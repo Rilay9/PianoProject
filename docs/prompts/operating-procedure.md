@@ -12,6 +12,15 @@ document puts judgement first and evidence discipline in its service.
 
 ---
 
+## 0. The north star
+
+The work is not complete when the architecture is correct. It is complete when the
+learner experience is substantially better: an app a competent piano teacher could look
+at and say the material is musically sensible, the teaching progression makes sense, the
+feedback is honest, the practice adapts to the learner, and the interface supports
+actually learning to play. Every wave is judged against that sentence, and the master
+backlog (`backlog-2026-09-25.md`) is how no part of it drops out of the plan.
+
 ## 1. The five rules everything else serves
 
 1. **Solve the actual problem, not the literal request.** Restate the goal without the

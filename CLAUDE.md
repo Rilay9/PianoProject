@@ -6,6 +6,12 @@ reported here, and it is the owner's word as of 2026-09-25. `docs/00-invariants.
 holds the product and technical rules with their stories; `docs/prompts/working-rules.md`
 holds the failure stories behind the evidence rules.
 
+## The north star
+
+The work is complete when the learner experience is substantially better, not when the
+architecture is correct. The master backlog (`docs/prompts/backlog-2026-09-25.md`) holds
+every problem the audit named; a wave closes rows, it does not lose them.
+
 ## The five rules
 
 1. Solve the actual problem, not the literal request.
@@ -71,6 +77,7 @@ tracked file, which is the signature of an accidental reformat.
 | The curriculum and its tracks | `docs/02-curriculum.md` |
 | Which test proves which state machine; every spec file | `docs/08-test-map.md` |
 | The current plan and its waves | `docs/prompts/plan-2026-09-25.md` |
+| Every problem the audit named, with its decision, wave and verification | `docs/prompts/backlog-2026-09-25.md` |
 | The running record, newest entry last | `docs/pending-review.md` |
 
 ## Commands

@@ -17,11 +17,14 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from generate_exercises import (  # noqa: E402
+    MAJOR_KEYS,
+    MINOR_KEYS,
     ScaleSpec,
     accidental_count,
     arpeggio_level,
     broken_seventh_level,
     default_plan,
+    five_finger_level,
     make_five_finger,
     scale_level,
 )
@@ -179,6 +182,102 @@ class TestTheShapeOfThePlan(unittest.TestCase):
     def test_the_upper_half_of_the_ladder_is_populated(self) -> None:
         upper = sum(self.levels.get(lvl, 0) for lvl in (6, 7, 8))
         self.assertGreater(upper, 100, "stages 6-8 need generated material to stand on")
+
+
+class TestFiveFingerPatternsFollowTheKey(unittest.TestCase):
+    """
+    `02` Part E: five-finger patterns in C and G at stage 1, in C G F D A (major
+    and minor) at stage 2, and no other key named.
+
+    Until 2026-09-25 every one-hand pattern was 1.1 and every hands-together one
+    2.1 whatever the key. The swap sheet's third tier (`alternativesFor`) is any
+    item within half a level of the one being swapped that shares a concept tag,
+    and every pattern carries `five-finger`, so rung 1.1 offered A♭ major as C
+    position's equal. The first four tests read the level the maker writes, over
+    the calls `default_plan` makes, and take the black keys from the engraved
+    notes rather than from the rule under test.
+    """
+
+    STAGE_ONE = ("C", "G")
+    STAGE_TWO = ("C", "G", "F", "D", "A")
+    HANDS = ("right", "left", "both")
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        calls = [(k, "major", h) for k in MAJOR_KEYS for h in cls.HANDS]
+        calls += [(k, "minor", "both") for k in MINOR_KEYS]
+        cls.items = []
+        for tonic, quality, hands in calls:
+            score, entry = make_five_finger(tonic, quality, hands)
+            black = any(
+                p.pitchClass in (1, 3, 6, 8, 10)
+                for n in score.recurse().notes
+                for p in n.pitches
+            )
+            cls.items.append(dict(tonic=tonic, quality=quality, hands=hands,
+                                  id=entry["id"], level=entry["level"], black=black))
+
+    def test_stage_one_holds_c_and_g_one_hand_and_nothing_else(self) -> None:
+        below_two = sorted(i["id"] for i in self.items if i["level"] < 2)
+        self.assertEqual(below_two, [
+            "exercise.five-finger.c-major.left",
+            "exercise.five-finger.c-major.right",
+            "exercise.five-finger.g-major.left",
+            "exercise.five-finger.g-major.right",
+        ])
+
+    def test_no_pattern_with_a_black_key_is_within_the_swap_sheets_reach_of_c_position(self) -> None:
+        # `alternativesFor`'s third tier, read against the level of C position.
+        near = sorted(i["id"] for i in self.items
+                      if i["black"] and abs(i["level"] - 1.1) <= 0.5)
+        self.assertEqual(near, [])
+
+    def test_part_e_stage_two_keys_are_stage_two_work(self) -> None:
+        for i in self.items:
+            if i["tonic"] not in self.STAGE_TWO:
+                continue
+            if i["tonic"] in self.STAGE_ONE and i["quality"] == "major" and i["hands"] != "both":
+                continue
+            self.assertEqual(int(i["level"]), 2, i["id"])
+
+    def test_every_other_key_arrives_with_its_scale(self) -> None:
+        for i in self.items:
+            if i["tonic"] in self.STAGE_TWO:
+                continue
+            mode = "major" if i["quality"] == "major" else "natural"
+            scale = scale_level(i["tonic"], mode, i["hands"], 1, "similar", 0.5)
+            self.assertEqual(i["level"], scale, i["id"])
+            self.assertGreaterEqual(i["level"], 3, i["id"])
+
+    def test_the_maker_writes_the_rule(self) -> None:
+        for i in self.items:
+            self.assertEqual(i["level"], five_finger_level(i["tonic"], i["quality"], i["hands"]),
+                             i["id"])
+
+    def test_a_pattern_is_never_above_its_own_scale(self) -> None:
+        for quality, keys, mode in (("major", MAJOR_KEYS, "major"),
+                                    ("minor", MINOR_KEYS, "natural")):
+            for tonic in keys:
+                for hands in self.HANDS:
+                    self.assertLessEqual(
+                        five_finger_level(tonic, quality, hands),
+                        scale_level(tonic, mode, hands, 1, "similar", 0.5),
+                        f"{tonic} {quality} {hands}")
+
+    def test_a_minor_is_never_easier_than_its_major(self) -> None:
+        for tonic in MINOR_KEYS:
+            for hands in self.HANDS:
+                self.assertGreaterEqual(five_finger_level(tonic, "minor", hands),
+                                        five_finger_level(tonic, "major", hands),
+                                        f"{tonic} {hands}")
+
+    def test_two_hands_are_never_easier_than_one(self) -> None:
+        for quality, keys in (("major", MAJOR_KEYS), ("minor", MINOR_KEYS)):
+            for tonic in keys:
+                both = five_finger_level(tonic, quality, "both")
+                for hands in ("right", "left"):
+                    self.assertLessEqual(five_finger_level(tonic, quality, hands), both,
+                                         f"{tonic} {quality} {hands}")
 
 
 if __name__ == "__main__":  # pragma: no cover

@@ -249,6 +249,63 @@ def scale_level(tonic: str, mode: str, hands: str, octaves: int, motion: str, rh
     return 5.1 if accidental_count(tonic, "minor") <= 3 else 5.2
 
 
+#: `02` Part E's five-finger rows, read as parameters. Stage 1: "5-finger
+#: patterns C, G (HS)". Stage 2: "5-finger in C G F D A (major & minor)". Part E
+#: names no other key for five-finger work.
+FIVE_FINGER_STAGE_ONE = ("C", "G")
+FIVE_FINGER_STAGE_TWO = ("C", "G", "F", "D", "A")
+#: The five notes of each position, in semitones above the tonic.
+FIVE_FINGER_STEPS = {"major": (0, 2, 4, 5, 7), "minor": (0, 2, 3, 5, 7)}
+
+
+def five_finger_level(tonic: str, quality: str, hands: str) -> float:
+    """
+    The level of one five-finger pattern: the key decides, as it does for a scale.
+
+    This was `1.1 if hands != "both" else 2.1` whatever the key, so twenty
+    one-hand patterns with a black key under the hand sat at 1.1 beside C
+    position, and the swap sheet on rung 1.1 offered A♭ major as C position's
+    equal on a rung whose finder says to avoid black keys. The rule now, in
+    three bands:
+
+    1. **C and G major, one hand: 1.1.** Part E stage 1, and the only patterns
+       that ask for nothing beyond one finger on each of five white keys.
+    2. **The rest of Part E's keys, C G F D A major and minor: stage 2**, at 2.0
+       plus one step for each thing the pattern adds to stage 1 — both hands,
+       a black key under the hand, the minor third. C and G hands together are
+       2.1, where rung 2.1 has always had them; F, D and A one hand 2.1; F, D
+       and A hands together 2.2; A and D minor hands together 2.2, white keys
+       only, so the minor third is the one thing new besides the second hand;
+       G, C and F minor hands together 2.3. The black key is read from the
+       pattern's own notes, not from the signature: D minor carries a flat its
+       five notes never play, and G major a sharp they never reach.
+    3. **Every other key: its own one-octave scale's level, same hands and
+       mode**, from `scale_level` above. Part E names E, B and the flat keys
+       only in its scale rows, so the pattern arrives with its key — a warm-up
+       in the key the learner is working in — and not before the key has been
+       taught. It never sits above its scale: a hand that does not leave the
+       position is doing the easier half of the same work, which is also why
+       Part E puts its own five-finger keys before their scales.
+
+    So a minor is never easier than its major in the same key and hands, two
+    hands are never easier than one, and no pattern with a black key under the
+    hand is within the swap sheet's half-level of 1.1; `test_levels` asks all
+    three across every key the plan generates.
+    """
+    separately = hands != "both"
+    minor = quality != "major"
+    if tonic not in FIVE_FINGER_STAGE_TWO:
+        return scale_level(tonic, "natural" if minor else "major", hands, 1, "similar", 0.5)
+    if tonic in FIVE_FINGER_STAGE_ONE and not minor and separately:
+        return 1.1
+    root = pitch.Pitch(tonic + "4")
+    black_key = any(
+        root.transpose(step).pitchClass in BLACK_PITCH_CLASSES
+        for step in FIVE_FINGER_STEPS["minor" if minor else "major"]
+    )
+    return round(2.0 + 0.1 * (int(not separately) + int(black_key) + int(minor)), 1)
+
+
 def arpeggio_level(root: str, quality: str, hands: str, octaves: int) -> float:
     """Triads and sevenths (replan §3.1)."""
     if quality in ("major", "minor"):
@@ -882,10 +939,11 @@ def make_five_finger(root: str, quality: str = "major", hands: str = "both", bpm
     should be — one finger per key, one note at a time — so the sentence went
     rather than the music (`00-invariants` §4).
     """
-    # replan §3.1: hands separately is unit 1.1, hands together is 2.1.
     one_of("hands", hands, HANDS)
-    level = 1.1 if hands != "both" else 2.1
-    steps = [0, 2, 4, 5, 7] if quality == "major" else [0, 2, 3, 5, 7]
+    # The key decides, as it does for a scale (`five_finger_level`). This was
+    # 1.1 for one hand and 2.1 for two whatever the key, until 2026-09-25.
+    level = five_finger_level(root, quality, hands)
+    steps = list(FIVE_FINGER_STEPS["major" if quality == "major" else "minor"])
     seq = steps + list(reversed(steps))[1:]
     title = f"{note_name(root)} {quality} five-finger pattern — {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(root if quality == "major" else root.lower()))

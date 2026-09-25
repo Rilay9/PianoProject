@@ -725,6 +725,8 @@ their pattern definitions (each is a 8-note cell transposed stepwise up two octa
   chords, extended chords, chord-scale, transposition, Roman-numeral reading and
   learn-a-tune-by-ear; sight-reading levels 5–7.
 
+**Amendment 2026-09-25 (T39):** five-finger patterns are levelled by key from rows 1 and 2 above (`five_finger_level`, beside `scale_level`): C and G one hand 1.1; the rest of C G F D A, major and minor, at stage 2, a step above 2.0 for each of both hands, a black key under the hand and the minor third (2.1–2.3); every other key at its own one-octave scale's level (E and B one hand 3.2, the flat keys 4.2, hands together 4.1–5.2), never above that scale. Until then every one-hand pattern was 1.1 and every hands-together one 2.1, whatever the key.
+
 ### Part E2 — the non-scale exercise families (`00` D21; **built in P5b**)
 
 The table above is a technique syllabus in the conservatoire sense. It is not the whole of
