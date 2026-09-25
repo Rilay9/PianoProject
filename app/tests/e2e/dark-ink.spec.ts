@@ -25,6 +25,13 @@ test('the drill draws its notation in light ink on a dark card', async ({ page }
 
 test('and so does the score screen, which is where the rule came from', async ({ page }) => {
   await page.goto('/#/score/exercise.five-finger.c-major.right');
+  // Revised 2026-09-25 (test class: revise). The old test read the filter as soon as
+  // the front buffer was visible and assumed the theme attribute was already on
+  // `<html>`; on CI's slower runner the sheet drew first and the filter read as the
+  // empty string, failing on two runs in five while passing here every time. The
+  // rule under test is a stylesheet rule on `[data-theme='dark'] .score-buffer svg`,
+  // so the theme is the precondition and is waited for, as the drill test above does.
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   const svg = page.locator('.score-buffer.is-front svg').first();
   await expect(svg).toBeVisible({ timeout: 60_000 });
   expect(await inverted(page, '.score-buffer.is-cursor svg')).toContain('invert');
