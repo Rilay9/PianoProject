@@ -1,4 +1,14 @@
-# Outside audit, shared by the owner: "Piano Project Improvements" — captured 2026-09-25
+# Outside audit, shared by the owner: "Piano Project Improvements"
+
+**2026-09-25, later: this file holds only the last five turns.** The share's page rendered
+five messages and this capture took them for the whole; the share's data holds 206 nodes,
+and the ten long reviewer messages before these (the first branch audit, the generator and
+curriculum deep-dive, the phone score review, the directive on PDMX, writing and the whole
+experience, the "quietly wrong" audit, the mechanisms and writing contract, the
+source-level audit, the forensic pass, the self-assessment) are in
+`audit-2026-09-25-outside-full.md`. The backlog cites them by node number. The lesson is in
+memory: a share page's DOM is not the conversation; read its data.
+
 
 Source: https://chatgpt.com/share/6ab5f689-f7a8-83ea-8af5-427fd23e4e89
 The share holds five messages. Message 1 opens mid-conversation ("given everything we've
