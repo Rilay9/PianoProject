@@ -666,6 +666,16 @@ test.describe('the sheet fills the screen (P19b)', () => {
     // A stave, not the whole sheet: 40 px is "the fit has run and drawn
     // something at a readable size", not "the sheet is 300 px tall".
     await expect.poll(height, { timeout: 30_000 }).toBeGreaterThan(40);
+    // **Revised 2026-09-25 (test class: revise).** The fit is read once the
+    // piece's measurement has landed, not at the first readable draw. The
+    // first draw is a transitional fit that the settled one replaces, larger,
+    // when the measurement arrives (T38); on CI that first state lasted long
+    // enough to be read as "fitted", and a Size step from the settled state
+    // then read *larger* than it (90 against a 60 that was never the fit).
+    // Here the measurement is fast and the two reads agreed. Whether a
+    // learner sees that transitional draw grow is the matrix's U42.
+    await page.waitForSelector('.score-view[data-measured]', { timeout: 60_000 });
+    await page.waitForTimeout(500);
     const fitted = await height();
     // Zoom is a multiplier on the fitted size now. It used to be the absolute
     // OSMD zoom, which a fit would simply cancel out.

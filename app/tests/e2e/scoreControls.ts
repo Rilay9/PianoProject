@@ -50,7 +50,19 @@ export async function openScoreMenu(page: Page): Promise<void> {
   // covering, so mid-run `⋯` is behind a stage that takes the tap — the fuzz
   // walk spent its whole four-minute budget being told so.
   await revealBar(page);
-  await page.locator('#score-more').click();
+  // **Revised 2026-09-25 (test class: revise).** The bar fades again three
+  // seconds after a reveal while a run is going, and on a slow runner the
+  // click can arrive as it fades: Playwright then waits for a stable target
+  // until the test's own timeout (five minutes in the state probe, on CI,
+  // twice today). The old helper assumed the reveal outlasts the click. Now
+  // the click has its own short timeout and a failed one reveals and tries
+  // once more, so a stall costs seconds and says what it was.
+  try {
+    await page.locator('#score-more').click({ timeout: 8_000 });
+  } catch {
+    await revealBar(page);
+    await page.locator('#score-more').click({ timeout: 8_000 });
+  }
   await expect(sheet).toBeVisible();
 }
 
