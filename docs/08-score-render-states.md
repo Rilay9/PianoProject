@@ -396,7 +396,10 @@ first, looking ahead second, the bar count third*, and the arrangement follows t
   number, which is what it did 266 times in T30's grid. The reason the row gives is the
   renderer's (`data-window-why`, T38): `floor` upright, `size` over 100 %, and `across`
   sideways, where the words are *about 2 fit across at this size* — nothing there would be
-  drawn smaller, so "too small" was false.
+  drawn smaller, so "too small" was false. On the two-column sideways sheet the row shows a
+  compact form of the same words (`04` §5), because the full sentence made the sheet
+  scroll on Linux fonts (T38 follow-up, 2026-09-25); the `N asked, M shown` form the
+  window-rule spec parses is kept in both.
 - Exactly one slot holds the cursor and **is never re-drawn while it does**. Each slot is an
   engraver loaded with the piece, so a piece longer than the probe's cap keeps two. The
   shape is chosen at the first fit and held for a run, like the scale, and it may only

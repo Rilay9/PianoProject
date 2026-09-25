@@ -1590,7 +1590,11 @@ without distortion and being able to look ahead are paramount."* So:
    do not, the window holds as many of the asked bars as fit at the readable size and **the
    row says so in words** — *Bars in window — 4 asked, 2 shown: 4 would be too small here* —
    with the stepper still live (`§0` R4, and `00-invariants` §1: a control that looks
-   pressable must do something). It never silently draws a different number. The reason
+   pressable must do something). It never silently draws a different number. Where the
+   sheet is two columns (a phone held sideways) the row uses a compact form of the same
+   words — *Bars — 4 asked, 2 shown: too small*, *…: fits across*, *…shown at 150 %*,
+   *Bars — next bar runs on* — because the full sentence wrapped to four lines there and
+   pushed the sheet into scrolling on Linux fonts (T38 follow-up, 2026-09-25). The reason
    is the true one for the stage (T38): *4 would be too small here* upright, where more bars
    would put the staff under the floor; *at 150 % only 2 of 4 fit here* over 100 % Size; and
    sideways, where the size comes from the height and no count changes it, *about 2 fit

@@ -315,7 +315,11 @@ test.describe('score screen in landscape', () => {
       if (s.shown < s.asked) {
         expect(told, `${String(s.asked)} asked, ${String(s.shown)} held and the row is silent: ${said}`).not.toBeNull();
         expect(Number(told?.[2]), `the row's count is not the count held: ${said}`).toBe(s.shown);
-        expect(s.words, `sideways the reason is the room across, not a smaller size: ${said}`).toMatch(/fit across/);
+        // "fits across" where the sheet is two columns (a phone sideways, this
+        // stage), "about N fit across" where it has the room: the reason is the
+        // room across either way (the row's words, compacted 2026-09-25 so the
+        // sideways sheet does not scroll).
+        expect(s.words, `sideways the reason is the room across, not a smaller size: ${said}`).toMatch(/fits? across/);
       } else {
         expect(told, `the row says fewer are shown when all are: ${said}`).toBeNull();
       }

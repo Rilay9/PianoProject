@@ -127,6 +127,15 @@ test.describe('score screen', () => {
   test('the ⋯ sheet fits sideways without scrolling (08 §7.2)', async ({ page }) => {
     await page.setViewportSize({ width: 780, height: 360 });
     await openScore(page);
+    // **Revised 2026-09-25**: read the sheet once the window's count is settled.
+    // The count is chosen again when the piece's measurement lands (T38), and at
+    // this stage that yields — the row then says why in words, its longest
+    // label. Read before it landed, this passed here, where the measurement is
+    // usually late, and failed on CI, where it was not: the same sheet, two
+    // moments. The sheet is judged at its fullest state, the one a learner
+    // opening it a second later sees.
+    await page.waitForSelector('.score-view[data-measured]', { timeout: 60_000 });
+    await page.waitForTimeout(500);
     await openScoreMenu(page);
     const fits = await page.evaluate(() => {
       const panel = document.querySelector<HTMLElement>('#score-more-sheet .sheet__panel');

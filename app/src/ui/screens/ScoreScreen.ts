@@ -3537,30 +3537,53 @@ export function ScoreScreen(router: Router): HTMLElement {
     // the number to be about (`04` section 0 R4). The Layout row says where
     // the setting applies, so the sentence is not simply lost with the row.
     barsRow.hidden = settings.layout === 'scroll';
-    setRowLabel(
-      barsRow,
-      barsShown < settings.barsPerWindow
-        ? `Bars in window — ${String(settings.barsPerWindow)} asked, ${String(barsShown)} shown: ${
-            // The reason the count fell, as the renderer priced it (T38,
-            // `data-window-why` on the stage). Sideways it is the room across
-            // at the size the height gives — nothing would be drawn smaller, so
-            // "too small" was false there. Over 100 % Size it is the size asked
-            // for (T34); upright, more bars would put the staff under the floor.
-            stage.dataset.windowWhy === 'across'
-              ? `about ${String(barsShown)} fit across at this size`
-              : stage.dataset.windowWhy === 'size' || (stage.dataset.windowWhy === undefined && settings.zoom > 1)
-                ? `at ${String(Math.round(settings.zoom * 100))} % only ${String(barsShown)} of ${String(settings.barsPerWindow)} fit here`
-                : `${String(settings.barsPerWindow)} would be too small here`
-          }`
-        : // The greyed next row, when it is wider than the stage at the
-          // window's size (T38, `data-ahead`): the window keeps its size and
-          // the row says what became of the next bar.
-          stage.dataset.ahead === 'continues'
-          ? 'Bars in window — the next bar continues past the edge'
-          : stage.dataset.ahead === 'start'
-            ? 'Bars in window — only the start of the next bar fits'
-            : 'Bars in window',
-    );
+    {
+      // The reason the count fell, as the renderer priced it (T38,
+      // `data-window-why` on the stage). Sideways it is the room across at the
+      // size the height gives — nothing would be drawn smaller, so "too small"
+      // was false there. Over 100 % Size it is the size asked for (T34);
+      // upright, more bars would put the staff under the floor.
+      const asked = String(settings.barsPerWindow);
+      const shown = String(barsShown);
+      const why = stage.dataset.windowWhy ?? (settings.zoom > 1 ? 'size' : 'floor');
+      const percent = String(Math.round(settings.zoom * 100));
+      // **Compact where the sheet is two columns** (the stylesheet's
+      // `max-height: 520px` rule, a phone held sideways): each row's words get
+      // about 150 px beside their control, the hints are hidden, and a label
+      // past two lines makes the row taller than its stepper — at 780 x 360 the
+      // full sentence took four lines and put the sheet 26 px behind a scroll
+      // (18 on CI's fonts), which `08` §7.2 forbids. Two lines cost the row
+      // nothing. The count and the reason stay; the words shrink.
+      const compact = window.innerHeight <= 520;
+      setRowLabel(
+        barsRow,
+        barsShown < settings.barsPerWindow
+          ? compact
+            ? `Bars — ${asked} asked, ${shown} shown${
+                why === 'across' ? ': fits across' : why === 'size' ? ` at ${percent} %` : ': too small'
+              }`
+            : `Bars in window — ${asked} asked, ${shown} shown: ${
+                why === 'across'
+                  ? `about ${shown} fit across at this size`
+                  : why === 'size'
+                    ? `at ${percent} % only ${shown} of ${asked} fit here`
+                    : `${asked} would be too small here`
+              }`
+          : // The greyed next row, when it is wider than the stage at the
+            // window's size (T38, `data-ahead`): the window keeps its size and
+            // the row says what became of the next bar. Only where there is a
+            // look-ahead row, which a phone held sideways never has.
+            stage.dataset.ahead === 'continues'
+            ? compact
+              ? 'Bars — next bar runs on'
+              : 'Bars in window — the next bar continues past the edge'
+            : stage.dataset.ahead === 'start'
+              ? compact
+                ? 'Bars — part of next bar'
+                : 'Bars in window — only the start of the next bar fits'
+              : 'Bars in window',
+      );
+    }
     setRowLabel(
       layoutRow,
       settings.layout === 'scroll' ? 'Layout — Bars in window applies to the Window layout' : 'Layout',
