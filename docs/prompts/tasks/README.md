@@ -124,3 +124,11 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **T39** | Five-finger patterns levelled by key; catalog rebuilt; no band widened | build, content | with T38 |
 | **T37** | Nothing displayed or recorded that was not measured; sight-reading receives what the rungs promise | build, browser | after T38 and T39 |
 | **T33** | The five state-machine choices | build, browser | after T37 |
+
+### Between B and C (the reviewer's three decisions) and C0 (design, read-only)
+
+| | Task | Kind | Runs |
+|---|---|---|---|
+| **T40** | Three evidence rules: no input means not measured; a heard sight-read is not a first attempt; a demonstrated performance is not independent | build, browser | now |
+| **C0a** | The vocabulary design: demands, skills, needs, ability, address, observations, evidence, the teaching plan, designed apart for review | design, read-only | on CI's verdict |
+| **C0b** | The test inventory (AT-15): every test classified preserve / revise / delete / replace / add | audit, read-only | on CI's verdict |
