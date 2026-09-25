@@ -327,34 +327,232 @@ Recommendation: drop it, and say "next bar below" in the row. **E:** on a wide s
 readability is comfortably met, should the look-ahead beat the asked count? Recommendation:
 yes.
 
-## The decisions, in one place
+## The decisions, separated: fact, design problem, proposal, and what stays a choice
 
-1. **Wait-mode runs are practice, not passes** (problem 1). Recommend yes.
-2. **Roles on rung options; completion as a predicate over stored runs; judge by the
-   opening rung** (problem 2). Recommend yes.
-3. **Adaptivity as three small readers of stored evidence, sight-reading first**
-   (problem 3). Recommend yes.
-4. **Measured features plus judgement as the one source of level; generated items levelled,
-   not declared; a `targetSkill` field; validated tags** (problem 4). Recommend yes.
-5. **The excerpt item, on one rung first** (problem 5). Recommend yes, after 1–3.
-6. **Window B: a next row that does not fit across is dropped, with the row saying so**
-   (T35). Recommend yes.
-7. **Window E: on a wide stage with readability comfortably met, the look-ahead beats the
-   asked count** (T35). Recommend yes.
+Revised 2026-09-25 on the reviewer's instruction: the audit above is left as it is; this
+section separates what the traces *establish* from what they *suggest* and from what only
+the owner can decide. The target model throughout is
 
-Everything under problem 1 and the window's R2, C and D needs no decision and can start
-on your word.
+> performance → observations → evidence → skill state → curriculum decision
+
+and not *performance → completion → rung state*. Where a proposal below is a step on the
+way, it is called a step, and the thing it must not become is named.
+
+### D1. What a Wait-mode run is evidence of
+
+- **Fact (observed at the lines).** In Wait mode the engine keeps no timing (`deltas`
+  written only in the Tempo path) and the "tempo" compared against the rung's floor is the
+  slider's value (`PracticeEngine.ts:1308`); `evaluateOutcome` passes Wait and Tempo alike
+  (`Scoring.ts:184`); Wait is the default with a piano attached; `02` Part G defines a pass
+  in Tempo mode.
+- **Design problem.** A pass today asserts two things, notes and tempo, and in the default
+  mode the second was never observed. The record cannot tell a pass that was played in time
+  from one that was not.
+- **Proposal.** Not "Wait runs are not passes": that defines the problem away. Rather: a run
+  stores what it *observed* (pitch accuracy under Wait's definition; nothing about tempo),
+  and any criterion that demands a tempo cannot be met by observations that carry none. A
+  Wait run is honest evidence of knowing the notes; it is no evidence of pulse. The sheet
+  says which.
+- **What stays a choice.** Whether a rung's requirement should include tempo at all for its
+  first pass (Part G says yes; lesson 1.1 asks for Wait at 95 % *then* Tempo at 90 %, which
+  is a two-stage requirement nobody built). Recommendation: keep Part G, and let a rung state
+  a two-stage rule where its lesson already does.
+
+### D2. What a pass is evidence *of*, and against *what*
+
+- **Fact.** A run is judged by the first rung that lists the item, not the one that opened
+  the screen (`selectors.ts:29–40`; `ScoreScreen.ts:2225–2231`, `fromRung` at `:219` used
+  only for Back); the pass is a flag on the item and `lessonComplete` credits it on every
+  rung listing the item (`selectors.ts:176–204`); 53 of 181 multi-rung items have a later
+  rung that asks more (*trace only*); `mastery.custom` has two readers and neither enforces
+  a rule (`selectors.ts:167`, `ScoreScreen.ts:2450`); Wait accuracy and Tempo accuracy are
+  different quantities under one threshold.
+- **Design problem.** The evidence is keyed to the item and to nothing else: not to the
+  criteria it was judged against, not to the skill the run exercised, not to the context it
+  was practised in. So it cannot be reused honestly (one run *can* be evidence for several
+  skills) and cannot be refused honestly (a 3.4 pass should not finish 4.7 "from memory").
+- **Proposal, in the target model's terms.** (1) *Observations*: a run writes what was
+  measured, by its own definitions: mode, pitch accuracy and which definition, whether tempo
+  was measured and at what, per-bar misses and wrongs, timing, first attempt or not, the
+  item, and the context that opened it. `SessionRow` holds half of this already. (2)
+  *Evidence*: derived from observations against the item's declared target skills (D4), so
+  one performance yields evidence for each skill the item exercises, weighted by what the
+  item actually demands. (3) *Skill state*: per concept, updated from evidence, with recency.
+  (4) *Curriculum decision*: a rung's requirement is stated over skill evidence ("two unseen
+  phrases read in Tempo mode at ≥ 90 %"; "this piece at ≥ 85 % with hands together"), and
+  its state is *derived* from the skill state and the observations, never stored as a flag.
+  The "roles on options" idea from the first draft is only the item's target-skill
+  declaration seen from the rung's side; it is not a completion predicate over item flags,
+  and the first draft's wording invited exactly that misreading.
+- **A step, and what it must not become.** Storing observations and judging by the opening
+  context can land first, without the skill model, because they are needed by every later
+  step. Deriving rung state from stored observations against each rung's own criteria is
+  also a step: better than the flag, but if it ships alone it is a disguised item-completion
+  architecture and must be labelled as interim in the code and the record.
+- **What stays a choice.** Is the rung that opened the screen the right source of intent, or
+  should a run outside any rung (Library, import) still yield skill evidence? Recommendation:
+  both, and they are not in tension once evidence is keyed to skills; the opening rung only
+  sets which criteria the *sheet* reports against. Is rung state binary? Recommendation: the
+  learner sees a rung as open, in progress or done, but the state underneath is graded
+  evidence and stays so. What "pass" means per content type (repertoire, technique,
+  sight-reading) is a pedagogy question: recommendation, one observation shape, and
+  per-type requirements written in the rung.
+
+### D3. Whether anything the learner does changes what comes next
+
+- **Fact.** `fillSlot` takes the learner's level from the stage number of the first
+  incomplete rung (`session.ts:256`) and picks inside a rung by index (`:236`, `:260`,
+  `:303`); nothing reads hot spots, timing or misses; the sight-reading level is a constant
+  per row; review is calendar-only. Observed by running `buildSession` on constructed
+  states: a failing learner and a never-played learner get the same card.
+- **Design problem.** There is no skill state to read, so selection reads position and
+  chance. This is the consequence of D2's design problem, not a separate one.
+- **Proposal.** Three readers of the skill state, added one at a time, each with a
+  constructed learner state as its test: the in-rung pick (prefer the option whose skill
+  evidence is weakest or missing; skip what is already evidenced on this rung), the
+  sight-reading generator's constraints (move one dimension at a time from the reading
+  skill state), and the swap sheet. Nothing else adapts. The calendar review stays, with its
+  date bug fixed.
+- **What stays a choice.** How visible adaptation is (does the learner see why an item was
+  chosen; can they override). Recommendation: the reason line already exists on every row;
+  make it true, and keep Shuffle and Swap as the override.
+
+### D4. Which numbers mean what
+
+- **Fact.** `level` is a curriculum address for generated items (declared from one
+  parameter; the rung id as a default) and a regression quantity for quarried ones, on one
+  axis; `levelSource: judged` is written on declared numbers; one quarried piece carries
+  seven numbers, three shown to a learner; the nineteen features are dropped at the catalog
+  boundary; the model has no feature for tuplets or grace notes and ranks Anh. 113 below the
+  plainer Petzold; `abrsmGradeApprox` has no reader; item concept tags are free text not in
+  the vocabulary; the swap sheet's "shared concept" tier matches on a tag every quarried item
+  carries.
+- **Design problem.** Seven different things are being asked of one field. The reviewer's
+  list is the right one, and the traces show each is currently either collapsed into
+  `level` or absent:
+
+  | concept | what it is | where it lives today |
+  |---|---|---|
+  | material demand | what the notation asks, per dimension (reading, rhythm, range, leaps, texture, hand independence, physical) | the nineteen features, dropped; not measured for tuplets, graces, ornaments |
+  | performance demand | what this *run* asked: tempo, hands, mode, unseen or not | partly in `SessionRow`; the tempo is the slider in Wait |
+  | skill prerequisites | the concepts a piece needs before it is honest to offer | nowhere; `requires` checks four notation facts on some rungs |
+  | skill practised | what the item is for | generator docstrings, `02` Part E2, lesson prose; never a field |
+  | learner ability | skill state per concept | nowhere; the stage number stands in |
+  | curriculum address | which rung, which stage | the rung itself, and again as `level`'s integer part |
+  | mastery / evidence | what the observations support | a flag and a date |
+
+- **Proposal.** Separate fields, each with one writer: `demands` (per-dimension, measured,
+  extended with tuplets, graces, ornaments, simultaneity), `targetSkills` (declared by the
+  generator or the author, validated against the vocabulary), `needs` (concept
+  prerequisites, derived from `demands` where possible), and the rung as the only address.
+  A single `level` may remain as a *derived, versioned* sort-and-display scalar with its
+  derivation stated, or be dropped from the screens; it must not be written by hand, used
+  as an address, or compared against the stage number as if it were ability. Generated
+  items get their `demands` measured the same way as quarried ones.
+- **What stays a choice.** Which dimensions (recommendation: start from the seven above and
+  the features already computed); whether a scalar is shown at all (recommendation: show
+  the two or three demands a learner can act on, "hard in the left hand", and keep the
+  scalar for sorting); whether a person's grade remains an input (recommendation: yes, as
+  judgement that overrides the derived scalar and joins the calibration set). **The schema
+  is not approved by this document; it is proposed for review in its own brief.**
+
+### D5. What an excerpt must be
+
+- **Fact.** `level`, `concepts` and `file` are per item with no bar range; `songOptions`
+  is a list of ids; `teaching.sections` carries a label and bars only; a looped range writes
+  no evidence; one excerpt exists by accident as a truncated upload. Cut on paper, bars
+  17–24 of Anh. 113 teach `classical.3`'s own concept within what Stage 3 has taught, and
+  the single number would have ranked the hardest cut easiest.
+- **Design problem.** A piece is the only unit of experience, so the honest early use of a
+  hard piece is unreachable, and the only way round is a second file that forgets its
+  parent.
+- **Proposal, pedagogically not just technically.** An excerpt is an item that carries:
+  its source piece and bar range; its own `demands`, measured on the slice (not inherited);
+  its own `targetSkills`, `needs`, hands and texture; its musical context (key area, where
+  it sits in the form, whether it begins and ends on phrase boundaries, and what precedes
+  it, so the learner is not dropped mid-phrase); the reason it was cut (which skill, for
+  which rung); and its own observations and evidence, which also count as evidence toward
+  the parent piece's skills. `pieceId + startBar + endBar` alone is a smaller piece, and is
+  refused.
+- **What stays a choice.** Whether to build it, and on which rung first. Recommendation:
+  yes, after D1–D3, on `classical.3` with the cuts the trace made (a rung that has a
+  teacher's read already) rather than on an empty rung.
+
+### D6 and D7. The window: what is bug, what is stale spec, what is a changed invariant
+
+The classification stands per item; here is the mechanism and the measurement behind each
+proposed invariant change, and what is *not* an invariant change.
+
+- **R2 (implementation bug, no invariant change).** *Mechanism:* the chooser prices every
+  bar at `naturalBar.width`, a running maximum per engraving zoom of row-ink ÷ bars-in-row
+  (`WindowRenderer.ts:2371–2377`) that carries the row's clef, key and time signature and
+  never comes down; the Size target is priced from that prediction (`:1577–1593`) while
+  `scaleFor` sizes from the ink drawn. *Measurement:* at 1280 × 720 on Hot Cross Buns, 2
+  bars: 100 % drew two bars; 110 % drew one bar at 0.93 of the 100 % scale; 120 % at 0.92;
+  back to 110 % at 0.85, a different size for the same setting (probe run twice, identical).
+  The spec's own reading fell by the same ratio, so not a test bug. *Fix:* price from what
+  is drawn, hold the target per step, refuse any shape smaller than the 100 % scale. This
+  restores `08` §9 invariant 3; it changes no invariant.
+- **R1 (outdated spec over the same bug).** *Mechanism:* sideways the count yields by
+  design, and the yield's room is priced at the inflated per-bar width. *Measurement:*
+  `data-window-bars` was 1 for 1, 2, 3 and 4 asked at 880 × 412; a page never stepped said 2
+  shown, and one stepper press later the same stage said 1. *Fix:* the spec asserts "count
+  rises or the row states the yield"; the pricing fix above makes the yield honest; the row's
+  sentence is corrected. No invariant change.
+- **R3 (five reds outdated spec, two reds fault B).** *Measurement:* the five assert a
+  pre-T34 page width; the two "ink fills 74 / 78 %" cells are the window row drawn at the
+  scale the wider look-ahead bar set. Spec re-pointed; B fixed. No invariant change.
+- **B (implementation bug, and one product line).** *Mechanism:* `fitSlots` hands the greyed
+  row to `scaleFor`, whose width term is the widest box, while the chooser granted that row
+  on height alone. *Measurement:* at 390 × 844 the scale equalled (stage width − margin) ÷
+  the look-ahead row's width, about 8 % under the window's own fit; at 360 × 780 about a
+  quarter under; mid-run the frozen scale held and the greyed row's ink was measured past the
+  stage's right edge (tablet upright, Nocturne, 4 bars). `08` §9.7 already says the window is
+  never shrunk for the look-ahead, so the fix (scale from window rows only) restores an
+  invariant. **The choice (D6)** is only what to do with a next row that does not fit across
+  at the window's scale: drop it, or draw it running off the edge showing its opening. The
+  reviewer's caution applies: dropping it can leave a hole and can oscillate at the
+  breakpoint. Recommendation: draw it running off the edge, greyed, which never changes the
+  window's size and never oscillates, and say "next bar continues" in the row; test the
+  breakpoint with a viewport swept across it and assert the window's scale is monotone.
+- **C (implementation bug, distortion).** *Mechanism:* `drawInto` gives a look-ahead slot a
+  page of bars × stage width; when the zoom rises at Play, two dense bars exceed it, the
+  engraver wraps the slot and justifies bar 5 across the row; `data-stretch` records intent.
+  *Measurement:* the phone upright Nocturne 4-bar mid-run cell on the sheet, opened. *Fix:*
+  size the page from the widest natural bar at the zoom; write `data-stretch` from the
+  outcome; add a check that reads drawn width against engraved width per bar. Restores the
+  owner's first rule; no invariant change.
+- **D (two definitions of "staff").** *Measurement:* the `.staffline` box every spec reads is
+  1.8 to 2 times the five-line span on two pieces; `pieceInk.staff` the same. *Fix:* the
+  five-line height becomes the one meaning; the floor's number is re-derived from screens
+  the owner has called readable. This changes the *number* in an invariant, not the
+  invariant; two pieces is a thin base and the re-derivation should measure more.
+- **E (intentional behaviour; the one real invariant change, D7).** *Mechanism:* T34 rule 2
+  grants the next bar only if it fits at the largest scale, and the largest scale on a wide
+  stage leaves no room. *Measurement:* tablet sideways, Twinkle and Nocturne at 2 bars: one
+  row at maximum size, cursor on the last bar, no next bar, the lower sixth to third of the
+  stage empty, staff far above any floor. *The choice:* whether readability, once
+  comfortably met, should yield room to the look-ahead. The owner said the two are "the most
+  important things" together; T34 read "maximise readability" as "maximise size".
+  Recommendation: yes, with "comfortably met" defined as a multiple of the five-line floor
+  from D above and tested on the sheet's four tablet cells before and after. This one is
+  yours, because it changes what a tablet shows on every piece.
+
+**Needs no decision and can start on the word:** R2, R1's pricing and sentence, R3's spec,
+B's scale fix, C, D, and every item under problem 1 except D1's requirement question.
 
 ## What this changes in the plan
 
 - **Wave B (on your go):** every P0 in problem 1, local, each with a test seen red; the
   window's R2, B, C and D at the shared mechanism, the two stale specs re-pointed, a
   distortion check that reads outcome; then T33. One chain, commit, push, green baseline.
-- **Wave C:** problems 2 and 3, in the order above, as the smallest model changes, one
-  consumer at a time, with constructed learner states as tests.
-- **Wave D:** problem 4 (the level source of truth, the notation block extended, the
-  target-skill field), then problem 5 (needs-versus-taught as a gate; the excerpt item on
-  one rung), then the lesson-voice pass and the carried-over open items.
+  D6 and D7 as decided.
+- **Wave C:** D1–D3 in the target model's terms (observations, evidence keyed to skills,
+  skill state, three readers), one consumer at a time, with constructed learner states as
+  tests; any interim completion-from-observations step labelled as interim.
+- **Wave D:** D4 (the separated fields, schema proposed for review first), then D5
+  (needs-versus-taught as a gate; the excerpt item as defined, on one rung), then the
+  lesson-voice pass and the carried-over open items.
 
 ## Unverified
 
