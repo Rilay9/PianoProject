@@ -1371,6 +1371,18 @@ changed while paused restarted it. The chrome folds three seconds into a pause a
 into any run (the owner's *just always fade it*); one tap on the sheet brings back the `▶` the
 line names, and the line itself is in the stage's corner while the chrome is folded.
 
+**The note waited for is named as the score writes it** (added 2026-09-25, T41). With *Name the
+note I am waiting for* on, a Wait for me run says *Waiting for E♭5*, or the chord low to high
+(*Waiting for B♭3 + D5*). It used to name each key from its MIDI number through a table of
+sharps, so the Minuet in F asked for *A♯3* and *D♯5* over a page printing B♭3 and E♭5 — the key
+is the same, the note is not, and a name the page does not show is a wrong thing taught (`00`
+never teach wrong). The spelling is the notation's own step and alter, carried on each note as
+`ScoreNote.accidental` and reached through the prepared step's note ids: ♯ and ♭, 𝄪 and 𝄫 as
+written, and ♮ where the key signature in force would alter the letter and the note is written
+without it (the B♮ in F major, which a teacher names "B natural", whether or not the bar reprints
+the sign). One key written two ways in one chord is named both ways, lower letter first. The
+octave belongs to the letter: B♯3 is the key of middle C.
+
 **And a demonstration says it is one.** `Hear it` deliberately leaves the mode selector alone,
 so the state line read the *selected* mode's standing sentence while the app played the piece
 — *Play the first note. Nothing moves until you do.* over a run in which nothing the learner
@@ -2162,7 +2174,12 @@ learner looks at.
 - **Result sheet:** pass/master against the same accuracy setting a piece uses (§7), the
   kind's own numbers (mean reaction, clean changes, velocity ratio), "Again" for a fresh set,
   *Go over the ones you missed* where there were any, and the run recorded through the P7
-  stores. After a backing-track run — the one kind that records what was played — the sheet
+  stores. **A kind that judges nothing claims nothing** (T41): the backing track has no right
+  answer, so its sheet is headed *Practice*, says *Nothing here is judged, so there is no
+  accuracy and no pass — only what you played.*, and prints the one thing it measured, *Notes
+  played* — no *Not passed yet*, no badge, no *Accuracy* or *Answered*, and no coaching line
+  (the general rule read the zero the result carries as *Fast, but 0% right*). The verdict's
+  readers ask `drillOutcome(…).judged`, not the kind. After a backing-track run — the one kind that records what was played — the sheet
   also offers **Listen back**, which plays the learner's own notes through the piano at the
   timing and velocity they were played and keeps nothing afterwards (`DrillScreen`
   `playRecording`; a drill that judges every answer has nothing to play back that the learner

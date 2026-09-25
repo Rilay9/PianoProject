@@ -240,7 +240,8 @@
           "onset": 3,
           "sourceOnset": 3,
           "duration": 0.5,
-          "fingering": 4
+          "fingering": 4,
+          "accidental": "sharp"
         },
         {
           "id": "0:2:2:2880:54",
@@ -253,7 +254,8 @@
           "onset": 3,
           "sourceOnset": 3,
           "duration": 0.5,
-          "fingering": 2
+          "fingering": 2,
+          "accidental": "sharp"
         }
       ],
       "measureIndex": 0,
@@ -499,7 +501,8 @@
           "onset": 6.5,
           "sourceOnset": 6.5,
           "duration": 0.5,
-          "fingering": 4
+          "fingering": 4,
+          "accidental": "sharp"
         },
         {
           "id": "1:2:2:6240:66",
@@ -512,7 +515,8 @@
           "onset": 6.5,
           "sourceOnset": 6.5,
           "duration": 0.5,
-          "fingering": 2
+          "fingering": 2,
+          "accidental": "sharp"
         }
       ],
       "measureIndex": 1,
@@ -573,7 +577,8 @@
           "onset": 7.5,
           "sourceOnset": 7.5,
           "duration": 0.5,
-          "fingering": 4
+          "fingering": 4,
+          "accidental": "sharp"
         },
         {
           "id": "1:2:2:7200:66",
@@ -586,7 +591,8 @@
           "onset": 7.5,
           "sourceOnset": 7.5,
           "duration": 0.5,
-          "fingering": 2
+          "fingering": 2,
+          "accidental": "sharp"
         }
       ],
       "measureIndex": 1,
@@ -832,7 +838,8 @@
           "onset": 11,
           "sourceOnset": 11,
           "duration": 0.5,
-          "fingering": 4
+          "fingering": 4,
+          "accidental": "sharp"
         },
         {
           "id": "2:2:2:10560:54",
@@ -845,7 +852,8 @@
           "onset": 11,
           "sourceOnset": 11,
           "duration": 0.5,
-          "fingering": 2
+          "fingering": 2,
+          "accidental": "sharp"
         }
       ],
       "measureIndex": 2,

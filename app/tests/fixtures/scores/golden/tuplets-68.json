@@ -86,7 +86,8 @@
           "sourceMeasureIndex": 0,
           "onset": 1.5,
           "sourceOnset": 1.5,
-          "duration": 1.5
+          "duration": 1.5,
+          "accidental": "flat"
         }
       ],
       "measureIndex": 0,

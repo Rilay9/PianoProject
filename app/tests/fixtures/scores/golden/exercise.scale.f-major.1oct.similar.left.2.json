@@ -90,7 +90,8 @@
           "onset": 1.5,
           "sourceOnset": 1.5,
           "duration": 0.5,
-          "fingering": 2
+          "fingering": 2,
+          "accidental": "flat"
         }
       ],
       "measureIndex": 0,
@@ -282,7 +283,8 @@
           "onset": 5.5,
           "sourceOnset": 5.5,
           "duration": 0.5,
-          "fingering": 2
+          "fingering": 2,
+          "accidental": "flat"
         }
       ],
       "measureIndex": 1,

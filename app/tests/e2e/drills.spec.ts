@@ -144,14 +144,25 @@ test.describe('the drill screen', () => {
     await expect(page.locator('#drill-ratio')).toContainText('enough');
   });
 
-  test('the backing-track drill loops and judges nothing', async ({ page }) => {
+  test('the backing-track drill loops, judges nothing, and says so', async ({ page }) => {
+    // **Revised by T41 (class: revise).** This asserted *Not passed yet* and
+    // *Accuracy 0%* on the sheet, which is the fault itself: a loop to play
+    // over has nothing to be right about (docs/05 §7), so a verdict and a
+    // percentage are a measurement nobody took. The old assumption was that
+    // every drill's sheet is a pass or a fail with an accuracy under it. What
+    // the drill does measure is how many notes were played, and that is what
+    // the sheet prints.
     const midi = await openDrill(page, 'drill.improv.loop-i-iv-v');
     await expect(page.locator('#drill-loop-card')).toHaveText('8 bars');
     await midi.noteOn(64, 90);
     await page.locator('#drill-end').click();
-    await expect(page.locator('#drill-outcome')).toHaveText('Not passed yet');
-    // Nothing to be right about: it records, it does not score (docs/05 §7).
-    await expect(page.locator('[data-stat="accuracy"]')).toHaveText('0%');
+    await expect(page.locator('#drill-outcome')).toHaveText('Practice');
+    await expect(page.locator('#drill-outcome-note')).toContainText('Nothing here is judged');
+    for (const stat of ['accuracy', 'answered']) {
+      await expect(page.locator(`[data-stat="${stat}"]`), `${stat} on a drill that judges nothing`).toHaveCount(0);
+    }
+    await expect(page.locator('[data-stat="notes-played"]')).toHaveText('1');
+    await expect(page.locator('#drill-summary')).not.toContainText('Not passed');
   });
 
   test('a call-and-response drill plays a phrase and takes it back in order', async ({ page }) => {

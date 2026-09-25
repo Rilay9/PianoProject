@@ -129,7 +129,8 @@
           "onset": 1.5,
           "sourceOnset": 1.5,
           "duration": 0.5,
-          "fingering": 4
+          "fingering": 4,
+          "accidental": "flat"
         },
         {
           "id": "0:2:2:1440:60",
@@ -179,7 +180,8 @@
           "onset": 2,
           "sourceOnset": 2,
           "duration": 0.5,
-          "fingering": 2
+          "fingering": 2,
+          "accidental": "flat"
         }
       ],
       "measureIndex": 0,
@@ -401,7 +403,8 @@
           "onset": 5,
           "sourceOnset": 5,
           "duration": 0.5,
-          "fingering": 2
+          "fingering": 2,
+          "accidental": "flat"
         }
       ],
       "measureIndex": 1,
@@ -425,7 +428,8 @@
           "onset": 5.5,
           "sourceOnset": 5.5,
           "duration": 0.5,
-          "fingering": 4
+          "fingering": 4,
+          "accidental": "flat"
         },
         {
           "id": "1:2:2:5280:60",

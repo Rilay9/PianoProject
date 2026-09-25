@@ -55,7 +55,7 @@ import { bpmAt, type ScoreModel } from '../../score/types';
 import type { Router } from '../../router';
 import { KeyboardStrip, type KeyView } from '../KeyboardStrip';
 import { KeyRibbon } from '../KeyRibbon';
-import { waitingForLine } from '../expectedNote';
+import { waitingForLine, type WrittenPitch } from '../expectedNote';
 import { stripRangeFor } from '../stripRange';
 import { onScreenDispose } from '../screenLifecycle';
 import {
@@ -3316,6 +3316,24 @@ export function ScoreScreen(router: Router): HTMLElement {
   // --- render --------------------------------------------------------------
 
   /**
+   * The notes the run is waiting for, as the score writes them (T41).
+   *
+   * `expectedNow` is MIDI numbers, and a number is a key, not a note: the
+   * line named every black key from it as a sharp. The prepared step keeps
+   * the ids of the notes each expected key stands for (`noteIdsByMidi`, after
+   * the hand filter and the grace-note rule), and those lead back to the
+   * model's notes, which carry the notation's own spelling.
+   */
+  function writtenNow(): WrittenPitch[] {
+    const prepared = session?.prepared;
+    const at = session?.state?.step;
+    const step = prepared && at !== undefined ? prepared.steps[at] : undefined;
+    if (!prepared || !step) return [];
+    const ids = new Set([...step.noteIdsByMidi.values()].flat());
+    return (prepared.model.steps[step.index]?.notes ?? []).filter((note) => ids.has(note.id));
+  }
+
+  /**
    * Names the note being waited for, when the owner has asked for names.
    *
    * Wait mode only: in the clock-driven modes nothing is ever waited for, and
@@ -3324,7 +3342,7 @@ export function ScoreScreen(router: Router): HTMLElement {
   function drawWaitingFor(): void {
     const named =
       getSettings().showNoteNames && mode === 'wait' && session?.running === true
-        ? waitingForLine(session.expectedNow)
+        ? waitingForLine(writtenNow())
         : '';
     const wanted =
       pausedLine() ||

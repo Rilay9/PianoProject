@@ -646,7 +646,8 @@ and the status line says `Played to the end.`
   a finished run.
 - **The waiting line** — names the note being waited for (`Waiting for D4`). Exists only when
   `showNoteNames` is on **and** the mode is Wait **and** a run is going: in a clock-driven mode
-  nothing is ever waited for. Hidden, not blank, so it costs no height.
+  nothing is ever waited for. Hidden, not blank, so it costs no height. The name is the one the
+  score writes (T41, `04` §5): `Waiting for E♭5` in a flat key, never the sharp of the same key.
 
 Sideways both are **mirrored into the control bar's left end**; the originals stay the source of
 truth.
@@ -937,6 +938,18 @@ Numbered for citation. Each is falsifiable; most are already testable.
     spacing times the one scale: one system per row, no bar's notes spaced wider or tighter
     than the engraver sets them (`data-stretch` from `layoutOf`; `score.window-rule` reads it
     per bar from the glass).
+
+**Publishing** (T41)
+39. **The fit says when it is done.** `data-settled` is on the stage only while no engraving
+    search is queued or running, the piece is measured at the zoom the sheet is engraved at (or
+    cannot be measured), and no run is waiting to take its size; it is written where the fit
+    completes (the end of `fitSlots`) and taken off wherever such work is queued. A test that
+    reads the fit waits on it, never on a fixed time after `data-measured`: that attribute is
+    set before the re-plan it causes and is not taken back when the search moves the zoom
+    (the Scherzo with 60 px less stage named zoom 1.27 for half a second over a sheet engraved
+    at 0.97). The next bars arriving in a slot (`scheduleSettle`) and the spare sheet sideways
+    are not the fit and are not part of it. `score.screen` "the fit says when it has settled"
+    checks it frame by frame.
 
 ---
 

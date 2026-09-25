@@ -221,23 +221,32 @@ const DICTATION_TICK_MS = 60;
  */
 const FORM_TICK_MS = 100;
 
-/** docs/02 Part G: a drill passes at the same accuracy a piece does. */
+/**
+ * docs/02 Part G: a drill passes at the same accuracy a piece does.
+ *
+ * `judged` says whether there was a verdict at all (T41). A backing track
+ * judges nothing (docs/05 §7): its result carries `accuracy: 0` because the
+ * type has to carry a number, and the sheet printed that zero as *Accuracy
+ * 0%* under *Not passed yet*, and the coaching rule read it as *0% right*.
+ * Every reader of the verdict asks this instead of the kind.
+ */
 export function drillOutcome(
   result: DrillResult,
   passAccuracyPct: number,
-): { passed: boolean; masterEligible: boolean } {
-  // A backing track judges nothing (docs/05 §7), so it can neither pass nor
-  // fail; it is recorded as time spent and nothing more.
-  if (result.kind === 'backing-track') return { passed: false, masterEligible: false };
-  if (result.answered === 0) return { passed: false, masterEligible: false };
+): { passed: boolean; masterEligible: boolean; judged: boolean } {
+  // A backing track judges nothing, so it can neither pass nor fail; it is
+  // recorded as time spent and nothing more.
+  if (result.kind === 'backing-track') return { passed: false, masterEligible: false, judged: false };
+  if (result.answered === 0) return { passed: false, masterEligible: false, judged: true };
   // Simon is scored by how far the chain got, not by a share of the cards:
   // breaking at the sixth round is five chains right out of six, which as an
   // accuracy would say the same thing as breaking at the twelfth. The chain
   // is the score, so the chain is what passes it.
-  if (result.kind === 'simon') return simonOutcome(result.detail?.longestChain ?? 0);
+  if (result.kind === 'simon') return { ...simonOutcome(result.detail?.longestChain ?? 0), judged: true };
   return {
     passed: result.accuracy >= passAccuracyPct / 100,
     masterEligible: result.accuracy >= 0.97,
+    judged: true,
   };
 }
 
@@ -2379,10 +2388,24 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       el(
         'div.row',
         {},
-        el('h2', { id: 'drill-outcome', text: outcome.passed ? 'Passed' : 'Not passed yet' }),
-        outcome.passed ? badge('passed', 'passed') : badge('keep going'),
+        // A drill that judges nothing has no verdict to head its sheet with
+        // (T41): it was practice, and the sheet says so rather than *Not
+        // passed yet* over a pass nobody could have earned.
+        el('h2', {
+          id: 'drill-outcome',
+          text: !outcome.judged ? 'Practice' : outcome.passed ? 'Passed' : 'Not passed yet',
+        }),
+        ...(outcome.judged ? [outcome.passed ? badge('passed', 'passed') : badge('keep going')] : []),
       ),
-      statSheet(result),
+      ...(outcome.judged
+        ? []
+        : [
+            el('p.muted', {
+              id: 'drill-outcome-note',
+              text: 'Nothing here is judged, so there is no accuracy and no pass — only what you played.',
+            }),
+          ]),
+      statSheet(result, outcome.judged),
       // The one number a Simon run is about, said in words: the stat list can
       // print "longest chain 5" from `detail`, and it cannot say that five is
       // further than you have ever got.
@@ -2452,7 +2475,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // nothing to say it was there. The set had ended and the screen looked
     // unchanged.
     sheet.scrollIntoView({ block: 'start', behavior: 'smooth' });
-    void showCoaching(result);
+    // Coaching reads the accuracy, so a drill that measured none gets none
+    // (T41): the general rule read a backing track's zero as "Fast, but 0%
+    // right. Slow down until you are getting them right."
+    if (outcome.judged) void showCoaching(result);
 
     // A set that ran out records itself; one that was stopped waits to be
     // asked. A set with no cards in it records nothing either way: `worthRecording`
@@ -2497,11 +2523,19 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     });
   }
 
-  function statSheet(result: DrillResult): HTMLElement {
-    const rows: [string, string][] = [
-      ['Accuracy', `${String(Math.round(result.accuracy * 100))}%`],
-      ['Answered', `${String(result.correct)} of ${String(result.total || result.answered)}`],
-    ];
+  /**
+   * The numbers under the heading. `judged` false (T41): no accuracy and no
+   * answered count, because a drill that asks nothing has neither — only the
+   * kind's own measurements from `detail`, which for a backing track is the
+   * notes played.
+   */
+  function statSheet(result: DrillResult, judged: boolean): HTMLElement {
+    const rows: [string, string][] = judged
+      ? [
+          ['Accuracy', `${String(Math.round(result.accuracy * 100))}%`],
+          ['Answered', `${String(result.correct)} of ${String(result.total || result.answered)}`],
+        ]
+      : [];
     if (result.meanReactionMs > 0) {
       rows.push(['Average time to answer', `${String(Math.round(result.meanReactionMs))} ms`]);
     }

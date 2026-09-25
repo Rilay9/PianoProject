@@ -7,7 +7,7 @@
 
 import { expect, test, type Page } from '@playwright/test';
 
-
+import { installMidiMock } from './fixtures/midiMock';
 import {
   closeScoreMenu,
   inkBox,
@@ -134,8 +134,11 @@ test.describe('score screen', () => {
     // usually late, and failed on CI, where it was not: the same sheet, two
     // moments. The sheet is judged at its fullest state, the one a learner
     // opening it a second later sees.
-    await page.waitForSelector('.score-view[data-measured]', { timeout: 60_000 });
-    await page.waitForTimeout(500);
+    // **Revised again by T41 (class: revise):** `data-measured` plus a fixed
+    // 500 ms became a wait on `data-settled`, the state the renderer sets once
+    // the re-plan the measurement causes is done; the old assumption was that
+    // half a second after the attribute is always enough.
+    await page.waitForSelector('.score-view[data-settled]', { timeout: 60_000 });
     await openScoreMenu(page);
     const fits = await page.evaluate(() => {
       const panel = document.querySelector<HTMLElement>('#score-more-sheet .sheet__panel');
@@ -697,8 +700,12 @@ test.describe('the sheet fills the screen (P19b)', () => {
     // then read *larger* than it (90 against a 60 that was never the fit).
     // Here the measurement is fast and the two reads agreed. Whether a
     // learner sees that transitional draw grow is the matrix's U42.
-    await page.waitForSelector('.score-view[data-measured]', { timeout: 60_000 });
-    await page.waitForTimeout(500);
+    // **Revised again by T41 (class: revise):** it waited on `data-measured`
+    // and then 500 ms more, because the attribute is set before the fit it
+    // causes and outlives a change of engraving zoom; the old assumption was
+    // that half a second covers the difference. It waits on the state that
+    // says the fit is done instead.
+    await page.waitForSelector('.score-view[data-settled]', { timeout: 60_000 });
     const fitted = await height();
     // Zoom is a multiplier on the fitted size now. It used to be the absolute
     // OSMD zoom, which a fit would simply cancel out.
@@ -706,6 +713,87 @@ test.describe('the sheet fills the screen (P19b)', () => {
       await page.locator('#score-zoom-out').click();
     });
     await expect.poll(height, { timeout: 15_000 }).toBeLessThan(fitted - 5);
+  });
+});
+
+/**
+ * The fit says when it is done (T41, `08` §9.39).
+ *
+ * `data-measured` was the only signal, and it is not this one: it is set when
+ * the probe measures, and nothing takes it back when the engraving search then
+ * moves the zoom. On the committed code, with the Scherzo's stage 60 px
+ * shorter, it named zoom 1.27 for half a second while the sheet was engraved
+ * at 0.97, and the stave read "right after `data-measured`" was 85 px against
+ * the 67 it settled at. So tests padded it with fixed waits. `data-settled` is
+ * set where the fit completes, and only while nothing is queued behind it.
+ */
+test.describe('the fit says when it has settled (T41)', () => {
+  test('a stage that loses height is unsettled until the fit at the new engraving has landed', async ({
+    page,
+  }) => {
+    test.setTimeout(120_000);
+    await page.setViewportSize({ width: 780, height: 360 });
+    // Every frame's state, recorded by the page itself, so a claim made for a
+    // single frame and taken back in the next is on the record.
+    await page.addInitScript(() => {
+      const log: unknown[] = [];
+      (window as unknown as { __fitLog: unknown[] }).__fitLog = log;
+      const tick = (): void => {
+        const stage = document.querySelector<HTMLElement>('#score-stage');
+        const hooks = (window as unknown as { __pianopath?: { scoreFit?: () => { zoom?: number } | null } })
+          .__pianopath;
+        const fit = hooks?.scoreFit?.();
+        const front = stage?.querySelector<HTMLElement>('.score-buffer.is-front');
+        const bar = front?.querySelector('svg .vf-measure');
+        if (stage && front && typeof fit?.zoom === 'number') {
+          log.push({
+            settled: stage.dataset.settled !== undefined,
+            measured: stage.dataset.measured ?? null,
+            zoom: String(fit.zoom),
+            stage: Math.round(stage.getBoundingClientRect().height),
+            shape: `${String(bar ? Math.round(bar.getBoundingClientRect().height) : 0)}|${front.style.transform}`,
+          });
+        }
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+    type Frame = { settled: boolean; measured: string | null; zoom: string; stage: number; shape: string };
+    const frames = (from = 0): Promise<Frame[]> =>
+      page.evaluate((n) => (window as unknown as { __fitLog: Frame[] }).__fitLog.slice(n), from);
+
+    await openScore(page, 'song.classical.chopin-scherzo-2.nifc');
+    await page.waitForSelector('.score-view[data-settled]', { timeout: 60_000 });
+    const opened = (await frames()).at(-1);
+    const from = (await frames()).length;
+
+    await page.setViewportSize({ width: 780, height: 300 });
+    // Taken once the page has drawn the new stage and says it is settled again.
+    await expect
+      .poll(
+        async () => {
+          const after = await frames(from);
+          const last = after.at(-1);
+          return last !== undefined && last.settled && opened !== undefined && last.stage < opened.stage;
+        },
+        { timeout: 60_000, message: 'the stage never settled at its new height' },
+      )
+      .toBe(true);
+    const after = await frames(from);
+    const final = after.at(-1);
+    // From the frame the renderer reacted: before it, the page has a new box
+    // and has not yet been told (the resize observer runs after the frame's
+    // callbacks), so its last word is still about the old stage.
+    const reacted = after.findIndex((f) => !f.settled);
+    expect(reacted, 'the new height did not unsettle the fit, so this walk proves nothing').toBeGreaterThanOrEqual(0);
+    for (const frame of await frames()) {
+      if (frame.settled) {
+        expect(frame.measured, 'settled while the measurement was of another engraving').toBe(frame.zoom);
+      }
+    }
+    for (const frame of after.slice(reacted).filter((f) => f.settled)) {
+      expect(frame.shape, 'settled on a shape that then changed').toBe(final?.shape);
+    }
   });
 });
 
@@ -750,6 +838,43 @@ test.describe('naming the note it is waiting for', () => {
     // this line then says so — but it never names a note.
     await page.locator('#score-mode').selectOption('tempo');
     await expect(page.locator('#score-waiting')).not.toContainText('Waiting for');
+  });
+
+  test('in a flat key it names the flats the score writes (T41)', async ({ page }) => {
+    // The line spelled every black key from a table of sharps, so the Minuet
+    // in F told the learner to wait for A♯3 and D♯5 over a page printing B♭3
+    // and E♭5 — the key is the same, the note is not, and a learner told a
+    // name the page does not show has been taught something wrong.
+    test.setTimeout(120_000);
+    const midi = await installMidiMock(page, { permission: 'granted' });
+    await page.goto('/#/settings');
+    await page.locator('#set-notenames').click();
+    await openScore(page, 'song.classical.bach-menuet-bwv-anh-113.pdmx');
+    await page.locator('#score-mode').selectOption('wait');
+    await page.locator('#score-play').click();
+
+    type Run = { step: number; expected: number[] } | null;
+    const run = (): Promise<Run> =>
+      page.evaluate(
+        () => (window as unknown as { __pianopath: { scoreRun: () => Run } }).__pianopath.scoreRun(),
+      );
+    await expect.poll(async () => (await run())?.step, { timeout: 30_000 }).toBe(0);
+    // Played forward from the piano, a step at a time, until the run asks for
+    // bar 3's first beat: B♭3 in the left hand under D5 in the right.
+    for (let i = 0; i < 40; i += 1) {
+      const now = await run();
+      if (!now || now.expected.includes(58)) break;
+      for (const n of now.expected) await midi.noteOn(n, 80);
+      for (const n of now.expected) await midi.noteOff(n);
+      await expect.poll(async () => (await run())?.step, { timeout: 10_000 }).toBeGreaterThan(now.step);
+    }
+    const waiting = page.locator('#score-waiting');
+    await expect(waiting).toHaveText('Waiting for B♭3 + D5');
+    // And the next note, the E♭5 the score prints with its own flat.
+    for (const n of [58, 74]) await midi.noteOn(n, 80);
+    for (const n of [58, 74]) await midi.noteOff(n);
+    await expect(waiting).toHaveText('Waiting for E♭5');
+    await expect(waiting).not.toContainText('♯');
   });
 });
 

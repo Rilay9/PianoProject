@@ -2415,6 +2415,7 @@ export class WindowRenderer {
         this.pieceInkZoom = -1;
         this.barTable = null;
         delete this.el.dataset.measured;
+        delete this.el.dataset.settled;
         // And the size a run is holding, which was taken on a stage this is
         // not (`08` §3.3: a turn releases it and the run continues at the new
         // one). It used to be released only when the *arrangement* changed,
@@ -2677,6 +2678,7 @@ export class WindowRenderer {
         this.ensureScrollRender();
         this.fit(front);
         this.repositionBands();
+        this.publishSettled();
       }
       return;
     }
@@ -2944,6 +2946,52 @@ export class WindowRenderer {
     // measurement landing, the run ending — left them where the old scale had
     // put the notes until the next step moved them.
     this.repositionBands();
+    // The one place a fit and its re-plan complete: every path that changes
+    // the shape — the measurement landing, the engraving search, a turn, a
+    // setting — ends here (T41).
+    this.publishSettled();
+  }
+
+  /**
+   * Whether the fit has nothing left to do (T41, `08` §9.39).
+   *
+   * `data-measured` said the probe had measured the piece *at some zoom*, and
+   * it was set before the re-plan it triggers and never taken back when the
+   * engraving search moved the zoom: after the Scherzo's stage lost 60 px of
+   * height the attribute went on naming zoom 1.27 for half a second while the
+   * sheet was engraved at 0.97, and a test that trusted it read a stave of 85
+   * px that became 67. So the tests padded it with fixed waits. This is the
+   * state they were waiting for: no engraving search queued or running, the
+   * piece measured at the zoom the sheet is engraved at (or not measurable at
+   * all), and no run waiting to take its size. Nothing here changes the fit;
+   * it only says when the fit is done.
+   *
+   * The window's content arriving in the slot the cursor left (`scheduleSettle`)
+   * and the spare sheet sideways (`schedulePrepareNextWindow`) are not part of
+   * it: they draw the next bars, not the size or the shape.
+   */
+  private fitSettled(): boolean {
+    return (
+      !this.disposed &&
+      this.fitHandle === null &&
+      !this.fitting &&
+      this.measureHandle === null &&
+      !this.probeLoading &&
+      (this.probe === null || this.pieceInkZoom === this.zoomLevel) &&
+      this.freezeHandle === null
+    );
+  }
+
+  /**
+   * `data-settled` on the stage, while `fitSettled` holds. Written at the end
+   * of every fit, and where fit work is queued outside one (the engraving
+   * search, a run's freeze) or ends without one (a measurement that could not
+   * be taken, a run stopped before it froze), so it is never left claiming a
+   * fit that has work still queued.
+   */
+  private publishSettled(): void {
+    if (this.fitSettled()) this.el.dataset.settled = 'true';
+    else delete this.el.dataset.settled;
   }
 
   /** The last bar of the window the cursor is in, at the shown count. */
@@ -3271,6 +3319,8 @@ export class WindowRenderer {
     this.fittedAtWidth = Math.round(available.width);
     if (!worthRefitting(this.zoomLevel, target)) return;
     if (this.fitHandle !== null) cancelAnimationFrame(this.fitHandle);
+    // Queued, so not settled until the search and the fit after it are done.
+    delete this.el.dataset.settled;
     this.fitHandle = requestAnimationFrame(() => {
       this.fitHandle = null;
       if (this.disposed || this.fitting) return;
@@ -3497,7 +3547,11 @@ export class WindowRenderer {
       window.clearTimeout(this.freezeHandle);
       this.freezeHandle = null;
     }
-    if (!this.frozen) return;
+    if (!this.frozen) {
+      // Stopped before the freeze was taken: nothing is waiting on it now.
+      this.publishSettled();
+      return;
+    }
     this.frozen = null;
     // The scale only. **Not** the engraving, and not by blanking the box the
     // last search was run against.
@@ -3558,8 +3612,11 @@ export class WindowRenderer {
         piece: this.pieceInkZoom === this.zoomLevel ? this.pieceInk : null,
         zoom: this.zoomLevel,
       };
+      this.publishSettled();
     };
     this.freezeHandle = window.setTimeout(attempt, FREEZE_SETTLE_MS);
+    // The run has a size still to take (T41).
+    this.publishSettled();
   }
 
   /** The scale the cursor slot is drawn at, from its transform; 0 if none. */
@@ -3816,6 +3873,9 @@ export class WindowRenderer {
       void this.measurePiece().then(() => {
         // Apply it: the slots were fitted to the held sizes until now.
         if (!this.disposed && this.pieceInkZoom === this.zoomLevel) this.fitSlots();
+        // A probe that could not load is dropped, and the held sizes are the
+        // fit for good: nothing further is coming (T41).
+        else if (!this.disposed) this.publishSettled();
       });
     };
     // Idle, but not long: the first chunk is fitted to its own ink until the
@@ -3830,6 +3890,8 @@ export class WindowRenderer {
       typeof w.requestIdleCallback === 'function'
         ? w.requestIdleCallback(run, { timeout: MEASURE_IDLE_TIMEOUT_MS })
         : window.setTimeout(run, MEASURE_IDLE_TIMEOUT_MS);
+    // A measurement is queued, so the fit is not settled (T41).
+    delete this.el.dataset.settled;
   }
 
   /**
@@ -3907,6 +3969,11 @@ export class WindowRenderer {
     // on: under a parallel suite idle comes late, and `score.slots.spec.ts`
     // failed on a busy runner and passed on a quiet one for exactly that
     // reason. Waiting on this makes the wait explicit instead.
+    //
+    // It says a measurement landed, at this zoom — not that the fit it causes
+    // is done, and not that the sheet is still engraved at this zoom a moment
+    // later: the engraving search can move the zoom and leave this naming the
+    // old one. `data-settled` is the state that says the fit is done (T41).
     this.el.dataset.measured = String(zoom);
   }
 

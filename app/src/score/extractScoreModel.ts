@@ -28,6 +28,7 @@ import {
   type ScoreStep,
   type TempoMapEntry,
   type TimeSignatureEntry,
+  type WrittenAccidental,
 } from './types';
 
 /**
@@ -100,6 +101,15 @@ export interface OsmdVoiceEntry {
 
 export interface OsmdNote {
   halfTone: number;
+  /**
+   * The written pitch (T41). `FundamentalNote` is the letter as semitones
+   * above C (OSMD's `NoteEnum`: C 0, D 2 … B 11); `AccidentalHalfTones` is
+   * MusicXML's `<alter>`, which already includes the key signature's effect
+   * (an E♭ in B♭ major is written `<alter>-1</alter>`). Optional so a
+   * hand-built note in a test still type-checks; a note without one gets no
+   * written spelling.
+   */
+  Pitch?: { FundamentalNote: number; AccidentalHalfTones: number } | undefined;
   Length: { RealValue: number };
   Fingering?: { value?: string } | undefined;
   NoteTie?: { StartNote?: OsmdNote; Notes?: OsmdNote[] } | undefined;
@@ -169,6 +179,63 @@ function readKeySignature(sheet: OsmdLikeSheet): string | undefined {
     }
   }
   return undefined;
+}
+
+/**
+ * The key signature in force in each printed measure, as a fifths count
+ * (T41): the one `writtenAccidental` asks whether a natural is worth naming.
+ *
+ * Walked in printed order and carried forward, and looked up by the printed
+ * measure, so a repeat that jumps back over a key change finds the key that
+ * is printed there rather than the last one the playback passed.
+ */
+function keyFifthsByMeasure(sheet: OsmdLikeSheet): number[] {
+  let fifths = 0;
+  return sheet.SourceMeasures.map((measure) => {
+    for (const entry of measure.FirstInstructionsStaffEntries ?? []) {
+      for (const instruction of entry?.Instructions ?? []) {
+        const candidate = instruction as { Key?: unknown; Mode?: unknown };
+        if (typeof candidate.Key === 'number' && typeof candidate.Mode === 'number') {
+          fifths = candidate.Key;
+        }
+      }
+    }
+    return fifths;
+  });
+}
+
+/** The letters a key signature alters, in the order it adds them. */
+const SHARPS_ORDER = [5, 0, 7, 2, 9, 4, 11]; // F C G D A E B
+const FLATS_ORDER = [11, 4, 9, 2, 7, 0, 5]; // B E A D G C F
+
+const ACCIDENTAL_OF_ALTER: Readonly<Record<number, WrittenAccidental>> = {
+  1: 'sharp',
+  [-1]: 'flat',
+  2: 'double-sharp',
+  [-2]: 'double-flat',
+};
+
+/**
+ * The accidental the note's name carries, as the score writes it (T41).
+ *
+ * From the notation's own letter and alter, never from the MIDI number: the
+ * number is the key, and one key is two or three notes. A natural is named
+ * only where the key signature would otherwise alter the letter. Nothing is
+ * returned where the written pitch does not reach the MIDI number (a
+ * microtone, a triple accidental, a malformed file), rather than a spelling
+ * that disagrees with the key the engine waits for.
+ */
+function writtenAccidental(note: OsmdNote, midi: number, fifths: number): WrittenAccidental | undefined {
+  const pitch = note.Pitch;
+  if (!pitch) return undefined;
+  const letter = pitch.FundamentalNote;
+  const alter = pitch.AccidentalHalfTones;
+  if (!Number.isInteger(letter) || !Number.isInteger(alter) || Math.abs(alter) > 2) return undefined;
+  if ((((midi - letter - alter) % 12) + 12) % 12 !== 0) return undefined;
+  if (alter !== 0) return ACCIDENTAL_OF_ALTER[alter];
+  const altered =
+    fifths > 0 ? SHARPS_ORDER.slice(0, fifths) : fifths < 0 ? FLATS_ORDER.slice(0, -fifths) : [];
+  return altered.includes(letter) ? 'natural' : undefined;
 }
 
 function staffOf(note: OsmdNote): 1 | 2 {
@@ -257,6 +324,7 @@ export function extractScoreModelFromSheet(
   const maxSteps = options.maxSteps ?? DEFAULT_MAX_STEPS;
   const title = sheet.TitleString?.trim() ?? '';
   const homeStaves = voiceHomeStaves(sheet, maxSteps);
+  const keyFifths = keyFifthsByMeasure(sheet);
 
   const steps: ScoreStep[] = [];
   const tempoMap: TempoMapEntry[] = [];
@@ -328,6 +396,7 @@ export function extractScoreModelFromSheet(
         const duration = roundBeats(tieDurationBeats(note));
         const fingering = parseFingering(note);
         const tieLength = note.NoteTie?.Notes?.length ?? 1;
+        const accidental = writtenAccidental(note, midi, keyFifths[sourceMeasureIndex] ?? 0);
         notes.push({
           id: makeNoteId({ measureIndex, staff, voice, onset, midi }),
           midi,
@@ -344,6 +413,7 @@ export function extractScoreModelFromSheet(
           ...(staff !== home ? { crossStaff: true } : {}),
           ...(tieLength > 1 ? { tieLength } : {}),
           ...(accented ? { accent: true } : {}),
+          ...(accidental === undefined ? {} : { accidental }),
         });
         handsPresent[hand] = true;
       }

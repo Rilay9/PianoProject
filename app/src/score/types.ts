@@ -74,7 +74,36 @@ export interface ScoreNote {
    * carries it - which is also what a player does with one.
    */
   accent?: boolean;
+  /**
+   * The accidental this note's **name** carries, from the notation's own step
+   * and alter (T41). `midi` alone cannot say it: the key under an E♭ is the
+   * key under a D♯, and a status line that named notes from the MIDI number
+   * told a learner in a flat key to wait for D♯ where the score prints E♭.
+   *
+   * `natural` where the key signature in force sharps or flats this letter and
+   * the note is written without it — the B♮ in F major, which a teacher names
+   * "B natural". Absent for a plain letter in a key that leaves it alone.
+   *
+   * Not the sign printed beside the note: a natural the bar already carries is
+   * not reprinted, and the note is still B♮. The letter is `midi` less
+   * `ACCIDENTAL_SEMITONES[accidental]`, so the name and the key cannot
+   * disagree. Absent rather than defaulted, like `accent`, so a golden model
+   * changes only where a note has one.
+   */
+  accidental?: WrittenAccidental;
 }
+
+/** The accidentals a note's written name can carry (`ScoreNote.accidental`). */
+export type WrittenAccidental = 'sharp' | 'flat' | 'natural' | 'double-sharp' | 'double-flat';
+
+/** How far each moves the letter, in semitones: MusicXML's `<alter>`. */
+export const ACCIDENTAL_SEMITONES: Readonly<Record<WrittenAccidental, number>> = {
+  sharp: 1,
+  flat: -1,
+  natural: 0,
+  'double-sharp': 2,
+  'double-flat': -2,
+};
 
 /**
  * One cursor position: every note that starts at this onset.

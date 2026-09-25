@@ -682,7 +682,13 @@ test.describe('the five choices, decided (T33)', () => {
     const midi = await openScore(page, '?performance=1');
     await chooseMode(page, 'wait');
     await pressControl(page, '#score-play');
-    await page.waitForTimeout(300);
+    // **Revised by T41 (class: revise):** the two 300 ms waits in this test
+    // became waits on the state each was standing in for — the run going in
+    // Wait, and the demonstration over — rather than a time assumed to cover
+    // it. They were never about the fit.
+    await expect
+      .poll(async () => (await snap(page)).run?.engineMode ?? '', { timeout: 5_000 })
+      .toBe('wait');
     for (let i = 0; i < 4; i += 1) await playExpected(page, midi);
     const bar = await whereBar(page);
 
@@ -691,7 +697,7 @@ test.describe('the five choices, decided (T33)', () => {
       .poll(async () => (await snap(page)).engineMode, { timeout: 5_000 })
       .toBe('listen');
     await pressControl(page, '#score-hear');
-    await page.waitForTimeout(300);
+    await expect.poll(async () => (await snap(page)).hearing, { timeout: 5_000 }).toBe(false);
     await pressControl(page, '#score-play');
     await playToTheEnd(page, midi);
 
