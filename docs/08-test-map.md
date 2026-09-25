@@ -253,7 +253,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `score.sheet-rows.spec.ts` — a `⋯` row stays in one piece at 342 px: the steppers do not wrap.
 - `score.slide.spec.ts` — sideways the sheet slides by bar, holding the cursor about a third across.
 - `score.slots.spec.ts` — the two slots on a real engraving: the playing slot never redrawn, the next bar already there.
-- `score.spec.ts` — the dev harness: the render budget, the window and scroll layouts, hands, bars per window.
+- `score.spec.ts` — the dev harness: the render budget, the window and scroll layouts, hands, bars per window (revised after T38: the window inks exactly the bars it says it holds, holds the asked number or the whole piece, or fewer with a stated reason, and holds more as more is asked; it asserted 1 and 2 bars drew the same screen, the pre-T32 slot rule).
 - `score.stepper-limits.spec.ts` — a stepper at the end of its range greys out and costs nothing, no restart.
 - `score.strip-span.spec.ts` — the keyboard strip shows the whole chord, not the bottom of it.
 - `settings-rules.spec.ts` — `04` §0 on Settings: row heights, eight settings on the first screenful.

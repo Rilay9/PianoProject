@@ -339,40 +339,113 @@ test.describe('window layout holds its shape', () => {
     });
   }
 
-  test('bars per window changes how many measures are drawn', async ({ page }) => {
-    // Upright, for the same reason: sideways the count carries A2's read-ahead
-    // bars and 1, 2 and 4 all clamp to the length of a four-bar fixture.
+  /**
+   * **Revised 2026-09-25 (T38 follow-up).** This counted `.vf-measure` groups
+   * in every drawn buffer and asserted that 1 and 2 bars draw *the same*
+   * screen and 4 a larger one. That encoded the pre-T32 slot rule — a slot
+   * held `⌊barsPerWindow / 2⌋` bars, so 1 and 2 were one setting — which T32
+   * removed: the window is the asked number of bars, laid over as many rows
+   * as fit, with a greyed look-ahead row below when there is room (`08` §4.1).
+   * The count it took also mixed three things that are not the window: the
+   * look-ahead row, the second stave of a grand staff (one `.vf-measure` per
+   * stave per bar), and bars engraved but not on the glass. It went red at
+   * 1 bar = 4 groups (bar 1 and the greyed bar 2, two staves each) against
+   * 2 bars = 6 (bars 1–2 and the greyed bar 3).
+   *
+   * What the learner is promised (`04` §5, T34 rule 4): per setting, the
+   * window inks exactly the bars it says it holds, from the cursor's bar; it
+   * holds the asked number (or the whole piece, when that is shorter), or
+   * fewer with a reason the `⋯` row can state (`data-window-why`, which the
+   * score screen's row reads); and more asked holds more, or says why not.
+   * Read from the glass: distinct printed bars with a visible note in the
+   * window's rows, look-ahead rows left out. The piece's length is read, not
+   * assumed: the generated fixture was four bars when this was written and is
+   * three now, so four asked is the whole piece.
+   */
+  test('bars per window changes what the window holds, or says why not', async ({ page }) => {
+    // Upright, where the window is rows and the count is the rows' bars;
+    // sideways the sliding chunk runs bars off the edge on purpose.
     await page.setViewportSize({ width: 390, height: 844 });
     const dev = await openDevScore(page);
-    // A four-bar fixture, so 1/2/4 are all distinguishable.
+    // A short generated fixture: 1 and 2 are windows of it, 4 is past its end.
     await dev.load('exercise.five-finger.c-major.both');
-    const counts: number[] = [];
-    for (const bars of [1, 2, 4]) {
-      await dev.setBars(bars);
+    const pieceBars = await page.evaluate(() => window.__pianopathDevScore?.measureCounts().printed ?? 0);
+    expect(pieceBars, 'the fixture has no bars').toBeGreaterThan(1);
+    const seen: { asked: number; held: number; why: string | null; inked: number[] }[] = [];
+    for (const asked of [1, 2, 4]) {
+      await dev.setBars(asked);
       await dev.showStep(0);
-      counts.push(
-        await page.evaluate(
-          // Both slots upright, so this counts the whole window.
-          () => document.querySelectorAll('.score-buffer.is-front .vf-measure').length,
-        ),
+      await waitForPieceMeasured(page);
+      // Settled: the shape and every row's transform unchanged for four reads.
+      // The measurement lands on idle and may re-plan the rows once.
+      await page.waitForFunction(
+        () => {
+          const stage = document.querySelector<HTMLElement>('#dev-stage');
+          if (!stage) return false;
+          const key = [
+            stage.dataset.windowBars,
+            stage.dataset.slots,
+            ...[...stage.querySelectorAll<HTMLElement>('.score-buffer.is-front')].map((b) => b.style.transform),
+          ].join('|');
+          const holder = window as unknown as { __wbKey?: string; __wbSame?: number };
+          if (holder.__wbKey === key) holder.__wbSame = (holder.__wbSame ?? 0) + 1;
+          else {
+            holder.__wbKey = key;
+            holder.__wbSame = 0;
+          }
+          return (holder.__wbSame ?? 0) >= 4;
+        },
+        undefined,
+        { timeout: 30_000, polling: 150 },
+      );
+      await page.evaluate(() => {
+        const holder = window as unknown as { __wbKey?: string; __wbSame?: number };
+        delete holder.__wbKey;
+        delete holder.__wbSame;
+      });
+      seen.push(
+        await page.evaluate((wanted) => {
+          const stage = document.querySelector<HTMLElement>('#dev-stage');
+          if (!stage) throw new Error('no stage');
+          const box = stage.getBoundingClientRect();
+          const bars = new Set<number>();
+          for (const note of stage.querySelectorAll<HTMLElement>('.score-buffer.is-front:not(.is-ahead) .score-note')) {
+            const r = note.getBoundingClientRect();
+            if (r.width <= 0 || r.right <= box.left || r.left >= box.right || r.bottom <= box.top || r.top >= box.bottom)
+              continue;
+            const bar = Number(note.dataset.bar);
+            if (Number.isFinite(bar)) bars.add(bar);
+          }
+          return {
+            asked: wanted,
+            held: Number(stage.dataset.windowBars),
+            why: stage.dataset.windowWhy ?? null,
+            inked: [...bars].sort((a, b) => a - b),
+          };
+        }, asked),
       );
     }
-    // Not strictly increasing any more, and that is worth saying out loud.
-    //
-    // How many systems the screen holds is decided by the room now, not by the
-    // setting — that is what stopped a phone drawing one bar with a third of the
-    // stage black. A slot still holds `⌊barsPerWindow / 2⌋` bars, so at 1 and at
-    // 2 a slot holds one bar and the screen holds as many as fit: **the two
-    // settings draw the same screen upright.** 4 doubles it and still differs.
-    //
-    // That is the `barsPerWindow` question `08` §4.1 and the handoff's §4b have
-    // been carrying, arriving at the surface. The one-line answer the docs
-    // recommend is to make a slot hold `barsPerWindow` bars rather than half of
-    // them, which would make every setting distinct and mean "bars on a line".
-    // It is an owner decision, so it is not taken here; this asserts what is
-    // true today rather than what would be tidier.
-    expect(counts[0]).toBe(counts[1]);
-    expect(counts[1]).toBeLessThan(counts[2] ?? 0);
+    const said = seen
+      .map((s) => `${String(s.asked)} asked: ${String(s.held)} held (${s.why ?? 'no reason'}), bars inked ${s.inked.join(' ')}`)
+      .join('; ');
+    for (const s of seen) {
+      // Exactly the bars it says it holds, from the cursor's bar: nothing
+      // missing, and no bar of the next window drawn as if it were this one.
+      expect(s.inked, `the window does not ink the bars it holds: ${said}`).toEqual(
+        Array.from({ length: s.held }, (_, i) => i),
+      );
+      const whole = Math.min(s.asked, pieceBars);
+      if (s.held < whole) expect(s.why, `fewer held than asked with no reason to say: ${said}`).not.toBeNull();
+      else expect(s.held, `${said} (the piece has ${String(pieceBars)} bars)`).toBe(whole);
+    }
+    for (let i = 1; i < seen.length; i += 1) {
+      const a = seen[i - 1];
+      const b = seen[i];
+      expect(
+        b.held > a.held || b.held < Math.min(b.asked, pieceBars) || a.held === pieceBars,
+        `more asked, the same held and nothing to say: ${said}`,
+      ).toBe(true);
+    }
   });
 });
 
