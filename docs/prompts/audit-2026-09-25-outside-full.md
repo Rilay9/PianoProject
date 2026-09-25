@@ -10542,7 +10542,7 @@ Plus the JSON rule: before re-serialising any JSON file, compare a round-trip ag
 - Lesson tests read built content
 - Rungs are curated — never force every song onto a rung
 - Playwright disabled-click stalls
-- Agents are the builder tier only — never Fable; wait or ask on a 429
+- Agents are the builder tier only — never the orchestrator tier; wait or ask on a 429
 - Orchestrate only — I brief, run one verification chain, commit, push, relay
 - Agents exhaustive — every item done or an explicit not-done line
 - Never state an absence
