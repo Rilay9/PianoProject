@@ -101,3 +101,17 @@ review page is machine work; the ticking is not, deliberately —
 - **Playing the generated music.** Nineteen pieces were written on 2026-09-18 and none has
   been heard. Five faults in them were found by looking at pictures, and the pictures are
   crops.
+
+## From 2026-09-25: the plan built on the outside audit
+
+**The plan is `docs/prompts/plan-2026-09-25.md`; the procedure every brief points at is
+`docs/prompts/operating-procedure.md`.** Wave A runs one builder and three read-only traces
+side by side; the traces feed a diagnosis the owner reads before Wave B is briefed.
+
+| | Task | Kind | Delivers |
+|---|---|---|---|
+| **T35** | The window fit finished: two red specs at their mechanism, rotate run, sheet re-shot, chain | build | Entry 64 |
+| **T36a** | One generated exercise traced from generator to next recommendation | read-only | `traces/2026-09-25-generated-exercise.md` |
+| **T36b** | One quarried piece traced from archive to progress; every difficulty compared; the excerpt idea tried | read-only | `traces/2026-09-25-repertoire.md` |
+| **T36c** | One sight-reading run traced from level request to next assignment | read-only | `traces/2026-09-25-sight-reading.md` |
+| **T33** | The five state-machine choices | build | waits for T35 |

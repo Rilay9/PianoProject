@@ -4,9 +4,13 @@ Every rule here was written after breaking it, on 2026-09-18, in this repository
 a general exhortation; each names the failure it prevents, because "be careful" was tried
 and did not work.
 
-**If you are an agent starting work here**, read this, then `docs/00-invariants.md`, then
-your task brief. §1 is the one that generates all the others — if you only keep one thing,
-keep that.
+**If you are an agent starting work here**, read `operating-procedure.md` first: it says
+what these rules are for and where they sit (evidence discipline, third of four tiers,
+below product truth and technical correctness). Then this, then `docs/00-invariants.md`,
+then your task brief. §1 is the one that generates all the others — if you only keep one
+thing, keep that. (2026-09-25: an outside audit found these rules were being run as a
+linter on the report's prose rather than as a check on the work. They are the latter.
+State scope once, mark the unverified once, and spend the turn on the product.)
 
 ---
 
@@ -43,7 +47,7 @@ next sentence has to close it or admit it is open.
 
 ## 2. The specific rules, each with the failure it prevents
 
-### 2.1 Never state an absence. State the search and its result.
+### 2.1 An absence is a claim about a search. Give it the search's scope, no more, no less.
 
 "grep for `tempoLadder|autoTempo` under `app/src` returned nothing" — not "there is no
 tempo ladder". Before an absence means anything, run a **second search shaped
@@ -53,7 +57,7 @@ differently**: another spelling, another field, the filter removed.
 `candidates.py` now runs the relaxed queries automatically when a search returns zero,
 which is that second search made mechanical.
 
-### 2.2 A claim about several things is several claims.
+### 2.2 Do not imply broader verification than you performed.
 
 When you write "X and Y are Z", "all N are Z", or a bare plural, you have almost certainly
 checked one. Name which, check the rest, or say in the same sentence that the rest are

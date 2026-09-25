@@ -1,9 +1,11 @@
 # T33 — The five state-machine choices, decided and built
 
-**Read `docs/prompts/working-rules.md`, `docs/00-invariants.md` §1, the checklist in
-`CLAUDE.md`, `docs/decisions/2026-09-23-score-state-machine.md` §5 and §7 in full, the
-handlers they name in `app/src/ui/screens/ScoreScreen.ts` and `ScoreSession.ts`, and
-`app/tests/e2e/score.states.spec.ts` first.**
+**Read `docs/prompts/operating-procedure.md` §1–§4 and §11–§12, `docs/00-invariants.md`
+§1, `docs/decisions/2026-09-23-score-state-machine.md` §5 and §7 in full, the handlers
+they name in `app/src/ui/screens/ScoreScreen.ts` and `ScoreSession.ts`, and
+`app/tests/e2e/score.states.spec.ts` first.** (Re-pointed 2026-09-25; runs after T35 has
+left the score files. The budget line below is stale: the plan was upgraded on
+2026-09-25.)
 
 ## The owner's word (2026-09-23)
 

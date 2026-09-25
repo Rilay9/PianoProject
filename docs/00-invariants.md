@@ -62,10 +62,14 @@ a considered decision gets read as a bug; it happened here on 2026-09-12.
 
 ## 1a. Claims
 
-**Never state an absence. State the search and its result.** "There is no tempo ladder"
-is a claim about the repository; "grep for `tempoLadder|autoTempo` under `app/src` returned
-nothing" is a claim about a command, and it is the true one. The difference is not
-pedantry — the second shows the reader the hole. The ladder exists and is spelled
+**An absence is a claim about a search; give it the search's scope and no more.** "There
+is no tempo ladder" is a claim about the repository; "grep for `tempoLadder|autoTempo`
+under `app/src` returned nothing" is a claim about a command, and it is the true one.
+"Every TypeScript reader of `foo` under `app/src` was grepped and there are none" is a
+perfectly good sentence; "there are no consumers anywhere" needs much stronger evidence.
+The difference is not pedantry — the scoped sentence shows the reader the hole. (Reworded
+2026-09-25: the old heading, *never state an absence*, had produced sentences that refused
+to conclude anything; the rule is that the claim's scope matches the search's.) The ladder exists and is spelled
 `LADDER_*`; it was reported missing to the owner twice off that grep. On the same pattern,
 a filter over genre-tagged songs returned zero and became "the library has no early-stage
 genre repertoire", which sent a session writing generators; and the same filter said core
@@ -84,9 +88,11 @@ the rung teaching the waltz bass — four wrong placements out of eight, all fro
 `requires` on a rung and `validate.py`'s `notation_requirements` now refuse this; do not
 work around them.
 
-**A claim about several things is several claims.** When you write "X and Y are Z",
+**Do not imply broader verification than you performed.** When you write "X and Y are Z",
 "all N are Z", or a bare plural, you have almost certainly checked one of them. Name
-which, check the rest, or say in the same sentence that the rest are unchecked. Joining
+which, check the rest, or say in the same sentence that the rest are unchecked. The
+grammatical tell below is a self-check, not a rule about prose: the fault is the unearned
+scope, and a sentence with "both" in it that was fully checked needs no editing. Joining
 two things in one clause is how an unchecked thing borrows a verified thing's
 credibility, and it happened three times in one day: `genres` was measured unreliable —
 the Library's filters held no songs at all — and the sentence "genres and tags are
