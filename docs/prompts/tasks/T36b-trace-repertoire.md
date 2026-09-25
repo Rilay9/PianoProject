@@ -24,8 +24,12 @@ Also name one *judged* song on the same rung for comparison.
 
 Archive row → quarry and shortlist → extraction and conversion → features → estimated
 level → catalog row → rung placement and the lesson prose that names it → the Library,
-Plan and Lesson screens → the Score screen → grading against the rung's numbers → the
-progress row → what comes next.
+Plan and Lesson screens → the Score screen → the run → grading against the rung's
+numbers → the feedback the learner reads → the progress row and whatever evidence is
+kept → **the next recommendation**. Do not stop at placement or at grading: the
+architectural question is whether the learner's performance on this piece produces
+evidence that changes the learner model and therefore the next experience, and whether
+the answer for a repertoire piece differs from the answer for a generated exercise.
 
 At each stage: the data structure; the source of truth; what is lost; what is assumed;
 whether the next stage gets enough; whether the concept is recomputed elsewhere.
@@ -65,12 +69,15 @@ Do not read the 37,261-score archive. One piece, its rows, and the code that car
 3. **Placement.** Is the piece where a teacher would put it, judged from the notation and
    the rung's lesson? Compare with the judged song on the same rung. What does the
    `requires` rule and `notation_requirements` actually check, and what do they miss?
-4. **The excerpt idea, tried.** Cut this piece (on paper, in your report) into two or
-   three 4–8 bar excerpts. For each: what it would teach, at what level, and whether a
-   Stage 2–3 learner could use it although the whole piece is above them. Then say what
-   the smallest pipeline change would be for an item that points at a file *and a bar
-   range* (the catalog schema, `attach_notation`, the Score screen's loop, the rung's
-   options), and what it would cost. This is evidence for a decision, not a design.
+4. **Can the data model represent an excerpt at all?** First the architectural fact:
+   is a PDMX source forced into being a whole-piece repertoire item, or does anything in
+   the catalog schema, the curriculum schema, `teaching.sections`, the Score screen's loop
+   or the engine already let a 4–8 bar range stand as a learning experience of its own
+   with its own level and concepts? Say what the current model can and cannot represent,
+   with the schema lines. Then, as evidence for a later decision and not as a design: cut
+   this piece (on paper, in your report) into two or three 4–8 bar excerpts, and for each
+   say what it would teach, at what level, and whether a Stage 2–3 learner could use it
+   although the whole piece is above them. Do not propose an excerpt-mining pipeline.
 5. **What the app learns from a run of this piece** and how it changes what comes next:
    the fields written, their readers, and whether the rung's own numbers are the ones a
    run is judged by (`masteryCriteriaFor`).
@@ -78,6 +85,23 @@ Do not read the 37,261-score archive. One piece, its rows, and the code that car
    the top of the working period beginning 2026-09-17): rock as a style, the earliest
    honest stage, the public build carrying the personal items. For each, is it done, half
    done, or not done, with the evidence.
+
+## Hypothesis status
+
+The orchestrator's hypotheses H1, H3, H4, H6 and H8 in `plan-2026-09-25.md` touch this
+trace. For each one your trace meets, report it as **supported by observed evidence**,
+**contradicted by observed evidence**, or **unresolved**, and say what you observed. A
+code path consistent with a hypothesis does not confirm it. This is an investigation, not
+a confirmation exercise; if the evidence points at a different architectural problem,
+that is the finding.
+
+## The source-of-truth rows
+
+For each of these that your trace touches, fill a row: **concept | current source of
+truth | major consumers | competing definitions?** — learner level, difficulty, skill,
+mastery, performance evidence, repertoire level, curriculum stage. Your question 1 is
+most of the difficulty and repertoire-level rows. Leave rows you did not touch blank
+rather than guessing; the orchestrator merges the three traces' tables.
 
 ## Findings
 

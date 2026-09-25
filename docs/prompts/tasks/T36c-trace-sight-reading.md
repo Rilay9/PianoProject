@@ -46,7 +46,14 @@ stage JSON and lesson, `docs/05-score-follow-engine.md` §8, `docs/04-ui-spec.md
 1. **What is the level, and who chooses it?** Where does the number the generator
    receives come from (the rung's params, the stage, a setting, the learner's history)?
    Does anything the learner has done ever change it? If not, that is the audit's point 3
-   made concrete: say so as P1 with the lines.
+   made concrete: say so as P1 with the lines. Then the distinction the reviewer asked
+   for (`audit-2026-09-25-outside.md` Part 2, point 4): **generator constraints are not
+   pedagogical difficulty.** Write what `level` actually controls in the generator (range,
+   leap size, rhythm vocabulary, keys, hands, chord-tone targeting) and then say,
+   separately, whether anything establishes that a phrase built under level-4 constraints
+   is appropriate for a level-4 learner, and whether the same number is afterwards treated
+   as the learner's ability, as the exercise's difficulty, or as both, with the lines
+   where each reading happens.
 2. **What the level table trains.** Write the table as a teacher would read it: at each
    level, what reading skill is new (a key, a range, a rhythm, the left hand, a leap) and
    what a phrase at that level therefore demands. Is the progression sensible? Does any
@@ -68,6 +75,22 @@ stage JSON and lesson, `docs/05-score-follow-engine.md` §8, `docs/04-ui-spec.md
 6. **The teacher's read.** Is a generated phrase musically plausible (a phrase, a cadence,
    a shape) or a random walk that happens to be diatonic? Which is it at levels 1, 3 and
    6? Say what you could not judge without hearing it, in those words.
+
+## Hypothesis status
+
+The orchestrator's hypotheses H1, H2, H3 and H5 in `plan-2026-09-25.md` touch this
+trace. For each one your trace meets, report it as **supported by observed evidence**,
+**contradicted by observed evidence**, or **unresolved**, and say what you observed. A
+code path consistent with a hypothesis does not confirm it. This is an investigation, not
+a confirmation exercise; if the evidence points at a different architectural problem,
+that is the finding.
+
+## The source-of-truth rows
+
+For each of these that your trace touches, fill a row: **concept | current source of
+truth | major consumers | competing definitions?** — learner level, difficulty, skill,
+mastery, performance evidence, repertoire level, curriculum stage. Leave rows you did not
+touch blank rather than guessing; the orchestrator merges the three traces' tables.
 
 ## Findings
 

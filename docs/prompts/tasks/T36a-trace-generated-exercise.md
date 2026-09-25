@@ -24,9 +24,20 @@ reading or coordination family (`make_interval_reading` on 1.5, `make_coordinati
 
 ## The stages, and the six questions at each
 
-Generator → exercise definition → catalog → curriculum rung → the day's session or the
-lesson page → the Score screen → the engine's prepared steps → grading → the summary the
-learner reads → the progress row → the review queue → the next session.
+**Start inside the generator, not at its output** (the reviewer's point 2 in
+`audit-2026-09-25-outside.md` Part 2): generator inputs → the intended target skill and
+where it is represented → the generation algorithm → the generated musical structure →
+the `confirm_*` validation → difficulty assignment (measured from the notation, inferred
+from parameters, or simply declared?) → catalog metadata → what is discarded after
+generation → the curriculum rung → the day's session or the lesson page → the Score
+screen → the engine's prepared steps → grading → the summary the learner reads → the
+progress row → the review queue → **the next recommendation**. Do not stop at selection
+or at grading: the architectural question is whether the learner's performance produces
+evidence that changes the learner model and therefore the next experience.
+
+Where the exercise is named by a lesson, also read the lesson's prose about it and say
+whether the writing teaches the musical idea the exercise is for, explains the app, or
+promises something the notation does not contain.
 
 At each stage write: what data structure carries it; what the source of truth is; what
 information is lost; what assumption is introduced; whether the next stage receives
@@ -80,6 +91,31 @@ Do not read the archive or the whole catalog; two items and the code that carrie
 6. **The feedback the learner reads.** After a run with three wrong notes and a rushed
    bar, what does the summary say? Does it say what happened, what it probably means, and
    what to do next? Quote the actual strings.
+
+7. **Does the generator guarantee the target skill?** For each of your two families:
+   the declared target skill (in the docstring, the concept tags, the lesson, wherever
+   it lives); whether anything checks the notation for it; the other skills the artifact
+   requires; how the level number was assigned and whether it was measured, inferred or
+   declared; what the catalog keeps of all this and what it throws away.
+
+## Hypothesis status
+
+The orchestrator's hypotheses H1–H5 and H7 in `plan-2026-09-25.md` touch this trace. For
+each one your trace meets, report it as **supported by observed evidence**,
+**contradicted by observed evidence**, or **unresolved**, and say what you observed. A
+code path consistent with a hypothesis does not confirm it: "stage number is used as
+level" is already known; the question is whether that substitution produces a wrong
+selection under a real learner state, and you should construct one such state from the
+progress rows and walk `fillSlot` with it. This is an investigation, not a confirmation
+exercise; if the evidence points at a different architectural problem, that is the
+finding.
+
+## The source-of-truth rows
+
+For each of these that your trace touches, fill a row: **concept | current source of
+truth | major consumers | competing definitions?** — learner level, difficulty, skill,
+mastery, performance evidence, repertoire level, curriculum stage. Leave the rows you did
+not touch blank rather than guessing; the orchestrator merges the three traces' tables.
 
 ## Findings
 
