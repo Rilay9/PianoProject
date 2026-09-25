@@ -173,9 +173,17 @@ export const CONTROL_BAR_START_HIDE_MS = 700;
  */
 function generateSightReadingFor(item: CatalogItem, seed?: number): { musicXml: string; seed: number } {
   const phrase = generateSightReading(
-    sightReadingOptionsFor(item.drill?.params ?? {}, seed ?? Math.floor(Math.random() * 0xffffffff)),
+    sightReadingOptionsFor(item.drill?.params ?? {}, seed ?? freshSeed()),
   );
   return { musicXml: phrase.musicXml, seed: phrase.seed };
+}
+
+/** A phrase's seed nobody asked for, and never the one named (T40's *New phrase*). */
+function freshSeed(not?: number): number {
+  for (;;) {
+    const seed = Math.floor(Math.random() * 0xffffffff);
+    if (seed !== not) return seed;
+  }
 }
 
 /**
@@ -359,12 +367,23 @@ export function ScoreScreen(router: Router): HTMLElement {
    */
   let phraseSeen = false;
   /**
+   * The app has played this phrase to the learner (T40): `Hear it`, a bar held
+   * down, or *Play it to me* — any Listen run on it, before a run or during
+   * one. A sight-read of music already heard is not a first reading, whenever
+   * the hearing came. T33 caught it part way through a run, from `heardAt`,
+   * which every fresh start empties; played before ▶, the run that followed
+   * went on the record as the first reading. One phrase per visit, so it is
+   * never cleared.
+   */
+  let phraseHeard = false;
+  /**
    * The run waiting for its *How did it go?* answer (T37).
    *
    * Without a judging input the sheet asks, and said `Recorded: Clean` while
    * nothing was stored: the run was written before the question was drawn and
    * the answer never reached it. So the run is held here and written with the
-   * answer, or without one the moment the sheet is left.
+   * answer. Since T40 the sheet asks where the app heard nothing, and a run
+   * left unanswered is let go, not written: it has no evidence.
    */
   let pendingRecord: ((report?: 'rough' | 'ok' | 'clean') => void) | null = null;
   let input: FollowInput = 'none';
@@ -1864,7 +1883,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     } = {},
   ): void {
     if (!session || !model) return;
-    // The last run's record, if its self-report was never given (T37).
+    // The last run's question, if it was never answered: let go (T37, T40).
     flushPendingRecord();
     if (options.fresh !== false) resetChanges();
     // A one-bar preview ends when its loop comes round, and until T31 that was
@@ -1959,6 +1978,9 @@ export function ScoreScreen(router: Router): HTMLElement {
       render();
       return;
     }
+    // The app is about to play the music to the learner (T40): a sight-read
+    // of it is no longer a first reading, whatever run comes next.
+    if (runMode === 'listen') phraseHeard = true;
     sayWhatThisRunIs(runMode);
     // **After the refusal above, and it has to stay there.** `attachInput`
     // detaches the old source and subscribes a new one, and `WebMidiSource`
@@ -2859,21 +2881,38 @@ export function ScoreScreen(router: Router): HTMLElement {
     // (T33): with `Hear it` setting a run aside rather than ending it, a
     // sight-read can now carry on after the phrase has been heard, and a
     // reading of heard music is not the first reading the record would claim.
+    // Nor one the phrase was played to the learner *before* (T40): the reason
+    // is the same, and `phraseHeard` holds it for the phrase, not the run.
     const sightReading = item !== undefined && isSightReading(item);
     const alreadyMet = sightReadAttempts > 0 || phraseSeen;
-    const sightReadRepeat = sightReading && (alreadyMet || heardAt.length > 0);
-    if (sightReadRepeat) {
-      status.textContent = alreadyMet
-        ? 'Sight-reading counts on the first attempt only — this run is not recorded.'
-        : SUMMARY_TEXT.sightReadHeard;
-    }
+    const sightReadRepeat = sightReading && (alreadyMet || phraseHeard);
     if (item !== undefined) sightReadAttempts += 1;
 
-    // Without a judging input the learner is asked how it went instead of
-    // being shown a number they did not earn (`02` Part G), and the answer is
-    // part of the record.
-    const askSelfReport = input === 'none';
+    /**
+     * Whether the app heard anything at all (T40).
+     *
+     * `score.notes` is every note the engine took, from whichever source fed
+     * it — MIDI, a microphone estimate, a screen key — so it is read here and
+     * not the input selector: a learner with a piano selected can still play
+     * nothing. With nothing heard there is no accuracy, no miss and no weak
+     * bar, only a clock that ran; the sheet says the run was not measured and
+     * asks how it went (`02` Part G), and nothing is recorded but the answer.
+     * On the screen as it stands, the one way here is a run with nothing
+     * listening: with an input chosen, a run holds for its first note.
+     */
+    const heard = score.notes.length > 0;
+    // The answer is the only evidence such a run has, so it is asked exactly
+    // there, and written with the run.
+    const askSelfReport = !heard;
+    // A performance the piece was played to the learner in the middle of
+    // (T40). `heardAt` is the bars of this run's demonstrations (T33, C5), so
+    // one heard before the take began is preparation, not help inside it.
+    const demonstratedTake = performanceRun && heardAt.length > 0;
     const title = document.createElement('h2');
+    /** The heading, with what kept a performance from being one said after it. */
+    const setHeading = (text: string): void => {
+      title.textContent = demonstratedTake ? `${text} — ${SUMMARY_TEXT.demonstratedTake}` : text;
+    };
     const run: RunResult | null =
       item && !sightReadRepeat && mode !== 'listen' && mode !== 'free'
         ? {
@@ -2895,9 +2934,12 @@ export function ScoreScreen(router: Router): HTMLElement {
             passed: outcome.passed,
             masterEligible: outcome.masterEligible,
             // What the run observed about tempo (T37): nothing in Wait, and
-            // nothing with no input listening, whatever the slider said.
-            tempoMeasured: outcome.tempoMeasured && !askSelfReport,
-            ...(performanceRun ? { performance: true } : {}),
+            // nothing where nothing was heard, whatever the slider said.
+            tempoMeasured: outcome.tempoMeasured && heard,
+            // A performance is a take nobody helped with (T40): one the piece
+            // was played to the learner part way through is kept as practice,
+            // and off the performances list, which reads this flag.
+            ...(demonstratedTake ? {} : performanceRun ? { performance: true } : {}),
             ...(rhythmRun ? { rhythmOnly: true } : {}),
           }
         : null;
@@ -2915,10 +2957,11 @@ export function ScoreScreen(router: Router): HTMLElement {
           // so the sheet can never say *Mastered* before the store does.
           if (result.masterEligible && !rhythmRun) {
             const days = Math.min(MASTER_DAYS, row.masteredOn?.length ?? 1);
-            title.textContent =
+            setHeading(
               row.status === 'mastered'
                 ? 'Mastered'
-                : `Mastery run ${String(days)} of ${String(MASTER_DAYS)}`;
+                : `Mastery run ${String(days)} of ${String(MASTER_DAYS)}`,
+            );
           }
           then?.();
         })
@@ -2929,24 +2972,29 @@ export function ScoreScreen(router: Router): HTMLElement {
     if (run && askSelfReport) {
       pendingRecord = (report) => {
         pendingRecord = null;
-        if (report === undefined) {
-          save(run);
-          return;
-        }
+        // Left unanswered — another run, Done, leaving the screen — a run the
+        // app heard nothing of has no evidence at all, and is not written
+        // (T40). T37 wrote it without an answer, as accuracy 0 and every note
+        // missed, which the history printed as "0%": a measurement nobody took.
+        if (report === undefined) return;
         // "Clean" is a pass in the learner's own judgement, which is what
         // Part G makes a run without MIDI; anything else is practice that
-        // happened. Never a master-standard run: nothing measured one.
+        // happened. Never a master-standard run: nothing measured one. And
+        // never a pass of the piece from a rhythm run, whatever the answer
+        // (`05` §3a): the answer replaced `passed` and gave it one (T40).
+        const selfPassed = report === 'clean' && !rhythmRun;
         save(
           {
             ...run,
             selfReport: report,
-            passed: report === 'clean',
-            ...(report === 'clean' ? { selfPassed: true } : {}),
+            passed: selfPassed,
+            ...(selfPassed ? { selfPassed: true } : {}),
             masterEligible: false,
           },
           () => {
-            status.textContent =
-              report === 'clean' ? SUMMARY_TEXT.selfReportClean : SUMMARY_TEXT.selfReportOther(report);
+            status.textContent = selfPassed
+              ? SUMMARY_TEXT.selfReportClean
+              : SUMMARY_TEXT.selfReportOther(report);
           },
         );
       };
@@ -2958,35 +3006,54 @@ export function ScoreScreen(router: Router): HTMLElement {
     // rhythm run reads as a piece that failed to pass, and over a Wait for me
     // run whose notes were right it reads as a failure the learner did not
     // have (T37): that run had every note it needed and nothing it could pass
-    // on, so it is headed for the half it did.
+    // on, so it is headed for the half it did. A run the app heard nothing of
+    // is headed for exactly that (T40), before anything else it might be.
     const notesReady =
       mode === 'wait' && !outcome.passed && score.accuracy >= criteria.passAccuracy;
-    title.textContent = rhythmRun
-      ? 'Rhythm run'
-      : outcome.passed
-        ? 'Passed'
-        : notesReady
-          ? SUMMARY_TEXT.waitNotesReady
-          : 'Run finished';
+    setHeading(
+      !heard
+        ? SUMMARY_TEXT.notMeasuredHeading
+        : rhythmRun
+          ? 'Rhythm run'
+          : outcome.passed
+            ? 'Passed'
+            : notesReady
+              ? SUMMARY_TEXT.waitNotesReady
+              : 'Run finished',
+    );
     sheet.appendChild(title);
+
+    // What the run is, in sentences, under the heading (T40): why a run has no
+    // numbers, and why one is not on the record. The second used to go to
+    // `#score-status`, the header's line, which the sheet covers and which is
+    // cut after twenty-odd characters at 342 px — seen on the glass, nobody
+    // could read it.
+    const said: string[] = [];
+    if (!heard) {
+      said.push(SUMMARY_TEXT.notMeasured);
+      if (input === 'none') said.push(SUMMARY_TEXT.notMeasuredNoInput);
+    }
+    if (sightReadRepeat) said.push(alreadyMet ? SUMMARY_TEXT.sightReadRepeat : SUMMARY_TEXT.sightReadHeard);
+    if (said.length > 0) {
+      const note = document.createElement('p');
+      note.className = 'summary-note';
+      note.id = 'summary-note';
+      note.textContent = said.join(' ');
+      sheet.appendChild(note);
+    }
 
     const lines = document.createElement('dl');
     lines.className = 'summary-stats';
-    // Accuracy and Missed are facts about a run that played nothing: nought
-    // right, everything missed, and the self-report below is what the sheet
-    // offers instead of a number he did not earn.
+    // With nothing heard, none of the numbers below was measured (T40): not
+    // the accuracy, not the misses, not the tempo nobody played to, not the
+    // bars that "went worst". Only the *Changed* line stands — it is about the
+    // settings, not the playing.
     //
-    // `Wrong notes` and `Timing` are not. Nought wrong notes out of nothing
-    // played, and a mean lateness over no notes, are statistics with nothing
-    // behind them — a dead control in a different coat (`04` §0 R4).
-    //
-    // Both counters, because the modes keep score differently: Wait counts
-    // `correctSteps` and can finish a clean run with `hits` at nought, while
-    // Tempo counts `hits` against the expected pitches (`engine/types.ts`).
-    const heard =
-      score.hits > 0 || score.correctSteps > 0 || score.wrongNotesTotal > 0 || (score.early ?? 0) > 0;
+    // `Wrong notes` and `Timing` also wait for something heard: nought wrong
+    // notes out of nothing played, and a mean lateness over no notes, are
+    // statistics with nothing behind them (`04` §0 R4).
     // First, so it is read before the accuracy it qualifies.
-    if (rhythmRun) {
+    if (rhythmRun && heard) {
       addStat(lines, 'Judged', 'Rhythm only — the notes were not, so this does not count as playing the piece');
     }
     // What changed during the run, in one line, before the numbers it
@@ -2998,7 +3065,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     // have moved since).
     changedLine = addStat(lines, SUMMARY_TEXT.changedLabel, '');
     drawChanged();
-    addStat(lines, 'Accuracy', `${Math.round(score.accuracy * 100)}%${score.accuracyEstimated === true ? ' (estimated)' : ''}`);
+    if (heard) {
+      addStat(lines, 'Accuracy', `${Math.round(score.accuracy * 100)}%${score.accuracyEstimated === true ? ' (estimated)' : ''}`);
+    }
     // The tempo is a measurement only where the run kept one (T37). In Wait
     // for me the slider is a setting nobody played to, and it used to be
     // printed as "70% of written" and passed on; now the line says what the
@@ -3006,11 +3075,13 @@ export function ScoreScreen(router: Router): HTMLElement {
     // converter made up (`tempo-defaulted`) is a share of that suggestion, not
     // of anything written.
     const ofWhat = item?.tags?.includes('tempo-defaulted') === true ? 'of the suggested tempo' : 'of written';
-    addStat(
-      lines,
-      'Tempo',
-      outcome.tempoMeasured ? `${String(Math.round(score.tempoPct))}% ${ofWhat}` : SUMMARY_TEXT.waitTempo,
-    );
+    if (heard) {
+      addStat(
+        lines,
+        'Tempo',
+        outcome.tempoMeasured ? `${String(Math.round(score.tempoPct))}% ${ofWhat}` : SUMMARY_TEXT.waitTempo,
+      );
+    }
     // Where the ladder got to. The Tempo line above is the tempo of the *last*
     // pass, which is the same number — said again, under its own name, because
     // "did the ladder go up or down over the session?" is the question the
@@ -3022,11 +3093,11 @@ export function ScoreScreen(router: Router): HTMLElement {
     // entirely the ladder's doing. The toggle cannot be reached without a loop
     // in the first place, so this cannot say "ended at" about a ladder that
     // never ran.
-    if (ladderOn) addStat(lines, 'Ladder', `ended at ${String(tempoPct)} % ${ofWhat}`);
+    if (ladderOn && heard) addStat(lines, 'Ladder', `ended at ${String(tempoPct)} % ${ofWhat}`);
     if (heard) {
       addStat(lines, 'Wrong notes', String(score.wrongNotesTotal));
+      addStat(lines, 'Missed', String(score.missedTotal));
     }
-    addStat(lines, 'Missed', String(score.missedTotal));
     // A right note that came before its beat is its own observation (T37): it
     // used to be a wrong note *and* a miss, and neither line said "early".
     const early = score.early ?? 0;
@@ -3036,7 +3107,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     // Beside the accuracy it is deliberately not part of, and said in words
     // rather than as a bare number: "82%" under "Legato" would be read as a
     // second accuracy, which is exactly the confusion these exist to avoid.
-    if (technique) {
+    if (technique && heard) {
       addStat(
         lines,
         technique.label,
@@ -3062,8 +3133,10 @@ export function ScoreScreen(router: Router): HTMLElement {
       );
     }
     // The bars that went worst, by printed number, so the learner knows where
-    // to look before choosing `Loop the weak bars` (`08` §6.2).
-    const weakest = [...score.hotSpots]
+    // to look before choosing `Loop the weak bars` (`08` §6.2). None where
+    // nothing was heard: every bar "missed" by a run nobody listened to is not
+    // a bar that went badly (T40).
+    const weakest = [...(heard ? score.hotSpots : [])]
       .filter((spot) => spotDamage(spot) > 0)
       .sort((a, b) => spotDamage(b) - spotDamage(a))
       .slice(0, 3)
@@ -3098,6 +3171,26 @@ export function ScoreScreen(router: Router): HTMLElement {
         tempo.value = String(tempoPct);
         startRun();
       }, 'summary-faster'),
+      // A phrase nobody has heard (T40), on the sheet that says why this one
+      // no longer counts: after a first reading, a repeat or a phrase played
+      // to the learner, a new one is the only way to a first reading again.
+      // The same row, a fresh seed in the route — the route is what makes the
+      // screen draw one — and the same way back. It is not Today's read: the
+      // day's phrase is the day's seed (`04` §2).
+      ...(sightReading
+        ? [
+            button('New phrase', () => {
+              flushPendingRecord();
+              summaryUp(false);
+              router.navigateScore(itemId, {
+                ...tourRoute,
+                ...(blind ? { blind: true } : {}),
+                ...(performanceRun ? { performance: true } : {}),
+                seed: freshSeed(phraseSeed),
+              });
+            }, 'summary-new-phrase'),
+          ]
+        : []),
       // Only when there is something to loop. Offered unconditionally, its one
       // possible outcome on a clean run was the message "No weak bars to loop
       // — nothing went wrong", which is a button whose entire function is to
@@ -3116,7 +3209,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     );
     sheet.appendChild(actions);
 
-    // Without a judging input there is nothing to be accurate *about*, so the
+    // With nothing heard there is nothing to be accurate *about*, so the
     // learner says how it went instead of being shown a number they did not
     // earn — and the answer is recorded with the run, as self-assessed (`02`
     // Part G, T37). Only where there is a run to record it with: a repeated
@@ -3151,11 +3244,12 @@ export function ScoreScreen(router: Router): HTMLElement {
   }
 
   /**
-   * Writes a run still waiting for its self-report, without one (T37).
+   * Lets go of a run still waiting for its self-report (T37, T40).
    *
-   * Called wherever the sheet is left — another run, Done, leaving the screen
-   * — so a learner who does not answer still has the practice on the record,
-   * exactly as a run with a piano connected does.
+   * Called wherever the sheet is left — another run, Done, leaving the screen.
+   * T37 wrote the run here without an answer; since T40 a run waits for an
+   * answer only when the app heard nothing of it, and unanswered it has no
+   * evidence to write, so it is not recorded (`02` Part G).
    */
   function flushPendingRecord(): void {
     const flush = pendingRecord;
@@ -4126,8 +4220,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     // `onFinished`, so tearing the screen down draws a summary — which would
     // otherwise forget the very run this is about to remember.
     leaving = true;
-    // A run still waiting for *How did it go?* is written as it stands: the
-    // learner left the question, not the practice (T37).
+    // A run still waiting for *How did it go?* is let go: it is a run the app
+    // heard nothing of, and unanswered it has no evidence to write (T40; T37
+    // wrote it as it stood).
     flushPendingRecord();
     // Where the run was left, if it was left. Read off the same step the bar
     // readout reads, so the number the offer prints next time is the number

@@ -113,6 +113,15 @@ Judging input (only if any input source is active):
   field `SessionScore` has always documented and never filled.
 
 Without any input source, Tempo mode simply plays/moves and asks for the self-report at the end.
+**What decides "no input" at the end is what was heard** (2026-09-25, T40): a run whose
+`SessionScore.notes` is empty — no note reached the engine from any source — is *not
+measured*. The sheet prints no accuracy, misses, tempo or weak bars (`04` §5), and the run is
+recorded only with the learner's answer. It reads the notes and not the input selector, since
+a learner with a piano selected can still play nothing; on the screen as it stands, a run with
+an input chosen cannot end with nothing heard (Keep tempo holds for the first note, §3b), so the
+one way to such a sheet is a run with nothing listening. The engine still closes every slot as
+missed on that run, and the session paints the notes red as the clock passes — not changed by
+T40, and contrary to "simply plays/moves"; recorded as a follow-up.
 
 Playback in Tempo mode: the app plays **the non-focused hand** (or nothing / everything —
 setting) through the Web Audio piano, scheduled ahead on the AudioContext clock from the same
@@ -151,7 +160,7 @@ Three consequences, each deliberate:
 **Which runs measure what (2026-09-25, T37).** A Keep tempo run measures the notes and the
 tempo; a rhythm-only run the tempo and not the notes; a Wait run the notes and not the tempo
 (§2); Listen and Free neither. The Score screen records `tempoMeasured` on the session row
-from the same rule (and `false` for a run no input was listening to), and a tempo nobody
+from the same rule (and `false` for a run the app heard nothing of, T40), and a tempo nobody
 played to never becomes an item's best tempo.
 
 **`SessionScore.rhythmOnly`** carries that last fact out. Its own field rather than a
@@ -428,7 +437,7 @@ returns null rather than guessing, so an unreadable parameter is a visible failu
 | `rhythm` | shows a rhythm on one line; learner taps any key; judged like Tempo mode on onsets only | timing accuracy |
 | `pedal` | Tempo-mode chord sequence; scores CC64 transitions: a "clean change" = pedal up between 0 and 120 ms *after* the new chord's first Note-On, then down within 250 ms | % clean |
 | `dynamics` | asks for p then f phrases; measures mean velocity ratio | ratio ≥ 1.6 |
-| `sight-reading` | see §8 | Tempo-mode accuracy on first attempt only |
+| `sight-reading` | see §8 | Tempo-mode accuracy on the first attempt only, of a phrase not played to the learner |
 | `call-response` | plays 2 bars, expects them back (pitch + rhythm within tolerance) | accuracy |
 | `backing-track` | Free mode + loop | none (records) |
 
@@ -489,6 +498,16 @@ screen in Tempo mode. Level table (extend as the curriculum grows):
 | 7 | keys to 4♯/♭, 2 octaves | + 16ths | HT | as 5; LH walking |
 
 Deterministic from a seed so a failed sight-read can be retried identically once.
+
+**Unseen means unheard as well (2026-09-25, T40).** A run of a phrase the app has played to the
+learner — `Hear it`, a held bar, *Play it to me*; any Listen run on it, before the run or during
+it — is not a first reading and is not recorded, exactly as a retry is not. The Score screen
+keeps that per phrase for the visit (`phraseHeard`, set where a Listen run starts); T33 had it
+per run, from the bars of a demonstration inside the run, which a fresh start emptied. The
+summary sheet of every sight-read offers **New phrase**: the same row with a fresh seed in the
+route, which is how the screen is told to draw one. Not kept across visits: a phrase heard,
+left unplayed and opened again is a first reading to the next visit (Today's read, and any
+route that carries its seed — *New phrase* writes one — open on the same phrase again).
 
 **What a row asks for reaches the generator (2026-09-25, T37).** `sightReadingOptionsFor`
 (`sightReading.ts`) is the one reader of a catalog row's `drill.params`: `level`, `bars`,

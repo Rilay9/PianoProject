@@ -185,6 +185,13 @@ describe('the Score screen’s run sentences are the ones `04` §5f prints', () 
       SUMMARY_TEXT.heard([2]),
       SUMMARY_TEXT.afterTheRun,
       SUMMARY_TEXT.sightReadHeard,
+      // T40: the sheet of a run the app heard nothing of, the repeat sentence
+      // moved onto the sheet from the header, and a performance helped part way.
+      SUMMARY_TEXT.notMeasuredHeading,
+      SUMMARY_TEXT.notMeasured,
+      SUMMARY_TEXT.notMeasuredNoInput,
+      SUMMARY_TEXT.sightReadRepeat,
+      SUMMARY_TEXT.demonstratedTake,
     ];
     const missing = said.filter((line) => !section.includes(flat(line)));
     expect(missing, `run sentences §5f does not print:\n${missing.join('\n')}`).toEqual([]);

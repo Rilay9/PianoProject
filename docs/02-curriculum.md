@@ -913,6 +913,20 @@ suggestions** with a note on where to buy/obtain MusicXML.
   today's read and playing it again is a retry and is not recorded. The sentence below
   that the drills "generate a fresh phrase every time" is true of every open except
   Today's, which is one phrase a day by design (`04` §2).
+- **Three runs that are not what they look like (2026-09-25, T40; the reviewer's
+  decisions).** *A run the app heard nothing of* — no note from MIDI, the microphone or the
+  screen keys reached it — is not measured: its sheet is headed *Not measured* and shows no
+  accuracy, and it is recorded only with the *How did it go?* answer, as above; unanswered,
+  it is not recorded at all (its minutes, its attempt and, on Today's read, the day's tick
+  included). The rule reads what was heard, not
+  which input was chosen, and a run with one note in it is measured as any run is. *Clean*
+  after a rhythm-only run is recorded as the learner's word and is not a pass of the piece.
+  *A sight-read the learner has heard* — `Hear it`, a held bar or *Play it to me*, before the
+  run or during it — is not a first reading and is not recorded, the same rule as a repeat;
+  the sheet offers *New phrase*, a fresh phrase of the same row, which is. So hearing today's
+  phrase first means the day is not ticked by it. *A performance the piece was played to the
+  learner in the middle of* is recorded as practice, not as a performance (`04` §5e); heard
+  before the take began, it is still a performance.
 - **What a drill run counts (2026-09-16, `04` §5c).** *Show me* draws the answer on a staff
   and *Hear it* plays it; either forfeits the mark for that prompt, so a set you revealed your
   way through cannot pass. A missed card pauses until you tap it on. When the set ends the app

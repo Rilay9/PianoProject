@@ -490,21 +490,44 @@ test.describe('score screen', () => {
     await expect(page.locator('.screen h1')).toHaveText('Today');
   });
 
-  test('a Tempo-mode run reaches the summary sheet with its numbers', async ({ page }) => {
+  test('a Keep tempo run nothing listened to says it was not measured, and asks how it went', async ({
+    page,
+  }) => {
+    // Revised 2026-09-25 (T40). This was "a Tempo-mode run reaches the summary
+    // sheet with its numbers" and read *Accuracy*, *Tempo* and *Loop the weak
+    // bars* off the sheet of a run no input was listening to — which is every
+    // run on a phone with no piano connected. The numbers were *Accuracy 0%*,
+    // *Missed 17* and *Weakest bars 1, 2, 3*: a measurement nobody took. The
+    // reviewer's rule: no input, no accuracy.
     await openScore(page);
     await page.locator('#score-mode').selectOption('tempo');
     await setTempoPercent(page, 130);
     await page.locator('#score-play').click();
     const sheet = page.locator('#score-summary');
     await expect(sheet).toBeVisible({ timeout: 60_000 });
-    await expect(sheet).toContainText('Accuracy');
-    await expect(sheet).toContainText('Tempo');
-    // No judging input, so the learner is asked rather than shown a number
-    // they did not earn (docs/04 §5).
+    await expect(sheet.locator('h2')).toHaveText('Not measured');
+    await expect(sheet.locator('#summary-note')).toContainText('heard no notes');
+    for (const stat of ['accuracy', 'tempo', 'missed', 'weakest-bars']) {
+      await expect(sheet.locator(`[data-stat="${stat}"]`), `${stat} on a run nothing heard`).toHaveCount(0);
+    }
+    // Part G's question for a run without an instrument is the one thing
+    // offered in their place.
     await expect(page.locator('#summary-selfreport')).toBeVisible();
-    for (const id of ['again', 'slower', 'faster', 'loop', 'done']) {
+    for (const id of ['again', 'slower', 'faster', 'done']) {
       await expect(page.locator(`#summary-${id}`)).toBeVisible();
     }
+    await expect(page.locator('#summary-loop'), 'weak bars nobody listened for').toHaveCount(0);
+
+    // Left unanswered, nothing goes on the record.
+    await page.locator('#summary-done').click();
+    await page.waitForTimeout(1_000);
+    const sessions = await page.evaluate(async () => {
+      const hooks = (window as unknown as {
+        __pianopath: { exportAll: () => Promise<{ stores: Record<string, unknown[]> }> };
+      }).__pianopath;
+      return (await hooks.exportAll()).stores.sessions;
+    });
+    expect(sessions, 'a run nothing heard went on the record unanswered').toHaveLength(0);
   });
 
   test('the summary puts the screen behind it out of reach', async ({ page }) => {

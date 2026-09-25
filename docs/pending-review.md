@@ -15440,3 +15440,209 @@ metronome on at bar 1; heard it played at bar 2* above *Accuracy 100%*; the shee
 `app/tests/unit/help.test.ts`; `docs/04-ui-spec.md` §5 and §5f, `docs/05-score-follow-engine.md`
 §3b and §4, `docs/decisions/2026-09-23-score-state-machine.md` (§7 decided, §5 table, intro),
 `docs/08-test-map.md`, `docs/08-score-render-states.md` (deviation 5).
+
+
+### Entry 68 — T40: a run nothing heard is not measured, a heard sight-read is not a first reading, a demonstrated take is not a performance (2026-09-25)
+
+**Judgement.** Yes, for the three runs the reviewer named, with one contradiction left on the
+screen and said up front. **A run the app heard nothing of** — on a phone with no piano
+connected this is every Keep tempo run, because the default input is *None* — now ends on a
+sheet headed **Not measured**: *The app heard no notes, so there is nothing to mark. To be
+marked, connect a piano or choose Screen keys in ⋯.*, then Again / Slower / Faster / Done and
+*How did it go?*. It used to read *Run finished · Accuracy 0% · Tempo 70% of written · Missed
+17 · Weakest bars 1, 2, 3 · Loop the weak bars*. Left unanswered it is no longer written (it
+was: accuracy 0, every note missed, printed in Progress as "0%"). **A sight-read played to the
+learner before its first run** is not recorded, and the sheet says so under its heading: *Sight-
+reading counts only on music you have not heard — this run is not recorded.*, with a **New
+phrase** button beside Again. **A performance with Hear it inside it** is recorded as practice,
+not as a performance: its heading reads *Notes ready — heard part way, kept as practice*, its
+*Changed* line *heard it played at bar 2*, and Progress says *No performances yet*. A piano
+teacher would recognise all three: "I couldn't hear you, so I won't mark it — how did it
+feel?"; "you've heard it now, so that wasn't sight-reading — here's a new one"; "good run, but
+I played part of it for you, so it wasn't a performance". **The contradiction:** behind the
+*Not measured* sheet the page still has every note painted red, because the session paints
+each slot the engine closes as missed, listening or not — a separate mechanism, not changed
+(Follow-ups, P0). **What I looked at:** each case reproduced on the glass before any change
+(dev server, 342 × 740, dark), and each sheet after (342 × 740 upright, DPR 1, light, by a
+script: all three fit with no scroll, no line overflows), and Progress after case 3. Not looked
+at sideways, on a tablet, or at 115 % text. Nothing was heard.
+
+**Deviations, each with its reason.**
+1. **The "not recorded" sentences moved from `#score-status` onto the sheet** (`#summary-note`,
+   under the heading). The brief says "the sheet says so in the sentence T33 wrote"; on the
+   glass the sentence was set on `#score-status`, which sits in the header the summary covers —
+   0 × 0 with the sheet up (measured), and cut after twenty-odd characters when the header is
+   visible. T37's *first attempt only* sentence had the same fault and moved with it.
+2. **"Recorded as practice" read as "not recorded"** for the heard sight-read: the brief asks
+   for the sheet to say so "in the sentence T33 wrote", and that sentence says *this run is not
+   recorded*; T33's mid-run case and T37's repeat case are not recorded either. Recording it as
+   a practice row would be a new kind of record (Questions).
+3. **A `New phrase` button** on every sight-read's sheet: the brief asked that the way to a
+   fresh phrase be on the sheet or the screen; there was none on either (the way was Back and
+   open it again, and Today's read reopens the same phrase).
+4. **An adjacent fix on the path I rewrote:** a *Clean* self-report replaced `passed` wholesale,
+   so after a rhythm-only run it recorded the piece as passed, which `05` §3a says a rhythm run
+   never does. Now `passed: report === 'clean' && !rhythmRun`, and the status line says
+   *Recorded: Clean — practice, not marked passed.*
+5. **`heard` has one definition:** the sheet's own `heard` (hits, correct steps, wrong notes,
+   early) is replaced by `score.notes.length > 0`, the engine's record of every note it took.
+   They differ only where a microphone run heard nothing but uncertain wrong notes (recorded,
+   not counted): that run is now measured, as the brief's rule says ("some notes arrived").
+6. **`lab.spec.ts`** is not in the brief's list; it reads the record and the sentence (Today's
+   read), so it is revised and extended under "the e2e tests that read the summary or the
+   record".
+7. `help.ts`'s `SUMMARY_TEXT` constants were added before the e2e red run: `tsconfig.app.json`
+   includes `tests/unit`, so `build:app` would not compile the new unit tests without them.
+   They were unused until the change; the red build behaved as the committed code.
+
+## Done — per case: reproduction, mechanism, the red line, the words
+
+**1. No input, no accuracy.** *Reproduced:* input *None* (the default with no MIDI: `inputPriority
+['midi', 'mic', 'none']`, and the microphone is never automatic), Keep tempo, Hot Cross Buns,
+nothing played → the sheet above; Done unanswered → a session row `accuracy: 0, missed: 17`,
+progress `started`. *The screen-keys hypothesis, tested:* Screen keys, Keep tempo, ▶, nothing
+pressed → after thirty seconds still `armed`, *Play your first note to start*, no summary. So on
+the screen as it stands the only way to a run with nothing heard is nothing listening (input
+*None*, or the microphone failing, which restarts with *None*); with an input chosen Keep tempo
+holds for the first note (T8) and Wait waits (inferred from `feedWait`, not driven). *Mechanism:*
+`askSelfReport = input === 'none'` and every stat drawn unconditionally. *Now:* `heard =
+score.notes.length > 0`, decided from what reached the engine, not the selector; with nothing
+heard the heading is **Not measured**, the note says why (plus the input hint where input is
+*None*), Accuracy, Tempo, Ladder, Wrong notes, Missed, the technique line and Weakest bars are
+not drawn, *Loop the weak bars* is not offered, the question is asked, and `pendingRecord`
+unanswered returns without writing. A run with one note is measured as before. *Red (committed
+code):* `expected 'Run finished' to be 'Not measured'` (unit, with Screen keys chosen and no note
+heard; and with *None*); `a run nothing heard went on the record unanswered: expected "vi.fn()"
+to not be called at all, but actually been called 1 times` (Done, and Again); e2e
+`score.screen`: `Expected: "Not measured" Received: "Run finished"`; rhythm: `expected true to
+be false`. *Words:* *Not measured* / *The app heard no notes, so there is nothing to mark.* /
+*To be marked, connect a piano or choose Screen keys in ⋯.* A heading, not a line: the heading
+is what is read first, and "Run finished" read as a failure over a run that was not one.
+*Consumers of the row no longer written* (read from `recordRun`): the item's `attempts`,
+`lastPracticedAt` and `new → started`, the week's minutes, and — for Today's read played with
+nothing listening — the day's tick, which now comes only with an answer. Passes, mastery, review
+and rung completion are unaffected: that row was never a pass.
+
+**2. A sight-read heard before its first run is not a first attempt.** *Reproduced:*
+sight-reading-1, Screen keys, Hear it for four seconds, Stop, ▶, played → recorded, with its
+seed, as the first reading. *Mechanism:* T33's rule read `heardAt`, the bars of a demonstration
+inside the run, and every fresh start (`resetChanges`) empties it; the demonstration before ▶
+left no trace. *Now:* `phraseHeard`, per phrase for the visit, set in `startRun` wherever a
+Listen run starts — `Hear it`, the held-bar preview, *Play it to me* — and read beside
+`alreadyMet`. *Red:* unit `a phrase the learner had heard, recorded as a first reading: expected
+"vi.fn()" to not be called at all, but actually been called 1 times` (Hear it; and *Play it to
+me*); e2e `lab.spec`: `a phrase the learner had heard, recorded as a first reading — Expected
+length: 0, Received length: 1` (today's read, played cleanly, recorded with the day's seed);
+`#summary-new-phrase is not on the screen`. *Words:* T33's sentence, on the sheet. *The way to
+a fresh phrase:* **New phrase** on the sheet of every sight-read — the same row, a fresh seed in
+the route (the route is what makes the screen draw one), the tour and rung kept. Seen: it moved
+`#/score/drill.reading.sight-reading-1` to `…?seed=3701801199` and drew a phrase. It is not
+Today's read (the day's phrase is the day's seed), so on Today's read hearing the phrase first
+means the day is not ticked by it.
+
+**3. A performance with a demonstration inside it is not an independent performance.**
+*Reproduced:* `?performance=1`, Screen keys, Wait, four notes, Hear it, Stop, ▶, to the end →
+row `performance: true`; Progress listed it under Performances. *Mechanism:* the record read the
+route alone. *Now:* `demonstratedTake = performanceRun && heardAt.length > 0` — `heardAt` is
+T33's list of this run's demonstrations, so hearing the piece before the take began leaves it a
+performance — and the record omits the flag; `setHeading` appends *— heard part way, kept as
+practice* to the verdict and keeps it when T37's store answer rewrites the heading to *Mastery
+run 1 of 2*. `Hear it` is not refused. *Readers checked:* `recentPerformances` (the list) and the
+*No performances yet* sentence read only the flag: the take is absent from the list and present
+in the history, and the empty sentence (*…one run through with no restarts and no looping*)
+stays true. No schema change, so no `demonstrated` field. *Red:* unit `a demonstrated take kept
+as a performance: expected true to be undefined`; e2e `score.states`: `a demonstrated take went
+on the performances list — Received: true`. *Words:* the heading's clause, and Perform's help
+line *…however it went. Use Hear it part way and it is kept as practice instead.*
+
+## Tests
+
+| test | class | the assumption the old assertion encoded | why the new one reads the learner-facing outcome |
+|---|---|---|---|
+| `scoreSummaryTruth` `run()` helper (`notes: []` → eight recorded notes) | revise | the sheet reads only the counters; a score with eight hits and no recorded notes (the engine records a note wherever it counts a hit — read in `feedTempo` and `feedWait`) | the fixture carries what the engine keeps, which is what "heard" is now read from |
+| `scoreSummaryTruth` `ScoreSession` stub (start/stop move `running`; suspend/restore) | revise | nothing drives `Hear it` over a run through the real screen | enough of T33's set-aside to reach case 3's record and heading |
+| `scoreSummaryTruth` 4 *writes the answer…*, *a Rough answer…* | preserve | (asked because the input was *None*) | same assertions; the input now says what was heard (`NOTHING_HEARD`) |
+| `scoreSummaryTruth` 4 *a run left without an answer is still recorded, without one* | revise → *…is not recorded at all* | an unanswered run nothing heard is practice to record (T37), as accuracy 0 and every note missed | nothing is recorded as a measured run; the answer is the only evidence |
+| `scoreSummaryTruth` 4 *nor when the next run is started*, *a rhythm run answered Clean…* | add | — | the other flush path; the rhythm refusal survives the answer |
+| `scoreSummaryTruth` T40 1 ×3 | add | — | *Not measured* with a judging input chosen and nothing heard; the hint with *None*; one note heard is a measured run |
+| `scoreSummaryTruth` 7–8 *re-opening a phrase already on the record…* | revise | `#score-status` is where the learner reads the verdict | reads `#summary-note`; the status line is 0 × 0 under the sheet (measured) |
+| `scoreSummaryTruth` T40 2 ×5 | add | — | Hear it before ▶ and *Play it to me* → not recorded, the sentence; unheard → recorded; *New phrase*'s route; no button on a piece |
+| `scoreSummaryTruth` T40 3 ×3 | add | — | no flag and the heading after a demonstration inside; the flag without one, and with one heard before |
+| `help.test` *lists every sentence…* | revise (extended) | the sheet's sentences were T33's | §5f prints the five T40 sentences (red on the committed §5f) |
+| `help.test` *says on the screen exactly what §5f says* | preserve | — | Perform's new counts line printed in §5f in the same change (red before) |
+| `score.screen.spec` *a Tempo-mode run reaches the summary sheet with its numbers* | revise → *a Keep tempo run nothing listened to says it was not measured…* | a no-input run's sheet has Accuracy, Tempo and *Loop the weak bars* | heading, note, no numbers, the question, the four buttons, no loop, nothing stored when left |
+| `score.screen.spec` self-report, *out of reach*, *Slower* | preserve | — | still true on the *Not measured* sheet |
+| `lab.spec` *re-opened after it was read…* | revise | as the unit repeat test | reads the sheet |
+| `lab.spec` *heard before its first run…* | add | — | today's phrase heard, then read: no row, the sentence, *New phrase* to another seed |
+| `score.states.spec` `openScore(page, query = '')` | revise | one route | default unchanged; `?performance=1` for T40 |
+| `score.states.spec` *T40: a performance with Hear it inside it…* | add | — | the store, the heading, the bar, and Progress's *No performances yet* |
+
+## Runs (unpiped; exit codes read)
+
+- Red, committed behaviour: `vitest run scoreSummaryTruth` exit 1 (10 failed, 19 passed, each on
+  its intended line); `help.test` exit 1 (2 failed); Playwright (score.screen, score.states, lab;
+  two workers) exit 1, 4 failed: three on the intended lines, one on a test fault (a click on a
+  folded bar, fixed with `pressControl`), re-run alone exit 1 on the record line.
+- After: `npx tsc -b` 0; `npm run lint` 0 (after one `unbound-method` fix in the new test);
+  `npx vitest run` 0 — 208 files, 5,225 passed, 5 skipped.
+- Playwright, one build (`npm run build:app` 0), `vite preview` on 4173, two workers, one spec
+  set at a time, each exit 0: `score.screen` 35 passed; `score.states` 19; `lab` 14; `score.run`
+  8; `first-day` 2; `lesson-flow` 1; `modes-*` 54; `progress` + `progress.hierarchy` 19;
+  `score.rhythm-ladder` + `score.hearbar` + `help-strip` 19; `score.fuzz` 5; `engine` 14. Two
+  comment-only edits to `ScoreScreen.ts` came after the build; `tsc -b`, lint and vitest ran
+  after them.
+
+## Not done
+
+- Nothing of the three decided cases is left undone.
+- Not closed, by choice: a phrase heard, left without a run and opened again (only Today's read,
+  or a route with its seed) is a first reading to the next visit — the hearing is per visit.
+  Keeping it across visits needs a stored "heard" per seed, an evidence-model decision for C.
+
+## Follow-ups
+
+- **P0 (new, seen on the glass).** With nothing listening, the page paints every note red as the
+  clock passes (`ScoreSession`'s `missed` → `'wrong'`, and the key flash), behind a sheet that now
+  says *Not measured*; `05` §3 says Tempo without input "simply plays/moves". A run option from
+  the screen (nothing listening) and the session skipping the missed paint would be the change.
+- **P0-adjacent, `ProgressScreen.ts` (not owned).** The history prints "0% at 70% · clean" for a
+  self-reported run; a row with `selfReport` is now always a run nothing heard, so the line can
+  print the answer instead. (T37's "100% at 70%" for a Wait run is the same fault, still open.)
+- **P2 (inferred from code, not driven).** The ladder with nothing listening lowers the tempo on
+  every lap for "mistakes" nobody made — it acts on the engine's misses.
+- **P3.** The self-report confirmation (*Recorded: Clean — …*) still goes to `#score-status`,
+  hidden or cut with the sheet up, and the chosen answer is not marked (all three grey).
+- **P3.** Nothing says, at the moment `Hear it` is pressed on a sight-read or in a performance,
+  what it will cost; the sheet says it afterwards (Perform's help card says it before).
+- **P3.** An unanswered *Not measured* sheet keeps an empty stats list, a small gap above the
+  buttons.
+- A *Clean* self-report still passes a run whose rung `mastery.custom` binds a technique measure
+  nothing measured; no rung binds one today.
+
+## Questions
+
+- The minutes of an unanswered run nothing heard are no longer counted (nothing is recorded).
+  Should a run the learner sat through count its minutes without a measurement or an answer?
+  It would be a new kind of row; I read the reviewer's "nothing is recorded as a measured run"
+  as not writing it.
+- The brief says the heard sight-read is "recorded as practice"; T33's sentence, which the brief
+  asks the sheet to say, says *not recorded*, and I followed the sentence. A practice row for it
+  is the same new-row question as above.
+
+## Unverified
+
+- Looked at: the three sheets and Progress at 342 × 740 upright (after: DPR 1, light, by a
+  script; before and case 1 after: the pane, dark). Not looked at sideways, on a tablet, in dark
+  for cases 2 and 3, or at 115 % text.
+- The held-bar preview path to `phraseHeard` is the same line as `Hear it` and *Play it to me*
+  and is not driven by a test.
+- The microphone path (a failing microphone restarting with nothing listening) is read from the
+  code, not driven. Nothing was heard.
+
+## Files
+
+`app/src/ui/screens/ScoreScreen.ts`, `app/src/ui/help.ts`; `app/tests/unit/scoreSummaryTruth.test.ts`,
+`app/tests/unit/help.test.ts`, `app/tests/e2e/score.screen.spec.ts`, `app/tests/e2e/score.states.spec.ts`,
+`app/tests/e2e/lab.spec.ts` (deviation 6); `docs/02-curriculum.md` Part G, `docs/04-ui-spec.md` §2, §5,
+§5e, §5f, `docs/05-score-follow-engine.md` §3, §3a, §7, §8, `docs/08-test-map.md`. Not touched:
+`ScoreSession.ts`, `progressStore.ts`, `db.ts` (no field or store changed).

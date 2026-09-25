@@ -98,11 +98,14 @@ async function snap(page: Page): Promise<Snap> {
   });
 }
 
-/** Opens the piece with a MIDI piano plugged in and waits for the first engraving. */
-async function openScore(page: Page): Promise<MidiMock> {
+/**
+ * Opens the piece with a MIDI piano plugged in and waits for the first engraving.
+ * `query` is the rest of the route, `?performance=1` for a performance (T40).
+ */
+async function openScore(page: Page, query = ''): Promise<MidiMock> {
   await page.setViewportSize(UPRIGHT);
   const midi = await installMidiMock(page, { permission: 'granted' });
-  await page.goto(`/#/score/${ITEM}`);
+  await page.goto(`/#/score/${ITEM}${query}`);
   await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-mode', /wait|tempo/, {
     timeout: 60_000,
   });
@@ -665,6 +668,56 @@ test.describe('the five choices, decided (T33)', () => {
     expect(back.engineMode, 'the run, not the demonstration').toBe('wait');
     expect(back.run?.paused, 'back where it was, paused').toBe(true);
     expect(back.run?.step, 'on the step it was on').toBe(before.run?.step);
+  });
+
+  /**
+   * T40 (the reviewer, 2026-09-25): a performance with a demonstration inside
+   * it is not an undemonstrated performance. `Hear it` is not refused during
+   * one — the run is set aside and put back as C1 does — but the take is kept
+   * as practice, the heading says so, and Progress, which reads the flag,
+   * lists no performance.
+   */
+  test('T40: a performance with Hear it inside it is kept as practice', async ({ page }) => {
+    test.setTimeout(150_000);
+    const midi = await openScore(page, '?performance=1');
+    await chooseMode(page, 'wait');
+    await pressControl(page, '#score-play');
+    await page.waitForTimeout(300);
+    for (let i = 0; i < 4; i += 1) await playExpected(page, midi);
+    const bar = await whereBar(page);
+
+    await pressControl(page, '#score-hear');
+    await expect
+      .poll(async () => (await snap(page)).engineMode, { timeout: 5_000 })
+      .toBe('listen');
+    await pressControl(page, '#score-hear');
+    await page.waitForTimeout(300);
+    await pressControl(page, '#score-play');
+    await playToTheEnd(page, midi);
+
+    const sheet = page.locator('#score-summary');
+    await expect(sheet).toBeVisible({ timeout: 10_000 });
+    const sessions = (): Promise<{ itemId: string; performance?: boolean }[]> =>
+      page.evaluate(async () => {
+        const hooks = (window as unknown as {
+          __pianopath: { exportAll: () => Promise<{ stores: Record<string, unknown[]> }> };
+        }).__pianopath;
+        return (await hooks.exportAll()).stores.sessions as { itemId: string; performance?: boolean }[];
+      });
+    await expect.poll(async () => (await sessions()).length, { timeout: 10_000 }).toBe(1);
+    const [row] = await sessions();
+    expect(row?.performance, 'a demonstrated take went on the performances list').toBeUndefined();
+    await expect(sheet.locator('h2')).toContainText('kept as practice');
+    await expect(sheet.locator('dd[data-stat="changed"]')).toContainText(
+      `heard it played at bar ${String(bar)}`,
+    );
+
+    await page.locator('#summary-done').click();
+    await page.goto('/#/progress');
+    await expect(page.locator('#progress-performances')).toContainText('No performances yet', {
+      timeout: 30_000,
+    });
+    await expect(page.locator('#progress-history')).toContainText('Mary Had a Little Lamb');
   });
 
   test('C1: ▶ during the demonstration carries the run on from where it was', async ({ page }) => {

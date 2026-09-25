@@ -161,7 +161,7 @@ export const MODE_HELP: Readonly<Record<ScoreMode, HelpEntry>> = {
     title: 'Perform',
     what: 'One pass from start to finish: no restarts, no loop, and it is kept on its own list.',
     now: 'One run through. There is no going back.',
-    counts: 'It is kept as a performance, on its own list, however it went.',
+    counts: 'It is kept as a performance, on its own list, however it went. Use Hear it part way and it is kept as practice instead.',
     controls: [
       { name: '⋯', does: 'Stops performing and goes back to practising, once the run is paused.' },
     ],
@@ -192,15 +192,40 @@ export const SUMMARY_TEXT = {
   waitNotesReady: 'Notes ready',
   /** Said once a *Clean* self-report is on the record: `02` Part G's pass without MIDI. */
   selfReportClean: 'Recorded: Clean — a pass, in your own judgement.',
-  /** Said once a *Rough* or *OK* self-report is on the record. */
-  selfReportOther: (report: 'rough' | 'ok'): string =>
-    `Recorded: ${report === 'ok' ? 'OK' : 'Rough'} — practice, not marked passed.`,
   /**
-   * A sight-read that was played to the learner part way through (T33): the
-   * phrase has been heard, so the run is not a first reading of it, and is not
-   * recorded as one (`05` §7).
+   * Said once a *Rough* or *OK* self-report is on the record — or a *Clean*
+   * one after a rhythm run, which can never pass the piece (T40, `05` §3a).
+   */
+  selfReportOther: (report: 'rough' | 'ok' | 'clean'): string =>
+    `Recorded: ${report === 'ok' ? 'OK' : report === 'clean' ? 'Clean' : 'Rough'} — practice, not marked passed.`,
+  /**
+   * The heading of a run the app heard nothing of (T40): no note reached it
+   * from any source, so there is no accuracy, no miss and no weak bar to give.
+   * It printed *Accuracy 0%* and *Missed 17* over a run nothing listened to.
+   * Not a failure, because nothing failed: nothing was measured.
+   */
+  notMeasuredHeading: 'Not measured',
+  /** …the line under it, the reason in the learner's terms… */
+  notMeasured: 'The app heard no notes, so there is nothing to mark.',
+  /** …and where nothing was listening, how to be heard next time. */
+  notMeasuredNoInput: 'To be marked, connect a piano or choose Screen keys in ⋯.',
+  /**
+   * A sight-read of a phrase already on the record, or run again (T37): the
+   * material has been seen, so the run is not a first reading (`05` §7).
+   */
+  sightReadRepeat: 'Sight-reading counts on the first attempt only — this run is not recorded.',
+  /**
+   * A sight-read whose phrase was played to the learner — part way through
+   * the run (T33), or before it started (T40): the phrase has been heard, so
+   * the run is not a first reading of it, and is not recorded as one (`05` §7).
    */
   sightReadHeard: 'Sight-reading counts only on music you have not heard — this run is not recorded.',
+  /**
+   * The second half of a performance's heading when the piece was played to
+   * the learner part way through it (T40): the take is kept as practice, not
+   * as a performance, and the *Changed* line under it names the bar.
+   */
+  demonstratedTake: 'heard part way, kept as practice',
   /**
    * The summary's one line naming what changed during the run (T33, C5), so
    * the numbers are read against the run that produced them. Its label, and

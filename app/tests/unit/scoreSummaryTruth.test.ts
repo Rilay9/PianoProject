@@ -15,7 +15,7 @@ import { makeModel, note } from './helpers/engineHarness';
 import { DEFAULT_SETTINGS, updateSettings } from '../../src/data/settingsStore';
 import { timingStats } from '../../src/engine/Scoring';
 import { SUMMARY_TEXT } from '../../src/ui/help';
-import type { SessionScore } from '../../src/engine/types';
+import type { RecordedNote, SessionScore } from '../../src/engine/types';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
 import type { ProgressRow, SessionRow } from '../../src/data/db';
 import type { RunResult } from '../../src/data/progressStore';
@@ -32,13 +32,18 @@ const MODEL = makeModel(
   })),
 );
 
-const { findItemSpy, curriculumRef, loadedXml, onFinishedRef, recordRunSpy, sessionsSpy } =
+const { findItemSpy, curriculumRef, loadedXml, onFinishedRef, sessionRef, recordRunSpy, sessionsSpy } =
   vi.hoisted(() => ({
     findItemSpy: vi.fn((): Promise<CatalogItem | undefined> => Promise.resolve(undefined)),
     curriculumRef: { current: null as Curriculum | null },
     /** Every MusicXML the screen handed the engraver, newest last. */
     loadedXml: [] as string[],
     onFinishedRef: { current: null as null | ((score: SessionScore, looped: boolean) => void) },
+    /**
+     * The screen's session, so a test can say where the run is (T40). Only
+     * what `Hear it` over a run reads: the step, and whether one is going.
+     */
+    sessionRef: { current: null as null | { running: boolean; state: { step: number } | null } },
     recordRunSpy: vi.fn((result: RunResult): Promise<ProgressRow> =>
       Promise.resolve({
         itemId: result.itemId,
@@ -117,12 +122,20 @@ vi.mock('../../src/score/WindowRenderer', async (importOriginal) => {
 vi.mock('../../src/score/ScoreSession', () => ({
   ScoreSession: class {
     running = false;
-    state = null;
+    paused = false;
+    state: { step: number } | null = null;
     prepared = null;
     expectedNow: number[] = [];
     learnerHasNotes = true;
+    /**
+     * Enough of T33's set-aside for `Hear it` over a run (T40): the run goes
+     * aside at its step and comes back paused there. Nothing is played.
+     */
+    hasSuspended = false;
+    suspendedStep: number | null = null;
     constructor(options: { onFinished?: (score: SessionScore, looped: boolean) => void }) {
       onFinishedRef.current = options.onFinished ?? null;
+      sessionRef.current = this;
     }
     loopForPrintedBars(): undefined {
       return undefined;
@@ -130,8 +143,36 @@ vi.mock('../../src/score/ScoreSession', () => ({
     setStrip(): void {}
     previewFirst(): void {}
     setPiano(): void {}
-    start(): void {}
-    stop(): void {}
+    start(): void {
+      this.running = true;
+      this.paused = false;
+    }
+    stop(): void {
+      this.running = false;
+    }
+    suspend(): boolean {
+      if (!this.running) return false;
+      this.hasSuspended = true;
+      this.suspendedStep = this.state?.step ?? 0;
+      return true;
+    }
+    restoreSuspended(): void {
+      this.hasSuspended = false;
+      this.suspendedStep = null;
+      this.running = true;
+      this.paused = true;
+    }
+    dropSuspended(): void {
+      this.hasSuspended = false;
+      this.suspendedStep = null;
+    }
+    setMetronome(): void {}
+    resume(): void {
+      this.paused = false;
+    }
+    pause(): void {
+      this.paused = true;
+    }
     repaint(): void {}
     dispose(): void {}
   },
@@ -207,14 +248,57 @@ function routerFor(hash: string): Router {
   } as unknown as Router;
 }
 
+/** The router the last `open` built, so a test can read where a control sent it. */
+let lastRouter: Router | null = null;
+
 async function open(hash: string): Promise<HTMLElement> {
-  const section = ScoreScreen(routerFor(hash));
+  lastRouter = routerFor(hash);
+  const section = ScoreScreen(lastRouter);
   document.body.replaceChildren(section);
   await vi.waitFor(() => {
     expect(section.dataset.running).toBeDefined();
     expect(onFinishedRef.current).not.toBeNull();
   });
   return section;
+}
+
+/**
+ * What the engine keeps of the notes it took: one right note per step.
+ *
+ * A finished run's `notes` are every note that reached the engine, and since
+ * T40 the sheet reads them to know whether anything was heard at all. The
+ * default run below used to carry none beside eight hits, which no engine can
+ * produce.
+ */
+function heardNotes(count: number): RecordedNote[] {
+  return Array.from({ length: count }, (_, index) => ({
+    midi: 64,
+    velocity: 80,
+    tMs: index * 500,
+    stepIndex: index,
+    ok: true,
+    deltaMs: 0,
+  }));
+}
+
+/** A run the app heard nothing of: every note missed, nothing taken. */
+const NOTHING_HEARD: Partial<SessionScore> = {
+  hits: 0,
+  correctSteps: 0,
+  accuracy: 0,
+  missedTotal: 8,
+  timing: timingStats([]),
+  hotSpots: [
+    { measureIndex: 0, misses: 4, wrongs: 0 },
+    { measureIndex: 1, misses: 4, wrongs: 0 },
+  ],
+  notes: [],
+};
+
+function click(id: string): void {
+  const control = document.getElementById(id);
+  expect(control, `#${id} is not on the screen`).not.toBeNull();
+  (control as HTMLElement).click();
 }
 
 /** A finished run; the parts a test does not name are a clean Keep tempo run at full speed. */
@@ -236,14 +320,21 @@ function run(partial: Partial<SessionScore>): SessionScore {
     durationMs: 8_000,
     loops: 0,
     rolledChordSteps: 0,
-    notes: [],
+    notes: heardNotes(8),
     ...partial,
   };
 }
 
 function finish(score: SessionScore): void {
   expect(onFinishedRef.current).not.toBeNull();
+  // The engine reports its end with the run already over.
+  if (sessionRef.current) sessionRef.current.running = false;
   onFinishedRef.current?.(score, false);
+}
+
+/** The sentences on the sheet under its heading (T40). */
+function sheetNote(): string {
+  return document.querySelector('#summary-note')?.textContent ?? '';
 }
 
 function stat(name: string): string | null {
@@ -380,7 +471,7 @@ describe('4: the self-report is recorded', () => {
 
   it('writes the answer with the run, as a pass in the learner’s own judgement', async () => {
     await open(`#/score/${SONG_ID}`);
-    finish(run({ hits: 0, correctSteps: 0, accuracy: 0, missedTotal: 8, timing: timingStats([]) }));
+    finish(run(NOTHING_HEARD));
     // Nothing is written until the question is answered, or the run would go
     // on the record without the one thing the sheet asked for.
     expect(recordRunSpy).not.toHaveBeenCalled();
@@ -402,18 +493,96 @@ describe('4: the self-report is recorded', () => {
 
   it('a Rough answer is recorded and is not a pass', async () => {
     await open(`#/score/${SONG_ID}`);
-    finish(run({ hits: 0, correctSteps: 0, accuracy: 0, missedTotal: 8, timing: timingStats([]) }));
+    finish(run(NOTHING_HEARD));
     document.querySelector<HTMLButtonElement>('#summary-self-rough')?.click();
     await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalledTimes(1));
     expect(lastRecorded().selfReport).toBe('rough');
     expect(lastRecorded().passed).toBe(false);
   });
 
-  it('a run left without an answer is still recorded, without one', async () => {
+  // Revised by T40. This was "a run left without an answer is still recorded,
+  // without one": the row it wrote said accuracy 0 and every note missed, for
+  // a run nothing had listened to — a measurement nobody took, which the
+  // Progress history printed as "0%". The reviewer's rule is that nothing is
+  // recorded as a measured run; the answer is the only evidence there is.
+  it('a run left without an answer is not recorded at all', async () => {
     await open(`#/score/${SONG_ID}`);
-    finish(run({ hits: 0, correctSteps: 0, accuracy: 0, missedTotal: 8, timing: timingStats([]) }));
-    document.querySelector<HTMLButtonElement>('#summary-done')?.click();
+    finish(run(NOTHING_HEARD));
+    click('summary-done');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(recordRunSpy, 'a run nothing heard went on the record unanswered').not.toHaveBeenCalled();
+  });
+
+  it('nor when the next run is started instead', async () => {
+    await open(`#/score/${SONG_ID}`);
+    finish(run(NOTHING_HEARD));
+    click('summary-again');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(recordRunSpy).not.toHaveBeenCalled();
+  });
+
+  it('a rhythm run answered Clean is still not a pass of the piece', async () => {
+    // Found by T40 on the self-report path: the answer replaced `passed`
+    // wholesale, so *Clean* after a rhythm-only run recorded the piece as
+    // passed, which `05` §3a says a rhythm run can never do.
+    await open(`#/score/${SONG_ID}`);
+    finish(run({ ...NOTHING_HEARD, rhythmOnly: true }));
+    click('summary-self-clean');
     await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalledTimes(1));
+    expect(lastRecorded().selfReport).toBe('clean');
+    expect(lastRecorded().passed).toBe(false);
+    expect(lastRecorded().selfPassed).toBeUndefined();
+  });
+});
+
+describe('T40 1: a run the app heard nothing of is not measured', () => {
+  it('says so, with a judging input chosen, and prints no accuracy, misses or weak bars', async () => {
+    // Screen keys chosen, and no note reached the engine: the rule reads what
+    // was heard, not what was selected (the brief: a learner with MIDI
+    // selected can still play nothing).
+    await open(`#/score/${SONG_ID}`);
+    finish(run(NOTHING_HEARD));
+    expect(heading()).toBe('Not measured');
+    expect(sheetNote()).toBe(SUMMARY_TEXT.notMeasured);
+    expect(stat('accuracy'), 'an accuracy over a run nothing heard').toBeNull();
+    expect(stat('missed'), 'misses nobody listened for').toBeNull();
+    expect(stat('tempo'), 'a tempo nobody played to').toBeNull();
+    expect(stat('weakest-bars')).toBeNull();
+    expect(document.getElementById('summary-loop'), 'weak bars offered to loop').toBeNull();
+    // Part G's answer for a run without an instrument, and nothing written
+    // until it is given.
+    expect(document.getElementById('summary-selfreport')).not.toBeNull();
+    expect(recordRunSpy).not.toHaveBeenCalled();
+  });
+
+  it('with nothing listening, says how to be heard next time', async () => {
+    updateSettings({ inputPriority: ['none'] });
+    await open(`#/score/${SONG_ID}`);
+    finish(run(NOTHING_HEARD));
+    expect(heading()).toBe('Not measured');
+    expect(sheetNote()).toBe(`${SUMMARY_TEXT.notMeasured} ${SUMMARY_TEXT.notMeasuredNoInput}`);
+    expect(stat('accuracy')).toBeNull();
+    expect(document.getElementById('summary-selfreport')).not.toBeNull();
+  });
+
+  it('one note heard is a measured run, played badly, and is recorded as one', async () => {
+    await open(`#/score/${SONG_ID}`);
+    finish(
+      run({
+        ...NOTHING_HEARD,
+        hits: 1,
+        accuracy: 0.125,
+        missedTotal: 7,
+        timing: timingStats([20]),
+        notes: heardNotes(1),
+      }),
+    );
+    expect(heading()).toBe('Run finished');
+    expect(stat('accuracy')).toBe('13%');
+    expect(stat('missed')).toBe('7');
+    expect(document.getElementById('summary-selfreport')).toBeNull();
+    await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalledTimes(1));
+    expect(lastRecorded().accuracy).toBe(0.125);
     expect(lastRecorded().selfReport).toBeUndefined();
   });
 });
@@ -476,7 +645,10 @@ describe('7 and 8: a sight-read is the phrase its row asks for, recorded once', 
     finish(run({}));
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(recordRunSpy).not.toHaveBeenCalled();
-    expect(document.querySelector('#score-status')?.textContent).toContain('first attempt only');
+    // On the sheet (T40). It was read off `#score-status`, the header's line,
+    // which the summary covers and which is cut after twenty-odd characters at
+    // 342 px: seen on the glass, the learner could not read it.
+    expect(sheetNote()).toContain('first attempt only');
   });
 
   it('a different phrase of the same row is a first attempt', async () => {
@@ -506,5 +678,122 @@ describe('5: an early note reads as early', () => {
     expect(stat('wrong-notes')).toBe('0');
     expect(stat('missed')).toBe('0');
     expect(stat('weakest-bars')).not.toBeNull();
+  });
+});
+
+describe('T40 2: a sight-read heard before its first run is not a first reading', () => {
+  beforeEach(() => {
+    findItemSpy.mockResolvedValue(readerItem({ level: 1, bars: 2, hands: 'right' }));
+  });
+
+  it('Hear it before ▶: the run that follows is not recorded, and the sheet says why', async () => {
+    // T33 refused the record where the phrase was played part way through;
+    // played *before* the run, `heardAt` was emptied by the start and the
+    // first run went on the record as a first reading of music already heard.
+    await open(`#/score/${READ_ID}`);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    click('score-hear');
+    click('score-hear');
+    click('score-play');
+    finish(run({}));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(recordRunSpy, 'a phrase the learner had heard, recorded as a first reading').not.toHaveBeenCalled();
+    expect(sheetNote()).toBe(SUMMARY_TEXT.sightReadHeard);
+    // Nothing is recorded, so nothing is asked.
+    expect(document.getElementById('summary-selfreport')).toBeNull();
+  });
+
+  it('so does Play it to me, the mode', async () => {
+    await open(`#/score/${READ_ID}?mode=listen`);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    click('score-play');
+    finish(run({ mode: 'listen' }));
+    const select = document.getElementById('score-mode') as HTMLSelectElement;
+    select.value = 'tempo';
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+    click('score-play');
+    finish(run({}));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(recordRunSpy).not.toHaveBeenCalled();
+    expect(sheetNote()).toBe(SUMMARY_TEXT.sightReadHeard);
+  });
+
+  it('a phrase nobody played to the learner is still a first reading', async () => {
+    await open(`#/score/${READ_ID}`);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    click('score-play');
+    finish(run({}));
+    await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalledTimes(1));
+    expect(sheetNote()).toBe('');
+  });
+
+  it('the sheet offers a new phrase, which opens one of its own', async () => {
+    // The way to unseen music, on the sheet where the learner is told this
+    // one no longer counts: the same row, a fresh seed, the same way back.
+    await open(`#/score/${READ_ID}?seed=4242&from=1.5`);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    click('score-hear');
+    click('score-hear');
+    click('score-play');
+    finish(run({}));
+    click('summary-new-phrase');
+    // The router here is `routerFor`'s, whose methods are all `vi.fn()`.
+    const navigate = (lastRouter as unknown as { navigateScore: ReturnType<typeof vi.fn> }).navigateScore;
+    expect(navigate).toHaveBeenCalledTimes(1);
+    const [id, options] = navigate.mock.calls[0] as [string, { seed?: number; from?: string }];
+    expect(id).toBe(READ_ID);
+    expect(options.from).toBe('1.5');
+    expect(typeof options.seed).toBe('number');
+    expect(options.seed).not.toBe(4242);
+  });
+
+  it('a piece that is not a sight-read has no new phrase to offer', async () => {
+    findItemSpy.mockResolvedValue(songItem());
+    await open(`#/score/${SONG_ID}`);
+    finish(run({}));
+    expect(document.getElementById('summary-new-phrase')).toBeNull();
+  });
+});
+
+describe('T40 3: a performance with a demonstration inside it is kept as practice', () => {
+  it('Hear it part way: recorded without the performance flag, and the heading says why', async () => {
+    await open(`#/score/${SONG_ID}?performance=1`);
+    click('score-play');
+    // The learner is on the fifth note, in bar 2, when they ask to hear it.
+    if (sessionRef.current) sessionRef.current.state = { step: 4 };
+    click('score-hear');
+    // Stopped: the run comes back where it was (T33, C1), and is played on.
+    click('score-hear');
+    finish(run({}));
+    await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalledTimes(1));
+    expect(lastRecorded().performance, 'a demonstrated take kept as a performance').toBeUndefined();
+    expect(stat('changed')).toContain('heard it played at bar 2');
+    // Said in the heading, and still said once the store has answered and
+    // the heading has been rewritten from the row (T37's *Mastery run*).
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(heading()).toContain(SUMMARY_TEXT.demonstratedTake);
+    expect(heading()).toMatch(/^Mastery run 1 of 2/);
+  });
+
+  it('played through without one, it is a performance', async () => {
+    await open(`#/score/${SONG_ID}?performance=1`);
+    click('score-play');
+    finish(run({}));
+    await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalledTimes(1));
+    expect(lastRecorded().performance).toBe(true);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(heading()).toBe('Mastery run 1 of 2');
+  });
+
+  it('heard before it started, it is still a performance', async () => {
+    // Listening to a piece before playing it for somebody is preparation; the
+    // rule is about a demonstration inside the take.
+    await open(`#/score/${SONG_ID}?performance=1`);
+    click('score-hear');
+    click('score-hear');
+    click('score-play');
+    finish(run({}));
+    await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalledTimes(1));
+    expect(lastRecorded().performance).toBe(true);
   });
 });

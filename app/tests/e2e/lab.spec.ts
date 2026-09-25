@@ -17,7 +17,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 import { playInTime } from './fixtures/playInTime';
-import { withScoreMenu } from './scoreControls';
+import { pressControl, withScoreMenu } from './scoreControls';
 
 /** What a lab import's id always begins with. */
 const LAB_ROW = '.list-row[data-item^="import.lab-"]';
@@ -381,10 +381,64 @@ test.describe("Today's sight-read", () => {
     expect(typeof first?.seed, 'the day’s phrase went on the record without its seed').toBe('number');
 
     await readOnce();
-    await expect(page.locator('#score-status')).toContainText('first attempt only');
+    // On the sheet (revised by T40): this read `#score-status`, the header's
+    // line, which the summary covers and cuts after twenty-odd characters at
+    // 342 px — the learner could not read what the test could.
+    await expect(page.locator('#summary-note')).toContainText('first attempt only');
     // Give a write that should not happen the time a write takes, then count.
     await page.waitForTimeout(1_000);
     expect(await sessions(), 'the same phrase was recorded as a first attempt twice').toHaveLength(1);
+  });
+
+  test('heard before its first run, the phrase is not read for the first time', async ({ page }) => {
+    // T40 (the reviewer, 2026-09-25). T33 stopped recording a sight-read the
+    // phrase was played to *part way through*; played to the learner before
+    // the run started, the run that followed went on the record as the first
+    // reading of music already heard.
+    test.setTimeout(240_000);
+    const sessions = (): Promise<{ itemId: string; seed?: number }[]> =>
+      page.evaluate(async () => {
+        const hooks = (window as unknown as {
+          __pianopath: { exportAll: () => Promise<{ stores: Record<string, unknown[]> }> };
+        }).__pianopath;
+        return (await hooks.exportAll()).stores.sessions as { itemId: string; seed?: number }[];
+      });
+    await page.goto('/');
+    const row = page.locator('#today-daily .list-row');
+    await expect(row).toBeVisible({ timeout: 30_000 });
+    const seed = await row.getAttribute('data-seed');
+    await row.locator('button[aria-label="Open today\'s sight-read"]').click();
+    const screen = page.locator('section[data-screen="score"]');
+    await expect(screen).toHaveAttribute('data-mode', 'tempo', { timeout: 60_000 });
+    await expect(page.locator('#score-stage .is-front svg').first()).toBeVisible({ timeout: 60_000 });
+    await withScoreMenu(page, async () => {
+      await page.locator('#score-input').selectOption('keys');
+    });
+    // Played to the learner first, and stopped. Pressed the way a person
+    // does, revealing the bar first: it folds once the playing starts.
+    await pressControl(page, '#score-hear');
+    await expect(screen).toHaveAttribute('data-hearing', 'true', { timeout: 5_000 });
+    await page.waitForTimeout(1_500);
+    await pressControl(page, '#score-hear');
+    await expect(screen).toHaveAttribute('data-hearing', 'false', { timeout: 5_000 });
+
+    await pressControl(page, '#score-play');
+    await expect(screen).toHaveAttribute('data-running', 'true');
+    await playInTime(page, 'keys');
+    const sheet = page.locator('#score-summary');
+    await expect(sheet).toBeVisible({ timeout: 60_000 });
+    // Give a write that should not happen the time a write takes, then count.
+    await page.waitForTimeout(1_000);
+    expect(await sessions(), 'a phrase the learner had heard, recorded as a first reading').toHaveLength(0);
+    await expect(sheet.locator('#summary-note')).toHaveText(
+      'Sight-reading counts only on music you have not heard — this run is not recorded.',
+    );
+
+    // The way to a phrase nobody has heard is on the same sheet.
+    await sheet.locator('#summary-new-phrase').click();
+    await expect.poll(() => new URL(page.url()).hash, { timeout: 10_000 }).not.toContain(`seed=${seed ?? ''}`);
+    expect(new URL(page.url()).hash).toMatch(/seed=\d+/);
+    await expect(page.locator('#score-stage .is-front svg').first()).toBeVisible({ timeout: 60_000 });
   });
 });
 

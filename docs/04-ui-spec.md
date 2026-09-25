@@ -229,10 +229,16 @@ and a daily read you can swap for something else is not a daily read.
 - **One first attempt per phrase (2026-09-25, T37).** The session row keeps the phrase's
   seed, for today's read and for every fresh open. Re-opening today's card gives the same
   phrase, and a phrase whose seed is already on a stored run has been seen: its run is
-  not recorded, and the status line says *Sight-reading counts on the first attempt only*.
+  not recorded, and the sheet says *Sight-reading counts on the first attempt only* (under its
+  heading since T40; it was on the header's status line, which the sheet covers).
   It used to be a counter that started at nought on every visit, so every re-open recorded
   the same phrase as a first attempt again. *Hear it* and a stopped run are still not
-  attempts (nothing reaches the sheet).
+  attempts (nothing reaches the sheet) — but **a phrase played to the learner is no longer
+  unseen** (T40): after *Hear it*, a held bar or *Play it to me*, the run that follows is not
+  recorded and the day is not ticked by it. The sheet's **New phrase** opens a fresh phrase of
+  the same row, which is recorded as a first reading and, being another seed, does not tick
+  the day either. Not closed: hearing today's phrase, leaving without a run, and opening it
+  again — the screen forgets the hearing with the visit, and the next run is recorded.
 - With no reading exercises in the build there is no card at all, rather than an empty one
   (R4). The day is ticked by the progress store when a run carrying the day's seed is recorded (`recordRun` → `markDailyRead`), so the same exercise opened from Plan or the Library — a different phrase — does not count, and a day already ticked stays ticked when the stage moves on (2026-09-16).
 
@@ -1294,9 +1300,10 @@ restart the demonstration. An option that restarts the run, changed while the pi
 over a run set aside, drops that run — it is not the run now asked for — and the run restarts
 when the demonstration ends, paused, saying so (C2 below). Leaving the screen, or pressing
 Blind or Perform, while a run is set aside remembers that run's bar for the offer to carry
-on. A sight-read the phrase was played to part way through is not recorded as a first
-reading (`05` §7): *Sight-reading counts only on music you have not heard — this run is not
-recorded.*
+on. A sight-read the phrase was played to part way through — or before the run began, T40 — is
+not recorded as a first reading (`05` §7): *Sight-reading counts only on music you have not
+heard — this run is not recorded.* A performance the piece was played to part way through goes
+on as a performance does and is recorded as practice (T40, §5e).
 
 **What a control does to a run already going** (added 2026-09-22, T23). Every control that
 changes *what is judged* restarts the run — the mode, the hands, the loop, the section,
@@ -1760,7 +1767,35 @@ Notation area:
     played too soon*, and counts in its bar's damage; it used to be a wrong note and a miss.
   - **How did it go?** is asked only where there is a run to record it with, and the run is
     written with the answer (*Recorded: Clean — a pass, in your own judgement.*; *Recorded:
-    OK — practice, not marked passed.*), or without one when the sheet is left unanswered.
+    OK — practice, not marked passed.*). *Clean* after a rhythm run is recorded, and is not
+    a pass of the piece (T40; the answer used to replace the refusal).
+
+  **No input, no accuracy (2026-09-25, T40; the reviewer's decision).** A run in which no note
+  reached the engine from any source — no MIDI, no microphone estimate, no screen key — is
+  headed **Not measured** and says why in a line under the heading (§5f): no *Accuracy 0 %*, no
+  *Missed N*, no Tempo line (the slider's value, which nobody played to), no weak bars and no
+  *Loop the weak bars*. It asks *How did it go?*, and the answer is recorded as above; left
+  unanswered, the run is **not recorded** — it has no evidence, and T37's row (accuracy 0,
+  every note missed) printed in Progress as *0 %*. The decision reads what was heard
+  (`SessionScore.notes`, every note the engine took), not the input selector: a learner with a
+  piano selected can still play nothing, and a run with one note in it is a measured run,
+  played badly. On the screen as it stands the only way to such a sheet is a run with nothing
+  listening (Keep tempo keeps time by the clock); with an input chosen, Keep tempo holds for
+  the first note and Wait waits for it (seen on the glass: screen keys, Keep tempo, nothing
+  pressed, still holding after thirty seconds). The page behind the sheet still paints every
+  note red as the clock passes it — a separate mechanism, not changed here (`pending-review`,
+  T40's follow-ups).
+
+  **A sight-read, and a performance, say what they are (T40).** A sight-read whose phrase the
+  app played to the learner — `Hear it`, a bar held down, *Play it to me*, before the run or
+  during it — is not a first reading and is not recorded (`05` §7); the line under the heading
+  says so, and a **New phrase** button on the sheet of every sight-read opens the same row with
+  a fresh seed (never Today's: the day's phrase is the day's seed, §2). A **performance** the
+  piece was played to the learner part way through is recorded without `performance: true`, so
+  it is practice and not on Progress's list of performances; its heading says *— heard part
+  way, kept as practice* after the verdict, and the *Changed* line names the bar. `Hear it` is
+  not refused during a performance (the reviewer chose "not an undemonstrated performance",
+  not "refused"), and one heard *before* the take began leaves it a performance.
 
   **The sheet names what changed during the run** (decided 2026-09-23, built by T33 — C5),
   in one line labelled **Changed**, first, before the numbers it qualifies: *hands changed
@@ -1908,7 +1943,14 @@ accuracy.**
 - **Perform** (`?performance=1`) is one pass through: no restart button, no looping, and the
   run is recorded `performance: true` whatever the accuracy. Progress lists them separately,
   because playing a piece for somebody is a different act from practising it and it is the
-  thing that quietly never happens.
+  thing that quietly never happens. **Unless the piece was played to the learner part way
+  through** (2026-09-25, T40, the reviewer's decision): `Hear it` during a performance is not
+  refused — the run is set aside and put back as any run is (§5, C1) — but the take is
+  recorded without the flag, as practice, and is not on the list; the summary's heading says
+  *— heard part way, kept as practice* and its *Changed* line names the bar. Hearing the piece
+  before the take began leaves it a performance. Progress's list and its *No performances yet*
+  read only the flag, so neither needed a change; the take is in the history as the practice
+  run it is.
 
 ## 5c. Drill screen (P8)
 
@@ -2372,8 +2414,22 @@ tempo at bar 5*, *hands changed to R at bar 3*, *tempo 70 → 80 % at bar 5*, *l
 bars 3–4 at bar 2*, *loop cleared at bar 6*, *input changed to Mic at bar 4*, *rhythm only on
 at bar 2*, *duet off at bar 2*, *metronome on at bar 1*, *heard it played at bar 2*, and for a
 change made while the sheet is up, *after the run* in place of the bar. A sight-read the
-phrase was played to part way through is not recorded, and says: *Sight-reading counts only on
-music you have not heard — this run is not recorded.*
+phrase was played to — part way through, or before the run began (T40) — is not recorded, and
+says: *Sight-reading counts only on music you have not heard — this run is not recorded.*
+
+**What the sheet says a run is, under its heading** (T40, 2026-09-25). One line of sentences,
+`#summary-note`, where the header's status line used to carry the second of them: the sheet
+covers that line and 342 px cuts it after twenty-odd characters, so nobody could read it.
+
+- **A run the app heard nothing of** — no note reached it from any source — is headed **Not
+  measured**, with *The app heard no notes, so there is nothing to mark.*, and where nothing was
+  listening, *To be marked, connect a piano or choose Screen keys in ⋯.* It prints no accuracy,
+  tempo, misses or weak bars, and asks *How did it go?*.
+- **A sight-read met before**: *Sight-reading counts on the first attempt only — this run is not
+  recorded.*
+- **A performance the piece was played to the learner part way through** keeps its heading and
+  adds, after a dash, *heard part way, kept as practice* — *Passed — heard part way, kept as
+  practice* — and the *Changed* line under it names the bar.
 
 **Where each answer goes.** Questions 1 and 2 are the **help strip**: two lines at the top
 of the screen, inside the first screenful on a 342 px phone (§0 R1), the first naming the
@@ -2495,7 +2551,7 @@ back. A browser that refuses storage shows it every time, which is the safe way 
 - *What do I do now?* One run through. There is no going back.
 - *What can I do here?* **⋯** — Stops performing and goes back to practising, once the run is paused.
 - *What else is there?* Performances are listed on their own in Progress, apart from practice runs. Practise the piece in Keep tempo first.
-- *What counts?* It is kept as a performance, on its own list, however it went.
+- *What counts?* It is kept as a performance, on its own list, however it went. Use Hear it part way and it is kept as practice instead.
 
 ### Every drill kind
 
