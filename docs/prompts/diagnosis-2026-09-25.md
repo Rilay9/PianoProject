@@ -260,9 +260,72 @@ rung first (`latin.4`, which has no music, or `classical.3` with the cuts above)
 | repertoire level | as difficulty, plus the rung's `levelBand` and the finder's words | `validate`, `candidates`; the Shelf's default | band (the span of the options) vs finder ("Grade 1 to 2" = Stage 4–5) vs the stage's own words ("initial / grade 1") |
 | curriculum stage | the stage file a rung lives in | `nextRecommended` → learner level | generated levels encode unit ids on the same axis; `rungForLevel` reads 5.23 as "Stage 5" for a piece on a Stage 3 rung |
 
-## The window baseline (T35)
+## The window baseline (T35): not sound to build on
 
-*Pending: T35 was still running when this was written. Its section is added when it lands.*
+The three items, classified with the measurement behind each (`traces/2026-09-25-window-
+reds.md`); the mechanism was read by the orchestrator at the cited lines.
+
+- **R1, `score.layout` sideways 880 × 412, 1 and 2 bars the same ink: outdated spec, over
+  a real fault.** Sideways the count yields by design and the row says so; at that stage
+  no asked count changes the glass. The spec should assert that the drawn count rises with
+  the asked count *or* the row states the yield. But the yield itself is over-priced (the
+  shared mechanism below), the row's sentence is false ("would be too small" when two bars
+  fit), and the row flips with history: a fresh page says 2 shown, one stepper press later
+  the same stage says 1.
+- **R2, `score.screen` Size + draws a smaller staff: implementation bug.** Size's 100 % is
+  priced from a *prediction* (`base` in `chooseWindowShape`, `WindowRenderer.ts:1577–1593`)
+  that sits below the scale actually drawn, so 110 % yields a bar *and* draws it smaller,
+  and the same 110 % gives two different sizes depending on the path taken. Breaks `08` §9
+  invariant 3 (zoom is monotonic) and the owner's rule 6. Not a test bug: the spec's
+  reading fell by the same ratio as the renderer's own scale.
+- **R3, `score.rotate`: 7 of 10 red, not because of `data-fit=size`.** Five reds assert a
+  pre-T34 page width, two hold the greyed look-ahead row to the full width; both are
+  outdated spec. Two reds are a renderer fault: the look-ahead row is priced into the
+  window's width (fault B).
+
+**The shared mechanism** (`WindowRenderer.ts:2371–2377`, `:1577`): the chooser prices every
+bar at `naturalBar`, a running *maximum* of row-ink ÷ bars-in-row that never comes down
+within one engraving zoom and includes the clef, key and time signature, so a one-bar row
+inflates it for the rest of the session; `scaleFor` meanwhile sizes from the ink actually
+drawn, so the chooser and the fit disagree. Every test helper steps down to one bar and
+back, so the tests always run in the inflated state. Tablet sideways, Twinkle, 4 bars at
+rest: the per-bar price rose by more than a third after the stepper passed through 1 bar
+and the window was split into two rows each about a third of the width; after Play the
+zoom changed, the price reset, and the same window became one row at nearly the full
+width.
+
+**Three more faults found on the way, all P0 or P1 by the owner's own rules:**
+- **B, P0.** The greyed look-ahead row sets the window's scale (`fitSlots` hands it to
+  `scaleFor`; the chooser granted it on height only). At rest it shrinks the window by
+  about a tenth on one phone and a quarter on another; mid-run the frozen scale holds and
+  the greyed row runs off the right edge (both tablet Nocturne 4-bar cells on the sheet).
+- **C, P0, distortion.** Phone upright, Nocturne, 4 bars mid-run: a look-ahead slot
+  wrapped onto two systems and bar 5 was justified across the whole row, while
+  `data-stretch` still says `natural` because it records intent, not outcome. This is the
+  one thing the owner said must never happen, and `score.window-rule` is blind to it.
+- **D, P1, two definitions of "staff".** Every spec and the tour camera read the
+  `.staffline` box, which includes notes, stems and fingerings and is about twice the
+  five-line span; the renderer's own `pieceInk.staff` is the same. So the readability
+  floor ("five lines with ten pixels between") is enforced at a little over half its
+  stated value.
+- **E, product, the owner's call.** Tablet sideways at 2 bars draws the window at maximum
+  size with nothing ahead, on both pieces, while the staff is far above any floor. That
+  is T34's rule 2 working as written and, to the reader's eye and mine, wrong: the second
+  good (look-ahead) should win once the first (readability) is comfortably met.
+
+**Direction for Wave B.** Price bars from what is drawn, not from a running maximum with
+the opening in it; hold the Size target fixed per step and refuse any shape smaller than
+the 100 % scale; take the window's scale from window rows only and decide B's remainder
+by the owner's choice; make the five-line height the one meaning of "staff" and re-derive
+the floor; teach `score.rotate` and `score.layout` the T34 promises; and add a
+distortion check that reads outcome (drawn width against engraved width per bar), not
+`data-stretch`. Each with a red line first.
+
+*Decisions needed:* two, both product. **B:** when the greyed next row does not fit across
+at the window's scale, drop it or let it run off the edge showing its opening?
+Recommendation: drop it, and say "next bar below" in the row. **E:** on a wide stage where
+readability is comfortably met, should the look-ahead beat the asked count? Recommendation:
+yes.
 
 ## The decisions, in one place
 
@@ -274,13 +337,19 @@ rung first (`latin.4`, which has no music, or `classical.3` with the cuts above)
 4. **Measured features plus judgement as the one source of level; generated items levelled,
    not declared; a `targetSkill` field; validated tags** (problem 4). Recommend yes.
 5. **The excerpt item, on one rung first** (problem 5). Recommend yes, after 1–3.
+6. **Window B: a next row that does not fit across is dropped, with the row saying so**
+   (T35). Recommend yes.
+7. **Window E: on a wide stage with readability comfortably met, the look-ahead beats the
+   asked count** (T35). Recommend yes.
 
-Everything under problem 1 needs no decision beyond the first and can start on your word.
+Everything under problem 1 and the window's R2, C and D needs no decision and can start
+on your word.
 
 ## What this changes in the plan
 
 - **Wave B (on your go):** every P0 in problem 1, local, each with a test seen red; the
-  window fix as T35 classifies it; then T33. One chain, commit, push, green baseline.
+  window's R2, B, C and D at the shared mechanism, the two stale specs re-pointed, a
+  distortion check that reads outcome; then T33. One chain, commit, push, green baseline.
 - **Wave C:** problems 2 and 3, in the order above, as the smallest model changes, one
   consumer at a time, with constructed learner states as tests.
 - **Wave D:** problem 4 (the level source of truth, the notation block extended, the
