@@ -29,16 +29,41 @@ import { anyRomanToChord } from './drills/theory';
 
 export type SightReadingLevel = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
+export interface TimeSig {
+  beats: number;
+  beatType: number;
+}
+
 export interface SightReadingOptions {
   level: SightReadingLevel;
-  /** Sharps positive, flats negative. Clamped to what the level allows. */
-  fifths?: number;
-  timeSig?: { beats: number; beatType: number };
+  /**
+   * Sharps positive, flats negative. Clamped to what the level allows.
+   *
+   * A list is a choice the seed makes (T37): a rung that promises "keys"
+   * gets a different one from phrase to phrase, and the same one every time
+   * for the same seed. Drawn from a stream of its own, so the melody a seed
+   * writes in the chosen key is the melody it writes when that key is asked
+   * for outright.
+   */
+  fifths?: number | readonly number[];
+  /** A list is a choice the seed makes, as for `fifths`. */
+  timeSig?: TimeSig | readonly TimeSig[];
   bars?: number;
   hands?: 'R' | 'L' | 'both';
   bpm?: number;
   /** Any 32-bit integer; the same seed always gives the same music. */
   seed?: number;
+  /**
+   * What a rung promises the phrase will contain (T37). Each one both allows
+   * the feature at a level whose table does not and *guarantees* it: a phrase
+   * that came out without it is drawn again, from the same seed, so the seed
+   * still names one phrase. See {@link PROMISES}.
+   */
+  skips?: boolean;
+  eighths?: boolean;
+  syncopation?: boolean;
+  triplets?: boolean;
+  accidentals?: boolean;
 }
 
 export interface SightReadingResult {
@@ -140,6 +165,24 @@ interface LevelSpec {
    * skill sight-reading is training.
    */
   chordTones?: boolean;
+  /**
+   * Every note starts where its length belongs (levels 1-4, T37).
+   *
+   * A length drawn with no rule about where in the bar it may start is
+   * syncopation by accident: the trace counted a quarter-or-longer note
+   * starting off the beat in 74 % of level-2 phrases, 98 % at level 3 and all
+   * of level 4, three stages before the rung that teaches syncopation (4.5). So
+   * below level 5 a plain note of length L starts on a multiple of L, a dotted
+   * quarter starts on a beat and a dotted half on beat one or three. Levels
+   * 5-7 keep the draw they had: their syncopation is designed, and their
+   * goldens describe it.
+   */
+  metricPlacement?: boolean;
+  /**
+   * The designed syncopation below level 5, where a rung promises it (4.5):
+   * eighth, quarter, eighth from a beat — the quarter on the "and".
+   */
+  syncopa?: boolean;
 }
 
 const LEVELS: Record<SightReadingLevel, LevelSpec> = {
@@ -154,6 +197,7 @@ const LEVELS: Record<SightReadingLevel, LevelSpec> = {
     allowTies: false,
     allowRests: false,
     leftHand: 'none',
+    metricPlacement: true,
   },
   // Adds eighths, dotted halves and thirds, and the left hand alternates in.
   2: {
@@ -166,6 +210,7 @@ const LEVELS: Record<SightReadingLevel, LevelSpec> = {
     allowTies: false,
     allowRests: false,
     leftHand: 'whole',
+    metricPlacement: true,
   },
   // Hands together, with ties and rests; the left hand holds roots.
   3: {
@@ -178,6 +223,7 @@ const LEVELS: Record<SightReadingLevel, LevelSpec> = {
     allowTies: true,
     allowRests: true,
     leftHand: 'whole',
+    metricPlacement: true,
   },
   // Ledger lines, keys to two accidentals, dotted quarters, block chords.
   4: {
@@ -190,6 +236,7 @@ const LEVELS: Record<SightReadingLevel, LevelSpec> = {
     allowTies: true,
     allowRests: true,
     leftHand: 'chord',
+    metricPlacement: true,
   },
   // Two octaves, keys to three accidentals, syncopation, and a broken-chord
   // left hand: the first level where the page looks like music rather than an
@@ -265,6 +312,31 @@ interface Cell {
   tuplet?: { actual: number; normal: number; at?: 'start' | 'stop' };
   /** Silent by construction — the rest that pushes a syncopated bar off the beat. */
   rest?: boolean;
+  /**
+   * The off-beat quarter of a designed syncopation. Never turned into a rest:
+   * a quarter rest on an "and" is bad notation, and the figure is the point.
+   */
+  syncopated?: boolean;
+}
+
+/**
+ * What a phrase turned out to contain, counted as it is written (T37).
+ *
+ * The generator promises a rung's features by checking this and drawing the
+ * phrase again when one is missing, so it counts what is on the page and not
+ * what was intended: a triplet whose every note became a rest does not count.
+ */
+interface Tally {
+  steps: number;
+  skips: number;
+  eighths: number;
+  syncopation: number;
+  triplets: number;
+  accidentals: number;
+}
+
+function emptyTally(): Tally {
+  return { steps: 0, skips: 0, eighths: 0, syncopation: 0, triplets: 0, accidentals: 0 };
 }
 
 /**
@@ -338,6 +410,87 @@ function pickRhythm(rng: () => number, spec: LevelSpec, divisionsPerBar: number)
   return cells;
 }
 
+/** How often a designed figure is tried at a beat that can hold it (levels 1-4). */
+const PLACED_TRIPLET_CHANCE = 0.08;
+const PLACED_SYNCOPA_CHANCE = 0.1;
+
+/**
+ * Whether a length may start at this offset in a bar of simple time (T37).
+ *
+ * A plain length starts on a multiple of itself, so a quarter is on a beat, a
+ * half on beat one or three and a whole on beat one; a dotted quarter starts
+ * on a beat (its eighth then falls on the "and" by the same rule); a dotted
+ * half on beat one or three.
+ */
+function placedOnItsBeat(duration: number, offset: number, beat: number): boolean {
+  if (duration === beat * 1.5) return offset % beat === 0;
+  if (duration === beat * 3) return offset % (beat * 2) === 0;
+  return offset % duration === 0;
+}
+
+/**
+ * One bar of rhythm for levels 1-4, every note where its length belongs.
+ *
+ * Simple time walks the bar from the left and draws only lengths that may
+ * start where it is. Compound time (6/8, 9/8, 12/8) fills it a dotted-quarter
+ * beat at a time from the three figures a first reader of 6/8 meets — the
+ * dotted quarter, the quarter-eighth lilt and three eighths — with the whole
+ * bar held now and then; no designed syncopation and no triplets there, where
+ * a triplet is not a thing and one new metre is enough to read.
+ */
+function pickRhythmPlaced(
+  rng: () => number,
+  spec: LevelSpec,
+  divisionsPerBar: number,
+  timeSig: TimeSig,
+): Cell[] {
+  const cells: Cell[] = [];
+  const compound = timeSig.beatType === 8 && timeSig.beats % 3 === 0;
+  if (compound) {
+    const beat = DIVISIONS * 1.5;
+    const eighth = DIVISIONS / 2;
+    if (divisionsPerBar === beat * 2 && rng() < 0.12) return [{ duration: beat * 2 }];
+    const figures = [[beat], [DIVISIONS, eighth], [eighth, eighth, eighth]];
+    let offset = 0;
+    while (offset + beat <= divisionsPerBar) {
+      for (const duration of pick(rng, figures)) cells.push({ duration });
+      offset += beat;
+    }
+    if (offset < divisionsPerBar) cells.push({ duration: divisionsPerBar - offset });
+    return cells;
+  }
+  const beat = (DIVISIONS * 4) / timeSig.beatType;
+  let offset = 0;
+  while (offset < divisionsPerBar) {
+    const remaining = divisionsPerBar - offset;
+    const onBeat = offset % beat === 0;
+    if (spec.triplets && onBeat && remaining >= beat && rng() < PLACED_TRIPLET_CHANCE) {
+      const unit = beat / 3;
+      cells.push(
+        { duration: unit, tuplet: { actual: 3, normal: 2, at: 'start' } },
+        { duration: unit, tuplet: { actual: 3, normal: 2 } },
+        { duration: unit, tuplet: { actual: 3, normal: 2, at: 'stop' } },
+      );
+      offset += beat;
+      continue;
+    }
+    if (spec.syncopa && onBeat && remaining >= beat * 2 && rng() < PLACED_SYNCOPA_CHANCE) {
+      cells.push({ duration: beat / 2 }, { duration: beat, syncopated: true }, { duration: beat / 2 });
+      offset += beat * 2;
+      continue;
+    }
+    const allowed = spec.rhythms.filter(
+      (duration) => duration <= remaining && placedOnItsBeat(duration, offset, beat),
+    );
+    // Nothing in the palette fits only where the bar ends on a fragment the
+    // palette has no length for; the fragment is then the note.
+    const duration = allowed.length > 0 ? pick(rng, allowed) : remaining;
+    cells.push({ duration });
+    offset += duration;
+  }
+  return cells;
+}
+
 /**
  * Builds the melody.
  *
@@ -354,7 +507,9 @@ function buildRightHand(
   fifths: number,
   bars: number,
   divisionsPerBar: number,
-  harmony?: number[],
+  harmony: number[] | undefined,
+  timeSig: TimeSig,
+  tally: Tally,
 ): WriterNote[][] {
   const scale = scalePitches(fifths, spec.rhKey.low, spec.rhKey.high);
   if (scale.length === 0) return Array.from({ length: bars }, () => []);
@@ -362,7 +517,11 @@ function buildRightHand(
   const tonicIndex = tonicIndexIn(scale, fifths);
   let index = tonicIndex;
 
-  const rhythms = Array.from({ length: bars }, () => pickRhythm(rng, spec, divisionsPerBar));
+  const rhythms = Array.from({ length: bars }, () =>
+    spec.metricPlacement
+      ? pickRhythmPlaced(rng, spec, divisionsPerBar, timeSig)
+      : pickRhythm(rng, spec, divisionsPerBar),
+  );
   const totalNotes = rhythms.reduce((sum, bar) => sum + bar.length, 0);
   let placed = 0;
 
@@ -382,14 +541,32 @@ function buildRightHand(
       if (cell.rest) {
         const { type, dotted } = durationToType(duration);
         notes.push({ midi: null, duration, type, staff: 1, voice: 1, ...(dotted ? { dotted } : {}) });
+        tally.syncopation += 1;
         return;
       }
 
       const isRest =
-        spec.allowRests && notes.length > 0 && !(isLastBar && i === barRhythm.length - 1) && rng() < 0.12;
+        spec.allowRests &&
+        notes.length > 0 &&
+        !(isLastBar && i === barRhythm.length - 1) &&
+        cell.syncopated !== true &&
+        rng() < 0.12;
       if (isRest) {
         const { type, dotted } = durationToType(duration);
-        notes.push({ midi: null, duration, type, staff: 1, voice: 1, ...(dotted ? { dotted } : {}) });
+        // A rest inside a triplet keeps the triplet (T37). It was written as a
+        // plain eighth rest a triplet long, with no `<time-modification>` and
+        // its bracket's start or stop dropped, in 87 % of level-6 phrases and
+        // 89 % of level-7 ones: the bar still added up, and the page did not
+        // say three-in-the-time-of-two where it had to.
+        notes.push({
+          midi: null,
+          duration,
+          type,
+          staff: 1,
+          voice: 1,
+          ...(dotted ? { dotted } : {}),
+          ...(tuplet ? { tuplet } : {}),
+        });
         return;
       }
 
@@ -419,6 +596,9 @@ function buildRightHand(
         ...(tuplet ? { tuplet } : {}),
         ...(tieNext ? { tie: tieNext } : {}),
       });
+      if (tuplet) tally.triplets += 1;
+      else if (duration === DIVISIONS / 2) tally.eighths += 1;
+      if (cell.syncopated === true) tally.syncopation += 1;
 
       if (notesAfterThis <= 0) return;
       // Moves left *after* this one. The melody may wander only as far as it
@@ -547,27 +727,182 @@ function buildLeftHand(
 }
 
 /**
+ * The features a rung can promise, and how each is looked for (T37).
+ *
+ * A rung that says a phrase trains skips, eighths, syncopation, triplets or
+ * accidentals gets phrases that contain them: the option both allows the
+ * feature where the level's table does not and makes it a condition of the
+ * phrase. The key and the metre are promised by `fifths` and `timeSig`
+ * themselves, which the phrase simply is in.
+ *
+ * - `skips`: a third somewhere in the tune and a step somewhere too, and the
+ *   walk may move by a third (level 1's cap is a step; rung 1.5 is *Steps and
+ *   skips*). Both, because reading by interval is telling the two apart: a
+ *   phrase of nothing but thirds would teach that as little as one of nothing
+ *   but steps did.
+ * - `eighths`: at least one eighth note, not in a triplet (rung 2.2).
+ * - `syncopation`: below level 5 the eighth-quarter-eighth figure from a beat;
+ *   from level 5 the bar that opens on an eighth rest (rungs 4.5, theory.6).
+ *   Not asked of a phrase in compound time, which is its own new thing.
+ * - `triplets`: at least one sounded triplet, on a beat; simple time only.
+ * - `accidentals`: the raised fourth rising a step to the fifth (F sharp to G
+ *   in C), off the downbeat and never over the IV chord it would clash with.
+ */
+export const PROMISES = ['skips', 'eighths', 'syncopation', 'triplets', 'accidentals'] as const;
+export type PhrasePromise = (typeof PROMISES)[number];
+
+/** How many times a phrase is drawn again for a missing promise before it is given up on. */
+const PROMISE_ATTEMPTS = 64;
+
+/** Salt for the stream that chooses a key and a metre from a list. */
+const CHOICE_SALT = 0x5bd1e995;
+
+/** The seed of a redraw: attempt 0 is the seed itself, so a phrase that kept its promises is unchanged. */
+function attemptSeed(seed: number, attempt: number): number {
+  return attempt === 0 ? seed >>> 0 : (seed ^ Math.imul(attempt, 0x9e3779b1)) >>> 0;
+}
+
+function chooseOne<T>(rng: () => number, value: T | readonly T[] | undefined): T | undefined {
+  if (value === undefined) return undefined;
+  if (!Array.isArray(value)) return value as T;
+  const list = value as readonly T[];
+  return list.length > 0 ? pick(rng, list) : undefined;
+}
+
+/** The level's table, widened by what the options promise. */
+function specFor(level: SightReadingLevel, options: SightReadingOptions): LevelSpec {
+  const base = LEVELS[level];
+  return {
+    ...base,
+    // A skip is a third: the walk has to be allowed one.
+    ...(options.skips === true ? { maxLeap: Math.max(base.maxLeap, 2) } : {}),
+    // Eighths come with level 2's palette; below it they are added.
+    ...(options.eighths === true && !base.rhythms.includes(DIVISIONS / 2)
+      ? { rhythms: [DIVISIONS / 2, ...base.rhythms] }
+      : {}),
+    ...(options.syncopation === true && base.metricPlacement === true ? { syncopa: true } : {}),
+    ...(options.syncopation === true && base.metricPlacement !== true ? { syncopation: true } : {}),
+    ...(options.triplets === true ? { triplets: true } : {}),
+  };
+}
+
+/** Which promises this phrase has to keep: in compound time the rhythmic two are not asked. */
+function promisesFor(options: SightReadingOptions, timeSig: TimeSig): PhrasePromise[] {
+  const compound = timeSig.beatType === 8 && timeSig.beats % 3 === 0;
+  return PROMISES.filter((promise) => {
+    if (options[promise] !== true) return false;
+    if (compound && (promise === 'syncopation' || promise === 'triplets')) return false;
+    return true;
+  });
+}
+
+/** Steps and thirds between consecutive sounded notes of one line, by scale step. */
+function countIntervals(
+  bars: readonly WriterNote[][],
+  scale: readonly number[],
+): { steps: number; skips: number } {
+  let steps = 0;
+  let skips = 0;
+  let previous: number | null = null;
+  for (const note of bars.flat()) {
+    if (note.midi === null || note.tie === 'stop' || note.chord === true) continue;
+    const here = scale.indexOf(note.midi);
+    if (previous !== null && here >= 0) {
+      const distance = Math.abs(here - previous);
+      if (distance === 1) steps += 1;
+      if (distance === 2) skips += 1;
+    }
+    previous = here >= 0 ? here : null;
+  }
+  return { steps, skips };
+}
+
+/**
+ * The raised fourth that rises to the fifth (T37, `accidentals`).
+ *
+ * The chromatic note a Grade 1-2 reader meets first, and one that is spelled
+ * right in every key the generator writes up to two accidentals: F sharp in
+ * C, B natural in F, E natural in B flat, C sharp in G, G sharp in D. Only
+ * where the next sounded note is the fifth a step above, and only as a
+ * passing or neighbour note is written: short (a quarter or less), off the
+ * bar's strong beats, never tied, and never in a bar whose left hand holds the
+ * IV chord, whose root it would rub against; and approached by step. (A first
+ * version allowed it on beat three, as a half note, and after a leap: F sharp
+ * held for two beats over a C chord, and reached by a tritone from C, were the
+ * first things the rendered page and the printed seeds showed.)
+ */
+function addAccidentals(
+  rng: () => number,
+  right: WriterNote[][],
+  left: readonly WriterNote[][],
+  scale: readonly number[],
+  tonicIndex: number,
+  lhScale: readonly number[],
+  lhTonicIndex: number,
+  divisionsPerBar: number,
+): number {
+  const sounded: { note: WriterNote; bar: number; offset: number }[] = [];
+  right.forEach((notes, bar) => {
+    let offset = 0;
+    for (const note of notes) {
+      if (note.midi !== null && note.chord !== true) sounded.push({ note, bar, offset });
+      if (note.chord !== true) offset += note.duration;
+    }
+  });
+  const degreeOf = (index: number, tonic: number): number => (((index - tonic) % 7) + 7) % 7;
+  let raised = 0;
+  for (let i = 0; i < sounded.length - 1; i += 1) {
+    const here = sounded[i];
+    const next = sounded[i + 1];
+    if (!here || !next || here.note.midi === null || next.note.midi === null) continue;
+    if (here.offset % (divisionsPerBar / 2) === 0 || here.note.duration > DIVISIONS) continue;
+    if (here.note.tie !== undefined || next.note.tie === 'stop') continue;
+    const index = scale.indexOf(here.note.midi);
+    if (index < 0 || degreeOf(index, tonicIndex) !== 3) continue;
+    if (scale.indexOf(next.note.midi) !== index + 1) continue;
+    // Approached by step, as a passing note from below or a neighbour from the
+    // fifth: raised after a leap it becomes a tritone from C to F sharp, which
+    // the rendered page showed on the first try.
+    const before = sounded[i - 1];
+    const from = before?.note.midi === null || before === undefined ? -1 : scale.indexOf(before.note.midi);
+    if (from < 0 || Math.abs(from - index) !== 1) continue;
+    const bass = left[here.bar]?.find((note) => note.midi !== null && note.chord !== true);
+    const bassIndex = bass === undefined || bass.midi === null ? -1 : lhScale.indexOf(bass.midi);
+    if (bassIndex >= 0 && degreeOf(bassIndex, lhTonicIndex) === 3) continue;
+    if (rng() >= 0.5) continue;
+    here.note.midi += 1;
+    raised += 1;
+  }
+  return raised;
+}
+
+/**
  * Generates an unseen exercise as MusicXML.
  *
  * The result is fed to the normal Score screen in Tempo mode, so nothing
  * downstream knows or cares that it was generated.
+ *
+ * A key or a metre given as a list is chosen by the seed first, from a stream
+ * of its own; then the phrase is written, and written again from a derived
+ * seed if it came out without something the options promise (T37). The first
+ * draw uses the seed itself, so a phrase that already kept its promises is
+ * the phrase the seed always wrote, and every redraw is as deterministic as
+ * the first: the seed still names one phrase.
  */
 export function generateSightReading(options: SightReadingOptions): SightReadingResult {
   const level = (Math.min(7, Math.max(1, Math.round(options.level))) || 1) as SightReadingLevel;
-  const spec = LEVELS[level];
   const seed = options.seed ?? Math.floor(Math.random() * 0xffffffff);
-  const rng = makeRng(seed);
+  const choose = makeRng((seed ^ CHOICE_SALT) >>> 0);
+  const wantedFifths = chooseOne(choose, options.fifths) ?? 0;
+  const timeSig = chooseOne(choose, options.timeSig) ?? { beats: 4, beatType: 4 };
+  const spec = specFor(level, options);
 
-  const fifths = Math.max(-spec.maxFifths, Math.min(spec.maxFifths, options.fifths ?? 0));
-  const timeSig = options.timeSig ?? { beats: 4, beatType: 4 };
+  const fifths = Math.max(-spec.maxFifths, Math.min(spec.maxFifths, wantedFifths));
   const bars = Math.max(1, Math.min(32, options.bars ?? 4));
   const bpm = options.bpm ?? 72;
   // Divisions are per quarter note, so 6/8 is six eighths = three quarters.
   const divisionsPerBar = (timeSig.beats * DIVISIONS * 4) / timeSig.beatType;
-
-  // Drawn before either hand, and only where a level asks for it, so levels
-  // 1-4 consume the same random numbers in the same order they always did.
-  const harmony = spec.chordTones ? pickHarmony(rng, bars) : undefined;
+  const promised = promisesFor(options, timeSig);
 
   const wantsLeft = options.hands !== 'R' && spec.hands === 'both';
   // A level with no left-hand part of its own (level 1) can still be read by
@@ -577,15 +912,52 @@ export function generateSightReading(options: SightReadingOptions): SightReading
   // per key — and it costs no new music, only where the tune is put.
   const leftOnlyMelody = options.hands === 'L' && spec.leftHand === 'none';
   const empty = (): WriterNote[][] => Array.from({ length: bars }, () => []);
-  const rightBars =
-    options.hands === 'L' && (spec.leftHand !== 'none' || leftOnlyMelody)
-      ? empty()
-      : buildRightHand(rng, spec, fifths, bars, divisionsPerBar, harmony);
-  const leftBars = leftOnlyMelody
-    ? buildRightHand(rng, { ...spec, rhKey: spec.lhKey }, fifths, bars, divisionsPerBar, harmony)
-    : wantsLeft
-      ? buildLeftHand(rng, spec, fifths, bars, divisionsPerBar, harmony)
-      : empty();
+  const melodySpec = leftOnlyMelody ? { ...spec, rhKey: spec.lhKey } : spec;
+  const melodyScale = scalePitches(fifths, melodySpec.rhKey.low, melodySpec.rhKey.high);
+
+  let rightBars: WriterNote[][] = empty();
+  let leftBars: WriterNote[][] = empty();
+  for (let attempt = 0; attempt < PROMISE_ATTEMPTS; attempt += 1) {
+    const rng = makeRng(attemptSeed(seed, attempt));
+    const tally = emptyTally();
+    // Drawn before either hand, and only where a level asks for it, so levels
+    // 1-4 consume the same random numbers in the same order they always did.
+    const harmony = spec.chordTones ? pickHarmony(rng, bars) : undefined;
+    rightBars =
+      options.hands === 'L' && (spec.leftHand !== 'none' || leftOnlyMelody)
+        ? empty()
+        : buildRightHand(rng, spec, fifths, bars, divisionsPerBar, harmony, timeSig, tally);
+    leftBars = leftOnlyMelody
+      ? buildRightHand(rng, melodySpec, fifths, bars, divisionsPerBar, harmony, timeSig, tally)
+      : wantsLeft
+        ? buildLeftHand(rng, spec, fifths, bars, divisionsPerBar, harmony)
+        : empty();
+    const melodyBars = leftOnlyMelody ? leftBars : rightBars;
+    const intervals = countIntervals(melodyBars, melodyScale);
+    tally.steps = intervals.steps;
+    tally.skips = intervals.steps > 0 ? intervals.skips : 0;
+    if (options.accidentals === true) {
+      const lhScale = scalePitches(fifths, spec.lhKey.low, spec.lhKey.high);
+      tally.accidentals = addAccidentals(
+        rng,
+        melodyBars,
+        leftOnlyMelody ? empty() : leftBars,
+        melodyScale,
+        tonicIndexIn(melodyScale, fifths),
+        lhScale,
+        tonicIndexIn(lhScale, fifths),
+        divisionsPerBar,
+      );
+    }
+    if (promised.every((promise) => tally[promise] > 0)) break;
+  }
+
+  // Beamed by the beat, once the phrase is settled: a dotted quarter in
+  // compound time, a quarter otherwise.
+  const beamBeat =
+    timeSig.beatType === 8 && timeSig.beats % 3 === 0 ? DIVISIONS * 1.5 : (DIVISIONS * 4) / timeSig.beatType;
+  beamLine(rightBars, beamBeat);
+  beamLine(leftBars, beamBeat);
 
   const staves: 1 | 2 = leftBars.some((b) => b.length > 0) ? 2 : 1;
   const measures: WriterMeasure[] = Array.from({ length: bars }, (_, bar) => {
@@ -633,6 +1005,117 @@ export function generateSightReading(options: SightReadingOptions): SightReading
     bars,
     bpm,
     melody,
+  };
+}
+
+/**
+ * Beams one line's notes by the beat (T37).
+ *
+ * Nothing was beamed, so every eighth carried its own flag: rung 2.2 teaches
+ * that "the beaming is a kindness — it groups the notes into beats so your eye
+ * can see where beat two starts", and its reading drill printed none; and a
+ * 6/8 bar of flags does not show the two groups of three that *are* 6/8.
+ * Notes shorter than a quarter that lie inside one beat are beamed together;
+ * a triplet is beamed as its own group; a rest, or a note that reaches past the
+ * beat, breaks the beam. A lone short note keeps its flag.
+ */
+function beamLine(bars: WriterNote[][], beat: number): void {
+  for (const notes of bars) {
+    let offset = 0;
+    let group: WriterNote[] = [];
+    let groupKey = '';
+    let tupletGroup = 0;
+    const close = (): void => {
+      if (group.length >= 2) {
+        group.forEach((note, i) => {
+          note.beam = i === 0 ? 'begin' : i === group.length - 1 ? 'end' : 'continue';
+        });
+      }
+      group = [];
+      groupKey = '';
+    };
+    for (const note of notes) {
+      // A chord's other notes hang from its first note's stem.
+      if (note.chord === true) continue;
+      const start = offset;
+      offset += note.duration;
+      if (note.tuplet?.at === 'start') tupletGroup += 1;
+      const key = note.tuplet
+        ? `t${String(tupletGroup)}`
+        : Math.floor(start / beat) === Math.floor((offset - 1) / beat)
+          ? `b${String(Math.floor(start / beat))}`
+          : '';
+      const beamable = note.midi !== null && note.duration < DIVISIONS && key !== '';
+      if (!beamable || key !== groupKey) close();
+      if (beamable) {
+        group.push(note);
+        groupKey = key;
+      }
+    }
+    close();
+  }
+}
+
+/** A metre written as `6/8`, or as `{ beats, beatType }`. */
+function readTimeSig(value: unknown): TimeSig | undefined {
+  if (typeof value === 'string') {
+    const match = /^(\d+)\/(\d+)$/.exec(value.trim());
+    if (!match) return undefined;
+    const beats = Number(match[1]);
+    const beatType = Number(match[2]);
+    return beats > 0 && beatType > 0 ? { beats, beatType } : undefined;
+  }
+  if (typeof value === 'object' && value !== null) {
+    const { beats, beatType } = value as Partial<TimeSig>;
+    if (typeof beats === 'number' && typeof beatType === 'number') return { beats, beatType };
+  }
+  return undefined;
+}
+
+/**
+ * The generator options a catalog row's `drill.params` ask for (T37).
+ *
+ * The one reader of those params, so the Score screen, the tests and anything
+ * else that opens a sight-reading row turn the same row into the same options.
+ * The Score screen passed `level`, `hands`, `bars` and the seed and nothing
+ * else, so every phrase in the app was C major, 4/4 at 72: the key, the metre
+ * and the tempo a row could ask for were never read, and the rungs that
+ * promise keys, 6/8 or skips could not get them.
+ *
+ * - `level`, `bars`, `bpm`: numbers.
+ * - `hands`: `right`, `left` or `both`.
+ * - `fifths`: a number, or a list the seed chooses from.
+ * - `timeSig`: `"6/8"`, or a list the seed chooses from.
+ * - `skips`, `eighths`, `syncopation`, `triplets`, `accidentals`: `true` to
+ *   promise the feature ({@link PROMISES}).
+ */
+export function sightReadingOptionsFor(
+  params: Readonly<Record<string, unknown>>,
+  seed?: number,
+): SightReadingOptions {
+  const hands = params.hands === 'left' ? 'L' : params.hands === 'both' ? 'both' : 'R';
+  const level = (typeof params.level === 'number' ? params.level : 1) as SightReadingLevel;
+  const fifths = Array.isArray(params.fifths)
+    ? (params.fifths as unknown[]).filter((value): value is number => typeof value === 'number')
+    : typeof params.fifths === 'number'
+      ? params.fifths
+      : undefined;
+  const timeSig = Array.isArray(params.timeSig)
+    ? (params.timeSig as unknown[])
+        .map(readTimeSig)
+        .filter((value): value is TimeSig => value !== undefined)
+    : readTimeSig(params.timeSig);
+  const promises: Partial<Record<PhrasePromise, true>> = {};
+  for (const promise of PROMISES) if (params[promise] === true) promises[promise] = true;
+  return {
+    level,
+    hands,
+    ...(typeof params.bars === 'number' ? { bars: params.bars } : {}),
+    ...(fifths === undefined || (Array.isArray(fifths) && fifths.length === 0) ? {} : { fifths }),
+    ...(timeSig === undefined || (Array.isArray(timeSig) && timeSig.length === 0) ? {} : { timeSig }),
+    ...(typeof params.bpm === 'number' ? { bpm: params.bpm } : {}),
+    ...promises,
+    ...(seed === undefined ? {} : { seed }),
   };
 }
 

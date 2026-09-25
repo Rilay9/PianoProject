@@ -41,8 +41,18 @@ export interface ProgressRow {
   /** ISO date-time of the last run. */
   lastPracticedAt: string;
   minutes: number;
-  /** ISO dates on which this item was passed — `master` needs two, different days. */
+  /** ISO dates on which this item was passed. The review calendar reads them. */
   passedOn: string[];
+  /**
+   * ISO dates of the runs that met the master standard (T37).
+   *
+   * `02` Part G's master is 97 % at full tempo *twice on different days*, and
+   * the store used to grant it on one such run plus any earlier pass, because
+   * it counted `passedOn`. The two lists are kept apart so a pass at 90 % on
+   * Monday and one master-standard run on Tuesday is still one master day.
+   * Absent on rows written before it existed, which read as none.
+   */
+  masteredOn?: string[];
   /** Set by "I already know this" rather than by a measured run. */
   selfPassed?: boolean;
 }
@@ -88,6 +98,23 @@ export interface SessionRow {
    * practice but never a pass, and the history can say so.
    */
   rhythmOnly?: boolean;
+  /**
+   * Whether the run measured a tempo (T37).
+   *
+   * `false` on a Wait for me run, whose `tempoPct` is the slider's setting and
+   * not anything played to, and on a run nothing was listening to. Absent on
+   * rows written before it existed and on the writers that do not say (a drill,
+   * paper), which read as they always did.
+   */
+  tempoMeasured?: boolean;
+  /**
+   * The generated phrase's seed, on a sight-reading run (T37).
+   *
+   * What makes a retry on the same music tellable from a new phrase: the Score
+   * screen refuses a second first attempt at a phrase whose seed is already in
+   * a row, which is what re-opening today's read used to be.
+   */
+  seed?: number;
 }
 
 export type ImportKind = 'musicxml' | 'pdf';

@@ -170,6 +170,34 @@ export const MODE_HELP: Readonly<Record<ScoreMode, HelpEntry>> = {
 };
 
 /**
+ * What the summary sheet says about what a run did and did not measure (T37,
+ * `04` §5).
+ *
+ * Here beside `MODE_HELP` because they are the same facts told at the other
+ * end of the run: *Wait for me* says before a run that a pass is measured in
+ * Keep tempo, and the sheet says it again after one, in the same words, so
+ * the two cannot drift apart.
+ */
+export const SUMMARY_TEXT = {
+  /**
+   * The Tempo line of a Wait for me run. The slider's value is a setting
+   * nobody played to, so it is not printed as a share of anything.
+   */
+  waitTempo: 'Not judged in Wait for me — to pass, play it in Keep tempo',
+  /**
+   * The heading of a Wait for me run whose notes met the pass. "Run finished"
+   * read as a failure over a run that had every note it needed, and "Passed"
+   * would claim the half nobody measured.
+   */
+  waitNotesReady: 'Notes ready',
+  /** Said once a *Clean* self-report is on the record: `02` Part G's pass without MIDI. */
+  selfReportClean: 'Recorded: Clean — a pass, in your own judgement.',
+  /** Said once a *Rough* or *OK* self-report is on the record. */
+  selfReportOther: (report: 'rough' | 'ok'): string =>
+    `Recorded: ${report === 'ok' ? 'OK' : 'Rough'} — practice, not marked passed.`,
+} as const;
+
+/**
  * Every drill kind, in the learner's words.
  *
  * Exhaustive by type: a `DrillKind` added without a row here does not compile,

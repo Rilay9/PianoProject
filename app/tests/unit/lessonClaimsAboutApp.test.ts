@@ -1035,24 +1035,44 @@ const T12_APP: [string, string, () => boolean][] = [
       );
     },
   ],
+  // Replaced 2026-09-25 (T37). The row said "a Wait for me run is scored and
+  // can pass, the same as a Keep tempo one", and it was true of the code: a
+  // Wait run passed on the tempo slider's value, a tempo nobody played to. The
+  // lesson now says what the app measures — both modes score the notes, only
+  // Keep tempo measures tempo, so a pass is played in Keep tempo — and this row
+  // holds the app to that sentence.
   [
     '0.3',
-    'a Wait for me run is scored and can pass, the same as a Keep tempo one',
+    'both modes score the notes, and only a Keep tempo run measures tempo and can pass',
     () => {
-      const run = (mode: string): boolean =>
+      const outcome = (mode: string) =>
         evaluateOutcome({ mode, accuracy: 0.95, tempoPct: 85 } as unknown as Parameters<
           typeof evaluateOutcome
-        >[0]).passed;
-      return run('wait') && run('tempo') && !run('listen') && !run('free');
+        >[0]);
+      return (
+        !outcome('wait').passed &&
+        !outcome('wait').tempoMeasured &&
+        outcome('tempo').passed &&
+        outcome('tempo').tempoMeasured &&
+        !outcome('listen').passed &&
+        !outcome('free').passed
+      );
     },
   ],
+  // Replaced 2026-09-25 (T37). The row said "the second day only has to be a
+  // pass" and read `row.passedOn.length >= 2` out of the store's source, which
+  // is the store granting mastery on one master-standard run plus any earlier
+  // pass. Part G and now the lesson say the master standard on two different
+  // days; the store keeps those days apart (`masteredOn`) and
+  // `progressStore.test.ts` drives it.
   [
     '0.3',
-    'mastery is 97 % at full tempo, and the second day only has to be a pass',
+    'mastery is 97 % at full tempo, on two different days',
     () =>
       DEFAULT_MASTERY.masterAccuracy === 0.97 &&
       DEFAULT_MASTERY.masterTempoPct === 100 &&
-      source('data/progressStore.ts').includes('row.passedOn.length >= 2'),
+      /export const MASTER_DAYS = 2;/.test(source('data/progressStore.ts')) &&
+      !source('data/progressStore.ts').includes('row.passedOn.length >= 2'),
   ],
   [
     '0.3',

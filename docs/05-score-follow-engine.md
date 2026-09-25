@@ -71,6 +71,12 @@ Sustain pedal (CC64) is recorded for the pedal drill scorer but never blocks adv
 Accuracy for the run: `correctSteps / totalSteps` where a step is "correct" if it was completed
 with zero wrong notes *and* ≤ 1 retry. Also report `wrongNotesTotal`.
 
+**Wait mode measures no tempo (2026-09-25, T37).** The page holds until the note arrives, so
+no lateness is recorded (`deltas` is written only in the Tempo path) and the run's `tempoPct`
+is the slider's setting. `evaluateOutcome` reports `tempoMeasured: false` for it: a Wait run
+meets a criterion only where the criterion asks for no tempo, and is never master-eligible.
+It is honest evidence of the notes and none of the pulse; the record and the sheet say which.
+
 ## 3. Tempo mode (default without MIDI; also the "performance" mode) — "the clock drives"
 
 The clock advances the cursor: at `tStep[k]` emit `stepAdvanced` regardless of input. A count-in
@@ -84,7 +90,15 @@ Judging input (only if any input source is active):
 - A `noteOn(m)` at time `t` is matched to the nearest step `j` with `m ∈ expected[j]` and
   `|t − tStep[j]| ≤ toleranceMs` [150], preferring unsatisfied slots; mark it `hit` with
   `deltaMs = t − tStep[j]` (negative = early).
-- If no such step: `wrong` (extra note).
+- If no such step: `wrong` (extra note) — **unless it is the right pitch, early** (2026-09-25,
+  T37): a pitch the next not-yet-open step expects, struck less than a beat before that step
+  and outside its window, is held against that step. If the same pitch then arrives inside
+  the window, the on-time one is the hit and the early one was an extra (`wrong`); if the
+  window closes without it, the early one *was* the note, and it is counted once as
+  `early` — not a hit, not a miss, its negative `deltaMs` in the timing. It used to be a
+  wrong note and then a miss: one early note, two faults, neither of them "early". A beat or
+  more ahead it is that pitch struck somewhere else, and still an extra note; a rhythm-only
+  run keeps the rule below unchanged.
 - When the clock passes `tStep[j] + toleranceMs` and a slot in `expected[j]` is unsatisfied →
   `missed`.
 - Accuracy = hits / expected slots; timing stats = mean/σ of deltaMs, % early, % late.
@@ -133,6 +147,12 @@ Three consequences, each deliberate:
 - **It forgives the note, never the moment.** That is what makes the run worth recording at
   all: something real was measured. What was *not* measured is whether the learner can play
   the piece.
+
+**Which runs measure what (2026-09-25, T37).** A Keep tempo run measures the notes and the
+tempo; a rhythm-only run the tempo and not the notes; a Wait run the notes and not the tempo
+(§2); Listen and Free neither. The Score screen records `tempoMeasured` on the session row
+from the same rule (and `false` for a run no input was listening to), and a tempo nobody
+played to never becomes an item's best tempo.
 
 **`SessionScore.rhythmOnly`** carries that last fact out. Its own field rather than a
 flavour of `accuracyEstimated`, because the two say opposite things — an estimated accuracy
@@ -458,6 +478,46 @@ screen in Tempo mode. Level table (extend as the curriculum grows):
 
 Deterministic from a seed so a failed sight-read can be retried identically once.
 
+**What a row asks for reaches the generator (2026-09-25, T37).** `sightReadingOptionsFor`
+(`sightReading.ts`) is the one reader of a catalog row's `drill.params`: `level`, `bars`,
+`hands`, `bpm`, `fifths` (a number, or a list the seed chooses from), `timeSig` (`"6/8"`, or
+a list) and the features a rung promises — `skips`, `eighths`, `syncopation`, `triplets`,
+`accidentals`. The Score screen used to pass the level, the hands, the bars and the seed, so
+every phrase in the app was C major, 4/4, 72 bpm. A promised feature is both *allowed*
+(level 1 may move by a third where `skips` asks) and *guaranteed*: a phrase without it is
+drawn again from a seed derived from the first, so the seed still names one phrase. A key or
+metre list is chosen from a stream of its own, so the melody a seed writes in the chosen key
+is the melody it writes when that key is asked for outright. The nine rows now ask for:
+
+| row | rungs | asks for |
+|---|---|---|
+| `sight-reading-1` | 1.5 | C, 4/4, `skips` (a step and a third in every phrase, inside C4–G4) |
+| `sight-reading-1-left` | 1.3, 1.4 | C, 4/4 |
+| `sight-reading-2-right` | 2.2, 2.5 | C, 4/4, `eighths`, `skips` |
+| `sight-reading-2` | 3.4, classical.3 | C, 4/4, `eighths` |
+| `sight-reading-3` | 4.5, 4.6 | C, 6/8 or 4/4, `syncopation` and `triplets` in the 4/4 phrases |
+| `sight-reading-4` | 4.6, technique.5 | C, 4/4, `accidentals` (the raised fourth rising to the fifth) |
+| `sight-reading-5` | theory.6 | keys to three accidentals, 4/4, `syncopation` |
+| `sight-reading-6` | chords-pop.8, theory.9 | keys to four accidentals, 4/4, `triplets` |
+| `sight-reading-7` | jazz.8, theory.9 | keys to four accidentals, 4/4, `triplets` |
+
+**Levels 1–4 place every note where its length belongs** (same date): a plain note of length L
+starts on a multiple of L, a dotted quarter on a beat, a dotted half on beat one or three; in
+6/8 a bar is filled a dotted-quarter beat at a time from the dotted quarter, the
+quarter-eighth lilt and three eighths. The old draw put a quarter-or-longer note off the beat
+in 74 % of level-2 phrases, 98 % at level 3 and all of level 4 — syncopation three stages
+before 4.5 teaches it. Levels 5–7 keep their draw (their syncopation is designed and the
+goldens pin it). **A rest inside a triplet keeps the triplet**: it lost its
+`<time-modification>` and its bracket's start or stop in 87 % of level-6 and 89 % of level-7
+phrases. **Short notes are beamed by the beat** (a quarter; a dotted quarter in 6/8), a
+triplet as its own group: nothing was beamed, so every generated eighth carried a flag — on
+rung 2.2, whose concepts include `beams`, and in 6/8, whose groups of three are the metre.
+Found by looking at the rendered phrases, not by any test. **The accidental** is a short
+passing or neighbour note (a quarter or less, off beats one and three) rising a semitone to the
+fifth; a first version let it sit for two beats on beat three over the tonic chord.
+`sightReadingPromises.test.ts` generates every row and checks each phrase for what its rungs
+promise and for nothing the earliest rung listing it has not taught.
+
 **Tempo mode is applied after the learner's default, not before it** (fixed 2026-09-22).
 `ScoreScreen` set `mode = 'tempo'` where the score finished loading and then read
 `settings.defaultModeWithInput` / `defaultModeWithoutInput` three hundred lines later, which
@@ -516,9 +576,11 @@ to appear with a generic name ⇒ never key settings on the device name alone.
 one. The rule in a sentence: *a run judged for a rung uses that rung's numbers; a run with
 no rung uses the defaults.*
 
-- The rung is found by `lessonForItem(curriculum, itemId)` — the first rung listing the item
-  among its options, which is the same lookup the Score screen has always used to choose the
-  prose beside a piece.
+- The rung is **the one that opened the screen** (`?from=`) where one did, and
+  `lessonForItem(curriculum, itemId)` — the first rung listing the item — only where none did
+  (2026-09-25, T37). It was always the first listing: a minuet opened from `classical.3` was
+  held to 3.4's numbers and stored as 3.4's run. Completion is unchanged: a pass is still a
+  flag on the item, credited on every rung listing it (Wave C's business).
 - `mastery.minAccuracy` is already a fraction. `mastery.minTempoPct` is written as a fraction
   in **every** rung of the built curriculum (the values in use are 0, 0.7, 0.75, 0.8, 0.85
   and 0.9) while the scorer speaks percentages, so a value at or below 1 is read as a
@@ -529,7 +591,9 @@ no rung uses the defaults.*
   recording — is saying "I have no number of my own" and takes the default, rather than
   passing everything at nought.
 - **`master` is not per-rung.** `02` Part G defines it once for the whole plan (97 % at full
-  tempo, twice on different days) and no rung carries a second pair of numbers for it.
+  tempo, twice on different days) and no rung carries a second pair of numbers for it. The
+  store counts the days the master standard was met (`masteredOn`), apart from pass days; it
+  used to grant *mastered* on one such run after any earlier pass (T37).
 - The defaults are the learner's own pair from Settings (`04` §7), which therefore still
   governs every run the curriculum says nothing about: a Library piece, an import, paper.
 - The run is stored with the rung that judged it (`SessionRow.lessonId`). Older rows keep the

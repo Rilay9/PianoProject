@@ -268,6 +268,20 @@ export class PracticeEngine {
   private readonly deltas: number[] = [];
   private readonly missesByMeasure = new Map<number, number>();
   private readonly wrongsByMeasure = new Map<number, number>();
+  /**
+   * Right pitches struck before their step's window opened, waiting for that
+   * window to say what they were (T37; `05` §3). By step, then by pitch.
+   *
+   * Such a strike used to match nothing and count as a wrong note, and its
+   * slot then closed unsatisfied and counted as a miss: one early note, two
+   * faults, and neither of them "early". It is held here instead. If the
+   * pitch then arrives inside the window the on-time one is the note and this
+   * one was an extra; if the window closes without it, this *was* the note,
+   * played early, and it is counted once as that.
+   */
+  private readonly earlyStrikes = new Map<number, Map<number, { deltaMs: number }>>();
+  private earlyTotal = 0;
+  private readonly earlyByMeasure = new Map<number, number>();
 
   constructor(model: ScoreModel, options: EngineOptions, clock: Clock = systemClock) {
     this.session = prepareSession(model, options);
@@ -922,6 +936,32 @@ export class PracticeEngine {
     this.openUpcomingSlots(Math.max(music, at));
 
     const match = this.rhythmOnly ? this.findRhythmSlot(at) : this.findSlot(midi, at);
+    const earlyFor =
+      match === null &&
+      !this.rhythmOnly &&
+      confidence >= this.session.options.wrongNoteConfidence
+        ? this.findEarlyStep(midi, at)
+        : null;
+    if (earlyFor !== null) {
+      // A right pitch, before its window: held until the window decides (see
+      // `earlyStrikes`). Shown as not right *now*, which it is not, and
+      // recorded against the step it was early for, with by how much.
+      const target = this.session.steps[earlyFor];
+      const deltaMs = at - (target?.tMs ?? at);
+      const pending = this.earlyStrikes.get(earlyFor) ?? new Map<number, { deltaMs: number }>();
+      pending.set(midi, { deltaMs });
+      this.earlyStrikes.set(earlyFor, pending);
+      this.record(midi, velocity, rawTMs, earlyFor, false, deltaMs);
+      this.emit({
+        kind: 'noteJudged',
+        ok: false,
+        midi,
+        noteIds: [],
+        stepIndex: this.step,
+        tMs: rawTMs,
+      });
+      return;
+    }
     if (match === null) {
       const certain = confidence >= this.session.options.wrongNoteConfidence;
       this.record(midi, velocity, rawTMs, null, false);
@@ -975,6 +1015,15 @@ export class PracticeEngine {
       return;
     }
     slot?.delete(midi);
+    // The same pitch was struck early for this step and has now come on time:
+    // the on-time one is the note, and the early one was an extra (T37).
+    const early = this.earlyStrikes.get(match);
+    if (early?.has(midi)) {
+      early.delete(midi);
+      if (early.size === 0) this.earlyStrikes.delete(match);
+      this.wrongNotesTotal += 1;
+      this.bump(this.wrongsByMeasure, target?.measureIndex ?? this.measureIndexNear(at));
+    }
     if (slot && slot.size === 0) {
       this.openSlots.delete(match);
       // Every pitch this step expected arrived inside its window, which is
@@ -1019,6 +1068,32 @@ export class PracticeEngine {
       }
     }
     return best;
+  }
+
+  /**
+   * The step a right pitch struck before its window was early for, if any (T37).
+   *
+   * The nearest step not yet open that expects this pitch, and only within a
+   * beat of it: a beat or more ahead it is not an early note, it is that pitch
+   * struck somewhere else, and stays an extra note as `05` §3 has always said.
+   * A second early strike of the same pitch for the same step is an extra too.
+   * Microphone guesses the engine is not sure of are left to the wrong-note
+   * path, which already keeps them out of the score.
+   */
+  private findEarlyStep(midi: number, atMs: number): number | null {
+    const tolerance = this.session.options.toleranceMs;
+    const reach = this.session.msPerBeat;
+    if (!(reach > 0)) return null;
+    for (let index = this.nextSlotToOpen; index <= this.session.lastStep; index += 1) {
+      const step = this.session.steps[index];
+      if (!step || step.isEmpty) continue;
+      const ahead = step.tMs - atMs;
+      if (ahead >= reach) return null;
+      if (ahead <= tolerance) continue;
+      if (!step.expected.includes(midi)) continue;
+      return this.earlyStrikes.get(index)?.has(midi) === true ? null : index;
+    }
+    return null;
   }
 
   /**
@@ -1138,13 +1213,28 @@ export class PracticeEngine {
     }
   }
 
-  /** Closes one window: whatever it still expected was missed. */
+  /**
+   * Closes one window: whatever it still expected was missed — unless it was
+   * struck early for this step, in which case it was played early (T37).
+   */
   private closeSlotAsMissed(index: number): void {
     const pitches = this.openSlots.get(index);
     const step = this.session.steps[index];
     this.openSlots.delete(index);
+    const early = this.earlyStrikes.get(index);
+    this.earlyStrikes.delete(index);
     if (!pitches || !step) return;
     for (const midi of pitches) {
+      const struck = early?.get(midi);
+      if (struck) {
+        // One observation: the right note, early. Not a hit, because it was
+        // not in time; not a miss, because it was played; and its lateness —
+        // negative — is part of the timing, because it was measured.
+        this.earlyTotal += 1;
+        this.bump(this.earlyByMeasure, step.measureIndex);
+        this.deltas.push(struck.deltaMs);
+        continue;
+      }
       this.missedTotal += 1;
       this.bump(this.missesByMeasure, step.measureIndex);
       this.emit({
@@ -1215,6 +1305,7 @@ export class PracticeEngine {
     this.progress = freshProgress();
     this.earlyBuffer = new Set();
     this.openSlots.clear();
+    this.earlyStrikes.clear();
     if (this.mode === 'wait' || this.mode === 'free') {
       const start = nextPlayableStep(this.session.steps, this.session.firstStep, this.session.lastStep);
       this.step = start ?? this.session.firstStep;
@@ -1256,6 +1347,9 @@ export class PracticeEngine {
     this.deltas.length = 0;
     this.missesByMeasure.clear();
     this.wrongsByMeasure.clear();
+    this.earlyStrikes.clear();
+    this.earlyTotal = 0;
+    this.earlyByMeasure.clear();
   }
 
   private record(
@@ -1316,6 +1410,8 @@ export class PracticeEngine {
       deltas: this.deltas,
       missesByMeasure: this.missesByMeasure,
       wrongsByMeasure: this.wrongsByMeasure,
+      early: this.earlyTotal,
+      earlyByMeasure: this.earlyByMeasure,
       durationMs: this.running || this.finished ? this.elapsedMs : 0,
       loops: this.loopsCompleted,
       rolledChordSteps: this.rolledChordSteps,

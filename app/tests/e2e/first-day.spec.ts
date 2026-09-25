@@ -14,9 +14,16 @@
  * So: nothing in storage → the tour finished → the placement test taken and
  * passed all the way through → *Start here* → the rung Plan then names → its
  * lesson → a piece from that rung opened → a Wait run fed through the MIDI
- * mock → the pass on the sheet → reload → Today, Plan and Skills asked
- * separately whether they agree about where the learner is, what was passed
- * and what is next.
+ * mock, which learns the notes and is not a pass → the same piece in Keep
+ * tempo, in time → the pass on the sheet → reload → Today, Plan and Skills
+ * asked separately whether they agree about where the learner is, what was
+ * passed and what is next.
+ *
+ * The Keep tempo run was added 2026-09-25 (T37). The chain used to take its
+ * pass from the Wait run, which passed only because the tempo slider's number
+ * was compared with the floor as if somebody had played to it. A Wait run is
+ * evidence of the notes and none of the pulse, so it is headed *Notes ready*
+ * and the pass is played where lesson 1.1 says to play it: in Keep tempo.
  *
  * **Every destination is asserted from what the control itself declared**,
  * the way `lesson-tools.spec.ts` does: the placement's `data-unit`, Plan's
@@ -32,6 +39,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import { installMidiMock, type MidiMock } from './fixtures/midiMock';
+import { playInTime } from './fixtures/playInTime';
 import { setTempoPercent, withScoreMenu } from './scoreControls';
 
 /** A first launch is a launch with nothing saved, so no shared state. */
@@ -386,6 +394,41 @@ async function playItThrough(page: Page, mock: MidiMock, itemId: string): Promis
   return played;
 }
 
+/**
+ * Step 5: the same piece in Keep tempo, in time, over the fake cable (T37).
+ *
+ * Played from inside the page on the page's own frames (`playInTime`), because
+ * a note sent by a round trip from here lands whenever the machine lets it,
+ * and in Keep tempo a note late by more than the window is a miss.
+ */
+async function playItInTime(page: Page): Promise<void> {
+  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-mode', /wait|tempo/, {
+    timeout: 60_000,
+  });
+  await page.waitForFunction(
+    () => {
+      const svg = document.querySelector('#score-stage .is-front svg');
+      return svg instanceof SVGElement && svg.getBoundingClientRect().height > 20;
+    },
+    undefined,
+    { timeout: 120_000 },
+  );
+  await withScoreMenu(page, async () => {
+    await page.locator('#score-input').selectOption('midi');
+  });
+  await page.locator('#score-mode').selectOption('tempo');
+  await setTempoPercent(page, FULL_TEMPO);
+  await page.locator('#score-play').click();
+  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-running', 'true');
+  const armed = await runState(page);
+  expect(armed?.input, 'the score screen is not listening to the MIDI mock').toBe('midi');
+  expect(armed?.engineMode, 'the run is not in Keep tempo').toBe('tempo');
+  expect(await playInTime(page, 'midi'), 'nothing was played in time').toBeGreaterThan(0);
+  await expect(page.locator('#score-summary'), 'the piece was played in time and no summary appeared').toBeVisible({
+    timeout: 60_000,
+  });
+}
+
 /** The chain, once. Both orientations run it; only the viewport differs. */
 async function firstDay(page: Page, size: { width: number; height: number }): Promise<void> {
   await emptyStorage(page);
@@ -416,20 +459,45 @@ async function firstDay(page: Page, size: { width: number; height: number }): Pr
   expect(played, 'no note was fed through the cable').toBeGreaterThan(0);
 
   const sheet = page.locator('#score-summary');
-  await expect(sheet, 'a run of every expected note was not a pass').toContainText(/Passed|Mastered/);
+  // Every note right, and no tempo measured: the notes are ready, and the
+  // sheet says where a pass is played rather than granting one.
+  await expect(sheet.locator('h2'), 'a Wait run of every note was not headed for the notes').toHaveText(
+    'Notes ready',
+  );
   await expect(sheet.locator('[data-stat="accuracy"]')).toHaveText('100%');
+  await expect(sheet.locator('[data-stat="tempo"]')).toContainText('play it in Keep tempo');
   // A judging input was connected, so there is nothing to self-report.
   await expect(page.locator('#summary-selfreport')).toHaveCount(0);
+  await page.locator('#summary-done').click();
+
+  // Back on the rung, and the row is not badged passed: the notes were
+  // practised, and nothing measured a pass.
+  const passBadge = page.locator(
+    `.list-row[data-item="${itemId}"] .badge[data-kind="passed"], .list-row[data-item="${itemId}"] .badge[data-kind="mastered"]`,
+  );
+  await expect(page.locator('section[data-screen="lesson"]')).toHaveAttribute('data-lesson', lessonId, {
+    timeout: 60_000,
+  });
+  await expect(passBadge, 'a Wait run put a pass on the rung').toHaveCount(0);
+
+  // The same piece again, in Keep tempo, in time.
+  await page.locator(`#lesson-songs .list-row[data-item="${itemId}"], #lesson-exercises .list-row[data-item="${itemId}"]`)
+    .first()
+    .click();
+  await playItInTime(page);
+  await expect(sheet.locator('h2'), 'a Keep tempo run of every note in time was not a pass').toHaveText(
+    /Passed|Mastery run 1 of 2/,
+    { timeout: 30_000 },
+  );
+  await expect(sheet.locator('[data-stat="accuracy"]')).toHaveText('100%');
+  await expect(sheet.locator('[data-stat="tempo"]')).toHaveText(/% of (written|the suggested tempo)$/);
   await page.locator('#summary-done').click();
 
   // Back on the rung it came from, with the row now badged as passed.
   await expect(page.locator('section[data-screen="lesson"]')).toHaveAttribute('data-lesson', lessonId, {
     timeout: 60_000,
   });
-  await expect(
-    page.locator(`.list-row[data-item="${itemId}"] .badge[data-kind="passed"], .list-row[data-item="${itemId}"] .badge[data-kind="mastered"]`),
-    'the pass is on the sheet and not on the rung',
-  ).toHaveCount(1);
+  await expect(passBadge, 'the pass is on the sheet and not on the rung').toHaveCount(1);
 
   // --- and now the reload, which is where a first day usually ends ---------
   await page.reload();

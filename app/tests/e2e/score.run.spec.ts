@@ -8,6 +8,7 @@
 
 import { expect, test, type Page } from '@playwright/test';
 
+import { playInTime } from './fixtures/playInTime';
 import { setTempoPercent, withScoreMenu } from './scoreControls';
 
 const ITEM = 'song.folk.hot-cross-buns';
@@ -55,7 +56,7 @@ async function press(page: Page, midi: number): Promise<void> {
 test.describe('a whole run', () => {
   test.setTimeout(180_000);
 
-  test('Wait mode: playing it correctly reaches the summary with full accuracy', async ({
+  test('Wait mode: playing it correctly says the notes are ready, and where a pass is played', async ({
     page,
   }) => {
     await openAndArm(page, 'wait');
@@ -69,7 +70,19 @@ test.describe('a whole run', () => {
 
     const sheet = page.locator('#score-summary');
     await expect(sheet).toBeVisible({ timeout: 30_000 });
-    await expect(sheet).toContainText(/Passed|Mastered/);
+    // Revised 2026-09-25 (T37). This asserted `Passed|Mastered` over a Wait
+    // run with the slider at 100 %, which is the fault: the page waited for
+    // every note, so nothing measured a tempo, and the pass was granted on the
+    // slider's number. The run is honest evidence of knowing the notes, and
+    // the sheet now says exactly that — headed for the half it measured, with
+    // the tempo line saying it is not judged here and where a pass is played.
+    await expect(sheet.locator('h2')).toHaveText('Notes ready');
+    await expect(sheet).not.toContainText(/Passed|Mastered/);
+    await expect(sheet.locator('[data-stat="tempo"]')).toHaveText(
+      'Not judged in Wait for me — to pass, play it in Keep tempo',
+    );
+    // And no timing: Wait keeps none, and "0 ms off the beat" is not a result.
+    await expect(sheet.locator('[data-stat="timing"]')).toHaveCount(0);
     // Wait mode with every step completed cleanly is 100 %, and the run had a
     // judging input, so there is no self-report to fall back on.
     await expect(sheet.locator('[data-stat="accuracy"]')).toHaveText('100%');
@@ -88,6 +101,30 @@ test.describe('a whole run', () => {
     await expect(page.locator('#summary-faster')).toBeVisible();
     await expect(page.locator('#summary-again')).toBeVisible();
     await expect(page.locator('#summary-done')).toBeVisible();
+  });
+
+  test('Keep tempo: played in time it passes, and says its tempo and its timing', async ({ page }) => {
+    // The counterpart to the Wait run above, and the one a pass is made of
+    // (T37): the clock runs at the slider's tempo and every note is judged
+    // against it, so here the tempo is a measurement.
+    await openAndArm(page, 'tempo');
+    await page.locator('#score-play').click();
+    await expect(page.locator('section[data-screen="score"]')).toHaveAttribute(
+      'data-running',
+      'true',
+    );
+    const struck = await playInTime(page, 'keys');
+    expect(struck, 'no note was struck').toBeGreaterThan(0);
+
+    const sheet = page.locator('#score-summary');
+    await expect(sheet).toBeVisible({ timeout: 60_000 });
+    await expect(sheet.locator('[data-stat="accuracy"]')).toHaveText('100%');
+    await expect(sheet.locator('[data-stat="tempo"]')).toHaveText('100% of written');
+    await expect(sheet.locator('[data-stat="timing"]')).toHaveCount(1);
+    // A master-standard run on its first day: the store says one day of two,
+    // so the sheet must not say *Mastered* (Part G: twice, on different days).
+    await expect(sheet.locator('h2')).toHaveText(/Passed|Mastery run 1 of 2/, { timeout: 30_000 });
+    await expect(sheet.locator('h2')).not.toHaveText('Mastered');
   });
 
   test('a run with a fumble is offered the loop, and it names the bar', async ({ page }) => {

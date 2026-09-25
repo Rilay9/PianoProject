@@ -226,6 +226,13 @@ and a daily read you can swap for something else is not a daily read.
   that is already on its way, and writes the day down itself. The days live in the `settings`
   store under `pianopath.dailyRead` rather than in `StreakRow`, which would have cost a schema
   version bump for one array of date strings.
+- **One first attempt per phrase (2026-09-25, T37).** The session row keeps the phrase's
+  seed, for today's read and for every fresh open. Re-opening today's card gives the same
+  phrase, and a phrase whose seed is already on a stored run has been seen: its run is
+  not recorded, and the status line says *Sight-reading counts on the first attempt only*.
+  It used to be a counter that started at nought on every visit, so every re-open recorded
+  the same phrase as a first attempt again. *Hear it* and a stopped run are still not
+  attempts (nothing reaches the sheet).
 - With no reading exercises in the build there is no card at all, rather than an empty one
   (R4). The day is ticked by the progress store when a run carrying the day's seed is recorded (`recordRun` → `markDailyRead`), so the same exercise opened from Plan or the Library — a different phrase — does not count, and a day already ticked stays ticked when the stage moves on (2026-09-16).
 
@@ -1661,7 +1668,34 @@ Notation area:
   too long is a 100 % run. The line says *"this rung requires it"* only where the rung's
   `mastery.custom` says so, and no rung does yet.
   **Pass and master** are judged against **the rung's** `minAccuracy` and `minTempoPct` where
-  the piece is on one, and against the Settings pair (§7) where it is not (`05` §9a).
+  the piece is on one, and against the Settings pair (§7) where it is not (`05` §9a). The
+  rung is **the one that opened the screen** (`?from=`) where one did, and the first rung
+  listing the piece only where none did (2026-09-25, T37); the side panel's prose is that
+  same rung's.
+
+  **The sheet says only what the run measured (2026-09-25, T37).** The rule is the
+  reviewer's: never display or record evidence the engine did not measure.
+  - **A Wait for me run** carries no tempo: the page waited for every note, so the slider's
+    value is a setting nobody played to. Its Tempo line reads *Not judged in Wait for me —
+    to pass, play it in Keep tempo* (`help.ts` `SUMMARY_TEXT`, the same fact *Wait for me*'s
+    own help card states before the run), and it cannot pass a criterion with a tempo floor
+    or be master-eligible. A Wait run whose notes met the rung's accuracy is headed **Notes
+    ready**, not *Run finished*, which read as a failure over a run that had every note it
+    needed, and not *Passed*, which would claim the half nobody measured.
+  - **The Timing line** appears only where timing was measured (`timing.n > 0`). Wait keeps
+    none, and the line used to print *0 ms off the beat on average* over every clean Wait
+    run.
+  - **The Tempo line of a Keep tempo run** is *N% of written*, or *N% of the suggested tempo*
+    where the catalog tags the piece `tempo-defaulted` (the converter made the tempo up);
+    the *Ladder* line says the same.
+  - **The heading of a master-standard run** follows the store: *Passed* until the row it
+    was written into answers, then **Mastery run 1 of 2** or **Mastered** — never
+    *Mastered* before the store says so (Part G: the master standard on two different days).
+  - **Early**: a right note played before its step's window is one line, *N right notes
+    played too soon*, and counts in its bar's damage; it used to be a wrong note and a miss.
+  - **How did it go?** is asked only where there is a run to record it with, and the run is
+    written with the answer (*Recorded: Clean — a pass, in your own judgement.*; *Recorded:
+    OK — practice, not marked passed.*), or without one when the sheet is left unanswered.
 
 **The screen's own stylesheet** is `src/ui/screens/ScoreScreen.css`, imported by
 `ScoreScreen.ts`. `src/style.css` stays the app's shared sheet with one owner; what belongs

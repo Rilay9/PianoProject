@@ -524,13 +524,30 @@ test.describe('score screen', () => {
   });
 
   test('the summary self-report records an answer', async ({ page }) => {
+    // Revised 2026-09-25 (T37). This asserted that the status line said
+    // "Clean", and it did — `Recorded: Clean` — while nothing was stored: the
+    // run had been written before the question was drawn and the answer went
+    // nowhere. What a learner is told was recorded is read back from the
+    // store now, the way the Progress screen reads it.
     await openScore(page);
     await page.locator('#score-mode').selectOption('tempo');
     await setTempoPercent(page, 130);
     await page.locator('#score-play').click();
     await expect(page.locator('#score-summary')).toBeVisible({ timeout: 60_000 });
     await page.locator('#summary-self-clean').click();
-    await expect(page.locator('#score-status')).toContainText('Clean');
+    await expect(page.locator('#score-status')).toHaveText('Recorded: Clean — a pass, in your own judgement.', {
+      timeout: 30_000,
+    });
+    const sessions = await page.evaluate(async () => {
+      const hooks = (window as unknown as {
+        __pianopath: { exportAll: () => Promise<{ stores: Record<string, unknown[]> }> };
+      }).__pianopath;
+      return (await hooks.exportAll()).stores.sessions as { itemId: string; selfReport?: string; tempoMeasured?: boolean }[];
+    });
+    const last = sessions[sessions.length - 1];
+    expect(last?.selfReport, 'the answer the sheet says it recorded is not on the session row').toBe('clean');
+    // Nothing was listening, so the run is not evidence of a tempo either.
+    expect(last?.tempoMeasured).toBe(false);
   });
 
   test('“Slower” restarts ten percent down', async ({ page }) => {

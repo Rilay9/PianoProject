@@ -136,6 +136,35 @@ describe('pass and master (curriculum Part G)', () => {
   });
 });
 
+/**
+ * A Wait for me run measures the notes and not the pulse (T37, the reviewer's
+ * boundary 6). Its `tempoPct` is the slider's setting: the page waits for each
+ * note, so nobody played to that number. It used to be compared with the
+ * rung's tempo floor like a measured one, so a run played a note at a time
+ * "passed at 80 %" and could be master-eligible "at 100 %".
+ */
+describe('a run that measured no tempo', () => {
+  it('cannot meet a tempo floor, whatever the slider said', () => {
+    const outcome = evaluateOutcome(scoreWith({ mode: 'wait', accuracy: 1, tempoPct: 130 }));
+    expect(outcome.passed).toBe(false);
+    expect(outcome.masterEligible).toBe(false);
+    expect(outcome.tempoMeasured).toBe(false);
+  });
+
+  it('meets a criterion that asks for no tempo on its notes alone, and is never master-eligible', () => {
+    const notesOnly = { ...DEFAULT_MASTERY, passTempoPct: 0, masterTempoPct: 0 };
+    const outcome = evaluateOutcome(scoreWith({ mode: 'wait', accuracy: 1 }), notesOnly);
+    expect(outcome.passed).toBe(true);
+    expect(outcome.masterEligible).toBe(false);
+  });
+
+  it('a Keep tempo run did measure it, and is judged on it as before', () => {
+    expect(evaluateOutcome(scoreWith({ mode: 'tempo', tempoPct: 80 })).tempoMeasured).toBe(true);
+    expect(evaluateOutcome(scoreWith({ mode: 'tempo', tempoPct: 80 })).passed).toBe(true);
+    expect(evaluateOutcome(scoreWith({ mode: 'tempo', tempoPct: 79 })).passed).toBe(false);
+  });
+});
+
 describe('loops from bar numbers', () => {
   const model = makeModel([
     { onset: 0, notes: [note({ midi: 60 })] },

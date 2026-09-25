@@ -19,9 +19,9 @@ import { parseFrontMatter, renderMarkdown } from '../markdown';
 import { barsPerWindowFor, isTablet } from '../tablet';
 import { getImport } from '../../data/importStore';
 import { isSightReading } from '../../engine/drills/fromCatalog';
-import { generateSightReading, type SightReadingLevel } from '../../engine/sightReading';
-import type { CatalogItem, Lesson } from '../../curriculum/types';
-import { lessonForItem, masteryCriteriaFor } from '../../curriculum/selectors';
+import { generateSightReading, sightReadingOptionsFor } from '../../engine/sightReading';
+import type { CatalogItem, Curriculum, Lesson } from '../../curriculum/types';
+import { findLesson, lessonForItem, masteryCriteriaFor } from '../../curriculum/selectors';
 import { getMidiSettings } from '../../data/midiSettings';
 import {
   DEFAULT_SETTINGS,
@@ -38,7 +38,7 @@ import {
   techniqueMeasureFor,
 } from '../../engine/Scoring';
 import { nextLadderTempo } from '../../engine/PracticeEngine';
-import { recordRun } from '../../data/progressStore';
+import { MASTER_DAYS, recordRun, sessionsForItem, type RunResult } from '../../data/progressStore';
 import type { Mode, SessionScore } from '../../engine/types';
 import type { InputNoteEvent } from '../../midi/types';
 import { toMusicXml } from '../../score/mxl';
@@ -58,7 +58,7 @@ import { KeyRibbon } from '../KeyRibbon';
 import { waitingForLine } from '../expectedNote';
 import { stripRangeFor } from '../stripRange';
 import { onScreenDispose } from '../screenLifecycle';
-import { MODE_HELP, type ScoreMode } from '../help';
+import { MODE_HELP, SUMMARY_TEXT, type ScoreMode } from '../help';
 import { forgetUnfinished, rememberUnfinished, unfinishedFor } from '../../data/unfinishedRun';
 import { createHelpStrip, maybeFirstSight, openFirstSight, type HelpStrip } from '../helpStrip';
 import { openSheet } from '../widgets';
@@ -148,26 +148,34 @@ export const CONTROL_BAR_START_HIDE_MS = 700;
 /**
  * Sight-reading is the one drill kind that is notation (docs/05 §7–§8), so it
  * opens here rather than on the drill screen. Its parameters come from the
- * catalog item, exactly as the runtime drills' do.
+ * catalog item, exactly as the runtime drills' do — all of them, through
+ * `sightReadingOptionsFor` (T37): the key, the metre, the tempo and what the
+ * rung promises the phrase will contain, where this used to pass the level,
+ * the hands and the bars and nothing else.
  *
  * A fresh exercise is generated each time the screen is opened, because the
  * whole point is material the learner has not seen. "Again" on the summary
  * sheet re-runs the *loaded* score rather than regenerating, which is what
  * docs/05 §8 means by retrying a failed sight-read identically.
+ *
+ * The seed comes back with the music. Today's sight-read carries the day's
+ * seed in the route (`04` §2), so the day has one phrase; every other open
+ * draws one here, and the screen keeps it so the run can be recorded against
+ * the phrase it was (the session row's `seed`).
  */
-function generateSightReadingFor(item: CatalogItem, seed?: number): string {
-  const params = item.drill?.params ?? {};
-  const hands = params.hands === 'left' ? 'L' : params.hands === 'both' ? 'both' : 'R';
-  const level = (typeof params.level === 'number' ? params.level : 1) as SightReadingLevel;
-  return generateSightReading({
-    level,
-    hands,
-    ...(typeof params.bars === 'number' ? { bars: params.bars } : {}),
-    // Today's sight-read carries the day's seed in the route (`04` §2), so
-    // the day has one phrase; every other open is fresh.
-    ...(seed === undefined ? {} : { seed }),
-  }).musicXml;
+function generateSightReadingFor(item: CatalogItem, seed?: number): { musicXml: string; seed: number } {
+  const phrase = generateSightReading(
+    sightReadingOptionsFor(item.drill?.params ?? {}, seed ?? Math.floor(Math.random() * 0xffffffff)),
+  );
+  return { musicXml: phrase.musicXml, seed: phrase.seed };
 }
+
+/**
+ * How many of an item's stored runs are looked through for a phrase it has
+ * already been played on. Every run of a sight-reading row is one phrase, and
+ * the daily read adds one a day, so this is more than a year of them.
+ */
+const PHRASE_HISTORY = 500;
 
 export function ScoreScreen(router: Router): HTMLElement {
   const section = document.createElement('section');
@@ -331,6 +339,26 @@ export function ScoreScreen(router: Router): HTMLElement {
   let pressFrom: { x: number; y: number } | null = null;
   /** Runs finished since this exercise was generated (see the summary sheet). */
   let sightReadAttempts = 0;
+  /** The generated phrase's seed, on a sight-reading item (T37). */
+  let phraseSeed: number | undefined;
+  /**
+   * A stored run already carries this phrase's seed (T37).
+   *
+   * "First attempt" was a counter that started at nought on every visit, so
+   * re-opening today's read regenerated the identical phrase and recorded its
+   * first run as a first attempt again. The seed is on the session row now, so
+   * a retry on the same music is told from a new phrase across visits too.
+   */
+  let phraseSeen = false;
+  /**
+   * The run waiting for its *How did it go?* answer (T37).
+   *
+   * Without a judging input the sheet asks, and said `Recorded: Clean` while
+   * nothing was stored: the run was written before the question was drawn and
+   * the answer never reached it. So the run is held here and written with the
+   * answer, or without one the moment the sheet is left.
+   */
+  let pendingRecord: ((report?: 'rough' | 'ok' | 'clean') => void) | null = null;
   let input: FollowInput = 'none';
   /**
    * Which hand the learner is playing.
@@ -408,7 +436,7 @@ export function ScoreScreen(router: Router): HTMLElement {
    * stops moving and the run is never restarted, it could never be climbed out
    * of again. The pass is the difference.
    */
-  let ladderPassBase = { missed: 0, wrong: 0 };
+  let ladderPassBase = { missed: 0, wrong: 0, early: 0 };
   let loopBars: { from: number; to: number } | null = null;
   let loopAnchor: number | null = null;
   let sections: { label: string; fromMeasure: number; toMeasure: number }[] = [];
@@ -1712,6 +1740,8 @@ export function ScoreScreen(router: Router): HTMLElement {
    */
   function startRun(options: { latch?: boolean; preview?: boolean } = {}): void {
     if (!session || !model) return;
+    // The last run's record, if its self-report was never given (T37).
+    flushPendingRecord();
     // A one-bar preview ends when its loop comes round, and until T31 that was
     // the *only* thing that ended it: clear the loop under it and the run goes
     // to the end of the piece instead, `onFinished` returns without ending the
@@ -1725,7 +1755,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     summaryUp(false);
     // A new run keeps its own totals, so the ladder's first pass is measured
     // from nought again.
-    ladderPassBase = { missed: 0, wrong: 0 };
+    ladderPassBase = { missed: 0, wrong: 0, early: 0 };
     const midi = getMidiSettings();
     // A performance is one pass through. Looping a section mid-performance is
     // practising, and the flag would then be recording something that did not
@@ -1897,9 +1927,17 @@ export function ScoreScreen(router: Router): HTMLElement {
     // Not during a demonstration: `Hear it` judges nothing, so every lap of one
     // is trivially clean and the ladder would climb on playing nobody did.
     if (!ladderOn || hearing || !ladderApplies()) return;
+    // An early note is a mistake in a pass too (T37): it used to arrive here
+    // as a wrong note and a miss, and counting it once must not make it none.
     const clean =
-      score.missedTotal === ladderPassBase.missed && score.wrongNotesTotal === ladderPassBase.wrong;
-    ladderPassBase = { missed: score.missedTotal, wrong: score.wrongNotesTotal };
+      score.missedTotal === ladderPassBase.missed &&
+      score.wrongNotesTotal === ladderPassBase.wrong &&
+      (score.early ?? 0) === ladderPassBase.early;
+    ladderPassBase = {
+      missed: score.missedTotal,
+      wrong: score.wrongNotesTotal,
+      early: score.early ?? 0,
+    };
     const next = nextLadderTempo({
       enabled: true,
       tempoPct,
@@ -2215,27 +2253,44 @@ export function ScoreScreen(router: Router): HTMLElement {
   });
 
   /**
-   * Fills the side panel with the lesson text this piece belongs to.
+   * The rung this run is judged by (T37, the reviewer's D2 step).
    *
-   * The first lesson that lists the piece as an option — a piece is usually an
-   * option of one rung, and where it is an option of several the first is the
-   * one the ladder reaches first. Failure is silent and leaves the panel out:
-   * a score screen must open with or without its prose.
+   * The one that opened the screen (`?from=`) when one did, and only when none
+   * did the first rung listing the item. It was always the first listing: the
+   * minuet opened from `classical.3` was held to 3.4's numbers and stored as
+   * 3.4's run, and `c-major.both` opened from 2.1 was judged by 1.1 with 1.1's
+   * prose beside it. A `?from=` naming no rung the curriculum has falls back
+   * the same way.
+   */
+  function judgingRung(curriculum: Curriculum, id: string): Lesson | undefined {
+    const opened = fromRung === undefined ? undefined : findLesson(curriculum, fromRung);
+    return opened ?? lessonForItem(curriculum, id);
+  }
+
+  /**
+   * Finds the rung the run is judged by; see `judgingRung`. Failure is silent:
+   * the run is then judged against the learner's settings (see `rung`).
    */
   async function findRung(id: string): Promise<void> {
     try {
-      rung = lessonForItem(await loadCurriculum(), id);
+      rung = judgingRung(await loadCurriculum(), id);
     } catch {
       // Judged against the learner's settings instead; see `rung`'s comment.
     }
   }
 
+  /**
+   * Fills the side panel with the lesson text of the rung the run is judged
+   * by, so the prose beside the piece and the numbers it is held to are one
+   * rung's. Failure is silent and leaves the panel out: a score screen must
+   * open with or without its prose.
+   */
   async function fillSidePanel(target: CatalogItem): Promise<void> {
     const body = document.getElementById('score-side-body');
     if (!body) return;
     try {
       const curriculum = await loadCurriculum();
-      const found = lessonForItem(curriculum, target.id);
+      const found = judgingRung(curriculum, target.id);
       if (!found) return;
       const summary = document.getElementById('score-side-summary');
       // The rung's title alone. This is the heading over its text beside the
@@ -2454,54 +2509,116 @@ export function ScoreScreen(router: Router): HTMLElement {
         ? { ...measured, passed: false, masterEligible: false }
         : measured;
 
-    // Recorded before the sheet is drawn, and not awaited: the numbers are
-    // already final, and a slow write should not delay the learner seeing
-    // them. A failed write is reported on the sheet rather than swallowed —
-    // practice history is the one thing here that cannot be regenerated.
     // docs/05 §7: a sight-reading drill is scored on the first attempt only.
     // After that the material has been seen, and a second run measures
-    // something else entirely.
-    const sightReadRepeat = item !== undefined && isSightReading(item) && sightReadAttempts > 0;
+    // something else entirely. Per phrase, not per visit (T37): a phrase whose
+    // seed is already on a stored run has been seen, however the screen was
+    // reached again.
+    const sightReadRepeat =
+      item !== undefined && isSightReading(item) && (sightReadAttempts > 0 || phraseSeen);
     if (sightReadRepeat) {
       status.textContent = 'Sight-reading counts on the first attempt only — this run is not recorded.';
     }
     if (item !== undefined) sightReadAttempts += 1;
 
-    if (item && !sightReadRepeat && mode !== 'listen' && mode !== 'free') {
-      void recordRun({
-        itemId: item.id,
-        // Which rung judged it. `SessionRow` has carried the field since the
-        // store was written and nothing filled it from here, so a stored run
-        // could not say which pair of numbers it had been held to.
-        ...(rung === undefined ? {} : { lessonId: rung.id }),
-        // The generated phrase's seed, so the store can tell Today's read
-        // (the run carrying the day's seed, `04` §2) from any other run.
-        ...(router.route.seed === undefined ? {} : { seed: router.route.seed }),
-        mode,
-        tempoPct: score.tempoPct,
-        accuracy: score.accuracy,
-        accuracyEstimated: score.accuracyEstimated,
-        wrongNotes: score.wrongNotesTotal,
-        missed: score.missedTotal,
-        durationMs: score.durationMs,
-        passed: outcome.passed,
-        masterEligible: outcome.masterEligible,
-        ...(performanceRun ? { performance: true } : {}),
-        ...(rhythmRun ? { rhythmOnly: true } : {}),
-      }).catch((cause: unknown) => {
-        status.textContent = `Could not save this run: ${String(cause)}`;
-      });
+    // Without a judging input the learner is asked how it went instead of
+    // being shown a number they did not earn (`02` Part G), and the answer is
+    // part of the record.
+    const askSelfReport = input === 'none';
+    const title = document.createElement('h2');
+    const run: RunResult | null =
+      item && !sightReadRepeat && mode !== 'listen' && mode !== 'free'
+        ? {
+            itemId: item.id,
+            // Which rung judged it: the one that opened the screen, where one
+            // did (`judgingRung`).
+            ...(rung === undefined ? {} : { lessonId: rung.id }),
+            // The generated phrase's seed, so the store can tell Today's read
+            // (the run carrying the day's seed, `04` §2) from any other run,
+            // and a retry on the same music from a new phrase (T37).
+            ...(phraseSeed === undefined ? {} : { seed: phraseSeed }),
+            mode,
+            tempoPct: score.tempoPct,
+            accuracy: score.accuracy,
+            accuracyEstimated: score.accuracyEstimated,
+            wrongNotes: score.wrongNotesTotal,
+            missed: score.missedTotal,
+            durationMs: score.durationMs,
+            passed: outcome.passed,
+            masterEligible: outcome.masterEligible,
+            // What the run observed about tempo (T37): nothing in Wait, and
+            // nothing with no input listening, whatever the slider said.
+            tempoMeasured: outcome.tempoMeasured && !askSelfReport,
+            ...(performanceRun ? { performance: true } : {}),
+            ...(rhythmRun ? { rhythmOnly: true } : {}),
+          }
+        : null;
+
+    // Written before the sheet is drawn where there is nothing to ask, and not
+    // awaited: the numbers are already final, and a slow write should not
+    // delay the learner seeing them. A failed write is reported on the sheet
+    // rather than swallowed — practice history is the one thing here that
+    // cannot be regenerated.
+    function save(result: RunResult, then?: () => void): void {
+      void recordRun(result)
+        .then((row) => {
+          // The heading follows the store (T37): a master-standard run reads
+          // *Passed* until the row it was written into says what it came to,
+          // so the sheet can never say *Mastered* before the store does.
+          if (result.masterEligible && !rhythmRun) {
+            const days = Math.min(MASTER_DAYS, row.masteredOn?.length ?? 1);
+            title.textContent =
+              row.status === 'mastered'
+                ? 'Mastered'
+                : `Mastery run ${String(days)} of ${String(MASTER_DAYS)}`;
+          }
+          then?.();
+        })
+        .catch((cause: unknown) => {
+          status.textContent = `Could not save this run: ${String(cause)}`;
+        });
+    }
+    if (run && askSelfReport) {
+      pendingRecord = (report) => {
+        pendingRecord = null;
+        if (report === undefined) {
+          save(run);
+          return;
+        }
+        // "Clean" is a pass in the learner's own judgement, which is what
+        // Part G makes a run without MIDI; anything else is practice that
+        // happened. Never a master-standard run: nothing measured one.
+        save(
+          {
+            ...run,
+            selfReport: report,
+            passed: report === 'clean',
+            ...(report === 'clean' ? { selfPassed: true } : {}),
+            masterEligible: false,
+          },
+          () => {
+            status.textContent =
+              report === 'clean' ? SUMMARY_TEXT.selfReportClean : SUMMARY_TEXT.selfReportOther(report);
+          },
+        );
+      };
+    } else if (run) {
+      save(run);
     }
 
-    const title = document.createElement('h2');
     // Named for what it was, not for what it was not: "Run finished" over a
-    // rhythm run reads as a piece that failed to pass.
+    // rhythm run reads as a piece that failed to pass, and over a Wait for me
+    // run whose notes were right it reads as a failure the learner did not
+    // have (T37): that run had every note it needed and nothing it could pass
+    // on, so it is headed for the half it did.
+    const notesReady =
+      mode === 'wait' && !outcome.passed && score.accuracy >= criteria.passAccuracy;
     title.textContent = rhythmRun
       ? 'Rhythm run'
-      : outcome.masterEligible
-        ? 'Mastered'
-        : outcome.passed
-          ? 'Passed'
+      : outcome.passed
+        ? 'Passed'
+        : notesReady
+          ? SUMMARY_TEXT.waitNotesReady
           : 'Run finished';
     sheet.appendChild(title);
 
@@ -2518,13 +2635,25 @@ export function ScoreScreen(router: Router): HTMLElement {
     // Both counters, because the modes keep score differently: Wait counts
     // `correctSteps` and can finish a clean run with `hits` at nought, while
     // Tempo counts `hits` against the expected pitches (`engine/types.ts`).
-    const heard = score.hits > 0 || score.correctSteps > 0 || score.wrongNotesTotal > 0;
+    const heard =
+      score.hits > 0 || score.correctSteps > 0 || score.wrongNotesTotal > 0 || (score.early ?? 0) > 0;
     // First, so it is read before the accuracy it qualifies.
     if (rhythmRun) {
       addStat(lines, 'Judged', 'Rhythm only — the notes were not, so this does not count as playing the piece');
     }
     addStat(lines, 'Accuracy', `${Math.round(score.accuracy * 100)}%${score.accuracyEstimated === true ? ' (estimated)' : ''}`);
-    addStat(lines, 'Tempo', `${Math.round(score.tempoPct)}% of written`);
+    // The tempo is a measurement only where the run kept one (T37). In Wait
+    // for me the slider is a setting nobody played to, and it used to be
+    // printed as "70% of written" and passed on; now the line says what the
+    // mode does not judge, and where a pass is played. A piece whose tempo the
+    // converter made up (`tempo-defaulted`) is a share of that suggestion, not
+    // of anything written.
+    const ofWhat = item?.tags?.includes('tempo-defaulted') === true ? 'of the suggested tempo' : 'of written';
+    addStat(
+      lines,
+      'Tempo',
+      outcome.tempoMeasured ? `${String(Math.round(score.tempoPct))}% ${ofWhat}` : SUMMARY_TEXT.waitTempo,
+    );
     // Where the ladder got to. The Tempo line above is the tempo of the *last*
     // pass, which is the same number — said again, under its own name, because
     // "did the ladder go up or down over the session?" is the question the
@@ -2536,11 +2665,17 @@ export function ScoreScreen(router: Router): HTMLElement {
     // entirely the ladder's doing. The toggle cannot be reached without a loop
     // in the first place, so this cannot say "ended at" about a ladder that
     // never ran.
-    if (ladderOn) addStat(lines, 'Ladder', `ended at ${String(tempoPct)} % of written`);
+    if (ladderOn) addStat(lines, 'Ladder', `ended at ${String(tempoPct)} % ${ofWhat}`);
     if (heard) {
       addStat(lines, 'Wrong notes', String(score.wrongNotesTotal));
     }
     addStat(lines, 'Missed', String(score.missedTotal));
+    // A right note that came before its beat is its own observation (T37): it
+    // used to be a wrong note *and* a miss, and neither line said "early".
+    const early = score.early ?? 0;
+    if (early > 0) {
+      addStat(lines, 'Early', `${String(early)} right note${early === 1 ? '' : 's'} played too soon`);
+    }
     // Beside the accuracy it is deliberately not part of, and said in words
     // rather than as a bare number: "82%" under "Legato" would be read as a
     // second accuracy, which is exactly the confusion these exist to avoid.
@@ -2572,12 +2707,16 @@ export function ScoreScreen(router: Router): HTMLElement {
     // The bars that went worst, by printed number, so the learner knows where
     // to look before choosing `Loop the weak bars` (`08` §6.2).
     const weakest = [...score.hotSpots]
-      .filter((spot) => spot.misses + spot.wrongs > 0)
-      .sort((a, b) => b.misses + b.wrongs - (a.misses + a.wrongs))
+      .filter((spot) => spotDamage(spot) > 0)
+      .sort((a, b) => spotDamage(b) - spotDamage(a))
       .slice(0, 3)
       .map((spot) => printedBar(model?.steps.find((s) => s.measureIndex === spot.measureIndex)?.sourceMeasureIndex ?? spot.measureIndex));
     if (weakest.length > 0) addStat(lines, 'Weakest bars', [...new Set(weakest)].sort((a, b) => a - b).join(', '));
-    if (score.timing && heard) {
+    // Only where timing was measured (T37). Wait for me keeps none — the
+    // engine writes a note's lateness only on the clock — and the line used to
+    // print "0 ms off the beat on average" over every clean Wait run, which a
+    // learner reads as perfect timing nobody listened for.
+    if (heard && score.timing.n > 0) {
       // "mean" is a statistician's word on a summary a learner reads after
       // playing (owner, 2026-09-22: the wording is "weird and unhelpful").
       addStat(
@@ -2613,6 +2752,7 @@ export function ScoreScreen(router: Router): HTMLElement {
         ? [button('Loop the weak bars', () => loopWeakBars(score), 'summary-loop')]
         : []),
       button('Done', () => {
+        flushPendingRecord();
         summaryUp(false);
         leaveScore();
       }, 'summary-done'),
@@ -2620,25 +2760,50 @@ export function ScoreScreen(router: Router): HTMLElement {
     sheet.appendChild(actions);
 
     // Without a judging input there is nothing to be accurate *about*, so the
-    // learner says how it went instead of being shown a number they did not earn.
-    if (input === 'none' || mode === 'listen') {
+    // learner says how it went instead of being shown a number they did not
+    // earn — and the answer is recorded with the run, as self-assessed (`02`
+    // Part G, T37). Only where there is a run to record it with: a repeated
+    // sight-read is not recorded, so it is not asked.
+    if (askSelfReport && pendingRecord) {
       const ask = document.createElement('div');
       ask.className = 'summary-selfreport';
       ask.id = 'summary-selfreport';
       const label = document.createElement('p');
       label.textContent = 'How did it go?';
       ask.appendChild(label);
-      for (const answer of ['Rough', 'OK', 'Clean']) {
-        ask.appendChild(
-          button(answer, () => {
-            ask.dataset.answered = answer;
-            status.textContent = `Recorded: ${answer}`;
-          }, `summary-self-${answer.toLowerCase()}`),
-        );
+      const answers: { label: string; report: 'rough' | 'ok' | 'clean' }[] = [
+        { label: 'Rough', report: 'rough' },
+        { label: 'OK', report: 'ok' },
+        { label: 'Clean', report: 'clean' },
+      ];
+      const choices: HTMLButtonElement[] = [];
+      for (const answer of answers) {
+        const choice = button(answer.label, () => {
+          if (!pendingRecord) return;
+          ask.dataset.answered = answer.label;
+          // One answer per run: the others go quiet once it is written.
+          for (const other of choices) other.disabled = true;
+          pendingRecord(answer.report);
+        }, `summary-self-${answer.report}`);
+        choices.push(choice);
+        ask.appendChild(choice);
       }
       sheet.appendChild(ask);
     }
     summaryUp(true);
+  }
+
+  /**
+   * Writes a run still waiting for its self-report, without one (T37).
+   *
+   * Called wherever the sheet is left — another run, Done, leaving the screen
+   * — so a learner who does not answer still has the practice on the record,
+   * exactly as a run with a piano connected does.
+   */
+  function flushPendingRecord(): void {
+    const flush = pendingRecord;
+    pendingRecord = null;
+    flush?.();
   }
 
   /**
@@ -2676,12 +2841,17 @@ export function ScoreScreen(router: Router): HTMLElement {
     list.append(dt, dd);
   }
 
+  /** What went wrong in a bar: missed, wrong and early notes alike (T37). */
+  function spotDamage(spot: SessionScore['hotSpots'][number]): number {
+    return spot.misses + spot.wrongs + (spot.early ?? 0);
+  }
+
   /** docs/05 §6: build a loop from the bars with the most misses last run. */
   function loopWeakBars(score: SessionScore): void {
     const worst = [...score.hotSpots]
-      .sort((a, b) => b.misses + b.wrongs - (a.misses + a.wrongs))
+      .sort((a, b) => spotDamage(b) - spotDamage(a))
       .at(0);
-    if (!worst || worst.misses + worst.wrongs === 0) {
+    if (!worst || spotDamage(worst) === 0) {
       status.textContent = 'No weak bars to loop — nothing went wrong.';
       return;
     }
@@ -3151,7 +3321,21 @@ export function ScoreScreen(router: Router): HTMLElement {
       // that the learner has not seen it before.
       let musicXml: string;
       if (sightReading) {
-        musicXml = generateSightReadingFor(item, router.route.seed);
+        const phrase = generateSightReadingFor(item, router.route.seed);
+        musicXml = phrase.musicXml;
+        phraseSeed = phrase.seed;
+        const seen = phrase.seed;
+        const readerId = item.id;
+        // A run already stored on this phrase makes the next one a retry, not
+        // a first attempt (T37). Asked now, while the score is being engraved,
+        // so the answer is in long before a run can finish.
+        void sessionsForItem(readerId, PHRASE_HISTORY)
+          .then((rows) => {
+            if (rows.some((row) => row.seed === seen)) phraseSeen = true;
+          })
+          .catch(() => {
+            // No history to read is a phrase nobody has recorded.
+          });
       } else if (item.imported) {
         const row = await getImport(item.id);
         if (typeof row?.data !== 'string') throw new Error('the imported file is missing');
@@ -3489,6 +3673,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     // `onFinished`, so tearing the screen down draws a summary — which would
     // otherwise forget the very run this is about to remember.
     leaving = true;
+    // A run still waiting for *How did it go?* is written as it stands: the
+    // learner left the question, not the practice (T37).
+    flushPendingRecord();
     // Where the run was left, if it was left. Read off the same step the bar
     // readout reads, so the number the offer prints next time is the number
     // the screen was showing when the learner walked away.

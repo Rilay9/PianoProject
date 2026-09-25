@@ -49,6 +49,17 @@ export interface WriterNote {
    * marks the group's first and last note, which is what draws the bracket.
    */
   tuplet?: { actual: number; normal: number; at?: 'start' | 'stop' };
+  /**
+   * The note's place in a beam, where one is written (T37).
+   *
+   * Nothing was, so every generated eighth carried its own flag — in the
+   * reading drill on rung 2.2, whose lesson teaches that "the beaming is a
+   * kindness: it groups the notes into beats", and in 6/8, where the groups of
+   * three *are* the metre. One level: the engraver draws a sixteenth's second
+   * beam from the durations. Absent writes nothing, so every caller that does
+   * not set it writes exactly what it wrote before.
+   */
+  beam?: 'begin' | 'continue' | 'end';
 }
 
 export interface WriterMeasure {
@@ -205,6 +216,8 @@ function noteXml(
     lines.push(`${indent}  </time-modification>`);
   }
   if (note.staff !== undefined) lines.push(`${indent}  <staff>${note.staff}</staff>`);
+  // After <staff> and before <notations>, per the MusicXML DTD.
+  if (note.beam !== undefined) lines.push(`${indent}  <beam number="1">${note.beam}</beam>`);
   const notations: string[] = [];
   if (note.tie === 'stop' || note.tie === 'both') notations.push(`<tied type="stop"/>`);
   if (note.tie === 'start' || note.tie === 'both') notations.push(`<tied type="start"/>`);

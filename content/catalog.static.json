@@ -723,7 +723,10 @@
       "params": {
         "level": 1,
         "bars": 4,
-        "hands": "right"
+        "hands": "right",
+        "fifths": 0,
+        "timeSig": "4/4",
+        "skips": true
       }
     },
     "source": {
@@ -1535,7 +1538,10 @@
       "params": {
         "level": 2,
         "bars": 4,
-        "hands": "both"
+        "hands": "both",
+        "fifths": 0,
+        "timeSig": "4/4",
+        "eighths": true
       }
     },
     "source": {
@@ -1886,7 +1892,14 @@
       "params": {
         "level": 3,
         "bars": 8,
-        "hands": "both"
+        "hands": "both",
+        "fifths": 0,
+        "timeSig": [
+          "6/8",
+          "4/4"
+        ],
+        "syncopation": true,
+        "triplets": true
       }
     },
     "source": {
@@ -1934,7 +1947,9 @@
       "params": {
         "level": 1,
         "bars": 4,
-        "hands": "left"
+        "hands": "left",
+        "fifths": 0,
+        "timeSig": "4/4"
       }
     },
     "source": {
@@ -1981,7 +1996,11 @@
       "params": {
         "level": 2,
         "bars": 4,
-        "hands": "right"
+        "hands": "right",
+        "fifths": 0,
+        "timeSig": "4/4",
+        "eighths": true,
+        "skips": true
       }
     },
     "source": {
@@ -2028,7 +2047,10 @@
       "params": {
         "level": 4,
         "bars": 8,
-        "hands": "both"
+        "hands": "both",
+        "fifths": 0,
+        "timeSig": "4/4",
+        "accidentals": true
       }
     },
     "source": {
@@ -3880,7 +3902,18 @@
       "params": {
         "level": 5,
         "bars": 8,
-        "hands": "both"
+        "hands": "both",
+        "fifths": [
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3
+        ],
+        "timeSig": "4/4",
+        "syncopation": true
       }
     },
     "source": {
@@ -3928,7 +3961,20 @@
       "params": {
         "level": 6,
         "bars": 8,
-        "hands": "both"
+        "hands": "both",
+        "fifths": [
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "timeSig": "4/4",
+        "triplets": true
       }
     },
     "source": {
@@ -3977,7 +4023,20 @@
       "params": {
         "level": 7,
         "bars": 8,
-        "hands": "both"
+        "hands": "both",
+        "fifths": [
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "timeSig": "4/4",
+        "triplets": true
       }
     },
     "source": {

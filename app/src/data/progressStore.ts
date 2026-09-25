@@ -40,12 +40,26 @@ export interface RunResult {
   rhythmOnly?: boolean;
   /** The pass is the owner's word, not a measurement. */
   selfPassed?: boolean;
+  /**
+   * Whether the run measured a tempo (T37). `false` on a Wait for me run and on
+   * a run nothing was listening to: their `tempoPct` is a setting, so it never
+   * becomes the item's best tempo. Absent reads as the old behaviour, for the
+   * writers that do not say.
+   */
+  tempoMeasured?: boolean;
 }
 
 export const DEFAULT_WEEKLY_GOAL_MINUTES = 150;
 
 /** docs/02 Part G: review comes back 1, 3, 7 and 21 days after a pass. */
 export const REVIEW_INTERVALS_DAYS = [1, 3, 7, 21];
+
+/**
+ * docs/02 Part G: the master standard on this many different days is mastery.
+ * The sheet's "Mastery run 1 of 2" reads it, and the heading is taken from the
+ * row `recordRun` returns, so it can never say *Mastered* before the store has.
+ */
+export const MASTER_DAYS = 2;
 
 /**
  * The date a moment belongs to, **where the owner is**.
@@ -59,7 +73,7 @@ export const REVIEW_INTERVALS_DAYS = [1, 3, 7, 21];
  * is decided.
  *
  * Local, therefore, and the same rule everywhere a day is named — `passedOn`
- * (mastery wants two passes on different *days*), the minutes, and the Progress
+ * (mastery wants the master standard on two different *days*), the minutes, and the Progress
  * screen's heat map, which walks days with local arithmetic and was keying them
  * with the UTC formatter.
  */
@@ -118,8 +132,10 @@ export async function allProgress(): Promise<ProgressRow[]> {
  * Records one run: updates the item's progress, appends a session row, and
  * adds the minutes to today's total.
  *
- * `master` needs two passes on *different days* (docs/02 Part G), which is why
- * `passedOn` is a list of dates and not a count.
+ * `master` needs the master standard on two *different days* (docs/02 Part
+ * G), which is why `masteredOn` is a list of dates and not a count, and why it
+ * is a list of its own: it used to be read off `passedOn`, so one
+ * master-standard run after any earlier pass was "mastered" (T37).
  */
 export async function recordRun(result: RunResult, now = new Date()): Promise<ProgressRow> {
   const row = { ...(await getProgress(result.itemId)) };
@@ -134,15 +150,25 @@ export async function recordRun(result: RunResult, now = new Date()): Promise<Pr
   row.lastPracticedAt = now.toISOString();
   row.minutes += result.durationMs / 60_000;
   row.bestAccuracy = Math.max(row.bestAccuracy, result.accuracy);
-  if (result.passed) row.bestTempoPct = Math.max(row.bestTempoPct, result.tempoPct);
+  // A tempo nobody played to is not a best tempo (T37): a Wait run's number is
+  // the slider's.
+  if (result.passed && result.tempoMeasured !== false) {
+    row.bestTempoPct = Math.max(row.bestTempoPct, result.tempoPct);
+  }
 
   // A pass the owner asserted rather than the app measured keeps saying so,
   // and one that was measured clears the flag: playing it properly is a
   // stronger claim than having said you could, and it should replace it.
   if (result.passed) row.selfPassed = result.selfPassed ?? false;
   if (result.passed && !row.passedOn.includes(date)) row.passedOn.push(date);
-  if (result.masterEligible && row.passedOn.length >= 2) row.status = 'mastered';
-  else if (result.passed) row.status = row.status === 'mastered' ? 'mastered' : 'passed';
+  // The master standard, and only the master standard, counts towards
+  // mastery; a mastered row stays mastered (rows mastered under the old rule
+  // are not taken back).
+  const masteredOn = [...(row.masteredOn ?? [])];
+  if (result.masterEligible && !masteredOn.includes(date)) masteredOn.push(date);
+  if (masteredOn.length > 0) row.masteredOn = masteredOn;
+  if (row.status === 'mastered' || masteredOn.length >= MASTER_DAYS) row.status = 'mastered';
+  else if (result.passed) row.status = 'passed';
   else if (row.status === 'new') row.status = 'started';
 
   memory.set(row.itemId, row);
@@ -163,6 +189,8 @@ export async function recordRun(result: RunResult, now = new Date()): Promise<Pr
     ...(result.bpm === undefined ? {} : { bpm: result.bpm }),
     ...(result.performance ? { performance: true } : {}),
     ...(result.rhythmOnly ? { rhythmOnly: true } : {}),
+    ...(result.tempoMeasured === undefined ? {} : { tempoMeasured: result.tempoMeasured }),
+    ...(result.seed === undefined ? {} : { seed: result.seed }),
   };
 
   const db = await openDatabase();
@@ -490,21 +518,56 @@ export interface ReviewItem {
  */
 export function reviewQueue(rows: ProgressRow[], now = new Date()): ReviewItem[] {
   const due: ReviewItem[] = [];
+  const todayKey = dayKey(now);
   for (const row of rows) {
     if (row.status !== 'passed') continue;
     const first = row.passedOn[0];
     if (!first) continue;
-    const daysSince = Math.floor((now.getTime() - new Date(first).getTime()) / 86_400_000);
+    // Calendar days between two day keys, both where the learner lives (T37).
+    // This was `new Date(first)`, which reads `YYYY-MM-DD` as *UTC* midnight:
+    // in New York a piece passed at 20:30 was due for review at 20:45 the same
+    // evening, and every later step came four to seven hours early. `dayKey`
+    // was fixed for exactly this and this reader was missed.
+    const daysSince = daysBetween(first, todayKey);
+    if (daysSince === null) continue;
     const step = REVIEW_INTERVALS_DAYS.filter((interval) => daysSince >= interval).length;
     if (step === 0) continue;
     // Already reviewed since the interval came due? `passedOn` grows on each
     // pass, so more passes than steps means it is up to date.
     if (row.passedOn.length > step) continue;
     const interval = REVIEW_INTERVALS_DAYS[step - 1] ?? 21;
-    const dueAt = new Date(new Date(first).getTime() + interval * 86_400_000).toISOString();
+    const dueAt = localMidnight(first, interval)?.toISOString() ?? now.toISOString();
     due.push({ itemId: row.itemId, dueAt, step });
   }
   return due.sort((a, b) => a.dueAt.localeCompare(b.dueAt));
+}
+
+/** A `YYYY-MM-DD` day key's parts, or null for anything else. */
+function dayParts(key: string): [number, number, number] | null {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(key);
+  if (!match) return null;
+  return [Number(match[1]), Number(match[2]), Number(match[3])];
+}
+
+/**
+ * Whole calendar days from one day key to another.
+ *
+ * Counted on the calendar, not on the clock: both keys are turned into the same
+ * kind of midnight (UTC, as a pure number) so a day with a clock change in it
+ * is still one day, and no time zone enters the sum at all.
+ */
+function daysBetween(from: string, to: string): number | null {
+  const a = dayParts(from);
+  const b = dayParts(to);
+  if (!a || !b) return null;
+  return Math.round((Date.UTC(b[0], b[1] - 1, b[2]) - Date.UTC(a[0], a[1] - 1, a[2])) / 86_400_000);
+}
+
+/** Local midnight `plusDays` after a day key: when a review step comes due. */
+function localMidnight(key: string, plusDays: number): Date | null {
+  const parts = dayParts(key);
+  if (!parts) return null;
+  return new Date(parts[0], parts[1] - 1, parts[2] + plusDays);
 }
 
 /**

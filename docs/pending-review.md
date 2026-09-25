@@ -14953,3 +14953,273 @@ Chain 1, on the build before the second round, was window-rule 1, layout 1, rota
 - `docs/decisions/2026-09-23-score-window-strategy.md` §6
 - The pictures are in `build/tour/T38/{run-off,compact}/`. The probe was deleted.
 
+
+### Entry 66 — T37: nothing displayed or recorded that the run did not measure, and the sight-reading rungs given what they promise (2026-09-25)
+
+**Judgement.** Yes, as far as the ten items reach: a Wait for me run no longer carries a tempo
+into the pass, the best tempo, master eligibility or the sheet; *Mastered* appears only when the
+store has two master-standard days; the Timing line appears only over timing that was taken; the
+self-report that says *Recorded* is on the session row; the run is judged and stored by the rung
+that opened it; the review calendar counts the learner's days; and every sight-reading row now
+writes, in every phrase, what the rungs listing it say it trains, and nothing the earliest of
+them has not taught. **What a teacher would say the Wait sheet tells a learner:** *you have the
+notes; the pulse was not judged here; play it in Keep tempo to pass* — the sheet is headed
+**Notes ready**, the Tempo line reads *Not judged in Wait for me — to pass, play it in Keep
+tempo*, and there is no timing line. That is the traditional order of practice (learn it
+slowly, then play it in time), said in the app's words; a teacher would call "ready" generous
+at the rung's 90 % and right at 100 %. **What I looked at:** the Wait sheet rendered at 342 px
+after a clean Hot Cross Buns run (the Tempo sentence wraps to three lines and the sheet fits),
+and four generated phrases engraved at 1100 px: a 6/8 phrase, a level-6 triplet with a rest in
+it (E major), a level-4 accidental, and a level-2 phrase. Looking found two things no test had:
+**no generated eighth was ever beamed** (fixed, see item 7), and my first accidental rule wrote
+F♯ as a half note on beat three over a C chord (tightened). Nothing was heard.
+
+**Deviations, each with its reason.** (1) `app/src/engine/types.ts` is not in the owned list:
+item 5 needed one optional field on `SessionScore` (`early`) and one on `HotSpot`. (2)
+`content/lessons/0.3.md` is not in the owned list: it said "Both modes score you … a pass is 90 %
+at 80 % of the written tempo; mastered is … once you have passed the piece on two different
+days", which items 1 and 2 made false; two sentences rewritten (never teach wrong), content
+rebuilt. (3) Item 3's Tempo line in Wait is *omitted as a number* and replaced by the sentence,
+rather than shown as the setting: a setting printed beside *Accuracy* reads as a result. (4)
+`app/src/engine/musicXmlWriter.ts` is not in the owned list: `WriterNote.beam` (optional,
+written as `<beam number="1">` after `<staff>`) was the only way to beam generated phrases;
+every other caller of the writer is unchanged because it never sets the field.
+
+## Done — per item: mechanism, the discriminating test, the red line, before → after
+
+**1. Wait mode carries no tempo.** *Mechanism:* `evaluateOutcome` compared `score.tempoPct` —
+in Wait the slider (`PracticeEngine.buildScore` passes `options.tempoPct`) — with the floor for
+Wait and Tempo alike. Now `Outcome.tempoMeasured = measuresTempo(mode)` (Keep tempo only); a run
+without it meets a criterion only if `passTempoPct <= 0`, and is never master-eligible. The
+Score screen records `tempoMeasured` (false in Wait and with no input listening) on
+`RunResult`/`SessionRow`; `recordRun` never takes a best tempo from a run with
+`tempoMeasured: false`. No rung's floor was lowered. *Test:* `engineScoring.test.ts` "cannot
+meet a tempo floor, whatever the slider said"; `scoreSummaryTruth` item 1; `recordTruth` "its
+slider value never becomes the best tempo". *Red line (old code):* `expected true to be false`
+(passed); `expected 120 to be +0` (best tempo). *Before → after:* a clean Wait run at slider 100
+→ *Mastered*, "100% of written", recorded passed + master-eligible → *Notes ready*, *Not judged
+in Wait for me — to pass, play it in Keep tempo*, recorded `passed: false, masterEligible:
+false, tempoMeasured: false`.
+
+**2. Mastery is two master-standard runs on different days.** *Mechanism:* `recordRun` set
+`mastered` when `masterEligible && passedOn.length >= 2`, so any earlier pass day counted. Now
+`ProgressRow.masteredOn` holds master-standard days apart from `passedOn`; `mastered` at
+`MASTER_DAYS` (2) of them (rows mastered under the old rule are kept). The sheet heads a
+master-standard run *Passed* and replaces it with the row `recordRun` returns: *Mastery run 1 of
+2* or *Mastered*. *Test:* `recordTruth` "a pass one day and one master-standard run the next is
+not yet mastery"; `scoreSummaryTruth` "heads a first master-standard day …". *Red line:*
+`expected 'mastered' to be 'passed'`; the sheet's heading was *Mastered* before the write.
+*Before → after:* pass Mon + 97 % at 100 % Tue → mastered → passed, `masteredOn: [Tue]`, sheet
+*Mastery run 1 of 2*.
+
+**3. The Timing and Tempo lines.** *Mechanism:* `if (score.timing && heard)` — `timing` always
+exists and in Wait `n` is 0, so "0 ms off the beat on average, 0% of them early" printed over
+every clean Wait run (reproduced: `timingStats([])` gives `n: 0, meanMs: 0`). Now `timing.n >
+0`. Tempo: measured → "N% of written", or "N% of the suggested tempo" where the item is tagged
+`tempo-defaulted` (the Ladder line too); not measured → the sentence. *Test:*
+`scoreSummaryTruth` items 1 and 3. *Red line:* the timing stat present; "80% of written" where
+"80% of the suggested tempo" was expected.
+
+**4. The self-report is stored.** *Mechanism:* the run was written before *How did it go?* was
+drawn and the answer set only the status text. Now, with no judging input, the run waits in
+`pendingRecord` and is written with the answer (`selfReport`, *Clean* = `passed: true,
+selfPassed: true`, never master-eligible, Part G), or without one when the sheet is left (a new
+run, Done, leaving the screen). The question is not asked for a run that is not recorded. The
+status is set after the write resolves. *Test:* `scoreSummaryTruth` item 4 (three cases);
+`score.screen.spec.ts` reads the stored session row. *Red line:* `recordRun` called before the
+answer, without `selfReport`.
+
+**6. The rung that opened the screen judges the run.** *Mechanism:* `findRung` used
+`lessonForItem` (the first rung listing the item) and ignored `fromRung`. Now `judgingRung` takes
+`findLesson(curriculum, fromRung)` first; the side panel uses the same rung. Completion is
+untouched. *Test:* `scoreSummaryTruth` "opened from 2.1 …". *Red line:* `lessonId` `1.1` where
+`2.1` was expected, and `passed: true` at 93 % against 2.1's 97 %.
+
+**9. The review queue counts days where the learner lives.** *Mechanism:* `new Date('YYYY-MM-DD')`
+is UTC midnight. Now `daysBetween(dayKey, dayKey)` on the calendar and `localMidnight` for
+`dueAt`. *Test:* `recordTruth`, three zones. *Red line:* New York: `expected [ { itemId: 'a' … } ]
+to deeply equal []` at 20:45 the evening of the pass; Tokyo: `expected [] to deeply equal [ 1 ]`
+at 07:00 the next morning (the old reading made east-of-UTC reviews late, too).
+
+**7. Sight-reading receives what the curriculum promises.** *Mechanism:* the Score screen passed
+level, hands, bars and seed; `fifths`, `timeSig`, `bpm` were never read (the generator honoured
+them — confirmed with one phrase each). `sightReadingOptionsFor` is now the one reader of a
+row's params. Promised features are options that both allow and *guarantee* a feature: a phrase
+without it is redrawn from a derived seed (attempt 0 is the seed itself). Level 1 cannot write a
+skip (`maxLeap: 1`; 0 of 500 seeds) — **decision:** a level-1 `skips` option rather than a new
+level, because the rung needs only the thirds, a new level would renumber every row and title,
+and the option keeps C position, quarters/halves/wholes and the level's other constraints
+exactly; `skips` asks for a step *and* a third in each phrase. Levels 1–4 now place every note
+where its length belongs (the old draw's off-beat quarter-or-longer notes: 74 % of level-2
+phrases, reproduced; now 0 %); 6/8 is written in dotted-quarter beats. Triplet rests keep their
+`<time-modification>` (87 %/89 % malformed, reproduced; now 0 of 500 each; the bracket was seen
+drawn over a rest on screen). **Beams** (found by looking): short notes are beamed by the beat,
+a triplet as its own group — rung 2.2's concepts include `beams` and its lesson says "the
+beaming is a kindness"; 6/8 is now drawn in beamed groups of three. **The accidental** (row 4)
+is the raised fourth rising to the fifth, short, off beats one and three, reached by step, never
+over IV: F♯ as a passing note E–F♯–G or a neighbour G–F♯–G. The nine rows' params are in `05`
+§8's table. *Measured the trace's way, seeds 1–500 per row, after:* row 1 a third in 100 %
+(was 0 %); rows 2-right and 2 eighths 100 %, off-beat long notes 0 % (was 74 %); row 3 in 6/8
+49 %, the 4/4 half with triplets and the syncopated figure 51 % (was 4/4 only, neither); row 4
+an accidental 100 % (was 0 %); rows 5–7 keys spread across −3…3 / −4…4 (was C only);
+malformed triplet rests 0 % (was 87/89 %). *Test:* `sightReadingPromises.test.ts` (built rows, 40
+seeds, promises from the rungs' lessons and the rows' tags, absences from the curriculum order);
+`scoreSummaryTruth` "is written in the key, metre and tempo its row names". *Red lines, old
+generator with the old option mapping (14 of 30 red):* `sight-reading-1 (1.5): a skip (a third)
+in 0 of 40 phrases`; `sight-reading-2-right (2.2, 2.5): no syncopation (before 4.5) fails at
+seeds 1, 7920, …` (28 of 40); `sight-reading-3 (4.5, 4.6): a phrase in 6/8 in no phrase`;
+`sight-reading-4: an accidental in 0 of 40 phrases`; `sight-reading-5/6: a key signature in no
+phrase`; `sight-reading-7: a key with four accidentals in no phrase`; `level 6 seed 1: expected [
+…(2) ] to deeply equal []` (the untupled rests); beams: 21 of 39 red, e.g.
+`sight-reading-2-right (2.2, 2.5): unbeamed short notes at seeds 1, 15839, …` (34 of 40).
+
+**8. First attempt is per phrase.** *Mechanism:* `sightReadAttempts` restarted at 0 per screen
+mount, and today's read regenerates the same phrase. The phrase's seed is now always known on the
+screen (fresh opens draw one), stored on the session row, and at load `sessionsForItem` is asked
+whether a row already carries it (`phraseSeen`). *Test:* `scoreSummaryTruth` "re-opening a phrase
+already on the record …"; `recordTruth` seed on the row; `lab.spec.ts` plays today's phrase,
+re-opens it, plays it again and counts the rows. *Red line:* `recordRun` called for the
+re-opened phrase; no `seed` on a fresh open.
+
+**5. A right note played early.** *Reproduced first*, on the unchanged engine (`engineEarlyNote`):
+D struck at 700 ms for a step at 1000 ms (window ±150) → `wrong 1, missed 1`, the note recorded
+against no step. The trace was right. *Mechanism:* no open slot matched, so `feedTempo` counted
+a wrong note; the slot then closed unsatisfied. Now a right pitch the next not-yet-open step
+expects, struck less than a beat early and outside its window, is held (`earlyStrikes`); if the
+pitch arrives in the window the on-time one is the hit and the early one an extra; if the window
+closes without it the early one is counted once as `early` (not a hit, not a miss, its delta in
+the timing, its bar in the hot spots). The sheet has an *Early* line; the ladder counts it as a
+mistake. *Red line:* `expected 1 to be 0` (wrongNotesTotal). The other four cases (early then on
+time; a beat or more early; inside the window; a wrong pitch) pass on old and new code alike.
+
+**10. Stage 1's reading row.** *Rule chosen:* the slot admits items `level <= stage` **or the
+current rung's own exercise options** tagged `sight-reading`. Widening the level test to the
+stage's decimals would also give 1.1 the skips of 1.5 and Stage 4 the 6/8 of 4.5; the rung's own
+option is exactly the drill the learner is on. *Test:* `sightReadingSlot.test.ts` on the shipped
+content. *Red line:* `no 30-minute card on 1.5 had sight-reading-1 in its reading row`. A learner
+on 1.1 or 1.2 still has no reading row (no drill of theirs), and the daily read still offers them
+the easiest reader, which now has skips (Follow-ups).
+
+## Pedagogical verdict on the phrases (from the notation; nothing heard)
+
+Seeds 1 and 2 per row, as the Score screen generates them now (RH, bar by bar; q quarter, h
+half, e eighth, 3 triplet eighth, s sixteenth, ~ tied):
+
+- **1 (1.5).** s1: C h D q F q | G w | G w | F q D q C h — an arch with two skips, readable;
+  the two-bar G is static. s2: C w | D C D h | C w | D h E q C q — mostly C–D, one skip at the
+  end: a drill more than a phrase. Both inside C4–G4, no eighths.
+- **1-left (1.3, 1.4).** s1: C D E | F | E | D C C in the bass; s2 the C–D oscillation.
+- **2-right (2.2).** s1: C h D e C e D q | E h. D e C e | C h D q E q | F q E e D e E q C e C
+  e — eighths on the beat and the "and", no syncopation now; ends on an off-beat eighth. s2
+  repeats C four eighths running at the floor (the walk clamping) — plain.
+- **2 (3.4).** The same right hands over whole-note roots C C G C / C C F C.
+- **3 (4.5).** s1 (6/8): C q. D q C e | D e F e G e B q. | B~e A e G e E q F e | … — the
+  dotted-quarter lilt is there, and a tie into bar 3; the last bars leap C5→E4 through a tie
+  (pre-existing, Follow-ups). s2 (4/4): triplets in bars 3, 5 and 7, the eighth-quarter-eighth
+  figure, rests — a lot for one first read at Stage 4, but each is what 4.5 teaches.
+- **4 (4.6, technique.5).** s1: … | E5 e F♯5 e G5 e G5 e G5 q r q | … — a passing F♯ over a
+  C chord; s2: E5 e F♯5 e G5 e … over G. The accidental now reads as a teacher would write it
+  (short, weak, by step, resolving up). Wide wandering (A3–G5) and repeated top Gs from
+  clamping remain.
+- **5 (theory.6).** s1 F major, s2 D major; Alberti from F2/D2; five and six of the eight bars
+  open on an eighth rest — syncopation is present and dense; s2 leaps C♯5→G5 over rests.
+- **6 (chords-pop.8, theory.9).** F and D major; triplets with rests inside, now bracketed;
+  sixths inside triplets — hard and random-walk in character.
+- **7 (jazz.8, theory.9).** Sixteenths, triplets, rests in triplets and leaps past an octave in
+  one bar — very busy; the walking bass is right.
+
+A teacher would accept rows 1, 1-left, 2-right and 2 as early reading material now that the
+accidental syncopation is gone, and would still find the right hand a walk with no phrase
+grammar (P2-b in the trace, untouched). Rows 3–7 contain what they promise; whether 5–7 sound
+like music, whether 6/8 at ♩=72 (♩.=48) feels like two in a bar, and whether an Alberti bass
+from F2 is muddy cannot be judged without hearing.
+
+## Tests changed
+
+| test | class | the assumption it encoded | why the new one reads the learner-facing outcome |
+|---|---|---|---|
+| `lessonClaimsAboutApp` 0.3 "a Wait for me run is scored and can pass, the same as a Keep tempo one" | replace | Wait passes on the slider | the lesson now says only Keep tempo measures tempo; the row asserts `passed`/`tempoMeasured` per mode |
+| `lessonClaimsAboutApp` 0.3 "mastery … the second day only has to be a pass" | replace | a source grep for `passedOn.length >= 2`, i.e. the bug | "on two different days"; behaviour is proved in `recordTruth` |
+| `score.run.spec` "Wait mode: playing it correctly reaches the summary with full accuracy" (`Passed\|Mastered`) | revise | a clean Wait run is a pass | the sheet: *Notes ready*, the tempo sentence, no timing line, 100 % |
+| `score.run.spec` "Keep tempo: played in time it passes …" | add | — | a pass is played in Keep tempo; tempo and timing lines present; never *Mastered* on day one |
+| `lesson-flow.spec` (Wait, `Passed\|Mastered`) | revise | Wait passes | plays in Keep tempo, in time (`fixtures/playInTime.ts`) |
+| `first-day.spec` (a Wait run → the pass) | revise | Wait passes | Wait → *Notes ready*, no badge; Keep tempo → pass, badge |
+| `score.screen.spec` "the summary self-report records an answer" (status contains *Clean*) | revise | the status line is the record | reads the stored session row: `selfReport: 'clean'`, `tempoMeasured: false` |
+| `engine.spec` "a scripted MIDI performance …" (Wait → `passed`, `masterEligible` true) | revise | Wait passes and masters | Wait replay: accuracy 1, neither granted |
+| `modes-technique-measure.spec` heading `/Mastered\|Passed\|Run finished/` (×2) | revise | a Wait run may be headed *Passed* | `/Notes ready\|Run finished/` |
+| `lab.spec` today's read re-opened | add | — | the store holds one row for the phrase, with its seed |
+| `engineScoring` "a run that measured no tempo" (×3) | add | — | pass/master/tempoMeasured per mode |
+| `engineEarlyNote` (×5) | add | — | one early note is one observation |
+| `recordTruth` (×13) | add | — | master days, best tempo, session row fields, three time zones |
+| `scoreSummaryTruth` (×16) | add | — | the sheet's words and `recordRun`'s arguments per item |
+| `sightReadingPromises` (×42) | add | — | each row's promises present, unintended demands absent, triplet rests, beams, the accidental's shape |
+| `sightReadingSlot` (×4) | add | — | Stage 1's reading row on the shipped content |
+| `progressStore.test` "needs two passes on different days to master" | preserve | (its sequence is three master-eligible runs, still mastered on day 2) | — |
+| `sightReading.test` level-1 "steps only" | preserve | level 1 without `skips` is still steps only | — |
+
+## Runs (unpiped, exit codes read)
+
+- `npx tsc -b` 0; `npm run lint` 0; `npx vitest run` 0 — 208 files, 5,206 passed, 5 skipped.
+- Content: `python tools/content/build.py --offline` 0 (twice: after the rows, after lesson
+  0.3); `python tools/content/validate.py --allow-nc --personal` 0; `python -m unittest discover
+  tools/content/tests` 927 OK.
+- Playwright, two workers, one config, port 4173: `drills`, `engine`, `lab`, `lesson-flow`,
+  `modes-technique-measure`, `score.run`, `score.screen` — 97 passed, 3 failed on the first run
+  (all three were `playInTime` striking during the count-in, before the run holds for its first
+  note: a fault in the new helper, fixed); the three re-run: 3 passed; `first-day` (both
+  orientations) 2 passed; after the beams, `drills`, `engine`, `lab`, `score.run` 62 passed.
+  The last generator change (the accidental reached by step) came after the last e2e run; no
+  e2e spec generates row 4, and the unit suite ran after it.
+
+## Not done
+
+- Nothing among the ten items is left undone. Out of their scope and recorded below: the Progress
+  history line, the no-input Accuracy line, the tie leaps.
+
+## Follow-ups
+
+- **P0-adjacent, `ProgressScreen.ts` (not owned).** The history prints "88% at 70%" for a Wait run
+  — the slider as if achieved. It can now read `session.tempoMeasured === false` and print the
+  mode's words instead.
+- **P0-adjacent.** With no input the sheet still prints *Accuracy 0%* and *Missed N* over a run
+  nothing listened to, and records `accuracy: 0`; the self-report is now stored beside it. Deciding
+  whether that line should say *not measured* touches an earlier owner decision (the comment in
+  `showSummary`), so it is a question, not a fix.
+- **P2.** Levels 3–4 (and 5–7): a tie at a barline overwrites the next bar's first pitch after the
+  walk has moved from it, so a leap beyond the level's cap follows in 16 % (level 3) and 25 % (level
+  4) of 8-bar phrases, every one after a tied note (old code: 21 % and 24 %, same mechanism;
+  the trace's 0.7 %/1.1 % were per interval, not per phrase). Row 3 is on 4.5.
+- **P2.** The daily read below 1.5 falls back to the easiest reader, which now carries 1.5's skips.
+  A stepwise treble row for 1.1–1.4 would need a catalog row and a rung.
+- **P2.** `sight-reading-2-right` sits on 2.2 and 2.5; its phrases reach C5 (2.5's lesson relies on
+  it), so on 2.2 they leave C position before thumb-under. A split needs a curriculum edit.
+- **P2 (trace P2-b), untouched.** No phrase grammar; endings on short off-beats (38–54 % of phrases at
+  levels 2–4 end on a note shorter than a quarter).
+- **P0-d, untouched.** The Timing line's "off the beat on average" is a signed mean.
+- **P3.** The accompaniment lab's melodies and the MIDI import write through the same writer and
+  do not set `beam`, so their eighths are still flagged one by one; `beamLine` in
+  `sightReading.ts` could be applied to the lab's bars as it is to the generator's.
+
+## Questions
+
+- The no-input sheet (above): keep *Accuracy 0%* as "nothing was heard", or say *not measured*?
+
+## Unverified
+
+- Looked at, once each: the Wait sheet at 342 px; a 6/8 phrase, a triplet with a rest, an
+  accidental and a level-2 phrase at 1100 px (the built app, `vite preview`). Not looked at:
+  the sheet sideways, the self-report sheet, the *Early* line, *Mastery run 1 of 2* (asserted
+  by string in unit and e2e tests only).
+- Nothing was heard.
+- The e2e Keep tempo runs play from inside the page on its own frames; they prove the screen passes
+  a run played in time, not that a person at 100 % can play it.
+
+## Files
+
+`app/src/engine/Scoring.ts`, `PracticeEngine.ts`, `sightReading.ts`, `types.ts` (deviation),
+`musicXmlWriter.ts` (deviation);
+`app/src/data/progressStore.ts`, `db.ts`; `app/src/curriculum/session.ts`;
+`app/src/ui/screens/ScoreScreen.ts`, `app/src/ui/help.ts`; `content/catalog.static.json` (nine
+rows), `content/lessons/0.3.md` (deviation); tests listed above plus
+`app/tests/e2e/fixtures/playInTime.ts`; `docs/02-curriculum.md` Part G, `docs/04-ui-spec.md` §2 §5,
+`docs/05-score-follow-engine.md` §2 §3 §3a §8 §9a, `docs/08-test-map.md`.

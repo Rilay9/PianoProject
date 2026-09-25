@@ -57,9 +57,13 @@ test.describe('Wait mode end to end', () => {
     expect((await dev.engineState())?.finished).toBe(true);
     expect(score?.accuracy).toBe(1);
     expect(score?.wrongNotesTotal).toBe(0);
+    // Revised 2026-09-25 (T37): this expected a pass and master eligibility
+    // from a Wait run, which the engine granted on the tempo slider's value.
+    // The replay is every note right with the page waiting for each one, so
+    // it is evidence of the notes and of no tempo, and neither is granted.
     const outcome = await dev.engineOutcome();
-    expect(outcome?.passed).toBe(true);
-    expect(outcome?.masterEligible).toBe(true);
+    expect(outcome?.passed).toBe(false);
+    expect(outcome?.masterEligible).toBe(false);
   });
 
   test('a wrong note is counted and painted red without advancing', async ({ page }) => {

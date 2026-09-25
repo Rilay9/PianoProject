@@ -16,6 +16,9 @@
  */
 import { expect, test, type Page } from '@playwright/test';
 
+import { playInTime } from './fixtures/playInTime';
+import { withScoreMenu } from './scoreControls';
+
 /** What a lab import's id always begins with. */
 const LAB_ROW = '.list-row[data-item^="import.lab-"]';
 
@@ -339,6 +342,49 @@ test.describe("Today's sight-read", () => {
     const again = page.locator('#today-daily .list-row');
     await expect(again).toHaveAttribute('data-done', 'true', { timeout: 30_000 });
     await expect(again).toHaveAttribute('data-streak', '1');
+  });
+
+  test('re-opened after it was read, the same phrase is not a new first attempt', async ({ page }) => {
+    // T37 item 8. "First attempt only" was a counter that started at nought on
+    // every visit, and today's read regenerates the identical phrase from the
+    // day's seed, so re-opening it recorded its first run as a first attempt
+    // again. The seed is on the session row now: this plays the day's phrase
+    // once, opens it again, plays it again, and reads the store.
+    test.setTimeout(240_000);
+    const sessions = (): Promise<{ itemId: string; seed?: number }[]> =>
+      page.evaluate(async () => {
+        const hooks = (window as unknown as {
+          __pianopath: { exportAll: () => Promise<{ stores: Record<string, unknown[]> }> };
+        }).__pianopath;
+        return (await hooks.exportAll()).stores.sessions as { itemId: string; seed?: number }[];
+      });
+    const readOnce = async (): Promise<void> => {
+      await page.goto('/');
+      const row = page.locator('#today-daily .list-row');
+      await expect(row).toBeVisible({ timeout: 30_000 });
+      await row.locator('button[aria-label="Open today\'s sight-read"]').click();
+      const screen = page.locator('section[data-screen="score"]');
+      await expect(screen).toHaveAttribute('data-mode', 'tempo', { timeout: 60_000 });
+      await expect(page.locator('#score-stage .is-front svg').first()).toBeVisible({ timeout: 60_000 });
+      await withScoreMenu(page, async () => {
+        await page.locator('#score-input').selectOption('keys');
+      });
+      await page.locator('#score-play').click();
+      await expect(screen).toHaveAttribute('data-running', 'true');
+      await playInTime(page, 'keys');
+      await expect(page.locator('#score-summary')).toBeVisible({ timeout: 60_000 });
+    };
+
+    await readOnce();
+    await expect.poll(async () => (await sessions()).length, { timeout: 30_000 }).toBe(1);
+    const first = (await sessions())[0];
+    expect(typeof first?.seed, 'the day’s phrase went on the record without its seed').toBe('number');
+
+    await readOnce();
+    await expect(page.locator('#score-status')).toContainText('first attempt only');
+    // Give a write that should not happen the time a write takes, then count.
+    await page.waitForTimeout(1_000);
+    expect(await sessions(), 'the same phrase was recorded as a first attempt twice').toHaveLength(1);
   });
 });
 

@@ -63,16 +63,24 @@ export function hotSpots(
   misses: ReadonlyMap<number, number>,
   wrongs: ReadonlyMap<number, number>,
   limit = 5,
+  early: ReadonlyMap<number, number> = new Map(),
 ): HotSpot[] {
-  const measures = new Set<number>([...misses.keys(), ...wrongs.keys()]);
+  const measures = new Set<number>([...misses.keys(), ...wrongs.keys(), ...early.keys()]);
+  const damage = (h: HotSpot): number => h.misses + h.wrongs + (h.early ?? 0);
   return [...measures]
-    .map((measureIndex) => ({
-      measureIndex,
-      misses: misses.get(measureIndex) ?? 0,
-      wrongs: wrongs.get(measureIndex) ?? 0,
-    }))
-    .filter((h) => h.misses + h.wrongs > 0)
-    .sort((a, b) => b.misses + b.wrongs - (a.misses + a.wrongs) || a.measureIndex - b.measureIndex)
+    .map((measureIndex): HotSpot => {
+      const came = early.get(measureIndex) ?? 0;
+      return {
+        measureIndex,
+        misses: misses.get(measureIndex) ?? 0,
+        wrongs: wrongs.get(measureIndex) ?? 0,
+        // An early note is trouble in its bar too (T37), and only said where
+        // there was one, so every bar without one reads as it always did.
+        ...(came > 0 ? { early: came } : {}),
+      };
+    })
+    .filter((h) => damage(h) > 0)
+    .sort((a, b) => damage(b) - damage(a) || a.measureIndex - b.measureIndex)
     .slice(0, limit);
 }
 
@@ -89,6 +97,9 @@ export interface ScoreInput {
   deltas: readonly number[];
   missesByMeasure: ReadonlyMap<number, number>;
   wrongsByMeasure: ReadonlyMap<number, number>;
+  /** Right notes played before their window (T37). Absent reads as none. */
+  early?: number;
+  earlyByMeasure?: ReadonlyMap<number, number>;
   durationMs: number;
   loops: number;
   rolledChordSteps: number;
@@ -130,9 +141,10 @@ export function buildScore(input: ScoreInput): SessionScore {
     hits: input.hits,
     missedTotal: input.missedTotal,
     wrongNotesTotal: input.wrongNotesTotal,
+    early: input.early ?? 0,
     accuracy: Math.min(1, Math.max(0, accuracy)),
     timing: timingStats(input.deltas),
-    hotSpots: hotSpots(input.missesByMeasure, input.wrongsByMeasure),
+    hotSpots: hotSpots(input.missesByMeasure, input.wrongsByMeasure, 5, input.earlyByMeasure),
     durationMs: input.durationMs,
     loops: input.loops,
     rolledChordSteps: input.rolledChordSteps,
@@ -168,6 +180,27 @@ export interface Outcome {
   masterEligible: boolean;
   accuracy: number;
   tempoPct: number;
+  /**
+   * Whether the run measured a tempo at all (T37).
+   *
+   * Only a Keep tempo run does: its clock ran at `tempoPct` and every note was
+   * judged against that clock. A Wait for me run holds the page until the note
+   * arrives, so the slider's value is a setting nobody played to, and it is
+   * not evidence of pulse. The sheet and the record read this rather than the
+   * number beside it.
+   */
+  tempoMeasured: boolean;
+}
+
+/**
+ * Whether a run in this mode measures tempo (T37).
+ *
+ * Keep tempo only. Wait has no clock to be inside (`05` §2), Listen judges
+ * nothing and Free marks nothing. A rhythm-only run is a Keep tempo run whose
+ * timing is exactly what was measured, so it counts here.
+ */
+export function measuresTempo(mode: Mode): boolean {
+  return mode === 'tempo';
 }
 
 /**
@@ -176,19 +209,36 @@ export interface Outcome {
  * Listen and Free never pass: nothing was judged, so there is nothing to
  * assess. Without an input source the app asks for a self-report instead
  * (docs/05 §3, docs/02 Part G).
+ *
+ * **A run that measured no tempo cannot meet a tempo floor** (T37; the
+ * reviewer's boundary 6). A Wait for me run is honest evidence of knowing the
+ * notes and no evidence of pulse: it used to pass on the slider's value, so a
+ * run played one note at a time "passed at 80 %" because the slider said 80.
+ * It can still pass a criterion whose floor is nought — there the notes are
+ * the whole of what is asked — and it can never be master-eligible, because
+ * Part G's master is "at 100 % tempo" and nothing measured one.
  */
 export function evaluateOutcome(
   score: SessionScore,
   criteria: MasteryCriteria = DEFAULT_MASTERY,
 ): Outcome {
   const judged = score.mode === 'wait' || score.mode === 'tempo';
-  const passed =
-    judged && score.accuracy >= criteria.passAccuracy && score.tempoPct >= criteria.passTempoPct;
+  const tempoMeasured = measuresTempo(score.mode);
+  const tempoMet = tempoMeasured
+    ? score.tempoPct >= criteria.passTempoPct
+    : criteria.passTempoPct <= 0;
+  const passed = judged && score.accuracy >= criteria.passAccuracy && tempoMet;
   const masterEligible =
-    judged &&
+    tempoMeasured &&
     score.accuracy >= criteria.masterAccuracy &&
     score.tempoPct >= criteria.masterTempoPct;
-  return { passed, masterEligible, accuracy: score.accuracy, tempoPct: score.tempoPct };
+  return {
+    passed,
+    masterEligible,
+    accuracy: score.accuracy,
+    tempoPct: score.tempoPct,
+    tempoMeasured,
+  };
 }
 
 /**

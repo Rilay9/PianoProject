@@ -356,13 +356,22 @@ function fillSlot(
   }
 
   if (kind === 'sightreading') {
+    // At or below the stage, *or the current rung's own reading drill* (T37).
+    // By level alone Stage 1 had no reading row at all: the only Stage 1
+    // readers sit at 1.5 and 1.6, above the stage's number, so a learner on
+    // 1.5 — *Steps and skips, and the sight-reading habit* — was never offered
+    // the rung's own `sight-reading-1` in the slot for it. Widening the level
+    // test instead (say to "this stage's decimals") would also hand a learner
+    // on 1.1 the skips of 1.5 and a Stage 4 learner 4.5's 6/8; the rung's own
+    // option is exactly the drill the learner is on, and nothing above it.
+    const ownReaders = new Set(position?.lesson.exerciseOptions ?? []);
     const chosen = pick(
       items.filter(
         (item) =>
           free(item.id) &&
           playable(item) &&
           item.concepts.includes('sight-reading') &&
-          item.level <= level,
+          (item.level <= level || ownReaders.has(item.id)),
       ),
       seed,
     );

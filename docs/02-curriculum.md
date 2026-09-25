@@ -899,6 +899,20 @@ suggestions** with a note on where to buy/obtain MusicXML.
   the learner self-reports after a Tempo-mode run — the app shows a "How did it go?" 3-button
   prompt and records it as self-assessed).
 - `master` = accuracy ≥ 97 % at 100 % tempo, twice on different days.
+- **What a run is evidence of (2026-09-25, T37).** The pass above is played in Tempo mode
+  because only Tempo mode measures a tempo. A *Wait for me* run is evidence of the notes
+  and none of the pulse: it is stored as not having measured tempo (`tempoMeasured: false`
+  on the session row), meets a criterion only where the criterion asks for no tempo, is
+  never master-eligible, and its sheet is headed *Notes ready* with *to pass, play it in
+  Keep tempo* where the tempo used to be. `master` counts the days the master standard
+  itself was met (`ProgressRow.masteredOn`), not pass days, so a pass on Monday and one
+  97 %-at-full-tempo run on Tuesday is *Mastery run 1 of 2*. Without MIDI the *How did it
+  go?* answer is written with the run, and *Clean* is a self-assessed pass. A run is judged
+  by the rung that opened the Score screen where one did. A sight-read counts on its
+  first attempt *per phrase*: the phrase's seed is on the session row, so re-opening
+  today's read and playing it again is a retry and is not recorded. The sentence below
+  that the drills "generate a fresh phrase every time" is true of every open except
+  Today's, which is one phrase a day by design (`04` §2).
 - **What a drill run counts (2026-09-16, `04` §5c).** *Show me* draws the answer on a staff
   and *Hear it* plays it; either forfeits the mark for that prompt, so a set you revealed your
   way through cannot pass. A missed card pauses until you tap it on. When the set ends the app

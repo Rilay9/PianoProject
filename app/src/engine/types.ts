@@ -364,6 +364,11 @@ export interface HotSpot {
   measureIndex: number;
   misses: number;
   wrongs: number;
+  /**
+   * Right notes played before their window in this bar (T37). Absent where
+   * there were none, so a bar with no early note reads as it always did.
+   */
+  early?: number;
 }
 
 export interface SessionScore {
@@ -385,6 +390,13 @@ export interface SessionScore {
   hits: number;
   missedTotal: number;
   wrongNotesTotal: number;
+  /**
+   * Keep tempo: right notes played before their step's window, each counted
+   * once as that (T37, `05` §3) — not as a wrong note and then a miss, which
+   * is what one early note used to cost. Not hits, so they are in the accuracy
+   * as notes not played in time. Optional for the reason `rhythmOnly` is.
+   */
+  early?: number;
   /** 0..1. Wait: correctSteps/totalSteps. Tempo: hits/expectedNotes. */
   accuracy: number;
   /**

@@ -159,10 +159,12 @@ test('the staccato study is playable from the keys and the summary says how shor
   // two four-bar runs in parallel workers is load, and load on this suite
   // looks like a fault (`00` §2, §3).
   await expect(measure).not.toContainText('this rung requires it');
-  // The sheet is headed for what the run *was* — `Mastered`, `Passed`, or
-  // `Run finished` — and the technique line is on it either way, because it
-  // is a measurement and not a verdict.
-  await expect(sheet.locator('h2')).toHaveText(/Mastered|Passed|Run finished/);
+  // The sheet is headed for what the run *was*, and the technique line is on
+  // it either way, because it is a measurement and not a verdict. A Wait run
+  // measures the notes and no tempo (T37, revised 2026-09-25: this allowed
+  // `Mastered|Passed` too, which a Wait run can no longer be), so it is headed
+  // *Notes ready* or *Run finished*.
+  await expect(sheet.locator('h2')).toHaveText(/Notes ready|Run finished/);
 });
 
 test('a measure the glass cannot take says so, rather than printing a nought', async ({ page }) => {
@@ -191,5 +193,5 @@ test('a measure the glass cannot take says so, rather than printing a nought', a
   // Not a pass it quietly failed, either: no technique rung states a rule in
   // `mastery.custom`, so nothing here decides the verdict.
   await expect(measure).not.toContainText('this rung requires it');
-  await expect(sheet.locator('h2')).toHaveText(/Mastered|Passed|Run finished/);
+  await expect(sheet.locator('h2')).toHaveText(/Notes ready|Run finished/);
 });

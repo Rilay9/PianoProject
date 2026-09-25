@@ -18,6 +18,8 @@ A test named here is the reproduction: every failure prints the seed and the act
 | **The tempo ladder** (`nextLadderTempo`, `LADDER_NOTCH_PCT`, `LADDER_CEILING_PCT`) | a ladder that climbs past the written tempo, or past a learner's own faster choice; one that steps under the slider's floor; one that counts a demonstration as a clean pass; a restart fired from inside the lap event it is reacting to | `tests/unit/tempoLadder.test.ts` — off is a no-op, clean up, a mistake down, both ends clamped, the learner's own ceiling kept, and up-then-down returning to where it started; `tests/e2e/score.rhythm-ladder.spec.ts` — a loop nobody plays walking down to the floor and a loop tapped clean climbing to the ceiling, each asserted at the end of the ladder rather than on a rung in flight | done (P21f) |
 | **The duet row** (`playbackHands`, bound at the Score screen) | a setting nobody can find; a row offering a hand the piece does not have, or one the learner is already playing; a second setting that drifts from the first | `tests/e2e/score.rhythm-ladder.spec.ts` — hidden with Both, named with R and with L, and the stored `playbackHands` read back after the toggle | done (P21f) |
 | **Slot plan** (`slots.ts`): which bars each slot holds | the wrong next range at a repeat or ending | `tests/unit/slots.test.ts` | done (P21c) |
+| **What a run measured, on the sheet and in the record** (T37): `evaluateOutcome`'s `tempoMeasured`, `recordRun`'s `masteredOn`, the sheet's lines, the self-report, the judging rung, one first attempt per phrase, the early note | a Wait run passing on the slider; *Mastered* after one master-standard run; "0 ms off the beat" over a run that timed nothing; *Recorded: Clean* with nothing stored; a run held to the first rung listing the piece instead of the one that opened it; today's read recorded as a first attempt on every re-open; one early note counted as a wrong note and a miss; an evening pass due for review the same evening | `tests/unit/engineScoring.test.ts` (a run that measured no tempo), `recordTruth.test.ts` (master days, best tempo, the session row's `tempoMeasured` and `seed`, the review queue in three zones), `scoreSummaryTruth.test.ts` (the sheet and `recordRun`'s arguments per item, through the real screen), `engineEarlyNote.test.ts` (the early note, reproduced first); `tests/e2e/score.run.spec.ts`, `lesson-flow.spec.ts`, `first-day.spec.ts` (a pass played in Keep tempo, in time, via `fixtures/playInTime.ts`), `score.screen.spec.ts` (the self-report read back from the store), `lab.spec.ts` (today's read re-opened is not recorded again) | done (T37, 2026-09-25) |
+| **The sight-reading rows against their rungs** (T37): `sightReadingOptionsFor`, the promises, metric placement at levels 1–4, the triplet rest | a phrase without what its rung promises (skips at 1.5, eighths at 2.2, 6/8 and triplets and syncopation at 4.5, keys, accidentals); anything the earliest rung listing a row has not taught; a rest in a triplet without its bracket | `tests/unit/sightReadingPromises.test.ts` — every built row generated forty times, each phrase checked; `sightReadingSlot.test.ts` — Stage 1's reading row on the shipped content | done (T37); nothing heard |
 | **Renderer** (`WindowRenderer`): steps forward, back, jumps; rotation; bars per window; hands | a stale element map; a slot engraved while hidden; no redraw after a rotation; two slots at two scales; the band off the note | `tests/e2e/score.renderer.fuzz.spec.ts` — seeded random walk on the dev harness, invariants after every move | done; extend with zoom and scroll layout |
 | **Score screen** (`ScoreScreen`): everything a learner can do during a run | summary over a live run; a recorded half-run; the warning mark after a stop; a Wait run with nothing to wait for; a freeze; a paused run that says nothing; a stranded one-bar preview; a run armed for an input that has been taken away | `tests/e2e/score.states.spec.ts` — named state, one event, recorded (T31); `tests/e2e/score.fuzz.spec.ts` — seeded random walk with the spoofed piano, invariants after every action, long-task watch; the fifth seed walks the tablet sizes | done; the `⋯` sheet's rows are proved by their own specs rather than under the walk (`score.blind`, `score.stepper-limits` for size and bars, `score.sheet-rows`, `keys-guide`, `score.rhythm-ladder`); still not walked: section loops and the summary's Slower/Faster/Loop the weak bars |
 | **A whole song** on every form factor | a stall; a size change mid-run; the next bar not on the screen; the slide losing the cursor | `tests/tour/sequence.spec.ts` — plays what the app asks for, first note to summary; `SEQ_SONG`/`SEQ_FACTORS` choose the song and sizes | done |
@@ -162,7 +164,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `engine.spec.ts` — the P3 acceptance criteria through the real renderer and a `ReplaySource` on `/dev/score`.
 - `feedback-placement.spec.ts` — R6: a message beside the control that caused it, measured on Drill and Settings.
 - `finder.spec.ts` — finders and the two-tap import: the action count against a simulated share.
-- `first-day.spec.ts` — one first day as one chain, across a reload, upright and sideways: empty storage → the tour finished → the placement passed through to a unit → *Start here* → the rung Plan then names → its lesson → a piece from that rung → a Wait run fed through the MIDI mock → the pass on the sheet and on the rung → reload → Today, Plan, Skills and the Library asked separately whether they agree. Every destination is checked against what the control itself declared. It is the spec that found the double-mounted Score screen (`pending-review` Entry 52).
+- `first-day.spec.ts` — one first day as one chain, across a reload, upright and sideways: empty storage → the tour finished → the placement passed through to a unit → *Start here* → the rung Plan then names → its lesson → a piece from that rung → a Wait run fed through the MIDI mock, headed *Notes ready* and not a pass (T37) → the same piece in Keep tempo, in time → the pass on the sheet and on the rung → reload → Today, Plan, Skills and the Library asked separately whether they agree. Every destination is checked against what the control itself declared. It is the spec that found the double-mounted Score screen (`pending-review` Entry 52).
 - `folder.add.spec.ts` — adding a score from the folder all the way into the library.
 - `folder.manifest.spec.ts` — the manifest-first listing at 342 × 740: the two sentences it has to say, and R1 held.
 - `folder.rail-cost.spec.ts` — a letter jump moves the window rather than drawing the list up to it.
@@ -175,9 +177,9 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `keyboard-strip.spec.ts` — an update touches only the keys that changed and never rebuilds the DOM.
 - `keys-guide.spec.ts` — the keys' three settings, each on its own: the guide ahead, finger numbers, the flash.
 - `lab-both-ways.spec.ts` — the lab's two chip rows in a browser (`04` §3c): the three ways round are exclusive with trading fours, a way round with nothing to play is `disabled` as a DOM property and says why, and every control carries its line.
-- `lab.spec.ts` — the accompaniment lab from the Library line, and Today's daily sight-read (`04` §2, §3c). Also R1 on a 342 px phone from both doors: the one chip row that changes what *Jam it* does, and all five of its chips, inside the first screenful and still under the buttons (T22).
+- `lab.spec.ts` — the accompaniment lab from the Library line, and Today's daily sight-read (`04` §2, §3c); today's phrase played, re-opened and played again is recorded once, with its seed (T37). Also R1 on a 342 px phone from both doors: the one chip row that changes what *Jam it* does, and all five of its chips, inside the first screenful and still under the buttons (T22).
 - `landscape.spec.ts` — R5: sideways on a phone the header is one line and the first content is within 48 px.
-- `lesson-flow.spec.ts` — Today → Score → screen keys → summary → Progress → the review queue, joined.
+- `lesson-flow.spec.ts` — Today → Score → screen keys, in Keep tempo and in time (T37) → summary → Progress → the review queue, joined.
 - `lesson-tools.spec.ts` — a rung's tools are controls and each lands somewhere specific (`04` §3d); and a rung naming none draws no block at all.
 - `library.spec.ts` — Library and own-score import: pick a file, see it, open it, keep it after a reload.
 - `metronome.spec.ts` — the standalone metronome: reachable, the controls change what they say, Start runs the scheduler, leaving stops it.
@@ -246,8 +248,8 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `score.rhythm-ladder.spec.ts` — rhythm only, the tempo ladder and the duet row on the real screen.
 - `score.states.spec.ts` — the state machine one cell at a time (T31), the other half of `score.fuzz`'s random walk: a paused run says it is paused and a `Hear it` run says it is a demonstration rather than showing the selected mode's standing line; a one-bar preview cannot strand the screen in Listen; taking the input away does not leave a run holding for a first note nothing can play; hiding the page pauses a `Hear it` run; a hand the refusal named starts the run; the loop prompt goes when the loop is set. Its last test is a **probe** that drives named states and prints what each event did, which is where `docs/decisions/2026-09-23-score-state-machine.md`'s measured cells come from.
 - `score.rotate.spec.ts` — turning the phone mid-run, paused, twice, in Scroll, and the tour's miniature. Re-pointed by T38 (R3) at T34's promises: an upright row's page is at most a stage's width per bar or its bars' natural width with the renderer's slack; only the widest window row is held to the width; greyed look-ahead rows are exempt; the staff is the five lines.
-- `score.run.spec.ts` — a whole run through the screen keys, first note to a summary that says so.
-- `score.screen.spec.ts` — one test per control on the Score screen, a scripted run in each judged mode, the blind block; and (T38, fault A) Size steps are monotone and one setting draws one size whichever way it was reached, the staff read as its five lines.
+- `score.run.spec.ts` — a whole run through the screen keys, first note to a summary that says so: a clean Wait run is *Notes ready* with no tempo judged and no timing line, and a Keep tempo run played in time passes and says its tempo and timing (T37).
+- `score.screen.spec.ts` — one test per control on the Score screen, a scripted run in each judged mode, the blind block, the self-report read back from the stored session row (T37); and (T38, fault A) Size steps are monotone and one setting draws one size whichever way it was reached, the staff read as its five lines.
 - `score.sheet-rows.spec.ts` — a `⋯` row stays in one piece at 342 px: the steppers do not wrap.
 - `score.slide.spec.ts` — sideways the sheet slides by bar, holding the cursor about a third across.
 - `score.slots.spec.ts` — the two slots on a real engraving: the playing slot never redrawn, the next bar already there.
@@ -267,7 +269,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `trading-fours.spec.ts` — the mode from the Library's own lab door: the chips are off until asked for and exclusive, *Jam it* hands the bars over, a setting changed under a trade stops it, and a key played inside the learner's own bars reaches the judging.
 - `update.tab-nav.spec.ts` — the tab bar survives a service-worker update.
 - `wide.spec.ts` — wide screens (`04` §7a): seven shapes, gutters symmetric, content no wider at 1920 than at 1366. Waits for the precache to be stocked before the walk and watches the lazy screens' own placeholder, so a chunk that queues or fails is not read as a screen that never mounted.
-- `scoreControls.ts`, `fixtures/` — not specs: the shared helpers for the `⋯` and tempo sheets, and the MIDI mock.
+- `scoreControls.ts`, `fixtures/` — not specs: the shared helpers for the `⋯` and tempo sheets, the MIDI mock, and `playInTime` (T37), which plays a Keep tempo run from inside the page on its own frames.
 
 ### `app/tests/unit/` — Vitest, no browser (`npx vitest run`)
 
@@ -315,7 +317,8 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `el.test.ts` — `el()`'s selector understands `input#folder-search` as well as `div.row.wide`.
 - `engineMic.test.ts` — the engine's microphone adaptations: an unsure report never advances or counts.
 - `engineRhythmOnly.test.ts` — rhythm first: the same strike accepted inside the window and refused outside it.
-- `engineScoring.test.ts` — outcome, hot spots, the timing histogram and stats, the weak-bars loop.
+- `engineEarlyNote.test.ts` — a right note played more than the window early is one observation, early, not a wrong note and a miss; played again on time it is a hit and an extra; a beat or more early it is still an extra (T37).
+- `engineScoring.test.ts` — outcome, hot spots, the timing histogram and stats, the weak-bars loop; a run that measured no tempo cannot meet a tempo floor or be master-eligible (T37).
 - `engineTempo.test.ts` — Tempo mode, the `05` §10 matrix.
 - `engineWait.test.ts` — Wait mode, the `05` §10 matrix plus its edges.
 - `errorBoundary.test.ts` — the banner and the debug report read one log; repeats counted, not stacked.
@@ -413,6 +416,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `progressScreenRepertoireAndGoal.test.ts` — the repertoire list capped; the weekly-goal message beside its control.
 - `progressStore.test.ts` — pass, master, the review queue and the weekly goal, on the memory fallback.
 - `readAheadScale.test.ts` — the read-ahead cap on the sideways fit.
+- `recordTruth.test.ts` — what the record keeps (T37): mastery on two master-standard days, a Wait run's slider never the best tempo, the session row's `tempoMeasured`, `seed` and self-report, the review queue by day keys in New York, Los Angeles and Tokyo.
 - `redrawFailure.test.ts` — a redraw that fails says so instead of leaving the old screen standing.
 - `reorder.test.ts` — reordering arithmetic, the off-by-one both ways.
 - `rhythmCountIn.test.ts` — the rhythm drill's count-in and clock.
@@ -424,6 +428,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `scoreModelKnownIssues.test.ts` — upstream OSMD defects asserted *broken* on purpose, so an upgrade says when a workaround can go.
 - `scoreSession.test.ts` — the session's state machine with a fake renderer and a hand-cranked frame.
 - `scoreSheetRows.test.ts` — the Duet and Ladder rows carry state across a toggle.
+- `scoreSummaryTruth.test.ts` — the summary sheet and `recordRun`'s arguments say only what the run measured (T37): the Wait sheet, the suggested tempo, *Mastery run 1 of 2*, the self-report written with the run, the opening rung judging it, a sight-read's key, metre and tempo from its row and its seed on the record, the early line.
 - `scoreSmoke.test.ts` — the fixtures exist and one extracts.
 - `scoreTourRoute.test.ts` — the Score screen opened by the guided tour: `?mode=`, `?loop=`, the three exits.
 - `scoreTypes.test.ts` — beats, ticks, tempo and time-signature lookups, note ids.
@@ -441,6 +446,8 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `shelfScreenRedraw.test.ts` — saving one piece redraws that piece, not the whole shelf.
 - `shelfTwinSearch.test.ts` — the twin search debounced, bounded at six, matching the composer too.
 - `sightReading.test.ts` — the generator through OSMD and the extractor, including the left hand alone.
+- `sightReadingPromises.test.ts` — every built sight-reading row, forty seeds each: what its rungs and tags promise is in every phrase, nothing its earliest rung has not taught is in any, a rest in a triplet is a triplet rest, short notes in one beat are beamed, an accidental is a short passing note; the params reach the generator (T37).
+- `sightReadingSlot.test.ts` — the session card's reading row at Stage 1 on the shipped content: the rung's own drill, and nothing above it (T37).
 - `simonDrill.test.ts` — Simon: the chain grows, breaks, is scored, the two catalog items played, the three levels of help and the missed chain that comes back, the chain as a list of moments the screen lights, names and engraves from, and `simonForStage` checked against where the curriculum puts them.
 - `simonTurnCue.test.ts` — Simon says whose turn it is (`04` §5c-2), on every rung of the help ladder, and names no note of the chain while doing it.
 - `skillsFromPractice.test.ts` — finishing a lesson by playing it teaches its concepts.

@@ -11,8 +11,9 @@
  * moving the recorded pass back two days, because waiting two days is not a
  * test.
  */
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
+import { playInTime } from './fixtures/playInTime';
 import { setTempoPercent, withScoreMenu } from './scoreControls';
 
 const ITEM = 'song.folk.hot-cross-buns';
@@ -36,13 +37,6 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-async function press(page: Page, midi: number): Promise<void> {
-  const key = page.locator(`.keyboard-strip [data-midi="${midi}"]`);
-  await key.scrollIntoViewIfNeeded();
-  await key.dispatchEvent('pointerdown', { pointerId: 1, button: 0, isPrimary: true });
-  await key.dispatchEvent('pointerup', { pointerId: 1, button: 0, isPrimary: true });
-}
-
 test('a run played from Today is recorded, and comes back for review', async ({ page }) => {
   test.setTimeout(180_000);
 
@@ -52,7 +46,11 @@ test('a run played from Today is recorded, and comes back for review', async ({ 
   await expect(page.locator('#today-card .list-row').first()).toBeVisible();
   await expect(page.locator('#today-goal')).toContainText('0 / 150 min this week');
 
-  // 2. Play it through the on-screen keyboard — a real InputSource.
+  // 2. Play it through the on-screen keyboard — a real InputSource — in Keep
+  //    tempo, in time. Revised 2026-09-25 (T37): this played it in Wait for me
+  //    and expected a pass, and a Wait run passed only because the tempo
+  //    slider's number was compared with the floor as if somebody had played
+  //    to it. A pass is played in Keep tempo, so that is what this plays.
   await page.goto(`/#/score/${ITEM}`);
   await page.waitForFunction(
     () => {
@@ -65,15 +63,15 @@ test('a run played from Today is recorded, and comes back for review', async ({ 
   await withScoreMenu(page, async () => {
     await page.locator('#score-input').selectOption('keys');
   });
-  await page.locator('#score-mode').selectOption('wait');
+  await page.locator('#score-mode').selectOption('tempo');
   await page.locator('#score-hands-R').click();
   await setTempoPercent(page, 100);
   await page.locator('#score-play').click();
-  for (const midi of MELODY) await press(page, midi);
+  expect(await playInTime(page, 'keys')).toBeGreaterThanOrEqual(MELODY.length);
 
   const sheet = page.locator('#score-summary');
-  await expect(sheet).toBeVisible({ timeout: 30_000 });
-  await expect(sheet).toContainText(/Passed|Mastered/);
+  await expect(sheet).toBeVisible({ timeout: 60_000 });
+  await expect(sheet.locator('h2')).toHaveText(/Passed|Mastery run 1 of 2/, { timeout: 30_000 });
 
   // 3. Progress has it: a session row, a pass, and minutes on today's cell.
   await page.goto('/#/progress');
