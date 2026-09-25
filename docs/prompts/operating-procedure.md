@@ -171,6 +171,11 @@ what the owner or the next agent does; wording alone never earns a turn.
 4. **Consumers and record.** Who else reads what changed and what each does with it; the
    spec, test map and record updated in the same change, with the reason.
 
+A green suite is not evidence when its assertions encode the model being replaced: a wave
+that changes behaviour deletes or replaces the tests that asserted the old behaviour, in
+the same change, with the reason and the class from the test inventory
+(`backlog-2026-09-25.md` area 11), and adds the test for the learner-facing result.
+
 The technical rules that still bite every week: never assert a number measured on this
 machine; never name an AI model anywhere; the specs serve the code; one Playwright suite
 at a time on port 4173; `npx tsc -b`, not `tsc --noEmit -p`; commit named paths only, and
