@@ -115,3 +115,12 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **T36b** | One quarried piece traced from archive to progress; every difficulty compared; the excerpt idea tried | read-only | `traces/2026-09-25-repertoire.md` |
 | **T36c** | One sight-reading run traced from level request to next assignment | read-only | `traces/2026-09-25-sight-reading.md` |
 | **T33** | The five state-machine choices | build | waits for T35 |
+
+### Wave B (go given 2026-09-25 after the diagnosis was read)
+
+| | Task | Kind | Runs |
+|---|---|---|---|
+| **T38** | The window's demonstrated faults fixed at their mechanism; two look-ahead treatments judged by eye | build, browser | with T39 |
+| **T39** | Five-finger patterns levelled by key; catalog rebuilt; no band widened | build, content | with T38 |
+| **T37** | Nothing displayed or recorded that was not measured; sight-reading receives what the rungs promise | build, browser | after T38 and T39 |
+| **T33** | The five state-machine choices | build, browser | after T37 |
