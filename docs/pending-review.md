@@ -14559,3 +14559,397 @@ priced at the piece's tallest system, so short rows can leave a next row's worth
 31 % of the height filled), caused by the ceiling; re-shot after its removal.
 
 **Still red after the second round (not debugged):** `score.layout` at 880 x 412 inks the same three bars for 1 and 2 asked; `score.screen`'s Size + drew a *smaller* staff (270 to 250 px) at its viewport. The per-group counts above are from the first round; after the reading-order check was added only `score.window-rule`'s exit code (0) was taken, not the counts.
+
+
+### Entry 64 — T39: five-finger patterns levelled by their key, and the catalog rebuilt with no band widened (2026-09-25)
+
+**Judgement.** Yes: a learner at 1.1 now meets only C and G. The only five-finger patterns within
+the swap sheet's half-level of C position are the C and G one-hand patterns. 42 of the 48 items
+moved. The six that did not are C and G major (right, left, both). Every rung band holds its
+items. No band was widened and nothing came off a rung list. I did not open the app (the brief
+says no browser), so the swap-sheet result is reasoned from `alternativesFor`'s inputs, rebuilt in
+Python over the built catalog and curriculum. It was not seen on a screen. No teacher has checked
+the ordering. It follows Part E and the scale table, but two placements are my judgement and are
+flagged under Follow-ups: E minor, and one-hand flat keys at 4.2.
+
+**Mechanism.** `make_five_finger` computed `level = 1.1 if hands != "both" else 2.1`. The key never
+entered the calculation, even though `scale_level` in the same file ranks keys. That is why twenty
+one-hand patterns with black keys sat at 1.1. The swap sheet's third tier offers anything within
+0.5 that shares a tag, and every pattern carries `five-finger`, so rung 1.1 offered A♭ major first:
+its id sorts first among equals.
+
+**The rule** (`five_finger_level`, beside `scale_level`, with the rule in its docstring):
+
+1. C and G major, one hand: **1.1** (Part E stage 1).
+2. The rest of Part E's keys, C G F D A major and minor: **stage 2**. The level is 2.0 plus 0.1 for
+   each thing the pattern adds to stage 1:
+   - both hands;
+   - a black key under the hand, read from the pattern's own notes, not the key signature (D minor
+     and A minor have none);
+   - the minor third.
+
+   So the band runs from 2.1 to 2.3.
+3. Every other key: the level of **its own one-octave scale**, with the same hands and mode, from
+   `scale_level`. Part E names those keys only in its scale rows, so the pattern arrives with its
+   key and is never above its scale.
+
+On minors, my judgement: a minor pattern is never easier than its major, but it is not forced a
+full step above it. A and D minor are all white keys, so they sit level with A and D major (2.2).
+That matches the scale table's own first-minors ranking (A, E, D). The deviation clause was not
+needed. The scale table fits once Part E's two five-finger rows set the first two bands.
+
+## Done
+
+- **Technical.** The generator levels by key, and the catalog is rebuilt. Build exit **0**
+  (`python tools/content/build.py --offline`). Validator exit **0**
+  (`python tools/content/validate.py --allow-nc --personal`). Both were unpiped runs, one each, after
+  all edits. Content tests: 919 OK before, 927 OK after (8 new), exit 0 both times. Because these
+  levels feed the app, I also ran twelve app unit files that read levels, sessions, swaps or the
+  built catalog: 487 tests, exit 0.
+- **Recount.** The built catalog has 48 five-finger items: 24 one-hand and 24 two-hand. All carry
+  `levelSource: "judged"`. The generated fragment agrees with the merged catalog on all 48.
+- **Pedagogical.** C and G come before F, D and A, which come before E and B, which come before the
+  flat keys. That is Part E's order, and it is the scale table's order with F moved to stage 2,
+  because F's pattern has a B♭ under the fourth finger. No pattern is placed before its key is
+  taught, and none is placed above its own scale.
+- **Swap sheet on 1.1** (item 3). I checked the tier-3 candidates for C position right hand, G
+  right hand and the right-hand five-finger drill, with no limit on the list. Before the change
+  there were 22 five-finger candidates, 20 of them with black keys (A♭ major left was the first
+  shown). After it there are two: `c-major.left` and `g-major.left`, both at 1.1. The first twelve
+  now also hold the left-hand drill, the A minor and C riffs, and C-position reading drills, all
+  on white keys. Rung 1.3, checked the same way, now reaches only `c-major.right` and
+  `g-major.right`.
+- **Lessons.** No lesson names a key that moved. I searched `content/lessons/` for "five-finger",
+  "five finger", "pentascale", "five-note" and the G/D/F/A "position" names. The hits are generic
+  ("the five-finger walk", "a five-finger pattern hands together") or about C position (0.4, 1.1,
+  2.1, 2.5, improv.3). So no lesson was edited.
+
+### Moved items (before → after, from the built catalog)
+
+| hands | before → after | n | items (`exercise.five-finger.` omitted) |
+|---|---|---:|---|
+| one | 1.1 → 1.1 | 4 | c-major.left, c-major.right, g-major.left, g-major.right (unchanged) |
+| one | 1.1 → 2.1 | 6 | a-, d-, f-major .left/.right |
+| one | 1.1 → 3.2 | 4 | b-, e-major .left/.right |
+| one | 1.1 → 4.2 | 10 | a-flat, b-flat, d-flat, e-flat, g-flat major .left/.right |
+| both | 2.1 → 2.1 | 2 | c-major, g-major (unchanged) |
+| both | 2.1 → 2.2 | 5 | a-major, d-major, f-major, a-minor, d-minor |
+| both | 2.1 → 2.3 | 3 | c-minor, f-minor, g-minor |
+| both | 2.1 → 4.1 | 2 | b-major, e-major |
+| both | 2.1 → 4.2 | 3 | b-flat-major, e-flat-major, e-minor |
+| both | 2.1 → 5.1 | 5 | a-flat-, d-flat-, g-flat-major; b-minor, f-sharp-minor |
+| both | 2.1 → 5.2 | 4 | b-flat-, c-sharp-, e-flat-, g-sharp-minor |
+
+### Band cases (item 2)
+
+Eight lessons list `exercise.five-finger.*` items: 1.1, 1.3, practice.1, practice.3, practice.4,
+practice.5, 2.1 and 3.1. Only one listed item moved:
+
+- `exercise.five-finger.f-major.right` on **3.1**, which moved from 1.1 to 2.1. The band is
+  1.1–3.2, so the band still holds it. **It stays.** 3.1 is the sharps-and-flats rung, and F major
+  with its B♭ is a key the rung teaches.
+
+Every other listed item is C or G and did not move. The validator reports no level-band error on
+any rung. No band was widened and no item was removed. The committed ladder report was not stale
+(the validator checks it), because no rung's option range changed.
+
+**Red line** (the new tests run against a scratch copy of the generator as it was):
+`test_stage_one_holds_c_and_g_one_hand_and_nothing_else` failed with
+`AssertionError: Lists differ: ['exe[13 chars]nger.a-flat-major.left', ...] != ['exe[13 chars]nger.c-major.left', ...] — First list contains 20 additional elements.`
+`test_no_pattern_with_a_black_key_is_within_the_swap_sheets_reach_of_c_position` failed with 20 ids
+against `[]`. Five failures and three errors in total; the errors come from the stub that stood in
+for the new function. On the new rule all 8 pass.
+
+## Not done
+
+- The app was not opened and the swap sheet was not seen on a screen (the brief says no browser).
+- `docs/03` §3 was not edited. It does not document the rule; it says generated items are
+  "levelled from one table", which is now true of this family.
+
+## Follow-ups
+
+1. **P3, D4 owns it.** `levelSource: "judged"` is still written on every generated item
+   (`catalog_entry`), and `levelConfidence` still prefers those items in swap sorts. Left as it is.
+2. **P2.** `c-major.both` (2.1, hands together) is still listed on the Stage 1 rungs 1.1 and 1.3 and
+   on practice.3 and practice.4 (trace finding 8). Its swap sheet on 1.1 now reaches the Part E
+   stage-2 patterns: F, D and A one hand at 2.1 are among its first twelve. That is stage-2 work
+   offered from a stage-1 rung, because the item being swapped is itself stage-2 work. The cure is
+   finding 8's (take it off those lists, or give it a role), not the level.
+3. **Pedagogy, unverified.** E minor is at 4.2 while G, C and F minor are at 2.3. The rule keeps a
+   minor no easier than its major, and E major is outside Part E's five-finger list. A teacher
+   might put E minor with G minor. Separately, one-hand patterns in the flat keys arrive with
+   the flat-key rung (4.2). A teacher might introduce all-key pentascales earlier, as a
+   scale-formula exercise at 3.1.
+4. **P3.** Part E's 2026-09-06 bullet names a `LEVELS` table in the generator that does not exist.
+   The table is the constants and the `*_level` functions. Not touched: the brief allowed one dated
+   line.
+5. **Consumers read, not changed.** These read `level`: `alternativesFor`; `buildSession`'s
+   fallbacks (`|level − stage| ≤ 1`, `≤ stage + 1`); the Library's level filter, sort and detail
+   line; the lesson page's meta line; `add_technique_units.py`'s band picks (a bootstrap tool, not
+   in the build; its rerun test passes on the new catalog).
+
+## Questions
+
+None that need the owner. The placements above are judgement within the brief.
+
+## Files
+
+- `tools/content/generate_exercises.py`: adds `FIVE_FINGER_STAGE_ONE`, `FIVE_FINGER_STAGE_TWO`,
+  `FIVE_FINGER_STEPS` and `five_finger_level` after `scale_level`. `make_five_finger` calls it.
+- `tools/content/tests/test_levels.py`: new `TestFiveFingerPatternsFollowTheKey`, 8 tests.
+- `docs/02-curriculum.md`: one dated amendment line at the end of Part E's amendments.
+- Rebuilt, gitignored: `build/catalog.generated.json`, `app/public/content/`. Left as the build wrote
+  them for the next task's build.
+- Unchanged: `content/curriculum/*.json`, `content/lessons/*.md`, `docs/03-content-pipeline.md`,
+  `docs/generated/ladder.md`, `content/catalog.static.json`, everything under `app/`.
+
+
+
+### Entry 65 — T38: the window's demonstrated faults fixed at their mechanism, and the look-ahead treatment chosen by the pictures (2026-09-25)
+
+**Judgement.** On every cell shot (T34's 16-cell sheet mid-run in both treatments, a 17-width
+sweep of Hot Cross Buns at rest in both, the 60 cells of `score.window-rule` at rest, the probe's
+named states), the owner's rules hold as follows:
+- **No distortion:** holds everywhere I looked, read as an outcome now. Every bar's stave on the
+  glass matches the engraver's natural width at the one scale, per bar, on all 60 cells and on the
+  mid-run Nocturne cell that found C. A second distortion nobody had named went with it: dense
+  bars used to be *squeezed* onto a stage-width page.
+- **As large as the stage allows, and Size moves around that:** holds. Size is monotone and
+  path-independent, and the greyed row no longer shrinks the window.
+- **The next bar in view:** holds on 13 of the 16 sheet cells. It fails on 3. Two are the tablet
+  sideways 2-bar cells, which are E as before. The third, **tablet upright Twinkle 2**, moved into
+  E's class: fixing A removed the mispricing that had given it one bar a row. On the sweep, the
+  greyed next row is present from 360 to 440 px wide and absent from 480 to 1000 px, because the
+  window's rows, growing with the width, leave no row's height below them. All three failures and
+  the sweep's gap are T34 rule 2 as written; changing them is D7, the owner's call.
+- **The staff floor:** now measured on the five lines. Its number is provisional and a question
+  (table below).
+
+**The treatment the pictures chose: run-off**, with compact kept behind the switch
+`localStorage['pianopath.lookAhead']` for one wave.
+- On the two Nocturne cells where the treatment shows mid-run (phone upright and tablet upright,
+  4 bars), compact's cut fell inside a beamed group: there is no gap between note columns that a
+  beam does not cross. It left a stub of beam hanging in the fade, which reads as a rendering
+  fault.
+- Run-off lets the stage's own frame cut the row, like the edge of a page, and shows more of the
+  next bar.
+- On Hot Cross Buns at rest the two read alike.
+- Neither produces a hole or oscillates: the window's staff never falls across the sweep
+  (asserted), and the treatment state changes once (continues → none at 480 px), never back.
+
+Nothing was seen on the owner's device. No teacher judged these pictures. The judgements above
+are a reader's.
+
+**Done**
+
+*Fault A: the `naturalBar` ratchet (implementation bug).*
+- *Mechanism:* `chooseWindowShape` priced every bar at a running maximum of (row ink ÷ bars) per
+  engraving zoom, clef, key and time included. It only rose, and it was fed by sheets not on the
+  glass.
+- *Reproduction before, with T35's probe pattern (Hot Cross Buns, 1280 × 720):*
+  - Size 100 → 110 → 120 → 110 → 100 % drew scale 1.85646 → 1.72657 → 1.71405 → 1.57121 →
+    1.85646, identical to the trace.
+  - Tablet sideways Twinkle 4 after a pass through 1 bar: `naturalBar` 252.6 → 349.0, two rows at
+    0.816, 412 and 352 px wide on a 1024 px stage.
+- *Red lines:*
+  - `score.screen` "Size steps are monotone…": five-line staff 148.52 → 138.13 → 137.12 → 125.7 →
+    148.52.
+  - `score.window-rule` "a pass through one bar…": fresh page 1 row at 1.195; after the pass
+    through 1 bar, 2 rows at 0.816.
+- *Change:* every candidate is priced on its own window from the probe's per-bar natural widths
+  (`barTable`: `begin + minimumStaffEntriesWidth + end`), with the opening once per row. A row that
+  starts the piece carries clef, key and time; any other row carries clef and key. The ink past the
+  lines (a brace) is measured from the rows on the glass (`inkOverhang`). Size's 100 % is the asked
+  window's own fit, and over 100 % a yield is taken only if it draws larger than 100 %.
+- *After, same probe:* 1.85646 → 2.0421 → 2.22775 → 2.0421 → 1.85646. Tablet: one row at 1.195
+  on both paths.
+- *Deviation noted:* the price is exact per window rather than "from the rows on the glass" as the
+  trace's root fix had it. A price taken from the rows drawn depends on which window is drawn, and
+  it can flip a count between two answers. The engraver's natural widths are what a natural row is
+  made of. Before the probe lands, the old default stands until the first measurement, as the
+  brief allows.
+
+*Fault B: the look-ahead row priced into the width (implementation bug).*
+- *Mechanism:* `fitSlots` handed the greyed row to `scaleFor`.
+- *Before:* at 390 × 844 the scale was 0.964286 = 378/392 (the greyed row's width), 8 % under the
+  window's own 378/360.
+- *Measurement against the trace:* at 360 × 780 at rest from bar 1 the cost was only 0.6 %
+  (0.961 against 0.967). The trace's "a quarter under" is the 1-bar window with the cursor on
+  bar 2 (`score.rotate`'s cell), which re-pointed rotate now covers.
+- *Red lines:* the widest window row reached 347.0 of 378 px at 390, and 345.9 of 348 px at 360.
+- *Change:* the window's scale comes from its own rows, and the width-centring comes from its
+  rows too. During a run the held size gives way at once, and only then, if a window row would
+  not fit across it, so a bar being played never runs off the side.
+- *After:* 390 → 1.05044 = 378/360; 360 → 0.96707 = 348/360.
+
+*B's remainder: two treatments built and judged.* Both are built behind one switch. `data-ahead`
+reports `row`, `continues`, `start` or `none`. The `⋯` row says *the next bar continues past the
+edge* (run-off) or *only the start of the next bar fits* (compact). The choice and its reasons are
+under Judgement.
+
+*Fault C: a row wrapped and justified (implementation bug, distortion).*
+- *Mechanism:* a natural row's page was one stage width per bar.
+- *Before:* phone upright Nocturne 4 mid-run; my replay reached a different state from the trace's
+  but the same mechanism. Both window rows wrapped onto two systems, and printed bars 5 and 7 were
+  drawn across the whole 684 px page, while `data-stretch` said `natural`.
+- *Red line:* bar 5 drawn at ×2.52 its natural width, bar 7 at ×1.53.
+- *Change:* the page is at least the row's natural width × 1.25. The layout is read back after
+  every natural draw (`layoutOf`: systems, and each bar's spacing factor), the row is redrawn once
+  on the engraver's own width if it came out wrapped or squeezed, and `data-stretch` is the
+  outcome.
+- *After:* one system per row, all bars natural.
+- *Also found:* a dense bar wider than a stage's width per bar had always been squeezed. Hot Cross
+  Buns' eight quavers at 360 px were drawn at 0.79 of natural; they are now natural and smaller.
+
+*Fault D: two definitions of "staff" (P1).*
+- *Mechanism, measured on six pieces:* the engraver's staff line reports its top line exactly, but
+  `staffLineBoxes` added the line's whole content height to it. That gave "staff" = 1.65–2.5 × the
+  five lines. The specs read the `.staffline` group, 1.8–2 × the five lines.
+- *The same mistake padded every system's height reserve* by the ink above its stave: Hot Cross
+  Buns reserved 177 px at zoom 2 for 145 px of ink.
+- *Change:* the five lines (`StaffHeight` below the top line) everywhere: the renderer's floor and
+  read-ahead, `score.window-rule` (e), `score.screen`, `score.rotate`, and the T30/T34 camera.
+- *The read-ahead peek was re-derived, not converted.* Half of the five lines put Hot Cross Buns'
+  next note 7 px off the edge at 880 × 412, so the read-ahead now keeps three spaces
+  (`NEXT_NOTE_PEEK_STAVES = 0.75`). The sideways count, measured from the barline, keeps two.
+- *The floor, `MIN_STAFF_PX`, is provisional at 22 px* on the five lines: what the old floor
+  enforced on a plain single staff. Table from the chooser's candidates on the grid (80
+  upright/tall cells, five pieces):
+
+  | five-line floor | cells whose count would differ from today |
+  |---|---|
+  | 16 px (the Nocturne's old effective) | 2 |
+  | 20 | 1 |
+  | 22 | 0 |
+  | 25 | 0 |
+  | 30 | 5 |
+  | 40 (the documented number) | 9 |
+
+  Per the brief's deviation clause, the number is left as a question.
+
+*R1, stale spec (`score.layout`).* The test is replaced: the count rises with the setting, or the
+row says "N asked, M shown" with M the count held and a true reason, and the words are the same on
+a fresh page. The renderer now re-chooses the sideways count when the measurement lands; that was
+the history dependence. The sentence says *about N fit across at this size* sideways. At 880 × 412,
+Twinkle RH: before, "2 shown" when fresh and "1 shown … too small" after a press; after, 1 shown
+and the same words fresh, stepped and reloaded.
+
+*R3, stale spec (`score.rotate`).* Re-pointed at T34's promises, with the reason beside each: page
+width against the slot's own bars and natural width, only the widest window row held to the width,
+look-ahead rows exempt, and staff as the five lines.
+
+*Also found and fixed in the same change* (each seen on the sheet or in a spec, then measured):
+- **The fold shift.** A phone's folded chrome moves the sideways sheet 22 px down, a shift the fit
+  never knew about. With the reserve exact, the bass staff's fingerings on Twinkle ran 17.6 px
+  past the stage mid-run. A run is now fitted for the folded box from its start; after the fix the
+  ink ends 5 px inside.
+- **The tie between splits.** Splits within a fiftieth of each other now go to the one that keeps
+  the next music in view (`SPLIT_TIE`).
+- **The outcome guard's page.** It widened to double the page; it now widens to the engraver's
+  width.
+- **Two stale spec lines in `score.window-rule`:**
+  - (c) now checks the long piece's two-sheet limit before the same-row case.
+  - (f) exempts one height-bound row, where Size + can no longer give up a bar for nothing.
+- **`score.density` (stale spec).** Its "stretched" check was a 70 % share of the width, and
+  natural bars at 900 px reached 81 % once B was fixed. It is now read bar by bar.
+
+**Tests touched**
+
+| test | kind | the assumption the old assertion encoded | what the new one reads, and why that is the learner's outcome |
+|---|---|---|---|
+| `score.screen` Size steps monotone… | add | none | The five lines on the glass at each Size step: what the learner sees grow. |
+| `score.screen` zoom, strip, destination | revise | The `.staffline` group's box is the staff. It holds the notes, so it moved with content. | The five stave lines on the glass. |
+| `score.window-rule` (a) | revise | `data-stretch` (the draw's request) means undistorted. | Each bar's stave width on the glass ÷ its scale, against the engraver's natural width. The flag is now the outcome too. |
+| `score.window-rule` (e) and its floor | revise | Staff = group box, floor 40. | Five lines on the glass, against the code's own floor (22, provisional). |
+| `score.window-rule` (c) | revise | A long piece using both sheets with room to the right is a fault. | The two-sheet limit is stated as not built, whatever the room to the right. |
+| `score.window-rule` (f) | revise | Size + must change the picture unless one row or one bar a row. The old renderer gave up a bar for nothing there. | A height-bound single row may stay the same; nothing on the stage can grow. |
+| `score.window-rule` pass through 1 bar; greyed row at 390 and 360; Nocturne mid-run natural; sweep; folded chrome | add | none | The same stage and settings draw the same window; the widest window row reaches the width; bars at natural spacing mid-run; the staff never falls as the stage widens; all ink on the stage mid-run. |
+| `score.layout` "holds more bars…" | replace | Sideways, the `.vf-measure` count in the SVG rises with the setting. It counted the engraving, not the glass, and ignored the designed yield. | The count held (`data-window-bars`) rises, or the row says so truly; the same words fresh and stepped. |
+| `score.layout` three screenshots | preserve (local win32 baselines regenerated after looking; gitignored, CI skips) | The reference picture | The picture itself |
+| `score.rotate` three verdicts and staff | revise | Any inline page is the sideways chunk; every slot fills 80 %; staff = group box. | Page against the slot's bars and natural width; the widest window row's width; look-ahead exempt; five lines. |
+| `score.density` 900/1512 px | revise (constant replaced) | A wide ink share means stretched. | Per-bar spacing from the glass against the engraver's natural width. |
+| `t30.ts` camera, `t34-sheet` | revise | Staff = group box. | Five lines; the captions add the look-ahead state and the stretch outcome; treatments and sweep. |
+| unit `readAheadScale` | revise | Staff 151 (the box); peek and floor as literals. | Staff 80 (five lines at zoom 2); the renderer's own constants. |
+
+The sheet, mid-run, run-off (compact differs only where marked). "Before" is T35's table and its
+probe; the five-line staff is 40 × engraving zoom × scale.
+
+| cell | before | now | reading |
+|---|---|---|---|
+| phone upright · Twinkle · 2 | bar 4, 5 greyed | the same, 60.2 px | yes |
+| phone upright · Twinkle · 4 | 5–8, bottom third empty | the same, 42.1 px | yes |
+| phone upright · Nocturne · 2 | 4, 5 greyed | the same, 35.7 px | readable; bottom half empty |
+| phone upright · Nocturne · 4 | rows wrapped, bar justified (C) | cursor row 3–4 natural; greyed 5–6 runs off (compact: cut with a beam stub); 25.1 px (T35 replay 25.3 distorted) | undistorted and small; bottom half empty (two sheets, piece > 48 bars) |
+| phone sideways · Twinkle · 2 | 2–6 | 2–6, 53.8 px, fingerings on the glass | yes |
+| phone sideways · Twinkle · 4 | 4–9 | 4–9, 4 shown | yes |
+| phone sideways · Nocturne · 2 | 2–6; row said "2 asked, 1 shown" | 2–6, 25.7 px (25.1), silent | readable, small; now consistent with the 4-bar cell |
+| phone sideways · Nocturne · 4 | same picture, "4 shown" | same | as above |
+| tablet upright · Twinkle · 2 | bar 4, 5 greyed (one bar a row) | one row 3–4, 96.4 px, **no next bar**, lower 55 % empty | worse on look-ahead: **moved into E's class** by A (one row draws 1.2048, two rows 1.0228) |
+| tablet upright · Twinkle · 4 | 5–8 | the same, 87.4 px | yes |
+| tablet upright · Nocturne · 2 | 4, 5 greyed | the same, 69 px | yes |
+| tablet upright · Nocturne · 4 | greyed row ran off while the scale held (B) | window sized by its rows, 57.5 px (57.5); greyed 5–6 runs off by design | reads as a page edge |
+| tablet sideways · Twinkle · 2 (E) | no next bar, 123.2 px | no next bar, 127.8 px | unchanged in kind; D grew it |
+| tablet sideways · Twinkle · 4 | 5–8 one row | the same, 77 px (77.0) | yes; lower half empty mid-run |
+| tablet sideways · Nocturne · 2 (E) | no next bar, 77.0 | no next bar, 77 px | unchanged |
+| tablet sideways · Nocturne · 4 | greyed row ran off (B) | 1–4 window, 5–8 greyed runs off by design, 43.5 px | reads as a page edge |
+
+**The nine specs**, from `app/`, two workers, one at a time, unpiped, on the final build (chain 2):
+- `score.window-rule` 0 (11 passed)
+- `score.layout` 0 (14)
+- `score.screen` 0 (35)
+- `score.rotate` 0 (10)
+- `score.fill` 0 (3)
+- `score.fuzz` 0 (5)
+- `score.head-height` 0 (7)
+- `score.stepper-limits` 0 (4)
+- `score.states` 0 (9)
+
+Chain 1, on the build before the second round, was window-rule 1, layout 1, rotate 1, and the rest
+0. Those reds are classified above and fixed. `npx tsc -b` 0, `npm run lint` 0,
+`npx vitest run` 0 (5,123 passed). Consumers `wide.spec` and `score.density` pass.
+
+**Unverified, beside what passes**
+- Nothing was seen on the owner's device, and no teacher judged the pictures. All numbers are
+  this machine's; the specs assert relationships.
+- The per-bar check compares the glass with the engraver's natural width as the renderer reports
+  it. Only the glass half is independent.
+- The grid is five pieces, the sheet two, and the sweep one.
+- The height tolerances of a frozen run (`FROZEN_OVERFLOW`, `FROZEN_HEIGHT_HOLD`) were written when
+  the reserve carried hidden slack. Only the fold case was measured.
+- **P1 against rows at natural width.** A run's size now gives way when a wider window arrives:
+  on the Nocturne phone cell, windows priced 0.4745 and drawn 0.4316 by bar 5. That is inferred
+  from the price and the drawn scale; the frozen value at the run's start was not read. Before,
+  the rows were all page-width because they were distorted.
+
+**Not done**
+- E (tablet 2-bar look-ahead) by instruction.
+- The floor's number is not chosen (question).
+- Compact's cut does not avoid beams. It is kept as-is behind the switch.
+
+**Follow-ups**
+- P2: `src/ui/help.ts` says "You always get the next bar", which is false on E cells and at the
+  sweep's wider widths.
+- P1: size a run once from the piece's widest row (P1) instead of shrinking mid-run.
+- P1: a piece over 48 bars gets two sheets, so there is no look-ahead row and upright Nocturne
+  cells leave half the stage empty.
+- P2: the shape frozen at Play keeps the at-rest arrangement after the stage grows.
+- P3: the `⋯` row's look-ahead words update only when the screen re-renders.
+
+**Questions for the owner**
+1. The floor on the five lines: 22 (today's behaviour), 25, 30 or 40? See the table.
+2. D7, now with three cells and the sweep's 480–1000 px range behind it.
+3. Keep run-off, or see compact first? The switch is `localStorage['pianopath.lookAhead']`.
+
+**Files**
+- `app/src/score/WindowRenderer.ts`
+- `app/src/ui/screens/ScoreScreen.ts` (the row's sentence only)
+- `app/tests/e2e/score.window-rule.spec.ts`, `score.layout.spec.ts`, `score.screen.spec.ts`,
+  `score.rotate.spec.ts`, `score.density.spec.ts`
+- `app/tests/tour/t30.ts`, `t34-sheet.spec.ts`
+- `app/tests/unit/readAheadScale.test.ts`
+- `docs/08-score-render-states.md` §4.1 and §9 (3, 7, and new 37, 38)
+- `docs/04-ui-spec.md` §5
+- `docs/08-test-map.md`
+- `docs/decisions/2026-09-23-score-window-strategy.md` §6
+- The pictures are in `build/tour/T38/{run-off,compact}/`. The probe was deleted.
+

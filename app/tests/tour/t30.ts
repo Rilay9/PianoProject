@@ -264,11 +264,24 @@ export async function measure(page: Page): Promise<Measurement | null> {
     // readability actually has (`MIN_STAFF_PX`); a share of the width says
     // nothing, because a stave line spans the system whether it carries five
     // notes or none.
+    //
+    // **The five lines themselves (T38)**, top line to bottom line: the thin
+    // horizontal strokes each `.vf-measure` draws. This read the `.staffline`
+    // group's box, which holds the notes, stems and fingerings as well and was
+    // 1.8 to 2 times the lines — so the camera and the renderer's floor were
+    // measuring two different things under one name.
     let stavePx: number | null = null;
     for (const buffer of buffers) {
-      for (const line of buffer.querySelectorAll<SVGGraphicsElement>('.staffline')) {
-        const box = line.getBoundingClientRect();
-        if (box.height > 1 && overlaps(box)) stavePx = stavePx === null ? box.height : Math.min(stavePx, box.height);
+      for (const measure of buffer.querySelectorAll('.vf-measure')) {
+        const ys: number[] = [];
+        for (const line of measure.querySelectorAll(':scope > path')) {
+          const box = line.getBoundingClientRect();
+          if (box.height <= 1.5 && box.width >= 10 && overlaps(new DOMRect(box.left, box.top - 1, box.width, box.height + 2)))
+            ys.push(box.top + box.height / 2);
+        }
+        if (ys.length < 5) continue;
+        const span = Math.max(...ys) - Math.min(...ys);
+        stavePx = stavePx === null ? span : Math.min(stavePx, span);
       }
     }
 

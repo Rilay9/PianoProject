@@ -82,16 +82,39 @@ interface Ink {
 
 interface SlotShot {
   slot: string;
+  /** `is-cursor`, `is-ahead` and the rest, as the renderer set them. */
+  classes: string;
+  /** How many printed bars the slot holds, from its `data-bars` range. */
+  bars: number;
   /**
    * The engraver's page, in layout pixels, from the wrapper's inline width.
-   * Set only on the sliding path (`drawInto` gives a chunk a bar's width of
-   * page per bar), so a page wider than the stage *is* the slide's signature —
-   * and unlike a translate it does not depend on which bar the cursor is on.
+   *
+   * **Re-pointed 2026-09-25 (T38).** This said the width was set only on the
+   * sliding path, so any page wider than the stage was the slide's signature.
+   * Since T34 every upright row is engraved at natural width on an inline
+   * page too, and since T38 that page is at least the row's own natural width
+   * (a dense bar on a narrow stage is wider than the stage). What still tells
+   * the sideways chunk from an upright row after a turn is the page against
+   * the slot's own bars: a row's page is the larger of a stage's width per bar
+   * and its bars' natural width with the renderer's slack (`naturalPage`); the
+   * chunk is several bars at the old stage's width.
    */
   pageWidth: number;
   /** What OSMD laid out into, from the `<svg>`'s own width attribute. */
   engraved: number;
+  /** The slot's bars' natural widths added up, from the engraver's model (`debugFit`); 0 if unknown. */
+  natural: number;
   ink: Ink | null;
+}
+
+/**
+ * The widest page an upright row may be engraved on: a stage's width per bar,
+ * or its bars' natural width with the renderer's slack (`NATURAL_PAGE_SLACK`,
+ * 1.25, and the fit's margin), whichever is larger. Anything wider is a sheet
+ * engraved for another stage.
+ */
+function naturalPage(slot: SlotShot, stageWidth: number): number {
+  return Math.max(stageWidth * Math.max(1, slot.bars), slot.natural * 1.25 + 12) + 2;
 }
 
 interface Shot {
@@ -208,22 +231,39 @@ async function shoot(page: Page): Promise<Shot> {
     const fronts = document.querySelectorAll<HTMLElement>(
       '#score-stage .score-buffer.is-front:not(.score-probe)',
     );
+    const fit = (
+      window as unknown as {
+        __pianopath?: { scoreFit?: () => { slots?: { bars?: { natural: number }[] }[] } | null };
+      }
+    ).__pianopath?.scoreFit?.();
     const slots = [...fronts]
       .filter((el) => !el.hidden)
       .map((el) => {
         const svg = el.querySelector('svg');
+        const [from, to] = (el.dataset.bars ?? '').split('-').map(Number);
+        const laid = fit?.slots?.[Number(el.dataset.slot)]?.bars ?? [];
         return {
           slot: el.dataset.slot ?? '?',
+          classes: [...el.classList].filter((c) => c.startsWith('is-')).join(' '),
+          bars: Number.isFinite(from) && Number.isFinite(to) ? to - from + 1 : 1,
           pageWidth: Number.parseFloat(el.style.width) || 0,
           engraved: svg ? Number.parseFloat(svg.getAttribute('width') ?? '') || 0 : 0,
+          // Each bar once: a grand staff lays a bar out once per column.
+          natural: laid.reduce((sum, b) => sum + (b.natural || 0), 0),
           ink: inkOf(el),
         };
       });
-    // The stave's own height, from the five lines: the floor the fit keeps.
+    // The staff is its five lines (`08` §9, T38): the thin strokes each
+    // `.vf-measure` draws, top line to bottom line — the floor the fit keeps.
+    // It read the `.staffline` group's box, which carries the notes as well.
     let staff = Infinity;
-    for (const stave of fronts[0]?.querySelectorAll<SVGGraphicsElement>('.staffline') ?? []) {
-      const r = stave.getBoundingClientRect();
-      if (r.height > 0) staff = Math.min(staff, r.height);
+    for (const measure of fronts[0]?.querySelectorAll('.vf-measure') ?? []) {
+      const ys: number[] = [];
+      for (const line of measure.querySelectorAll(':scope > path')) {
+        const r = line.getBoundingClientRect();
+        if (r.height <= 1.5 && r.width >= 10) ys.push(r.top + r.height / 2);
+      }
+      if (ys.length >= 5) staff = Math.min(staff, Math.max(...ys) - Math.min(...ys));
     }
     return {
       stage: box
@@ -277,29 +317,38 @@ const uprightSingle: Verdict = (shot) => {
     notes.push(`read-ahead is ${String(shot.readAhead)}`);
   const drawn = shot.slots.filter((s) => s.ink !== null);
   if (drawn.length < 1) notes.push(`${String(drawn.length)} slots are drawn`);
-  const front = drawn[0];
-  const ink = front?.ink;
-  if (!ink || !front) notes.push('nothing is drawn');
-  else {
-    // What was *engraved*, before what it was scaled to.
-    //
-    // The width alone cannot tell a re-engraved bar from the sideways chunk
-    // squeezed to fit: a chunk fitted to the width fills the width, which is
-    // how four of these tests passed over a sheet drawn at a quarter size.
-    // Turned upright while paused, Hot Cross Buns kept its three-bar 2,340 px
-    // page and drew 34 px of music into a 662 px stage. The two lines below
-    // are the ones that see it.
-    if (front.pageWidth > 0)
+  const windowRows = drawn.filter((s) => !s.classes.includes('is-ahead'));
+  if (windowRows.length === 0) notes.push('nothing is drawn');
+  // What was *engraved*, before what it was scaled to.
+  //
+  // The width alone cannot tell a re-engraved bar from the sideways chunk
+  // squeezed to fit: a chunk fitted to the width fills the width, which is how
+  // four of these tests passed over a sheet drawn at a quarter size. Turned
+  // upright while paused, Hot Cross Buns kept its three-bar 2,340 px page and
+  // drew 34 px of music into a 662 px stage. The page against the slot's own
+  // bars is the line that sees it (re-pointed by T38: it said *any* inline
+  // page was the chunk's, which T34 made false for every upright row).
+  for (const slot of drawn) {
+    if (slot.pageWidth > naturalPage(slot, stage.width))
       notes.push(
-        `the engraver's page is still the sideways chunk's ${px(front.pageWidth)} ` +
-          `on a ${px(stage.width)} stage`,
+        `slot ${slot.slot} is engraved on a ${px(slot.pageWidth)} page for ${String(slot.bars)} bar(s) ` +
+          `on a ${px(stage.width)} stage — the sideways chunk's, not an upright row's`,
       );
-    if (Math.abs(front.engraved - stage.width) > stage.width * 0.15)
-      notes.push(`engraved for ${px(front.engraved)} into a ${px(stage.width)} stage`);
-    if (ink.width < stage.width * FILLS_WIDTH)
-      notes.push(`the ink fills ${pct(ink.width, stage.width)} of the width`);
-    if (ink.height >= stage.height)
-      notes.push(`the ink is ${px(ink.height)} tall in a ${px(stage.height)} stage`);
+    if (slot.engraved > naturalPage(slot, stage.width))
+      notes.push(`slot ${slot.slot} was laid out on ${px(slot.engraved)} for a ${px(stage.width)} stage`);
+  }
+  // T34 rule 1: one scale for the window, as large as the stage allows, so the
+  // **widest window row** reaches across (or the height is what bound it). A
+  // narrower row, and the greyed look-ahead row, are left as they are.
+  const widest = windowRows.reduce<Ink | null>(
+    (w, s) => (s.ink && (!w || s.ink.width > w.width) ? s.ink : w),
+    null,
+  );
+  if (widest && widest.width < stage.width * FILLS_WIDTH && shot.fit !== 'height' && shot.fit !== 'size')
+    notes.push(`the widest window row fills ${pct(widest.width, stage.width)} of the width, fit by ${String(shot.fit)}`);
+  for (const slot of windowRows) {
+    if (slot.ink && slot.ink.height >= stage.height)
+      notes.push(`slot ${slot.slot} is ${px(slot.ink.height)} tall in a ${px(stage.height)} stage`);
   }
   return notes.length === 0 ? 'ok' : notes.join('; ');
 };
@@ -348,11 +397,21 @@ const uprightSlots: Verdict = (shot) => {
   // (`chooseSlotCount`), and a run holds whatever it started with. What must
   // be true of every one of them is the width.
   if (drawn.length < 2) notes.push(`${String(drawn.length)} slots are drawn`);
-  for (const slot of drawn) {
-    const ink = slot.ink;
-    if (!ink) continue;
-    if (ink.width < stage.width * FILLS_WIDTH)
-      notes.push(`slot ${slot.slot} fills ${pct(ink.width, stage.width)} of the width`);
+  // **Re-pointed 2026-09-25 (T38)**: every slot was held to 80 % of the width,
+  // which predates natural widths. T34 rule 1 draws the window at one scale,
+  // so only the widest window row reaches across; a narrower row is left as it
+  // is, and the greyed look-ahead row is not the window at all.
+  const windowRows = drawn.filter((s) => !s.classes.includes('is-ahead'));
+  const widest = windowRows.reduce<Ink | null>(
+    (w, s) => (s.ink && (!w || s.ink.width > w.width) ? s.ink : w),
+    null,
+  );
+  if (!widest) notes.push('no window row is drawn');
+  else if (widest.width < stage.width * FILLS_WIDTH && shot.fit !== 'height' && shot.fit !== 'size')
+    notes.push(`the widest window row fills ${pct(widest.width, stage.width)} of the width, fit by ${String(shot.fit)}`);
+  for (const slot of windowRows) {
+    if (slot.ink && slot.ink.right > stage.right + 2)
+      notes.push(`window row ${slot.slot} runs ${px(slot.ink.right - stage.right)} past the right edge`);
   }
   return notes.length === 0 ? 'ok' : notes.join('; ');
 };
@@ -371,16 +430,25 @@ const fittedToThisWidth: Verdict = (shot) => {
   const notes: string[] = [];
   const drawn = shot.slots.filter((s) => s.ink !== null);
   if (drawn.length === 0) notes.push('nothing is drawn');
-  for (const slot of drawn) {
+  // The greyed look-ahead row is exempt (T38): it is placed at the window's
+  // scale and never sizes it, so it may be wider than the stage, and the
+  // treatment either cuts it inside the stage or lets the edge cut it.
+  const windowRows = drawn.filter((s) => !s.classes.includes('is-ahead'));
+  for (const slot of windowRows) {
     const ink = slot.ink;
     if (!ink) continue;
     // The fit insets by 6 px, so the ink stops that short of the edge; 2 px
     // of tolerance is for the rounding, not for an overflow.
     if (ink.right > stage.right + 2)
       notes.push(`slot ${slot.slot} runs ${px(ink.right - stage.right)} past the right edge`);
-    if (ink.width < stage.width * FILLS_WIDTH)
-      notes.push(`slot ${slot.slot} fills ${pct(ink.width, stage.width)} of the width`);
   }
+  // One scale for the window (T34 rule 1): the widest window row reaches across.
+  const widest = windowRows.reduce<Ink | null>(
+    (w, s) => (s.ink && (!w || s.ink.width > w.width) ? s.ink : w),
+    null,
+  );
+  if (widest && widest.width < stage.width * FILLS_WIDTH && shot.fit !== 'height' && shot.fit !== 'size')
+    notes.push(`the widest window row fills ${pct(widest.width, stage.width)} of the width`);
   return notes.length === 0 ? 'ok' : notes.join('; ');
 };
 

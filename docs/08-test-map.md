@@ -221,26 +221,33 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `score.bar-targets.spec.ts` — the control bar's targets against R4's forty pixels, in one row.
 - `score.blind.spec.ts` — a blind run hides the notation and nothing else: count-in, dot and corner stay.
 - `score.countin.spec.ts` — the count-in drawn large over the notation, and the beat dot during a run.
-- `score.density.spec.ts` — how much room the music may take and where it sits: never stretched past natural spacing.
+- `score.density.spec.ts` — how much room the music may take and where it sits: never stretched past natural spacing, read bar by bar from the glass against the engraver's natural width (T38; it was a 70 % share of a wide stage's width, which a natural bar scaled up uniformly now passes), and centred when narrow.
 - `score.fill.spec.ts` — the music uses the screen it is on: a width floor on the dense pieces.
-- `score.window-rule.spec.ts` — the window rule, from the glass: no system stretched past
-  `MAX_BAR_WIDTH_IN_STAVES`, no staff under `MIN_STAFF_PX`, a bar past the window's last on
+- `score.window-rule.spec.ts` — the window rule, from the glass: no bar spaced wider than the
+  engraver's natural width (T38: read per bar from the outcome — each `.vf-measure`'s stave on
+  the glass against the bar's natural width from `debugFit` — not from the `data-stretch` flag
+  alone), no staff under `MIN_STAFF_PX` (the five lines, T38), a bar past the window's last on
   the stage, and the bars the `⋯` row promises all inked. Five shapes x three pieces x
   *Bars in window* 1, 2, 4, 8. The companion `04` §5 asks for beside `score.fill`'s floor.
+  T38 added five named cases: a pass through one bar leaves the tablet sideways window as a
+  fresh page draws it (fault A); the greyed next row does not size the window at 390 x 844 and
+  360 x 780 (fault B); mid-run, every bar of the phone upright Nocturne window is at natural
+  spacing (fault C); and the window never shrinks as the stage widens across the look-ahead's
+  breakpoint (B's remainder, a sweep).
 - `score.fuzz.spec.ts` — the seeded random walk over the whole Score screen, invariants after every action.
 - `score.head-height.spec.ts` — the Score screen's header is the same height all through a run (the first correct notes, a message longer than the row, a wider font); a stage whose *height* changes mid-run leaves the drawn sheet's transform alone; a run restarted mid-piece (hand change, `Hear it`) keeps its **engraving zoom** through a header that grows, which the transform alone cannot show; and the hands control is reachable during a run when the bar has sent it behind `⋯`, which is the branch a wider set of glyphs takes and this machine does not.
 - `score.hearbar.spec.ts` — long-press a bar to hear it: one bar, both hands, once, the run put back.
 - `score.ladder-route.spec.ts` — `?ladder=1` lands where it says (`04` §3d, `05` §6): one of the rung's own exercises, the whole of it looped, the Ladder row pressed — and the three refusals that leave both controls alone.
 - `score.latch.spec.ts` — the learner's first note starts the clock (T8): a Tempo run holds on its first note, the keys and Space start one, and a run with no input keeps time by the clock.
-- `score.layout.spec.ts` — screenshots at 1, 2 and 4 bars per window, and "the next bar is on the glass".
+- `score.layout.spec.ts` — screenshots at 1, 2 and 4 bars per window, and "the next bar is on the glass"; the count rises with the setting **or** the row says "N asked, M shown" with the count held and a true reason, the same fresh and after stepping (re-pointed by T38 from counting `.vf-measure`, R1).
 - `score.pickup-numbers.spec.ts` — one bar, one number everywhere: the pickup piece's bar 0 through the loop machinery.
 - `score.readahead.spec.ts` — a beat of warning: the next-step mark and the paler next key, Tempo and Listen only.
 - `score.renderer.fuzz.spec.ts` — the seeded random walk over `WindowRenderer` alone, on the dev harness.
 - `score.rhythm-ladder.spec.ts` — rhythm only, the tempo ladder and the duet row on the real screen.
 - `score.states.spec.ts` — the state machine one cell at a time (T31), the other half of `score.fuzz`'s random walk: a paused run says it is paused and a `Hear it` run says it is a demonstration rather than showing the selected mode's standing line; a one-bar preview cannot strand the screen in Listen; taking the input away does not leave a run holding for a first note nothing can play; hiding the page pauses a `Hear it` run; a hand the refusal named starts the run; the loop prompt goes when the loop is set. Its last test is a **probe** that drives named states and prints what each event did, which is where `docs/decisions/2026-09-23-score-state-machine.md`'s measured cells come from.
-- `score.rotate.spec.ts` — turning the phone mid-run, paused, twice, in Scroll, and the tour's miniature.
+- `score.rotate.spec.ts` — turning the phone mid-run, paused, twice, in Scroll, and the tour's miniature. Re-pointed by T38 (R3) at T34's promises: an upright row's page is at most a stage's width per bar or its bars' natural width with the renderer's slack; only the widest window row is held to the width; greyed look-ahead rows are exempt; the staff is the five lines.
 - `score.run.spec.ts` — a whole run through the screen keys, first note to a summary that says so.
-- `score.screen.spec.ts` — one test per control on the Score screen, a scripted run in each judged mode, the blind block.
+- `score.screen.spec.ts` — one test per control on the Score screen, a scripted run in each judged mode, the blind block; and (T38, fault A) Size steps are monotone and one setting draws one size whichever way it was reached, the staff read as its five lines.
 - `score.sheet-rows.spec.ts` — a `⋯` row stays in one piece at 342 px: the steppers do not wrap.
 - `score.slide.spec.ts` — sideways the sheet slides by bar, holding the cursor about a third across.
 - `score.slots.spec.ts` — the two slots on a real engraving: the playing slot never redrawn, the next bar already there.
@@ -479,10 +486,11 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `audit.ts` — the machine's half of the review: the six shapes of defect the pictures showed, looked for on every screen.
 - `seed.ts` — a used phone's worth of data put into the app before photographing it.
 - `shoot.ts` — the camera and the contact sheet, shared so every run names its pictures the same way.
-- `t30.ts` — T30's camera and tape measure: the same file layout as `shoot.ts` under `build/tour/T30/`, one JSON record a cell (several workers write it, so no shared ledger), and the measurement each caption carries — bars drawn from the ink, the engraver's zoom times the CSS scale, the stave on the glass, `score.fill`'s own fill, and the stepper's text against the drawn count.
+- `t30.ts` — T30's camera and tape measure: the same file layout as `shoot.ts` under `build/tour/T30/`, one JSON record a cell (several workers write it, so no shared ledger), and the measurement each caption carries — bars drawn from the ink, the engraver's zoom times the CSS scale, the staff on the glass as its five lines (T38; it read the `.staffline` group's box, notes included), `score.fill`'s own fill, and the stepper's text against the drawn count.
 - `t30-window.spec.ts` — not a test: the score window on five shapes x six *Bars in window* x six pieces x both layouts x Size either way x five run modes, 495 measured cells into `build/tour/T30/`. Run it with `--config playwright.tour.config.ts t30-window --workers=4 --fully-parallel` (about a quarter of an hour). **Two** configs have `testDir: './tests/tour'` and therefore collect this file — `playwright.tour.config.ts:18` and `playwright.corpus.config.ts:12` — but every script that uses either names its own spec files (`tour`, `tour:sequence`, `choices`, `corpus`; `package.json` 20–25), so none of them got longer. `playwright.states.config.ts:35` is `./tests/states` and `playwright.config.ts:10` is `./tests/e2e`, which is what CI runs (`npm run e2e`, `.github/workflows/ci.yml:86`).
 - `t30-sheet.mjs` — tiles those records into `build/tour/T30/index.html` and the fault table `faults.md`; `node tests/tour/t30-sheet.mjs ../build/tour/T30`.
 - `t30-strategy.spec.ts` — the same three pieces under whichever window rule is in the tree, named by `T30_STRATEGY`, so candidate rules can be compared cell by cell (`docs/decisions/2026-09-23-score-window-strategy.md` §3).
+- `t34-sheet.spec.ts` — not a test: T34's sixteen-cell contact sheet (four shapes x Twinkle and the Nocturne op. 48 no. 1 x two and four bars, mid-run) into `build/tour/T34/`, the caption under each picture being the claim. With `T38_LOOKAHEAD=compact` or `run-off` it sets the look-ahead switch (`localStorage['pianopath.lookAhead']`), writes to `build/tour/T38/<treatment>/`, and adds a sweep of Hot Cross Buns at rest across the width where its greyed next row stops fitting. Run it alone: `npx playwright test --config playwright.tour.config.ts t34-sheet`.
 
 ### `tools/content/tests/` — Python, `python -m unittest discover tools/content/tests`
 

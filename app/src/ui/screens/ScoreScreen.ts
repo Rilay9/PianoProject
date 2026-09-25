@@ -2958,13 +2958,25 @@ export function ScoreScreen(router: Router): HTMLElement {
       barsRow,
       barsShown < settings.barsPerWindow
         ? `Bars in window — ${String(settings.barsPerWindow)} asked, ${String(barsShown)} shown: ${
-            // The reason the count fell (T34): over 100 % Size it is the size
-            // asked for, not the screen being too small for the music.
-            settings.zoom > 1
-              ? `at ${String(Math.round(settings.zoom * 100))} % only ${String(barsShown)} of ${String(settings.barsPerWindow)} fit here`
-              : `${String(settings.barsPerWindow)} would be too small here`
+            // The reason the count fell, as the renderer priced it (T38,
+            // `data-window-why` on the stage). Sideways it is the room across
+            // at the size the height gives — nothing would be drawn smaller, so
+            // "too small" was false there. Over 100 % Size it is the size asked
+            // for (T34); upright, more bars would put the staff under the floor.
+            stage.dataset.windowWhy === 'across'
+              ? `about ${String(barsShown)} fit across at this size`
+              : stage.dataset.windowWhy === 'size' || (stage.dataset.windowWhy === undefined && settings.zoom > 1)
+                ? `at ${String(Math.round(settings.zoom * 100))} % only ${String(barsShown)} of ${String(settings.barsPerWindow)} fit here`
+                : `${String(settings.barsPerWindow)} would be too small here`
           }`
-        : 'Bars in window',
+        : // The greyed next row, when it is wider than the stage at the
+          // window's size (T38, `data-ahead`): the window keeps its size and
+          // the row says what became of the next bar.
+          stage.dataset.ahead === 'continues'
+          ? 'Bars in window — the next bar continues past the edge'
+          : stage.dataset.ahead === 'start'
+            ? 'Bars in window — only the start of the next bar fits'
+            : 'Bars in window',
     );
     setRowLabel(
       layoutRow,

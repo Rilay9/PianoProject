@@ -277,18 +277,63 @@ test.describe('score screen in landscape', () => {
     }
   }
 
-  test('the window really holds more bars as the setting goes up', async ({ page }) => {
-    // The catastrophe the pictures caught: a window that draws one bar when it
-    // says four. Counted rather than looked at.
+  /**
+   * The catastrophe the pictures caught: a window that draws one bar when it
+   * says four. **Re-pointed 2026-09-25 (T38, R1)**, and why: this counted
+   * `.vf-measure` in the front sheet and asked the count to rise with the
+   * setting. Sideways the count yields by design to as many bars as reach
+   * across the stage at the size the height gives (`04` §5), and no count
+   * changes that size, so at this stage the sheet cannot hold more bars
+   * whatever is asked, and the test was red over a screen doing what the spec
+   * says. What it guards is the silent different number. So: per setting, the
+   * window's bars rise with the setting, **or** the row says "N asked, M shown"
+   * with M the number the stage holds (`data-window-bars`) and a reason that
+   * is true there — the room across, never "too small" when nothing would be
+   * drawn smaller. And the same stage and setting say the same words on a page
+   * that was never stepped: the sentence used to appear only after a stepper
+   * press, because the count was not chosen again when the measurement landed.
+   */
+  test('the window holds more bars as the setting goes up, or the row says how many it holds', async ({ page }) => {
     await open(page);
-    const drawn: number[] = [];
-    for (const bars of [1, 2, 4]) {
-      await setBars(page, bars);
-      drawn.push(await page.locator('#score-stage .is-front svg .vf-measure').count());
+    const read = async (): Promise<{ shown: number; words: string }> => {
+      await page.waitForSelector('.score-view[data-measured]', { timeout: 60_000 });
+      await page.waitForTimeout(300);
+      const shown = Number(await page.locator('#score-stage').getAttribute('data-window-bars'));
+      await openScoreMenu(page);
+      const words = ((await page.locator('#score-bars-row').textContent()) ?? '').replace(/How much music.*$/s, '');
+      await closeScoreMenu(page);
+      return { shown, words };
+    };
+    const seen: { asked: number; shown: number; words: string }[] = [];
+    for (const asked of [1, 2, 4]) {
+      await setBars(page, asked);
+      seen.push({ asked, ...(await read()) });
     }
-    const [one, two, four] = drawn as [number, number, number];
-    expect(two, `1 bar drew ${String(one)}, 2 bars drew ${String(two)}`).toBeGreaterThan(one);
-    expect(four, `2 bars drew ${String(two)}, 4 bars drew ${String(four)}`).toBeGreaterThan(two);
+    const said = seen.map((s) => `${String(s.asked)} asked: ${String(s.shown)} held, "${s.words}"`).join('; ');
+    for (const s of seen) {
+      const told = /(\d+)\s+asked,\s*(\d+)\s+shown/i.exec(s.words);
+      if (s.shown < s.asked) {
+        expect(told, `${String(s.asked)} asked, ${String(s.shown)} held and the row is silent: ${said}`).not.toBeNull();
+        expect(Number(told?.[2]), `the row's count is not the count held: ${said}`).toBe(s.shown);
+        expect(s.words, `sideways the reason is the room across, not a smaller size: ${said}`).toMatch(/fit across/);
+      } else {
+        expect(told, `the row says fewer are shown when all are: ${said}`).toBeNull();
+      }
+    }
+    for (let i = 1; i < seen.length; i += 1) {
+      const a = seen[i - 1];
+      const b = seen[i];
+      expect(b.shown > a.shown || b.shown < b.asked, `more asked, the same held and nothing said: ${said}`).toBe(true);
+    }
+    // The same stage and setting on a page that has never been stepped.
+    const last = seen[seen.length - 1];
+    await page.reload();
+    await open(page);
+    const fresh = await read();
+    expect(fresh, `a fresh page at ${String(last.asked)} bars says something else: ${said}`).toEqual({
+      shown: last.shown,
+      words: last.words,
+    });
   });
 
   /**

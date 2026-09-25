@@ -8,18 +8,24 @@
 // glass while the current bar is played. Pure arithmetic, so it is checked
 // here in the unit it is stated in, and end to end by `score.layout.spec`.
 import { describe, expect, it } from 'vitest';
-import { readAheadScale, SLIDE_TARGET_MIN } from '../../src/score/WindowRenderer';
+import { MIN_STAFF_PX, NEXT_NOTE_PEEK_STAVES, readAheadScale, SLIDE_TARGET_MIN } from '../../src/score/WindowRenderer';
 
 /** The fit's inset, as `08` §4 states it: the ink stops this short of the edge. */
 const INSET = 6;
-/** Half a staff: the barline, its padding and a note head (`NEXT_NOTE_PEEK_STAVES`). */
-const PEEK_STAVES = 0.5;
+/** The next note's room, in staves (`NEXT_NOTE_PEEK_STAVES`): the renderer's own number. */
+const PEEK_STAVES = NEXT_NOTE_PEEK_STAVES;
+/**
+ * A staff, as the renderer measures it since T38: its five lines, four staff
+ * spaces — 80 px at engraving zoom 2. It was 151 here, the engraver's
+ * staff-line box on Twinkle, notes and all, which is what "staff" used to mean.
+ */
+const STAFF = 80;
 
 describe('readAheadScale', () => {
   it('is no limit at all while nothing has been measured', () => {
-    expect(readAheadScale(880, 0, 151)).toBe(Infinity);
-    expect(readAheadScale(0, 353, 151)).toBe(Infinity);
-    expect(readAheadScale(880, Number.NaN, 151)).toBe(Infinity);
+    expect(readAheadScale(880, 0, STAFF)).toBe(Infinity);
+    expect(readAheadScale(0, 353, STAFF)).toBe(Infinity);
+    expect(readAheadScale(880, Number.NaN, STAFF)).toBe(Infinity);
   });
 
   it('caps the scale so the widest bar and the next note fit right of the leftmost slide target', () => {
@@ -28,7 +34,7 @@ describe('readAheadScale', () => {
     // next bar's first note, which is a fixed size on the staff.
     const stage = 880;
     const bar = 353;
-    const staff = 151;
+    const staff = STAFF;
     const scale = readAheadScale(stage, bar, staff);
     const drawnBar = bar * scale;
     const drawnPeek = staff * PEEK_STAVES * scale;
@@ -43,8 +49,8 @@ describe('readAheadScale', () => {
   it('prices the read-ahead as a note, not as a share of the bar', () => {
     // A bar twice as wide needs the same note after it, so the cap falls by
     // less than half: the note does not grow with the bar it follows.
-    const narrow = readAheadScale(880, 200, 151);
-    const wide = readAheadScale(880, 400, 151);
+    const narrow = readAheadScale(880, 200, STAFF);
+    const wide = readAheadScale(880, 400, STAFF);
     expect(wide).toBeLessThan(narrow);
     expect(wide).toBeGreaterThan(narrow / 2);
   });
@@ -58,27 +64,27 @@ describe('readAheadScale', () => {
     const bar = 353;
     const unknown = readAheadScale(stage, bar, 0);
     expect(stage * SLIDE_TARGET_MIN + bar * unknown * 1.25).toBeLessThanOrEqual(stage - INSET + 1e-9);
-    expect(unknown).toBeLessThanOrEqual(readAheadScale(stage, bar, 151));
+    expect(unknown).toBeLessThanOrEqual(readAheadScale(stage, bar, STAFF));
   });
 
   it('is monotonic: a wider bar or a narrower stage means a smaller sheet', () => {
-    expect(readAheadScale(880, 353, 151)).toBeLessThan(readAheadScale(880, 207, 151));
-    expect(readAheadScale(740, 353, 151)).toBeLessThan(readAheadScale(880, 353, 151));
+    expect(readAheadScale(880, 353, STAFF)).toBeLessThan(readAheadScale(880, 207, STAFF));
+    expect(readAheadScale(740, 353, STAFF)).toBeLessThan(readAheadScale(880, 353, STAFF));
   });
 
   it('never goes below the readable staff, whatever the bar costs', () => {
     // A bar so wide that fitting it would draw the staff at a fraction of
     // its floor: the floor wins and the bar is slid past instead.
-    const staff = 151;
+    const staff = STAFF;
     const scale = readAheadScale(880, 20_000, staff);
-    expect(staff * scale).toBeCloseTo(40, 5);
+    expect(staff * scale).toBeCloseTo(MIN_STAFF_PX, 5);
     // The floor is a floor, not a value: a bar that fits above it is unaffected.
-    expect(readAheadScale(880, 353, staff)).toBeGreaterThan(40 / staff);
+    expect(readAheadScale(880, 353, staff)).toBeGreaterThan(MIN_STAFF_PX / staff);
   });
 
   it('leaves a piece of narrow bars to the height', () => {
     // Twinkle's widest bar sideways: the cap is well above any scale the
     // height of a phone allows, so the height decides, as it always did.
-    expect(readAheadScale(880, 207, 151)).toBeGreaterThan(2);
+    expect(readAheadScale(880, 207, STAFF)).toBeGreaterThan(2);
   });
 });

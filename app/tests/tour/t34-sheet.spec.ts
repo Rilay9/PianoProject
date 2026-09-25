@@ -7,6 +7,11 @@
  * Run alone, on a fresh build:
  *   npx playwright test --config playwright.tour.config.ts t34-sheet
  * Writes `build/tour/T34/*.png` and `build/tour/T34/index.html`.
+ *
+ * **T38: both look-ahead treatments.** `T38_LOOKAHEAD=compact` or `run-off`
+ * sets the renderer's switch (`localStorage['pianopath.lookAhead']`) and
+ * writes to `build/tour/T38/<treatment>/` instead, with a sweep of Hot Cross
+ * Buns at rest across the width where its greyed next row stops fitting.
  */
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -17,7 +22,8 @@ import { installMidiMock, type MidiMock } from '../e2e/fixtures/midiMock';
 import { pressControl } from '../e2e/scoreControls';
 import { measure, openPiece, setBars, setLayout, settle } from './t30';
 
-const DIR = resolve('../build/tour/T34');
+const TREATMENT = process.env.T38_LOOKAHEAD;
+const DIR = TREATMENT ? resolve('../build/tour/T38', TREATMENT) : resolve('../build/tour/T34');
 
 const SHAPES = [
   { name: 'phone upright 342x740', slug: 'phone-upright', size: { width: 342, height: 740 } },
@@ -88,9 +94,10 @@ for (const shape of SHAPES) {
 
     test(`16-cell sheet · ${shape.slug}`, async ({ page }) => {
       const midi = await installMidiMock(page, { permission: 'granted' });
-      await page.addInitScript(() => {
+      await page.addInitScript((treatment) => {
         localStorage.setItem('pianopath.firstSight', '["*"]');
-      });
+        if (treatment) localStorage.setItem('pianopath.lookAhead', treatment);
+      }, TREATMENT ?? null);
       mkdirSync(DIR, { recursive: true });
       const shots: Shot[] = [];
       for (const piece of PIECES) {
@@ -106,7 +113,14 @@ for (const shape of SHAPES) {
           const m = await measure(page);
           const said = await page.evaluate(() => {
             const el = document.querySelector<HTMLElement>('#score-stage');
-            return { shown: el?.dataset.windowBars ?? '?', fit: el?.dataset.fit ?? '?' };
+            return {
+              shown: el?.dataset.windowBars ?? '?',
+              fit: el?.dataset.fit ?? '?',
+              ahead: el?.dataset.ahead ?? '?',
+              stretch: [...document.querySelectorAll<HTMLElement>('#score-stage .score-buffer.is-front')]
+                .map((b) => b.dataset.stretch ?? '?')
+                .join('/'),
+            };
           });
           const file = `${shape.slug}-${piece.short}-${String(bars)}bar.png`;
           await page.screenshot({ path: join(DIR, file), animations: 'disabled' });
@@ -117,9 +131,9 @@ for (const shape of SHAPES) {
             `cursor at printed bar ${reached === null ? '? (the run never started)' : String(reached + 1)}; ` +
               `bars inked ${(m?.barsInk ?? []).map((b) => b + 1).join(' ') || 'none'}; ` +
               `next bar visible: ${String(m?.nextBarVisible ?? '?')}`,
-            `staff ${round(m?.stavePx)} px · CSS scale ${round(m?.cssScale, 3)} · sized by ${said.fit} · ` +
+            `staff (five lines) ${round(m?.stavePx)} px · CSS scale ${round(m?.cssScale, 3)} · sized by ${said.fit} · ` +
               `fill ${round((m?.fillW ?? 0) * 100, 0)} % wide x ${round((m?.fillH ?? 0) * 100, 0)} % tall · ` +
-              `${String(m?.slotCount ?? '?')} systems · ${String(m?.readAhead ?? '?')}`,
+              `${String(m?.slotCount ?? '?')} systems · ${String(m?.readAhead ?? '?')} · look-ahead ${said.ahead} · ${said.stretch}`,
           ].join('\n');
           shots.push({ file, caption });
         }
@@ -139,13 +153,59 @@ for (const shape of SHAPES) {
   });
 }
 
+/**
+ * T38: Hot Cross Buns at two bars, at rest, a phone's height, the width swept
+ * across the point where its widest bar — the greyed next row — stops fitting
+ * across at the window's scale. Only with a treatment named.
+ */
+test.describe('T38 sweep', () => {
+  test.use({ deviceScaleFactor: 1 });
+  test.describe.configure({ timeout: 600_000 });
+  test('Hot Cross Buns across the look-ahead breakpoint', async ({ page }) => {
+    test.skip(!TREATMENT, 'the sweep is T38s, shot with a treatment named');
+    await page.addInitScript((treatment) => {
+      localStorage.setItem('pianopath.firstSight', '["*"]');
+      if (treatment) localStorage.setItem('pianopath.lookAhead', treatment);
+    }, TREATMENT ?? null);
+    mkdirSync(DIR, { recursive: true });
+    await page.setViewportSize({ width: 360, height: 844 });
+    await openPiece(page, 'song.folk.hot-cross-buns');
+    await setLayout(page, 'window');
+    await setBars(page, 2);
+    const shots: Shot[] = [];
+    for (let width = 360; width <= 1000; width += 40) {
+      await page.setViewportSize({ width, height: 844 });
+      await page.waitForSelector('.score-view[data-measured]', { timeout: 60_000 }).catch(() => undefined);
+      await settle(page);
+      const m = await measure(page);
+      const said = await page.evaluate(() => {
+        const el = document.querySelector<HTMLElement>('#score-stage');
+        return { fit: el?.dataset.fit ?? '?', ahead: el?.dataset.ahead ?? '?', shown: el?.dataset.windowBars ?? '?' };
+      });
+      const file = `sweep-hcb-${String(width)}.png`;
+      await page.screenshot({ path: join(DIR, file), animations: 'disabled' });
+      const round = (n: number | null | undefined, d = 1): string =>
+        n === null || n === undefined ? '?' : (Math.round(n * 10 ** d) / 10 ** d).toString();
+      shots.push({
+        file,
+        caption: [
+          `sweep · ${String(width)} x 844 · Hot Cross Buns · 2 asked, ${said.shown} shown, at rest`,
+          `look-ahead ${said.ahead} · staff (five lines) ${round(m?.stavePx)} px · CSS scale ${round(m?.cssScale, 3)} · sized by ${said.fit}`,
+          `bars inked ${(m?.barsInk ?? []).map((b) => b + 1).join(' ') || 'none'} · ${String(m?.slotCount ?? '?')} systems`,
+        ].join('\n'),
+      });
+    }
+    writeFileSync(join(DIR, 'sweep.json'), JSON.stringify(shots, null, 2), 'utf8');
+  });
+});
+
 test.afterAll(() => {
   // The sheet is assembled from whatever shapes have written their captions.
   const parts: string[] = [];
-  for (const shape of SHAPES) {
+  for (const part of [...SHAPES.map((shape) => shape.slug), 'sweep']) {
     let shots: Shot[];
     try {
-      shots = JSON.parse(readFileSync(join(DIR, `${shape.slug}.json`), 'utf8')) as Shot[];
+      shots = JSON.parse(readFileSync(join(DIR, `${part}.json`), 'utf8')) as Shot[];
     } catch {
       continue;
     }
@@ -164,7 +224,7 @@ test.afterAll(() => {
 main{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px}
 figure{margin:0}img{max-width:100%;max-height:420px;border:1px solid #ccc;display:block}
 figcaption{margin-top:4px;line-height:1.35}</style>
-<h1>T34 — the score window, mid-run</h1>
+<h1>${TREATMENT ? `T38 — the score window, mid-run, look-ahead ${TREATMENT}` : 'T34 — the score window, mid-run'}</h1>
 <p>The pictures are the proxy; the numbers under each are the claim.</p><main>${parts.join('\n')}</main>`,
     'utf8',
   );

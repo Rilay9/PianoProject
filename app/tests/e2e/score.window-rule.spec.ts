@@ -25,7 +25,9 @@
  *     width free right of it — and the cell says so in its annotation.
  * (d) **The count**: the asked bars are inked at the window's first bar, or
  *     the `⋯` sheet's row says in words that fewer are shown.
- * (e) **The floor**: the shortest staff on the glass clears `MIN_STAFF_PX`.
+ * (e) **The floor**: the shortest staff on the glass clears `MIN_STAFF_PX`,
+ *     a staff being its five lines (T38: it was the `.staffline` group's box,
+ *     notes and fingerings included, 1.8 to 2 times the lines).
  * (f) **The steppers still do something.** Two Bars settings or two Size
  *     settings that draw the same picture are a fault unless the screen says
  *     why: the piece is shorter than both, the row says fewer are shown, or
@@ -41,6 +43,7 @@
  */
 import { expect, test, type Page } from '@playwright/test';
 
+import { installMidiMock } from './fixtures/midiMock';
 import { pressControl, withScoreMenu } from './scoreControls';
 
 /** The five shapes T30 shot, so a red line here names a cell over there. */
@@ -66,8 +69,13 @@ const PIECES = [
 /** Both ends of the stepper and two in between — 1 is where read-ahead is weakest. */
 const BARS = [1, 2, 4, 8];
 
-/** `WindowRenderer.MIN_STAFF_PX` — the code's own floor, in the unit it is written in. */
-const MIN_STAFF_PX = 40;
+/**
+ * `WindowRenderer.MIN_STAFF_PX` — the code's own floor, in the unit it is
+ * written in: the five lines, top line to bottom line (T38). Mirrored rather
+ * than imported, because importing the renderer drags the engraver into the
+ * test runner.
+ */
+const MIN_STAFF_PX = 22;
 
 /**
  * How near an edge counts as touching it: the fit keeps a margin, and a row's
@@ -85,6 +93,12 @@ const TOUCH_HEIGHT_BY_TALLEST = 0.5;
 const ROW_AND_GAP = 1.1;
 /** Two sheets drawn "at one scale" may differ by rounding, no more. */
 const SAME_SCALE = 0.01;
+/**
+ * A bar drawn wider than its natural width by more than line widths and
+ * rounding is spread: a justified bar is drawn at the page's width, twice its
+ * natural width or more on the cell that found it.
+ */
+const SPACED_AS_ENGRAVED = 1.03;
 
 interface Row {
   left: number;
@@ -94,14 +108,35 @@ interface Row {
   bars: number;
 }
 
+interface Sheet {
+  scale: number;
+  stretch: string;
+  classes: string;
+  slot: number;
+  ink: { left: number; right: number } | null;
+  measures: { id: string; left: number; right: number; span: number }[];
+}
+
+/** One laid-out bar, as the renderer's `debugFit().slots[i].bars` reports it from the engraver's model. */
+interface LaidBar {
+  number: number;
+  bar: number;
+  natural: number;
+}
+
 interface Glass {
   stage: { left: number; top: number; width: number; height: number } | null;
   /** Distinct printed bars with an inked, visible note on the stage. */
   barsInk: number[];
   /** Per drawn system: its ink box (notes and stave lines) and the bars inked in it. */
   rows: Row[];
-  /** Per front sheet with ink on the stage: its CSS scale and how it was engraved. */
-  sheets: { scale: number; stretch: string; classes: string }[];
+  /**
+   * Per front sheet with ink on the stage: its CSS scale, how it says it was
+   * engraved, its slot, its whole ink across, and every bar's stave on the
+   * glass — the thin horizontal strokes each `.vf-measure` draws, which are
+   * the five lines and nothing else — keyed by the engraver's measure number.
+   */
+  sheets: Sheet[];
   cursorBar: number | null;
   lastBar: number | null;
   stavePx: number | null;
@@ -117,6 +152,8 @@ interface Glass {
     rowPx: number | null;
     /** How many sheets the renderer has to draw rows into (a long piece gets two). */
     sheetsAvailable: number | null;
+    /** Per slot index, the bars the engraver laid out, with their natural widths. */
+    laid: (LaidBar[] | null)[];
   };
 }
 
@@ -151,7 +188,14 @@ async function readGlass(page: Page): Promise<Glass> {
 
     const all = new Set<number>();
     const rows: { left: number; right: number; top: number; bottom: number; bars: number }[] = [];
-    const sheets: { scale: number; stretch: string; classes: string }[] = [];
+    const sheets: {
+      scale: number;
+      stretch: string;
+      classes: string;
+      slot: number;
+      ink: { left: number; right: number } | null;
+      measures: { id: string; left: number; right: number; span: number }[];
+    }[] = [];
     for (const buffer of buffers) {
       const here = new Set<number>();
       let left = Number.POSITIVE_INFINITY;
@@ -183,10 +227,39 @@ async function readGlass(page: Page): Promise<Glass> {
       const host = buffer.style.transform ? buffer : (buffer.querySelector<HTMLElement>('[style*="scale"]') ?? buffer);
       const match = /scale\(([\d.]+)\)/.exec(host.style.transform);
       const holder = buffer.dataset.stretch ? buffer : (buffer.querySelector<HTMLElement>('[data-stretch]') ?? buffer);
+      // The sheet's whole ink across, on the glass, clipped by nothing.
+      let inkLeft = Number.POSITIVE_INFINITY;
+      let inkRight = Number.NEGATIVE_INFINITY;
+      for (const node of buffer.querySelectorAll('svg path, svg rect, svg text')) {
+        const box = node.getBoundingClientRect();
+        if (box.width <= 0 && box.height <= 0) continue;
+        inkLeft = Math.min(inkLeft, box.left);
+        inkRight = Math.max(inkRight, box.right);
+      }
+      // Each bar's stave: its five lines, the unit of "staff" (`08` §9).
+      const measures: { id: string; left: number; right: number; span: number }[] = [];
+      for (const measure of buffer.querySelectorAll<SVGGElement>('.vf-measure')) {
+        const lines: DOMRect[] = [];
+        for (const line of measure.querySelectorAll(':scope > path')) {
+          const box = line.getBoundingClientRect();
+          if (box.height <= 1.5 && box.width >= 10) lines.push(box);
+        }
+        if (lines.length < 5) continue;
+        const ys = lines.map((b) => b.top + b.height / 2);
+        measures.push({
+          id: measure.id,
+          left: Math.min(...lines.map((b) => b.left)),
+          right: Math.max(...lines.map((b) => b.right)),
+          span: Math.max(...ys) - Math.min(...ys),
+        });
+      }
       sheets.push({
         scale: match ? Number(match[1]) : 0,
         stretch: holder.dataset.stretch ?? '',
         classes: [...buffer.classList].filter((c) => c.startsWith('is-')).sort().join(' '),
+        slot: Number(buffer.dataset.slot),
+        ink: Number.isFinite(inkLeft) ? { left: inkLeft, right: inkRight } : null,
+        measures,
       });
     }
 
@@ -201,7 +274,7 @@ async function readGlass(page: Page): Promise<Glass> {
           readAhead?: string;
           ceilingScale?: number;
           rowPx?: number;
-          slots?: unknown[];
+          slots?: { bars?: { number: number; bar: number; natural: number }[] }[];
         } | null;
       };
     };
@@ -221,11 +294,22 @@ async function readGlass(page: Page): Promise<Glass> {
     const lastBar =
       typeof run?.lastBar === 'number' ? run.lastBar : typeof count === 'number' && count > 0 ? count - 1 : null;
 
+    // The staff is its five lines (`08` §9, T38): the thin horizontal strokes
+    // each `.vf-measure` draws, top line to bottom line, the same thing the
+    // renderer's floor measures. Not the `.staffline` group's box, which holds
+    // the notes, stems and fingerings too and was 1.8 to 2 times the lines.
     let stavePx: number | null = null;
     for (const buffer of buffers) {
-      for (const line of buffer.querySelectorAll<SVGGraphicsElement>('.staffline')) {
-        const box = line.getBoundingClientRect();
-        if (box.height > 1 && overlaps(box)) stavePx = stavePx === null ? box.height : Math.min(stavePx, box.height);
+      for (const measure of buffer.querySelectorAll('.vf-measure')) {
+        const ys: number[] = [];
+        for (const line of measure.querySelectorAll(':scope > path')) {
+          const box = line.getBoundingClientRect();
+          if (box.height <= 1.5 && box.width >= 10 && overlaps(new DOMRect(box.left, box.top - 1, box.width, box.height + 2)))
+            ys.push(box.top + box.height / 2);
+        }
+        if (ys.length < 5) continue;
+        const span = Math.max(...ys) - Math.min(...ys);
+        stavePx = stavePx === null ? span : Math.min(stavePx, span);
       }
     }
     const round = (n: number): number => Math.round(n * 10) / 10;
@@ -248,6 +332,11 @@ async function readGlass(page: Page): Promise<Glass> {
         ceilingScale: typeof fit?.ceilingScale === 'number' ? fit.ceilingScale : null,
         rowPx: typeof fit?.rowPx === 'number' ? fit.rowPx : null,
         sheetsAvailable: Array.isArray(fit?.slots) ? fit.slots.length : null,
+        laid: Array.isArray(fit?.slots)
+          ? fit.slots.map((slot) =>
+              Array.isArray(slot.bars) ? slot.bars.map((b) => ({ number: b.number, bar: b.bar, natural: b.natural })) : null,
+            )
+          : [],
       },
     };
   });
@@ -384,6 +473,30 @@ function faultsOf(glass: Glass, asked: number, words: string, notes: string[]): 
   if (justified.length > 0) {
     out.push(`(a) stretched: ${justified.map((s) => s.stretch || 'unsaid').join('/')} sheet, not natural`);
   }
+  // (a), read from the outcome (T38, fault C): every bar on the glass is drawn
+  // at the width the engraver gives its notes at natural spacing, times the
+  // sheet's one scale. The flag above says what the draw *asked* for; this
+  // says what came out — a row the engraver wrapped onto two systems has its
+  // first system justified to the page, and the flag used to say `natural`
+  // over a bar spread across the whole row.
+  for (const sheet of sheets) {
+    const laid = glass.shape.laid[sheet.slot];
+    if (!laid || !(sheet.scale > 0)) continue;
+    const told = new Set<number>();
+    for (const measure of sheet.measures) {
+      const bar = laid.find((b) => String(b.number) === measure.id);
+      // A grand staff draws each bar once per stave; one line per bar.
+      if (!bar || !(bar.natural > 0) || told.has(bar.bar)) continue;
+      const drawn = (measure.right - measure.left) / sheet.scale;
+      if (drawn > bar.natural * SPACED_AS_ENGRAVED) {
+        told.add(bar.bar);
+        out.push(
+          `(a) stretched: bar ${String(bar.bar + 1)} drawn ${String(Math.round(drawn))} px wide at the sheet's scale, ` +
+            `where the engraver's natural width is ${String(Math.round(bar.natural))} (x${(drawn / bar.natural).toFixed(2)})`,
+        );
+      }
+    }
+  }
 
   // (b) — as big as allowed: touches the width or the height, or at the ceiling.
   const inkLeft = Math.min(...rows.map((r) => r.left));
@@ -468,7 +581,19 @@ function faultsOf(glass: Glass, asked: number, words: string, notes: string[]): 
       );
     }
     const roomRight = freeRight >= barWidth;
-    if (!roomBelow && roomRight && glass.shape.readAhead === 'slots') {
+    const sheetsSpent =
+      glass.shape.sheetsAvailable !== null && (glass.shape.slots ?? 0) >= glass.shape.sheetsAvailable;
+    if (roomBelow && sheetsSpent && glass.shape.readAhead === 'slots') {
+      // A piece longer than the probe's reach is given two sheets, not four
+      // (`WindowRenderer.create`), and a window that fills both has none left
+      // for the next row, whatever room there is to its right as well (T38:
+      // this branch used to be taken only when there was none). Not changed.
+      notes.push(
+        `NOT BUILT, no sheet left for the next row: ${String(glass.shape.slots)} of ${String(
+          glass.shape.sheetsAvailable,
+        )} in use, ${String(Math.round(freeBelow))} px free below`,
+      );
+    } else if (!roomBelow && roomRight && glass.shape.readAhead === 'slots') {
       // Rule 2's first branch — the next bar on the same row — exists only in
       // the sideways chunk. Upright rows are not extended past the window
       // (not built in T34); the cell says so rather than passing silently.
@@ -476,20 +601,6 @@ function faultsOf(glass: Glass, asked: number, words: string, notes: string[]): 
         `NOT BUILT, same-row look-ahead upright: ${String(Math.round(freeRight))} px free right, a bar is ${String(
           Math.round(barWidth),
         )}`,
-      );
-    } else if (
-      roomBelow &&
-      !roomRight &&
-      glass.shape.sheetsAvailable !== null &&
-      (glass.shape.slots ?? 0) >= glass.shape.sheetsAvailable
-    ) {
-      // A piece longer than the probe's reach is given two sheets, not four
-      // (`WindowRenderer.create`), and a window that fills both has none left
-      // for the next row. Not changed in T34; the cell says so.
-      notes.push(
-        `NOT BUILT, no sheet left for the next row: ${String(glass.shape.slots)} of ${String(
-          glass.shape.sheetsAvailable,
-        )} in use, ${String(Math.round(freeBelow))} px free below`,
       );
     } else if (roomBelow || roomRight) {
       out.push(
@@ -543,9 +654,15 @@ for (const shape of SHAPES) {
           const fitBy = glass.shape.fitBy;
           const shownBefore = glass.shape.shown;
           // Already bound by the stage with nothing left to yield: one row,
-          // or one bar in every row.
+          // or one bar in every row — or one row the height binds, where fewer
+          // bars on it draw no larger (T38: over 100 % the renderer no longer
+          // gives up a bar for nothing, which is what drew a different picture
+          // here before, at the same size).
           const oneRow =
-            glass.shape.readAhead === 'single' || shownBefore === 1 || glass.rows.every((r) => r.bars === 1);
+            glass.shape.readAhead === 'single' ||
+            shownBefore === 1 ||
+            glass.rows.every((r) => r.bars === 1) ||
+            (glass.rows.length === 1 && fitBy === 'height');
           const atFloor = glass.stavePx !== null && glass.stavePx <= MIN_STAFF_PX * 1.1;
           if (await pressSize(page, 'in')) {
             const up = await readGlass(page);
@@ -591,3 +708,222 @@ for (const shape of SHAPES) {
     ).toEqual([]);
   });
 }
+
+/**
+ * The same stage and the same settings draw the same window, however the
+ * learner arrived at them (T38, fault A).
+ *
+ * The chooser priced every bar at a running maximum of row ink over bars that
+ * carried the row's clef, key and time signature and that only a change of
+ * engraving zoom released. A one-bar row therefore priced every later window at
+ * that zoom as if each bar carried a whole opening: on a tablet held sideways
+ * Twinkle's four bars came out as two rows each about a third of the width
+ * after the stepper had passed through one bar, and as one row across the
+ * stage on a page that had never been stepped.
+ */
+test('a pass through one bar leaves the tablet sideways window as a fresh page draws it', async ({ page }) => {
+  test.setTimeout(240_000);
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await page.addInitScript(() => {
+    const raw = localStorage.getItem('pianopath.settings');
+    const settings = raw === null ? {} : (JSON.parse(raw) as Record<string, unknown>);
+    localStorage.setItem('pianopath.settings', JSON.stringify({ ...settings, barsPerWindow: 4 }));
+  });
+  await openPiece(page, 'song.folk.twinkle.ht');
+  await page.waitForSelector('.score-view[data-measured]', { timeout: 60_000 }).catch(() => undefined);
+  await settle(page);
+  const fresh = await readGlass(page);
+  await setBars(page, 1);
+  await setBars(page, 4);
+  const stepped = await readGlass(page);
+  const describe = (g: Glass): string =>
+    `${String(g.rows.length)} rows at ${g.sheets.map((s) => s.scale.toFixed(3)).join('/')}, ` +
+    `widest ${String(Math.round(Math.max(...g.rows.map((r) => r.right - r.left))))} of ${String(g.stage?.width)}`;
+  const said = `fresh: ${describe(fresh)}; after a pass through one bar: ${describe(stepped)}`;
+  expect(stepped.rows.length, said).toBe(fresh.rows.length);
+  const a = Math.min(...fresh.sheets.map((s) => s.scale));
+  const b = Math.min(...stepped.sheets.map((s) => s.scale));
+  expect(Math.abs(a - b) / a, said).toBeLessThan(SAME_SCALE);
+});
+
+/**
+ * The greyed next row costs the window nothing (T38, fault B; `08` §9.7).
+ *
+ * The window's scale is the largest at which *its own* rows fit the stage.
+ * `fitSlots` used to hand the look-ahead row to the fit as well, so a next bar
+ * wider than the window's bars sized the window: at 390 x 844 the window was
+ * drawn at (stage width − margin) ÷ the greyed row's width. So the widest
+ * window row reaches the stage's width, unless the height, the Size setting or
+ * the read-ahead is what sized it, and the stage says so.
+ */
+for (const vp of [
+  { width: 390, height: 844 },
+  { width: 360, height: 780 },
+]) {
+  test(`the greyed next row does not size the window at ${String(vp.width)} x ${String(vp.height)}`, async ({ page }) => {
+    test.setTimeout(180_000);
+    await page.setViewportSize(vp);
+    await openPiece(page, 'song.folk.hot-cross-buns');
+    await page.waitForSelector('.score-view[data-measured]', { timeout: 60_000 }).catch(() => undefined);
+    await settle(page);
+    const glass = await readGlass(page);
+    const stage = glass.stage;
+    expect(stage, 'no stage').not.toBeNull();
+    if (!stage) return;
+    const windowSheets = glass.sheets.filter((s) => !s.classes.includes('is-ahead') && s.ink !== null);
+    expect(windowSheets.length, 'no window row on the glass').toBeGreaterThan(0);
+    const widest = Math.max(...windowSheets.map((s) => (s.ink ? s.ink.right - s.ink.left : 0)));
+    // The fit insets the ink by six pixels a side (`FIT_MARGIN_PX`); one pixel is rounding.
+    const room = stage.width - 12;
+    const boundElsewhere = ['height', 'size', 'read-ahead'].includes(glass.shape.fitBy ?? '');
+    expect(
+      widest >= room - 1 || boundElsewhere,
+      `the widest window row is ${widest.toFixed(1)} px of the ${String(room)} px it may use, sized by ${String(glass.shape.fitBy)}; ` +
+        `the rows: ${glass.sheets.map((s) => `${s.classes} ${s.ink ? (s.ink.right - s.ink.left).toFixed(1) : '?'}`).join(', ')}`,
+    ).toBe(true);
+  });
+}
+
+/**
+ * The cell that found fault C, mid-run: phone upright, Chopin's Nocturne op. 48
+ * no. 1, four bars. A row's page was `bars × stage width`, and when the run's
+ * taller stage raised the engraving zoom two dense bars no longer fitted it, so
+ * the engraver broke the row onto two systems and justified the first bar
+ * across the whole page. (a)'s outcome check reads it bar by bar.
+ */
+test('mid-run, every bar on a phone upright Nocturne window is drawn at its natural spacing', async ({ page }) => {
+  test.setTimeout(240_000);
+  const midi = await installMidiMock(page, { permission: 'granted' });
+  await page.setViewportSize({ width: 342, height: 740 });
+  await openPiece(page, 'song.classical.chopin-nocturne-op48-1.nifc');
+  await setBars(page, 4);
+  await page.locator('#score-mode').selectOption('wait');
+  await settle(page);
+  await pressControl(page, '#score-play');
+  await page.waitForTimeout(700);
+  type Run = { step: number; bar: number; lastBar: number; expected: number[]; pitches: number[] } | null;
+  type Hooked = Window & { __pianopath?: { scoreRun?: () => Run } };
+  let reached = -1;
+  for (let i = 0; i < 40; i += 1) {
+    const run = await page.evaluate(() => (window as Hooked).__pianopath?.scoreRun?.() ?? null);
+    if (run === null) break;
+    reached = run.bar;
+    if (run.bar > 4 || run.bar >= run.lastBar) break;
+    const notes = run.expected.length > 0 ? run.expected : run.pitches;
+    for (const note of notes) await midi.noteOn(note, 78);
+    await page.waitForTimeout(60);
+    for (const note of notes) await midi.noteOff(note);
+    const moved = await page
+      .waitForFunction(
+        (was) => {
+          const now = (window as Hooked).__pianopath?.scoreRun?.() ?? null;
+          return now === null || now.step !== was;
+        },
+        run.step,
+        { timeout: 4_000 },
+      )
+      .then(() => true)
+      .catch(() => false);
+    if (!moved) break;
+  }
+  expect(reached, 'the run never got past the first window').toBeGreaterThan(3);
+  await settle(page);
+  const glass = await readGlass(page);
+  const stretched = faultsOf(glass, 4, '', []).filter((f) => f.startsWith('(a)'));
+  expect(stretched, `at printed bar ${String(reached + 1)}:\n${stretched.join('\n')}`).toEqual([]);
+});
+
+/**
+ * Across the look-ahead's breakpoint the window never shrinks as the stage
+ * widens (T38, fault B's remainder). Hot Cross Buns at two bars: its third bar
+ * is the widest, so on a narrow stage the greyed next row does not fit across
+ * at the window's scale and is cut or runs off; somewhere as the stage widens
+ * it starts to fit. A treatment that fed back into the window's size would
+ * make the size jump there, or flip between two answers. The staff on the
+ * glass — the window's five lines, look-ahead rows left out — is read at each
+ * width of a sweep, and it must never fall.
+ */
+test('the window never shrinks as the stage widens across the look-ahead breakpoint', async ({ page }) => {
+  test.setTimeout(300_000);
+  await page.setViewportSize({ width: 360, height: 844 });
+  await openPiece(page, 'song.folk.hot-cross-buns');
+  const seen: { width: number; staff: number; ahead: string }[] = [];
+  for (let width = 360; width <= 1000; width += 40) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.waitForSelector('.score-view[data-measured]', { timeout: 60_000 }).catch(() => undefined);
+    await settle(page);
+    const read = await page.evaluate(() => {
+      let staff = Number.POSITIVE_INFINITY;
+      for (const buffer of document.querySelectorAll('#score-stage .score-buffer.is-front:not(.is-ahead)')) {
+        for (const measure of buffer.querySelectorAll('.vf-measure')) {
+          const ys: number[] = [];
+          for (const line of measure.querySelectorAll(':scope > path')) {
+            const box = line.getBoundingClientRect();
+            if (box.height <= 1.5 && box.width >= 10) ys.push(box.top + box.height / 2);
+          }
+          if (ys.length >= 5) staff = Math.min(staff, Math.max(...ys) - Math.min(...ys));
+        }
+      }
+      return { staff, ahead: document.querySelector<HTMLElement>('#score-stage')?.dataset.ahead ?? '?' };
+    });
+    seen.push({ width, ...read });
+  }
+  const said = seen.map((s) => `${String(s.width)}: ${s.staff.toFixed(1)} (${s.ahead})`).join(', ');
+  for (let i = 1; i < seen.length; i += 1) {
+    const a = seen[i - 1];
+    const b = seen[i];
+    // Rounding, not a size: a hundredth.
+    expect(b.staff, `the window shrank as the stage widened: ${said}`).toBeGreaterThanOrEqual(a.staff * 0.99);
+  }
+  test.info().annotations.push({ type: 'sweep', description: said });
+});
+
+/**
+ * Mid-run on a phone held sideways, once the chrome has folded, every mark of
+ * the music is still on the stage (T38). A run's stage takes the bar's row at
+ * Play, the size is frozen a moment later, and the chrome folds a few seconds
+ * in — moving the sheet down under the `bar n / m` chip without changing the
+ * stage's box. With the height reserve measured exactly (the five lines, not
+ * a box that counted the ink above the stave twice) the bass staff's
+ * fingerings on Twinkle ran past the stage's bottom; the fold's room is now
+ * given from the start of the run.
+ */
+test('mid-run on a phone sideways, the folded chrome leaves the music on the stage', async ({ page }) => {
+  test.setTimeout(240_000);
+  const midi = await installMidiMock(page, { permission: 'granted' });
+  await page.setViewportSize({ width: 740, height: 342 });
+  await openPiece(page, 'song.folk.twinkle.ht');
+  await setBars(page, 2);
+  await page.locator('#score-mode').selectOption('wait');
+  await settle(page);
+  await pressControl(page, '#score-play');
+  type Run = { step: number; bar: number; lastBar: number; expected: number[]; pitches: number[] } | null;
+  type Hooked = Window & { __pianopath?: { scoreRun?: () => Run } };
+  for (let i = 0; i < 12; i += 1) {
+    const run = await page.evaluate(() => (window as Hooked).__pianopath?.scoreRun?.() ?? null);
+    if (run === null) break;
+    const notes = run.expected.length > 0 ? run.expected : run.pitches;
+    for (const note of notes) await midi.noteOn(note, 78);
+    await page.waitForTimeout(60);
+    for (const note of notes) await midi.noteOff(note);
+    await page
+      .waitForFunction((was) => (window as Hooked).__pianopath?.scoreRun?.()?.step !== was, run.step, { timeout: 4_000 })
+      .catch(() => undefined);
+  }
+  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-chrome', 'folded', { timeout: 15_000 });
+  await settle(page);
+  const seen = await page.evaluate(() => {
+    const stage = document.querySelector('#score-stage')!.getBoundingClientRect();
+    let bottom = Number.NEGATIVE_INFINITY;
+    for (const node of document.querySelectorAll('#score-stage .score-buffer.is-front svg path, #score-stage .score-buffer.is-front svg text, #score-stage .score-buffer.is-front svg rect')) {
+      const box = node.getBoundingClientRect();
+      if (box.width <= 0 && box.height <= 0) continue;
+      bottom = Math.max(bottom, box.bottom);
+    }
+    return { stageBottom: stage.bottom, inkBottom: bottom };
+  });
+  expect(
+    seen.inkBottom,
+    `the music ends ${(seen.inkBottom - seen.stageBottom).toFixed(1)} px past the stage's bottom with the chrome folded`,
+  ).toBeLessThanOrEqual(seen.stageBottom + 1);
+});

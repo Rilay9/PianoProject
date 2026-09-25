@@ -281,13 +281,19 @@ test.describe('score screen', () => {
 
     // T34: Size multiplies the fit, and over 100 % the window drops bars to
     // draw the rest bigger — so the ink can get *narrower* while every note
-    // grows. "Bigger" is the staff's height, not the ink's width.
+    // grows. "Bigger" is the staff's height, not the ink's width — and the
+    // staff is its five lines (T38, `08` §9), the thin strokes each
+    // `.vf-measure` draws, not the `.staffline` group, which carries the notes.
     const staffNow = (): Promise<number> =>
       page.evaluate(() => {
         let h = Number.POSITIVE_INFINITY;
-        for (const line of document.querySelectorAll('#score-stage .is-front .staffline')) {
-          const box = line.getBoundingClientRect();
-          if (box.height > 1) h = Math.min(h, box.height);
+        for (const measure of document.querySelectorAll('#score-stage .is-front .vf-measure')) {
+          const ys: number[] = [];
+          for (const line of measure.querySelectorAll(':scope > path')) {
+            const box = line.getBoundingClientRect();
+            if (box.height <= 1.5 && box.width >= 10) ys.push(box.top + box.height / 2);
+          }
+          if (ys.length >= 5) h = Math.min(h, Math.max(...ys) - Math.min(...ys));
         }
         return h;
       });
@@ -309,6 +315,61 @@ test.describe('score screen', () => {
     await page.locator('#score-destination').click();
     await expect(page.locator('#score-destination')).toContainText('Both');
     await closeScoreMenu(page);
+  });
+
+  test('Size steps are monotone, and a setting draws one size whichever way it was reached', async ({ page }) => {
+    // T38, fault A (`docs/prompts/traces/2026-09-25-window-reds.md`, R2). Over
+    // 100 % the window yields bars to grow, and the size it grows to was priced
+    // from a running maximum of row ink over bars, clef and time signature
+    // included, that only a change of engraving zoom released: at this
+    // viewport 110 % drew one bar *smaller* than the two at 100 %, and 110 %
+    // reached from 120 % drew smaller again. The staff is the five lines
+    // (`08` §9, "staff"), read from the glass: the thin horizontal strokes each
+    // `.vf-measure` draws, which are the stave's own lines and nothing else.
+    await openScore(page);
+    const fiveLines = (): Promise<number> =>
+      page.evaluate(() => {
+        let shortest = Number.POSITIVE_INFINITY;
+        for (const measure of document.querySelectorAll('#score-stage .score-buffer.is-front .vf-measure')) {
+          const ys: number[] = [];
+          for (const line of measure.querySelectorAll(':scope > path')) {
+            const box = line.getBoundingClientRect();
+            if (box.height <= 1.5 && box.width >= 10) ys.push(box.top + box.height / 2);
+          }
+          if (ys.length >= 5) shortest = Math.min(shortest, Math.max(...ys) - Math.min(...ys));
+        }
+        return shortest;
+      });
+    // The fit settles over a few frames; read once the drawn size has held.
+    const settled = async (): Promise<number> => {
+      let last = -1;
+      let same = 0;
+      for (let i = 0; i < 60 && same < 4; i += 1) {
+        await page.waitForTimeout(150);
+        const now = Math.round((await fiveLines()) * 100) / 100;
+        same = now === last ? same + 1 : 0;
+        last = now;
+      }
+      return last;
+    };
+    const press = async (which: 'in' | 'out'): Promise<number> => {
+      await withScoreMenu(page, async () => {
+        await page.locator(`#score-zoom-${which}`).click();
+      });
+      return settled();
+    };
+    const at100 = await settled();
+    const at110 = await press('in');
+    const at120 = await press('in');
+    const back110 = await press('out');
+    const back100 = await press('out');
+    const said = `100 % ${String(at100)}, 110 % ${String(at110)}, 120 % ${String(at120)}, back to 110 % ${String(back110)}, back to 100 % ${String(back100)}`;
+    expect(at110, `Size + drew a smaller staff: ${said}`).toBeGreaterThan(at100);
+    expect(at120, `a second Size + drew a smaller staff: ${said}`).toBeGreaterThanOrEqual(at110);
+    // One setting, one size: the same stage and the same setting reached from
+    // above or from below. Within a hundredth, which is rounding, not a size.
+    expect(Math.abs(back110 - at110) / at110, `110 % drew two sizes: ${said}`).toBeLessThan(0.01);
+    expect(Math.abs(back100 - at100) / at100, `100 % drew two sizes: ${said}`).toBeLessThan(0.01);
   });
 
   test('the metronome toggles while the sheet music is showing', async ({ page }) => {

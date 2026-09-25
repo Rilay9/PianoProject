@@ -351,10 +351,52 @@ first, looking ahead second, the bar count third*, and the arrangement follows t
   round-robin put them in: the window's rows top to bottom, then the look-ahead. **The look-ahead row costs the window nothing:** it is added below only
   when one more row fits at the window's own scale, and drawn greyed (`is-ahead`). On the
   same row is the sideways chunk's job; upright rows are not extended past the window.
+- **Priced as drawn (T38, 2026-09-25).** Every candidate is priced on its own window — the
+  bars the cursor's window holds at that count — each row as its opening once (clef, key, and
+  the time signature only for a row that starts the piece) plus its bars' natural widths,
+  taken from the probe's engraving (`barTable`: `begin + minimumStaffEntriesWidth + end` per
+  bar). The price was `naturalBar`, a running maximum of row ink ÷ bars that carried the
+  opening in every bar, only rose, and only a change of engraving zoom released: after any
+  one-bar window every later window was priced as if each bar carried a clef, Size's 100 %
+  sat below the scale drawn so 110 % drew one bar *smaller* and 110 % reached from 120 % drew
+  smaller again, and a tablet sideways drew Twinkle's four bars as two rows a third of the
+  width each (`docs/prompts/traces/2026-09-25-window-reds.md`, fault A). The same window on
+  the same stage is now priced the same whatever was drawn before. **Size** is a fixed
+  multiple of the asked window's own fit, and over 100 % the count yields only to a shape
+  drawn larger than 100 % — a bar is never given up for nothing.
+- **The window's scale comes from the window's rows only (T38, fault B).** The greyed
+  look-ahead row is placed at that scale and never asked to set it; it had been handed to the
+  fit with the window's rows, so a next bar wider than the window's bars sized the window. When
+  that row is wider than the stage at the window's scale it is drawn one of two ways, behind
+  one switch for one wave (`localStorage['pianopath.lookAhead']`): **`run-off`**, the default,
+  draws it whole and lets the stage's edge cut it, like the edge of a page; **`compact`** cuts
+  it inside the stage between two note columns with a short fade. The pictures chose: on the
+  Nocturne mid-run `compact` cut inside a beamed group and left a stub of beam in the fade,
+  which reads as a rendering fault, and `run-off` showed more of the next bar (T38 entry). The
+  stage says which in `data-ahead` (`row`, `continues`, `start`, `none`) and the `⋯` row says it
+  in words. During a run the held size gives way at once, and only then, when a
+  window row would not fit across it: a bar being played never runs off the side.
+- **Splits that tie keep the next music in view (T38).** Splits whose scales are within a
+  fiftieth of the largest (`SPLIT_TIE`) draw what the eye takes for one size; among them the
+  one that keeps the next music on the stage wins — two or more systems do at every step, one
+  does only with a look-ahead row below — and then the one with fewer rows. Priced as drawn, a
+  tablet upright's two bars of Twinkle on one row came out 0.4 % larger than one bar a row, took
+  the old tie-break (fewer rows), and left the cursor on the window's last bar with nothing
+  after it.
+- **A row is natural in outcome, not in intent (T38, fault C).** A row's page is at least its
+  bars' natural width with slack (`NATURAL_PAGE_SLACK`), not a stage's width per bar, which a
+  dense bar on a narrow stage outgrew once the run's taller stage raised the engraving zoom:
+  the engraver broke the row onto two systems and justified the first bar across the page. The
+  engraving is read after every natural draw (`layoutOf`: systems, and each bar's spacing
+  factor), drawn once more on a wider page if it wrapped or squeezed, and `data-stretch` says
+  what came out — `natural`, `wrapped`, `stretched` or `squeezed` — not what was asked for.
 - **When no arrangement of the asked number clears the floor**, the window holds fewer bars
   — `shownBars` — and the `⋯` sheet's row says so in words: *4 asked, 2 shown: 4 would be
   too small here*. The stepper stays live (`00` §1). It never silently draws a different
-  number, which is what it did 266 times in T30's grid.
+  number, which is what it did 266 times in T30's grid. The reason the row gives is the
+  renderer's (`data-window-why`, T38): `floor` upright, `size` over 100 %, and `across`
+  sideways, where the words are *about 2 fit across at this size* — nothing there would be
+  drawn smaller, so "too small" was false.
 - Exactly one slot holds the cursor and **is never re-drawn while it does**. Each slot is an
   engraver loaded with the piece, so a piece longer than the probe's cap keeps two. The
   shape is chosen at the first fit and held for a run, like the scale, and it may only
@@ -433,6 +475,19 @@ the bar being played.
   walks the last bars to the right — there is nothing left to slide towards.
 - The next chunk is pre-rendered **in the same shape**, so the same bars sit at the same x on
   both sheets and the swap is invisible.
+- **How many of the asked bars the window holds sideways (T38):** as many as reach across
+  the stage at the size the height gives, priced as drawn (the opening and each bar's natural
+  width), with the next bar's first note after them — half a staff, as the read-ahead cap
+  prices it. It kept a whole bar's room, so the row said one was shown while two bars and the
+  next one's start were on the glass. And the count is chosen again when the probe's
+  measurement lands, before anything is played: a page that was never stepped said "4 shown"
+  over two bars, and one press later the same stage said something else.
+- **A run is fitted for the folded chrome's box (T38).** On a phone the stylesheet moves the
+  sliding sheet down below the `bar n / m` chip when the chrome folds, a few seconds into a run
+  and after the size is frozen, without changing the stage's box; the fit keeps that room from
+  the run's start (`sheetShift`). Measured before: the bass staff's fingerings on Twinkle ran
+  18 px past the stage's bottom mid-run once the height reserve stopped counting the ink above
+  the stave twice.
 - The chunk's width is deliberately **not** a fit constraint: the read-ahead bars run off the
   right edge, which is what there is to slide towards. The **bar being played** is: with its
   first note a quarter of the way across, the rest of that bar and the first note of the next
@@ -782,7 +837,10 @@ Numbered for citation. Each is falsifiable; most are already testable.
    story: `updateReadAhead` set the frozen scale to null and nothing put one back, so a run
    turned mid-piece finished with its scale free to move from window to window.
 2. Stave lines sit at the same y in every window of a piece.
-3. Zoom is monotonic.
+3. Zoom is monotonic, and one Size setting draws one size however it was reached (T38: 110 %
+   drew smaller than 100 %, and smaller again reached from 120 %, because Size's 100 % was
+   priced from a running maximum rather than the window as drawn; `score.screen` asserts the
+   path).
 4. No fit is triggered from inside a draw; bands are placed after the fit.
 5. Nothing re-engraves during a run except by restarting it — **or by turning the phone**, which
    §10 has always required ("rotating while paused: redrawn like any rotation; still paused").
@@ -802,7 +860,10 @@ Numbered for citation. Each is falsifiable; most are already testable.
    own scale (priced at the piece's tallest system), or when every sheet is in use — a piece
    past the probe's 48 bars gets two sheets, not four (`WindowRenderer.create`). The window's
    size is never reduced to make room for it. Readability first, looking ahead second — the
-   owner's order, 2026-09-23.
+   owner's order, 2026-09-23. **Since T38 that is measured, not only granted:** the window's
+   scale is fitted to the window's rows alone, and a look-ahead row wider than the stage at
+   that scale is cut inside the stage (`compact`) or runs off its edge (`run-off`), never the
+   window made smaller for it (§4.1).
 8. The end of a piece fills both slots wherever there are bars behind to fill them with.
 9. Exactly one cursor band, and at most one read-ahead line, exist in the document.
 10. No overlay outlives its anchor: after any refit, rotation or window change, every band is
@@ -858,6 +919,19 @@ Numbered for citation. Each is falsifiable; most are already testable.
     what the learner scrolls, so a sheet narrower than the stage has been fitted by something
     else — the slot fit was running over it and limiting the scale by the height of the whole
     piece (checked by the state gallery).
+
+**Units** (T38)
+37. **A staff is its five lines**, top line to bottom line: four staff spaces, `StaffHeight`
+    units below the engraver's top line, and on the glass the thin strokes each `.vf-measure`
+    draws. The readability floor (`MIN_STAFF_PX`), the read-ahead's half-staff peek, every spec
+    and the tour camera measure this one thing. There were two definitions: the renderer read
+    the staff-line's whole content box (notes, stems, fingerings; 1.6 to 2.5 times the lines)
+    and the specs read the `.staffline` group's box (1.8 to 2 times), under one name. The same
+    mistake padded every system's height reserve by the ink above its top line.
+38. **Natural is an outcome.** Every bar on the glass is drawn at the engraver's natural
+    spacing times the one scale: one system per row, no bar's notes spaced wider or tighter
+    than the engraver sets them (`data-stretch` from `layoutOf`; `score.window-rule` reads it
+    per bar from the glass).
 
 ---
 

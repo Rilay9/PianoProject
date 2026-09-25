@@ -1499,7 +1499,11 @@ stretch, as big as the stage and the Size ceiling allow, the next bar or no room
 count or the sentence, the floor, both steppers changing the picture, and the look-ahead
 row below the window's rows). The Size stepper **multiplies the fit**: 100 % is the largest
 uniform scale at which the window's rows fit the stage; above it the bars grow and the count
-yields with the sentence *at 150 % only 2 of 4 fit here*; below it they shrink.
+yields with the sentence *at 150 % only 2 of 4 fit here*; below it they shrink. **One setting
+is one size, and bigger is bigger (T38):** 100 % is the asked window as it is drawn, every step
+is a fixed multiple of it, and over 100 % a bar is given up only for a window drawn larger than
+100 % — 110 % had drawn one bar smaller than the two at 100 %, and smaller again when reached
+from 120 %.
 
 **What *Bars in window* means, and the order the three goods are in (owner, 2026-09-23).**
 *"We've got to find the balance between showing the music to be as big as possible without
@@ -1508,7 +1512,9 @@ without distortion and being able to look ahead are paramount."* So:
 
 1. **Never distort.** A bar is drawn at the width its music needs at the current size, a
    system that is not full is never stretched to the stage's width, and the staff never
-   falls under `MIN_STAFF_PX`.
+   falls under `MIN_STAFF_PX`. The staff is its five lines, top line to bottom line (T38);
+   the floor's number on that measure is provisional and the owner's to set (the T38 entry
+   in `pending-review` has the table).
 2. **Always look ahead.** In every state before and during a run, the next bar after the
    window's last is on the stage, drawn as the following system — unless keeping it would
    break 1, which is the one-system case `08` §4.1 and invariant 7 already allow.
@@ -1516,18 +1522,35 @@ without distortion and being able to look ahead are paramount."* So:
    do not, the window holds as many of the asked bars as fit at the readable size and **the
    row says so in words** — *Bars in window — 4 asked, 2 shown: 4 would be too small here* —
    with the stepper still live (`§0` R4, and `00-invariants` §1: a control that looks
-   pressable must do something). It never silently draws a different number.
+   pressable must do something). It never silently draws a different number. The reason
+   is the true one for the stage (T38): *4 would be too small here* upright, where more bars
+   would put the staff under the floor; *at 150 % only 2 of 4 fit here* over 100 % Size; and
+   sideways, where the size comes from the height and no count changes it, *about 2 fit
+   across at this size*. The same stage and settings give the same words, on a fresh page and
+   after any number of presses.
 
 The layout that follows: the asked bars are laid over as many systems as the stage holds, at
 the largest size where every asked bar and the next bar are on the stage. The size is frozen
 for the run; a rotation re-fits under the same rule.
+
+**The next row never sizes the window (T38).** The window's size comes from its own rows. The
+greyed next row below is drawn at that size, and when it is wider than the stage there — a
+dense bar after sparse ones — it is shown one of two ways, both built so the owner can choose
+between them by eye (`localStorage['pianopath.lookAhead']`): **run-off**, the default, drawn
+whole with the stage's edge cutting it like the edge of a page, and the row says *Bars in
+window — the next bar continues past the edge*; or **compact**, cut inside the stage between
+two notes with a short fade, and the row says *Bars in window — only the start of the next bar
+fits*. Run-off was chosen from the pictures: compact's cut fell inside beamed groups on the
+Nocturne and left a stub of beam that reads as a fault.
 
 **Two things this settles.** In **`Scroll`** the row is *gone*, not greyed — the whole piece
 is one sheet there and a window has no meaning (`§0` R4) — and the Layout row says where the
 setting applies: *Layout — Bars in window applies to the Window layout*. **Sideways**, the two
 extra bars either side that the sliding chunk engraves are read-ahead and context, not the
 window: the window is the asked bars, and the count is honoured up to as many as reach across
-the stage at the size the height gives, with a bar's room left for the next one.
+the stage at the size the height gives, with the next bar's first note after them (T38: this
+said a bar's room, and the row said *1 shown* while two bars and the start of the third were
+on the glass).
 
 **Both steppers say where they are and where they stop (2026-09-12).** `Bars in window` always
 read `2 bars` between its buttons; `Size` said nothing at all, so it could be pressed a dozen
@@ -1560,9 +1583,13 @@ Notation area:
   Both slots are drawn at **one scale** — they are engraved separately, so fitting each to
   its own half would draw a bar of minims larger than a bar of semiquavers.
 
-- **Window layout, sideways — one system.** Nothing to alternate, so the window is N bars
-  scaled to fit the width, and the next window is pre-rendered into the spare buffer so a
-  swap is a class toggle. A window of one bar is this layout upright too.
+- **Window layout, sideways — one system.** Nothing to alternate: one system, as tall as
+  the stage's height allows, with the bars to read into running off the right edge and the
+  sheet sliding past them (`08` §4.1 CHUNK); the window is as many of the asked bars as reach
+  across at that size. The next window is pre-rendered into the spare buffer so a swap is a
+  class toggle. (Corrected by T38: this said the window was N bars scaled to fit the width,
+  and that one bar was this layout upright too — neither has been true since the slot
+  arrangement took every upright stage.)
 - **Scroll layout:** full piece, auto-scroll keeps the cursor between 25–40 % of viewport
   height; manual scroll pauses auto-scroll for 5 s.
 - **Cursor:** translucent vertical band over the current step's notes spanning both staves.

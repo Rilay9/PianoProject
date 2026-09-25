@@ -496,3 +496,54 @@ arrangement**: sideways there is one sliding system by construction and the chun
 to slide towards, so the look-ahead is checked there and passes on all 12 sideways cells.
 
 **Built (T34, 2026-09-23):** the rule built is T34's — rows engraved at natural widths, one scale for the window as large as the stage allows times the Size setting (100 % = that fit), rows in reading order, rows split by the largest scale, the next bar a greyed row below only when it costs the window nothing, the count yielding with its sentence (`docs/prompts/tasks/T34-window-fit.md`, `pending-review` Entry 63).
+
+## 6. What T38 changed in the rule, and what it measured (2026-09-25)
+
+T34's rule stands as built; T38 fixed the mechanisms under it that the T35 trace classified
+(`docs/prompts/traces/2026-09-25-window-reds.md`), each seen red first and measured again
+the same way afterwards (`pending-review`, the T38 entry, has the numbers).
+
+- **Priced as drawn (fault A).** The chooser priced every bar at a running maximum of row
+  ink ÷ bars that carried the row's opening and only a zoom change released. It now prices
+  each candidate on its own window from the engraver's natural bar widths (the probe's
+  `begin + minimumStaffEntriesWidth + end`), the opening once per row, the ink past the lines
+  measured from the rows on the glass. Size's 100 % is the asked window's own fit, every step
+  a fixed multiple of it, and over 100 % a bar is given up only for a window drawn larger.
+- **The window's scale from the window's rows (fault B).** The greyed next row no longer
+  sizes the window. When it is wider than the stage at the window's scale it is drawn one of
+  two ways, both built and photographed on T34's sixteen cells and on a sweep of Hot Cross
+  Buns at rest from 360 to 1000 px wide: **run-off**, the default, draws it whole and lets the
+  stage's edge cut it; **compact** cuts it inside the stage between two note columns with a
+  fade. The pictures chose run-off: on the two Nocturne cells where the treatment shows
+  mid-run, compact's cut fell inside a beamed group — there is no gap between columns that a
+  beam does not cross — and left a stub of beam in the fade, which reads as a rendering fault,
+  while run-off reads as the edge of a page and shows more of the next bar; on Hot Cross Buns
+  the two read alike. Neither made the window's size move across the sweep (asserted,
+  `score.window-rule`). The switch stays for one wave: `localStorage['pianopath.lookAhead']`,
+  `run-off` or `compact`.
+- **Natural in outcome (fault C).** A row's page is at least its bars' natural width with
+  slack, the draw is read back from the engraver's layout, and `data-stretch` says what came
+  out. This also ended a squeeze nobody had named: a dense bar wider than a stage's width per
+  bar was engraved narrower than its natural spacing (Hot Cross Buns' eight quavers on a
+  360 px phone at 0.79 of natural); it is now drawn at natural spacing and smaller.
+- **A staff is its five lines (fault D).** One measurement for the renderer's floor, the
+  read-ahead, every spec and the tour camera. The same mistake had padded every system's
+  height reserve with the ink above its stave (Hot Cross Buns reserved 177 px at zoom 2 for
+  systems whose ink is 145), so a window the height sizes is now as tall as its ink allows:
+  Twinkle's right hand at 880 x 412 went from a 109 px to a 142 px five-line staff and now
+  holds one bar and the next one's first note where it held two; Twinkle hands together on a
+  tablet held sideways, 113 to 117.
+  The floor's number on the new measure is provisional at 22 px (what the old floor enforced
+  on a plain staff) and is a question for the owner, with the table: on the 80 upright and
+  tall cells of `score.window-rule`'s grid, 22 or 25 px changes no count, 30 px five, the
+  documented 40 px nine.
+- **Consequences on the sheet and the sweep, stated.** With the reserve exact, a phone's folded
+  chrome pushed a sideways sheet's bottom 18 px off the stage mid-run; the fit now keeps the
+  fold's room for a run from its start. Splits within a fiftieth of each other now go to the one
+  that keeps the next music in view (`SPLIT_TIE`). And one cell moved into E's class: on a tablet upright, Twinkle at two
+  bars is one row of two bars drawn 18 % larger than one bar a row, so by rule 2 as written
+  there is no room for the next row below — the cell had the next bar before only because the
+  old price made the one-row split look smaller than it draws. Whether the look-ahead should
+  win there is D7, the owner's. The sweep shows the same rule at a phone's height: Hot Cross
+  Buns at rest keeps its greyed next row up to 440 px wide and has none from 480 px, where the
+  window's two rows, growing with the width, leave no row's height below them.

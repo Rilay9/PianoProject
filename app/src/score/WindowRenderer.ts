@@ -37,7 +37,7 @@
 import { OsmdView, type MeasureRange } from './OsmdView';
 import { trimMusicXml } from './trimMusicXml';
 import { MAX_FIT, MIN_FIT, fitZoom, refitEngraving, worthRefitting } from './autoFit';
-import { barsPerSlot, planSlots, sameRange as sameSlotRange, windowAt, type SlotIndex } from './slots';
+import { planSlots, rangeAt, sameRange as sameSlotRange, windowAt, type SlotIndex } from './slots';
 import type { ScoreModel, ScoreNote, ScoreStep } from './types';
 import { recordRenderTiming } from '../util/renderTiming';
 
@@ -83,19 +83,38 @@ export const SLIDE_TARGET_MIN = 0.25;
 export const SLIDE_TARGET_MAX = 0.45;
 
 /**
- * The smallest a five-line staff may be drawn, in pixels on the glass.
+ * The smallest a staff may be drawn, in pixels on the glass, where **a staff is
+ * its five lines**: the top line to the bottom one, four staff spaces (T38).
  *
  * This is the only floor the fit has, and everything else gives way to it: the
  * screen is filled with as much of the piece as will go, and the size falls
  * until a staff reaches this, at which point fewer systems are drawn instead.
  *
- * 40 px is five lines with ten between them — about the smallest a note head
- * and its ledger lines stay separable at arm's length on a phone. Under it,
- * notation becomes texture: the thing the owner meant by "impossible to play
- * stuff in". Over it, more music on the screen is worth more than bigger notes,
- * which is the thing they meant by "compressed".
+ * **Two definitions became one here.** This used to be documented as "five
+ * lines with ten between them" and enforced on the engraver's staff-line
+ * *box*, which holds the notes, stems and fingerings above and below the
+ * lines: 1.65 to 2.5 times the five lines on the six pieces measured, so the
+ * floor the five lines actually had was 16 to 24 px, piece by piece, and the
+ * specs and the tour camera read yet another box (the `.staffline` group's,
+ * 1.8 to 2 times). Now the renderer, every spec and the camera measure the
+ * same thing: the five lines (`staffLineBoxes`, and on the glass the thin
+ * strokes of each `.vf-measure`).
+ *
+ * **The number is provisional, and a question for the owner.** It is set to
+ * what the old floor enforced on a plain single staff, where the box is about
+ * 1.8 times the five lines: forty on the box, twenty-two on the lines — five
+ * or six pixels between them. Screens the reader called readable in the T35
+ * sheet carried five-line staves of 25 to 36 px (the Nocturne on a phone). On
+ * `score.window-rule`'s grid (80 upright and tall cells, five pieces) the
+ * count at 22 or 25 px is the count drawn today on every cell; at 30 px five
+ * cells hold fewer bars, and at the documented 40, nine — dense pieces at four
+ * and eight bars (`docs/prompts/tasks/T38-window-fixes.md` item 5; the T38
+ * entry in `pending-review` has the table). Under the floor, notation becomes texture: the thing the
+ * owner meant by "impossible to play stuff in". Over it, more music on the
+ * screen is worth more than bigger notes, which is what they meant by
+ * "compressed".
  */
-const MIN_STAFF_PX = 40;
+export const MIN_STAFF_PX = 22;
 
 /**
  * The Size stepper is a **multiplier on the fit** (T34, corrected 2026-09-23):
@@ -106,16 +125,71 @@ const MIN_STAFF_PX = 40;
  * screen allows, and Size moves around that.
  */
 
+/**
+ * Two splits of the window into rows whose scales are within this share of
+ * each other draw what the eye takes for one size: a fiftieth moves a 60 px
+ * staff by a pixel. Among such splits the one that keeps the next music on the
+ * stage wins (`chooseWindowShape`, T38).
+ */
+const SPLIT_TIE = 0.02;
+
 /** How far the look-ahead row is greyed: readable, and plainly not the window. */
 const AHEAD_OPACITY = 0.45;
+
+/**
+ * How a greyed look-ahead row wider than the stage at the window's scale is
+ * drawn (T38, fault B's remainder). The window's scale comes from the window's
+ * rows only (`08` §9.7), so the next row can be wider than the glass:
+ *
+ * - `run-off`: drawn whole at the window's scale, its opening at the left, and
+ *   the stage's edge cuts it wherever it falls;
+ * - `compact`: cut inside the stage between two notes, with a short fade, so
+ *   what shows is the start of the next music and nothing is sliced in half.
+ *
+ * Both are built so the owner can see both; the switch is
+ * `localStorage['pianopath.lookAhead']`, read when the renderer is made.
+ *
+ * **`run-off` is the default, chosen by the pictures (T38).** On Hot Cross
+ * Buns at rest the two read alike. On the Nocturne mid-run, phone and tablet
+ * upright, `compact` cut inside a beamed group — there is no gap between
+ * columns that a beam does not cross — and left a stub of beam hanging in the
+ * fade, which reads as a rendering fault; `run-off` let the stage's own frame
+ * cut the row, like the edge of a page, and showed more of the next bar.
+ */
+export type LookAheadTreatment = 'compact' | 'run-off';
+export const LOOK_AHEAD_DEFAULT: LookAheadTreatment = 'run-off';
+/** The switch's key, for the tests and the owner's console. */
+export const LOOK_AHEAD_KEY = 'pianopath.lookAhead';
+
+function readLookAhead(): LookAheadTreatment {
+  try {
+    const value = typeof localStorage === 'undefined' ? null : localStorage.getItem(LOOK_AHEAD_KEY);
+    return value === 'run-off' || value === 'compact' ? value : LOOK_AHEAD_DEFAULT;
+  } catch {
+    return LOOK_AHEAD_DEFAULT;
+  }
+}
+
+/** How much of the stage's edge the compact look-ahead fades over, in pixels on the glass. */
+const AHEAD_FADE_PX = 18;
 
 /** Bars of read-ahead drawn to the right of the window, sideways. */
 const SLIDE_READ_AHEAD_BARS = 2;
 
 /**
  * How much of the *next* bar must be on the glass while a bar is played,
- * sideways, in staff heights: the barline, the padding after it, and the
- * first note head.
+ * sideways, in staff heights — **the five lines** since T38, so three
+ * quarters of a staff is three staff spaces: measured from the bar's widest
+ * natural width (`readAheadScale`), that is the space after its last note and
+ * its barline, the lead-in of the next bar, and that bar's first note head.
+ *
+ * **Re-derived by T38, not converted.** It was half a staff when "staff" was
+ * the engraver's staff-line box, 1.6 to 2.5 times the five lines — about three
+ * and a half spaces. Half of the five lines, two spaces, put the first note of
+ * Hot Cross Buns' fourth bar 7 px past the right edge at 880 x 412 while its
+ * bar of eight quavers was played (`score.layout`, "the next bar is on the
+ * glass"); two and a half spaces was the least that kept it on, and three
+ * leaves a hair of air.
  *
  * The owner's requirement, in his words: the learner must be able to see at
  * least the beginning of the next music while playing the current bar,
@@ -143,7 +217,17 @@ const SLIDE_READ_AHEAD_BARS = 2;
  * space, a note head is a little over one, and the barline itself a hair.
  * Measured on the drawn chunk rather than derived, see `readAheadScale`.
  */
-const NEXT_NOTE_PEEK_STAVES = 0.5;
+export const NEXT_NOTE_PEEK_STAVES = 0.75;
+
+/**
+ * The next bar's first note measured **from the barline** — its lead-in and
+ * its note head, two staff spaces (T38) — which is what a row of whole bars
+ * needs after it for the next bar to be begun on the glass. The sideways count
+ * prices a window this way (`chooseWindowShape`): its row already carries its
+ * last barline, so the read-ahead's three spaces would count the barline twice
+ * and say one bar was shown with two and the next one's start on the glass.
+ */
+const NEXT_NOTE_AFTER_BARLINE_STAVES = 0.5;
 
 /**
  * Bars drawn to the *left* of the window, sideways (P21e A3).
@@ -698,11 +782,49 @@ export class WindowRenderer {
   /** Over 100 %, the scale the Size setting asked for (0 otherwise) — the tests' `ceilingScale`. */
   private ceilingCss = 0;
   /**
-   * The widest natural bar drawn so far at this zoom, clef and signatures
-   * included, from the rows themselves: the probe is laid out on a justified
-   * page, so its bar is wider than any bar drawn at its natural width.
+   * Every printed bar's natural width, **without** a row's opening, and the
+   * opening priced once per row — from the probe's engraving, at `zoom` (T38).
+   *
+   * It replaced `naturalBar`, a running maximum of *(a drawn row's ink ÷ the
+   * bars in it)* per engraving zoom. That number carried the row's clef, key
+   * and time signature, so a one-bar row charged a whole opening to its one
+   * bar; it only ever rose, and only a change of zoom released it; and it was
+   * fed by sheets that were not on the glass (a blanked slot, the spare). The
+   * chooser priced every later window at it, so a learner who tried one bar,
+   * and every test helper, which steps through one bar, got windows priced as
+   * if every bar carried an opening: Size's 100 % came out below the scale
+   * actually drawn and 110 % drew one bar *smaller* than the two at 100 %, and
+   * a tablet sideways drew Twinkle's four bars as two rows a third of the
+   * width each (`docs/prompts/traces/2026-09-25-window-reds.md`, fault A).
+   *
+   * The engraver's own natural widths are what a natural row is made of
+   * (`drawInto`: `begin + minimumStaffEntriesWidth + end` per bar, factor 1),
+   * so a window priced from them is priced as it will be drawn, and the same
+   * window on the same stage is priced the same whatever was drawn before it.
+   * Priced per window, not at the piece's widest bar, so the chooser and
+   * `scaleFor` — which sizes from the window's own ink — agree.
    */
-  private naturalBar = { zoom: -1, width: 0 };
+  private barTable: BarTable | null = null;
+  /**
+   * How much wider a row's ink is than its bars' natural widths, at `zoom`:
+   * a grand staff's brace left of the lines, a flag or a tie past the last
+   * barline. Measured on the window's rows at every fit and replaced, not
+   * accumulated; 0 until something has been drawn at this zoom (T38). Without
+   * it the chooser priced a braced row 24 px narrower than it drew and let a
+   * staff come out a hair under the floor.
+   */
+  private inkOverhang = { zoom: -1, px: 0 };
+  /**
+   * Which way a greyed look-ahead row that does not fit across at the
+   * window's scale is drawn (T38, fault B's remainder), and the switch that
+   * picks it: `localStorage['pianopath.lookAhead']`, `compact` or `run-off`.
+   * Kept for one wave so the owner can see both (`LOOK_AHEAD_DEFAULT`).
+   */
+  private readonly lookAhead: LookAheadTreatment;
+  /** What the look-ahead did at the last fit, for the row's sentence: `data-ahead` on the stage. */
+  private aheadState: 'row' | 'continues' | 'start' | 'none' = 'none';
+  /** What the chooser last priced, for `debugFit`: the asked window's rows and the fit they give. */
+  private priced: unknown = null;
   /** The tallest row the last fit drew, in stage pixels with its margin: what a look-ahead row is priced at. */
   private drawnRowPx = 0;
   /** What the probe measured, at `pieceInkZoom`; null until it has run. */
@@ -783,6 +905,7 @@ export class WindowRenderer {
     this.orientation = options.orientation ?? null;
     this.miniature = options.miniature !== undefined && options.miniature > 0 ? options.miniature : 1;
     this.handsFocus = options.handsFocus ?? 'both';
+    this.lookAhead = readLookAhead();
     this.userZoom = options.zoom ?? 1;
     // Starts at the owner's number and becomes the fitted one on the first
     // draw, once there is a rendered sheet to measure.
@@ -1556,6 +1679,7 @@ export class WindowRenderer {
     // Two systems is the old default, the window is what was asked for, and
     // the fit is redone the moment the measurement lands.
     if (!(height > 0) || !(staff > 0) || !(bar > 0) || stage.height <= 0 || stage.width <= 0) {
+      this.windowWhy(null);
       return { slots: Math.max(1, Math.min(2, mostSlots)), systems: 1, shown: wanted };
     }
     // **T34 rule 1 — one scale, as large as the stage allows.** The
@@ -1574,40 +1698,75 @@ export class WindowRenderer {
     // every window was drawn as if it were that wide.
     const z = this.zoomLevel > 0 ? this.zoomLevel : 1;
     const u = this.userZoom;
-    const barWidth = this.naturalBar.zoom === this.zoomLevel && this.naturalBar.width > 0 ? this.naturalBar.width : bar;
+    const pickup = this.model.pickup === true;
+    const cursor = this.model.steps[Math.max(0, this.currentStep)];
+    const cursorBar = cursor ? cursor.sourceMeasureIndex : 0;
+    // **T38: every candidate is priced as it will be drawn** — its own window
+    // (the bars the cursor's window holds at that count), each row the
+    // opening once plus its bars' natural widths (`barTable`, `rowPx`). Never
+    // a running maximum, never an opening charged to every bar, so the same
+    // window on the same stage is priced the same whatever was drawn before.
+    const row = (range: MeasureRange): number => this.rowPx(range.fromMeasure, range.toMeasure, bar);
     // **Sideways there is one system and the fit is driven by the height**, so
     // the width is not something the fit will solve — it lets the chunk run
     // off the right edge and slides towards it (`08` §4.1 CHUNK). That is the
     // read-ahead, and it is also why the count was never honoured there: eight
     // bars asked drew five, because three were past the edge. So the window is
-    // as many of the asked bars as fit across the stage at the size the height
-    // gives, with one bar's room left for the next one.
+    // as many of the asked bars as reach across the stage at the size the
+    // height gives, with the next bar's first note after them (T38: it kept a
+    // whole bar's room, so two bars and the next one's opening were on the
+    // glass while the row said one was shown).
     if (arrangement !== 'slots') {
       // As `scaleFor` will draw it sideways: the height, and the read-ahead
       // term (the bar being played and the next one's first beat right of the
-      // slide target). Leaving the second out priced every bar too wide and
-      // held 1 and 2 asked to the same one bar at 880 x 412.
-      const byHeight = Math.min((stage.height - FIT_MARGIN_PX) / height, readAheadScale(stage.width, bar, staff));
+      // slide target). Over 100 % the height still binds: Size cannot draw a
+      // one-system sheet taller than the stage, so it yields nothing here.
+      const byHeight = Math.min(
+        (stage.height - this.sheetShift() - FIT_MARGIN_PX) / height,
+        readAheadScale(stage.width, bar, staff),
+      );
       const base = byHeight;
-      const scale = u <= 1 ? u * base : Math.min(byHeight, u * base);
+      const scale = u <= 1 ? u * base : byHeight;
       this.sizeTargetAbs = u > 1 ? u * base * z : 0;
       if (!(scale > 0)) return { slots: 1, systems: 1, shown: wanted };
-      // Rule 2 sideways: one bar's room is kept for the next one, which the
-      // chunk engraves past the window for the slide to move towards.
-      const room = (stage.width - FIT_MARGIN_PX) / (barWidth * scale);
-      const fits = Math.max(1, Math.floor(wanted < pieceBars ? room - 1 : room));
-      return this.settleShape(stage.width, 1, 1, Math.min(wanted, fits));
+      const room = (stage.width - FIT_MARGIN_PX) / scale;
+      const peek = staff * NEXT_NOTE_AFTER_BARLINE_STAVES;
+      let fits = 1;
+      for (let shown = wanted; shown > 1; shown -= 1) {
+        const w = windowAt(cursorBar, shown, pieceBars, pickup);
+        const need = row(w) + (w.toMeasure < pieceBars - 1 ? peek : 0);
+        if (need <= room) {
+          fits = shown;
+          break;
+        }
+      }
+      this.windowWhy(fits < wanted ? 'across' : null);
+      this.priced = { arrangement: 'single', scale, room: Math.round(room), shown: fits, staffPx: Math.round(staff * scale * 10) / 10 };
+      return this.settleShape(stage.width, 1, 1, fits);
     }
 
+    /** The window of `shown` bars the cursor is in, split over `systems` rows as `slots.rangeAt` splits it. */
+    const rowsFor = (shown: number, systems: number): { window: MeasureRange; rows: MeasureRange[] } => {
+      const w = windowAt(cursorBar, shown, pieceBars, pickup);
+      const rows: MeasureRange[] = [];
+      for (let b = w.fromMeasure; b <= w.toMeasure; ) {
+        const r = rangeAt(b, shown, pieceBars, pickup, systems);
+        rows.push(r);
+        b = Math.max(b + 1, r.toMeasure + 1);
+      }
+      return { window: w, rows };
+    };
     /**
      * The fit of `shown` bars over `systems` rows, **as `scaleFor` will
      * compute it**: each row's share of the height against the tallest system
-     * the piece has, and the widest row's natural width against the stage.
+     * the piece has, and the widest of the window's own rows against the
+     * stage's width.
      */
     const fitFor = (shown: number, systems: number): number => {
       const perRow = (stage.height - SLOT_GAP_PX * (systems - 1)) / systems;
       const byHeight = (perRow - FIT_MARGIN_PX) / height;
-      const byWidth = (stage.width - FIT_MARGIN_PX) / (barWidth * barsPerSlot(shown, systems));
+      const widest = Math.max(...rowsFor(shown, systems).rows.map(row), 1);
+      const byWidth = (stage.width - FIT_MARGIN_PX) / widest;
       return Math.min(byHeight, byWidth);
     };
     /**
@@ -1618,57 +1777,181 @@ export class WindowRenderer {
      * choice: the window's scale is decided first, and the next bar only gets
      * what is left over (rule 2).
      */
-    // Two splits within a hair of each other draw the same size, and then the
-    // one with fewer rows wins: it leaves the height for the next bar (rule 2).
+    // **Splits that draw what the eye takes for one size (T38).** Within a
+    // fiftieth of the largest, the split that keeps the next music on the stage
+    // wins (rule 2), and then the one with fewer rows. Two or more systems keep
+    // it there at every step — the slot the cursor leaves is drawn again with
+    // what comes next — and one system keeps it only with a look-ahead row
+    // below. The tie used to go to fewer rows on the reading that they leave
+    // the height for the next bar; priced as drawn, a tablet upright's two bars
+    // of Twinkle on one row came out 0.4 % larger than one bar a row, took the
+    // tie, left no height for a row below, and the cursor reached the window's
+    // last bar with nothing after it and half the stage empty.
+    const nextInView = (shown: number, systems: number, fit: number, maxSlots: number): boolean => {
+      if (systems >= 2) return true;
+      if (windowAt(cursorBar, shown, pieceBars, pickup).toMeasure >= pieceBars - 1) return true;
+      if (systems + 1 > maxSlots) return false;
+      const rowHeight = height * (u <= 1 ? u * fit : fit) + FIT_MARGIN_PX;
+      return systems * rowHeight + rowHeight + SLOT_GAP_PX * systems <= stage.height;
+    };
     const bestFor = (shown: number, maxSlots: number): { systems: number; fit: number } | null => {
-      let best: { systems: number; fit: number } | null = null;
+      const splits: { systems: number; fit: number }[] = [];
       for (let systems = 1; systems <= Math.min(shown, maxSlots); systems += 1) {
         const fit = fitFor(shown, systems);
-        if (fit > 0 && (best === null || fit > best.fit * 1.001)) best = { systems, fit };
+        if (fit > 0) splits.push({ systems, fit });
       }
-      return best;
+      if (splits.length === 0) return null;
+      const top = Math.max(...splits.map((split) => split.fit));
+      const near = splits.filter((split) => split.fit >= top * (1 - SPLIT_TIE));
+      return near.find((split) => nextInView(shown, split.systems, split.fit, maxSlots)) ?? near[0] ?? null;
     };
     const askedBest = bestFor(wanted, Math.max(1, Math.min(mostSlots, this.slotCeilingNow(stage.width, wanted))));
+    // **Size's 100 % is the asked window's own fit** — priced as it is drawn,
+    // so it is the scale the learner saw at 100 %, and every step of Size is a
+    // fixed multiple of it (T34 rule 6, T38). It was a prediction that sat a
+    // sixth to a quarter below the scale drawn, so 110 % could not reach even
+    // the 100 % size.
     const base = askedBest?.fit ?? 0;
     this.sizeTargetAbs = u > 1 ? u * base * z : 0;
     // **T34 rule 4 — the count yields to readability, and says so.** One bar
     // fewer at a time, from the asked count down, until the window's staff
-    // clears the floor — or, over 100 % Size, until the bigger size fits.
-    // `applyWindowShape` tells the stepper's row, which says "4 asked, 2
-    // shown"; nothing is dropped silently.
+    // clears the floor. Over 100 % Size (T38): the largest count that reaches
+    // the size asked for; failing that, whichever count draws largest — and
+    // never a count that is not drawn larger than 100 %, because a bar given
+    // up for nothing is the thing rule 4 forbids. `applyWindowShape` tells the
+    // stepper's row, which says "4 asked, 2 shown"; nothing is dropped silently.
+    type Choice = { shown: number; systems: number; fit: number; drawn: number; maxSlots: number };
+    let choice: Choice | null = null;
+    let asWanted: Choice | null = null;
     for (let shown = wanted; shown >= 1; shown -= 1) {
       const maxSlots = Math.max(1, Math.min(mostSlots, this.slotCeilingNow(stage.width, shown)));
       const best = bestFor(shown, maxSlots);
       if (!best) continue;
       const drawn = u <= 1 ? u * best.fit : Math.min(best.fit, u * base);
       if (staff * drawn < MIN_STAFF_PX) continue;
-      if (u > 1 && shown > 1 && best.fit < u * base * 0.98) continue;
-      // **T34 rule 2 — the next bar is in view whenever it can be.** One more
-      // row below, at the window's own scale, when the stage has the height
-      // for it; otherwise none, and the window keeps its size. (On the same
-      // row is the sideways chunk's job; the upright rows do not extend a row
-      // past the window.)
-      // Priced at the scale actually drawn when this is the shape on the
-      // glass: the prediction prices a bar at the widest natural bar seen,
-      // and the Nocturne's eight bars on a tablet upright were drawn smaller
-      // than predicted, which left a row's height empty below and no next bar.
-      const drawnNow = this.systemsPerWindow === best.systems && this.shownBars === shown ? this.currentScale() : 0;
-      const rowHeight = height * (drawnNow > 0 ? Math.min(drawn, drawnNow) : drawn) + FIT_MARGIN_PX;
-      // The window's rows keep the reserve of the piece's tallest system (one
-      // size for the whole run); the look-ahead row is priced at the rows
-      // actually drawn, since it is a greyed preview and costs the window
-      // nothing. Priced at the reserve, the Nocturne's one row on a tablet
-      // sideways left two thirds of the stage empty and no next bar.
-      const aheadHeight = drawnNow > 0 && this.drawnRowPx > 0 ? Math.min(rowHeight, this.drawnRowPx) : rowHeight;
-      const ahead =
-        shown < pieceBars &&
-        best.systems + 1 <= maxSlots &&
-        best.systems * rowHeight + aheadHeight + SLOT_GAP_PX * best.systems <= stage.height;
-      return this.settleShape(stage.width, ahead ? best.systems + 1 : best.systems, best.systems, shown);
+      const candidate: Choice = { shown, systems: best.systems, fit: best.fit, drawn, maxSlots };
+      if (shown === wanted) asWanted = candidate;
+      if (u <= 1 || drawn >= u * base * 0.98) {
+        choice = candidate;
+        break;
+      }
+      if (choice === null || drawn > choice.drawn * 1.005) choice = candidate;
+    }
+    if (u > 1 && choice !== null && asWanted !== null && choice.shown < wanted && !(choice.drawn > base * 1.005)) {
+      choice = asWanted;
     }
     // Nothing clears the floor, so the floor wins and the window is one bar on
     // one system: `MIN_STAFF_PX` is what everything gives way to.
-    return this.settleShape(stage.width, 1, 1, 1);
+    if (choice === null) {
+      this.windowWhy(wanted > 1 ? 'floor' : null);
+      return this.settleShape(stage.width, 1, 1, 1);
+    }
+    this.windowWhy(choice.shown < wanted ? (u > 1 ? 'size' : 'floor') : null);
+    // **T34 rule 2 — the next bar is in view whenever it can be.** One more
+    // row below, at the window's own scale, when the stage has the height
+    // for it; otherwise none, and the window keeps its size. Whether that row
+    // fits *across* at the window's scale is the look-ahead treatment's
+    // question (`fitSlots`), not the window's: it never shrinks the window.
+    // Priced at the scale actually drawn when this is the shape on the
+    // glass: the prediction prices a row at the piece's tallest system, and
+    // the Nocturne's eight bars on a tablet upright were drawn smaller than
+    // predicted, which left a row's height empty below and no next bar.
+    const { window: chosen, rows } = rowsFor(choice.shown, choice.systems);
+    const drawnNow =
+      this.systemsPerWindow === choice.systems && this.shownBars === choice.shown ? this.currentScale() : 0;
+    const rowHeight = height * (drawnNow > 0 ? Math.min(choice.drawn, drawnNow) : choice.drawn) + FIT_MARGIN_PX;
+    // The window's rows keep the reserve of the piece's tallest system (one
+    // size for the whole run); the look-ahead row is priced at the rows
+    // actually drawn, since it is a greyed preview and costs the window
+    // nothing. Priced at the reserve, the Nocturne's one row on a tablet
+    // sideways left two thirds of the stage empty and no next bar.
+    const aheadHeight = drawnNow > 0 && this.drawnRowPx > 0 ? Math.min(rowHeight, this.drawnRowPx) : rowHeight;
+    const ahead =
+      chosen.toMeasure < pieceBars - 1 &&
+      choice.systems + 1 <= choice.maxSlots &&
+      choice.systems * rowHeight + aheadHeight + SLOT_GAP_PX * choice.systems <= stage.height;
+    // Every count's best shape and the five-line staff it would draw, so the
+    // floor's number can be judged from one pass (`debugFit`, T38 item 5).
+    const candidates: { shown: number; systems: number; staffPx: number }[] = [];
+    for (let shown = wanted; shown >= 1; shown -= 1) {
+      const best = bestFor(shown, Math.max(1, Math.min(mostSlots, this.slotCeilingNow(stage.width, shown))));
+      if (!best) continue;
+      const drawn = u <= 1 ? u * best.fit : Math.min(best.fit, u * base);
+      candidates.push({ shown, systems: best.systems, staffPx: Math.round(staff * drawn * 10) / 10 });
+    }
+    this.priced = {
+      arrangement: 'slots',
+      candidates,
+      shown: choice.shown,
+      systems: choice.systems,
+      fit: Math.round(choice.fit * 10000) / 10000,
+      drawn: Math.round(choice.drawn * 10000) / 10000,
+      base: Math.round(base * 10000) / 10000,
+      rows: rows.map((r) => ({ from: r.fromMeasure, to: r.toMeasure, px: Math.round(row(r)) })),
+    };
+    return this.settleShape(stage.width, ahead ? choice.systems + 1 : choice.systems, choice.systems, choice.shown);
+  }
+
+  /**
+   * How far down the stage the one sliding sheet starts, in layout pixels: the
+   * stylesheet moves it below the `bar n / m` chip when a phone's chrome folds
+   * (`.score-buffer { top: var(--score-corner-h) }`), and the fit has to fit
+   * the box the sheet is actually in (T38). It sized to the stage's whole
+   * height, and the reserve's old overshoot — the ink above the stave, counted
+   * twice (`staffLineBoxes`) — was all that kept the bottom of a phone held
+   * sideways on the glass; measured once the reserve was exact, the bass
+   * staff's fingerings on Twinkle ran 18 px past the stage's bottom mid-run.
+   * The slots set their own `top`, so this is the sliding sheet's alone.
+   *
+   * **A run is fitted for the folded box from its start.** The stage takes
+   * the bar's row when a run starts (`data-running`), the size is frozen a
+   * moment later, and the chrome folds a few seconds after that — moving the
+   * sheet down without changing the stage's box, so nothing refits. So while
+   * a run is on, on a phone, the chip's height is kept from the start: one
+   * size for the whole run, with the room the fold will take already given.
+   */
+  private sheetShift(): number {
+    if (this.readAhead !== 'single' || this.layout !== 'window' || typeof getComputedStyle !== 'function') return 0;
+    const top = Number.parseFloat(getComputedStyle(this.buffers[this.cursorSlot]!.wrapper).top);
+    if (Number.isFinite(top) && top > 0) return top;
+    return this.running && this.el.closest('[data-tablet="true"]') === null ? FOLDED_SHEET_SHIFT_PX : 0;
+  }
+
+  /** The piece's widest bar at natural spacing, px at the engraving zoom, or the widest drawn; 0 if neither. */
+  private widestBarNow(): number {
+    if (this.pieceInkZoom === this.zoomLevel && this.pieceInk) return this.pieceInk.bar;
+    return this.held.zoom === this.zoomLevel ? this.held.bar : 0;
+  }
+
+  /**
+   * A row of printed bars at natural spacing, in CSS pixels at the engraving
+   * zoom: the opening once — clef, key and time for a row that starts the
+   * piece, clef and key for any other — each bar's own natural width
+   * (`barTable`), and the ink a row carries past its bars (`inkOverhang`, once
+   * something has been drawn at this zoom). A bar the probe did not reach is
+   * priced at the widest it did; with no table at all, every bar at `fallback`
+   * (the piece's widest bar) and no opening.
+   */
+  private rowPx(from: number, to: number, fallback: number, withInk = true): number {
+    const table = this.barTable;
+    const k = table && table.zoom > 0 && this.zoomLevel > 0 ? this.zoomLevel / table.zoom : 0;
+    let px = table && k > 0 ? (from <= 0 ? table.opening : table.openingLater) * k : 0;
+    for (let i = from; i <= to; i += 1) {
+      px += table && k > 0 ? (table.bars[i] ?? table.widest) * k : fallback;
+    }
+    if (withInk && this.inkOverhang.zoom === this.zoomLevel) px += this.inkOverhang.px;
+    return px;
+  }
+
+  /**
+   * Why the window holds fewer bars than asked, for the row's sentence
+   * (`data-window-why` on the stage): `across` sideways, where the room across
+   * is the reason and nothing would be drawn smaller; `floor` upright, where
+   * more bars would put the staff under `MIN_STAFF_PX`; `size` over 100 %.
+   */
+  private windowWhy(why: 'across' | 'floor' | 'size' | null): void {
+    if (why === null) delete this.el.dataset.windowWhy;
+    else this.el.dataset.windowWhy = why;
   }
 
   /** The chosen shape, or the one already drawn when the ladder is spent. */
@@ -2008,7 +2291,21 @@ export class WindowRenderer {
       // drawn at it is as big as it was asked to be.
       ceilingScale: this.ceilingCss > 0 ? this.ceilingCss : null,
       shapeChanges: this.shapeChanges,
-      naturalBar: this.naturalBar,
+      // What the chooser priced (T38): the asked window's rows at natural
+      // width, from the engraver's own bar widths, and the fit they give.
+      priced: this.priced,
+      barTable: this.barTable
+        ? {
+            zoom: this.barTable.zoom,
+            opening: Math.round(this.barTable.opening),
+            openingLater: Math.round(this.barTable.openingLater),
+            widest: Math.round(this.barTable.widest),
+            bars: this.barTable.bars.map((b) => Math.round(b)),
+          }
+        : null,
+      lookAhead: this.lookAhead,
+      ahead: this.aheadState,
+      inkOverhang: this.inkOverhang,
       sizeTargetAbs: this.sizeTargetAbs,
       held: { ...this.held },
       piece: this.pieceInkZoom === this.zoomLevel ? this.pieceInk : null,
@@ -2030,9 +2327,48 @@ export class WindowRenderer {
           range: slot.range,
           ink: ink ? { w: Math.round(ink.width), h: Math.round(ink.height), y: Math.round(ink.y) } : null,
           staffTop: staffTopOf(slot.view),
+          staffBox: (() => {
+            try {
+              const svg = slot.view.svg;
+              const line = slot.view.instance.GraphicSheet?.MusicPages?.[0]?.MusicSystems?.[0]?.StaffLines?.[0];
+              if (!(svg instanceof SVGSVGElement) || !line) return null;
+              const unit = svgUnit(svg) * OSMD_UNIT;
+              const box = line.PositionAndShape;
+              return {
+                y: Math.round(box.AbsolutePosition.y * unit * 10) / 10,
+                height: Math.round(box.Size.height * unit * 10) / 10,
+                borderTop: Math.round(box.BorderTop * unit * 10) / 10,
+                borderBottom: Math.round(box.BorderBottom * unit * 10) / 10,
+                staffHeight: Math.round(line.StaffHeight * unit * 10) / 10,
+                topLineOffset: line.TopLineOffset,
+              };
+            } catch {
+              return null;
+            }
+          })(),
           pageWidth: slot.wrapper.style.width,
           transform: slot.wrapper.style.transform,
           bar: Math.round(widestBarOf(slot.view)),
+          // The outcome of the draw, from the engraver's layout (T38): how many
+          // systems the slot came out as, and each bar's natural and drawn
+          // width with the spacing factor the engraver applied.
+          ...(slot.range
+            ? (() => {
+                const laid = layoutOf(slot.view);
+                return {
+                  systems: laid.systems,
+                  bars: laid.bars.map((b) => ({
+                    bar: b.bar,
+                    number: b.number,
+                    first: b.first,
+                    begin: Math.round(b.begin * 10) / 10,
+                    natural: Math.round(b.natural * 10) / 10,
+                    drawn: Math.round(b.drawn * 10) / 10,
+                    factor: Math.round(b.factor * 1000) / 1000,
+                  })),
+                };
+              })()
+            : {}),
         };
       }),
     };
@@ -2077,6 +2413,7 @@ export class WindowRenderer {
         this.held = { height: 0, width: 0, bar: 0, above: 0, zoom: this.zoomLevel };
         this.pieceInk = null;
         this.pieceInkZoom = -1;
+        this.barTable = null;
         delete this.el.dataset.measured;
         // And the size a run is holding, which was taken on a stage this is
         // not (`08` §3.3: a turn releases it and the run continues at the new
@@ -2205,9 +2542,21 @@ export class WindowRenderer {
     // large as the stage allows.
     const natural = this.sliding || this.readAhead === 'slots';
     if (natural) {
+      // **T38, fault C: the page is at least the row's own natural width.** It
+      // was a stage's width per bar, on the reading that a bar never needs
+      // more — false for dense bars on a narrow stage once the run's taller
+      // stage raises the engraving zoom: two bars of the Nocturne on a phone
+      // upright came out wider than their page, the engraver broke the row onto
+      // two systems and justified the first bar across the whole page, and the
+      // sheet said `natural` because the flag recorded the request. The width
+      // comes from the engraver's own natural bar widths (`rowPx`); the outcome
+      // is checked after the draw, below.
       const bars = Math.max(1, range.toMeasure - range.fromMeasure + 1);
       const stageWidth = Math.max(1, this.measure(this.el).width);
-      buffer.wrapper.style.width = `${String(Math.round(bars * stageWidth))}px`;
+      const last = Number.isFinite(range.toMeasure) ? range.toMeasure : range.fromMeasure;
+      const need = this.rowPx(range.fromMeasure, last, this.widestBarNow());
+      const page = Math.max(bars * stageWidth, need * NATURAL_PAGE_SLACK + FIT_MARGIN_PX);
+      buffer.wrapper.style.width = `${String(Math.round(page))}px`;
     } else {
       // Upright, the page is made *wider than the stage* by exactly the amount
       // the fit is about to shrink it by, so the system comes back to the
@@ -2256,6 +2605,23 @@ export class WindowRenderer {
     buffer.view.setRange(range);
     buffer.view.render();
     buffer.natural = false;
+    // What came out, read from the engraver's layout (T38): one system, every
+    // bar at its natural spacing. A row the page could not hold is drawn once
+    // more on a page as wide as the engraver says its bars are.
+    let outcome = natural ? naturalOutcome(layoutOf(buffer.view)) : 'natural';
+    if (natural && outcome !== 'natural') {
+      const laid = layoutOf(buffer.view);
+      const needed = laid.bars.reduce((sum, b) => sum + b.natural, 0);
+      // As wide as the engraver says the bars are, with the slack; never
+      // narrower than the page that failed. Before the piece is measured at a
+      // new width (just after a turn) the first page is a stage per bar, and a
+      // dense bar wider than the stage is squeezed onto it: this is that draw.
+      const current = Number.parseFloat(buffer.wrapper.style.width) || this.measure(this.el).width;
+      const wider = Math.max(current + 1, needed * NATURAL_PAGE_SLACK + FIT_MARGIN_PX);
+      buffer.wrapper.style.width = `${String(Math.round(wider))}px`;
+      buffer.view.render();
+      outcome = naturalOutcome(layoutOf(buffer.view));
+    }
     if (wide) {
       const share = drawnShare(buffer.wrapper);
       if (share >= FILL_SHARE) {
@@ -2269,7 +2635,7 @@ export class WindowRenderer {
     // Written for the tests and the pane: which of the four ways this sheet
     // was drawn, and whether the stage had a width when it was.
     buffer.wrapper.dataset.stretch = natural
-      ? 'natural'
+      ? outcome
       : wide
       ? buffer.natural
         ? 'natural'
@@ -2356,9 +2722,29 @@ export class WindowRenderer {
     // is shared by the **window's** rows only; the look-ahead row takes what
     // is left below them (`chooseWindowShape` grants it only when it fits).
     const rows = this.readAhead === 'slots' ? Math.max(1, this.systemsPerWindow) : boxes.length;
-    const perSlot = (available.height - SLOT_GAP_PX * (rows - 1)) / rows;
+    const perSlot = (available.height - this.sheetShift() - SLOT_GAP_PX * (rows - 1)) / rows;
+    // **The window's scale comes from the window's rows only (T38, fault B;
+    // `08` §9.7).** The greyed look-ahead row is placed at that scale, never
+    // asked to set it. Handed to `scaleFor` with the rest, a next bar wider
+    // than the window's bars sized the window: at 390 x 844 on Hot Cross Buns
+    // the window was drawn at (stage width − margin) ÷ the greyed row's width,
+    // about a twelfth under its own fit, and mid-run the frozen scale held
+    // while the greyed row ran off the right edge.
+    const windowEntries = boxes.filter((entry) => !this.isAheadSlot(entry.slot));
+    const sizing = windowEntries.length > 0 ? windowEntries : boxes;
+    // The ink a row carries beyond its bars' natural widths, from the rows on
+    // the glass, for the next time the shape is priced (`inkOverhang`).
+    if (this.barTable && this.readAhead === 'slots') {
+      let over = 0;
+      for (const { slot, box } of windowEntries) {
+        const range = slot.range;
+        if (!range || !Number.isFinite(range.toMeasure)) continue;
+        over = Math.max(over, box.width - this.rowPx(range.fromMeasure, range.toMeasure, 0, false));
+      }
+      this.inkOverhang = { zoom: this.zoomLevel, px: over };
+    }
     const scale = this.scaleFor(
-      boxes.map((entry) => entry.box),
+      sizing.map((entry) => entry.box),
       { width: available.width, height: perSlot },
     );
     if (scale === null) return;
@@ -2366,22 +2752,14 @@ export class WindowRenderer {
     // applied once and never multiplies a fit that already fills the stage.
     const drawn = scale;
     this.drawnRowPx = Math.max(...boxes.map((entry) => entry.box.height * drawn), 0) + FIT_MARGIN_PX;
-    // What a natural bar costs across, from the rows just measured, for the
-    // next time the shape is priced (`chooseWindowShape`).
-    for (const { slot, box } of boxes) {
-      const range = slot.range;
-      if (!range) continue;
-      const perBar = box.width / Math.max(1, range.toMeasure - range.fromMeasure + 1);
-      if (this.naturalBar.zoom !== this.zoomLevel) this.naturalBar = { zoom: this.zoomLevel, width: 0 };
-      this.naturalBar.width = Math.max(this.naturalBar.width, perBar);
-    }
     // One offset for every slot, for the same reason there is one scale: the
     // slots are engraved separately, so their ink boxes differ — a bar of
     // semiquavers is wider than a bar of minims — and centring each in its own
     // right put four stacked systems at four different left edges. The widest
-    // window decides, so every system starts in the same place and the widest
-    // one is the one that is actually centred.
-    this.slotSpan = Math.max(...boxes.map((entry) => entry.box.width), 0);
+    // *window* row decides, so every system starts in the same place and the
+    // widest one is the one that is actually centred; a look-ahead row wider
+    // than the window starts where they do and is the treatment's to handle.
+    this.slotSpan = Math.max(...sizing.map((entry) => entry.box.width), 0);
     for (const { slot, box } of boxes) {
       const transform = this.placement(slot, box, drawn);
       slot.wrapper.style.transform = transform;
@@ -2389,6 +2767,7 @@ export class WindowRenderer {
       if (slot === this.buffers[this.cursorSlot]!) this.baseTransform = transform;
     }
     this.packSlots(boxes.map((entry) => ({ slot: entry.slot, height: entry.box.height * drawn + FIT_MARGIN_PX })));
+    this.treatLookAhead(boxes, drawn, available.width);
     // The first fit is what tells the count: the widest and tallest window
     // are known now. A different answer redraws once, from the current step.
     // A pending freeze does not close this while the run is still at its
@@ -2521,6 +2900,32 @@ export class WindowRenderer {
         return;
       }
     }
+    // **Sideways, the count is chosen again once the piece is measured (T38).**
+    // Before the measurement lands the chooser has nothing to price with and
+    // answers the asked count; nothing asked again when it landed, so a page
+    // that was never stepped said "4 shown" with two bars on the glass, and one
+    // press of the stepper later the same stage said something else. Before
+    // the learner has played anything only, as the slot arrangement does.
+    if (
+      this.readAhead === 'single' &&
+      this.layout === 'window' &&
+      !this.frozen &&
+      (this.freezeHandle === null || this.currentStep <= 0) &&
+      this.currentStep <= 0 &&
+      !this.fitting &&
+      this.pieceInkZoom === this.zoomLevel
+    ) {
+      const shape = this.chooseWindowShape('single');
+      if (shape.shown !== this.shownBars) {
+        this.applyWindowShape(1, 1, shape.shown);
+        for (const slot of this.buffers) {
+          slot.range = null;
+          slot.elements = new Map();
+        }
+        if (this.currentStep >= 0) this.showStep(this.currentStep);
+        return;
+      }
+    }
     // Sideways the spare is not on the screen and not in `drawnSlots`, but it
     // is about to be: fit it to the same stage now rather than when it comes
     // forward, where a fit would cost the swap its frame.
@@ -2539,6 +2944,123 @@ export class WindowRenderer {
     // measurement landing, the run ending — left them where the old scale had
     // put the notes until the next step moved them.
     this.repositionBands();
+  }
+
+  /** The last bar of the window the cursor is in, at the shown count. */
+  private windowEndNow(): number {
+    const step = this.model.steps[Math.max(0, this.currentStep)];
+    return windowAt(
+      step ? step.sourceMeasureIndex : 0,
+      this.shownBars,
+      this.model.sourceMeasureCount,
+      this.model.pickup === true,
+    ).toMeasure;
+  }
+
+  /** A drawn slot whose bars all come after the window's last: the greyed look-ahead (T34 rule 2). */
+  private isAheadSlot(slot: Buffer, windowEnd = this.windowEndNow()): boolean {
+    return this.readAhead === 'slots' && slot.range !== null && slot.range.fromMeasure > windowEnd;
+  }
+
+  /**
+   * The greyed look-ahead row that does not fit across at the window's scale
+   * (T38, fault B's remainder). The window keeps its size whatever this row
+   * needs; the row is drawn one of two ways (`LookAheadTreatment`), and the
+   * stage says which in `data-ahead` for the row's sentence:
+   *
+   * - `row`: the next row fits across and is drawn whole;
+   * - `continues` (`run-off`): drawn whole, its opening at the left, the
+   *   stage's edge cutting it wherever it falls;
+   * - `start` (`compact`): cut between two notes inside the stage, with a
+   *   short fade, so the start of the next music shows and no note is sliced;
+   * - `none`: there is no look-ahead row on the glass.
+   */
+  private treatLookAhead(
+    entries: { slot: Buffer; box: { x: number; width: number } }[],
+    scale: number,
+    stageWidth: number,
+  ): void {
+    const windowEnd = this.windowEndNow();
+    let state: 'row' | 'continues' | 'start' | 'none' = 'none';
+    const inset = this.slotSpan > 0 ? this.centredInset(this.frontBuffer, { width: this.slotSpan }, scale) : FIT_INSET_PX;
+    const edge = stageWidth - FIT_INSET_PX;
+    for (const { slot, box } of entries) {
+      if (!this.isAheadSlot(slot, windowEnd)) {
+        this.clearAheadMask(slot);
+        continue;
+      }
+      const right = inset + box.width * scale;
+      if (right <= edge + 0.5) {
+        this.clearAheadMask(slot);
+        if (state === 'none') state = 'row';
+        continue;
+      }
+      if (this.lookAhead === 'run-off') {
+        this.clearAheadMask(slot);
+        state = 'continues';
+        continue;
+      }
+      state = this.maskAheadAt(slot, edge) ? 'start' : 'continues';
+    }
+    this.aheadState = state;
+    this.el.dataset.ahead = state;
+  }
+
+  /**
+   * Cuts a look-ahead row between the last note that fits inside `edge` (stage
+   * pixels from the stage's left) and the one after it, fading over the last
+   * few pixels. A mask on the sheet's own `<svg>`, in its own unscaled pixels,
+   * so the wrapper's transform carries it and nothing above or below the
+   * staff is clipped. False when there is no note to cut after.
+   */
+  private maskAheadAt(slot: Buffer, edge: number): boolean {
+    const svg = slot.view.svg;
+    if (!svg) return false;
+    const host = this.measure(this.el);
+    const page = this.measure(svg);
+    const engraved = engravedSize(svg);
+    if (!(page.width > 0) || !engraved) return false;
+    const k = page.width / engraved.width;
+    const limit = host.left + edge - AHEAD_FADE_PX / 2;
+    const heads: { left: number; right: number }[] = [];
+    for (const note of svg.querySelectorAll<SVGGraphicsElement>('.vf-stavenote')) {
+      const box = this.measure(note);
+      if (box.width > 0) heads.push({ left: box.left, right: box.right });
+    }
+    heads.sort((a, b) => a.left - b.left);
+    // Columns, not notes: the two staves of a grand staff put a note in each
+    // at nearly the same x, and a cut between them would slice one.
+    const columns: { left: number; right: number }[] = [];
+    for (const head of heads) {
+      const last = columns[columns.length - 1];
+      if (last && head.left <= last.right) last.right = Math.max(last.right, head.right);
+      else columns.push({ ...head });
+    }
+    let cut = -1;
+    let shown = -1;
+    for (let i = 0; i < columns.length; i += 1) {
+      const here = columns[i]!;
+      if (here.right > limit) break;
+      const next = columns[i + 1];
+      shown = here.right;
+      cut = next ? Math.min(limit, (here.right + next.left) / 2) : Math.min(limit, here.right + AHEAD_FADE_PX);
+    }
+    if (cut < 0) return false;
+    // The fade is in the gap after the last note shown, never over it.
+    const fadeFrom = Math.max(shown, cut - AHEAD_FADE_PX);
+    const local = (cut - page.left) / k;
+    const localFrom = (fadeFrom - page.left) / k;
+    const mask = `linear-gradient(to right, #000 0, #000 ${String(Math.max(0, localFrom))}px, transparent ${String(local)}px)`;
+    svg.style.maskImage = mask;
+    svg.style.setProperty('-webkit-mask-image', mask);
+    return true;
+  }
+
+  private clearAheadMask(slot: Buffer): void {
+    const svg = slot.view.svg;
+    if (!svg || !svg.style.maskImage) return;
+    svg.style.maskImage = '';
+    svg.style.removeProperty('-webkit-mask-image');
   }
 
   /**
@@ -2613,6 +3135,9 @@ export class WindowRenderer {
       const ahead = drawn && this.readAhead === 'slots' && slot.range !== null && slot.range.fromMeasure > windowEnd;
       slot.wrapper.classList.toggle('is-ahead', ahead);
       slot.wrapper.style.opacity = ahead ? String(AHEAD_OPACITY) : '';
+      // A row cut for the look-ahead is whole again the moment the cursor's
+      // window reaches it, in the same class toggle (`treatLookAhead`).
+      if (!ahead) this.clearAheadMask(slot);
       slot.wrapper.dataset.slot = String(i);
       // Which bars this one is showing. Nothing outside could tell before, so
       // a test could see *that* the cursor had moved to another slot but not
@@ -2917,7 +3442,10 @@ export class WindowRenderer {
     // The same scale the slots use, from the same measurement of the piece:
     // this is the pre-render's fit, and a spare fitted to its own ink came
     // forward at a different size from the sheet it replaced.
-    const fill = this.scaleFor([{ ...box, bar: widestBarOf(buffer.view) }], available);
+    const fill = this.scaleFor([{ ...box, bar: widestBarOf(buffer.view) }], {
+      width: available.width,
+      height: available.height - this.sheetShift(),
+    });
     if (fill === null) return;
     // `fill` already carries the Size setting (`scaleFor`, T34): a multiplier
     // applied here as well would draw past the stage over 100 %.
@@ -3160,13 +3688,16 @@ export class WindowRenderer {
       };
     }
     if (this.frozen && this.frozen.scale > 0) {
-      if (fitted >= this.frozen.scale * FROZEN_OVERFLOW) return this.frozen.scale;
-      const across = Math.min(byWidth, byReadAhead) * (u <= 1 ? u : 1);
-      if (
-        stageFit === byHeight &&
-        across >= this.frozen.scale * FROZEN_OVERFLOW &&
-        fitted >= this.frozen.scale * FROZEN_HEIGHT_HOLD
-      ) {
+      // **Across, the held size gives way at once (T38).** A window row that
+      // does not fit across at the frozen scale would run off the side while
+      // it is played; the tolerances below are for ink a little *taller* than
+      // the piece's typical system, which runs into the margin, and they used
+      // to let a row one tenth too wide keep the size and lose its last notes
+      // past the edge. The look-ahead row is not a window row (`fitSlots`) and
+      // is the treatment's to handle.
+      const holdsAcross = Math.min(byWidth, byReadAhead) >= this.frozen.scale * 0.999;
+      if (holdsAcross && fitted >= this.frozen.scale * FROZEN_OVERFLOW) return this.frozen.scale;
+      if (holdsAcross && stageFit === byHeight && fitted >= this.frozen.scale * FROZEN_HEIGHT_HOLD) {
         return this.frozen.scale;
       }
       // The shrink is allowed — and the freeze moves with it.
@@ -3366,6 +3897,9 @@ export class WindowRenderer {
     if (!measured) return;
     this.pieceInk = measured;
     this.pieceInkZoom = zoom;
+    // Each bar's natural width from the same engraving, which is what the
+    // window's rows are made of (`barTable`, T38).
+    this.barTable = barTableOf(probe, zoom);
     // The one thing outside this class that can tell the measurement has
     // landed. It arrives on idle, after the first draw, and the slot count and
     // the page width are corrected once when it does. A test that starts
@@ -3589,6 +4123,17 @@ const OSMD_UNIT = 10;
  * put the highest fingering, and that moved by nine units between two
  * chunks of the same bars. Anchoring on it moved the stave; the model knows
  * where the lines are.
+ *
+ * **The bottom is the bottom line (T38).** The top was always right — a
+ * staff line's position is its top line — but the height was the staff
+ * line's `Size`, which is its whole content box: the notes, stems and
+ * fingerings above and below the lines. Added to the top line, that ran the
+ * "staff" past the bottom line by everything drawn *above* the top one, so
+ * the staff this module measured was 1.6 to 2.5 times the five lines, and
+ * every system's height reserve (`pieceInkOf`) carried that overshoot too —
+ * Hot Cross Buns reserved 177 px at zoom 2 for systems whose ink is 145. The
+ * lines are `StaffHeight` units below the top line, whatever is drawn round
+ * them.
  */
 function staffLineBoxes(view: OsmdView): StaffLineBox[] {
   const svg = view.svg;
@@ -3601,9 +4146,10 @@ function staffLineBoxes(view: OsmdView): StaffLineBox[] {
       for (const system of page.MusicSystems ?? []) {
         for (const line of system.StaffLines ?? []) {
           const shape = line.PositionAndShape;
-          const y = shape?.AbsolutePosition?.y;
-          const height = shape?.Size?.height;
-          if (typeof y !== 'number' || typeof height !== 'number' || !(height > 0)) continue;
+          const top = shape?.AbsolutePosition?.y;
+          const height = line.StaffHeight;
+          if (typeof top !== 'number' || typeof height !== 'number' || !(height > 0)) continue;
+          const y = top + (typeof line.TopLineOffset === 'number' ? line.TopLineOffset : 0);
           const x = shape?.AbsolutePosition?.x;
           const width = shape?.Size?.width;
           const left = typeof x === 'number' ? x * unit : 0;
@@ -3809,6 +4355,157 @@ function widestBarOf(view: OsmdView): number {
     return 0;
   }
   return widest * unit;
+}
+
+/**
+ * How much wider than its bars' natural widths a natural row's page is made
+ * (`drawInto`): room for what the table cannot know — a bar past the probe's
+ * reach, a courtesy signature — without which the engraver would break the row.
+ * A page wider than the music costs nothing: a natural row's last system is
+ * never spread (`OsmdView.naturalLastSystem`).
+ */
+const NATURAL_PAGE_SLACK = 1.25;
+
+/**
+ * How far a phone's folded chrome moves the sliding sheet down, below the
+ * `bar n / m` chip: the stylesheet's `var(--score-corner-h, 22px)` on
+ * `.score-buffer` while `data-chrome='folded'` (`style.css`). Mirrored, not
+ * read, because a run is fitted before the fold has happened (`sheetShift`).
+ */
+const FOLDED_SHEET_SHIFT_PX = 22;
+
+/**
+ * What a draw asked to be natural came out as (T38): `natural` when it is one
+ * system with every bar at the engraver's natural spacing; `wrapped` when the
+ * page broke it onto several (the first justified to the page); `stretched`
+ * or `squeezed` when a bar's notes were spaced wider or tighter than natural.
+ * A layout that cannot be read is taken as it was asked for.
+ */
+function naturalOutcome(laid: { systems: number; bars: { factor: number }[] }): 'natural' | 'wrapped' | 'stretched' | 'squeezed' {
+  if (laid.bars.length === 0) return 'natural';
+  if (laid.systems > 1) return 'wrapped';
+  if (laid.bars.some((b) => b.factor > 1.001)) return 'stretched';
+  if (laid.bars.some((b) => b.factor < 0.999)) return 'squeezed';
+  return 'natural';
+}
+
+/** One laid-out bar of a drawn sheet, from the engraver's own model, in CSS pixels at its zoom. */
+interface LaidBar {
+  /** The printed bar, as a source measure index. */
+  bar: number;
+  /** The engraver's measure number, which it writes as the `id` of the bar's `.vf-measure` group. */
+  number: number;
+  /** Whether it opens its system, carrying the clef and key (and at the piece's start the time). */
+  first: boolean;
+  /** Which system of the page it is on, from the top. */
+  system: number;
+  /** The opening it carries: clef, key, time, a repeat line — `beginInstructionsWidth`. */
+  begin: number;
+  /** Its width at the engraver's natural spacing: `begin + minimumStaffEntriesWidth + endInstructionsWidth`. */
+  natural: number;
+  /** The width the engraver actually gave it on this page. */
+  drawn: number;
+  /** The spacing factor the engraver applied to its notes: 1 natural, above 1 justified, below 1 squeezed. */
+  factor: number;
+}
+
+/**
+ * Every printed bar's natural width without a row's opening, and the widest
+ * opening a row starts with, in CSS pixels at `zoom` (T38, `barTable`).
+ */
+interface BarTable {
+  zoom: number;
+  /** By source measure index; a bar the engraving did not reach is missing. */
+  bars: number[];
+  /** The widest bar here: the price of one the engraving did not reach. */
+  widest: number;
+  /** The opening of a row that starts the piece: clef, key and time signature. */
+  opening: number;
+  /**
+   * The opening of any other row: clef and key, the time signature being
+   * drawn only at the start and where it changes. A row that does not start
+   * the piece priced with the first opening came out a time signature too
+   * wide — bar 2 of Hot Cross Buns priced 358 px at zoom 2 and drawn 278.
+   */
+  openingLater: number;
+}
+
+/**
+ * A bar table from one engraving: each bar's natural width, less the opening
+ * when it opens its system, and the widest opening. The widest, because a row
+ * that starts the piece carries the time signature as well and the chooser
+ * would rather price a row a little wide than draw it off the edge.
+ */
+function barTableOf(view: OsmdView, zoom: number): BarTable | null {
+  const laid = layoutOf(view);
+  if (laid.bars.length === 0) return null;
+  const bars: number[] = [];
+  let opening = 0;
+  let openingLater = 0;
+  let widest = 0;
+  for (const b of laid.bars) {
+    const own = b.first ? b.natural - b.begin : b.natural;
+    if (b.first && b.system === 0) opening = Math.max(opening, b.begin);
+    else if (b.first) openingLater = Math.max(openingLater, b.begin);
+    const width = Math.max(bars[b.bar] ?? 0, own);
+    bars[b.bar] = width;
+    widest = Math.max(widest, width);
+  }
+  // One system on the page: no later opening was seen, so every row is priced
+  // with the first, which errs a time signature wide.
+  if (!(openingLater > 0)) openingLater = opening;
+  return widest > 0 ? { zoom, bars, widest, opening, openingLater } : null;
+}
+
+/**
+ * What the engraver laid out on its page: how many systems, and every bar with
+ * its natural and drawn width (T38).
+ *
+ * OSMD sizes a bar as `begin + minimumStaffEntriesWidth × factor + end`, and
+ * the factor is 1 on a natural row, above 1 on a system justified to its page,
+ * below 1 on a bar squeezed into a page too narrow for it. So the outcome of a
+ * draw — natural or not — is read here, from the layout, and not from what the
+ * draw asked for. Walks the systems of the current engraving only: the graphic
+ * sheet keeps measures from earlier renders in `MeasureList`.
+ */
+function layoutOf(view: OsmdView): { systems: number; bars: LaidBar[] } {
+  const svg = view.svg;
+  if (!(svg instanceof SVGSVGElement)) return { systems: 0, bars: [] };
+  const unit = svgUnit(svg) * OSMD_UNIT;
+  const bars: LaidBar[] = [];
+  let systems = 0;
+  try {
+    for (const page of view.instance.GraphicSheet?.MusicPages ?? []) {
+      for (const system of page.MusicSystems ?? []) {
+        systems += 1;
+        (system.GraphicalMeasures ?? []).forEach((column, index) => {
+          let bar = -1;
+          let number = -1;
+          let begin = 0;
+          let natural = 0;
+          let drawn = 0;
+          let factor = 1;
+          for (const measure of column ?? []) {
+            if (!measure) continue;
+            const b = measure.beginInstructionsWidth ?? 0;
+            const entries = measure.minimumStaffEntriesWidth ?? 0;
+            const e = measure.endInstructionsWidth ?? 0;
+            bar = measure.parentSourceMeasure?.measureListIndex ?? bar;
+            number = measure.MeasureNumber ?? number;
+            begin = Math.max(begin, b);
+            natural = Math.max(natural, b + entries + e);
+            drawn = Math.max(drawn, measure.PositionAndShape?.Size?.width ?? 0);
+            if (typeof measure.staffEntriesScaleFactor === 'number' && entries > 0) factor = measure.staffEntriesScaleFactor;
+          }
+          if (bar < 0) return;
+          bars.push({ bar, number, first: index === 0, system: systems - 1, begin: begin * unit, natural: natural * unit, drawn: drawn * unit, factor });
+        });
+      }
+    }
+  } catch {
+    return { systems: 0, bars: [] };
+  }
+  return { systems, bars };
 }
 
 /**

@@ -24,12 +24,22 @@ const LAPTOP = { width: 1512, height: 850 };
 /** Below this the phone is back to the third-of-a-screen sheet (`09` §35). */
 const PHONE_FILL_MIN = 0.85;
 /**
- * Above this on a laptop the bar is being stretched rather than engraved.
+ * How much wider than the engraver's natural width a bar may be drawn, at its
+ * sheet's scale, before its notes are spread: line widths and rounding.
  *
- * Generous: the point is not a target width, it is that one bar of four notes
- * must not be pulled across a whole desktop display.
+ * **Replaced 2026-09-25 (T38).** This was `WIDE_FILL_MAX = 0.7`, a share of
+ * the stage's width above which the bar was taken to be "stretched rather than
+ * engraved". Since T34 a bar is engraved at its natural spacing and the window
+ * scaled uniformly as large as the stage allows, so a natural bar may reach
+ * across a wide stage and a share of the width cannot tell it from a stretched
+ * one (`04` §5, the note to whoever writes the test). When T38 stopped the
+ * greyed next row from sizing the window, Hot Cross Buns' natural bars at
+ * 900 px reached 81 % of the width and this read them as stretched. The claim
+ * the test exists for — four notes are not pulled apart across a display — is
+ * now read bar by bar from the glass: each bar's stave, divided by its sheet's
+ * scale, against the bar's natural width from the engraver (`debugFit`).
  */
-const WIDE_FILL_MAX = 0.7;
+const SPACED_AS_ENGRAVED = 1.03;
 
 /**
  * Below this share of the width, being left-aligned reads as a broken layout.
@@ -42,6 +52,8 @@ interface Drawn {
   width: number;
   left: number;
   right: number;
+  /** Each bar on this sheet: its drawn width at the sheet's scale over its natural width. */
+  spacing: { bar: number; ratio: number }[];
 }
 
 async function drawn(page: import('@playwright/test').Page, viewport: number): Promise<Drawn[]> {
@@ -54,8 +66,15 @@ async function drawn(page: import('@playwright/test').Page, viewport: number): P
   // so measuring before it has landed measures the fallback instead.
   await page.waitForTimeout(2_500);
   const seen = await page.evaluate(() => {
-    const out: { width: number; left: number; right: number }[] = [];
-    for (const host of document.querySelectorAll('.score-buffer.is-front')) {
+    const fit = (
+      window as unknown as {
+        __pianopath?: {
+          scoreFit?: () => { slots?: { bars?: { number: number; bar: number; natural: number }[] }[] } | null;
+        };
+      }
+    ).__pianopath?.scoreFit?.();
+    const out: { width: number; left: number; right: number; spacing: { bar: number; ratio: number }[] }[] = [];
+    for (const host of document.querySelectorAll<HTMLElement>('.score-buffer.is-front')) {
       let left = Infinity;
       let right = -Infinity;
       for (const stave of host.querySelectorAll('.staffline, .vf-stave')) {
@@ -64,7 +83,22 @@ async function drawn(page: import('@playwright/test').Page, viewport: number): P
         left = Math.min(left, r.left);
         right = Math.max(right, r.right);
       }
-      if (Number.isFinite(left)) out.push({ width: right - left, left, right });
+      const match = /scale\(([\d.]+)\)/.exec(host.style.transform);
+      const scale = match ? Number(match[1]) : 0;
+      const laid = fit?.slots?.[Number(host.dataset.slot)]?.bars ?? [];
+      const spacing: { bar: number; ratio: number }[] = [];
+      for (const measure of host.querySelectorAll<SVGGElement>('.vf-measure')) {
+        const lines: DOMRect[] = [];
+        for (const line of measure.querySelectorAll(':scope > path')) {
+          const box = line.getBoundingClientRect();
+          if (box.height <= 1.5 && box.width >= 10) lines.push(box);
+        }
+        const bar = laid.find((b) => String(b.number) === measure.id);
+        if (lines.length < 5 || !bar || !(bar.natural > 0) || !(scale > 0)) continue;
+        const drawnWidth = (Math.max(...lines.map((b) => b.right)) - Math.min(...lines.map((b) => b.left))) / scale;
+        spacing.push({ bar: bar.bar, ratio: drawnWidth / bar.natural });
+      }
+      if (Number.isFinite(left)) out.push({ width: right - left, left, right, spacing });
     }
     return out;
   });
@@ -87,10 +121,14 @@ for (const size of [TABLET, LAPTOP]) {
     await page.setViewportSize(size);
     const slots = await drawn(page, size.width);
     const widest = Math.max(...slots.map((s) => s.width));
+    // Note spacing, from the outcome: no bar on the glass wider than the
+    // engraver sets its notes, at the one scale (see `SPACED_AS_ENGRAVED`).
+    const spread = slots.flatMap((s) => s.spacing).filter((b) => b.ratio > SPACED_AS_ENGRAVED);
     expect(
-      widest / size.width,
-      `${String(size.width)}px stretched one bar to ${String(Math.round(widest))}px`,
-    ).toBeLessThan(WIDE_FILL_MAX);
+      spread.map((b) => `bar ${String(b.bar + 1)} at x${b.ratio.toFixed(2)} of its natural width`),
+      `${String(size.width)}px spread a bar's notes`,
+    ).toEqual([]);
+    expect(slots.flatMap((s) => s.spacing).length, 'no bar on the glass could be read').toBeGreaterThan(0);
 
     // Every slot starts in the same place: they are engraved separately, so
     // centring each on its own ink put four stacked systems at four different
