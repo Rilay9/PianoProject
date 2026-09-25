@@ -132,3 +132,13 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **T40** | Three evidence rules: no input means not measured; a heard sight-read is not a first attempt; a demonstrated performance is not independent | build, browser | now |
 | **C0a** | The vocabulary design: demands, skills, needs, ability, address, observations, evidence, the teaching plan, designed apart for review | design, read-only | on CI's verdict |
 | **C0b** | The test inventory (AT-15): every test classified preserve / revise / delete / replace / add | audit, read-only | on CI's verdict |
+
+### Between C0 and C (T41), and Wave C's first four steps (approved 2026-09-26)
+
+| | Task | Kind | Runs |
+|---|---|---|---|
+| **T41** | A black key named by its key on the status line; a drill sheet that stops claiming an accuracy; the renderer publishes when the fit has settled | build, browser | now |
+| **C1** | Observations stored: every run writes what it measured and marks what it did not; T40's drops recorded flagged; the guide off for sight-reading drills and recorded | build, browser | after T41 |
+| **C2** | Vocabulary v0 (the reading strand) and the demand detectors; one authoritative definition; the build gate | build, content | beside C1, after T41 |
+| **C3** | The evidence function and the ladder; the property test over the vocabulary; the sheet's "not judged" lines | build | after C1 and C2 |
+| **C4** | The first reader: sight-reading constraints from the reading skill state; unseen guaranteed; the true reason line; then the learner-facing checkpoint | build, browser | after C3 |
