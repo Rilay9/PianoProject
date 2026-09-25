@@ -670,8 +670,10 @@ quick.
 
 `Hear it` is a Listen run that **does not move the mode select**: what it interrupts is restored
 when it ends, and `▶` during one ends it and starts the run you chose. **`Hear it` during a run
-ends the run and begins the demonstration** — from the loop if one is set, else from the top —
-and a second tap ends that. (Today the first tap only stops the run — §11.13.)
+sets the run aside, paused, and begins the demonstration** — from the loop if one is set, else
+from the top — and when the demonstration ends (a second tap, or the end) the run is back where
+it was, paused; `▶` during it carries the run straight on (T33, C1 of
+`docs/decisions/2026-09-23-score-state-machine.md` §7; it used to end the run).
 
 ### 7.2 Rarely — the `⋯` sheet
 
@@ -1100,7 +1102,7 @@ match; **later** is the list for the next builder. The random walks and the whol
 | §6.3 the waiting line only in Wait during a run; mirrored sideways | `drawWaitingFor`, `syncBarLeft` | matches |
 | §7.1 one row at every width; short modes below 400 px | CSS and `NARROW_BAR_PX`; `score.spec` widths | matches |
 | §7.1 auto-hide 0.7 s at a run's start, 3 s after a tap, only where it costs room | `showBar(CONTROL_BAR_START_HIDE_MS)`, `barCostsMusicRoom` | **done**; `score.screen.spec:75` still fails sideways — **open**, see below |
-| §7.1 `Hear it` during a run ends the run and demonstrates | `toggleHear` | **done** |
+| §7.1 `Hear it` during a run sets the run aside and demonstrates; the run comes back paused | `toggleHear`, `endDemonstration`, `ScoreSession.suspend` | **done** (T33) |
 | §7.2 the ⋯ sheet sideways in two columns without scrolling | CSS at `max-height: 520px` | matches; **done** — a test at 780 by 360 |
 | §7.3 tap toggles the bar; double-tap loops; long-press demonstrates; a drag cancels (12 px); the click after a press is swallowed | the stage handlers, read | matches; long-press during a run is ignored now — **done** |
 | §9.24 bar numbers at gesture boundaries | the double-tap handed its *printed* number to the index-based loop builder: double-tapping bar 3 looped bar 4 (the long-press used the printed builder and was right) | **done** — loops are printed bars everywhere; the weak-bars loop converts its unrolled measure |

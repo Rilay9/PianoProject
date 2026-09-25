@@ -15223,3 +15223,220 @@ from F2 is muddy cannot be judged without hearing.
 rows), `content/lessons/0.3.md` (deviation); tests listed above plus
 `app/tests/e2e/fixtures/playInTime.ts`; `docs/02-curriculum.md` Part G, `docs/04-ui-spec.md` §2 §5,
 `docs/05-score-follow-engine.md` §2 §3 §3a §8 §9a, `docs/08-test-map.md`.
+
+
+### Entry 67 — T33: the five state choices built, a run set aside under a demonstration and put back, and notes that played into a pause (2026-09-25)
+
+**Judgement.** Yes for the learner, on every choice, with one limit said up front: the state
+line is one line and at 342 px it holds about forty characters. What a learner now meets:
+pressing **Hear it** in the middle of a run no longer throws the run away — the piece plays,
+the header says *Playing it to you — your run waits at bar 2…*, and when it stops the run is
+where it was, the notes already played still green, the cursor on the next one, the header
+saying *Paused at bar 2 — ▶ to carry on*; `▶` carries on, and the summary at the end counts
+the wrong note played before the demonstration. **Changing the hand while paused** no longer
+starts the music under the learner: the cursor goes back to bar 1 and the header says
+*Restarted at bar 1 with the right hand — ▶ when ready*. The **Metronome** row in Free play
+reads *Off*, greyed, *Metronome — no clock in Free play*, instead of *On* over silence.
+**Blind and Perform** mid-run are greyed with *pause the run first*, and once paused they
+work and the rebuilt screen offers the run back from its bar. The **summary** says, first,
+what changed during the run: *Changed — metronome on at bar 1; heard it played at bar 2*.
+A piano teacher would recognise all five as what a good teacher does at the piano: stop, play
+the passage to the student, and go back to where they were; never start the music before the
+student is ready; and say plainly when something is not available and why. **What I looked
+at:** each choice on the built app at 342 × 740 upright and 740 × 342 sideways (the demo
+line, the restored pause, the restart line, the Free play row, the Blind and Perform rows, the
+summary sheet). The words were then shortened once on the glass (below). **Nothing was
+heard** — no click, no played-back hand, no demonstration.
+
+**Deviations, each with its reason.**
+1. **C3 was decided from its heading, and only one of its four states is a refusal.** Free
+   play is (the engine never clicks there), and it is built as decided: *Off*, disabled,
+   the reason on the label. The other three — no run yet, paused, holding for the first note
+   — are waits: the start, the resume and the latch each start the click. *Off* and disabled
+   there would have made the click impossible to switch on before pressing `▶`, which is when
+   it is set. So those keep the row live and *On* and say when the click comes (*the click
+   starts with the run / when you carry on / on your first note*) — option (a) of §7 for the
+   states it fits. The brief anticipated this (*"decide that case by the same principles"*).
+2. **C4's *stop the run first* is written *pause the run first*.** This screen has no stop:
+   a run ends at its end, on a refusal, or by leaving. A reason naming no control is the dead
+   instruction T31 removed (`⏮`). So "until the run stops" is read as *until it is paused*:
+   both toggles are live once paused, and the rebuilt screen offers the paused run back (the
+   net the decision kept).
+3. **C5 was decided from the heading, and §7's own case is a different one.** §7 C5 is a
+   setting changed *with the summary up*; the decision's example (*mode changed to Keep tempo
+   at bar 5*) is a change *during* the run, which always restarts it. Both are covered in the
+   one line: changes during the run at their bar, changes while the sheet is up *after the
+   run*. The second is reachable only through a `⋯` or tempo sheet left open as the run ends
+   (the summary makes the bar and stage `inert`; read from `summaryUp`, driven once by the
+   e2e test).
+4. **The owner's *press ▶* is written *▶*.** *Paused at bar 12 — ▶ to carry on* and
+   *Restarted at bar 1 with the left hand — ▶ when ready*, matching T31's paused line (*Paused
+   — ▶ to carry on…*). Measured at 342 px (283 px of line): *Paused at bar 12 — press ▶ to
+   carry on* just fits and the `▶` form fits with room; the restart line needs 340 px either
+   way and is cut after *hand — ▶ w…*. Sideways it is cut at *with the right ha…*, beside the
+   highlighted `R` and the `▶` (seen).
+5. **One file outside the brief's list:** `docs/08-score-render-states.md` §7.1 and its
+   status-table row said *`Hear it` during a run ends the run*; five lines corrected so the
+   spec no longer describes the replaced behaviour. Revert if another task owns that file.
+6. **Tried and reverted on the glass:** keeping the chrome open while a run is paused, so the
+   `▶` the paused lines name is always visible. Sideways the bar then covered the lowest
+   notes for as long as the pause lasted, and the owner's standing order is *just always fade
+   it* (the comment in `showBar`). Reverted; a paused run folds after three seconds like any
+   other, the line moves to the stage's corner, one tap brings `▶` back — as T31's pause
+   already did.
+
+## Done — per choice: what was built, the red line, the words on screen
+
+**C1 — `Hear it` during a run keeps the run.** *Mechanism of the fault:* `toggleHear` called
+`session.stop()` on any running run, and the session holds one engine, so the run's clock,
+totals and judgements went with it. *Built:* `ScoreSession.suspend()` moves the engine, its
+judgements, wrong keys and scheduling aside intact (paused first, so the queued app notes are
+taken back); `restoreSuspended()` puts them back and repaints; engine events are handled only
+while that engine is the session's. The screen: `toggleHear` sets the run aside and starts the
+demonstration; `endDemonstration('stop' | 'end' | 'play')` restores it paused (or resumes it
+for `▶`); the natural end is deferred by a microtask, as `climbLadder` is, because it is
+emitted from inside the demonstration's engine; the ladder's pass base and the metronome
+setting ride with it; the transport reads `▶` during a demonstration (it read `⏸` and did not
+pause anything); *Start again* during a demonstration starts the learner's run (it restarted
+the demonstration, §3's surprising R15 cell); leaving, Blind or Perform during one remember
+the run set aside. *Consumer handled:* a sight-read that heard its phrase part way is not
+recorded (*Sight-reading counts only on music you have not heard — this run is not
+recorded.*). *Red (old code):* `the run is still there — Expected: true, Received: false`
+(stopped early and played to its end); `from where it was, not from bar 1 — Expected: 4,
+Received: 0` (`▶` during it). *Words:* *Playing it to you — your run waits at bar N. Stop to
+go back to it.* → *Paused at bar N — ▶ to carry on*. *Before → after:* Wait run at step 4 with
+one wrong note, Hear it, Stop → no run, idle at bar 1 → the run at step 4, paused; played on,
+the summary reads *Wrong notes 1*.
+
+**C2 — an option changed while paused restarts and waits.** *Mechanism:* each of the twelve
+restarting controls called `startRun()`, which starts playing. *Built:*
+`RunOptions.startPaused` (the engine paused before its first frame: nothing scheduled, no
+click); `restartForOption(what)` is the one path for mode, hands, tempo (slider and bpm),
+loop set and clear, section, input, *Rhythm only*, duet, bars in window, layout and the
+microphone failing; paused, it restarts paused and says what changed. A press that changes
+nothing (the hand already chosen, *Loop* with no loop) no longer restarts at all. *Red:* `the
+restart waits for the learner — Expected: true, Received: false` (a hand; the tempo).
+*Words:* *Restarted at bar N with the left hand — ▶ when ready* (the phrases are in `04` §5f).
+
+**Found while building C2, and fixed (P0, from T8):** a pause took back the app's queued notes
+and forgot they were scheduled so the resume would play them, and the paused clock stands
+still inside their look-ahead — so the very next frame queued them again and they sounded
+into the pause; a run restarted paused would have played its own first notes. Hypothesis
+named before the test; `schedulePlayback` now returns while paused. *Red:* `notes handed to
+the piano while the run was paused: expected [ 50 ] to deeply equal []`. Inferred from the
+scheduler with a fake piano, **not heard**.
+
+**C3 — a refused Metronome reads as refused.** *Built:* `drawMetronomeRow`: in Free play (the
+run's mode, or the selector's with no run) *Off*, `disabled`, `aria-pressed=false`, label
+*Metronome — no clock in Free play*; the learner's choice is kept and comes back in a mode with
+a clock. Waiting states as in deviation 1. `help.ts`'s Free play line no longer offers the
+metronome. *Red:* `Free play has no clock to click against — Expected: "Off", Received: "On"`.
+
+**C4 — Blind and Perform refused while a run is going.** *Built:* `drawRouteRows`: disabled
+while the run is going (counting in, holding, playing), labels *Blind — pause the run first*,
+*Perform — pause the run first*; live when paused, during a demonstration, and with no run.
+`help.ts`'s Blind line said *"Nothing else about the run changes"*, false of a route; it now
+says the toggle waits for a pause and the run is offered back. *Red:* `#score-blind while the
+run is going — toBeDisabled() — Received: enabled`.
+
+**C5 — the summary names what changed.** *Built:* per-setting notes (`noteChange`) from the
+learner's own start through the restarts the options made — each setting once, from where it
+began to where it ended, at the bar of its last change, a change undone not named — plus the
+bars a demonstration was heard at, and changes made with the sheet up (*after the run*). One
+stat, **Changed**, first on the sheet, hidden when empty. Views (Size, Keys, Sound, Bars,
+Layout) are not named. *Red:* `hands changed to R at bar 2 — element(s) not found`; `input
+changed to Screen keys after the run — element(s) not found`. *Seen at 342 px:* *Changed —
+metronome on at bar 1; heard it played at bar 2* above *Accuracy 100%*; the sheet still fits.
+
+## Tests
+
+| test | class | the assumption the old assertion encoded | why the new one reads the learner-facing outcome |
+|---|---|---|---|
+| `score.states.spec` probe *what each event does in each state* | revise | its sequence lined up only because an option changed while paused restarted *playing* (*paused → hands->both → "pause (2)"*) and `Hear it` ended the run (*"idle/wait \| Hear it"*); pressing the hand already chosen restarted the run | drives a real change (`R`) while paused and records the C2 cell, and records C1 as set aside / back / carried on; still record-only, and the decision document's measured cells are its output |
+| `score.states.spec` C1 ×3 (stopped early; played to its end; `▶` during it) | add | — | the run is still there, in its mode, paused, on its step; `▶` carries it on from that step; the summary counts the wrong note played before the demonstration |
+| `score.states.spec` C2 ×2 (a hand; the tempo) | add | — | paused after the change, at bar 1, the line naming the change, a note played does not move it, `▶` does; and the hand already chosen, pressed while paused, leaves the run paused where it was (its red is T31's measured probe cell *paused/wait \| hands->both*: going again from bar 1; not re-run red here, added after the red run) |
+| `score.states.spec` C3 | add | — | the row's text, `disabled`, `aria-pressed` and label in Free play; the choice back in Keep tempo; the waiting words idle and paused |
+| `score.states.spec` C4 | add | — | disabled with the reason while going; live when paused; pressing it rebuilds blind and the offer names the bar |
+| `score.states.spec` C5 ×2 (during; after, through the open `⋯`) | add | — | the words of the *Changed* line on the sheet |
+| `scoreSession.test` *a paused run hands the piano nothing more, frame after frame* | add | — | what reaches the piano across frames of a pause |
+| `scoreSession.test` *a pause takes back the app's notes that were queued and not yet heard* | preserve | read the take-back at the instant of the pause and not a frame later, which is how the re-scheduling stayed hidden | still true; the new test completes it |
+| `scoreSession.test` set aside ×3, started paused ×1 | add | — | step, mode, pause, wrong-note total and cursor after the round trip; nothing scheduled or clicked while started paused |
+| `help.test` *the Score screen's run sentences are the ones `04` §5f prints* | add | — | every state-line, row and summary sentence is the one §5f prints (red on the committed §5f: of the 13 whole sentences checked against it, none was there; short phrases such as *in Keep tempo* were not checked) |
+| `score.screen.spec` *Hear it plays the piece without moving the mode select*, *pressing Play during a Hear it run gives you your own mode back*; `score.run.spec` *Hear it reaching the end is not a run* | preserve | `Hear it` from idle | nothing to set aside, so still no run afterwards |
+| `scoreMidRunSettings.test` (the click ×3, the away line, Free play's end) | preserve | the click live in Keep tempo; the away sentence | C3 does not touch a mode with a clock; the sentence is unchanged, now from `STATE_TEXT.away` |
+| `score.fuzz.spec` invariants | preserve | its *a Wait run moves on* check already skips paused runs | C1 and C2 leave runs paused; no invariant encoded the old behaviour |
+| `shelf.spec` blind and perform; `score.spec` *everything that left the bar…* | preserve | the toggles pressed with no run; the metronome in a mode with a clock | unchanged by C3/C4 |
+
+## Runs (unpiped; exit codes read)
+
+- Red run of the nine new e2e tests on the committed code: exit 1, 9 failed, each on the line
+  quoted above. `scoreSession` red: exit 1 on the one test.
+- Chain, on one build: `npm run build:app` 0; `score.states` 0 (18 passed); `score.screen` 0
+  (35 passed); `score.fuzz` two workers 0 and 0 (5 passed each, 0 long tasks); `start-and-return`
+  0 (7 passed); `score.head-height` 0 (7 passed); `npx tsc -b` 0; `npm run lint` 0;
+  `npx vitest run` 0 (208 files, 5,212 passed, 5 skipped). After the chain one assertion was
+  added to the C2 hand test (the already-chosen hand); `tsc -b` 0, eslint on the file 0, and
+  `score.states` again 0 (18 passed, on a fresh build by the config's web server).
+- Also run, touching the same controls: `first-day`, `help-strip`, `score.latch`, `score.run`,
+  `score.spec`, `shelf`, `score.blind`, `metronome` — exit 1: 86 passed, **13 failed, all in
+  `score.spec`'s dev route** (`#/dev/score`, `DevScoreScreen`): 12 screenshot diffs against the
+  gitignored local `-win32.png` references, written 2026-09-13 and 2026-09-16, and *bars per window changes how
+  many measures are drawn* `Expected: 6, Received: 4` (it asserts 1 and 2 bars draw the same
+  upright screen, which T38's window pricing changed). **Not caused by T33 — inferred, not
+  measured on the old tree:** `DevScoreScreen` imports neither `ScoreScreen`, `ScoreSession`
+  nor `help.ts`, and I changed nothing it imports. The count test is a T38 follow-up (revise:
+  it encodes the pre-T38 window); the screenshots need their local baseline rebuilt.
+
+## Not done
+
+- Nothing of the five is left undone. Not built, by choice: a click of its own for Free play
+  (§7 C3's option (c) — a feature, not the choice).
+
+## Follow-ups
+
+- **P1.** A sight-read played to the learner **before** the first run (`Hear it` from idle) is
+  still recorded as a first attempt; T33 closed only the case it created (a demonstration
+  inside the run). `05` §7's reason (*"the material has been seen"*) covers hearing too, but
+  it changes how Today's read is recorded, so it is a question below rather than a fix.
+- **P2.** The long-press bar preview is still refused during a run (`08` §7.3); the session
+  can now set a run aside, so it could do what `Hear it` does.
+- **P2.** An option changed while a run is *playing* restarts it with nothing said; principle 2
+  (*the screen says which, in words*) is met for a paused run only.
+- **P3.** A demonstration paused by the page going away shows the generic paused line,
+  *▶ to carry on*, and `▶` then carries on the learner's run, not the demonstration.
+- **P3.** The offer on a screen rebuilt by Blind or Perform says *…last time* about a run left
+  seconds ago.
+- **T38 area:** `score.spec` *bars per window changes how many measures are drawn* encodes the
+  pre-T38 window (revise); the dev-route screenshot baselines are stale.
+
+## Questions
+
+- Should hearing the phrase before a sight-read make that read unrecorded, as hearing it part
+  way through now does?
+- A performance with a demonstration inside it is still recorded as a performance (*"kept …
+  however it went"*) and its summary names the demonstration. Should a demonstration during a
+  performance be refused instead, as *Start again* is?
+
+## Unverified
+
+- **Nothing was heard**: the demonstration, the click's start after a restore or a paused
+  restart, and the claim that no note sounds into a pause are read from the scheduler with a
+  fake piano and the DOM.
+- Looked at once each at 342 × 740 and 740 × 342, on *Mary Had a Little Lamb* with the screen
+  keys; not on a two-hand piece, not on a tablet, not in light mode, not at 115 % text. The
+  sideways C1 and C2 lines were first seen in their earlier words (*press ▶*); the final C2
+  line was seen sideways, the final C1 line upright only.
+- Whether the fuzz walks' `Hear it` presses landed on a running run is not recorded by the
+  walk; the named-state tests cover that path.
+- The microphone path (the failure restarting paused) is read from the code, not driven.
+- "The run" for C5 is the chain since the learner's own start; a demonstration heard in a
+  segment that an option then restarted is still named. Read as right (it happened in the
+  sitting the numbers close), not asked.
+
+## Files
+
+`app/src/score/ScoreSession.ts`, `app/src/ui/screens/ScoreScreen.ts`, `app/src/ui/help.ts`;
+`app/tests/e2e/score.states.spec.ts`, `app/tests/unit/scoreSession.test.ts`,
+`app/tests/unit/help.test.ts`; `docs/04-ui-spec.md` §5 and §5f, `docs/05-score-follow-engine.md`
+§3b and §4, `docs/decisions/2026-09-23-score-state-machine.md` (§7 decided, §5 table, intro),
+`docs/08-test-map.md`, `docs/08-score-render-states.md` (deviation 5).

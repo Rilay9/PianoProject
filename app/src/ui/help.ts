@@ -89,7 +89,7 @@ export const MODE_HELP: Readonly<Record<ScoreMode, HelpEntry>> = {
     now: 'Play the first note. Nothing moves until you do.',
     counts: 'A run in this mode is practice: it is recorded, but a pass for the rung is measured in Keep tempo.',
     controls: [
-      { name: 'Hear it', does: 'Plays the piece to you. Nothing is judged while it plays.' },
+      { name: 'Hear it', does: 'Plays the piece to you. Nothing is judged while it plays, and a run you are part way through waits, paused, until it stops.' },
       { name: 'Hands', does: 'Which hand the app waits for. The phone can play the other one.' },
       { name: '⋯', does: 'The settings you change once: the metronome, the input, how much music is on the screen, the keys underneath.' },
       { name: 'Bars in window', does: 'How many bars you want on the screen at once. You always get the next bar after them too, and the notes are never squeezed or stretched to make a number fit — so if the one you ask for would come out too small to read, the app shows fewer and tells you so.' },
@@ -130,7 +130,7 @@ export const MODE_HELP: Readonly<Record<ScoreMode, HelpEntry>> = {
     counts: 'Nothing is counted, recorded or marked.',
     controls: [
       { name: 'Hands', does: 'Which hand the page follows.' },
-      { name: '⋯', does: 'The metronome, the keys under the score, and how much music is on the screen.' },
+      { name: '⋯', does: 'The keys under the score and how much music is on the screen. The metronome is off here: Free play has no clock for it to click against.' },
       { name: 'Bars in window', does: 'How many bars you want on the screen at once, with the next bar after them always drawn as well. Ask for more than fits and the app shows as many as it can read out clearly, and says how many that is.' },
     ],
     elsewhere: 'For improvising over a piece, or just playing it. Nothing from a free run reaches Progress; Keep tempo is what records a run.',
@@ -153,7 +153,7 @@ export const MODE_HELP: Readonly<Record<ScoreMode, HelpEntry>> = {
     now: 'Play from memory. It is still being marked.',
     counts: 'It counts exactly as the same run would with the notation showing.',
     controls: [
-      { name: '⋯', does: 'Shows the score again. Nothing else about the run changes.' },
+      { name: '⋯', does: 'Shows the score again, once the run is paused. The screen is set up again and offers the run back from the bar you left it on.' },
     ],
     elsewhere: 'It is scored exactly as a sighted run, so a blind pass counts for the rung. It sits alongside Wait for me and Keep tempo rather than replacing either.',
   },
@@ -163,7 +163,7 @@ export const MODE_HELP: Readonly<Record<ScoreMode, HelpEntry>> = {
     now: 'One run through. There is no going back.',
     counts: 'It is kept as a performance, on its own list, however it went.',
     controls: [
-      { name: '⋯', does: 'Stops performing and goes back to practising.' },
+      { name: '⋯', does: 'Stops performing and goes back to practising, once the run is paused.' },
     ],
     elsewhere: 'Performances are listed on their own in Progress, apart from practice runs. Practise the piece in Keep tempo first.',
   },
@@ -195,6 +195,137 @@ export const SUMMARY_TEXT = {
   /** Said once a *Rough* or *OK* self-report is on the record. */
   selfReportOther: (report: 'rough' | 'ok'): string =>
     `Recorded: ${report === 'ok' ? 'OK' : 'Rough'} — practice, not marked passed.`,
+  /**
+   * A sight-read that was played to the learner part way through (T33): the
+   * phrase has been heard, so the run is not a first reading of it, and is not
+   * recorded as one (`05` §7).
+   */
+  sightReadHeard: 'Sight-reading counts only on music you have not heard — this run is not recorded.',
+  /**
+   * The summary's one line naming what changed during the run (T33, C5), so
+   * the numbers are read against the run that produced them. Its label, and
+   * how each thing is said.
+   */
+  changedLabel: 'Changed',
+  /** One setting that changed; `when` is `atBar(n)` or `afterTheRun`. */
+  changed: (key: RunChangeKey, to: string, when: string, from?: string): string => {
+    switch (key) {
+      case 'mode':
+        return `mode changed to ${to} ${when}`;
+      case 'hands':
+        return `hands changed to ${to} ${when}`;
+      case 'tempo':
+        return `tempo ${from ?? '?'} → ${to} % ${when}`;
+      case 'loop':
+        return to === 'off' ? `loop cleared ${when}` : `loop set to ${to} ${when}`;
+      case 'input':
+        return `input changed to ${to} ${when}`;
+      case 'rhythm':
+        return `rhythm only ${to} ${when}`;
+      case 'duet':
+        return `duet ${to} ${when}`;
+      case 'metronome':
+        return `metronome ${to} ${when}`;
+    }
+  },
+  atBar: (bar: number): string => `at bar ${String(bar)}`,
+  afterTheRun: 'after the run',
+  /** The run was set aside while the piece was played to the learner (C1). */
+  heard: (bars: readonly number[]): string =>
+    `heard it played at bar${bars.length === 1 ? '' : 's'} ${bars.map(String).join(', ')}`,
+} as const;
+
+/** The settings whose change the summary's *Changed* line names (T33, C5). */
+export type RunChangeKey =
+  | 'mode'
+  | 'hands'
+  | 'tempo'
+  | 'loop'
+  | 'input'
+  | 'rhythm'
+  | 'duet'
+  | 'metronome';
+
+/**
+ * The Score screen's state line, when the run has something to say about
+ * itself (`04` §5f): paused, played to, restarted (T31, T33).
+ *
+ * In the table rather than beside the markup for the reason this file exists:
+ * `04` §5f prints these sentences, and `help.test.ts` fails when the two stop
+ * being the same sentence.
+ */
+export const STATE_TEXT = {
+  /** Paused by ⏸ (T31). */
+  paused: 'Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning.',
+  /** …during a performance, which has no *Start again* row (`04` §5e). */
+  pausedPerforming: 'Paused — ▶ to carry on.',
+  /** Paused because the page was hidden (`05` §4, T31). */
+  away: (seconds: number | string, performing: boolean): string =>
+    `Paused — you were away ${String(seconds)} s. ${
+      performing ? '▶ to carry on.' : '▶ to carry on, or Start again in ⋯ to go back to the beginning.'
+    }`,
+  /** A demonstration with no run under it (T31). */
+  hearing: 'Playing it to you — nothing is judged. Hear it again to stop.',
+  /**
+   * A demonstration with the learner's run set aside under it (T33, C1). What
+   * matters most first: at 342 px the line holds about forty characters, and
+   * *your run waits at bar 12* is the answer to the question a learner has
+   * the moment the piece starts playing — did I just lose my run? `Stop` is
+   * what `Hear it` reads while it plays.
+   */
+  hearingOverRun: (bar: number | string): string =>
+    `Playing it to you — your run waits at bar ${String(bar)}. Stop to go back to it.`,
+  /**
+   * The demonstration has ended and the run is back where it was (T33, C1).
+   * `▶ to carry on`, the words of the paused line T31 wrote, rather than the
+   * decision's *press ▶ to carry on*: one way of saying it on one line, and
+   * the whole sentence fits at 342 px.
+   */
+  pausedAt: (bar: number | string): string => `Paused at bar ${String(bar)} — ▶ to carry on`,
+  /**
+   * An option changed while the run was paused: the run restarted and is
+   * waiting for the learner (T33, C2). `what` is one of `RESTARTED_WITH`.
+   * Where it is cut at 342 px it is cut after what changed, and ▶ is on the
+   * bar, which a paused run keeps open.
+   */
+  restarted: (bar: number | string, what: string): string =>
+    `Restarted at bar ${String(bar)} ${what} — ▶ when ready`,
+} as const;
+
+/**
+ * What changed, in the words `STATE_TEXT.restarted` puts after the bar (T33,
+ * C2): *Restarted at bar 1 **with the left hand** — press ▶ when ready*.
+ */
+export const RESTARTED_WITH = {
+  mode: (label: string): string => `in ${label}`,
+  hands: (hand: 'R' | 'L' | 'both'): string =>
+    hand === 'both' ? 'with both hands' : `with the ${hand === 'R' ? 'right' : 'left'} hand`,
+  tempo: (pct: number): string => `at ${String(pct)} %`,
+  loop: (bars: string): string => `on a loop of ${bars}`,
+  noLoop: 'with no loop',
+  input: (said: string): string => `listening to ${said}`,
+  noInput: 'with nothing listening',
+  rhythm: (on: boolean): string => (on ? 'judging the rhythm only' : 'judging the notes as well'),
+  duet: (played: string | null): string =>
+    played === null ? 'with nothing played under you' : `with the app playing ${played}`,
+  bars: (count: number): string => `with ${String(count)} bar${count === 1 ? '' : 's'} in the window`,
+  layout: (scroll: boolean): string => (scroll ? 'in the Scroll layout' : 'in the Window layout'),
+} as const;
+
+/**
+ * Why a `⋯` row cannot act now, on the row's own label (T33, C3 and C4) —
+ * the label rather than the hint, because sideways the sheet hides every
+ * hint and a reason nobody can see is a dead control with an excuse.
+ */
+export const ROW_TEXT = {
+  /** C3: the engine refuses the click in Free play (`05` §3b). */
+  metronomeNoClock: 'no clock in Free play',
+  /** C3: the click is on, and waits for the run to be going to be heard. */
+  metronomeWithRun: 'the click starts with the run',
+  metronomeOnResume: 'the click starts when you carry on',
+  metronomeOnFirstNote: 'the click starts on your first note',
+  /** C4: Blind and Perform are refused while a run is going. */
+  pauseFirst: 'pause the run first',
 } as const;
 
 /**

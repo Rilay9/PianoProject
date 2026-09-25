@@ -11,7 +11,8 @@ something that is not true.**
 
 `score.fuzz.spec.ts` walks random paths and checks what must hold whatever happened. Nobody
 had written the table down. This is the table, the diagram of what it should be, the seven
-faults it found and the five choices it cannot make.
+faults it found and the five choices it could not make — decided on 2026-09-23 and built by
+T33 (§7).
 
 ---
 
@@ -240,7 +241,7 @@ why the diagram has no separate arrow for them.
 | **section** | restart | **restart** | a loop with a name |
 | **tempo** (slider `change`, bpm) | restart | **restart** | every `tStep` moves; judging against the old table would be judging a different piece |
 | **ladder** | live | **live** | it acts at a lap boundary and never at the moment it is pressed; the tempo label is underlined so the number moving says it was asked for |
-| **metronome** | live | **live**, and say when it is refused | the click is heard and never judged (T23). The four refusals are right; the silence about them is not (§7) |
+| **metronome** | live | **live**, and say when it is refused | the click is heard and never judged (T23). The four refusals are right; the silence about them is not — decided in §7 C3: Free play reads *Off*, disabled, *no clock in Free play*; the other three say when the click comes |
 | **input** | nothing → **restart** | **restart** | five judging options and the latch come from it; §6.4 |
 | **layout** | restart | **restart** | a re-engraving recreates every element the judgements are keyed to (`08` §8.3) |
 | **bars in window** | restart | **restart** | same, and it already refuses a press that would change nothing |
@@ -248,8 +249,8 @@ why the diagram has no separate arrow for them.
 | **keys** (strip/ribbon/off) | live | **live** | a view of the run, not part of it |
 | **sound** (destination) | live | **live** | where the playback comes out |
 | **duet** (`playbackHands`) | restart | **restart** | it decides whether the learner leads, which decides whether the run may hold for a first note (`learnerLeads`) |
-| **perform** | route, run lost | **refused until the run stops** — a choice (§7) | a performance is a claim about one pass; turning one on mid-practice cannot make the practice into it |
-| **blind** | route, run lost | **refused until the run stops** — a choice (§7) | the same, and the run so far was read from a page |
+| **perform** | route, run lost | **refused while the run is going**, live once paused — decided in §7 C4 | a performance is a claim about one pass; turning one on mid-practice cannot make the practice into it |
+| **blind** | route, run lost | **refused while the run is going**, live once paused — decided in §7 C4 | the same, and the run so far was read from a page |
 | **rhythm only** | restart | **restart** | it is exactly *what is judged* |
 
 ---
@@ -363,7 +364,18 @@ Received: "Loop start: bar 1. Double-tap the last bar."`
 
 ---
 
-## 7. The choices, for the owner. None of these was built
+## 7. The choices — decided (2026-09-23), built (T33), and why
+
+This section was *"The choices, for the owner. None of these was built."* The owner's word,
+2026-09-23: *"Do what you think is best."* Each was decided by §5's principles — nothing
+starts or restarts unasked; nothing lost silently; `Hear it` and a run never both going; the
+state line says what the run is doing — and the standing order that the learner is never
+surprised. The options as they were put stay under each heading, because they are the
+reasoning; the decision, what was built, the test that was red first, and every case the
+decision's one-line form did not fit follow them. The words are `STATE_TEXT`, `ROW_TEXT`,
+`RESTARTED_WITH` and `SUMMARY_TEXT` in `app/src/ui/help.ts`, printed in `04` §5f. The tests
+are `app/tests/e2e/score.states.spec.ts`, *the five choices, decided (T33)*, nine of them,
+each seen red against the code before T33.
 
 ### C1 — `Hear it` from a run throws the run away
 
@@ -381,12 +393,61 @@ selector**, and the selector does come back; the run does not.
   count back in a resume already has. Closest to what the words promise. Costs a real state —
   a run suspended under a demonstration — in the machine that is already the most crowded.
 
+**Decided: (c), and the run comes back paused.** The run pauses, the demonstration plays, and
+when it ends — stopped with `Stop` or played to its end — the run is back where it was,
+paused, and the state line says *Paused at bar 12 — ▶ to carry on*. Nothing is thrown away.
+*Why:* principle 3 and the words `04` §5 already promised (*what it interrupts is put back when
+it ends*); a resume already counts a clocked run back in, so coming back paused costs the
+learner one `▶` and gives them the moment to find their hands. **Built:** the real state the
+option costs, in the session rather than the screen, because the session owns the renderer,
+the strip and the piano: `ScoreSession.suspend()` moves the engine, its judgements, its
+wrong keys and its scheduling out of the way intact, and `restoreSuspended()` puts them back
+and repaints (the colours of what was played come back with the cursor). An engine's events
+are handled only while it is the session's engine, so a run set aside is never heard from.
+**Cases the one-line decision did not name, decided by the same principles:** `▶` during the
+demonstration ends it and carries the run straight on (`▶` is the learner asking for their
+run); the transport reads `▶` during a demonstration, because pressing it does not pause
+anything; *Start again* during one starts the learner's run from the top (it restarted the
+demonstration — §3's surprising R15 cell); while the piece plays the state line says the run
+is kept, *Playing it to you — your run waits at bar 12. Stop to go back to it.*; an option
+that restarts the run, changed during the demonstration, drops the run set aside (it is not
+the run now asked for) and the run restarts paused when the demonstration ends (C2);
+leaving, Blind or Perform during the demonstration remember the run set aside for the offer
+to carry on; the ladder's pass base is kept with it. **A consumer the decision created:** a
+sight-read can now carry on after its phrase has been played to the learner, and a reading of
+heard music is not the first reading the record would claim, so such a run is not recorded
+(*Sight-reading counts only on music you have not heard — this run is not recorded.*).
+A performance with a demonstration inside it is still recorded as a performance
+(*"kept … however it went"*, `04` §5e) and its summary names the demonstration (C5); whether
+it should be is a question in T33's entry. **Red first:** `the run is still there — Expected:
+true, Received: false`; for `▶` during the demonstration, `from where it was, not from bar 1 —
+Expected: 4, Received: 0`.
+
 ### C2 — an option changed while paused restarts and starts playing again
 
 Measured: pause at bar 12, change hands, and the run is going again from bar 1. Two of the
 principles pull opposite ways — *nothing restarts unasked* against *a run cannot carry half
 of each*. (a) restart and play, as now; (b) restart but stay paused at bar 1, so the next
 thing that happens is the learner's; (c) refuse the option while paused and say so.
+
+**Decided: (b).** The run restarts at its first bar and stays paused, and the state line says
+what changed: *Restarted at bar 1 with the left hand — ▶ when ready*. *Why:* both principles
+kept at once — the run cannot carry half of each, so it restarts, and nothing restarts
+*playing* unasked, so the next thing that happens is the learner's. (c) would have made the
+hand buttons dead exactly when a paused learner reaches for them. **Built:**
+`RunOptions.startPaused` pauses the engine before the first frame, so nothing is scheduled
+and nothing clicks; every restarting control goes through one function
+(`restartForOption`), so all twelve do the same, and the microphone failing mid-run too.
+**Cases:** the bar in the sentence is the run's first step's (a loop's first bar, or where a
+hand with a late entry starts); a press that changes nothing — the hand already chosen, a
+Loop with no loop — no longer restarts at all; the chrome folds three seconds into the pause
+as into any, per the owner's *just always fade it*, with the line in the stage's corner.
+**Found on the way, and fixed:** a pause took back the app's queued notes and the next frame
+queued them again (a paused clock stands still inside their look-ahead), so they sounded into
+the pause — and a run restarted paused would have played its own first notes. *Red:*
+`notes handed to the piano while the run was paused: expected [ 50 ] to deeply equal []`
+(`scoreSession.test.ts`). **Red first** for C2: `the restart waits for the learner — Expected:
+true, Received: false`, for a hand and for the tempo.
 
 ### C3 — the Metronome row in Free play, while paused, and while holding
 
@@ -396,6 +457,21 @@ act, as Ladder, Rhythm only and Duet already do (`04` §0 R4); (c) give **Free p
 of its own — it is the one of the four where a click has an obvious use and only the
 *engine's* timetable is missing.
 
+**Decided: a refused control reads as refused.** The row shows *Off*, disabled while the
+reason holds, with the reason on its label: *Metronome — no clock in Free play*. It never
+reads *On* over nothing. **Where the decision did not fit, and what was done instead:** it
+was taken from this heading, and of the four refusals only **Free play** is one. In the
+other three — no run yet, paused, holding for the first note — the setting is honoured the
+moment the run moves (the start, the resume and the latch each start the click), so *Off* and
+disabled there would have made the click impossible to switch on before pressing `▶`, which is
+when a learner wants it: a live control made dead. Those three keep the row live and *On*, and
+say when the click will be heard — *the click starts with the run*, *… when you carry on*, *…
+on your first note* — which is option (a) for the states it fits. The learner's choice is
+kept through Free play and comes back with a mode that has a clock. The label, not the hint,
+carries the reason, because sideways the sheet hides every hint. *Free play* (c), a click of
+its own, is not built: a feature, not the choice. **Red first:** `Free play has no clock to
+click against — Expected: "Off", Received: "On"`.
+
 ### C4 — Blind and Perform are routes, so pressing them mid-run loses the run
 
 Recorded as R1 in Entry 49 and now half-closed: the run is remembered by
@@ -404,11 +480,48 @@ Recorded as R1 in Entry 49 and now half-closed: the run is remembered by
 (the recommendation in §5's table); (c) keep the toggles live and say the run will be lost
 before navigating.
 
+**Decided: (b).** Refused until the run stops, the toggle disabled with the reason on its
+row, as §5's table recommends; the offer to carry on stays as the net for any other way out.
+*Why:* a performance is a claim about one pass and a blind run about memory, and neither can
+be made out of a practice already under way. **Where the words did not fit:** *stop the run
+first* names an act this screen has no control for — a run ends only by reaching its end, a
+refusal, or leaving — and a reason naming no control is the dead instruction §6.7 removed
+(`⏮`). So "stops" is read as **paused**, the one way to halt a run short of its end: the
+labels say *Blind — pause the run first* and *Perform — pause the run first*, both are live
+once the run is paused (and during a demonstration, which is not the learner's run), and the
+rebuilt screen offers the paused run back from its bar. `help.ts`'s Blind and Perform lines
+had said *"Nothing else about the run changes"*, which was never true of a route; they now say
+the toggle waits for a pause and the run is offered back. **Red first:** `#score-blind while
+the run is going — expect(locator).toBeDisabled() — Received: enabled`.
+
 ### C5 — the summary sheet over settings that have changed
 
 Change the hands or the tempo with a summary up and the sheet goes on showing a score for the
 run that produced it. (a) leave it — it is a record of that run and correct as such;
 (b) close it when a judging option changes, since the next run will not be comparable.
+
+**Decided: neither — name the change.** The summary names what changed during the run in one
+line (*mode changed to Keep tempo at bar 5; tempo 70 → 80 %*), so the score it shows is read
+against the run that produced it. **The cases, each covered.** The decision was taken from
+this heading, whose own case is **a change made while the summary is up**; and it is
+reachable only through a `⋯` or tempo sheet left open as the run ends — the summary makes the
+bar and the stage `inert`, so §3's R18 + RESTARTS cell is reachable that way and no other.
+That case is kept as (a) says — the sheet is the record of that run — and the change is added
+to the line, *after the run*: *input changed to Screen keys after the run*, so *Again* is read
+as running with what the line says. **During the run**, a mode, hand, tempo, loop, section,
+input, *Rhythm only* or duet change restarted the run, so the summary's numbers are the
+restarted run's: each is named with the bar the learner was at (*hands changed to R at bar
+3*); the metronome switched mid-run and a demonstration heard mid-run (C1) did not restart it
+and are named the same way (*metronome on at bar 1*, *heard it played at bar 5*). "The run" is
+everything since the learner last asked for one (`▶`, Space or a key from nothing, *Start
+again*, the summary's four buttons, *Carry on*) through the restarts the options made; a
+refused start ends it. Each setting is named once, from where it began to where it ended, at
+its last change, and a change undone is not named — so the line describes the run the
+numbers came from, not the path to it. Views that decide nothing about the score (Size, Keys,
+Sound, Bars in window, Layout) are not named. The line is first on the sheet, before the
+numbers it qualifies, labelled **Changed**, and absent when nothing changed. **Red first:**
+`hands changed to R at bar 2 — element(s) not found`, and the same for the change made after
+the run.
 
 ---
 

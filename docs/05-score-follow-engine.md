@@ -242,6 +242,13 @@ sound while the microphone is what will end the hold — and **Free play** (`eng
 'free'`), which has no timetable to click against and which `startRun` refuses the same way
 on the way in (`run.mode !== 'free'` on the `startMetronome` line). Until this the Metronome row
 restarted the whole run instead, which cost the learner the run to gain a click (`04` §5).
+**The row says which of the four it is** (T33, the state-machine document's C3, decided
+2026-09-23): Free play is the one true refusal — the row reads *Off*, is disabled while the
+mode has no clock, and says *no clock in Free play* — and the other three are waits, not
+refusals (the start, the resume and the latch each start the click), so the row stays live and
+says when the click will be heard. A paused run no longer hands the piano anything either
+(`schedulePlayback` returns while paused): the pause's take-back of queued notes was undone by
+the very next frame, because a paused clock stands still inside those notes' look-ahead.
 
 **Deliberately unchanged:** Paper (it measures each onset against the nearest *audible*
 click, so there is no timeline for a late entry to shift), the chord chart (it judges the
@@ -257,7 +264,12 @@ back in phase after the first tap.
 **The whole machine, state by state and event by event**, is written down in
 `docs/decisions/2026-09-23-score-state-machine.md` (T31): twenty states, fourteen columns,
 which cells were measured by driving the screen and which were read out of the code, the six
-faults it found, and the five choices it left for the owner.
+faults it found, and the five choices it left for the owner — decided on 2026-09-23 and built
+by T33 (§7 there says what and why). Two of them are session machinery: **a run can be set
+aside** under a demonstration (`ScoreSession.suspend` / `restoreSuspended`: the engine, its
+judgements and its scheduling moved out of the way intact and put back paused, C1), and **a
+run can start paused** (`RunOptions.startPaused`: paused before the first frame, so nothing is
+scheduled or clicked, for an option changed while the run was paused, C2).
 
 ## 4. Listen mode
 
@@ -291,8 +303,8 @@ The sentence on return is on the **state line** (`04` §5f) rather than on `#sco
 because being paused is a thing the run is doing and there is one line for that; it used to be
 on the status line beside a state line still reading *The count-in clicks, then play along*,
 and sideways only one of the two is drawn. Resume is the
-bar's `▶` and restart its `⏮` rather than two new buttons for something that happens once a
-session. Wait and Free are left alone — they have no timetable to lose, so the run is exactly
+bar's `▶` and restart the `Start again` row in `⋯` rather than two new buttons for something
+that happens once a session (this said `⏮`, a glyph no control wears; T33 corrected it). Wait and Free are left alone — they have no timetable to lose, so the run is exactly
 where he left it. Found while checking the minutes: `elapsedMs` returned 0 the instant a run
 ended, so every score run had been recorded as `durationMs: 0`.
 

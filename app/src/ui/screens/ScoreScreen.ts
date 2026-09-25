@@ -58,7 +58,15 @@ import { KeyRibbon } from '../KeyRibbon';
 import { waitingForLine } from '../expectedNote';
 import { stripRangeFor } from '../stripRange';
 import { onScreenDispose } from '../screenLifecycle';
-import { MODE_HELP, SUMMARY_TEXT, type ScoreMode } from '../help';
+import {
+  MODE_HELP,
+  RESTARTED_WITH,
+  ROW_TEXT,
+  STATE_TEXT,
+  SUMMARY_TEXT,
+  type RunChangeKey,
+  type ScoreMode,
+} from '../help';
 import { forgetUnfinished, rememberUnfinished, unfinishedFor } from '../../data/unfinishedRun';
 import { createHelpStrip, maybeFirstSight, openFirstSight, type HelpStrip } from '../helpStrip';
 import { openSheet } from '../widgets';
@@ -380,6 +388,44 @@ export function ScoreScreen(router: Router): HTMLElement {
    * are not about the transport. `null` is a pause the learner asked for.
    */
   let awaySeconds: number | null = null;
+  /**
+   * What the state line says about a pause the learner did not make with ⏸
+   * (T33): the run back from under a demonstration (*Paused at bar 12 — ▶ to
+   * carry on*, C1) or restarted by an option changed while paused
+   * (*Restarted at bar 1 with the left hand — ▶ when ready*, C2). `null` is
+   * the learner's own pause, which `pausedLine` already words.
+   */
+  let pauseNote: string | null = null;
+  /**
+   * What the screen keeps for the run set aside under a demonstration (T33,
+   * C1) — the session keeps the run itself. The ladder's pass base, because
+   * the demonstration's start resets it and the run's next lap is judged
+   * against it; and the bar, for the state line.
+   */
+  let setAside: { ladderPassBase: { missed: number; wrong: number; early: number }; bar: number } | null =
+    null;
+  /**
+   * An option that restarts the run was changed while a demonstration played
+   * over a run set aside: that run is not the one now asked for, so it is
+   * dropped, and when the demonstration ends the run restarts, paused, with
+   * this said (T33, C1 with C2).
+   */
+  let restartAfterDemo: string | null = null;
+  /**
+   * What changed during the run the summary will be about, per setting, and
+   * the bar it changed at (T33, C5); and what was changed after it, while its
+   * summary was up. Emptied by every start the learner asks for, and by a
+   * start that is refused, so it covers the run the summary reports and the
+   * option restarts that led to it.
+   */
+  const changedDuring = new Map<RunChangeKey, { from: string; to: string; bar: number | null }>();
+  const changedAfter = new Map<RunChangeKey, { from: string; to: string; bar: number | null }>();
+  /** The bars the run was at when the piece was played to the learner (C1, C5). */
+  let heardAt: number[] = [];
+  /** The summary's *Changed* line while the summary is up, so a change after the run can add to it. */
+  let changedLine: { dt: HTMLElement; dd: HTMLElement } | null = null;
+  /** The tempo the run was started at, which the slider's `input` has already moved past by its `change`. */
+  let tempoApplied = settings.defaultTempoPct;
   /**
    * The last start was refused because the chosen hand has nothing to play.
    *
@@ -840,7 +886,22 @@ export function ScoreScreen(router: Router): HTMLElement {
   // starts from the beginning, so the glyph was the mid-run case only, which
   // is a deliberate and occasional act. Eight controls came to 444 px of a
   // 390 px bar and wrapped it onto a second row, taking 40 px off the music.
-  const restart = button('Start again', () => startRun(), 'score-restart');
+  const restart = button(
+    'Start again',
+    () => {
+      // During a demonstration it is the learner's run that is asked for
+      // again, from the top — not the demonstration, which is what it used to
+      // restart (the decision document's §3, R15 + *Start again*), and not a
+      // run set aside under it, which *again* means starting over (T33).
+      if (hearing) {
+        hearing = false;
+        restartAfterDemo = null;
+        clearBeat();
+      }
+      startRun();
+    },
+    'score-restart',
+  );
 
   const playPause = button('▶', () => togglePlay(), 'score-play');
   playPause.setAttribute('aria-label', 'Play');
@@ -858,11 +919,13 @@ export function ScoreScreen(router: Router): HTMLElement {
     'score-mode',
     'Practice mode',
     (value) => {
+      const was = mode;
       mode = value as Mode;
       // A mode chosen by hand is a mode met for the first time as much as one
       // arrived at by default.
       maybeFirstSight({ key: `mode:${modeKey()}`, entry: MODE_HELP[modeKey()], id: 'score' });
-      if (session?.running) startRun();
+      noteChange('mode', modeLabel(was), modeLabel(mode));
+      restartForOption(RESTARTED_WITH.mode(modeLabel(mode)));
       render();
     },
   );
@@ -977,13 +1040,24 @@ export function ScoreScreen(router: Router): HTMLElement {
       button(
         hand.label,
         () => {
+          const was = hands;
+          // The hand already chosen, pressed again: nothing changes, so nothing
+          // is restarted (T33). It used to start the run again from bar 1 —
+          // the pass under the learner thrown away by a tap that asked for
+          // nothing, the fault `setBars` closed for its own `−` at one bar.
+          if (was === hand.id && !handRefused) {
+            render();
+            return;
+          }
           hands = hand.id;
           forgetPlayingHand();
           renderer?.setHandsFocus(hand.id);
           // The sentence named the hand that was refused, and the hand has
           // just changed, so it is about nothing now.
           if (handRefused) status.textContent = '';
-          if (session?.running === true || handRefused) startRun();
+          noteChange('hands', was === 'both' ? 'Both' : was, hand.label);
+          if (handRefused && session?.running !== true) startRun();
+          else restartForOption(RESTARTED_WITH.hands(hand.id));
           render();
         },
         `score-hands-${hand.id}`,
@@ -1068,7 +1142,10 @@ export function ScoreScreen(router: Router): HTMLElement {
   tempo.addEventListener('change', () => {
     tempoPct = Number(tempo.value);
     raiseLadderCeiling();
-    if (session?.running) startRun();
+    // From the tempo the run has, not from `tempoPct`: the drag's `input`
+    // events have already moved that to where the finger came off.
+    noteChange('tempo', String(tempoApplied), String(tempoPct));
+    restartForOption(RESTARTED_WITH.tempo(tempoPct));
     render();
   });
 
@@ -1102,6 +1179,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     'score-input',
     'Follow input',
     (value) => {
+      const was = input;
       input = value as FollowInput;
       // Input decides what is judged, so `04` 5's rule applies to it as much
       // as to the mode and the hands: `accuracyEstimated`, `micChordLeniency`,
@@ -1113,7 +1191,8 @@ export function ScoreScreen(router: Router): HTMLElement {
       // the run held for ever. The microphone's own failure path has restarted
       // the run for exactly this reason since T8; this is the same rule for
       // the control that does it on purpose.
-      if (session?.running === true) startRun();
+      noteChange('input', inputLabel(was), inputLabel(input));
+      restartForOption(input === 'none' ? RESTARTED_WITH.noInput : RESTARTED_WITH.input(inputSaid(input)));
       // `startRun` attaches the source itself once it has a run going, and
       // does not when it refuses one (a hand this piece has nothing for), so
       // the source chosen a moment ago would be left unattached. Attached from
@@ -1148,9 +1227,11 @@ export function ScoreScreen(router: Router): HTMLElement {
       status.textContent = `${chosen.label} could not be found in this score.`;
       return;
     }
+    const was = loopLabel();
     loopBars = { from: chosen.fromMeasure, to: chosen.toMeasure };
     loopSection = chosen;
-    if (session.running) startRun();
+    noteChange('loop', was, loopLabel());
+    restartForOption(RESTARTED_WITH.loop(loopLabel()));
     render();
   });
 
@@ -1160,6 +1241,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     'Off',
     () => {
       metronomeOn = !metronomeOn;
+      // Live: the run goes on, and the summary says where the click changed
+      // so its numbers are read against it (T33, C5).
+      noteChange('metronome', metronomeOn ? 'off' : 'on', metronomeOn ? 'on' : 'off');
       // The click has to be able to start *while the score is showing*, not
       // only at the top of a run: it is the thing you reach for mid-piece.
       //
@@ -1193,7 +1277,8 @@ export function ScoreScreen(router: Router): HTMLElement {
       saidRhythmRun = false;
       // What is judged has changed, so what is being measured has changed: a
       // run cannot carry half of each.
-      if (session?.running) startRun();
+      noteChange('rhythm', rhythmOnly ? 'off' : 'on', rhythmOnly ? 'on' : 'off');
+      restartForOption(RESTARTED_WITH.rhythm(rhythmOnly));
       render();
     },
     'score-rhythm',
@@ -1254,7 +1339,8 @@ export function ScoreScreen(router: Router): HTMLElement {
       // The status line says which hand is played once per run; turning the
       // duet on mid-run should get that sentence, not silence.
       forgetPlayingHand();
-      if (session?.running) startRun();
+      noteChange('duet', next === 'none' ? 'on' : 'off', next === 'none' ? 'off' : 'on');
+      restartForOption(RESTARTED_WITH.duet(next === 'none' ? null : duetPlays(next)));
       render();
     },
     'score-duet',
@@ -1403,6 +1489,27 @@ export function ScoreScreen(router: Router): HTMLElement {
   sectionRow.hidden = true;
 
   /**
+   * The three rows whose control can be refused, named so the refusal can be
+   * said on them (T33): the Metronome in Free play (C3), and Blind and
+   * Perform while a run is going (C4). On the label, not the hint, because
+   * sideways the sheet hides every hint.
+   */
+  const metronomeRow = menuRow('Metronome', 'The click, on or off.', metronomeButton);
+  metronomeRow.id = 'score-metronome-row';
+  const blindRow = menuRow(
+    'Blind',
+    'Hides the notation so you play from memory. The app still follows you and still marks what you play.',
+    blindToggle,
+  );
+  blindRow.id = 'score-blind-row';
+  const performanceRow = menuRow(
+    'Perform',
+    'One pass, start to finish: no restarts, no loop, and it is kept as a performance rather than practice.',
+    performanceToggle,
+  );
+  performanceRow.id = 'score-performance-row';
+
+  /**
    * The way into the chord chart (`04` §3b, built 2026-09-21).
    *
    * The chart screen had a route and no door: nothing in the app called
@@ -1440,7 +1547,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     chartRow,
     menuRow('Loop', 'Repeat a few bars over and over until they are yours. Double-tap the sheet to mark them.', loopButton),
     ladderRow,
-    menuRow('Metronome', 'The click, on or off.', metronomeButton),
+    metronomeRow,
     barsRow,
     menuRow('Size', 'Bigger or smaller notes, around whatever already fits.', zoomOut, zoomLabel, zoomIn),
     layoutRow,
@@ -1449,8 +1556,8 @@ export function ScoreScreen(router: Router): HTMLElement {
     // Under Sound, which is where it comes out, and next to the hand buttons'
     // consequence rather than three screens away in Settings.
     duetRow,
-    menuRow('Blind', 'Hides the notation so you play from memory. The app still follows you and still marks what you play.', blindToggle),
-    menuRow('Perform', 'One pass, start to finish: no restarts, no loop, and it is kept as a performance rather than practice.', performanceToggle),
+    blindRow,
+    performanceRow,
   );
 
   // --- behaviour -----------------------------------------------------------
@@ -1509,7 +1616,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     // A re-engraving recreates every element the run's judgements are keyed
     // to, so the run restarts rather than continuing over a sheet that has
     // forgotten it (`08` §8.3).
-    if (session?.running) startRun();
+    restartForOption(RESTARTED_WITH.bars(settings.barsPerWindow));
     render();
   }
 
@@ -1527,7 +1634,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     settings.layout = next;
     updateSettings({ layout: next });
     renderer?.setLayout(next);
-    if (session?.running) startRun();
+    restartForOption(RESTARTED_WITH.layout(next === 'scroll'));
     render();
   }
 
@@ -1590,7 +1697,8 @@ export function ScoreScreen(router: Router): HTMLElement {
     tempoPct = Math.min(130, Math.max(30, Math.round((wanted / writtenBpm()) * 100)));
     tempo.value = String(tempoPct);
     raiseLadderCeiling();
-    if (session?.running) startRun();
+    noteChange('tempo', String(tempoApplied), String(tempoPct));
+    restartForOption(RESTARTED_WITH.tempo(tempoPct));
     render();
   }
 
@@ -1722,8 +1830,10 @@ export function ScoreScreen(router: Router): HTMLElement {
         // A run already going was set up to hold for a first note the
         // microphone would have heard. With no input nothing can play it, so
         // it would hold for ever: start it again, following the clock, which
-        // is what the line below promises (T8 review, M1).
-        if (session?.running === true) startRun();
+        // is what the line below promises (T8 review, M1). Paused, it restarts
+        // paused, like any option changed while paused (T33, C2).
+        noteChange('input', inputLabel('mic'), inputLabel('none'));
+        restartForOption(RESTARTED_WITH.noInput);
         status.textContent = `Microphone unavailable: ${String(cause)} — using the clock instead.`;
         render();
       });
@@ -1738,10 +1848,25 @@ export function ScoreScreen(router: Router): HTMLElement {
    * that starts a run lets the session decide whether it waits for the
    * learner's first note (T8).
    */
-  function startRun(options: { latch?: boolean; preview?: boolean } = {}): void {
+  function startRun(
+    options: {
+      latch?: boolean;
+      preview?: boolean;
+      /**
+       * `false` for a start the learner did not ask for as a new run: an
+       * option restarting the run, the ladder, a demonstration. Those carry
+       * the list of what changed on to the run the summary will report (T33,
+       * C5); every other start begins it again.
+       */
+      fresh?: boolean;
+      /** Start held paused, for an option changed while paused (T33, C2). */
+      paused?: boolean;
+    } = {},
+  ): void {
     if (!session || !model) return;
     // The last run's record, if its self-report was never given (T37).
     flushPendingRecord();
+    if (options.fresh !== false) resetChanges();
     // A one-bar preview ends when its loop comes round, and until T31 that was
     // the *only* thing that ended it: clear the loop under it and the run goes
     // to the end of the piece instead, `onFinished` returns without ending the
@@ -1749,10 +1874,19 @@ export function ScoreScreen(router: Router): HTMLElement {
     // later run a Listen run under a selector saying otherwise. Anything that
     // starts a run now gives the screen back what the preview borrowed first.
     if (hearingBar && options.preview !== true) endBarPreview();
+    // Only a demonstration plays over a run set aside (T33, C1); any other
+    // start is the run the learner has now asked for, and replaces it.
+    if (!hearing && session.hasSuspended) {
+      session.dropSuspended();
+      setAside = null;
+    }
     endedSinceLastStart = false;
     handRefused = false;
     awaySeconds = null;
+    pauseNote = null;
+    tempoApplied = tempoPct;
     summaryUp(false);
+    changedLine = null;
     // A new run keeps its own totals, so the ladder's first pass is measured
     // from nought again.
     ladderPassBase = { missed: 0, wrong: 0, early: 0 };
@@ -1796,6 +1930,7 @@ export function ScoreScreen(router: Router): HTMLElement {
       // the clock, which is the whole point of Tempo without a piano.
       ...(input === 'none' ? { latchStart: false } : {}),
       ...(options.latch === false ? { holdAtStart: false } : {}),
+      ...(options.paused === true ? { startPaused: true } : {}),
       ...(input === 'mic'
         ? {
             micChordLeniency: true,
@@ -1814,6 +1949,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     if ((runMode === 'wait' || runMode === 'tempo') && !session.learnerHasNotes) {
       session.stop();
       handRefused = true;
+      // No run, so no run for a summary to be about: what changed is
+      // nothing's, and the start that follows the refusal begins afresh.
+      resetChanges();
       status.textContent =
         hands === 'both'
           ? 'Nothing to play in this piece'
@@ -1960,7 +2098,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     // The practice carries on at the new tempo: no holding for a first note
     // between passes (T8), or every rung of the ladder would stop and wait.
     queueMicrotask(() => {
-      if (session?.running === true) startRun({ latch: false });
+      if (session?.running === true) startRun({ latch: false, fresh: false });
     });
     render();
   }
@@ -2024,17 +2162,211 @@ export function ScoreScreen(router: Router): HTMLElement {
     // screen hears back, so a preview left running under it would never end.
     if (hearingBar) endBarPreview();
     if (hearing) {
+      endDemonstration('stop');
+      return;
+    }
+    // During a run: the run is set aside, paused, the piece is played, and
+    // the run comes back where it was when the playing stops (T33, C1). It
+    // used to be stopped — the middle of a run thrown away, with nothing
+    // said, by the control a beginner presses most — and before that it was
+    // only stopped (`08` §7.1).
+    if (session.running) {
+      const bar = runBar();
+      const base = ladderPassBase;
+      if (session.suspend()) {
+        setAside = { ladderPassBase: base, bar: bar ?? 1 };
+        if (bar !== null && !heardAt.includes(bar)) heardAt.push(bar);
+      }
+    }
+    hearing = true;
+    // Not a fresh start: a run set aside keeps what changed during it.
+    startRun({ fresh: false });
+  }
+
+  /**
+   * The demonstration is over — stopped by `Hear it`, played to its end, or
+   * ended by ▶ — and the screen goes back to what it interrupted (T33, C1).
+   *
+   * With a run set aside under it, that run comes back where it was, paused,
+   * and the state line says where and what to press; ▶ carries it straight
+   * on. Where a restarting option was changed while it played, the run under
+   * it was dropped and it restarts instead, paused (C2), or playing for ▶.
+   * With no run under it, the demonstration simply ends, as it always did.
+   */
+  function endDemonstration(how: 'stop' | 'end' | 'play'): void {
+    if (!session) return;
+    hearing = false;
+    clearBeat();
+    const restart = restartAfterDemo;
+    restartAfterDemo = null;
+    if (restart !== null) {
       session.stop();
-      hearing = false;
-      clearBeat();
+      if (how === 'play') startRun({ fresh: false });
+      else restartPaused(restart);
+      showBar();
       render();
       return;
     }
-    // During a run: the run ends and the demonstration begins (`08` §7.1).
-    // It used to only stop the run, which is not what the tap asked for.
-    if (session.running) session.stop();
-    hearing = true;
-    startRun();
+    if (session.hasSuspended) {
+      const kept = setAside;
+      setAside = null;
+      session.restoreSuspended();
+      if (kept) ladderPassBase = kept.ladderPassBase;
+      // The click may have been switched while the piece played; the run
+      // carries the setting the row shows now, and picks it up on its resume.
+      session.setMetronome(metronomeOn);
+      if (how === 'play') {
+        awaySeconds = null;
+        session.resume();
+      } else {
+        pauseNote = STATE_TEXT.pausedAt(runBar() ?? kept?.bar ?? 1);
+      }
+      showBar();
+      render();
+      return;
+    }
+    if (how === 'end') status.textContent = 'Played to the end.';
+    else session.stop();
+    if (how === 'play') startRun();
+    render();
+  }
+
+  /**
+   * An option that changes what is judged, changed with a run going (`04` §5,
+   * T33): the run restarts, because it cannot carry half of each.
+   *
+   * **Paused, it restarts paused** (C2). A learner who pauses and then
+   * reaches for a hand has not asked for the music to start; the restart goes
+   * back to the run's first bar and waits for ▶, and the state line says what
+   * changed. Under a demonstration with a run set aside, the run set aside is
+   * not the one now asked for: it is dropped, the demonstration goes on with
+   * the new setting, and the restart comes when the demonstration ends. With
+   * no run, nothing starts (principle 1 of the decision document).
+   */
+  function restartForOption(what: string): void {
+    if (!session) return;
+    if (hearing && (session.hasSuspended || restartAfterDemo !== null)) {
+      session.dropSuspended();
+      setAside = null;
+      restartAfterDemo = what;
+      startRun({ fresh: false });
+      return;
+    }
+    if (session.running !== true) return;
+    if (session.paused && !hearing && hearingBar === null) {
+      restartPaused(what);
+      return;
+    }
+    startRun({ fresh: false });
+  }
+
+  /** The run again from its first bar, held paused, saying why (T33, C2). */
+  function restartPaused(what: string): void {
+    startRun({ fresh: false, paused: true });
+    // Refused — a hand with nothing to play — and the refusal has said so.
+    if (session?.running !== true) return;
+    pauseNote = STATE_TEXT.restarted(runBar() ?? 1, what);
+    // Three seconds before the chrome folds, as after any pause, rather than
+    // the 0.7 s a run gets when it starts playing: nothing is playing, and the
+    // line saying why the cursor went back to bar 1 is in the header.
+    showBar();
+    render();
+  }
+
+  /**
+   * The printed bar the learner's run is at: the run set aside under a
+   * demonstration, or the run going. `null` with no run of the learner's —
+   * nothing going, or only a demonstration.
+   */
+  function runBar(): number | null {
+    if (!session || !model) return null;
+    const step = session.hasSuspended
+      ? session.suspendedStep
+      : session.running && !hearing && hearingBar === null
+        ? (session.state?.step ?? null)
+        : null;
+    if (step === null) return null;
+    const measure = model.steps[step]?.sourceMeasureIndex;
+    return measure === undefined ? null : printedBar(measure);
+  }
+
+  /**
+   * Remembers what changed during the run for the summary (T33, C5): the
+   * setting, where it started from, what it became, and the bar the run was
+   * at. A change and its undoing cancel out. With the summary up it is a
+   * change after the run, said as such; with no run at all it is a setting,
+   * not a change to anything.
+   */
+  function noteChange(key: RunChangeKey, from: string, to: string): void {
+    if (from === to) return;
+    const after = !sheet.hidden;
+    const bar = after ? null : runBar();
+    if (!after && bar === null) return;
+    const into = after ? changedAfter : changedDuring;
+    const first = into.get(key)?.from ?? from;
+    if (first === to) into.delete(key);
+    else into.set(key, { from: first, to, bar });
+    if (after) drawChanged();
+  }
+
+  function resetChanges(): void {
+    changedDuring.clear();
+    changedAfter.clear();
+    heardAt = [];
+  }
+
+  /** The summary's *Changed* line, from what was noted (T33, C5). */
+  function changedText(): string {
+    const said: string[] = [];
+    for (const [key, change] of changedDuring) {
+      said.push(
+        SUMMARY_TEXT.changed(key, change.to, SUMMARY_TEXT.atBar(change.bar ?? 1), change.from),
+      );
+    }
+    if (heardAt.length > 0) said.push(SUMMARY_TEXT.heard(heardAt));
+    for (const [key, change] of changedAfter) {
+      said.push(SUMMARY_TEXT.changed(key, change.to, SUMMARY_TEXT.afterTheRun, change.from));
+    }
+    return said.join('; ');
+  }
+
+  function drawChanged(): void {
+    if (!changedLine) return;
+    const text = changedText();
+    changedLine.dd.textContent = text;
+    changedLine.dt.hidden = text === '';
+    changedLine.dd.hidden = text === '';
+  }
+
+  /** What the mode selector calls a mode, in the words the summary uses. */
+  function modeLabel(id: Mode): string {
+    return MODES.find((m) => m.id === id)?.label ?? id;
+  }
+
+  /** The Input row's own word for an input. */
+  function inputLabel(id: FollowInput): string {
+    return INPUTS.find((i) => i.id === id)?.label ?? id;
+  }
+
+  /** What the run listens to, in a sentence (C2). */
+  function inputSaid(id: FollowInput): string {
+    if (id === 'midi') return 'the piano';
+    if (id === 'mic') return 'the microphone';
+    if (id === 'keys') return 'the screen keys';
+    return 'nothing';
+  }
+
+  /** The loop as the summary names it: `off`, or the bars or the section. */
+  function loopLabel(): string {
+    if (loopSection) return loopSection.label;
+    if (loopBars) return `bars ${String(shownBar(loopBars.from))}–${String(shownBar(loopBars.to))}`;
+    return 'off';
+  }
+
+  /** Which hand the duet plays, in the words its row uses. */
+  function duetPlays(which: PlaybackHands): string {
+    if (which === 'both') return 'both hands';
+    return `the ${hands === 'R' ? 'left' : 'right'} hand`;
   }
 
   /**
@@ -2090,14 +2422,16 @@ export function ScoreScreen(router: Router): HTMLElement {
   function togglePlay(): void {
     if (!session) return;
     // Pressing Play during a `Hear it` run is asking for the run you chose,
-    // not for the demonstration to carry on.
+    // not for the demonstration to carry on — and where a run was set aside
+    // under it, that run, carried on from where it was (T33, C1).
     if (hearing) {
-      session.stop();
-      hearing = false;
+      endDemonstration('play');
+      return;
     }
     if (!session.running) startRun();
-    else if (session.state?.paused === true) {
+    else if (session.paused) {
       awaySeconds = null;
+      pauseNote = null;
       session.resume();
     } else session.pause();
     render();
@@ -2112,6 +2446,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     // Including a half-set one: *Loop start: bar 3. Double-tap the last bar.*
     // is an instruction about a loop that no longer exists (T31).
     if (loopAnchor !== null) status.textContent = '';
+    const was = loopLabel();
     loopBars = null;
     loopAnchor = null;
     loopSection = null;
@@ -2122,7 +2457,8 @@ export function ScoreScreen(router: Router): HTMLElement {
     ladderOn = false;
     const control = document.getElementById('score-section');
     if (control instanceof HTMLSelectElement) control.value = '';
-    if (session?.running) startRun();
+    noteChange('loop', was, 'off');
+    if (was !== 'off') restartForOption(RESTARTED_WITH.noLoop);
     render();
   }
 
@@ -2167,8 +2503,10 @@ export function ScoreScreen(router: Router): HTMLElement {
     pressFrom = { x: event.clientX, y: event.clientY };
     pressHold = window.setTimeout(() => {
       pressHold = null;
-      // Not during a run: demonstrating a bar would end the run, and the
-      // engine keeps no state to resume it from (`08` §7.3). Stop first.
+      // Not during a run (`08` §7.3). The reason written here was that the
+      // engine keeps no state to resume a run from; since T33 the session can
+      // set a run aside under a demonstration, as `Hear it` does, and the
+      // long-press does not use it yet — a press mid-run is still ignored.
       if (session?.running === true) return;
       const measure = measureAt(target);
       if (measure !== null) hearBar(measure);
@@ -2238,6 +2576,7 @@ export function ScoreScreen(router: Router): HTMLElement {
       loopAnchor = measure;
       status.textContent = `Loop start: bar ${String(shownBar(measure))}. Double-tap the last bar.`;
     } else {
+      const was = loopLabel();
       loopBars = { from: Math.min(loopAnchor, measure), to: Math.max(loopAnchor, measure) };
       loopAnchor = null;
       loopSection = null;
@@ -2247,7 +2586,8 @@ export function ScoreScreen(router: Router): HTMLElement {
       // `Bars 3–6` — and then stayed there through the rest of the sitting,
       // over a cleared loop, a mode change and a pause (T31, measured).
       status.textContent = '';
-      if (session?.running) startRun();
+      noteChange('loop', was, loopLabel());
+      restartForOption(RESTARTED_WITH.loop(loopLabel()));
     }
     render();
   });
@@ -2514,10 +2854,18 @@ export function ScoreScreen(router: Router): HTMLElement {
     // something else entirely. Per phrase, not per visit (T37): a phrase whose
     // seed is already on a stored run has been seen, however the screen was
     // reached again.
-    const sightReadRepeat =
-      item !== undefined && isSightReading(item) && (sightReadAttempts > 0 || phraseSeen);
+    //
+    // And not a run the phrase was played to the learner part way through
+    // (T33): with `Hear it` setting a run aside rather than ending it, a
+    // sight-read can now carry on after the phrase has been heard, and a
+    // reading of heard music is not the first reading the record would claim.
+    const sightReading = item !== undefined && isSightReading(item);
+    const alreadyMet = sightReadAttempts > 0 || phraseSeen;
+    const sightReadRepeat = sightReading && (alreadyMet || heardAt.length > 0);
     if (sightReadRepeat) {
-      status.textContent = 'Sight-reading counts on the first attempt only — this run is not recorded.';
+      status.textContent = alreadyMet
+        ? 'Sight-reading counts on the first attempt only — this run is not recorded.'
+        : SUMMARY_TEXT.sightReadHeard;
     }
     if (item !== undefined) sightReadAttempts += 1;
 
@@ -2641,6 +2989,15 @@ export function ScoreScreen(router: Router): HTMLElement {
     if (rhythmRun) {
       addStat(lines, 'Judged', 'Rhythm only — the notes were not, so this does not count as playing the piece');
     }
+    // What changed during the run, in one line, before the numbers it
+    // qualifies (T33, C5): a hand or a tempo changed part way restarted the
+    // run, and the click or a demonstration came in the middle of it, so the
+    // numbers below are read against the run that produced them. Drawn empty
+    // and hidden when nothing changed, so a change made while the sheet is up
+    // can still be said on it (§7's own case: the sheet over settings that
+    // have moved since).
+    changedLine = addStat(lines, SUMMARY_TEXT.changedLabel, '');
+    drawChanged();
     addStat(lines, 'Accuracy', `${Math.round(score.accuracy * 100)}%${score.accuracyEstimated === true ? ' (estimated)' : ''}`);
     // The tempo is a measurement only where the run kept one (T37). In Wait
     // for me the slider is a setting nobody played to, and it used to be
@@ -2830,7 +3187,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     stage.inert = open;
   }
 
-  function addStat(list: HTMLElement, label: string, value: string): void {
+  function addStat(list: HTMLElement, label: string, value: string): { dt: HTMLElement; dd: HTMLElement } {
     const dt = document.createElement('dt');
     dt.textContent = label;
     const dd = document.createElement('dd');
@@ -2839,6 +3196,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     // at 100 % tempo whatever the accuracy was, which is not what anyone means.
     dd.dataset.stat = label.toLowerCase().replace(/[^a-z]+/g, '-');
     list.append(dt, dd);
+    return { dt, dd };
   }
 
   /** What went wrong in a bar: missed, wrong and early notes alike (T37). */
@@ -2899,13 +3257,12 @@ export function ScoreScreen(router: Router): HTMLElement {
    */
   function pausedLine(): string {
     if (session?.paused !== true) return '';
+    // A pause the learner did not make with ⏸ says what made it (T33): the
+    // run back from under a demonstration, or restarted by an option.
+    if (pauseNote !== null) return pauseNote;
     // A performance has no *Start again* row to name (`04` 5e).
-    const carry = performanceRun
-      ? '▶ to carry on.'
-      : '▶ to carry on, or Start again in ⋯ to go back to the beginning.';
-    return awaySeconds === null
-      ? `Paused — ${carry}`
-      : `Paused — you were away ${String(awaySeconds)} s. ${carry}`;
+    if (awaySeconds !== null) return STATE_TEXT.away(awaySeconds, performanceRun);
+    return performanceRun ? STATE_TEXT.pausedPerforming : STATE_TEXT.paused;
   }
 
   /**
@@ -2919,7 +3276,10 @@ export function ScoreScreen(router: Router): HTMLElement {
    */
   function hearingLine(): string {
     if (!hearing || session?.running !== true) return '';
-    return 'Playing it to you — nothing is judged. Hear it again to stop.';
+    // With the learner's run set aside under it, the line says the run is
+    // kept, and where (T33, C1): the old demonstration threw it away unsaid.
+    if (setAside !== null) return STATE_TEXT.hearingOverRun(setAside.bar);
+    return STATE_TEXT.hearing;
   }
 
   /**
@@ -3087,6 +3447,59 @@ export function ScoreScreen(router: Router): HTMLElement {
     duetToggle.setAttribute('aria-pressed', String(duetOn));
   }
 
+  /**
+   * The Metronome row, refused where it cannot act and saying when it will
+   * where it is only waiting (T33, C3).
+   *
+   * **Free play is refused.** The engine never clicks in it — `start` and
+   * `setMetronome` both refuse, because there is no timetable to click
+   * against (`05` §3b) — and the row went on reading *On*: a control over
+   * nothing, which `04` §0 R4 forbids. It reads *Off*, is disabled while the
+   * reason holds and says the reason on its label; the learner's choice is
+   * kept and comes back with a mode that has a clock.
+   *
+   * **The other three refusals are waits, not refusals**, and are said as
+   * such: with no run going, paused, or holding for the first note, the
+   * setting is honoured the moment the run moves (the start, the resume, the
+   * latch each start the click). Disabling the row there would have made the
+   * click impossible to set before pressing ▶, which is when it is wanted.
+   */
+  function drawMetronomeRow(): void {
+    const runMode = session?.running === true ? session.mode : mode;
+    const clockless = runMode === 'free';
+    const shownOn = metronomeOn && !clockless;
+    metronomeButton.disabled = clockless;
+    metronomeButton.textContent = shownOn ? 'On' : 'Off';
+    metronomeButton.classList.toggle('is-selected', shownOn);
+    metronomeButton.setAttribute('aria-pressed', String(shownOn));
+    let why: string | null = null;
+    if (clockless) why = ROW_TEXT.metronomeNoClock;
+    else if (metronomeOn && session?.running !== true) why = ROW_TEXT.metronomeWithRun;
+    else if (metronomeOn && session?.paused === true) why = ROW_TEXT.metronomeOnResume;
+    else if (metronomeOn && session?.armed === true) why = ROW_TEXT.metronomeOnFirstNote;
+    setRowLabel(metronomeRow, why === null ? 'Metronome' : `Metronome — ${why}`);
+  }
+
+  /**
+   * Blind and Perform, refused while a run is going (T33, C4).
+   *
+   * Both are routes: the screen is built again with the run set up that way
+   * from its start, so pressing either mid-run lost the run, and a performance
+   * or a blind run cannot be made out of a practice already under way. They
+   * are live again once the run is paused — the one way this screen has of
+   * stopping a run short of its end, and what the reason on the row says to
+   * do — and the run left paused is offered back from its bar on the rebuilt
+   * screen (`rememberUnfinished`), which is the net for every way out.
+   */
+  function drawRouteRows(): void {
+    const going =
+      session?.running === true && !session.paused && !hearing && hearingBar === null;
+    blindToggle.disabled = going;
+    performanceToggle.disabled = going;
+    setRowLabel(blindRow, going ? `Blind — ${ROW_TEXT.pauseFirst}` : 'Blind');
+    setRowLabel(performanceRow, going ? `Perform — ${ROW_TEXT.pauseFirst}` : 'Perform');
+  }
+
   function render(): void {
     drawWaitingFor();
     // Holding for the first note (T8): the count is over, and its wash must
@@ -3164,9 +3577,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     layoutWindow.setAttribute('aria-pressed', String(settings.layout === 'window'));
     layoutScroll.classList.toggle('is-selected', settings.layout === 'scroll');
     layoutScroll.setAttribute('aria-pressed', String(settings.layout === 'scroll'));
-    metronomeButton.textContent = metronomeOn ? 'On' : 'Off';
-    metronomeButton.classList.toggle('is-selected', metronomeOn);
-    metronomeButton.setAttribute('aria-pressed', String(metronomeOn));
+    drawMetronomeRow();
     for (const choice of KEYS_CHOICES) {
       const node = document.getElementById(`score-keys-${choice.id}`);
       node?.classList.toggle('is-selected', settings.keys === choice.id);
@@ -3201,10 +3612,14 @@ export function ScoreScreen(router: Router): HTMLElement {
     blindToggle.setAttribute('aria-pressed', String(blind));
     performanceToggle.classList.toggle('is-selected', performanceRun);
     performanceToggle.setAttribute('aria-pressed', String(performanceRun));
+    drawRouteRows();
     for (const hand of HANDS) {
       document.getElementById(`score-hands-${hand.id}`)?.classList.toggle('is-selected', hands === hand.id);
     }
-    const playing = session?.running === true && session.state?.paused !== true;
+    // Not during a demonstration (T33): ▶ then ends it and starts or carries
+    // on the learner's own run, which is not playing, so the button says ▶.
+    // It said ⏸, and pressing it did not pause anything.
+    const playing = session?.running === true && !session.paused && !hearing;
     playPause.textContent = playing ? '⏸' : '▶';
     playPause.setAttribute('aria-label', playing ? 'Pause' : 'Play');
     stripHost.hidden = settings.keys === 'off';
@@ -3464,8 +3879,23 @@ export function ScoreScreen(router: Router): HTMLElement {
         // the select happened to show.
         // …and so is a Listen run chosen from the select: the app played it,
         // there is nothing to report (`08` §7.4). The status line says so.
-        if (hearing || mode === 'listen') {
-          hearing = false;
+        //
+        // A demonstration over a run set aside puts that run back (T33, C1),
+        // and that is deferred by a microtask for the reason `climbLadder`
+        // gives: this finish is emitted from inside the demonstration's own
+        // engine, and restoring the run from here would set the session going
+        // again under the frame that is still unwinding.
+        if (hearing) {
+          if (session?.hasSuspended === true || restartAfterDemo !== null) {
+            queueMicrotask(() => {
+              if (hearing) endDemonstration('end');
+            });
+            return;
+          }
+          endDemonstration('end');
+          return;
+        }
+        if (mode === 'listen') {
           clearBeat();
           status.textContent = 'Played to the end.';
           render();
@@ -3684,8 +4114,16 @@ export function ScoreScreen(router: Router): HTMLElement {
     // runs under a selector that still says *Wait for me*, so leaving during a
     // demonstration wrote *You stopped at bar 7 of 12 last time* — an offer to
     // carry on with a run nobody had played a note of.
-    if (session?.running === true && model && itemId !== undefined && session.mode !== 'listen') {
-      const step = session.state?.step ?? 0;
+    // And the run set aside under a demonstration, which is the learner's run
+    // whatever is playing over it (T33, C1): Back, Blind or Perform pressed
+    // while the piece is being played to them leaves that run half way.
+    const leftStep = session?.hasSuspended
+      ? session.suspendedStep
+      : session?.running === true && session.mode !== 'listen'
+        ? (session.state?.step ?? 0)
+        : null;
+    if (leftStep !== null && leftStep !== undefined && model && itemId !== undefined) {
+      const step = leftStep;
       const bar = model.steps[step]?.sourceMeasureIndex;
       if (bar !== undefined) {
         rememberUnfinished({

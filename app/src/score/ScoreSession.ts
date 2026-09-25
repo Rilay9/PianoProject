@@ -152,6 +152,30 @@ export interface RunOptions extends Omit<Partial<EngineOptions>, 'mode'> {
    * resume may still hold.
    */
   holdAtStart?: boolean;
+  /**
+   * Start the run and hold it paused at once, before anything is scheduled or
+   * clicked (T33, C2): an option changed while a run was paused restarts it,
+   * and the restart waits for the learner's ▶ rather than playing on its own.
+   */
+  startPaused?: boolean;
+}
+
+/**
+ * A run set aside while a demonstration plays over it (T33, C1).
+ *
+ * Everything the session keeps per run, moved out of the way intact so that
+ * the demonstration can have the renderer, the strip and the piano, and put
+ * back when it ends — the engine with its clock, totals and judgements, and
+ * the colours on the page that say what was played.
+ */
+interface SuspendedRun {
+  engine: PracticeEngine;
+  runOptions: RunOptions;
+  judgements: Map<string, NoteState>;
+  wrongKeys: Set<number>;
+  scheduledSteps: Set<number>;
+  scheduledStops: Map<number, (() => void)[]>;
+  freeMoved: boolean;
 }
 
 /** How far ahead playback is scheduled, in milliseconds of music time. */
@@ -283,6 +307,8 @@ export class ScoreSession {
    * screen's own doing and is not reported back to it.
    */
   private stopping = false;
+  /** The run set aside under a demonstration, if one is (T33, C1). */
+  private suspended: SuspendedRun | null = null;
 
   constructor(options: ScoreSessionOptions) {
     this.options = options;
@@ -466,6 +492,7 @@ export class ScoreSession {
     // leads starts itself. Decided here because only the session knows what
     // the app will play. `latchStart: false` from the caller opts out.
     delete (engineOptions as Record<string, unknown>).holdAtStart;
+    delete (engineOptions as Record<string, unknown>).startPaused;
     const latchStart =
       run.mode === 'tempo' &&
       run.latchStart !== false &&
@@ -481,17 +508,26 @@ export class ScoreSession {
     // the preview out again from whatever the run left behind.
     this.previewExpected = [];
     this.previewKey = '';
+    // Only while it is the session's run. A run set aside under a
+    // demonstration keeps this handler, and must not be heard from while the
+    // demonstration is the one on the screen (T33).
     engine.on((event) => {
-      this.handle(event);
+      if (this.engine === engine) this.handle(event);
     });
     engine.start();
+    // Paused before the first frame, so nothing is scheduled and nothing
+    // clicks: a restart the learner has not asked to hear yet (T33, C2).
+    if (run.startPaused === true) engine.pause();
     this.pendingStep = engine.state.step;
     this.dirty = true;
 
     // Not when the run is already holding: with no count-in it holds from its
     // first moment, and the `armed` that would have stopped the click came
-    // before there was a click to stop (T8).
-    if (run.metronome === true && run.mode !== 'free' && !engine.state.armed) this.startMetronome(run);
+    // before there was a click to stop (T8). Not paused either: the resume
+    // starts it on the run's own grid.
+    if (run.metronome === true && run.mode !== 'free' && !engine.state.armed && !engine.isPaused) {
+      this.startMetronome(run);
+    }
     this.loop();
     this.ticker = window.setInterval(this.beat, TICK_INTERVAL_MS);
     this.options.onChange?.();
@@ -657,6 +693,100 @@ export class ScoreSession {
     this.options.onChange?.();
   }
 
+  /**
+   * Sets the run aside, paused, so a demonstration can play over it (T33, C1).
+   *
+   * `Hear it` pressed during a run used to stop the run: the middle of a good
+   * pass thrown away with nothing said, by the one control a beginner presses
+   * most. The owner's decision (2026-09-23) is that the run pauses, the piece
+   * is played, and the run comes back where it was — so the engine is not
+   * stopped but moved aside with everything the session keeps for it, and
+   * `restoreSuspended` puts all of it back. Nothing ticks, feeds or schedules
+   * a run set aside: every driver here reads `this.engine`, which is the
+   * demonstration's until the run is restored.
+   *
+   * Returns false, and does nothing, when there is no run to set aside.
+   */
+  suspend(): boolean {
+    const engine = this.engine;
+    if (!engine || !this.running) return false;
+    // A pause first, which takes back the app's notes queued and not yet
+    // heard, so the resume plays them; and stops the click.
+    if (!engine.isPaused) this.pause();
+    if (this.raf !== null) cancelAnimationFrame(this.raf);
+    this.raf = null;
+    if (this.ticker !== null) window.clearInterval(this.ticker);
+    this.ticker = null;
+    this.metronome?.stop();
+    this.metronome?.dispose();
+    this.metronome = null;
+    this.piano?.stop();
+    this.clearFlashes();
+    this.suspended = {
+      engine,
+      runOptions: this.runOptions,
+      judgements: this.judgements,
+      wrongKeys: this.wrongKeys,
+      scheduledSteps: this.scheduledSteps,
+      scheduledStops: this.scheduledStops,
+      freeMoved: this.freeMoved,
+    };
+    this.engine = null;
+    this.judgements = new Map();
+    this.wrongKeys = new Set();
+    this.scheduledSteps = new Set();
+    this.scheduledStops = new Map();
+    return true;
+  }
+
+  /** A run is set aside under a demonstration (T33). */
+  get hasSuspended(): boolean {
+    return this.suspended !== null;
+  }
+
+  /** The step the run set aside is paused on, or `null` when there is none. */
+  get suspendedStep(): number | null {
+    return this.suspended?.engine.state.step ?? null;
+  }
+
+  /**
+   * Ends whatever is playing and puts the run set aside back, still paused,
+   * exactly where it was (T33, C1). The resume is the learner's: `resume()`
+   * counts a clock-driven run back in as it does after any pause.
+   *
+   * Returns false when there was nothing set aside.
+   */
+  restoreSuspended(): boolean {
+    const held = this.suspended;
+    if (!held) return false;
+    this.suspended = null;
+    this.stop();
+    this.engine = held.engine;
+    this.runOptions = held.runOptions;
+    this.judgements = held.judgements;
+    this.wrongKeys = held.wrongKeys;
+    this.scheduledSteps = held.scheduledSteps;
+    this.scheduledStops = held.scheduledStops;
+    this.freeMoved = held.freeMoved;
+    this.previewExpected = [];
+    this.previewKey = '';
+    this.pendingStep = held.engine.state.step;
+    this.dirty = true;
+    this.loop();
+    this.ticker = window.setInterval(this.beat, TICK_INTERVAL_MS);
+    this.options.onChange?.();
+    return true;
+  }
+
+  /**
+   * Forgets the run set aside (T33): an option that restarts the run was
+   * changed while the demonstration played, so the run under it is not the
+   * run the learner has now asked for.
+   */
+  dropSuspended(): void {
+    this.suspended = null;
+  }
+
   /** Asks for a paint at the next frame: the sheet was redrawn under the run. */
   repaint(): void {
     this.dirty = true;
@@ -713,6 +843,7 @@ export class ScoreSession {
   }
 
   dispose(): void {
+    this.suspended = null;
     this.stop();
   }
 
@@ -1026,6 +1157,11 @@ export class ScoreSession {
     if (!engine || !piano || !context) return;
     const mode = engine.mode;
     if (mode !== 'tempo' && mode !== 'listen') return;
+    // Nothing into a pause (T33). `pause()` takes back what was queued and
+    // forgets it was scheduled, so the resume plays it — and a paused clock
+    // stands still inside that note's look-ahead, so without this the very
+    // next frame queued it again and it sounded into the pause after all.
+    if (engine.isPaused) return;
 
     const which = this.runOptions.playbackHands ?? 'non-focused';
     if (which === 'none') return;

@@ -597,6 +597,43 @@ describe('the T8 review’s second round, in the session', () => {
     s.dispose();
   });
 
+  /**
+   * …and it stays taken back (T33). Taking a note back also forgets that it was
+   * scheduled, so that the resume plays it; and the clock of a paused run
+   * stands still inside the look-ahead of that very note. So the next frame
+   * scheduled it again, and it sounded into the pause after all. A run that
+   * restarts paused at bar 1 (C2) would have played its own first notes.
+   */
+  it('a paused run hands the piano nothing more, frame after frame', () => {
+    const quick = makeModel([
+      { onset: 0, notes: [note({ midi: 48, hand: 'L' })] },
+      { onset: 0.2, notes: [note({ midi: 50, hand: 'L' })] },
+      { onset: 1, notes: [note({ midi: 60 })] },
+    ]);
+    const started: number[] = [];
+    const piano = {
+      start: (n: { midi: number }) => {
+        started.push(n.midi);
+        return vi.fn();
+      },
+      stop: () => undefined,
+    } as unknown as Piano;
+    const s = new ScoreSession({
+      model: quick,
+      renderer: fakeRenderer().renderer,
+      piano,
+      audioContext: { currentTime: 0 } as unknown as AudioContext,
+    });
+    s.start({ mode: 'tempo', countInBars: 0, hands: 'R' });
+    flushFrame();
+    s.pause();
+    const before = started.length;
+    flushFrame();
+    flushFrame();
+    expect(started.slice(before), 'notes handed to the piano while the run was paused').toEqual([]);
+    s.dispose();
+  });
+
   it('a second pause, during a resume’s count, keeps the learner-led decision', async () => {
     // The app's note first, then the learner's two.
     const tune = makeModel([
@@ -618,5 +655,114 @@ describe('the T8 review’s second round, in the session', () => {
     s.resume();
     expect(s.holdingFrom).toBe(holding);
     s.dispose();
+  });
+});
+
+/**
+ * `Hear it` during a run (T33, C1): the run is set aside, paused, while the
+ * demonstration plays, and comes back where it was with what it had judged.
+ * It used to be stopped, and everything it had measured went with it.
+ */
+describe('a run set aside under a demonstration (T33, C1)', () => {
+  it('comes back where it was, paused, with what it had judged', () => {
+    session.start({ mode: 'wait' });
+    flushFrame();
+    press(60);
+    press(61);
+    press(62);
+    const step = session.state?.step ?? -1;
+    expect(step, 'the run moved on').toBeGreaterThan(0);
+
+    expect(session.suspend()).toBe(true);
+    expect(session.hasSuspended).toBe(true);
+    expect(session.suspendedStep).toBe(step);
+    expect(session.running, 'nothing is the session’s run while it is set aside').toBe(false);
+    session.start({ mode: 'listen' });
+    flushFrame();
+    expect(session.mode).toBe('listen');
+
+    expect(session.restoreSuspended()).toBe(true);
+    expect(session.hasSuspended).toBe(false);
+    expect(session.mode).toBe('wait');
+    expect(session.paused, 'back, and waiting for ▶').toBe(true);
+    expect(session.state?.step).toBe(step);
+    expect(session.state?.score.wrongNotesTotal, 'the wrong note it had judged').toBe(1);
+    expect(finishes, 'neither the demonstration’s stop nor the run was reported as a finish').toHaveLength(0);
+
+    session.resume();
+    press(64);
+    expect(session.state?.step, 'carries on from where it was').toBe(step + 1);
+    session.dispose();
+  });
+
+  it('draws the cursor where the run was, not where the demonstration got to', () => {
+    session.start({ mode: 'wait' });
+    flushFrame();
+    press(60);
+    press(62);
+    const step = session.state?.step ?? -1;
+    session.suspend();
+    session.start({ mode: 'wait' });
+    flushFrame();
+    press(60);
+    expect(calls.showStep.at(-1), 'the demonstration moved the cursor').not.toBe(step);
+    session.restoreSuspended();
+    flushFrame();
+    expect(calls.showStep.at(-1)).toBe(step);
+    session.dispose();
+  });
+
+  it('has nothing to set aside with no run, and nothing to restore after it is dropped', () => {
+    expect(session.suspend()).toBe(false);
+    session.start({ mode: 'wait' });
+    expect(session.suspend()).toBe(true);
+    session.dropSuspended();
+    expect(session.hasSuspended).toBe(false);
+    expect(session.restoreSuspended()).toBe(false);
+    session.dispose();
+  });
+});
+
+/**
+ * An option changed while a run is paused restarts it paused (T33, C2): the
+ * restart is there, at its first step, and nothing sounds or clicks until the
+ * learner's ▶.
+ */
+describe('a run started paused (T33, C2)', () => {
+  it('schedules nothing and clicks nothing until it is resumed', () => {
+    const starts = vi.spyOn(Metronome.prototype, 'start').mockImplementation(() => undefined);
+    vi.spyOn(Metronome.prototype, 'stop').mockImplementation(() => undefined);
+    vi.spyOn(Metronome.prototype, 'dispose').mockImplementation(() => undefined);
+    // The app's left hand opens the piece, so an app-led run would sound at once.
+    const intro = makeModel([
+      { onset: 0, notes: [note({ midi: 48, hand: 'L' })] },
+      { onset: 0.2, notes: [note({ midi: 50, hand: 'L' })] },
+      { onset: 1, notes: [note({ midi: 60 })] },
+    ]);
+    const started: number[] = [];
+    const piano = {
+      start: (n: { midi: number }) => {
+        started.push(n.midi);
+        return vi.fn();
+      },
+      stop: () => undefined,
+    } as unknown as Piano;
+    const s = new ScoreSession({
+      model: intro,
+      renderer: fakeRenderer().renderer,
+      piano,
+      audioContext: fakeAudio(),
+    });
+    s.start({ mode: 'tempo', countInBars: 0, hands: 'R', metronome: true, startPaused: true });
+    flushFrame();
+    flushFrame();
+    expect(s.running, 'the run is there').toBe(true);
+    expect(s.paused, 'and waiting').toBe(true);
+    expect(started, 'nothing handed to the piano').toEqual([]);
+    expect(starts, 'no click').not.toHaveBeenCalled();
+    s.resume();
+    expect(s.paused).toBe(false);
+    s.dispose();
+    vi.restoreAllMocks();
   });
 });

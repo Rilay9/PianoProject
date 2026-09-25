@@ -1277,6 +1277,27 @@ what it interrupts is put back when it ends, and `▶` during one ends it and st
 you chose. The screen carries `data-hearing` so the run's mode and the selected mode stay two
 facts rather than one.
 
+**`Hear it` during a run keeps the run** (decided 2026-09-23, built by T33 — the state-machine
+document's C1). It used to end the run: the middle of a good pass thrown away, silently, by
+the control a beginner presses most, on a count-in, a hold, a Wait or Keep tempo run, a
+performance or a pause alike. Now the run is **set aside, paused** (`ScoreSession.suspend`:
+the engine with its clock, totals and judgements, and the colours on the page), the piece is
+played, and when the playing stops — `Stop`, or the end of the piece — the run is back
+exactly where it was, **paused**, with the state line saying *Paused at bar 12 — ▶ to carry
+on* and the transport reading `▶`. While the piece plays the line says the run is kept:
+*Playing it to you — your run waits at bar 12. Stop to go back to it.* `▶` during the
+demonstration ends it and carries the run straight on, from where it was (a clock-driven run
+counts one bar back in, as after any pause); the transport reads `▶` during a demonstration,
+because pressing it starts or carries on the learner's run rather than pausing anything.
+*Start again* during a demonstration starts the learner's run from the top, where it used to
+restart the demonstration. An option that restarts the run, changed while the piece plays
+over a run set aside, drops that run — it is not the run now asked for — and the run restarts
+when the demonstration ends, paused, saying so (C2 below). Leaving the screen, or pressing
+Blind or Perform, while a run is set aside remembers that run's bar for the offer to carry
+on. A sight-read the phrase was played to part way through is not recorded as a first
+reading (`05` §7): *Sight-reading counts only on music you have not heard — this run is not
+recorded.*
+
 **What a control does to a run already going** (added 2026-09-22, T23). Every control that
 changes *what is judged* restarts the run — the mode, the hands, the loop, the section,
 *Rhythm only*, *Duet*, **Input**, and the two that re-engrave the sheet and so recreate every
@@ -1288,7 +1309,21 @@ where the run starts, so a run switched to the microphone half way was recorded 
 measured, and a Keep tempo run **holding for its first note** when Input was set to *None*
 held for ever — nothing left could play one. The microphone's own failure path had restarted
 the run for exactly that reason since T8; the control that does it on purpose did not.
-Two do not, and they used to:
+
+**Changed while the run is paused, the restart waits** (decided 2026-09-23, built by T33 —
+C2). It used to restart and play: a learner who paused at bar 12 and reached for a hand had
+the run going again from bar 1 under them, which is *nothing restarts unasked* broken by the
+rule meant to protect the run. Now the run restarts at its first bar **and stays paused**
+(`startPaused`: nothing is scheduled and nothing clicks), the cursor goes back, and the state
+line says what changed: *Restarted at bar 1 with the left hand — ▶ when ready*. The next thing
+that happens is the learner's. The same for every control in the list above and for the
+microphone failing mid-run. A press that changes nothing — the hand already chosen, a Loop
+with no loop to clear — does nothing at all, as `−` at one bar already did: it used to restart
+the run for nothing. (Found while building this: a pause took back the app's queued notes and
+the very next frame queued them again, so they sounded into the pause after all; a paused run
+now schedules nothing — `ScoreSession.schedulePlayback`.)
+
+Two do not restart, and they used to:
 
 - **The tempo slider re-times the run when the finger comes off, not on every step of the
   drag.** `input` fires once per step, and each one used to start the run again: a drag from
@@ -1301,6 +1336,15 @@ Two do not, and they used to:
   and another count-in. The click now picks up on the engine's own grid, the way a resume
   does, so it agrees with the timetable the notes are being judged on. Nothing starts while
   the run is paused or still holding for its first note (`05` §3b).
+- **And it reads refused where it is refused** (decided 2026-09-23, built by T33 — C3). The
+  engine never clicks in **Free play** — there is no timetable to click against — and the row
+  went on reading *On* over nothing. In Free play it reads *Off*, is disabled while that
+  holds, and its label says why: *Metronome — no clock in Free play*; the learner's choice is
+  kept and comes back with a mode that has a clock. The other three refusals of `05` §3b —
+  no run yet, paused, holding for the first note — are waits rather than refusals (the start,
+  the resume and the latch each start the click), so the row stays live there, because that
+  is when a click is set, and says when it will be heard: *the click starts with the run*,
+  *the click starts when you carry on*, *the click starts on your first note*.
 
 **A paused run says so** (added 2026-09-23, T31). On the **state line**, which is where what
 the run is doing is written (§5f): *Paused — ▶ to carry on, or Start again in ⋯ to go back to
@@ -1313,13 +1357,20 @@ instead of pixels. **Coming back from a lock or a call** the same line carries t
 That sentence used to sit on `#score-status` beside a state line contradicting it, and
 sideways there is one slot for the two, so only one of them was ever drawn. It used to name
 `⏮`, a glyph no control in the app wears. During a performance the second half is dropped,
-because a performance has no *Start again* row (§5e).
+because a performance has no *Start again* row (§5e). A pause the learner did not make with
+`⏸` says what made it instead (T33): *Paused at bar 12 — ▶ to carry on* when a demonstration
+has given the run back, *Restarted at bar 1 with the left hand — ▶ when ready* when an option
+changed while paused restarted it. The chrome folds three seconds into a pause as it does
+into any run (the owner's *just always fade it*); one tap on the sheet brings back the `▶` the
+line names, and the line itself is in the stage's corner while the chrome is folded.
 
 **And a demonstration says it is one.** `Hear it` deliberately leaves the mode selector alone,
 so the state line read the *selected* mode's standing sentence while the app played the piece
 — *Play the first note. Nothing moves until you do.* over a run in which nothing the learner
 plays is looked at at all. It now says *Playing it to you — nothing is judged. Hear it again
-to stop.* The one-bar preview is left to the status line, which already names its bar.
+to stop.* — and, over a run set aside (T33), *Playing it to you — your run waits at bar 12.
+Stop to go back to it.* The one-bar preview is left to the status line, which already names
+its bar.
 
 **A one-bar preview gives the screen back what it borrowed, whatever ends it** (T31). The
 preview sets a loop of its own bar and ends when that loop comes round — which was the *only*
@@ -1413,6 +1464,16 @@ section) · **Ladder** (only when a loop is set, in `Keep tempo`) · **Metronome
 **Layout** (`Window` | `Scroll`, a segment: it is a state, not a verb) · **Keys**
 (`Keys` | `Ribbon` | `Off`, a segment) · **Sound** (Phone / Piano / Both) · **Duet** (only
 with `R` or `L` chosen, on a piece that has the other hand) · **Blind** · **Perform**.
+
+**Blind and Perform are refused while a run is going** (decided 2026-09-23, built by T33 —
+C4). Both are routes: the screen is built again, set up that way from the run's start, so
+pressing either mid-run lost the run, and a performance or a memory run cannot be made out of
+a practice already under way. While a run is going — counting in, holding, playing — both are
+disabled and their labels say *Blind — pause the run first*, *Perform — pause the run first*.
+Pausing is the one way this screen has of stopping a run short of its end, so it is what the
+reason names; once paused both are live, and the rebuilt screen offers the run back from the
+bar it was left on (*You stopped at bar 12 of 48*, `rememberUnfinished`), which stays the net
+for every other way out. Live during a demonstration, which is not a run of the learner's.
 
 Three of those come and go. That is `04` §0 R4 and not tidiness — a Ladder with no loop, a
 Rhythm only in a mode with no clock and a Duet on a piece written for one hand are all live
@@ -1696,6 +1757,22 @@ Notation area:
   - **How did it go?** is asked only where there is a run to record it with, and the run is
     written with the answer (*Recorded: Clean — a pass, in your own judgement.*; *Recorded:
     OK — practice, not marked passed.*), or without one when the sheet is left unanswered.
+
+  **The sheet names what changed during the run** (decided 2026-09-23, built by T33 — C5),
+  in one line labelled **Changed**, first, before the numbers it qualifies: *hands changed
+  to R at bar 3; metronome on at bar 1; heard it played at bar 5*. A mode, a hand, a tempo, a
+  loop, the input, *Rhythm only* or the duet changed part way restarted the run, so the
+  numbers are the restarted run's; the metronome switched mid-run and a demonstration heard
+  mid-run did not, and the run went on with them. "The run" is everything since the learner
+  last asked for one — `▶` or Space or a key from nothing, *Start again*, *Again*, *Slower*,
+  *Faster*, *Loop the weak bars*, *Carry on* — through the restarts the options made; a
+  refused start ends it. Each setting is named once, from where it started to where it
+  ended, at the bar of its last change, and a change undone is not named. Views that decide
+  nothing about the score (Size, Keys, Sound, Bars in window, Layout) are not named.
+  **Settings changed after the run, while the sheet is up** — reachable through an open `⋯`
+  or tempo sheet, which stays live above the summary — are added to the same line, *after the
+  run* in place of a bar: the sheet stays the record of the run that produced it (§7's own
+  case in the state-machine document), and *Again* then runs with what the line says.
 
 **The screen's own stylesheet** is `src/ui/screens/ScoreScreen.css`, imported by
 `ScoreScreen.ts`. `src/style.css` stays the app's shared sheet with one owner; what belongs
@@ -2255,6 +2332,45 @@ paused, holding, demonstrating, the note names, the ready line, the standing lin
 `drawWaitingFor` in `ScoreScreen.ts`, and the machine it serves is written out in
 `docs/decisions/2026-09-23-score-state-machine.md`.
 
+**The run's own sentences** (T31, and T33 for the five choices that document's §7 left open,
+decided 2026-09-23). They are `STATE_TEXT`, `RESTARTED_WITH`, `ROW_TEXT` and the *Changed*
+words of `SUMMARY_TEXT` in `help.ts`, and `help.test.ts` fails when a sentence there stops being
+printed here. What matters most comes first in each, because at 342 px the state line holds
+about forty characters and cuts the rest with an ellipsis:
+
+- **Paused with ⏸**: *Paused — ▶ to carry on, or Start again in ⋯ to go back to the
+  beginning.* During a performance, which has no *Start again* row: *Paused — ▶ to carry on.*
+- **Paused because the page went away**: *Paused — you were away N s. ▶ to carry on, or Start
+  again in ⋯ to go back to the beginning.*
+- **Played to** (`Hear it`): *Playing it to you — nothing is judged. Hear it again to stop.* —
+  and over a run the learner was part way through, which is set aside and kept (C1): *Playing
+  it to you — your run waits at bar N. Stop to go back to it.*
+- **Back from under the demonstration** (C1): *Paused at bar N — ▶ to carry on*
+- **Restarted by an option changed while paused** (C2): *Restarted at bar N with the left hand
+  — ▶ when ready*, where what changed is said as *in Keep tempo*, *with the left hand* / *with
+  both hands*, *at 80 %*, *on a loop of bars 3–4*, *with no loop*, *listening to the
+  microphone*, *with nothing listening*, *judging the rhythm only* / *judging the notes as
+  well*, *with the app playing the left hand* / *with nothing played under you*, *with 3 bars
+  in the window*, *in the Scroll layout* / *in the Window layout*.
+
+A refused `⋯` row says why **on its label**, not in its hint, because sideways the sheet hides
+every hint (§5):
+
+- **Metronome in Free play** (C3): *Metronome — no clock in Free play*, reading *Off* and
+  disabled while it holds. With the click on and nothing yet to click against it is not
+  refused but waiting, and says until when: *the click starts with the run*, *the click starts
+  when you carry on*, *the click starts on your first note*.
+- **Blind and Perform while a run is going** (C4): *Blind — pause the run first*, *Perform —
+  pause the run first*.
+
+The summary's one line of what changed (C5) is labelled **Changed**: *mode changed to Keep
+tempo at bar 5*, *hands changed to R at bar 3*, *tempo 70 → 80 % at bar 5*, *loop set to
+bars 3–4 at bar 2*, *loop cleared at bar 6*, *input changed to Mic at bar 4*, *rhythm only on
+at bar 2*, *duet off at bar 2*, *metronome on at bar 1*, *heard it played at bar 2*, and for a
+change made while the sheet is up, *after the run* in place of the bar. A sight-read the
+phrase was played to part way through is not recorded, and says: *Sight-reading counts only on
+music you have not heard — this run is not recorded.*
+
 **Where each answer goes.** Questions 1 and 2 are the **help strip**: two lines at the top
 of the screen, inside the first screenful on a 342 px phone (§0 R1), the first naming the
 thing and the second saying what to do *now*. The second line is written by whatever already
@@ -2325,7 +2441,7 @@ back. A browser that refuses storage shows it every time, which is the safe way 
 
 - *What is this?* The page holds still until you play the right note, for as long as you like.
 - *What do I do now?* Play the first note. Nothing moves until you do.
-- *What can I do here?* **Hear it** — Plays the piece to you. Nothing is judged while it plays. **Hands** — Which hand the app waits for. The phone can play the other one. **⋯** — The settings you change once: the metronome, the input, how much music is on the screen, the keys underneath. **← Back** — Leaves the piece. A run you were part way through is offered again when you come back.
+- *What can I do here?* **Hear it** — Plays the piece to you. Nothing is judged while it plays, and a run you are part way through waits, paused, until it stops. **Hands** — Which hand the app waits for. The phone can play the other one. **⋯** — The settings you change once: the metronome, the input, how much music is on the screen, the keys underneath. **← Back** — Leaves the piece. A run you were part way through is offered again when you come back.
 - *What else is there?* The mode for the first time you meet a piece. When the notes are under your fingers, Keep tempo is the one that scores.
 - *What counts?* A run in this mode is practice: it is recorded, but a pass for the rung is measured in Keep tempo.
 
@@ -2349,7 +2465,7 @@ back. A browser that refuses storage shows it every time, which is the safe way 
 
 - *What is this?* The page turns on your own notes and nothing is judged, counted or recorded.
 - *What do I do now?* Play. The page follows you; nothing is marked.
-- *What can I do here?* **Hands** — Which hand the page follows. **⋯** — The metronome, the keys under the score, and how much music is on the screen.
+- *What can I do here?* **Hands** — Which hand the page follows. **⋯** — The keys under the score and how much music is on the screen. The metronome is off here: Free play has no clock for it to click against.
 - *What else is there?* For improvising over a piece, or just playing it. Nothing from a free run reaches Progress; Keep tempo is what records a run.
 - *What counts?* Nothing is counted, recorded or marked.
 
@@ -2365,7 +2481,7 @@ back. A browser that refuses storage shows it every time, which is the safe way 
 
 - *What is this?* The same run with the notation hidden, so you play from memory.
 - *What do I do now?* Play from memory. It is still being marked.
-- *What can I do here?* **⋯** — Shows the score again. Nothing else about the run changes.
+- *What can I do here?* **⋯** — Shows the score again, once the run is paused. The screen is set up again and offers the run back from the bar you left it on.
 - *What else is there?* It is scored exactly as a sighted run, so a blind pass counts for the rung. It sits alongside Wait for me and Keep tempo rather than replacing either.
 - *What counts?* It counts exactly as the same run would with the notation showing.
 
@@ -2373,7 +2489,7 @@ back. A browser that refuses storage shows it every time, which is the safe way 
 
 - *What is this?* One pass from start to finish: no restarts, no loop, and it is kept on its own list.
 - *What do I do now?* One run through. There is no going back.
-- *What can I do here?* **⋯** — Stops performing and goes back to practising.
+- *What can I do here?* **⋯** — Stops performing and goes back to practising, once the run is paused.
 - *What else is there?* Performances are listed on their own in Progress, apart from practice runs. Practise the piece in Keep tempo first.
 - *What counts?* It is kept as a performance, on its own list, however it went.
 

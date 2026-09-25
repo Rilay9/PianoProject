@@ -25,10 +25,19 @@
  */
 import { expect, test, type Page } from '@playwright/test';
 import { installMidiMock, type MidiMock } from './fixtures/midiMock';
-import { pressControl, revealBar, withScoreMenu } from './scoreControls';
+import {
+  closeScoreMenu,
+  openScoreMenu,
+  pressControl,
+  revealBar,
+  setTempoPercent,
+  withScoreMenu,
+} from './scoreControls';
 
 const UPRIGHT = { width: 390, height: 844 };
 const ITEM = 'song.folk.mary-had-a-little-lamb';
+/** A key the piece never asks for. */
+const WRONG_NOTE = 61;
 
 /** The standing lines `app/src/ui/help.ts` holds, so the probe can tell one from a run's own. */
 const STANDING = {
@@ -40,6 +49,10 @@ const STANDING = {
 type Run = {
   step: number;
   expected: number[];
+  /** The source measure the cursor is in; 0 is printed bar 1 on this piece. */
+  bar: number;
+  /** The measure of the next step, or `null` on the run's last step. */
+  nextBar: number | null;
   paused: boolean;
   armed: boolean;
   engineMode: string;
@@ -129,6 +142,31 @@ async function setHidden(page: Page, hidden: boolean): Promise<void> {
     document.dispatchEvent(new Event('visibilitychange'));
   }, hidden);
   await page.waitForTimeout(250);
+}
+
+/** The bar the header says the cursor is in: `bar 2 / 8` gives 2. */
+async function whereBar(page: Page): Promise<number> {
+  const said = (await page.locator('#score-where').textContent()) ?? '';
+  const bar = Number(/bar (\d+)/.exec(said)?.[1]);
+  expect(Number.isFinite(bar), `no bar in "${said}"`).toBe(true);
+  return bar;
+}
+
+/** Plays whatever the run asks for until it ends by itself. */
+async function playToTheEnd(page: Page, midi: MidiMock): Promise<void> {
+  for (let i = 0; i < 120; i += 1) {
+    const s = await snap(page);
+    if (s.summary || !s.running) return;
+    await playExpected(page, midi);
+  }
+  throw new Error('the run never reached its end');
+}
+
+/** The words on the `⋯` row that holds `control` — where a row says why it is refused. */
+function rowLabel(page: Page, control: string) {
+  return page
+    .locator('.score-menu-row', { has: page.locator(control) })
+    .locator('.score-menu-row__label');
 }
 
 test.describe('the score screen, one state and one event at a time', () => {
@@ -439,9 +477,17 @@ test.describe('the score screen, one state and one event at a time', () => {
       await page.locator('#score-metronome').click();
     });
     await record('paused/wait', 'metronome on');
+    // The hand already chosen: nothing changes, so nothing restarts (T33).
     await pressControl(page, '#score-hands-both');
     await page.waitForTimeout(400);
-    await record('paused/wait', 'hands->both');
+    await record('paused/wait', 'hands->both (already chosen)');
+    // C2 (T33): a restarting option while paused restarts paused.
+    await pressControl(page, '#score-hands-R');
+    await page.waitForTimeout(400);
+    await record('paused/wait', 'hands->R (C2)');
+    await pressControl(page, '#score-play');
+    await page.waitForTimeout(300);
+    await record('restarted+paused/wait', 'resume');
     await pressControl(page, '#score-play');
     await page.waitForTimeout(300);
     await record('running/wait', 'pause (2)');
@@ -468,23 +514,25 @@ test.describe('the score screen, one state and one event at a time', () => {
     });
     await page.waitForTimeout(500);
 
-    // --- Hear it, from a run and from idle ----------------------------------
+    // --- Hear it, over a run (C1, T33) --------------------------------------
+    await playExpected(page, midi);
+    await playExpected(page, midi);
     await pressControl(page, '#score-hear');
     await page.waitForTimeout(700);
-    await record('running/wait', 'Hear it');
+    await record('running/wait', 'Hear it (C1: run set aside)');
     await pressControl(page, '#score-hear');
     await page.waitForTimeout(400);
-    await record('hearing', 'Hear it again');
+    await record('hearing over a run', 'Hear it again (C1: run back)');
     await pressControl(page, '#score-hear');
     await page.waitForTimeout(700);
-    await record('idle/wait', 'Hear it');
+    await record('paused/wait', 'Hear it (C1: set aside again)');
     await setHidden(page, true);
-    await record('hearing', 'page hidden');
+    await record('hearing over a run', 'page hidden');
     await setHidden(page, false);
-    await record('hearing+hidden', 'page shown');
+    await record('hearing over a run+hidden', 'page shown');
     await pressControl(page, '#score-play');
     await page.waitForTimeout(600);
-    await record('hearing', 'play');
+    await record('hearing over a run', 'play (C1: the run carries on)');
 
     // --- the page goes away in Wait -----------------------------------------
     await setHidden(page, true);
@@ -539,5 +587,295 @@ test.describe('the score screen, one state and one event at a time', () => {
 
     console.log(`\nT31 probe, ${String(rows.length)} cells:\n${rows.join('\n')}\n`);
     expect(rows.length).toBeGreaterThan(0);
+  });
+});
+
+/**
+ * The five choices the state-machine document left for the owner (§7 of
+ * `docs/decisions/2026-09-23-score-state-machine.md`), decided on 2026-09-23
+ * and built by T33. Each test drives the state the choice is about and reads
+ * what a learner meets: whether the run is still there, where it is, what the
+ * state line says, what a `⋯` row says and whether it can be pressed, and what
+ * the summary sheet says. The same proxy caveat as the file's opening applies:
+ * nothing here is heard.
+ */
+test.describe('the five choices, decided (T33)', () => {
+  /**
+   * C1. `Hear it` pressed during a run used to end the run: the middle of a
+   * good run thrown away, silently, by the control a beginner presses most.
+   * Now the run is set aside, paused, while the piece is played, and comes
+   * back where it was.
+   */
+  test('C1: Hear it during a run puts the run back where it was, paused', async ({ page }) => {
+    const midi = await openScore(page);
+    await chooseMode(page, 'wait');
+    await pressControl(page, '#score-play');
+    await page.waitForTimeout(300);
+    // Something to lose: a wrong note, then on into the second bar.
+    await midi.noteOn(WRONG_NOTE, 80);
+    await page.waitForTimeout(80);
+    await midi.noteOff(WRONG_NOTE);
+    for (let i = 0; i < 4; i += 1) await playExpected(page, midi);
+    const before = await snap(page);
+    const bar = await whereBar(page);
+    expect(before.engineMode, 'a Wait run is going').toBe('wait');
+
+    await pressControl(page, '#score-hear');
+    await expect
+      .poll(async () => (await snap(page)).engineMode, { timeout: 5_000 })
+      .toBe('listen');
+    // Stopped early, the way a learner who has heard enough stops it.
+    await pressControl(page, '#score-hear');
+    await page.waitForTimeout(300);
+
+    const back = await snap(page);
+    expect(back.running, 'the run is still there').toBe(true);
+    expect(back.engineMode, 'the run, not the demonstration').toBe('wait');
+    expect(back.run?.paused, 'back where it was, paused').toBe(true);
+    expect(back.run?.step, 'on the step it was on').toBe(before.run?.step);
+    expect(back.play, 'the transport offers to carry on').toBe('▶');
+    expect(back.waiting).toContain(`Paused at bar ${String(bar)}`);
+
+    // ▶ carries on, and the run's own record comes with it: the wrong note
+    // played before the demonstration is on the sheet at the end.
+    await pressControl(page, '#score-play');
+    await playToTheEnd(page, midi);
+    await expect(page.locator('#score-summary')).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator('#score-summary dd[data-stat="wrong-notes"]')).toHaveText('1');
+  });
+
+  test('C1: a demonstration that plays to its end puts the run back too', async ({ page }) => {
+    test.setTimeout(150_000);
+    const midi = await openScore(page);
+    await chooseMode(page, 'wait');
+    await setTempoPercent(page, 130);
+    await pressControl(page, '#score-play');
+    await page.waitForTimeout(300);
+    for (let i = 0; i < 4; i += 1) await playExpected(page, midi);
+    const before = await snap(page);
+
+    await pressControl(page, '#score-hear');
+    const screen = page.locator('section[data-screen="score"]');
+    await expect(screen).toHaveAttribute('data-hearing', 'true', { timeout: 5_000 });
+    await expect(screen).toHaveAttribute('data-hearing', 'false', { timeout: 90_000 });
+    await page.waitForTimeout(300);
+
+    const back = await snap(page);
+    expect(back.running, 'the run is still there').toBe(true);
+    expect(back.engineMode, 'the run, not the demonstration').toBe('wait');
+    expect(back.run?.paused, 'back where it was, paused').toBe(true);
+    expect(back.run?.step, 'on the step it was on').toBe(before.run?.step);
+  });
+
+  test('C1: ▶ during the demonstration carries the run on from where it was', async ({ page }) => {
+    const midi = await openScore(page);
+    await chooseMode(page, 'wait');
+    await pressControl(page, '#score-play');
+    await page.waitForTimeout(300);
+    for (let i = 0; i < 4; i += 1) await playExpected(page, midi);
+    const before = await snap(page);
+
+    await pressControl(page, '#score-hear');
+    await expect
+      .poll(async () => (await snap(page)).engineMode, { timeout: 5_000 })
+      .toBe('listen');
+    await pressControl(page, '#score-play');
+    await page.waitForTimeout(300);
+
+    const after = await snap(page);
+    expect(after.engineMode, 'the run, not the demonstration').toBe('wait');
+    expect(after.run?.paused, 'carried on, as ▶ asked').toBe(false);
+    expect(after.run?.step, 'from where it was, not from bar 1').toBe(before.run?.step);
+  });
+
+  /**
+   * C2. An option that restarts the run, changed while the run was paused,
+   * used to restart it *playing*: the learner paused, reached for a hand, and
+   * the run was going again under them. Now it restarts at the top and waits.
+   */
+  test('C2: a hand changed while paused restarts at bar 1 and stays paused', async ({ page }) => {
+    const midi = await openScore(page);
+    await chooseMode(page, 'wait');
+    await pressControl(page, '#score-play');
+    await page.waitForTimeout(300);
+    for (let i = 0; i < 4; i += 1) await playExpected(page, midi);
+    await pressControl(page, '#score-play');
+    await page.waitForTimeout(300);
+    const paused = await snap(page);
+    expect(paused.run?.paused, 'paused part way').toBe(true);
+
+    // The hand already chosen changes nothing, so nothing restarts: this
+    // press used to throw the pass away and start playing (T31's probe,
+    // *paused/wait | hands->both*, measured it going again from bar 1).
+    await pressControl(page, '#score-hands-both');
+    await page.waitForTimeout(400);
+    const same = await snap(page);
+    expect(same.run?.paused, 'still paused').toBe(true);
+    expect(same.run?.step, 'still where it was').toBe(paused.run?.step);
+
+    await pressControl(page, '#score-hands-R');
+    await page.waitForTimeout(400);
+    const after = await snap(page);
+    expect(after.running, 'a run is there').toBe(true);
+    expect(after.run?.paused, 'the restart waits for the learner').toBe(true);
+    expect(after.run?.bar, 'at the top of the piece').toBe(0);
+    expect(after.play, 'the transport says ▶').toBe('▶');
+    expect(after.waiting).toContain('Restarted at bar 1');
+    expect(after.waiting).toContain('right hand');
+
+    // Nothing moves until ▶: a note played now is not the run's.
+    await playExpected(page, midi);
+    expect((await snap(page)).run?.step, 'a paused run does not move on a note').toBe(after.run?.step);
+    await pressControl(page, '#score-play');
+    await page.waitForTimeout(300);
+    expect((await snap(page)).run?.paused, '▶ carries on').toBe(false);
+  });
+
+  test('C2: the tempo changed while paused restarts and names the new tempo', async ({ page }) => {
+    await openScore(page);
+    await chooseMode(page, 'tempo');
+    await pressControl(page, '#score-play');
+    await page.waitForTimeout(500);
+    await pressControl(page, '#score-play');
+    await page.waitForTimeout(300);
+    expect((await snap(page)).run?.paused, 'paused').toBe(true);
+
+    await setTempoPercent(page, 80);
+    await page.waitForTimeout(400);
+    const after = await snap(page);
+    expect(after.running, 'a run is there').toBe(true);
+    expect(after.run?.paused, 'the restart waits for the learner').toBe(true);
+    expect(after.waiting).toContain('Restarted at bar 1');
+    expect(after.waiting).toContain('80 %');
+  });
+
+  /**
+   * C3. The engine refuses the click in Free play — there is no timetable to
+   * click against — and the row went on reading *On*. A refused control reads
+   * as refused; a click that is only waiting for the run says when it comes.
+   */
+  test('C3: the metronome reads refused in Free play, and says when its click comes elsewhere', async ({
+    page,
+  }) => {
+    await openScore(page);
+    await chooseMode(page, 'tempo');
+    const metronome = page.locator('#score-metronome');
+    await openScoreMenu(page);
+    await metronome.click();
+    await expect(metronome).toHaveText('On');
+    await closeScoreMenu(page);
+
+    await chooseMode(page, 'free');
+    await openScoreMenu(page);
+    await expect(metronome, 'Free play has no clock to click against').toHaveText('Off');
+    await expect(metronome).toBeDisabled();
+    await expect(metronome).toHaveAttribute('aria-pressed', 'false');
+    await expect(rowLabel(page, '#score-metronome')).toContainText('no clock in Free play');
+    await closeScoreMenu(page);
+
+    // The learner's choice comes back when the reason stops holding, and with
+    // nothing running the row says when the click will be heard.
+    await chooseMode(page, 'tempo');
+    await openScoreMenu(page);
+    await expect(metronome).toHaveText('On');
+    await expect(metronome).toBeEnabled();
+    await expect(rowLabel(page, '#score-metronome')).toContainText('starts with the run');
+    await closeScoreMenu(page);
+
+    // Paused, the click is on and silent, and the row says until when.
+    await pressControl(page, '#score-play');
+    await page.waitForTimeout(500);
+    await pressControl(page, '#score-play');
+    await page.waitForTimeout(300);
+    expect((await snap(page)).run?.paused, 'paused').toBe(true);
+    await openScoreMenu(page);
+    await expect(metronome).toHaveText('On');
+    await expect(rowLabel(page, '#score-metronome')).toContainText('when you carry on');
+    await closeScoreMenu(page);
+  });
+
+  /**
+   * C4. Blind and Perform are routes: pressing either rebuilt the screen and
+   * the run went with it. Refused while a run is going, with the reason on
+   * the row; live once it is paused, with the offer to carry on as the net.
+   */
+  test('C4: Blind and Perform are refused while a run is going, and live once it is paused', async ({
+    page,
+  }) => {
+    const midi = await openScore(page);
+    await chooseMode(page, 'wait');
+    await pressControl(page, '#score-play');
+    await page.waitForTimeout(300);
+    for (let i = 0; i < 4; i += 1) await playExpected(page, midi);
+    const bar = await whereBar(page);
+    await openScoreMenu(page);
+    for (const id of ['#score-blind', '#score-performance']) {
+      await expect(page.locator(id), `${id} while the run is going`).toBeDisabled();
+      await expect(rowLabel(page, id)).toContainText('pause the run first');
+    }
+    await closeScoreMenu(page);
+
+    await pressControl(page, '#score-play');
+    await page.waitForTimeout(300);
+    expect((await snap(page)).run?.paused, 'paused').toBe(true);
+    await openScoreMenu(page);
+    await expect(page.locator('#score-blind')).toBeEnabled();
+    await expect(rowLabel(page, '#score-blind')).not.toContainText('pause the run first');
+    await page.locator('#score-blind').click();
+    // The route rebuilds the screen; the run left paused is offered back.
+    await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-blind', 'true', {
+      timeout: 60_000,
+    });
+    await expect(page.locator('#score-resume-said')).toContainText(`bar ${String(bar)}`, {
+      timeout: 60_000,
+    });
+  });
+
+  /**
+   * C5. The summary is the record of the run that produced it. A hand chosen
+   * mid-run restarts the run and the metronome switched on mid-run does not;
+   * both are said on the sheet, so its numbers are read against that run.
+   */
+  test('C5: the summary names what changed during the run', async ({ page }) => {
+    const midi = await openScore(page);
+    await chooseMode(page, 'wait');
+    await pressControl(page, '#score-play');
+    await page.waitForTimeout(300);
+    for (let i = 0; i < 4; i += 1) await playExpected(page, midi);
+    const bar = await whereBar(page);
+
+    await pressControl(page, '#score-hands-R');
+    await page.waitForTimeout(400);
+    await withScoreMenu(page, async () => {
+      await page.locator('#score-metronome').click();
+    });
+    await playToTheEnd(page, midi);
+    const changed = page.locator('#score-summary dd[data-stat="changed"]');
+    await expect(changed).toContainText(`hands changed to R at bar ${String(bar)}`, { timeout: 10_000 });
+    await expect(changed).toContainText('metronome on at bar 1');
+  });
+
+  test('C5: and what was changed after it, while the summary was up', async ({ page }) => {
+    const midi = await openScore(page);
+    await chooseMode(page, 'wait');
+    await pressControl(page, '#score-play');
+    await page.waitForTimeout(300);
+    for (let i = 0; i < 120; i += 1) {
+      const s = await snap(page);
+      if (s.run?.nextBar === null) break;
+      await playExpected(page, midi);
+    }
+    // The last note played with the `⋯` sheet open: the run ends under it,
+    // and the sheet's controls are still there to be changed.
+    await openScoreMenu(page);
+    await playExpected(page, midi);
+    await expect
+      .poll(async () => (await snap(page)).summary, { timeout: 10_000 })
+      .toBe(true);
+    await page.locator('#score-input').selectOption('keys');
+    await closeScoreMenu(page);
+    await expect(page.locator('#score-summary dd[data-stat="changed"]')).toContainText(
+      'input changed to Screen keys after the run',
+    );
   });
 });

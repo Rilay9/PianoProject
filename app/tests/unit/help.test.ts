@@ -24,6 +24,10 @@ import { describe, expect, it } from 'vitest';
 import {
   DRILL_HELP,
   MODE_HELP,
+  RESTARTED_WITH,
+  ROW_TEXT,
+  STATE_TEXT,
+  SUMMARY_TEXT,
   TOOL_HELP,
   drillDetailLabel,
   help,
@@ -126,6 +130,64 @@ describe('every mode, drill and tool says what it is', () => {
     expect(drifted, `lines the screens show that §5f does not list:\n${drifted.join('\n')}`).toEqual(
       [],
     );
+  });
+});
+
+/**
+ * The run's own sentences — the state line, the refused `⋯` rows, the
+ * summary's *Changed* line (T31, T33) — are printed in `04` §5f as well, and
+ * this is the join. Whitespace is compared loosely because §5f wraps its
+ * lines and the table does not; every word has to be the same.
+ */
+describe('the Score screen’s run sentences are the ones `04` §5f prints', () => {
+  const flat = (text: string): string => text.replace(/\s+/g, ' ');
+
+  it('lists every sentence the state line, the rows and the summary say about a run', () => {
+    const section = flat(sectionFiveF());
+    const said: string[] = [
+      STATE_TEXT.paused,
+      STATE_TEXT.pausedPerforming,
+      STATE_TEXT.away('N', false),
+      STATE_TEXT.hearing,
+      STATE_TEXT.hearingOverRun('N'),
+      STATE_TEXT.pausedAt('N'),
+      STATE_TEXT.restarted('N', RESTARTED_WITH.hands('L')),
+      RESTARTED_WITH.mode('Keep tempo'),
+      RESTARTED_WITH.hands('both'),
+      RESTARTED_WITH.tempo(80),
+      RESTARTED_WITH.loop('bars 3–4'),
+      RESTARTED_WITH.noLoop,
+      RESTARTED_WITH.input('the microphone'),
+      RESTARTED_WITH.noInput,
+      RESTARTED_WITH.rhythm(true),
+      RESTARTED_WITH.rhythm(false),
+      RESTARTED_WITH.duet('the left hand'),
+      RESTARTED_WITH.duet(null),
+      RESTARTED_WITH.bars(3),
+      RESTARTED_WITH.layout(true),
+      RESTARTED_WITH.layout(false),
+      `Metronome — ${ROW_TEXT.metronomeNoClock}`,
+      ROW_TEXT.metronomeWithRun,
+      ROW_TEXT.metronomeOnResume,
+      ROW_TEXT.metronomeOnFirstNote,
+      `Blind — ${ROW_TEXT.pauseFirst}`,
+      `Perform — ${ROW_TEXT.pauseFirst}`,
+      SUMMARY_TEXT.changedLabel,
+      SUMMARY_TEXT.changed('mode', 'Keep tempo', SUMMARY_TEXT.atBar(5)),
+      SUMMARY_TEXT.changed('hands', 'R', SUMMARY_TEXT.atBar(3)),
+      SUMMARY_TEXT.changed('tempo', '80', SUMMARY_TEXT.atBar(5), '70'),
+      SUMMARY_TEXT.changed('loop', 'bars 3–4', SUMMARY_TEXT.atBar(2)),
+      SUMMARY_TEXT.changed('loop', 'off', SUMMARY_TEXT.atBar(6)),
+      SUMMARY_TEXT.changed('input', 'Mic', SUMMARY_TEXT.atBar(4)),
+      SUMMARY_TEXT.changed('rhythm', 'on', SUMMARY_TEXT.atBar(2)),
+      SUMMARY_TEXT.changed('duet', 'off', SUMMARY_TEXT.atBar(2)),
+      SUMMARY_TEXT.changed('metronome', 'on', SUMMARY_TEXT.atBar(1)),
+      SUMMARY_TEXT.heard([2]),
+      SUMMARY_TEXT.afterTheRun,
+      SUMMARY_TEXT.sightReadHeard,
+    ];
+    const missing = said.filter((line) => !section.includes(flat(line)));
+    expect(missing, `run sentences §5f does not print:\n${missing.join('\n')}`).toEqual([]);
   });
 });
 
