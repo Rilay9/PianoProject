@@ -876,6 +876,40 @@ test.describe('naming the note it is waiting for', () => {
     await expect(waiting).toHaveText('Waiting for E♭5');
     await expect(waiting).not.toContainText('♯');
   });
+
+  test('the ribbon names the flats the score writes too (C1, U44)', async ({ page }) => {
+    // T41's follow-up, P0: with the keys as a ribbon, the wanted key's cell
+    // carries its name, and that name came from a table of sharps — the same
+    // fault T41 fixed on the status line, on the other line a learner reads.
+    test.setTimeout(120_000);
+    const midi = await installMidiMock(page, { permission: 'granted' });
+    await page.goto('/#/settings');
+    await page.locator('#set-keys').selectOption('ribbon');
+    await openScore(page, 'song.classical.bach-menuet-bwv-anh-113.pdmx');
+    await page.locator('#score-mode').selectOption('wait');
+    await page.locator('#score-play').click();
+
+    type Run = { step: number; expected: number[] } | null;
+    const run = (): Promise<Run> =>
+      page.evaluate(
+        () => (window as unknown as { __pianopath: { scoreRun: () => Run } }).__pianopath.scoreRun(),
+      );
+    await expect.poll(async () => (await run())?.step, { timeout: 30_000 }).toBe(0);
+    for (let i = 0; i < 40; i += 1) {
+      const now = await run();
+      if (!now || now.expected.includes(58)) break;
+      for (const n of now.expected) await midi.noteOn(n, 80);
+      for (const n of now.expected) await midi.noteOff(n);
+      await expect.poll(async () => (await run())?.step, { timeout: 10_000 }).toBeGreaterThan(now.step);
+    }
+    const cell = (key: number) => page.locator(`.key-ribbon .rib[data-midi="${String(key)}"]`);
+    await expect(cell(58)).toHaveClass(/is-expected/);
+    await expect(cell(58), 'the ribbon named B♭3 as A♯3').toHaveAttribute('data-note', /^B♭3/);
+    for (const n of [58, 74]) await midi.noteOn(n, 80);
+    for (const n of [58, 74]) await midi.noteOff(n);
+    await expect(cell(75)).toHaveClass(/is-expected/, { timeout: 10_000 });
+    await expect(cell(75), 'the ribbon named E♭5 as D♯5').toHaveAttribute('data-note', /^E♭5/);
+  });
 });
 
 /**

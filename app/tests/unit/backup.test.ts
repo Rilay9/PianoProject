@@ -17,6 +17,7 @@ import {
   type BackupFile,
 } from '../../src/data/backup';
 import { STORE_NAMES, openDatabase, type ProgressRow } from '../../src/data/db';
+import { recordRun, resetProgressForTest, type RunResult } from '../../src/data/progressStore';
 import { useFakeIndexedDb } from './helpers/idb';
 
 beforeEach(() => {
@@ -330,5 +331,57 @@ describe('a backup of a phone that has been used (P19 §C3)', () => {
 
     // And the folder listing did not come back, which is the design.
     expect(await fresh?.get('folderLibraries', 'Mine')).toBeUndefined();
+  });
+});
+
+describe('an observed run (C1)', () => {
+  // The session row is now what a run measured, per step, with every channel
+  // it did not measure marked "not measured". A backup that dropped a field,
+  // or turned the mark into a zero or a null, would restore a different
+  // history from the one that was played.
+  it('comes back whole from a backup, "not measured" included', async () => {
+    resetProgressForTest();
+    const observed = {
+      itemId: 'drill.reading.sight-reading-1',
+      mode: 'wait',
+      tempoPct: 70,
+      accuracy: 0.875,
+      accuracyEstimated: false,
+      wrongNotes: 1,
+      missed: 0,
+      durationMs: 42_000,
+      passed: false,
+      masterEligible: false,
+      tempoMeasured: false,
+      seed: 4242,
+      definitions: 1,
+      range: { fromMeasure: 0, toMeasure: 1 },
+      opened: { tab: 'today', slot: 'not measured' },
+      baseTempo: { bpm: 72, source: 'written' },
+      hands: { played: 'R', appPlayed: 'none' },
+      keys: { view: 'ribbon', guide: 'off', fingers: true, names: false },
+      graceNotes: false,
+      input: { source: 'keys', toleranceMs: 150, latencyMs: 0 },
+      unseen: false,
+      demonstrated: false,
+      pitch: { definition: 'wait-steps', right: 7, of: 8, estimated: false },
+      early: 'not measured',
+      timing: 'not measured',
+      steps: { from: 0, codes: 'hhhwhhhh', measures: [0, 0, 4, 1], wrong: [3, 65], early: [], timing: 'not measured' },
+      pedal: 'not measured',
+      chords: { rolled: 0, lenient: 0 },
+      loops: 0,
+    } as unknown as RunResult;
+    await recordRun(observed, new Date('2026-09-20T12:00:00.000Z'));
+    const file = JSON.parse(JSON.stringify(await exportAll())) as unknown;
+
+    useFakeIndexedDb();
+    resetProgressForTest();
+    await importAll(file);
+    const fresh = await openDatabase();
+    const [row] = (await fresh?.getAll('sessions')) ?? [];
+    const { passed: _p, masterEligible: _m, ...kept } = observed as unknown as Record<string, unknown>;
+    expect(row).toMatchObject(kept);
+    expect(row?.steps?.timing).toBe('not measured');
   });
 });

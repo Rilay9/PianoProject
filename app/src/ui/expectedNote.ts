@@ -69,6 +69,14 @@ function writtenName(note: WrittenPitch): { name: string; place: number } {
 }
 
 /**
+ * A note's name as the score writes it — "E♭5" — for the other places a
+ * learner reads one: the key ribbon's label over a lit cell (C1, U44).
+ */
+export function writtenNoteName(note: WrittenPitch): string {
+  return writtenName(note).name;
+}
+
+/**
  * "Waiting for F♯4", or the chord, or nothing at all.
  *
  * Empty when there is nothing to wait for — no expected notes, or a mode where

@@ -229,13 +229,16 @@ and a daily read you can swap for something else is not a daily read.
 - **One first attempt per phrase (2026-09-25, T37).** The session row keeps the phrase's
   seed, for today's read and for every fresh open. Re-opening today's card gives the same
   phrase, and a phrase whose seed is already on a stored run has been seen: its run is
-  not recorded, and the sheet says *Sight-reading counts on the first attempt only* (under its
-  heading since T40; it was on the header's status line, which the sheet covers).
+  recorded as practice, not as a reading — flagged `unseen: false`, so it passes nothing and
+  ticks no day (C1, 2026-09-26; T37 did not record it at all, minutes included) — and the sheet
+  says *Sight-reading counts on the first attempt only* (under its heading since T40; it was on
+  the header's status line, which the sheet covers).
   It used to be a counter that started at nought on every visit, so every re-open recorded
   the same phrase as a first attempt again. *Hear it* and a stopped run are still not
   attempts (nothing reaches the sheet) — but **a phrase played to the learner is no longer
-  unseen** (T40): after *Hear it*, a held bar or *Play it to me*, the run that follows is not
-  recorded and the day is not ticked by it. The sheet's **New phrase** opens a fresh phrase of
+  unseen** (T40): after *Hear it*, a held bar or *Play it to me*, the run that follows is
+  recorded as practice, flagged the same way (C1; T40 did not record it), and the day is not
+  ticked by it. The sheet's **New phrase** opens a fresh phrase of
   the same row, which is recorded as a first reading and, being another seed, does not tick
   the day either. Not closed: hearing today's phrase, leaving without a run, and opening it
   again — the screen forgets the hearing with the visit, and the next run is recorded.
@@ -1301,8 +1304,8 @@ over a run set aside, drops that run — it is not the run now asked for — and
 when the demonstration ends, paused, saying so (C2 below). Leaving the screen, or pressing
 Blind or Perform, while a run is set aside remembers that run's bar for the offer to carry
 on. A sight-read the phrase was played to part way through — or before the run began, T40 — is
-not recorded as a first reading (`05` §7): *Sight-reading counts only on music you have not
-heard — this run is not recorded.* A performance the piece was played to part way through goes
+recorded as practice and not as a first reading (`05` §7; C1): *Sight-reading counts only on
+music you have not heard — this run is kept as practice.* A performance the piece was played to part way through goes
 on as a performance does and is recorded as practice (T40, §5e).
 
 **What a control does to a run already going** (added 2026-09-22, T23). Every control that
@@ -1697,12 +1700,18 @@ Notation area:
   for | that and the one after | off] — with two notes ahead, the paler blue is shown in every
   mode, Wait included; **Finger numbers on the keys** [on] — the score's finger number printed
   on each marked key, and after the note's name on the ribbon; **Flash a hit green and a miss
-  red** [on]. Any of the three works alone: a guide with no verdicts, verdicts with no guide. This is the
+  red** [on]. Any of the three works alone: a guide with no verdicts, verdicts with no guide.
+  **Keys guide when sight-reading** [off | the note it waits for | that and the one after]
+  (2026-09-26, C1; the reviewer's decision 5): a reading drill's own guide, **off** by default,
+  because a phrase read with the next key lit is a phrase followed on the keys, not read from
+  the staff; the learner's *Keys guide* governs everything else, and every run records what the
+  keys showed (`01` §4.5). This is the
   no-MIDI learner's main feedback and also the ScreenKeyboardSource input surface (tap to play
   — enabled only in Free/Wait mode when no MIDI input is present).
 - **The ribbon** (P21d A6, `keys: 'ribbon'`): the same keys as a 32 px band, one cell per
-  semitone over the piece's range, the wanted key in blue with its **name** over it, the next
-  one paler, played keys green or red. Not tappable. The strip's information at a third of
+  semitone over the piece's range, the wanted key in blue with its **name** over it — the name
+  the score writes, *E♭5* under a printed flat (C1; it was the MIDI number's, from a table of
+  sharps, so the Minuet in F lit E♭5 as *D♯5*) — the next one paler, played keys green or red. Not tappable. The strip's information at a third of
   the height, for a player with a piano connected; which of the two he wants is his taste
   (`keys` in §7: `strip` | `ribbon` | `off`).
 - **Follow options on a phone** (the owner asked for several): (1) Wait mode with MIDI;
@@ -1800,7 +1809,8 @@ Notation area:
 
   **A sight-read, and a performance, say what they are (T40).** A sight-read whose phrase the
   app played to the learner — `Hear it`, a bar held down, *Play it to me*, before the run or
-  during it — is not a first reading and is not recorded (`05` §7); the line under the heading
+  during it — is not a first reading: it is recorded as practice, flagged `unseen: false`, and
+  passes nothing (`05` §7; C1, where T40 recorded nothing of it); the line under the heading
   says so, and a **New phrase** button on the sheet of every sight-read opens the same row with
   a fresh seed (never Today's: the day's phrase is the day's seed, §2). A **performance** the
   piece was played to the learner part way through is recorded without `performance: true`, so
@@ -2431,8 +2441,9 @@ tempo at bar 5*, *hands changed to R at bar 3*, *tempo 70 → 80 % at bar 5*, *l
 bars 3–4 at bar 2*, *loop cleared at bar 6*, *input changed to Mic at bar 4*, *rhythm only on
 at bar 2*, *duet off at bar 2*, *metronome on at bar 1*, *heard it played at bar 2*, and for a
 change made while the sheet is up, *after the run* in place of the bar. A sight-read the
-phrase was played to — part way through, or before the run began (T40) — is not recorded, and
-says: *Sight-reading counts only on music you have not heard — this run is not recorded.*
+phrase was played to — part way through, or before the run began (T40) — is kept as practice
+(C1), and says: *Sight-reading counts only on music you have not heard — this run is kept as
+practice.*
 
 **What the sheet says a run is, under its heading** (T40, 2026-09-25). One line of sentences,
 `#summary-note`, where the header's status line used to carry the second of them: the sheet
@@ -2442,8 +2453,8 @@ covers that line and 342 px cuts it after twenty-odd characters, so nobody could
   measured**, with *The app heard no notes, so there is nothing to mark.*, and where nothing was
   listening, *To be marked, connect a piano or choose Screen keys in ⋯.* It prints no accuracy,
   tempo, misses or weak bars, and asks *How did it go?*.
-- **A sight-read met before**: *Sight-reading counts on the first attempt only — this run is not
-  recorded.*
+- **A sight-read met before**: *Sight-reading counts on the first attempt only — this run is kept
+  as practice.*
 - **A performance the piece was played to the learner part way through** keeps its heading and
   adds, after a dash, *heard part way, kept as practice* — *Passed — heard part way, kept as
   practice* — and the *Changed* line under it names the bar.
@@ -2800,7 +2811,7 @@ the drills themselves, so a measurement added and not named fails.
 - **`THIS WEEK` over "48 of 150 minutes *this week*"** — a name repeated inside its own heading, and the heading was taking the room while the figure it headed was set at the same weight as the muted line under it. The heading is gone, the figure is the one loud thing on the screen, and "days practised" moves to the quiet line so the headline does not wrap at 342 px.
 - **The heat map joins it in the same block.** Minutes a day and minutes this week are one subject and were announced as two, behind a heading and a rule each. The map's own caption stays — it is what tells a reader what the squares are.
 - **The weekly goal moves below the map**, with a rule of its own: it is set about once, and it was standing between the figure and the map it belongs to. Its confirmation line stays inside the same block, beside the control (R6).
-- **No badge on every row of a list defined by that badge.** `mastered` was on every row under *Repertoire*, `performance` on every row under *Performances*. Each cost its row the line the title needed; the titles now take two lines (one where the row carries a self-report badge, which is the only badge left).
+- **No badge on every row of a list defined by that badge.** `mastered` was on every row under *Repertoire*, `performance` on every row under *Performances*. Each cost its row the line the title needed; the titles now take two lines, and since C1 no row carries a badge: the self-report moved onto the detail line, where it is the run's whole record (below).
 - **A row in any of the three lists opens the piece it names.** Fifty cards — twenty performances and thirty sessions — were drawn with the border, surface and height of the tappable rows with no click handler at all. The repertoire row's `▶` goes with the change: one control instead of two doing the same thing, and a whole row is a bigger target than a 40 px glyph. A run whose item has been deleted since is *not* drawn as a control, and says so in words.
 - **No internal identifiers.** The history's second line printed `session.mode` raw, so a week of drills read `drill:walkthrough`; it is words now (*Wait mode*, *Tempo mode*, *From the book*, *Drill*). All three lists used to fall back to `itemId` when the catalog had no entry.
 - **Nothing filled, and the text actions are a thumb tall.** *Export everything* was the one filled box, for the rarest action on the screen, at the bottom of fifty rows; it keeps an outline because it is the one action here with a consequence, and *Import a backup* and *Diagnostics* are text. `.link-button`'s own floor is `§9`'s 24 px for a link, which is not enough for a control, so this screen's link buttons are held to R4's 40.
@@ -2813,6 +2824,16 @@ the drills themselves, so a measurement added and not named fails.
   list needed its own way to see the rest rather than one that would eventually make it the
   longest, slowest list on the screen.
 - Session history (table) with per-session detail (accuracy over time chart for an item).
+- **What a history line says (2026-09-26, C1; backlog L41, L43, L49).** What the run measured
+  and nothing else; one function (`historyDetail`) for the history and the performances, and
+  the words are `help.ts`'s `HISTORY_TEXT`. A Keep tempo run: *92% at 70% · 3 min*. A Wait for
+  me run: *88% · tempo not judged · 3 min* — it printed "at 70%", the slider as if kept. A run
+  the app heard nothing of: *Not measured · you said Clean · 3 min* — it printed "0%". A run
+  nothing judged, a jam over a backing track: *Not judged · 42 notes played · 3 min* — it
+  printed "0%" too. Before the minutes, a sight-read met before says *not first sight*, a run the
+  piece was played to part way through *heard part way*, and a rhythm-only run *rhythm only*.
+  A drill's tempo is a placeholder and is not printed. Rows written before C1 are read by what
+  they can say: a Wait row's mode, a row's self-report, a backing track's kind.
 - Export / Import all data (JSON). "Copy debug report".
 - The weekly-goal number control writes its confirmation to its own line beside it, inside the
   "This week" block — not the screen's bottom status line (`04` §0 R6).
@@ -2850,7 +2871,8 @@ fingering [on]; *Name the note I am waiting for* [off] (`showNoteNames`; it was 
 "show note names in note heads, auto-on for Stage ≤ 1" and never did either — it names the
 waited-for note in Wait mode's status line, `08-score-render-states` §11.19); show chord
 symbols [on]; keys under the score [strip | ribbon | off, default strip] (`keys`, §5); keys guide
-[next | next-two | off, default next]; finger numbers on the keys [on]; flash a hit green and a
+[next | next-two | off, default next]; keys guide when sight-reading [off | next | next-two,
+default off] (`keysGuideSightReading`, C1, §5); finger numbers on the keys [on]; flash a hit green and a
 miss red [on]; keep screen awake [on]; left-handed layout [off].
 
 **Sound** — piano volume; metronome volume; playback plays: both / only the non-focused hand

@@ -48,8 +48,12 @@ vi.mock('../../src/curriculum/load', async (importOriginal) => {
   };
 });
 
+const { recordRunSpy } = vi.hoisted(() => ({
+  recordRunSpy: vi.fn((_result: Record<string, unknown>) => Promise.resolve()),
+}));
+
 vi.mock('../../src/data/progressStore', () => ({
-  recordRun: vi.fn(() => Promise.resolve()),
+  recordRun: recordRunSpy,
   sessionsForItem: vi.fn(() => Promise.resolve([])),
   getProgress: vi.fn(() => Promise.resolve({ bestAccuracy: 0 })),
 }));
@@ -101,6 +105,7 @@ async function mount(): Promise<HTMLElement> {
 beforeEach(() => {
   localStorage.clear();
   findItemSpy.mockReset();
+  recordRunSpy.mockClear();
 });
 
 afterEach(() => {
@@ -132,5 +137,27 @@ describe('the backing-track sheet', () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
     const coaching = document.querySelector<HTMLElement>('#drill-coaching');
     expect(coaching?.hidden, `coached on an accuracy nobody measured: "${coaching?.textContent ?? ''}"`).toBe(true);
+  });
+
+  // C1 item 9 (backlog L49, P0 truth). The sheet stopped claiming an accuracy
+  // (T41) and the record kept writing one: *Count this set* stored the jam as
+  // accuracy 0 with every note played counted wrong, and the Progress history
+  // printed it as "0%". What a jam measures is the notes played; the rest is
+  // not measured, and is stored as that.
+  it('Count this set records the notes played, and every judged channel as not measured', async () => {
+    await mount();
+    for (const midi of [60, 64, 67]) {
+      screenKeyboardSource.noteOn(midi, 90);
+      screenKeyboardSource.noteOff(midi);
+    }
+    document.querySelector<HTMLButtonElement>('#drill-end')?.click();
+    document.querySelector<HTMLButtonElement>('#drill-keep')?.click();
+    await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalledTimes(1));
+    const kept = recordRunSpy.mock.calls[0]?.[0] ?? {};
+    expect(kept.accuracy, 'a jam nothing judged went on the record as 0%').toBe('not measured');
+    expect(kept.wrongNotes, 'the notes of a jam went on the record as wrong notes').toBe('not measured');
+    expect(kept.missed).toBe('not measured');
+    expect(kept.notesHeard).toBe(3);
+    expect(kept.passed).toBe(false);
   });
 });

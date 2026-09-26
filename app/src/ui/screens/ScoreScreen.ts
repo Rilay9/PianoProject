@@ -28,6 +28,7 @@ import {
   getSettings,
   updateSettings,
   type FollowInput,
+  type KeysGuide as PracticeGuide,
   type KeysView,
   type PlaybackHands,
 } from '../../data/settingsStore';
@@ -35,11 +36,13 @@ import {
   demandsTechniqueMeasure,
   evaluateOutcome,
   accentScore,
+  measuresOf,
   techniqueMeasureFor,
 } from '../../engine/Scoring';
 import { nextLadderTempo } from '../../engine/PracticeEngine';
 import { MASTER_DAYS, recordRun, sessionsForItem, type RunResult } from '../../data/progressStore';
-import type { Mode, SessionScore } from '../../engine/types';
+import { OBSERVATION_DEFINITIONS, type RunHeader } from '../../data/db';
+import { NOT_MEASURED, type Mode, type SessionScore } from '../../engine/types';
 import type { InputNoteEvent } from '../../midi/types';
 import { toMusicXml } from '../../score/mxl';
 import { OsmdView } from '../../score/OsmdView';
@@ -2615,27 +2618,28 @@ export function ScoreScreen(router: Router): HTMLElement {
   });
 
   /**
-   * The rung this run is judged by (T37, the reviewer's D2 step).
+   * The rung this run is judged by (T37, the reviewer's D2 step; C1).
    *
-   * The one that opened the screen (`?from=`) when one did, and only when none
-   * did the first rung listing the item. It was always the first listing: the
-   * minuet opened from `classical.3` was held to 3.4's numbers and stored as
-   * 3.4's run, and `c-major.both` opened from 2.1 was judged by 1.1 with 1.1's
-   * prose beside it. A `?from=` naming no rung the curriculum has falls back
-   * the same way.
+   * The one that opened the screen (`?from=`), and no other. It was always the
+   * first listing: the minuet opened from `classical.3` was held to 3.4's
+   * numbers and stored as 3.4's run. T37 made the opening rung win, and kept
+   * the first listing for a screen nothing opened — a rung nobody chose, whose
+   * prose the learner never read, standing in for "no rung". A run from
+   * nowhere now records no rung and is judged by Part G's defaults, the
+   * learner's own pair from Settings (design §10 C1). A `?from=` naming no
+   * rung the curriculum has is nowhere too.
    */
-  function judgingRung(curriculum: Curriculum, id: string): Lesson | undefined {
-    const opened = fromRung === undefined ? undefined : findLesson(curriculum, fromRung);
-    return opened ?? lessonForItem(curriculum, id);
+  function judgingRung(curriculum: Curriculum): Lesson | undefined {
+    return fromRung === undefined ? undefined : findLesson(curriculum, fromRung);
   }
 
   /**
    * Finds the rung the run is judged by; see `judgingRung`. Failure is silent:
    * the run is then judged against the learner's settings (see `rung`).
    */
-  async function findRung(id: string): Promise<void> {
+  async function findRung(): Promise<void> {
     try {
-      rung = judgingRung(await loadCurriculum(), id);
+      rung = judgingRung(await loadCurriculum());
     } catch {
       // Judged against the learner's settings instead; see `rung`'s comment.
     }
@@ -2644,15 +2648,20 @@ export function ScoreScreen(router: Router): HTMLElement {
   /**
    * Fills the side panel with the lesson text of the rung the run is judged
    * by, so the prose beside the piece and the numbers it is held to are one
-   * rung's. Failure is silent and leaves the panel out: a score screen must
-   * open with or without its prose.
+   * rung's. Opened from nowhere there is no such rung (C1), and the panel
+   * shows the first rung listing the piece as reading, as it always did.
+   * Failure is silent and leaves the panel out: a score screen must open with
+   * or without its prose.
    */
   async function fillSidePanel(target: CatalogItem): Promise<void> {
     const body = document.getElementById('score-side-body');
     if (!body) return;
     try {
       const curriculum = await loadCurriculum();
-      const found = judgingRung(curriculum, target.id);
+      // The prose beside the piece: the opening rung's, and where nothing
+      // opened the screen the first rung listing it — text to read, not the
+      // numbers the run is held to, which are the defaults there (C1).
+      const found = judgingRung(curriculum) ?? lessonForItem(curriculum, target.id);
       if (!found) return;
       const summary = document.getElementById('score-side-summary');
       // The rung's title alone. This is the heading over its text beside the
@@ -2796,6 +2805,64 @@ export function ScoreScreen(router: Router): HTMLElement {
 
   // --- summary sheet (docs/04 §5) -----------------------------------------
 
+  /**
+   * What the run was, as this screen knew it (C1; design §3): the header half
+   * of the observation, beside the measures `measuresOf` gives.
+   *
+   * The engine reports what it judged under (`judgedUnder`); the screen adds
+   * what only it knows — what opened it, the tempo the percentage is of, what
+   * the app played beside the learner, what the keys showed, the input. What
+   * neither knows is stored as not measured, never guessed: the Today slot,
+   * which the route does not carry, and anything the engine did not report.
+   */
+  function runHeader(score: SessionScore, first: { unseen?: boolean }, demonstrated: boolean): RunHeader {
+    const under = score.judgedUnder;
+    const base = model?.tempoMap[0];
+    // The hand the engine judged, which is the run's; the screen's own
+    // `hands` can have moved since, with the sheet up.
+    const played = under?.hands ?? hands;
+    const other = played === 'R' ? 'L' : 'R';
+    const appPlayed =
+      settings.playbackHands === 'both'
+        ? ('both hands' as const)
+        : settings.playbackHands === 'non-focused' && played !== 'both' && model?.handsPresent[other] === true
+          ? ('other hand' as const)
+          : ('none' as const);
+    return {
+      definitions: OBSERVATION_DEFINITIONS,
+      ...(under ? { range: { fromMeasure: under.fromMeasure, toMeasure: under.toMeasure } } : {}),
+      opened: {
+        tab: router.route.tab,
+        ...(fromRung === undefined ? {} : { rung: fromRung }),
+        ...(tourId === undefined ? {} : { tour: tourId }),
+        slot: NOT_MEASURED,
+      },
+      baseTempo: base
+        ? { bpm: base.bpm, source: item?.tags?.includes('tempo-defaulted') === true ? 'defaulted' : 'written' }
+        : NOT_MEASURED,
+      hands: { played, appPlayed },
+      keys: keysShown(),
+      graceNotes: under?.graceNotes ?? NOT_MEASURED,
+      input: {
+        source: input,
+        toleranceMs: under?.toleranceMs ?? NOT_MEASURED,
+        latencyMs: under?.inputLatencyMs ?? NOT_MEASURED,
+      },
+      ...first,
+      demonstrated,
+    };
+  }
+
+  /**
+   * Whether the run about to be summarised is a sight-read of a phrase met
+   * before — read already, on the record or this visit, or played to the
+   * learner (T37, T33, T40). Read before `sightReadAttempts` counts this run.
+   */
+  function firstReadingRefused(): boolean {
+    if (item === undefined || !isSightReading(item)) return false;
+    return sightReadAttempts > 0 || phraseSeen || phraseHeard;
+  }
+
   function showSummary(score: SessionScore): void {
     // The run ended and the learner is being shown the result, so there is
     // nothing hanging to come back to — unless this summary is the one
@@ -2870,6 +2937,10 @@ export function ScoreScreen(router: Router): HTMLElement {
       : techniqueBinds && !technique.met
         ? { ...measured, passed: false, masterEligible: false }
         : measured;
+    // A phrase met before is not a first reading (see `sightReadRepeat`
+    // below), so it cannot be the reading drill's pass: refused here, so the
+    // heading does not say *Passed* over a run the record keeps as practice.
+    const judged = firstReadingRefused() ? { ...outcome, passed: false, masterEligible: false } : outcome;
 
     // docs/05 §7: a sight-reading drill is scored on the first attempt only.
     // After that the material has been seen, and a second run measures
@@ -2885,8 +2956,14 @@ export function ScoreScreen(router: Router): HTMLElement {
     // is the same, and `phraseHeard` holds it for the phrase, not the run.
     const sightReading = item !== undefined && isSightReading(item);
     const alreadyMet = sightReadAttempts > 0 || phraseSeen;
-    const sightReadRepeat = sightReading && (alreadyMet || phraseHeard);
+    // One rule, read once more before this run is counted: `judged` above
+    // asked the same question.
+    const sightReadRepeat = firstReadingRefused();
     if (item !== undefined) sightReadAttempts += 1;
+    // Such a run is recorded (C1, reviewer decision 3): it is practice, and
+    // its minutes, its attempt and its row are kept. It is not a reading, so
+    // it passes nothing — the reading drill's pass is the claim that the
+    // learner read the phrase — and the store refuses it the day's tick.
 
     /**
      * Whether the app heard anything at all (T40).
@@ -2907,18 +2984,22 @@ export function ScoreScreen(router: Router): HTMLElement {
     // A performance the piece was played to the learner in the middle of
     // (T40). `heardAt` is the bars of this run's demonstrations (T33, C5), so
     // one heard before the take began is preparation, not help inside it.
-    const demonstratedTake = performanceRun && heardAt.length > 0;
+    const demonstrated = heardAt.length > 0;
+    const demonstratedTake = performanceRun && demonstrated;
     const title = document.createElement('h2');
     /** The heading, with what kept a performance from being one said after it. */
     const setHeading = (text: string): void => {
       title.textContent = demonstratedTake ? `${text} — ${SUMMARY_TEXT.demonstratedTake}` : text;
     };
+    // Every run of a judging mode leaves a record (C1): a sight-read met before
+    // is kept as practice, flagged `unseen: false`, where T37 and T40 dropped
+    // it with its minutes. Listen and Free judge nothing and record nothing.
     const run: RunResult | null =
-      item && !sightReadRepeat && mode !== 'listen' && mode !== 'free'
+      item && mode !== 'listen' && mode !== 'free'
         ? {
             itemId: item.id,
             // Which rung judged it: the one that opened the screen, where one
-            // did (`judgingRung`).
+            // did (`judgingRung`), and none otherwise.
             ...(rung === undefined ? {} : { lessonId: rung.id }),
             // The generated phrase's seed, so the store can tell Today's read
             // (the run carrying the day's seed, `04` §2) from any other run,
@@ -2926,13 +3007,14 @@ export function ScoreScreen(router: Router): HTMLElement {
             ...(phraseSeed === undefined ? {} : { seed: phraseSeed }),
             mode,
             tempoPct: score.tempoPct,
-            accuracy: score.accuracy,
+            // Nothing heard, nothing measured (T40, C1): not a zero.
+            accuracy: heard ? score.accuracy : NOT_MEASURED,
             accuracyEstimated: score.accuracyEstimated,
-            wrongNotes: score.wrongNotesTotal,
-            missed: score.missedTotal,
+            wrongNotes: heard ? score.wrongNotesTotal : NOT_MEASURED,
+            missed: heard ? score.missedTotal : NOT_MEASURED,
             durationMs: score.durationMs,
-            passed: outcome.passed,
-            masterEligible: outcome.masterEligible,
+            passed: judged.passed,
+            masterEligible: judged.masterEligible,
             // What the run observed about tempo (T37): nothing in Wait, and
             // nothing where nothing was heard, whatever the slider said.
             tempoMeasured: outcome.tempoMeasured && heard,
@@ -2941,6 +3023,15 @@ export function ScoreScreen(router: Router): HTMLElement {
             // and off the performances list, which reads this flag.
             ...(demonstratedTake ? {} : performanceRun ? { performance: true } : {}),
             ...(rhythmRun ? { rhythmOnly: true } : {}),
+            // What the run was and what it measured, by its own definitions,
+            // with every channel it did not measure marked so (C1).
+            ...runHeader(score, sightReading ? { unseen: !sightReadRepeat } : {}, demonstrated),
+            ...measuresOf(score, {
+              heard,
+              technique,
+              pedalMeasurable: input === 'midi',
+              steps: session?.prepared?.steps ?? [],
+            }),
           }
         : null;
 
@@ -3009,13 +3100,13 @@ export function ScoreScreen(router: Router): HTMLElement {
     // on, so it is headed for the half it did. A run the app heard nothing of
     // is headed for exactly that (T40), before anything else it might be.
     const notesReady =
-      mode === 'wait' && !outcome.passed && score.accuracy >= criteria.passAccuracy;
+      mode === 'wait' && !judged.passed && score.accuracy >= criteria.passAccuracy;
     setHeading(
       !heard
         ? SUMMARY_TEXT.notMeasuredHeading
         : rhythmRun
           ? 'Rhythm run'
-          : outcome.passed
+          : judged.passed
             ? 'Passed'
             : notesReady
               ? SUMMARY_TEXT.waitNotesReady
@@ -3212,8 +3303,8 @@ export function ScoreScreen(router: Router): HTMLElement {
     // With nothing heard there is nothing to be accurate *about*, so the
     // learner says how it went instead of being shown a number they did not
     // earn — and the answer is recorded with the run, as self-assessed (`02`
-    // Part G, T37). Only where there is a run to record it with: a repeated
-    // sight-read is not recorded, so it is not asked.
+    // Part G, T37). Only where there is a run to record it with, which since
+    // C1 is every run of a judging mode.
     if (askSelfReport && pendingRecord) {
       const ask = document.createElement('div');
       ask.className = 'summary-selfreport';
@@ -3772,7 +3863,7 @@ export function ScoreScreen(router: Router): HTMLElement {
       const loop = loopBars && !performanceRun ? session.loopForPrintedBars(loopBars.from, loopBars.to) : undefined;
       session.previewFirst({ mode, hands, ...(loop ? { loop } : {}) });
     }
-    section.dataset.keysGuide = settings.keysGuide;
+    section.dataset.keysGuide = guideFor();
     // Which mode the *run* is in, when it is not the one the select shows.
     section.dataset.hearing = String(hearing);
     hearButton.textContent = hearing ? 'Stop' : 'Hear it';
@@ -3780,6 +3871,33 @@ export function ScoreScreen(router: Router): HTMLElement {
       ? 'Stop playing it to you'
       : 'Play the piece to you, nothing judged';
     section.dataset.input = input;
+  }
+
+  /**
+   * What the keys guide is for this item (C1, reviewer decision 5): a
+   * sight-reading drill has a default of its own, off, because a phrase read
+   * with the next key lit is a phrase followed on the keys. The learner's
+   * `keysGuide` governs everything else, and both are theirs in Settings.
+   */
+  function guideFor(): PracticeGuide {
+    return item !== undefined && isSightReading(item) ? settings.keysGuideSightReading : settings.keysGuide;
+  }
+
+  /**
+   * What the keys under the score showed during the run, as the record keeps
+   * it (C1): what was on the glass, so a view that was off shows no guide and
+   * no numbers whatever the settings said. A note's name was shown where the
+   * ribbon labels its lit cell, or where Wait's line names the note.
+   */
+  function keysShown(): NonNullable<RunHeader['keys']> {
+    const view = settings.keys;
+    const guide = view === 'off' ? 'off' : guideFor();
+    return {
+      view,
+      guide,
+      fingers: guide !== 'off' && settings.keysFingerNumbers,
+      names: (view === 'ribbon' && guide !== 'off') || (settings.showNoteNames && mode === 'wait'),
+    };
   }
 
   /**
@@ -3829,7 +3947,7 @@ export function ScoreScreen(router: Router): HTMLElement {
       // Unconditional, unlike the side panel below, which is a tablet's
       // second column: the rung decides what this run has to reach, and that
       // cannot depend on how wide the screen is.
-      void findRung(item.id);
+      void findRung();
       // Shown only where the file has chord symbols in it (`openItem.ts`).
       chartRow.hidden = !hasChordSymbols(item);
       if (tablet) void fillSidePanel(item);
@@ -3985,7 +4103,7 @@ export function ScoreScreen(router: Router): HTMLElement {
         model: loaded,
         renderer,
         strip,
-        stripOptions: { guide: settings.keysGuide, fingers: settings.keysFingerNumbers, flash: settings.keysFlash },
+        stripOptions: { guide: guideFor(), fingers: settings.keysFingerNumbers, flash: settings.keysFlash },
         piano: null,
         audioContext: context,
         destination: audioEngine.masterGain,

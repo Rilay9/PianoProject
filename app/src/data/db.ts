@@ -18,6 +18,7 @@ import {
   type IDBPTransaction,
   type StoreNames,
 } from 'idb';
+import type { BarTally, HandsFilter, NotMeasured, RunMeasures } from '../engine/types';
 
 export const DB_NAME = 'pianopath';
 /**
@@ -27,6 +28,11 @@ export const DB_NAME = 'pianopath';
  * listing into one record per score plus a compact per-folder index, so
  * opening the browse screen and adding one piece stop costing the whole
  * listing (see `folderLibraries` below).
+ *
+ * C1's observations (`RunObservation` on `SessionRow`) changed no store and no
+ * index — every field is optional on a value, which IndexedDB does not
+ * describe — so they are not a version: a row written before them reads as
+ * one with none, and the `upgrade` below has nothing to do for them.
  */
 export const DB_VERSION = 6;
 
@@ -57,16 +63,93 @@ export interface ProgressRow {
   selfPassed?: boolean;
 }
 
-export interface SessionRow {
+/**
+ * Which set of definitions wrote a row's observation (C1).
+ *
+ * The accuracy definitions, the tolerance, the step codes and the "not
+ * measured" mark all belong to this number, so a later reader can tell which
+ * rules produced a row and derive again from it. Absent: a row written before
+ * observations were stored, which has only the seven numbers it always had.
+ */
+export const OBSERVATION_DEFINITIONS = 1;
+
+/**
+ * What a run was, as the screen that ran it knew it: the header half of an
+ * observation (C1; design §3). Every field optional, because rows written
+ * before C1 have none of them; a C1 row has all of them that apply.
+ */
+export interface RunHeader {
+  /** `OBSERVATION_DEFINITIONS` at the time of writing. */
+  definitions?: number;
+  /**
+   * The printed measures the run covered (`ScoreStep.sourceMeasureIndex`,
+   * 0-based): the whole piece, or the loop it was confined to.
+   */
+  range?: { fromMeasure: number; toMeasure: number };
+  /**
+   * What opened the Score screen: the tab the learner came from, the rung
+   * that opened it (`?from=`), the tour. The Today slot is not in the route,
+   * so it is not measured, and says so.
+   */
+  opened?: { tab: string; rung?: string; tour?: string; slot: NotMeasured };
+  /**
+   * The tempo the percentage is of: the score's first marking, `written` or
+   * `defaulted` where the converter made it up (the `tempo-defaulted` tag).
+   */
+  baseTempo?: { bpm: number; source: 'written' | 'defaulted' } | NotMeasured;
+  /** The hand the learner played, and what the app played beside it. */
+  hands?: { played: HandsFilter; appPlayed: 'none' | 'other hand' | 'both hands' };
+  /**
+   * What the keys under the score showed during the run: the view, the guide
+   * ahead of time, finger numbers on the marked keys, and whether a note's
+   * name was on the screen (the ribbon's label, or *Name the note I am
+   * waiting for* in Wait). A run the keys guided is not clean evidence of
+   * reading the staff (reviewer decision 5).
+   */
+  keys?: { view: 'strip' | 'ribbon' | 'off'; guide: 'next' | 'next-two' | 'off'; fingers: boolean; names: boolean };
+  /** Whether grace notes were judged (`05` §1.3). */
+  graceNotes?: boolean | NotMeasured;
+  /** The input, the timing window it was judged with, and the latency taken off. */
+  input?: {
+    source: 'midi' | 'mic' | 'keys' | 'none';
+    toleranceMs: number | NotMeasured;
+    latencyMs: number | NotMeasured;
+  };
+  /**
+   * A generated phrase read for the first time, never heard: `true`. Heard
+   * before or during the run, or read before, it is `false`, and the run is
+   * practice and not evidence of reading (reviewer decision 3). Absent on
+   * anything that is not a generated phrase, where first sight is no claim.
+   */
+  unseen?: boolean;
+  /** The piece was played to the learner part way through this run (`Hear it` over it, T33). */
+  demonstrated?: boolean;
+}
+
+/**
+ * What a stored run measured (C1): the engine's measures, and — once a row is
+ * older than the observation window — its per-step detail folded into bars.
+ */
+export interface RunObservation extends RunHeader, Partial<RunMeasures> {
+  /** Per-bar tallies, where `steps` was compacted (`progressStore.compactObservation`). */
+  bars?: BarTally[];
+}
+
+export interface SessionRow extends RunObservation {
   id?: number;
   itemId: string;
   lessonId?: string;
   mode: string;
   tempoPct: number;
-  accuracy: number;
+  /**
+   * The run's accuracy as a fraction, or `not measured` where it measured none
+   * (a run nothing heard, a drill nothing judged, C1). It was written as 0
+   * there, and the history printed "0%".
+   */
+  accuracy: number | NotMeasured;
   accuracyEstimated: boolean;
-  wrongNotes: number;
-  missed: number;
+  wrongNotes: number | NotMeasured;
+  missed: number | NotMeasured;
   durationMs: number;
   /** ISO date-time. */
   at: string;

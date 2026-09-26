@@ -211,15 +211,18 @@ export const SUMMARY_TEXT = {
   notMeasuredNoInput: 'To be marked, connect a piano or choose Screen keys in ⋯.',
   /**
    * A sight-read of a phrase already on the record, or run again (T37): the
-   * material has been seen, so the run is not a first reading (`05` §7).
+   * material has been seen, so the run is not a first reading (`05` §7). It is
+   * kept as practice (C1): its minutes and its attempt count, and it is
+   * flagged so it counts as no reading.
    */
-  sightReadRepeat: 'Sight-reading counts on the first attempt only — this run is not recorded.',
+  sightReadRepeat: 'Sight-reading counts on the first attempt only — this run is kept as practice.',
   /**
    * A sight-read whose phrase was played to the learner — part way through
    * the run (T33), or before it started (T40): the phrase has been heard, so
-   * the run is not a first reading of it, and is not recorded as one (`05` §7).
+   * the run is not a first reading of it (`05` §7). Kept as practice, as
+   * above (C1; the reviewer's decision 3).
    */
-  sightReadHeard: 'Sight-reading counts only on music you have not heard — this run is not recorded.',
+  sightReadHeard: 'Sight-reading counts only on music you have not heard — this run is kept as practice.',
   /**
    * The second half of a performance's heading when the piece was played to
    * the learner part way through it (T40): the take is kept as practice, not
@@ -258,6 +261,32 @@ export const SUMMARY_TEXT = {
   /** The run was set aside while the piece was played to the learner (C1). */
   heard: (bars: readonly number[]): string =>
     `heard it played at bar${bars.length === 1 ? '' : 's'} ${bars.map(String).join(', ')}`,
+} as const;
+
+/**
+ * What the Progress history's detail line says about a run (C1, `04` §6).
+ *
+ * The line was `N% at T%` for every run but paper, so it printed a Wait run
+ * as "88% at 70%" (the slider, as if kept), a self-reported run as "0%" and a
+ * kept jam as "0%" (backlog L41, L43, L49). It says what was measured now,
+ * and these are its words, here beside the sheet's so the two say one thing.
+ */
+export const HISTORY_TEXT = {
+  /** After a Wait run's accuracy, in place of "at 70%": the slider is not a tempo anyone kept. */
+  tempoNotJudged: 'tempo not judged',
+  /** A run the app heard nothing of — the sheet's own heading for it. */
+  notMeasured: 'Not measured',
+  /** …and the answer the learner gave, which is the whole of its record. */
+  youSaid: (report: 'rough' | 'ok' | 'clean'): string =>
+    `you said ${report === 'ok' ? 'OK' : report === 'clean' ? 'Clean' : 'Rough'}`,
+  /** A run nothing judged — a jam over a backing track. */
+  notJudged: 'Not judged',
+  /** A sight-read of a phrase met before: practice, not a reading. */
+  notFirstSight: 'not first sight',
+  /** A run the piece was played to the learner part way through. */
+  heardPartWay: 'heard part way',
+  /** A rhythm-only run: its figure is the rhythm's, not the notes'. */
+  rhythmOnly: 'rhythm only',
 } as const;
 
 /** The settings whose change the summary's *Changed* line names (T33, C5). */

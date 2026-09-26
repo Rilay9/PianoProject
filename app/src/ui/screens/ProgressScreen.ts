@@ -40,6 +40,8 @@ import { allShelfPieces } from '../../data/booksStore';
 import type { CatalogItem } from '../../curriculum/types';
 import { importAll, isBackupFile, writeBackup } from '../../data/backup';
 import type { ProgressRow, SessionRow } from '../../data/db';
+import { NOT_MEASURED } from '../../engine/types';
+import { HISTORY_TEXT } from '../help';
 import {
   allProgress,
   dayKey,
@@ -49,7 +51,7 @@ import {
   setWeeklyGoal,
   weekSoFar,
 } from '../../data/progressStore';
-import { badge, button, el, listRow, minutesLabel, numberControl } from '../widgets';
+import { button, el, listRow, minutesLabel, numberControl } from '../widgets';
 import { openItem } from '../openItem';
 import { screenFrame, statusLine } from './screenFrame';
 import { plural } from '../../util/plural';
@@ -125,6 +127,60 @@ export function modeLabel(mode: string): string {
   if (word) return word;
   const bare = mode.split(':')[0] ?? mode;
   return bare.charAt(0).toUpperCase() + bare.slice(1);
+}
+
+/**
+ * The detail line under a recorded run: what it measured, and nothing it did
+ * not (C1 items 5 and 9; backlog L41, L43, L49).
+ *
+ * It was `N% at T%` for every run but paper, and so printed three things that
+ * were never measured: a Wait for me run "at 70%" (the slider, as if the
+ * learner had kept that tempo), a self-reported run as "0%" (a run the app
+ * heard nothing of), and a kept jam as "0%" (a run nothing judged). One
+ * mechanism, so one function, for the history and the performances alike.
+ *
+ * Rows written before C1 are read by what they can say: a Wait row's mode is
+ * enough to know its tempo was the slider, a row carrying a self-report was
+ * always a run nothing heard, and a backing track judges nothing whatever its
+ * accuracy says. A drill's `tempoPct` is a placeholder, so no drill says
+ * "at 100%". The flags come before the minutes because the line is cut from
+ * the end to fit a phone (`fitDetail`).
+ */
+export function historyDetail(session: SessionRow): string {
+  const minutes = minutesLabel(session.durationMs / 60_000);
+  // A paper run has no accuracy and must not be printed as 0 %: the app could
+  // not see the notes, and a zero would read as a verdict rather than as an
+  // absence (replan §5.3).
+  if (session.mode === 'paper') {
+    return [
+      `${plural(session.notesHeard ?? 0, 'note')} heard`,
+      session.steadinessMs === undefined ? 'steadiness not measured' : `±${String(session.steadinessMs)} ms`,
+      minutes,
+    ].join(' · ');
+  }
+  const flags: string[] = [];
+  if (session.unseen === false) flags.push(HISTORY_TEXT.notFirstSight);
+  if (session.demonstrated === true) flags.push(HISTORY_TEXT.heardPartWay);
+  if (session.rhythmOnly === true) flags.push(HISTORY_TEXT.rhythmOnly);
+  let lead: string[];
+  if (session.selfReport !== undefined) {
+    lead = [HISTORY_TEXT.notMeasured, HISTORY_TEXT.youSaid(session.selfReport)];
+  } else if (session.accuracy === NOT_MEASURED || session.mode === 'drill:backing-track') {
+    lead = [
+      HISTORY_TEXT.notJudged,
+      ...(session.notesHeard === undefined ? [] : [`${plural(session.notesHeard, 'note')} played`]),
+    ];
+  } else {
+    const share = `${String(Math.round(session.accuracy * 100))}%${session.accuracyEstimated ? ' (estimated)' : ''}`;
+    const drill = session.mode.startsWith('drill:');
+    const tempoKept = !drill && session.mode !== 'wait' && session.tempoMeasured !== false;
+    lead = tempoKept
+      ? [`${share} at ${String(session.tempoPct)}%`]
+      : drill
+        ? [share]
+        : [share, HISTORY_TEXT.tempoNotJudged];
+  }
+  return [...lead, ...flags, minutes].join(' · ');
 }
 
 /**
@@ -363,7 +419,9 @@ export function ProgressScreen(router: Router): HTMLElement {
             return listRow({
               title: titleFor(item),
               subtitle: session.at.slice(0, 16).replace('T', ' '),
-              meta: `${String(Math.round(session.accuracy * 100))}% at ${String(session.tempoPct)}% · ${minutesLabel(session.durationMs / 60_000)}`,
+              // What was measured, by the history's own rule (C1): a Wait
+              // performance is not "at 70%".
+              meta: historyDetail(session),
               // No badge: `performance` on every row of a list headed
               // *Performances*, which is queried as `recentPerformances`. The
               // heading says it, once.
@@ -395,24 +453,11 @@ export function ProgressScreen(router: Router): HTMLElement {
               // `modeLabel`, not `session.mode`: this line printed
               // `drill:walkthrough` and `drill:checklist` at a reader.
               subtitle: `${session.at.slice(0, 16).replace('T', ' ')} · ${modeLabel(session.mode)}`,
-              // A paper run has no accuracy and must not be printed as 0 %:
-              // the app could not see the notes, and a zero would read as a
-              // verdict rather than as an absence (replan §5.3).
-              meta:
-                session.mode === 'paper'
-                  ? [
-                      `${plural(session.notesHeard ?? 0, 'note')} heard`,
-                      session.steadinessMs === undefined
-                        ? 'steadiness not measured'
-                        : `±${String(session.steadinessMs)} ms`,
-                      minutesLabel(session.durationMs / 60_000),
-                    ].join(' · ')
-                  : `${String(Math.round(session.accuracy * 100))}%${
-                      session.accuracyEstimated ? ' (estimated)' : ''
-                    } at ${String(session.tempoPct)}% · ${minutesLabel(session.durationMs / 60_000)}`,
-              // Kept: how it felt is not on the detail line, and it is only
-              // on the rows where he said so (`04` §0 R2).
-              badges: session.selfReport ? [badge(session.selfReport)] : [],
+              // What was measured and nothing else (C1; `historyDetail`). The
+              // self-report used to be a badge beside "0% at 70%"; the answer
+              // is the run's whole record, so it is on the line, and the row
+              // has no badge left.
+              meta: historyDetail(session),
               ...(item ? { onClick: () => void openItem(router, item) } : {}),
               dataset: { 'data-session': session.id ?? 0, 'data-item': session.itemId },
             });

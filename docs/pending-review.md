@@ -15696,3 +15696,109 @@ line *…however it went. Use Hear it part way and it is kept as practice instea
 **Unverified.** 𝄪 and 𝄫 on any glass, and all four signs on the owner's phone (system-ui/Roboto falls back for U+1D12A/B); a key change inside a bar (the key is read per printed measure); `data-settled` under CI load; external stage changes can unsettle the fit after a test has read it settled (the state is the renderer's knowledge at the time). Nothing heard.
 
 **Files.** `app/src/score/types.ts`, `app/src/score/extractScoreModel.ts`, `app/src/ui/expectedNote.ts`, `app/src/ui/screens/ScoreScreen.ts` (the waiting line only), `app/src/ui/screens/DrillScreen.ts`, `app/src/score/WindowRenderer.ts` (the settled state only); `app/tests/unit/expectedNote.test.ts`, `app/tests/unit/backingTrackSheet.test.ts` (new), `app/tests/fixtures/scores/edge/spelling.musicxml` (new), `app/tests/fixtures/scores/golden/spelling.json` (new) and 16 goldens, `app/tests/e2e/score.screen.spec.ts`, `app/tests/e2e/drills.spec.ts`, `app/tests/e2e/score.states.spec.ts`; `docs/04-ui-spec.md` (§5, §5c), `docs/08-score-render-states.md` (§6.3, §9.39), `docs/08-test-map.md`.
+
+### Entry 70 — C1: a run writes what it measured, marks what it did not, and nothing measured is thrown away (2026-09-26)
+
+**Judgement.** Yes, for the nine items, with one behaviour change to Today said up front. **What one run now leaves behind:** a run used to leave seven numbers — accuracy, tempo, wrong, missed, minutes — and the history printed "N% at T%". The Keep tempo case in `observationsFromRun` (the real engine, eight quarters, every note 20 ms late but the fourth, struck 300 ms early) now reads back from the store as: pitch `tempo-notes`, 7 of 8; early 1; step codes `hhhehhhh`; the early note `[3, 62]`; eight `[step, deltaMs]` pairs, seven at +20 and one at −300; hands, keys, grace notes, input, range. In general a row carries the pitch with its definition and denominators (a Wait run says `wait-steps`, steps completed cleanly, never the same number as Keep tempo's), one code per step for every step of the run (`h` hit, `p` part, `m` missed, `e` early, `w` wrong-then-right, `l` lenient, `-` nothing to play, `.` not reached), the wrong and early notes against their steps, the onset delta of every timed note, the printed bars it covered, the hand played and what the app played beside it, what the keys showed (view, guide, finger numbers, a name on the glass), whether grace notes were judged, the input with its window and latency, what opened the screen, the base tempo and whether it was written or defaulted, the technique measure and the accents where the item asks, the pedal on MIDI, rolled and lenient chords, laps — and on a generated phrase whether it was unseen. Every channel the run did not measure is the string *not measured*, never 0: Wait's timing, a run nothing heard (its accuracy, wrong notes and misses too), a jam's judged channels. **What a teacher could learn from it that the old record hid:** which notes were missed, not only which bar (the leap into bar 5, not bar 5); which notes came early or late, and by how much; that a "92%" was the right hand alone with the app playing the left and the keys lighting each next note; that a clean sight-read was of a phrase the learner had just heard; that a run's tempo was the slider, not kept. Nothing reads these yet but the history and the backup (C3, C4). **What I looked at on the glass** (a Playwright script at 342 × 740 on the built app, pictures in the scratch folder, and the Browser pane once): the ribbon in the Minuet in F at bar 3 — *B♭3* and *D5* over the lit cells, then *E♭5* beside a page printing the flat; a sight-read opening with no key marked beside Hot Cross Buns opening with one; the new Settings row *Keys guide when sight-reading* [Off]; the Progress history over six runs — *92% at 70%*, *88% · tempo not judged*, *Not measured · you said Clean*, *Not judged · 42 notes played*, *100% at 70% · not first sight*, *97% at 90% · heard part way* — every line inside its row at 342 px. Not looked at: sideways, a tablet, dark, 115 % text, the owner's phone. Nothing was heard. **The behaviour change:** Today opens its cards without `?from=`, so a Today run now records no rung and is judged by the defaults (the learner's pair in Settings), where it was judged by the first rung listing the item — which was also not the rung Today chose. Today carrying its slot's rung is a follow-up (P1).
+
+**Deviations, each with its reason.**
+1. **A repeated sight-read is recorded too** (`unseen: false`), not only the heard one. The brief reverses T40's drop; T37's drop of a re-read is the same drop (design §11 item 6 lists both), and keeping it would record a heard phrase's minutes and lose a re-read's. Same flag, same refusal. `scoreSummaryTruth`'s T37 repeat case and `lab.spec`'s re-open case are revised with it.
+2. **The store refuses the evidence, not only the screen.** `recordRun` gives a run with `unseen: false` no pass, no mastery, no best and no day's tick whatever its writer says; the screen also refuses the pass so its heading never says *Passed* over practice.
+3. **`SettingsScreen.ts`** (not owned) gains one row, *Keys guide when sight-reading*: a per-kind default the learner cannot see would be the hidden override the brief rules out. `04` §7 names it.
+4. **`expectedNote.ts`** (not owned) exports `writtenNoteName`, a wrapper over T41's private `writtenName`, so the ribbon and the status line spell from one function.
+5. **`accuracy`, `wrongNotes` and `missed` are `number | not measured`** on `RunResult` and `SessionRow`, so every reader says what it does with a run that measured none: the history (`historyDetail`), the store's best (left alone), the drill coaching (numeric runs only, one line in `DrillScreen.showCoaching`).
+6. **`sessionsForItem` walks `byItem` backwards to its limit** instead of reading the item's rows whole: rows are now several times larger and the cap many times higher, and the daily read's rows are read on every sight-read's open. **`recentPerformances` keeps the old reach** (2,200 runs): at the new cap a learner who never performs would walk the whole store on every Progress load.
+7. **The side panel** (tablets) still shows the first listing rung's prose for a piece opened from nowhere — reading, not the numbers the run is held to; changing it was not asked.
+8. **`05` §8** one sentence (a heard phrase "is not recorded") and **`04` §2** one bullet were false after item 2; corrected by targeted replacement.
+
+## Done — per item: mechanism, the red line, before → after
+
+**1. The observation.** *Mechanism (hypothesis 1, traced first — partly false):* a Keep tempo miss is decided in `closeSlotAsMissed`, which knew its step and kept only the per-bar map and an event; a wrong note that matched nothing was recorded with `stepIndex: null` and given a bar by `measureIndexNear`; `notes` holds only what was played. So per-step outcomes could not be recovered from `notes` and the miss maps. *Change:* the engine marks each step where it is decided (`stepMarks`: a hit where a pitch matches, a miss and an early note where a window closes, a Wait step's cleanliness where it completes; a wrong note that matched nothing on the step nearest in time, `stepNear`), with `timed` and `earlyNotes` beside `deltas`; `buildScore` turns them into `SessionScore.stepOutcomes` and reports `judgedUnder`; `Scoring.measuresOf` is the one definition of the record's measures; the Score screen adds the header; `recordRun` keeps every field (`sessionRowFor`). *Hypothesis 2 (no version bump):* true — `db.ts`'s upgrade creates stores and indexes only, and no index changed; `DB_VERSION` stays 6. *Red:* `observationsFromRun` 10 of 10 on the committed code — `expected undefined to be 'not measured'` (Wait timing), `Target cannot be null or undefined` (per-step codes), `expected undefined to deeply equal { Object (played, appPlayed) }` (R), `expected undefined to be false` (grace notes), `the run left no row in the store` (heard sight-read). *Before → after:* the row's seven numbers → the observation above, read back from a fake IndexedDB through the real engine, screen and store.
+
+**2. T40's drop reversed.** *Mechanism:* `run` was `null` where `sightReadRepeat` (T37's `alreadyMet` or T40's `phraseHeard`). *Change:* recorded, flagged `unseen: false` (and `true` on a first reading), not passed; `demonstrated: true` wherever `Hear it` came inside the run, the performance flag still omitted there; the two sheet sentences now end *— this run is kept as practice.* *Red:* `a heard run went unrecorded, minutes and all: expected "vi.fn()" to be called 1 times, but got 0 times`; `a re-read went unrecorded…`; `expected undefined to be true` (demonstrated); e2e `lab.spec` `Expected: 1 Received: 0` (heard) and `Expected: true Received: undefined` (the first row's `unseen`). *After:* heard and re-read runs recorded as practice; Today's card not ticked by a heard phrase (e2e).
+
+**3. The guide off for sight-reading.** *Change:* `keysGuideSightReading` (default `off`) beside `keysGuide`, read by `guideFor()` for the strip and `data-keys-guide`; the record's `keys` says what the glass showed. *Red:* `the keys showed the next note during a reading drill: expected 'next' to be 'off'`. *After:* a sight-read opens with no key marked (glass), Hot Cross Buns with one.
+
+**4. The cap.** *Mechanism:* `MAX_SESSIONS = 2_000`, deleting oldest rows by count, its comment reasoning in sessions; the retention test pruned itself. *Change:* rows past `OBSERVATION_WINDOW_DAYS` (90) are compacted — per-step detail folded into per-bar tallies (`compactObservation`, `compactSteps`) — by a background tidy each recorded run starts (compact, then the cap; walked back from the window's edge, stopping at compact rows); `sessionsTidied()` lets a test wait for it. The cap is 25,000 runs, every row counting, held by `sessionRetention` to `SESSIONS_BUDGET_BYTES` (64 MiB of structured clone) against a measured row. *Measured* (`v8.serialize`, the structured clone IndexedDB stores, on constructed rows): a compacted 64-bar row is about ten times a legacy row and its full form under three times the compacted one; at the cap, a window of full rows at ten runs a day plus compacted rows for the rest sits under the budget with room. The storage report (Settings → Content) showed a quota in gigabytes in a desktop Chromium; the budget is a small share of it. *Red:* `expected 2000 to be greater than or equal to 18250`; `compactSessions is not a function`; `compactObservation is not a function`.
+
+**5 and 9. The history, and the run that judged nothing.** *Mechanism:* one line, `N% at T%`, for every run but paper; `DrillScreen.keep()` wrote a jam as `accuracy: 0` and every note played as wrong. *Change:* `historyDetail` (history and performances) prints what was measured, with `help.ts`'s `HISTORY_TEXT`; old rows are read by what they can say (a Wait row's mode, a self-report, a backing track's kind); the self-report badge moved onto the line; `keep()` stores *not measured* and the notes played. *Red:* `expected '88% at 70% · 1 min' to be '88% · tempo not judged · 1 min'`; `expected '0% at 70% · 1 min' to be 'Not measured · you said Clean · 1 min'`; `expected '0% at 100% · 1 min' to be 'Not judged · 1 min'`; `a jam nothing judged went on the record as 0%: expected +0 to be 'not measured'`.
+
+**6. No rung from nowhere.** *Change:* `judgingRung` returns the `?from=` rung only. *Red:* `a rung nobody opened was stored as the one that judged it: expected '2.1' to be undefined` (and not passed at 93 % against the first listing's 97 %). *After:* stored with no rung, judged by the Settings pair.
+
+**7. Backup.** Rows are plain JSON, so export and restore carry them whole; `BACKUP_VERSION` unchanged. *Red:* the round-trip test — `expected { …(12) } to match object { …(27) }`: `recordRun` had dropped the fields before the backup ever saw them. `01` §4.5 says what changed and why no store changed shape.
+
+**8. The ribbon.** *Mechanism:* `KeyRibbon` labelled a lit cell from `midiToNoteName`. *Change:* `paintStrip` gathers the marked keys' written names through the prepared step's `noteIdsByMidi` (T41's path) — for the preview, the step now and the step after — and hands them over as `KeyboardStripState.names`; a transposed key keeps its MIDI name. *Red:* unit `the ribbon named B♭3 from a table of sharps: expected 'A♯3' to be 'B♭3'`; e2e `the ribbon named B♭3 as A♯3 … Received string: "A♯3"`. *After:* *B♭3*, *D5*, then *E♭5* on the glass.
+
+## Pedagogical verdict (from the code and the pictures; nothing heard)
+
+The history lines are what a teacher would say: a Wait run's tempo is not judged, a run nobody heard is the learner's word, a jam is not marked. *not first sight* is the teacher's phrase and terse for a learner. Turning the guide off for sight-reading is right by the design's argument: a phrase read with the next key lit tests following, not reading. Whether a learner meeting a sight-read with an unlit strip for the first time is lost is unverified as music and as experience.
+
+## Tests
+
+| test | class | the assumption the old assertion encoded | why the new one reads the learner-facing outcome |
+|---|---|---|---|
+| `observationsFromRun` ×10 | add | — | the stored row, through the real engine, screen and store |
+| `progressHistoryLines` ×6 | add | — | the line on the real Progress screen, old rows and new; the words in `04` §6 |
+| `keyRibbonSpelling` ×3 | add | — | the label the CSS prints over a lit cell |
+| `sessionRetention` "keeps more than any screen reads…" | replace | nothing reads an old row | the cap against five years at ten runs a day and the budget, on a measured row |
+| `sessionRetention` "recording a run prunes without being asked" | revise | the test pruned the store itself; the run's prune deleted rows | waits for the run's own tidy; old rows compacted, none deleted |
+| `sessionRetention` "brings a store over the cap back down" | revise | the default cap is small enough to seed | the same rule at a small explicit cap |
+| `sessionRetention` compaction ×2 | add | — | per-bar tallies, the rest of the row kept |
+| `sessionRetention` under the cap, oldest first, no database | preserve | — | still true (compaction added to the last) |
+| `recordTruth` "a Wait run is stored…" | revise | the row is seven fields and two flags | every field kept, *not measured* included |
+| `recordTruth` "…a self-report its answer" | revise | a self-report row carries accuracy 0 | *not measured*, and no NaN best |
+| `recordTruth` not a first reading ×2 | add | — | minutes and attempt kept; no pass, best or day's tick; an unseen run still ticks |
+| `recordTruth` mastery, best tempo, review ×9 | preserve | — | untouched, green |
+| `scoreSummaryTruth` "opened from nowhere, the first rung listing it still judges it" | revise | a run from nowhere belongs to the first listing rung | no rung, the defaults |
+| `scoreSummaryTruth` "re-opening a phrase…" | revise | a re-read is not recorded | recorded, `unseen: false`, not passed (deviation 1) |
+| `scoreSummaryTruth` "Hear it before ▶", "so does Play it to me" | revise | a heard run is not recorded | recorded, `unseen: false`, not passed |
+| `scoreSummaryTruth` "Hear it part way", "played through without one" | revise | the take says nothing of the demonstration | `demonstrated` true / false |
+| `scoreSummaryTruth` `recordRunSpy` helper | revise | accuracy is always a number | a best of 0 for *not measured* |
+| `backingTrackSheet` "Count this set…" | add | — | the kept row: *not measured*, the notes played |
+| `backup` observed row round-trip | add | — | the restored row equals the recorded one |
+| `progressRanking` "…kept where it is news" | revise | the self-report is on no line of the row, so a badge | the answer on the line, no badge |
+| `settingsRoundTrip` candidates | revise | — | the new key survives coercion |
+| `lab.spec` "re-opened after it was read…" | revise | the second reading is not recorded | two rows, one unseen |
+| `lab.spec` "heard before its first run…" | revise | the heard run is not recorded | one row `unseen: false`; the day not ticked |
+| `score.screen.spec` "the ribbon names the flats…" | add | — | the ribbon in the Minuet in F |
+| `help.test` §5f sentences | preserve (file unchanged) | — | the new sentences printed in §5f in the same change |
+| `progressAtScale`, `scoreSession`, `engineTempo`, `engineEarlyNote`, `engineScoring`, `halfPedalDepth`, `lessonClaimsAboutApp`, `legacyStorage`, `backupStreaming` | preserve (code under them touched) | — | green: `sessionsForItem`'s walk, `paintStrip`, the engine's marks, `TechniqueMeasure.measured` add and change nothing they assert |
+
+## Runs (unpiped; exit codes read)
+
+- Red, committed code: the unit files above (each on its intended line, or on the missing function for the new mechanism); e2e on a `vite build` of the committed source, two workers: `lab.spec` sight-read tests exit 1 (2 failed, 2 passed), the ribbon test exit 1.
+- After: `npx tsc -b` 0; `npm run lint` 0; `npx vitest run` 0 — 216 files, 5,489 passed, 6 skipped; `npm run build:app` 0.
+- Playwright, `vite preview` on 4173, two workers, one config, no build during a run, final build: `lab.spec` 0 (14); `score.screen.spec` 0 (38); `score.states` + `drills` + `keys-guide` + `progress` + `progress.hierarchy` 0 (70). On the build before the last two small edits (the judged hand for the header; `paintStrip` reading the step only where the guide marks one): `score.run` + `today` + `progress` + `keys-guide` 0 (44); `engine` + `modes-technique-measure` + `first-day` + `lesson-flow` + `score.rhythm-ladder` + `score.hearbar` 0 (29).
+- C2's in-progress source was in every build after the red one.
+
+## Not done
+
+- Continuity (stops, gaps, time per step in Wait) and evenness: not measured by anything, not stored ahead of a measure.
+- The Today slot: not in the route, stored as *not measured*.
+
+## Follow-ups
+
+- **P1.** Today opens its cards without `?from=`, so Today runs record no rung and are judged by the defaults. Today should carry its slot and its rung in the route, apart from Back's `from`.
+- **P2.** The budget holds for a representative 64-bar row; a learner whose runs are mostly of the longest pieces (the Scherzo's compacted row is several times the 64-bar one) would pass it long before the cap. A second compaction stage (bars to totals after a year) or a bound in bytes would close it.
+- **P2.** The sheet's *Accents* line prints a share over flat velocities (screen keys); the record says *not measured*, the sheet does not.
+- **P2.** Other drill writers store placeholders as measurements: the walkthrough's `accuracy: 1`, every drill's `tempoPct: 100` (the history no longer prints a drill's tempo).
+- **P2.** Performances further back than 2,200 runs are kept and not listed; a numeric performance index would find them (a version bump).
+- **P2.** The side panel for a piece opened from nowhere shows the first listing rung's prose while the run is judged by the defaults.
+- **P3.** A compaction walk stops after fifty compact rows, so rows restored older than compacted ones wait until a walk reaches them.
+- **P3.** On the ribbon the lit *B♭3* label sits against the next cell's *C4* octave label.
+
+## Questions
+
+- Recording a re-read sight-read (deviation 1): the brief named only the heard one. Keep?
+- Today's runs judged by the defaults until Today carries its rung: acceptable meanwhile?
+
+## Unverified
+
+- Looked at: the pictures listed in the judgement, 342 × 740 upright, light, desktop Chromium. Not sideways, tablet, dark, 115 % text, or the owner's phone; the ♭ glyph on the phone's font.
+- The storage budget against the phone's quota (only a desktop Chromium's report was read); compaction's cost on a phone with thousands of rows.
+- `appPlayed` is read from the setting, not from sound that reached a speaker.
+- Nothing heard.
+
+## Files
+
+`app/src/engine/types.ts`, `Scoring.ts`, `PracticeEngine.ts`; `app/src/data/db.ts`, `progressStore.ts`, `settingsStore.ts` (the guide default); `app/src/ui/screens/ScoreScreen.ts`, `ProgressScreen.ts`, `DrillScreen.ts` (`keep()`, and the coaching's numeric filter), `SettingsScreen.ts` (deviation 3); `app/src/score/ScoreSession.ts` (`paintStrip`, the preview step); `app/src/ui/KeyRibbon.ts`, `KeyboardStrip.ts` (the state type), `expectedNote.ts` (deviation 4), `help.ts`; tests: `observationsFromRun`, `progressHistoryLines`, `keyRibbonSpelling` (new), `sessionRetention`, `recordTruth`, `scoreSummaryTruth`, `backingTrackSheet`, `backup`, `progressRanking`, `settingsRoundTrip`, e2e `lab.spec`, `score.screen.spec`; `docs/01-architecture.md` §4.5, `docs/02-curriculum.md` Part G, `docs/04-ui-spec.md` §2 §5 §5f §6 §7, `docs/05-score-follow-engine.md` §8 §9a, `docs/08-test-map.md`. `app/src/data/backup.ts`: unchanged (it carries the rows as they are).

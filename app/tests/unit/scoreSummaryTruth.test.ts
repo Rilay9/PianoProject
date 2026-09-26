@@ -48,7 +48,8 @@ const { findItemSpy, curriculumRef, loadedXml, onFinishedRef, sessionRef, record
       Promise.resolve({
         itemId: result.itemId,
         status: result.passed ? 'passed' : 'started',
-        bestAccuracy: result.accuracy,
+        // A run that measured nothing sets no best (C1).
+        bestAccuracy: typeof result.accuracy === 'number' ? result.accuracy : 0,
         bestTempoPct: 0,
         attempts: 1,
         lastPracticedAt: '',
@@ -605,12 +606,23 @@ describe('6: the run is judged by the rung that opened the screen', () => {
     expect(recorded.passed).toBe(false);
   });
 
-  it('opened from nowhere, the first rung listing it still judges it', async () => {
+  // Revised (C1; design §10 C1). This was "opened from nowhere, the first rung
+  // listing it still judges it": with no `?from=` the run was stored as the
+  // first listing rung's and held to its numbers — a rung nobody chose, whose
+  // prose the learner never opened. A run from nowhere records no opening
+  // rung and is judged by Part G's defaults (the Settings pair).
+  it('opened from nowhere, no rung judges it: it is held to the defaults and stored with no rung', async () => {
+    // The song first listed on a rung that asks 97 %, so the first-listing
+    // rule and the defaults give different answers at 93 %.
+    curriculumRef.current = {
+      ...CURRICULUM,
+      stages: [{ number: 2, units: [{ id: 'u2', lessons: [lesson('2.1', 0.97, 0.9)] }] }],
+    } as unknown as Curriculum;
     await open(`#/score/${SONG_ID}`);
     await new Promise((resolve) => setTimeout(resolve, 0));
     finish(run({ accuracy: 0.93, hits: 7 }));
     await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalled());
-    expect(lastRecorded().lessonId).toBe('1.1');
+    expect(lastRecorded().lessonId, 'a rung nobody opened was stored as the one that judged it').toBeUndefined();
     expect(lastRecorded().passed).toBe(true);
   });
 });
@@ -636,19 +648,26 @@ describe('7 and 8: a sight-read is the phrase its row asks for, recorded once', 
     expect(typeof lastRecorded().seed).toBe('number');
   });
 
-  it('re-opening a phrase already on the record is not a new first attempt', async () => {
+  // Revised (C1). T37 did not record a re-read of a phrase already on the
+  // record, so the minutes and the attempt were lost with the evidence. The
+  // reviewer's decision 3 for heard runs is the same rule: recorded, flagged
+  // `unseen: false`, and kept out of the evidence it cannot support — here the
+  // reading drill's pass.
+  it('re-opening a phrase already on the record is kept as practice, not a new first attempt', async () => {
     findItemSpy.mockResolvedValue(readerItem({ level: 1, bars: 2, hands: 'right' }));
     sessionsSpy.mockResolvedValue([{ itemId: READ_ID, seed: 777 } as unknown as SessionRow]);
     await open(`#/score/${READ_ID}?seed=777`);
     await vi.waitFor(() => expect(sessionsSpy).toHaveBeenCalled());
     await new Promise((resolve) => setTimeout(resolve, 0));
     finish(run({}));
-    await new Promise((resolve) => setTimeout(resolve, 0));
-    expect(recordRunSpy).not.toHaveBeenCalled();
+    await vi.waitFor(() => expect(recordRunSpy, 'a re-read went unrecorded, minutes and all').toHaveBeenCalledTimes(1));
+    expect(lastRecorded().unseen).toBe(false);
+    expect(lastRecorded().seed).toBe(777);
+    expect(lastRecorded().passed, 'a re-read passed the reading drill').toBe(false);
     // On the sheet (T40). It was read off `#score-status`, the header's line,
     // which the summary covers and which is cut after twenty-odd characters at
     // 342 px: seen on the glass, the learner could not read it.
-    expect(sheetNote()).toContain('first attempt only');
+    expect(sheetNote()).toBe(SUMMARY_TEXT.sightReadRepeat);
   });
 
   it('a different phrase of the same row is a first attempt', async () => {
@@ -686,23 +705,28 @@ describe('T40 2: a sight-read heard before its first run is not a first reading'
     findItemSpy.mockResolvedValue(readerItem({ level: 1, bars: 2, hands: 'right' }));
   });
 
-  it('Hear it before ▶: the run that follows is not recorded, and the sheet says why', async () => {
-    // T33 refused the record where the phrase was played part way through;
-    // played *before* the run, `heardAt` was emptied by the start and the
-    // first run went on the record as a first reading of music already heard.
+  // Revised (C1; reviewer decision 3). T40 made this run unrecorded: the
+  // reading was not a first reading, and so nothing of it was kept — its
+  // minutes, its attempt and, on Today's read, the day. It is recorded now,
+  // flagged `unseen: false`, and the flag keeps it out of the reading drill's
+  // pass. T33's case (heard part way) is the same flag.
+  it('Hear it before ▶: the run that follows is recorded as not a first reading, and the sheet says why', async () => {
     await open(`#/score/${READ_ID}`);
     await new Promise((resolve) => setTimeout(resolve, 0));
     click('score-hear');
     click('score-hear');
     click('score-play');
     finish(run({}));
-    await new Promise((resolve) => setTimeout(resolve, 0));
-    expect(recordRunSpy, 'a phrase the learner had heard, recorded as a first reading').not.toHaveBeenCalled();
+    await vi.waitFor(() => expect(recordRunSpy, 'a heard run went unrecorded, minutes and all').toHaveBeenCalledTimes(1));
+    expect(lastRecorded().unseen).toBe(false);
+    expect(lastRecorded().passed, 'a heard phrase passed the reading drill').toBe(false);
+    expect(lastRecorded().masterEligible).toBe(false);
     expect(sheetNote()).toBe(SUMMARY_TEXT.sightReadHeard);
-    // Nothing is recorded, so nothing is asked.
+    // Notes were heard, so nothing is asked.
     expect(document.getElementById('summary-selfreport')).toBeNull();
   });
 
+  // Revised (C1): as above, recorded and flagged rather than dropped.
   it('so does Play it to me, the mode', async () => {
     await open(`#/score/${READ_ID}?mode=listen`);
     await new Promise((resolve) => setTimeout(resolve, 0));
@@ -713,8 +737,8 @@ describe('T40 2: a sight-read heard before its first run is not a first reading'
     select.dispatchEvent(new Event('change', { bubbles: true }));
     click('score-play');
     finish(run({}));
-    await new Promise((resolve) => setTimeout(resolve, 0));
-    expect(recordRunSpy).not.toHaveBeenCalled();
+    await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalledTimes(1));
+    expect(lastRecorded().unseen).toBe(false);
     expect(sheetNote()).toBe(SUMMARY_TEXT.sightReadHeard);
   });
 
@@ -767,6 +791,8 @@ describe('T40 3: a performance with a demonstration inside it is kept as practic
     finish(run({}));
     await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalledTimes(1));
     expect(lastRecorded().performance, 'a demonstrated take kept as a performance').toBeUndefined();
+    // Revised (C1): the take also says what happened in it.
+    expect(lastRecorded().demonstrated).toBe(true);
     expect(stat('changed')).toContain('heard it played at bar 2');
     // Said in the heading, and still said once the store has answered and
     // the heading has been rewritten from the row (T37's *Mastery run*).
@@ -781,6 +807,7 @@ describe('T40 3: a performance with a demonstration inside it is kept as practic
     finish(run({}));
     await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalledTimes(1));
     expect(lastRecorded().performance).toBe(true);
+    expect(lastRecorded().demonstrated).toBe(false);
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(heading()).toBe('Mastery run 1 of 2');
   });

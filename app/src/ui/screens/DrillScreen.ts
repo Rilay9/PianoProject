@@ -60,7 +60,7 @@ import { Metronome } from '../../audio/Metronome';
 import { audioTimeToPerformanceMs, captureAudioClockAnchor, type AudioClockAnchor } from '../../audio/clock';
 import { metronomeSoundFor, shouldMuteExpectedPlayback } from '../../audio/inputPolicy';
 import { noteLabel, worthRecording, type DrillKind } from '../../engine/drills/types';
-import type { EngineInput, Mode } from '../../engine/types';
+import { NOT_MEASURED, type EngineInput, type Mode } from '../../engine/types';
 import { getSettings } from '../../data/settingsStore';
 import { getMidiSettings } from '../../data/midiSettings';
 import { getProgress, recordRun, sessionsForItem } from '../../data/progressStore';
@@ -2288,7 +2288,11 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // is about a week of practice — so anything on a fortnightly rotation got
     // no history, and the plateau advice silently stopped appearing with no
     // error and nothing on the screen to show for it.
-    const recent = await sessionsForItem(current.id, 2).catch(() => [] as { accuracy: number }[]);
+    // Only runs that measured an accuracy: a kept jam's is "not measured"
+    // (C1), and no plateau is made of that.
+    const recent = (await sessionsForItem(current.id, 2).catch(() => [])).flatMap((row) =>
+      typeof row.accuracy === 'number' ? [{ accuracy: row.accuracy, at: row.at }] : [],
+    );
     const coaching: Coaching | null = coach(result.kind, result, recent);
     if (!coaching) return;
     line.replaceChildren(el('span', { text: coaching.text }));
@@ -2502,18 +2506,24 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   function keep(): void {
     if (!item || !lastResult) return;
     const { result, outcome, durationMs } = lastResult;
+    // A set nothing judged (a backing track, T41) measured one thing, the
+    // notes played; its accuracy, wrong notes and misses are not measured and
+    // are stored as that (C1, L49). They were written as 0 and "every note
+    // played was wrong", and the Progress history printed the jam as "0%".
+    const judged = outcome.judged;
     void recordRun({
       itemId: item.id,
       // Which rung judged it — see the Score screen's note on the same field.
       ...(rung === undefined ? {} : { lessonId: rung.id }),
       mode: `drill:${result.kind}`,
       tempoPct: 100,
-      accuracy: result.accuracy,
+      accuracy: judged ? result.accuracy : NOT_MEASURED,
       // A drill's accuracy is measured, not estimated — every answer is
       // either the right pitch set or it is not.
       accuracyEstimated: false,
-      wrongNotes: Math.max(0, result.answered - result.correct),
-      missed: Math.max(0, result.total - result.answered),
+      wrongNotes: judged ? Math.max(0, result.answered - result.correct) : NOT_MEASURED,
+      missed: judged ? Math.max(0, result.total - result.answered) : NOT_MEASURED,
+      ...(judged ? {} : { notesHeard: result.detail?.notesPlayed ?? result.answered }),
       durationMs,
       passed: outcome.passed,
       masterEligible: outcome.masterEligible,

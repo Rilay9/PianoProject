@@ -87,6 +87,14 @@ export interface KeyboardStripState {
    * `undefined` leaves the numbers as they were, like every other field.
    */
   fingers?: ReadonlyMap<number, string>;
+  /**
+   * The name the score writes for a marked key, by midi — "E♭5" where the
+   * page prints a flat (C1, U44). The ribbon prints a lit cell's name, and it
+   * came from a table of sharps; the strip names only its C keys and ignores
+   * this. A key with no entry is named from its MIDI number; `undefined`
+   * leaves the names as they were, like every other field.
+   */
+  names?: ReadonlyMap<number, string>;
 }
 
 /**

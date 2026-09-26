@@ -349,6 +349,136 @@ export interface RecordedNote {
   releasedAtMs?: number;
 }
 
+/**
+ * The mark a channel carries when the run did not measure it (C1).
+ *
+ * Never a zero and never left out: a Wait for me run has no timing, a run the
+ * app heard nothing of has no accuracy, a jam nothing judged has no wrong
+ * notes, and each of those is a different fact from "measured, and it came to
+ * nought". A string rather than `null` so that a backup read in a text editor
+ * says it in words, and so the type makes every reader say what it does with
+ * it.
+ */
+export const NOT_MEASURED = 'not measured' as const;
+export type NotMeasured = typeof NOT_MEASURED;
+
+/**
+ * What happened at each step of a run, one character a step (C1).
+ *
+ * Kept because the hot spots keep the worst five bars and the record kept
+ * none, so a miss could never be attributed to the note where it happened
+ * (the ledger note, the skip) rather than to its whole bar — which is what a
+ * reader of reading skills needs (design §3).
+ *
+ * `codes[i]` is step `from + i` of the score model (`ScoreStep.index`):
+ *
+ * - `h` — Keep tempo: every expected pitch struck inside its window;
+ *   Wait: completed cleanly (no wrong note, at most one reset, `05` §2)
+ * - `p` — Keep tempo: some pitches in time and some missed
+ * - `m` — Keep tempo: every expected pitch missed
+ * - `e` — Keep tempo: a right pitch played early (`05` §3) and nothing missed
+ * - `w` — Wait: completed after a wrong note or a strict reset
+ * - `l` — Wait: completed by the microphone's chord leniency (`05` §11.4)
+ * - `-` — nothing for the learner to play (a rest, or the other hand's step)
+ * - `.` — not reached before the run ended
+ *
+ * A looped run sums its laps, so a step right on one lap and missed on the
+ * next reads `p`.
+ */
+export interface StepOutcomes {
+  /** The model step index of `codes[0]`. */
+  from: number;
+  codes: string;
+  /**
+   * Where each bar starts in `codes`, as flat pairs: `[offset, measure, …]`,
+   * `measure` being the printed measure index (`ScoreStep.sourceMeasureIndex`,
+   * 0-based; a piece with a pickup numbers it 0). In playing order, so a
+   * repeat is a bar again. What compaction to per-bar tallies reads.
+   */
+  measures: number[];
+  /**
+   * Wrong notes as flat pairs `[step, midi, …]`. Keep tempo: a note that
+   * matched nothing is put against the step nearest it in time, the way its
+   * bar is found for the hot spots; Wait: the step the run was on.
+   */
+  wrong: number[];
+  /** Right notes played before their window, as flat pairs `[step, midi, …]` (Keep tempo). */
+  early: number[];
+  /**
+   * The onset delta of every timed note, rounded, as flat pairs
+   * `[step, deltaMs, …]` — the notes in time and the early ones. Keep tempo
+   * only: a Wait run has no clock, and says so.
+   */
+  timing: number[] | NotMeasured;
+}
+
+/**
+ * One bar of a compacted run (C1): `[measure, steps, clean, missed, early,
+ * wrong]`, and `timed, meanMs` after them where the run timed notes.
+ *
+ * `steps` counts the bar's steps with something to play, `clean` those that
+ * came out `h`, `missed` those with a pitch missed (`m` or `p`), `early` and
+ * `wrong` the notes of those kinds, `timed` the notes with a delta and
+ * `meanMs` their rounded mean.
+ */
+export type BarTally =
+  | [measure: number, steps: number, clean: number, missed: number, early: number, wrong: number]
+  | [
+      measure: number,
+      steps: number,
+      clean: number,
+      missed: number,
+      early: number,
+      wrong: number,
+      timed: number,
+      meanMs: number,
+    ];
+
+/** The conditions the engine judged a run under, reported by the engine itself (C1). */
+export interface JudgedUnder {
+  hands: HandsFilter;
+  /** Whether grace notes were judged (`05` §1.3; off by default). */
+  graceNotes: boolean;
+  toleranceMs: number;
+  inputLatencyMs: number;
+  /** The printed measure indices (`sourceMeasureIndex`) of the run's first and last steps. */
+  fromMeasure: number;
+  toMeasure: number;
+}
+
+/** The pitch channel, with the definition it was measured by (C1). */
+export interface PitchObservation {
+  /**
+   * `wait-steps`: steps completed cleanly, of the steps with something to
+   * play. `tempo-notes`: expected pitches struck inside their window, of the
+   * expected pitches. Two definitions, never one number (L10).
+   */
+  definition: 'wait-steps' | 'tempo-notes';
+  right: number;
+  of: number;
+  /** The microphone's figure, which is an estimate (`05` §11.4). */
+  estimated: boolean;
+}
+
+/** What a run measured, by its own definitions (C1): the measures half of an observation. */
+export interface RunMeasures {
+  pitch: PitchObservation | NotMeasured;
+  /** A rhythm-only run's figure: expected notes whose moment was hit, of the expected (`05` §3a). */
+  rhythm?: { right: number; of: number };
+  /** Right notes played before their window (Keep tempo). */
+  early: number | NotMeasured;
+  timing: { n: number; meanMs: number; sdMs: number } | NotMeasured;
+  steps?: StepOutcomes;
+  /** The exercise's technique measure, where its `drill` block asks for one (P12a). */
+  technique?: { kind: string; result: 'met' | 'not met' | NotMeasured; judged: number };
+  /** Accented notes played louder than the run's own unaccented ones, where the score prints accents. */
+  accents?: { right: number; of: number } | NotMeasured;
+  /** CC64 messages, and those with the damper down. Only MIDI can send one. */
+  pedal: { messages: number; down: number } | NotMeasured;
+  chords: { rolled: number; lenient: number };
+  loops: number;
+}
+
 export interface TimingStats {
   n: number;
   meanMs: number;
@@ -449,4 +579,12 @@ export interface SessionScore {
    */
   pedal?: readonly number[];
   notes: RecordedNote[];
+  /**
+   * What happened at every step of the run (C1). Optional for the reason
+   * `rhythmOnly` is: a score built before it existed, or by hand in a test,
+   * reads as a run whose steps were not kept.
+   */
+  stepOutcomes?: StepOutcomes;
+  /** The hands, the grace-note rule, the window and the range the engine judged under (C1). */
+  judgedUnder?: JudgedUnder;
 }

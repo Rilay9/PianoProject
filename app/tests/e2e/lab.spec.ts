@@ -350,13 +350,17 @@ test.describe("Today's sight-read", () => {
     // day's seed, so re-opening it recorded its first run as a first attempt
     // again. The seed is on the session row now: this plays the day's phrase
     // once, opens it again, plays it again, and reads the store.
+    //
+    // Revised (C1): the second reading used to go unrecorded, minutes and
+    // all. It is recorded now, flagged as not a first reading (`unseen:
+    // false`), which is what keeps it out of the reading drill's evidence.
     test.setTimeout(240_000);
-    const sessions = (): Promise<{ itemId: string; seed?: number }[]> =>
+    const sessions = (): Promise<{ itemId: string; seed?: number; unseen?: boolean }[]> =>
       page.evaluate(async () => {
         const hooks = (window as unknown as {
           __pianopath: { exportAll: () => Promise<{ stores: Record<string, unknown[]> }> };
         }).__pianopath;
-        return (await hooks.exportAll()).stores.sessions as { itemId: string; seed?: number }[];
+        return (await hooks.exportAll()).stores.sessions as { itemId: string; seed?: number; unseen?: boolean }[];
       });
     const readOnce = async (): Promise<void> => {
       await page.goto('/');
@@ -379,15 +383,17 @@ test.describe("Today's sight-read", () => {
     await expect.poll(async () => (await sessions()).length, { timeout: 30_000 }).toBe(1);
     const first = (await sessions())[0];
     expect(typeof first?.seed, 'the day’s phrase went on the record without its seed').toBe('number');
+    expect(first?.unseen).toBe(true);
 
     await readOnce();
     // On the sheet (revised by T40): this read `#score-status`, the header's
     // line, which the summary covers and cuts after twenty-odd characters at
     // 342 px — the learner could not read what the test could.
     await expect(page.locator('#summary-note')).toContainText('first attempt only');
-    // Give a write that should not happen the time a write takes, then count.
-    await page.waitForTimeout(1_000);
-    expect(await sessions(), 'the same phrase was recorded as a first attempt twice').toHaveLength(1);
+    await expect.poll(async () => (await sessions()).length, { timeout: 30_000 }).toBe(2);
+    const rows = await sessions();
+    expect(rows.filter((row) => row.unseen === true), 'the same phrase was recorded as a first attempt twice').toHaveLength(1);
+    expect(rows.filter((row) => row.unseen === false && row.seed === first?.seed)).toHaveLength(1);
   });
 
   test('heard before its first run, the phrase is not read for the first time', async ({ page }) => {
@@ -395,13 +401,17 @@ test.describe("Today's sight-read", () => {
     // phrase was played to *part way through*; played to the learner before
     // the run started, the run that followed went on the record as the first
     // reading of music already heard.
+    //
+    // Revised (C1; the reviewer's decision 3). T40 then recorded nothing of
+    // it; it is recorded now, flagged `unseen: false`, so the practice counts
+    // and the reading does not — and the day is not ticked by it.
     test.setTimeout(240_000);
-    const sessions = (): Promise<{ itemId: string; seed?: number }[]> =>
+    const sessions = (): Promise<{ itemId: string; seed?: number; unseen?: boolean }[]> =>
       page.evaluate(async () => {
         const hooks = (window as unknown as {
           __pianopath: { exportAll: () => Promise<{ stores: Record<string, unknown[]> }> };
         }).__pianopath;
-        return (await hooks.exportAll()).stores.sessions as { itemId: string; seed?: number }[];
+        return (await hooks.exportAll()).stores.sessions as { itemId: string; seed?: number; unseen?: boolean }[];
       });
     await page.goto('/');
     const row = page.locator('#today-daily .list-row');
@@ -427,11 +437,12 @@ test.describe("Today's sight-read", () => {
     await playInTime(page, 'keys');
     const sheet = page.locator('#score-summary');
     await expect(sheet).toBeVisible({ timeout: 60_000 });
-    // Give a write that should not happen the time a write takes, then count.
-    await page.waitForTimeout(1_000);
-    expect(await sessions(), 'a phrase the learner had heard, recorded as a first reading').toHaveLength(0);
+    await expect.poll(async () => (await sessions()).length, { timeout: 30_000 }).toBe(1);
+    const [stored] = await sessions();
+    expect(stored?.unseen, 'a phrase the learner had heard, recorded as a first reading').toBe(false);
+    expect(String(stored?.seed)).toBe(seed);
     await expect(sheet.locator('#summary-note')).toHaveText(
-      'Sight-reading counts only on music you have not heard — this run is not recorded.',
+      'Sight-reading counts only on music you have not heard — this run is kept as practice.',
     );
 
     // The way to a phrase nobody has heard is on the same sheet.
@@ -439,6 +450,12 @@ test.describe("Today's sight-read", () => {
     await expect.poll(() => new URL(page.url()).hash, { timeout: 10_000 }).not.toContain(`seed=${seed ?? ''}`);
     expect(new URL(page.url()).hash).toMatch(/seed=\d+/);
     await expect(page.locator('#score-stage .is-front svg').first()).toBeVisible({ timeout: 60_000 });
+
+    // Recorded, and still not the day's read: Today's card is not ticked.
+    await page.goto('/');
+    const card = page.locator('#today-daily .list-row');
+    await expect(card).toBeVisible({ timeout: 30_000 });
+    await expect(card).toHaveAttribute('data-done', 'false');
   });
 });
 

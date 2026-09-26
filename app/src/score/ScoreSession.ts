@@ -28,6 +28,7 @@ import type {
   LoopRange,
   Mode,
   PreparedSession,
+  PreparedStep,
   SessionScore,
 } from '../engine/types';
 import {
@@ -39,6 +40,7 @@ import {
 import type { ScoreModel } from './types';
 import { WindowRenderer, type HandsFocus, type NoteState, type ScoreLayout } from './WindowRenderer';
 import type { KeyView } from '../ui/KeyboardStrip';
+import { writtenNoteName } from '../ui/expectedNote';
 import type { Piano } from '../audio/Piano';
 import { Metronome, type MetronomeSound } from '../audio/Metronome';
 import { captureAudioClockAnchor } from '../audio/clock';
@@ -385,6 +387,8 @@ export class ScoreSession {
    * exists — this is only ever the answer before the first note.
    */
   private previewExpected: number[] = [];
+  /** The step `previewExpected` came from, so its keys can be named as written (C1). */
+  private previewStep: PreparedStep | null = null;
 
   /**
    * What the last preview was computed for, so it is computed once.
@@ -419,6 +423,7 @@ export class ScoreSession {
       ...(run.loop ? { loop: run.loop } : {}),
     });
     this.previewExpected = run.mode === 'free' ? [] : (prepared.steps[0]?.expected ?? []);
+    this.previewStep = prepared.steps[0] ?? null;
     this.paintStrip();
   }
 
@@ -1046,6 +1051,26 @@ export class ScoreSession {
     this.paintStrip();
   }
 
+  /**
+   * The written name of each of `keys` in one prepared step, by midi (C1).
+   *
+   * Only a note whose own pitch is the key: a transposed run's key is not the
+   * note the page prints, and is left to its MIDI name. One key written two
+   * ways in the step (G♭ in one hand, F♯ in the other) is named both ways.
+   */
+  private writtenNamesOf(step: PreparedStep | null, keys: readonly number[], into: Map<number, string>): void {
+    if (!step) return;
+    const notes = this.options.model.steps[step.index]?.notes ?? [];
+    for (const midi of keys) {
+      if (into.has(midi)) continue;
+      const ids = new Set(step.noteIdsByMidi.get(midi) ?? []);
+      const spelled = [
+        ...new Set(notes.filter((note) => ids.has(note.id) && note.midi === midi).map((note) => writtenNoteName(note))),
+      ];
+      if (spelled.length > 0) into.set(midi, spelled.join('/'));
+    }
+  }
+
   /** The score's finger numbers for a step's notes, by midi. */
   private fingersOf(stepIndex: number, into: Map<number, string>): void {
     const step = this.options.model.steps[stepIndex];
@@ -1076,13 +1101,27 @@ export class ScoreSession {
     const next = guide === 'off' ? [] : guide === 'next-two' ? this.expectedAfter : this.expectedNext;
     const fingerMap = new Map<number, string>();
     const engine = this.engine;
-    if (fingers && engine && guide !== 'off') {
-      const step = engine.state.step;
-      this.fingersOf(step, fingerMap);
-      if (next.length > 0) this.fingersOf(step + 1, fingerMap);
+    // `state` builds a score, so it is asked once, and only where the guide
+    // marks something to number or name (T31's cost note on `state`).
+    const at = engine && guide !== 'off' ? engine.state.step : null;
+    if (fingers && at !== null && guide !== 'off') {
+      this.fingersOf(at, fingerMap);
+      if (next.length > 0) this.fingersOf(at + 1, fingerMap);
       // Only the keys that are marked: a number on a plain key is a puzzle.
       const marked = new Set([...expected, ...next]);
       for (const midi of [...fingerMap.keys()]) if (!marked.has(midi)) fingerMap.delete(midi);
+    }
+    // The marked keys' names as the score writes them (C1, U44): the ribbon
+    // prints a lit cell's name, and it named every black key from a table of
+    // sharps, so the Minuet in F lit E♭5 as *D♯5*. The step's written notes
+    // are gathered the way the status line gathers them (T41,
+    // `ScoreScreen.writtenNow`), through the prepared step's `noteIdsByMidi`.
+    const names = new Map<number, string>();
+    if (guide !== 'off') {
+      const steps = engine?.prepared.steps;
+      const nowStep = at === null ? this.previewStep : (steps?.[at] ?? null);
+      this.writtenNamesOf(nowStep, expected, names);
+      if (at !== null) this.writtenNamesOf(steps?.[at + 1] ?? null, next, names);
     }
     strip.setState({
       expected: new Set(expected),
@@ -1092,6 +1131,7 @@ export class ScoreSession {
       wrong,
       uncertain,
       fingers: fingerMap,
+      names,
     });
     // Keep what it is waiting for on the screen — all of it. This asked for
     // the lowest note alone, which for two hands an octave apart put the other

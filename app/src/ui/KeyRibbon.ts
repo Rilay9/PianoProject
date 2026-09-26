@@ -12,6 +12,13 @@
  * Same contract as `KeyboardStrip` (`KeyView`), so the session drives either
  * without knowing which it has. Not interactive: a cell 8 px wide is not a
  * key anyone can play, and the strip exists for the learner with no piano.
+ *
+ * **The name is the score's (C1, U44).** It was the MIDI number's, from a
+ * table of sharps, so the Minuet in F lit E♭5 as *D♯5* under a page printing
+ * the flat — the fault T41 fixed on the status line, on the other line a
+ * learner reads. The session hands the written names of the marked keys over
+ * (`KeyboardStripState.names`); a key the score names nothing for keeps its
+ * MIDI name.
  */
 import { midiToNoteName } from '../midi/parseMidiMessage';
 import {
@@ -31,6 +38,14 @@ const STATE_CLASSES: Record<KeyStateName, string> = {
   wrong: 'is-wrong',
   uncertain: 'is-uncertain',
 };
+
+/**
+ * A key's name from its MIDI number, for a cell the score has not named.
+ * `#` reads as a hash on a phone; the sharp sign is the note's name.
+ */
+function plainName(midi: number): string {
+  return midiToNoteName(midi).replace('#', '♯');
+}
 
 export interface KeyRibbonOptions {
   from?: number;
@@ -67,8 +82,7 @@ export class KeyRibbon implements KeyView {
       const name = midiToNoteName(midi);
       cell.className = `rib ${isBlackKey(midi) ? 'rib--black' : 'rib--white'}`;
       cell.dataset.midi = String(midi);
-      // `#` reads as a hash on a phone; the sharp sign is the note's name.
-      cell.dataset.note = name.replace('#', '♯');
+      cell.dataset.note = plainName(midi);
       if (name.startsWith('C') && !name.includes('#')) cell.dataset.octave = name;
       cells.appendChild(cell);
       this.cells.set(midi, cell);
@@ -87,26 +101,30 @@ export class KeyRibbon implements KeyView {
       if (next === undefined) continue;
       this.applySet(name, next);
     }
-    if (state.fingers !== undefined) this.applyFingers(state.fingers);
+    if (state.fingers === undefined && state.names === undefined) return;
+    const touched = new Set([...this.fingers.keys(), ...this.names.keys()]);
+    if (state.fingers !== undefined) this.fingers = new Map(state.fingers);
+    if (state.names !== undefined) this.names = new Map(state.names);
+    for (const midi of [...this.fingers.keys(), ...this.names.keys()]) touched.add(midi);
+    for (const midi of touched) {
+      const cell = this.cells.get(midi);
+      if (cell) cell.dataset.note = this.labelFor(midi);
+    }
   }
 
-  /** The cells carrying a finger number; the name gets the number after it. */
-  private readonly fingered = new Set<number>();
+  /** The finger number for a marked cell; the name gets the number after it. */
+  private fingers = new Map<number, string>();
+  /**
+   * The name the score writes for a marked cell (C1, U44). A cell the score
+   * names nothing for is named from its MIDI number, which is also every
+   * unlit cell's name: the CSS prints a name only over a lit one.
+   */
+  private names = new Map<number, string>();
 
-  private applyFingers(fingers: ReadonlyMap<number, string>): void {
-    for (const midi of this.fingered) {
-      if (!fingers.has(midi)) {
-        const cell = this.cells.get(midi);
-        if (cell) cell.dataset.note = midiToNoteName(midi).replace('#', '♯');
-        this.fingered.delete(midi);
-      }
-    }
-    for (const [midi, finger] of fingers) {
-      const cell = this.cells.get(midi);
-      if (!cell) continue;
-      cell.dataset.note = `${midiToNoteName(midi).replace('#', '♯')} ${finger}`;
-      this.fingered.add(midi);
-    }
+  private labelFor(midi: number): string {
+    const name = this.names.get(midi) ?? plainName(midi);
+    const finger = this.fingers.get(midi);
+    return finger === undefined ? name : `${name} ${finger}`;
   }
 
   clear(): void {

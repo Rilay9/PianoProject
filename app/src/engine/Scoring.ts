@@ -6,13 +6,18 @@
 // running a session at all.
 
 import { summarise } from '../util/stats';
-import type {
-  HotSpot,
-  Mode,
-  PreparedStep,
-  RecordedNote,
-  SessionScore,
-  TimingStats,
+import {
+  NOT_MEASURED,
+  type BarTally,
+  type HotSpot,
+  type JudgedUnder,
+  type Mode,
+  type PreparedStep,
+  type RecordedNote,
+  type RunMeasures,
+  type SessionScore,
+  type StepOutcomes,
+  type TimingStats,
 } from './types';
 
 /** Histogram edges in milliseconds, matching the summary sheet in docs/04 §5. */
@@ -109,6 +114,93 @@ export interface ScoreInput {
   lenientChordSteps: number;
   /** Every CC64 value the run saw. Absent reads as none, for old callers. */
   pedal?: readonly number[];
+  /**
+   * What happened at each step, as the engine marked it (C1). Absent for a
+   * caller that does not keep them, which then reports no step outcomes.
+   */
+  stepMarks?: ReadonlyMap<number, StepMark>;
+  /** Flat `[step, deltaMs, …]` for every timed note, in the order they were timed. */
+  timed?: readonly number[];
+  /** Flat `[step, midi, …]` for every right note played early. */
+  earlyNotes?: readonly number[];
+  judgedUnder?: JudgedUnder;
+}
+
+/**
+ * What the engine marked at one step as the run went (C1).
+ *
+ * Counted where each thing is decided — a hit where a pitch matches, a miss
+ * and an early note where a window closes, a Wait step's cleanliness where
+ * it completes — so nothing is reconstructed afterwards from the notes, which
+ * do not carry the misses at all.
+ */
+export interface StepMark {
+  hit: number;
+  missed: number;
+  early: number;
+  /** The pitches of the wrong notes put against this step. */
+  wrong: number[];
+  /** The step was finished: its window closed, or (Wait) it was completed. */
+  done: boolean;
+  /** Wait: completed with no wrong note and at most one reset. */
+  clean: boolean;
+  /** Wait: completed by the microphone's chord leniency. */
+  lenient: boolean;
+}
+
+export function emptyStepMark(): StepMark {
+  return { hit: 0, missed: 0, early: 0, wrong: [], done: false, clean: false, lenient: false };
+}
+
+/** One step's code (see `StepOutcomes`). */
+function stepCode(step: PreparedStep, mark: StepMark | undefined, waitMode: boolean): string {
+  if (step.isEmpty || step.expected.length === 0) return '-';
+  if (!mark) return '.';
+  if (waitMode) {
+    if (!mark.done) return '.';
+    if (mark.lenient) return 'l';
+    return mark.clean ? 'h' : 'w';
+  }
+  const expected = step.expected.length;
+  if (!mark.done && mark.missed === 0 && mark.early === 0 && mark.hit < expected) return '.';
+  if (mark.missed === 0 && mark.early === 0 && mark.hit >= expected) return 'h';
+  if (mark.hit === 0 && mark.early === 0) return 'm';
+  if (mark.missed === 0) return 'e';
+  return 'p';
+}
+
+/** Every step of the run, coded, with where each bar begins (C1). */
+function stepOutcomesFor(input: ScoreInput, marks: ReadonlyMap<number, StepMark>): StepOutcomes {
+  const waitMode = input.mode === 'wait';
+  const codes: string[] = [];
+  const measures: number[] = [];
+  const wrong: number[] = [];
+  let lastMeasure: number | null = null;
+  for (let i = input.firstStep; i <= input.lastStep; i += 1) {
+    const step = input.steps[i];
+    if (!step) {
+      codes.push('-');
+      continue;
+    }
+    if (step.measureIndex !== lastMeasure) {
+      measures.push(codes.length, step.sourceMeasureIndex);
+      lastMeasure = step.measureIndex;
+    }
+    const mark = marks.get(i);
+    codes.push(stepCode(step, mark, waitMode));
+    for (const midi of mark?.wrong ?? []) wrong.push(i, midi);
+  }
+  return {
+    from: input.firstStep,
+    codes: codes.join(''),
+    measures,
+    wrong,
+    early: [...(input.earlyNotes ?? [])],
+    // Wait has no clock, so no note of it was timed: not an empty list.
+    // Rounded to the millisecond, and `|| 0` so a delta that rounds to -0 is
+    // stored as the 0 it is.
+    timing: waitMode ? NOT_MEASURED : (input.timed ?? []).map((value, index) => (index % 2 === 0 ? value : Math.round(value) || 0)),
+  };
 }
 
 export function buildScore(input: ScoreInput): SessionScore {
@@ -152,7 +244,154 @@ export function buildScore(input: ScoreInput): SessionScore {
     lenientChordSteps: input.lenientChordSteps,
     pedal: [...(input.pedal ?? [])],
     notes: [...input.notes],
+    ...(input.stepMarks ? { stepOutcomes: stepOutcomesFor(input, input.stepMarks) } : {}),
+    ...(input.judgedUnder ? { judgedUnder: { ...input.judgedUnder } } : {}),
   };
+}
+
+/** What a caller knows about a run that the score alone does not (C1). */
+export interface MeasureContext {
+  /** Whether any note reached the engine (T40's `heard`). */
+  heard: boolean;
+  /** The exercise's technique measure, as the sheet computed it, or none asked. */
+  technique: TechniqueMeasure | null;
+  /** Whether the input could send a pedal message at all: MIDI only. */
+  pedalMeasurable: boolean;
+  /** The run's prepared steps, for the accents; empty when the caller has none. */
+  steps: readonly PreparedStep[];
+}
+
+/**
+ * What the run measured, by its own definitions, with every channel it did
+ * not measure marked `not measured` (C1; design §3).
+ *
+ * The one place the definitions live, so the record and a later reader
+ * deriving from a stored row agree: Wait's pitch is steps completed cleanly,
+ * Keep tempo's is expected pitches struck inside their window, and a
+ * rhythm-only run has no pitch at all — its figure is the rhythm's. A run the
+ * app heard nothing of measured nothing: no pitch, no timing, no steps.
+ */
+export function measuresOf(score: SessionScore, context: MeasureContext): RunMeasures {
+  const chords = { rolled: score.rolledChordSteps, lenient: score.lenientChordSteps };
+  const pedal = context.pedalMeasurable
+    ? { messages: score.pedal?.length ?? 0, down: (score.pedal ?? []).filter((value) => value > 0).length }
+    : NOT_MEASURED;
+  if (!context.heard) {
+    return {
+      pitch: NOT_MEASURED,
+      early: NOT_MEASURED,
+      timing: NOT_MEASURED,
+      ...(context.technique ? { technique: { kind: context.technique.kind, result: NOT_MEASURED, judged: 0 } } : {}),
+      pedal,
+      chords,
+      loops: score.loops,
+    };
+  }
+  const wait = score.mode === 'wait';
+  const rhythm = score.rhythmOnly === true;
+  const pitch = rhythm
+    ? NOT_MEASURED
+    : {
+        definition: wait ? ('wait-steps' as const) : ('tempo-notes' as const),
+        right: wait ? score.correctSteps : score.hits,
+        of: wait ? score.totalSteps : score.expectedNotes,
+        estimated: score.accuracyEstimated,
+      };
+  // Early is a Keep tempo observation, and a rhythm run does not hold a right
+  // pitch for its window (it judges no pitch), so it has none either.
+  const early = wait || rhythm ? NOT_MEASURED : (score.early ?? 0);
+  const timing =
+    wait || score.timing.n === 0
+      ? NOT_MEASURED
+      : {
+          n: score.timing.n,
+          meanMs: Math.round(score.timing.meanMs) || 0,
+          sdMs: Math.round(score.timing.stdDevMs) || 0,
+        };
+  const technique = context.technique
+    ? {
+        kind: context.technique.kind,
+        result: context.technique.measured ? (context.technique.met ? ('met' as const) : ('not met' as const)) : NOT_MEASURED,
+        judged: context.technique.judged,
+      }
+    : undefined;
+  const accents = accentsObserved(score, context.steps);
+  return {
+    pitch,
+    ...(rhythm ? { rhythm: { right: score.hits, of: score.expectedNotes } } : {}),
+    early,
+    timing,
+    ...(score.stepOutcomes ? { steps: score.stepOutcomes } : {}),
+    ...(technique ? { technique } : {}),
+    ...(accents === undefined ? {} : { accents }),
+    pedal,
+    chords,
+    loops: score.loops,
+  };
+}
+
+/**
+ * The accents, where the run's music prints one: how many were played louder
+ * than the run's own unaccented notes, or `not measured` where the notes all
+ * arrived at one velocity (the screen keys) or there was nothing to compare.
+ */
+function accentsObserved(
+  score: SessionScore,
+  steps: readonly PreparedStep[],
+): { right: number; of: number } | typeof NOT_MEASURED | undefined {
+  if (!steps.some((step) => (step.accents?.length ?? 0) > 0)) return undefined;
+  if (velocityIsFlat(score.notes)) return NOT_MEASURED;
+  const result = accentScore(score.notes, steps);
+  return result.judged > 0 ? { right: result.correct, of: result.judged } : NOT_MEASURED;
+}
+
+/**
+ * A run's per-step detail folded into per-bar tallies (C1), for a stored row
+ * past the observation window: see `BarTally`. What is lost is which step in
+ * a bar a miss or a wrong note was at; the bar, the counts and the timing's
+ * mean per bar stay.
+ */
+export function compactSteps(steps: StepOutcomes): BarTally[] {
+  const bars: BarTally[] = [];
+  const timed = steps.timing !== NOT_MEASURED;
+  const timing = steps.timing === NOT_MEASURED ? [] : steps.timing;
+  for (let i = 0; i < steps.measures.length; i += 2) {
+    const offset = steps.measures[i] ?? 0;
+    const measure = steps.measures[i + 1] ?? 0;
+    const end = steps.measures[i + 2] ?? steps.codes.length;
+    const segment = steps.codes.slice(offset, end);
+    const first = steps.from + offset;
+    const last = steps.from + end - 1;
+    const inBar = (step: number): boolean => step >= first && step <= last;
+    const count = (pairs: readonly number[]): number => {
+      let n = 0;
+      for (let p = 0; p < pairs.length; p += 2) if (inBar(pairs[p] ?? -1)) n += 1;
+      return n;
+    };
+    let playable = 0;
+    let clean = 0;
+    let missed = 0;
+    for (const code of segment) {
+      if (code === '-') continue;
+      playable += 1;
+      if (code === 'h') clean += 1;
+      if (code === 'm' || code === 'p') missed += 1;
+    }
+    const tally: BarTally = [measure, playable, clean, missed, count(steps.early), count(steps.wrong)];
+    if (timed) {
+      let n = 0;
+      let sum = 0;
+      for (let p = 0; p < timing.length; p += 2) {
+        if (!inBar(timing[p] ?? -1)) continue;
+        n += 1;
+        sum += timing[p + 1] ?? 0;
+      }
+      bars.push([...tally, n, n > 0 ? Math.round(sum / n) || 0 : 0]);
+    } else {
+      bars.push(tally);
+    }
+  }
+  return bars;
 }
 
 /** Thresholds from docs/02-curriculum.md Part G; all are settings. */
@@ -495,6 +734,13 @@ export interface TechniqueMeasure {
   met: boolean;
   /** How many things were judged — nought means the run could not say. */
   judged: number;
+  /**
+   * Whether the run could take the measure at all (C1). False on every
+   * *not measured* line — no note-off, one velocity, no pedal message, a
+   * pedal that is a switch — so a record can say "not measured" without
+   * reading the sentence.
+   */
+  measured: boolean;
 }
 
 function numberParam(params: Record<string, unknown> | undefined, name: string): number | null {
@@ -562,6 +808,7 @@ export function techniqueMeasureFor(
         text: 'not measured — the input did not say when the keys came up',
         met: false,
         judged: 0,
+        measured: false,
       };
     }
     const share = result.accuracy;
@@ -573,6 +820,7 @@ export function techniqueMeasureFor(
       )}% of the written value)`,
       met: share >= minShare,
       judged: result.judged,
+      measured: true,
     };
   }
 
@@ -586,12 +834,13 @@ export function techniqueMeasureFor(
         text: 'not measured — no chord was struck with more than one note',
         met: false,
         judged: 0,
+        measured: false,
       };
     }
     // After the count, because "no chord was struck" is the more specific
     // answer where both are true.
     if (velocityIsFlat(score.notes)) {
-      return { kind: drill.kind, label: 'Top note', text: NO_DYNAMICS, met: false, judged: 0 };
+      return { kind: drill.kind, label: 'Top note', text: NO_DYNAMICS, met: false, judged: 0, measured: false };
     }
     return {
       kind: drill.kind,
@@ -601,6 +850,7 @@ export function techniqueMeasureFor(
       )} times the rest (on average ${result.meanRatio.toFixed(2)}×)`,
       met: result.accuracy >= minShare,
       judged: result.judged,
+      measured: true,
     };
   }
 
@@ -615,6 +865,7 @@ export function techniqueMeasureFor(
         text: 'not measured — too few notes were heard to have a slope',
         met: false,
         judged: score.notes.length,
+        measured: false,
       };
     }
     // A line of one velocity has no slope to read, and reporting it as a
@@ -626,6 +877,7 @@ export function techniqueMeasureFor(
         text: NO_DYNAMICS,
         met: false,
         judged: 0,
+        measured: false,
       };
     }
     return {
@@ -636,6 +888,7 @@ export function techniqueMeasureFor(
       )}% of it in the right direction`,
       met: result.passed,
       judged: score.notes.length,
+      measured: true,
     };
   }
 
@@ -651,6 +904,7 @@ export function techniqueMeasureFor(
         text: 'not measured — no pedal message arrived',
         met: false,
         judged: 0,
+        measured: false,
       };
     }
     if (result.held === 0) {
@@ -663,6 +917,7 @@ export function techniqueMeasureFor(
         text: 'not measured — the pedal never left the top',
         met: false,
         judged: 0,
+        measured: false,
       };
     }
     if (result.binaryPedal) {
@@ -672,6 +927,7 @@ export function techniqueMeasureFor(
         text: 'not measured — this pedal is a switch, sending only 0 and 127',
         met: false,
         judged: result.held,
+        measured: false,
       };
     }
     return {
@@ -685,6 +941,7 @@ export function techniqueMeasureFor(
       )} pedal messages with the pedal down were between ${String(range[0])} and ${String(range[1])}`,
       met: result.share >= minShare,
       judged: result.held,
+      measured: true,
     };
   }
 

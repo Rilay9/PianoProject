@@ -37,6 +37,8 @@ function candidates(key: keyof PracticeSettings): unknown[] {
     defaultModeWithoutInput: ['wait'],
     layout: ['scroll'],
     keysGuide: ['next-two', 'off'],
+    // C1: the reading drills' own guide, whose default is off.
+    keysGuideSightReading: ['next', 'next-two'],
     metronomeSound: ['beep', 'high'],
     playbackDestination: ['piano', 'both'],
     playbackHands: ['both', 'none'],

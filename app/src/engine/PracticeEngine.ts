@@ -31,7 +31,7 @@ import {
   type SessionScore,
 } from './types';
 import { MAX_TEMPO_PCT, MIN_TEMPO_PCT, nextPlayableStep, prepareSession } from './prepareSession';
-import { buildScore } from './Scoring';
+import { buildScore, emptyStepMark, type StepMark } from './Scoring';
 import type { ScoreModel } from '../score/types';
 
 /** Sustain pedal; recorded for the pedal drill, never blocks advancement. */
@@ -282,6 +282,20 @@ export class PracticeEngine {
   private readonly earlyStrikes = new Map<number, Map<number, { deltaMs: number }>>();
   private earlyTotal = 0;
   private readonly earlyByMeasure = new Map<number, number>();
+  /**
+   * What happened at each step, marked where it was decided (C1).
+   *
+   * The totals above are per run and per bar; the sheet needs no more. The
+   * record does: a miss put against its bar cannot be told from a miss of the
+   * ledger note in that bar, and the miss maps are per bar while `recorded`
+   * holds only notes that were played. So each hit, miss, early note, wrong
+   * note and Wait completion also lands on its step here.
+   */
+  private readonly stepMarks = new Map<number, StepMark>();
+  /** Flat `[step, deltaMs, …]` beside `deltas`: which step each timed note was. */
+  private readonly timed: number[] = [];
+  /** Flat `[step, midi, …]`: the right notes played early, where their windows closed. */
+  private readonly earlyNotes: number[] = [];
 
   constructor(model: ScoreModel, options: EngineOptions, clock: Clock = systemClock) {
     this.session = prepareSession(model, options);
@@ -744,6 +758,7 @@ export class PracticeEngine {
       this.progress.strikeTimes.push(tMs);
       if (confidence > this.progress.bestConfidence) this.progress.bestConfidence = confidence;
       if (this.progress.firstStrikeMs === null) this.progress.firstStrikeMs = tMs;
+      this.markStep(this.step).hit += 1;
       this.record(midi, velocity, tMs, this.step, true);
       this.emit({
         kind: 'noteJudged',
@@ -785,6 +800,7 @@ export class PracticeEngine {
     this.progress.wrongCount += 1;
     this.wrongNotesTotal += 1;
     this.bump(this.wrongsByMeasure, current.measureIndex);
+    this.markStep(this.step).wrong.push(midi);
     if (this.session.options.strict) {
       this.progress.satisfied.clear();
       this.progress.strikeTimes.length = 0;
@@ -827,7 +843,11 @@ export class PracticeEngine {
       if (!this.progress.satisfied.has(midi)) return;
     }
     // docs/05 §2: a step counts as correct with no wrong notes and ≤ 1 retry.
-    if (this.progress.wrongCount === 0 && this.progress.retries <= 1) this.correctSteps += 1;
+    const clean = this.progress.wrongCount === 0 && this.progress.retries <= 1;
+    if (clean) this.correctSteps += 1;
+    const mark = this.markStep(this.step);
+    mark.done = true;
+    mark.clean = clean;
     // The chord window never delays advancement (docs/05 §2) — it is a
     // tolerance, not a wait. Its one use is telling the learner afterwards
     // that a chord came out rolled rather than together.
@@ -853,6 +873,7 @@ export class PracticeEngine {
       if (target?.expected.includes(midi)) {
         this.progress.satisfied.add(midi);
         this.progress.strikeTimes.push(tMs);
+        this.markStep(next).hit += 1;
       }
     }
     this.emit({ kind: 'stepAdvanced', from, to: next, tMs });
@@ -889,6 +910,7 @@ export class PracticeEngine {
     if (now - firstStrikeMs < this.session.options.micChordGraceMs) return;
 
     this.lenientChordSteps += 1;
+    this.markStep(this.step).lenient = true;
     for (const midi of current.expected) satisfied.add(midi);
     // Not a clean step: leave `wrongCount` alone but make sure this one is not
     // counted as correct by `maybeAdvanceWait`.
@@ -976,7 +998,9 @@ export class PracticeEngine {
       });
       if (!certain) return;
       this.wrongNotesTotal += 1;
-      this.bump(this.wrongsByMeasure, this.measureIndexNear(at));
+      const near = this.stepNear(at);
+      this.bump(this.wrongsByMeasure, near?.measureIndex ?? 0);
+      if (near) this.markStep(near.index).wrong.push(midi);
       return;
     }
 
@@ -1002,6 +1026,10 @@ export class PracticeEngine {
       // same thing `correctSteps` counts on an ordinary Tempo run below.
       this.correctSteps += 1;
       this.deltas.push(deltaMs);
+      const settled = this.markStep(match);
+      settled.hit += slot?.size ?? 0;
+      settled.done = true;
+      this.timed.push(match, deltaMs);
       this.record(midi, velocity, rawTMs, match, true, deltaMs);
       this.emit({
         kind: 'noteJudged',
@@ -1022,7 +1050,8 @@ export class PracticeEngine {
       early.delete(midi);
       if (early.size === 0) this.earlyStrikes.delete(match);
       this.wrongNotesTotal += 1;
-      this.bump(this.wrongsByMeasure, target?.measureIndex ?? this.measureIndexNear(at));
+      this.bump(this.wrongsByMeasure, target?.measureIndex ?? this.stepNear(at)?.measureIndex ?? 0);
+      this.markStep(match).wrong.push(midi);
     }
     if (slot && slot.size === 0) {
       this.openSlots.delete(match);
@@ -1034,10 +1063,13 @@ export class PracticeEngine {
       // closer and every Tempo run reported nought (T24; `engineTempo.test.ts`
       // "counts a step completed in time").
       this.correctSteps += 1;
+      this.markStep(match).done = true;
     }
     const deltaMs = at - (target?.tMs ?? at);
     this.hits += 1;
     this.deltas.push(deltaMs);
+    this.markStep(match).hit += 1;
+    this.timed.push(match, deltaMs);
     this.record(midi, velocity, rawTMs, match, true, deltaMs);
     this.emit({
       kind: 'noteJudged',
@@ -1123,8 +1155,9 @@ export class PracticeEngine {
   }
 
   /**
-   * The bar closest to a time on the music clock — for attributing a note
-   * that matched nothing (docs/05 §3's hot-spot list, "Loop the weak bars").
+   * The step closest to a time on the music clock — for attributing a note
+   * that matched nothing: its bar to the hot spots (docs/05 §3, "Loop the weak
+   * bars"), and itself to the record's per-step outcomes (C1).
    *
    * Not `this.step`: that is the *cursor*, which only moves in
    * `advanceClockTo` and lags a note played near a barline. `openUpcomingSlots`
@@ -1134,7 +1167,7 @@ export class PracticeEngine {
    * definition matched no open slot, so `findSlot`'s own search cannot be
    * reused here. Scored by time over every step of the run instead.
    */
-  private measureIndexNear(atMs: number): number {
+  private stepNear(atMs: number): PreparedStep | undefined {
     let best = this.session.steps[this.step];
     let bestDistance = best ? Math.abs(atMs - best.tMs) : Number.POSITIVE_INFINITY;
     for (let i = this.session.firstStep; i <= this.session.lastStep; i += 1) {
@@ -1146,7 +1179,7 @@ export class PracticeEngine {
         best = step;
       }
     }
-    return best?.measureIndex ?? 0;
+    return best;
   }
 
   /** Opens the matching window for a step, if it expects anything. */
@@ -1224,6 +1257,8 @@ export class PracticeEngine {
     const early = this.earlyStrikes.get(index);
     this.earlyStrikes.delete(index);
     if (!pitches || !step) return;
+    const mark = this.markStep(index);
+    mark.done = true;
     for (const midi of pitches) {
       const struck = early?.get(midi);
       if (struck) {
@@ -1233,9 +1268,13 @@ export class PracticeEngine {
         this.earlyTotal += 1;
         this.bump(this.earlyByMeasure, step.measureIndex);
         this.deltas.push(struck.deltaMs);
+        mark.early += 1;
+        this.earlyNotes.push(index, midi);
+        this.timed.push(index, struck.deltaMs);
         continue;
       }
       this.missedTotal += 1;
+      mark.missed += 1;
       this.bump(this.missesByMeasure, step.measureIndex);
       this.emit({
         kind: 'missed',
@@ -1350,6 +1389,19 @@ export class PracticeEngine {
     this.earlyStrikes.clear();
     this.earlyTotal = 0;
     this.earlyByMeasure.clear();
+    this.stepMarks.clear();
+    this.timed.length = 0;
+    this.earlyNotes.length = 0;
+  }
+
+  /** The step's marks, made on first use (C1). */
+  private markStep(index: number): StepMark {
+    let mark = this.stepMarks.get(index);
+    if (!mark) {
+      mark = emptyStepMark();
+      this.stepMarks.set(index, mark);
+    }
+    return mark;
   }
 
   private record(
@@ -1419,6 +1471,17 @@ export class PracticeEngine {
       lenientChordSteps: this.lenientChordSteps,
       pedal: this.pedalValues,
       notes: this.recorded,
+      stepMarks: this.stepMarks,
+      timed: this.timed,
+      earlyNotes: this.earlyNotes,
+      judgedUnder: {
+        hands: this.session.options.hands,
+        graceNotes: this.session.options.includeGraceNotes,
+        toleranceMs: this.session.options.toleranceMs,
+        inputLatencyMs: this.session.options.inputLatencyMs,
+        fromMeasure: this.session.steps[this.session.firstStep]?.sourceMeasureIndex ?? 0,
+        toMeasure: this.session.steps[this.session.lastStep]?.sourceMeasureIndex ?? 0,
+      },
     });
     return this.rhythmOnly ? { ...score, rhythmOnly: true } : score;
   }

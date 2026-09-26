@@ -8,9 +8,20 @@
  * the worst bug this app could have.
  */
 import { dailySeed } from '../engine/sightReading';
-import { openDatabase, type ProgressRow, type SessionRow, type StreakRow } from './db';
+import { compactSteps } from '../engine/Scoring';
+import type { NotMeasured } from '../engine/types';
+import { openDatabase, type ProgressRow, type RunObservation, type SessionRow, type StreakRow } from './db';
 
-export interface RunResult {
+/**
+ * One finished run, as its screen hands it to the store.
+ *
+ * Since C1 it carries the run's observation (`RunObservation`, in `db.ts`):
+ * what the run measured by its own definitions, the conditions it was played
+ * under, and every channel it did not measure marked `not measured`. The store
+ * keeps all of it on the session row; `passed`, `masterEligible` and
+ * `selfPassed` are what it acts on for the item's progress.
+ */
+export interface RunResult extends RunObservation {
   itemId: string;
   lessonId?: string;
   /**
@@ -22,10 +33,11 @@ export interface RunResult {
   seed?: number;
   mode: string;
   tempoPct: number;
-  accuracy: number;
+  /** A fraction, or `not measured` for a run that measured none (C1). */
+  accuracy: number | NotMeasured;
   accuracyEstimated: boolean;
-  wrongNotes: number;
-  missed: number;
+  wrongNotes: number | NotMeasured;
+  missed: number | NotMeasured;
   durationMs: number;
   passed: boolean;
   masterEligible: boolean;
@@ -140,70 +152,92 @@ export async function allProgress(): Promise<ProgressRow[]> {
 export async function recordRun(result: RunResult, now = new Date()): Promise<ProgressRow> {
   const row = { ...(await getProgress(result.itemId)) };
   const date = today(now);
+  /**
+   * Whether this run can be evidence of what its item claims (C1, reviewer
+   * decision 3). A generated phrase heard or read before (`unseen: false`) is
+   * not a first reading: it is kept — its minutes, its attempt, its row — and
+   * it passes nothing, masters nothing, sets no best and ticks no day. Here,
+   * in the store every writer goes through, so a writer that forgets cannot
+   * turn practice into evidence.
+   */
+  const evidence = result.unseen !== false;
   // The same exercise opened from Plan or the Library is a different phrase
   // and does not tick the day; a day already ticked stays ticked when the
   // stage moves on and Today picks another item. It used to be read off the
-  // item's `lastPracticedAt`, which had both faults (2026-09-16).
-  if (result.seed !== undefined && result.seed === dailySeed(dayKey(now))) await markDailyRead(now);
+  // item's `lastPracticedAt`, which had both faults (2026-09-16). A phrase
+  // heard before it was read is today's phrase and not today's read.
+  if (evidence && result.seed !== undefined && result.seed === dailySeed(dayKey(now))) await markDailyRead(now);
+  const passed = evidence && result.passed;
+  const masterEligible = evidence && result.masterEligible;
 
   row.attempts += 1;
   row.lastPracticedAt = now.toISOString();
   row.minutes += result.durationMs / 60_000;
-  row.bestAccuracy = Math.max(row.bestAccuracy, result.accuracy);
+  // Nothing measured is not a best of nought (C1): it leaves the best alone.
+  if (evidence && typeof result.accuracy === 'number') {
+    row.bestAccuracy = Math.max(row.bestAccuracy, result.accuracy);
+  }
   // A tempo nobody played to is not a best tempo (T37): a Wait run's number is
   // the slider's.
-  if (result.passed && result.tempoMeasured !== false) {
+  if (passed && result.tempoMeasured !== false) {
     row.bestTempoPct = Math.max(row.bestTempoPct, result.tempoPct);
   }
 
   // A pass the owner asserted rather than the app measured keeps saying so,
   // and one that was measured clears the flag: playing it properly is a
   // stronger claim than having said you could, and it should replace it.
-  if (result.passed) row.selfPassed = result.selfPassed ?? false;
-  if (result.passed && !row.passedOn.includes(date)) row.passedOn.push(date);
+  if (passed) row.selfPassed = result.selfPassed ?? false;
+  if (passed && !row.passedOn.includes(date)) row.passedOn.push(date);
   // The master standard, and only the master standard, counts towards
   // mastery; a mastered row stays mastered (rows mastered under the old rule
   // are not taken back).
   const masteredOn = [...(row.masteredOn ?? [])];
-  if (result.masterEligible && !masteredOn.includes(date)) masteredOn.push(date);
+  if (masterEligible && !masteredOn.includes(date)) masteredOn.push(date);
   if (masteredOn.length > 0) row.masteredOn = masteredOn;
   if (row.status === 'mastered' || masteredOn.length >= MASTER_DAYS) row.status = 'mastered';
-  else if (result.passed) row.status = 'passed';
+  else if (passed) row.status = 'passed';
   else if (row.status === 'new') row.status = 'started';
 
   memory.set(row.itemId, row);
-  const session: SessionRow = {
-    itemId: result.itemId,
-    ...(result.lessonId === undefined ? {} : { lessonId: result.lessonId }),
-    mode: result.mode,
-    tempoPct: result.tempoPct,
-    accuracy: result.accuracy,
-    accuracyEstimated: result.accuracyEstimated,
-    wrongNotes: result.wrongNotes,
-    missed: result.missed,
-    durationMs: result.durationMs,
-    at: now.toISOString(),
-    ...(result.selfReport === undefined ? {} : { selfReport: result.selfReport }),
-    ...(result.steadinessMs === undefined ? {} : { steadinessMs: result.steadinessMs }),
-    ...(result.notesHeard === undefined ? {} : { notesHeard: result.notesHeard }),
-    ...(result.bpm === undefined ? {} : { bpm: result.bpm }),
-    ...(result.performance ? { performance: true } : {}),
-    ...(result.rhythmOnly ? { rhythmOnly: true } : {}),
-    ...(result.tempoMeasured === undefined ? {} : { tempoMeasured: result.tempoMeasured }),
-    ...(result.seed === undefined ? {} : { seed: result.seed }),
-  };
+  const session = sessionRowFor(result, now);
 
   const db = await openDatabase();
   if (db) {
     await db.put('progress', row);
     await db.add('sessions', session);
     // Not awaited: the run is finished and the learner is looking at a
-    // summary. Tidying up is the app's business, not theirs.
-    void pruneSessions();
+    // summary. Tidying up is the app's business, not theirs; a test waits for
+    // it with `sessionsTidied()`.
+    tidySessions(now);
   }
   await addMinutes(result.durationMs / 60_000, now);
   notify();
   return row;
+}
+
+/**
+ * The session row for a run: everything the run carried, as it carried it,
+ * but what the store acts on for the item (C1).
+ *
+ * It used to copy seven named fields and drop the rest, which is how the
+ * engine's per-step outcomes, the hands and the rest were computed for the
+ * sheet and thrown away (L15). Now every field comes across — `not measured`
+ * included — and only `undefined` is left out, so an absent field still means
+ * "this writer does not have that channel", and `performance` and
+ * `rhythmOnly` are kept only where true, as they always were.
+ */
+function sessionRowFor(result: RunResult, now: Date): SessionRow {
+  const { passed: _passed, masterEligible: _master, selfPassed: _self, performance, rhythmOnly, ...rest } = result;
+  const session: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(rest)) {
+    if (value !== undefined) session[key] = value;
+  }
+  return {
+    ...(session as unknown as Omit<SessionRow, 'at'>),
+    at: now.toISOString(),
+    ...(performance ? { performance: true } : {}),
+    ...(rhythmOnly ? { rhythmOnly: true } : {}),
+  };
 }
 
 /** "I already know this" — a pass the learner asserts rather than plays. */
@@ -248,7 +282,8 @@ export async function recentSessions(limit = 50): Promise<SessionRow[]> {
 }
 
 /**
- * The last `limit` performances, however far back they are.
+ * The last `limit` performances, however far back they are — up to
+ * `PERFORMANCE_REACH` runs back.
  *
  * The Progress screen used to filter performances out of `recentSessions(100)`,
  * which is the last hundred runs *of anything*. A performance is rare by
@@ -267,7 +302,7 @@ export async function recentPerformances(limit = 20): Promise<SessionRow[]> {
     const out: SessionRow[] = [];
     let scanned = 0;
     let cursor = await db.transaction('sessions').store.index('byDate').openCursor(null, 'prev');
-    while (cursor && out.length < limit && scanned < MAX_SESSIONS + PRUNE_SLACK) {
+    while (cursor && out.length < limit && scanned < PERFORMANCE_REACH) {
       if (cursor.value.performance === true) out.push(cursor.value);
       scanned += 1;
       cursor = await cursor.continue();
@@ -291,13 +326,26 @@ export async function recentPerformances(limit = 20): Promise<SessionRow[]> {
  * fortnightly rotation silently stopped getting plateau advice — no error, no
  * empty state, just a paragraph that quietly stopped appearing. `byItem` is the
  * index that answers the question that was meant.
+ *
+ * Walked backwards and stopped at `limit` (C1) rather than read whole: a row
+ * is an observation now, several times the size it was, and the cap is many
+ * times higher, so the daily read's own rows alone grow into megabytes over
+ * the years — read on every sight-read's open. Within one item the index
+ * orders rows by key, which is the order they were written; a restored backup
+ * writes older runs under newer keys, so the few read are still sorted by
+ * date before they are handed back.
  */
 export async function sessionsForItem(itemId: string, limit = 5): Promise<SessionRow[]> {
   const db = await openDatabase();
   if (!db) return [];
   try {
-    const rows = await db.getAllFromIndex('sessions', 'byItem', itemId);
-    return rows.sort((a, b) => b.at.localeCompare(a.at)).slice(0, limit);
+    const rows: SessionRow[] = [];
+    let cursor = await db.transaction('sessions').store.index('byItem').openCursor(IDBKeyRange.only(itemId), 'prev');
+    while (cursor && rows.length < limit) {
+      rows.push(cursor.value);
+      cursor = await cursor.continue();
+    }
+    return rows.sort((a, b) => b.at.localeCompare(a.at));
   } catch {
     return (await recentSessions(MAX_SESSIONS))
       .filter((row) => row.itemId === itemId)
@@ -317,30 +365,143 @@ export async function sessionCount(): Promise<number> {
 }
 
 /**
- * The most sessions kept, and the slack before pruning is worth doing.
+ * The most **runs** kept, and the slack before pruning is worth doing.
  *
  * The store had no retention rule at all: `db.ts` creates it with
  * `autoIncrement` and nothing anywhere removed a row, so every practice run
- * appended one for ever. Daily use for a year is thousands of rows on a phone,
- * and `recentSessions` reads *all* of them and sorts the lot to hand back
- * fifty.
+ * appended one for ever. A cap of 2,000 fixed that, on the grounds that nothing
+ * read an old row, and its comment reasoned in *sessions* — "six years at a
+ * session a day" — while it counted rows, and a row is one run: at ten runs a
+ * day it forgot after about two hundred days (backlog L48).
  *
- * 2,000 because that is far more than anything reads. The deepest consumer is
- * the Progress screen's history at 30, and the performances list, which asks
- * for twenty of a rare thing and may therefore walk the whole store to find
- * them — that is the one reader for which the cap is also the bound. The weekly
- * minutes and the heat map come from the `streak` store, which is a total per
- * day and does not depend on this at all. So the cap cannot change a number the
- * owner sees until they are two thousand sessions deep — about six years at a
- * session a day — except that a performance older than that is forgotten, which
- * is the price of not keeping every run ever played.
+ * C1 made a row an observation, which is evidence (Q26), so the cap is no
+ * longer the routine: old rows are compacted, not deleted
+ * (`OBSERVATION_WINDOW_DAYS`), and the cap is the last resort, set by what the
+ * store costs at it — `SESSIONS_BUDGET_BYTES`, against a measured row, in
+ * `sessionRetention.test.ts`. Every row counts, measured or not: a run nothing
+ * heard still costs a row, and a learner with no piano writes only those.
  *
  * Pruned in blocks rather than one row per run: deleting on every write would
  * put a cursor walk in the path of finishing a piece, which is the one moment
  * this store must not be slow.
  */
-export const MAX_SESSIONS = 2_000;
+export const MAX_SESSIONS = 25_000;
 export const PRUNE_SLACK = 200;
+
+/**
+ * How many days a run keeps its per-step detail before it is compacted to
+ * per-bar tallies (C1). Long enough for a reader of recent evidence — the
+ * retained state is tried at three weeks (design §11 item 11) — to attribute a
+ * miss to its note, with room to spare; after it, a miss is attributed to its
+ * bar, which is what the hot spots have always done.
+ */
+export const OBSERVATION_WINDOW_DAYS = 90;
+
+/**
+ * What the `sessions` store may cost at the cap: 64 MiB of structured clone.
+ *
+ * Chosen against what the storage report shows (Settings → Content: the
+ * origin's usage beside its quota). Where it was looked at — a desktop
+ * Chromium, C1 — the quota was in gigabytes and this is a small share of it,
+ * of the order of the folder listing the database already keeps and under
+ * what a few imported PDFs cost; the owner's phone has not been looked at.
+ * `sessionRetention.test.ts` holds the cap to it, measured on a stored row,
+ * so a change that makes rows bigger fails there rather than on the phone.
+ */
+export const SESSIONS_BUDGET_BYTES = 64 * 1024 * 1024;
+
+/**
+ * How far back the performances list looks: the old cap and its slack.
+ *
+ * `recentPerformances` walks the store newest first until it has its twenty,
+ * so a learner who has never performed walks all of it, on every Progress
+ * load. At the old cap that walk was the store; at the new one it would be
+ * twenty times as long for the rarest thing on the screen. So it looks as far
+ * as it always could, which loses nothing it used to find — a performance
+ * further back was deleted, and is now kept and not listed.
+ */
+export const PERFORMANCE_REACH = 2_200;
+
+/** Consecutive rows already compact after which a compaction walk stops. */
+const COMPACT_STOP = 50;
+
+const DAY_MS = 86_400_000;
+
+/**
+ * A row with its per-step detail folded into per-bar tallies (C1).
+ *
+ * Everything else — the totals, the pitch and its definition, the timing
+ * summary, the header — stays as it was. A row with no per-step detail (one
+ * already compact, or written before observations) comes back unchanged.
+ */
+export function compactObservation(row: SessionRow): SessionRow {
+  if (!row.steps) return row;
+  const { steps, ...rest } = row;
+  return { ...rest, bars: compactSteps(steps) };
+}
+
+/**
+ * Compacts the rows older than the observation window (C1).
+ *
+ * Walked newest first from the window's edge, by the `byDate` index, and
+ * stopped once `COMPACT_STOP` rows in a row are already compact: each tidy
+ * then touches the few rows that have just crossed the edge, not the whole
+ * store. Failure is silent for the reason pruning's is.
+ */
+export async function compactSessions(now = new Date(), windowDays = OBSERVATION_WINDOW_DAYS): Promise<number> {
+  const db = await openDatabase();
+  if (!db) return 0;
+  try {
+    const edge = new Date(now.getTime() - windowDays * DAY_MS).toISOString();
+    const tx = db.transaction('sessions', 'readwrite');
+    let cursor = await tx.store.index('byDate').openCursor(IDBKeyRange.upperBound(edge, true), 'prev');
+    let compacted = 0;
+    let settled = 0;
+    while (cursor && settled < COMPACT_STOP) {
+      if (cursor.value.steps) {
+        await cursor.update(compactObservation(cursor.value));
+        compacted += 1;
+        settled = 0;
+      } else {
+        settled += 1;
+      }
+      cursor = await cursor.continue();
+    }
+    await tx.done;
+    return compacted;
+  } catch {
+    return 0;
+  }
+}
+
+/** The tidy the last recorded run started, so a caller can wait for it. */
+let tidying: Promise<void> = Promise.resolve();
+
+/**
+ * Compacts, then prunes, after a run is written — in the background and one
+ * at a time, so two runs finished close together never walk the store twice
+ * at once.
+ */
+function tidySessions(now: Date): void {
+  tidying = tidying
+    .then(async () => {
+      await compactSessions(now);
+      await pruneSessions();
+    })
+    .catch(() => undefined);
+}
+
+/**
+ * Resolves once the tidy the last run started has finished.
+ *
+ * `recordRun` does not wait for it (the learner is looking at a summary); a
+ * test that wants to see what the run did to the store waits here instead of
+ * tidying the store itself (Q26: the retention test used to prune on its own
+ * and so proved the prune, not that the run asks for it).
+ */
+export function sessionsTidied(): Promise<void> {
+  return tidying;
+}
 
 /**
  * Drops the oldest sessions once there are more than the cap plus its slack.

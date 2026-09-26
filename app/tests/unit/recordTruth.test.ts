@@ -18,6 +18,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
 import {
+  dailyReadDays,
   dayKey,
   recentSessions,
   recordRun,
@@ -25,7 +26,10 @@ import {
   reviewQueue,
   type RunResult,
 } from '../../src/data/progressStore';
+import { dailySeed } from '../../src/engine/sightReading';
 import type { ProgressRow } from '../../src/data/db';
+
+const NOT_MEASURED = 'not measured';
 
 const RUN: RunResult = {
   itemId: 'song.folk.hot-cross-buns',
@@ -93,18 +97,92 @@ describe('a Wait for me run records no tempo', () => {
 });
 
 describe('the session row says what was measured, and of which phrase', () => {
-  it('a Wait run is stored as one whose tempo was not measured', async () => {
-    await recordRun({ ...RUN, mode: 'wait', tempoMeasured: false, passed: false });
+  // Revised (C1): this read two fields back. The row is now the run's whole
+  // observation (`observationsFromRun` proves what the screen writes); what
+  // the store owes it is to keep every field it was given, "not measured"
+  // included, rather than the seven it used to copy.
+  it('a Wait run is stored as one whose tempo was not measured, with the rest of what it observed', async () => {
+    await recordRun({
+      ...RUN,
+      mode: 'wait',
+      tempoMeasured: false,
+      passed: false,
+      definitions: 1,
+      pitch: { definition: 'wait-steps', right: 7, of: 8, estimated: false },
+      timing: NOT_MEASURED,
+      early: NOT_MEASURED,
+      steps: { from: 0, codes: 'hhhwhhhh', measures: [0, 0, 4, 1], wrong: [3, 63], early: [], timing: NOT_MEASURED },
+      hands: { played: 'R', appPlayed: 'other hand' },
+      keys: { view: 'strip', guide: 'next', fingers: true, names: false },
+      graceNotes: false,
+      input: { source: 'midi', toleranceMs: 150, latencyMs: 0 },
+      range: { fromMeasure: 0, toMeasure: 1 },
+      demonstrated: false,
+    });
     const [session] = await recentSessions(1);
     expect(session?.mode).toBe('wait');
     expect(session?.tempoMeasured).toBe(false);
+    expect(session?.timing).toBe(NOT_MEASURED);
+    expect(session?.early).toBe(NOT_MEASURED);
+    expect(session?.steps?.codes).toBe('hhhwhhhh');
+    expect(session?.hands).toEqual({ played: 'R', appPlayed: 'other hand' });
+    expect(session?.keys?.guide).toBe('next');
+    expect(session?.graceNotes).toBe(false);
+    expect(session?.definitions).toBe(1);
   });
 
-  it('a sight-read keeps its phrase’s seed, and a self-report its answer', async () => {
-    await recordRun({ ...RUN, seed: 20260925, selfReport: 'ok', passed: false, tempoMeasured: false });
+  // Revised (C1): a self-report is written only for a run nothing heard
+  // (T40), and its accuracy is now "not measured", not the 0 that the history
+  // printed as "0%" (L43).
+  it('a sight-read keeps its phrase’s seed, and a self-report its answer and no accuracy', async () => {
+    const row = await recordRun({
+      ...RUN,
+      seed: 20260925,
+      selfReport: 'ok',
+      passed: false,
+      tempoMeasured: false,
+      accuracy: NOT_MEASURED,
+      wrongNotes: NOT_MEASURED,
+      missed: NOT_MEASURED,
+      pitch: NOT_MEASURED,
+    });
     const [session] = await recentSessions(1);
     expect(session?.seed).toBe(20260925);
     expect(session?.selfReport).toBe('ok');
+    expect(session?.accuracy).toBe(NOT_MEASURED);
+    expect(session?.wrongNotes).toBe(NOT_MEASURED);
+    // Nothing measured is not a best of nought, and never NaN.
+    expect(row.bestAccuracy).toBe(0);
+    expect(row.attempts).toBe(1);
+  });
+});
+
+describe('a run that was not a first reading is practice, not evidence (C1, reviewer decision 3)', () => {
+  it('keeps its minutes, its attempt and its row, and gives no pass, no best and no day’s tick', async () => {
+    const now = on('2026-09-25');
+    // Today's phrase, heard before it was read: the writer says it passed on
+    // its notes, and the store still refuses what it cannot support.
+    const row = await recordRun(
+      { ...RUN, seed: dailySeed(dayKey(now)), unseen: false, passed: true, masterEligible: true },
+      now,
+    );
+    expect(row.status, 'a heard phrase passed the reading drill').toBe('started');
+    expect(row.passedOn).toEqual([]);
+    expect(row.masteredOn ?? []).toEqual([]);
+    expect(row.bestAccuracy).toBe(0);
+    expect(row.bestTempoPct).toBe(0);
+    expect(row.attempts).toBe(1);
+    expect(row.minutes).toBe(1);
+    expect(await dailyReadDays(), 'a heard phrase ticked the day').not.toContain(dayKey(now));
+    const [session] = await recentSessions(1);
+    expect(session?.unseen).toBe(false);
+  });
+
+  it('an unseen run of today’s phrase still ticks the day and passes', async () => {
+    const now = on('2026-09-25');
+    const row = await recordRun({ ...RUN, seed: dailySeed(dayKey(now)), unseen: true }, now);
+    expect(row.status).toBe('passed');
+    expect(await dailyReadDays()).toContain(dayKey(now));
   });
 });
 

@@ -82,6 +82,19 @@ export interface PracticeSettings {
   keys: KeysView;
   /** Which keys are marked before they are played. */
   keysGuide: KeysGuide;
+  /**
+   * The same choice for a sight-reading drill, whose default is **off**
+   * (reviewer decision 5, C1).
+   *
+   * A sight-read's whole claim is that the learner read the staff, and a run
+   * the keys walked through, one blue key at a time, is evidence that they
+   * followed the keys. So the reading drills have a default of their own: a
+   * per-kind default the learner can see and change in Settings, not an
+   * override hidden inside the Score screen, and every run records what the
+   * keys showed (`SessionRow.keys`). `keysGuide` still governs everything
+   * else.
+   */
+  keysGuideSightReading: KeysGuide;
   /** The score's finger number printed on each marked key. */
   keysFingerNumbers: boolean;
   /** A hit flashes its key green and a miss red, for a moment. */
@@ -148,6 +161,7 @@ export const DEFAULT_SETTINGS: Readonly<PracticeSettings> = {
   showChordSymbols: true,
   keys: 'strip',
   keysGuide: 'next',
+  keysGuideSightReading: 'off',
   keysFingerNumbers: true,
   keysFlash: true,
   keepScreenAwake: true,
@@ -200,6 +214,11 @@ export function coerceSettings(raw: unknown): PracticeSettings {
   out.waitStrict = bool(v.waitStrict, out.waitStrict);
   out.rhythmOnly = bool(v.rhythmOnly, out.rhythmOnly);
   out.keysGuide = oneOf(v.keysGuide, ['next', 'next-two', 'off'] as const, out.keysGuide);
+  out.keysGuideSightReading = oneOf(
+    v.keysGuideSightReading,
+    ['next', 'next-two', 'off'] as const,
+    out.keysGuideSightReading,
+  );
   out.keysFingerNumbers = bool(v.keysFingerNumbers, out.keysFingerNumbers);
   out.keysFlash = bool(v.keysFlash, out.keysFlash);
   out.toleranceMs = Math.round(num(v.toleranceMs, out.toleranceMs, 30, 500));

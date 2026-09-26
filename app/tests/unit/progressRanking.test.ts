@@ -186,7 +186,11 @@ describe('a badge on every row of a list', () => {
     document.body.replaceChildren();
   });
 
-  it('is gone from the repertoire and the performances, and kept where it is news', async () => {
+  // Revised (C1; backlog L43). The self-report was the one badge kept, because
+  // how it felt was "on no line of the row" — the line beside it read "0% at
+  // 70%" for a run nothing heard. The answer is that run's whole record, so it
+  // is on the line now (`historyDetail`), and no row on the screen has a badge.
+  it('is gone from the repertoire and the performances, and the answer is on its line', async () => {
     await seed();
     const { section } = await mount();
     await vi.waitFor(() => {
@@ -196,11 +200,11 @@ describe('a badge on every row of a list', () => {
     // the list can hold.
     expect(section.querySelectorAll('#progress-repertoire .badge')).toHaveLength(0);
     expect(section.querySelectorAll('#progress-performances .badge')).toHaveLength(0);
-    // How it felt is on no line of the row, and only on the runs where he
-    // said so (`04` §0 R2).
-    const rough = section.querySelector('#progress-history .list-row[data-session] .badge');
-    expect(text(rough)).toBe('rough');
-    expect(section.querySelectorAll('#progress-history .badge')).toHaveLength(1);
+    const lines = [...section.querySelectorAll('#progress-history .list-row[data-session] .list-row__metatext')].map(
+      (node) => text(node),
+    );
+    expect(lines.filter((line) => line.includes('you said Rough'))).toHaveLength(1);
+    expect(section.querySelectorAll('#progress-history .badge')).toHaveLength(0);
   });
 });
 

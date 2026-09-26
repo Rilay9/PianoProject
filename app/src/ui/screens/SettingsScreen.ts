@@ -313,6 +313,22 @@ export function SettingsScreen(router: Router): HTMLElement {
       ),
       'Marked blue on the keys before you play it; the one after in a paler blue.',
     ),
+    // The reading drills' own guide (C1, reviewer decision 5): a sight-read is
+    // read from the page, so it is off there unless the learner turns it on.
+    field(
+      'Keys guide when sight-reading',
+      selectControl(
+        'set-keys-guide-reading',
+        [
+          { value: 'off', label: 'Off' },
+          { value: 'next', label: 'The note it waits for' },
+          { value: 'next-two', label: 'That, and the one after' },
+        ],
+        s.keysGuideSightReading,
+        (value) => set({ keysGuideSightReading: value as PracticeSettings['keysGuideSightReading'] }),
+      ),
+      'A sight-read is read from the page, so the keys do not show the way unless you ask.',
+    ),
     field('Finger numbers on the keys', toggleControl('set-keys-fingers', s.keysFingerNumbers, (v) => set({ keysFingerNumbers: v })), 'The score’s finger number, printed on each marked key.'),
     field('Flash a hit green and a miss red', toggleControl('set-keys-flash', s.keysFlash, (v) => set({ keysFlash: v })), 'For under a second; then the key goes back to the guide.'),
     field('Keep the screen awake', toggleControl('set-awake', s.keepScreenAwake, (v) => set({ keepScreenAwake: v }))),

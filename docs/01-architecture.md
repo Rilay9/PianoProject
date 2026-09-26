@@ -249,7 +249,7 @@ IndexedDB stores (via `idb`):
 |-------|-----|-------|
 | `settings` | `'app'` | all settings (see 04-ui-spec.md §7) |
 | `progress` | itemId | `{ itemId, status:'new'|'started'|'passed'|'mastered', bestAccuracy, bestTempoPct, attempts, lastPracticedAt, minutes }` |
-| `sessions` | autoincrement | one row per practice run: itemId, mode, tempoPct, accuracy, timing stats, date, durationMs; `performance: true` for a Perform run (`04` §5e), `rhythmOnly: true` for a rhythm run, which can never be a pass (`04` §5) |
+| `sessions` | autoincrement | one row per practice run: itemId, mode, tempoPct, accuracy, date, durationMs; `performance: true` for a Perform run (`04` §5e), `rhythmOnly: true` for a rhythm run, which can never be a pass (`04` §5); since C1 the run's **observation** — what it measured by its own definitions, per step, the conditions it was played under, every channel it did not measure marked `not measured` (below) |
 | `imports` | id | user-imported score: name, MusicXML text (or mxl bytes) **or PDF bytes**, `kind: 'musicxml' \| 'pdf'`, tags, addedAt, and for a PDF `cuts` — the corrected system boundaries. A PDF item is viewable and followable but not playable or judgeable — it has no notes (`04` §5b). |
 | `plan` | `'current'` | current stage/unit, chosen track order, placement-test result |
 | `streak` | `'streak'` | weekly-minutes goal progress and practice-day history (no daily-streak punishment) |
@@ -262,7 +262,49 @@ IndexedDB stores (via `idb`):
 | `books` | id | a book the owner owns on paper: title, and the pieces in it with their page numbers and the rungs they are options of (replan §5.1). Typed in by hand; nothing is scanned. |
 
 **`DB_VERSION` is 6.** Every upgrade is keyed on `oldVersion` and creates only the stores that
-version lacked, so a phone that skipped a version arrives correct.
+version lacked, so a phone that skipped a version arrives correct. C1 (2026-09-26) grew
+`SessionRow` and changed no store and no index: every new field is optional on a value, which
+IndexedDB does not describe, so there is nothing for an upgrade to do and no version to spend.
+A row written before C1 reads as a run with no observation.
+
+**A session row is an observation (2026-09-26, C1; design §3, backlog L15, L48, Q26).** The
+engine computed per-step outcomes, the onset delta of every timed note and the technique
+measures for the summary sheet, and the store kept seven numbers. Now `recordRun` keeps every
+field the run carries (`RunObservation` in `data/db.ts`):
+
+- **The header** — what opened the screen (tab, `?from=` rung, tour; the Today slot is not in
+  the route and is stored as not measured), the printed measures the run covered, the base
+  tempo and whether it was written or defaulted, the hand played and what the app played
+  beside it, what the keys showed (view, guide, finger numbers, whether a note's name was on
+  the glass), whether grace notes were judged, the input with its window and latency, and on a
+  generated phrase `unseen` — `false` where the phrase was heard or read before, which keeps
+  it practice and never evidence of reading — and `demonstrated` where the piece was played to
+  the learner inside the run. `definitions` names the set of rules that wrote it.
+- **The measures** — `Scoring.measuresOf`: pitch with its definition and denominators (Wait:
+  steps completed cleanly; Keep tempo: expected pitches inside their window; a rhythm-only run
+  has none, and its figure is `rhythm`), early notes, the timing summary, one code per step
+  (`StepOutcomes`: hit, part, missed, early, wrong-then-right, lenient, nothing to play, not
+  reached) with the wrong and early notes against their steps and every timed note's delta,
+  the technique measure and the accents where the item asks, the pedal (MIDI only), rolled
+  and lenient chords, laps.
+- **Not measured is a value.** `NOT_MEASURED` (`'not measured'`) marks a channel the run did not
+  measure — Wait's timing, a run nothing heard (its `accuracy`, `wrongNotes` and `missed` too),
+  a jam's judged channels. It was 0, and the Progress history printed it as "0%".
+- **Evidence is refused in one place.** A run with `unseen: false` is kept — minutes, attempt,
+  row — and `recordRun` gives it no pass, no mastery, no best and no day's tick, whatever its
+  writer said.
+- **Old rows are compacted, not deleted.** After `OBSERVATION_WINDOW_DAYS` (90) a row's per-step
+  detail is folded into per-bar tallies (`compactObservation`); the header and totals stay.
+  Each recorded run starts a tidy — compaction, then the cap — in the background, one at a
+  time, walking back from the window's edge and stopping at the compact rows; `sessionsTidied()`
+  is how a test waits for it. The cap (`MAX_SESSIONS`, 25,000) counts every run, measured or
+  not, and is the last resort; it is held by `sessionRetention.test.ts` to `SESSIONS_BUDGET_BYTES`
+  (64 MiB of structured clone at the cap, measured on a stored row with `v8.serialize`), a small
+  share of the quota the storage report (Settings → Content) showed where it was looked at —
+  gigabytes, in a desktop Chromium; not yet looked at on the owner's phone.
+- **The backup carries it as it is.** Rows are plain JSON — strings, numbers, arrays — so an
+  export writes them whole and `importAll` restores them whole, `not measured` included
+  (`backup.test.ts`); `BACKUP_VERSION` did not change, because the file's shape did not.
 
 **The folder three, and why the split.** Every score in a folder used to be an element of one
 `folderLibraries` record, and IndexedDB can read or write only whole records — so every
@@ -364,13 +406,17 @@ made it worse by walking days with local arithmetic and naming them in UTC, so a
 it could emit one square twice and skip another.
 
 **The `sessions` store is read by its indexes, not whole.** `recentSessions` walks `byDate`
-backwards and stops at the limit; `sessionsForItem` uses `byItem`. Reading and sorting the whole
+backwards and stops at the limit; `sessionsForItem` walks `byItem` backwards and stops at its
+limit too (C1: a row is an observation now, and one item's rows grow into megabytes over the
+years, read on every sight-read's open). Reading and sorting the whole
 store to hand back fifty rows was 2,200 rows and 2,200 `localeCompare`s at the retention cap, on
 the Progress screen's load and again at the end of every drill. And two readers were asking the
 wrong question altogether: performances and one drill's own history are both **rare by
 construction**, so filtering them out of "the last hundred runs of anything" meant that a few
 weeks of ordinary practice made them disappear — the Progress screen said *No performances yet*
-over a history that had them. `recentPerformances` asks for performances.
+over a history that had them. `recentPerformances` asks for performances, and looks back as
+far as the old cap did (`PERFORMANCE_REACH`): at the new cap a learner who never performs would
+walk the whole store on every Progress load.
 
 Export/import: one JSON file containing all stores (imports included), via the File System
 Access API when available and share-sheet/`<a download>` fallback otherwise. PDF bytes are
