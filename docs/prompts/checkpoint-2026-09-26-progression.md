@@ -94,3 +94,7 @@ Both findings are fixed, each seen red first (Entry 79, item 8). `done` now read
 
 **The chain over the fixed tree (2026-09-26):** content build, validator, content tests, typecheck, lint, 5,910 unit tests and the app build green; the default Playwright configuration 789 passed, with one connection-refused on `setup-layout` that passed alone (a port event while a stopped chain's process was still finishing); the states gallery was blocked by its own harness, which had not preloaded the first-sight seen list since Wave 14 (Q38), now fixed, with the gallery's first run on the current tree to follow. Neither is a C5 fault.
 
+## 9. Closed
+
+The reviewer closed C5 on 2026-09-26 after reading the checkpoint, Entry 79, `rungState`, the evidence job, the retirement and S8 tests and both fix-forwards: the one-path criterion is satisfied and the old completion path is retired. C6 starts with the review correction (two reasons: skill retention and repertoire retention).
+
