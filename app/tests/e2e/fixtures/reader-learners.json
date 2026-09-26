@@ -1,0 +1,2858 @@
+{
+ "skipLearner": [
+  {
+   "itemId": "drill.reading.sight-reading-2-right",
+   "seed": 1002,
+   "mode": "tempo",
+   "tempoPct": 70,
+   "tempoMeasured": true,
+   "accuracy": 1,
+   "accuracyEstimated": false,
+   "wrongNotes": 0,
+   "missed": 0,
+   "durationMs": 19056.380952380954,
+   "at": "2026-10-01T12:00:00.000Z",
+   "definitions": 1,
+   "range": {
+    "fromMeasure": 0,
+    "toMeasure": 3
+   },
+   "opened": {
+    "tab": "today",
+    "rung": "2.2",
+    "slot": "daily-read"
+   },
+   "baseTempo": {
+    "bpm": 72,
+    "source": "written"
+   },
+   "hands": {
+    "played": "both",
+    "appPlayed": "none"
+   },
+   "keys": {
+    "view": "strip",
+    "guide": "off",
+    "fingers": false,
+    "names": false
+   },
+   "graceNotes": false,
+   "input": {
+    "source": "keys",
+    "toleranceMs": 150,
+    "latencyMs": 0
+   },
+   "unseen": true,
+   "demonstrated": false,
+   "pitch": {
+    "definition": "tempo-notes",
+    "right": 21,
+    "of": 21,
+    "estimated": false
+   },
+   "early": 0,
+   "timing": {
+    "n": 21,
+    "meanMs": 3,
+    "sdMs": 14
+   },
+   "steps": {
+    "from": 0,
+    "codes": "hhhhhhhhhhhhhhhhhhhhh",
+    "measures": [
+     0,
+     0,
+     5,
+     1,
+     9,
+     2,
+     14,
+     3
+    ],
+    "wrong": [],
+    "early": [],
+    "timing": [
+     0,
+     0,
+     1,
+     -20,
+     2,
+     17,
+     3,
+     14,
+     4,
+     -10,
+     5,
+     24,
+     6,
+     0,
+     7,
+     19,
+     8,
+     12,
+     9,
+     3,
+     10,
+     7,
+     11,
+     -1,
+     12,
+     -23,
+     13,
+     -5,
+     14,
+     -4,
+     15,
+     -22,
+     16,
+     21,
+     17,
+     5,
+     18,
+     20,
+     19,
+     9,
+     20,
+     0
+    ]
+   },
+   "pedal": "not measured",
+   "chords": {
+    "rolled": 0,
+    "lenient": 0
+   },
+   "loops": 0,
+   "recipe": {
+    "row": "drill.reading.sight-reading-2-right"
+   },
+   "evidence": [
+    {
+     "kind": "measured",
+     "skill": "sight-reading",
+     "observationId": null,
+     "standard": "full",
+     "n": 21,
+     "right": 21,
+     "at": "2026-10-01T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 1002,
+      "firstContact": true,
+      "met": [
+       "keep-tempo",
+       "unseen",
+       "guide-off"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "interval.step",
+       "n": 14,
+       "right": 14,
+       "steps": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        11,
+        12,
+        13,
+        14,
+        16,
+        17
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "interval.skip",
+       "n": 3,
+       "right": 3,
+       "steps": [
+        10,
+        19,
+        20
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "rhythm.eighths",
+       "n": 14,
+       "right": 14,
+       "steps": [
+        3,
+        4,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "n": 14,
+       "right": 14,
+       "steps": [
+        3,
+        4,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+       ],
+       "wrong": []
+      }
+     ]
+    },
+    {
+     "kind": "measured",
+     "skill": "interval-reading",
+     "observationId": null,
+     "standard": "full",
+     "n": 17,
+     "right": 17,
+     "at": "2026-10-01T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 1002,
+      "firstContact": true,
+      "met": [
+       "unseen",
+       "guide-off"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "interval.step",
+       "n": 14,
+       "right": 14,
+       "steps": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        11,
+        12,
+        13,
+        14,
+        16,
+        17
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "interval.skip",
+       "n": 3,
+       "right": 3,
+       "steps": [
+        10,
+        19,
+        20
+       ],
+       "wrong": []
+      }
+     ],
+     "otherDemands": [
+      {
+       "demand": "rhythm.eighths",
+       "steps": [
+        3,
+        4,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        16,
+        17,
+        19,
+        20
+       ]
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "steps": [
+        3,
+        4,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        16,
+        17,
+        19,
+        20
+       ]
+      }
+     ]
+    },
+    {
+     "kind": "measured",
+     "skill": "subdivision",
+     "observationId": null,
+     "standard": "full",
+     "n": 14,
+     "right": 14,
+     "at": "2026-10-01T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 1002,
+      "firstContact": true,
+      "met": [
+       "keep-tempo",
+       "unseen"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "rhythm.eighths",
+       "n": 14,
+       "right": 14,
+       "steps": [
+        3,
+        4,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "n": 14,
+       "right": 14,
+       "steps": [
+        3,
+        4,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+       ],
+       "wrong": []
+      }
+     ],
+     "otherDemands": [
+      {
+       "demand": "interval.step",
+       "steps": [
+        3,
+        4,
+        7,
+        8,
+        9,
+        11,
+        12,
+        16,
+        17
+       ]
+      },
+      {
+       "demand": "interval.skip",
+       "steps": [
+        10,
+        19,
+        20
+       ]
+      }
+     ]
+    },
+    {
+     "kind": "refusal",
+     "skill": "position-shift",
+     "reason": "no-opportunity",
+     "cites": [
+      "steps",
+      "hands.played"
+     ]
+    }
+   ],
+   "evidenceDefinitions": 2,
+   "id": 1
+  },
+  {
+   "itemId": "drill.reading.sight-reading-2-right",
+   "seed": 1003,
+   "mode": "tempo",
+   "tempoPct": 70,
+   "tempoMeasured": true,
+   "accuracy": 1,
+   "accuracyEstimated": false,
+   "wrongNotes": 0,
+   "missed": 0,
+   "durationMs": 19050.380952380954,
+   "at": "2026-10-02T12:00:00.000Z",
+   "definitions": 1,
+   "range": {
+    "fromMeasure": 0,
+    "toMeasure": 3
+   },
+   "opened": {
+    "tab": "today",
+    "rung": "2.2",
+    "slot": "daily-read"
+   },
+   "baseTempo": {
+    "bpm": 72,
+    "source": "written"
+   },
+   "hands": {
+    "played": "both",
+    "appPlayed": "none"
+   },
+   "keys": {
+    "view": "strip",
+    "guide": "off",
+    "fingers": false,
+    "names": false
+   },
+   "graceNotes": false,
+   "input": {
+    "source": "keys",
+    "toleranceMs": 150,
+    "latencyMs": 0
+   },
+   "unseen": true,
+   "demonstrated": false,
+   "pitch": {
+    "definition": "tempo-notes",
+    "right": 15,
+    "of": 15,
+    "estimated": false
+   },
+   "early": 0,
+   "timing": {
+    "n": 15,
+    "meanMs": 2,
+    "sdMs": 16
+   },
+   "steps": {
+    "from": 0,
+    "codes": "hhhhhhhhhhhhhhh",
+    "measures": [
+     0,
+     0,
+     4,
+     1,
+     6,
+     2,
+     9,
+     3
+    ],
+    "wrong": [],
+    "early": [],
+    "timing": [
+     0,
+     13,
+     1,
+     -3,
+     2,
+     -6,
+     3,
+     -17,
+     4,
+     3,
+     5,
+     24,
+     6,
+     -6,
+     7,
+     13,
+     8,
+     -17,
+     9,
+     2,
+     10,
+     -15,
+     11,
+     13,
+     12,
+     23,
+     13,
+     25,
+     14,
+     -22
+    ]
+   },
+   "pedal": "not measured",
+   "chords": {
+    "rolled": 0,
+    "lenient": 0
+   },
+   "loops": 0,
+   "recipe": {
+    "row": "drill.reading.sight-reading-2-right"
+   },
+   "evidence": [
+    {
+     "kind": "measured",
+     "skill": "sight-reading",
+     "observationId": null,
+     "standard": "full",
+     "n": 15,
+     "right": 15,
+     "at": "2026-10-02T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 1003,
+      "firstContact": true,
+      "met": [
+       "keep-tempo",
+       "unseen",
+       "guide-off"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "interval.step",
+       "n": 8,
+       "right": 8,
+       "steps": [
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        11,
+        12
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "interval.skip",
+       "n": 4,
+       "right": 4,
+       "steps": [
+        1,
+        7,
+        13,
+        14
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "rhythm.eighths",
+       "n": 6,
+       "right": 6,
+       "steps": [
+        1,
+        2,
+        9,
+        10,
+        13,
+        14
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "n": 6,
+       "right": 6,
+       "steps": [
+        1,
+        2,
+        9,
+        10,
+        13,
+        14
+       ],
+       "wrong": []
+      }
+     ]
+    },
+    {
+     "kind": "measured",
+     "skill": "interval-reading",
+     "observationId": null,
+     "standard": "full",
+     "n": 12,
+     "right": 12,
+     "at": "2026-10-02T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 1003,
+      "firstContact": true,
+      "met": [
+       "unseen",
+       "guide-off"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "interval.step",
+       "n": 8,
+       "right": 8,
+       "steps": [
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        11,
+        12
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "interval.skip",
+       "n": 4,
+       "right": 4,
+       "steps": [
+        1,
+        7,
+        13,
+        14
+       ],
+       "wrong": []
+      }
+     ],
+     "otherDemands": [
+      {
+       "demand": "rhythm.eighths",
+       "steps": [
+        1,
+        2,
+        9,
+        13,
+        14
+       ]
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "steps": [
+        1,
+        2,
+        9,
+        13,
+        14
+       ]
+      }
+     ]
+    },
+    {
+     "kind": "measured",
+     "skill": "subdivision",
+     "observationId": null,
+     "standard": "full",
+     "n": 6,
+     "right": 6,
+     "at": "2026-10-02T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 1003,
+      "firstContact": true,
+      "met": [
+       "keep-tempo",
+       "unseen"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "rhythm.eighths",
+       "n": 6,
+       "right": 6,
+       "steps": [
+        1,
+        2,
+        9,
+        10,
+        13,
+        14
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "n": 6,
+       "right": 6,
+       "steps": [
+        1,
+        2,
+        9,
+        10,
+        13,
+        14
+       ],
+       "wrong": []
+      }
+     ],
+     "otherDemands": [
+      {
+       "demand": "interval.step",
+       "steps": [
+        2,
+        9
+       ]
+      },
+      {
+       "demand": "interval.skip",
+       "steps": [
+        1,
+        13,
+        14
+       ]
+      }
+     ]
+    },
+    {
+     "kind": "refusal",
+     "skill": "position-shift",
+     "reason": "no-opportunity",
+     "cites": [
+      "steps",
+      "hands.played"
+     ]
+    }
+   ],
+   "evidenceDefinitions": 2,
+   "id": 2
+  },
+  {
+   "itemId": "drill.reading.sight-reading-2-right",
+   "seed": 1004,
+   "mode": "tempo",
+   "tempoPct": 70,
+   "tempoMeasured": true,
+   "accuracy": 1,
+   "accuracyEstimated": false,
+   "wrongNotes": 0,
+   "missed": 0,
+   "durationMs": 19051.380952380954,
+   "at": "2026-10-03T12:00:00.000Z",
+   "definitions": 1,
+   "range": {
+    "fromMeasure": 0,
+    "toMeasure": 3
+   },
+   "opened": {
+    "tab": "today",
+    "rung": "2.2",
+    "slot": "daily-read"
+   },
+   "baseTempo": {
+    "bpm": 72,
+    "source": "written"
+   },
+   "hands": {
+    "played": "both",
+    "appPlayed": "none"
+   },
+   "keys": {
+    "view": "strip",
+    "guide": "off",
+    "fingers": false,
+    "names": false
+   },
+   "graceNotes": false,
+   "input": {
+    "source": "keys",
+    "toleranceMs": 150,
+    "latencyMs": 0
+   },
+   "unseen": true,
+   "demonstrated": false,
+   "pitch": {
+    "definition": "tempo-notes",
+    "right": 21,
+    "of": 21,
+    "estimated": false
+   },
+   "early": 0,
+   "timing": {
+    "n": 21,
+    "meanMs": 0,
+    "sdMs": 13
+   },
+   "steps": {
+    "from": 0,
+    "codes": "hhhhhhhhhhhhhhhhhhhhh",
+    "measures": [
+     0,
+     0,
+     7,
+     1,
+     10,
+     2,
+     15,
+     3
+    ],
+    "wrong": [],
+    "early": [],
+    "timing": [
+     0,
+     0,
+     1,
+     15,
+     2,
+     -21,
+     3,
+     -8,
+     4,
+     24,
+     5,
+     -10,
+     6,
+     -2,
+     7,
+     -1,
+     8,
+     5,
+     9,
+     15,
+     10,
+     4,
+     11,
+     4,
+     12,
+     -8,
+     13,
+     -24,
+     14,
+     -18,
+     15,
+     -17,
+     16,
+     8,
+     17,
+     10,
+     18,
+     5,
+     19,
+     11,
+     20,
+     11
+    ]
+   },
+   "pedal": "not measured",
+   "chords": {
+    "rolled": 0,
+    "lenient": 0
+   },
+   "loops": 0,
+   "recipe": {
+    "row": "drill.reading.sight-reading-2-right"
+   },
+   "evidence": [
+    {
+     "kind": "measured",
+     "skill": "sight-reading",
+     "observationId": null,
+     "standard": "full",
+     "n": 21,
+     "right": 21,
+     "at": "2026-10-03T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 1004,
+      "firstContact": true,
+      "met": [
+       "keep-tempo",
+       "unseen",
+       "guide-off"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "interval.step",
+       "n": 8,
+       "right": 8,
+       "steps": [
+        1,
+        2,
+        4,
+        5,
+        9,
+        10,
+        13,
+        14
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "interval.skip",
+       "n": 6,
+       "right": 6,
+       "steps": [
+        3,
+        6,
+        11,
+        12,
+        19,
+        20
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "rhythm.eighths",
+       "n": 12,
+       "right": 12,
+       "steps": [
+        0,
+        1,
+        2,
+        3,
+        5,
+        6,
+        12,
+        13,
+        15,
+        16,
+        19,
+        20
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "n": 12,
+       "right": 12,
+       "steps": [
+        0,
+        1,
+        2,
+        3,
+        5,
+        6,
+        12,
+        13,
+        15,
+        16,
+        19,
+        20
+       ],
+       "wrong": []
+      }
+     ]
+    },
+    {
+     "kind": "measured",
+     "skill": "interval-reading",
+     "observationId": null,
+     "standard": "full",
+     "n": 14,
+     "right": 14,
+     "at": "2026-10-03T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 1004,
+      "firstContact": true,
+      "met": [
+       "unseen",
+       "guide-off"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "interval.step",
+       "n": 8,
+       "right": 8,
+       "steps": [
+        1,
+        2,
+        4,
+        5,
+        9,
+        10,
+        13,
+        14
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "interval.skip",
+       "n": 6,
+       "right": 6,
+       "steps": [
+        3,
+        6,
+        11,
+        12,
+        19,
+        20
+       ],
+       "wrong": []
+      }
+     ],
+     "otherDemands": [
+      {
+       "demand": "rhythm.eighths",
+       "steps": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        12,
+        13,
+        19,
+        20
+       ]
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "steps": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        12,
+        13,
+        19,
+        20
+       ]
+      }
+     ]
+    },
+    {
+     "kind": "measured",
+     "skill": "subdivision",
+     "observationId": null,
+     "standard": "full",
+     "n": 12,
+     "right": 12,
+     "at": "2026-10-03T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 1004,
+      "firstContact": true,
+      "met": [
+       "keep-tempo",
+       "unseen"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "rhythm.eighths",
+       "n": 12,
+       "right": 12,
+       "steps": [
+        0,
+        1,
+        2,
+        3,
+        5,
+        6,
+        12,
+        13,
+        15,
+        16,
+        19,
+        20
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "n": 12,
+       "right": 12,
+       "steps": [
+        0,
+        1,
+        2,
+        3,
+        5,
+        6,
+        12,
+        13,
+        15,
+        16,
+        19,
+        20
+       ],
+       "wrong": []
+      }
+     ],
+     "otherDemands": [
+      {
+       "demand": "interval.step",
+       "steps": [
+        1,
+        2,
+        5,
+        13
+       ]
+      },
+      {
+       "demand": "interval.skip",
+       "steps": [
+        3,
+        6,
+        12,
+        19,
+        20
+       ]
+      }
+     ]
+    },
+    {
+     "kind": "refusal",
+     "skill": "position-shift",
+     "reason": "no-opportunity",
+     "cites": [
+      "steps",
+      "hands.played"
+     ]
+    }
+   ],
+   "evidenceDefinitions": 2,
+   "id": 3
+  },
+  {
+   "itemId": "drill.reading.sight-reading-2-right",
+   "seed": 1005,
+   "mode": "tempo",
+   "tempoPct": 70,
+   "tempoMeasured": true,
+   "accuracy": 0.75,
+   "accuracyEstimated": false,
+   "wrongNotes": 5,
+   "missed": 5,
+   "durationMs": 19056.14285714286,
+   "at": "2026-10-04T12:00:00.000Z",
+   "definitions": 1,
+   "range": {
+    "fromMeasure": 0,
+    "toMeasure": 3
+   },
+   "opened": {
+    "tab": "today",
+    "rung": "2.2",
+    "slot": "daily-read"
+   },
+   "baseTempo": {
+    "bpm": 72,
+    "source": "written"
+   },
+   "hands": {
+    "played": "both",
+    "appPlayed": "none"
+   },
+   "keys": {
+    "view": "strip",
+    "guide": "off",
+    "fingers": false,
+    "names": false
+   },
+   "graceNotes": false,
+   "input": {
+    "source": "keys",
+    "toleranceMs": 150,
+    "latencyMs": 0
+   },
+   "unseen": true,
+   "demonstrated": false,
+   "pitch": {
+    "definition": "tempo-notes",
+    "right": 15,
+    "of": 20,
+    "estimated": false
+   },
+   "early": 0,
+   "timing": {
+    "n": 15,
+    "meanMs": 5,
+    "sdMs": 15
+   },
+   "steps": {
+    "from": 0,
+    "codes": "hhhhhhhhhhhmhhhmmhmm",
+    "measures": [
+     0,
+     0,
+     4,
+     1,
+     9,
+     2,
+     15,
+     3
+    ],
+    "wrong": [
+     11,
+     64,
+     15,
+     62,
+     16,
+     65,
+     18,
+     62,
+     19,
+     59
+    ],
+    "early": [],
+    "timing": [
+     0,
+     0,
+     1,
+     -5,
+     2,
+     -18,
+     3,
+     24,
+     4,
+     22,
+     5,
+     -20,
+     6,
+     -4,
+     7,
+     17,
+     8,
+     10,
+     9,
+     16,
+     10,
+     11,
+     12,
+     19,
+     13,
+     7,
+     14,
+     8,
+     17,
+     -15
+    ]
+   },
+   "pedal": "not measured",
+   "chords": {
+    "rolled": 0,
+    "lenient": 0
+   },
+   "loops": 0,
+   "recipe": {
+    "row": "drill.reading.sight-reading-2-right"
+   },
+   "evidence": [
+    {
+     "kind": "measured",
+     "skill": "sight-reading",
+     "observationId": null,
+     "standard": "full",
+     "n": 20,
+     "right": 15,
+     "at": "2026-10-04T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 1005,
+      "firstContact": true,
+      "met": [
+       "keep-tempo",
+       "unseen",
+       "guide-off"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "interval.step",
+       "n": 8,
+       "right": 8,
+       "steps": [
+        1,
+        2,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "interval.skip",
+       "n": 5,
+       "right": 0,
+       "steps": [
+        11,
+        15,
+        16,
+        18,
+        19
+       ],
+       "wrong": [
+        11,
+        15,
+        16,
+        18,
+        19
+       ]
+      },
+      {
+       "demand": "rhythm.eighths",
+       "n": 10,
+       "right": 7,
+       "steps": [
+        5,
+        6,
+        7,
+        8,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+       ],
+       "wrong": [
+        11,
+        15,
+        16
+       ]
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "n": 10,
+       "right": 7,
+       "steps": [
+        5,
+        6,
+        7,
+        8,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+       ],
+       "wrong": [
+        11,
+        15,
+        16
+       ]
+      }
+     ]
+    },
+    {
+     "kind": "measured",
+     "skill": "interval-reading",
+     "observationId": null,
+     "standard": "full",
+     "n": 13,
+     "right": 8,
+     "at": "2026-10-04T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 1005,
+      "firstContact": true,
+      "met": [
+       "unseen",
+       "guide-off"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "interval.step",
+       "n": 8,
+       "right": 8,
+       "steps": [
+        1,
+        2,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "interval.skip",
+       "n": 5,
+       "right": 0,
+       "steps": [
+        11,
+        15,
+        16,
+        18,
+        19
+       ],
+       "wrong": [
+        11,
+        15,
+        16,
+        18,
+        19
+       ]
+      }
+     ],
+     "otherDemands": [
+      {
+       "demand": "rhythm.eighths",
+       "steps": [
+        5,
+        6,
+        8,
+        11,
+        12,
+        15,
+        16
+       ]
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "steps": [
+        5,
+        6,
+        8,
+        11,
+        12,
+        15,
+        16
+       ]
+      }
+     ]
+    },
+    {
+     "kind": "measured",
+     "skill": "subdivision",
+     "observationId": null,
+     "standard": "full",
+     "n": 7,
+     "right": 7,
+     "at": "2026-10-04T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 1005,
+      "firstContact": true,
+      "met": [
+       "keep-tempo",
+       "unseen"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "rhythm.eighths",
+       "n": 7,
+       "right": 7,
+       "steps": [
+        5,
+        6,
+        7,
+        8,
+        12,
+        13,
+        14
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "n": 7,
+       "right": 7,
+       "steps": [
+        5,
+        6,
+        7,
+        8,
+        12,
+        13,
+        14
+       ],
+       "wrong": []
+      }
+     ],
+     "otherDemands": [
+      {
+       "demand": "interval.step",
+       "steps": [
+        5,
+        6,
+        8,
+        12
+       ]
+      }
+     ]
+    },
+    {
+     "kind": "refusal",
+     "skill": "position-shift",
+     "reason": "no-opportunity",
+     "cites": [
+      "steps",
+      "hands.played"
+     ]
+    }
+   ],
+   "evidenceDefinitions": 2,
+   "id": 4
+  },
+  {
+   "itemId": "drill.reading.sight-reading-2-right",
+   "seed": 1006,
+   "mode": "tempo",
+   "tempoPct": 70,
+   "tempoMeasured": true,
+   "accuracy": 0.6666666666666666,
+   "accuracyEstimated": false,
+   "wrongNotes": 6,
+   "missed": 6,
+   "durationMs": 19058.380952380954,
+   "at": "2026-10-05T12:00:00.000Z",
+   "definitions": 1,
+   "range": {
+    "fromMeasure": 0,
+    "toMeasure": 3
+   },
+   "opened": {
+    "tab": "today",
+    "rung": "2.2",
+    "slot": "daily-read"
+   },
+   "baseTempo": {
+    "bpm": 72,
+    "source": "written"
+   },
+   "hands": {
+    "played": "both",
+    "appPlayed": "none"
+   },
+   "keys": {
+    "view": "strip",
+    "guide": "off",
+    "fingers": false,
+    "names": false
+   },
+   "graceNotes": false,
+   "input": {
+    "source": "keys",
+    "toleranceMs": 150,
+    "latencyMs": 0
+   },
+   "unseen": true,
+   "demonstrated": false,
+   "pitch": {
+    "definition": "tempo-notes",
+    "right": 12,
+    "of": 18,
+    "estimated": false
+   },
+   "early": 0,
+   "timing": {
+    "n": 12,
+    "meanMs": 2,
+    "sdMs": 14
+   },
+   "steps": {
+    "from": 0,
+    "codes": "hhmhhhhhhmmmhmhmhh",
+    "measures": [
+     0,
+     0,
+     4,
+     1,
+     6,
+     2,
+     12,
+     3
+    ],
+    "wrong": [
+     2,
+     62,
+     9,
+     62,
+     10,
+     59,
+     11,
+     62,
+     14,
+     60,
+     16,
+     62
+    ],
+    "early": [],
+    "timing": [
+     0,
+     0,
+     1,
+     -9,
+     3,
+     -14,
+     4,
+     9,
+     5,
+     -15,
+     6,
+     23,
+     7,
+     -3,
+     8,
+     8,
+     12,
+     23,
+     14,
+     -4,
+     16,
+     -8,
+     17,
+     18
+    ]
+   },
+   "pedal": "not measured",
+   "chords": {
+    "rolled": 0,
+    "lenient": 0
+   },
+   "loops": 0,
+   "recipe": {
+    "row": "drill.reading.sight-reading-2-right"
+   },
+   "evidence": [
+    {
+     "kind": "measured",
+     "skill": "sight-reading",
+     "observationId": null,
+     "standard": "full",
+     "n": 18,
+     "right": 12,
+     "at": "2026-10-05T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 1006,
+      "firstContact": true,
+      "met": [
+       "keep-tempo",
+       "unseen",
+       "guide-off"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "interval.step",
+       "n": 8,
+       "right": 8,
+       "steps": [
+        3,
+        4,
+        7,
+        8,
+        12,
+        14,
+        16,
+        17
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "interval.skip",
+       "n": 6,
+       "right": 0,
+       "steps": [
+        2,
+        9,
+        10,
+        11,
+        13,
+        15
+       ],
+       "wrong": [
+        2,
+        9,
+        10,
+        11,
+        13,
+        15
+       ]
+      },
+      {
+       "demand": "rhythm.eighths",
+       "n": 10,
+       "right": 7,
+       "steps": [
+        1,
+        2,
+        6,
+        7,
+        8,
+        9,
+        12,
+        13,
+        16,
+        17
+       ],
+       "wrong": [
+        2,
+        9,
+        13
+       ]
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "n": 10,
+       "right": 7,
+       "steps": [
+        1,
+        2,
+        6,
+        7,
+        8,
+        9,
+        12,
+        13,
+        16,
+        17
+       ],
+       "wrong": [
+        2,
+        9,
+        13
+       ]
+      }
+     ]
+    },
+    {
+     "kind": "measured",
+     "skill": "interval-reading",
+     "observationId": null,
+     "standard": "full",
+     "n": 14,
+     "right": 8,
+     "at": "2026-10-05T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 1006,
+      "firstContact": true,
+      "met": [
+       "unseen",
+       "guide-off"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "interval.step",
+       "n": 8,
+       "right": 8,
+       "steps": [
+        3,
+        4,
+        7,
+        8,
+        12,
+        14,
+        16,
+        17
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "interval.skip",
+       "n": 6,
+       "right": 0,
+       "steps": [
+        2,
+        9,
+        10,
+        11,
+        13,
+        15
+       ],
+       "wrong": [
+        2,
+        9,
+        10,
+        11,
+        13,
+        15
+       ]
+      }
+     ],
+     "otherDemands": [
+      {
+       "demand": "rhythm.eighths",
+       "steps": [
+        2,
+        7,
+        8,
+        9,
+        12,
+        13,
+        16,
+        17
+       ]
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "steps": [
+        2,
+        7,
+        8,
+        9,
+        12,
+        13,
+        16,
+        17
+       ]
+      }
+     ]
+    },
+    {
+     "kind": "measured",
+     "skill": "subdivision",
+     "observationId": null,
+     "standard": "full",
+     "n": 7,
+     "right": 7,
+     "at": "2026-10-05T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 1006,
+      "firstContact": true,
+      "met": [
+       "keep-tempo",
+       "unseen"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "rhythm.eighths",
+       "n": 7,
+       "right": 7,
+       "steps": [
+        1,
+        6,
+        7,
+        8,
+        12,
+        16,
+        17
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "n": 7,
+       "right": 7,
+       "steps": [
+        1,
+        6,
+        7,
+        8,
+        12,
+        16,
+        17
+       ],
+       "wrong": []
+      }
+     ],
+     "otherDemands": [
+      {
+       "demand": "interval.step",
+       "steps": [
+        7,
+        8,
+        12,
+        16,
+        17
+       ]
+      }
+     ]
+    },
+    {
+     "kind": "refusal",
+     "skill": "position-shift",
+     "reason": "no-opportunity",
+     "cites": [
+      "steps",
+      "hands.played"
+     ]
+    }
+   ],
+   "evidenceDefinitions": 2,
+   "id": 5
+  }
+ ],
+ "ambiguous": [
+  {
+   "itemId": "drill.reading.sight-reading-2-right",
+   "seed": 5006,
+   "mode": "tempo",
+   "tempoPct": 70,
+   "tempoMeasured": true,
+   "accuracy": 0.8333333333333334,
+   "accuracyEstimated": false,
+   "wrongNotes": 3,
+   "missed": 3,
+   "durationMs": 19047.666666666668,
+   "at": "2026-10-01T12:00:00.000Z",
+   "definitions": 1,
+   "range": {
+    "fromMeasure": 0,
+    "toMeasure": 3
+   },
+   "opened": {
+    "tab": "today",
+    "rung": "2.5",
+    "slot": "daily-read"
+   },
+   "baseTempo": {
+    "bpm": 72,
+    "source": "written"
+   },
+   "hands": {
+    "played": "both",
+    "appPlayed": "none"
+   },
+   "keys": {
+    "view": "strip",
+    "guide": "off",
+    "fingers": false,
+    "names": false
+   },
+   "graceNotes": false,
+   "input": {
+    "source": "keys",
+    "toleranceMs": 150,
+    "latencyMs": 0
+   },
+   "unseen": true,
+   "demonstrated": false,
+   "pitch": {
+    "definition": "tempo-notes",
+    "right": 15,
+    "of": 18,
+    "estimated": false
+   },
+   "early": 0,
+   "timing": {
+    "n": 15,
+    "meanMs": -3,
+    "sdMs": 12
+   },
+   "steps": {
+    "from": 0,
+    "codes": "hhhhmhhhhhhhhhmmhh",
+    "measures": [
+     0,
+     0,
+     6,
+     1,
+     11,
+     2,
+     16,
+     3
+    ],
+    "wrong": [
+     4,
+     64,
+     14,
+     65,
+     15,
+     62
+    ],
+    "early": [],
+    "timing": [
+     0,
+     4,
+     1,
+     1,
+     2,
+     1,
+     3,
+     5,
+     5,
+     -18,
+     6,
+     -14,
+     7,
+     -4,
+     8,
+     -17,
+     9,
+     -5,
+     10,
+     4,
+     11,
+     9,
+     12,
+     -2,
+     13,
+     -19,
+     16,
+     24,
+     17,
+     -15
+    ]
+   },
+   "pedal": "not measured",
+   "chords": {
+    "rolled": 0,
+    "lenient": 0
+   },
+   "loops": 0,
+   "recipe": {
+    "row": "drill.reading.sight-reading-2-right"
+   },
+   "evidence": [
+    {
+     "kind": "measured",
+     "skill": "sight-reading",
+     "observationId": null,
+     "standard": "full",
+     "n": 18,
+     "right": 15,
+     "at": "2026-10-01T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 5006,
+      "firstContact": true,
+      "met": [
+       "keep-tempo",
+       "unseen",
+       "guide-off"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "interval.step",
+       "n": 12,
+       "right": 12,
+       "steps": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "interval.skip",
+       "n": 4,
+       "right": 1,
+       "steps": [
+        4,
+        14,
+        15,
+        16
+       ],
+       "wrong": [
+        4,
+        14,
+        15
+       ]
+      },
+      {
+       "demand": "rhythm.eighths",
+       "n": 8,
+       "right": 5,
+       "steps": [
+        0,
+        1,
+        3,
+        4,
+        8,
+        9,
+        14,
+        15
+       ],
+       "wrong": [
+        4,
+        14,
+        15
+       ]
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "n": 8,
+       "right": 5,
+       "steps": [
+        0,
+        1,
+        3,
+        4,
+        8,
+        9,
+        14,
+        15
+       ],
+       "wrong": [
+        4,
+        14,
+        15
+       ]
+      },
+      {
+       "demand": "range.beyond-position",
+       "n": 3,
+       "right": 3,
+       "steps": [
+        6,
+        9,
+        10
+       ],
+       "wrong": []
+      }
+     ]
+    },
+    {
+     "kind": "measured",
+     "skill": "interval-reading",
+     "observationId": null,
+     "standard": "full",
+     "n": 16,
+     "right": 13,
+     "at": "2026-10-01T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 5006,
+      "firstContact": true,
+      "met": [
+       "unseen",
+       "guide-off"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "interval.step",
+       "n": 12,
+       "right": 12,
+       "steps": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "interval.skip",
+       "n": 4,
+       "right": 1,
+       "steps": [
+        4,
+        14,
+        15,
+        16
+       ],
+       "wrong": [
+        4,
+        14,
+        15
+       ]
+      }
+     ],
+     "otherDemands": [
+      {
+       "demand": "rhythm.eighths",
+       "steps": [
+        1,
+        3,
+        4,
+        8,
+        9,
+        14,
+        15
+       ]
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "steps": [
+        1,
+        3,
+        4,
+        8,
+        9,
+        14,
+        15
+       ]
+      },
+      {
+       "demand": "range.beyond-position",
+       "steps": [
+        6,
+        9,
+        10
+       ]
+      }
+     ]
+    },
+    {
+     "kind": "measured",
+     "skill": "subdivision",
+     "observationId": null,
+     "standard": "full",
+     "n": 5,
+     "right": 5,
+     "at": "2026-10-01T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 5006,
+      "firstContact": true,
+      "met": [
+       "keep-tempo",
+       "unseen"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "rhythm.eighths",
+       "n": 5,
+       "right": 5,
+       "steps": [
+        0,
+        1,
+        3,
+        8,
+        9
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "n": 5,
+       "right": 5,
+       "steps": [
+        0,
+        1,
+        3,
+        8,
+        9
+       ],
+       "wrong": []
+      }
+     ],
+     "otherDemands": [
+      {
+       "demand": "interval.step",
+       "steps": [
+        1,
+        3,
+        8,
+        9
+       ]
+      },
+      {
+       "demand": "range.beyond-position",
+       "steps": [
+        9
+       ]
+      }
+     ]
+    },
+    {
+     "kind": "measured",
+     "skill": "position-shift",
+     "observationId": null,
+     "standard": "full",
+     "n": 3,
+     "right": 3,
+     "at": "2026-10-01T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 5006,
+      "firstContact": true,
+      "met": [
+       "keep-tempo",
+       "guide-off"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "range.beyond-position",
+       "n": 3,
+       "right": 3,
+       "steps": [
+        6,
+        9,
+        10
+       ],
+       "wrong": []
+      }
+     ],
+     "otherDemands": [
+      {
+       "demand": "interval.step",
+       "steps": [
+        6,
+        9,
+        10
+       ]
+      },
+      {
+       "demand": "rhythm.eighths",
+       "steps": [
+        9
+       ]
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "steps": [
+        9
+       ]
+      }
+     ]
+    }
+   ],
+   "evidenceDefinitions": 2,
+   "id": 1
+  },
+  {
+   "itemId": "drill.reading.sight-reading-2-right",
+   "seed": 5010,
+   "mode": "tempo",
+   "tempoPct": 70,
+   "tempoMeasured": true,
+   "accuracy": 0.7647058823529411,
+   "accuracyEstimated": false,
+   "wrongNotes": 4,
+   "missed": 4,
+   "durationMs": 19048.14285714286,
+   "at": "2026-10-02T12:00:00.000Z",
+   "definitions": 1,
+   "range": {
+    "fromMeasure": 0,
+    "toMeasure": 3
+   },
+   "opened": {
+    "tab": "today",
+    "rung": "2.5",
+    "slot": "daily-read"
+   },
+   "baseTempo": {
+    "bpm": 72,
+    "source": "written"
+   },
+   "hands": {
+    "played": "both",
+    "appPlayed": "none"
+   },
+   "keys": {
+    "view": "strip",
+    "guide": "off",
+    "fingers": false,
+    "names": false
+   },
+   "graceNotes": false,
+   "input": {
+    "source": "keys",
+    "toleranceMs": 150,
+    "latencyMs": 0
+   },
+   "unseen": true,
+   "demonstrated": false,
+   "pitch": {
+    "definition": "tempo-notes",
+    "right": 13,
+    "of": 17,
+    "estimated": false
+   },
+   "early": 0,
+   "timing": {
+    "n": 13,
+    "meanMs": -7,
+    "sdMs": 12
+   },
+   "steps": {
+    "from": 0,
+    "codes": "hhhhhhhhmhhmhhmmh",
+    "measures": [
+     0,
+     0,
+     3,
+     1,
+     5,
+     2,
+     12,
+     3
+    ],
+    "wrong": [
+     8,
+     64,
+     11,
+     71,
+     14,
+     64,
+     16,
+     60
+    ],
+    "early": [],
+    "timing": [
+     0,
+     10,
+     1,
+     3,
+     2,
+     -8,
+     3,
+     8,
+     4,
+     -9,
+     5,
+     -12,
+     6,
+     -25,
+     7,
+     -3,
+     9,
+     -10,
+     10,
+     2,
+     12,
+     -23,
+     13,
+     3,
+     16,
+     -21
+    ]
+   },
+   "pedal": "not measured",
+   "chords": {
+    "rolled": 0,
+    "lenient": 0
+   },
+   "loops": 0,
+   "recipe": {
+    "row": "drill.reading.sight-reading-2-right"
+   },
+   "evidence": [
+    {
+     "kind": "measured",
+     "skill": "sight-reading",
+     "observationId": null,
+     "standard": "full",
+     "n": 17,
+     "right": 13,
+     "at": "2026-10-02T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 5010,
+      "firstContact": true,
+      "met": [
+       "keep-tempo",
+       "unseen",
+       "guide-off"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "interval.step",
+       "n": 8,
+       "right": 8,
+       "steps": [
+        1,
+        2,
+        4,
+        6,
+        7,
+        9,
+        10,
+        16
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "interval.skip",
+       "n": 7,
+       "right": 3,
+       "steps": [
+        3,
+        5,
+        8,
+        11,
+        13,
+        14,
+        15
+       ],
+       "wrong": [
+        8,
+        11,
+        14,
+        15
+       ]
+      },
+      {
+       "demand": "rhythm.eighths",
+       "n": 10,
+       "right": 6,
+       "steps": [
+        1,
+        2,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        14,
+        15
+       ],
+       "wrong": [
+        8,
+        11,
+        14,
+        15
+       ]
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "n": 10,
+       "right": 6,
+       "steps": [
+        1,
+        2,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        14,
+        15
+       ],
+       "wrong": [
+        8,
+        11,
+        14,
+        15
+       ]
+      },
+      {
+       "demand": "range.beyond-position",
+       "n": 2,
+       "right": 1,
+       "steps": [
+        10,
+        11
+       ],
+       "wrong": [
+        11
+       ]
+      }
+     ]
+    },
+    {
+     "kind": "measured",
+     "skill": "interval-reading",
+     "observationId": null,
+     "standard": "full",
+     "n": 15,
+     "right": 11,
+     "at": "2026-10-02T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 5010,
+      "firstContact": true,
+      "met": [
+       "unseen",
+       "guide-off"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "interval.step",
+       "n": 8,
+       "right": 8,
+       "steps": [
+        1,
+        2,
+        4,
+        6,
+        7,
+        9,
+        10,
+        16
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "interval.skip",
+       "n": 7,
+       "right": 3,
+       "steps": [
+        3,
+        5,
+        8,
+        11,
+        13,
+        14,
+        15
+       ],
+       "wrong": [
+        8,
+        11,
+        14,
+        15
+       ]
+      }
+     ],
+     "otherDemands": [
+      {
+       "demand": "rhythm.eighths",
+       "steps": [
+        1,
+        2,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        14,
+        15
+       ]
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "steps": [
+        1,
+        2,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        14,
+        15
+       ]
+      },
+      {
+       "demand": "range.beyond-position",
+       "steps": [
+        10,
+        11
+       ]
+      }
+     ]
+    },
+    {
+     "kind": "measured",
+     "skill": "subdivision",
+     "observationId": null,
+     "standard": "full",
+     "n": 6,
+     "right": 6,
+     "at": "2026-10-02T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 5010,
+      "firstContact": true,
+      "met": [
+       "keep-tempo",
+       "unseen"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "rhythm.eighths",
+       "n": 6,
+       "right": 6,
+       "steps": [
+        1,
+        2,
+        6,
+        7,
+        9,
+        10
+       ],
+       "wrong": []
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "n": 6,
+       "right": 6,
+       "steps": [
+        1,
+        2,
+        6,
+        7,
+        9,
+        10
+       ],
+       "wrong": []
+      }
+     ],
+     "otherDemands": [
+      {
+       "demand": "interval.step",
+       "steps": [
+        1,
+        2,
+        6,
+        7,
+        9,
+        10
+       ]
+      },
+      {
+       "demand": "range.beyond-position",
+       "steps": [
+        10
+       ]
+      }
+     ]
+    },
+    {
+     "kind": "measured",
+     "skill": "position-shift",
+     "observationId": null,
+     "standard": "full",
+     "n": 2,
+     "right": 1,
+     "at": "2026-10-02T12:00:00.000Z",
+     "context": {
+      "itemId": "drill.reading.sight-reading-2-right",
+      "seed": 5010,
+      "firstContact": true,
+      "met": [
+       "keep-tempo",
+       "guide-off"
+      ],
+      "unattributed": 0,
+      "estimated": false
+     },
+     "byDemand": [
+      {
+       "demand": "range.beyond-position",
+       "n": 2,
+       "right": 1,
+       "steps": [
+        10,
+        11
+       ],
+       "wrong": [
+        11
+       ]
+      }
+     ],
+     "otherDemands": [
+      {
+       "demand": "interval.step",
+       "steps": [
+        10
+       ]
+      },
+      {
+       "demand": "interval.skip",
+       "steps": [
+        11
+       ]
+      },
+      {
+       "demand": "rhythm.eighths",
+       "steps": [
+        10,
+        11
+       ]
+      },
+      {
+       "demand": "rhythm.shorter-than-quarter",
+       "steps": [
+        10,
+        11
+       ]
+      }
+     ]
+    }
+   ],
+   "evidenceDefinitions": 2,
+   "id": 2
+  }
+ ]
+}

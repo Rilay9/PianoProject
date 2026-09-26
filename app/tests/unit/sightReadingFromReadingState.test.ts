@@ -21,30 +21,32 @@ import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
 import {
-  EASY_AFTER,
-  READING_DIMENSIONS,
+  READER_POLICY,
   nextRecommended,
-  readingMovesFrom,
+  readingMoves,
   readingOffer,
   readingOptions,
   recipeDistance,
+  taughtAtRung,
   type ReadingOffer,
 } from '../../src/curriculum/session';
-import { dailySeed } from '../../src/engine/sightReading';
+import { dailySeed, unrealisable } from '../../src/engine/sightReading';
+import { UNREALISABLE_AT } from '../../src/engine/readingControls';
+import { demandReadings } from '../../src/evidence/demandReadings';
+import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import { dayKey } from '../../src/data/progressStore';
 import { READING_TEXT, readingReason } from '../../src/ui/help';
-import { detect, type DetectorId } from '../../src/demands/detect';
 import type { CatalogItem, Curriculum } from '../../src/curriculum/types';
 import type { ReadingRecipe, SessionRow } from '../../src/data/db';
-import type { DemandsFile } from '../../src/demands/vocabulary';
 import { phraseModel, readPhrase, skipSteps } from './helpers/reader';
 
 const CONTENT = join(process.cwd(), 'public', 'content');
 const catalog = JSON.parse(readFileSync(join(CONTENT, 'catalog.json'), 'utf8')) as CatalogItem[];
 const curriculum = JSON.parse(readFileSync(join(CONTENT, 'curriculum.json'), 'utf8')) as Curriculum;
-const { demands } = JSON.parse(
-  readFileSync(resolve('..', 'content', 'curriculum', 'vocabulary', 'demands.json'), 'utf8'),
-) as DemandsFile;
+const EASY_AFTER = READER_POLICY.easyAfter;
+/** The options the Score screen writes for a recipe opened from a rung: the row held to what the rung has taught (C4c). */
+const written = (item: CatalogItem, recipe: ReadingRecipe, seed: number, rung = '2.2') =>
+  readingOptions(item, recipe, seed, taughtAtRung(curriculum, rung));
 const byId = new Map(catalog.map((item) => [item.id, item]));
 const TWO_RIGHT = byId.get('drill.reading.sight-reading-2-right') as CatalogItem;
 const readers = catalog.filter((item) => item.drill?.kind === 'sight-reading');
@@ -67,7 +69,7 @@ function offer(rows: readonly SessionRow[], rung = '2.2', today = TODAY, purpose
 async function seedsWithSkips(count: number, from: number): Promise<number[]> {
   const out: number[] = [];
   for (let seed = from; out.length < count; seed += 1) {
-    const model = await phraseModel(readingOptions(TWO_RIGHT, { row: TWO_RIGHT.id }, seed), `s.${String(seed)}`);
+    const model = await phraseModel(written(TWO_RIGHT, { row: TWO_RIGHT.id }, seed), `s.${String(seed)}`);
     if (skipSteps(model).length >= 3) out.push(seed);
   }
   return out;
@@ -81,7 +83,7 @@ async function fiveReads(misread: readonly number[], from: number): Promise<Sess
     const recipe: ReadingRecipe = { row: TWO_RIGHT.id };
     const { row } = await readPhrase({
       item: TWO_RIGHT,
-      options: readingOptions(TWO_RIGHT, recipe, seed),
+      options: written(TWO_RIGHT, recipe, seed),
       at: day(n),
       recipe,
       ...(misread.includes(n) ? { wrong: skipSteps } : {}),
@@ -108,15 +110,19 @@ describe('three learners on 2.2, five reads each, get three different next phras
     expect(readingReason(next.why, 'daily', TODAY)).toBe(READING_TEXT.rungDaily);
   });
 
-  it('misread the skips on two days: one dimension easier — the same row in C position', () => {
+  // Revised (C4c): C4 stepped down by the newest thing added, else range, so
+  // this learner got the row in C position ("This one in C position — 14 of 20
+  // right and in time yesterday"). The skips are singled out (C4a), and the
+  // skip control moves; the phrase is already in C position at 2.2 (held).
+  it('misread the skips on two days: the skip control, off — the same row by step only, and the line says why', () => {
     const next = offer(misreadSkips);
-    expect(next.recipe).toEqual({ row: TWO_RIGHT.id, moved: { position: true } });
+    expect(next.recipe).toEqual({ row: TWO_RIGHT.id, moved: { skips: false } });
     expect(next.why.kind).toBe('back');
     const last = misreadSkips[misreadSkips.length - 1]?.recipe as ReadingRecipe;
     expect(recipeDistance(next.recipe, last, catalog)).toBe(1);
     const line = readingReason(next.why, 'daily', TODAY);
-    expect(line, 'the reason does not say what the phrase changes, then what the last read measured').toMatch(
-      /^This one in C position — \d+ of \d+ right and in time yesterday$/,
+    expect(line, 'the reason does not say what the phrase changes, then what the reads singled out').toMatch(
+      /^This one by step only — skips went wrong in \d+ phrases$/,
     );
   });
 
@@ -134,14 +140,19 @@ describe('three learners on 2.2, five reads each, get three different next phras
     expect(new Set(keys).size).toBe(3);
   });
 
-  it('the reason line cites the last read’s own measurement, and nothing it did not measure', () => {
-    const last = misreadSkips[misreadSkips.length - 1] as SessionRow;
-    const sight = (last.evidence ?? []).find((result) => result.skill === 'sight-reading') as { n: number; right: number };
+  // Revised (C4c): C4's line could only cite the last read's count ("the
+  // evidence is per skill: it cannot say which demand went wrong"). Since C4a
+  // it can say which demand the reads single out; the line cites that and its
+  // number, and nothing the readings did not establish.
+  it('the reason line cites what the reads singled out, with its number, and nothing else', () => {
+    const skip = demandReadings(misreadSkips, VOCABULARY_V0, TODAY).find((one) => one.skill === 'sight-reading' && one.demand === 'interval.skip');
+    expect(skip?.selectivity).toMatch(/pattern|isolated/);
     const line = readingReason(offer(misreadSkips).why, 'daily', TODAY);
-    expect(line).toContain(`${String(sight.right)} of ${String(sight.n)}`);
-    // The evidence is per skill: it cannot say which demand went wrong, so the
-    // line never names skips it could not count (Entry 72's construct list).
-    expect(line.toLowerCase()).not.toContain('skip');
+    expect(line).toContain(`skips went wrong in ${String(skip?.phrasesBelow)} phrases`);
+    // Nothing else is named: not the eighths, not the hands.
+    expect(line.toLowerCase()).not.toMatch(/eighth|hand/);
+    // And a clean reader's line names nothing that went wrong.
+    expect(readingReason(offer(cleanEighths).why, 'daily', TODAY)).not.toMatch(/went wrong/);
   });
 });
 
@@ -151,17 +162,22 @@ describe('never a dimension the rung has not taught', () => {
     expect(Object.keys(forward.recipe.moved ?? {})).toEqual(['hands']);
   });
 
-  it('on 3.1 the same reader, already with both hands, may move to a key; on 2.5 not', () => {
-    // One dimension on from both hands: a key needs 3.1's key signatures. On
-    // 2.5 nothing is taught to move to, so the phrase stays — or, this being
-    // the fourth read since an easy one, is the easy one.
+  // Revised (C4c): C4's table had nothing to move on 2.5 (the generator could
+  // not write ties or dotted quarters at level 2, S25) and moved the key next
+  // on 3.1. The reader now turns on the first demand the rung has taught that
+  // the phrase does not promise and the reads have not shown, in the order the
+  // curriculum teaches them. These reads were one-hand phrases, which showed no
+  // leap, so a leap (taught at 1.5) comes first on either rung — and a key
+  // signature (3.1) never comes before what earlier rungs taught.
+  it('the same reader, already with both hands: on 2.5 and on 3.1 the next is the earliest taught demand not yet shown, never a key first', () => {
     const withBoth = cleanEighths.map((row) => ({ ...row, recipe: { row: TWO_RIGHT.id, moved: { hands: 'both' as const } } }));
-    const on25 = offer(withBoth, '2.5');
-    expect(['stay', 'easy']).toContain(on25.why.kind);
-    expect(on25.recipe.moved?.fifths).toBeUndefined();
-    const on31 = offer(withBoth, '3.1');
-    expect(on31.why.kind).toBe('forward');
-    expect(on31.recipe.moved).toEqual({ hands: 'both', fifths: 1 });
+    for (const rung of ['2.5', '3.1']) {
+      const next = offer(withBoth, rung);
+      expect(next.why.kind, rung).toBe('forward');
+      expect(next.recipe.moved, rung).toEqual({ hands: 'both', leaps: true });
+      expect(next.recipe.moved?.fifths, rung).toBeUndefined();
+      expect(readingReason(next.why, 'daily', TODAY), rung).toMatch(/^Now with a leap — /);
+    }
   });
 
   it('a rung whose row’s promises fix every dimension keeps the phrase at the row, and says why', () => {
@@ -214,7 +230,13 @@ describe('an easy band: one read in every few sits one dimension below, on purpo
       const next = offer(rows, '2.2', today, 'slot');
       offers.push(next);
       const item = byId.get(next.recipe.row) as CatalogItem;
-      const { row } = await readPhrase({ item, options: readingOptions(item, next.recipe, next.seed), at: new Date(2026, 10, n, 12).toISOString(), recipe: next.recipe });
+      const { row } = await readPhrase({
+        item,
+        options: written(item, next.recipe, next.seed, next.lessonId),
+        at: new Date(2026, 10, n, 12).toISOString(),
+        recipe: next.recipe,
+        opened: { tab: 'today', rung: next.lessonId ?? '2.2', slot: 'sightreading' },
+      });
       rows.push({ ...row, id: n });
     }
     return { offers, rows };
@@ -249,53 +271,43 @@ describe('an easy band: one read in every few sits one dimension below, on purpo
   }, 120_000);
 });
 
-/**
- * A move changes one dimension of the music (the brief's third hypothesis:
- * the promises' bounds and the one-dimension move do not conflict).
- *
- * For every reading row and every one-dimension move the reader can make from
- * its own recipe, the same twelve seeds are generated both ways and read with
- * the demand detectors — the one definition of each fact (C2). What the row
- * writes in every phrase, the move still writes in every phrase, unless it is
- * the move's own demand; and what the move adds that the row never wrote is
- * only the move's own. That is T37's promise check held on the recipes the
- * reader chooses, which `sightReadingPromises` (preserved) holds on the rows.
- */
-describe('a move changes one dimension of the music, inside the row’s promises', () => {
-  const SEEDS = Array.from({ length: 12 }, (_, i) => 31 + i * 7919);
-  const DETECTORS = [...new Set(demands.map((d) => d.detector))] as DetectorId[];
-  const demandOf = new Map(demands.map((d) => [d.detector, d.id]));
-
-  async function demandSets(item: CatalogItem, recipe: ReadingRecipe): Promise<Set<string>[]> {
-    const out: Set<string>[] = [];
-    for (const seed of SEEDS) {
-      const model = await phraseModel(readingOptions(item, recipe, seed), `${item.id}.${String(seed)}`);
-      out.push(new Set(DETECTORS.filter((id) => detect(model, id).present).map((id) => demandOf.get(id) ?? id)));
-    }
-    return out;
-  }
-
-  for (const item of readers) {
-    it(`${item.id}: every move keeps what the row always writes and adds only its own demand`, async () => {
-      const own = await demandSets(item, { row: item.id });
-      const always = [...(own[0] ?? [])].filter((d) => own.every((set) => set.has(d)));
-      const ever = new Set(own.flatMap((set) => [...set]));
-      for (const move of readingMovesFrom(item, { row: item.id })) {
-        const moved = await demandSets(item, move.recipe);
-        const label = `${item.id} ${move.dimension} ${move.from} → ${move.to}`;
-        for (const d of always) {
-          if (move.demands.includes(d)) continue;
-          const kept = moved.filter((set) => set.has(d)).length;
-          expect(kept, `${label}: ${d} in ${String(kept)} of ${String(SEEDS.length)} phrases`).toBe(SEEDS.length);
+// Replaced (C4c): "a move changes one dimension of the music, inside the row's
+// promises" walked C4's hand-written dimension table (`readingMovesFrom`) for
+// every row and read twelve phrases each way with the detectors. The table is
+// gone: every move the reader makes is a demand's control from
+// `readingControls.ts`, and C4b's `generatorContract.test.ts` (preserved) holds
+// every one of them at every core rung — on in every phrase, off in none, the
+// promises kept, nothing untaught, nothing new but what the control brings.
+// "Names the six dimensions the brief lists" is deleted with the table (the six
+// were today's controls, never the ontology: the reviewer's fourth message §4).
+// What stays here is the seam between the two: the reader never asks for a
+// move C4b declares impossible.
+describe('the reader asks only for moves the generator makes (C4b’s contract, cited)', () => {
+  const order = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons.map((lesson) => lesson.id)));
+  const listing = (id: string): string[] =>
+    order.filter((rung) =>
+      curriculum.stages.some((stage) => stage.units.some((unit) => unit.lessons.some((lesson) => lesson.id === rung && lesson.exerciseOptions.includes(id)))),
+    );
+  it('at every rung listing a reading row: no move UNREALISABLE_AT declares, and none the generator gives a new reason against', () => {
+    let checked = 0;
+    for (const item of readers) {
+      for (const rung of listing(item.id)) {
+        const taught = taughtAtRung(curriculum, rung);
+        const base = readingOptions(item, { row: item.id }, undefined, taught);
+        for (const move of readingMoves({ curriculum, item, recipe: { row: item.id }, rung })) {
+          checked += 1;
+          const label = `${item.id} at ${rung}: ${move.demand} ${move.direction}`;
+          expect(
+            UNREALISABLE_AT.some((u) => u.demand === move.demand && u.direction === move.direction && u.rungs.includes(rung)),
+            label,
+          ).toBe(false);
+          const before = new Set(unrealisable(base));
+          expect(unrealisable(readingOptions(item, move.recipe, undefined, taught)).filter((reason) => !before.has(reason)), label).toEqual([]);
+          if (move.direction === 'on') expect(move.brings.every((demand) => taught?.(demand) === true), label).toBe(true);
         }
-        const added = [...new Set(moved.flatMap((set) => [...set]))].filter((d) => !ever.has(d) && !move.demands.includes(d));
-        expect(added, `${label}: adds ${added.join(', ')}`).toEqual([]);
       }
-    }, 120_000);
-  }
-
-  it('names the six dimensions the brief lists', () => {
-    expect([...READING_DIMENSIONS].sort()).toEqual(['hands', 'key', 'metre', 'range', 'rhythm', 'syncopation']);
+    }
+    expect(checked, 'no moves were offered anywhere').toBeGreaterThan(20);
   });
 });
 

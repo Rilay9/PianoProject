@@ -7,7 +7,9 @@
  * exercise breadth is that a skill can be practised without a tune attached
  * (`00` D21).
  */
-import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { expect, test, type Page } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
@@ -242,94 +244,108 @@ test.describe('Today obeys 04 §0', () => {
 
 /**
  * The daily read says why this phrase, in one line drawn from the reads behind
- * it (C4; `04` §2, design §11 item 4, backlog I1).
+ * it (C4, C4c; `04` §2, design §11 item 4, backlog I1, L64).
  *
- * A constructed learner, restored the way a backup is: placed on 2.2, five
- * first readings of 2.2's own row stored with the evidence the Score screen
- * keeps (16 of 16, 16, 15, then 11 and 11 of 16 right and in time). The daily
- * card used to say *One phrase you have never seen, once, slowly* whatever the
- * record held, and open the stage's row. Read here on the glass at the owner's
- * width: the sentence, whole; and ▶ opening that phrase — the rung's row one
- * dimension easier, on the day's seed.
+ * Constructed learners, restored the way a backup is. **Their rows come from
+ * the real path, never typed here** (C4c item 0): `readerMovesTheDemand.test.ts`
+ * generates each phrase as the Score screen writes it, plays it through the
+ * real engine, computes the evidence and stamps it as the record call does, and
+ * holds `fixtures/reader-learners.json` equal to what that path makes. This
+ * case used to type its evidence in C3's shape under the observation's stamp;
+ * once C4a gave the evidence a version of its own, those rows contributed
+ * nothing and the card said *One phrase you have never seen, once, slowly*.
+ * The dates are moved so the last read was yesterday, which moves nothing the
+ * reader reads but the words for the day.
+ *
+ * Read on the glass at the owner's width: the sentence, whole; and ▶ opening
+ * that phrase — the recipe the reader chose, on the day's seed, held to the
+ * rung.
  */
-test.describe('the daily read says why this phrase (C4)', () => {
+test.describe('the daily read says why this phrase (C4, C4c)', () => {
   test.use({ viewport: { width: 342, height: 740 } });
 
-  test('two misread days on 2.2: the phrase steps back into C position, and the card says why', async ({ page }) => {
+  const learners = JSON.parse(readFileSync(join(process.cwd(), 'tests', 'e2e', 'fixtures', 'reader-learners.json'), 'utf8')) as Record<
+    string,
+    Record<string, unknown>[]
+  >;
+
+  /** Restores a learner placed on a rung, the rows' dates moved so the last read was yesterday, and reloads. */
+  async function restore(page: Page, rows: Record<string, unknown>[], rung: string): Promise<void> {
     await page.goto('/');
     await expect(page.locator('#today-daily [data-daily]')).toBeVisible({ timeout: 30_000 });
-    await page.evaluate(async () => {
-      const ROW = 'drill.reading.sight-reading-2-right';
-      const noon = (daysAgo: number): string => {
-        const at = new Date();
-        at.setHours(12, 0, 0, 0);
-        at.setDate(at.getDate() - daysAgo);
-        return at.toISOString();
-      };
-      const read = (daysAgo: number, right: number): Record<string, unknown> => ({
-        itemId: ROW,
-        lessonId: '2.2',
-        seed: 90_000 + daysAgo,
-        mode: 'tempo',
-        tempoPct: 70,
-        tempoMeasured: true,
-        accuracy: right / 16,
-        accuracyEstimated: false,
-        wrongNotes: 16 - right,
-        missed: 16 - right,
-        durationMs: 60_000,
-        at: noon(daysAgo),
-        definitions: 1,
-        unseen: true,
-        demonstrated: false,
-        recipe: { row: ROW },
-        opened: { tab: 'today', rung: '2.2', slot: 'daily-read' },
-        hands: { played: 'both', appPlayed: 'none' },
-        keys: { view: 'strip', guide: 'off', fingers: false, names: false },
-        evidence: [
-          {
-            kind: 'measured',
-            skill: 'sight-reading',
-            observationId: null,
-            standard: 'full',
-            n: 16,
-            right,
-            at: noon(daysAgo),
-            context: {
-              itemId: ROW,
-              seed: 90_000 + daysAgo,
-              firstContact: true,
-              met: ['keep-tempo', 'unseen', 'guide-off'],
-              unattributed: 0,
-              estimated: false,
-            },
+    await page.evaluate(
+      async ({ rows, rung }) => {
+        const local = (iso: string): Date => new Date(iso);
+        const dayOf = (d: Date): number => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+        const last = rows.map((row) => local(row.at as string)).sort((a, b) => a.getTime() - b.getTime()).at(-1) as Date;
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const days = Math.round((dayOf(yesterday) - dayOf(last)) / 86_400_000);
+        const moved = (iso: string): string => {
+          const at = local(iso);
+          at.setDate(at.getDate() + days);
+          return at.toISOString();
+        };
+        const sessions = rows.map((row) => ({
+          ...row,
+          at: moved(row.at as string),
+          evidence: (row.evidence as Record<string, unknown>[]).map((one) => (typeof one.at === 'string' ? { ...one, at: moved(one.at) } : one)),
+        }));
+        const hooks = (window as unknown as { __pianopath?: { importAll: (raw: unknown) => Promise<unknown> } }).__pianopath;
+        if (!hooks) throw new Error('storage hooks not exposed');
+        await hooks.importAll({
+          app: 'pianopath',
+          version: 1,
+          exportedAt: new Date().toISOString(),
+          stores: {
+            plan: [{ id: 'current', stage: 2, unitId: rung, trackOrder: ['core'], placement: { unitId: rung, at: moved(rows[0]?.at as string) } }],
+            sessions,
           },
-        ],
-      });
-      const hooks = (window as unknown as { __pianopath?: { importAll: (raw: unknown) => Promise<unknown> } }).__pianopath;
-      if (!hooks) throw new Error('storage hooks not exposed');
-      await hooks.importAll({
-        app: 'pianopath',
-        version: 1,
-        exportedAt: new Date().toISOString(),
-        stores: {
-          plan: [{ id: 'current', stage: 2, unitId: '2.2', trackOrder: ['core'], placement: { unitId: '2.2', at: noon(6) } }],
-          sessions: [read(5, 16), read(4, 16), read(3, 15), read(2, 11), read(1, 11)],
-        },
-      });
-    });
+        });
+      },
+      { rows, rung },
+    );
     await page.reload();
+  }
+
+  async function wholeLine(page: Page, text: string | RegExp): Promise<void> {
     const line = page.locator('#today-daily .list-row__sub');
-    await expect(line).toHaveText('This one in C position — 11 of 16 right and in time yesterday', { timeout: 30_000 });
+    await expect(line).toHaveText(text, { timeout: 30_000 });
     const cut = await line.evaluate((el) => el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1);
     expect(cut, 'the reason is cut off on the glass').toBe(false);
+  }
 
+  async function openDaily(page: Page): Promise<string> {
     await page.locator('#today-daily button[aria-label="Open today\'s sight-read"]').click();
     await expect(page).toHaveURL(/#\/score\/drill\.reading\.sight-reading-2-right\?/, { timeout: 30_000 });
     const hash = decodeURIComponent(new URL(page.url()).hash);
-    expect(hash).toContain('recipe=position:1');
+    await page.waitForSelector('.score-view[data-settled]', { timeout: 60_000 });
+    return hash;
+  }
+
+  // Revised (C4c): the learner is the same shape (three clean reads of 2.2's
+  // row, then two with every skip misread), made by the real path; C4 stepped
+  // it into C position, whatever it had added last. The skips are singled
+  // out, and the skip control moves; 2.2's row is already inside C position.
+  test('two days of misread skips on 2.2: the phrase moves by step, and the card says the skips went wrong', async ({ page }) => {
+    await restore(page, learners.skipLearner ?? [], '2.2');
+    await wholeLine(page, /^This one by step only — skips went wrong in \d+ phrases$/);
+    const hash = await openDaily(page);
+    expect(hash).toContain('recipe=skips:0');
     expect(hash).toContain('slot=daily-read');
     expect(hash).toContain('rung=2.2');
-    await page.waitForSelector('.score-view[data-settled]', { timeout: 60_000 });
+  });
+
+  // Added (C4c): the reviewer's mixed-demand learner — every note that was a
+  // skip and an eighth at once misread, twice. Nothing is singled out, so
+  // nothing is blamed: the easy read, and the card says the app is not sure.
+  test('two reads wrong only where skips and eighths coincide, on 2.5: nothing blamed, the easy read, and the card says it is not sure yet', async ({
+    page,
+  }) => {
+    await restore(page, learners.ambiguous ?? [], '2.5');
+    await wholeLine(page, 'An easy one: in C position — not sure yet what went wrong');
+    const hash = await openDaily(page);
+    expect(hash).toContain('recipe=position:1,easy:1');
+    expect(hash).toContain('rung=2.5');
   });
 });

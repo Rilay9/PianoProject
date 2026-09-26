@@ -33,7 +33,7 @@
 import type { DrillKind } from '../engine/drills/types';
 import type { Refusal } from '../evidence/evidence';
 import type { Skill } from '../demands/vocabulary';
-import type { ReadingDimension, ReadingWhy } from '../curriculum/session';
+import type { ReadingMove, ReadingWhy } from '../curriculum/session';
 import type { ReadingRecipe } from '../data/db';
 
 /** One control, and what it says back. */
@@ -519,19 +519,22 @@ export const ROW_TEXT = {
 } as const;
 
 /**
- * Why Today offers this sight-reading phrase, in one line (C4; `04` §2,
+ * Why Today offers this sight-reading phrase, in one line (C4, C4c; `04` §2,
  * design §11 item 4, backlog I1).
  *
- * The line says only what the stored evidence says — the last read's
- * sight-reading measurement, which is right notes in time on every step — and
- * what the phrase changes because of it. It never names a demand it cannot
- * count (the evidence is per skill, so "you misread two skips" is not
- * something it knows), and where no evidence chose the phrase it says the
- * rung's words and nothing more. Printed in `04` §2.
+ * The line says only what the stored evidence established: the last read's
+ * sight-reading measurement (right notes in time on every step), and, where
+ * the reads single out a demand (C4a's `pattern` or `isolated`), that demand
+ * and the number of phrases it went wrong in. Where two reads went against the
+ * recipe and nothing is singled out, it says the app is not sure yet what went
+ * wrong, and names nothing. It never says a demand was *read* (Entry 72: "right
+ * and in time" at a demand's notes is not reading them), never ranks one key
+ * above another, and where no evidence chose the phrase it says the rung's
+ * words and nothing more. Printed in `04` §2.
  *
- * What the phrase changes comes first and the measurement after it: the
- * session card cuts a reason to one line at the owner's width, and the half
- * that has to survive is what this phrase is.
+ * What the phrase changes comes first: the session card cuts a reason to one
+ * line at the owner's width, and the half that has to survive is what this
+ * phrase is.
  */
 export const READING_TEXT = {
   /** No evidence chose it: the daily card's words, as they always were. */
@@ -544,14 +547,24 @@ export const READING_TEXT = {
   metHeard: 'Heard before it was read — tomorrow’s phrase is new',
   /** The easy one, on purpose. */
   easy: 'An easy one, for fluency',
+  /** The easy one after two reads against the recipe that singled nothing out. */
+  easyUnsure: 'An easy one',
   /** The same recipe again. */
   hold: 'Another like it',
+  /** Two reads against the recipe, and the reads single nothing out (C4c). */
+  unsure: 'not sure yet what went wrong',
+  /** A demand singled out, and no control here keeps it out (C4c). */
+  kept: 'and every phrase here has them',
+  /** The key signature's control, on: a key to read, not a harder one (C4c, U52). */
+  keySignature: 'A key signature to read',
+  /** The rung that holds the row has moved on, and its phrases may hold more (C4c). */
+  lesson: 'This lesson’s phrases',
   /** Ready to move, and nothing the rung has taught to move to. */
   stayTaught: 'The next step waits for a later lesson',
-  /** Failing, and nothing easier keeps what the rung asks for. */
-  stayEasier: 'Nothing easier fits this lesson',
   /** The measurement's words. */
   rightInTime: 'right and in time',
+  /** A singled-out demand's words: "skips went wrong in 3 phrases". */
+  wentWrong: 'went wrong in',
 } as const;
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -579,53 +592,105 @@ const KEY_NAMES: Readonly<Record<string, string>> = {
   '4': 'E major',
   '-4': 'A♭ major',
 };
+const COUNT_WORDS = ['no', 'one', 'two', 'three', 'four'];
+
+/** A key and what its signature asks: "G major, one sharp". A name, never a rank. */
+export function keyWords(fifths: number): string {
+  if (fifths === 0) return 'C major';
+  const count = Math.abs(fifths);
+  const sign = fifths > 0 ? 'sharp' : 'flat';
+  return `${KEY_NAMES[String(fifths)] ?? 'another key'}, ${COUNT_WORDS[count] ?? String(count)} ${sign}${count === 1 ? '' : 's'}`;
+}
+
+/**
+ * How the reason line names a demand's notes, and what turning its control on
+ * or off makes the phrase ("with dotted quarters", "by step only"). Keyed by
+ * vocabulary demand id; the hands, the key and the range are worded from the
+ * move itself (`moveWords`).
+ */
+export const DEMAND_WORDS: Readonly<Record<string, { name: string; on: string; off: string; lesson?: string }>> = {
+  'clef.bass': { name: 'the bass-staff notes', on: 'with both hands', off: 'right hand only' },
+  'pitch.ledger': { name: 'the ledger-line notes', on: 'with a ledger-line note', off: 'without ledger lines' },
+  'interval.step': { name: 'steps', on: 'with steps', off: 'without steps' },
+  'interval.skip': { name: 'skips', on: 'with skips', off: 'by step only' },
+  'interval.leap': { name: 'leaps', on: 'with a leap', off: 'without leaps' },
+  'rhythm.eighths': { name: 'the eighth notes', on: 'with eighth notes', off: 'without eighth notes' },
+  'rhythm.shorter-than-quarter': { name: 'the eighth notes', on: 'with eighth notes', off: 'without eighth notes' },
+  'rhythm.sixteenths': { name: 'the sixteenth notes', on: 'with sixteenth notes', off: 'without sixteenth notes' },
+  'rhythm.dotted-quarter': { name: 'the dotted quarters', on: 'with dotted quarters', off: 'without dotted quarters' },
+  'rhythm.ties': { name: 'the tied notes', on: 'with tied notes', off: 'without ties' },
+  'rhythm.syncopation': { name: 'the syncopation', on: 'with syncopation', off: 'without syncopation' },
+  'rhythm.triplets': { name: 'the triplets', on: 'with triplets', off: 'without triplets' },
+  'metre.compound': { name: 'the bars in 6/8', on: 'in 6/8', off: 'in 4/4' },
+  'key.signature': { name: 'the key signature', on: 'with a key signature', off: 'in C major' },
+  'pitch.chromatic': { name: 'the notes outside the key', on: 'with a note outside the key', off: 'without notes outside the key' },
+  'range.beyond-position': {
+    name: 'the notes beyond the hand position',
+    on: 'beyond C position',
+    off: 'in C position',
+    lesson: 'can reach beyond C position',
+  },
+  'texture.hands-together': { name: 'both hands together', on: 'with both hands', off: 'right hand only' },
+  'texture.left-hand-pattern': { name: 'the moving left hand', on: 'with a moving left hand', off: 'with held notes in the left hand' },
+  'texture.walking-bass': { name: 'the walking bass', on: 'with a walking bass', off: 'without a walking bass' },
+};
 
 /** What a move makes the phrase, in a teacher's words. */
-export function readingChange(dimension: ReadingDimension, value: string, key = '0'): string {
-  const home = key === '0' || key === 'list' ? 'C position' : 'one hand position';
-  switch (dimension) {
-    case 'hands':
-      return value === 'both' ? 'with both hands' : value === 'left' ? 'in the left hand' : 'right hand only';
-    case 'range':
-      return value === 'position' ? `in ${home}` : `beyond ${home}`;
-    case 'rhythm':
-      return value === 'eighths' ? 'with eighth notes' : 'without eighth notes';
-    case 'key':
-      return `in ${KEY_NAMES[value] ?? 'another key'}`;
-    case 'metre':
-      return `in ${value}`;
-    case 'syncopation':
-      return value === 'on' ? 'with syncopation' : 'without syncopation';
+export function moveWords(move: Pick<ReadingMove, 'demand' | 'direction' | 'patch' | 'recipe' | 'key'>): string {
+  const hands = move.patch.hands;
+  if (hands !== undefined) return hands === 'both' ? 'with both hands' : hands === 'left' ? 'in the left hand' : 'right hand only';
+  if (move.demand === 'key.signature') return move.direction === 'on' && move.key !== undefined ? keyWords(move.key) : 'in C major';
+  if (move.demand === 'range.beyond-position') {
+    const fifths = move.recipe.moved?.fifths;
+    const home = fifths === undefined || fifths === 0 ? 'C position' : 'one hand position';
+    return move.direction === 'on' ? `beyond ${home}` : `in ${home}`;
   }
+  const words = DEMAND_WORDS[move.demand];
+  if (!words) return move.direction === 'on' ? 'with something new' : 'with something left out';
+  return move.direction === 'on' ? words.on : words.off;
 }
 
 /**
  * The reason line for a reading offer. `today` is the morning the line is
- * read, for "Yesterday"; the evidence carries its own date.
+ * read, for "yesterday"; the evidence carries its own date.
  */
 export function readingReason(why: ReadingWhy, purpose: 'daily' | 'slot', today: Date): string {
   const measured = (last: { at: string; right: number; n: number }): string =>
     `${String(last.right)} of ${String(last.n)} ${READING_TEXT.rightInTime} ${readDay(last.at, today)}`;
+  const wentWrong = (finding: { demand: string; phrasesBelow: number }): string =>
+    `${DEMAND_WORDS[finding.demand]?.name ?? 'those notes'} ${READING_TEXT.wentWrong} ${String(finding.phrasesBelow)} phrase${finding.phrasesBelow === 1 ? '' : 's'}`;
   switch (why.kind) {
     case 'rung':
       return purpose === 'daily' ? READING_TEXT.rungDaily : READING_TEXT.rungSlot;
     case 'met':
       return why.read ? READING_TEXT.metRead : READING_TEXT.metHeard;
     case 'hold':
-      return `${READING_TEXT.hold} — ${measured(why.last)}`;
+      if (why.wrong) return `${READING_TEXT.hold} — ${wentWrong(why.wrong)}`;
+      return why.key === undefined
+        ? `${READING_TEXT.hold} — ${measured(why.last)}`
+        : `${READING_TEXT.hold}: ${keyWords(why.key)} — ${measured(why.last)}`;
     case 'forward':
-      return `Now ${readingChange(why.move.dimension, why.move.to, keyOf(why.move.recipe))} — ${measured(why.last)}`;
+      return why.move.demand === 'key.signature' && why.move.key !== undefined
+        ? `${READING_TEXT.keySignature}: ${keyWords(why.move.key)} — ${measured(why.last)}`
+        : `Now ${moveWords(why.move)} — ${measured(why.last)}`;
     case 'back':
-      return `This one ${readingChange(why.move.dimension, why.move.to, keyOf(why.move.recipe))} — ${measured(why.last)}`;
+      return `This one ${moveWords(why.move)} — ${wentWrong(why.because)}`;
+    case 'unsure':
+      return why.easy
+        ? `${READING_TEXT.easyUnsure}: ${moveWords(why.easy)} — ${READING_TEXT.unsure}`
+        : `${READING_TEXT.hold} — ${READING_TEXT.unsure}`;
+    case 'kept':
+      return `${READING_TEXT.hold} — ${wentWrong(why.because)}, ${READING_TEXT.kept}`;
+    case 'lesson': {
+      const demand = why.demands[0] ?? '';
+      const words = DEMAND_WORDS[demand];
+      return `${READING_TEXT.lesson} ${words?.lesson ?? `can have ${words?.name ?? 'something new'}`}`;
+    }
     case 'easy':
-      return `${READING_TEXT.easy}: ${readingChange(why.move.dimension, why.move.to, keyOf(why.move.recipe))}`;
+      return `${READING_TEXT.easy}: ${moveWords(why.move)}`;
     case 'stay':
-      return `${why.because === 'nothing-taught' ? READING_TEXT.stayTaught : READING_TEXT.stayEasier} — ${measured(why.last)}`;
+      return `${READING_TEXT.stayTaught} — ${measured(why.last)}`;
   }
-}
-
-function keyOf(recipe: ReadingRecipe): string {
-  return recipe.moved?.fifths === undefined ? '0' : String(recipe.moved.fifths);
 }
 
 /**

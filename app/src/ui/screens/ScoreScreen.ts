@@ -20,7 +20,7 @@ import { barsPerWindowFor, isTablet, sidePanelProse } from '../tablet';
 import { getImport } from '../../data/importStore';
 import { isSightReading } from '../../engine/drills/fromCatalog';
 import { generateSightReading } from '../../engine/sightReading';
-import { readingOptions } from '../../curriculum/session';
+import { readingOptions, taughtAtRung } from '../../curriculum/session';
 import type { CatalogItem, Curriculum, Lesson } from '../../curriculum/types';
 import { findLesson, lessonForItem, masteryCriteriaFor } from '../../curriculum/selectors';
 import { getMidiSettings } from '../../data/midiSettings';
@@ -183,10 +183,18 @@ export const CONTROL_BAR_START_HIDE_MS = 700;
  *
  * The recipe (C4) is what Today's reader moved from the row's own params
  * (`?recipe=`): the phrase is written from the row with those moves over it,
- * by the same function the reader and its tests use (`readingOptions`).
+ * by the same function the reader and its tests use (`readingOptions`). And
+ * the rung that opened it (C4c): the row held to what that rung has taught
+ * (`taught`), so 2.2's row stays inside C position until 2.5 teaches leaving
+ * it; opened from nowhere, the row as it stands.
  */
-function generateSightReadingFor(item: CatalogItem, seed: number, recipe?: RouteRecipe): { musicXml: string; seed: number } {
-  const phrase = generateSightReading(readingOptions(item, recipe, seed));
+function generateSightReadingFor(
+  item: CatalogItem,
+  seed: number,
+  recipe?: RouteRecipe,
+  taught?: (demand: string) => boolean,
+): { musicXml: string; seed: number } {
+  const phrase = generateSightReading(readingOptions(item, recipe, seed, taught));
   return { musicXml: phrase.musicXml, seed: phrase.seed };
 }
 
@@ -4137,7 +4145,11 @@ export function ScoreScreen(router: Router): HTMLElement {
         };
         const named = router.route.seed;
         if (named === undefined) remember(await history);
-        const phrase = generateSightReadingFor(item, named ?? freshSeed(seedsOnRecord), routeRecipe);
+        // The rung the run is for holds the phrase to what it has taught (C4c).
+        const heldBy = judgingRungId();
+        const taught =
+          heldBy === undefined ? undefined : await loadCurriculum().then((curriculum) => taughtAtRung(curriculum, heldBy), () => undefined);
+        const phrase = generateSightReadingFor(item, named ?? freshSeed(seedsOnRecord), routeRecipe, taught);
         musicXml = phrase.musicXml;
         phraseSeed = phrase.seed;
         const seen = phrase.seed;

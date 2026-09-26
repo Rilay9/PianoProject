@@ -366,6 +366,38 @@ describe('score routes', () => {
     expect(seen).toEqual(['null', '{"moved":{"hands":"both"}}', '{"moved":{"position":true}}', 'null']);
   });
 
+  // Added (C4c): the reader moves every control C4b's map names, so the route
+  // carries them all — a dotted quarter, a tie, skips kept out, a set of keys
+  // for the seed to choose from — or Today's phrase and the Score screen's
+  // would part (the Score screen writes what the route says).
+  it('carries every control the reader moves, a set of keys among them, and reads it back', () => {
+    const { win } = fakeWindow('#/today');
+    const router = new Router(win as unknown as Window);
+    const moved = {
+      hands: 'both' as const,
+      position: false,
+      ledger: true,
+      skips: false,
+      leaps: true,
+      eighths: false,
+      sixteenths: false,
+      dottedQuarters: true,
+      ties: true,
+      syncopation: false,
+      triplets: false,
+      timeSig: '4/4' as const,
+      fifths: [1, -1],
+      accidentals: true,
+      leftHand: 'broken' as const,
+    };
+    router.navigateScore('drill.reading.sight-reading-2-right', { seed: 7, recipe: { moved } });
+    expect(router.route.scoreRecipe).toEqual({ moved });
+    expect(parseHash(win.location.hash).scoreRecipe).toEqual({ moved });
+    expect(decodeURIComponent(win.location.hash)).toContain('fifths:1|-1');
+    const bad = encodeURIComponent('ties:2,fifths:1|9,leftHand:stride,dottedQuarters:1');
+    expect(parseHash(`#/score/song.a?recipe=${bad}`).scoreRecipe).toEqual({ moved: { dottedQuarters: true } });
+  });
+
   it('drops the parts of a recipe the reader never writes', () => {
     const bad = encodeURIComponent('hands:four,fifths:99,position:1,timeSig:5/4,syncopation:1');
     expect(parseHash(`#/score/song.a?recipe=${bad}`).scoreRecipe).toEqual({ moved: { position: true, syncopation: true } });

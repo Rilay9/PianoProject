@@ -21,6 +21,8 @@ import type { ProgressRow, SessionRow } from '../../src/data/db';
 import type { RunResult } from '../../src/data/progressStore';
 import { parseHash, type Router } from '../../src/router';
 import { generateSightReading, sightReadingOptionsFor } from '../../src/engine/sightReading';
+import { heldToRung } from '../../src/engine/readingControls';
+import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 
 const SONG_ID = 'song.folk.hot-cross-buns';
 const READ_ID = 'drill.reading.sight-reading-test';
@@ -745,6 +747,35 @@ describe('C4: the recipe reaches the phrase and the record; a drawn phrase is on
     finish(run({}));
     await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalled());
     expect(lastRecorded().recipe).toEqual({ row: READ_ID });
+  });
+
+  // Added (C4c; S16's app half, C4b's `heldToRung`): the phrase a rung opens is
+  // its row held to what that rung has taught, so 2.2's row stays inside C
+  // position until 2.5 teaches leaving it. Before C4c the screen wrote the row
+  // as it stands whatever rung opened it.
+  it('a sight-read opened from a rung is its row held to what that rung has taught; from nowhere, the row as it stands', async () => {
+    const HELD = {
+      version: 1,
+      tracks: [],
+      stages: [{ number: 2, units: [{ id: 'u2', lessons: [lesson('2.2', 0.9, 0.7), lesson('2.5', 0.9, 0.7)] }] }],
+    } as unknown as Curriculum;
+    const order = ['2.2', '2.5'];
+    const taughtAt22 = (demand: string): boolean => {
+      const at = VOCABULARY_V0.demands.find((d) => d.id === demand)?.taughtAt;
+      return at !== null && at !== undefined && order.indexOf(at) >= 0 && order.indexOf(at) <= order.indexOf('2.2');
+    };
+    curriculumRef.current = HELD;
+    findItemSpy.mockResolvedValue(readerItem(PARAMS));
+    const own = generateSightReading(sightReadingOptionsFor(PARAMS, 4242)).musicXml;
+    const held = generateSightReading(heldToRung(sightReadingOptionsFor(PARAMS, 4242), taughtAt22)).musicXml;
+    expect(held, 'this seed’s phrase never leaves C position, so the case proves nothing').not.toBe(own);
+    await open(`#/score/${READ_ID}?seed=4242&from=2.2`);
+    await vi.waitFor(() => expect(loadedXml.some((text) => text.includes('Sight-reading level'))).toBe(true));
+    expect(loadedXml.find((text) => text.includes('Sight-reading level')), 'the rung’s phrase was the row as it stands').toBe(held);
+    loadedXml.length = 0;
+    await open(`#/score/${READ_ID}?seed=4242`);
+    await vi.waitFor(() => expect(loadedXml.some((text) => text.includes('Sight-reading level'))).toBe(true));
+    expect(loadedXml.find((text) => text.includes('Sight-reading level'))).toBe(own);
   });
 
   it('New phrase draws a seed no stored run carries, and keeps the recipe', async () => {

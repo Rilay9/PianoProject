@@ -139,18 +139,32 @@ export interface RunHeader {
 }
 
 /**
- * The generator parameters the reader can move (C4), one per dimension, in the
- * spelling a catalog row's `drill.params` uses so the two merge as they are
- * (`sightReadingOptionsFor`). `position` is the one the rows never write: the
- * melody held inside one five-finger position whatever the level's range.
+ * The generator parameters the reader can move (C4; since C4c every option the
+ * control map moves, `readingControls.ts`), in the spelling a catalog row's
+ * `drill.params` uses so the two merge as they are (`sightReadingOptionsFor`).
+ * `position` is one the rows never write: the melody held inside one
+ * five-finger position whatever the level's range (`false`: promised beyond
+ * it). The tri-state controls are C4b's: `true` promises the demand, `false`
+ * keeps it out, absent is the row's own. `fifths` is a key, or a set of keys
+ * the seed chooses from (the key signature's control is every key the level
+ * writes with one, never a ladder, C4c).
  */
 export interface ReadingMoves {
   hands?: 'right' | 'left' | 'both';
   position?: boolean;
+  ledger?: boolean;
+  skips?: boolean;
+  leaps?: boolean;
   eighths?: boolean;
-  fifths?: number;
-  timeSig?: '4/4' | '6/8';
+  sixteenths?: boolean;
+  dottedQuarters?: boolean;
+  ties?: boolean;
   syncopation?: boolean;
+  triplets?: boolean;
+  timeSig?: '4/4' | '6/8';
+  fifths?: number | readonly number[];
+  accidentals?: boolean;
+  leftHand?: 'whole' | 'chord' | 'alberti' | 'broken' | 'walking';
 }
 
 /** A phrase's recipe: the row, what was moved, and whether it was the easy one on purpose. */

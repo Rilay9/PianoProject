@@ -57,6 +57,20 @@ export function skipSteps(model: ScoreModel): number[] {
   return [...new Set(detect(model, 'skips').at.map((at) => at.step))];
 }
 
+/** Every step with an eighth note on it (the one definition, `detect.ts`). */
+export function eighthSteps(model: ScoreModel): number[] {
+  return [...new Set(detect(model, 'eighths').at.map((at) => at.step))];
+}
+
+/**
+ * The steps that are a skip and an eighth at once (C4c: the reviewer's
+ * mixed-demand ambiguity learner misreads these and nothing else).
+ */
+export function skipEighthSteps(model: ScoreModel): number[] {
+  const eighths = new Set(eighthSteps(model));
+  return skipSteps(model).filter((step) => eighths.has(step));
+}
+
 export interface Read {
   item: CatalogItem;
   options: SightReadingOptions;
@@ -66,6 +80,16 @@ export interface Read {
   recipe?: SessionRow['recipe'];
   /** The steps this reader gets wrong in this phrase (the white key below, in time). */
   wrong?: (model: ScoreModel) => number[];
+  /**
+   * The key struck at a wrong step, where the white key below would be the
+   * next note's (`RunPlan.wrongKey`); the white key below unless said.
+   */
+  wrongKey?: (midi: number) => number;
+  /**
+   * What opened the Score screen, as it records it (`RunHeader.opened`, C3):
+   * the rung the run was judged by and the phrase held to (C4c).
+   */
+  opened?: SessionRow['opened'];
   tempoPct?: number;
   guide?: 'next' | 'off';
   mode?: 'tempo' | 'wait';
@@ -93,6 +117,7 @@ export async function readPhrase(read: Read): Promise<ReadOut> {
     seed,
     at: read.at,
     wrongInstead: read.wrong?.(model) ?? [],
+    ...(read.wrongKey ? { wrongKey: read.wrongKey } : {}),
     offsetMs: jitter(seed),
   });
   const evidence = evidenceFor({
@@ -105,6 +130,7 @@ export async function readPhrase(read: Read): Promise<ReadOut> {
   const accuracy = typeof measured === 'number' ? measured : 0;
   const header = {
     ...observation,
+    ...(read.opened ? { opened: read.opened } : {}),
     ...(read.recipe ? { recipe: read.recipe } : {}),
     ...stampedEvidence(evidence),
   };

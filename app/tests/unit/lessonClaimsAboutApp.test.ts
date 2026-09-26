@@ -46,7 +46,7 @@ import {
 import { drillFromCatalog } from '../../src/engine/drills/fromCatalog';
 import { masteryCriteriaFor } from '../../src/curriculum/selectors';
 import { DEFAULT_MASTERY } from '../../src/engine/Scoring';
-import { nextRecommended, readingMovesFrom, readingOffer } from '../../src/curriculum/session';
+import { nextRecommended, readingMoves, readingOffer } from '../../src/curriculum/session';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import { hasChordSymbols } from '../../src/ui/openItem';
 import type { CatalogItem, Curriculum, Lesson, LessonTool } from '../../src/curriculum/types';
@@ -1426,29 +1426,35 @@ const T12_APP: [string, string, () => boolean][] = [
   // and the two-hand one at Stage 4". It re-implemented the stage rule (the
   // hardest reading row with `item.level <= stageNumber`) instead of calling
   // the app, and C4 retires that rule: the daily read comes from the reader.
-  // Its lesson sentence was rewritten with it; this row is the new sentence's.
+  // Its lesson sentence was rewritten with it.
+  // Replaced (C4c): C4's sentence said "what it can move here is its key or how
+  // far it ranges" — C4's six dimensions, of which only those two were open at
+  // 3.4. The reader now moves any demand the rungs so far have taught that the
+  // generator can write there (C4b's contract), and leaves out a kind of note
+  // the reads single out; the lesson sentence was rewritten to say so, and
+  // this row is the new sentence's.
   [
     '3.4',
-    'the daily read starts from this rung’s two-hand phrase, and what it can move here is its key or how far it ranges',
+    'the daily read starts from this rung’s two-hand phrase and changes one thing at a time — adding what a lesson has taught, such as a ledger line, a dotted rhythm or a key signature, or leaving out for a while a kind of note that keeps going wrong — never something untaught',
     () => {
       const position = nextRecommended(curriculum, [], ['core'], { startAt: '3.4' });
       const offer = readingOffer({ curriculum, items: catalog, position, activeTracks: ['core'], rows: [], today: new Date(2026, 9, 1), purpose: 'daily' });
-      // The moves whose demands the curriculum has taught by 3.4 (the
-      // vocabulary's `taughtAt`, in the curriculum's own order).
+      // What the curriculum has taught by 3.4 (the vocabulary's `taughtAt`, in the curriculum's own order).
       const order = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons.map((lesson) => lesson.id)));
       const taught = (demand: string): boolean => {
         const rung = VOCABULARY_V0.demands.find((d) => d.id === demand)?.taughtAt;
-        return rung !== null && rung !== undefined && order.indexOf(rung) <= order.indexOf('3.4');
+        return rung !== null && rung !== undefined && order.indexOf(rung) >= 0 && order.indexOf(rung) <= order.indexOf('3.4');
       };
-      const moves = readingMovesFrom(item('drill.reading.sight-reading-2'), { row: 'drill.reading.sight-reading-2' }).filter(
-        (move) => move.direction === 'down' || move.demands.every(taught),
-      );
+      const row = item('drill.reading.sight-reading-2');
+      const moves = readingMoves({ curriculum, item: row, recipe: { row: row.id }, rung: '3.4' });
+      const on = moves.filter((move) => move.direction === 'on');
       return (
-        offer?.item.id === 'drill.reading.sight-reading-2' &&
-        item(offer.item.id).hands === 'both' &&
-        JSON.stringify(offer.recipe) === JSON.stringify({ row: 'drill.reading.sight-reading-2' }) &&
-        moves.length > 0 &&
-        moves.every((move) => move.dimension === 'key' || move.dimension === 'range')
+        offer?.item.id === row.id &&
+        row.hands === 'both' &&
+        JSON.stringify(offer.recipe) === JSON.stringify({ row: row.id }) &&
+        ['pitch.ledger', 'rhythm.dotted-quarter', 'key.signature'].every((demand) => on.some((move) => move.demand === demand)) &&
+        moves.some((move) => move.direction === 'off') &&
+        on.every((move) => taught(move.demand) && move.brings.every(taught))
       );
     },
   ],

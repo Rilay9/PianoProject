@@ -351,24 +351,45 @@ function parseLoopParam(value: string | null | undefined): { from: number; to: n
 }
 
 /**
- * `?recipe=` — `key:value` pairs the reader writes (C4), each checked on its
- * own and dropped when it is not one the reader writes, the way a bad `rung`
- * or `tour` is: a hand, a hand position, eighths, a key within four
- * accidentals, four-four or six-eight, syncopation, and the easy flag.
+ * The recipe's on/off controls (C4's, and C4b's since C4c), in the order the
+ * route writes them: one recipe is one hash.
+ */
+const RECIPE_FLAGS = [
+  'position',
+  'ledger',
+  'skips',
+  'leaps',
+  'eighths',
+  'sixteenths',
+  'dottedQuarters',
+  'ties',
+  'syncopation',
+  'triplets',
+  'accidentals',
+] as const;
+const LEFT_HANDS = ['whole', 'chord', 'alberti', 'broken', 'walking'] as const;
+
+/**
+ * `?recipe=` — `key:value` pairs the reader writes (C4, C4c), each checked on
+ * its own and dropped when it is not one the reader writes, the way a bad
+ * `rung` or `tour` is: a hand, every on/off control (`1` or `0`), four-four or
+ * six-eight, a key within four accidentals or a set of them (`fifths:1|-1`,
+ * the seed chooses), a left-hand pattern, and the easy flag.
  */
 function parseRecipeParam(value: string | null | undefined): RouteRecipe | undefined {
   if (value === null || value === undefined || value === '') return undefined;
   const moved: ReadingMoves = {};
+  const flags = moved as Record<string, unknown>;
   let easy = false;
   for (const pair of value.split(',')) {
     const [key = '', raw = ''] = pair.split(':');
     const flag = raw === '1' ? true : raw === '0' ? false : undefined;
     if (key === 'hands' && (raw === 'right' || raw === 'left' || raw === 'both')) moved.hands = raw;
-    else if (key === 'position' && flag !== undefined) moved.position = flag;
-    else if (key === 'eighths' && flag !== undefined) moved.eighths = flag;
+    else if ((RECIPE_FLAGS as readonly string[]).includes(key) && flag !== undefined) flags[key] = flag;
     else if (key === 'fifths' && /^-?[0-4]$/.test(raw)) moved.fifths = Number(raw);
+    else if (key === 'fifths' && /^-?[0-4](\|-?[0-4])+$/.test(raw)) moved.fifths = raw.split('|').map(Number);
     else if (key === 'timeSig' && (raw === '4/4' || raw === '6/8')) moved.timeSig = raw;
-    else if (key === 'syncopation' && flag !== undefined) moved.syncopation = flag;
+    else if (key === 'leftHand' && (LEFT_HANDS as readonly string[]).includes(raw)) moved.leftHand = raw as (typeof LEFT_HANDS)[number];
     else if (key === 'easy' && raw === '1') easy = true;
   }
   const hasMoves = Object.keys(moved).length > 0;
@@ -379,14 +400,15 @@ function parseRecipeParam(value: string | null | undefined): RouteRecipe | undef
 /** The recipe as the route writes it, in one key order so one recipe is one hash. */
 function recipeParam(recipe: RouteRecipe): string {
   const moved = recipe.moved ?? {};
+  const flags = moved as Record<string, unknown>;
   const bit = (value: boolean): string => (value ? '1' : '0');
+  const fifths = moved.fifths;
   return [
     ...(moved.hands === undefined ? [] : [`hands:${moved.hands}`]),
-    ...(moved.position === undefined ? [] : [`position:${bit(moved.position)}`]),
-    ...(moved.eighths === undefined ? [] : [`eighths:${bit(moved.eighths)}`]),
-    ...(moved.fifths === undefined ? [] : [`fifths:${String(moved.fifths)}`]),
+    ...RECIPE_FLAGS.flatMap((key) => (typeof flags[key] === 'boolean' ? [`${key}:${bit(flags[key])}`] : [])),
     ...(moved.timeSig === undefined ? [] : [`timeSig:${moved.timeSig}`]),
-    ...(moved.syncopation === undefined ? [] : [`syncopation:${bit(moved.syncopation)}`]),
+    ...(fifths === undefined ? [] : [`fifths:${Array.isArray(fifths) ? fifths.join('|') : String(fifths)}`]),
+    ...(moved.leftHand === undefined ? [] : [`leftHand:${moved.leftHand}`]),
     ...(recipe.easy ? ['easy:1'] : []),
   ].join(',');
 }

@@ -13,7 +13,8 @@
  *
  * This reads the **built** catalog rows and curriculum (the claim is about
  * those), generates every row the way the Score screen does
- * (`sightReadingOptionsFor`), turns each phrase into the score model the engine
+ * (`readingOptions`: the row's params held to what the rung that opened it has
+ * taught, C4c — so a row is read at each rung listing it), turns each phrase into the score model the engine
  * plays (OSMD, then `extractScoreModel`), and checks it with the demand
  * detectors in `src/demands/detect.ts` (C2) — the one definition of each fact,
  * which used to be a dozen helpers in this file reading the MusicXML string:
@@ -41,6 +42,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { generateSightReading, sightReadingOptionsFor } from '../../src/engine/sightReading';
+import { readingOptions, taughtAtRung } from '../../src/curriculum/session';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
 import type { DetectorId } from '../../src/demands/detect';
 import type { DemandsFile, SkillsFile } from '../../src/demands/vocabulary';
@@ -88,35 +90,23 @@ const position = (id: string): number => {
   return at;
 };
 
-/**
- * A demand a row writes before the rung that teaches it, known and named, so
- * the check stays on for everything else. Each one is asserted still to happen:
- * when the generator stops writing it, this list says to remove the line.
- */
-const KNOWN_EARLY: { row: string; demand: string; why: string }[] = [
-  {
-    row: 'drill.reading.sight-reading-2-right',
-    demand: 'range.beyond-position',
-    why:
-      'Level 2 writes the right hand from C4 to C5, and 2.5 counts on it ("its phrases already reach up ' +
-      'to the C above middle C, beyond C position"), but the row is listed first on 2.2, three rungs before ' +
-      'the hand is taught to leave C position. Found by C2 when the taught-at table moved into the ' +
-      'vocabulary. C4b proved the generator side (generatorContract: the row held to 2.2 by ' +
-      '`heldToRung` stays in C position and keeps 2.2’s promises; at 2.5 it is the row as it stands); ' +
-      'the row as the app asks for it still leaves the position at 2.2 until the one writer of a phrase ' +
-      '(`readingOptions`) holds it to the route’s rung (C4c). Remove this line then.',
-  },
-];
+// Removed (C4c): `KNOWN_EARLY`, which named the one demand a row wrote before
+// the rung that teaches it — `sight-reading-2-right` leaving C position on 2.2,
+// three rungs before 2.5 teaches it (S16, found by C2). C4b proved the
+// generator side (`heldToRung`); C4c made the one writer of a phrase
+// (`readingOptions`) hold the row to the rung that opens it, for Today and for
+// the rung page, and this file now generates each row that way, at each rung
+// listing it. The untaught check below has no exceptions left.
 
 /**
  * Everything the earliest rung listing a row has not been taught yet — and,
  * since C4b, every demand no rung teaches (`taughtAt: null`): a row a rung
  * offers does not write what nothing teaches (S23).
  */
-function unintended(row: string, earliest: string): Check[] {
+function unintended(earliest: string): Check[] {
   position(earliest);
   for (const d of demands) if (d.taughtAt !== null) position(d.taughtAt);
-  return untaughtChecks(earliest, ORDER, demands, (demand) => KNOWN_EARLY.some((k) => k.row === row && k.demand === demand));
+  return untaughtChecks(earliest, ORDER, demands);
 }
 
 const readers = catalog.filter((row) => row.drill?.kind === 'sight-reading');
@@ -144,49 +134,58 @@ describe('the nine sight-reading rows', () => {
   for (const row of readers) {
     const rungs = rungsListing(row.id);
     const earliest = rungs[0] ?? '';
-    const phrases: Phrase[] = [];
+    /** The row as authored, for `readingOptions`, which reads the row's params. */
+    const asAuthored = { ...row, drill: { ...row.drill, params: paramsOf(row) } } as CatalogItem;
+    /** The phrases the app writes for the row opened from each rung listing it: held to what that rung has taught (C4c). */
+    const atRung = new Map<string, Phrase[]>();
     beforeAll(async () => {
-      for (const seed of SEEDS) {
-        const xml = generateSightReading(sightReadingOptionsFor(paramsOf(row), seed)).musicXml;
-        phrases.push({
-          model: await modelOf(xml, `${row.id}.${String(seed)}`),
-          sheet: engraving(xml),
-          level: Number(paramsOf(row).level ?? 1),
-        });
+      for (const rung of rungs) {
+        const list: Phrase[] = [];
+        for (const seed of SEEDS) {
+          const xml = generateSightReading(readingOptions(asAuthored, undefined, seed, taughtAtRung(curriculum, rung))).musicXml;
+          list.push({
+            model: await modelOf(xml, `${row.id}.${rung}.${String(seed)}`),
+            sheet: engraving(xml),
+            level: Number(paramsOf(row).level ?? 1),
+          });
+        }
+        atRung.set(rung, list);
       }
-    }, 120_000);
-    const promised = [
-      ...(authored.get(row.id) ?? row).concepts.flatMap((concept) => CLAIMED_BY_CONCEPT[concept] ?? []),
-      ...rungs.flatMap((rung) => PROMISED_BY_RUNG[rung] ?? []),
-    ];
+    }, 240_000);
+    /** At the earliest rung listing it: what every check but the rungs' own promises reads. */
+    const phrases: Phrase[] = [];
+    beforeAll(() => {
+      phrases.push(...(atRung.get(earliest) ?? []));
+    });
+    const tagged = (authored.get(row.id) ?? row).concepts.flatMap((concept) => CLAIMED_BY_CONCEPT[concept] ?? []);
     const label = `${row.id} (${rungs.join(', ')})`;
 
-    it(`${label}: contains what its rungs and tags promise`, () => {
-      expect(promised.length, `${row.id} promises nothing this test can check`).toBeGreaterThan(0);
-      for (const check of promised) {
-        const holding = phrases.filter((p) => check.holds(p)).length;
-        if (check.scope === 'every') {
-          expect(holding, `${label}: ${check.what} in ${String(holding)} of ${String(phrases.length)} phrases`).toBe(
-            phrases.length,
-          );
-        } else {
-          expect(holding, `${label}: ${check.what} in no phrase`).toBeGreaterThan(0);
+    it(`${label}: contains what its rungs and tags promise, at each rung listing it`, () => {
+      expect(tagged.length + rungs.flatMap((rung) => PROMISED_BY_RUNG[rung] ?? []).length, `${row.id} promises nothing this test can check`).toBeGreaterThan(0);
+      for (const rung of rungs) {
+        const here = atRung.get(rung) ?? [];
+        for (const check of [...tagged, ...(PROMISED_BY_RUNG[rung] ?? [])]) {
+          const holding = here.filter((p) => check.holds(p)).length;
+          if (check.scope === 'every') {
+            expect(holding, `${label} at ${rung}: ${check.what} in ${String(holding)} of ${String(here.length)} phrases`).toBe(here.length);
+          } else {
+            expect(holding, `${label} at ${rung}: ${check.what} in no phrase`).toBeGreaterThan(0);
+          }
         }
       }
     });
 
     it(`${label}: nothing ${earliest} has not taught`, () => {
-      for (const check of unintended(row.id, earliest)) {
+      for (const check of unintended(earliest)) {
         const failing = SEEDS.filter((_, i) => !check.holds(phrases[i] as Phrase));
         expect(failing, `${label}: ${check.what} fails at seeds ${failing.join(', ')}`).toEqual([]);
       }
-      for (const known of KNOWN_EARLY.filter((k) => k.row === row.id)) {
-        const detector = demands.find((d) => d.id === known.demand)?.detector as DetectorId;
-        expect(phrases.some(has(detector)), `${label}: ${known.demand} no longer comes early — remove it from KNOWN_EARLY`).toBe(true);
-      }
     });
 
-    it(`${label}: every skill it declares has its opportunity in its phrases`, () => {
+    // Revised (C4c): read over the phrases of every rung listing the row, now
+    // that each rung holds the row to what it has taught — 2.2's row declares
+    // position-shift, whose opportunity (leaving C position) is 2.5's.
+    it(`${label}: every skill it declares has its opportunity in its phrases at some rung listing it`, () => {
       const declared = authored.get(row.id)?.targetSkills ?? [];
       expect(declared.length, `${row.id} declares no targetSkills`).toBeGreaterThan(0);
       for (const id of declared) {
@@ -194,7 +193,7 @@ describe('the nine sight-reading rows', () => {
         expect(skill, `${row.id}: ${id} is not a vocabulary skill`).toBeDefined();
         if (!skill || skill.opportunity === 'every-step') continue;
         const detectors = skill.opportunity.map((d) => demands.find((x) => x.id === d)?.detector as DetectorId);
-        const found = phrases.filter((p) => detectors.some((d) => has(d)(p))).length;
+        const found = rungs.flatMap((rung) => atRung.get(rung) ?? []).filter((p) => detectors.some((d) => has(d)(p))).length;
         expect(found, `${label}: declares ${id}, and none of ${skill.opportunity.join(', ')} is in any phrase`).toBeGreaterThan(0);
       }
     });

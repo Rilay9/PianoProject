@@ -5,21 +5,25 @@
  * part only** (C4). The in-rung pick and the swap sheet are C6's; until then
  * every other slot still fills as it did, and this file says so.
  *
- * Two constructed learners on the same rung: one who has never read, and one
- * who has read the rung's own row three days running and got a third of each
- * phrase wrong. They used to get the same reading row, because the row was
- * chosen by the stage. Renumbering the stages used to change it, because the
- * rule compared a stage number with an item's level; now it changes nothing.
+ * Constructed learners on the same rung: one who has never read; one who has
+ * read the rung's own row three days running and got a third of each phrase
+ * wrong, every demand alike; and (C4c) one who misread every skip on the last
+ * two of three days. They used to get the same reading row, because the row
+ * was chosen by the stage. Renumbering the stages used to change it, because
+ * the rule compared a stage number with an item's level; now it changes
+ * nothing. Since C4c what the phrase changes follows what the reads single
+ * out: the skip learner's phrase moves by step; the learner who went wrong
+ * everywhere keeps the recipe, and the line says the app is not sure yet.
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { buildSession, readingOffer, nextRecommended, type SessionSlot } from '../../src/curriculum/session';
-import { sightReadingOptionsFor } from '../../src/engine/sightReading';
+import { buildSession, readingOffer, readingOptions, nextRecommended, taughtAtRung, type SessionSlot } from '../../src/curriculum/session';
+import { READING_TEXT } from '../../src/ui/help';
 import { indexCatalog } from '../../src/curriculum/selectors';
 import type { CatalogItem, Curriculum } from '../../src/curriculum/types';
 import type { SessionRow } from '../../src/data/db';
-import { readPhrase } from './helpers/reader';
+import { phraseModel, readPhrase, skipSteps } from './helpers/reader';
 
 const CONTENT = join(process.cwd(), 'public', 'content');
 const catalog = JSON.parse(readFileSync(join(CONTENT, 'catalog.json'), 'utf8')) as CatalogItem[];
@@ -35,6 +39,10 @@ const RENUMBERED: Curriculum = {
 };
 
 let failing: SessionRow[];
+let skipLearner: SessionRow[];
+/** The row's own recipe as the Score screen writes it for a Today read on 2.2: held to what 2.2 has taught (C4c). */
+const written = (seed: number) => readingOptions(TWO_RIGHT, { row: TWO_RIGHT.id }, seed, taughtAtRung(curriculum, '2.2'));
+const opened = { tab: 'today', rung: '2.2', slot: 'sightreading' } as const;
 
 beforeAll(async () => {
   failing = [];
@@ -43,14 +51,29 @@ beforeAll(async () => {
     const recipe = { row: TWO_RIGHT.id };
     const { row } = await readPhrase({
       item: TWO_RIGHT,
-      // The row's own recipe: its params as the catalog writes them.
-      options: sightReadingOptionsFor(TWO_RIGHT.drill?.params ?? {}, seed),
+      options: written(seed),
       at: new Date(2026, 9, n, 12).toISOString(),
       recipe,
+      opened,
       // Every third step wrong: a reader at about two thirds.
       wrong: (model) => model.steps.map((step) => step.index).filter((step) => step % 3 === 1),
     });
     failing.push({ ...row, id: n });
+  }
+  // Added (C4c): three reads with at least three skips each, every skip misread on the last two.
+  skipLearner = [];
+  for (let seed = 600, n = 1; n <= 3; seed += 1) {
+    if (skipSteps(await phraseModel(written(seed), `s.${String(seed)}`)).length < 3) continue;
+    const { row } = await readPhrase({
+      item: TWO_RIGHT,
+      options: written(seed),
+      at: new Date(2026, 9, n, 12).toISOString(),
+      recipe: { row: TWO_RIGHT.id },
+      opened,
+      ...(n >= 2 ? { wrong: skipSteps } : {}),
+    });
+    skipLearner.push({ ...row, id: n });
+    n += 1;
   }
 }, 120_000);
 
@@ -76,34 +99,53 @@ function card(rows: readonly SessionRow[], where: Curriculum = curriculum): Sess
 
 const reading = (slots: SessionSlot[]): SessionSlot | undefined => slots.find((slot) => slot.kind === 'sightreading');
 
-describe('two learners on 2.2: one failing, one who never read', () => {
-  it('get different reading phrases in the session', () => {
+describe('learners on 2.2: one failing everywhere, one misreading the skips, one who never read', () => {
+  // Revised (C4c): C4 gave the failing learner the row one dimension easier
+  // ({ position: true }), because any two reads against the recipe stepped
+  // back the newest dimension. This learner went wrong at every demand alike,
+  // so nothing is singled out and nothing is blamed: the recipe is the same as
+  // the never-read learner's (2.2's own, already in C position, with nothing
+  // below it for an easy read), and the slot's line says the app is not sure.
+  it('the learner failing everywhere keeps the rung’s recipe, and the slot says it is not sure yet — not the rung’s words', () => {
     const never = reading(card([]));
     const fails = reading(card(failing));
     expect(never?.reading?.recipe, 'the never-read learner has no reading row').toBeDefined();
     expect(fails?.reading?.recipe, 'the failing learner has no reading row').toBeDefined();
-    expect(JSON.stringify(fails?.reading?.recipe)).not.toBe(JSON.stringify(never?.reading?.recipe));
-    // The failing one is one dimension easier, on the same rung's row.
-    expect(fails?.reading?.recipe).toEqual({ row: TWO_RIGHT.id, moved: { position: true } });
+    expect(fails?.reading?.recipe).toEqual({ row: TWO_RIGHT.id });
+    expect(fails?.reading?.why.kind).toBe('unsure');
+    expect(fails?.reason).toContain(READING_TEXT.unsure);
+    expect(never?.reason).toBe(READING_TEXT.rungSlot);
   });
 
-  it('and different daily reads', () => {
+  // Added (C4c): the demand case. The skips are singled out; the phrase moves by step.
+  it('the skip learner gets a different phrase from both: the same row by step only, and the slot says why', () => {
+    const skips = reading(card(skipLearner));
+    expect(skips?.reading?.recipe).toEqual({ row: TWO_RIGHT.id, moved: { skips: false } });
+    expect(skips?.reason).toMatch(/^This one by step only — skips went wrong in \d+ phrases$/);
+    expect(JSON.stringify(skips?.reading?.recipe)).not.toBe(JSON.stringify(reading(card(failing))?.reading?.recipe));
+  });
+
+  it('and different daily reads, for what the reads showed', () => {
     const position = nextRecommended(curriculum, [], ['core'], { startAt: '2.2' });
     const daily = (rows: readonly SessionRow[]) =>
       readingOffer({ curriculum, items: catalog, position, activeTracks: ['core'], rows, today: TODAY, purpose: 'daily' });
-    expect(JSON.stringify(daily(failing)?.recipe)).not.toBe(JSON.stringify(daily([])?.recipe));
+    expect(daily([])?.why.kind).toBe('rung');
+    expect(daily(failing)?.why.kind).toBe('unsure');
+    expect(daily(skipLearner)?.why.kind).toBe('back');
+    expect(JSON.stringify(daily(skipLearner)?.recipe)).not.toBe(JSON.stringify(daily([])?.recipe));
   });
 
-  it('nothing else on the card adapts: every other slot is the same for both', () => {
+  it('nothing else on the card adapts: every other slot is the same for all three', () => {
     const strip = (slots: SessionSlot[]) =>
       slots.filter((slot) => slot.kind !== 'sightreading').map((slot) => [slot.kind, slot.item?.id, slot.reason]);
     expect(strip(card(failing))).toEqual(strip(card([])));
+    expect(strip(card(skipLearner))).toEqual(strip(card([])));
   });
 });
 
 describe('the stage number is not the learner', () => {
   it('renumbering every stage changes neither learner’s reading phrase', () => {
-    for (const rows of [[], failing]) {
+    for (const rows of [[], failing, skipLearner]) {
       expect(JSON.stringify(reading(card(rows, RENUMBERED))?.reading?.recipe)).toBe(
         JSON.stringify(reading(card(rows))?.reading?.recipe),
       );

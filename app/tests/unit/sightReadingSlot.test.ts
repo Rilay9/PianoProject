@@ -100,9 +100,11 @@ describe('a Stage 1 card has its reading row', () => {
 
 // Added (C4): the evidence rule. Two learners on 2.2, one who has read the
 // rung's row three days running and got a third of each phrase wrong: the
-// failing one's row is the same rung's, one dimension easier; nothing above
-// the rung reaches either card; and Shuffle turns a new phrase of the same
-// recipe, not another row.
+// failing one's row is the same rung's; nothing above the rung reaches either
+// card; and Shuffle turns a new phrase of the same recipe, not another row.
+// Revised (C4c): the failing learner went wrong at every demand alike, so the
+// reads single nothing out and the recipe is held (C4 stepped it one dimension
+// easier, whichever dimension it had added last).
 describe('the reading row follows the learner’s reads, not the stage', () => {
   const TWO_RIGHT = catalog.find((item) => item.id === 'drill.reading.sight-reading-2-right') as CatalogItem;
   let failing: SessionRow[] = [];
@@ -128,12 +130,13 @@ describe('the reading row follows the learner’s reads, not the stage', () => {
     }
   });
 
-  it('a learner failing the rung’s row gets it one dimension easier, and never a row above the stage', () => {
+  it('a learner failing the rung’s row at every demand alike keeps its recipe, is told the app is not sure yet, and never gets a row above the stage', () => {
     const slots = readingSlots('2.2', 30, failing).filter((slot) => slot !== undefined);
     expect(slots.length, 'no card had a reading row').toBeGreaterThan(0);
     for (const slot of slots) {
       expect(slot?.item?.id).toBe(TWO_RIGHT.id);
-      expect(slot?.reading?.recipe).toEqual({ row: TWO_RIGHT.id, moved: { position: true } });
+      expect(slot?.reading?.recipe).toEqual({ row: TWO_RIGHT.id });
+      expect(slot?.reading?.why.kind).toBe('unsure');
       expect(slot?.item?.level ?? 99).toBeLessThan(3);
     }
   });

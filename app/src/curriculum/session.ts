@@ -20,9 +20,18 @@ import {
 import { lockState } from './prerequisites';
 import type { ReadingMoves, ReadingRecipe, SessionRow } from '../data/db';
 import { dayKey } from '../data/progressStore';
-import { dailySeed, maxFifthsFor, sightReadingOptionsFor, type SightReadingOptions } from '../engine/sightReading';
+import { heldToRung, READING_CONTROLS, UNREALISABLE_AT, type ControlPatch } from '../engine/readingControls';
+import {
+  dailySeed,
+  generateSightReading,
+  sightReadingOptionsFor,
+  unrealisable,
+  type SightReadingOptions,
+  type TimeSig,
+} from '../engine/sightReading';
+import { demandReadings, type DemandReading } from '../evidence/demandReadings';
 import type { MeasuredEvidence } from '../evidence/evidence';
-import { ladderState, RECENT_ATTEMPTS, supports } from '../evidence/ladder';
+import { RECENT_ATTEMPTS, SUPPORT_SHARE, supports } from '../evidence/ladder';
 import { readingState, storedEvidence, type SkillState } from '../evidence/readingState';
 import { VOCABULARY_V0, type Vocabulary } from '../evidence/vocabulary';
 import { readingReason, READING_TEXT } from '../ui/help';
@@ -529,205 +538,122 @@ export function playInstead(
 
 export { findLesson, lessonComplete };
 
-// --- the reader (C4): the next sight-reading phrase, from the reads ------------
+// --- the reader (C4, C4c): the next sight-reading phrase, from the reads -------
 
 /**
- * The dimensions a phrase's recipe can move in, one at a time (C4; the
- * brief's six): which hands, how far the melody ranges, the rhythm vocabulary,
- * the key, the metre, and syncopation. Each is one generator parameter
- * (`ReadingMoves`), so moving one moves nothing else the generator decides.
+ * The reader's policy (C4c; the reviewer's fourth message §8): the numbers it
+ * decides by, in one object, so a later wave can make them depend on the
+ * learner's state without touching the reader's logic (`ReadingInput.policy`).
+ * Every one is **policy and a hypothesis**, not a measurement.
  */
-export type ReadingDimension = 'hands' | 'range' | 'rhythm' | 'key' | 'metre' | 'syncopation';
-export const READING_DIMENSIONS: readonly ReadingDimension[] = ['hands', 'range', 'rhythm', 'key', 'metre', 'syncopation'];
+export interface ReaderPolicy {
+  /**
+   * After this many reads that were not easy, the next is one below the recipe
+   * on purpose (S13): one read in four. The brief asked for "every few
+   * sessions"; three is C4's starting number, never measured against a learner.
+   */
+  easyAfter: number;
+  /** Reads against the working recipe in a row before the reader steps down: the ladder's `RECENT_ATTEMPTS`. */
+  stepDownAfter: number;
+  /**
+   * Days of full-standard support at the working recipe, the latest
+   * full-standard read supporting, before the reader steps up: the ladder's
+   * proficiency (two days), restarted after `stepDownAfter` reads against.
+   */
+  stepUpAfter: number;
+  /**
+   * Phrases in the demand-reading window a demand must have held in, and held
+   * over the window, before a step up counts it shown and passes over it — the
+   * ladder's two days, borrowed for a demand.
+   */
+  demandShownAfter: number;
+}
 
-/**
- * One read in this many sits one dimension below the learner's recipe on
- * purpose (S13): after `EASY_AFTER` reads that were not, the next is. A
- * starting number, not a measured one; the brief leaves the cadence to the
- * builder, and "every few sessions" is what it asks.
- */
-export const EASY_AFTER = 3;
-
-/**
- * What each value of a dimension asks of the reader, in the vocabulary's
- * demand ids: what the taught-at gate checks before a move up, and what a
- * move's notation may add. Measured, not assumed (`sightReadingFromReadingState`
- * reads twelve phrases each way): adding the left hand under a melody at
- * level 2 adds both hands at once, the bass staff, and the leaps its roots
- * make between bars; six-eight at levels 1-4 is written in dotted-quarter
- * beats and the eighths inside them; the designed syncopation below level 5 is
- * the eighth-quarter-eighth figure.
- */
-const VALUE_DEMANDS: Readonly<Record<ReadingDimension, Readonly<Record<string, readonly string[]>>>> = {
-  hands: { right: [], left: ['clef.bass'], both: ['texture.hands-together', 'clef.bass', 'interval.leap'] },
-  range: { position: [], octave: ['range.beyond-position'], wide: [] },
-  rhythm: { quarters: [], eighths: ['rhythm.eighths', 'rhythm.shorter-than-quarter'] },
-  key: Object.fromEntries(['0', '1', '-1', '2', '-2', '3', '-3', '4', '-4', 'list'].map((k) => [k, k === '0' ? [] : ['key.signature']])),
-  metre: { '4/4': [], '6/8': ['metre.compound', 'rhythm.dotted-quarter', 'rhythm.eighths', 'rhythm.shorter-than-quarter'], list: [] },
-  syncopation: { off: [], on: ['rhythm.syncopation', 'rhythm.eighths', 'rhythm.shorter-than-quarter'] },
+export const READER_POLICY: Readonly<ReaderPolicy> = {
+  easyAfter: 3,
+  stepDownAfter: RECENT_ATTEMPTS,
+  stepUpAfter: RECENT_ATTEMPTS,
+  demandShownAfter: 2,
 };
 
-/** The skill whose evidence a value is practice of: a move up is not taken while that skill is failing elsewhere. */
-const VALUE_SKILL: Readonly<Partial<Record<ReadingDimension, Readonly<Record<string, string>>>>> = {
-  hands: { left: 'bass-clef', both: 'hands-together' },
-  range: { octave: 'position-shift' },
-  rhythm: { eighths: 'subdivision' },
-  key: Object.fromEntries(['1', '-1', '2', '-2', '3', '-3', '4', '-4'].map((k) => [k, 'key-signature'])),
-  metre: { '6/8': '6/8' },
-  syncopation: { on: 'syncopation' },
-};
-
-/** A key moves up to one sharp, then one flat, then two of each; the ladder is by accidentals. */
-const KEY_LADDER = ['0', '1', '-1', '2', '-2', '3', '-3', '4', '-4'];
-
-interface DimensionState {
-  dimension: ReadingDimension;
-  /** The values this row can take, easiest first. */
-  values: readonly string[];
-  /** The row's own value. */
-  own: string;
-  /** The recipe's value. */
-  value: string;
-  /** Fixed by what the row's rungs promise, or by its level: never moved. */
-  fixed: boolean;
-}
-
-function levelOf(item: CatalogItem): number {
-  const level = item.drill?.params?.level;
-  return typeof level === 'number' ? level : 1;
-}
+/** The skill the reader moves by: right notes in time on every step (C3), with its evidence per demand (C4a). */
+const READER_SKILL = 'sight-reading';
 
 /**
- * Where a recipe stands on each dimension, and which dimensions its row lets
- * the reader move.
- *
- * - **hands**: right or left alone at level 1 (a left hand read alone is the
- *   melody on the bass staff); right or both from level 2, where the left hand
- *   is the level's own. Fixed where the row promises the hands: the bass clef
- *   (1.3's row), two hands (3.4's, 4.6's), a left-hand pattern or a walking
- *   bass (levels 5-7).
- * - **range**: C position or the level's own octave, at levels 2 and 3 only;
- *   level 1 is C position already and level 4's range is its ledger lines.
- * - **rhythm**: eighths or not, at level 1 without an eighths promise; from
- *   level 2 the eighths are the level's own.
- * - **key**: any key up to the level's widest; fixed where the row asks the
- *   seed to choose from a list (the `keys` rows), and where it promises an
- *   accidental: level 4 in G wrote none in one of twelve phrases, so a key
- *   move there would break the row's promise (the brief's third hypothesis).
- *   The same row in six-eight dropped it in one of twelve too, so the metre is
- *   fixed there as well.
- * - **metre**: four-four or six-eight; fixed where the row asks for a list,
- *   promises syncopation or triplets (simple time's), or is level 5 or above,
- *   and while the recipe is syncopated.
- * - **syncopation**: on or off; fixed where the row promises it or the level
- *   designs it (5 and above), and while the recipe is in six-eight.
+ * Every generator option the control map moves (`readingControls.ts`), in one
+ * order: a recipe's `moved` is written in it, and `recipeDistance` counts in it.
  */
-function dimensionsOf(item: CatalogItem, moved: ReadingMoves = {}): DimensionState[] {
-  const params = item.drill?.params ?? {};
-  const level = levelOf(item);
-  const concepts = new Set(item.concepts);
+export const RECIPE_KEYS = [
+  'hands',
+  'position',
+  'ledger',
+  'skips',
+  'leaps',
+  'eighths',
+  'sixteenths',
+  'dottedQuarters',
+  'ties',
+  'syncopation',
+  'triplets',
+  'timeSig',
+  'fifths',
+  'accidentals',
+  'leftHand',
+] as const satisfies readonly (keyof ReadingMoves)[];
+type RecipeKey = (typeof RECIPE_KEYS)[number];
 
-  const ownHands = params.hands === 'left' ? 'left' : params.hands === 'both' ? 'both' : 'right';
-  const ranged = level === 2 || level === 3;
-  const ownRange = ranged ? 'octave' : level <= 1 ? 'position' : 'wide';
-  const ownRhythm = level >= 2 || params.eighths === true ? 'eighths' : 'quarters';
-  const keys = KEY_LADDER.filter((k) => Math.abs(Number(k)) <= maxFifthsFor(level));
-  const ownKey = Array.isArray(params.fifths) ? 'list' : String(typeof params.fifths === 'number' ? params.fifths : 0);
-  const ownMetre = Array.isArray(params.timeSig) ? 'list' : params.timeSig === '6/8' ? '6/8' : '4/4';
-  const ownSync = params.syncopation === true || level >= 5 ? 'on' : 'off';
+/**
+ * "Shorter than a quarter" is every eighth again (C4a): it patterns with the
+ * eighths because it is the same notes, and one control moves both. The reader
+ * names and moves it as the eighths.
+ */
+const SAME_NOTES: Readonly<Record<string, string>> = { 'rhythm.shorter-than-quarter': 'rhythm.eighths' };
 
-  const metre = moved.timeSig ?? ownMetre;
-  const syncopation = moved.syncopation === undefined ? ownSync : moved.syncopation ? 'on' : 'off';
-  return [
-    {
-      dimension: 'hands',
-      values: level <= 1 ? ['right', 'left'] : ['right', 'both'],
-      own: ownHands,
-      value: moved.hands ?? ownHands,
-      fixed: ['bass-clef', 'two-hands', 'accompaniment-patterns', 'walking-bass'].some((c) => concepts.has(c)),
-    },
-    {
-      dimension: 'range',
-      values: ranged ? ['position', 'octave'] : [ownRange],
-      own: ownRange,
-      value: moved.position === true ? 'position' : ownRange,
-      fixed: !ranged || concepts.has('C-position'),
-    },
-    {
-      dimension: 'rhythm',
-      values: ['quarters', 'eighths'],
-      own: ownRhythm,
-      value: moved.eighths === undefined ? ownRhythm : moved.eighths ? 'eighths' : 'quarters',
-      fixed: level >= 2 || params.eighths === true,
-    },
-    {
-      dimension: 'key',
-      values: keys,
-      own: ownKey,
-      value: moved.fifths === undefined ? ownKey : String(moved.fifths),
-      fixed: ownKey === 'list' || keys.length < 2 || params.accidentals === true,
-    },
-    {
-      dimension: 'metre',
-      values: ['4/4', '6/8'],
-      own: ownMetre,
-      value: metre,
-      fixed:
-        ownMetre === 'list' ||
-        params.syncopation === true ||
-        params.triplets === true ||
-        params.accidentals === true ||
-        level >= 5 ||
-        syncopation === 'on',
-    },
-    {
-      dimension: 'syncopation',
-      values: ['off', 'on'],
-      own: ownSync,
-      value: syncopation,
-      fixed: params.syncopation === true || level >= 5 || metre === '6/8',
-    },
-  ];
+/** The rows' own spelling of what a recipe leaves alone: a row that says nothing plays the right hand, in C, in 4/4. */
+function ownValue(item: CatalogItem, key: RecipeKey): unknown {
+  const value = item.drill?.params?.[key];
+  if (key === 'hands') return value === 'left' || value === 'both' ? value : 'right';
+  if (key === 'fifths') return value ?? 0;
+  if (key === 'timeSig') return value ?? '4/4';
+  return value;
 }
 
-/** The recipe's moves with one dimension set to a value, in one key order, without what equals the row's own. */
-function withValue(item: CatalogItem, moved: ReadingMoves, dimension: ReadingDimension, value: string): ReadingMoves {
-  const own = dimensionsOf(item).find((d) => d.dimension === dimension)?.own;
-  const next: ReadingMoves = { ...moved };
-  const same = value === own;
-  if (dimension === 'hands') {
-    if (same) delete next.hands;
-    else next.hands = value as 'right' | 'left' | 'both';
-  } else if (dimension === 'range') {
-    if (same) delete next.position;
-    else next.position = value === 'position';
-  } else if (dimension === 'rhythm') {
-    if (same) delete next.eighths;
-    else next.eighths = value === 'eighths';
-  } else if (dimension === 'key') {
-    if (same) delete next.fifths;
-    else next.fifths = Number(value);
-  } else if (dimension === 'metre') {
-    if (same) delete next.timeSig;
-    else next.timeSig = value as '4/4' | '6/8';
-  } else if (same) {
-    delete next.syncopation;
-  } else {
-    next.syncopation = value === 'on';
-  }
-  return normaliseMoves(next);
-}
+const same = (a: unknown, b: unknown): boolean => JSON.stringify(a) === JSON.stringify(b);
 
 function normaliseMoves(moved: ReadingMoves | undefined): ReadingMoves {
-  const out: ReadingMoves = {};
+  const out: Record<string, unknown> = {};
   if (!moved) return out;
-  if (moved.hands !== undefined) out.hands = moved.hands;
-  if (moved.position !== undefined) out.position = moved.position;
-  if (moved.eighths !== undefined) out.eighths = moved.eighths;
-  if (moved.fifths !== undefined) out.fifths = moved.fifths;
-  if (moved.timeSig !== undefined) out.timeSig = moved.timeSig;
-  if (moved.syncopation !== undefined) out.syncopation = moved.syncopation;
+  for (const key of RECIPE_KEYS) {
+    const value = moved[key];
+    if (value === undefined) continue;
+    out[key] = Array.isArray(value) ? [...(value as readonly number[])] : value;
+  }
   return out;
+}
+
+/** A control's patch (generator options) in a recipe's spelling (the rows' `drill.params`). */
+function patchToMoves(patch: ControlPatch): ReadingMoves {
+  const out: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(patch)) {
+    if (value === undefined || !(RECIPE_KEYS as readonly string[]).includes(key)) continue;
+    if (key === 'hands') out.hands = value === 'L' ? 'left' : value === 'both' ? 'both' : 'right';
+    else if (key === 'timeSig') {
+      if (!Array.isArray(value)) out.timeSig = `${String((value as TimeSig).beats)}/${String((value as TimeSig).beatType)}`;
+    } else out[key] = value;
+  }
+  return normaliseMoves(out);
+}
+
+/** The recipe's moves with a patch over them; a value that is the row's own is dropped, so undoing a move returns to the row. */
+function withMoves(item: CatalogItem, moved: ReadingMoves, patch: ReadingMoves): ReadingMoves {
+  const next: Record<string, unknown> = { ...moved };
+  for (const key of RECIPE_KEYS) {
+    const value = patch[key];
+    if (value === undefined) continue;
+    if (same(value, ownValue(item, key))) delete next[key];
+    else next[key] = value;
+  }
+  return normaliseMoves(next);
 }
 
 function recipe(row: string, moved: ReadingMoves, easy = false): ReadingRecipe {
@@ -740,79 +666,92 @@ function recipeKey(value: ReadingRecipe): string {
   return `${value.row}|${JSON.stringify(normaliseMoves(value.moved))}`;
 }
 
-/** The generator options a row and a recipe write: the row's own params, with the recipe's moves over them. */
+function lessonOrder(curriculum: Curriculum): string[] {
+  return curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons.map((lesson) => lesson.id)));
+}
+
+/**
+ * What a rung has taught: a demand whose `taughtAt` rung comes at or before it
+ * in the curriculum's order. `undefined` for no rung (a phrase opened from
+ * nowhere is the row as it stands) or one the curriculum does not have.
+ */
+export function taughtAtRung(
+  curriculum: Curriculum,
+  rung: string | undefined,
+  vocabulary: Vocabulary = VOCABULARY_V0,
+): ((demand: string) => boolean) | undefined {
+  if (rung === undefined) return undefined;
+  const order = lessonOrder(curriculum);
+  const here = order.indexOf(rung);
+  if (here < 0) return undefined;
+  return (demand) => {
+    const at = vocabulary.demands.find((d) => d.id === demand)?.taughtAt;
+    if (at === null || at === undefined) return false;
+    const index = order.indexOf(at);
+    return index >= 0 && index <= here;
+  };
+}
+
+/**
+ * The generator options a row and a recipe write: the row's own params with the
+ * recipe's moves over them, and — given what the rung that opened the phrase
+ * has taught — held to it (C4b's `heldToRung`, C4c): every demand the rung has
+ * not taught that a phrase of these options may contain is kept out. The
+ * recipe's own moves stand over the hold: the reader asked for them, at the
+ * learner's rung, which can be later than the rung whose row it is (a 2.4
+ * learner reads 2.2's row and is asked for ties). The one writer of a phrase
+ * for Today, the rung page, the Score screen and the tests.
+ */
 export function readingOptions(
   item: CatalogItem,
   value?: { row?: string; moved?: ReadingMoves; easy?: true },
   seed?: number,
+  taught?: (demand: string) => boolean,
 ): SightReadingOptions {
-  return sightReadingOptionsFor({ ...(item.drill?.params ?? {}), ...normaliseMoves(value?.moved) }, seed);
+  const moved = normaliseMoves(value?.moved);
+  const merged = sightReadingOptionsFor({ ...(item.drill?.params ?? {}), ...moved }, seed);
+  if (!taught) return merged;
+  const held: Record<string, unknown> = { ...heldToRung(merged, taught) };
+  const asked = merged as unknown as Record<string, unknown>;
+  for (const key of Object.keys(moved)) {
+    if (asked[key] === undefined) delete held[key];
+    else held[key] = asked[key];
+  }
+  return held as unknown as SightReadingOptions;
 }
 
 /**
- * How many dimensions two recipes of one row differ in; different rows are
- * not comparable this way (`Infinity`): that is the rung's row changing, which
- * the curriculum decides, not the reads.
+ * How many things the reader moves two recipes of one row differ in: the
+ * recipe keys whose value (the recipe's, else the row's own) is not the same.
+ * Different rows are not comparable this way (`Infinity`): that is the rung's
+ * row changing, which the curriculum decides, not the reads.
  */
 export function recipeDistance(a: ReadingRecipe, b: ReadingRecipe, items: readonly CatalogItem[]): number {
   if (a.row !== b.row) return Number.POSITIVE_INFINITY;
   const item = items.find((one) => one.id === a.row);
   if (!item) return Number.POSITIVE_INFINITY;
-  const left = dimensionsOf(item, a.moved);
-  const right = dimensionsOf(item, b.moved);
-  return left.filter((d, i) => d.value !== right[i]?.value).length;
-}
-
-export interface ReadingMove {
-  dimension: ReadingDimension;
-  from: string;
-  to: string;
-  /** Up the dimension (harder) or down (easier). */
-  direction: 'up' | 'down';
-  /** The recipe after the move. */
-  recipe: ReadingRecipe;
-  /** The demands the move touches: what the new value brings, or the old one took away. */
-  demands: string[];
-}
-
-/** The key one step down: one accidental fewer, same side (C4). */
-function keyDown(value: string): string | undefined {
-  const k = Number(value);
-  if (!Number.isFinite(k) || k === 0) return undefined;
-  return String(Math.sign(k) * (Math.abs(k) - 1));
+  const left = normaliseMoves(a.moved) as Record<string, unknown>;
+  const right = normaliseMoves(b.moved) as Record<string, unknown>;
+  return RECIPE_KEYS.filter((key) => !same(left[key] ?? ownValue(item, key), right[key] ?? ownValue(item, key))).length;
 }
 
 /**
- * Every one-dimension move a recipe of this row can make, up and down, on the
- * dimensions the row does not fix. Not gated by what the learner's rung has
- * taught: `readingOffer` does that, and the test of the promises' bounds walks
- * all of them.
+ * One move of the recipe: a demand the control map can write or keep out
+ * (`readingControls.ts`), turned on or off, and nothing else.
  */
-export function readingMovesFrom(item: CatalogItem, from: ReadingRecipe): ReadingMove[] {
-  const out: ReadingMove[] = [];
-  for (const state of dimensionsOf(item, from.moved)) {
-    if (state.fixed) continue;
-    const at = state.values.indexOf(state.value);
-    if (at < 0) continue;
-    const up = state.values[at + 1];
-    const down = state.dimension === 'key' ? keyDown(state.value) : state.values[at - 1];
-    for (const [to, direction] of [
-      [up, 'up'],
-      [down, 'down'],
-    ] as const) {
-      if (to === undefined || !state.values.includes(to)) continue;
-      const moves = withValue(item, from.moved ?? {}, state.dimension, to);
-      out.push({
-        dimension: state.dimension,
-        from: state.value,
-        to,
-        direction,
-        recipe: recipe(from.row, moves),
-        demands: [...new Set([...(VALUE_DEMANDS[state.dimension][state.value] ?? []), ...(VALUE_DEMANDS[state.dimension][to] ?? [])])],
-      });
-    }
-  }
-  return out;
+export interface ReadingMove {
+  /** The vocabulary demand the move is about. */
+  demand: string;
+  /** Written into the phrase (`on`) or kept out of it (`off`). */
+  direction: 'on' | 'off';
+  /** The recipe after the move. */
+  recipe: ReadingRecipe;
+  /** What the control changed, in the recipe's spelling. */
+  patch: ReadingMoves;
+  /** Other demands the move may bring into a phrase that had none of them (the control's `brings`). */
+  brings: readonly string[];
+  /** The key the offered phrase is written in, where the move is the key signature's: named, never ranked. */
+  key?: number;
 }
 
 /** The last read's sight-reading measurement, as a reason line may cite it. */
@@ -820,6 +759,17 @@ export interface ReadMeasure {
   at: string;
   right: number;
   n: number;
+}
+
+/** A demand the reads single out (C4a's `pattern` or `isolated`), with the numbers a reason line may cite. */
+export interface DemandFinding {
+  demand: string;
+  selectivity: 'pattern' | 'isolated';
+  /** Phrases in the window that had the demand, and those where its share fell below the support share. */
+  phrases: number;
+  phrasesBelow: number;
+  n: number;
+  right: number;
 }
 
 /**
@@ -831,16 +781,31 @@ export type ReadingWhy =
   | { kind: 'rung' }
   /** Today's phrase is on the record already: read, or heard before it was read. */
   | { kind: 'met'; read: boolean }
-  /** The same recipe again: not yet shown at it, and not failing it. */
-  | { kind: 'hold'; last: ReadMeasure }
-  /** Shown at this recipe on two days: one dimension up. */
+  /**
+   * The same recipe again: not yet shown at it, and not failing it. `key`: the
+   * key today's phrase is in, where the recipe reads a set of keys. `wrong`: a
+   * demand the reads single out that went wrong in the reads that would
+   * otherwise have moved the recipe on.
+   */
+  | { kind: 'hold'; last: ReadMeasure; key?: number; wrong?: DemandFinding }
+  /** Shown at this recipe on two days: the next demand the rung has taught, on. */
   | { kind: 'forward'; last: ReadMeasure; move: ReadingMove }
-  /** The last two reads at this recipe went against it: one dimension down. */
-  | { kind: 'back'; last: ReadMeasure; move: ReadingMove }
-  /** One dimension below, on purpose, for fluency. */
+  /** Two reads against the recipe, and the reads single out a demand: that demand's control, off. */
+  | { kind: 'back'; last: ReadMeasure; move: ReadingMove; because: DemandFinding }
+  /**
+   * Two reads against the recipe, and nothing singled out: nothing blamed; the
+   * easy read where there is one. Or right as a whole on two days, a demand of
+   * the phrase wrong in them, and nothing singled out: held, nothing blamed.
+   */
+  | { kind: 'unsure'; last: ReadMeasure; easy?: ReadingMove }
+  /** Two reads against the recipe, a demand singled out, and no control here keeps it out: held, and said. */
+  | { kind: 'kept'; last: ReadMeasure; because: DemandFinding }
+  /** The rung that holds the row has changed, and its phrases may now hold what the last read's could not: held, and said. */
+  | { kind: 'lesson'; last: ReadMeasure; demands: readonly string[] }
+  /** One below the recipe, on purpose, for fluency. */
   | { kind: 'easy'; move: ReadingMove }
-  /** Ready, but nothing is taught to move to; or failing, and nothing easier keeps the row's promises. */
-  | { kind: 'stay'; last: ReadMeasure; because: 'nothing-taught' | 'nothing-easier' };
+  /** Ready, and nothing the rung has taught to move to. */
+  | { kind: 'stay'; last: ReadMeasure };
 
 export interface ReadingOffer {
   /** The catalog row the phrase is generated from. */
@@ -848,7 +813,7 @@ export interface ReadingOffer {
   recipe: ReadingRecipe;
   /** A phrase no stored run carries (the daily read: the day's seed, as ever). */
   seed: number;
-  /** The rung whose reading row this is, where one is reached. */
+  /** The rung whose reading row this is, where one is reached: the rung the phrase is held to and judged by. */
   lessonId?: string;
   /** False before any rung that lists a reading row: the easiest row stands in, and the session has no reading slot. */
   anchored: boolean;
@@ -869,6 +834,8 @@ export interface ReadingInput {
   /** Shuffle's counter: another phrase of the same recipe. */
   shuffle?: number;
   vocabulary?: Vocabulary;
+  /** The reader's numbers (`READER_POLICY` unless given). */
+  policy?: ReaderPolicy;
 }
 
 /** A sight-reading row: generated notation (`drill.kind`), not the transposition drills that share the tag. */
@@ -904,39 +871,84 @@ function anchorFor(input: ReadingInput, readers: readonly CatalogItem[]): { item
   return { item: easiest, anchored: false };
 }
 
-/** A demand is taught at the learner's rung when the rung that teaches it comes at or before it in the curriculum. */
-function taughtBy(curriculum: Curriculum, position: LessonPosition | undefined, vocabulary: Vocabulary): (demand: string) => boolean {
-  const order = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons.map((lesson) => lesson.id)));
-  const here = position ? order.indexOf(position.lesson.id) : order.length;
-  return (demand) => {
-    const rung = vocabulary.demands.find((d) => d.id === demand)?.taughtAt;
-    if (rung === null || rung === undefined) return false;
-    const at = order.indexOf(rung);
-    return at >= 0 && at <= here;
-  };
-}
-
-/** Where a demand is taught, as a place in the curriculum (for ordering moves: what was taught first, first). */
-function taughtAt(curriculum: Curriculum, vocabulary: Vocabulary): (demands: readonly string[]) => number {
-  const order = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons.map((lesson) => lesson.id)));
-  return (demands) =>
-    Math.max(
-      -1,
-      ...demands.map((demand) => {
-        const rung = vocabulary.demands.find((d) => d.id === demand)?.taughtAt;
-        return rung ? order.indexOf(rung) : Number.POSITIVE_INFINITY;
-      }),
-    );
-}
-
-/** A skill whose two latest measured records both went against it. */
-function failing(states: readonly SkillState[], skill: string | undefined): boolean {
+/** A skill whose latest measured records, as many as the policy's step-down count, all went against it. */
+function failing(states: readonly SkillState[], skill: string | undefined, policy: ReaderPolicy): boolean {
   if (skill === undefined) return false;
   const measured = states
     .find((state) => state.skill.id === skill)
     ?.evidence.filter((e): e is MeasuredEvidence => e.kind === 'measured');
-  const latest = (measured ?? []).slice(-RECENT_ATTEMPTS);
-  return latest.length === RECENT_ATTEMPTS && latest.every((e) => !supports(e));
+  const latest = (measured ?? []).slice(-policy.stepDownAfter);
+  return latest.length === policy.stepDownAfter && latest.every((e) => !supports(e));
+}
+
+/**
+ * Proficient at the working recipe, by the policy's numbers read as the ladder
+ * reads them: full-standard support on `stepUpAfter` different days since the
+ * last run of `stepDownAfter` reads against, the latest full-standard read
+ * supporting.
+ */
+function proficientAt(evidence: readonly MeasuredEvidence[], policy: ReaderPolicy): boolean {
+  let days = new Set<string>();
+  let against = 0;
+  let lastFull: MeasuredEvidence | undefined;
+  for (const e of evidence) {
+    if (e.standard !== 'full') continue;
+    lastFull = e;
+    if (supports(e)) {
+      against = 0;
+      days.add(dayKey(new Date(e.at)));
+    } else {
+      against += 1;
+      if (against >= policy.stepDownAfter) days = new Set();
+    }
+  }
+  return lastFull !== undefined && supports(lastFull) && days.size >= policy.stepUpAfter;
+}
+
+/**
+ * The demands of the phrase that went below the support share in any of these
+ * reads (C4a's per-demand counts; "shorter than a quarter" as the eighths): a
+ * phrase read right as a whole is not yet shown at a demand that went wrong in
+ * it, and the reader does not add to it until those reads hold at every demand
+ * the phrase still asks. A demand the recipe now keeps out does not hold it
+ * back.
+ */
+function heldBack(reads: readonly MeasuredEvidence[], current: SightReadingOptions): string[] {
+  const out = new Set<string>();
+  for (const read of reads) {
+    for (const entry of read.byDemand ?? []) {
+      if (entry.n === 0 || entry.right / entry.n >= SUPPORT_SHARE) continue;
+      const demand = SAME_NOTES[entry.demand] ?? entry.demand;
+      if (READING_CONTROLS[demand]?.mayWrite(current) ?? true) out.add(demand);
+    }
+  }
+  return [...out];
+}
+
+/**
+ * The demands of sight-reading the reads single out (`pattern` or `isolated`)
+ * that the phrase still holds, as findings a reason line may cite: "shorter
+ * than a quarter" as the eighths; the lowest share first, a pattern before an
+ * isolated case, the latest taught first.
+ */
+function singledOut(
+  readings: readonly DemandReading[],
+  current: SightReadingOptions,
+  taughtIndex: (demand: string) => number,
+): DemandFinding[] {
+  const out: DemandFinding[] = [];
+  for (const one of readings) {
+    if (one.selectivity === 'ambiguous') continue;
+    const demand = SAME_NOTES[one.demand] ?? one.demand;
+    if ((READING_CONTROLS[demand]?.mayWrite(current) ?? true) !== true || out.some((found) => found.demand === demand)) continue;
+    out.push({ demand, selectivity: one.selectivity, phrases: one.phrases, phrasesBelow: one.phrasesBelow, n: one.n, right: one.right });
+  }
+  return out.sort(
+    (a, b) =>
+      a.right / a.n - b.right / b.n ||
+      (a.selectivity === 'pattern' ? 0 : 1) - (b.selectivity === 'pattern' ? 0 : 1) ||
+      taughtIndex(b.demand) - taughtIndex(a.demand),
+  );
 }
 
 /** The day's slot phrase, and the ones after it for Shuffle: a stream of its own beside the daily seed. */
@@ -944,38 +956,126 @@ function slotSeed(day: string, index: number): number {
   return (dailySeed(`${day}#reading`) + Math.imul(index, 0x9e3779b1)) >>> 0;
 }
 
-const PROFICIENT_OR_MORE = new Set(['proficient', 'transfer demonstrated', 'retained', 'mastered']);
+/** What a move is computed against: the row, the working recipe, the rungs, and the options a recipe writes. */
+interface MoveContext {
+  item: CatalogItem;
+  working: ReadingRecipe;
+  /** The learner's rung: what is taught, and where C4b's declared impossibilities are read. */
+  rung: string | undefined;
+  /** The options a recipe writes, held as the Score screen will hold them. */
+  options: (value: ReadingRecipe) => SightReadingOptions;
+}
 
 /**
- * The next sight-reading phrase for a learner (C4): Today's daily read and the
- * session's reading slot, from one rule.
+ * One demand's control, turned on or off from the working recipe, where C4b's
+ * contract says the generator makes it at this rung: its patch exists, the rung
+ * is not one `UNREALISABLE_AT` names for it, the generator gives no new reason
+ * it cannot (`unrealisable`), the recipe changes, and after it the demand may
+ * be written (on) or cannot be (off).
+ */
+function moveFor(ctx: MoveContext, demand: string, direction: 'on' | 'off'): ReadingMove | undefined {
+  const control = READING_CONTROLS[demand];
+  if (!control) return undefined;
+  const current = ctx.options(ctx.working);
+  const patch = direction === 'on' ? control.on(current) : control.off(current);
+  if (!patch) return undefined;
+  const rung = ctx.rung;
+  if (rung !== undefined && UNREALISABLE_AT.some((u) => u.demand === demand && u.direction === direction && u.rungs.includes(rung))) {
+    return undefined;
+  }
+  const moves = patchToMoves(patch);
+  const next = recipe(ctx.item.id, withMoves(ctx.item, ctx.working.moved ?? {}, moves));
+  if (recipeKey(next) === recipeKey(ctx.working)) return undefined;
+  const after = ctx.options(next);
+  const before = new Set(unrealisable(current));
+  if (unrealisable(after).some((reason) => !before.has(reason))) return undefined;
+  if (control.mayWrite(after) !== (direction === 'on')) return undefined;
+  return { demand, direction, recipe: next, patch: moves, brings: direction === 'on' ? [...(control.brings?.(after) ?? [])] : [] };
+}
+
+/**
+ * Every move the reader can ask for from a recipe at a rung: each taught
+ * demand's control on, each demand the phrase may hold off — the ones C4b's
+ * contract says the generator makes there. What the reader chooses among, and
+ * what a lesson sentence about the reader is checked against.
+ */
+export function readingMoves(input: {
+  curriculum: Curriculum;
+  item: CatalogItem;
+  recipe: ReadingRecipe;
+  /** The learner's rung. */
+  rung: string;
+  /** The rung the phrase is held to (the row's rung); the learner's where absent. */
+  hold?: string;
+  vocabulary?: Vocabulary;
+}): ReadingMove[] {
+  const vocabulary = input.vocabulary ?? VOCABULARY_V0;
+  const taught = taughtAtRung(input.curriculum, input.rung, vocabulary) ?? (() => false);
+  const hold = taughtAtRung(input.curriculum, input.hold ?? input.rung, vocabulary);
+  const ctx: MoveContext = {
+    item: input.item,
+    working: recipe(input.recipe.row, input.recipe.moved ?? {}),
+    rung: input.rung,
+    options: (value) => readingOptions(input.item, value, undefined, hold),
+  };
+  const out: ReadingMove[] = [];
+  for (const demand of vocabulary.demands) {
+    const on = taught(demand.id) ? moveFor(ctx, demand.id, 'on') : undefined;
+    if (on && on.brings.every(taught)) out.push(on);
+    const off = moveFor(ctx, demand.id, 'off');
+    if (off) out.push(off);
+  }
+  return out;
+}
+
+/**
+ * The next sight-reading phrase for a learner (C4, C4c): Today's daily read and
+ * the session's reading slot, from one rule.
  *
  * 1. **The row** is the rung's (`anchorFor`). A learner with no reads there
- *    gets it as it stands, and the reason claims nothing beyond the rung.
+ *    gets it as it stands (held to what the rung has taught), and the reason
+ *    claims nothing beyond the rung.
  * 2. **The working recipe** is the learner's last one at that row, from the
  *    stored `recipe` (an easy read is a detour, not the working recipe); its
  *    **block** is the run of reads at it since the learner arrived there.
- * 3. **The evidence** is sight-reading's, stored on those rows: the skill
- *    every phrase exercises, measured on every step as right notes in time.
- *    - The last two against it: **one dimension down** — the newest thing
- *      added, else the first a row allows (range, then hands, then the rest).
- *    - Proficient at the recipe (the ladder read over the block: full-standard
- *      support on two days, the latest supporting), and the read before this
- *      one not an easy one: **one dimension up** — the first whose demands the
- *      learner's rung has taught, what was taught earliest first, and not one
- *      whose skill the learner is failing elsewhere.
- *    - `EASY_AFTER` reads since the last easy one: **one dimension down, on
- *      purpose** — the same step a failing read would get.
+ * 3. **The rung that holds the row** may have moved on since the last read
+ *    (2.2's row read on 2.5 may leave C position): where that lets the phrase
+ *    hold a demand the last read's could not, the recipe is held and the line
+ *    says what the lesson adds — one change a day.
+ * 4. **The evidence** is sight-reading's, stored on those rows, and C4a's
+ *    readings of it per demand (`demandReadings`):
+ *    - The last `stepDownAfter` reads against it: if the reads single out a
+ *      demand the phrase holds (`pattern` or `isolated`), **that demand's
+ *      control, off** — every other part of the recipe held — or, where no
+ *      control here keeps it out, the recipe held and the line says so. If
+ *      nothing is singled out, **nothing is blamed**: the recipe is held, the
+ *      next read is the easy one where one exists, and the line says the app
+ *      is not sure yet what went wrong.
+ *    - Proficient at the recipe (`proficientAt`), no demand the phrase holds
+ *      below the support share in those reads (`heldBack`), and the read
+ *      before not an easy one: **the next taught demand, on** — the first, in the order the
+ *      curriculum teaches them (then the vocabulary's), that the learner's rung
+ *      has taught, the phrase does not already promise, the reads have not
+ *      shown, whose skill is not failing elsewhere, whose move brings nothing
+ *      untaught, and which the generator makes here (C4b). None: the line says
+ *      the next step waits for a later lesson.
+ *    - `easyAfter` reads since the last easy one: **one below, on purpose** —
+ *      the newest thing the recipe added, undone; else C position, then one
+ *      hand, where the row's promises allow.
  *    - Otherwise **the same recipe**, another phrase.
- *    Where no move is open, the phrase stays and the reason says why.
- * 4. **The seed** is one no stored run of the row carries; the daily read's is
+ * 5. **The seed** is one no stored run of the row carries; the daily read's is
  *    the day's, as it always was, and once today's phrase is on the record the
  *    card offers that phrase as met, not as a new read.
+ *
+ * Keys are never ranked: the key signature's control is every key the level
+ * writes with a signature, a set the seed chooses from, and the line names the
+ * key the phrase is in.
  *
  * Pure: the same rows, rung and day give the same offer.
  */
 export function readingOffer(input: ReadingInput): ReadingOffer | null {
   const vocabulary = input.vocabulary ?? VOCABULARY_V0;
+  const policy = input.policy ?? READER_POLICY;
   const readers = input.items.filter(isReader);
   const anchor = anchorFor(input, readers);
   if (!anchor) return null;
@@ -1016,7 +1116,7 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
     block.unshift(row);
   }
   const sightOf = (row: SessionRow): MeasuredEvidence | undefined =>
-    storedEvidence(row).find((e): e is MeasuredEvidence => e.kind === 'measured' && e.skill === 'sight-reading');
+    storedEvidence(row).find((e): e is MeasuredEvidence => e.kind === 'measured' && e.skill === READER_SKILL);
   const evidence = block.map(sightOf).filter((e): e is MeasuredEvidence => e !== undefined);
   const previous = here[here.length - 1];
   const previousEasy = previous !== undefined && recipeOf(previous).easy === true;
@@ -1037,55 +1137,128 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
   const last = evidence[evidence.length - 1];
   if (!last) return offer(working, { kind: 'rung' });
   const measure: ReadMeasure = { at: last.at, right: last.right, n: last.n };
+
+  // The phrase is held to what the row's rung has taught (as the Score screen holds it); moves are gated by the learner's.
+  const rung = input.position?.lesson.id;
+  const taught = taughtAtRung(input.curriculum, rung, vocabulary) ?? ((demand: string) => vocabulary.demands.some((d) => d.id === demand && d.taughtAt !== null));
+  const hold = taughtAtRung(input.curriculum, anchor.lessonId, vocabulary);
+  const ctx: MoveContext = {
+    item: anchor.item,
+    working,
+    rung,
+    options: (value) => readingOptions(anchor.item, value, undefined, hold),
+  };
+  const current = ctx.options(working);
+  const order = lessonOrder(input.curriculum);
+  const taughtIndex = (demand: string): number => {
+    const at = vocabulary.demands.find((d) => d.id === demand)?.taughtAt;
+    return at ? order.indexOf(at) : Number.POSITIVE_INFINITY;
+  };
+  const vocabularyIndex = (demand: string): number => vocabulary.demands.findIndex((d) => d.id === demand);
+
+  // 3. The rung holding the row has moved on since the last read, and its phrases may now hold more.
+  const thenRung = previous?.opened?.rung;
+  if (thenRung !== undefined && anchor.lessonId !== undefined && thenRung !== anchor.lessonId) {
+    const then = readingOptions(anchor.item, working, undefined, taughtAtRung(input.curriculum, thenRung, vocabulary));
+    const opened = Object.entries(READING_CONTROLS)
+      .filter(([, control]) => control.mayWrite(current) && !control.mayWrite(then))
+      .map(([demand]) => demand);
+    if (opened.length > 0) return offer(working, { kind: 'lesson', last: measure, demands: opened });
+  }
+
+  const readings = demandReadings(input.rows, vocabulary, input.today).filter((one) => one.skill === READER_SKILL);
   const states = readingState(input.rows, vocabulary, input.today);
-  const taught = taughtBy(input.curriculum, input.position, vocabulary);
-  const whenTaught = taughtAt(input.curriculum, vocabulary);
-  const own = new Map(dimensionsOf(anchor.item).map((d) => [d.dimension, d]));
-  const moves = readingMovesFrom(anchor.item, working);
-  const rank = (d: ReadingDimension, value: string): number => {
-    const values = own.get(d)?.values ?? [];
-    return d === 'key' ? Math.abs(Number(value)) : values.indexOf(value);
-  };
 
-  const stepDown = (): ReadingMove | undefined => {
-    const downs = moves.filter((m) => m.direction === 'down');
-    // Undo what was added: a dimension above the row's own, the newest taught first.
-    const added = downs.filter((m) => rank(m.dimension, m.from) > rank(m.dimension, own.get(m.dimension)?.own ?? m.from));
-    if (added.length > 0) {
-      return added.sort(
-        (a, b) =>
-          whenTaught(VALUE_DEMANDS[b.dimension][b.from] ?? []) - whenTaught(VALUE_DEMANDS[a.dimension][a.from] ?? []) ||
-          READING_DIMENSIONS.indexOf(b.dimension) - READING_DIMENSIONS.indexOf(a.dimension),
-      )[0];
+  /** The newest thing the recipe added, undone; else C position, then one hand, where the row's promises allow. */
+  const easyMove = (): ReadingMove | undefined => {
+    const moved = normaliseMoves(working.moved) as Record<string, unknown>;
+    const added: { key: RecipeKey; demand: string; at: number }[] = [];
+    for (const key of RECIPE_KEYS) {
+      if (moved[key] === undefined) continue;
+      const without = { ...moved };
+      delete without[key];
+      const beneath = ctx.options(recipe(anchor.item.id, without));
+      for (const [demand, control] of Object.entries(READING_CONTROLS)) {
+        const on = control.on(beneath);
+        if (!on || !taught(demand)) continue;
+        // The demand's own patch, whole, is what the recipe holds at this key (a left-hand pattern's
+        // patch also names the pattern, so both hands alone are not a pattern added).
+        const patch = patchToMoves(on) as Record<string, unknown>;
+        const contained = Object.keys(patch).length > 0 && Object.entries(patch).every(([k, v]) => same(v, k === key ? moved[key] : (moved[k] ?? ownValue(anchor.item, k as RecipeKey))));
+        if (contained && Object.prototype.hasOwnProperty.call(patch, key)) added.push({ key, demand, at: taughtIndex(demand) });
+      }
     }
-    return downs.sort((a, b) => READING_DIMENSIONS.indexOf(a.dimension) - READING_DIMENSIONS.indexOf(b.dimension))[0];
+    added.sort((a, b) => b.at - a.at || RECIPE_KEYS.indexOf(b.key) - RECIPE_KEYS.indexOf(a.key));
+    for (const one of added) {
+      const without = { ...moved };
+      delete without[one.key];
+      const next = recipe(anchor.item.id, without);
+      const before = new Set(unrealisable(current));
+      if (unrealisable(ctx.options(next)).some((reason) => !before.has(reason))) continue;
+      const patch = { [one.key]: ownValue(anchor.item, one.key) } as ReadingMoves;
+      return { demand: one.demand, direction: 'off', recipe: next, patch, brings: [] };
+    }
+    const concepts = new Set(anchor.item.concepts);
+    const below: [string, boolean][] = [
+      ['range.beyond-position', concepts.has('C-position')],
+      ['clef.bass', ['bass-clef', 'two-hands', 'accompaniment-patterns', 'walking-bass'].some((c) => concepts.has(c))],
+    ];
+    for (const [demand, fixed] of below) {
+      if (fixed || READING_CONTROLS[demand]?.mayWrite(current) !== true) continue;
+      const down = moveFor(ctx, demand, 'off');
+      if (down) return down;
+    }
+    return undefined;
   };
-  const stepUp = (): ReadingMove | undefined =>
-    moves
-      .filter((m) => m.direction === 'up')
-      .filter((m) => m.to === own.get(m.dimension)?.own || (VALUE_DEMANDS[m.dimension][m.to] ?? []).every(taught))
-      .filter((m) => !failing(states, VALUE_SKILL[m.dimension]?.[m.to]))
-      .sort((a, b) => {
-        const at = (m: ReadingMove): number => (m.to === own.get(m.dimension)?.own ? -1 : whenTaught(VALUE_DEMANDS[m.dimension][m.to] ?? []));
-        return at(a) - at(b) || READING_DIMENSIONS.indexOf(a.dimension) - READING_DIMENSIONS.indexOf(b.dimension);
-      })[0];
+  const asEasy = (move: ReadingMove): ReadingRecipe => recipe(move.recipe.row, move.recipe.moved ?? {}, true);
 
-  const lastTwo = evidence.slice(-RECENT_ATTEMPTS);
-  if (lastTwo.length === RECENT_ATTEMPTS && lastTwo.every((e) => !supports(e))) {
-    const down = stepDown();
-    return down
-      ? offer(down.recipe, { kind: 'back', last: measure, move: down })
-      : offer(working, { kind: 'stay', last: measure, because: 'nothing-easier' });
+  // 4a. Two reads against the recipe.
+  const lastFew = evidence.slice(-policy.stepDownAfter);
+  if (lastFew.length === policy.stepDownAfter && lastFew.every((e) => !supports(e))) {
+    const because = singledOut(readings, current, taughtIndex)[0];
+    if (because) {
+      const down = moveFor(ctx, because.demand, 'off');
+      return down ? offer(down.recipe, { kind: 'back', last: measure, move: down, because }) : offer(working, { kind: 'kept', last: measure, because });
+    }
+    const easy = previousEasy ? undefined : easyMove();
+    return easy ? offer(asEasy(easy), { kind: 'unsure', last: measure, easy }) : offer(working, { kind: 'unsure', last: measure });
   }
-  const ready = !previousEasy && PROFICIENT_OR_MORE.has(ladderState({ evidence, today: input.today }).state);
+
+  // 4b. Proficient at the recipe, at every demand the phrase holds: the next taught demand.
+  const proficient = !previousEasy && proficientAt(evidence, policy);
+  const stillWrong = proficient ? heldBack(evidence.slice(-policy.stepUpAfter), current) : [];
+  const ready = proficient && stillWrong.length === 0;
   if (ready) {
-    const up = stepUp();
-    if (up) return offer(up.recipe, { kind: 'forward', last: measure, move: up });
+    const shown = (demand: string): boolean =>
+      readings.some(
+        (one) => (SAME_NOTES[one.demand] ?? one.demand) === demand && !one.below && one.phrases - one.phrasesBelow >= policy.demandShownAfter,
+      );
+    const candidates = vocabulary.demands
+      .map((d) => d.id)
+      .filter(taught)
+      .sort((a, b) => taughtIndex(a) - taughtIndex(b) || vocabularyIndex(a) - vocabularyIndex(b));
+    for (const demand of candidates) {
+      if (shown(demand) || failing(states, vocabulary.demands.find((d) => d.id === demand)?.copedWithBy, policy)) continue;
+      const up = moveFor(ctx, demand, 'on');
+      if (!up || !up.brings.every(taught)) continue;
+      const key = demand === 'key.signature' ? generateSightReading(readingOptions(anchor.item, up.recipe, seed, hold)).fifths : undefined;
+      return offer(up.recipe, { kind: 'forward', last: measure, move: key === undefined ? up : { ...up, key } });
+    }
   }
-  if (sinceEasy >= EASY_AFTER && !previousEasy) {
-    const down = stepDown();
-    if (down) return offer(recipe(down.recipe.row, down.recipe.moved ?? {}, true), { kind: 'easy', move: down });
+
+  // 4c. The easy one, on purpose.
+  if (sinceEasy >= policy.easyAfter && !previousEasy) {
+    const down = easyMove();
+    if (down) return offer(asEasy(down), { kind: 'easy', move: down });
   }
-  if (ready) return offer(working, { kind: 'stay', last: measure, because: 'nothing-taught' });
-  return offer(working, { kind: 'hold', last: measure });
+  if (ready) return offer(working, { kind: 'stay', last: measure });
+  // Right as a whole, and a demand the phrase holds went wrong in the proving reads: held, and the line says
+  // what the reads single out, or that the app is not sure yet.
+  if (stillWrong.length > 0) {
+    const finding = singledOut(readings, current, taughtIndex).find((one) => stillWrong.includes(one.demand));
+    return finding ? offer(working, { kind: 'hold', last: measure, wrong: finding }) : offer(working, { kind: 'unsure', last: measure });
+  }
+  const keys = current.fifths;
+  const key = Array.isArray(keys) && keys.length > 1 ? generateSightReading(readingOptions(anchor.item, working, seed, hold)).fifths : undefined;
+  return offer(working, { kind: 'hold', last: measure, ...(key === undefined ? {} : { key }) });
 }

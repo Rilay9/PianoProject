@@ -579,37 +579,59 @@ bass, which is how level 6 passed theory.9's "walking bass", a sentence about le
 here). Two limits the model sets on every detector: it carries no clef (staff 1 is read as
 treble, staff 2 as bass, which every generated phrase is) and only the first key signature.
 
-**What comes next is chosen from the reads (2026-09-26, C4).** The row a learner reads used to
-be a constant per stage. Today's daily read and the session's reading slot now come from one
-function, `readingOffer` (`curriculum/session.ts`; the rule and its reason lines are `04` §2):
-the rung's own row, as it stands for a learner who has not read, moved one dimension at a time
-by sight-reading's evidence stored on the learner's rows (`01` §4.5), toward what the rung has
-taught (`taughtAt`). A **recipe** is a row's own params with at most a few of them moved,
-spelled as the params are (`ReadingMoves`), so `readingOptions(item, recipe, seed)` is the row's
-`sightReadingOptionsFor` with the moves laid over it — the Score screen and the tests write a
-phrase through that one function. The six dimensions and where each moves:
+**What comes next is chosen from the reads (2026-09-26, C4; the demand it moves since C4c).**
+The row a learner reads used to be a constant per stage. Today's daily read and the session's
+reading slot come from one function, `readingOffer` (`curriculum/session.ts`; the rule and its
+reason lines are `04` §2): the rung's own row, moved one demand at a time by sight-reading's
+evidence stored on the learner's rows (`01` §4.5) and C4a's readings of it per demand (§9b). A
+**recipe** is a row's own params with some of them moved, spelled as the params are
+(`ReadingMoves`: every option the control map below moves), and `readingOptions(item, recipe,
+seed, taught)` is the one writer of a phrase — for Today, the rung page, the Score screen and the
+tests: the row's `sightReadingOptionsFor` with the moves laid over it, **held to what the rung
+that opened it has taught** (`heldToRung` with the route's rung, C4c: 2.2's row stays inside C
+position until 2.5 teaches leaving it, S16), the recipe's own moves standing over the hold (the
+reader asked for them, at the learner's rung, which can be later than the row's).
 
-| dimension | values, easiest first | moves on | fixed where |
-|---|---|---|---|
-| hands | right, left (level 1); right, both (level 2+) | `hands` | the row promises the bass clef, two hands, or a left-hand pattern |
-| range | C position, the level's octave (levels 2-3) | `position` | level 1 (already C position), level 4+ (the ledger lines are the point) |
-| rhythm | quarters, eighths (level 1) | `eighths` | level 2+ (the level's own), or promised |
-| key | C, G, F, D, B♭, … up to the level's widest (`maxFifthsFor`) | `fifths` | a key list, or a promised accidental |
-| metre | 4/4, 6/8 | `timeSig` | a list, promised syncopation, triplets or accidental, level 5+ |
-| syncopation | off, on | `syncopation` | promised, or level 5+ (designed there) |
+**The reader moves the demand the evidence supports (C4c).** C4 moved six dimensions of its own
+(hands, range, rhythm, key, metre, syncopation) and stepped down by backing out whatever it had
+added last, so a learner who misread every skip lost the left hand (L64). The six were today's
+controls, never the ontology of difficulty (the reviewer's fourth message §4), and the
+hand-written table is deleted: the reader asks C4a's readings which demand the reads single out,
+and C4b's map (`readingControls.ts`, below) which control changes it.
 
-**`position`** is the one generator parameter no catalog row writes: the melody held inside the
-five notes from the key's tonic, from middle C (or from the C below for a left hand read alone),
-whatever the level's range; nothing else about the level changes. Without it "the same phrase,
-inside the hand" could only be had by changing the level, which moves several dimensions at
-once. **Measured, not assumed** (`sightReadingFromReadingState.test.ts`, twelve seeds each way,
-read with the detectors): every move keeps what its row writes in every phrase unless it is the
-move's own demand, and adds nothing the row never writes but the move's own. That is how two
-conflicts with the promises were found and the dimension fixed rather than the promise broken:
-level 4's promised accidental was missing from one of twelve phrases in G and one of twelve in
-6/8. What a move brings is listed with it (adding the left hand at level 2 also brings the bass
-staff and the leaps its roots make; 6/8 brings dotted quarters and eighths; the designed
-syncopation below level 5 brings eighths), and the taught-at gate checks all of it.
+- **A step down** (two reads against the recipe, `READER_POLICY.stepDownAfter`): the
+  sight-reading demand the reads single out (`pattern` or `isolated`; "shorter than a quarter"
+  is the eighths, one control), among those the phrase still holds — that demand's control
+  **off**, nothing else moved; or, where no control keeps it out at this rung, the recipe held
+  and the line says so. Nothing singled out: nothing blamed, the recipe held, the easy read
+  (below) where there is one, and the line says the app is not sure yet what went wrong.
+- **A step up** (proficient at the recipe, `stepUpAfter` days by the ladder's rule, *and* no
+  demand the phrase holds below the support share in those reads, and the read before not an
+  easy one): the first demand, in the order the curriculum teaches them (then the vocabulary's),
+  that the learner's rung has taught, the phrase does not already promise, the reads have not
+  shown (`demandShownAfter` phrases held), whose skill is not failing elsewhere, whose move
+  brings nothing untaught — and which C4b declares realisable there (`UNREALISABLE_AT`, and no
+  new reason from `unrealisable`). None: the next step waits for a later lesson.
+- **The easy read** (after `easyAfter` reads that were not): the newest demand the recipe
+  turned on, undone; else C position, then one hand, where the row's promises allow — C4's
+  band, one below the recipe, flagged easy.
+- **A rung that moves on** (the row's rung has changed since the last read, and its phrases may
+  now hold a demand the last read's could not): the recipe is held that day and the line says
+  what the lesson adds — one change a day.
+- **Keys are not ranked.** The key signature's control is every key the level writes with a
+  signature, a set the seed chooses from; the line names the key the phrase is in ("A key
+  signature to read: G major, one sharp") and never says "now" of a key.
+
+`READER_POLICY` holds the four numbers (`easyAfter` 3, `stepDownAfter` and `stepUpAfter` the
+ladder's 2, `demandShownAfter` 2), each **policy and a hypothesis**, passed in so a later wave
+can make them depend on the learner's state without touching the logic. Every move the reader
+asks for at a rung listing a reading row is one C4b declares realisable
+(`sightReadingFromReadingState.test.ts`); the moves the thirty-day and ambiguity diaries asked
+for, and every recipe they read, are generated and read with the detectors
+(`firstThirtyDays.test.ts`, demonstration 4). **Not held:** a recipe composed of several moves
+(by 3.1 the diary's learner reads both hands, dotted quarters, ties, a key set and an accidental
+at once) misses a promise at some seeds — the contract holds each move from a rung's base, not
+moves composed on moves (Entry 77; listed in that test).
 
 **The curriculum–generator contract (2026-09-26, C4b).** On 2.5 the reader had nothing to move
 for ten days (the thirty-day diary): ties and dotted quarters are taught at 2.4, and the
@@ -709,8 +731,8 @@ declared. Three parts:
 
   Everything else is made, including the S25 moves: ties and dotted quarters from 2.4 on the
   right-hand row, from 3.4 on the two-hand row and on 4.5's; a ledger line beyond middle C on
-  3.4's row (S22). The reader asks for them once it reads this map (C4c); until then the moves
-  exist and nothing offers them.
+  3.4's row (S22). The reader asks for them since C4c: the thirty-day learner reaches dotted
+  quarters on 2.5's second day and ties three days later (`checkpoint-2026-09-27-diary.md`).
 
 **Unseen, and the seed.** The daily read keeps the day's seed (`dailySeed`), which ticks the day;
 the slot draws its own for the day (`dailySeed(day + '#reading')` stepped by Shuffle), and every
