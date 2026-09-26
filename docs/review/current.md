@@ -25,7 +25,8 @@ HEAD: e7c6009 (this file's commit is the next one)
 ## Tests and verification
 
 - Fix-forward, the builder's runs: tsc 0, lint 0, vitest 0 (5,974 passed), build 0, twelve Playwright specs 0.
-- The orchestrator's chain over `f3c4b7e`: through the app build with exit 0; the two Playwright configurations pending at the time of this handoff. Not yet verified green; the next handoff says.
+- The orchestrator's chain over `f3c4b7e` (finished 19:48): content build, validator, content tests, tsc, lint, vitest, app build exit 0; the default Playwright configuration 791 passed, 7 skipped, none failed; the states gallery failed only on U62's two known light-theme contrasts (`#score-waiting`, `#score-help-more` at 4.3:1 — the only broken strings in its log). The fix-forward is verified green.
+- T52 dispatched as Entry 81 after this chain; F0 follows it.
 
 ## Questions for the reviewer
 
