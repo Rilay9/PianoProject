@@ -4,7 +4,7 @@
 
 ## The goal, in the orchestrator's words
 
-CI on a30dc96 failed in "a pass with misses in it slows down, and stops at the floor": the test fed no input (`inputPriority: ['none']`) and relied on every note being judged missed, which was the fault C3 fixed (L42). With nothing judged the pass now reads as clean, and the ladder sped the loop up to 100 % where the test expected 30 %. Both halves are wrong for a learner: a pass nothing listened to must not move the ladder at all, and the test must make its misses under an input that is judging.
+CI on a30dc96 failed in "a pass with misses in it slows down, and stops at the floor": the test fed no input (`inputPriority: ['none']`) and relied on every note being judged missed, which was the fault C3 fixed (L42). With nothing judged the pass now reads as clean, and the tempo slider ended at 100 % where the test expected 30 % (from the CI assertion, started at 40 %; that the ladder walked up on a "clean" pass is inferred — trace it, and say if the mechanism is different). Both halves are wrong for a learner: a pass nothing listened to must not move the ladder at all, and the test must make its misses under an input that is judging.
 
 ## What is decided
 

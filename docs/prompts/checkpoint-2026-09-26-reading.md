@@ -64,15 +64,20 @@ real store wrote the run. The diary is one line per day in the app's own words.
 
 ## 3. Three mornings on the glass
 
-Pictures are in the session's scratch folder; the owner can see them in the conversation.
+Pictures are in the session's scratch folder; the owner can see four of them in the
+conversation. The orchestrator looked at day 3's phrase and sheet, day 22's phrase and Today,
+the three learners' Today cards and day 6's Today; the rest are C4's.
 
 - **Day 3** (342 × 740). The card: "Now with both hands — 15 of 15 right and in time
   yesterday". The phrase: right hand in C with eighths, left hand whole-note roots. The sheet
   after a clean run: accuracy, tempo, timing, and one line that reads as noise — "Not judged:
   Shifting position — none in this phrase". The skill was declared on the row; the phrase had no
   shift; a learner does not need to be told that (U50).
-- **Day 6.** "This one right hand only — 10 of 14 right and in time yesterday". Honest, and
-  the wrong remedy (above).
+- **Day 6.** The diary's line is "This one right hand only — 10 of 14 right and in time
+  yesterday": honest, and the wrong remedy (above). The orchestrator's look at this morning's
+  picture shows only the top of Today at 60 minutes: the warm-up card holding the rung's
+  reading row (L65), then review, new, repertoire and jam; the daily-read card sits below the
+  fold, so its line on the glass is C4's report, not the orchestrator's eye.
 - **Day 22.** "Now in G major — 12 of 12 right and in time yesterday"; the phrase opens in G
   with both hands; the session card cuts the reason to "12 of 12 ri…" at phone width (U51).
   The same Today shows the sight-reading generator twice for a 2.2 learner: once as the
