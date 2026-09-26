@@ -40,3 +40,8 @@ L93 P1 (the status line and Plan read the strands); L88 and G1 P1 (target skills
 1. The two decisions above on retention and exposure: stand, or change?
 2. Is the "fires on nothing shipped" finding acceptable as C6's honest state until D0 and E, or should a smaller task put `targetSkills` on the core exercise families before C7?
 3. Parts 18 and 19 (the session is composed but not run; the interruption lifecycle) are recorded as X's boundary beside C6; anything there that C7 must not cement?
+
+## The fix-forward (commit `f3c4b7e`), for the re-check
+
+The reviewer's one correction is built: review and repertoire run a due retention, then the ladder, then exposure last; the builder found a second instance of the fault (the ladder ran every step on one strand before the next, so the first strand's exposure beat the second strand's rung option) and fixed it; the seven-day constant, its flag and the `tracks` family are gone; three red lines on the committed code, five `fallbackOrder` cases, the reruns revised. Inspect `docs/prompts/entry-80.md` from "Addendum (exposure precedence)", `app/tests/unit/fallbackOrder.test.ts`, and the after-fix diaries beside the before-fix ones. **The consequence to judge** (L96): on the three constructed learners exposure vanished from the review row rather than shrinking — every morning the rung still had an option not on the card — so the review repeats one item for days (the skip learner ten days running; those learners never play the review row, so nothing is ever counted to prefer). Breadth now lives only in the warm-up's exposure choice and in L32's reserved share, unbuilt. Question 4: is that acceptable review, or is L32's share now urgent?
+
