@@ -1,4 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
+import { readdirSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { openDevScore, waitForPieceMeasured, waitForStableLayout } from './fixtures/devScore';
 import {
   closeScoreMenu,
@@ -260,13 +263,28 @@ test.describe('double buffering', () => {
   });
 });
 
+/**
+ * The dev route lists what its two globs find (`edge/*.musicxml` and
+ * `generated/*.mxl`, see DevScoreScreen), so the test counts the same two
+ * folders. A literal here was a count of the folders on one day: T41 added
+ * `edge/spelling.musicxml` and CI read 43 against an asserted 42.
+ */
+const FIXTURE_ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'fixtures', 'scores');
+function bundledFixtureCount(): number {
+  const edge = readdirSync(path.join(FIXTURE_ROOT, 'edge')).filter((f) => f.endsWith('.musicxml')).length;
+  const generated = readdirSync(path.join(FIXTURE_ROOT, 'generated')).filter((f) => f.endsWith('.mxl')).length;
+  return edge + generated;
+}
+
 test.describe('the dev route itself', () => {
   test('is reachable from Settings and lists every bundled fixture', async ({ page }) => {
     await page.goto('/#/settings');
     await page.locator('#open-dev-score').click();
     await expect(page.locator('.card h1')).toHaveText('Score renderer (dev)');
     expect(new URL(page.url()).hash).toBe('#/dev/score');
-    await expect(page.locator('#dev-fixture option')).toHaveCount(42);
+    const expected = bundledFixtureCount();
+    expect(expected).toBeGreaterThan(0);
+    await expect(page.locator('#dev-fixture option')).toHaveCount(expected);
   });
 
   test('arrow keys step the cursor and 1-8 set bars per window', async ({ page }) => {
