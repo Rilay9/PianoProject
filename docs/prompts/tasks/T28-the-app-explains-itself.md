@@ -1,3 +1,5 @@
+> **Partially superseded (2026-09-26, Part 22 of the audit file).** The persistent help strip on every practising screen and the first-sight cards per mode and drill conflict with X15 (playing stays visually stable, no prose or control mutation) and X18 (help is contextual and state-specific; the full explanation lives in browsing). Do not build the strip. The four questions remain the audit rubric; the contract that replaces this brief is in X18's decision cell.
+
 # T28 — Every screen, mode and drill says what it is, what to do now, and what else is here
 
 **Read `docs/prompts/working-rules.md`, `docs/00-invariants.md` (§1: a control that looks
