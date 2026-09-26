@@ -24,6 +24,7 @@ import { describe, expect, it } from 'vitest';
 import {
   DRILL_HELP,
   MODE_HELP,
+  NOT_JUDGED_TEXT,
   RESTARTED_WITH,
   ROW_TEXT,
   STATE_TEXT,
@@ -192,6 +193,21 @@ describe('the Score screen’s run sentences are the ones `04` §5f prints', () 
       SUMMARY_TEXT.notMeasuredNoInput,
       SUMMARY_TEXT.sightReadRepeat,
       SUMMARY_TEXT.demonstratedTake,
+      // C3 item 6: what a run could not judge of the skills its item declares,
+      // and the *Accents* line where the record says not measured (U46).
+      NOT_JUDGED_TEXT.label,
+      NOT_JUDGED_TEXT.timingWait,
+      NOT_JUDGED_TEXT.timingUntimed,
+      NOT_JUDGED_TEXT.notesRhythm,
+      NOT_JUDGED_TEXT.oneHand('R'),
+      NOT_JUDGED_TEXT.keepTempo,
+      NOT_JUDGED_TEXT.unseen,
+      NOT_JUDGED_TEXT.guideOff,
+      NOT_JUDGED_TEXT.noOpportunity(false),
+      NOT_JUDGED_TEXT.noOpportunity(true),
+      NOT_JUDGED_TEXT.precision,
+      NOT_JUDGED_TEXT.accentsFlat,
+      NOT_JUDGED_TEXT.accentsNone,
     ];
     const missing = said.filter((line) => !section.includes(flat(line)));
     expect(missing, `run sentences §5f does not print:\n${missing.join('\n')}`).toEqual([]);

@@ -38,9 +38,9 @@
  *     *Shuffle options*, *Jump to…*, *Metronome*, which move below the card
  *     the way Plan's occasional links moved below its list.
  */
-import type { Router } from '../../router';
+import type { Router, TodaySlot } from '../../router';
 import { allItems, loadCurriculum } from '../../curriculum/load';
-import { indexCatalog, type CatalogIndex } from '../../curriculum/selectors';
+import { findLesson, indexCatalog, lessonForItem, type CatalogIndex } from '../../curriculum/selectors';
 import { activeTracksFor } from '../../curriculum/tracks';
 import type { CatalogItem, Curriculum, PassRecord } from '../../curriculum/types';
 import {
@@ -70,7 +70,7 @@ import type { ProgressRow } from '../../data/db';
 import { webMidiSource, micSource } from '../../app/services';
 import { onScreenDispose } from '../screenLifecycle';
 import { badge, button, chip, el, handsLabel, levelLabel, listRow, openSheet, shortHandsLabel } from '../widgets';
-import { openItem } from '../openItem';
+import { openItem, targetFor } from '../openItem';
 import { screenFrame, statusLine } from './screenFrame';
 
 const SLOT_LABELS: Record<SessionSlot['kind'], string> = {
@@ -228,7 +228,20 @@ export function TodayScreen(router: Router): HTMLElement {
 
   // --- rows ---------------------------------------------------------------
 
-  const open = (target: CatalogItem): void => void openItem(router, target);
+  /**
+   * Opens a card's item with the rung the run is for and the slot it fills
+   * (C3 item 0b, L50), each its own route parameter and never `from`, which
+   * would also send Back to the rung's page. Only the Score screen reads them;
+   * a drill or a PDF opens as it always did.
+   */
+  const open = (target: CatalogItem, slot: SessionSlot): void => {
+    if (targetFor(target) !== 'score') {
+      void openItem(router, target);
+      return;
+    }
+    const rung = curriculum ? rungForSlot(curriculum, target, slot.lessonId) : undefined;
+    router.navigateScore(target.id, { ...(rung === undefined ? {} : { rung }), slot: slot.kind });
+  };
 
   function showSwapSheet(slotIndex: number): void {
     const slot = slots[slotIndex];
@@ -314,14 +327,14 @@ export function TodayScreen(router: Router): HTMLElement {
     if (substitute) {
       // Not a dead row: the item's own alternatives name what to play instead.
       actionButtons.push(
-        button(`Play ${substitute.title}`, () => open(substitute), { variant: 'secondary' }),
+        button(`Play ${substitute.title}`, () => open(substitute, slot), { variant: 'secondary' }),
       );
     } else {
       actionButtons.push(
         // Not primary: R3 wants one thing to do on a screen, and with a blue
         // button on every row "Start session" was the fifth blue thing on
         // Today rather than the first.
-        button('▶', () => open(item), { ariaLabel: `Open ${item.title}` }),
+        button('▶', () => open(item, slot), { ariaLabel: `Open ${item.title}` }),
       );
     }
 
@@ -344,7 +357,7 @@ export function TodayScreen(router: Router): HTMLElement {
         .join(' · '),
       badges,
       actions: actionButtons,
-      onClick: substitute ? () => open(substitute) : () => open(item),
+      onClick: substitute ? () => open(substitute, slot) : () => open(item, slot),
       dataset: { 'data-slot': slot.kind, 'data-item': item.id },
     });
   }
@@ -395,7 +408,10 @@ export function TodayScreen(router: Router): HTMLElement {
    */
   function openDailyRead(): void {
     if (!dailyTarget) return;
-    router.navigateScore(dailyTarget.id, { seed: dailySeed(dayKey(now)) });
+    // Its slot, and the rung it is on where it is on one (L50).
+    const rung = curriculum ? rungForSlot(curriculum, dailyTarget) : undefined;
+    const slot: TodaySlot = 'daily-read';
+    router.navigateScore(dailyTarget.id, { seed: dailySeed(dayKey(now)), ...(rung === undefined ? {} : { rung }), slot });
   }
 
   function drawDaily(): void {
@@ -443,7 +459,7 @@ export function TodayScreen(router: Router): HTMLElement {
         'Start session',
         () => {
           const first = slots.find((slot) => slot.item);
-          if (first?.item) open(first.item);
+          if (first?.item) open(first.item, first);
           else status.textContent = 'Nothing in the card to start yet.';
         },
         { id: 'today-start', variant: 'primary' },
@@ -679,4 +695,26 @@ export function TodayScreen(router: Router): HTMLElement {
   onScreenDispose(section, stopWatchingProgress);
 
   return section;
+}
+
+/**
+ * The rung a Today card's run is for (C3 item 0b, L50).
+ *
+ * The rung the session builder offered the item from, where that rung lists
+ * it: the warm-up and the new piece come off the learner's current rung.
+ * Otherwise the first rung listing the item — a review, a repertoire piece, a
+ * fallback, the daily read — which is the rung it belongs to wherever it is
+ * listed once, and what every Today run was judged by before C1. `undefined`
+ * for an item on no rung, which the Settings pair then judges.
+ *
+ * Interim, and labelled so: the session builder (C4) should say which rung
+ * each slot is for; for an item listed on several rungs and offered from none
+ * of them, the first listing is a guess the route now makes visible.
+ */
+export function rungForSlot(curriculum: Curriculum, item: CatalogItem, offeredFrom?: string): string | undefined {
+  const offered = offeredFrom === undefined ? undefined : findLesson(curriculum, offeredFrom);
+  if (offered && (offered.exerciseOptions.includes(item.id) || offered.songOptions.includes(item.id))) {
+    return offered.id;
+  }
+  return lessonForItem(curriculum, item.id)?.id;
 }

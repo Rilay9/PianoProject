@@ -5,8 +5,8 @@
 // time and ticks the engine the way requestAnimationFrame would, which is what
 // makes Tempo-mode assertions exact rather than flaky.
 
-import { PracticeEngine } from '../../../src/engine/PracticeEngine';
-import type { Clock, EngineEvent, EngineOptions } from '../../../src/engine/types';
+import { PracticeEngine, type PracticeEngineOptions } from '../../../src/engine/PracticeEngine';
+import type { Clock, EngineEvent } from '../../../src/engine/types';
 import {
   withBeatToMs,
   type ScoreModel,
@@ -113,7 +113,7 @@ export interface Harness {
 
 export function harness(
   model: ScoreModel,
-  options: EngineOptions,
+  options: PracticeEngineOptions,
   startAtMs = 0,
 ): Harness {
   const clock = new FakeClock(startAtMs);

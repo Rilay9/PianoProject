@@ -31,6 +31,8 @@
  * "Wait mode".
  */
 import type { DrillKind } from '../engine/drills/types';
+import type { Refusal } from '../evidence/evidence';
+import type { Skill } from '../demands/vocabulary';
 
 /** One control, and what it says back. */
 export interface HelpControl {
@@ -262,6 +264,115 @@ export const SUMMARY_TEXT = {
   heard: (bars: readonly number[]): string =>
     `heard it played at bar${bars.length === 1 ? '' : 's'} ${bars.map(String).join(', ')}`,
 } as const;
+
+/**
+ * What the summary sheet says a run could not judge (C3 item 6, `04` §5f).
+ *
+ * Where the evidence function refuses a skill the item declares, the sheet
+ * prints a *Not judged* line saying what and why, where it used to say nothing
+ * — a Wait run of a reading row printed its accuracy and not a word about the
+ * rhythm it never timed. Each line comes from a refusal and cites the fields of
+ * the run's own record it read (`notJudgedLines`); a refusal that says nothing
+ * about this run (a skill no run can show yet) is not printed. The *Accents*
+ * line's not-judged reasons are here too (U46): where the record keeps the
+ * accents as not measured, the sheet says so instead of printing a share.
+ */
+export const NOT_JUDGED_TEXT = {
+  /** The label of each line. */
+  label: 'Not judged',
+  /** Timing, on a Wait for me run: the page waits, so nothing is on a clock. */
+  timingWait: 'timing — Wait for me keeps no clock',
+  /** Timing, on a Keep tempo run where none of the skill's notes was played to be timed. */
+  timingUntimed: 'timing — none of those notes was played, so none was timed',
+  /** The notes, on a rhythm-only run. */
+  notesRhythm: 'the notes — Rhythm only judges the timing',
+  /** A skill for both hands at once, on a run of one hand. */
+  oneHand: (hand: 'R' | 'L'): string => `you played the ${hand === 'L' ? 'left' : 'right'} hand alone`,
+  /** A skill whose standard asks for Keep tempo, on a run that kept none. */
+  keepTempo: 'it needs Keep tempo',
+  /** A skill that counts only on a first reading. */
+  unseen: 'it counts only on music you have not seen or heard',
+  /** A skill that counts only with the keys guide off. */
+  guideOff: 'it counts only with the keys guide off',
+  /** The skill's demand is not in what was played: the whole phrase, or the bars looped. */
+  noOpportunity: (looped: boolean): string => (looped ? 'none in the bars you played' : 'none in this phrase'),
+  /** The timing window is not narrower than the rhythm error the skill is about, at this tempo. */
+  precision: 'too close to call at this speed; slower, the app can tell',
+  /** Accents over notes that all arrived at one loudness (the screen keys). */
+  accentsFlat: 'not judged — every note came at the same loudness, so louder cannot be heard',
+  /** Accents where no accented note was played to be compared. */
+  accentsNone: 'not judged — no accented note was played',
+} as const;
+
+/** One *Not judged* line: what the sheet prints, and the record fields it rests on. */
+export interface NotJudgedLine {
+  text: string;
+  /** The observation fields the refusals behind it read (`SessionRow` paths). */
+  cites: string[];
+}
+
+/**
+ * The sheet's *Not judged* lines for a run's refusals, grouped where the
+ * reason is one sentence: *timing — Wait for me keeps no clock (Sight-reading,
+ * Subdivision)*; *Ledger lines, Accidentals — none in this phrase*.
+ */
+export function notJudgedLines(
+  refusals: readonly Refusal[],
+  skills: readonly Skill[],
+  run: { hands?: { played: 'R' | 'L' | 'both' }; looped: boolean },
+): NotJudgedLine[] {
+  const name = (id: string): string => skills.find((skill) => skill.id === id)?.display ?? id;
+  const channelLines = new Map<string, { skills: string[]; cites: Set<string> }>();
+  const skillLines = new Map<string, { skills: string[]; cites: Set<string> }>();
+  const add = (into: typeof channelLines, why: string, refusal: Refusal): void => {
+    const entry = into.get(why) ?? { skills: [], cites: new Set<string>() };
+    entry.skills.push(name(refusal.skill));
+    for (const path of refusal.cites) entry.cites.add(path);
+    into.set(why, entry);
+  };
+  for (const refusal of refusals) {
+    switch (refusal.reason) {
+      case 'not-measured:timing':
+        add(channelLines, refusal.detail === 'wait' ? NOT_JUDGED_TEXT.timingWait : NOT_JUDGED_TEXT.timingUntimed, refusal);
+        break;
+      case 'not-measured:pitch':
+        // Only a rhythm-only run's is about this run's choices; a run nothing
+        // heard is already headed *Not measured*.
+        if (refusal.detail === 'rhythm-only') add(channelLines, NOT_JUDGED_TEXT.notesRhythm, refusal);
+        break;
+      case 'condition:both-hands':
+        add(skillLines, NOT_JUDGED_TEXT.oneHand(run.hands?.played === 'L' ? 'L' : 'R'), refusal);
+        break;
+      case 'condition:keep-tempo':
+        add(skillLines, NOT_JUDGED_TEXT.keepTempo, refusal);
+        break;
+      case 'condition:unseen':
+        add(skillLines, NOT_JUDGED_TEXT.unseen, refusal);
+        break;
+      case 'condition:guide-off':
+        add(skillLines, NOT_JUDGED_TEXT.guideOff, refusal);
+        break;
+      case 'no-opportunity':
+        add(skillLines, NOT_JUDGED_TEXT.noOpportunity(run.looped), refusal);
+        break;
+      case 'precision':
+        add(skillLines, NOT_JUDGED_TEXT.precision, refusal);
+        break;
+      case 'not-measured:observable':
+      case 'unknown-skill':
+        // Nothing about this run: the same on every run, and the build says it.
+        break;
+    }
+  }
+  const lines: NotJudgedLine[] = [];
+  for (const [why, entry] of channelLines) {
+    lines.push({ text: `${why} (${entry.skills.join(', ')})`, cites: [...entry.cites] });
+  }
+  for (const [why, entry] of skillLines) {
+    lines.push({ text: `${entry.skills.join(', ')} — ${why}`, cites: [...entry.cites] });
+  }
+  return lines;
+}
 
 /**
  * What the Progress history's detail line says about a run (C1, `04` §6).

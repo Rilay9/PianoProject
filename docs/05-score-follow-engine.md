@@ -119,9 +119,18 @@ measured*. The sheet prints no accuracy, misses, tempo or weak bars (`04` §5), 
 recorded only with the learner's answer. It reads the notes and not the input selector, since
 a learner with a piano selected can still play nothing; on the screen as it stands, a run with
 an input chosen cannot end with nothing heard (Keep tempo holds for the first note, §3b), so the
-one way to such a sheet is a run with nothing listening. The engine still closes every slot as
-missed on that run, and the session paints the notes red as the clock passes — not changed by
-T40, and contrary to "simply plays/moves"; recorded as a follow-up.
+one way to such a sheet is a run with nothing listening.
+
+**Nothing judges a run nothing listens to (2026-09-26, C3, L42).** The engine closed every window
+as a miss whatever was listening — it cannot tell, since no note arrives either way — and the
+session painted each note red and flashed its key behind the *Not measured* sheet. Listen had the
+same fault on its clock while its input path judged nothing, so `Hear it` painted the piece red as
+it played it. The host now says so: `PracticeEngineOptions.judging` (`PracticeEngine.ts`), which
+the Score screen sets to `false` when the input is *None*. With it off — and always in Listen —
+the clock drives the cursor, the count-in and the end exactly as before; no note fed is judged, a
+window that closes is not a miss, and the score keeps no step outcomes (nothing was decided at any
+step). Wait and Free are untouched: they have no clock to close a window on. Seen on the glass at
+390 × 844: the notes stay black behind the sheet and during `Hear it`, and the band still moves.
 
 Playback in Tempo mode: the app plays **the non-focused hand** (or nothing / everything —
 setting) through the Web Audio piano, scheduled ahead on the AudioContext clock from the same
@@ -626,8 +635,12 @@ no rung uses the defaults.*
   3.4's run. T37 made the opening rung win and kept the first listing where none opened the
   screen; since C1 (2026-09-26) a run from nowhere has no rung, is judged by the defaults, and
   is stored with none (the side panel still shows the first listing's prose, as reading).
-  Today opens its cards without `?from=`, so a Today run is such a run until Today carries its
-  slot's rung. Completion is unchanged: a pass is still a flag on the item, credited on every
+  **Or the rung a Today card chose** (`?rung=`, with `?slot=`; C3 item 0b, L50): Today names the
+  rung it offered the item from where that rung lists it (the warm-up and the new piece), and
+  otherwise the first rung listing the item (a review, a repertoire piece, a fallback, the daily
+  read) — interim, `TodayScreen.rungForSlot`, until the session builder says which rung each slot
+  is for (C4). It judges and is stored as `lessonId` and `opened.rung`, the slot as
+  `opened.slot`, and it does not steer Back, which is `from`'s other job. Completion is unchanged: a pass is still a flag on the item, credited on every
   rung listing it (Wave C's business).
 - `mastery.minAccuracy` is already a fraction. `mastery.minTempoPct` is written as a fraction
   in **every** rung of the built curriculum (the values in use are 0, 0.7, 0.75, 0.8, 0.85
@@ -725,6 +738,74 @@ unaccented ones (`ACCENT_MIN_RATIO`).
   that is a little shy is not a wrong note.
 - Absent rather than `false` where the score prints nothing, which is what keeps every golden
   model of an unaccented score byte-identical.
+
+## 9b. Evidence: what one observation supports about one skill (built 2026-09-26, C3)
+
+`app/src/evidence/` turns one stored observation into evidence about the skills its item
+declares, or into a stated refusal, and reads a skill's evidence into a ladder state. Nothing
+selects by it yet (C4). **What it enforces is evidentiary honesty; it does not prove that a
+measurement shows the skill** — right notes in a fixed position are what a note-namer plays as
+well as an interval-reader (the reviewer's principle, `audit-2026-09-25-outside.md` Part 7).
+
+**`evidenceFor(observation, played, targetSkills, vocabulary)`** (`evidence.ts`). The notation
+played is the score model (the phrase this seed generated, the file); the run's steps are C1's
+codes, `from + i` in model step indexes, the same numbers the detectors locate demands at (checked
+on a run and on a loop in `evidenceOnlyMeasured.test.ts`). No parameter carries the item's level,
+rung or tags. One result per declared skill, decided in this order:
+
+1. **Target** — only `targetSkills`; a skill nobody declared gets nothing.
+2. **Channel** — every channel of the skill's `observable` measured (`measurement.ts`): nothing on
+   a row with no measures block (a row before C1, and the placeholders `accuracy: 1` and
+   `tempoPct: 100` some writers store, L52); pitch where the row's `pitch` is not *not measured*
+   and its per-step codes are kept (a row compacted to bars measures nothing here); timing on a
+   Keep tempo run that timed a note. `observable: none` is refused outright.
+3. **Conditions** — the skill's full standard, else its practice standard, else refused with the
+   first practice condition missed. The conditions are `skills.json`'s, and each is read from the
+   field its `recordedBy` names: `keep-tempo` from `mode` and `tempoMeasured`, `unseen` from
+   `unseen`, `guide-off` from `keys.guide`, `both-hands` from `hands.played`. Sight-reading's
+   practice standard includes `unseen` (C3 second pass, reviewer decision 3): a phrase heard or
+   read before is no evidence of reading at any standard.
+4. **Opportunity** — the skill's demands (or every step with a note for the learner) inside the
+   steps the run covered, in the hands it played.
+5. **Precision** (reviewer decision 6, S21) — a timing skill counts only the steps where the run's
+   window is narrower than the error the skill is about, at the tempo the run kept there
+   (`TIMING_PRECISION_QUARTERS`: triplets 1/12 of a quarter, subdivision 1/6, 6/8 1/4, the dotted
+   quarter, syncopation and ties 1/2; a skill whose rhythm is the phrase's takes the finest demand
+   located at each step, and an eighth where none is). None left, and it is refused. At Anh. 113's
+   ♩ = 96 and the rung's 80 % a quarter is 781 ms and the rushed triplet's second note 65 ms early,
+   inside ±150: no triplet evidence; a window narrower than that gives it (`tripletPrecision.test.ts`).
+   The global window is not changed.
+
+Then attribution: `n` counts the opportunity steps the channels measured, `right` those right on
+every channel. C1 keeps a step's code, not which pitch of a chord was missed, so a chord step
+partly missed counts in `n` and never in `right` (`context.unattributed` says how many): `right`
+is a floor. A refusal is `{skill, reason, cites}` — `not-measured:<channel>`,
+`not-measured:observable`, `condition:<id>`, `no-opportunity`, `precision`, `unknown-skill` — and
+`cites` names the observation fields it read. A self-reported run (nothing measured, the learner's
+answer) is evidence of the class `self-assessed`, which the ladder shows apart and no requirement
+accepts. **In the types**, `Evidence` is built only from a `Measurement` and a `Measurement` only
+by `takeMeasurements(observation)`; both carry brands with no runtime value, so a detector's
+`Opportunity` has no path to evidence (`demandIsNotAbility.test.ts` holds the compiler to it).
+
+**`ladderState(evidence, today)`** (`ladder.ts`) — introduced (an exposure), practised (a record of
+either outcome), familiar (supporting at the practice standard on a day), proficient (supporting at
+the full standard on two days, the most recent full attempt supporting), transfer demonstrated
+(then a first reading of another item), retained (then a first attempt of a day supporting at least
+21 days after the previous support), mastered (then no full attempt against it among the last two).
+Supporting is `right / n` at or above Part G's pass share: v0 skills declare no threshold. Two full
+attempts against it in a row put anything from proficient back to familiar; time alone lowers
+nothing, and 21 days without support is shown as *not shown recently*. The history is replayed in
+order, so the state is derived every time and never stored. Three rules are named and are
+hypotheses, not measurements: `RETENTION_DAYS` (21, the review calendar's last step),
+`RECENT_ATTEMPTS` (2), and `countsTowardsMovingDown` — **an attempt against on first contact with
+material other than where proficiency was shown does not count towards moving down, nor against
+mastery** (C3 second pass): a learner proficient at level 2 who reads two level-4 phrases badly at
+sight still reads level 2, and the attempts are evidence about the harder material, not transfer.
+The Skills screen still reads `skillsStore` and its 30-day rust (C7).
+
+**On the sheet** (`04` §5f): where the run refuses a declared skill, a *Not judged* line says what
+and why, citing the record's fields; the *Accents* line reads the recorded accents and says *not
+judged* where they are not measured (U46).
 
 ## 10. Test plan for the engine (Vitest)
 

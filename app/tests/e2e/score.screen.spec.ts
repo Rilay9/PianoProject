@@ -50,6 +50,41 @@ async function openScore(page: Page, id: string = ITEM): Promise<void> {
   await expect(page.locator('#score-bar')).toHaveAttribute('data-visible', 'true');
 }
 
+/**
+ * Counts every note and key that takes a verdict colour from here on (L42):
+ * a MutationObserver on the class attribute, installed before the run starts,
+ * so a red that came and went during the run is counted, not only one that
+ * stayed. `movedTo` counts the notes the cursor marked current: a
+ * clock-driven run moves through them whether or not anything is judging it.
+ */
+async function watchVerdicts(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const notes = new Set<Element>();
+    const keys = new Set<Element>();
+    const current = new Set<Element>();
+    const w = window as unknown as { __verdicts: () => { notes: number; keys: number; movedTo: number } };
+    const observer = new MutationObserver((records) => {
+      for (const record of records) {
+        const element = record.target;
+        if (!(element instanceof Element)) continue;
+        const onStage = element.closest('#score-stage') !== null;
+        if (onStage && element.classList.contains('is-current')) current.add(element);
+        if (!element.classList.contains('is-wrong')) continue;
+        if (element.closest('.keyboard-strip, .key-ribbon') !== null) keys.add(element);
+        else if (onStage) notes.add(element);
+      }
+    });
+    observer.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
+    w.__verdicts = () => ({ notes: notes.size, keys: keys.size, movedTo: current.size });
+  });
+}
+
+async function readVerdicts(page: Page): Promise<{ notes: number; keys: number; movedTo: number }> {
+  return page.evaluate(() =>
+    (window as unknown as { __verdicts: () => { notes: number; keys: number; movedTo: number } }).__verdicts(),
+  );
+}
+
 test.describe('score screen', () => {
   test.setTimeout(120_000);
 
@@ -531,6 +566,48 @@ test.describe('score screen', () => {
       return (await hooks.exportAll()).stores.sessions;
     });
     expect(sessions, 'a run nothing heard went on the record unanswered').toHaveLength(0);
+  });
+
+  /**
+   * L42 (C3 item 0). Behind T40's *Not measured* sheet every note had been
+   * painted red as missed, and each key flashed red as the clock passed it,
+   * during a Keep tempo run nothing was listening to: the engine closed every
+   * window as a miss whatever was judging, and the session painted each one.
+   * `05` §3: without any input source Tempo mode simply plays and moves.
+   * Every verdict class a note or a key takes during the run is counted by an
+   * observer installed before ▶, and the page is read again once the sheet is
+   * up, so a red that came and went is caught as well as one that stayed.
+   */
+  test('a Keep tempo run nothing listened to marks no note and flashes no key (L42)', async ({ page }) => {
+    await openScore(page);
+    await page.locator('#score-mode').selectOption('tempo');
+    await setTempoPercent(page, 130);
+    await watchVerdicts(page);
+    await page.locator('#score-play').click();
+    await expect(page.locator('#score-summary')).toBeVisible({ timeout: 60_000 });
+    await expect(page.locator('#score-summary h2')).toHaveText('Not measured');
+    const seen = await readVerdicts(page);
+    expect(seen.notes, 'notes painted as missed during a run nothing listened to').toBe(0);
+    expect(seen.keys, 'keys flashed as missed during a run nothing listened to').toBe(0);
+    expect(seen.movedTo, 'the cursor did not move: the clock is still meant to drive it').toBeGreaterThan(1);
+    await expect(page.locator('#score-stage .is-wrong'), 'a note left red behind the sheet').toHaveCount(0);
+    await expect(page.locator('#score-stage .is-correct')).toHaveCount(0);
+  });
+
+  test('Hear it marks no note while it plays the piece (L42)', async ({ page }) => {
+    // The same mechanism on the demonstration: a Listen run judged nothing
+    // on its input path and closed every window as a miss on its clock.
+    await openScore(page);
+    await setTempoPercent(page, 130);
+    await watchVerdicts(page);
+    const screen = page.locator('section[data-screen="score"]');
+    await page.locator('#score-hear').click();
+    await expect(screen).toHaveAttribute('data-hearing', 'true');
+    await expect(screen).toHaveAttribute('data-hearing', 'false', { timeout: 60_000 });
+    const seen = await readVerdicts(page);
+    expect(seen.notes, 'notes painted as missed while the app played them').toBe(0);
+    expect(seen.keys, 'keys flashed as missed while the app played them').toBe(0);
+    await expect(page.locator('#score-stage .is-wrong')).toHaveCount(0);
   });
 
   test('the summary puts the screen behind it out of reach', async ({ page }) => {

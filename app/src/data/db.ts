@@ -19,6 +19,7 @@ import {
   type StoreNames,
 } from 'idb';
 import type { BarTally, HandsFilter, NotMeasured, RunMeasures } from '../engine/types';
+import type { TodaySlot } from '../router';
 
 export const DB_NAME = 'pianopath';
 /**
@@ -88,10 +89,11 @@ export interface RunHeader {
   range?: { fromMeasure: number; toMeasure: number };
   /**
    * What opened the Score screen: the tab the learner came from, the rung
-   * that opened it (`?from=`), the tour. The Today slot is not in the route,
-   * so it is not measured, and says so.
+   * that judged it (`?from=`, or the rung a Today card chose, `?rung=`), the
+   * tour, and the Today slot. Only a Today card names a slot (C3 item 0b,
+   * L50); any other opening stores it as not measured, and says so.
    */
-  opened?: { tab: string; rung?: string; tour?: string; slot: NotMeasured };
+  opened?: { tab: string; rung?: string; tour?: string; slot: TodaySlot | NotMeasured };
   /**
    * The tempo the percentage is of: the score's first marking, `written` or
    * `defaulted` where the converter made it up (the `tempo-defaulted` tag).

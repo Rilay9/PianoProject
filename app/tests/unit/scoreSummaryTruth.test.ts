@@ -625,6 +625,28 @@ describe('6: the run is judged by the rung that opened the screen', () => {
     expect(lastRecorded().lessonId, 'a rung nobody opened was stored as the one that judged it').toBeUndefined();
     expect(lastRecorded().passed).toBe(true);
   });
+
+  // Added (C3 item 0b, L50). Today opened its cards with no rung in the
+  // route, so since C1 a Today run was judged by the defaults and stored with
+  // no rung. Today now names the rung it chose and the slot, each as its own
+  // parameter: not `from`, which also sends Back to the rung's page.
+  it('opened from a Today card, it is held to the rung Today chose and stores that rung and the slot', async () => {
+    const section = await open(`#/score/${SONG_ID}?rung=2.1&slot=new`);
+    await vi.waitFor(() => expect(section.dataset.running).toBeDefined());
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    finish(run({ accuracy: 0.93, hits: 7 }));
+    await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalled());
+    const recorded = lastRecorded();
+    expect(recorded.lessonId, 'a Today run was stored with no rung').toBe('2.1');
+    expect(recorded.opened).toMatchObject({ rung: '2.1', slot: 'new' });
+    // 93 % passes the defaults (90 % at 80 %) and not 2.1 (97 %).
+    expect(recorded.passed).toBe(false);
+    // Back is Today's, not the rung's page: the rung judges, it does not steer.
+    click('summary-done');
+    const spies = lastRouter as unknown as { navigateLesson: ReturnType<typeof vi.fn>; navigate: ReturnType<typeof vi.fn> };
+    expect(spies.navigateLesson).not.toHaveBeenCalled();
+    expect(spies.navigate).toHaveBeenCalledWith('plan');
+  });
 });
 
 describe('7 and 8: a sight-read is the phrase its row asks for, recorded once', () => {
@@ -769,6 +791,21 @@ describe('T40 2: a sight-read heard before its first run is not a first reading'
     expect(options.from).toBe('1.5');
     expect(typeof options.seed).toBe('number');
     expect(options.seed).not.toBe(4242);
+  });
+
+  // Added (C3 item 0b): Today's daily read opens with `?slot=daily-read`. A
+  // new phrase is the same rung's reading, and not the day's read — that is
+  // the day's seed — so it keeps the rung and drops the slot.
+  it('a new phrase from the daily read keeps the rung and is not the daily read', async () => {
+    await open(`#/score/${READ_ID}?seed=4242&rung=1.5&slot=daily-read`);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    click('score-play');
+    finish(run({}));
+    click('summary-new-phrase');
+    const navigate = (lastRouter as unknown as { navigateScore: ReturnType<typeof vi.fn> }).navigateScore;
+    const [, options] = navigate.mock.calls[0] as [string, { seed?: number; rung?: string; slot?: string }];
+    expect(options.rung).toBe('1.5');
+    expect(options.slot, 'a fresh phrase was recorded as the daily read').toBeUndefined();
   });
 
   it('a piece that is not a sight-read has no new phrase to offer', async () => {

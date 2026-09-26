@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, searchForWorkspaceRoot } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 // Deployed to GitHub Pages under the repo name by default; override with
@@ -118,6 +118,11 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    // Vocabulary v0 is bundled from `content/curriculum/vocabulary/` (C3's
+    // evidence function reads the skills there and nowhere else). The build
+    // reaches it through Rollup; the dev server serves nothing outside `app/`
+    // unless it is named, so that one folder is.
+    fs: { allow: [searchForWorkspaceRoot(process.cwd()), '../content/curriculum/vocabulary'] },
   },
   preview: {
     port: 4173,

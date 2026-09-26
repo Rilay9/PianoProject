@@ -299,6 +299,44 @@ describe('score routes', () => {
   });
 
   /**
+   * `?rung=` and `?slot=` — the rung a Today card chose and the slot it
+   * filled (C3 item 0b, L50). Their own parameters, not `from`: `from` also
+   * sends Back to the rung's page, and a Today run's Back is Today's.
+   */
+  it('carries the rung and the slot a Today card chose, apart from from', () => {
+    const { win } = fakeWindow('#/today');
+    const router = new Router(win as unknown as Window);
+    router.navigateScore('song.a', { rung: '2.1', slot: 'new' });
+    expect(router.route.scoreRung).toBe('2.1');
+    expect(router.route.scoreSlot).toBe('new');
+    expect(router.route.scoreFrom).toBeUndefined();
+    const read = parseHash(win.location.hash);
+    expect(read.scoreRung).toBe('2.1');
+    expect(read.scoreSlot).toBe('new');
+    expect(read.scoreFrom).toBeUndefined();
+  });
+
+  it('treats the same piece for another slot or rung as a different route', () => {
+    const { win } = fakeWindow('#/today');
+    const router = new Router(win as unknown as Window);
+    const seen: string[] = [];
+    router.subscribe((route) => seen.push(`${route.scoreRung ?? '-'}/${route.scoreSlot ?? '-'}`));
+    router.navigateScore('song.a', { rung: '2.1', slot: 'new' });
+    router.navigateScore('song.a', { rung: '2.1', slot: 'review' });
+    router.navigateScore('song.a', { slot: 'review' });
+    expect(seen).toEqual(['-/-', '2.1/new', '2.1/review', '-/review']);
+  });
+
+  it('drops a rung that is not a lesson id and a slot Today does not have', () => {
+    expect(parseHash('#/score/song.a?rung=../../etc/passwd').scoreRung).toBeUndefined();
+    expect(parseHash('#/score/song.a?slot=anything').scoreSlot).toBeUndefined();
+    expect(parseHash('#/score/song.a?rung=blues.7&slot=daily-read')).toMatchObject({
+      scoreRung: 'blues.7',
+      scoreSlot: 'daily-read',
+    });
+  });
+
+  /**
    * The same parameter on the chord chart (`04` §3b, 2026-09-22).
    *
    * Entry 42 built `?from=` for the Score screen and recorded in its own

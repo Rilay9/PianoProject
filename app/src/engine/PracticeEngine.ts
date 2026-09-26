@@ -34,6 +34,29 @@ import { MAX_TEMPO_PCT, MIN_TEMPO_PCT, nextPlayableStep, prepareSession } from '
 import { buildScore, emptyStepMark, type StepMark } from './Scoring';
 import type { ScoreModel } from '../score/types';
 
+/**
+ * The engine's options, and one only its host can know (L42, C3): whether
+ * anything is judging this run.
+ *
+ * `05` §3 judges input "only if any input source is active", and without one
+ * "Tempo mode simply plays/moves". The engine cannot tell which: nothing
+ * arrives either way. So it closed every window as a miss on a Keep tempo run
+ * nothing was listening to, and the session painted each note red and flashed
+ * its key behind a sheet that said the run was not measured. Listen had the
+ * same fault on its clock while its input path judged nothing. The host says
+ * so here, and the engine keeps the clock and judges nothing.
+ */
+export interface PracticeEngineOptions extends EngineOptions {
+  /**
+   * `false`: no input is judging the run. The clock still drives the cursor,
+   * the count-in and the end exactly as it would; no note fed is judged, and
+   * a window that closes is not a miss. Keep tempo only: Listen never judges,
+   * whatever this says, and Wait and Free have no clock to judge by. Default
+   * `true`.
+   */
+  judging?: boolean;
+}
+
 /** Sustain pedal; recorded for the pedal drill, never blocks advancement. */
 const CC_SUSTAIN = 64;
 
@@ -199,6 +222,9 @@ export class PracticeEngine {
   /** The step a resume is counting back in to, while it is. */
   private recountTargetStep: number | null = null;
 
+  /** Whether anything is judging this run (L42; `PracticeEngineOptions.judging`). */
+  private readonly judging: boolean;
+
   // --- the latch (T8) -------------------------------------------------------
   private readonly latchStart: boolean;
   /** The first step the learner plays in this run, which the latch anchors. */
@@ -297,8 +323,12 @@ export class PracticeEngine {
   /** Flat `[step, midi, …]`: the right notes played early, where their windows closed. */
   private readonly earlyNotes: number[] = [];
 
-  constructor(model: ScoreModel, options: EngineOptions, clock: Clock = systemClock) {
+  constructor(model: ScoreModel, options: PracticeEngineOptions, clock: Clock = systemClock) {
     this.session = prepareSession(model, options);
+    // Listen judges nothing; a Keep tempo run with no input judges nothing
+    // either (L42). Wait and Free are unaffected: they have no clock to close
+    // a window on.
+    this.judging = options.mode === 'listen' ? false : options.mode === 'tempo' ? options.judging !== false : true;
     this.clock = clock;
     this.step = this.session.firstStep;
     // Tempo only. Wait has no window to be inside, Listen judges nothing and
@@ -653,7 +683,8 @@ export class PracticeEngine {
     // advance the score on a guess, counting it wrong would punish the room.
     const confidence = input.confidence ?? 1;
     if (confidence < this.session.options.minConfidence) return;
-    if (this.mode === 'listen') return;
+    // Listen, and a Keep tempo run nothing is judging (L42): no verdict.
+    if (!this.judging) return;
     if (this.awaitingFirstNote) {
       // Practice time starts here, not at Start (T8, case 4). Pauses before
       // this moment belonged to the waiting and go with it.
@@ -1257,6 +1288,11 @@ export class PracticeEngine {
     const early = this.earlyStrikes.get(index);
     this.earlyStrikes.delete(index);
     if (!pitches || !step) return;
+    // Nothing is listening (Listen, or Keep tempo with no input): the window
+    // closes, and nobody missed anything in it (L42). The slot is still
+    // opened and closed above, so the resume and the cursor keep the clock a
+    // judged run keeps.
+    if (!this.judging) return;
     const mark = this.markStep(index);
     mark.done = true;
     for (const midi of pitches) {
@@ -1471,7 +1507,9 @@ export class PracticeEngine {
       lenientChordSteps: this.lenientChordSteps,
       pedal: this.pedalValues,
       notes: this.recorded,
-      stepMarks: this.stepMarks,
+      // A run nothing judged decided nothing at any step (L42): no outcomes,
+      // rather than a row of steps "not reached".
+      ...(this.judging ? { stepMarks: this.stepMarks } : {}),
       timed: this.timed,
       earlyNotes: this.earlyNotes,
       judgedUnder: {

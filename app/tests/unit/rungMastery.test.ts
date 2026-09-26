@@ -11,10 +11,11 @@
  * pass every run at 0.85 % of tempo while looking entirely reasonable.
  */
 import { describe, expect, it } from 'vitest';
-import { lessonForItem, masteryCriteriaFor } from '../../src/curriculum/selectors';
+import { findLesson, lessonForItem, masteryCriteriaFor } from '../../src/curriculum/selectors';
 import type { Curriculum, Lesson } from '../../src/curriculum/types';
 import { DEFAULT_MASTERY, evaluateOutcome } from '../../src/engine/Scoring';
 import type { SessionScore, TimingStats } from '../../src/engine/types';
+import { parseHash } from '../../src/router';
 
 function lesson(id: string, over: Partial<Lesson> = {}): Lesson {
   return {
@@ -177,5 +178,22 @@ describe('a run judged against its rung', () => {
       mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 0.8, minTempoPct: 0.7 },
     });
     expect(evaluateOutcome(run, masteryCriteriaFor(rung, DEFAULT_MASTERY)).passed).toBe(true);
+  });
+
+  // Added (C3 item 0b, L50): the Today case. A Today card names the rung it
+  // chose in the route (`?rung=`), apart from `from`; the rung it names is the
+  // one the run is held to, exactly as a rung that opened the screen is.
+  it('opened from a Today card, it is judged by the rung the card names', () => {
+    const route = parseHash('#/score/song.4.4?rung=4.4&slot=new');
+    expect(route.scoreRung, 'the route dropped the rung Today chose').toBe('4.4');
+    expect(route.scoreSlot).toBe('new');
+    expect(route.scoreFrom, 'the rung Today chose is not where Back goes').toBeUndefined();
+    const curriculum = curriculumOf(
+      lesson('4.4', { mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 0.97, minTempoPct: 0.8 } }),
+    );
+    const rung = findLesson(curriculum, route.scoreRung ?? '');
+    const run = scoreWith({ accuracy: 0.93, tempoPct: 100 });
+    expect(evaluateOutcome(run, DEFAULT_MASTERY).passed).toBe(true);
+    expect(evaluateOutcome(run, masteryCriteriaFor(rung, DEFAULT_MASTERY)).passed).toBe(false);
   });
 });

@@ -107,7 +107,10 @@ test.describe("Today's tools", () => {
     const item = await card.getAttribute('data-daily');
     expect(seed).not.toBeNull();
     await page.locator('#today-read').click();
-    await expect(page).toHaveURL(new RegExp(`#/score/${String(item)}\\?seed=${String(seed)}$`));
+    // Revised (C3 item 0b, L50): the route also names the slot, and the rung
+    // where the row is on one, so the seed is one parameter among them.
+    await expect(page).toHaveURL(new RegExp(`#/score/${String(item)}\\?(.+&)?seed=${String(seed)}(&|$)`));
+    expect(new URL(page.url()).hash).toContain('slot=daily-read');
     await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
   });
 

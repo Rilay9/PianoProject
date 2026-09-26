@@ -1445,8 +1445,11 @@ Blind and Perform, because a control that has nothing to do with where you came 
 change where Back goes. **The tour wins where both are in the hash**: a walkthrough has a next
 step and the learner is inside it, and the rung is still there when it ends. An id that is not
 a lesson id is dropped and Back is the tab again, which is what `?tour=` already says about
-itself. Nothing else changed: the Library, Today and the chord chart still open a score with
-no rung in the route, and Back from those is the tab it always was.
+itself. Nothing else changed: the Library and the chord chart still open a score with no rung
+in the route, and Back from those is the tab it always was. **Today** (C3, 2026-09-26, L50) opens
+a card with the rung it chose and the slot it filled as parameters of their own, `?rung=` and
+`?slot=`, never `?from=`: the rung judges the run and is stored with it, and Back from a Today
+run is still Today.
 
 `⏮ Start again` is **in the `⋯` sheet**, not on the bar. Eight controls come to 444 px of a
 390 px row and wrap it onto a second line, taking 40 px off the music; `▶` from stopped
@@ -1762,9 +1765,10 @@ Notation area:
   `mastery.custom` says so, and no rung does yet.
   **Pass and master** are judged against **the rung's** `minAccuracy` and `minTempoPct` where
   the piece is on one, and against the Settings pair (§7) where it is not (`05` §9a). The
-  rung is **the one that opened the screen** (`?from=`) where one did, and the first rung
-  listing the piece only where none did (2026-09-25, T37); the side panel's prose is that
-  same rung's.
+  rung is **the one that opened the screen** (`?from=`), or the one a Today card chose
+  (`?rung=`, C3); a run opened from nowhere has none and is held to the Settings pair (C1).
+  The side panel's prose is that same rung's, and the first rung listing the piece where
+  nothing names one.
 
   **The sheet says only what the run measured (2026-09-25, T37).** The rule is the
   reviewer's: never display or record evidence the engine did not measure.
@@ -2458,6 +2462,31 @@ covers that line and 342 px cuts it after twenty-odd characters, so nobody could
 - **A performance the piece was played to the learner part way through** keeps its heading and
   adds, after a dash, *heard part way, kept as practice* — *Passed — heard part way, kept as
   practice* — and the *Changed* line under it names the bar.
+
+**What a run could not judge** (C3, 2026-09-26). Where the item declares the skills it is for
+(`targetSkills`: the nine sight-reading rows today) and the evidence function refuses one of them
+for this run, the sheet prints a line labelled **Not judged**, after the numbers, and nothing else
+on it changes. Each line comes from a refusal over the run's own record and carries the fields it
+read (`data-cites`), which `feedbackFromMeasurements.test.ts` checks against the stored row. The
+sentences, grouped where the reason is one:
+
+- a channel the run did not measure, with the skills after it in brackets: *timing — Wait for me
+  keeps no clock*; *timing — none of those notes was played, so none was timed*; *the notes —
+  Rhythm only judges the timing*;
+- a skill, then why: *you played the right hand alone* (or *left*), *it needs Keep tempo*, *it
+  counts only on music you have not seen or heard*, *it counts only with the keys guide off*,
+  *none in this phrase* (or *none in the bars you played*, for a run of part of the piece), and
+  *too close to call at this speed; slower, the app can tell* — the timing window is not narrower
+  than the rhythm error the skill is about at this tempo (reviewer decision 6).
+
+For example *Not judged: timing — Wait for me keeps no clock (Sight-reading, Subdivision)* and *Not
+judged: Ledger lines — none in this phrase*. A run nothing heard adds none: its heading already
+says *Not measured*. A skill no run can show yet (`observable: none`, *Reading ahead*) is not
+printed either: the line would be the same on every run and says nothing about this one. The
+**Accents** line says *not judged — every note came at the same loudness, so louder cannot be
+heard* where the notes all arrived at one velocity (the screen keys), and *not judged — no
+accented note was played* where there was nothing to compare, instead of a share: the record keeps
+the accents as not measured in both cases (U46), and the sheet reads that same value.
 
 **Where each answer goes.** Questions 1 and 2 are the **help strip**: two lines at the top
 of the screen, inside the first screenful on a 342 px phone (§0 R1), the first naming the

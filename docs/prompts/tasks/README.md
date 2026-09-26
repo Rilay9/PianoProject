@@ -140,5 +140,5 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **T41** | A black key named by its key on the status line; a drill sheet that stops claiming an accuracy; the renderer publishes when the fit has settled | build, browser | done 2026-09-25 (Entry 69) |
 | **C1** | Observations stored: every run writes what it measured and marks what it did not; T40's drops recorded flagged; the guide off for sight-reading drills and recorded | build, browser | done 2026-09-26 (Entry 70) |
 | **C2** | Vocabulary v0 (the reading strand) and the demand detectors; one authoritative definition; the build gate | build, content | done 2026-09-26 (Entry 71) |
-| **C3** | The evidence function and the ladder; the property test over the vocabulary; the sheet's "not judged" lines | build | after C1 and C2 |
+| **C3** | The evidence function and the ladder; the property test over the vocabulary; the sheet's "not judged" lines | build | done 2026-09-26 (Entry 72) |
 | **C4** | The first reader: sight-reading constraints from the reading skill state; unseen guaranteed; the true reason line; then the learner-facing checkpoint | build, browser | after C3 |

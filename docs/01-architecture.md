@@ -272,8 +272,9 @@ engine computed per-step outcomes, the onset delta of every timed note and the t
 measures for the summary sheet, and the store kept seven numbers. Now `recordRun` keeps every
 field the run carries (`RunObservation` in `data/db.ts`):
 
-- **The header** — what opened the screen (tab, `?from=` rung, tour; the Today slot is not in
-  the route and is stored as not measured), the printed measures the run covered, the base
+- **The header** — what opened the screen (tab, the rung that judged it — `?from=`, or the
+  `?rung=` a Today card names — tour, and the Today slot, `?slot=`, stored as not measured
+  where no Today card opened the run; C3), the printed measures the run covered, the base
   tempo and whether it was written or defaulted, the hand played and what the app played
   beside it, what the keys showed (view, guide, finger numbers, whether a note's name was on
   the glass), whether grace notes were judged, the input with its window and latency, and on a

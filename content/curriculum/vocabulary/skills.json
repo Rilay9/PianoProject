@@ -30,17 +30,17 @@
     {
       "id": "unseen",
       "meaning": "The first reading of this music: not played or heard before this run.",
-      "recordedBy": "For a generated phrase, SessionRow.seed and the Score screen's refusal to record a seen or heard sight-read (T37, T40). First contact with a fixed file is not recorded; v0's material is the generated phrases."
+      "recordedBy": "SessionRow.unseen (C1): true on the first reading of a generated phrase, false when it was heard or read before; absent on anything else, whose first contact no run records. v0's material is the generated phrases."
     },
     {
       "id": "guide-off",
       "meaning": "The keys under the score did not mark the next key, so the notes were read and not followed.",
-      "recordedBy": null
+      "recordedBy": "SessionRow.keys.guide (C1): 'off', which the Score screen also writes when the keys are hidden"
     },
     {
       "id": "both-hands",
       "meaning": "The run played both hands, not one with the other left out or played by the app.",
-      "recordedBy": null
+      "recordedBy": "SessionRow.hands.played (C1): 'both'"
     }
   ],
   "skills": [
@@ -54,7 +54,7 @@
       "unobserved": [
         "Straight through without stopping: stops and hesitations are not measured (continuity is not built, design §3). That part is reading-ahead."
       ],
-      "standards": { "practice": ["keep-tempo"], "full": ["keep-tempo", "unseen", "guide-off"] }
+      "standards": { "practice": ["keep-tempo", "unseen"], "full": ["keep-tempo", "unseen", "guide-off"] }
     },
     {
       "id": "reading-ahead",
@@ -210,7 +210,7 @@
     {
       "rung": "1.5",
       "skill": "sight-reading",
-      "reason": "`sight-read-5-first-attempt>=0.9` asks for five unseen phrases read at 90 %: nothing in the app counts them (the rung completes on two exercise passes, `lessonComplete`), and the full standard's guide-off is not recorded on a run (S20). The design named this one.",
+      "reason": "`sight-read-5-first-attempt>=0.9` asks for five unseen phrases read at 90 %: nothing counts the five (the rung completes on two exercise passes, `lessonComplete`). Every condition of the full standard is recorded since C1.",
       "until": "C5"
     },
     {

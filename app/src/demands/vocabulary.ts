@@ -2,9 +2,9 @@
  * The shape of vocabulary v0 (C2): `content/curriculum/vocabulary/skills.json`
  * and `demands.json`.
  *
- * Types only. Nothing at runtime loads the vocabulary yet: the detectors are
- * code (`detect.ts`), and the evidence function that will read the skills'
- * observables and conditions is C3's. The files' own schemas
+ * Types only. The detectors are code (`detect.ts`); the files themselves are
+ * bundled for the evidence function by `evidence/vocabulary.ts` (C3), which
+ * reads the skills' observables and conditions from them. The files' own schemas
  * (`skills.schema.json`, `demands.schema.json` beside them) are the authority;
  * `validate.py` checks them and their references on every build.
  */

@@ -11,6 +11,7 @@
 import type { Mode } from './engine/types';
 import type { HandsFocus } from './score/WindowRenderer';
 import { LAB_BEDS, LAB_LOCKS, type LabBed, type LabLock } from './engine/sightReading';
+import type { SlotKind } from './curriculum/session';
 
 export const TAB_IDS = ['today', 'plan', 'library', 'progress', 'settings'] as const;
 export type TabId = (typeof TAB_IDS)[number];
@@ -31,6 +32,27 @@ export type SubId = (typeof SUB_IDS)[number];
  * still carries a `tab` so the shell has something to highlight, but the nav
  * shows nothing as current.
  */
+/**
+ * The slots a Today card can open a run from (C3 item 0b, L50): the session
+ * card's kinds, and the daily read beside it. `free` opens nothing, and is
+ * here so the list is the session builder's own.
+ */
+export const TODAY_SLOTS = [
+  'technique',
+  'review',
+  'new',
+  'repertoire',
+  'jam',
+  'free',
+  'sightreading',
+  'daily-read',
+] as const satisfies readonly (SlotKind | 'daily-read')[];
+export type TodaySlot = (typeof TODAY_SLOTS)[number];
+
+function isTodaySlot(value: string | null | undefined): value is TodaySlot {
+  return value !== null && value !== undefined && (TODAY_SLOTS as readonly string[]).includes(value);
+}
+
 export const DEV_IDS = ['score'] as const;
 export type DevId = (typeof DEV_IDS)[number];
 
@@ -206,6 +228,17 @@ export interface Route {
    */
   scoreFrom?: string;
   /**
+   * `#/score/<id>?rung=<lesson id>` — the rung this run is for, as Today chose
+   * it (C3 item 0b, L50). It judges the run as `from` does and is stored as
+   * the run's rung, and it does not steer Back: a Today run's Back is
+   * Today's. Its own parameter for that reason. Since C1 stopped the Score
+   * screen guessing the first rung listing a piece, a Today card that named
+   * no rung left its run judged by the Settings pair.
+   */
+  scoreRung?: string;
+  /** `#/score/<id>?slot=new` — the Today slot that opened this run (L50), for the record. */
+  scoreSlot?: TodaySlot;
+  /**
    * `#/score/<id>?seed=1234` — generate *this* exercise rather than a new one.
    *
    * Only a generated item reads it, and only one screen writes it: Today's
@@ -354,6 +387,14 @@ export function parseHash(hash: string): Route {
     wantedFrom !== null && wantedFrom !== undefined && looksLikeLessonId(wantedFrom)
       ? wantedFrom
       : undefined;
+  // The rung and slot a Today card chose (L50), each dropped when it is not
+  // one: a rung that is no lesson id judges nothing, and a slot Today does not
+  // have is not a slot.
+  const wantedRung = params?.get('rung');
+  const scoreRung =
+    wantedRung !== null && wantedRung !== undefined && looksLikeLessonId(wantedRung) ? wantedRung : undefined;
+  const wantedSlot = params?.get('slot');
+  const scoreSlot = isTodaySlot(wantedSlot) ? wantedSlot : undefined;
   if (query) {
     const value = new URLSearchParams(query).get('for');
     // A lesson id, or nothing. An unrecognised one is dropped rather than
@@ -383,6 +424,8 @@ export function parseHash(hash: string): Route {
       ...(scoreLoop ? { scoreLoop } : {}),
       ...(tour === undefined ? {} : { tour }),
       ...(fromLesson === undefined ? {} : { scoreFrom: fromLesson }),
+      ...(scoreRung === undefined ? {} : { scoreRung }),
+      ...(scoreSlot === undefined ? {} : { scoreSlot }),
       ...(seed === undefined ? {} : { seed }),
     };
   }
@@ -517,6 +560,8 @@ export function routeToHash(route: Route): string {
         : []),
       ...(route.tour === undefined ? [] : [`tour=${encodeURIComponent(route.tour)}`]),
       ...(route.scoreFrom === undefined ? [] : [`from=${encodeURIComponent(route.scoreFrom)}`]),
+      ...(route.scoreRung === undefined ? [] : [`rung=${encodeURIComponent(route.scoreRung)}`]),
+      ...(route.scoreSlot === undefined ? [] : [`slot=${route.scoreSlot}`]),
       ...(route.seed === undefined ? [] : [`seed=${String(route.seed >>> 0)}`]),
     ];
     const base = `#/score/${encodeURIComponent(route.score)}`;
@@ -604,6 +649,10 @@ export class Router {
       tour?: string;
       /** The rung that opened it, which Back returns to (`04` §5). */
       from?: string;
+      /** The rung a Today card chose, which judges the run and does not steer Back (L50). */
+      rung?: string;
+      /** The Today slot that opened it (L50). */
+      slot?: TodaySlot;
       /** Generate this exercise rather than a new one (Today's daily read). */
       seed?: number;
     } = {},
@@ -619,6 +668,8 @@ export class Router {
       ...(options.loop ? { scoreLoop: options.loop } : {}),
       ...(options.tour === undefined ? {} : { tour: options.tour }),
       ...(options.from === undefined ? {} : { scoreFrom: options.from }),
+      ...(options.rung === undefined ? {} : { scoreRung: options.rung }),
+      ...(options.slot === undefined ? {} : { scoreSlot: options.slot }),
       ...(options.seed === undefined ? {} : { seed: options.seed }),
     };
     this.win.location.hash = routeToHash(route);
@@ -759,6 +810,10 @@ export class Router {
       // from a rung and opened from the Library are two routes, and leaving
       // this out would have the second one silently keep the first one's Back.
       route.scoreFrom === this.current.scoreFrom &&
+      // The rung a run is judged by and the slot it is for are part of which
+      // run this is, for the reason `from` is (L50).
+      route.scoreRung === this.current.scoreRung &&
+      route.scoreSlot === this.current.scoreSlot &&
       route.seed === this.current.seed &&
       route.lab === this.current.lab &&
       route.labPreset === this.current.labPreset &&

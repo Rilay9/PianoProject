@@ -35,10 +35,12 @@ import {
 import {
   demandsTechniqueMeasure,
   evaluateOutcome,
-  accentScore,
   measuresOf,
   techniqueMeasureFor,
+  velocityIsFlat,
 } from '../../engine/Scoring';
+import { evidenceFor, isRefusal } from '../../evidence/evidence';
+import { VOCABULARY_V0 } from '../../evidence/vocabulary';
 import { nextLadderTempo } from '../../engine/PracticeEngine';
 import { MASTER_DAYS, recordRun, sessionsForItem, type RunResult } from '../../data/progressStore';
 import { OBSERVATION_DEFINITIONS, type RunHeader } from '../../data/db';
@@ -63,10 +65,12 @@ import { stripRangeFor } from '../stripRange';
 import { onScreenDispose } from '../screenLifecycle';
 import {
   MODE_HELP,
+  NOT_JUDGED_TEXT,
   RESTARTED_WITH,
   ROW_TEXT,
   STATE_TEXT,
   SUMMARY_TEXT,
+  notJudgedLines,
   type RunChangeKey,
   type ScoreMode,
 } from '../help';
@@ -245,6 +249,13 @@ export function ScoreScreen(router: Router): HTMLElement {
    */
   const fromRung = router.route.scoreFrom;
   /**
+   * The rung a Today card chose for this run, and the slot it filled (C3 item
+   * 0b, L50): `?rung=` and `?slot=`, apart from `from` because they judge and
+   * record the run and do not steer Back. Read once, like `from`.
+   */
+  const todayRung = router.route.scoreRung;
+  const todaySlot = router.route.scoreSlot;
+  /**
    * The tour's parameters, for a navigation that has to keep them.
    *
    * Blind and Perform are routes, so pressing either rebuilds the screen from
@@ -261,6 +272,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     ...(routeLoop ? { loop: routeLoop } : {}),
     ...(tourId === undefined ? {} : { tour: tourId }),
     ...(fromRung === undefined ? {} : { from: fromRung }),
+    // A Today run toggled into Blind is still that Today run (L50).
+    ...(todayRung === undefined ? {} : { rung: todayRung }),
+    ...(todaySlot === undefined ? {} : { slot: todaySlot }),
   };
   /**
    * Where Back goes: the tour that opened this, the rung that opened it, or
@@ -1951,6 +1965,10 @@ export function ScoreScreen(router: Router): HTMLElement {
       // No input, no first note: a run following nothing must keep time by
       // the clock, which is the whole point of Tempo without a piano.
       ...(input === 'none' ? { latchStart: false } : {}),
+      // And nothing to judge (L42, `05` §3): the clock moves the cursor and no
+      // note is marked, where every window used to close red as a miss behind
+      // a sheet saying the run was not measured.
+      judging: input !== 'none',
       ...(options.latch === false ? { holdAtStart: false } : {}),
       ...(options.paused === true ? { startPaused: true } : {}),
       ...(input === 'mic'
@@ -2628,9 +2646,17 @@ export function ScoreScreen(router: Router): HTMLElement {
    * nowhere now records no rung and is judged by Part G's defaults, the
    * learner's own pair from Settings (design §10 C1). A `?from=` naming no
    * rung the curriculum has is nowhere too.
+   *
+   * Or the rung a Today card chose (`?rung=`, C3 item 0b, L50), which wins
+   * where both are named: it is the rung this run was asked for. Today used to
+   * name none, so since C1 every Today run was judged by the defaults.
    */
+  function judgingRungId(): string | undefined {
+    return todayRung ?? fromRung;
+  }
   function judgingRung(curriculum: Curriculum): Lesson | undefined {
-    return fromRung === undefined ? undefined : findLesson(curriculum, fromRung);
+    const id = judgingRungId();
+    return id === undefined ? undefined : findLesson(curriculum, id);
   }
 
   /**
@@ -2812,12 +2838,14 @@ export function ScoreScreen(router: Router): HTMLElement {
    * The engine reports what it judged under (`judgedUnder`); the screen adds
    * what only it knows — what opened it, the tempo the percentage is of, what
    * the app played beside the learner, what the keys showed, the input. What
-   * neither knows is stored as not measured, never guessed: the Today slot,
-   * which the route does not carry, and anything the engine did not report.
+   * neither knows is stored as not measured, never guessed: the Today slot
+   * where the route carries none (only a Today card names one, L50), and
+   * anything the engine did not report.
    */
   function runHeader(score: SessionScore, first: { unseen?: boolean }, demonstrated: boolean): RunHeader {
     const under = score.judgedUnder;
     const base = model?.tempoMap[0];
+    const judgedBy = judgingRungId();
     // The hand the engine judged, which is the run's; the screen's own
     // `hands` can have moved since, with the sheet up.
     const played = under?.hands ?? hands;
@@ -2833,9 +2861,9 @@ export function ScoreScreen(router: Router): HTMLElement {
       ...(under ? { range: { fromMeasure: under.fromMeasure, toMeasure: under.toMeasure } } : {}),
       opened: {
         tab: router.route.tab,
-        ...(fromRung === undefined ? {} : { rung: fromRung }),
+        ...(judgedBy === undefined ? {} : { rung: judgedBy }),
         ...(tourId === undefined ? {} : { tour: tourId }),
-        slot: NOT_MEASURED,
+        slot: todaySlot ?? NOT_MEASURED,
       },
       baseTempo: base
         ? { bpm: base.bpm, source: item?.tags?.includes('tempo-defaulted') === true ? 'defaulted' : 'written' }
@@ -2986,6 +3014,15 @@ export function ScoreScreen(router: Router): HTMLElement {
     // one heard before the take began is preparation, not help inside it.
     const demonstrated = heardAt.length > 0;
     const demonstratedTake = performanceRun && demonstrated;
+    // What the run measured, by the record's one definition (C1), read once:
+    // the record keeps it, and the sheet's *Accents* line reads the same value
+    // so the two cannot disagree (U46).
+    const measures = measuresOf(score, {
+      heard,
+      technique,
+      pedalMeasurable: input === 'midi',
+      steps: session?.prepared?.steps ?? [],
+    });
     const title = document.createElement('h2');
     /** The heading, with what kept a performance from being one said after it. */
     const setHeading = (text: string): void => {
@@ -3026,12 +3063,7 @@ export function ScoreScreen(router: Router): HTMLElement {
             // What the run was and what it measured, by its own definitions,
             // with every channel it did not measure marked so (C1).
             ...runHeader(score, sightReading ? { unseen: !sightReadRepeat } : {}, demonstrated),
-            ...measuresOf(score, {
-              heard,
-              technique,
-              pedalMeasurable: input === 'midi',
-              steps: session?.prepared?.steps ?? [],
-            }),
+            ...measures,
           }
         : null;
 
@@ -3210,18 +3242,28 @@ export function ScoreScreen(router: Router): HTMLElement {
     // that `04` §0 R2 already measures on a 342 px phone. Never part of the
     // pass — nothing in `mastery.custom` names it, and a leaning that is a
     // little shy is not a wrong note.
-    const accents = heard ? accentScore(score.notes, session?.prepared?.steps ?? []) : null;
-    if (accents !== null && accents.judged > 0) {
-      addStat(
+    //
+    // Read from the measures the record keeps (U46): over notes that all
+    // arrived at one loudness — the screen keys — the record says not
+    // measured, and the sheet printed a share of them anyway. Where the record
+    // says not measured the sheet says not judged, and why.
+    const accents = heard ? measures.accents : undefined;
+    if (accents !== undefined) {
+      const line = addStat(
         lines,
         'Accents',
-        // "leaned on, against the rest of your playing" was read three times
-        // before it parsed: the number is the share of the notes written with
-        // an accent that were actually played louder than their neighbours.
-        `${String(Math.round(accents.accuracy * 100))}% of the ${String(
-          accents.judged,
-        )} accented notes were played louder than the notes around them`,
+        accents === NOT_MEASURED
+          ? velocityIsFlat(score.notes)
+            ? NOT_JUDGED_TEXT.accentsFlat
+            : NOT_JUDGED_TEXT.accentsNone
+          : // "leaned on, against the rest of your playing" was read three times
+            // before it parsed: the number is the share of the notes written with
+            // an accent that were actually played louder than their neighbours.
+            `${String(Math.round((accents.right / accents.of) * 100))}% of the ${String(
+              accents.of,
+            )} accented notes were played louder than the notes around them`,
       );
+      if (accents === NOT_MEASURED) line.dd.dataset.cites = 'accents';
     }
     // The bars that went worst, by printed number, so the learner knows where
     // to look before choosing `Loop the weak bars` (`08` §6.2). None where
@@ -3245,6 +3287,29 @@ export function ScoreScreen(router: Router): HTMLElement {
         'Timing',
         `${Math.round(score.timing.meanMs)} ms off the beat on average, ${Math.round(score.timing.earlyPct)}% of them early`,
       );
+    }
+    // What the run could not judge of the skills its item declares, and why
+    // (C3 item 6): one line per reason, each from a refusal of the evidence
+    // function over this run's own record, citing the fields it read. Where
+    // nothing was heard the heading already says so, and nothing is added.
+    if (run && heard && model && (item?.targetSkills?.length ?? 0) > 0) {
+      const refusals = evidenceFor({
+        observation: run,
+        played: model,
+        targetSkills: item?.targetSkills ?? [],
+        vocabulary: VOCABULARY_V0,
+      }).filter(isRefusal);
+      // A run of part of the piece says "in the bars you played", read off the
+      // run's own range rather than the loop control, which is let go before a
+      // looped run can end.
+      const looped =
+        run.range !== undefined && (run.range.fromMeasure > 0 || run.range.toMeasure < model.sourceMeasureCount - 1);
+      for (const said of notJudgedLines(refusals, VOCABULARY_V0.skills, {
+        ...(run.hands ? { hands: run.hands } : {}),
+        looped,
+      })) {
+        addStat(lines, NOT_JUDGED_TEXT.label, said.text).dd.dataset.cites = said.cites.join(' ');
+      }
     }
     sheet.appendChild(lines);
 
@@ -3273,8 +3338,11 @@ export function ScoreScreen(router: Router): HTMLElement {
             button('New phrase', () => {
               flushPendingRecord();
               summaryUp(false);
+              // The same rung's reading, and not the day's read: that is the
+              // day's seed, so a fresh phrase drops the daily-read slot (L50).
+              const { slot: _slot, ...sameRoute } = tourRoute;
               router.navigateScore(itemId, {
-                ...tourRoute,
+                ...(todaySlot === 'daily-read' ? sameRoute : tourRoute),
                 ...(blind ? { blind: true } : {}),
                 ...(performanceRun ? { performance: true } : {}),
                 seed: freshSeed(phraseSeed),

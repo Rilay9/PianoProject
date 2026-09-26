@@ -20,10 +20,9 @@
  *     not act on, so a new event kind shows up as a compile error rather than
  *     as silence.
  */
-import { PracticeEngine } from '../engine/PracticeEngine';
+import { PracticeEngine, type PracticeEngineOptions } from '../engine/PracticeEngine';
 import type {
   EngineEvent,
-  EngineOptions,
   HandsFilter,
   LoopRange,
   Mode,
@@ -139,7 +138,12 @@ export interface ScoreSessionOptions {
   onBeat?: (beat: { beat: number; bar: number; isCountIn: boolean }) => void;
 }
 
-export interface RunOptions extends Omit<Partial<EngineOptions>, 'mode'> {
+/**
+ * A run as the screen asks for it: the engine's options, `judging` among them
+ * (L42 — `false` when no input is listening, so the clock moves the cursor and
+ * nothing is marked), and the playback and click that are the session's own.
+ */
+export interface RunOptions extends Omit<Partial<PracticeEngineOptions>, 'mode'> {
   mode: Mode;
   /** Clicks during the run, including while the score is on screen. */
   metronome?: boolean;
@@ -488,7 +492,7 @@ export class ScoreSession {
     // The screen's run options are a superset of the engine's: strip the ones
     // that belong to playback and the click before handing them over, so a new
     // engine option is never shadowed by a UI one with the same name.
-    const engineOptions: Partial<EngineOptions> = { ...run };
+    const engineOptions: Partial<PracticeEngineOptions> = { ...run };
     delete (engineOptions as Record<string, unknown>).metronome;
     delete (engineOptions as Record<string, unknown>).metronomeSound;
     delete (engineOptions as Record<string, unknown>).metronomeVolume;

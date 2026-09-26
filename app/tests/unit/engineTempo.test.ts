@@ -377,6 +377,57 @@ describe('Listen mode', () => {
     expect(h.of('stepAdvanced').map((e) => e.to)).toEqual([1, 2, 3]);
     expect(h.of('noteJudged')).toEqual([]);
     expect(h.engine.state.score.wrongNotesTotal).toBe(0);
+    // Nor on the clock (L42). "Judges nothing" was held on the input path
+    // only, and every window closed as a miss, so a demonstration painted the
+    // notes it was playing red.
+    expect(h.of('missed')).toEqual([]);
+    expect(h.engine.state.score.missedTotal).toBe(0);
+  });
+});
+
+/**
+ * A Keep tempo run with no input judging it (L42; `05` §3: "Judging input
+ * (only if any input source is active)", and "without any input source,
+ * Tempo mode simply plays/moves"). The engine closed every window as missed
+ * whatever was listening, and the session painted each one red and flashed
+ * its key, behind a sheet that said the run was not measured.
+ */
+describe('A Keep tempo run nothing is judging (L42)', () => {
+  it('moves on the timetable and finishes, and judges no miss', () => {
+    const h = harness(melody, { mode: 'tempo', countInBars: 0, judging: false });
+    h.engine.start();
+    h.advance(4.5 * BEAT_MS);
+    expect(h.of('stepAdvanced').map((e) => e.to)).toEqual([1, 2, 3]);
+    expect(h.of('finished')).toHaveLength(1);
+    expect(h.of('missed'), 'a note nobody was listening for was judged missed').toEqual([]);
+    const score = h.engine.state.score;
+    expect(score.missedTotal).toBe(0);
+    expect(score.hotSpots).toEqual([]);
+    // Nothing was decided at any step, so the score keeps no step outcomes:
+    // not a row of misses, and not a row of steps "not reached" either.
+    expect(score.stepOutcomes).toBeUndefined();
+  });
+
+  it('keeps the same clock as a judged run: the cursor, the ticks and the end', () => {
+    const judged = harness(melody, { mode: 'tempo', countInBars: 1 });
+    const unjudged = harness(melody, { mode: 'tempo', countInBars: 1, judging: false });
+    for (const h of [judged, unjudged]) {
+      h.engine.start();
+      h.advance(8.5 * BEAT_MS);
+    }
+    const shape = (h: typeof judged): unknown => ({
+      steps: h.of('stepAdvanced').map((e) => [e.to, e.tMs]),
+      ticks: h.of('tempoTick').map((e) => [e.bar, e.beat, e.tMs]),
+      finished: h.of('finished').map((e) => e.tMs),
+    });
+    expect(shape(unjudged)).toEqual(shape(judged));
+  });
+
+  it('a judged run still misses what was not played', () => {
+    const h = harness(melody, { mode: 'tempo', countInBars: 0, judging: true });
+    h.engine.start();
+    h.advance(4.5 * BEAT_MS);
+    expect(h.of('missed')).toHaveLength(4);
   });
 });
 
