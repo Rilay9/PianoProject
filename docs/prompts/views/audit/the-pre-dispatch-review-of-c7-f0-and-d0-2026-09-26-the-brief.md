@@ -55,3 +55,5 @@ P1 findings leave the active queue with their disposition kept; after D0, genera
 whose premise was "parameters or docstrings imply pedagogical truth" are retired where the
 contract and the measured-demand gate replace them. **Next checkpoint**: C7's packet with its
 named artefacts, reviewed against the amended brief before F0 is dispatched.
+
+**Addendum to the pre-dispatch review (2026-09-26):** the sequence becomes F0 → C7 → D0 → E — F0 first as the P0 learner-truth correction, with no architectural dependency on C7 and sequential with it because both own `help.ts`; everything else stands (C7's weak-exposure-only migration, D0's vocabulary gate, PRUNE/MERGE as supersession with traceability); the two-gate workflow with the frontier audit in parallel is the standard; T52 dispatches on a green chain.
