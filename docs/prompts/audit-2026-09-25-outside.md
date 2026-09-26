@@ -1497,3 +1497,51 @@ admitted blind spot: enumerate every family, generate representative and adversa
 inspect distributions and actual notation, and separate structural, pedagogical, physical and
 musical-quality failures. It prepares D (with Part 11 and G35–G40) while C6 and C7 finish.
 
+**The reviewer's verification of the record (2026-09-26, at 162b4ea).** Incorporation approved:
+no numbered Part-12, 13 or 14 finding dropped, materially weakened or changed in meaning; the
+nine destinations and the consolidations confirmed (the reviewer notes they were "new rows or
+explicit strengthenings", since L84, L86, L87 and L88 came from Part 13); the wave division
+confirmed, with L90 and L91's moves consistent with it; the C6 addendum the right boundary when
+sent; the six existing-rule claims confirmed as coverage, which means the concepts are
+strengthened and tested in E and G, not reinvented. Two changes: (1) the C6 builder receives one
+narrow L93 boundary — a rung bypassed by placement or profile, or set aside, is not new unmet
+work merely because later work in the strand is exhausted; no placement diagnostics, no
+fabricated evidence, but the new selector must not cement a backward walk through bypassed rungs
+as debt, and records the boundary as not done if the architecture cannot avoid it — sent
+2026-09-26; (2) L88 is owned by F and G, with D contributing the generated families' target-skill
+and demand contracts; D does not own the general 109-rung requirement audit. On verification: the
+prerequisite-graph claim (no missing ids, no forward edges) came from a complete enumeration of
+the 109-lesson graph, not a sample, as did every structural claim in Parts 13–14 (every lesson,
+requirement kind, stage and track placement and prerequisite edge); the learner-profile stress
+tests are conceptual tests, not repository measurements, and stay described so. C7 item 5's
+shape stays the builder's provided the implementation proves seven invariants (written into the
+brief): pruning cannot erase established evidence; enough provenance survives (skill or demand,
+conditions and standard, transfer and retention context, time, evidence-definition version);
+recent contrary evidence still changes current competence; `notShownRecently` still means current
+uncertainty; historical mastery is never an irreversible boolean; backup, restore and later
+evidence-version work preserve or refuse the historical claim honestly; the prune-boundary test
+exercises the actual persistence path, not a helper.
+
+===== PART 15 (PRELIMINARY): THE GENERATOR AND SIGHT-READING AUDIT IN PROGRESS (2026-09-26) =====
+
+Not the D packet; the reviewer is still classifying family by family. What it has so far, with
+the rows each finding lands on:
+
+- From the repository's own sight-reading trace (`docs/prompts/traces/2026-09-25-sight-reading.md`,
+  counts over seeds 1–500 per level, on the generator as it was at Wave A): at level 2, 74 % of
+  phrases had a quarter-or-longer event beginning off the beat; levels 3–4, 98–100 % — syncopation
+  written below the rung that teaches it (S26 strengthened; S26 had the levels 3–4 half of this);
+  the tie-closing pass can create intervals beyond the intended leap cap (S26); levels 6–7
+  produced malformed triplet-rest notation in 87–89 % of sampled phrases (S2, built by T37 after
+  the trace — the audit re-checks on the current generator before D inherits the number); phrases
+  frequently finish without a convincing rhythmic arrival (S7, G9).
+- Musical coherence is not decorative polish after the "real" reading constraints: pianists
+  read intervals such as octaves as visual patterns and fluent reading proceeds through larger
+  units; tonal structure affects sight-reading performance and pianists visually process harmonic
+  predictability in notation. Generated material without phrase structure is not appropriate
+  reading material (G9, S7: coherence is a requirement of the family, with a reader's read).
+- The distinction being worked out for D: a legitimate canonical drill (a Hanon pattern being
+  repetitive is not a defect) against material that promises to behave like music (a generated
+  sight-reading phrase with no phrase structure is a defect). The family classification will say
+  which promise each family makes.
+
