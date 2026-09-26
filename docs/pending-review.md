@@ -16094,3 +16094,69 @@ Read as a practice diary (`DIARY.md`), the month is a teacher's shape in outline
 ## Files
 
 `app/src/evidence/readingState.ts` (new); `app/src/curriculum/session.ts` (the reader and the slot); `app/src/data/db.ts` (`evidence`, `recipe`, `ReadingMoves`, `ReadingRecipe`); `app/src/engine/sightReading.ts` (`position`, `maxFifthsFor`); `app/src/router.ts` (deviation 1); `app/src/ui/screens/ScoreScreen.ts` (evidence at record, the recipe, the seeds, the title, the side panel); `app/src/ui/screens/TodayScreen.ts`; `app/src/ui/help.ts`; `app/src/ui/tablet.ts`; `app/src/style.css` (deviation 3); `content/lessons/3.4.md` (deviation 4); tests: `readingState`, `sightReadingFromReadingState`, `recommendRespondsToEvidence`, `firstThirtyDays`, `helpers/reader.ts` (new); `feedbackFromMeasurements`, `scoreSummaryTruth`, `router`, `tablet`, `sightReadingSlot`, `lessonClaimsAboutApp`, `helpers/observed.ts`; e2e `today.spec`, `side-panel-prose.spec`; `docs/04-ui-spec.md` §2 and §5c, `docs/05-score-follow-engine.md` §8, `docs/01-architecture.md` §4.5, `docs/08-test-map.md`.
+
+### Entry 74 — T42: the tempo ladder holds on a pass nothing judged and says so, and the test that relied on the old fault misses under a judging input (2026-09-26)
+
+**Judgement.** Yes for the three decided items. **On the glass** (the build with the change, desktop Chromium, light, Hot Cross Buns, bar 1 looped, the ladder on at 40 %, input *None*, two pass boundaries): the status line reads *Nothing listening — staying at 40 %*, the slider stays at 40 and the notes stay black. At 1180 × 920 it sits in the header beside *bar 1 / 4* while the loop runs. At 390 × 844 the header is folded away while the run goes (pre-existing, every ladder line alike — Follow-ups), so the learner meets the line after a tap brings the chrome back: *Hot Cross B… Nothing listening — staying at 40 %* at the top right. At 342 × 740 after a tap it is shown whole (its box is as wide as its text; the title gives way to *Hot …*). **Mechanism, traced on the committed build** (not only inferred from the slider): the hold case's recorder, installed before ▶, caught the committed screen writing *Clean — up to 50 %* and *Clean — up to 60 %* at the first two pass boundaries. `climbLadder` judges a pass clean when the engine's miss, wrong and early totals have not moved since the last lap; since C3 a run with no input counts no miss (`judging: false`), so every lap read as clean and the ladder climbed notch by notch to `LADDER_CEILING_PCT`. The CI failure reproduces locally on the same build with the old test: `Expected: "30"`, `Received: "100"`. So the mechanism is the one the brief inferred. Before C3 the same comparison walked down on misses nobody made (L44).
+
+Not heard; nothing here is about sound. A teacher's read: if the app cannot hear you it should not tell you to go faster or slower, and now it does neither and says why in six words. The line does not say how to be heard; the sheet at the end does (*connect a piano or choose Screen keys in ⋯*).
+
+**Deviations, each with its reason.**
+1. **The misses case plays one note.** The brief suggested the screen keys with no key pressed, or the MIDI mock silent. Either one holds the run for ever: a Keep tempo run with an input holds at the start for the learner's first note (`05` §3b), so no pass would ever end. The revised case presses the note the run is holding for (read from `scoreRun().expected`, not written into the test) and then nothing, so pass 1 has two misses and every later pass has three. That is what a learner who starts and then keeps missing gets.
+2. **`LADDER_TEXT` holds the whole ladder line, not only the new sentence.** One line with three verdicts is one set of words in `help.ts`. The *Clean* and *A mistake* strings moved out of `ScoreScreen.ts` unchanged, and the existing floor and ceiling cases hold them.
+3. **`listening()` replaces `input !== 'none'` on C3's `judging:` line.** The hold and the run's `judging` read one fact, so they cannot come apart. An input change restarts the run, so at a lap it is still the input the lap was judged by. Nothing in `ScoreSession.ts` changed: the screen owns the input, as Entry 72's deviation 1 argued, and the session reading its options back would restate the engine's rule a second time.
+
+## Done — per item: mechanism, the red line, before → after
+
+**1. The ladder holds on an unjudged pass (Q33, P1).** *Change:* in `climbLadder`, after the pass base is updated, `if (!listening())` writes `LADDER_TEXT.line(LADDER_TEXT.nothingListening, tempoPct, tempoPct)`, renders and returns: no tempo change up or down, no restart, the lap the engine has begun runs on. `Hear it` keeps its own earlier guard. The record path is untouched. A loop run is still recorded at its summary, and with nothing heard that summary is T40's *Not measured* sheet, recorded with the learner's answer (read from the code, not driven here). *Red:* `the ladder moved the tempo on a pass nothing judged … + "Clean — up to 50 %", + "Clean — up to 60 %"`. *After:* no line moved the tempo, the slider reads 40 after two passes, and the status line reads *Nothing listening — staying at 40 %*.
+
+**2. The misses case revised (class: revise; old assumption: no input means every note is missed).** Screen keys, the first note played to start the clock, nothing after it. It now asserts *A mistake — staying at 30 %*, so a hold at the floor cannot pass for a walk down. *Red:* it passes on the committed build, because the screen keys judge there as well. Reverting the engine's `judging` guard cannot make it red either: with a judging input that guard never acts. It was seen red on a copy of the committed build with `judging` forced off for every input, spliced into the built bundle so the shared tree was not built: `Expected: "30"`, `Received: "40"`. With judging off the engine's `feed` returns before the latch, so the run holds for its first note for ever. That is the revised test failing because its input is not judging, the failure CI met in the old form (`Expected: "30"`, `Received: "100"`, reproduced locally on the committed build). *After:* green.
+
+**3. The clean-pass case** already taps every step under the screen keys (a judging input, Rhythm only), so it did not rely on nothing being judged. Preserved, green.
+
+## Pedagogical verdict (from the code and the pictures; nothing heard)
+
+A hold is what a teacher would do. They would add that a ladder switched on with nothing listening is a control that can never act: the row could say so on its label, as the metronome row does in Free play (Follow-ups). The standing line under the header, *The count-in clicks, then play along.*, is the mode's default, and a no-input loop leaves it as it was.
+
+## Tests
+
+| test | class | the assumption the old assertion encoded | why the new one reads the learner-facing outcome |
+|---|---|---|---|
+| `score.rhythm-ladder` "a pass with misses in it slows down, and stops at the floor" | revise | no input means every note is missed (L42, fixed by C3) | misses made under the screen keys; the floor and the *A mistake* verdict on the status line |
+| `score.rhythm-ladder` "a pass nothing listened to holds the tempo, and says why" | add | — | the slider after two passes, every status line of the run (none moved the tempo), the reason line |
+| `score.rhythm-ladder` "a clean pass speeds up, and stops at the written tempo" | preserve | — (taps under a judging input) | green |
+| `score.rhythm-ladder` "the Ladder row is not offered without a loop to climb" | preserve | — (no input, asserts only the row) | green |
+| `score.rhythm-ladder` rhythm first ×3, duet ×2 | preserve | — | green |
+| `score.rhythm-ladder` helpers: `ScoreRun` gains `armed` and `expected`; `waitForHold`, `recordStatusLines`, `statusLines`, `waitForPassBoundaries` added; the header's third habit reworded | add / revise | the header said both ladder cases end at the floor or the ceiling | a hold is a third place the tempo stops moving |
+| `tempoLadder.test.ts`, `help.test.ts` | preserve | — | green in the Vitest run (`LADDER_TEXT` is printed in `04` §5, not §5f) |
+
+## Runs (unpiped; exit codes read)
+
+- Red, on a `build:app` of the clean committed tree (dc7d0c1, exit 0), copied aside and served from the copy: the ladder block, 1 failed (the hold) and 3 passed; the old spec's misses case, 1 failed (`Received: "100"`). The mutation copy: 1 failed (`Received: "40"`).
+- Green, first on a `vite build` of the change (`build:app` was then refused by another builder's red-first unit test in `tsc -b`): `score.rhythm-ladder` 0 (9 passed), `score.states` 0 (19 passed).
+- Final, on the tree as it stood at 01:19 with the other builders' uncommitted work in it: `npm run build:app` 0; `npx tsc -b` 0; `npm run lint` 1, with every error in other builders' in-progress unit files (`evidenceVersion.test.ts`, `zz_c4a_probe.test.ts`; on a rerun `generatorContract.test.ts`), and `eslint` on the three T42 code files 0; `npx vitest run` 1, 5,768 passed, 6 skipped and 1 failed in `evidenceByDemand.test.ts` (C4a's), and `help`, `tempoLadder`, `scoreSheetRows`, `scoreSummaryTruth` 0 (52 passed). Playwright on that build (`vite preview` on 4173, two workers, one config, nothing built during a run): `score.rhythm-ladder` 0 (9 passed); `score.states` 0 (19 passed); `score.screen`, `modes-ladder`, `score.ladder-route` 0 (49 passed; `score.screen` holds C3's two no-input cases, and C3's `judging` line now reads `listening()`).
+- Three temporary picture specs were run and deleted.
+
+## Not done
+
+- Nothing from the brief.
+
+## Follow-ups
+
+- **P2 (pre-existing, every ladder line):** on an upright phone the header, and the status line in it, is `display: none` while the chrome is folded during a run. So *Clean — up to 70 %*, *A mistake — down to 50 %* and now *Nothing listening — staying at 40 %* are unseen until a tap, and the tempo label that `04` §5 marks as moving by itself is folded too. The corner chip shows only *bar n / m*. The learner hears the loop get faster with nothing on the glass saying why.
+- **P3:** the Ladder row could say *nothing is listening* on its label when the input is *None*, as the metronome row refuses Free play. Offered, it is a control that can only hold.
+- **P3 (engine):** `PracticeEngine` with `judging: false` and `latchStart: true` holds for ever, because `feed` returns before the latch. The screen cannot reach it (both are set from the input), but the engine does not refuse the pair.
+
+## Questions
+
+None.
+
+## Unverified
+
+- Nothing heard. Pictures at 390 × 844 (folded, and after a tap), 342 × 740 (folded, and after a tap) and 1180 × 920, light, desktop Chromium. Not seen sideways, in dark, at 115 % text or on the owner's phone.
+- The hold with a microphone or a MIDI piano that is attached and silent: those are judging inputs, so their passes are judged and walk down, which the revised case shows for the screen keys only.
+- *Counts as practice*: the record path is unchanged and was read from the code; no loop run was stopped and recorded here.
+
+## Files
+
+`app/src/ui/screens/ScoreScreen.ts` (`listening()`, the hold in `climbLadder`, the line from `LADDER_TEXT`), `app/src/ui/help.ts` (`LADDER_TEXT`), `app/tests/e2e/score.rhythm-ladder.spec.ts`, `docs/05-score-follow-engine.md` (§6, one paragraph), `docs/04-ui-spec.md` (§5, the Ladder paragraph), `docs/08-test-map.md` (the tempo ladder row).

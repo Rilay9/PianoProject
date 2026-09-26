@@ -23,9 +23,10 @@
  *  - **The assertions are on end states, never on a sentence in flight.** The
  *    ladder writes a line at every pass boundary and replaces it at the next
  *    one, so a test that waits for one particular rung fails on a busy
- *    machine. Both ladder cases run to the end of the ladder — the floor, or
- *    the ceiling — where the tempo stops moving and the sentence stops
- *    changing.
+ *    machine. Every ladder case runs to where the tempo stops moving — the
+ *    floor, the ceiling, or a pass nothing judged — and the sentence stops
+ *    changing; the hold case also keeps every line the status was given, so
+ *    "it never moved" is read off the whole run rather than its last line.
  */
 import { expect, test, type Page } from '@playwright/test';
 
@@ -55,6 +56,10 @@ const PAST_THE_WINDOW_MS = 650;
 
 interface ScoreRun {
   step: number;
+  /** Holding for the learner's first note (`05` §3b). */
+  armed: boolean;
+  /** The pitches the run is waiting for. */
+  expected: number[];
 }
 
 async function withSettings(page: Page, patch: Record<string, unknown>): Promise<void> {
@@ -123,6 +128,66 @@ async function waitForStep(page: Page, step: number): Promise<void> {
     },
     step,
     { timeout: 60_000, polling: 30 },
+  );
+}
+
+/**
+ * Waits for a Keep tempo run to hold for its first note, and says which note.
+ *
+ * A run with an input to hear holds at the start until the learner plays
+ * (`05` §3b), so a run that is to miss under a judging input still needs the
+ * one note that starts its clock; this is the note, read from the run.
+ */
+async function waitForHold(page: Page): Promise<number> {
+  const handle = await page.waitForFunction(
+    () => {
+      const run =
+        (window as unknown as { __pianopath?: { scoreRun?: () => ScoreRun | null } }).__pianopath
+          ?.scoreRun?.() ?? null;
+      return run !== null && run.armed ? (run.expected[0] ?? null) : null;
+    },
+    undefined,
+    { timeout: 60_000, polling: 30 },
+  );
+  return (await handle.jsonValue()) as number;
+}
+
+/**
+ * Keeps every line the status is given from here on, in the page.
+ *
+ * A pass boundary replaces the line, and the next one replaces it again, so
+ * the last line cannot say whether the ladder moved earlier in the run. Each
+ * assignment to the line adds a text node, which is what is kept.
+ */
+async function recordStatusLines(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const lines: string[] = [];
+    (window as unknown as { __statusLines?: string[] }).__statusLines = lines;
+    const status = document.querySelector('#score-status');
+    if (status === null) throw new Error('the screen has no #score-status');
+    new MutationObserver((records) => {
+      for (const record of records) {
+        for (const node of record.addedNodes) lines.push(node.textContent ?? '');
+      }
+    }).observe(status, { childList: true });
+  });
+}
+
+async function statusLines(page: Page): Promise<string[]> {
+  return page.evaluate(
+    () => (window as unknown as { __statusLines?: string[] }).__statusLines ?? [],
+  );
+}
+
+/** Waits until the ladder has spoken at `count` pass boundaries, whatever it said. */
+async function waitForPassBoundaries(page: Page, count: number): Promise<void> {
+  await page.waitForFunction(
+    (want) =>
+      ((window as unknown as { __statusLines?: string[] }).__statusLines ?? []).filter((line) =>
+        /staying at|up to|down to/.test(line),
+      ).length >= want,
+    count,
+    { timeout: 120_000, polling: 100 },
   );
 }
 
@@ -271,11 +336,43 @@ test.describe('the tempo ladder on a loop', () => {
   test.setTimeout(180_000);
 
   test('a pass with misses in it slows down, and stops at the floor', async ({ page }) => {
-    // Nothing is fed — `inputPriority: ['none']` leaves the run with no input
-    // source at all — so every pass misses everything and the ladder walks
-    // down. Started one rung above the floor, so the end state arrives in two
-    // passes and the assertion is on a tempo that can go no lower rather than
-    // on a rung in flight.
+    // Misses a learner made, under an input that is listening: the screen
+    // keys, the first note played to start the clock (a run with an input
+    // holds for it, `05` §3b) and nothing after it, so every pass has misses
+    // in it and the ladder walks down. Until T42 this fed no input at all and
+    // relied on every note being judged missed, which was the fault C3 fixed
+    // (L42); a pass nothing judged is the next case, and it holds. Started one
+    // rung above the floor, so the end state arrives in two passes and the
+    // assertion is on a tempo that can go no lower rather than on a rung in
+    // flight.
+    await withSettings(page, { defaultTempoPct: 40, countInBars: 0 });
+    await openScore(page);
+    await armTempoRun(page);
+    await loopFirstBar(page);
+    await setSheetToggle(page, 'score-ladder', true);
+    await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-ladder', 'on');
+
+    await page.locator('#score-play').click();
+    await press(page, await waitForHold(page));
+    // 30 % is `MIN_TEMPO_PCT`, the bottom of the slider the tempo sheet has
+    // always had: the ladder uses the range that is already there rather than
+    // inventing one of its own.
+    await expect(page.locator('#score-tempo')).toHaveValue('30', { timeout: 120_000 });
+    // A pass that cannot move the tempo still says what it was: a mistake,
+    // which is not the same sentence as a pass nothing judged.
+    await expect(page.locator('#score-status')).toContainText('A mistake — staying at 30 %', {
+      timeout: 120_000,
+    });
+    await expect(page.locator('#score-status')).not.toContainText('down to 20');
+  });
+
+  test('a pass nothing listened to holds the tempo, and says why', async ({ page }) => {
+    // No input at all — `inputPriority: ['none']` — so nothing is judged (L42)
+    // and a pass is neither clean nor a mistake. The ladder is the one control
+    // that acts without being asked, so on such a pass it does nothing, and
+    // says the reason is that nothing was listening, not that a floor or a
+    // ceiling was reached (T42). Before, it climbed to the written tempo on
+    // passes nobody played, and before C3 it walked down on misses nobody made.
     await withSettings(page, { defaultTempoPct: 40, countInBars: 0, inputPriority: ['none'] });
     await openScore(page);
     await page.locator('#score-mode').selectOption('tempo');
@@ -283,17 +380,19 @@ test.describe('the tempo ladder on a loop', () => {
     await loopFirstBar(page);
     await setSheetToggle(page, 'score-ladder', true);
     await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-ladder', 'on');
+    await expect(page.locator('#score-tempo')).toHaveValue('40');
 
+    await recordStatusLines(page);
     await page.locator('#score-play').click();
-    // 30 % is `MIN_TEMPO_PCT`, the bottom of the slider the tempo sheet has
-    // always had: the ladder uses the range that is already there rather than
-    // inventing one of its own.
-    await expect(page.locator('#score-tempo')).toHaveValue('30', { timeout: 120_000 });
-    // A pass that cannot move the tempo still says what it was.
-    await expect(page.locator('#score-status')).toContainText('staying at 30 %', {
-      timeout: 120_000,
-    });
-    await expect(page.locator('#score-status')).not.toContainText('down to 20');
+    // Two pass boundaries: the ladder has had two chances to move the tempo,
+    // so a tempo read now is not simply a first lap that has not ended.
+    await waitForPassBoundaries(page, 2);
+    expect(
+      (await statusLines(page)).filter((line) => /up to|down to/.test(line)),
+      'the ladder moved the tempo on a pass nothing judged',
+    ).toEqual([]);
+    await expect(page.locator('#score-tempo')).toHaveValue('40');
+    await expect(page.locator('#score-status')).toHaveText('Nothing listening — staying at 40 %');
   });
 
   test('a clean pass speeds up, and stops at the written tempo', async ({ page }) => {

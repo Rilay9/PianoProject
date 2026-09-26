@@ -480,6 +480,29 @@ export const RESTARTED_WITH = {
 } as const;
 
 /**
+ * The status line at each pass boundary of a loop with the tempo ladder on
+ * (`04` §5, `05` §6): what the pass was, then what the tempo does about it —
+ * *Clean — up to 70 %*, *A mistake — staying at 30 %*.
+ */
+export const LADDER_TEXT = {
+  /** Nothing missed, wrong or early in the pass. */
+  clean: 'Clean',
+  /** A miss, a wrong note or an early one in the pass. */
+  mistake: 'A mistake',
+  /**
+   * A pass nothing judged (T42): no input was listening, so the pass was
+   * neither clean nor a mistake and the ladder holds. The words give the
+   * reason, which is not a floor or a ceiling, and match `RESTARTED_WITH`'s
+   * *with nothing listening*.
+   */
+  nothingListening: 'Nothing listening',
+  line: (verdict: string, fromPct: number, toPct: number): string =>
+    toPct === fromPct
+      ? `${verdict} — staying at ${String(toPct)} %`
+      : `${verdict} — ${toPct > fromPct ? 'up' : 'down'} to ${String(toPct)} %`,
+} as const;
+
+/**
  * Why a `⋯` row cannot act now, on the row's own label (T33, C3 and C4) —
  * the label rather than the hint, because sideways the sheet hides every
  * hint and a reason nobody can see is a dead control with an excuse.

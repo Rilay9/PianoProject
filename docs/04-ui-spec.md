@@ -1606,7 +1606,9 @@ pass with a mistake slows down one, from wherever the tempo is when it is switch
 within the slider's own 30–130 % and never above 100 % unless the learner had already asked
 for more. The status line says what happened at each pass boundary — *Clean — up to 70 %*,
 *A mistake — down to 50 %*, *Clean — staying at 100 %* — and the summary reports where the
-ladder ended. The number it moves is the tempo label on the bar, which is underlined while
+ladder ended. With nothing listening a pass is judged neither way and the tempo holds, and the
+line gives that reason rather than a floor: *Nothing listening — staying at 40 %* (T42).
+The number it moves is the tempo label on the bar, which is underlined while
 the ladder is on: a figure that changes by itself reads as a fault unless something says it
 is meant to, and the mark belongs on the figure rather than on a second readout competing
 for the bar's width.

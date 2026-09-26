@@ -381,6 +381,13 @@ cursor set from a dead engine.
 The ladder is ignored during `Hear it`: a demonstration judges nothing, so every lap of one
 is trivially clean and the ladder would climb on playing nobody did.
 
+**A pass nothing listened to holds the tempo** (2026-09-26, T42): with no input no miss is
+counted (§3, L42), so the comparison above read such a pass as clean and the ladder climbed to
+the written tempo on playing nobody did (CI caught it), and the screen now leaves the tempo
+where it is, restarts nothing and says *Nothing listening — staying at 40 %*, the reason rather
+than a floor (`listening()` in `ScoreScreen.ts` is the one fact behind this hold and the run's
+`judging`).
+
 **Clearing the loop switches the ladder off.** It is a property of the loop it climbs, and
 run state for the same reason the loop is (`04` §5). Left on, the Ladder row disappeared
 from the sheet with the toggle still pressed underneath it, and the next loop set — later
@@ -780,8 +787,9 @@ unaccented ones (`ACCENT_MIN_RATIO`).
 ## 9b. Evidence: what one observation supports about one skill (built 2026-09-26, C3)
 
 `app/src/evidence/` turns one stored observation into evidence about the skills its item
-declares, or into a stated refusal, and reads a skill's evidence into a ladder state. Nothing
-selects by it yet (C4). **What it enforces is evidentiary honesty; it does not prove that a
+declares, or into a stated refusal, and reads a skill's evidence into a ladder state. C4's
+reader selects by the skill-level counts (§8); the per-demand counts and readings below
+(C4a) are for the reader to act on (C4c). **What it enforces is evidentiary honesty; it does not prove that a
 measurement shows the skill** — right notes in a fixed position are what a note-namer plays as
 well as an interval-reader (the reviewer's principle, `audit-2026-09-25-outside.md` Part 7).
 
@@ -824,6 +832,72 @@ answer) is evidence of the class `self-assessed`, which the ladder shows apart a
 accepts. **In the types**, `Evidence` is built only from a `Measurement` and a `Measurement` only
 by `takeMeasurements(observation)`; both carry brands with no runtime value, so a detector's
 `Opportunity` has no path to evidence (`demandIsNotAbility.test.ts` holds the compiler to it).
+
+**Per demand, with the overlap kept** (C4a, 2026-09-26; L64; the reviewer's Part 8). Each
+measured result also splits its counted steps by demand. `byDemand` holds, for each demand the
+skill names — every vocabulary demand, for a skill read over every step (sight-reading) — that
+the passage contains at measured steps, `{demand, n, right, steps, wrong}`: the opportunities
+whose right or wrong the record can tell, the right ones, and which steps, so a later reader can
+audit them against the observation. A step that is an opportunity for several demands counts
+under each. The skill's own `n` and `right` are unchanged, and the ladder reads only them. Where
+a demand sits on some notes of a step that went partly wrong (`p`, `l`, or `e` or `w` on a chord)
+the record cannot say which note — C1 keeps the step's code, not which pitch was missed (L56) —
+so the step is out of that demand's `n` and listed in `unattributed`; a demand on every note of
+the step, or a step where every pitch was missed (`m`), is told (`StepMeasure.uniform`). For a
+skill with a demand list, `otherDemands` names the demands it does not count, located on its
+counted steps; with the entries' own steps that says where every demand of those steps is, and
+`overlapOf(evidence, demand)` derives which other demands shared a demand's steps. Each
+(demand, step) is stored once: stored beside every entry, the overlap made the evidence several
+times the observation it came from. **No field says which demand caused a miss**: one wrong note
+at a skip, in the left hand, during eighths is wrong under all three. A demand with no measured
+opportunity is absent, `no-opportunity` stays a skill-level refusal only when none of the skill's
+demands had one, and a timing step the window cannot resolve is out of the skill's steps and so
+out of every demand's (at the phrase's own 72 bpm the eighths drop out of sight-reading's counts,
+as §9b's precision rule already said). One pass over the detectors per run serves every skill.
+
+**Demand readings** (`demandReadings.ts`, C4a). `demandReadings(rows, vocabulary, today)`: per
+reading-strand skill and per demand its evidence counted, over the skill's last
+`DEMAND_WINDOW_READS` (5) reads stored under the current evidence stamp — `n`, `right`, the
+phrases it had an opportunity in and those where its share was below the support share, and one
+of three facts:
+
+- **`pattern`** — below the support share over the window and in at least
+  `PATTERN_MIN_PHRASES` (2) phrases; for every demand of another skill on any of its wrong steps
+  (a *rival*), below the support share also where that rival was absent, over at least
+  `MIN_CONTRAST` (2) such opportunities; and *selective*.
+- **`isolated`** — below the support share; more than half of its wrong steps, and at least
+  `MIN_ALONE_WRONG` (2), carry no demand of another skill; and *selective*.
+- **`ambiguous`** — neither: it held, or it fell together with a demand the observations cannot
+  tell it from.
+
+*Selective*: every other demand of the skill held (at or above the support share) where this one
+was absent, judged wherever it had at least `MIN_CONTRAST` such opportunities, and at least one
+such comparison exists. Demands the same skill copes with (`copedWithBy`: the step, skip and
+leap; the eighth and "shorter than a quarter") are never rivals of one another — one ability
+graded, and "shorter than a quarter" is every eighth over again — but are held to selectivity.
+The support share is the ladder's (`SUPPORT_SHARE`, Part G's pass share). **The four constants
+and the arithmetic are hypotheses**, not measurements; `basis` on each reading carries the
+numbers it was decided on. The worked examples (`demandReadings.test.ts`): five first readings
+of 2.2's row with every skip misread give `pattern` for skips under sight-reading and reading by
+interval, and not for steps; three good reads then two with the skips misread give it after the
+second bad read and not the first; one wrong note carrying a skip, an eighth, the bass staff, the
+key signature and the other hand is `ambiguous` under all five, on one day or two; the
+**mixed-demand ambiguity adversary** — two phrases whose wrong notes are all skips and eighths at
+once — is `ambiguous` for both, and then (a) skips in quarters right and steps in eighths wrong
+make the eighths a `pattern` (2 of 8 right where no skip was) and not the skips (4 of 4 right
+where no eighth was), while (b) skips in quarters right and eighths in steps right leave both
+`ambiguous`: each held without the other, so the failures were at the combination and nothing
+is named. The evidence and the readings speak in the vocabulary's demand ids and know nothing of
+what a reader can change; the reader maps a supported demand to a control (C4c) and acts only on
+`isolated` or `pattern`.
+
+**The evidence's own version** (L66, C4a). `EVIDENCE_DEFINITIONS` (2) in `evidence.ts`, stamped on
+the row beside the evidence as `evidenceDefinitions` by the record call (`stampedEvidence`);
+`storedEvidence` takes only the current stamp and ignores the observation's `definitions`, which
+stays the observation's. Version 1 is C3's per-skill evidence as C4 stored it under the
+observation's stamp: those rows contribute nothing now. `recomputeEvidence(row, played,
+vocabulary)` is what the record call would store today, for a later job that holds the played
+model; nothing runs that job yet (`01` §4.5).
 
 **`ladderState(evidence, today)`** (`ladder.ts`) — introduced (an exposure), practised (a record of
 either outcome), familiar (supporting at the practice standard on a day), proficient (supporting at

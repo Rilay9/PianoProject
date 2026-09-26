@@ -40,7 +40,7 @@ import {
   techniqueMeasureFor,
   velocityIsFlat,
 } from '../../engine/Scoring';
-import { evidenceFor, isRefusal, type EvidenceResult } from '../../evidence/evidence';
+import { evidenceFor, isRefusal, stampedEvidence, type EvidenceResult } from '../../evidence/evidence';
 import { VOCABULARY_V0 } from '../../evidence/vocabulary';
 import { nextLadderTempo } from '../../engine/PracticeEngine';
 import { MASTER_DAYS, recordRun, sessionsForItem, type RunResult } from '../../data/progressStore';
@@ -65,6 +65,7 @@ import { waitingForLine, type WrittenPitch } from '../expectedNote';
 import { stripRangeFor } from '../stripRange';
 import { onScreenDispose } from '../screenLifecycle';
 import {
+  LADDER_TEXT,
   MODE_HELP,
   NOT_JUDGED_TEXT,
   RESTARTED_WITH,
@@ -1987,7 +1988,7 @@ export function ScoreScreen(router: Router): HTMLElement {
       // And nothing to judge (L42, `05` §3): the clock moves the cursor and no
       // note is marked, where every window used to close red as a miss behind
       // a sheet saying the run was not measured.
-      judging: input !== 'none',
+      judging: listening(),
       ...(options.latch === false ? { holdAtStart: false } : {}),
       ...(options.paused === true ? { startPaused: true } : {}),
       ...(input === 'mic'
@@ -2055,6 +2056,16 @@ export function ScoreScreen(router: Router): HTMLElement {
   }
 
   /**
+   * Whether any input is listening to the run: the one fact behind `judging`
+   * on its start (L42) and the ladder's hold at a lap (T42). Choosing an
+   * input restarts the run, so at a lap boundary this is still the input the
+   * lap was judged by.
+   */
+  function listening(): boolean {
+    return input !== 'none';
+  }
+
+  /**
    * Whether the Ladder has anything to act on: a loop, in the mode with a
    * tempo to move. A performance neither loops nor repeats.
    */
@@ -2117,6 +2128,12 @@ export function ScoreScreen(router: Router): HTMLElement {
    * run for the whole run, which is why the comparison is against
    * `ladderPassBase` rather than against nought.
    *
+   * **A pass nothing judged holds** (T42). With no input listening no miss is
+   * counted (L42), so the comparison above reads such a pass as clean, and
+   * the ladder climbed to the written tempo on passes nobody played — before
+   * L42 it walked down on misses nobody made. Neither is a verdict on the
+   * learner, so the tempo is left where it is and the line says why.
+   *
    * The restart is deferred by a microtask. The engine emits this finish from
    * the middle of `completeLap`, and it still has the new lap's clock to rebase
    * afterwards; tearing it down from inside its own event would leave the next
@@ -2138,17 +2155,18 @@ export function ScoreScreen(router: Router): HTMLElement {
       wrong: score.wrongNotesTotal,
       early: score.early ?? 0,
     };
+    if (!listening()) {
+      status.textContent = LADDER_TEXT.line(LADDER_TEXT.nothingListening, tempoPct, tempoPct);
+      render();
+      return;
+    }
     const next = nextLadderTempo({
       enabled: true,
       tempoPct,
       startedAtPct: ladderCeilingPct,
       clean,
     });
-    const verdict = clean ? 'Clean' : 'A mistake';
-    status.textContent =
-      next === tempoPct
-        ? `${verdict} — staying at ${String(tempoPct)} %`
-        : `${verdict} — ${clean ? 'up' : 'down'} to ${String(next)} %`;
+    status.textContent = LADDER_TEXT.line(clean ? LADDER_TEXT.clean : LADDER_TEXT.mistake, tempoPct, next);
     // Nothing to re-time, so the lap the engine has already begun is left to
     // run: a restart here would cost a count-in and buy an identical pass.
     if (next === tempoPct) {
@@ -3126,7 +3144,8 @@ export function ScoreScreen(router: Router): HTMLElement {
       // evidence is its own.
       const evidence = result === run ? runEvidence : evidenceOf(result);
       if (phraseSeed !== undefined) seedsOnRecord.add(phraseSeed);
-      void recordRun(evidence === undefined ? result : { ...result, evidence })
+      // Stamped with the evidence's own version (C4a, L66), not the observation's.
+      void recordRun(evidence === undefined ? result : { ...result, ...stampedEvidence(evidence) })
         .then((row) => {
           // The heading follows the store (T37): a master-standard run reads
           // *Passed* until the row it was written into says what it came to,
