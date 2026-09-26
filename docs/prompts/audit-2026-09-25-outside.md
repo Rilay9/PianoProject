@@ -649,3 +649,105 @@ endorsed: C4a = what the evidence supports; C4b = can the content system produce
 adaptation asks for; C4c = use both to choose what comes next; C5 = retire the old progression
 semantics. Proceed. At the C4.5 report the reviewer goes to the files and tests first.
 
+===== PART 9: THE REVIEWER'S FULL-TREE SWEEP (2026-09-27) =====
+
+With the repository tool the reviewer enumerated the branch at 422e0cf (about 1,857 tree
+entries: 56 UI source files, 26 audio, 24 engine, 17 data, 14 score, 11 curriculum, 10 import,
+8 MIDI, 7 PDF, plus the Python content and PDMX toolchain and its tests). The conclusion: the
+app is more feature-packed than the discussions credited; the problem is increasingly not
+"build more features" but "turn all these features into one coherent teacher". Nothing in the
+sweep interrupts C4.5; everything below goes into the later waves.
+
+Still standing from the earlier sweep: (2) content delivery will outgrow precache-everything
+(core offline: app, soundfont, curriculum, lessons, essential exercises, starter repertoire;
+cached or downloaded: PDMX excerpts, larger repertoire, collections, projects, upcoming
+material); (3) `ScoreViewportPlan` as a real abstraction: musical and visual facts + viewport +
+preference + practice context → a pure plan that OSMD renders, testable without the renderer,
+and the basis of portrait karaoke; (4) layout understands musical density, not only geometry,
+but renderer density is never pedagogical difficulty; (5) audit every notation surface, not
+only the score renderer (OSMD score, drill staff notation, chord charts, PDF, keyboard strips
+and ribbons, lesson-embedded notation); (6) a real-hardware truth corpus: the same
+performances through the HP-130's MIDI, the phone microphone and perhaps a third route, then
+compare the learner-facing conclusions — the diagnostics system already supports MIDI
+inspection, mic diagnostics, latency calibration, acoustic loopback, raw captures, render
+timing, analysis cost and device reporting; (7) generator separation: musical knowledge →
+pedagogical recipe → realiser → structural validator → pedagogical validator →
+musical-quality evaluator; (8) generator identity and cache (family + specification + seed +
+generator version); (9) the generator microscope; (10) a real-phone threshold for huge
+MusicXML first render, with excerpt files, segmentation or preprocessing rather than whole-
+score parsing; (11) the laptop deserves a deliberate experience, but separate device
+capability from interaction context (at the piano with hands occupied: giant controls,
+hands-free lifecycle, minimal tapping, notation priority, continuity; planning and browsing:
+repertoire discovery, progress analysis, skill map, lessons, projects), never phone = playing,
+laptop = analysis.
+
+Missed before seeing the tree: (12) MIDI import is a potentially major product feature — the
+browser-side transcription reads arbitrary MIDI, keeps two-track hands, splits one-track
+performances, merges ambiguous tracks, estimates key, respells, chooses quantisation grids per
+bar, detects and de-swings swing, handles repeated notes, slices into writable rhythms, fills
+rests, writes MusicXML, reads it back, verifies nothing was lost, checks bar durations and
+reports what could not be represented; the workflow "bring me music I care about → convert
+and analyse → what is usable → sections into a project, excerpt or plan", with transcription
+uncertainty visible and provenance and confidence carried, never silently canonical; (13) a
+substantial harmony and improvisation teacher already exists (chord identification, charts,
+live matching, backing loops, bass, drums, comping, swing, modes, chord-scale, extended
+chords, Roman numerals, transposition, ear tunes, dictation, trading fours, generated calls);
+build no new harmony feature — integrate into one strand: hear tonic and dominant → recognise
+chords → play symbols → I/IV/V → transpose → charts → scales over chords → comping →
+constrained improvisation → call and response → trading fours → repertoire and jam; (14)
+trading fours is underused; its result rightly is not evidence today; later an improvisation
+evidence grammar (form, entry, phrase length, continuity, chord-tone targeting, scale fit,
+motif reuse, register, response), never "72 % improvisation accuracy"; (15) the backing loop
+is infrastructure, not the finished accompaniment experience: pedagogical backing (clear,
+exposes harmony and rhythm) is a different audio design from musically satisfying backing;
+(16) chord charts need the hands-busy audit too; the audit spans Score, Chord Chart, Drills,
+Jam and trading, PDF, Free Play; (17) ear training as a progression (hear → imitate →
+identify → sing or anticipate → find on the keyboard → recognise in repertoire → use in
+improvisation), not games of growing length; (18) the chord-dictation silence threshold
+(about 120 ms, helped by expected-next-chord membership) is a measurement, not a construct —
+segmentation carries confidence in the eventual evidence audit; (19) the hand split should be
+user-correctable, the correction saved and reflected in rendering, demands, difficulty and
+assignments; (20) imported-score difficulty (the TypeScript port with parity tests) must not
+resurrect "Level 4, therefore appropriate": estimated level plus measured demands; (21) PDF
+system detection (ink profile, staff lines, systems, barline reasoning, user correction
+persisted) makes "Follow my PDF" viable: system navigation, automatic progression, timer,
+bookmarks, goals, never pretending to know the notes; (22) no full OMR until the non-OMR PDF
+experience is excellent; (23) diagnostics become a guided setup ("Play these notes. Good. I can
+hear your piano. Now I'll measure the delay. Done."), the technical screen kept for
+troubleshooting; (24) `devicePreview.ts` exists: H extends it into a device-matrix harness
+(342 × 740, ~412 × 915, both orientations, tablet, laptop, short laptop, browser chrome and
+keyboard) rather than another simulator; (25) the test infrastructure is richer than credited
+(four Playwright configurations, an on-demand full render workflow): extend, do not invent;
+(26) the content toolchain (archive search, PDMX quarry, shortlist and review, fingering and
+Hanon extraction, Kern, MuseTrainer, ABC, authoring, checks, difficulty fitting, render
+validation, licensing, rung audits, ladder reports, truncation scans, video checks, notation
+analysis, demand extraction) becomes one developer-facing workbench; (27) E evolves the
+existing `tools/content/pdmx/` package into the excerpt workbench, not a new pipeline; (28)
+content provenance universal (where from; transformations; measured, inferred or supplied;
+analyser and generator versions) as an E-level invariant; (29) an external recommendation as
+its own object type, distinct from playable catalog content; (30) a content-source decision
+policy: choose the kind of experience first (controlled drill, generated exercise, generated
+study, sight-reading phrase, PDMX excerpt, full repertoire, ear drill, chord chart, jam or
+trading, PDF project, external recommendation), then the content; (31) evidence grammars
+differ by experience (sight-reading; technique; ear; harmony; improvisation; repertoire; PDF
+and external) and one learner model consumes all without pretending they are measured alike;
+(32) feature-packed means composable experiences with a reason, not a menu of 37 modes; (33)
+hands-busy as a cross-cutting interaction context (playing / between attempts / browsing)
+governing auto-start, count-in, cues, control visibility, accidental taps, continuation,
+notation changes, feedback timing and settings lock; (34) audio cues as the hands-free
+channel; (35) voice control not yet; (36) MIDI gestures as commands, opt-in, outside judged
+windows, never letting musical input become UI input by accident; (37) free play feeding the
+teacher descriptively, never a score, much later; (38) keep the parity tests, demote the
+scalar level's authority; (39) documentation supersession hygiene (current / superseded /
+historical); (40) decompose the giant modules only when H or X works the area, along
+conceptual boundaries; (41) help as contextual support in three kinds (operate; what the
+musical thing means; why the teacher assigned this); (42) setup ends by proving the practice
+loop; (43) accessibility audited in the playing state; (44) performance budgets per device
+class, the owner's phone primary; (45) don't build everything now — record the requirements in
+their waves.
+
+The 17 consolidated additions and the overarching sentence — *the finished teacher chooses an
+experience before it chooses an item; features are teaching tools, not destinations* — are
+mapped row by row in `sweep-2026-09-27-mapping.md`. The reviewer can now read the exact
+reviewer packet, enumerate the branch and inspect the implementation and tests directly.
+
