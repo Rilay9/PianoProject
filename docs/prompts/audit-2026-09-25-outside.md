@@ -512,6 +512,27 @@ selects from stored evidence, one dimension at a time; the diary runs the genera
 through the real engine, computes evidence, stores it in a fake IndexedDB and reads it back
 the next day. "Stronger work than we could establish from the summary alone."
 
+**The second message, itemised** (superseded in emphasis by the third and fourth, but the
+briefs cite its list): 1. no heuristic like "failed passage containing skips = weak at skips";
+attribution to the events and opportunities of a demand, ambiguity preserved; 2. the chain
+passage demand → opportunity → observations → valid measurement under conditions →
+attributable evidence → skill state → adaptation, presence never evidence, whole-phrase failure
+never a diagnosis; 3. adaptation of the supported dimension, the skip case as the adversary;
+4. the contract, impossible combinations explicit; 5. keys not ordinal; 6. raw observations and
+run conditions retained beside cached evidence and the definitions version, recomputable;
+7. adversarial construct-validity tests: accurate steps with inaccurate skips; accurate pitch
+with poor rhythm; accurate right hand with poor left or coordination; a difficult passage
+performed accurately; an easy one performed poorly; a passage containing a demand with no
+valid measurable opportunity; a heard, demonstrated or re-read passage performed perfectly; no
+input — evidence and next selection change only where justified; 8. the diary rerun with
+several profiles (struggling; uneven with one weakness; rapidly improving; already proficient;
+inconsistent) looking for oscillation, plateaus, punishment for trying harder, unrelated
+changes — retracted in the third message for the other profiles, which come with C5–C7;
+9. the cleanup rows kept and phone-sized output checked; 10. T42 independently, the test not
+weakened. The stop's five questions: the dimension identified when the observations allow;
+uncertainty admitted when they do not; the next exercise manipulates the justified dimension;
+the generator fulfils every requested progression; the trajectories look sensible.
+
 **The central finding, confirmed in the code.** The evidence function identifies opportunity
 steps per demand but the stored evidence collapses them to `skill, n, right`; C4's reader
 sees sight-reading fail twice and runs `stepDown()`, which backs out the most recently added
