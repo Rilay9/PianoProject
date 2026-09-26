@@ -32,7 +32,7 @@ function lesson(id: string): Lesson {
     textFile: '',
     exerciseOptions: [],
     songOptions: [],
-    mastery: { exercisesRequired: 0, songsRequired: 0, minAccuracy: 0, minTempoPct: 0 },
+    mastery: { minAccuracy: 0, minTempoPct: 0 }, requirements: [],
   };
 }
 
@@ -85,7 +85,15 @@ describe('a stage row in the Plan screen', () => {
   });
 
   it('opens on a tap on the title, and the chevron then says "close"', async () => {
+    // Revised (C5): Stage 1 opens by itself now, as the stage being worked
+    // on — its rung states no requirement the evidence has met, where a rung
+    // asking for nought passes used to count as complete. So it is closed
+    // with a tap first; the tap under test is the one after.
     const section = await mountPlan(1);
+    expect(stageRow(section, 1).getAttribute('data-open')).toBe('true');
+    section
+      .querySelector('[data-stage="1"] .list-row__title')
+      ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     expect(stageRow(section, 1).getAttribute('data-open')).toBe('false');
     expect(chevronOf(section, 1).textContent).toBe('›');
 

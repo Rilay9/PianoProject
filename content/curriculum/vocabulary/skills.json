@@ -16,9 +16,10 @@
     "rhythm.eighths), and `C-position` is a range v0 measures (range.beyond-position absent):",
     "none is a skill, because a detector finds it.",
     "",
-    "`requirementTerms` and `gateWaivers` are interim: the first maps the two",
-    "`mastery.custom` terms that name a v0 skill, the second names the rungs the build gate",
-    "would refuse today and why. Both go when C5 turns rung requirements into predicates.",
+    "A rung names a skill in its `requirements` (curriculum.schema.json, since C5): a",
+    "ladder state, or reads at a standard. C2's interim table of `mastery.custom` terms and",
+    "the build gate's waivers are gone with the terms: each became a predicate or an",
+    "`unjudged` requirement the lesson page prints.",
     "validate.py checks this file against skills.schema.json and its references."
   ],
   "conditions": [
@@ -200,30 +201,6 @@
       "opportunity": ["texture.left-hand-pattern", "texture.walking-bass"],
       "observable": ["pitch", "timing"],
       "standards": { "practice": ["keep-tempo", "both-hands"], "full": ["keep-tempo", "both-hands", "unseen", "guide-off"] }
-    }
-  ],
-  "requirementTerms": [
-    { "term": "sight-read-5-first-attempt", "skill": "sight-reading", "standard": "full", "runs": 5, "evaluatedBy": null },
-    { "term": "sight-read-5", "skill": "sight-reading", "standard": "practice", "runs": 5, "evaluatedBy": null }
-  ],
-  "gateWaivers": [
-    {
-      "rung": "1.5",
-      "skill": "sight-reading",
-      "reason": "`sight-read-5-first-attempt>=0.9` asks for five unseen phrases read at 90 %: nothing counts the five (the rung completes on two exercise passes, `lessonComplete`). Every condition of the full standard is recorded since C1.",
-      "until": "C5"
-    },
-    {
-      "rung": "3.4",
-      "skill": "sight-reading",
-      "reason": "`sight-read-5>=0.85` asks for five sight-reads at 85 %, and nothing counts them either: the rung completes on one exercise and one song. Not in the design's list; the same rule finds it.",
-      "until": "C5"
-    },
-    {
-      "rung": "4.6",
-      "skill": "reading-ahead",
-      "reason": "4.6 teaches reading-ahead (its concepts), and completing the rung marks that skill known (LessonScreen), but no run measures reading ahead: continuity is not built. The brief's case of a promised feature with no honest observable.",
-      "until": "C5"
     }
   ]
 }

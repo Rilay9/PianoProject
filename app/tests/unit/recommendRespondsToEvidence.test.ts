@@ -24,6 +24,8 @@ import { indexCatalog } from '../../src/curriculum/selectors';
 import type { CatalogItem, Curriculum } from '../../src/curriculum/types';
 import type { SessionRow } from '../../src/data/db';
 import { phraseModel, readPhrase, skipSteps } from './helpers/reader';
+import { rungState } from '../../src/evidence/rungState';
+import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 
 const CONTENT = join(process.cwd(), 'public', 'content');
 const catalog = JSON.parse(readFileSync(join(CONTENT, 'catalog.json'), 'utf8')) as CatalogItem[];
@@ -82,7 +84,7 @@ function card(rows: readonly SessionRow[], where: Curriculum = curriculum): Sess
     curriculum: where,
     catalog: index,
     items: catalog,
-    records: [],
+    states: { byRung: new Map() },
     dueForReview: [],
     mastered: [],
     activeTracks: ['core'],
@@ -126,7 +128,7 @@ describe('learners on 2.2: one failing everywhere, one misreading the skips, one
   });
 
   it('and different daily reads, for what the reads showed', () => {
-    const position = nextRecommended(curriculum, [], ['core'], { startAt: '2.2' });
+    const position = nextRecommended(curriculum, { byRung: new Map() }, ['core'], { startAt: '2.2' });
     const daily = (rows: readonly SessionRow[]) =>
       readingOffer({ curriculum, items: catalog, position, activeTracks: ['core'], rows, today: TODAY, purpose: 'daily' });
     expect(daily([])?.why.kind).toBe('rung');
@@ -152,4 +154,63 @@ describe('the stage number is not the learner', () => {
       expect(reading(card(rows, RENUMBERED))?.item?.id).toBe(reading(card(rows))?.item?.id);
     }
   });
+});
+
+/**
+ * The rung part (C5): which rung the card comes off responds to evidence the
+ * rung's requirements name, and never to a count of passes. Three learners on
+ * 2.2: one who has played nothing; one who played every option of 2.2 at the
+ * full standard from the Library, so no rung judged a run of them (under the
+ * old count 2.2 was complete, and the card moved to 2.3); and one who played an
+ * exercise and a song of 2.2 from 2.2's page and read 2.2's row with eighths,
+ * which shows subdivision — the skill 2.2 names.
+ */
+describe('the rung part (C5): the card comes off the rung the evidence has not met', () => {
+  const rung22 = curriculum.stages.flatMap((s) => s.units.flatMap((u) => u.lessons)).find((l) => l.id === '2.2');
+  const piece = (itemId: string, lessonId: string | undefined): SessionRow => ({
+    itemId,
+    ...(lessonId === undefined ? {} : { lessonId }),
+    mode: 'tempo',
+    tempoPct: 100,
+    tempoMeasured: true,
+    accuracy: 1,
+    accuracyEstimated: false,
+    wrongNotes: 0,
+    missed: 0,
+    durationMs: 60_000,
+    at: new Date(2026, 9, 2, 12).toISOString(),
+  });
+  const newRung = (rows: SessionRow[]): string | undefined =>
+    buildSession({
+      curriculum,
+      catalog: index,
+      items: catalog,
+      states: rungState(rows, curriculum, VOCABULARY_V0, TODAY),
+      dueForReview: [],
+      mastered: [],
+      activeTracks: ['core'],
+      minutes: 30,
+      seed: 1,
+      startAt: '2.2',
+      today: TODAY,
+    }).slots.find((slot) => slot.kind === 'new')?.lessonId;
+
+  it('nothing played, and every option passed from nowhere, both leave the card on 2.2', () => {
+    const options = [...(rung22?.exerciseOptions ?? []), ...(rung22?.songOptions ?? [])].filter((id) => !id.includes('sight-reading'));
+    expect(newRung([])).toBe('2.2');
+    expect(newRung(options.map((id) => piece(id, undefined))), 'a count of passes moved the card').toBe('2.2');
+  });
+
+  it('runs judged by 2.2 and reads that show its skill move the card on to 2.3', async () => {
+    let eighths: SessionRow | undefined;
+    for (let seed = 700; eighths === undefined && seed < 760; seed += 1) {
+      const { row } = await readPhrase({ item: TWO_RIGHT, options: written(seed), at: new Date(2026, 9, 2, 9).toISOString(), recipe: { row: TWO_RIGHT.id }, opened });
+      const subdivision = row.evidence?.find((entry) => entry.skill === 'subdivision');
+      if (subdivision && subdivision.kind === 'measured') eighths = { ...row, id: seed, lessonId: '2.2' };
+    }
+    expect(eighths, 'no phrase of 2.2’s row had eighths the window could time').toBeDefined();
+    const rows = [piece(rung22?.exerciseOptions[1] as string, '2.2'), piece(rung22?.songOptions[0] as string, '2.2'), eighths as SessionRow];
+    expect(rungState(rows, curriculum, VOCABULARY_V0, TODAY).byRung.get('2.2')?.status).toBe('met');
+    expect(newRung(rows)).toBe('2.3');
+  }, 120_000);
 });

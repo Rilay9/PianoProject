@@ -139,6 +139,14 @@ export interface Route {
   /** Catalog id of the drill being run (docs/05 §7). */
   drill?: string;
   /**
+   * `#/drill/<id>?rung=<lesson id>` — the rung that opened the drill, which
+   * judges its run and is stored as the run's rung (C5, L8): the lesson page's
+   * row or a Today card. None where nothing opened it from a rung, and the
+   * drill is then judged by the Settings pair and counts for no rung. It used
+   * to be judged by the first rung listing it, whoever opened it.
+   */
+  drillRung?: string;
+  /**
    * `#/library?for=<lessonId>` — the rung an import is being made for
    * (replan §4.3).
    *
@@ -579,7 +587,8 @@ export function parseHash(hash: string): Route {
     } catch {
       return { tab: DEFAULT_TAB };
     }
-    return looksLikeCatalogId(id) ? { tab: DEFAULT_TAB, drill: id } : { tab: DEFAULT_TAB };
+    if (!looksLikeCatalogId(id)) return { tab: DEFAULT_TAB };
+    return { tab: DEFAULT_TAB, drill: id, ...(scoreRung === undefined ? {} : { drillRung: scoreRung }) };
   }
   if (tab === 'chart') {
     let id: string;
@@ -660,7 +669,10 @@ export function routeToHash(route: Route): string {
     const base = `#/chart/${encodeURIComponent(route.chart)}`;
     return route.chartFrom === undefined ? base : `${base}?from=${encodeURIComponent(route.chartFrom)}`;
   }
-  if (route.drill) return `#/drill/${encodeURIComponent(route.drill)}`;
+  if (route.drill) {
+    const base = `#/drill/${encodeURIComponent(route.drill)}`;
+    return route.drillRung === undefined ? base : `${base}?rung=${encodeURIComponent(route.drillRung)}`;
+  }
   if (route.dev) return `#/dev/${route.dev}`;
   return route.sub ? `#/${route.tab}/${route.sub}` : `#/${route.tab}`;
 }
@@ -780,9 +792,13 @@ export class Router {
     this.setRoute(route);
   }
 
-  /** Runs a drill (`#/drill/<itemId>`). */
-  navigateDrill(itemId: string): void {
-    const route: Route = { tab: this.current.tab, drill: itemId };
+  /** Runs a drill (`#/drill/<itemId>`), judged by the rung that opened it, if one did (C5). */
+  navigateDrill(itemId: string, options: { rung?: string } = {}): void {
+    const route: Route = {
+      tab: this.current.tab,
+      drill: itemId,
+      ...(options.rung === undefined ? {} : { drillRung: options.rung }),
+    };
     this.win.location.hash = routeToHash(route);
     this.setRoute(route);
   }
@@ -934,7 +950,9 @@ export class Router {
       // Library are two routes, and the second would otherwise keep the
       // first one's Back and never redraw.
       route.chartFrom === this.current.chartFrom &&
-      route.drill === this.current.drill
+      route.drill === this.current.drill &&
+      // The rung that judges the drill is part of which run it is (C5).
+      route.drillRung === this.current.drillRung
     ) {
       return;
     }

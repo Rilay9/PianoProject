@@ -1,13 +1,16 @@
 """
-The build refuses a rung that requires evidence no run can give (C2).
+The build refuses a rung whose requirement no run can evidence (C2, C5).
 
-Design 2026-09-26 §4, enforcement 3: a rung whose requirement names a skill with
-`observable: none`, or a condition no run records, or a count nothing counts, is
-a promise the app cannot keep, and the Plan screen would mark it done on
-evidence of something else. Vocabulary v0 (`content/curriculum/vocabulary/`)
-says what each reading skill's observable and conditions are; `validate.py`
-reads it and refuses the rung. The refusals the tree already carries are
-waivers with reasons until C5 turns rung requirements into predicates.
+Design 2026-09-26 §4, enforcement 3: a rung that requires a skill with
+`observable: none`, or a standard whose conditions no run records, or evidence
+its own page offers no way to give, is a promise the app cannot keep, and the
+Plan screen would mark it done on evidence of something else. Since C5 a rung's
+requirements are predicates in the content (`requirements`, `curriculum.schema.json`)
+and `evidence/rungState.ts` reads them; this reads the same predicates against
+vocabulary v0 and the catalog, and refuses the rung. Nothing is waived: C2's
+three waivers (1.5's five first readings, 3.4's five reads, 4.6's reading ahead)
+became a predicate the evidence can meet or an `unjudged` requirement the page
+prints as the lesson's rule, and every unjudged rule is listed on every build.
 
 Also here: `CLAIMING_CONCEPTS` keys are concept ids (G34), and the vocabulary's
 own references resolve.
@@ -41,11 +44,21 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 CONTENT = REPO_ROOT / "content"
 
 
-def rung(lesson_id: str, concepts: list[str], custom: str | None = None) -> dict:
-    mastery: dict = {"exercisesRequired": 1, "songsRequired": 0, "minAccuracy": 0.9, "minTempoPct": 0.8}
-    if custom is not None:
-        mastery["custom"] = custom
-    return {"id": lesson_id, "concepts": concepts, "mastery": mastery, "exerciseOptions": [], "songOptions": []}
+def rung(
+    lesson_id: str,
+    concepts: list[str],
+    requirements: list[dict] | None = None,
+    exercises: list[str] | None = None,
+    songs: list[str] | None = None,
+) -> dict:
+    return {
+        "id": lesson_id,
+        "concepts": concepts,
+        "mastery": {"minAccuracy": 0.9, "minTempoPct": 0.8},
+        "requirements": requirements if requirements is not None else [{"kind": "runs", "from": "exercises", "count": 1}],
+        "exerciseOptions": exercises if exercises is not None else ["ex.1", "drill.read"],
+        "songOptions": songs if songs is not None else [],
+    }
 
 
 def curriculum(*lessons: dict) -> dict:
@@ -74,77 +87,117 @@ SKILLS = {
             "standards": {"practice": [], "full": []},
         },
     ],
-    "requirementTerms": [
-        {"term": "read-5", "skill": "reading", "standard": "practice", "runs": 5, "evaluatedBy": "lessonComplete"},
-        {"term": "read-5-unseen", "skill": "reading", "standard": "full", "runs": 5, "evaluatedBy": "lessonComplete"},
-        {"term": "read-5-counted-by-nobody", "skill": "reading", "standard": "practice", "runs": 5, "evaluatedBy": None},
-    ],
-    "gateWaivers": [],
 }
+
+#: The reading row the constructed rungs list, declaring the one measurable skill.
+CATALOG = [{"id": "drill.read", "targetSkills": ["reading"]}, {"id": "ex.1"}]
+
+UNJUDGED_PEDAL = {"kind": "unjudged", "rule": "pedal-clean>=0.9", "says": "Change the pedal cleanly.", "why": "pedalling is not judged"}
 
 
 class TestTheGate(unittest.TestCase):
     def test_a_rung_requiring_a_skill_no_run_can_measure_is_refused(self) -> None:
-        errors, waived, _ = evidence_gate(curriculum(rung("9.9", ["keeping-going"])), SKILLS)
-        self.assertEqual(waived, [])
+        errors, _ = evidence_gate(
+            curriculum(rung("9.9", [], [{"kind": "skill", "skill": "keeping-going", "state": "familiar"}])), SKILLS, CATALOG
+        )
         self.assertEqual(len(errors), 1)
         self.assertIn("9.9", errors[0])
         self.assertIn("keeping-going", errors[0])
         self.assertIn("observable", errors[0])
 
+    def test_a_concept_no_run_can_measure_is_refused_unless_the_rung_says_the_app_does_not_judge_it(self) -> None:
+        errors, _ = evidence_gate(curriculum(rung("9.9", ["keeping-going"])), SKILLS, CATALOG)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("keeping-going", errors[0])
+        said = {"kind": "unjudged", "rule": "keeping-going", "says": "Keep going through a slip.", "why": "continuity is not measured"}
+        errors, unjudged = evidence_gate(
+            curriculum(rung("9.9", ["keeping-going"], [{"kind": "runs", "from": "exercises", "count": 1}, said])), SKILLS, CATALOG
+        )
+        self.assertEqual(errors, [])
+        self.assertEqual(unjudged, ["9.9: keeping-going"])
+
     def test_a_requirement_whose_standard_no_run_records_is_refused(self) -> None:
-        errors, _, _ = evidence_gate(curriculum(rung("9.9", [], "read-5-unseen>=0.9")), SKILLS)
+        reads = {"kind": "reads", "skill": "reading", "standard": "full", "share": 0.9, "count": 5}
+        errors, _ = evidence_gate(curriculum(rung("9.9", [], [reads])), SKILLS, CATALOG)
         self.assertEqual(len(errors), 1)
         self.assertIn("guide-off", errors[0])
 
-    def test_a_count_nothing_counts_is_refused(self) -> None:
-        errors, _, _ = evidence_gate(curriculum(rung("9.9", [], "read-5-counted-by-nobody>=0.9")), SKILLS)
+    def test_a_skill_the_rung_offers_no_way_to_show_is_refused(self) -> None:
+        # No option of the rung declares the skill: the page could never lead to
+        # the evidence its requirement names.
+        errors, _ = evidence_gate(
+            curriculum(rung("9.9", [], [{"kind": "skill", "skill": "reading", "state": "familiar"}], exercises=["ex.1"])),
+            SKILLS,
+            CATALOG,
+        )
         self.assertEqual(len(errors), 1)
-        self.assertIn("nothing evaluates", errors[0])
+        self.assertIn("no option", errors[0])
 
-    def test_a_measurable_skill_with_a_counted_requirement_passes(self) -> None:
-        errors, waived, unjudged = evidence_gate(curriculum(rung("9.9", ["reading"], "read-5>=0.85")), SKILLS)
-        self.assertEqual((errors, waived, unjudged), ([], [], []))
-
-    def test_a_waiver_turns_the_refusal_into_a_named_exception(self) -> None:
-        skills = copy.deepcopy(SKILLS)
-        skills["gateWaivers"] = [
-            {"rung": "9.9", "skill": "keeping-going", "reason": "continuity is not measured yet; C5 decides", "until": "C5"}
+    def test_a_measurable_skill_its_page_can_show_passes(self) -> None:
+        requirements = [
+            {"kind": "runs", "from": "exercises", "count": 2},
+            {"kind": "skill", "skill": "reading", "state": "familiar"},
+            {"kind": "reads", "skill": "reading", "standard": "practice", "share": 0.85, "count": 5},
         ]
-        errors, waived, _ = evidence_gate(curriculum(rung("9.9", ["keeping-going"])), skills)
-        self.assertEqual(errors, [])
-        self.assertEqual(len(waived), 1)
-        self.assertIn("9.9", waived[0])
+        self.assertEqual(evidence_gate(curriculum(rung("9.9", ["reading"], requirements)), SKILLS, CATALOG), ([], []))
 
-    def test_a_waiver_nothing_needs_is_an_error(self) -> None:
-        skills = copy.deepcopy(SKILLS)
-        skills["gateWaivers"] = [{"rung": "9.9", "skill": "reading", "reason": "no longer true", "until": "C5"}]
-        errors, _, _ = evidence_gate(curriculum(rung("9.9", ["reading"])), skills)
+    def test_a_count_of_runs_the_rung_cannot_offer_is_refused(self) -> None:
+        errors, _ = evidence_gate(
+            curriculum(rung("9.9", [], [{"kind": "runs", "from": "songs", "count": 1}], songs=[])), SKILLS, CATALOG
+        )
         self.assertEqual(len(errors), 1)
-        self.assertIn("waiver", errors[0])
+        self.assertIn("songs", errors[0])
 
-    def test_a_measure_outside_the_vocabulary_is_reported_not_refused(self) -> None:
-        errors, _, unjudged = evidence_gate(curriculum(rung("9.9", [], "pedal-clean>=0.9")), SKILLS)
+    def test_a_finished_item_is_a_requirement_only_for_the_one_rung_listing_it(self) -> None:
+        done = [{"kind": "done", "item": "ex.1"}]
+        errors, _ = evidence_gate(curriculum(rung("9.8", [], done), rung("9.9", [])), SKILLS, CATALOG)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("9.9", errors[0])
+
+    def test_a_rung_with_no_requirement_is_refused(self) -> None:
+        errors, _ = evidence_gate(curriculum(rung("9.9", [], [])), SKILLS, CATALOG)
+        self.assertEqual(len(errors), 1)
+        self.assertIn("no requirement", errors[0])
+
+    def test_an_unjudged_rule_is_listed_not_refused(self) -> None:
+        errors, unjudged = evidence_gate(
+            curriculum(rung("9.9", [], [{"kind": "runs", "from": "exercises", "count": 1}, UNJUDGED_PEDAL])), SKILLS, CATALOG
+        )
         self.assertEqual(errors, [])
-        self.assertEqual(unjudged, ["9.9: pedal-clean"])
+        self.assertEqual(unjudged, ["9.9: pedal-clean>=0.9"])
 
-    def test_a_comparison_written_as_prose_is_listed_whole(self) -> None:
-        errors, _, unjudged = evidence_gate(curriculum(rung("9.9", [], "two clean passes, then blind at >=0.9")), SKILLS)
-        self.assertEqual(errors, [])
-        self.assertEqual(unjudged, ['9.9: "two clean passes, then blind at >=0.9"'])
-
-    def test_the_tree_carries_exactly_its_waivers(self) -> None:
+    def test_the_tree_is_refused_nothing_and_says_what_it_does_not_judge(self) -> None:
         stages = []
         for path in sorted((CONTENT / "curriculum").glob("stage-*.json")):
             stages.extend(json.loads(path.read_text(encoding="utf-8")).get("stages", []))
         skills, _ = load_vocabulary()
-        errors, waived, unjudged = evidence_gate({"stages": stages}, skills)
+        catalog = json.loads((CONTENT / "catalog.static.json").read_text(encoding="utf-8"))
+        errors, unjudged = evidence_gate({"stages": stages}, skills, catalog)
         self.assertEqual(errors, [])
-        self.assertEqual(sorted(w.split(":")[0] for w in waived), ["1.5", "3.4", "4.6"])
-        # The technique, ear and performance measures named in `mastery.custom`
-        # are outside v0: counted, never silently passed.
-        self.assertIn("3.5: pedal-clean", unjudged)
-        self.assertIn("2.4: dynamics-contrast", unjudged)
+        # The technique, ear and performance measures the lessons state and no
+        # run records: listed, never silently passed.
+        self.assertIn("3.5: pedal-clean>=0.9", unjudged)
+        self.assertIn("2.4: dynamics-contrast>=1.6", unjudged)
+        # C2's three waivers, each become what the evidence can meet or what
+        # the page says the app does not judge.
+        self.assertIn("4.6: reading-ahead", unjudged)
+        lessons = {lesson["id"]: lesson for stage in stages for unit in stage["units"] for lesson in unit["lessons"]}
+        for rung_id, standard, share in (("1.5", "full", 0.9), ("3.4", "practice", 0.85)):
+            reads = [r for r in lessons[rung_id]["requirements"] if r["kind"] == "reads"]
+            self.assertEqual(
+                [(r["skill"], r["standard"], r["share"], r["count"]) for r in reads],
+                [("sight-reading", standard, share, 5)],
+                rung_id,
+            )
+
+    def test_no_rung_keeps_the_old_counting_fields(self) -> None:
+        for path in sorted((CONTENT / "curriculum").glob("stage-*.json")):
+            for stage in json.loads(path.read_text(encoding="utf-8")).get("stages", []):
+                for unit in stage["units"]:
+                    for lesson in unit["lessons"]:
+                        self.assertEqual(
+                            sorted(lesson["mastery"]), ["minAccuracy", "minTempoPct"], f"{lesson['id']} in {path.name}"
+                        )
 
 
 class TestTheVocabulary(unittest.TestCase):

@@ -72,7 +72,7 @@ const { loadCurriculumSpy, allItemsSpy, fetchMarkdownSpy, lessonRef } = vi.hoist
     exerciseOptions: [],
     songOptions: [],
     songOptional: true,
-    mastery: { exercisesRequired: 1, songsRequired: 0, minAccuracy: 0.95, minTempoPct: 0.8 },
+    mastery: { minAccuracy: 0.95, minTempoPct: 0.8 }, requirements: [{ kind: 'runs', from: 'exercises', count: 1 }],
   } as unknown as Lesson;
   const ref = { current: lesson };
   return {

@@ -38,11 +38,21 @@
                 "song.folk.simple-gifts.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "1.5"
               ],
@@ -122,11 +132,26 @@
                 "song.folk.anonymous-swing-low-sweet-chariot.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.85
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                },
+                {
+                  "kind": "skill",
+                  "skill": "subdivision",
+                  "state": "familiar"
+                }
+              ],
               "prerequisites": [
                 "2.1"
               ],
@@ -192,12 +217,36 @@
                 "song.folk.skip-to-my-lou.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
-                "minTempoPct": 0.8,
-                "custom": "chord-drill-20-changes>=0.95"
+                "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "items": [
+                    "drill.chord.c-f-g"
+                  ],
+                  "count": 1,
+                  "accuracy": 0.95
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "chord-drill-20-changes>=0.95",
+                  "says": "Twenty chord changes: two sets of ten.",
+                  "why": "A set of the chord drill is ten changes; two sets are not counted together."
+                }
+              ],
               "prerequisites": [
                 "2.1"
               ],
@@ -275,12 +324,27 @@
                 "song.pop.careless-love-blues.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
-                "minTempoPct": 0.8,
-                "custom": "dynamics-contrast>=1.6"
+                "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "dynamics-contrast>=1.6",
+                  "says": "Your loud notes at least 1.6 times as strong as your soft ones.",
+                  "why": "Loudness contrast is not measured yet: no run records it."
+                }
+              ],
               "prerequisites": [
                 "2.2"
               ],
@@ -345,12 +409,36 @@
                 "song.classical.beethoven-ode-to-joy.easy"
               ],
               "mastery": {
-                "exercisesRequired": 2,
-                "songsRequired": 0,
                 "minAccuracy": 0.95,
-                "minTempoPct": 0.8,
-                "custom": "c-major-scale-HS-60bpm>=0.95"
+                "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 2
+                },
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "items": [
+                    "exercise.scale.c-major.1oct.similar.right.2",
+                    "exercise.scale.c-major.1oct.similar.left.2"
+                  ],
+                  "count": 2
+                },
+                {
+                  "kind": "skill",
+                  "skill": "position-shift",
+                  "state": "familiar"
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "c-major-scale-HS-60bpm>=0.95",
+                  "says": "The scale at 60 beats a minute in eighth notes.",
+                  "why": "The app judges tempo as a share of the written tempo, not in beats a minute."
+                }
+              ],
               "prerequisites": [
                 "2.3",
                 "2.4"
@@ -416,11 +504,21 @@
                 "song.classical.1863-rev-john-henry-hopkins-we-three-kings-of-orient-are.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "estimatedDays": 14,
               "requires": {
                 "chordSymbols": true
@@ -492,11 +590,21 @@
                 "song.folk.anonymous-swing-low-sweet-chariot.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "estimatedDays": 10,
               "tools": [
                 {

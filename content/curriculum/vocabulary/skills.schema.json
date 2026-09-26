@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "pianopath/vocabulary/skills.schema.json",
   "title": "Vocabulary v0: skills",
-  "description": "The reading skills (C2). The shape only: validate.py checks the references (every opportunity a demand id, every condition declared, every waiver a real rung) and app/tests/unit/vocabulary.test.ts checks the ids against concepts.json.",
+  "description": "The reading skills (C2). The shape only: validate.py checks the references (every opportunity a demand id, every condition declared) and app/tests/unit/vocabulary.test.ts checks the ids against concepts.json.",
   "type": "object",
-  "required": ["conditions", "skills", "requirementTerms", "gateWaivers"],
+  "required": ["conditions", "skills"],
   "additionalProperties": false,
   "properties": {
     "_comment": { "type": "array", "items": { "type": "string" } },
@@ -62,37 +62,6 @@
         },
         "if": { "properties": { "observable": { "const": "none" } } },
         "then": { "required": ["unobserved"] }
-      }
-    },
-    "requirementTerms": {
-      "type": "array",
-      "description": "Interim, until C5: the mastery.custom terms that name a v0 skill.",
-      "items": {
-        "type": "object",
-        "required": ["term", "skill", "standard", "runs", "evaluatedBy"],
-        "additionalProperties": false,
-        "properties": {
-          "term": { "type": "string", "pattern": "^[A-Za-z0-9-]+$" },
-          "skill": { "type": "string" },
-          "standard": { "enum": ["practice", "full"] },
-          "runs": { "type": "integer", "minimum": 1 },
-          "evaluatedBy": { "type": ["string", "null"] }
-        }
-      }
-    },
-    "gateWaivers": {
-      "type": "array",
-      "description": "Refusals the build accepts until a named wave, each with its reason. validate.py counts them on every build and refuses one nothing needs.",
-      "items": {
-        "type": "object",
-        "required": ["rung", "skill", "reason", "until"],
-        "additionalProperties": false,
-        "properties": {
-          "rung": { "type": "string" },
-          "skill": { "type": "string" },
-          "reason": { "type": "string", "minLength": 40 },
-          "until": { "type": "string" }
-        }
       }
     }
   }

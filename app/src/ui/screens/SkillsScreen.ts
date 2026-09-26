@@ -9,20 +9,31 @@
 import type { Router } from '../../router';
 import { allItems, loadCurriculum } from '../../curriculum/load';
 import type { CatalogItem, ConceptEntry as CurriculumConcept, Curriculum } from '../../curriculum/types';
-import { allProgress } from '../../data/progressStore';
+import { rungRows } from '../../data/progressStore';
 import { getPlan } from '../../data/planStore';
 import { activeTracksFor } from '../../curriculum/tracks';
 import { nextRecommended } from '../../curriculum/session';
 import { getSettings } from '../../data/settingsStore';
 import { allSkills, displayState, type SkillState } from '../../data/skillsStore';
+import { carriedExposures, learnerRecordFrom, rungState, skillLadders } from '../../evidence/rungState';
+import { ladderState, type LadderReading, type LadderState } from '../../evidence/ladder';
+import { VOCABULARY_V0 } from '../../evidence/vocabulary';
 import type { SkillRow } from '../../data/db';
 import { createSubScreen } from './subScreen';
 import { badge, button, chip, el, levelLabel, listRow } from '../widgets';
 import { openFinderSheet } from '../finderSheet';
 import { openItem } from '../openItem';
 
-const STATE_LABEL: Record<SkillState, string> = {
+/**
+ * What a concept's row says. The skills store's four, and the ladder's first
+ * state, *introduced* (C5): met — the lesson read, the material played before
+ * the app judged rungs by evidence — and nothing shown yet.
+ */
+export type ShownState = SkillState | 'introduced';
+
+const STATE_LABEL: Record<ShownState, string> = {
   unseen: 'never',
+  introduced: 'introduced',
   learning: 'learning',
   known: 'measured',
   rusty: 'rusty',
@@ -32,7 +43,7 @@ interface ConceptEntry {
   concept: string;
   stages: number[];
   tracks: string[];
-  state: SkillState;
+  state: ShownState;
   /**
    * Everything playable that trains this concept, easiest first (replan §3.2).
    *
@@ -49,33 +60,65 @@ interface ConceptEntry {
 export const SKILL_ITEMS_SHOWN = 3;
 
 /**
+ * A skill's ladder reading as the screen's states (C5): not introduced is
+ * *never*, introduced (met, nothing shown yet — a carried rung's concepts) is
+ * *introduced*, tried and not yet shown is *learning*, familiar or better is
+ * *measured* — which it now is — and a skill whose supporting evidence is
+ * older than the ladder's retention span is *rusty*, by the evidence rather
+ * than by the calendar since a page was drawn (L16's complaint, for these
+ * skills).
+ */
+export function ladderToState(reading: Pick<LadderReading, 'state' | 'notShownRecently'> | LadderState): ShownState {
+  const state = typeof reading === 'string' ? reading : reading.state;
+  const stale = typeof reading === 'string' ? false : reading.notShownRecently;
+  if (state === 'not introduced') return 'unseen';
+  if (state === 'introduced') return 'introduced';
+  if (state === 'practised') return 'learning';
+  return stale ? 'rusty' : 'known';
+}
+
+/**
  * Every concept, with where it comes from and what could drill it.
  *
- * A concept's state comes from two places: what the learner recorded in the
- * skills store, and what they actually passed. The second wins when it is
- * stronger — passing an item that teaches a concept *is* evidence about the
- * concept, and asking someone to tick a box they have already earned is the
- * kind of bookkeeping that makes a screen go unused.
+ * A concept that is a vocabulary skill with an observable shows what the
+ * learner's evidence shows (C5: the ladder over every current-stamp record,
+ * whichever rung judged the run). Every other concept shows what the learner
+ * recorded in the skills store (C7 replaces it). An item's pass moves neither:
+ * it used to promote every concept the item names to *learning*, an item's
+ * flag standing in for a skill.
+ *
+ * `exposures` are the carried rungs' concepts (`carriedExposures`): a concept
+ * the store has as never met is shown at the ladder's first state for them,
+ * *introduced*; what the learner said or showed outranks it. (The vocabulary
+ * skills have them already, through `ladders`.)
  */
 export function buildConcepts(
   curriculum: Curriculum,
   items: CatalogItem[],
   skills: SkillRow[],
-  passedItemIds: Set<string>,
+  ladders: ReadonlyMap<string, Pick<LadderReading, 'state' | 'notShownRecently'> | LadderState>,
   now = new Date(),
+  exposures: ReadonlyMap<string, readonly string[]> = new Map(),
 ): ConceptEntry[] {
   const byConcept = new Map<string, ConceptEntry>();
   const skillByConcept = new Map(skills.map((row) => [row.conceptId, row]));
+  const storeState = (concept: string): ShownState => {
+    const stored = displayState(skillByConcept.get(concept), now);
+    const exposed = exposures.get(concept);
+    if (stored !== 'unseen' || !exposed || exposed.length === 0) return stored;
+    return ladderToState(ladderState({ evidence: [], exposures: exposed, today: now }));
+  };
 
   for (const stage of curriculum.stages) {
     for (const unit of stage.units) {
       for (const lesson of unit.lessons) {
         for (const concept of lesson.concepts) {
+          const ladder = ladders.get(concept);
           const entry = byConcept.get(concept) ?? {
             concept,
             stages: [],
             tracks: [],
-            state: displayState(skillByConcept.get(concept), now),
+            state: ladder === undefined ? storeState(concept) : ladderToState(ladder),
             items: [],
           };
           if (!entry.stages.includes(stage.number)) entry.stages.push(stage.number);
@@ -93,7 +136,6 @@ export function buildConcepts(
       if (!entry) continue;
       // Songs are not practice for a *skill*: they are where the skill is used.
       if (playable && item.type !== 'song') entry.items.push(item);
-      if (passedItemIds.has(item.id) && entry.state === 'unseen') entry.state = 'learning';
     }
   }
   for (const entry of byConcept.values()) {
@@ -332,17 +374,18 @@ export function SkillsScreen(router: Router): HTMLElement {
   }
 
   void (async () => {
-    const [curriculum, items, skills, progress] = await Promise.all([
+    const [curriculum, items, skills, rows, plan] = await Promise.all([
       loadCurriculum(),
       allItems(),
       allSkills(),
-      allProgress(),
+      rungRows(),
+      getPlan(),
     ]);
-    const passed = new Set(
-      progress.filter((row) => row.status === 'passed' || row.status === 'mastered').map((row) => row.itemId),
-    );
+    const now = new Date();
     conceptMeta = new Map((curriculum.concepts ?? []).map((entry) => [entry.id, entry]));
-    entries = buildConcepts(curriculum, items, skills, passed);
+    // The carried rungs' concepts, as exposures on the ladder (C5): *introduced*.
+    const exposures = carriedExposures(curriculum, plan.carriedOver);
+    entries = buildConcepts(curriculum, items, skills, skillLadders(rows, VOCABULARY_V0, now, exposures), now, exposures);
     drawFilters(
       curriculum.stages.map((stage) => stage.number),
       curriculum.tracks.map((track) => track.id),
@@ -355,15 +398,10 @@ export function SkillsScreen(router: Router): HTMLElement {
       stateFilter = 'rusty';
       document.getElementById('skills-rusty')?.setAttribute('aria-pressed', 'true');
     } else {
-      // Nothing rusty: the stage being worked on and the one below it.
-      const records = progress.map((row) => ({
-        itemId: row.itemId,
-        passed: row.status === 'passed' || row.status === 'mastered',
-        mastered: row.status === 'mastered',
-      }));
-      const plan = await getPlan();
-      const here = nextRecommended(curriculum, records, activeTracksFor(plan, curriculum), {
-        requireTwoSongs: getSettings().requireTwoSongs,
+      // Nothing rusty: the stage being worked on and the one below it — where
+      // the learner is by the evidence (C5), as Plan and Today say it.
+      const states = rungState(rows, curriculum, VOCABULARY_V0, now, learnerRecordFrom(plan, getSettings()));
+      const here = nextRecommended(curriculum, states, activeTracksFor(plan, curriculum), {
         // The same starting point Plan and Today use, so the three screens
         // cannot disagree about where the learner is (built 2026-09-21).
         ...(plan.placement === undefined ? {} : { startAt: plan.placement.unitId }),

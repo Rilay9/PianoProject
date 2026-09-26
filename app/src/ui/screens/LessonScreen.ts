@@ -13,13 +13,17 @@
  */
 import type { Router } from '../../router';
 import { allItems, loadCurriculum, fetchMarkdown } from '../../curriculum/load';
-import { findLesson, idsToCompleteLesson, lessonComplete } from '../../curriculum/selectors';
+import { findLesson, masteryCriteriaFor } from '../../curriculum/selectors';
 import { lessonShortfall } from '../../curriculum/needs';
-import type { CatalogItem, Curriculum, Lesson, LessonTool, PassRecord } from '../../curriculum/types';
+import type { CatalogItem, Curriculum, Lesson, LessonTool } from '../../curriculum/types';
 import { allProgress, selfPass } from '../../data/progressStore';
 import { getSettings, updateSettings } from '../../data/settingsStore';
 import { markLessonLearnt, markSkill } from '../../data/skillsStore';
-import { recordPlacement } from '../../data/planStore';
+import { recordPlacement, recordRungWord } from '../../data/planStore';
+import { loadRungStates } from '../../data/rungStates';
+import type { RungReading, RungStates } from '../../evidence/rungState';
+import { VOCABULARY_V0 } from '../../evidence/vocabulary';
+import { RUNG_TEXT, requirementState, requirementWords, rungBadge } from '../help';
 import type { ProgressRow } from '../../data/db';
 import { parseFrontMatter, renderMarkdown } from '../markdown';
 import { badge, button, el, handsLabel, levelLabel, listRow, openSheet } from '../widgets';
@@ -58,7 +62,10 @@ interface VideoLink {
  *     there, and it is the only place it is.
  */
 export function noSongsSentence(lesson: Pick<Lesson, 'songOptional' | 'optionsExempt'>): string {
-  if (lesson.songOptional === true) return 'No song tests this skill — two exercises finish this rung.';
+  // Not "two exercises finish this rung" (C5): what finishes a rung is its
+  // requirements, listed under *What the app counts*, and a song-optional rung
+  // asks for one exercise, or two, or five reads of its reading row as well.
+  if (lesson.songOptional === true) return 'No song tests this skill, so this rung asks only for its exercises.';
   if (lesson.optionsExempt === true) return 'No songs on this rung — its exercises are the whole of it.';
   return 'No songs listed for this lesson yet.';
 }
@@ -80,6 +87,14 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   const actions = el('div.row.lesson-actions', { id: 'lesson-actions' });
   const needsLine = el('p.needs', { id: 'lesson-needs' });
   const lockLine = el('p.lesson-lock', { id: 'lesson-lock', hidden: true });
+  /**
+   * What the app counts for this rung, and what it has counted (C5, T2): the
+   * rung's requirements read against the evidence (`rungState`), one line
+   * each, and where a run has to be opened from to count. Folded to its first
+   * line so the options stay in the first screenful (`04` §0 R1); the line
+   * says how far the rung is.
+   */
+  const counts = el('details.lesson-counts', { id: 'lesson-counts' });
   /**
    * The modes this rung recommends, as controls (`04` §3d).
    *
@@ -144,6 +159,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     status,
     startBlock,
     actions,
+    counts,
     lockLine,
     toolsBlock,
     el('section.block', {}, el('h2', { text: 'Exercise options' }), exercises),
@@ -167,13 +183,13 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   let items = new Map<string, CatalogItem>();
   let shelf: ShelfPiece[] = [];
   let lock: LockState = { locked: false, missing: [], reason: '' };
+  /** Where the learner is, from the evidence (C5): every rung's state, this one's among them. */
+  let states: RungStates | null = null;
 
-  function records(): PassRecord[] {
-    return [...progress.values()].map((row) => ({
-      itemId: row.itemId,
-      passed: row.status === 'passed' || row.status === 'mastered',
-      mastered: row.status === 'mastered',
-    }));
+  /** Reads the rung state again after the learner's word or a pass changed it. */
+  async function refresh(): Promise<void> {
+    progress = new Map((await allProgress()).map((row) => [row.itemId, row]));
+    if (curriculum) states = await loadRungStates(curriculum);
   }
 
   /**
@@ -248,8 +264,10 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   }
 
   async function markKnown(itemId: string): Promise<void> {
+    // The item's own record, badged as the learner's word (C5: it counts for
+    // no rung — a rung is met by runs judged by it, never by an item's flag).
     await selfPass(itemId);
-    progress = new Map((await allProgress()).map((row) => [row.itemId, row]));
+    await refresh();
     draw();
     status.textContent = 'Marked as already known. It shows a different badge from a measured pass.';
   }
@@ -475,7 +493,8 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
       const id = first.id;
       lockLine.append(
         ' ',
-        button(`Go to ${id}`, () => router.navigateLesson(id), {
+        // Not `Go to 1.1` (T26, `00` §1): the reason beside it names the rung.
+        button('Open that lesson', () => router.navigateLesson(id), {
           variant: 'quiet',
           id: 'lesson-prereq-go',
         }),
@@ -694,6 +713,60 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     startBlock.hidden = false;
   }
 
+  /**
+   * *What the app counts* (C5, T2): each requirement in a sentence and what the
+   * evidence shows for it, and where a run has to be opened from to count.
+   */
+  function drawCounts(rung: Lesson, reading: RungReading | undefined): void {
+    const criteria = masteryCriteriaFor(rung, {
+      passAccuracy: getSettings().passAccuracyPct / 100,
+      passTempoPct: getSettings().passTempoPct,
+      masterAccuracy: 0.97,
+      masterTempoPct: 100,
+    });
+    const titleOf = (id: string): string => items.get(id)?.title ?? id;
+    const context = {
+      accuracy: criteria.passAccuracy,
+      tempoPct: criteria.passTempoPct,
+      titleOf,
+      drillsOnly: (ids: readonly string[]) =>
+        ids.length > 0 && ids.every((id) => {
+          const item = items.get(id);
+          return item?.drill !== undefined && !item.file;
+        }),
+      skillName: (id: string) => VOCABULARY_V0.skills.find((skill) => skill.id === id)?.display ?? id,
+      exercises: rung.exerciseOptions,
+      songs: [...rung.songOptions, ...(rung.paperOptions ?? [])],
+    };
+    const readings = reading?.requirements ?? [];
+    const judged = readings.filter((entry) => entry.holds !== 'unjudged');
+    const held = judged.filter((entry) => entry.holds === true).length;
+    const summary = judged.length > 0 ? `${RUNG_TEXT.heading} — ${String(held)} of ${String(judged.length)}` : `${RUNG_TEXT.heading} — ${RUNG_TEXT.notJudged}`;
+    const list = el(
+      'ul.lesson-counts__list',
+      {},
+      ...readings.map((entry) => {
+        const said = requirementState(entry, titleOf);
+        return el(
+          'li',
+          { 'data-holds': String(entry.holds), 'data-kind': entry.requirement.kind },
+          el('span', { text: requirementWords(entry, context) }),
+          ...(said ? [' ', el('span.muted', { text: `(${said})` })] : []),
+        );
+      }),
+    );
+    const notes: HTMLElement[] = [];
+    if (reading && !reading.judged) notes.push(el('p.muted', { text: RUNG_TEXT.notJudgedLine }));
+    if (reading?.word) notes.push(el('p.muted', { text: RUNG_TEXT.wordLine }));
+    if (reading?.carried) notes.push(el('p.muted', { text: RUNG_TEXT.carriedLine }));
+    counts.replaceChildren(
+      el('summary', { text: summary }),
+      list,
+      ...notes,
+      el('p.muted', { text: RUNG_TEXT.opensFromHere }),
+    );
+  }
+
   function draw(): void {
     if (!lesson) return;
     const rung = lesson;
@@ -720,7 +793,11 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     drawPaper(lesson);
     drawLock();
 
-    const done = lessonComplete(lesson, records(), { requireTwoSongs: getSettings().requireTwoSongs });
+    const reading = states?.byRung.get(lesson.id);
+    drawCounts(lesson, reading);
+    // Met by the evidence its requirements name (C5), where it was the items
+    // marked passed, counted over the rung's lists.
+    const done = reading?.status === 'met';
     // A lesson finished by *playing* it teaches its concepts too.
     //
     // `markSkill` was called in exactly one place: the `I already know this`
@@ -735,20 +812,23 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     // and a timestamp that keeps moving is one that never reaches thirty days —
     // the screen would then have no rusty skills for the other reason.
     if (done) void markLessonLearnt(lesson.concepts ?? []);
+    const stateWord = reading ? rungBadge(reading) : RUNG_TEXT.notStarted;
     actions.replaceChildren(
-      el('span', { id: 'lesson-state' }, done ? badge('complete', 'passed') : badge('in progress')),
+      el('span', { id: 'lesson-state' }, badge(stateWord, done ? 'passed' : 'neutral')),
       button(
         'I already know this',
         () => {
-          // Marks every option of the lesson self-passed in one go: the claim
-          // is about the *skill*, not about one particular tune.
+          // The learner's word about the rung (C5): kept apart from the
+          // evidence, it sets the rung aside in the plan and meets none of its
+          // requirements. It used to mark the rung's items passed, which
+          // credited every other rung listing them (L8). The concepts are
+          // still marked on the Skills screen, as before (C7 owns that store).
           void (async () => {
-            const strict = { requireTwoSongs: getSettings().requireTwoSongs };
-            for (const id of lesson ? idsToCompleteLesson(lesson, strict) : []) await selfPass(id);
+            await recordRungWord(lessonId, 'known');
             for (const concept of lesson?.concepts ?? []) await markSkill(concept, 'known');
-            progress = new Map((await allProgress()).map((row) => [row.itemId, row]));
+            await refresh();
             draw();
-            status.textContent = 'Lesson marked as already known.';
+            status.textContent = 'Lesson marked as already known. The app keeps your word apart from your runs.';
           })();
         },
         { id: 'lesson-know', variant: 'quiet' },
@@ -774,9 +854,9 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
         () => {
           if (!confirm('Mark this lesson done without a measured run?')) return;
           void (async () => {
-            const strict = { requireTwoSongs: getSettings().requireTwoSongs };
-            for (const id of lesson ? idsToCompleteLesson(lesson, strict) : []) await selfPass(id);
-            progress = new Map((await allProgress()).map((row) => [row.itemId, row]));
+            // The learner's word, as above (C5).
+            await recordRungWord(lessonId, 'done');
+            await refresh();
             draw();
             status.textContent = 'Marked done by hand.';
           })();
@@ -813,11 +893,9 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     items = new Map(loadedItems.map((item) => [item.id, item]));
     progress = new Map(rows.map((row) => [row.itemId, row]));
     lesson = findLesson(loaded, lessonId);
+    states = await loadRungStates(loaded);
     if (lesson) {
-      lock = lockState(lesson, loaded, records(), {
-        strict: getSettings().strictPrerequisites,
-        requireTwoSongs: getSettings().requireTwoSongs,
-      });
+      lock = lockState(lesson, loaded, states, { strict: getSettings().strictPrerequisites });
     }
     if (!lesson) {
       // `04` §0 R4. It said the rung did not exist and then drew the whole rung

@@ -14,7 +14,7 @@
  */
 import { beforeEach, describe, expect, it } from 'vitest';
 import { openDB } from 'idb';
-import { DB_VERSION, STORE_NAMES, openDatabase, resetDatabaseForTest } from '../../src/data/db';
+import { CARRY_OVER_DUE_KEY, DB_VERSION, STORE_NAMES, openDatabase, resetDatabaseForTest } from '../../src/data/db';
 import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
 
 /** The stores each version had, in the order `db.ts` created them. */
@@ -33,6 +33,7 @@ const STORES_BY_VERSION: Record<number, string[]> = {
   3: ['folderLibraries'],
   4: [],
   5: ['books'],
+  6: ['folderScores', 'folderIndexes'],
 };
 
 function storesUpTo(version: number): string[] {
@@ -62,6 +63,9 @@ async function openAtVersion(version: number): Promise<void> {
           database.createObjectStore('skills', { keyPath: 'conceptId' });
         } else if (name === 'levelOverrides') {
           database.createObjectStore('levelOverrides', { keyPath: 'itemId' });
+        } else if (name === 'folderScores') {
+          const scores = database.createObjectStore('folderScores', { keyPath: ['folder', 'file'] });
+          scores.createIndex('byTitle', ['folder', 'sort']);
         } else {
           database.createObjectStore(name, { keyPath: 'id' });
         }
@@ -111,7 +115,7 @@ describe('upgrading from every version that has shipped', () => {
     useFakeIndexedDb();
   });
 
-  for (const from of [1, 2, 3, 4, 5]) {
+  for (const from of [1, 2, 3, 4, 5, 6]) {
     it(`from version ${String(from)} keeps every row and ends with every store`, async () => {
       await openAtVersion(from);
       resetDatabaseForTest();
@@ -137,6 +141,11 @@ describe('upgrading from every version that has shipped', () => {
       const imported = await db?.get('imports', 'import.kept');
       if (from < 4) expect(imported?.levelSource).toBe('judged');
 
+      // C5, on every path from a version before 7: a database made before C5
+      // holds a record the old rule read, so the upgrade marks it due to be
+      // carried over once (the carry-over itself runs later, on the job).
+      expect(await db?.get('settings', CARRY_OVER_DUE_KEY), `no carry-over due after ${String(from)}`).toBe(true);
+
       clearFakeIndexedDb();
     });
   }
@@ -144,6 +153,8 @@ describe('upgrading from every version that has shipped', () => {
   it('a fresh database runs no migration and still has everything', async () => {
     const db = await openDatabase();
     expect(db?.version).toBe(DB_VERSION);
+    // A database C5 makes has no old record to carry over.
+    expect(await db?.get('settings', CARRY_OVER_DUE_KEY)).toBeUndefined();
     for (const name of STORE_NAMES) {
       expect([...(db?.objectStoreNames ?? [])]).toContain(name);
     }

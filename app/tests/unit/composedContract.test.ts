@@ -126,7 +126,7 @@ interface Group {
 function groups(): Group[] {
   const out: Group[] = [];
   for (const rung of CORE) {
-    const position = nextRecommended(curriculum, [], ['core'], { startAt: rung });
+    const position = nextRecommended(curriculum, { byRung: new Map() }, ['core'], { startAt: rung });
     const offer = readingOffer({ curriculum, items: catalog, position, activeTracks: ['core'], rows: [], today: new Date(2026, 9, 1), purpose: 'daily' });
     if (!offer?.anchored || position?.lesson.id !== rung) continue;
     const hold = offer.lessonId ?? rung;

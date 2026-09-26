@@ -40,9 +40,10 @@
  */
 import type { Router, TodaySlot } from '../../router';
 import { allItems, loadCurriculum } from '../../curriculum/load';
-import { findLesson, indexCatalog, lessonForItem, type CatalogIndex } from '../../curriculum/selectors';
+import { findLesson, indexCatalog, type CatalogIndex } from '../../curriculum/selectors';
 import { activeTracksFor } from '../../curriculum/tracks';
-import type { CatalogItem, Curriculum, PassRecord } from '../../curriculum/types';
+import type { CatalogItem, Curriculum } from '../../curriculum/types';
+import { loadRungStates } from '../../data/rungStates';
 import {
   SESSION_TEMPLATES,
   buildSession,
@@ -60,10 +61,12 @@ import {
   getStreak,
   onProgressChange,
   readToday,
+  repertoireOf,
   reviewQueue,
   sessionsForItem,
   weekSoFar,
 } from '../../data/progressStore';
+import { isSightReading } from '../../engine/drills/fromCatalog';
 import { simonForStage } from '../../engine/drills/simon';
 import { getPlan } from '../../data/planStore';
 import { getSettings, updateSettings } from '../../data/settingsStore';
@@ -244,11 +247,17 @@ export function TodayScreen(router: Router): HTMLElement {
    * a drill or a PDF opens as it always did.
    */
   const open = (target: CatalogItem, slot: SessionSlot): void => {
+    const rung = curriculum ? rungForSlot(curriculum, target, slot.lessonId) : undefined;
+    // A drill carries the rung too (C5): it judges the drill's run.
+    if (targetFor(target) === 'drill') {
+      if (rung === undefined) router.navigateDrill(target.id);
+      else router.navigateDrill(target.id, { rung });
+      return;
+    }
     if (targetFor(target) !== 'score') {
       void openItem(router, target);
       return;
     }
-    const rung = curriculum ? rungForSlot(curriculum, target, slot.lessonId) : undefined;
     // The reading slot's phrase, exactly (C4): its seed and its recipe. Only
     // while the row is the reader's: a swap replaces the item, and a recipe
     // written for one row means nothing on another.
@@ -565,12 +574,14 @@ export function TodayScreen(router: Router): HTMLElement {
         .getElementById(`today-length-${String(template.minutes)}`)
         ?.setAttribute('aria-pressed', String(template.minutes === minutes));
     }
-    const records: PassRecord[] = progress.map((row) => ({
-      itemId: row.itemId,
-      passed: row.status === 'passed' || row.status === 'mastered',
-      mastered: row.status === 'mastered',
-    }));
-    void getPlan().then((plan) => {
+    // A generated sight-reading row (C5, S8): never reviewed, never repertoire.
+    const generated = (id: string): boolean => {
+      const item = catalog?.byId.get(id);
+      return item !== undefined && isSightReading(item);
+    };
+    // Where the learner is comes from the evidence (C5: `rungState`), where it
+    // was the items marked passed, counted over each rung.
+    void Promise.all([getPlan(), loadRungStates(curriculum, now)]).then(([plan, states]) => {
       // The same active set Plan and Settings show, so the three screens
       // cannot disagree about what is switched on.
       const active = activeTracksFor(plan, curriculum as Curriculum);
@@ -578,13 +589,14 @@ export function TodayScreen(router: Router): HTMLElement {
         curriculum: curriculum as Curriculum,
         catalog: catalog as CatalogIndex,
         items,
-        records,
-        dueForReview: reviewQueue(progress).map((entry) => entry.itemId),
-        mastered: progress.filter((row) => row.status === 'mastered').map((row) => row.itemId),
+        states,
+        // Pieces only (C5, S8): a generated sight-reading row is never
+        // reviewed and never repertoire, whatever an older build wrote on it.
+        dueForReview: reviewQueue(progress, now, generated).map((entry) => entry.itemId),
+        mastered: repertoireOf(progress, generated),
         activeTracks: active,
         minutes,
         seed,
-        requireTwoSongs: getSettings().requireTwoSongs,
         strictPrerequisites: getSettings().strictPrerequisites,
         // "Placement recorded. Today will build from here" — which it now
         // does (`02` Stage 0.4, built 2026-09-21).
@@ -605,8 +617,7 @@ export function TodayScreen(router: Router): HTMLElement {
         actionsDrawn = true;
       }
 
-      const position = nextRecommended(curriculum as Curriculum, records, active, {
-        requireTwoSongs: getSettings().requireTwoSongs,
+      const position = nextRecommended(curriculum as Curriculum, states, active, {
         strictPrerequisites: getSettings().strictPrerequisites,
         // The same `startAt` the session above was built with (T17).
         //
@@ -755,23 +766,25 @@ function routeRecipeOf(offer: ReadingOffer): { moved?: NonNullable<ReadingOffer[
 }
 
 /**
- * The rung a Today card's run is for (C3 item 0b, L50).
+ * The rung a Today card's run is judged by (C3 item 0b, L50; C5).
  *
  * The rung the session builder offered the item from, where that rung lists
- * it: the warm-up and the new piece come off the learner's current rung.
- * Otherwise the first rung listing the item — a review, a repertoire piece, a
- * fallback, the daily read — which is the rung it belongs to wherever it is
- * listed once, and what every Today run was judged by before C1. `undefined`
- * for an item on no rung, which the Settings pair then judges.
- *
- * Interim, and labelled so: the session builder (C4) should say which rung
- * each slot is for; for an item listed on several rungs and offered from none
- * of them, the first listing is a guess the route now makes visible.
+ * it: the warm-up, the new piece and the reading row come off the learner's
+ * rung, which the builder takes from the derived rung state (`rungState`
+ * through `nextRecommended`), so this reads the derived state through the
+ * slot. Otherwise the one rung that lists the item, where exactly one does:
+ * its standard is the only one the curriculum gives the item. Otherwise none:
+ * an item several rungs list, offered from none of them (a review, a
+ * repertoire piece, a fallback), is judged by the Settings pair and counts
+ * towards no rung's requirement — no rung asked for it, and choosing one of
+ * its listings would be the credit by listing C5 removed (L8). It was the
+ * first rung listing it, a guess C3 labelled interim.
  */
 export function rungForSlot(curriculum: Curriculum, item: CatalogItem, offeredFrom?: string): string | undefined {
+  const lists = (lesson: { exerciseOptions: string[]; songOptions: string[] }): boolean =>
+    lesson.exerciseOptions.includes(item.id) || lesson.songOptions.includes(item.id);
   const offered = offeredFrom === undefined ? undefined : findLesson(curriculum, offeredFrom);
-  if (offered && (offered.exerciseOptions.includes(item.id) || offered.songOptions.includes(item.id))) {
-    return offered.id;
-  }
-  return lessonForItem(curriculum, item.id)?.id;
+  if (offered && lists(offered)) return offered.id;
+  const listing = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons.filter(lists)));
+  return listing.length === 1 ? listing[0]?.id : undefined;
 }

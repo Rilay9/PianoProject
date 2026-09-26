@@ -489,7 +489,8 @@ reads every JSON file at the top of `content/curriculum/` as a stage file. They 
 copied into `public/content`; nothing at runtime reads them yet. `validate.py` checks their
 shape and references (`vocabulary_errors`), refuses a `targetSkills` or `demands` id on a
 catalog row that v0 does not define, and runs the evidence gate (`evidence_gate`, `02`
-Part H), printing its waivers and the `mastery.custom` terms outside v0 on every build. The
+Part H) over every rung's `requirements` (C5), printing the lesson rules the app does not judge
+(`unjudged` requirements) on every build; nothing is waived. The
 catalog schema gained three optional item fields: `targetSkills`, `demands` and `role`.
 
 **A demand has one definition, and it is the app's.** The detectors are TypeScript

@@ -28,12 +28,23 @@
               ],
               "songOptions": [],
               "mastery": {
-                "exercisesRequired": 2,
-                "songsRequired": 0,
                 "minAccuracy": 0.0,
-                "minTempoPct": 0.0,
-                "custom": "checklist-complete"
+                "minTempoPct": 0.0
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "items": [
+                    "drill.technique.finger-numbers"
+                  ],
+                  "count": 1
+                },
+                {
+                  "kind": "done",
+                  "item": "drill.setup.posture-checklist"
+                }
+              ],
               "estimatedDays": 2,
               "optionsExempt": true,
               "levelBand": [
@@ -64,12 +75,22 @@
               ],
               "songOptions": [],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0.95,
-                "minTempoPct": 0.0,
-                "custom": "20-keys-in-40s>=0.95"
+                "minTempoPct": 0.0
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "20-keys-in-40s>=0.95",
+                  "says": "Twenty named keys in forty seconds.",
+                  "why": "The drills count the keys found right; the time they took is not recorded."
+                }
+              ],
               "estimatedDays": 3,
               "optionsExempt": true,
               "levelBand": [
@@ -100,12 +121,15 @@
                 "song.folk.hot-cross-buns"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0.0,
-                "minTempoPct": 0.0,
-                "custom": "tour-complete"
+                "minTempoPct": 0.0
               },
+              "requirements": [
+                {
+                  "kind": "done",
+                  "item": "drill.tour.app-basics"
+                }
+              ],
               "estimatedDays": 1,
               "optionsExempt": true,
               "levelBand": [
@@ -133,12 +157,15 @@
               ],
               "songOptions": [],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0.0,
-                "minTempoPct": 0.0,
-                "custom": "placement-complete"
+                "minTempoPct": 0.0
               },
+              "requirements": [
+                {
+                  "kind": "done",
+                  "item": "drill.placement.stage-0"
+                }
+              ],
               "estimatedDays": 1,
               "optionsExempt": true,
               "levelBand": [

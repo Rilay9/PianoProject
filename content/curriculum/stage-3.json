@@ -41,11 +41,21 @@
                 "song.folk.scarborough-fair.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "2.5"
               ],
@@ -111,11 +121,21 @@
                 "song.pop.misc-tunes-yankee-doodle.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.9
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "3.1"
               ],
@@ -190,11 +210,21 @@
                 "song.folk.greensleeves.simple"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "3.2"
               ],
@@ -270,12 +300,28 @@
                 "song.classical.beethoven-fur-elise.beginner"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.85,
-                "minTempoPct": 0.8,
-                "custom": "sight-read-5>=0.85"
+                "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                },
+                {
+                  "kind": "reads",
+                  "skill": "sight-reading",
+                  "standard": "practice",
+                  "share": 0.85,
+                  "count": 5
+                }
+              ],
               "prerequisites": [
                 "3.1"
               ],
@@ -337,12 +383,27 @@
                 "song.classical.ode-to-joy.full"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
-                "minTempoPct": 0.8,
-                "custom": "pedal-clean>=0.9"
+                "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "pedal-clean>=0.9",
+                  "says": "Nine pedal changes in ten clean, with no overlap longer than 120 ms.",
+                  "why": "The pedal is recorded; whether a change was clean is not judged yet."
+                }
+              ],
               "prerequisites": [
                 "3.3"
               ],
@@ -413,11 +474,16 @@
                 "song.classical.pachelbel-canon-d.easy"
               ],
               "mastery": {
-                "exercisesRequired": 2,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.9
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 2
+                }
+              ],
               "prerequisites": [
                 "3.5"
               ],
@@ -491,11 +557,21 @@
                 "song.classical.beethoven-ludwig-van-beethoven-ecossaise.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "3.4"
               ],
@@ -566,11 +642,21 @@
                 "song.pop.tom-dooley.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.9
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "3.2"
               ],
@@ -650,11 +736,21 @@
                 "song.blues.tishomingo-blues"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "3.2"
               ],
@@ -717,12 +813,24 @@
               ],
               "songOptions": [],
               "mastery": {
-                "exercisesRequired": 2,
-                "songsRequired": 0,
                 "minAccuracy": 0.8,
-                "minTempoPct": 0,
-                "custom": "intervals-by-ear>=0.8"
+                "minTempoPct": 0
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 2
+                },
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "items": [
+                    "drill.ear.intervals-within-octave"
+                  ],
+                  "count": 1
+                }
+              ],
               "estimatedDays": 30,
               "songOptional": true,
               "tools": [
@@ -780,12 +888,22 @@
               ],
               "songOptions": [],
               "mastery": {
-                "exercisesRequired": 2,
-                "songsRequired": 0,
                 "minAccuracy": 0,
-                "minTempoPct": 0,
-                "custom": "three-choruses-recorded"
+                "minTempoPct": 0
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 2
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "three-choruses-recorded",
+                  "says": "Three choruses over the loop, each phrase answered.",
+                  "why": "A recording of your own playing is not a run the app judges."
+                }
+              ],
               "estimatedDays": 30,
               "songOptional": true,
               "levelBand": [
@@ -850,11 +968,21 @@
                 "song.classical.simple-gifts-2-part-round.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "3.2"
               ],
@@ -918,12 +1046,22 @@
                 "song.folk.scarborough-fair.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0,
-                "minTempoPct": 0,
-                "custom": "textures-identified"
+                "minTempoPct": 0
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "textures-identified",
+                  "says": "Name the texture a rock track's piano part keeps.",
+                  "why": "Naming what you hear is not a run the app records."
+                }
+              ],
               "estimatedDays": 7,
               "tools": [
                 {
@@ -984,11 +1122,21 @@
                 "song.folk.so-danco-samba.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "estimatedDays": 12,
               "tools": [
                 {
@@ -1048,11 +1196,21 @@
                 "song.pop.misc-christmas-traditional-music-god-rest-ye-merry-gentlemen-gw.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.88,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "estimatedDays": 10,
               "tools": [
                 {
@@ -1111,11 +1269,21 @@
                 "song.blues.ole-miss"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "3.2"
               ],

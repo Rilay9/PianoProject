@@ -35,8 +35,21 @@ export const DB_NAME = 'pianopath';
  * index — every field is optional on a value, which IndexedDB does not
  * describe — so they are not a version: a row written before them reads as
  * one with none, and the `upgrade` below has nothing to do for them.
+ *
+ * 7 (C5) changes no store either. It is a version so that the one moment a
+ * database made before C5 is first opened by C5's code can be told apart from
+ * every other open: that upgrade marks the old record as due to be carried
+ * over (`CARRY_OVER_DUE_KEY`, `data/carryOver.ts`), and a database C5 makes
+ * never is.
  */
-export const DB_VERSION = 6;
+export const DB_VERSION = 7;
+
+/**
+ * Set in the `settings` store by the version 7 upgrade of a database made
+ * before C5, and cleared by `planStore.carryOverOnce` once the learner's old
+ * rungs have been carried over. Never set on a database C5 made.
+ */
+export const CARRY_OVER_DUE_KEY = 'pianopath.carryOverDue';
 
 export type ProgressStatus = 'new' | 'started' | 'passed' | 'mastered';
 
@@ -205,7 +218,24 @@ export interface RunObservation extends RunHeader, Partial<RunMeasures> {
    * had no stamp of its own (version 1, per skill only).
    */
   evidenceDefinitions?: number;
+  /**
+   * Set by the evidence job (C5, `data/evidenceJob.ts`) where it could not
+   * bring this row's evidence under the version in force: that version, and
+   * why. The row then contributes nothing, as any row under another version
+   * does, and the job does not try it again until the version moves. Absent
+   * on a row it has not tried, or has brought up to date.
+   */
+  evidenceRecompute?: { definitions: number; excluded: EvidenceExclusion };
 }
+
+/**
+ * Why the evidence job keeps a row out (C5): recorded before each note was kept
+ * or compacted to bars (`no-steps`); its exercise gone from the catalog
+ * (`item-gone`); a generated phrase with no seed (`no-seed`); not a generated
+ * phrase (`not-generated`); or the phrase written today is not the one the run
+ * read (`phrase-differs`).
+ */
+export type EvidenceExclusion = 'no-steps' | 'item-gone' | 'no-seed' | 'not-generated' | 'phrase-differs';
 
 export interface SessionRow extends RunObservation {
   id?: number;
@@ -336,6 +366,23 @@ export interface PlanRow {
   unitId: string;
   trackOrder: string[];
   placement?: { unitId: string; at: string };
+  /**
+   * The learner's word about a rung (C5): "I already know this" (`known`) or
+   * *Mark done* (`done`), when. Kept about the rung and apart from the
+   * evidence: it never meets a requirement, and it sets the rung aside in the
+   * recommendation the way a placement sets aside the rungs behind it. It
+   * replaced marking the rung's items passed, which credited every other rung
+   * listing them. Absent: none said.
+   */
+  rungWords?: Record<string, { kind: 'known' | 'done'; at: string }>;
+  /**
+   * The rungs done under the old rule (a count of passed items) before C5,
+   * carried over once on the first open of C5's code (`evidence/carryOver.ts`),
+   * and when. Shown apart as done before the app judged rungs by evidence, set
+   * aside like the learner's word, never met. Absent: nothing to carry, or
+   * never looked.
+   */
+  carriedOver?: { at: string; rungs: string[] };
 }
 
 export interface StreakRow {
@@ -806,6 +853,17 @@ function upgrade(
         // key range rather than a walk of the listing.
         scores.createIndex('byTitle', ['folder', 'sort']);
         db.createObjectStore('folderIndexes', { keyPath: 'id' });
+      }
+      // Guarded on the store: a database some other code opened at an older
+      // version without making the stores (a test's stand-in for another tab)
+      // has nothing to carry, and a write to a missing store would abort the
+      // whole upgrade.
+      if (oldVersion >= 1 && oldVersion < 7 && db.objectStoreNames.contains('settings')) {
+        // C5: a record the old rule read, from before rungs were judged by
+        // evidence. One flag in the upgrade, nothing rewritten here (the
+        // reason v6 gives); the carry-over itself runs later, on the evidence
+        // job, where nothing is waiting on it.
+        void tx.objectStore('settings').put(true, CARRY_OVER_DUE_KEY);
       }
 }
 

@@ -559,15 +559,20 @@ def thin_lesson_errors(lesson: dict, exercises: list, songs: list, min_options: 
     """
     docs/00 D21: three alternatives per rung, checked rather than trusted.
 
-    A lesson that requires no songs at all — Stage 0's checklists, the theory and
-    improvisation rungs — is exempt from the song count but not from the exercise one.
+    A lesson whose requirements ask for no song at all — Stage 0's checklists, the
+    theory and improvisation rungs — is exempt from the song count but not from the
+    exercise one.
     """
     lesson_id = lesson.get("id", "?")
     if lesson.get("optionsExempt"):
         # Orientation lessons: there is one placement test and one guided tour, and
         # inventing two more to satisfy a counter would be worse than the counter.
         return []
-    required_songs = (lesson.get("mastery") or {}).get("songsRequired", 1)
+    # Whether the rung asks for a run of one of its songs (C5's requirement that
+    # replaced `songsRequired`).
+    required_songs = any(
+        r.get("kind") == "runs" and r.get("from") == "songs" for r in lesson.get("requirements") or []
+    )
     out: list[str] = []
     if len(exercises) < min_options:
         out.append(
@@ -1027,13 +1032,6 @@ def notation_requirements(curriculum: dict, catalog: list) -> list[str]:
 #: file at the top of `content/curriculum/` as a stage file.
 VOCABULARY_DIR = CONTENT_SRC / "curriculum" / "vocabulary"
 
-#: A named comparison in `mastery.custom`: `sight-read-5>=0.85`, `pedal-clean>=0.9`
-#: (the name against its operator, which is how every term in the tree is written).
-_CUSTOM_TERM = re.compile(r"([A-Za-z0-9][A-Za-z0-9-]*)[<>]=?\s*[0-9.]+")
-#: Any comparison at all, `demandsMeasuredAccuracy`'s test in `selectors.ts`.
-_COMPARISON = re.compile(r"[<>]=?\s*[0-9]")
-
-
 def load_vocabulary(directory: Path = VOCABULARY_DIR) -> tuple[dict, dict]:
     """The skills file and the demands file, as written."""
     skills = load(directory / "skills.json")
@@ -1064,8 +1062,7 @@ def vocabulary_errors(
     The schemas answer the shape; this answers the references: a skill's
     opportunity names demands that exist and its standards name declared
     conditions, a demand is coped with by a skill whose opportunity names it and
-    is taught at a rung the curriculum has, a requirement term and a waiver name
-    a real skill (and a waiver a real rung), and every `targetSkills` and
+    is taught at a rung the curriculum has, and every `targetSkills` and
     `demands` id on a catalog row is in the vocabulary. Whether each demand's
     detector exists is the app's to say: `app/tests/unit/vocabulary.test.ts`
     imports the module.
@@ -1120,17 +1117,6 @@ def vocabulary_errors(
             errors.append(
                 f"vocabulary: demand {demand['id']} is taught at {demand['taughtAt']!r}, which is not a rung"
             )
-    for term in skills_file.get("requirementTerms", []):
-        if term["skill"] not in skills:
-            errors.append(
-                f"vocabulary: requirement term {term['term']!r} names skill {term['skill']!r}, "
-                f"which skills.json lacks"
-            )
-    for waiver in skills_file.get("gateWaivers", []):
-        if waiver["rung"] not in rungs:
-            errors.append(f"vocabulary: waiver names rung {waiver['rung']!r}, which is not in the curriculum")
-        if waiver["skill"] not in skills:
-            errors.append(f"vocabulary: waiver names skill {waiver['skill']!r}, which skills.json lacks")
     for item in catalog:
         for skill_id in item.get("targetSkills") or []:
             if skill_id not in skills:
@@ -1145,89 +1131,123 @@ def vocabulary_errors(
     return errors
 
 
-def evidence_gate(curriculum: dict, skills_file: dict) -> tuple[list[str], list[str], list[str]]:
+#: The ladder state a `skill` requirement names, and the standard its evidence
+#: has to reach (`app/src/evidence/ladder.ts`): familiar is supporting evidence
+#: at the practice standard, proficient at the full one.
+SKILL_STATE_STANDARD = {"familiar": "practice", "proficient": "full"}
+
+
+def evidence_gate(curriculum: dict, skills_file: dict, catalog: list) -> tuple[list[str], list[str]]:
     """
-    Refuses a rung that requires evidence no run can give (C2; design
+    Refuses a rung whose requirement no run can evidence (C2, C5; design
     2026-09-26 §4, enforcement 3).
 
-    A rung *requires* a v0 skill in two ways today:
+    Since C5 a rung states what completes it as `requirements`, predicates over
+    evidence that `app/src/evidence/rungState.ts` reads. This reads the same
+    predicates against vocabulary v0 and the catalog:
 
-    - **Its `concepts`.** Completing a rung marks each of them known on the
-      Skills screen (`LessonScreen`'s `markLessonLearnt`), so the rung claims
-      evidence of every one. A skill with `observable: none` can never have any.
-    - **A `mastery.custom` term the vocabulary maps to a skill**
-      (`requirementTerms`, interim until C5): the standard it asks for must name
-      only conditions some run records, and something in the app must evaluate
-      the count it states.
+    - **every rung states at least one requirement**;
+    - a `skill` or `reads` requirement names a v0 skill whose observable is not
+      `none`, whose standard (familiar: practice; proficient and `reads` as
+      written) names only conditions some run records, and which one of the
+      rung's own options declares in `targetSkills` — the evidence has to be
+      reachable from the rung's page;
+    - a `runs` requirement asks for no more distinct items than its pool holds
+      (the rung's exercises, songs, or the items it names, which must be its own);
+    - a `done` requirement names an option of this rung that no other rung lists;
+    - a concept that is a v0 skill with `observable: none` (completing a rung
+      marks its concepts learnt) is refused unless the rung carries an
+      `unjudged` requirement naming it: the page then says the app does not
+      judge it.
 
-    Returns `(errors, waived, unjudged)`. A refusal the vocabulary's
-    `gateWaivers` names (rung and skill) is reported as waived, with its
-    reasons, and a waiver that matches no refusal is an error, so the list
-    cannot go stale. A comparison term that names nothing in the vocabulary is
-    outside v0: listed as unjudged (`rung: term`), never refused, because v0
-    does not know what it measures, and never silently passed either.
+    Returns `(errors, unjudged)`: `unjudged` lists every `unjudged` requirement
+    as `rung: rule`, printed on every build, so "nothing refused" is never read
+    as "everything measured". Nothing is waived.
     """
     skills = {s["id"]: s for s in skills_file.get("skills", [])}
     recorded = {c["id"]: c.get("recordedBy") is not None for c in skills_file.get("conditions", [])}
-    terms = {t["term"]: t for t in skills_file.get("requirementTerms", [])}
+    declares = {item.get("id"): set(item.get("targetSkills") or []) for item in catalog}
+    rungs = _rungs(curriculum)
+    listed_on: dict[str, list[str]] = {}
+    for lesson in rungs:
+        for item_id in (lesson.get("exerciseOptions") or []) + (lesson.get("songOptions") or []):
+            listed_on.setdefault(item_id, []).append(str(lesson.get("id")))
 
-    refusals: dict[tuple[str, str], list[str]] = {}
+    errors: list[str] = []
     unjudged: list[str] = []
 
-    def refuse(rung_id: str, skill_id: str, why: str) -> None:
-        reasons = refusals.setdefault((rung_id, skill_id), [])
-        if why not in reasons:
-            reasons.append(why)
-
-    for lesson in _rungs(curriculum):
+    for lesson in rungs:
         rung_id = str(lesson.get("id", "?"))
+        requirements = lesson.get("requirements") or []
+        exercises = list(lesson.get("exerciseOptions") or [])
+        songs = list(lesson.get("songOptions") or [])
+        options = exercises + songs
+        if not requirements:
+            errors.append(f"{rung_id}: states no requirement, so nothing could ever meet it")
+            continue
+        said_unjudged = {r.get("rule") for r in requirements if r.get("kind") == "unjudged"}
+
         for concept in lesson.get("concepts") or []:
             skill = skills.get(concept)
-            if skill is not None and skill["observable"] == "none":
-                refuse(rung_id, concept, "its concepts claim a skill whose observable is none: no run can measure it")
-        custom = (lesson.get("mastery") or {}).get("custom") or ""
-        names = _CUSTOM_TERM.findall(custom)
-        if not names and _COMPARISON.search(custom):
-            # A comparison written as prose ("then blind at >=0.9"): no name to
-            # look up, so the whole rule is listed.
-            unjudged.append(f'{rung_id}: "{custom}"')
-        for name in names:
-            term = terms.get(name)
-            if term is None:
-                unjudged.append(f"{rung_id}: {name}")
-                continue
-            skill = skills.get(term["skill"])
-            if skill is None:
-                continue
-            if skill["observable"] == "none":
-                refuse(rung_id, skill["id"], f"`{name}` names a skill whose observable is none")
-            missing = [c for c in skill["standards"][term["standard"]] if not recorded.get(c, False)]
-            if missing:
-                refuse(
-                    rung_id,
-                    skill["id"],
-                    f"`{name}` asks for the {term['standard']} standard, which needs "
-                    f"{', '.join(missing)}: no run records it",
+            if skill is not None and skill["observable"] == "none" and concept not in said_unjudged:
+                errors.append(
+                    f"{rung_id}: its concepts claim {concept}, whose observable is none: no run can measure it; "
+                    f"say so with an unjudged requirement whose rule is {concept!r}"
                 )
-            if term.get("evaluatedBy") is None:
-                refuse(rung_id, skill["id"], f"nothing evaluates `{name}` ({term['runs']} runs)")
 
-    waivers = {(w["rung"], w["skill"]): w for w in skills_file.get("gateWaivers", [])}
-    errors: list[str] = []
-    waived: list[str] = []
-    for (rung_id, skill_id), reasons in sorted(refusals.items()):
-        waiver = waivers.get((rung_id, skill_id))
-        if waiver is not None:
-            waived.append(f"{rung_id}: {skill_id}, until {waiver['until']}: {'; '.join(reasons)}")
-        else:
-            errors.append(f"{rung_id}: requires evidence of {skill_id} that no run can give: {'; '.join(reasons)}")
-    for (rung_id, skill_id) in sorted(waivers):
-        if (rung_id, skill_id) not in refusals:
-            errors.append(
-                f"{rung_id}: the evidence-gate waiver for {skill_id} matches no refusal; remove it "
-                f"from content/curriculum/vocabulary/skills.json"
-            )
-    return errors, waived, unjudged
+        for requirement in requirements:
+            kind = requirement.get("kind")
+            if kind in ("skill", "reads"):
+                skill_id = requirement.get("skill")
+                skill = skills.get(skill_id)
+                if skill is None:
+                    errors.append(f"{rung_id}: requires {skill_id!r}, which vocabulary v0 does not define")
+                    continue
+                if skill["observable"] == "none":
+                    errors.append(f"{rung_id}: requires {skill_id}, whose observable is none: no run can measure it")
+                    continue
+                standard = (
+                    SKILL_STATE_STANDARD.get(requirement.get("state"), "full")
+                    if kind == "skill"
+                    else requirement.get("standard", "full")
+                )
+                missing = [c for c in skill["standards"][standard] if not recorded.get(c, False)]
+                if missing:
+                    errors.append(
+                        f"{rung_id}: requires {skill_id} at the {standard} standard, which needs "
+                        f"{', '.join(missing)}: no run records it"
+                    )
+                if not any(skill_id in declares.get(option, set()) for option in options):
+                    errors.append(
+                        f"{rung_id}: requires {skill_id}, and no option of the rung declares it in targetSkills: "
+                        f"the evidence is not reachable from the rung's page"
+                    )
+            elif kind == "runs":
+                source = requirement.get("from")
+                pool = exercises if source == "exercises" else songs if source == "songs" else options
+                named = requirement.get("items")
+                if named is not None:
+                    strangers = [item for item in named if item not in options]
+                    if strangers:
+                        errors.append(f"{rung_id}: its runs requirement names {', '.join(strangers)}, not options of the rung")
+                    pool = [item for item in pool if item in named]
+                count = requirement.get("count", 0)
+                if count > len(pool):
+                    errors.append(
+                        f"{rung_id}: asks for {count} of its {source} and offers {len(pool)}: no run can meet it"
+                    )
+            elif kind == "done":
+                item = requirement.get("item")
+                if item not in options:
+                    errors.append(f"{rung_id}: its done requirement names {item!r}, not an option of the rung")
+                elif len(listed_on.get(item, [])) > 1:
+                    errors.append(
+                        f"{rung_id}: its done requirement names {item}, which {', '.join(listed_on[item])} list: "
+                        f"finishing it would count for more than one rung"
+                    )
+            elif kind == "unjudged":
+                unjudged.append(f"{rung_id}: {requirement.get('rule')}")
+    return errors, unjudged
 
 
 #: The lab's presets, as `engine/sightReading.ts` declares them. Duplicated here
@@ -1488,11 +1508,11 @@ def main() -> None:
         errors += finder_errors(curriculum)
         errors += unknown_concepts(curriculum)
         errors += notation_requirements(curriculum, catalog)
-        # C2: vocabulary v0, and the rungs that would require evidence no run
-        # can give. The waivers are counted on every build, below.
+        # C2, C5: vocabulary v0, and the rungs whose requirements no run can
+        # evidence. The lesson rules the app does not judge are listed below.
         skills_file, demands_file = load_vocabulary()
         errors += vocabulary_errors(skills_file, demands_file, curriculum, catalog)
-        errors += evidence_gate(curriculum, skills_file)[0]
+        errors += evidence_gate(curriculum, skills_file, catalog)[0]
         errors += tool_errors(curriculum, catalog)
         errors += paper_hint_errors(curriculum)
         errors += tip_errors(catalog, CONTENT_SRC / "tips")
@@ -1609,19 +1629,15 @@ def main() -> None:
             edge = "above C8" if midi > KEYBOARD_TOP else "below A0"
             print(f"  {item_id}: {name} (midi {midi}), {edge}")
 
-    # C2: waived refusals said out loud on every run, like the exempt rungs: a
-    # rule that can be switched off quietly is not a rule. The measures outside
-    # v0 are counted too, so "nothing refused" is never read as "all measured".
+    # C5: the lesson rules no run can show, said out loud on every run, so
+    # "nothing refused" is never read as "everything measured". Nothing is waived.
     skills_file, _ = load_vocabulary()
-    _, gate_waived, gate_unjudged = evidence_gate(curriculum, skills_file)
+    _, gate_unjudged = evidence_gate(curriculum, skills_file, catalog)
     targeted = sum(1 for item in catalog if item.get("targetSkills"))
     print(
-        f"  evidence gate (vocabulary v0): {len(gate_waived)} rung(s) waived until C5, "
-        f"{len(gate_unjudged)} mastery term(s) outside v0 and unjudged; "
+        f"  evidence gate (vocabulary v0): {len(gate_unjudged)} lesson rule(s) the app does not judge; "
         f"{targeted} item(s) declare targetSkills"
     )
-    for line in gate_waived:
-        print(f"    waived {line}")
     if gate_unjudged:
         print(f"    unjudged: {', '.join(gate_unjudged)}")
 

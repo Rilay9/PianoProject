@@ -32,6 +32,10 @@ import {
   TOOL_HELP,
   drillDetailLabel,
   help,
+  EVIDENCE_EXCLUSION_WORDS,
+  RUNG_TEXT,
+  evidenceJobLine,
+  requirementState,
   type HelpEntry,
 } from '../../src/ui/help';
 import { STAFF_POLICY, type DrillKind } from '../../src/engine/drills/types';
@@ -237,5 +241,44 @@ describe('a drill’s own measurements are named in words', () => {
 
   it('falls back to the old spacing rather than dropping an unknown one', () => {
     expect(drillDetailLabel('somethingNew')).toBe('something new');
+  });
+});
+
+// Added (C5): what the lesson page says about a rung — its state, *What the app
+// counts*, the learner's word and the carry-over — and the storage report's
+// line about the evidence job, are the sentences `04` §3f prints.
+describe('the rung sentences are the ones `04` §3f prints', () => {
+  const flat = (text: string): string => text.replace(/\s+/g, ' ');
+  function sectionThreeF(): string {
+    const start = SPEC.indexOf('### 3f. What the app counts for a rung');
+    expect(start, '`04` has no §3f under that name').toBeGreaterThan(-1);
+    const end = SPEC.indexOf('\n### ', start + 1);
+    return SPEC.slice(start, end === -1 ? undefined : end);
+  }
+
+  it('lists every fixed sentence and word the page, Plan and the storage report say', () => {
+    const section = flat(sectionThreeF());
+    const said: string[] = [
+      ...Object.values(RUNG_TEXT),
+      ...Object.values(EVIDENCE_EXCLUSION_WORDS),
+      'by your word',
+      evidenceJobLine({ state: 'waiting', current: 0, recomputed: 0, pending: 0, excluded: {}, normalised: 0, carried: 0 }),
+    ];
+    const missing = said.filter((line) => !section.includes(flat(line)));
+    expect(missing, `rung sentences §3f does not print:\n${missing.join('\n')}`).toEqual([]);
+  });
+
+  // Added (C5, found in the pictures): a skill requirement not yet shown read
+  // "(not yet — now not shown yet)" on 2.2's page. It says what the reads show,
+  // once: "(not shown yet)", "(tried, not yet shown)", and "(counted — familiar)"
+  // when it holds.
+  it('says what the reads show for a skill, once', () => {
+    const skill = { kind: 'skill', skill: 'subdivision', state: 'familiar' } as const;
+    const titleOf = (id: string): string => id;
+    const reading = (holds: boolean, state: 'not introduced' | 'practised' | 'familiar') =>
+      ({ requirement: skill, holds, have: holds ? 1 : 0, need: 1, state, items: [] });
+    expect(requirementState(reading(false, 'not introduced'), titleOf)).toBe('not shown yet');
+    expect(requirementState(reading(false, 'practised'), titleOf)).toBe('tried, not yet shown');
+    expect(requirementState(reading(true, 'familiar'), titleOf)).toBe('counted — familiar');
   });
 });

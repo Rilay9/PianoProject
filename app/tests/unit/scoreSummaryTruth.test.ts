@@ -196,7 +196,7 @@ function lesson(id: string, minAccuracy: number, minTempoPct: number): Lesson {
     textFile: `lessons/${id}.md`,
     exerciseOptions: [],
     songOptions: [SONG_ID],
-    mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy, minTempoPct },
+    mastery: { minAccuracy, minTempoPct }, requirements: [{ kind: 'runs', from: 'exercises', count: 1 }, { kind: 'runs', from: 'songs', count: 1 }],
   };
 }
 
@@ -693,6 +693,18 @@ describe('7 and 8: a sight-read is the phrase its row asks for, recorded once', 
     // which the summary covers and which is cut after twenty-odd characters at
     // 342 px: seen on the glass, the learner could not read it.
     expect(sheetNote()).toBe(SUMMARY_TEXT.sightReadRepeat);
+  });
+
+  // Added (C5, S8): a first reading at the master standard is a reading, and
+  // the sheet never counts it towards mastering the row, whatever the store
+  // hands back — a generated phrase carries no mastery.
+  it('a first reading at the full tempo is not a mastery run of the row', async () => {
+    findItemSpy.mockResolvedValue(readerItem({ level: 1, bars: 2, hands: 'right' }));
+    await open(`#/score/${READ_ID}`);
+    finish(run({}));
+    await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalled());
+    expect(lastRecorded().masterEligible, 'a sight-read was offered to the store as a mastery run').toBe(false);
+    await vi.waitFor(() => expect(heading()).toBe('Passed'));
   });
 
   it('a different phrase of the same row is a first attempt', async () => {

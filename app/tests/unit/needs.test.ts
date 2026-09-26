@@ -20,7 +20,7 @@ function lesson(over: Partial<Lesson> = {}): Lesson {
     textFile: 'lessons/2.1.md',
     exerciseOptions: ['exercise.a', 'exercise.b', 'exercise.c'],
     songOptions: ['song.a', 'song.b'],
-    mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 0.9, minTempoPct: 0.8 },
+    mastery: { minAccuracy: 0.9, minTempoPct: 0.8 }, requirements: [{ kind: 'runs', from: 'exercises', count: 1 }, { kind: 'runs', from: 'songs', count: 1 }],
     needs: { songs: 1, exercises: 0, paper: 0, inBand: 0, floor: 3 },
     ...over,
   };

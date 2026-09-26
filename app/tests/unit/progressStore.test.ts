@@ -109,44 +109,50 @@ describe('selfPass', () => {
   });
 });
 
+// Revised (C5, S8): the review calendar is a piece's, and the queue is told
+// which items are generated sight-reading rows so it can skip them
+// (`sightReadingIsNotAPiece.test.ts`); every item here is a piece.
+const PIECES = (): boolean => false;
+
 describe('reviewQueue', () => {
   const now = day('2026-09-10');
 
   it('is empty for something passed today', () => {
-    expect(reviewQueue([row({ passedOn: ['2026-09-10'] })], now)).toEqual([]);
+    expect(reviewQueue([row({ passedOn: ['2026-09-10'] })], now, PIECES)).toEqual([]);
   });
 
   it('brings back an item a day after it was passed', () => {
-    const due = reviewQueue([row({ itemId: 'a', passedOn: ['2026-09-09'] })], now);
+    const due = reviewQueue([row({ itemId: 'a', passedOn: ['2026-09-09'] })], now, PIECES);
     expect(due.map((d) => d.itemId)).toEqual(['a']);
     expect(due[0]?.step).toBe(1);
   });
 
   it('moves through the 1, 3, 7, 21 day steps', () => {
     const eightDaysAgo = row({ itemId: 'a', passedOn: ['2026-09-02'] });
-    expect(reviewQueue([eightDaysAgo], now)[0]?.step).toBe(3);
+    expect(reviewQueue([eightDaysAgo], now, PIECES)[0]?.step).toBe(3);
     expect(REVIEW_INTERVALS_DAYS).toEqual([1, 3, 7, 21]);
   });
 
   it('drops an item that has been reviewed since it came due', () => {
     // Two passes, one step due: already caught up.
     const caughtUp = row({ itemId: 'a', passedOn: ['2026-09-09', '2026-09-10'] });
-    expect(reviewQueue([caughtUp], now)).toEqual([]);
+    expect(reviewQueue([caughtUp], now, PIECES)).toEqual([]);
   });
 
   it('leaves mastered items out', () => {
     const mastered = row({ status: 'mastered', passedOn: ['2026-08-01', '2026-08-02'] });
-    expect(reviewQueue([mastered], now)).toEqual([]);
+    expect(reviewQueue([mastered], now, PIECES)).toEqual([]);
   });
 
   it('leaves items that were never passed out', () => {
-    expect(reviewQueue([row({ status: 'started', passedOn: [] })], now)).toEqual([]);
+    expect(reviewQueue([row({ status: 'started', passedOn: [] })], now, PIECES)).toEqual([]);
   });
 
   it('orders by how overdue they are', () => {
     const due = reviewQueue(
       [row({ itemId: 'newer', passedOn: ['2026-09-09'] }), row({ itemId: 'older', passedOn: ['2026-09-01'] })],
       now,
+      PIECES,
     );
     expect(due.map((d) => d.itemId)).toEqual(['older', 'newer']);
   });

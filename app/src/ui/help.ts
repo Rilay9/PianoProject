@@ -35,6 +35,10 @@ import type { Refusal } from '../evidence/evidence';
 import type { Skill } from '../demands/vocabulary';
 import type { ReadingMove, ReadingWhy } from '../curriculum/session';
 import type { ReadingRecipe } from '../data/db';
+import type { RequirementReading, RungReading } from '../evidence/rungState';
+import type { LadderState } from '../evidence/ladder';
+import type { EvidenceJobStatus } from '../data/evidenceJob';
+import type { EvidenceExclusion } from '../data/db';
 
 /** One control, and what it says back. */
 export interface HelpControl {
@@ -566,6 +570,183 @@ export const READING_TEXT = {
   /** A singled-out demand's words: "skips went wrong in 3 phrases". */
   wentWrong: 'went wrong in',
 } as const;
+
+/**
+ * What a rung asks and what the evidence shows, in the learner's words (C5):
+ * the lesson page's state line and its list *What the app counts*, and the
+ * badges Plan puts on a rung. `04` §3 prints them and `help.test.ts` is the
+ * join. It says what the app counts and nothing more: the lesson's own *How
+ * you'll know* can ask for more than a run shows, and a rule no run can show is
+ * printed as the lesson's (T2).
+ */
+export const RUNG_TEXT = {
+  heading: 'What the app counts',
+  /** Under the list: where a run has to be opened from to count (the judging rung, C5). */
+  opensFromHere: 'A run counts for this rung when you open it from this page, or from Today’s card for this rung.',
+  met: 'complete',
+  inProgress: 'in progress',
+  notStarted: 'not started',
+  notJudged: 'not judged by the app',
+  /** A rung whose every requirement is the lesson's rule. */
+  notJudgedLine: 'The app cannot judge this rung: its rule is the lesson’s. Mark it done when you have done it.',
+  known: 'you said you know it',
+  done: 'marked done',
+  carried: 'done before',
+  carriedLine: 'Done before the app judged rungs by what your runs showed, and not judged again.',
+  wordLine: 'Your word is kept apart from your runs: it moves the plan on and counts as none of them.',
+  /** Before a requirement the app cannot judge. */
+  unjudged: 'Not judged by the app — the lesson’s rule:',
+  counted: 'counted',
+  notYet: 'not yet',
+  /** Plan's stage line and legend: the rungs the evidence met, beside those done before. */
+  countedSince: 'counted since',
+  byWord: 'by your word',
+} as const;
+
+/**
+ * A stage's count on Plan (C5). Where rungs were carried over from before C5
+ * they come first, apart, and the rungs the evidence has met since follow —
+ * "3 of 9 done before · 1 counted since" — so the line reads as the learner's
+ * place kept, not a reset; otherwise the rungs met, "3 of 9 lessons". The
+ * learner's word is counted apart after either.
+ */
+export function stageCountWords(counts: { done: number; total: number; byWord: number; before: number }): string {
+  const head =
+    counts.before > 0
+      ? `${String(counts.before)} of ${String(counts.total)} ${RUNG_TEXT.carried} · ${String(counts.done)} ${RUNG_TEXT.countedSince}`
+      : `${String(counts.done)} of ${String(counts.total)} lessons`;
+  return counts.byWord > 0 ? `${head} · ${String(counts.byWord)} ${RUNG_TEXT.byWord}` : head;
+}
+
+/** Why the evidence job kept runs out, as the storage report says it (C5). */
+export const EVIDENCE_EXCLUSION_WORDS: Readonly<Record<EvidenceExclusion, string>> = {
+  'no-steps': 'recorded before the app kept each note',
+  'item-gone': 'whose exercise is no longer in the catalog',
+  'no-seed': 'whose phrase was never numbered',
+  'not-generated': 'of music the job does not rewrite',
+  'phrase-differs': 'whose phrase the app now writes differently',
+};
+
+/**
+ * The evidence job's line on the storage report (Settings → Content, C5): what
+ * is up to date, what is still to do, and what is kept out and why. A run kept
+ * out contributes nothing to where the learner is.
+ */
+export function evidenceJobLine(status: EvidenceJobStatus): string {
+  if (status.state === 'waiting') return 'Evidence from your runs: checking after the screen is up.';
+  // While it runs: the rows still to do once it has counted them, and until
+  // then that it is still checking — "0 up to date." over rows it has not
+  // reached yet read exactly like the finished line.
+  const doing =
+    status.state !== 'running'
+      ? ''
+      : status.pending > 0
+        ? `, ${String(status.pending)} being brought up to date`
+        : ', still checking';
+  const kept = (Object.entries(status.excluded) as [EvidenceExclusion, number][])
+    .filter(([, n]) => n > 0)
+    .map(([why, n]) => `${String(n)} ${EVIDENCE_EXCLUSION_WORDS[why]}`);
+  const stopped = status.stopped === true ? ' Stopped before the end; it tries again the next time the app opens.' : '';
+  return `Evidence from your runs: ${String(status.current)} up to date${doing}.${kept.length > 0 ? ` Kept out: ${kept.join('; ')}.` : ''}${stopped}`;
+}
+
+const NUMBER_WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
+
+function countWord(n: number): string {
+  return NUMBER_WORDS[n] ?? String(n);
+}
+
+function percent(share: number): string {
+  return `${String(Math.round(share * 100))} %`;
+}
+
+/** A ladder state as a person says it (C3's ladder, `evidence/ladder.ts`). */
+export function ladderWords(state: LadderState): string {
+  if (state === 'not introduced' || state === 'introduced') return 'not shown yet';
+  if (state === 'practised') return 'tried, not yet shown';
+  return state;
+}
+
+/** What one requirement asks, in a sentence, without its state. */
+export function requirementWords(
+  reading: RequirementReading,
+  context: {
+    /** The share and the tempo a run of the rung is judged at (`masteryCriteriaFor`). */
+    accuracy: number;
+    tempoPct: number;
+    /** An item's title, for the items a requirement names. */
+    titleOf: (id: string) => string;
+    /** Whether every item a requirement draws on is a drill, which has no tempo. */
+    drillsOnly: (ids: readonly string[]) => boolean;
+    /** A skill's display name. */
+    skillName: (id: string) => string;
+    /** The rung's own options, for a pool. */
+    exercises: readonly string[];
+    songs: readonly string[];
+  },
+): string {
+  const r = reading.requirement;
+  switch (r.kind) {
+    case 'runs': {
+      const pool = r.items ?? (r.from === 'exercises' ? context.exercises : r.from === 'songs' ? context.songs : [...context.exercises, ...context.songs]);
+      let what: string;
+      if (r.items !== undefined) {
+        const titles = r.items.map(context.titleOf);
+        what =
+          r.items.length === 1
+            ? (titles[0] as string)
+            : r.count === r.items.length
+              ? `All of ${titles.join(', ')}`
+              : `${countWord(r.count)} of ${titles.join(', ')}`;
+      } else {
+        const noun = r.from === 'exercises' ? 'exercise' : r.from === 'songs' ? 'song' : 'piece';
+        what = `${countWord(r.count)} ${noun}${r.count === 1 ? '' : 's'} from this page`;
+      }
+      const share = `at ${percent(r.accuracy ?? context.accuracy)} of the notes`;
+      const tempo =
+        context.tempoPct > 0 && !context.drillsOnly(pool)
+          ? `, in Keep tempo at ${String(Math.round(context.tempoPct))} % of the written tempo or faster`
+          : '';
+      const perform = r.performance === true ? ', played with Perform on' : '';
+      return `${what} ${share}${tempo}${perform}.`;
+    }
+    case 'reads':
+      return `${countWord(r.count)} new phrases of this rung’s sight-reading, read at sight in Keep tempo${
+        r.standard === 'full' ? ' with the keys guide off' : ''
+      }, ${percent(r.share)} right and in time.`;
+    case 'skill':
+      return `${context.skillName(r.skill)}: ${r.state} or better, from what your reads show wherever you read.`;
+    case 'done':
+      return `${context.titleOf(r.item)}, finished.`;
+    case 'measure':
+      return `The ${r.measure} measure met, in a run from this page.`;
+    case 'unjudged':
+      return `${RUNG_TEXT.unjudged} ${r.says}`;
+  }
+}
+
+/** What the evidence shows for one requirement, beside its sentence; `''` for one the app cannot judge. */
+export function requirementState(reading: RequirementReading, titleOf: (id: string) => string): string {
+  if (reading.holds === 'unjudged') return '';
+  if (reading.requirement.kind === 'skill') {
+    // What the reads show, once: "not yet — now not shown yet" said it twice.
+    const shows = ladderWords(reading.state ?? 'not introduced');
+    return reading.holds ? `${RUNG_TEXT.counted} — ${shows}` : shows;
+  }
+  if (reading.holds) {
+    return reading.items.length > 0 ? `${RUNG_TEXT.counted}: ${reading.items.map(titleOf).join(', ')}` : RUNG_TEXT.counted;
+  }
+  return reading.need > 1 ? `${String(reading.have)} of ${String(reading.need)}` : RUNG_TEXT.notYet;
+}
+
+/** The badge a rung wears on Plan and on its page: the evidence's word first, then the learner's. */
+export function rungBadge(state: Pick<RungReading, 'status' | 'judged' | 'word' | 'carried'>): string {
+  if (state.status === 'met') return RUNG_TEXT.met;
+  if (state.word !== undefined) return state.word.kind === 'known' ? RUNG_TEXT.known : RUNG_TEXT.done;
+  if (state.carried) return RUNG_TEXT.carried;
+  if (!state.judged) return RUNG_TEXT.notJudged;
+  return state.status === 'in progress' ? RUNG_TEXT.inProgress : RUNG_TEXT.notStarted;
+}
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

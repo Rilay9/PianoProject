@@ -44,6 +44,8 @@ import {
   toggleControl,
 } from '../widgets';
 import { onScreenDispose } from '../screenLifecycle';
+import { evidenceJobStatus, onEvidenceJobChange } from '../../data/evidenceJob';
+import { evidenceJobLine } from '../help';
 import { screenFrame, statusLine } from './screenFrame';
 
 const SESSION_LENGTHS = [15, 30, 60, 120].map((minutes) => ({
@@ -434,8 +436,24 @@ export function SettingsScreen(router: Router): HTMLElement {
    * does not reserve a line for a sentence that may never come.
    */
   const durability = el('p.muted', { id: 'settings-durability', hidden: true });
+  /**
+   * The evidence job's progress (C5): runs whose evidence is brought up to the
+   * version in force after an update, and those kept out and why. Beside the
+   * storage figures because it is about what the stored runs are worth.
+   */
+  const evidenceLine = el('p.muted', { id: 'settings-evidence', text: evidenceJobLine(evidenceJobStatus()) });
+  // `data-settled` once the job is done on this open: the state to wait on,
+  // rather than the words (C5).
+  const showEvidence = (status: ReturnType<typeof evidenceJobStatus>): void => {
+    evidenceLine.textContent = evidenceJobLine(status);
+    if (status.state === 'done') evidenceLine.dataset.settled = 'true';
+    else delete evidenceLine.dataset.settled;
+  };
+  showEvidence(evidenceJobStatus());
+  const stopEvidence = onEvidenceJobChange(showEvidence);
+  onScreenDispose(section, stopEvidence);
   const trackRow = el('div.filter-row', { id: 'settings-tracks' });
-  content.append(trackRow, contentStatus, durability);
+  content.append(trackRow, contentStatus, durability, evidenceLine);
 
   // The chips are shared with the setup tour (`ui/trackChips`): the
   // curriculum's tracks, in its order, only those the library can offer

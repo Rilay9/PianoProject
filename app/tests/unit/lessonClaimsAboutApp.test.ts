@@ -664,8 +664,8 @@ const CLAIMS: [string, string, () => boolean][] = [
     '0.4',
     'your plan begins at the placed unit from then on',
     () => {
-      const first = nextRecommended(curriculum, [], [])?.lesson.id;
-      const placed = nextRecommended(curriculum, [], [], { startAt: '3.2' })?.lesson.id;
+      const first = nextRecommended(curriculum, NO_RUNS, [])?.lesson.id;
+      const placed = nextRecommended(curriculum, NO_RUNS, [], { startAt: '3.2' })?.lesson.id;
       return first !== placed && placed === '3.2';
     },
   ],
@@ -1115,8 +1115,8 @@ const T12_APP: [string, string, () => boolean][] = [
     '0.4',
     'a placement start holds the rungs behind it back and gives them back when nothing is left in front',
     () => {
-      const plain = nextRecommended(curriculum, [], [], {});
-      const placed = nextRecommended(curriculum, [], [], { startAt: '3.1' });
+      const plain = nextRecommended(curriculum, NO_RUNS, [], {});
+      const placed = nextRecommended(curriculum, NO_RUNS, [], { startAt: '3.1' });
       const core = t12Core();
       return (
         plain !== undefined &&
@@ -1437,7 +1437,7 @@ const T12_APP: [string, string, () => boolean][] = [
     '3.4',
     'the daily read starts from this rung’s two-hand phrase and changes one thing at a time — adding what a lesson has taught, such as a ledger line, a dotted rhythm or a key signature, or leaving out for a while a kind of note that keeps going wrong — never something untaught',
     () => {
-      const position = nextRecommended(curriculum, [], ['core'], { startAt: '3.4' });
+      const position = nextRecommended(curriculum, NO_RUNS, ['core'], { startAt: '3.4' });
       const offer = readingOffer({ curriculum, items: catalog, position, activeTracks: ['core'], rows: [], today: new Date(2026, 9, 1), purpose: 'daily' });
       // What the curriculum has taught by 3.4 (the vocabulary's `taughtAt`, in the curriculum's own order).
       const order = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons.map((lesson) => lesson.id)));
@@ -1783,16 +1783,19 @@ const T12_APP: [string, string, () => boolean][] = [
       );
     },
   ],
+  // Replaced (C5): it held that the blind rule was a \`mastery.custom\` string
+  // nothing measured and that the rung completed on one pass counted from the
+  // song list. The rule is now an unjudged requirement the lesson page prints
+  // as the lesson's, and what the app counts is one song run judged by 4.7.
   [
     '4.7',
-    "the rung's blind rule is a string nothing measures, and completion is one pass",
+    "the rung's blind rule is the lesson's, which the app does not judge, and what it counts is one song played from this rung",
     () => {
-      const mastery = rung('4.7').mastery;
+      const requirements = rung('4.7').requirements;
       return (
-        mastery.songsRequired === 1 &&
-        typeof mastery.custom === 'string' &&
-        demandsMeasuredAccuracy(rung('4.7')) &&
-        source('curriculum/selectors.ts').includes('/[<>]=?\\s*\\d/.test(custom)')
+        requirements.some((r) => r.kind === 'runs' && r.from === 'songs' && r.count === 1) &&
+        requirements.some((r) => r.kind === 'unjudged' && /blind/.test(r.rule)) &&
+        requirements.every((r) => r.kind === 'runs' || r.kind === 'unjudged')
       );
     },
   ],
@@ -2145,7 +2148,13 @@ import { DEFAULT_SETTINGS } from '../../src/data/settingsStore';
 import { evaluateOutcome } from '../../src/engine/Scoring';
 import { LADDER_CEILING_PCT, LADDER_NOTCH_PCT, nextLadderTempo } from '../../src/engine/PracticeEngine';
 import { SIMON_MASTER_CHAIN, SIMON_PASS_CHAIN } from '../../src/engine/drills/simon';
-import { demandsMeasuredAccuracy } from '../../src/curriculum/selectors';
+import type { RungStates } from '../../src/evidence/rungState';
+
+/**
+ * A learner with no runs (C5): the derived rung state is empty, so where the
+ * learner is comes from the placement alone. It was an empty list of passes.
+ */
+const NO_RUNS: RungStates = { byRung: new Map() };
 import {
   LAB_LOCKS,
   buildLabExercise,
@@ -2290,8 +2299,10 @@ const T12B_APP: [string, string, () => boolean][] = [
     'technique.5',
     'the slope is reported beside the accuracy and this rung does not make it a condition of passing',
     () =>
-      rung('technique.5').mastery.custom === undefined &&
-      !demandsTechniqueMeasure(rung('technique.5').mastery.custom, 'shaping') &&
+      // Revised (C5): the rung makes a measure binding with a \`measure\`
+      // requirement, and technique.5 has none (it read \`mastery.custom\`).
+      !rung('technique.5').requirements.some((r) => r.kind === 'measure') &&
+      !demandsTechniqueMeasure(rung('technique.5').requirements, 'shaping') &&
       source('ui/screens/ScoreScreen.ts').includes('demandsTechniqueMeasure('),
   ],
   [
@@ -2597,7 +2608,7 @@ const T12B_APP: [string, string, () => boolean][] = [
       return (
         halfPedalScore([0, 127, 0, 127], [32, 96]).binaryPedal &&
         measure?.text.includes('this pedal is a switch') === true &&
-        !demandsTechniqueMeasure(rung('technique.7').mastery.custom, 'half-pedal')
+        !demandsTechniqueMeasure(rung('technique.7').requirements, 'half-pedal')
       );
     },
   ],

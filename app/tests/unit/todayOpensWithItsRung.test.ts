@@ -29,7 +29,11 @@ function lesson(id: string, exerciseOptions: string[], songOptions: string[]): L
     textFile: `lessons/${id}.md`,
     exerciseOptions,
     songOptions,
-    mastery: { exercisesRequired: 2, songsRequired: 1, minAccuracy: 0.95, minTempoPct: 0.8 },
+    mastery: { minAccuracy: 0.95, minTempoPct: 0.8 },
+    requirements: [
+      { kind: 'runs', from: 'exercises', count: 2 },
+      { kind: 'runs', from: 'songs', count: 1 },
+    ],
   };
 }
 
@@ -88,7 +92,7 @@ vi.mock('../../src/curriculum/load', () => ({
   allItems: () => Promise.resolve(ITEMS),
 }));
 
-const { TodayScreen } = await import('../../src/ui/screens/TodayScreen');
+const { TodayScreen, rungForSlot } = await import('../../src/ui/screens/TodayScreen');
 const { updateSettings, DEFAULT_SETTINGS } = await import('../../src/data/settingsStore');
 
 let navigateScore: ReturnType<typeof vi.fn>;
@@ -184,5 +188,38 @@ describe('Today opens a card with its rung and its slot (L50)', () => {
     expect(options).toMatchObject({ slot: 'daily-read' });
     expect(typeof options.seed).toBe('number');
     expect(options).not.toHaveProperty('rung');
+  });
+});
+
+describe('the rung a card is judged by, where the builder offered it from no rung (C5)', () => {
+  // Added (C5, L8). The first rung listing an item stood in for the rung that
+  // judged it; for an item several rungs list, that credited the first of them
+  // with a run nobody opened from it.
+  const TWO = {
+    ...CURRICULUM,
+    stages: [
+      {
+        number: 1,
+        title: 'Stage 1',
+        summary: '',
+        units: [
+          {
+            id: 'u1',
+            title: 'Unit',
+            track: 'core',
+            lessons: [lesson('1.2', ['exercise.shared', 'exercise.only'], ['song.test.c']), lesson('1.3', ['exercise.shared'], [])],
+          },
+        ],
+      },
+    ],
+  } as unknown as Curriculum;
+  it('offered from a rung that lists it: that rung', () => {
+    expect(rungForSlot(TWO, item('exercise.shared'), '1.3')).toBe('1.3');
+  });
+  it('listed by one rung: that rung, whose standard is the only one it has', () => {
+    expect(rungForSlot(TWO, item('exercise.only'))).toBe('1.2');
+  });
+  it('listed by several and offered from none: no rung judges it, so it counts towards none', () => {
+    expect(rungForSlot(TWO, item('exercise.shared')), 'the first listing judged a run nobody opened from it').toBeUndefined();
   });
 });

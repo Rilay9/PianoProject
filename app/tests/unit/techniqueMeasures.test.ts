@@ -17,6 +17,9 @@
  */
 import { describe, expect, it } from 'vitest';
 import { techniqueMeasureFor, demandsTechniqueMeasure } from '../../src/engine/Scoring';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import type { Curriculum } from '../../src/curriculum/types';
 import type { PreparedStep, RecordedNote, SessionScore, TimingStats } from '../../src/engine/types';
 
 const EMPTY_TIMING: TimingStats = {
@@ -276,18 +279,31 @@ describe('a measure that cannot be taken says so', () => {
   });
 });
 
+// Replaced (C5): the rung made a measure binding by naming it with a number in
+// `mastery.custom`, read by a regular expression. `custom` became the rung's
+// `requirements`, and a binding measure is a `measure` requirement.
 describe('whether the rung makes it binding', () => {
-  it('is false where the rung states no rule, which is all four of them today', () => {
+  it('is false where the rung requires no measure, which is every rung in the built curriculum', () => {
+    const curriculum = JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', 'curriculum.json'), 'utf8')) as Curriculum;
+    const rungs = curriculum.stages.flatMap((s) => s.units.flatMap((u) => u.lessons));
+    expect(rungs.length).toBeGreaterThan(90);
+    for (const rung of rungs) {
+      for (const kind of ['voicing', 'articulation', 'shaping']) {
+        expect(demandsTechniqueMeasure(rung.requirements, kind), `${rung.id} ${kind}`).toBe(false);
+      }
+    }
     expect(demandsTechniqueMeasure(undefined, 'voicing')).toBe(false);
-    expect(demandsTechniqueMeasure('one-piece-performed', 'voicing')).toBe(false);
   });
 
-  it('is true where a rung names the measure with a number', () => {
-    expect(demandsTechniqueMeasure('voicing-top-note>=0.9', 'voicing')).toBe(true);
-    expect(demandsTechniqueMeasure('articulation-held>=0.9', 'articulation')).toBe(true);
+  it('is true where a rung requires the measure', () => {
+    expect(demandsTechniqueMeasure([{ kind: 'measure', measure: 'voicing' }], 'voicing')).toBe(true);
+    expect(demandsTechniqueMeasure([{ kind: 'runs', from: 'exercises', count: 1 }, { kind: 'measure', measure: 'articulation' }], 'articulation')).toBe(true);
   });
 
-  it('does not fire for a different measure’s rule', () => {
-    expect(demandsTechniqueMeasure('voicing-top-note>=0.9', 'shaping')).toBe(false);
+  it('does not fire for a different measure’s requirement, nor for the lesson’s unjudged rule', () => {
+    expect(demandsTechniqueMeasure([{ kind: 'measure', measure: 'voicing' }], 'shaping')).toBe(false);
+    expect(
+      demandsTechniqueMeasure([{ kind: 'unjudged', rule: 'voicing-top-note>=0.9', says: 'The top note sings.', why: 'not measured' }], 'voicing'),
+    ).toBe(false);
   });
 });

@@ -73,7 +73,7 @@ function offer(rows: readonly SessionRow[], rung: string, today: Date): ReadingO
   const made = readingOffer({
     curriculum,
     items: catalog,
-    position: nextRecommended(curriculum, [], ['core'], { startAt: rung }),
+    position: nextRecommended(curriculum, { byRung: new Map() }, ['core'], { startAt: rung }),
     activeTracks: ['core'],
     rows,
     today,

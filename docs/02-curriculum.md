@@ -954,20 +954,51 @@ suggestions** with a note on where to buy/obtain MusicXML.
   the app play the hand you are not, and counts for the hand you are. The accompaniment lab
   (Library → Lab) writes its exercises into the Library as imports; they are practised there
   and never sit on a rung.
-- Lesson complete = **1 exercise passed + 1 item passed**, where the second item may be a song
-  *or* another exercise (`00` D21). A unit whose skill no song tests — 1.5 reading by
-  interval, 2.5 the first scale, 3.6 accompaniment patterns, the whole theory-and-ear track —
-  sets `songOptional: true` in its lesson and is complete on two exercises. Setting: "require
-  2 songs" for anyone who wants the stricter rule.
+- **A rung is met by the evidence its requirements name (C5, 2026-09-27).** Each rung states
+  `requirements` (`content/curriculum.schema.json`), predicates over evidence, and every one
+  the app can judge must hold; `app/src/evidence/rungState.ts` derives met / in progress /
+  not started from the stored runs, and Plan, Today, the lesson page and Skills read it
+  (`04` §3f). The kinds: **`runs`** — distinct items of the rung's exercises, songs (paper
+  pieces included) or either, or items it names, each with a run *judged by this rung* at its
+  standard (`mastery.minAccuracy`, and `minTempoPct` in Keep tempo; a Wait run meets only a
+  rung that asks no tempo); **`reads`** — phrases of its reading row read at sight, judged by
+  it, whose evidence for a skill is at the practice or full standard with a share right;
+  **`skill`** — a vocabulary skill's ladder state (familiar or proficient) over **every**
+  evidence record, whichever rung judged the run; **`done`** — an item of this rung's alone
+  finished with nothing left undone (the checklist, the tour, the placement test);
+  **`measure`** — a technique measure met in a run judged by it (the hook; no rung uses it);
+  **`unjudged`** — the lesson's rule where no run can show it, printed on the page as the
+  lesson's and never counted. The old rule — *1 exercise passed + 1 item passed*, counted
+  over the rung's lists wherever the passes were judged, so a pass credited every rung listing
+  the item (L8), and `mastery.custom` never enforced (L9) — is deleted: `exercisesRequired`
+  and `songsRequired` became `runs` requirements, and every `custom` term a `runs`, `reads`
+  or `done` requirement or an `unjudged` one. The translation, rung by rung, is
+  `docs/pending-review.md` Entry 79. A song-optional rung (`songOptional: true`: 1.5, 2.5,
+  3.6, the theory-and-ear track and the rest) asks for exercises and no song. Setting:
+  "require 2 songs" asks a second song of a rung that asks for songs and has two.
+- **The learner's word and the carry-over (C5).** *I already know this* and *Mark done* record
+  the learner's word about a rung (the plan row's `rungWords`), shown apart; they never meet
+  a requirement and set the rung aside in the recommendation the way a placement sets aside
+  the rungs behind it. A paper run and a self-report are the learner's word about a run, and
+  no requirement accepts them (the self-assessment rule above). The rungs the old rule had
+  done before the rung it was recommending, on a database made before C5, are carried over
+  once as *done before*, apart, never met (`app/src/data/carryOver.ts`).
 - **Every rung offers at least three alternatives** for each of `exerciseOptions` and
   `songOptions` (`00` D21). Where three songs do not exist, exercises make up the number and
   the lesson text says which skill they stand in for. `tools/content/validate.py` enforces
   the count; it is not left to the author's judgement.
-- Unit complete = all lessons complete. Stage complete = all core units + the capstone.
+- Unit complete = all lessons met. Stage complete = all core units + the capstone.
 - Review queue intervals: 1, 3, 7, 21 days after `pass`; an item drops out of review after
-  `master`, but reappears in "Repertoire" every ~30 days.
-- Prerequisites are advisory; "strict mode" locks items until prerequisites are passed.
-- The placement test can mark whole stages `passed (placement)`.
+  `master`, but reappears in "Repertoire" every ~30 days. **Pieces only (C5, S8):** a generated
+  sight-reading phrase carries no piece semantics — its row is never passed, mastered, put on
+  the review calendar or offered as repertoire, and its runs are observations with evidence,
+  read by the reader and by `rungState`. The daily read's done-day stays: a habit, not a
+  mastery.
+- Prerequisites are advisory; "strict mode" locks a rung until its prerequisites are met (or
+  set aside by the learner's word, or carried over).
+- The placement test sets where the plan starts (a floor): rungs behind it are held back and
+  come back when nothing is left in front. It meets no requirement — its answers are the
+  learner's own account, not runs of each rung's material (C5 keeps placement a floor).
 
 ## Part H — Vocabulary v0: what a skill is and what a demand is (2026-09-26, C2)
 
@@ -996,15 +1027,18 @@ grown only when a reader needs it and its observable exists).
   `demands` (measured by the build, E) and `role` (D) exist in the schema and nothing writes
   them yet. A genre is never a skill or a demand; the generated rows' `genre: ["technique"]`
   and `["drill"]` are types, left for D to remove.
-- **The build gate.** `validate.py` refuses a rung that requires evidence no run can give:
-  a concept that is a v0 skill with `observable: none` (completing a rung marks its concepts
-  known), or a `mastery.custom` term — mapped to a skill in `requirementTerms` until C5 turns
-  requirements into predicates — whose standard needs a condition no run records, or whose
-  count nothing evaluates. Three are waived today with reasons, printed on every build:
-  1.5's `sight-read-5-first-attempt>=0.9` (nothing counts the five; the key guide is not
-  recorded), 3.4's `sight-read-5>=0.85` (nothing counts them), 4.6's `reading-ahead`. The
-  technique, ear and performance terms outside v0 are listed as unjudged, never passed in
-  silence.
+- **The build gate (C2; since C5 over the rungs' `requirements`).** `validate.py`'s
+  `evidence_gate` refuses a rung whose requirement no run can evidence: a rung with no
+  requirement; a `skill` or `reads` requirement naming a skill that is not in v0, or whose
+  observable is `none`, or whose standard needs a condition no run records, or that no option
+  of the rung declares in `targetSkills` (the evidence must be reachable from the rung's
+  page); a `runs` requirement asking more items than its pool; a `done` requirement naming an
+  item another rung lists; a concept that is a v0 skill with `observable: none` unless an
+  `unjudged` requirement names it. Nothing is waived: C2's three waivers became 1.5's and
+  3.4's `reads` requirements (five first readings at 90 % at the full standard; five reads at
+  85 % at the practice standard) and 4.6's `unjudged` reading ahead. Every `unjudged` rule is
+  listed on every build. `requirementsCanBeShown.test.ts` checks the evidence itself: each
+  skill requirement is shown by a reading of the rung's own row from its page.
 - **Taught at.** `sightReadingPromises.test.ts` holds every sight-reading row to *nothing the
   earliest rung listing it has not taught*, read from `taughtAt` — and, since C4b, to nothing
   no rung teaches (`taughtAt: null`): row 7 stopped writing sixteenths (S23; below). One known

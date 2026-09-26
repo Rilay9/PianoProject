@@ -66,7 +66,7 @@ import type {
   SkillRow,
   StreakRow,
 } from '../../src/data/db';
-import { openDatabase, resetDatabaseForTest } from '../../src/data/db';
+import { CARRY_OVER_DUE_KEY, openDatabase, resetDatabaseForTest } from '../../src/data/db';
 import type { Curriculum, Lesson } from '../../src/curriculum/types';
 import type { Router } from '../../src/router';
 
@@ -117,7 +117,13 @@ function rungStricterThanTheLegacyPass(): { lesson: Lesson; exercise: string; so
   for (const lesson of everyRung()) {
     if (lesson.mastery.minAccuracy <= LEGACY_ACCURACY) continue;
     if (lesson.songOptional === true) continue;
-    if (lesson.mastery.exercisesRequired !== 1 || lesson.mastery.songsRequired !== 1) continue;
+    // One exercise and one song, as the rung's requirements state it (C5; it
+    // read the old counts).
+    const plain = JSON.stringify(lesson.requirements) === JSON.stringify([
+      { kind: 'runs', from: 'exercises', count: 1 },
+      { kind: 'runs', from: 'songs', count: 1 },
+    ]);
+    if (!plain) continue;
     const exercise = lesson.exerciseOptions[0];
     const song = lesson.songOptions[0];
     if (exercise === undefined || song === undefined) continue;
@@ -329,6 +335,11 @@ async function seedLegacySnapshot(): Promise<void> {
     source: null,
     scores: [legacyFolderScore()],
   });
+  // A database made before C5: its version 6 → 7 upgrade marks the old record
+  // as due to be carried over (`db.ts`, `CARRY_OVER_DUE_KEY`). The snapshot is
+  // written through today's `openDatabase()`, which makes version 7 directly,
+  // so the mark the upgrade would have left is put down here (C5).
+  await db.put('settings', true, CARRY_OVER_DUE_KEY);
 
   resetDatabaseForTest();
 }
@@ -438,28 +449,29 @@ describe('a storage snapshot from before this week, booted by this week’s code
     expect(rows.get(STRICT.exercise)?.selfPassed).toBeUndefined();
   });
 
-  it('does not re-judge a pass under a rung that now asks for more', async () => {
-    const { allProgress } = await import('../../src/data/progressStore');
-    const { lessonComplete, masteryCriteriaFor } = await import('../../src/curriculum/selectors');
-    const { DEFAULT_MASTERY } = await import('../../src/engine/Scoring');
-
-    // The rung's own numbers, read from the build, are stricter than the run.
-    const criteria = masteryCriteriaFor(STRICT.lesson, DEFAULT_MASTERY);
-    expect(
-      criteria.passAccuracy,
-      `${STRICT.lesson.id} no longer asks for more than the legacy pass measured`,
-    ).toBeGreaterThan(LEGACY_ACCURACY);
-
-    const records = (await allProgress()).map((row) => ({
-      itemId: row.itemId,
-      passed: row.status === 'passed' || row.status === 'mastered',
-      mastered: row.status === 'mastered',
-      ...(row.selfPassed === undefined ? {} : { selfPassed: row.selfPassed }),
-    }));
-    expect(
-      lessonComplete(STRICT.lesson, records),
-      `${STRICT.lesson.id} was completed under the old rule and this build reopened it`,
-    ).toBe(true);
+  // Replaced (C5): it held that a rung completed under the old rule — passed
+  // items counted, wherever judged — stayed complete. A rung is met only by
+  // runs judged by it now, and the old record's rows name no rung, so the old
+  // passes meet nothing; what the old rule had walked past is carried over
+  // once, apart, as done before (`carryOver.test.ts` has the owner's shape).
+  // Here the old rule was still at the start (nothing before this Stage 4
+  // rung was passed), so nothing is carried and the passes stay the items'.
+  it('meets no rung from the old record, and carries over only what the old rule had walked past', async () => {
+    const { rungRows, allProgress } = await import('../../src/data/progressStore');
+    const { carryOverOnce, getPlan } = await import('../../src/data/planStore');
+    const { loadCurriculum } = await import('../../src/curriculum/load');
+    const { rungState, learnerRecordFrom } = await import('../../src/evidence/rungState');
+    const { VOCABULARY_V0 } = await import('../../src/evidence/vocabulary');
+    const { getSettings } = await import('../../src/data/settingsStore');
+    const curriculum = await loadCurriculum();
+    // The database was made before C5, so the carry-over is due; it runs once.
+    expect(await carryOverOnce(curriculum)).toBe(0);
+    const plan = await getPlan();
+    expect(plan.carriedOver?.rungs, 'the carry-over did not run on a database made before C5').toEqual([]);
+    const states = rungState(await rungRows(), curriculum, VOCABULARY_V0, READ_ON, learnerRecordFrom(plan, getSettings()));
+    expect(states.byRung.get(STRICT.lesson.id)?.status, `${STRICT.lesson.id} was met by passes no rung judged`).toBe('not started');
+    // The passes themselves are kept as the items' records (the case above).
+    expect((await allProgress()).some((row) => row.itemId === STRICT.song && row.status === 'mastered')).toBe(true);
   });
 
   it('carries no step count on any stored row, which is why the engine fix is safe', async () => {
@@ -533,7 +545,7 @@ describe('a storage snapshot from before this week, booted by this week’s code
     expect(plan.placement, 'a placement was invented for a plan that never had one').toBeUndefined();
 
     const curriculum = await loadCurriculum();
-    const recommended = nextRecommended(curriculum, [], activeTracksFor(plan, curriculum), {});
+    const recommended = nextRecommended(curriculum, { byRung: new Map() }, activeTracksFor(plan, curriculum), {});
     expect(recommended, 'a plan with no placement recommends nothing at all').toBeTruthy();
   });
 
@@ -614,7 +626,10 @@ describe('a storage snapshot from before this week, booted by this week’s code
       await vi.waitFor(() => {
         expect(section.querySelector('#plan-next'), 'Plan drew no Next up card').not.toBeNull();
       });
-      // The rung the legacy pass completed is drawn as complete. A stage is
+      // Revised (C5): the rung the legacy passes completed under the old rule
+      // is not drawn complete — no rung judged those runs, and the old rule
+      // had not walked past it, so nothing carried it over — and it is not
+      // drawn as anything else either. It was "drawn as complete". A stage is
       // collapsed until it is tapped, so the tap happens: a check skipped
       // because the row was not there is a check that proves nothing.
       const stage = stageOfRung(STRICT.lesson.id);
@@ -626,8 +641,8 @@ describe('a storage snapshot from before this week, booted by this week’s code
         expect(row, `${STRICT.lesson.id} is not on Plan once its stage is open`).not.toBeNull();
         expect(
           row?.querySelector('.badge[data-kind="passed"]'),
-          `${STRICT.lesson.id} was completed before this week and Plan does not say so`,
-        ).not.toBeNull();
+          `${STRICT.lesson.id} is drawn complete from passes no rung judged`,
+        ).toBeNull();
       });
     });
 

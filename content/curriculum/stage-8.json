@@ -43,11 +43,21 @@
                 "song.classical.debussy-arabesque-1"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "classical.7"
               ],
@@ -130,11 +140,21 @@
                 "song.classical.scott-frog-legs-rag.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "ragtime.7"
               ],
@@ -205,11 +225,16 @@
               "songOptions": [],
               "songOptional": true,
               "mastery": {
-                "exercisesRequired": 2,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 2
+                }
+              ],
               "levelBand": [
                 8.1,
                 8.1
@@ -269,11 +294,16 @@
               ],
               "songOptional": true,
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.85
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "jazz.7"
               ],
@@ -342,11 +372,16 @@
               ],
               "songOptional": true,
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.85
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "blues.7"
               ],
@@ -417,11 +452,16 @@
               ],
               "songOptional": true,
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.85
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "chords-pop.7"
               ],
@@ -488,11 +528,16 @@
               "songOptions": [],
               "songOptional": true,
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.85
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "theory.7"
               ],
@@ -552,11 +597,16 @@
               "songOptions": [],
               "songOptional": true,
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.85
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "improv.7"
               ],

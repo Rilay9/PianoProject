@@ -178,10 +178,14 @@ describe('a run that was not a first reading is practice, not evidence (C1, revi
     expect(session?.unseen).toBe(false);
   });
 
-  it('an unseen run of today’s phrase still ticks the day and passes', async () => {
+  // Revised (C5, S8): the first reading of today's phrase still ticks the day
+  // — a habit — and passes nothing: a generated phrase carries no pass, no
+  // mastery and no review date. Its evidence is on the session row.
+  it('an unseen run of today’s phrase still ticks the day, and passes nothing', async () => {
     const now = on('2026-09-25');
     const row = await recordRun({ ...RUN, seed: dailySeed(dayKey(now)), unseen: true }, now);
-    expect(row.status).toBe('passed');
+    expect(row.status, 'a sight-read passed its row like a piece').toBe('started');
+    expect(row.passedOn).toEqual([]);
     expect(await dailyReadDays()).toContain(dayKey(now));
   });
 });
@@ -207,16 +211,19 @@ describe('the review queue counts days where the learner lives', () => {
   }
 
   // West of UTC the old reading made an evening pass due the same evening; east
-  // of it, a pass was not due until mid-morning of the next day.
+  // of it, a pass was not due until mid-morning of the next day. Revised (C5):
+  // the queue is told which items are generated sight-reading rows (none here:
+  // 'a' is a piece, whose calendar C5 keeps).
+  const pieces = (): boolean => false;
   for (const tz of ['America/New_York', 'America/Los_Angeles', 'Asia/Tokyo']) {
     it(`in ${tz}: passed at 20:30, not due at 20:45 that evening, due the next morning`, () => {
       process.env.TZ = tz;
       const passedAt = new Date(2026, 8, 10, 20, 30);
       const row = passed(dayKey(passedAt));
       expect(row.passedOn).toEqual(['2026-09-10']);
-      expect(reviewQueue([row], new Date(2026, 8, 10, 20, 45))).toEqual([]);
-      expect(reviewQueue([row], new Date(2026, 8, 10, 23, 59))).toEqual([]);
-      const tomorrow = reviewQueue([row], new Date(2026, 8, 11, 7, 0));
+      expect(reviewQueue([row], new Date(2026, 8, 10, 20, 45), pieces)).toEqual([]);
+      expect(reviewQueue([row], new Date(2026, 8, 10, 23, 59), pieces)).toEqual([]);
+      const tomorrow = reviewQueue([row], new Date(2026, 8, 11, 7, 0), pieces);
       expect(tomorrow.map((item) => item.step)).toEqual([1]);
       // Due from the learner's own midnight, not from UTC's.
       expect(new Date(tomorrow[0]?.dueAt ?? '').getTime()).toBe(new Date(2026, 8, 11).getTime());
@@ -225,8 +232,8 @@ describe('the review queue counts days where the learner lives', () => {
     it(`in ${tz}: the three-day step comes on the third calendar day`, () => {
       process.env.TZ = tz;
       const row = passed('2026-09-10');
-      expect(reviewQueue([row], new Date(2026, 8, 12, 23, 0))[0]?.step).toBe(1);
-      expect(reviewQueue([{ ...row, passedOn: ['2026-09-10', '2026-09-11'] }], new Date(2026, 8, 13, 0, 30))[0]?.step).toBe(2);
+      expect(reviewQueue([row], new Date(2026, 8, 12, 23, 0), pieces)[0]?.step).toBe(1);
+      expect(reviewQueue([{ ...row, passedOn: ['2026-09-10', '2026-09-11'] }], new Date(2026, 8, 13, 0, 30), pieces)[0]?.step).toBe(2);
     });
   }
 });

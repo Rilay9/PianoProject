@@ -117,18 +117,23 @@ describe('the ids an item names', () => {
   });
 });
 
-describe('the bridge from today’s rung requirements and the waivers', () => {
-  it('every requirement term names a skill and a standard', () => {
-    for (const term of skillsFile.requirementTerms) {
-      expect(skillIds, term.term).toContain(term.skill);
-      expect(['practice', 'full']).toContain(term.standard);
+describe('the rungs name skills in their own requirements (C5)', () => {
+  // Replaced (C5): C2's interim table mapped two `mastery.custom` terms to a
+  // skill and named three rungs the gate waived until C5. The terms are gone;
+  // each rung states its requirements, and the vocabulary keeps no bridge.
+  const lessons = curriculum.stages.flatMap((s) => s.units.flatMap((u) => u.lessons));
+  it('every skill a requirement names is a vocabulary skill with an observable', () => {
+    const named = lessons.flatMap((lesson) =>
+      lesson.requirements.flatMap((r) => (r.kind === 'skill' || r.kind === 'reads' ? [[lesson.id, r.skill] as const] : [])),
+    );
+    expect(named.length, 'no rung names a skill').toBeGreaterThan(0);
+    for (const [rung, skill] of named) {
+      expect(skillIds, `${rung} → ${skill}`).toContain(skill);
+      expect(skills.find((s) => s.id === skill)?.observable, `${rung} → ${skill}`).not.toBe('none');
     }
+    expect(rungs.size).toBe(lessons.length);
   });
-  it('every waiver names a rung the curriculum has, a skill the vocabulary has, and a reason', () => {
-    for (const waiver of skillsFile.gateWaivers) {
-      expect(rungs).toContain(waiver.rung);
-      expect(skillIds).toContain(waiver.skill);
-      expect(waiver.reason.length).toBeGreaterThan(40);
-    }
+  it('the skills file keeps no interim bridge and no waiver', () => {
+    expect(Object.keys(skillsFile).sort()).toEqual(['_comment', 'conditions', 'skills']);
   });
 });

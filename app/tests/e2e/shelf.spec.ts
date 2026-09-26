@@ -247,8 +247,12 @@ test.describe('practising against paper', () => {
     await expect(history).toContainText('notes heard');
   });
 
-  test('a self-assessed clean run finishes the rung it answers', async ({ page }) => {
-    // 4.4's rule is not a measured one, so his word counts (replan §5.2).
+  // Replaced (C5, L9): it held that 4.4's rule was not a measured one, so his
+  // word finished the rung (replan §5.2). A rung is met by runs judged by it
+  // at its standard now, and a paper run is his own answer, not a measurement:
+  // it is recorded and badged as his, and meets no requirement of the rung
+  // (`04` §3f; `02` Part G's self-assessment rule).
+  test('a self-assessed clean run is recorded as his answer and meets no requirement of the rung', async ({ page }) => {
     await addBookAndPiece(page, { book: 'My book', piece: 'Study', lesson: '4.4' });
     await page.locator('#shelf-list [data-piece]').first().getByRole('button', { name: 'Practise' }).click();
     await page.locator('#paper-start').click();
@@ -261,6 +265,12 @@ test.describe('practising against paper', () => {
 
     await page.goto('/#/lesson/4.4');
     await expect(page.locator('#lesson-paper')).toContainText('you said you can play it');
+    await expect(page.locator('#lesson-state'), 'his answer made the rung complete').not.toContainText('complete');
+    await expect(page.locator('#lesson-counts summary')).toContainText('What the app counts');
+    await expect(
+      page.locator('#lesson-counts li[data-holds="true"]'),
+      'his answer met a requirement of the rung',
+    ).toHaveCount(0);
   });
 });
 

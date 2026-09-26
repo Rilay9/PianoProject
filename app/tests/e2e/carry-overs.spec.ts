@@ -168,6 +168,8 @@ test.describe('strict prerequisites', () => {
     await expect(lock).toBeVisible();
     await expect(lock).toContainText('comes later');
     await expect(lock).toContainText('Usually comes after');
+    // The rung by its name, never its id (C5, T26): `4.4 Hanon…` was the line.
+    await expect(lock, 'the lock line names a rung by its id').not.toContainText(/\b\d+\.\d+\b/);
 
     // The cards still open. A disabled card tells the learner no and gives him
     // nothing to do about it.

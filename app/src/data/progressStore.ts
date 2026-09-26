@@ -113,6 +113,11 @@ function freshRow(itemId: string): ProgressRow {
 
 const memory = new Map<string, ProgressRow>();
 let streakMemory: StreakRow | null = null;
+/**
+ * The rows the rung state is derived from (C5), without their per-step detail:
+ * read once a session by `rungRows`, then kept current by every write here.
+ */
+let rungRowsMemory: SessionRow[] | null = null;
 const listeners = new Set<() => void>();
 
 export function onProgressChange(cb: () => void): () => void {
@@ -167,14 +172,27 @@ export async function recordRun(result: RunResult, now = new Date()): Promise<Pr
   // item's `lastPracticedAt`, which had both faults (2026-09-16). A phrase
   // heard before it was read is today's phrase and not today's read.
   if (evidence && result.seed !== undefined && result.seed === dailySeed(dayKey(now))) await markDailyRead(now);
-  const passed = evidence && result.passed;
-  const masterEligible = evidence && result.masterEligible;
+  /**
+   * A generated sight-reading phrase carries no piece semantics (C5, S8): its
+   * row is not passed, not mastered and not put on the review calendar, and
+   * sets no best. Every open writes a phrase never seen before, so "passed"
+   * and "mastered" would be claims about the row that no reading supports;
+   * what a reading shows is its evidence, on the session row, which the
+   * reader and `rungState` read. `unseen` (or the recipe) is written on every
+   * run of a generated phrase and on nothing else (C1, C4). The row keeps
+   * its practice — the attempt, the minutes, when — and the day's tick above
+   * stays: a habit, not a mastery.
+   */
+  const generated = result.unseen !== undefined || result.recipe !== undefined;
+  const passed = evidence && result.passed && !generated;
+  const masterEligible = evidence && result.masterEligible && !generated;
 
   row.attempts += 1;
   row.lastPracticedAt = now.toISOString();
   row.minutes += result.durationMs / 60_000;
   // Nothing measured is not a best of nought (C1): it leaves the best alone.
-  if (evidence && typeof result.accuracy === 'number') {
+  // A generated phrase has no best either: each is a different phrase (S8).
+  if (evidence && !generated && typeof result.accuracy === 'number') {
     row.bestAccuracy = Math.max(row.bestAccuracy, result.accuracy);
   }
   // A tempo nobody played to is not a best tempo (T37): a Wait run's number is
@@ -204,7 +222,8 @@ export async function recordRun(result: RunResult, now = new Date()): Promise<Pr
   const db = await openDatabase();
   if (db) {
     await db.put('progress', row);
-    await db.add('sessions', session);
+    const key = await db.add('sessions', session);
+    rungRowsMemory?.push(forRungState({ ...session, id: key }));
     // Not awaited: the run is finished and the learner is looking at a
     // summary. Tidying up is the app's business, not theirs; a test waits for
     // it with `sessionsTidied()`.
@@ -238,6 +257,79 @@ function sessionRowFor(result: RunResult, now: Date): SessionRow {
     ...(performance ? { performance: true } : {}),
     ...(rhythmOnly ? { rhythmOnly: true } : {}),
   };
+}
+
+/**
+ * A stored run as the rung state reads it (C5): everything but the per-step
+ * detail and its bar tallies, which no requirement reads.
+ */
+function forRungState(row: SessionRow): SessionRow {
+  const { steps: _steps, bars: _bars, ...rest } = row;
+  return rest;
+}
+
+/**
+ * Every stored run, as the rung state reads it (C5: `evidence/rungState`):
+ * where the learner is comes from these rows and nothing else.
+ *
+ * Read once a session with a cursor down the store and kept in memory after
+ * that: `recordRun` appends to it and `replaceSessionEvidence` updates it, so
+ * Plan, Today and the lesson page do not each walk the store on every draw.
+ * Without the per-step detail, which is most of a row's size and which no
+ * requirement reads. Failure returns what is in memory (nothing, the first
+ * time), which reads as a learner with no runs: honest, and the screen still
+ * draws.
+ */
+export async function rungRows(): Promise<SessionRow[]> {
+  if (rungRowsMemory) return rungRowsMemory;
+  const db = await openDatabase();
+  if (!db) return [];
+  const out: SessionRow[] = [];
+  try {
+    let cursor = await db.transaction('sessions').store.openCursor();
+    while (cursor) {
+      out.push(forRungState({ ...cursor.value, id: cursor.primaryKey }));
+      cursor = await cursor.continue();
+    }
+  } catch {
+    return out;
+  }
+  rungRowsMemory = out;
+  return out;
+}
+
+/**
+ * Writes a stored run's evidence, or the evidence job's reason for keeping it
+ * out, by the run's key (C5, `data/evidenceJob.ts`). Only those three fields
+ * change; the observation is never rewritten. The rung state's copy follows.
+ * A row that is gone (pruned meanwhile) is left gone.
+ */
+export async function replaceSessionEvidence(
+  id: number,
+  patch: Pick<SessionRow, 'evidence' | 'evidenceDefinitions' | 'evidenceRecompute'>,
+): Promise<void> {
+  const db = await openDatabase();
+  if (!db) return;
+  const row = await db.get('sessions', id);
+  if (!row) return;
+  const next: SessionRow = { ...row };
+  for (const key of ['evidence', 'evidenceDefinitions', 'evidenceRecompute'] as const) {
+    if (!(key in patch)) continue;
+    const value = patch[key];
+    if (value === undefined) delete next[key];
+    else (next as unknown as Record<string, unknown>)[key] = value;
+  }
+  // The row carries its own key (`keyPath: 'id'`); a key beside it is refused.
+  await db.put('sessions', { ...next, id });
+  if (rungRowsMemory) {
+    const index = rungRowsMemory.findIndex((entry) => entry.id === id);
+    if (index >= 0) rungRowsMemory[index] = forRungState({ ...next, id });
+  }
+}
+
+/** Tells the screens that listen that the store changed (the evidence job's one announcement). */
+export function announceProgressChange(): void {
+  notify();
 }
 
 /** "I already know this" — a pass the learner asserts rather than plays. */
@@ -529,6 +621,8 @@ export async function pruneSessions(max = MAX_SESSIONS, slack = PRUNE_SLACK): Pr
       cursor = await cursor.continue();
     }
     await tx.done;
+    // The rung state's copy is read again from what is left (C5).
+    if (dropped > 0) rungRowsMemory = null;
     return dropped;
   } catch {
     return 0;
@@ -677,11 +771,21 @@ export interface ReviewItem {
  * round again about every thirty days, which is a different list and belongs
  * to the Progress screen.
  */
-export function reviewQueue(rows: ProgressRow[], now = new Date()): ReviewItem[] {
+export function reviewQueue(
+  rows: ProgressRow[],
+  now: Date,
+  /**
+   * Whether an item is a generated sight-reading row (C5, S8), which is never
+   * reviewed: every open is a new phrase. Required, so no caller can forget
+   * it, and a row an older build marked passed is still skipped.
+   */
+  isGenerated: (itemId: string) => boolean,
+): ReviewItem[] {
   const due: ReviewItem[] = [];
   const todayKey = dayKey(now);
   for (const row of rows) {
     if (row.status !== 'passed') continue;
+    if (isGenerated(row.itemId)) continue;
     const first = row.passedOn[0];
     if (!first) continue;
     // Calendar days between two day keys, both where the learner lives (T37).
@@ -701,6 +805,44 @@ export function reviewQueue(rows: ProgressRow[], now = new Date()): ReviewItem[]
     due.push({ itemId: row.itemId, dueAt, step });
   }
   return due.sort((a, b) => a.dueAt.localeCompare(b.dueAt));
+}
+
+/**
+ * The pieces the learner has mastered, for Today's repertoire slot (C5, S8):
+ * never a generated sight-reading row, whatever an older build wrote on it.
+ */
+export function repertoireOf(rows: readonly ProgressRow[], isGenerated: (itemId: string) => boolean): string[] {
+  return rows.filter((row) => row.status === 'mastered' && !isGenerated(row.itemId)).map((row) => row.itemId);
+}
+
+/**
+ * Puts the generated sight-reading rows an older build passed or mastered back
+ * to practised (C5, S8): no pass, no mastery, no review dates, no self-pass,
+ * no best, and their attempts, minutes and last run kept. The session rows —
+ * the observations and their evidence — are untouched. Idempotent: it returns
+ * the rows it changed, none the second time. Run once on open by the evidence
+ * job (`evidence/recompute.ts`).
+ */
+export async function normaliseGeneratedRows(isGenerated: (itemId: string) => boolean): Promise<string[]> {
+  const changed: string[] = [];
+  for (const row of await allProgress()) {
+    if (!isGenerated(row.itemId)) continue;
+    const marked =
+      row.status === 'passed' ||
+      row.status === 'mastered' ||
+      row.passedOn.length > 0 ||
+      (row.masteredOn?.length ?? 0) > 0 ||
+      row.selfPassed !== undefined;
+    if (!marked) continue;
+    const { masteredOn: _mastered, selfPassed: _self, ...rest } = row;
+    const next: ProgressRow = { ...rest, status: row.attempts > 0 ? 'started' : 'new', passedOn: [], bestAccuracy: 0, bestTempoPct: 0 };
+    memory.set(next.itemId, next);
+    const db = await openDatabase();
+    await db?.put('progress', next);
+    changed.push(next.itemId);
+  }
+  if (changed.length > 0) notify();
+  return changed;
 }
 
 /** A `YYYY-MM-DD` day key's parts, or null for anything else. */
@@ -750,6 +892,7 @@ export function forgetCachedProgress(): void {
   memory.clear();
   streakMemory = null;
   dailyReadMemory = null;
+  rungRowsMemory = null;
 }
 
 /** Test hook. */

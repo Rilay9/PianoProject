@@ -8,7 +8,7 @@
 
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_MASTERY, evaluateOutcome } from '../../../src/engine/Scoring';
-import { lessonForItem, masteryCriteriaFor } from '../../../src/curriculum/selectors';
+import { masteryCriteriaFor } from '../../../src/curriculum/selectors';
 import type { CatalogItem, Curriculum } from '../../../src/curriculum/types';
 import {
   faultIn,
@@ -111,15 +111,24 @@ export function sweepShard(index: number, count: number): void {
         const tempoFault = faultIn(tempo, 'Keep tempo');
         if (tempoFault) faults.push(tempoFault);
 
-        // The rung's own numbers where the item is on one, the learner's
-        // defaults where it is not (`selectors.masteryCriteriaFor`).
+        // Revised (C5): under the numbers of every rung that lists the item —
+        // a run is judged by the rung that opened it, which can be any of
+        // them — and the learner's defaults where none does. It was the first
+        // rung listing the item, the lookup C5 removed as a judge.
         if (tempo.score) {
-          const criteria = masteryCriteriaFor(lessonForItem(plan, item.id), DEFAULT_MASTERY);
-          const outcome = evaluateOutcome(tempo.score, criteria);
-          if (!outcome.passed) {
-            faults.push(
-              `Keep tempo: not a pass at accuracy ${outcome.accuracy.toFixed(4)} / tempo ${String(outcome.tempoPct)} % against ${String(criteria.passAccuracy)} / ${String(criteria.passTempoPct)} %`,
-            );
+          const listing = plan.stages.flatMap((stage) =>
+            stage.units.flatMap((unit) =>
+              unit.lessons.filter((lesson) => lesson.exerciseOptions.includes(item.id) || lesson.songOptions.includes(item.id)),
+            ),
+          );
+          for (const rung of listing.length > 0 ? listing : [undefined]) {
+            const criteria = masteryCriteriaFor(rung, DEFAULT_MASTERY);
+            const outcome = evaluateOutcome(tempo.score, criteria);
+            if (!outcome.passed) {
+              faults.push(
+                `Keep tempo: not a pass at accuracy ${outcome.accuracy.toFixed(4)} / tempo ${String(outcome.tempoPct)} % against ${String(criteria.passAccuracy)} / ${String(criteria.passTempoPct)} %${rung ? ` (${rung.id})` : ''}`,
+              );
+            }
           }
         }
 

@@ -6,6 +6,7 @@
 // running a session at all.
 
 import { summarise } from '../util/stats';
+import type { Requirement } from '../curriculum/types';
 import {
   NOT_MEASURED,
   type BarTally,
@@ -1093,23 +1094,17 @@ function ccRangeParam(params: Record<string, unknown> | undefined): [number, num
 /**
  * Does this rung make its technique measure a condition of passing?
  *
- * Deliberately syntactic, and deliberately the same shape as
- * `demandsMeasuredAccuracy`: a rung says so by naming the measure with a
- * comparison in `mastery.custom` — `voicing-top-note>=0.9` — rather than by
- * being on a list of rung ids that would go stale the first time a rung moved.
+ * A rung says so with a `measure` requirement naming the kind (C5), rather
+ * than by being on a list of rung ids that would go stale the first time a
+ * rung moved. It was a comparison written into `mastery.custom` and read by a
+ * regular expression; `custom` became the rung's `requirements`, and a rule
+ * the app cannot measure is an `unjudged` requirement, which binds nothing.
  *
- * **No rung says so today.** `technique.4`, `.5`, `.6` and `.7` carry no
- * `custom` at all, so the measure is reported and the pass is unaffected,
- * which is what the lessons on those rungs now say. The hook is here so that
- * making one of them binding is a content change and not a code change.
+ * **No rung says so today.** `technique.4`, `.5`, `.6` and `.7` require no
+ * measure, so the measure is reported and the pass is unaffected, which is
+ * what the lessons on those rungs now say. The hook is here so that making
+ * one of them binding is a content change and not a code change.
  */
-export function demandsTechniqueMeasure(custom: string | undefined, kind: string): boolean {
-  if (custom === undefined) return false;
-  // Built by hand rather than as one template literal: written that way the
-  // escapes went in as `\b` and `\d`, which a template literal reads as a
-  // backspace character and the letter `d`. It compiled, it type-checked, and
-  // the rule matched nothing at all — the sort of fault only a test finds.
-  const word = '[a-zA-Z]';
-  const pattern = ['(?<!', word, ')', kind, '(?!', word, ')[a-z-]*\\s*[<>]=?\\s*[0-9]'].join('');
-  return new RegExp(pattern).test(custom);
+export function demandsTechniqueMeasure(requirements: readonly Requirement[] | undefined, kind: string): boolean {
+  return (requirements ?? []).some((requirement) => requirement.kind === 'measure' && requirement.measure === kind);
 }

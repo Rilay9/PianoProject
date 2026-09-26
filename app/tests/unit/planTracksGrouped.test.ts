@@ -29,7 +29,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Router } from '../../src/router';
 import type { Curriculum, Mastery, Stage, Unit } from '../../src/curriculum/types';
 
-const MASTERY: Mastery = { exercisesRequired: 1, songsRequired: 0, minAccuracy: 0, minTempoPct: 0 };
+const MASTERY: Mastery = { minAccuracy: 0, minTempoPct: 0 };
 
 function unit(id: string, track: string): Unit {
   return {
@@ -46,6 +46,7 @@ function unit(id: string, track: string): Unit {
         songOptions: [],
         songOptional: true,
         mastery: MASTERY,
+        requirements: [{ kind: 'runs', from: 'exercises', count: 1 }],
       },
     ],
   };
@@ -95,8 +96,9 @@ vi.mock('../../src/data/planStore', () => ({
   updatePlan: () => Promise.resolve(undefined),
 }));
 
+// The rows the rung state is read from (C5); none here.
 vi.mock('../../src/data/progressStore', () => ({
-  allProgress: () => Promise.resolve([]),
+  rungRows: () => Promise.resolve([]),
 }));
 
 const { PlanScreen } = await import('../../src/ui/screens/PlanScreen');

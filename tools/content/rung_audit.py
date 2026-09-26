@@ -156,18 +156,18 @@ def audit(out_dir: Path, only: str | None, only_track: str | None) -> list[tuple
                     f"removing that one option breaks the rung",
                 ))
 
-        # 5. Mastery asking for more than the rung offers.
-        mastery = rung.get("mastery") or {}
-        if mastery.get("exercisesRequired", 0) > len(exercises):
-            found.append((
-                "HIGH", rid,
-                f"mastery needs {mastery['exercisesRequired']} exercises, rung offers {len(exercises)}",
-            ))
-        if not rung.get("songOptional") and mastery.get("songsRequired", 0) > len(songs):
-            found.append((
-                "HIGH", rid,
-                f"mastery needs {mastery['songsRequired']} songs, rung offers {len(songs)}",
-            ))
+        # 5. A requirement asking for more runs than the rung offers (C5's
+        #    requirements; validate.py refuses the same thing on every build).
+        for requirement in rung.get("requirements") or []:
+            if requirement.get("kind") != "runs":
+                continue
+            source = requirement.get("from")
+            pool = exercises if source == "exercises" else songs if source == "songs" else exercises + songs
+            if requirement.get("count", 0) > len(pool):
+                found.append((
+                    "HIGH", rid,
+                    f"requires {requirement['count']} of its {source}, rung offers {len(pool)}",
+                ))
 
         # 6. A tool naming an item the rung does not offer is caught by
         #    validate.py; a rung with no tools at all is only worth a note.

@@ -180,6 +180,19 @@ Score screen is a full-screen route pushed on top (back gesture returns).
   technique drills in the current keys) · Review (due items) · New (current lesson's chosen
   exercise + song) · Repertoire (a mastered piece) · Free play prompt. Each row: title, level,
   hands, est. minutes, ▶ button. Tapping ▶ opens the Score screen for that item.
+  **Where the card comes from, and which rung a row's run counts for (C5, 2026-09-27).** The
+  rung the card is built from is `nextRecommended` over the derived rung state (§3f), never
+  over the items marked passed. A row opened from Today carries the rung it counts for
+  (`?rung=`, and on a drill `#/drill/<id>?rung=`): the rung the builder offered it from where
+  that rung lists it (the warm-up, the new piece, the reading row); else the one rung listing
+  the item, where exactly one does; else **none** — a review, repertoire or fallback item that
+  several rungs list is judged by the Settings pair and counts for no rung, because choosing
+  one of its listings would be the credit by listing C5 removed (L8). It was the first rung
+  listing it. **Review and repertoire are pieces (S8):** a generated sight-reading row is
+  never due for review and never offered as repertoire, whatever an older build wrote on its
+  row, and the repertoire row says *A piece you know* only when the piece it offers is one
+  the learner mastered — a mastered id that could not be offered used to leave a song never
+  played under that label (L18).
 - **"Swap this"** on every row — not just the whole-card "shuffle" — offers the alternatives
   for that slot (`00` D21): the other options in the same lesson first, then any catalog item
   at the same level sharing a concept tag, and then the item's own `alternatives[]` if it has
@@ -417,15 +430,19 @@ promise — the app is not marking you — and the name is the owner's word for 
 
 - Stage list (0–9) with completion rings; expand → units → lessons.
 - Every lesson is openable regardless of status. Lesson page has **"I already know this"**
-  (marks self-passed; distinct badge from a measured pass) and **"Quick check"** (a 2–3 minute
-  measured test built from the lesson's drills) so the owner can move on fast or confirm.
+  (the learner's word about the rung, kept apart from the evidence and badged *you said you
+  know it*; it sets the rung aside and marks no item passed — §3f, C5) and **"Quick check"**
+  (a 2–3 minute measured test built from the lesson's drills) so the owner can move on fast or
+  confirm.
 - Lesson page, **in the order it is drawn** (`LessonScreen.ts`, `body.append`): the status
   line, the rung's own actions, *Ways to play this* (§3d, hidden where the rung names no
   tool), **Exercise options** and **Song options** as cards (title, composer, level, hands,
   duration, source badge, status badge new/started/passed/mastered, "Import needed" for
   `[IMPORT]`), *From your own books*, *More for this rung*, then **Concept** — the lesson
   text — and **Videos** (link cards opening YouTube). Any card → Score screen. "Mark lesson
-  done manually" (with confirmation) for the no-MIDI honour path.
+  done manually" (with confirmation) for the no-MIDI honour path: the learner's word again,
+  badged *marked done* (§3f). *What the app counts* (§3f) sits between the actions and the
+  options, folded to one line.
   *(Corrected 2026-09-22: this bullet listed the concept text and the videos **first**, which
   was the page until the 2026-09-12 ranking pass moved them. The options are the subject and
   R1 is about them; the file's own comment says so — "then everything that is read once and
@@ -435,7 +452,10 @@ promise — the app is not marking you — and the name is the owner's word for 
 - **An empty *Song options* block says which kind of empty it is** (R4; added 2026-09-22).
   Nineteen rungs list no song and they mean three different things by it, so there are three
   sentences (`noSongsSentence` in `LessonScreen.ts`, and `lessonSongEmpty.test.ts`): a
-  `songOptional` rung is *finished* on its exercises (`02` Part G) and says so; an
+  `songOptional` rung asks only for its exercises and says so (*No song tests this skill, so
+  this rung asks only for its exercises* — since C5 not "two exercises finish this rung",
+  which was false for the practice rungs, asking for one, and is not what finishes 1.5 or
+  2.5; what finishes a rung is §3f's list); an
   `optionsExempt` rung — posture, the keyboard's layout, the placement test — says its
   exercises are the whole of it; and only a rung the quarry has not filled says "yet". The
   first used to end "(docs/00 D21)", which is this repository citing itself in front of
@@ -516,6 +536,97 @@ R1 still holds with all three added: measured at 342 px, the first option row of
 first screenful. `start-and-return.spec.ts` asserts that, and that the three lines are
 inside it too.
 
+### 3f. What the app counts for a rung (C5, 2026-09-27)
+
+A rung is **met** when every requirement the app can judge holds; otherwise it is **in
+progress** (something counts) or **not started**. The state is derived every time by one
+function, `evidence/rungState.ts`, from the stored runs and nothing else — never from an item's
+passed flag, never from a count of items passed, never from which rungs list an item (L8, L9).
+The requirements are the rung's own (`requirements` in the curriculum, `02` Part G): runs of its
+material, phrases read at sight from its reading row, a skill's ladder state, an item of its
+own finished, or the lesson's rule the app cannot measure.
+
+**Two scopes, and they are the point.** A skill the rung names is read on the ladder over
+**every** evidence record, whichever rung judged the run: interval reading shown on a 2.2
+phrase counts for 1.5's requirement that names it. The decision that a run meets **this
+rung's** requirement is this rung's: only runs whose record names the rung as the one that
+opened them count, each judged again under the rung's standard from what it measured (Keep
+tempo at the rung's tempo; a Wait run meets only a rung that asks for no tempo; nothing heard,
+rhythm only, a phrase met before and the learner's own answer are not runs). An item three
+rungs list meets at most the one that opened it.
+
+**The lesson page.** Under the actions, a line folded by default (§0 R1):
+*What the app counts — 1 of 2* (or *What the app counts — not judged by the app*). Opened, one
+line per requirement and what the evidence shows for it: *One exercise from this page at 90 %
+of the notes, in Keep tempo at 80 % of the written tempo or faster. (counted: Hot Cross Buns)*;
+*Five new phrases of this rung's sight-reading, read at sight in Keep tempo with the keys
+guide off, 90 % right and in time. (2 of 5)*; *Reading by interval: familiar or better, from
+what your reads show wherever you read. (tried, not yet shown)*; and, for a rule
+no run can show, *Not judged by the app — the lesson's rule: Loud and soft clearly different.*
+The last line, always: *A run counts for this rung when you open it from this page, or from
+Today's card for this rung.* The words are `RUNG_TEXT` and `requirementWords` in `ui/help.ts`
+(`help.test.ts` holds this section to them):
+
+| key | the words |
+|---|---|
+| heading | What the app counts |
+| opensFromHere | A run counts for this rung when you open it from this page, or from Today’s card for this rung. |
+| met / inProgress / notStarted | complete · in progress · not started |
+| notJudged | not judged by the app |
+| notJudgedLine | The app cannot judge this rung: its rule is the lesson’s. Mark it done when you have done it. |
+| known / done | you said you know it · marked done |
+| carried | done before |
+| carriedLine | Done before the app judged rungs by what your runs showed, and not judged again. |
+| wordLine | Your word is kept apart from your runs: it moves the plan on and counts as none of them. |
+| unjudged | Not judged by the app — the lesson’s rule: |
+| counted / notYet | counted · not yet |
+| countedSince / byWord | counted since · by your word |
+
+The state badge beside *I already know this* is the same word Plan uses (`rungBadge`): the
+evidence's first (*complete*, *in progress*, *not started*), then the learner's (*you said you
+know it*, *marked done*), then *done before*.
+
+**The learner's word.** *I already know this* and *Mark done* write the learner's word about
+the rung into the plan row (`PlanRow.rungWords`) and mark **no item passed** — they used to
+mark the rung's items passed, which credited every other rung listing them. The word never
+meets a requirement; `nextRecommended` sets the rung aside as it sets aside the rungs behind a
+placement, and comes back to it only when nothing else is left. A rung whose every requirement
+is the lesson's rule is *not judged by the app* and moves on by the word alone.
+
+**Done before (the one-time carry-over).** Runs recorded before 2026-09-21 name no rung; from
+then until T37 (2026-09-25) every run named the first rung listing its item, and until C1
+(2026-09-26) a run opened from no rung — every Today card among them — still did. So a
+learner's rungs from then cannot be re-derived from evidence. On a database made before C5 (its version 7 upgrade marks it), the
+evidence job carries over once the rungs the old rule had done **before the rung it was
+recommending** (`data/carryOver.ts`, with the old counts frozen): shown as *done before*, set
+aside, never met. A rung the old rule credited only because a pass there counted for every
+rung listing the item (the Petzold at 3.4 completing 4.4, 4.6 and 4.7) is not carried.
+
+**Plan.** A rung's badge is `rungBadge`; a rung not started wears none. A stage's line counts
+the rungs met, the learner's word apart: *3 of 9 lessons · 1 by your word*. Where rungs were
+carried over, they come first and the rungs met since follow, so the line reads as the
+learner's place kept and not a reset: *6 of 9 done before · 1 counted since* (`stageCountWords`
+in `help.ts`). The bar under the line is drawn the same way: the carried rungs first, in a fill
+of their own — lighter and broken — then the rungs the evidence met, solid. The carried part is
+never the measured fill. A legend over the stage list names the two fills (*done before* ·
+*counted since*), and is drawn only where something was carried.
+
+**The lock line (T26).** With strict prerequisites on, *Usually comes after Right hand C
+position.* — the rung's name, never `1.1 Right hand C position` — and the button beside it is
+*Open that lesson*, not *Go to 1.1*. A prerequisite is satisfied when it is met, set aside by
+the learner's word, or carried over.
+
+**The evidence job's line on the storage report** (Settings → Content, `#settings-evidence`):
+*Evidence from your runs: checking after the screen is up.* until the job has run once after
+an open, then *Evidence from your runs: 12 up to date.*, with *, still checking* while it is
+looking through the runs and *, 9 being brought up to date* once it has counted them, and the
+line marked `data-settled` when the job is done; and *Kept out:* and the counts and reasons of the runs it could not bring up to
+date — recorded before the app kept each note; whose exercise is no longer in the catalog;
+whose phrase was never numbered; of music the job does not rewrite; whose phrase the app now
+writes differently. A run kept out contributes nothing to where the learner is (`05` §9b). If
+the store fails part way the line ends *Stopped before the end; it tries again the next time
+the app opens.* rather than reading like a finished job.
+
 ### 3a. Skills review
 
 **§0:** opens on what needs attention (R1): the rusty concepts if there are any, otherwise the current stage and the one below, with *Show all* revealing the rest in pages. *Drill it* is the box; *Find more* is text (R3).
@@ -524,7 +635,17 @@ A grid of every concept in the curriculum (from `concepts[]` across lessons), ea
 state (never / self-passed / measured / mastered / rusty = not practised in 30 days) and a
 "Drill it" button that launches the concept's drill or a matching short exercise. Filters by
 stage and track. This is how "go back and practise old skills" works without navigating the
-plan.
+plan. **Since C5** a concept that is a vocabulary skill with an observable shows what the
+learner's evidence shows, on the ladder, whichever rung judged the runs (*never* for not shown
+yet, *introduced* for met and nothing shown yet, *learning* for tried and not yet shown,
+*measured* for familiar or better, *rusty* for no supporting evidence in the ladder's retention
+span); every other concept shows the skills store's state (C7 replaces it). The concepts of the
+rungs carried over from before C5 are exposures on the ladder, dated the day they were carried
+— the learner read those lessons and played that material — so they show *introduced*, the
+ladder's first state, and never *learning* or *measured*; what the learner said or showed
+outranks it. An item's pass moves neither — it used to promote every
+concept the item names to *learning*. The stages it opens on are where the learner is by the
+derived rung state, as Plan and Today say it.
 
 **Named, and findable** (P15). Each row shows the concept's *display name* from
 `content/curriculum/concepts.json` — the screen used to derive a label from the id, which
@@ -1858,8 +1979,8 @@ Notation area:
   gains no line, which is what keeps this off a sheet §0 R2 already measures. It is in words rather
   than as a percentage, because a bare number under *Legato* reads as a second accuracy and
   the whole point of these is that they are not one: a staccato phrase of right notes held
-  too long is a 100 % run. The line says *"this rung requires it"* only where the rung's
-  `mastery.custom` says so, and no rung does yet.
+  too long is a 100 % run. The line says *"this rung requires it"* only where the rung has a
+  `measure` requirement naming it (C5; it read `mastery.custom`), and no rung does yet.
   **Pass and master** are judged against **the rung's** `minAccuracy` and `minTempoPct` where
   the piece is on one, and against the Settings pair (§7) where it is not (`05` §9a). The
   rung is **the one that opened the screen** (`?from=`), or the one a Today card chose
@@ -3056,7 +3177,7 @@ set it.
 | velocity curve · sustain pedal CC · ignore channels · Note-On velocity 0 as Note-Off | The parser already does the right thing with velocity-0; the other three are unexercised on the one piano this app talks to. They belong on the MIDI screen when there is a second device to need them. |
 | language · note naming | One user, English, letter names (`00` A7). A localisation table with one locale in it is not a setting. |
 | show US-only PD items | **Built** (P7) — nine bundled items are US-only (`00` A4). |
-| require 2 songs per lesson | **Built** (P7) — honoured by `lessonComplete`, and never applied to a `songOptional` unit. |
+| require 2 songs per lesson | **Built** (P7) — honoured by `rungState` on a rung's songs requirement (C5; it was `lessonComplete`), and never applied to a `songOptional` unit. |
 
 **Built since, in P18** (`docs/decisions/2026-09-06-p18-carry-overs.md`): the mic's amber
 state (§5), named sections and their loop picker (§5), drag-to-reorder tracks (§3), the chord

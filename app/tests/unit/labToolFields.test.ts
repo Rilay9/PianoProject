@@ -153,7 +153,7 @@ function lesson(): Lesson {
     exerciseOptions: [EXERCISE, DRILL],
     songOptions: [SONG],
     tools: toolsRef.current,
-    mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 0.9, minTempoPct: 0.85 },
+    mastery: { minAccuracy: 0.9, minTempoPct: 0.85 }, requirements: [{ kind: 'runs', from: 'exercises', count: 1 }, { kind: 'runs', from: 'songs', count: 1 }],
   };
 }
 

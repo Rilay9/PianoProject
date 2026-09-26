@@ -51,7 +51,7 @@ const { loadCurriculumSpy, allItemsSpy, fetchMarkdownSpy, rungs } = vi.hoisted((
     textFile: `lessons/${id}.md`,
     exerciseOptions: [],
     songOptions: [],
-    mastery: { exercisesRequired: 2, songsRequired: 0, minAccuracy: 0.9, minTempoPct: 0.8 },
+    mastery: { minAccuracy: 0.9, minTempoPct: 0.8 }, requirements: [{ kind: 'runs', from: 'exercises', count: 2 }],
     ...extra,
   });
   const optional = make('theory.fake', { songOptional: true });

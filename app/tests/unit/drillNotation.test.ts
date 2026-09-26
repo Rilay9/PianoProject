@@ -145,7 +145,8 @@ vi.mock('../../src/curriculum/tips', () => ({ tipsFor: () => Promise.resolve(nul
 const { DrillScreen } = await import('../../src/ui/screens/DrillScreen');
 const { disposeScreen } = await import('../../src/ui/screenLifecycle');
 
-const router = { navigate: vi.fn(), navigateScore: vi.fn(), navigateLesson: vi.fn() } as unknown as Router;
+// `route` because the screen reads the rung that opened it from there (C5).
+const router = { route: { tab: 'plan' }, navigate: vi.fn(), navigateScore: vi.fn(), navigateLesson: vi.fn() } as unknown as Router;
 
 let screen: HTMLElement | null = null;
 

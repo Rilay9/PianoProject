@@ -21,7 +21,7 @@ import './DrillScreen.css';
 import type { Router } from '../../router';
 import { findItem, loadCurriculum } from '../../curriculum/load';
 import type { CatalogItem, Lesson } from '../../curriculum/types';
-import { lessonForItem, masteryCriteriaFor } from '../../curriculum/selectors';
+import { findLesson, masteryCriteriaFor } from '../../curriculum/selectors';
 import {
   ChordDictationDrill,
   BackingTrackDrill,
@@ -2786,14 +2786,17 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
 
     function finishChecklist(): void {
       const done = ticked.filter(Boolean).length;
-      const accuracy = items.length > 0 ? done / items.length : 0;
       finished = true;
       section.dataset.drill = 'finished';
       void recordRun({
         itemId: target.id,
+        ...(rung === undefined ? {} : { lessonId: rung.id }),
         mode: 'drill:checklist',
         tempoPct: 100,
-        accuracy,
+        // The ticks are the learner's own check, not a measurement of playing
+        // (L52, C5): the boxes left unticked are `missed`, and a checklist
+        // with nothing left undone is what 0.1's `done` requirement reads.
+        accuracy: NOT_MEASURED,
         accuracyEstimated: false,
         wrongNotes: 0,
         missed: items.length - done,
@@ -2873,7 +2876,6 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   function runPlacement(target: CatalogItem): void {
     const { items, passUnit } = placementSteps(target);
     let index = 0;
-    let answered = 0;
     section.dataset.drill = 'running';
     section.dataset.kind = 'placement';
     startedAtMs = Date.now();
@@ -2901,7 +2903,6 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
           'Pass',
           () => {
             index += 1;
-            answered += 1;
             showStep();
           },
           { id: 'drill-placement-pass', variant: 'primary' },
@@ -2909,7 +2910,6 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         button(
           'Fail',
           () => {
-            answered += 1;
             finishPlacement(step.failUnit);
           },
           { id: 'drill-placement-fail' },
@@ -2981,9 +2981,12 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       prompt.textContent = '';
       void recordRun({
         itemId: target.id,
+        ...(rung === undefined ? {} : { lessonId: rung.id }),
         mode: 'drill:placement',
         tempoPct: 100,
-        accuracy: items.length > 0 ? answered / items.length : 0,
+        // A placement answers questions about the learner; it measures no
+        // playing (L52, C5). Finished, nothing is left undone.
+        accuracy: NOT_MEASURED,
         accuracyEstimated: false,
         wrongNotes: 0,
         missed: 0,
@@ -3286,11 +3289,14 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       counter.textContent = '';
       void recordRun({
         itemId: target.id,
+        ...(rung === undefined ? {} : { lessonId: rung.id }),
         mode: 'drill:walkthrough',
         tempoPct: 100,
-        // A tour is not accurate or inaccurate — `02` Stage 0.3's mastery is
-        // "tour completed", so reaching the end is the whole criterion.
-        accuracy: 1,
+        // A tour is not accurate or inaccurate — `02` Stage 0.3's rule is "tour
+        // completed", which 0.3's `done` requirement reads from this row with
+        // nothing missed. It was written as accuracy 1, a measurement nobody
+        // took (L52, C5).
+        accuracy: NOT_MEASURED,
         accuracyEstimated: false,
         wrongNotes: 0,
         missed: 0,
@@ -3341,9 +3347,13 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // Before the first card, so a set that runs its course fast is still
     // judged by the rung that set it. Not awaited: nothing on the screen
     // depends on it until `finish()`.
+    // The rung that opened the drill (C5, `?rung=`), or none: never the first
+    // rung listing it, which counted a drill's pass for a rung nobody opened
+    // it from (L8).
+    const openedFrom = router.route.drillRung;
     void loadCurriculum()
       .then((curriculum) => {
-        rung = lessonForItem(curriculum, itemId);
+        rung = openedFrom === undefined ? undefined : findLesson(curriculum, openedFrom);
       })
       .catch(() => {
         // Judged against the learner's settings instead; see `rung` above.

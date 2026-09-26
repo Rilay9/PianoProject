@@ -22,7 +22,7 @@ import { isSightReading } from '../../engine/drills/fromCatalog';
 import { generateSightReading } from '../../engine/sightReading';
 import { readingOptions, taughtAtRung } from '../../curriculum/session';
 import type { CatalogItem, Curriculum, Lesson } from '../../curriculum/types';
-import { findLesson, lessonForItem, masteryCriteriaFor } from '../../curriculum/selectors';
+import { findLesson, masteryCriteriaFor, proseRungFor } from '../../curriculum/selectors';
 import { getMidiSettings } from '../../data/midiSettings';
 import {
   DEFAULT_SETTINGS,
@@ -2734,7 +2734,7 @@ export function ScoreScreen(router: Router): HTMLElement {
       // teaching, without the paragraph that states its pass, which is not the
       // pass this run is held to: that is the Settings pair (C1; C4 item 6).
       const judging = judgingRung(curriculum);
-      const found = judging ?? lessonForItem(curriculum, target.id);
+      const found = judging ?? proseRungFor(curriculum, target.id);
       if (!found) return;
       const summary = document.getElementById('score-side-summary');
       // The rung's title alone. This is the heading over its text beside the
@@ -3015,13 +3015,13 @@ export function ScoreScreen(router: Router): HTMLElement {
     /**
      * Whether missing it can stop the pass.
      *
-     * Only where the rung says so in `mastery.custom`, and none of the four
+     * Only where the rung requires it (a `measure` requirement, C5), and none of the four
      * technique rungs does. So the measure is shown and the pass is decided
      * the way it always was — which is what those lessons now say, rather
      * than the app quietly raising the bar under them.
      */
     const techniqueBinds =
-      technique !== null && demandsTechniqueMeasure(rung?.mastery.custom, technique.kind);
+      technique !== null && demandsTechniqueMeasure(rung?.requirements, technique.kind);
     const outcome = rhythmRun
       ? { ...measured, passed: false, masterEligible: false }
       : techniqueBinds && !technique.met
@@ -3113,7 +3113,9 @@ export function ScoreScreen(router: Router): HTMLElement {
             missed: heard ? score.missedTotal : NOT_MEASURED,
             durationMs: score.durationMs,
             passed: judged.passed,
-            masterEligible: judged.masterEligible,
+            // A generated phrase carries no mastery (C5, S8): a first reading
+            // is evidence of reading, never a mastery run of the row.
+            masterEligible: judged.masterEligible && !sightReading,
             // What the run observed about tempo (T37): nothing in Wait, and
             // nothing where nothing was heard, whatever the slider said.
             tempoMeasured: outcome.tempoMeasured && heard,
@@ -3320,7 +3322,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     // The accent, where the score prints one (T16 item 7). Only then: a piece
     // with no accent in it gains no row, which is what keeps this off a sheet
     // that `04` §0 R2 already measures on a 342 px phone. Never part of the
-    // pass — nothing in `mastery.custom` names it, and a leaning that is a
+    // pass — no `measure` requirement names it, and a leaning that is a
     // little shy is not a wrong note.
     //
     // Read from the measures the record keeps (U46): over notes that all

@@ -148,11 +148,12 @@ function fetchCurriculum(): Promise<Curriculum> {
  * Appends the owner's imports to the rungs he assigned them to (replan §4.3).
  *
  * This is the whole point of `lessonIds`. Without it an imported piece is a
- * Library row that "sits outside the curriculum": it cannot complete a rung,
+ * Library row that "sits outside the curriculum": it cannot count for a rung,
  * it never appears in a swap, and the session builder cannot pick it. With it
- * the piece is an *option of the rung*, and every reader downstream —
- * `lessonComplete`, `alternativesFor`, `buildSession`, the lesson page — needs
- * no change at all, because they all read `songOptions`.
+ * the piece is an *option of the rung*, and every reader downstream — a rung's
+ * `runs` requirement (`evidence/rungState`, for a run of it opened from the
+ * rung), `alternativesFor`, `buildSession`, the lesson page — needs no change
+ * at all, because they all read `songOptions`.
  *
  * The built curriculum is never mutated: it is cached and shared, and an
  * overlay that wrote into it would accumulate the same import twice on the
@@ -196,8 +197,9 @@ export function overlayImports(curriculum: Curriculum, imports: CatalogItem[]): 
  * The same mechanism as `overlayImports`, and separate from it because the two
  * lists mean different things: a `songOption` is something the app can open, a
  * `paperOption` is something on a shelf in the room. The lesson page shows
- * them apart for that reason, and `lessonComplete` treats a self-assessed
- * paper pass more carefully than a measured one.
+ * them apart for that reason. A paper run is the learner's own answer, so it
+ * counts for no requirement (C5: `rungState` reads measured runs only); the
+ * piece is still the rung's, and the page lists it.
  */
 export function overlayShelf(curriculum: Curriculum, pieces: ShelfPiece[]): Curriculum {
   const byLesson = new Map<string, string[]>();

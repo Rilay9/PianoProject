@@ -28,8 +28,6 @@ import type { Router } from '../../src/router';
 import type { Curriculum, Lesson, Mastery, Stage, Unit } from '../../src/curriculum/types';
 
 const MASTERY: Mastery = {
-  exercisesRequired: 1,
-  songsRequired: 0,
   minAccuracy: 0,
   minTempoPct: 0,
 };
@@ -43,6 +41,7 @@ function lesson(id: string, title: string, extra: Partial<Lesson> = {}): Lesson 
     exerciseOptions: [`ex.${id}`],
     songOptions: [`song.${id}.a`, `song.${id}.b`],
     mastery: MASTERY,
+    requirements: [{ kind: 'runs', from: 'exercises', count: 1 }],
     ...extra,
   };
 }
@@ -123,10 +122,14 @@ const ALL_TRACKS = ['core', 'practice', 'classical', 'theory-ear', 'jazz'];
  */
 const state = vi.hoisted(() => ({
   trackOrder: ['core', 'practice', 'classical', 'theory-ear', 'jazz'],
-  // Enough passes to finish every core rung of Stage 1 and the classical rung
-  // of Stage 2 — so the recommendation falls on a side track, and a stage's
-  // fraction has something in it to count.
+  // Enough runs, each judged by its own rung, to finish every core rung of
+  // Stage 1 and the classical rung of Stage 2 — so the recommendation falls on
+  // a side track, and a stage's fraction has something in it to count. (C5:
+  // these were passed flags on items; a rung is met by runs judged by it.)
   passed: ['ex.1.1', 'ex.1.2', 'ex.1.3', 'ex.1.4', 'ex.1.5', 'ex.classical.2'],
+  words: {},
+  // The rungs carried over from before C5 (`PlanRow.carriedOver`); none by default.
+  carried: [] as string[],
 }));
 
 vi.mock('../../src/curriculum/load', () => ({
@@ -135,13 +138,34 @@ vi.mock('../../src/curriculum/load', () => ({
 }));
 
 vi.mock('../../src/data/planStore', () => ({
-  getPlan: () => Promise.resolve({ trackOrder: state.trackOrder }),
+  getPlan: () =>
+    Promise.resolve({
+      trackOrder: state.trackOrder,
+      rungWords: state.words,
+      ...(state.carried.length > 0 ? { carriedOver: { at: '2026-09-27T08:00:00.000Z', rungs: state.carried } } : {}),
+    }),
   updatePlan: () => Promise.resolve(undefined),
 }));
 
 vi.mock('../../src/data/progressStore', () => ({
-  allProgress: () =>
-    Promise.resolve(state.passed.map((itemId) => ({ itemId, status: 'passed' as const }))),
+  // The store's rows the rung state reads (C5): a clean Keep tempo run of each
+  // item, judged by the rung it is the exercise of.
+  rungRows: () =>
+    Promise.resolve(
+      state.passed.map((itemId) => ({
+        itemId,
+        lessonId: itemId.replace(/^ex\./, ''),
+        mode: 'tempo',
+        tempoPct: 100,
+        tempoMeasured: true,
+        accuracy: 1,
+        accuracyEstimated: false,
+        wrongNotes: 0,
+        missed: 0,
+        durationMs: 1000,
+        at: '2026-10-01T10:00:00.000Z',
+      })),
+    ),
 }));
 
 const { PlanScreen } = await import('../../src/ui/screens/PlanScreen');
@@ -181,6 +205,8 @@ describe('the Plan screen', () => {
   beforeEach(() => {
     state.trackOrder = [...ALL_TRACKS];
     state.passed = ['ex.1.1', 'ex.1.2', 'ex.1.3', 'ex.1.4', 'ex.1.5', 'ex.classical.2'];
+    state.carried = [];
+    state.words = {};
     navigateLesson.mockClear();
     document.body.replaceChildren();
   });
@@ -369,6 +395,52 @@ describe('the Plan screen', () => {
     for (const id of ['plan-placement', 'plan-skills', 'plan-practice']) {
       expect(links.querySelector(`#${id}`), id).toBeTruthy();
     }
+  });
+
+  // Added (C5): a rung's badge is the evidence's word, and the learner's word
+  // is named apart and counted apart.
+  it('badges a rung the evidence met as complete, the learner’s word apart, and a rung not started with nothing', async () => {
+    state.passed = ['ex.1.1'];
+    state.words = { '1.2': { kind: 'known', at: '2026-10-01T10:00:00.000Z' } };
+    const section = await mount();
+    const badgeOf = (id: string): string => text(section.querySelector(`[data-lesson="${id}"] .badge`));
+    expect(badgeOf('1.1')).toBe('complete');
+    expect(badgeOf('1.2')).toBe('you said you know it');
+    expect(section.querySelector('[data-lesson="1.3"] .badge')).toBeNull();
+    expect(metaOf(section.querySelector('[data-stage="1"]') as HTMLElement)).toMatch(/^1 of 7 lessons · 1 by your word/);
+    // Next up skips the rung set aside by the word, as it skips one behind a placement.
+    expect(text(section.querySelector('#plan-next .plan-next__title'))).toBe('Learning it from memory');
+  });
+
+  // Added (C5, the coordinator's decision): the rungs carried over from before
+  // C5 are drawn into the stage's bar, apart — a fill of their own, which the
+  // legend names — so a learner who walked Stage 1 before C5 reads continuity
+  // and not a reset. The line said "0 of 7 lessons · 3 done before" with an
+  // empty bar. The carried part is never the measured fill: the fill is the
+  // rungs the evidence met, and nothing else.
+  it('draws the carried rungs into the bar apart, and the line reads as continuity', async () => {
+    state.passed = ['ex.1.4'];
+    state.carried = ['1.1', '1.2', '1.3'];
+    const section = await mount();
+    const stageOne = section.querySelector('[data-stage="1"]') as HTMLElement;
+    expect(metaOf(stageOne)).toMatch(/^3 of 7 done before · 1 counted since/);
+    const carried = stageOne.querySelector<HTMLElement>('.plan-stage-bar__carried');
+    expect(carried, 'the carried rungs are not in the bar').not.toBeNull();
+    expect(carried?.style.width).toBe('43%');
+    // The measured fill is the rung the evidence met, and only that.
+    expect((stageOne.querySelector('.plan-stage-bar__fill') as HTMLElement).style.width).toBe('14%');
+    // The legend names the two fills, once, and only where something was carried.
+    const legend = section.querySelector('#plan-legend');
+    expect(text(legend)).toContain('done before');
+    expect(text(legend)).toContain('counted since');
+    expect(section.querySelector('[data-stage="2"] .plan-stage-bar__carried'), 'a stage with nothing carried draws a carried part').toBeNull();
+  });
+
+  it('draws no legend and no carried part for a learner who carried nothing', async () => {
+    const section = await mount();
+    expect(section.querySelector('#plan-legend')).toBeNull();
+    expect(section.querySelector('.plan-stage-bar__carried')).toBeNull();
+    expect(metaOf(section.querySelector('[data-stage="1"]') as HTMLElement)).toMatch(/^5 of 7 lessons/);
   });
 
   it('says so on the one line that announces, when there is nothing left', async () => {

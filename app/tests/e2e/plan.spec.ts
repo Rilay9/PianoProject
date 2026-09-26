@@ -2,9 +2,12 @@
  * Plan, the lesson page and Skills review (docs/04 §3, §3a).
  *
  * The behaviour worth pinning down is that **every lesson is openable** and
- * that "I already know this" records a self-pass with a *different* badge from
- * a measured one — six months on, the difference between "the app watched me
- * play this" and "I said I could" is what makes the record worth anything.
+ * that "I already know this" records the learner's word with a *different*
+ * badge from a measured state — six months on, the difference between "the app
+ * watched me play this" and "I said I could" is what makes the record worth
+ * anything. Since C5 the word is about the rung and kept apart from the
+ * evidence: it marks no item passed and never makes the rung complete
+ * (`04` §3f).
  */
 import { expect, test } from '@playwright/test';
 
@@ -83,16 +86,25 @@ test.describe('the lesson page', () => {
     await expect(page.locator('#lesson-videos')).toContainText('needs internet');
   });
 
-  test('"I already know this" records a self-pass with its own badge', async ({ page }) => {
+  // Revised (C5, L8): it held that the word marked every item of the rung
+  // self-passed and drew the rung *complete*. The word is the learner's about
+  // the rung now — badged as such, kept apart from the evidence — and marks no
+  // item: an item marked passed here was credited to every rung listing it.
+  test('"I already know this" records the learner’s word with its own badge, and no item passed', async ({ page }) => {
     await page.goto('/#/lesson/1.1');
+    await expect(page.locator('#lesson-state')).toContainText('not started', { timeout: 15_000 });
     await page.locator('#lesson-know').click();
     await expect(page.locator('#lesson-status')).toContainText('already known');
-    await expect(page.locator('#lesson-exercises')).toContainText('you said you know it');
-    await expect(page.locator('#lesson-state')).toContainText('complete');
+    await expect(page.locator('#lesson-state')).toContainText('you said you know it');
+    await expect(page.locator('#lesson-state'), 'the word made the rung complete').not.toContainText('complete');
+    await expect(
+      page.locator('#lesson-exercises .badge, #lesson-songs .badge').filter({ hasText: /you said you know it|passed|mastered/ }),
+      'the word about the rung marked its items',
+    ).toHaveCount(0);
 
     // And it survives a reload — this is IndexedDB, not screen state.
     await page.reload();
-    await expect(page.locator('#lesson-exercises')).toContainText('you said you know it');
+    await expect(page.locator('#lesson-state')).toContainText('you said you know it', { timeout: 15_000 });
   });
 
   test('every option on a lesson offers a way to open it', async ({ page }) => {
@@ -134,7 +146,9 @@ test.describe('Skills review', () => {
     await expect(page.locator('#skills-status')).toContainText('skills');
     const first = page.locator('#skills-list .list-row').first();
     await expect(first).toBeVisible();
-    await expect(first).toHaveAttribute('data-state', /unseen|learning|known|rusty/);
+    // Revised (C5): *introduced* is a state too — the ladder's first, which the
+    // concepts of rungs carried over from before C5 show.
+    await expect(first).toHaveAttribute('data-state', /^(unseen|introduced|learning|known|rusty)$/);
   });
 
   test('lists every exercise for a concept, easiest first, collapsed after three', async ({

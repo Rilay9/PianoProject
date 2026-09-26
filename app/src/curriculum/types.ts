@@ -189,12 +189,109 @@ export interface ConceptEntry {
   finder?: Finder;
 }
 
+/**
+ * The rung's standard for judging **one run** (`02` Part G): the share of the
+ * notes and the share of the written tempo a run has to reach, where the rung
+ * states them (`selectors.masteryCriteriaFor`; 0 is "no number of its own").
+ * What completes the rung is not here: it is `Lesson.requirements` (C5).
+ */
 export interface Mastery {
-  exercisesRequired: number;
-  songsRequired: number;
   minAccuracy: number;
   minTempoPct: number;
-  custom?: string;
+}
+
+/**
+ * What a rung asks of the learner's evidence (C5): one predicate each, every
+ * one the app can judge must hold for the rung to be met (`evidence/rungState`).
+ *
+ * Two scopes, and they are the point (the reviewer's clarification of
+ * 2026-09-27). **Skill evidence is the learner's everywhere**: a `skill`
+ * requirement reads the ladder over every evidence record, whichever rung the
+ * run was judged by. **The decision that this rung's requirement is met by a
+ * run is this rung's**: `runs`, `reads` and `measure` count only runs whose
+ * record names this rung as the one that judged them (`SessionRow.lessonId`),
+ * re-judged under this rung's standard. No item carries credit: an item listed
+ * by three rungs completes none of them by being listed.
+ */
+export type Requirement =
+  | RunsRequirement
+  | ReadsRequirement
+  | SkillRequirement
+  | DoneRequirement
+  | MeasureRequirement
+  | UnjudgedRequirement;
+
+/**
+ * Runs of this rung's own material, judged by this rung, each at its standard
+ * (Keep tempo at `minTempoPct` or faster where it states a tempo, `minAccuracy`
+ * of the notes), counted as distinct items. What the old counts of required
+ * exercises and songs counted as passed flags, restated over what the runs
+ * measured.
+ */
+export interface RunsRequirement {
+  kind: 'runs';
+  /** The rung's exercises, its songs (paper pieces included), or either. */
+  from: 'exercises' | 'songs' | 'any';
+  /** Only these of the rung's own options (the ear drill a theory rung names). */
+  items?: string[];
+  /** Distinct items with a qualifying run. */
+  count: number;
+  /** Played as a performance: started once, no restart, no loop, nothing played to the learner inside it. */
+  performance?: boolean;
+  /** The share of the notes, where this requirement asks more than the rung's `minAccuracy`. */
+  accuracy?: number;
+}
+
+/**
+ * Phrases read at sight from this rung's reading row, judged by this rung,
+ * whose stored evidence for `skill` is at `standard` (the full standard
+ * satisfies the practice one) with `share` of its opportunities right.
+ */
+export interface ReadsRequirement {
+  kind: 'reads';
+  skill: string;
+  standard: 'practice' | 'full';
+  share: number;
+  count: number;
+}
+
+/** A skill's ladder state over all the learner's evidence, at `state` or above (`evidence/ladder`). */
+export interface SkillRequirement {
+  kind: 'skill';
+  skill: string;
+  state: 'familiar' | 'proficient';
+}
+
+/**
+ * An item of this rung's alone, recorded finished with nothing left undone:
+ * the tour walked to its end, the placement test answered, every box of the
+ * checklist ticked. An event the app observes, not a measurement of a skill.
+ */
+export interface DoneRequirement {
+  kind: 'done';
+  item: string;
+}
+
+/** A run judged by this rung whose technique measure (`RunMeasures.technique`) of this kind was met. */
+export interface MeasureRequirement {
+  kind: 'measure';
+  measure: string;
+}
+
+/**
+ * The lesson's rule where no run the app records can show it (loudness
+ * contrast, clean pedalling, a time limit, a recording): printed on the page
+ * as the lesson's, never counted, never passed in silence. A rung whose every
+ * requirement is this kind is not judged by the app at all.
+ */
+export interface UnjudgedRequirement {
+  kind: 'unjudged';
+  /** The rule as the curriculum wrote it (the old `mastery.custom` term). */
+  rule: string;
+  /** The rule in the learner's words, for the lesson page. */
+  says: string;
+  /** Why no run can show it, for the record and the build's report. */
+  why: string;
 }
 
 /**
@@ -270,10 +367,12 @@ export interface Lesson {
   exerciseOptions: string[];
   songOptions: string[];
   mastery: Mastery;
+  /** What completes the rung, as predicates over the learner's evidence (C5). */
+  requirements: Requirement[];
   /**
    * True when no song tests this unit's skill — reading by interval, the first scale,
-   * accompaniment patterns, the theory and improvisation tracks (docs/02 Part G). The
-   * lesson then completes on two exercises instead of an exercise and a song.
+   * accompaniment patterns, the theory and improvisation tracks (docs/02 Part G). Its
+   * requirements then ask for exercises and no song.
    */
   songOptional?: boolean;
   /** Orientation lessons that are a single thing by nature: the placement test, the tour. */
@@ -351,14 +450,3 @@ export interface Curriculum {
   concepts?: ConceptEntry[];
 }
 
-/** What the learner has passed, keyed by item id. P7 stores this in IndexedDB. */
-export interface PassRecord {
-  itemId: string;
-  passed: boolean;
-  mastered?: boolean;
-  /**
-   * True when the pass is the learner's own word rather than a measurement —
-   * "I already know this", or a run against paper the app could not see.
-   */
-  selfPassed?: boolean;
-}

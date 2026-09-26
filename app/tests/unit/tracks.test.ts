@@ -9,7 +9,10 @@
 import { describe, expect, it } from 'vitest';
 import { FRESH_TRACK_ORDER, activeTracksFor, defaultActiveTracks } from '../../src/curriculum/tracks';
 import { nextRecommended } from '../../src/curriculum/session';
-import type { Curriculum, Lesson, PassRecord, Track } from '../../src/curriculum/types';
+import type { Curriculum, Lesson, Track } from '../../src/curriculum/types';
+import { rungState } from '../../src/evidence/rungState';
+import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
+import type { SessionRow } from '../../src/data/db';
 
 function track(id: string, defaultActive?: boolean): Track {
   return {
@@ -101,7 +104,7 @@ describe('what it fixes', () => {
       textFile: `lessons/${id}.md`,
       exerciseOptions: [`exercise.${id}`],
       songOptions: [`song.${id}`],
-      mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 0.9, minTempoPct: 0.8 },
+      mastery: { minAccuracy: 0.9, minTempoPct: 0.8 }, requirements: [{ kind: 'runs', from: 'exercises', count: 1 }, { kind: 'runs', from: 'songs', count: 1 }],
     };
   }
 
@@ -120,10 +123,22 @@ describe('what it fixes', () => {
     ],
   } as unknown as Curriculum;
 
-  const done: PassRecord[] = [
-    { itemId: 'exercise.1.1', passed: true },
-    { itemId: 'song.1.1', passed: true },
-  ];
+  // Revised (C5): the core rung met by the evidence — a clean run of each of
+  // its options judged by it — where it was two passed flags.
+  const judged = (itemId: string): SessionRow => ({
+    itemId,
+    lessonId: '1.1',
+    mode: 'tempo',
+    tempoPct: 100,
+    tempoMeasured: true,
+    accuracy: 1,
+    accuracyEstimated: false,
+    wrongNotes: 0,
+    missed: 0,
+    durationMs: 1000,
+    at: '2026-10-01T10:00:00.000Z',
+  });
+  const done = rungState([judged('exercise.1.1'), judged('song.1.1')], withUnits, VOCABULARY_V0, new Date('2026-10-02T10:00:00Z'));
 
   it('stops Today recommending nothing once the core path is finished', () => {
     // The raw fresh order: core is complete, classical is invisible.

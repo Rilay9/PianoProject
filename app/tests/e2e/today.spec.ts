@@ -120,48 +120,50 @@ test.describe('Today', () => {
     );
   });
 
+  // Replaced (C5, L8): it recorded a pass of every item on the core rungs,
+  // opened from no rung, and held that Today then moved past the core path.
+  // Runs opened from no rung meet no rung now — that is the credit by listing
+  // C5 removed — so it cannot put a learner past the core path any more. What
+  // the test is for stands: once the core path is behind him, Today keeps
+  // recommending, from a track he never turned on. He puts it behind him here
+  // by his word, on one lesson page and then in a restored backup carrying the
+  // word for every core rung (the word sets a rung aside, `04` §3f); a sweep
+  // by evidence is `recommendRespondsToEvidence.test.ts` and
+  // `noCompletionBesideTheEvidence.test.ts`.
   test('Today keeps recommending after the core path, from a track he never turned on', async ({
     page,
   }) => {
-    // The failure this replaces: Today walked the raw ['core'] order, so the
-    // moment the core path was finished it said "Every lesson in the plan is
-    // complete" — to a learner who had done Stage 0 to 4 and nothing else.
-    await page.goto('/');
+    await page.goto('/#/lesson/0.1');
+    await expect(page.locator('#lesson-state')).toContainText('not started', { timeout: 15_000 });
+    await page.locator('#lesson-know').click();
+    await expect(page.locator('#lesson-state')).toContainText('you said you know it');
     const coreLessons = await page.evaluate(async () => {
       const response = await fetch('content/curriculum.json');
       const curriculum = (await response.json()) as {
-        stages: { units: { track: string; lessons: { id: string; exerciseOptions: string[]; songOptions: string[] }[] }[] }[];
+        stages: { units: { track: string; lessons: { id: string }[] }[] }[];
       };
-      const store = (window as unknown as { __pianopath?: Record<string, unknown> }).__pianopath;
-      const recordRun = store?.recordRun as ((r: unknown) => Promise<unknown>) | undefined;
-      if (!recordRun) throw new Error('progress store not exposed');
+      const hooks = (window as unknown as { __pianopath?: Record<string, unknown> }).__pianopath;
+      const exportAll = hooks?.exportAll as (() => Promise<{ stores: Record<string, unknown[]> }>) | undefined;
+      const importAll = hooks?.importAll as ((raw: unknown) => Promise<unknown>) | undefined;
+      if (!exportAll || !importAll) throw new Error('backup hooks not exposed');
       const ids: string[] = [];
       for (const stage of curriculum.stages) {
         for (const unit of stage.units) {
           if (unit.track !== 'core') continue;
-          for (const lesson of unit.lessons) {
-            ids.push(lesson.id);
-            for (const itemId of [...lesson.exerciseOptions, ...lesson.songOptions]) {
-              await recordRun({
-                itemId,
-                mode: 'tempo',
-                tempoPct: 100,
-                accuracy: 0.98,
-                accuracyEstimated: false,
-                wrongNotes: 0,
-                missed: 0,
-                durationMs: 120_000,
-                passed: true,
-                masterEligible: false,
-              });
-            }
-          }
+          for (const lesson of unit.lessons) ids.push(lesson.id);
         }
       }
+      const backup = await exportAll();
+      const plan = backup.stores.plan?.[0] as { rungWords?: Record<string, unknown> } | undefined;
+      if (!plan) throw new Error('the word on 0.1 wrote no plan row');
+      const at = new Date().toISOString();
+      plan.rungWords = Object.fromEntries(ids.map((id) => [id, { kind: 'known', at }]));
+      await importAll(backup);
       return ids;
     });
     expect(coreLessons.length).toBeGreaterThan(20);
 
+    await page.goto('/#/today');
     await page.reload();
     const status = page.locator('#today-status');
     await expect(status).toContainText('Working on Stage');

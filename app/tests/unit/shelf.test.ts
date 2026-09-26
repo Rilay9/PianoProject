@@ -25,8 +25,10 @@ import {
 } from '../../src/data/booksStore';
 import { exportAll, importAll } from '../../src/data/backup';
 import { overlayShelf } from '../../src/curriculum/load';
-import { demandsMeasuredAccuracy, lessonComplete, paperPassAllowed } from '../../src/curriculum/selectors';
 import type { Curriculum, Lesson } from '../../src/curriculum/types';
+import type { SessionRow } from '../../src/data/db';
+import { rungState } from '../../src/evidence/rungState';
+import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
 
 function lesson(over: Partial<Lesson> = {}): Lesson {
@@ -37,7 +39,7 @@ function lesson(over: Partial<Lesson> = {}): Lesson {
     textFile: 'lessons/2.1.md',
     exerciseOptions: ['exercise.a'],
     songOptions: [],
-    mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 0.9, minTempoPct: 0.8 },
+    mastery: { minAccuracy: 0.9, minTempoPct: 0.8 }, requirements: [{ kind: 'runs', from: 'exercises', count: 1 }, { kind: 'runs', from: 'songs', count: 1 }],
     ...over,
   };
 }
@@ -281,79 +283,38 @@ describe('overlayShelf', () => {
   });
 });
 
-describe('whether a paper pass may finish a rung', () => {
-  it('is allowed on a rung with no measured rule', () => {
-    expect(paperPassAllowed(lesson())).toBe(true);
-    expect(demandsMeasuredAccuracy(lesson())).toBe(false);
-  });
-
-  it('is allowed on a rung whose rule is not a number', () => {
-    const rung = lesson({
-      mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 0.9, minTempoPct: 0.8, custom: 'checklist-complete' },
+// Replaced (C5): six cases held a self-assessed paper pass to the syntax of
+// \`mastery.custom\` — counted towards a rung whose rule named no number, refused
+// where it did (\`paperPassAllowed\`, \`lessonComplete\`). A paper run is the
+// learner's own answer, and no requirement accepts an answer as a run (design
+// §5, Part G's self-assessment rule); the piece is still the rung's paper
+// option, listed on its page, and the learner's word sets the rung aside.
+describe('a paper run and the rung it answers', () => {
+  it('is the learner’s own answer, recorded, and counts for no requirement of the rung', () => {
+    const rung = { ...lesson(), id: '4.4', paperOptions: ['book.x/p'] };
+    const curriculum = {
+      version: 1,
+      tracks: [],
+      stages: [{ number: 4, title: 'Four', summary: '', units: [{ id: 'u', title: 'U', track: 'core', lessons: [rung] }] }],
+    } as unknown as Curriculum;
+    const run = (itemId: string, over: Partial<SessionRow>): SessionRow => ({
+      itemId,
+      lessonId: '4.4',
+      mode: 'tempo',
+      tempoPct: 100,
+      tempoMeasured: true,
+      accuracy: 1,
+      accuracyEstimated: false,
+      wrongNotes: 0,
+      missed: 0,
+      durationMs: 1000,
+      at: '2026-10-01T10:00:00.000Z',
+      ...over,
     });
-    expect(paperPassAllowed(rung)).toBe(true);
-  });
-
-  it('is refused where the rule demands a measurement', () => {
-    // `dynamics-contrast>=1.6` is a claim about something the app measured.
-    // Accepting "I think that went well" for it would be recording a number
-    // nobody took.
-    for (const custom of ['dynamics-contrast>=1.6', '20-keys-in-40s>=0.95', 'sight-read-5-first-attempt>=0.9']) {
-      const rung = lesson({
-        mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 0.9, minTempoPct: 0.8, custom },
-      });
-      expect(paperPassAllowed(rung), custom).toBe(false);
-    }
-  });
-
-  it('completes a repertoire rung from a self-assessed paper pass', () => {
-    const rung = { ...lesson(), paperOptions: ['book.x/p'] };
-    const records = [
-      { itemId: 'exercise.a', passed: true },
-      { itemId: 'book.x/p', passed: true, selfPassed: true },
-    ];
-    expect(lessonComplete(rung, records)).toBe(true);
-  });
-
-  it('refuses to complete a measured rung from a self-assessed paper pass', () => {
-    const rung = {
-      ...lesson({
-        mastery: {
-          exercisesRequired: 1,
-          songsRequired: 1,
-          minAccuracy: 0.9,
-          minTempoPct: 0.8,
-          custom: 'dynamics-contrast>=1.6',
-        },
-      }),
-      paperOptions: ['book.x/p'],
-    };
-    const records = [
-      { itemId: 'exercise.a', passed: true },
-      { itemId: 'book.x/p', passed: true, selfPassed: true },
-    ];
-    expect(lessonComplete(rung, records)).toBe(false);
-  });
-
-  it('accepts a *measured* paper pass even on a measured rung', () => {
-    // A piece with a twin gets a real run, and that run is evidence wherever
-    // any other measured run would be.
-    const rung = {
-      ...lesson({
-        mastery: {
-          exercisesRequired: 1,
-          songsRequired: 1,
-          minAccuracy: 0.9,
-          minTempoPct: 0.8,
-          custom: 'dynamics-contrast>=1.6',
-        },
-      }),
-      paperOptions: ['book.x/p'],
-    };
-    const records = [
-      { itemId: 'exercise.a', passed: true },
-      { itemId: 'book.x/p', passed: true, selfPassed: false },
-    ];
-    expect(lessonComplete(rung, records)).toBe(true);
+    // As PaperScreen writes it: no accuracy it measured, the answer "Clean".
+    const paper = run('book.x/p', { mode: 'paper', tempoPct: 1, accuracy: 0, accuracyEstimated: true, selfReport: 'clean' });
+    const states = rungState([run('exercise.a', {}), paper], curriculum, VOCABULARY_V0, new Date('2026-10-02T10:00:00Z'));
+    expect(states.byRung.get('4.4')?.requirements.map((r) => r.holds)).toEqual([true, false]);
+    expect(states.byRung.get('4.4')?.status).toBe('in progress');
   });
 });

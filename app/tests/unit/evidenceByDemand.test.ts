@@ -345,7 +345,15 @@ describe('the evidence is keyed by musical demand, never by a reader’s control
       const source = readFileSync(join(dir, file), 'utf8');
       expect(source, `${file} imports the generator`).not.toMatch(/from ['"][./]*engine\/sightReading['"]/);
       expect(source, `${file} imports the generator's controls`).not.toMatch(/readingControls/);
-      expect(source, `${file} imports the reader`).not.toMatch(/from ['"][./]*curriculum\//);
+      expect(source, `${file} imports the reader`).not.toMatch(/from ['"][./]*curriculum\/session['"]/);
+      // Revised (C5): the rung state lives here (the brief's placement) and
+      // reads the curriculum's rungs — their requirements and the standard a
+      // rung judges a run at (`curriculum/types`, `curriculum/selectors`). Every
+      // other file here reads none of it, and none reads the reader, the
+      // generator or its controls: the evidence stays keyed by demand.
+      if (file !== 'rungState.ts') {
+        expect(source, `${file} reads the curriculum`).not.toMatch(/from ['"][./]*curriculum\//);
+      }
       expect(source, `${file} speaks in the reader's dimensions`).not.toMatch(/READING_DIMENSIONS|ReadingMoves|ReadingRecipe|SightReadingOptions|\bdimensions?\b/);
     }
   });

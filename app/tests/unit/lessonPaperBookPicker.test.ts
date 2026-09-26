@@ -27,7 +27,7 @@ const { loadCurriculumSpy, allItemsSpy, fetchMarkdownSpy, LESSON } = vi.hoisted(
     exerciseOptions: [],
     songOptions: [],
     optionsExempt: true,
-    mastery: { exercisesRequired: 0, songsRequired: 0, minAccuracy: 0.9, minTempoPct: 0.8 },
+    mastery: { minAccuracy: 0.9, minTempoPct: 0.8 }, requirements: [],
   };
   const curriculum = {
     version: 1,

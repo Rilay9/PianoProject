@@ -10,6 +10,12 @@
  * on Today's card again. Nothing here is seeded — the only clock trick is
  * moving the recorded pass back two days, because waiting two days is not a
  * test.
+ *
+ * Revised (C5): the piece is opened for its rung (`?rung=1.1`, as the lesson
+ * page and Today's card open it), and after the run the rung's own page says
+ * what the evidence counts for it — the song requirement met by this run, the
+ * exercise one not yet, the rung in progress and not complete (`04` §3f). It
+ * opened the score with no rung, which since C5 counts for none.
  */
 import { expect, test } from '@playwright/test';
 
@@ -51,7 +57,7 @@ test('a run played from Today is recorded, and comes back for review', async ({ 
   //    and expected a pass, and a Wait run passed only because the tempo
   //    slider's number was compared with the floor as if somebody had played
   //    to it. A pass is played in Keep tempo, so that is what this plays.
-  await page.goto(`/#/score/${ITEM}`);
+  await page.goto(`/#/score/${ITEM}?rung=1.1`);
   await page.waitForFunction(
     () => {
       const svg = document.querySelector('#score-stage .is-front svg');
@@ -77,6 +83,17 @@ test('a run played from Today is recorded, and comes back for review', async ({ 
   await page.goto('/#/progress');
   await expect(page.locator('#progress-history')).toContainText('Hot Cross Buns');
   await expect(page.locator('#progress-totals')).toContainText('1 passed');
+
+  // 3a. The rung's page reads the evidence (C5): the run counts for 1.1's
+  //     song requirement, the exercise one is still open, so the rung is in
+  //     progress — one of two, and not complete.
+  await page.goto('/#/lesson/1.1');
+  await expect(page.locator('#lesson-state')).toContainText('in progress', { timeout: 15_000 });
+  const counts = page.locator('#lesson-counts');
+  await expect(counts.locator('summary')).toContainText('What the app counts — 1 of 2');
+  await counts.locator('summary').click();
+  await expect(counts.locator('li[data-holds="true"]')).toContainText('Hot Cross Buns');
+  await expect(counts.locator('li[data-holds="false"]')).toHaveCount(1);
 
   // 4. Two days later it is due again (docs/02 Part G: 1, 3, 7, 21 days).
   await page.evaluate(async () => {

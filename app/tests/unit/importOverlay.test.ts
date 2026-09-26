@@ -9,9 +9,11 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { overlayImports } from '../../src/curriculum/load';
 import { importToCatalogItem } from '../../src/data/importStore';
-import { lessonComplete, alternativesFor, indexCatalog } from '../../src/curriculum/selectors';
+import { alternativesFor, indexCatalog } from '../../src/curriculum/selectors';
 import type { Curriculum, CatalogItem, Lesson } from '../../src/curriculum/types';
-import type { ImportRow } from '../../src/data/db';
+import type { ImportRow, SessionRow } from '../../src/data/db';
+import { rungState } from '../../src/evidence/rungState';
+import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 
 function lesson(over: Partial<Lesson> = {}): Lesson {
   return {
@@ -21,7 +23,7 @@ function lesson(over: Partial<Lesson> = {}): Lesson {
     textFile: 'lessons/2.1.md',
     exerciseOptions: ['exercise.a', 'exercise.b', 'exercise.c'],
     songOptions: ['song.a', 'song.b'],
-    mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 0.9, minTempoPct: 0.8 },
+    mastery: { minAccuracy: 0.9, minTempoPct: 0.8 }, requirements: [{ kind: 'runs', from: 'exercises', count: 1 }, { kind: 'runs', from: 'songs', count: 1 }],
     ...over,
   };
 }
@@ -101,13 +103,27 @@ describe('what the overlay unlocks', () => {
     overlaid = overlayImports(curriculum([lesson()]), [item]);
   });
 
-  it('lets an imported piece complete the rung', () => {
-    const rung = overlaid.stages[0]?.units[0]?.lessons[0] as Lesson;
-    const records = [
-      { itemId: 'exercise.a', passed: true },
-      { itemId: 'import.my-piece', passed: true },
-    ];
-    expect(lessonComplete(rung, records)).toBe(true);
+  // Replaced (C5): it asserted the import's passed flag counted towards the
+  // rung's songs (`lessonComplete`). What counts now is a run of the import
+  // judged by the rung it was assigned to, which the overlay makes one of the
+  // rung's songs.
+  it('lets a run of an imported piece, opened from its rung, count for that rung', () => {
+    const run = (itemId: string): SessionRow => ({
+      itemId,
+      lessonId: '2.1',
+      mode: 'tempo',
+      tempoPct: 100,
+      tempoMeasured: true,
+      accuracy: 1,
+      accuracyEstimated: false,
+      wrongNotes: 0,
+      missed: 0,
+      durationMs: 1000,
+      at: '2026-10-01T10:00:00.000Z',
+    });
+    const states = rungState([run('exercise.a'), run('import.my-piece')], overlaid, VOCABULARY_V0, new Date('2026-10-02T10:00:00Z'));
+    expect(states.byRung.get('2.1')?.status).toBe('met');
+    expect(states.byRung.get('2.1')?.requirements[1]?.items).toEqual(['import.my-piece']);
   });
 
   it('offers it as an alternative to the rung’s other songs', () => {

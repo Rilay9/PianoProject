@@ -320,8 +320,11 @@ field the run carries (`RunObservation` in `data/db.ts`):
   carries no `evidence` (written before C4, or by a writer with no model), contributes nothing to
   the reading state; it is **not re-derived** on read, because re-deriving needs the played
   model, which the row does not carry. `recomputeEvidence(row, played, vocabulary)` gives what
-  the record call would store today, for a job that regenerates the phrase from `recipe` and
-  `seed` (or loads the file); nothing runs that job yet. A change to the vocabulary or the
+  the record call would store today; the evidence job (C5, `data/evidenceJob.ts`, `05` §9b)
+  runs it on every open for the rows under another version, writing each generated phrase
+  again from `recipe`, `seed` and the rung that held it and using it only where it matches the
+  run's own record — otherwise the row is kept out with its reason (`evidenceRecompute`). A
+  change to the vocabulary or the
   evidence function that changes results moves `EVIDENCE_DEFINITIONS`, not
   `OBSERVATION_DEFINITIONS`. Compaction keeps the field, so evidence outlives the per-step detail
   it was computed from. With the per-demand counts a sight-read's stored evidence is about twice
@@ -463,10 +466,15 @@ Loads `content/curriculum.json` (built from `content/curriculum/stage-*.json`) a
 search, the swap sheet, the session builder and `#/score/<id>` cannot tell a bought score from
 a bundled one (`allItems()`).
 
-Selectors: `lessonComplete`, `idsToCompleteLesson`, `alternativesFor`, `findLesson`,
-`thinLessons`, and in `session.ts` `nextRecommended(curriculum, records, activeTracks)`,
-`buildSession(input)`, `swapOptions(slot, …)`, `playInstead(item, …)`. Prerequisites are
-*advisory* by default; the "strict mode" setting enforces them.
+Selectors: `masteryCriteriaFor` (the standard a rung judges one run at), `alternativesFor`,
+`findLesson`, `thinLessons`, `proseRungFor` (the lesson text beside a piece opened from no rung,
+and nothing else), and in `session.ts` `nextRecommended(curriculum, states, activeTracks)`,
+`buildSession(input)`, `swapOptions(slot, …)`, `playInstead(item, …)`. Where the learner is
+comes from `evidence/rungState.ts` (C5): every rung met / in progress / not started, derived
+from the stored runs against the rung's `requirements`; the screens load it through
+`data/rungStates.ts` and hand it to `nextRecommended` (`04` §3f). The count of passed items
+over a rung's lists (`lessonComplete`) is deleted. Prerequisites are *advisory* by default; the
+"strict mode" setting enforces them against the derived state.
 
 Two rules the session builder follows that are not obvious from `04` §2:
 

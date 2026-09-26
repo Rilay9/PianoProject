@@ -42,13 +42,14 @@
  */
 import type { Router } from '../../router';
 import { allItems, loadCurriculum } from '../../curriculum/load';
-import { lessonComplete } from '../../curriculum/selectors';
 import { getSettings } from '../../data/settingsStore';
 import { nextRecommended } from '../../curriculum/session';
 import { activeTracksFor } from '../../curriculum/tracks';
 import { indexAtPoint, isDrag, moveDown, moveItem, moveUp } from '../reorder';
-import type { Curriculum, Lesson, PassRecord, Stage, Track, Unit } from '../../curriculum/types';
-import { allProgress } from '../../data/progressStore';
+import type { Curriculum, Lesson, Stage, Track, Unit } from '../../curriculum/types';
+import { loadRungStates } from '../../data/rungStates';
+import type { RungStates } from '../../evidence/rungState';
+import { RUNG_TEXT, rungBadge, stageCountWords } from '../help';
 import { getPlan, updatePlan } from '../../data/planStore';
 import { onScreenDispose } from '../screenLifecycle';
 import { badge, button, chip, el, listRow, openSheet } from '../widgets';
@@ -126,23 +127,31 @@ function onActiveTrack(unit: Unit, activeTracks: string[]): boolean {
  * on, so a stage showing three rungs was headed "3 of 12 lessons" and the
  * other nine were nowhere. A fraction whose denominator names rows that are
  * not there is worse than no fraction.
+ *
+ * `done` is the rungs the evidence has met (C5: `rungState`); the rungs set
+ * aside by the learner's word and those carried over from before C5 are
+ * counted apart (`byWord`, `before`), because neither is a rung the app judged.
  */
 function completion(
   stage: Stage,
-  records: PassRecord[],
+  states: RungStates | null,
   activeTracks: string[],
-  options: { requireTwoSongs?: boolean },
-): { done: number; total: number } {
+): { done: number; total: number; byWord: number; before: number } {
   let done = 0;
   let total = 0;
+  let byWord = 0;
+  let before = 0;
   for (const unit of stage.units) {
     if (!onActiveTrack(unit, activeTracks)) continue;
     for (const lesson of unit.lessons) {
       total += 1;
-      if (lessonComplete(lesson, records, options)) done += 1;
+      const state = states?.byRung.get(lesson.id);
+      if (state?.status === 'met') done += 1;
+      else if (state?.word !== undefined) byWord += 1;
+      else if (state?.carried === true) before += 1;
     }
   }
-  return { done, total };
+  return { done, total, byWord, before };
 }
 
 /** Two titles that are the same words — the duplication `00` D26 is about. */
@@ -177,10 +186,13 @@ export function PlanScreen(router: Router): HTMLElement {
   const status = statusLine('plan-status');
   const trackRow = el('div.filter-row', { id: 'plan-tracks' });
   const nextBox = el('div', { id: 'plan-next-slot' });
+  /** The bar's legend, drawn only where rungs were carried over (C5). */
+  const legendBox = el('div', { id: 'plan-legend-slot' });
   const list = el('div.list', { id: 'plan-list' });
 
   let curriculum: Curriculum | null = null;
-  let records: PassRecord[] = [];
+  /** Where the learner is, from the evidence (C5: `rungState`). */
+  let states: RungStates | null = null;
   /** Set by a drag so the click it produced does not also toggle the track. */
   let suppressClickFor: string | null = null;
   let activeTracks: string[] = [];
@@ -199,19 +211,29 @@ export function PlanScreen(router: Router): HTMLElement {
   // things read once a month. `04` §0 R1 and R6: the status line sits beside
   // what it is about rather than under ninety rows of stage list, which is
   // where "Next up: …" used to be printed.
-  body.append(nextBox, status, list, linkRow);
+  body.append(nextBox, status, legendBox, list, linkRow);
 
   function trackById(id: string): Track | undefined {
     return curriculum?.tracks.find((candidate) => candidate.id === id);
   }
 
   function lessonRow(lesson: Lesson, options: { next: boolean }): HTMLElement {
-    const done = lessonComplete(lesson, records, { requireTwoSongs: getSettings().requireTwoSongs });
     // Only what the detail line does not already say (`04` §0 R2). "No song
     // needed" is *in* the detail line, where it replaces the "0 songs" it used
     // to sit beside; as a badge as well it cost the row a fourth line and put
     // two rungs over the 96 px budget.
-    const badges: HTMLElement[] = done ? [badge('complete', 'passed')] : [];
+    //
+    // The rung's state from the evidence (C5): complete, in progress, or the
+    // learner's word or the carry-over, each named apart. A rung not started
+    // wears nothing, as before.
+    const state = states?.byRung.get(lesson.id);
+    const word = state ? rungBadge(state) : RUNG_TEXT.notStarted;
+    const badges: HTMLElement[] =
+      state?.status === 'met'
+        ? [badge(word, 'passed')]
+        : word === RUNG_TEXT.notStarted
+          ? []
+          : [badge(word)];
     // The title, and nothing else. It used to be `${lesson.id} · ${title}` —
     // `classical.5 · Sonatina form and Romantic…` — so an internal id the
     // learner has no use for took the room that then truncated the words that
@@ -271,8 +293,7 @@ export function PlanScreen(router: Router): HTMLElement {
 
   function draw(): void {
     if (!curriculum) return;
-    const recommended = nextRecommended(curriculum, records, activeTracks, {
-      requireTwoSongs: getSettings().requireTwoSongs,
+    const recommended = nextRecommended(curriculum, states ?? { byRung: new Map() }, activeTracks, {
       strictPrerequisites: getSettings().strictPrerequisites,
       // The placement's starting point, so *Next up* agrees with what the
       // placement test told the learner it had recorded (built 2026-09-21).
@@ -280,11 +301,26 @@ export function PlanScreen(router: Router): HTMLElement {
     });
     drawNext(recommended);
     list.replaceChildren();
+    // The two fills of a stage's bar, named once (C5): the rungs carried over
+    // from before C5 in a fill of their own, never the measured one.
+    const anyCarried = curriculum.stages.some((stage) => completion(stage, states, activeTracks).before > 0);
+    legendBox.replaceChildren(
+      ...(anyCarried
+        ? [
+            el(
+              'p.plan-legend.muted',
+              { id: 'plan-legend' },
+              el('span.plan-legend__swatch.plan-legend__swatch--carried', { 'aria-hidden': 'true' }),
+              el('span', { text: RUNG_TEXT.carried }),
+              el('span.plan-legend__swatch.plan-legend__swatch--counted', { 'aria-hidden': 'true' }),
+              el('span', { text: RUNG_TEXT.countedSince }),
+            ),
+          ]
+        : []),
+    );
 
     for (const stage of curriculum.stages) {
-      const { done, total } = completion(stage, records, activeTracks, {
-        requireTwoSongs: getSettings().requireTwoSongs,
-      });
+      const { done, total, byWord, before } = completion(stage, states, activeTracks);
       const open = expanded.has(stage.number);
       const current = recommended?.stageNumber === stage.number;
       const head = listRow({
@@ -294,7 +330,7 @@ export function PlanScreen(router: Router): HTMLElement {
         // the keyboard, how…", which is an explanation that has stopped
         // explaining. It moves *below the thing it explains* (R1): in full,
         // wrapping, as the first line inside the stage once it is open.
-        meta: `${String(done)} of ${String(total)} lessons${
+        meta: `${stageCountWords({ done, total, byWord, before })}${
           stage.approxDuration ? ` · ${stage.approxDuration}` : ''
         }`,
         badges: done === total && total > 0 ? [badge('complete', 'passed')] : [],
@@ -316,9 +352,22 @@ export function PlanScreen(router: Router): HTMLElement {
       // fraction: it is what makes a column of ten stage rows scannable
       // without reading any of them. Absolutely positioned along the row's
       // bottom edge, so it costs the row no height against `04` §0 R2.
+      //
+      // The rungs carried over from before C5 come first, in a fill of their
+      // own (C5): the learner's place, kept, and never drawn as measured
+      // progress — the solid fill is the rungs the evidence met, and nothing
+      // else. The legend above the list names the two.
+      const share = (n: number): string => `${String(total > 0 ? Math.round((n / total) * 100) : 0)}%`;
+      const bar = el('span.plan-stage-bar', { 'aria-hidden': 'true' });
+      if (before > 0) {
+        const carriedPart = el('span.plan-stage-bar__carried');
+        carriedPart.style.width = share(before);
+        bar.append(carriedPart);
+      }
       const fill = el('span.plan-stage-bar__fill');
-      fill.style.width = `${String(total > 0 ? Math.round((done / total) * 100) : 0)}%`;
-      head.append(el('span.plan-stage-bar', { 'aria-hidden': 'true' }, fill));
+      fill.style.width = share(done);
+      bar.append(fill);
+      head.append(bar);
       list.append(head);
       if (!open) continue;
       if (stage.summary) {
@@ -738,18 +787,15 @@ export function PlanScreen(router: Router): HTMLElement {
   }
 
   void (async () => {
-    const [loaded, rows, plan] = await Promise.all([loadCurriculum(), allProgress(), getPlan()]);
+    const [loaded, plan] = await Promise.all([loadCurriculum(), getPlan()]);
     curriculum = loaded;
-    records = rows.map((row) => ({
-      itemId: row.itemId,
-      passed: row.status === 'passed' || row.status === 'mastered',
-      mastered: row.status === 'mastered',
-    }));
+    // Where the learner is comes from the evidence (C5), where it was the
+    // items marked passed, counted over each rung.
+    states = await loadRungStates(loaded);
     activeTracks = activeTracksFor(plan, loaded);
     placedAt = plan.placement?.unitId ?? '';
     // Expand the stage being worked on, so the screen opens where the learner is.
-    const recommended = nextRecommended(loaded, records, activeTracks, {
-      requireTwoSongs: getSettings().requireTwoSongs,
+    const recommended = nextRecommended(loaded, states, activeTracks, {
       ...(placedAt === '' ? {} : { startAt: placedAt }),
     });
     if (recommended) expanded.add(recommended.stageNumber);

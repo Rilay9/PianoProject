@@ -23,6 +23,11 @@ import { SKILLS_FILE, VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import { detect } from '../../src/demands/detect';
 import type { Observed } from '../../src/evidence/measurement';
 import { NOT_MEASURED } from '../../src/engine/types';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import type { Curriculum } from '../../src/curriculum/types';
+
+const CURRICULUM = JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', 'curriculum.json'), 'utf8')) as Curriculum;
 
 /** Eighths and a dotted rhythm over a left hand, two bars: timing demands everywhere. */
 const RHYTHMIC = phrase({
@@ -158,10 +163,17 @@ describe('the conditions are the vocabulary’s, read from the fields it names (
     }
   });
 
-  it('1.5’s waiver says what still stands: nothing counts the five', () => {
-    const waiver = SKILLS_FILE.gateWaivers.find((w) => w.rung === '1.5');
-    expect(waiver?.reason).toContain('nothing counts the five');
-    expect(waiver?.reason, 'guide-off is recorded since C1; the waiver still said it was not').not.toContain('not recorded');
+  it('1.5’s five first readings are counted now: a reads requirement at the full standard, not a waiver', () => {
+    // Replaced (C5): the test held C2's waiver to its reason, "nothing counts
+    // the five". C5 counts them: 1.5 requires five phrases read at 90 % at the
+    // full standard (unseen, guide off, Keep tempo), each judged by 1.5, and
+    // every condition of that standard has a field that records it (above).
+    const rung = CURRICULUM.stages.flatMap((s) => s.units.flatMap((u) => u.lessons)).find((l) => l.id === '1.5');
+    expect(rung?.requirements).toContainEqual({ kind: 'reads', skill: 'sight-reading', standard: 'full', share: 0.9, count: 5 });
+    const full = SKILLS_FILE.skills.find((s) => s.id === 'sight-reading')?.standards.full ?? [];
+    for (const condition of full) {
+      expect(SKILLS_FILE.conditions.find((c) => c.id === condition)?.recordedBy, condition).toBeTruthy();
+    }
   });
 });
 

@@ -66,7 +66,7 @@ const { loadCurriculumSpy, allItemsSpy, fetchMarkdownSpy, LESSON } = vi.hoisted(
     exerciseOptions: [],
     songOptions: ['song.with.chords', 'song.without.chords'],
     optionsExempt: true,
-    mastery: { exercisesRequired: 0, songsRequired: 0, minAccuracy: 0.9, minTempoPct: 0.85 },
+    mastery: { minAccuracy: 0.9, minTempoPct: 0.85 }, requirements: [],
   } as unknown as Lesson;
   const built = {
     version: 1,

@@ -38,11 +38,21 @@
                 "song.classical.schumann-schumann-album-for-the-young-op-68-no-16-first-grief.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "classical.4"
               ],
@@ -118,11 +128,21 @@
                 "song.folk.before-you-go-lewis-capaldi.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "chords-pop.4"
               ],
@@ -194,11 +214,21 @@
                 "song.classical.royal-garden-blues.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.85
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "blues.4"
               ],
@@ -265,11 +295,21 @@
                 "song.jazz.django-reinhardt-limehouse-blues.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.85
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "chords-pop.5"
               ],
@@ -337,11 +377,21 @@
                 "song.classical.carol-we-wish-you-a-marry-christmas-piano.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "holiday.4"
               ],
@@ -401,11 +451,21 @@
                 "song.ragtime.joplin-rose-bud-march"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "4.5"
               ],
@@ -473,12 +533,24 @@
               ],
               "songOptions": [],
               "mastery": {
-                "exercisesRequired": 2,
-                "songsRequired": 0,
                 "minAccuracy": 0.8,
-                "minTempoPct": 0,
-                "custom": "sevenths-by-ear>=0.8"
+                "minTempoPct": 0
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 2
+                },
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "items": [
+                    "drill.ear.seventh-qualities"
+                  ],
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "theory.4"
               ],
@@ -540,12 +612,22 @@
                 "exercise.blues.twelve-bar-shuffle.g"
               ],
               "mastery": {
-                "exercisesRequired": 2,
-                "songsRequired": 0,
                 "minAccuracy": 0,
-                "minTempoPct": 0,
-                "custom": "eight-bar-melody-written"
+                "minTempoPct": 0
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 2
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "eight-bar-melody-written",
+                  "says": "An eight-bar melody of your own, written down.",
+                  "why": "Writing a melody is not a run the app records."
+                }
+              ],
               "prerequisites": [
                 "improv.4"
               ],
@@ -626,11 +708,21 @@
                 "song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-a.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "4.5"
               ],
@@ -715,11 +807,16 @@
               ],
               "songOptional": true,
               "mastery": {
-                "exercisesRequired": 2,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 2
+                }
+              ],
               "tools": [
                 {
                   "kind": "duet",
@@ -777,11 +874,16 @@
                 "song.classical.sakamoto-andata.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "rock.4"
               ],
@@ -846,11 +948,16 @@
               ],
               "songOptions": [],
               "mastery": {
-                "exercisesRequired": 2,
-                "songsRequired": 0,
                 "minAccuracy": 0.85,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 2
+                }
+              ],
               "prerequisites": [
                 "jam"
               ],
@@ -911,11 +1018,21 @@
                 "song.pop.martin-j-nystrom-as-the-deer-piano.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "hymns.4"
               ],

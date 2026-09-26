@@ -43,11 +43,21 @@
                 "song.classical.beethoven-fur-elise"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "classical.5"
               ],
@@ -121,11 +131,21 @@
                 "song.ragtime.joplin-entertainer"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "ragtime.5"
               ],
@@ -221,11 +241,16 @@
               ],
               "songOptional": true,
               "mastery": {
-                "exercisesRequired": 2,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 2
+                }
+              ],
               "tools": [
                 {
                   "kind": "ladder"
@@ -297,11 +322,16 @@
               ],
               "songOptional": true,
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.85
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "jazz.5"
               ],
@@ -373,11 +403,21 @@
                 "song.pop.misc-christmas-joy-to-the-world-piano-solo.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "holiday.5"
               ],
@@ -445,11 +485,16 @@
               ],
               "songOptional": true,
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.85
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "blues.5"
               ],
@@ -520,11 +565,16 @@
               ],
               "songOptional": true,
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.85
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "chords-pop.5"
               ],
@@ -589,11 +639,16 @@
               "songOptions": [],
               "songOptional": true,
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.85
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "theory.5"
               ],
@@ -653,11 +708,16 @@
               "songOptions": [],
               "songOptional": true,
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.85
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "improv.5"
               ],
@@ -721,11 +781,21 @@
                 "song.classical.beethoven-moonlight-i"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "rock.4"
               ],
@@ -789,11 +859,16 @@
               ],
               "songOptions": [],
               "mastery": {
-                "exercisesRequired": 2,
-                "songsRequired": 0,
                 "minAccuracy": 0.85,
                 "minTempoPct": 0.75
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 2
+                }
+              ],
               "prerequisites": [
                 "jam.5"
               ],
@@ -855,11 +930,21 @@
                 "song.folk.down-by-the-riverside.pdmx.2"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "hymns.5"
               ],
@@ -923,11 +1008,21 @@
                 "song.jazz.the-crave"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "latin"
               ],

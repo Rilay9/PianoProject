@@ -56,7 +56,7 @@ const day = (n: number, hour = 12): string => new Date(2026, 9, n, hour).toISOSt
 const TODAY = new Date(2026, 9, 6, 9);
 
 function at(rung: string) {
-  return nextRecommended(curriculum, [], ['core'], { startAt: rung });
+  return nextRecommended(curriculum, { byRung: new Map() }, ['core'], { startAt: rung });
 }
 
 function offer(rows: readonly SessionRow[], rung = '2.2', today = TODAY, purpose: 'daily' | 'slot' = 'daily'): ReadingOffer {

@@ -43,11 +43,13 @@ def lesson(lesson_id: str, exercises: list[str], songs: list[str], **overrides) 
         "exerciseOptions": exercises,
         "songOptions": songs,
         "mastery": {
-            "exercisesRequired": 1,
-            "songsRequired": 1,
             "minAccuracy": 0.9,
             "minTempoPct": 0.8,
         },
+        "requirements": [
+            {"kind": "runs", "from": "exercises", "count": 1},
+            {"kind": "runs", "from": "songs", "count": 1},
+        ],
     }
     base.update(overrides)
     return base
@@ -158,8 +160,10 @@ class TestThreeAlternatives(unittest.TestCase):
         self.assertTrue(any("exercise option" in e for e in errors), errors)
 
     def test_a_lesson_that_needs_no_songs_is_not_asked_for_three(self) -> None:
+        # Revised (C5): a rung whose requirements ask for no song run, where it
+        # was one whose `mastery.songsRequired` was 0.
         thin = lesson("1.1", THREE_EX, [])
-        thin["mastery"]["songsRequired"] = 0
+        thin["requirements"] = [{"kind": "runs", "from": "exercises", "count": 1}]
         self.assertEqual(validate_curriculum(curriculum(thin), CATALOG), [])
 
     def test_an_exempt_lesson_is_skipped_entirely(self) -> None:

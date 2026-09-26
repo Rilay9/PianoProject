@@ -44,11 +44,21 @@
                 "song.classical.bach-invention-no-4-in-d-minor-bwv-775.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "classical.6"
               ],
@@ -132,11 +142,21 @@
                 "song.ragtime.joplin-sugar-cane"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "ragtime.6"
               ],
@@ -224,11 +244,16 @@
               ],
               "songOptional": true,
               "mastery": {
-                "exercisesRequired": 2,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 2
+                }
+              ],
               "tools": [
                 {
                   "kind": "ladder"
@@ -303,11 +328,16 @@
               ],
               "songOptional": true,
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.85
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "jazz.6"
               ],
@@ -373,11 +403,21 @@
                 "song.jazz.vince-guaraldi-skating.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "holiday.6"
               ],
@@ -439,11 +479,16 @@
               ],
               "songOptional": true,
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.85
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "blues.6"
               ],
@@ -518,11 +563,16 @@
               ],
               "songOptional": true,
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.85
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "chords-pop.6"
               ],
@@ -586,11 +636,16 @@
               "songOptions": [],
               "songOptional": true,
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.85
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "theory.6"
               ],
@@ -653,11 +708,16 @@
               "songOptions": [],
               "songOptional": true,
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.85
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "improv.6"
               ],
@@ -716,11 +776,21 @@
                 "song.classical.beethoven-moonlight-iii"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.88,
                 "minTempoPct": 0.75
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "rock.6"
               ],
@@ -778,11 +848,21 @@
                 "song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "latin.6"
               ],
@@ -844,11 +924,21 @@
                 "song.blues.storyville-blues"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.85,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "jam.6"
               ],

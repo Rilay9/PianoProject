@@ -4,9 +4,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   alternativesFor,
-  idsToCompleteLesson,
   indexCatalog,
-  lessonComplete,
   thinLessons,
   type CatalogItem,
   type Curriculum,
@@ -34,7 +32,7 @@ function lesson(over: Partial<Lesson> = {}): Lesson {
     textFile: 'lessons/2.1.md',
     exerciseOptions: ['exercise.a', 'exercise.b', 'exercise.c'],
     songOptions: ['song.a', 'song.b', 'song.c'],
-    mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 0.9, minTempoPct: 0.8 },
+    mastery: { minAccuracy: 0.9, minTempoPct: 0.8 }, requirements: [{ kind: 'runs', from: 'exercises', count: 1 }, { kind: 'runs', from: 'songs', count: 1 }],
     ...over,
   };
 }
@@ -54,47 +52,11 @@ function curriculumOf(...lessons: Lesson[]): Curriculum {
   };
 }
 
-const passes = (...ids: string[]) => ids.map((itemId) => ({ itemId, passed: true }));
-
-describe('lessonComplete', () => {
-  it('needs an exercise and a song by default', () => {
-    expect(lessonComplete(lesson(), passes('exercise.a'))).toBe(false);
-    expect(lessonComplete(lesson(), passes('song.a'))).toBe(false);
-    expect(lessonComplete(lesson(), passes('exercise.a', 'song.a'))).toBe(true);
-  });
-
-  it('ignores passes on items the lesson does not offer', () => {
-    expect(lessonComplete(lesson(), passes('exercise.elsewhere', 'song.a'))).toBe(false);
-  });
-
-  it('lets a song-optional lesson finish on two exercises', () => {
-    const l = lesson({ songOptional: true });
-    expect(lessonComplete(l, passes('exercise.a'))).toBe(false);
-    expect(lessonComplete(l, passes('exercise.a', 'exercise.b'))).toBe(true);
-  });
-
-  it('still accepts a song on a song-optional lesson', () => {
-    const l = lesson({ songOptional: true });
-    expect(lessonComplete(l, passes('exercise.a', 'song.a'))).toBe(true);
-  });
-
-  it('does not let a song-optional lesson skip the exercise floor', () => {
-    const l = lesson({
-      songOptional: true,
-      mastery: { exercisesRequired: 2, songsRequired: 0, minAccuracy: 0.9, minTempoPct: 0.8 },
-    });
-    expect(lessonComplete(l, passes('exercise.a', 'song.a', 'song.b'))).toBe(false);
-    expect(lessonComplete(l, passes('exercise.a', 'exercise.b'))).toBe(true);
-  });
-
-  it('counts a failed attempt as not passed', () => {
-    const records = [
-      { itemId: 'exercise.a', passed: false },
-      { itemId: 'song.a', passed: true },
-    ];
-    expect(lessonComplete(lesson(), records)).toBe(false);
-  });
-});
+// Deleted (C5): the `lessonComplete` cases — a rung complete when enough of its
+// listed items carried a passed flag, wherever the pass was judged. A rung is
+// met by the evidence its requirements name now: `rungStateFromEvidence.test.ts`
+// (the three states, met by evidence and never by a count, two rungs listing
+// one item) and `noCompletionBesideTheEvidence.test.ts` (the function is gone).
 
 describe('alternativesFor', () => {
   const catalog = indexCatalog([
@@ -190,63 +152,7 @@ describe('thinLessons', () => {
   });
 });
 
-describe('require 2 songs per lesson (docs/04 §7)', () => {
-  const strict = { requireTwoSongs: true };
-
-  it('is off by default: one exercise and one song complete a lesson', () => {
-    const unit = lesson({
-      exerciseOptions: ['ex.1', 'ex.2', 'ex.3'],
-      songOptions: ['song.1', 'song.2', 'song.3'],
-      mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 0.9, minTempoPct: 0.8 },
-    });
-    const records = [
-      { itemId: 'ex.1', passed: true },
-      { itemId: 'song.1', passed: true },
-    ];
-    expect(lessonComplete(unit, records)).toBe(true);
-    expect(lessonComplete(unit, records, strict)).toBe(false);
-    expect(lessonComplete(unit, [...records, { itemId: 'song.2', passed: true }], strict)).toBe(
-      true,
-    );
-  });
-
-  it('never applies to a lesson whose skill no song tests', () => {
-    const unit = lesson({
-      songOptional: true,
-      exerciseOptions: ['ex.1', 'ex.2', 'ex.3'],
-      songOptions: [],
-      mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 0.9, minTempoPct: 0.8 },
-    });
-    const records = [
-      { itemId: 'ex.1', passed: true },
-      { itemId: 'ex.2', passed: true },
-    ];
-    expect(lessonComplete(unit, records, strict)).toBe(true);
-  });
-
-  it('does not demand a second song a lesson does not have', () => {
-    const unit = lesson({
-      exerciseOptions: ['ex.1'],
-      songOptions: ['song.1'],
-      mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 0.9, minTempoPct: 0.8 },
-    });
-    const records = [
-      { itemId: 'ex.1', passed: true },
-      { itemId: 'song.1', passed: true },
-    ];
-    expect(lessonComplete(unit, records, strict)).toBe(true);
-  });
-
-  it('idsToCompleteLesson returns exactly what lessonComplete checks for', () => {
-    const unit = lesson({
-      exerciseOptions: ['ex.1', 'ex.2'],
-      songOptions: ['song.1', 'song.2'],
-      mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 0.9, minTempoPct: 0.8 },
-    });
-    for (const options of [{}, strict]) {
-      const ids = idsToCompleteLesson(unit, options);
-      const records = ids.map((itemId) => ({ itemId, passed: true }));
-      expect(lessonComplete(unit, records, options)).toBe(true);
-    }
-  });
-});
+// Replaced (C5): "require 2 songs per lesson" is read by \`rungState\` now, on
+// the rung's songs requirement (\`rungStateFromEvidence.test.ts\`, the setting's
+// three cases); \`idsToCompleteLesson\` is deleted with the item passes it
+// marked — the learner's word is kept about the rung (\`lessonPageReadsTheEvidence\`).

@@ -879,10 +879,11 @@ minVelocityRange } }` — and shown on the summary sheet (`04` §5).
 
 They are **not** accuracy and are not folded into it: a staccato phrase with every right note
 and no shortness is a 100 % run and is the thing the exercise exists to catch. Whether missing
-one can stop a pass is the rung's business: `demandsTechniqueMeasure` reads
-`mastery.custom` for a rule naming the measure with a comparison, the same syntactic test
-`demandsMeasuredAccuracy` uses. **No rung states one today**, so the measure is reported and
-the pass is decided exactly as it was.
+one can stop a pass is the rung's business: `demandsTechniqueMeasure` reads the rung's
+`requirements` for a `measure` requirement naming it (C5; it read `mastery.custom` with a
+regular expression, and a rule the app cannot measure is an `unjudged` requirement, which binds
+nothing). **No rung states one today**, so the measure is reported and the pass is decided
+exactly as it was.
 
 A measure that could not be taken says so rather than reporting nought — the microphone never
 sends note-off, and "no note was short enough" is a different answer from "nothing could be
@@ -926,7 +927,7 @@ unaccented ones (`ACCENT_MIN_RATIO`).
   accent by the same gesture and land on different velocities.
 - **By step and by pitch, never by pitch alone.** A piece accents its first E and not its
   fourth; matching on the pitch judged both, which the `accents.musicxml` fixture caught.
-- **It never decides a pass.** Nothing in any rung's `mastery.custom` names it, and a leaning
+- **It never decides a pass.** No rung's requirements name it, and a leaning
   that is a little shy is not a wrong note.
 - Absent rather than `false` where the score prints nothing, which is what keeps every golden
   model of an unaccented score byte-identical.
@@ -1043,9 +1044,31 @@ the row beside the evidence as `evidenceDefinitions` by the record call (`stampe
 `storedEvidence` takes only the current stamp and ignores the observation's `definitions`, which
 stays the observation's. Version 1 is C3's per-skill evidence as C4 stored it under the
 observation's stamp; version 2 is C4a–C4c's, whose hands-together counts sat on every note over
-the other hand's held note: rows under either contribute nothing now. `recomputeEvidence(row,
-played, vocabulary)` is what the record call would store today, for a later job that holds the
-played model; nothing runs that job yet (`01` §4.5).
+the other hand's held note: rows under either contribute nothing until the job below brings
+them up to date. `recomputeEvidence(row, played, vocabulary)` is what the record call would
+store today.
+
+**The recompute job** (C5; L78, L66; `app/src/data/evidenceJob.ts`). On every open, after the
+first screen is up, the job looks at every stored run of an item that declares `targetSkills`
+whose evidence is under another version (or none) and has not already been kept out under the
+version in force. For each, one per idle slice (`requestIdleCallback`, a two-second deadline;
+OSMD is loaded only when a row needs a phrase written again, and parses without drawing), it
+writes the phrase again from the item, the seed, the recipe and the rung that held it — the
+writers the Score screen has used since observations were kept, newest first: held to the rung
+(C4c on), with the recipe (C4 on), the row's own params — and uses a candidate only where it
+**matches the run's own record**: the same steps with something to play and the same steps
+with nothing, bar for bar, the same count of expected notes, and every note heard early one the
+phrase asks for at that step. A match gives the evidence the record call gives today, stamped
+with the version in force. Otherwise the row is kept out, with the version and the reason on
+the row (`evidenceRecompute`), and not tried again until the version moves: `no-steps`
+(recorded before C1, or compacted to bars after the observation window), `item-gone`, `no-seed`,
+`not-generated`, `phrase-differs` (the generator writes that phrase differently now — C4d's redraw
+budget moved some). A kept-out row contributes nothing, as decided at C4d; nothing is estimated.
+The limit: a phrase that differs only in pitches where the learner played nothing early would
+match, because the generator's version is not on the row (Part 9 §8 of the outside audit wants
+it). Progress is on the storage report (`04` §3f). The same job carries the learner's history
+from before C5 over once and puts back to practised the reading rows an older build passed or
+mastered (S8), before any row.
 
 **Playing hands together is counted where the hands are coordinated** (C4d, L72; the reviewer's
 C4.5 review). The `handsTogether` detector's opportunity is a step where a left-hand note strikes

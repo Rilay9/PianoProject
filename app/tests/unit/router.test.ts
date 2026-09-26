@@ -316,6 +316,22 @@ describe('score routes', () => {
     expect(read.scoreFrom).toBeUndefined();
   });
 
+  // Added (C5, L8): a drill is judged by the rung that opened it, and by none
+  // when nothing did. It used to be judged by the first rung listing it,
+  // which is how a drill's pass counted for a rung nobody opened it from.
+  it('carries the rung a drill was opened from, reads it back, and treats another rung as another route', () => {
+    const { win } = fakeWindow('#/plan');
+    const router = new Router(win as unknown as Window);
+    const seen: string[] = [];
+    router.subscribe((route) => seen.push(`${route.drill ?? '-'}@${route.drillRung ?? '-'}`));
+    router.navigateDrill('drill.reading.find-key', { rung: '0.2' });
+    expect(win.location.hash).toBe('#/drill/drill.reading.find-key?rung=0.2');
+    expect(parseHash(win.location.hash)).toMatchObject({ drill: 'drill.reading.find-key', drillRung: '0.2' });
+    router.navigateDrill('drill.reading.find-key');
+    expect(parseHash('#/drill/drill.reading.find-key?rung=../x').drillRung).toBeUndefined();
+    expect(seen).toEqual(['-@-', 'drill.reading.find-key@0.2', 'drill.reading.find-key@-']);
+  });
+
   it('treats the same piece for another slot or rung as a different route', () => {
     const { win } = fakeWindow('#/today');
     const router = new Router(win as unknown as Window);

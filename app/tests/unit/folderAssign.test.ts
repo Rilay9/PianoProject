@@ -49,7 +49,7 @@ const CURRICULUM: Curriculum = {
               textFile: '1.1.md',
               exerciseOptions: ['drill.a'],
               songOptions: ['song.bundled'],
-              mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 90, minTempoPct: 80 },
+              mastery: { minAccuracy: 90, minTempoPct: 80 }, requirements: [{ kind: 'runs', from: 'exercises', count: 1 }, { kind: 'runs', from: 'songs', count: 1 }],
             },
             {
               id: '1.2',
@@ -58,7 +58,7 @@ const CURRICULUM: Curriculum = {
               textFile: '1.2.md',
               exerciseOptions: [],
               songOptions: [],
-              mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 90, minTempoPct: 80 },
+              mastery: { minAccuracy: 90, minTempoPct: 80 }, requirements: [{ kind: 'runs', from: 'exercises', count: 1 }, { kind: 'runs', from: 'songs', count: 1 }],
             },
           ],
         },

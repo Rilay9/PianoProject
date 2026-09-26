@@ -21,6 +21,31 @@ import {
 } from '../../src/curriculum/session';
 import { indexCatalog } from '../../src/curriculum/selectors';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
+import type { SessionRow } from '../../src/data/db';
+import { rungState, type RungStates } from '../../src/evidence/rungState';
+import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
+
+/**
+ * Where the learner is, from runs each judged by the rung named with its item
+ * (C5): `rungState` over the rows, where these tests handed a list of passed
+ * items before.
+ */
+function statesOf(curriculum: Curriculum, runs: [itemId: string, rung: string][] = []): RungStates {
+  const rows: SessionRow[] = runs.map(([itemId, lessonId]) => ({
+    itemId,
+    lessonId,
+    mode: 'tempo',
+    tempoPct: 100,
+    tempoMeasured: true,
+    accuracy: 1,
+    accuracyEstimated: false,
+    wrongNotes: 0,
+    missed: 0,
+    durationMs: 1000,
+    at: '2026-10-01T10:00:00.000Z',
+  }));
+  return rungState(rows, curriculum, VOCABULARY_V0, new Date('2026-10-02T10:00:00Z'));
+}
 
 function item(id: string, over: Partial<CatalogItem> = {}): CatalogItem {
   return {
@@ -44,7 +69,7 @@ function lesson(id: string, over: Partial<Lesson> = {}): Lesson {
     textFile: `lessons/${id}.md`,
     exerciseOptions: ['ex.a', 'ex.b', 'ex.c'],
     songOptions: ['song.a', 'song.b'],
-    mastery: { exercisesRequired: 1, songsRequired: 1, minAccuracy: 0.9, minTempoPct: 0.8 },
+    mastery: { minAccuracy: 0.9, minTempoPct: 0.8 }, requirements: [{ kind: 'runs', from: 'exercises', count: 1 }, { kind: 'runs', from: 'songs', count: 1 }],
     ...over,
   };
 }
@@ -75,7 +100,9 @@ const CURRICULUM: Curriculum = {
           track: 'core',
           lessons: [
             lesson('1.1'),
-            // Different options, or passing 1.1 would silently pass 1.2 too.
+            // Its options overlap 1.1's (ex.b, song.b): since C5 a run judged
+            // by 1.1 never meets 1.2, so the overlap is harmless — it was the
+            // reason these options differed.
             lesson('1.2', { exerciseOptions: ['ex.b', 'ex.c'], songOptions: ['song.b', 'song.c'] }),
           ],
         },
@@ -89,7 +116,7 @@ function input(over: Partial<BuildInput> = {}): BuildInput {
     curriculum: CURRICULUM,
     catalog: indexCatalog(ITEMS),
     items: ITEMS,
-    records: [],
+    states: statesOf(CURRICULUM),
     dueForReview: [],
     mastered: [],
     activeTracks: ['core'],
@@ -134,16 +161,35 @@ describe('the templates', () => {
 });
 
 describe('nextRecommended', () => {
-  it('is the first lesson that is not complete', () => {
-    expect(nextRecommended(CURRICULUM, [])?.lesson.id).toBe('1.1');
+  // Revised (C5): the rung is met by runs judged by it, where it was two
+  // passed flags; the assertions stand.
+  it('is the first rung the evidence has not met', () => {
+    expect(nextRecommended(CURRICULUM, statesOf(CURRICULUM))?.lesson.id).toBe('1.1');
   });
 
-  it('moves on once a lesson is complete', () => {
-    const records = [
-      { itemId: 'ex.a', passed: true },
-      { itemId: 'song.a', passed: true },
-    ];
-    expect(nextRecommended(CURRICULUM, records)?.lesson.id).toBe('1.2');
+  it('moves on once a rung is met', () => {
+    expect(nextRecommended(CURRICULUM, statesOf(CURRICULUM, [['ex.a', '1.1'], ['song.a', '1.1']]))?.lesson.id).toBe('1.2');
+  });
+
+  it('does not move on for passes of the rung’s items judged by another rung, or by none', () => {
+    // Added (C5, L8): ex.b and song.b are 1.2's too; run from 1.2 they meet
+    // nothing of 1.1, and run from nowhere they meet nothing at all.
+    const elsewhere = statesOf(CURRICULUM, [['ex.b', '1.2'], ['song.b', '1.2']]);
+    expect(nextRecommended(CURRICULUM, elsewhere)?.lesson.id).toBe('1.1');
+    expect(elsewhere.byRung.get('1.2')?.status).toBe('met');
+  });
+
+  it('sets a rung aside on the learner’s word, and comes back to it when nothing else is left', () => {
+    // Added (C5): the word is kept apart from the evidence — the rung is not
+    // met — and the recommendation skips it as it skips a rung behind a placement.
+    const said = rungState([], CURRICULUM, VOCABULARY_V0, new Date('2026-10-02T10:00:00Z'), {
+      words: { '1.1': { kind: 'known', at: '2026-10-01T10:00:00.000Z' } },
+    });
+    expect(nextRecommended(CURRICULUM, said)?.lesson.id).toBe('1.2');
+    const bothSaid = rungState([], CURRICULUM, VOCABULARY_V0, new Date('2026-10-02T10:00:00Z'), {
+      words: { '1.1': { kind: 'known', at: '2026-10-01T10:00:00.000Z' }, '1.2': { kind: 'done', at: '2026-10-01T10:00:00.000Z' } },
+    });
+    expect(nextRecommended(CURRICULUM, bothSaid)?.lesson.id).toBe('1.1');
   });
 
   it('skips a track the learner switched off, but never the core path', () => {
@@ -159,8 +205,8 @@ describe('nextRecommended', () => {
         },
       ],
     };
-    expect(nextRecommended(withTrack, [], ['core'])?.lesson.id).toBe('1.1');
-    expect(nextRecommended(withTrack, [], ['core', 'blues-boogie'])?.lesson.id).toBe('B.1');
+    expect(nextRecommended(withTrack, statesOf(withTrack), ['core'])?.lesson.id).toBe('1.1');
+    expect(nextRecommended(withTrack, statesOf(withTrack), ['core', 'blues-boogie'])?.lesson.id).toBe('B.1');
   });
 });
 

@@ -66,6 +66,15 @@ function mount(): void {
   // the tour is one row in Settings then.
   const hash = window.location.hash.replace(/^#\/?/, '');
   if (hash === '' && setupStatus() === 'never') router.navigate('settings', 'setup');
+  // The evidence job (C5): the learner's history from before C5 carried over
+  // once, the reading rows an older build passed put back to practised, and
+  // every run whose evidence is under another version brought up to date or
+  // kept out with its reason. After the first screen, and one row per idle
+  // slice (`data/evidenceJob.ts`), so it never holds up a screen; its module
+  // and OSMD load only now.
+  void import('./data/evidenceJob')
+    .then(({ startEvidenceJob }) => startEvidenceJob())
+    .catch(() => undefined);
 }
 
 // The owner's own difficulty numbers (replan §1.4). Not awaited: every screen

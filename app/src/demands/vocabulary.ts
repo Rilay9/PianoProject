@@ -51,31 +51,13 @@ export interface Skill {
 }
 
 /**
- * A `mastery.custom` term that names a v0 skill (interim, until C5 turns rung
- * requirements into predicates): which skill, at which standard, over how many
- * runs, and what in the app evaluates it — `null` where nothing does.
+ * The skills file. A rung names a skill in its own `requirements` (C5,
+ * `curriculum/types.ts`); C2's interim table of `mastery.custom` terms and the
+ * build gate's waivers went with the terms.
  */
-export interface RequirementTerm {
-  term: string;
-  skill: string;
-  standard: 'practice' | 'full';
-  runs: number;
-  evaluatedBy: string | null;
-}
-
-/** A refusal the build knows about and accepts until a named wave, with the reason. */
-export interface GateWaiver {
-  rung: string;
-  skill: string;
-  reason: string;
-  until: string;
-}
-
 export interface SkillsFile {
   conditions: Condition[];
   skills: Skill[];
-  requirementTerms: RequirementTerm[];
-  gateWaivers: GateWaiver[];
 }
 
 /**

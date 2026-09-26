@@ -1,32 +1,33 @@
 /**
- * Read-only questions about the curriculum: is this lesson finished, and what else
- * could I play instead?
+ * Read-only questions about the curriculum: what a rung holds a run to, and what
+ * else could I play instead? Whether a rung is met is not asked here: that is
+ * `evidence/rungState`, from the evidence its requirements name (C5).
  *
  * Kept free of DOM and storage so it is testable in Node. P7 builds the screens on top.
  */
 import type { MasteryCriteria } from '../engine/Scoring';
-import type { CatalogItem, Curriculum, Lesson, PassRecord } from './types';
+import type { CatalogItem, Curriculum, Lesson } from './types';
 
 export interface CatalogIndex {
   byId: Map<string, CatalogItem>;
 }
 
 /**
- * The rung an item is practised on, or undefined when it is not on one.
+ * The rung whose lesson text the Score screen shows beside a piece opened from
+ * nowhere: the first rung listing it, **as reading and nothing else** (C5).
  *
- * The first rung that lists it, which is what the Score screen's side panel
- * has always used to pick the prose to show beside a piece: an item is
- * usually an option of one rung, and where it is an option of several the
- * first is the one the ladder reaches first. Lifted out of that screen so the
- * *judging* can ask the same question, because a run judged against one
- * rung's numbers while the prose beside it comes from another would be two
- * answers to one question.
+ * It used to be the lookup that judged as well: a run opened from no
+ * rung was held to the first rung listing its item and recorded against it,
+ * and a drill still was until C5 — which is how a pass came to count for a
+ * rung that never asked for it (L7, L8). A run is judged only by the rung that
+ * opened the screen now, or by none (C1; the drill route carries its rung,
+ * C5), and a rung is met only through `evidence/rungState`. This is the prose
+ * beside the piece, without its pass paragraph (`sidePanelProse`), and a test
+ * holds it to that one caller (`noCompletionBesideTheEvidence.test.ts`).
  *
- * Library pieces, imports and paper have no rung and get `undefined`, which
- * is the honest answer rather than a nearest guess: nothing in the curriculum
- * said anything about them.
+ * Library pieces, imports and paper have no rung and get `undefined`.
  */
-export function lessonForItem(curriculum: Curriculum, itemId: string): Lesson | undefined {
+export function proseRungFor(curriculum: Curriculum, itemId: string): Lesson | undefined {
   for (const stage of curriculum.stages) {
     for (const unit of stage.units) {
       for (const lesson of unit.lessons) {
@@ -95,140 +96,6 @@ export function masteryCriteriaFor(
 
 export function indexCatalog(items: CatalogItem[]): CatalogIndex {
   return { byId: new Map(items.map((item) => [item.id, item])) };
-}
-
-function passedIds(records: PassRecord[]): Set<string> {
-  return new Set(records.filter((record) => record.passed).map((record) => record.itemId));
-}
-
-/**
- * `passedIds` and the self-pass set below are both loop-invariant over
- * `records` — everything `lessonComplete` needs from them depends only on
- * which records exist, never on the lesson being checked. `nextRecommended`
- * calls `lessonComplete` once per lesson across all of them (93 and
- * growing), and Plan's `draw()` reaches that path several times a redraw and
- * on every stage expand and track reorder; at a few hundred progress rows
- * that was rebuilding two Sets from scratch roughly 250,000 times over.
- *
- * Cached by the `records` array's own identity rather than threading a cache
- * through every call site: every caller in the app builds a fresh `records`
- * array once per load and then passes that same reference to `lessonComplete`
- * for each lesson it checks, so a `WeakMap` keyed on it gives the hoist
- * `nextRecommended` wants without changing `lessonComplete`'s signature for
- * any of its callers, and lets the entry be collected the moment nothing
- * still holds that array.
- *
- * **The invariant this rests on: a `records` array is never mutated in place.**
- * Every caller builds one with `.map()` over the progress rows and throws it
- * away when the rows change — checked across `PlanScreen`, `TodayScreen`,
- * `SkillsScreen` and `prerequisites`, none of which push, splice, sort or
- * assign into one. A caller that appended to an existing array instead would
- * get a stale answer here, and the symptom would be a rung that stayed
- * incomplete after it was passed: silent, and nowhere near this file.
- * `selectorsCacheInvariant.test.ts` fails if that ever starts happening.
- */
-const recordSetsCache = new WeakMap<PassRecord[], { passed: Set<string>; selfPassed: Set<string> }>();
-
-function recordSets(records: PassRecord[]): { passed: Set<string>; selfPassed: Set<string> } {
-  const cached = recordSetsCache.get(records);
-  if (cached) return cached;
-  const computed = {
-    passed: passedIds(records),
-    selfPassed: new Set(
-      records.filter((record) => record.passed && record.selfPassed).map((record) => record.itemId),
-    ),
-  };
-  recordSetsCache.set(records, computed);
-  return computed;
-}
-
-/**
- * docs/02 Part G, as amended by docs/00 D21.
- *
- * A lesson completes on `exercisesRequired` exercises plus `songsRequired` songs — except
- * that a `songOptional` lesson has no song that tests its skill, so its second pass may be
- * another exercise. Forcing a song there was making the rule lie: unit 3.6 is about
- * accompaniment patterns and no song in the library tests one.
- */
-/**
- * Does this rung's mastery rule demand a number the app has to measure?
- *
- * A paper piece can finish a repertoire rung: the owner played it, the app
- * could not see it, and his word is the only evidence there was ever going to
- * be. It cannot finish a rung whose rule is `dynamics-contrast>=1.6` or
- * `20-keys-in-40s>=0.95`, because those are claims about a measurement, and
- * accepting a self-report for them would be recording a number nobody took.
- *
- * The test is deliberately syntactic — a comparison against a number — rather
- * than a list of rung ids. A list would go stale the first time a rung was
- * added; this reads the rule the rung actually states.
- */
-export function demandsMeasuredAccuracy(lesson: Lesson): boolean {
-  const custom = lesson.mastery.custom;
-  return custom !== undefined && /[<>]=?\s*\d/.test(custom);
-}
-
-/** True when a self-assessed pass on paper may count towards this rung (replan §5.2). */
-export function paperPassAllowed(lesson: Lesson): boolean {
-  return !demandsMeasuredAccuracy(lesson);
-}
-
-export function lessonComplete(
-  lesson: Lesson,
-  records: PassRecord[],
-  options: { requireTwoSongs?: boolean } = {},
-): boolean {
-  // A registered book piece counts as one of the rung's songs, on the same
-  // terms as anything else — except that a *self-assessed* pass on paper is
-  // refused where the rung's rule demands a measurement (replan §5.2).
-  const { passed, selfPassed } = recordSets(records);
-  const exercises = lesson.exerciseOptions.filter((id) => passed.has(id)).length;
-  const paper = (lesson.paperOptions ?? []).filter(
-    (id) => passed.has(id) && (paperPassAllowed(lesson) || !selfPassed.has(id)),
-  ).length;
-  const songs = lesson.songOptions.filter((id) => passed.has(id)).length + paper;
-  const { exercisesRequired } = lesson.mastery;
-  // docs/04 §7 "require 2 songs per lesson [off]": the stricter rule for
-  // anyone who wants it. It cannot apply to a lesson with no song that tests
-  // its skill — that is what `songOptional` means.
-  const songsRequired =
-    options.requireTwoSongs && !lesson.songOptional && lesson.songOptions.length >= 2
-      ? 2
-      : lesson.mastery.songsRequired;
-
-  if (lesson.songOptional) {
-    // Any mix, as long as there are enough passes in total and the exercise floor is met.
-    return exercises >= exercisesRequired && exercises + songs >= exercisesRequired + songsRequired;
-  }
-  return exercises >= exercisesRequired && songs >= songsRequired;
-}
-
-/**
- * The items to mark passed when the learner says "I already know this" or
- * "mark this done" (docs/04 §3).
- *
- * It has to satisfy `lessonComplete`, or the lesson stays open after the
- * learner has just told the app it is finished — which is the bug that makes
- * an honour-system button feel broken. So it follows the same rule the check
- * does: `exercisesRequired` exercises plus `songsRequired` songs, except that
- * a `songOptional` lesson takes exercises for both (`00` D21).
- */
-export function idsToCompleteLesson(
-  lesson: Lesson,
-  options: { requireTwoSongs?: boolean } = {},
-): string[] {
-  const { exercisesRequired } = lesson.mastery;
-  const songsRequired =
-    options.requireTwoSongs && !lesson.songOptional && lesson.songOptions.length >= 2
-      ? 2
-      : lesson.mastery.songsRequired;
-  if (lesson.songOptional) {
-    return lesson.exerciseOptions.slice(0, exercisesRequired + songsRequired);
-  }
-  return [
-    ...lesson.exerciseOptions.slice(0, exercisesRequired),
-    ...lesson.songOptions.slice(0, songsRequired),
-  ];
 }
 
 export interface AlternativesQuery {
@@ -327,6 +194,14 @@ export function findLesson(curriculum: Curriculum, lessonId: string): Lesson | u
 }
 
 /**
+ * Whether a rung's requirements ask for a run of one of its songs (C5): what
+ * the old count of required songs said, read from the requirement that replaced it.
+ */
+export function asksForSongs(lesson: Lesson): boolean {
+  return (lesson.requirements ?? []).some((requirement) => requirement.kind === 'runs' && requirement.from === 'songs');
+}
+
+/**
  * Lessons that fall below the three-alternatives rule, for the Diagnostics screen
  * (docs/04 §7b). `validate.py` fails the build on these, so in a shipped build the list
  * is empty — it is here so a hand-edited curriculum on the device is visible too.
@@ -341,7 +216,7 @@ export function thinLessons(curriculum: Curriculum, minOptions = 3): Lesson[] {
         const enough = lesson.songOptional
           ? lesson.exerciseOptions.length >= minOptions && total >= minOptions
           : lesson.exerciseOptions.length >= minOptions &&
-            (lesson.mastery.songsRequired === 0 || lesson.songOptions.length >= minOptions);
+            (!asksForSongs(lesson) || lesson.songOptions.length >= minOptions);
         if (!enough) thin.push(lesson);
       }
     }

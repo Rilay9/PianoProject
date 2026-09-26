@@ -36,12 +36,33 @@
                 "song.classical.ode-to-joy.g"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.95,
-                "minTempoPct": 0.8,
-                "custom": "4-scales-HT-2oct-80bpm>=0.95"
+                "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "items": [
+                    "exercise.scale.c-major.2oct.similar.both.2",
+                    "exercise.scale.g-major.2oct.similar.both.2",
+                    "exercise.scale.d-major.2oct.similar.both.2",
+                    "exercise.scale.a-major.2oct.similar.both.2"
+                  ],
+                  "count": 4
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "4-scales-HT-2oct-80bpm>=0.95",
+                  "says": "The four scales at 80 beats a minute in eighth notes.",
+                  "why": "The app judges tempo as a share of the written tempo, not in beats a minute."
+                }
+              ],
               "prerequisites": [
                 "3.6"
               ],
@@ -109,11 +130,21 @@
                 "song.folk.twinkle.f"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.95,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "4.1"
               ],
@@ -186,12 +217,35 @@
                 "song.folk.greensleeves.chords"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.95,
-                "minTempoPct": 0.8,
-                "custom": "30-inversions-3s-each>=0.95"
+                "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "items": [
+                    "drill.chord.inversions"
+                  ],
+                  "count": 1
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "30-inversions-3s-each>=0.95",
+                  "says": "Thirty inversions, each within three seconds.",
+                  "why": "The inversion drill judges each answer; the time an answer took is not recorded."
+                }
+              ],
               "prerequisites": [
                 "4.1"
               ],
@@ -252,12 +306,34 @@
                 "song.classical.beethoven-ode-to-joy.easy"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.97,
-                "minTempoPct": 0.8,
-                "custom": "hanon-1-5-HT-80bpm>=0.97"
+                "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "items": [
+                    "exercise.hanon.01.both",
+                    "exercise.hanon.02.both",
+                    "exercise.hanon.03.both",
+                    "exercise.hanon.04.both",
+                    "exercise.hanon.05.both"
+                  ],
+                  "count": 5
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "hanon-1-5-HT-80bpm>=0.97",
+                  "says": "At 80 beats a minute, the fourth-finger notes as loud as the others.",
+                  "why": "The app judges tempo as a share of the written tempo, not in beats a minute. Loudness per finger is not measured."
+                }
+              ],
               "prerequisites": [
                 "4.1"
               ],
@@ -336,11 +412,31 @@
                 "song.folk.traditional-music-when-johnny-comes-marching-home.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.9
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                },
+                {
+                  "kind": "skill",
+                  "skill": "6/8",
+                  "state": "familiar"
+                },
+                {
+                  "kind": "skill",
+                  "skill": "syncopation",
+                  "state": "familiar"
+                }
+              ],
               "prerequisites": [
                 "4.2"
               ],
@@ -403,12 +499,28 @@
                 "song.holiday.carol-of-the-bells.easy"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 2,
                 "minAccuracy": 0.9,
-                "minTempoPct": 0.9,
-                "custom": "two-pieces-performance-mode>=0.9"
+                "minTempoPct": 0.9
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 2,
+                  "performance": true
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "reading-ahead",
+                  "says": "Read ahead of where you are playing.",
+                  "why": "Continuity is not measured: no run records how far ahead the eyes are."
+                }
+              ],
               "prerequisites": [
                 "4.3",
                 "4.4",
@@ -462,12 +574,22 @@
                 "song.classical.pachelbel-canon-d.easy"
               ],
               "mastery": {
-                "exercisesRequired": 0,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
-                "minTempoPct": 0.9,
-                "custom": "two clean passes, then blind at >=0.9"
+                "minTempoPct": 0.9
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "two clean passes, then blind at >=0.9",
+                  "says": "From memory, starting anywhere, at half tempo, within a tenth of your sighted run.",
+                  "why": "A run with the score hidden is not recorded as such, and the two runs are not compared."
+                }
+              ],
               "estimatedDays": 21,
               "tools": [
                 {
@@ -535,11 +657,21 @@
                 "song.classical.gurlitt-cornelius-gurlitt-op-82.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "classical.3"
               ],
@@ -649,12 +781,22 @@
                 "song.beautiful.g-minor-bach"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
-                "minTempoPct": 0.8,
-                "custom": "one-piece-performed"
+                "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1,
+                  "performance": true
+                }
+              ],
               "prerequisites": [
                 "3.5"
               ],
@@ -713,11 +855,21 @@
                 "song.classical.alexander-s-ragtime-band.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.9
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "chords-pop.3"
               ],
@@ -789,11 +941,21 @@
                 "song.blues.hesitating-blues"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.85
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "3.2"
               ],
@@ -859,11 +1021,21 @@
                 "song.pop.margie.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "chords-pop.4"
               ],
@@ -927,11 +1099,21 @@
                 "song.classical.away-in-a-manger.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "holiday"
               ],
@@ -993,12 +1175,24 @@
               ],
               "songOptions": [],
               "mastery": {
-                "exercisesRequired": 2,
-                "songsRequired": 0,
                 "minAccuracy": 0.8,
-                "minTempoPct": 0,
-                "custom": "cadences-by-ear>=0.8"
+                "minTempoPct": 0
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 2
+                },
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "items": [
+                    "drill.ear.cadences"
+                  ],
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "theory.3"
               ],
@@ -1054,12 +1248,22 @@
               ],
               "songOptions": [],
               "mastery": {
-                "exercisesRequired": 2,
-                "songsRequired": 0,
                 "minAccuracy": 0,
-                "minTempoPct": 0,
-                "custom": "four-answers-recorded"
+                "minTempoPct": 0
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 2
+                },
+                {
+                  "kind": "unjudged",
+                  "rule": "four-answers-recorded",
+                  "says": "Four answers recorded.",
+                  "why": "A recording of your own playing is not a run the app judges."
+                }
+              ],
               "prerequisites": [
                 "improv.3"
               ],
@@ -1123,11 +1327,21 @@
                 "exercise.blues.twelve-bar-shuffle.f"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.85
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "blues.4"
               ],
@@ -1209,11 +1423,16 @@
               ],
               "songOptional": true,
               "mastery": {
-                "exercisesRequired": 2,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 2
+                }
+              ],
               "tools": [
                 {
                   "kind": "ladder"
@@ -1279,11 +1498,16 @@
                 "song.folk.greensleeves.chords"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 0,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "rock.overview"
               ],
@@ -1351,11 +1575,21 @@
                 "song.classical.bach-o-sacred-head-johann-sebastian-bach-on-a-tune-by-hans-leo-hassler.pdmx"
               ],
               "mastery": {
-                "exercisesRequired": 1,
-                "songsRequired": 1,
                 "minAccuracy": 0.9,
                 "minTempoPct": 0.8
               },
+              "requirements": [
+                {
+                  "kind": "runs",
+                  "from": "exercises",
+                  "count": 1
+                },
+                {
+                  "kind": "runs",
+                  "from": "songs",
+                  "count": 1
+                }
+              ],
               "prerequisites": [
                 "hymns"
               ],

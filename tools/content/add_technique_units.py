@@ -198,12 +198,14 @@ def build_unit(stage: int, catalog: list[dict]) -> dict:
                 # because they are the repertoire tracks; this is a drill
                 # track, like theory and blues and jazz.
                 "estimatedDays": DAYS_PER_STAGE[stage],
+                # The standard a run is judged at, and what completes the rung:
+                # two of its exercises judged by it (C5's requirements, which
+                # replaced exercisesRequired/songsRequired).
                 "mastery": {
-                    "exercisesRequired": 2,
-                    "songsRequired": 0,
                     "minAccuracy": 0.9,
                     "minTempoPct": 0.8,
                 },
+                "requirements": [{"kind": "runs", "from": "exercises", "count": 2}],
             }
         ],
     }

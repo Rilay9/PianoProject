@@ -50,7 +50,10 @@ export function openItem(
       router.navigatePdf(item.id);
       return true;
     case 'drill':
-      router.navigateDrill(item.id);
+      // The rung rides along (C5): it judges the drill's run, as it judges a
+      // piece's, where the first rung listing the drill used to.
+      if (options.from === undefined) router.navigateDrill(item.id);
+      else router.navigateDrill(item.id, { rung: options.from });
       return true;
     case 'score':
       // The bare call where there is no rung, rather than one with an empty

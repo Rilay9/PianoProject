@@ -51,7 +51,16 @@ const { findItemSpy, recordRunSpy } = vi.hoisted(() => ({
 
 vi.mock('../../src/curriculum/load', async (importOriginal) => {
   const original = await importOriginal<typeof import('../../src/curriculum/load')>();
-  return { ...original, findItem: findItemSpy };
+  // The one rung the tour is on, so a drill opened from it can be judged by it (C5).
+  const curriculum = {
+    version: 1,
+    tracks: [],
+    stages: [{ number: 0, title: 'Stage 0', summary: '', units: [{ id: '0.3', title: 'Tour', track: 'core', lessons: [
+      { id: '0.3', title: 'Tour', concepts: [], textFile: 'lessons/0.3.md', exerciseOptions: [TOUR_ID], songOptions: [],
+        mastery: { minAccuracy: 0, minTempoPct: 0 }, requirements: [{ kind: 'done', item: TOUR_ID }] },
+    ] }] }],
+  };
+  return { ...original, findItem: findItemSpy, loadCurriculum: () => Promise.resolve(curriculum) };
 });
 
 vi.mock('../../src/data/progressStore', () => ({
@@ -74,7 +83,7 @@ interface FakeRouter {
   navigate: ReturnType<typeof vi.fn>;
   navigateScore: ReturnType<typeof vi.fn>;
   navigateDrill: ReturnType<typeof vi.fn>;
-  route: { tab: string };
+  route: { tab: string; drillRung?: string };
 }
 
 let router: FakeRouter;
@@ -255,6 +264,45 @@ describe('there is a way out of every step, and it can be run again', () => {
     router = newRouter();
     await mount();
     expect(text('drill-counter')).toMatch(/1 of 3/);
+  });
+
+  // Added (C5; L52's writers, L8). The tour is finished or not: its run was
+  // written with accuracy 1 and tempo 100 as if it had measured a performance,
+  // and with no rung at all. Now it says it measured no accuracy, that nothing
+  // was left undone (what 0.3's `done` requirement reads), and which rung
+  // opened it.
+  it('records the finished tour as no measurement of playing, nothing left undone, and the rung that opened it', async () => {
+    router.route = { tab: 'plan', drillRung: '0.3' };
+    await mount();
+    click('drill-walkthrough-next');
+    click('drill-walkthrough-next');
+    click('drill-walkthrough-next');
+    await vi.waitFor(() => {
+      expect(recordRunSpy).toHaveBeenCalledTimes(1);
+    });
+    const record = recordRunSpy.mock.calls[0]?.[0];
+    expect(record?.accuracy, 'a tour measured an accuracy').toBe('not measured');
+    expect(record?.missed).toBe(0);
+    expect(record?.lessonId).toBe('0.3');
+  });
+
+  it('a checklist opened from no rung is judged by none, and its ticks are not an accuracy', async () => {
+    findItemSpy.mockResolvedValue(checklistItem());
+    await mount('drill.posture.checklist');
+    for (const box of document.querySelectorAll<HTMLInputElement>('#drill-checklist input[type="checkbox"]')) {
+      box.checked = true;
+      box.dispatchEvent(new Event('change'));
+    }
+    const finish = document.querySelector<HTMLButtonElement>('#drill-checklist-done') ?? undefined;
+    expect(finish, 'the checklist has no finish button').toBeDefined();
+    finish?.click();
+    await vi.waitFor(() => {
+      expect(recordRunSpy).toHaveBeenCalledTimes(1);
+    });
+    const record = recordRunSpy.mock.calls[0]?.[0];
+    expect(record).not.toHaveProperty('lessonId');
+    expect(record?.accuracy).toBe('not measured');
+    expect(record?.missed).toBe(0);
   });
 
   it('Again on the sheet puts it back to the first step in place', async () => {

@@ -4397,7 +4397,45 @@ input[type='checkbox'] {
 
 .plan-stage-bar__fill {
   display: block;
+  flex: none;
   height: 100%;
+  background: var(--accent);
+}
+
+/* The rungs carried over from before C5 (C5): first, and in a fill of their
+   own — lighter and broken — so they never read as measured progress. The
+   legend over the list names both fills. */
+.plan-stage-bar {
+  display: flex;
+}
+
+.plan-stage-bar__carried,
+.plan-legend__swatch--carried {
+  display: block;
+  flex: none;
+  height: 100%;
+  background: repeating-linear-gradient(90deg, var(--accent) 0 4px, transparent 4px 7px);
+  opacity: 0.5;
+}
+
+.plan-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 4px 8px;
+  font-size: 0.85rem;
+}
+
+.plan-legend__swatch {
+  display: inline-block;
+  width: 20px;
+  height: 4px;
+  border-radius: 2px;
+}
+
+.plan-legend__swatch--counted {
+  margin-left: 8px;
   background: var(--accent);
 }
 

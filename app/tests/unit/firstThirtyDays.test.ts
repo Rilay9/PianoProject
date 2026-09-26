@@ -152,7 +152,7 @@ async function live(learner: Learner): Promise<Day[]> {
     const made = readingOffer({
       curriculum,
       items: catalog,
-      position: nextRecommended(curriculum, [], ['core'], { startAt: rung }),
+      position: nextRecommended(curriculum, { byRung: new Map() }, ['core'], { startAt: rung }),
       activeTracks: ['core'],
       rows,
       today: morning,

@@ -9,15 +9,15 @@
  * The shape of a session is fixed by the templates below; what varies is what
  * goes in each slot, and every slot can be swapped (docs/04 §2, `00` D21).
  */
-import type { CatalogItem, Curriculum, Lesson, PassRecord, Unit } from './types';
+import type { CatalogItem, Curriculum, Lesson, Unit } from './types';
 import {
   alternativesFor,
   findLesson,
-  lessonComplete,
   levelConfidence,
   type CatalogIndex,
 } from './selectors';
 import { lockState } from './prerequisites';
+import type { RungStates } from '../evidence/rungState';
 import type { ReadingMoves, ReadingRecipe, SessionRow } from '../data/db';
 import { dayKey } from '../data/progressStore';
 import { heldToRung, READING_CONTROLS, UNREALISABLE_AT, type ControlPatch } from '../engine/readingControls';
@@ -130,7 +130,11 @@ export interface BuildInput {
   catalog: CatalogIndex;
   /** Every item, for the fallbacks — the index's map in list form. */
   items: CatalogItem[];
-  records: PassRecord[];
+  /**
+   * Where the learner is, from the evidence (C5: `evidence/rungState`). It was
+   * `records`, a list of passed items counted over each rung.
+   */
+  states: RungStates;
   /** Item ids due for review, most overdue first (progressStore.reviewQueue). */
   dueForReview: string[];
   /** Items whose status is `mastered`, for the Repertoire slot. */
@@ -140,8 +144,6 @@ export interface BuildInput {
   minutes: number;
   /** Rotates the choice within a slot so "Shuffle" gives something different. */
   seed?: number;
-  /** docs/04 §7 "require 2 songs per lesson"; changes what counts as complete. */
-  requireTwoSongs?: boolean;
   /** docs/04 §7: opt-in gating, off by default (`00` D17). */
   strictPrerequisites?: boolean;
   /**
@@ -170,7 +172,15 @@ export interface LessonPosition {
 }
 
 /**
- * Walks stages in order and returns the first lesson that is not complete.
+ * Walks stages in order and returns the first rung the evidence has not met
+ * (C5: `rungState`, where it used to be the first rung whose passed items did
+ * not add up).
+ *
+ * A rung the learner has set aside by their word ("I already know this",
+ * *Mark done*) or that was carried over from before C5 is held back the way a
+ * rung behind the placement is: not recommended while anything in front is
+ * open, and come back to when nothing else is. The word is not evidence, so
+ * the rung is not met; it is simply not where the learner said they are.
  *
  * `startAt` is the placement test's answer (`02` Stage 0.4, built 2026-09-21).
  * It was written into the plan by `recordPlacement` and read by **nothing**:
@@ -192,10 +202,9 @@ export interface LessonPosition {
  */
 export function nextRecommended(
   curriculum: Curriculum,
-  records: PassRecord[],
+  states: RungStates,
   activeTracks: string[] = [],
   options: {
-    requireTwoSongs?: boolean;
     strictPrerequisites?: boolean;
     /** The placed unit or rung: nothing before it is recommended first. */
     startAt?: string;
@@ -206,6 +215,7 @@ export function nextRecommended(
   const startAt = options.startAt === undefined || options.startAt === '' ? null : options.startAt;
   let reachedStart = startAt === null;
   let firstBehind: LessonPosition | undefined;
+  let firstSetAside: LessonPosition | undefined;
   for (const stage of curriculum.stages) {
     for (const unit of stage.units) {
       // A track the learner has switched off is skipped, but the core track
@@ -214,8 +224,13 @@ export function nextRecommended(
       if (unit.id === startAt) reachedStart = true;
       for (const lesson of unit.lessons) {
         if (lesson.id === startAt) reachedStart = true;
-        if (lessonComplete(lesson, records, options)) continue;
+        const state = states.byRung.get(lesson.id);
+        if (state?.status === 'met') continue;
         const position = { lesson, unit, stageNumber: stage.number };
+        if (state !== undefined && (state.word !== undefined || state.carried)) {
+          firstSetAside ??= position;
+          continue;
+        }
         if (!reachedStart) {
           firstBehind ??= position;
           continue;
@@ -226,13 +241,8 @@ export function nextRecommended(
           // left is locked — which happens when a prerequisite is a rung he
           // has skipped past — recommending nothing would leave Today empty,
           // and an empty Today is worse than a rung with a badge on it.
-          const state = lockState(lesson, curriculum, records, {
-            strict: true,
-            ...(options.requireTwoSongs === undefined
-              ? {}
-              : { requireTwoSongs: options.requireTwoSongs }),
-          });
-          if (state.locked) {
+          const lock = lockState(lesson, curriculum, states, { strict: true });
+          if (lock.locked) {
             firstLocked ??= position;
             continue;
           }
@@ -241,8 +251,9 @@ export function nextRecommended(
       }
     }
   }
-  // Nothing from the placement onwards, so the rungs behind it come back.
-  return firstLocked ?? firstBehind;
+  // Nothing from the placement onwards, so the rungs behind it come back; and
+  // after them the rungs set aside by the learner's word.
+  return firstLocked ?? firstBehind ?? firstSetAside;
 }
 
 /**
@@ -359,8 +370,9 @@ function fillSlot(
   }
 
   if (kind === 'repertoire') {
+    const known = pick(resolve(mastered, catalog, free), seed);
     const chosen =
-      pick(resolve(mastered, catalog, free), seed) ??
+      known ??
       pick(
         items.filter(
           (item) =>
@@ -370,7 +382,11 @@ function fillSlot(
       );
     return {
       ...(chosen ? { item: chosen } : {}),
-      reason: mastered.length > 0 ? 'A piece you know — keep it playable' : 'Something to just play',
+      // Said of the piece chosen, not of the list (L18, with S8): a mastered id
+      // that could not be offered — a reading row an older build marked
+      // mastered, a piece already on the card — left a song never played
+      // labelled as one the learner knows.
+      reason: known !== undefined ? 'A piece you know — keep it playable' : 'Something to just play',
     };
   }
 
@@ -431,8 +447,7 @@ function fillSlot(
  */
 export function buildSession(input: BuildInput): { template: SessionTemplate; slots: SessionSlot[] } {
   const template = templateFor(input.minutes);
-  const position = nextRecommended(input.curriculum, input.records, input.activeTracks, {
-    ...(input.requireTwoSongs === undefined ? {} : { requireTwoSongs: input.requireTwoSongs }),
+  const position = nextRecommended(input.curriculum, input.states, input.activeTracks, {
     ...(input.strictPrerequisites ? { strictPrerequisites: true } : {}),
     ...(input.startAt === undefined ? {} : { startAt: input.startAt }),
   });
@@ -536,7 +551,7 @@ export function playInstead(
   return alternativesFor({ itemId: id }, curriculum, catalog).find((candidate) => playable(candidate));
 }
 
-export { findLesson, lessonComplete };
+export { findLesson };
 
 // --- the reader (C4, C4c): the next sight-reading phrase, from the reads -------
 
