@@ -23,9 +23,9 @@
  *   is repertoire retention, in the piece's words and never a skill's; the new
  *   slot begins the next lesson and says why.
  * - **D**: as C, but the 2.1 piece played yesterday and 2.1's coordination
- *   exercises played last week: nothing is due, so the review row is the
- *   exposure rule — a kind of exercise the lessons have taught and nothing of
- *   which was played this week.
+ *   exercises played last week: nothing is due, and the review is the rung's
+ *   own option — the ladder has something, so a week-unplayed kind of exercise
+ *   does not jump it (the reviewer's correction, 2026-09-26).
  *
  * And a constructed case for the warm-up's first claim, which no shipped
  * exercise can reach yet (only the nine reading rows declare `targetSkills`):
@@ -304,28 +304,30 @@ describe('D: nothing due, and a week without most of what the lessons have taugh
   ];
   const slots = (): SessionSlot[] => card({ rows: rows(), learned: [{ itemId: SONG_21, status: 'passed', lastPlayed: daysAgo(1) }] });
 
-  it('the review row is the exposure rule: a kind of exercise taught and not played this week, said with when', () => {
+  // Revised (the reviewer's correction, 2026-09-26): this said "the review row is the exposure rule: a
+  // kind of exercise taught and not played this week", which held because a week-unplayed kind took the
+  // review straight after retention, ahead of the ladder. Generic breadth may not outrank a semantic
+  // claim: 2.2 still has options of its own, so the review is the rung's, and says nothing is due.
+  it('nothing due: the review is the rung’s own option, ahead of any week-unplayed kind of exercise', () => {
     const review = slot(slots(), 'review');
-    expect(review?.claim?.kind).toBe('exposure');
-    expect(review?.reason).toMatch(/, from your lessons — not played yet$|^Keeping .* warm — last played /);
-    const family = (review?.claim as Extract<NonNullable<SessionSlot['claim']>, { kind: 'exposure' }>).family;
-    expect(family.by).toBe('kind');
-    // Not the kind on the card already, and not one played this week.
-    for (const one of slots()) if (one.kind !== 'review') expect(one.item?.drill?.kind ?? 'song', one.kind).not.toBe(family.id);
-    expect(family.id).not.toBe('coordination');
+    expect(review?.claim?.kind, review?.reason).toBe('rung');
+    expect(review?.reason).toBe('Nothing due for review — more from this lesson');
+    expect([...R22.exerciseOptions, ...R22.songOptions]).toContain(review?.item?.id);
+    // What it reviews is what the lesson has counted, where something is counted.
+    expect([FIRST_EXERCISE_22, FIRST_SONG_22]).toContain(review?.item?.id);
   });
 
-  it('coordination, played eight days ago, is due too; Shuffle reaches it, with when it was last played', () => {
-    const reasons = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((seed) => card({ rows: rows(), learned: [{ itemId: SONG_21, status: 'passed', lastPlayed: daysAgo(1) }], seed }))
-      .map((one) => slot(one, 'review'))
-      .filter((one) => one?.claim?.kind === 'exposure' && (one.claim as { family: { id: string } }).family.id === 'coordination');
-    expect(reasons.length).toBeGreaterThan(0);
-    expect(reasons[0]?.reason).toMatch(/^Keeping your coordination exercises warm — last played on /);
-  });
+  // Deleted (the same correction): "coordination, played eight days ago, is due too; Shuffle reaches
+  // it". It held the seven-day exposure pre-pass (`EXPOSURE_DAYS`), which is gone; exposure is the
+  // ladder's last step (`fallbackOrder.test.ts` › exposure comes after the ladder) and its words are
+  // held below ("Keeping your scales warm — last played on …").
 });
 
+// Revised (the reviewer's correction, 2026-09-26): exposure was expected on these cards, where it chose
+// the review ahead of the ladder. On 2.2 the ladder always has something to offer, so exposure chooses
+// none of these slots; where the ladder has nothing it does (`fallbackOrder.test.ts`).
 describe('the balance across the four cards (the plan’s rule; L26)', () => {
-  it('the rung’s intent, retention and exposure each choose a slot somewhere, and remediation alone chooses none', () => {
+  it('the rung’s intent, retention and the rung’s own option each choose a slot; remediation alone chooses none; breadth never jumps the ladder', () => {
     const D = [...learnerC.slice(1), { ...judged(SONG_21, '2.1', daysAgo(1)), id: 10 }];
     const kinds = new Set(
       [
@@ -340,7 +342,8 @@ describe('the balance across the four cards (the plan’s rule; L26)', () => {
     expect(kinds).toContain('asked');
     expect(kinds).toContain('skill-retention');
     expect(kinds).toContain('piece-retention');
-    expect(kinds).toContain('exposure');
+    expect(kinds).toContain('rung');
+    expect(kinds).not.toContain('exposure');
   });
 });
 

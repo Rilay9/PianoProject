@@ -352,13 +352,6 @@ function pick<T>(candidates: readonly T[], seed: number): T | undefined {
 export const REPERTOIRE_WINDOW_DAYS = 14;
 
 /**
- * Days after which a family of taught material the learner has played none of
- * is "not seen lately" for the exposure rule (C6; L26). **A hypothesis**: a
- * week, the unit the app counts practice in (the weekly goal).
- */
-export const EXPOSURE_DAYS = 7;
-
-/**
  * The fallback ladder (L14; `operating-procedure.md` §7): when a slot's first
  * claim finds nothing, these weaker claims are tried in this order, and the
  * reason line names the one used. No slot falls back to a level window.
@@ -479,8 +472,6 @@ interface SlotContext {
   skills: ReadonlyMap<string, SkillEvidence>;
   learned: ReadonlyMap<string, LearnedPiece>;
   lastPlayed: (id: string) => string | undefined;
-  /** Whether the learner has played anything at all: the exposure rule needs a history to balance. */
-  history: boolean;
   today: Date;
   used: Set<string>;
   seed: number;
@@ -831,9 +822,14 @@ function fallback(
   const strands = want?.strand
     ? [want.strand]
     : [...ctx.strands.filter((one) => !servedBy(onCard, one)), ...ctx.strands.filter((one) => servedBy(onCard, one))];
-  for (const strand of strands.length > 0 ? strands : [undefined]) {
-    const found = fallbackFrom(ctx, songs, want, order, strand);
-    if (found) return found;
+  // Each step over every strand before the next step (the reviewer's correction, 2026-09-26): a rung
+  // option on the second strand in today's order is a stronger claim than exposure on the first, and
+  // exposure — generic breadth — is tried once, last, never ahead of a semantic claim.
+  for (const step of FALLBACK_ORDER) {
+    for (const strand of step === 'exposure' || strands.length === 0 ? [strands[0]] : strands) {
+      const found = fallbackStep(ctx, songs, want, order, strand, step);
+      if (found) return found;
+    }
   }
   return undefined;
 }
@@ -843,12 +839,13 @@ function servedBy(onCard: readonly Choice[], strand: Strand): boolean {
   return onCard.some((choice) => choice.strand === strand.track);
 }
 
-function fallbackFrom(
+function fallbackStep(
   ctx: SlotContext,
   songs: 'any' | 'none' | 'only',
   want: { skill?: string } | undefined,
   order: (items: CatalogItem[]) => CatalogItem[],
   strand: Strand | undefined,
+  step: (typeof FALLBACK_ORDER)[number],
 ): Choice | undefined {
   const rung = strand?.rung;
   const vocabulary = ctx.input.vocabulary ?? VOCABULARY_V0;
@@ -870,7 +867,7 @@ function fallbackFrom(
     const from = lessonId?.(item);
     return { item, claim: claim(item), ...(from === undefined ? {} : { lessonId: from }) };
   };
-  for (const step of FALLBACK_ORDER) {
+  {
     let found: Choice | undefined;
     if (step === 'rung' && rung) {
       const own = [...rung.exerciseOptions, ...rung.songOptions].map((id) => ctx.catalog.byId.get(id)).filter((item): item is CatalogItem => item !== undefined);
@@ -894,11 +891,11 @@ function fallbackFrom(
         if (found) break;
       }
     } else if (step === 'exposure') {
-      found = songs === 'only' ? exposure(ctx, 'songs', false) : (exposure(ctx, 'kinds', false) ?? (songs === 'any' ? exposure(ctx, 'songs', false) : undefined));
+      // Generic breadth, not the strand's: nothing of the strand is claimed.
+      return songs === 'only' ? exposure(ctx, 'songs') : (exposure(ctx, 'kinds') ?? (songs === 'any' ? exposure(ctx, 'songs') : undefined));
     }
-    if (found) return strand ? { ...found, strand: strand.track } : found;
+    return found && strand ? { ...found, strand: strand.track } : found;
   }
-  return undefined;
 }
 
 /** The reached rung listing an item, latest first: where an item drawn from taught material was offered from. */
@@ -916,22 +913,19 @@ function listingIn(ctx: SlotContext, item: CatalogItem): string | undefined {
  */
 const ORIENTATION_KINDS = new Set(['checklist', 'walkthrough', 'placement']);
 
-/** Tracks about how to practise, technique or theory rather than a style of music: not a style to balance. */
-const METHOD_TRACKS = new Set(['technique', 'practice', 'theory-ear']);
-
 /**
  * Which families the exposure rule balances over:
  *
  * - `kinds` — the kinds of exercise the learner has been taught (`drill.kind`:
  *   scales, rhythm drills, hearing chords, reading notes…), L26's domains as
  *   far as the catalog names them;
- * - `tracks` — the styles the learner switched on (a song's track, from the
- *   rung listing it; never the method tracks, `METHOD_TRACKS`), beside the
- *   core path;
- * - `songs` — every song taught: the tracks, and the core lessons before the
- *   learner's as one family.
+ * - `songs` — every song taught: each track's (a song's style, from the rung
+ *   listing it), and the core lessons before the learner's as one family.
+ *
+ * (A `tracks` family of the styles alone served the repertoire row's
+ * week-unplayed pre-pass, removed with it on 2026-09-26.)
  */
-type Families = 'kinds' | 'tracks' | 'songs';
+type Families = 'kinds' | 'songs';
 
 /**
  * The exposure rule (C6; L26; the plan's balance rule): among the families of
@@ -944,14 +938,16 @@ type Families = 'kinds' | 'tracks' | 'songs';
  * already on today's card is not "not seen lately". Not remediation: nothing
  * here reads a weakness.
  *
- * `due`: only a family nothing of which was played for `EXPOSURE_DAYS`, and
- * only for a learner with a history to balance — how the review (over kinds)
- * and the repertoire slot (over tracks) let exposure choose ahead of the rung
- * rather than only as a last resort. Otherwise the least lately played, said
- * with when.
+ * The fallback ladder's last step, and — in the warm-up, when no strand asks
+ * anything a warm-up serves — the brief's exposure choice; never ahead of a
+ * semantic claim. Until the reviewer's correction of 2026-09-26 a week-unplayed
+ * family (`EXPOSURE_DAYS`) took the review and the repertoire row straight
+ * after their own claims, before the ladder's rung, skill, demand and
+ * prerequisite steps; that pre-pass and the constant are gone. A reserved share
+ * of breadth, if the product wants one, is the composed session's policy
+ * (L32), not a selector's.
  */
-function exposure(ctx: SlotContext, families: Families, due: boolean): Choice | undefined {
-  if (due && !ctx.history) return undefined;
+function exposure(ctx: SlotContext, families: Families): Choice | undefined {
   const here = new Set(ctx.strands.map((strand) => strand.rung.id));
   const found = new Map<string, { family: ExposureFamily; items: { item: CatalogItem; from: string; at: number }[]; last?: string; latest: number }>();
   const titleOf = (track: string): string => ctx.input.curriculum.tracks.find((t) => t.id === track)?.title ?? track;
@@ -963,9 +959,8 @@ function exposure(ctx: SlotContext, families: Families, due: boolean): Choice | 
       if (item.type !== 'song') {
         const kind = item.drill?.kind ?? 'study';
         if (families === 'kinds' && !ORIENTATION_KINDS.has(kind)) family = { by: 'kind', id: kind };
-      } else if (families !== 'kinds' && !here.has(walked.lesson.id)) {
-        if (walked.track !== 'core' && (families === 'songs' || !METHOD_TRACKS.has(walked.track))) family = { by: 'track', id: walked.track, title: titleOf(walked.track) };
-        else if (walked.track === 'core' && families === 'songs') family = { by: 'earlier', id: 'earlier' };
+      } else if (families === 'songs' && !here.has(walked.lesson.id)) {
+        family = walked.track === 'core' ? { by: 'earlier', id: 'earlier' } : { by: 'track', id: walked.track, title: titleOf(walked.track) };
       }
       if (!family) continue;
       const key = `${family.by}:${family.id}`;
@@ -980,7 +975,6 @@ function exposure(ctx: SlotContext, families: Families, due: boolean): Choice | 
   const ranked = [...found.values()]
     .filter((entry) => entry.items.some((one) => usable(ctx, one.item, 'any')))
     .filter((entry) => !entry.items.some((one) => ctx.used.has(one.item.id)))
-    .filter((entry) => !due || entry.last === undefined || (daysSince(entry.last, ctx.today) ?? 0) >= EXPOSURE_DAYS)
     .sort((a, b) => (a.last ?? '').localeCompare(b.last ?? '') || b.latest - a.latest);
   const entry = pick(ranked, ctx.seed);
   if (!entry) return undefined;
@@ -1028,7 +1022,7 @@ function warmup(ctx: SlotContext, phase: Phase): Choice | undefined {
       if (item) return { item, claim: askedClaim(want, true, strand), lessonId: strand.after.id, strand: strand.track };
     }
   }
-  return exposure(ctx, 'kinds', false);
+  return exposure(ctx, 'kinds');
 }
 
 /**
@@ -1079,10 +1073,8 @@ function fresh(ctx: SlotContext, onCard: readonly Choice[], phase: Phase): Choic
  *   exposure rule keeps warm, not a piece to keep playable.
  *
  * Whichever is further past its own span first; Shuffle reaches the rest.
- * Nothing due for either: the exposure rule over the kinds of exercise the
- * lessons have taught, where a kind has gone a week unplayed (the balance:
- * well-rounded exposure chooses too, not only as a last resort); then the
- * fallback ladder, the rung's counted items before the rest.
+ * Nothing due for either: the fallback ladder — a strand's rung (its counted
+ * items first), a prerequisite rung's option, and the exposure rule last.
  */
 function review(ctx: SlotContext, phase: Phase, onCard: readonly Choice[]): Choice | undefined {
   if (phase === 'fallback') {
@@ -1126,19 +1118,18 @@ function review(ctx: SlotContext, phase: Phase, onCard: readonly Choice[]): Choi
   }
   due.sort((a, b) => Number(a.retained) - Number(b.retained) || b.over - a.over || Number(b.skill) - Number(a.skill));
   const chosen = pick(due, ctx.seed);
-  if (chosen) return { item: chosen.item, claim: chosen.claim, ...(chosen.phrase ? { phrase: chosen.phrase } : {}) };
-  // Nothing due for either reason: a kind of exercise the lessons have taught and nothing of which
-  // was played this week (the balance, L26), ahead of more of the lesson.
-  return exposure(ctx, 'kinds', true);
+  // A due retention need may outrank the lesson's work: it is forgetting. Nothing due: the ladder, in
+  // the fallback pass, with exposure last (the reviewer's correction, 2026-09-26).
+  return chosen ? { item: chosen.item, claim: chosen.claim, ...(chosen.phrase ? { phrase: chosen.phrase } : {}) } : undefined;
 }
 
 /**
  * Repertoire (C6 item 4): a piece whose measured demands the learner's skills
  * support (familiar or better) with one the learner's rung teaches — no piece
  * carries measured demands yet (E writes them), so this finds nothing today;
- * then the exposure rule over the styles the learner switched on, where a
- * style's rungs have gone a week with nothing played; then the fallback
- * ladder, a piece not yet learned before one learned. A mastered
+ * then the fallback ladder — a strand's rung song, a prerequisite rung's, a
+ * piece not yet counted or learned before one that is — and the exposure rule
+ * over the songs taught last. A mastered
  * piece is still "a piece you know" (L18), but it is no longer offered every
  * session (L17): keeping it playable is the review's repertoire retention.
  */
@@ -1167,8 +1158,7 @@ function repertoire(ctx: SlotContext, phase: Phase, onCard: readonly Choice[]): 
     (item) => usable(ctx, item, 'only') && (item.demands ?? []).length > 0 && (item.demands ?? []).every(supported) && (item.demands ?? []).some(edge),
   );
   const piece = pick(ready, ctx.seed);
-  if (piece) return { item: piece, claim: { kind: 'ready', demand: (piece.demands ?? []).find(edge) as string } };
-  return exposure(ctx, 'tracks', true);
+  return piece ? { item: piece, claim: { kind: 'ready', demand: (piece.demands ?? []).find(edge) as string } } : undefined;
 }
 
 /** The tracks whose rungs are about playing from chords, form and feel. */
@@ -1240,7 +1230,6 @@ export function buildSession(input: BuildInput): { template: SessionTemplate; sl
     skills: skillEvidenceOf(input.rows ?? input.readingRows ?? [], input.vocabulary ?? VOCABULARY_V0, today),
     learned: new Map((input.learned ?? []).map((piece) => [piece.itemId, piece])),
     lastPlayed,
-    history: [...played.values()].some((value) => value !== ''),
     today,
     used: new Set<string>(),
     seed: input.seed ?? 0,

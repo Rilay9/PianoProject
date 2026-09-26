@@ -19,7 +19,7 @@ import { describe, expect, it } from 'vitest';
 import { buildSession, FALLBACK_ORDER, type SessionSlot } from '../../src/curriculum/session';
 import { indexCatalog } from '../../src/curriculum/selectors';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
-import { rungState } from '../../src/evidence/rungState';
+import { rungState, type RungReading } from '../../src/evidence/rungState';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 
 const TODAY = new Date(2026, 9, 20, 9);
@@ -172,5 +172,136 @@ describe('the warm-up walks the ladder one claim at a time, and the line names t
         }
       }
     }
+  });
+});
+
+/**
+ * Exposure never jumps the ladder (the reviewer's correction to C6, 2026-09-26).
+ * The review and the repertoire row took a seven-day exposure choice straight
+ * after their own claim (retention; the demand-ready piece), so it ran before
+ * the ladder's rung, skill, demand and prerequisite steps ever saw the slot:
+ * `FALLBACK_ORDER` said exposure was last and the code put it second. A due
+ * retention need may outrank ordinary work (it is forgetting); generic breadth
+ * may not. Here a learner with a history, on R (which builds on P), with the
+ * classical track beside it (C1 met, C2 next) and a classical piece and a kind
+ * of exercise nobody has played for a week or ever: an exposure choice is
+ * always available, and whether the ladder has something decides who wins.
+ */
+describe('exposure comes after the ladder, never ahead of it', () => {
+  const TRACKS: Curriculum['tracks'] = [
+    { id: 'core', title: 'Core', description: '', startsAtStage: 0 },
+    { id: 'classical', title: 'Classical', description: '', startsAtStage: 1 },
+  ];
+  const W: Curriculum = {
+    version: 1,
+    tracks: TRACKS,
+    stages: [
+      {
+        number: 1,
+        title: 'One',
+        summary: '',
+        units: [
+          {
+            id: 'u',
+            title: 'U',
+            track: 'core',
+            lessons: [
+              lesson('E', 'An earlier lesson', { exerciseOptions: ['ex.e.scale'], songOptions: ['song.e'] }),
+              lesson('P', 'The lesson R builds on', { exerciseOptions: ['ex.p'], songOptions: ['song.p'] }),
+              lesson('R', 'This lesson', {
+                exerciseOptions: ['ex.r1', 'ex.r2'],
+                songOptions: ['song.r1', 'song.r2'],
+                requirements: [
+                  { kind: 'runs', from: 'exercises', count: 1 },
+                  { kind: 'runs', from: 'songs', count: 1 },
+                ],
+                prerequisites: ['P'],
+              }),
+            ],
+          },
+          {
+            id: 'k',
+            title: 'K',
+            track: 'classical',
+            lessons: [
+              lesson('C1', 'Classical, first', { exerciseOptions: [], songOptions: ['song.c1'], requirements: [{ kind: 'runs', from: 'songs', count: 1 }] }),
+              lesson('C2', 'Classical, next', { exerciseOptions: ['ex.c2'], songOptions: ['song.c2', 'song.c2b'], requirements: [{ kind: 'runs', from: 'songs', count: 1 }] }),
+            ],
+          },
+        ],
+      },
+    ],
+  };
+  const all = (gone: readonly string[]): CatalogItem[] =>
+    [
+      item('ex.e.scale', { file: null, drill: { kind: 'scale', params: {} } }),
+      item('song.e', { type: 'song' }),
+      item('ex.p'),
+      item('song.p', { type: 'song' }),
+      item('ex.r1'),
+      item('ex.r2'),
+      item('song.r1', { type: 'song' }),
+      item('song.r2', { type: 'song' }),
+      item('song.c1', { type: 'song', tracks: ['classical'] }),
+      item('ex.c2'),
+      item('song.c2', { type: 'song', tracks: ['classical'] }),
+      item('song.c2b', { type: 'song', tracks: ['classical'] }),
+    ].map((one) => (gone.includes(one.id) ? { ...one, file: null, drill: null } : one));
+  const met = (id: string) => {
+    const rung = W.stages[0]?.units.flatMap((u) => u.lessons).find((l) => l.id === id) as Lesson;
+    const reading: RungReading = { rung, status: 'met', judged: true, carried: false, requirements: [] };
+    return [id, reading] as const;
+  };
+  const tenDaysAgo = new Date(2026, 9, 10, 12).toISOString();
+  function card(minutes: number, gone: readonly string[] = []): SessionSlot[] {
+    const items = all(gone);
+    return buildSession({
+      curriculum: W,
+      catalog: indexCatalog(items),
+      items,
+      states: { byRung: new Map([met('E'), met('P'), met('C1')]) },
+      rows: [],
+      learned: [],
+      // A history to balance: the prerequisite's exercise, ten days ago. The scale and the classical
+      // piece before C2 have never been played, so each is a seven-day exposure candidate.
+      lastPlayed: new Map([['ex.p', tenDaysAgo]]),
+      activeTracks: ['core', 'classical'],
+      minutes,
+      today: TODAY,
+    }).slots;
+  }
+  const slot = (slots: SessionSlot[], kind: SessionSlot['kind']) => slots.find((one) => one.kind === kind);
+
+  it('review: a rung candidate and an exposure candidate — the rung wins, and says nothing is due', () => {
+    const review = slot(card(15), 'review');
+    expect(review?.claim?.kind, review?.reason).toBe('rung');
+    expect(review?.reason).toMatch(/^Nothing due for review — more from/);
+  });
+
+  it('review: when the first strand in today’s order has nothing, the next strand’s rung still comes before exposure', () => {
+    // Classical, never played, is first in today's order; C2's other options are gone and it builds on
+    // nothing. The core path's rung still has an exercise: every strand's rung is tried before exposure.
+    const review = slot(card(15, ['ex.c2', 'song.c2b']), 'review');
+    expect(review?.claim?.kind, review?.reason).toBe('rung');
+    expect(review?.reason).toBe('Nothing due for review — more from this lesson');
+  });
+
+  it('review: no rung, prerequisite or other strand has anything — then exposure, said with its family', () => {
+    const review = slot(card(15, ['ex.r2', 'song.r1', 'song.r2', 'ex.p', 'song.p', 'ex.c2', 'song.c2b']), 'review');
+    expect(review?.claim?.kind, review?.reason).toBe('exposure');
+    expect(review?.reason).toMatch(/^Scales, from your lessons — not played yet$/);
+  });
+
+  it('repertoire: a rung’s song and a week-unplayed style — the rung’s song wins, with its words', () => {
+    const repertoire = slot(card(30), 'repertoire');
+    expect(repertoire?.claim?.kind, repertoire?.reason).toBe('rung');
+    expect(repertoire?.reason).toMatch(/^More music from /);
+    expect(repertoire?.item?.id).not.toBe('song.c1');
+  });
+
+  it('repertoire: no rung or prerequisite song is left — then exposure', () => {
+    const repertoire = slot(card(30, ['song.r1', 'song.r2', 'song.p', 'song.c2', 'song.c2b']), 'repertoire');
+    expect(repertoire?.claim?.kind, repertoire?.reason).toBe('exposure');
+    expect(repertoire?.reason).toMatch(/^For variety: /);
   });
 });

@@ -16885,3 +16885,63 @@ The card now reads like a teacher's plan: the lesson's asks, what has counted an
 ## Files
 
 `app/src/curriculum/session.ts` (the slots, strands, the ladder, exposure, retention, `readerPosition`, `swapOptions`), `app/src/curriculum/selectors.ts` (`tieredAlternatives`), `app/src/data/progressStore.ts` (`learnedPieces`; the calendar deleted), `app/src/ui/help.ts` (`SLOT_TEXT`, `slotReason`, `FAMILY_WORDS`, `swapTierWords`, `swapChoiceWords`), `app/src/ui/screens/TodayScreen.ts`; `content/lessons/0.3.md`, `content/lessons/practice.3.md` (deviation 1); tests: `slotsFromEvidence`, `repertoireRetention`, `fallbackOrder`, `alternativesShareASkill`, `parallelStrands` (new), `firstThirtyDays`, `firstThirtyDaysOnTheLadder`, `session`, `recommendRespondsToEvidence`, `sightReadingSlot`, `sightReadingIsNotAPiece`, `recordTruth`, `progressStore`, `masteryLadder`, `curriculumSelectors`, `levelSource`, `lessonShape`, `help`; e2e `today`, `progress`, `lesson-flow`; `docs/02-curriculum.md` (Part A §6, Part G), `docs/04-ui-spec.md` §2, `docs/08-test-map.md`. Scratch: `HANDOFF.md`, `reds/`, `runs/`, `diary/`, `pictures/`, `tools/`, `committed/`.
+
+
+#### Addendum (exposure precedence)
+
+**The reviewer's correction (2026-09-26, against a5d3d24; C6 approved otherwise).** The week-unplayed exposure heuristic ran ahead of the stronger claims. The review slot returned `exposure(ctx, 'kinds', true)` straight after retention, and the repertoire slot returned `exposure(ctx, 'tracks', true)` straight after the demand-ready piece. Both ran in the first pass, before the second pass's rung → skill → demand → prerequisite ladder saw the slot. So `FALLBACK_ORDER` (exposure last) and the code (exposure second) disagreed, and on shipped content the heuristic always fired while the skill and demand steps starved.
+
+**What changed.**
+- Review is now: a due skill or piece retention → the ladder (a strand's rung, its counted items first; a prerequisite rung's option; skill and demand where a skill is wanted) → exposure last.
+- Repertoire is now: the demand-ready piece → the ladder (a strand's rung song, a prerequisite rung's, uncounted and unlearned first) → exposure over the songs taught, last.
+- A due retention need still outranks the lesson's work, because it is forgetting; generic breadth does not.
+- **A second instance of the same fault, found while building the tests.** The ladder ran every step on one strand before trying the next strand, so exposure on the first strand in today's order came before a rung option on the second. It now runs each step over every strand before the next step, and exposure once, last.
+- Removed: `EXPOSURE_DAYS`, the `history` flag, exposure's `due` parameter, and the `tracks` family and `METHOD_TRACKS` (which only the repertoire pre-pass used). No reserved breadth share is modelled; that is L32's.
+- Unchanged: the warm-up's exposure choice when no strand asks for an exercise (the brief's item 1). It was never the week-unplayed pre-pass.
+- `docs/04` §2, `02` Part G and `08` updated.
+
+**Red lines** (`fallbackOrder.test.ts` › exposure comes after the ladder, on the committed code at 15ede3c; `reds/precedence-on-committed.txt`):
+- review, a rung candidate beside a week-unplayed kind: `AssertionError: Scales, from your lessons — not played yet: expected 'exposure' to be 'rung'`
+- review, when the first strand in today's order has nothing, the next strand's rung: the same line.
+- repertoire, a rung song beside a week-unplayed style: `AssertionError: For variety: a Classical piece — none played yet: expected 'exposure' to be 'rung'`
+
+The two cases where no semantic candidate exists were green before and after (exposure wins either way); they guard the ladder's last step. After the pre-pass was removed and before the loop was turned, the next-strand case was still red, which is how the second instance was found.
+
+**Tests**
+
+| test | class | the assumption the old assertion encoded | now |
+|---|---|---|---|
+| `fallbackOrder` › review: a rung and an exposure candidate | add | — | the rung wins: "Nothing due for review — more from…" |
+| `fallbackOrder` › review: the first strand has nothing, the next strand's rung | add | — | "Nothing due for review — more from this lesson", not exposure |
+| `fallbackOrder` › review: no semantic candidate | add (guard) | — | exposure: "Scales, from your lessons — not played yet" |
+| `fallbackOrder` › repertoire: a rung song and a style | add | — | "More music from …", not the classical piece |
+| `fallbackOrder` › repertoire: no semantic candidate | add (guard) | — | exposure: "For variety: …" |
+| `slotsFromEvidence` › D: the review row is the exposure rule | revise | a week-unplayed kind takes the review ahead of the ladder | the rung's counted item: "Nothing due for review — more from this lesson" |
+| `slotsFromEvidence` › D: coordination due too, Shuffle reaches it | delete | the seven-day due pre-pass | gone with `EXPOSURE_DAYS`; exposure words held by the words test, the step by `fallbackOrder` |
+| `slotsFromEvidence` › the balance across the four cards | revise | exposure chooses somewhere on the four cards | asked, both retentions and the rung's option choose; exposure none, because the ladder always has something on 2.2 |
+| `firstThirtyDays` › with nothing due, the exposure rule chooses the review row | revise | exposure from day two, more than twenty days | the rung's own option all thirty days |
+| `firstThirtyDaysOnTheLadder` › the exposure rule takes its turn in the review row | revise | exposure in the review when nothing is due | the rung's option and piece retention; no exposure |
+| every other C6 test | preserve | — | green |
+
+**The diaries, before → after** (`diary/before-precedence/`, `diary/after-precedence/`):
+- **Skip learner, review:** 29 exposure days and 1 rung → 30 days of "Nothing due for review — more from this lesson". It is the same item for each rung's stretch: *Rhythm: eighths — 4 bars* on 2.2, the left-hand C major scale on 2.5, then 3.1's. This learner plays nothing but reading, so nothing is ever counted to prefer. Repertoire unchanged (30 × "More music from this lesson").
+- **Returning intermediate, review:** before, 18 exposure, 1 rung, 10 piece retention, 1 skill retention. After, 19 rung, 10 piece retention, 1 skill retention (day 24, "Reading by interval: not shown in 3 weeks").
+  - Exposure did not shrink to where the ladder had nothing to say; it disappeared from the review. Every morning some rung it was on still had an option not on the card, so the ladder always had something.
+  - Because the review now plays the rung's own options, judged by the rung, it met 3.6 one day sooner and reached 4.6 on day 23, where it was day 25.
+  - Warm-up exposure (the brief's item 1) is now on days 24–30, where it was 26–30.
+  - Repertoire unchanged (30 × "More music from this lesson").
+- **Experienced musician, review:** 19 exposure, 1 rung, 10 piece retention → 20 rung, 10 piece retention. It reached 4.6 a day sooner (day 7). Warm-up exposure is on days 8–30, where it was 9–30. Repertoire unchanged.
+- **Read as a teacher.** When nothing is due the review is now more of the lesson, and what it prefers is what the lesson has already counted, so it is review in the plain sense. The breadth the pre-pass gave — a different corner of technique each day — is gone from the review on these learners. Where the ladder has nothing it comes back (the guard cases). If the product wants breadth on a cadence, it is a composed-session policy (L32).
+
+**Runs (unpiped).**
+- `npx tsc -b` 0; `npm run lint` 0; `npx vitest run` 0 (252 files, 5,974 passed, 6 skipped).
+- `npm run build:app` 0, with no preview running.
+- Playwright, one config, two workers, port 4173: `today`, `doors`, `first-day`, `progress`, `lesson-flow`, `progress.hierarchy`, `lab`, `carry-overs`, `empty-states`, `plan`, `start-and-return`, `app-shell` — 0 (135 passed, 2 skipped).
+- The preview was stopped; port 4173 is free.
+
+**Files.** `app/src/curriculum/session.ts`; `app/tests/unit/{fallbackOrder,slotsFromEvidence,firstThirtyDays,firstThirtyDaysOnTheLadder}.test.ts`; `docs/02-curriculum.md`, `docs/04-ui-spec.md` §2, `docs/08-test-map.md`.
+
+**Not done.**
+- No new picture: the glass rows change only in the review line on a nothing-due day, and those words were already pictured.
+- The whole default Playwright configuration was not run (12 specs were).
+- **Stale copies in the repository (the orchestrator's to refresh):** `docs/prompts/checkpoint-2026-09-26-slots-diaries.md` (committed in a5d3d24) still shows exposure days in the review rows, and `checkpoint-2026-09-26-slots.md` line 24 still lists "exposure may choose ahead of the ladder's first step" as a standing decision. The current diaries are `diary/after-precedence/`.

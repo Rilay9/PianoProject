@@ -405,10 +405,17 @@ describe('the other slots over thirty mornings (C6)', () => {
     }
   });
 
-  it('the exposure rule takes its turn in the review row when nothing is due, and the repertoire row is the lesson’s music', () => {
+  // Revised (the reviewer's correction, 2026-09-26): this said the exposure rule took its turn in the
+  // review row when nothing was due — a week-unplayed kind of exercise ahead of the ladder. Now the
+  // review is retention when due and the ladder otherwise; in these two months a rung always had an
+  // option of its own, so exposure chooses no review, and breadth appears only in the warm-up when no
+  // strand asks for an exercise (the brief's item 1).
+  it('the review row is retention when due and the rung’s own option otherwise; exposure never jumps it; the repertoire row is the lesson’s music', () => {
     for (const [name, mornings] of both()) {
       const review = mornings.map((m) => m.card.find((slot) => slot.kind === 'review')?.claim?.kind);
-      expect(review, `${name}: ${review.join(',')}`).toContain('exposure');
+      expect(review, `${name}: ${review.join(',')}`).toContain('rung');
+      expect(review, `${name}: ${review.join(',')}`).toContain('piece-retention');
+      expect(review, `${name}: ${review.join(',')}`).not.toContain('exposure');
       // Core only: no style of the learner's own to balance, so the repertoire row is the rung's music.
       const repertoire = mornings.map((m) => m.card.find((slot) => slot.kind === 'repertoire')?.claim?.kind);
       expect(repertoire, `${name}: ${repertoire.join(',')}`).toContain('rung');

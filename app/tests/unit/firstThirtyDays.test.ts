@@ -594,11 +594,17 @@ describe('the other slots, every morning (C6)', () => {
     }
   });
 
-  it('with nothing due, the exposure rule chooses the review row: this learner has played no kind of exercise but reading', () => {
-    const exposed = skipDays().filter((day) => day.card.find((slot) => slot.kind === 'review')?.claim?.kind === 'exposure');
-    // Day one has no history to balance (the rung's own material); from day two the learner has.
-    expect(exposed.length, skipDays().map((d) => d.card.find((s) => s.kind === 'review')?.reason).join(' | ')).toBeGreaterThan(20);
-    // Core only: no style of its own to balance, so the repertoire row is the rung's own music.
-    for (const day of skipDays()) expect(day.card.find((slot) => slot.kind === 'repertoire')?.claim?.kind, `day ${String(day.n)}`).toBe('rung');
+  // Revised (the reviewer's correction, 2026-09-26): this said the exposure rule chose the review row
+  // from day two, because a week-unplayed kind of exercise took the review straight after retention,
+  // ahead of the ladder. Generic breadth may not outrank a semantic claim: nothing is due for this
+  // learner all month and its rung always has an option of its own, so the review is the rung's.
+  it('with nothing due, the review is the rung’s own option every day: breadth never jumps the ladder', () => {
+    for (const day of skipDays()) {
+      const review = day.card.find((slot) => slot.kind === 'review');
+      expect(review?.claim?.kind, `day ${String(day.n)}: “${review?.reason ?? ''}”`).toBe('rung');
+      expect(review?.reason).toBe('Nothing due for review — more from this lesson');
+      // Core only: the repertoire row is the rung's own music.
+      expect(day.card.find((slot) => slot.kind === 'repertoire')?.claim?.kind, `day ${String(day.n)}`).toBe('rung');
+    }
   });
 });

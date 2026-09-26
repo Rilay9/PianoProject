@@ -232,30 +232,38 @@ fallback until C6 and are deleted.
   song the learner passed or mastered and has not played for `REPERTOIRE_WINDOW_DAYS` (14, a
   hypothesis apart from the ladder's), however recently its skills were shown elsewhere.
   Whichever is further past its own span first; Shuffle reaches the rest. The item calendar
-  (1, 3, 7 and 21 days after a first pass) is retired. Nothing due: the exposure rule over the
-  kinds of exercise the lessons have taught, where a kind has gone a week unplayed; then the
-  fallback ladder, the rung's counted items first.
+  (1, 3, 7 and 21 days after a first pass) is retired. A due retention need may outrank the
+  lesson's work, because it is forgetting. Nothing due: the fallback ladder — a strand's rung,
+  its counted items first; a prerequisite rung's option; the exposure rule last (the reviewer's
+  correction, 2026-09-26: a week-unplayed kind of exercise used to take the review ahead of the
+  ladder).
 - **Repertoire** is a piece whose measured demands the learner's skills support with one the
-  rung has just taught (no piece carries measured demands yet; E writes them); then a style the
-  learner switched on whose rungs have gone a week with nothing played (the exposure rule); then
-  the fallback ladder, a piece not yet counted or learned before one that is. It no longer
-  offers a mastered piece every session (L17): keeping a piece playable is the review's.
+  rung has just taught (no piece carries measured demands yet; E writes them); then the fallback
+  ladder — a strand's rung song, a prerequisite rung's, a piece not yet counted or learned before
+  one that is — and the exposure rule over the songs taught last (a style gone a week unplayed
+  used to take the row ahead of the ladder, until the same correction). It no longer offers a
+  mastered piece every session (L17): keeping a piece playable is the review's.
 - **Jam** is an option of a rung on a jam track (chords & pop, blues, jazz, jam) the learner
   has reached, played least lately; before any is reached there is no jam row.
 - **The fallback ladder** (L14), when a slot's own claim finds nothing, in one order
   (`FALLBACK_ORDER`): the rung's own option; an item declaring the same target skill; an item
-  carrying the same demand; a prerequisite rung's option; the exposure rule. The line names the
-  step. With nothing at all the row is dropped, as any row is: a fresh phone on 0.1 has two
+  carrying the same demand; a prerequisite rung's option; the exposure rule. Each step is tried
+  on every strand before the next step, so a rung option on the second strand in today's order
+  comes before exposure on the first; exposure is tried once, last. The line names the step.
+  With nothing at all the row is dropped, as any row is: a fresh phone on 0.1 has two
   rows, the checklist and the finger numbers, because 0.1 asks for those two things.
-- **The exposure rule** (L26; the balance: evidence, curriculum intent, retention and
-  well-rounded exposure all choose): among the families of material the lessons have taught —
-  the kinds of exercise (`drill.kind`, never the orientation items), or the styles switched on
-  — the one played least lately, never played first, the latest-taught first among those, and
-  a family already on the card is not "not seen lately". A week (`EXPOSURE_DAYS`, a hypothesis)
-  is "lately". The vocabulary's skills are all reading skills the reader trains daily, so the
-  rule reads the curriculum's own families.
+- **The exposure rule** (L26): among the families of material the lessons have taught — the
+  kinds of exercise (`drill.kind`, never the orientation items), or the songs by track, the core
+  lessons before the learner's as one — the one played least lately, never played first, the
+  latest-taught first among those, and a family already on the card is not "not seen lately".
+  It is the fallback ladder's last step, and the warm-up's choice when no strand asks for an
+  exercise (the brief's item 1); never ahead of a semantic claim. Generic breadth does not
+  outrank the lesson's work: the week-unplayed pre-pass (`EXPOSURE_DAYS`) is gone, and a reserved
+  share of breadth, if the product wants one, is the composed session's policy (L32). The
+  vocabulary's skills are all reading skills the reader trains daily, so the rule reads the
+  curriculum's own families.
 - **Two passes.** Every slot's own claim first — the reader's row, what the lessons ask,
-  retention, exposure where due — and only then the fallbacks, so a fallback never takes what a
+  retention, a demand-ready piece — and only then the fallbacks, so a fallback never takes what a
   claim asked for; a review with nothing due chooses last. No slot offers an item a
   requirement has counted while something the rung asks for waits.
 
@@ -280,7 +288,7 @@ in its first words and the detail after the dash:
 | the same demand | Has eighth notes, which this lesson asks for |
 | a prerequisite rung | From Hands together: the left hand holds, which this lesson builds on |
 | exposure, a kind | Keeping your scales warm — last played on 11 Oct · Cadences, from your lessons — not played yet |
-| exposure, a style | For variety: a Classical piece — none played since 4 Oct · none played yet |
+| exposure, songs (the ladder's last step) | For variety: a Classical piece — none played since 4 Oct · none played yet |
 | a mastered piece in the repertoire row | A piece you know — more music from this lesson |
 | jam | Chords, form and feel: from Playing from chord symbols |
 | after a swap | You chose this one — from the same lesson |

@@ -1004,9 +1004,10 @@ suggestions** with a note on where to buy/obtain MusicXML.
   in time is not remembering the piece; the line is the piece's ("Keeping this piece playable").
   They replace the item calendar (1, 3, 7, 21 days after `pass`, one due item a session) and the
   repertoire slot's mastered piece every session (L17); neither reason is dropped for the other,
-  and G builds the repertoire lifecycle (R17–R20) on the second. With nothing due, the review
-  keeps a kind of exercise warm that the lessons taught and nothing of which was played this
-  week (the exposure rule, `04` §2). **Pieces only (C5, S8):** a generated sight-reading phrase
+  and G builds the repertoire lifecycle (R17–R20) on the second. With nothing due, the review is
+  the fallback ladder's — a strand's rung (its counted items first), a prerequisite rung's
+  option — with the exposure rule last, never ahead of them (the reviewer's correction,
+  2026-09-26; `04` §2). **Pieces only (C5, S8):** a generated sight-reading phrase
   carries no piece semantics — its row is never passed, mastered, a learned piece or offered as
   repertoire, and its runs are observations with evidence, read by the reader and by
   `rungState`; skill retention offers a new phrase, never the same one. The daily read's
