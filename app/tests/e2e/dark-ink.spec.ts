@@ -32,7 +32,14 @@ test('and so does the score screen, which is where the rule came from', async ({
   // rule under test is a stylesheet rule on `[data-theme='dark'] .score-buffer svg`,
   // so the theme is the precondition and is waited for, as the drill test above does.
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  // Revised 2026-09-27 (test class: revise). The read above waited for the *front*
+  // buffer's SVG and then read the filter on the *cursor* buffer's, which under CI
+  // load was not yet drawn (twice in five pushes the string came back empty). The
+  // old assumption: the cursor buffer has its SVG as soon as the front one is
+  // visible. Now the test waits on the renderer's own settled state (T41) and reads
+  // the buffer it waited for; the rule is on every `.score-buffer svg`.
+  await page.waitForSelector('.score-view[data-settled]', { timeout: 60_000 });
   const svg = page.locator('.score-buffer.is-front svg').first();
   await expect(svg).toBeVisible({ timeout: 60_000 });
-  expect(await inverted(page, '.score-buffer.is-cursor svg')).toContain('invert');
+  expect(await inverted(page, '.score-buffer.is-front svg')).toContain('invert');
 });

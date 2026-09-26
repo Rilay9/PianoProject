@@ -482,6 +482,9 @@ describe('the walk is the reader’s, and covers what the diaries read', () => {
   });
 });
 
+// The two walks below drive the real generator over the reachable set; under CI's
+// load one of them passed the default 5 s on this machine and not there (Q37). Their
+// budget is the walk's, stated on the test, not the suite's default.
 describe('every reachable composed recipe keeps its promises, or is declared to the reader', () => {
   it('no reachable recipe silently fails: every promised demand in every phrase, nothing untaught, nothing undeclared', async () => {
     const failing: string[] = [];
@@ -491,7 +494,7 @@ describe('every reachable composed recipe keeps its promises, or is declared to 
       if (!listed) failing.push(`${j.reached.group.rungs.join(',')} ${recipeKey(j.reached.recipe)} (${j.reached.via}) seeds ${(await failingSeeds(j)).join(',')}: ${j.problems.join('; ')}`);
     }
     expect(failing).toEqual([]);
-  });
+  }, 180_000);
 
   it('what COMPOSED_UNRELIABLE names is reached and does fail (never stale)', () => {
     for (const u of COMPOSED_UNRELIABLE) {
@@ -509,5 +512,5 @@ describe('every reachable composed recipe keeps its promises, or is declared to 
       }
     }
     expect(offered).toEqual([]);
-  });
+  }, 180_000);
 });
