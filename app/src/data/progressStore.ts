@@ -63,9 +63,6 @@ export interface RunResult extends RunObservation {
 
 export const DEFAULT_WEEKLY_GOAL_MINUTES = 150;
 
-/** docs/02 Part G: review comes back 1, 3, 7 and 21 days after a pass. */
-export const REVIEW_INTERVALS_DAYS = [1, 3, 7, 21];
-
 /**
  * docs/02 Part G: the master standard on this many different days is mastery.
  * The sheet's "Mastery run 1 of 2" reads it, and the heading is taken from the
@@ -771,65 +768,47 @@ export function dailyReadStreak(days: readonly string[], now = new Date()): numb
   return streak;
 }
 
-// --- review queue (docs/02 Part G) ----------------------------------------
+// --- learned pieces (docs/02 Part G; C6) -----------------------------------
 
-export interface ReviewItem {
+/**
+ * A piece the learner has learned, and when they last played it (C6): what the
+ * review slot's repertoire retention reads, and the repertoire slot's "a piece
+ * you know".
+ */
+export interface LearnedPiece {
   itemId: string;
-  dueAt: string;
-  /** Which of the 1/3/7/21-day steps this is. */
-  step: number;
+  /** Passed on a measured run at a rung's standard, or mastered (`02` Part G). */
+  status: 'passed' | 'mastered';
+  /** The last run of it, of any kind (`ProgressRow.lastPracticedAt`). */
+  lastPlayed: string;
 }
 
 /**
- * What is due for review.
+ * The pieces the learner has learned (C6, the reviewer's correction of
+ * 2026-09-26): every row passed or mastered on a measured run, with when it
+ * was last played. It replaces the review calendar (`reviewQueue`: 1, 3, 7 and
+ * 21 days after a first pass, one due item a session), which decided by the
+ * item's dates alone; whether a learned piece is due is now the session's
+ * repertoire-retention rule, from when it was last played
+ * (`session.REPERTOIRE_WINDOW_DAYS`), beside skill retention from the ladder.
  *
- * An item enters the queue when it is first passed and comes back after 1, 3,
- * 7 and 21 days. `master` takes it out — but Repertoire brings mastered pieces
- * round again about every thirty days, which is a different list and belongs
- * to the Progress screen.
+ * **Learned** is a measured pass or mastery, the rung's standard or the master
+ * standard (`02` Part A §6: passed items come back for review); the session
+ * keeps only the songs among them for repertoire retention (a scale passed is
+ * technique, which its exposure rule keeps warm). Never a
+ * generated sight-reading row, whatever an older build wrote on it (S8), and
+ * never a pass that is only the learner's word (`selfPassed`, *Know it*): the
+ * app keeps playable what it saw learned, and a piece the learner says they
+ * know is theirs to keep. Required, so no caller can forget the reading rows.
  */
-export function reviewQueue(
-  rows: ProgressRow[],
-  now: Date,
-  /**
-   * Whether an item is a generated sight-reading row (C5, S8), which is never
-   * reviewed: every open is a new phrase. Required, so no caller can forget
-   * it, and a row an older build marked passed is still skipped.
-   */
-  isGenerated: (itemId: string) => boolean,
-): ReviewItem[] {
-  const due: ReviewItem[] = [];
-  const todayKey = dayKey(now);
+export function learnedPieces(rows: readonly ProgressRow[], isGenerated: (itemId: string) => boolean): LearnedPiece[] {
+  const out: LearnedPiece[] = [];
   for (const row of rows) {
-    if (row.status !== 'passed') continue;
-    if (isGenerated(row.itemId)) continue;
-    const first = row.passedOn[0];
-    if (!first) continue;
-    // Calendar days between two day keys, both where the learner lives (T37).
-    // This was `new Date(first)`, which reads `YYYY-MM-DD` as *UTC* midnight:
-    // in New York a piece passed at 20:30 was due for review at 20:45 the same
-    // evening, and every later step came four to seven hours early. `dayKey`
-    // was fixed for exactly this and this reader was missed.
-    const daysSince = daysBetween(first, todayKey);
-    if (daysSince === null) continue;
-    const step = REVIEW_INTERVALS_DAYS.filter((interval) => daysSince >= interval).length;
-    if (step === 0) continue;
-    // Already reviewed since the interval came due? `passedOn` grows on each
-    // pass, so more passes than steps means it is up to date.
-    if (row.passedOn.length > step) continue;
-    const interval = REVIEW_INTERVALS_DAYS[step - 1] ?? 21;
-    const dueAt = localMidnight(first, interval)?.toISOString() ?? now.toISOString();
-    due.push({ itemId: row.itemId, dueAt, step });
+    if (row.status !== 'passed' && row.status !== 'mastered') continue;
+    if (isGenerated(row.itemId) || row.selfPassed === true) continue;
+    out.push({ itemId: row.itemId, status: row.status, lastPlayed: row.lastPracticedAt });
   }
-  return due.sort((a, b) => a.dueAt.localeCompare(b.dueAt));
-}
-
-/**
- * The pieces the learner has mastered, for Today's repertoire slot (C5, S8):
- * never a generated sight-reading row, whatever an older build wrote on it.
- */
-export function repertoireOf(rows: readonly ProgressRow[], isGenerated: (itemId: string) => boolean): string[] {
-  return rows.filter((row) => row.status === 'mastered' && !isGenerated(row.itemId)).map((row) => row.itemId);
+  return out;
 }
 
 /**
@@ -870,24 +849,19 @@ function dayParts(key: string): [number, number, number] | null {
 }
 
 /**
- * Whole calendar days from one day key to another.
+ * Whole calendar days from one day key to another (`dayKey`'s `YYYY-MM-DD`),
+ * or null for anything else. The session's retention rules count in these
+ * (C6); the review calendar did until C6 (T37 fixed its UTC parse).
  *
  * Counted on the calendar, not on the clock: both keys are turned into the same
  * kind of midnight (UTC, as a pure number) so a day with a clock change in it
  * is still one day, and no time zone enters the sum at all.
  */
-function daysBetween(from: string, to: string): number | null {
+export function daysBetween(from: string, to: string): number | null {
   const a = dayParts(from);
   const b = dayParts(to);
   if (!a || !b) return null;
   return Math.round((Date.UTC(b[0], b[1] - 1, b[2]) - Date.UTC(a[0], a[1] - 1, a[2])) / 86_400_000);
-}
-
-/** Local midnight `plusDays` after a day key: when a review step comes due. */
-function localMidnight(key: string, plusDays: number): Date | null {
-  const parts = dayParts(key);
-  if (!parts) return null;
-  return new Date(parts[0], parts[1] - 1, parts[2] + plusDays);
 }
 
 /**

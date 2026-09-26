@@ -2,8 +2,9 @@
  * Progress, Settings and Diagnostics (docs/04 §6, §7, §7b).
  *
  * The acceptance criterion P7 sets is here: a full lesson flow from Today to a
- * recorded run, and the item coming back in the review queue tomorrow with a
- * faked clock. And the export/import round trip, because a backup file is the
+ * recorded run, and the piece coming back for review once it has gone the
+ * repertoire window unplayed, with a faked clock (C6: the item calendar is
+ * retired). And the export/import round trip, because a backup file is the
  * only copy of a year of practice on a phone with no server behind it.
  */
 import { expect, test } from '@playwright/test';
@@ -81,14 +82,18 @@ test.describe('Progress', () => {
     await expect(page.locator(`.heat-cell[data-day="${today}"]`)).toHaveAttribute('data-level', /[1-4]/);
   });
 
-  test('an item passed yesterday is due for review today', async ({ page }) => {
+  // Replaced (C6): "an item passed yesterday is due for review today" held the item calendar (1, 3,
+  // 7 and 21 days after a pass), which is retired (the reviewer's correction, 2026-09-26). A piece
+  // passed and not played for the repertoire window (two weeks) comes back, in the piece's words.
+  test('a piece passed and not played for two weeks comes back for review, in its own words', async ({ page }) => {
     await page.goto('/#/progress');
-    // Faking the clock rather than waiting a day: the review intervals in
-    // docs/02 Part G are 1, 3, 7 and 21 days after a pass.
-    await seedRun(page, 'song.folk.hot-cross-buns', 2);
+    // Faking the clock rather than waiting two weeks.
+    await seedRun(page, 'song.folk.hot-cross-buns', 15);
     await page.goto('/#/today');
-    await expect(page.locator('.list-row[data-slot="review"]')).toContainText('Hot Cross Buns');
-    await expect(page.locator('.list-row[data-slot="review"]')).toContainText('Due for review today');
+    const review = page.locator('.list-row[data-slot="review"]');
+    await expect(review).toContainText('Hot Cross Buns');
+    await expect(review).toContainText('Keeping this piece playable — last played');
+    await expect(review).toHaveAttribute('data-claim', 'piece-retention');
   });
 
   test('exports everything and restores it onto a wiped phone', async ({ page }) => {

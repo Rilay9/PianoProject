@@ -111,16 +111,6 @@ export interface AlternativesQuery {
 }
 
 /**
- * What to offer when the learner says "give me something else" (docs/04 §2).
- *
- * Three tiers, in order, because they are three different strengths of claim:
- *   1. the other options in the same lesson — the curriculum says these are equivalent;
- *   2. the item's own `alternatives[]` — an author said these train the same thing, and
- *      it is what makes an un-imported song a pointer rather than a dead row;
- *   3. anything at the same level sharing a concept tag — a guess, but a useful one.
- * Ordered by how close the level is, so a swap does not quietly raise the difficulty.
- */
-/**
  * 1 for a judged level, 0 for an estimated one (replan §1.4).
  *
  * An item with no `levelSource` at all — an import, or a catalog built before
@@ -132,54 +122,93 @@ export function levelConfidence(item: CatalogItem): number {
   return item.levelSource === 'estimated' ? 0 : 1;
 }
 
-export function alternativesFor(
+/**
+ * The tier an alternative came from (C6; backlog L12's third reader, L36): a
+ * claim of its own strength, which the swap sheet prints.
+ *
+ * - `lesson`: another option of the lesson the row was offered from — the
+ *   curriculum says these are equivalent;
+ * - `alternative`: one of the item's own `alternatives[]` — its author named it
+ *   as a stand-in, which is what makes an un-imported song a pointer rather
+ *   than a dead row;
+ * - `skill`: an item declaring a target skill the item declares;
+ * - `demand`: an item carrying a demand the build measured on the item.
+ *
+ * The third tier was "anything within half a level sharing a concept tag", and
+ * `repertoire` is a tag on every quarried piece and nothing else, so for a PDMX
+ * piece it was a level window over the whole quarry (the repertoire trace,
+ * P1-4). A concept tag matches nothing now: an alternative is an alternative
+ * because it trains the same thing.
+ */
+export type AlternativeTier = 'lesson' | 'alternative' | 'skill' | 'demand';
+
+export interface TieredAlternative {
+  item: CatalogItem;
+  tier: AlternativeTier;
+  /** The target skill or measured demand the `skill` or `demand` tier shares. */
+  shared?: string;
+}
+
+/**
+ * What to offer when the learner says "give me something else" (docs/04 §2),
+ * each with the tier it came from, in the tiers' order. Within the skill and
+ * demand tiers, the nearest level first, so a swap does not quietly raise the
+ * difficulty — an order, not a window: nothing is left out for its level
+ * (`session.swapOptions` leaves out what the learner's lessons have not
+ * taught), and a judged level before an estimated one at the same distance
+ * (replan §1.4).
+ */
+export function tieredAlternatives(
   query: AlternativesQuery,
   curriculum: Curriculum,
   catalog: CatalogIndex,
-): CatalogItem[] {
+): TieredAlternative[] {
   const { itemId, lessonId, excludeSongs = false, exclude = [], limit = 12 } = query;
   const skip = new Set<string>([itemId, ...exclude]);
   const source = catalog.byId.get(itemId);
-  const out: CatalogItem[] = [];
+  const out: TieredAlternative[] = [];
 
-  const push = (id: string): void => {
+  const push = (id: string, tier: AlternativeTier, shared?: string): void => {
     if (skip.has(id)) return;
     const item = catalog.byId.get(id);
     if (!item) return;
     if (excludeSongs && item.type === 'song') return;
     skip.add(id);
-    out.push(item);
+    out.push({ item, tier, ...(shared === undefined ? {} : { shared }) });
   };
 
   const lesson = lessonId ? findLesson(curriculum, lessonId) : undefined;
   if (lesson) {
-    for (const id of [...lesson.exerciseOptions, ...lesson.songOptions]) push(id);
+    for (const id of [...lesson.exerciseOptions, ...lesson.songOptions]) push(id, 'lesson');
   }
 
-  for (const id of source?.alternatives ?? []) push(id);
+  for (const id of source?.alternatives ?? []) push(id, 'alternative');
 
   if (source) {
-    const concepts = new Set(source.concepts);
-    const nearby = [...catalog.byId.values()]
-      .filter(
-        (item) =>
-          !skip.has(item.id) &&
-          Math.abs(item.level - source.level) <= 0.5 &&
-          item.concepts.some((concept) => concepts.has(concept)),
-      )
-      .sort((a, b) => {
-        const byDistance =
-          Math.abs(a.level - source.level) - Math.abs(b.level - source.level);
-        if (byDistance !== 0) return byDistance;
-        // replan §1.4: at the same distance, prefer a level someone judged over
-        // one a band or a model estimated. Two pieces that claim to be equally
-        // close are not equally likely to be — one of the claims is a guess.
-        return levelConfidence(b) - levelConfidence(a);
-      });
-    for (const item of nearby) push(item.id);
+    const nearest = (a: CatalogItem, b: CatalogItem): number =>
+      Math.abs(a.level - source.level) - Math.abs(b.level - source.level) || levelConfidence(b) - levelConfidence(a);
+    const sharing = (own: readonly string[] | undefined, theirs: (item: CatalogItem) => readonly string[] | undefined, tier: AlternativeTier): void => {
+      const mine = new Set(own ?? []);
+      if (mine.size === 0) return;
+      const found = [...catalog.byId.values()]
+        .filter((item) => !skip.has(item.id) && (theirs(item) ?? []).some((one) => mine.has(one)))
+        .sort(nearest);
+      for (const item of found) push(item.id, tier, (theirs(item) ?? []).find((one) => mine.has(one)));
+    };
+    sharing(source.targetSkills, (item) => item.targetSkills, 'skill');
+    sharing(source.demands, (item) => item.demands, 'demand');
   }
 
   return out.slice(0, limit);
+}
+
+/** The alternatives alone, in the tiers' order (`tieredAlternatives`): `playInstead` and the lesson page read these. */
+export function alternativesFor(
+  query: AlternativesQuery,
+  curriculum: Curriculum,
+  catalog: CatalogIndex,
+): CatalogItem[] {
+  return tieredAlternatives(query, curriculum, catalog).map((one) => one.item);
 }
 
 export function findLesson(curriculum: Curriculum, lessonId: string): Lesson | undefined {

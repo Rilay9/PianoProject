@@ -9,17 +9,18 @@
  * The shape of a session is fixed by the templates below; what varies is what
  * goes in each slot, and every slot can be swapped (docs/04 §2, `00` D21).
  */
-import type { CatalogItem, Curriculum, Lesson, Unit } from './types';
+import type { CatalogItem, Curriculum, Lesson, Requirement, Unit } from './types';
 import {
   alternativesFor,
   findLesson,
-  levelConfidence,
+  tieredAlternatives,
+  type AlternativeTier,
   type CatalogIndex,
 } from './selectors';
 import { lockState } from './prerequisites';
-import type { RungStates } from '../evidence/rungState';
+import type { RequirementReading, RungStates } from '../evidence/rungState';
 import type { ReadingMoves, ReadingRecipe, SessionRow } from '../data/db';
-import { dayKey } from '../data/progressStore';
+import { dayKey, daysBetween, type LearnedPiece } from '../data/progressStore';
 import { heldToRung, READING_CONTROLS, UNREALISABLE_AT, type ControlPatch } from '../engine/readingControls';
 import {
   dailySeed,
@@ -31,10 +32,10 @@ import {
 } from '../engine/sightReading';
 import { demandReadings, type DemandReading } from '../evidence/demandReadings';
 import type { MeasuredEvidence } from '../evidence/evidence';
-import { RECENT_ATTEMPTS, SUPPORT_SHARE, supports } from '../evidence/ladder';
+import { LADDER_STATES, ladderState, RECENT_ATTEMPTS, RETENTION_DAYS, SUPPORT_SHARE, supports, type LadderReading } from '../evidence/ladder';
 import { readingState, storedEvidence, type SkillState } from '../evidence/readingState';
 import { VOCABULARY_V0, type Vocabulary } from '../evidence/vocabulary';
-import { readingReason, READING_TEXT } from '../ui/help';
+import { readingReason, slotReason } from '../ui/help';
 
 export type SlotKind = 'technique' | 'review' | 'new' | 'repertoire' | 'jam' | 'free' | 'sightreading';
 
@@ -46,8 +47,21 @@ export interface SessionSlot {
   item?: CatalogItem;
   /** The lesson the item was offered from, so "Swap this" can look there first. */
   lessonId?: string;
-  /** Why it is here, shown under the title. */
+  /** Why it is here, shown under the title: drawn from `claim` (C6), or the reader's (C4). */
   reason: string;
+  /**
+   * What chose the item (C6): the rung's ask, retention, the exposure rule or a
+   * step of the fallback ladder. Absent on the reading slot (its `reading.why`
+   * is the reader's) and on the free-play prompt.
+   */
+  claim?: SlotClaim;
+  /**
+   * A skill-retention review's phrase (C6): the recipe that writes the skill's
+   * demand into it, and the rung it is held to — the learner's. Today opens
+   * the row with it (a fresh seed, as any open of a reading row draws); a
+   * swap replaces the item and it stops applying.
+   */
+  phrase?: { recipe: ReadingRecipe; rung?: string };
   /**
    * The reading slot's phrase (C4): the row's recipe, its seed and why, from
    * the learner's reads. Today opens exactly this phrase; a swap replaces the
@@ -135,14 +149,33 @@ export interface BuildInput {
    * `records`, a list of passed items counted over each rung.
    */
   states: RungStates;
-  /** Item ids due for review, most overdue first (progressStore.reviewQueue). */
-  dueForReview: string[];
-  /** Items whose status is `mastered`, for the Repertoire slot. */
-  mastered: string[];
+  /**
+   * The pieces the learner has learned and when each was last played
+   * (`progressStore.learnedPieces`, C6): the review's repertoire retention and
+   * the repertoire slot's "a piece you know". It replaced `dueForReview`, the
+   * item calendar, and `mastered`.
+   */
+  learned?: readonly LearnedPiece[];
+  /**
+   * When each item was last played, by any run (the progress rows'
+   * `lastPracticedAt`): what the exposure rule reads. None: nothing played.
+   */
+  lastPlayed?: ReadonlyMap<string, string>;
+  /**
+   * Every stored run with its evidence (the rung state's rows, C5): the
+   * learner's skills, for skill retention and the warm-up's skill claim.
+   * Absent: `readingRows`, which today hold every row that can carry evidence.
+   */
+  rows?: readonly SessionRow[];
+  /** The vocabulary the skills and demands are read in (v0 unless given). */
+  vocabulary?: Vocabulary;
   /** Tracks the learner has switched on, in their order (planStore). */
   activeTracks: string[];
   minutes: number;
-  /** Rotates the choice within a slot so "Shuffle" gives something different. */
+  /**
+   * Shuffle's counter: the next candidate of the claim that chose each slot,
+   * never another claim (C6: it was an index into the rung's list).
+   */
   seed?: number;
   /** docs/04 §7: opt-in gating, off by default (`00` D17). */
   strictPrerequisites?: boolean;
@@ -257,6 +290,39 @@ export function nextRecommended(
 }
 
 /**
+ * The rung the reader reads from (C6, the parallel-strand finding): the core
+ * path's next rung while there is one — the spine the reading rows sit on —
+ * then the earliest strand's in the curriculum's order; none once nothing is
+ * open, and the reader reads its latest row. `nextRecommended` walks every
+ * switched-on track in the file's order, so with the fresh tracks a learner at
+ * 4.1 whose How to practise rungs are open was placed on `practice.1`, and the
+ * reading row of the latest rung before it (1.5's, level one) was the daily
+ * read. Never a rung the learner is past by placement or by their word
+ * (the reviewer's boundary: a bypassed rung is not new unmet work because the
+ * work ahead is done); `nextRecommended` still falls back to those for the
+ * status line and Plan (C5's; reported). The daily card and the session's
+ * reading slot both read this.
+ */
+export function readerPosition(
+  curriculum: Curriculum,
+  states: RungStates,
+  activeTracks: string[] = [],
+  options: { strictPrerequisites?: boolean; startAt?: string } = {},
+): LessonPosition | undefined {
+  const walk = walkOf(curriculum, activeTracks);
+  const { strands } = strandsOf({ input: { curriculum, states, ...(options.startAt === undefined ? {} : { startAt: options.startAt }) }, walk, lastPlayed: () => undefined });
+  const at = (id: string): number => walk.findIndex((walked) => walked.lesson.id === id);
+  const chosen = strands.find((strand) => strand.track === 'core') ?? [...strands].sort((a, b) => at(a.rung.id) - at(b.rung.id))[0];
+  if (!chosen) return undefined;
+  for (const stage of curriculum.stages) {
+    for (const unit of stage.units) {
+      if (unit.lessons.includes(chosen.rung)) return { lesson: chosen.rung, unit, stageNumber: stage.number };
+    }
+  }
+  return undefined;
+}
+
+/**
  * An item with no file and no drill is an import placeholder: a pointer to
  * something the learner has to bring, not something to practise today
  * (docs/04 §2 offers its alternatives instead).
@@ -265,215 +331,993 @@ export function playable(item: CatalogItem | undefined | null): boolean {
   return Boolean(item && (item.file || item.imported || item.drill));
 }
 
-/** The playable items behind a list of ids, in order, skipping what is taken. */
-function resolve(
-  ids: readonly string[],
-  catalog: CatalogIndex,
-  free: (id: string) => boolean,
-): CatalogItem[] {
-  const out: CatalogItem[] = [];
-  for (const id of ids) {
-    const item = catalog.byId.get(id);
-    if (item && playable(item) && free(item.id)) out.push(item);
-  }
-  return out;
-}
-
-function pick<T>(candidates: T[], seed: number): T | undefined {
+/** Shuffle's turn within one claim: the first candidate unless the learner asked for another. */
+function pick<T>(candidates: readonly T[], seed: number): T | undefined {
   if (candidates.length === 0) return undefined;
   return candidates[seed % candidates.length];
 }
 
+// --- the slots: what the evidence supports and what the rung asks next (C6) --
+
 /**
- * Fills one slot.
- *
- * Each kind has its own idea of what belongs, and each falls back rather than
- * leaving a hole: an empty row on Today is a session the learner has to
- * assemble by hand, which is the thing this screen exists to avoid.
+ * Days a learned piece may go unplayed before the review slot brings it back
+ * (C6: repertoire retention, the reviewer's correction of 2026-09-26). **A
+ * hypothesis**, apart from the ladder's `RETENTION_DAYS` (which is about a
+ * skill's evidence, not a piece): two weeks is long enough that the piece is
+ * no longer in the fingers from the week it was learned, and short enough that
+ * it has not gone. The calendar it replaces came back at 7 and then 21 days
+ * after a first pass; `02` Part G said mastered pieces every thirty days or so.
+ * Never measured against a learner.
  */
-function fillSlot(
-  kind: SlotKind,
-  input: BuildInput,
-  position: LessonPosition | undefined,
-  used: Set<string>,
-  seed: number,
-): { item?: CatalogItem; reason: string; lessonId?: string; reading?: ReadingOffer } {
-  const { catalog, items, mastered, dueForReview } = input;
-  const level = position ? position.stageNumber : 1;
-  const free = (id: string): boolean => !used.has(id);
+export const REPERTOIRE_WINDOW_DAYS = 14;
 
-  if (kind === 'technique') {
-    const fromLesson = resolve(position?.lesson.exerciseOptions ?? [], catalog, free);
-    const chosen =
-      pick(fromLesson, seed) ??
-      pick(
-        items.filter(
-          (item) =>
-            free(item.id) &&
-            playable(item) &&
-            item.type !== 'song' &&
-            item.tracks.includes('technique') &&
-            Math.abs(item.level - level) <= 1,
-        ),
-        seed,
-      );
-    return {
-      ...(chosen ? { item: chosen } : {}),
-      ...(position ? { lessonId: position.lesson.id } : {}),
-      reason: 'Warm-up in the keys you are working in',
-    };
-  }
+/**
+ * Days after which a family of taught material the learner has played none of
+ * is "not seen lately" for the exposure rule (C6; L26). **A hypothesis**: a
+ * week, the unit the app counts practice in (the weekly goal).
+ */
+export const EXPOSURE_DAYS = 7;
 
-  if (kind === 'review') {
-    const due = resolve(dueForReview, catalog, free);
-    const chosen =
-      due[0] ??
-      pick(resolve(mastered, catalog, free), seed) ??
-      // Nothing due and nothing mastered is what the first week looks like.
-      // Playing something at this level a second time is still review.
-      pick(
-        // One level above the stage, not two: a Stage 6 learner was handed the
-        // all-seven-modes drill from Stage 7 to "keep warm" (owner, 2026-09-15).
-        items.filter(
-          (item) => free(item.id) && playable(item) && item.type !== 'song' && item.level <= level + 1,
-        ),
-        seed,
-      );
-    return {
-      ...(chosen ? { item: chosen } : {}),
-      reason: due.length > 0 ? 'Due for review today' : 'Nothing due — keeping something warm',
-    };
-  }
+/**
+ * The fallback ladder (L14; `operating-procedure.md` §7): when a slot's first
+ * claim finds nothing, these weaker claims are tried in this order, and the
+ * reason line names the one used. No slot falls back to a level window.
+ */
+export const FALLBACK_ORDER = ['rung', 'skill', 'demand', 'prerequisite', 'exposure'] as const;
 
-  if (kind === 'new') {
-    const options = resolve(
-      [...(position?.lesson.exerciseOptions ?? []), ...(position?.lesson.songOptions ?? [])],
-      catalog,
-      free,
-    );
-    // The current lesson can run out — Stage 0 units have two options and the
-    // warm-up slot has already taken one. Anything at this level is a better
-    // row than an empty one.
-    const chosen =
-      pick(options, seed) ??
-      pick(
-        items.filter(
-          (item) => free(item.id) && playable(item) && Math.abs(item.level - level) <= 1,
-        ),
-        seed,
-      );
-    return {
-      ...(chosen ? { item: chosen } : {}),
-      ...(position ? { lessonId: position.lesson.id } : {}),
-      reason: position ? `Lesson ${position.lesson.id} — ${position.lesson.title}` : 'New material',
-    };
-  }
-
-  if (kind === 'repertoire') {
-    const known = pick(resolve(mastered, catalog, free), seed);
-    const chosen =
-      known ??
-      pick(
-        items.filter(
-          (item) =>
-            free(item.id) && playable(item) && item.type === 'song' && item.level < level + 2,
-        ),
-        seed,
-      );
-    return {
-      ...(chosen ? { item: chosen } : {}),
-      // Said of the piece chosen, not of the list (L18, with S8): a mastered id
-      // that could not be offered — a reading row an older build marked
-      // mastered, a piece already on the card — left a song never played
-      // labelled as one the learner knows.
-      reason: known !== undefined ? 'A piece you know — keep it playable' : 'Something to just play',
-    };
-  }
-
-  if (kind === 'jam') {
-    const chosen = pick(
-      items.filter(
-        (item) =>
-          free(item.id) &&
-          playable(item) &&
-          (item.tracks.includes('chords-pop') ||
-            item.tracks.includes('blues-boogie') ||
-            item.tracks.includes('jazz')) &&
-          item.level <= level + 1,
-      ),
-      seed,
-    );
-    return { ...(chosen ? { item: chosen } : {}), reason: 'Chords, form and feel' };
-  }
-
-  if (kind === 'sightreading') {
-    // The reader's phrase (C4), where it used to be any reading row at or
-    // below the stage by catalog order — level 3 every day at Stages 5-9 and
-    // level 1 at Stage 4 (the sight-reading trace, P1-a) — plus the rung's own
-    // (T37). Now the rung's own row, moved by what the learner's reads show;
-    // the same rule as the daily read, with a phrase of its own. Before any
-    // rung that lists a reading row there is no slot, as there was none; a
-    // row another slot already took is not offered twice.
-    const today = input.today ?? new Date(0);
-    const offer = readingOffer({
-      curriculum: input.curriculum,
-      items,
-      position,
-      activeTracks: input.activeTracks,
-      rows: input.readingRows ?? [],
-      today,
-      purpose: 'slot',
-      shuffle: seed,
-    });
-    if (!offer || !offer.anchored || !free(offer.item.id) || !playable(offer.item)) {
-      return { reason: READING_TEXT.rungSlot };
-    }
-    return {
-      item: offer.item,
-      ...(offer.lessonId === undefined ? {} : { lessonId: offer.lessonId }),
-      reason: readingReason(offer.why, 'slot', today),
-      reading: offer,
-    };
-  }
-
-  return { reason: 'Play anything you like — no scoring, no cursor' };
+/**
+ * A family of material the exposure rule balances over: a kind of exercise
+ * (`drill.kind`), a track the learner switched on (a song's style, from the
+ * rung that lists it; never the quarry's genre column, `00` §1a), or the core
+ * lessons before the learner's.
+ */
+export interface ExposureFamily {
+  by: 'kind' | 'track' | 'earlier';
+  /** The drill kind, or the track id; `earlier` for the core lessons before this one. */
+  id: string;
+  /** The track's title, for a track. */
+  title?: string;
 }
+
+/**
+ * Why a slot holds its item (C6): what the reason line is drawn from, and what
+ * a test reads. Every kind is evidence, the rung, retention or the exposure
+ * rule; none is a level or a seed.
+ */
+export type SlotClaim =
+  /**
+   * The rung asks for it: an unmet requirement's item, or an exercise training
+   * a skill an unmet requirement names (`skill`). `next`: the rung after the
+   * learner's, because this one's asks of this kind are met. `waitsForReads`:
+   * what is left on the learner's rung is its reads (the reader's).
+   */
+  | {
+      kind: 'asked';
+      rung: Lesson;
+      next: boolean;
+      requirement: Requirement;
+      have: number;
+      need: number;
+      skill?: string;
+      waitsForReads?: boolean;
+      /** The strand that asked: a track's title, absent for the core path. */
+      strand?: string;
+      /** The rung is a project (Stage 9: "nothing here is a rung to pass"), not a rung to meet. */
+      project?: true;
+    }
+  /** Skill retention: a skill whose evidence the reads have not shown for the ladder's span; a phrase of a row it was shown on. */
+  | { kind: 'skill-retention'; skill: string; lastShown: string }
+  /** Repertoire retention: a learned piece not played for `REPERTOIRE_WINDOW_DAYS`. */
+  | { kind: 'piece-retention'; lastPlayed: string }
+  /** A piece whose measured demands the learner's skills support, with one the rung has just taught. */
+  | { kind: 'ready'; demand: string }
+  /** The fallback ladder's first step: the rung's own option, and the strand it is on (a track's title; absent for core). */
+  | { kind: 'rung'; rung: Lesson; strand?: string }
+  /** An item declaring the target skill the rung asks for. */
+  | { kind: 'skill'; skill: string; rung: Lesson }
+  /** An item carrying a demand of the skill the rung asks for. */
+  | { kind: 'demand'; demand: string; rung: Lesson }
+  /** An option of a rung this one builds on (`Lesson.prerequisites`). */
+  | { kind: 'prerequisite'; rung: Lesson; of: Lesson }
+  /** The exposure rule: the family of taught material played least lately (never, first). */
+  | { kind: 'exposure'; family: ExposureFamily; lastPlayed?: string }
+  /** Jam: an option of a rung on a jam track the learner has reached. */
+  | { kind: 'jam'; rung: Lesson };
+
+/** A rung in the curriculum's walk on the tracks switched on, as `nextRecommended` walks it. */
+interface Walked {
+  lesson: Lesson;
+  track: string;
+  stage: number;
+}
+
+/**
+ * The stages whose rungs are projects, not rungs to meet: Stage 9 says of
+ * itself "Nothing here is a rung to pass; they are pieces to live with"
+ * (`content/curriculum/stage-9.json`). No slot advances into one as "the next
+ * lesson", and its asks are offered as a project. By number, because the
+ * curriculum does not mark the stage (a report item for the curriculum).
+ */
+const PROJECT_STAGES: ReadonlySet<number> = new Set([9]);
+
+/**
+ * One line of study the learner is on (the reviewer's parallel-strand finding,
+ * 2026-09-26): the core path, the spine through Stage 4, and each track the
+ * learner has switched on, which from Stage 3 runs beside it and from Stage 5
+ * alone (`02`: "the learner picks which to advance"). Each has its own next
+ * rung, so no strand waits behind another in the file's order.
+ */
+interface Strand {
+  track: string;
+  /** The track's title; absent for the core path, which the lines call "this lesson". */
+  title?: string;
+  /** The strand's next rung: its first not met, not set aside, not behind the placement, and open. */
+  rung: Lesson;
+  stage: number;
+  /** The rung after it on the same track, never into a project stage: what "the next lesson" means for this strand. */
+  after?: Lesson;
+  /** When anything from the strand's rungs so far was last played. */
+  last?: string;
+}
+
+/** Everything the slots read, worked out once per card. */
+interface SlotContext {
+  input: BuildInput;
+  catalog: CatalogIndex;
+  /** The reader's rung (`readerPosition`): its row, and what a phrase is held to. */
+  position: LessonPosition | undefined;
+  /** The rungs on the tracks switched on, in the curriculum's order. */
+  walk: Walked[];
+  /**
+   * The strands the learner is on, in today's order: the one played least
+   * lately first (never, first), the core path first on a tie. The slots choose
+   * across them (the balance rule), never from one position in the file's order.
+   */
+  strands: Strand[];
+  /** What has been taught: every rung met, set aside, behind the placement, or up to a strand's next rung. */
+  reached: Walked[];
+  skills: ReadonlyMap<string, SkillEvidence>;
+  learned: ReadonlyMap<string, LearnedPiece>;
+  lastPlayed: (id: string) => string | undefined;
+  /** Whether the learner has played anything at all: the exposure rule needs a history to balance. */
+  history: boolean;
+  today: Date;
+  used: Set<string>;
+  seed: number;
+}
+
+/** One skill's evidence, as the slots read it. */
+interface SkillEvidence {
+  reading: LadderReading;
+  /** The last supporting record's date. */
+  lastSupport?: string;
+  /** Supporting records in the last `RETENTION_DAYS`: "the evidence has shown least" counts these. */
+  recentSupported: number;
+  /** The items a supporting record came from, with the latest date on each. */
+  supportedOn: ReadonlyMap<string, string>;
+}
+
+/** A sight-reading row: generated notation (`drill.kind`), not the transposition drills that share the tag. */
+function isReadingRow(item: CatalogItem | undefined): boolean {
+  return item?.drill?.kind === 'sight-reading';
+}
+
+function walkOf(curriculum: Curriculum, activeTracks: readonly string[]): Walked[] {
+  const tracks = new Set(activeTracks);
+  const out: Walked[] = [];
+  for (const stage of curriculum.stages) {
+    for (const unit of stage.units) {
+      if (tracks.size > 0 && unit.track !== 'core' && !tracks.has(unit.track)) continue;
+      for (const lesson of unit.lessons) out.push({ lesson, track: unit.track, stage: stage.number });
+    }
+  }
+  return out;
+}
+
+/**
+ * The strands and what they have taught (the parallel-strand finding). Per
+ * track, in the curriculum's order within it:
+ *
+ * - **Met, set aside or behind the placement** is passed over (the rung
+ *   state; the learner's word or the carry-over; `startAt`, as
+ *   `nextRecommended` holds those rungs back) and counts as taught.
+ * - **The core path is the spine**: its next rung is the first not passed
+ *   over. A track opens where the spine has reached the track's stage (the
+ *   core path's next rung's stage, every stage once the core path is done) and
+ *   the rung's prerequisites are met, set aside or behind the placement —
+ *   honoured here, because the file's order no longer does it for them.
+ * - **A project stage** is a strand's rung like any other when the strand has
+ *   come to it, and never "the next lesson" of the rung before it.
+ *
+ * Then ordered for today: the strand played least lately first (never,
+ * first), the core path first on a tie, then the order of the walk.
+ */
+function strandsOf(ctx: {
+  input: Pick<BuildInput, 'curriculum' | 'states' | 'startAt'>;
+  walk: readonly Walked[];
+  lastPlayed: (id: string) => string | undefined;
+}): { strands: Strand[]; reached: Walked[] } {
+  const { input, walk } = ctx;
+  const state = (id: string) => input.states.byRung.get(id);
+  const aside = (id: string): boolean => {
+    const one = state(id);
+    return one !== undefined && (one.word !== undefined || one.carried);
+  };
+  const startAt = input.startAt === undefined || input.startAt === '' ? null : input.startAt;
+  const behind = new Set<string>();
+  if (startAt !== null) {
+    let reachedStart = false;
+    for (const walked of walk) {
+      if (walked.lesson.id === startAt || findUnitOf(input.curriculum, walked.lesson.id) === startAt) reachedStart = true;
+      if (!reachedStart) behind.add(walked.lesson.id);
+    }
+    // A placement the walk never reaches holds nothing back.
+    if (behind.size === walk.length) behind.clear();
+  }
+  const passed = (id: string): boolean => state(id)?.status === 'met' || aside(id) || behind.has(id);
+  const tracks = [...new Set(walk.map((walked) => walked.track))].sort((a, b) => (a === 'core' ? -1 : b === 'core' ? 1 : 0));
+  const titleOf = (track: string): string => input.curriculum.tracks.find((t) => t.id === track)?.title ?? track;
+  const spine = walk.find((walked) => walked.track === 'core' && !passed(walked.lesson.id));
+  const spineStage = spine ? spine.stage : Number.POSITIVE_INFINITY;
+  // Every rung of the curriculum, switched on or not: a prerequisite on a track the learner has off still gates.
+  const known = new Set(input.curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons.map((lesson) => lesson.id))));
+  const strands: Strand[] = [];
+  const reached: Walked[] = [];
+  for (const track of tracks) {
+    const line = walk.filter((walked) => walked.track === track);
+    const at = line.findIndex((walked) => !passed(walked.lesson.id));
+    const next = at < 0 ? undefined : line[at];
+    const open =
+      next !== undefined &&
+      (track === 'core' ||
+        (next.stage <= spineStage && (next.lesson.prerequisites ?? []).every((id) => !known.has(id) || passed(id))));
+    reached.push(...line.slice(0, at < 0 ? line.length : open ? at + 1 : at));
+    if (!next || !open) continue;
+    const following = line[at + 1];
+    const items = line.slice(0, at + 1).flatMap((walked) => [...walked.lesson.exerciseOptions, ...walked.lesson.songOptions]);
+    const last = items.map((id) => ctx.lastPlayed(id)).filter((when): when is string => when !== undefined).sort().at(-1);
+    strands.push({
+      track,
+      ...(track === 'core' ? {} : { title: titleOf(track) }),
+      rung: next.lesson,
+      stage: next.stage,
+      ...(following && !PROJECT_STAGES.has(following.stage) ? { after: following.lesson } : {}),
+      ...(last === undefined ? {} : { last }),
+    });
+  }
+  const order = new Map(tracks.map((track, index) => [track, index]));
+  strands.sort((a, b) => (a.last ?? '').localeCompare(b.last ?? '') || (order.get(a.track) ?? 0) - (order.get(b.track) ?? 0));
+  const reachedIds = new Set(reached.map((walked) => walked.lesson.id));
+  return { strands, reached: walk.filter((walked) => reachedIds.has(walked.lesson.id)) };
+}
+
+/** The unit id a rung is in, for a placement that names a unit (`nextRecommended` matches both). */
+function findUnitOf(curriculum: Curriculum, lessonId: string): string | undefined {
+  for (const stage of curriculum.stages) {
+    for (const unit of stage.units) if (unit.lessons.some((lesson) => lesson.id === lessonId)) return unit.id;
+  }
+  return undefined;
+}
+
+/**
+ * Every vocabulary skill with an observable, from the evidence the rows carry
+ * under the evidence definitions in force (`storedEvidence`), whichever rung
+ * judged the run: the ladder's reading, when it last supported the skill, how
+ * often in the retention span, and on which items.
+ */
+function skillEvidenceOf(rows: readonly SessionRow[], vocabulary: Vocabulary, today: Date): Map<string, SkillEvidence> {
+  const bySkill = new Map<string, MeasuredEvidence[]>();
+  const all = new Map<string, ReturnType<typeof storedEvidence>>();
+  for (const row of rows) {
+    for (const evidence of storedEvidence(row)) {
+      const list = all.get(evidence.skill) ?? [];
+      list.push(evidence);
+      all.set(evidence.skill, list);
+      if (evidence.kind !== 'measured') continue;
+      const measured = bySkill.get(evidence.skill) ?? [];
+      measured.push(evidence);
+      bySkill.set(evidence.skill, measured);
+    }
+  }
+  const todayKey = dayKey(today);
+  const out = new Map<string, SkillEvidence>();
+  for (const skill of vocabulary.skills) {
+    if (skill.observable === 'none') continue;
+    const measured = (bySkill.get(skill.id) ?? []).slice().sort((a, b) => a.at.localeCompare(b.at));
+    const supporting = measured.filter((e) => supports(e));
+    const supportedOn = new Map<string, string>();
+    for (const e of supporting) supportedOn.set(e.context.itemId, e.at);
+    const last = supporting[supporting.length - 1];
+    out.set(skill.id, {
+      reading: ladderState({ evidence: all.get(skill.id) ?? [], today }),
+      ...(last ? { lastSupport: last.at } : {}),
+      recentSupported: supporting.filter((e) => (daysBetween(dayKey(new Date(e.at)), todayKey) ?? Infinity) < RETENTION_DAYS).length,
+      supportedOn,
+    });
+  }
+  return out;
+}
+
+function daysSince(at: string | undefined, today: Date): number | undefined {
+  if (at === undefined || at === '') return undefined;
+  const then = new Date(at);
+  if (Number.isNaN(then.getTime())) return undefined;
+  return daysBetween(dayKey(then), dayKey(today)) ?? undefined;
+}
+
+/** What the rung state says of each of a rung's requirements; a rung the state does not have reads as nothing counted. */
+function readingsOf(ctx: SlotContext, rung: Lesson): RequirementReading[] {
+  const state = ctx.input.states.byRung.get(rung.id);
+  if (state) return state.requirements;
+  return (rung.requirements ?? []).map((requirement) => ({
+    requirement,
+    holds: requirement.kind === 'unjudged' ? ('unjudged' as const) : false,
+    have: 0,
+    need: requirement.kind === 'runs' || requirement.kind === 'reads' ? requirement.count : 1,
+    items: [],
+  }));
+}
+
+/** A slot's eye on an item: playable, not on the card, never a reading row (the reading slot is the reader's, L65). */
+function usable(ctx: SlotContext, item: CatalogItem | undefined, songs: 'any' | 'none' | 'only'): item is CatalogItem {
+  if (!item || !playable(item) || ctx.used.has(item.id) || isReadingRow(item)) return false;
+  if (songs === 'none' && item.type === 'song') return false;
+  if (songs === 'only' && item.type !== 'song') return false;
+  return true;
+}
+
+/**
+ * One unmet requirement of a rung and the items that would serve it: the
+ * unit the warm-up and the new slot choose among. `pool` is every item the
+ * requirement would count, whether or not it can be offered now; `offer`
+ * those that can.
+ */
+interface Want {
+  rung: Lesson;
+  reading: RequirementReading;
+  skill?: string;
+  pool: CatalogItem[];
+  offer: CatalogItem[];
+}
+
+/**
+ * The unmet requirements of `rung` a slot can serve, in the order the lesson
+ * states them, each with its items in the lesson's order.
+ *
+ * - `runs`: the rung's own options it counts (its exercises, songs, or the
+ *   items it names), not yet counted. The warm-up serves only exercises.
+ * - `done`: the item. `measure`: the rung's exercises of that kind.
+ * - `skill`: the rung's exercises that declare the skill in `targetSkills`,
+ *   the skill the evidence has shown least first. A skill no exercise of the
+ *   rung declares is the reader's (only reading rows declare skills today):
+ *   neither slot claims it.
+ * - `reads`: always the reader's.
+ */
+function wantsOf(ctx: SlotContext, rung: Lesson, songs: 'any' | 'none'): Want[] {
+  const out: Want[] = [];
+  const own = (ids: readonly string[]): CatalogItem[] =>
+    ids.map((id) => ctx.catalog.byId.get(id)).filter((item): item is CatalogItem => item !== undefined && !isReadingRow(item));
+  const skillWants: Want[] = [];
+  for (const reading of readingsOf(ctx, rung)) {
+    if (reading.holds !== false) continue;
+    const r = reading.requirement;
+    let pool: CatalogItem[];
+    let skill: string | undefined;
+    if (r.kind === 'runs') {
+      if (songs === 'none' && r.from === 'songs') continue;
+      const base =
+        r.from === 'exercises' ? rung.exerciseOptions : r.from === 'songs' ? rung.songOptions : [...rung.exerciseOptions, ...rung.songOptions];
+      const named = r.items === undefined ? null : new Set(r.items);
+      pool = own(base.filter((id) => (named === null || named.has(id)) && !reading.items.includes(id)));
+    } else if (r.kind === 'done') {
+      pool = own([r.item]);
+    } else if (r.kind === 'measure') {
+      pool = own(rung.exerciseOptions).filter((item) => item.drill?.kind === r.measure);
+    } else if (r.kind === 'skill') {
+      skill = r.skill;
+      pool = own(rung.exerciseOptions).filter((item) => item.type !== 'song' && (item.targetSkills ?? []).includes(r.skill));
+    } else {
+      continue;
+    }
+    if (songs === 'none') pool = pool.filter((item) => item.type !== 'song');
+    if (pool.length === 0) continue;
+    const want: Want = { rung, reading, ...(skill === undefined ? {} : { skill }), pool, offer: pool.filter((item) => usable(ctx, item, songs)) };
+    if (skill === undefined) out.push(want);
+    else skillWants.push(want);
+  }
+  // The skills first, the one the evidence has shown least first (the brief's item 1): a skill below its
+  // standard, and among those the fewest supporting records in the retention span.
+  const shownLeast = (want: Want): number => (want.skill === undefined ? 0 : (ctx.skills.get(want.skill)?.recentSupported ?? 0));
+  skillWants.sort((a, b) => shownLeast(a) - shownLeast(b));
+  return [...skillWants, ...out];
+}
+
+function askedClaim(want: Want, next: boolean, strand: Strand, extra: { waitsForReads?: boolean } = {}): SlotClaim {
+  return {
+    kind: 'asked',
+    rung: want.rung,
+    next,
+    requirement: want.reading.requirement,
+    have: want.reading.have,
+    need: want.reading.need,
+    ...(want.skill === undefined ? {} : { skill: want.skill }),
+    ...(extra.waitsForReads ? { waitsForReads: true } : {}),
+    ...(strand.title === undefined ? {} : { strand: strand.title }),
+    ...(!next && PROJECT_STAGES.has(strand.stage) ? { project: true as const } : {}),
+  };
+}
+
+/** Whether what is unmet on the rung is only what the reader serves (its reads and its skills). */
+function waitsForReads(ctx: SlotContext, rung: Lesson): boolean {
+  const unmet = readingsOf(ctx, rung).filter((reading) => reading.holds === false);
+  return unmet.length > 0 && unmet.every((reading) => reading.requirement.kind === 'reads' || reading.requirement.kind === 'skill');
+}
+
+/**
+ * Items no requirement of the learner's rung has counted before those it has,
+ * each in its own order: a slot never offers what the evidence says is met
+ * while something the rung asks for waits (C6 item 9). The review's order is
+ * the other way round: what was counted is what can be reviewed.
+ */
+function uncountedFirst(ctx: SlotContext, items: CatalogItem[]): CatalogItem[] {
+  const counted = countedOnStrands(ctx);
+  return [...items.filter((item) => !counted.has(item.id)), ...items.filter((item) => counted.has(item.id))];
+}
+
+/** Every item a requirement of a strand's rung has counted. */
+function countedOnStrands(ctx: SlotContext): Set<string> {
+  return new Set(ctx.strands.flatMap((strand) => readingsOf(ctx, strand.rung).flatMap((reading) => reading.items)));
+}
+
+/** A chosen item, where it was offered from, and why. */
+interface Choice {
+  item: CatalogItem;
+  claim: SlotClaim;
+  lessonId?: string;
+  phrase?: SessionSlot['phrase'];
+  /** The strand it came from, where one asked: so the next slot can serve another. */
+  strand?: string;
+}
+
+/**
+ * The phrase a skill-retention review writes (C6): a reading row the skill was
+ * shown on, with the control that writes one of the skill's demands into every
+ * phrase where the row does not already (C4b's map, read through the reader's
+ * own `moveFor`, which checks the contract), held to what the learner's rung
+ * has taught. Without it the review could say the bass clef has not been shown
+ * and offer a phrase that cannot show it — the intermediate of the thirty days
+ * was told "Shifting position" six mornings running over 2.2's row held inside
+ * C position. `undefined` where no demand of the skill can be written here.
+ */
+function retentionPhrase(ctx: SlotContext, item: CatalogItem, skill: string): SessionSlot['phrase'] | undefined {
+  const vocabulary = ctx.input.vocabulary ?? VOCABULARY_V0;
+  const rung = ctx.position?.lesson.id;
+  const hold = taughtAtRung(ctx.input.curriculum, rung, vocabulary);
+  const move: MoveContext = { item, working: recipe(item.id, {}), rung, options: (value) => readingOptions(item, value, undefined, hold) };
+  const at = (value: ReadingRecipe): SessionSlot['phrase'] => ({ recipe: value, ...(rung === undefined ? {} : { rung }) });
+  const demands = vocabulary.demands.filter((demand) => demand.copedWithBy === skill);
+  // A skill read over every step (sight-reading) is in every phrase.
+  if (demands.length === 0) return at(move.working);
+  for (const demand of demands) {
+    if (hold !== undefined && !hold(demand.id)) continue;
+    const control = READING_CONTROLS[demand.id];
+    const patch = control?.on(move.options(move.working));
+    if (!control || !patch) continue;
+    // The row already writes it into every phrase: its own recipe.
+    if (recipeKey(recipe(item.id, withMoves(item, {}, patchToMoves(patch)))) === recipeKey(move.working)) return at(move.working);
+    const on = moveFor(move, demand.id, 'on');
+    if (on) return at(on.recipe);
+  }
+  return undefined;
+}
+
+/**
+ * The fallback ladder (`FALLBACK_ORDER`), from the learner's rung: each claim
+ * weaker than the one before, the first that finds an item wins.
+ *
+ * `want` is the skill the slot's first claim was after, where it had one: the
+ * target-skill and demand steps look for it, and are skipped without one.
+ * `order` sorts a step's candidates for the slot (the review prefers what the
+ * rung has counted; the repertoire slot what the learner has not learned).
+ */
+function fallback(
+  ctx: SlotContext,
+  songs: 'any' | 'none' | 'only',
+  want: { skill?: string; strand?: Strand } | undefined,
+  order: (items: CatalogItem[]) => CatalogItem[],
+  onCard: readonly Choice[] = [],
+): Choice | undefined {
+  // The strand whose ask failed; otherwise the strands in today's order, one not yet on the card first.
+  const strands = want?.strand
+    ? [want.strand]
+    : [...ctx.strands.filter((one) => !servedBy(onCard, one)), ...ctx.strands.filter((one) => servedBy(onCard, one))];
+  for (const strand of strands.length > 0 ? strands : [undefined]) {
+    const found = fallbackFrom(ctx, songs, want, order, strand);
+    if (found) return found;
+  }
+  return undefined;
+}
+
+/** Whether a choice already on the card came from this strand's rungs. */
+function servedBy(onCard: readonly Choice[], strand: Strand): boolean {
+  return onCard.some((choice) => choice.strand === strand.track);
+}
+
+function fallbackFrom(
+  ctx: SlotContext,
+  songs: 'any' | 'none' | 'only',
+  want: { skill?: string } | undefined,
+  order: (items: CatalogItem[]) => CatalogItem[],
+  strand: Strand | undefined,
+): Choice | undefined {
+  const rung = strand?.rung;
+  const vocabulary = ctx.input.vocabulary ?? VOCABULARY_V0;
+  /** Items listed by a rung the learner has reached: taught material, in the curriculum's order. */
+  const taught: CatalogItem[] = [];
+  const seen = new Set<string>();
+  for (const walked of ctx.reached) {
+    for (const id of [...walked.lesson.exerciseOptions, ...walked.lesson.songOptions]) {
+      if (seen.has(id)) continue;
+      seen.add(id);
+      const item = ctx.catalog.byId.get(id);
+      if (item) taught.push(item);
+    }
+  }
+  const choose = (items: CatalogItem[], claim: (item: CatalogItem) => SlotClaim, lessonId?: (item: CatalogItem) => string | undefined): Choice | undefined => {
+    const offer = order(items.filter((item) => usable(ctx, item, songs)));
+    const item = pick(offer, ctx.seed);
+    if (!item) return undefined;
+    const from = lessonId?.(item);
+    return { item, claim: claim(item), ...(from === undefined ? {} : { lessonId: from }) };
+  };
+  for (const step of FALLBACK_ORDER) {
+    let found: Choice | undefined;
+    if (step === 'rung' && rung) {
+      const own = [...rung.exerciseOptions, ...rung.songOptions].map((id) => ctx.catalog.byId.get(id)).filter((item): item is CatalogItem => item !== undefined);
+      found = choose(own, () => ({ kind: 'rung', rung, ...(strand?.title === undefined ? {} : { strand: strand.title }) }), () => rung.id);
+    } else if (step === 'skill' && rung && want?.skill !== undefined) {
+      const skill = want.skill;
+      found = choose(taught.filter((item) => (item.targetSkills ?? []).includes(skill)), () => ({ kind: 'skill', skill, rung }), (item) => listingIn(ctx, item));
+    } else if (step === 'demand' && rung && want?.skill !== undefined) {
+      const demands = new Set(vocabulary.demands.filter((d) => d.copedWithBy === want.skill).map((d) => d.id));
+      found = choose(
+        taught.filter((item) => (item.demands ?? []).some((d) => demands.has(d))),
+        (item) => ({ kind: 'demand', demand: (item.demands ?? []).find((d) => demands.has(d)) as string, rung }),
+        (item) => listingIn(ctx, item),
+      );
+    } else if (step === 'prerequisite' && rung) {
+      for (const id of rung.prerequisites ?? []) {
+        const before = ctx.walk.find((walked) => walked.lesson.id === id)?.lesson;
+        if (!before) continue;
+        const own = [...before.exerciseOptions, ...before.songOptions].map((one) => ctx.catalog.byId.get(one)).filter((item): item is CatalogItem => item !== undefined);
+        found = choose(own, () => ({ kind: 'prerequisite', rung: before, of: rung }), () => before.id);
+        if (found) break;
+      }
+    } else if (step === 'exposure') {
+      found = songs === 'only' ? exposure(ctx, 'songs', false) : (exposure(ctx, 'kinds', false) ?? (songs === 'any' ? exposure(ctx, 'songs', false) : undefined));
+    }
+    if (found) return strand ? { ...found, strand: strand.track } : found;
+  }
+  return undefined;
+}
+
+/** The reached rung listing an item, latest first: where an item drawn from taught material was offered from. */
+function listingIn(ctx: SlotContext, item: CatalogItem): string | undefined {
+  for (let i = ctx.reached.length - 1; i >= 0; i -= 1) {
+    const lesson = (ctx.reached[i] as Walked).lesson;
+    if (lesson.exerciseOptions.includes(item.id) || lesson.songOptions.includes(item.id)) return lesson.id;
+  }
+  return undefined;
+}
+
+/**
+ * Orientation items, which are not material to keep warm: the checklist, the
+ * tour, the placement test. Each is done once, for its own rung.
+ */
+const ORIENTATION_KINDS = new Set(['checklist', 'walkthrough', 'placement']);
+
+/** Tracks about how to practise, technique or theory rather than a style of music: not a style to balance. */
+const METHOD_TRACKS = new Set(['technique', 'practice', 'theory-ear']);
+
+/**
+ * Which families the exposure rule balances over:
+ *
+ * - `kinds` — the kinds of exercise the learner has been taught (`drill.kind`:
+ *   scales, rhythm drills, hearing chords, reading notes…), L26's domains as
+ *   far as the catalog names them;
+ * - `tracks` — the styles the learner switched on (a song's track, from the
+ *   rung listing it; never the method tracks, `METHOD_TRACKS`), beside the
+ *   core path;
+ * - `songs` — every song taught: the tracks, and the core lessons before the
+ *   learner's as one family.
+ */
+type Families = 'kinds' | 'tracks' | 'songs';
+
+/**
+ * The exposure rule (C6; L26; the plan's balance rule): among the families of
+ * material the learner has been taught — the options of every rung reached on
+ * the tracks switched on, the learner's own rung's songs left to the rung —
+ * the family played least lately, and in it an item played least lately.
+ * Never played comes first, then the longest since; among the never played,
+ * the family and the item the latest rung teaches first (the nearest to where
+ * the learner is), and a piece not yet learned before one learned. A family
+ * already on today's card is not "not seen lately". Not remediation: nothing
+ * here reads a weakness.
+ *
+ * `due`: only a family nothing of which was played for `EXPOSURE_DAYS`, and
+ * only for a learner with a history to balance — how the review (over kinds)
+ * and the repertoire slot (over tracks) let exposure choose ahead of the rung
+ * rather than only as a last resort. Otherwise the least lately played, said
+ * with when.
+ */
+function exposure(ctx: SlotContext, families: Families, due: boolean): Choice | undefined {
+  if (due && !ctx.history) return undefined;
+  const here = new Set(ctx.strands.map((strand) => strand.rung.id));
+  const found = new Map<string, { family: ExposureFamily; items: { item: CatalogItem; from: string; at: number }[]; last?: string; latest: number }>();
+  const titleOf = (track: string): string => ctx.input.curriculum.tracks.find((t) => t.id === track)?.title ?? track;
+  ctx.reached.forEach((walked, at) => {
+    for (const id of [...walked.lesson.exerciseOptions, ...walked.lesson.songOptions]) {
+      const item = ctx.catalog.byId.get(id);
+      if (!item || isReadingRow(item) || !playable(item)) continue;
+      let family: ExposureFamily | undefined;
+      if (item.type !== 'song') {
+        const kind = item.drill?.kind ?? 'study';
+        if (families === 'kinds' && !ORIENTATION_KINDS.has(kind)) family = { by: 'kind', id: kind };
+      } else if (families !== 'kinds' && !here.has(walked.lesson.id)) {
+        if (walked.track !== 'core' && (families === 'songs' || !METHOD_TRACKS.has(walked.track))) family = { by: 'track', id: walked.track, title: titleOf(walked.track) };
+        else if (walked.track === 'core' && families === 'songs') family = { by: 'earlier', id: 'earlier' };
+      }
+      if (!family) continue;
+      const key = `${family.by}:${family.id}`;
+      const entry = found.get(key) ?? { family, items: [], latest: -1 };
+      if (!entry.items.some((one) => one.item.id === item.id)) entry.items.push({ item, from: walked.lesson.id, at });
+      entry.latest = Math.max(entry.latest, at);
+      const played = ctx.lastPlayed(item.id);
+      if (played !== undefined && (entry.last === undefined || played > entry.last)) entry.last = played;
+      found.set(key, entry);
+    }
+  });
+  const ranked = [...found.values()]
+    .filter((entry) => entry.items.some((one) => usable(ctx, one.item, 'any')))
+    .filter((entry) => !entry.items.some((one) => ctx.used.has(one.item.id)))
+    .filter((entry) => !due || entry.last === undefined || (daysSince(entry.last, ctx.today) ?? 0) >= EXPOSURE_DAYS)
+    .sort((a, b) => (a.last ?? '').localeCompare(b.last ?? '') || b.latest - a.latest);
+  const entry = pick(ranked, ctx.seed);
+  if (!entry) return undefined;
+  const chosen = entry.items
+    .filter((one) => usable(ctx, one.item, 'any'))
+    .sort(
+      (a, b) =>
+        (ctx.learned.has(a.item.id) ? 1 : 0) - (ctx.learned.has(b.item.id) ? 1 : 0) ||
+        (ctx.lastPlayed(a.item.id) ?? '').localeCompare(ctx.lastPlayed(b.item.id) ?? '') ||
+        b.at - a.at,
+    )[0];
+  if (!chosen) return undefined;
+  return { item: chosen.item, claim: { kind: 'exposure', family: entry.family, ...(entry.last === undefined ? {} : { lastPlayed: entry.last }) }, lessonId: chosen.from };
+}
+
+/**
+ * The warm-up (C6 item 1): from the rung's exercises, the one its unmet
+ * requirements ask for — an exercise training a skill a requirement names, the
+ * skill the evidence has shown least first; else one its runs, done or measure
+ * requirements count and have not counted, in the lesson's order. Never the
+ * rung's reading row, nor any reading row (L65: a warm-up is not a sight-read,
+ * and the reading slot is the reader's). When the rung asks nothing a warm-up
+ * serves, the next rung's; when that asks nothing either, the exposure rule.
+ * When the rung asks something and no exercise of its can be offered, the
+ * fallback ladder.
+ */
+function warmup(ctx: SlotContext, phase: Phase): Choice | undefined {
+  const wanting = ctx.strands.map((strand) => ({ strand, wants: wantsOf(ctx, strand.rung, 'none') }));
+  if (phase === 'fallback') {
+    const stuck = wanting.find((one) => one.wants.length > 0);
+    return stuck ? fallback(ctx, 'none', { ...(stuck.wants[0]?.skill === undefined ? {} : { skill: stuck.wants[0]?.skill }), strand: stuck.strand }, (items) => uncountedFirst(ctx, items)) : undefined;
+  }
+  for (const { strand, wants } of wanting) {
+    for (const want of wants) {
+      const item = pick(want.offer, ctx.seed);
+      if (item) return { item, claim: askedClaim(want, false, strand), lessonId: strand.rung.id, strand: strand.track };
+    }
+  }
+  // A strand asking something no exercise of its can be offered for waits for the fallback pass.
+  if (wanting.some((one) => one.wants.length > 0)) return undefined;
+  for (const { strand } of wanting) {
+    if (!strand.after) continue;
+    for (const want of wantsOf(ctx, strand.after, 'none')) {
+      const item = pick(want.offer, ctx.seed);
+      if (item) return { item, claim: askedClaim(want, true, strand), lessonId: strand.after.id, strand: strand.track };
+    }
+  }
+  return exposure(ctx, 'kinds', false);
+}
+
+/**
+ * New (C6 item 3): a strand's next unmet requirement's item, in the order its
+ * lesson states them — a strand the card does not serve yet first, so no one
+ * track takes the warm-up, the new piece and the repertoire (the
+ * parallel-strand finding); within a strand, a requirement the warm-up already
+ * serves gives way to the next. Where what is left on a strand's rung is its
+ * reads, that strand's next lesson's first, said as such — never out of a
+ * stage into a project. Otherwise the fallback ladder.
+ */
+function fresh(ctx: SlotContext, onCard: readonly Choice[], phase: Phase): Choice | undefined {
+  const strands = [...ctx.strands.filter((one) => !servedBy(onCard, one)), ...ctx.strands.filter((one) => servedBy(onCard, one))];
+  if (phase === 'fallback') {
+    const first = strands.map((strand) => ({ strand, wants: wantsOf(ctx, strand.rung, 'any') })).find((one) => one.wants.length > 0);
+    return fallback(ctx, 'any', first ? { ...(first.wants[0]?.skill === undefined ? {} : { skill: first.wants[0]?.skill }), strand: first.strand } : undefined, (items) => uncountedFirst(ctx, items), onCard);
+  }
+  const served = (want: Want): boolean => onCard.some((choice) => want.pool.some((item) => item.id === choice.item.id));
+  for (const strand of strands) {
+    const wants = wantsOf(ctx, strand.rung, 'any');
+    for (const want of [...wants.filter((want) => !served(want)), ...wants.filter(served)]) {
+      const item = pick(want.offer, ctx.seed);
+      if (item) return { item, claim: askedClaim(want, false, strand), lessonId: strand.rung.id, strand: strand.track };
+    }
+  }
+  for (const strand of strands) {
+    if (!strand.after || wantsOf(ctx, strand.rung, 'any').length > 0) continue;
+    for (const want of wantsOf(ctx, strand.after, 'any')) {
+      if (served(want)) continue;
+      const item = pick(want.offer, ctx.seed);
+      if (item) return { item, claim: askedClaim(want, true, strand, waitsForReads(ctx, strand.rung) ? { waitsForReads: true } : {}), lessonId: strand.after.id, strand: strand.track };
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Review (C6 item 2): two reasons, and the line says which.
+ *
+ * - **Skill retention**: a skill whose evidence the reads have not shown for
+ *   the ladder's `RETENTION_DAYS` (`notShownRecently`), a skill not yet
+ *   retained before one that has come back after a gap once; the item is a
+ *   reading row the skill was shown on before (every generated phrase is
+ *   new, so this is never the same phrase twice: S8 stands).
+ * - **Repertoire retention**: a learned piece (a song passed or mastered) not
+ *   played for `REPERTOIRE_WINDOW_DAYS`, however recently its skills were
+ *   shown elsewhere. A scale or a drill passed is technique, which the
+ *   exposure rule keeps warm, not a piece to keep playable.
+ *
+ * Whichever is further past its own span first; Shuffle reaches the rest.
+ * Nothing due for either: the exposure rule over the kinds of exercise the
+ * lessons have taught, where a kind has gone a week unplayed (the balance:
+ * well-rounded exposure chooses too, not only as a last resort); then the
+ * fallback ladder, the rung's counted items before the rest.
+ */
+function review(ctx: SlotContext, phase: Phase, onCard: readonly Choice[]): Choice | undefined {
+  if (phase === 'fallback') {
+    const counted = countedOnStrands(ctx);
+    return fallback(ctx, 'any', undefined, (items) => [...items.filter((item) => counted.has(item.id)), ...items.filter((item) => !counted.has(item.id))], onCard);
+  }
+  interface Due {
+    item: CatalogItem;
+    phrase?: SessionSlot['phrase'];
+    claim: SlotClaim;
+    over: number;
+    retained: boolean;
+    skill: boolean;
+  }
+  const due: Due[] = [];
+  for (const [skill, evidence] of ctx.skills) {
+    if (!evidence.reading.notShownRecently || evidence.lastSupport === undefined) continue;
+    const rows = [...evidence.supportedOn.entries()]
+      .sort((a, b) => b[1].localeCompare(a[1]))
+      .map(([id]) => ctx.catalog.byId.get(id))
+      .filter((item): item is CatalogItem => item !== undefined && isReadingRow(item) && playable(item) && !ctx.used.has(item.id));
+    const found = rows.map((row) => ({ row, phrase: retentionPhrase(ctx, row, skill) })).find((one) => one.phrase !== undefined);
+    if (!found) continue;
+    const item = found.row;
+    due.push({
+      item,
+      ...(found.phrase ? { phrase: found.phrase } : {}),
+      claim: { kind: 'skill-retention', skill, lastShown: evidence.lastSupport },
+      over: (daysSince(evidence.lastSupport, ctx.today) ?? 0) - RETENTION_DAYS,
+      retained: evidence.reading.retained,
+      skill: true,
+    });
+  }
+  for (const piece of ctx.learned.values()) {
+    const item = ctx.catalog.byId.get(piece.itemId);
+    // A piece: a scale or a drill passed is technique, kept warm by the exposure rule, not "a piece to keep playable".
+    if (!usable(ctx, item, 'only')) continue;
+    const since = daysSince(piece.lastPlayed, ctx.today);
+    if (since === undefined || since < REPERTOIRE_WINDOW_DAYS) continue;
+    due.push({ item, claim: { kind: 'piece-retention', lastPlayed: piece.lastPlayed }, over: since - REPERTOIRE_WINDOW_DAYS, retained: false, skill: false });
+  }
+  due.sort((a, b) => Number(a.retained) - Number(b.retained) || b.over - a.over || Number(b.skill) - Number(a.skill));
+  const chosen = pick(due, ctx.seed);
+  if (chosen) return { item: chosen.item, claim: chosen.claim, ...(chosen.phrase ? { phrase: chosen.phrase } : {}) };
+  // Nothing due for either reason: a kind of exercise the lessons have taught and nothing of which
+  // was played this week (the balance, L26), ahead of more of the lesson.
+  return exposure(ctx, 'kinds', true);
+}
+
+/**
+ * Repertoire (C6 item 4): a piece whose measured demands the learner's skills
+ * support (familiar or better) with one the learner's rung teaches — no piece
+ * carries measured demands yet (E writes them), so this finds nothing today;
+ * then the exposure rule over the styles the learner switched on, where a
+ * style's rungs have gone a week with nothing played; then the fallback
+ * ladder, a piece not yet learned before one learned. A mastered
+ * piece is still "a piece you know" (L18), but it is no longer offered every
+ * session (L17): keeping it playable is the review's repertoire retention.
+ */
+function repertoire(ctx: SlotContext, phase: Phase, onCard: readonly Choice[]): Choice | undefined {
+  if (phase === 'fallback') {
+    return fallback(
+      ctx,
+      'only',
+      undefined,
+      (items) => {
+        const order = uncountedFirst(ctx, items);
+        return [...order.filter((item) => !ctx.learned.has(item.id)), ...order.filter((item) => ctx.learned.has(item.id))];
+      },
+      onCard,
+    );
+  }
+  const vocabulary = ctx.input.vocabulary ?? VOCABULARY_V0;
+  const rungs = new Set(ctx.strands.map((strand) => strand.rung.id));
+  const supported = (demand: string): boolean => {
+    const skill = vocabulary.demands.find((d) => d.id === demand)?.copedWithBy;
+    const state = skill === undefined ? undefined : ctx.skills.get(skill)?.reading.state;
+    return state !== undefined && LADDER_STATES.indexOf(state) >= LADDER_STATES.indexOf('familiar');
+  };
+  const edge = (demand: string): boolean => rungs.has(vocabulary.demands.find((d) => d.id === demand)?.taughtAt ?? '');
+  const ready = ctx.input.items.filter(
+    (item) => usable(ctx, item, 'only') && (item.demands ?? []).length > 0 && (item.demands ?? []).every(supported) && (item.demands ?? []).some(edge),
+  );
+  const piece = pick(ready, ctx.seed);
+  if (piece) return { item: piece, claim: { kind: 'ready', demand: (piece.demands ?? []).find(edge) as string } };
+  return exposure(ctx, 'tracks', true);
+}
+
+/** The tracks whose rungs are about playing from chords, form and feel. */
+const JAM_TRACKS = new Set(['chords-pop', 'blues-boogie', 'jazz', 'jam']);
+
+/**
+ * Jam: an option of a rung on a jam track the learner has reached — the
+ * learner's own rung first where it is one — played least lately. It was any
+ * item on those tracks at or below the stage number plus one; before any jam
+ * rung is reached there is no jam row.
+ */
+function jam(ctx: SlotContext, phase: Phase): Choice | undefined {
+  if (phase === 'fallback') return undefined;
+  const rungs = ctx.reached.filter((walked) => JAM_TRACKS.has(walked.track)).map((walked) => walked.lesson).reverse();
+  for (const lesson of rungs) {
+    const offer = [...lesson.exerciseOptions, ...lesson.songOptions]
+      .map((id) => ctx.catalog.byId.get(id))
+      .filter((item): item is CatalogItem => usable(ctx, item, 'any'))
+      .map((item, at) => ({ item, at }))
+      .sort((a, b) => (ctx.lastPlayed(a.item.id) ?? '').localeCompare(ctx.lastPlayed(b.item.id) ?? '') || a.at - b.at)
+      .map((one) => one.item);
+    const item = pick(offer, ctx.seed);
+    if (item) return { item, claim: { kind: 'jam', rung: lesson }, lessonId: lesson.id };
+  }
+  return undefined;
+}
+
+/**
+ * Two passes: every slot's own claim first — the reader's row, what the lesson
+ * asks, retention, the exposure rule — and only then the fallback ladder for
+ * the slots still empty, so a fallback never takes what a claim asked for. A
+ * review with nothing due is the weakest of the fallbacks and chooses last.
+ */
+type Phase = 'claim' | 'fallback';
+const CLAIM_ORDER: readonly SlotKind[] = ['sightreading', 'technique', 'new', 'review', 'repertoire', 'jam', 'free'];
+const FALLBACK_FILL_ORDER: readonly SlotKind[] = ['technique', 'new', 'repertoire', 'review', 'jam'];
 
 /**
  * Today's session card (docs/04 §2).
  *
- * Slots are filled in template order and no item is used twice, so a short
- * session never turns into the same scale five times.
+ * Every slot is chosen from what the evidence supports and what the rung asks
+ * next (C6), and its reason line says which, or claims only the rung. Slots
+ * choose strongest claim first — the reader's row, then the warm-up and the
+ * new slot, which the rung asks for, then review and repertoire, whose
+ * fallbacks take what is left — and are shown in the template's order. No
+ * item is used twice, and a row that finds nothing is dropped.
  */
 export function buildSession(input: BuildInput): { template: SessionTemplate; slots: SessionSlot[] } {
   const template = templateFor(input.minutes);
-  const position = nextRecommended(input.curriculum, input.states, input.activeTracks, {
+  const position = readerPosition(input.curriculum, input.states, input.activeTracks, {
     ...(input.strictPrerequisites ? { strictPrerequisites: true } : {}),
     ...(input.startAt === undefined ? {} : { startAt: input.startAt }),
   });
-  const used = new Set<string>();
-  const seed = input.seed ?? 0;
+  const today = input.today ?? new Date(0);
+  const walk = walkOf(input.curriculum, input.activeTracks);
+  const played = input.lastPlayed ?? new Map<string, string>();
+  const lastPlayed = (id: string): string | undefined => {
+    const value = played.get(id);
+    return value === undefined || value === '' ? undefined : value;
+  };
+  const { strands, reached } = strandsOf({ input, walk, lastPlayed });
+  const ctx: SlotContext = {
+    input,
+    catalog: input.catalog,
+    position,
+    walk,
+    strands,
+    reached,
+    skills: skillEvidenceOf(input.rows ?? input.readingRows ?? [], input.vocabulary ?? VOCABULARY_V0, today),
+    learned: new Map((input.learned ?? []).map((piece) => [piece.itemId, piece])),
+    lastPlayed,
+    history: [...played.values()].some((value) => value !== ''),
+    today,
+    used: new Set<string>(),
+    seed: input.seed ?? 0,
+  };
+
+  const filled = new Map<number, { item?: CatalogItem; claim?: SlotClaim; lessonId?: string; reading?: ReadingOffer; phrase?: SessionSlot['phrase']; reason: string }>();
+  const chosen: Choice[] = [];
+  const indexed = template.slots.map((slot, slotIndex) => ({ slot, slotIndex }));
+  const inOrder = (order: readonly SlotKind[]): typeof indexed =>
+    indexed
+      .filter(({ slot }) => order.includes(slot.kind))
+      .sort((a, b) => order.indexOf(a.slot.kind) - order.indexOf(b.slot.kind) || a.slotIndex - b.slotIndex);
+  const choose = (kind: SlotKind, phase: Phase): Choice | undefined =>
+    kind === 'technique'
+      ? warmup(ctx, phase)
+      : kind === 'new'
+        ? fresh(ctx, chosen, phase)
+        : kind === 'review'
+          ? review(ctx, phase, chosen)
+          : kind === 'repertoire'
+            ? repertoire(ctx, phase, chosen)
+            : jam(ctx, phase);
+  const keep = (slotIndex: number, kind: SlotKind, choice: Choice): void => {
+    ctx.used.add(choice.item.id);
+    chosen.push(choice);
+    const known = kind === 'repertoire' && ctx.learned.get(choice.item.id)?.status === 'mastered';
+    filled.set(slotIndex, {
+      item: choice.item,
+      claim: choice.claim,
+      ...(choice.lessonId === undefined ? {} : { lessonId: choice.lessonId }),
+      ...(choice.phrase ? { phrase: choice.phrase } : {}),
+      reason: slotReason(kind, choice.claim, today, { known }),
+    });
+  };
+  for (const { slot, slotIndex } of inOrder(CLAIM_ORDER)) {
+    if (slot.kind === 'free') {
+      filled.set(slotIndex, { reason: slotReason('free', undefined, today) });
+      continue;
+    }
+    if (slot.kind === 'sightreading') {
+      const reading = readingSlot(ctx, slotIndex);
+      if (reading) {
+        ctx.used.add(reading.item.id);
+        filled.set(slotIndex, reading);
+      }
+      continue;
+    }
+    const choice = choose(slot.kind, 'claim');
+    if (choice) keep(slotIndex, slot.kind, choice);
+  }
+  for (const { slot, slotIndex } of inOrder(FALLBACK_FILL_ORDER)) {
+    if (filled.has(slotIndex)) continue;
+    const choice = choose(slot.kind, 'fallback');
+    if (choice) keep(slotIndex, slot.kind, choice);
+  }
 
   const slots: SessionSlot[] = [];
   let breakAfter = template.breakAfterSlot;
   template.slots.forEach((slot, slotIndex) => {
-    const filled = fillSlot(slot.kind, input, position, used, seed + slotIndex);
+    const one = filled.get(slotIndex);
     // A row with nothing in it is worse than no row: it is a hole the learner
     // has to fill by hand, which is the thing this card exists to avoid. Free
     // play is the exception — it never has an item and is a prompt, not a
     // piece.
-    if (!filled.item && slot.kind !== 'free') {
+    if (!one || (!one.item && slot.kind !== 'free')) {
       if (breakAfter !== undefined && slotIndex < breakAfter) breakAfter -= 1;
       return;
     }
-    if (filled.item) used.add(filled.item.id);
     slots.push({
       kind: slot.kind,
       minutes: slot.minutes,
-      ...(filled.item ? { item: filled.item } : {}),
-      ...(filled.lessonId ? { lessonId: filled.lessonId } : {}),
-      reason: filled.reason,
-      ...(filled.reading ? { reading: filled.reading } : {}),
+      ...(one.item ? { item: one.item } : {}),
+      ...(one.lessonId ? { lessonId: one.lessonId } : {}),
+      reason: one.reason,
+      ...(one.claim ? { claim: one.claim } : {}),
+      ...(one.reading ? { reading: one.reading } : {}),
+      ...(one.phrase ? { phrase: one.phrase } : {}),
     });
   });
   return {
@@ -483,56 +1327,114 @@ export function buildSession(input: BuildInput): { template: SessionTemplate; sl
 }
 
 /**
- * What "Swap this" offers for one row (docs/04 §2).
+ * The reading slot: the reader's phrase (C4), where it used to be any reading
+ * row at or below the stage by catalog order — level 3 every day at Stages 5-9
+ * and level 1 at Stage 4 (the sight-reading trace, P1-a) — plus the rung's own
+ * (T37). The same rule as the daily read, with a phrase of its own. Before any
+ * rung that lists a reading row there is no slot, as there was none. Chosen
+ * first, so no other slot can take the row (L65).
+ */
+function readingSlot(ctx: SlotContext, slotIndex: number): { item: CatalogItem; lessonId?: string; reason: string; reading: ReadingOffer } | undefined {
+  const today = ctx.today;
+  const offer = readingOffer({
+    curriculum: ctx.input.curriculum,
+    items: ctx.input.items,
+    position: ctx.position,
+    activeTracks: ctx.input.activeTracks,
+    rows: ctx.input.readingRows ?? [],
+    today,
+    purpose: 'slot',
+    // Shuffle's counter, offset by the slot's place as it always was, so a card's phrase is the one it was.
+    shuffle: ctx.seed + slotIndex,
+  });
+  if (!offer || !offer.anchored || ctx.used.has(offer.item.id) || !playable(offer.item)) return undefined;
+  return {
+    item: offer.item,
+    ...(offer.lessonId === undefined ? {} : { lessonId: offer.lessonId }),
+    reason: readingReason(offer.why, 'slot', today),
+    reading: offer,
+  };
+}
+
+/** Which tier of "Swap this" an option came from (`selectors.tieredAlternatives`), or `kind`, the sheet's last. */
+export interface SwapOption {
+  item: CatalogItem;
+  tier: AlternativeTier | 'kind';
+  /** The skill or demand the tier shares, for its words. */
+  shared?: string;
+}
+
+/**
+ * The demands a reading row may write that the learner's rung has not taught
+ * (C4b's control map read, never moved); for any other item its measured
+ * `demands` the rung has not taught. What keeps a swap from offering what the
+ * lessons have not reached, where a level window used to.
+ */
+function untaughtDemands(item: CatalogItem, taught: (demand: string) => boolean, vocabulary: Vocabulary): string[] {
+  if (isReadingRow(item)) {
+    const options = sightReadingOptionsFor(item.drill?.params ?? {}, 1);
+    return vocabulary.demands
+      .filter((demand) => !taught(demand.id))
+      .filter((demand) => READING_CONTROLS[demand.id]?.mayWrite(options) === true)
+      .map((demand) => demand.id);
+  }
+  return (item.demands ?? []).filter((demand) => !taught(demand));
+}
+
+/**
+ * What "Swap this" offers for one row (docs/04 §2; C6 item 6).
  *
- * Wraps `alternativesFor` with the two things a *session* row knows that a
- * lesson does not: what is already in today's card (so a swap never offers a
- * duplicate), and whether the row is a slot where a song makes sense at all.
+ * The tiers are `tieredAlternatives`'s — the same lesson, a stand-in the
+ * item's author named, an item sharing a target skill, one carrying a measured
+ * demand it carries — and each option says which tier it came from, which the
+ * sheet prints. Two things a session row knows that a lesson does not: what is
+ * already on today's card (never offered twice), and whether a song makes sense
+ * in the slot at all. Given the learner's rung, nothing is offered that carries
+ * a demand no lesson up to it has taught.
+ *
+ * With nothing in any tier, the last resort is no longer "the same type within
+ * one level" but the same kind of exercise — or, for a song, a song — from the
+ * lessons the learner has reached (`kind`), which the sheet names as such.
  */
 export function swapOptions(
   slot: SessionSlot,
   slots: SessionSlot[],
   curriculum: Curriculum,
   catalog: CatalogIndex,
-  options: { excludeSongs?: boolean; items?: CatalogItem[] } = {},
-): CatalogItem[] {
+  options: { excludeSongs?: boolean; items?: CatalogItem[]; rung?: string; activeTracks?: readonly string[]; vocabulary?: Vocabulary } = {},
+): SwapOption[] {
   if (!slot.item) return [];
   const source = slot.item;
+  const vocabulary = options.vocabulary ?? VOCABULARY_V0;
   const excludeSongs = options.excludeSongs ?? slot.kind === 'technique';
   const exclude = slots.map((other) => other.item?.id).filter((id): id is string => Boolean(id));
-  const tiered = alternativesFor(
-    {
-      itemId: source.id,
-      ...(slot.lessonId ? { lessonId: slot.lessonId } : {}),
-      excludeSongs,
-      exclude,
-    },
+  const taught = options.rung === undefined ? undefined : taughtAtRung(curriculum, options.rung, vocabulary);
+  const fits = (item: CatalogItem): boolean => playable(item) && (taught === undefined || untaughtDemands(item, taught, vocabulary).length === 0);
+  const tiered: SwapOption[] = tieredAlternatives(
+    { itemId: source.id, ...(slot.lessonId ? { lessonId: slot.lessonId } : {}), excludeSongs, exclude },
     curriculum,
     catalog,
-  ).filter((candidate) => playable(candidate));
+  ).filter((option) => fits(option.item));
   if (tiered.length > 0) return tiered;
 
-  // A swap sheet that offers nothing is a dead button, and at Stage 0 the
-  // three tiers can genuinely come up empty: a handful of drills, few shared
-  // concept tags. So the last resort is the loosest useful claim — anything
-  // of the same kind at about the same level.
+  // The last resort: the same kind, from the lessons reached. Without a rung, every rung counts as reached.
+  const walk = walkOf(curriculum, options.activeTracks ?? []);
+  const at = options.rung === undefined ? walk.length - 1 : walk.findIndex((walked) => walked.lesson.id === options.rung);
+  const reached = walk.slice(0, (at < 0 ? walk.length - 1 : at) + 1);
   const skip = new Set([source.id, ...exclude]);
-  return (options.items ?? [...catalog.byId.values()])
-    .filter(
-      (item) =>
-        !skip.has(item.id) &&
-        playable(item) &&
-        item.type === source.type &&
-        !(excludeSongs && item.type === 'song') &&
-        Math.abs(item.level - source.level) <= 1,
-    )
-    .sort((a, b) => {
-      const byDistance = Math.abs(a.level - source.level) - Math.abs(b.level - source.level);
-      if (byDistance !== 0) return byDistance;
-      // replan §1.4: a judged level beats an estimated one at equal distance.
-      return levelConfidence(b) - levelConfidence(a);
-    })
-    .slice(0, 12);
+  const out: SwapOption[] = [];
+  for (const walked of reached) {
+    for (const id of [...walked.lesson.exerciseOptions, ...walked.lesson.songOptions]) {
+      const item = catalog.byId.get(id);
+      if (!item || skip.has(id) || !fits(item) || isReadingRow(item) !== isReadingRow(source)) continue;
+      if (excludeSongs && item.type === 'song') continue;
+      const same = source.type === 'song' ? item.type === 'song' : item.type !== 'song' && (item.drill?.kind ?? 'study') === (source.drill?.kind ?? 'study');
+      if (!same) continue;
+      skip.add(id);
+      out.push({ item, tier: 'kind' });
+    }
+  }
+  return out.slice(-12).reverse();
 }
 
 /**

@@ -20,7 +20,7 @@ import { evidenceFor, type Evidence, type EvidenceResult } from '../../src/evide
 import { ladderState, RETENTION_DAYS, RECENT_ATTEMPTS, SUPPORT_SHARE } from '../../src/evidence/ladder';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import { DEFAULT_MASTERY } from '../../src/engine/Scoring';
-import { REVIEW_INTERVALS_DAYS } from '../../src/data/progressStore';
+import { REPERTOIRE_WINDOW_DAYS } from '../../src/curriculum/session';
 
 /** Two bars a reader reads: ten notes, every one an opportunity for sight-reading. */
 const PHRASE = phrase({ bars: [line(['C4', 'D4', 'E4', 'C4'], 1), line(['E4', 'F4', 'G4', 'G4'], 1)] });
@@ -50,8 +50,12 @@ const BADLY = { wrongSteps: [1, 3, 5, 7] };
 const today = new Date(day(60));
 
 describe('the numbers are named and are what the design says they are', () => {
-  it('21 days is the review calendar’s last step; two recent attempts; supporting is Part G’s pass share', () => {
-    expect(RETENTION_DAYS).toBe(REVIEW_INTERVALS_DAYS[REVIEW_INTERVALS_DAYS.length - 1]);
+  // Revised (C6): 21 days was named as the review calendar's last step; the
+  // calendar is retired (the reviewer's correction of 2026-09-26) and the span
+  // stays the ladder's own hypothesis, with a piece's repertoire window apart.
+  it('21 days is the ladder’s retention span, apart from a piece’s repertoire window; two recent attempts; supporting is Part G’s pass share', () => {
+    expect(RETENTION_DAYS).toBe(21);
+    expect(REPERTOIRE_WINDOW_DAYS).not.toBe(RETENTION_DAYS);
     expect(RECENT_ATTEMPTS).toBe(2);
     expect(SUPPORT_SHARE).toBe(DEFAULT_MASTERY.passAccuracy);
   });

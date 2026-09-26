@@ -1,8 +1,14 @@
 // @vitest-environment jsdom
 /**
  * A learner's first thirty days of reading, day by day, through the real code
- * (the test inventory's Q6 row `firstThirtyDays`, **the reading part only**;
- * C4, rerun for C4c). The other learners and the other slots come with C5–C7.
+ * (the test inventory's Q6 row `firstThirtyDays`; C4, rerun for C4c; the
+ * other two learners are `firstThirtyDaysOnTheLadder.test.ts`, C5). Since C6
+ * each morning also builds the whole 30-minute card from the same store — the
+ * warm-up, review, new and repertoire slots beside the reading slot — and the
+ * last describe reads it: every slot says why it is there, from the rung or
+ * the evidence. The skip learner is a reader by construction and plays
+ * nothing but the day's phrase, so its card shows what Today offers a learner
+ * who only reads.
  *
  * Each morning Today's reader (`readingOffer`) chooses the daily read from the
  * rows the store holds; the phrase is generated from that recipe and seed, held
@@ -48,9 +54,11 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { nextRecommended, readingOffer, readingOptions, recipeDistance, type ReadingOffer } from '../../src/curriculum/session';
+import { buildSession, nextRecommended, readingOffer, readingOptions, recipeDistance, type ReadingOffer, type SessionSlot } from '../../src/curriculum/session';
+import { indexCatalog } from '../../src/curriculum/selectors';
+import { rungState } from '../../src/evidence/rungState';
 import { dailySeed, generateSightReading, type SightReadingOptions } from '../../src/engine/sightReading';
-import { recordRun, resetProgressForTest, sessionsForItem, dailyReadDays, dayKey } from '../../src/data/progressStore';
+import { allProgress, learnedPieces, recordRun, resetProgressForTest, rungRows, sessionsForItem, dailyReadDays, dayKey } from '../../src/data/progressStore';
 import { demandReadings, type DemandReading } from '../../src/evidence/demandReadings';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import { detect, type DetectorId } from '../../src/demands/detect';
@@ -63,6 +71,7 @@ import { eighthSteps, phraseModel, readPhrase, skipEighthSteps, skipSteps } from
 
 const CONTENT = join(process.cwd(), 'public', 'content');
 const catalog = JSON.parse(readFileSync(join(CONTENT, 'catalog.json'), 'utf8')) as CatalogItem[];
+const INDEX = indexCatalog(catalog);
 const curriculum = JSON.parse(readFileSync(join(CONTENT, 'curriculum.json'), 'utf8')) as Curriculum;
 const readers = catalog.filter((item) => item.drill?.kind === 'sight-reading');
 const byId = new Map(catalog.map((item) => [item.id, item]));
@@ -108,6 +117,8 @@ interface Day {
   model: ScoreModel;
   misread?: string;
   sight?: { n: number; right: number };
+  /** The morning's 30-minute card, built from the same store (C6). */
+  card: SessionSlot[];
 }
 
 const SKIP_LEARNER: Learner = {
@@ -149,6 +160,24 @@ async function live(learner: Learner): Promise<Day[]> {
     const morning = at(learner, n, 8);
     const rung = learner.rungOn(n);
     const rows = await storedRows();
+    // The morning's card (C6): the rung state and the skills from every stored run, the pieces
+    // learned and when each item was last played from the progress rows, as Today builds it.
+    const all = await rungRows();
+    const progress = await allProgress();
+    const card = buildSession({
+      curriculum,
+      catalog: INDEX,
+      items: catalog,
+      states: rungState(all, curriculum, VOCABULARY_V0, morning),
+      rows: all,
+      readingRows: rows,
+      learned: learnedPieces(progress, (id) => byId.get(id)?.drill?.kind === 'sight-reading'),
+      lastPlayed: new Map(progress.map((row) => [row.itemId, row.lastPracticedAt])),
+      activeTracks: ['core'],
+      minutes: 30,
+      startAt: rung,
+      today: morning,
+    }).slots;
     const made = readingOffer({
       curriculum,
       items: catalog,
@@ -189,6 +218,7 @@ async function live(learner: Learner): Promise<Day[]> {
       model,
       ...(miss ? { misread: miss.label } : {}),
       ...(sight && sight.kind === 'measured' ? { sight: { n: sight.n, right: sight.right } } : {}),
+      card,
     });
   }
   const rowsOut = process.env.C4C_DIARY_ROWS;
@@ -232,7 +262,10 @@ function diaryLine(day: Day): string {
     `Today: “${day.line}”`,
     `played: ${played(day)}`,
     `${day.sight ? `${String(day.sight.right)}/${String(day.sight.n)} right and in time` : 'no sight-reading evidence'}${day.misread ? ` — ${day.misread}` : ''}`,
-  ].join(' · ');
+  ].join(' · ').concat(
+    // The morning's card (C6), one slot a line under the day.
+    ...day.card.map((slot) => `\n        ${slot.kind.padEnd(12)} ${slot.item?.title ?? '(prompt)'} — “${slot.reason}”`),
+  );
 }
 
 const learners: Record<string, Day[]> = {};
@@ -511,5 +544,61 @@ describe('the second stop’s demonstrations (C4c item 6)', () => {
         expect(reads.some((row) => (row.evidence ?? []).some((one) => one.skill === 'sight-reading' && one.kind === 'measured')), label).toBe(false);
       }
     }
+  });
+});
+
+/**
+ * The other slots, every morning (C6; the brief's item 9): each is chosen from
+ * the rung or the evidence and says so; no fixed sentence is left; the warm-up
+ * never takes the reading row, so the reading slot is on every card from a
+ * rung with a row; nothing the rung has counted is offered by the slots that
+ * serve its asks; and the exposure rule chooses the repertoire slot, because
+ * this learner never plays a song from an earlier lesson.
+ */
+describe('the other slots, every morning (C6)', () => {
+  const OLD_WORDS = [
+    'Warm-up in the keys you are working in',
+    'Nothing due — keeping something warm',
+    'Due for review today',
+    'Something to just play',
+    'A piece you know — keep it playable',
+  ];
+
+  it('every slot but the reader’s says why it is there, from a claim, and none says an old fixed sentence', () => {
+    for (const day of skipDays()) {
+      for (const slot of day.card) {
+        const label = `day ${String(day.n)} ${slot.kind}: “${slot.reason}”`;
+        expect(OLD_WORDS, label).not.toContain(slot.reason);
+        expect(slot.reason.startsWith('Lesson '), label).toBe(false);
+        if (slot.kind !== 'sightreading' && slot.kind !== 'free') expect(slot.claim, label).toBeDefined();
+      }
+    }
+  });
+
+  it('the warm-up never takes the reading row, and the reading slot is on every card (L65)', () => {
+    for (const day of skipDays()) {
+      const warmup = day.card.find((slot) => slot.kind === 'technique');
+      expect(warmup?.item?.drill?.kind, `day ${String(day.n)}`).not.toBe('sight-reading');
+      expect(day.card.some((slot) => slot.kind === 'sightreading'), `day ${String(day.n)}: no reading slot`).toBe(true);
+    }
+  });
+
+  it('the warm-up and the new slot serve what the day’s rung asks, and never an item it has counted', () => {
+    for (const day of skipDays()) {
+      for (const kind of ['technique', 'new'] as const) {
+        const slot = day.card.find((one) => one.kind === kind);
+        expect(slot?.claim?.kind, `day ${String(day.n)} ${kind}`).toBe('asked');
+        const claim = slot?.claim as Extract<NonNullable<SessionSlot['claim']>, { kind: 'asked' }>;
+        expect(claim.rung.id, `day ${String(day.n)} ${kind}`).toBe(day.rung);
+      }
+    }
+  });
+
+  it('with nothing due, the exposure rule chooses the review row: this learner has played no kind of exercise but reading', () => {
+    const exposed = skipDays().filter((day) => day.card.find((slot) => slot.kind === 'review')?.claim?.kind === 'exposure');
+    // Day one has no history to balance (the rung's own material); from day two the learner has.
+    expect(exposed.length, skipDays().map((d) => d.card.find((s) => s.kind === 'review')?.reason).join(' | ')).toBeGreaterThan(20);
+    // Core only: no style of its own to balance, so the repertoire row is the rung's own music.
+    for (const day of skipDays()) expect(day.card.find((slot) => slot.kind === 'repertoire')?.claim?.kind, `day ${String(day.n)}`).toBe('rung');
   });
 });

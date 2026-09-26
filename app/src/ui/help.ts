@@ -33,7 +33,9 @@
 import type { DrillKind } from '../engine/drills/types';
 import type { Refusal } from '../evidence/evidence';
 import type { Skill } from '../demands/vocabulary';
-import type { ReadingMove, ReadingWhy } from '../curriculum/session';
+import type { ExposureFamily, ReadingMove, ReadingWhy, SlotClaim, SlotKind } from '../curriculum/session';
+import type { AlternativeTier } from '../curriculum/selectors';
+import { VOCABULARY_V0 } from '../evidence/vocabulary';
 import type { ReadingRecipe } from '../data/db';
 import type { RequirementReading, RungReading } from '../evidence/rungState';
 import type { LadderState } from '../evidence/ladder';
@@ -885,6 +887,297 @@ export function readingTitle(title: string, ownHands: string, recipe: Pick<Readi
   if (hands === undefined || hands === ownHands) return title;
   const bare = title.replace(/, (right|left) hand$/, '');
   return hands === 'both' ? bare : `${bare}, ${hands} hand`;
+}
+
+/**
+ * Why a slot on Today's card holds its item, in one line (C6; `04` §2, backlog
+ * I1, T19): drawn from the claim that chose it (`session.SlotClaim`) — what the
+ * lesson asks and what has counted, the skill the reads have not shown lately,
+ * when a learned piece was last played, the family of material played least
+ * lately, or the step of the fallback ladder — and nothing else. The session
+ * row cuts a reason to one line at the owner's width, so what the item is for
+ * comes first. Printed in `04` §2.
+ */
+export const SLOT_TEXT = {
+  thisLesson: 'This lesson',
+  nextLesson: 'The next lesson',
+  /** "This lesson asks for an exercise — not counted yet": the requirement's words (`rungState`). */
+  asksFor: 'asks for',
+  notCounted: 'not counted yet',
+  /** A `runs` requirement that asks for a performance (`04` §5e). */
+  performed: 'played with Perform on',
+  counted: 'counted',
+  /** New, when what is left on the learner's rung is its reads (the reader's): the next lesson, said as such. */
+  nextUp: 'Next lesson',
+  /** A project stage's rung (Stage 9): a piece to live with, never a rung to pass. */
+  project: 'A piece to live with',
+  waitsForReads: 'this one waits for your reads',
+  /** Skill retention: "Bass clef: not shown in 4 weeks" — what the reads have not shown. */
+  notShown: 'not shown in',
+  notShownSince: 'not shown since',
+  /** Repertoire retention: the piece's words, never a skill's. */
+  keepPlayable: 'Keeping this piece playable',
+  lastPlayed: 'last played',
+  /** A piece whose measured demands the reads support, one the lesson has just taught. */
+  readyWith: 'A piece with',
+  readySupported: 'your reads support them',
+  /** The review, when neither reason finds anything. */
+  nothingDue: 'Nothing due for review',
+  /** The fallback ladder's steps. */
+  fromThisLesson: 'From this lesson',
+  moreFromThisLesson: 'more from this lesson',
+  moreMusic: 'More music from this lesson',
+  trains: 'Trains',
+  has: 'Has',
+  whichAsked: 'which this lesson asks for',
+  whichBuildsOn: 'which this lesson builds on',
+  /** The exposure rule (L26). */
+  forVariety: 'For variety',
+  fromLessonsSoFar: 'from your lessons',
+  notPlayedYet: 'not played yet',
+  nonePlayedYet: 'none played yet',
+  nonePlayedSince: 'none played since',
+  earlierSong: 'a song from an earlier lesson',
+  /** Said of a mastered piece and only of one (L18). */
+  pieceYouKnow: 'A piece you know',
+  jam: 'Chords, form and feel',
+  free: 'Play anything you like — no scoring, no cursor',
+  /** After a swap: the learner's choice, and the tier it came from. */
+  chose: 'You chose this one',
+} as const;
+
+function lowerFirst(text: string): string {
+  return text.charAt(0).toLowerCase() + text.slice(1);
+}
+
+function upperFirst(text: string): string {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+/** A skill's name as a person says it (`skills.json`'s `display`). */
+function skillName(id: string): string {
+  return VOCABULARY_V0.skills.find((skill) => skill.id === id)?.display ?? id;
+}
+
+/** A demand's notes without the article: "dotted quarters", "eighth notes". */
+function demandName(id: string): string {
+  return (DEMAND_WORDS[id]?.name ?? id).replace(/^the /, '');
+}
+
+/**
+ * What a family of exercises is called (`drill.kind`), for the exposure
+ * rule's line. A kind with no row reads as its own name, and should be given
+ * one.
+ */
+export const FAMILY_WORDS: Readonly<Record<string, string>> = {
+  scale: 'scales',
+  arpeggio: 'arpeggios',
+  hanon: 'Hanon exercises',
+  comping: 'comping patterns',
+  'five-finger': 'five-finger patterns',
+  'seventh-voicing': 'seventh chords',
+  accompaniment: 'accompaniment patterns',
+  boogie: 'boogie patterns',
+  'broken-seventh': 'broken seventh chords',
+  cadence: 'cadences',
+  'ii-V-I': 'ii–V–I progressions',
+  progression: 'chord progressions',
+  'walking-bass': 'walking bass lines',
+  rhythm: 'rhythm drills',
+  inversion: 'inversions',
+  'blues-scale': 'blues scales',
+  'open-voicing': 'open voicings',
+  'interval-reading': 'reading by interval',
+  montuno: 'montunos',
+  'octave-scale': 'scales in octaves',
+  'hand-independence': 'hand-independence exercises',
+  trill: 'trills',
+  'repeated-notes': 'repeated notes',
+  tremolo: 'tremolos',
+  turnaround: 'turnarounds',
+  'broken-octaves': 'broken octaves',
+  clave: 'clave patterns',
+  coordination: 'coordination exercises',
+  'position-shift': 'position shifts',
+  shaping: 'phrase shaping',
+  articulation: 'articulation exercises',
+  pedal: 'pedalling',
+  rotation: 'rotation exercises',
+  'backing-track': 'playing over a loop',
+  chord: 'chord drills',
+  'note-flash': 'note reading',
+  'latin-groove': 'Latin grooves',
+  tumbao: 'tumbaos',
+  voicing: 'voicing exercises',
+  'find-key': 'finding notes on the keyboard',
+  'double-sixth': 'double sixths',
+  'double-third': 'double thirds',
+  'half-pedal': 'half pedalling',
+  'pedal-held': 'held-pedal exercises',
+  'slash-bass': 'slash-chord basses',
+  stride: 'stride patterns',
+  'tritone-sub': 'tritone substitutions',
+  'ear-progression': 'hearing progressions',
+  simon: 'Simon',
+  meter: 'odd metres',
+  syncopation: 'syncopation',
+  'ear-interval': 'hearing intervals',
+  'ear-chord': 'hearing chords',
+  'call-response': 'playing back by ear',
+  'ear-tune': 'playing tunes by ear',
+  'extended-chord': 'extended chords',
+  transposition: 'transposition',
+  'harmonic-dictation': 'harmonic dictation',
+  mode: 'modes',
+  'roman-numeral': 'Roman numerals',
+  dynamics: 'dynamics',
+  'chord-scale': 'chord–scales',
+  placement: 'the placement test',
+  checklist: 'the posture checklist',
+  walkthrough: 'the tour',
+  study: 'studies',
+};
+
+function familyWords(family: ExposureFamily): string {
+  if (family.by === 'earlier') return SLOT_TEXT.earlierSong;
+  if (family.by === 'track') return `a ${family.title ?? family.id} piece`;
+  return FAMILY_WORDS[family.id] ?? family.id.replace(/-/g, ' ');
+}
+
+/** "not shown in 4 weeks", or since the day, for longer than ten weeks: in figures, so the line's first words hold it. */
+function spanWords(since: string, today: Date): string {
+  const startOf = (d: Date): number => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  const weeks = Math.floor(Math.round((startOf(today) - startOf(new Date(since))) / 86_400_000) / 7);
+  return weeks <= 10
+    ? `${SLOT_TEXT.notShown} ${String(weeks)} week${weeks === 1 ? '' : 's'}`
+    : `${SLOT_TEXT.notShownSince} ${readDay(since, today).replace(/^on /, '')}`;
+}
+
+/**
+ * What the lesson asks, in a line: who asked, then what has counted
+ * (`rungState`). The session row is one line at the owner's width and its end
+ * is cut (seen on the glass at 342 px), so the claim comes in the first words:
+ * "This lesson asks for it" — the row's title is the "it" — and what has
+ * counted after the dash. A track names itself, the core path is "this
+ * lesson"; a project is a piece to live with, never a rung that asks.
+ */
+function askedWords(claim: Extract<SlotClaim, { kind: 'asked' }>): string {
+  const who =
+    claim.strand === undefined
+      ? claim.next
+        ? SLOT_TEXT.nextLesson
+        : SLOT_TEXT.thisLesson
+      : claim.next
+        ? `${claim.strand}’s next lesson`
+        : claim.strand;
+  if (claim.project) return `${claim.strand ?? SLOT_TEXT.thisLesson}: ${lowerFirst(SLOT_TEXT.project)}`;
+  if (claim.skill !== undefined) {
+    const whose = claim.next ? (claim.strand === undefined ? 'the next lesson' : `${claim.strand}’s next lesson`) : (claim.strand ?? 'this lesson');
+    return `${SLOT_TEXT.trains} ${lowerFirst(bareSkill(claim.skill))}, for ${whose}`;
+  }
+  const r = claim.requirement;
+  // A performance is what counts where the lesson asks for one: said, or a learner playing it daily never learns why nothing counts.
+  const perform = r.kind === 'runs' && r.performance === true ? `, ${SLOT_TEXT.performed}` : '';
+  if (claim.need > 1) return `${who}: ${String(claim.have)} of ${String(claim.need)} ${SLOT_TEXT.counted}${perform}`;
+  switch (r.kind) {
+    case 'done':
+      return `${who} ${SLOT_TEXT.asksFor} it — finished, nothing left undone`;
+    case 'measure':
+      return `${who} ${SLOT_TEXT.asksFor} it — its ${r.measure} measure met`;
+    default:
+      return `${who} ${SLOT_TEXT.asksFor} it${perform} — ${SLOT_TEXT.notCounted}`;
+  }
+}
+
+/** A skill's name without its article, for the start of a short line: "Bass clef", "Subdivision". */
+function bareSkill(id: string): string {
+  return upperFirst(skillName(id).replace(/^The /, ''));
+}
+
+/**
+ * The reason line for a slot (C6). `today` is the morning it is read, for
+ * "last played on Tuesday". `known`: the repertoire slot's piece is one the
+ * learner mastered, and only then does the line say so (L18).
+ */
+export function slotReason(kind: SlotKind, claim: SlotClaim | undefined, today: Date, options: { known?: boolean } = {}): string {
+  if (kind === 'free' || claim === undefined) return SLOT_TEXT.free;
+  const nothingDue = (rest: string): string => (kind === 'review' ? `${SLOT_TEXT.nothingDue} — ${lowerFirst(rest)}` : rest);
+  const line = ((): string => {
+    switch (claim.kind) {
+      case 'asked':
+        if (kind === 'new' && claim.next) {
+          // The row's title is the item; the next lesson's own title would be cut, so the line says why it is early.
+          const up = claim.strand === undefined ? SLOT_TEXT.nextUp : `${SLOT_TEXT.nextUp} in ${claim.strand}`;
+          return claim.waitsForReads ? `${up} — ${SLOT_TEXT.waitsForReads}` : up;
+        }
+        return askedWords(claim);
+      case 'skill-retention':
+        return `${bareSkill(claim.skill)}: ${spanWords(claim.lastShown, today)}`;
+      case 'piece-retention':
+        return `${SLOT_TEXT.keepPlayable} — ${SLOT_TEXT.lastPlayed} ${readDay(claim.lastPlayed, today)}`;
+      case 'ready':
+        return `${SLOT_TEXT.readyWith} ${demandName(claim.demand)} — ${SLOT_TEXT.readySupported}`;
+      case 'rung': {
+        // "this lesson" is the core path's; a track's own rung is named by its track.
+        if (claim.strand !== undefined) {
+          if (kind === 'review') return `${SLOT_TEXT.nothingDue} — more from ${claim.strand}`;
+          return kind === 'repertoire' ? `More music from ${claim.strand}` : kind === 'new' ? `More from ${claim.strand}` : `From ${claim.strand}`;
+        }
+        if (kind === 'review') return `${SLOT_TEXT.nothingDue} — ${SLOT_TEXT.moreFromThisLesson}`;
+        if (kind === 'repertoire') return SLOT_TEXT.moreMusic;
+        return kind === 'new' ? upperFirst(SLOT_TEXT.moreFromThisLesson) : SLOT_TEXT.fromThisLesson;
+      }
+      case 'skill':
+        return nothingDue(`${SLOT_TEXT.trains} ${lowerFirst(skillName(claim.skill))}, ${SLOT_TEXT.whichAsked}`);
+      case 'demand':
+        return nothingDue(`${SLOT_TEXT.has} ${demandName(claim.demand)}, ${SLOT_TEXT.whichAsked}`);
+      case 'prerequisite':
+        return nothingDue(`From ${claim.rung.title}, ${SLOT_TEXT.whichBuildsOn}`);
+      case 'exposure': {
+        // The family first, in its own words (a proper name — Simon, Hanon, Latin — keeps its capital),
+        // then when; the same line in the warm-up and in a review with nothing due.
+        const words = familyWords(claim.family);
+        if (claim.family.by !== 'kind') {
+          const since = claim.lastPlayed === undefined ? SLOT_TEXT.nonePlayedYet : `${SLOT_TEXT.nonePlayedSince} ${readDay(claim.lastPlayed, today).replace(/^on /, '')}`;
+          return `${SLOT_TEXT.forVariety}: ${words} — ${since}`;
+        }
+        if (claim.lastPlayed === undefined) return `${upperFirst(words)}, ${SLOT_TEXT.fromLessonsSoFar} — ${SLOT_TEXT.notPlayedYet}`;
+        const yours = words.startsWith('the ') ? words : `your ${words}`;
+        return `Keeping ${yours} warm — ${SLOT_TEXT.lastPlayed} ${readDay(claim.lastPlayed, today)}`;
+      }
+      case 'jam':
+        return `${SLOT_TEXT.jam}: from ${claim.rung.title}`;
+    }
+  })();
+  return kind === 'repertoire' && options.known === true ? `${SLOT_TEXT.pieceYouKnow} — ${lowerFirst(line)}` : line;
+}
+
+/** The swap sheet's words for a tier (C6 item 6): printed once over the options that came from it. */
+export function swapTierWords(tier: AlternativeTier | 'kind', shared?: string): string {
+  switch (tier) {
+    case 'lesson':
+      return 'From the same lesson';
+    case 'alternative':
+      return 'Named as a stand-in for it';
+    case 'skill':
+      return `Trains the same skill: ${shared === undefined ? 'the same' : lowerFirst(skillName(shared))}`;
+    case 'demand':
+      return `Carries the same demand: ${shared === undefined ? 'the same' : demandName(shared)}`;
+    case 'kind':
+      return 'The same kind, from your lessons so far';
+  }
+}
+
+/** A swapped row's reason: the learner's choice, and the claim the option had. */
+export function swapChoiceWords(tier: AlternativeTier | 'kind'): string {
+  const why: Record<AlternativeTier | 'kind', string> = {
+    lesson: 'from the same lesson',
+    alternative: 'a stand-in for the one offered',
+    skill: 'it trains the same skill',
+    demand: 'it carries the same demand',
+    kind: 'the same kind, from your lessons so far',
+  };
+  return `${SLOT_TEXT.chose} — ${why[tier]}`;
 }
 
 /**

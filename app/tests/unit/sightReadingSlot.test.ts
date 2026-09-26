@@ -46,8 +46,6 @@ function readingSlots(rung: string, minutes: number, reads: readonly SessionRow[
       catalog: index,
       items: catalog,
       states: { byRung: new Map() },
-      dueForReview: [],
-      mastered: [],
       activeTracks: ['core'],
       minutes,
       seed,

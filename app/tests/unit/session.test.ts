@@ -15,6 +15,7 @@ import {
   nextRecommended,
   playInstead,
   playable,
+  REPERTOIRE_WINDOW_DAYS,
   swapOptions,
   templateFor,
   type BuildInput,
@@ -117,10 +118,10 @@ function input(over: Partial<BuildInput> = {}): BuildInput {
     catalog: indexCatalog(ITEMS),
     items: ITEMS,
     states: statesOf(CURRICULUM),
-    dueForReview: [],
-    mastered: [],
+    learned: [],
     activeTracks: ['core'],
     minutes: 30,
+    today: new Date('2026-10-02T10:00:00Z'),
     ...over,
   };
 }
@@ -247,13 +248,21 @@ describe('buildSession', () => {
     }
   });
 
-  it('puts a due item in the review row and says so', () => {
-    const { slots } = buildSession(input({ dueForReview: ['song.b'] }));
+  // Replaced (C6): "puts a due item in the review row and says so" handed the builder a list of
+  // item ids due by the calendar and read "Due for review" back. The calendar is retired: a
+  // learned piece comes back when it has gone the repertoire window unplayed, and the line is the
+  // piece's (`repertoireRetention.test.ts` holds the rule; this is the builder's end of it).
+  it('puts a learned piece past the repertoire window in the review row, in the piece’s words', () => {
+    const today = new Date('2026-10-20T10:00:00Z');
+    const lastPlayed = new Date(today.getTime() - (REPERTOIRE_WINDOW_DAYS + 1) * 86_400_000).toISOString();
+    const { slots } = buildSession(input({ learned: [{ itemId: 'song.c', status: 'passed', lastPlayed }], lastPlayed: new Map([['song.c', lastPlayed]]), today }));
     const review = slots.find((slot) => slot.kind === 'review');
-    expect(review?.item?.id).toBe('song.b');
-    expect(review?.reason).toContain('Due for review');
+    expect(review?.item?.id).toBe('song.c');
+    expect(review?.reason).toMatch(/^Keeping this piece playable/);
   });
 
+  // Revised (C6): the seed was an index into the rung's list for every slot; it is Shuffle's turn
+  // to the next candidate of the claim that chose each slot. The card still changes.
   it('a different seed gives a different card', () => {
     const first = buildSession(input({ seed: 0 })).slots.map((s) => s.item?.id);
     const second = buildSession(input({ seed: 1 })).slots.map((s) => s.item?.id);
@@ -270,9 +279,10 @@ describe('swapOptions', () => {
       items: ITEMS,
     });
     expect(options.length).toBeGreaterThan(0);
+    expect(options[0]?.tier).toBe('lesson');
     // Nothing already in today's card.
     const inCard = new Set(slots.map((s) => s.item?.id));
-    for (const option of options) expect(inCard.has(option.id)).toBe(false);
+    for (const option of options) expect(inCard.has(option.item.id)).toBe(false);
   });
 
   it('the "not a song" filter removes songs', () => {
@@ -282,15 +292,22 @@ describe('swapOptions', () => {
       excludeSongs: true,
       items: ITEMS,
     });
-    expect(options.every((option) => option.type !== 'song')).toBe(true);
+    expect(options.every((option) => option.item.type !== 'song')).toBe(true);
   });
 
-  it('falls back to something at the same level rather than coming back empty', () => {
-    // A lesson with one option and no shared concepts anywhere.
+  // Replaced (C6): "falls back to something at the same level rather than coming back empty"
+  // offered anything of the same type within one level. The last resort is now the same kind of
+  // exercise from the lessons reached, said as such; with nothing taught of its kind, nothing.
+  it('with no tier to offer, the same kind from the lessons reached, and nothing from no lesson', () => {
+    const slot = { kind: 'review' as const, minutes: 5, item: ITEMS[2] as CatalogItem, reason: '' };
+    const options = swapOptions(slot, [slot], CURRICULUM, indexCatalog(ITEMS), { items: ITEMS });
+    expect(options.map((option) => [option.item.id, option.tier])).toEqual([
+      ['ex.b', 'kind'],
+      ['ex.a', 'kind'],
+    ]);
     const lonely = [item('only.one', { concepts: ['unique'] }), item('near.by', { concepts: ['other'] })];
-    const slot = { kind: 'technique' as const, minutes: 5, item: lonely[0], reason: '' };
-    const options = swapOptions(slot, [slot], CURRICULUM, indexCatalog(lonely), { items: lonely });
-    expect(options.map((option) => option.id)).toEqual(['near.by']);
+    const alone = { kind: 'technique' as const, minutes: 5, item: lonely[0], reason: '' };
+    expect(swapOptions(alone, [alone], CURRICULUM, indexCatalog(lonely), { items: lonely })).toEqual([]);
   });
 });
 

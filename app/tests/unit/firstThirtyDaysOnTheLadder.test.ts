@@ -23,12 +23,25 @@
  *   from 4.6's page, which shows 6/8 and syncopation — skills 4.5 names — so
  *   4.5 is begun by evidence observed elsewhere, and is met only when runs
  *   judged by 4.5 meet its standard.
+ *
+ * Since C6 each morning also builds Today's 30-minute card from the same store
+ * (`buildSession`: the rung state, the skills, the pieces learned, when each
+ * item was last played), and each learner plays what the card's review and
+ * repertoire rows offer, from the card, as a learner who follows Today there;
+ * the rung's own material they still play down the page, as before. The last
+ * describe reads the thirty cards: every slot says why it is there; no slot
+ * offers an item its rung has counted while one it asks for waits; a piece
+ * learned comes back to the review row once it has gone the repertoire window
+ * unplayed, in the piece's words; and the exposure rule takes its turn. Set
+ * `C6_DIARY` to a directory for each learner's cards, one slot a line.
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { nextRecommended, readingOffer, readingOptions, taughtAtRung } from '../../src/curriculum/session';
-import { recordRun, resetProgressForTest, rungRows, type RunResult } from '../../src/data/progressStore';
+import { buildSession, nextRecommended, readingOffer, readingOptions, taughtAtRung, type SessionSlot } from '../../src/curriculum/session';
+import { indexCatalog } from '../../src/curriculum/selectors';
+import { allProgress, learnedPieces, recordRun, resetProgressForTest, rungRows, type RunResult } from '../../src/data/progressStore';
+import { rungForSlot } from '../../src/ui/screens/TodayScreen';
 import { rungState, type LearnerRecord, type RungStates } from '../../src/evidence/rungState';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
@@ -51,6 +64,52 @@ interface Morning {
   states: RungStates;
   /** What the day's runs were. */
   did: string[];
+  /** Today's 30-minute card that morning (C6). */
+  card: SessionSlot[];
+}
+
+const INDEX = indexCatalog(catalog);
+const isReadingRow = (id: string): boolean => byId.get(id)?.drill?.kind === 'sight-reading';
+
+/** Today's card for the morning, from the store, as the Today screen builds it (C6). */
+async function cardFor(morning: Date, states: RungStates, startAt: string): Promise<SessionSlot[]> {
+  const rows = await rungRows();
+  const progress = await allProgress();
+  return buildSession({
+    curriculum,
+    catalog: INDEX,
+    items: catalog,
+    states,
+    rows,
+    readingRows: rows.filter((row) => isReadingRow(row.itemId)),
+    learned: learnedPieces(progress, isReadingRow),
+    lastPlayed: new Map(progress.map((row) => [row.itemId, row.lastPracticedAt])),
+    activeTracks: ['core'],
+    minutes: 30,
+    startAt,
+    today: morning,
+  }).slots;
+}
+
+/**
+ * The card's review and repertoire rows, played from the card (C6): judged by the rung the card
+ * says they count for (`rungForSlot`), a reading row read at sight through the engine.
+ */
+async function playFromCard(card: SessionSlot[], n: number, did: string[]): Promise<void> {
+  for (const kind of ['review', 'repertoire'] as const) {
+    const slot = card.find((one) => one.kind === kind);
+    if (!slot?.item) continue;
+    const rung = slot.phrase ? slot.phrase.rung : rungForSlot(curriculum, slot.item, slot.lessonId);
+    if (isReadingRow(slot.item.id)) {
+      // A skill-retention phrase, as Today opens it: its recipe, held to (and judged by) the learner's rung.
+      await read(slot.item, rung ?? '1.3', 5000 + n * 10 + (kind === 'review' ? 1 : 2), day(n, kind === 'review' ? 16 : 17), slot.phrase?.recipe);
+    } else {
+      await recordRun(piece(slot.item.id, rung), day(n, kind === 'review' ? 16 : 17));
+    }
+    did.push(`${slot.item.id} from Today's ${kind} row${rung === undefined ? '' : ` (${rung})`}`);
+    // The Petzold played from 3.4, from Today's card for 3.4 rather than down the page: the same proof.
+    if (slot.item.id === PETZOLD && rung === '3.4') petzoldDay ??= { n, after: await statesNow(day(n, 18), {}) };
+  }
 }
 
 /** A piece played from `rung`'s page (or from nowhere) as the Score screen hands it to the store. */
@@ -125,6 +184,7 @@ async function returningIntermediate(): Promise<void> {
     const position = nextRecommended(curriculum, states, ['core'], { startAt: '3.1' });
     const rung = position?.lesson.id ?? 'none';
     const did: string[] = [];
+    const card = await cardFor(morning, states, '3.1');
     // The day's phrase, as Today offers it, judged by the rung whose row it is.
     const rows = await rungRows();
     const offer = readingOffer({ curriculum, items: catalog, position, activeTracks: ['core'], rows, today: morning, purpose: 'daily' });
@@ -154,7 +214,8 @@ async function returningIntermediate(): Promise<void> {
       // The first time, from 3.4 (4.4 lists it too, and plays it from 4.4 later).
       if (wanted === PETZOLD && rung === '3.4') petzoldDay ??= { n, after: await statesNow(day(n, 15), learner) };
     }
-    INTERMEDIATE.push({ n, rung, states, did });
+    await playFromCard(card, n, did);
+    INTERMEDIATE.push({ n, rung, states, did, card });
   }
 }
 
@@ -176,6 +237,7 @@ async function experiencedMusician(): Promise<void> {
     const position = nextRecommended(curriculum, states, ['core'], { startAt: '4.1' });
     const rung = position?.lesson.id ?? 'none';
     const did: string[] = [];
+    const card = await cardFor(morning, states, '4.1');
     // The first mornings, before 4.5: two phrases of 4.6's row read from 4.6's page.
     if (fourFiveBegun === undefined && rung !== '4.5') {
       for (const k of [0, 1]) {
@@ -191,14 +253,25 @@ async function experiencedMusician(): Promise<void> {
       await recordRun(piece(wanted, rung), day(n, 14));
       did.push(`${wanted} from ${rung}`);
     }
-    MUSICIAN.push({ n, rung, states, did });
+    await playFromCard(card, n, did);
+    MUSICIAN.push({ n, rung, states, did, card });
   }
 }
 
 beforeAll(async () => {
   await returningIntermediate();
   await experiencedMusician();
-}, 600_000);
+  const diary = process.env.C6_DIARY;
+  if (diary) {
+    const title = (id: string | undefined): string => (id === undefined ? '(prompt)' : (byId.get(id)?.title ?? id));
+    for (const [name, mornings] of [['intermediate', INTERMEDIATE], ['musician', MUSICIAN]] as const) {
+      const lines = mornings.map((m) =>
+        [`Day ${String(m.n).padStart(2)} · rung ${m.rung} · did: ${m.did.join('; ')}`, ...m.card.map((slot) => `        ${slot.kind.padEnd(12)} ${title(slot.item?.id)} — “${slot.reason}”`)].join('\n'),
+      );
+      writeFileSync(join(diary, `${name}.txt`), lines.join('\n') + '\n');
+    }
+  }
+}, 900_000);
 
 afterAll(() => clearFakeIndexedDb());
 
@@ -276,5 +349,70 @@ describe('the experienced musician, placed at 4.1, who says he knows 4.1 and 4.2
     for (const m of at45) expect(m.states.byRung.get('4.5')?.status).not.toBe('met');
     const after = MUSICIAN.find((m) => m.n === (at45[at45.length - 1] as Morning).n + 1);
     expect(after?.states.byRung.get('4.5')?.status, 'runs judged by 4.5 did not meet it').toBe('met');
+  });
+});
+
+/**
+ * Today's card over the two learners' thirty mornings (C6; the brief's item 9),
+ * read as a teacher would read it.
+ */
+describe('the other slots over thirty mornings (C6)', () => {
+  const OLD_WORDS = ['Warm-up in the keys you are working in', 'Nothing due — keeping something warm', 'Due for review today', 'Something to just play', 'A piece you know — keep it playable'];
+  const both = (): [string, Morning[]][] => [
+    ['intermediate', INTERMEDIATE],
+    ['musician', MUSICIAN],
+  ];
+
+  it('every slot says why it is there, from a claim; no fixed sentence is left', () => {
+    for (const [name, mornings] of both()) {
+      for (const m of mornings) {
+        for (const slot of m.card) {
+          const label = `${name} day ${String(m.n)} ${slot.kind}: “${slot.reason}”`;
+          expect(OLD_WORDS, label).not.toContain(slot.reason);
+          if (slot.kind !== 'sightreading' && slot.kind !== 'free') expect(slot.claim, label).toBeDefined();
+        }
+      }
+    }
+  });
+
+  it('no slot offers an item its rung has counted while one the rung asks for waits', () => {
+    for (const [name, mornings] of both()) {
+      for (const m of mornings) {
+        for (const slot of m.card) {
+          const claim = slot.claim;
+          if (claim?.kind !== 'asked' || !slot.item) continue;
+          const reading = m.states.byRung.get(claim.rung.id)?.requirements.find((r) => r.requirement === claim.requirement);
+          expect(reading?.items ?? [], `${name} day ${String(m.n)} ${slot.kind}: ${slot.item.id} is counted`).not.toContain(slot.item.id);
+          expect(reading?.holds, `${name} day ${String(m.n)} ${slot.kind}: its requirement already holds`).toBe(false);
+        }
+      }
+    }
+  });
+
+  it('a piece learned comes back to the review row once it has gone the window unplayed, in the piece’s words', () => {
+    const kept = INTERMEDIATE.flatMap((m) => m.card.filter((slot) => slot.kind === 'review' && slot.claim?.kind === 'piece-retention').map((slot) => ({ m, slot })));
+    expect(kept.length, INTERMEDIATE.map((m) => m.card.find((s) => s.kind === 'review')?.reason).join(' | ')).toBeGreaterThan(0);
+    for (const { m, slot } of kept) {
+      expect(slot.reason, `day ${String(m.n)}`).toMatch(/^Keeping this piece playable — last played /);
+      // Played earlier in the month, and not in the window since: the day it came back is at least the window after.
+      // Played from a page or from the card (its id leads the line), or on the Library morning (every option of that rung).
+      const id = slot.item?.id ?? '-';
+      const library = libraryDay !== undefined && [...lesson(libraryDay.next).exerciseOptions, ...lesson(libraryDay.next).songOptions].includes(id);
+      const played = INTERMEDIATE.filter((one) => one.n < m.n && (one.did.some((d) => d.startsWith(`${id} `)) || (library && one.n === libraryDay?.n)));
+      const last = played[played.length - 1];
+      expect(last, `day ${String(m.n)}: ${slot.item?.id ?? ''} was never played`).toBeDefined();
+      expect(m.n - (last as Morning).n, `day ${String(m.n)}: ${slot.item?.id ?? ''} came back too soon`).toBeGreaterThanOrEqual(14);
+    }
+  });
+
+  it('the exposure rule takes its turn in the review row when nothing is due, and the repertoire row is the lesson’s music', () => {
+    for (const [name, mornings] of both()) {
+      const review = mornings.map((m) => m.card.find((slot) => slot.kind === 'review')?.claim?.kind);
+      expect(review, `${name}: ${review.join(',')}`).toContain('exposure');
+      // Core only: no style of the learner's own to balance, so the repertoire row is the rung's music.
+      const repertoire = mornings.map((m) => m.card.find((slot) => slot.kind === 'repertoire')?.claim?.kind);
+      expect(repertoire, `${name}: ${repertoire.join(',')}`).toContain('rung');
+      expect(repertoire, `${name}: ${repertoire.join(',')}`).not.toContain('exposure');
+    }
   });
 });

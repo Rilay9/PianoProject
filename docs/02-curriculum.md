@@ -110,8 +110,10 @@ Time estimates assume ~30 min/day, 5–6 days/week. They are advisory.
    the library on some rung, which put thirty to seventy pieces on the classical rungs; see
    `handoff-2026-09-09.md` §5aj–§5ak. The per-rung tables below name the plan's intended
    pieces; `docs/generated/ladder.md` is what the build offers today.)
-6. **Spaced review.** Passed items come back in a "Review" queue (1 day, 3 days, 1 week,
-   3 weeks). Mastered items appear in "Repertoire" for occasional replay.
+6. **Spaced review.** Review has two reasons (C6, 2026-09-26; Part G): a reading skill the
+   learner's reads have not shown for three weeks, and a piece learned (passed or mastered) that
+   has not been played for two weeks. The item calendar (1 day, 3 days, 1 week, 3 weeks) and
+   the mastered piece in "Repertoire" every session are retired.
 7. **Ear before theory before name.** Every theory concept has an ear-training drill the
    learner answers *on the keyboard* (MIDI or screen keys), then a short text explanation.
 8. **Session templates.** The owner practises 20–30 min on some weekdays and for hours at
@@ -991,12 +993,30 @@ suggestions** with a note on where to buy/obtain MusicXML.
   the lesson text says which skill they stand in for. `tools/content/validate.py` enforces
   the count; it is not left to the author's judgement.
 - Unit complete = all lessons met. Stage complete = all core units + the capstone.
-- Review queue intervals: 1, 3, 7, 21 days after `pass`; an item drops out of review after
-  `master`, but reappears in "Repertoire" every ~30 days. **Pieces only (C5, S8):** a generated
-  sight-reading phrase carries no piece semantics — its row is never passed, mastered, put on
-  the review calendar or offered as repertoire, and its runs are observations with evidence,
-  read by the reader and by `rungState`. The daily read's done-day stays: a habit, not a
-  mastery.
+- **Review has two reasons, and the line says which (C6, 2026-09-26; the reviewer's
+  correction).** *Skill retention*: a skill whose evidence the reads have not shown for the
+  ladder's `RETENTION_DAYS` (21, a hypothesis) comes back as a fresh phrase of a reading row it
+  was shown on, written with one of its demands and held to the learner's reading rung; the line
+  names the skill ("Bass clef: not shown in 4 weeks"). *Repertoire retention*: a song passed or
+  mastered on a measured run (`progressStore.learnedPieces`; never the learner's word alone)
+  that has not been played for `REPERTOIRE_WINDOW_DAYS` (14, a hypothesis apart from the
+  ladder's) comes back however recently its skills were shown elsewhere, because reading eighths
+  in time is not remembering the piece; the line is the piece's ("Keeping this piece playable").
+  They replace the item calendar (1, 3, 7, 21 days after `pass`, one due item a session) and the
+  repertoire slot's mastered piece every session (L17); neither reason is dropped for the other,
+  and G builds the repertoire lifecycle (R17–R20) on the second. With nothing due, the review
+  keeps a kind of exercise warm that the lessons taught and nothing of which was played this
+  week (the exposure rule, `04` §2). **Pieces only (C5, S8):** a generated sight-reading phrase
+  carries no piece semantics — its row is never passed, mastered, a learned piece or offered as
+  repertoire, and its runs are observations with evidence, read by the reader and by
+  `rungState`; skill retention offers a new phrase, never the same one. The daily read's
+  done-day stays: a habit, not a mastery.
+- **Today's slots from the evidence (C6).** Every slot is chosen from what the evidence supports
+  and what a strand's rung asks next, in the stated fallback order (the rung's own option, the
+  same target skill, the same demand, a prerequisite rung, the exposure rule), never from a
+  level window around the stage number; the tracks run as parallel strands beside the core
+  path's spine, and Stage 9's projects are never "the next rung". The rules and the words are
+  `04` §2.
 - Prerequisites are advisory; "strict mode" locks a rung until its prerequisites are met (or
   set aside by the learner's word, or carried over).
 - The placement test sets where the plan starts (a floor): rungs behind it are held back and

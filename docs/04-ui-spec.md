@@ -176,10 +176,10 @@ Score screen is a full-screen route pushed on top (back gesture returns).
   repertoire block and, if the jam module is active, a jam block (chord-chart practice).
 - **Jump to…** button: opens any stage/unit/lesson directly; and **Review a skill**: opens the
   Skills review screen (§3a).
-- **Session card** (auto-built from the template in curriculum Part A §8): Warm-up (1–2
-  technique drills in the current keys) · Review (due items) · New (current lesson's chosen
-  exercise + song) · Repertoire (a mastered piece) · Free play prompt. Each row: title, level,
-  hands, est. minutes, ▶ button. Tapping ▶ opens the Score screen for that item.
+- **Session card** (auto-built from the template in curriculum Part A §8): Warm-up · Review ·
+  New · Repertoire · Sight-reading · Jam · Free play prompt, each chosen as the block below
+  says (C6). Each row: title, level, hands, est. minutes, ▶ button. Tapping ▶ opens the Score
+  screen for that item.
   **Where the card comes from, and which rung a row's run counts for (C5, 2026-09-27).** The
   rung the card is built from is `nextRecommended` over the derived rung state (§3f), never
   over the items marked passed. A row opened from Today carries the rung it counts for
@@ -188,16 +188,129 @@ Score screen is a full-screen route pushed on top (back gesture returns).
   the item, where exactly one does; else **none** — a review, repertoire or fallback item that
   several rungs list is judged by the Settings pair and counts for no rung, because choosing
   one of its listings would be the credit by listing C5 removed (L8). It was the first rung
-  listing it. **Review and repertoire are pieces (S8):** a generated sight-reading row is
-  never due for review and never offered as repertoire, whatever an older build wrote on its
-  row, and the repertoire row says *A piece you know* only when the piece it offers is one
-  the learner mastered — a mastered id that could not be offered used to leave a song never
-  played under that label (L18).
+  listing it. **A generated sight-reading row carries no piece semantics (S8):** it is never a
+  learned piece, never kept playable, never repertoire, whatever an older build wrote on its
+  row; the one way a reading row reaches the review is skill retention, below, as a fresh
+  phrase. The repertoire row says *A piece you know* only when the piece it offers is one the
+  learner mastered — a mastered id that could not be offered used to leave a song never played
+  under that label (L18).
+
+**What each slot is, and why it says so (C6, 2026-09-26).** Every slot is chosen from what the
+evidence supports and what the rung asks next, and its line says which, or claims only the
+rung (`curriculum/session.ts`, `SlotClaim`; the words `SLOT_TEXT` in `help.ts`). Nothing is
+chosen because its level is within one of the stage number: those windows were every slot's
+fallback until C6 and are deleted.
+
+- **Strands, not one position.** The curriculum is not one ladder: the core path runs Stages
+  0–4 and is the spine, the tracks switched on run beside it from their stage (How to practise
+  from Stage 1, most from Stage 3) and alone from Stage 5, and Stage 9 is projects. Each
+  strand has its own next rung — the first on its track not met, not set aside by the
+  learner's word or the carry-over, not behind the placement, and open: the spine has reached
+  its stage and its prerequisites are met, set aside or behind the placement. The slots choose
+  across the strands, the one played least lately first (the core path first on a tie), a
+  strand not yet on the card before one that is, so no track takes the warm-up, the new piece
+  and the repertoire, and the file's order decides nothing. A line a track asked for names the
+  track (*Classical asks for it*); the core path's says *this lesson*. A rung passed over by
+  the placement or the learner's word is never offered as new work because the work ahead is
+  done; nothing advances into a project stage as "the next lesson", and a project is offered as
+  *a piece to live with*. `nextRecommended`, which the status line and Plan read, still walks
+  every track in the file's order and falls back to such rungs (C5's; reported in Entry 80).
+- **The warm-up** is the strand's exercise its unmet requirements ask for: one training a skill
+  a requirement names, the skill the evidence has shown least first (only the reading rows
+  declare skills today, so this waits for D); else one its runs, done or measure requirements
+  count and have not counted, in the lesson's order. Never a reading row (L65: the reading slot
+  is the reader's, and a warm-up is not a sight-read). When the strands ask nothing a warm-up
+  serves, the next lesson's; when that asks nothing either, the exposure rule.
+- **New** is a strand's next unmet requirement's item, in the order its lesson states them; a
+  requirement the warm-up is serving gives way to the next. When what is left on the rung is
+  its reads, the next lesson's first, said as such.
+- **Review has two reasons, and the line says which** (the reviewer's correction): *skill
+  retention* — a skill the reads have not shown for the ladder's 21 days (`RETENTION_DAYS`), a
+  skill not yet retained first, offered as a fresh phrase of a reading row it was shown on,
+  with the control that writes one of its demands into every phrase and held to the reader's
+  rung (`SessionSlot.phrase`, opened with `?recipe=` and that rung); *repertoire retention* — a
+  song the learner passed or mastered and has not played for `REPERTOIRE_WINDOW_DAYS` (14, a
+  hypothesis apart from the ladder's), however recently its skills were shown elsewhere.
+  Whichever is further past its own span first; Shuffle reaches the rest. The item calendar
+  (1, 3, 7 and 21 days after a first pass) is retired. Nothing due: the exposure rule over the
+  kinds of exercise the lessons have taught, where a kind has gone a week unplayed; then the
+  fallback ladder, the rung's counted items first.
+- **Repertoire** is a piece whose measured demands the learner's skills support with one the
+  rung has just taught (no piece carries measured demands yet; E writes them); then a style the
+  learner switched on whose rungs have gone a week with nothing played (the exposure rule); then
+  the fallback ladder, a piece not yet counted or learned before one that is. It no longer
+  offers a mastered piece every session (L17): keeping a piece playable is the review's.
+- **Jam** is an option of a rung on a jam track (chords & pop, blues, jazz, jam) the learner
+  has reached, played least lately; before any is reached there is no jam row.
+- **The fallback ladder** (L14), when a slot's own claim finds nothing, in one order
+  (`FALLBACK_ORDER`): the rung's own option; an item declaring the same target skill; an item
+  carrying the same demand; a prerequisite rung's option; the exposure rule. The line names the
+  step. With nothing at all the row is dropped, as any row is: a fresh phone on 0.1 has two
+  rows, the checklist and the finger numbers, because 0.1 asks for those two things.
+- **The exposure rule** (L26; the balance: evidence, curriculum intent, retention and
+  well-rounded exposure all choose): among the families of material the lessons have taught —
+  the kinds of exercise (`drill.kind`, never the orientation items), or the styles switched on
+  — the one played least lately, never played first, the latest-taught first among those, and
+  a family already on the card is not "not seen lately". A week (`EXPOSURE_DAYS`, a hypothesis)
+  is "lately". The vocabulary's skills are all reading skills the reader trains daily, so the
+  rule reads the curriculum's own families.
+- **Two passes.** Every slot's own claim first — the reader's row, what the lessons ask,
+  retention, exposure where due — and only then the fallbacks, so a fallback never takes what a
+  claim asked for; a review with nothing due chooses last. No slot offers an item a
+  requirement has counted while something the rung asks for waits.
+
+The line is the session row's second line and is cut at the owner's width, so the claim comes
+in its first words and the detail after the dash:
+
+| claim | the line |
+|---|---|
+| a lesson asks for it (one) | This lesson asks for it — not counted yet |
+| a lesson asks for several | This lesson: 1 of 4 counted |
+| the next lesson's | The next lesson asks for it — not counted yet |
+| a track asked | Classical asks for it — not counted yet |
+| a performance is asked | This lesson asks for it, played with Perform on — not counted yet |
+| an exercise training an asked skill | Trains subdivision, for this lesson |
+| new, the rung waiting on its reads | Next lesson — this one waits for your reads |
+| a project (Stage 9) | Classical: a piece to live with |
+| skill retention | Bass clef: not shown in 4 weeks |
+| repertoire retention | Keeping this piece playable — last played on 10 Sep |
+| a piece the reads are ready for | A piece with dotted quarters — your reads support them |
+| the rung's own option | From this lesson · More from this lesson · More music from this lesson · Nothing due for review — more from this lesson |
+| the same target skill | Trains subdivision, which this lesson asks for |
+| the same demand | Has eighth notes, which this lesson asks for |
+| a prerequisite rung | From Hands together: the left hand holds, which this lesson builds on |
+| exposure, a kind | Keeping your scales warm — last played on 11 Oct · Cadences, from your lessons — not played yet |
+| exposure, a style | For variety: a Classical piece — none played since 4 Oct · none played yet |
+| a mastered piece in the repertoire row | A piece you know — more music from this lesson |
+| jam | Chords, form and feel: from Playing from chord symbols |
+| after a swap | You chose this one — from the same lesson |
+
+The fixed pieces: `SLOT_TEXT.thisLesson` "This lesson", `nextLesson` "The next lesson",
+`asksFor` "asks for", `notCounted` "not counted yet", `counted` "counted", `performed` "played
+with Perform on", `nextUp` "Next lesson", `waitsForReads` "this one waits for your reads",
+`project` "A piece to live with", `notShown` "not shown in", `notShownSince` "not shown since",
+`keepPlayable` "Keeping this piece playable", `lastPlayed` "last played", `readyWith` "A piece
+with", `readySupported` "your reads support them", `nothingDue` "Nothing due for review",
+`fromThisLesson` "From this lesson", `moreFromThisLesson` "more from this lesson", `moreMusic`
+"More music from this lesson", `trains` "Trains", `has` "Has", `whichAsked` "which this lesson
+asks for", `whichBuildsOn` "which this lesson builds on", `forVariety` "For variety",
+`fromLessonsSoFar` "from your lessons", `notPlayedYet` "not played yet", `nonePlayedYet` "none
+played yet", `nonePlayedSince` "none played since", `earlierSong` "a song from an earlier
+lesson", `pieceYouKnow` "A piece you know", `jam` "Chords, form and feel", `free` "Play anything
+you like — no scoring, no cursor", `chose` "You chose this one".
 - **"Swap this"** on every row — not just the whole-card "shuffle" — offers the alternatives
-  for that slot (`00` D21): the other options in the same lesson first, then any catalog item
-  at the same level sharing a concept tag, and then the item's own `alternatives[]` if it has
-  them. A **"not a song"** filter is on the sheet, because half the point of the exercise
-  breadth is that a skill can be practised without a tune attached.
+  for that slot (`00` D21), in tiers that are claims (C6; L12's third reader, L36;
+  `selectors.tieredAlternatives`): the other options of the lesson the row came from (*From the
+  same lesson*); the item's own `alternatives[]` (*Named as a stand-in for it*); items sharing
+  a target skill (*Trains the same skill: subdivision*); items carrying a measured demand it
+  carries (*Carries the same demand: dotted quarters*) — within a tier the nearest level first,
+  an order and not a window. A shared concept tag matches nothing: the `repertoire` tag on every
+  quarried piece made the old third tier a level window over the quarry. Given the learner's
+  rung, nothing is offered that carries a demand no lesson up to it has taught (a reading row by
+  what C4b's map says it may write). Each tier's words are printed once over its options, and a
+  row keeps `data-tier`; a chosen option's line is *You chose this one — from the same lesson*
+  (or its tier). A **"not a song"** filter is on the sheet, because half the point of the
+  exercise breadth is that a skill can be practised without a tune attached.
 - **An import-only item always shows what to play instead.** A rock-module song you have not
   imported yet is not a dead row: it offers the public-domain vehicle its technique brief
   names ("play Moonlight I — same texture"), taken from the item's `alternatives[]`.
@@ -207,11 +320,13 @@ Score screen is a full-screen route pushed on top (back gesture returns).
   the learner has to fill by hand, which is what this card exists to avoid; free play is the
   exception, because it is a prompt and never has an item. On a fresh Stage 0 profile that is
   the difference between a usable card and three filled rows out of nine.
-- **The swap sheet has a fourth, loosest tier** after the three above: anything playable of
-  the same type within one level. The three tiers genuinely come up empty at Stage 0 — few
-  drills, few shared concept tags — and a swap button that offers nothing is a dead button.
-  Review and repertoire fall back the same way when nothing is due and nothing is mastered,
-  which is what the first week always looks like.
+- **The swap sheet's last resort is the same kind** (C6; it was anything playable of the same
+  type within one level): with nothing in any tier, the same kind of exercise — or, for a song,
+  a song — from the lessons the learner has reached, latest first, printed *The same kind, from
+  your lessons so far*. With nothing of the kind taught the sheet says *Nothing else trains the
+  same thing yet*, which is true: 0.1's checklist and finger numbers have no alternative, where a
+  level window used to offer the nearest thing of the same type. Review and repertoire no longer
+  fall back to a level window when nothing is due (the block above).
 
 **Today's sight-read** (added 2026-09-15). One card under the session card, its own row and
 not a sixth row of that one: it is there whatever session length was chosen, it is the same
@@ -264,7 +379,10 @@ backlog S4, S13, I1, L64).** The daily read and the session's reading slot come 
 function, `readingOffer` (`curriculum/session.ts`), over the evidence the learner's rows stored
 (`01` §4.5) and its readings per demand (`05` §9b):
 
-- **The row** is the reading row of the latest rung the learner has reached that lists one, on
+- **The row** (the reader's rung since C6 is `readerPosition`: the core path's next rung while
+  there is one, never a rung passed over by placement or the learner's word — `nextRecommended`
+  walked every track in the file's order and could put a 4.1 learner on `practice.1`, and the
+  daily read on 1.5's level-one row) is the reading row of the latest rung the learner has reached that lists one, on
   the tracks switched on, in the curriculum's order — the rung's own row where the rung lists
   one. Before any such rung the easiest row stands in, as the daily read always did there, and
   the session has no reading slot, as it had none there. A learner with no reads gets the row

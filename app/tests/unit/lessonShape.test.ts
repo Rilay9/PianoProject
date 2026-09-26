@@ -49,11 +49,20 @@ const QUOTED: { where: string; says: RegExp; from: string; holds: RegExp }[] = [
     from: 'src/engine/Scoring.ts',
     holds: /masterAccuracy:\s*0\.97\b/,
   },
+  // Replaced (C6): 0.3 said the review queue brings a passed item back after 1, 3, 7 and 21
+  // days, pinned to `REVIEW_INTERVALS_DAYS`. The calendar is retired; the lesson now states the
+  // two reasons review has, each pinned to its own number.
   {
     where: '0.3.md',
-    says: /after 1, 3, 7 and 21 days/,
-    from: 'src/data/progressStore.ts',
-    holds: /REVIEW_INTERVALS_DAYS = \[1, 3, 7, 21\]/,
+    says: /not\s+played for 14 days/,
+    from: 'src/curriculum/session.ts',
+    holds: /REPERTOIRE_WINDOW_DAYS = 14;/,
+  },
+  {
+    where: '0.3.md',
+    says: /not shown for 21\s+days/,
+    from: 'src/evidence/ladder.ts',
+    holds: /RETENTION_DAYS = 21;/,
   },
   {
     where: 'technique.6.md',
@@ -112,11 +121,18 @@ const QUOTED: { where: string; says: RegExp; from: string; holds: RegExp }[] = [
   },
   {
     // Stated in figures in `0.3` and in words in `practice.3`; the figures were
-    // guarded and the words were not.
+    // guarded and the words were not. Replaced (C6): the calendar's four steps
+    // became the two spans review keeps.
     where: 'practice.3.md',
-    says: /one, three, seven and twenty-one days after you passed it/,
-    from: 'src/data/progressStore.ts',
-    holds: /REVIEW_INTERVALS_DAYS = \[1, 3, 7, 21\]/,
+    says: /not played it for two weeks/,
+    from: 'src/curriculum/session.ts',
+    holds: /REPERTOIRE_WINDOW_DAYS = 14;/,
+  },
+  {
+    where: 'practice.3.md',
+    says: /reads have not shown it for three/,
+    from: 'src/evidence/ladder.ts',
+    holds: /RETENTION_DAYS = 21;/,
   },
 ];
 

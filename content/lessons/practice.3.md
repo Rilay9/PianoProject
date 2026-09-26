@@ -30,10 +30,11 @@ happens.
 Finish with something you enjoy playing. Ending on failure teaches you to dread
 the piano stool.
 
-**The review queue.** The app's review queue is this idea applied across days:
-an item comes back one, three, seven and twenty-one days after you passed it.
-Trust it — the day it suggests something is usually the day before you would
-have forgotten it.
+**Review.** The app's review row is this idea applied across days: a piece you
+learned comes back when you have not played it for two weeks, and a reading
+skill when your reads have not shown it for three. The numbers are a starting
+guess, not a measurement of your memory; the idea is what to trust — meet a
+thing again just as it starts to fade.
 
 **Common mistake.** Treating a session as a to-do list to be completed. If you
 run out of time, the last item is dropped, and the first item is where all the

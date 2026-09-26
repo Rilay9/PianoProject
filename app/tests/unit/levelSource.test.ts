@@ -24,6 +24,7 @@ function item(id: string, over: Partial<CatalogItem> = {}): CatalogItem {
     hands: 'both',
     tracks: ['classical'],
     concepts: ['etude'],
+    targetSkills: ['subdivision'],
     ...over,
   };
 }
@@ -58,6 +59,8 @@ describe('levelConfidence', () => {
   });
 });
 
+// Revised (C6): the fixtures share a target skill, where they shared the concept tag `etude` — a
+// concept tag no longer makes an alternative (L36). The two orders are unchanged.
 describe('alternativesFor', () => {
   it('prefers a judged level over an estimated one at the same distance', () => {
     const catalog = indexCatalog([

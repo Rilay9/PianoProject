@@ -1,9 +1,10 @@
 // @vitest-environment jsdom
 /**
  * The next card responds to evidence, not to the stage number (backlog L12;
- * the test inventory's Q6 row `recommendRespondsToEvidence`) — **the reading
- * part only** (C4). The in-rung pick and the swap sheet are C6's; until then
- * every other slot still fills as it did, and this file says so.
+ * the test inventory's Q6 row `recommendRespondsToEvidence`) — the reading
+ * part (C4) and the rung part (C5) here; every other slot's choice from the
+ * evidence is `slotsFromEvidence.test.ts` (C6), and reads that differ only in
+ * reading still move only the reading slot.
  *
  * Constructed learners on the same rung: one who has never read; one who has
  * read the rung's own row three days running and got a third of each phrase
@@ -85,14 +86,13 @@ function card(rows: readonly SessionRow[], where: Curriculum = curriculum): Sess
     catalog: index,
     items: catalog,
     states: { byRung: new Map() },
-    dueForReview: [],
-    mastered: [],
     activeTracks: ['core'],
     minutes: 30,
-    // Shuffle 1: at 0 the warm-up slot takes 2.2's reading row (its first
-    // exercise option), and a row is never offered twice, so the card has no
-    // reading slot to compare (recorded in C4's entry as a follow-up).
-    seed: 1,
+    // Revised (C6, L65): Shuffle 0. It was 1, because at 0 the warm-up took
+    // 2.2's reading row (its first exercise option) and a row is never offered
+    // twice, so the card had no reading slot; the warm-up never takes a
+    // reading row now.
+    seed: 0,
     startAt: '2.2',
     readingRows: rows,
     today: TODAY,
@@ -137,7 +137,13 @@ describe('learners on 2.2: one failing everywhere, one misreading the skips, one
     expect(JSON.stringify(daily(skipLearner)?.recipe)).not.toBe(JSON.stringify(daily([])?.recipe));
   });
 
-  it('nothing else on the card adapts: every other slot is the same for all three', () => {
+  // Revised (C6): this said "nothing else on the card adapts", because until C6 nothing else read
+  // the learner. The other slots read the evidence now (`slotsFromEvidence.test.ts`); these three
+  // learners differ only in three days of reads, which no other slot's claim turns on (no piece
+  // declares or carries what they showed, and no skill has gone three weeks unshown), so every
+  // other slot is still the same for all three, and each says why.
+  it('reads that differ only in reading move only the reading slot; every other slot says why it is there', () => {
+    for (const slot of card([])) if (slot.kind !== 'sightreading') expect(slot.claim, `${slot.kind} has no claim`).toBeDefined();
     const strip = (slots: SessionSlot[]) =>
       slots.filter((slot) => slot.kind !== 'sightreading').map((slot) => [slot.kind, slot.item?.id, slot.reason]);
     expect(strip(card(failing))).toEqual(strip(card([])));
@@ -186,8 +192,6 @@ describe('the rung part (C5): the card comes off the rung the evidence has not m
       catalog: index,
       items: catalog,
       states: rungState(rows, curriculum, VOCABULARY_V0, TODAY),
-      dueForReview: [],
-      mastered: [],
       activeTracks: ['core'],
       minutes: 30,
       seed: 1,

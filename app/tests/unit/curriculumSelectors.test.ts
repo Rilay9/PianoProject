@@ -60,16 +60,17 @@ function curriculumOf(...lessons: Lesson[]): Curriculum {
 
 describe('alternativesFor', () => {
   const catalog = indexCatalog([
-    item('exercise.a'),
+    item('exercise.a', { targetSkills: ['hands-together'] }),
     item('exercise.b'),
     item('exercise.c'),
     item('song.a'),
     item('song.b'),
     item('song.c'),
     item('song.import', { file: null, importHint: 'buy it', alternatives: ['exercise.vehicle'] }),
-    item('exercise.vehicle', { level: 2.1 }),
-    item('exercise.faraway', { level: 8.1 }),
-    item('exercise.unrelated', { concepts: ['ragtime'] }),
+    item('exercise.vehicle', { level: 2.1, targetSkills: ['hands-together'] }),
+    item('exercise.faraway', { level: 8.1, targetSkills: ['hands-together'] }),
+    // Shares the concept tag every item here carries, and nothing else.
+    item('exercise.unrelated', { concepts: ['hands-together'] }),
   ]);
   const curriculum = curriculumOf(lesson());
 
@@ -103,11 +104,16 @@ describe('alternativesFor', () => {
     expect(out.at(0)?.id).toBe('exercise.vehicle');
   });
 
-  it('falls back to items at the same level sharing a concept', () => {
+  // Replaced (C6, L36): "falls back to items at the same level sharing a concept" — within half a
+  // level, any shared concept tag, which for a quarried piece was the `repertoire` tag every PDMX
+  // item carries. The tier is a shared target skill now, nearest level first (an order, not a
+  // window: `swapOptions` leaves out what the learner's lessons have not taught), and a shared
+  // concept tag alone matches nothing (`alternativesShareASkill.test.ts`).
+  it('falls back to items sharing a target skill, the nearest level first; a shared concept tag matches nothing', () => {
     const out = alternativesFor({ itemId: 'exercise.a' }, curriculum, catalog);
     const ids = out.map((i) => i.id);
     expect(ids).toContain('exercise.vehicle');
-    expect(ids).not.toContain('exercise.faraway');
+    expect(ids.indexOf('exercise.vehicle')).toBeLessThan(ids.indexOf('exercise.faraway'));
     expect(ids).not.toContain('exercise.unrelated');
   });
 

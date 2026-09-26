@@ -28,6 +28,36 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
+/**
+ * Places the learner at a rung through the app's own backup import, and reloads.
+ *
+ * Added (C6): a fresh phone is on 0.1, which asks for two things — the posture
+ * checklist and the finger numbers — and since C6 a row that neither the
+ * evidence nor a rung can fill is dropped, where it used to be filled from a
+ * level window over the whole catalog. The tests about the card's shape, the
+ * swap sheet and Shuffle need a rung with more on it, so they place the learner
+ * at 1.1 (its exercises and songs, and How to practise beside it).
+ */
+async function placeAt(page: Page, rung: string, stores: Record<string, unknown[]> = {}): Promise<void> {
+  await page.goto('/');
+  await expect(page.locator('#today-card .list-row').first()).toBeVisible({ timeout: 30_000 });
+  await page.evaluate(
+    async ({ rung, stores }) => {
+      const hooks = (window as unknown as { __pianopath?: { importAll: (raw: unknown) => Promise<unknown> } }).__pianopath;
+      if (!hooks) throw new Error('storage hooks not exposed');
+      await hooks.importAll({
+        app: 'pianopath',
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        stores: { plan: [{ id: 'current', stage: 1, unitId: rung, trackOrder: ['core'], placement: { unitId: rung, at: new Date().toISOString() } }], ...stores },
+      });
+    },
+    { rung, stores },
+  );
+  await page.reload();
+  await expect(page.locator('#today-status')).toHaveAttribute('data-lesson', /./, { timeout: 30_000 });
+}
+
 test.describe('Today', () => {
   test('shows a weekly goal, an input chip, and a session card', async ({ page }) => {
     await page.goto('/');
@@ -37,8 +67,10 @@ test.describe('Today', () => {
     await expect(page.locator('#today-status')).toContainText('Working on Stage');
   });
 
+  // Revised (C6): placed at 1.1 (`placeAt`); on a fresh phone 0.1 asks for two things and nothing
+  // else fills a row now, so every length is the same two rows.
   test('the four session lengths build different cards', async ({ page }) => {
-    await page.goto('/');
+    await placeAt(page, '1.1');
     await expect(page.locator('#today-length-15')).toBeVisible();
     await page.locator('#today-length-15').click();
     await expect(page.locator('#today-length-15')).toHaveAttribute('aria-pressed', 'true');
@@ -58,8 +90,10 @@ test.describe('Today', () => {
     await expect(page.locator('#today-length-60')).toHaveAttribute('aria-pressed', 'true');
   });
 
+  // Revised (C6): placed at 1.1; 0.1's two items have no alternative in any tier, and the level
+  // window that used to supply one is gone. The sheet names the tier each option came from.
   test('"Swap this" offers alternatives and can exclude songs', async ({ page }) => {
-    await page.goto('/');
+    await placeAt(page, '1.1');
     const firstRow = page.locator('#today-card .list-row').first();
     await firstRow.getByRole('button', { name: 'Swap' }).click();
     await expect(page.locator('#today-swap')).toBeVisible();
@@ -67,6 +101,8 @@ test.describe('Today', () => {
 
     const options = page.locator('#today-swap .list-row');
     await expect(options.first()).toBeVisible();
+    await expect(page.locator('#today-swap .today-swap-tier').first()).toHaveText('From the same lesson');
+    await expect(options.first()).toHaveAttribute('data-tier', 'lesson');
     const title = await firstRow.locator('.list-row__title').textContent();
 
     await options.first().click();
@@ -76,7 +112,8 @@ test.describe('Today', () => {
   });
 
   test('the "not a song" filter removes songs from the swap sheet', async ({ page }) => {
-    await page.goto('/');
+    // Revised (C6): placed at 1.1, where the new row's lesson has songs to filter out.
+    await placeAt(page, '1.1');
     // The "New" row is the one that offers songs, so it is the one where the
     // filter has anything to do.
     const newRow = page.locator('#today-card .list-row[data-slot="new"]').first();
@@ -93,7 +130,8 @@ test.describe('Today', () => {
   });
 
   test('shuffle rebuilds the card', async ({ page }) => {
-    await page.goto('/');
+    // Revised (C6): placed at 1.1, where each claim has more than one candidate for Shuffle to turn.
+    await placeAt(page, '1.1');
     const before = await page.locator('#today-card').textContent();
     await page.locator('#today-shuffle').click();
     await expect
@@ -176,6 +214,40 @@ test.describe('Today', () => {
     const named = (await status.getAttribute('data-lesson')) ?? '';
     expect(named, 'Today named no rung to work on').not.toBe('');
     expect(coreLessons).not.toContain(named);
+  });
+
+  // Added (C6): the warm-up and review reasons on the glass, for a constructed learner on 2.2 whose
+  // exercise for 2.2 is counted (a run 2.2 judged, yesterday) and who learned a 2.1 song twenty
+  // days ago and has not played it since. The warm-up moves to the next lesson's exercise and says
+  // so; the review is repertoire retention, in the piece's words; the swap sheet names its tiers.
+  test('the warm-up and the review say why, for a learner whose lesson exercise is counted and a piece has gone unplayed', async ({ page }) => {
+    const day = 86_400_000;
+    const yesterday = new Date(Date.now() - day).toISOString();
+    const long = new Date(Date.now() - 20 * day).toISOString();
+    await placeAt(page, '2.2', {
+      sessions: [
+        { itemId: 'drill.rhythm.eighths', lessonId: '2.2', mode: 'drill:rhythm', tempoPct: 100, tempoMeasured: false, accuracy: 0.97, accuracyEstimated: false, wrongNotes: 0, missed: 0, durationMs: 120_000, at: yesterday },
+        { itemId: 'song.classical.ode-to-joy.ht', lessonId: '2.1', mode: 'tempo', tempoPct: 100, tempoMeasured: true, accuracy: 0.95, accuracyEstimated: false, wrongNotes: 0, missed: 0, durationMs: 120_000, at: long },
+      ],
+      progress: [
+        { itemId: 'drill.rhythm.eighths', status: 'passed', bestAccuracy: 0.97, bestTempoPct: 0, attempts: 1, lastPracticedAt: yesterday, minutes: 2, passedOn: [yesterday.slice(0, 10)] },
+        { itemId: 'song.classical.ode-to-joy.ht', status: 'passed', bestAccuracy: 0.95, bestTempoPct: 100, attempts: 1, lastPracticedAt: long, minutes: 2, passedOn: [long.slice(0, 10)] },
+      ],
+    });
+    const warmup = page.locator('#today-card .list-row[data-slot="technique"]');
+    await expect(warmup).toHaveAttribute('data-claim', 'asked', { timeout: 30_000 });
+    await expect(warmup.locator('.list-row__sub')).toHaveText('The next lesson asks for it — not counted yet');
+    const review = page.locator('#today-card .list-row[data-slot="review"]');
+    await expect(review).toHaveAttribute('data-claim', 'piece-retention');
+    await expect(review.locator('.list-row__title')).toContainText('Ode to Joy');
+    await expect(review.locator('.list-row__sub')).toHaveText(/^Keeping this piece playable — last played on \d+ \w+$/);
+    // No old fixed sentence anywhere on the card.
+    await expect(page.locator('#today-card')).not.toContainText('Warm-up in the keys you are working in');
+    await expect(page.locator('#today-card')).not.toContainText('Nothing due — keeping something warm');
+    // The swap sheet names each tier it offers from.
+    await warmup.getByRole('button', { name: 'Swap' }).click();
+    await expect(page.locator('#today-swap .today-swap-tier').first()).toHaveText('From the same lesson');
+    await expect(page.locator('#today-swap .list-row').first()).toHaveAttribute('data-tier', 'lesson');
   });
 
   test('starting the session opens the first row', async ({ page }) => {

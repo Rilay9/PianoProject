@@ -18,8 +18,7 @@ import {
   normaliseGeneratedRows,
   recordRun,
   resetProgressForTest,
-  reviewQueue,
-  repertoireOf,
+  learnedPieces,
   type RunResult,
 } from '../../src/data/progressStore';
 import { dailySeed } from '../../src/engine/sightReading';
@@ -70,7 +69,9 @@ describe('a reading row is not passed, mastered or put on the calendar', () => {
     expect(await dailyReadDays()).toContain(dayKey(now));
   });
 
-  it('the review queue skips a reading row, even one an old build marked passed', () => {
+  // Revised (C6): the review calendar is retired; what it read is now the pieces learned, and a
+  // generated row is still never one, so repertoire retention can never bring a phrase back.
+  it('a reading row is never a learned piece, even one an old build marked passed', () => {
     const old: ProgressRow = {
       itemId: 'drill.reading.sight-reading-2-right',
       status: 'passed',
@@ -82,17 +83,20 @@ describe('a reading row is not passed, mastered or put on the calendar', () => {
       passedOn: ['2026-09-01'],
     };
     const piece: ProgressRow = { ...old, itemId: 'song.folk.hot-cross-buns' };
-    const due = reviewQueue([old, piece], new Date('2026-09-05T10:00:00'), isGenerated).map((entry) => entry.itemId);
-    expect(due).toEqual(['song.folk.hot-cross-buns']);
+    const learned = learnedPieces([old, piece], isGenerated).map((entry) => entry.itemId);
+    expect(learned).toEqual(['song.folk.hot-cross-buns']);
   });
 
-  it('the repertoire is pieces: a reading row an old build marked mastered is not one', () => {
+  // Revised (C6): `repertoireOf` listed the mastered pieces for the repertoire slot every session
+  // (L17); the pieces learned — passed or mastered — are what repertoire retention reads now. The
+  // reading row an old build marked mastered is still not one.
+  it('the pieces learned are pieces: a reading row an old build marked mastered is not one', () => {
     const rows = [
-      { itemId: 'drill.reading.sight-reading-1', status: 'mastered' },
-      { itemId: 'song.folk.lightly-row', status: 'mastered' },
-      { itemId: 'song.folk.old-macdonald', status: 'passed' },
-    ] as ProgressRow[];
-    expect(repertoireOf(rows, isGenerated)).toEqual(['song.folk.lightly-row']);
+      { itemId: 'drill.reading.sight-reading-1', status: 'mastered', lastPracticedAt: '' },
+      { itemId: 'song.folk.lightly-row', status: 'mastered', lastPracticedAt: '' },
+      { itemId: 'song.folk.old-macdonald', status: 'passed', lastPracticedAt: '' },
+    ] as unknown as ProgressRow[];
+    expect(learnedPieces(rows, isGenerated).map((entry) => entry.itemId)).toEqual(['song.folk.lightly-row', 'song.folk.old-macdonald']);
   });
 
   it('a row an old build passed or mastered is put back to practised, once, keeping its practice', async () => {
@@ -111,21 +115,68 @@ describe('“A piece you know” is said only of a piece the learner knows (L18,
   const song = (id: string): CatalogItem =>
     ({ id, type: 'song', title: id, level: 1, tracks: ['core'], concepts: [], tags: [], file: `${id}.mxl` }) as unknown as CatalogItem;
   const items = [song('song.a'), song('song.b')];
-  const curriculum = { version: 1, tracks: [], stages: [] } as unknown as Curriculum;
+  // Revised (C6): the songs sit on a rung, because nothing is offered from no rung any more (the
+  // level windows are gone); the line is the rung's, and never "a piece you know".
+  const curriculum = {
+    version: 1,
+    tracks: [{ id: 'core', title: 'Core', description: '', startsAtStage: 0 }],
+    stages: [
+      {
+        number: 1,
+        title: 'One',
+        summary: '',
+        units: [
+          {
+            id: 'u',
+            title: 'U',
+            track: 'core',
+            lessons: [
+              {
+                id: '1.1',
+                title: 'One',
+                concepts: [],
+                textFile: 'lessons/1.1.md',
+                exerciseOptions: [],
+                songOptions: ['song.a', 'song.b'],
+                mastery: { minAccuracy: 0.9, minTempoPct: 0.8 },
+                requirements: [{ kind: 'runs', from: 'songs', count: 1 }],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  } as unknown as Curriculum;
   it('a mastered id that cannot be offered leaves the slot saying what it is, not that you know it', () => {
     const built = buildSession({
       curriculum,
       catalog: indexCatalog(items),
       items,
       states: { byRung: new Map() },
-      dueForReview: [],
       // A reading row an old build called mastered: not playable as a piece here.
-      mastered: ['drill.reading.sight-reading-1'],
+      learned: [{ itemId: 'drill.reading.sight-reading-1', status: 'mastered', lastPlayed: '2026-09-01T10:00:00.000Z' }],
       activeTracks: [],
       minutes: 30,
     });
     const repertoire = built.slots.find((slot) => slot.kind === 'repertoire');
     expect(repertoire?.item?.id).toMatch(/^song\./);
-    expect(repertoire?.reason, 'a song never played was offered as a piece you know').toBe('Something to just play');
+    expect(repertoire?.reason, 'a song never played was offered as a piece you know').not.toMatch(/^A piece you know/);
+  });
+
+  // Added (C6): the other half of L18 — a piece the learner did master is still said to be known.
+  it('a mastered piece the repertoire slot offers is "a piece you know"', () => {
+    const built = buildSession({
+      curriculum,
+      catalog: indexCatalog(items),
+      items,
+      states: { byRung: new Map() },
+      learned: ['song.a', 'song.b'].map((itemId) => ({ itemId, status: 'mastered' as const, lastPlayed: '2026-09-01T10:00:00.000Z' })),
+      activeTracks: [],
+      minutes: 30,
+      today: new Date('2026-09-05T10:00:00'),
+    });
+    const repertoire = built.slots.find((slot) => slot.kind === 'repertoire');
+    expect(repertoire?.item?.id).toMatch(/^song\./);
+    expect(repertoire?.reason).toMatch(/^A piece you know — /);
   });
 });

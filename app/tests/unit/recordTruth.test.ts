@@ -4,7 +4,8 @@
  * The store half of the rule the sheet's half is tested for in
  * `scoreSummaryTruth.test.ts`: never record evidence the engine did not
  * measure. Four things the record used to get wrong, each driven through
- * `recordRun` and `reviewQueue` and read back the way the app reads it:
+ * `recordRun` (and, for the last, the session's retention rule) and read back
+ * the way the app reads it:
  *
  * - *mastered* came from one master-standard run plus any earlier pass,
  *   because the store counted `passedOn`; Part G asks for the master standard
@@ -13,7 +14,8 @@
  * - the session row had nowhere to say that tempo was not measured, or which
  *   generated phrase the run was of;
  * - the review queue read a local day key as UTC midnight, so in the US an
- *   evening pass was "due for review" the same evening.
+ *   evening pass was "due for review" the same evening (the queue is retired
+ *   in C6; the repertoire window that replaced it counts days the same way).
  */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
@@ -23,11 +25,12 @@ import {
   recentSessions,
   recordRun,
   resetProgressForTest,
-  reviewQueue,
   type RunResult,
 } from '../../src/data/progressStore';
 import { dailySeed } from '../../src/engine/sightReading';
-import type { ProgressRow } from '../../src/data/db';
+import { buildSession, REPERTOIRE_WINDOW_DAYS } from '../../src/curriculum/session';
+import { indexCatalog } from '../../src/curriculum/selectors';
+import type { CatalogItem, Curriculum } from '../../src/curriculum/types';
 
 const NOT_MEASURED = 'not measured';
 
@@ -190,50 +193,40 @@ describe('a run that was not a first reading is practice, not evidence (C1, revi
   });
 });
 
-describe('the review queue counts days where the learner lives', () => {
+// Replaced (C6): T37's two calendar cases per time zone — an evening pass not
+// due that evening and due the next morning at step 1; the three-day step on
+// the third calendar day. The calendar is retired (the reviewer's correction of
+// 2026-09-26); what it protected, days counted where the learner lives, is held
+// here on the rule that replaced it: a learned piece returns once it has gone
+// the repertoire window unplayed, counted in the learner's calendar days.
+describe('the repertoire window counts days where the learner lives', () => {
   const zone = process.env.TZ;
   afterEach(() => {
     if (zone === undefined) delete process.env.TZ;
     else process.env.TZ = zone;
   });
 
-  function passed(day: string): ProgressRow {
-    return {
-      itemId: 'a',
-      status: 'passed',
-      bestAccuracy: 0.95,
-      bestTempoPct: 100,
-      attempts: 1,
-      lastPracticedAt: '',
-      minutes: 1,
-      passedOn: [day],
-    };
-  }
+  const song = { id: 'song.a', type: 'song', title: 'A', level: 1, hands: 'both', tracks: ['core'], concepts: [], file: 'scores/a.mxl' } as CatalogItem;
+  const empty: Curriculum = { version: 1, tracks: [], stages: [] };
+  const reviewOn = (today: Date, lastPlayed: string): string | undefined =>
+    buildSession({
+      curriculum: empty,
+      catalog: indexCatalog([song]),
+      items: [song],
+      states: { byRung: new Map() },
+      learned: [{ itemId: 'song.a', status: 'passed', lastPlayed }],
+      lastPlayed: new Map([['song.a', lastPlayed]]),
+      activeTracks: [],
+      minutes: 15,
+      today,
+    }).slots.find((slot) => slot.kind === 'review')?.claim?.kind;
 
-  // West of UTC the old reading made an evening pass due the same evening; east
-  // of it, a pass was not due until mid-morning of the next day. Revised (C5):
-  // the queue is told which items are generated sight-reading rows (none here:
-  // 'a' is a piece, whose calendar C5 keeps).
-  const pieces = (): boolean => false;
   for (const tz of ['America/New_York', 'America/Los_Angeles', 'Asia/Tokyo']) {
-    it(`in ${tz}: passed at 20:30, not due at 20:45 that evening, due the next morning`, () => {
+    it(`in ${tz}: played at 20:30, not due late on the window's last day, due the next morning`, () => {
       process.env.TZ = tz;
-      const passedAt = new Date(2026, 8, 10, 20, 30);
-      const row = passed(dayKey(passedAt));
-      expect(row.passedOn).toEqual(['2026-09-10']);
-      expect(reviewQueue([row], new Date(2026, 8, 10, 20, 45), pieces)).toEqual([]);
-      expect(reviewQueue([row], new Date(2026, 8, 10, 23, 59), pieces)).toEqual([]);
-      const tomorrow = reviewQueue([row], new Date(2026, 8, 11, 7, 0), pieces);
-      expect(tomorrow.map((item) => item.step)).toEqual([1]);
-      // Due from the learner's own midnight, not from UTC's.
-      expect(new Date(tomorrow[0]?.dueAt ?? '').getTime()).toBe(new Date(2026, 8, 11).getTime());
-    });
-
-    it(`in ${tz}: the three-day step comes on the third calendar day`, () => {
-      process.env.TZ = tz;
-      const row = passed('2026-09-10');
-      expect(reviewQueue([row], new Date(2026, 8, 12, 23, 0), pieces)[0]?.step).toBe(1);
-      expect(reviewQueue([{ ...row, passedOn: ['2026-09-10', '2026-09-11'] }], new Date(2026, 8, 13, 0, 30), pieces)[0]?.step).toBe(2);
+      const playedAt = new Date(2026, 8, 10, 20, 30).toISOString();
+      expect(reviewOn(new Date(2026, 8, 10 + REPERTOIRE_WINDOW_DAYS - 1, 23, 59), playedAt)).not.toBe('piece-retention');
+      expect(reviewOn(new Date(2026, 8, 10 + REPERTOIRE_WINDOW_DAYS, 7, 0), playedAt)).toBe('piece-retention');
     });
   }
 });

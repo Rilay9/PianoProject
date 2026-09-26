@@ -95,14 +95,17 @@ test('a run played from Today is recorded, and comes back for review', async ({ 
   await expect(counts.locator('li[data-holds="true"]')).toContainText('Hot Cross Buns');
   await expect(counts.locator('li[data-holds="false"]')).toHaveCount(1);
 
-  // 4. Two days later it is due again (docs/02 Part G: 1, 3, 7, 21 days).
+  // 4. Replaced (C6): "two days later it is due again (1, 3, 7, 21 days)" — the item calendar is
+  //    retired (the reviewer's correction, 2026-09-26). A learned piece comes back when it has gone
+  //    the repertoire window unplayed (`session.REPERTOIRE_WINDOW_DAYS`, two weeks), in the piece's
+  //    words: fifteen days on it is back.
   await page.evaluate(async () => {
     const request = indexedDB.open('pianopath');
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(new Error(String(request.error)));
     });
-    const twoDaysAgo = new Date(Date.now() - 2 * 86_400_000).toISOString();
+    const twoDaysAgo = new Date(Date.now() - 15 * 86_400_000).toISOString();
     await new Promise<void>((resolve, reject) => {
       const tx = db.transaction('progress', 'readwrite');
       const store = tx.objectStore('progress');
@@ -123,5 +126,6 @@ test('a run played from Today is recorded, and comes back for review', async ({ 
   await page.reload();
   const review = page.locator('.list-row[data-slot="review"]');
   await expect(review).toContainText('Hot Cross Buns');
-  await expect(review).toContainText('Due for review today');
+  await expect(review).toContainText('Keeping this piece playable — last played');
+  await expect(review).toHaveAttribute('data-claim', 'piece-retention');
 });

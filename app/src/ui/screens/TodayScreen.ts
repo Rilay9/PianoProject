@@ -49,6 +49,7 @@ import {
   buildSession,
   nextRecommended,
   playInstead,
+  readerPosition,
   readingOffer,
   swapOptions,
   type ReadingOffer,
@@ -61,8 +62,8 @@ import {
   getStreak,
   onProgressChange,
   readToday,
-  repertoireOf,
-  reviewQueue,
+  learnedPieces,
+  rungRows,
   sessionsForItem,
   weekSoFar,
 } from '../../data/progressStore';
@@ -71,7 +72,7 @@ import { simonForStage } from '../../engine/drills/simon';
 import { getPlan } from '../../data/planStore';
 import { getSettings, updateSettings } from '../../data/settingsStore';
 import type { ProgressRow, SessionRow } from '../../data/db';
-import { readingReason, readingTitle } from '../help';
+import { readingReason, readingTitle, swapChoiceWords, swapTierWords } from '../help';
 import { webMidiSource, micSource } from '../../app/services';
 import { onScreenDispose } from '../screenLifecycle';
 import { badge, button, chip, el, handsLabel, levelLabel, listRow, openSheet, shortHandsLabel } from '../widgets';
@@ -156,6 +157,8 @@ export function TodayScreen(router: Router): HTMLElement {
   let dailyOffer: ReadingOffer | null = null;
   /** The learner's stored runs of the reading rows: what the reader reads (C4). */
   let readingRows: SessionRow[] = [];
+  /** The rung the card was built from (C6): what the swap sheet holds its options to. */
+  let learnerRung: string | undefined;
 
   const goalLine = el('p.today-goal', { id: 'today-goal' });
   const inputChip = chip('…', {
@@ -247,6 +250,20 @@ export function TodayScreen(router: Router): HTMLElement {
    * a drill or a PDF opens as it always did.
    */
   const open = (target: CatalogItem, slot: SessionSlot): void => {
+    // A skill-retention review's phrase (C6): the recipe that writes the skill's demand, held to
+    // the learner's rung, which judges it; a fresh seed, as every open of a reading row draws.
+    const phrase = slot.phrase && slot.item?.id === target.id ? slot.phrase : undefined;
+    if (phrase && targetFor(target) === 'score') {
+      router.navigateScore(target.id, {
+        ...(phrase.rung === undefined ? {} : { rung: phrase.rung }),
+        slot: slot.kind,
+        recipe: {
+          ...(phrase.recipe.moved === undefined ? {} : { moved: phrase.recipe.moved }),
+          ...(phrase.recipe.easy === true ? { easy: true as const } : {}),
+        },
+      });
+      return;
+    }
     const rung = curriculum ? rungForSlot(curriculum, target, slot.lessonId) : undefined;
     // A drill carries the rung too (C5): it judges the drill's run.
     if (targetFor(target) === 'drill') {
@@ -280,20 +297,32 @@ export function TodayScreen(router: Router): HTMLElement {
       const options = swapOptions(slot, slots, curriculum as Curriculum, catalog as CatalogIndex, {
         excludeSongs: notASong,
         items,
+        ...(learnerRung === undefined ? {} : { rung: learnerRung }),
       });
       list.replaceChildren();
       if (options.length === 0) {
-        list.append(el('p.muted', { text: 'Nothing else at this level trains the same thing yet.' }));
+        list.append(el('p.muted', { text: 'Nothing else trains the same thing yet.' }));
         return;
       }
+      // Each tier's claim once, over the options it gave (C6): the same lesson, trains the same
+      // skill, carries the same demand — why each one is an alternative at all.
+      let heading = '';
       for (const option of options) {
+        const words = swapTierWords(option.tier, option.shared);
+        if (words !== heading) {
+          heading = words;
+          list.append(el('p.muted.today-swap-tier', { text: words, 'data-tier': option.tier }));
+        }
+        const choice = option.item;
         list.append(
           listRow({
-            title: option.title,
-            meta: `${levelLabel(option.level, option.levelSource)} · ${handsLabel(option.hands)} · ${option.type}`,
-            dataset: { 'data-swap': option.id },
+            title: choice.title,
+            meta: `${levelLabel(choice.level, choice.levelSource)} · ${handsLabel(choice.hands)} · ${choice.type}`,
+            dataset: { 'data-swap': choice.id, 'data-tier': option.tier },
             onClick: () => {
-              slots[slotIndex] = { ...slot, item: option, reason: 'You chose this one' };
+              // The learner's choice, and the claim the option had; what chose the row before no longer applies.
+              const { claim: _claim, phrase: _phrase, ...rest } = slot;
+              slots[slotIndex] = { ...rest, item: choice, reason: swapChoiceWords(option.tier) };
               sheet.close();
               drawCard();
             },
@@ -387,7 +416,12 @@ export function TodayScreen(router: Router): HTMLElement {
       badges,
       actions: actionButtons,
       onClick: substitute ? () => open(substitute, slot) : () => open(item, slot),
-      dataset: { 'data-slot': slot.kind, 'data-item': item.id },
+      dataset: {
+        'data-slot': slot.kind,
+        'data-item': item.id,
+        // What chose it (C6), in data where a test can read it and a learner cannot.
+        ...(slot.claim ? { 'data-claim': slot.claim.kind } : slot.reading ? { 'data-claim': 'reader' } : {}),
+      },
     });
   }
 
@@ -580,8 +614,9 @@ export function TodayScreen(router: Router): HTMLElement {
       return item !== undefined && isSightReading(item);
     };
     // Where the learner is comes from the evidence (C5: `rungState`), where it
-    // was the items marked passed, counted over each rung.
-    void Promise.all([getPlan(), loadRungStates(curriculum, now)]).then(([plan, states]) => {
+    // was the items marked passed, counted over each rung; the same rows carry
+    // the learner's skills, which the review and the warm-up read (C6).
+    void Promise.all([getPlan(), loadRungStates(curriculum, now), rungRows()]).then(([plan, states, rows]) => {
       // The same active set Plan and Settings show, so the three screens
       // cannot disagree about what is switched on.
       const active = activeTracksFor(plan, curriculum as Curriculum);
@@ -590,10 +625,13 @@ export function TodayScreen(router: Router): HTMLElement {
         catalog: catalog as CatalogIndex,
         items,
         states,
-        // Pieces only (C5, S8): a generated sight-reading row is never
-        // reviewed and never repertoire, whatever an older build wrote on it.
-        dueForReview: reviewQueue(progress, now, generated).map((entry) => entry.itemId),
-        mastered: repertoireOf(progress, generated),
+        // The pieces learned and when each was last played (C6): the review's
+        // repertoire retention and "a piece you know". Pieces only (C5, S8): a
+        // generated sight-reading row is never one, whatever an older build
+        // wrote on it. The item calendar they replace is gone.
+        learned: learnedPieces(progress, generated),
+        lastPlayed: new Map(progress.map((row) => [row.itemId, row.lastPracticedAt])),
+        rows,
         activeTracks: active,
         minutes,
         seed,
@@ -648,6 +686,7 @@ export function TodayScreen(router: Router): HTMLElement {
       // that reads one is not depending on wording.
       if (position) status.dataset.lesson = position.lesson.id;
       else delete status.dataset.lesson;
+      learnerRung = position?.lesson.id;
 
       // The daily read and the session's reading slot are one rule, the reader
       // (C4): the rung's reading row, moved by what the learner's reads show.
@@ -655,7 +694,12 @@ export function TodayScreen(router: Router): HTMLElement {
       dailyOffer = readingOffer({
         curriculum: curriculum as Curriculum,
         items,
-        position,
+        // The core path's rung while there is one (C6): the reading rows sit on the spine, and the
+        // status line's rung can be a track's in the file's order (`readerPosition`).
+        position: readerPosition(curriculum as Curriculum, states, active, {
+          strictPrerequisites: getSettings().strictPrerequisites,
+          ...(plan.placement === undefined ? {} : { startAt: plan.placement.unitId }),
+        }),
         activeTracks: active,
         rows: readingRows,
         today: now,

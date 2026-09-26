@@ -34,8 +34,10 @@ import {
   help,
   EVIDENCE_EXCLUSION_WORDS,
   RUNG_TEXT,
+  SLOT_TEXT,
   evidenceJobLine,
   requirementState,
+  swapTierWords,
   type HelpEntry,
 } from '../../src/ui/help';
 import { STAFF_POLICY, type DrillKind } from '../../src/engine/drills/types';
@@ -280,5 +282,31 @@ describe('the rung sentences are the ones `04` §3f prints', () => {
     expect(requirementState(reading(false, 'not introduced'), titleOf)).toBe('not shown yet');
     expect(requirementState(reading(false, 'practised'), titleOf)).toBe('tried, not yet shown');
     expect(requirementState(reading(true, 'familiar'), titleOf)).toBe('counted — familiar');
+  });
+});
+
+// Added (C6): the words each slot's line is drawn from, and the swap sheet's tier words, are the
+// ones `04` §2 prints — one fact in the code and the spec, joined.
+describe('the slot sentences are the ones `04` §2 prints', () => {
+  const flat = (text: string): string => text.replace(/\s+/g, ' ');
+  function sectionTwo(): string {
+    const start = SPEC.indexOf('## 2. Today');
+    expect(start, '`04` has no §2 under that name').toBeGreaterThan(-1);
+    const end = SPEC.indexOf('\n## 2a.', start + 1);
+    return SPEC.slice(start, end === -1 ? undefined : end);
+  }
+
+  it('lists every fixed piece of a slot’s line, and every tier the swap sheet names', () => {
+    const section = flat(sectionTwo());
+    const said = [
+      ...Object.values(SLOT_TEXT),
+      swapTierWords('lesson'),
+      swapTierWords('alternative'),
+      'Trains the same skill',
+      'Carries the same demand',
+      swapTierWords('kind'),
+    ];
+    const missing = said.filter((line) => !section.includes(flat(line)));
+    expect(missing, `slot words §2 does not print:\n${missing.join('\n')}`).toEqual([]);
   });
 });

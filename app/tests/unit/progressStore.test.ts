@@ -1,5 +1,5 @@
 /**
- * docs/02 Part G: pass, master, the review queue and the weekly goal.
+ * docs/02 Part G: pass, master, the pieces learned and the weekly goal.
  *
  * IndexedDB is not available under jsdom, so `openDatabase()` resolves to null
  * and the store falls back to memory — which is exactly the path a learner in
@@ -9,13 +9,12 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import {
   dailyReadDays,
   dayKey,
-  REVIEW_INTERVALS_DAYS,
   addMinutes,
   getProgress,
   getStreak,
   recordRun,
   resetProgressForTest,
-  reviewQueue,
+  learnedPieces,
   selfPass,
   weekSoFar,
   type RunResult,
@@ -109,52 +108,29 @@ describe('selfPass', () => {
   });
 });
 
-// Revised (C5, S8): the review calendar is a piece's, and the queue is told
-// which items are generated sight-reading rows so it can skip them
-// (`sightReadingIsNotAPiece.test.ts`); every item here is a piece.
-const PIECES = (): boolean => false;
+// Replaced (C6): the seven `reviewQueue` cases — a passed item due 1, 3, 7 and
+// 21 days after its first pass, caught up by a pass since, mastered items out,
+// ordered by how overdue. The assumption they encoded, that review is a
+// calendar of one item's dates, is retired (the reviewer's correction of
+// 2026-09-26): the store lists the pieces learned and when each was last
+// played, and the session decides what is due from skill retention and a
+// repertoire window (`repertoireRetention.test.ts`, which holds the rest:
+// generated rows, the learner's word, the window).
+describe('learnedPieces', () => {
+  const PIECES = (): boolean => false;
 
-describe('reviewQueue', () => {
-  const now = day('2026-09-10');
-
-  it('is empty for something passed today', () => {
-    expect(reviewQueue([row({ passedOn: ['2026-09-10'] })], now, PIECES)).toEqual([]);
+  it('a piece passed or mastered is learned, with when it was last played', () => {
+    const played = '2026-09-09T18:00:00.000Z';
+    expect(
+      learnedPieces([row({ itemId: 'a', lastPracticedAt: played }), row({ itemId: 'b', status: 'mastered', lastPracticedAt: played })], PIECES),
+    ).toEqual([
+      { itemId: 'a', status: 'passed', lastPlayed: played },
+      { itemId: 'b', status: 'mastered', lastPlayed: played },
+    ]);
   });
 
-  it('brings back an item a day after it was passed', () => {
-    const due = reviewQueue([row({ itemId: 'a', passedOn: ['2026-09-09'] })], now, PIECES);
-    expect(due.map((d) => d.itemId)).toEqual(['a']);
-    expect(due[0]?.step).toBe(1);
-  });
-
-  it('moves through the 1, 3, 7, 21 day steps', () => {
-    const eightDaysAgo = row({ itemId: 'a', passedOn: ['2026-09-02'] });
-    expect(reviewQueue([eightDaysAgo], now, PIECES)[0]?.step).toBe(3);
-    expect(REVIEW_INTERVALS_DAYS).toEqual([1, 3, 7, 21]);
-  });
-
-  it('drops an item that has been reviewed since it came due', () => {
-    // Two passes, one step due: already caught up.
-    const caughtUp = row({ itemId: 'a', passedOn: ['2026-09-09', '2026-09-10'] });
-    expect(reviewQueue([caughtUp], now, PIECES)).toEqual([]);
-  });
-
-  it('leaves mastered items out', () => {
-    const mastered = row({ status: 'mastered', passedOn: ['2026-08-01', '2026-08-02'] });
-    expect(reviewQueue([mastered], now, PIECES)).toEqual([]);
-  });
-
-  it('leaves items that were never passed out', () => {
-    expect(reviewQueue([row({ status: 'started', passedOn: [] })], now, PIECES)).toEqual([]);
-  });
-
-  it('orders by how overdue they are', () => {
-    const due = reviewQueue(
-      [row({ itemId: 'newer', passedOn: ['2026-09-09'] }), row({ itemId: 'older', passedOn: ['2026-09-01'] })],
-      now,
-      PIECES,
-    );
-    expect(due.map((d) => d.itemId)).toEqual(['older', 'newer']);
+  it('a piece never passed is not', () => {
+    expect(learnedPieces([row({ status: 'started', passedOn: [] }), row({ status: 'new', passedOn: [] })], PIECES)).toEqual([]);
   });
 });
 
