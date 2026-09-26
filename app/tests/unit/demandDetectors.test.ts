@@ -241,14 +241,59 @@ describe('range.beyond-position — one hand wider than a five-finger position',
     expect(present('beyondPosition', [[...line(['C4', 'E4', 'G4', 'E4']), ...line(['C3', 'G3', 'E3', 'G3'], 1, 2)]])).toBe(false));
 });
 
-describe('texture.hands-together — both hands sounding at once', () => {
+describe('texture.hands-together — both hands at once, located where they must be coordinated (C4d, L72)', () => {
+  /** The steps the detector locates the opportunity at, and at each the staves of the notes it names. */
+  const where = (bars: HandNote[][]): { steps: number[]; staves: number[][] } => {
+    const found = detect(phrase({ bars }), 'handsTogether');
+    const steps = [...new Set(found.at.map((a) => a.step))].sort((a, b) => a - b);
+    return { steps, staves: steps.map((step) => found.at.filter((a) => a.step === step).map((a) => a.staff).sort()) };
+  };
+
   it('present: a note in each hand together', () =>
     expect(present('handsTogether', [[{ at: 0, dur: 4, pitch: 'E4' }, { at: 0, dur: 4, pitch: 'C3', staff: 2 }]])).toBe(true));
-  it('present: the left hand holds while the right hand moves', () =>
-    expect(present('handsTogether', [[...line(['E4', 'F4', 'G4']).map((n) => ({ ...n, at: n.at + 1 })), { at: 0, dur: 4, pitch: 'C3', staff: 2 }]])).toBe(true));
+  it('present, with nowhere to coordinate: the left hand holds while the right hand, entering after it, moves', () => {
+    // Revised (C4d): C2 asserted only `present`, which still holds — both hands
+    // sound at once. Under L72 no step asks the hands to be coordinated: the
+    // left hand struck alone, and every right-hand note sounds over it held.
+    const bars = [[...line(['E4', 'F4', 'G4']).map((n) => ({ ...n, at: n.at + 1 })), { at: 0, dur: 4, pitch: 'C3', staff: 2 as const }]];
+    expect(present('handsTogether', bars)).toBe(true);
+    expect(where(bars).steps).toEqual([]);
+  });
   it('absent: the right hand alone', () => expect(present('handsTogether', [line(['C4', 'D4', 'E4', 'F4'])])).toBe(false));
   it('boundary: hands alternating, never together', () =>
     expect(present('handsTogether', [[{ at: 0, dur: 2, pitch: 'E4' }, { at: 2, dur: 2, pitch: 'C3', staff: 2 }]])).toBe(false));
+
+  it('sustained accompaniment — whole-note roots under a melody: the opportunities are where the root changes with the melody, not every melody note', () => {
+    // Bar 1: C4 D4 E4 F4 over C3; bar 2: G4 F4 E4 D4 over G2. Steps 0–3 and 4–7.
+    const bars = [
+      [...line(['C4', 'D4', 'E4', 'F4']), { at: 0, dur: 4, pitch: 'C3', staff: 2 as const }],
+      [...line(['G4', 'F4', 'E4', 'D4']), { at: 0, dur: 4, pitch: 'G2', staff: 2 as const }],
+    ];
+    expect(where(bars)).toEqual({ steps: [0, 4], staves: [[1, 2], [1, 2]] });
+  });
+
+  it('changing coordination — an Alberti left hand under a melody: every left-hand note the melody sounds over, and the melody note struck with one', () => {
+    // Bar 1: C5 half, E5 half over C3 G3 E3 G3 C3 G3 E3 G3 in eighths: eight steps.
+    const alberti = (at: number, pitch: string): HandNote => ({ at, dur: 0.5, pitch, staff: 2 });
+    const bars = [
+      [
+        { at: 0, dur: 2, pitch: 'C5' },
+        { at: 2, dur: 2, pitch: 'E5' },
+        ...['C3', 'G3', 'E3', 'G3', 'C3', 'G3', 'E3', 'G3'].map((pitch, i) => alberti(i * 0.5, pitch)),
+      ],
+    ];
+    expect(where(bars)).toEqual({ steps: [0, 1, 2, 3, 4, 5, 6, 7], staves: [[1, 2], [2], [2], [2], [1, 2], [2], [2], [2]] });
+  });
+
+  it('the left hand changing under a held right-hand note is an opportunity; the right hand moving over a held left-hand note is not', () => {
+    // Bar 1: E4 whole over C3 half then G3 half. Bar 2: C3 whole under E4 F4 G4 E4.
+    const bars = [
+      [{ at: 0, dur: 4, pitch: 'E4' }, { at: 0, dur: 2, pitch: 'C3', staff: 2 as const }, { at: 2, dur: 2, pitch: 'G3', staff: 2 as const }],
+      [...line(['E4', 'F4', 'G4', 'E4']), { at: 0, dur: 4, pitch: 'C3', staff: 2 as const }],
+    ];
+    // Steps: 0 (E4 + C3), 1 (G3 under E4), 2 (E4 + C3), 3–5 (F4, G4, E4 over C3 held).
+    expect(where(bars)).toEqual({ steps: [0, 1, 2], staves: [[1, 2], [2], [1, 2]] });
+  });
 });
 
 describe('texture.left-hand-pattern — the left hand moves in every bar', () => {

@@ -138,3 +138,35 @@ recomputed. `pattern` is an association across phrases, never a cause; the const
 list of Entry 72 stands. The chain over C4c's tree and CI on its push are recorded in the matrix
 rows when they land (CI on the two previous pushes failed only on the Today case C4c rebuilt, and
 the tempo ladder is green there).
+
+## 7. After C4d (2026-09-27): the two P1s closed
+
+- **Verification 4 is now yes.** The composed misses were the generator's redraw budget, not
+  the composition: at every missing seed all 64 draws were used; in G major at level 2 the
+  raised fourth sits at the bottom of the range and a draw keeps the accidental about one time
+  in forty, so all five 3.1 promises together came out about once in 200 draws. The budget is
+  sized from the rarest reachable recipe (about one keep in 370 draws), and only phrases that
+  used to go out broken change. A contract test now walks the reader's own transitions — 1,123
+  reachable recipes over the core rungs, twelve seeds each — with every promise
+  detector-confirmed, untaught demands absent, and no recipe declared unreliable; it fails if
+  that list goes stale. On the committed generator 357 of them failed, none below 3.1. Five
+  entries of the unchanged-generator golden had also gone out without their accidental; they
+  are the only golden entries that moved.
+- **Verification 1's caveat is closed.** The hands-together opportunity is counted only where
+  a left-hand note strikes while the right hand sounds. The two-hand skip learner is singled
+  out on the second bad day (skips 16 of 20 away from playing together), with no one-hand
+  detour: day 6 says "This one by step only — skips went wrong in 2 phrases", skips off, both
+  hands kept. Clean two-hand reads still earn hands-together at every bar-start.
+- **The reruns.** The skip learner's diary changed on two days only: day 28 has its tie (a
+  different phrase from the same seed), and day 29 cites it. The ambiguity learner is unchanged
+  line for line in both halves. Day 28's new phrase keeps every promise and is poor music — a
+  tritone leap, an off-beat ending, a left hand that never moves — which is the random walk's
+  fault and Wave D's (S30), not this repair's.
+- **Decided:** the evidence version moved again (3); rows stored earlier contribute nothing
+  until recomputed and old counts do not mix in for a window; the recompute job is C5's (L78).
+- **Not built:** L76, as designed. C4d found the generator side of a discriminating read is
+  already proven by the composed walk; the policy side is not free.
+- **Verified:** C4d's own runs (typecheck, lint, 5,820 unit tests, the vocabulary tests, the
+  validator, the app build, `today` and `doors`); the orchestrator's chain and CI on the push are
+  recorded in the matrix rows when they land. Nothing was seen or heard.
+

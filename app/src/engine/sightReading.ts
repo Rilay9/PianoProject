@@ -403,6 +403,8 @@ interface Tally {
   sixteenths: number;
   /** 1 when the melody spans more than one five-finger position (`position: false`). */
   beyond: number;
+  /** 1 when the melody strikes a note in every bar (`underTune`, `promisesFor`). */
+  underTune: number;
 }
 
 function emptyTally(): Tally {
@@ -419,6 +421,7 @@ function emptyTally(): Tally {
     leaps: 0,
     sixteenths: 0,
     beyond: 0,
+    underTune: 0,
   };
 }
 
@@ -848,8 +851,25 @@ function buildLeftHand(
 export const PROMISES = ['skips', 'eighths', 'syncopation', 'triplets', 'accidentals'] as const;
 export type PhrasePromise = (typeof PROMISES)[number];
 
-/** How many times a phrase is drawn again for a missing promise before it is given up on. */
-const PROMISE_ATTEMPTS = 64;
+/**
+ * How many times a phrase is drawn again for a missing promise before it is
+ * given up on.
+ *
+ * 64 was enough for one promise at a time, and not for the recipes the reader
+ * composes (C4d, S29): at 3.1 the working recipe promises skips, eighths,
+ * dotted quarters, ties and an accidental at once, and in G major level 2's
+ * raised fourth (C sharp) lies at the bottom of its range, so a draw keeps the
+ * accidental about once in forty and all five about once in two hundred; the
+ * budget ran out at some seeds and the phrase went out without a tie, a dotted
+ * quarter or its accidental, silently. Counted over every recipe the reader can
+ * reach (`composedContract.test.ts`), the rarest keeps all its promises about
+ * once in 370 draws (the two-hand row at 3.6 in G with a ledger line, an
+ * accidental, ties and dotted quarters, seeds 1–20,000). At this budget a seed
+ * of that recipe misses a promise about once in 60,000. A phrase that kept its
+ * promises in fewer draws is unchanged: the loop stops at the first that keeps
+ * them, so only the phrases that used to go out without one are different.
+ */
+const PROMISE_ATTEMPTS = 4096;
 
 /** Salt for the stream that chooses a key and a metre from a list. */
 const CHOICE_SALT = 0x5bd1e995;
@@ -990,6 +1010,17 @@ export function unrealisable(options: SightReadingOptions): string[] {
   }
   if (options.position === false && level === 1) {
     say('Level 1’s range is one five-finger position, so its melody cannot leave it.');
+  }
+  // C4d (S29), a composition: the position from the key's tonic can lie above
+  // the level's own range, and the melody would climb past where the level
+  // stops (G major's position, G to D, at levels 2 and 3, which stop at the C an
+  // octave above middle C). Found by the composed contract: at 3.1 a keyed
+  // recipe with the hand held in position broke 2.5's "nothing above the C
+  // above middle C".
+  if (options.position === true && hands !== 'L') {
+    const top = LEVELS[level].rhKey.high;
+    const climbs = keysAsked(options).some((k) => handPosition(Math.max(-facts.maxFifths, Math.min(facts.maxFifths, k)), 60).high > top);
+    if (climbs) say('Held inside the five-finger position from its tonic, a melody in one of these keys would climb above the top of the level’s range.');
   }
   if (compoundAny && (leftHand === 'broken' || leftHand === 'walking') && options.leftHand !== undefined && twoHands) {
     say('The broken-chord and walking left hands move in quarters, which cross the dotted-quarter beat of compound time.');
@@ -1134,8 +1165,20 @@ function specFor(level: SightReadingLevel, options: SightReadingOptions): LevelS
 type ControlPromise = 'ties' | 'dottedQuarters' | 'ledger' | 'leaps' | 'sixteenths';
 const CONTROL_PROMISES: readonly ControlPromise[] = ['ties', 'dottedQuarters', 'ledger', 'leaps', 'sixteenths'];
 
-/** Which promises this phrase has to keep: in compound time the rhythmic two are not asked, nor a dotted quarter. */
-function promisesFor(options: SightReadingOptions, timeSig: TimeSig): (PhrasePromise | ControlPromise | 'beyond')[] {
+/**
+ * Which promises this phrase has to keep: in compound time the rhythmic two are
+ * not asked, nor a dotted quarter.
+ *
+ * `underTune` (C4d, S29): where a moving left hand is asked for outright
+ * (`leftHand` an Alberti, broken-chord or walking pattern, under a melody), the
+ * melody strikes a note in every bar, because the pattern is a pattern *under a
+ * tune* only in a bar where the tune plays (the `leftHandPattern` and
+ * `walkingBass` detectors, `detect.ts`). A melody that ties into a bar it then
+ * holds whole — level 3's 6/8 bar held for its length, reached by a tie — left
+ * one bar with the pattern alone, and the phrase went out without the pattern
+ * the control promised (the composed contract found it at 4.5).
+ */
+function promisesFor(options: SightReadingOptions, timeSig: TimeSig, twoHands: boolean): (PhrasePromise | ControlPromise | 'beyond' | 'underTune')[] {
   const compound = isCompoundTime(timeSig);
   const older = PROMISES.filter((promise) => {
     if (options[promise] !== true) return false;
@@ -1143,7 +1186,8 @@ function promisesFor(options: SightReadingOptions, timeSig: TimeSig): (PhrasePro
     return true;
   });
   const added = CONTROL_PROMISES.filter((promise) => options[promise] === true && !(compound && promise === 'dottedQuarters'));
-  return [...older, ...added, ...(options.position === false ? (['beyond'] as const) : [])];
+  const moving = twoHands && (options.leftHand === 'alberti' || options.leftHand === 'broken' || options.leftHand === 'walking');
+  return [...older, ...added, ...(options.position === false ? (['beyond'] as const) : []), ...(moving ? (['underTune'] as const) : [])];
 }
 
 /** Steps, thirds and wider between consecutive sounded notes of one line, by scale step. */
@@ -1319,9 +1363,9 @@ export function generateSightReading(options: SightReadingOptions): SightReading
   const bpm = options.bpm ?? 72;
   // Divisions are per quarter note, so 6/8 is six eighths = three quarters.
   const divisionsPerBar = (timeSig.beats * DIVISIONS * 4) / timeSig.beatType;
-  const promised = promisesFor(options, timeSig);
-
   const wantsLeft = options.hands !== 'R' && spec.hands === 'both';
+  const promised = promisesFor(options, timeSig, wantsLeft && options.hands !== 'L');
+
   // A level with no left-hand part of its own (level 1) can still be read by
   // the left hand alone: the same melody, drawn in the left hand's five-finger
   // range and written on the bass staff, with the treble staff resting. That
@@ -1370,6 +1414,7 @@ export function generateSightReading(options: SightReadingOptions): SightReading
     }
     tally.leaps = intervals.leaps;
     tallyMelody(melodyBars, leftOnlyMelody, timeSig, melodySpec.rhythms.includes(DIVISIONS / 2), tally);
+    tally.underTune = melodyBars.every((bar) => bar.some((note) => note.midi !== null && note.chord !== true && note.tie !== 'stop')) ? 1 : 0;
     if (promised.every((promise) => tally[promise] > 0)) break;
   }
 

@@ -628,10 +628,32 @@ can make them depend on the learner's state without touching the logic. Every mo
 asks for at a rung listing a reading row is one C4b declares realisable
 (`sightReadingFromReadingState.test.ts`); the moves the thirty-day and ambiguity diaries asked
 for, and every recipe they read, are generated and read with the detectors
-(`firstThirtyDays.test.ts`, demonstration 4). **Not held:** a recipe composed of several moves
-(by 3.1 the diary's learner reads both hands, dotted quarters, ties, a key set and an accidental
-at once) misses a promise at some seeds — the contract holds each move from a rung's base, not
-moves composed on moves (Entry 77; listed in that test).
+(`firstThirtyDays.test.ts`, demonstration 4).
+
+**The contract over composed recipes (2026-09-27, C4d, S29).** C4c found the reader's composed
+recipes missing promises: by 3.1 the diary's learner reads both hands, dotted quarters, ties, a
+key set and an accidental at once, and at five of twelve seeds a phrase went out without its tie,
+dotted quarter or accidental, silently. Counted before anything changed: every miss was the
+redraw budget (64 draws) running out, and the generator's own tally agreed with the detectors at
+every seed. All were in G major, where level 2's raised fourth (C sharp) lies at the bottom of the
+range: a draw keeps the accidental about once in forty there (once in eight in C, once in five in
+F), all five promises about once in two hundred. The budget is now 4096 draws, sized from the
+rarest recipe the reader can reach (about once in 370 draws; a seed of it misses a promise about
+once in 60,000); the loop stops at the first draw that keeps every promise, so only phrases that
+used to go out without one changed (five of the unchanged golden's older-option phrases, each a
+phrase that had lost its promised accidental). `composedContract.test.ts` walks what the reader
+can offer — from each core rung's row, the reader's step ups in the taught-at order (with the
+passes-over it can make: a demand the phrases may already show, or whose skill the row declares),
+one step down on a demand the phrase holds and the step ups after it until that demand is back,
+and each easy read — about 1,100 recipes, not every combination of controls, and holds each to
+the single-move terms over twelve seeds. Two compositions it found are not a budget: a moving
+left hand asked for outright is now also a promise that the melody strikes in every bar
+(`underTune`; a tie into a 6/8 bar held whole left one bar with the pattern alone, which the
+detectors do not read as a pattern under a tune), and the hand held in the key's own position at
+levels 2–3 in G major climbs above the level's range (G to D, where 2.5's row stops at C), which
+`unrealisable` now declares, so the reader does not offer it: a step up passes to the next move or
+the next step waits, a step down holds and says so, as for a single impossible move. None is listed
+as unreliable (`COMPOSED_UNRELIABLE` is empty).
 
 **The curriculum–generator contract (2026-09-26, C4b).** On 2.5 the reader had nothing to move
 for ten days (the thirty-day diary): ties and dotted quarters are taught at 2.4, and the
@@ -692,7 +714,9 @@ declared. Three parts:
   in the widest it has." · "A left hand read alone at level 1 starts and ends on the C below
   middle C, too far by step from a ledger line to reach one and come back." · "Held inside one
   five-finger position from middle C, the melody has no ledger line beyond middle C to reach."
-  · "Level 1's range is one five-finger position, so its melody cannot leave it." · "The
+  · "Level 1's range is one five-finger position, so its melody cannot leave it." · "Held
+  inside the five-finger position from its tonic, a melody in one of these keys would climb
+  above the top of the level's range." (C4d, a composition) · "The
   broken-chord and walking left hands move in quarters, which cross the dotted-quarter beat of
   compound time." · "The Alberti, broken-chord and walking left hands are built from the C two
   octaves below middle C, on ledger lines below the bass staff." · "A phrase in compound time
@@ -1014,13 +1038,27 @@ is named. The evidence and the readings speak in the vocabulary's demand ids and
 what a reader can change; the reader maps a supported demand to a control (C4c) and acts only on
 `isolated` or `pattern`.
 
-**The evidence's own version** (L66, C4a). `EVIDENCE_DEFINITIONS` (2) in `evidence.ts`, stamped on
+**The evidence's own version** (L66, C4a). `EVIDENCE_DEFINITIONS` (3) in `evidence.ts`, stamped on
 the row beside the evidence as `evidenceDefinitions` by the record call (`stampedEvidence`);
 `storedEvidence` takes only the current stamp and ignores the observation's `definitions`, which
 stays the observation's. Version 1 is C3's per-skill evidence as C4 stored it under the
-observation's stamp: those rows contribute nothing now. `recomputeEvidence(row, played,
-vocabulary)` is what the record call would store today, for a later job that holds the played
-model; nothing runs that job yet (`01` §4.5).
+observation's stamp; version 2 is C4a–C4c's, whose hands-together counts sat on every note over
+the other hand's held note: rows under either contribute nothing now. `recomputeEvidence(row,
+played, vocabulary)` is what the record call would store today, for a later job that holds the
+played model; nothing runs that job yet (`01` §4.5).
+
+**Playing hands together is counted where the hands are coordinated** (C4d, L72; the reviewer's
+C4.5 review). The `handsTogether` detector's opportunity is a step where a left-hand note strikes
+while the right hand sounds — both hands striking together, or the left hand changing under a held
+right-hand note — at every note struck there; the demand is still *present* wherever both hands
+sound at once. Under whole-note roots the opportunities are the bars' first beats, where the root
+changes with the melody, not every melody note over the held root (C2 located every one, so in a
+level-2 two-hand phrase playing together sat on every wrong skip and the reads could not tell the
+skips from it without a one-hand read); under an Alberti or broken-chord left hand they are every
+left-hand note. A clean two-hand read still earns it: on 2.2's row with both hands, four of four
+per four-bar phrase where C4c counted every note; on 3.4's row the hands-together skill is
+measured and supported. The two-hand skip learner, who never reads one-handed, is singled out the
+morning after the second bad read (`readerMovesTheDemand.test.ts`), not after an easy detour.
 
 **`ladderState(evidence, today)`** (`ladder.ts`) — introduced (an exposure), practised (a record of
 either outcome), familiar (supporting at the practice standard on a day), proficient (supporting at

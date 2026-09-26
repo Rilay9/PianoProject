@@ -34,6 +34,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { nextRecommended, readingOffer, readingOptions, type ReadingOffer } from '../../src/curriculum/session';
 import { generateSightReading } from '../../src/engine/sightReading';
 import { demandReadings, type DemandReading } from '../../src/evidence/demandReadings';
+import type { MeasuredEvidence } from '../../src/evidence/evidence';
 import { SUPPORT_SHARE } from '../../src/evidence/ladder';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import { readingReason } from '../../src/ui/help';
@@ -183,34 +184,57 @@ describe('two reads against the recipe, one demand singled out: that demand’s 
     expect(readingReason(next.why, 'daily', today)).toBe(`This one by step only — skips went wrong in ${String(skip.phrasesBelow)} phrases`);
   });
 
-  it('the skip learner with both hands: the left hand is kept; the skips are named only once a read has separated them from playing together', async () => {
+  it('the skip learner with both hands, never reading one-handed: the skips are singled out the morning after the second bad read, and the left hand is kept', () => {
+    // Replaced (C4d, L72). C4c asserted that the skips stayed `ambiguous` here
+    // until a one-hand read separated them from playing together, because
+    // "both hands at once" sat on every right-hand note over the left hand's
+    // held note, so on every skip that went wrong. The hands-together
+    // opportunity is now where the hands must be coordinated — the left hand
+    // striking with the right, or changing under it — so in these phrases it
+    // is the bar's first beat, where the root changes, and the skips that went
+    // wrong inside the bar went wrong without it.
+    expect(twoHandSkipLearner.every((row) => row.recipe?.moved?.hands === 'both'), 'a one-hand read among them').toBe(true);
     expect(twoHandSkipLearner.slice(3).every(against)).toBe(true);
-    // Which: the hands control moves only when a demand it governs is singled
-    // out, and here none is. Neither are the skips yet: every right-hand note
-    // of these phrases sounds over the left hand's held note, so playing
-    // together sits on every skip that went wrong, the skips never went wrong
-    // without it, and the reads cannot tell the two apart (C4a's rule).
     const six = morning(6);
     const readings = sight(twoHandSkipLearner, six);
-    expect(readingOf(readings, 'interval.skip')).toMatchObject({ below: true, selectivity: 'ambiguous' });
-    expect(readingOf(readings, 'interval.skip').basis.withoutRival.find((one) => one.demand === 'texture.hands-together')?.n).toBe(0);
-    expect(readingOf(readings, 'clef.bass').selectivity).toBe('ambiguous');
-    expect(readingOf(readings, 'texture.hands-together').selectivity).toBe('ambiguous');
-    const unsure = offer(twoHandSkipLearner, '2.2', six);
-    expect(unsure.why.kind, 'a diagnosis the reads do not support').toBe('unsure');
-    // The easy read is the one hand (the newest thing added, undone, on purpose); the working recipe keeps both.
-    expect(unsure.recipe).toEqual({ row: TWO_RIGHT.id, easy: true });
-    expect(readingReason(unsure.why, 'daily', six)).toBe('An easy one: right hand only — not sure yet what went wrong');
-    // That one-hand read, skips misread again, separates them: skips without playing together went wrong too.
-    const [easyRead] = await readDays([{ recipe: unsure.recipe, seed: unsure.seed, wrong: skipSteps }], '2.2', 6);
-    const rows = [...twoHandSkipLearner, easyRead as SessionRow];
-    const seven = morning(7);
-    expect(readingOf(sight(rows, seven), 'interval.skip').selectivity).toBe('pattern');
-    const next = offer(rows, '2.2', seven);
+    const skip = readingOf(readings, 'interval.skip');
+    expect(skip.selectivity, 'the skips were not singled out by the second bad two-hand read').toBe('pattern');
+    const withoutTogether = skip.basis.withoutRival.find((one) => one.demand === 'texture.hands-together');
+    expect(withoutTogether?.n, 'no skip went wrong away from a coordination step').toBeGreaterThanOrEqual(2);
+    expect((withoutTogether?.right ?? 0) / (withoutTogether?.n ?? 1)).toBeLessThan(SUPPORT_SHARE);
+    // Nothing the hands control governs is singled out: the left hand stays.
+    expect(named(readings)).toEqual(['interval.skip pattern']);
+    const next = offer(twoHandSkipLearner, '2.2', six);
     expect(next.why.kind).toBe('back');
-    expect(next.recipe, 'the left hand was taken away').toEqual({ row: TWO_RIGHT.id, moved: { hands: 'both', skips: false } });
-    expect(readingReason(next.why, 'daily', seven)).toMatch(/^This one by step only — skips went wrong in \d+ phrases$/);
-  }, 120_000);
+    expect(next.recipe, 'the left hand was taken away, or the skips were not').toEqual({ row: TWO_RIGHT.id, moved: { hands: 'both', skips: false } });
+    expect(readingReason(next.why, 'daily', six)).toBe(`This one by step only — skips went wrong in ${String(skip.phrasesBelow)} phrases`);
+  });
+
+  it('the same learner’s clean two-hand reads still carry hands-together evidence, at the coordination steps, all right', () => {
+    // Legitimate two-hand evidence survives L72: the three clean reads' sight-reading keeps its hands-together
+    // count, at every step where the left hand struck under the right, every one right.
+    for (const row of twoHandSkipLearner.slice(0, 3)) {
+      const result = (row.evidence ?? []).find((one) => one.skill === 'sight-reading') as MeasuredEvidence | undefined;
+      const together = result?.byDemand.find((one) => one.demand === 'texture.hands-together');
+      expect(together?.n, `read ${String(row.id)}: no hands-together count`).toBeGreaterThan(0);
+      expect(together?.right).toBe(together?.n);
+    }
+  });
+
+  it('a clean read of the row that declares playing hands together (3.4’s) still earns that skill, supported', async () => {
+    const TWO = catalog.find((item) => item.id === 'drill.reading.sight-reading-2') as CatalogItem;
+    const { evidence } = await readPhrase({
+      item: TWO,
+      options: readingOptions(TWO, { row: TWO.id }, 4242, taughtAt('3.4')),
+      at: noon(1),
+      opened: { tab: 'today', rung: '3.4', slot: 'daily-read' },
+    });
+    const skill = evidence.find((one) => one.skill === 'hands-together') as MeasuredEvidence | undefined;
+    expect(skill?.kind, JSON.stringify(skill)).toBe('measured');
+    expect(skill?.n).toBeGreaterThan(0);
+    expect(skill?.right).toBe(skill?.n);
+    expect(skill?.byDemand.find((one) => one.demand === 'texture.hands-together')).toMatchObject({ n: skill?.n, right: skill?.n });
+  }, 60_000);
 });
 
 describe('two reads against the recipe, nothing singled out: nothing blamed, the easy read, and the line says it is not sure', () => {

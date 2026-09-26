@@ -1,4 +1,4 @@
-# The thirty-day diary again, and the mixed-demand ambiguity learner (C4c)
+# The thirty-day diary again, and the mixed-demand ambiguity learner (C4c; rerun after C4d)
 
 Produced by `app/tests/unit/firstThirtyDays.test.ts` with `C4C_DIARY` set, after C4a (evidence per demand), C4b (the
 curriculum–generator contract) and C4c (the reader that moves the demand the evidence singles out). Each morning the
@@ -8,6 +8,13 @@ through the real engine at the default 70 % with a small unevenness; the evidenc
 with the row's own skills and stamped; `recordRun` wrote it into a fake IndexedDB, and the next morning read it back.
 "Today:" is the Today card's line, word for word; "played:" is what the phrase held, read off the notation with the
 demand detectors. Nothing was heard.
+
+Rerun after C4d (2026-09-27): the generator keeps the promises of the recipes the reader composes (its redraw
+budget was the mechanism of the missing tie), and playing hands together is counted only where the hands are
+coordinated. Two lines changed, both on account of the first: day 28's phrase now has its tie (it is a different
+phrase from the same seed, the one the generator reaches once it keeps every promise), and day 29 cites that
+read's count. The second changed no line: day 6's step down was already due that morning, and it no longer rests
+on day 4's one-hand read (`firstThirtyDays` demonstration 1 reads the two-hand days alone).
 
 ## The skip learner, thirty days
 
@@ -43,8 +50,8 @@ Day 24 · Sat 24 Oct · rung 3.1 · Today: “Now with a note outside the key �
 Day 25 · Sun 25 Oct · rung 3.1 · Today: “Another like it: G major, one sharp — 16 of 16 right and in time yesterday” · played: both hands, G major, beyond one hand position, dotted quarters, ties · 14/14 right and in time
 Day 26 · Mon 26 Oct · rung 3.1 · Today: “Now with a leap — 14 of 14 right and in time yesterday” · played: both hands, G major, beyond one hand position, dotted quarters, ties · 15/15 right and in time
 Day 27 · Tue 27 Oct · rung 3.1 · Today: “An easy one, for fluency: without notes outside the key” · played: both hands, F major, beyond one hand position, dotted quarters, ties (the easy one) · 20/20 right and in time
-Day 28 · Wed 28 Oct · rung 3.1 · Today: “Another like it: G major, one sharp — 15 of 15 right and in time on Monday” · played: both hands, G major, inside one hand position, dotted quarters · 14/14 right and in time
-Day 29 · Thu 29 Oct · rung 3.1 · Today: “The next step waits for a later lesson — 14 of 14 right and in time yesterday” · played: both hands, G major, inside one hand position, dotted quarters, ties · 11/11 right and in time
+Day 28 · Wed 28 Oct · rung 3.1 · Today: “Another like it: G major, one sharp — 15 of 15 right and in time on Monday” · played: both hands, G major, beyond one hand position, dotted quarters, ties · 21/21 right and in time
+Day 29 · Thu 29 Oct · rung 3.1 · Today: “The next step waits for a later lesson — 21 of 21 right and in time yesterday” · played: both hands, G major, inside one hand position, dotted quarters, ties · 11/11 right and in time
 Day 30 · Fri 30 Oct · rung 3.1 · Today: “The next step waits for a later lesson — 11 of 11 right and in time yesterday” · played: both hands, G major, inside one hand position, dotted quarters, ties · 17/17 right and in time
 
 ## The mixed-demand ambiguity learner, both halves

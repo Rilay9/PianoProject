@@ -122,8 +122,14 @@ export interface EvidenceContext {
  *   the counted steps is (`otherDemands`), from which the overlap is derived
  *   (`overlapOf`); and the per-step verdicts they are told from
  *   (`StepMeasure.uniform`).
+ * - **3** — the same shape; playing hands together (`texture.hands-together`)
+ *   counted only where the hands are coordinated, a left-hand note struck
+ *   while the right hand sounds, not every note over the other hand's held
+ *   note (C4d, L72: `detect.ts`). The hands-together skill's `n` and `right`
+ *   and every entry for that demand change with it, so rows under 2 wait for a
+ *   recompute like any other.
  */
-export const EVIDENCE_DEFINITIONS = 2;
+export const EVIDENCE_DEFINITIONS = 3;
 
 /** A demand at some steps: another demand on a demand's counted steps (`overlapOf`), or one a skill does not count (`otherDemands`). */
 export interface DemandOverlap {

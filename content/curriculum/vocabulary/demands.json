@@ -60,7 +60,7 @@
     { "id": "key.signature", "display": "A key signature", "dimension": "key", "detector": "keySignature", "copedWithBy": "key-signature", "taughtAt": "3.1" },
     { "id": "pitch.chromatic", "display": "A note outside the key", "dimension": "accidental", "detector": "chromatic", "copedWithBy": "accidentals", "taughtAt": "3.1" },
     { "id": "range.beyond-position", "display": "One hand wider than a five-finger position", "dimension": "range", "detector": "beyondPosition", "copedWithBy": "position-shift", "taughtAt": "2.5" },
-    { "id": "texture.hands-together", "display": "Both hands sounding at once", "dimension": "texture", "detector": "handsTogether", "copedWithBy": "hands-together", "taughtAt": "2.1" },
+    { "id": "texture.hands-together", "display": "Both hands at once: struck together, or the left hand moving under the right", "dimension": "texture", "detector": "handsTogether", "copedWithBy": "hands-together", "taughtAt": "2.1" },
     {
       "id": "texture.left-hand-pattern",
       "display": "A moving left-hand pattern",

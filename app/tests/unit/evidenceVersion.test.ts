@@ -308,6 +308,14 @@ describe('only evidence with the current evidence stamp reaches the reading stat
     expect(storedEvidence({ ...row, evidenceDefinitions: EVIDENCE_DEFINITIONS - 1 })).toEqual([]);
   });
 
+  it('a row stored under C4a–C4c’s evidence (2), whose hands-together counts sat on every note over a held note, contributes nothing (C4d, L72)', async () => {
+    // The opportunity of `texture.hands-together` moved to the steps where the hands are coordinated, so
+    // the per-demand counts a row stored under 2 are not what this evidence says: the stamp moved with it.
+    const row = await recordedRead();
+    expect(EVIDENCE_DEFINITIONS, 'the evidence names the same version though what it counts for playing together changed').toBeGreaterThan(2);
+    expect(storedEvidence({ ...row, evidenceDefinitions: 2 })).toEqual([]);
+  });
+
   it('the observation’s stamp stays the observation’s: it neither admits nor refuses evidence', async () => {
     const row = await recordedRead();
     // An observation written under other rules, with evidence computed under the current ones.

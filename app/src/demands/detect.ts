@@ -461,15 +461,36 @@ export const DETECTORS: Readonly<Record<DetectorId, Detector>> = {
   },
 
   /**
-   * Both hands sounding at once: a note in one hand starts while the other
-   * hand has a note sounding, or both start together. Hands that alternate
-   * never are. Located at the note that makes it together.
+   * Both hands at once, located where the hands have to be coordinated (C4d,
+   * backlog L72; the reviewer's C4.5 review).
+   *
+   * **Present** when both hands sound at once anywhere: a note in one hand
+   * starts while the other hand has a note sounding, or both start together.
+   * Hands that alternate never are. This is the texture, and what the reading
+   * rows' promises and the contract read.
+   *
+   * **Located** only at the steps where the two hands must be coordinated: a
+   * step where the left hand strikes while the right hand sounds — both hands
+   * striking together, or the left hand changing under a held right-hand
+   * note — at every note struck there. A right-hand note over a held left-hand
+   * note is not an opportunity: under a sustained accompaniment (whole-note
+   * roots under a melody) the opportunities are the steps where the root
+   * changes with the melody, not every melody note; under a moving left hand
+   * (an Alberti or broken-chord pattern) they are every left-hand note the
+   * melody sounds over. C2 located every note that sounded over the other
+   * hand, so in a level-2 two-hand phrase playing together sat on every
+   * right-hand note, and a learner's wrong skips could never be read apart
+   * from it. A texture with no such step (a left-hand note struck alone, a
+   * melody entering over it held) is present with nowhere to point, as a key
+   * signature whose altered letters never sound is.
    */
   handsTogether: (m) => {
     const notes = placed(m);
     const sounding = (hand: 'R' | 'L', at: number): boolean =>
       notes.some((q) => q.note.hand === hand && q.note.onset <= at + EPSILON && q.note.onset + q.note.duration > at + EPSILON);
-    return found('handsTogether', notes.filter((p) => sounding(p.note.hand === 'R' ? 'L' : 'R', p.note.onset)).map(locate));
+    const present = notes.some((p) => sounding(p.note.hand === 'R' ? 'L' : 'R', p.note.onset));
+    const coordinated = new Set(notes.filter((p) => p.note.hand === 'L' && sounding('R', p.note.onset)).map((p) => p.step));
+    return found('handsTogether', notes.filter((p) => coordinated.has(p.step)).map(locate), present);
   },
 
   /**

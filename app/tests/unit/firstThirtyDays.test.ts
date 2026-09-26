@@ -238,27 +238,14 @@ function diaryLine(day: Day): string {
 const learners: Record<string, Day[]> = {};
 
 /**
- * Promises a recipe these diaries read does not keep at a seed, found by
- * demonstration 4 and reported as C4b's contract gap (the contract holds each
- * move from a rung's base; these are moves composed on moves). Each line must
- * still fail: when the generator keeps the promise, the test says to remove it.
+ * Promises a recipe these diaries read does not keep at a seed. Revised (C4d,
+ * S29): C4c listed fourteen here — day 28's missing tie and the 3.1 working
+ * recipes at five seeds, all in G major, where level 2's raised fourth lies at
+ * the bottom of its range and the composed promises outlasted the generator's
+ * redraw budget. The budget was the mechanism (`sightReading.ts`); the reachable
+ * composed recipes are held by `composedContract.test.ts`, and none is broken.
  */
-const KNOWN_BROKEN: string[] = [
-  "skip day 28 (seed 3497510848): rhythm.ties missing",
-  "3.1 {\"hands\":\"both\",\"dottedQuarters\":true,\"ties\":true,\"fifths\":[1,-1],\"accidentals\":true} seed 47615: rhythm.dotted-quarter missing",
-  "3.1 {\"hands\":\"both\",\"dottedQuarters\":true,\"ties\":true,\"fifths\":[1,-1],\"accidentals\":true} seed 47615: rhythm.ties missing",
-  "3.1 {\"hands\":\"both\",\"dottedQuarters\":true,\"ties\":true,\"fifths\":[1,-1],\"accidentals\":true} seed 47615: pitch.chromatic missing",
-  "3.1 {\"hands\":\"both\",\"dottedQuarters\":true,\"ties\":true,\"fifths\":[1,-1],\"accidentals\":true} seed 87210: rhythm.ties missing",
-  "3.1 {\"hands\":\"both\",\"dottedQuarters\":true,\"ties\":true,\"fifths\":[1,-1],\"accidentals\":true} seed 87210: pitch.chromatic missing",
-  "3.1 {\"hands\":\"both\",\"leaps\":true,\"dottedQuarters\":true,\"ties\":true,\"fifths\":[1,-1],\"accidentals\":true} seed 101: rhythm.ties missing",
-  "3.1 {\"hands\":\"both\",\"leaps\":true,\"dottedQuarters\":true,\"ties\":true,\"fifths\":[1,-1],\"accidentals\":true} seed 39696: rhythm.ties missing",
-  "3.1 {\"hands\":\"both\",\"leaps\":true,\"dottedQuarters\":true,\"ties\":true,\"fifths\":[1,-1],\"accidentals\":true} seed 47615: rhythm.dotted-quarter missing",
-  "3.1 {\"hands\":\"both\",\"leaps\":true,\"dottedQuarters\":true,\"ties\":true,\"fifths\":[1,-1],\"accidentals\":true} seed 47615: rhythm.ties missing",
-  "3.1 {\"hands\":\"both\",\"leaps\":true,\"dottedQuarters\":true,\"ties\":true,\"fifths\":[1,-1],\"accidentals\":true} seed 47615: pitch.chromatic missing",
-  "3.1 {\"hands\":\"both\",\"leaps\":true,\"dottedQuarters\":true,\"ties\":true,\"fifths\":[1,-1],\"accidentals\":true} seed 71372: pitch.chromatic missing",
-  "3.1 {\"hands\":\"both\",\"leaps\":true,\"dottedQuarters\":true,\"ties\":true,\"fifths\":[1,-1],\"accidentals\":true} seed 87210: rhythm.ties missing",
-  "3.1 {\"hands\":\"both\",\"leaps\":true,\"dottedQuarters\":true,\"ties\":true,\"fifths\":[1,-1],\"accidentals\":true} seed 87210: pitch.chromatic missing",
-];
+const KNOWN_BROKEN: string[] = [];
 
 beforeAll(async () => {
   for (const learner of [SKIP_LEARNER, AMBIGUITY_B, AMBIGUITY_A]) learners[learner.name] = await live(learner);
@@ -347,6 +334,13 @@ describe('the second stop’s demonstrations (C4c item 6)', () => {
     for (const demand of ['clef.bass', 'texture.hands-together']) {
       expect(readings.find((r) => r.demand === demand)?.selectivity ?? 'ambiguous', demand).toBe('ambiguous');
     }
+    // Added (C4d, L72): the move no longer rests on the one-hand reads. Over the two-hand reads alone, the
+    // skips are singled out too: playing together is where the hands are coordinated, not every note over the
+    // held left hand, so the skips inside the bar went wrong without it.
+    const twoHanded = day.rowsBefore.filter((row) => row.recipe?.moved?.hands === 'both');
+    expect(twoHanded.length, 'the reads before the move were not two-handed').toBeGreaterThanOrEqual(2);
+    const alone = demandReadings(twoHanded, VOCABULARY_V0, day.morning).find((r) => r.skill === 'sight-reading' && r.demand === 'interval.skip');
+    expect(alone?.selectivity, 'over the two-hand reads alone the skips are not singled out').toMatch(/pattern|isolated/);
   });
 
   it('2. ambiguous mixed failure names nothing; the contrasting reads then name what they separate, and only that', () => {

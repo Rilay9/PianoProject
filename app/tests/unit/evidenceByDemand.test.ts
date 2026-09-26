@@ -247,6 +247,54 @@ describe('each fact is stored once: the evidence grows with the demands, not wit
   });
 });
 
+describe('playing hands together is evidenced where the hands are coordinated (C4d, L72), and a clean two-hand read still earns it', () => {
+  /** Bar 1: C4 D4 E4 F4 over C3; bar 2: G4 F4 E4 D4 over G2 — whole-note roots under a melody. */
+  const SUSTAINED = phrase({
+    bars: [
+      [{ at: 0, pitch: 'C4' }, { at: 1, pitch: 'D4' }, { at: 2, pitch: 'E4' }, { at: 3, pitch: 'F4' }, { at: 0, dur: 4, pitch: 'C3', staff: 2 }],
+      [{ at: 0, pitch: 'G4' }, { at: 1, pitch: 'F4' }, { at: 2, pitch: 'E4' }, { at: 3, pitch: 'D4' }, { at: 0, dur: 4, pitch: 'G2', staff: 2 }],
+    ],
+  });
+  /** C5 half, E5 half over an Alberti left hand in eighths: C3 G3 E3 G3 twice. */
+  const ALBERTI = phrase({
+    bars: [
+      [
+        { at: 0, dur: 2, pitch: 'C5' },
+        { at: 2, dur: 2, pitch: 'E5' },
+        ...['C3', 'G3', 'E3', 'G3', 'C3', 'G3', 'E3', 'G3'].map((pitch, i) => ({ at: i * 0.5, dur: 0.5, pitch, staff: 2 as const })),
+      ],
+    ],
+  });
+  const clean = (model: ScoreModelData): MeasuredEvidence => {
+    const [together] = evidenceFor({ observation: observe(model, FIRST_READ), played: model, targetSkills: ['hands-together'], vocabulary: VOCABULARY_V0 });
+    expect(together?.kind, JSON.stringify(together)).toBe('measured');
+    return together as MeasuredEvidence;
+  };
+
+  it('sustained accompaniment read cleanly: the two steps where the root changes with the melody, both right — not the six melody notes over a held root', () => {
+    const together = clean(SUSTAINED);
+    expect(together).toMatchObject({ n: 2, right: 2 });
+    expect(entry(together, 'texture.hands-together')).toMatchObject({ n: 2, right: 2, steps: [0, 4] });
+  });
+
+  it('an Alberti left hand under a melody read cleanly: every left-hand note is an opportunity, all right', () => {
+    const together = clean(ALBERTI);
+    expect(together).toMatchObject({ n: 8, right: 8 });
+  });
+
+  it('the melody misread over a held root is not a hands-together failure; the root and melody struck wrong together is', () => {
+    // Steps 1 and 2 (D4, E4 over C3 held) misread: hands together holds, 2 of 2.
+    const inside = observe(SUSTAINED, { ...FIRST_READ, wrongInstead: [1, 2] });
+    const [a] = evidenceFor({ observation: inside, played: SUSTAINED, targetSkills: ['hands-together'], vocabulary: VOCABULARY_V0 });
+    expect(a).toMatchObject({ kind: 'measured', n: 2, right: 2 });
+    // Step 4 (G4 over the new root G2) misread: 1 of 2.
+    const onTheChange = observe(SUSTAINED, { ...FIRST_READ, wrongInstead: [4] });
+    const [b] = evidenceFor({ observation: onTheChange, played: SUSTAINED, targetSkills: ['hands-together'], vocabulary: VOCABULARY_V0 });
+    expect(b).toMatchObject({ kind: 'measured', n: 2, right: 1 });
+    expect(entry(b as MeasuredEvidence, 'texture.hands-together')?.wrong).toEqual([4]);
+  });
+});
+
 describe('a demand with no measured opportunity is absent, and the skill refuses only when none of its demands had one', () => {
   it('a loop that leaves the skips out: no entry for the skip, the steps still counted', () => {
     // Steps 6 and 7 (F4, E4): two steps, no skip. (The harness plays the first

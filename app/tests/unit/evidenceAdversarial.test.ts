@@ -171,8 +171,12 @@ describe('3. accurate right hand, poor left hand', () => {
     // Bar 3's together-steps are part right: `p`.
     expect(observation.steps?.codes).toBe('hhhhmmmmphph');
     const sight = measured(results, 'sight-reading');
-    expect(counted(sight, 'texture.hands-together')).toMatchObject({ n: 4, right: 2, wrong: [8, 10] });
-    expect(counted(measured(results, 'hands-together'), 'texture.hands-together')).toMatchObject({ n: 4, right: 2 });
+    // Revised (C4d, L72): the opportunities are the two steps where the left
+    // hand strikes with the right (8 and 10), not also the right hand's notes
+    // over the held left hand (9 and 11), which C4a counted 2 of 4.
+    expect(counted(sight, 'texture.hands-together')).toMatchObject({ n: 2, right: 0, steps: [8, 10], wrong: [8, 10] });
+    expect(counted(measured(results, 'hands-together'), 'texture.hands-together')).toMatchObject({ n: 2, right: 0 });
+    expect(measured(results, 'hands-together')).toMatchObject({ n: 2, right: 0 });
     // The right hand's steps, alone or over a held left hand: 4 of 4. At the
     // two part-right steps the right hand's note cannot be told from the
     // left's, and is left out of the count and said.
@@ -194,13 +198,17 @@ describe('3. accurate right hand, poor left hand', () => {
     // Without a skip (the left hand's first C3): 0 of 2. The right hand's skip without the bass staff: 2 of 2.
     expect(bass.basis.withoutRival.find((one) => one.demand === 'interval.skip')).toEqual({ demand: 'interval.skip', n: 2, right: 0 });
     expect(bass.basis.othersWithout.find((one) => one.demand === 'interval.skip')).toEqual({ demand: 'interval.skip', n: 2, right: 2 });
-    // Hands together, where no left-hand note struck: 4 of 4.
+    // Revised (C4d, L72): hands together is now only where a left-hand note
+    // strikes, so it is never read apart from the bass staff here (C4a's "4 of
+    // 4 where no left-hand note struck" were the right hand's notes over a
+    // held left hand). The bass staff's pattern still rests on the skip.
     expect(bass.basis.othersWithout.find((one) => one.demand === 'texture.hands-together')).toEqual({
       demand: 'texture.hands-together',
-      n: 4,
-      right: 4,
+      n: 0,
+      right: 0,
     });
-    expect(readingOf(readings, 'sight-reading', 'texture.hands-together').selectivity).toBe('ambiguous');
+    // Playing together went wrong only where the bass staff did: never singled out.
+    expect(readingOf(readings, 'sight-reading', 'texture.hands-together')).toMatchObject({ below: true, selectivity: 'ambiguous' });
   });
 });
 

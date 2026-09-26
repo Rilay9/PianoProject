@@ -16479,3 +16479,115 @@ The reader now does what a teacher does with the evidence a teacher would trust:
 ## Files
 
 `app/src/curriculum/session.ts` (the reader), `app/src/ui/help.ts` (the words), `app/src/data/db.ts` (`ReadingMoves`), `app/src/router.ts` (deviation 1), `app/src/ui/screens/ScoreScreen.ts` (deviation 2), `content/lessons/3.4.md` (deviation 3); tests: `readerMovesTheDemand.test.ts`, `readerAdversarial.test.ts`, `tests/e2e/fixtures/reader-learners.json` (new), `firstThirtyDays`, `sightReadingFromReadingState`, `recommendRespondsToEvidence`, `sightReadingSlot`, `sightReadingPromises`, `scoreSummaryTruth`, `router`, `lessonClaimsAboutApp`, `helpers/reader.ts`, e2e `today.spec`; `docs/04-ui-spec.md` §2, `docs/05-score-follow-engine.md` §8, `docs/08-test-map.md`, `docs/prompts/checkpoint-2026-09-27-diary.md` (new).
+
+### Entry 78 — C4d: the contract over the composed recipes the reader can reach, and a hands-together opportunity that means coordination — the missed promises were the redraw budget, counted before it changed; playing together is counted where the left hand strikes under the right, so a two-hand skip learner is singled out the morning after the second bad read (2026-09-27)
+
+**Judgement.** Yes for S29, L72 and the four reruns, with one finding the reviewer should hear first: **the composed misses were never a composition the generator could not write; they were a redraw budget sized for one promise at a time.** Counted before anything changed (probes in the scratch folder): at every missing seed the generator's own tally and the detectors agree, the loop had run all 64 draws, and every miss was in G major, where level 2's raised fourth (C sharp) lies at the bottom of the C4–C5 range — a draw keeps the accidental about once in forty there (once in eight in C, once in five in F), and all five of 3.1's working promises (skips, eighths, dotted quarters, ties, the accidental) about once in two hundred. Unbounded, the failing seeds keep every promise after 70–490 draws. The budget is now 4096, sized from the rarest recipe the reader can reach (about once in 370 draws, seeds 1–20,000; a seed of it now misses about once in 60,000). The same budget was quietly failing single promises too: five phrases in the unchanged golden (the older `accidentals` option at levels 3, 4, 5 and 7, hands together, four bars) had gone out without their promised accidental; they are the only golden entries that moved. The contract now walks what the reader can reach (about 1,100 recipes over twelve rung groups) and every one keeps its promises at every seed; two compositions the walk found were not the budget, and each is dealt with honestly (below). **L72:** the two-hand skip learner who never reads one-handed is singled out **the morning after the second bad read** — C4c's hypothesis holds; it does not take a third day.
+
+**The two-hand skip learner, before and after** (`readerMovesTheDemand`; the same five reads — 2.2's row with both hands, three clean, then every skip misread on days 4 and 5; the same calendar; both runs through the real path, the committed detector copied in for "before" and put back):
+
+| morning | before (C4c's detector) | after (C4d) |
+|---|---|---|
+| 6 | skips 16 of 23, below in 2 phrases, **`ambiguous`**: where playing together was absent the skips had **0** opportunities (it sat on every right-hand note over the held root). *An easy one: right hand only — not sure yet what went wrong*; the easy read, skips misread again | skips 16 of 23, below in 2 phrases, **`pattern`**: where playing together was absent (inside the bar) the skips went 16 of 20, below. *This one by step only — skips went wrong in 2 phrases*: skips off, **both hands kept** |
+| 7 | skips 8 of 20, below in 3, `pattern`: *This one by step only — skips went wrong in 3 phrases*, both hands kept | — (the move came a day earlier, without the detour) |
+
+The clean reads still carry playing together: each four-bar phrase counts it at its four bar-starts, all right, where C4c counted all 19–22 steps; a clean read of 3.4's row (the one that declares the hands-together skill) is measured and supported.
+
+**The composed contract, rung by rung** (`composedContract.test.ts`; twelve seeds a recipe; generator → OSMD → extractor → detectors; the reader's own transitions — `readingMoves`, in the taught-at order, with the passes-over it can make, one step down on a demand the phrase holds and the step ups until it is back, each easy read):
+
+| rungs (the reader's row, held to) | recipes | reliable | deepest accumulation walked | declared unavailable in composition (the reader does not offer them) |
+|---|---|---|---|---|
+| 1.3, 1.4 (`1-left`) | 2 each | all | the row | — |
+| 1.5, 2.1 (`1`) | 4 each | all | the melody on the bass staff | — |
+| 2.2–2.3 (`2-right`, 2.2) | 13 | all | both hands, a leap | skips off where leaps are on ("A melody held to steps cannot leap"); leap on where skips are off; leap off with both hands (the roots) |
+| 2.4 (`2-right`, 2.2) | 32 | all | both hands, leap, dotted quarters, ties | as 2.2, and: eighths off where dotted quarters are on, dotted quarters on where eighths are off ("completed by an eighth"); leap or skip off, or ties on, where a tie's closing note forbids it |
+| 2.5 (`2-right`, 2.5) | 47 | all | + beyond C position | as 2.4 |
+| 3.1–3.3 (`2-right`, 2.5) | 87 | all | both hands, leap, dotted quarters, ties, beyond, a key set, an accidental (the diary's working recipes are among them) | as 2.4, and **new**: the hand held in position once a key set is on, or a key set once the hand is held in position ("Held inside the five-finger position from its tonic, a melody in one of these keys would climb above the top of the level's range": G major's position runs G–D, and 2.5's row stops at C) |
+| 3.4–3.5 (`2`, 3.4) | 144 | all | skip, leap, dotted quarters, ties, beyond, key, accidental, ledger | as above; ledger on or the position held where the other is ("no ledger line beyond middle C to reach") |
+| 3.6–4.4 (`2`, 3.4) | 178 | all | + a broken-chord left hand | as 3.4, and: one hand, or ledger lines off, under a moving left hand; a moving left hand where skips are off or ledger lines are off |
+| 4.5; 4.6–4.7 (`3`) | 305 each | all | skip, leap, eighths, dotted quarters, ties, beyond, key, accidental, ledger, an Alberti left hand | the position, ledger and left-hand compositions as above |
+
+`COMPOSED_UNRELIABLE` — the list for a recipe the generator still cannot honour at every seed — is empty and held so (a failing recipe not named there fails the file; a named one that passes fails it too).
+
+**The thirty days, the ambiguity adversary, read as a teacher** (`docs/prompts/checkpoint-2026-09-27-diary.md`, regenerated; its diff is in the scratch folder):
+- **Two lines changed, both S29's.** Day 28 now has its tie: *Another like it: G major, one sharp* — a different phrase from the same seed, the one the generator reaches once it keeps every promise (21 steps read where C4c's had 14, and no tie). Day 29 cites that read, *21 of 21 right and in time yesterday*. Read off the notation, not heard: G4 dotted half, C5 tied across the bar line; A4 B4 C5 eighths, C5 dotted quarter, C5 eighth; A4, F♯4, **C4** (a tritone down), D4, C♯4, D4, C4; F♯4 dotted quarter, G4 A4 F♯4 D4, ending on **G4 as an off-beat eighth**; the left hand holds G3 for all four bars. The tie and the accidental (C♯ as a lower neighbour, short, off the beat) are clean; the tritone leap, the weak ending and the motionless left hand are the random walk's (D's), and a teacher would not choose this phrase for the first week of 3.1. Unverified as music.
+- **L72 changed no line.** Day 6's step down was already due that morning (two reads against the both-hands recipe, days 3 and 5); it no longer rests on day 4's one-hand read — over the two-hand reads alone the skips are singled out (demonstration 1, extended; red on C4c's detector: `expected 'ambiguous' to match /pattern|isolated/`).
+- **The ambiguity adversary, both halves: unchanged, line for line.** Its phrases are 2.5's right-hand row until the variant adds both hands on day 6, and no decision there turned on playing together. (b) still names nothing in ten days; (a) still names the eighths on day 4 and only them. That L76 question stands as the C4.5 review left it.
+
+**Deviations, each with its reason.**
+1. **The evidence's version moved to 3** (`evidence.ts`, the line the brief allowed). The detector's change moves every stored `texture.hands-together` count and the hands-together skill's `n`; `01` §4.5 says a change to the vocabulary's results moves `EVIDENCE_DEFINITIONS`. Consequence for a learner: every row C4a–C4c stored contributes nothing until something recomputes it (no trigger yet, as before). The e2e fixture's seven stamps moved with it (only those bytes), so `today` and `doors` ran.
+2. **A moving left hand is also a promise that the melody strikes in every bar** (`underTune`, `sightReading.ts`). Not the budget: at 4.5 a tie into a 6/8 bar held whole left one bar with the Alberti alone, and the `leftHandPattern` detector (C2's, not mine) reads a pattern only under a bar where the tune plays. The generator now redraws that shape where `leftHand` is asked for outright; phrases with `leftHand` absent are untouched (the golden).
+3. **A composed unavailability is a reason from `unrealisable`, not a separate list.** The reader already refuses any move that brings a new `unrealisable` reason (`moveFor`, the easy read), so a composition declared there behaves exactly as a single impossible move: skipped, the next move tried, or the next step waits. `session.ts` and `readingControls.ts` are untouched.
+4. **The walk steps down only on a demand the phrase may hold.** `readingMoves` also lists an off move for a demand no phrase of the recipe can hold — the walking bass off at 3.4, which writes a broken-chord left hand 3.6 has not taught; `readingOffer` never takes it (it steps down only on a demand the reads single out, `singledOut`). Reported, not fixed (Follow-ups).
+5. **`handsTogether` keeps `present` as the texture** (both hands sounding at once) and moves only its locations — the reading rows' promises, the contract and `demandsOfFiles` read `present`, and a held left hand under a melody entering after it is still two hands at once, with nowhere to coordinate (as a key signature whose altered letters never sound).
+6. **Tests the brief did not name:** `evidenceVersion` gains a case (the others preserved); `firstThirtyDays` demonstration 1 gains the two-hand-only reading; the golden's five entries (Tests).
+
+## Done — per item: mechanism, the red line, before → after
+
+**S29. The contract over composed recipes, and the generator honouring them.** *Mechanism, counted:* the redraw budget (above), and two compositions that were not the budget (deviations 2 and 3, and the G position). *Red, on the committed generator (copied in, then put back) and the walk as built:* `composedContract`: `AssertionError: expected [ …(357) ] to deeply equal []` — 357 of the 1,123 reachable recipes, none below 3.1 (22 at 3.1–3.3, 55 at 3.4–3.5, 86 at 3.6–4.4, 97 each at 4.5 and 4.6–4.7), 354 of them missing a promised demand at some seed; the first line `3.1,3.2,3.3 {"hands":"both","position":false,"leaps":true,"dottedQuarters":true,"ties":true,"fifths":[1,-1],"accidentals":true} (up) seeds 101,39696,47615,63453,71372,79291,87210: rhythm.dotted-quarter in 10 of 12 phrases it is asked of; rhythm.ties in 6 of 12 …; pitch.chromatic in 7 of 12 …`; `firstThirtyDays`: `AssertionError: expected [ …(14) ] to deeply equal []` (C4c's fourteen, listed as the red). After the budget alone: the misses gone, left the 4.5 left-hand pattern (`texture.left-hand-pattern in 11 of 12 phrases it is asked of`, seed 15939) and 3.1's `breaks: nothing above the C above middle C`. *After:* `composedContract` 6 of 6; `KNOWN_BROKEN` empty; `generatorContract`, `sightReadingOptions`, `sightReadingPromises`, the levels 5–7 goldens unchanged and green.
+
+**L72. The hands-together opportunity means coordination.** *Mechanism:* `handsTogether` located every note sounding over the other hand; under whole-note roots that is every right-hand note, so on every wrong skip, and C4a's rule rightly refused to separate them. *Change:* located at a step where a left-hand note strikes while the right hand sounds, every note struck there. *Red:* `demandDetectors`: `expected [ 1, 2, 3 ] to deeply equal []` (a held root, the melody entering after it), `expected { …(2) } to deeply equal { steps: [ +0, 4 ], …(1) }` (sustained accompaniment), `expected { steps: [ +0, 1, 2, 3, 4, 5 ], …(1) } to deeply equal { steps: [ +0, 1, 2 ], …(1) }` (the left hand changing under a held note); the Alberti case green on both (genuine coordination kept its opportunities); `readerMovesTheDemand`: `the skips were not singled out by the second bad two-hand read: expected 'ambiguous' to be 'pattern'`; `evidenceByDemand`: `expected { kind: 'measured', …(9) } to match object { n: 2, right: 2 }`; `evidenceAdversarial`: `expected { …(5) } to match object { n: 2, right: +0, …(2) }`; `evidenceVersion`: `expected 2 to be greater than 2`. *After:* the table above.
+
+**The reruns.** The skip learner's thirty days and the ambiguity adversary's two halves regenerated (above); the two-hand skip learner (above); the composed contract (above).
+
+**L76.** Not built. The composed walk proves the generator half of a discriminating read — the working recipes on its chains, each with one demand taken out, are walked and kept — so the probe's phrase costs nothing new; the rest (the persistence threshold, which competing demand to isolate first, the neutral line, adapting only if the probe discriminates) is policy the review designed for after C5. Not essentially free; stopped there.
+
+## Pedagogical verdict (from the code, the diaries and the notation; nothing heard)
+
+A teacher would recognise both repairs. A learner who misreads skips with both hands is told the skips are the trouble after two bad days, and keeps the left hand — no detour to one hand to find out. And a phrase the reader promises with a tie now has one. The 3.1 phrases are still dense and still the random walk's: day 28 keeps every promise and still leaps a tritone, ends on an off-beat eighth and holds its bass for four bars — D's. The held position in G is withheld rather than bent; a keyed learner at levels 2–3 whose range is singled out is held and told so (*Another like it — the notes beyond the hand position went wrong in 2 phrases, and every phrase here has them*), which is less helpful than a G-position phrase that fits, and whose last clause is true only where the recipe promises the range (C4c's P3 wording, now reachable here; Follow-ups). Unverified as music.
+
+## Tests
+
+| test | class | the assumption the old assertion encoded | why the new one reads the learner-facing outcome |
+|---|---|---|---|
+| `composedContract` ×6 | add | — | every reachable composed recipe keeps its promises; a move the generator declares it cannot make is never offered; the diary's 3.1 recipes are reached; the walk is not the product |
+| `firstThirtyDays` `KNOWN_BROKEN` | revise | composed recipes may miss a promise | empty: the composed recipes the diaries read keep every promise |
+| `firstThirtyDays` demonstration 1 | revise (extended) | the move may rest on a one-hand read | over the two-hand reads alone the skips are singled out |
+| `firstThirtyDays` others | preserve | — | green; the diary regenerated |
+| `readerMovesTheDemand` two-hand skip learner | replace | every note under a held note is a coordination opportunity, so the skips wait for a one-hand read | singled out the morning after the second bad read, the left hand kept |
+| `readerMovesTheDemand` clean two-hand reads; 3.4's row | add | — | legitimate hands-together evidence survives, at the coordination steps, all right; the skill measured and supported |
+| `readerMovesTheDemand` e2e fixture guard | preserve (fixture data: seven stamps) | — | the rows are the real path's |
+| `demandDetectors` hands-together: a held root, the melody entering after | revise | every right-hand note over a held left-hand note is an opportunity (the old test asserted only `present`, which holds) | present, located nowhere |
+| `demandDetectors` sustained; the left hand changing under a held note; Alberti | add | — | the opportunities are the root changes, the left-hand changes, every Alberti note |
+| `evidenceAdversarial` case 3 (evidence; two reads) | revise | every note under a held note is an opportunity | hands together 0 of 2 at the two coordination steps; never read apart from the bass staff; still not singled out |
+| `evidenceByDemand` ×3 | add | — | a clean sustained or Alberti read earns hands-together; a melody misread over a held root is not a hands-together failure |
+| `evidenceVersion` a row under 2 | add | — | the version moved with what playing together counts |
+| `sightReadingUnchanged` | preserve (golden data: five entries) | 64 draws keep every single promise | the five phrases that went out without their accidental now keep it; nothing else moved |
+| `generatorContract`, `sightReadingOptions`, `sightReading` (goldens), `sightReadingPromises`, `demandReadings`, `evidenceProperty`, `demandsOfFiles`, `readerAdversarial`, `sightReadingFromReadingState`, `recommendRespondsToEvidence`, `sightReadingSlot` | preserve | — | green; `readerAdversarial` case 3 still steps back to one hand (its hands-together counts changed, not its decision) and 6b is still not sure |
+
+## Runs (unpiped; exit codes read)
+
+- Reds as quoted, each on the committed code: the composed contract on the committed `sightReading.ts` copied in and put back; demonstration 1's extension and the two-hand learner's "before" with the committed `detect.ts` copied in and put back (`git diff` read after each); the version red on the committed constant; the fixture guard before its rewrite; the golden after the budget change (then its five entries checked one by one: each had spent all 64 draws without its accidental).
+- After: `npx tsc -b` 0; `npm run lint` 0; `npx vitest run` 0 — 238 files, 5,820 passed, 6 skipped; `python -m unittest tools.content.tests.test_vocabulary_dimension tools.content.tests.test_evidence_gate` 0 (18); `python tools/content/validate.py --personal` 0 (the vocabulary is imported by the app, not built, so no content build). `npm run build:app` 0 with no preview running; then Playwright on that build, `vite preview` on 4173, two workers, one config, nothing built during the run: `today` + `doors` 0 (36 passed); the preview server stopped after.
+- Probes in the scratch folder (a scratch Vitest config rooted at `app/`): an instrumented copy of the generator for redraw counts and per-draw rates; the walk's size and rates; day 28's notation; the two-hand learner before and after. None is in the tree.
+- Two `vite preview --port 4173` processes from before this session (started 03:01, not listening) were left alone.
+
+## Not done
+
+- `readingMoves`' over-listing (deviation 4): `session.ts` was mine only for a composed unavailability.
+- The backlog rows S29 and L72 and `docs/prompts/checkpoint-2026-09-27-reading.md` are the orchestrator's to update.
+- L76 (designed, after C5).
+
+## Follow-ups
+
+- **P2 (C4c's `readingMoves`):** it lists an off move for a demand no phrase of the recipe can hold (the walking bass off at 3.4 writes a broken-chord left hand, untaught there); `readingOffer` never takes it, but `lessonClaimsAboutApp` checks 3.4's sentence against the list. Filter by `mayWrite(current)`, as its own comment says.
+- **P2 (C2's detectors):** `leftHandPattern` and `walkingBass` read a bar the melody only holds (tied in, held whole) as no tune; musically the pattern is still under a tune. The generator now avoids the shape where it promises the pattern; the definition is C2's to revisit.
+- **P2 (D):** day 28's phrase — a tritone leap (F♯4–C4), the last note an off-beat eighth, the left hand motionless for four bars. The random walk, not the contract.
+- **P2 (the learner model in the tests):** the constructed skip learner misreads every pitch of a wrong step, so where a skip falls on a bar-start its left-hand root is misread too and hands together goes wrong there with it; a real learner would miss the right-hand note (`p`, and the step untold for hands together). The conclusion does not depend on it; the counts do.
+- **P2 (C4c's words, reachable through this change):** the `kept` line ends "and every phrase here has them", true only where the recipe promises the demand in every phrase. With the G position declared unavailable, a keyed learner on 2.5's row whose range is singled out, with the range not promised (`position` absent), is held with that line while only some phrases reach beyond the position. Not in any diary; the words are `help.ts`'s.
+- **P3:** the G position is withheld at levels 2–3; a lower G position would need ledger lines 3.1 has not taught. If a keyed range step down is wanted, it is a range the level could write (D).
+
+## Questions
+
+- The evidence version moved to 3 (deviation 1): every row stored since C4a now waits for a recompute that has no trigger. Confirm, or say the hands-together counts should be allowed to mix for a window.
+
+## Unverified
+
+- Nothing heard; no screen looked at (the e2e run drove the Today cases, whose rows are C4c's but for the stamp; no picture taken).
+- Twelve seeds a recipe (deterministic, reproducible anywhere); the rates are over seeds 1–4,000 and 1–20,000, deterministic properties of the generator, not measurements of this machine. The walk is representative, not every combination.
+- The learners are constructed; C4a's thresholds and the reader's policy are unchanged hypotheses.
+- The cost of the larger budget on the owner's phone: the rarest reachable recipe takes about 370 draws on average and at most 4096, each a draw of a four-bar phrase without rendering it; not measured on the phone or against the render.
+
+## Files
+
+`app/src/engine/sightReading.ts` (`PROMISE_ATTEMPTS`, `underTune`, `unrealisable`'s composed reason); `app/src/demands/detect.ts` (`handsTogether` only); `app/src/evidence/evidence.ts` (`EVIDENCE_DEFINITIONS` 3 and its line); `content/curriculum/vocabulary/demands.json` (`texture.hands-together`'s display, spliced); tests: `composedContract.test.ts` (new), `firstThirtyDays`, `readerMovesTheDemand`, `demandDetectors`, `evidenceAdversarial`, `evidenceByDemand`, `evidenceVersion`, `fixtures/scores/golden/sight-reading-unchanged.json` (five entries), `tests/e2e/fixtures/reader-learners.json` (seven stamps); `docs/05-score-follow-engine.md` §8 and §9b, `docs/08-test-map.md`, `docs/prompts/checkpoint-2026-09-27-diary.md`.
