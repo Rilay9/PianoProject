@@ -27,6 +27,15 @@
  * is tried, newest first, and only one that matches the observation is used;
  * the generator's own changes (C4d's redraw budget, for one) show up here as a
  * phrase that no longer matches, which is kept out rather than guessed at.
+ *
+ * **Which rows.** The stored runs themselves, walked from the sessions store
+ * (`walkRuns`), not the catalog's items: a run of an item the catalog no
+ * longer has is found and kept out as `item-gone` (the reviewer's C5 review —
+ * the job walked the catalog's evidence-bearing items and asked each for its
+ * runs, so a gone item's runs were never found). A run is the job's when its
+ * item bears evidence (declares `targetSkills`), or when its item is gone and
+ * the row itself shows it bore evidence or could have (`boreEvidence`); a run
+ * of a piece that never bore evidence is not reported as kept out.
  */
 import type { EvidenceExclusion, SessionRow } from './db';
 import type { CatalogItem, Curriculum } from '../curriculum/types';
@@ -38,6 +47,22 @@ import type { Vocabulary } from '../evidence/vocabulary';
 
 /** Why a row stays out of the evidence (`db.ts`); the storage report says each in words. */
 export type RecomputeExclusion = EvidenceExclusion;
+
+/**
+ * Whether a row itself shows it bore evidence, or was a generated phrase that
+ * could have: evidence stored, a stamp, or a generated phrase's marks (the
+ * first-reading flag, the recipe, the seed). For a run whose item the catalog
+ * no longer has, this is all there is to go on.
+ */
+export function boreEvidence(row: SessionRow): boolean {
+  return (
+    row.evidence !== undefined ||
+    row.evidenceDefinitions !== undefined ||
+    row.unseen !== undefined ||
+    row.recipe !== undefined ||
+    row.seed !== undefined
+  );
+}
 
 /** Whether a row's evidence is under another version than the one in force, and not already kept out under it. */
 export function needsRecompute(row: SessionRow, current: number = EVIDENCE_DEFINITIONS): boolean {
@@ -163,8 +188,11 @@ export interface EvidenceJobStatus {
 export interface EvidenceJobDeps {
   curriculum: () => Promise<Curriculum>;
   items: () => Promise<CatalogItem[]>;
-  /** Every stored run of one item, with its per-step detail. */
-  runsOf: (itemId: string) => Promise<SessionRow[]>;
+  /**
+   * Hands every stored run to `visit`, with its per-step detail and its key,
+   * from the sessions store itself — whatever the catalog holds now.
+   */
+  walkRuns: (visit: (row: SessionRow) => void) => Promise<void>;
   /** Writes a row's evidence, or its exclusion, by the row's key. */
   writeEvidence: (id: number, patch: Pick<SessionRow, 'evidence' | 'evidenceDefinitions' | 'evidenceRecompute'>) => Promise<void>;
   /** The score model the engine plays for a MusicXML phrase. */
@@ -184,7 +212,7 @@ export interface EvidenceJobDeps {
 /**
  * One pass of the job (see the module note). Order: the carry-over and the
  * normalisation first — cheap, and what where-the-learner-is depends on —
- * then each stale run, one per idle slice, newest item first. Reports as it
+ * then each stale run, one per idle slice, newest first. Reports as it
  * goes through `onStatus`. Never throws: a row that cannot be done is kept out
  * with its reason, and a failure of the whole store leaves the job `done`
  * with what it managed.
@@ -201,19 +229,22 @@ export async function runEvidenceJob(deps: EvidenceJobDeps, onStatus: (status: E
     const isGenerated = (itemId: string): boolean => byId.get(itemId)?.drill?.kind === 'sight-reading';
     status.normalised = (await deps.normalise(isGenerated)).length;
     changed = status.carried > 0 || status.normalised > 0;
-    const bearing = items.filter((item) => (item.targetSkills?.length ?? 0) > 0);
+    const bearing = new Set(items.filter((item) => (item.targetSkills?.length ?? 0) > 0).map((item) => item.id));
     const stale: SessionRow[] = [];
-    for (const item of bearing) {
-      for (const row of await deps.runsOf(item.id)) {
-        if (row.id === undefined) continue;
-        if (!needsRecompute(row)) {
-          if (row.evidenceDefinitions === EVIDENCE_DEFINITIONS) status.current += 1;
-          else if (row.evidenceRecompute?.excluded) status.excluded[row.evidenceRecompute.excluded] = (status.excluded[row.evidenceRecompute.excluded] ?? 0) + 1;
-          continue;
-        }
-        stale.push(row);
+    // The store's own runs, not the catalog's items: a run of an item the
+    // catalog no longer has is found here, and kept out below as `item-gone`.
+    await deps.walkRuns((row) => {
+      if (row.id === undefined) return;
+      if (!needsRecompute(row)) {
+        if (row.evidenceDefinitions === EVIDENCE_DEFINITIONS) status.current += 1;
+        else if (row.evidenceRecompute?.excluded) status.excluded[row.evidenceRecompute.excluded] = (status.excluded[row.evidenceRecompute.excluded] ?? 0) + 1;
+        return;
       }
-    }
+      const ours = bearing.has(row.itemId) || (!byId.has(row.itemId) && boreEvidence(row));
+      if (ours) stale.push(row);
+    });
+    // Newest first: the reads the reader looks at are the recent ones.
+    stale.sort((a, b) => b.at.localeCompare(a.at));
     status.pending = stale.length;
     say();
     for (const row of stale) {
@@ -326,7 +357,7 @@ export function startEvidenceJob(delayMs = 1500): Promise<EvidenceJobStatus> {
       {
         curriculum: load.loadCurriculum,
         items: load.allItems,
-        runsOf: (itemId) => progress.sessionsForItem(itemId, progress.MAX_SESSIONS),
+        walkRuns: progress.walkSessions,
         writeEvidence: progress.replaceSessionEvidence,
         modelOf: modelInTheBrowser,
         write: sight.generateSightReading,

@@ -19,6 +19,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 import { runEvidenceJob, candidatePhrases, phraseMatches, needsRecompute, type EvidenceJobDeps } from '../../src/data/evidenceJob';
+import { evidenceJobLine } from '../../src/ui/help';
 import { readingOptions, taughtAtRung } from '../../src/curriculum/session';
 import { generateSightReading } from '../../src/engine/sightReading';
 import { EVIDENCE_DEFINITIONS, isRefusal } from '../../src/evidence/evidence';
@@ -50,7 +51,10 @@ function deps(rows: SessionRow[], writes: Map<number, Partial<SessionRow>>, idle
   return {
     curriculum: () => Promise.resolve(curriculum),
     items: () => Promise.resolve(catalog),
-    runsOf: (itemId) => Promise.resolve(rows.filter((row) => row.itemId === itemId)),
+    walkRuns: (visit: (row: SessionRow) => void) => {
+      for (const row of rows) visit(row);
+      return Promise.resolve();
+    },
     writeEvidence: (id, patch) => {
       writes.set(id, patch);
       const row = rows.find((entry) => entry.id === id);
@@ -131,6 +135,50 @@ describe('a row whose phrase cannot be written again stays out, and says why', (
   }, 60_000);
 });
 
+// Added (C5, the reviewer's boundary defect 2): the job found its rows by
+// walking the catalog's evidence-bearing items and asking for each one's runs,
+// so a run of an item the catalog no longer has was never found — the job's
+// own `item-gone` reason was reachable only by calling `candidatePhrases` with
+// `undefined`, as the case above does. It walks the stored runs now, whatever
+// the catalog holds.
+describe('the job finds stale rows in the store, not through the catalog', () => {
+  it('a run of an item no longer in the catalog is found, kept out as gone, and counted on the report', async () => {
+    const read = await readOn22(909, 50, '2026-09-25T09:00:00.000Z');
+    const gone: SessionRow = { ...read, id: 51, itemId: 'drill.reading.sight-reading-retired', evidenceDefinitions: 2 };
+    const writes = new Map<number, Partial<SessionRow>>();
+    const status = await runEvidenceJob(deps([gone], writes));
+    expect(writes.get(51)?.evidenceRecompute, 'the run of a gone item was never found').toEqual({
+      definitions: EVIDENCE_DEFINITIONS,
+      excluded: 'item-gone',
+    });
+    expect(status.excluded['item-gone']).toBe(1);
+    expect(evidenceJobLine(status)).toContain('Kept out: 1 whose exercise is no longer in the catalog.');
+    // And on the next open it is counted from the row, not tried again.
+    const again = await runEvidenceJob(deps([gone], new Map()));
+    expect(again.excluded['item-gone']).toBe(1);
+  }, 60_000);
+
+  it('a run that never bore evidence is not reported as kept out, whether its piece is there or gone', async () => {
+    const song: SessionRow = {
+      id: 60,
+      itemId: 'song.folk.hot-cross-buns',
+      mode: 'tempo',
+      tempoPct: 100,
+      accuracy: 1,
+      accuracyEstimated: false,
+      wrongNotes: 0,
+      missed: 0,
+      durationMs: 30_000,
+      at: '2026-09-20T10:00:00.000Z',
+    };
+    const goneSong: SessionRow = { ...song, id: 61, itemId: 'song.folk.no-longer-here' };
+    const writes = new Map<number, Partial<SessionRow>>();
+    const status = await runEvidenceJob(deps([song, goneSong], writes));
+    expect(writes.size).toBe(0);
+    expect(status.excluded).toEqual({});
+  });
+});
+
 describe('paced so it never holds up a screen', () => {
   it('waits for an idle moment before every row it works on, and before none of the reading', async () => {
     const rows = [await readOn22(606, 30, '2026-09-25T10:00:00.000Z'), await readOn22(707, 31, '2026-09-25T11:00:00.000Z')].map((row) => ({
@@ -149,14 +197,16 @@ describe('paced so it never holds up a screen', () => {
       return write(id, patch);
     };
     await runEvidenceJob(job);
-    expect(order).toEqual(['idle', 'write 30', 'idle', 'write 31']);
+    // Newest first across the store (revised with the walk: it was the fake
+    // store's order within one item).
+    expect(order).toEqual(['idle', 'write 31', 'idle', 'write 30']);
   }, 60_000);
 
   // Added (C5, found in the pictures): a store that fails part way left the
   // job "done", and the report read like a finished one.
   it('a job the store stops part way says it stopped, and is not done on this open', async () => {
     const job = deps([], new Map());
-    job.runsOf = () => Promise.reject(new Error('the store went away'));
+    job.walkRuns = () => Promise.reject(new Error('the store went away'));
     const status = await runEvidenceJob(job);
     expect(status.state).toBe('done');
     expect(status.stopped, 'a failure read as a finished job').toBe(true);

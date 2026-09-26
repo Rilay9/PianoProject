@@ -965,7 +965,10 @@ suggestions** with a note on where to buy/obtain MusicXML.
   it, whose evidence for a skill is at the practice or full standard with a share right;
   **`skill`** — a vocabulary skill's ladder state (familiar or proficient) over **every**
   evidence record, whichever rung judged the run; **`done`** — an item of this rung's alone
-  finished with nothing left undone (the checklist, the tour, the placement test);
+  finished, in a run judged by it, with nothing left undone and, where the run measured an
+  accuracy, at its standard (the checklist, the tour, the placement test; it read every run of
+  the item until the reviewer's C5 review — the tour keeps the rung that began it across its
+  visits to the Score screen, so the tour 0.3 offers still meets 0.3);
   **`measure`** — a technique measure met in a run judged by it (the hook; no rung uses it);
   **`unjudged`** — the lesson's rule where no run can show it, printed on the page as the
   lesson's and never counted. The old rule — *1 exercise passed + 1 item passed*, counted

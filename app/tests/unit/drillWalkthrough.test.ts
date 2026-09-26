@@ -286,6 +286,41 @@ describe('there is a way out of every step, and it can be run again', () => {
     expect(record?.lessonId).toBe('0.3');
   });
 
+  // Added (C5, with the reviewer's boundary defect 1). The tour leaves this
+  // screen on every step and the Score screen's Back brings it back as
+  // `#/drill/<tour>` — with no `?rung=`. So a tour opened from 0.3 finished,
+  // after its last step, as a run no rung judged, and 0.3's `done` (now the
+  // judging rung's) could never be met by the tour the rung offers. The rung
+  // that began the tour is kept with its position, and judges the finished run.
+  it('a tour begun from its rung and resumed after the Score screen is still judged by that rung', async () => {
+    router.route = { tab: 'plan', drillRung: '0.3' };
+    await mount();
+    click('drill-walkthrough-open');
+    // Back from the Score screen: a fresh mount, and no rung in the route.
+    document.body.replaceChildren();
+    router = newRouter();
+    await mount();
+    expect(text('drill-counter')).toMatch(/2 of 3/);
+    click('drill-walkthrough-next');
+    click('drill-walkthrough-next');
+    await vi.waitFor(() => {
+      expect(recordRunSpy).toHaveBeenCalledTimes(1);
+    });
+    expect(recordRunSpy.mock.calls[0]?.[0]?.lessonId, 'the resumed tour lost the rung that began it').toBe('0.3');
+    // Finished: nothing is kept for the next time it is opened.
+    document.body.replaceChildren();
+    recordRunSpy.mockClear();
+    router = newRouter();
+    await mount();
+    click('drill-walkthrough-next');
+    click('drill-walkthrough-next');
+    click('drill-walkthrough-next');
+    await vi.waitFor(() => {
+      expect(recordRunSpy).toHaveBeenCalledTimes(1);
+    });
+    expect(recordRunSpy.mock.calls[0]?.[0], 'a tour opened from nowhere inherited an old rung').not.toHaveProperty('lessonId');
+  });
+
   it('a checklist opened from no rung is judged by none, and its ticks are not an accuracy', async () => {
     findItemSpy.mockResolvedValue(checklistItem());
     await mount('drill.posture.checklist');

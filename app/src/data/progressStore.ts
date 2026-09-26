@@ -280,6 +280,23 @@ function forRungState(row: SessionRow): SessionRow {
  * time), which reads as a learner with no runs: honest, and the screen still
  * draws.
  */
+/**
+ * Hands every stored run to `visit`, per-step detail and key included, from
+ * the sessions store itself (the evidence job, C5: a run of an item the
+ * catalog no longer has is found this way, where asking the catalog's items
+ * for their runs never reached it). Failure stops the walk and rejects, so the
+ * job can say it stopped.
+ */
+export async function walkSessions(visit: (row: SessionRow) => void): Promise<void> {
+  const db = await openDatabase();
+  if (!db) return;
+  let cursor = await db.transaction('sessions').store.openCursor();
+  while (cursor) {
+    visit({ ...cursor.value, id: cursor.primaryKey });
+    cursor = await cursor.continue();
+  }
+}
+
 export async function rungRows(): Promise<SessionRow[]> {
   if (rungRowsMemory) return rungRowsMemory;
   const db = await openDatabase();

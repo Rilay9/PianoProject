@@ -349,6 +349,8 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    * set is judged against that number, which is what happened before.
    */
   let rung: Lesson | undefined;
+  /** The id of the rung that opened this drill (or began the tour it resumes), or none. */
+  let openedRungId: string | undefined;
   let tips: Tips | null = null;
   let drill: Drill | null = null;
   let current: DrillPrompt | null = null;
@@ -3157,9 +3159,26 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     }
   }
 
+  /** Where the rung that began a tour is kept beside its position (C5). */
+  function walkthroughRungKey(id: string): string {
+    return `${walkthroughStorageKey(id)}:rung`;
+  }
+
+  /** The rung a tour in progress was begun from, or none: only while a position is kept. */
+  function resumedWalkthroughRung(id: string): string | undefined {
+    try {
+      if (localStorage.getItem(walkthroughStorageKey(id)) === null) return undefined;
+      return localStorage.getItem(walkthroughRungKey(id)) ?? undefined;
+    } catch {
+      return undefined;
+    }
+  }
+
   function saveWalkthroughStep(id: string, index: number): void {
     try {
       localStorage.setItem(walkthroughStorageKey(id), String(index));
+      if (openedRungId === undefined) localStorage.removeItem(walkthroughRungKey(id));
+      else localStorage.setItem(walkthroughRungKey(id), openedRungId);
     } catch {
       // The tour then restarts on the next visit rather than resuming, which
       // is a worse tour and not a broken one.
@@ -3169,6 +3188,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   function clearWalkthroughStep(id: string): void {
     try {
       localStorage.removeItem(walkthroughStorageKey(id));
+      localStorage.removeItem(walkthroughRungKey(id));
     } catch {
       /* as above */
     }
@@ -3350,7 +3370,13 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // The rung that opened the drill (C5, `?rung=`), or none: never the first
     // rung listing it, which counted a drill's pass for a rung nobody opened
     // it from (L8).
-    const openedFrom = router.route.drillRung;
+    //
+    // The tour leaves this screen on every step and the Score screen's Back
+    // brings it back without `?rung=`; the rung that began it is kept with its
+    // position and judges the finished tour (C5: 0.3's `done` is the judging
+    // rung's, so a tour that lost its rung could never meet it).
+    const openedFrom = router.route.drillRung ?? (isWalkthrough(item) ? resumedWalkthroughRung(item.id) : undefined);
+    openedRungId = openedFrom;
     void loadCurriculum()
       .then((curriculum) => {
         rung = openedFrom === undefined ? undefined : findLesson(curriculum, openedFrom);

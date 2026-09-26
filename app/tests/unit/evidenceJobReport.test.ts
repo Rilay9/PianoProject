@@ -71,7 +71,7 @@ describe('the storage report', () => {
       {
         curriculum: () => Promise.resolve({ version: 1, tracks: [], stages: [] }),
         items: () => Promise.resolve([]),
-        runsOf: () => Promise.resolve([]),
+        walkRuns: () => Promise.resolve(),
         writeEvidence: () => Promise.resolve(),
         modelOf: () => Promise.reject(new Error('no phrase to write')),
         write: () => ({ musicXml: '' }),

@@ -21,12 +21,15 @@
  *   whichever rung the run was judged by, or none. Interval reading shown on a
  *   2.2 phrase counts for 1.5's requirement that names it.
  * - **The decision that a rung's requirement is met by a run is the judging
- *   rung's.** `runs`, `reads` and `measure` count only rows whose record names
+ *   rung's.** `runs`, `reads`, `done` and `measure` count only rows whose record names
  *   the rung as the one that judged them (`SessionRow.lessonId`: the rung that
  *   opened the screen, or the one a Today card chose, C1/C3), and each such run
  *   is judged again here under that rung's standard from what it measured
  *   (`masteryCriteriaFor`, the function the Score screen judges by). A run of
- *   an item three rungs list meets at most the one that judged it.
+ *   an item three rungs list meets at most the one that judged it. A `done`
+ *   item (a checklist, the tour, the placement test) is finished when nothing
+ *   was left undone and, where the run measured an accuracy, at the rung's
+ *   standard; it read every row of the item until the reviewer's C5 review.
  *
  * **What a run measured** is read, never assumed: accuracy a number (a run
  * nothing heard is `not measured`, C1), not rhythm only, not a phrase met
@@ -243,16 +246,12 @@ export function rungState(
   // evidence, whichever rung judged the run it came from.
   const judgedBy = new Map<string, SessionRow[]>();
   const evidenceBySkill = new Map<string, Evidence[]>();
-  const rowsOfItem = new Map<string, SessionRow[]>();
   for (const row of rows) {
     if (row.lessonId !== undefined) {
       const list = judgedBy.get(row.lessonId) ?? [];
       list.push(row);
       judgedBy.set(row.lessonId, list);
     }
-    const ofItem = rowsOfItem.get(row.itemId) ?? [];
-    ofItem.push(row);
-    rowsOfItem.set(row.itemId, ofItem);
     for (const evidence of storedEvidence(row)) {
       const list = evidenceBySkill.get(evidence.skill) ?? [];
       list.push(evidence);
@@ -279,7 +278,7 @@ export function rungState(
         const criteria = masteryCriteriaFor(rung, defaults);
         const judged = judgedBy.get(rung.id) ?? [];
         const readings = (rung.requirements ?? []).map((requirement) =>
-          read(requirement, rung, criteria, judged, rowsOfItem, evidenceBySkill, ladderOf, learner),
+          read(requirement, rung, criteria, judged, evidenceBySkill, ladderOf, learner),
         );
         const judgeable = readings.filter((reading) => reading.holds !== 'unjudged');
         const met = judgeable.length > 0 && judgeable.every((reading) => reading.holds === true);
@@ -304,7 +303,6 @@ function read(
   rung: Lesson,
   criteria: MasteryCriteria,
   judged: readonly SessionRow[],
-  rowsOfItem: ReadonlyMap<string, readonly SessionRow[]>,
   evidenceBySkill: ReadonlyMap<string, readonly Evidence[]>,
   ladderOf: (skill: string) => LadderState,
   learner: LearnerRecord,
@@ -350,7 +348,16 @@ function read(
       return { requirement, holds: reached, have: reached || begun ? 1 : 0, need: 1, state, items: [] };
     }
     case 'done': {
-      const finished = (rowsOfItem.get(requirement.item) ?? []).some((row) => row.missed === 0);
+      // The rung's own runs, like the other kinds: finished from this rung,
+      // nothing left undone, and — where the run measured an accuracy — at the
+      // rung's standard. A completion that measures no accuracy (the tour's
+      // steps, a checklist's ticks) is judged on what was left undone alone.
+      const finished = judged.some(
+        (row) =>
+          row.itemId === requirement.item &&
+          row.missed === 0 &&
+          (typeof row.accuracy !== 'number' || row.accuracy >= criteria.passAccuracy),
+      );
       return { requirement, holds: finished, have: finished ? 1 : 0, need: 1, items: finished ? [requirement.item] : [] };
     }
     case 'measure': {

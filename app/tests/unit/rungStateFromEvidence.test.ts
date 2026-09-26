@@ -173,6 +173,52 @@ describe('two rungs listing one item', () => {
   });
 });
 
+// Added (C5, the reviewer's boundary defect 1): a `done` requirement read the
+// item's rows across the whole history and took any with nothing left undone,
+// where `runs`, `reads` and `measure` read only the runs the rung judged. The
+// built curriculum's `done` items are each listed by one rung, so it was not a
+// live cross-rung credit — but it broke the invariant: the decision that a run
+// meets a rung's requirement is the judging rung's. The rung here and its twin
+// list one checklist between them, which the build gate forbids and a
+// constructed curriculum can do.
+describe('a done requirement is the judging rung’s, like the other kinds', () => {
+  const D = rung('D', {
+    exerciseOptions: ['drill.check'],
+    mastery: { minAccuracy: 0, minTempoPct: 0 },
+    requirements: [{ kind: 'done', item: 'drill.check' }],
+  });
+  const E = rung('E', { exerciseOptions: ['drill.check'], requirements: [{ kind: 'runs', from: 'exercises', count: 1 }] });
+  const M = rung('M', {
+    exerciseOptions: ['drill.check'],
+    mastery: { minAccuracy: 0.9, minTempoPct: 0 },
+    requirements: [{ kind: 'done', item: 'drill.check' }],
+  });
+  const twins = curriculumOf([D, E, M]);
+  const finished = (over: Partial<SessionRow> = {}): SessionRow =>
+    run('drill.check', { mode: 'drill:checklist', accuracy: 'not measured', tempoMeasured: false, missed: 0, ...over });
+  const doneOf = (rows: SessionRow[], id: string) => rungState(rows, twins, VOCABULARY_V0, TODAY).byRung.get(id);
+
+  it('finished from nowhere, it meets no rung', () => {
+    expect(doneOf([finished()], 'D')?.requirements[0]?.holds, 'a run nothing opened from the rung met its done').toBe(false);
+    expect(doneOf([finished()], 'D')?.status).toBe('not started');
+  });
+
+  it('finished from the other rung that lists it, it meets that rung’s nothing and this rung’s nothing', () => {
+    expect(doneOf([finished({ lessonId: 'E' })], 'D')?.requirements[0]?.holds, 'a run judged by E met D’s done').toBe(false);
+  });
+
+  it('finished from the rung, it meets it; left with something undone, it does not', () => {
+    expect(doneOf([finished({ lessonId: 'D' })], 'D')?.status).toBe('met');
+    expect(doneOf([finished({ lessonId: 'D', missed: 2 })], 'D')?.requirements[0]?.holds).toBe(false);
+  });
+
+  it('where the run measured an accuracy, it is judged at the rung’s standard', () => {
+    expect(doneOf([finished({ lessonId: 'M', accuracy: 0.5 })], 'M')?.requirements[0]?.holds).toBe(false);
+    expect(doneOf([finished({ lessonId: 'M', accuracy: 0.95 })], 'M')?.requirements[0]?.holds).toBe(true);
+    expect(doneOf([finished({ lessonId: 'M' })], 'M')?.requirements[0]?.holds, 'a completion that measured nothing').toBe(true);
+  });
+});
+
 describe('a rung the app cannot judge', () => {
   it('is never met by the app, and says so; the learner’s word is kept apart and meets nothing', () => {
     const state = stateOf([run('ex.u', { lessonId: 'U' })]).byRung.get('U');

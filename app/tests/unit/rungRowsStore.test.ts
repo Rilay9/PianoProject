@@ -16,6 +16,7 @@ import {
   forgetCachedProgress,
   replaceSessionEvidence,
   sessionsForItem,
+  walkSessions,
   type RunResult,
 } from '../../src/data/progressStore';
 import { EVIDENCE_DEFINITIONS } from '../../src/evidence/evidence';
@@ -73,6 +74,20 @@ describe('rungRows', () => {
 // refuses, so in the browser the job wrote nothing and its report said
 // "0 up to date" over a row it had not been able to mark. The job's own test
 // hands it a store of its own, which is why only a real (fake) IndexedDB shows it.
+// Added (C5, the reviewer's boundary defect 2): the job walks the store, so a
+// run of an item no catalog has is reached — here, with its steps and its key.
+describe('the evidence job’s walk', () => {
+  it('hands over every stored run, whatever item it names, with its steps and its key', async () => {
+    await recordRun(RUN, new Date('2026-10-01T10:00:00Z'));
+    await recordRun({ ...RUN, itemId: 'drill.reading.sight-reading-retired' }, new Date('2026-10-01T10:05:00Z'));
+    const walked: { itemId: string; id: unknown; steps: unknown }[] = [];
+    await walkSessions((row) => walked.push({ itemId: row.itemId, id: row.id, steps: row.steps }));
+    expect(walked.map((row) => row.itemId)).toEqual(['song.folk.hot-cross-buns', 'drill.reading.sight-reading-retired']);
+    expect(walked.every((row) => typeof row.id === 'number')).toBe(true);
+    expect(walked[1]?.steps).toEqual(RUN.steps);
+  });
+});
+
 describe('the evidence job’s write', () => {
   it('lands on the stored row, and the rows the rung state reads see it', async () => {
     await recordRun(RUN, new Date('2026-10-01T10:00:00Z'));

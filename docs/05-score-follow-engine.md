@@ -1049,9 +1049,14 @@ them up to date. `recomputeEvidence(row, played, vocabulary)` is what the record
 store today.
 
 **The recompute job** (C5; L78, L66; `app/src/data/evidenceJob.ts`). On every open, after the
-first screen is up, the job looks at every stored run of an item that declares `targetSkills`
-whose evidence is under another version (or none) and has not already been kept out under the
-version in force. For each, one per idle slice (`requestIdleCallback`, a two-second deadline;
+first screen is up, the job walks the stored runs themselves (the sessions store, not the
+catalog's items) and takes every run whose evidence is under another version (or none) and has
+not already been kept out under the version in force, where the run's item declares
+`targetSkills` or the item is gone from the catalog and the row itself shows it bore evidence
+or was a generated phrase (evidence, a stamp, the first-reading flag, a recipe or a seed); a
+gone item's run is kept out as `item-gone`, and a run of a piece that never bore evidence is not
+reported. (It walked the catalog's evidence-bearing items and asked each for its runs until the
+reviewer's C5 review, so a gone item's runs were never found.) Newest first. For each, one per idle slice (`requestIdleCallback`, a two-second deadline;
 OSMD is loaded only when a row needs a phrase written again, and parses without drawing), it
 writes the phrase again from the item, the seed, the recipe and the rung that held it — the
 writers the Score screen has used since observations were kept, newest first: held to the rung
