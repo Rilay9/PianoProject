@@ -773,3 +773,35 @@ harmony, PDMX or test infrastructure; the scalar level demoted, not deleted; pro
 invariant; hands-busy a cross-cutting X concept; M7's freeze retained. The strategy
 incorporation is reviewed; the C4.5 implementation packet remains a separate review.
 
+**The C4.5 review (2026-09-27, against 4921646, file-first).** The reviewer read the checkpoint
+and both diaries, then the named unit and e2e tests and the evidence, demand-reading,
+reader-control, generator-contract and `readingOffer` code. Verdict: the architectural repair
+is successful enough to keep; do not redesign C0–C4.5. The original failure is genuinely
+repaired: demand-local evidence preserves overlap without asserting cause; selective
+contrasting observations identify a relevant demand; ambiguous observations stay ambiguous;
+the reader adapts the supported demand rather than backing out the last-added dimension; the
+tests drive generated phrases through the real engine and evidence path. The thirty-day
+trajectory is materially better; the later 3.1 density and "Now with a leap" are later
+curriculum and generator-quality questions, not reasons to reopen the evidence repair. Do the
+bounded follow-up before C5; both P1s are real: (1) S29 — extend the contract from single
+control moves to composed recipes the live reader can reach (not the Cartesian product):
+recipes reachable by legal reader transitions, representative accumulated combinations at
+every served rung; every promised demand detector-confirmed, untaught demands absent,
+impossible or unreliable combinations explicit to the reader rather than silently generated
+differently; (2) L72 — the hands-together opportunity must mean meaningful two-hand
+coordination (onset or left-hand change), not every right-hand event over a sustained note,
+with regressions that distinguish sustained accompaniment from genuine coordination and keep
+legitimate two-hand evidence. On L76: yes in principle to a discriminating read — ten days of
+"not sure yet" is honest but pedagogically passive — but not in this repair: it is a distinct
+diagnostic-probe experience, not remediation (persistent ambiguity → deliberately isolate one
+competing demand while holding the established ones → ordinary observations and evidence →
+adapt only if the probe discriminates; the learner-facing line must not claim the diagnosis
+beforehand); record and design now, implement after C5 unless S29's work makes it essentially
+free. C5 remains next after S29/L72. One packet defect reported: `docs/pending-review.md`
+appeared empty to the reviewer's tool at 4921646 — the file is intact (16,481 lines, about
+1.7 MB, larger than the tool fetches); Entries 74–77 are copied into
+`docs/prompts/entries-74-77.md` for the packet. The verdict is provisional until the chain and
+CI on 4921646 finish; any failure is reviewed as a fix, not overridden by this review. After
+S29/L72: rerun the skip learner, the two-hand skip learner, the ambiguity adversary and the
+composed-recipe contract; if green with the chain and CI, proceed to C5.
+

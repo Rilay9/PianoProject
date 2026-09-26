@@ -3,7 +3,8 @@
 The second learner-facing stop, after the reviewer's verdict on the first (Part 8 of
 `audit-2026-09-25-outside.md`). It answers the six verifications the reviewer set, with the
 evidence each rests on, and reads the reruns as a teacher would. The record behind it is
-Entries 74–77 in `docs/pending-review.md`; the diaries are `checkpoint-2026-09-27-diary.md`
+Entries 74–77 in `docs/pending-review.md` (copied to `entries-74-77.md` for tools that cannot
+fetch the full record); the diaries are `checkpoint-2026-09-27-diary.md`
 (against the first, `checkpoint-2026-09-26-diary.md`); the open problems are rows in
 `backlog-2026-09-25.md`, named below. The reviewer said they would go to the files and tests
 first; the tests to start from are `readerMovesTheDemand`, `readerAdversarial`,
