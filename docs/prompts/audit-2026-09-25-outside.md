@@ -614,3 +614,17 @@ item-completion semantics cannot contradict the evidence-derived rung state (the
 reads this last one as C5's exit criterion, to be reported at the C4.5 stop as not yet, by
 design, and confirmed with the reviewer). Then C5–C7, with the trajectories already planned
 there. The master backlog stays intact: D, E, F, G, X and H own the rest.
+
+**The fifth message (the sequencing, confirmed).** The verification "old item-completion
+semantics cannot contradict evidence-derived rung state" belongs at C5, not C4.5; requiring it
+at the C4.5 stop would force part of C5 forward. At the C4.5 stop, report it as not yet
+verified by design, with C5 owning it. C4.5 verifies what it owns: demand-local evidence with
+ambiguity preserved; selective, discriminating attribution where justified; independent
+evidence-definitions versioning; the curriculum–generator contract; demand truth independent
+of generator controls; the repaired reader on the skip and mixed-demand adversaries. C5's exit
+criterion: L8, L9 and S8 actually closed, one authoritative evidence-to-rung-state path, the
+old completion semantics retired rather than left operating in parallel. The decomposition
+endorsed: C4a = what the evidence supports; C4b = can the content system produce what
+adaptation asks for; C4c = use both to choose what comes next; C5 = retire the old progression
+semantics. Proceed. At the C4.5 report the reviewer goes to the files and tests first.
+
