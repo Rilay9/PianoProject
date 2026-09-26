@@ -7,6 +7,13 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 5173
+    },
+    {
+      "name": "pianopath-states",
+      "cwd": "app",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "preview:states"],
+      "port": 4183
     }
   ]
 }

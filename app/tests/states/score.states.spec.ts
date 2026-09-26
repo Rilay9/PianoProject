@@ -111,6 +111,15 @@ test('every state, photographed and measured', async ({ page }) => {
   // Without this the gallery once photographed thirty-nine convincing cells
   // of the wrong state, because the hook it drove was misnamed.
   await page.setViewportSize(PHONE_UP);
+  // Revised 2026-09-26 (test class: revise). The e2e suites preload the first-sight
+  // "seen" list through their storage fixture; this gallery never did, so from the
+  // day the first-sight card became a sheet (Wave 14) it opened over the control
+  // bar on the first mode change and the ▶ click below retried for the whole test
+  // timeout ("subtree intercepts pointer events"). The old assumption: the mode's
+  // card is not in the way. A gallery photographs states, not first meetings.
+  await page.addInitScript(() => {
+    localStorage.setItem('pianopath.firstSight', JSON.stringify(['*']));
+  });
   await openScore(page);
   const hooked = await page.evaluate(
     () => typeof (window as unknown as { __pianopath?: { scoreRun?: unknown } }).__pianopath?.scoreRun === 'function',
