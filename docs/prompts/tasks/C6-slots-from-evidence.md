@@ -52,3 +52,5 @@ Three findings from the reviewer's unfinished curriculum audit (Part 13), verifi
 Sent later the same day, after the reviewer's verification of the record: the discriminating parallel-strand test (core, classical, theory-ear and practice all unmet; file order alone cannot let one strand monopolise the session; asserted on strands served and reasons), and one L93 boundary — a rung bypassed by placement or profile, or set aside, is not new unmet work merely because later work in the strand is exhausted; no placement diagnostics, no fabricated evidence, and the new selector must not cement a backward walk through bypassed rungs as debt; recorded as not done if the architecture cannot avoid it. Nothing else from Part 14 goes to C6.
 
 **Delivered 2026-09-26** as commit `8f86d53`, Entry 80; the reviewer's packet is `docs/prompts/checkpoint-2026-09-26-slots.md`.
+
+**Reviewed 2026-09-26**: approved with one policy correction before C7 — the seven-day exposure pre-pass in the review and repertoire slots runs ahead of the ladder's semantic tiers; corrected as a fix-forward in the same tree with adversarial tests (the C6 review in the audit file).
