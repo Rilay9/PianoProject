@@ -33,6 +33,14 @@ The reason words (in `help.ts`, printed in `04` §2); the order of candidates fo
 - `EVIDENCE_DEFINITIONS` is 2 and rows stored since C4 contribute nothing until recomputed; your diaries write fresh rows, so this does not touch them, but say it in the report's unverified list for a real learner.
 - The both-succeed half of the ambiguity adversary stays `ambiguous` in C4a's readings, so the reader must hold and say so there (item 5).
 
+## Facts from C4b's landing (Entry 76) that change your reading of the brief
+
+- The map is `app/src/engine/readingControls.ts`: per demand the option, an `on` patch, an `off` patch, `mayWrite`, `brings`; plus `withDemand`, `withoutDemand`, `heldToRung(recipe, rung)` and `UNREALISABLE_AT`; the generator's `unrealisable(options)` gives reasons in words. Read these instead of C4's hand-written dimension table, and delete that table if they make it redundant.
+- `ReadingMoves` in `db.ts` and `normaliseMoves` / `readingOptions` in `session.ts` carry only C4's six fields, so a recipe with `ties` is dropped before it reaches the generator: extend them (db.ts is granted for that field). Call `heldToRung` with the route's rung in `readingOptions`, for Today and for a row opened from the rung page; then remove the promises test's `KNOWN_EARLY` line (C4b left it for you).
+- Day 14's phrase is now askable: with ties, | C4 half, D4 half tied over the bar line | …; with dotted quarters, the dotted-quarter–eighth figure three times beside plain eighth pairs. Which the reader offers first is your taught-at order.
+- Nine impossibilities are declared (46 rung-moves), among them: `step` never off; `leap` never on at 1.5; hands together never on at level 1; 6/8 in every phrase of 4.5's row; skips, leaps and eighths never off there. Where every candidate is impossible the line says the next step waits, as today.
+- `dimension` on each demand is a musical grouping (clef, interval, rhythm, metre, key, accidental, range, texture); `hands` is a control, not a dimension.
+
 ## Hypotheses you inherit as questions
 
 - That C4a's `pattern` appears by the second bad day on the constructed skip learner (C4a's test says so on five reads; the diary has two bad reads before the move is due — check, and if the pattern needs a third read, the reader holds one more day and the diary shows it).

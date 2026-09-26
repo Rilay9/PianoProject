@@ -12,11 +12,15 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "display", "detector", "copedWithBy", "taughtAt"],
+        "required": ["id", "display", "dimension", "detector", "copedWithBy", "taughtAt"],
         "additionalProperties": false,
         "properties": {
           "id": { "type": "string", "pattern": "^[a-z]+[.][a-z0-9-]+$" },
           "display": { "type": "string", "minLength": 2 },
+          "dimension": {
+            "description": "The musical dimension the demand belongs to (C4b): what kind of musical fact it is. A closed list. Which generator option moves it is app code (app/src/engine/readingControls.ts), not a field here.",
+            "enum": ["clef", "interval", "rhythm", "metre", "key", "accidental", "range", "texture"]
+          },
           "detector": { "type": "string", "pattern": "^[a-z][A-Za-z]+$" },
           "copedWithBy": { "type": "string" },
           "taughtAt": { "type": ["string", "null"] },

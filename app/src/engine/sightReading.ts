@@ -58,6 +58,12 @@ export interface SightReadingOptions {
    * the feature at a level whose table does not and *guarantees* it: a phrase
    * that came out without it is drawn again, from the same seed, so the seed
    * still names one phrase. See {@link PROMISES}.
+   *
+   * Tri-state since C4b, like every control below: `true` promises the
+   * demand, `false` keeps it out of the phrase, absent is the level's own.
+   * Where a `false` cannot be honoured (a level-6 phrase without triplets is
+   * fine; a level-5 phrase without eighths is not, its Alberti left hand is in
+   * eighths), {@link unrealisable} says so.
    */
   skips?: boolean;
   eighths?: boolean;
@@ -74,9 +80,47 @@ export interface SightReadingOptions {
    * "the same phrase, but inside the hand" could only be had by changing the
    * level, which changes several things at once. Nothing else about the level
    * changes; the left hand under a melody keeps its own range.
+   *
+   * `false` (C4b) is the other way: the melody promised to reach beyond one
+   * five-finger position (a span wider than a fifth), which a level-2 range
+   * does in about half its phrases by itself. Level 1's range *is* one
+   * position, so it cannot.
    */
   position?: boolean;
+  /**
+   * The controls C4b added, one for each reading demand a rung teaches that no
+   * option could ask for (the curriculum–generator contract; the map from a
+   * demand to these is `readingControls.ts`). Tri-state, as above.
+   *
+   * - `ties`: a note tied over the bar line, only from a note that starts on a
+   *   beat (a tie from an off-beat is syncopation, which 4.5 teaches). Levels
+   *   1-2 never tied; `false` keeps levels 3-7's ties out.
+   * - `dottedQuarters`: a dotted quarter on a beat, its eighth after it, in
+   *   simple time (in compound time it is the beat, not a dotted note); where
+   *   the level writes eighths, beside a pair of plain eighths in one beat, the
+   *   subdivision the dotted figure is read against.
+   * - `ledger`: a melody note on a ledger line beyond middle C: the right
+   *   hand's range reaches down to A below middle C, a left-hand melody's up
+   *   to the E above it. `false` holds the range off the ledger lines.
+   * - `leaps`: an interval of a fourth or wider in the melody; `false` holds
+   *   it to steps and skips.
+   * - `sixteenths`: a sixteenth note. No rung teaches reading them yet (S23).
+   * - `leftHand`: the left hand's pattern in place of the level's own, with
+   *   the range the level that first writes that pattern gives it, so the
+   *   shape is the one the generator already writes: `whole` (level 2),
+   *   `chord` (4), `alberti` (5), `broken` (6), `walking` (7). Both hands only.
+   */
+  ties?: boolean;
+  dottedQuarters?: boolean;
+  ledger?: boolean;
+  leaps?: boolean;
+  sixteenths?: boolean;
+  leftHand?: LeftHandPattern;
 }
+
+/** The left-hand patterns an option can ask for (the table's `none` is `hands: 'R'`). */
+export type LeftHandPattern = 'whole' | 'chord' | 'alberti' | 'broken' | 'walking';
+export const LEFT_HAND_PATTERNS_BY_NAME: readonly LeftHandPattern[] = ['whole', 'chord', 'alberti', 'broken', 'walking'];
 
 export interface SightReadingResult {
   musicXml: string;
@@ -195,6 +239,12 @@ interface LevelSpec {
    * eighth, quarter, eighth from a beat — the quarter on the "and".
    */
   syncopa?: boolean;
+  /**
+   * A tie only from a note that starts on the beat (C4b): set where an option
+   * asks for ties or keeps syncopation out, so a tie is never syncopation by
+   * accident. Levels whose phrases asked for neither keep the draw they had.
+   */
+  tieOnBeat?: boolean;
 }
 
 const LEVELS: Record<SightReadingLevel, LevelSpec> = {
@@ -345,10 +395,31 @@ interface Tally {
   syncopation: number;
   triplets: number;
   accidentals: number;
+  // C4b's promises, counted on the melody once the phrase is written.
+  ties: number;
+  dottedQuarters: number;
+  ledger: number;
+  leaps: number;
+  sixteenths: number;
+  /** 1 when the melody spans more than one five-finger position (`position: false`). */
+  beyond: number;
 }
 
 function emptyTally(): Tally {
-  return { steps: 0, skips: 0, eighths: 0, syncopation: 0, triplets: 0, accidentals: 0 };
+  return {
+    steps: 0,
+    skips: 0,
+    eighths: 0,
+    syncopation: 0,
+    triplets: 0,
+    accidentals: 0,
+    ties: 0,
+    dottedQuarters: 0,
+    ledger: 0,
+    leaps: 0,
+    sixteenths: 0,
+    beyond: 0,
+  };
 }
 
 /**
@@ -438,6 +509,16 @@ function placedOnItsBeat(duration: number, offset: number, beat: number): boolea
   if (duration === beat * 1.5) return offset % beat === 0;
   if (duration === beat * 3) return offset % (beat * 2) === 0;
   return offset % duration === 0;
+}
+
+/** Compound time: beats of three eighths (6/8, 9/8, 12/8). */
+function isCompoundTime(timeSig: TimeSig): boolean {
+  return timeSig.beatType === 8 && timeSig.beats % 3 === 0;
+}
+
+/** The beat a reader counts, in divisions: a dotted quarter in compound time. */
+function feltBeat(timeSig: TimeSig): number {
+  return isCompoundTime(timeSig) ? DIVISIONS * 1.5 : (DIVISIONS * 4) / timeSig.beatType;
 }
 
 /**
@@ -596,8 +677,12 @@ function buildRightHand(
       // written, which is how "start on C" was being lost.
       const midi = scale[index] ?? scale[0] ?? spec.rhKey.low;
       const { type, dotted } = durationToType(duration);
+      // Only from a note on the beat where an option asks (C4b): the check sits
+      // before the draw, and is true where no option asked, so a phrase that
+      // asked for neither ties nor their absence draws what it always drew.
+      const onItsBeat = spec.tieOnBeat !== true || atOffset % feltBeat(timeSig) === 0;
       const tieNext =
-        spec.allowTies && !isLastBar && i === barRhythm.length - 1 && rng() < 0.25 ? 'start' : undefined;
+        spec.allowTies && !isLastBar && i === barRhythm.length - 1 && onItsBeat && rng() < 0.25 ? 'start' : undefined;
       notes.push({
         midi,
         duration,
@@ -791,6 +876,165 @@ export function maxFifthsFor(level: number): number {
   return LEVELS[at].maxFifths;
 }
 
+/**
+ * What a level's table writes by itself, for the control map
+ * (`readingControls.ts`), which says per demand whether a phrase of given
+ * options may contain it. Read-only facts, not the table.
+ */
+export interface LevelFacts {
+  hands: 'R' | 'both';
+  leftHand: 'none' | LeftHandPattern;
+  /** Note lengths, in quarter-note beats. */
+  lengths: readonly number[];
+  maxLeap: number;
+  allowTies: boolean;
+  maxFifths: number;
+  rhRange: { low: number; high: number };
+  syncopation: boolean;
+  triplets: boolean;
+  chordTones: boolean;
+  metricPlacement: boolean;
+}
+
+export function levelFacts(level: number): LevelFacts {
+  const at = (Math.min(7, Math.max(1, Math.round(level))) || 1) as SightReadingLevel;
+  const spec = LEVELS[at];
+  return {
+    hands: spec.hands,
+    leftHand: spec.leftHand,
+    lengths: spec.rhythms.map((r) => r / DIVISIONS),
+    maxLeap: spec.maxLeap,
+    allowTies: spec.allowTies,
+    maxFifths: spec.maxFifths,
+    rhRange: { ...spec.rhKey },
+    syncopation: spec.syncopation === true,
+    triplets: spec.triplets === true,
+    chordTones: spec.chordTones === true,
+    metricPlacement: spec.metricPlacement === true,
+  };
+}
+
+/** The metres a phrase of these options may be written in (4/4 where none is asked). */
+function metresAsked(options: SightReadingOptions): readonly TimeSig[] {
+  if (options.timeSig === undefined) return [{ beats: 4, beatType: 4 }];
+  return Array.isArray(options.timeSig) ? (options.timeSig as readonly TimeSig[]) : [options.timeSig as TimeSig];
+}
+
+/** The keys a phrase of these options may be asked in. */
+function keysAsked(options: SightReadingOptions): number[] {
+  if (options.fifths === undefined) return [0];
+  return Array.isArray(options.fifths) ? [...(options.fifths as readonly number[])] : [options.fifths as number];
+}
+
+/**
+ * Why the generator cannot write what these options ask, or nothing (C4b).
+ *
+ * The curriculum–generator contract's "never silent": where an option cannot
+ * be honoured — the level has no room for it, two options contradict, or the
+ * phrase's metre does not admit it — the generator does not hand back
+ * different material and let it pass as the thing asked for. It still writes
+ * its best phrase, and this says, in words for a reader of `05` §8, what that
+ * phrase will not be. Pure: the options alone decide it, never the seed.
+ *
+ * `generatorContract.test.ts` holds this to the phrases: every combination the
+ * reading curriculum can ask for either keeps its promise on every seed tried,
+ * or is named here (or, where a rung's own promise forbids it, in
+ * `readingControls.ts`'s `UNREALISABLE_AT`).
+ */
+export function unrealisable(options: SightReadingOptions): string[] {
+  const level = (Math.min(7, Math.max(1, Math.round(options.level))) || 1) as SightReadingLevel;
+  const facts = levelFacts(level);
+  const hands = options.hands ?? 'both';
+  const twoHands = hands === 'both' && facts.hands === 'both';
+  const leftHand = leftHandOf(level, options);
+  const pattern = twoHands && (leftHand === 'alberti' || leftHand === 'broken' || leftHand === 'walking');
+  // Some phrases in compound time, or every one: a metre list is a choice the
+  // seed makes, and the rhythms simple time is asked for are asked only of the
+  // phrases in simple time (T37), so only a list with no simple metre in it
+  // cannot keep them at all.
+  const compoundAny = metresAsked(options).some(isCompoundTime);
+  const compoundAll = metresAsked(options).every(isCompoundTime);
+  const tiesAllowed = options.ties === true || (options.ties !== false && facts.allowTies);
+  const reasons: string[] = [];
+  const say = (reason: string): void => {
+    if (!reasons.includes(reason)) reasons.push(reason);
+  };
+
+  if (options.hands === 'both' && facts.hands === 'R') {
+    say('Level 1 writes one hand at a time; both hands start at level 2.');
+  }
+  if (options.leftHand !== undefined && !twoHands) {
+    say('A left-hand pattern is written under a melody, so it needs both hands, from level 2.');
+  }
+  if (hands === 'L' && facts.hands === 'both') {
+    const shaping = (
+      ['skips', 'eighths', 'syncopation', 'triplets', 'accidentals', 'ties', 'dottedQuarters', 'ledger', 'leaps', 'sixteenths'] as const
+    ).some((name) => options[name] !== undefined);
+    if (shaping || options.position !== undefined) {
+      say('From level 2 the left hand read alone plays its accompaniment, with no melody for these options to shape.');
+    }
+  }
+  const beyondKey = keysAsked(options).find((k) => Math.abs(k) > facts.maxFifths);
+  if (beyondKey !== undefined) {
+    say(
+      facts.maxFifths === 0
+        ? 'Level 1 writes C major only.'
+        : `Level ${String(level)} writes keys up to ${String(facts.maxFifths)} sharp${facts.maxFifths === 1 ? '' : 's'} or flat${facts.maxFifths === 1 ? '' : 's'}; a wider key is written in the widest it has.`,
+    );
+  }
+  if (options.ledger === true && hands === 'L' && facts.hands === 'R') {
+    say('A left hand read alone at level 1 starts and ends on the C below middle C, too far by step from a ledger line to reach one and come back.');
+  }
+  if (options.position === true && options.ledger === true) {
+    say('Held inside one five-finger position from middle C, the melody has no ledger line beyond middle C to reach.');
+  }
+  if (options.position === false && level === 1) {
+    say('Level 1’s range is one five-finger position, so its melody cannot leave it.');
+  }
+  if (compoundAny && (leftHand === 'broken' || leftHand === 'walking') && options.leftHand !== undefined && twoHands) {
+    say('The broken-chord and walking left hands move in quarters, which cross the dotted-quarter beat of compound time.');
+  }
+  if (options.ledger === false && pattern) {
+    say('The Alberti, broken-chord and walking left hands are built from the C two octaves below middle C, on ledger lines below the bass staff.');
+  }
+  if (compoundAll && (options.syncopation === true || options.triplets === true)) {
+    say('A phrase in compound time is not asked for syncopation or triplets: one new metre is enough to read (T37).');
+  }
+  if (compoundAll && options.dottedQuarters === true) {
+    say('In compound time the dotted quarter is the beat itself, not a dotted note to read.');
+  }
+  if (compoundAny && facts.metricPlacement && (options.sixteenths === true || options.eighths === false)) {
+    say('Compound time at levels 1–4 is written in its three first figures, all of dotted quarters, quarters and eighths.');
+  }
+  if (options.ties === true && (options.bars ?? 4) < 2) {
+    say('A tie crosses a bar line, and a phrase of one bar has none.');
+  }
+  if (options.skips === false && options.leaps === true) {
+    say('A melody held to steps cannot leap.');
+  }
+  if (options.skips === false || options.leaps === false) {
+    const what = options.skips === false ? 'a third' : 'a fourth or wider';
+    if (tiesAllowed) say(`A tie’s closing note is set to the tied pitch after the melody has moved on, so the note after it can be ${what} away.`);
+    if (facts.chordTones) say(`From level 5 the melody moves to a chord tone on the strong beats, which can be ${what} away.`);
+  }
+  if (options.skips === false && pattern) {
+    say('The Alberti, broken-chord and walking left hands move by thirds.');
+  }
+  if (options.leaps === false && twoHands) {
+    say('The left hand’s roots move between I, IV and V, by fourths and fifths.');
+  }
+  if (options.eighths === false) {
+    if (options.syncopation === true && facts.metricPlacement) say('The syncopation below level 5 is the eighth–quarter–eighth figure.');
+    if (options.dottedQuarters === true) say('A dotted quarter in simple time is completed by an eighth.');
+    const sixteenths = options.sixteenths === true || (facts.lengths.includes(0.25) && options.sixteenths !== false);
+    if (!facts.metricPlacement && options.syncopation !== false && !sixteenths) {
+      say('From level 5 a syncopated bar opens on an eighth rest and leaves an eighth to fill.');
+    }
+    if (twoHands && leftHand === 'alberti') say('The Alberti left hand is in eighths.');
+  }
+  return reasons;
+}
+
 /** One five-finger position: the five notes from the key's tonic, at or above `from` (C4). */
 function handPosition(fifths: number, from: number): { low: number; high: number } {
   const tonic = tonicPitchClass(fifths);
@@ -798,10 +1042,39 @@ function handPosition(fifths: number, from: number): { low: number; high: number
   return { low, high: low + 7 };
 }
 
-/** The level's table, widened by what the options promise. */
+/**
+ * The level that first writes each left-hand pattern (C4b's `leftHand`): an
+ * override takes that level's left-hand range with the pattern, so the shape is
+ * the one the generator already writes there, not a pattern folded into a range
+ * built for held roots.
+ */
+const LEFT_HAND_HOME: Readonly<Record<LeftHandPattern, SightReadingLevel>> = {
+  whole: 2,
+  chord: 4,
+  alberti: 5,
+  broken: 6,
+  walking: 7,
+};
+
+/** The left hand a phrase of these options is written with: the option's pattern, else the level's own. */
+function leftHandOf(level: SightReadingLevel, options: SightReadingOptions): LevelSpec['leftHand'] {
+  return options.leftHand ?? LEVELS[level].leftHand;
+}
+
+const withoutLength = (rhythms: number[], length: number): number[] => rhythms.filter((r) => r !== length);
+const withLength = (rhythms: number[], length: number): number[] =>
+  rhythms.includes(length) ? rhythms : [...rhythms, length].sort((a, b) => a - b);
+
+/**
+ * The level's table, widened by what the options promise and narrowed by what
+ * they keep out.
+ *
+ * Every C4b branch is guarded by its option being given, so a phrase that asks
+ * none of them gets the table exactly as before (the unchanged golden).
+ */
 function specFor(level: SightReadingLevel, options: SightReadingOptions): LevelSpec {
   const base = LEVELS[level];
-  return {
+  const spec: LevelSpec = {
     ...base,
     // A skip is a third: the walk has to be allowed one.
     ...(options.skips === true ? { maxLeap: Math.max(base.maxLeap, 2) } : {}),
@@ -813,25 +1086,74 @@ function specFor(level: SightReadingLevel, options: SightReadingOptions): LevelS
     ...(options.syncopation === true && base.metricPlacement !== true ? { syncopation: true } : {}),
     ...(options.triplets === true ? { triplets: true } : {}),
   };
+  // --- C4b: each control where it is given, and nowhere else ---
+  // A leap is a fourth or wider; held to steps and skips, or to steps only.
+  if (options.leaps === true) spec.maxLeap = Math.max(spec.maxLeap, 3);
+  if (options.leaps === false) spec.maxLeap = Math.min(spec.maxLeap, 2);
+  if (options.skips === false) spec.maxLeap = 1;
+  if (options.ties === true) spec.allowTies = true;
+  if (options.ties === false) spec.allowTies = false;
+  if (options.ties !== undefined || options.syncopation === false) spec.tieOnBeat = true;
+  if (options.dottedQuarters === true) {
+    spec.rhythms = withLength(spec.rhythms, DIVISIONS * 1.5);
+    // The dotted quarter's eighth completes its beat.
+    if (options.eighths !== false) spec.rhythms = withLength(spec.rhythms, DIVISIONS / 2);
+  }
+  if (options.dottedQuarters === false) spec.rhythms = withoutLength(spec.rhythms, DIVISIONS * 1.5);
+  if (options.sixteenths === true) spec.rhythms = withLength(spec.rhythms, DIVISIONS / 4);
+  if (options.sixteenths === false) spec.rhythms = withoutLength(spec.rhythms, DIVISIONS / 4);
+  if (options.eighths === false) {
+    spec.rhythms = withoutLength(spec.rhythms, DIVISIONS / 2);
+    // Without eighths nothing completes a dotted quarter's beat.
+    if (options.dottedQuarters !== true) spec.rhythms = withoutLength(spec.rhythms, DIVISIONS * 1.5);
+  }
+  if (options.syncopation === false) {
+    // Every note where its length belongs: the rule levels 1-4 always follow.
+    spec.syncopation = false;
+    spec.syncopa = false;
+    spec.metricPlacement = true;
+  }
+  if (options.triplets === false) spec.triplets = false;
+  // Only where the level has a left hand to replace (level 1 writes one hand;
+  // `unrealisable` says so rather than an empty staff).
+  if (options.leftHand !== undefined && base.hands === 'both') {
+    spec.leftHand = options.leftHand;
+    spec.lhKey = LEVELS[LEFT_HAND_HOME[options.leftHand]].lhKey;
+  }
+  if (options.ledger === false) {
+    spec.rhKey = { low: Math.max(spec.rhKey.low, 60), high: Math.min(spec.rhKey.high, 79) };
+    spec.lhKey = { low: Math.max(spec.lhKey.low, 41), high: Math.min(spec.lhKey.high, 60) };
+  }
+  return spec;
 }
 
-/** Which promises this phrase has to keep: in compound time the rhythmic two are not asked. */
-function promisesFor(options: SightReadingOptions, timeSig: TimeSig): PhrasePromise[] {
-  const compound = timeSig.beatType === 8 && timeSig.beats % 3 === 0;
-  return PROMISES.filter((promise) => {
+/**
+ * The promises C4b's controls add, each counted on the melody as written. The
+ * key and the metre stay promised by `fifths` and `timeSig` themselves.
+ */
+type ControlPromise = 'ties' | 'dottedQuarters' | 'ledger' | 'leaps' | 'sixteenths';
+const CONTROL_PROMISES: readonly ControlPromise[] = ['ties', 'dottedQuarters', 'ledger', 'leaps', 'sixteenths'];
+
+/** Which promises this phrase has to keep: in compound time the rhythmic two are not asked, nor a dotted quarter. */
+function promisesFor(options: SightReadingOptions, timeSig: TimeSig): (PhrasePromise | ControlPromise | 'beyond')[] {
+  const compound = isCompoundTime(timeSig);
+  const older = PROMISES.filter((promise) => {
     if (options[promise] !== true) return false;
     if (compound && (promise === 'syncopation' || promise === 'triplets')) return false;
     return true;
   });
+  const added = CONTROL_PROMISES.filter((promise) => options[promise] === true && !(compound && promise === 'dottedQuarters'));
+  return [...older, ...added, ...(options.position === false ? (['beyond'] as const) : [])];
 }
 
-/** Steps and thirds between consecutive sounded notes of one line, by scale step. */
+/** Steps, thirds and wider between consecutive sounded notes of one line, by scale step. */
 function countIntervals(
   bars: readonly WriterNote[][],
   scale: readonly number[],
-): { steps: number; skips: number } {
+): { steps: number; skips: number; leaps: number } {
   let steps = 0;
   let skips = 0;
+  let leaps = 0;
   let previous: number | null = null;
   for (const note of bars.flat()) {
     if (note.midi === null || note.tie === 'stop' || note.chord === true) continue;
@@ -840,10 +1162,65 @@ function countIntervals(
       const distance = Math.abs(here - previous);
       if (distance === 1) steps += 1;
       if (distance === 2) skips += 1;
+      if (distance >= 3) leaps += 1;
     }
     previous = here >= 0 ? here : null;
   }
-  return { steps, skips };
+  return { steps, skips, leaps };
+}
+
+/**
+ * What C4b's promises find in the written melody: the ties that survived their
+ * closing (a tie whose next note became a rest is dropped), the dotted quarters
+ * of simple time, the notes on a ledger line beyond middle C, the sixteenths,
+ * and whether the line spans more than one five-finger position.
+ */
+function tallyMelody(
+  bars: readonly WriterNote[][],
+  onBassStaff: boolean,
+  timeSig: TimeSig,
+  eighthsWritten: boolean,
+  tally: Tally,
+): void {
+  const sounded = bars.flat().filter((note) => note.midi !== null && note.chord !== true);
+  tally.ties = sounded.filter((note) => note.tie === 'start').length;
+  // A dotted quarter is read against the plain eighths it replaces, so where
+  // the level writes eighths the phrase keeps a pair of them in one beat as
+  // well — as `skips` asks for a step beside the third. Without it, a phrase
+  // whose every eighth completes a dotted quarter loses the beamed pair its row
+  // had in every phrase (the contract found it on 2.2's row at 2.4).
+  const dotted = isCompoundTime(timeSig)
+    ? 0
+    : sounded.filter((note) => note.duration === DIVISIONS * 1.5 && note.tuplet === undefined).length;
+  tally.dottedQuarters = dotted > 0 && (!eighthsWritten || eighthPairs(bars, timeSig) > 0) ? dotted : 0;
+  // Treble: B below middle C and lower (middle C's own line is the landmark,
+  // not the skill: `detect.ts`). Bass: D above middle C and higher; C sharp
+  // above it is left out, as it may be written on middle C's line.
+  tally.ledger = sounded.filter((note) => (onBassStaff ? (note.midi ?? 0) >= 62 : (note.midi ?? 99) <= 59)).length;
+  tally.sixteenths = sounded.filter((note) => note.duration === DIVISIONS / 4 && note.tuplet === undefined).length;
+  const pitches = sounded.map((note) => note.midi as number);
+  tally.beyond = pitches.length > 0 && Math.max(...pitches) - Math.min(...pitches) > 7 ? 1 : 0;
+}
+
+/** Two sounded eighths inside one beat, the second straight after the first: a beamed pair. */
+function eighthPairs(bars: readonly WriterNote[][], timeSig: TimeSig): number {
+  const beat = feltBeat(timeSig);
+  let pairs = 0;
+  for (const bar of bars) {
+    let offset = 0;
+    let previous: number | null = null;
+    for (const note of bar) {
+      if (note.chord === true) continue;
+      const here = offset;
+      offset += note.duration;
+      const eighth = note.midi !== null && note.duration === DIVISIONS / 2 && note.tuplet === undefined;
+      if (eighth && previous !== null && previous + DIVISIONS / 2 === here && Math.floor(previous / beat) === Math.floor(here / beat)) {
+        pairs += 1;
+      }
+      previous = eighth ? here : null;
+    }
+  }
+  return pairs;
 }
 
 /**
@@ -929,7 +1306,15 @@ export function generateSightReading(options: SightReadingOptions): SightReading
   const fifths = Math.max(-table.maxFifths, Math.min(table.maxFifths, wantedFifths));
   // Held inside one hand position where the options ask (C4): the right
   // hand's range only; a left hand read alone gets its own position below.
-  const spec = options.position === true ? { ...table, rhKey: handPosition(fifths, 60) } : table;
+  const positioned = options.position === true ? { ...table, rhKey: handPosition(fifths, 60) } : table;
+  // A ledger line beyond middle C where the options ask (C4b): the right
+  // hand's range reaches down to the A below middle C. Not inside one
+  // position, which has none, and not for a left hand read alone (see
+  // `unrealisable`).
+  const ledgered = options.ledger === true && options.position !== true;
+  const spec = ledgered
+    ? { ...positioned, rhKey: { low: Math.min(positioned.rhKey.low, 57), high: positioned.rhKey.high } }
+    : positioned;
   const bars = Math.max(1, Math.min(32, options.bars ?? 4));
   const bpm = options.bpm ?? 72;
   // Divisions are per quarter note, so 6/8 is six eighths = three quarters.
@@ -983,6 +1368,8 @@ export function generateSightReading(options: SightReadingOptions): SightReading
         divisionsPerBar,
       );
     }
+    tally.leaps = intervals.leaps;
+    tallyMelody(melodyBars, leftOnlyMelody, timeSig, melodySpec.rhythms.includes(DIVISIONS / 2), tally);
     if (promised.every((promise) => tally[promise] > 0)) break;
   }
 
@@ -1121,9 +1508,13 @@ function readTimeSig(value: unknown): TimeSig | undefined {
  * - `fifths`: a number, or a list the seed chooses from.
  * - `timeSig`: `"6/8"`, or a list the seed chooses from.
  * - `skips`, `eighths`, `syncopation`, `triplets`, `accidentals`: `true` to
- *   promise the feature ({@link PROMISES}).
- * - `position`: `true` to hold the melody inside one hand position. No row
- *   writes it; the reader's recipes do (C4).
+ *   promise the feature ({@link PROMISES}), `false` to keep it out (C4b).
+ * - `position`: `true` to hold the melody inside one hand position (the
+ *   reader's recipes, C4); `false` to promise it leaves one (C4b).
+ * - `ties`, `dottedQuarters`, `ledger`, `leaps`, `sixteenths`: `true` or
+ *   `false`, as the options say (C4b).
+ * - `leftHand`: one of {@link LEFT_HAND_PATTERNS_BY_NAME}; anything else is
+ *   not passed on.
  */
 export function sightReadingOptionsFor(
   params: Readonly<Record<string, unknown>>,
@@ -1141,8 +1532,13 @@ export function sightReadingOptionsFor(
         .map(readTimeSig)
         .filter((value): value is TimeSig => value !== undefined)
     : readTimeSig(params.timeSig);
-  const promises: Partial<Record<PhrasePromise, true>> = {};
-  for (const promise of PROMISES) if (params[promise] === true) promises[promise] = true;
+  // Both values of a tri-state control are passed on; anything else is absent.
+  const controls: Partial<Record<PhrasePromise | ControlPromise | 'position', boolean>> = {};
+  for (const name of [...PROMISES, ...CONTROL_PROMISES, 'position'] as const) {
+    const value = params[name];
+    if (value === true || value === false) controls[name] = value;
+  }
+  const leftHand = LEFT_HAND_PATTERNS_BY_NAME.find((pattern) => pattern === params.leftHand);
   return {
     level,
     hands,
@@ -1150,8 +1546,8 @@ export function sightReadingOptionsFor(
     ...(fifths === undefined || (Array.isArray(fifths) && fifths.length === 0) ? {} : { fifths }),
     ...(timeSig === undefined || (Array.isArray(timeSig) && timeSig.length === 0) ? {} : { timeSig }),
     ...(typeof params.bpm === 'number' ? { bpm: params.bpm } : {}),
-    ...promises,
-    ...(params.position === true ? { position: true } : {}),
+    ...controls,
+    ...(leftHand === undefined ? {} : { leftHand }),
     ...(seed === undefined ? {} : { seed }),
   };
 }

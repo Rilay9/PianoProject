@@ -78,10 +78,18 @@ export interface SkillsFile {
   gateWaivers: GateWaiver[];
 }
 
+/**
+ * The musical dimension a demand belongs to (C4b): what kind of musical fact it
+ * is, from `demands.schema.json`'s closed list. Which generator option writes
+ * or removes a demand is app code (`engine/readingControls.ts`), not vocabulary.
+ */
+export type DemandDimension = 'clef' | 'interval' | 'rhythm' | 'metre' | 'key' | 'accidental' | 'range' | 'texture';
+
 export interface Demand {
   /** `family.name`, e.g. `rhythm.triplets`. */
   id: string;
   display: string;
+  dimension: DemandDimension;
   /** Which function in `detect.ts` finds it. */
   detector: DetectorId;
   /** The skill that copes with it: one reviewed table, the start of `needsSkills`. */

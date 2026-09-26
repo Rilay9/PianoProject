@@ -1006,6 +1006,29 @@ grown only when a reader needs it and its observable exists).
   technique, ear and performance terms outside v0 are listed as unjudged, never passed in
   silence.
 - **Taught at.** `sightReadingPromises.test.ts` holds every sight-reading row to *nothing the
-  earliest rung listing it has not taught*, read from `taughtAt`. One known exception:
-  `sight-reading-2-right` reaches C5 on 2.2, three rungs before 2.5 teaches leaving C position
-  (S16; D's per-rung row).
+  earliest rung listing it has not taught*, read from `taughtAt` — and, since C4b, to nothing
+  no rung teaches (`taughtAt: null`): row 7 stopped writing sixteenths (S23; below). One known
+  exception: `sight-reading-2-right` reaches C5 on 2.2, three rungs before 2.5 teaches leaving
+  C position (S16). C4b proved the generator side: held to 2.2 (`heldToRung`) the row stays in
+  C position and keeps 2.2's promises; the app asks for that shape once the reader's one writer
+  of a phrase holds it to the route's rung (C4c).
+- **Dimension (C4b).** Every demand names the musical dimension it belongs to, from a closed
+  list in `demands.schema.json`: `clef`, `interval`, `rhythm`, `metre`, `key`, `accidental`,
+  `range`, `texture` — its family, except that a ledger line is range and a note outside the
+  key an accidental. `hands` is not a dimension: it is a control (the left hand brings the
+  bass clef and hands together, which are). Which generator option writes or removes a demand
+  is not in the vocabulary: that map is app code (`app/src/engine/readingControls.ts`), so the
+  generator can change without the vocabulary or the evidence moving (Part 8, the fourth
+  message §4).
+- **The curriculum–generator contract (C4b).** At every core rung from 1.3, every demand the
+  rung has taught can be written into the reading row the reader offers there, keeping the
+  rung's promises and adding nothing untaught — or the reason it cannot is declared
+  (`UNREALISABLE_AT`, printed in `05` §8, held to exactly the undoable set by
+  `generatorContract.test.ts`). The declared gaps a teacher would notice: at 2.1, which
+  teaches hands together, the reader's row is 1.5's level-1 row, which writes one hand; on
+  1.5's row a leap breaks its drill's "only steps and skips", though 1.5's song has one.
+- **Sixteenths (S23, C4b).** No rung teaches reading sixteenths: the core track never does,
+  and the rungs that touch them (ragtime.5's short–long–short, technique.6's page of
+  sixteenths) are on tracks a jazz or theory learner need not take before jazz.8 or theory.9,
+  where row 7 sits. So row 7 asks `sixteenths: false` and no longer claims the concept, until
+  F gives a rung on that path the teaching; `taughtAt` stays `null`, not guessed.

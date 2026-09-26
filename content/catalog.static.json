@@ -4052,7 +4052,6 @@
     "concepts": [
       "sight-reading",
       "triplets",
-      "sixteenths",
       "walking-bass"
     ],
     "targetSkills": [
@@ -4088,7 +4087,8 @@
           4
         ],
         "timeSig": "4/4",
-        "triplets": true
+        "triplets": true,
+        "sixteenths": false
       }
     },
     "source": {

@@ -16247,3 +16247,104 @@ None open.
 ## Files
 
 `app/src/evidence/evidence.ts`, `measurement.ts`, `readingState.ts`, `demandReadings.ts` (new); `app/src/data/db.ts` (`evidenceDefinitions`); `app/src/ui/screens/ScoreScreen.ts` (the save line and its import — already in HEAD via 30c63e4); tests: `evidenceByDemand`, `demandReadings`, `evidenceVersion`, `evidenceAdversarial` (new), `evidenceProperty`, `readingState`, `helpers/observed.ts`, `helpers/reader.ts`; `docs/05-score-follow-engine.md` §9b (most of it already in HEAD via 30c63e4), `docs/01-architecture.md` §4.5, `docs/08-test-map.md`.
+
+### Entry 76 — C4b: the curriculum–generator contract — every demand a core rung has taught can be written into the reading row the reader offers there, or the reason it cannot is declared; the control map in app code, the vocabulary only gaining each demand's musical dimension (2026-09-26)
+
+**Judgement.** Yes on the generator side, not yet for the learner. At every core rung from 1.3 to 4.7, with the row the real `readingOffer` gives a learner placed there, every demand the rung has taught is now written into every phrase when asked and kept out when asked, keeping the rung's and the row's promises, writing nothing a later rung teaches, and bringing nothing new that the control does not declare — or it is one of nine declared impossibilities (46 rung-moves), held to exactly that list by `generatorContract.test.ts`. **S25 is closed as a contract:** ties and dotted quarters are written on request from 2.4 on the right-hand row, from 3.4 on the two-hand row and on 4.5's row. **What the 2.5 learner is offered on day 14 is unchanged on this tree:** the thirty-day diary regenerated after C4b gives the same thirty Today lines and reads as the checkpoint's, day 14 still "The next step waits for a later lesson — 14 of 14 right and in time yesterday", because the reader (`session.ts`, C4c) does not read the new controls yet. What it can now ask for that morning (the day's seed, the diary's recipe — the right-hand row with both hands — plus the control): **with ties**, | C4 half, D4 half tied over the bar line | to a quarter, E4 F4 eighths, G4 quarter | A4 half, B4 G4 eighths, F4 quarter | D4 dotted half, C4 quarter |, left hand C3 held in every bar; **with dotted quarters**, | C4 dotted quarter, C4 eighth, D4 E4 D4 C4 eighths | D4 half, F4 dotted quarter, E4 eighth | D4 quarter, E4 dotted quarter, F4 eighth, G4 E4 eighths | D4 quarter, C4 dotted quarter, D4 eighth, C4 quarter |, left hand C3 F3 F3 C3. Read as a teacher reads notation, not heard: one tie from a strong beat across the first bar line is a clean first tie; the dotted phrase drills the dotted-quarter–eighth figure three times, stepwise, beside plain eighth pairs; both stay inside C4–B4; the tie version's left hand never moves. Unverified as music. **Not looked at as a learner meets it:** no browser (as briefed), nothing drawn or heard.
+
+**The contract, rung by rung** (the reader's row there; twelve seeds a move; generator → OSMD → extractor → detectors):
+
+| rungs (row) | in every phrase already | written when asked (on) | kept out when asked (off) | cannot, and why |
+|---|---|---|---|---|
+| 1.3–1.4 (`1-left`) | bass staff, step | — (nothing else taught) | bass staff (→ right hand; drops 1.3's bass-staff promise) | step off: no control |
+| 1.5 (`1`) | step, skip | bass staff (the melody to the left hand) | skip (drops the row's) | leap on: 1.5's drill promises "only steps and skips"; step off |
+| 2.1 (`1`) | as 1.5 | as 1.5 | as 1.5 | as 1.5; hands together on: level 1 writes one hand (2.1 teaches both) |
+| 2.2–2.3 (`2-right` held in C position, S16) | step, skip, eighths, shorter-than-quarter | bass staff, hands together (each brings the other and the roots' leaps), leap | skip, eighths, shorter (drop their promises) | step off |
+| 2.4 (the same) | as 2.2 | as 2.2 + **dotted quarter, ties** (a tie can bring a leap: D's tie-closing fault) | as 2.2 | step off |
+| 2.5 (`2-right` as it stands) | as 2.2 | as 2.4 + beyond the position in every phrase | as 2.2 + beyond the position (drops 2.5's "a phrase beyond C position") | step off |
+| 3.1–3.3 (the same) | as 2.2 | as 2.5 + key signature (a set of keys), accidental | as 2.5 | step off |
+| 3.4–3.5 (`2`, both hands) | bass staff, hands together, step, eighths, shorter | **ledger line beyond middle C (S22)**, skip, leap, dotted quarter, ties, key, accidental, beyond | bass staff and hands together (drop 3.4's two-hands promise), skip, eighths, shorter, beyond | leap off: the left hand's roots move by fourths and fifths; step off |
+| 3.6–4.4 (the same) | as 3.4 | as 3.4 + left-hand pattern (a broken chord, from C2: brings ledger lines) | as 3.4 | as 3.4 |
+| 4.5–4.7 (`3`, 6/8 or 4/4) | bass staff, hands together, step, skip, leap, eighths, shorter; syncopation and triplets in its 4/4 phrases | ledger, dotted quarter (4/4 phrases), ties, key, accidental, beyond, left-hand pattern (Alberti, since some phrases are 6/8) | bass staff, hands together, ties, syncopation, triplets, 6/8 (drops "a phrase in 6/8"), beyond | 6/8 in every phrase (its syncopation and triplets are not asked in 6/8, T37); skip off, leap off (a tie's closing note; the roots); eighths off, shorter off (the 6/8 figures and the syncopation figure are eighths); step off |
+
+Never written at any core rung: sixteenths (no rung teaches them), a walking bass (blues.5 is a track rung after 4.7).
+
+**Deviations, each with its reason.**
+1. **A sixth new option, `leaps`.** `interval.leap` is taught at 1.5 and had no control; the brief's principle ("new options where a taught demand has none") covers it.
+2. **An "off" for every demand, and tri-state options.** The brief's map names the option that turns a demand on; C4c's brief steps down by turning a demand off ("skips off", "eighths off") and hopes to delete C4's table for this one. `true` promises, `false` keeps out, absent is the level's own; `skips`, `eighths`, `syncopation`, `triplets`, `accidentals` gained `false`; `position: false` promises a melody wider than one position. Absent, nothing changes (asserted).
+3. **`mayWrite`, `brings` and `heldToRung` in `readingControls.ts`.** "Untaught demands are absent" needs to know what a recipe may contain without generating it (S16), and "holding the unrelated dimensions stable" needs what a move brings declared (as C4's `VALUE_DEMANDS` did). `mayWrite(…) === false` is held to every phrase the contract generates.
+4. **`app/src/demands/vocabulary.ts`** (not named): the `Demand` type gains `dimension`.
+5. **The contract covers every core rung from 1.3 to 4.7, not only the eight that list a row**: the reader serves 2.4 and 3.1–3.3 from earlier rungs' rows, and the diary's plateaus sit there.
+6. **The dotted-quarter promise keeps a pair of plain eighths** where the level writes eighths (as `skips` asks for a step beside the third). The contract found dotted quarters on 2.2's row at 2.4 leaving some phrase with no beamed pair, which 2.2's "eighths beamed in their beats" check reads as a broken promise; the check is kept, the phrase now keeps what it checks.
+7. **S16 is fixed where the rung is known, not in the row.** Setting the row's own recipe in C position would make 2.5's lesson sentence ("its phrases already reach up to the C above middle C") false on this tree, since the committed reader cannot move range up from a row whose params hold it. The generator side is proven; the app asks for the held shape once `readingOptions` calls `heldToRung` (C4c).
+8. **A ledger line for a left hand read alone at level 1 is declared, not built**: the walk from C3 cannot reach a ledger line and come back in four bars of level-1 rhythms. My first unit test assumed it could (0 of 12); revised to the declaration before green.
+9. **The promises test reads the authored rows' params and concepts**, as it already read `targetSkills`: the content build ran once, early, as briefed, so the built catalog carries row 7's recipe at the next build.
+
+## Done — per item: mechanism, the red line, before → after
+
+**1. The dimension, and a control for every demand, in app code.** `demands.json` gains `dimension` (spliced as text; the multi-line entries keep one field a line) from the schema's closed list `clef, interval, rhythm, metre, key, accidental, range, texture` — the id's family, except a ledger line is range and a note outside the key an accidental; `hands` is a control, not a dimension. `readingControls.ts`: `READING_CONTROLS` (option, `on`, `off`, `mayWrite`, `brings`), `withDemand`, `withoutDemand`, `heldToRung`, `UNREALISABLE_AT`. *Red:* `AssertionError: 'dimension' not found in ['id', 'display', 'detector', 'copedWithBy', 'taughtAt']`; `AssertionError: False is not true : []` (a demand without a dimension accepted); with no map, as on the committed tree, `AssertionError: expected [] to deeply equal [ 'clef.bass', 'interval.leap', …(17) ]`.
+
+**2. The new options, and `unrealisable(options)`.** `ties` (only from a note on the beat), `dottedQuarters`, `ledger`, `leaps`, `sixteenths`, `leftHand` (an override with the range of the level that first writes the pattern; absent, the level's own). Every branch is guarded by its option being given. `unrealisable` is pure and says, in words printed in `05` §8, what a phrase of these options will not be. *Red:* `ties on at level 2: ties in 0 of 12 phrases: expected +0 to be 12`; `dotted quarters on at level 2: dottedQuarters in 0 of 12 phrases`; `ledger on at level 2: ledgerLines in 0 of 12 phrases`; `a left-hand pattern at level 2: leftHandPattern in 0 of 12 phrases`; `sixteenths off at level 7: sixteenths still in 12 of 12 phrases`; `TypeError: unrealisable is not a function`. *After:* each on in every phrase, each off in none. *The hypothesis, checked by generating:* level 2's grid holds a dotted quarter (on a beat, its eighth after) and a tie without changing the bar count or the range; the tie as the generator closes it brings a leap in some phrases (declared, D's), and a tie drawn from any note is syncopation — level 3's own ties make syncopation in 18 of 40 seeds (right hand, eight bars), the on-beat rule in none.
+
+**3. The contract test.** *Red, on the committed generator* (its phrases, run through a scratch config aliasing `sightReading` to the committed file beside C4b's pure helpers): `AssertionError: 2.4 rhythm.ties: expected 'fails' to be 'ok'`; the report: `2.5 … rhythm.ties … fails (PROBLEMS: rhythm.ties in 0 of 12 phrases)`, `3.4 … pitch.ledger … fails (PROBLEMS: pitch.ledger in 0 of 12 phrases)`. *Found and settled on the way:* a tie brings a leap, the left hand added brings its staff and roots, a moving pattern brings ledger lines (declared); a broken left hand in 6/8 was read as a walking bass (untaught at 4.5): the control asks the Alberti where a phrase may be in 6/8, and a broken or walking left hand in compound time is declared unrealisable; the dotted-quarter pair (deviation 6).
+
+**4. The four rows.** **S25**: ties and dotted quarters realisable from 2.4 (above). **S22**: 3.4's row writes a ledger line beyond middle C when asked (`ledger`), asserted by name; its own recipe unchanged (`position` and `ledger` together are unrealisable, and the committed reader's range step down is `position`). **S16**: `heldToRung(row, taught at 2.2)` is `position: true`; the contract asserts no phrase beyond C position there and some at 2.5 on the row as it stands; the app side is C4c's. **S23**: row 7 asks `sixteenths: false` and drops the `sixteenths` concept (text splice, two lines). No rung teaches reading sixteenths: the core never does, and the rungs that touch them (ragtime.5's short–long–short, technique.6's page of sixteenths) are on tracks a jazz or theory learner need not take before jazz.8 or theory.9; `taughtAt` stays null, not guessed. *Red:* `drill.reading.sight-reading-7 (jazz.8, theory.9): no rhythm.sixteenths (taught at null) fails at seeds 1, 7920, 15839, … : expected [ 1, 7920, 15839, 23758, 31677, …(35) ] to deeply equal []`; the params guard, `drill.reading.sight-reading-7: expected { level: 7, bars: 8, …(4) } to deeply equal { level: 7, bars: 8, …(5) }`.
+
+**5. Keys are not ordered.** `key.signature`'s `on` is every key with a signature the level writes, sharps and flats alike, a set the seed chooses from.
+
+**6. Unchanged with every option absent.** A golden of phrase hashes written by the generator before C4b (the nine rows' old params at forty seeds, every level with each hand setting and two lengths, every older option at every level) and the rows' params unchanged but row 7's. The levels 5–7 melody goldens unchanged. The thirty-day diary's lines and reads identical to the checkpoint's.
+
+## Pedagogical verdict (from the notation; nothing heard)
+
+The contract makes the 2.5 plateau impossible on the generator's side and says honestly where the curriculum asks what the reader's row cannot give: 2.1 teaches hands together over a one-hand row; 1.5's song teaches the leap its drill forbids; 4.5's row cannot drop skips, leaps or eighths. Three things a teacher would not accept yet, each recorded, none fixed (D's): a tie can be followed by a fifth (seed 71282 on the right-hand row: A4 tied into bar 4, then E4; C4 tied into bar 2, then G4); the first left-hand pattern (3.6) arrives two octaves below middle C with ledger lines, two new things at once (seed 11: C2 G2 E2 G2 under C4); and the day-14 tie phrase's left hand holds C3 for four bars. Whether any phrase reads as music is unverified as music.
+
+## Tests
+
+| test | class | the assumption the old assertion encoded | why the new one reads the learner-facing outcome |
+|---|---|---|---|
+| `generatorContract.test.ts` | add | — | every move the reader can ask at every core rung, through the real generator and detectors; the undoable set exactly declared |
+| `sightReadingOptions.test.ts` | add | — | each control present when on, absent when off, where the level alone would not; params read; unrealisable cases |
+| `sightReadingUnchanged.test.ts` + golden `sight-reading-unchanged.json` | add (guard) | — | nothing a phrase did not ask for changes; the rows ask what they asked but row 7 |
+| `tools/content/tests/test_vocabulary_dimension.py` | add | — | the closed list, required, per demand |
+| `sightReadingPromises.test.ts` bounds → `helpers/promises.ts` | revise (every assertion kept; the hook's large-removal warning is this move) | the promises are the test's own | one definition shared with the contract; each check says which demand it is about |
+| `sightReadingPromises.test.ts` `unintended()` | revise | a demand no rung teaches is not checked | `taughtAt: null` is untaught everywhere (S23) |
+| `sightReadingPromises.test.ts` params and concepts | revise | the built rows are current | read from the authored rows, as `targetSkills` already was |
+| `sightReadingPromises.test.ts` `KNOWN_EARLY` | preserve (reason updated) | the rows' recipes are the only shapes the generator is asked for | kept for the row as the app asks today; the contract asks the held shape |
+| `sightReading.test.ts` (goldens), `sightReadingFromReadingState`, `firstThirtyDays`, `sightReadingSlot`, `recommendRespondsToEvidence`, `lessonClaimsAboutApp`, `vocabulary`, `test_evidence_gate` | preserve | — | green; no diary line changed |
+
+## Runs (unpiped; exit codes read)
+
+- Content build once, early: `python tools/content/build.py --skip-fetch` 0.
+- After the edits: `python tools/content/validate.py --personal` 0 (3 waived, 13 unjudged, 9 items declare targetSkills); `python -m unittest discover -s tools/content/tests -t tools/content` 0 (947); `npx tsc -b` 0; `npm run lint` 0; `npx vitest run` 0 (235 files, 5788 passed, 6 skipped), with C4a's and T42's work in the tree.
+- Reds on the committed code: the options file (29 red), the dimension tests (5 FAIL), the contract on the committed generator (6 red), the control-entry test with no map, the promises test's S23 line, the params guard.
+- Two temporary probe tests (seeds for the follow-ups; the tie/syncopation measurement) were run once and deleted.
+
+## Not done
+
+- **The reader offers none of the new moves** (C4c): day 14 still waits. `ReadingMoves` (`db.ts`) and `normaliseMoves`/`readingOptions` (`session.ts`) carry only C4's six fields, so a recipe with `ties` would be dropped on the way to the generator.
+- **`KNOWN_EARLY` did not shrink** (brief item 5): S16's held shape reaches the learner only when `readingOptions` calls `heldToRung` with the route's rung (C4c), for Today and for an open from the rung page.
+- The built catalog carries row 7's recipe at the next content build (the build ran once, early, as briefed).
+- The contract covers the core track; the track rungs that list rows (classical.3, technique.5, theory.6, jazz.8, chords-pop.8, theory.9) and rows 4–7, which anchor no core rung, are held only by the promises test.
+
+## Follow-ups
+
+- **P1 (C4c):** read `READING_CONTROLS` / `unrealisable` / `UNREALISABLE_AT` to step up and down; grow `ReadingMoves` and `normaliseMoves` with the new options; call `heldToRung` in `readingOptions`; then remove `KNOWN_EARLY`'s line.
+- **P1 (F), as the brief asks for a lesson–row contradiction:** 2.1 teaches hands together, and the row the reader offers there (1.5's, level 1) writes one hand. One rung.
+- **P2 (D):** the tie's closing note is set after the walk moved on (seed 71282 above); level 3–4's own ties from an off-beat are syncopation (harmless at 4.5, a relic below it); the moving left-hand patterns sit from C2 (seed 11), so 3.6's move brings ledger lines; broken and walking left hands move in quarters under 6/8.
+- **P2 (detectors, not mine):** `walkingBass` counts a bar of three quarters in 6/8 as a walk (its bar length is in quarters, not felt beats): a broken chord in 6/8 read as a walking bass in 9 of 12 seeds of 4.5's row.
+- **P2 (D):** on 4.5's row skips, leaps and eighths cannot be turned off, so a skip learner there cannot be given steps only.
+- **Record:** `docs/05` §8 and `docs/08-test-map.md` C4b additions went into commit 160aed7 (C4a's) with the shared files, ahead of the code they describe, which is uncommitted.
+
+## Questions
+
+None that block. To confirm: `leaps` and the "off" direction beyond the brief's list (deviations 1–2); S16 fixed in the reader, not the row (deviation 7); S23 by dropping sixteenths from row 7 until F teaches them.
+
+## Unverified
+
+- Nothing heard or seen: no browser (as briefed); every musical judgement is a reading of pitches and durations.
+- Twelve seeds a move (deterministic, reproducible anywhere), not every seed; a promise that fails after the redraws would show as a failing move, and none did on those seeds.
+- The reader's use of the map (C4c); the phrases on the owner's phone.
+
+## Files
+
+`app/src/engine/readingControls.ts` (new); `app/src/engine/sightReading.ts` (options, `unrealisable`, `levelFacts`, `sightReadingOptionsFor`); `app/src/demands/vocabulary.ts` (`DemandDimension`, `Demand.dimension`); `content/curriculum/vocabulary/demands.json` (`dimension`, comment), `demands.schema.json`; `content/catalog.static.json` (row 7: `sixteenths: false`, concept `sixteenths` removed); tests: `generatorContract.test.ts`, `sightReadingOptions.test.ts`, `sightReadingUnchanged.test.ts`, `helpers/promises.ts` (new), `fixtures/scores/golden/sight-reading-unchanged.json` (new), `sightReadingPromises.test.ts`; `tools/content/tests/test_vocabulary_dimension.py` (new); `docs/05-score-follow-engine.md` §8, `docs/02-curriculum.md` Part H, `docs/08-test-map.md`.
