@@ -2349,9 +2349,7 @@ practice-loop proof still in its decision.
 1. **T28 is not implemented literally.** Its persistent practising-screen strip predates X15
    (playing stays visually stable, no prose or control mutation) and X18 (operational help
    contextual; musical explanation where the concept is taught; "why did the teacher assign
-   this" with the recommendation, session or episode; the full explanation in browsing). The
-   strip requirement is superseded so no future builder faithfully adds permanent explanatory
-   chrome to Score, the drills or the Lab; T28's four questions survive as an audit rubric, never
+   this" with the recommendation, session or episode; the full explanation in browsing). The strip was in fact built (`helpStrip.ts` on Score, Drill, Chord Chart, Lab and Free Play; about forty-five e2e specs reference it — checked after the reviewer's packet), so the requirement is superseded in the other direction: X18 brings the existing strip under the state contract and revises the specs, and no builder extends it; T28's four questions survive as an audit rubric, never
    as four answers on screen at once. The brief is annotated.
 2. **State-specific explanation, the contract**: *browsing, before starting* — what this
    activity is, why it is here, what the learner will do, what if anything the app can measure,
