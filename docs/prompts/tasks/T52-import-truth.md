@@ -8,9 +8,9 @@ The assign sheet tells the learner that assigning an imported piece to a rung "c
 
 ## What is decided
 
-1. `assignSheet.ts`'s text becomes the equivalent of: "Assigning it to a rung makes it one of that rung's practice options. The app can then suggest it there and use measured practice on it toward that rung's requirements." `docs/OWNER-GUIDE.md` says the same.
+1. `assignSheet.ts`'s text becomes: "Assigning it to a rung makes it one of that rung's practice options. The app can suggest it there, and qualifying practice can count toward that rung's requirements." (The reviewer's wording, 2026-09-26: "qualifying" leaves the requirement predicate in charge and nothing implies that measuring a run satisfies a requirement.) `docs/OWNER-GUIDE.md` says the same.
 2. The comments in `load.ts` and `importOverlay.test.ts` ("cannot count for a rung", "could not complete a rung") are kept only where they unambiguously mean qualifying practice of the item, never assignment or item identity; otherwise rewritten.
-3. A regression test: an imported piece assigned to a rung yields no evidence and the rung's state is unchanged; a qualifying measured run of it, judged for that rung, satisfies the appropriate `runs` requirement.
+3. One regression test with both halves, because together they prove the boundary rather than that assignment does nothing: an imported piece assigned to a rung yields no evidence and the rung's state is unchanged; then a measured run of it, constructed to satisfy that rung's actual `runs` predicate and judged for that rung, satisfies the requirement — the test names which requirement. Never assert that any run of an assigned import advances the rung.
 4. Every other learner-facing or owner-facing sentence found by a search for "counts towards" and "finishing the rung" across `app/src` and `docs/` is corrected or listed.
 
 ## Rules and files
