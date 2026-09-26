@@ -805,3 +805,10 @@ CI on 4921646 finish; any failure is reviewed as a fix, not overridden by this r
 S29/L72: rerun the skip learner, the two-hand skip learner, the ambiguity adversary and the
 composed-recipe contract; if green with the chain and CI, proceed to C5.
 
+**The reviewer approved 3c6c098** as the correct response to the C4.5 review: S29 and L72 as
+C4d before C5 with the distinctions kept (reachable composed recipes, not the Cartesian
+product; coordination, not sustain); L76 designed without inventing its threshold; the record
+file authoritative with the companion copy; L73–L75 rightly C5's. No further direction: let
+the verification finish, then C4d does exactly S29, L72 and the four reruns, then a review
+before C5. The chain over 4921646 finished green on all twenty-three steps after this.
+
