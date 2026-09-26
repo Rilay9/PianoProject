@@ -1,0 +1,35 @@
+=== A-day-one
+technique | asked | Rhythm reading with eighth notes | This lesson asks for it — not counted yet
+review | rung | Rhythm: eighths — 4 bars | Nothing due for review — more from this lesson
+new | asked | London Bridge Is Falling Down | This lesson asks for it — not counted yet
+repertoire | rung | Merrily We Roll Along | More music from this lesson
+sightreading | reader | Sight-reading generator, level 2, right hand | Read something you have never seen, once, slowly
+free |  |  | Free play4 min · Play anything you like — no scoring, no cursor
+cut: true This lesson asks for it — not counted yet // true Nothing due for review — more from this lesson // true This lesson asks for it — not counted yet // false More music from this lesson // true Read something you have never seen, once, slowly
+status: Working on Stage 2 · Eighth notes and counting “1 and 2 and”
+daily: One phrase you have never seen, once, slowly
+=== B-skill-retention
+technique | asked | Chord drill — C, F and G | The next lesson asks for it — not counted yet
+review | skill-retention | Sight-reading generator, level 1, left hand | Bass clef: not shown in 4 weeks
+new | asked | London Bridge Is Falling Down | This lesson asks for it — not counted yet
+repertoire | rung | Merrily We Roll Along | More music from this lesson
+sightreading | reader | Sight-reading generator, level 2, right hand | Another like it — 19 of 19 right and in time yesterday
+free |  |  | Free play4 min · Play anything you like — no scoring, no cursor
+cut: true The next lesson asks for it — not counted yet // false Bass clef: not shown in 4 weeks // true This lesson asks for it — not counted yet // false More music from this lesson // true Another like it — 19 of 19 right and in time yesterday
+status: Working on Stage 2 · Eighth notes and counting “1 and 2 and”
+daily: Another like it — 19 of 19 right and in time yesterday
+=== B swap sheet
+# From the same lesson
+  C major triad inversions — both
+  I-IV-V7-I in C — root position
+  I-IV-V7-I in C — smooth voicing
+=== C-piece-retention
+technique | asked | Chord drill — C, F and G | The next lesson asks for it — not counted yet
+review | piece-retention | Ode to Joy (hands together) | Keeping this piece playable — last played on 10 Sep
+new | asked | Happy Birthday to You | Next lesson — this one waits for your reads
+repertoire | rung | Merrily We Roll Along | More music from this lesson
+sightreading | reader | Sight-reading generator, level 2, right hand | Read something you have never seen, once, slowly
+free |  |  | Free play4 min · Play anything you like — no scoring, no cursor
+cut: true The next lesson asks for it — not counted yet // true Keeping this piece playable — last played on 10 Sep // true Next lesson — this one waits for your reads // false More music from this lesson // true Read something you have never seen, once, slowly
+status: Working on Stage 2 · Eighth notes and counting “1 and 2 and”
+daily: One phrase you have never seen, once, slowly
