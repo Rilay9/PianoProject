@@ -16,6 +16,11 @@
  * U46 is the same rule on the *Accents* line: over notes that all arrived at
  * one loudness (the screen keys) the record stores the accents as not
  * measured, and the sheet printed a share of them; it says not judged now.
+ *
+ * C4 item 0 adds the last block: the row keeps the evidence and the refusals
+ * the sheet was drawn from, stamped with the row's `definitions`, because the
+ * played model the evidence function needs exists only on this screen. The
+ * reading state reads them back (`readingState.test.ts`).
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
@@ -24,7 +29,7 @@ import { phrase, line } from './helpers/phrase';
 import { DEFAULT_SETTINGS, updateSettings } from '../../src/data/settingsStore';
 import type { EngineOptions, SessionScore } from '../../src/engine/types';
 import type { CatalogItem } from '../../src/curriculum/types';
-import type { SessionRow } from '../../src/data/db';
+import { OBSERVATION_DEFINITIONS, type SessionRow } from '../../src/data/db';
 import { withBeatToMs, type ScoreModel, type ScoreModelData } from '../../src/score/types';
 import { parseHash, type Router } from '../../src/router';
 
@@ -391,5 +396,51 @@ describe('U46: the Accents line says not judged where the record says not measur
     expect(accents?.textContent ?? '', 'the sheet printed a share of accents nobody could play louder').not.toMatch(/%/);
     expect(accents?.textContent).toContain(NOT_JUDGED_TEXT.accentsFlat);
     expect((accents as HTMLElement | null)?.dataset.cites).toBe('accents');
+  });
+});
+
+// Added (C4 item 0): the evidence is computed where the played model is in
+// hand — here, at record time — and kept on the row, so a reader later has it
+// without the phrase. The sheet's *Not judged* lines and the row read the same
+// results.
+describe('the row keeps what its run is evidence of, and what it is not (C4 item 0)', () => {
+  it('a first reading in Keep tempo: the evidence and the refusals, stamped with the row’s definitions', async () => {
+    findItemSpy.mockResolvedValue(reader(['sight-reading', 'hands-together', 'reading-ahead']));
+    await open(`#/score/${READ_ID}?hands=R`, PLAIN);
+    playAndFinish(PLAIN, { hands: 'R' });
+    const row = await storedRow();
+    expect(row.evidence, 'a recorded sight-read kept no evidence').toBeDefined();
+    expect(row.definitions).toBe(OBSERVATION_DEFINITIONS);
+    const bySkill = new Map((row.evidence ?? []).map((result) => [result.skill, result]));
+    expect([...bySkill.keys()].sort()).toEqual(['hands-together', 'reading-ahead', 'sight-reading']);
+    // Every note right, first time, guide off (the reading default), in time.
+    expect(bySkill.get('sight-reading')).toMatchObject({ kind: 'measured', skill: 'sight-reading', standard: 'full' });
+    const sight = bySkill.get('sight-reading') as { n: number; right: number };
+    expect(sight.n).toBeGreaterThan(0);
+    expect(sight.right).toBe(sight.n);
+    // The right hand alone: the two-hand skill refused, citing the field.
+    expect(bySkill.get('hands-together')).toMatchObject({ kind: 'refusal', reason: 'condition:both-hands', cites: ['hands.played'] });
+    expect(bySkill.get('reading-ahead')).toMatchObject({ kind: 'refusal', reason: 'not-measured:observable' });
+    // And the sheet's line is the refusal the row kept.
+    expect(notJudged().map((line) => line.text).join(' | ')).toContain(NOT_JUDGED_TEXT.oneHand('R'));
+  });
+
+  it('a Wait run: the timing refusals the sheet printed are the ones on the row', async () => {
+    findItemSpy.mockResolvedValue(reader(['sight-reading', 'interval-reading', 'subdivision']));
+    await open(`#/score/${READ_ID}?mode=wait`, PLAIN);
+    playAndFinish(PLAIN, { mode: 'wait' });
+    const row = await storedRow();
+    const refused = (row.evidence ?? []).filter((result) => result.kind === 'refusal').map((result) => result.skill);
+    expect(refused.sort(), 'the row kept no refusal for the timing Wait never took').toEqual(['sight-reading', 'subdivision']);
+    // Pitch was measured: reading by interval is evidence, at the practice standard.
+    expect((row.evidence ?? []).find((result) => result.skill === 'interval-reading')).toMatchObject({ kind: 'measured' });
+  });
+
+  it('an item that declares no skill stores no evidence field at all', async () => {
+    findItemSpy.mockResolvedValue(song());
+    await open(`#/score/${SONG_ID}`, PLAIN);
+    playAndFinish(PLAIN);
+    const row = await storedRow();
+    expect(row).not.toHaveProperty('evidence');
   });
 });

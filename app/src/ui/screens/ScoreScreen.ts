@@ -16,10 +16,11 @@ import { metronomeSoundFor } from '../../audio/inputPolicy';
 import { getPiano, micSource, screenKeyboardSource, webMidiSource } from '../../app/services';
 import { findItem, contentUrl, loadCurriculum } from '../../curriculum/load';
 import { parseFrontMatter, renderMarkdown } from '../markdown';
-import { barsPerWindowFor, isTablet } from '../tablet';
+import { barsPerWindowFor, isTablet, sidePanelProse } from '../tablet';
 import { getImport } from '../../data/importStore';
 import { isSightReading } from '../../engine/drills/fromCatalog';
-import { generateSightReading, sightReadingOptionsFor } from '../../engine/sightReading';
+import { generateSightReading } from '../../engine/sightReading';
+import { readingOptions } from '../../curriculum/session';
 import type { CatalogItem, Curriculum, Lesson } from '../../curriculum/types';
 import { findLesson, lessonForItem, masteryCriteriaFor } from '../../curriculum/selectors';
 import { getMidiSettings } from '../../data/midiSettings';
@@ -39,11 +40,11 @@ import {
   techniqueMeasureFor,
   velocityIsFlat,
 } from '../../engine/Scoring';
-import { evidenceFor, isRefusal } from '../../evidence/evidence';
+import { evidenceFor, isRefusal, type EvidenceResult } from '../../evidence/evidence';
 import { VOCABULARY_V0 } from '../../evidence/vocabulary';
 import { nextLadderTempo } from '../../engine/PracticeEngine';
 import { MASTER_DAYS, recordRun, sessionsForItem, type RunResult } from '../../data/progressStore';
-import { OBSERVATION_DEFINITIONS, type RunHeader } from '../../data/db';
+import { OBSERVATION_DEFINITIONS, type ReadingRecipe, type RunHeader, type SessionRow } from '../../data/db';
 import { NOT_MEASURED, type Mode, type SessionScore } from '../../engine/types';
 import type { InputNoteEvent } from '../../midi/types';
 import { toMusicXml } from '../../score/mxl';
@@ -57,7 +58,7 @@ import {
   type ScoreLayout,
 } from '../../score/WindowRenderer';
 import { bpmAt, type ScoreModel } from '../../score/types';
-import type { Router } from '../../router';
+import type { RouteRecipe, Router } from '../../router';
 import { KeyboardStrip, type KeyView } from '../KeyboardStrip';
 import { KeyRibbon } from '../KeyRibbon';
 import { waitingForLine, type WrittenPitch } from '../expectedNote';
@@ -71,6 +72,7 @@ import {
   STATE_TEXT,
   SUMMARY_TEXT,
   notJudgedLines,
+  readingTitle,
   type RunChangeKey,
   type ScoreMode,
 } from '../help';
@@ -177,19 +179,26 @@ export const CONTROL_BAR_START_HIDE_MS = 700;
  * seed in the route (`04` §2), so the day has one phrase; every other open
  * draws one here, and the screen keeps it so the run can be recorded against
  * the phrase it was (the session row's `seed`).
+ *
+ * The recipe (C4) is what Today's reader moved from the row's own params
+ * (`?recipe=`): the phrase is written from the row with those moves over it,
+ * by the same function the reader and its tests use (`readingOptions`).
  */
-function generateSightReadingFor(item: CatalogItem, seed?: number): { musicXml: string; seed: number } {
-  const phrase = generateSightReading(
-    sightReadingOptionsFor(item.drill?.params ?? {}, seed ?? freshSeed()),
-  );
+function generateSightReadingFor(item: CatalogItem, seed: number, recipe?: RouteRecipe): { musicXml: string; seed: number } {
+  const phrase = generateSightReading(readingOptions(item, recipe, seed));
   return { musicXml: phrase.musicXml, seed: phrase.seed };
 }
 
-/** A phrase's seed nobody asked for, and never the one named (T40's *New phrase*). */
-function freshSeed(not?: number): number {
+/**
+ * A phrase's seed nobody asked for: never one a stored run of the item
+ * carries, nor the one on the screen (T40's *New phrase*; C4 item 2). A random
+ * 32-bit seed was almost never one of them; "almost" is not what the learner
+ * is told when the card says *never seen*.
+ */
+function freshSeed(avoid: ReadonlySet<number> = new Set()): number {
   for (;;) {
     const seed = Math.floor(Math.random() * 0xffffffff);
-    if (seed !== not) return seed;
+    if (!avoid.has(seed)) return seed;
   }
 }
 
@@ -255,6 +264,8 @@ export function ScoreScreen(router: Router): HTMLElement {
    */
   const todayRung = router.route.scoreRung;
   const todaySlot = router.route.scoreSlot;
+  /** The phrase's recipe, where Today's reader named one (C4, `?recipe=`). */
+  const routeRecipe = router.route.scoreRecipe;
   /**
    * The tour's parameters, for a navigation that has to keep them.
    *
@@ -275,6 +286,8 @@ export function ScoreScreen(router: Router): HTMLElement {
     // A Today run toggled into Blind is still that Today run (L50).
     ...(todayRung === undefined ? {} : { rung: todayRung }),
     ...(todaySlot === undefined ? {} : { slot: todaySlot }),
+    // And the same kind of phrase (C4): *New phrase* and Blind keep the recipe.
+    ...(routeRecipe === undefined ? {} : { recipe: routeRecipe }),
   };
   /**
    * Where Back goes: the tour that opened this, the rung that opened it, or
@@ -383,6 +396,12 @@ export function ScoreScreen(router: Router): HTMLElement {
    * a retry on the same music is told from a new phrase across visits too.
    */
   let phraseSeen = false;
+  /**
+   * Every seed a stored run of this item carries (C4 item 2), so a phrase the
+   * screen draws for itself — a fresh open, *New phrase* — is never one the
+   * learner has played or heard. Filled as the item's rows are read.
+   */
+  const seedsOnRecord = new Set<number>();
   /**
    * The app has played this phrase to the learner (T40): `Hear it`, a bar held
    * down, or *Play it to me* — any Listen run on it, before a run or during
@@ -2684,10 +2703,12 @@ export function ScoreScreen(router: Router): HTMLElement {
     if (!body) return;
     try {
       const curriculum = await loadCurriculum();
-      // The prose beside the piece: the opening rung's, and where nothing
-      // opened the screen the first rung listing it — text to read, not the
-      // numbers the run is held to, which are the defaults there (C1).
-      const found = judgingRung(curriculum) ?? lessonForItem(curriculum, target.id);
+      // The prose beside the piece: the rung that judges the run, whole, and
+      // where nothing opened the screen the first rung listing it — its
+      // teaching, without the paragraph that states its pass, which is not the
+      // pass this run is held to: that is the Settings pair (C1; C4 item 6).
+      const judging = judgingRung(curriculum);
+      const found = judging ?? lessonForItem(curriculum, target.id);
       if (!found) return;
       const summary = document.getElementById('score-side-summary');
       // The rung's title alone. This is the heading over its text beside the
@@ -2698,7 +2719,7 @@ export function ScoreScreen(router: Router): HTMLElement {
       const { body: markdown } = parseFrontMatter(await response.text());
       sidePanel.hidden = false;
       section.dataset.side = 'text';
-      body.replaceChildren(renderMarkdown(markdown));
+      body.replaceChildren(renderMarkdown(sidePanelProse(markdown, judging !== undefined)));
     } catch {
       sidePanel.hidden = true;
     }
@@ -2842,7 +2863,7 @@ export function ScoreScreen(router: Router): HTMLElement {
    * where the route carries none (only a Today card names one, L50), and
    * anything the engine did not report.
    */
-  function runHeader(score: SessionScore, first: { unseen?: boolean }, demonstrated: boolean): RunHeader {
+  function runHeader(score: SessionScore, first: { unseen?: boolean; recipe?: ReadingRecipe }, demonstrated: boolean): RunHeader {
     const under = score.judgedUnder;
     const base = model?.tempoMap[0];
     const judgedBy = judgingRungId();
@@ -2878,6 +2899,21 @@ export function ScoreScreen(router: Router): HTMLElement {
       },
       ...first,
       demonstrated,
+    };
+  }
+
+  /**
+   * What the phrase on the screen was written from (C4): the row, what the
+   * route's recipe moved, and whether it is the easy one on purpose. The row's
+   * own recipe where nothing moved it, so the reader always knows the last
+   * recipe a learner read.
+   */
+  function phraseRecipe(row: string): ReadingRecipe {
+    const moved = routeRecipe?.moved;
+    return {
+      row,
+      ...(moved !== undefined && Object.keys(moved).length > 0 ? { moved } : {}),
+      ...(routeRecipe?.easy === true ? { easy: true as const } : {}),
     };
   }
 
@@ -3062,10 +3098,23 @@ export function ScoreScreen(router: Router): HTMLElement {
             ...(rhythmRun ? { rhythmOnly: true } : {}),
             // What the run was and what it measured, by its own definitions,
             // with every channel it did not measure marked so (C1).
-            ...runHeader(score, sightReading ? { unseen: !sightReadRepeat } : {}, demonstrated),
+            ...runHeader(score, sightReading ? { unseen: !sightReadRepeat, recipe: phraseRecipe(item.id) } : {}, demonstrated),
             ...measures,
           }
         : null;
+
+    /**
+     * What a run is evidence of, and what it is not (C3's function; C4 item 0):
+     * computed here, where the played model is in hand, and kept on the row,
+     * because nothing later has the phrase to compute it from. The sheet's *Not
+     * judged* lines read the same results. None for an item that declares no
+     * skill.
+     */
+    const evidenceOf = (observation: RunResult): EvidenceResult[] | undefined =>
+      model && (item?.targetSkills?.length ?? 0) > 0
+        ? evidenceFor({ observation, played: model, targetSkills: item?.targetSkills ?? [], vocabulary: VOCABULARY_V0 })
+        : undefined;
+    const runEvidence = run ? evidenceOf(run) : undefined;
 
     // Written before the sheet is drawn where there is nothing to ask, and not
     // awaited: the numbers are already final, and a slow write should not
@@ -3073,7 +3122,11 @@ export function ScoreScreen(router: Router): HTMLElement {
     // rather than swallowed — practice history is the one thing here that
     // cannot be regenerated.
     function save(result: RunResult, then?: () => void): void {
-      void recordRun(result)
+      // The run as answered is another observation (a self-report): its
+      // evidence is its own.
+      const evidence = result === run ? runEvidence : evidenceOf(result);
+      if (phraseSeed !== undefined) seedsOnRecord.add(phraseSeed);
+      void recordRun(evidence === undefined ? result : { ...result, evidence })
         .then((row) => {
           // The heading follows the store (T37): a master-standard run reads
           // *Passed* until the row it was written into says what it came to,
@@ -3292,13 +3345,8 @@ export function ScoreScreen(router: Router): HTMLElement {
     // (C3 item 6): one line per reason, each from a refusal of the evidence
     // function over this run's own record, citing the fields it read. Where
     // nothing was heard the heading already says so, and nothing is added.
-    if (run && heard && model && (item?.targetSkills?.length ?? 0) > 0) {
-      const refusals = evidenceFor({
-        observation: run,
-        played: model,
-        targetSkills: item?.targetSkills ?? [],
-        vocabulary: VOCABULARY_V0,
-      }).filter(isRefusal);
+    if (run && heard && model && runEvidence) {
+      const refusals = runEvidence.filter(isRefusal);
       // A run of part of the piece says "in the bars you played", read off the
       // run's own range rather than the loop control, which is let go before a
       // looped run can end.
@@ -3345,7 +3393,7 @@ export function ScoreScreen(router: Router): HTMLElement {
                 ...(todaySlot === 'daily-read' ? sameRoute : tourRoute),
                 ...(blind ? { blind: true } : {}),
                 ...(performanceRun ? { performance: true } : {}),
-                seed: freshSeed(phraseSeed),
+                seed: freshSeed(new Set([...seedsOnRecord, ...(phraseSeed === undefined ? [] : [phraseSeed])])),
               });
             }, 'summary-new-phrase'),
           ]
@@ -4011,7 +4059,8 @@ export function ScoreScreen(router: Router): HTMLElement {
         bar.hidden = true;
         return;
       }
-      title.textContent = item.title;
+      // A reading row whose recipe moved the hands says the hands it plays (C4).
+      title.textContent = isSightReading(item) ? readingTitle(item.title, item.hands, routeRecipe) : item.title;
       // Unconditional, unlike the side panel below, which is a tablet's
       // second column: the rung decides what this run has to reach, and that
       // cannot depend on how wide the screen is.
@@ -4057,21 +4106,26 @@ export function ScoreScreen(router: Router): HTMLElement {
       // that the learner has not seen it before.
       let musicXml: string;
       if (sightReading) {
-        const phrase = generateSightReadingFor(item, router.route.seed);
+        // The item's stored runs: a run already on this phrase makes the next
+        // one a retry, not a first attempt (T37), and a phrase drawn here is
+        // never one of them (C4 item 2). Where the route names the seed (the
+        // daily read, Today's slot, *New phrase*) the phrase is drawn at once
+        // and the answer comes in while it is engraved; where it does not, the
+        // seed waits for the answer, which is one index walk.
+        const history = sessionsForItem(item.id, PHRASE_HISTORY).catch((): SessionRow[] => []);
+        const remember = (rows: readonly SessionRow[]): void => {
+          for (const row of rows) if (row.seed !== undefined) seedsOnRecord.add(row.seed);
+        };
+        const named = router.route.seed;
+        if (named === undefined) remember(await history);
+        const phrase = generateSightReadingFor(item, named ?? freshSeed(seedsOnRecord), routeRecipe);
         musicXml = phrase.musicXml;
         phraseSeed = phrase.seed;
         const seen = phrase.seed;
-        const readerId = item.id;
-        // A run already stored on this phrase makes the next one a retry, not
-        // a first attempt (T37). Asked now, while the score is being engraved,
-        // so the answer is in long before a run can finish.
-        void sessionsForItem(readerId, PHRASE_HISTORY)
-          .then((rows) => {
-            if (rows.some((row) => row.seed === seen)) phraseSeen = true;
-          })
-          .catch(() => {
-            // No history to read is a phrase nobody has recorded.
-          });
+        void history.then((rows) => {
+          remember(rows);
+          if (rows.some((row) => row.seed === seen)) phraseSeen = true;
+        });
       } else if (item.imported) {
         const row = await getImport(item.id);
         if (typeof row?.data !== 'string') throw new Error('the imported file is missing');

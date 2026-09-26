@@ -20,6 +20,7 @@ import {
 } from 'idb';
 import type { BarTally, HandsFilter, NotMeasured, RunMeasures } from '../engine/types';
 import type { TodaySlot } from '../router';
+import type { EvidenceResult } from '../evidence/evidence';
 
 export const DB_NAME = 'pianopath';
 /**
@@ -126,6 +127,40 @@ export interface RunHeader {
   unseen?: boolean;
   /** The piece was played to the learner part way through this run (`Hear it` over it, T33). */
   demonstrated?: boolean;
+  /**
+   * What a generated phrase was written from (C4): the catalog row, and the
+   * dimensions the reader moved away from the row's own recipe. Written on
+   * every sight-reading run — from the route where Today's reader chose it
+   * (`?recipe=`), the row's own recipe otherwise — so the reader can tell the
+   * learner's last recipe from their last row. Absent on anything else, and on
+   * sight-reads recorded before C4, which read as the row's own recipe.
+   */
+  recipe?: ReadingRecipe;
+}
+
+/**
+ * The generator parameters the reader can move (C4), one per dimension, in the
+ * spelling a catalog row's `drill.params` uses so the two merge as they are
+ * (`sightReadingOptionsFor`). `position` is the one the rows never write: the
+ * melody held inside one five-finger position whatever the level's range.
+ */
+export interface ReadingMoves {
+  hands?: 'right' | 'left' | 'both';
+  position?: boolean;
+  eighths?: boolean;
+  fifths?: number;
+  timeSig?: '4/4' | '6/8';
+  syncopation?: boolean;
+}
+
+/** A phrase's recipe: the row, what was moved, and whether it was the easy one on purpose. */
+export interface ReadingRecipe {
+  /** The catalog row (`drill.reading.…`) the phrase was generated from. */
+  row: string;
+  /** Only what differs from the row's own params; absent when nothing does. */
+  moved?: ReadingMoves;
+  /** One dimension below the learner's recipe, on purpose, for fluency (S13). */
+  easy?: true;
 }
 
 /**
@@ -135,6 +170,17 @@ export interface RunHeader {
 export interface RunObservation extends RunHeader, Partial<RunMeasures> {
   /** Per-bar tallies, where `steps` was compacted (`progressStore.compactObservation`). */
   bars?: BarTally[];
+  /**
+   * What this run is evidence of, and what it is not (C4 item 0): the evidence
+   * function's results for the skills the item declares, computed once by the
+   * Score screen when it records the run, because the played model it needs
+   * exists only there. A cache of a derived value, stamped with this row's
+   * `definitions`: a reader uses it only when that is the version in force,
+   * and never re-derives a row without it (`evidence/readingState.ts`).
+   * Refusals are kept beside the evidence, citing what they read. No
+   * observation field changes for it; compaction keeps it.
+   */
+  evidence?: EvidenceResult[];
 }
 
 export interface SessionRow extends RunObservation {

@@ -33,6 +33,8 @@
 import type { DrillKind } from '../engine/drills/types';
 import type { Refusal } from '../evidence/evidence';
 import type { Skill } from '../demands/vocabulary';
+import type { ReadingDimension, ReadingWhy } from '../curriculum/session';
+import type { ReadingRecipe } from '../data/db';
 
 /** One control, and what it says back. */
 export interface HelpControl {
@@ -492,6 +494,129 @@ export const ROW_TEXT = {
   /** C4: Blind and Perform are refused while a run is going. */
   pauseFirst: 'pause the run first',
 } as const;
+
+/**
+ * Why Today offers this sight-reading phrase, in one line (C4; `04` §2,
+ * design §11 item 4, backlog I1).
+ *
+ * The line says only what the stored evidence says — the last read's
+ * sight-reading measurement, which is right notes in time on every step — and
+ * what the phrase changes because of it. It never names a demand it cannot
+ * count (the evidence is per skill, so "you misread two skips" is not
+ * something it knows), and where no evidence chose the phrase it says the
+ * rung's words and nothing more. Printed in `04` §2.
+ *
+ * What the phrase changes comes first and the measurement after it: the
+ * session card cuts a reason to one line at the owner's width, and the half
+ * that has to survive is what this phrase is.
+ */
+export const READING_TEXT = {
+  /** No evidence chose it: the daily card's words, as they always were. */
+  rungDaily: 'One phrase you have never seen, once, slowly',
+  /** No evidence chose it: the session row's words, as they always were. */
+  rungSlot: 'Read something you have never seen, once, slowly',
+  /** Today's phrase is on the record, read. */
+  metRead: 'Read today — tomorrow’s phrase is new',
+  /** Today's phrase is on the record, heard or read before its first run. */
+  metHeard: 'Heard before it was read — tomorrow’s phrase is new',
+  /** The easy one, on purpose. */
+  easy: 'An easy one, for fluency',
+  /** The same recipe again. */
+  hold: 'Another like it',
+  /** Ready to move, and nothing the rung has taught to move to. */
+  stayTaught: 'The next step waits for a later lesson',
+  /** Failing, and nothing easier keeps what the rung asks for. */
+  stayEasier: 'Nothing easier fits this lesson',
+  /** The measurement's words. */
+  rightInTime: 'right and in time',
+} as const;
+
+const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/** When a read was, as a person says it the next morning. */
+function readDay(at: string, today: Date): string {
+  const then = new Date(at);
+  const startOf = (d: Date): number => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  const days = Math.round((startOf(today) - startOf(then)) / 86_400_000);
+  if (days <= 0) return 'today';
+  if (days === 1) return 'yesterday';
+  if (days < 7) return `on ${WEEKDAYS[then.getDay()] ?? 'an earlier day'}`;
+  return `on ${String(then.getDate())} ${MONTHS[then.getMonth()] ?? ''}`;
+}
+
+const KEY_NAMES: Readonly<Record<string, string>> = {
+  '0': 'C major',
+  '1': 'G major',
+  '-1': 'F major',
+  '2': 'D major',
+  '-2': 'B♭ major',
+  '3': 'A major',
+  '-3': 'E♭ major',
+  '4': 'E major',
+  '-4': 'A♭ major',
+};
+
+/** What a move makes the phrase, in a teacher's words. */
+export function readingChange(dimension: ReadingDimension, value: string, key = '0'): string {
+  const home = key === '0' || key === 'list' ? 'C position' : 'one hand position';
+  switch (dimension) {
+    case 'hands':
+      return value === 'both' ? 'with both hands' : value === 'left' ? 'in the left hand' : 'right hand only';
+    case 'range':
+      return value === 'position' ? `in ${home}` : `beyond ${home}`;
+    case 'rhythm':
+      return value === 'eighths' ? 'with eighth notes' : 'without eighth notes';
+    case 'key':
+      return `in ${KEY_NAMES[value] ?? 'another key'}`;
+    case 'metre':
+      return `in ${value}`;
+    case 'syncopation':
+      return value === 'on' ? 'with syncopation' : 'without syncopation';
+  }
+}
+
+/**
+ * The reason line for a reading offer. `today` is the morning the line is
+ * read, for "Yesterday"; the evidence carries its own date.
+ */
+export function readingReason(why: ReadingWhy, purpose: 'daily' | 'slot', today: Date): string {
+  const measured = (last: { at: string; right: number; n: number }): string =>
+    `${String(last.right)} of ${String(last.n)} ${READING_TEXT.rightInTime} ${readDay(last.at, today)}`;
+  switch (why.kind) {
+    case 'rung':
+      return purpose === 'daily' ? READING_TEXT.rungDaily : READING_TEXT.rungSlot;
+    case 'met':
+      return why.read ? READING_TEXT.metRead : READING_TEXT.metHeard;
+    case 'hold':
+      return `${READING_TEXT.hold} — ${measured(why.last)}`;
+    case 'forward':
+      return `Now ${readingChange(why.move.dimension, why.move.to, keyOf(why.move.recipe))} — ${measured(why.last)}`;
+    case 'back':
+      return `This one ${readingChange(why.move.dimension, why.move.to, keyOf(why.move.recipe))} — ${measured(why.last)}`;
+    case 'easy':
+      return `${READING_TEXT.easy}: ${readingChange(why.move.dimension, why.move.to, keyOf(why.move.recipe))}`;
+    case 'stay':
+      return `${why.because === 'nothing-taught' ? READING_TEXT.stayTaught : READING_TEXT.stayEasier} — ${measured(why.last)}`;
+  }
+}
+
+function keyOf(recipe: ReadingRecipe): string {
+  return recipe.moved?.fifths === undefined ? '0' : String(recipe.moved.fifths);
+}
+
+/**
+ * A reading row's title with the hands its recipe plays (C4). A row named
+ * for one hand ("…, level 2, right hand") whose recipe added the other must
+ * not say "right hand" over a two-hand phrase; a row named for neither says
+ * the hand where the recipe took one away. Every other title is the row's.
+ */
+export function readingTitle(title: string, ownHands: string, recipe: Pick<ReadingRecipe, 'moved'> | undefined): string {
+  const hands = recipe?.moved?.hands;
+  if (hands === undefined || hands === ownHands) return title;
+  const bare = title.replace(/, (right|left) hand$/, '');
+  return hands === 'both' ? bare : `${bare}, ${hands} hand`;
+}
 
 /**
  * Every drill kind, in the learner's words.

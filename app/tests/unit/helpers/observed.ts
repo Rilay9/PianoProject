@@ -22,6 +22,11 @@ export interface RunPlan {
   offsetMs?: (step: number) => number;
   /** Wait: steps where a wrong key (a semitone up) is struck before the right ones. */
   wrongFirst?: readonly number[];
+  /**
+   * Keep tempo: steps where the white key below is struck instead of the
+   * written one, in time (C4: a misread note, as a reader plays it).
+   */
+  wrongInstead?: readonly number[];
   /** Nothing reaches the engine: the run nothing heard. */
   silent?: boolean;
   loop?: { fromStep: number; toStep: number };
@@ -31,6 +36,12 @@ export interface RunPlan {
   at?: string;
   itemId?: string;
   seed?: number;
+}
+
+/** The white key below a note (a black key's neighbour below): a step misread, not a random key. */
+function whiteKeyBelow(midi: number): number {
+  const pitchClass = ((midi % 12) + 12) % 12;
+  return midi - (pitchClass === 0 || pitchClass === 5 || [1, 3, 6, 8, 10].includes(pitchClass) ? 1 : 2);
 }
 
 function until(h: Harness, ms: number): void {
@@ -77,9 +88,10 @@ export function play(data: ScoreModelData, plan: RunPlan = {}): { score: Session
     if (!step || step.isEmpty || plan.silent === true || plan.skip?.includes(index)) continue;
     const at = step.tMs - origin + (plan.offsetMs?.(index) ?? 0);
     until(h, Math.max(h.clock.now(), at));
-    for (const midi of step.expected) h.play(midi);
+    const keys = plan.wrongInstead?.includes(index) ? step.expected.map(whiteKeyBelow) : step.expected;
+    for (const midi of keys) h.play(midi);
     until(h, at + 60);
-    for (const midi of step.expected) h.release(midi);
+    for (const midi of keys) h.release(midi);
   }
   const last = steps[lastStep];
   until(h, (last ? last.tMs - origin + last.durMs : 0) + 4 * BEAT_MS);

@@ -4625,6 +4625,14 @@ input[type='checkbox'] {
   text-align: center;
 }
 
+/* Today's sight-read says why this phrase in one sentence (C4), and it is
+   read whole: the card's title is one line and it has no Swap, so a second
+   line of reason keeps the row inside R2's 96 px. Every other row's reason is
+   still one line, cut. */
+.list-row__sub.today-reason {
+  white-space: normal;
+}
+
 /* The one filled box, above the card rather than under it. */
 .today-start-row {
   margin-bottom: 8px;

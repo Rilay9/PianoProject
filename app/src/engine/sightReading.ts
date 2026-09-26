@@ -64,6 +64,18 @@ export interface SightReadingOptions {
   syncopation?: boolean;
   triplets?: boolean;
   accidentals?: boolean;
+  /**
+   * The melody inside one five-finger position (C4): the five notes from the
+   * key's tonic up, from middle C for the right hand and from the C below it
+   * for a left hand read alone, whatever range the level's table gives.
+   *
+   * The one generator parameter the reader moves that no catalog row writes:
+   * a level's range is bundled with its rhythms and its leaps, so without it
+   * "the same phrase, but inside the hand" could only be had by changing the
+   * level, which changes several things at once. Nothing else about the level
+   * changes; the left hand under a melody keeps its own range.
+   */
+  position?: boolean;
 }
 
 export interface SightReadingResult {
@@ -769,6 +781,23 @@ function chooseOne<T>(rng: () => number, value: T | readonly T[] | undefined): T
   return list.length > 0 ? pick(rng, list) : undefined;
 }
 
+/**
+ * The widest key a level writes (its table's `maxFifths`): a key asked for
+ * beyond it is clamped to it. Read by the reader (C4), so a key it moves to is
+ * one the level will actually write.
+ */
+export function maxFifthsFor(level: number): number {
+  const at = (Math.min(7, Math.max(1, Math.round(level))) || 1) as SightReadingLevel;
+  return LEVELS[at].maxFifths;
+}
+
+/** One five-finger position: the five notes from the key's tonic, at or above `from` (C4). */
+function handPosition(fifths: number, from: number): { low: number; high: number } {
+  const tonic = tonicPitchClass(fifths);
+  const low = from + ((tonic - (from % 12) + 12) % 12);
+  return { low, high: low + 7 };
+}
+
 /** The level's table, widened by what the options promise. */
 function specFor(level: SightReadingLevel, options: SightReadingOptions): LevelSpec {
   const base = LEVELS[level];
@@ -895,9 +924,12 @@ export function generateSightReading(options: SightReadingOptions): SightReading
   const choose = makeRng((seed ^ CHOICE_SALT) >>> 0);
   const wantedFifths = chooseOne(choose, options.fifths) ?? 0;
   const timeSig = chooseOne(choose, options.timeSig) ?? { beats: 4, beatType: 4 };
-  const spec = specFor(level, options);
+  const table = specFor(level, options);
 
-  const fifths = Math.max(-spec.maxFifths, Math.min(spec.maxFifths, wantedFifths));
+  const fifths = Math.max(-table.maxFifths, Math.min(table.maxFifths, wantedFifths));
+  // Held inside one hand position where the options ask (C4): the right
+  // hand's range only; a left hand read alone gets its own position below.
+  const spec = options.position === true ? { ...table, rhKey: handPosition(fifths, 60) } : table;
   const bars = Math.max(1, Math.min(32, options.bars ?? 4));
   const bpm = options.bpm ?? 72;
   // Divisions are per quarter note, so 6/8 is six eighths = three quarters.
@@ -912,7 +944,9 @@ export function generateSightReading(options: SightReadingOptions): SightReading
   // per key — and it costs no new music, only where the tune is put.
   const leftOnlyMelody = options.hands === 'L' && spec.leftHand === 'none';
   const empty = (): WriterNote[][] => Array.from({ length: bars }, () => []);
-  const melodySpec = leftOnlyMelody ? { ...spec, rhKey: spec.lhKey } : spec;
+  const melodySpec = leftOnlyMelody
+    ? { ...spec, rhKey: options.position === true ? handPosition(fifths, 48) : spec.lhKey }
+    : spec;
   const melodyScale = scalePitches(fifths, melodySpec.rhKey.low, melodySpec.rhKey.high);
 
   let rightBars: WriterNote[][] = empty();
@@ -1088,6 +1122,8 @@ function readTimeSig(value: unknown): TimeSig | undefined {
  * - `timeSig`: `"6/8"`, or a list the seed chooses from.
  * - `skips`, `eighths`, `syncopation`, `triplets`, `accidentals`: `true` to
  *   promise the feature ({@link PROMISES}).
+ * - `position`: `true` to hold the melody inside one hand position. No row
+ *   writes it; the reader's recipes do (C4).
  */
 export function sightReadingOptionsFor(
   params: Readonly<Record<string, unknown>>,
@@ -1115,6 +1151,7 @@ export function sightReadingOptionsFor(
     ...(timeSig === undefined || (Array.isArray(timeSig) && timeSig.length === 0) ? {} : { timeSig }),
     ...(typeof params.bpm === 'number' ? { bpm: params.bpm } : {}),
     ...promises,
+    ...(params.position === true ? { position: true } : {}),
     ...(seed === undefined ? {} : { seed }),
   };
 }

@@ -239,3 +239,97 @@ test.describe('Today obeys 04 §0', () => {
     await expect(page.locator('#today-practice')).toHaveCount(0);
   });
 });
+
+/**
+ * The daily read says why this phrase, in one line drawn from the reads behind
+ * it (C4; `04` §2, design §11 item 4, backlog I1).
+ *
+ * A constructed learner, restored the way a backup is: placed on 2.2, five
+ * first readings of 2.2's own row stored with the evidence the Score screen
+ * keeps (16 of 16, 16, 15, then 11 and 11 of 16 right and in time). The daily
+ * card used to say *One phrase you have never seen, once, slowly* whatever the
+ * record held, and open the stage's row. Read here on the glass at the owner's
+ * width: the sentence, whole; and ▶ opening that phrase — the rung's row one
+ * dimension easier, on the day's seed.
+ */
+test.describe('the daily read says why this phrase (C4)', () => {
+  test.use({ viewport: { width: 342, height: 740 } });
+
+  test('two misread days on 2.2: the phrase steps back into C position, and the card says why', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('#today-daily [data-daily]')).toBeVisible({ timeout: 30_000 });
+    await page.evaluate(async () => {
+      const ROW = 'drill.reading.sight-reading-2-right';
+      const noon = (daysAgo: number): string => {
+        const at = new Date();
+        at.setHours(12, 0, 0, 0);
+        at.setDate(at.getDate() - daysAgo);
+        return at.toISOString();
+      };
+      const read = (daysAgo: number, right: number): Record<string, unknown> => ({
+        itemId: ROW,
+        lessonId: '2.2',
+        seed: 90_000 + daysAgo,
+        mode: 'tempo',
+        tempoPct: 70,
+        tempoMeasured: true,
+        accuracy: right / 16,
+        accuracyEstimated: false,
+        wrongNotes: 16 - right,
+        missed: 16 - right,
+        durationMs: 60_000,
+        at: noon(daysAgo),
+        definitions: 1,
+        unseen: true,
+        demonstrated: false,
+        recipe: { row: ROW },
+        opened: { tab: 'today', rung: '2.2', slot: 'daily-read' },
+        hands: { played: 'both', appPlayed: 'none' },
+        keys: { view: 'strip', guide: 'off', fingers: false, names: false },
+        evidence: [
+          {
+            kind: 'measured',
+            skill: 'sight-reading',
+            observationId: null,
+            standard: 'full',
+            n: 16,
+            right,
+            at: noon(daysAgo),
+            context: {
+              itemId: ROW,
+              seed: 90_000 + daysAgo,
+              firstContact: true,
+              met: ['keep-tempo', 'unseen', 'guide-off'],
+              unattributed: 0,
+              estimated: false,
+            },
+          },
+        ],
+      });
+      const hooks = (window as unknown as { __pianopath?: { importAll: (raw: unknown) => Promise<unknown> } }).__pianopath;
+      if (!hooks) throw new Error('storage hooks not exposed');
+      await hooks.importAll({
+        app: 'pianopath',
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        stores: {
+          plan: [{ id: 'current', stage: 2, unitId: '2.2', trackOrder: ['core'], placement: { unitId: '2.2', at: noon(6) } }],
+          sessions: [read(5, 16), read(4, 16), read(3, 15), read(2, 11), read(1, 11)],
+        },
+      });
+    });
+    await page.reload();
+    const line = page.locator('#today-daily .list-row__sub');
+    await expect(line).toHaveText('This one in C position — 11 of 16 right and in time yesterday', { timeout: 30_000 });
+    const cut = await line.evaluate((el) => el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1);
+    expect(cut, 'the reason is cut off on the glass').toBe(false);
+
+    await page.locator('#today-daily button[aria-label="Open today\'s sight-read"]').click();
+    await expect(page).toHaveURL(/#\/score\/drill\.reading\.sight-reading-2-right\?/, { timeout: 30_000 });
+    const hash = decodeURIComponent(new URL(page.url()).hash);
+    expect(hash).toContain('recipe=position:1');
+    expect(hash).toContain('slot=daily-read');
+    expect(hash).toContain('rung=2.2');
+    await page.waitForSelector('.score-view[data-settled]', { timeout: 60_000 });
+  });
+});

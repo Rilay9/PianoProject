@@ -572,6 +572,44 @@ bass, which is how level 6 passed theory.9's "walking bass", a sentence about le
 here). Two limits the model sets on every detector: it carries no clef (staff 1 is read as
 treble, staff 2 as bass, which every generated phrase is) and only the first key signature.
 
+**What comes next is chosen from the reads (2026-09-26, C4).** The row a learner reads used to
+be a constant per stage. Today's daily read and the session's reading slot now come from one
+function, `readingOffer` (`curriculum/session.ts`; the rule and its reason lines are `04` §2):
+the rung's own row, as it stands for a learner who has not read, moved one dimension at a time
+by sight-reading's evidence stored on the learner's rows (`01` §4.5), toward what the rung has
+taught (`taughtAt`). A **recipe** is a row's own params with at most a few of them moved,
+spelled as the params are (`ReadingMoves`), so `readingOptions(item, recipe, seed)` is the row's
+`sightReadingOptionsFor` with the moves laid over it — the Score screen and the tests write a
+phrase through that one function. The six dimensions and where each moves:
+
+| dimension | values, easiest first | moves on | fixed where |
+|---|---|---|---|
+| hands | right, left (level 1); right, both (level 2+) | `hands` | the row promises the bass clef, two hands, or a left-hand pattern |
+| range | C position, the level's octave (levels 2-3) | `position` | level 1 (already C position), level 4+ (the ledger lines are the point) |
+| rhythm | quarters, eighths (level 1) | `eighths` | level 2+ (the level's own), or promised |
+| key | C, G, F, D, B♭, … up to the level's widest (`maxFifthsFor`) | `fifths` | a key list, or a promised accidental |
+| metre | 4/4, 6/8 | `timeSig` | a list, promised syncopation, triplets or accidental, level 5+ |
+| syncopation | off, on | `syncopation` | promised, or level 5+ (designed there) |
+
+**`position`** is the one generator parameter no catalog row writes: the melody held inside the
+five notes from the key's tonic, from middle C (or from the C below for a left hand read alone),
+whatever the level's range; nothing else about the level changes. Without it "the same phrase,
+inside the hand" could only be had by changing the level, which moves several dimensions at
+once. **Measured, not assumed** (`sightReadingFromReadingState.test.ts`, twelve seeds each way,
+read with the detectors): every move keeps what its row writes in every phrase unless it is the
+move's own demand, and adds nothing the row never writes but the move's own. That is how two
+conflicts with the promises were found and the dimension fixed rather than the promise broken:
+level 4's promised accidental was missing from one of twelve phrases in G and one of twelve in
+6/8. What a move brings is listed with it (adding the left hand at level 2 also brings the bass
+staff and the leaps its roots make; 6/8 brings dotted quarters and eighths; the designed
+syncopation below level 5 brings eighths), and the taught-at gate checks all of it.
+
+**Unseen, and the seed.** The daily read keeps the day's seed (`dailySeed`), which ticks the day;
+the slot draws its own for the day (`dailySeed(day + '#reading')` stepped by Shuffle), and every
+phrase the Score screen draws for itself — a fresh open, *New phrase* — is a seed no stored run of
+the row carries: the screen reads the row's stored runs before it draws one. *New phrase* keeps
+the recipe (`?recipe=`); the run keeps it on the row (`SessionRow.recipe`).
+
 **Tempo mode is applied after the learner's default, not before it** (fixed 2026-09-22).
 `ScoreScreen` set `mode = 'tempo'` where the score finished loading and then read
 `settings.defaultModeWithInput` / `defaultModeWithoutInput` three hundred lines later, which

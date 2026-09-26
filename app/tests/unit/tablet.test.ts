@@ -5,12 +5,15 @@
  * phone in landscape is 915 × 412 and passes a width-only test while having
  * 412 px of height to put a side panel in.
  */
+import { readdirSync, readFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   TABLET_BARS_PER_WINDOW,
   TABLET_MIN_PX,
   barsPerWindowFor,
   isTablet,
+  sidePanelProse,
 } from '../../src/ui/tablet';
 
 describe('isTablet', () => {
@@ -49,5 +52,41 @@ describe('barsPerWindowFor', () => {
     // opinion about what he wants.
     expect(barsPerWindowFor(6, { tablet: true, storedIsDefault: false })).toBe(6);
     expect(barsPerWindowFor(1, { tablet: true, storedIsDefault: false })).toBe(1);
+  });
+});
+
+/**
+ * The lesson text beside a piece nothing opened from a rung (C4 item 6, U47).
+ *
+ * Since C1 a run opened from the Library or a door is held to the Settings
+ * pair, and the side panel still drew the first rung listing the piece, whole
+ * — its *How you'll know you've got it* paragraph quoting that rung's numbers
+ * beside a run judged by other ones. The rung's teaching stays; its pass line
+ * goes. Opened from the rung (`?from=`, or the rung a Today card named), the
+ * run is that rung's and the text is whole.
+ */
+describe('the side panel says nothing about a pass the run is not held to', () => {
+  const LESSONS = resolve('..', 'content', 'lessons');
+  const lessons = readdirSync(LESSONS)
+    .filter((name) => name.endsWith('.md'))
+    .map((name) => ({ name, text: readFileSync(join(LESSONS, name), 'utf8').replace(/\r\n/g, '\n') }));
+
+  it('keeps the whole text for a run a rung opened', () => {
+    const text = lessons.find((one) => one.name === '1.5.md')?.text ?? '';
+    expect(sidePanelProse(text, true)).toBe(text);
+  });
+
+  it('drops the pass paragraph, and only it, for a run no rung opened — in every lesson', () => {
+    expect(lessons.length, 'no lessons were read').toBeGreaterThan(80);
+    for (const { name, text } of lessons) {
+      const shown = sidePanelProse(text, false);
+      expect(shown, `${name} still says how you know you have got it`).not.toMatch(/how you'll know you've got it/i);
+      // The rest is there: every other paragraph, word for word.
+      const paragraphs = text.split(/\n\s*\n/).filter((p) => !/^\*\*How you'll know you've got it\.\*\*/.test(p.trim()));
+      for (const paragraph of paragraphs) {
+        if (paragraph.trim() === '') continue;
+        expect(shown, `${name} lost a paragraph that is not the pass line`).toContain(paragraph.trim());
+      }
+    }
   });
 });

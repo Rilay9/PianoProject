@@ -20,6 +20,7 @@ import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types
 import type { ProgressRow, SessionRow } from '../../src/data/db';
 import type { RunResult } from '../../src/data/progressStore';
 import { parseHash, type Router } from '../../src/router';
+import { generateSightReading, sightReadingOptionsFor } from '../../src/engine/sightReading';
 
 const SONG_ID = 'song.folk.hot-cross-buns';
 const READ_ID = 'drill.reading.sight-reading-test';
@@ -701,6 +702,81 @@ describe('7 and 8: a sight-read is the phrase its row asks for, recorded once', 
     finish(run({}));
     await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalled());
     expect(lastRecorded().seed).toBe(778);
+  });
+});
+
+// Added (C4 items 1 and 2): Today's reader names the phrase's recipe in the
+// route (`?recipe=`: what it moved from the row, and whether it is the easy one
+// on purpose). The screen writes that phrase and keeps the recipe on the run,
+// which is how the reader knows the learner's last recipe tomorrow; and every
+// phrase it draws for itself — a fresh open, *New phrase* — is one no stored
+// run carries.
+describe('C4: the recipe reaches the phrase and the record; a drawn phrase is one nobody has played', () => {
+  const PARAMS = { level: 2, bars: 2, hands: 'right', eighths: true, skips: true };
+  /** `Math.random` answering these seeds, in order, then anything. */
+  function randomSeeds(...seeds: number[]): void {
+    const queue = [...seeds];
+    vi.spyOn(Math, 'random').mockImplementation(() => {
+      const next = queue.shift();
+      return next === undefined ? 0.123456 : (next + 0.5) / 0xffffffff;
+    });
+  }
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('the recipe in the route writes its phrase, and the run keeps the recipe', async () => {
+    findItemSpy.mockResolvedValue(readerItem(PARAMS));
+    await open(`#/score/${READ_ID}?seed=4242&recipe=${encodeURIComponent('position:1,easy:1')}`);
+    const xml = loadedXml.find((text) => text.includes('Sight-reading level')) ?? '';
+    const own = generateSightReading(sightReadingOptionsFor(PARAMS, 4242)).musicXml;
+    const moved = generateSightReading(sightReadingOptionsFor({ ...PARAMS, position: true }, 4242)).musicXml;
+    expect(xml, 'the screen wrote the row’s own phrase over the recipe the route named').not.toBe(own);
+    expect(xml).toBe(moved);
+    finish(run({}));
+    await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalled());
+    expect(lastRecorded().recipe, 'the run kept no recipe').toEqual({ row: READ_ID, moved: { position: true }, easy: true });
+  });
+
+  it('a sight-read opened with no recipe keeps the row’s own', async () => {
+    findItemSpy.mockResolvedValue(readerItem(PARAMS));
+    await open(`#/score/${READ_ID}?seed=4242`);
+    finish(run({}));
+    await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalled());
+    expect(lastRecorded().recipe).toEqual({ row: READ_ID });
+  });
+
+  it('New phrase draws a seed no stored run carries, and keeps the recipe', async () => {
+    findItemSpy.mockResolvedValue(readerItem(PARAMS));
+    sessionsSpy.mockResolvedValue([
+      { itemId: READ_ID, seed: 111 } as unknown as SessionRow,
+      { itemId: READ_ID, seed: 222 } as unknown as SessionRow,
+    ]);
+    await open(`#/score/${READ_ID}?seed=4242&rung=2.2&slot=sightreading&recipe=${encodeURIComponent('hands:both')}`);
+    await vi.waitFor(() => expect(sessionsSpy).toHaveBeenCalled());
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    finish(run({}));
+    randomSeeds(111, 222, 333);
+    click('summary-new-phrase');
+    const navigate = (lastRouter as unknown as { navigateScore: ReturnType<typeof vi.fn> }).navigateScore;
+    const [, options] = navigate.mock.calls[0] as [string, { seed?: number; recipe?: unknown }];
+    expect([111, 222], 'a new phrase was one already on the record').not.toContain(options.seed);
+    expect(options.seed).toBe(333);
+    expect(options.recipe).toEqual({ moved: { hands: 'both' } });
+  });
+
+  it('a fresh open draws a seed no stored run carries, so its first run is a first reading', async () => {
+    findItemSpy.mockResolvedValue(readerItem(PARAMS));
+    sessionsSpy.mockResolvedValue([{ itemId: READ_ID, seed: 111 } as unknown as SessionRow]);
+    randomSeeds(111, 333);
+    await open(`#/score/${READ_ID}`);
+    await vi.waitFor(() => expect(sessionsSpy).toHaveBeenCalled());
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    finish(run({}));
+    await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalled());
+    expect(lastRecorded().seed, 'a fresh open drew a phrase already on the record').not.toBe(111);
+    expect(lastRecorded().unseen).toBe(true);
   });
 });
 

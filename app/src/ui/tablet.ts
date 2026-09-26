@@ -42,3 +42,23 @@ export function barsPerWindowFor(
   if (!options.tablet) return stored;
   return options.storedIsDefault ? TABLET_BARS_PER_WINDOW : stored;
 }
+
+/**
+ * The lesson text the side panel shows beside a piece (C4 item 6, U47).
+ *
+ * The panel draws the rung that judges the run (`?from=`, or the rung a Today
+ * card named), whole. A piece nothing opened from a rung is held to the
+ * Settings pair (C1), and its panel draws the first rung listing it — which
+ * is that rung's teaching, and was also its *How you'll know you've got it*
+ * paragraph, quoting a pass the run is not held to. That paragraph is left out
+ * there, and only it: every lesson has exactly one, and it is where a rung
+ * states its numbers (`lessonShape.test.ts` holds every lesson to having it).
+ */
+export function sidePanelProse(markdown: string, judgedByTheRung: boolean): string {
+  if (judgedByTheRung) return markdown;
+  const newline = markdown.includes('\r\n') ? '\r\n' : '\n';
+  return markdown
+    .split(/\r?\n\s*\r?\n/)
+    .filter((paragraph) => !/^\*\*How you'll know you've got it\.\*\*/.test(paragraph.trim()))
+    .join(newline + newline);
+}

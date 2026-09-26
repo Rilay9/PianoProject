@@ -12,6 +12,16 @@ import type { Mode } from './engine/types';
 import type { HandsFocus } from './score/WindowRenderer';
 import { LAB_BEDS, LAB_LOCKS, type LabBed, type LabLock } from './engine/sightReading';
 import type { SlotKind } from './curriculum/session';
+import type { ReadingMoves } from './data/db';
+
+/**
+ * What Today's reader moved from a reading row's own recipe, and whether the
+ * phrase is the easy one on purpose (C4): `?recipe=hands:both,fifths:1,easy:1`.
+ */
+export interface RouteRecipe {
+  moved?: ReadingMoves;
+  easy?: true;
+}
 
 export const TAB_IDS = ['today', 'plan', 'library', 'progress', 'settings'] as const;
 export type TabId = (typeof TAB_IDS)[number];
@@ -239,6 +249,14 @@ export interface Route {
   /** `#/score/<id>?slot=new` — the Today slot that opened this run (L50), for the record. */
   scoreSlot?: TodaySlot;
   /**
+   * `#/score/<id>?recipe=hands:both,easy:1` — the phrase's recipe, as Today's
+   * reader chose it (C4): what it moved from the row's own params, and whether
+   * it is the easy one on purpose. Only a generated item reads it. It rides the
+   * route for the seed's reasons — a reload, *New phrase* and Blind write the
+   * same kind of phrase — and the run keeps it as the recipe it was.
+   */
+  scoreRecipe?: RouteRecipe;
+  /**
    * `#/score/<id>?seed=1234` — generate *this* exercise rather than a new one.
    *
    * Only a generated item reads it, and only one screen writes it: Today's
@@ -332,6 +350,47 @@ function parseLoopParam(value: string | null | undefined): { from: number; to: n
   return to < from ? undefined : { from, to };
 }
 
+/**
+ * `?recipe=` — `key:value` pairs the reader writes (C4), each checked on its
+ * own and dropped when it is not one the reader writes, the way a bad `rung`
+ * or `tour` is: a hand, a hand position, eighths, a key within four
+ * accidentals, four-four or six-eight, syncopation, and the easy flag.
+ */
+function parseRecipeParam(value: string | null | undefined): RouteRecipe | undefined {
+  if (value === null || value === undefined || value === '') return undefined;
+  const moved: ReadingMoves = {};
+  let easy = false;
+  for (const pair of value.split(',')) {
+    const [key = '', raw = ''] = pair.split(':');
+    const flag = raw === '1' ? true : raw === '0' ? false : undefined;
+    if (key === 'hands' && (raw === 'right' || raw === 'left' || raw === 'both')) moved.hands = raw;
+    else if (key === 'position' && flag !== undefined) moved.position = flag;
+    else if (key === 'eighths' && flag !== undefined) moved.eighths = flag;
+    else if (key === 'fifths' && /^-?[0-4]$/.test(raw)) moved.fifths = Number(raw);
+    else if (key === 'timeSig' && (raw === '4/4' || raw === '6/8')) moved.timeSig = raw;
+    else if (key === 'syncopation' && flag !== undefined) moved.syncopation = flag;
+    else if (key === 'easy' && raw === '1') easy = true;
+  }
+  const hasMoves = Object.keys(moved).length > 0;
+  if (!hasMoves && !easy) return undefined;
+  return { ...(hasMoves ? { moved } : {}), ...(easy ? { easy: true as const } : {}) };
+}
+
+/** The recipe as the route writes it, in one key order so one recipe is one hash. */
+function recipeParam(recipe: RouteRecipe): string {
+  const moved = recipe.moved ?? {};
+  const bit = (value: boolean): string => (value ? '1' : '0');
+  return [
+    ...(moved.hands === undefined ? [] : [`hands:${moved.hands}`]),
+    ...(moved.position === undefined ? [] : [`position:${bit(moved.position)}`]),
+    ...(moved.eighths === undefined ? [] : [`eighths:${bit(moved.eighths)}`]),
+    ...(moved.fifths === undefined ? [] : [`fifths:${String(moved.fifths)}`]),
+    ...(moved.timeSig === undefined ? [] : [`timeSig:${moved.timeSig}`]),
+    ...(moved.syncopation === undefined ? [] : [`syncopation:${bit(moved.syncopation)}`]),
+    ...(recipe.easy ? ['easy:1'] : []),
+  ].join(',');
+}
+
 /** `?seed=` — a 32-bit unsigned integer, and nothing else. */
 function parseSeedParam(value: string | null | undefined): number | undefined {
   if (value === null || value === undefined || !/^\d{1,10}$/.test(value)) return undefined;
@@ -395,6 +454,7 @@ export function parseHash(hash: string): Route {
     wantedRung !== null && wantedRung !== undefined && looksLikeLessonId(wantedRung) ? wantedRung : undefined;
   const wantedSlot = params?.get('slot');
   const scoreSlot = isTodaySlot(wantedSlot) ? wantedSlot : undefined;
+  const scoreRecipe = parseRecipeParam(params?.get('recipe'));
   if (query) {
     const value = new URLSearchParams(query).get('for');
     // A lesson id, or nothing. An unrecognised one is dropped rather than
@@ -426,6 +486,7 @@ export function parseHash(hash: string): Route {
       ...(fromLesson === undefined ? {} : { scoreFrom: fromLesson }),
       ...(scoreRung === undefined ? {} : { scoreRung }),
       ...(scoreSlot === undefined ? {} : { scoreSlot }),
+      ...(scoreRecipe === undefined ? {} : { scoreRecipe }),
       ...(seed === undefined ? {} : { seed }),
     };
   }
@@ -562,6 +623,7 @@ export function routeToHash(route: Route): string {
       ...(route.scoreFrom === undefined ? [] : [`from=${encodeURIComponent(route.scoreFrom)}`]),
       ...(route.scoreRung === undefined ? [] : [`rung=${encodeURIComponent(route.scoreRung)}`]),
       ...(route.scoreSlot === undefined ? [] : [`slot=${route.scoreSlot}`]),
+      ...(route.scoreRecipe === undefined ? [] : [`recipe=${encodeURIComponent(recipeParam(route.scoreRecipe))}`]),
       ...(route.seed === undefined ? [] : [`seed=${String(route.seed >>> 0)}`]),
     ];
     const base = `#/score/${encodeURIComponent(route.score)}`;
@@ -655,6 +717,8 @@ export class Router {
       slot?: TodaySlot;
       /** Generate this exercise rather than a new one (Today's daily read). */
       seed?: number;
+      /** The phrase's recipe, as Today's reader chose it (C4). */
+      recipe?: RouteRecipe;
     } = {},
   ): void {
     const route: Route = {
@@ -670,6 +734,7 @@ export class Router {
       ...(options.from === undefined ? {} : { scoreFrom: options.from }),
       ...(options.rung === undefined ? {} : { scoreRung: options.rung }),
       ...(options.slot === undefined ? {} : { scoreSlot: options.slot }),
+      ...(options.recipe === undefined || recipeParam(options.recipe) === '' ? {} : { scoreRecipe: options.recipe }),
       ...(options.seed === undefined ? {} : { seed: options.seed }),
     };
     this.win.location.hash = routeToHash(route);
@@ -814,6 +879,9 @@ export class Router {
       // run this is, for the reason `from` is (L50).
       route.scoreRung === this.current.scoreRung &&
       route.scoreSlot === this.current.scoreSlot &&
+      // By value, as the loop is: the same recipe is the same phrase (C4).
+      (route.scoreRecipe === undefined ? '' : recipeParam(route.scoreRecipe)) ===
+        (this.current.scoreRecipe === undefined ? '' : recipeParam(this.current.scoreRecipe)) &&
       route.seed === this.current.seed &&
       route.lab === this.current.lab &&
       route.labPreset === this.current.labPreset &&

@@ -306,6 +306,27 @@ field the run carries (`RunObservation` in `data/db.ts`):
 - **The backup carries it as it is.** Rows are plain JSON — strings, numbers, arrays — so an
   export writes them whole and `importAll` restores them whole, `not measured` included
   (`backup.test.ts`); `BACKUP_VERSION` did not change, because the file's shape did not.
+- **The evidence is stored with the row, stamped (C4, 2026-09-26).** `SessionRow.evidence` is
+  the evidence function's results for the skills the item declares (`EvidenceResult[]`:
+  evidence, and refusals citing the fields they read), computed once by the Score screen when
+  it records the run — the one place the played model exists, since a generated phrase is not
+  kept — and read back by `evidence/readingState.ts`. It is a cache of a derived value
+  (design §5), not a stored state: the ladder is derived from it every time. **The stamp is the
+  row's own `definitions`.** A row whose `definitions` is not `OBSERVATION_DEFINITIONS`, or
+  which carries no `evidence` (written before C4, or by a writer with no model), contributes
+  nothing to the reading state; it is **not re-derived**, because re-deriving needs the played
+  model, which the row does not carry (the phrase could be regenerated from `recipe` and `seed`;
+  nothing does that yet). So a change to the vocabulary or to the evidence function that
+  changes results must move `OBSERVATION_DEFINITIONS` too, or stored evidence is read as current
+  when it is not — the stamp covers the observation's rules, and the evidence's only by that
+  rule (a follow-up: an evidence version of its own). Compaction keeps the field, so evidence
+  outlives the per-step detail it was computed from. No observation field C1 defined changed.
+- **The recipe (C4).** On a sight-reading run, `SessionRow.recipe` is what the phrase was
+  written from: the catalog row, the dimensions Today's reader moved (`ReadingMoves`, in the
+  row's own `drill.params` spelling — hands, `position`, eighths, fifths, timeSig,
+  syncopation), and `easy: true` for a read one dimension below on purpose. Written on every
+  sight-read (the row's own recipe where nothing moved it); a row from before C4 reads as the
+  row's own recipe. The reader takes the learner's last recipe from it (`04` §2).
 
 **The folder three, and why the split.** Every score in a folder used to be an element of one
 `folderLibraries` record, and IndexedDB can read or write only whole records — so every

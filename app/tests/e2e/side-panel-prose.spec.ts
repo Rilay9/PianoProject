@@ -145,6 +145,39 @@ test.describe('on a tablet, where the panel is drawn', () => {
     );
   });
 
+  /**
+   * Added (C4 item 6, U47): a piece nothing opened from a rung is held to the
+   * Settings pair (C1), so the panel beside it says nothing about the rung's
+   * pass — its *How you'll know you've got it* paragraph is left out and the
+   * rest of the rung's teaching stays. Opened from the rung, the run is that
+   * rung's and the text is whole.
+   */
+  test('a piece opened from nowhere shows the rung’s teaching without its pass line', async ({ page }) => {
+    await openPiece(page);
+    const body = page.locator('#score-side-body');
+    await expect(body).not.toBeEmpty({ timeout: 60_000 });
+    await expect(body, 'the panel quotes a pass the run is not held to').not.toContainText("How you'll know you've got it");
+    // Opened from a rung listing it, the same panel is that rung's, whole.
+    const lesson = await page.evaluate(async (piece) => {
+      const response = await fetch('content/curriculum.json');
+      const curriculum = (await response.json()) as {
+        stages: { units: { lessons: { id: string; songOptions?: string[] }[] }[] }[];
+      };
+      for (const stage of curriculum.stages) {
+        for (const unit of stage.units) {
+          for (const one of unit.lessons) if ((one.songOptions ?? []).includes(piece)) return one.id;
+        }
+      }
+      return '';
+    }, PIECE);
+    expect(lesson, `no rung lists ${PIECE}`).not.toBe('');
+    await page.goto(`/#/score/${PIECE}?from=${lesson}`);
+    await page.waitForFunction(() => document.querySelector('#score-stage .is-front svg') !== null, undefined, {
+      timeout: 60_000,
+    });
+    await expect(page.locator('#score-side-body')).toContainText("How you'll know you've got it", { timeout: 60_000 });
+  });
+
   test('one lesson from every track fits the panel', async ({ page }) => {
     expect(PER_TRACK.length, 'no track offered a playable piece').toBeGreaterThan(1);
     const bad: string[] = [];

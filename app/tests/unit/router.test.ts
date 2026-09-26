@@ -337,6 +337,43 @@ describe('score routes', () => {
   });
 
   /**
+   * `?recipe=` — what Today's reader moved from the row's own recipe, and
+   * whether the phrase is the easy one on purpose (C4). It rides the route
+   * like the seed, so a reload, *New phrase* and Blind write the same kind of
+   * phrase, and the run can keep the recipe it was.
+   */
+  it('carries the reader’s recipe, and reads it back', () => {
+    const { win } = fakeWindow('#/today');
+    const router = new Router(win as unknown as Window);
+    router.navigateScore('drill.reading.sight-reading-2-right', {
+      seed: 7,
+      recipe: { moved: { hands: 'both', fifths: -1, position: true, timeSig: '6/8' }, easy: true },
+    });
+    const wanted = { moved: { hands: 'both', fifths: -1, position: true, timeSig: '6/8' }, easy: true };
+    expect(router.route.scoreRecipe).toEqual(wanted);
+    expect(parseHash(win.location.hash).scoreRecipe).toEqual(wanted);
+    expect(parseHash(win.location.hash).seed).toBe(7);
+  });
+
+  it('treats the same piece with another recipe as a different route', () => {
+    const { win } = fakeWindow('#/today');
+    const router = new Router(win as unknown as Window);
+    const seen: string[] = [];
+    router.subscribe((route) => seen.push(JSON.stringify(route.scoreRecipe ?? null)));
+    router.navigateScore('song.a', { recipe: { moved: { hands: 'both' } } });
+    router.navigateScore('song.a', { recipe: { moved: { position: true } } });
+    router.navigateScore('song.a');
+    expect(seen).toEqual(['null', '{"moved":{"hands":"both"}}', '{"moved":{"position":true}}', 'null']);
+  });
+
+  it('drops the parts of a recipe the reader never writes', () => {
+    const bad = encodeURIComponent('hands:four,fifths:99,position:1,timeSig:5/4,syncopation:1');
+    expect(parseHash(`#/score/song.a?recipe=${bad}`).scoreRecipe).toEqual({ moved: { position: true, syncopation: true } });
+    expect(parseHash('#/score/song.a?recipe=nonsense').scoreRecipe).toBeUndefined();
+    expect(parseHash(`#/score/song.a?recipe=${encodeURIComponent('easy:1')}`).scoreRecipe).toEqual({ easy: true });
+  });
+
+  /**
    * The same parameter on the chord chart (`04` §3b, 2026-09-22).
    *
    * Entry 42 built `?from=` for the Score screen and recorded in its own

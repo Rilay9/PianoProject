@@ -48,25 +48,27 @@ import {
   buildSession,
   nextRecommended,
   playInstead,
+  readingOffer,
   swapOptions,
+  type ReadingOffer,
   type SessionSlot,
 } from '../../curriculum/session';
 import {
   allProgress,
   dailyReadDays,
   dailyReadStreak,
-  dayKey,
   getStreak,
   onProgressChange,
   readToday,
   reviewQueue,
+  sessionsForItem,
   weekSoFar,
 } from '../../data/progressStore';
-import { dailySeed } from '../../engine/sightReading';
 import { simonForStage } from '../../engine/drills/simon';
 import { getPlan } from '../../data/planStore';
 import { getSettings, updateSettings } from '../../data/settingsStore';
-import type { ProgressRow } from '../../data/db';
+import type { ProgressRow, SessionRow } from '../../data/db';
+import { readingReason, readingTitle } from '../help';
 import { webMidiSource, micSource } from '../../app/services';
 import { onScreenDispose } from '../screenLifecycle';
 import { badge, button, chip, el, handsLabel, levelLabel, listRow, openSheet, shortHandsLabel } from '../widgets';
@@ -144,6 +146,13 @@ export function TodayScreen(router: Router): HTMLElement {
   let dailyDays: string[] = [];
   /** Which generated reading exercise today's phrase comes out of. */
   let dailyTarget: CatalogItem | null = null;
+  /**
+   * Today's read as the reader chose it (C4): the row, the recipe, the day's
+   * seed, and why — from the evidence the learner's reads stored.
+   */
+  let dailyOffer: ReadingOffer | null = null;
+  /** The learner's stored runs of the reading rows: what the reader reads (C4). */
+  let readingRows: SessionRow[] = [];
 
   const goalLine = el('p.today-goal', { id: 'today-goal' });
   const inputChip = chip('…', {
@@ -240,7 +249,15 @@ export function TodayScreen(router: Router): HTMLElement {
       return;
     }
     const rung = curriculum ? rungForSlot(curriculum, target, slot.lessonId) : undefined;
-    router.navigateScore(target.id, { ...(rung === undefined ? {} : { rung }), slot: slot.kind });
+    // The reading slot's phrase, exactly (C4): its seed and its recipe. Only
+    // while the row is the reader's: a swap replaces the item, and a recipe
+    // written for one row means nothing on another.
+    const reading = slot.reading?.item.id === target.id ? slot.reading : undefined;
+    router.navigateScore(target.id, {
+      ...(rung === undefined ? {} : { rung }),
+      slot: slot.kind,
+      ...(reading ? { seed: reading.seed, recipe: routeRecipeOf(reading) } : {}),
+    });
   };
 
   function showSwapSheet(slotIndex: number): void {
@@ -338,8 +355,11 @@ export function TodayScreen(router: Router): HTMLElement {
       );
     }
 
+    // The reading row plays its recipe's hands, and says so (C4).
+    const reading = slot.reading?.item.id === item.id ? slot.reading : undefined;
+    const hands = reading?.recipe.moved?.hands ?? item.hands;
     return listRow({
-      title: item.title,
+      title: reading ? readingTitle(item.title, item.hands, reading.recipe) : item.title,
       subtitle: slot.reason,
       // `04` §0 R2: one line that fits. "Hands together" on every row is three
       // words that never distinguish anything, so it leaves and the line stops
@@ -351,7 +371,7 @@ export function TodayScreen(router: Router): HTMLElement {
         SLOT_LABELS[slot.kind],
         `${String(slot.minutes)} min`,
         levelLabel(item.level, item.levelSource),
-        shortHandsLabel(item.hands),
+        shortHandsLabel(hands),
       ]
         .filter(Boolean)
         .join(' · '),
@@ -380,24 +400,6 @@ export function TodayScreen(router: Router): HTMLElement {
   // --- today's sight-read (`04` §2) ---------------------------------------
 
   /**
-   * The reading exercise for the learner's stage.
-   *
-   * The hardest one at or below the stage, and the easiest one if the stage is
-   * below all of them — deliberately *not* a random pick, because the day's
-   * variation is the seed's job and an item that also moved would make two
-   * things change at once for no reason. `drill.kind` rather than the
-   * `sight-reading` concept tag, which the transposition drills also carry and
-   * which open on a different screen.
-   */
-  function dailyItemFor(stageNumber: number): CatalogItem | null {
-    const readers = items
-      .filter((item) => item.drill?.kind === 'sight-reading')
-      .sort((a, b) => a.level - b.level);
-    const reachable = readers.filter((item) => item.level <= stageNumber);
-    return reachable[reachable.length - 1] ?? readers[0] ?? null;
-  }
-
-  /**
    * Opens today's phrase — the same phrase, from wherever it is asked for.
    *
    * One function rather than a closure in the card, because the tools row
@@ -407,11 +409,17 @@ export function TodayScreen(router: Router): HTMLElement {
    * fail to tick the day (`04` §2, `markDailyRead`).
    */
   function openDailyRead(): void {
-    if (!dailyTarget) return;
-    // Its slot, and the rung it is on where it is on one (L50).
-    const rung = curriculum ? rungForSlot(curriculum, dailyTarget) : undefined;
+    if (!dailyTarget || !dailyOffer) return;
+    // Its slot, and the rung whose row it is (L50); the day's seed, and the
+    // recipe the reader chose (C4).
+    const rung = curriculum ? rungForSlot(curriculum, dailyTarget, dailyOffer.lessonId) : undefined;
     const slot: TodaySlot = 'daily-read';
-    router.navigateScore(dailyTarget.id, { seed: dailySeed(dayKey(now)), ...(rung === undefined ? {} : { rung }), slot });
+    router.navigateScore(dailyTarget.id, {
+      seed: dailyOffer.seed,
+      ...(rung === undefined ? {} : { rung }),
+      slot,
+      recipe: routeRecipeOf(dailyOffer),
+    });
   }
 
   function drawDaily(): void {
@@ -420,16 +428,19 @@ export function TodayScreen(router: Router): HTMLElement {
     // nothing to offer here, and an empty card saying so would be a hole. The
     // door in the tools row goes with it, for the same reason (`drawDoors`).
     const item = dailyTarget;
-    if (!item) return;
-    const seed = dailySeed(dayKey(now));
+    const offer = dailyOffer;
+    if (!item || !offer) return;
+    const seed = offer.seed;
     const done = readToday(dailyDays, now);
     const streak = dailyReadStreak(dailyDays, now);
     const bars = item.drill?.params?.bars;
     const open = openDailyRead;
-    dailyCard.append(
-      listRow({
+    const row = listRow({
         title: "Today's sight-read",
-        subtitle: 'One phrase you have never seen, once, slowly',
+        // Why this phrase, from the reads behind it; the rung's words where
+        // no evidence chose it; and once today's phrase is on the record, that
+        // it is read and not offered again (C4).
+        subtitle: readingReason(offer.why, 'daily', now),
         meta: [
           streak > 0 ? `Day ${String(streak)}` : 'Start a run',
           levelLabel(item.level, item.levelSource),
@@ -446,11 +457,16 @@ export function TodayScreen(router: Router): HTMLElement {
         dataset: {
           'data-daily': item.id,
           'data-seed': String(seed),
+          'data-why': offer.why.kind,
           'data-streak': String(streak),
           'data-done': String(done),
         },
-      }),
-    );
+      });
+    // The reason takes a second line here rather than an ellipsis (C4): the
+    // card's title is one line and it has no Swap, so the row stays inside
+    // `04` §0 R2 with the whole sentence on it.
+    row.querySelector('.list-row__sub')?.classList.add('today-reason');
+    dailyCard.append(row);
   }
 
   function drawActions(): void {
@@ -573,6 +589,9 @@ export function TodayScreen(router: Router): HTMLElement {
         // "Placement recorded. Today will build from here" — which it now
         // does (`02` Stage 0.4, built 2026-09-21).
         ...(plan.placement === undefined ? {} : { startAt: plan.placement.unitId }),
+        // The reading slot's phrase comes from the learner's reads (C4).
+        readingRows,
+        today: now,
       });
       slots = built.slots;
       breakAfter = built.template.breakAfterSlot;
@@ -619,9 +638,19 @@ export function TodayScreen(router: Router): HTMLElement {
       if (position) status.dataset.lesson = position.lesson.id;
       else delete status.dataset.lesson;
 
-      // The daily read hangs off the same stage number the session card does,
-      // so the two cannot disagree about where the learner is.
-      dailyTarget = dailyItemFor(position ? position.stageNumber : 1);
+      // The daily read and the session's reading slot are one rule, the reader
+      // (C4): the rung's reading row, moved by what the learner's reads show.
+      // It used to be the hardest row at or below the stage number.
+      dailyOffer = readingOffer({
+        curriculum: curriculum as Curriculum,
+        items,
+        position,
+        activeTracks: active,
+        rows: readingRows,
+        today: now,
+        purpose: 'daily',
+      });
+      dailyTarget = dailyOffer?.item ?? null;
       // The day itself is written by the Score screen when the seeded run
       // is recorded (`markDailyRead` there), not read off the item's row.
       drawDaily();
@@ -646,6 +675,7 @@ export function TodayScreen(router: Router): HTMLElement {
     catalog = indexCatalog(loadedItems);
     progress = rows;
     dailyDays = readDays;
+    readingRows = await loadReadingRows(loadedItems);
 
     const week = weekSoFar(streak);
     // Short enough not to wrap at 360 px (`04` §0 R2). Progress says it in
@@ -686,15 +716,42 @@ export function TodayScreen(router: Router): HTMLElement {
   const stopWatchingProgress = onProgressChange(() => {
     // The daily days too: the store ticks the day when a seeded run is
     // recorded, and the tick has to reach the card without a reload.
-    void Promise.all([allProgress(), dailyReadDays()]).then(([rows, days]) => {
+    void Promise.all([allProgress(), dailyReadDays(), loadReadingRows(items)]).then(([rows, days, reads]) => {
       progress = rows;
       dailyDays = days;
+      readingRows = reads;
       rebuild();
     });
   });
   onScreenDispose(section, stopWatchingProgress);
 
   return section;
+}
+
+/**
+ * How many stored runs of each reading row the reader looks through (C4): the
+ * Score screen's own reach for a phrase already played, so the two agree on
+ * what is on the record.
+ */
+const READING_HISTORY = 500;
+
+/** The learner's stored runs of every reading row, for the reader (C4). */
+async function loadReadingRows(items: readonly CatalogItem[]): Promise<SessionRow[]> {
+  const readers = items.filter((item) => item.drill?.kind === 'sight-reading');
+  try {
+    return (await Promise.all(readers.map((item) => sessionsForItem(item.id, READING_HISTORY)))).flat();
+  } catch {
+    // No history to read is a learner who has not read: the rung's own row.
+    return [];
+  }
+}
+
+/** A reader's recipe as the route carries it: what moved, and whether it is the easy one. */
+function routeRecipeOf(offer: ReadingOffer): { moved?: NonNullable<ReadingOffer['recipe']['moved']>; easy?: true } {
+  return {
+    ...(offer.recipe.moved === undefined ? {} : { moved: offer.recipe.moved }),
+    ...(offer.recipe.easy === true ? { easy: true as const } : {}),
+  };
 }
 
 /**

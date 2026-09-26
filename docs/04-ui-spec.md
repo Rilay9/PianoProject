@@ -206,10 +206,10 @@ three minutes every day, and it is the only thing on this screen counted in **da
 rather than minutes this week. Putting it inside the card would also have made it swappable,
 and a daily read you can swap for something else is not a daily read.
 
-- It opens the reading exercise for the learner's stage — the hardest one at or below it, the
-  easiest one if the stage is below all of them. Deliberately not a random pick: the day's
-  variation is the seed's job, and an item that moved as well would change two things at once
-  for no reason.
+- **It opens the phrase the reader chose (C4, 2026-09-26)** — the rung's reading row, moved by
+  what the learner's reads show (the block below). Until C4 it opened the hardest reading row
+  with `item.level <= stageNumber`, the easiest one below all of them: a constant per stage,
+  whatever the learner read, and on 2.2, *Eighth notes*, the level-1 left-hand row.
 - **The seed is a hash of the local date**, so the day has one phrase and tomorrow has another,
   and re-opening today's card gives the same phrase back rather than a fresh one. It reaches
   the generator as `#/score/<id>?seed=<n>` — the same mechanism `blind`, `mode` and `loop`
@@ -242,6 +242,71 @@ and a daily read you can swap for something else is not a daily read.
   the same row, which is recorded as a first reading and, being another seed, does not tick
   the day either. Not closed: hearing today's phrase, leaving without a run, and opening it
   again — the screen forgets the hearing with the visit, and the next run is recorded.
+- **A phrase the screen draws for itself is never one on the record (C4).** A fresh open and
+  *New phrase* draw a seed no stored run of the item carries (the Score screen reads the item's
+  rows before it draws one); *New phrase* keeps the recipe it was on (`?recipe=`, below).
+
+**The reader: why this phrase (C4, 2026-09-26; design §11 item 4, backlog S4, S13, I1).** The
+daily read and the session's reading slot come from one function, `readingOffer`
+(`curriculum/session.ts`), over the evidence the learner's rows stored (`01` §4.5):
+
+- **The row** is the reading row of the latest rung the learner has reached that lists one, on
+  the tracks switched on, in the curriculum's order — the rung's own row where the rung lists
+  one. Before any such rung the easiest row stands in, as the daily read always did there, and
+  the session has no reading slot, as it had none there. A learner with no reads gets the row
+  as it stands.
+- **The recipe** is the learner's last one at that row (`SessionRow.recipe`), moved in **one
+  dimension** — hands, range (inside C position, or the level's own), rhythm (eighths, at
+  level 1), key, metre (4/4 or 6/8), syncopation — each one generator parameter
+  (`ReadingMoves`), never two at once, and never one whose demands the learner's rung has not
+  taught (`demands.json`'s `taughtAt`, in the curriculum's order), unless it returns to the
+  row's own value. A dimension the row's promises fix is not moved: the bass clef of 1.3's row,
+  the two hands of 3.4's, a key list, a promised accidental (level 4 in G, and in 6/8, each
+  dropped the accidental in one of twelve phrases), a promised syncopation or triplet.
+- **What moves it** is sight-reading's evidence (right notes in time, every step) from the reads
+  at that recipe since the learner arrived at it: the last two against it — one dimension
+  **down** (the newest thing added, else range, then hands); proficient at it by the ladder's
+  rule (full-standard support on two days, the latest supporting) and the read before not an
+  easy one — one dimension **up** (what was taught earliest first, and not a skill the learner
+  is failing elsewhere); otherwise the same recipe, another phrase.
+- **The easy band (S13).** After three reads that were not easy (`EASY_AFTER`), the next is one
+  dimension below the recipe, on purpose — the same step a failing read would get — and the row
+  says so. Where nothing sits below (1.3's row, 1.5's at its start), there is none, and nothing
+  claims one.
+- **Unseen.** The daily read keeps the day's seed (the day is ticked by it). The slot draws a
+  seed of its own for the day, never one a stored run of the row carries, and *Shuffle options*
+  turns the next one. Once today's phrase is on the record the card offers it as met, not as a
+  new read.
+- **The route** carries the recipe: `#/score/<id>?seed=<n>&recipe=hands:both,easy:1`. The Score
+  screen writes that phrase, keeps the recipe on the run, keeps it through *New phrase* and
+  Blind, and titles a row whose recipe moved the hands by the hands it plays ("…, level 2"
+  over a two-hand phrase of the right-hand row).
+
+**The reason line** is the card's second line (the session row's, cut to one line there; on the
+daily card it takes a second line rather than an ellipsis, `.today-reason`). It says what the
+phrase changes and then the last read's measurement, and nothing the evidence did not
+measure: the evidence is per skill, so it cannot say which note or which demand went wrong
+("you misread two skips" is not something it knows), and sight-reading's measurement is right
+notes in time, not reading ahead (Entry 72's construct-validity list). The words
+(`READING_TEXT` in `help.ts`):
+
+| why | the line |
+|---|---|
+| no evidence chose it (daily) | One phrase you have never seen, once, slowly |
+| no evidence chose it (session) | Read something you have never seen, once, slowly |
+| today's phrase read | Read today — tomorrow’s phrase is new |
+| today's phrase heard first | Heard before it was read — tomorrow’s phrase is new |
+| the same recipe | Another like it — *n* of *m* right and in time yesterday |
+| one dimension up | Now with both hands — *n* of *m* right and in time yesterday |
+| one dimension down | This one in C position — *n* of *m* right and in time on Tuesday |
+| the easy one | An easy one, for fluency: right hand only |
+| ready, nothing taught to move to | The next step waits for a later lesson — *n* of *m* … |
+| failing, nothing easier | Nothing easier fits this lesson — *n* of *m* … |
+
+The measurement's words are "right and in time"; the day is *today*, *yesterday*, *on
+Tuesday* within the week, *on 14 Sep* before it. A move reads "in C position", "beyond C
+position", "with both hands", "right hand only", "in the left hand", "with eighth notes", "in G
+major", "in 6/8", "with syncopation" (`readingChange`).
 - With no reading exercises in the build there is no card at all, rather than an empty one
   (R4). The day is ticked by the progress store when a run carrying the day's seed is recorded (`recordRun` → `markDailyRead`), so the same exercise opened from Plan or the Library — a different phrase — does not count, and a day already ticked stays ticked when the stage moves on (2026-09-16).
 
@@ -2203,7 +2268,9 @@ learner looks at.
   pass is a chain rather than a share of the cards (`engine/drills/simon.ts`).
 - **Sight-reading is not here.** It is generated notation and opens on the Score screen in
   Tempo mode (`05` §8), scored on the first attempt only — after that the material has been
-  seen and a second run measures something else.
+  seen and a second run measures something else. From Today it opens the phrase the reader
+  chose, recipe and seed in the route (§2, C4); opened anywhere else it is the row's own recipe
+  on a seed no stored run of the row carries.
 - **Three faces are not prompt loops at all.** A `checklist` is ticked prose, a `placement`
   test is a self-judged pass/fail branch, and a `walkthrough` is a few sentences per step that
   hand the learner to another screen. None of them has expected pitches or a keyboard strip, so
