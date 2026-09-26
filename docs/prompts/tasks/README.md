@@ -142,3 +142,4 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **C2** | Vocabulary v0 (the reading strand) and the demand detectors; one authoritative definition; the build gate | build, content | done 2026-09-26 (Entry 71) |
 | **C3** | The evidence function and the ladder; the property test over the vocabulary; the sheet's "not judged" lines | build | done 2026-09-26 (Entry 72) |
 | **C4** | The first reader: sight-reading constraints from the reading skill state; unseen guaranteed; the true reason line; then the learner-facing checkpoint | build, browser | done 2026-09-26 (Entry 73); checkpoint written |
+| **T42** | The tempo ladder holds on a pass nothing judged and says so; the rhythm-ladder test that relied on L42's fault is revised (CI on a30dc96) | build, browser | after the C4 chain |
