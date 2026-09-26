@@ -40,11 +40,37 @@
  * Then **attribution**: `n` counts the opportunity steps the channels
  * measured, and `right` those right on every channel. A self-reported run is
  * evidence of the class `self-assessed`, which no requirement accepts.
+ *
+ * **Per demand, with the overlap kept** (C4a; backlog L64; the reviewer's
+ * Part 8). The same counted steps are split by demand: for each demand the
+ * skill names (every vocabulary demand, for a skill read over every step) that
+ * the played passage contains at those steps, `byDemand` keeps how many of its
+ * opportunities could be told right or wrong, how many were right, and which
+ * steps they were. A step that is an opportunity for several demands counts
+ * under each. Where every other demand sits on those steps is kept too (the
+ * entries' own steps, and `otherDemands` for the demands a skill with a list
+ * does not count), so `overlapOf` can say which other demands shared a
+ * demand's steps and a reader can tell a failure on the demand's own notes
+ * from one shared with others. Each (demand, step) is stored once: the overlap
+ * stored beside every entry made the evidence several times the observation
+ * it came from. Nothing says which demand caused a miss: one wrong note
+ * at a skip, in the left hand, during eighths, is wrong under all three, and
+ * the record cannot know more. Where a demand sits on some notes of a step
+ * that went partly wrong, its note cannot be told (the record keeps the step's
+ * code, not which pitch was missed): the step is left out of that demand's
+ * count and listed as `unattributed`. The skill's own `n` and `right` are
+ * unchanged, and the ladder reads only them.
+ *
+ * **Its own version** (L66). `EVIDENCE_DEFINITIONS` names this module's rules
+ * and shape; the record call stamps it on the row beside the evidence
+ * (`SessionRow.evidenceDefinitions`), independent of the observation's
+ * `definitions`. `recomputeEvidence` gives what the record call would store
+ * today, for a later job that holds the played model.
  */
 import type { ConditionId, Skill } from '../demands/vocabulary';
-import { detect } from '../demands/detect';
+import { detect, type DemandAt } from '../demands/detect';
 import type { ScoreModelData, ScoreNote } from '../score/types';
-import { isMeasurement, codeAt, takeMeasurements, type Measurement, type Observed } from './measurement';
+import { isMeasurement, codeAt, takeMeasurements, type Measurement, type Observed, type StepMeasure } from './measurement';
 import type { Vocabulary } from './vocabulary';
 
 export type Standard = 'practice' | 'full';
@@ -83,6 +109,50 @@ export interface EvidenceContext {
   estimated: boolean;
 }
 
+/**
+ * The evidence's own definitions: the rules above and the shape they write
+ * (C4a, L66). Stamped on a stored row as `evidenceDefinitions`; a reader takes
+ * stored evidence only under the version in force. Independent of the
+ * observation's `OBSERVATION_DEFINITIONS`: a change here moves this and not
+ * that, and the other way round.
+ *
+ * - **1** — C3's evidence, as C4 stored it under the observation's
+ *   `definitions` with no stamp of its own: per skill only.
+ * - **2** — per-demand counts (`byDemand`) and where every other demand of
+ *   the counted steps is (`otherDemands`), from which the overlap is derived
+ *   (`overlapOf`); and the per-step verdicts they are told from
+ *   (`StepMeasure.uniform`).
+ */
+export const EVIDENCE_DEFINITIONS = 2;
+
+/** A demand at some steps: another demand on a demand's counted steps (`overlapOf`), or one a skill does not count (`otherDemands`). */
+export interface DemandOverlap {
+  /** A vocabulary demand id. */
+  demand: string;
+  /** The steps, ascending. */
+  steps: number[];
+}
+
+/**
+ * One demand's share of a skill's evidence (C4a): its opportunities in the
+ * counted steps, told right or wrong by the skill's channels. Keyed by the
+ * vocabulary's demand id, never by anything a reader controls.
+ */
+export interface DemandCount {
+  /** A vocabulary demand id. */
+  demand: string;
+  /** Its opportunity steps the run measured whose right or wrong the record can tell. */
+  n: number;
+  /** Of those, the steps right on every channel of the skill. */
+  right: number;
+  /** The `n` steps (model step indexes), ascending: what a later reader audits against the record. */
+  steps: number[];
+  /** Of `steps`, those not right. */
+  wrong: number[];
+  /** Measured steps where the demand sat on some notes of a step partly wrong: counted in the skill's `n`, not here. */
+  unattributed?: number[];
+}
+
 declare const EVIDENCE: unique symbol;
 
 /** Evidence from a measurement: the only class a requirement can accept. */
@@ -100,6 +170,21 @@ export interface MeasuredEvidence {
   /** When the run was (`SessionRow.at`). */
   at: string;
   context: EvidenceContext;
+  /**
+   * The same steps per demand, in the vocabulary's order: each demand the
+   * skill names (every one, for a skill read over every step) with a measured
+   * opportunity here. A demand with none is absent.
+   */
+  byDemand: DemandCount[];
+  /**
+   * The vocabulary demands the skill does not count, located on its counted
+   * steps in the hands played (absent where there are none, and always for a
+   * skill read over every step, whose entries hold every demand): with
+   * `byDemand`, where every demand of those steps is, so the overlap can be
+   * derived (`overlapOf`) rather than stored beside every entry. A fact about
+   * the notation, never a cause.
+   */
+  otherDemands?: DemandOverlap[];
 }
 
 /** The learner's own word about a run nothing measured (design §5): shown apart, accepted by no requirement. */
@@ -223,7 +308,7 @@ function opportunitySteps(
   inRun: (step: number) => boolean,
   played: 'R' | 'L' | 'both' | undefined,
   model: ScoreModelData,
-  vocabulary: Vocabulary,
+  located: Located,
 ): number[] {
   if (skill.opportunity === 'every-step') {
     return model.steps
@@ -233,13 +318,57 @@ function opportunitySteps(
   const byId = notesById(model);
   const found = new Set<number>();
   for (const demandId of skill.opportunity) {
-    const demand = vocabulary.demands.find((d) => d.id === demandId);
-    if (!demand) continue;
-    for (const at of detect(model, demand.detector).at) {
+    for (const at of located.get(demandId) ?? []) {
       if (inRun(at.step) && handPlayed(byId.get(at.noteId), played)) found.add(at.step);
     }
   }
   return [...found].sort((a, b) => a - b);
+}
+
+/**
+ * Every vocabulary demand's places in the played notation, by demand id: one
+ * pass over the detectors per run, shared by every skill's opportunity, the
+ * precision rule and the per-demand counts (C3 ran the detectors per skill).
+ * A demand the vocabulary names whose detector finds nothing maps to an empty
+ * list; an id the vocabulary does not name is not a key.
+ */
+type Located = ReadonlyMap<string, readonly DemandAt[]>;
+
+function locateDemands(model: ScoreModelData, vocabulary: Vocabulary): Located {
+  const out = new Map<string, readonly DemandAt[]>();
+  for (const demand of vocabulary.demands) out.set(demand.id, detect(model, demand.detector).at);
+  return out;
+}
+
+/**
+ * Where the demands are, step by step, in the hands the run played: step ->
+ * demand id -> the note ids it is located at. What the per-demand counts and
+ * the overlap read. `order` is the vocabulary's order of demand ids.
+ */
+interface DemandsAtSteps {
+  byStep: ReadonlyMap<number, ReadonlyMap<string, ReadonlySet<string>>>;
+  order: readonly string[];
+}
+
+function demandsAtSteps(
+  located: Located,
+  model: ScoreModelData,
+  played: 'R' | 'L' | 'both' | undefined,
+  vocabulary: Vocabulary,
+): DemandsAtSteps {
+  const byId = notesById(model);
+  const byStep = new Map<number, Map<string, Set<string>>>();
+  for (const demand of vocabulary.demands) {
+    for (const at of located.get(demand.id) ?? []) {
+      if (!handPlayed(byId.get(at.noteId), played)) continue;
+      const here = byStep.get(at.step) ?? new Map<string, Set<string>>();
+      const notes = here.get(demand.id) ?? new Set<string>();
+      notes.add(at.noteId);
+      here.set(demand.id, notes);
+      byStep.set(at.step, here);
+    }
+  }
+  return { byStep, order: vocabulary.demands.map((demand) => demand.id) };
 }
 
 /** A measured run's steps: inside its codes, with something for the learner, reached. */
@@ -273,12 +402,12 @@ function precisionQuartersAt(skill: Skill, rhythmAt: ReadonlyMap<number, number>
 }
 
 /** Step -> the finest precision any rhythm demand located there asks for. */
-function rhythmPrecisionByStep(model: ScoreModelData, vocabulary: Vocabulary): Map<number, number> {
+function rhythmPrecisionByStep(located: Located, vocabulary: Vocabulary): Map<number, number> {
   const out = new Map<number, number>();
   for (const demand of vocabulary.demands) {
     const quarters = PRECISION_BY_SKILL[demand.copedWithBy];
     if (quarters === undefined) continue;
-    for (const at of detect(model, demand.detector).at) {
+    for (const at of located.get(demand.id) ?? []) {
       out.set(at.step, Math.min(out.get(at.step) ?? Infinity, quarters));
     }
   }
@@ -307,6 +436,45 @@ function refuse(skill: string, reason: RefusalReason, cites: string[], detail?: 
   return { kind: 'refusal', skill, reason, cites, ...(detail === undefined ? {} : { detail }) };
 }
 
+/**
+ * What one demand's notes at a step came to, by the skill's channels: right
+ * where the step was right; wrong where the demand is on every note of the
+ * step, or where every channel's verdict against it holds for every pitch
+ * (all missed); otherwise not to be told from the record (a chord partly
+ * wrong, or early at a note the record does not name).
+ */
+function toldAt(here: readonly (StepMeasure | undefined)[], onEveryNote: boolean): 'right' | 'wrong' | 'untold' {
+  if (here.every((measure) => measure?.right === true)) return 'right';
+  if (onEveryNote) return 'wrong';
+  const against = here.filter((measure): measure is StepMeasure => measure !== undefined && !measure.right);
+  return against.every((measure) => measure.uniform) ? 'wrong' : 'untold';
+}
+
+interface Tally {
+  steps: number[];
+  wrong: number[];
+  unattributed: number[];
+}
+
+/**
+ * The other demands on one demand's counted steps, with the steps they share,
+ * in the vocabulary's order: derived from where each demand is in the
+ * evidence (its entries' steps and unattributed steps, and `otherDemands`).
+ * Which demands shared a wrong note is what tells a failure on a demand's own
+ * notes from one mixed with others; it never says which caused it.
+ */
+export function overlapOf(evidence: MeasuredEvidence, demand: string, vocabulary: Vocabulary): DemandOverlap[] {
+  const mine = new Set(evidence.byDemand.find((entry) => entry.demand === demand)?.steps ?? []);
+  const where = new Map<string, number[]>();
+  for (const entry of evidence.byDemand) where.set(entry.demand, [...entry.steps, ...(entry.unattributed ?? [])]);
+  for (const other of evidence.otherDemands ?? []) where.set(other.demand, other.steps);
+  return vocabulary.demands
+    .map((d) => d.id)
+    .filter((id) => id !== demand && where.has(id))
+    .map((id) => ({ demand: id, steps: (where.get(id) ?? []).filter((step) => mine.has(step)).sort((a, b) => a - b) }))
+    .filter((shared) => shared.steps.length > 0);
+}
+
 /** The one constructor of measured evidence: from measurements, and nothing else. */
 function evidenceFrom(
   measurements: readonly Measurement[],
@@ -317,20 +485,56 @@ function evidenceFrom(
   met: ConditionId[],
   model: ScoreModelData,
   at: string,
+  where: DemandsAtSteps,
 ): MeasuredEvidence {
   let n = 0;
   let right = 0;
   let unattributed = 0;
   const played = observation.hands?.played;
+  const named = skill.opportunity === 'every-step' ? null : new Set(skill.opportunity);
+  const tallies = new Map<string, Tally>();
+  const others = new Map<string, number[]>();
   for (const step of steps) {
     const here = measurements.map((m) => m.at.get(step));
     if (here.every((measure) => measure === undefined)) continue;
     n += 1;
+    const learner = learnerNotesAt(model, step, played);
     if (here.every((measure) => measure?.right === true)) right += 1;
-    else if (here.some((measure) => measure?.mixed === true) && learnerNotesAt(model, step, played).length > 1) {
+    else if (here.some((measure) => measure?.mixed === true) && learner.length > 1) {
       unattributed += 1;
     }
+    // The same step, per demand the skill names (every demand, for a skill
+    // read over every step): the counts are the skill's steps split, never a
+    // second reading of the run.
+    for (const [demand, notes] of where.byStep.get(step) ?? []) {
+      if (named !== null && !named.has(demand)) {
+        others.set(demand, [...(others.get(demand) ?? []), step]);
+        continue;
+      }
+      const tally = tallies.get(demand) ?? { steps: [], wrong: [], unattributed: [] };
+      const told = toldAt(here, learner.every((note) => notes.has(note.id)));
+      if (told === 'untold') tally.unattributed.push(step);
+      else {
+        tally.steps.push(step);
+        if (told === 'wrong') tally.wrong.push(step);
+      }
+      tallies.set(demand, tally);
+    }
   }
+  const byDemand: DemandCount[] = where.order
+    .filter((demand) => tallies.has(demand))
+    .map((demand) => {
+      const tally = tallies.get(demand) as Tally;
+      return {
+        demand,
+        n: tally.steps.length,
+        right: tally.steps.length - tally.wrong.length,
+        steps: tally.steps,
+        wrong: tally.wrong,
+        ...(tally.unattributed.length > 0 ? { unattributed: tally.unattributed } : {}),
+      };
+    });
+  const otherDemands: DemandOverlap[] = where.order.filter((demand) => others.has(demand)).map((demand) => ({ demand, steps: others.get(demand) ?? [] }));
   return {
     kind: 'measured',
     skill: skill.id,
@@ -347,6 +551,8 @@ function evidenceFrom(
       unattributed,
       estimated: measurements.some((m) => m.estimated),
     },
+    byDemand,
+    ...(otherDemands.length > 0 ? { otherDemands } : {}),
   } as unknown as MeasuredEvidence;
 }
 
@@ -381,6 +587,8 @@ export function evidenceFor(input: EvidenceInput): EvidenceResult[] {
   const { observation, played, vocabulary } = input;
   const at = observation.at ?? (input.now ?? new Date()).toISOString();
   const readings = takeMeasurements(observation);
+  const located = locateDemands(played, vocabulary);
+  const where = demandsAtSteps(located, played, observation.hands?.played, vocabulary);
   const results: EvidenceResult[] = [];
   for (const id of [...new Set(input.targetSkills)]) {
     const skill = vocabulary.skills.find((candidate) => candidate.id === id);
@@ -388,9 +596,41 @@ export function evidenceFor(input: EvidenceInput): EvidenceResult[] {
       results.push(refuse(id, 'unknown-skill', []));
       continue;
     }
-    results.push(evidenceForSkill(skill, observation, played, vocabulary, readings, at));
+    results.push(evidenceForSkill(skill, observation, played, vocabulary, readings, at, located, where));
   }
   return results;
+}
+
+/** What the record call stores on a row: the results, stamped with the evidence's own version. */
+export interface StoredEvidence {
+  evidence: EvidenceResult[];
+  evidenceDefinitions: number;
+}
+
+/** The results as a row keeps them: the one place the stamp is put on. */
+export function stampedEvidence(evidence: EvidenceResult[]): StoredEvidence {
+  return { evidence, evidenceDefinitions: EVIDENCE_DEFINITIONS };
+}
+
+/**
+ * What the record call would store on this row today (L66): the evidence for
+ * the skills the row's stored results name (or `targetSkills`, where the item's
+ * declaration has changed since), from the row's own observation and the
+ * notation played, stamped with the version in force. Pure. For a later job
+ * that holds the played model — a generated phrase from its recipe and seed, a
+ * file from the catalog — to refresh rows stored under another version;
+ * nothing runs that job yet. `undefined` where there is no skill to evidence,
+ * as the record call stores no evidence for an item that declares none.
+ */
+export function recomputeEvidence(
+  row: Observed,
+  played: ScoreModelData,
+  vocabulary: Vocabulary,
+  targetSkills?: readonly string[],
+): StoredEvidence | undefined {
+  const skills = targetSkills ?? [...new Set((row.evidence ?? []).map((result) => result.skill))];
+  if (skills.length === 0) return undefined;
+  return stampedEvidence(evidenceFor({ observation: row, played, targetSkills: skills, vocabulary }));
 }
 
 function evidenceForSkill(
@@ -400,6 +640,8 @@ function evidenceForSkill(
   vocabulary: Vocabulary,
   readings: ReturnType<typeof takeMeasurements>,
   at: string,
+  located: Located,
+  where: DemandsAtSteps,
 ): EvidenceResult {
   if (skill.observable === 'none') return refuse(skill.id, 'not-measured:observable', [], 'observable none');
 
@@ -408,7 +650,7 @@ function evidenceForSkill(
   const answered = observation.selfReport;
   const nothingMeasured = !isMeasurement(readings.pitch) && !isMeasurement(readings.timing);
   if (answered !== undefined && nothingMeasured) {
-    const steps = opportunitySteps(skill, coveredRun(observation, model), observation.hands?.played, model, vocabulary);
+    const steps = opportunitySteps(skill, coveredRun(observation, model), observation.hands?.played, model, located);
     if (steps.length === 0) return refuse(skill.id, 'no-opportunity', ['range', 'hands.played']);
     return selfAssessed(skill, observation, answered, at);
   }
@@ -435,7 +677,7 @@ function evidenceForSkill(
   }
 
   // 4. The opportunity, inside the run and the hands it played.
-  let steps = opportunitySteps(skill, measuredRun(observation), observation.hands?.played, model, vocabulary);
+  let steps = opportunitySteps(skill, measuredRun(observation), observation.hands?.played, model, located);
   if (steps.length === 0) return refuse(skill.id, 'no-opportunity', ['steps', 'hands.played']);
 
   // 5. Precision, for a skill timed at all: only the steps where the window
@@ -444,15 +686,15 @@ function evidenceForSkill(
   if (timing) {
     const window = timing.toleranceMs;
     if (window === null) return refuse(skill.id, 'precision', ['input.toleranceMs'], 'window not recorded');
-    const rhythmAt = rhythmPrecisionByStep(model, vocabulary);
+    const rhythmAt = rhythmPrecisionByStep(located, vocabulary);
     steps = steps.filter((step) =>
       windowDiscriminates(window, precisionQuartersAt(skill, rhythmAt, step), model, step, observation.tempoPct),
     );
     if (steps.length === 0) return refuse(skill.id, 'precision', ['input.toleranceMs', 'tempoPct'], `${String(window)} ms`);
   }
 
-  // Attribution: only the opportunity steps count.
-  const evidence = evidenceFrom(measurements, skill, observation, steps, standard, met, model, at);
+  // Attribution: only the opportunity steps count, per skill and per demand.
+  const evidence = evidenceFrom(measurements, skill, observation, steps, standard, met, model, at, where);
   if (evidence.n === 0) {
     // Every opportunity step fell where the channel measured nothing (a note
     // never played has no onset to time).

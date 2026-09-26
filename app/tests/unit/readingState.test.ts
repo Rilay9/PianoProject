@@ -6,8 +6,9 @@
  * The evidence function needs the played score model, which exists only while
  * the Score screen has the phrase loaded, so the screen computes the evidence
  * once, when it records the run, and stores it on the row stamped with the
- * row's `definitions` (`feedbackFromMeasurements` holds that half). What is
- * read here is those stored results and nothing else: no row is re-derived.
+ * evidence's own version, `evidenceDefinitions` (C4a; `evidenceVersion` holds
+ * the record call). What is read here is those stored results and nothing
+ * else: no row is re-derived.
  *
  * The three learners are the brief's, and each is five realistic reads, not a
  * hand-set state: the rung's own reading row (`sight-reading-2-right`, the one
@@ -24,6 +25,7 @@ import { sightReadingOptionsFor } from '../../src/engine/sightReading';
 import { readingState } from '../../src/evidence/readingState';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import { OBSERVATION_DEFINITIONS, type SessionRow } from '../../src/data/db';
+import { EVIDENCE_DEFINITIONS } from '../../src/evidence/evidence';
 import type { CatalogItem } from '../../src/curriculum/types';
 import { phraseModel, readPhrase, skipSteps } from './helpers/reader';
 
@@ -100,15 +102,23 @@ describe('the three learners of the brief, five reads each', () => {
   });
 });
 
-describe('only the evidence a row stored, under the definitions in force', () => {
+describe('only the evidence a row stored, under the evidence definitions in force', () => {
   it('a row with no stored evidence contributes nothing, and is not re-derived', () => {
     const bare = cleanEighths.map(({ evidence: _evidence, ...row }) => row as SessionRow);
     expect(stateOf(bare, 'sight-reading')).toBe('not introduced');
   });
 
-  it('a row stamped with other definitions contributes nothing', () => {
-    const stale = cleanEighths.map((row) => ({ ...row, definitions: OBSERVATION_DEFINITIONS + 1 }));
+  // Revised (C4a, L66): the stamp that decides is the evidence's own. The old
+  // assertion stamped the observation's `definitions` and expected nothing:
+  // it assumed the observation's version was the evidence's.
+  it('a row whose evidence carries another evidence stamp contributes nothing', () => {
+    const stale = cleanEighths.map((row) => ({ ...row, evidenceDefinitions: EVIDENCE_DEFINITIONS + 1 }));
     expect(stateOf(stale, 'sight-reading')).toBe('not introduced');
+  });
+
+  it('the observation’s stamp is not the evidence’s: evidence stamped current reads, whatever the observation’s', () => {
+    const otherObservation = cleanEighths.map((row) => ({ ...row, definitions: OBSERVATION_DEFINITIONS + 1 }));
+    expect(stateOf(otherObservation, 'sight-reading')).toBe('proficient');
   });
 
   it('keeps the reading strand: no technique skill is read into a state', () => {

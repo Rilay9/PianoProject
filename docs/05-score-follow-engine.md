@@ -547,7 +547,7 @@ is the melody it writes when that key is asked for outright. The nine rows now a
 | `sight-reading-4` | 4.6, technique.5 | C, 4/4, `accidentals` (the raised fourth rising to the fifth) |
 | `sight-reading-5` | theory.6 | keys to three accidentals, 4/4, `syncopation` |
 | `sight-reading-6` | chords-pop.8, theory.9 | keys to four accidentals, 4/4, `triplets` |
-| `sight-reading-7` | jazz.8, theory.9 | keys to four accidentals, 4/4, `triplets` |
+| `sight-reading-7` | jazz.8, theory.9 | keys to four accidentals, 4/4, `triplets`, `sixteenths: false` (C4b, S23: no rung teaches reading sixteenths) |
 
 **Levels 1–4 place every note where its length belongs** (same date): a plain note of length L
 starts on a multiple of L, a dotted quarter on a beat, a dotted half on beat one or three; in
@@ -610,6 +610,107 @@ level 4's promised accidental was missing from one of twelve phrases in G and on
 6/8. What a move brings is listed with it (adding the left hand at level 2 also brings the bass
 staff and the leaps its roots make; 6/8 brings dotted quarters and eighths; the designed
 syncopation below level 5 brings eighths), and the taught-at gate checks all of it.
+
+**The curriculum–generator contract (2026-09-26, C4b).** On 2.5 the reader had nothing to move
+for ten days (the thirty-day diary): ties and dotted quarters are taught at 2.4, and the
+generator wrote them only at higher levels. The fix is a contract over the whole reading
+curriculum, not a patch for 2.5 (the reviewer, Part 8): at every core rung, every demand the
+rung has taught can be written into the rung's reading row, or the reason it cannot is
+declared. Three parts:
+
+- **A control for every demand, in app code.** `app/src/engine/readingControls.ts` maps each
+  demand of vocabulary v0 to the generator option that writes it (`on`) and the one that keeps
+  it out (`off`), whether a phrase of given options may contain it at all (`mayWrite`), and what
+  else a move measurably brings. The vocabulary gained only each demand's musical `dimension`
+  (`02` Part H); the map is not in it, so a later generator can be unbundled without the
+  vocabulary, or the evidence that names its ids, moving. New options, each tri-state (`true`
+  promises the demand and redraws a phrase without it, `false` keeps it out, absent is the
+  level's own — so every golden and every row's phrase is unchanged with them absent,
+  `sightReadingUnchanged.test.ts` against hashes written by the generator before C4b):
+  `ties` (only from a note on the beat, so a tie is never syncopation), `dottedQuarters` (in
+  simple time, beside a pair of plain eighths where the level writes eighths), `ledger` (the
+  right hand down to the A below middle C; `false` holds the range off the ledger lines),
+  `leaps` (a fourth or wider; `false` holds the melody to steps and skips), `sixteenths`, and
+  `leftHand` (`whole`, `chord`, `alberti`, `broken`, `walking`, with the left-hand range of the
+  level that first writes that pattern: an override, the level's own pattern when absent).
+  `skips`, `eighths`, `syncopation`, `triplets` and `accidentals` gained `false`;
+  `position: false` promises a melody wider than one five-finger position.
+
+  | demand | dimension | on | off |
+  |---|---|---|---|
+  | `clef.bass` | clef | `hands: 'L'` (level 1: the melody on the bass staff), `hands: 'both'` (2+) | `hands: 'R'` |
+  | `pitch.ledger` | range | `ledger: true` | `ledger: false` |
+  | `interval.step` | interval | — (in every phrase) | — (none needed or written) |
+  | `interval.skip` | interval | `skips: true` | `skips: false` |
+  | `interval.leap` | interval | `leaps: true` | `leaps: false` |
+  | `rhythm.eighths`, `rhythm.shorter-than-quarter` | rhythm | `eighths: true` | `eighths: false` (the second also `triplets`, `sixteenths: false`) |
+  | `rhythm.sixteenths` | rhythm | `sixteenths: true` | `sixteenths: false` |
+  | `rhythm.dotted-quarter` | rhythm | `dottedQuarters: true` | `dottedQuarters: false` |
+  | `rhythm.ties` | rhythm | `ties: true` | `ties: false` |
+  | `rhythm.syncopation` | rhythm | `syncopation: true` | `syncopation: false` (levels 5–7: every note where its length belongs) |
+  | `rhythm.triplets` | rhythm | `triplets: true` | `triplets: false` |
+  | `metre.compound` | metre | `timeSig: 6/8` | `timeSig: 4/4` |
+  | `key.signature` | key | `fifths`: every key with a signature the level writes, sharps and flats, a set the seed chooses from (keys are not ranked) | `fifths: 0` |
+  | `pitch.chromatic` | accidental | `accidentals: true` | `accidentals: false` |
+  | `range.beyond-position` | range | `position: false` | `position: true` |
+  | `texture.hands-together` | texture | `hands: 'both'` | `hands: 'R'` |
+  | `texture.left-hand-pattern` | texture | `leftHand: 'broken'` (`'alberti'` where a phrase may be in 6/8) | `leftHand: 'whole'` |
+  | `texture.walking-bass` | texture | `leftHand: 'walking'` | `leftHand: 'broken'` |
+
+  Declared as brought, measured: the left hand added at level 2+ brings the bass staff, both
+  hands at once, and its roots' leaps; a tie at level 2 can bring a leap (its closing note is
+  set after the melody has moved on — a fault of the tie's closing, D's, declared not fixed);
+  a moving left-hand pattern brings ledger lines below the bass staff (built from C2).
+- **`unrealisable(options)`** (`sightReading.ts`, pure): what the generator cannot write, in
+  words, instead of writing something else and letting it pass. The reasons, as printed:
+  "Level 1 writes one hand at a time; both hands start at level 2." · "A left-hand pattern is
+  written under a melody, so it needs both hands, from level 2." · "From level 2 the left hand
+  read alone plays its accompaniment, with no melody for these options to shape." · "Level 1
+  writes C major only." / "Level N writes keys up to M sharps or flats; a wider key is written
+  in the widest it has." · "A left hand read alone at level 1 starts and ends on the C below
+  middle C, too far by step from a ledger line to reach one and come back." · "Held inside one
+  five-finger position from middle C, the melody has no ledger line beyond middle C to reach."
+  · "Level 1's range is one five-finger position, so its melody cannot leave it." · "The
+  broken-chord and walking left hands move in quarters, which cross the dotted-quarter beat of
+  compound time." · "The Alberti, broken-chord and walking left hands are built from the C two
+  octaves below middle C, on ledger lines below the bass staff." · "A phrase in compound time
+  is not asked for syncopation or triplets: one new metre is enough to read (T37)." · "In
+  compound time the dotted quarter is the beat itself, not a dotted note to read." · "Compound
+  time at levels 1–4 is written in its three first figures, all of dotted quarters, quarters
+  and eighths." · "A tie crosses a bar line, and a phrase of one bar has none." · "A melody
+  held to steps cannot leap." · "A tie's closing note is set to the tied pitch after the
+  melody has moved on, so the note after it can be a third away / a fourth or wider away." ·
+  "From level 5 the melody moves to a chord tone on the strong beats, which can be a third /
+  a fourth or wider away." · "The Alberti, broken-chord and walking left hands move by
+  thirds." · "The left hand's roots move between I, IV and V, by fourths and fifths." · "The
+  syncopation below level 5 is the eighth–quarter–eighth figure." · "A dotted quarter in
+  simple time is completed by an eighth." · "From level 5 a syncopated bar opens on an eighth
+  rest and leaves an eighth to fill." · "The Alberti left hand is in eighths."
+- **The contract test** (`generatorContract.test.ts`): for every core rung from 1.3 to 4.7,
+  the reader's row there (`readingOffer`, no reads) held to what the rung has taught
+  (`heldToRung`: on 2.2–2.4 the right-hand row inside C position, S16; elsewhere the row as it
+  stands), and every taught demand, on and off, over twelve seeds, through the generator,
+  OSMD, the extractor and the detectors: the demand in every phrase asked (for syncopation,
+  triplets and the dotted quarter, every phrase in simple time), the rung's and the row's
+  promises kept (a promise about the demand itself dropped by an "off" is listed, not
+  failed), nothing a later rung teaches (nor sixteenths, which no rung teaches), nothing new
+  but what the control declares. Where a move cannot be made the reason is declared, and the
+  test holds the set to exactly `UNREALISABLE_AT`:
+
+  | rungs (the reader's row) | cannot | why |
+  |---|---|---|
+  | 1.3–4.7 (every row) | step off | no control: a phrase without a step is neither written nor needed |
+  | 1.5, 2.1 (`sight-reading-1`) | leap on | 1.5's drill promises "only steps and skips" |
+  | 2.1 (`sight-reading-1`) | hands together on | level 1 writes one hand (2.1 teaches both; the row there cannot) |
+  | 3.4–4.4 (`sight-reading-2`) | leap off | the left hand's roots move by fourths and fifths |
+  | 4.5–4.7 (`sight-reading-3`) | skip off, leap off | a tie's closing note (and the left hand's roots) |
+  | 4.5–4.7 | eighths off, shorter-than-quarter off | the 6/8 figures and the syncopation figure are eighths |
+  | 4.5–4.7 | compound time in every phrase | its syncopation and triplets are not asked in 6/8 (T37) |
+
+  Everything else is made, including the S25 moves: ties and dotted quarters from 2.4 on the
+  right-hand row, from 3.4 on the two-hand row and on 4.5's; a ledger line beyond middle C on
+  3.4's row (S22). The reader asks for them once it reads this map (C4c); until then the moves
+  exist and nothing offers them.
 
 **Unseen, and the seed.** The daily read keeps the day's seed (`dailySeed`), which ticks the day;
 the slot draws its own for the day (`dailySeed(day + '#reading')` stepped by Shuffle), and every
@@ -852,8 +953,8 @@ times the observation it came from. **No field says which demand caused a miss**
 at a skip, in the left hand, during eighths is wrong under all three. A demand with no measured
 opportunity is absent, `no-opportunity` stays a skill-level refusal only when none of the skill's
 demands had one, and a timing step the window cannot resolve is out of the skill's steps and so
-out of every demand's (at the phrase's own 72 bpm the eighths drop out of sight-reading's counts,
-as §9b's precision rule already said). One pass over the detectors per run serves every skill.
+out of every demand's (at 100 % of a phrase written at 72 bpm the eighths drop out of
+sight-reading's counts, as the precision rule above already said). One pass over the detectors per run serves every skill.
 
 **Demand readings** (`demandReadings.ts`, C4a). `demandReadings(rows, vocabulary, today)`: per
 reading-strand skill and per demand its evidence counted, over the skill's last

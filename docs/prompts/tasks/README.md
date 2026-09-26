@@ -143,6 +143,6 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **C3** | The evidence function and the ladder; the property test over the vocabulary; the sheet's "not judged" lines | build | done 2026-09-26 (Entry 72) |
 | **C4** | The first reader: sight-reading constraints from the reading skill state; unseen guaranteed; the true reason line; then the learner-facing checkpoint | build, browser | done 2026-09-26 (Entry 73); checkpoint written |
 | **T42** | The tempo ladder holds on a pass nothing judged and says so; the rhythm-ladder test that relied on L42's fault is revised (CI on a30dc96) | build, browser | done 2026-09-27 (Entry 74) |
-| **C4a** | Evidence per demand with the overlap between demands preserved; the evidence's own definitions version; the adversarial construct-validity cases | build | beside T42 and C4b |
+| **C4a** | Evidence per demand with the overlap between demands preserved; the evidence's own definitions version; the adversarial construct-validity cases | build | done 2026-09-27 (Entry 75) |
 | **C4b** | The curriculum–generator contract: the reading rows' dimensions as independent generator options; every progression the taught-at table allows is realisable, proven; impossible combinations declared | build, content | beside T42 and C4a |
 | **C4c** | The demand-sensitive reader; a key change is different, not harder; the thirty-day skip learner rerun with the reviewer's four demonstrations; the second checkpoint | build, browser | after C4a, C4b and T42 |

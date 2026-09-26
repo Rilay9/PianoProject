@@ -26,6 +26,13 @@ The reader stops backing out whatever it added last. It moves the dimension the 
 
 The reason words (in `help.ts`, printed in `04` §2); the order of candidates for a step up when several demands are taught and unread; how a `pattern` on a demand whose dimension is already at its floor is handled (hold and say so).
 
+## Facts from C4a's landing (Entry 75) that change your reading of the brief
+
+- `demandReadings` lives in `app/src/evidence/demandReadings.ts`; `ambiguous` covers both "held" and "fell together", so read its `below` field to tell a demand that fell with others from one that simply held. "Shorter than a quarter" patterns together with the eighths because they are the same notes: treat them as one control.
+- The skip learner's `pattern` appears by the second bad day (C4a tested it), so your step down is due on the day the brief says.
+- `EVIDENCE_DEFINITIONS` is 2 and rows stored since C4 contribute nothing until recomputed; your diaries write fresh rows, so this does not touch them, but say it in the report's unverified list for a real learner.
+- The both-succeed half of the ambiguity adversary stays `ambiguous` in C4a's readings, so the reader must hold and say so there (item 5).
+
 ## Hypotheses you inherit as questions
 
 - That C4a's `pattern` appears by the second bad day on the constructed skip learner (C4a's test says so on five reads; the diary has two bad reads before the move is due — check, and if the pattern needs a third read, the reader holds one more day and the diary shows it).

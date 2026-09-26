@@ -40,6 +40,13 @@
  * told right or wrong from the record; it is counted as measured and not
  * right, and the evidence says how many such steps it counted
  * (`context.unattributed`), so `right` is a floor, never an overstatement.
+ *
+ * **Uniform** (C4a) says the verdict holds for every expected pitch of the
+ * step, so for any one note of it: `h` (all struck, in time) and `m` (all
+ * missed). `e`, `w`, `p` and `l` on a chord say something went wrong at the
+ * step without saying at which note, so a demand on some of its notes cannot
+ * be told from them (the per-demand counts leave it out and say so). On a step
+ * with one note every verdict is that note's.
  */
 import type { RunObservation } from '../data/db';
 import { NOT_MEASURED, type NotMeasured } from '../engine/types';
@@ -66,6 +73,8 @@ export interface StepMeasure {
   right: boolean;
   /** Some pitches of a chord right and some not: which one is not recorded. */
   mixed: boolean;
+  /** The verdict holds for every expected pitch of the step (`h`, `m`): see the module note. */
+  uniform: boolean;
 }
 
 declare const MEASURED: unique symbol;
@@ -140,15 +149,19 @@ function pitchReading(observation: Observed): ChannelReading {
     switch (code) {
       case 'h':
       case 'e':
-        at.set(step, { right: true, mixed: false });
+        // Every expected pitch struck: `e` is early, not wrong, on this channel.
+        at.set(step, { right: true, mixed: false, uniform: true });
         break;
       case 'm':
+        at.set(step, { right: false, mixed: false, uniform: true });
+        break;
       case 'w':
-        at.set(step, { right: false, mixed: false });
+        // A wrong key first, then the step completed: not which note it was.
+        at.set(step, { right: false, mixed: false, uniform: false });
         break;
       case 'p':
       case 'l':
-        at.set(step, { right: false, mixed: true });
+        at.set(step, { right: false, mixed: true, uniform: false });
         break;
       default:
         // `-` nothing for the learner, `.` not reached: not measured.
@@ -173,9 +186,10 @@ function timingReading(observation: Observed): ChannelReading {
   for (let offset = 0; offset < steps.codes.length; offset += 1) {
     const code = steps.codes[offset];
     const step = steps.from + offset;
-    if (code === 'h') at.set(step, { right: true, mixed: false });
-    else if (code === 'e') at.set(step, { right: false, mixed: false });
-    else if (code === 'p') at.set(step, { right: false, mixed: true });
+    if (code === 'h') at.set(step, { right: true, mixed: false, uniform: true });
+    // A right pitch early and nothing missed: on a chord, not which pitch.
+    else if (code === 'e') at.set(step, { right: false, mixed: false, uniform: false });
+    else if (code === 'p') at.set(step, { right: false, mixed: true, uniform: false });
     // `m`: nothing was played there, so there is no onset to time.
   }
   const window = observation.input?.toleranceMs;

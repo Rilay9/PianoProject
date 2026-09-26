@@ -27,6 +27,19 @@ export interface RunPlan {
    * written one, in time (C4: a misread note, as a reader plays it).
    */
   wrongInstead?: readonly number[];
+  /**
+   * The key struck instead at a `wrongInstead` step: the white key below
+   * unless said. A hand-made phrase whose misread key is the next note's (a
+   * skip up read as a step, then that step) would have the engine hold it as
+   * an early strike of that next note (C4a: the adversary phrases pass one that
+   * no later step expects, so every misread step reads `m`).
+   */
+  wrongKey?: (midi: number) => number;
+  /**
+   * Keep tempo: pitches struck wrong (by `wrongKey`) wherever this says so,
+   * for a step whose notes are not all misread — one hand of a chord (C4a).
+   */
+  wrongPitch?: (step: number, midi: number) => boolean;
   /** Nothing reaches the engine: the run nothing heard. */
   silent?: boolean;
   loop?: { fromStep: number; toStep: number };
@@ -88,7 +101,8 @@ export function play(data: ScoreModelData, plan: RunPlan = {}): { score: Session
     if (!step || step.isEmpty || plan.silent === true || plan.skip?.includes(index)) continue;
     const at = step.tMs - origin + (plan.offsetMs?.(index) ?? 0);
     until(h, Math.max(h.clock.now(), at));
-    const keys = plan.wrongInstead?.includes(index) ? step.expected.map(whiteKeyBelow) : step.expected;
+    const misread = (midi: number): boolean => plan.wrongInstead?.includes(index) === true || plan.wrongPitch?.(index, midi) === true;
+    const keys = step.expected.map((midi) => (misread(midi) ? (plan.wrongKey ?? whiteKeyBelow)(midi) : midi));
     for (const midi of keys) h.play(midi);
     until(h, at + 60);
     for (const midi of keys) h.release(midi);

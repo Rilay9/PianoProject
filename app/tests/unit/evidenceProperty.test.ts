@@ -15,6 +15,13 @@
  *    narrow enough, every note right: evidence at the full standard whose
  *    count equals the opportunity steps the run covered.
  *
+ * Revised (C4a): the evidence is per demand as well as per skill. In case 3
+ * every demand the skill names (every vocabulary demand, for a skill read
+ * over every step) that the fixture contains has its own count, equal to the
+ * steps the detector locates it at, all right; in cases 1, 1b and 2 the
+ * refusal carries no per-demand count at all. The old assumption was that
+ * evidence is per skill only.
+ *
  * The test walks `skills.json`, so a skill added later is covered by being
  * added; and it refuses a demand with no fixture below, so a demand added
  * later has to bring one. A skill whose observable is `none` is refused in all
@@ -23,7 +30,7 @@
 import { describe, expect, it } from 'vitest';
 import { phrase, line, type HandNote } from './helpers/phrase';
 import { observe } from './helpers/observed';
-import { evidenceFor, type EvidenceResult } from '../../src/evidence/evidence';
+import { evidenceFor, type EvidenceResult, type MeasuredEvidence } from '../../src/evidence/evidence';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import { detect, type DetectorId } from '../../src/demands/detect';
 import type { Observed } from '../../src/evidence/measurement';
@@ -148,6 +155,23 @@ function opportunities(skill: Skill, model: ScoreModelData): number {
   return steps.size;
 }
 
+/**
+ * The demands a skill's evidence must count separately in a fixture played in
+ * full: the ones it names (every vocabulary demand, for a skill read over every
+ * step) that the fixture contains, in the vocabulary's order, with the steps
+ * the detector locates each at — the detectors' answer, not the function's.
+ */
+function demandsIn(skill: Skill, model: ScoreModelData): { demand: string; steps: number[] }[] {
+  const named = skill.opportunity === 'every-step' ? null : new Set(skill.opportunity);
+  return VOCABULARY_V0.demands
+    .filter((demand) => named === null || named.has(demand.id))
+    .map((demand) => ({
+      demand: demand.id,
+      steps: [...new Set(detect(model, demand.detector).at.map((at) => at.step))].sort((a, b) => a - b),
+    }))
+    .filter((one) => one.steps.length > 0);
+}
+
 const evidence = (skill: Skill, model: ScoreModelData, observation: Observed): EvidenceResult =>
   evidenceFor({ observation, played: model, targetSkills: [skill.id], vocabulary: VOCABULARY_V0 })[0] as EvidenceResult;
 
@@ -176,6 +200,7 @@ describe.each(VOCABULARY_V0.skills.map((skill) => [skill.id, skill] as const))('
       const result = evidence(skill, fixture.model, observation);
       expect(result.kind).toBe('refusal');
       expect(result.kind === 'refusal' && result.reason).toMatch(/^not-measured:/);
+      expect(result).not.toHaveProperty('byDemand');
     });
 
     it(`1b: a row of placeholders with ${demand} present gives no evidence (L52)`, () => {
@@ -191,6 +216,7 @@ describe.each(VOCABULARY_V0.skills.map((skill) => [skill.id, skill] as const))('
       } as Observed;
       const result = evidence(skill, fixture.model, placeholder);
       expect(result.kind === 'refusal' && result.reason).toMatch(/^not-measured:/);
+      expect(result).not.toHaveProperty('byDemand');
     });
 
     it(`2: ${demand} outside what was played gives no evidence`, () => {
@@ -211,6 +237,7 @@ describe.each(VOCABULARY_V0.skills.map((skill) => [skill.id, skill] as const))('
             ? /^(no-opportunity|not-measured:pitch)$/
             : /^no-opportunity$/;
       expect(result.kind === 'refusal' && result.reason).toMatch(expected);
+      expect(result).not.toHaveProperty('byDemand');
     });
 
     it(`3: everything met with ${demand} gives evidence counting its opportunities`, () => {
@@ -223,6 +250,15 @@ describe.each(VOCABULARY_V0.skills.map((skill) => [skill.id, skill] as const))('
       const count = opportunities(skill, fixture.model);
       expect(count).toBeGreaterThan(0);
       expect(result).toMatchObject({ kind: 'measured', skill: skill.id, standard: 'full', n: count, right: count });
+      // Per demand (C4a): each demand the fixture contains, counted at its own steps, all right.
+      const expected = demandsIn(skill, fixture.model);
+      if (skill.opportunity !== 'every-step') expect(expected.map((one) => one.demand)).toContain(demand);
+      const byDemand = (result as MeasuredEvidence).byDemand;
+      expect(byDemand?.map((one) => one.demand), 'the evidence kept no per-demand counts').toEqual(expected.map((one) => one.demand));
+      for (const one of expected) {
+        const kept = byDemand.find((entry) => entry.demand === one.demand);
+        expect(kept, one.demand).toMatchObject({ n: one.steps.length, right: one.steps.length, steps: one.steps, wrong: [] });
+      }
     });
   }
 });

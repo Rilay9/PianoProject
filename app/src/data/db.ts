@@ -174,13 +174,23 @@ export interface RunObservation extends RunHeader, Partial<RunMeasures> {
    * What this run is evidence of, and what it is not (C4 item 0): the evidence
    * function's results for the skills the item declares, computed once by the
    * Score screen when it records the run, because the played model it needs
-   * exists only there. A cache of a derived value, stamped with this row's
-   * `definitions`: a reader uses it only when that is the version in force,
-   * and never re-derives a row without it (`evidence/readingState.ts`).
-   * Refusals are kept beside the evidence, citing what they read. No
-   * observation field changes for it; compaction keeps it.
+   * exists only there. A cache of a derived value, stamped with the
+   * evidence's own version (`evidenceDefinitions`, C4a): a reader uses it only
+   * when that is the version in force (`evidence/readingState.ts`); a row
+   * with another stamp, or none, is refreshed only by `recomputeEvidence`
+   * given the played model, which nothing runs yet. Refusals are kept beside
+   * the evidence, citing what they read. No observation field changes for it;
+   * compaction keeps it.
    */
   evidence?: EvidenceResult[];
+  /**
+   * `EVIDENCE_DEFINITIONS` when `evidence` was computed (C4a, L66): the
+   * evidence's rules and shape, independent of the observation's
+   * `definitions` — the observation's rules can hold while the evidence's
+   * change, and the other way round. Absent on rows C4 stored, whose evidence
+   * had no stamp of its own (version 1, per skill only).
+   */
+  evidenceDefinitions?: number;
 }
 
 export interface SessionRow extends RunObservation {

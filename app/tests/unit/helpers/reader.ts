@@ -4,15 +4,16 @@
 // `sightReadingPromises` does), played through the real engine on a fake clock
 // (`observed.ts`), measured by the record's one definition, and read by the
 // evidence function with the row's own `targetSkills` — the call the Score
-// screen makes at record time. What a test hands the reading state is a row
-// the store would have kept, not a hand-typed guess at one.
+// screen makes at record time — and stamped as that call stamps it (C4a: the
+// evidence's own version, `stampedEvidence`). What a test hands the reading
+// state is a row the store would have kept, not a hand-typed guess at one.
 //
 // Test files that use this need `// @vitest-environment jsdom` (OSMD draws).
 
 import { OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
 import { extractScoreModel } from '../../../src/score/extractScoreModel';
 import { generateSightReading, type SightReadingOptions } from '../../../src/engine/sightReading';
-import { evidenceFor, type EvidenceResult } from '../../../src/evidence/evidence';
+import { evidenceFor, stampedEvidence, type EvidenceResult } from '../../../src/evidence/evidence';
 import { VOCABULARY_V0 } from '../../../src/evidence/vocabulary';
 import { detect } from '../../../src/demands/detect';
 import type { ScoreModel } from '../../../src/score/types';
@@ -105,7 +106,7 @@ export async function readPhrase(read: Read): Promise<ReadOut> {
   const header = {
     ...observation,
     ...(read.recipe ? { recipe: read.recipe } : {}),
-    evidence,
+    ...stampedEvidence(evidence),
   };
   const result = {
     ...header,

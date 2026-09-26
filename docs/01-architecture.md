@@ -312,15 +312,24 @@ field the run carries (`RunObservation` in `data/db.ts`):
   it records the run — the one place the played model exists, since a generated phrase is not
   kept — and read back by `evidence/readingState.ts`. It is a cache of a derived value
   (design §5), not a stored state: the ladder is derived from it every time. **The stamp is the
-  row's own `definitions`.** A row whose `definitions` is not `OBSERVATION_DEFINITIONS`, or
-  which carries no `evidence` (written before C4, or by a writer with no model), contributes
-  nothing to the reading state; it is **not re-derived**, because re-deriving needs the played
-  model, which the row does not carry (the phrase could be regenerated from `recipe` and `seed`;
-  nothing does that yet). So a change to the vocabulary or to the evidence function that
-  changes results must move `OBSERVATION_DEFINITIONS` too, or stored evidence is read as current
-  when it is not — the stamp covers the observation's rules, and the evidence's only by that
-  rule (a follow-up: an evidence version of its own). Compaction keeps the field, so evidence
-  outlives the per-step detail it was computed from. No observation field C1 defined changed.
+  evidence's own (C4a, 2026-09-26; L66).** `SessionRow.evidenceDefinitions` is
+  `EVIDENCE_DEFINITIONS` when the evidence was computed, independent of the observation's
+  `definitions`: C4a changed what evidence is (per-demand counts, `05` §9b) without changing an
+  observation field, which is why one stamp could not serve both. A row whose evidence stamp is
+  not the current one — every row C4 stored, whose evidence had no stamp of its own — or which
+  carries no `evidence` (written before C4, or by a writer with no model), contributes nothing to
+  the reading state; it is **not re-derived** on read, because re-deriving needs the played
+  model, which the row does not carry. `recomputeEvidence(row, played, vocabulary)` gives what
+  the record call would store today, for a job that regenerates the phrase from `recipe` and
+  `seed` (or loads the file); nothing runs that job yet. A change to the vocabulary or the
+  evidence function that changes results moves `EVIDENCE_DEFINITIONS`, not
+  `OBSERVATION_DEFINITIONS`. Compaction keeps the field, so evidence outlives the per-step detail
+  it was computed from. With the per-demand counts a sight-read's stored evidence is about twice
+  its bare observation (a four-bar one-hand phrase and an eight-bar two-hand one, as structured
+  clone), so a compacted sight-read keeps several times the bytes of a compacted row without
+  evidence: folding the per-demand step lists at compaction is a follow-up, and the retention
+  budget above is held against a row that carries no evidence. No observation field C1 defined
+  changed.
 - **The recipe (C4).** On a sight-reading run, `SessionRow.recipe` is what the phrase was
   written from: the catalog row, the dimensions Today's reader moved (`ReadingMoves`, in the
   row's own `drill.params` spelling — hands, `position`, eighths, fifths, timeSig,
