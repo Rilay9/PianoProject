@@ -6,6 +6,13 @@ on:
   pull_request:
     branches: [claude/piano-teaching-app-bo19td]
 
+# One CI run per branch at a time: a newer push cancels the runs queued behind it, so the
+# latest HEAD gets its conclusion instead of waiting behind every record commit (2026-09-26,
+# when fourteen runs were in progress at once). A cancelled run is not a red one.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 # NOTE: this repository's default branch is `claude/piano-teaching-app-bo19td`
 # (there is no `main`). See docs/decisions/2026-09-05-default-branch.md.
 # If the default branch is later renamed to `main`, update the branch names
