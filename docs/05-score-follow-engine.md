@@ -501,7 +501,8 @@ Deterministic from a seed so a failed sight-read can be retried identically once
 
 **Unseen means unheard as well (2026-09-25, T40).** A run of a phrase the app has played to the
 learner — `Hear it`, a held bar, *Play it to me*; any Listen run on it, before the run or during
-it — is not a first reading and is not recorded, exactly as a retry is not. The Score screen
+it — is not a first reading, exactly as a retry is not; since C1 (2026-09-26) both are recorded
+as practice, flagged `unseen: false`, and pass nothing (`01` §4.5). The Score screen
 keeps that per phrase for the visit (`phraseHeard`, set where a Listen run starts); T33 had it
 per run, from the bars of a demonstration inside the run, which a fresh start emptied. The
 summary sheet of every sight-read offers **New phrase**: the same row with a fresh seed in the
@@ -548,6 +549,19 @@ passing or neighbour note (a quarter or less, off beats one and three) rising a 
 fifth; a first version let it sit for two beats on beat three over the tonic chord.
 `sightReadingPromises.test.ts` generates every row and checks each phrase for what its rungs
 promise and for nothing the earliest rung listing it has not taught.
+
+**What a phrase demands is measured by one module (2026-09-26, C2).** The checks that test
+made (an eighth, a triplet, a skip, syncopation, an accidental, a walking bass) were a dozen
+helpers reading the MusicXML string inside the test. They are now `app/src/demands/detect.ts`,
+reading the score model the engine plays, which keeps the written parts of a tie chain
+(`ScoreNote.tiedDurations`) and the tuplet (`ScoreNote.tuplet`) for them. The taught-at table
+is `taughtAt` in `content/curriculum/vocabulary/demands.json`, so the absence check covers
+every v0 demand rather than six. Moving them found three things: a melody in the left hand
+alone counted as an accompaniment pattern; a broken chord in quarters counted as a walking
+bass, which is how level 6 passed theory.9's "walking bass", a sentence about level 7; and
+`sight-reading-2-right` writes past C position on 2.2 (S16, recorded in the test, not fixed
+here). Two limits the model sets on every detector: it carries no clef (staff 1 is read as
+treble, staff 2 as bass, which every generated phrase is) and only the first key signature.
 
 **Tempo mode is applied after the learner's default, not before it** (fixed 2026-09-22).
 `ScoreScreen` set `mode = 'tempo'` where the score finished loading and then read
@@ -607,11 +621,14 @@ to appear with a generic name ⇒ never key settings on the device name alone.
 one. The rule in a sentence: *a run judged for a rung uses that rung's numbers; a run with
 no rung uses the defaults.*
 
-- The rung is **the one that opened the screen** (`?from=`) where one did, and
-  `lessonForItem(curriculum, itemId)` — the first rung listing the item — only where none did
-  (2026-09-25, T37). It was always the first listing: a minuet opened from `classical.3` was
-  held to 3.4's numbers and stored as 3.4's run. Completion is unchanged: a pass is still a
-  flag on the item, credited on every rung listing it (Wave C's business).
+- The rung is **the one that opened the screen** (`?from=`), and no other. It was always the
+  first listing: a minuet opened from `classical.3` was held to 3.4's numbers and stored as
+  3.4's run. T37 made the opening rung win and kept the first listing where none opened the
+  screen; since C1 (2026-09-26) a run from nowhere has no rung, is judged by the defaults, and
+  is stored with none (the side panel still shows the first listing's prose, as reading).
+  Today opens its cards without `?from=`, so a Today run is such a run until Today carries its
+  slot's rung. Completion is unchanged: a pass is still a flag on the item, credited on every
+  rung listing it (Wave C's business).
 - `mastery.minAccuracy` is already a fraction. `mastery.minTempoPct` is written as a fraction
   in **every** rung of the built curriculum (the values in use are 0, 0.7, 0.75, 0.8, 0.85
   and 0.9) while the scorer speaks percentages, so a value at or below 1 is read as a
@@ -630,6 +647,24 @@ no rung uses the defaults.*
 - The run is stored with the rung that judged it (`SessionRow.lessonId`). Older rows keep the
   `passed`/`bestAccuracy`/`bestTempoPct` they were written with; **changing a rung's numbers
   does not re-judge history**, and the numbers needed to re-judge it are in the row.
+
+**What a run records (2026-09-26, C1).** `Scoring.measuresOf` is the one place a run's
+measures are defined for the record, beside `buildScore` for the sheet: pitch with its
+definition — `wait-steps` (steps completed cleanly, of the steps with something to play) or
+`tempo-notes` (expected pitches inside their window, of the expected) — and its denominators,
+never one number for both (L10); a rhythm-only run has no pitch and its figure is `rhythm`;
+early notes (Keep tempo); the timing summary; the technique measure with *not measured* kept
+(`TechniqueMeasure.measured`); the accents where the run's music prints one (*not measured*
+where every note arrived at one velocity); the pedal (MIDI only); rolled and lenient chords;
+laps. A run nothing heard measured none of them. The engine marks each step where it is decided
+(`PracticeEngine.stepMarks`: a hit where a pitch matches, a miss and an early note where a
+window closes, a Wait step's cleanliness where it completes), because the miss maps were per bar
+and `notes` holds only what was played — so `SessionScore.stepOutcomes` has one code per step
+(`h` `p` `m` `e` `w` `l` `-` `.`, `engine/types.ts`), the wrong and early notes against their
+steps (a wrong note that matched nothing against the step nearest it in time, as its bar is
+found for the hot spots), and every timed note's delta; `judgedUnder` reports the hands, the
+grace-note rule, the window, the latency and the range. What is not built: continuity (stops,
+gaps, time per step in Wait) has no measure yet, and is not stored ahead of one.
 
 **The technique measures.** `articulationScore`, `voicingScore` and `shapingScore` (P12a) are
 computed for a run of an exercise whose own `drill` block asks for one —

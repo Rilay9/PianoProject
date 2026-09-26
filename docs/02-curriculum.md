@@ -910,7 +910,7 @@ suggestions** with a note on where to buy/obtain MusicXML.
   go?* answer is written with the run, and *Clean* is a self-assessed pass. A run is judged
   by the rung that opened the Score screen where one did. A sight-read counts on its
   first attempt *per phrase*: the phrase's seed is on the session row, so re-opening
-  today's read and playing it again is a retry and is not recorded. The sentence below
+  today's read and playing it again is a retry, recorded as practice (C1, below). The sentence below
   that the drills "generate a fresh phrase every time" is true of every open except
   Today's, which is one phrase a day by design (`04` §2).
 - **Three runs that are not what they look like (2026-09-25, T40; the reviewer's
@@ -922,11 +922,24 @@ suggestions** with a note on where to buy/obtain MusicXML.
   which input was chosen, and a run with one note in it is measured as any run is. *Clean*
   after a rhythm-only run is recorded as the learner's word and is not a pass of the piece.
   *A sight-read the learner has heard* — `Hear it`, a held bar or *Play it to me*, before the
-  run or during it — is not a first reading and is not recorded, the same rule as a repeat;
+  run or during it — is not a first reading, the same rule as a repeat, and is recorded
+  only as practice (C1, below);
   the sheet offers *New phrase*, a fresh phrase of the same row, which is. So hearing today's
   phrase first means the day is not ticked by it. *A performance the piece was played to the
   learner in the middle of* is recorded as practice, not as a performance (`04` §5e); heard
   before the take began, it is still a performance.
+- **What a run leaves behind (2026-09-26, C1; the reviewer's decisions 3 and 5).** Every run
+  of a judging mode is recorded with what it measured and the conditions it was played under
+  (`01` §4.5), a channel it did not measure marked *not measured*, never 0. A sight-read heard
+  before or during its run, or read before, is recorded **flagged** (`unseen: false`): its
+  minutes and its attempt count, and it passes nothing, masters nothing and does not tick the
+  day — it is practice, not evidence of reading. A performance with a demonstration inside it
+  says so (`demonstrated: true`) as well as being practice. A Score-screen run opened from no
+  rung is judged by the defaults above (the learner's pair in Settings) and stored with no
+  rung; the first rung listing the item no longer stands in. The keys guide is off for the
+  sight-reading drills by default (*Keys guide when sight-reading*, `04` §7): a phrase read
+  with the next key lit is followed on the keys, not read from the staff, and every run
+  records what the keys showed.
 - **What a drill run counts (2026-09-16, `04` §5c).** *Show me* draws the answer on a staff
   and *Hear it* plays it; either forfeits the mark for that prompt, so a set you revealed your
   way through cannot pass. A missed card pauses until you tap it on. When the set ends the app
@@ -955,3 +968,44 @@ suggestions** with a note on where to buy/obtain MusicXML.
   `master`, but reappears in "Repertoire" every ~30 days.
 - Prerequisites are advisory; "strict mode" locks items until prerequisites are passed.
 - The placement test can mark whole stages `passed (placement)`.
+
+## Part H — Vocabulary v0: what a skill is and what a demand is (2026-09-26, C2)
+
+The curriculum names *concepts*: 283 of them, mixing abilities, notation, styles and app
+features. The evidence model (`prompts/design-2026-09-26-vocabulary.md` §1, §4) needs two
+narrower words, and v0 defines them for the reading strand only (reviewer decision 2: small,
+grown only when a reader needs it and its observable exists).
+
+- **A skill** is an ability a teacher names: *reading by interval*, *subdivision*, *the bass
+  clef*. `content/curriculum/vocabulary/skills.json` gives each its kind, its **opportunity**
+  (the demands whose steps exercise it), its **observable** (pitch, timing, or `none`, with
+  the parts no run measures listed) and the run conditions for its **practice** and **full**
+  standards: Keep tempo for anything timed; unseen and the key guide off for reading at the
+  full standard. Sixteen skills: what the nine sight-reading rows and the rungs 1.3, 1.4,
+  1.5, 2.2, 2.5, 3.4, 4.5 and 4.6 practise, plus `tie` and `dotted-quarter`, which the
+  taught-at table below needs a coper for. Ids are today's concept ids wherever they read as
+  abilities; `accidentals` is the one new id. `reading-ahead` (4.6) is `observable: none`:
+  continuity is not measured, and neither is the "straight through" part of sight-reading.
+- **A demand** is something the notation contains, found by a detector and located in steps:
+  an eighth, a skip, a note on a ledger line beyond middle C. `demands.json` gives each its
+  detector (a function in `app/src/demands/detect.ts`, reading the score model the engine
+  plays), the skill that copes with it (`copedWithBy`), and the rung that teaches it
+  (`taughtAt`). Nineteen demands. `steps`, `skips` and `eighth-notes` stay concepts but are
+  demands here; C position is a range (`range.beyond-position` absent).
+- **Items.** `targetSkills` (declared, never evidence) is on the nine sight-reading rows only.
+  `demands` (measured by the build, E) and `role` (D) exist in the schema and nothing writes
+  them yet. A genre is never a skill or a demand; the generated rows' `genre: ["technique"]`
+  and `["drill"]` are types, left for D to remove.
+- **The build gate.** `validate.py` refuses a rung that requires evidence no run can give:
+  a concept that is a v0 skill with `observable: none` (completing a rung marks its concepts
+  known), or a `mastery.custom` term — mapped to a skill in `requirementTerms` until C5 turns
+  requirements into predicates — whose standard needs a condition no run records, or whose
+  count nothing evaluates. Three are waived today with reasons, printed on every build:
+  1.5's `sight-read-5-first-attempt>=0.9` (nothing counts the five; the key guide is not
+  recorded), 3.4's `sight-read-5>=0.85` (nothing counts them), 4.6's `reading-ahead`. The
+  technique, ear and performance terms outside v0 are listed as unjudged, never passed in
+  silence.
+- **Taught at.** `sightReadingPromises.test.ts` holds every sight-reading row to *nothing the
+  earliest rung listing it has not taught*, read from `taughtAt`. One known exception:
+  `sight-reading-2-right` reaches C5 on 2.2, three rungs before 2.5 teaches leaving C position
+  (S16; D's per-rung row).

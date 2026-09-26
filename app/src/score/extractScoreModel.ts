@@ -113,6 +113,8 @@ export interface OsmdNote {
   Length: { RealValue: number };
   Fingering?: { value?: string } | undefined;
   NoteTie?: { StartNote?: OsmdNote; Notes?: OsmdNote[] } | undefined;
+  /** The innermost tuplet the note is written in (C2); `TupletLabelNumber` is 3 for a triplet. */
+  NoteTuplet?: { TupletLabelNumber?: number } | undefined;
   ParentStaffEntry?: { ParentStaff?: { Id?: number } } | undefined;
   isRest(): boolean;
 }
@@ -264,6 +266,22 @@ function tieDurationBeats(note: OsmdNote): number {
   return total;
 }
 
+/**
+ * The written length of each note in a tie chain, in beats (C2). Only for a
+ * chain: an untied note's written length is its `duration`.
+ */
+function tiedDurationsBeats(note: OsmdNote): number[] | undefined {
+  const notes = note.NoteTie?.Notes;
+  if (!notes || notes.length < 2) return undefined;
+  return notes.map((n) => roundBeats(wholeNotesToBeats(n.Length.RealValue)));
+}
+
+/** The tuplet's number, or nothing outside one (C2). */
+function tupletOf(note: OsmdNote): number | undefined {
+  const label = note.NoteTuplet?.TupletLabelNumber;
+  return typeof label === 'number' && Number.isInteger(label) && label > 1 ? label : undefined;
+}
+
 function parseFingering(note: OsmdNote): number | undefined {
   const raw = note.Fingering?.value;
   if (raw === undefined) return undefined;
@@ -396,6 +414,8 @@ export function extractScoreModelFromSheet(
         const duration = roundBeats(tieDurationBeats(note));
         const fingering = parseFingering(note);
         const tieLength = note.NoteTie?.Notes?.length ?? 1;
+        const tiedDurations = tieLength > 1 ? tiedDurationsBeats(note) : undefined;
+        const tuplet = tupletOf(note);
         const accidental = writtenAccidental(note, midi, keyFifths[sourceMeasureIndex] ?? 0);
         notes.push({
           id: makeNoteId({ measureIndex, staff, voice, onset, midi }),
@@ -412,6 +432,8 @@ export function extractScoreModelFromSheet(
           ...(isGrace ? { graceNote: true } : {}),
           ...(staff !== home ? { crossStaff: true } : {}),
           ...(tieLength > 1 ? { tieLength } : {}),
+          ...(tiedDurations === undefined ? {} : { tiedDurations }),
+          ...(tuplet === undefined ? {} : { tuplet }),
           ...(accented ? { accent: true } : {}),
           ...(accidental === undefined ? {} : { accidental }),
         });

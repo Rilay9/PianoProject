@@ -1,0 +1,229 @@
+{
+  "_comment": [
+    "Vocabulary v0: the reading skills (C2, 2026-09-26; design 2026-09-26-vocabulary.md §1, §4).",
+    "",
+    "A skill is an ability a teacher names. Each one says which demands exercise it",
+    "(`opportunity`, ids in demands.json), how a run could show it (`observable`: pitch,",
+    "timing, or none, with the parts no run measures under `unobserved`), and the run",
+    "conditions for its practice standard and its full one. v0 holds only what the nine",
+    "sight-reading rows and the rungs 1.3, 1.4, 1.5, 2.2, 2.5, 3.4, 4.5 and 4.6 practise,",
+    "plus the two skills the taught-at table needs a coper for (tie, dotted-quarter). A",
+    "skill is added when a reader needs it and its observable exists (reviewer decision 2).",
+    "",
+    "Ids are today's concept ids wherever they read as abilities (concepts.json keeps their",
+    "display names and finders); `accidentals` is the one new id. `steps`, `skips` and",
+    "`eighth-notes` stay concepts but are demands here (interval.step, interval.skip,",
+    "rhythm.eighths), and `C-position` is a range v0 measures (range.beyond-position absent):",
+    "none is a skill, because a detector finds it.",
+    "",
+    "`requirementTerms` and `gateWaivers` are interim: the first maps the two",
+    "`mastery.custom` terms that name a v0 skill, the second names the rungs the build gate",
+    "would refuse today and why. Both go when C5 turns rung requirements into predicates.",
+    "validate.py checks this file against skills.schema.json and its references."
+  ],
+  "conditions": [
+    {
+      "id": "keep-tempo",
+      "meaning": "The run kept a tempo (Keep tempo), so onsets were timed. Wait has no clock.",
+      "recordedBy": "SessionRow.mode and SessionRow.tempoMeasured (T37); a pass with a tempo floor requires it (Scoring.evaluateOutcome)"
+    },
+    {
+      "id": "unseen",
+      "meaning": "The first reading of this music: not played or heard before this run.",
+      "recordedBy": "For a generated phrase, SessionRow.seed and the Score screen's refusal to record a seen or heard sight-read (T37, T40). First contact with a fixed file is not recorded; v0's material is the generated phrases."
+    },
+    {
+      "id": "guide-off",
+      "meaning": "The keys under the score did not mark the next key, so the notes were read and not followed.",
+      "recordedBy": null
+    },
+    {
+      "id": "both-hands",
+      "meaning": "The run played both hands, not one with the other left out or played by the app.",
+      "recordedBy": null
+    }
+  ],
+  "skills": [
+    {
+      "id": "sight-reading",
+      "display": "Sight-reading",
+      "sentence": "Playing a phrase you have never seen, first time, at a steady tempo: the right notes in the right rhythm.",
+      "kind": "reading",
+      "opportunity": "every-step",
+      "observable": ["pitch", "timing"],
+      "unobserved": [
+        "Straight through without stopping: stops and hesitations are not measured (continuity is not built, design §3). That part is reading-ahead."
+      ],
+      "standards": { "practice": ["keep-tempo"], "full": ["keep-tempo", "unseen", "guide-off"] }
+    },
+    {
+      "id": "reading-ahead",
+      "display": "Reading ahead",
+      "sentence": "Keeping the music going by reading further along the line than the note you are playing.",
+      "kind": "continuity",
+      "opportunity": "every-step",
+      "observable": "none",
+      "unobserved": [
+        "The eyes cannot be seen, and the one sign a run could give of reading ahead (no stop, no hesitation before a new bar) is not measured: continuity is not built (design §3)."
+      ],
+      "standards": { "practice": [], "full": [] }
+    },
+    {
+      "id": "bass-clef",
+      "display": "The bass clef",
+      "sentence": "Reading notes on the bass staff by where they sit, not by counting up from a landmark every time.",
+      "kind": "reading",
+      "opportunity": ["clef.bass"],
+      "observable": ["pitch"],
+      "standards": { "practice": [], "full": ["unseen", "guide-off"] }
+    },
+    {
+      "id": "ledger-lines",
+      "display": "Ledger lines",
+      "sentence": "Reading notes above and below the staff, on the ledger lines beyond middle C.",
+      "kind": "reading",
+      "opportunity": ["pitch.ledger"],
+      "observable": ["pitch"],
+      "standards": { "practice": [], "full": ["unseen", "guide-off"] }
+    },
+    {
+      "id": "interval-reading",
+      "display": "Reading by interval",
+      "sentence": "Reading the distance to the next note (a step, a skip, a leap) from its shape on the staff instead of naming every note.",
+      "kind": "reading",
+      "opportunity": ["interval.step", "interval.skip", "interval.leap"],
+      "observable": ["pitch"],
+      "standards": { "practice": [], "full": ["unseen", "guide-off"] },
+      "note": "Right notes are what a note-namer plays too, in a fixed position with the first finger printed (design §2, the generated-exercise trace Q5). Pitch is the observable; that it shows reading by interval rather than by name rests on the material and the conditions, not on the measurement."
+    },
+    {
+      "id": "position-shift",
+      "display": "Shifting position",
+      "sentence": "Moving the hand to a new place when the music leaves the five notes under it.",
+      "kind": "technique",
+      "opportunity": ["range.beyond-position"],
+      "observable": ["pitch"],
+      "unobserved": ["Without a gap in the sound: legato across the shift is not measured."],
+      "standards": { "practice": [], "full": ["keep-tempo", "guide-off"] }
+    },
+    {
+      "id": "subdivision",
+      "display": "Subdivision",
+      "sentence": "Feeling the smaller notes inside the beat, two eighths or four sixteenths to it, and placing them evenly.",
+      "kind": "rhythm",
+      "opportunity": ["rhythm.eighths", "rhythm.shorter-than-quarter", "rhythm.sixteenths"],
+      "observable": ["timing"],
+      "standards": { "practice": ["keep-tempo"], "full": ["keep-tempo", "unseen"] }
+    },
+    {
+      "id": "dotted-quarter",
+      "display": "Dotted quarter notes",
+      "sentence": "Holding a note for a beat and a half and placing the eighth after it.",
+      "kind": "rhythm",
+      "opportunity": ["rhythm.dotted-quarter"],
+      "observable": ["timing"],
+      "standards": { "practice": ["keep-tempo"], "full": ["keep-tempo", "unseen"] }
+    },
+    {
+      "id": "tie",
+      "display": "Ties",
+      "sentence": "Holding a note through the tie into the next beat or bar without playing it again.",
+      "kind": "rhythm",
+      "opportunity": ["rhythm.ties"],
+      "observable": ["timing"],
+      "standards": { "practice": ["keep-tempo"], "full": ["keep-tempo", "unseen"] },
+      "note": "Timing, for the note after the tie. A tied note played again is an extra key; whether the engine counts it against the run was not checked, so pitch is not claimed."
+    },
+    {
+      "id": "syncopation",
+      "display": "Syncopation",
+      "sentence": "Placing a note off the beat, or coming in after a rest on the beat, against a pulse that keeps going.",
+      "kind": "rhythm",
+      "opportunity": ["rhythm.syncopation"],
+      "observable": ["timing"],
+      "standards": { "practice": ["keep-tempo"], "full": ["keep-tempo", "unseen"] }
+    },
+    {
+      "id": "triplets",
+      "display": "Triplets",
+      "sentence": "Fitting three even notes into the space of two.",
+      "kind": "rhythm",
+      "opportunity": ["rhythm.triplets"],
+      "observable": ["timing"],
+      "standards": { "practice": ["keep-tempo"], "full": ["keep-tempo", "unseen"] },
+      "note": "At the rungs' tempi the engine's ±150 ms window cannot tell even triplets from a rushed sixteenth-sixteenth-eighth (design §4; reviewer decision 6). Timing is the observable; the evidence function (C3) refuses it wherever the window is wider than the difference it has to see."
+    },
+    {
+      "id": "6/8",
+      "display": "Six-eight time",
+      "sentence": "Feeling two beats of three eighths each, not six equal beats.",
+      "kind": "rhythm",
+      "opportunity": ["metre.compound"],
+      "observable": ["timing"],
+      "standards": { "practice": ["keep-tempo"], "full": ["keep-tempo", "unseen"] }
+    },
+    {
+      "id": "key-signature",
+      "display": "Key signatures",
+      "sentence": "Remembering the sharps or flats at the start of the line on every note they alter.",
+      "kind": "reading",
+      "opportunity": ["key.signature"],
+      "observable": ["pitch"],
+      "standards": { "practice": [], "full": ["unseen", "guide-off"] }
+    },
+    {
+      "id": "accidentals",
+      "newId": true,
+      "display": "Accidentals",
+      "sentence": "Reading a sharp, flat or natural written beside a note, and letting it last to the end of the bar.",
+      "kind": "reading",
+      "opportunity": ["pitch.chromatic"],
+      "observable": ["pitch"],
+      "standards": { "practice": [], "full": ["unseen", "guide-off"] },
+      "note": "New because no concept names it: `sharps` and `flats` are the two signs as 3.1 teaches them (notes and key signatures), `chromatic` is moving by semitones (a technique rung). The level-4 row promises an accidental in the bar, which is this."
+    },
+    {
+      "id": "hands-together",
+      "display": "Playing hands together",
+      "sentence": "Reading both staves at once and playing together the notes that sound together.",
+      "kind": "coordination",
+      "opportunity": ["texture.hands-together"],
+      "observable": ["pitch"],
+      "standards": { "practice": ["both-hands"], "full": ["both-hands", "keep-tempo", "guide-off"] },
+      "note": "Pitch at the steps where both hands play; the two hands arriving together in time is the full standard's Keep tempo."
+    },
+    {
+      "id": "hand-independence",
+      "display": "Hand independence",
+      "sentence": "The hands doing different things at once: a moving left-hand pattern under a melody.",
+      "kind": "coordination",
+      "opportunity": ["texture.left-hand-pattern", "texture.walking-bass"],
+      "observable": ["pitch", "timing"],
+      "standards": { "practice": ["keep-tempo", "both-hands"], "full": ["keep-tempo", "both-hands", "unseen", "guide-off"] }
+    }
+  ],
+  "requirementTerms": [
+    { "term": "sight-read-5-first-attempt", "skill": "sight-reading", "standard": "full", "runs": 5, "evaluatedBy": null },
+    { "term": "sight-read-5", "skill": "sight-reading", "standard": "practice", "runs": 5, "evaluatedBy": null }
+  ],
+  "gateWaivers": [
+    {
+      "rung": "1.5",
+      "skill": "sight-reading",
+      "reason": "`sight-read-5-first-attempt>=0.9` asks for five unseen phrases read at 90 %: nothing in the app counts them (the rung completes on two exercise passes, `lessonComplete`), and the full standard's guide-off is not recorded on a run (S20). The design named this one.",
+      "until": "C5"
+    },
+    {
+      "rung": "3.4",
+      "skill": "sight-reading",
+      "reason": "`sight-read-5>=0.85` asks for five sight-reads at 85 %, and nothing counts them either: the rung completes on one exercise and one song. Not in the design's list; the same rule finds it.",
+      "until": "C5"
+    },
+    {
+      "rung": "4.6",
+      "skill": "reading-ahead",
+      "reason": "4.6 teaches reading-ahead (its concepts), and completing the rung marks that skill known (LessonScreen), but no run measures reading ahead: continuity is not built. The brief's case of a promised feature with no honest observable.",
+      "until": "C5"
+    }
+  ]
+}

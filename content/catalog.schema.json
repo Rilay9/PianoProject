@@ -101,6 +101,28 @@
             "type": "string"
           }
         },
+        "targetSkills": {
+          "type": "array",
+          "description": "What the item is chosen to train: skill ids from vocabulary v0 (content/curriculum/vocabulary/skills.json), the primary first. Declared, never evidence: a run is evidence of a skill only through a measurement (design 2026-09-26 §4). validate.py refuses an id the vocabulary lacks. C2 fills it on the nine sight-reading rows only; D writes it per generator family.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "demands": {
+          "type": "array",
+          "description": "The material demands the build measured on the item's file with the app's own detectors (app/src/demands/detect.ts): demand ids from content/curriculum/vocabulary/demands.json. Measured, never declared. Absent on a runtime drill, whose demands belong to each phrase it generates. Nothing writes it yet (E).",
+          "items": {
+            "type": "string"
+          }
+        },
+        "role": {
+          "enum": [
+            "canonical",
+            "variable",
+            "transfer"
+          ],
+          "description": "Relative to the primary target skill (design 2026-09-26 §7): the same notes every time, a new realisation of the same constraints, or a different surface for the same skill. Nothing writes it yet (D)."
+        },
         "hands": {
           "enum": [
             "both",

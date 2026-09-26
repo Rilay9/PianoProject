@@ -60,6 +60,24 @@ export interface CatalogItem {
   hands: Hands;
   tracks: string[];
   concepts: string[];
+  /**
+   * What the item is chosen to train: skill ids from vocabulary v0
+   * (`content/curriculum/vocabulary/skills.json`), the primary first (C2).
+   *
+   * Declared, never evidence: a run is evidence of a skill only through a
+   * measurement its definition names (design 2026-09-26 §4). Filled on the nine
+   * sight-reading rows only; D writes it per generator family. Nothing in the
+   * app reads it yet — C3's evidence function will.
+   */
+  targetSkills?: string[];
+  /**
+   * The demands the build measured on the item's file with the app's own
+   * detectors (`demands/detect.ts`). Measured, never declared; absent on a
+   * runtime drill, whose demands belong to each phrase. Nothing writes it yet (E).
+   */
+  demands?: string[];
+  /** Relative to the primary target skill (design §7). Nothing writes it yet (D). */
+  role?: 'canonical' | 'variable' | 'transfer';
   /** null for an import placeholder and for a drill generated at runtime. */
   file?: string | null;
   importHint?: string | null;

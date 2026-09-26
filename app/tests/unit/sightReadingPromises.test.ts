@@ -13,65 +13,106 @@
  *
  * This reads the **built** catalog rows and curriculum (the claim is about
  * those), generates every row the way the Score screen does
- * (`sightReadingOptionsFor`), and checks each phrase:
+ * (`sightReadingOptionsFor`), turns each phrase into the score model the engine
+ * plays (OSMD, then `extractScoreModel`), and checks it with the demand
+ * detectors in `src/demands/detect.ts` (C2) — the one definition of each fact,
+ * which used to be a dozen helpers in this file reading the MusicXML string:
  *
  * - **present** — what each rung listing the row says its reading drill
  *   trains (`PROMISED_BY_RUNG`, each line quoting where it is said) and what the
  *   row's own `concepts` claim;
- * - **absent** — anything the earliest rung listing the row comes before: no
- *   eighths before 2.2, no ties or dotted quarters before 2.4, no key
- *   signature before 3.1, no syncopation or triplets before 4.5 — read off the
- *   curriculum's own order, not written down here;
- * - **well formed** — a rest inside a triplet is a triplet rest.
+ * - **absent** — every demand vocabulary v0 says is taught after the earliest
+ *   rung listing the row (`content/curriculum/vocabulary/demands.json`,
+ *   `taughtAt`, placed in the curriculum's own order): no eighths before 2.2, no
+ *   ties or dotted quarters before 2.4, no key signature before 3.1, no
+ *   syncopation, triplets or compound time before 4.5 — and 4/4 only before 4.5;
+ * - **declared** — every skill the row says it practises (`targetSkills`) has
+ *   its opportunity somewhere in the row's phrases;
+ * - **well formed** — a rest inside a triplet is a triplet rest, and short
+ *   notes in one beat share a beam. These two are about how the page is
+ *   engraved, which the score model deliberately does not carry (it has no
+ *   rests and no beams), so they read the MusicXML as before.
  *
  * Nothing here is heard. Whether the phrases are musical is a separate
  * question the report answers seed by seed, from the notation.
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
+import { OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
 import { generateSightReading, sightReadingOptionsFor } from '../../src/engine/sightReading';
+import { extractScoreModel } from '../../src/score/extractScoreModel';
+import type { ScoreModel } from '../../src/score/types';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
+import {
+  detect,
+  keyFifths,
+  melodyLine,
+  melodyStaff,
+  offsetInBar,
+  range,
+  soundedNotes,
+  type DetectorId,
+} from '../../src/demands/detect';
+import type { DemandsFile, SkillsFile } from '../../src/demands/vocabulary';
 
 const CONTENT = join(process.cwd(), 'public', 'content');
 const catalog = JSON.parse(readFileSync(join(CONTENT, 'catalog.json'), 'utf8')) as CatalogItem[];
 const curriculum = JSON.parse(readFileSync(join(CONTENT, 'curriculum.json'), 'utf8')) as Curriculum;
+const SOURCE = join(process.cwd(), '..', 'content');
+const { demands } = JSON.parse(readFileSync(join(SOURCE, 'curriculum', 'vocabulary', 'demands.json'), 'utf8')) as DemandsFile;
+const { skills } = JSON.parse(readFileSync(join(SOURCE, 'curriculum', 'vocabulary', 'skills.json'), 'utf8')) as SkillsFile;
+/**
+ * `targetSkills` as authored. The build copies `catalog.static.json`'s rows
+ * through unchanged, so this is what the built rows carry once the content is
+ * rebuilt; read from the source so the check does not wait on a build.
+ */
+const authored = new Map(
+  (JSON.parse(readFileSync(join(SOURCE, 'catalog.static.json'), 'utf8')) as CatalogItem[]).map((row) => [row.id, row]),
+);
 
 const SEEDS = Array.from({ length: 40 }, (_, i) => 1 + i * 7919);
 
-// --- the phrase, as notes -----------------------------------------------------
+// --- the phrase: the model the engine plays, and the page as engraved ---------
 
-interface Note {
+async function modelOf(musicXml: string, id: string): Promise<ScoreModel> {
+  const container = document.createElement('div');
+  document.body.appendChild(container);
+  try {
+    const osmd = new OpenSheetMusicDisplay(container, { autoResize: false, backend: 'svg' });
+    await osmd.load(musicXml);
+    return extractScoreModel(osmd, { id });
+  } finally {
+    container.remove();
+  }
+}
+
+/** One written note or rest, for the two engraving checks only. */
+interface Engraved {
   staff: number;
   bar: number;
   /** Divisions from the start of the bar. */
   at: number;
   duration: number;
-  midi: number | null;
+  rest: boolean;
   tuplet: boolean;
-  tieStart: boolean;
-  tieStop: boolean;
   chord: boolean;
   /** `begin`, `continue`, `end`, or null where the note has no beam. */
   beam: string | null;
 }
 
-interface Phrase {
-  notes: Note[];
-  fifths: number;
+interface Sheet {
+  notes: Engraved[];
+  divisions: number;
   beats: number;
   beatType: number;
-  divisions: number;
   clefs: string[];
 }
 
-const STEP: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
-
-function read(xml: string): Phrase {
+function engraving(xml: string): Sheet {
   const doc = new DOMParser().parseFromString(xml, 'application/xml');
-  const num = (selector: string, fallback: number): number =>
-    Number(doc.querySelector(selector)?.textContent ?? fallback);
-  const notes: Note[] = [];
+  const num = (selector: string, fallback: number): number => Number(doc.querySelector(selector)?.textContent ?? fallback);
+  const notes: Engraved[] = [];
   doc.querySelectorAll('measure').forEach((measure, bar) => {
     let t = 0;
     let last = 0;
@@ -83,22 +124,13 @@ function read(xml: string): Phrase {
       }
       if (child.tagName !== 'note') continue;
       const chord = child.querySelector('chord') !== null;
-      const pitch = child.querySelector('pitch');
-      const midi = pitch
-        ? (Number(pitch.querySelector('octave')?.textContent) + 1) * 12 +
-          (STEP[pitch.querySelector('step')?.textContent ?? 'C'] ?? 0) +
-          Number(pitch.querySelector('alter')?.textContent ?? 0)
-        : null;
-      const at = chord ? last : t;
       notes.push({
         staff: Number(child.querySelector('staff')?.textContent ?? 1),
         bar,
-        at,
+        at: chord ? last : t,
         duration,
-        midi,
+        rest: child.querySelector('rest') !== null,
         tuplet: child.querySelector('time-modification') !== null,
-        tieStart: child.querySelector('tie[type="start"]') !== null,
-        tieStop: child.querySelector('tie[type="stop"]') !== null,
         chord,
         beam: child.querySelector('beam')?.textContent ?? null,
       });
@@ -110,108 +142,50 @@ function read(xml: string): Phrase {
   });
   return {
     notes,
-    fifths: num('fifths', 0),
+    divisions: num('divisions', 12),
     beats: num('beats', 4),
     beatType: num('beat-type', 4),
-    divisions: num('divisions', 12),
     clefs: Array.from(doc.querySelectorAll('clef sign')).map((sign) => sign.textContent ?? ''),
   };
 }
 
-const compound = (p: Phrase): boolean => p.beatType === 8 && p.beats % 3 === 0;
-const beatOf = (p: Phrase): number => (compound(p) ? p.divisions * 1.5 : (p.divisions * 4) / p.beatType);
-const sounded = (p: Phrase, staff?: number): Note[] =>
-  p.notes.filter((n) => n.midi !== null && !n.chord && (staff === undefined || n.staff === staff));
-const melodyStaff = (p: Phrase): number => (sounded(p, 1).length > 0 ? 1 : 2);
+const compoundSheet = (s: Sheet): boolean => s.beatType === 8 && s.beats % 3 === 0;
 
-function scaleSteps(p: Phrase): number[] {
-  const tonic = (((p.fifths * 7) % 12) + 12) % 12;
-  const degrees = [0, 2, 4, 5, 7, 9, 11];
-  const index = (midi: number): number => {
-    const rel = midi - tonic;
-    const octave = Math.floor(rel / 12);
-    const pc = ((rel % 12) + 12) % 12;
-    // A chromatic note sits between two degrees; count it with the one below.
-    let degree = degrees.length - 1;
-    while (degree > 0 && (degrees[degree] ?? 0) > pc) degree -= 1;
-    return octave * 7 + degree;
-  };
-  const line = sounded(p, melodyStaff(p)).filter((n) => !n.tieStop);
-  const out: number[] = [];
-  for (let i = 1; i < line.length; i += 1) {
-    out.push(Math.abs(index(line[i]?.midi ?? 0) - index(line[i - 1]?.midi ?? 0)));
-  }
-  return out;
-}
-
-const hasEighth = (p: Phrase): boolean =>
-  p.notes.some((n) => n.midi !== null && !n.tuplet && n.duration === p.divisions / 2);
-const hasShorterThanQuarter = (p: Phrase): boolean =>
-  p.notes.some((n) => n.midi !== null && n.duration < p.divisions);
-const hasTriplet = (p: Phrase): boolean => p.notes.some((n) => n.midi !== null && n.tuplet);
-const hasTie = (p: Phrase): boolean => p.notes.some((n) => n.tieStart || n.tieStop);
-const hasDottedQuarter = (p: Phrase): boolean =>
-  p.notes.some((n) => n.duration === p.divisions * 1.5 && !compound(p));
-const hasSixteenth = (p: Phrase): boolean =>
-  p.notes.some((n) => n.midi !== null && !n.tuplet && n.duration === p.divisions / 4);
-/** A note of a beat or more starting off the beat, or a bar that opens on a rest. */
-function hasSyncopation(p: Phrase): boolean {
-  const beat = beatOf(p);
-  const offBeatLong = p.notes.some(
-    (n) => n.midi !== null && !n.tieStop && n.duration >= p.divisions && n.at % beat !== 0,
-  );
-  const restOnOne = p.notes.some(
-    (n) => n.staff === melodyStaff(p) && n.at === 0 && n.midi === null && n.duration < p.divisions * 4,
-  );
-  const tiedOverTheBar = p.notes.some((n) => n.tieStart && n.at % beat !== 0);
-  return offBeatLong || restOnOne || tiedOverTheBar;
-}
-const hasChromatic = (p: Phrase): boolean => {
-  const tonic = (((p.fifths * 7) % 12) + 12) % 12;
-  return p.notes.some(
-    (n) => n.midi !== null && ![0, 2, 4, 5, 7, 9, 11].includes((((n.midi - tonic) % 12) + 12) % 12),
-  );
-};
-const range = (p: Phrase): [number, number] => {
-  const pitches = sounded(p, melodyStaff(p)).map((n) => n.midi as number);
-  return [Math.min(...pitches), Math.max(...pitches)];
-};
-const bothHands = (p: Phrase): boolean => sounded(p, 1).length > 0 && sounded(p, 2).length > 0;
-const walkingBass = (p: Phrase): boolean => {
-  const bars = new Set(p.notes.map((n) => n.bar));
-  return [...bars].every(
-    (bar) =>
-      sounded(p, 2).filter((n) => n.bar === bar && n.duration === p.divisions).length ===
-      (p.beats * 4) / p.beatType,
-  );
-};
 /**
  * Short notes that share a beat share a beam (T37): two adjacent sounded notes
  * shorter than a quarter, not in a triplet, inside one beat, are joined — the
  * second is not the start of a new beam and neither is left with a flag.
  */
-function beamedByTheBeat(p: Phrase): boolean {
-  const beat = beatOf(p);
+function beamedByTheBeat(s: Sheet): boolean {
+  const beat = compoundSheet(s) ? s.divisions * 1.5 : (s.divisions * 4) / s.beatType;
   for (const staff of [1, 2]) {
-    const line = p.notes.filter((n) => n.staff === staff && !n.chord);
+    const line = s.notes.filter((n) => n.staff === staff && !n.chord);
     for (let i = 1; i < line.length; i += 1) {
-      const a = line[i - 1] as Note;
-      const b = line[i] as Note;
-      const short = (n: Note): boolean => n.midi !== null && !n.tuplet && n.duration < p.divisions;
+      const a = line[i - 1] as Engraved;
+      const b = line[i] as Engraved;
+      const short = (n: Engraved): boolean => !n.rest && !n.tuplet && n.duration < s.divisions;
       if (a.bar !== b.bar || !short(a) || !short(b)) continue;
-      const beatOfNote = (n: Note): number => Math.floor(n.at / beat);
-      const inside = (n: Note): boolean => beatOfNote(n) === Math.floor((n.at + n.duration - 1) / beat);
+      const beatOfNote = (n: Engraved): number => Math.floor(n.at / beat);
+      const inside = (n: Engraved): boolean => beatOfNote(n) === Math.floor((n.at + n.duration - 1) / beat);
       if (!inside(a) || !inside(b) || beatOfNote(a) !== beatOfNote(b)) continue;
       if (a.beam === null || a.beam === 'end' || b.beam === null || b.beam === 'begin') return false;
     }
   }
   return true;
 }
-const hasBeam = (p: Phrase): boolean => p.notes.some((n) => n.beam !== null);
 
-const patternedLeftHand = (p: Phrase): boolean => {
-  const bars = new Set(p.notes.map((n) => n.bar));
-  return [...bars].every((bar) => sounded(p, 2).filter((n) => n.bar === bar).length > 1);
+interface Phrase {
+  model: ScoreModel;
+  sheet: Sheet;
+  /** The generator level the row asked for (`drill.params.level`). */
+  level: number;
+}
+
+const has = (id: DetectorId) => (p: Phrase): boolean => detect(p.model, id).present;
+const compound = has('compoundMetre');
+const metre = (p: Phrase): string => {
+  const first = p.model.timeSigMap[0];
+  return first ? `${String(first.beats)}/${String(first.beatType)}` : '4/4';
 };
 
 // --- what is promised, and by whom ---------------------------------------------
@@ -224,57 +198,64 @@ const some = (what: string, holds: (p: Phrase) => boolean): Check => ({ what, sc
 /** In simple time only: a 6/8 phrase is its own new thing and is not asked for these. */
 const simple = (holds: (p: Phrase) => boolean) => (p: Phrase): boolean => compound(p) || holds(p);
 
+/**
+ * Each chromatic note is a short passing or neighbour note (T37's
+ * `accidentals` promise): a quarter or less, off the bar's strong beats,
+ * reached by a step, and rising a semitone to the next note.
+ */
+function chromaticAsPassingNotes(p: Phrase): boolean {
+  const staff = melodyStaff(p.model);
+  const chromatic = new Set(detect(p.model, 'chromatic').at.filter((a) => a.staff === staff).map((a) => a.noteId));
+  const line = melodyLine(p.model);
+  const barLength = ((p.model.timeSigMap[0]?.beats ?? 4) * 4) / (p.model.timeSigMap[0]?.beatType ?? 4);
+  return line.every((n, i) => {
+    if (!chromatic.has(n.id)) return true;
+    const next = line[i + 1];
+    const before = line[i - 1];
+    const step = before === undefined ? 99 : Math.abs(n.midi - before.midi);
+    return (
+      n.duration <= 1 &&
+      offsetInBar(p.model, n) % (barLength / 2) !== 0 &&
+      step >= 1 &&
+      step <= 2 &&
+      next?.midi === n.midi + 1
+    );
+  });
+}
+
 /** What a row's own `concepts` claim, read as a teacher would check it on the page. */
 const CLAIMED_BY_CONCEPT: Record<string, Check[]> = {
-  steps: [every('a step', (p) => scaleSteps(p).includes(1))],
-  skips: [every('a skip (a third)', (p) => scaleSteps(p).includes(2))],
-  eighths: [every('an eighth note', hasEighth)],
-  'two-hands': [every('both hands', bothHands)],
+  steps: [every('a step', has('steps'))],
+  skips: [every('a skip (a third)', has('skips'))],
+  eighths: [every('an eighth note', has('eighths'))],
+  'two-hands': [every('both hands, together', has('handsTogether'))],
   'bass-clef': [
     every(
       'every note on the bass staff',
-      (p) => p.clefs.includes('F') && sounded(p, 1).length === 0 && sounded(p, 2).length > 0,
+      (p) => p.sheet.clefs.includes('F') && soundedNotes(p.model, 1).length === 0 && has('bassClef')(p),
     ),
   ],
   'C-position': [
     every('a range inside C position', (p) => {
-      const [low, high] = range(p);
-      return melodyStaff(p) === 1 ? low >= 60 && high <= 67 : low >= 48 && high <= 55;
+      const [low, high] = range(p.model);
+      return melodyStaff(p.model) === 1 ? low >= 60 && high <= 67 : low >= 48 && high <= 55;
     }),
   ],
-  syncopation: [every('syncopation (simple time)', simple(hasSyncopation))],
-  '6/8': [some('a phrase in 6/8', (p) => p.beats === 6 && p.beatType === 8)],
-  triplets: [every('a triplet (simple time)', simple(hasTriplet))],
+  syncopation: [every('syncopation (simple time)', simple(has('syncopation')))],
+  '6/8': [some('a phrase in 6/8', (p) => metre(p) === '6/8')],
+  triplets: [every('a triplet (simple time)', simple(has('triplets')))],
   keys: [
-    some('a key signature', (p) => p.fifths !== 0),
-    some('a sharp key', (p) => p.fifths > 0),
-    some('a flat key', (p) => p.fifths < 0),
+    some('a key signature', (p) => keyFifths(p.model) !== 0),
+    some('a sharp key', (p) => keyFifths(p.model) > 0),
+    some('a flat key', (p) => keyFifths(p.model) < 0),
   ],
   accidentals: [
-    every('an accidental', hasChromatic),
-    every('each accidental a short note off the strong beats, reached by step, rising a semitone', (p) => {
-      const tonic = (((p.fifths * 7) % 12) + 12) % 12;
-      const barLength = (p.beats * p.divisions * 4) / p.beatType;
-      const line = sounded(p, melodyStaff(p));
-      return line.every((n, i) => {
-        if (n.midi === null || [0, 2, 4, 5, 7, 9, 11].includes((((n.midi - tonic) % 12) + 12) % 12)) return true;
-        const next = line[i + 1];
-        const before = line[i - 1];
-        const step = before?.midi === null || before === undefined ? 99 : Math.abs(n.midi - before.midi);
-        return (
-          n.duration <= p.divisions &&
-          n.at % (barLength / 2) !== 0 &&
-          step >= 1 &&
-          step <= 2 &&
-          next?.midi !== null &&
-          next?.midi === n.midi + 1
-        );
-      });
-    }),
+    every('an accidental', has('chromatic')),
+    every('each accidental a short note off the strong beats, reached by step, rising a semitone', chromaticAsPassingNotes),
   ],
-  sixteenths: [every('a sixteenth', hasSixteenth)],
-  'walking-bass': [every('a walking bass', walkingBass)],
-  'accompaniment-patterns': [every('a left-hand pattern', patternedLeftHand)],
+  sixteenths: [every('a sixteenth', has('sixteenths'))],
+  'walking-bass': [every('a walking bass', has('walkingBass'))],
+  'accompaniment-patterns': [every('a left-hand pattern', has('leftHandPattern'))],
 };
 
 /**
@@ -290,32 +271,39 @@ const PROMISED_BY_RUNG: Record<string, Check[]> = {
   '1.5': [
     ...(CLAIMED_BY_CONCEPT.steps ?? []),
     ...(CLAIMED_BY_CONCEPT.skips ?? []),
-    every('only steps and skips', (p) => scaleSteps(p).every((step) => step <= 2)),
+    every('only steps and skips', (p) => !has('leaps')(p)),
     ...(CLAIMED_BY_CONCEPT['C-position'] ?? []),
   ],
   // 2.2: "eighths can turn up in the very first one"; and its concept `beams`
   // — "the beaming is a kindness: it groups the notes into beats".
-  '2.2': [...(CLAIMED_BY_CONCEPT.eighths ?? []), every('eighths beamed in their beats', hasBeam)],
+  '2.2': [
+    ...(CLAIMED_BY_CONCEPT.eighths ?? []),
+    every('eighths beamed in their beats', (p) => p.sheet.notes.some((n) => n.beam !== null)),
+  ],
   // 2.5: "its phrases already reach up to the C above middle C, beyond C position".
   '2.5': [
-    some('a phrase beyond C position', (p) => range(p)[1] > 67),
-    every('nothing above the C above middle C', (p) => range(p)[1] <= 72),
+    some('a phrase beyond C position', (p) => range(p.model)[1] > 67),
+    every('nothing above the C above middle C', (p) => range(p.model)[1] <= 72),
   ],
   // 3.4: "sight-reading level 2 (two hands, wider range, quarters and eighths)".
   '3.4': [...(CLAIMED_BY_CONCEPT['two-hands'] ?? []), ...(CLAIMED_BY_CONCEPT.eighths ?? [])],
   // 4.5: *Compound time, triplets and syncopation*; "sight-reading level 3".
   '4.5': [
     ...(CLAIMED_BY_CONCEPT['6/8'] ?? []),
-    some('a phrase in 4/4 beside the 6/8 ones', (p) => p.beats === 4 && p.beatType === 4),
+    some('a phrase in 4/4 beside the 6/8 ones', (p) => metre(p) === '4/4'),
     ...(CLAIMED_BY_CONCEPT.triplets ?? []),
     ...(CLAIMED_BY_CONCEPT.syncopation ?? []),
   ],
-  // theory.9: "at level 7 … in keys with four accidentals, with triplets and a
-  // walking bass".
+  // theory.9: "The sight-reading generator at level 7 makes music … in keys
+  // with four accidentals, with triplets and a walking bass". The rung also
+  // lists level 6, whose left hand is a broken chord in quarters: the walking
+  // bass is the level-7 row's, which is what the sentence says. (The helper
+  // this used to call counted any four left-hand quarters as a walk, so level
+  // 6 passed it on a broken chord.)
   'theory.9': [
-    some('a key with four accidentals', (p) => Math.abs(p.fifths) === 4),
+    some('a key with four accidentals', (p) => Math.abs(keyFifths(p.model)) === 4),
     ...(CLAIMED_BY_CONCEPT.triplets ?? []),
-    ...(CLAIMED_BY_CONCEPT['walking-bass'] ?? []),
+    every('a walking bass, at the level the lesson names (7)', (p) => p.level !== 7 || has('walkingBass')(p)),
   ],
 };
 
@@ -329,27 +317,32 @@ const position = (id: string): number => {
   return at;
 };
 
+/**
+ * A demand a row writes before the rung that teaches it, known and named, so
+ * the check stays on for everything else. Each one is asserted still to happen:
+ * when the generator stops writing it, this list says to remove the line.
+ */
+const KNOWN_EARLY: { row: string; demand: string; why: string }[] = [
+  {
+    row: 'drill.reading.sight-reading-2-right',
+    demand: 'range.beyond-position',
+    why:
+      'Level 2 writes the right hand from C4 to C5, and 2.5 counts on it ("its phrases already reach up ' +
+      'to the C above middle C, beyond C position"), but the row is listed first on 2.2, three rungs before ' +
+      'the hand is taught to leave C position. Found by C2 when the taught-at table moved into the ' +
+      'vocabulary; the fix is the per-rung row (S16, D), not this list.',
+  },
+];
+
 /** Everything the earliest rung listing a row has not been taught yet. */
-function unintended(earliest: string): Check[] {
+function unintended(row: string, earliest: string): Check[] {
   const before = (rung: string): boolean => position(earliest) < position(rung);
   return [
-    ...(before('2.2')
-      ? [every('no eighths or anything shorter (before 2.2)', (p) => !hasShorterThanQuarter(p))]
-      : []),
-    ...(before('2.4')
-      ? [
-          every('no ties (before 2.4)', (p) => !hasTie(p)),
-          every('no dotted quarters (before 2.4)', (p) => !hasDottedQuarter(p)),
-        ]
-      : []),
-    ...(before('3.1') ? [every('no key signature (before 3.1)', (p) => p.fifths === 0)] : []),
-    ...(before('4.5')
-      ? [
-          every('no syncopation (before 4.5)', (p) => !hasSyncopation(p)),
-          every('no triplets (before 4.5)', (p) => !hasTriplet(p)),
-          every('4/4 only (before 4.5)', (p) => p.beats === 4 && p.beatType === 4),
-        ]
-      : []),
+    ...demands
+      .filter((d) => d.taughtAt !== null && before(d.taughtAt))
+      .filter((d) => !KNOWN_EARLY.some((k) => k.row === row && k.demand === d.id))
+      .map((d) => every(`no ${d.id} (taught at ${String(d.taughtAt)})`, (p) => !has(d.detector)(p))),
+    ...(before('4.5') ? [every('4/4 only (before 4.5)', (p) => p.model.timeSigMap.every((t) => t.beats === 4 && t.beatType === 4))] : []),
   ];
 }
 
@@ -377,9 +370,17 @@ describe('the nine sight-reading rows', () => {
   for (const row of readers) {
     const rungs = rungsListing(row.id);
     const earliest = rungs[0] ?? '';
-    const phrases = SEEDS.map((seed) =>
-      read(generateSightReading(sightReadingOptionsFor(row.drill?.params ?? {}, seed)).musicXml),
-    );
+    const phrases: Phrase[] = [];
+    beforeAll(async () => {
+      for (const seed of SEEDS) {
+        const xml = generateSightReading(sightReadingOptionsFor(row.drill?.params ?? {}, seed)).musicXml;
+        phrases.push({
+          model: await modelOf(xml, `${row.id}.${String(seed)}`),
+          sheet: engraving(xml),
+          level: Number(row.drill?.params?.level ?? 1),
+        });
+      }
+    }, 120_000);
     const promised = [
       ...row.concepts.flatMap((concept) => CLAIMED_BY_CONCEPT[concept] ?? []),
       ...rungs.flatMap((rung) => PROMISED_BY_RUNG[rung] ?? []),
@@ -401,21 +402,38 @@ describe('the nine sight-reading rows', () => {
     });
 
     it(`${label}: nothing ${earliest} has not taught`, () => {
-      for (const check of unintended(earliest)) {
+      for (const check of unintended(row.id, earliest)) {
         const failing = SEEDS.filter((_, i) => !check.holds(phrases[i] as Phrase));
         expect(failing, `${label}: ${check.what} fails at seeds ${failing.join(', ')}`).toEqual([]);
+      }
+      for (const known of KNOWN_EARLY.filter((k) => k.row === row.id)) {
+        const detector = demands.find((d) => d.id === known.demand)?.detector as DetectorId;
+        expect(phrases.some(has(detector)), `${label}: ${known.demand} no longer comes early — remove it from KNOWN_EARLY`).toBe(true);
+      }
+    });
+
+    it(`${label}: every skill it declares has its opportunity in its phrases`, () => {
+      const declared = authored.get(row.id)?.targetSkills ?? [];
+      expect(declared.length, `${row.id} declares no targetSkills`).toBeGreaterThan(0);
+      for (const id of declared) {
+        const skill = skills.find((s) => s.id === id);
+        expect(skill, `${row.id}: ${id} is not a vocabulary skill`).toBeDefined();
+        if (!skill || skill.opportunity === 'every-step') continue;
+        const detectors = skill.opportunity.map((d) => demands.find((x) => x.id === d)?.detector as DetectorId);
+        const found = phrases.filter((p) => detectors.some((d) => has(d)(p))).length;
+        expect(found, `${label}: declares ${id}, and none of ${skill.opportunity.join(', ')} is in any phrase`).toBeGreaterThan(0);
       }
     });
 
     it(`${label}: every rest inside a triplet is a triplet rest`, () => {
       for (const p of phrases) {
-        const bad = p.notes.filter((n) => n.midi === null && n.duration === p.divisions / 3 && !n.tuplet);
+        const bad = p.sheet.notes.filter((n) => n.rest && n.duration === p.sheet.divisions / 3 && !n.tuplet);
         expect(bad).toEqual([]);
       }
     });
 
     it(`${label}: short notes in one beat are beamed together`, () => {
-      const failing = SEEDS.filter((_, i) => !beamedByTheBeat(phrases[i] as Phrase));
+      const failing = SEEDS.filter((_, i) => !beamedByTheBeat((phrases[i] as Phrase).sheet));
       expect(failing, `${label}: unbeamed short notes at seeds ${failing.join(', ')}`).toEqual([]);
     });
   }
@@ -469,10 +487,10 @@ describe('levels 6 and 7 write a rest inside a triplet as a triplet rest', () =>
     it(`level ${String(level)}, 60 phrases`, () => {
       let restsInTriplets = 0;
       for (let seed = 1; seed <= 60; seed += 1) {
-        const p = read(generateSightReading({ level, bars: 8, hands: 'both', seed }).musicXml);
-        const untupled = p.notes.filter((n) => n.midi === null && n.duration === p.divisions / 3 && !n.tuplet);
+        const s = engraving(generateSightReading({ level, bars: 8, hands: 'both', seed }).musicXml);
+        const untupled = s.notes.filter((n) => n.rest && n.duration === s.divisions / 3 && !n.tuplet);
         expect(untupled, `level ${String(level)} seed ${String(seed)}`).toEqual([]);
-        restsInTriplets += p.notes.filter((n) => n.midi === null && n.tuplet).length;
+        restsInTriplets += s.notes.filter((n) => n.rest && n.tuplet).length;
       }
       // And the case the fix is about did come up, or the loop proved nothing.
       expect(restsInTriplets).toBeGreaterThan(0);

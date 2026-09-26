@@ -1,0 +1,73 @@
+{
+  "_comment": [
+    "Vocabulary v0: the material demands (C2, 2026-09-26; design 2026-09-26-vocabulary.md §1, §7).",
+    "",
+    "A demand is something the notation contains, found by a detector and located in steps",
+    "and staves; a person never types one. Each says which function in",
+    "app/src/demands/detect.ts finds it (`detector`), which skill copes with it",
+    "(`copedWithBy`: the one reviewed table needsSkills will be derived from), and which rung",
+    "teaches it (`taughtAt`), which is what the sight-reading promises test holds every row to:",
+    "nothing the earliest rung listing it has not taught. That table lived in the test until",
+    "C2 (`unintended()`); these are its six rows and the rest of what the rows write.",
+    "",
+    "v0 is what the nine sight-reading rows' promises name and what the taught-at table",
+    "needs. validate.py checks this file against demands.schema.json and its references;",
+    "vocabulary.test.ts checks every detector exists in the app."
+  ],
+  "demands": [
+    { "id": "clef.bass", "display": "Notes on the bass staff", "detector": "bassClef", "copedWithBy": "bass-clef", "taughtAt": "1.3" },
+    { "id": "pitch.ledger", "display": "A note on a ledger line beyond middle C", "detector": "ledgerLines", "copedWithBy": "ledger-lines", "taughtAt": "3.4" },
+    {
+      "id": "interval.step",
+      "display": "A step",
+      "detector": "steps",
+      "copedWithBy": "interval-reading",
+      "taughtAt": "1.1",
+      "taughtAtNote": "The five-finger walks of the first rung are steps; 1.5 teaches reading them as steps."
+    },
+    { "id": "interval.skip", "display": "A skip (a third)", "detector": "skips", "copedWithBy": "interval-reading", "taughtAt": "1.5" },
+    {
+      "id": "interval.leap",
+      "display": "A leap (a fourth or wider)",
+      "detector": "leaps",
+      "copedWithBy": "interval-reading",
+      "taughtAt": "1.5",
+      "taughtAtNote": "1.5's song has a leap of a fourth, D up to G, read with the same habit; its video is 'Steps, Skips & Leaps'. Its drill promises steps and skips only."
+    },
+    { "id": "rhythm.eighths", "display": "Eighth notes", "detector": "eighths", "copedWithBy": "subdivision", "taughtAt": "2.2" },
+    { "id": "rhythm.shorter-than-quarter", "display": "Notes shorter than a quarter", "detector": "shorterThanQuarter", "copedWithBy": "subdivision", "taughtAt": "2.2" },
+    {
+      "id": "rhythm.sixteenths",
+      "display": "Sixteenth notes",
+      "detector": "sixteenths",
+      "copedWithBy": "subdivision",
+      "taughtAt": null,
+      "taughtAtNote": "No rung's concepts name sixteenths and no core lesson teaches reading them; the level-7 row writes them on jazz.8 and theory.9. A gap for D and F to settle, not a rung to guess."
+    },
+    { "id": "rhythm.dotted-quarter", "display": "Dotted quarter notes", "detector": "dottedQuarters", "copedWithBy": "dotted-quarter", "taughtAt": "2.4" },
+    { "id": "rhythm.ties", "display": "Tied notes", "detector": "ties", "copedWithBy": "tie", "taughtAt": "2.4" },
+    { "id": "rhythm.syncopation", "display": "Syncopation", "detector": "syncopation", "copedWithBy": "syncopation", "taughtAt": "4.5" },
+    { "id": "rhythm.triplets", "display": "Triplets", "detector": "triplets", "copedWithBy": "triplets", "taughtAt": "4.5" },
+    { "id": "metre.compound", "display": "Compound time", "detector": "compoundMetre", "copedWithBy": "6/8", "taughtAt": "4.5" },
+    { "id": "key.signature", "display": "A key signature", "detector": "keySignature", "copedWithBy": "key-signature", "taughtAt": "3.1" },
+    { "id": "pitch.chromatic", "display": "A note outside the key", "detector": "chromatic", "copedWithBy": "accidentals", "taughtAt": "3.1" },
+    { "id": "range.beyond-position", "display": "One hand wider than a five-finger position", "detector": "beyondPosition", "copedWithBy": "position-shift", "taughtAt": "2.5" },
+    { "id": "texture.hands-together", "display": "Both hands sounding at once", "detector": "handsTogether", "copedWithBy": "hands-together", "taughtAt": "2.1" },
+    {
+      "id": "texture.left-hand-pattern",
+      "display": "A moving left-hand pattern",
+      "detector": "leftHandPattern",
+      "copedWithBy": "hand-independence",
+      "taughtAt": "3.6",
+      "taughtAtNote": "3.6 teaches the broken-chord and Alberti accompaniments the level-5 and level-6 rows write."
+    },
+    {
+      "id": "texture.walking-bass",
+      "display": "A walking bass",
+      "detector": "walkingBass",
+      "copedWithBy": "hand-independence",
+      "taughtAt": "blues.5",
+      "taughtAtNote": "The first rung whose concepts name walking-bass."
+    }
+  ]
+}

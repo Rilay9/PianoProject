@@ -710,6 +710,10 @@
       "steps",
       "skips"
     ],
+    "targetSkills": [
+      "sight-reading",
+      "interval-reading"
+    ],
     "hands": "right",
     "durationSec": null,
     "tempoBpm": null,
@@ -1525,6 +1529,11 @@
       "sight-reading",
       "two-hands"
     ],
+    "targetSkills": [
+      "sight-reading",
+      "hands-together",
+      "subdivision"
+    ],
     "hands": "both",
     "durationSec": null,
     "tempoBpm": null,
@@ -1879,6 +1888,13 @@
       "syncopation",
       "6/8"
     ],
+    "targetSkills": [
+      "sight-reading",
+      "syncopation",
+      "triplets",
+      "6/8",
+      "reading-ahead"
+    ],
     "hands": "both",
     "durationSec": null,
     "tempoBpm": null,
@@ -1934,6 +1950,10 @@
       "C-position",
       "steps"
     ],
+    "targetSkills": [
+      "sight-reading",
+      "bass-clef"
+    ],
     "hands": "left",
     "durationSec": null,
     "tempoBpm": null,
@@ -1982,6 +2002,12 @@
       "sight-reading",
       "eighths",
       "skips"
+    ],
+    "targetSkills": [
+      "sight-reading",
+      "interval-reading",
+      "subdivision",
+      "position-shift"
     ],
     "hands": "right",
     "durationSec": null,
@@ -2033,6 +2059,13 @@
       "sight-reading",
       "two-hands",
       "accidentals"
+    ],
+    "targetSkills": [
+      "sight-reading",
+      "accidentals",
+      "hands-together",
+      "ledger-lines",
+      "reading-ahead"
     ],
     "hands": "both",
     "durationSec": null,
@@ -3889,6 +3922,12 @@
       "keys",
       "accompaniment-patterns"
     ],
+    "targetSkills": [
+      "sight-reading",
+      "syncopation",
+      "key-signature",
+      "hand-independence"
+    ],
     "hands": "both",
     "durationSec": null,
     "tempoBpm": null,
@@ -3947,6 +3986,12 @@
       "triplets",
       "keys",
       "accompaniment-patterns"
+    ],
+    "targetSkills": [
+      "sight-reading",
+      "triplets",
+      "key-signature",
+      "hand-independence"
     ],
     "hands": "both",
     "durationSec": null,
@@ -4009,6 +4054,13 @@
       "triplets",
       "sixteenths",
       "walking-bass"
+    ],
+    "targetSkills": [
+      "sight-reading",
+      "triplets",
+      "subdivision",
+      "key-signature",
+      "hand-independence"
     ],
     "hands": "both",
     "durationSec": null,

@@ -110,7 +110,8 @@
           "sourceMeasureIndex": 1,
           "onset": 3,
           "sourceOnset": 3,
-          "duration": 0.3333333333333333
+          "duration": 0.3333333333333333,
+          "tuplet": 3
         }
       ],
       "measureIndex": 1,
@@ -133,7 +134,8 @@
           "sourceMeasureIndex": 1,
           "onset": 3.3333333333333335,
           "sourceOnset": 3.3333333333333335,
-          "duration": 0.3333333333333333
+          "duration": 0.3333333333333333,
+          "tuplet": 3
         }
       ],
       "measureIndex": 1,
@@ -156,7 +158,8 @@
           "sourceMeasureIndex": 1,
           "onset": 3.6666666666666665,
           "sourceOnset": 3.6666666666666665,
-          "duration": 0.3333333333333333
+          "duration": 0.3333333333333333,
+          "tuplet": 3
         }
       ],
       "measureIndex": 1,

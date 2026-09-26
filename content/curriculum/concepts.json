@@ -11,7 +11,16 @@
     "",
     "`levelWords` is derived from the stage the concept is taught at, not authored: the",
     "stage is already the truth about where a skill sits, and 254 hand-written level",
-    "descriptions would drift the first time a lesson moved."
+    "descriptions would drift the first time a lesson moved.",
+    "",
+    "Vocabulary v0 (content/curriculum/vocabulary/, C2, 2026-09-26) has taken over these ids as",
+    "skills, and holds their kind, opportunity, observable and standards: sight-reading,",
+    "reading-ahead, bass-clef, ledger-lines, interval-reading, position-shift, subdivision,",
+    "dotted-quarter, tie, syncopation, triplets, 6/8, key-signature, hands-together and",
+    "hand-independence. Their entries here keep the display name and the finder. `steps`, `skips`",
+    "and `eighth-notes` are demands in v0 (interval.step, interval.skip, rhythm.eighths), and",
+    "`C-position` and `LH-C-position` are a range it measures (range.beyond-position absent): none",
+    "is a v0 skill, and they stay here because lessons name them. Nothing else here is touched by v0."
   ],
   "concepts": [
     {

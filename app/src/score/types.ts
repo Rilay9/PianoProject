@@ -63,6 +63,23 @@ export interface ScoreNote {
   /** Number of notes in the merged tie chain (1 = untied). */
   tieLength?: number;
   /**
+   * The written length of each note in the tie chain, in beats, in order (C2).
+   *
+   * `duration` is the chain's total, which is what the engine waits for; the
+   * page prints the parts. A quarter tied to an eighth lasts as long as a
+   * dotted quarter and is not one, and the eighth it prints is an eighth the
+   * learner reads — so a demand detector reads these. Present exactly when
+   * `tieLength` is.
+   */
+  tiedDurations?: number[];
+  /**
+   * The tuplet this note is written in, as its number: 3 for a triplet (C2).
+   *
+   * Absent outside a tuplet. A duration alone cannot say it: a duplet eighth
+   * in 6/8 lasts as long as a dotted eighth.
+   */
+  tuplet?: number;
+  /**
    * The score prints an accent or a marcato on this note (T16 item 7).
    *
    * Absent rather than `false` where it does not, which is what keeps every

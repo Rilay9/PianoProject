@@ -30,6 +30,7 @@ The order in which dimensions are moved when several are "next"; the easy band's
 
 - That C3's ladder states for the reading skills are distinguishable on a few days of real use. Construct the three states from realistic observation histories (five reads each), not from hand-set states; if they collapse to one state, say so: it is the checkpoint's most important finding.
 - That the promises' bounds and the one-dimension move do not conflict (a move to a key on a rung whose promise is C major). Check per rung.
+- That the rows are what their rungs say. C2 measured two that are not: the 2-right row leaves C position on 2.2 in most phrases (S16), and the 3.4 row writes no ledger note beyond middle C (S22). Those are D's to fix; your moves must not depend on them, and where one blocks a move, keep the phrase at the rung's row and report it.
 
 ## Rules and files
 

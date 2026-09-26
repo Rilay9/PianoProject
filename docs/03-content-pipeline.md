@@ -483,6 +483,23 @@ Two neighbouring faults this does not touch, both found while measuring it:
 Authoritative JSON Schemas are `content/catalog.schema.json` and
 `content/curriculum.schema.json` in this repo. Keep them in sync with `01-architecture.md` §5.
 
+**Vocabulary v0 (2026-09-26, C2)** lives in `content/curriculum/vocabulary/`: `skills.json`
+and `demands.json`, each beside its schema, in a folder of their own because `build.py`
+reads every JSON file at the top of `content/curriculum/` as a stage file. They are not
+copied into `public/content`; nothing at runtime reads them yet. `validate.py` checks their
+shape and references (`vocabulary_errors`), refuses a `targetSkills` or `demands` id on a
+catalog row that v0 does not define, and runs the evidence gate (`evidence_gate`, `02`
+Part H), printing its waivers and the `mastery.custom` terms outside v0 on every build. The
+catalog schema gained three optional item fields: `targetSkills`, `demands` and `role`.
+
+**A demand has one definition, and it is the app's.** The detectors are TypeScript
+(`app/src/demands/detect.ts`) and read the score model OSMD makes of a file, so the build
+does not keep a Python copy: `tools/content/demands.py` hands score files to
+`app/tests/unit/demandsOfFiles.test.ts` through Vitest, the way `render_check.py` hands them
+to Playwright, and reads back the demand ids per file. Nothing in `build.py` calls it yet;
+E does, over the catalog, with a per-file cache like `attach_notation`'s. The cost of the
+alternative choices was measured on the built catalog (`pending-review` Entry 71).
+
 ## 5. Authoring conventions for `[AUTH]` ABC files
 
 **Bars are numbered from 1.** music21's ABC reader numbers a tune's first full bar 0, and the

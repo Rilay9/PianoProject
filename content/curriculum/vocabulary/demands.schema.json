@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pianopath/vocabulary/demands.schema.json",
+  "title": "Vocabulary v0: demands",
+  "description": "The material demands (C2). The shape only: validate.py checks every copedWithBy is a skill and every taughtAt a rung; app/tests/unit/vocabulary.test.ts checks every detector is a function in app/src/demands/detect.ts.",
+  "type": "object",
+  "required": ["demands"],
+  "additionalProperties": false,
+  "properties": {
+    "_comment": { "type": "array", "items": { "type": "string" } },
+    "demands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "display", "detector", "copedWithBy", "taughtAt"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z]+[.][a-z0-9-]+$" },
+          "display": { "type": "string", "minLength": 2 },
+          "detector": { "type": "string", "pattern": "^[a-z][A-Za-z]+$" },
+          "copedWithBy": { "type": "string" },
+          "taughtAt": { "type": ["string", "null"] },
+          "taughtAtNote": { "type": "string", "minLength": 10 }
+        },
+        "if": { "properties": { "taughtAt": { "const": null } } },
+        "then": { "required": ["taughtAtNote"] }
+      }
+    }
+  }
+}
