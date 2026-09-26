@@ -44,3 +44,8 @@ If a slot cannot be chosen from evidence for a learner with none (day one), it f
 ## Report
 
 Judgement first: the three learners' thirty days across every slot, read as a teacher, with the reasons the app printed; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes from unpiped runs; unverified beside what passes.
+
+## Addendum (2026-09-26, sent to the builder mid-task)
+
+Three findings from the reviewer's unfinished curriculum audit (Part 13), verified at the lines: the curriculum is not one global ability ladder (core units end at Stage 4; L85); `nextRecommended` returns one first-unmet position while tracks run in parallel from Stage 3, so the slots choose per active strand and never let one position monopolise technique, new and repertoire or serialise the tracks (L84); Stage 9's units are projects, never rungs to pass, so "met → next rung" is never universal (L86). The entry says what changed and, in an explicit not-done line, what could not. The nine broader constraints (L85–L92) are downstream and do not stop this task.
+
