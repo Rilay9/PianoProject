@@ -813,3 +813,23 @@ the verification finish, then C4d does exactly S29, L72 and the four reruns, the
 before C5. The chain over 4921646 finished green on all twenty-three steps after this.
 
 **The reviewer approved C4d** (file-first at d31be56, and abc277a checked to hold only the dormant C5 brief): verifications 1 and 4 hold; S29 and L72 accepted as substantive repairs of the demonstrated mechanisms; S30 to D; the composed walk to be described as representative, not exhaustive. C5 may start with one clarification, applied to its brief: keep skill evidence separate from rung and item credit — evidence observed on 2.2 informs the learner's skills everywhere; satisfaction of a rung's requirement is what is scoped to the judging rung; the old item credit across rungs disappears. "This is the point where the project moves from the adaptive reader reasons honestly to the whole curriculum uses that evidence as its authoritative progression model."
+
+**The C5 review (2026-09-26, at d06d7b7, file-first).** Not released to C6/C7 yet. L9 and S8 are
+closed to the reviewer's satisfaction; the one-path progression architecture is accepted
+(`rungState` is genuinely the derivation, generated reading acquires no piece semantics, the old
+count and pass machinery is deleted, the cross-listing tests are substantive: every
+multiply-listed exercise and song in the built curriculum, the Petzold case, the two-ear-drill
+1.5 regression, the two thirty-day trajectories on the real derivation, carry-over stored apart
+and never making a rung met, carried concepts as exposures weaker than measured learning). The
+carry-over decisions stand. Two findings first: (1) `done` is not judging-rung scoped — `runs`,
+`reads` and `measure` read the rows judged by the rung, `done` searches the learner's whole
+history and accepts any row with `missed === 0`; used at 0.1, 0.3 and 0.4, uniquely listed today,
+so no present exploit, but it contradicts C5's invariant; prefer scoping it and add an
+adversarial test, or make the exception explicit; (2) the production evidence job cannot reach
+its "item gone" exclusion, because it enumerates sessions from the current catalog's items; a
+historical row whose item is gone is never enumerated; fix the enumeration and report path with
+a test through `runEvidenceJob`. Keep the `phraseMatches` limitation live and prominent with the
+generator-version work: a regenerated phrase differing only where the learner supplied no early
+note can match and be recomputed. After the two fixes, rerun the focused C5 tests and the
+relevant chain and report; then C5 closes and C6/C7 start.
+

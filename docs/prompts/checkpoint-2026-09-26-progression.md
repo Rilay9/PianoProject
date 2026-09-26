@@ -83,3 +83,8 @@ first real test, and the storage report will say what they did.
 Nothing heard. The learners and the owner-shaped history are constructions. Desktop Chromium at
 342 × 740, not the phone; the job's pace on a phone. The chain and CI on this push are recorded in the
 matrix rows when they land.
+
+## 7. The reviewer's verdict (2026-09-26)
+
+L9 and S8 closed; the one-path architecture accepted; the carry-over decisions stand. Not released to C6/C7 until two boundary defects are fixed: `done` must obey the judging-rung scope like the other requirement kinds (L82), and the evidence job must enumerate stale rows independently of the current catalog so an item-gone row is reported (L83). The `phraseMatches` limitation (L80) stays live at P1 with the generator-version work. The fix-forward is in progress; its result is recorded here when it lands.
+
