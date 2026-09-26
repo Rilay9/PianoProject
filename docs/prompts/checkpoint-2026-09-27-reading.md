@@ -147,7 +147,8 @@ the tempo ladder is green there).
   in forty, so all five 3.1 promises together came out about once in 200 draws. The budget is
   sized from the rarest reachable recipe (about one keep in 370 draws), and only phrases that
   used to go out broken change. A contract test now walks the reader's own transitions — 1,123
-  reachable recipes over the core rungs, twelve seeds each — with every promise
+  recipes in the representative reader-reachable walk over the core rungs (not an enumeration of
+  every possible state), twelve seeds each — with every promise
   detector-confirmed, untaught demands absent, and no recipe declared unreliable; it fails if
   that list goes stale. On the committed generator 357 of them failed, none below 3.1. Five
   entries of the unchanged-generator golden had also gone out without their accidental; they
@@ -170,3 +171,6 @@ the tempo ladder is green there).
   validator, the app build, `today` and `doors`); the orchestrator's chain and CI on the push are
   recorded in the matrix rows when they land. Nothing was seen or heard.
 
+## 8. The reviewer's verdict on C4d (2026-09-27)
+
+C4d passes; verifications 1 and 4 hold; C5 may start. S29 accepted (the composed contract exercises the real curriculum and reader controls over a representative reader-reachable walk; the redraw-budget fix addresses the demonstrated mechanism). L72 accepted (the texture still detects; the opportunities are coordination points; the regressions support the definition; the two-hand skip learner isolates skips without the detour while the ambiguity learner stays ambiguous). S30 belongs to D. One clarification to the C5 brief, applied: skill evidence is never owned by the rung where it was observed; requirement satisfaction is scoped to the judging rung; item credit across rungs disappears.
