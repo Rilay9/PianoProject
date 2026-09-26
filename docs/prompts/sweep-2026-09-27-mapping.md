@@ -8,7 +8,10 @@ Nothing here changes C4.5; every item lands in a later wave, as the reviewer ask
 
 **The overarching sentence**, now at the head of the plan's later waves: *the finished
 teacher chooses an experience before it chooses an item; features are teaching tools, not
-destinations.*
+destinations.* Balanced, at the reviewer's strategy review: the choice responds to evidence,
+curriculum intent, retention and transfer, the learner's goals and well-rounded exposure (L26),
+never only to the weakest measured skill. The same review split R33/R34 between E (import truth)
+and X (the learner workflow), made E14's gate measurable, and kept L67/L68 out of C5.
 
 | # | The reviewer's point | Row | Wave | Verdict |
 |---|---|---|---|---|

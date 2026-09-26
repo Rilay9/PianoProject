@@ -751,3 +751,25 @@ experience before it chooses an item; features are teaching tools, not destinati
 mapped row by row in `sweep-2026-09-27-mapping.md`. The reviewer can now read the exact
 reviewer packet, enumerate the branch and inspect the implementation and tests directly.
 
+**The strategy review (2026-09-27, before C4.5's packet).** The reviewer read the mapping, the
+post-B plan and rules, the new and strengthened rows, and Part 9. Verdict: the incorporation
+is strong and substantially faithful; none of the 45 observations dropped; the five
+qualifications accepted (E14 gated on demonstrated pressure; hardware capture batched around
+the owner; audio cues that discriminate themselves from piano and metronome; MIDI commands
+opt-in and never accidental; Free Play observation opt-in, visible, later); M7 as the gate is
+correct. Four corrections, all applied: (1) C5 does not own L67 or L68 — it remains the
+focused retirement of the old progression semantics via L8/L9/S8; improvisation evidence and
+chord-dictation confidence come with their experiences; (2) R33/R34 split — E owns import
+truth (conversion reliability, uncertainty, provenance, correctable hands, measured demands,
+a trustworthy content object), X owns the learner workflow (bring me music I care about, the
+correction UX, usable sections into projects and practice); E is never the whole import
+product wave; (3) E14's gate made measurable — during E measure install and precache bytes,
+install and update cost, storage behaviour on the target phone and the projected
+excerpt-corpus size, then keep or trigger; (4) one balancing rule on experience-first —
+selection responds to evidence, curriculum intent, retention and transfer, learner goals and
+well-rounded exposure (L26), not merely remediation of the weakest measured skill. Otherwise
+the placements and weighting stand: do not reopen C0–C4; do not interrupt C4.5; no duplicate
+harmony, PDMX or test infrastructure; the scalar level demoted, not deleted; provenance an E
+invariant; hands-busy a cross-cutting X concept; M7's freeze retained. The strategy
+incorporation is reviewed; the C4.5 implementation packet remains a separate review.
+
