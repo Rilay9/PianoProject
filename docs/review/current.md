@@ -31,7 +31,7 @@ HEAD: e7c6009 (this file's commit is the next one)
 ## Questions for the reviewer
 
 1. L96: acceptable review, or is L32's reserved breadth share now urgent?
-2. The handoff protocol: can the reviewer's tooling commit `reviewer-response.md`, or does the owner paste it?
+2. Answered: the reviewer creates files on the branch (commit 346e817) but cannot overwrite one, so its responses are new files `docs/review/responses/<HEAD>.md`; this handoff's response is `responses/0b39088.md` or later — quote the HEAD you reviewed in the file's first line.
 
 ## Do not re-review
 
