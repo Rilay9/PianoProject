@@ -25,6 +25,17 @@ The generator is a mechanically well-tested content factory: fifty-six families,
 - **Preserve**: `test_generator_invariants.py` whole, the sight-reading promise tests, the fingering tests; every existing test green throughout.
 - **Replace / delete**, with the old assumption named: the `open_voicing` span exemption; any test that asserts a declared level or parameter in place of a measured demand.
 
+## Verification layers (the plan's rule: acceptance prose is never one test per sentence)
+
+Q41's twenty cases, each assigned the cheapest layer that proves it, consolidated where they share an invariant; D0 owns the first eleven, the rest are named so this brief does not claim them:
+
+- **Build-time contract tests** (`tools/content/tests/`, table-driven over all 56 makers): every maker has exactly one contract; every contract names vocabulary skills; roles explicit; the assessment declaration names what is judged; no title, docstring or catalogue fact carries a retired genre universal; identity changes with recipe or version — one parametrised test file, one row per maker, never 56 files.
+- **Build-time measured-demand checks** through the bridge: every output's measured demands satisfy its contract's presence, density and absence rules; forbidden and untaught demands absent — one table-driven test over the families' generated outputs, with the bridge regression first.
+- **Mutation census** (extends the existing one): a mutation of every contract promise makes its gate fail — one loop over promises.
+- **Unit adversaries** (`tools/content/tests/test_physical_gate.py`, `test_roles.py`): the open voicings and the other physical adversaries fail; a new seed alone cannot masquerade as transfer; technique assessment cannot claim an unmeasured quality.
+- **Preserved suites**: the T37 and C4 sight-reading guarantees stay green (run, not rewritten).
+- **Not this brief's** (named so they are not claimed done here): phrase endings and shape under a musical-quality policy (D1); large-seed distribution tests (D1); a music-like family reviewed as music and the review record distinguishing inspection, notation review and hearing (D2, human); the workbench rendering and playing a candidate (D2); one complete canonical → variable → transfer → authentic chain (D4). D0's report says which of the twenty are proven here, by which layer, and which wait.
+
 ## What is the agent's judgement
 
 The density thresholds per family (said with the reason); which of the three open-voicing resolutions; where a split of the generator file earns its ownership; the words of each family's admission of what it cannot prove.
