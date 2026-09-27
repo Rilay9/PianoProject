@@ -86,7 +86,11 @@ class TestAgainstTheCurriculumAsItStands(unittest.TestCase):
     def setUp(self) -> None:
         catalog_path = Path("build") / "catalog.generated.json"
         if not catalog_path.is_file():
-            self.skipTest("no generated catalog; run tools/content/build.py")
+            self.fail(
+                f"{catalog_path.resolve()} is missing, and these tests read the generated "
+                "catalogue: run `python tools/content/build.py` first (CI: the step "
+                "'Build content', before 'Content pipeline tests')"
+            )
         self.catalog = read_json(catalog_path)
         self.units = technique_units()
         self.assertEqual(len(self.units), len(UNITS), "not every technique unit was found")

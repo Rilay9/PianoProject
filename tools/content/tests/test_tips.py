@@ -180,7 +180,11 @@ class TestShippedTips(unittest.TestCase):
 
     def test_the_shipped_files_pass_every_rule(self) -> None:
         if not CATALOG.is_file():
-            self.skipTest("no build in this tree")
+            self.fail(
+                f"{CATALOG} is missing, and this test reads the built catalogue: run "
+                "`python tools/content/build.py` first (CI: the step 'Build content', "
+                "before 'Content pipeline tests')"
+            )
         catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
         self.assertEqual(validate.tip_errors(catalog, TIPS_DIR), [])
 

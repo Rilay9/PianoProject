@@ -76,7 +76,11 @@ interface Reference {
 type EventJson = [string, string, number, number | null];
 
 const references: { name: string; reference: Reference; midi: Uint8Array }[] = [];
-let why = '';
+const why =
+  `no reference in ${PARITY}: run \`python tools/midi-cleanup/tests/parity_reference.py\` ` +
+  'from the repository root (CI: the step "Write the MIDI parity reference", before "Unit ' +
+  'tests"). It writes the references for the committed fixtures, and for each of the three ' +
+  'MAESTRO performances that build/midi-real/ holds (see its SOURCE.md).';
 if (existsSync(PARITY)) {
   for (const file of readdirSync(PARITY).filter((name) => name.endsWith('.json'))) {
     const reference = JSON.parse(readFileSync(path.join(PARITY, file), 'utf8')) as Reference;
@@ -93,22 +97,16 @@ if (existsSync(PARITY)) {
     });
   }
 }
-if (references.length === 0) {
-  why =
-    `no reference in ${PARITY}: run \`python tools/midi-cleanup/tests/parity_reference.py\` ` +
-    'from the repository root, with the three MAESTRO performances named in ' +
-    'build/midi-real/SOURCE.md in place.';
-}
-
 const asEvents = (rows: EventJson[]): EventJson[] => rows;
 const eventsOf = (events: NoteEvent[]): EventJson[] =>
   events.map((event) => [fracToString(event.start), fracToString(event.end), event.midi, event.velocity]);
 
-describe.skipIf(references.length === 0)('the port agrees with the Python converter', () => {
+describe('the port agrees with the Python converter', () => {
   it('has a reference to compare against', () => {
     // Said out loud: an empty list of fixtures would make every case below
-    // vacuously true, and `skipIf` above is what stops that being silent.
-    expect(references.length).toBeGreaterThan(0);
+    // vacuously true, so an absent reference fails here, naming the step that
+    // writes it (Q24: this used to skip, and a gate that skips is open).
+    expect(references.length, why).toBeGreaterThan(0);
   });
 
   for (const { name, reference, midi } of references) {
@@ -205,6 +203,11 @@ describe.skipIf(references.length === 0)('the port agrees with the Python conver
         expect(mine).toEqual(reference.sounding.map((row) => [row[0], row[1], row[2], row[3]]));
       });
 
+      // Skipped by design for a reference that holds no split: `keep`, or `auto` on a
+      // file with two note tracks, which both sides keep as recorded; the hands
+      // decision itself is compared above. A split is written only for `split` (the
+      // MAESTRO performances) or `auto` on a one-track file, and no committed fixture
+      // is converted either way, so this runs only where build/midi-real/ holds them.
       it.skipIf(reference.handSplit === null)('splits the hands the same way', () => {
         const split = splitHands(report.events);
         expect(eventsOf(split.right)).toEqual(asEvents(reference.handSplit?.right ?? []));
@@ -220,12 +223,12 @@ describe.skipIf(references.length === 0)('the port agrees with the Python conver
   }
 });
 
-describe.skipIf(references.length > 0)('the parity reference', () => {
-  it('is missing, and says how to make it', () => {
-    // Not a silent pass: the reason is printed where a reader of the run will
-    // see it, which is the convention `test_converter.py` uses for the same
-    // files.
+describe('the parity reference', () => {
+  it('is made by a script and a CI step the failure above names', () => {
+    // It used to pass, with a warning, whenever the reference was missing. Now
+    // the case above fails instead, and its message has to send the reader to
+    // things that exist; test_ci_order.py checks the step's name in ci.yml.
     expect(why).toContain('parity_reference.py');
-    console.warn(`midi parity tests skipped — ${why}`);
+    expect(why).toContain('"Write the MIDI parity reference"');
   });
 });

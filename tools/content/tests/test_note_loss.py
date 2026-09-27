@@ -210,8 +210,15 @@ class TestCacheRecord(unittest.TestCase):
 THREE_SPINE_RAG = REPO / "content" / "scores" / "imported" / "kern" / "joplin" / "kern" / "school.krn"
 
 
-@unittest.skipUnless(THREE_SPINE_RAG.is_file(), f"{THREE_SPINE_RAG} is not in this tree")
 class TestThreeStavesKeepEveryNote(unittest.TestCase):
+    def setUp(self) -> None:
+        if not THREE_SPINE_RAG.is_file():
+            self.fail(
+                f"{THREE_SPINE_RAG} is missing: craigsapp's Joplin edition is fetched, not "
+                "committed. Run `python tools/content/fetch.py --only kern-joplin` (CI: the "
+                "step 'Build content' clones it, before 'Content pipeline tests')"
+            )
+
     def test_the_conversion_holds_every_event_the_source_had(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             result = convert_file(THREE_SPINE_RAG, Path(tmp) / "rag.mxl")
