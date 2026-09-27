@@ -547,7 +547,7 @@ is the melody it writes when that key is asked for outright. The nine rows now a
 | `sight-reading-4` | 4.6, technique.5 | C, 4/4, `accidentals` (the raised fourth rising to the fifth) |
 | `sight-reading-5` | theory.6 | keys to three accidentals, 4/4, `syncopation` |
 | `sight-reading-6` | chords-pop.8, theory.9 | keys to four accidentals, 4/4, `triplets` |
-| `sight-reading-7` | jazz.8, theory.9 | keys to four accidentals, 4/4, `triplets`, `sixteenths: false` (C4b, S23: no rung teaches reading sixteenths) |
+| `sight-reading-7` | jazz.8, theory.9 | keys to four accidentals, 4/4, `triplets`, `sixteenths: false` (C4b, S23: no rung teaches reading sixteenths; with them kept out its right hand draws level 6's lengths, so a seed writes nearly row 6's melody over a walking bass — D1's reader's read, Entry 94) |
 
 **Levels 1–4 place every note where its length belongs** (same date): a plain note of length L
 starts on a multiple of L, a dotted quarter on a beat, a dotted half on beat one or three; in
@@ -703,7 +703,8 @@ declared. Three parts:
 
   Declared as brought, measured: the left hand added at level 2+ brings the bass staff, both
   hands at once, and its roots' leaps; a tie at level 2 can bring a leap (its closing note is
-  set after the melody has moved on — a fault of the tie's closing, D's, declared not fixed);
+  set after the melody has moved on — a fault of the tie's closing, D's, declared not fixed;
+  version 2 of the generator holds the tied pitch, and the leap is gone there, D1 below);
   a moving left-hand pattern brings ledger lines below the bass staff (built from C2).
 - **`unrealisable(options)`** (`sightReading.ts`, pure): what the generator cannot write, in
   words, instead of writing something else and letting it pass. The reasons, as printed:
@@ -727,7 +728,8 @@ declared. Three parts:
   held to steps cannot leap." · "A tie's closing note is set to the tied pitch after the
   melody has moved on, so the note after it can be a third away / a fourth or wider away." ·
   "From level 5 the melody moves to a chord tone on the strong beats, which can be a third /
-  a fourth or wider away." · "The Alberti, broken-chord and walking left hands move by
+  a fourth or wider away." (these two at version 1 only: version 2 has neither way past a held
+  cap, D1 below) · "The Alberti, broken-chord and walking left hands move by
   thirds." · "The left hand's roots move between I, IV and V, by fourths and fifths." · "The
   syncopation below level 5 is the eighth–quarter–eighth figure." · "A dotted quarter in
   simple time is completed by an eighth." · "From level 5 a syncopated bar opens on an eighth
@@ -757,6 +759,76 @@ declared. Three parts:
   right-hand row, from 3.4 on the two-hand row and on 4.5's; a ledger line beyond middle C on
   3.4's row (S22). The reader asks for them since C4c: the thirty-day learner reaches dotted
   quarters on 2.5's second day and ties three days later (`checkpoint-2026-09-27-diary.md`).
+
+**The phrase chosen for its shape (2026-09-27, D1; S7, S18, S26, G9, G20, G21, G22).** The hard
+layer above stands: the promises, nothing untaught, the range, the metre, the key,
+`unrealisable`. What the phrases lacked was shape: legal cells over a constrained walk that
+stopped wherever the bar ran out and wandered (on the committed generator, over the distribution
+suite's seeds, about three phrases in five arrive at levels 2–4 and one in five on level 7's own
+table; a fifth of four-bar units are one contour at levels 3–5). Version 2 of the generator:
+
+- **S26 in the hard layer.** No melodic interval beyond the level's leap cap: the walk holds a
+  tied pitch through its tie (version 1 moved on and set the next bar's first note back to the
+  tied pitch, so the note after it could leap past the cap — seed 71282 on the right-hand row
+  with ties: C4 tied into bar 2 then G4, a fifth, and A4 tied into bar 4 then E4, a fourth, where
+  the cap is a third), and levels 5–7 move a strong beat to a chord tone only within the cap of
+  the note before (version 1's snap could go a step past it). A tie leaves the beat only where
+  the phrase has syncopation of its own — designed at levels 5–7, promised at 1–4 (4.5's row) —
+  so a level 1–4 phrase never syncopates by accident, below 4.5 or after it: stricter than
+  "below 4.5", because T37's placement rule for levels 1–4 is every note where its length
+  belongs, whatever the rung. `unrealisable` declares neither way past a held cap at version 2.
+- **Valid candidates scored** (`sightReadingScore.ts`, one module for the judging, split for
+  ownership). After the first draw that keeps every promise and the hard layer the generator
+  keeps drawing, up to 16 valid draws or 96 draws past the first, scores each and keeps the
+  earliest within 0.05 of the best among those at or above the valid draws' lower quartile of
+  notes. A draw that breaks a hard constraint is never scored. The parts, each 0–1:
+  **arrival** (weight 5, the fault named first): the final event on the last bar's downbeat 1,
+  begun in the last bar and held a felt beat from the half bar 0.9, from another beat 0.7, from
+  off the beat 0.5, the close on the tonic, and from level 5 the approach by step or from a chord
+  tone of the final harmony. The rule the tests state is the reviewer's: the final event begins on
+  the last bar's felt beat 1, or begins in the last bar and sustains at least one felt beat — never
+  a long note elsewhere in the last bar. In 5/8 and 7/8 the felt beat is the shorter group, a
+  quarter, not an eighth (no row asks for them). **Contour** (3): each four-bar unit an arch, a
+  valley, an ascent or a descent, read on the beats (the note sounding on each felt beat), so a
+  broken figure inside a beat is not a turn; a turn counts once the line has come back a third;
+  rocking between two notes beyond four, one pitch struck more than three times running, and
+  turning on more than half the moves cost it. **Motif** (1.5, from level 2): a bar's rhythm
+  under other notes, or its interval shape at another pitch; an exact repeat beyond the first
+  costs. **Harmony** (1.5): strong beats on the left hand's chord tones, a note leaning on the
+  chord by step half. **Beginning** (1): the tonic or a chord tone of bar 1, on the downbeat.
+  **Rests** (1, levels 3–7): a rest closing a two-bar group rewarded; one in the arrival bar,
+  after another rest or splitting a beat's short notes penalised; the syncopation rest is the
+  level's device. **Leaps** (0.5): a fourth or wider costs its size towards the cap, half when
+  the next move turns back. No part asks for one form. Why the floor and the tolerance: without
+  the floor the choice drifted to sparser phrases, which are easier to shape (level 2 fell from
+  about four notes a bar to three and a half), and the strict best collapsed level 1 onto a
+  handful of phrases (156 different in 200 seeds; with the tolerance 182; version 1, 192).
+- **Identity.** `SightReadingResult.generator` is `{ family: 'sight-reading', version, seed }`,
+  D0's shape, and `version` is an option; version 1 writes what the committed generator wrote,
+  note for note (`sightReadingUnchanged.test.ts`). **The app still writes version 1**
+  (`SIGHT_READING_IN_FORCE`): a run's record keeps the row, the recipe, the rung and the seed and
+  no version, so a version-2 phrase from a seed already read would be the same encounter to the
+  phrase-seen check and to the evidence job's rewriting of a stored run. Carrying the version is
+  one optional field on `SessionRow` (no IndexedDB version and no upgrade, as C1's fields),
+  written by the Score screen and read by the evidence job and the seen check; D1's brief stops at
+  that line and leaves it to the reviewer (Entry 94). Once it is carried, the in-force version
+  becomes 2 and a stored run without one reads as version 1, which the generator still writes.
+- **The distribution suite** (`sightReadingDistribution.test.ts`): each level's own table (200
+  seeds) and each row at each rung listing it (150), measured on the MusicXML read back and
+  written as a table on request: key and metre as asked, interval classes, notes a bar, rests,
+  repeated notes, contour, oscillation, the arrival rule, strong-beat arrival, the tonic, strong
+  beats on chord tones, a motif, each promise's presence and density, accidentals, span, the left
+  hand's pattern, the search, the kept phrase's score, near-duplicates and hard violations.
+  Bounded, between version 1 and version 2 on these seeds and red on the committed generator:
+  arrival by the rule (levels 2–7), strong-beat arrival (level 1, where every note is a beat long
+  and every phrase arrives by the rule at either version), four-bar units with one contour
+  (modest at 6–7, where tripling the candidates barely moved it: the walk is the ceiling),
+  rocking at levels 1–2, and S26. Guards version 1 passes too: the key and metre, every promise
+  on the page, notes a bar within a tenth of version 1's, repeated notes at most a third of the
+  moves, near-duplicates (a fifth at level 1's small space, none elsewhere), the strong beats on
+  chord tones at 5–7, the search within the redraw budget, and a floor under the kept phrase's
+  score. The numbers are this generator's from these seeds (Entry 94's table), not product
+  facts; nothing was heard, and the phrases are unverified as music.
 
 **Unseen, and the seed.** The daily read keeps the day's seed (`dailySeed`), which ticks the day;
 the slot draws its own for the day (`dailySeed(day + '#reading')` stepped by Shuffle), and every
