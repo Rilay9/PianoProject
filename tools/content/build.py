@@ -216,7 +216,7 @@ def merge_catalog(out_dir: Path) -> Step:
     read = attach_notation(entries, out_dir)
     keyed = settle_key_signatures(entries)
     measured, unmeasured, runtime = attach_demands(entries, out_dir)
-    attach_provenance(entries)
+    attach_provenance(entries, out_dir)
     write_json(out_dir / "catalog.json", entries)
     detail = f"{len(entries)} items"
     if sections:
@@ -679,7 +679,7 @@ def source_kind(entry: dict) -> str:
     return "unknown"
 
 
-def attach_provenance(entries: list[dict]) -> None:
+def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
     """
     Where every item came from and how each fact about it is known (E0 item 2; R35,
     R15, R11, Part 21 §B): `provenance` on every row.
@@ -699,10 +699,15 @@ def attach_provenance(entries: list[dict]) -> None:
       repository), `reviewed` (a person's decision). Never flattened into one field.
       Where the tempo is inferred, the tempo-sensitive demands are listed untrusted.
     - `review`: R42's two decisions as separate bits — a usable, faithful score; a good
-      teaching use. `null` is "no person has decided", which is every item today. A
-      PDMX row's quarry `keep` is a source-level decision of the quarry, recorded as
-      `quarryKeep` (the decision; the reviewer's note stays in `pdmx.json`) and never
-      read as either bit (Part 12 §14: one keep bit never implies both).
+      teaching use — filled from the human review record (`content/review/decisions.jsonl`,
+      D2) by `review.fill_reviewed`: each dimension's current decision on the item's current
+      identity (a triage line or a stale identity never), as the bit (`yes` true; `no` and
+      `fix` false) and as a `reviewed` fact with the value, the basis, the date and the event
+      id (`reviewedScore`, `reviewedTeaching`). `null` is "no person has decided". A PDMX
+      row's quarry `keep` is a source-level decision of the quarry, recorded as `quarryKeep`
+      (the decision; the reviewer's note stays in `pdmx.json`) and never read as either bit
+      (Part 12 §14: one keep bit never implies both). `out_dir` is where the built score
+      files are, for a notated item's identity (the file's sha256).
     - `physical`: a generated item's declared large-hand voicing, with its prerequisite
       and alternative (D0 finding 5), so no selector recommends it without them.
     """
@@ -845,6 +850,11 @@ def attach_provenance(entries: list[dict]) -> None:
                         "alternative": large.get("alternative"),
                     }
         entry["provenance"] = record
+
+    # The reviewed facts (D2 item 4): the record's current decisions, per dimension.
+    import review
+
+    review.fill_reviewed(entries, out_dir)
 
 
 def attach_rung_tracks(entries: list[dict]) -> int:
@@ -1028,6 +1038,11 @@ def step_reports(out_dir: Path, write_docs: bool) -> Step:
     inventory = claims.inventory(catalog, curriculum)
     write_json(BUILD_DIR / "rung-claims.json", report)
     write_json(BUILD_DIR / "inventory.json", inventory)
+    # The builder's microscope reads the report's data, the contracts' verdicts, the queue and
+    # the record beside the catalogue (D2): one file in the built content, never precached.
+    import review
+
+    review.write_microscope(out_dir, catalog, report)
     if write_docs:
         RUNG_CLAIMS_MD.write_text(claims.render_rung_claims(report), encoding="utf-8", newline="\n")
         INVENTORY_MD.write_text(claims.render_inventory(inventory), encoding="utf-8", newline="\n")

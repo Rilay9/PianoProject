@@ -127,7 +127,8 @@ caught by the merge rather than by whichever wrote last:
    attached as `teaching.sections`. This is also where `settle_key_signatures()` decides what
    the Library prints over "Key" for a score that states a signature and no mode, where
    `attach_demands()` writes every bundled score's measured demands (E0, §4 below) and
-   `attach_provenance()` writes every row's provenance (E0, §4a).
+   `attach_provenance()` writes every row's provenance (E0, §4a), its two review bits and
+   `reviewed` facts read from the human review record (D2, §4b).
 7a. **score checks** (`score_checks.py --gate`, added 2026-09-22) — the seven checks of
    `08-test-map.md`'s own row (key consistency, grace density, truncation, bar duration,
    containment, title structure, repeat structure) over the catalog this build just wrote,
@@ -144,7 +145,12 @@ caught by the merge rather than by whichever wrote last:
    and curriculum this build just wrote (`tools/content/claims.py`): as JSON in `build/`, and as
    `docs/prompts/rung-claims.md` and `docs/prompts/inventory.md` for the default build only, so a
    `--out` or `--quick` build never rewrites what the reviewer reads. `validate.py` prints the
-   report's count as a warning, never a failure, until the reviewer says otherwise.
+   report's count as a warning, never a failure, until the reviewer says otherwise. Since D2 the
+   priority rungs' tables carry a teaching-review column (the current teaching-use decision and
+   its basis), and the same step writes `review/microscope.json` into the built content for the
+   builder's microscope (§4b): the queue, each item's contract verdicts and rung claims, and the
+   record's events. The PWA does not precache `content/review/` (`vite.config.ts`
+   `globIgnores`), so no learner downloads it.
 9. **validate** (`validate.py`) — everything in §4 and more: schemas, every referenced file
    present, every curriculum option in the catalog, the three-alternative floor, finders, tips
    files, section bar numbers, track definitions, orphan exercises, licences, the committed
@@ -553,13 +559,51 @@ imported score (`importStore.importProvenance`):
   than the beat) are listed `untrusted` beside the measured ones: measured in the notation,
   their difficulty resting on a tempo the converter supplied. Never flattened into one field.
 - **`review`**: R42's two decisions as separate bits, `score` (usable, faithful) and `teaching`
-  (a good teaching use for its claimed role); `null` is "no person has decided", which is every
-  item today. A PDMX row's quarry `keep` is recorded as `quarryKeep` (the decision; the
-  reviewer's note, working prose with no source, stays in `pdmx.json`) and is neither bit (Part 12
-  §14).
+  (a good teaching use for its claimed role), filled since D2 from the human review record (§4b):
+  each dimension's current decision on the item's current identity, `yes` true, `no` and `fix`
+  false, `null` where no person has decided — with, per current decision, a `reviewed` fact
+  (`reviewedScore`, `reviewedTeaching`) carrying the value, the basis (`inspected`, `notation`,
+  `heard`), the date and the event id. A PDMX row's quarry `keep` is recorded as `quarryKeep` (the
+  decision; the reviewer's note, working prose with no source, stays in `pdmx.json`) and is
+  neither bit (Part 12 §14).
 - **`physical`**: a generated item's declared large-hand voicing, with its prerequisite and
   alternative (D0 finding 5); the gate recommends no such item until the alternative reaches
   the learner.
+
+### 4b. The human review record and the merge (D2; R42, G28, G29, E16)
+
+`content/review/decisions.jsonl` is what a person decided about an item: one JSON event per
+line, append-only, never re-serialised; `content/review/README.md` lists the fields. The short
+form:
+
+- **One dimension per event** — `usableScore` or `goodTeachingUse` — each with its own `value`
+  (`yes`, `no`, `fix`), `reason`, `category`, `basis`, reviewer, time and a stable event id.
+  `basis` is `inspected` (the facts), `notation` (the page read) or `heard` (complete playback,
+  both hands sounding, at the item's intended tempo; hand-alone or partial playback stays
+  `notation`).
+- **Bound to the item's identity**: a generated item's `drill.generator` triple and its recipe
+  (`drill.params` with the hands, and the tempo — the seed is `null` on every deterministic
+  family, so the triple alone does not name an item); a notated item's built file (its sha256,
+  `attach_demands`' cache key); `none` for an item with no file, shown as weaker. A moved version,
+  a changed recipe or a changed file makes every earlier event on the item stale.
+- **Current values per item and dimension**: triage lines (`by: "triage"`) and stale events never
+  participate; the latest valid human event (`at`, then the later line) supersedes the earlier;
+  an event on one dimension never touches the other.
+
+Decisions are made on the builder's microscope (`#/dev/microscope/<item id>`; §3's reports step
+writes its data) and leave the device as an exported file, merged by
+`python tools/content/review.py --merge <file>`: a line that is malformed, names an item the
+built catalogue does not have, or names an identity it does not have is refused with its line
+number; an event id already in the record is skipped when identical and refused when not, so a
+rerun appends nothing. No server writes the record (the reviewer's decision, `docs/review/
+responses/7ab175a.md`). `review.py --check` lists the queue — the music families' canonical items,
+then the not-judged families', then the options a rung lists for a claim no detector checks, then
+the rest — with what is decided, and exits 1 only for a fault in the record.
+
+`family_contracts.json`'s `heard` stays a hand-maintained declaration; `test_family_contracts.py`
+holds that a family marked `heard: true` has at least one `heard` decision on a current item.
+`review.py` and `app/src/review/record.ts` implement the contract; `tests/fixtures/
+review_cases.json` holds both to it.
 
 ## 5. Authoring conventions for `[AUTH]` ABC files
 

@@ -306,6 +306,8 @@ def rung_claims(catalog: list[dict], curriculum: dict) -> dict:
                 "claims": per,
                 "unmeasurable": unmeasurable,
                 "review": provenance.get("review") or {"score": None, "teaching": None},
+                # The teaching-use decision and its basis (D2 item 4): the record's current one.
+                "teachingReview": teaching_review(provenance),
                 "untaught": untaught_on(item, lesson["id"], ancestry, demands) if item and lesson["id"] in firsts.get(item_id, set()) else [],
                 "earliest": lesson["id"] in firsts.get(item_id, set()),
                 "established": ((item or {}).get("measurement") or {}).get("established") or [],
@@ -352,7 +354,7 @@ def rung_claims(catalog: list[dict], curriculum: dict) -> dict:
             "optionsServingNoneOfTheirRungsClaims": len(serves_none),
             "generatedUntaught": sum(1 for _ in generated_untaught),
             "generatedUntaughtMatchesRecord": generated_untaught == recorded_counter,
-            "humanReviewed": sum(1 for o in options if (o["review"] or {}).get("teaching")),
+            "humanReviewed": sum(1 for o in options if o["teachingReview"] is not None),
             "clefMisread": sum(1 for item in catalog if ((item.get("measurement") or {}).get("misread"))),
         },
         "rungs": rungs,
@@ -367,6 +369,18 @@ def rung_claims(catalog: list[dict], curriculum: dict) -> dict:
         # `rungAncestry` equal to it, so the report's "untaught here" and the gate read one thing.
         "ancestry": {rung: sorted(members) for rung, members in ancestry.items()},
     }
+
+
+def teaching_review(provenance: dict) -> dict | None:
+    """The item's current teaching-use decision and its basis, from the provenance (D2), or None."""
+    fact = (provenance.get("facts") or {}).get("reviewedTeaching")
+    return {"value": fact["value"], "basis": fact["basis"]} if fact else None
+
+
+def review_words(option: dict) -> str:
+    """The report's review column: the teaching-use decision and its basis, or a dash."""
+    decided = option.get("teachingReview")
+    return f"{decided['value']} ({decided['basis']})" if decided else "—"
 
 
 def _claim_words(claim: dict, skills: dict[str, dict], demands: dict[str, dict]) -> str:
@@ -433,11 +447,14 @@ def render_rung_claims(report: dict) -> str:
         claims = ", ".join(_claim_words(c, skills, demands) for c in rung["claims"]) or "none the vocabulary can measure"
         lines.append(f"Measurable claims: {claims}.")
         lines.append("")
-        lines.append(f"Claims no detector can establish (a person's judgement; review bit: none on any option): "
+        reviewed = sum(1 for option in options_by_rung[rung_id] if option.get("teachingReview"))
+        review_bit = (f"a teaching-use review on {reviewed} of {len(options_by_rung[rung_id])} options"
+                      if reviewed else "none on any option")
+        lines.append(f"Claims no detector can establish (a person's judgement; review bit: {review_bit}): "
                      f"{', '.join(rung['unmeasurable']) or 'none'}.")
         lines.append("")
-        lines.append("| Option | Source | Establishes | Claims | Untaught here |")
-        lines.append("| --- | --- | --- | --- | --- |")
+        lines.append("| Option | Source | Establishes | Claims | Untaught here | Teaching review |")
+        lines.append("| --- | --- | --- | --- | --- | --- |")
         for option in options_by_rung[rung_id]:
             verdicts = "; ".join(
                 f"{_claim_words(c, skills, demands)}: {c['status']}" + (f" ({'; '.join(c['e22'])})" if c["e22"] else "")
@@ -445,7 +462,7 @@ def render_rung_claims(report: dict) -> str:
             lines.append(
                 f"| {option['title'] or option['item']} (`{option['item']}`) | {option['source'] or '?'} | "
                 f"{', '.join(option['establishedMarked']) or ('— (' + str(option['measured']) + ')')} | {verdicts} | "
-                f"{', '.join(option['untaught']) or '—'} |")
+                f"{', '.join(option['untaught']) or '—'} | {review_words(option)} |")
         lines.append("")
 
     lines += ["## Rung claims no option establishes", "",
@@ -562,8 +579,9 @@ def inventory(catalog: list[dict], curriculum: dict) -> dict:
             "arrangements": len(arrangements),
             "excerpts": 0,
             "withSections": sections,
-            "scoreReviewed": sum(1 for i in catalog if ((i.get("provenance") or {}).get("review") or {}).get("score")),
-            "teachingReviewed": sum(1 for i in catalog if ((i.get("provenance") or {}).get("review") or {}).get("teaching")),
+            # A decision either way is a review: `no` and `fix` count as much as `yes` (D2).
+            "scoreReviewed": sum(1 for i in catalog if ((i.get("provenance") or {}).get("review") or {}).get("score") is not None),
+            "teachingReviewed": sum(1 for i in catalog if ((i.get("provenance") or {}).get("review") or {}).get("teaching") is not None),
             "quarryKeeps": quarry_keeps,
             "tempoInferred": sum(r["tempoInferred"] for r in by_source.values()),
         },
