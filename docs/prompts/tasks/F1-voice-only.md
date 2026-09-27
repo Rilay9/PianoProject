@@ -28,3 +28,5 @@ Judgement first: three of the eleven as a learner now reads them, the ones whose
 
 **Delivered 2026-09-27**, Entry 88, in an isolated worktree: all eleven rows (twelve sentences) rewritten in the teacher layer with the advice kept; the brief's candidate for 3.4 ("the first piece here written for both hands at once") was false of the plan and was not used — the ranking is cut; twelve claims rows added; the four style pointers left as existence-only for G to judge.
 
+**Accepted by the reviewer 2026-09-27** (`responses/a94baee.md`): the style pointers for G; the T55 "every key" diagnosis superseded — the sentence is literally correct.
+
