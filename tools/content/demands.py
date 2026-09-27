@@ -16,6 +16,12 @@ Nothing in the build calls this yet: the catalog carries `demands` from E on,
 with a cache keyed on the file, as `attach_notation` has. What it costs is in
 the C2 entry, measured on the built catalog.
 
+**Counts (D0).** `measure_opportunities` returns the same run's full rows: the
+ids, how many places each detector located, and the bars, steps and sounded
+notes of the model. The family contracts' density checks read those counts
+(`tools/content/tests/test_measured_demands.py`); they are the detectors' own
+`at` lists, counted in TypeScript, so this module still decides nothing.
+
     python3 tools/content/demands.py content/scores/pdmx/<file>.mxl [...]
 """
 from __future__ import annotations
@@ -53,6 +59,17 @@ def measure(paths: list[Path], timeout: int = 3600) -> dict[str, list[str]]:
     Raises `DemandsError` naming every file the app could not load, rather than
     returning a shorter dict a caller might read as "no demands".
     """
+    return {path: row["demands"] for path, row in measure_opportunities(paths, timeout).items()}
+
+
+def measure_opportunities(paths: list[Path], timeout: int = 3600) -> dict[str, dict]:
+    """
+    `{path: {"demands": [...], "opportunities": {id: n}, "measures": n, "steps": n,
+    "notes": n}}` for each file: the ids in vocabulary order, and per vocabulary
+    demand the number of places its detector located (0 where none).
+
+    One Vitest run for all the files. Raises `DemandsError` as `measure` does.
+    """
     with tempfile.TemporaryDirectory() as scratch:
         listing = Path(scratch) / "in.json"
         report = Path(scratch) / "out.json"
@@ -68,7 +85,10 @@ def measure(paths: list[Path], timeout: int = 3600) -> dict[str, list[str]]:
     failed = {path: row["error"] for path, row in answered.items() if "error" in row}
     if failed:
         raise DemandsError("could not measure: " + "; ".join(f"{path}: {why}" for path, why in failed.items()))
-    return {path: row["demands"] for path, row in answered.items()}
+    missing = [str(p) for p in paths if str(p) not in answered]
+    if missing:
+        raise DemandsError("the detector run did not answer for: " + "; ".join(missing))
+    return answered
 
 
 def main() -> int:

@@ -10,6 +10,7 @@ import {
   type Curriculum,
   type Lesson,
 } from '../../src/curriculum';
+import { EVERY_DECLARED_SKILL } from '../../src/curriculum/skillActivation';
 
 function item(id: string, over: Partial<CatalogItem> = {}): CatalogItem {
   return {
@@ -110,7 +111,8 @@ describe('alternativesFor', () => {
   // window: `swapOptions` leaves out what the learner's lessons have not taught), and a shared
   // concept tag alone matches nothing (`alternativesShareASkill.test.ts`).
   it('falls back to items sharing a target skill, the nearest level first; a shared concept tag matches nothing', () => {
-    const out = alternativesFor({ itemId: 'exercise.a' }, curriculum, catalog);
+    // Constructed exercises declaring a skill: activated here, deliberately (D0).
+    const out = alternativesFor({ itemId: 'exercise.a' }, curriculum, catalog, EVERY_DECLARED_SKILL);
     const ids = out.map((i) => i.id);
     expect(ids).toContain('exercise.vehicle');
     expect(ids.indexOf('exercise.vehicle')).toBeLessThan(ids.indexOf('exercise.faraway'));

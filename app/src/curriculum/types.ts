@@ -66,8 +66,9 @@ export interface CatalogItem {
    *
    * Declared, never evidence: a run is evidence of a skill only through a
    * measurement its definition names (design 2026-09-26 §4). Filled on the nine
-   * sight-reading rows only; D writes it per generator family. Nothing in the
-   * app reads it yet — C3's evidence function will.
+   * sight-reading rows (C2) and, since D0, on the generated items whose family
+   * contract names a judged primary skill. Read only through
+   * `skillActivation.skillsInForce`, which as shipped acts on the reading rows'.
    */
   targetSkills?: string[];
   /**
@@ -76,7 +77,11 @@ export interface CatalogItem {
    * runtime drill, whose demands belong to each phrase. Nothing writes it yet (E).
    */
   demands?: string[];
-  /** Relative to the primary target skill (design §7). Nothing writes it yet (D). */
+  /**
+   * Relative to the primary target skill (design §7). Written on the generated items
+   * from their family contracts since D0; nothing in the app reads it yet (the
+   * ladder's transfer reads first contact; D4 brings roles to selection).
+   */
   role?: 'canonical' | 'variable' | 'transfer';
   /** null for an import placeholder and for a drill generated at runtime. */
   file?: string | null;

@@ -42,6 +42,7 @@ import type { CatalogItem, Curriculum } from '../curriculum/types';
 import type { SightReadingOptions } from '../engine/sightReading';
 import type { ScoreModelData, ScoreStep } from '../score/types';
 import { readingOptions, taughtAtRung } from '../curriculum/session';
+import { skillsInForce } from '../curriculum/skillActivation';
 import { EVIDENCE_DEFINITIONS, recomputeEvidence, type StoredEvidence } from '../evidence/evidence';
 import type { Vocabulary } from '../evidence/vocabulary';
 
@@ -160,7 +161,7 @@ export function recomputed(
   item: CatalogItem,
   vocabulary: Vocabulary,
 ): StoredEvidence | undefined {
-  return recomputeEvidence(row, model, vocabulary, item.targetSkills ?? []);
+  return recomputeEvidence(row, model, vocabulary, [...skillsInForce(item)]);
 }
 
 // --- the job ---------------------------------------------------------------
@@ -229,7 +230,9 @@ export async function runEvidenceJob(deps: EvidenceJobDeps, onStatus: (status: E
     const isGenerated = (itemId: string): boolean => byId.get(itemId)?.drill?.kind === 'sight-reading';
     status.normalised = (await deps.normalise(isGenerated)).length;
     changed = status.carried > 0 || status.normalised > 0;
-    const bearing = new Set(items.filter((item) => (item.targetSkills?.length ?? 0) > 0).map((item) => item.id));
+    // Through the activation boundary (D0): an item whose declared skills are not
+    // activated bears no evidence, as before it declared any.
+    const bearing = new Set(items.filter((item) => skillsInForce(item).length > 0).map((item) => item.id));
     const stale: SessionRow[] = [];
     // The store's own runs, not the catalog's items: a run of an item the
     // catalog no longer has is found here, and kept out below as `item-gone`.

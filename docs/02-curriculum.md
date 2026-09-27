@@ -715,9 +715,12 @@ Stages 3, 5, 6 and 7.)*
 | 8 | all scales 4 oct at ♩=120 in 16ths; scales in 3rds/6ths all keys | — | Hanon 44–60; Czerny op.740; Clementi Gradus; Chopin op.10/25 (projects) |
 
 Every scale/arpeggio drill is generated per key, hands (R/L/both), octaves (1–4), motion
-(similar/contrary), rhythm (quarters/8ths/16ths), and target bpm, with correct standard
-fingerings encoded in the MusicXML `<fingering>` elements. Hanon 1–20 are generated from
-their pattern definitions (each is a 8-note cell transposed stepwise up two octaves and back).
+(similar/contrary), rhythm (quarters/8ths/16ths), and target bpm. Fingering is printed in the
+MusicXML `<fingering>` elements where a published table covers the shape — Clementi and Kelley
+for the scales, Kelley for the triad arpeggios, McLain for the white-root sevenths and the
+chromatic scale — and each family's contract says whether it prints fingering and on what
+source (D0; entries 84–86). Hanon 1–20 are generated from the Mutopia edition's own data, its
+printed fingers included.
 
 **Amendments 2026-09-06 (replan, §3):**
 
@@ -746,6 +749,50 @@ their pattern definitions (each is a 8-note cell transposed stepwise up two octa
 
 ### Part E2 — the non-scale exercise families (`00` D21; **built in P5b**)
 
+> **The family contracts (D0, 2026-09-27).** What each family is *for* is data now, not the
+> "Trains" column below and not a docstring: `tools/content/family_contracts.json`, one row per
+> maker in `generate_exercises.py` (56), read by the generator, the build and the tests through
+> `tools/content/family_contracts.py`. The table below is kept as the record of why each family
+> was built; where it and a contract row disagree, the row is right.
+>
+> - **Each row states** the family's name for what it writes (a I–V–vi–IV loop, son clave, a
+>   tumbao pattern — never a genre universal, G11); its promise, `drill` or `music`, with the
+>   reason (the groove and style families are `music` and marked unheard until a person hears
+>   them); its primary target skill from vocabulary v0, or "not judged by the app" with the
+>   candidate recorded for the vocabulary review (no skill was added: the six conditions, D0's
+>   entry); legitimate secondary skills; the demands it assumes, requires at a family-specific
+>   density, and forbids; its physical constraints (the widest chord one hand strikes, declared
+>   leaps, a repeated-note solution, the fastest rate at the stated tempo, and whether fingering
+>   is printed and on what source — `fingeringVerified` is never true without one); the roles it
+>   can honestly provide (canonical and variable within a family; transfer only across families,
+>   named, with the surface dimensions that differ; a new seed is never transfer); what the app
+>   judges of it, from which input, at what precision, and what stays unjudged (G8); what it
+>   cannot prove, in words; and its version.
+> - **Four gates.** Structural is the invariant suite, unchanged. Pedagogical reads the demands
+>   the app's own detectors measure on every generated file (`tools/content/demands.py` →
+>   `demandsOfFiles.test.ts`; one definition of each demand) against the row, and every item a
+>   rung lists against what that rung has taught — D0 changes no placement, so what the rung
+>   check finds is recorded in `tools/content/tests/fixtures/untaught_on_rung.json` for E.
+>   Physical reads the score, and the build refuses an item that fails it (`confirm_physical`);
+>   the two open voicings were its first refusals (G38). Musical is a hook only: no `music`
+>   family passes it until D1–D3 write the evaluator and D2 records a hearing.
+> - **Identity (G21).** `drill.generator` holds family, version and seed; the recipe is
+>   `drill.params`. A family's version changes when its music does, and a test pins each
+>   family's music to its version. Version 2 so far: `five_finger` and `triad_inversions`
+>   (spelled by interval, D0) and `open_voicing` (the quartal stack arranged over the bass).
+> - **`genre`** is gone from the generated rows and the static drills: "technique" and "drill"
+>   are types (G33).
+>
+> **Who reads the contract's target skills (item 9).** The catalog carries them on the generated
+> items, and every runtime reader asks one module before acting on them:
+> `app/src/curriculum/skillActivation.ts` (`skillsInForce`). As shipped it acts on the reading
+> rows' skills only, which is exactly what C6's swap tier, the session's skill step and the
+> Score screen's evidence acted on before D0, so writing the families' skills changes nothing a
+> learner is offered or credited with (`skillActivationBoundary.test.ts`). Activating a family is
+> a deliberate change to that module, with a test beside it. **E extends this one boundary** with
+> its needs-versus-taught and measured-demand checks, and D4 with roles in the ladder; nobody
+> writes a second readiness check beside it.
+
 The table above is a technique syllabus in the conservatoire sense. It is not the whole of
 what a learner practises, and a skill with no generated exercise ends up either untested or
 propped up by a song that only half tests it. Every family below is generated notation, per
@@ -763,9 +810,9 @@ key and per hand where that means anything, with fingering:
 | `rhythm` in other meters | 1.4 (3/4), 4.5 (6/8) | 1–4 | `make_rhythm` currently hardcodes 4/4; the meter becomes a parameter. |
 | `shuffle` | 4.5, blues track | 4 | Straight eighths written, swung played; the notation carries the "shuffle" instruction. |
 | `contrary` 2-octave, minors | 4.1, 4.2 | 4 | Contrary motion exists at one octave in majors only. |
-| the **guitar keys** for `boogie`, `blues-scale`, `walking-bass`, `comping` | D3 blues, and the whole `jam` module | 4–6 | `JAM_KEYS` is E, A, G and D — what a guitarist calls — and the default harmony set is C, F, B♭, E♭, which is what a horn section reads. So `jam`, whose lesson asks for "a boogie bass in E", offered a boogie in C. Four families in four keys, not `--full`'s four hundred items. |
-| `walking-bass` and `boogie` over a **minor blues** | D3 Stage 6's "minor blues" | 6 | `TWELVE_BAR_MINOR`: minor sevenths on the i and the iv, and the ♭VI7–V7 at bars nine and ten. A band above the major form, because that pair is the only place the form leaves the key. The boogie figure's third flattens; its sixth does not — a minor blues is Dorian. |
-| `meter` in **12/8** | D3 Stage 6's "slow blues 12/8" | 6 | `ODD_METERS` held 5/4 and 7/8. 12/8 is compound rather than odd and is in that table because it is the same problem — a bar `make_rhythm` cannot write — so the row carries its own concepts and is not filed under "odd meter". It is a **blues**, not a scale in a new signature: twelve bars of `TWELVE_BAR`, the shuffle bass long-short in the left hand (which is what 12/8 *does* to the music), the shell twice a bar in the right. A learner sent to "slow blues 12/8" and handed a C major walk has been told something untrue by the catalog. |
+| the **guitar keys** for `boogie`, `blues-scale`, `walking-bass`, `comping` | D3 blues, and the whole `jam` module | 4–6 | `JAM_KEYS` is E, A, G and D, the keys the `jam` lesson names for its band, and the default harmony set is C, F, B♭, E♭. So `jam`, whose lesson asks for "a boogie bass in E", offered a boogie in C. Four families in four keys, not `--full`'s four hundred items. |
+| `walking-bass` and `boogie` over a **minor blues** | D3 Stage 6's "minor blues" | 6 | `TWELVE_BAR_MINOR`: minor sevenths on the i and the iv, and the ♭VI7–V7 at bars nine and ten. A band above the major form, because that pair is the only place the form leaves the key. The boogie figure's third flattens; its sixth stays major over the minor chord (a Dorian colour), and which sixth a given minor blues uses is the lessons' to say (F, G). |
+| `meter` in **12/8** | D3 Stage 6's "slow blues 12/8" | 6 | `ODD_METERS` held 5/4 and 7/8. 12/8 is compound rather than odd and is in that table because it is the same problem — a bar `make_rhythm` cannot write — so the row carries its own concepts and is not filed under "odd meter". It is a **blues**, not a scale in a new signature: twelve bars of `TWELVE_BAR`, the bass long-short in the left hand (two eighths of each beat and then one, written in the metre), the shell twice a bar in the right. A learner sent to "slow blues 12/8" and handed a C major walk has been told something untrue by the catalog. |
 | `oompah` | D5 ragtime, on every one of its rungs | 4–5 | Bass on 1 and 3, chord on 2 and 4, I–IV–V–I in 2/4. Two spans: the chord an octave above the bass, and a tenth above it. The span is the whole difficulty. Ragtime had **no generated family at all** — its rung's four exercises were borrowed accompaniment and syncopation rows. |
 | `secondary-rag` | `ragtime.8`; the `secondary-rag` concept id | 6 | A three-sixteenth cell — short, long — over a beat of four, tied across the barline, with an oom-pah underneath so the beat it slips against is audible. Levelled with `syncopation`'s sixteenth variant: three-against-four at the sixteenth is the hardest rhythm the generator writes, and a level that puts an item on rungs it cannot be played on is worse than none. `concepts.json` has carried the id since it was written with nothing behind it. |
 | `cadence` in a **plagal** voicing | `hymns`' plagal cadence | 3 | IV–I in every major key, a third voicing on an existing family. Same level as the other two: the hand shapes are unit 3.2's either way, and what is being learnt is the sound. |

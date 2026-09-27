@@ -1,0 +1,291 @@
+{
+  "_comment": [
+    "Each family's music, pinned to its generator version (G21; test_family_contracts.TestIdentity).",
+    "digest: sha256 over the family's plan items, each item's own digest (every strike's onset, length,",
+    "written pitches and tie, per staff, with the tempo and the metre), in id order. When a family's music",
+    "changes on purpose, its row's version goes up in family_contracts.json and the pin is rewritten with it;",
+    "a change with no version change fails. Written by D0 from the plan as it builds after D0's changes."
+  ],
+  "families": {
+    "accompaniment": {
+      "version": 1,
+      "items": 30,
+      "digest": "2c3a4bfbc439c18fbe22d685330cb7a5a46829ab6df3267f070e2d9cfbe003eb"
+    },
+    "arpeggio": {
+      "version": 1,
+      "items": 60,
+      "digest": "77fd6f678aeb890280461947f23aaa94804441d334db8b8b47091c2d82bfbdae"
+    },
+    "articulation": {
+      "version": 1,
+      "items": 8,
+      "digest": "0c4b4d3d641d31dbd30b35795e9b823c573e7f3674a3ef0e871457fdf80398ef"
+    },
+    "blues_scale": {
+      "version": 1,
+      "items": 16,
+      "digest": "3ed727b64bdbc0228c33dea359442db50eb43a5df6c66f065c37b413ad8a5da7"
+    },
+    "boogie": {
+      "version": 1,
+      "items": 36,
+      "digest": "1f8d71b56ca0f286dfef53247ac8d77a9755ed6db7b249d8bc4ab1afb0b9da0c"
+    },
+    "broken_seventh": {
+      "version": 1,
+      "items": 36,
+      "digest": "1b682c6a34765369ef16ca484909414e7872538224c20b01e1de8fa11b3e8854"
+    },
+    "cadence": {
+      "version": 1,
+      "items": 36,
+      "digest": "6c439ac900bb0c3526a06ef45d869ca187463f66ae26655d558501143c1ca4ab"
+    },
+    "chromatic": {
+      "version": 1,
+      "items": 16,
+      "digest": "fff8597130ca4db18982a93756aeaffafb67699aa073bd848bf6abe69ac88c7c"
+    },
+    "clave": {
+      "version": 1,
+      "items": 10,
+      "digest": "703981daaf2a8d31fde27c2e60a570545e6f045bfc9050bd6e7303766ffc3fe0"
+    },
+    "comping": {
+      "version": 1,
+      "items": 58,
+      "digest": "bba2643de14345d2b69a1c825f227e2c3d103062d006aeef2c5bf66da3c5ba5a"
+    },
+    "coordination": {
+      "version": 1,
+      "items": 10,
+      "digest": "e61d378435e05560bce10b9239165a73fd95af30572ddd4b5c325513c68b19b7"
+    },
+    "double_scale": {
+      "version": 1,
+      "items": 8,
+      "digest": "b5184f7223074546ed27e5b8326b0eb8076ad71897cf8536ed9b333efcfd163e"
+    },
+    "five_finger": {
+      "version": 2,
+      "items": 48,
+      "digest": "f9db06a607f1c24c9dbdacca70f2edb504db463d8f4ae00defa8d97418f9e7ad"
+    },
+    "four_chord_loop": {
+      "version": 1,
+      "items": 24,
+      "digest": "d60eb2afa51a9164a341dba973c65acc5daa3486751b3fb3b72a2283ceb9d212"
+    },
+    "hand_independence": {
+      "version": 1,
+      "items": 12,
+      "digest": "6b0750959a0274407638039118962bce047468f49b2fb60c209c128b0545138f"
+    },
+    "hanon": {
+      "version": 1,
+      "items": 60,
+      "digest": "53e2fd5bd10322706c11f12d4d6d42525a6d2a6c4b2a73f67d37996b22b8535b"
+    },
+    "ii_v_i": {
+      "version": 1,
+      "items": 36,
+      "digest": "4b293b631f7af9f0c105d6355e064ed5db0893a6f63a09dedb08400545d9420e"
+    },
+    "interval_reading": {
+      "version": 1,
+      "items": 16,
+      "digest": "4d4246d2117518e991d8c17a8b478c1a45beb70d821351c6255dd6f3791b3fe2"
+    },
+    "intro": {
+      "version": 1,
+      "items": 5,
+      "digest": "fac435d2c7e19d864cb0c1de8f805c6b742aad039d22fcf420c397327c4e7b7d"
+    },
+    "latin_groove": {
+      "version": 1,
+      "items": 5,
+      "digest": "d306f535c91c3f59e8d45bed57d488f4d2383a92e91b057947fdb26b27ece42a"
+    },
+    "meter": {
+      "version": 1,
+      "items": 3,
+      "digest": "02244605baf069101955fe90de180f70cf4b7bc98bad66a4c23ae0d5aceacffa"
+    },
+    "modal_vamp": {
+      "version": 1,
+      "items": 3,
+      "digest": "337de2af6ea2564d08438a0f7e8b8a3cb33f134fc48f927d7f71f9ae40bc5f03"
+    },
+    "montuno": {
+      "version": 1,
+      "items": 15,
+      "digest": "391e7c0e94e122fba8e9e90fcc5ae48be765af25bfe9680c0ad4322b328ac876"
+    },
+    "octave_scale": {
+      "version": 1,
+      "items": 25,
+      "digest": "084cc32dd69e17d010b2805bcc53dd3b1daeaef07cdc24df9088f14d448c77d0"
+    },
+    "oompah": {
+      "version": 1,
+      "items": 8,
+      "digest": "373b5c5b1c9258e11b302f64c36d74d6df84444dec874ad9c33b18b9d82b9016"
+    },
+    "open_voicing": {
+      "version": 2,
+      "items": 16,
+      "digest": "acaf3098e6f75a80ffdca795d2faf95ac0312f53f8486dc874239b317f9cd109"
+    },
+    "ostinato": {
+      "version": 1,
+      "items": 6,
+      "digest": "f65305bdc7c9fe4e143cc71b554d74f0e93f4b45f958a8c22c24d1b5e4fd567d"
+    },
+    "passing_chord": {
+      "version": 1,
+      "items": 4,
+      "digest": "46d60a452bb2e675b30c63ec6e9cc8b7e381f1f8790d673f69c4297955451fcd"
+    },
+    "pedal": {
+      "version": 1,
+      "items": 6,
+      "digest": "6125df927c26a22f82ede235db42130fa3ff1d0ec4b85a34643dcd3deb92d13b"
+    },
+    "pedal_variant": {
+      "version": 1,
+      "items": 8,
+      "digest": "7e2b474e1fdb9dd7aea35c7c0a3dda149be58648485e4b3b0bb7fcb9d2d29340"
+    },
+    "pentatonic": {
+      "version": 1,
+      "items": 6,
+      "digest": "050e5a8015a60a2f7257f2858b7b80ff758c9910edff7b9b2470f46d3b0369d8"
+    },
+    "position_shift": {
+      "version": 1,
+      "items": 10,
+      "digest": "a3a820d1d0428b80b0a1eab50d93b5c2c33686b57c722d6bdf1f647dd260e3a8"
+    },
+    "power_chord": {
+      "version": 1,
+      "items": 3,
+      "digest": "12ce66bfbf130725a329f7dabc755ec001d7f76b3a03c054b941142ca952eae6"
+    },
+    "repeated_notes": {
+      "version": 1,
+      "items": 12,
+      "digest": "87fac3584013cafd371e4713aabbc138346fae42aca13f6ffa4c7bbb8634c324"
+    },
+    "rhythm": {
+      "version": 1,
+      "items": 18,
+      "digest": "9c3a59fd6ad61b95de1802ddc6643506d4d5af8d0d747e4638bd5e45f0c18950"
+    },
+    "riff": {
+      "version": 1,
+      "items": 4,
+      "digest": "48c76445c6cc5d7564c7345f8b8ef72faecedbcc63225073d097a14939a1a7cb"
+    },
+    "rotation": {
+      "version": 1,
+      "items": 6,
+      "digest": "97005864711bb947b6c4dcf98f2fee12853b35d0d603420cd0581e273b719f53"
+    },
+    "scale": {
+      "version": 1,
+      "items": 252,
+      "digest": "964d226daf6628b49dc0bcc7591586b557ceede8cacb6a9bbea8de2749040abf"
+    },
+    "secondary_rag": {
+      "version": 1,
+      "items": 1,
+      "digest": "2ad8eb5d3225a03325406cf3f7bed9951366718ace5f87a705d128f4dbf616b9"
+    },
+    "seventh_arpeggio": {
+      "version": 1,
+      "items": 60,
+      "digest": "c0730c8fd699434b60d7ca16a265c5f15d8b01302c91423aed45e6fe380076e3"
+    },
+    "seventh_voicing": {
+      "version": 1,
+      "items": 48,
+      "digest": "0c2fc5259c7ad130c1d1db2b5c4e841559746b6bdfa4ecac2f2c12c7d9f9fcd2"
+    },
+    "shaping": {
+      "version": 1,
+      "items": 10,
+      "digest": "1a1d4b4b79acd280a13a7dd21536fe72a1c7a50f5c6dfd3caf42ba7141a96bb6"
+    },
+    "slash_bass": {
+      "version": 1,
+      "items": 4,
+      "digest": "cb7c501897b07ff7433505c857f8d910df04eea8b83fee1135619b5c28839d5e"
+    },
+    "stride": {
+      "version": 1,
+      "items": 4,
+      "digest": "78d7e8bd533d6ec0a1400886ffd99340838bc68b00509283d44fe6d6646cb14d"
+    },
+    "swing_pair": {
+      "version": 1,
+      "items": 3,
+      "digest": "be610c14bceb540770f268e20a7ef5a5ff1b365c9921bc1f8434e972f1a804ad"
+    },
+    "syncopation": {
+      "version": 1,
+      "items": 2,
+      "digest": "03646a86e1f2aeb3bb9f9e7e0f1aeae4eb539c60c759c4948348502365c981f5"
+    },
+    "tremolo_octaves": {
+      "version": 1,
+      "items": 12,
+      "digest": "4a5ad5913a0e28131078c2d2685ecc3ed57f968e30691a6b6e963277796cbebd"
+    },
+    "tresillo": {
+      "version": 1,
+      "items": 3,
+      "digest": "45e93e68073aded329798ff34d83b4a61a79e166c43522ae8cfe97d5bd34ed5d"
+    },
+    "triad_inversions": {
+      "version": 2,
+      "items": 24,
+      "digest": "ecb8f2ed056526ba3271f08c464666fdfd18fb0d1d3d129cea9e915e74cef0b5"
+    },
+    "trill": {
+      "version": 1,
+      "items": 12,
+      "digest": "55b0b5d3c5bbc96be6165f6303c093c0463e321b68ff6056650d6c2558dbd70f"
+    },
+    "tritone_sub": {
+      "version": 1,
+      "items": 4,
+      "digest": "a2bce25532d324d9a33150a43b80add83e48548e74bf9f762411f3abcae5c9e4"
+    },
+    "tumbao": {
+      "version": 1,
+      "items": 5,
+      "digest": "66d83c82f14c5a4183d5eaa0f08213241f3a58b5b235bc9374b3aaa338edaa81"
+    },
+    "turnaround": {
+      "version": 1,
+      "items": 12,
+      "digest": "950787c94b5eddc59d7979f8345dd45e63c91a7a2958ee6253ccb24ae443ecd2"
+    },
+    "voicing": {
+      "version": 1,
+      "items": 5,
+      "digest": "711d37463a1b1b90af2de4588b1551f46a1aa7529d5eefcc9f6b88bb7a2ce0e9"
+    },
+    "walking_bass": {
+      "version": 1,
+      "items": 28,
+      "digest": "eb5037273150bd2f434e4ff2b1ee1979112e0de8174d79b492e74e02eff08954"
+    },
+    "walkup": {
+      "version": 1,
+      "items": 4,
+      "digest": "bc8f6ca989d51e76f6287f3910c37312e7be012fcebb0f05f2da077fcf80444f"
+    }
+  }
+}

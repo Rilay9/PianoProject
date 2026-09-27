@@ -1,0 +1,509 @@
+{
+  "_comment": [
+    "The pedagogical gate's rung check (D0 item 3; test_measured_demands.TestTheRungTheItemSitsOn): for every",
+    "generated item a rung lists, the demands the app's detectors measured on it that the curriculum has not",
+    "taught by the earliest rung listing it (demands.json's taughtAt, in the curriculum's order; null is taught",
+    "nowhere). D0 changes no placement (G18: the round-robin stays), so these are recorded rather than fixed:",
+    "the report E's needs-versus-taught gate acts on. The test fails when a combination appears or goes.",
+    "Grouped family by rung by demand, with the number of items. Written by D0 from the plan after its changes."
+  ],
+  "found": [
+    {
+      "family": "arpeggio",
+      "rung": "3.3",
+      "demand": "pitch.ledger",
+      "taughtAt": "3.4",
+      "items": 1
+    },
+    {
+      "family": "arpeggio",
+      "rung": "3.3",
+      "demand": "texture.left-hand-pattern",
+      "taughtAt": "3.6",
+      "items": 1
+    },
+    {
+      "family": "broken_seventh",
+      "rung": "technique.7",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 2
+    },
+    {
+      "family": "cadence",
+      "rung": "2.3",
+      "demand": "pitch.ledger",
+      "taughtAt": "3.4",
+      "items": 1
+    },
+    {
+      "family": "cadence",
+      "rung": "2.3",
+      "demand": "range.beyond-position",
+      "taughtAt": "2.5",
+      "items": 2
+    },
+    {
+      "family": "cadence",
+      "rung": "3.2",
+      "demand": "pitch.ledger",
+      "taughtAt": "3.4",
+      "items": 3
+    },
+    {
+      "family": "clave",
+      "rung": "latin.3",
+      "demand": "rhythm.syncopation",
+      "taughtAt": "4.5",
+      "items": 4
+    },
+    {
+      "family": "clave",
+      "rung": "latin.3",
+      "demand": "texture.walking-bass",
+      "taughtAt": "blues.5",
+      "items": 1
+    },
+    {
+      "family": "coordination",
+      "rung": "2.1",
+      "demand": "key.signature",
+      "taughtAt": "3.1",
+      "items": 1
+    },
+    {
+      "family": "five_finger",
+      "rung": "1.1",
+      "demand": "clef.bass",
+      "taughtAt": "1.3",
+      "items": 1
+    },
+    {
+      "family": "five_finger",
+      "rung": "1.1",
+      "demand": "key.signature",
+      "taughtAt": "3.1",
+      "items": 1
+    },
+    {
+      "family": "five_finger",
+      "rung": "1.1",
+      "demand": "texture.hands-together",
+      "taughtAt": "2.1",
+      "items": 1
+    },
+    {
+      "family": "five_finger",
+      "rung": "1.3",
+      "demand": "key.signature",
+      "taughtAt": "3.1",
+      "items": 1
+    },
+    {
+      "family": "five_finger",
+      "rung": "1.3",
+      "demand": "pitch.ledger",
+      "taughtAt": "3.4",
+      "items": 1
+    },
+    {
+      "family": "five_finger",
+      "rung": "practice.5",
+      "demand": "key.signature",
+      "taughtAt": "3.1",
+      "items": 1
+    },
+    {
+      "family": "five_finger",
+      "rung": "practice.5",
+      "demand": "pitch.ledger",
+      "taughtAt": "3.4",
+      "items": 1
+    },
+    {
+      "family": "five_finger",
+      "rung": "practice.5",
+      "demand": "texture.hands-together",
+      "taughtAt": "2.1",
+      "items": 1
+    },
+    {
+      "family": "hanon",
+      "rung": "4.4",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 4
+    },
+    {
+      "family": "hanon",
+      "rung": "classical.5",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 2
+    },
+    {
+      "family": "hanon",
+      "rung": "classical.6",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 3
+    },
+    {
+      "family": "hanon",
+      "rung": "classical.7",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 2
+    },
+    {
+      "family": "hanon",
+      "rung": "classical.8",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 2
+    },
+    {
+      "family": "hanon",
+      "rung": "practice.1",
+      "demand": "pitch.ledger",
+      "taughtAt": "3.4",
+      "items": 1
+    },
+    {
+      "family": "hanon",
+      "rung": "practice.1",
+      "demand": "range.beyond-position",
+      "taughtAt": "2.5",
+      "items": 1
+    },
+    {
+      "family": "hanon",
+      "rung": "practice.1",
+      "demand": "rhythm.shorter-than-quarter",
+      "taughtAt": "2.2",
+      "items": 1
+    },
+    {
+      "family": "hanon",
+      "rung": "practice.1",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 1
+    },
+    {
+      "family": "hanon",
+      "rung": "practice.1",
+      "demand": "texture.hands-together",
+      "taughtAt": "2.1",
+      "items": 1
+    },
+    {
+      "family": "hanon",
+      "rung": "ragtime.7",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 1
+    },
+    {
+      "family": "hanon",
+      "rung": "technique.4",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 2
+    },
+    {
+      "family": "hanon",
+      "rung": "technique.5",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 2
+    },
+    {
+      "family": "octave_scale",
+      "rung": "technique.7",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 2
+    },
+    {
+      "family": "ostinato",
+      "rung": "2.1",
+      "demand": "range.beyond-position",
+      "taughtAt": "2.5",
+      "items": 1
+    },
+    {
+      "family": "ostinato",
+      "rung": "2.1",
+      "demand": "rhythm.eighths",
+      "taughtAt": "2.2",
+      "items": 1
+    },
+    {
+      "family": "ostinato",
+      "rung": "2.1",
+      "demand": "rhythm.shorter-than-quarter",
+      "taughtAt": "2.2",
+      "items": 1
+    },
+    {
+      "family": "ostinato",
+      "rung": "3.3",
+      "demand": "pitch.ledger",
+      "taughtAt": "3.4",
+      "items": 1
+    },
+    {
+      "family": "pentatonic",
+      "rung": "2.5",
+      "demand": "pitch.ledger",
+      "taughtAt": "3.4",
+      "items": 1
+    },
+    {
+      "family": "pentatonic",
+      "rung": "3.1",
+      "demand": "pitch.ledger",
+      "taughtAt": "3.4",
+      "items": 1
+    },
+    {
+      "family": "position_shift",
+      "rung": "2.5",
+      "demand": "key.signature",
+      "taughtAt": "3.1",
+      "items": 1
+    },
+    {
+      "family": "position_shift",
+      "rung": "2.5",
+      "demand": "pitch.ledger",
+      "taughtAt": "3.4",
+      "items": 2
+    },
+    {
+      "family": "power_chord",
+      "rung": "3.3",
+      "demand": "pitch.ledger",
+      "taughtAt": "3.4",
+      "items": 1
+    },
+    {
+      "family": "power_chord",
+      "rung": "3.3",
+      "demand": "texture.left-hand-pattern",
+      "taughtAt": "3.6",
+      "items": 1
+    },
+    {
+      "family": "repeated_notes",
+      "rung": "latin.7",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 1
+    },
+    {
+      "family": "repeated_notes",
+      "rung": "technique.6",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 1
+    },
+    {
+      "family": "rhythm",
+      "rung": "2.4",
+      "demand": "metre.compound",
+      "taughtAt": "4.5",
+      "items": 1
+    },
+    {
+      "family": "rhythm",
+      "rung": "ragtime.5",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 1
+    },
+    {
+      "family": "riff",
+      "rung": "1.1",
+      "demand": "interval.skip",
+      "taughtAt": "1.5",
+      "items": 1
+    },
+    {
+      "family": "rotation",
+      "rung": "latin.7",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 1
+    },
+    {
+      "family": "rotation",
+      "rung": "technique.6",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 1
+    },
+    {
+      "family": "scale",
+      "rung": "3.3",
+      "demand": "pitch.ledger",
+      "taughtAt": "3.4",
+      "items": 1
+    },
+    {
+      "family": "scale",
+      "rung": "3.3",
+      "demand": "texture.left-hand-pattern",
+      "taughtAt": "3.6",
+      "items": 1
+    },
+    {
+      "family": "scale",
+      "rung": "practice.2",
+      "demand": "range.beyond-position",
+      "taughtAt": "2.5",
+      "items": 1
+    },
+    {
+      "family": "scale",
+      "rung": "practice.2",
+      "demand": "rhythm.eighths",
+      "taughtAt": "2.2",
+      "items": 1
+    },
+    {
+      "family": "scale",
+      "rung": "practice.2",
+      "demand": "rhythm.shorter-than-quarter",
+      "taughtAt": "2.2",
+      "items": 1
+    },
+    {
+      "family": "scale",
+      "rung": "practice.2",
+      "demand": "texture.hands-together",
+      "taughtAt": "2.1",
+      "items": 1
+    },
+    {
+      "family": "scale",
+      "rung": "practice.2",
+      "demand": "texture.left-hand-pattern",
+      "taughtAt": "3.6",
+      "items": 1
+    },
+    {
+      "family": "scale",
+      "rung": "practice.5",
+      "demand": "range.beyond-position",
+      "taughtAt": "2.5",
+      "items": 1
+    },
+    {
+      "family": "scale",
+      "rung": "practice.5",
+      "demand": "rhythm.eighths",
+      "taughtAt": "2.2",
+      "items": 1
+    },
+    {
+      "family": "scale",
+      "rung": "practice.5",
+      "demand": "rhythm.shorter-than-quarter",
+      "taughtAt": "2.2",
+      "items": 1
+    },
+    {
+      "family": "scale",
+      "rung": "practice.5",
+      "demand": "texture.hands-together",
+      "taughtAt": "2.1",
+      "items": 1
+    },
+    {
+      "family": "scale",
+      "rung": "practice.5",
+      "demand": "texture.left-hand-pattern",
+      "taughtAt": "3.6",
+      "items": 1
+    },
+    {
+      "family": "scale",
+      "rung": "technique.8",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 12
+    },
+    {
+      "family": "secondary_rag",
+      "rung": "ragtime.9",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 1
+    },
+    {
+      "family": "swing_pair",
+      "rung": "2.2",
+      "demand": "range.beyond-position",
+      "taughtAt": "2.5",
+      "items": 1
+    },
+    {
+      "family": "syncopation",
+      "rung": "technique.6",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 1
+    },
+    {
+      "family": "tremolo_octaves",
+      "rung": "blues.5",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 1
+    },
+    {
+      "family": "tremolo_octaves",
+      "rung": "technique.7",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 1
+    },
+    {
+      "family": "tresillo",
+      "rung": "3.6",
+      "demand": "rhythm.syncopation",
+      "taughtAt": "4.5",
+      "items": 1
+    },
+    {
+      "family": "triad_inversions",
+      "rung": "2.3",
+      "demand": "pitch.ledger",
+      "taughtAt": "3.4",
+      "items": 1
+    },
+    {
+      "family": "triad_inversions",
+      "rung": "2.3",
+      "demand": "range.beyond-position",
+      "taughtAt": "2.5",
+      "items": 1
+    },
+    {
+      "family": "triad_inversions",
+      "rung": "2.3",
+      "demand": "texture.left-hand-pattern",
+      "taughtAt": "3.6",
+      "items": 1
+    },
+    {
+      "family": "trill",
+      "rung": "technique.6",
+      "demand": "rhythm.sixteenths",
+      "taughtAt": null,
+      "items": 1
+    }
+  ]
+}
