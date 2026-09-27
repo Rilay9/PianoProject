@@ -679,7 +679,6 @@ def built(item: str):
     return found, read_score(text)
 
 
-@unittest.skipUnless(BUILT, "app/public/content/catalog.json has not been built")
 class KnownItems(unittest.TestCase):
     """
     Each of the seven faults in `docs/lesson-audit/README.md`, against a named
@@ -687,6 +686,14 @@ class KnownItems(unittest.TestCase):
     (`so-danco-samba`) does not, and that is asserted too, because the file is
     not wrong — see `test_bar_duration`.
     """
+
+    def setUp(self):
+        if not BUILT:
+            self.fail(
+                f"{CATALOG} is missing, and these tests read the built catalogue: run "
+                "`python tools/content/build.py` first (CI: the step 'Build content', "
+                "before 'Content pipeline tests')"
+            )
 
     def test_key_consistency(self):
         """
@@ -756,7 +763,11 @@ class KnownItems(unittest.TestCase):
         self.assertEqual([f.severity for f in found], ["high"])
         self.assertEqual(check_truncation(green, full, {red["id"]: (short.bar_count, short.bar_count)}), [])
 
-    @unittest.skipUnless(LIBRARY_INDEX.exists(), "the unpacked archive is not on this machine")
+    @unittest.skipUnless(
+        LIBRARY_INDEX.exists(),
+        f"{LIBRARY_INDEX} is not here: the unpacked PDMX archive is not in the "
+        "repository and no CI step fetches it",
+    )
     def test_a_title_match_that_shares_no_bars_is_not_a_copy(self):
         """*Minuet in C major* is a title two different pieces carry — Mozart's
         K. 1f and a Clementi. Matched on the title alone the Mozart is reported

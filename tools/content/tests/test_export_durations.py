@@ -348,13 +348,19 @@ class TestARealFile(unittest.TestCase):
     def setUp(self) -> None:
         self.raw = PDMX_RAW / f"{self.CID}.mxl"
         if not self.raw.exists():
-            self.skipTest("the PDMX re-run's raw files are not on this machine")
+            self.skipTest(
+                f"{self.raw} is not here: the 2026-09-15 re-run read it from a PDMX "
+                "archive, which is not in the repository and which no CI step fetches"
+            )
 
     def test_the_re_run_refused_it_at_the_export_step(self) -> None:
         # Guards the premise rather than the fix: if the recorded reason is not
         # one of the writer's, this file is no longer the right witness.
         if not PDMX_QUARRIED.exists():
-            self.skipTest("the PDMX re-run's results are not on this machine")
+            self.skipTest(
+                f"{PDMX_QUARRIED} is not here: the same re-run's results, from a PDMX "
+                "archive that is not in the repository and that no CI step fetches"
+            )
         rows = json.loads(PDMX_QUARRIED.read_text(encoding="utf-8"))["rows"]
         row = next(row for row in rows if row["cid"] == self.CID)
         self.assertEqual(row.get("gate"), "convert")

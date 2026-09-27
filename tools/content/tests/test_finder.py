@@ -243,7 +243,11 @@ class TestShippedContent(unittest.TestCase):
 
     def test_the_built_curriculum_carries_both_prompts_everywhere(self) -> None:
         if not BUILT.is_file():
-            self.skipTest("no build in this tree")
+            self.fail(
+                f"{BUILT} is missing, and this test reads the built curriculum: run "
+                "`python tools/content/build.py` first (CI: the step 'Build content', "
+                "before 'Content pipeline tests')"
+            )
         built = json.loads(BUILT.read_text(encoding="utf-8"))
         self.assertEqual(validate.finder_errors(built), [])
         self.assertEqual(validate.unknown_concepts(built), [])

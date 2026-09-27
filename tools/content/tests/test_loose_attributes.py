@@ -126,13 +126,21 @@ class TestAKeyChangeBetweenBars(LooseAttributeCase):
         self.assertEqual([w for w in result.warnings if "into the bar they fall in" in w], [])
 
 
-@unittest.skipUnless(CLEOPHA.exists(), "craigsapp's Joplin edition is not in this tree")
 class TestCleopha(LooseAttributeCase):
     """
     The rag it was found on. `*k[b-e-]` stands at the double bar in the middle
     of bar 54, and the second strain used to be engraved in the first strain's
     key — every B flat of it spelled out as an accidental instead.
     """
+
+    def setUp(self) -> None:
+        if not CLEOPHA.exists():
+            self.fail(
+                f"{CLEOPHA} is missing: craigsapp's Joplin edition is fetched, not "
+                "committed. Run `python tools/content/fetch.py --only kern-joplin` (CI: the "
+                "step 'Build content' clones it, before 'Content pipeline tests')"
+            )
+        super().setUp()
 
     def test_every_signature_the_edition_prints_reaches_the_page(self) -> None:
         source, written = self.round_trip(CLEOPHA)

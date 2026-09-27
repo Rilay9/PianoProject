@@ -57,7 +57,9 @@ REAL_FILES = (
 have_real = all((REAL_DIR / name).exists() for name in REAL_FILES)
 real_reason = (
     f"{REAL_DIR} is under .gitignore; fetch the three MAESTRO performances named in "
-    f"its SOURCE.md to run these: {', '.join(REAL_FILES)}"
+    f"its SOURCE.md to run these: {', '.join(REAL_FILES)}. They come from the MAESTRO "
+    "v3.0.0 MIDI zip as test input only, not redistributable, so they are not "
+    "committed and no CI step fetches them"
 )
 
 
@@ -400,7 +402,10 @@ class TestRenderedInput(unittest.TestCase):
 
     def setUp(self) -> None:
         if not self.fixture.exists():
-            self.skipTest(f"{self.fixture} is missing")
+            self.fail(
+                f"{self.fixture} is missing, and it is committed: the round trip has no "
+                "input (CI has it from the checkout)"
+            )
 
     def round_trip(self, jitter_ms: float) -> tuple[list, list, dict]:
         with tempfile.TemporaryDirectory() as tmp:

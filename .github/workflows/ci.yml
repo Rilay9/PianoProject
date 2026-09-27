@@ -58,15 +58,33 @@ jobs:
         working-directory: app
         run: npm ci
 
-      - name: Content pipeline tests
-        run: python3 -m unittest discover -s tools/content/tests -t tools/content -v
-
       - name: Build content
         # Not --offline: the runner can reach GitHub, and fetching the score
         # library here is what proves the fetch step still works. A source that
-        # cannot be reached is skipped rather than failing the build, so this
-        # does not make CI depend on someone else's uptime.
+        # cannot be reached is skipped rather than failing the build, so the
+        # build does not depend on someone else's uptime; the content tests that
+        # read a fetched edition (the Joplin rags) do, and fail naming the file.
         run: python3 tools/content/build.py
+
+      - name: Content pipeline tests
+        # After the build, never before (Q24, 2026-09-27). A test that reads the
+        # built catalogue, the curriculum or an edition the build fetches fails
+        # when that input is missing, naming the step that makes it, instead of
+        # skipping; tools/content/tests/test_ci_order.py holds this order.
+        run: python3 -m unittest discover -s tools/content/tests -t tools/content -v
+
+      - name: MIDI converter harness
+        # tools/midi-cleanup/midi_to_musicxml.py's own tests, on the committed
+        # fixture. The three MAESTRO recordings its real-recording class reads
+        # are not redistributable and nothing here fetches them, so that class
+        # skips with its reason.
+        run: python3 -m unittest discover -s tools/midi-cleanup/tests -v
+
+      - name: Write the MIDI parity reference
+        # What the Python converter decides for the committed fixtures, written
+        # to build/midi-parity/ for midiParity.test.ts to hold the app's
+        # TypeScript port to. Without it the unit tests fail naming this step.
+        run: python3 tools/midi-cleanup/tests/parity_reference.py
 
       - name: Generate icons
         working-directory: app
