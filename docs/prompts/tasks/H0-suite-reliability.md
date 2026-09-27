@@ -1,0 +1,27 @@
+# H0 — Suite reliability: the diagnosed load-only failures, test and harness only (overnight seam, 2026-09-27; the reviewer's package)
+
+**Read first:** `docs/prompts/operating-procedure.md` §1–§5 and §11–§13; the matrix rows Q34, Q37, Q39, Q44 in `docs/prompts/views/backlog/Q.md` (each holds the instances, the shape, and the reviewer's disposition: suite-reliability work that never weakens a product assertion or becomes a broad timeout); `app/tests/unit/sightReadingPromises.test.ts` (the two triplet cases at the default 5 s under suite load, Q37); `app/tests/e2e/engine.spec.ts:112` "Tempo mode end to end › a late run yields the expected timing statistics" (three CI-only failures, expected 2, Q39); `app/tests/e2e/midi.spec.ts` (the reload case and the unsupported-browser case, Q44); `app/tests/e2e/doors.spec.ts` "Duet opens with a hand chosen" (the library list not found in 60 s under load, Q44 with Q34); `app/tests/e2e/score.density.spec.ts` (the 900 px case, Q34); `app/src/engine/PracticeEngine.ts` (its clock is injectable — `this.clock.now()` — which is the door to a fake clock); the `data-settled` mark and how the score and list specs wait on it (T41; `app/tests/e2e/dark-ink.spec.ts` waits on `.score-view[data-settled]`); `docs/08-test-map.md` (read only; not this seam's to edit).
+
+## The goal, in the orchestrator's words
+
+Six cases fail only under load and pass alone, and each has cost a chain or a CI run this week: two generative unit cases that exceed a default 5 s while another process builds, a browser test that times a run against the wall clock, two MIDI-screen cases and a Duet door that wait a fixed time for a screen that is still arriving, and a density case that waits for a score to appear. None is a product fault. After this task each waits on the state it actually needs, or measures with a clock it controls, and the reason is written where the wait is; nothing about the product changes and no assertion is weaker.
+
+## What is decided
+
+1. **Prove each mechanism first** with the smallest discriminating test: for the timing statistic, that the count depends on wall-clock scheduling (a fake clock makes it deterministic); for the waits, that the element or state arrives later than the fixed timeout under load (a repetition under `--repeat-each` or a parallel load makes it fail, a settled-state wait makes it pass).
+2. **Engine timing (Q39)**: the statistic is measured against the engine's injected clock, not real time, where the case can be expressed that way — in the engine's unit tests with a fake clock — and the browser case then asserts what it can assert deterministically; never a wider tolerance.
+3. **Browser waits (Q44, Q34)**: the MIDI screen's cases wait on the screen's own settled or rendered state (a `data-settled` or equivalent mark that already exists or is added to the screen as a test hook only, never a behaviour change), the Duet door on the library list's settled mark, the density case on the score view's `data-settled`; fixed sleeps and default-timeout arrivals go.
+4. **The generative unit cases (Q37)**: a case that is genuinely expensive owns an explicit local timeout with the reason stated at the case; never a global `testTimeout` change.
+5. **Then the proof**: the touched files run under repetition (`--repeat-each` for Playwright; the unit file several times) and once under a parallel load (a concurrent `npm run build:app` or a second vitest run) with the counts reported; the full default configuration run once at the end on the worktree's own build and port (see the rules).
+
+## Rules and files
+
+You own only the test and harness files named above (`sightReadingPromises.test.ts`, `engine.spec.ts`, `midi.spec.ts`, `doors.spec.ts`, `score.density.spec.ts`, the engine's unit tests if a fake-clock case is added, and a test-hook attribute in a screen only if no settled mark exists — say which and why), plus this seam's entry. Not the generator, not lessons, not `docs/08`, not any product behaviour. Never name an AI model. Never assert a number measured on this machine. Every change red first (the discriminating test) with the assertion named; every touched test classified. Runs unpiped from `app/` with exit codes: `npm ci` if `node_modules` is absent; `npx tsc -b`; `npm run lint`; `npx vitest run`; `npm run build:app` (never with a preview running); Playwright on **port 4183** with `--strictPort` through your own preview of your own build (the main checkout's 4173 belongs to other work; if the config pins 4173, run with a config override that only changes the port and say so), two workers, one config at a time. No commits, no push, no stash, never `git add`. Your entry as `ENTRY.md` in your scratch folder, headed "### Entry 87 — H0: …", in the shape of Entries 84–85, with a table of every case: the old wait or measure, the new one, the reason, the counts under repetition and load.
+
+## When to deviate
+
+If a case cannot be made deterministic without changing product behaviour, do not change the product: leave the case as it is, say what the product would need (a settled mark, an injected clock) and record it for the reviewer. Never widen a tolerance to hide a timing dependence.
+
+## Report
+
+Judgement first: which of the six mechanisms were proven and how; then Done / Not done / Follow-ups / Questions / Files; the table; the red lines; exit codes and the repetition and load counts; unverified beside what passes.
