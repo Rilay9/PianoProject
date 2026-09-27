@@ -83,3 +83,14 @@ written as `docs/review/handoffs/<seven-character implementation HEAD>.md` at th
 posted, so a later handoff never overwrites an unreviewed one; `current.md` stays the pointer to the
 latest. A response is named by the implementation HEAD it reviewed and answers that handoff file.
 
+## The trigger (from 2026-09-27): pull request #1
+
+The reviewer's timed tasks are disabled. Pull request #1 on `claude/piano-teaching-app-bo19td` is the
+standing trigger: every push to the branch updates the PR and wakes the reviewer's GitHub-triggered
+task, which reads the handoff files, skips any that already have a matching response, reviews the new
+one, and commits its response file. **The PR stays open and is never merged**; it exists only to be
+updated. A response commit wakes the reviewer again and it skips. The orchestrator's side is unchanged:
+one immutable handoff per seam under `handoffs/`, the watcher on `responses/`, every finding verified
+at the line, dispositions recorded, the D0 gate respected. Docs-only pushes wake the reviewer too, so
+record commits are batched where they can be.
+
