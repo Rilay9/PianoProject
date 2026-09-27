@@ -148,12 +148,18 @@ function fetchCurriculum(): Promise<Curriculum> {
  * Appends the owner's imports to the rungs he assigned them to (replan §4.3).
  *
  * This is the whole point of `lessonIds`. Without it an imported piece is a
- * Library row that "sits outside the curriculum": it cannot count for a rung,
- * it never appears in a swap, and the session builder cannot pick it. With it
- * the piece is an *option of the rung*, and every reader downstream — a rung's
- * `runs` requirement (`evidence/rungState`, for a run of it opened from the
- * rung), `alternativesFor`, `buildSession`, the lesson page — needs no change
- * at all, because they all read `songOptions`.
+ * Library row that "sits outside the curriculum": it is no rung's option, so
+ * no run of it can count toward a rung's `runs` requirement, it never appears
+ * in a swap, and the session builder offers it as no lesson's work. (Once it
+ * has been passed, the review's repertoire retention can still bring it back:
+ * that reads every learned piece, `progressStore.learnedPieces`, and asks
+ * nothing about rungs.) With it the piece is an *option of the rung*, and
+ * only that: the assignment is not a run and counts for nothing by itself
+ * (C5, T52; `assignmentIsNotEvidence.test.ts` proves both). Every reader
+ * downstream — a rung's `runs` requirement (`evidence/rungState`, which counts
+ * a qualifying run of it opened from the rung and judged by it),
+ * `alternativesFor`, `buildSession`, the lesson page — needs no change at all,
+ * because they all read `songOptions`.
  *
  * The built curriculum is never mutated: it is cached and shared, and an
  * overlay that wrote into it would accumulate the same import twice on the

@@ -60,6 +60,7 @@ import { openAssignSheetFor } from '../assignSheet';
 import { badge, button, chip, el, listRow, openSheet } from '../widgets';
 import { loadCurriculum } from '../../curriculum/load';
 import { rungForLevel, rungSentence } from '../../curriculum/rungFor';
+import { findLesson } from '../../curriculum/selectors';
 import type { Curriculum } from '../../curriculum/types';
 import { addParagraph, createSubScreen } from './subScreen';
 import { plural } from '../../util/plural';
@@ -615,10 +616,12 @@ export function FolderScreen(router: Router): HTMLElement {
     const imported = importIndex.get(score.file);
     const onRung = (imported?.lessonIds?.length ?? 0) > 0;
     // Adding a score used to end the story, and the story was not over: an
-    // import with no `lessonIds` "sits outside the curriculum" — it cannot
-    // complete a rung, it never appears in a swap, and the session builder
-    // cannot pick it (`curriculum/load.ts`). So an added row says which of
-    // the two it is, and carries the one action that changes the answer.
+    // import with no `lessonIds` "sits outside the curriculum" — no run of it
+    // can count toward a rung's `runs` requirement, it never appears in a
+    // swap, and the session builder offers it as no lesson's work; only the
+    // review can bring it back, once it has been passed (`curriculum/load.ts`).
+    // So an added row says which of the two it is, and carries the one action
+    // that changes the answer.
     if (added) badges.push(badge(onRung ? 'on a rung' : 'no rung'));
 
     // A row's action, outlined: sixty filled `Add` boxes made the one thing
@@ -1266,14 +1269,21 @@ export function FolderScreen(router: Router): HTMLElement {
       sayOnRow(score, `${summary.title} is no longer in your library.`);
       return;
     }
+    // The rung is named by its title, never its id (`00` §1), and assigning is
+    // not progress (T52): the piece becomes one of the rung's options, and
+    // only a qualifying run of it, judged by the rung, can count.
+    const plan = (curriculum ??= await loadCurriculum());
     await openAssignSheetFor(row, {
       onSaved: (saved) => {
         importIndex.set(score.file, saved);
-        const rungs = saved.lessonIds ?? [];
+        const rungs = (saved.lessonIds ?? []).map((id) => findLesson(plan, id)?.title ?? null);
+        const named = rungs.filter((title): title is string => title !== null);
         folderStatus.textContent =
-          rungs.length > 0
-            ? `${saved.title} is on ${rungs.join(', ')} — it counts towards that rung now.`
-            : `${saved.title} is in your library, on no rung.`;
+          rungs.length === 0
+            ? `${saved.title} is in your library, on no rung.`
+            : named.length > 0
+              ? `${saved.title} is now one of the practice options for ${named.join(' and ')}.`
+              : `${saved.title} is now one of the practice options for its rung.`;
         redrawRow(score);
       },
     });

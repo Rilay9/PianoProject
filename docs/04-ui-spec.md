@@ -1361,8 +1361,15 @@ out.
   - Typing over the estimate makes the level *judged* rather than *estimated*, so the app
     stops printing the `≈`: the owner is a better source than the model he is overruling.
   - The assignment is what makes the piece an **option of the rung** — `curriculum/load.ts`
-    appends it to that lesson's `songOptions` at load, so it counts towards finishing the
-    rung, turns up in swaps, and can be chosen by the session builder. It is in the backup.
+    appends it to that lesson's `songOptions` at load, so it turns up in swaps and can be
+    chosen by the session builder, and a qualifying run of it, judged by that rung, can count
+    toward the rung's requirements. The assignment itself is no evidence and meets no rung.
+    The sheet says so: *Assigning it to a rung makes it one of that rung’s practice options.
+    The app can suggest it there, and qualifying practice can count toward that rung’s
+    requirements.* After Save from the score folder, the line names the rung by its title:
+    *… is now one of the practice options for <rung title>.* (2026-09-26, T52: both said the
+    piece counted towards finishing the rung, which C5 made false; the folder's line also
+    printed the rung's id.) It is in the backup.
 
 ## 4b. Score folder (browsing files that live on the phone)
 

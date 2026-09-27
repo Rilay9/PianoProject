@@ -69,7 +69,7 @@ export function openAssignSheet(
 
   sheet.body.append(
     el('p.muted', {
-      text: 'Assigning it to a rung makes it one of that rung’s song options — it counts towards finishing the rung, and it turns up when you ask for something else to play.',
+      text: 'Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.',
     }),
   );
 

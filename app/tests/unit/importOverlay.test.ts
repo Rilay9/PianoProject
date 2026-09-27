@@ -1,10 +1,12 @@
 /**
  * An imported piece has to become an *option of the rung* (replan §4.3).
  *
- * Before this, a file the owner found was a Library row and nothing else: it
- * could not complete a rung, never appeared in a swap, and the session builder
- * could not pick it. The overlay is one function, and these are the four
- * things that would otherwise silently not work.
+ * Before this, a file the owner found was a Library row and nothing else: no
+ * run of it could count for a rung, it never appeared in a swap, and the
+ * session builder could not pick it. The overlay is one function, and these
+ * are the four things that would otherwise silently not work. It makes the
+ * piece an option of the rung and nothing more: the assignment alone is no
+ * evidence and meets no rung (C5; `assignmentIsNotEvidence.test.ts`).
  */
 import { beforeEach, describe, expect, it } from 'vitest';
 import { overlayImports } from '../../src/curriculum/load';

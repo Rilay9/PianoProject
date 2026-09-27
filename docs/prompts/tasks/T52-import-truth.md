@@ -20,3 +20,6 @@ You own `app/src/ui/assignSheet.ts` (the text only), `docs/OWNER-GUIDE.md`, the 
 ## Report
 
 The sentence before and after, the test's red line, the search's other hits with their disposition, exit codes, Files.
+
+**Delivered 2026-09-26**, Entry 81, in three rounds: the sheet, the owner guide, the two comments and the regression; then the folder screen's message after Save (the rung's title, never its id) and the Guide's sentence; then the second false claim the builder inferred and the orchestrator confirmed at the lines — a passed piece on no rung returns in Today's review since C6 — proven by a test through the real review path and corrected in five places.
+

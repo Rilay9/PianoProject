@@ -5,15 +5,19 @@
  * The bug this pins down is a silence, not a crash. `addFromFolder` runs the
  * ordinary import, and a fresh import has no `lessonIds` — which
  * `curriculum/load.ts` says in its own words means the piece "sits outside the
- * curriculum: it cannot complete a rung, it never appears in a swap, and the
- * session builder cannot pick it". Everything looked like it worked. The
+ * curriculum": it is no rung's option, so no run of it can count toward a
+ * rung's `runs` requirement, it never appears in a swap, and the session
+ * builder offers it as no lesson's work (once passed, the review can still
+ * bring it back to keep it playable). Everything looked like it worked. The
  * score was in the library, it opened, it played, and it counted towards
  * nothing at all, with nothing on any screen saying so.
  *
- * So the first half of this file asserts the gap — an added score contributes
- * nothing to any rung — and the second half drives the way out of it that the
- * folder screen's `Assign` now offers, ending at the same assertion with the
- * opposite answer.
+ * So the first half of this file asserts the gap — an added score is on no
+ * rung — and the second half drives the way out of it that the folder
+ * screen's `Assign` now offers, ending at the same assertion with the opposite
+ * answer: the score is one of that rung's options. Being an option is not
+ * progress; only a qualifying run of it, judged by the rung, can count
+ * (`assignmentIsNotEvidence.test.ts`).
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { zipSync, strToU8 } from 'fflate';
@@ -133,14 +137,16 @@ describe('a score added from the folder', () => {
     expect(items).toHaveLength(1);
     expect(items[0]?.lessonIds).toEqual([]);
     // Nothing to overlay, so the overlay hands the curriculum straight back:
-    // the piece is in the library and on no rung, and every reader
-    // downstream — `lessonComplete`, `alternativesFor`, `buildSession` —
-    // reads `songOptions` and therefore cannot see it.
+    // the piece is in the library and on no rung, and the readers of a
+    // rung's options — a rung's `runs` requirement (`rungState`),
+    // `alternativesFor`, the session builder's lesson work — read
+    // `songOptions` and therefore cannot see it. (Once passed, the review's
+    // repertoire retention can, since it reads every learned piece: T52.)
     expect(optionsOf(overlayImports(CURRICULUM, items), '1.1')).toEqual(['song.bundled']);
     clearFakeIndexedDb();
   });
 
-  it('reaches the assign sheet from the folder, and then counts towards the rung', async () => {
+  it('reaches the assign sheet from the folder, and then is one of the rung’s options', async () => {
     const row = await addOneFromAFolder();
 
     let resolveSaved: (saved: ImportRow) => void = () => undefined;

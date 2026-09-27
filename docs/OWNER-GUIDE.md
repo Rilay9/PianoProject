@@ -398,12 +398,13 @@ The level is marked `≈` while it is the app's guess. Type over it and it stops
 being a guess, and stops showing the `≈`: you are a better judge than the model
 is.
 
-**Assigning it to a rung is what matters.** A piece attached to a rung is one
-of that rung's song options: it counts towards finishing the rung, it turns up
-when you ask for something else to play, and the session builder can pick it.
-A piece with no rung is just a file in your library — still playable, but the
-plan does not know about it. You can leave it that way on purpose; "No rung" is
-the first choice in the list.
+**Assigning it to a rung is what matters.** It makes the piece one of that
+rung's practice options. The app can suggest it there, and qualifying practice
+can count toward that rung's requirements. A piece with no rung is a file in
+your library — still playable, and never offered as a lesson's work, but once
+you have passed it, Today's review can bring it back when it has gone unplayed
+for a while, to keep it playable. You can leave it that way on purpose; "No
+rung" is the first choice in the list.
 
 ### What it takes
 

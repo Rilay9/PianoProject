@@ -184,11 +184,13 @@ async function seedImportFromFolder(
  * A score added from the folder has to be able to reach a rung (replan §4.3).
  *
  * `addFromFolder` runs the ordinary import, and an import arrives with no
- * `lessonIds` — which, in `curriculum/load.ts`'s own words, means it "cannot
- * complete a rung, it never appears in a swap, and the session builder cannot
- * pick it". The mechanism to fix that has existed all along on the Library
- * row's Assign button; what did not exist was any way to get there from the
- * screen the piece was added on, or anything saying it was needed.
+ * `lessonIds` — which, as `curriculum/load.ts` puts it, means no run of it can
+ * count toward a rung's `runs` requirement, it never appears in a swap, and
+ * the session builder offers it as no lesson's work (once passed, the review
+ * can still bring it back: T52). The mechanism to fix that has existed all
+ * along on the Library row's Assign button; what did not exist was any way to
+ * get there from the screen the piece was added on, or anything saying it was
+ * needed.
  */
 test.describe('a score added from the folder and the rung it has not got', () => {
   test('says it is on no rung, and opens the assign sheet from the folder row', async ({ page }) => {
@@ -233,14 +235,20 @@ test.describe('a score added from the folder and the rung it has not got', () =>
     const rung = page.locator('#assign-lesson');
     const chosen = await rung.locator('option').nth(1).getAttribute('value');
     expect(chosen).toBeTruthy();
+    // The option reads `Stage N · <title>`; the line after Save names the rung
+    // by its title, never its id (`00` §1).
+    const title = ((await rung.locator('option').nth(1).textContent()) ?? '').replace(/^Stage \d+ · /, '');
+    expect(title).toBeTruthy();
     await rung.selectOption(chosen ?? '');
     await page.locator('#assign-save').click();
     await expect(sheet).toHaveCount(0);
 
     const assigned = page.locator('#folder-list .list-row[data-file="07/Qm7.mxl"]');
     await expect(assigned).toContainText('on a rung');
+    // Revised (T52): it said "it counts towards that rung now" — assigning is
+    // not progress; the piece becomes one of the rung's practice options.
     await expect(page.locator('[data-screen="folder"]')).toContainText(
-      `is on ${String(chosen)} — it counts towards that rung now.`,
+      `is now one of the practice options for ${title}.`,
     );
     // And it survives the trip through the store, which is the only proof
     // that the rung is real rather than a label on a row.
