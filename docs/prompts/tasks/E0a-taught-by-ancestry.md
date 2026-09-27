@@ -32,3 +32,6 @@ If the core path's ancestry (Stages 0–4) is not expressible from `prerequisite
 ## Report
 
 Judgement first: the walking bass at jazz.5 before and after, and any morning of the three learners that changed; then Done / Not done / Follow-ups / Questions / Files; the red lines; exit codes; unverified beside what passes.
+
+**Delivered 2026-09-27**, Entry 93, in an isolated worktree: the ancestry with the brief's deviation taken for the core path and a corrected premise for the tracks (prerequisites plus the core up to the stage); the learner's reached set from `strandsOf`; the regression red first; the build's reading made path-correct; 143 readings moved; no learner morning changed; one promise found broken (L108) and named in the promise tests rather than settled.
+

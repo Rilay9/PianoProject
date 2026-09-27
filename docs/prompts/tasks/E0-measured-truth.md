@@ -65,3 +65,5 @@ E1 the excerpt as a first-class object: identity from source, range, part and ve
 
 **Reviewed 2026-09-27** (`responses/f3b75b7.md`): approved with one required change — the taught-at-rung predicate flattens the parallel tracks (L107); E0a. Answers: no same-lesson exemption; placed rung for the swap sheet, strand rung for the strand's row once path-correct; the density values stay hypotheses for E1; E0 closes on E0a's acceptance, and implementation that depends on E0's readiness waits for it.
 
+**E0a delivered 2026-09-27** (Entry 93); E0 closes on its acceptance.
+
