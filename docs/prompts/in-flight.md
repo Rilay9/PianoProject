@@ -10,9 +10,9 @@
 
 ## Waiting
 
-- **D0 / D0a** — D0a **landed** (Entry 91, merged as c483169, handoff `handoffs/3b9c37d.md`): 35 items in nine families respelled; awaiting the reviewer's response, whose ACCEPT closes D0 and dispatches E0.
+- **D0 / D0a** — **closed**: D0a accepted (`responses/3b9c37d.md`); B7 kept (G53), the arpeggios' notation to G52.
 - **Q24** — **closed**, approved by the reviewer (`responses/e32d0ef.md`, unprompted); the MAESTRO download stays the owner's question (Q47).
-- **E0** (`docs/prompts/tasks/E0-measured-truth.md`): amended to D0's actual boundary and bridge and carrying the D0 response's constraints; brief **approved** (`responses/af665ec.md`, unprompted through the brief handoff — the trigger proven); four constraints appended to the brief; dispatches on D0a's ACCEPT.
+- **E0** — **dispatched** (Entry 92) in an isolated worktree on D0a's acceptance, under its approved brief; on landing: merge, the content build, validator, the targeted content suites and vitest, the swap-sheet and Today specs once, the rung-claims report read as a teacher, record, handoff, push.
 
 ## Standing rules in force tonight
 

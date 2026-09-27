@@ -69,3 +69,5 @@ D1 the sight-reading phrase: grammar, candidate scoring under S7 and G9, the dis
 
 **Reviewed 2026-09-27** (`responses/0669117.md`): the architecture approved — the contract source, the measured demands, the four-reader boundary as the correct conservative deviation, the physical gate's declared add9 exception at the contract seam; **one required change before E0 dispatches**: the shared spelling policy writes E♯ as F natural in F♯ major (G50, promoted to P1 by "never teach wrong") — D0a. Constraints carried to E: extend the one boundary, never a parallel check; L101's combinations are placement work, not activation grounds; the add9 alternative must reach the learner before the family is recommended.
 
+**Closed 2026-09-27** on D0a's acceptance (`responses/3b9c37d.md`).
+
