@@ -1,0 +1,101 @@
+exercise.arpeggio7.f-half-diminished7.2oct.both
+   RH: 4 events differ; first: #2 B4 -> C-5; #6 B5 -> C-6; #10 B5 -> C-6; #14 B4 -> C-5
+   LH: 4 events differ; first: #2 B3 -> C-4; #6 B4 -> C-5; #10 B4 -> C-5; #14 B3 -> C-4
+exercise.arpeggio7.b-flat-half-diminished7.2oct.both
+   RH: 4 events differ; first: #2 E5 -> F-5; #6 E6 -> F-6; #10 E6 -> F-6; #14 E5 -> F-5
+   LH: 4 events differ; first: #2 E4 -> F-4; #6 E5 -> F-5; #10 E5 -> F-5; #14 E4 -> F-4
+exercise.arpeggio7.a-flat-minor7.2oct.both
+   RH: 4 events differ; first: #1 B4 -> C-5; #5 B5 -> C-6; #11 B5 -> C-6; #15 B4 -> C-5
+   LH: 4 events differ; first: #1 B3 -> C-4; #5 B4 -> C-5; #11 B4 -> C-5; #15 B3 -> C-4
+exercise.arpeggio7.a-flat-half-diminished7.2oct.both
+   RH: 4 events differ; first: #1 B4 -> C-5; #5 B5 -> C-6; #11 B5 -> C-6; #15 B4 -> C-5
+   LH: 4 events differ; first: #1 B3 -> C-4; #5 B4 -> C-5; #11 B4 -> C-5; #15 B3 -> C-4
+exercise.arpeggio7.d-flat-dominant7.2oct.both
+   RH: 4 events differ; first: #3 B4 -> C-5; #7 B5 -> C-6; #9 B5 -> C-6; #13 B4 -> C-5
+   LH: 4 events differ; first: #3 B3 -> C-4; #7 B4 -> C-5; #9 B4 -> C-5; #13 B3 -> C-4
+exercise.arpeggio7.d-flat-minor7.2oct.both
+   RH: 8 events differ; first: #1 E4 -> F-4; #3 B4 -> C-5; #5 E5 -> F-5; #7 B5 -> C-6; #9 B5 -> C-6; #11 E5 -> F-5
+   LH: 8 events differ; first: #1 E3 -> F-3; #3 B3 -> C-4; #5 E4 -> F-4; #7 B4 -> C-5; #9 B4 -> C-5; #11 E4 -> F-4
+exercise.arpeggio7.d-flat-half-diminished7.2oct.both
+   RH: 8 events differ; first: #1 E4 -> F-4; #3 B4 -> C-5; #5 E5 -> F-5; #7 B5 -> C-6; #9 B5 -> C-6; #11 E5 -> F-5
+   LH: 8 events differ; first: #1 E3 -> F-3; #3 B3 -> C-4; #5 E4 -> F-4; #7 B4 -> C-5; #9 B4 -> C-5; #11 E4 -> F-4
+exercise.arpeggio7.g-flat-dominant7.2oct.both
+   RH: 4 events differ; first: #3 E5 -> F-5; #7 E6 -> F-6; #9 E6 -> F-6; #13 E5 -> F-5
+   LH: 4 events differ; first: #3 E4 -> F-4; #7 E5 -> F-5; #9 E5 -> F-5; #13 E4 -> F-4
+exercise.arpeggio7.g-flat-minor7.2oct.both
+   RH: 4 events differ; first: #3 E5 -> F-5; #7 E6 -> F-6; #9 E6 -> F-6; #13 E5 -> F-5
+   LH: 4 events differ; first: #3 E4 -> F-4; #7 E5 -> F-5; #9 E5 -> F-5; #13 E4 -> F-4
+exercise.arpeggio7.g-flat-half-diminished7.2oct.both
+   RH: 4 events differ; first: #3 E5 -> F-5; #7 E6 -> F-6; #9 E6 -> F-6; #13 E5 -> F-5
+   LH: 4 events differ; first: #3 E4 -> F-4; #7 E5 -> F-5; #9 E5 -> F-5; #13 E4 -> F-4
+exercise.arpeggio7.d-diminished7.2oct.both
+   RH: 4 events differ; first: #3 B4 -> C-5; #7 B5 -> C-6; #9 B5 -> C-6; #13 B4 -> C-5
+   LH: 4 events differ; first: #3 B3 -> C-4; #7 B4 -> C-5; #9 B4 -> C-5; #13 B3 -> C-4
+exercise.arpeggio7.g-diminished7.2oct.both
+   RH: 4 events differ; first: #3 E5 -> F-5; #7 E6 -> F-6; #9 E6 -> F-6; #13 E5 -> F-5
+   LH: 4 events differ; first: #3 E4 -> F-4; #7 E5 -> F-5; #9 E5 -> F-5; #13 E4 -> F-4
+exercise.arpeggio7.f-diminished7.2oct.both
+   RH: 4 events differ; first: #2 B4 -> C-5; #6 B5 -> C-6; #10 B5 -> C-6; #14 B4 -> C-5
+   LH: 4 events differ; first: #2 B3 -> C-4; #6 B4 -> C-5; #10 B4 -> C-5; #14 B3 -> C-4
+exercise.arpeggio7.b-flat-diminished7.2oct.both
+   RH: 4 events differ; first: #2 E5 -> F-5; #6 E6 -> F-6; #10 E6 -> F-6; #14 E5 -> F-5
+   LH: 4 events differ; first: #2 E4 -> F-4; #6 E5 -> F-5; #10 E5 -> F-5; #14 E4 -> F-4
+exercise.broken7.a-flat-minor7.both
+   RH: 8 events differ; first: #1 B3 -> C-4; #7 B3 -> C-4; #9 B4 -> C-5; #15 B4 -> C-5; #17 B3 -> C-4; #23 B3 -> C-4
+   LH: 8 events differ; first: #1 B2 -> C-3; #7 B2 -> C-3; #9 B3 -> C-4; #15 B3 -> C-4; #17 B2 -> C-3; #23 B2 -> C-3
+exercise.broken7.d-flat-dominant7.both
+   RH: 8 events differ; first: #3 B3 -> C-4; #5 B3 -> C-4; #11 B4 -> C-5; #13 B4 -> C-5; #19 B3 -> C-4; #21 B3 -> C-4
+   LH: 8 events differ; first: #3 B2 -> C-3; #5 B2 -> C-3; #11 B3 -> C-4; #13 B3 -> C-4; #19 B2 -> C-3; #21 B2 -> C-3
+exercise.broken7.d-flat-minor7.both
+   RH: 16 events differ; first: #1 E3 -> F-3; #3 B3 -> C-4; #5 B3 -> C-4; #7 E3 -> F-3; #9 E4 -> F-4; #11 B4 -> C-5
+   LH: 16 events differ; first: #1 E2 -> F-2; #3 B2 -> C-3; #5 B2 -> C-3; #7 E2 -> F-2; #9 E3 -> F-3; #11 B3 -> C-4
+exercise.broken7.g-flat-dominant7.both
+   RH: 8 events differ; first: #3 E4 -> F-4; #5 E4 -> F-4; #11 E5 -> F-5; #13 E5 -> F-5; #19 E4 -> F-4; #21 E4 -> F-4
+   LH: 8 events differ; first: #3 E3 -> F-3; #5 E3 -> F-3; #11 E4 -> F-4; #13 E4 -> F-4; #19 E3 -> F-3; #21 E3 -> F-3
+exercise.broken7.g-flat-minor7.both
+   RH: 8 events differ; first: #3 E4 -> F-4; #5 E4 -> F-4; #11 E5 -> F-5; #13 E5 -> F-5; #19 E4 -> F-4; #21 E4 -> F-4
+   LH: 8 events differ; first: #3 E3 -> F-3; #5 E3 -> F-3; #11 E4 -> F-4; #13 E4 -> F-4; #19 E3 -> F-3; #21 E3 -> F-3
+exercise.voicing7.f-sharp.close
+   RH: 2 events differ; first: #3 C#4+F4+G#4+B4 -> C#4+E#4+G#4+B4; #5 F#4+A#4+C#5+F5 -> F#4+A#4+C#5+E#5
+exercise.voicing7.f-sharp.shell
+   RH: 2 events differ; first: #3 C#4+F4+B4 -> C#4+E#4+B4; #5 F#4+A#4+F5 -> F#4+A#4+E#5
+exercise.voicing7.f-sharp.rootless-a
+   RH: 2 events differ; first: #3 B4+D#5+F5+G#5 -> B4+D#5+E#5+G#5; #5 A#4+C#5+F5+G#5 -> A#4+C#5+E#5+G#5
+exercise.voicing7.f-sharp.rootless-b
+   RH: 2 events differ; first: #3 F4+G#4+B4+D#5 -> E#4+G#4+B4+D#5; #5 F4+G#4+A#4+C#5 -> E#4+G#4+A#4+C#5
+exercise.ii-v-i.f-sharp.shells
+   LH: 2 events differ; first: #2 F#3+F4 -> F#3+E#4; #3 F#3+F4 -> F#3+E#4
+exercise.ii-v-i.f-sharp
+   RH: 3 events differ; first: #3 F4+B4 -> E#4+B4; #5 F4+A#4 -> E#4+A#4; #6 F4+A#4 -> E#4+A#4
+exercise.ii-v-i.f-sharp.rootless
+   RH: 3 events differ; first: #3 B4+D#5+F5+G#5 -> B4+D#5+E#5+G#5; #5 A#4+C#5+F5+G#5 -> A#4+C#5+E#5+G#5; #6 A#4+C#5+F5+G#5 -> A#4+C#5+E#5+G#5
+exercise.loop4.f-sharp.root
+   RH: 1 events differ; first: #3 C#4+F4+G#4 -> C#4+E#4+G#4
+exercise.loop4.f-sharp.inversions
+   RH: 1 events differ; first: #3 F4+G#4+C#5 -> E#4+G#4+C#5
+exercise.tritone-sub.c
+   RH: 1 events differ; first: #3 D-4+F4+B4 -> D-4+F4+C-5
+exercise.tritone-sub.f
+   RH: 1 events differ; first: #3 G-4+B-4+E5 -> G-4+B-4+F-5
+exercise.open-voicing.e-flat.quartal
+   RH: 1 events differ; first: #3 D-5+G-5+B5 -> D-5+G-5+C-6
+exercise.walking-bass.f.minor-blues
+   RH: 1 events differ; first: #17 D-4+F4+B4 -> D-4+F4+C-5
+exercise.walking-bass.b-flat.minor-blues
+   RH: 1 events differ; first: #17 G-4+B-4+E5 -> G-4+B-4+F-5
+exercise.walking-bass.e-flat.minor-blues
+   RH: 2 events differ; first: #9 A-4+B4+G-5 -> A-4+C-5+G-5; #11 A-4+B4+G-5 -> A-4+C-5+G-5
+   LH: 2 events differ; first: #17 B2 -> C-3; #21 B2 -> C-3
+exercise.passing-chord.f
+   RH: 1 events differ; first: #7 D-4+F4+B4 -> D-4+F4+C-5
+
+broken_seventh: 5 of 36 items change
+four_chord_loop: 2 of 24 items change
+ii_v_i: 3 of 36 items change
+open_voicing: 1 of 16 items change
+passing_chord: 1 of 4 items change
+seventh_arpeggio: 14 of 60 items change
+seventh_voicing: 4 of 48 items change
+tritone_sub: 2 of 4 items change
+walking_bass: 3 of 28 items change
+35 of 1176 items change

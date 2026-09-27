@@ -10,7 +10,7 @@
 
 ## Waiting
 
-- **D0** — architecture **approved with one required change** (`responses/0669117.md`); **D0a** (the E♯ spelling, `tasks/D0a-key-spelling.md`) dispatched in an isolated worktree (Entry 91); on landing: merge, the content build, validator and content tests as its proof, the F♯ ii-V-I and one G♭ item rendered and read, record, handoff, push. Its ACCEPT closes D0 and releases E0.
+- **D0 / D0a** — D0a **landed** (Entry 91, merged as c483169, handoff `handoffs/3b9c37d.md`): 35 items in nine families respelled; awaiting the reviewer's response, whose ACCEPT closes D0 and dispatches E0.
 - **Q24** — **closed**, approved by the reviewer (`responses/e32d0ef.md`, unprompted); the MAESTRO download stays the owner's question (Q47).
 - **E0** (`docs/prompts/tasks/E0-measured-truth.md`): amended to D0's actual boundary and bridge and carrying the D0 response's constraints; brief **approved** (`responses/af665ec.md`, unprompted through the brief handoff — the trigger proven); four constraints appended to the brief; dispatches on D0a's ACCEPT.
 

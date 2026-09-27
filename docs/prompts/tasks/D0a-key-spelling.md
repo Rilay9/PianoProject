@@ -33,3 +33,6 @@ If the key-aware rule cannot be expressed without threading the key into `up` (i
 ## Report
 
 Judgement first: the F♯ major ii-V-I as a learner now reads it, degree by degree; then Done / Not done / Follow-ups / Questions / Files; the red lines; exit codes; unverified beside what passes.
+
+**Delivered 2026-09-27**, Entry 91, in an isolated worktree: the rule in `_readable`'s docstring with a `borrowed_root` flag from `_transpose_name`; `up` unchanged in signature; 35 items in nine families changed, note for note beside the entry; `test_key_spelling.py` red on the committed policy (25 failures, the first naming the F♯ ii-V-I's bar 2) with the mutation; nine versions and pins moved; the bridge fixture untouched; `make_five_finger` back through `up` with an empty diff. Deviations named: `test_generator_fingering.py`'s tolerance encoded the old policy and was tightened; the seventh_voicing admission sentence was made true; `npm ci` for the content suite's bridge. Judgement calls for the reviewer: the E♭ minor blues' ♭VI7 kept as B7 (a register job, G53); the six double-accidental arpeggios left note-by-note (G52).
+

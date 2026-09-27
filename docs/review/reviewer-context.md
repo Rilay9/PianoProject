@@ -175,7 +175,7 @@ Do not manufacture status from an old snapshot. If the repository and this secti
 
 Current snapshot as of 2026-09-27, late afternoon (refreshed by the orchestrator at each handoff push, because the reviewer's tooling commits only under `responses/`; the live pointer is always `docs/review/current.md`):
 - The T53 chain (T53, T53b, T53c), F1, Q24 and H0 are closed; every immutable handoff before D0a has a matching response.
-- D0's architecture is approved (`responses/0669117.md`) with one required change: the shared spelling policy writes E♯ as F in F♯ major. That change is D0a (`docs/prompts/tasks/D0a-key-spelling.md`), building; its handoff follows when it lands, and its ACCEPT closes D0.
+- D0's architecture is approved (`responses/0669117.md`) with one required change: the shared spelling policy writes E♯ as F in F♯ major. That change is D0a (`docs/prompts/tasks/D0a-key-spelling.md`), landed and handed off at `handoffs/3b9c37d.md` (35 items in nine families, not nine in F♯); its ACCEPT closes D0.
 - E0's brief is approved through a brief handoff (`responses/af665ec.md`) with four constraints appended to the brief; E0 dispatches only on D0a's ACCEPT.
 - The sequence is D0a -> E0 -> (E1, E2 briefs after E0 closes); X/G implementation does not leap ahead of D/E truths.
 - The pre-dispatch gate now posts its own handoff file (`docs/review/README.md` §Brief handoffs).
