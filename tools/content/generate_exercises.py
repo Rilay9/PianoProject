@@ -118,6 +118,28 @@ HARMONIC_MINOR_FINGERING: dict[str, tuple[list[int], list[int]]] = {
     "B-": ([2, 1, 2, 3, 1, 2, 3, 4], [2, 1, 3, 2, 1, 4, 3, 2]),
     "E-": ([3, 1, 2, 3, 4, 1, 2, 3], [2, 1, 4, 3, 2, 1, 3, 2]),
 }
+#: The right hand's finger on a tonic *inside* a run, where it is not the
+#: finger the one-octave table starts on (`expand_fingering`'s `join`).
+#:
+#: A one-octave table says where the hand starts and where it stops. The finger
+#: a tonic takes when the run goes on through it is a third fact, and in every
+#: key but one it is the starting finger, so the tables never had to say it.
+#: B♭ minor is the one. Its right hand starts on 2, as Clementi prints it, and
+#: every B♭ after the first takes 4: Clementi prints 4 on the B♭ inside his
+#: two-octave run (the Mutopia typeset, `inlineScaleBesMin`), and Robert
+#: Kelley's "Scale Fingering Chart for Piano, Organ, or Electric Keyboard"
+#: (https://robertkelleyphd.com/home/keyboard-scale-fingering-chart/) gives
+#: B♭ minor's right hand as 41231234 in the natural, harmonic and melodic
+#: columns alike, a pattern his first rule repeats every octave. Joining on the
+#: starting finger printed A(3) then B♭(2) at every inner B♭ of the two- and
+#: three-octave scales, the hand crossing itself away from the thumb (G43).
+#: Read against the right hand of each of Clementi's twenty-four two-octave
+#: runs, no other key's inner tonic differs from its table's first finger.
+SCALE_JOIN_RH: dict[tuple[str, str], int] = {
+    # (tonic, table): "major" is MAJOR_FINGERING, "minor" HARMONIC_MINOR_FINGERING,
+    # which the melodic and natural forms share.
+    ("B-", "minor"): 4,
+}
 #: The twelve major and twelve minor keys, spelled the way they are played.
 #:
 #: The spellings are not interchangeable: D-flat minor needs eight flats and
@@ -196,17 +218,33 @@ ARPEGGIO_CHART: dict[tuple[str, str], tuple[str, str]] = {
     # Nor in E♭ minor.
     ("E-", "minor"): ("1231", "1421"),
 }
-#: A four-note seventh arpeggio from a white-key root: one finger a note from
-#: the first root, 5 on the last note in the right hand — 1-2-3-4 and 5-4-3-2
-#: — and the thumb on every root after the first in both hands, so the left
-#: hand's second octave begins 1-4-3-2, not 5-4-3-2 again. The old
-#: `[1, 2, 3, 5]` put the little finger on the seventh and then passed the
-#: thumb under *it*, which no hand does; and until T53 the left hand printed
-#: 5-4-3-2-**5**-4-3-2-1, the triads' fault. No chart this file has covers
-#: sevenths; the join follows the triad chart's first and third rules above
-#: (every octave fingered alike, the fifth finger only where the line starts,
-#: turns or stops). Black-key roots print no fingering at all and say so in
-#: the catalog (`fingeringVerified`): better none than one this file invented.
+#: A four-note seventh arpeggio from a white-key root, from a published source:
+#: Margaret Starr McLain, *Class Piano* (Bloomington: Indiana University Press,
+#: 1974), chapter 9, the section "Fingering for Seventh Chord Arpeggios", read
+#: 2026-09-27 in the press's open-access edition,
+#: https://publish.iupress.indiana.edu/read/class-piano/section/f039d7d1-597f-4b17-87bd-95408ef56d20
+#: It gives one rule for every form of seventh chord: from a white key the
+#: right hand goes up 1 2 3 4 1 2 3 4 5 and the left 5 4 3 2 1 4 3 2 1 — one
+#: finger a note, the thumb on every root after the first, the fifth finger
+#: where the left hand starts and the right hand turns. S. Torkelson's
+#: fingering sheet for Wartburg College (https://vip.wartburg.edu/musicdept/fandp.pdf)
+#: gives the same fingers for the dominant and diminished sevenths. These
+#: tables are the first four; `arpeggio_ascent` joins them, and the way down is
+#: the mirror, as the triads are read.
+#:
+#: T53 printed exactly these numbers, marked verified, before any seventh
+#: source had been read: the join was reasoned from the triad chart's rules
+#: (G47). Reading the book changed no number; it changed what the flag rests
+#: on. The old `[1, 2, 3, 5]` put the little finger on the seventh and then
+#: passed the thumb under *it*, which no hand does; and until T53 the left hand
+#: printed 5-4-3-2-**5**-4-3-2-1, the triads' fault.
+#:
+#: Black-key roots print no fingering and say so in the catalog
+#: (`fingeringVerified`). The book has a rule for them as well — the thumbs on
+#: the first white key, the other fingers in order, no fifth finger — but one
+#: of these chords has no white key at all (E♭ minor 7th), and how the rule
+#: reads there is not settled here, so none is printed rather than one this
+#: file would have to invent.
 SEVENTH_ARPEGGIO_FINGERING_RH = [1, 2, 3, 4]
 SEVENTH_ARPEGGIO_FINGERING_LH = [5, 4, 3, 2]
 
@@ -812,15 +850,23 @@ def catalog_entry(item_id: str, title: str, level: float, concepts: list[str], h
 
 def expand_fingering(
     one_octave: list[int], octaves: int, ascending: bool = True, hand: str = "right",
+    join: int | None = None,
 ) -> list[int]:
     """
     Repeat a one-octave fingering over N octaves. `one_octave` is 8 entries, tonic to tonic.
 
-    The two hands repeat differently, and the reason is visible on the keyboard.
+    `join` is the finger on a tonic *inside* the run. A one-octave table says
+    where the hand starts and stops, not what a tonic takes when the run goes
+    on through it, so each hand has a default and a key the default gets wrong
+    names its own (`SCALE_JOIN_RH`, sourced there).
+
+    The two hands' defaults differ, and the reason is visible on the keyboard.
     The right thumb *starts* each octave group, so a tonic in the middle of a
-    run takes the finger the run began with and the join is `one_octave[0]`.
-    The left thumb *ends* one, so the middle tonic takes the finger the octave
-    ends on and the next group begins at the second entry.
+    run takes the finger the run began with and the default join is
+    `one_octave[0]` — true wherever the starting finger is the one the tonic
+    goes through on, which is every table but B♭ minor's (it starts on 2 and
+    goes through on 4). The left thumb *ends* one, so the middle tonic takes
+    the finger the octave ends on and the next group begins at the second entry.
 
     One rule was used for both. Every two-octave left-hand scale in C, G, D, A,
     E, B and F major and in A, E, D, G, C, B and F harmonic minor printed the
@@ -830,10 +876,13 @@ def expand_fingering(
     both rules agree there and the bug is invisible in exactly the keys a
     reader would check last.
     """
+    middle = one_octave[1:-1]
     if hand == "left":
-        fingers = [one_octave[0]] + one_octave[1:] * octaves
+        inner = one_octave[-1] if join is None else join
+        fingers = [one_octave[0]] + (middle + [inner]) * (octaves - 1) + one_octave[1:]
     else:
-        fingers = one_octave[:-1] * octaves + [one_octave[-1]]
+        inner = one_octave[0] if join is None else join
+        fingers = one_octave[:-1] + ([inner] + middle) * (octaves - 1) + [one_octave[-1]]
     return fingers if ascending else list(reversed(fingers))
 
 
@@ -907,7 +956,9 @@ def make_scale(spec: ScaleSpec) -> tuple[stream.Score, dict]:
 
     rh_f = lh_f = None
     if fing:
-        rh_f = expand_fingering(fing[0], spec.octaves) + expand_fingering(fing[0], spec.octaves, ascending=False)[1:]
+        join = SCALE_JOIN_RH.get((spec.tonic, "major" if spec.mode == "major" else "minor"))
+        rh_f = (expand_fingering(fing[0], spec.octaves, join=join)
+                + expand_fingering(fing[0], spec.octaves, ascending=False, join=join)[1:])
         lh_asc = expand_fingering(fing[1], spec.octaves, hand="left")
         lh_f = lh_asc + list(reversed(lh_asc))[1:]
         if spec.motion == "contrary":
@@ -1253,6 +1304,21 @@ SEVENTH_LABELS = {
 }
 
 
+def seventh_chord(root: pitch.Pitch, quality: str) -> list[pitch.Pitch]:
+    """
+    A seventh chord's four notes from `root` up, spelled by `SEVENTH_SPELLING`.
+
+    The one place a seventh is spelled, for the arpeggio and the broken figure
+    alike: thirds stacked on the root, and a note whose stacked-thirds spelling
+    needs a double flat printed as its enharmonic (`_readable`). The broken
+    sevenths used to have a spelling of their own, a count of semitones, and
+    it gave E major 7th an E flat and wrote A flat 7 in sharps (G44).
+    """
+    steps = [interval.Interval(name) for name in SEVENTH_SPELLING[quality]]
+    assert [step.semitones for step in steps] == SEVENTH_SHAPES[quality], quality
+    return [_readable(root.transpose(step)) for step in steps]
+
+
 def make_seventh_arpeggio(
     root: str, quality: str = "dominant7", hands: str = "both", octaves: int = 2,
     bpm: int = 60,
@@ -1267,32 +1333,32 @@ def make_seventh_arpeggio(
 
     Fingered 1-2-3-4 in the right hand and 5-4-3-2 in the left — one finger to
     each note of the shape, which is `SEVENTH_ARPEGGIO_FINGERING_RH` and `_LH`
-    above and what the page prints. It read "1-2-3-5" and "5-3-2-1" here, a
-    fingering neither table has ever held; the tables are what is engraved, so
-    the sentence was wrong and not the music. Every root after the first takes
-    the thumb in both hands (`arpeggio_ascent`), so the left hand's second
-    octave is 1-4-3-2: it printed 5-4-3-2 again, finger 5 straight after 2.
+    above and what the page prints, and what McLain's *Class Piano* gives for
+    every seventh-chord arpeggio from a white key (the tables' comment names the
+    page); from a black key nothing is printed. It read "1-2-3-5" and
+    "5-3-2-1" here, a fingering neither table has ever held; the tables are
+    what is engraved, so the sentence was wrong and not the music. Every root
+    after the first takes the thumb in both hands (`arpeggio_ascent`), so the
+    left hand's second octave is 1-4-3-2: it printed 5-4-3-2 again, finger 5
+    straight after 2.
 
     These are taught after the triads because the hand has to stretch a seventh
     rather than a fifth.
     """
     one_of("hands", hands, HANDS)
     level = arpeggio_level(root, quality, hands, octaves)
-    shape = SEVENTH_SHAPES[quality]
     label = SEVENTH_LABELS[quality]
     title = f"{note_name(root)} {label} arpeggio — {octaves} oct, {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key("C"))
     no_signature(sc)
 
-    spelling = [interval.Interval(name) for name in SEVENTH_SPELLING[quality]]
-    assert [step.semitones for step in spelling] == shape, quality
-
     def run(start: pitch.Pitch) -> list[pitch.Pitch]:
-        climb = [_readable(by_octaves(start, o).transpose(step)) for o in range(octaves) for step in spelling]
+        climb = [tone for o in range(octaves) for tone in seventh_chord(by_octaves(start, o), quality)]
         climb.append(by_octaves(start, octaves))
         return climb + list(reversed(climb))[1:]
 
     rh_pitches, lh_pitches = run(pitch.Pitch(root + "4")), run(pitch.Pitch(root + "3"))
+    # The source's own condition: the arpeggio starts on a white key.
     fingered = not is_black_root(root)
     rh_fingers = lh_fingers = None
     if fingered:
@@ -1520,14 +1586,18 @@ def make_broken_seventh(
     """
     one_of("hands", hands, HANDS)
     level = broken_seventh_level(root)
-    shape = SEVENTH_SHAPES[quality]
     label = SEVENTH_LABELS[quality]
     title = f"{note_name(root)} broken {label} — {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key("C"))
     no_signature(sc)
 
     def figure(start: pitch.Pitch) -> list[pitch.Pitch]:
-        tones = [start.transpose(i) for i in shape] + [start.transpose(12)]
+        # Spelled as the arpeggio is, by `seventh_chord`. It was
+        # `start.transpose(i)` over `SEVENTH_SHAPES`' semitone counts, which
+        # music21 spells by pitch class: E major 7th printed an E flat for its
+        # D sharp, B major 7th E flat and B flat for D sharp and A sharp, and
+        # A flat 7 came out G sharp, C, E flat, F sharp (G44).
+        tones = seventh_chord(start, quality) + [by_octaves(start, 1)]
         cell = tones + list(reversed(tones))[1:-1]
         # Two octaves of the same figure, twice.
         #
