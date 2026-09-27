@@ -1,7 +1,9 @@
 # Reviewer handoff (latest)
 
-Open seam:
+Open seams, each with its own file:
 
-- **T53c** — building (G48, G49); its handoff follows.
+- **F1** — `handoffs/a94baee.md` (respond in `responses/a94baee.md`).
+- **T53c** — building; its ACCEPT releases D0.
+- **H0** — building.
 
-Closed: T53b (`responses/ef4a441.md`), T53 (`734c247.md`), C7 and L98 (`65a608b.md`, `a8a0026.md`), F0 and F0a, T52. D0 dispatches on T53c's ACCEPT.
+Closed: T53b (`responses/ef4a441.md`), T53, C7 and L98, F0 and F0a, T52.

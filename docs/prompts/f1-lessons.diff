@@ -1,0 +1,157 @@
+diff --git a/content/lessons/1.2.md b/content/lessons/1.2.md
+index 61947bb..53bc48f 100644
+--- a/content/lessons/1.2.md
++++ b/content/lessons/1.2.md
+@@ -26,7 +26,7 @@ built on top of them.
+ half rest (a small block sitting *on* the middle line), a whole rest (hanging
+ *under* the line above). The trick to reading rests is to count them exactly as
+ loudly as you count notes. A rest is not a pause — it is a beat that happens to
+-be silent, and letting it run long is the most common rhythm error there is.
++be silent, and it is easy to let it run long.
+ 
+ **Holding a note is work.** A half note is not "play and wait"; it is play, then
+ keep the key down and keep counting, and release exactly on the next beat. If
+diff --git a/content/lessons/2.2.md b/content/lessons/2.2.md
+index 46a5541..26dd187 100644
+--- a/content/lessons/2.2.md
++++ b/content/lessons/2.2.md
+@@ -17,8 +17,8 @@ notes into beats so your eye can see where beat two starts without counting.
+ **Count "1 and 2 and 3 and 4 and".** Say it out loud, every beat, whether or not
+ there is an eighth note there. This is **subdivision**: keeping a faster pulse
+ running underneath the beat so that when a half-beat note arrives you already
+-know where it goes. Almost every rhythm problem a beginner has is a
+-subdivision problem, and almost every fix is to count the "ands" out loud.
++know where it goes. When a rhythm goes wrong, check the subdivision first:
++count the "ands" out loud.
+ 
+ **Put the metronome on.** Not because a machine is musical, but because your
+ sense of pulse is worse than you think and you cannot hear yourself rushing.
+diff --git a/content/lessons/3.4.md b/content/lessons/3.4.md
+index 7051446..f49c69c 100644
+--- a/content/lessons/3.4.md
++++ b/content/lessons/3.4.md
+@@ -37,8 +37,7 @@ lose the thread.
+ 
+ **What to do at the piano.** Note-flash extended from C2 to C6, sight-reading
+ level 2 (two hands, wider range, quarters and eighths), then the Petzold
+-*Minuet in G* — the first real piece in the plan, and one whose right hand
+-ranges well above the staff.
++*Minuet in G*, whose right hand ranges well above the staff.
+ 
+ **Common mistake.** Counting ledger lines upward from the top line every time.
+ Learn High C and count from there — it is two steps, not five.
+diff --git a/content/lessons/blues.4.md b/content/lessons/blues.4.md
+index b74cedf..64946bf 100644
+--- a/content/lessons/blues.4.md
++++ b/content/lessons/blues.4.md
+@@ -42,8 +42,8 @@ above it, or sliding off the flat onto the natural.
+ 
+ It is the same key whether you call it F sharp or G flat, and you will see both.
+ The app writes it as a sharp, because the flat spelling runs out: the flattened
+-fifth of F is C flat, of B flat is F flat, of E flat is B double flat — and no
+-edition prints those. A raised fourth works in every key.
++fifth of F is C flat, of B flat is F flat, of E flat is B double flat — names
++that are awkward to read. A raised fourth works in every key.
+ 
+ **What to practise.** The generated twelve-bar shuffles in C, F and G; the shuffle exercise; then the same form with a simple right-hand
+ riff on top.
+diff --git a/content/lessons/chords-pop.5.md b/content/lessons/chords-pop.5.md
+index 7304a16..8603241 100644
+--- a/content/lessons/chords-pop.5.md
++++ b/content/lessons/chords-pop.5.md
+@@ -24,10 +24,10 @@ step below the octave) floats, a *minor* seventh (a whole step below) leans.
+ **Suspensions.** **sus4** replaces the third with the fourth (Csus4 = C–F–G) and
+ **sus2** replaces it with the second (C–D–G). With no third, the chord is neither
+ major nor minor and sounds open and unresolved. Play sus4 then the plain triad
+-and you have the most-used gesture in pop piano. **add9** keeps the third and adds
++and you have a pop-piano gesture. **add9** keeps the third and adds
+ the ninth: C–E–G–D with the added note on top, which is how the add9 exercises write it
+ (they are on the rock track at this stage, and in the Library), or C–D–E–G with
+-it tucked inside — closer under the hand, and the one you will hear in most
++it tucked inside — closer under the hand, and one you will hear in
+ modern ballad writing. Learn the written one, then find the other; they are
+ the same four notes and they do not sound alike.
+ 
+diff --git a/content/lessons/chords-pop.9.md b/content/lessons/chords-pop.9.md
+index 1151851..947a109 100644
+--- a/content/lessons/chords-pop.9.md
++++ b/content/lessons/chords-pop.9.md
+@@ -17,9 +17,8 @@ pattern? Where is the melody — in the top of the chords, or above them? What i
+ the rhythm of the accompaniment? And where does the texture change, because an
+ arrangement that does not change is a loop.
+ 
+-**Steal the intro from the last eight bars.** The oldest arranging trick there
+-is: whatever you do at the end, do a thinner version of it at the start, and the
+-song sounds designed.
++**Steal the intro from the last eight bars.** Whatever you do at the end, do a
++thinner version of it at the start, and the song sounds designed.
+ 
+ **Learning by ear is part of arranging**, because the arrangement you can hear is
+ the one you can copy. The eight-bar ear drill is on this rung for that reason.
+diff --git a/content/lessons/classical.4.md b/content/lessons/classical.4.md
+index deebb39..ea91889 100644
+--- a/content/lessons/classical.4.md
++++ b/content/lessons/classical.4.md
+@@ -39,7 +39,7 @@ time it usually starts on the upper one: upper, main, upper, main. Do not attemp
+ a long trill, attempt a clean short one.
+ 
+ **Repertoire for this rung.** Five options: Attwood's *Sonatina in
+-G*, the first sonatina most learners meet; C. P. E. Bach's *March in D* from
++G*, the one to start on; C. P. E. Bach's *March in D* from
+ the Anna Magdalena notebook, for staccato in both hands; the child Mozart's
+ minuet K. 1e in G, whose file carries the C major minuet K. 1f as its Trio,
+ four-bar phrases with the articulation written in; Schumann's
+diff --git a/content/lessons/classical.9.md b/content/lessons/classical.9.md
+index 319ebb6..0db58aa 100644
+--- a/content/lessons/classical.9.md
++++ b/content/lessons/classical.9.md
+@@ -10,7 +10,7 @@ readingTime: 3
+ ---
+ 
+ There is no rung above this one, and nothing here is meant to be passed. These
+-are pieces to live with — ten minutes of music, several months of work, and a
++are pieces to live with — minutes of music, several months of work, and a
+ result that keeps changing for years afterwards.
+ 
+ **Pick one. Not three.** The single most common way to waste a year is to start
+diff --git a/content/lessons/jazz.7.md b/content/lessons/jazz.7.md
+index 03a7a88..072fbc4 100644
+--- a/content/lessons/jazz.7.md
++++ b/content/lessons/jazz.7.md
+@@ -20,7 +20,7 @@ notice the top note is different: that is why both exist. Whichever puts the mel
+ 
+ **Quartal voicings** are stacked fourths. From D: D, G, C, F. Read from the root that is a D
+ minor eleventh, which is what the chart calls it, but the sound is not a chord
+-with a name — it is modal jazz, and most film music written since 1960. Practise them because you cannot find them by
++with a name — it is modal jazz, and it turns up in film music too. Practise them because you cannot find them by
+ thinking in thirds.
+ 
+ **The tritone substitution.** G7 and D♭7 share their third and seventh — B and F,
+diff --git a/content/lessons/rock.4.md b/content/lessons/rock.4.md
+index b3b19ad..3efe2fb 100644
+--- a/content/lessons/rock.4.md
++++ b/content/lessons/rock.4.md
+@@ -11,8 +11,8 @@ readingTime: 3
+ 
+ The rung before this one taught the reduction — melody, bass and one texture —
+ and named three textures for that layer. This is the first rock texture under
+-your hands, and it is the one almost
+-every heavy piano part is built from: a shape with no third in it, and a figure
++your hands, and one that heavy piano
++parts are built from: a shape with no third in it, and a figure
+ that does not change.
+ 
+ **A power chord is root, fifth, octave, and no third.** The third is what makes
+diff --git a/content/lessons/rock.6.md b/content/lessons/rock.6.md
+index 30a50cf..b3cec50 100644
+--- a/content/lessons/rock.6.md
++++ b/content/lessons/rock.6.md
+@@ -40,7 +40,7 @@ the exercises allow.
+ **Repertoire.** Three options, all bundled. Satie's *Gnossienne No. 1* is the
+ gentlest and the most useful: a left hand that repeats almost unchanged under a
+ right hand that is free. Chopin's *Prelude No. 20* is thirteen bars of block
+-chords and is here because it is the clearest example in the library of weight
++chords and is here for weight
+ placed rather than struck — play it slowly and loudly and listen to the bottom
+ of each chord. *Moonlight*, first movement, is the archetype the other two are
+ preparing you for: triplet arpeggios, all the way through, over a bass that

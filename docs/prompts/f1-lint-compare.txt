@@ -1,0 +1,10 @@
+before 600, after 592
+gone (8):
+  1.2 | most | x1 | A rest is not a pause — it is a beat that happens to be silent, and letting it run long is the most common rhythm error there is.
+  2.2 | every | x2 | Almost every rhythm problem a beginner has is a subdivision problem, and almost every fix is to count the "ands" out loud.
+  chords-pop.5 | most | x1 | Play sus4 then the plain triad and you have the most-used gesture in pop piano.
+  chords-pop.5 | most | x1 | add9 keeps the third and adds the ninth: C–E–G–D with the added note on top, which is how the add9 exercises write it (they are on the rock track at this stage, and in the Library), or C–D–E–G with it tucked inside — closer under the hand, and the one you will hear in most modern ballad writing.
+  classical.4 | most | x1 | Five options: Attwood's Sonatina in G, the first sonatina most learners meet; C.
+  jazz.7 | most | x1 | Read from the root that is a D minor eleventh, which is what the chart calls it, but the sound is not a chord with a name — it is modal jazz, and most film music written since 1960.
+  rock.4 | every | x1 | This is the first rock texture under your hands, and it is the one almost every heavy piano part is built from: a shape with no third in it, and a figure that does not change.
+new (0):

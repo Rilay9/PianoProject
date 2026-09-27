@@ -25,3 +25,6 @@ If a sentence turns out to be a contested fact rather than voice once you are at
 ## Report
 
 Judgement first: three of the eleven as a learner now reads them, the ones whose advice was hardest to keep; then Done / Not done / Follow-ups / Questions / Files; the table; the red lines; exit codes; unverified beside what passes.
+
+**Delivered 2026-09-27**, Entry 88, in an isolated worktree: all eleven rows (twelve sentences) rewritten in the teacher layer with the advice kept; the brief's candidate for 3.4 ("the first piece here written for both hands at once") was false of the plan and was not used — the ranking is cut; twelve claims rows added; the four style pointers left as existence-only for G to judge.
+

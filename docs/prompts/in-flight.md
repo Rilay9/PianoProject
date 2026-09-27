@@ -6,7 +6,7 @@
 |---|---|---|---|
 | T53c | 86 | the G♯ minor left hand by form and direction (G48), the broken sevenths' fingering sourced or not printed (G49); generator and fingering tests only | commit on its worktree branch, merge, remove the worktree; verification is the builder's content build, validator and content tests (generator-only seam); record Entry 86; handoff `docs/review/handoffs/<its commit>.md`; push (wakes the reviewer through PR #1). **Its ACCEPT releases D0.** |
 | H0 | 87 | suite reliability, test and harness only (Q34, Q37, Q39, Q44); Playwright on port 4183 in its worktree | merge; no product change to verify — the touched specs under repetition are its proof; record; handoff; push |
-| F1 | 88 | the eleven F0 deferrals classed voice rewrite; lesson text and claims rows only | merge; content build and validator; record; handoff; push |
+| F1 | 88 | **landed** (Entry 88, merged as daeb468, handoff `handoffs/a94baee.md`); awaiting the reviewer's response | — |
 
 ## Waiting
 
