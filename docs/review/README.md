@@ -73,3 +73,13 @@ the review and continue what is independent; on a response, check it is for that
 every finding against the code before acting; record every disposition; keep the established
 sequence and dependency boundaries, never letting review traffic open a new workstream.
 
+## One packet per seam (the reviewer's constraint, 2026-09-26, late)
+
+Independent seams that finish near each other are never bundled into one reviewer HEAD. Each seam
+(a task and its fix-forwards) gets its own commit, its own handoff and its own review: F0a closes the
+single F0 fix-forward narrowly; T53 gets its own post-build handoff; C7 gets its own after F0a is
+reconciled into its tree and its chain rerun. Because `current.md` is one file, every handoff is also
+written as `docs/review/handoffs/<seven-character implementation HEAD>.md` at the moment it is
+posted, so a later handoff never overwrites an unreviewed one; `current.md` stays the pointer to the
+latest. A response is named by the implementation HEAD it reviewed and answers that handoff file.
+
