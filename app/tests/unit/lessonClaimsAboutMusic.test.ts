@@ -3416,3 +3416,107 @@ describe('F0a: practice.4 sends pain to a clinician without an invented cutoff',
     );
   });
 });
+
+// --- F1: the eleven F0 deferrals classed "F's voice rewrite" (2026-09-27) ----
+//
+// Eleven sentences stated as fact what nobody had counted: the most common
+// rhythm error there is, almost every beginner's problem, the first real piece
+// in the plan, the first sonatina most learners meet, no edition, almost every
+// heavy piano part, the most-used gesture in pop piano, the clearest example
+// in the library, most film music since 1960, ten minutes of music, the oldest
+// arranging trick there is. F0 (`docs/prompts/f0-disposition-85.md`, rows 5,
+// 14, 18, 29, 34, 41, 46, 63, 70, 85, 87) classed them as voice rather than
+// contested fact: the advice under each is sound and the absolute was
+// decoration. Each row holds one sentence: the uncounted absolute is gone from
+// the lesson and the rewritten words are there as written. The rewrites put no
+// count in the count's place (no "usually", "constantly" or "most" standing in
+// for "almost every") and turn none of them into a different fact. F0's row 46
+// holds two superlatives in chords-pop.5, so that lesson has two rows here.
+// The layer is a teacher's judgement for every one: nothing here is sourced,
+// and nothing has been heard.
+
+/** `[lesson, what the sentence now says, the absolutes that must be gone, the words that replace them]` */
+const F1_VOICE: [string, string, string[], string][] = [
+  [
+    '1.2',
+    'a rest is easy to let run long, with no ranking of rhythm errors',
+    ['most common rhythm error'],
+    'A rest is not a pause — it is a beat that happens to be silent, and it is easy to let it run long.',
+  ],
+  [
+    '2.2',
+    'when a rhythm goes wrong, check the subdivision first, with no count of beginners',
+    ['almost every rhythm problem', 'almost every fix'],
+    'When a rhythm goes wrong, check the subdivision first: count the "ands" out loud.',
+  ],
+  [
+    '3.4',
+    'the Petzold is named for its right hand above the staff, not ranked as the first real piece in the plan',
+    ['first real piece'],
+    'then the Petzold Minuet in G, whose right hand ranges well above the staff.',
+  ],
+  [
+    'classical.4',
+    'the Attwood is the one to start on, with no survey of what most learners meet',
+    ['most learners meet'],
+    "Attwood's Sonatina in G, the one to start on;",
+  ],
+  [
+    'blues.4',
+    'the flat spellings are awkward to read, with no claim about every edition',
+    ['no edition prints'],
+    'The app writes it as a sharp, because the flat spelling runs out: the flattened fifth of F is C flat, of B flat is F flat, of E flat is B double flat — names that are awkward to read.',
+  ],
+  [
+    'rock.4',
+    'heavy piano parts are built from this texture, with no count of them',
+    ['almost every heavy piano part'],
+    'This is the first rock texture under your hands, and one that heavy piano parts are built from: a shape with no third in it, and a figure that does not change.',
+  ],
+  [
+    'chords-pop.5',
+    'sus4 then the plain triad is a pop-piano gesture, not the most-used one',
+    ['most-used gesture'],
+    'Play sus4 then the plain triad and you have a pop-piano gesture.',
+  ],
+  [
+    'chords-pop.5',
+    'the add9 with the ninth tucked inside is one you will hear in modern ballad writing, not the one in most of it',
+    ['most modern ballad writing'],
+    'closer under the hand, and one you will hear in modern ballad writing.',
+  ],
+  [
+    'rock.6',
+    'the Prelude is here for weight placed rather than struck, with no ranking over the library',
+    ['clearest example'],
+    "Chopin's Prelude No. 20 is thirteen bars of block chords and is here for weight placed rather than struck — play it slowly and loudly and listen to the bottom of each chord.",
+  ],
+  [
+    'jazz.7',
+    'quartal colour turns up in film music, with no share of it and no date',
+    ['most film music', 'since 1960'],
+    'it is modal jazz, and it turns up in film music too.',
+  ],
+  [
+    'classical.9',
+    'minutes of music against months of work, with no single figure for pieces of very different lengths',
+    ['ten minutes'],
+    'These are pieces to live with — minutes of music, several months of work, and a result that keeps changing for years afterwards.',
+  ],
+  [
+    'chords-pop.9',
+    'the intro trick is given as advice, with no claim to be the oldest',
+    ['oldest arranging trick'],
+    'Steal the intro from the last eight bars. Whatever you do at the end, do a thinner version of it at the start, and the song sounds designed.',
+  ],
+];
+
+describe('F1: the voice rewrite — each sentence keeps its advice and drops the uncounted absolute', () => {
+  for (const [lesson, says, gone, now] of F1_VOICE) {
+    it(`${lesson}: ${says}`, () => {
+      const text = f0mText(lesson);
+      for (const phrase of gone) expect.soft(text.toLowerCase()).not.toContain(phrase.toLowerCase());
+      expect.soft(text).toContain(now);
+    });
+  }
+});

@@ -42,8 +42,8 @@ above it, or sliding off the flat onto the natural.
 
 It is the same key whether you call it F sharp or G flat, and you will see both.
 The app writes it as a sharp, because the flat spelling runs out: the flattened
-fifth of F is C flat, of B flat is F flat, of E flat is B double flat — and no
-edition prints those. A raised fourth works in every key.
+fifth of F is C flat, of B flat is F flat, of E flat is B double flat — names
+that are awkward to read. A raised fourth works in every key.
 
 **What to practise.** The generated twelve-bar shuffles in C, F and G; the shuffle exercise; then the same form with a simple right-hand
 riff on top.

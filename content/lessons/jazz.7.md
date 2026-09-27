@@ -20,7 +20,7 @@ notice the top note is different: that is why both exist. Whichever puts the mel
 
 **Quartal voicings** are stacked fourths. From D: D, G, C, F. Read from the root that is a D
 minor eleventh, which is what the chart calls it, but the sound is not a chord
-with a name — it is modal jazz, and most film music written since 1960. Practise them because you cannot find them by
+with a name — it is modal jazz, and it turns up in film music too. Practise them because you cannot find them by
 thinking in thirds.
 
 **The tritone substitution.** G7 and D♭7 share their third and seventh — B and F,

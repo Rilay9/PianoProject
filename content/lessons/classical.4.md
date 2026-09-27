@@ -39,7 +39,7 @@ time it usually starts on the upper one: upper, main, upper, main. Do not attemp
 a long trill, attempt a clean short one.
 
 **Repertoire for this rung.** Five options: Attwood's *Sonatina in
-G*, the first sonatina most learners meet; C. P. E. Bach's *March in D* from
+G*, the one to start on; C. P. E. Bach's *March in D* from
 the Anna Magdalena notebook, for staccato in both hands; the child Mozart's
 minuet K. 1e in G, whose file carries the C major minuet K. 1f as its Trio,
 four-bar phrases with the articulation written in; Schumann's

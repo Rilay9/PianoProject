@@ -10,7 +10,7 @@ readingTime: 3
 ---
 
 There is no rung above this one, and nothing here is meant to be passed. These
-are pieces to live with — ten minutes of music, several months of work, and a
+are pieces to live with — minutes of music, several months of work, and a
 result that keeps changing for years afterwards.
 
 **Pick one. Not three.** The single most common way to waste a year is to start
