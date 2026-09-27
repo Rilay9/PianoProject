@@ -11,7 +11,7 @@
 ## Waiting
 
 - **D0** — **dispatched** (Entry 90) in an isolated worktree on T53c's ACCEPT; on landing: merge, the builder's content build, validator and content tests plus vitest as its proof (generator and contracts; no rendering), record, handoff, push; then E0 to the reviewer's gate.
-- **Q24** — **landed** (Entry 89, merged as d9133af, handoff `handoffs/e32d0ef.md`); awaiting the reviewer's response; the MAESTRO download is the owner's question (Q47).
+- **Q24** — **closed**, approved by the reviewer (`responses/e32d0ef.md`, unprompted); the MAESTRO download stays the owner's question (Q47).
 - **E0** (`docs/prompts/tasks/E0-measured-truth.md`): drafted; to the reviewer's gate after D0 is dispatched; never before D0 lands.
 
 ## Standing rules in force tonight
