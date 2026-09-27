@@ -439,9 +439,12 @@ SEVENTH_INTERVALS = {
     "half-diminished7": ("P1", "m3", "d5", "m7"),
 }
 
-#: White keys wearing an accidental. The generator prints the enharmonic
-#: instead (`_readable`), as it does for a double accidental.
-NOBODY_WRITES = {"C-", "F-", "B#", "E#"}
+#: The four white keys that can wear an accidental. A seventh chord's own
+#: tone is printed as its stacked thirds spell it, these included
+#: (`_readable`, D0a): C flat is A flat minor 7's third and F flat is G flat
+#: 7's seventh. Only a double accidental is printed as its enharmonic, and
+#: the enharmonic is never one of these.
+WHITE_KEYS_WITH_ACCIDENTALS = {"C-", "F-", "B#", "E#"}
 
 
 def spelling_faults(sc, entry: dict) -> list[str]:
@@ -451,8 +454,7 @@ def spelling_faults(sc, entry: dict) -> list[str]:
     A triad arpeggio prints only its key's first, third and fifth degrees; a
     seventh arpeggio or a broken seventh prints its four notes as stacked
     thirds from the root, except that a note whose stacked-thirds spelling
-    needs a double accidental, or is one nobody writes, may be printed as its
-    enharmonic.
+    needs a double accidental may be printed as its enharmonic.
     """
     params = entry["drill"]["params"]
     root = params["key"]
@@ -467,9 +469,9 @@ def spelling_faults(sc, entry: dict) -> list[str]:
                 for want in proper:
                     if p.name == want.name:
                         ok = True
-                    elif (abs(want.alter) > 1 or want.name in NOBODY_WRITES) and \
+                    elif abs(want.alter) > 1 and \
                             p.pitchClass == want.pitchClass and abs(p.alter) <= 1 and \
-                            p.name not in NOBODY_WRITES:
+                            p.name not in WHITE_KEYS_WITH_ACCIDENTALS:
                         ok = True
             else:
                 k = key.Key(root if quality == "major" else root.lower())

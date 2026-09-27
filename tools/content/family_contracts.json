@@ -690,7 +690,7 @@
     },
     "seventh_arpeggio": {
       "maker": "make_seventh_arpeggio",
-      "version": 1,
+      "version": 2,
       "name": "a four-note seventh arpeggio, two octaves",
       "promise": [
         {
@@ -994,7 +994,7 @@
     },
     "broken_seventh": {
       "maker": "make_broken_seventh",
-      "version": 1,
+      "version": 2,
       "name": "a seventh chord broken up to the octave and back, two octaves, twice",
       "promise": [
         {
@@ -3274,7 +3274,7 @@
     },
     "seventh_voicing": {
       "maker": "make_seventh_voicing",
-      "version": 1,
+      "version": 2,
       "name": "a ii-V-I in one seventh voicing (close, shell, rootless A or B)",
       "promise": [
         {
@@ -3361,12 +3361,12 @@
           "which finger played: nothing tracks fingers, so a printed number is advice and is never judged"
         ]
       },
-      "admission": "Right chords in time. F-sharp major writes F for E-sharp (UNWRITTEN: E-sharp, B-sharp, C-flat and F-flat are respelled), which the detectors read as chromatic; a readability convention, recorded.",
+      "admission": "Right chords in time. F-sharp major writes E-sharp, the key's own seventh, as E-sharp (D0a; the old UNWRITTEN policy respelled it F in every key, which the detectors read as chromatic).",
       "heard": false
     },
     "four_chord_loop": {
       "maker": "make_four_chord_loop",
-      "version": 1,
+      "version": 2,
       "name": "a I-V-vi-IV loop, root position or inverted",
       "promise": [
         {
@@ -3645,7 +3645,7 @@
     },
     "ii_v_i": {
       "maker": "make_ii_v_i",
-      "version": 1,
+      "version": 2,
       "name": "a ii-V-I in shells, guide tones or rootless voicings",
       "promise": [
         {
@@ -3737,7 +3737,7 @@
     },
     "tritone_sub": {
       "maker": "make_tritone_sub",
-      "version": 1,
+      "version": 2,
       "name": "a ii-subV-I with the tonic held",
       "promise": [
         {
@@ -3830,7 +3830,7 @@
     },
     "open_voicing": {
       "maker": "make_open_voicing",
-      "version": 2,
+      "version": 3,
       "name": "stacked fourths (a minor eleventh) and sus2, sus4 and add9 voicings over the root in the bass",
       "promise": [
         {
@@ -4023,7 +4023,7 @@
     },
     "passing_chord": {
       "maker": "make_passing_chord",
-      "version": 1,
+      "version": 2,
       "name": "the chord a semitone above the target, played first",
       "promise": [
         {
@@ -4210,7 +4210,7 @@
     },
     "walking_bass": {
       "maker": "make_walking_bass",
-      "version": 1,
+      "version": 2,
       "name": "a root-third-fifth-approach bass line in quarters over a blues or a ii-V-I",
       "promise": [
         {
