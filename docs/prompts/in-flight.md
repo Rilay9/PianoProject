@@ -10,6 +10,8 @@
 
 ## Waiting
 
+- **D2 and D1** — briefs drafted 2026-09-27 (`tasks/D2-microscope-and-review-record.md`, `tasks/D1-sight-reading-phrase.md`), at the gate as the brief handoff `handoffs/7ab175a.md`; dispatch on that read, D2 first; D3 after D1 and D2 land; D4 after E1.
+
 - **D0 / D0a** — **closed**: D0a accepted (`responses/3b9c37d.md`); B7 kept (G53), the arpeggios' notation to G52.
 - **Q24** — **closed**, approved by the reviewer (`responses/e32d0ef.md`, unprompted); the MAESTRO download stays the owner's question (Q47).
 - **E0** — **landed** (Entry 92, merged as e5fb68a, handoff `handoffs/f3b75b7.md`); awaiting the reviewer's response; on ACCEPT the E1 and E2 briefs are drafted for their gates.

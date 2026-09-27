@@ -177,7 +177,7 @@ Current snapshot as of 2026-09-27, late afternoon (refreshed by the orchestrator
 - The T53 chain (T53, T53b, T53c), F1, Q24 and H0 are closed; every immutable handoff before D0a has a matching response.
 - D0 is closed: its architecture approved (`responses/0669117.md`) and its one required change, D0a, accepted (`responses/3b9c37d.md`).
 - E0 is landed and handed off at `handoffs/f3b75b7.md` (Entry 92); its ACCEPT closes E0 and opens the E1 and E2 briefs.
-- The sequence is E0 -> (E1, E2 briefs after E0 closes); X/G implementation does not leap ahead of D/E truths.
+- The D2 and D1 briefs are at the gate (`handoffs/7ab175a.md`); the proposed sequence is D2 -> D1 -> E1 -> D3 -> D4, with E2 after E1; X/G implementation does not leap ahead of D/E truths.
 - The pre-dispatch gate now posts its own handoff file (`docs/review/README.md` §Brief handoffs).
 - The owner's open decision: Q47, whether CI downloads the MAESTRO MIDI zip for the converter's real-recording tests; it blocks nothing.
 
