@@ -5,7 +5,7 @@
 | Seam | Entry | What it owns | On landing |
 |---|---|---|---|
 | T53c | 86 | **accepted** (`responses/df71a0b.md`); the T53 chain closed | — |
-| H0 | 87 | **landed** (Entry 87, merged as 46af8fc, handoff `handoffs/a008ba5.md`); awaiting the reviewer's response | — |
+| H0 | 87 | **closed**, approved by the reviewer (`responses/a008ba5.md`, unprompted); U66 recorded for X | — |
 | F1 | 88 | **accepted** by the reviewer (`responses/a94baee.md`, unprompted through PR #1) | — |
 
 ## Waiting
