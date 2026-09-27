@@ -54,12 +54,22 @@ carries one status:
 - No automated loop between the two models: a handoff is written by the orchestrator, read on the
   owner's word, answered by the reviewer, processed under the owner's standing instruction, with the guardrails above.
 
-## The reviewer's own clone (from 2026-09-26, late)
+## The communication experiment of 2026-09-26, reverted the same night
 
-The reviewer runs locally in its own checkout, `C:/Users/yalir/repos/Piano Stuff/PianoProject-reviewer`, on the
-same branch. It never edits the orchestrator's tree (`PianoProject`), where builders run alone; it commits
-response files in its clone and pushes. The orchestrator watches the clone's `docs/review/responses/` and
-origin, reads a new response within seconds, and merges the commit (a response only adds a file, so the
-merge is clean). If the reviewer is ever asked to build, it does so as an implementer under a brief with the
-builders' rules, in its own clone, never in the orchestrator's tree. The hourly check is retired.
+A local reviewer clone with a coding agent as its hands cost too many tokens and was reverted; it
+changed nothing in the development and review architecture. The standing arrangement: the
+orchestrator and its builders implement; the reviewer's existing conversation, with its accumulated
+context, is the architectural and post-build reviewer; while the owner is active the owner relays
+messages by hand, which is the simplest reliable channel; overnight the reviewer's hourly automation
+checks GitHub as a best-effort fallback; GitHub stays the durable record of handoffs and responses.
+No mail, watcher, MCP or other reviewer infrastructure is built. The overnight automation's success
+criterion is never "I checked GitHub": it is either nothing new, or the matching
+`docs/review/responses/<HEAD>.md` created and confirmed. Silence is never approval: no matching
+response means not yet reviewed.
+
+Per review boundary: commit and push the implementation and the handoff; the exact HEAD in the
+handoff; the exact entries, files, tests and artefacts to inspect; stop only the work that depends on
+the review and continue what is independent; on a response, check it is for that HEAD and verify
+every finding against the code before acting; record every disposition; keep the established
+sequence and dependency boundaries, never letting review traffic open a new workstream.
 
