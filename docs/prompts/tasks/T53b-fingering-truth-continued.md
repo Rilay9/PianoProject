@@ -21,3 +21,6 @@ You own `tools/content/generate_exercises.py` (the scale join and the B♭ minor
 ## Report
 
 Judgement first: what a learner now sees on the B♭ harmonic minor two-octave scale, on a broken E major seventh and an A♭ dominant seventh, and on a white-root seventh arpeggio; then Done / Not done / Follow-ups / Questions / Files; the table; the red lines; exit codes; unverified beside what passes.
+
+**Delivered 2026-09-27**, Entry 85, in an isolated worktree: the B♭ minor join with the sources checked first and no other family moved; one seventh helper for both makers; the sevenths' fingering sourced (McLain 1974) rather than removed; G45 diagnosed, not fixed (outside the owned parts); the G♯ minor left thumb on F♯ found and pinned (G48); the broken sevenths' own unsourced printed fingering recorded (G49).
+

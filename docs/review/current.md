@@ -1,7 +1,7 @@
 # Reviewer handoff (latest)
 
-Open seams:
+Open seam:
 
-- **T53b** — building; its handoff follows (implementation HEAD to be named).
+- **T53b** — `handoffs/ef4a441.md` (respond in `responses/ef4a441.md`). Its questions decide G48 and G49 and gate D0.
 
-Answered and closed: C7 (`responses/65a608b.md`, `a8a0026.md`), T53 (`responses/734c247.md`), F0 and F0a, T52. D0 is dispatched when T53b is closed.
+Closed: C7 and L98 (`responses/65a608b.md`, `a8a0026.md`), T53 (`responses/734c247.md`), F0 and F0a, T52.
