@@ -208,17 +208,6 @@ def pedagogical_faults(row: dict, recipe: dict, measured: dict) -> list[str]:
     return faults
 
 
-def untaught_on(rung_index: int, measured: dict, order: list[str]) -> list[str]:
-    """The measured demands the curriculum has not taught by the rung at `rung_index`."""
-    _skills, demands = vocabulary()
-    out = []
-    for demand in measured["demands"]:
-        at = demands[demand]["taughtAt"]
-        if at is None or at not in order or order.index(at) > rung_index:
-            out.append(demand)
-    return out
-
-
 # --------------------------------------------------------------------------------------
 # the physical gate: the score against the row
 # --------------------------------------------------------------------------------------

@@ -18,9 +18,11 @@ in the music. Thresholds are the family's own, each with its reason in the row; 
 universal percentage.
 
 **And the rung.** The combination appropriate to the rung the item sits on: every measured demand
-of an item a rung lists, against the curriculum's order and `demands.json`'s `taughtAt`, on the
-earliest rung listing it (the sight-reading promise test's rule). D0 changes no placement (the
-round-robin stays, G18), so what this finds is recorded, family by rung by demand, in
+of an item a rung lists, against the rung's ancestry and `demands.json`'s `taughtAt`, on the
+earliest rung listing it on that rung's path (the sight-reading promise test's rule). Since E0a the
+reading is the build report's own (`claims.rung_ancestry`, `claims.first_listings`,
+`claims.untaught_on`): what the rung builds on, never the file's order across tracks. D0 changes
+no placement (the round-robin stays, G18), so what this finds is recorded, family by rung by demand, in
 `fixtures/untaught_on_rung.json` — the pedagogical gate's report, for E's needs-versus-taught gate
 to act on. The test fails when a new combination appears or a recorded one disappears.
 """
@@ -36,6 +38,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+import claims  # noqa: E402
 import demands  # noqa: E402
 import family_contracts as FC  # noqa: E402
 import generate_exercises as G  # noqa: E402
@@ -45,32 +48,15 @@ FIXTURES = Path(__file__).resolve().parent / "fixtures"
 REPO = Path(__file__).resolve().parents[3]
 
 
-def lesson_order() -> list[str]:
-    """Rung ids in the curriculum's order, as `build.py` assembles `curriculum.json` from the sources."""
+def curriculum_sources() -> dict:
+    """The curriculum's stages as `build.py` assembles `curriculum.json` from the sources, in order."""
     stages: list[dict] = []
     for path in sorted((REPO / "content" / "curriculum").glob("*.json")):
         if path.name == "concepts.json":
             continue
         stages.extend(json.loads(path.read_text(encoding="utf-8")).get("stages", []))
     stages.sort(key=lambda stage: stage["number"])
-    return [lesson["id"] for stage in stages for unit in stage.get("units", []) for lesson in unit.get("lessons", [])]
-
-
-def first_listing() -> dict[str, str]:
-    """`{item id: the earliest rung listing it}`, over exercise and song options."""
-    out: dict[str, str] = {}
-    stages: list[dict] = []
-    for path in sorted((REPO / "content" / "curriculum").glob("*.json")):
-        if path.name == "concepts.json":
-            continue
-        stages.extend(json.loads(path.read_text(encoding="utf-8")).get("stages", []))
-    stages.sort(key=lambda stage: stage["number"])
-    for stage in stages:
-        for unit in stage.get("units", []):
-            for lesson in unit.get("lessons", []):
-                for item_id in lesson.get("exerciseOptions", []) + lesson.get("songOptions", []):
-                    out.setdefault(item_id, lesson["id"])
-    return out
+    return {"stages": stages}
 
 
 class TestTheBridgeReturnsTheDetectorsIds(unittest.TestCase):
@@ -160,16 +146,16 @@ class TestEveryItemSatisfiesItsContract(unittest.TestCase):
 
 class TestTheRungTheItemSitsOn(unittest.TestCase):
     def test_untaught_demands_on_the_earliest_listing_rung_are_the_recorded_ones(self) -> None:
-        order = lesson_order()
-        first = first_listing()
+        curriculum = curriculum_sources()
+        ancestry = claims.rung_ancestry(curriculum)
+        firsts = claims.first_listings(curriculum, ancestry)
+        _skills, vocabulary = claims.load_vocabulary()
         measured = planned.measured()
         found: Counter = Counter()
         for _sc, entry in planned.plan():
-            rung = first.get(entry["id"])
-            if rung is None or rung not in order:
-                continue
-            for demand in FC.untaught_on(order.index(rung), measured[entry["id"]], order):
-                found[(entry["drill"]["generator"]["family"], rung, demand)] += 1
+            for rung in sorted(firsts.get(entry["id"], set())):
+                for demand in claims.untaught_on(measured[entry["id"]], rung, ancestry, vocabulary):
+                    found[(entry["drill"]["generator"]["family"], rung, demand)] += 1
         recorded = json.loads((FIXTURES / "untaught_on_rung.json").read_text(encoding="utf-8"))["found"]
         pinned = Counter({(r["family"], r["rung"], r["demand"]): r["items"] for r in recorded})
         new = {f"{k[0]} on {k[1]}: {k[2]} x{n}" for k, n in found.items() if pinned.get(k) != n}

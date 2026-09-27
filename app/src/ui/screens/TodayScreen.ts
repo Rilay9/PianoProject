@@ -161,6 +161,8 @@ export function TodayScreen(router: Router): HTMLElement {
   let learnerRung: string | undefined;
   /** The stored runs the card was built from: the learner's skills, the gate's first question on the swap sheet (E0). */
   let learnerRows: SessionRow[] = [];
+  // The rungs the learner has reached, as the session read them: their own path, for the sheet's gate (E0a).
+  let learnerReached: string[] = [];
 
   const goalLine = el('p.today-goal', { id: 'today-goal' });
   const inputChip = chip('…', {
@@ -302,6 +304,7 @@ export function TodayScreen(router: Router): HTMLElement {
         ...(learnerRung === undefined ? {} : { rung: learnerRung }),
         // The learner's skills as well as their rung, so the gate asks both halves of its first question (E0).
         rows: learnerRows,
+        reached: learnerReached,
         today: new Date(),
       });
       list.replaceChildren();
@@ -650,6 +653,7 @@ export function TodayScreen(router: Router): HTMLElement {
         today: now,
       });
       slots = built.slots;
+      learnerReached = built.reached;
       breakAfter = built.template.breakAfterSlot;
       drawCard();
       // Once, after the first session exists. Nothing in the row depends on

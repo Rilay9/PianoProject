@@ -74,13 +74,13 @@ interface Morning {
 const INDEX = indexCatalog(catalog);
 const isReadingRow = (id: string): boolean => byId.get(id)?.drill?.kind === 'sight-reading';
 
-/** What each row's swap sheet would offer on the card, as Today hands it the rung and the runs (E0; diary only). */
-async function swapsFor(card: SessionSlot[], morning: Date, rung: string): Promise<string[]> {
-  return process.env.C6_DIARY ? swapLines(card, curriculum, INDEX, catalog, rung, await rungRows(), morning) : [];
+/** What each row's swap sheet would offer on the card, as Today hands it the rung, the runs and the rungs reached (E0, E0a; diary only). */
+async function swapsFor(card: SessionSlot[], morning: Date, rung: string, reached: readonly string[]): Promise<string[]> {
+  return process.env.C6_DIARY ? swapLines(card, curriculum, INDEX, catalog, rung, await rungRows(), morning, reached) : [];
 }
 
 /** Today's card for the morning, from the store, as the Today screen builds it (C6). */
-async function cardFor(morning: Date, states: RungStates, startAt: string): Promise<SessionSlot[]> {
+async function cardFor(morning: Date, states: RungStates, startAt: string): Promise<{ slots: SessionSlot[]; reached: string[] }> {
   const rows = await rungRows();
   const progress = await allProgress();
   return buildSession({
@@ -98,7 +98,7 @@ async function cardFor(morning: Date, states: RungStates, startAt: string): Prom
     today: morning,
     // The readiness floor the E0 brief asked to compare (`E0_FLOOR=introduced`); `familiar` ships.
     ...(process.env.E0_FLOOR === 'introduced' ? { readinessFloor: 'introduced' as const } : {}),
-  }).slots;
+  });
 }
 
 /**
@@ -194,8 +194,8 @@ async function returningIntermediate(): Promise<void> {
     const position = nextRecommended(curriculum, states, ['core'], { startAt: '3.1' });
     const rung = position?.lesson.id ?? 'none';
     const did: string[] = [];
-    const card = await cardFor(morning, states, '3.1');
-    const swaps = await swapsFor(card, morning, rung);
+    const { slots: card, reached } = await cardFor(morning, states, '3.1');
+    const swaps = await swapsFor(card, morning, rung, reached);
     // The day's phrase, as Today offers it, judged by the rung whose row it is.
     const rows = await rungRows();
     const offer = readingOffer({ curriculum, items: catalog, position, activeTracks: ['core'], rows, today: morning, purpose: 'daily' });
@@ -248,8 +248,8 @@ async function experiencedMusician(): Promise<void> {
     const position = nextRecommended(curriculum, states, ['core'], { startAt: '4.1' });
     const rung = position?.lesson.id ?? 'none';
     const did: string[] = [];
-    const card = await cardFor(morning, states, '4.1');
-    const swaps = await swapsFor(card, morning, rung);
+    const { slots: card, reached } = await cardFor(morning, states, '4.1');
+    const swaps = await swapsFor(card, morning, rung, reached);
     // The first mornings, before 4.5: two phrases of 4.6's row read from 4.6's page.
     if (fourFiveBegun === undefined && rung !== '4.5') {
       for (const k of [0, 1]) {

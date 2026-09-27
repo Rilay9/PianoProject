@@ -167,7 +167,7 @@ async function live(learner: Learner): Promise<Day[]> {
     // learned and when each item was last played from the progress rows, as Today builds it.
     const all = await rungRows();
     const progress = await allProgress();
-    const card = buildSession({
+    const built = buildSession({
       curriculum,
       catalog: INDEX,
       items: catalog,
@@ -182,8 +182,9 @@ async function live(learner: Learner): Promise<Day[]> {
       today: morning,
       // The readiness floor the E0 brief asked to compare (`E0_FLOOR=introduced`); `familiar` ships.
       ...(process.env.E0_FLOOR === 'introduced' ? { readinessFloor: 'introduced' as const } : {}),
-    }).slots;
-    const swaps = process.env.C4C_DIARY ? swapLines(card, curriculum, INDEX, catalog, rung, all, morning) : [];
+    });
+    const card = built.slots;
+    const swaps = process.env.C4C_DIARY ? swapLines(card, curriculum, INDEX, catalog, rung, all, morning, built.reached) : [];
     const made = readingOffer({
       curriculum,
       items: catalog,

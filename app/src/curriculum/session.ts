@@ -674,11 +674,21 @@ function usable(ctx: SlotContext, item: CatalogItem | undefined, songs: 'any' | 
 /**
  * The learner as the one gate reads them (E0, `eligibility.ts`): the ladder state
  * of each skill from every stored run, and what `rung` — the rung judging the
- * offer — has taught. `rung` absent: no rung judges, and only the evidence counts.
+ * offer — has taught, with what the rungs the learner has reached taught them
+ * (E0a: their own path, `taughtAtRung`'s second reading). `rung` absent: no rung
+ * judges, and only the evidence counts.
  */
 function learnerAt(ctx: SlotContext, rung: Lesson | undefined): Learner {
   const vocabulary = ctx.input.vocabulary ?? VOCABULARY_V0;
-  const taught = rung === undefined ? undefined : taughtAtRung(ctx.input.curriculum, rung.id, vocabulary);
+  const taught =
+    rung === undefined
+      ? undefined
+      : taughtAtRung(
+          ctx.input.curriculum,
+          rung.id,
+          vocabulary,
+          ctx.reached.map((walked) => walked.lesson.id),
+        );
   return {
     skillState: (skill) => ctx.skills.get(skill)?.reading.state,
     ...(taught === undefined ? {} : { taught }),
@@ -1275,7 +1285,12 @@ const FALLBACK_FILL_ORDER: readonly SlotKind[] = ['technique', 'new', 'repertoir
  * fallbacks take what is left — and are shown in the template's order. No
  * item is used twice, and a row that finds nothing is dropped.
  */
-export function buildSession(input: BuildInput): { template: SessionTemplate; slots: SessionSlot[] } {
+export function buildSession(input: BuildInput): {
+  template: SessionTemplate;
+  slots: SessionSlot[];
+  /** The rungs the learner has reached (placed on or passed), for the swap sheet's gate (E0a). */
+  reached: string[];
+} {
   const template = templateFor(input.minutes);
   const position = readerPosition(input.curriculum, input.states, input.activeTracks, {
     ...(input.strictPrerequisites ? { strictPrerequisites: true } : {}),
@@ -1381,6 +1396,7 @@ export function buildSession(input: BuildInput): { template: SessionTemplate; sl
   return {
     template: breakAfter === template.breakAfterSlot ? template : { ...template, ...(breakAfter === undefined ? {} : { breakAfterSlot: breakAfter }) },
     slots,
+    reached: reached.map((walked) => walked.lesson.id),
   };
 }
 
@@ -1431,8 +1447,9 @@ export interface SwapOption {
  * tier it came from, which the sheet prints. Two things a session row knows
  * that a lesson does not: what is already on today's card (never offered
  * twice), and whether a song makes sense in the slot at all. Every option goes
- * through the one gate (E0, `eligibility.ts`) with the learner's rung — what it
- * has taught — and, where the caller has them, the learner's skill states: it
+ * through the one gate (E0, `eligibility.ts`) with the learner's rung — what its
+ * ancestry has taught, and what the rungs the learner has reached taught them
+ * (E0a) — and, where the caller has them, the learner's skill states: it
  * replaced the untaught-demand filter that stood here, which is the gate's
  * first question.
  *
@@ -1461,6 +1478,11 @@ export function swapOptions(
     today?: Date;
     /** The ladder state at which a skill supports its demands (`BuildInput.readinessFloor`). */
     readinessFloor?: LadderState;
+    /**
+     * The rungs the learner has reached, as the session reads them (`buildSession`'s
+     * `reached`): what they taught counts as taught for this learner (E0a).
+     */
+    reached?: readonly string[];
   } = {},
 ): SwapOption[] {
   if (!slot.item) return [];
@@ -1468,7 +1490,7 @@ export function swapOptions(
   const vocabulary = options.vocabulary ?? VOCABULARY_V0;
   const excludeSongs = options.excludeSongs ?? slot.kind === 'technique';
   const exclude = slots.map((other) => other.item?.id).filter((id): id is string => Boolean(id));
-  const taught = options.rung === undefined ? undefined : taughtAtRung(curriculum, options.rung, vocabulary);
+  const taught = options.rung === undefined ? undefined : taughtAtRung(curriculum, options.rung, vocabulary, options.reached);
   // The learner's skills from their stored runs, the session's own reading (`skillEvidenceOf`), where given.
   const evidence = options.rows === undefined ? undefined : skillEvidenceOf(options.rows, vocabulary, options.today ?? new Date());
   const skillState = options.skillState ?? (evidence === undefined ? undefined : (skill: string) => evidence.get(skill)?.reading.state);
@@ -1653,29 +1675,116 @@ function recipeKey(value: ReadingRecipe): string {
   return `${value.row}|${JSON.stringify(normaliseMoves(value.moved))}`;
 }
 
+/**
+ * Every rung in the file's order. Never what a rung has taught (`rungAncestry`
+ * is, E0a): its one reader is the easy move's "newest thing the recipe added"
+ * order among demands the learner's rung has taught, all in that rung's
+ * ancestry — and every prerequisite, and every core rung of an earlier stage, is
+ * stored before the rung it leads to, so on one ancestry the file's order is the
+ * order the rungs are met in.
+ */
 function lessonOrder(curriculum: Curriculum): string[] {
   return curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons.map((lesson) => lesson.id)));
 }
 
+/** Worked out once per curriculum object: nothing changes a rung or a prerequisite in a session. */
+const ANCESTRY = new WeakMap<Curriculum, ReadonlyMap<string, ReadonlySet<string>>>();
+
 /**
- * What a rung has taught: a demand whose `taughtAt` rung comes at or before it
- * in the curriculum's order. `undefined` for no rung (a phrase opened from
- * nowhere is the row as it stands) or one the curriculum does not have.
+ * Every rung's ancestry (E0a; the reviewer's finding 1 on E0): the rungs every
+ * learner at it has been through, itself included — what "taught by this rung"
+ * is read from. It was the file's order, and the curriculum is not one line:
+ * `blues.5` is stored before `jazz.5`, so the walking bass read as taught at
+ * `jazz.5` and at every rung stored after it, on every track.
+ *
+ * - **On the core path**, every core rung before it in stage-and-unit order. The
+ *   spine is walked in that order (`nextRecommended`, `strandsOf`), and its
+ *   `prerequisites` do not say all of it: 4.6's, followed back, never reach 3.4
+ *   (3.5 builds on 3.3, 3.4 on 3.1), 4.7 names none, and Stage 0 is nobody's.
+ * - **On a track**, its `prerequisites`, each with its own ancestry, and the core
+ *   path up to the rung's stage: a track opens where the spine has reached its
+ *   stage (`docs/04` §2), so `jazz.5` stands on the whole core path although its
+ *   prerequisites, followed back, leave the core at 3.2. A track's own earlier
+ *   rungs count through its prerequisites, never through the file.
+ *
+ * A prerequisite the curriculum does not have is passed over, as `strandsOf`
+ * passes it; a cycle stops rather than loops. `tools/content/claims.py`'s
+ * `rung_ancestry` is the build's reading of the same thing, for the rung-claims
+ * report's "untaught here".
+ */
+export function rungAncestry(curriculum: Curriculum): ReadonlyMap<string, ReadonlySet<string>> {
+  const known = ANCESTRY.get(curriculum);
+  if (known) return known;
+  const stages = [...curriculum.stages].sort((a, b) => a.number - b.number);
+  const ids = new Set(stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons.map((lesson) => lesson.id))));
+  const parents = new Map<string, string[]>();
+  const core: { stage: number; id: string }[] = [];
+  let previous: string | undefined;
+  for (const stage of stages) {
+    // The last core rung of an earlier stage: where the spine is once a track of this stage opens.
+    const spine = [...core].reverse().find((one) => one.stage < stage.number)?.id;
+    for (const unit of stage.units) {
+      for (const lesson of unit.lessons) {
+        const own = (lesson.prerequisites ?? []).filter((id) => ids.has(id) && id !== lesson.id);
+        if (unit.track === 'core') {
+          parents.set(lesson.id, [...(previous === undefined ? [] : [previous]), ...own]);
+          previous = lesson.id;
+          core.push({ stage: stage.number, id: lesson.id });
+        } else {
+          parents.set(lesson.id, [...own, ...(spine === undefined ? [] : [spine])]);
+        }
+      }
+    }
+  }
+  const out = new Map<string, Set<string>>();
+  const visiting = new Set<string>();
+  const of = (id: string): Set<string> => {
+    const done = out.get(id);
+    if (done) return done;
+    const found = new Set<string>([id]);
+    if (visiting.has(id)) return found;
+    visiting.add(id);
+    for (const parent of parents.get(id) ?? []) for (const one of of(parent)) found.add(one);
+    visiting.delete(id);
+    out.set(id, found);
+    return found;
+  };
+  for (const id of parents.keys()) of(id);
+  ANCESTRY.set(curriculum, out);
+  return out;
+}
+
+/**
+ * What a rung has taught (E0a): a demand whose `taughtAt` rung is in the rung's
+ * ancestry (`rungAncestry`) — the rung, what it builds on, and on a track the
+ * core path up to its stage. A demand taught on one track is not taught on its
+ * sibling, whatever the file's order.
+ *
+ * `reached`, where the caller has a learner, is the second reading: the rungs
+ * the learner has been placed on or passed (the session's `reached`: met, set
+ * aside, behind the placement, or a strand's open rung). A demand taught by any
+ * of them is taught for this learner wherever they are judged — a learner who
+ * did the blues track and sits on `jazz.6` has met the walking bass.
+ *
+ * `undefined` for no rung (a phrase opened from nowhere is the row as it stands)
+ * or one the curriculum does not have.
  */
 export function taughtAtRung(
   curriculum: Curriculum,
   rung: string | undefined,
   vocabulary: Vocabulary = VOCABULARY_V0,
+  reached: readonly string[] = [],
 ): ((demand: string) => boolean) | undefined {
   if (rung === undefined) return undefined;
-  const order = lessonOrder(curriculum);
-  const here = order.indexOf(rung);
-  if (here < 0) return undefined;
+  const ancestry = rungAncestry(curriculum);
+  const here = ancestry.get(rung);
+  if (here === undefined) return undefined;
+  const theirs = reached.map((id) => ancestry.get(id)).filter((one): one is ReadonlySet<string> => one !== undefined);
+  const taughtBy: ReadonlySet<string> = theirs.length === 0 ? here : new Set([...here, ...theirs.flatMap((one) => [...one])]);
   return (demand) => {
     const at = vocabulary.demands.find((d) => d.id === demand)?.taughtAt;
     if (at === null || at === undefined) return false;
-    const index = order.indexOf(at);
-    return index >= 0 && index <= here;
+    return taughtBy.has(at);
   };
 }
 
