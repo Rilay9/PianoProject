@@ -3082,10 +3082,11 @@ describe('the open findings T22 decided, under test', () => {
 // score was the reason the old sentence was wrong: the anacrusis rule stated
 // two lines before the rung's own *When the Saints*, which breaks it, and the
 // arpeggio fingering the lesson printed, which is not what the rung's
-// exercises print. One row holds a lesson sentence to a *fault* in the score —
-// 4.3's warning about the printed left-hand arpeggio fingering — so the day
-// the generator is corrected this row fails and the warning comes out of the
-// lesson with it. Nothing here has been heard.
+// exercises print. The 4.3 row held a lesson sentence to a *fault* in the
+// score — the warning that the printed left-hand arpeggio fingering was wrong
+// at the octave join — until T53 corrected the generator; it now holds the six
+// arpeggios the lesson names to the fingering the lesson teaches, and the
+// warning is gone. Nothing here has been heard.
 
 const F0M_LESSONS = join(process.cwd(), '..', 'content', 'lessons');
 
@@ -3172,25 +3173,30 @@ const F0_MUSIC: [string, string, () => boolean][] = [
   ],
   [
     '4.3',
-    'the right hand prints 1-2-3, 1-2-3, 5 over two octaves; the left hand prints 5 straight after 2 at the octave join, the fault the lesson warns of',
+    'the six two-octave arpeggios the lesson names print the fingering it teaches going up: right hand 1-2-3, 1-2-3, 5, left hand 5-4-2-1, 4-2-1 with the thumb on the middle root, and the lesson no longer warns that the print is wrong',
     () => {
-      const right = t12Line('exercise.arpeggio.c-major.2oct.right', 1)
-        .slice(0, 7)
-        .map((note) => note.finger)
-        .join('');
-      const left = t12Line('exercise.arpeggio.c-major.2oct.left', 2)
-        .slice(0, 4)
-        .map((note) => note.finger)
-        .join('');
+      // T53 replaced the F0 row that held the lesson's warning to the fault
+      // (the left hand read 5-3-2-5 at the join). This row fails the other
+      // way: if any of the six regresses to a join the lesson does not teach.
+      const up = (id: string, staff: number): string =>
+        t12Line(id, staff)
+          .slice(0, 7)
+          .map((note) => note.finger)
+          .join('');
+      const keys = ['c-major', 'g-major', 'f-major', 'a-minor', 'd-minor', 'e-minor'];
       const text = f0mText('4.3');
       return (
-        t12Exercises('4.3').includes('exercise.arpeggio.c-major.2oct.left') &&
-        right === '1231235' &&
-        // When this stops being 5-3-2-5 the generator has been corrected, and
-        // the lesson's warning has to go.
-        left === '5325' &&
-        text.includes('is wrong where the octaves join') &&
-        text.includes('5-4-2-1') &&
+        keys.every(
+          (k) =>
+            t12Exercises('4.3').includes(`exercise.arpeggio.${k}.2oct.right`) &&
+            t12Exercises('4.3').includes(`exercise.arpeggio.${k}.2oct.left`) &&
+            up(`exercise.arpeggio.${k}.2oct.right`, 1) === '1231235' &&
+            up(`exercise.arpeggio.${k}.2oct.left`, 2) === '5421421',
+        ) &&
+        text.includes('The left hand going up plays 5-4-2-1') &&
+        text.includes('then finger 4 (or 3) crosses over the thumb') &&
+        text.includes('in C, G, F, A minor, D minor and E minor') &&
+        !text.includes('is wrong where the octaves join') &&
         !text.includes('Right hand 1-2-3-5')
       );
     },
