@@ -148,3 +148,39 @@ If an unreviewed handoff exists:
 3. report the seam, implementation HEAD, verdict and response path.
 
 If GitHub write capability is unavailable during the scheduled run, do not pretend the review completed. Report the exact blocker and, if possible, include the handoff HEAD that needs manual review.
+
+## Live reviewer state
+
+This section is mutable. Every autonomous reviewer pass must refresh it from the repository before finishing, even if no review is performed. Do not rely on the previous contents without re-checking GitHub.
+
+Record:
+- last autonomous check time;
+- latest branch HEAD observed;
+- current architectural frontier and next gated brief;
+- latest accepted/closed seams;
+- unreviewed immutable handoffs currently present;
+- blocking fix-forwards currently required;
+- independent seams in progress or awaiting review;
+- next allowed implementation steps;
+- anything that still requires the owner's decision.
+
+The scheduled reviewer must derive this state from:
+1. `docs/prompts/tasks/README.md`;
+2. immutable `docs/review/handoffs/`;
+3. immutable `docs/review/responses/`;
+4. the latest relevant task/entry/backlog files named by those artifacts;
+5. current branch state.
+
+Do not manufacture status from an old snapshot. If the repository and this section disagree, the repository wins and this section must be corrected.
+
+Current snapshot as of 2026-09-27:
+- F0 closed.
+- C7 closed after L98.
+- T53 core accepted.
+- T53b accepted.
+- T53c is required before D0 and is the current gate.
+- D0 remains approved pre-build but must not dispatch until T53c receives ACCEPT.
+- Independent overnight work may include test/harness reliability and narrowly scoped F voice-only cleanup, but those do not waive the T53c → D0 gate.
+- X/G implementation must not leap ahead of D/E truths.
+- No owner decision is currently required by the reviewer.
+
