@@ -1218,7 +1218,15 @@ export function slotReason(kind: SlotKind, claim: SlotClaim | undefined, today: 
   return kind === 'repertoire' && options.known === true ? `${SLOT_TEXT.pieceYouKnow} — ${lowerFirst(line)}` : line;
 }
 
-/** The swap sheet's words for a tier (C6 item 6): printed once over the options that came from it. */
+/**
+ * The swap sheet's words for a tier (C6 item 6): printed once over the options
+ * that came from it, stating the strongest fact known (Part 23; E0). The skill and
+ * demand tiers passed the one gate (`eligibility.ts`): the option provides the
+ * skill's or the demand's opportunity at a useful density, and every other demand
+ * it measures is one the learner has met — in the lessons up to their rung, or in
+ * their own evidence. Never "similar difficulty" from a level, never "practises X"
+ * because X occurs somewhere in the file.
+ */
 export function swapTierWords(tier: AlternativeTier | 'kind', shared?: string): string {
   switch (tier) {
     case 'lesson':
@@ -1226,9 +1234,10 @@ export function swapTierWords(tier: AlternativeTier | 'kind', shared?: string): 
     case 'alternative':
       return 'Named as a stand-in for it';
     case 'skill':
-      return `Trains the same skill: ${shared === undefined ? 'the same' : lowerFirst(skillName(shared))}`;
+      return `Also trains ${shared === undefined ? 'the same skill' : lowerFirst(skillName(shared))}, with the other demands you have met`;
     case 'demand':
-      return `Carries the same demand: ${shared === undefined ? 'the same' : demandName(shared)}`;
+      // The demand's name with its article ("the key signature", "the moving left hand", "skips").
+      return `Also practises ${shared === undefined ? 'the same demand' : (DEMAND_WORDS[shared]?.name ?? shared)}, with the other demands you have met`;
     case 'kind':
       return 'The same kind, from your lessons so far';
   }
@@ -1239,8 +1248,8 @@ export function swapChoiceWords(tier: AlternativeTier | 'kind'): string {
   const why: Record<AlternativeTier | 'kind', string> = {
     lesson: 'from the same lesson',
     alternative: 'a stand-in for the one offered',
-    skill: 'it trains the same skill',
-    demand: 'it carries the same demand',
+    skill: 'it also trains the same skill',
+    demand: 'it also practises the same demand',
     kind: 'the same kind, from your lessons so far',
   };
   return `${SLOT_TEXT.chose} — ${why[tier]}`;

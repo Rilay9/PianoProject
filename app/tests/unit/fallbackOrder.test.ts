@@ -19,6 +19,15 @@
  * with `EVERY_DECLARED_SKILL` (D0): as shipped, the skill step acts on the
  * reading rows' skills only (`skillActivationBoundary.test.ts`), and this file
  * exercises the step itself.
+ *
+ * **Revised (E0).** The skill and demand steps go through the one gate
+ * (`eligibility.ts`): the candidate's notes provide the skill's or the demand's
+ * opportunity at a useful density and the learner can cope with every demand it
+ * measures. So the constructed exercises carry their measurement
+ * (`helpers/measured`), and the vocabulary this file hands the session says its
+ * earlier lesson E teaches eighth notes — the constructed curriculum has none of
+ * the real rungs `taughtAt` names. Old assumption: a declared skill, or a bare
+ * demand id, was enough to be offered.
  */
 import { describe, expect, it } from 'vitest';
 import { buildSession, FALLBACK_ORDER, type SessionSlot } from '../../src/curriculum/session';
@@ -26,7 +35,14 @@ import { indexCatalog } from '../../src/curriculum/selectors';
 import { EVERY_DECLARED_SKILL } from '../../src/curriculum/skillActivation';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
 import { rungState, type RungReading } from '../../src/evidence/rungState';
-import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
+import { VOCABULARY_V0, type Vocabulary } from '../../src/evidence/vocabulary';
+import { measured } from './helpers/measured';
+
+/** Vocabulary v0 with eighth notes taught at the constructed lesson E. */
+const VOCABULARY: Vocabulary = {
+  ...VOCABULARY_V0,
+  demands: VOCABULARY_V0.demands.map((demand) => (demand.id === 'rhythm.eighths' ? { ...demand, taughtAt: 'E' } : demand)),
+};
 
 const TODAY = new Date(2026, 9, 20, 9);
 
@@ -78,15 +94,15 @@ const CURRICULUM: Curriculum = {
 function catalog(gone: readonly string[]): CatalogItem[] {
   const all = [
     // R's own exercise that trains the skill, never playable: the first claim always fails.
-    item('ex.r1', { targetSkills: ['subdivision'], file: null }),
-    item('ex.r2'),
-    item('ex.skill', { targetSkills: ['subdivision'] }),
-    item('ex.demand', { demands: ['rhythm.eighths'] }),
-    item('ex.pre'),
+    item('ex.r1', { targetSkills: ['subdivision'], file: null, ...measured(['rhythm.eighths']) }),
+    item('ex.r2', measured([])),
+    item('ex.skill', { targetSkills: ['subdivision'], ...measured(['rhythm.eighths']) }),
+    item('ex.demand', measured(['rhythm.eighths'])),
+    item('ex.pre', measured([])),
     item('ex.expo', { file: null, drill: { kind: 'scale', params: {} } }),
     // The trap: at the stage's level, on the technique track, on no rung, sharing nothing.
-    item('ex.near', { level: 1, tracks: ['technique', 'core'] }),
-    item('song.near', { type: 'song', level: 1 }),
+    item('ex.near', { level: 1, tracks: ['technique', 'core'], ...measured([]) }),
+    item('song.near', { type: 'song', level: 1, ...measured([]) }),
   ];
   return all.map((one) => (gone.includes(one.id) ? { ...one, file: null, drill: null } : one));
 }
@@ -107,6 +123,7 @@ function warmup(gone: readonly string[]): SessionSlot | undefined {
     startAt: 'R',
     today: TODAY,
     skillActivation: EVERY_DECLARED_SKILL,
+    vocabulary: VOCABULARY,
   }).slots.find((slot) => slot.kind === 'technique');
 }
 
@@ -174,6 +191,7 @@ describe('the warm-up walks the ladder one claim at a time, and the line names t
           startAt: 'R',
           today: TODAY,
           skillActivation: EVERY_DECLARED_SKILL,
+          vocabulary: VOCABULARY,
         }).slots;
         for (const slot of slots) {
           expect(['ex.near', 'song.near'], `${slot.kind} at ${String(minutes)} min, gone ${gone.join(',')}`).not.toContain(slot.item?.id);

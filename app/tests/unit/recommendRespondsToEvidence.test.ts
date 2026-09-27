@@ -4,7 +4,8 @@
  * the test inventory's Q6 row `recommendRespondsToEvidence`) — the reading
  * part (C4) and the rung part (C5) here; every other slot's choice from the
  * evidence is `slotsFromEvidence.test.ts` (C6), and reads that differ only in
- * reading still move only the reading slot.
+ * reading move the reading slot and, where they support a piece that practises
+ * what the rung teaches, the repertoire slot (E0).
  *
  * Constructed learners on the same rung: one who has never read; one who has
  * read the rung's own row three days running and got a third of each phrase
@@ -138,16 +139,27 @@ describe('learners on 2.2: one failing everywhere, one misreading the skips, one
   });
 
   // Revised (C6): this said "nothing else on the card adapts", because until C6 nothing else read
-  // the learner. The other slots read the evidence now (`slotsFromEvidence.test.ts`); these three
-  // learners differ only in three days of reads, which no other slot's claim turns on (no piece
-  // declares or carries what they showed, and no skill has gone three weeks unshown), so every
-  // other slot is still the same for all three, and each says why.
-  it('reads that differ only in reading move only the reading slot; every other slot says why it is there', () => {
+  // the learner. The other slots read the evidence now (`slotsFromEvidence.test.ts`).
+  // Revised (E0): C6's version held every other slot the same for all three learners, because "no
+  // piece declares or carries what they showed". Every piece carries its measured demands now, so
+  // the repertoire claim C6 built can fire: the skip learner's reads show subdivision proficient and
+  // interval reading familiar, so the one gate passes a piece that provides the eighth notes 2.2
+  // teaches and asks nothing their reads do not support, and the row says so. The learner failing
+  // everywhere reads intervals at `practised`, below the floor, so nothing is ready for them and their
+  // card is the never-read learner's. Every slot but reading and repertoire is the same for all three.
+  it('reads that differ only in reading move the reading slot, and the repertoire slot only to a piece the reads support; every other slot says why it is there', () => {
     for (const slot of card([])) if (slot.kind !== 'sightreading') expect(slot.claim, `${slot.kind} has no claim`).toBeDefined();
-    const strip = (slots: SessionSlot[]) =>
-      slots.filter((slot) => slot.kind !== 'sightreading').map((slot) => [slot.kind, slot.item?.id, slot.reason]);
+    const strip = (slots: SessionSlot[], leave: readonly SessionSlot['kind'][] = ['sightreading']) =>
+      slots.filter((slot) => !leave.includes(slot.kind)).map((slot) => [slot.kind, slot.item?.id, slot.reason]);
     expect(strip(card(failing))).toEqual(strip(card([])));
-    expect(strip(card(skipLearner))).toEqual(strip(card([])));
+    expect(strip(card(skipLearner), ['sightreading', 'repertoire'])).toEqual(strip(card([]), ['sightreading', 'repertoire']));
+    const repertoire = card(skipLearner).find((slot) => slot.kind === 'repertoire');
+    expect(repertoire?.claim?.kind).toBe('ready');
+    const demand = repertoire?.claim?.kind === 'ready' ? repertoire.claim.demand : '';
+    expect(VOCABULARY_V0.demands.find((one) => one.id === demand)?.taughtAt, 'a demand 2.2 teaches').toBe('2.2');
+    const measurement = repertoire?.item?.measurement;
+    expect(measurement?.status === 'measured' ? measurement.established : [], 'provided at a useful density').toContain(demand);
+    expect(repertoire?.reason).toMatch(/ — your reads support them$/);
   });
 });
 

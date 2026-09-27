@@ -20,6 +20,13 @@
  * test-visible change here. E extends this same boundary with its needs-versus-taught and
  * measured-demand checks rather than writing a second readiness check beside it (`02`
  * Part E2, "Who reads the contract").
+ *
+ * **E0 did** (`eligibility.ts`, the one gate): the evidence readers keep
+ * `skillsInForce` at the shipped activation, so no new run earns credit; selection
+ * reads `declaredSkills` through the gate, which acts on a declared skill beyond the
+ * active ones only where the item's measured notes establish its opportunity and the
+ * learner can cope. A rung's skill requirement is still served only by what the
+ * evidence readers act on, because only those runs can meet it.
  */
 import type { CatalogItem } from './types';
 
@@ -43,4 +50,18 @@ export const EVERY_DECLARED_SKILL: SkillActivation = () => true;
 export function skillsInForce(item: CatalogItem | undefined, activation: SkillActivation = SHIPPED_SKILL_ACTIVATION): readonly string[] {
   if (item === undefined || !activation(item)) return [];
   return item.targetSkills ?? [];
+}
+
+/**
+ * The item's declared target skills, unfiltered, for the one gate that decides
+ * which of them *selection* acts on (E0: `eligibility.ts`, and nothing else;
+ * `skillActivationBoundary.test.ts` holds that). This is how E extends the
+ * boundary rather than writing a second one: a declared skill beyond the active
+ * ones is acted on for choosing material only where the item's measured demands
+ * establish its opportunity and the learner can cope — the gate's two questions —
+ * and never for evidence, whose readers keep `skillsInForce` at the shipped
+ * activation (E0 never widens what earns evidence; L102, D4).
+ */
+export function declaredSkills(item: CatalogItem | undefined): readonly string[] {
+  return item?.targetSkills ?? [];
 }

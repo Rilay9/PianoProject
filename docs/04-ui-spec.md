@@ -309,15 +309,21 @@ you like — no scoring, no cursor", `chose` "You chose this one".
 - **"Swap this"** on every row — not just the whole-card "shuffle" — offers the alternatives
   for that slot (`00` D21), in tiers that are claims (C6; L12's third reader, L36;
   `selectors.tieredAlternatives`): the other options of the lesson the row came from (*From the
-  same lesson*); the item's own `alternatives[]` (*Named as a stand-in for it*); items sharing
-  a target skill (*Trains the same skill: subdivision*); items carrying a measured demand it
-  carries (*Carries the same demand: dotted quarters*) — within a tier the nearest level first,
-  an order and not a window. A shared concept tag matches nothing: the `repertoire` tag on every
-  quarried piece made the old third tier a level window over the quarry. Given the learner's
+  same lesson*); the item's own `alternatives[]` (*Named as a stand-in for it*); items that
+  declare the row's target skill and whose measured notes provide its opportunity (*Also trains
+  subdivision, with the other demands you have met*); items whose measured notes provide, at a
+  useful density, the demand the row's rung teaches (*Also practises skips, with the other
+  demands you have met*) — within a tier the nearest level first, an order and not a window.
+  Every tier goes through the one gate (E0, `curriculum/eligibility.ts`): given the learner's
   rung, nothing is offered that carries a demand no lesson up to it has taught (a reading row by
-  what C4b's map says it may write). Each tier's words are printed once over its options, and a
-  row keeps `data-tier`; a chosen option's line is *You chose this one — from the same lesson*
-  (or its tier). A **"not a song"** filter is on the sheet, because half the point of the
+  what C4b's map says it may write); nothing unmeasured is offered as an equivalent, the lesson's
+  own options and the named stand-ins included; a declared large-hand voicing is not offered
+  until its alternative reaches the learner. A shared concept tag or a step every tune has
+  matches nothing: the `repertoire` tag on every quarried piece made the old third tier a level
+  window over the quarry. The words state the strongest fact known, never "similar difficulty".
+  Each tier's words are printed once over its options, and a row keeps `data-tier`; a chosen
+  option's line is *You chose this one — from the same lesson* (or its tier: *it also trains the
+  same skill*, *it also practises the same demand*). A **"not a song"** filter is on the sheet, because half the point of the
   exercise breadth is that a skill can be practised without a tune attached.
 - **An import-only item always shows what to play instead.** A rock-module song you have not
   imported yet is not a dead row: it offers the public-domain vehicle its technique brief

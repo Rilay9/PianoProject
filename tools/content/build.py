@@ -215,6 +215,8 @@ def merge_catalog(out_dir: Path) -> Step:
     tracked = attach_rung_tracks(entries)
     read = attach_notation(entries, out_dir)
     keyed = settle_key_signatures(entries)
+    measured, unmeasured, runtime = attach_demands(entries, out_dir)
+    attach_provenance(entries)
     write_json(out_dir / "catalog.json", entries)
     detail = f"{len(entries)} items"
     if sections:
@@ -225,6 +227,7 @@ def merge_catalog(out_dir: Path) -> Step:
         detail += f", {read} read from the score"
     if keyed:
         detail += f", {keyed} keySig corrected"
+    detail += f", demands measured on {measured} ({unmeasured} unmeasured, {runtime} made at runtime)"
     return Step("merge catalog", ok=True, detail=detail)
 
 
@@ -439,6 +442,411 @@ def attach_notation(entries: list[dict], out_dir: Path) -> int:
     return touched
 
 
+#: The per-demand useful-density rule for notated items (E0): one file, read here and
+#: by `app/src/curriculum/eligibility.ts`.
+DENSITY_FILE = CONTENT_SRC / "sources" / "opportunity-density.json"
+
+#: What a score file is, for the detectors: MusicXML, compressed or not.
+NOTATION_SUFFIXES = (".mxl", ".musicxml", ".xml")
+
+
+def _sha256(path: Path) -> str:
+    import hashlib
+
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+#: The detectors' clef assumption (`detect.ts`'s module note): staff 1 is read as the treble
+#: clef and staff 2 as the bass. A file whose upper staff is written in the bass clef — a
+#: one-staff part in the bass clef, or an upper staff that changes to it — is read wrong by
+#: the two detectors that depend on the clef. Found from the file's own `<clef>` signs,
+#: which is structure, not a demand reading; the readings are marked, never corrected here
+#: (the detectors' readings are E22's seam).
+CLEF_MISREAD = ("clef.bass", "pitch.ledger")
+_CLEF = __import__("re").compile(r'<clef(?:\s+number="(\d)")?[^>]*>\s*<sign>([A-Z]+)</sign>')
+
+
+def clef_misread(path: Path, staves: int | None) -> str | None:
+    """Why the clef-dependent readings of this file are unreliable, or None."""
+    from notation import read_musicxml
+
+    text = read_musicxml(path)
+    if text is None:
+        return None
+    upper = [sign for number, sign in _CLEF.findall(text) if number in ("", "1")]
+    if not upper or "F" not in upper:
+        return None
+    if staves == 1 and upper[0] == "F":
+        return "one staff in the bass clef: the detectors read staff 1 as the treble clef (detect.ts's clef assumption)"
+    return "the upper staff moves into the bass clef: the detectors read staff 1 as the treble clef throughout (detect.ts's clef assumption)"
+
+
+def established_by_density(located: dict[str, int], bars: int, table: dict, order: list[str]) -> list[str]:
+    """
+    The demands a notated item provides at a useful density (E0 item 3): the located
+    count reaches the demand's `min` and its count per bar reaches `perBar`
+    (`content/sources/opportunity-density.json`). In the vocabulary's order.
+
+    The same arithmetic as `usefulDensity` in `app/src/curriculum/eligibility.ts`, over
+    the same file; `eligibility.test.ts` holds the two equal on every built item.
+    """
+    rules = table["demands"]
+    out = []
+    for demand in order:
+        rule = rules.get(demand)
+        n = int(located.get(demand, 0))
+        if rule is None or n <= 0:
+            continue
+        if n >= rule["min"] and n / max(bars, 1) >= rule["perBar"]:
+            out.append(demand)
+    return out
+
+
+def established_by_contract(entry: dict, row: dict) -> list[str]:
+    """
+    The demands a generated item provides at its own family's density (D0's contract):
+    each `requires` rule that states a density — a count per bar, or a count of two or
+    more — and that the item meets, by the contract's own gate (`pedagogical_faults`
+    on that one rule). A rule asking only for presence states no density and
+    establishes nothing here (the tie drill's one tie in four bars, D0 finding 6).
+    """
+    import family_contracts as FC
+
+    family = ((entry.get("drill") or {}).get("generator") or {}).get("family")
+    if not family or family not in FC.contracts():
+        return []
+    recipe = FC.recipe_of(entry)
+    out = []
+    for rule in FC.selected(FC.contract(family).get("requires"), recipe):
+        if "minPer" not in rule and int(rule.get("min", 0)) < 2:
+            continue
+        faults = FC.pedagogical_faults({"requires": [rule], "target": {"primary": []}}, recipe, row)
+        if not faults and rule["demand"] not in out:
+            out.append(rule["demand"])
+    return out
+
+
+def attach_demands(entries: list[dict], out_dir: Path) -> tuple[int, int, int]:
+    """
+    The demands the app's own detectors measure on every bundled score, on its row (E0
+    item 1; E23): `demands` (the ids, in the vocabulary's order) and `measurement` — the
+    located count of each demand, the bars, steps and notes, which demands the item
+    provides at a useful density (`established`), and the definitions they were measured
+    under.
+
+    **One measurement, through the bridge.** Every score file goes through
+    `demands.measure_each`, which runs `app/src/demands/detect.ts` on the model the app
+    makes of the file (`demandsOfFiles.test.ts`): authored, PDMX, Kern, MuseTrainer and
+    generated alike, never a Python reading of a demand. Measured on the arrangement in
+    the file; nothing here reads a title, a genre or a level.
+
+    **Cached on the file's bytes** in `build/demands-cache.json`, like
+    `attach_notation`, and on `demands.definition_fingerprint()`: a changed detector,
+    model or vocabulary discards the cache and every file is measured again; a changed
+    score is measured again alone.
+
+    **Never an empty list that reads as "no demands".** A file the app cannot load, a
+    score that is not notation, a piece whose notation is not bundled: `demands:
+    "unmeasured"` and `measurement.status: "unmeasured"` with the reason. A runtime drill
+    writes no score: it has no `demands` at all and `measurement.status: "runtime"`,
+    because its demands belong to each phrase it makes.
+
+    Returns (measured, unmeasured, runtime).
+    """
+    import demands as D
+
+    table = read_json(DENSITY_FILE)
+    assert isinstance(table, dict)
+    vocabulary = read_json(CONTENT_SRC / "curriculum" / "vocabulary" / "demands.json")
+    assert isinstance(vocabulary, dict)
+    order = [d["id"] for d in vocabulary["demands"]]
+    fingerprint = D.definition_fingerprint()
+    definitions = D.evidence_definitions()
+    cache_path = BUILD_DIR / "demands-cache.json"
+    cache = read_json(cache_path) if cache_path.exists() else {}
+    assert isinstance(cache, dict)
+    rows: dict[str, dict] = dict(cache.get("files") or {}) if cache.get("fingerprint") == fingerprint else {}
+
+    def unmeasured(entry: dict, reason: str) -> None:
+        entry["demands"] = "unmeasured"
+        entry["measurement"] = {"status": "unmeasured", "reason": reason}
+
+    planned: list[tuple[dict, str]] = []
+    todo: dict[str, Path] = {}
+    runtime = 0
+    for entry in entries:
+        rel = entry.get("file")
+        if not rel:
+            if entry.get("drill"):
+                entry.pop("demands", None)
+                reading = (entry.get("drill") or {}).get("kind") == "sight-reading"
+                entry["measurement"] = {
+                    "status": "runtime",
+                    "reason": (
+                        "made when it opens: each phrase's demands are the reading controls', held to the rung that opens it"
+                        if reading
+                        else "made when it opens: a runtime drill writes no score the build can measure"
+                    ),
+                }
+                runtime += 1
+            else:
+                unmeasured(entry, "no notation is bundled: it arrives when the learner imports the piece")
+            continue
+        path = out_dir / rel
+        if not path.exists():
+            unmeasured(entry, "the score file was not built")
+            continue
+        if path.suffix.lower() not in NOTATION_SUFFIXES:
+            unmeasured(entry, f"not notation the detectors read (a {path.suffix.lstrip('.').upper()} file)")
+            continue
+        sha = _sha256(path)
+        planned.append((entry, sha))
+        if sha not in rows:
+            todo[sha] = path
+
+    if todo:
+        answered = D.measure_each(list(todo.values()))
+        for sha, path in todo.items():
+            rows[sha] = answered[str(path)]
+
+    measured = 0
+    failed = 0
+    for entry, sha in planned:
+        row = rows[sha]
+        if "error" in row:
+            unmeasured(entry, f"the app could not load the file: {row['error']}")
+            failed += 1
+            continue
+        located = {demand: int(n) for demand, n in (row.get("opportunities") or {}).items() if int(n) > 0}
+        by_density = established_by_density(located, int(row["measures"]), table, order)
+        by_contract = [d for d in established_by_contract(entry, row) if d not in by_density]
+        misread = clef_misread(out_dir / entry["file"], (entry.get("notation") or {}).get("staves"))
+        # A reading known to be wrong on this file never establishes an opportunity; it stays
+        # among the ids, so the gate still treats it as something the learner may have to meet.
+        established = [d for d in order if (d in by_density or d in by_contract) and not (misread and d in CLEF_MISREAD)]
+        entry["demands"] = list(row["demands"])
+        entry["measurement"] = {
+            "status": "measured",
+            "definitions": definitions,
+            "detectors": fingerprint,
+            "located": located,
+            "bars": int(row["measures"]),
+            "steps": int(row["steps"]),
+            "notes": int(row["notes"]),
+            "established": established,
+            **({"contract": [d for d in by_contract if d in established]} if [d for d in by_contract if d in established] else {}),
+            **({"misread": {"demands": list(CLEF_MISREAD), "why": misread}} if misread else {}),
+        }
+        measured += 1
+
+    write_json(cache_path, {"fingerprint": fingerprint, "files": {sha: rows[sha] for _e, sha in planned}})
+
+    # A reader that fails on most files is a broken bridge, not a library of unreadable
+    # scores (attach_notation's lesson): stop, rather than ship a catalog of "unmeasured".
+    if planned and failed > len(planned) // 10:
+        raise SystemExit(
+            f"attach_demands: {failed} of {len(planned)} score files could not be measured. "
+            f"That is the detector run failing, not the library; the first: "
+            f"{next(e['measurement']['reason'] for e, _s in planned if e.get('demands') == 'unmeasured')}"
+        )
+    unmeasured_count = sum(1 for entry in entries if entry.get("demands") == "unmeasured")
+    return measured, unmeasured_count, runtime
+
+
+def source_kind(entry: dict) -> str:
+    """Where an item's notes come from (R35): the one answer every provenance record starts from."""
+    tags = set(entry.get("tags") or [])
+    rel = entry.get("file") or ""
+    drill = entry.get("drill") or {}
+    if drill.get("generator") or rel.startswith("scores/generated/"):
+        return "generated"
+    if not rel and drill:
+        return "runtime"
+    if "pdmx" in tags:
+        return "pdmx"
+    if "kern" in tags:
+        return "kern"
+    if "musetrainer" in tags:
+        return "musetrainer"
+    if "authored" in tags or rel.startswith("scores/authored/"):
+        return "authored"
+    if not rel:
+        return "placeholder"
+    return "unknown"
+
+
+def attach_provenance(entries: list[dict]) -> None:
+    """
+    Where every item came from and how each fact about it is known (E0 item 2; R35,
+    R15, R11, Part 21 §B): `provenance` on every row.
+
+    - `source`: authored, pdmx, kern, musetrainer, generated (with D0's identity),
+      runtime (a drill the app makes when it opens), placeholder (not bundled).
+    - `edition`, `composition`, `arrangement`: R15's chain as far as the data knows it.
+      An authored variant names its tune by `variantOf` (authored); otherwise the
+      composition is `work_key` of the title and composer — the PDMX identity function,
+      conservative by design (two keys that differ may still be one piece; two that
+      match are one), so it is `inferred`. A PDMX duplicate edition shares its
+      arrangement with the upload it duplicates.
+    - `converter` / `generator`: what turned the source into the score, by version.
+    - `facts`: each fact with how it is known — `measured` (the detectors, by their
+      definitions), `inferred` (the converter's default tempo, a level estimate, an
+      identity key), `authored` (written by the edition, the generator's recipe or this
+      repository), `reviewed` (a person's decision). Never flattened into one field.
+      Where the tempo is inferred, the tempo-sensitive demands are listed untrusted.
+    - `review`: R42's two decisions as separate bits — a usable, faithful score; a good
+      teaching use. `null` is "no person has decided", which is every item today. A
+      PDMX row's quarry `keep` is a source-level decision of the quarry, recorded as
+      `quarryKeep` (the decision; the reviewer's note stays in `pdmx.json`) and never
+      read as either bit (Part 12 §14: one keep bit never implies both).
+    - `physical`: a generated item's declared large-hand voicing, with its prerequisite
+      and alternative (D0 finding 5), so no selector recommends it without them.
+    """
+    import family_contracts as FC
+    from convert import tool_fingerprint
+    from pdmx.shortlist import work_key
+
+    table = read_json(DENSITY_FILE)
+    assert isinstance(table, dict)
+    tempo_sensitive = set(table["tempoSensitive"])
+    pdmx_rows: dict[str, dict] = {}
+    pdmx_path = CONTENT_SRC / "sources" / "pdmx.json"
+    if pdmx_path.exists():
+        data = read_json(pdmx_path)
+        assert isinstance(data, dict)
+        pdmx_rows = {row["id"]: row for row in data.get("items", [])}
+    converter = {"name": "tools/content/convert.py", "version": tool_fingerprint()[:12]}
+    by_id = {entry["id"]: entry for entry in entries}
+
+    def root_of(entry: dict) -> dict:
+        seen = {entry["id"]}
+        here = entry
+        while here.get("variantOf") and here["variantOf"] in by_id and here["variantOf"] not in seen:
+            seen.add(here["variantOf"])
+            here = by_id[here["variantOf"]]
+        return here
+
+    for entry in entries:
+        kind = source_kind(entry)
+        source = entry.get("source") or {}
+        checksum = str(source.get("checksum") or "").replace("sha256:", "")
+        drill = entry.get("drill") or {}
+        facts: dict[str, dict] = {}
+        record: dict = {"source": kind}
+
+        # --- identity (R15) -----------------------------------------------------
+        if kind == "generated":
+            generator = drill.get("generator") or {}
+            record["generator"] = {
+                "name": "tools/content/generate_exercises.py",
+                "family": generator.get("family"),
+                "version": generator.get("version"),
+                "seed": generator.get("seed"),
+            }
+        elif kind == "runtime":
+            record["generator"] = {"name": "the app, when the drill opens", "kind": drill.get("kind")}
+        else:
+            if kind == "pdmx":
+                row = pdmx_rows.get(entry["id"], {})
+                cid = row.get("cid") or Path(entry.get("file") or "").stem or None
+                record["edition"] = f"pdmx:{cid}" if cid else None
+                duplicate = row.get("duplicateOf")
+                record["arrangement"] = duplicate or entry["id"]
+                facts["arrangement"] = {"kind": "authored" if duplicate else "inferred",
+                                        "via": "the quarry's duplicate edition" if duplicate else "one upload, one arrangement"}
+                # The decision alone: the reviewer's note is working prose with no source
+                # (one names a year T22 removed from every catalogue field), and it stays in
+                # the source table.
+                decision = (row.get("review") or {}).get("decision")
+                if decision:
+                    record["quarryKeep"] = decision
+            else:
+                record["edition"] = f"{kind}:sha256:{checksum[:16]}" if checksum else None
+                record["arrangement"] = entry["id"]
+                facts["arrangement"] = {"kind": "authored", "via": "one catalogue entry per edition or arrangement"}
+            root = root_of(entry)
+            if root is not entry:
+                record["composition"] = f"variant-of:{root['id']}"
+                facts["composition"] = {"kind": "authored", "via": "variantOf"}
+            else:
+                artist = str((pdmx_rows.get(entry["id"]) or {}).get("artist") or "")
+                record["composition"] = f"work:{work_key(entry.get('title') or '', entry.get('composer'), artist)}"
+                facts["composition"] = {"kind": "inferred", "via": "work_key (title and composer)"}
+            if kind in ("pdmx", "kern", "musetrainer"):
+                record["converter"] = converter
+            elif kind == "authored":
+                record["converter"] = {"name": "tools/content/author.py", "version": converter["version"]}
+
+        # --- the facts ----------------------------------------------------------
+        measurement = entry.get("measurement") or {}
+        if measurement.get("status") == "measured":
+            facts["demands"] = {
+                "kind": "measured",
+                "via": "app/src/demands/detect.ts",
+                "definitions": measurement.get("definitions"),
+                "detectors": measurement.get("detectors"),
+            }
+            if measurement.get("misread"):
+                facts["demands"]["misread"] = measurement["misread"]["demands"]
+                facts["demands"]["misreadWhy"] = measurement["misread"]["why"]
+        elif measurement.get("status") == "unmeasured":
+            facts["demands"] = {"kind": "unmeasured", "why": measurement.get("reason")}
+        else:
+            facts["demands"] = {"kind": "runtime", "why": measurement.get("reason")}
+
+        if kind in ("generated", "authored"):
+            facts["tempo"] = {"kind": "authored", "via": "the recipe" if kind == "generated" else "this repository's score"}
+        elif kind == "pdmx":
+            defaulted = "tempo-defaulted" in (entry.get("tags") or [])
+            facts["tempo"] = ({"kind": "inferred", "via": "convert.py's default (the upload has no tempo of its own)"}
+                              if defaulted else {"kind": "authored", "via": "the upload"})
+        elif kind in ("kern", "musetrainer"):
+            facts["tempo"] = ({"kind": "authored", "via": "the edition"} if entry.get("tempoBpm")
+                              else {"kind": "inferred", "via": "convert.py's default (the edition has no tempo of its own)"})
+        if facts.get("tempo", {}).get("kind") == "inferred" and isinstance(entry.get("demands"), list):
+            untrusted = [d for d in entry["demands"] if d in tempo_sensitive]
+            if untrusted:
+                facts["demands"]["untrusted"] = untrusted
+                facts["demands"]["untrustedWhy"] = "their difficulty depends on a tempo the converter supplied, not one the score states"
+
+        if entry.get("levelSource") == "estimated":
+            facts["level"] = {"kind": "inferred", "via": "an estimate (the difficulty model, or an opus banded on import)"}
+        else:
+            facts["level"] = {"kind": "authored", "via": "judged for this item"}
+        if kind in ("generated", "authored"):
+            facts["hands"] = {"kind": "authored", "via": "the recipe" if kind == "generated" else "this repository's score"}
+        elif kind in ("pdmx", "kern", "musetrainer"):
+            facts["hands"] = {"kind": "authored", "via": "the edition's staves"}
+        if entry.get("type") == "song" and (entry.get("notation") or {}).get("keys"):
+            facts["key"] = {"kind": "measured", "via": "the file's signature and final bass (build.settle_key_signatures)"}
+        elif kind == "generated":
+            facts["key"] = {"kind": "authored", "via": "the recipe"}
+        if entry.get("targetSkills"):
+            facts["targetSkills"] = ({"kind": "authored", "via": f"the family contract, version {(drill.get('generator') or {}).get('version')}"}
+                                     if kind == "generated" else {"kind": "authored", "via": "the vocabulary's reading rows (C2)"})
+        if entry.get("role"):
+            facts["role"] = {"kind": "authored", "via": "the family contract"}
+
+        record["facts"] = facts
+        record["review"] = {"score": None, "teaching": None}
+
+        if kind == "generated":
+            family = (drill.get("generator") or {}).get("family")
+            if family in FC.contracts():
+                large = (FC.contract(family).get("physical") or {}).get("largeHand")
+                if large and FC.matches(large.get("when"), FC.recipe_of(entry)):
+                    record["physical"] = {
+                        "largeHandSpan": large.get("span"),
+                        "prerequisite": large.get("prerequisite"),
+                        "alternative": large.get("alternative"),
+                    }
+        entry["provenance"] = record
+
+
 def attach_rung_tracks(entries: list[dict]) -> int:
     """
     A song on a genre rung carries that genre's track (2026-09-18).
@@ -597,6 +1005,37 @@ def copy_curriculum(out_dir: Path) -> Step:
         detail=f"{len(files)} file(s), {len(stages)} stage(s), "
                f"{lessons_with_finders} finder(s), {len(concepts)} concept(s)",
     )
+
+
+#: Where the two generated reports live for the reviewer and the owner (E0 items 5 and 6).
+RUNG_CLAIMS_MD = REPO_ROOT / "docs" / "prompts" / "rung-claims.md"
+INVENTORY_MD = REPO_ROOT / "docs" / "prompts" / "inventory.md"
+
+
+def step_reports(out_dir: Path, write_docs: bool) -> Step:
+    """
+    The rung-claims report and the inventory, from the catalogue and curriculum this build
+    just wrote (E0 items 5 and 6; `claims.py`). Always as JSON under `build/`; as the two
+    markdown files in `docs/prompts/` only for the default build, so a `--out` or
+    `--quick` build never rewrites what the reviewer reads with a partial catalogue.
+    """
+    import claims
+
+    catalog = read_json(out_dir / "catalog.json")
+    curriculum = read_json(out_dir / "curriculum.json")
+    assert isinstance(catalog, list) and isinstance(curriculum, dict)
+    report = claims.rung_claims(catalog, curriculum)
+    inventory = claims.inventory(catalog, curriculum)
+    write_json(BUILD_DIR / "rung-claims.json", report)
+    write_json(BUILD_DIR / "inventory.json", inventory)
+    if write_docs:
+        RUNG_CLAIMS_MD.write_text(claims.render_rung_claims(report), encoding="utf-8", newline="\n")
+        INVENTORY_MD.write_text(claims.render_inventory(inventory), encoding="utf-8", newline="\n")
+    s = report["summary"]
+    detail = (f"{s['measurable']} checkable claims on {s['options']} options: {s['unestablished']} not established, "
+              f"{s['rungClaimsKeptByNoOption']} kept by no option; {inventory['headline']['works']} works, "
+              f"{inventory['headline']['arrangements']} arrangements")
+    return Step("reports", ok=True, detail=detail + ("" if write_docs else " (docs/prompts left alone)"))
 
 
 def copy_lessons(out_dir: Path) -> Step:
@@ -807,6 +1246,7 @@ def run_build(args: argparse.Namespace, started: float) -> None:
     steps.append(merge_catalog(args.out))
     steps.append(step_score_checks(args.out))
     steps.append(copy_curriculum(args.out))
+    steps.append(step_reports(args.out, write_docs=args.out.resolve() == DEFAULT_OUT.resolve() and not args.quick))
     steps.append(copy_lessons(args.out))
     steps.append(copy_tips(args.out))
     copy_schemas(args.out)

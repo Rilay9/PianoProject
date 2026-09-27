@@ -103,16 +103,202 @@
         },
         "targetSkills": {
           "type": "array",
-          "description": "What the item is chosen to train: skill ids from vocabulary v0 (content/curriculum/vocabulary/skills.json), the primary first. Declared, never evidence: a run is evidence of a skill only through a measurement (design 2026-09-26 §4). validate.py refuses an id the vocabulary lacks. C2 fills it on the nine sight-reading rows only; D writes it per generator family.",
+          "description": "What the item is chosen to train: skill ids from vocabulary v0 (content/curriculum/vocabulary/skills.json), the primary first. Declared, never evidence: a run is evidence of a skill only through a measurement (design 2026-09-26 §4). validate.py refuses an id the vocabulary lacks. C2 fills it on the nine sight-reading rows and D0 on the generated items whose family contract names a judged primary skill. Read at runtime only through app/src/curriculum/skillActivation.ts: the evidence readers act on the reading rows' alone, and selection acts on a declared skill only where eligibility.ts finds its opportunity established (E0).",
           "items": {
             "type": "string"
           }
         },
         "demands": {
-          "type": "array",
-          "description": "The material demands the build measured on the item's file with the app's own detectors (app/src/demands/detect.ts): demand ids from content/curriculum/vocabulary/demands.json. Measured, never declared. Absent on a runtime drill, whose demands belong to each phrase it generates. Nothing writes it yet (E).",
-          "items": {
-            "type": "string"
+          "description": "The material demands the build measured on the item's file with the app's own detectors (app/src/demands/detect.ts), in the vocabulary's order: demand ids from content/curriculum/vocabulary/demands.json. Measured, never declared (E0, build.attach_demands). The string \"unmeasured\" where a notated item could not be measured — the file would not load, it is not notation, or its notation is not bundled — with the reason in `measurement.reason`: never an empty list that reads as \"no demands\". Absent on a runtime drill, whose demands belong to each phrase it generates (`measurement.status` \"runtime\").",
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "const": "unmeasured"
+            }
+          ]
+        },
+        "measurement": {
+          "type": "object",
+          "description": "How the item's demands are known (E0): measured by the detectors (with the counts, the bars, steps and notes, and the demands provided at a useful density), unmeasured (with the reason), or made at runtime (with the reason). Written by build.attach_demands for a bundled item and by the import path for an imported score.",
+          "required": [
+            "status"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "enum": [
+                "measured",
+                "unmeasured",
+                "runtime"
+              ]
+            },
+            "reason": {
+              "type": "string",
+              "description": "Why the demands are unmeasured, or why a runtime drill has none of its own."
+            },
+            "definitions": {
+              "type": "integer",
+              "description": "EVIDENCE_DEFINITIONS (app/src/evidence/evidence.ts) the demands were measured under."
+            },
+            "detectors": {
+              "type": "string",
+              "description": "The fingerprint of the files that decide a measurement (tools/content/demands.py DEFINITION_FILES)."
+            },
+            "located": {
+              "type": "object",
+              "description": "Per demand, the number of places its detector located (only the demands located at least once).",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "bars": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "steps": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "notes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "established": {
+              "type": "array",
+              "description": "The demands the item provides at a useful density (content/sources/opportunity-density.json, or a generated family's own contract density): the opportunities eligibility reads, told apart from incidental presence.",
+              "items": {
+                "type": "string"
+              }
+            },
+            "contract": {
+              "type": "array",
+              "description": "Of `established`, the demands only the generated family's contract density establishes.",
+              "items": {
+                "type": "string"
+              }
+            },
+            "misread": {
+              "type": "object",
+              "description": "Detector readings known to be wrong on this file, and why (the clef assumption: an upper staff written in the bass clef). They stay among the ids and never establish an opportunity.",
+              "required": [
+                "demands",
+                "why"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "demands": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "why": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "provenance": {
+          "type": "object",
+          "description": "Where the item came from and how each fact about it is known (E0; R35, R15, R11): the source kind, the edition, composition and arrangement identities, the converter or generator by version, each fact labelled measured, inferred, authored, reviewed, unmeasured or runtime, and R42's two review decisions as separate bits. Never flattened into one field.",
+          "required": [
+            "source",
+            "facts",
+            "review"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "enum": [
+                "authored",
+                "pdmx",
+                "kern",
+                "musetrainer",
+                "generated",
+                "runtime",
+                "placeholder",
+                "imported-midi",
+                "imported-musicxml",
+                "imported-pdf"
+              ]
+            },
+            "edition": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "composition": {
+              "type": "string"
+            },
+            "arrangement": {
+              "type": "string"
+            },
+            "converter": {
+              "type": "object"
+            },
+            "generator": {
+              "type": "object"
+            },
+            "quarryKeep": {
+              "type": "string",
+              "description": "A PDMX row's quarry decision (`keep`): a source-level decision of the quarry, never either review bit (Part 12 §14). The reviewer's note stays in content/sources/pdmx.json: it is working prose with no source."
+            },
+            "physical": {
+              "type": "object",
+              "description": "A generated item's declared large-hand voicing, with its prerequisite and alternative (D0 finding 5)."
+            },
+            "facts": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "required": [
+                  "kind"
+                ],
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "measured",
+                      "inferred",
+                      "authored",
+                      "reviewed",
+                      "unmeasured",
+                      "runtime"
+                    ]
+                  }
+                }
+              }
+            },
+            "review": {
+              "type": "object",
+              "description": "R42's two decisions, apart: `score` a person judged the score usable and faithful; `teaching` a person judged it a good teaching use for its claimed role. null: no person has decided.",
+              "required": [
+                "score",
+                "teaching"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "score": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "teaching": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                }
+              }
+            }
           }
         },
         "role": {
@@ -121,7 +307,7 @@
             "variable",
             "transfer"
           ],
-          "description": "Relative to the primary target skill (design 2026-09-26 §7): the same notes every time, a new realisation of the same constraints, or a different surface for the same skill. Nothing writes it yet (D)."
+          "description": "Relative to the primary target skill (design 2026-09-26 §7): the same notes every time, a new realisation of the same constraints, or a different surface for the same skill. Written on the generated items from their family contracts (D0); no selector reads it yet (D4 brings roles to selection)."
         },
         "hands": {
           "enum": [

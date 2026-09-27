@@ -14,8 +14,13 @@ import {
   type Curriculum,
 } from '../../src/curriculum';
 import { EVERY_DECLARED_SKILL } from '../../src/curriculum/skillActivation';
+import type { Learner } from '../../src/curriculum/eligibility';
 import { levelLabel } from '../../src/ui/widgets';
+import { measured } from './helpers/measured';
 
+// Revised (E0): each constructed item's notes provide eighth notes at a useful density
+// (`helpers/measured`), because the skill tier now asks the notes for the skill's
+// opportunity and a learner for readiness, not only for a declared skill in common.
 function item(id: string, over: Partial<CatalogItem> = {}): CatalogItem {
   return {
     id,
@@ -26,9 +31,13 @@ function item(id: string, over: Partial<CatalogItem> = {}): CatalogItem {
     tracks: ['classical'],
     concepts: ['etude'],
     targetSkills: ['subdivision'],
+    ...measured(['interval.step', 'rhythm.eighths']),
     ...over,
   };
 }
+
+/** A learner whose lessons have taught steps and eighths. */
+const LEARNER: Learner = { taught: (demand) => demand === 'interval.step' || demand === 'rhythm.eighths' };
 
 const emptyCurriculum: Curriculum = { version: 1, tracks: [], stages: [] };
 
@@ -77,6 +86,7 @@ describe('alternativesFor', () => {
       emptyCurriculum,
       catalog,
       EVERY_DECLARED_SKILL,
+      LEARNER,
     );
     expect(found.map((i) => i.id)).toEqual(['song.judged', 'song.estimated']);
   });
@@ -94,6 +104,7 @@ describe('alternativesFor', () => {
       emptyCurriculum,
       catalog,
       EVERY_DECLARED_SKILL,
+      LEARNER,
     );
     expect(found.map((i) => i.id)).toEqual(['song.near', 'song.far']);
   });

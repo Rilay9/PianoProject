@@ -18,7 +18,8 @@ import {
   type CatalogIndex,
 } from './selectors';
 import { lockState } from './prerequisites';
-import { SHIPPED_SKILL_ACTIVATION, skillsInForce, type SkillActivation } from './skillActivation';
+import { SHIPPED_SKILL_ACTIVATION, type SkillActivation } from './skillActivation';
+import { eligible, eligibleFor, type Eligibility, type Learner, type Want as GateWant } from './eligibility';
 import type { RequirementReading, RungStates } from '../evidence/rungState';
 import type { ReadingMoves, ReadingRecipe, SessionRow } from '../data/db';
 import { dayKey, daysBetween, type LearnedPiece } from '../data/progressStore';
@@ -33,7 +34,7 @@ import {
 } from '../engine/sightReading';
 import { demandReadings, type DemandReading } from '../evidence/demandReadings';
 import type { MeasuredEvidence } from '../evidence/evidence';
-import { LADDER_STATES, ladderState, RECENT_ATTEMPTS, RETENTION_DAYS, SUPPORT_SHARE, supports, type LadderReading } from '../evidence/ladder';
+import { ladderState, RECENT_ATTEMPTS, RETENTION_DAYS, SUPPORT_SHARE, supports, type LadderReading, type LadderState } from '../evidence/ladder';
 import { readingState, storedEvidence, type SkillState } from '../evidence/readingState';
 import { VOCABULARY_V0, type Vocabulary } from '../evidence/vocabulary';
 import { readingReason, slotReason } from '../ui/help';
@@ -176,6 +177,12 @@ export interface BuildInput {
    * exercises the skill step on constructed items passes `EVERY_DECLARED_SKILL`.
    */
   skillActivation?: SkillActivation;
+  /**
+   * The ladder state at which a skill supports its demands in the one gate
+   * (`eligibility.ts`): `familiar` unless given. `introduced` is the comparison
+   * the E0 brief asked for on the three constructed learners; nothing ships it.
+   */
+  readinessFloor?: LadderState;
   /** Tracks the learner has switched on, in their order (planStore). */
   activeTracks: string[];
   minutes: number;
@@ -665,6 +672,26 @@ function usable(ctx: SlotContext, item: CatalogItem | undefined, songs: 'any' | 
 }
 
 /**
+ * The learner as the one gate reads them (E0, `eligibility.ts`): the ladder state
+ * of each skill from every stored run, and what `rung` — the rung judging the
+ * offer — has taught. `rung` absent: no rung judges, and only the evidence counts.
+ */
+function learnerAt(ctx: SlotContext, rung: Lesson | undefined): Learner {
+  const vocabulary = ctx.input.vocabulary ?? VOCABULARY_V0;
+  const taught = rung === undefined ? undefined : taughtAtRung(ctx.input.curriculum, rung.id, vocabulary);
+  return {
+    skillState: (skill) => ctx.skills.get(skill)?.reading.state,
+    ...(taught === undefined ? {} : { taught }),
+    ...(ctx.input.readinessFloor === undefined ? {} : { floor: ctx.input.readinessFloor }),
+  };
+}
+
+/** The gate's answer for one candidate, in the session's vocabulary. */
+function gate(ctx: SlotContext, item: CatalogItem, learner: Learner, want: GateWant): Eligibility {
+  return eligibleFor(item, learner, want, ctx.input.vocabulary ?? VOCABULARY_V0);
+}
+
+/**
  * One unmet requirement of a rung and the items that would serve it: the
  * unit the warm-up and the new slot choose among. `pool` is every item the
  * requirement would count, whether or not it can be offered now; `offer`
@@ -685,11 +712,15 @@ interface Want {
  * - `runs`: the rung's own options it counts (its exercises, songs, or the
  *   items it names), not yet counted. The warm-up serves only exercises.
  * - `done`: the item. `measure`: the rung's exercises of that kind.
- * - `skill`: the rung's exercises that declare the skill in `targetSkills`,
- *   the skill the evidence has shown least first, read through the activation
- *   boundary (`skillActivation.ts`, D0). A skill no activated exercise of the
- *   rung declares is the reader's (as shipped only the reading rows are active,
- *   and they are the reader's): neither slot claims it.
+ * - `skill`: the rung's exercises the one gate passes for the requirement
+ *   (`eligibility.ts`, E0): an exercise declaring the skill whose runs the evidence
+ *   readers act on (D0's boundary, the reading rows as shipped), with its
+ *   opportunity in the notes and nothing the learner cannot cope with; the skill
+ *   the evidence has shown least first. Only such an exercise's runs can meet the
+ *   requirement, so no other is offered as what the lesson asks for (E0 never
+ *   widens what earns evidence). A skill none of the rung's exercises serves is
+ *   the reader's (as shipped the reading rows are the reader's): neither slot
+ *   claims it.
  * - `reads`: always the reader's.
  */
 function wantsOf(ctx: SlotContext, rung: Lesson, songs: 'any' | 'none'): Want[] {
@@ -714,8 +745,10 @@ function wantsOf(ctx: SlotContext, rung: Lesson, songs: 'any' | 'none'): Want[] 
       pool = own(rung.exerciseOptions).filter((item) => item.drill?.kind === r.measure);
     } else if (r.kind === 'skill') {
       skill = r.skill;
+      const learner = learnerAt(ctx, rung);
+      const activation = ctx.input.skillActivation ?? SHIPPED_SKILL_ACTIVATION;
       pool = own(rung.exerciseOptions).filter(
-        (item) => item.type !== 'song' && skillsInForce(item, ctx.input.skillActivation ?? SHIPPED_SKILL_ACTIVATION).includes(r.skill),
+        (item) => item.type !== 'song' && eligible(gate(ctx, item, learner, { for: 'requirement', skill: r.skill, activation })),
       );
     } else {
       continue;
@@ -883,18 +916,26 @@ function fallbackStep(
       const own = [...rung.exerciseOptions, ...rung.songOptions].map((id) => ctx.catalog.byId.get(id)).filter((item): item is CatalogItem => item !== undefined);
       found = choose(own, () => ({ kind: 'rung', rung, ...(strand?.title === undefined ? {} : { strand: strand.title }) }), () => rung.id);
     } else if (step === 'skill' && rung && want?.skill !== undefined) {
+      // Practice of the skill the rung asks for, through the one gate (E0): declared, its opportunity in
+      // the notes, nothing the learner cannot cope with. Practice, never credit: the claim says it trains it.
       const skill = want.skill;
       const activation = ctx.input.skillActivation ?? SHIPPED_SKILL_ACTIVATION;
+      const learner = learnerAt(ctx, rung);
       found = choose(
-        taught.filter((item) => skillsInForce(item, activation).includes(skill)),
+        taught.filter((item) => eligible(gate(ctx, item, learner, { for: 'skill', skill, activation }))),
         () => ({ kind: 'skill', skill, rung }),
         (item) => listingIn(ctx, item),
       );
     } else if (step === 'demand' && rung && want?.skill !== undefined) {
-      const demands = new Set(vocabulary.demands.filter((d) => d.copedWithBy === want.skill).map((d) => d.id));
+      // An item providing, at a useful density, a demand of the skill the rung asks for (E0): never one
+      // that only contains it, and never one bringing a demand the learner cannot cope with.
+      const demands = vocabulary.demands.filter((d) => d.copedWithBy === want.skill).map((d) => d.id);
+      const learner = learnerAt(ctx, rung);
+      const practised = (item: CatalogItem): string | undefined =>
+        demands.find((demand) => eligible(gate(ctx, item, learner, { for: 'demand', demand })));
       found = choose(
-        taught.filter((item) => (item.demands ?? []).some((d) => demands.has(d))),
-        (item) => ({ kind: 'demand', demand: (item.demands ?? []).find((d) => demands.has(d)) as string, rung }),
+        taught.filter((item) => practised(item) !== undefined),
+        (item) => ({ kind: 'demand', demand: practised(item) as string, rung }),
         (item) => listingIn(ctx, item),
       );
     } else if (step === 'prerequisite' && rung) {
@@ -1139,14 +1180,17 @@ function review(ctx: SlotContext, phase: Phase, onCard: readonly Choice[]): Choi
 }
 
 /**
- * Repertoire (C6 item 4): a piece whose measured demands the learner's skills
- * support (familiar or better) with one the learner's rung teaches — no piece
- * carries measured demands yet (E writes them), so this finds nothing today;
- * then the fallback ladder — a strand's rung song, a prerequisite rung's, a
- * piece not yet counted or learned before one that is — and the exposure rule
- * over the songs taught last. A mastered
- * piece is still "a piece you know" (L18), but it is no longer offered every
- * session (L17): keeping it playable is the review's repertoire retention.
+ * Repertoire (C6 item 4): a piece the one gate passes (E0, `eligibility.ts`) as
+ * practice of a demand a strand's rung teaches — the piece provides it at a useful
+ * density, and the learner's skills support every demand it measures (familiar or
+ * better). No rung judges a piece chosen from the whole catalogue, so what the
+ * lessons have taught does not stand in for the evidence here: "your reads support
+ * them" stays true. Among those, the nearest in level to the rung's band first:
+ * level orders, and rescues nothing. Then the fallback ladder — a strand's rung
+ * song, a prerequisite rung's, a piece not yet counted or learned before one that
+ * is — and the exposure rule over the songs taught last. A mastered piece is still
+ * "a piece you know" (L18), but it is no longer offered every session (L17):
+ * keeping it playable is the review's repertoire retention.
  */
 function repertoire(ctx: SlotContext, phase: Phase, onCard: readonly Choice[]): Choice | undefined {
   if (phase === 'fallback') {
@@ -1162,18 +1206,28 @@ function repertoire(ctx: SlotContext, phase: Phase, onCard: readonly Choice[]): 
     );
   }
   const vocabulary = ctx.input.vocabulary ?? VOCABULARY_V0;
-  const rungs = new Set(ctx.strands.map((strand) => strand.rung.id));
-  const supported = (demand: string): boolean => {
-    const skill = vocabulary.demands.find((d) => d.id === demand)?.copedWithBy;
-    const state = skill === undefined ? undefined : ctx.skills.get(skill)?.reading.state;
-    return state !== undefined && LADDER_STATES.indexOf(state) >= LADDER_STATES.indexOf('familiar');
-  };
-  const edge = (demand: string): boolean => rungs.has(vocabulary.demands.find((d) => d.id === demand)?.taughtAt ?? '');
-  const ready = ctx.input.items.filter(
-    (item) => usable(ctx, item, 'only') && (item.demands ?? []).length > 0 && (item.demands ?? []).every(supported) && (item.demands ?? []).some(edge),
-  );
-  const piece = pick(ready, ctx.seed);
-  return piece ? { item: piece, claim: { kind: 'ready', demand: (piece.demands ?? []).find(edge) as string } } : undefined;
+  // The evidence alone: no rung judges a piece chosen from the whole catalogue.
+  const learner: Learner = learnerAt(ctx, undefined);
+  const ready: { item: CatalogItem; demand: string; distance: number }[] = [];
+  for (const strand of ctx.strands) {
+    const edges = vocabulary.demands.filter((d) => d.taughtAt === strand.rung.id).map((d) => d.id);
+    if (edges.length === 0) continue;
+    const [low, high] = strand.rung.levelBand ?? [strand.stage, strand.stage + 0.99];
+    for (const item of ctx.input.items) {
+      if (!usable(ctx, item, 'only') || ready.some((one) => one.item.id === item.id)) continue;
+      const demand = edges.find((one) => eligible(gate(ctx, item, learner, { for: 'demand', demand: one })));
+      if (demand === undefined) continue;
+      ready.push({ item, demand, distance: item.level < low ? low - item.level : item.level > high ? item.level - high : 0 });
+    }
+  }
+  ready.sort((a, b) => a.distance - b.distance || levelOrder(a.item, b.item));
+  const chosen = pick(ready, ctx.seed);
+  return chosen ? { item: chosen.item, claim: { kind: 'ready', demand: chosen.demand } } : undefined;
+}
+
+/** A judged level before an estimated one, then the catalogue's id order: a stable order among equals. */
+function levelOrder(a: CatalogItem, b: CatalogItem): number {
+  return (a.levelSource === 'estimated' ? 1 : 0) - (b.levelSource === 'estimated' ? 1 : 0) || a.id.localeCompare(b.id);
 }
 
 /** The tracks whose rungs are about playing from chords, form and feel. */
@@ -1369,36 +1423,23 @@ export interface SwapOption {
 }
 
 /**
- * The demands a reading row may write that the learner's rung has not taught
- * (C4b's control map read, never moved); for any other item its measured
- * `demands` the rung has not taught. What keeps a swap from offering what the
- * lessons have not reached, where a level window used to.
- */
-function untaughtDemands(item: CatalogItem, taught: (demand: string) => boolean, vocabulary: Vocabulary): string[] {
-  if (isReadingRow(item)) {
-    const options = sightReadingOptionsFor(item.drill?.params ?? {}, 1);
-    return vocabulary.demands
-      .filter((demand) => !taught(demand.id))
-      .filter((demand) => READING_CONTROLS[demand.id]?.mayWrite(options) === true)
-      .map((demand) => demand.id);
-  }
-  return (item.demands ?? []).filter((demand) => !taught(demand));
-}
-
-/**
  * What "Swap this" offers for one row (docs/04 §2; C6 item 6).
  *
  * The tiers are `tieredAlternatives`'s — the same lesson, a stand-in the
- * item's author named, an item sharing a target skill, one carrying a measured
- * demand it carries — and each option says which tier it came from, which the
- * sheet prints. Two things a session row knows that a lesson does not: what is
- * already on today's card (never offered twice), and whether a song makes sense
- * in the slot at all. Given the learner's rung, nothing is offered that carries
- * a demand no lesson up to it has taught.
+ * item's author named, an item that also trains the row's target skill, one
+ * that also practises a demand the row exists for — and each option says which
+ * tier it came from, which the sheet prints. Two things a session row knows
+ * that a lesson does not: what is already on today's card (never offered
+ * twice), and whether a song makes sense in the slot at all. Every option goes
+ * through the one gate (E0, `eligibility.ts`) with the learner's rung — what it
+ * has taught — and, where the caller has them, the learner's skill states: it
+ * replaced the untaught-demand filter that stood here, which is the gate's
+ * first question.
  *
  * With nothing in any tier, the last resort is no longer "the same type within
  * one level" but the same kind of exercise — or, for a song, a song — from the
- * lessons the learner has reached (`kind`), which the sheet names as such.
+ * lessons the learner has reached (`kind`), which the sheet names as such, and
+ * which passes the same gate as an equivalent.
  */
 export function swapOptions(
   slot: SessionSlot,
@@ -1413,6 +1454,13 @@ export function swapOptions(
     vocabulary?: Vocabulary;
     /** Whose declared target skills the skill tier reads (D0; `skillActivation.ts`). */
     skillActivation?: SkillActivation;
+    /** The learner's ladder state per skill, where the caller has the evidence (the gate's first question). */
+    skillState?: (skill: string) => LadderState | undefined;
+    /** Or the stored runs to read it from, as the session does (`rows`, with the morning it is read on). */
+    rows?: readonly SessionRow[];
+    today?: Date;
+    /** The ladder state at which a skill supports its demands (`BuildInput.readinessFloor`). */
+    readinessFloor?: LadderState;
   } = {},
 ): SwapOption[] {
   if (!slot.item) return [];
@@ -1421,13 +1469,22 @@ export function swapOptions(
   const excludeSongs = options.excludeSongs ?? slot.kind === 'technique';
   const exclude = slots.map((other) => other.item?.id).filter((id): id is string => Boolean(id));
   const taught = options.rung === undefined ? undefined : taughtAtRung(curriculum, options.rung, vocabulary);
-  const fits = (item: CatalogItem): boolean => playable(item) && (taught === undefined || untaughtDemands(item, taught, vocabulary).length === 0);
+  // The learner's skills from their stored runs, the session's own reading (`skillEvidenceOf`), where given.
+  const evidence = options.rows === undefined ? undefined : skillEvidenceOf(options.rows, vocabulary, options.today ?? new Date());
+  const skillState = options.skillState ?? (evidence === undefined ? undefined : (skill: string) => evidence.get(skill)?.reading.state);
+  const learner: Learner = {
+    ...(taught === undefined ? {} : { taught }),
+    ...(skillState === undefined ? {} : { skillState }),
+    ...(options.readinessFloor === undefined ? {} : { floor: options.readinessFloor }),
+  };
+  const fits = (item: CatalogItem): boolean => playable(item) && eligible(eligibleFor(item, learner, { for: 'equivalent' }, vocabulary));
   const tiered: SwapOption[] = tieredAlternatives(
     { itemId: source.id, ...(slot.lessonId ? { lessonId: slot.lessonId } : {}), excludeSongs, exclude },
     curriculum,
     catalog,
     options.skillActivation ?? SHIPPED_SKILL_ACTIVATION,
-  ).filter((option) => fits(option.item));
+    learner,
+  ).filter((option) => playable(option.item));
   if (tiered.length > 0) return tiered;
 
   // The last resort: the same kind, from the lessons reached. Without a rung, every rung counts as reached.

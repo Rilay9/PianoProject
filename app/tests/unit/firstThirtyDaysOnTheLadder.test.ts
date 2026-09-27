@@ -48,6 +48,7 @@ import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types
 import type { SessionRow } from '../../src/data/db';
 import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
 import { readPhrase } from './helpers/reader';
+import { swapLines } from './helpers/diarySwaps';
 
 const CONTENT = join(process.cwd(), 'public', 'content');
 const catalog = JSON.parse(readFileSync(join(CONTENT, 'catalog.json'), 'utf8')) as CatalogItem[];
@@ -66,10 +67,17 @@ interface Morning {
   did: string[];
   /** Today's 30-minute card that morning (C6). */
   card: SessionSlot[];
+  /** What each row's swap sheet offered that morning, as Today hands it the rung and the runs (E0; diary only). */
+  swaps?: string[];
 }
 
 const INDEX = indexCatalog(catalog);
 const isReadingRow = (id: string): boolean => byId.get(id)?.drill?.kind === 'sight-reading';
+
+/** What each row's swap sheet would offer on the card, as Today hands it the rung and the runs (E0; diary only). */
+async function swapsFor(card: SessionSlot[], morning: Date, rung: string): Promise<string[]> {
+  return process.env.C6_DIARY ? swapLines(card, curriculum, INDEX, catalog, rung, await rungRows(), morning) : [];
+}
 
 /** Today's card for the morning, from the store, as the Today screen builds it (C6). */
 async function cardFor(morning: Date, states: RungStates, startAt: string): Promise<SessionSlot[]> {
@@ -88,6 +96,8 @@ async function cardFor(morning: Date, states: RungStates, startAt: string): Prom
     minutes: 30,
     startAt,
     today: morning,
+    // The readiness floor the E0 brief asked to compare (`E0_FLOOR=introduced`); `familiar` ships.
+    ...(process.env.E0_FLOOR === 'introduced' ? { readinessFloor: 'introduced' as const } : {}),
   }).slots;
 }
 
@@ -185,6 +195,7 @@ async function returningIntermediate(): Promise<void> {
     const rung = position?.lesson.id ?? 'none';
     const did: string[] = [];
     const card = await cardFor(morning, states, '3.1');
+    const swaps = await swapsFor(card, morning, rung);
     // The day's phrase, as Today offers it, judged by the rung whose row it is.
     const rows = await rungRows();
     const offer = readingOffer({ curriculum, items: catalog, position, activeTracks: ['core'], rows, today: morning, purpose: 'daily' });
@@ -215,7 +226,7 @@ async function returningIntermediate(): Promise<void> {
       if (wanted === PETZOLD && rung === '3.4') petzoldDay ??= { n, after: await statesNow(day(n, 15), learner) };
     }
     await playFromCard(card, n, did);
-    INTERMEDIATE.push({ n, rung, states, did, card });
+    INTERMEDIATE.push({ n, rung, states, did, card, swaps });
   }
 }
 
@@ -238,6 +249,7 @@ async function experiencedMusician(): Promise<void> {
     const rung = position?.lesson.id ?? 'none';
     const did: string[] = [];
     const card = await cardFor(morning, states, '4.1');
+    const swaps = await swapsFor(card, morning, rung);
     // The first mornings, before 4.5: two phrases of 4.6's row read from 4.6's page.
     if (fourFiveBegun === undefined && rung !== '4.5') {
       for (const k of [0, 1]) {
@@ -254,7 +266,7 @@ async function experiencedMusician(): Promise<void> {
       did.push(`${wanted} from ${rung}`);
     }
     await playFromCard(card, n, did);
-    MUSICIAN.push({ n, rung, states, did, card });
+    MUSICIAN.push({ n, rung, states, did, card, swaps });
   }
 }
 
@@ -266,7 +278,12 @@ beforeAll(async () => {
     const title = (id: string | undefined): string => (id === undefined ? '(prompt)' : (byId.get(id)?.title ?? id));
     for (const [name, mornings] of [['intermediate', INTERMEDIATE], ['musician', MUSICIAN]] as const) {
       const lines = mornings.map((m) =>
-        [`Day ${String(m.n).padStart(2)} · rung ${m.rung} · did: ${m.did.join('; ')}`, ...m.card.map((slot) => `        ${slot.kind.padEnd(12)} ${title(slot.item?.id)} — “${slot.reason}”`)].join('\n'),
+        [
+          `Day ${String(m.n).padStart(2)} · rung ${m.rung} · did: ${m.did.join('; ')}`,
+          ...m.card.map((slot) => `        ${slot.kind.padEnd(12)} ${title(slot.item?.id)} — “${slot.reason}”`),
+          // What each row's swap sheet would offer that morning (E0), as Today draws it.
+          ...(m.swaps ?? []),
+        ].join('\n'),
       );
       writeFileSync(join(diary, `${name}.txt`), lines.join('\n') + '\n');
     }

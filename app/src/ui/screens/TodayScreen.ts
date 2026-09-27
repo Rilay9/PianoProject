@@ -159,6 +159,8 @@ export function TodayScreen(router: Router): HTMLElement {
   let readingRows: SessionRow[] = [];
   /** The rung the card was built from (C6): what the swap sheet holds its options to. */
   let learnerRung: string | undefined;
+  /** The stored runs the card was built from: the learner's skills, the gate's first question on the swap sheet (E0). */
+  let learnerRows: SessionRow[] = [];
 
   const goalLine = el('p.today-goal', { id: 'today-goal' });
   const inputChip = chip('…', {
@@ -298,6 +300,9 @@ export function TodayScreen(router: Router): HTMLElement {
         excludeSongs: notASong,
         items,
         ...(learnerRung === undefined ? {} : { rung: learnerRung }),
+        // The learner's skills as well as their rung, so the gate asks both halves of its first question (E0).
+        rows: learnerRows,
+        today: new Date(),
       });
       list.replaceChildren();
       if (options.length === 0) {
@@ -620,6 +625,7 @@ export function TodayScreen(router: Router): HTMLElement {
       // The same active set Plan and Settings show, so the three screens
       // cannot disagree about what is switched on.
       const active = activeTracksFor(plan, curriculum as Curriculum);
+      learnerRows = rows;
       const built = buildSession({
         curriculum: curriculum as Curriculum,
         catalog: catalog as CatalogIndex,

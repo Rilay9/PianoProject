@@ -11,7 +11,12 @@ import {
   type Lesson,
 } from '../../src/curriculum';
 import { EVERY_DECLARED_SKILL } from '../../src/curriculum/skillActivation';
+import type { Learner } from '../../src/curriculum/eligibility';
+import { measured } from './helpers/measured';
 
+// Revised (E0): every constructed item carries a measurement — steps and both hands
+// together, provided at a useful density — because the one gate offers nothing whose
+// demands are unknown as equivalent practice (an item with no record is unmeasured).
 function item(id: string, over: Partial<CatalogItem> = {}): CatalogItem {
   return {
     id,
@@ -21,9 +26,13 @@ function item(id: string, over: Partial<CatalogItem> = {}): CatalogItem {
     hands: 'both',
     tracks: ['core'],
     concepts: ['hands-together'],
+    ...measured(['interval.step', 'texture.hands-together']),
     ...over,
   };
 }
+
+/** A learner on 2.1: steps and hands together taught. */
+const ON_2_1: Learner = { taught: (demand) => ['interval.step', 'texture.hands-together', 'clef.bass'].includes(demand) };
 
 function lesson(over: Partial<Lesson> = {}): Lesson {
   return {
@@ -70,8 +79,8 @@ describe('alternativesFor', () => {
     item('song.import', { file: null, importHint: 'buy it', alternatives: ['exercise.vehicle'] }),
     item('exercise.vehicle', { level: 2.1, targetSkills: ['hands-together'] }),
     item('exercise.faraway', { level: 8.1, targetSkills: ['hands-together'] }),
-    // Shares the concept tag every item here carries, and nothing else.
-    item('exercise.unrelated', { concepts: ['hands-together'] }),
+    // Shares the concept tag every item here carries, and a step, and nothing else.
+    item('exercise.unrelated', { concepts: ['hands-together'], ...measured(['interval.step']) }),
   ]);
   const curriculum = curriculumOf(lesson());
 
@@ -110,9 +119,11 @@ describe('alternativesFor', () => {
   // item carries. The tier is a shared target skill now, nearest level first (an order, not a
   // window: `swapOptions` leaves out what the learner's lessons have not taught), and a shared
   // concept tag alone matches nothing (`alternativesShareASkill.test.ts`).
+  // Revised (E0): the skill tier needs a learner to judge readiness by, and the candidate's
+  // notes to provide the skill's opportunity; old assumption: overlap of declared skills.
   it('falls back to items sharing a target skill, the nearest level first; a shared concept tag matches nothing', () => {
     // Constructed exercises declaring a skill: activated here, deliberately (D0).
-    const out = alternativesFor({ itemId: 'exercise.a' }, curriculum, catalog, EVERY_DECLARED_SKILL);
+    const out = alternativesFor({ itemId: 'exercise.a' }, curriculum, catalog, EVERY_DECLARED_SKILL, ON_2_1);
     const ids = out.map((i) => i.id);
     expect(ids).toContain('exercise.vehicle');
     expect(ids.indexOf('exercise.vehicle')).toBeLessThan(ids.indexOf('exercise.faraway'));
