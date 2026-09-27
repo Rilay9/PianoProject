@@ -31,8 +31,9 @@ end.
 
 **Repertoire for this rung.** Three, and two of them are a left hand that never
 stops. *Boogie (easy, for beginners)* is the one from Stage 6 and is still the
-warm-up. *Rhythm and Boogie* is forty bars of shuffle with the boogie
-figure on the upper staff and a section to clap; each half ends on a written
+warm-up. *Rhythm and Boogie* is forty bars written in straight eighths with no swing or
+shuffle marking, so the app times it straight, with the boogie figure on the
+upper staff and a section to clap; each half ends on a written
 walk down to G rather than a turnaround. *Boogie-Boogie
 en Sol* is short and sits in G, which puts the bass figure under a different set
 of fingers — the fastest way to find out whether you learned the pattern or the

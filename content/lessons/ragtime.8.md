@@ -14,8 +14,8 @@ syncopation is denser, the harmony moves further from the key, and the strains
 stop being self-contained tunes. If Stage 7 was about the left hand, this rung
 is about the right.
 
-**Denser syncopation.** *Pine Apple Rag* and *Gladiolus Rag* put the ragtime
-figure on nearly every beat instead of once a bar, and the secondary rag —
+**Denser syncopation.** *Pine Apple Rag* has the ragtime figure in over
+half its bars, *Gladiolus Rag* in over a third, and the secondary rag —
 sixteenths grouped in threes across the bar line — fills a whole strain
 of *Pine Apple* rather than turning up in passing. The practice that works is unglamorous: **name the figure, play it
 alone until it is automatic, then find every place it occurs.** Most late rags

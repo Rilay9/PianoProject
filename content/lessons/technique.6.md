@@ -16,10 +16,11 @@ you stop calculating them and start recognising them — which is what makes a
 chord symbol readable at speed.
 
 **Rotation.** The Alberti figures here are the same shapes you played as
-accompaniment at Stage 3, but fast. At this speed fingers alone cannot do it and
-should not try: the motion is a small rotation of the forearm, the one you use
-turning a key in a lock. If your hand is tiring, you are playing it with the
-fingers.
+accompaniment at Stage 3, but fast. Many teachers have them played with a small
+rotation of the forearm — the movement of turning a key in a lock — helping the
+fingers rather than replacing them, and at speed that is often what keeps the
+figure even and the hand easy. If your hand tires quickly, letting the forearm
+help is worth trying, though tiredness can have other causes too.
 
 **Trills are measured.** The number of notes to the beat is written above the
 staff and the notation matches it exactly. "As fast as you can" is not a target
@@ -49,12 +50,11 @@ the hand does.
 **Tools for this rung.** *Climb the ladder* opens the four-octave A flat
 arpeggio hands together — the first of this rung's written-out exercises —
 loops the whole of it and turns the Ladder on in Keep tempo. A clean pass
-raises the tempo a notch and a pass with a mistake drops one, which is the
-rotation tested at the only thing that tests it: speed. For the arpeggios
+raises the tempo a notch and a pass with a mistake drops one, which tests the
+rotation where it matters: at speed. For the arpeggios
 further down the list, set the loop yourself and switch the same row on.
 
 **How you'll know you've got it.** A seventh chord you recognise rather than
-spell. An Alberti figure at speed with a hand that is not tired afterwards — if
-it is, you played it with the fingers. And a voiced chord where you hear a tune
+spell. An Alberti figure at speed with a hand that is not tired afterwards. And a voiced chord where you hear a tune
 over an accompaniment instead of a block: loud enough that you could sing the top
 note back after one hearing.

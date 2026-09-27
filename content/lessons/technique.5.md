@@ -16,10 +16,9 @@ Stage 4 was about getting the notes under the hand. This rung is about what they
 sound like once they are.
 
 **Repeated notes** are the first exercise here that feels pointless and is not.
-Striking one key three times with three fingers is how a repeated note stays
-even at speed: the hand does not lift, the fingers take turns. The printed
-fingering matters — 3-2-1 for three, 4-3-2-1 for four, always coming towards
-you.
+Changing finger on each strike is one way to keep a fast repeated note even;
+the printed 3-2-1 for three strikes here, 4-3-2-1 for four on the next technique
+rung, is a common choice, not the only one.
 
 **Two hands at different speeds.** Start with 2:1, eighths over quarters, and do
 not move on until it is boring. The trap is counting the fast hand and fitting
@@ -57,8 +56,8 @@ slow to be an ornament. Printed at two per beat so you can count it before you
 speed it up, and in the left hand, where a mordent is hardest.
 
 **An étude to put it in.** Duvernoy's Op. 176 Nos. 4, 5 and 6 are on this
-rung, in the order the collection grades them: one page each, the exercise
-above with a melody on it.
+rung, in the order the collection grades them: twenty-one to thirty-one bars
+each, the exercise above with a melody on it.
 
 **Tools for this rung.** *Play it as a duet* opens the two-against-one
 exercise — not one of the études — with the moving hand yours and the app

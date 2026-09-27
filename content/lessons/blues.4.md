@@ -25,7 +25,7 @@ style that would be a chord demanding resolution; in the blues it is just the
 colour, and the tension never resolves, which is the point.
 
 **Shuffle feel.** Written eighth notes are played long-short — the first note
-takes two thirds of the beat, the second one third, as if they were the outer
+takes roughly two thirds of the beat, the second one third, as if they were the outer
 notes of a triplet. Nothing in the notation says so; the word "shuffle" at the
 top does. Count "one-and-a two-and-a" and play on the "one" and the "a".
 
@@ -45,8 +45,7 @@ The app writes it as a sharp, because the flat spelling runs out: the flattened
 fifth of F is C flat, of B flat is F flat, of E flat is B double flat — and no
 edition prints those. A raised fourth works in every key.
 
-**What to practise.** The twelve-bar left-hand patterns in C, F and G from the
-generator; the shuffle exercise; then the same form with a simple right-hand
+**What to practise.** The generated twelve-bar shuffles in C, F and G; the shuffle exercise; then the same form with a simple right-hand
 riff on top.
 
 **Common mistake.** Playing straight eighths and calling it blues. Record

@@ -9,7 +9,8 @@ videos:
 readingTime: 3
 ---
 
-**Four seventh-chord qualities** cover nearly everything:
+**Four seventh-chord qualities**, the ones this rung drills (there are others,
+such as the fully diminished seventh):
 
 - **maj7** — major triad plus major 7th. Bright, still.
 - **dominant 7 (just "7")** — major triad plus *minor* 7th. Tense, moving.
@@ -26,16 +27,19 @@ third and the mood softens; in ii–V the bass leaps a fourth and the harmony
 tightens.
 
 **Modes.** Play the white keys from D to D and you get **D Dorian** — a minor
-scale with a raised sixth, which is why it sounds minor but not sad. From G to
+scale with a raised sixth, which many players hear as minor but brighter than
+the natural minor. From G to
 G: **G Mixolydian**, major with a flattened seventh, the sound of a great deal
 of folk and rock. From A to A: **A Aeolian**, plain natural minor. From C:
 **C Ionian**, the major scale.
 
 The intuition that matters: a mode is not a different set of notes, it is a
 different note treated as home. What changes is which intervals sit above the
-tonic, and one altered degree is enough to change the colour completely —
-Mixolydian's flat seventh removes the leading tone, so the music never pulls
-home and can circle indefinitely.
+tonic, and one altered degree is enough to change the colour — Mixolydian's flat
+seventh removes the leading tone, the note a semitone below the tonic that leans
+into it in a major key, so the pull home is weaker and a Mixolydian tune can
+circle for a long time without needing to resolve. That is a colour, not a law:
+it can still come to rest on its tonic.
 
 **Transposition.** Take a progression written in C and play it in E flat by
 thinking in numerals, not letters. This is the practical payoff of everything on

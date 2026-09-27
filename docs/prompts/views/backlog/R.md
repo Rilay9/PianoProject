@@ -61,6 +61,7 @@ any wave rewrites what the suite encodes; repeated as a cleanup and rebuild pass
 
 | id | problem | evidence | sev | decision | status | wave | verified |
 |---|---|---|---|---|---|---|---|
+| R48 | *Ode to Joy (full)* bar 12 prints right-hand finger 5 on G3 under a thumb on C4 — a printed fingering a hand cannot play | T22 (first), F0 (repeated) | P0 | T53 corrects the authored score's fingering at that bar, with a test reading the score | diagnosed, pending | T53 | pending |
 | R1 | `level` is both an address and a quantity; seven numbers on one piece, three learner-facing; two definitions of level | T36b Q1 | P1 | one level and its derivation (E); the scalar demoted to a sort and banding key as C, D and E mature, never deleted (Part 9 §38); the teacher reasons in demands — reading, rhythmic, coordination, physical, harmonic, interpretive, learner-specific familiarity — never in "a 5.2 learner plus a 5.1 piece" (Part 11) | diagnosed, pending | C0, E | pending |
 | R2 | The nineteen measured features are dropped at the catalog boundary | T36b P1-1; N-170 §10, §12; N-180 | P1 | demands into the catalog, per dimension | diagnosed, pending | E | pending |
 | R3 | The level model cannot see tuplets, grace notes or ornaments; ranks Anh. 113 below the Petzold | T36b Q2 | P1 | features extended, refit | diagnosed, pending | E | pending |

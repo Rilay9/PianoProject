@@ -19,8 +19,8 @@ third below the tonic, and you never have to work one out twice.
 
 **vi and ii are the two you need.** **vi** (Am in C) is the relative minor — it
 shares two of its three notes with I (A–C–E against C–E–G) and has a darker
-centre, which is why it is the chord that makes a progression sound wistful. **ii** (Dm in C) is the smoothest approach to V, which is why **ii–V–I** is the
-most common cadence in Western music.
+centre, which is why it is the chord that makes a progression sound wistful. **ii** (Dm in C) leads smoothly to V, which is why **ii–V–I** is such a common
+approach to the cadence V–I.
 
 **The four-chord song.** **I–V–vi–IV** — C–G–Am–F in C — is the progression
 behind an implausible number of pop songs. Learn it in C, G and D, in
@@ -36,7 +36,8 @@ arrangement sound composed rather than blocked out.
 **Repertoire for this rung.** Seven options. *Greensleeves* is here twice, with
 chords and with a waltz bass — one song, two left hands, and the plainest
 demonstration here of what arranging is. *Scarborough Fair*
-and *Shenandoah* are the modal tunes where vi and ii do the work;
+is the modal one (E Dorian); *Shenandoah* (G major) is where vi and ii
+do the work;
 *Hallelujah*, in its easy setting, is not the four-chord loop but uses mostly
 its chords in other orders — I and vi rocking back and forth, then IV, V and I, and a chorus of IV and vi — with no symbols, so naming them is
 yours;

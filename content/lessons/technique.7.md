@@ -22,11 +22,11 @@ depends on your hand and on the key, and if it does not suit yours, change it,
 write it in, and then keep the one you chose — an inner fingering you decide
 again every time is the thing that stops this getting faster.
 
-**Octaves.** One rule, worth more than any amount of practice without it: thumb
-and fifth on the white keys, thumb and **fourth** on the black ones, in both
-hands. A hand that plays every octave 1–5 will not survive D flat. The broken
-form is the same notes rolled, and it is a rotation exercise in an octave
-costume — if your arm is lifting, slow down.
+**Octaves.** The printed fingering, thumb and fifth on white keys and thumb and
+**fourth** on black ones in both hands, is common, not a rule: the longer fourth
+reaches a black key easily, but a large hand may use it on white keys too and a
+small one the fifth throughout. Keep what your hand plays easily. The broken
+form, the same notes in turn, is often helped by a small forearm rotation.
 
 **Two against three**, in both directions. These are two different exercises and
 not one: the hand playing the three is the hand doing the work, and swapping
@@ -34,13 +34,13 @@ which hand that is changes the problem completely. Do not learn the rhythm as a
 pattern of words. Learn it as two independent pulses that happen to line up on
 the beat.
 
-**Half pedal.** The damper does not have to be up or down. Held part-way it
-clears the treble while the bass keeps ringing, which is how most Romantic music
-is actually pedalled. This exercise opens as an ordinary score, and the summary
-at the end says what share of your pedal went down part-way rather than to the
-floor or the top. Some digital pianos send only 0 or 127 and nothing in
-between; the app says that is what yours does instead of marking you down for
-it, and that is worth knowing about your instrument.
+**Half pedal.** The damper pedal need not be up or down. Pressed part-way, it
+lifts the dampers only a little, so they still touch the strings: a loud sound
+is cut short but not stopped, and a quieter ring carries on. Find by ear where
+they catch on your piano. This exercise opens as an ordinary score,
+and its summary says what share of your pedal readings, while the pedal was
+down, sat between 32 and 96 — 0 is fully up, 127 fully down. Some digital
+pianos send only 0 or 127; the app says so instead of marking you down.
 
 **An étude to put it in.** Czerny Op. 299 No. 5, No. 8 and No. 10, the faster
 ones: No. 5 has scales in both hands and right-hand double notes, No. 8 broken
@@ -56,7 +56,6 @@ are also producing. Then swap hands, because that is the other exercise.
 left hand, loops the whole of it and raises the tempo a notch for each clean
 pass.
 
-**How you'll know you've got it.** The same inner fingering in thirds twice
-running without deciding it again. An octave in D flat that takes the fourth
-finger unprompted. Two against three where you can stop anywhere and say which
+**How you'll know you've got it.** The same fingering for thirds and for
+octaves in D flat twice running, without deciding it again. Two against three where you can stop anywhere and say which
 hand is on the beat. And a half pedal your piano reports between 0 and 127.

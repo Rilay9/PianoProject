@@ -47,10 +47,9 @@ written left hand entirely: play power chords under the tune from the symbols,
 then play the ostinato under it instead, and hear the same melody sit on two
 different floors.
 
-There is only one, and that is honest rather than thin. The library's minor-key
-two-hand music at this level is four settings of this tune and two of *Für
-Elise*, and a piece that modulates twice or wants eighteen chords is not a
-vehicle for a figure that never changes, whatever its level says.
+There is only one, and that is honest rather than thin: a piece that modulates
+twice or wants eighteen chords is not a vehicle for a figure that never changes,
+whatever its level says.
 The exercises are the material here; the song is where you try it.
 
 **Common mistake.** Making the ostinato expressive. A figure that swells and

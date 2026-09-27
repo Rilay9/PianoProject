@@ -35,8 +35,8 @@ your attention away from listening.
 **Repertoire for this rung.** Five. Start with *St. James Infirmary*, for the
 reason below. *Careless Love* is the shortest — eight bars with chords — and has
 no blue notes as written, which makes it the place to add your own. *Wabash Blues* and
-*Tishomingo Blues* are full published songs with a verse before the chorus, so
-read the chorus first. *St. Louis Blues* is the famous one; *Wabash Blues* is
+*Tishomingo Blues* are band charts in lettered sections; learn them one section
+at a time. *St. Louis Blues* is the famous one; *Wabash Blues* is
 the longest.
 
 **Why the minor one first.** *St. James Infirmary* is in D minor. With the

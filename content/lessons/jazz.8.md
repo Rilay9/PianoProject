@@ -23,15 +23,16 @@ which one you meant.
 **Modulation.** The dictation drill on this rung changes key partway through.
 It is the same drill the theory track's Stage 8 lesson explains — the pivot
 chord, and why the moment you hear is not the pivot — so read that; what
-matters here is that a bridge is where a standard modulates, and hearing the
+matters here is that a bridge is often where a standard changes key, and hearing the
 first chord that could only be the new key is how you stay with the tune.
 
-**What to practise.** Ninth chords in five roots; one thirteenth voiced two ways;
+**What to practise.** The drill's elevenths and thirteenths on its four roots,
+C, E flat, F and B flat; one thirteenth voiced two ways;
 the modulating dictation until you can name where the key changed rather than
 only that it did.
 
 **Repertoire for this rung.** Three options. *Stardust* (1927) is a standard
-whose bridge modulates, as most 1920s bridges do, and it is all bridge; *I Got
+printed here with no chord symbols, so where its harmony goes is yours to hear; *I Got
 Rhythm* has the bridge that walks a circle of dominants, which is where the
 thirteenths go; and Tom Brier's *Uncle Ben's Cakewalk* is a modern rag to put
 the extensions into once you can voice them.

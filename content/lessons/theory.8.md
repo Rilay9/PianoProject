@@ -9,9 +9,9 @@ videos:
 readingTime: 2
 ---
 
-**A modulation is a change of home.** Not a chord from outside the key — a
-decision that the key is now somewhere else, held long enough that the ear
-resets.
+**A modulation is a change of home.** Not a chord from outside the key — the
+key is now somewhere else, usually confirmed by a cadence in the new key, and
+the ear resets.
 
 **The pivot** is a chord that belongs to both keys and is the door between them.
 In C going to G, the chord Am is vi in C and ii in G; play it, then a D7, and the
@@ -30,8 +30,10 @@ is half of hearing the thing it describes.
 same progression transposed, so that the modulation is a relationship rather
 than a set of chords.
 
-**Repertoire for this rung.** Not required. If you want one, the bridge of almost
-any standard modulates.
+**Repertoire for this rung.** Not required. If you want one, listen to the
+bridge of a standard: it is often where the harmony goes somewhere else —
+sometimes a real modulation, often a few bars that tonicise another chord and
+come back.
 
 **Tools for this rung.** One button, *Simon*, and it opens the chain game drawn
 from all twelve keys — *Simon — every key around middle C*. That is not one of
@@ -41,7 +43,8 @@ key change you cannot name. The longest chain you kept is the score, and
 nothing else about the run is marked.
 
 **Common mistake.** Calling every chromatic chord a modulation. If the music is
-back home in two bars, nothing modulated.
+back home in two bars with no cadence in the new key, it was most likely a
+tonicisation.
 
 **How you'll know you've got it.** You can say which key a passage moved to and
 which chord was the door.

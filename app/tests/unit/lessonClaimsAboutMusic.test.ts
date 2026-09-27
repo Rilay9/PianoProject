@@ -3074,3 +3074,314 @@ describe('the open findings T22 decided, under test', () => {
     });
   }
 });
+
+// --- F0: never teach wrong, the music half (2026-09-26) ----------------------
+//
+// The sentences F0 corrected that are about a piece or an exercise, held to
+// the built score. Two of them are checked against the score because the
+// score was the reason the old sentence was wrong: the anacrusis rule stated
+// two lines before the rung's own *When the Saints*, which breaks it, and the
+// arpeggio fingering the lesson printed, which is not what the rung's
+// exercises print. One row holds a lesson sentence to a *fault* in the score —
+// 4.3's warning about the printed left-hand arpeggio fingering — so the day
+// the generator is corrected this row fails and the warning comes out of the
+// lesson with it. Nothing here has been heard.
+
+const F0M_LESSONS = join(process.cwd(), '..', 'content', 'lessons');
+
+/** A lesson's body, front matter and emphasis marks dropped, whitespace flattened. */
+function f0mText(id: string): string {
+  return readFileSync(join(F0M_LESSONS, `${id}.md`), 'utf8')
+    .replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '')
+    .replace(/\*/g, '')
+    .replace(/\s+/g, ' ');
+}
+
+/** Quarter notes in each bar of a built score, from MusicXML's own cursor. */
+function f0BarQuarters(id: string): number[] {
+  const xml = t12Xml(id);
+  const divisions = Number(/<divisions>(\d+)<\/divisions>/.exec(xml)?.[1] ?? '1') || 1;
+  const out: number[] = [];
+  for (const measure of xml.matchAll(/<measure\b[^>]*>([\s\S]*?)<\/measure>/g)) {
+    let cursor = 0;
+    let longest = 0;
+    for (const part of (measure[1] ?? '').matchAll(
+      /<note\b[\s\S]*?<\/note>|<backup>[\s\S]*?<\/backup>|<forward>[\s\S]*?<\/forward>/g,
+    )) {
+      const text = part[0];
+      const duration = Number(/<duration>(\d+)<\/duration>/.exec(text)?.[1] ?? '0');
+      if (text.startsWith('<backup')) {
+        cursor -= duration;
+        continue;
+      }
+      if (text.includes('<grace') || text.includes('<chord')) continue;
+      cursor += duration;
+      longest = Math.max(longest, cursor);
+    }
+    out.push(longest / divisions);
+  }
+  return out;
+}
+
+/**
+ * Notes struck per second at the first printed tempo, both hands, chord
+ * members counted and tied continuations not. A proxy for "how much there is
+ * to play", named as one: it uses the first tempo only.
+ */
+function f0NotesPerSecond(id: string): number {
+  const xml = t12Xml(id);
+  const tempo = Number(/<sound[^>]*\btempo="([\d.]+)"/.exec(xml)?.[1] ?? 'NaN');
+  const quarters = f0BarQuarters(id).reduce((a, b) => a + b, 0);
+  const struck = [...xml.matchAll(/<note\b[\s\S]*?<\/note>/g)].filter((found) => {
+    const text = found[0];
+    const tiedOn = text.includes('<tie type="stop"') && !text.includes('<tie type="start"');
+    return !text.includes('<rest') && !text.includes('<grace') && !tiedOn;
+  }).length;
+  return struck / ((quarters * 60) / tempo);
+}
+
+/** The share of a score's bars whose right hand has a sixteenth–eighth–sixteenth run. */
+function f0FigureShare(id: string): number {
+  const bars = [...new Set(t12Notes(id).map((note) => note.bar))];
+  const line = t12Line(id, 1);
+  const hit = bars.filter((bar) => {
+    const types = line.filter((note) => note.bar === bar).map((note) => note.type);
+    return types.some((type, index) => type === '16th' && types[index + 1] === 'eighth' && types[index + 2] === '16th');
+  });
+  return bars.length > 0 ? hit.length / bars.length : 0;
+}
+
+const F0_MUSIC: [string, string, () => boolean][] = [
+  [
+    '1.4',
+    'When the Saints opens with a three-beat bar and ends with a full four-beat one, so the missing beat is not taken off the end',
+    () => {
+      const id = 'song.folk.when-the-saints.alternating';
+      const bars = f0BarQuarters(id);
+      const text = f0mText('1.4');
+      return (
+        t12Songs('1.4').includes(id) &&
+        t12Notation(id).times.join(',') === '4/4' &&
+        bars[0] === 3 &&
+        bars[bars.length - 1] === 4 &&
+        text.includes('a common way of writing it, not a rule') &&
+        text.includes('its last bar is a full four beats') &&
+        !text.includes('the missing beats are at the end of the piece')
+      );
+    },
+  ],
+  [
+    '4.3',
+    'the right hand prints 1-2-3, 1-2-3, 5 over two octaves; the left hand prints 5 straight after 2 at the octave join, the fault the lesson warns of',
+    () => {
+      const right = t12Line('exercise.arpeggio.c-major.2oct.right', 1)
+        .slice(0, 7)
+        .map((note) => note.finger)
+        .join('');
+      const left = t12Line('exercise.arpeggio.c-major.2oct.left', 2)
+        .slice(0, 4)
+        .map((note) => note.finger)
+        .join('');
+      const text = f0mText('4.3');
+      return (
+        t12Exercises('4.3').includes('exercise.arpeggio.c-major.2oct.left') &&
+        right === '1231235' &&
+        // When this stops being 5-3-2-5 the generator has been corrected, and
+        // the lesson's warning has to go.
+        left === '5325' &&
+        text.includes('is wrong where the octaves join') &&
+        text.includes('5-4-2-1') &&
+        !text.includes('Right hand 1-2-3-5')
+      );
+    },
+  ],
+  [
+    'technique.7',
+    'the octave scale prints thumb and fifth on white keys and thumb and fourth on black keys in both hands, and the lesson calls it a common fingering, not a rule',
+    () => {
+      const notes = t12Sounded('exercise.octave-scale.a.1oct.both');
+      const black = (midi: number | null): boolean => [1, 3, 6, 8, 10].includes((midi ?? 0) % 12);
+      const outer = notes.filter((note) => (note.staff === 1 ? note.chord : !note.chord));
+      const thumbs = notes.filter((note) => (note.staff === 1 ? !note.chord : note.chord));
+      const text = f0mText('technique.7');
+      return (
+        t12Exercises('technique.7').includes('exercise.octave-scale.a.1oct.both') &&
+        outer.length > 0 &&
+        outer.some((note) => black(note.midi)) &&
+        outer.every((note) => note.finger === (black(note.midi) ? '4' : '5')) &&
+        thumbs.every((note) => note.finger === '1') &&
+        text.includes('is common, not a rule') &&
+        !text.includes('will not survive D flat')
+      );
+    },
+  ],
+  [
+    'technique.5',
+    'the repeated-note exercises print 3-2-1 on this rung and 4-3-2-1 on the next, which is how the lesson now describes them',
+    () => {
+      const three = t12Line('exercise.repeated-notes.c.3x.left', 2).map((note) => note.finger);
+      const four = t12Line('exercise.repeated-notes.c.4x.left', 2).map((note) => note.finger);
+      const text = f0mText('technique.5');
+      return (
+        t12Exercises('technique.5').includes('exercise.repeated-notes.c.3x.left') &&
+        t12Exercises('technique.6').includes('exercise.repeated-notes.c.4x.left') &&
+        three.length > 0 &&
+        three.join('') === '321'.repeat(three.length / 3) &&
+        four.length > 0 &&
+        four.join('') === '4321'.repeat(four.length / 4) &&
+        text.includes('3-2-1 for three strikes here, 4-3-2-1 for four on the next technique rung') &&
+        !text.includes('always coming towards')
+      );
+    },
+  ],
+  [
+    'technique.5',
+    "the three Duvernoy études run from twenty-one to thirty-one bars, the length the lesson gives instead of a page",
+    () => {
+      const ids = t12Songs('technique.5').filter((id) => id.includes('duvernoy'));
+      const bars = ids.map((id) => t12Notation(id).bars);
+      const text = f0mText('technique.5');
+      return (
+        ids.length === 3 &&
+        Math.min(...bars) === 21 &&
+        Math.max(...bars) === 31 &&
+        text.includes('twenty-one to thirty-one bars') &&
+        !text.includes('one page each')
+      );
+    },
+  ],
+  [
+    'technique.4',
+    'the three Lemoine études are sixteen bars each, the length the lesson gives instead of a page',
+    () => {
+      const ids = t12Songs('technique.4').filter((id) => id.includes('lemoine'));
+      const text = f0mText('technique.4');
+      return (
+        ids.length === 3 &&
+        ids.every((id) => t12Notation(id).bars === 16) &&
+        text.includes('sixteen bars each') &&
+        !text.includes('one page each') &&
+        !text.includes('the same finger work as the exercises above')
+      );
+    },
+  ],
+  [
+    'chords-pop.4',
+    'Scarborough Fair sits on E with C sharps over Em, D and A, and Shenandoah is G major with Am and Em — so the mode is one tune and the vi and ii the other',
+    () => {
+      const scarborough = t12Notation('song.pop.scarborough-fair.pdmx');
+      const shenandoah = t12Notation('song.folk.traditional-music-shenandoah.pdmx');
+      const text = f0mText('chords-pop.4');
+      return (
+        scarborough.keys[0]?.fifths === 0 &&
+        scarborough.finalBass === 4 &&
+        t12Sounded('song.pop.scarborough-fair.pdmx').some((note) => (note.name ?? '').startsWith('C#')) &&
+        ['Em', 'D', 'A'].every((chord) => scarborough.chords.includes(chord)) &&
+        shenandoah.keys[0]?.fifths === 1 &&
+        shenandoah.keys[0]?.mode === 'major' &&
+        shenandoah.finalBass === 7 &&
+        ['Am', 'Em'].every((chord) => shenandoah.chords.includes(chord)) &&
+        text.includes('the modal one (E Dorian)') &&
+        text.includes('Shenandoah (G major)') &&
+        !text.includes('are the modal tunes') &&
+        !text.includes('most common cadence in Western music')
+      );
+    },
+  ],
+  [
+    'jazz.4',
+    "Margie's symbols include a diminished and an augmented chord, which the lesson now names as the exceptions to the letter rule",
+    () => {
+      const chords = t12Notation('song.pop.margie.pdmx').chords;
+      const text = f0mText('jazz.4');
+      return (
+        t12Songs('jazz.4').includes('song.pop.margie.pdmx') &&
+        chords.includes('Fdim') &&
+        chords.includes('F7+') &&
+        text.includes("Margie's Fdim is F, A flat and C flat") &&
+        text.includes('F7+ is F, A and C sharp')
+      );
+    },
+  ],
+  [
+    'blues.3',
+    'Wabash Blues and Tishomingo Blues are marked in rehearsal letters and name no verse or chorus',
+    () => {
+      const ids = ['song.blues.wabash-blues', 'song.blues.tishomingo-blues'];
+      const text = f0mText('blues.3');
+      return (
+        ids.every((id) => t12Songs('blues.3').includes(id)) &&
+        ids.every((id) => t12Count(id, /<rehearsal\b/g) >= 3 && !/\b(verse|chorus)\b/i.test(t12Xml(id))) &&
+        text.includes('band charts in lettered sections') &&
+        !text.includes('verse before the chorus')
+      );
+    },
+  ],
+  [
+    'ragtime.8',
+    'Pine Apple Rag has the sixteenth–eighth–sixteenth figure in over half its bars and Gladiolus in over a third',
+    () => {
+      const pine = f0FigureShare('song.ragtime.joplin-pine-apple-rag');
+      const gladiolus = f0FigureShare('song.ragtime.joplin-gladiolus-rag');
+      const text = f0mText('ragtime.8');
+      return (
+        pine > 1 / 2 &&
+        gladiolus > 1 / 3 &&
+        text.includes('the ragtime figure in over half its bars, Gladiolus Rag in over a third') &&
+        !text.includes('on nearly every beat')
+      );
+    },
+  ],
+  [
+    'chords-pop.8',
+    'If I Had a Chicken has more notes to play each second at its printed tempo than any of the rung’s other five songs',
+    () => {
+      const songs = t12Songs('chords-pop.8');
+      const chicken = 'song.pop.kevin-macleod-if-i-had-a-chicken.pdmx';
+      const rate = f0NotesPerSecond(chicken);
+      return (
+        songs.length === 6 &&
+        songs.includes(chicken) &&
+        songs.filter((id) => id !== chicken).every((id) => f0NotesPerSecond(id) < rate) &&
+        f0mText('chords-pop.8').includes('more notes to play each second than any of the other five') &&
+        !f0mText('chords-pop.8').includes('is the fastest of them')
+      );
+    },
+  ],
+  [
+    'classical.8',
+    'the Moonlight finale has more notes to play each second at its printed tempo than any of the rung’s other five pieces, as the lesson says',
+    () => {
+      const songs = t12Songs('classical.8');
+      const moonlight = 'song.classical.beethoven-moonlight-iii';
+      const rate = f0NotesPerSecond(moonlight);
+      return (
+        songs.includes(moonlight) &&
+        songs.filter((id) => id !== moonlight).every((id) => f0NotesPerSecond(id) < rate) &&
+        f0mText('classical.8').includes('the fastest thing here')
+      );
+    },
+  ],
+  [
+    'jazz.8',
+    'this Stardust prints no chord symbols, which is what the lesson now says instead of what its bridge does',
+    () => {
+      const id = 'song.jazz.hoagy-carmichael-stardust-hoagy-carmichael.pdmx';
+      const text = f0mText('jazz.8');
+      return (
+        t12Songs('jazz.8').includes(id) &&
+        t12Notation(id).chordCount === 0 &&
+        text.includes('printed here with no chord symbols') &&
+        !text.includes('as most 1920s bridges do')
+      );
+    },
+  ],
+];
+
+describe('F0: the corrected lessons tell the truth about the music they name', () => {
+  for (const [lesson, says, holds] of F0_MUSIC) {
+    it(`${lesson}: ${says}`, () => {
+      expect(holds()).toBe(true);
+    });
+  }
+});

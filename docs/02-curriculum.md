@@ -131,6 +131,20 @@ Time estimates assume ~30 min/day, 5–6 days/week. They are advisory.
    60 takes its three minutes from repertoire. The 30 had only two minutes of free play, so
    it takes those and a third minute from repertoire: **30 min** is now technique 5 ·
    review 5 · new 10 · repertoire 7 · sight-reading 3, with no free-play row.
+9. **A lesson's claim names what verified it** (2026-09-26, F0; backlog M11, T28–T41, T51).
+   The lesson-claims tests (`lessonClaimsAboutApp`, `lessonClaimsAboutMusic`) and
+   `validate.py` prove that a lesson agrees with the app and its scores; they do not prove
+   that it is true. So each sentence F0 corrected was verified by one of three layers, and
+   Entry 82's table says which: an outside source the owner can open, for a fact about
+   music, the instrument, history or health; a teacher's judgement, for a heuristic, written
+   in the lesson as one ("a common fingering", "a first model", "often") and never as a law;
+   or the app's code read at a line, for a claim about the app. A fact that cannot be
+   verified is written as uncertain or removed and listed for an outside expert, never
+   guessed. `lessonClaimsNeverTeachWrong.test.ts` holds the two cases a test can express
+   over every lesson — note-value arithmetic, and the half pedal as partial damping rather
+   than a treble filter — and `tools/content/lint_absolutes.py` lists every absolute word
+   (always, never, only, every, exactly, all, none, most, the reason, the main reason, the
+   fix) for Wave F's human review and fails nothing.
 
 ## Part B — Stage map
 

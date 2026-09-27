@@ -13,7 +13,8 @@ Jazz starts here with two things and no new chords: the rhythm, and where to put
 a chord you already know.
 
 **Swung eighths.** Two eighth notes in swing are not equal. The first is long and
-the second short — roughly two thirds of the beat and one third. The
+the second short — roughly two thirds of the beat and one third to start with;
+the exact split changes with the tempo and the player. The
 shuffle-eighths exercise is four bars of nothing else: clap it, then play it on
 one note, until the long-short is automatic and you have stopped counting it.
 
@@ -31,7 +32,9 @@ Play each one through all four bars before trying the next, and swing the "ands"
 
 **Reading the symbols as triads.** The songs' chord symbols have sevenths and
 sixths in them — C7, Cm7, B♭m6. Here, play the triad: the letter, and minor if
-it says so, and nothing else. C7 is a C chord; B♭m6 is B flat minor. The
+it says so, and nothing else — except a dim or a + in the symbol, which changes
+the triad itself: *Margie*'s Fdim is F, A flat and C flat, and its F7+ is F, A
+and C sharp. C7 is a C chord; B♭m6 is B flat minor. The
 sevenths are what the next rung's shell voicings are for.
 
 **Repertoire for this rung.** Three options, all lead sheets from 1920 — a tune

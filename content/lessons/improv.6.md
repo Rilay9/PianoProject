@@ -18,8 +18,8 @@ on this rung: those two notes are where the harmony lives, and a solo that
 touches them at the right moments sounds like it knows the tune whatever else it
 does.
 
-**Modes are the note pool, not the melody.** Knowing that D dorian fits Dm7 tells
-you which notes are safe. It does not tell you what to play, and a solo made of
+**Modes are a note pool, not the melody.** In the chord-scale approach, D dorian
+is the usual pool for Dm7: it gives you notes that fit the chord. It does not tell you what to play, and a solo made of
 scales run up and down is what happens when you stop there.
 
 **Play the rhythm first.** Choose a rhythm — the comping patterns work — and

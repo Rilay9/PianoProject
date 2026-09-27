@@ -12,12 +12,13 @@ readingTime: 3
 **The pentatonic scale** is five notes: in C major, **C D E G A** — the major
 scale with the fourth and seventh removed. Those two are the notes that create
 friction (the fourth clashes with the tonic chord's third, the seventh is a
-leading tone that demands resolution), so taking them out leaves a scale where
-nothing can sound wrong over a diatonic progression. It is the reason the black
+leading tone that demands resolution), so taking them out leaves a scale with
+no note that sounds wrong over most diatonic progressions. It is the reason the black
 keys alone (an F sharp pentatonic) sound good over almost anything.
 
 **Over I–vi–IV–V.** The app loops C–Am–F–G, one chord a bar. Use C major
-pentatonic throughout — all five notes fit all four chords. Now the ear is free
+pentatonic throughout: every note works, though C rubs on the G chord and E on
+the F. Now the ear is free
 and the only questions left are rhythm, shape and where you stop. Stage 3's
 I–IV–V loop is still on this rung and is the easier of the two; the four-chord
 one changes chord every bar, where that one changes three times in eight bars,

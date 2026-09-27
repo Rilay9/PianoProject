@@ -16,11 +16,12 @@ This rung is not repertoire. It is the set of shapes every piece after it is
 built out of, and the reason to practise them on their own is that a shape you
 have to think about in a scale is a shape you cannot think about in a piece.
 
-**Scales.** The work is the thumb. Everything else is fingers stepping; the
-thumb passing under is the only moment where the hand changes shape, and it is
-the only moment worth watching. Play slowly enough that it never jerks. The
-fingering printed on these exercises is the standard one — not a suggestion,
-and inventing your own here will cost you later in a key you have not met yet.
+**Scales.** Much of the work is the thumb: passing under is where the hand
+changes shape most visibly, so watch it first, with the wrist and arm carrying
+the hand along. Play slowly enough that it never jerks. The fingering printed
+here is the conventional one; keep to it while the scale is new, because its
+groups carry over from key to key and a fingering chosen afresh each time will
+not get faster.
 
 **Contrary motion** is easier than it sounds and worth doing early: both thumbs
 move at the same time, so the hands mirror each other rather than tracking two
@@ -46,18 +47,18 @@ Two exercises pass this rung. Take the scales at a tempo where the thumb is
 silent.
 
 **An étude to put it in.** Three of Lemoine's *Études enfantines*, Op. 37 —
-No. 1, No. 2 and No. 35 — are on this rung as pieces: one page each, one
-figure each, the same finger work as the exercises above: No. 1 runs a scale in the right hand over
+No. 1, No. 2 and No. 35 — are on this rung as pieces: sixteen bars each, one
+figure each: No. 1 runs a scale in the right hand over
 left-hand chords, No. 2 gives it to the left hand under right-hand chords, and
 No. 35 is repeated triads in 6/8. Play one after the exercises; it is where the
 drill turns into music.
 
-**Tools for this rung.** The Lemoine study is one figure for a page, which is
+**Tools for this rung.** The Lemoine study is one figure throughout, which is
 what *Climb the ladder* is for. It opens the first of the rung's exercises that
 is written out — the legato phrase in C — loops the whole of it and turns the
 Ladder on, so a clean pass earns the next notch and a faulty one gives it back.
-Take the scales the same way from their own rows, and the thumb will stop the
-climb long before your fingers do.
+Take the scales the same way from their own rows, and listen for the thumb as
+the tempo rises.
 
 **How you'll know you've got it.** A scale hands together at a tempo where you
 cannot hear the thumb arrive — not quieter, *inaudible* as an event. And the

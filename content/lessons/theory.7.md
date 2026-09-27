@@ -19,16 +19,24 @@ symbol that means the same thing in every key; described in words it takes a
 sentence and has to be said again in the next key. That is the argument for
 numerals in miniature.
 
-**Tonicisation is not modulation.** A secondary dominant points at a chord for a
-moment and then the music carries on in the original key. A modulation stays.
-The difference is length, and your ear knows it long before your analysis does.
+**Tonicisation is not modulation.** A secondary dominant makes another chord
+sound for a moment like a home of its own, and then the music carries on in the
+original key. A modulation moves home: the new key is confirmed, usually by a
+cadence in it, and the music carries on from there. So it is not only a matter
+of length — a tonicisation can stretch over several bars — and a short passage
+that ends with a cadence in a new key can be heard either way; analysts
+sometimes disagree about those.
 
-**Chord-scales.** Every chord suggests a scale: a dominant seventh takes
-mixolydian, a minor seventh dorian, a half-diminished chord locrian. Those three
-are not opinions — they are what the chord tones already spell. Where there is a
-choice (a major seventh takes ionian or lydian depending on what it is doing),
-the drill names one — ionian — and marks only the scale it named, so a lydian
-answer counts as wrong there; trust your ear over it everywhere else.
+**Chord-scales.** Jazz improvisers often use one framework, the chord-scale
+approach, which pairs each chord with a scale to improvise from. Its usual first
+choices are mixolydian for a dominant seventh, dorian for a minor seventh and
+locrian for a half-diminished chord. The chord's own four notes are fixed; the
+other three notes of the scale are a choice, and players make others — lydian
+dominant or the altered scale over a dominant seventh, aeolian or phrygian over
+a minor seventh. It is a way of finding notes, not a law of harmony. The drill
+names one scale for each chord — ionian for a major seventh, where lydian would
+also work — and marks only the scale it named, so a lydian answer counts as
+wrong there; trust your ear over it everywhere else.
 
 **What to practise.** The secondary-dominant ear drill until `V/V` is a sound and
 not a calculation, and one chord-scale a day played through two octaves.

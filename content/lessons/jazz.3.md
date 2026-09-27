@@ -12,8 +12,9 @@ readingTime: 3
 Jazz starts a rung before the chords do. Nothing here asks you to build a chord
 or read a symbol. This rung is the *feel*, on four tunes and five short studies.
 
-**Two eighths, unequal.** Written evenly, played long-short: the first takes
-about two thirds of the beat and the second about one third. The three studies
+**Two eighths, unequal.** Written evenly, played long-short: as a first model,
+the first takes about two thirds of the beat and the second about one third.
+Players stretch or tighten that with the tempo, so treat it as a starting point. The three studies
 called *Straight, then swung* are four bars played dead even, a bar of silence,
 and the same four bars again with the swing marked — one each in C, F and G.
 Play the two halves back to back and listen to the join. The short note is

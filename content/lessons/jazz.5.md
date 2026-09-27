@@ -12,9 +12,10 @@ readingTime: 3
 Jazz needs the chord vocabulary from the Chords & pop track at Stage 5 first. Given that,
 three things get you playing.
 
-**Swing eighths.** Same long-short division as the blues shuffle, usually a
-little less extreme, and with the accent on the *off*-beat — the "and", not the
-number. That accent is what separates swing from a shuffle. Play a scale in
+**Swing eighths.** The long-short of the blues shuffle, often with the accent on
+the *off*-beat — the "and", not the number. That accent is one difference from a
+shuffle; the split, which changes with tempo, and what the band plays are
+others. Play a scale in
 eighths and lean on every "and".
 
 **Shell voicings.** A seventh chord has four notes; the two that define it are

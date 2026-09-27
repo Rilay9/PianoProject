@@ -36,3 +36,6 @@ If a correction needs a musical judgement you cannot source and cannot honestly 
 ## Report
 
 Judgement first: the four factual errors as a learner now reads them, and the half-pedal sentence with its source; then Done / Not done / Follow-ups / Questions / Files; the table of corrected sentences with their layers; the old audit's 85 items each with its disposition; exit codes from unpiped runs; unverified beside what passes (say plainly which claims an outside expert must still check).
+
+**Delivered 2026-09-26**, Entry 82: 32 lessons corrected with the layer and source per sentence (`docs/prompts/f0-corrected-sentences.md`), the 87 old-audit boxes reconciled (`f0-disposition-85.md`), the lint diagnostic; the builder found a P0 in the generator's arpeggio fingering (G41) and left 4.3 warning about it until T53 fixes the generator.
+

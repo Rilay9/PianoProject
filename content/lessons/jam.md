@@ -13,8 +13,8 @@ Everything so far has been you and the app. This track is about the moment
 someone else is in the room — specifically a guitarist, which decides the keys.
 
 **Guitar keys.** Guitars are built around open strings in E, A, D and G, so
-those keys plus C are where a guitarist is comfortable and where the instrument
-rings. Blues in **E** and **A** first, then **G** and **D**. The twelve-bar
+those keys, and C, are usually comfortable for a guitarist and let the
+instrument ring. Blues in **E** and **A** first, then **G** and **D**. The twelve-bar
 shuffles on this rung are written in E, A, G, C and F: take the E, A and G
 ones as they stand, and move the C one up to D — the shape does not change,
 only where the hand sits, which is the whole point of knowing the form as I, IV and V. If

@@ -3553,3 +3553,216 @@ describe('T19: every lesson names the modes its rung has', () => {
 });
 
 import { targetFor } from '../../src/ui/openItem';
+
+// --- F0: never teach wrong, the app half (2026-09-26) ------------------------
+//
+// F0 corrected the lessons the reviewer's content audit named (Part 10:
+// T28–T41, T51) and the old audit's unverified app claims. Where a corrected
+// sentence says something about the app, the row below holds it to the code;
+// where it says something about music, `lessonClaimsAboutMusic.test.ts` holds
+// it to the score; and where it states a fact about music itself, the source
+// is cited in the entry's table, because agreement with the app is not truth
+// (M11). Each row reads the lesson's own words from `content/lessons`, so a
+// later edit that puts the old sentence back fails here.
+
+import { SWING_OFFBEAT } from '../../src/audio/backingLoop';
+import { swungOnset } from '../../src/engine/prepareSession';
+import { CHORD_BOUNDARY_MS, chordScaleDrill } from '../../src/engine/drills/harmony';
+import { harness as f0Harness, makeModel as f0Model, note as f0Note } from './helpers/engineHarness';
+
+const F0_LESSONS = resolve('..', 'content', 'lessons');
+
+/** A lesson's body, front matter and emphasis marks dropped, whitespace flattened. */
+function f0Text(id: string): string {
+  return readFileSync(join(F0_LESSONS, `${id}.md`), 'utf8')
+    .replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '')
+    .replace(/\*/g, '')
+    .replace(/\s+/g, ' ');
+}
+
+/** How many bars the catalog measured in a row's file (a field the app's type leaves out). */
+function f0Bars(id: string): number | undefined {
+  return (item(id).notation as { bars?: number } | null | undefined)?.bars;
+}
+
+const F0_APP: [string, string, () => boolean][] = [
+  [
+    '2.4',
+    'in Rhythm only a tap too far from its eighth is marked wrong and never early, a tap close enough counts, and the timing line gives the early share',
+    () => {
+      // Four eighths at 60 bpm: the steps land at 0, 500, 1000 and 1500 ms.
+      const model = f0Model([
+        { onset: 0, notes: [f0Note({ midi: 60 })] },
+        { onset: 0.5, notes: [f0Note({ midi: 62 })] },
+        { onset: 1, notes: [f0Note({ midi: 64 })] },
+        { onset: 1.5, notes: [f0Note({ midi: 65 })] },
+      ]);
+      const h = f0Harness(model, { mode: 'tempo', countInBars: 0, rhythmOnly: true });
+      h.engine.start();
+      const tap = (): void => {
+        h.play(71);
+        h.advance(50);
+        h.release(71);
+      };
+      tap(); // on the first eighth
+      h.advance(200); // 250 ms: halfway to the "and", outside every window
+      tap();
+      h.advance(700); // 1000 ms: on the third eighth
+      tap();
+      h.advance(400); // 1450 ms: 50 ms before the fourth, inside its window
+      tap();
+      h.advance(1500);
+      const score = h.engine.state.score;
+      const text = f0Text('2.4');
+      return (
+        (score.early ?? 0) === 0 &&
+        score.wrongNotesTotal === 1 &&
+        score.timing.n >= 2 &&
+        score.timing.earlyPct > 0 &&
+        text.includes('one too far from it is marked wrong') &&
+        text.includes('what share of them came early') &&
+        !text.includes('marked early the moment')
+      );
+    },
+  ],
+  [
+    '4.5',
+    'the app finds swing only in the words on the score and then expects each off-beat eighth two thirds of the way through the beat, and the lesson says so',
+    () => {
+      const notation = readFileSync(resolve('..', 'tools', 'content', 'notation.py'), 'utf8');
+      const text = f0Text('4.5');
+      return (
+        SWING_OFFBEAT === 2 / 3 &&
+        swungOnset(0.5) === 2 / 3 &&
+        swungOnset(2.5) === 2 + 2 / 3 &&
+        // A sixteenth inside a swung beat is not moved.
+        swungOnset(1.25) === 1.25 &&
+        notation.includes('findall(".//{*}words")') &&
+        notation.includes('"swungMark": "swing" in words or "shuffle" in words') &&
+        text.includes('the app looks only for the word') &&
+        text.includes('two thirds of the way through the beat') &&
+        !text.includes('2:1')
+      );
+    },
+  ],
+  [
+    '4.5, jazz.3, jazz.4, jazz.5, blues.4',
+    'every lesson that gives the swung pair its two-thirds split calls it a first or a rough model, and none says the accent is what separates swing from a shuffle',
+    () =>
+      ['4.5', 'jazz.3', 'jazz.4', 'blues.4'].every((id) => {
+        const text = f0Text(id);
+        return text.includes('two thirds') && /first model|roughly two thirds|starting point|to start with/.test(text);
+      }) &&
+      !f0Text('jazz.5').includes('what separates swing from a shuffle') &&
+      f0Text('jazz.5').includes('That accent is one difference from a shuffle'),
+  ],
+  [
+    'theory.5',
+    'the four seventh qualities are the four the rung drills, and the lesson says there are others and that the modes are colour',
+    () => {
+      const qualities = params('drill.ear.seventh-qualities').qualities as string[] | undefined;
+      const text = f0Text('theory.5');
+      return (
+        (qualities ?? []).join(',') === 'maj7,7,m7,m7b5' &&
+        rung('theory.5').exerciseOptions.includes('drill.ear.seventh-qualities') &&
+        text.includes('the ones this rung drills') &&
+        text.includes('fully diminished seventh') &&
+        !text.includes('cover nearly everything') &&
+        !text.includes('never pulls home') &&
+        text.includes('That is a colour, not a law')
+      );
+    },
+  ],
+  [
+    'theory.6',
+    'the 120 ms chord boundary is the app’s rule, said as the app’s, and the bass is not said to name the chord in an inversion',
+    () => {
+      const text = f0Text('theory.6');
+      return (
+        CHORD_BOUNDARY_MS === 120 &&
+        text.includes('120 milliseconds') &&
+        text.includes("That is the app's rule for telling chords apart") &&
+        !text.includes('and it should be') &&
+        !text.includes('The bass is what tells you the chord') &&
+        text.includes('in an inversion it is not')
+      );
+    },
+  ],
+  [
+    'theory.7',
+    'the chord-scale drill on this rung names ionian for a major seventh and expects F natural, and the lesson calls chord-scales one framework and states modulation by its cadence',
+    () => {
+      const drill = chordScaleDrill({ chords: ['Cmaj7'], count: 1, seed: 1 });
+      const prompt = drill.next();
+      const expected = prompt?.expected ?? [];
+      const text = f0Text('theory.7');
+      return (
+        rung('theory.7').exerciseOptions.includes('drill.jazz.chord-scale') &&
+        (prompt?.hint ?? '').includes('ionian') &&
+        expected.includes(65) &&
+        !expected.includes(66) &&
+        text.includes('one framework, the chord-scale approach') &&
+        text.includes('not a law of harmony') &&
+        text.includes('ionian for a major seventh') &&
+        !text.includes('not opinions') &&
+        text.includes('confirmed, usually by a cadence in it') &&
+        !text.includes('The difference is length')
+      );
+    },
+  ],
+  [
+    'jazz.8',
+    "the rung's extension drill is elevenths and thirteenths on C, E flat, F and B flat, which is what the lesson now names",
+    () => {
+      const p = params('drill.jazz.extended-chords-13');
+      const text = f0Text('jazz.8');
+      return (
+        rung('jazz.8').exerciseOptions.includes('drill.jazz.extended-chords-13') &&
+        !rung('jazz.8').exerciseOptions.includes('drill.jazz.extended-chords') &&
+        ((p.roots as string[] | undefined) ?? []).join(',') === 'C,E-,F,B-' &&
+        ((p.qualities as string[] | undefined) ?? []).join(',') === '11,m11,13,m13,maj13' &&
+        text.includes("The drill's elevenths and thirteenths on its four roots, C, E flat, F and B flat") &&
+        !text.includes('Ninth chords in five roots') &&
+        !text.includes('as most 1920s bridges do')
+      );
+    },
+  ],
+  [
+    'blues.4',
+    "the twelve-bar material in C, F and G is the rung's three generated shuffles, and the lesson names them rather than the drill of that title",
+    () => {
+      const text = f0Text('blues.4');
+      return (
+        ['c', 'f', 'g'].every((key) => {
+          const id = `exercise.blues.twelve-bar-shuffle.${key}`;
+          return rung('blues.4').songOptions.includes(id) && f0Bars(id) === 12;
+        }) &&
+        text.includes('The generated twelve-bar shuffles in C, F and G') &&
+        !text.includes('twelve-bar left-hand patterns')
+      );
+    },
+  ],
+  [
+    'blues.7',
+    'Rhythm and Boogie carries no swing or shuffle mark, so the app times it straight, and the lesson says so instead of calling it a shuffle',
+    () => {
+      const id = 'song.blues.rhythm-and-boogie';
+      const text = f0Text('blues.7');
+      return (
+        rung('blues.7').songOptions.includes(id) &&
+        item(id).notation?.swungMark === false &&
+        f0Bars(id) === 40 &&
+        text.includes('written in straight eighths with no swing or shuffle marking') &&
+        !text.includes('forty bars of shuffle')
+      );
+    },
+  ],
+];
+
+describe('F0: the corrected lessons say only what the app does', () => {
+  for (const [lesson, says, holds] of F0_APP) {
+    it(`${lesson}: ${says}`, () => {
+      expect(holds()).toBe(true);
+    });
+  }
+});

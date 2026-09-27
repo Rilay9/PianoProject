@@ -19,12 +19,14 @@ Capital is major, lower case minor, a 7 adds the seventh.
 
 **Dictation is numerals in reverse.** The drill plays a progression and waits for
 you to play it back as chords. Start by finding the bass note of each chord —
-that is most of the answer — and then decide major or minor.
+when the chord is in root position the bass is its root, which gets you most of
+the way — and then decide major or minor.
 
 **The rule about time.** The app decides a chord is finished when no new note has
 arrived for 120 milliseconds, or when you play a note that belongs to the next
 chord. So play chords, not notes: a triad picked out one finger at a time will
-be read as three chords, and it should be.
+be read as three chords. That is the app's rule for telling chords apart, not a
+rule of music.
 
 **Modes are on this rung** because the previous theory lesson taught four of
 them and nothing let you play them. Now something does.
@@ -35,8 +37,9 @@ down by ear.
 **Repertoire for this rung.** None, and none is wanted: this rung is finished on
 its drills alone, and the plan will not hold you here waiting for a piece.
 
-**Common mistake.** Naming chords by ear from their top note. The bass is what
-tells you the chord.
+**Common mistake.** Naming chords by ear from their top note. The bass is usually
+the better guide — in root position it is the chord's root — but in an inversion
+it is not, so listen for the note the chord is built on as well as the lowest.
 
 **Tools for this rung.** Two things here. *Simon* opens the chain game drawn
 from all twelve keys — *Simon — every key around middle C*, which this rung

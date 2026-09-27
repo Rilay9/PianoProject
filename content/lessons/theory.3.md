@@ -13,9 +13,9 @@ readingTime: 3
 inclusively: C to E is a 3rd (C, D, E — three letters). The count gives the
 *number*; the exact semitones give the *quality*. A 3rd spanning four semitones
 is **major**; three semitones is **minor**. Perfect intervals — the 4th, 5th and
-octave — take neither name: there is no major 5th and no minor 4th. They are the
-ones whose two notes stand in the simplest relationship, which is why they sound
-hollow rather than sweet.
+octave — take neither name: there is no major 5th and no minor 4th. Their two
+notes stand in the simplest frequency ratios (4:3, 3:2, 2:1), and many hear them
+as open beside a third.
 
 **The intervals inside the octave**: minor and major 2nd, minor and major 3rd,
 perfect 4th, tritone, perfect 5th, minor and major 6th, minor and major 7th,
