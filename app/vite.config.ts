@@ -99,6 +99,10 @@ export default defineConfig({
           'content/**/*.{json,mxl,musicxml,md}',
           'content/**/*.{sf2,sf3,mp3,ogg,wav,js}',
         ],
+        // The builder's microscope data (`#/dev/microscope`, D2): megabytes a learner never
+        // opens, fetched from the network by the one screen that reads it. Workbox's own
+        // default ignore is kept beside it, since naming this replaces the default.
+        globIgnores: ['**/node_modules/**/*', 'content/review/**'],
         // Workbox's default is 2 MB and it skips larger files *silently*.
         maximumFileSizeToCacheInBytes: 30 * 1024 * 1024,
         // Take control of the page that installed us, so the very first visit

@@ -63,7 +63,14 @@ function isTodaySlot(value: string | null | undefined): value is TodaySlot {
   return value !== null && value !== undefined && (TODAY_SLOTS as readonly string[]).includes(value);
 }
 
-export const DEV_IDS = ['score'] as const;
+/**
+ * `score` is the renderer harness (P2). `microscope` is the review workbench (D2): a queue
+ * of content items, each rendered and played by the app's own renderer and audio beside its
+ * contract and measured facts, with per-dimension decisions kept on the device and exported
+ * for `tools/content/review.py --merge`. It alone takes an item, `#/dev/microscope/<id>`,
+ * so a link in an entry opens that item.
+ */
+export const DEV_IDS = ['score', 'microscope'] as const;
 export type DevId = (typeof DEV_IDS)[number];
 
 /**
@@ -105,6 +112,8 @@ export interface Route {
   tab: TabId;
   sub?: SubId;
   dev?: DevId;
+  /** The catalogue item open in the microscope (`#/dev/microscope/<id>`, D2). */
+  devItem?: string;
   /** Catalog id of the piece open on the Score screen. */
   score?: string;
   /** Import id of the PDF open in the PDF viewer (docs/04 §5b). */
@@ -614,7 +623,16 @@ export function parseHash(hash: string): Route {
     return looksLikeLessonId(id) ? { tab: 'plan', lesson: id } : { tab: DEFAULT_TAB };
   }
   if (tab === 'dev') {
-    return isDevId(sub) ? { tab: DEFAULT_TAB, dev: sub } : { tab: DEFAULT_TAB };
+    if (!isDevId(sub)) return { tab: DEFAULT_TAB };
+    if (sub !== 'microscope') return { tab: DEFAULT_TAB, dev: sub };
+    // The item, when one is named and is a catalogue id; the queue otherwise.
+    let item: string;
+    try {
+      item = decodeURIComponent(cleaned.split('/')[2] ?? '');
+    } catch {
+      item = '';
+    }
+    return looksLikeCatalogId(item) ? { tab: DEFAULT_TAB, dev: sub, devItem: item } : { tab: DEFAULT_TAB, dev: sub };
   }
   if (!isTabId(tab)) return { tab: DEFAULT_TAB };
   // An unknown sub-route degrades to the tab itself rather than to Today: the
@@ -673,7 +691,11 @@ export function routeToHash(route: Route): string {
     const base = `#/drill/${encodeURIComponent(route.drill)}`;
     return route.drillRung === undefined ? base : `${base}?rung=${encodeURIComponent(route.drillRung)}`;
   }
-  if (route.dev) return `#/dev/${route.dev}`;
+  if (route.dev) {
+    return route.dev === 'microscope' && route.devItem !== undefined
+      ? `#/dev/microscope/${encodeURIComponent(route.devItem)}`
+      : `#/dev/${route.dev}`;
+  }
   return route.sub ? `#/${route.tab}/${route.sub}` : `#/${route.tab}`;
 }
 
@@ -848,9 +870,9 @@ export class Router {
     this.setRoute(route);
   }
 
-  /** Navigates to a builder-only route (`#/dev/<id>`). */
-  navigateDev(dev: DevId): void {
-    const route: Route = { tab: DEFAULT_TAB, dev };
+  /** Navigates to a builder-only route (`#/dev/<id>`, or `#/dev/microscope/<item>`). */
+  navigateDev(dev: DevId, item?: string): void {
+    const route: Route = { tab: DEFAULT_TAB, dev, ...(dev === 'microscope' && item !== undefined ? { devItem: item } : {}) };
     this.win.location.hash = routeToHash(route);
     this.setRoute(route);
   }
@@ -900,6 +922,7 @@ export class Router {
       route.tab === this.current.tab &&
       route.sub === this.current.sub &&
       route.dev === this.current.dev &&
+      route.devItem === this.current.devItem &&
       route.score === this.current.score &&
       route.pdf === this.current.pdf &&
       route.pdfPage === this.current.pdfPage &&

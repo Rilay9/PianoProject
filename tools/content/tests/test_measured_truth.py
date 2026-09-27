@@ -115,11 +115,16 @@ class TestProvenanceLabelsEveryFact(Built):
                 self.assertIn("demands", provenance["facts"])
                 self.assertEqual(provenance["facts"]["demands"]["kind"],
                                  {"measured": "measured", "unmeasured": "unmeasured", "runtime": "runtime"}[item["measurement"]["status"]])
-                # R42: two decisions, never one keep bit standing for both.
+                # R42: two decisions, never one keep bit standing for both. Since D2 a bit is filled
+                # only from the human review record, and always beside its `reviewed` fact; a quarry
+                # keep never fills one (revised: E0 held both bits null on every keep, when no person
+                # had decided anything; `test_review_record.py` holds every bit to the record).
                 self.assertEqual(set(provenance["review"]), {"score", "teaching"})
-                if provenance.get("quarryKeep"):
-                    self.assertIsNone(provenance["review"]["score"], "a quarry keep read as a score review")
-                    self.assertIsNone(provenance["review"]["teaching"], "a quarry keep read as a teaching review")
+                for bit, fact in (("score", "reviewedScore"), ("teaching", "reviewedTeaching")):
+                    if provenance["review"][bit] is not None:
+                        self.assertEqual(provenance["facts"][fact]["kind"], "reviewed", f"a {bit} bit with no reviewed fact")
+                    elif provenance.get("quarryKeep"):
+                        self.assertNotIn(fact, provenance["facts"], f"a quarry keep read as a {bit} review")
 
     def test_a_quarry_keep_is_the_decision_not_the_reviewers_prose(self) -> None:
         # The quarry's review note is a reviewer's working prose ("La Cumparsita is 1916"), with no

@@ -37,6 +37,7 @@ from music21 import harmony, meter  # noqa: E402
 
 import family_contracts as FC  # noqa: E402
 import generate_exercises as G  # noqa: E402
+import review  # noqa: E402
 from tests import planned  # noqa: E402
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
@@ -141,14 +142,61 @@ class TestTheRowsAreWellFormed(unittest.TestCase):
                 self.assertTrue(roles["transfer"])
                 self.assertTrue(row["assessment"]["unjudged"])
 
-    def test_every_music_family_is_marked_unheard(self) -> None:
+    def test_heard_is_held_to_the_record(self) -> None:
+        """
+        D2 item 4 (revised from D0's "every music family is marked unheard", whose assumption was
+        that no hearing could be recorded): `heard` stays a hand-maintained declaration, and a
+        family marked `heard: true` has at least one `heard` decision by a person on a current
+        item of it in `content/review/decisions.jsonl` — never the reverse. A music family still
+        unheard says so in its unjudged lines.
+        """
+        events, errors = review.read_record()
+        self.assertEqual(errors, [])
+        entries = [entry for _sc, entry in planned.plan()]
+        current = {entry["id"]: review.generator_identity(entry) for entry in entries}
+        family_of = {entry["id"]: entry["drill"]["generator"]["family"] for entry in entries}
+        self.assertEqual(review.heard_faults(FC.contracts(), events, current, family_of), [])
         music = [f for f, row in FC.contracts().items() if any(r["promise"] == "music" for r in row["promise"])]
         self.assertGreater(len(music), 10)
         for family in music:
             row = FC.contract(family)
             with self.subTest(family=family):
-                self.assertFalse(row["heard"])
-                self.assertTrue(any("heard" in line for line in row["assessment"]["unjudged"]))
+                self.assertIsInstance(row["heard"], bool)
+                if not row["heard"]:
+                    self.assertTrue(any("heard" in line for line in row["assessment"]["unjudged"]))
+
+    def test_a_family_marked_heard_without_a_heard_decision_fails(self) -> None:
+        """The adversaries of the rule above, on a copy of the table with `tumbao` marked heard."""
+        entry = next(e for _sc, e in planned.plan() if e["id"] == "exercise.tumbao.c")
+        identity = review.generator_identity(entry)
+        current = {entry["id"]: identity}
+        family_of = {entry["id"]: "tumbao"}
+        contracts = copy.deepcopy(FC.contracts())
+        contracts["tumbao"]["heard"] = True
+
+        def event(**over) -> dict:
+            base = {"v": 1, "event": "ev-heard-1", "item": entry["id"], "identity": copy.deepcopy(identity),
+                    "dimension": "goodTeachingUse", "value": "yes", "basis": "heard", "reason": "heard complete",
+                    "category": "style", "by": "A. Reviewer", "at": "2026-09-27T10:00:00.000Z"}
+            base.update(over)
+            return base
+
+        def faults(*events: dict, table: dict = contracts) -> list[str]:
+            text = "".join(json.dumps(e) + "\n" for e in events)
+            parsed, errors = review.parse(text)
+            self.assertEqual(errors, [])
+            return review.heard_faults(table, parsed, current, family_of)
+
+        stale = copy.deepcopy(identity)
+        stale["version"] = identity["version"] + 1
+        self.assertTrue(faults(), "heard with nothing in the record")
+        self.assertTrue(faults(event(basis="notation")), "heard on a notation decision")
+        self.assertTrue(faults(event(identity=stale)), "heard on a stale identity")
+        triage = {"v": 1, "event": "ev-heard-t", "item": entry["id"], "by": "triage", "reason": "it grooves",
+                  "at": "2026-09-27T10:00:00.000Z"}
+        self.assertTrue(faults(triage), "heard on a triage line")
+        self.assertEqual(faults(event()), [], "a heard decision on a current item")
+        self.assertEqual(faults(event(), table=FC.contracts()), [], "never the reverse: heard: false stays allowed")
 
     def test_the_groove_and_style_families_promise_music(self) -> None:
         """Item 6: clave, tumbao, montuno, boogie, stride, comping, walking bass, rag, vamp, riff, ostinato."""
