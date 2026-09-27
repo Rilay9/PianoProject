@@ -18,6 +18,7 @@ import {
   type CatalogIndex,
 } from './selectors';
 import { lockState } from './prerequisites';
+import { SHIPPED_SKILL_ACTIVATION, skillsInForce, type SkillActivation } from './skillActivation';
 import type { RequirementReading, RungStates } from '../evidence/rungState';
 import type { ReadingMoves, ReadingRecipe, SessionRow } from '../data/db';
 import { dayKey, daysBetween, type LearnedPiece } from '../data/progressStore';
@@ -169,6 +170,12 @@ export interface BuildInput {
   rows?: readonly SessionRow[];
   /** The vocabulary the skills and demands are read in (v0 unless given). */
   vocabulary?: Vocabulary;
+  /**
+   * Whose declared target skills the skill requirement and the skill fallback read
+   * (D0; `skillActivation.ts`): the shipped activation unless given. A test that
+   * exercises the skill step on constructed items passes `EVERY_DECLARED_SKILL`.
+   */
+  skillActivation?: SkillActivation;
   /** Tracks the learner has switched on, in their order (planStore). */
   activeTracks: string[];
   minutes: number;
@@ -679,9 +686,10 @@ interface Want {
  *   items it names), not yet counted. The warm-up serves only exercises.
  * - `done`: the item. `measure`: the rung's exercises of that kind.
  * - `skill`: the rung's exercises that declare the skill in `targetSkills`,
- *   the skill the evidence has shown least first. A skill no exercise of the
- *   rung declares is the reader's (only reading rows declare skills today):
- *   neither slot claims it.
+ *   the skill the evidence has shown least first, read through the activation
+ *   boundary (`skillActivation.ts`, D0). A skill no activated exercise of the
+ *   rung declares is the reader's (as shipped only the reading rows are active,
+ *   and they are the reader's): neither slot claims it.
  * - `reads`: always the reader's.
  */
 function wantsOf(ctx: SlotContext, rung: Lesson, songs: 'any' | 'none'): Want[] {
@@ -706,7 +714,9 @@ function wantsOf(ctx: SlotContext, rung: Lesson, songs: 'any' | 'none'): Want[] 
       pool = own(rung.exerciseOptions).filter((item) => item.drill?.kind === r.measure);
     } else if (r.kind === 'skill') {
       skill = r.skill;
-      pool = own(rung.exerciseOptions).filter((item) => item.type !== 'song' && (item.targetSkills ?? []).includes(r.skill));
+      pool = own(rung.exerciseOptions).filter(
+        (item) => item.type !== 'song' && skillsInForce(item, ctx.input.skillActivation ?? SHIPPED_SKILL_ACTIVATION).includes(r.skill),
+      );
     } else {
       continue;
     }
@@ -874,7 +884,12 @@ function fallbackStep(
       found = choose(own, () => ({ kind: 'rung', rung, ...(strand?.title === undefined ? {} : { strand: strand.title }) }), () => rung.id);
     } else if (step === 'skill' && rung && want?.skill !== undefined) {
       const skill = want.skill;
-      found = choose(taught.filter((item) => (item.targetSkills ?? []).includes(skill)), () => ({ kind: 'skill', skill, rung }), (item) => listingIn(ctx, item));
+      const activation = ctx.input.skillActivation ?? SHIPPED_SKILL_ACTIVATION;
+      found = choose(
+        taught.filter((item) => skillsInForce(item, activation).includes(skill)),
+        () => ({ kind: 'skill', skill, rung }),
+        (item) => listingIn(ctx, item),
+      );
     } else if (step === 'demand' && rung && want?.skill !== undefined) {
       const demands = new Set(vocabulary.demands.filter((d) => d.copedWithBy === want.skill).map((d) => d.id));
       found = choose(
@@ -1390,7 +1405,15 @@ export function swapOptions(
   slots: SessionSlot[],
   curriculum: Curriculum,
   catalog: CatalogIndex,
-  options: { excludeSongs?: boolean; items?: CatalogItem[]; rung?: string; activeTracks?: readonly string[]; vocabulary?: Vocabulary } = {},
+  options: {
+    excludeSongs?: boolean;
+    items?: CatalogItem[];
+    rung?: string;
+    activeTracks?: readonly string[];
+    vocabulary?: Vocabulary;
+    /** Whose declared target skills the skill tier reads (D0; `skillActivation.ts`). */
+    skillActivation?: SkillActivation;
+  } = {},
 ): SwapOption[] {
   if (!slot.item) return [];
   const source = slot.item;
@@ -1403,6 +1426,7 @@ export function swapOptions(
     { itemId: source.id, ...(slot.lessonId ? { lessonId: slot.lessonId } : {}), excludeSongs, exclude },
     curriculum,
     catalog,
+    options.skillActivation ?? SHIPPED_SKILL_ACTIVATION,
   ).filter((option) => fits(option.item));
   if (tiered.length > 0) return tiered;
 

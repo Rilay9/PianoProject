@@ -16,6 +16,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { alternativesFor, indexCatalog, tieredAlternatives } from '../../src/curriculum/selectors';
+import { EVERY_DECLARED_SKILL } from '../../src/curriculum/skillActivation';
 import { swapOptions, type SessionSlot } from '../../src/curriculum/session';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
 import { swapTierWords } from '../../src/ui/help';
@@ -61,7 +62,9 @@ const CATALOG = indexCatalog([
 ]);
 
 describe('the tiers are claims, in order, and each option says which', () => {
-  const tiers = () => tieredAlternatives({ itemId: 'song.source', lessonId: 'classical.3' }, CURRICULUM, CATALOG);
+  // Constructed songs declaring a skill: the skill tier is activated for them explicitly
+  // (D0; as shipped it reads the reading rows only — skillActivationBoundary.test.ts).
+  const tiers = () => tieredAlternatives({ itemId: 'song.source', lessonId: 'classical.3' }, CURRICULUM, CATALOG, EVERY_DECLARED_SKILL);
 
   it('the same lesson, a named stand-in, a shared target skill, a shared measured demand', () => {
     expect(tiers().map((one) => [one.item.id, one.tier])).toEqual([

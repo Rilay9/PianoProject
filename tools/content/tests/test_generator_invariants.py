@@ -168,20 +168,18 @@ MIDDLE_C = 60
 #: The stretch a hand takes at once, in semitones, before it stops being a hand
 #: shape and becomes a reach. An octave: `OOMPAH_SPANS` and `make_stride` both
 #: reach a tenth and both *break* it — bass, then chord — which is the
-#: difference this number is drawing. Measured over the whole plan, exactly one
-#: family strikes wider than this, and it is named in `STRIKES_WIDER_THAN_A_HAND`.
+#: difference this number is drawing. It holds for every family's representative
+#: item, with no exemption.
+#:
+#: Replaced (D0, G38): `STRIKES_WIDER_THAN_A_HAND = {"open_voicing": 15}`. Its
+#: assumption was that the voicing tables define the shapes and a wider stretch
+#: is a content decision left open (Entry 33), so a structural check could wave
+#: it through. The physical gate decides it now, from the family's contract
+#: (`family_contracts.json`, `test_physical_gate.py`): the quartal stack is
+#: arranged within the hand over the bass, and the add9's ninth is a large-hand
+#: voicing declared with its prerequisite and its alternative. Nothing here
+#: exempts a family any more.
 AN_OCTAVE = 12
-
-#: The two shapes in the generator that ask one hand for more than an octave
-#: **at once**, with what they ask for. Both are in `make_open_voicing`, both
-#: are the shape's own table, and neither is a slip: a stack of fourths *is*
-#: `[0, 5, 10, 15]` and an added ninth on top *is* `[0, 4, 7, 14]`. Narrowing
-#: either one changes what the family teaches, and splitting the stack across
-#: the hands — which is how a pianist actually plays it — changes the family's
-#: shape. That is a content decision and it is open: Entry 33.
-STRIKES_WIDER_THAN_A_HAND = {
-    "open_voicing": 15,  # quartal, C4-F4-B♭4-E♭5; add9 is 14 in the same maker
-}
 
 #: The longest printed direction the generator writes, as a ratchet and **not**
 #: as a measurement of the page. Entry 4 shortened every direction that ran off
@@ -823,8 +821,7 @@ class TestHandRange(FamilyCase):
     def test_no_hand_is_asked_to_strike_more_than_an_octave(self) -> None:
         for name, _claims, sc, _entry in self.each():
             span, where = widest_one_hand_chord(sc)
-            ceiling = STRIKES_WIDER_THAN_A_HAND.get(name, AN_OCTAVE)
-            self.assertLessEqual(span, ceiling, f"{name}: {where}")
+            self.assertLessEqual(span, AN_OCTAVE, f"{name}: {where}")
 
     def test_the_families_that_reach_a_tenth_break_it(self) -> None:
         """
@@ -1382,8 +1379,7 @@ class TestTheChecksGoRedOnAMutation(FamilyCase):
             if widest_one_hand_chord(sc)[0] == 0:
                 continue  # a family with no chord in either hand
             mutant = stretch_every_chord_by_an_octave(copy.deepcopy(sc))
-            ceiling = STRIKES_WIDER_THAN_A_HAND.get(name, AN_OCTAVE)
-            self.assertGreater(widest_one_hand_chord(mutant)[0], ceiling,
+            self.assertGreater(widest_one_hand_chord(mutant)[0], AN_OCTAVE,
                                f"{name}: mutation `stretch_every_chord_by_an_octave` "
                                "did not go red")
 

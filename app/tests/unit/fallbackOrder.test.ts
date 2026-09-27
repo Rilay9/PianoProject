@@ -14,10 +14,16 @@
  * The constructed rung R asks for subdivision; its only exercise that trains it
  * cannot be played. Each case below takes away the candidates of the tiers
  * before it, so the slot has to walk one step further down.
+ *
+ * The constructed exercises declare their skills and the session reads them
+ * with `EVERY_DECLARED_SKILL` (D0): as shipped, the skill step acts on the
+ * reading rows' skills only (`skillActivationBoundary.test.ts`), and this file
+ * exercises the step itself.
  */
 import { describe, expect, it } from 'vitest';
 import { buildSession, FALLBACK_ORDER, type SessionSlot } from '../../src/curriculum/session';
 import { indexCatalog } from '../../src/curriculum/selectors';
+import { EVERY_DECLARED_SKILL } from '../../src/curriculum/skillActivation';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
 import { rungState, type RungReading } from '../../src/evidence/rungState';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
@@ -100,6 +106,7 @@ function warmup(gone: readonly string[]): SessionSlot | undefined {
     minutes: 15,
     startAt: 'R',
     today: TODAY,
+    skillActivation: EVERY_DECLARED_SKILL,
   }).slots.find((slot) => slot.kind === 'technique');
 }
 
@@ -166,6 +173,7 @@ describe('the warm-up walks the ladder one claim at a time, and the line names t
           minutes,
           startAt: 'R',
           today: TODAY,
+          skillActivation: EVERY_DECLARED_SKILL,
         }).slots;
         for (const slot of slots) {
           expect(['ex.near', 'song.near'], `${slot.kind} at ${String(minutes)} min, gone ${gone.join(',')}`).not.toContain(slot.item?.id);

@@ -5,9 +5,6 @@
     "title": "Posture and hand-shape checklist",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core"
     ],
@@ -55,9 +52,6 @@
     "title": "Finger-number tap drill",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core"
     ],
@@ -98,9 +92,6 @@
     "title": "Find the key",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core"
     ],
@@ -142,9 +133,6 @@
     "title": "Play all the Cs, Fs and Gs",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core"
     ],
@@ -190,9 +178,6 @@
     "title": "Guided tour of the practice modes",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core"
     ],
@@ -239,9 +224,6 @@
     "title": "Placement test",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core"
     ],
@@ -315,9 +297,6 @@
     "title": "Right-hand five-finger walk",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "technique"
@@ -361,9 +340,6 @@
     "title": "Note flash — treble C4 to G4",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "theory-ear"
@@ -407,9 +383,6 @@
     "title": "Rhythm clap — quarters and rests",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "theory-ear"
@@ -455,9 +428,6 @@
     "title": "Rhythm reading — quarters, halves, wholes",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "theory-ear"
@@ -506,9 +476,6 @@
     "title": "Left-hand five-finger walk",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "technique"
@@ -552,9 +519,6 @@
     "title": "Note flash — bass F2 to C4",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "theory-ear"
@@ -598,9 +562,6 @@
     "title": "Note flash — grand staff",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "theory-ear"
@@ -644,9 +605,6 @@
     "title": "Rhythm reading in 3/4",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "theory-ear"
@@ -694,9 +652,6 @@
     "title": "Sight-reading generator, level 1",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "theory-ear"
@@ -749,9 +704,6 @@
     "title": "Ear drill — 2nd or 3rd",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear",
       "core"
@@ -798,9 +750,6 @@
     "title": "Ear drill — every interval within the octave",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear",
       "core"
@@ -855,9 +804,6 @@
     "title": "Hands-together pattern drill",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "technique"
@@ -901,9 +847,6 @@
     "title": "Rhythm reading with eighth notes",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "theory-ear"
@@ -950,9 +893,6 @@
     "title": "Chord drill — C, F and G",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "chords-pop"
@@ -1000,9 +940,6 @@
     "title": "Rhythm reading — dotted quarter and eighth",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "theory-ear"
@@ -1049,9 +986,6 @@
     "title": "Dynamics drill — piano and forte",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core"
     ],
@@ -1096,9 +1030,6 @@
     "title": "Position-shift drill",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "technique"
@@ -1141,9 +1072,6 @@
     "title": "Note flash with sharps and flats",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "theory-ear"
@@ -1187,9 +1115,6 @@
     "title": "Build a major scale from any note",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear",
       "core"
@@ -1232,9 +1157,6 @@
     "title": "I-IV-V7 in C, G and F",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "chords-pop"
@@ -1285,9 +1207,6 @@
     "title": "Chord-symbol flash",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "chords-pop",
       "core"
@@ -1329,9 +1248,6 @@
     "title": "Am, Dm and E7 changes",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "chords-pop"
@@ -1378,9 +1294,6 @@
     "title": "Ear drill — major or minor",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear",
       "core"
@@ -1425,9 +1338,6 @@
     "title": "Rhythm dictation",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear"
     ],
@@ -1469,9 +1379,6 @@
     "title": "Note flash — C2 to C6",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "theory-ear"
@@ -1515,9 +1422,6 @@
     "title": "Sight-reading generator, level 2",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "theory-ear"
@@ -1569,9 +1473,6 @@
     "title": "Pedal-change drill on I-IV-V7-I",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "technique"
@@ -1620,9 +1521,6 @@
     "title": "Left-hand accompaniment patterns",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "chords-pop",
@@ -1680,9 +1578,6 @@
     "title": "Inversion drill",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "chords-pop",
@@ -1733,9 +1628,6 @@
     "title": "Ear drill — cadences",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear"
     ],
@@ -1783,9 +1675,6 @@
     "title": "Melodic dictation",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear"
     ],
@@ -1827,9 +1716,6 @@
     "title": "Rhythm reading in 6/8",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "theory-ear"
@@ -1873,9 +1759,6 @@
     "title": "Sight-reading generator, level 3",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "theory-ear"
@@ -1934,9 +1817,6 @@
     "title": "Sight-reading generator, level 1, left hand",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "theory-ear"
@@ -1988,9 +1868,6 @@
     "title": "Sight-reading generator, level 2, right hand",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "theory-ear"
@@ -2045,9 +1922,6 @@
     "title": "Sight-reading generator, level 4",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "theory-ear"
@@ -2102,9 +1976,6 @@
     "title": "Ear drill — seventh-chord qualities",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear",
       "jazz"
@@ -2153,9 +2024,6 @@
     "title": "Ear drill — chord progressions",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear",
       "chords-pop"
@@ -2200,9 +2068,6 @@
     "title": "Improvise over a I-IV-V loop",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "improv-compose",
       "core"
@@ -2256,9 +2121,6 @@
     "title": "Improvise over a four-chord loop",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "improv-compose",
       "core"
@@ -2309,9 +2171,6 @@
     "title": "Answer the phrase",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "improv-compose",
       "theory-ear"
@@ -2355,9 +2214,6 @@
     "title": "Twelve-bar blues backing track",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "improv-compose",
       "blues-boogie"
@@ -2408,9 +2264,6 @@
     "title": "Twelve-bar left-hand patterns",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "blues-boogie",
       "technique"
@@ -2459,9 +2312,6 @@
     "title": "ii-V-I with shell voicings",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "jazz",
       "chords-pop"
@@ -2511,9 +2361,6 @@
     "title": "Play the form with the chart",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "blues-boogie",
       "jazz"
@@ -2928,9 +2775,6 @@
     "title": "Modes — the five you will meet first",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear",
       "improv-compose"
@@ -2990,9 +2834,6 @@
     "title": "Modes — all seven, from any root",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear",
       "improv-compose",
@@ -3060,9 +2901,6 @@
     "title": "Chord–scale — play what fits the symbol",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "jazz",
       "improv-compose"
@@ -3116,9 +2954,6 @@
     "title": "Ninth chords",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "jazz",
       "chords-pop"
@@ -3173,9 +3008,6 @@
     "title": "Elevenths and thirteenths",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "jazz"
     ],
@@ -3230,9 +3062,6 @@
     "title": "Harmonic dictation — write down what you hear",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear"
     ],
@@ -3299,9 +3128,6 @@
     "title": "Harmonic dictation — music that changes key",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear",
       "jazz"
@@ -3365,9 +3191,6 @@
     "title": "Secondary dominants by ear",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear",
       "chords-pop"
@@ -3415,9 +3238,6 @@
     "title": "Roman numerals — read and play",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear",
       "chords-pop"
@@ -3476,9 +3296,6 @@
     "title": "Roman numerals — the ones from outside the key",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear",
       "jazz"
@@ -3535,9 +3352,6 @@
     "title": "Transposition — four bars in another key",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear",
       "chords-pop",
@@ -3589,9 +3403,6 @@
     "title": "Transposition — a harder page, further away",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear",
       "chords-pop"
@@ -3642,9 +3453,6 @@
     "title": "Play back a tune — four bars, phrase by phrase",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear",
       "improv-compose"
@@ -3693,9 +3501,6 @@
     "title": "Play back a tune — eight bars",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear",
       "improv-compose"
@@ -3744,9 +3549,6 @@
     "title": "Simon — the white keys around middle C",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear"
     ],
@@ -3800,9 +3602,6 @@
     "title": "Simon — every key around middle C",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear"
     ],
@@ -3847,9 +3646,6 @@
     "title": "Simon — the C blues scale",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "theory-ear",
       "blues-boogie",
@@ -3906,9 +3702,6 @@
     "title": "Sight-reading generator, level 5",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "theory-ear"
@@ -3971,9 +3764,6 @@
     "title": "Sight-reading generator, level 6",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "theory-ear"
@@ -4038,9 +3828,6 @@
     "title": "Sight-reading generator, level 7",
     "composer": null,
     "arranger": "PianoPath",
-    "genre": [
-      "drill"
-    ],
     "tracks": [
       "core",
       "theory-ear",

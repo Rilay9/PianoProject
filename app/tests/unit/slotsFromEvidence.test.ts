@@ -28,14 +28,17 @@
  *   does not jump it (the reviewer's correction, 2026-09-26).
  *
  * And a constructed case for the warm-up's first claim, which no shipped
- * exercise can reach yet (only the nine reading rows declare `targetSkills`):
- * the exercise training the unmet skill the evidence has shown least.
+ * exercise can reach yet (the generated families declare `targetSkills` since
+ * D0, and the shipped activation acts on the reading rows' only): the exercise
+ * training the unmet skill the evidence has shown least, with the constructed
+ * exercises' skills activated explicitly (`EVERY_DECLARED_SKILL`).
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { buildSession, readingOptions, taughtAtRung, type BuildInput, type SessionSlot } from '../../src/curriculum/session';
 import { indexCatalog } from '../../src/curriculum/selectors';
+import { EVERY_DECLARED_SKILL } from '../../src/curriculum/skillActivation';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
 import type { SessionRow } from '../../src/data/db';
 import type { LearnedPiece } from '../../src/data/progressStore';
@@ -421,6 +424,7 @@ describe('the warm-up trains the unmet skill the evidence has shown least', () =
       activeTracks: ['core'],
       minutes: 15,
       today: TODAY,
+      skillActivation: EVERY_DECLARED_SKILL,
     }).slots;
     const warmup = slot(slots, 'technique');
     expect(warmup?.item?.id).toBe('ex.ties');

@@ -13,6 +13,7 @@ import {
   type CatalogItem,
   type Curriculum,
 } from '../../src/curriculum';
+import { EVERY_DECLARED_SKILL } from '../../src/curriculum/skillActivation';
 import { levelLabel } from '../../src/ui/widgets';
 
 function item(id: string, over: Partial<CatalogItem> = {}): CatalogItem {
@@ -61,6 +62,9 @@ describe('levelConfidence', () => {
 
 // Revised (C6): the fixtures share a target skill, where they shared the concept tag `etude` — a
 // concept tag no longer makes an alternative (L36). The two orders are unchanged.
+// Revised (D0): the skill tier reads a declared skill only where it is in force, and on shipped
+// content that is the reading rows (`skillActivation.ts`); these constructed items are not reading
+// rows, so the tier is activated here, deliberately, to keep testing the two orders.
 describe('alternativesFor', () => {
   it('prefers a judged level over an estimated one at the same distance', () => {
     const catalog = indexCatalog([
@@ -68,7 +72,12 @@ describe('alternativesFor', () => {
       item('song.estimated', { level: 7.2, levelSource: 'estimated' }),
       item('song.judged', { level: 7.2, levelSource: 'judged' }),
     ]);
-    const found = alternativesFor({ itemId: 'song.source' }, emptyCurriculum, catalog);
+    const found = alternativesFor(
+      { itemId: 'song.source' },
+      emptyCurriculum,
+      catalog,
+      EVERY_DECLARED_SKILL,
+    );
     expect(found.map((i) => i.id)).toEqual(['song.judged', 'song.estimated']);
   });
 
@@ -80,7 +89,12 @@ describe('alternativesFor', () => {
       item('song.near', { level: 7.1, levelSource: 'estimated' }),
       item('song.far', { level: 7.4, levelSource: 'judged' }),
     ]);
-    const found = alternativesFor({ itemId: 'song.source' }, emptyCurriculum, catalog);
+    const found = alternativesFor(
+      { itemId: 'song.source' },
+      emptyCurriculum,
+      catalog,
+      EVERY_DECLARED_SKILL,
+    );
     expect(found.map((i) => i.id)).toEqual(['song.near', 'song.far']);
   });
 });

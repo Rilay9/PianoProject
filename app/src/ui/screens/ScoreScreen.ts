@@ -23,6 +23,7 @@ import { generateSightReading } from '../../engine/sightReading';
 import { readingOptions, taughtAtRung } from '../../curriculum/session';
 import type { CatalogItem, Curriculum, Lesson } from '../../curriculum/types';
 import { findLesson, masteryCriteriaFor, proseRungFor } from '../../curriculum/selectors';
+import { skillsInForce } from '../../curriculum/skillActivation';
 import { getMidiSettings } from '../../data/midiSettings';
 import {
   DEFAULT_SETTINGS,
@@ -3135,12 +3136,13 @@ export function ScoreScreen(router: Router): HTMLElement {
      * What a run is evidence of, and what it is not (C3's function; C4 item 0):
      * computed here, where the played model is in hand, and kept on the row,
      * because nothing later has the phrase to compute it from. The sheet's *Not
-     * judged* lines read the same results. None for an item that declares no
-     * skill.
+     * judged* lines read the same results. None for an item whose declared skills
+     * are not in force (`skillActivation.ts`, D0): as shipped, the reading rows.
      */
+    const skills = skillsInForce(item);
     const evidenceOf = (observation: RunResult): EvidenceResult[] | undefined =>
-      model && (item?.targetSkills?.length ?? 0) > 0
-        ? evidenceFor({ observation, played: model, targetSkills: item?.targetSkills ?? [], vocabulary: VOCABULARY_V0 })
+      model && skills.length > 0
+        ? evidenceFor({ observation, played: model, targetSkills: skills, vocabulary: VOCABULARY_V0 })
         : undefined;
     const runEvidence = run ? evidenceOf(run) : undefined;
 

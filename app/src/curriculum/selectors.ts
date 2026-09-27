@@ -7,6 +7,7 @@
  */
 import type { MasteryCriteria } from '../engine/Scoring';
 import type { CatalogItem, Curriculum, Lesson } from './types';
+import { SHIPPED_SKILL_ACTIVATION, skillsInForce, type SkillActivation } from './skillActivation';
 
 export interface CatalogIndex {
   byId: Map<string, CatalogItem>;
@@ -131,7 +132,9 @@ export function levelConfidence(item: CatalogItem): number {
  * - `alternative`: one of the item's own `alternatives[]` — its author named it
  *   as a stand-in, which is what makes an un-imported song a pointer rather
  *   than a dead row;
- * - `skill`: an item declaring a target skill the item declares;
+ * - `skill`: an item declaring a target skill the item declares, both read through
+ *   `skillActivation.ts` (D0): the reading rows as shipped, so the target skills D0
+ *   writes on the generated families do not widen the tier until one is activated;
  * - `demand`: an item carrying a demand the build measured on the item.
  *
  * The third tier was "anything within half a level sharing a concept tag", and
@@ -162,6 +165,8 @@ export function tieredAlternatives(
   query: AlternativesQuery,
   curriculum: Curriculum,
   catalog: CatalogIndex,
+  /** Whose declared target skills the skill tier reads (D0; `skillActivation.ts`). */
+  activation: SkillActivation = SHIPPED_SKILL_ACTIVATION,
 ): TieredAlternative[] {
   const { itemId, lessonId, excludeSongs = false, exclude = [], limit = 12 } = query;
   const skip = new Set<string>([itemId, ...exclude]);
@@ -195,7 +200,7 @@ export function tieredAlternatives(
         .sort(nearest);
       for (const item of found) push(item.id, tier, (theirs(item) ?? []).find((one) => mine.has(one)));
     };
-    sharing(source.targetSkills, (item) => item.targetSkills, 'skill');
+    sharing(skillsInForce(source, activation), (item) => skillsInForce(item, activation), 'skill');
     sharing(source.demands, (item) => item.demands, 'demand');
   }
 
@@ -207,8 +212,9 @@ export function alternativesFor(
   query: AlternativesQuery,
   curriculum: Curriculum,
   catalog: CatalogIndex,
+  activation: SkillActivation = SHIPPED_SKILL_ACTIVATION,
 ): CatalogItem[] {
-  return tieredAlternatives(query, curriculum, catalog).map((one) => one.item);
+  return tieredAlternatives(query, curriculum, catalog, activation).map((one) => one.item);
 }
 
 export function findLesson(curriculum: Curriculum, lessonId: string): Lesson | undefined {
