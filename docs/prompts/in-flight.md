@@ -5,7 +5,7 @@
 | Seam | Entry | What it owns | On landing |
 |---|---|---|---|
 | T53c | 86 | **accepted** (`responses/df71a0b.md`); the T53 chain closed | — |
-| H0 | 87 | suite reliability, test and harness only (Q34, Q37, Q39, Q44); Playwright on port 4183 in its worktree | merge; no product change to verify — the touched specs under repetition are its proof; record; handoff; push |
+| H0 | 87 | **landed** (Entry 87, merged as 46af8fc, handoff `handoffs/a008ba5.md`); awaiting the reviewer's response | — |
 | F1 | 88 | **accepted** by the reviewer (`responses/a94baee.md`, unprompted through PR #1) | — |
 
 ## Waiting

@@ -25,3 +25,6 @@ If a case cannot be made deterministic without changing product behaviour, do no
 ## Report
 
 Judgement first: which of the six mechanisms were proven and how; then Done / Not done / Follow-ups / Questions / Files; the table; the red lines; exit codes and the repetition and load counts; unverified beside what passes.
+
+**Delivered 2026-09-27**, Entry 87, in an isolated worktree on port 4183: six test files and nothing else; the late-run case on Playwright's clock with its assertions kept and a unit twin on the engine's `FakeClock`; the two triplet cases budgeted; the MIDI, Open-as and density cases waiting on published state instead of a heading, a first row or a sleep. Two cases did not reproduce and now name their failure. The builder's open question (two local budgets or one config-wide arrival budget) decided by the orchestrator: local, with the reason at the case (Q51). The product implication of the Q39 mechanism recorded as U66.
+

@@ -1,0 +1,51 @@
+
+Running 25 tests using 2 workers
+
+(node:39804) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:49852) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\e2e\engine.spec.ts:112:3 › Tempo mode end to end › a late run yields the expected timing statistics (1.3s)
+  ok  2 tests\e2e\doors.spec.ts:215:3 › Open as… from a Library row › Duet opens with a hand chosen and the app on the other one (1.7s)
+  ok  4 tests\e2e\midi.spec.ts:177:3 › MIDI screen error states › an unsupported browser says so and keeps the on-screen keyboard (282ms)
+  ok  3 tests\e2e\midi.spec.ts:142:3 › MIDI screen settings persistence › the pinned input survives a reload (660ms)
+(node:47180) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  5 tests\e2e\score.density.spec.ts:138:3 › a 900px screen keeps note spacing and centres it (1.7s)
+  ok  6 tests\e2e\doors.spec.ts:215:3 › Open as… from a Library row › Duet opens with a hand chosen and the app on the other one (1.2s)
+(node:33920) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  7 tests\e2e\midi.spec.ts:142:3 › MIDI screen settings persistence › the pinned input survives a reload (469ms)
+  ok  8 tests\e2e\midi.spec.ts:177:3 › MIDI screen error states › an unsupported browser says so and keeps the on-screen keyboard (264ms)
+  ok  9 tests\e2e\engine.spec.ts:112:3 › Tempo mode end to end › a late run yields the expected timing statistics (1.3s)
+(node:42816) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 10 tests\e2e\score.density.spec.ts:138:3 › a 900px screen keeps note spacing and centres it (1.8s)
+(node:48368) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 11 tests\e2e\doors.spec.ts:215:3 › Open as… from a Library row › Duet opens with a hand chosen and the app on the other one (1.2s)
+  ok 13 tests\e2e\midi.spec.ts:142:3 › MIDI screen settings persistence › the pinned input survives a reload (477ms)
+  ok 14 tests\e2e\midi.spec.ts:177:3 › MIDI screen error states › an unsupported browser says so and keeps the on-screen keyboard (280ms)
+  ok 12 tests\e2e\engine.spec.ts:112:3 › Tempo mode end to end › a late run yields the expected timing statistics (1.4s)
+(node:46716) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 16 tests\e2e\doors.spec.ts:215:3 › Open as… from a Library row › Duet opens with a hand chosen and the app on the other one (1.2s)
+  ok 15 tests\e2e\score.density.spec.ts:138:3 › a 900px screen keeps note spacing and centres it (1.9s)
+(node:15864) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 17 tests\e2e\engine.spec.ts:112:3 › Tempo mode end to end › a late run yields the expected timing statistics (1.3s)
+  ok 18 tests\e2e\midi.spec.ts:142:3 › MIDI screen settings persistence › the pinned input survives a reload (626ms)
+  ok 19 tests\e2e\midi.spec.ts:177:3 › MIDI screen error states › an unsupported browser says so and keeps the on-screen keyboard (373ms)
+(node:46276) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 20 tests\e2e\score.density.spec.ts:138:3 › a 900px screen keeps note spacing and centres it (1.6s)
+(node:43316) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 21 tests\e2e\doors.spec.ts:215:3 › Open as… from a Library row › Duet opens with a hand chosen and the app on the other one (1.3s)
+  ok 23 tests\e2e\midi.spec.ts:142:3 › MIDI screen settings persistence › the pinned input survives a reload (542ms)
+  ok 24 tests\e2e\midi.spec.ts:177:3 › MIDI screen error states › an unsupported browser says so and keeps the on-screen keyboard (401ms)
+  ok 22 tests\e2e\engine.spec.ts:112:3 › Tempo mode end to end › a late run yields the expected timing statistics (1.4s)
+  ok 25 tests\e2e\score.density.spec.ts:138:3 › a 900px screen keeps note spacing and centres it (1.4s)
+
+  25 passed (16.8s)
+exit=0
