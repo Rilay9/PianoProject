@@ -362,8 +362,9 @@ each key (contrary, similar, 1 & 2 octaves, 60→100 bpm). Songs: *Beethoven —
 new keys. Songs: *Bella Ciao* `[MT]`, *Beethoven — Für Elise (beginner)* `[MT]`, *Twinkle, Twinkle, Little Star (in F major)* `[AUTH]`. Mastery: as 4.1.
 
 **4.3 Arpeggios and chord inversions (all triads, root/1st/2nd).** Concepts: inversion
-shapes, arpeggio fingering (RH 1-2-3-5 / LH 5-3-2-1), why inversions make smooth chord
-changes. Exercises: `[GEN]` inversion drill (app shows symbol like "F/A", learner plays it),
+shapes, arpeggio fingering over two octaves (in C, RH 1-2-3-1-2-3-5 and LH 5-4-2-1-4-2-1: the
+thumb takes every root after the first, the fifth finger only at the ends; the generator's other
+keys read from one published chart, T53), why inversions make smooth chord changes. Exercises: `[GEN]` inversion drill (app shows symbol like "F/A", learner plays it),
 `[GEN]` arpeggios HS 2 octaves C/G/F/Am/Dm/Em. Songs: *Pachelbel — Canon in D (easy)* `[MT]`, *Greensleeves* `[MT]`, *Greensleeves (with chords)* `[AUTH]`. Videos: Bill Hilton (inversions — a key lesson), Hoffman "inversions". Mastery: 30
 random inversions ≥ 95 % within 3 s each.
 

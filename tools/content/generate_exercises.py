@@ -138,26 +138,112 @@ HANDS = ("both", "right", "left")
 MAJOR_KEYS = ("C", "G", "D", "A", "E", "B", "F", "B-", "E-", "A-", "D-", "G-")
 MINOR_KEYS = ("A", "E", "D", "G", "C", "B", "F", "F#", "C#", "G#", "B-", "E-")
 
-ARPEGGIO_FINGERING_RH = [1, 2, 3, 5]   # root-position major/minor triad, white-key roots
-ARPEGGIO_FINGERING_LH = [5, 3, 2, 1]
-#: The same triad from a black-key root. The thumb does not take the black
-#: key: the second finger starts, the thumb takes the next chord tone, and
-#: the top note is the fourth finger — 2-1-2-4 in the right hand and its
-#: mirror 2-1-4-2 in the left, which is the shape Hanon prints for every
-#: black-key arpeggio (No. 41) and the one the graded syllabuses give for
-#: D♭, E♭, A♭, B♭ and G♭ major and the black-root minors. Sixty items shipped
-#: with the white-key table on these roots, thumb on the black key in every
-#: one, and `confirm_fingering` cannot see it: a melodic line is not a chord.
-ARPEGGIO_FINGERING_RH_BLACK = [2, 1, 2, 4]
-ARPEGGIO_FINGERING_LH_BLACK = [2, 1, 4, 2]
-#: A four-note seventh arpeggio from a white-key root: one finger a note,
-#: thumb under after the fourth, 5 on the last note — 1-2-3-4 and 5-4-3-2.
-#: The old `[1, 2, 3, 5]` put the little finger on the seventh and then
-#: passed the thumb under *it*, which no hand does. Black-key roots print no
-#: fingering at all and say so in the catalog (`fingeringVerified`), the
-#: policy `make_blues_scale` set: better none than one this file invented.
+#: Root-position triad arpeggios, both hands, every key the plan arpeggiates,
+#: from one published chart: Robert Kelley, "Arpeggio Fingering Chart for
+#: Piano, Organ, or Electric Keyboard",
+#: https://robertkelleyphd.com/home/teaching/keyboard/keyboard-arpeggio-fingering-chart/
+#: (read 2026-09-26). Each pattern is four fingers going up — root, third,
+#: fifth, and the root an octave higher — keyed here by music21's spelling of
+#: the root. The chart's rules say how to read it over more than one octave:
+#: "The arpeggio fingering pattern repeats every three notes, so that every
+#: octave has the same fingering"; "The thumb always stays on the white keys,
+#: except when there are no white keys (F♯/G♭ major and D♯/E♭ minor)"; and
+#: "The fifth finger is only used at a starting place, a stopping place, or a
+#: turning-around place." So the first root takes the first digit, every root
+#: after it takes the last, and the thumb gives way to the fifth finger at the
+#: bottom of a left hand and the top of a right (`chart_ascent`) — which is
+#: also what lesson 4.3 teaches for C: 1-2-3, 1-2-3, 5 and 5-4-2-1, 4-2-1.
+#:
+#: What stood here was a white-key and a black-key table per hand, read by
+#: `table[:3] * octaves + [table[3]]`: the first root's finger on every root.
+#: That is right only where the two are the same finger. Every left hand on a
+#: white root printed 5-3-2-**5**-3-2-1, the little finger straight after the
+#: second at each octave join, and every right hand on a black root put finger
+#: 2 on the fifth and again on the root a fourth above it; the black-key table
+#: also put the thumb on D♭ in B♭ minor and on G♭ in E♭ minor, and fingered
+#: G♭ major, which has no white key, with a shape built for a white third.
+#: Entry 82's scan flagged 89 of the 120 arpeggio items, and
+#: `test_generator_fingering.py` asserted the faulty sequences, so it passed;
+#: that file now reads the chart for itself. A key missing from this table
+#: prints no fingering and says so (`fingeringVerified`), the policy
+#: `make_blues_scale` set.
+ARPEGGIO_CHART: dict[tuple[str, str], tuple[str, str]] = {
+    # (root, quality): (right hand, left hand)
+    ("C", "major"): ("1231", "1421"),
+    ("G", "major"): ("1231", "1421"),
+    ("D", "major"): ("1231", "1321"),
+    ("A", "major"): ("1231", "1321"),
+    ("E", "major"): ("1231", "1321"),
+    ("B", "major"): ("1231", "1321"),
+    ("F", "major"): ("1231", "1421"),
+    ("B-", "major"): ("2124", "3213"),
+    ("E-", "major"): ("2124", "2142"),
+    ("A-", "major"): ("2124", "2142"),
+    ("D-", "major"): ("2124", "2142"),
+    # No white key in G♭ major: the chart fingers it as if it were white.
+    ("G-", "major"): ("1231", "1321"),
+    ("A", "minor"): ("1231", "1421"),
+    ("E", "minor"): ("1231", "1421"),
+    ("D", "minor"): ("1231", "1421"),
+    ("G", "minor"): ("1231", "1421"),
+    ("C", "minor"): ("1231", "1421"),
+    ("B", "minor"): ("1231", "1421"),
+    ("F", "minor"): ("1231", "1421"),
+    ("F#", "minor"): ("2124", "2142"),
+    ("C#", "minor"): ("2124", "2142"),
+    ("G#", "minor"): ("2124", "2142"),
+    ("B-", "minor"): ("2312", "3213"),
+    # Nor in E♭ minor.
+    ("E-", "minor"): ("1231", "1421"),
+}
+#: A four-note seventh arpeggio from a white-key root: one finger a note from
+#: the first root, 5 on the last note in the right hand — 1-2-3-4 and 5-4-3-2
+#: — and the thumb on every root after the first in both hands, so the left
+#: hand's second octave begins 1-4-3-2, not 5-4-3-2 again. The old
+#: `[1, 2, 3, 5]` put the little finger on the seventh and then passed the
+#: thumb under *it*, which no hand does; and until T53 the left hand printed
+#: 5-4-3-2-**5**-4-3-2-1, the triads' fault. No chart this file has covers
+#: sevenths; the join follows the triad chart's first and third rules above
+#: (every octave fingered alike, the fifth finger only where the line starts,
+#: turns or stops). Black-key roots print no fingering at all and say so in
+#: the catalog (`fingeringVerified`): better none than one this file invented.
 SEVENTH_ARPEGGIO_FINGERING_RH = [1, 2, 3, 4]
 SEVENTH_ARPEGGIO_FINGERING_LH = [5, 4, 3, 2]
+
+
+def arpeggio_ascent(first: list[int], join: int, top: int, octaves: int) -> list[int]:
+    """
+    An arpeggio's fingers going up, one a note, from the first root to the top one.
+
+    `first` fingers the first root and the chord tones above it, `join` every
+    later root inside the run, and `top` the last. They are three separate
+    numbers because in most hands they are three different fingers: a left
+    hand starts C major on 5 and takes each later C with the thumb, and a
+    right hand starts A flat major on 2 and takes each later A flat with 4.
+    The construction this replaced gave every root the first root's finger.
+    """
+    return first + ([join] + first[1:]) * (octaves - 1) + [top]
+
+
+def chart_ascent(pattern: str, hand: str, octaves: int) -> list[int]:
+    """
+    One `ARPEGGIO_CHART` pattern read out over `octaves`, going up.
+
+    The first digit is the first root, the last digit every later root, and
+    the thumb gives way to the fifth finger at the left hand's starting place
+    and the right hand's turning-around place, which the chart's third rule
+    allows and which is how lesson 4.3 fingers C: 1-2-3, 1-2-3, 5 and
+    5-4-2-1, 4-2-1.
+    """
+    root, third, fifth, octave = (int(digit) for digit in pattern)
+    start = 5 if hand == "left" and root == 1 else root
+    top = 5 if hand == "right" and octave == 1 else octave
+    return arpeggio_ascent([start, third, fifth], octave, top, octaves)
+
+
+def up_and_back(ascent: list[int]) -> list[int]:
+    """The same fingers coming down: the top note is played once."""
+    return ascent + list(reversed(ascent))[1:]
 
 
 def is_black_root(name: str) -> bool:
@@ -856,21 +942,27 @@ def make_arpeggio(root: str, quality: str = "major", hands: str = "both", octave
     ks = key.Key(root if quality == "major" else root.lower())
     sc, rh, lh = grand_staff(title, bpm, ks=ks)
 
+    # Spelled by interval, an octave at a time (`by_octaves`, `up`). It was
+    # `start.transpose(12 * o + i)`, a count of semitones, which music21 spells
+    # by pitch class: A flat major printed G sharp, C, E flat, G sharp under a
+    # four-flat signature, B major wrote its third as E flat, F minor its third
+    # as G sharp, and D flat and G flat major came out in sharps.
     def run(start: pitch.Pitch) -> list[pitch.Pitch]:
-        up = [start.transpose(12 * o + i) for o in range(octaves) for i in intervals] + [start.transpose(12 * octaves)]
-        return up + list(reversed(up))[1:]
+        climb = [up(by_octaves(start, o), i) for o in range(octaves) for i in intervals]
+        climb.append(by_octaves(start, octaves))
+        return climb + list(reversed(climb))[1:]
 
     rh_p = run(fits_on_the_keyboard(root, octaves, 4))
     lh_p = run(fits_on_the_keyboard(root, octaves, 2))
     n_up = 3 * octaves + 1
-    black = is_black_root(root)
-    rh_table = ARPEGGIO_FINGERING_RH_BLACK if black else ARPEGGIO_FINGERING_RH
-    lh_table = ARPEGGIO_FINGERING_LH_BLACK if black else ARPEGGIO_FINGERING_LH
-    rh_f = rh_table[:3] * octaves + [rh_table[3]]
-    rh_f = rh_f + list(reversed(rh_f))[1:]
-    lh_f = lh_table[:3] * octaves + [lh_table[3]]
-    lh_f = lh_f + list(reversed(lh_f))[1:]
-    assert len(rh_f) == len(rh_p) == 2 * n_up - 1
+    # Fingered from `ARPEGGIO_CHART`, where the table and its reading are
+    # sourced; a key the chart does not give prints no fingering at all.
+    chart = ARPEGGIO_CHART.get((root, quality))
+    rh_f = lh_f = None
+    if chart is not None:
+        rh_f = up_and_back(chart_ascent(chart[0], "right", octaves))
+        lh_f = up_and_back(chart_ascent(chart[1], "left", octaves))
+        assert len(rh_f) == len(lh_f) == len(rh_p) == len(lh_p) == 2 * n_up - 1
     if hands in ("both", "right"):
         add_notes(rh, rh_p, rh_f, 0.5)
     else:
@@ -882,7 +974,8 @@ def make_arpeggio(root: str, quality: str = "major", hands: str = "both", octave
     finalize(sc)
     item_id = f"exercise.arpeggio.{key_slug(root)}-{quality}.{octaves}oct.{hands}"
     entry = catalog_entry(item_id, title, level, ["arpeggio", f"{note_name(root)}-{quality}", f"hands:{hands}"], hands, bpm,
-                          "arpeggio", {"key": root, "quality": quality, "octaves": octaves, "fingeringVerified": True},
+                          "arpeggio", {"key": root, "quality": quality, "octaves": octaves,
+                                       "fingeringVerified": chart is not None},
                           f"scores/generated/{item_id}.mxl")
     return sc, entry
 
@@ -1131,6 +1224,25 @@ SEVENTH_SHAPES = {
     "half-diminished7": [0, 3, 6, 10],
 }
 
+#: The same shapes as the intervals they are spelled by, for the arpeggio.
+#:
+#: `make_seventh_arpeggio` built its notes from `SEVENTH_SHAPES`' semitone
+#: counts, and music21 spells a semitone count by pitch class: E major 7th
+#: printed E flat for its seventh (a chromatic step under the octave E), B
+#: major 7th printed E flat and B flat for D sharp and A sharp, F minor 7th
+#: G sharp for A flat, every half-diminished fifth came out a raised fourth,
+#: and all twenty black-root sevenths were written in sharps under titles in
+#: flats. A seventh chord is thirds stacked on its root. Where a stacked third
+#: needs a double flat — a diminished seventh's seventh, mostly — `_readable`
+#: prints the enharmonic, as it does everywhere in this file.
+SEVENTH_SPELLING = {
+    "dominant7": ("P1", "M3", "P5", "m7"),
+    "diminished7": ("P1", "m3", "d5", "d7"),
+    "major7": ("P1", "M3", "P5", "M7"),
+    "minor7": ("P1", "m3", "P5", "m7"),
+    "half-diminished7": ("P1", "m3", "d5", "m7"),
+}
+
 #: How each shape is spoken about, for titles and concept tags.
 SEVENTH_LABELS = {
     "dominant7": "dominant 7th",
@@ -1157,7 +1269,9 @@ def make_seventh_arpeggio(
     each note of the shape, which is `SEVENTH_ARPEGGIO_FINGERING_RH` and `_LH`
     above and what the page prints. It read "1-2-3-5" and "5-3-2-1" here, a
     fingering neither table has ever held; the tables are what is engraved, so
-    the sentence was wrong and not the music.
+    the sentence was wrong and not the music. Every root after the first takes
+    the thumb in both hands (`arpeggio_ascent`), so the left hand's second
+    octave is 1-4-3-2: it printed 5-4-3-2 again, finger 5 straight after 2.
 
     These are taught after the triads because the hand has to stretch a seventh
     rather than a fifth.
@@ -1170,20 +1284,20 @@ def make_seventh_arpeggio(
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key("C"))
     no_signature(sc)
 
+    spelling = [interval.Interval(name) for name in SEVENTH_SPELLING[quality]]
+    assert [step.semitones for step in spelling] == shape, quality
+
     def run(start: pitch.Pitch) -> list[pitch.Pitch]:
-        up = [start.transpose(12 * o + i) for o in range(octaves) for i in shape] + [
-            start.transpose(12 * octaves)
-        ]
-        return up + list(reversed(up))[1:]
+        climb = [_readable(by_octaves(start, o).transpose(step)) for o in range(octaves) for step in spelling]
+        climb.append(by_octaves(start, octaves))
+        return climb + list(reversed(climb))[1:]
 
     rh_pitches, lh_pitches = run(pitch.Pitch(root + "4")), run(pitch.Pitch(root + "3"))
     fingered = not is_black_root(root)
     rh_fingers = lh_fingers = None
     if fingered:
-        rh_fingers = SEVENTH_ARPEGGIO_FINGERING_RH * octaves + [5]
-        rh_fingers = rh_fingers + list(reversed(rh_fingers))[1:]
-        lh_fingers = SEVENTH_ARPEGGIO_FINGERING_LH * octaves + [1]
-        lh_fingers = lh_fingers + list(reversed(lh_fingers))[1:]
+        rh_fingers = up_and_back(arpeggio_ascent(SEVENTH_ARPEGGIO_FINGERING_RH, 1, 5, octaves))
+        lh_fingers = up_and_back(arpeggio_ascent(SEVENTH_ARPEGGIO_FINGERING_LH, 1, 1, octaves))
 
     for part_, pitches, fingers in ((rh, rh_pitches, rh_fingers), (lh, lh_pitches, lh_fingers)):
         if (part_ is rh and hands == "left") or (part_ is lh and hands == "right"):
@@ -2832,8 +2946,11 @@ def make_pedal_variant(
     `held-melody` is a melody note held while the harmony under it moves — the
     pedal has to change without cutting the melody, which is the whole
     difficulty. `half-pedal` asks for the damper part-way, scored on the CC64
-    *value* rather than on its timing: a pedal that is only ever 0 or 127 cannot
-    play late Romantic music.
+    *value* rather than on its timing. Pressed part-way, the pedal lifts the
+    dampers only a little, so they still touch the strings: a loud sound is cut
+    short but not stopped and a quieter ring carries on (technique.7, from
+    Lehtonen, Askenfelt and Välimäki 2009). A pedal that only ever sends 0 or
+    127 cannot report that place at all.
     """
 
     one_of("variant", variant, ("held-melody", "half-pedal"))

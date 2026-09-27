@@ -200,10 +200,12 @@ export interface PedalDrillOptions {
   downWithinMs?: number;
   /**
    * Half pedal: score the CC64 *value* rather than the timing of the change
-   * (P12a). A damper held part-way lets the bass ring while the treble clears,
-   * and a pedal that is only ever 0 or 127 cannot play Romantic music. When
-   * this is set the drill asks for a value inside the range and reports how
-   * much of the run was spent there.
+   * (P12a). Pressed part-way, the pedal lifts the dampers only a little, so
+   * they still touch the strings: a loud sound is cut short but not stopped,
+   * and a quieter ring carries on (technique.7, from Lehtonen, Askenfelt and
+   * Välimäki 2009). A pedal that only ever sends 0 or 127 cannot report that
+   * place at all. When this is set the drill asks for a value inside the range
+   * and reports how much of the run was spent there.
    */
   halfPedalRange?: [number, number];
 }
