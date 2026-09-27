@@ -4,7 +4,8 @@
     "digest: sha256 over the family's plan items, each item's own digest (every strike's onset, length,",
     "written pitches and tie, per staff, with the tempo and the metre), in id order. When a family's music",
     "changes on purpose, its row's version goes up in family_contracts.json and the pin is rewritten with it;",
-    "a change with no version change fails. Written by D0 from the plan as it builds after D0's changes."
+    "a change with no version change fails. Written by D0 from the plan as it builds after D0's changes.",
+    "Re-pinned by D0a, each with its version moved, where the spelling policy changed the notes: seventh_arpeggio, broken_seventh, seventh_voicing, ii_v_i, four_chord_loop, tritone_sub, walking_bass, open_voicing, passing_chord."
   ],
   "families": {
     "accompaniment": {
@@ -33,9 +34,9 @@
       "digest": "1f8d71b56ca0f286dfef53247ac8d77a9755ed6db7b249d8bc4ab1afb0b9da0c"
     },
     "broken_seventh": {
-      "version": 1,
+      "version": 2,
       "items": 36,
-      "digest": "1b682c6a34765369ef16ca484909414e7872538224c20b01e1de8fa11b3e8854"
+      "digest": "5486e36ab89e7dad691a5d7ad983de9a4c5acc5bd128f70d895f37f78e4c1642"
     },
     "cadence": {
       "version": 1,
@@ -73,9 +74,9 @@
       "digest": "f9db06a607f1c24c9dbdacca70f2edb504db463d8f4ae00defa8d97418f9e7ad"
     },
     "four_chord_loop": {
-      "version": 1,
+      "version": 2,
       "items": 24,
-      "digest": "d60eb2afa51a9164a341dba973c65acc5daa3486751b3fb3b72a2283ceb9d212"
+      "digest": "9ea2a0c6f32023027893b9c582374042b53c7c062446e5ef6f379ea6fff91914"
     },
     "hand_independence": {
       "version": 1,
@@ -88,9 +89,9 @@
       "digest": "53e2fd5bd10322706c11f12d4d6d42525a6d2a6c4b2a73f67d37996b22b8535b"
     },
     "ii_v_i": {
-      "version": 1,
+      "version": 2,
       "items": 36,
-      "digest": "4b293b631f7af9f0c105d6355e064ed5db0893a6f63a09dedb08400545d9420e"
+      "digest": "45eeeb6ce89b4065c56e6d945637658f5195d7a4624acd2f50355f54eb2ead4a"
     },
     "interval_reading": {
       "version": 1,
@@ -133,9 +134,9 @@
       "digest": "373b5c5b1c9258e11b302f64c36d74d6df84444dec874ad9c33b18b9d82b9016"
     },
     "open_voicing": {
-      "version": 2,
+      "version": 3,
       "items": 16,
-      "digest": "acaf3098e6f75a80ffdca795d2faf95ac0312f53f8486dc874239b317f9cd109"
+      "digest": "409d8ac37024d477f616d4e4dd070b4ff9d3725169060335b51c3e27831aebca"
     },
     "ostinato": {
       "version": 1,
@@ -143,9 +144,9 @@
       "digest": "f65305bdc7c9fe4e143cc71b554d74f0e93f4b45f958a8c22c24d1b5e4fd567d"
     },
     "passing_chord": {
-      "version": 1,
+      "version": 2,
       "items": 4,
-      "digest": "46d60a452bb2e675b30c63ec6e9cc8b7e381f1f8790d673f69c4297955451fcd"
+      "digest": "b50f450c3f6144d2cfa9bbba4b4f6f8d3ab8d0b5368cd40b529309e53fe28130"
     },
     "pedal": {
       "version": 1,
@@ -203,14 +204,14 @@
       "digest": "2ad8eb5d3225a03325406cf3f7bed9951366718ace5f87a705d128f4dbf616b9"
     },
     "seventh_arpeggio": {
-      "version": 1,
+      "version": 2,
       "items": 60,
-      "digest": "c0730c8fd699434b60d7ca16a265c5f15d8b01302c91423aed45e6fe380076e3"
+      "digest": "c6f6117186aa6ae627ef76b50646460fb6396194d50fa08adee6283f3e158e7d"
     },
     "seventh_voicing": {
-      "version": 1,
+      "version": 2,
       "items": 48,
-      "digest": "0c2fc5259c7ad130c1d1db2b5c4e841559746b6bdfa4ecac2f2c12c7d9f9fcd2"
+      "digest": "fccc09f5176456a5bf0cb2fa5ed8c5fd039063851d5671f371b80a79791ca32b"
     },
     "shaping": {
       "version": 1,
@@ -258,9 +259,9 @@
       "digest": "55b0b5d3c5bbc96be6165f6303c093c0463e321b68ff6056650d6c2558dbd70f"
     },
     "tritone_sub": {
-      "version": 1,
+      "version": 2,
       "items": 4,
-      "digest": "a2bce25532d324d9a33150a43b80add83e48548e74bf9f762411f3abcae5c9e4"
+      "digest": "bc7c86accfd289de38daf7c672e11b4442fd48271ef22f93dc19ce060a79313a"
     },
     "tumbao": {
       "version": 1,
@@ -278,9 +279,9 @@
       "digest": "711d37463a1b1b90af2de4588b1551f46a1aa7529d5eefcc9f6b88bb7a2ce0e9"
     },
     "walking_bass": {
-      "version": 1,
+      "version": 2,
       "items": 28,
-      "digest": "eb5037273150bd2f434e4ff2b1ee1979112e0de8174d79b492e74e02eff08954"
+      "digest": "930982f2f49487111868f497d6e376f3003a9f31644ae4aa580e2b48728d715b"
     },
     "walkup": {
       "version": 1,

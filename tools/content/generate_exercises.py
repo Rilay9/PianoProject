@@ -1200,15 +1200,15 @@ def make_five_finger(root: str, quality: str = "major", hands: str = "both", bpm
         if (part_ is rh and hands == "left") or (part_ is lh and hands == "right"):
             part_.append(note.Rest(quarterLength=len(seq) + 3))
             continue
-        # Spelled as the interval, not the pitch class: `transpose(s)` over a count
-        # of semitones let music21 choose, and twenty patterns shipped misspelled —
-        # B major as B C-sharp E-flat E F-sharp, A-flat major as G-sharp B-flat C
-        # C-sharp E-flat, F minor with G-sharp for A-flat — which the app's detectors
-        # read as skips and accidentals in a pattern that has neither (D0). Not `up`:
-        # its `_readable` turns G-flat major's own fourth, C-flat, into B natural,
-        # and the five notes of a key never need a double accidental.
+        # Spelled as the interval (`up`), not the pitch class: `transpose(s)` over a
+        # count of semitones let music21 choose, and twenty patterns shipped
+        # misspelled — B major as B C-sharp E-flat E F-sharp, A-flat major as
+        # G-sharp B-flat C C-sharp E-flat, F minor with G-sharp for A-flat — which
+        # the app's detectors read as skips and accidentals in a pattern that has
+        # neither (D0). D0 transposed directly here because `_readable` then turned
+        # G-flat major's own fourth, C-flat, into B natural; it keeps it now (D0a).
         tonic = pitch.Pitch(root + str(oct_))
-        add_notes(part_, [tonic.transpose(interval.Interval(SEMITONE_INTERVAL[s])) for s in seq], fing, 1.0)
+        add_notes(part_, [up(tonic, s) for s in seq], fing, 1.0)
         part_.append(note.Rest(quarterLength=3.0))
     finalize(sc)
     item_id = f"exercise.five-finger.{key_slug(root)}-{quality}.{hands}"
@@ -3394,11 +3394,17 @@ SEMITONE_INTERVAL = {
 #: Which scale degree each semitone above the tonic is, where it is diatonic.
 DEGREE_FOR_SEMITONE = {0: 1, 2: 2, 4: 3, 5: 4, 7: 5, 9: 6, 11: 7}
 
-#: Spellings that are correct and that nobody prints.
+#: The four white keys that can wear an accidental: C flat, F flat, B sharp and
+#: E sharp.
 #:
-#: Each of these is a white key wearing an accidental it does not need. They
-#: turn up as the flat II of the flat keys, where the arithmetic is right and
-#: the notation is unreadable.
+#: Each is a correct spelling, and whether it is printed depends on where it
+#: came from (`_readable`). Spelled by the key, or by an interval from a chord's
+#: root, it is the note the music means and is printed as it is: E sharp is
+#: F sharp major's seventh, and written F under six sharps it names the wrong
+#: degree. As the root of a borrowed chord it is respelled with the whole
+#: chord: the flat II of the flat keys, where the arithmetic is right (C flat 7
+#: as the tritone substitute in B flat) and the notation is not what a reader
+#: expects to find.
 UNWRITTEN = frozenset({"C-", "F-", "B#", "E#"})
 
 #: The octave the guide tones live in, as MIDI numbers: E4 up to E5.
@@ -3543,29 +3549,69 @@ HARMONY_KEYS = ("C", "D-", "D", "E-", "E", "F", "F#", "G", "A-", "A", "B-", "B")
 JAM_KEYS = ("E", "A", "G", "D")
 
 
-def _readable(p: pitch.Pitch) -> pitch.Pitch:
+def _readable(p: pitch.Pitch, borrowed_root: bool = False) -> pitch.Pitch:
     """
-    Respells double accidentals, and nothing else.
+    `p` as the page prints it.
 
-    A player reading E double flat has been failed by the notation, not taught
-    something — and the flat keys produce them freely: the tritone substitute in
-    B flat is spelled B double flat by interval, and the quartal stack in G flat
-    reaches both B double flat and E double flat. A reader in a flat key is not
-    confused by a flat, so the rule stays narrow: only the spellings nobody
-    writes get changed.
+    Every pitch that reaches this was spelled by the key (`_transpose_name`'s
+    degrees) or by a named interval from a note that was (`up`, `seventh_chord`,
+    an approach a semitone under the next root), so its letter already says
+    which degree of the key, or which tone of the chord, it is. The rule:
+
+    1. **A double accidental is respelled.** A player reading B double flat has
+       been failed by the notation, not taught something, and the flat keys make
+       them freely: G flat minor 7's third is B double flat by interval, and the
+       quartal stack in G flat reaches B double flat and E double flat.
+    2. **A spelling the key or the chord gave is kept**, the four white keys
+       wearing an accidental (`UNWRITTEN`) included. E sharp is F sharp major's
+       own seventh and the third of C sharp 7; F flat is the seventh of G flat 7.
+       Printed F and E they name the wrong degree under the key signature and the
+       wrong interval in the chord: the ii-V-I in F sharp printed F for E sharp
+       under six sharps until D0a, from this rule's old form, which respelled
+       all four in every key.
+    3. **The root of a borrowed chord, one not built on a degree of the key, is
+       respelled when it falls on one of `UNWRITTEN`** (`borrowed_root`, which
+       `_transpose_name` passes for its chromatic degrees and nothing else
+       does). The tritone substitute in B flat is C flat 7 by interval and is
+       printed B7; its notes are then spelled by `up` from the new root, B, D
+       sharp, F sharp, A, so the chord moves whole and not one note of it.
+
+    Kept: E sharp in F sharp major, F flat in G flat 7. Respelled: G flat minor
+    7's B double flat (as A), and the substitute's C flat 7 in B flat (as B7).
+
+    `up` takes no key because it needs none: the note it starts from was spelled
+    for the key, and an interval from it is the chord's own spelling. The key
+    decides where a chord's root comes from, which is `_transpose_name`'s part.
     """
-    if abs(p.alter) > 1 or p.name in UNWRITTEN:
+    if abs(p.alter) > 1 or (borrowed_root and p.name in UNWRITTEN):
         return p.simplifyEnharmonic(inPlace=False)
     return p
 
 
 def up(p: pitch.Pitch, semitones: int) -> pitch.Pitch:
-    """`p` raised by `semitones`, spelled as the interval rather than the pitch class."""
+    """
+    `p` raised by `semitones`, spelled as the interval rather than the pitch class.
+
+    The chord's own spelling (`_readable`'s second rule): four semitones above
+    C sharp is E sharp, the major third, and it is printed so. Only a double
+    accidental is respelled.
+    """
     return _readable(p.transpose(interval.Interval(SEMITONE_INTERVAL[semitones])))
 
 
 def _transpose_name(tonic: str, semitones: int) -> str:
-    """The note name `semitones` above `tonic`, spelled for the key."""
+    """
+    The note name `semitones` above `tonic`, spelled for the key.
+
+    The key is the major scale on `tonic`, for the minor-key makers too: a
+    degree it lacks is chromatic here, and its chord borrowed. That is what the
+    minor blues' table says of its flat VI7 ("the only place a minor blues
+    leaves the key"), and in E flat minor the flat VI7 is therefore B7, not
+    C flat 7. That also keeps its right hand a semitone above the V7 it slides
+    into: the makers place a root by its written octave (`root_name + "4"`),
+    and C flat 4 sounds B3, so C flat 7 would drop the bar an octave (D0a:
+    recorded, not changed).
+    """
     k = key.Key(tonic)
     degree = DEGREE_FOR_SEMITONE.get(semitones)
     if degree is not None:
@@ -3573,14 +3619,15 @@ def _transpose_name(tonic: str, semitones: int) -> str:
     # Chromatic: the diatonic degree above it, lowered — which is how a flat
     # second is spelled, and then made printable.
     #
-    # The flat II is borrowed from outside the key, so spelling it by the key
-    # signature gives C flat in B flat and F flat in E flat, and no chart has
-    # ever printed either. `_readable` turns those into B and E and leaves
-    # D flat alone, which is what a chart in C actually says.
+    # A chromatic degree is a borrowed chord's root: nothing built on it is the
+    # key's. Spelled by the key signature, the flat II is C flat in B flat and
+    # F flat in E flat, and no chart has ever printed either, so `_readable`'s
+    # third rule turns those into B and E and leaves D flat alone, which is what
+    # a chart in C actually says. The chord is then spelled from the new root.
     above = k.pitchFromDegree(DEGREE_FOR_SEMITONE[semitones + 1])
     lowered = pitch.Pitch(above.nameWithOctave)
     lowered.accidental = pitch.Accidental(above.alter - 1)
-    return _readable(lowered).name
+    return _readable(lowered, borrowed_root=True).name
 
 
 def chart_root(root_name: str, quality: str) -> str:
@@ -3599,11 +3646,14 @@ def chart_root(root_name: str, quality: str) -> str:
     leaves the printed root saying G flat over a chord that no longer spells one.
     The root is the thing that has to move.
 
-    So both spellings are built, each is charged for the notes nobody writes —
-    a double accidental, or one of `UNWRITTEN`'s white keys wearing an
-    accidental — and the cheaper wins. A tie keeps the name the key gave it,
-    because in a flat key a flat is what a reader is expecting and D flat 7 is
-    what a chart prints even though C sharp 7 costs the same.
+    So both spellings are built, each is charged for its double accidentals
+    and for each of `UNWRITTEN`'s white keys wearing an accidental, and the
+    cheaper wins. That is `_readable`'s third rule taken a step further, for the
+    one kind of chord it lets move: an approach chord is borrowed, so it may be
+    spelled from whichever root reads better, and it moves whole. A tie keeps
+    the name the key gave it, because in a flat key a flat is what a reader is
+    expecting and D flat 7 is what a chart prints even though C sharp 7 costs the
+    same; its seventh is then C flat, the chord's own (`_readable`'s second rule).
     """
     def cost(name: str) -> int:
         base = pitch.Pitch(name + "4")
