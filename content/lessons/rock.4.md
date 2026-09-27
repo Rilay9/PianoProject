@@ -11,8 +11,8 @@ readingTime: 3
 
 The rung before this one taught the reduction — melody, bass and one texture —
 and named three textures for that layer. This is the first rock texture under
-your hands, and it is the one almost
-every heavy piano part is built from: a shape with no third in it, and a figure
+your hands, and one that heavy piano
+parts are built from: a shape with no third in it, and a figure
 that does not change.
 
 **A power chord is root, fifth, octave, and no third.** The third is what makes

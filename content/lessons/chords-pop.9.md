@@ -17,9 +17,8 @@ pattern? Where is the melody — in the top of the chords, or above them? What i
 the rhythm of the accompaniment? And where does the texture change, because an
 arrangement that does not change is a loop.
 
-**Steal the intro from the last eight bars.** The oldest arranging trick there
-is: whatever you do at the end, do a thinner version of it at the start, and the
-song sounds designed.
+**Steal the intro from the last eight bars.** Whatever you do at the end, do a
+thinner version of it at the start, and the song sounds designed.
 
 **Learning by ear is part of arranging**, because the arrangement you can hear is
 the one you can copy. The eight-bar ear drill is on this rung for that reason.
