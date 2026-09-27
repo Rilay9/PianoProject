@@ -35,3 +35,5 @@ Judgement first: the walking bass at jazz.5 before and after, and any morning of
 
 **Delivered 2026-09-27**, Entry 93, in an isolated worktree: the ancestry with the brief's deviation taken for the core path and a corrected premise for the tracks (prerequisites plus the core up to the stage); the learner's reached set from `strandsOf`; the regression red first; the build's reading made path-correct; 143 readings moved; no learner morning changed; one promise found broken (L108) and named in the promise tests rather than settled.
 
+**Accepted by the reviewer 2026-09-27** (`responses/5bfe6d2.md`): the ancestry mechanism closes the E0 defect; the walking-bass metadata it exposed is E0b, and E0 closes on E0b's acceptance.
+
