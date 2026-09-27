@@ -252,12 +252,24 @@ describe('a row’s params reach the generator', () => {
   });
 });
 
+/**
+ * Each case below generates sixty eight-bar phrases and parses every one, so it
+ * owns its budget (H0, Q37; test class: revise, timeout only). At vitest's
+ * default of 5 s it timed out in full unit runs beside another build and passed
+ * alone: the work is the same sixty phrases either way, and only the machine's
+ * share of a processor changed (Entry 87 has the durations, alone and beside two
+ * other unit runs). The file's other generation already runs in `beforeAll`
+ * under a 240 s budget; these two read no catalog row, so they sit outside it.
+ * No assertion changed.
+ */
+const SIXTY_PHRASES_MS = 60_000;
+
 describe('levels 6 and 7 write a rest inside a triplet as a triplet rest', () => {
   // Without options, as the goldens are: the bracket fault was in the level,
   // not in the rows. 87 % and 89 % of 8-bar phrases had one (the trace, seeds
   // 1-500); a rest of a triplet's length with no <time-modification>.
   for (const level of [6, 7] as const) {
-    it(`level ${String(level)}, 60 phrases`, () => {
+    it(`level ${String(level)}, 60 phrases`, { timeout: SIXTY_PHRASES_MS }, () => {
       let restsInTriplets = 0;
       for (let seed = 1; seed <= 60; seed += 1) {
         const s = engraving(generateSightReading({ level, bars: 8, hands: 'both', seed }).musicXml);

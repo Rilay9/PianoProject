@@ -1,7 +1,12 @@
 // Tempo mode — the docs/05 §10 matrix. The clock drives; input is judged
 // against a fixed timetable.
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { BEAT_MS, harness, makeModel, note } from './helpers/engineHarness';
+import { noteOnBytes } from '../../src/midi/parseMidiMessage';
+import { ReplaySource } from '../../src/midi/ReplaySource';
+import { withBeatToMs, type ScoreModelData } from '../../src/score/types';
+import { BEAT_MS, harness, makeModel, note, type Harness } from './helpers/engineHarness';
 
 /** C D E F, one per beat at 60 bpm, so steps land at 0/1000/2000/3000 ms. */
 const melody = makeModel([
@@ -996,5 +1001,116 @@ describe('Tempo mode — the latch, reviewed again (T8)', () => {
     expect(h.engine.countingBackTo).toBeNull();
     h.play(62);
     expect(h.of('noteJudged').pop()).toMatchObject({ ok: true, deltaMs: 0 });
+  });
+});
+
+/**
+ * The late run `engine.spec.ts` times, on the engine's own clock (H0, Q39).
+ *
+ * The browser case drives the Tempo-change fixture through the dev harness's
+ * replay: a real `ReplaySource`, bytes to `parseMidiMessage` to the engine. On
+ * the page's real timers it asserted `hits: 2` and failed three times on CI
+ * with 1. The note's *stamp* is the script's (`base + atMs`), but its
+ * *delivery* is a `setTimeout`, and the harness also ticks the engine every
+ * 16 ms from its own timer and frame loop. On a loaded runner the page can
+ * stall past a window's close; the tick due first then closes the window as
+ * missed, and the note, still stamped inside it, arrives to nothing and is a
+ * wrong note. The count depended on the order two timers came off a busy
+ * queue. The browser case now runs on Playwright's clock.
+ *
+ * Here the same run is timed on the engine's injected clock. The source's
+ * timers and its clock are the engine's `FakeClock`, each message is delivered
+ * at its due time and a tick falls every 16 ms between, which is the order an
+ * idle browser keeps. So the statistic is exact and is asserted exactly: the
+ * browser case asserts a mean over 30 ms, this one the mean the stamps give.
+ */
+describe('Tempo mode — the harness’s late replay, on the engine’s clock (Q39)', () => {
+  /** The Tempo-change fixture's model: the extractor's own output, pinned by `scoreModel.test.ts`'s goldens. */
+  const tempoChange = withBeatToMs(
+    JSON.parse(
+      readFileSync(join(process.cwd(), 'tests', 'fixtures', 'scores', 'golden', 'tempo-change.json'), 'utf8'),
+    ) as ScoreModelData,
+  );
+  /** The harness's frame and timer tick (`HARNESS_TICK_MS` in `DevScoreScreen.ts`). */
+  const HARNESS_TICK_MS = 16;
+  /** How long past the script's last message the harness's `replay` waits before it resolves. */
+  const REPLAY_TAIL_MS = 250;
+
+  /**
+   * `DevScoreScreen`'s `replay`, with the page's timers replaced by the clock:
+   * the run restarted and the source connected in the same instant, every
+   * message delivered at its due time, a tick every 16 ms in between.
+   */
+  function replayOnTheEngineClock(h: Harness, script: { atMs: number; midi: number }[]): void {
+    const timers: { due: number; fn: () => void }[] = [];
+    const source = new ReplaySource(
+      {
+        name: 'engine clock',
+        messages: script.map((entry) => ({ atMs: entry.atMs, bytes: [...noteOnBytes(entry.midi, 90)] })),
+      },
+      {
+        schedule: (fn, delayMs) => {
+          const timer = { due: h.clock.now() + delayMs, fn };
+          timers.push(timer);
+          return timer;
+        },
+        cancel: (handle) => {
+          const at = timers.indexOf(handle as { due: number; fn: () => void });
+          if (at >= 0) timers.splice(at, 1);
+        },
+        now: () => h.clock.now(),
+      },
+    );
+    source.onNote((n) => h.engine.feed({ kind: n.kind, midi: n.midi, velocity: n.velocity, tMs: n.tMs }));
+    h.engine.start();
+    void source.connect();
+    const end = h.clock.now() + Math.max(...script.map((e) => e.atMs)) + REPLAY_TAIL_MS;
+    let frame = h.clock.now() + HARNESS_TICK_MS;
+    while (h.clock.now() < end) {
+      timers.sort((a, b) => a.due - b.due);
+      const next = timers[0];
+      if (next && next.due <= frame) {
+        timers.shift();
+        h.clock.set(next.due);
+        next.fn();
+        continue;
+      }
+      h.clock.set(Math.min(frame, end));
+      h.engine.tick();
+      frame += HARNESS_TICK_MS;
+    }
+  }
+
+  it('a run 100 ms late on both notes: two hits, both late, and the mean is the stamps’ own', () => {
+    const h = harness(tempoChange, { mode: 'tempo', countInBars: 0, tempoPct: 130, toleranceMs: 150 });
+    // `startRun`, then the page round trip before `replay` — a quarter of a
+    // second of a loaded machine — then the replay restarts the run as it
+    // connects, which is what makes the run's zero and the script's zero one
+    // instant. The age of the first start must not matter.
+    h.engine.start();
+    h.advance(250, HARNESS_TICK_MS);
+    replayOnTheEngineClock(h, [
+      { atMs: 100, midi: 60 },
+      { atMs: 869, midi: 62 },
+    ]);
+    // The spec's reading of the fixture: 60 bpm for two beats, so at 130 % the
+    // first two steps are 1000 / 1.3 ms apart, and 869 is 100 ms after the second.
+    const second = h.engine.prepared.steps[1]?.tMs ?? Number.NaN;
+    expect(second).toBeCloseTo(1000 / 1.3, 6);
+    const score = h.engine.state.score;
+    expect(score.hits).toBe(2);
+    expect(score.missedTotal).toBe(0);
+    expect(score.wrongNotesTotal).toBe(0);
+    expect(score.timing.n).toBe(2);
+    expect(score.timing.meanMs).toBeCloseTo((100 + (869 - second)) / 2, 6);
+    expect(score.timing.latePct).toBe(100);
+    expect(score.timing.earlyPct).toBe(0);
+    // And each note was judged against its own step, from its stamp.
+    expect(score.notes.map((n) => [n.midi, n.stepIndex, n.ok])).toEqual([
+      [60, 0, true],
+      [62, 1, true],
+    ]);
+    expect(score.notes[0]?.deltaMs).toBeCloseTo(100, 6);
+    expect(score.notes[1]?.deltaMs).toBeCloseTo(869 - second, 6);
   });
 });

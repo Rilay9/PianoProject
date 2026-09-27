@@ -17,6 +17,19 @@ import { openDevScore, waitForStableLayout } from './fixtures/devScore';
 
 const SONG = 'song.folk.hot-cross-buns';
 
+/**
+ * Every case here opens an engraving on a cold page and waits for its fit to
+ * settle: the engraver's chunk, the score, the first fit and the probe's
+ * third engraving of the piece. That is the expensive part of this file, and
+ * its waits already said so (60 s for the screen, 60 s for its mode), but the
+ * default 30 s test timeout cut them short: in the C6 chain the 900 px case
+ * ran out of test while still waiting for the Score screen, and passed alone
+ * (Q34). On a page slowed 16 and 32 times the same arrival and settle took
+ * longer than 30 s (Entry 87). So the cases own a budget that covers the
+ * waits they state (H0; test class: revise, timeout only). No assertion changed.
+ */
+test.describe.configure({ timeout: 120_000 });
+
 const PHONE = { width: 342, height: 740 };
 const TABLET = { width: 900, height: 1200 };
 const LAPTOP = { width: 1512, height: 850 };
@@ -64,7 +77,12 @@ async function drawn(page: import('@playwright/test').Page, viewport: number): P
   // The fit settles a frame or two after the score arrives, and the probe's
   // measurement of the piece lands after that — the density judgement reads it,
   // so measuring before it has landed measures the fallback instead.
-  await page.waitForTimeout(2_500);
+  //
+  // Revised (H0, Q34; test class: revise). This was `waitForTimeout(2_500)`, a
+  // guess at when both had happened; `data-settled` is the renderer's own word
+  // for it (T41, `08` §9.39): no fit queued or running, the piece measured at
+  // the zoom the sheet is engraved at, nothing waiting to take its size.
+  await page.waitForSelector('.score-view[data-settled]', { timeout: 60_000 });
   const seen = await page.evaluate(() => {
     const fit = (
       window as unknown as {
