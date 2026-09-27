@@ -21,3 +21,6 @@ You own `.github/workflows/ci.yml`, the skip sites' test files (the skip lines a
 ## Report
 
 Judgement first: which gates were open and are now closed; then Done / Not done / Follow-ups / Questions / Files; the table; the red lines; exit codes; unverified beside what passes (the workflow itself runs only on the next push).
+
+**Delivered 2026-09-27**, Entry 89, in an isolated worktree: the build before the content tests; the converter harness and the parity reference as CI steps; 26 skip sites classified (the brief's grep found 21; a wider search and the vitest run's fifth skip found five more), 14 now loud, 9 environmental, 3 by design; `test_ci_order.py` red on the committed workflow and nine mutants. Not done by the rule of the brief: the MAESTRO download (Q47, the owner's). Consumer: a fresh worktree's vitest needs `python tools/midi-cleanup/tests/parity_reference.py` first.
+

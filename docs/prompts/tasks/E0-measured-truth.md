@@ -52,3 +52,6 @@ Judgement first: the rung-claims report read as a teacher (which rungs' promises
 ## The briefs that follow in E (to be written when E0 closes)
 
 E1 the excerpt as a first-class object: identity from source, range, part and version; slice-local demands; mining that proposes with musical boundaries; the workbench's two review decisions with context outside the cut (R5, R7, R15, R40, R42, Q8's excerpt adversaries). E2 the source chooser's material layer and the import workflow (Part 25 layers 3–6 over every source; E21's workflow with X).
+
+**Addendum 2026-09-27 (after Q24, Entry 89):** a fresh worktree's `npx vitest run` now fails in `midiParity` until `python tools/midi-cleanup/tests/parity_reference.py` has run from the repository root (or `build/midi-parity/` is copied from the main checkout), and its content tests fail rather than skip until the build has run with the Joplin edition present. Run the reference script after `npm ci` and before vitest.
+

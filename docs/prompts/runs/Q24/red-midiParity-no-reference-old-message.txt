@@ -1,0 +1,47 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ad4db920a52007e2d/app
+
+ ❯ tests/unit/midiParity.test.ts (2 tests | 2 failed) 7ms
+   ❯ the port agrees with the Python converter (1)
+     × has a reference to compare against 3ms
+   ❯ the parity reference (1)
+     × is made by a script and a CI step the failure above names 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/midiParity.test.ts > the port agrees with the Python converter > has a reference to compare against
+AssertionError: no reference in C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ad4db920a52007e2d\build\midi-parity: run `python tools/midi-cleanup/tests/parity_reference.py` from the repository root, with the three MAESTRO performances named in build/midi-real/SOURCE.md in place.: expected 0 to be greater than 0
+ ❯ tests/unit/midiParity.test.ts:112:36
+    110|     // vacuously true, so an absent reference fails here, naming the s…
+    111|     // writes it (Q24: this used to skip, and a gate that skips is ope…
+    112|     expect(references.length, why).toBeGreaterThan(0);
+       |                                    ^
+    113|   });
+    114|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/midiParity.test.ts > the parity reference > is made by a script and a CI step the failure above names
+AssertionError: expected 'no reference in C:\Users\yalir\repos\…' to contain '"Write the MIDI parity reference"'
+
+Expected: ""Write the MIDI parity reference""
+Received: "no reference in C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ad4db920a52007e2d\build\midi-parity: run `python tools/midi-cleanup/tests/parity_reference.py` from the repository root, with the three MAESTRO performances named in build/midi-real/SOURCE.md in place."
+
+ ❯ tests/unit/midiParity.test.ts:235:17
+    233|     // things that exist; test_ci_order.py checks the step's name in c…
+    234|     expect(why).toContain('parity_reference.py');
+    235|     expect(why).toContain('"Write the MIDI parity reference"');
+       |                 ^
+    236|   });
+    237| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  05:17:09
+   Duration  220ms (transform 73%, import 18%, tests 6%, worker 3%)
+
+
+vitest exit 1

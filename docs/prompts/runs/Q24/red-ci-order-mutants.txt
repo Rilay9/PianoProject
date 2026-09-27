@@ -1,0 +1,22 @@
+﻿ok  control: unchanged: red = []
+ok  control: the steps re-joined by this script: red = []
+ok  control: build step as a `run: |` block: red = []
+ok  unit tests before the content build: red = ['test_the_parity_reference_is_written_before_the_unit_tests_compare_against_it', 'test_the_unit_tests_run_after_the_content_build_they_read']
+      AssertionError: 7 not less than 6 : 'Build content' (step 8) must run before 'Unit tests' (step 7): they read app/public/content
+ok  validate before the render check: red = ['test_the_render_check_and_the_second_validation_keep_their_places']
+      AssertionError: 18 not less than 17 : 'Render every catalog item' (step 19) must run before 'Validate again, now that durations have been written' (step 18): the render check writes durations into the catalogue
+ok  build before the pip install: red = ['test_the_build_follows_what_it_needs']
+      AssertionError: 5 not less than 4 : 'Install Python content-pipeline dependencies' (step 6) must run before 'Build content' (step 5): music21
+ok  parity reference after the unit tests: red = ['test_the_parity_reference_is_written_before_the_unit_tests_compare_against_it']
+      AssertionError: 13 not less than 12 : 'Write the MIDI parity reference' (step 14) must run before 'Unit tests' (step 13): midiParity.test.ts fails without build/midi-parity/
+ok  concurrency block removed: red = ['test_one_run_per_branch_at_a_time']
+      AssertionError: unexpectedly None : ci.yml lost its `concurrency` block
+ok  cancel-in-progress false: red = ['test_one_run_per_branch_at_a_time']
+      AssertionError: Regex didn't match: 'cancel-in-progress:\\s*true' not found in '  group: ci-${{ github.ref }}\n  cancel-in-progress: false\n'
+ok  converter harness step renamed: red = ['test_the_steps_the_failure_messages_name_exist']
+      + []
+ok  converter harness step removed: red = ['test_the_converter_harness_runs', 'test_the_steps_the_failure_messages_name_exist']
+      AssertionError: 0 != 1 : expected one step in ci.yml running 'unittest discover -s tools/midi-cleanup/tests', found 0
+ok  content tests before the build (the committed order): red = ['test_the_content_is_built_before_the_content_tests_read_it']
+      AssertionError: 7 not less than 6 : 'Build content' (step 8) must run before 'Content pipeline tests' (step 7): the content tests read the built catalogue, the curriculum and the fetched editions, and fail when they are missing
+every mutant caught, every control green

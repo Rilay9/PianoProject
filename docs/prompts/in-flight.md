@@ -11,10 +11,12 @@
 ## Waiting
 
 - **D0** — **dispatched** (Entry 90) in an isolated worktree on T53c's ACCEPT; on landing: merge, the builder's content build, validator and content tests plus vitest as its proof (generator and contracts; no rendering), record, handoff, push; then E0 to the reviewer's gate.
-- **Q24** (`docs/prompts/tasks/Q24-invariants-are-gates.md`): **dispatched** in a worktree after F1 landed (Entry 89); on landing: merge, the content tests before and after the build as its proof, record, handoff, push.
+- **Q24** — **landed** (Entry 89, merged as d9133af, handoff `handoffs/e32d0ef.md`); awaiting the reviewer's response; the MAESTRO download is the owner's question (Q47).
 - **E0** (`docs/prompts/tasks/E0-measured-truth.md`): drafted; to the reviewer's gate after D0 is dispatched; never before D0 lands.
 
 ## Standing rules in force tonight
+
+- From Q24 (Entry 89): a fresh worktree's `npx vitest run` needs `python tools/midi-cleanup/tests/parity_reference.py` first (or `build/midi-parity/` copied from the main checkout), and its content tests fail rather than skip until the build has run with the Joplin edition present. Every brief that runs vitest in a new worktree says so.
 
 - From F1's review: the reviewer treats uncommitted worktree logs as reported, not verified — on each landing, copy the seam's run captures (the exit-code and summary files, not the megabyte logs) into `docs/prompts/runs/<seam>/` beside the entry so the handoff's numbers can be checked.
 
