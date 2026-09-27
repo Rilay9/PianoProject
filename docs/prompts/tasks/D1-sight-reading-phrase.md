@@ -50,3 +50,5 @@ Judgement first: three phrases per level as a first reader meets them, before an
 
 **Delivered 2026-09-27**, Entry 94, in an isolated worktree: the scorer (`sightReadingScore.ts`), S26 as a hard constraint, the identity in `SightReadingResult.generator`, the distribution suite (23 configurations, red on the committed generator), 21 phrases read before and after — and **held at version 1**, because the run record carries no generator version and the brief said to stop at the schema boundary (S33). Two of the brief's premises were wrong: `fromCatalog.ts` builds no sight-reading drill, and no row asks for 5/4 or 7/8. Two calls for the reviewer: the capped chord-tone move at 5–7 (scoring alone dropped strong-beat chord tones to two in three), and the stricter tie rule.
 
+**Reviewed 2026-09-27** (`responses/b15758e.md`): approved with one required change — the zero-valid-candidate fallback must fail closed (S37); the record field approved (S33); the capped chord-tone move and the stricter tie rule accepted. D1a does the fallback, the field and the flip; D1 closes on its acceptance.
+
