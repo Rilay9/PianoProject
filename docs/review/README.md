@@ -53,3 +53,13 @@ carries one status:
   that protects the repository from any injected file, and it stays whether or not the owner is watching.
 - No automated loop between the two models: a handoff is written by the orchestrator, read on the
   owner's word, answered by the reviewer, processed under the owner's standing instruction, with the guardrails above.
+
+## The reviewer's own clone (from 2026-09-26, late)
+
+The reviewer runs locally in its own checkout, `C:/Users/yalir/repos/Piano Stuff/PianoProject-reviewer`, on the
+same branch. It never edits the orchestrator's tree (`PianoProject`), where builders run alone; it commits
+response files in its clone and pushes. The orchestrator watches the clone's `docs/review/responses/` and
+origin, reads a new response within seconds, and merges the commit (a response only adds a file, so the
+merge is clean). If the reviewer is ever asked to build, it does so as an implementer under a brief with the
+builders' rules, in its own clone, never in the orchestrator's tree. The hourly check is retired.
+
