@@ -12,7 +12,7 @@
 
 - **D0** — architecture **approved with one required change** (`responses/0669117.md`); **D0a** (the E♯ spelling, `tasks/D0a-key-spelling.md`) dispatched in an isolated worktree (Entry 91); on landing: merge, the content build, validator and content tests as its proof, the F♯ ii-V-I and one G♭ item rendered and read, record, handoff, push. Its ACCEPT closes D0 and releases E0.
 - **Q24** — **closed**, approved by the reviewer (`responses/e32d0ef.md`, unprompted); the MAESTRO download stays the owner's question (Q47).
-- **E0** (`docs/prompts/tasks/E0-measured-truth.md`): amended to D0's actual boundary and bridge and carrying the D0 response's constraints; at the reviewer's gate for its pre-dispatch read; dispatches only on D0a's ACCEPT and E0's own approval.
+- **E0** (`docs/prompts/tasks/E0-measured-truth.md`): amended to D0's actual boundary and bridge and carrying the D0 response's constraints; its pre-dispatch read posted as a brief handoff, `docs/review/handoffs/af665ec.md` (the automation reviews only handoff files — the reviewer's finding); dispatches only on D0a's ACCEPT and that approval.
 
 ## Standing rules in force tonight
 
@@ -20,7 +20,7 @@
 
 - From F1's review: the reviewer treats uncommitted worktree logs as reported, not verified — on each landing, copy the seam's run captures (the exit-code and summary files, not the megabyte logs) into `docs/prompts/runs/<seam>/` beside the entry so the handoff's numbers can be checked.
 
-- One handoff file per seam, named by the implementation commit; `current.md` a pointer only; a response is `responses/<same>.md`; verify every finding at the line; only findings acted on; dispositions in the next handoff.
+- One handoff file per seam, named by the implementation commit, and a brief handoff file for each pre-dispatch gate, named by the commit that carries the brief; `current.md` a pointer only; a response is `responses/<same>.md`; verify every finding at the line; only findings acted on; dispositions in the next handoff.
 - Verify by what a seam touches; never rerun a builder's full suite on the same tree; CI is the full run.
 - PR #1 is the trigger; never merge it; batch docs-only pushes.
 - Not tonight: E implementation, X, broader G, F's contested rows; nothing crosses the T53c → D0 gate.

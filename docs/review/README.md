@@ -94,3 +94,16 @@ one immutable handoff per seam under `handoffs/`, the watcher on `responses/`, e
 at the line, dispositions recorded, the D0 gate respected. Docs-only pushes wake the reviewer too, so
 record commits are batched where they can be.
 
+## Brief handoffs (from 2026-09-27): the pre-dispatch gate gets its own file
+
+The reviewer's automation acts only on a file under `handoffs/` that has no matching response, so
+a brief "at the gate" in `current.md` alone is never reviewed (the reviewer's finding, 2026-09-27,
+after E0 sat unread through two watches). The second of the two gates per task therefore posts the
+same way as the first: `handoffs/<seven-character HEAD of the commit that carries the brief>.md`,
+opening with the words "a brief handoff: no implementation to review", pointing at the brief's file
+and the entries and responses it builds on, listing the decisions the orchestrator made in it for the
+reviewer to accept or overturn, and asking its questions. The reply is `responses/<same>.md` with the
+usual statuses (APPROVE means dispatch when the brief's other gates are met; BLOCKING means the brief
+changes before dispatch). A brief handoff and an implementation handoff are different seams and never
+share a file; a brief that changes after its review gets a new handoff at its new commit.
+
