@@ -42,3 +42,5 @@ Judgement first: the Skills screen and Progress for a learner on 2.2 with the ow
 
 **Delivered 2026-09-27**, Entry 83: one skill state, rusty as `notShownRecently`, the 269 unmeasured concepts saying so, Progress's Skills section, the row as its own checkpoint (the seven invariants at the real cap), the migration as a weak exposure, L52's writers, the two passing fixes; deviations accepted — the two writers in `LessonScreen.ts`, one cache call each in `backup.ts` and `SettingsScreen.ts`, the prune in `progressStore.ts`, types in `db.ts`, `docs/01` §4.5 and `docs/05` §9b made true; the entry is 83.
 
+**Closed by the reviewer 2026-09-27**: approved with one required fix (L98, the first-open plan race, closed at the store), then the fix accepted; the soft-cap caveat on `holdsEvidence` is L99 for a later storage owner; the `recordRungWord` atomicity note is L100.
+
