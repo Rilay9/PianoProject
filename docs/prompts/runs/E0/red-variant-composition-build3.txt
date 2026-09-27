@@ -1,0 +1,38 @@
+.FFFF.
+======================================================================
+FAIL: test_authored_variants_name_one_composition (tests.test_measured_truth.TestIdentitySurvivesTheBuild.test_authored_variants_name_one_composition) (item='exercise.articulation.c.legato.right')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4916fdc4a3058d81\tools\content\tests\test_measured_truth.py", line 196, in test_authored_variants_name_one_composition
+    self.assertNotIn("composition", item["provenance"], "an exercise counted as a work")
+AssertionError: 'composition' unexpectedly found in {'source': 'generated', 'generator': {'name': 'tools/content/generate_exercises.py', 'family': 'articulation', 'version': 1, 'seed': None}, 'composition': 'variant-of:exercise.articulation.c.staccato.right', 'facts': {'composition': {'kind': 'authored', 'via': 'variantOf'}, 'demands': {'kind': 'measured', 'via': 'app/src/demands/detect.ts', 'definitions': 3, 'detectors': '5550e146647a'}, 'tempo': {'kind': 'authored', 'via': 'the recipe'}, 'level': {'kind': 'authored', 'via': 'judged for this item'}, 'hands': {'kind': 'authored', 'via': 'the recipe'}, 'key': {'kind': 'authored', 'via': 'the recipe'}, 'role': {'kind': 'authored', 'via': 'the family contract'}}, 'review': {'score': None, 'teaching': None}} : an exercise counted as a work
+
+======================================================================
+FAIL: test_authored_variants_name_one_composition (tests.test_measured_truth.TestIdentitySurvivesTheBuild.test_authored_variants_name_one_composition) (item='exercise.articulation.d.legato.right')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4916fdc4a3058d81\tools\content\tests\test_measured_truth.py", line 196, in test_authored_variants_name_one_composition
+    self.assertNotIn("composition", item["provenance"], "an exercise counted as a work")
+AssertionError: 'composition' unexpectedly found in {'source': 'generated', 'generator': {'name': 'tools/content/generate_exercises.py', 'family': 'articulation', 'version': 1, 'seed': None}, 'composition': 'variant-of:exercise.articulation.d.staccato.right', 'facts': {'composition': {'kind': 'authored', 'via': 'variantOf'}, 'demands': {'kind': 'measured', 'via': 'app/src/demands/detect.ts', 'definitions': 3, 'detectors': '5550e146647a'}, 'tempo': {'kind': 'authored', 'via': 'the recipe'}, 'level': {'kind': 'authored', 'via': 'judged for this item'}, 'hands': {'kind': 'authored', 'via': 'the recipe'}, 'key': {'kind': 'authored', 'via': 'the recipe'}, 'role': {'kind': 'authored', 'via': 'the family contract'}}, 'review': {'score': None, 'teaching': None}} : an exercise counted as a work
+
+======================================================================
+FAIL: test_authored_variants_name_one_composition (tests.test_measured_truth.TestIdentitySurvivesTheBuild.test_authored_variants_name_one_composition) (item='exercise.articulation.f.legato.right')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4916fdc4a3058d81\tools\content\tests\test_measured_truth.py", line 196, in test_authored_variants_name_one_composition
+    self.assertNotIn("composition", item["provenance"], "an exercise counted as a work")
+AssertionError: 'composition' unexpectedly found in {'source': 'generated', 'generator': {'name': 'tools/content/generate_exercises.py', 'family': 'articulation', 'version': 1, 'seed': None}, 'composition': 'variant-of:exercise.articulation.f.staccato.right', 'facts': {'composition': {'kind': 'authored', 'via': 'variantOf'}, 'demands': {'kind': 'measured', 'via': 'app/src/demands/detect.ts', 'definitions': 3, 'detectors': '5550e146647a'}, 'tempo': {'kind': 'authored', 'via': 'the recipe'}, 'level': {'kind': 'authored', 'via': 'judged for this item'}, 'hands': {'kind': 'authored', 'via': 'the recipe'}, 'key': {'kind': 'authored', 'via': 'the recipe'}, 'role': {'kind': 'authored', 'via': 'the family contract'}}, 'review': {'score': None, 'teaching': None}} : an exercise counted as a work
+
+======================================================================
+FAIL: test_authored_variants_name_one_composition (tests.test_measured_truth.TestIdentitySurvivesTheBuild.test_authored_variants_name_one_composition) (item='exercise.articulation.g.legato.right')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4916fdc4a3058d81\tools\content\tests\test_measured_truth.py", line 196, in test_authored_variants_name_one_composition
+    self.assertNotIn("composition", item["provenance"], "an exercise counted as a work")
+AssertionError: 'composition' unexpectedly found in {'source': 'generated', 'generator': {'name': 'tools/content/generate_exercises.py', 'family': 'articulation', 'version': 1, 'seed': None}, 'composition': 'variant-of:exercise.articulation.g.staccato.right', 'facts': {'composition': {'kind': 'authored', 'via': 'variantOf'}, 'demands': {'kind': 'measured', 'via': 'app/src/demands/detect.ts', 'definitions': 3, 'detectors': '5550e146647a'}, 'tempo': {'kind': 'authored', 'via': 'the recipe'}, 'level': {'kind': 'authored', 'via': 'judged for this item'}, 'hands': {'kind': 'authored', 'via': 'the recipe'}, 'key': {'kind': 'authored', 'via': 'the recipe'}, 'role': {'kind': 'authored', 'via': 'the family contract'}}, 'review': {'score': None, 'teaching': None}} : an exercise counted as a work
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.082s
+
+FAILED (failures=4)
+exit 1

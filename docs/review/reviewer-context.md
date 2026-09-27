@@ -176,7 +176,7 @@ Do not manufacture status from an old snapshot. If the repository and this secti
 Current snapshot as of 2026-09-27, late afternoon (refreshed by the orchestrator at each handoff push, because the reviewer's tooling commits only under `responses/`; the live pointer is always `docs/review/current.md`):
 - The T53 chain (T53, T53b, T53c), F1, Q24 and H0 are closed; every immutable handoff before D0a has a matching response.
 - D0 is closed: its architecture approved (`responses/0669117.md`) and its one required change, D0a, accepted (`responses/3b9c37d.md`).
-- E0 is dispatched (Entry 92) under its approved brief (`responses/af665ec.md`) and the constraints of the D0 and D0a responses; its handoff follows when it lands.
+- E0 is landed and handed off at `handoffs/f3b75b7.md` (Entry 92); its ACCEPT closes E0 and opens the E1 and E2 briefs.
 - The sequence is E0 -> (E1, E2 briefs after E0 closes); X/G implementation does not leap ahead of D/E truths.
 - The pre-dispatch gate now posts its own handoff file (`docs/review/README.md` §Brief handoffs).
 - The owner's open decision: Q47, whether CI downloads the MAESTRO MIDI zip for the converter's real-recording tests; it blocks nothing.

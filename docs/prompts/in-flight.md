@@ -12,7 +12,7 @@
 
 - **D0 / D0a** — **closed**: D0a accepted (`responses/3b9c37d.md`); B7 kept (G53), the arpeggios' notation to G52.
 - **Q24** — **closed**, approved by the reviewer (`responses/e32d0ef.md`, unprompted); the MAESTRO download stays the owner's question (Q47).
-- **E0** — **dispatched** (Entry 92) in an isolated worktree on D0a's acceptance, under its approved brief; on landing: merge, the content build, validator, the targeted content suites and vitest, the swap-sheet and Today specs once, the rung-claims report read as a teacher, record, handoff, push.
+- **E0** — **landed** (Entry 92, merged as e5fb68a, handoff `handoffs/f3b75b7.md`); awaiting the reviewer's response; on ACCEPT the E1 and E2 briefs are drafted for their gates.
 
 ## Standing rules in force tonight
 

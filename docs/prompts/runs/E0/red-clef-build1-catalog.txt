@@ -1,0 +1,27 @@
+﻿python : test_a_reading_the_clef_assumption_spoils_never_establishes 
+(tests.test_measured_truth.TestUsefulDensity.test_a_reading_the_clef_assumption_spoils_never_establishes)
+At line:1 char:529
++ ... 4a3058d81"; python "$S\scripts\red_clef.py" *> "$S\red-clef-build1-ca ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (test_a_reading_...er_establishes):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+detect.ts reads staff 1 as treble: a one-staff bass-clef part's ledger lines are the misreading, marked. ... FAIL
+
+======================================================================
+FAIL: test_a_reading_the_clef_assumption_spoils_never_establishes 
+(tests.test_measured_truth.TestUsefulDensity.test_a_reading_the_clef_assumption_spoils_never_establishes)
+detect.ts reads staff 1 as treble: a one-staff bass-clef part's ledger lines are the misreading, marked.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano 
+Stuff\PianoProject\.claude\worktrees\agent-a4916fdc4a3058d81\tools\content\tests\test_measured_truth.py", line 277, in 
+test_a_reading_the_clef_assumption_spoils_never_establishes
+    self.assertGreater(len(spoilt), 0, "the LH songs in the bass clef on one staff are no longer found")
+AssertionError: 0 not greater than 0 : the LH songs in the bass clef on one staff are no longer found
+
+----------------------------------------------------------------------
+Ran 1 test in 0.092s
+
+FAILED (failures=1)
+exit 1

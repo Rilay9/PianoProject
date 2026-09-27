@@ -61,3 +61,5 @@ E1 the excerpt as a first-class object: identity from source, range, part and ve
 
 **Released for dispatch 2026-09-27** on D0a's acceptance (`responses/3b9c37d.md`), with one more constraint from that response (finding 2): the 35 respelled items measure differently through the detectors, so E0 measures the current written music and consumes those measured results; it never inherits D0's older counts as placement truth.
 
+**Delivered 2026-09-27**, Entry 92, in an isolated worktree: items 1–6 built as decided; the evidence readers untouched; `demands: unmeasured` exploration-only on every path; the floor stays `familiar` (identical to `introduced` across the three learners' 90 mornings). Not done, named: re-measuring scores imported before E0 (E25); the detectors' clef assumption marked not fixed (E22); no hand-split correction screen (X); every review bit `null`. Outside the brief's list with reasons: `skillActivation.ts` (`declaredSkills`, so the boundary is extended, not duplicated), `types.ts`, three lines in `TodayScreen.ts` handing the sheet the learner's runs, `docs/04` §2 and `help.test.ts` (the tier words). Two questions for the reviewer (L106).
+

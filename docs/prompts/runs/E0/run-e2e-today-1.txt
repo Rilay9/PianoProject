@@ -1,0 +1,103 @@
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/curriculum/load.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/curriculum/tips.ts, src/data/planStore.ts, src/score/estimateImport.ts, src/ui/assignSheet.ts, src/ui/screens/ChordChartScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [plugin builtin:vite-reporter] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/planStore.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/data/backup.ts, src/data/rungStates.ts, src/ui/screens/DrillScreen.ts, src/ui/screens/LessonScreen.ts, src/ui/screens/PlanScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/evidenceJob.ts is dynamically imported by src/main.ts but also statically imported by src/ui/screens/SettingsScreen.ts, dynamic import will not move module into another chunk.
+[WebServer] 
+
+Running 16 tests using 2 workers
+
+  ok  2 tests\e2e\today.spec.ts:62:3 › Today › shows a weekly goal, an input chip, and a session card (914ms)
+  ok  1 tests\e2e\today.spec.ts:72:3 › Today › the four session lengths build different cards (1.8s)
+  ok  3 tests\e2e\today.spec.ts:86:3 › Today › remembers the session length across a reload (1.6s)
+  ok  4 tests\e2e\today.spec.ts:95:3 › Today › "Swap this" offers alternatives and can exclude songs (2.3s)
+  ok  5 tests\e2e\today.spec.ts:114:3 › Today › the "not a song" filter removes songs from the swap sheet (2.3s)
+  ok  7 tests\e2e\today.spec.ts:142:3 › Today › the tracks the data switches on are on before he touches a chip (C2) (1.4s)
+  ok  6 tests\e2e\today.spec.ts:132:3 › Today › shuffle rebuilds the card (3.3s)
+  ok  8 tests\e2e\today.spec.ts:171:3 › Today › Today keeps recommending after the core path, from a track he never turned on (2.5s)
+  ok 10 tests\e2e\today.spec.ts:253:3 › Today › starting the session opens the first row (1.9s)
+  x   9 tests\e2e\today.spec.ts:223:3 › Today › the warm-up and the review say why, for a learner whose lesson exercise is counted and a piece has gone unplayed (11.0s)
+  ok 12 tests\e2e\today.spec.ts:302:3 › Today obeys 04 §0 › the session card starts inside the first screenful (R1) (760ms)
+  ok 13 tests\e2e\today.spec.ts:313:3 › Today obeys 04 §0 › a row is one line of detail and no taller than 96 px (R2) (756ms)
+  x  11 tests\e2e\today.spec.ts:276:3 › the swap sheet’s demand tier (E0) › placed at 1.5, the new row’s sheet names the demand tier: also practises skips, with the other demands met (10.7s)
+  ok 14 tests\e2e\today.spec.ts:334:3 › Today obeys 04 §0 › one filled button on the screen, and it is Start session (R3) (721ms)
+  ok 15 tests\e2e\today.spec.ts:433:3 › the daily read says why this phrase (C4, C4c) › two days of misread skips on 2.2: the phrase moves by step, and the card says the skips went wrong (2.3s)
+  ok 16 tests\e2e\today.spec.ts:445:3 › the daily read says why this phrase (C4, C4c) › two reads wrong only where skips and eighths coincide, on 2.5: nothing blamed, the easy read, and the card says it is not sure yet (3.2s)
+
+
+  1) tests\e2e\today.spec.ts:223:3 › Today › the warm-up and the review say why, for a learner whose lesson exercise is counted and a piece has gone unplayed 
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: locator('#today-swap .today-swap-tier').first()
+    Expected: "From the same lesson"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveText" locator('#today-swap .today-swap-tier').first() with timeout 5000ms
+      - waiting for locator('#today-swap .today-swap-tier').first()
+
+
+      247 |     // The swap sheet names each tier it offers from.
+      248 |     await warmup.getByRole('button', { name: 'Swap' }).click();
+    > 249 |     await expect(page.locator('#today-swap .today-swap-tier').first()).toHaveText('From the same lesson');
+          |                                                                        ^
+      250 |     await expect(page.locator('#today-swap .list-row').first()).toHaveAttribute('data-tier', 'lesson');
+      251 |   });
+      252 |
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4916fdc4a3058d81\app\tests\e2e\today.spec.ts:249:72
+
+    Error Context: test-results\today-Today-the-warm-up-an-a2e8c-d-a-piece-has-gone-unplayed\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\today-Today-the-warm-up-an-a2e8c-d-a-piece-has-gone-unplayed\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\today-Today-the-warm-up-an-a2e8c-d-a-piece-has-gone-unplayed\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\e2e\today.spec.ts:276:3 › the swap sheet’s demand tier (E0) › placed at 1.5, the new row’s sheet names the demand tier: also practises skips, with the other demands met 
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: locator('#today-swap').locator('.today-swap-tier[data-tier="demand"]')
+    Expected: "Also practises skips, with the other demands you have met"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveText" locator('#today-swap').locator('.today-swap-tier[data-tier="demand"]') with timeout 5000ms
+      - waiting for locator('#today-swap').locator('.today-swap-tier[data-tier="demand"]')
+
+
+      282 |     await expect(sheet.locator('.today-swap-tier').first()).toHaveText('From the same lesson');
+      283 |     const demand = sheet.locator('.today-swap-tier[data-tier="demand"]');
+    > 284 |     await expect(demand).toHaveText('Also practises skips, with the other demands you have met');
+          |                          ^
+      285 |     await demand.scrollIntoViewIfNeeded();
+      286 |     await expect(demand).toBeInViewport();
+      287 |     await expect(sheet.locator('.list-row[data-tier="demand"]').first()).toBeVisible();
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4916fdc4a3058d81\app\tests\e2e\today.spec.ts:284:26
+
+    Error Context: test-results\today-the-swap-sheet’s-dem-f6058--with-the-other-demands-met\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\today-the-swap-sheet’s-dem-f6058--with-the-other-demands-met\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\today-the-swap-sheet’s-dem-f6058--with-the-other-demands-met\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests\e2e\today.spec.ts:223:3 › Today › the warm-up and the review say why, for a learner whose lesson exercise is counted and a piece has gone unplayed 
+    tests\e2e\today.spec.ts:276:3 › the swap sheet’s demand tier (E0) › placed at 1.5, the new row’s sheet names the demand tier: also practises skips, with the other demands met 
+  14 passed (1.0m)
+exit 1
