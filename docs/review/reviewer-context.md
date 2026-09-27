@@ -33,7 +33,7 @@ Classify findings as:
 A post-build review gate is real. Do not allow a dependent brief to advance merely because its predecessor built green.
 
 Current major sequence is:
-`F0 -> C7 -> D0 -> E`, with later G/X consuming D/E truths. F0 and C7 are closed. At the time this context file was created, T53c is an explicit fix-forward gate before D0; later handoffs/task index may supersede that fact, so verify the current frontier in `docs/prompts/tasks/README.md`, the latest immutable handoffs, and existing responses.
+`F0 -> C7 -> D0 -> E`, with later G/X consuming D/E truths. F0 and C7 are closed. The frontier moves; this sentence is refreshed with the snapshot below: D0 is built and approved with one required change, D0a, whose ACCEPT releases E0 (brief approved). Verify the current frontier in `docs/review/current.md` and `docs/prompts/tasks/README.md` before every pass.
 
 Do not let X/G implementation leap ahead of D/E when those later waves depend on truths D/E own.
 
@@ -173,14 +173,11 @@ The scheduled reviewer must derive this state from:
 
 Do not manufacture status from an old snapshot. If the repository and this section disagree, the repository wins and this section must be corrected.
 
-Current snapshot as of 2026-09-27:
-- F0 closed.
-- C7 closed after L98.
-- T53 core accepted.
-- T53b accepted.
-- T53c is required before D0 and is the current gate.
-- D0 remains approved pre-build but must not dispatch until T53c receives ACCEPT.
-- Independent overnight work may include test/harness reliability and narrowly scoped F voice-only cleanup, but those do not waive the T53c → D0 gate.
-- X/G implementation must not leap ahead of D/E truths.
-- No owner decision is currently required by the reviewer.
+Current snapshot as of 2026-09-27, late afternoon (refreshed by the orchestrator at each handoff push, because the reviewer's tooling commits only under `responses/`; the live pointer is always `docs/review/current.md`):
+- The T53 chain (T53, T53b, T53c), F1, Q24 and H0 are closed; every immutable handoff before D0a has a matching response.
+- D0's architecture is approved (`responses/0669117.md`) with one required change: the shared spelling policy writes E♯ as F in F♯ major. That change is D0a (`docs/prompts/tasks/D0a-key-spelling.md`), building; its handoff follows when it lands, and its ACCEPT closes D0.
+- E0's brief is approved through a brief handoff (`responses/af665ec.md`) with four constraints appended to the brief; E0 dispatches only on D0a's ACCEPT.
+- The sequence is D0a -> E0 -> (E1, E2 briefs after E0 closes); X/G implementation does not leap ahead of D/E truths.
+- The pre-dispatch gate now posts its own handoff file (`docs/review/README.md` §Brief handoffs).
+- The owner's open decision: Q47, whether CI downloads the MAESTRO MIDI zip for the converter's real-recording tests; it blocks nothing.
 
