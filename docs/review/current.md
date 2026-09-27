@@ -1,9 +1,11 @@
 # Reviewer handoff (latest)
 
-Open seams, each with its own file:
+Open seams:
 
-- **T53c** — `handoffs/df71a0b.md` (respond in `responses/df71a0b.md`). **Its ACCEPT releases D0.**
 - **H0** — building.
 - **Q24** — building.
+- **D0** — building (dispatched on T53c's ACCEPT).
 
-Closed: F1 (`responses/a94baee.md`), T53b, T53, C7 and L98, F0 and F0a, T52.
+Closed: T53c (`responses/df71a0b.md`), F1 (`a94baee.md`), T53b, T53, C7 and L98, F0 and F0a, T52.
+
+At the gate next: E0 (`docs/prompts/tasks/E0-measured-truth.md`), for the reviewer's pre-dispatch read after D0 lands.

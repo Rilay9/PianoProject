@@ -4,13 +4,13 @@
 
 | Seam | Entry | What it owns | On landing |
 |---|---|---|---|
-| T53c | 86 | **landed** (Entry 86, handoff `handoffs/df71a0b.md`); awaiting the reviewer's response — **its ACCEPT releases D0** | — |
+| T53c | 86 | **accepted** (`responses/df71a0b.md`); the T53 chain closed | — |
 | H0 | 87 | suite reliability, test and harness only (Q34, Q37, Q39, Q44); Playwright on port 4183 in its worktree | merge; no product change to verify — the touched specs under repetition are its proof; record; handoff; push |
 | F1 | 88 | **accepted** by the reviewer (`responses/a94baee.md`, unprompted through PR #1) | — |
 
 ## Waiting
 
-- **D0** (`docs/prompts/tasks/D0-family-contracts.md`, approved with one constraint, cases classified, premises verified at the lines 2026-09-27): dispatch in an isolated worktree the moment T53c's response file says ACCEPT. Runs the content build; owns the generator; Playwright not needed.
+- **D0** — **dispatched** (Entry 90) in an isolated worktree on T53c's ACCEPT; on landing: merge, the builder's content build, validator and content tests plus vitest as its proof (generator and contracts; no rendering), record, handoff, push; then E0 to the reviewer's gate.
 - **Q24** (`docs/prompts/tasks/Q24-invariants-are-gates.md`): **dispatched** in a worktree after F1 landed (Entry 89); on landing: merge, the content tests before and after the build as its proof, record, handoff, push.
 - **E0** (`docs/prompts/tasks/E0-measured-truth.md`): drafted; to the reviewer's gate after D0 is dispatched; never before D0 lands.
 
