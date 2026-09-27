@@ -1,0 +1,549 @@
+test_every_family_in_the_table_is_in_the_plan (tests.test_family_contracts.TestEveryItemCarriesItsContract.test_every_family_in_the_table_is_in_the_plan) ... ERROR
+test_target_skills_role_and_identity_are_the_rows (tests.test_family_contracts.TestEveryItemCarriesItsContract.test_target_skills_role_and_identity_are_the_rows) ... ERROR
+test_each_maker_passes_its_own_family_to_catalog_entry (tests.test_family_contracts.TestEveryMakerHasExactlyOneContract.test_each_maker_passes_its_own_family_to_catalog_entry) ... FAIL
+test_the_invariant_census_and_the_table_name_the_same_families (tests.test_family_contracts.TestEveryMakerHasExactlyOneContract.test_the_invariant_census_and_the_table_name_the_same_families) ... ok
+test_the_table_and_the_module_name_the_same_families (tests.test_family_contracts.TestEveryMakerHasExactlyOneContract.test_the_table_and_the_module_name_the_same_families) ... ok
+test_a_family_s_music_changes_only_with_its_version (tests.test_family_contracts.TestIdentity.test_a_family_s_music_changes_only_with_its_version) ... ERROR
+test_one_identity_is_one_piece_of_music (tests.test_family_contracts.TestIdentity.test_one_identity_is_one_piece_of_music) ... ERROR
+test_an_item_no_primary_rule_matches_is_declared_not_judged (tests.test_family_contracts.TestTheContractsNameTheVocabulary.test_an_item_no_primary_rule_matches_is_declared_not_judged) ... ERROR
+test_every_skill_and_demand_a_row_names_exists (tests.test_family_contracts.TestTheContractsNameTheVocabulary.test_every_skill_and_demand_a_row_names_exists) ... ok
+test_every_promise_can_fail (tests.test_family_contracts.TestTheMutationCensus.test_every_promise_can_fail) ... ERROR
+test_every_field (tests.test_family_contracts.TestTheRowsAreWellFormed.test_every_field) ... ok
+test_every_music_family_is_marked_unheard (tests.test_family_contracts.TestTheRowsAreWellFormed.test_every_music_family_is_marked_unheard) ... ok
+test_the_groove_and_style_families_promise_music (tests.test_family_contracts.TestTheRowsAreWellFormed.test_the_groove_and_style_families_promise_music)
+Item 6: clave, tumbao, montuno, boogie, stride, comping, walking bass, rag, vamp, riff, ostinato. ... ok
+test_a_contract_claiming_an_opportunity_the_music_lacks_fails (tests.test_measured_demands.TestEveryItemSatisfiesItsContract.test_a_contract_claiming_an_opportunity_the_music_lacks_fails)
+The adversary: the same measured item, a contract that claims what is not there. ... ERROR
+test_no_threshold_is_universal (tests.test_measured_demands.TestEveryItemSatisfiesItsContract.test_no_threshold_is_universal)
+Part 15 §13: family-specific thresholds, never one universal percentage. ... ok
+test_presence_density_overconcentration_and_absence_hold_for_every_item (tests.test_measured_demands.TestEveryItemSatisfiesItsContract.test_presence_density_overconcentration_and_absence_hold_for_every_item) ... ERROR
+test_the_five_finger_patterns_are_spelled_in_their_key (tests.test_measured_demands.TestEveryItemSatisfiesItsContract.test_the_five_finger_patterns_are_spelled_in_their_key)
+What the measured demands found: twenty patterns spelled by pitch class (B major as B C-sharp ... ERROR
+test_the_bridge_measures_the_whole_plan_and_misses_nothing (tests.test_measured_demands.TestTheBridgeReturnsTheDetectorsIds.test_the_bridge_measures_the_whole_plan_and_misses_nothing) ... ERROR
+test_the_pinned_generated_items_through_the_bridge (tests.test_measured_demands.TestTheBridgeReturnsTheDetectorsIds.test_the_pinned_generated_items_through_the_bridge) ... ERROR
+test_untaught_demands_on_the_earliest_listing_rung_are_the_recorded_ones (tests.test_measured_demands.TestTheRungTheItemSitsOn.test_untaught_demands_on_the_earliest_listing_rung_are_the_recorded_ones) ... ERROR
+test_a_chord_beyond_the_hand_fails (tests.test_physical_gate.TestAdversaries.test_a_chord_beyond_the_hand_fails) ... ok
+test_a_finger_passing_the_wrong_way_at_speed_fails (tests.test_physical_gate.TestAdversaries.test_a_finger_passing_the_wrong_way_at_speed_fails) ... ok
+test_a_leap_beyond_the_hand_fails_where_no_leap_is_declared (tests.test_physical_gate.TestAdversaries.test_a_leap_beyond_the_hand_fails_where_no_leap_is_declared) ... ok
+test_a_rate_beyond_the_declared_one_fails (tests.test_physical_gate.TestAdversaries.test_a_rate_beyond_the_declared_one_fails) ... ok
+test_a_repeated_note_figure_without_a_solution_fails (tests.test_physical_gate.TestAdversaries.test_a_repeated_note_figure_without_a_solution_fails) ... ok
+test_fingering_where_the_contract_says_none_fails (tests.test_physical_gate.TestAdversaries.test_fingering_where_the_contract_says_none_fails) ... ok
+test_verified_fingering_without_a_source_fails (tests.test_physical_gate.TestAdversaries.test_verified_fingering_without_a_source_fails) ... ok
+test_every_generated_item_passes_the_physical_gate (tests.test_physical_gate.TestEveryItemInThePlan.test_every_generated_item_passes_the_physical_gate) ... ERROR
+test_fingering_verified_is_never_true_without_a_source (tests.test_physical_gate.TestEveryItemInThePlan.test_fingering_verified_is_never_true_without_a_source)
+The reviewer's T53 rule: a printed number is a claim, and the flag needs a source. ... ERROR
+test_the_families_that_print_no_fingering_print_none (tests.test_physical_gate.TestEveryItemInThePlan.test_the_families_that_print_no_fingering_print_none) ... ERROR
+test_the_add9_passes_only_as_a_declared_large_hand_voicing (tests.test_physical_gate.TestTheOpenVoicings.test_the_add9_passes_only_as_a_declared_large_hand_voicing) ... ok
+test_the_invariant_suite_no_longer_exempts_any_family (tests.test_physical_gate.TestTheOpenVoicings.test_the_invariant_suite_no_longer_exempts_any_family) ... ok
+test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) ... 
+  test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.c.quartal') ... FAIL
+  test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.d-flat.quartal') ... FAIL
+  test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.d.quartal') ... FAIL
+  test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.e-flat.quartal') ... FAIL
+  test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.e.quartal') ... FAIL
+  test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.f.quartal') ... FAIL
+  test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.f-sharp.quartal') ... FAIL
+  test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.g.quartal') ... FAIL
+  test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.a-flat.quartal') ... FAIL
+  test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.a.quartal') ... FAIL
+  test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.b-flat.quartal') ... FAIL
+  test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.b.quartal') ... FAIL
+test_the_shapes_as_they_stood_fail_the_gate (tests.test_physical_gate.TestTheOpenVoicings.test_the_shapes_as_they_stood_fail_the_gate) ... ok
+test_no_item_is_transfer_by_seed_or_by_its_own_family (tests.test_roles.TestANewSeedIsNotTransfer.test_no_item_is_transfer_by_seed_or_by_its_own_family) ... ERROR
+test_the_check_fails_when_a_seed_is_marked_transfer (tests.test_roles.TestANewSeedIsNotTransfer.test_the_check_fails_when_a_seed_is_marked_transfer) ... ERROR
+test_a_claimed_dimension_the_items_share_fails (tests.test_roles.TestATransferItemDiffersInSurfaceAsItsContractSays.test_a_claimed_dimension_the_items_share_fails) ... ERROR
+test_every_declared_dimension_differs_from_every_item_of_the_source_family (tests.test_roles.TestATransferItemDiffersInSurfaceAsItsContractSays.test_every_declared_dimension_differs_from_every_item_of_the_source_family) ... ERROR
+test_every_family_says_what_it_does_about_transfer (tests.test_roles.TestRolesAreExplicit.test_every_family_says_what_it_does_about_transfer) ... ok
+test_every_item_has_a_role_its_family_provides (tests.test_roles.TestRolesAreExplicit.test_every_item_has_a_role_its_family_provides) ... ERROR
+test_a_measured_kind_is_declared_and_an_unmeasured_one_claims_nothing_beyond_pitch_and_time (tests.test_assessment_declaration.TestNoUnmeasuredQualityIsClaimed.test_a_measured_kind_is_declared_and_an_unmeasured_one_claims_nothing_beyond_pitch_and_time) ... ERROR
+test_a_quality_the_tags_name_is_judged_or_admitted (tests.test_assessment_declaration.TestNoUnmeasuredQualityIsClaimed.test_a_quality_the_tags_name_is_judged_or_admitted) ... ERROR
+test_a_scale_claiming_evenness_from_velocity_fails (tests.test_assessment_declaration.TestNoUnmeasuredQualityIsClaimed.test_a_scale_claiming_evenness_from_velocity_fails)
+The adversary: a technique family claiming a quality from an input nothing measures for it. ... ok
+test_every_judged_entry_names_an_input_and_a_precision (tests.test_assessment_declaration.TestTheDeclarationsAreWellFormed.test_every_judged_entry_names_an_input_and_a_precision) ... ok
+test_the_measure_map_is_the_score_screen_s (tests.test_assessment_declaration.TestTheDeclarationsAreWellFormed.test_the_measure_map_is_the_score_screen_s) ... ok
+test_the_patterns_the_reviewer_names (tests.test_named_by_what_they_are.TestNamedByWhatTheyAre.test_the_patterns_the_reviewer_names) ... ok
+test_no_title_direction_tag_docstring_contract_or_spec_line_carries_one (tests.test_named_by_what_they_are.TestNoGenreUniversal.test_no_title_direction_tag_docstring_contract_or_spec_line_carries_one) ... FAIL
+test_the_check_reads_what_it_says_it_reads (tests.test_named_by_what_they_are.TestNoGenreUniversal.test_the_check_reads_what_it_says_it_reads) ... ok
+test_the_retired_list_names_where_each_phrase_came_from (tests.test_named_by_what_they_are.TestNoGenreUniversal.test_the_retired_list_names_where_each_phrase_came_from) ... ok
+test_the_table_names_every_maker_in_the_module (tests.test_generator_invariants.TestEveryMakerIsHere.test_the_table_names_every_maker_in_the_module) ... ok
+test_there_are_as_many_rows_as_makers (tests.test_generator_invariants.TestEveryMakerIsHere.test_there_are_as_many_rows_as_makers) ... ok
+test_every_note_is_a_key_that_exists (tests.test_generator_invariants.TestHandRange.test_every_note_is_a_key_that_exists) ... ok
+test_no_hand_is_asked_to_strike_more_than_an_octave (tests.test_generator_invariants.TestHandRange.test_no_hand_is_asked_to_strike_more_than_an_octave) ... 
+  test_no_hand_is_asked_to_strike_more_than_an_octave (tests.test_generator_invariants.TestHandRange.test_no_hand_is_asked_to_strike_more_than_an_octave) (family='open_voicing', item='exercise.open-voicing.c.quartal') ... ERROR
+Exception ignored in: <generator object FamilyCase.each at 0x000001CAF5D87890>
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_generator_invariants.py", line 824, in test_no_hand_is_asked_to_strike_more_than_an_octave
+    self.assertLessEqual(span, AN_OCTAVE, f"{name}: {where}")
+RuntimeError: generator ignored GeneratorExit
+  test_no_hand_is_asked_to_strike_more_than_an_octave (tests.test_generator_invariants.TestHandRange.test_no_hand_is_asked_to_strike_more_than_an_octave) (family='boogie', item='exercise.boogie.c.root-fifth') ... ERROR
+test_no_hand_is_asked_to_strike_more_than_an_octave (tests.test_generator_invariants.TestHandRange.test_no_hand_is_asked_to_strike_more_than_an_octave) ... FAIL
+test_the_families_that_reach_a_tenth_break_it (tests.test_generator_invariants.TestHandRange.test_the_families_that_reach_a_tenth_break_it)
+`make_stride` and `make_oompah` both name a tenth, and neither strikes it. ... ok
+test_the_hand_a_family_says_rests_has_no_note_in_it (tests.test_generator_invariants.TestHandRange.test_the_hand_a_family_says_rests_has_no_note_in_it) ... ok
+test_the_left_hand_stays_in_the_register_the_family_claims (tests.test_generator_invariants.TestHandRange.test_the_left_hand_stays_in_the_register_the_family_claims) ... ok
+test_a_family_engraved_without_a_signature_names_no_key_on_any_root (tests.test_generator_invariants.TestKey.test_a_family_engraved_without_a_signature_names_no_key_on_any_root)
+The scout's second finding, measured wider than it was reported. ... ok
+test_a_title_that_names_one_hand_is_played_by_that_hand (tests.test_generator_invariants.TestKey.test_a_title_that_names_one_hand_is_played_by_that_hand)
+The scout's finding, 2026-09-22, and the second half of `hands`. ... ok
+test_a_title_that_says_minor_is_engraved_in_the_minor (tests.test_generator_invariants.TestKey.test_a_title_that_says_minor_is_engraved_in_the_minor)
+Entry 4's first fault: `exercise.riff.c.minor-hook` rendered in C major. ... ok
+test_hands_says_which_staves_sound (tests.test_generator_invariants.TestKey.test_hands_says_which_staves_sound) ... ok
+test_hanon_keeps_the_key_its_titles_name (tests.test_generator_invariants.TestKey.test_hanon_keeps_the_key_its_titles_name)
+The other side of the line: an empty signature that *is* a key. ... ok
+test_the_boogie_and_stride_titles_say_both_hands_in_every_key (tests.test_generator_invariants.TestKey.test_the_boogie_and_stride_titles_say_both_hands_in_every_key)
+The forty rows themselves, not one of them. ... ok
+test_the_catalog_key_is_the_engraved_one_or_nothing (tests.test_generator_invariants.TestKey.test_the_catalog_key_is_the_engraved_one_or_nothing)
+`engraved_key` is the only thing that knows both, and it may say nothing. ... ok
+test_the_minor_families_are_in_the_minor_in_every_key_they_are_written_in (tests.test_generator_invariants.TestKey.test_the_minor_families_are_in_the_minor_in_every_key_they_are_written_in)
+The keys, not the key. Entry 4's first fault was right in A and wrong in C. ... ok
+test_the_two_staves_carry_the_same_key_signature (tests.test_generator_invariants.TestKey.test_the_two_staves_carry_the_same_key_signature) ... ok
+test_both_staves_are_the_same_length (tests.test_generator_invariants.TestLength.test_both_staves_are_the_same_length)
+A staff that stops early is a page that ends twice. ... ok
+test_every_bar_is_full (tests.test_generator_invariants.TestLength.test_every_bar_is_full)
+`pad_final_bar` exists so a piece ends on a barline. This is that, checked. ... ok
+test_hanon_is_as_long_as_the_edition_it_is_copied_from (tests.test_generator_invariants.TestLength.test_hanon_is_as_long_as_the_edition_it_is_copied_from)
+The one family whose length is data, so the number cannot be written here. ... ok
+test_the_bar_count_is_the_one_the_family_states (tests.test_generator_invariants.TestLength.test_the_bar_count_is_the_one_the_family_states) ... ok
+test_a_repeated_note_family_strikes_each_note_the_number_of_times_it_says (tests.test_generator_invariants.TestRhythm.test_a_repeated_note_family_strikes_each_note_the_number_of_times_it_says) ... ok
+test_a_shuffle_row_is_written_straight_and_says_so_in_words (tests.test_generator_invariants.TestRhythm.test_a_shuffle_row_is_written_straight_and_says_so_in_words)
+`RHYTHM_PATTERNS_EXTRA`'s own comment: notating triplets would teach the ... ok
+test_every_rhythm_row_writes_the_lengths_its_table_holds (tests.test_generator_invariants.TestRhythm.test_every_rhythm_row_writes_the_lengths_its_table_holds) ... ok
+test_the_bar_in_between_the_halves_is_silent (tests.test_generator_invariants.TestRhythm.test_the_bar_in_between_the_halves_is_silent) ... ok
+test_the_boogie_drives_eight_eighths_a_bar (tests.test_generator_invariants.TestRhythm.test_the_boogie_drives_eight_eighths_a_bar) ... ok
+test_the_clave_strikes_where_the_table_says_and_nowhere_else (tests.test_generator_invariants.TestRhythm.test_the_clave_strikes_where_the_table_says_and_nowhere_else) ... ok
+test_the_hands_play_the_ratio_the_independence_family_names (tests.test_generator_invariants.TestRhythm.test_the_hands_play_the_ratio_the_independence_family_names) ... ok
+test_the_measured_trill_writes_the_number_of_notes_it_prints (tests.test_generator_invariants.TestRhythm.test_the_measured_trill_writes_the_number_of_notes_it_prints) ... ok
+test_the_meter_families_fill_the_signature_they_name (tests.test_generator_invariants.TestRhythm.test_the_meter_families_fill_the_signature_they_name) ... ok
+test_the_oom_pah_alternates_bass_and_chord (tests.test_generator_invariants.TestRhythm.test_the_oom_pah_alternates_bass_and_chord) ... ok
+test_the_riff_cell_is_two_bars_so_every_statement_starts_on_a_downbeat (tests.test_generator_invariants.TestRhythm.test_the_riff_cell_is_two_bars_so_every_statement_starts_on_a_downbeat)
+A cell of seven quarters put the second statement on beat four, the ... ok
+test_the_secondary_rag_cell_does_not_fit_the_beat (tests.test_generator_invariants.TestRhythm.test_the_secondary_rag_cell_does_not_fit_the_beat) ... ok
+test_the_swing_direction_sits_over_the_second_half (tests.test_generator_invariants.TestRhythm.test_the_swing_direction_sits_over_the_second_half) ... ok
+test_the_swung_half_is_the_straight_half_note_for_note (tests.test_generator_invariants.TestRhythm.test_the_swung_half_is_the_straight_half_note_for_note)
+The docstring's own condition: "if the two halves ever stop being ... ok
+test_the_tresillo_is_three_three_two (tests.test_generator_invariants.TestRhythm.test_the_tresillo_is_three_three_two) ... ok
+test_the_tumbao_never_lands_on_a_downbeat (tests.test_generator_invariants.TestRhythm.test_the_tumbao_never_lands_on_a_downbeat) ... ok
+test_no_family_engraves_a_double_accidental_it_does_not_need (tests.test_generator_invariants.TestSpelling.test_no_family_engraves_a_double_accidental_it_does_not_need)
+The only double sharp the plan writes is G sharp minor's leading note. ... ok
+test_the_blue_note_is_a_raised_fourth_in_every_key (tests.test_generator_invariants.TestSpelling.test_the_blue_note_is_a_raised_fourth_in_every_key)
+The owner's rule, 2026-09-19, and Entry 4's fifth fault the other way up. ... ok
+test_the_blues_direction_names_the_degree_the_page_engraves (tests.test_generator_invariants.TestSpelling.test_the_blues_direction_names_the_degree_the_page_engraves)
+Found by reading the rendered page, 2026-09-22. ... ok
+test_the_chromatic_scale_climbs_a_semitone_at_a_time (tests.test_generator_invariants.TestSpelling.test_the_chromatic_scale_climbs_a_semitone_at_a_time)
+What the family can honestly promise today, and what it cannot. ... ok
+test_a_direction_is_one_line (tests.test_generator_invariants.TestText.test_a_direction_is_one_line) ... ok
+test_a_direction_is_printed_above_the_staff (tests.test_generator_invariants.TestText.test_a_direction_is_printed_above_the_staff)
+A direction with no `placement` is drawn *between* the staves, at the ... ok
+test_a_direction_starts_at_a_barline (tests.test_generator_invariants.TestText.test_a_direction_starts_at_a_barline)
+A direction dropped mid-bar has the least room on the page to print in, ... ok
+test_no_direction_is_longer_than_that_in_any_key_the_family_is_written_in (tests.test_generator_invariants.TestText.test_no_direction_is_longer_than_that_in_any_key_the_family_is_written_in)
+A direction that interpolates a key name is longer in D flat than in C. ... ok
+test_no_direction_is_longer_than_the_longest_one_that_survived (tests.test_generator_invariants.TestText.test_no_direction_is_longer_than_the_longest_one_that_survived) ... ok
+test_the_exported_musicxml_carries_the_placement (tests.test_generator_invariants.TestText.test_the_exported_musicxml_carries_the_placement)
+The attribute has to survive the export, which is the only form OSMD ... ok
+test_dropping_the_last_bar_fails_hanon_s_length_check (tests.test_generator_invariants.TestTheChecksGoRedOnAMutation.test_dropping_the_last_bar_fails_hanon_s_length_check)
+Hanon's length is the edition's, so its mutation has to be run against ... ok
+test_dropping_the_last_bar_fails_the_length_check (tests.test_generator_invariants.TestTheChecksGoRedOnAMutation.test_dropping_the_last_bar_fails_the_length_check) ... ok
+test_every_family_has_at_least_one_mutation_that_reddens_it (tests.test_generator_invariants.TestTheChecksGoRedOnAMutation.test_every_family_has_at_least_one_mutation_that_reddens_it)
+The census. A family that no mutation can break has no check on it, and ... ok
+test_forgetting_the_signature_is_empty_fails_the_key_check (tests.test_generator_invariants.TestTheChecksGoRedOnAMutation.test_forgetting_the_signature_is_empty_fails_the_key_check)
+Run on a C root, which is the only root the fault could reach: an empty ... ok
+test_lifting_the_left_hand_two_octaves_fails_the_register_check (tests.test_generator_invariants.TestTheChecksGoRedOnAMutation.test_lifting_the_left_hand_two_octaves_fails_the_register_check) ... ok
+test_naming_one_hand_in_a_title_fails_the_title_check (tests.test_generator_invariants.TestTheChecksGoRedOnAMutation.test_naming_one_hand_in_a_title_fails_the_title_check)
+Every family whose music is not the left hand's alone, mutated. ... ok
+test_padding_a_direction_fails_the_text_check (tests.test_generator_invariants.TestTheChecksGoRedOnAMutation.test_padding_a_direction_fails_the_text_check) ... ok
+test_sounding_the_silent_hand_fails_the_rest_check (tests.test_generator_invariants.TestTheChecksGoRedOnAMutation.test_sounding_the_silent_hand_fails_the_rest_check) ... ok
+test_stretching_a_chord_by_an_octave_fails_the_span_check (tests.test_generator_invariants.TestTheChecksGoRedOnAMutation.test_stretching_a_chord_by_an_octave_fails_the_span_check) ... ok
+test_the_check_reddens_on_the_two_titles_that_shipped (tests.test_generator_invariants.TestTheChecksGoRedOnAMutation.test_the_check_reddens_on_the_two_titles_that_shipped)
+The check has to fail on the exact strings that shipped, or it is a ... ok
+test_every_maker_has_a_docstring (tests.test_generator_invariants.TestTheDocstringsAreTrue.test_every_maker_has_a_docstring) ... ok
+test_every_maker_with_a_closed_set_of_words_refuses_a_word_it_does_not_know (tests.test_generator_invariants.TestTheDocstringsAreTrue.test_every_maker_with_a_closed_set_of_words_refuses_a_word_it_does_not_know)
+`one_of`'s reason, held for the families that branch on a string. ... ok
+test_the_five_finger_pattern_has_no_block_chord (tests.test_generator_invariants.TestTheDocstringsAreTrue.test_the_five_finger_pattern_has_no_block_chord) ... ok
+test_the_riff_default_names_a_cell_that_exists (tests.test_generator_invariants.TestTheDocstringsAreTrue.test_the_riff_default_names_a_cell_that_exists)
+It named `minor-hook` for three days after the cells were renamed, so ... ok
+test_the_seventh_arpeggio_is_fingered_the_way_its_tables_say (tests.test_generator_invariants.TestTheDocstringsAreTrue.test_the_seventh_arpeggio_is_fingered_the_way_its_tables_say) ... ok
+test_the_tresillo_is_written_as_dotted_quarters_as_its_docstring_says (tests.test_generator_invariants.TestTheDocstringsAreTrue.test_the_tresillo_is_written_as_dotted_quarters_as_its_docstring_says) ... ok
+test_the_two_hands_do_not_finger_the_chromatic_scale_alike (tests.test_generator_invariants.TestTheDocstringsAreTrue.test_the_two_hands_do_not_finger_the_chromatic_scale_alike)
+`chromatic_finger`'s whole subject, and `make_chromatic`'s docstring used ... ok
+
+======================================================================
+ERROR: test_every_family_in_the_table_is_in_the_plan (tests.test_family_contracts.TestEveryItemCarriesItsContract.test_every_family_in_the_table_is_in_the_plan)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_family_contracts.py", line 178, in test_every_family_in_the_table_is_in_the_plan
+    self.assertEqual(sorted(planned.by_family()), sorted(FC.contracts()))
+                            ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\planned.py", line 41, in by_family
+    out[entry["drill"]["generator"]["family"]].append((sc, entry))
+        ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'generator'
+
+======================================================================
+ERROR: test_target_skills_role_and_identity_are_the_rows (tests.test_family_contracts.TestEveryItemCarriesItsContract.test_target_skills_role_and_identity_are_the_rows)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_family_contracts.py", line 165, in test_target_skills_role_and_identity_are_the_rows
+    family = entry["drill"]["generator"]["family"]
+             ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'generator'
+
+======================================================================
+ERROR: test_a_family_s_music_changes_only_with_its_version (tests.test_family_contracts.TestIdentity.test_a_family_s_music_changes_only_with_its_version)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_family_contracts.py", line 199, in test_a_family_s_music_changes_only_with_its_version
+    digests[entry["drill"]["generator"]["family"]].append((entry["id"], music_digest(sc, entry)))
+            ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'generator'
+
+======================================================================
+ERROR: test_one_identity_is_one_piece_of_music (tests.test_family_contracts.TestIdentity.test_one_identity_is_one_piece_of_music)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_family_contracts.py", line 188, in test_one_identity_is_one_piece_of_music
+    key = identity_key(entry)
+          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_family_contracts.py", line 70, in identity_key
+    return json.dumps([entry["drill"]["generator"], recipe], sort_keys=True)
+                       ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'generator'
+
+======================================================================
+ERROR: test_an_item_no_primary_rule_matches_is_declared_not_judged (tests.test_family_contracts.TestTheContractsNameTheVocabulary.test_an_item_no_primary_rule_matches_is_declared_not_judged)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_family_contracts.py", line 110, in test_an_item_no_primary_rule_matches_is_declared_not_judged
+    family = entry["drill"]["generator"]["family"]
+             ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'generator'
+
+======================================================================
+ERROR: test_every_promise_can_fail (tests.test_family_contracts.TestTheMutationCensus.test_every_promise_can_fail)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_family_contracts.py", line 214, in test_every_promise_can_fail
+    measured = planned.measured()
+               ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\planned.py", line 58, in measured
+    measure = demands.measure_opportunities
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'demands' has no attribute 'measure_opportunities'
+
+======================================================================
+ERROR: test_a_contract_claiming_an_opportunity_the_music_lacks_fails (tests.test_measured_demands.TestEveryItemSatisfiesItsContract.test_a_contract_claiming_an_opportunity_the_music_lacks_fails)
+The adversary: the same measured item, a contract that claims what is not there.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_measured_demands.py", line 116, in test_a_contract_claiming_an_opportunity_the_music_lacks_fails
+    measured = planned.measured()
+               ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\planned.py", line 58, in measured
+    measure = demands.measure_opportunities
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'demands' has no attribute 'measure_opportunities'
+
+======================================================================
+ERROR: test_presence_density_overconcentration_and_absence_hold_for_every_item (tests.test_measured_demands.TestEveryItemSatisfiesItsContract.test_presence_density_overconcentration_and_absence_hold_for_every_item)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_measured_demands.py", line 106, in test_presence_density_overconcentration_and_absence_hold_for_every_item
+    measured = planned.measured()
+               ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\planned.py", line 58, in measured
+    measure = demands.measure_opportunities
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'demands' has no attribute 'measure_opportunities'
+
+======================================================================
+ERROR: test_the_five_finger_patterns_are_spelled_in_their_key (tests.test_measured_demands.TestEveryItemSatisfiesItsContract.test_the_five_finger_patterns_are_spelled_in_their_key)
+What the measured demands found: twenty patterns spelled by pitch class (B major as B C-sharp
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_measured_demands.py", line 151, in test_the_five_finger_patterns_are_spelled_in_their_key
+    measured = planned.measured()
+               ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\planned.py", line 58, in measured
+    measure = demands.measure_opportunities
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'demands' has no attribute 'measure_opportunities'
+
+======================================================================
+ERROR: test_the_bridge_measures_the_whole_plan_and_misses_nothing (tests.test_measured_demands.TestTheBridgeReturnsTheDetectorsIds.test_the_bridge_measures_the_whole_plan_and_misses_nothing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_measured_demands.py", line 100, in test_the_bridge_measures_the_whole_plan_and_misses_nothing
+    measured = planned.measured()
+               ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\planned.py", line 58, in measured
+    measure = demands.measure_opportunities
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'demands' has no attribute 'measure_opportunities'
+
+======================================================================
+ERROR: test_the_pinned_generated_items_through_the_bridge (tests.test_measured_demands.TestTheBridgeReturnsTheDetectorsIds.test_the_pinned_generated_items_through_the_bridge)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_measured_demands.py", line 86, in test_the_pinned_generated_items_through_the_bridge
+    answered = demands.measure_opportunities(list(paths.values()))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'demands' has no attribute 'measure_opportunities'
+
+======================================================================
+ERROR: test_untaught_demands_on_the_earliest_listing_rung_are_the_recorded_ones (tests.test_measured_demands.TestTheRungTheItemSitsOn.test_untaught_demands_on_the_earliest_listing_rung_are_the_recorded_ones)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_measured_demands.py", line 165, in test_untaught_demands_on_the_earliest_listing_rung_are_the_recorded_ones
+    measured = planned.measured()
+               ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\planned.py", line 58, in measured
+    measure = demands.measure_opportunities
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'demands' has no attribute 'measure_opportunities'
+
+======================================================================
+ERROR: test_every_generated_item_passes_the_physical_gate (tests.test_physical_gate.TestEveryItemInThePlan.test_every_generated_item_passes_the_physical_gate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_physical_gate.py", line 114, in test_every_generated_item_passes_the_physical_gate
+    row = FC.contract(entry["drill"]["generator"]["family"])
+                      ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'generator'
+
+======================================================================
+ERROR: test_fingering_verified_is_never_true_without_a_source (tests.test_physical_gate.TestEveryItemInThePlan.test_fingering_verified_is_never_true_without_a_source)
+The reviewer's T53 rule: a printed number is a claim, and the flag needs a source.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_physical_gate.py", line 125, in test_fingering_verified_is_never_true_without_a_source
+    row = FC.contract(entry["drill"]["generator"]["family"])
+                      ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'generator'
+
+======================================================================
+ERROR: test_the_families_that_print_no_fingering_print_none (tests.test_physical_gate.TestEveryItemInThePlan.test_the_families_that_print_no_fingering_print_none)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_physical_gate.py", line 132, in test_the_families_that_print_no_fingering_print_none
+    for family, items in planned.by_family().items():
+                         ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\planned.py", line 41, in by_family
+    out[entry["drill"]["generator"]["family"]].append((sc, entry))
+        ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'generator'
+
+======================================================================
+ERROR: test_no_item_is_transfer_by_seed_or_by_its_own_family (tests.test_roles.TestANewSeedIsNotTransfer.test_no_item_is_transfer_by_seed_or_by_its_own_family)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_roles.py", line 91, in test_no_item_is_transfer_by_seed_or_by_its_own_family
+    self.assertEqual(transfer_faults(FC.contracts(), planned.plan()), [])
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_roles.py", line 52, in transfer_faults
+    family = entry["drill"]["generator"]["family"]
+             ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'generator'
+
+======================================================================
+ERROR: test_the_check_fails_when_a_seed_is_marked_transfer (tests.test_roles.TestANewSeedIsNotTransfer.test_the_check_fails_when_a_seed_is_marked_transfer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_roles.py", line 98, in test_the_check_fails_when_a_seed_is_marked_transfer
+    faults = transfer_faults(rows, planned.plan())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_roles.py", line 52, in transfer_faults
+    family = entry["drill"]["generator"]["family"]
+             ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'generator'
+
+======================================================================
+ERROR: test_a_claimed_dimension_the_items_share_fails (tests.test_roles.TestATransferItemDiffersInSurfaceAsItsContractSays.test_a_claimed_dimension_the_items_share_fails)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_roles.py", line 130, in test_a_claimed_dimension_the_items_share_fails
+    measured = planned.measured()
+               ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\planned.py", line 58, in measured
+    measure = demands.measure_opportunities
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'demands' has no attribute 'measure_opportunities'
+
+======================================================================
+ERROR: test_every_declared_dimension_differs_from_every_item_of_the_source_family (tests.test_roles.TestATransferItemDiffersInSurfaceAsItsContractSays.test_every_declared_dimension_differs_from_every_item_of_the_source_family)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_roles.py", line 105, in test_every_declared_dimension_differs_from_every_item_of_the_source_family
+    measured = planned.measured()
+               ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\planned.py", line 58, in measured
+    measure = demands.measure_opportunities
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'demands' has no attribute 'measure_opportunities'
+
+======================================================================
+ERROR: test_every_item_has_a_role_its_family_provides (tests.test_roles.TestRolesAreExplicit.test_every_item_has_a_role_its_family_provides)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_roles.py", line 76, in test_every_item_has_a_role_its_family_provides
+    row = FC.contract(entry["drill"]["generator"]["family"])
+                      ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'generator'
+
+======================================================================
+ERROR: test_a_measured_kind_is_declared_and_an_unmeasured_one_claims_nothing_beyond_pitch_and_time (tests.test_assessment_declaration.TestNoUnmeasuredQualityIsClaimed.test_a_measured_kind_is_declared_and_an_unmeasured_one_claims_nothing_beyond_pitch_and_time)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_assessment_declaration.py", line 92, in test_a_measured_kind_is_declared_and_an_unmeasured_one_claims_nothing_beyond_pitch_and_time
+    kinds[entry["drill"]["generator"]["family"]].add(entry["drill"]["kind"])
+          ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'generator'
+
+======================================================================
+ERROR: test_a_quality_the_tags_name_is_judged_or_admitted (tests.test_assessment_declaration.TestNoUnmeasuredQualityIsClaimed.test_a_quality_the_tags_name_is_judged_or_admitted)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_assessment_declaration.py", line 104, in test_a_quality_the_tags_name_is_judged_or_admitted
+    tagged[entry["drill"]["generator"]["family"]].add(concept)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'generator'
+
+======================================================================
+ERROR: test_no_hand_is_asked_to_strike_more_than_an_octave (tests.test_generator_invariants.TestHandRange.test_no_hand_is_asked_to_strike_more_than_an_octave) (family='open_voicing', item='exercise.open-voicing.c.quartal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_generator_invariants.py", line 538, in each
+    yield name, claims, sc, entry
+GeneratorExit
+
+======================================================================
+ERROR: test_no_hand_is_asked_to_strike_more_than_an_octave (tests.test_generator_invariants.TestHandRange.test_no_hand_is_asked_to_strike_more_than_an_octave) (family='boogie', item='exercise.boogie.c.root-fifth')
+----------------------------------------------------------------------
+GeneratorExit
+
+======================================================================
+FAIL: test_each_maker_passes_its_own_family_to_catalog_entry (tests.test_family_contracts.TestEveryMakerHasExactlyOneContract.test_each_maker_passes_its_own_family_to_catalog_entry)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_family_contracts.py", line 93, in test_each_maker_passes_its_own_family_to_catalog_entry
+    self.assertEqual({maker: fam for maker, fam in passed.items() if fam != maker[len("make_"):]}, {})
+AssertionError: {'make_scale': None, 'make_arpeggio': None[1343 chars]None} != {}
+Diff is 1563 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.c.quartal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_physical_gate.py", line 80, in test_the_quartal_stack_is_arranged_within_the_hand
+    self.assertLessEqual(facts["hands"]["RH"]["span"], FC.AN_OCTAVE)
+AssertionError: 15 not less than or equal to 12
+
+======================================================================
+FAIL: test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.d-flat.quartal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_physical_gate.py", line 80, in test_the_quartal_stack_is_arranged_within_the_hand
+    self.assertLessEqual(facts["hands"]["RH"]["span"], FC.AN_OCTAVE)
+AssertionError: 15 not less than or equal to 12
+
+======================================================================
+FAIL: test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.d.quartal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_physical_gate.py", line 80, in test_the_quartal_stack_is_arranged_within_the_hand
+    self.assertLessEqual(facts["hands"]["RH"]["span"], FC.AN_OCTAVE)
+AssertionError: 15 not less than or equal to 12
+
+======================================================================
+FAIL: test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.e-flat.quartal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_physical_gate.py", line 80, in test_the_quartal_stack_is_arranged_within_the_hand
+    self.assertLessEqual(facts["hands"]["RH"]["span"], FC.AN_OCTAVE)
+AssertionError: 15 not less than or equal to 12
+
+======================================================================
+FAIL: test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.e.quartal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_physical_gate.py", line 80, in test_the_quartal_stack_is_arranged_within_the_hand
+    self.assertLessEqual(facts["hands"]["RH"]["span"], FC.AN_OCTAVE)
+AssertionError: 15 not less than or equal to 12
+
+======================================================================
+FAIL: test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.f.quartal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_physical_gate.py", line 80, in test_the_quartal_stack_is_arranged_within_the_hand
+    self.assertLessEqual(facts["hands"]["RH"]["span"], FC.AN_OCTAVE)
+AssertionError: 15 not less than or equal to 12
+
+======================================================================
+FAIL: test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.f-sharp.quartal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_physical_gate.py", line 80, in test_the_quartal_stack_is_arranged_within_the_hand
+    self.assertLessEqual(facts["hands"]["RH"]["span"], FC.AN_OCTAVE)
+AssertionError: 15 not less than or equal to 12
+
+======================================================================
+FAIL: test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.g.quartal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_physical_gate.py", line 80, in test_the_quartal_stack_is_arranged_within_the_hand
+    self.assertLessEqual(facts["hands"]["RH"]["span"], FC.AN_OCTAVE)
+AssertionError: 15 not less than or equal to 12
+
+======================================================================
+FAIL: test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.a-flat.quartal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_physical_gate.py", line 80, in test_the_quartal_stack_is_arranged_within_the_hand
+    self.assertLessEqual(facts["hands"]["RH"]["span"], FC.AN_OCTAVE)
+AssertionError: 15 not less than or equal to 12
+
+======================================================================
+FAIL: test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.a.quartal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_physical_gate.py", line 80, in test_the_quartal_stack_is_arranged_within_the_hand
+    self.assertLessEqual(facts["hands"]["RH"]["span"], FC.AN_OCTAVE)
+AssertionError: 15 not less than or equal to 12
+
+======================================================================
+FAIL: test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.b-flat.quartal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_physical_gate.py", line 80, in test_the_quartal_stack_is_arranged_within_the_hand
+    self.assertLessEqual(facts["hands"]["RH"]["span"], FC.AN_OCTAVE)
+AssertionError: 15 not less than or equal to 12
+
+======================================================================
+FAIL: test_the_quartal_stack_is_arranged_within_the_hand (tests.test_physical_gate.TestTheOpenVoicings.test_the_quartal_stack_is_arranged_within_the_hand) (item='exercise.open-voicing.b.quartal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_physical_gate.py", line 80, in test_the_quartal_stack_is_arranged_within_the_hand
+    self.assertLessEqual(facts["hands"]["RH"]["span"], FC.AN_OCTAVE)
+AssertionError: 15 not less than or equal to 12
+
+======================================================================
+FAIL: test_no_title_direction_tag_docstring_contract_or_spec_line_carries_one (tests.test_named_by_what_they_are.TestNoGenreUniversal.test_no_title_direction_tag_docstring_contract_or_spec_line_carries_one)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_named_by_what_they_are.py", line 98, in test_no_title_direction_tag_docstring_contract_or_spec_line_carries_one
+    self.assertEqual(hits, {})
+AssertionError: {'generate_exercises.py': ['the sound of m[894 chars]ic']} != {}
+Diff is 1822 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_no_hand_is_asked_to_strike_more_than_an_octave (tests.test_generator_invariants.TestHandRange.test_no_hand_is_asked_to_strike_more_than_an_octave)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D0\redtree-A\tools\content\tests\test_generator_invariants.py", line 824, in test_no_hand_is_asked_to_strike_more_than_an_octave
+    self.assertLessEqual(span, AN_OCTAVE, f"{name}: {where}")
+AssertionError: 15 not less than or equal to 12 : open_voicing: RH ['C4', 'F4', 'B-4', 'E-5']
+
+----------------------------------------------------------------------
+Ran 112 tests in 206.380s
+
+FAILED (failures=15, errors=24)
+exit 1

@@ -1,0 +1,10 @@
+plan 178s, measured 513s, gates 4s; 1176 items
+items with targetSkills: 200 {'rhythm': 11, 'coordination': 10, 'position_shift': 10, 'interval_reading': 16, 'accompaniment': 15, 'hand_independence': 12, 'syncopation': 1, 'meter': 1, 'walking_bass': 16, 'comping': 22, 'boogie': 36, 'ostinato': 6, 'pentatonic': 6, 'tresillo': 3, 'clave': 10, 'tumbao': 5, 'montuno': 15, 'latin_groove': 5}
+== PEDAGOGICAL 8
+  five_finger: 8
+      exercise.five-finger.g-flat-major.right: density: interval.step located 4 times, the row asks for 8
+      exercise.five-finger.g-flat-major.right: forbidden: interval.skip is present
+      exercise.five-finger.g-flat-major.right: forbidden: pitch.chromatic is present
+      exercise.five-finger.g-flat-major.left: density: interval.step located 4 times, the row asks for 8
+== PHYSICAL 0
+exit 0

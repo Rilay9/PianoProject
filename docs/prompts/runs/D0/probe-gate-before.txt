@@ -1,0 +1,68 @@
+accompaniment    n= 30 span= 4 move=(12.5, 0.833, 'exercise.accompaniment.waltz.c-major.left LH q9') rate=2.4 cont=13.33 sec=[10.0, 13.333333333333334] repeats=[] crossings=0
+arpeggio         n= 60 span= 0 move=(0, 0, '') rate=2.0 cont=12.5 sec=[6.5, 12.5] repeats=[] crossings=0
+arpeggio7        n= 60 span= 0 move=(0, 0, '') rate=2.0 cont=8.5 sec=[8.5, 8.5] repeats=[] crossings=0
+articulation     n=  8 span= 0 move=(0, 0, '') rate=1.2 cont=13.33 sec=[13.333333333333334, 13.333333333333334] repeats=[] crossings=0
+blues-scale      n= 16 span= 0 move=(0, 0, '') rate=2.53 cont=5.13 sec=[5.131578947368421, 5.131578947368421] repeats=[] crossings=0
+boogie           n= 36 span=10 move=(0, 0, '') rate=3.47 cont=9.23 sec=[9.23076923076923, 9.23076923076923] repeats=[] crossings=0
+broken-octaves   n= 10 span= 0 move=(0, 0, '') rate=4.0 cont=7.5 sec=[7.5, 7.5] repeats=[] crossings=0
+broken7          n= 36 span= 0 move=(15.0, 0.238, 'exercise.broken7.c-dominant7.both RH q4') rate=4.2 cont=7.62 sec=[7.619047619047619, 7.619047619047619] repeats=[] crossings=0
+cadence          n= 36 span=10 move=(0, 0, '') rate=0.25 cont=16.0 sec=[12.0, 16.0] repeats=[] crossings=0
+chromatic        n= 16 span= 0 move=(0, 0, '') rate=2.0 cont=24.5 sec=[12.5, 24.5] repeats=[] crossings=0
+clave            n= 10 span= 0 move=(0, 0, '') rate=1.47 cont=21.82 sec=[20.795454545454543, 21.818181818181817] repeats=[] crossings=0
+comping          n= 58 span=11 move=(0, 0, '') rate=2.2 cont=10.91 sec=[7.2727272727272725, 10.909090909090908] repeats=[] crossings=0
+coordination     n= 10 span= 0 move=(0, 0, '') rate=1.0 cont=12.0 sec=[12.0, 12.0] repeats=[] crossings=0
+double-sixth     n=  4 span= 9 move=(0, 0, '') rate=1.8 cont=10.56 sec=[10.555555555555555, 10.555555555555555] repeats=[] crossings=0
+double-third     n=  4 span= 4 move=(0, 0, '') rate=1.8 cont=13.89 sec=[13.88888888888889, 13.88888888888889] repeats=[] crossings=0
+five-finger      n= 48 span= 0 move=(0, 0, '') rate=1.0 cont=9.0 sec=[9.0, 9.0] repeats=[] crossings=0
+hanon            n= 60 span=12 move=(0, 0, '') rate=4.0 cont=62.0 sec=[56.0, 62.0] repeats=[] crossings=2
+     x exercise.hanon.15.left LH: finger 1 on two keys 0.25 s apart at quarter 28
+     x exercise.hanon.15.both LH: finger 1 on two keys 0.25 s apart at quarter 28
+ii-v-i           n= 36 span=11 move=(0, 0, '') rate=0.3 cont=13.33 sec=[10.0, 13.333333333333334] repeats=[] crossings=0
+independence     n= 12 span= 0 move=(0, 0, '') rate=3.0 cont=16.0 sec=[16.0, 16.0] repeats=[] crossings=0
+interval-reading n= 16 span= 0 move=(0, 0, '') rate=1.1 cont=14.55 sec=[14.545454545454545, 14.545454545454545] repeats=[] crossings=0
+intro            n=  5 span= 7 move=(0, 0, '') rate=1.27 cont=12.63 sec=[12.631578947368421, 12.631578947368421] repeats=[] crossings=0
+inversions       n= 24 span= 9 move=(0, 0, '') rate=1.0 cont=7.0 sec=[7.0, 7.0] repeats=[] crossings=0
+latin-groove     n=  5 span= 4 move=(14.0, 1.023, 'exercise.latin-groove.a.son-3-2 LH q27') rate=1.47 cont=1.7 sec=[21.818181818181817, 21.818181818181817] repeats=[] crossings=0
+loop4            n= 24 span= 9 move=(0, 0, '') rate=0.3 cont=13.33 sec=[13.333333333333334, 13.333333333333334] repeats=[] crossings=0
+meter            n=  3 span=10 move=(0, 0, '') rate=2.53 cont=56.84 sec=[12.727272727272727, 56.8421052631579] repeats=[] crossings=0
+modal-vamp       n=  3 span= 7 move=(0, 0, '') rate=0.67 cont=24.0 sec=[24.0, 24.0] repeats=[] crossings=0
+montuno          n= 15 span= 9 move=(0, 0, '') rate=1.47 cont=1.02 sec=[9.886363636363635, 10.227272727272727] repeats=[] crossings=0
+mordent          n=  6 span= 0 move=(0, 0, '') rate=2.0 cont=7.5 sec=[7.5, 7.5] repeats=[] crossings=0
+octave-scale     n= 15 span=12 move=(0, 0, '') rate=2.0 cont=7.5 sec=[7.5, 7.5] repeats=[] crossings=0
+oompah           n=  8 span= 8 move=(30.0, 0.682, 'exercise.oompah.f.tenth LH q8') rate=1.47 cont=10.91 sec=[10.909090909090908, 10.909090909090908] repeats=[] crossings=0
+open-voicing     n= 16 span=15 move=(0, 0, '') rate=0.26 cont=15.24 sec=[15.238095238095237, 15.238095238095237] repeats=[] crossings=0
+ostinato         n=  6 span=12 move=(0, 0, '') rate=2.8 cont=22.86 sec=[22.857142857142858, 22.857142857142858] repeats=[] crossings=0
+passing-chord    n=  4 span=11 move=(0, 0, '') rate=0.6 cont=13.33 sec=[13.333333333333334, 13.333333333333334] repeats=[] crossings=0
+pedal            n= 14 span= 9 move=(0, 0, '') rate=0.22 cont=17.78 sec=[17.77777777777778, 17.77777777777778] repeats=[] crossings=0
+pentatonic       n=  6 span= 0 move=(0, 0, '') rate=2.4 cont=5.42 sec=[4.583333333333334, 5.416666666666667] repeats=[] crossings=0
+position-shift   n= 10 span= 0 move=(0, 0, '') rate=1.1 cont=14.55 sec=[14.545454545454545, 14.545454545454545] repeats=[] crossings=0
+power-chord      n=  3 span=12 move=(0, 0, '') rate=3.07 cont=10.43 sec=[10.434782608695652, 10.434782608695652] repeats=[] crossings=0
+repeated-notes   n= 12 span= 0 move=(0, 0, '') rate=4.0 cont=8.0 sec=[8.0, 8.0] repeats=[] crossings=0
+rhythm           n= 18 span= 0 move=(0, 0, '') rate=5.33 cont=12.0 sec=[9.0, 12.0] repeats=['exercise.rhythm.sixteenths.4bar Rhythm 0.188s'] crossings=0
+riff             n=  4 span= 0 move=(0, 0, '') rate=2.53 cont=25.26 sec=[25.263157894736842, 25.263157894736842] repeats=[] crossings=0
+rotation         n=  6 span= 0 move=(0, 0, '') rate=4.8 cont=6.67 sec=[6.666666666666667, 6.666666666666667] repeats=[] crossings=0
+scale            n=252 span= 0 move=(0, 0, '') rate=8.0 cont=20.36 sec=[7.125, 20.357142857142858] repeats=[] crossings=0
+secondary-rag    n=  1 span= 7 move=(20.5, 0.833, 'exercise.secondary-rag.c.4bar LH q8') rate=4.8 cont=13.33 sec=[13.333333333333334, 13.333333333333334] repeats=[] crossings=0
+shaping          n= 10 span= 0 move=(0, 0, '') rate=2.0 cont=16.0 sec=[16.0, 16.0] repeats=[] crossings=0
+slash-bass       n=  4 span= 7 move=(0, 0, '') rate=0.58 cont=13.91 sec=[13.91304347826087, 13.91304347826087] repeats=[] crossings=0
+stride           n=  4 span=10 move=(26.0, 0.625, 'exercise.stride.c LH q8') rate=1.6 cont=10.0 sec=[10.0, 10.0] repeats=[] crossings=0
+swing-pair       n=  3 span= 0 move=(0, 0, '') rate=3.2 cont=10.0 sec=[22.5, 22.5] repeats=[] crossings=0
+syncopation      n=  2 span= 7 move=(0, 0, '') rate=5.07 cont=12.63 sec=[9.473684210526315, 12.631578947368421] repeats=[] crossings=0
+tremolo          n=  6 span= 0 move=(0, 0, '') rate=4.0 cont=8.0 sec=[8.0, 8.0] repeats=[] crossings=0
+tremolo-third    n=  6 span= 0 move=(0, 0, '') rate=4.0 cont=8.0 sec=[8.0, 8.0] repeats=[] crossings=0
+tresillo         n=  3 span= 7 move=(0, 0, '') rate=1.4 cont=22.86 sec=[22.857142857142858, 22.857142857142858] repeats=[] crossings=0
+trill            n=  6 span= 0 move=(0, 0, '') rate=4.0 cont=2.0 sec=[11.0, 11.0] repeats=[] crossings=0
+tritone-sub      n=  4 span=11 move=(0, 0, '') rate=0.32 cont=9.47 sec=[9.473684210526315, 9.473684210526315] repeats=[] crossings=0
+tumbao           n=  5 span= 0 move=(14.0, 1.023, 'exercise.tumbao.a LH q27') rate=0.98 cont=1.7 sec=[21.818181818181817, 21.818181818181817] repeats=[] crossings=0
+turnaround       n= 12 span=11 move=(0, 0, '') rate=0.73 cont=6.67 sec=[5.454545454545454, 6.666666666666667] repeats=[] crossings=0
+voicing          n=  5 span=12 move=(0, 0, '') rate=0.22 cont=17.78 sec=[17.77777777777778, 17.77777777777778] repeats=[] crossings=0
+voicing7         n= 48 span=11 move=(0, 0, '') rate=0.28 cont=10.91 sec=[10.909090909090908, 10.909090909090908] repeats=[] crossings=0
+walking-bass     n= 28 span=11 move=(18.0, 0.652, 'exercise.walking-bass.b-flat.ii-v-i LH q15') rate=1.53 cont=40.0 sec=[10.434782608695652, 40.0] repeats=[] crossings=6
+     x exercise.walking-bass.c.blues LH: left hand going up 3->5 at quarter 16
+     x exercise.walking-bass.c.blues LH: left hand going up 2->5 at quarter 32
+     x exercise.walking-bass.c.blues LH: left hand going up 2->5 at quarter 44
+     x exercise.walking-bass.c.blues.intro LH: left hand going up 3->5 at quarter 16
+     x exercise.walking-bass.c.blues.intro LH: left hand going up 2->5 at quarter 32
+     x exercise.walking-bass.c.blues.intro LH: left hand going up 2->5 at quarter 44
+walkup           n=  4 span= 7 move=(0, 0, '') rate=1.15 cont=13.91 sec=[13.91304347826087, 13.91304347826087] repeats=[] crossings=0
+exit 0

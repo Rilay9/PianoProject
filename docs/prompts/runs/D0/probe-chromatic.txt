@@ -1,0 +1,76 @@
+== exercise.inversions.b-major.both signature B major chromatic located 14
+   RH B4+E-5+F#5 E-5+F#5+B5 F#5+B5+E-6 B5+E-6+F#6 F#5+B5+E-6 E-5+F#5+B5 B4+E-5+F#5
+   LH B2+E-3+F#3 E-3+F#3+B3 F#3+B3+E-4 B3+E-4+F#4 F#3+B3+E-4 E-3+F#3+B3 B2+E-3+F#3
+== exercise.inversions.a-flat-major.both signature A- major chromatic located 14
+   RH G#4+C5+E-5 C5+E-5+G#5 E-5+G#5+C6 G#5+C6+E-6 E-5+G#5+C6 C5+E-5+G#5 G#4+C5+E-5
+   LH G#2+C3+E-3 C3+E-3+G#3 E-3+G#3+C4 G#3+C4+E-4 E-3+G#3+C4 C3+E-3+G#3 G#2+C3+E-3
+== exercise.inversions.d-flat-major.both signature D- major chromatic located 28
+   RH C#4+F4+G#4 F4+G#4+C#5 G#4+C#5+F5 C#5+F5+G#5 G#4+C#5+F5 F4+G#4+C#5 C#4+F4+G#4
+   LH C#2+F2+G#2 F2+G#2+C#3 G#2+C#3+F3 C#3+F3+G#3 G#2+C#3+F3 F2+G#2+C#3 C#2+F2+G#2
+== exercise.inversions.g-flat-major.both signature G- major chromatic located 28
+   RH F#4+B-4+C#5 B-4+C#5+F#5 C#5+F#5+B-5 F#5+B-5+C#6 C#5+F#5+B-5 B-4+C#5+F#5 F#4+B-4+C#5
+   LH F#2+B-2+C#3 B-2+C#3+F#3 C#3+F#3+B-3 F#3+B-3+C#4 C#3+F#3+B-3 B-2+C#3+F#3 F#2+B-2+C#3
+== exercise.inversions.f-minor.both signature f minor chromatic located 14
+   RH F4+G#4+C5 G#4+C5+F5 C5+F5+G#5 F5+G#5+C6 C5+F5+G#5 G#4+C5+F5 F4+G#4+C5
+   LH F2+G#2+C3 G#2+C3+F3 C3+F3+G#3 F3+G#3+C4 C3+F3+G#3 G#2+C3+F3 F2+G#2+C3
+== exercise.inversions.g-sharp-minor.both signature g# minor chromatic located 14
+   RH G#4+B4+E-5 B4+E-5+G#5 E-5+G#5+B5 G#5+B5+E-6 E-5+G#5+B5 B4+E-5+G#5 G#4+B4+E-5
+   LH G#2+B2+E-3 B2+E-3+G#3 E-3+G#3+B3 G#3+B3+E-4 E-3+G#3+B3 B2+E-3+G#3 G#2+B2+E-3
+== exercise.inversions.b-flat-minor.both signature b- minor chromatic located 14
+   RH B-4+C#5+F5 C#5+F5+B-5 F5+B-5+C#6 B-5+C#6+F6 F5+B-5+C#6 C#5+F5+B-5 B-4+C#5+F5
+   LH B-2+C#3+F3 C#3+F3+B-3 F3+B-3+C#4 B-3+C#4+F4 F3+B-3+C#4 C#3+F3+B-3 B-2+C#3+F3
+== exercise.inversions.e-flat-minor.both signature e- minor chromatic located 14
+   RH E-4+F#4+B-4 F#4+B-4+E-5 B-4+E-5+F#5 E-5+F#5+B-5 B-4+E-5+F#5 F#4+B-4+E-5 E-4+F#4+B-4
+   LH E-2+F#2+B-2 F#2+B-2+E-3 B-2+E-3+F#3 E-3+F#3+B-3 B-2+E-3+F#3 F#2+B-2+E-3 E-2+F#2+B-2
+== exercise.tremolo-third.c.right signature C major chromatic located 8
+   RH C4 E4 C4 E4 C4 E4 C4 E4 D4 F#4 D4 F#4 D4 F#4 D4 F#4 E4 G#4 E4 G#4 E4 G#4 E4 G#4
+== exercise.tremolo-third.c.left signature C major chromatic located 8
+   LH C2 E2 C2 E2 C2 E2 C2 E2 D2 F#2 D2 F#2 D2 F#2 D2 F#2 E2 G#2 E2 G#2 E2 G#2 E2 G#2
+== exercise.tremolo-third.g.right signature G major chromatic located 8
+   RH G4 B4 G4 B4 G4 B4 G4 B4 A4 C#5 A4 C#5 A4 C#5 A4 C#5 B4 D#5 B4 D#5 B4 D#5 B4 D#5
+== exercise.tremolo-third.g.left signature G major chromatic located 8
+   LH G2 B2 G2 B2 G2 B2 G2 B2 A2 C#3 A2 C#3 A2 C#3 A2 C#3 B2 D#3 B2 D#3 B2 D#3 B2 D#3
+== exercise.tremolo-third.f.right signature F major chromatic located 8
+   RH F4 A4 F4 A4 F4 A4 F4 A4 G4 B4 G4 B4 G4 B4 G4 B4 A4 C#5 A4 C#5 A4 C#5 A4 C#5
+== exercise.tremolo-third.f.left signature F major chromatic located 8
+   LH F2 A2 F2 A2 F2 A2 F2 A2 G2 B2 G2 B2 G2 B2 G2 B2 A2 C#3 A2 C#3 A2 C#3 A2 C#3
+== exercise.voicing7.f-sharp.close signature F# major chromatic located 2
+   RH G#4+B4+D#5+F#5 C#4+F4+G#4+B4 F#4+A#4+C#5+F5
+   LH G#2 C#2 F#2
+== exercise.voicing7.f-sharp.shell signature F# major chromatic located 2
+   RH G#4+B4+F#5 C#4+F4+B4 F#4+A#4+F5
+   LH G#2 C#2 F#2
+== exercise.voicing7.f-sharp.rootless-a signature F# major chromatic located 2
+   RH B4+D#5+F#5+A#5 B4+D#5+F5+G#5 A#4+C#5+F5+G#5
+   LH G#2 C#2 F#2
+== exercise.voicing7.f-sharp.rootless-b signature F# major chromatic located 2
+   RH F#4+A#4+B4+D#5 F4+G#4+B4+D#5 F4+G#4+A#4+C#5
+   LH G#2 C#2 F#2
+== exercise.ii-v-i.f-sharp.shells signature F# major chromatic located 1
+   LH G#3+F#4 C#3+B3 F#3+F4 F#3+F4
+== exercise.ii-v-i.f-sharp signature F# major chromatic located 2
+   RH F#4+B4 F4+B4 F4+A#4 F4+A#4
+   LH G#2 C#2 F#2 F#2
+== exercise.ii-v-i.f-sharp.rootless signature F# major chromatic located 2
+   RH B4+D#5+F#5+A#5 B4+D#5+F5+G#5 A#4+C#5+F5+G#5 A#4+C#5+F5+G#5
+== exercise.loop4.f-sharp.root signature F# major chromatic located 1
+   RH F#4+A#4+C#5 C#4+F4+G#4 D#4+F#4+A#4 B4+D#5+F#5
+   LH F#2 C#2 D#2 B2
+== exercise.loop4.f-sharp.inversions signature F# major chromatic located 1
+   RH F#4+A#4+C#5 F4+G#4+C#5 D#4+F#4+A#4 F#4+B4+D#5
+   LH F#2 C#2 D#2 B2
+== exercise.open-voicing.c.sus4 signature C major chromatic located 1
+   RH C4+F4+G4+C5 F4+B-4+C5+F5 G4+C5+D5+G5 C4+F4+G4+C5
+   LH C2 F2 G2 C2
+== exercise.open-voicing.f.sus4 signature F major chromatic located 1
+   RH F4+B-4+C5+F5 B-4+E-5+F5+B-5 C4+F4+G4+C5 F4+B-4+C5+F5
+   LH F2 B-2 C2 F2
+== exercise.open-voicing.b-flat.sus4 signature B- major chromatic located 1
+   RH B-4+E-5+F5+B-5 E-4+A-4+B-4+E-5 F4+B-4+C5+F5 B-4+E-5+F5+B-5
+   LH B-2 E-2 F2 B-2
+== exercise.open-voicing.e-flat.quartal signature e- minor chromatic located 1
+   RH E-4+A-4+D-5+G-5 A-4+D-5+G-5+B5 B-4+E-5+A-5+D-6 E-4+A-4+D-5+G-5
+   LH E-2 A-2 B-2 E-2
+== exercise.open-voicing.e-flat.sus4 signature E- major chromatic located 1
+   RH E-4+A-4+B-4+E-5 A-4+D-5+E-5+A-5 B-4+E-5+F5+B-5 E-4+A-4+B-4+E-5
+   LH E-2 A-2 B-2 E-2
