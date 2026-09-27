@@ -60,10 +60,41 @@ async function openToday(page: Page): Promise<void> {
   await expect(page.locator('#today-doors')).toBeVisible({ timeout: 60_000 });
 }
 
+/**
+ * The Library has drawn its list, or has said why it could not.
+ *
+ * Revised (H0, Q44 with Q34; test class: revise). This waited 60 s for the
+ * first row to be visible, and in the chain over 943b2fd it saw no row at all
+ * for the whole minute and could not say why. The screen publishes two states
+ * a test can read: the count line, "Loading your library…" until `draw` puts
+ * the real count there (the rows are appended in the same call), and the
+ * status line, which says "The library could not be loaded: …" when the read
+ * fails (`LibraryScreen`'s `refresh` and `sayLoadFailed`). No `data-settled`
+ * exists on the list and none is needed: the count line is the list's own
+ * word that it is drawn. So the wait is for either, and a failed load fails
+ * here in the screen's words instead of as a missing row a minute later. The
+ * budget is unchanged. A page slowed 32 times drew the list well inside it
+ * (Entry 87), so slowness alone does not account for the minute; this wait is
+ * what tells the next occurrence apart.
+ */
+async function libraryDrawn(page: Page): Promise<void> {
+  const count = page.locator('#library-count');
+  const status = page.locator('#library-status');
+  const drawnOrFailed = async (): Promise<string> => {
+    const said = (await status.textContent()) ?? '';
+    if (said.startsWith('The library could not be loaded')) return said;
+    return (await count.textContent()) ?? '';
+  };
+  await expect
+    .poll(drawnOrFailed, { timeout: 60_000, message: 'the Library drew its list or said why not' })
+    .toMatch(/^\d+ of \d+ items|^The library could not be loaded/);
+  expect(await drawnOrFailed(), 'the Library could not load its list').toMatch(/^\d+ of \d+ items/);
+}
+
 /** Finds one catalog row in a list of 1,533 without depending on where it sorts. */
 async function findRow(page: Page, id: string, search: string): Promise<void> {
   await page.goto('/#/library');
-  await expect(page.locator('#library-list .list-row').first()).toBeVisible({ timeout: 60_000 });
+  await libraryDrawn(page);
   await page.locator('#library-search').fill(search);
   await expect(page.locator(`#library-list .list-row[data-item="${id}"]`)).toBeVisible({
     timeout: 30_000,

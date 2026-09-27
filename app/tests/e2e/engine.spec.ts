@@ -110,15 +110,39 @@ test.describe('Tempo mode end to end', () => {
   });
 
   test('a late run yields the expected timing statistics', async ({ page }) => {
+    // Revised (H0, Q39; test class: revise, the clock only — every assertion
+    // below is the one this case always made). It ran on the page's real timers
+    // and failed three times on CI with `hits` 1. Old assumption: each replayed
+    // note is delivered before the harness's next tick passes its window. A
+    // note is *stamped* on the script's schedule but *delivered* by a timer, and
+    // the harness ticks the engine from a timer and a frame loop of its own; a
+    // page stalled past the window's close runs the tick first, the window
+    // closes as a miss, and the note, still stamped inside it, finds nothing. So
+    // the run is timed on a clock the test holds: Playwright's clock, installed
+    // before the page loads and left running for the load, then paused, and
+    // run forward through the replay so every timer fires in its due order. The
+    // same run on the engine's injected clock, with the statistic asserted
+    // exactly, is in `engineTempo.test.ts` (the harness's late replay).
+    await page.clock.install();
     const dev = await openDevScore(page);
     await dev.load('tempo-change');
+    await page.clock.pauseAt((await page.evaluate(() => Date.now())) + 1_000);
     // The piece is 60 bpm for two beats then 144; at 130 % the first two steps
     // are ~769 ms apart. Every note is played ~100 ms after its slot.
     await dev.startRun('tempo', { countInBars: 0, tempoPct: 130, toleranceMs: 150 });
-    await dev.replay([
+    const script = [
       { atMs: 100, midi: 60 },
       { atMs: 869, midi: 62 },
-    ]);
+    ];
+    const replayed = dev.replay(script);
+    // The replay restarts the run as its source connects (`DevScoreScreen`):
+    // the second `started` is the run's zero and the script's.
+    await expect
+      .poll(async () => (await dev.engineEvents()).filter((e) => e.kind === 'started').length)
+      .toBe(2);
+    // To the replay's own end: its last message, then the 250 ms it waits after it.
+    await page.clock.runFor(869 + 250 + 16);
+    await replayed;
     const score = await dev.engineScore();
     expect(score?.hits).toBe(2);
     expect(score?.timing.n).toBe(2);

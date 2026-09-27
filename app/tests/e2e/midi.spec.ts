@@ -8,9 +8,32 @@ const G4 = 67;
 
 const key = (page: Page, midi: number) => page.locator(`.key[data-midi="${midi}"]`);
 
+/**
+ * How long a cold boot of the app may take to mount a screen.
+ *
+ * Revised (H0, Q44; test class: revise). The arrival was `.screen h1` with
+ * the expect default of 5 s, which is an assertion's patience used as a boot
+ * budget: after `goto` resolves the shell still waits on the settings mirror
+ * (`app/boot.ts`, up to two seconds of timer on a fresh origin) before it
+ * mounts, and under a parallel suite that came in later than 5 s (the chain
+ * over 943b2fd; on a page slowed 32 times, Entry 87). The screen is built in
+ * one synchronous call — heading, Connect button, error box, keyboard strip
+ * and its first state — and mounted whole, so its `data-screen` is the
+ * settled mark: once it is there, everything a case reads next is already
+ * written. The budget is the whole of Playwright's default test timeout, the
+ * test's own, not an assertion's.
+ */
+const BOOT_MS = 30_000;
+
+/** Waits for the MIDI screen to be mounted, which is when every part of it is there. */
+async function midiScreenMounted(page: Page): Promise<void> {
+  await page.waitForSelector('[data-screen="midi"]', { timeout: BOOT_MS });
+  await expect(page.locator('[data-screen="midi"] h1')).toHaveText('MIDI');
+}
+
 async function openMidiScreen(page: Page): Promise<void> {
   await page.goto('/#/settings/midi');
-  await expect(page.locator('.screen h1')).toHaveText('MIDI');
+  await midiScreenMounted(page);
 }
 
 async function connect(page: Page): Promise<void> {
@@ -117,6 +140,11 @@ test.describe('MIDI screen with a mocked device', () => {
 
 test.describe('MIDI screen settings persistence', () => {
   test('the pinned input survives a reload', async ({ page }) => {
+    // Two cold boots of the app, the only case here with more than one, so
+    // it owns twice the default budget (H0, Q44; timeout only): on a page
+    // slowed 32 times both boots together ran past 30 s with the page already
+    // right (Entry 87).
+    test.setTimeout(2 * BOOT_MS);
     // Both ports are declared up front: the init script rebuilds the mock on
     // every navigation, so a hot-plugged one would not exist after a reload.
     await installMidiMock(page, {
@@ -127,6 +155,8 @@ test.describe('MIDI screen settings persistence', () => {
     await page.locator('input[data-input-id="mock-in-2"]').check();
 
     await page.reload();
+    // A second cold boot: the same mounted mark before anything is pressed.
+    await midiScreenMounted(page);
     await connect(page);
     await expect(page.locator('input[data-input-id="mock-in-2"]')).toBeChecked();
   });
