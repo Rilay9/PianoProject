@@ -22,3 +22,6 @@ You own `tools/content/generate_exercises.py` (the G♯ minor tables and `make_s
 ## Report
 
 Judgement first: what a learner now sees on the G♯ natural minor two-octave scale's left hand and on a broken C major seventh; then Done / Not done / Follow-ups / Questions / Files; the table; the red lines; exit codes; unverified beside what passes.
+
+**Delivered 2026-09-27**, Entry 86, in an isolated worktree: the four minor forms as a real distinction; path (b) for the broken sevenths after a documented search; G45 resolved because McLain's chromatic figure turned up; the G♯ pin replaced by the thumb rule over every scale item; 50 staves in 29 items changed and nothing else.
+
