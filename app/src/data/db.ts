@@ -21,6 +21,7 @@ import {
 import type { BarTally, HandsFilter, NotMeasured, RunMeasures } from '../engine/types';
 import type { TodaySlot } from '../router';
 import type { EvidenceResult } from '../evidence/evidence';
+import type { Measurement, Provenance } from '../curriculum/types';
 
 export const DB_NAME = 'pianopath';
 /**
@@ -359,6 +360,22 @@ export interface ImportRow {
    * is why the title fallback stays.
    */
   origin?: { folder: string; file: string };
+  /**
+   * What the app's detectors measured on the score when it was imported, and again
+   * whenever the learner corrects its hands (E0; R34's truth half), with the
+   * counts the one gate's density judgement reads (`importStore.measureImport`).
+   * `'unmeasured'` with the reason in `measurement` for a PDF or a score the app
+   * could not read. Absent on a row imported before E0: it reads as unmeasured.
+   */
+  demands?: string[] | 'unmeasured';
+  measurement?: Measurement;
+  /**
+   * Where the score came from and how each fact about it is known (E0; R35, Part 21
+   * §B): what came from the file, what the converter inferred and by which version,
+   * what the learner corrected. Inferred, measured and learner-supplied facts are
+   * never flattened into one field.
+   */
+  provenance?: Provenance;
 }
 
 export interface PlanRow {

@@ -304,8 +304,11 @@ describe('the slot sentences are the ones `04` §2 prints', () => {
       ...Object.values(SLOT_TEXT),
       swapTierWords('lesson'),
       swapTierWords('alternative'),
-      'Trains the same skill',
-      'Carries the same demand',
+      // Revised (E0): the tiers the gate turned on state what the option also practises; old words
+      // "Trains the same skill" and "Carries the same demand" said only that something was shared.
+      'Also trains',
+      'Also practises',
+      'with the other demands you have met',
       swapTierWords('kind'),
     ];
     const missing = said.filter((line) => !section.includes(flat(line)));

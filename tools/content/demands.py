@@ -12,9 +12,13 @@ back. A second implementation here would be the level model's two ports again
 (docs/pending-review.md Entry 53), and the C2 differential showed how quickly
 two readers of the same phrases part company.
 
-Nothing in the build calls this yet: the catalog carries `demands` from E on,
-with a cache keyed on the file, as `attach_notation` has. What it costs is in
-the C2 entry, measured on the built catalog.
+**The build calls it (E0).** `build.py`'s `attach_demands` sends every bundled
+score through `measure_each` and writes the ids, the located counts and the
+established opportunities onto the catalogue entry, cached on the file's bytes
+and on `definition_fingerprint()` — the bytes of the files that decide a
+measurement — so a detector change re-measures and nothing else does. A file the
+app could not load comes back with its reason, and the entry carries `demands:
+"unmeasured"` with that reason; it is never an empty list.
 
 **Counts (D0).** `measure_opportunities` returns the same run's full rows: the
 ids, how many places each detector located, and the bars, steps and sounded
@@ -89,6 +93,80 @@ def measure_opportunities(paths: list[Path], timeout: int = 3600) -> dict[str, d
     if missing:
         raise DemandsError("the detector run did not answer for: " + "; ".join(missing))
     return answered
+
+
+def measure_each(paths: list[Path], timeout: int = 3600, chunk: int = 400) -> dict[str, dict]:
+    """
+    `measure_opportunities`' rows for each file, except that a file the app could not
+    measure comes back as `{"error": why}` instead of failing the whole run: the build
+    marks that one entry unmeasured, with the reason, and measures the rest (E0).
+
+    In runs of `chunk` files, so one Vitest process never holds every score's model.
+    A run that writes no report at all still raises `DemandsError`: that is a broken
+    bridge, not a library of unreadable files, and the build must stop on it.
+    """
+    out: dict[str, dict] = {}
+    for start in range(0, len(paths), chunk):
+        part = paths[start:start + chunk]
+        with tempfile.TemporaryDirectory() as scratch:
+            listing = Path(scratch) / "in.json"
+            report = Path(scratch) / "out.json"
+            listing.write_text(json.dumps([str(p) for p in part]), encoding="utf-8")
+            environment = dict(os.environ)
+            environment.update({"PIANOPATH_DEMANDS_IN": str(listing), "PIANOPATH_DEMANDS_OUT": str(report)})
+            result = run([_npx(), "vitest", "run", SPEC, "--reporter=dot"], cwd=APP_DIR, timeout=timeout, env=environment)
+            if not report.exists():
+                raise DemandsError(
+                    f"the detector run wrote no report (exit {result.returncode}):\n"
+                    f"{result.stdout[-2000:]}{result.stderr[-2000:]}"
+                )
+            answered = json.loads(report.read_text(encoding="utf-8"))
+        for path in part:
+            out[str(path)] = answered.get(str(path), {"error": "the detector run did not answer for this file"})
+    return out
+
+
+#: The files whose bytes decide what a file measures as: the detectors, the model
+#: they read and how it is made, the vocabulary that names the ids, the bridge's
+#: own spec, and the lockfile that pins OpenSheetMusicDisplay. A change to any of
+#: them changes `definition_fingerprint()` and every cached measurement is taken
+#: again; a change anywhere else re-measures nothing.
+DEFINITION_FILES = (
+    "app/src/demands/detect.ts",
+    "app/src/score/extractScoreModel.ts",
+    "app/src/score/types.ts",
+    "app/src/score/mxl.ts",
+    "app/tests/unit/demandsOfFiles.test.ts",
+    "content/curriculum/vocabulary/demands.json",
+    "app/package-lock.json",
+)
+
+
+def definition_fingerprint() -> str:
+    """Twelve hex digits over `DEFINITION_FILES`' bytes, line endings normalised."""
+    import hashlib
+
+    digest = hashlib.sha256()
+    for rel in DEFINITION_FILES:
+        path = REPO_ROOT / rel
+        digest.update(rel.encode("utf-8"))
+        digest.update(path.read_bytes().replace(b"\r\n", b"\n") if path.exists() else b"(missing)")
+    return digest.hexdigest()[:12]
+
+
+def evidence_definitions() -> int:
+    """
+    `EVIDENCE_DEFINITIONS` from `app/src/evidence/evidence.ts`: the app's named version
+    of its evidence rules, which moves when a detector's located reading changes (C4d
+    moved it for the hands-together detector). Read from the source, never restated.
+    """
+    import re
+
+    text = (REPO_ROOT / "app" / "src" / "evidence" / "evidence.ts").read_text(encoding="utf-8")
+    match = re.search(r"export const EVIDENCE_DEFINITIONS = (\d+);", text)
+    if match is None:
+        raise DemandsError("EVIDENCE_DEFINITIONS not found in app/src/evidence/evidence.ts")
+    return int(match.group(1))
 
 
 def main() -> int:

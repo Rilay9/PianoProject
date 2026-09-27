@@ -244,8 +244,18 @@ test.describe('Today', () => {
     // No old fixed sentence anywhere on the card.
     await expect(page.locator('#today-card')).not.toContainText('Warm-up in the keys you are working in');
     await expect(page.locator('#today-card')).not.toContainText('Nothing due — keeping something warm');
-    // The swap sheet names each tier it offers from.
+    // Revised (E0): this opened the warm-up's sheet and found "From the same lesson" first, because
+    // any option of the row's lesson was an equivalent. The warm-up is 2.3's chord drill, and 2.3's
+    // other exercises (the cadences and the inversions) measure notes beyond the hand position,
+    // taught at 2.5: the one gate refuses them for a learner on 2.2 (Part 23: a same-lesson option
+    // has no immunity), and the sheet says there is nothing else rather than offering them.
     await warmup.getByRole('button', { name: 'Swap' }).click();
+    const sheet = page.locator('#today-swap');
+    await expect(sheet).toContainText('Nothing else trains the same thing yet.');
+    await expect(sheet.locator('.list-row')).toHaveCount(0);
+    await sheet.getByRole('button', { name: 'Close' }).click();
+    // The swap sheet names each tier it offers from: the new row's, from 2.2's own options first.
+    await page.locator('#today-card .list-row[data-slot="new"]').first().getByRole('button', { name: 'Swap' }).click();
     await expect(page.locator('#today-swap .today-swap-tier').first()).toHaveText('From the same lesson');
     await expect(page.locator('#today-swap .list-row').first()).toHaveAttribute('data-tier', 'lesson');
   });
@@ -257,6 +267,37 @@ test.describe('Today', () => {
     // own; a bundled exercise is notation and opens the Score screen.
     await expect(page).toHaveURL(/#\/(score|drill)\//);
     await expect(page.locator('[data-screen="drill"], [data-screen="score"]')).toBeVisible();
+  });
+});
+
+/**
+ * The demand tier live through the one gate (E0), on the glass at the owner's width.
+ *
+ * Every bundled score now carries the demands the app's detectors measured on it, and the
+ * swap sheet's demand tier offers what provides, at a useful density, the demand the row's
+ * rung teaches, with nothing else the learner's lessons have not reached. Placed at 1.5 (steps
+ * and skips), the card carries the rung's steps-and-skips exercise (found by its item: the practice
+ * track, on by default, may put its own row first); its sheet offers the lesson's other options
+ * first and then, under their own heading, items that also practise skips — and says so in those
+ * words, never "similar difficulty".
+ */
+test.describe('the swap sheet’s demand tier (E0)', () => {
+  test.use({ viewport: { width: 342, height: 740 } });
+
+  test('placed at 1.5, the steps-and-skips row’s sheet names the demand tier: also practises skips, with the other demands met', async ({ page }) => {
+    await placeAt(page, '1.5');
+    const row = page.locator('#today-card .list-row[data-item="exercise.reading.steps-and-skips-c"]');
+    await expect(row).toHaveCount(1);
+    await row.getByRole('button', { name: 'Swap' }).click();
+    const sheet = page.locator('#today-swap');
+    await expect(sheet).toBeVisible();
+    await expect(sheet.locator('.today-swap-tier').first()).toHaveText('From the same lesson');
+    const demand = sheet.locator('.today-swap-tier[data-tier="demand"]');
+    await expect(demand).toHaveText('Also practises skips, with the other demands you have met');
+    await demand.scrollIntoViewIfNeeded();
+    await expect(demand).toBeInViewport();
+    await expect(sheet.locator('.list-row[data-tier="demand"]').first()).toBeVisible();
+    await expect(sheet).not.toContainText(/similar difficulty/i);
   });
 });
 

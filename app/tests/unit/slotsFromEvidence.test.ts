@@ -44,8 +44,9 @@ import type { SessionRow } from '../../src/data/db';
 import type { LearnedPiece } from '../../src/data/progressStore';
 import { EVIDENCE_DEFINITIONS, type MeasuredEvidence } from '../../src/evidence/evidence';
 import { rungState } from '../../src/evidence/rungState';
-import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
+import { VOCABULARY_V0, type Vocabulary } from '../../src/evidence/vocabulary';
 import { readPhrase } from './helpers/reader';
+import { measured } from './helpers/measured';
 import { slotReason } from '../../src/ui/help';
 
 const CONTENT = join(process.cwd(), 'public', 'content');
@@ -368,7 +369,19 @@ describe('the warm-up trains the unmet skill the evidence has shown least', () =
     file: `scores/${id}.mxl`,
     ...over,
   });
-  const ITEMS = [item('ex.subdivision', { targetSkills: ['subdivision'] }), item('ex.ties', { targetSkills: ['tie'] }), item('ex.plain')];
+  // Revised (E0): each exercise's notes provide its skill's opportunity at a useful density
+  // (`helpers/measured`), and the vocabulary handed to the session says the constructed rung
+  // R teaches eighth notes and ties — the one gate asks both. Old assumption: a declared skill
+  // was enough for the requirement's pool.
+  const ITEMS = [
+    item('ex.subdivision', { targetSkills: ['subdivision'], ...measured(['rhythm.eighths']) }),
+    item('ex.ties', { targetSkills: ['tie'], ...measured(['rhythm.ties']) }),
+    item('ex.plain', measured([])),
+  ];
+  const VOCABULARY: Vocabulary = {
+    ...VOCABULARY_V0,
+    demands: VOCABULARY_V0.demands.map((demand) => (demand.id === 'rhythm.eighths' || demand.id === 'rhythm.ties' ? { ...demand, taughtAt: 'R' } : demand)),
+  };
   const R: Lesson = {
     id: 'R',
     title: 'A rung asking for two skills',
@@ -425,6 +438,7 @@ describe('the warm-up trains the unmet skill the evidence has shown least', () =
       minutes: 15,
       today: TODAY,
       skillActivation: EVERY_DECLARED_SKILL,
+      vocabulary: VOCABULARY,
     }).slots;
     const warmup = slot(slots, 'technique');
     expect(warmup?.item?.id).toBe('ex.ties');

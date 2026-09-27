@@ -125,7 +125,9 @@ caught by the merge rather than by whichever wrote last:
    from each file's YAML front-matter.
 7. **merge catalog** — the fragments into one `catalog.json`, with `content/sources/sections.json`
    attached as `teaching.sections`. This is also where `settle_key_signatures()` decides what
-   the Library prints over "Key" for a score that states a signature and no mode.
+   the Library prints over "Key" for a score that states a signature and no mode, where
+   `attach_demands()` writes every bundled score's measured demands (E0, §4 below) and
+   `attach_provenance()` writes every row's provenance (E0, §4a).
 7a. **score checks** (`score_checks.py --gate`, added 2026-09-22) — the seven checks of
    `08-test-map.md`'s own row (key consistency, grace density, truncation, bar duration,
    containment, title structure, repeat structure) over the catalog this build just wrote,
@@ -138,6 +140,11 @@ caught by the merge rather than by whichever wrote last:
    and `copy_curriculum`.)
 8. **curriculum, lessons, tips** — copied through from `content/`, with the schemas and the
    level model.
+8a. **reports** (`step_reports`, E0) — the rung-claims report and the inventory, from the catalog
+   and curriculum this build just wrote (`tools/content/claims.py`): as JSON in `build/`, and as
+   `docs/prompts/rung-claims.md` and `docs/prompts/inventory.md` for the default build only, so a
+   `--out` or `--quick` build never rewrites what the reviewer reads. `validate.py` prints the
+   report's count as a warning, never a failure, until the reviewer says otherwise.
 9. **validate** (`validate.py`) — everything in §4 and more: schemas, every referenced file
    present, every curriculum option in the catalog, the three-alternative floor, finders, tips
    files, section bar numbers, track definitions, orphan exercises, licences, the committed
@@ -497,9 +504,62 @@ catalog schema gained three optional item fields: `targetSkills`, `demands` and 
 (`app/src/demands/detect.ts`) and read the score model OSMD makes of a file, so the build
 does not keep a Python copy: `tools/content/demands.py` hands score files to
 `app/tests/unit/demandsOfFiles.test.ts` through Vitest, the way `render_check.py` hands them
-to Playwright, and reads back the demand ids per file. Nothing in `build.py` calls it yet;
-E does, over the catalog, with a per-file cache like `attach_notation`'s. The cost of the
-alternative choices was measured on the built catalog (`pending-review` Entry 71).
+to Playwright, and reads back the demand ids per file. The cost of the alternative choices
+was measured on the built catalog (`pending-review` Entry 71).
+
+**Every bundled score carries its measured demands (E0, 2026-09-27).** `build.attach_demands`
+sends every score file the build ships — authored, PDMX, Kern, MuseTrainer and generated —
+through `demands.measure_each` and writes on the row `demands` (the ids, in the vocabulary's
+order) and `measurement`: the located count of each demand, the bars, steps and notes, the
+definitions it was measured under (`EVIDENCE_DEFINITIONS` and a fingerprint of the files that
+decide a measurement, `demands.DEFINITION_FILES`), and `established` — the demands the item
+provides at a useful density, which is what the app's one gate reads
+(`app/src/curriculum/eligibility.ts`). The density rule is one file,
+`content/sources/opportunity-density.json`: a per-demand minimum count and count per bar, each
+a hypothesis with its reason, never one universal percentage; a generated item may also
+establish a demand by its family contract where the contract states a density for it (a
+presence-only rule establishes nothing — the tie drill). It is cached in
+`build/demands-cache.json` on each file's sha256 and on the fingerprint, so a detector change
+measures everything again and a changed score measures only itself. A file the app cannot
+load, a non-notation file, or a piece whose notation is not bundled carries `demands:
+"unmeasured"` with the reason in `measurement.reason` — never an empty list that reads as "no
+demands"; a runtime drill has no `demands` and `measurement.status: "runtime"`. A reader that
+fails on more than a tenth of the files stops the build (a broken bridge, not a library). An
+imported score is measured the same way in the app, by `importStore.measureImport`, at import
+and again whenever the learner corrects its hands (`correctImportHands`).
+
+### 4a. Provenance on every content object (E0; R35, R15, R11, Part 21 §B)
+
+`build.attach_provenance` writes `provenance` on every catalog row, and the import path on every
+imported score (`importStore.importProvenance`):
+
+- **`source`**: `authored`, `pdmx`, `kern`, `musetrainer`, `generated` (with D0's identity in
+  `generator`: family, version, seed), `runtime` (a drill the app makes when it opens),
+  `placeholder` (not bundled), or `imported-midi` / `imported-musicxml` / `imported-pdf`.
+- **Identity** (R15): `edition` (the PDMX upload's CID, or the source file's sha256),
+  `arrangement` (the item; a PDMX duplicate edition shares the arrangement of the upload it
+  duplicates) and `composition` (an authored variant names its tune by `variantOf`; otherwise
+  `work_key` of the title and composer, the PDMX identity function — conservative, so it is
+  labelled `inferred`). A generated item or runtime drill is identified by its `generator`
+  and names no composition: an exercise is not a work (the inventory counts none).
+- **`converter`**: `convert.py` by its tool fingerprint, `author.py`, or the app's MIDI converter
+  by `MIDI_CONVERTER_VERSION`.
+- **`facts`**: each fact with how it is known — `measured` (the detectors, with their
+  definitions; the key a song's signature and final bass give), `inferred` (the converter's
+  default tempo, a level estimate, a hand split, a key guess, an identity key), `authored`
+  (written by the edition, the generator's recipe, this repository, or the learner's
+  correction), `reviewed` (a person's decision), `unmeasured`, `runtime`. Where the tempo is
+  inferred, the tempo-sensitive demands (the density file's `tempoSensitive`: notes shorter
+  than the beat) are listed `untrusted` beside the measured ones: measured in the notation,
+  their difficulty resting on a tempo the converter supplied. Never flattened into one field.
+- **`review`**: R42's two decisions as separate bits, `score` (usable, faithful) and `teaching`
+  (a good teaching use for its claimed role); `null` is "no person has decided", which is every
+  item today. A PDMX row's quarry `keep` is recorded as `quarryKeep` (the decision; the
+  reviewer's note, working prose with no source, stays in `pdmx.json`) and is neither bit (Part 12
+  §14).
+- **`physical`**: a generated item's declared large-hand voicing, with its prerequisite and
+  alternative (D0 finding 5); the gate recommends no such item until the alternative reaches
+  the learner.
 
 ## 5. Authoring conventions for `[AUTH]` ABC files
 

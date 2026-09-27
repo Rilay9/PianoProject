@@ -792,6 +792,47 @@ printed fingers included.
 > a deliberate change to that module, with a test beside it. **E extends this one boundary** with
 > its needs-versus-taught and measured-demand checks, and D4 with roles in the ladder; nobody
 > writes a second readiness check beside it.
+>
+> **E0 extended it (2026-09-27): the one gate.** `app/src/curriculum/eligibility.ts`'s
+> `eligibleFor(candidate, learner, want)` answers two questions from the facts a candidate has:
+> *can the learner cope* — every demand the build measured on it is supported by the learner's
+> evidence (`familiar` or above on the demand's `copedWithBy` skill) or taught at or below the
+> rung judging it — and *does it provide the opportunity claimed* — the wanted demand, or the
+> wanted skill's opportunity, is in `measurement.established` (a useful density:
+> `content/sources/opportunity-density.json`, or the family contract's own density where it
+> states one; a presence-only rule, like the tie drill's one tie, establishes nothing). The swap
+> sheet's four tiers and its last resort, the session's skill requirement, its skill and demand
+> steps and the repertoire claim call it and nothing else. It reads declared skills only through
+> this module (`declaredSkills`): selection acts on a declared skill beyond the reading rows only
+> where the notes establish its opportunity; a rung's skill requirement is served only by what
+> the evidence readers act on, because only those runs can meet it; and the evidence readers keep
+> `skillsInForce` at the shipped activation, so no new run earns credit (D4 changes that). An
+> item whose demands are `unmeasured` is eligible for exploration only, never as an equivalent,
+> on every path — same-lesson options and `alternatives[]` included. A declared large-hand voicing
+> (the add9) is recommended by no selector until its smaller-hand alternative reaches the learner
+> (D0 finding 5). Level orders eligible candidates and rescues nothing. The readiness floor is
+> `familiar`, the rule the repertoire slot already used; the brief's comparison with `introduced`
+> is in Entry 92.
+
+> **What the notes establish of each rung's claims (E0, 2026-09-27).** Every bundled score now
+> carries the demands the app's detectors measured on it (`docs/03` §4), and the build writes the
+> **rung-claims report**, `docs/prompts/rung-claims.md`: for every option of every rung, each
+> claim the rung makes — the skills its requirements name, the vocabulary skills and notated facts
+> its concepts name, the demands the vocabulary says it teaches — as established, incidental,
+> absent or unmeasured, and every concept no detector can measure (rootless voicings, a montuno,
+> four-part texture, wrist rotation) as a claim needing a person's judgement, with the review bit
+> (none, today). The rungs Part 12 named first are in it in full: `jazz.7`, `jazz.8`, `hymns` and
+> `technique.7` make no claim the vocabulary can measure at all, so nothing on them is established
+> by the notes; `jazz.9`'s walking bass is established only by the stride exercise, which is the
+> detector's recorded misreading (E22); `latin`'s syncopation is established on most of its
+> options and its clave, tumbao and montuno are unmeasurable; `technique.4`'s one measurable
+> claim (notes outside the key) is established by its two chromatic-scale drills and one of its
+> three Lemoine études, `technique.5`'s syncopation by none of its options, `technique.6`'s moving
+> left hand only by the two 3:1 independence drills and by none of the Czerny studies, and
+> `technique.7` claims nothing the vocabulary can measure. **Nothing is removed from a rung**: the
+> authored lists stay authoritative, the report is what F, G and the owner rewrite from, and
+> `validate.py` warns with its count. The same report carries the untaught-on-rung demands of
+> every option, D0's 71 generated combinations among them.
 
 The table above is a technique syllabus in the conservatoire sense. It is not the whole of
 what a learner practises, and a skill with no generated exercise ends up either untested or

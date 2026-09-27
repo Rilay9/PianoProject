@@ -1123,12 +1123,43 @@ def vocabulary_errors(
                 errors.append(
                     f"{item.get('id')}: targetSkills names {skill_id!r}, which vocabulary v0 does not define"
                 )
-        for demand_id in item.get("demands") or []:
+        # `"unmeasured"` is the one string `demands` may be (E0): a notated item the
+        # detectors could not read, never an empty list; its reason is required.
+        measured = item.get("demands")
+        if measured == "unmeasured":
+            if not ((item.get("measurement") or {}).get("reason")):
+                errors.append(f"{item.get('id')}: demands unmeasured with no reason in measurement.reason")
+            continue
+        for demand_id in measured or []:
             if demand_id not in demands:
                 errors.append(
                     f"{item.get('id')}: demands names {demand_id!r}, which vocabulary v0 does not define"
                 )
+        for demand_id in (item.get("measurement") or {}).get("established") or []:
+            if demand_id not in (measured or []):
+                errors.append(
+                    f"{item.get('id')}: measurement establishes {demand_id!r}, which its measured demands lack"
+                )
     return errors
+
+
+def rung_claims_warning(catalog: list, curriculum: dict) -> str:
+    """
+    The rung-claims check as a warning, never a failure, until the reviewer says
+    otherwise (E0 item 5): how many of the claims rungs make about their options the
+    options' measured demands do not establish, and how many rung claims no option
+    keeps. The report itself is `docs/prompts/rung-claims.md` (`claims.py`).
+    """
+    import claims
+
+    s = claims.rung_claims(catalog, curriculum)["summary"]
+    return (
+        f"WARNING (rung claims, E0): {s['unestablished']} of {s['measurable']} checkable claims on rung options "
+        f"are not established by the options' measured demands; {s['rungClaimsKeptByNoOption']} rung claims "
+        f"no option establishes; {s['unmeasurableConcepts']} concept claims no detector can measure, with "
+        f"{s['humanReviewed']} human teaching-use reviews. Nothing is removed from a rung: "
+        f"docs/prompts/rung-claims.md."
+    )
 
 
 #: The ladder state a `skill` requirement names, and the standard its evidence
@@ -1640,6 +1671,7 @@ def main() -> None:
     )
     if gate_unjudged:
         print(f"    unjudged: {', '.join(gate_unjudged)}")
+    print(f"  {rung_claims_warning(catalog, curriculum)}")
 
     # Last, so the build's one-line summary of this step is the verdict and the
     # item count rather than whichever detail happened to print last — the same

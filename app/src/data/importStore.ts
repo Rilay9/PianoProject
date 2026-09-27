@@ -17,7 +17,7 @@
  * usually a stack-trace fragment, so it is translated here.
  */
 import { openDatabase, type ImportKind, type ImportRow } from './db';
-import type { CatalogItem } from '../curriculum/types';
+import type { CatalogItem, Measurement, Provenance } from '../curriculum/types';
 import { isMxl, toMusicXml } from '../score/mxl';
 import {
   ConvertError,
@@ -333,10 +333,150 @@ export async function getImport(id: string): Promise<ImportRow | undefined> {
 }
 
 /**
+ * The version of what the app's MIDI converter decides (`src/import/midi/`), stamped
+ * on an imported score's provenance so a later reader can tell which rules inferred
+ * its hands, key, grid and tempo (E0; R35). Move it when the converter's decisions
+ * change. The converter owning its own version is a follow-up; until then it lives
+ * beside the one writer of the provenance.
+ */
+export const MIDI_CONVERTER_VERSION = 1;
+
+/** A measured score's demands, or why they could not be measured. */
+export interface ImportMeasurement {
+  demands: string[] | 'unmeasured';
+  measurement: Measurement;
+}
+
+/**
+ * What the app's own detectors measure on an imported MusicXML score (E0 item 1):
+ * the same implementation the build uses (`demands/detect.ts`, over the model OSMD
+ * makes of the file), the located counts, and the demands the score provides at a
+ * useful density (`eligibility.usefulDensity`, the build's rule). Parsed in a
+ * detached element and never drawn, as `estimateImport` does, and reached through
+ * dynamic imports so the Library does not carry OSMD for a list.
+ *
+ * Best-effort by design, like the level estimate: a score the app cannot read still
+ * imports, and says so — `demands: 'unmeasured'` with the reason, never an empty list.
+ */
+export async function measureImport(xml: string, id: string): Promise<ImportMeasurement> {
+  const unmeasured = (reason: string): ImportMeasurement => ({ demands: 'unmeasured', measurement: { status: 'unmeasured', reason } });
+  if (typeof document === 'undefined') return unmeasured('the score could not be read here: no document to parse it in');
+  try {
+    const [{ OpenSheetMusicDisplay }, { extractScoreModel }, detectors, { usefulDensity }, { VOCABULARY_V0 }, { EVIDENCE_DEFINITIONS }] = await Promise.all([
+      import('opensheetmusicdisplay'),
+      import('../score/extractScoreModel'),
+      import('../demands/detect'),
+      import('../curriculum/eligibility'),
+      import('../evidence/vocabulary'),
+      import('../evidence/evidence'),
+    ]);
+    const host = document.createElement('div');
+    const osmd = new OpenSheetMusicDisplay(host, { autoResize: false, drawingParameters: 'compact' });
+    await osmd.load(xml);
+    const model = extractScoreModel(osmd, { id });
+    const located: Record<string, number> = {};
+    for (const demand of VOCABULARY_V0.demands) {
+      const n = detectors.detect(model, demand.detector).at.length;
+      if (n > 0) located[demand.id] = n;
+    }
+    const misread = clefMisread(xml);
+    const spoilt = new Set<string>(misread === undefined ? [] : CLEF_MISREAD);
+    return {
+      demands: detectors.measuredDemands(model, VOCABULARY_V0.demands),
+      measurement: {
+        status: 'measured',
+        definitions: EVIDENCE_DEFINITIONS,
+        located,
+        bars: model.measureCount,
+        steps: model.steps.length,
+        notes: detectors.soundedNotes(model).length,
+        // A reading known to be wrong on this file never establishes an opportunity.
+        established: usefulDensity(located, model.measureCount).filter((demand) => !spoilt.has(demand)),
+        ...(misread === undefined ? {} : { misread: { demands: [...CLEF_MISREAD], why: misread } }),
+      },
+    };
+  } catch (cause) {
+    return unmeasured(`the app could not read the score's notes (${String(cause).slice(0, 120)})`);
+  }
+}
+
+/** The two readings the detectors' clef assumption spoils (`build.CLEF_MISREAD`). */
+export const CLEF_MISREAD = ['clef.bass', 'pitch.ledger'] as const;
+
+/**
+ * Why the clef-dependent readings of a score are unreliable, or `undefined`: the
+ * detectors read staff 1 as the treble clef (`detect.ts`'s module note), so an upper
+ * staff written in the bass clef — a one-staff part, or an upper staff that moves into
+ * it — reads wrong for the bass staff and the ledger lines. Found from the file's own
+ * `<clef>` signs, as `build.clef_misread` does for the bundled scores; marked, never
+ * corrected (the detectors' readings are E22's).
+ */
+export function clefMisread(xml: string): string | undefined {
+  const staves = Number(/<staves>\s*(\d+)\s*<\/staves>/.exec(xml)?.[1] ?? '1');
+  const upper = [...xml.matchAll(/<clef(?:\s+number="(\d)")?[^>]*>\s*<sign>([A-Z]+)<\/sign>/g)]
+    .filter((match) => match[1] === undefined || match[1] === '1')
+    .map((match) => match[2]);
+  if (!upper.includes('F')) return undefined;
+  return staves === 1 && upper[0] === 'F'
+    ? 'one staff in the bass clef: the detectors read staff 1 as the treble clef (detect.ts’s clef assumption)'
+    : 'the upper staff moves into the bass clef: the detectors read staff 1 as the treble clef throughout (detect.ts’s clef assumption)';
+}
+
+/** Whether a MusicXML score writes a tempo of its own. */
+function writesTempo(xml: string): boolean {
+  return /<sound[^>]*\btempo="/i.test(xml) || /<metronome\b/i.test(xml);
+}
+
+/**
+ * An imported score's provenance (E0 item 2; R35, Part 21 §B): what came from the
+ * file, what the converter inferred and by which version, what the app measured.
+ * The learner's corrections are written over it by `correctImportHands`.
+ */
+export function importProvenance(
+  kind: 'midi' | 'musicxml' | 'pdf',
+  measured: ImportMeasurement,
+  xml: string | null,
+  report: ConversionReport | null,
+): Provenance {
+  const facts: Provenance['facts'] = {};
+  facts.demands =
+    measured.measurement.status === 'measured'
+      ? { kind: 'measured', via: 'app/src/demands/detect.ts' }
+      : { kind: 'unmeasured', why: measured.measurement.status === 'unmeasured' ? measured.measurement.reason : 'not notation' };
+  facts.level = { kind: 'inferred', via: 'the runtime level estimate, until the learner types one' };
+  if (kind === 'midi' && report) {
+    facts.hands =
+      report.hands === 'split into two'
+        ? { kind: 'inferred', via: 'the converter split one line by the shape of its voices' }
+        : { kind: 'authored', via: 'the file’s own tracks, kept as recorded' };
+    facts.key = { kind: report.keyFrom === 'chosen' ? 'authored' : 'inferred', via: report.keyFrom };
+    facts.timeSig = { kind: 'inferred', via: 'the file’s meta events, or the converter’s default' };
+    facts.grid = { kind: 'inferred', via: `quantised to ${report.grid}` };
+  } else if (kind === 'musicxml') {
+    facts.hands = { kind: 'authored', via: 'the file’s staves' };
+    facts.key = { kind: 'authored', via: 'the file’s signature' };
+  }
+  if (xml !== null) {
+    facts.tempo = writesTempo(xml)
+      ? { kind: 'authored', via: kind === 'midi' ? 'the file’s tempo map' : 'the file' }
+      : { kind: 'inferred', via: 'no tempo in the file: the app’s default' };
+  }
+  return {
+    source: kind === 'midi' ? 'imported-midi' : kind === 'pdf' ? 'imported-pdf' : 'imported-musicxml',
+    edition: null,
+    ...(kind === 'midi' ? { converter: { name: 'app/src/import/midi/convert.ts', version: MIDI_CONVERTER_VERSION } } : {}),
+    facts,
+    review: { score: null, teaching: null },
+  };
+}
+
+/**
  * Parses and stores one file.
  *
  * Validation happens *before* the write, so a file that cannot be read never
- * becomes a row the learner has to delete by hand.
+ * becomes a row the learner has to delete by hand. A score is measured by the
+ * app's detectors before it is stored and carries its provenance (E0); a PDF is
+ * stored as unmeasured, with the reason.
  */
 export async function addImport(file: File, now = new Date()): Promise<ImportRow> {
   const kind = kindForFilename(file.name);
@@ -438,11 +578,80 @@ export async function addImport(file: File, now = new Date()): Promise<ImportRow
     };
   }
 
+  // Measured on the arrangement in the file, before it is stored (E0): the same
+  // detectors the build runs, and the provenance of every fact the row carries.
+  const measured: ImportMeasurement =
+    row.kind === 'pdf' || typeof row.data !== 'string'
+      ? { demands: 'unmeasured', measurement: { status: 'unmeasured', reason: 'a PDF: the app reads no notes from it' } }
+      : await measureImport(row.data, row.id);
+  row = {
+    ...row,
+    demands: measured.demands,
+    measurement: measured.measurement,
+    provenance: importProvenance(kind, measured, typeof row.data === 'string' ? row.data : null, note?.report ?? null),
+  };
+
   await db.put('imports', row);
   if (note) conversions.set(row.id, note);
   addedSinceLoad.add(row.id);
   notify();
   return row;
+}
+
+/**
+ * The learner's correction of an imported score's hands, as source truth (E0; R34's
+ * truth half, Part 21 §B): the corrected MusicXML becomes the score — what renders,
+ * what the detectors measure, what the level is estimated from and what the gate
+ * reads — never a visual override on top of the converter's split. The demands are
+ * measured again, the provenance says the hands are the learner's, and an estimated
+ * level is estimated again from the corrected notes. The screen that lets a learner
+ * move notes between the staves is X's (R34's UX half); this is what it saves through.
+ *
+ * Returns the stored row, or `undefined` when there is no such score or it is a PDF.
+ */
+export async function correctImportHands(
+  id: string,
+  correctedXml: string,
+  now = new Date(),
+  estimate: (row: ImportRow) => Promise<number | undefined> = () => Promise.resolve(undefined),
+): Promise<ImportRow | undefined> {
+  const db = await openDatabase();
+  const row = await db?.get('imports', id);
+  if (!db || !row || row.kind !== 'musicxml') return undefined;
+  if (!/<score-partwise|<score-timewise/i.test(correctedXml)) {
+    throw new ImportError('The corrected score is not MusicXML, so it was not saved.');
+  }
+  const measured = await measureImport(correctedXml, id);
+  const before = row.provenance ?? importProvenance('musicxml', measured, correctedXml, null);
+  const provenance: Provenance = {
+    ...before,
+    facts: {
+      ...before.facts,
+      demands:
+        measured.measurement.status === 'measured'
+          ? { kind: 'measured', via: 'app/src/demands/detect.ts, on the corrected score' }
+          : { kind: 'unmeasured', why: measured.measurement.status === 'unmeasured' ? measured.measurement.reason : 'not notation' },
+      hands: { kind: 'authored', via: `the learner’s correction, ${now.toISOString().slice(0, 10)}` },
+    },
+  };
+  const next: ImportRow = {
+    ...row,
+    data: correctedXml,
+    bytes: byteSizeOf(correctedXml),
+    demands: measured.demands,
+    measurement: measured.measurement,
+    provenance,
+  };
+  if (row.levelSource !== 'judged') {
+    const level = await estimate(next);
+    if (level !== undefined) {
+      next.level = level;
+      next.levelSource = 'estimated';
+    }
+  }
+  await db.put('imports', next);
+  notify();
+  return next;
 }
 
 /** Must match `public/share-target.js`. */
@@ -539,6 +748,11 @@ export function importToCatalogItem(row: ImportSummary): CatalogItem {
     /** The rungs this piece was assigned to (replan §4.3). */
     lessonIds: row.lessonIds ?? [],
     source: { name: 'Imported by you', license: 'user-imported', url: null },
+    // What the detectors measured at import (or after the learner's correction), and how each
+    // fact is known (E0). A row imported before E0 carries neither and reads as unmeasured.
+    ...(row.demands === undefined ? {} : { demands: row.demands }),
+    ...(row.measurement === undefined ? {} : { measurement: row.measurement }),
+    ...(row.provenance === undefined ? {} : { provenance: row.provenance }),
   };
 }
 
