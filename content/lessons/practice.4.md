@@ -32,8 +32,8 @@ the fingers, and let go of each key once it has sounded.
 Stop. Any pain in the wrist, forearm, thumb or shoulder means the session is
 over; rest, and make the next one shorter or gentler.
 
-Pain that lasts more than a couple of days, or any numbness or tingling, is a
-reason to see a doctor or a physiotherapist, not a practice problem. Nothing
+Pain that does not settle, or any numbness or tingling, is a reason to see a
+doctor or a physiotherapist rather than to keep practising through it. Nothing
 about the piano is worth an injury that takes months.
 
 **Common mistake.** Long sessions at weekends after a week of none. Long

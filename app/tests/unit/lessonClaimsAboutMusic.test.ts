@@ -3385,3 +3385,28 @@ describe('F0: the corrected lessons tell the truth about the music they name', (
     });
   }
 });
+
+// --- F0a: the safety threshold (2026-09-26) ---------------------------------
+//
+// practice.4 sends a learner to a doctor or a physiotherapist for pain that
+// does not settle, or for any numbness or tingling. Until F0a it named a
+// cutoff, pain "that lasts more than a couple of days", which no clinical
+// source found here supports: the NHS page on repetitive strain injury says to
+// see a GP when symptoms are not going away or are getting worse, and names no
+// time. A health claim rather than a claim about music; the row holds the
+// referral in words and refuses a time cutoff in any sentence that makes it.
+// No clinician has checked it.
+
+describe('F0a: practice.4 sends pain to a clinician without an invented cutoff', () => {
+  it('practice.4: pain that does not settle, or any numbness or tingling, is a reason to see a doctor or a physiotherapist, and no time is named', () => {
+    const text = f0mText('practice.4');
+    const referral = text
+      .split(/(?<=[.!?])\s+/)
+      .filter((sentence) => /numbness|tingling|doctor|physiotherapist/i.test(sentence));
+    expect.soft(text).not.toContain('couple of days');
+    expect.soft(referral.filter((sentence) => /\b(?:hours?|days?|weeks?|months?)\b/i.test(sentence))).toEqual([]);
+    expect.soft(text).toContain(
+      'Pain that does not settle, or any numbness or tingling, is a reason to see a doctor or a physiotherapist rather than to keep practising through it.',
+    );
+  });
+});

@@ -19,3 +19,6 @@ You own `content/lessons/practice.4.md` (that sentence only) and its row in `app
 ## Report
 
 The sentence before and after; the source if any, else "removed, unsourced"; the red line; exit codes; Files.
+
+**Delivered 2026-09-26** in an isolated worktree; the brief's premise that a practice.4 row existed was wrong (none did), so the row was added, not revised.
+

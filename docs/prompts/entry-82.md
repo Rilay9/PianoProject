@@ -305,3 +305,67 @@ Unchanged but verified in this task (no lesson edit): 0.2 "twelve keys" (S2 §2.
 | 87 | batch-5:573 | JUDGEMENT | chords-pop.9:20 "The oldest arranging trick there is" | deferred to F | **F's voice rewrite** — a historical superlative; also Part 17 §20's item |
 
 **Totals.** THEORY 18: 14 corrected, 2 verified unchanged, 1 already corrected (T10) and re-checked, 1 already rewritten (T22) with a residual naming question for an outside expert. UNVERIFIED 16 (the 85's): 9 corrected, 1 verified unchanged, 6 already corrected or rewritten and re-checked (1 of them sourced again); plus `hymns.2:31` outside the 85. HISTORY 4: 1 removed earlier and verified absent, 1 sourced (S12), 1 sourced again (S13), 1 removed. JUDGEMENT 47: 8 corrected in F0 (practice.4 ×2, theory.5 ×2, technique.4, blues.7, jazz.8, theory.8 — each for the reason in its row), 39 deferred to F, each with its category (musical judgement 18, F's voice rewrite 11, contested fact 8, outside expert 2; four of the contested facts also need an outside expert); plus the re-filed FALSE outside the 85, deferred as a musical judgement.
+
+#### Addendum to Entry 82 — F0a: the safety threshold
+
+**Judgement.** practice.4 no longer names a clinical cutoff. A learner now reads, directly under "Pain — stop": *"Pain that does not settle, or any numbness or tingling, is a reason to see a doctor or a physiotherapist rather than to keep practising through it. Nothing about the piano is worth an injury that takes months."* Pain awareness and the referral stand; "more than a couple of days" is gone. As a teacher's reading: a sentence a teacher can say to a beginner without claiming medical knowledge. It is still safety advice nobody here is qualified to confirm: no clinician has read it.
+
+**The sentence** (`content/lessons/practice.4.md:35-36`; the paragraph's second sentence unchanged)
+
+- Before: "Pain that lasts more than a couple of days, or any numbness or tingling, is a reason to see a doctor or a physiotherapist, not a practice problem."
+- After: "Pain that does not settle, or any numbness or tingling, is a reason to see a doctor or a physiotherapist rather than to keep practising through it."
+- Layer: **teacher** (safety advice written as advice, no cutoff), not **source**. The cutoff: **removed, unsourced.**
+
+**The source search** (a few minutes, three web lookups, inside the brief's quarter hour). No clinical source for a couple of days turned up. The NHS page on repetitive strain injury (https://www.nhs.uk/conditions/repetitive-strain-injury-rsi/) says to see a GP if you have symptoms "and they are not going away or are getting worse", and gives no time. It lists tingling, pins and needles and numbness among the symptoms, and names physiotherapy. I read it through a fetch tool's summary, which quoted that line, not the raw page. So the new wording agrees with it, but it is not cited as the sentence's source. The musician-health pages a general search returned are not clinical guidance, and they disagree about the time: see a physician within a few days to a week, versus see a specialist if symptoms persist three to four weeks. That disagreement is one more reason to state no number.
+
+**readingTime.** 321 body words before and 320 after, counted the way `lessonShape.test.ts` counts: ceil(words / 200) = 2 both times, so `readingTime: 2` stays. `lessonShape.test.ts` passes (21/21).
+
+**The brief's premise, found wrong.** The brief said to revise "the F0 rows for practice.4" in `lessonClaimsAboutMusic.test.ts`. No such row existed. F0's music block has 13 rows (1.4, 4.3, technique.7, technique.5 ×2, technique.4, chords-pop.4, jazz.4, blues.3, ragtime.8, chords-pop.8, classical.8, jazz.8). A grep for `practice\.4` across `app/tests/unit/*.ts` found none, and neither did one for the sentence's words across `app/tests`. So the row is **added**, not revised. It sits in its own `describe` after F0's, because F0's title says "about the music they name" and this is a health claim. The only other test that reads the paragraph is `app/tests/e2e/tips.spec.ts:102-106` ("the injury lesson says to stop": `Stop`, `doctor`). Both words are still in the text. That spec was not run: no browser in this task.
+
+## Tests touched
+
+| Test | Class | Old assumption | Now |
+|---|---|---|---|
+| `lessonClaimsAboutMusic.test.ts` › *F0a: practice.4 sends pain to a clinician without an invented cutoff* (1 row) | add | none: no row held this sentence | three soft assertions: the lesson does not contain "couple of days"; no sentence naming numbness, tingling, a doctor or a physiotherapist contains hours, days, weeks or months; the new sentence is present word for word |
+
+## The red line
+
+`red-f0a-row-2.txt`, the new row against the unchanged lesson: 1 test, 3 of 3 assertions red, each for its own reason:
+
+1. `expected ' Pianists do get playing-related pain…' not to contain 'couple of days'`
+2. `expected [ Array(1) ] to deeply equal []`, the offending sentence being "Pain that lasts more than a couple of days, or any numbness or tingling, is a reason to see a doctor or a physiotherapist, not a practice problem."
+3. `expected ' Pianists do get playing-related pain…' to contain 'Pain that does not settle, or any num…'`
+
+Green after the edit: the whole file, 140/140.
+
+## Runs (unpiped: output went to files in this folder, exit codes read)
+
+| Run | Exit | Note |
+|---|---|---|
+| `npm ci` (app/, node_modules absent) | 0 | |
+| `npx vitest run … -t F0a` (first try) | 1 | not a test result: the worktree had no built content (`app/public/content/catalog.json` ENOENT) |
+| `python tools/content/build.py --offline` (first try, old lesson) | 1 | the environment, not the change: the worktree lacked the gitignored score libraries `content/scores/imported/{musetrainer,kern}`, so 117 validation errors about unknown items appeared. Fixed by copying both libraries from the main checkout into this worktree (the main checkout was only read; the copies are gitignored). No network fetch. |
+| `python tools/content/build.py --offline` (old lesson) | 0 | 2061 items, validation OK (`build-before.txt`) |
+| `npx vitest run tests/unit/lessonClaimsAboutMusic.test.ts -t F0a` (old lesson) | 1 | the red above |
+| `python tools/content/build.py --offline` (new sentence) | 0 | 2061 items, validation OK; the built lesson carries "does not settle" (`build-after.txt`) |
+| `python tools/content/validate.py --allow-nc --personal` | 0 | content validation OK, 2061 items (`validate-after.txt`) |
+| `npx vitest run tests/unit/lessonClaimsAboutMusic.test.ts` | 0 | 140 passed (`green-claims-file.txt`) |
+| `npx vitest run tests/unit/lessonShape.test.ts` | 0 | 21 passed: readingTime and the three-minute cap (`green-lessonShape.txt`) |
+
+## Unverified, beside what passes
+
+- No clinician has read the sentence. "Any numbness or tingling" as grounds for a referral was kept because the brief calls it ordinary safety advice. The NHS page lists those symptoms but does not single them out for referral: its trigger is symptoms not going away or getting worse. **Outside expert (clinician).** Not changed here.
+- `tips.spec.ts` (e2e) was not run. That it still passes is inferred from the text, which still contains `Stop` and `doctor`.
+- Nothing was heard; there is nothing to hear.
+
+## Follow-ups (classified; not done here: outside the two files)
+
+1. **Record, stale:** `docs/prompts/entry-82.md` row 26 (its After column) and item 7 of its outside-expert list still quote the "couple of days" sentence. **Process hygiene**, for the orchestrator.
+2. **Record:** `docs/prompts/test-inventory-2026-09-26.md` / `.csv` and `docs/08-test-map.md`'s never-teach-wrong row do not list the F0a row. **Process hygiene.**
+3. **Where the row lives:** `lessonClaimsNeverTeachWrong.test.ts` (truth rather than agreement with the app) would suit a health claim better than a music-claims file. I did not move it there because I don't own that file. **Process hygiene.**
+
+## Files
+
+- `content/lessons/practice.4.md`: the one sentence (lines 35-36).
+- `app/tests/unit/lessonClaimsAboutMusic.test.ts`: the F0a block appended (25 lines).
+- Not tracked, in this worktree only: `content/scores/imported/musetrainer` and `content/scores/imported/kern`, copied from the main checkout so the build could run; both gitignored, neither in `git status`.
