@@ -39,3 +39,5 @@ Judgement first: the four factual errors as a learner now reads them, and the ha
 
 **Delivered 2026-09-26**, Entry 82: 32 lessons corrected with the layer and source per sentence (`docs/prompts/f0-corrected-sentences.md`), the 87 old-audit boxes reconciled (`f0-disposition-85.md`), the lint diagnostic; the builder found a P0 in the generator's arpeggio fingering (G41) and left 4.3 warning about it until T53 fixes the generator.
 
+**Closed by the reviewer 2026-09-26**: approved with one required fix-forward (practice.4's threshold, F0a), then F0a accepted; the clinician's read of the safety sentence stays on T54's expert list.
+
