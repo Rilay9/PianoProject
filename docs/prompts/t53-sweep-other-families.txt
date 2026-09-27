@@ -1,0 +1,162 @@
+fingered staves checked per family: {'scale': 432, 'five-finger': 72, 'chromatic': 24, 'hanon': 80, 'coordination': 20, 'position-shift': 10, 'interval-reading': 16, 'accompaniment': 30, 'broken-octaves': 10, 'broken7': 42, 'repeated-notes': 12, 'trill': 6, 'mordent': 6, 'tremolo': 6, 'tremolo-third': 6, 'rotation': 6, 'voicing': 5, 'meter': 1, 'secondary-rag': 1, 'pedal': 8, 'voicing7': 48, 'ii-v-i': 12, 'loop4': 24, 'tritone-sub': 4, 'slash-bass': 4, 'stride': 4, 'walking-bass': 28, 'turnaround': 12, 'comping': 58, 'open-voicing': 16, 'boogie': 36, 'oompah': 8, 'intro': 10, 'walkup': 4, 'passing-chord': 4, 'ostinato': 6, 'riff': 4, 'swing-pair': 3, 'pentatonic': 6, 'tresillo': 3, 'tumbao': 5, 'latin-groove': 5}
+
+accompaniment: 30 staves with a fault
+   exercise.accompaniment.broken.c-major.left 2 ['LH F3(5): finger 5 in the middle of the run', 'LH G3(5): finger 5 in the middle of the run']
+   exercise.accompaniment.broken.c-major.both 2 ['LH F3(5): finger 5 in the middle of the run', 'LH G3(5): finger 5 in the middle of the run']
+   exercise.accompaniment.alberti.c-major.left 4 ['LH F3(5): finger 5 in the middle of the run', 'LH F3(5): finger 5 in the middle of the run', 'LH G3(5): finger 5 in the middle of the run']
+   exercise.accompaniment.alberti.c-major.both 4 ['LH F3(5): finger 5 in the middle of the run', 'LH F3(5): finger 5 in the middle of the run', 'LH G3(5): finger 5 in the middle of the run']
+
+broken-octaves: 10 staves with a fault
+   exercise.broken-octaves.c.1oct.right 14 ['RH C5(5): finger 5 in the middle of the run', 'RH D5(5): finger 5 in the middle of the run', 'RH E5(5): finger 5 in the middle of the run']
+   exercise.broken-octaves.c.1oct.left 13 ['LH D2(5): finger 5 in the middle of the run', 'LH E2(5): finger 5 in the middle of the run', 'LH F2(5): finger 5 in the middle of the run']
+   exercise.broken-octaves.g.1oct.right 12 ['RH G5(5): finger 5 in the middle of the run', 'RH A5(5): finger 5 in the middle of the run', 'RH B5(5): finger 5 in the middle of the run']
+   exercise.broken-octaves.g.1oct.left 11 ['LH A2(5): finger 5 in the middle of the run', 'LH B2(5): finger 5 in the middle of the run', 'LH C3(5): finger 5 in the middle of the run']
+
+broken7: 42 staves with a fault
+   exercise.broken7.c-dominant7.both 2 ['RH C4(5): finger 5 in the middle of the run', 'RH C4(5): finger 5 in the middle of the run']
+   exercise.broken7.c-dominant7.both 4 ['LH E2(4) C3(5): the hand crosses itself away from the thumb', 'LH E2(4) C3(5): the hand crosses itself away from the thumb', 'LH C3(5): finger 5 in the middle of the run']
+   exercise.broken7.c-major7.both 2 ['RH C4(5): finger 5 in the middle of the run', 'RH C4(5): finger 5 in the middle of the run']
+   exercise.broken7.c-major7.both 4 ['LH E2(4) C3(5): the hand crosses itself away from the thumb', 'LH E2(4) C3(5): the hand crosses itself away from the thumb', 'LH C3(5): finger 5 in the middle of the run']
+
+chromatic: 3 staves with a fault
+   exercise.chromatic.e.1oct.left 1 ['LH E3(1) F3(1): one finger on two different notes']
+   exercise.chromatic.e.1oct.both 1 ['LH E3(1) F3(1): one finger on two different notes']
+   exercise.chromatic.e.2oct.both 1 ['LH E3(1) F3(1): one finger on two different notes']
+
+comping: 58 staves with a fault
+   exercise.comping.c.charleston.intro 3 ['LH D2(5) G2(5): one finger on two different notes', 'LH G2(5) C2(5): one finger on two different notes', 'LH D2(5): finger 5 in the middle of the run']
+   exercise.comping.c.charleston 3 ['LH D2(5) G2(5): one finger on two different notes', 'LH G2(5) C2(5): one finger on two different notes', 'LH D2(5): finger 5 in the middle of the run']
+   exercise.comping.c.off-beats.intro 3 ['LH D2(5) G2(5): one finger on two different notes', 'LH G2(5) C2(5): one finger on two different notes', 'LH D2(5): finger 5 in the middle of the run']
+   exercise.comping.c.off-beats 3 ['LH D2(5) G2(5): one finger on two different notes', 'LH G2(5) C2(5): one finger on two different notes', 'LH D2(5): finger 5 in the middle of the run']
+
+hanon: 80 staves with a fault
+   exercise.hanon.01.right 16 ['RH A4(5): finger 5 in the middle of the run', 'RH B4(5): finger 5 in the middle of the run', 'RH F6(5): finger 5 in the middle of the run']
+   exercise.hanon.01.left 12 ['LH C3(5): finger 5 in the middle of the run', 'LH D3(5): finger 5 in the middle of the run', 'LH E3(5): finger 5 in the middle of the run']
+   exercise.hanon.01.both 16 ['RH A4(5): finger 5 in the middle of the run', 'RH B4(5): finger 5 in the middle of the run', 'RH F6(5): finger 5 in the middle of the run']
+   exercise.hanon.01.both 12 ['LH C3(5): finger 5 in the middle of the run', 'LH D3(5): finger 5 in the middle of the run', 'LH E3(5): finger 5 in the middle of the run']
+
+ii-v-i: 12 staves with a fault
+   exercise.ii-v-i.c 3 ['LH D2(5) G2(5): one finger on two different notes', 'LH G2(5) C2(5): one finger on two different notes', 'LH D2(5): finger 5 in the middle of the run']
+   exercise.ii-v-i.d-flat 3 ['LH E-2(5) A-2(5): one finger on two different notes', 'LH A-2(5) D-2(5): one finger on two different notes', 'LH E-2(5): finger 5 in the middle of the run']
+   exercise.ii-v-i.d 3 ['LH E2(5) A2(5): one finger on two different notes', 'LH A2(5) D2(5): one finger on two different notes', 'LH E2(5): finger 5 in the middle of the run']
+   exercise.ii-v-i.e-flat 3 ['LH F2(5) B-2(5): one finger on two different notes', 'LH B-2(5) E-2(5): one finger on two different notes', 'LH F2(5): finger 5 in the middle of the run']
+
+intro: 10 staves with a fault
+   exercise.intro.c.4bar 2 ['RH G4(5): finger 5 in the middle of the run', 'RH D5(5): finger 5 in the middle of the run']
+   exercise.intro.c.4bar 5 ['LH C2(5) G2(5): one finger on two different notes', 'LH G2(5) A2(5): one finger on two different notes', 'LH A2(5) F2(5): one finger on two different notes']
+   exercise.intro.g.4bar 2 ['RH A4(5): finger 5 in the middle of the run', 'RH B4(5): finger 5 in the middle of the run']
+   exercise.intro.g.4bar 5 ['LH G2(5) D2(5): one finger on two different notes', 'LH D2(5) E2(5): one finger on two different notes', 'LH E2(5) C2(5): one finger on two different notes']
+
+latin-groove: 5 staves with a fault
+   exercise.latin-groove.c.son-3-2 4 ['LH F2(5): finger 5 in the middle of the run', 'LH F2(5): finger 5 in the middle of the run', 'LH F2(5): finger 5 in the middle of the run']
+   exercise.latin-groove.d.son-3-2 4 ['LH G2(5): finger 5 in the middle of the run', 'LH G2(5): finger 5 in the middle of the run', 'LH G2(5): finger 5 in the middle of the run']
+   exercise.latin-groove.g.son-3-2 4 ['LH G2(5): finger 5 in the middle of the run', 'LH G2(5): finger 5 in the middle of the run', 'LH G2(5): finger 5 in the middle of the run']
+   exercise.latin-groove.a.son-3-2 4 ['LH A2(5): finger 5 in the middle of the run', 'LH A2(5): finger 5 in the middle of the run', 'LH A2(5): finger 5 in the middle of the run']
+
+loop4: 24 staves with a fault
+   exercise.loop4.c.root 5 ['LH C2(5) G2(5): one finger on two different notes', 'LH G2(5) A2(5): one finger on two different notes', 'LH A2(5) F2(5): one finger on two different notes']
+   exercise.loop4.c.inversions 5 ['LH C2(5) G2(5): one finger on two different notes', 'LH G2(5) A2(5): one finger on two different notes', 'LH A2(5) F2(5): one finger on two different notes']
+   exercise.loop4.d-flat.root 5 ['LH D-2(5) A-2(5): one finger on two different notes', 'LH A-2(5) B-2(5): one finger on two different notes', 'LH B-2(5) G-2(5): one finger on two different notes']
+   exercise.loop4.d-flat.inversions 5 ['LH D-2(5) A-2(5): one finger on two different notes', 'LH A-2(5) B-2(5): one finger on two different notes', 'LH B-2(5) G-2(5): one finger on two different notes']
+
+meter: 1 staves with a fault
+   exercise.meter.12-8 10 ['LH F2(5): finger 5 in the middle of the run', 'LH F2(5): finger 5 in the middle of the run', 'LH F2(5): finger 5 in the middle of the run']
+
+oompah: 8 staves with a fault
+   exercise.oompah.c.octave 12 ['LH C2(5) G2(5): one finger on two different notes', 'LH G2(5) F2(5): one finger on two different notes', 'LH F2(5) C3(5): one finger on two different notes']
+   exercise.oompah.c.tenth 12 ['LH C2(5) G2(5): one finger on two different notes', 'LH G2(5) F2(5): one finger on two different notes', 'LH F2(5) C3(5): one finger on two different notes']
+   exercise.oompah.f.octave 13 ['LH F2(5) C3(5): one finger on two different notes', 'LH C3(5) B-2(5): one finger on two different notes', 'LH B-2(5) F3(5): one finger on two different notes']
+   exercise.oompah.f.tenth 13 ['LH F2(5) C3(5): one finger on two different notes', 'LH C3(5) B-2(5): one finger on two different notes', 'LH B-2(5) F3(5): one finger on two different notes']
+
+open-voicing: 16 staves with a fault
+   exercise.open-voicing.c.quartal 4 ['LH C2(5) F2(5): one finger on two different notes', 'LH F2(5) G2(5): one finger on two different notes', 'LH G2(5) C2(5): one finger on two different notes']
+   exercise.open-voicing.c.sus2 4 ['LH C2(5) F2(5): one finger on two different notes', 'LH F2(5) G2(5): one finger on two different notes', 'LH G2(5) C2(5): one finger on two different notes']
+   exercise.open-voicing.c.sus4 4 ['LH C2(5) F2(5): one finger on two different notes', 'LH F2(5) G2(5): one finger on two different notes', 'LH G2(5) C2(5): one finger on two different notes']
+   exercise.open-voicing.c.add9 4 ['LH C2(5) F2(5): one finger on two different notes', 'LH F2(5) G2(5): one finger on two different notes', 'LH G2(5) C2(5): one finger on two different notes']
+
+passing-chord: 4 staves with a fault
+   exercise.passing-chord.c 8 ['LH C2(5) E-2(5): one finger on two different notes', 'LH E-2(5) D2(5): one finger on two different notes', 'LH D2(5) A-2(5): one finger on two different notes']
+   exercise.passing-chord.f 9 ['LH F2(5) G#2(5): one finger on two different notes', 'LH G#2(5) G2(5): one finger on two different notes', 'LH G2(5) D-2(5): one finger on two different notes']
+   exercise.passing-chord.b-flat 8 ['LH B-2(5) C#2(5): one finger on two different notes', 'LH C#2(5) C2(5): one finger on two different notes', 'LH C2(5) F#2(5): one finger on two different notes']
+   exercise.passing-chord.e-flat 8 ['LH E-2(5) F#2(5): one finger on two different notes', 'LH F#2(5) F2(5): one finger on two different notes', 'LH F2(5) B2(5): one finger on two different notes']
+
+pedal: 4 staves with a fault
+   exercise.pedal.half-pedal.c 5 ['RH G5(5) A5(5): one finger on two different notes', 'RH A5(5) G5(5): one finger on two different notes', 'RH G5(5) E5(5): one finger on two different notes']
+   exercise.pedal.half-pedal.g 5 ['RH D6(5) E6(5): one finger on two different notes', 'RH E6(5) D6(5): one finger on two different notes', 'RH D6(5) B5(5): one finger on two different notes']
+   exercise.pedal.half-pedal.f 5 ['RH C6(5) D6(5): one finger on two different notes', 'RH D6(5) C6(5): one finger on two different notes', 'RH C6(5) A5(5): one finger on two different notes']
+   exercise.pedal.half-pedal.a 5 ['RH E6(5) F#6(5): one finger on two different notes', 'RH F#6(5) E6(5): one finger on two different notes', 'RH E6(5) C#6(5): one finger on two different notes']
+
+position-shift: 5 staves with a fault
+   exercise.position-shift.c.left 1 ['LH G3(5): finger 5 in the middle of the run']
+   exercise.position-shift.g.left 1 ['LH D4(5): finger 5 in the middle of the run']
+   exercise.position-shift.f.left 1 ['LH C4(5): finger 5 in the middle of the run']
+   exercise.position-shift.d.left 1 ['LH A3(5): finger 5 in the middle of the run']
+
+rotation: 6 staves with a fault
+   exercise.rotation.c.left 4 ['LH F3(5): finger 5 in the middle of the run', 'LH F3(5): finger 5 in the middle of the run', 'LH G3(5): finger 5 in the middle of the run']
+   exercise.rotation.c.right 12 ['RH G4(5): finger 5 in the middle of the run', 'RH G4(5): finger 5 in the middle of the run', 'RH G4(5): finger 5 in the middle of the run']
+   exercise.rotation.g.left 4 ['LH C4(5): finger 5 in the middle of the run', 'LH C4(5): finger 5 in the middle of the run', 'LH D4(5): finger 5 in the middle of the run']
+   exercise.rotation.g.right 12 ['RH D5(5): finger 5 in the middle of the run', 'RH D5(5): finger 5 in the middle of the run', 'RH D5(5): finger 5 in the middle of the run']
+
+scale: 4 staves with a fault
+   exercise.scale.b-flat-harmonic-minor.2oct.similar.both.2 2 ['RH A5(3) B-5(2): the hand crosses itself away from the thumb', 'RH B-5(2) A5(3): the hand crosses itself away from the thumb']
+   exercise.scale.b-flat-melodic-minor.2oct.similar.both.2 2 ['RH A5(3) B-5(2): the hand crosses itself away from the thumb', 'RH B-5(2) A-5(3): the hand crosses itself away from the thumb']
+   exercise.scale.b-flat-natural-minor.2oct.similar.both.2 2 ['RH A-5(3) B-5(2): the hand crosses itself away from the thumb', 'RH B-5(2) A-5(3): the hand crosses itself away from the thumb']
+   exercise.scale.b-flat-harmonic-minor.3oct.similar.both.2 4 ['RH A5(3) B-5(2): the hand crosses itself away from the thumb', 'RH A6(3) B-6(2): the hand crosses itself away from the thumb', 'RH B-6(2) A6(3): the hand crosses itself away from the thumb']
+
+secondary-rag: 1 staves with a fault
+   exercise.secondary-rag.c.4bar 11 ['LH C2(5) G2(5): one finger on two different notes', 'LH G2(5) F2(5): one finger on two different notes', 'LH F2(5) C3(5): one finger on two different notes']
+
+slash-bass: 4 staves with a fault
+   exercise.slash-bass.c 13 ['LH C3(5) B2(5): one finger on two different notes', 'LH B2(5) A2(5): one finger on two different notes', 'LH A2(5) G2(5): one finger on two different notes']
+   exercise.slash-bass.f 13 ['LH F3(5) E3(5): one finger on two different notes', 'LH E3(5) D3(5): one finger on two different notes', 'LH D3(5) C3(5): one finger on two different notes']
+   exercise.slash-bass.b-flat 13 ['LH B-3(5) A3(5): one finger on two different notes', 'LH A3(5) G3(5): one finger on two different notes', 'LH G3(5) F3(5): one finger on two different notes']
+   exercise.slash-bass.e-flat 13 ['LH E-3(5) D3(5): one finger on two different notes', 'LH D3(5) C3(5): one finger on two different notes', 'LH C3(5) B-2(5): one finger on two different notes']
+
+stride: 4 staves with a fault
+   exercise.stride.c 2 ['LH G2(5): finger 5 in the middle of the run', 'LH F2(5): finger 5 in the middle of the run']
+   exercise.stride.f 3 ['LH F2(5): finger 5 in the middle of the run', 'LH F2(5): finger 5 in the middle of the run', 'LH B-2(5): finger 5 in the middle of the run']
+   exercise.stride.b-flat 3 ['LH B-2(5): finger 5 in the middle of the run', 'LH F2(5): finger 5 in the middle of the run', 'LH B-2(5): finger 5 in the middle of the run']
+   exercise.stride.e-flat 2 ['LH B-2(5): finger 5 in the middle of the run', 'LH A-2(5): finger 5 in the middle of the run']
+
+tremolo: 6 staves with a fault
+   exercise.tremolo.c.right 12 ['RH C5(5): finger 5 in the middle of the run', 'RH C5(5): finger 5 in the middle of the run', 'RH C5(5): finger 5 in the middle of the run']
+   exercise.tremolo.c.left 12 ['LH D2(5): finger 5 in the middle of the run', 'LH D2(5): finger 5 in the middle of the run', 'LH D2(5): finger 5 in the middle of the run']
+   exercise.tremolo.g.right 12 ['RH G5(5): finger 5 in the middle of the run', 'RH G5(5): finger 5 in the middle of the run', 'RH G5(5): finger 5 in the middle of the run']
+   exercise.tremolo.g.left 12 ['LH A2(5): finger 5 in the middle of the run', 'LH A2(5): finger 5 in the middle of the run', 'LH A2(5): finger 5 in the middle of the run']
+
+tritone-sub: 4 staves with a fault
+   exercise.tritone-sub.c 3 ['LH D2(5) D-2(5): one finger on two different notes', 'LH D-2(5) C2(5): one finger on two different notes', 'LH D-2(5): finger 5 in the middle of the run']
+   exercise.tritone-sub.f 3 ['LH G2(5) G-2(5): one finger on two different notes', 'LH G-2(5) F2(5): one finger on two different notes', 'LH G-2(5): finger 5 in the middle of the run']
+   exercise.tritone-sub.b-flat 3 ['LH C2(5) B2(5): one finger on two different notes', 'LH B2(5) B-2(5): one finger on two different notes', 'LH B-2(5): finger 5 in the middle of the run']
+   exercise.tritone-sub.e-flat 3 ['LH F2(5) E2(5): one finger on two different notes', 'LH E2(5) E-2(5): one finger on two different notes', 'LH E2(5): finger 5 in the middle of the run']
+
+tumbao: 5 staves with a fault
+   exercise.tumbao.c 4 ['LH F2(5): finger 5 in the middle of the run', 'LH F2(5): finger 5 in the middle of the run', 'LH F2(5): finger 5 in the middle of the run']
+   exercise.tumbao.d 4 ['LH G2(5): finger 5 in the middle of the run', 'LH G2(5): finger 5 in the middle of the run', 'LH G2(5): finger 5 in the middle of the run']
+   exercise.tumbao.g 4 ['LH G2(5): finger 5 in the middle of the run', 'LH G2(5): finger 5 in the middle of the run', 'LH G2(5): finger 5 in the middle of the run']
+   exercise.tumbao.a 4 ['LH A2(5): finger 5 in the middle of the run', 'LH A2(5): finger 5 in the middle of the run', 'LH A2(5): finger 5 in the middle of the run']
+
+turnaround: 12 staves with a fault
+   exercise.turnaround.c.i-vi-ii-v 5 ['LH C2(5) A2(5): one finger on two different notes', 'LH A2(5) D2(5): one finger on two different notes', 'LH D2(5) G2(5): one finger on two different notes']
+   exercise.turnaround.c.iii-vi-ii-v 5 ['LH E2(5) A2(5): one finger on two different notes', 'LH A2(5) D2(5): one finger on two different notes', 'LH D2(5) G2(5): one finger on two different notes']
+   exercise.turnaround.c.i-vi-ii-v.intro 5 ['LH C2(5) A2(5): one finger on two different notes', 'LH A2(5) D2(5): one finger on two different notes', 'LH D2(5) G2(5): one finger on two different notes']
+   exercise.turnaround.f.i-vi-ii-v 5 ['LH F2(5) D2(5): one finger on two different notes', 'LH D2(5) G2(5): one finger on two different notes', 'LH G2(5) C2(5): one finger on two different notes']
+
+voicing: 5 staves with a fault
+   exercise.voicing.c 4 ['LH C2(5) D2(5): one finger on two different notes', 'LH D2(5) E2(5): one finger on two different notes', 'LH E2(5) C2(5): one finger on two different notes']
+   exercise.voicing.g 4 ['LH G2(5) A2(5): one finger on two different notes', 'LH A2(5) B2(5): one finger on two different notes', 'LH B2(5) G2(5): one finger on two different notes']
+   exercise.voicing.f 4 ['LH F2(5) G2(5): one finger on two different notes', 'LH G2(5) A2(5): one finger on two different notes', 'LH A2(5) F2(5): one finger on two different notes']
+   exercise.voicing.d 4 ['LH D2(5) E2(5): one finger on two different notes', 'LH E2(5) F#2(5): one finger on two different notes', 'LH F#2(5) D2(5): one finger on two different notes']
+
+voicing7: 48 staves with a fault
+   exercise.voicing7.c.close 3 ['LH D2(5) G2(5): one finger on two different notes', 'LH G2(5) C2(5): one finger on two different notes', 'LH D2(5): finger 5 in the middle of the run']
+   exercise.voicing7.c.shell 3 ['LH D2(5) G2(5): one finger on two different notes', 'LH G2(5) C2(5): one finger on two different notes', 'LH D2(5): finger 5 in the middle of the run']
+   exercise.voicing7.c.rootless-a 3 ['LH D2(5) G2(5): one finger on two different notes', 'LH G2(5) C2(5): one finger on two different notes', 'LH D2(5): finger 5 in the middle of the run']
+   exercise.voicing7.c.rootless-b 3 ['LH D2(5) G2(5): one finger on two different notes', 'LH G2(5) C2(5): one finger on two different notes', 'LH D2(5): finger 5 in the middle of the run']
+
+walking-bass: 28 staves with a fault
+   exercise.walking-bass.c.blues 25 ['LH B1(5) C2(5): one finger on two different notes', 'LH B1(5) C2(5): one finger on two different notes', 'LH B1(5) C2(5): one finger on two different notes']
+   exercise.walking-bass.c.blues.intro 25 ['LH B1(5) C2(5): one finger on two different notes', 'LH B1(5) C2(5): one finger on two different notes', 'LH B1(5) C2(5): one finger on two different notes']
+   exercise.walking-bass.c.ii-v-i 7 ['LH F#2(2) G2(5): the hand crosses itself away from the thumb', 'LH B1(5) C2(5): one finger on two different notes', 'LH B1(5) C2(5): one finger on two different notes']
+   exercise.walking-bass.c.ii-v-i.intro 7 ['LH F#2(2) G2(5): the hand crosses itself away from the thumb', 'LH B1(5) C2(5): one finger on two different notes', 'LH B1(5) C2(5): one finger on two different notes']

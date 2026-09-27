@@ -25,3 +25,6 @@ If a correct fingering for a shape needs a judgement you cannot source and canno
 ## Report
 
 Judgement first: what a learner now sees on the two-octave left-hand C major arpeggio and on an A♭ major arpeggio, and bar 12 of *Ode to Joy*; then Done / Not done / Follow-ups / Questions / Files; the fingering table; the red lines; exit codes; unverified beside what passes (which fingerings an expert must still confirm).
+
+**Delivered 2026-09-27**, Entry 84: one sourced chart and one construction for both arpeggio makers, spelling by interval, the Ode bar, the two comments, 4.3's warning gone; the mutation census in `test_generator_invariants.py` not extended (not in the files; the equivalent five mutations live in the fingering tests); the same fault found in four B♭ minor scales and the broken sevenths' spelling (G43, G44).
+
