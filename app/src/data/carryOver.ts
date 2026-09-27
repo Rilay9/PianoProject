@@ -7,8 +7,9 @@
  * until T37 (2026-09-25), a run opened from no rung until C1 (2026-09-26).
  * So a learner's rungs from then cannot be re-derived from evidence: nothing
  * recorded which rung a run was for. Dropping them would put a learner who was
- * working on 2.2 back at 0.1. This carries them over **once** per device, the
- * first time C5's evidence job runs, and never again:
+ * working on 2.2 back at 0.1. This carries them over **once** per device, on
+ * the first read of the plan (`planStore`, since L98: it ran on C5's evidence
+ * job, after screens had read the plan), and never again:
  *
  * - it reads the old record the way the old rule read it (the counts each rung
  *   carried at C5's start, frozen below, over the items marked passed), walks

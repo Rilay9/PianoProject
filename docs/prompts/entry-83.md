@@ -110,3 +110,46 @@ None open.
 ## Files
 
 `app/src/data/skillsStore.ts` (rewritten: the migration, the exposures, the screens' readings), `app/src/ui/screens/SkillsScreen.ts`, `app/src/ui/screens/ProgressScreen.ts` (the Skills section), `app/src/ui/help.ts` (`SKILL_TEXT`, `skillStateWords`, `notShownWords`, `skillMoveWords`; `ladderWords`), `app/src/ui/screens/DrillScreen.ts` (L52); outside the list, each in the deviations: `app/src/ui/screens/LessonScreen.ts`, `app/src/data/backup.ts`, `app/src/ui/screens/SettingsScreen.ts`, `app/src/data/progressStore.ts`, `app/src/data/db.ts`, `app/src/evidence/ladder.ts` (comment). Tests: `oneSkillState`, `rustyIsNotACalendar`, `unmeasuredConceptsSaySo`, `legacySkillsAreExposures`, `competenceSurvivesPruning`, `helpers/skillEvidence.ts` (new); `tests/e2e/competence.spec.ts` (new); `skillsReadTheLadder`, `legacyStorage`, `sessionRetention`, `backingTrackSheet`, `drillWalkthrough`, `help`, `backup`, `dbUpgrades`, e2e `plan`; `skillsFromPractice` (deleted). Docs: `docs/04-ui-spec.md` §3a and §6, `docs/02-curriculum.md` Part G, `docs/08-test-map.md`, `docs/01-architecture.md` (one paragraph), `docs/05-score-follow-engine.md` (two sentences). Scratch: `ENTRY.md`, `reds/`, `runs/`, `pictures/` (the pictures, `facts-*.json`, the specs and probes), `committed/` (the snapshot), `tools/` (the splice scripts), `stage/`.
+
+
+#### Fix-forward (L98, the first-open race)
+
+**Judgement.** Fixed at the store, and seen on the glass. On the first open of a database made before C5 — the owner-shaped history, restored through the app's own backup import, 342 × 740 — the build C7 left read *Working on Stage 0 · Your instrument and your body* on Today and *12 of 283 skills · stage 0* on Skills, twice, and the right place only after a reload; the fixed build reads *Working on Stage 2 · Eighth notes and counting “1 and 2 and”* on Today and *52 of 283 skills · stages 1 and 2* on Skills from the first draw, in both probes (`reds/L98-probe*-before.txt`, `runs/L98-probe*-after.txt`, the same probe spec before and after). No screen was changed: no retry, no reload, no redraw on a new event.
+
+**Mechanism, confirmed at the lines** (`planStore.ts` as committed at 65a608b): `getPlan()` read the row asynchronously and assigned whatever came back to the shared `memory`, one database read per caller while `memory` was empty, so a read issued before `updatePlan` wrote could land after it and put the old row back, and every reader after it got the old row; and the one-time carry-over ran on the evidence job after the first screen, as an ordinary `updatePlan`, so a screen that had read the plan first kept the uncarried row and nothing told it. The first mechanism is the stale overwrite the reviewer named; the second is why Today and Skills could be drawn from the pre-carry-over row at all. (The probe's page also had a second context — the page before the reload — whose job carried over after the new page had read; under the fix the new page's own first read carries over, so that interleaving is closed too.)
+
+**Change** (`planStore.ts`, the reviewer's first option): the carry-over is part of the authoritative plan read.
+- **One read.** Concurrent first reads share one promise (`loading`); a second first read no longer goes to the database on its own.
+- **The carry-over inside it** (`carryIfDue`): while the version 7 upgrade's flag is set, the first read computes the carried rungs (`carriedOver`, the old counts frozen, as before), stores the row, clears the flag and only then answers anyone. Where the curriculum cannot be read the row is returned as stored and the flag left for the next read or the job.
+- **Nothing stale can publish** (`generation`): `updatePlan` and `forgetCachedPlan` move a counter; a read that began before the move answers its own caller and publishes nothing.
+- **Writes one at a time** (`serialised`): `updatePlan` and `carryOverOnce` run in order behind the read.
+- **`carryOverOnce`** (the evidence job's step) now finds the read has done it: it reports what the read carried, once, then 0; where the read could not load the curriculum it carries over itself, as a write in line. Its callers are unchanged.
+
+**Red lines** (`firstOpenReadsTheCarriedPlan.test.ts`, all six on the committed `planStore.ts`; `reds/L98-firstOpen-on-committed.txt`):
+- `a second first read went to the database on its own: expected { id: 'current', stage: +0, …(2) } to be { id: 'current', stage: +0, …(2) }` (two reads, two copies);
+- `a stale read overwrote what updatePlan wrote: expected '1.1' to be '2.2'`;
+- `the row read before the restore came back after it: expected '1.1' to be '3.1'` (a read landing after `forgetCachedPlan`; the order is forced with microtask ticks so the read reaches the database before the forget and lands after it);
+- the first read of a database made before C5: `first.carriedOver` undefined (the carry-over was not part of the read);
+- `Today drew from the plan before the carry-over: expected '0.1' to be '2.2'` (Today mounted, the job's `carryOverOnce` run beside it, no reload);
+- `Skills opened on the plan before the carry-over: expected '12 of 283 skills · stage 0' to match /stages 1 and 2$/`.
+One expectation of my own was wrong on the first green run and corrected, not the code: the job's step after the read returns what the read carried (10), once, then 0 — the test had asserted 0 at once.
+
+**Tests, added to the table**
+
+| test | class | the assumption the old assertion encoded | why the new one reads the learner-facing outcome |
+|---|---|---|---|
+| `firstOpenReadsTheCarriedPlan` (6) | add | — | one read; no stale publish after `updatePlan` or a forget; the carry-over part of the first read and repeated reads the same row; Today and Skills on the first open drawn from the carried plan, the job's step running beside them, no reload |
+| `carryOver` (2 store cases), `legacyStorage` (the carry-over case and the screens over a pre-C5 snapshot), `evidenceJobRecomputes`, `evidenceJobReport`, `lessonPageReadsTheEvidence`, `planTracksSheet`, `assignmentIsNotEvidence`, `backup` | preserve | — | green, no assertion changed: `carryOverOnce` still returns 10 the first time and 0 after where it is the first to read |
+
+**Runs (unpiped; exit codes read)**
+- `npx tsc -b` 0; `npm run lint` 0 (twice each).
+- `npx vitest run`: 1, twice — 6,045 passed, 6 skipped, 2 failed, both `sightReadingPromises` › *levels 6 and 7 write a rest inside a triplet*, `Test timed out in 5000ms`; that file alone: 0, 51 passed. It does not import the plan store. Both suite runs took several times the length of C7's final run, while another session's content build and content tests ran from its own worktree (`.claude/worktrees/agent-a5a84be9db88bb1de`, `tools/content/build.py --offline`, `score_checks.py`, then `unittest discover`): load, not the change. Third run: 1, the same two, the same way. **The discriminating run:** the whole suite with the committed `planStore.ts` put back and the new test file set aside (both restored afterwards, byte for byte): 1 — the same two `sightReadingPromises` cases timed out, 6,039 passed; so they fail with or without L98, under that load.
+- `npm run build:app` 0 (no preview on 4173; an older `vite preview` from another process sits on 4174 and was left alone).
+- Playwright, `vite preview --port 4173 --strictPort`, two workers, one config: `first-day`, `setup`, `competence`, `plan`, `plan.hierarchy`, `today`, `carry-overs`, `lesson-flow`, `placement-branches`, `modes-placement`, `progress`, `empty-states`, `settings-rules`, `mounted-once`, `offline`, `app-shell`, `doors` — 1: 145 passed, 2 skipped, 1 failed, `offline` › *the whole app works with the network off after one online launch* (`#diag-offline` still *Checking…* at 30 s; the Diagnostics screen reads no plan); `offline.spec.ts` alone: 0, 7 passed. No e2e case exercises a database made before C5 (searched `tests/e2e` and `tests/tour` for the flag and `carriedOver`); the first-open probes above are that case, on the glass.
+- The preview I started is stopped; port 4173 is free.
+
+**Files.** `app/src/data/planStore.ts`; `app/tests/unit/firstOpenReadsTheCarriedPlan.test.ts` (new); comments made false by the change: `app/src/data/db.ts` (`CARRY_OVER_DUE_KEY`), `app/src/data/carryOver.ts` (the module note); `docs/04-ui-spec.md` §3f (the carry-over runs in the first read of the plan, and why), `docs/08-test-map.md` (the C7 row and the unit list).
+
+**Not done / Follow-ups.** The soft-cap caveat on `holdsEvidence` (L99), U64 and U65 are untouched, as the review says. `recordRungWord` still reads the plan before its `updatePlan` rather than inside the serialised write, so two words given in the same instant could lose one (P3; not the race the review named, and not reached by any screen I know of).
+
+**Unverified.** Nothing heard. The probes are desktop Chromium at 342 px on rows in the owner's shape, not his phone or his rows. The integration cases run in jsdom over fake IndexedDB.

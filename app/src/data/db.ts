@@ -46,8 +46,9 @@ export const DB_VERSION = 7;
 
 /**
  * Set in the `settings` store by the version 7 upgrade of a database made
- * before C5, and cleared by `planStore.carryOverOnce` once the learner's old
- * rungs have been carried over. Never set on a database C5 made.
+ * before C5, and cleared by the plan store once the learner's old rungs have
+ * been carried over — by the first read of the plan since L98. Never set on a
+ * database C5 made.
  */
 export const CARRY_OVER_DUE_KEY = 'pianopath.carryOverDue';
 

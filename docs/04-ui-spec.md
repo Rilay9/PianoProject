@@ -723,9 +723,11 @@ is the lesson's rule is *not judged by the app* and moves on by the word alone.
 then until T37 (2026-09-25) every run named the first rung listing its item, and until C1
 (2026-09-26) a run opened from no rung — every Today card among them — still did. So a
 learner's rungs from then cannot be re-derived from evidence. On a database made before C5 (its version 7 upgrade marks it), the
-evidence job carries over once the rungs the old rule had done **before the rung it was
+first read of the plan carries over once the rungs the old rule had done **before the rung it was
 recommending** (`data/carryOver.ts`, with the old counts frozen): shown as *done before*, set
-aside, never met. A rung the old rule credited only because a pass there counted for every
+aside, never met. Since L98 it is part of that read (`planStore.getPlan`), so no screen is drawn
+from the plan before it: it ran on the evidence job after the first screen, and Today and Skills,
+drawn from the row they had already read, showed the uncarried plan until a reload. A rung the old rule credited only because a pass there counted for every
 rung listing the item (the Petzold at 3.4 completing 4.4, 4.6 and 4.7) is not carried.
 
 **Plan.** A rung's badge is `rungBadge`; a rung not started wears none. A stage's line counts
