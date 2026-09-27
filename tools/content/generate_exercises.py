@@ -118,6 +118,60 @@ HARMONIC_MINOR_FINGERING: dict[str, tuple[list[int], list[int]]] = {
     "B-": ([2, 1, 2, 3, 1, 2, 3, 4], [2, 1, 3, 2, 1, 4, 3, 2]),
     "E-": ([3, 1, 2, 3, 4, 1, 2, 3], [2, 1, 4, 3, 2, 1, 3, 2]),
 }
+#: The natural minor's own fingering, one octave ascending, tonic to tonic.
+#:
+#: A table of its own because the natural minor's seventh is a semitone below
+#: the harmonic minor's, and a finger that suits one need not suit the other.
+#: `make_scale` used to finger all three minor forms from the table above, and
+#: in G♯ minor that table's left thumb falls on the raised seventh, F𝄪, a white
+#: key; the natural seventh is F♯, a black one, so the natural scale both ways
+#: and the melodic scale coming down put the left thumb on F♯ (G48).
+#:
+#: The source is where Clementi's thumbs fall on the way *down*. Every minor run
+#: in his Op. 42 is a melodic minor, raised going up and natural coming down, so
+#: his descent is a print of the natural minor's fingering in every key. In
+#: eleven keys, and in G♯ minor's right hand, his thumbs come down where the
+#: table above puts them on those notes, so those rows are the same. G♯ minor's
+#: left hand is the one that differs: he prints the thumb on E and on B coming
+#: down, never on F♯, which read upwards is 3-2-1-3-2-1-4-3, and Robert Kelley's
+#: "Scale Fingering Chart for Piano, Organ, or Electric Keyboard"
+#: (https://robertkelleyphd.com/home/keyboard-scale-fingering-chart/) gives G♯
+#: minor's natural left hand as 32132143 against 32143213 for the harmonic and
+#: the (ascending) melodic columns.
+NATURAL_MINOR_FINGERING: dict[str, tuple[list[int], list[int]]] = {
+    "A":  ([1, 2, 3, 1, 2, 3, 4, 5], [5, 4, 3, 2, 1, 3, 2, 1]),
+    "E":  ([1, 2, 3, 1, 2, 3, 4, 5], [5, 4, 3, 2, 1, 3, 2, 1]),
+    "D":  ([1, 2, 3, 1, 2, 3, 4, 5], [5, 4, 3, 2, 1, 3, 2, 1]),
+    "G":  ([1, 2, 3, 1, 2, 3, 4, 5], [5, 4, 3, 2, 1, 3, 2, 1]),
+    "C":  ([1, 2, 3, 1, 2, 3, 4, 5], [5, 4, 3, 2, 1, 3, 2, 1]),
+    "B":  ([1, 2, 3, 1, 2, 3, 4, 5], [4, 3, 2, 1, 4, 3, 2, 1]),
+    "F":  ([1, 2, 3, 4, 1, 2, 3, 4], [5, 4, 3, 2, 1, 3, 2, 1]),
+    "F#": ([2, 3, 1, 2, 3, 4, 1, 2], [4, 3, 2, 1, 3, 2, 1, 4]),
+    "C#": ([2, 3, 1, 2, 3, 4, 1, 2], [3, 2, 1, 4, 3, 2, 1, 3]),
+    "G#": ([3, 4, 1, 2, 3, 1, 2, 3], [3, 2, 1, 3, 2, 1, 4, 3]),
+    "B-": ([2, 1, 2, 3, 1, 2, 3, 4], [2, 1, 3, 2, 1, 4, 3, 2]),
+    "E-": ([3, 1, 2, 3, 4, 1, 2, 3], [2, 1, 4, 3, 2, 1, 3, 2]),
+}
+#: The four minor forms, each with the table that fingers it.
+#:
+#: The melodic minor is two forms, one each way. Going up it raises the sixth
+#: and seventh, and its table is the one headed harmonic above: Clementi's runs
+#: go up in the melodic form, so his ascent — what `test_fingering.py` checks
+#: that table against — is this form's print, and Kelley's melodic (ascending)
+#: column agrees for G♯ minor. Coming down it takes the natural minor's notes,
+#: so it takes the natural minor's fingering, which is Clementi's descent itself.
+MINOR_FINGERING: dict[str, dict[str, tuple[list[int], list[int]]]] = {
+    "harmonic": HARMONIC_MINOR_FINGERING,
+    "natural": NATURAL_MINOR_FINGERING,
+    "melodic ascending": HARMONIC_MINOR_FINGERING,
+    "melodic descending": NATURAL_MINOR_FINGERING,
+}
+#: Which form each minor scale takes going up and coming down, by `ScaleSpec.mode`.
+MINOR_SCALE_FORMS: dict[str, tuple[str, str]] = {
+    "harmonic": ("harmonic", "harmonic"),
+    "natural": ("natural", "natural"),
+    "melodic": ("melodic ascending", "melodic descending"),
+}
 #: The right hand's finger on a tonic *inside* a run, where it is not the
 #: finger the one-octave table starts on (`expand_fingering`'s `join`).
 #:
@@ -136,8 +190,8 @@ HARMONIC_MINOR_FINGERING: dict[str, tuple[list[int], list[int]]] = {
 #: Read against the right hand of each of Clementi's twenty-four two-octave
 #: runs, no other key's inner tonic differs from its table's first finger.
 SCALE_JOIN_RH: dict[tuple[str, str], int] = {
-    # (tonic, table): "major" is MAJOR_FINGERING, "minor" HARMONIC_MINOR_FINGERING,
-    # which the melodic and natural forms share.
+    # (tonic, table): "major" is MAJOR_FINGERING, "minor" each of the four minor
+    # forms' tables (`MINOR_FINGERING`), whose B♭ minor right hands are one row.
     ("B-", "minor"): 4,
 }
 #: The twelve major and twelve minor keys, spelled the way they are played.
@@ -908,26 +962,33 @@ class ScaleSpec:
 def make_scale(spec: ScaleSpec) -> tuple[stream.Score, dict]:
     if spec.mode == "major":
         sc_obj = scale.MajorScale(spec.tonic)
-        fing = MAJOR_FINGERING.get(spec.tonic)
         ks = key.Key(spec.tonic, "major")
         mode_label = "major"
     elif spec.mode == "harmonic":
         sc_obj = scale.HarmonicMinorScale(spec.tonic)
-        fing = HARMONIC_MINOR_FINGERING.get(spec.tonic)
         ks = key.Key(spec.tonic.lower(), "minor")
         mode_label = "harmonic minor"
     elif spec.mode == "melodic":
         sc_obj = scale.MelodicMinorScale(spec.tonic)
-        fing = HARMONIC_MINOR_FINGERING.get(spec.tonic)
         ks = key.Key(spec.tonic.lower(), "minor")
         mode_label = "melodic minor"
     elif spec.mode == "natural":
         sc_obj = scale.MinorScale(spec.tonic)
-        fing = HARMONIC_MINOR_FINGERING.get(spec.tonic)
         ks = key.Key(spec.tonic.lower(), "minor")
         mode_label = "natural minor"
     else:
         raise ValueError(spec.mode)
+    # One table going up and one coming down, each the fingering of the form the
+    # notes take that way: the same table both ways for the major and for the
+    # harmonic and natural minors, and for the melodic minor the raised form's
+    # going up and the natural minor's coming down (`MINOR_SCALE_FORMS`).
+    if spec.mode == "major":
+        fing_up = fing_down = MAJOR_FINGERING.get(spec.tonic)
+    else:
+        form_up, form_down = MINOR_SCALE_FORMS[spec.mode]
+        fing_up = MINOR_FINGERING[form_up].get(spec.tonic)
+        fing_down = MINOR_FINGERING[form_down].get(spec.tonic)
+    fingered = fing_up is not None and fing_down is not None
 
     title = f"{note_name(spec.tonic)} {mode_label} scale — {spec.octaves} oct, {spec.motion}, {spec.hands}"
     sc, rh, lh = grand_staff(title, spec.bpm, ks=ks)
@@ -955,14 +1016,15 @@ def make_scale(spec: ScaleSpec) -> tuple[stream.Score, dict]:
     lh_p = run(lh_start, "up" if spec.motion == "similar" else "down")
 
     rh_f = lh_f = None
-    if fing:
+    if fingered:
         join = SCALE_JOIN_RH.get((spec.tonic, "major" if spec.mode == "major" else "minor"))
-        rh_f = (expand_fingering(fing[0], spec.octaves, join=join)
-                + expand_fingering(fing[0], spec.octaves, ascending=False, join=join)[1:])
-        lh_asc = expand_fingering(fing[1], spec.octaves, hand="left")
-        lh_f = lh_asc + list(reversed(lh_asc))[1:]
+        rh_f = (expand_fingering(fing_up[0], spec.octaves, join=join)
+                + expand_fingering(fing_down[0], spec.octaves, ascending=False, join=join)[1:])
+        lh_up = expand_fingering(fing_up[1], spec.octaves, hand="left")
+        lh_down = expand_fingering(fing_down[1], spec.octaves, ascending=False, hand="left")
+        lh_f = lh_up + lh_down[1:]
         if spec.motion == "contrary":
-            lh_f = list(reversed(lh_asc)) + lh_asc[1:]
+            lh_f = lh_down + lh_up[1:]
 
     if spec.hands in ("both", "right"):
         add_notes(rh, rh_p, rh_f, spec.rhythm)
@@ -979,7 +1041,7 @@ def make_scale(spec: ScaleSpec) -> tuple[stream.Score, dict]:
                           ["scale", f"{note_name(spec.tonic)}-{mode_label}", spec.motion, f"hands:{spec.hands}"],
                           spec.hands, spec.bpm, "scale",
                           {"key": spec.tonic, "mode": spec.mode, "octaves": spec.octaves, "motion": spec.motion,
-                           "rhythm": spec.rhythm, "fingeringVerified": fing is not None},
+                           "rhythm": spec.rhythm, "fingeringVerified": fingered},
                           f"scores/generated/{item_id}.mxl")
     return sc, entry
 
@@ -1204,15 +1266,28 @@ def chromatic_finger(midi: int, first: bool, hand: str = "right") -> int:
     It is *not* what Clementi Op. 42 prints — his 1801 chromatic runs 1-2-3-4
     across the keys — and that is a deliberate departure from the chart the
     scale fingerings were verified against: the 1-3 shape is what every
-    modern method teaches and what the learner will see everywhere else.
+    modern method teaches and what the learner will see everywhere else. The
+    source is Margaret Starr McLain, *Class Piano* (Indiana University Press,
+    1974), chapter 9, "Chromatic Scale Fingering": the third finger on every
+    black key, the thumb on every single white key, 1 and 2 on each pair of
+    neighbouring white keys, and a figure from C to C that prints the right
+    hand's 2 on F and C and the left hand's on E and B.
+
+    The first note of a run may take the thumb only in the right hand. Its
+    second finger is on the *upper* white of a pair, so a run that starts there
+    starts without the pair's lower note and the thumb is free to begin it; the
+    left hand's is on the *lower* white, and the thumb is wanted on the very
+    next note. The exception was written for both hands, and every chromatic
+    scale from E began the left hand E(1) F(1), the thumb on two neighbouring
+    keys, where the book's figure has E(2) F(1) (G45).
     """
     pitch_class = midi % 12
     if pitch_class in BLACK_PITCH_CLASSES:
         return 3
     seconds = (4, 11) if hand == "left" else (5, 0)
     if pitch_class in seconds:
-        # Except at the very start, where the thumb begins the run.
-        return 1 if first else 2
+        # Except where the right hand starts the run, and the thumb begins it.
+        return 1 if first and hand != "left" else 2
     return 1
 
 
@@ -1609,18 +1684,19 @@ def make_broken_seventh(
         two_octaves = cell + [up(p, 12) for p in cell]
         return two_octaves + two_octaves
 
-    # The figure spans an octave and the hand stays over it, so the fingers run
-    # straight out and straight back: 1-2-3-4-5 in the right hand and 5-4-3-2-1
-    # in the left. What stood here put 5 on the seventh and 1 on the octave
-    # above it — the thumb to the *right* of the little finger — and the mirror
-    # of that in the left. `confirm_fingering` cannot see this one, because it
-    # is a melodic line rather than a chord, and a melodic rule would have to
-    # allow the thumb-under that every scale depends on.
-    # Only from a white root: from a black one the thumb would take the
-    # root, and the honest shape for those is not in any chart this file has.
-    fingered = not is_black_root(root)
-    rh_fingers = [1, 2, 3, 4, 5, 4, 3, 2] if fingered else None
-    lh_fingers = [5, 4, 3, 2, 1, 2, 3, 4] if fingered else None
+    # No fingering is printed, from any root, until a source gives one for this
+    # figure (G49). A printed finger number is a claim the learner reads as the
+    # fingering, whatever `fingeringVerified` says, and no screen reads the flag.
+    # The white roots printed 1-2-3-4-5-4-3-2 in the right hand and 5-4-3-2-1-2-3-4
+    # in the left, with the flag false: a hand stretched over the octave, which
+    # is this file's reasoning and not a source's. The search for one (T53c,
+    # inside a quarter of an hour) found none that fingers a seventh chord broken
+    # up to the octave and back. McLain's *Class Piano*, the source of the seventh
+    # arpeggios' fingering, gives arpeggios over two octaves, whose right hand
+    # puts the thumb on the octave and goes on; this figure turns there, so her
+    # rule does not say what it takes. The black roots already printed nothing.
+    fingered = False
+    rh_fingers = lh_fingers = None
     if hands in ("both", "right"):
         add_notes(rh, figure(pitch.Pitch(root + "3")), rh_fingers, 0.25)
     else:
@@ -1636,7 +1712,7 @@ def make_broken_seventh(
         item_id, title, level,
         ["broken-chord", "seventh-chord", f"{note_name(root)}-{label}", f"hands:{hands}"],
         hands, bpm, "broken-seventh",
-        {"key": root, "quality": quality, "fingeringVerified": False},
+        {"key": root, "quality": quality, "fingeringVerified": fingered},
         f"scores/generated/{item_id}.mxl",
     )
     return sc, entry
