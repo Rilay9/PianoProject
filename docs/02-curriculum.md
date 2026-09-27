@@ -812,7 +812,14 @@ printed fingers included.
 > (the add9) is recommended by no selector until its smaller-hand alternative reaches the learner
 > (D0 finding 5). Level orders eligible candidates and rescues nothing. The readiness floor is
 > `familiar`, the rule the repertoire slot already used; the brief's comparison with `introduced`
-> is in Entry 92.
+> is in Entry 92. **"Taught at or below the rung" is the rung's ancestry (E0a, 2026-09-27), never
+> the file's order:** a demand is taught at a rung when its `taughtAt` rung is the rung itself,
+> a rung it builds on through `prerequisites` followed back, or — the core path being walked in
+> order and a track opening once the spine reaches its stage — a core rung before it in
+> stage-and-unit order, for a track rung every core rung of an earlier stage
+> (`session.rungAncestry`; `claims.rung_ancestry` for the report); where the gate has a learner
+> (the session, the swap sheet) a demand taught by any rung they have reached counts too, so the
+> walking bass `blues.5` teaches is not taught at `jazz.5` except to a learner who did the blues.
 
 > **What the notes establish of each rung's claims (E0, 2026-09-27).** Every bundled score now
 > carries the demands the app's detectors measured on it (`docs/03` §4), and the build writes the

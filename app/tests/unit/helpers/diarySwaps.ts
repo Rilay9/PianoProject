@@ -13,7 +13,8 @@ import { swapTierWords } from '../../../src/ui/help';
 
 /**
  * One line per row with an item: its swap sheet's first `limit` options, each after its
- * tier's words — with the learner's rung and stored runs, as the Today screen hands them.
+ * tier's words — with the learner's rung, stored runs and reached rungs, as the Today screen
+ * hands them (E0a: the rungs the session says they have reached).
  */
 export function swapLines(
   card: readonly SessionSlot[],
@@ -23,12 +24,13 @@ export function swapLines(
   rung: string | undefined,
   rows: readonly SessionRow[] = [],
   today: Date = new Date(),
+  reached: readonly string[] = [],
   limit = 6,
 ): string[] {
   const out: string[] = [];
   for (const slot of card) {
     if (!slot.item || slot.kind === 'free') continue;
-    const options = swapOptions(slot, [...card], curriculum, catalog, { items, ...(rung === undefined ? {} : { rung }), rows, today });
+    const options = swapOptions(slot, [...card], curriculum, catalog, { items, ...(rung === undefined ? {} : { rung }), rows, today, reached });
     const shown = options.slice(0, limit).map((option) => `[${swapTierWords(option.tier, option.shared)}] ${option.item.title}`);
     const more = options.length > limit ? ` (+${String(options.length - limit)} more)` : '';
     out.push(`            swap ${slot.kind.padEnd(12)} ${shown.length === 0 ? '(nothing)' : shown.join('; ')}${more}`);

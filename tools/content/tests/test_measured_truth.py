@@ -343,6 +343,29 @@ class TestTheReports(Built):
         self.assertEqual(after["summary"]["unestablished"], self.report["summary"]["unestablished"] + lost)
         self.assertIn(f"{target['item']} on {target['rung']}", after["servesNone"])
 
+    def test_untaught_here_is_the_rungs_path_never_the_files_order(self) -> None:
+        """
+        E0a: "untaught here" is read from the rung's ancestry. A walking-bass option on jazz.5 is
+        untaught there (blues.5 teaches it, on another track, stored before jazz.5 in the file); the
+        same option on blues.6, which builds on blues.5, is taught; and listed on both, it is read at
+        both, since neither rung comes before the other on its path.
+        """
+        catalog = copy.deepcopy(self.catalog)
+        curriculum = copy.deepcopy(self.curriculum)
+        probe = {"id": "song.e0a.walking-probe", "type": "song", "title": "E0a probe",
+                 "demands": ["texture.walking-bass"],
+                 "measurement": {"status": "measured", "established": ["texture.walking-bass"]}}
+        catalog.append(probe)
+        lessons = {lesson["id"]: lesson for _s, _u, lesson in self.claims.lessons_in_order(curriculum)}
+        lessons["jazz.5"]["songOptions"].append(probe["id"])
+        lessons["blues.6"]["songOptions"].append(probe["id"])
+        rows = {o["rung"]: o for o in self.claims.rung_claims(catalog, curriculum)["options"] if o["item"] == probe["id"]}
+        self.assertEqual(rows["jazz.5"]["untaught"], ["texture.walking-bass"],
+                         "texture.walking-bass on jazz.5: the file's order credited blues.5, stored before jazz.5")
+        self.assertTrue(rows["jazz.5"]["earliest"] and rows["blues.6"]["earliest"],
+                        "an option on two tracks is met first on each")
+        self.assertEqual(rows["blues.6"]["untaught"], [])
+
     def test_the_generated_untaught_combinations_are_d0s_record(self) -> None:
         self.assertTrue(self.report["summary"]["generatedUntaughtMatchesRecord"],
                         "the build's untaught-on-rung combinations differ from tests/fixtures/untaught_on_rung.json")

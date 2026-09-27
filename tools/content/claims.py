@@ -19,7 +19,9 @@ healthy wrist rotation — cannot be established by the notes at all: it is list
 claim that needs a person's judgement, with the review bit the provenance holds (none,
 today). The generated items' untaught-on-rung combinations (D0's rung check,
 `tests/fixtures/untaught_on_rung.json`, L101) are carried in the same report, and so are
-every other option's, so placement reads from one place. Three detector readings are
+every other option's, so placement reads from one place. "Taught by a rung" is the rung's
+ancestry (`rung_ancestry`, E0a), the app's `session.rungAncestry` reading: never the file's
+order, in which `blues.5` is stored before `jazz.5`. Three detector readings are
 known misreadings (E22) and are marked where they bear on a claim, never counted as
 teaching truth.
 
@@ -115,12 +117,69 @@ def lessons_in_order(curriculum: dict) -> list[tuple[dict, dict, dict]]:
             for lesson in unit.get("lessons", [])]
 
 
-def first_listing(curriculum: dict) -> dict[str, str]:
-    out: dict[str, str] = {}
-    for _stage, _unit, lesson in lessons_in_order(curriculum):
-        for item_id in lesson.get("exerciseOptions", []) + lesson.get("songOptions", []):
-            out.setdefault(item_id, lesson["id"])
+def rung_ancestry(curriculum: dict) -> dict[str, set[str]]:
+    """
+    Every rung's ancestry (E0a): the rungs every learner at it has been through, itself
+    included, as the app's `session.rungAncestry` reads it. On the core path, every core rung
+    before it in stage-and-unit order: the spine is walked in that order, and its
+    `prerequisites` do not say all of it (4.6's, followed back, never reach 3.4; 4.7 names
+    none). On a track, its `prerequisites`, each with its own ancestry, and the core path up to
+    the rung's stage, which is where a track opens (`docs/04` §2). A prerequisite the
+    curriculum lacks is passed over. Never the file's order across tracks: `blues.5` is stored
+    before `jazz.5`, and the walking bass it teaches is not taught at `jazz.5`.
+    """
+    stages = sorted(curriculum.get("stages", []), key=lambda stage: stage.get("number", 0))
+    known = {lesson["id"] for stage in stages for unit in stage.get("units", []) for lesson in unit.get("lessons", [])}
+    parents: dict[str, list[str]] = {}
+    core: list[tuple[int, str]] = []
+    previous: str | None = None
+    for stage in stages:
+        number = stage.get("number", 0)
+        spine = next((rung for at, rung in reversed(core) if at < number), None)
+        for unit in stage.get("units", []):
+            for lesson in unit.get("lessons", []):
+                own = [p for p in lesson.get("prerequisites") or [] if p in known and p != lesson["id"]]
+                if unit.get("track") == "core":
+                    parents[lesson["id"]] = ([previous] if previous else []) + own
+                    previous = lesson["id"]
+                    core.append((number, lesson["id"]))
+                else:
+                    parents[lesson["id"]] = own + ([spine] if spine else [])
+    out: dict[str, set[str]] = {}
+    visiting: set[str] = set()
+
+    def of(rung: str) -> set[str]:
+        if rung in out:
+            return out[rung]
+        found = {rung}
+        if rung in visiting:  # a cycle in the prerequisites: stop rather than loop
+            return found
+        visiting.add(rung)
+        for parent in parents.get(rung, []):
+            found |= of(parent)
+        visiting.discard(rung)
+        out[rung] = found
+        return found
+
+    for rung in parents:
+        of(rung)
     return out
+
+
+def first_listings(curriculum: dict, ancestry: dict[str, set[str]]) -> dict[str, set[str]]:
+    """
+    `{item id: the rungs listing it that no other rung listing it comes before on their own
+    path}`: where a learner first meets the item, on each path the curriculum has. On one line
+    of rungs that is the earliest listing, as before E0a; an item on two tracks is met first on
+    each, and read at both.
+    """
+    listed: dict[str, list[str]] = defaultdict(list)
+    for _stage, _unit, lesson in lessons_in_order(curriculum):
+        for item_id in dict.fromkeys(lesson.get("exerciseOptions", []) + lesson.get("songOptions", [])):
+            listed[item_id].append(lesson["id"])
+    return {item_id: {rung for rung in rungs
+                      if not any(other != rung and other in ancestry.get(rung, set()) for other in rungs)}
+            for item_id, rungs in listed.items()}
 
 
 def rung_claims_of(lesson: dict, skills: dict[str, dict], demands: dict[str, dict]) -> tuple[list[dict], list[str]]:
@@ -201,25 +260,24 @@ def e22_notes(claim: dict, item: dict | None, verdict: str, skills: dict[str, di
     return sorted(set(notes))
 
 
-def untaught_on(item: dict, rung: str, order: list[str], demands: dict[str, dict]) -> list[str]:
-    """The item's measured demands the curriculum has not taught by `rung` (D0's rung check)."""
-    if not isinstance(item.get("demands"), list) or rung not in order:
+def untaught_on(item: dict, rung: str, ancestry: dict[str, set[str]], demands: dict[str, dict]) -> list[str]:
+    """
+    The item's measured demands `rung` has not taught (D0's rung check): taught nowhere
+    (`taughtAt: null`), or taught at a rung outside its ancestry (E0a; before, a rung stored
+    after it in the file).
+    """
+    if not isinstance(item.get("demands"), list) or rung not in ancestry:
         return []
-    here = order.index(rung)
-    out = []
-    for demand in item["demands"]:
-        at = demands.get(demand, {}).get("taughtAt")
-        if at is None or at not in order or order.index(at) > here:
-            out.append(demand)
-    return out
+    taught_by = ancestry[rung]
+    return [demand for demand in item["demands"] if demands.get(demand, {}).get("taughtAt") not in taught_by]
 
 
 def rung_claims(catalog: list[dict], curriculum: dict) -> dict:
     """The report's rows and its summary, as data."""
     skills, demands = load_vocabulary()
     by_id = {item["id"]: item for item in catalog}
-    order = [lesson["id"] for _s, _u, lesson in lessons_in_order(curriculum)]
-    first = first_listing(curriculum)
+    ancestry = rung_ancestry(curriculum)
+    firsts = first_listings(curriculum, ancestry)
 
     rungs: list[dict] = []
     options: list[dict] = []
@@ -248,8 +306,8 @@ def rung_claims(catalog: list[dict], curriculum: dict) -> dict:
                 "claims": per,
                 "unmeasurable": unmeasurable,
                 "review": provenance.get("review") or {"score": None, "teaching": None},
-                "untaught": untaught_on(item, first.get(item_id, lesson["id"]), order, demands) if item and first.get(item_id) == lesson["id"] else [],
-                "earliest": first.get(item_id) == lesson["id"],
+                "untaught": untaught_on(item, lesson["id"], ancestry, demands) if item and lesson["id"] in firsts.get(item_id, set()) else [],
+                "earliest": lesson["id"] in firsts.get(item_id, set()),
                 "established": ((item or {}).get("measurement") or {}).get("established") or [],
                 # The same, each reading a recorded misreading bears on marked: never teaching truth.
                 "establishedMarked": [
@@ -305,6 +363,9 @@ def rung_claims(catalog: list[dict], curriculum: dict) -> dict:
                                "taughtAt": demands.get(k[2], {}).get("taughtAt")}
                               for k, n in sorted(generated_untaught.items())],
         "recordedUntaught": len(recorded),
+        # Every rung's ancestry as the build read it: `taughtByAncestry.test.ts` holds the app's
+        # `rungAncestry` equal to it, so the report's "untaught here" and the gate read one thing.
+        "ancestry": {rung: sorted(members) for rung, members in ancestry.items()},
     }
 
 
@@ -401,8 +462,10 @@ def render_rung_claims(report: dict) -> str:
     lines += [f"- {entry}" for entry in report["servesNone"]] or ["- none"]
     lines += ["", "## Untaught on the earliest rung listing them", "",
               "Every measured demand of an option that the curriculum has not taught by the earliest rung listing it "
-              "(`taughtAt`, in the curriculum's order; `null` is taught nowhere). For the generated items this is D0's "
-              "rung check (L101): inputs to placement, never permission to activate a family.", "",
+              "on that rung's path: `taughtAt` outside the rung's ancestry (the rung, what it builds on, and on a track "
+              "the core path to its stage; never the file's order, E0a), or `null`, taught nowhere. An option listed on "
+              "two paths is read where each first meets it. For the generated items this is D0's rung check (L101): "
+              "inputs to placement, never permission to activate a family.", "",
               "### Generated items, family by rung by demand", "",
               "| Family | Rung | Demand | Taught at | Items |", "| --- | --- | --- | --- | --- |"]
     for row in report["generatedUntaught"]:
