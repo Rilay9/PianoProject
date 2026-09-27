@@ -45,3 +45,6 @@ If a scorer part cannot be made deterministic and fast enough within the candida
 ## Report
 
 Judgement first: three phrases per level as a first reader meets them, before and after, which arrive; the distribution table; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes.
+
+**Brief approved by the reviewer 2026-09-27** (`responses/7ab175a.md`, findings 5–8): S26 hard and the qualities soft, the scorer never rescuing a candidate that breaks a hard constraint; the levels 1–4 arrival rule kept as a scored, testable hypothesis — state it unambiguously in the tests: the final event begins on the last bar's felt beat 1 or sustains at least one beat as the arrival, never "any long final note anywhere"; the phrase identity versioned before changed phrases reach encounter history, stopping at the schema boundary if a migration is needed; the distribution bounds red on the committed generator for contour and phrase ending, justified per metric, no golden form; rendered teacher reads never become evidence of musical feel. **Dispatched 2026-09-27** (Entry 94).
+

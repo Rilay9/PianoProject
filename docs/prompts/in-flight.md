@@ -10,11 +10,11 @@
 
 ## Waiting
 
-- **D2 and D1** — briefs drafted 2026-09-27 (`tasks/D2-microscope-and-review-record.md`, `tasks/D1-sight-reading-phrase.md`), at the gate as the brief handoff `handoffs/7ab175a.md`; dispatch on that read, D2 first; D3 after D1 and D2 land; D4 after E1.
+- **D1** (Entry 94) and **D2** (Entry 95) — **dispatched** on the reviewer's read (`responses/7ab175a.md`; D2 with its record contract amended); D1 on port 4183 and D2 on 4193 if either runs Playwright, E0a on 4173; on landing: merge, the targeted suites, the product look, record, handoff, push.
 
 - **D0 / D0a** — **closed**: D0a accepted (`responses/3b9c37d.md`); B7 kept (G53), the arpeggios' notation to G52.
 - **Q24** — **closed**, approved by the reviewer (`responses/e32d0ef.md`, unprompted); the MAESTRO download stays the owner's question (Q47).
-- **E0** — **landed** (Entry 92, merged as e5fb68a, handoff `handoffs/f3b75b7.md`); awaiting the reviewer's response; on ACCEPT the E1 and E2 briefs are drafted for their gates.
+- **E0** — approved with one required change (`responses/f3b75b7.md`): **E0a** dispatched (Entry 93; the ancestry predicate); on landing: merge, the named unit files and the consumer suites, the Today spec once, the diaries compared, record, handoff, push. Its ACCEPT closes E0.
 
 ## Standing rules in force tonight
 
