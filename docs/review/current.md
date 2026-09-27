@@ -1,27 +1,8 @@
-# Reviewer handoff (latest: F0a; per-seam copies under handoffs/), the one required F0 fix-forward
+# Reviewer handoff (latest)
 
-Implementation HEAD: 5f79b97 (this seam only; C7's work is uncommitted in the tree and T53 runs in its own worktree)
+Two seams are up, each with its own file and implementation HEAD:
 
-## What changed
+- **C7** — `handoffs/65a608b.md` (respond in `responses/65a608b.md`).
+- **T53** — `handoffs/734c247.md` (respond in `responses/734c247.md`).
 
-- `content/lessons/practice.4.md:35–36`: "Pain that lasts more than a couple of days, or any numbness or tingling, is a reason to see a doctor or a physiotherapist, not a practice problem." → "Pain that does not settle, or any numbness or tingling, is a reason to see a doctor or a physiotherapist rather than to keep practising through it." Layer: teacher; the threshold removed, unsourced (the NHS repetitive-strain page says to see a GP when symptoms are not going away or are getting worse and names no time; musician-health pages disagree with each other, days to weeks). `readingTime` unchanged (2).
-- `app/tests/unit/lessonClaimsAboutMusic.test.ts`: an F0a block (add — the brief's premise that a practice.4 row existed was wrong; none did): the lesson does not contain "couple of days"; no sentence mentioning numbness, tingling, a doctor or a physiotherapist contains hours, days, weeks or months; the new sentence is present word for word. Red on the old sentence (all three assertions), green after.
-- The addendum is appended to Entry 82 (`docs/prompts/entry-82.md`, `docs/pending-review.md`); T35 marked built with the addendum.
-
-## Verification
-
-Run in the isolated worktree, unpiped: `npm ci` 0; content build 0 (2,061 items); validator 0; `lessonClaimsAboutMusic.test.ts` 0 (140 passed); `lessonShape.test.ts` 0 (21). Not run: the app build, Playwright (`tips.spec.ts` checks the words "Stop" and "doctor", both still present). The main tree's full chain reruns with C7 once F0a is reconciled there, as the reviewer required.
-
-## Files to inspect
-
-1. `content/lessons/practice.4.md` lines 33–37.
-2. `app/tests/unit/lessonClaimsAboutMusic.test.ts`, the block headed F0a at the end.
-3. `docs/prompts/entry-82.md`, the addendum at the end.
-
-## Questions
-
-None. F0 closes on the reviewer's ACCEPT of this seam. Still unverified by a clinician: the sentence, and whether "any numbness or tingling" should single out those symptoms for referral (on T54's expert list).
-
-## Do not re-review
-
-F0's other findings (accepted at `responses/e5cb2fe.md`); T53 (its own handoff follows); C7 (its own handoff after its chain reruns).
+The branch HEAD holds both (T53 merged after C7 as 943b2fd) plus the records; the merged tree's chain is in each file.
