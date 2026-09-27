@@ -176,8 +176,8 @@ Do not manufacture status from an old snapshot. If the repository and this secti
 Current snapshot as of 2026-09-27, late afternoon (refreshed by the orchestrator at each handoff push, because the reviewer's tooling commits only under `responses/`; the live pointer is always `docs/review/current.md`):
 - The T53 chain (T53, T53b, T53c), F1, Q24 and H0 are closed; every immutable handoff before D0a has a matching response.
 - D0 is closed: its architecture approved (`responses/0669117.md`) and its one required change, D0a, accepted (`responses/3b9c37d.md`).
-- E0 is approved with one required change (`responses/f3b75b7.md`): E0a (the taught-at-rung ancestry) is building; its ACCEPT closes E0. E1 may be drafted against the E0 constraints; implementation depending on E0's readiness waits for E0a.
-- The D2 and D1 briefs are approved (`responses/7ab175a.md`; D2's record contract amended as required) and both are building; the sequence D2 -> D1 -> E1 -> D3 -> D4 is confirmed, E2 after E1; X/G implementation does not leap ahead of D/E truths.
+- E0 is approved with one required change (`responses/f3b75b7.md`); E0a is landed and handed off at `handoffs/5bfe6d2.md`; its ACCEPT closes E0.
+- The D2 and D1 briefs are approved (`responses/7ab175a.md`; D2's record contract amended as required) ; D1 is landed and handed off at `handoffs/b15758e.md` (held at version 1 pending the record field); D2 is building; the sequence D2 -> D1 -> E1 -> D3 -> D4 is confirmed, E2 after E1; X/G implementation does not leap ahead of D/E truths.
 - The pre-dispatch gate now posts its own handoff file (`docs/review/README.md` §Brief handoffs).
 - The owner's open decision: Q47, whether CI downloads the MAESTRO MIDI zip for the converter's real-recording tests; it blocks nothing.
 

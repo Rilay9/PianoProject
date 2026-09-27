@@ -10,11 +10,11 @@
 
 ## Waiting
 
-- **D1** (Entry 94) and **D2** (Entry 95) — **dispatched** on the reviewer's read (`responses/7ab175a.md`; D2 with its record contract amended); D1 on port 4183 and D2 on 4193 if either runs Playwright, E0a on 4173; on landing: merge, the targeted suites, the product look, record, handoff, push.
+- **D1** — **landed** (Entry 94, handoff `handoffs/b15758e.md`), built and held at version 1 until the reviewer approves the record field (S33). **D2** (Entry 95) — building on port 4193; on landing: merge, the targeted suites, the product look, record, handoff, push.
 
 - **D0 / D0a** — **closed**: D0a accepted (`responses/3b9c37d.md`); B7 kept (G53), the arpeggios' notation to G52.
 - **Q24** — **closed**, approved by the reviewer (`responses/e32d0ef.md`, unprompted); the MAESTRO download stays the owner's question (Q47).
-- **E0** — approved with one required change (`responses/f3b75b7.md`): **E0a** dispatched (Entry 93; the ancestry predicate); on landing: merge, the named unit files and the consumer suites, the Today spec once, the diaries compared, record, handoff, push. Its ACCEPT closes E0.
+- **E0 / E0a** — E0a **landed** (Entry 93, handoff `handoffs/5bfe6d2.md`); awaiting the reviewer; its ACCEPT closes E0. L108 (the walking bass on the jazz track) is the reviewer's and the owner's question.
 
 ## Standing rules in force tonight
 

@@ -1,11 +1,10 @@
 # Reviewer handoff (latest)
 
-Open handoffs: none. Building, each in an isolated worktree, each with its own handoff when it lands:
+Open handoffs, each with its own file:
 
-- **E0a** — the reviewer's required change on E0 (`responses/f3b75b7.md` finding 1), briefed in `docs/prompts/tasks/E0a-taught-by-ancestry.md` straight from the finding (Entry 93). Its ACCEPT closes E0.
-- **D1** — the sight-reading phrase, brief approved (`responses/7ab175a.md`), Entry 94.
-- **D2** — the microscope and the review record, brief approved with its one change applied (`responses/7ab175a.md` finding 1; the amended brief at this commit), Entry 95.
+- **E0a** — `handoffs/5bfe6d2.md` (respond in `responses/5bfe6d2.md`). The required change on E0; its ACCEPT closes E0. One question (L108, the walking bass on the jazz track).
+- **D1** — `handoffs/b15758e.md` (respond in `responses/b15758e.md`). Built and held at version 1; three questions (the record field, the chord-tone move, the tie rule).
 
-Closed: E0's architecture (`responses/f3b75b7.md`, one required change open as E0a), D0 and D0a (`0669117.md`, `3b9c37d.md`), E0's brief (`af665ec.md`), H0 (`a008ba5.md`), Q24 (`e32d0ef.md`), T53c (`df71a0b.md`), F1 (`a94baee.md`), T53b, T53, C7 and L98, F0 and F0a, T52.
+Building: **D2** (Entry 95), its own handoff when it lands.
 
-Next briefs: E1 (drafted against the E0 constraints once E0a lands), then D3 after D1 and D2, D4 after E1, E2 after E1.
+Closed: E0's architecture (`responses/f3b75b7.md`, closes on E0a), D0 and D0a, the D1 and D2 briefs (`7ab175a.md`), E0's brief, H0, Q24, T53c, F1, T53b, T53, C7 and L98, F0 and F0a, T52.
