@@ -1002,6 +1002,27 @@ suggestions** with a note on where to buy/obtain MusicXML.
   no requirement accepts them (the self-assessment rule above). The rungs the old rule had
   done before the rung it was recommending, on a database made before C5, are carried over
   once as *done before*, apart, never met (`app/src/data/carryOver.ts`).
+- **One skill state, the ladder's (C7, 2026-09-26).** What a learner can do is what the stored
+  runs' evidence shows, read on the ladder (`05` §9b) over every current-stamp record, whichever rung
+  judged the run; the Skills screen and Progress read that and nothing else (`04` §3a, §6). "Rusty"
+  is the ladder's *not shown recently* — no supporting evidence within `RETENTION_DAYS` (21, a
+  hypothesis) and some before — and never the calendar since a page was drawn; the state beside it
+  stays what the evidence supports. A concept the vocabulary cannot measure is *not judged by the
+  app*, with the lesson that teaches it; a candidate observable in an existing drill is recorded for
+  the vocabulary's next version, not invented as a skill here. The learner's word stays his, apart.
+  The skills store's own state (*unseen*, *learning*, *known*) and its writers — the lesson page
+  when a rung was met, *I already know this* — are deleted; its rows that said *learning* or
+  *known* are carried over once as exposures dated that day (*introduced* at most; never evidence,
+  a met requirement or an encounter with material).
+- **Cleanup never erases competence (C7, L87).** The ladder and the rung state are replayed from
+  the stored runs, so the store's last-resort cap (`MAX_SESSIONS`) deletes only runs no derivation
+  reads: a run that bears evidence or names the rung that judged it is kept, compacted past the
+  observation window as every run is, its evidence never folded or dropped, and no verdict written
+  in its place; and the cap never reaches into the observation window. So pruning cannot take a
+  skill back to *not shown yet* or a met rung back to open; recent contrary evidence still moves a
+  skill down, *not shown recently* still says what is uncertain now, and a later evidence version
+  refuses an old claim (it contributes nothing and the evidence job keeps it out, with its reason)
+  rather than deleting it. Backup and restore carry the rows whole.
 - **Every rung offers at least three alternatives** for each of `exerciseOptions` and
   `songOptions` (`00` D21). Where three songs do not exist, exercises make up the number and
   the lesson text says which skill they stand in for. `tools/content/validate.py` enforces

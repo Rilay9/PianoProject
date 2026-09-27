@@ -423,13 +423,14 @@ So there are three read paths and they are not interchangeable:
   the sizes up, and the backup, which writes them out.
 
 **A write-through cache in front of a store has to be told when the store is written from
-outside.** `progressStore` (`memory`, `streakMemory`), `planStore` (`memory`) and `skillsStore`
-(`memory`) all answer from memory once populated, and both restoring a backup and *Reset
-progress* clear or overwrite the rows underneath them. Left alone that is not a stale display:
-the next run reads the cached streak, adds today's minutes and **writes it back over the restored
-history**, which is the one number in this app with no second copy. `forgetCachedProgress()`,
-`forgetCachedPlan()` and `forgetCachedSkills()` are that other half; `importAll` calls all three
-and the reset calls the two whose stores it clears. The listeners are deliberately left
+outside.** `progressStore` (`memory`, `streakMemory`) and `planStore` (`memory`) answer from
+memory once populated, and both restoring a backup and *Reset progress* clear or overwrite the
+rows underneath them. Left alone that is not a stale display: the next run reads the cached
+streak, adds today's minutes and **writes it back over the restored history**, which is the one
+number in this app with no second copy. `forgetCachedProgress()` and `forgetCachedPlan()` are that
+other half; `importAll` calls both and the reset calls the one whose stores it clears.
+(`skillsStore` kept a copy too until C7; since then it holds only the retired rows' exposures and
+is read where it is shown, with nothing cached.) The listeners are deliberately left
 subscribed — a screen that is on the page is the one that has to redraw.
 
 **A day is a local day.** `dayKey()` in `progressStore` is the one rule, and the minutes, the

@@ -40,6 +40,7 @@ import type { ReadingRecipe } from '../data/db';
 import type { RequirementReading, RungReading } from '../evidence/rungState';
 import type { LadderState } from '../evidence/ladder';
 import type { EvidenceJobStatus } from '../data/evidenceJob';
+import type { SkillMove } from '../data/skillsStore';
 import type { EvidenceExclusion } from '../data/db';
 
 /** One control, and what it says back. */
@@ -606,6 +607,70 @@ export const RUNG_TEXT = {
 } as const;
 
 /**
+ * What the Skills screen and Progress say about a skill (C7; `04` §3a and §6,
+ * `help.test.ts` the join). One state, the ladder's, in a person's words; "not
+ * shown in 4 weeks" where the evidence has not supported a skill within the
+ * ladder's retention span — the words Today's review line uses — beside the
+ * state the evidence still supports; and, for a concept the app cannot
+ * measure, that it does not judge it and where it is taught. The ladder's
+ * "transfer demonstrated" is said as what v0 measured, "shown on different
+ * material" (Part 26: never "transferred", as if everywhere).
+ */
+export const SKILL_TEXT = {
+  notJudged: 'not judged by the app',
+  taughtIn: 'Taught in',
+  /** The Skills screen's filter, and its count line while on. */
+  notShownFilter: 'Not shown lately',
+  notShownCount: 'not shown lately',
+  notIntroduced: 'not shown yet',
+  introduced: 'introduced',
+  practised: 'tried, not yet shown',
+  transfer: 'shown on different material',
+  /** Progress: the section, its empty line and its way to the Skills screen. */
+  heading: 'Skills',
+  nothingMoved: 'No skill the app measures has moved in the last four weeks.',
+  review: 'Review a skill',
+  /** Progress: a skill shown again after the retention span. */
+  shownAgain: 'shown again',
+} as const;
+
+/** A ladder state as the Skills screen and Progress say it (`SKILL_TEXT`). */
+export function skillStateWords(state: LadderState): string {
+  switch (state) {
+    case 'not introduced':
+      return SKILL_TEXT.notIntroduced;
+    case 'introduced':
+      return SKILL_TEXT.introduced;
+    case 'practised':
+      return SKILL_TEXT.practised;
+    case 'transfer demonstrated':
+      return SKILL_TEXT.transfer;
+    default:
+      return state;
+  }
+}
+
+/** "not shown in 4 weeks", counted from the last supporting evidence: Today's words (`spanWords`). */
+export function notShownWords(since: string, today: Date): string {
+  return spanWords(since, today);
+}
+
+/**
+ * How a skill moved, as Progress says it (C7, X3): "tried, not yet shown →
+ * familiar" for a step on the ladder, "familiar · not shown in 4 weeks" for a
+ * skill the evidence has not supported within the retention span, "familiar ·
+ * shown again" after one. The state is always the one the evidence supports
+ * today; time alone lowers nothing.
+ */
+export function skillMoveWords(move: Pick<SkillMove, 'then' | 'now' | 'kind' | 'lastSupport'>, today: Date): string {
+  const now = skillStateWords(move.now.state);
+  const quiet = move.now.notShownRecently && move.lastSupport !== undefined ? ` · ${notShownWords(move.lastSupport, today)}` : '';
+  if (move.kind === 'up' || move.kind === 'down') return `${skillStateWords(move.then.state)} → ${now}${quiet}`;
+  if (move.kind === 'shown again') return `${now} · ${SKILL_TEXT.shownAgain}`;
+  return `${now}${quiet}`;
+}
+
+/**
  * A stage's count on Plan (C5). Where rungs were carried over from before C5
  * they come first, apart, and the rungs the evidence has met since follow —
  * "3 of 9 done before · 1 counted since" — so the line reads as the learner's
@@ -665,8 +730,9 @@ function percent(share: number): string {
 /** A ladder state as a person says it (C3's ladder, `evidence/ladder.ts`). */
 export function ladderWords(state: LadderState): string {
   if (state === 'not introduced' || state === 'introduced') return 'not shown yet';
-  if (state === 'practised') return 'tried, not yet shown';
-  return state;
+  // The rest as the Skills screen says them — "shown on different material",
+  // never "transfer demonstrated" (Part 26, C7).
+  return skillStateWords(state);
 }
 
 /** What one requirement asks, in a sentence, without its state. */

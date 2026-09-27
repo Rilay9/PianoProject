@@ -755,23 +755,47 @@ the app opens.* rather than reading like a finished job.
 
 ### 3a. Skills review
 
-**§0:** opens on what needs attention (R1): the rusty concepts if there are any, otherwise the current stage and the one below, with *Show all* revealing the rest in pages. *Drill it* is the box; *Find more* is text (R3).
+**§0:** opens on what needs attention (R1): the skills the evidence has not shown lately if there are any (*Not shown lately*, pressed), otherwise the current stage and the one below, with *Show all* revealing the rest in pages. *Drill it* is the box; *Find more* is text (R3).
 
-A grid of every concept in the curriculum (from `concepts[]` across lessons), each with its
-state (never / self-passed / measured / mastered / rusty = not practised in 30 days) and a
-"Drill it" button that launches the concept's drill or a matching short exercise. Filters by
-stage and track. This is how "go back and practise old skills" works without navigating the
-plan. **Since C5** a concept that is a vocabulary skill with an observable shows what the
-learner's evidence shows, on the ladder, whichever rung judged the runs (*never* for not shown
-yet, *introduced* for met and nothing shown yet, *learning* for tried and not yet shown,
-*measured* for familiar or better, *rusty* for no supporting evidence in the ladder's retention
-span); every other concept shows the skills store's state (C7 replaces it). The concepts of the
-rungs carried over from before C5 are exposures on the ladder, dated the day they were carried
-— the learner read those lessons and played that material — so they show *introduced*, the
-ladder's first state, and never *learning* or *measured*; what the learner said or showed
-outranks it. An item's pass moves neither — it used to promote every
-concept the item names to *learning*. The stages it opens on are where the learner is by the
-derived rung state, as Plan and Today say it.
+A grid of every concept in the curriculum (from `concepts[]` across lessons), each with what
+the app knows about it and a "Drill it" button that launches the concept's drill or a matching
+short exercise. Filters by stage and track, and *Not shown lately*. This is how "go back and
+practise old skills" works without navigating the plan.
+
+**One skill state, the ladder's (C7, 2026-09-26).** A concept that is a vocabulary skill with an
+observable shows the ladder's reading of the learner's evidence (`evidence/ladder.ts`), over every
+current-stamp record whichever rung judged the run, in these words: *not shown yet* (not
+introduced), *introduced* (met — a carried rung, or a row the retired skills store wrote — and
+nothing shown), *tried, not yet shown* (practised), *familiar*, *proficient*, *shown on different
+material* (the ladder's *transfer demonstrated*, said as what v0 measured — a different item —
+and never "transferred", Part 26), *retained*, *mastered*. Beside it, where the evidence has not
+supported the skill within the ladder's retention span (`RETENTION_DAYS`, 21 days, a hypothesis)
+and did before, a warning badge in Today's words: *not shown in 4 weeks*. That is what "rusty"
+means now — the ladder's `notShownRecently`, never the days since a page was drawn — and the state
+beside it is the one the evidence still supports: time alone lowers nothing. Every other concept
+says *not judged by the app*, with *Taught in* and the title of the first lesson that teaches it,
+and never a state. The learner's own word about a lesson that teaches the concept (*I already know
+this*, *Mark done*, `PlanRow.rungWords`) rides beside it as *you said you know it* or *marked
+done*, and never moves a state. An item's pass moves nothing.
+
+**Retired (C7).** The skills store kept its own state per concept — *never*, *learning*,
+*measured* — written by the lesson page when a rung was met and by *I already know this*, and
+called a concept *rusty* thirty days after that write whether or not it had been played since
+(L16). Those writers and that calendar are deleted. The store's rows that said *learning* or
+*known* are carried over once, the first time the screen or Progress reads them, as exposures
+dated that day — the only thing such a row can honestly say is that the old system met the
+concept — so a measurable skill shows *introduced* at most, and a concept the app cannot measure
+still says *not judged* (the reviewer's pre-dispatch change: never evidence, never a met
+requirement, never an encounter with material). The stages it opens on, when nothing is unshown,
+are where the learner is by the derived rung state, as Plan and Today say it. The words are
+`SKILL_TEXT` in `ui/help.ts` (`help.test.ts` holds this section and §6 to them):
+
+| key | the words |
+|---|---|
+| notJudged / taughtIn | not judged by the app · Taught in |
+| notShownFilter / notShownCount | Not shown lately · not shown lately |
+| notIntroduced / introduced / practised / transfer | not shown yet · introduced · tried, not yet shown · shown on different material |
+| heading / nothingMoved / review / shownAgain | Skills · No skill the app measures has moved in the last four weeks. · Review a skill · shown again |
 
 **Named, and findable** (P15). Each row shows the concept's *display name* from
 `content/curriculum/concepts.json` — the screen used to derive a label from the id, which
@@ -3199,6 +3223,15 @@ the drills themselves, so a measurement added and not named fails.
 - **Nothing filled, and the text actions are a thumb tall.** *Export everything* was the one filled box, for the rarest action on the screen, at the bottom of fifty rows; it keeps an outline because it is the one action here with a consequence, and *Import a backup* and *Diagnostics* are text. `.link-button`'s own floor is `§9`'s 24 px for a link, which is not enough for a control, so this screen's link buttons are held to R4's 40.
 
 - Calendar heat-map of practice minutes; streak; weekly minutes vs goal.
+- **Skills (C7, X3's first half).** Under the week, the skills whose state moved in the last four
+  weeks (`COMPETENCE_WINDOW_DAYS`, a choice: long enough to hold the ladder's retention span) and
+  how, from the same ladder the Skills screen reads and in its words (`SKILL_TEXT`,
+  `skillMoveWords`): a step up or down, *tried, not yet shown → familiar*; a skill the evidence
+  has not supported within the retention span, *familiar · not shown in 4 weeks*; one shown again,
+  *familiar · shown again*. Moving between not introduced and introduced is an exposure, not
+  competence, and is not listed. Steps up first, then down, then the unshown. With nothing moved:
+  *No skill the app measures has moved in the last four weeks.* Always a quiet *Review a skill*
+  to the Skills screen. Never a stage number: the strands move separately (L85).
 - Per-stage completion; per-track completion.
 - **Repertoire list (mastered)** with "last played", the row itself opening the piece, capped at 20 rows (same
   shape as Skills' concept grid) with a *Show N more* link — the history and the performances are

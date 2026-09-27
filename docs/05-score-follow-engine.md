@@ -1097,12 +1097,13 @@ Supporting is `right / n` at or above Part G's pass share: v0 skills declare no 
 attempts against it in a row put anything from proficient back to familiar; time alone lowers
 nothing, and 21 days without support is shown as *not shown recently*. The history is replayed in
 order, so the state is derived every time and never stored. Three rules are named and are
-hypotheses, not measurements: `RETENTION_DAYS` (21, the review calendar's last step),
+hypotheses, not measurements: `RETENTION_DAYS` (21, from the last step of the item review calendar C6 retired),
 `RECENT_ATTEMPTS` (2), and `countsTowardsMovingDown` — **an attempt against on first contact with
 material other than where proficiency was shown does not count towards moving down, nor against
 mastery** (C3 second pass): a learner proficient at level 2 who reads two level-4 phrases badly at
 sight still reads level 2, and the attempts are evidence about the harder material, not transfer.
-The Skills screen still reads `skillsStore` and its 30-day rust (C7).
+Since C7 the Skills screen and Progress read this ladder and nothing else, and "rusty" is its
+*not shown recently* (`04` §3a); the skills store's own state and its thirty-day rust are gone.
 
 **On the sheet** (`04` §5f): where the run refuses a declared skill, a *Not judged* line says what
 and why, citing the record's fields; the *Accents* line reads the recorded accents and says *not

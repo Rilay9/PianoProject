@@ -39,3 +39,6 @@ If a concept outside the vocabulary has an honest observable in an existing dril
 ## Report
 
 Judgement first: the Skills screen and Progress for a learner on 2.2 with the owner-shaped history, on the glass, and what a teacher would say about "rusty" now. Then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes from unpiped runs; unverified beside what passes.
+
+**Delivered 2026-09-27**, Entry 83: one skill state, rusty as `notShownRecently`, the 269 unmeasured concepts saying so, Progress's Skills section, the row as its own checkpoint (the seven invariants at the real cap), the migration as a weak exposure, L52's writers, the two passing fixes; deviations accepted — the two writers in `LessonScreen.ts`, one cache call each in `backup.ts` and `SettingsScreen.ts`, the prune in `progressStore.ts`, types in `db.ts`, `docs/01` §4.5 and `docs/05` §9b made true; the entry is 83.
+

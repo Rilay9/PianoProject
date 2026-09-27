@@ -160,4 +160,19 @@ describe('the backing-track sheet', () => {
     expect(kept.notesHeard).toBe(3);
     expect(kept.passed).toBe(false);
   });
+
+  // Added (C7, L52): every drill set is stored through this one writer (Simon's
+  // included), and each wrote `tempoPct: 100` — a drill has no tempo slider, so
+  // the number is a placeholder, and a passed set made it the item's best tempo.
+  // It is stored as a tempo not measured, the store's own mark for a tempo that
+  // is a setting.
+  it('a drill set stores its tempo as not measured, since no drill keeps one', async () => {
+    await mount();
+    screenKeyboardSource.noteOn(60, 90);
+    screenKeyboardSource.noteOff(60);
+    document.querySelector<HTMLButtonElement>('#drill-end')?.click();
+    document.querySelector<HTMLButtonElement>('#drill-keep')?.click();
+    await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalledTimes(1));
+    expect(recordRunSpy.mock.calls[0]?.[0]?.tempoMeasured, 'a drill’s placeholder tempo went on the record as measured').toBe(false);
+  });
 });

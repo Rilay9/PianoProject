@@ -60,10 +60,10 @@ import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
 import type {
   FolderScore,
   ImportRow,
+  LegacySkillRow,
   PlanRow,
   ProgressRow,
   SessionRow,
-  SkillRow,
   StreakRow,
 } from '../../src/data/db';
 import { CARRY_OVER_DUE_KEY, openDatabase, resetDatabaseForTest } from '../../src/data/db';
@@ -140,11 +140,12 @@ const STRICT = rungStricterThanTheLegacyPass();
 /**
  * The day this snapshot is read on, pinned.
  *
- * `displayState` calls a concept **rusty** after thirty days without practice,
- * so a snapshot with fixed dates in it would quietly change meaning a month
- * from now and the test would start failing for reasons that have nothing to
- * do with the code. Only `Date` is faked; the timers stay real, because
- * IndexedDB and `vi.waitFor` both need them.
+ * The retired skills store called a concept **rusty** thirty days after it
+ * last wrote it (until C7), and the ladder's "not shown recently" is counted
+ * in days too, so a snapshot with fixed dates in it would quietly change
+ * meaning a month from now and the test would start failing for reasons that
+ * have nothing to do with the code. Only `Date` is faked; the timers stay
+ * real, because IndexedDB and `vi.waitFor` both need them.
  */
 const READ_ON = new Date('2026-09-18T12:00:00');
 
@@ -238,19 +239,24 @@ function legacyStreak(): StreakRow {
 }
 
 /**
- * Two skill rows, on concepts the **built curriculum** actually names.
+ * Three skill rows, on concepts the **built curriculum** actually names.
  *
  * A concept id no lesson mentions gets no row on the Skills screen at all
  * (`buildConcepts` walks the curriculum, not the store), so a snapshot using
- * one would prove nothing about the screen.
+ * one would prove nothing about the screen. Revised (C7): the third is a
+ * vocabulary skill the app can measure, written `known` a month before the
+ * snapshot is read, so both halves of the migration are on the screen — a
+ * concept the app cannot measure, and one it can.
  */
 const MEASURED_CONCEPT = STRICT.lesson.concepts[0] ?? '';
 const LEARNING_CONCEPT = STRICT.lesson.concepts[1] ?? '';
+const VOCABULARY_CONCEPT = 'bass-clef';
 
-function legacySkills(): SkillRow[] {
+function legacySkills(): LegacySkillRow[] {
   return [
     { conceptId: MEASURED_CONCEPT, state: 'known', lastReviewedAt: '2026-09-16T23:40:00.000Z' },
     ...(LEARNING_CONCEPT === '' ? [] : [{ conceptId: LEARNING_CONCEPT, state: 'learning' as const }]),
+    { conceptId: VOCABULARY_CONCEPT, state: 'known', lastReviewedAt: '2026-08-12T19:00:00.000Z' },
   ];
 }
 
@@ -382,11 +388,10 @@ describe('a storage snapshot from before this week, booted by this week’s code
 
     // Every module-level cache dropped, so each test reads the rows rather
     // than the previous test's memory.
-    const [progressStore, planStore, skillsStore, importStore, levelOverrides, load, settings] =
+    const [progressStore, planStore, importStore, levelOverrides, load, settings] =
       await Promise.all([
         import('../../src/data/progressStore'),
         import('../../src/data/planStore'),
-        import('../../src/data/skillsStore'),
         import('../../src/data/importStore'),
         import('../../src/data/levelOverrides'),
         import('../../src/curriculum/load'),
@@ -394,7 +399,6 @@ describe('a storage snapshot from before this week, booted by this week’s code
       ]);
     progressStore.resetProgressForTest();
     planStore.resetPlanForTest();
-    skillsStore.resetSkillsForTest();
     importStore.resetImportCacheForTest();
     levelOverrides.resetLevelOverridesForTest();
     load.resetContentCacheForTest();
@@ -516,19 +520,27 @@ describe('a storage snapshot from before this week, booted by this week’s code
     expect(week.minutes).toBeGreaterThanOrEqual(0);
   });
 
-  it('keeps the skill rows, and does not let an old date read as rusty on its own', async () => {
-    const { allSkills, displayState } = await import('../../src/data/skillsStore');
-    const rows = new Map((await allSkills()).map((row) => [row.conceptId, row]));
+  // Replaced (C7; the migration integration of item 5a). This asserted the
+  // rows came back in the state they were stored in and that an undated row
+  // was not thirty days stale — the store's own truth, and its calendar, read
+  // on. That truth is retired: a row can honestly say only that the old system
+  // met the concept, so it is carried over once as an exposure dated the day
+  // it is read, and nothing it said about *when* survives as a claim.
+  it('carries the old skill rows over once, as exposures dated the day they are read, and nothing more', async () => {
+    const { learnerExposures } = await import('../../src/data/skillsStore');
+    const { loadCurriculum } = await import('../../src/curriculum/load');
+    const { getPlan } = await import('../../src/data/planStore');
+    const curriculum = await loadCurriculum();
+    const exposures = await learnerExposures(curriculum, await getPlan());
     for (const written of legacySkills()) {
-      const read = rows.get(written.conceptId);
-      expect(read, `${written.conceptId} is gone`).toBeDefined();
-      expect(read?.state, `${written.conceptId} changed state`).toBe(written.state);
-      expect(read?.lastReviewedAt).toBe(written.lastReviewedAt);
+      expect(exposures.get(written.conceptId), `${written.conceptId} was not carried over`).toEqual([READ_ON.toISOString()]);
     }
-    // A row with no `lastReviewedAt` at all — which is what the older writer
-    // left — must not be read as thirty days stale.
-    const noDate = rows.get(LEARNING_CONCEPT);
-    if (noDate) expect(displayState(noDate)).toBe('learning');
+    const db = await openDatabase();
+    const stored = (await db?.getAll('skills')) ?? [];
+    expect(stored.map((row) => Object.keys(row).sort())).toEqual(legacySkills().map(() => ['conceptId', 'exposedAt']));
+    // Once: read again, nothing changes.
+    await learnerExposures(curriculum, await getPlan());
+    expect((await db?.getAll('skills')) ?? []).toEqual(stored);
   });
 
   it('keeps a plan with no placement, and still recommends from its track order', async () => {
@@ -679,7 +691,12 @@ describe('a storage snapshot from before this week, booted by this week’s code
       expect(summary, 'Progress counted none of the stored passes').toMatch(/passed|mastered/i);
     });
 
-    it('Skills draws the stored skill rows in the state they were stored in', async () => {
+    // Replaced (C7): "draws the stored skill rows in the state they were
+    // stored in" — *measured* and *learning*, states no run had shown. The old
+    // rows are drawn as what they can say: a skill the app measures is
+    // *introduced*, a concept it cannot measure is *not judged*, and none is
+    // rusty, whatever date the old store wrote.
+    it('Skills draws the old rows as exposures: introduced where the app measures the skill, not judged where it cannot, none rusty', async () => {
       const { SkillsScreen } = await import('../../src/ui/screens/SkillsScreen');
       const section = await mounted(SkillsScreen(router()), '#skills-list .list-row');
 
@@ -706,19 +723,19 @@ describe('a storage snapshot from before this week, booted by this week’s code
 
       const measured = await paged(MEASURED_CONCEPT);
       expect(measured, `${MEASURED_CONCEPT} is not on the Skills screen`).not.toBeNull();
-      expect(
-        measured?.getAttribute('data-state'),
-        'a skill recorded as measured before this week came back in another state',
-      ).toBe('known');
+      expect(measured?.getAttribute('data-state'), 'an old "known" came back as a state no run showed').toBe('not-judged');
+      expect(measured?.getAttribute('data-rusty')).toBeNull();
 
       if (LEARNING_CONCEPT !== '') {
         const learning = await paged(LEARNING_CONCEPT);
         expect(learning, `${LEARNING_CONCEPT} is not on the Skills screen`).not.toBeNull();
-        expect(
-          learning?.getAttribute('data-state'),
-          'a skill recorded as being learnt came back in another state',
-        ).toBe('learning');
+        expect(learning?.getAttribute('data-state')).toBe('not-judged');
       }
+
+      const vocabulary = await paged(VOCABULARY_CONCEPT);
+      expect(vocabulary, `${VOCABULARY_CONCEPT} is not on the Skills screen`).not.toBeNull();
+      expect(vocabulary?.getAttribute('data-state'), 'an old "known" on a skill the app measures is at most introduced').toBe('introduced');
+      expect(vocabulary?.getAttribute('data-rusty'), 'a month-old store date read as rusty').toBeNull();
     });
 
     it('the Library badges the stored passes and lists the old import', async () => {

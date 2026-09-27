@@ -392,7 +392,25 @@ export interface StreakRow {
   weeklyGoalMinutes: number;
 }
 
+/**
+ * A row of the `skills` store since C7: a concept the retired store had as
+ * learning or known, kept only as an exposure dated the day it was carried
+ * over — the ladder's first state, *introduced*, and never evidence, a met
+ * requirement or an encounter with any material (`data/skillsStore.ts`). The
+ * app writes nothing else here.
+ */
 export interface SkillRow {
+  conceptId: string;
+  exposedAt: string;
+}
+
+/**
+ * A row as the store held it before C7 — its own truth per concept, written by
+ * the lesson page and *I already know this*, read with a thirty-day calendar
+ * for "rusty". Read once by the migration, which turns it into a `SkillRow`
+ * (or drops it, for `unseen`); an older backup restores rows of this shape.
+ */
+export interface LegacySkillRow {
   conceptId: string;
   state: 'unseen' | 'learning' | 'known';
   lastReviewedAt?: string;
@@ -633,7 +651,7 @@ interface PianoPathDb extends DBSchema {
   plan: { key: string; value: PlanRow };
   streak: { key: string; value: StreakRow };
   micCalibration: { key: string; value: unknown };
-  skills: { key: string; value: SkillRow };
+  skills: { key: string; value: SkillRow | LegacySkillRow };
   levelOverrides: { key: string; value: LevelOverrideRow };
   folderLibraries: { key: string; value: FolderLibraryRow };
   folderScores: {

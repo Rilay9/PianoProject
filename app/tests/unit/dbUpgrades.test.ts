@@ -14,7 +14,7 @@
  */
 import { beforeEach, describe, expect, it } from 'vitest';
 import { openDB } from 'idb';
-import { CARRY_OVER_DUE_KEY, DB_VERSION, STORE_NAMES, openDatabase, resetDatabaseForTest } from '../../src/data/db';
+import { CARRY_OVER_DUE_KEY, DB_VERSION, STORE_NAMES, openDatabase, resetDatabaseForTest, type LegacySkillRow } from '../../src/data/db';
 import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
 
 /** The stores each version had, in the order `db.ts` created them. */
@@ -133,7 +133,7 @@ describe('upgrading from every version that has shipped', () => {
       expect((await db?.get('plan', 'current'))?.trackOrder).toEqual(['core', 'blues']);
       expect(await db?.get('settings', 'pianopath.settings')).toBe('{"zoom":1.25}');
       expect((await db?.getAll('sessions'))?.length).toBe(1);
-      expect((await db?.get('skills', 'scale'))?.state).toBe('learning');
+      expect(((await db?.get('skills', 'scale')) as LegacySkillRow | undefined)?.state).toBe('learning');
 
       // P15's migration, on every path that passes version 4: a level typed
       // before P15 was the owner's own number, and printing it later as an

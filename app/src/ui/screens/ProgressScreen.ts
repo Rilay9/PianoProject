@@ -25,8 +25,9 @@
  *  1. **Am I keeping it up** — the week against the goal, and the thirteen
  *     weeks of minutes a day. One loud figure and the map under it, in one
  *     block, so the answer is the first thing on the screen (`04` §0 R1).
- *  2. **What has come of it** — the repertoire, and the counts of what is
- *     started, passed and mastered.
+ *  2. **What has come of it** — the skills whose state moved in the last
+ *     four weeks and how, from the ladder (C7, X3's first half), then the
+ *     repertoire and the counts of what is started, passed and mastered.
  *  3. **The record** — performances, then recent sessions. Each row opens the
  *     piece it names, which is what a row drawn like that promises.
  *  4. **Merely available** — the weekly-goal control, which is set about once,
@@ -35,19 +36,23 @@
  *     bottom of a screen fifty rows long (R3).
  */
 import type { Router } from '../../router';
-import { allItems } from '../../curriculum/load';
+import { allItems, loadCurriculum } from '../../curriculum/load';
 import { allShelfPieces } from '../../data/booksStore';
 import type { CatalogItem } from '../../curriculum/types';
 import { importAll, isBackupFile, writeBackup } from '../../data/backup';
 import type { ProgressRow, SessionRow } from '../../data/db';
 import { NOT_MEASURED } from '../../engine/types';
-import { HISTORY_TEXT } from '../help';
+import { HISTORY_TEXT, SKILL_TEXT, skillMoveWords } from '../help';
+import { getPlan } from '../../data/planStore';
+import { learnerExposures, skillMoves, type SkillMove } from '../../data/skillsStore';
+import { VOCABULARY_V0 } from '../../evidence/vocabulary';
 import {
   allProgress,
   dayKey,
   getStreak,
   recentPerformances,
   recentSessions,
+  rungRows,
   setWeeklyGoal,
   weekSoFar,
 } from '../../data/progressStore';
@@ -236,6 +241,9 @@ export function ProgressScreen(router: Router): HTMLElement {
       el('span.heatmap-key__label', { text: label }),
     );
   }
+  // What the learner's evidence has changed lately (C7, X3): one state, the
+  // ladder's, the same the Skills screen shows.
+  const skills = el('div.list', { id: 'progress-skills' });
   const repertoire = el('div.list', { id: 'progress-repertoire' });
   const history = el('div.list', { id: 'progress-history' });
   const performances = el('div.list', { id: 'progress-performances' });
@@ -266,6 +274,7 @@ export function ProgressScreen(router: Router): HTMLElement {
 
   body.append(
     summary,
+    el('section.block', {}, el('h2', { text: SKILL_TEXT.heading }), skills),
     el('section.block', {}, el('h2', { text: 'Repertoire' }), repertoire),
     el('section.block', {}, el('h2', { text: 'Performances' }), performances),
     el('section.block', {}, el('h2', { text: 'Recent sessions' }), history),
@@ -336,6 +345,34 @@ export function ProgressScreen(router: Router): HTMLElement {
     goalBlock.replaceChildren(
       el('div.setting-row', {}, el('label', { htmlFor: 'progress-goal', text: 'Weekly goal (minutes)' }), goalInput),
       goalStatus,
+    );
+  }
+
+  /**
+   * The skills whose state moved in the last four weeks, and how (C7; X3's
+   * first half, `04` §6): from the ladder over the stored evidence, in the
+   * words the Skills screen uses — a step up or down, a skill the evidence has
+   * not supported within the retention span, or one shown again. Never a
+   * stage number: the strands move separately (L85). Rows are not controls:
+   * the way to practise a skill is the Skills screen, one link below them.
+   */
+  function drawSkills(moves: SkillMove[], today: Date): void {
+    const review = button(SKILL_TEXT.review, () => router.navigate('plan', 'skills'), {
+      id: 'progress-skills-review',
+      variant: 'quiet',
+    });
+    const name = (id: string): string => VOCABULARY_V0.skills.find((skill) => skill.id === id)?.display ?? id;
+    skills.replaceChildren(
+      ...(moves.length > 0
+        ? moves.map((move) =>
+            listRow({
+              title: name(move.skill),
+              subtitle: skillMoveWords(move, today),
+              dataset: { 'data-skill': move.skill, 'data-move': move.kind },
+            }),
+          )
+        : [el('p.muted', { text: SKILL_TEXT.nothingMoved })]),
+      el('div.row', {}, review),
     );
   }
 
@@ -617,6 +654,24 @@ export function ProgressScreen(router: Router): HTMLElement {
     drawPerformances(performed, byId);
     drawHistory(sessions, byId);
     drawData();
+    // Apart, so a section that cannot be read never blanks the week and the
+    // backup: the minutes and the history are this screen's first jobs.
+    void loadSkills().catch((cause: unknown) => {
+      skills.replaceChildren(el('p.muted', { text: `Skills could not be read: ${String(cause)}` }));
+    });
+  }
+
+  /**
+   * The skills section's data: every stored run as the rung state and the
+   * Skills screen read them — the evidence the ladder replays — and the
+   * exposures beside it (the carried rungs' concepts, the retired skills
+   * store's rows, carried over the first time they are read).
+   */
+  async function loadSkills(): Promise<void> {
+    const [curriculum, plan, runs] = await Promise.all([loadCurriculum(), getPlan(), rungRows()]);
+    const today = new Date();
+    const exposures = await learnerExposures(curriculum, plan, today);
+    drawSkills(skillMoves(runs, VOCABULARY_V0, today, exposures), today);
   }
 
   /** Same rule as the library's: a redraw that fails has to say so. */

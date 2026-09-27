@@ -2518,7 +2518,11 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       // Which rung judged it — see the Score screen's note on the same field.
       ...(rung === undefined ? {} : { lessonId: rung.id }),
       mode: `drill:${result.kind}`,
+      // A drill has no tempo slider: the 100 is a placeholder, stored as a
+      // tempo not measured so it is never read as one — it was made the
+      // item's best tempo on a pass (L52, C7).
       tempoPct: 100,
+      tempoMeasured: false,
       accuracy: judged ? result.accuracy : NOT_MEASURED,
       // A drill's accuracy is measured, not estimated — every answer is
       // either the right pitch set or it is not.
@@ -2795,12 +2799,14 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         ...(rung === undefined ? {} : { lessonId: rung.id }),
         mode: 'drill:checklist',
         tempoPct: 100,
+        tempoMeasured: false,
         // The ticks are the learner's own check, not a measurement of playing
         // (L52, C5): the boxes left unticked are `missed`, and a checklist
-        // with nothing left undone is what 0.1's `done` requirement reads.
+        // with nothing left undone is what 0.1's `done` requirement reads. No
+        // note is played, so neither a tempo nor wrong notes (C7).
         accuracy: NOT_MEASURED,
         accuracyEstimated: false,
-        wrongNotes: 0,
+        wrongNotes: NOT_MEASURED,
         missed: items.length - done,
         durationMs: Date.now() - startedAtMs,
         passed: done === items.length,
@@ -2986,11 +2992,13 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         ...(rung === undefined ? {} : { lessonId: rung.id }),
         mode: 'drill:placement',
         tempoPct: 100,
+        tempoMeasured: false,
         // A placement answers questions about the learner; it measures no
-        // playing (L52, C5). Finished, nothing is left undone.
+        // playing (L52, C5): no accuracy, tempo or wrong notes (C7). Finished,
+        // nothing is left undone.
         accuracy: NOT_MEASURED,
         accuracyEstimated: false,
-        wrongNotes: 0,
+        wrongNotes: NOT_MEASURED,
         missed: 0,
         durationMs: Date.now() - startedAtMs,
         // A placement test is not passed or failed itself — it is completed,
@@ -3312,13 +3320,14 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         ...(rung === undefined ? {} : { lessonId: rung.id }),
         mode: 'drill:walkthrough',
         tempoPct: 100,
+        tempoMeasured: false,
         // A tour is not accurate or inaccurate — `02` Stage 0.3's rule is "tour
         // completed", which 0.3's `done` requirement reads from this row with
         // nothing missed. It was written as accuracy 1, a measurement nobody
-        // took (L52, C5).
+        // took (L52, C5), and a tempo and no wrong notes likewise (C7).
         accuracy: NOT_MEASURED,
         accuracyEstimated: false,
-        wrongNotes: 0,
+        wrongNotes: NOT_MEASURED,
         missed: 0,
         durationMs: Date.now() - startedAtMs,
         passed: true,

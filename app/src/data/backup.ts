@@ -22,7 +22,6 @@ import { openDatabase, STORE_NAMES, type ImportRow, type ProgressRow, type Store
 import { importsChanged } from './importStore';
 import { forgetCachedProgress } from './progressStore';
 import { forgetCachedPlan } from './planStore';
-import { forgetCachedSkills } from './skillsStore';
 
 export const BACKUP_VERSION = 1;
 
@@ -315,11 +314,11 @@ export async function importAll(
   // has just gone behind all of them. Left alone they do not merely show stale
   // numbers: the next run reads the cached streak row, adds today's minutes to
   // it and writes it back, which **deletes the restored history** — the one
-  // thing in this app with no second copy. Same shape for the plan and the
-  // skills; the imports also have to say so, or no screen redraws.
+  // thing in this app with no second copy. Same shape for the plan; the
+  // imports also have to say so, or no screen redraws. (The skills store keeps
+  // no copy in memory since C7: it is read where it is shown.)
   forgetCachedProgress();
   forgetCachedPlan();
-  forgetCachedSkills();
   if (Array.isArray(raw.stores.imports)) importsChanged();
   return report;
 }

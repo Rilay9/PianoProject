@@ -41,9 +41,10 @@ import type { Evidence, MeasuredEvidence, SelfAssessedEvidence } from './evidenc
 
 /**
  * Days between supporting evidence before a first attempt counts as retention.
- * **A hypothesis**: the review calendar's last step (`REVIEW_INTERVALS_DAYS`,
- * 21), not a measured forgetting curve. Also the span after which a skill is
- * "not shown recently".
+ * **A hypothesis**: taken from the last step of the item review calendar
+ * (1, 3, 7 and 21 days), which C6 retired; not a measured forgetting curve.
+ * Also the span after which a skill is "not shown recently" — what the Skills
+ * screen calls rusty since C7.
  */
 export const RETENTION_DAYS = 21;
 

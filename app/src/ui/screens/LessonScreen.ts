@@ -18,7 +18,6 @@ import { lessonShortfall } from '../../curriculum/needs';
 import type { CatalogItem, Curriculum, Lesson, LessonTool } from '../../curriculum/types';
 import { allProgress, selfPass } from '../../data/progressStore';
 import { getSettings, updateSettings } from '../../data/settingsStore';
-import { markLessonLearnt, markSkill } from '../../data/skillsStore';
 import { recordPlacement, recordRungWord } from '../../data/planStore';
 import { loadRungStates } from '../../data/rungStates';
 import type { RungReading, RungStates } from '../../evidence/rungState';
@@ -798,20 +797,10 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     // Met by the evidence its requirements name (C5), where it was the items
     // marked passed, counted over the rung's lists.
     const done = reading?.status === 'met';
-    // A lesson finished by *playing* it teaches its concepts too.
-    //
-    // `markSkill` was called in exactly one place: the `I already know this`
-    // shortcut. So a learner who practised a rung properly left every one of
-    // its concepts at `unseen` for ever — and because `displayState` derives
-    // "rusty" only from a state that is *not* unseen, those concepts could
-    // never go rusty either. The Skills review screen was inert for anyone who
-    // actually played the piano, which is the opposite of who it is for.
-    //
-    // Only on the transition, and only for a concept still unseen. Marking on
-    // every draw would refresh `lastReviewedAt` each time the page was opened,
-    // and a timestamp that keeps moving is one that never reaches thirty days —
-    // the screen would then have no rusty skills for the other reason.
-    if (done) void markLessonLearnt(lesson.concepts ?? []);
+    // A met rung writes no skill state (C7). It used to mark every concept the
+    // rung names `known` in the skills store — a second truth beside the
+    // evidence, and the start of a thirty-day calendar for "rusty". What the
+    // learner can do is what the runs' evidence shows, read on the ladder.
     const stateWord = reading ? rungBadge(reading) : RUNG_TEXT.notStarted;
     actions.replaceChildren(
       el('span', { id: 'lesson-state' }, badge(stateWord, done ? 'passed' : 'neutral')),
@@ -821,11 +810,11 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
           // The learner's word about the rung (C5): kept apart from the
           // evidence, it sets the rung aside in the plan and meets none of its
           // requirements. It used to mark the rung's items passed, which
-          // credited every other rung listing them (L8). The concepts are
-          // still marked on the Skills screen, as before (C7 owns that store).
+          // credited every other rung listing them (L8), and until C7 its
+          // concepts `known` in the skills store; the Skills screen now shows
+          // the word beside those concepts, apart, and never as a state.
           void (async () => {
             await recordRungWord(lessonId, 'known');
-            for (const concept of lesson?.concepts ?? []) await markSkill(concept, 'known');
             await refresh();
             draw();
             status.textContent = 'Lesson marked as already known. The app keeps your word apart from your runs.';

@@ -40,3 +40,5 @@ app/.probe/
 # reference. Only the CI platform's snapshots are committed (docs/06 §1).
 app/tests/**/*-win32.png
 app/tests/**/*-darwin.png
+# Isolated builder worktrees the harness creates beside the checkout
+.claude/worktrees/

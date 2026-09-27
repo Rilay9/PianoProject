@@ -24,7 +24,6 @@ import {
 import { getSetupRecord } from '../../data/setupStore';
 import { openDatabase } from '../../data/db';
 import { forgetCachedProgress } from '../../data/progressStore';
-import { forgetCachedSkills } from '../../data/skillsStore';
 import { directoryPickerAvailable } from '../../data/folderLibrary';
 import { getThemePreference, setThemePreference, type ThemePreference } from '../theme';
 import {
@@ -642,7 +641,6 @@ export function SettingsScreen(router: Router): HTMLElement {
             // minutes straight back into the emptied store — the reset was
             // undone rather than merely unrendered.
             forgetCachedProgress();
-            forgetCachedSkills();
             status.textContent = 'Progress reset. Reload the app to see it.';
           })();
         },

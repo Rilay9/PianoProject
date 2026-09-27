@@ -487,6 +487,12 @@ export async function sessionCount(): Promise<number> {
  * `sessionRetention.test.ts`. Every row counts, measured or not: a run nothing
  * heard still costs a row, and a learner with no piano writes only those.
  *
+ * Since C7 (L87) the cap deletes only rows no derivation reads
+ * (`holdsEvidence`): a run that bears evidence or names the rung that judged
+ * it is never deleted, so the store can hold more than this many rows, by the
+ * runs that established something — each of them no bigger than a compacted
+ * row. See `pruneSessions`.
+ *
  * Pruned in blocks rather than one row per run: deleting on every write would
  * put a cursor walk in the path of finishing a piece, which is the one moment
  * this store must not be slow.
@@ -592,7 +598,7 @@ function tidySessions(now: Date): void {
   tidying = tidying
     .then(async () => {
       await compactSessions(now);
-      await pruneSessions();
+      await pruneSessions(MAX_SESSIONS, PRUNE_SLACK, now);
     })
     .catch(() => undefined);
 }
@@ -610,31 +616,80 @@ export function sessionsTidied(): Promise<void> {
 }
 
 /**
+ * Whether a stored run holds something a derivation reads (C7, L87): evidence
+ * about a skill — under any evidence version, since a later version decides
+ * what an older claim is worth and refuses it rather than losing it — or the
+ * rung that judged it, whose requirements the rung state counts it towards.
+ * The last-resort cap never deletes such a row.
+ */
+export function holdsEvidence(row: SessionRow): boolean {
+  if (row.lessonId !== undefined) return true;
+  // A refusal is not evidence; a measured or self-assessed record is. (Read by
+  // kind rather than through the evidence module, which this store must not
+  // pull in: its detectors reach the score model's code.)
+  return Array.isArray(row.evidence) && row.evidence.some((result) => result.kind !== 'refusal');
+}
+
+/**
+ * The count left after a prune that could not reach the cap, so the next one
+ * waits for another slack's worth of runs instead of walking the same kept
+ * rows after every run. Forgotten with the other caches.
+ */
+let pruneStalledAt: number | null = null;
+
+/**
  * Drops the oldest sessions once there are more than the cap plus its slack.
  *
  * By the `byDate` index, oldest first, so "the oldest" means the oldest run
  * and not the lowest auto-increment key — the two agree today and would stop
  * agreeing the first time a backup is restored.
  *
+ * **Cleanup never erases competence (C7, L87).** The ladder and the rung
+ * state are derived by replaying the rows, so the runs that established a
+ * skill or met a rung are exactly the oldest ones, the first a cap would
+ * delete. Two shapes were open: a durable checkpoint beside the rows, or the
+ * row as its own checkpoint with deleting evidence forbidden. This is the
+ * second, because it is the simpler coherent one: every reader — the rung
+ * state, the reader, the Skills screen, backup and restore, the evidence job —
+ * already reads these rows and nothing has to be kept in step beside them. So
+ * the walk deletes only rows no derivation reads (`holdsEvidence`), keeps the
+ * rest as they are — already compacted past the observation window, their
+ * evidence never folded or dropped, no verdict written on them — and never
+ * reaches into the observation window: recent runs are what the history and
+ * the reader use, and when the kept rows alone are past the cap, deleting
+ * yesterday's run would not bring the store back to it. A later evidence
+ * version refuses a kept row's old claim (it contributes nothing, and the job
+ * keeps it out with its reason) rather than deleting it.
+ *
  * Failure is deliberately silent: a phone that cannot prune keeps every row,
  * which is exactly the behaviour that shipped, and is far better than a run
  * that will not record because tidying up threw.
  */
-export async function pruneSessions(max = MAX_SESSIONS, slack = PRUNE_SLACK): Promise<number> {
+export async function pruneSessions(
+  max = MAX_SESSIONS,
+  slack = PRUNE_SLACK,
+  now = new Date(),
+  windowDays = OBSERVATION_WINDOW_DAYS,
+): Promise<number> {
   const db = await openDatabase();
   if (!db) return 0;
   try {
     const total = await db.count('sessions');
     if (total <= max + slack) return 0;
+    if (pruneStalledAt !== null && total <= pruneStalledAt + slack) return 0;
+    const edge = new Date(now.getTime() - windowDays * DAY_MS).toISOString();
     const tx = db.transaction('sessions', 'readwrite');
-    let cursor = await tx.store.index('byDate').openCursor();
+    let cursor = await tx.store.index('byDate').openCursor(IDBKeyRange.upperBound(edge, true));
     let dropped = 0;
     while (cursor && total - dropped > max) {
-      await cursor.delete();
-      dropped += 1;
+      if (!holdsEvidence(cursor.value)) {
+        await cursor.delete();
+        dropped += 1;
+      }
       cursor = await cursor.continue();
     }
     await tx.done;
+    pruneStalledAt = total - dropped > max ? total - dropped : null;
     // The rung state's copy is read again from what is left (C5).
     if (dropped > 0) rungRowsMemory = null;
     return dropped;
@@ -884,6 +939,7 @@ export function forgetCachedProgress(): void {
   streakMemory = null;
   dailyReadMemory = null;
   rungRowsMemory = null;
+  pruneStalledAt = null;
 }
 
 /** Test hook. */

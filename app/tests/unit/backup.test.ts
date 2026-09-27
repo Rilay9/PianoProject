@@ -16,7 +16,7 @@ import {
   isBackupFile,
   type BackupFile,
 } from '../../src/data/backup';
-import { STORE_NAMES, openDatabase, type ProgressRow } from '../../src/data/db';
+import { STORE_NAMES, openDatabase, type LegacySkillRow, type ProgressRow } from '../../src/data/db';
 import { recordRun, resetProgressForTest, type RunResult } from '../../src/data/progressStore';
 import { useFakeIndexedDb } from './helpers/idb';
 
@@ -322,7 +322,8 @@ describe('a backup of a phone that has been used (P19 §C3)', () => {
     expect((await fresh?.get('books', 'book.mine'))?.pieces[0]?.page).toBe(14);
     expect(await fresh?.get('settings', 'pianopath.settings')).toContain('folderHandles');
     expect((await fresh?.getAll('sessions'))?.length).toBe(1);
-    expect((await fresh?.get('skills', 'scale'))?.state).toBe('known');
+    // A row of the retired store's shape, as an older backup holds it: restored as written (C7 migrates it where it is read).
+    expect(((await fresh?.get('skills', 'scale')) as LegacySkillRow | undefined)?.state).toBe('known');
     expect((await fresh?.get('levelOverrides', 'song.a'))?.level).toBe(6.1);
     expect((await fresh?.get('micCalibration', 'device-1')) as { latencyMs: number } | undefined).toEqual({
       latencyMs: 42,

@@ -130,6 +130,9 @@ async function seed(n: number, make: (at: Date, index: number) => SessionRow = p
   await tx.done;
 }
 
+/** A day the prune runs on, long after every seeded run: all of them are past the observation window. */
+const PRUNED_ON = new Date(Date.UTC(2027, 0, 1));
+
 function plainRow(at: Date, index: number): SessionRow {
   return {
     itemId: `song.day-${String(index)}`,
@@ -162,11 +165,14 @@ describe('the sessions store is bounded', () => {
   // Revised (C1): this seeded `MAX_SESSIONS + 201` rows. The cap is now tens of
   // thousands of runs, and the rule it tests — over the cap plus its slack,
   // back down to the cap, oldest first — is the same rule at any cap.
+  // Revised (C7): the prune never reaches into the observation window, so the
+  // day it runs on is given, well after the seeded runs, rather than read off
+  // the clock the test happens to run under.
   it('brings a store over the cap back down to it', async () => {
     const cap = 120;
     const slack = 20;
     await seed(cap + slack + 1);
-    const dropped = await pruneSessions(cap, slack);
+    const dropped = await pruneSessions(cap, slack, PRUNED_ON);
     expect(dropped).toBe(slack + 1);
     expect(await sessionCount()).toBe(cap);
   });
@@ -176,7 +182,7 @@ describe('the sessions store is bounded', () => {
     // same one. The slack exists so that a phone does not walk a cursor after
     // every single run, not to change which rows survive.
     await seed(30);
-    await pruneSessions(4, 0);
+    await pruneSessions(4, 0, PRUNED_ON);
     const kept = await recentSessions(100);
     expect(kept).toHaveLength(4);
     expect(kept.map((row) => row.itemId)).toEqual([
@@ -185,6 +191,16 @@ describe('the sessions store is bounded', () => {
       'song.day-28',
       'song.day-27',
     ]);
+  });
+
+  // Added (C7, L87): the last resort deletes old runs only. When the runs that
+  // must be kept are past the cap on their own, deleting yesterday's would
+  // not bring the store back to it, and yesterday's is what the history shows.
+  it('never deletes a run inside the observation window', async () => {
+    await seed(30);
+    const soon = new Date(Date.UTC(2026, 8, 12));
+    expect(await pruneSessions(4, 0, soon), 'a run from the last few weeks was pruned').toBe(0);
+    expect(await sessionCount()).toBe(30);
   });
 
   // Revised (C1). This was "keeps more than any screen reads, so the bound is

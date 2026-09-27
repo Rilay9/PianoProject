@@ -35,7 +35,9 @@ import {
   EVIDENCE_EXCLUSION_WORDS,
   RUNG_TEXT,
   SLOT_TEXT,
+  SKILL_TEXT,
   evidenceJobLine,
+  skillMoveWords,
   requirementState,
   swapTierWords,
   type HelpEntry,
@@ -308,5 +310,42 @@ describe('the slot sentences are the ones `04` §2 prints', () => {
     ];
     const missing = said.filter((line) => !section.includes(flat(line)));
     expect(missing, `slot words §2 does not print:\n${missing.join('\n')}`).toEqual([]);
+  });
+});
+
+// Added (C7): what the Skills screen and Progress say about a skill — the
+// ladder's states in words, "not shown in 4 weeks", *not judged by the app*
+// with where it is taught, and how a skill moved — are the words `04` §3a
+// and §6 print.
+describe('the skill words are the ones `04` §3a and §6 print', () => {
+  const flat = (text: string): string => text.replace(/\s+/g, ' ');
+  function between(start: string, next: string): string {
+    const from = SPEC.indexOf(start);
+    expect(from, `\`04\` has no section "${start}"`).toBeGreaterThan(-1);
+    const end = SPEC.indexOf(next, from + start.length);
+    return SPEC.slice(from, end === -1 ? undefined : end);
+  }
+
+  it('§3a lists every fixed word the Skills screen and Progress say', () => {
+    const section = flat(between('### 3a. Skills review', '\n### '));
+    const missing = Object.values(SKILL_TEXT).filter((line) => !section.includes(flat(line)));
+    expect(missing, `skill words §3a does not print:\n${missing.join('\n')}`).toEqual([]);
+  });
+
+  it('§6 prints how a move is said, as the function says it', () => {
+    const section = flat(between('## 6. Progress', '\n## 7.'));
+    const today = new Date('2026-10-29T12:00:00');
+    const reading = (state: 'practised' | 'familiar', notShownRecently = false) =>
+      ({ state, transfer: false, retained: false, notShownRecently, selfAssessed: [] });
+    const said = [
+      skillMoveWords({ kind: 'up', then: reading('practised'), now: reading('familiar') }, today),
+      skillMoveWords({ kind: 'unshown', then: reading('familiar'), now: reading('familiar', true), lastSupport: '2026-10-01T12:00:00' }, today),
+      skillMoveWords({ kind: 'shown again', then: reading('familiar', true), now: reading('familiar') }, today),
+      SKILL_TEXT.nothingMoved,
+      SKILL_TEXT.review,
+    ];
+    expect(said.slice(0, 3)).toEqual(['tried, not yet shown → familiar', 'familiar · not shown in 4 weeks', 'familiar · shown again']);
+    const missing = said.filter((line) => !section.includes(flat(line)));
+    expect(missing, `§6 does not print:\n${missing.join('\n')}`).toEqual([]);
   });
 });

@@ -1,0 +1,15 @@
+{
+ "constructed-skills.status": "1 of 283 skills · not shown lately",
+ "constructed-skills.chip": "Not shown lately pressed=true",
+ "constructed-skills.opening": [
+  "bass-clef: "
+ ],
+ "constructed-skills.all.status": "283 of 283 skills",
+ "constructed-skills.all.states": {
+  "not-judged": 46,
+  "familiar+rusty": 1,
+  "proficient": 2,
+  "not-introduced": 1
+ },
+ "constructed-progress.skills": "Sight-reading\nnot shown yet → proficient\nReading by interval\nnot shown yet → proficient\nThe bass clef\nfamiliar · not shown in 4 weeks\nReview a skill"
+}

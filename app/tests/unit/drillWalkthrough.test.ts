@@ -340,6 +340,39 @@ describe('there is a way out of every step, and it can be run again', () => {
     expect(record?.missed).toBe(0);
   });
 
+  // Added (C7, L52): the tour and the checklist measure no playing, and wrote a
+  // tempo of 100 and no wrong notes as if they had. Neither is a measurement:
+  // the tempo is stored as not measured and the wrong notes as not measured.
+  it('the tour and the checklist store no tempo and no wrong notes they did not measure', async () => {
+    await mount();
+    click('drill-walkthrough-next');
+    click('drill-walkthrough-next');
+    click('drill-walkthrough-next');
+    await vi.waitFor(() => {
+      expect(recordRunSpy).toHaveBeenCalledTimes(1);
+    });
+    const tour = recordRunSpy.mock.calls[0]?.[0];
+    expect(tour?.tempoMeasured, 'the tour’s tempo went on the record as measured').toBe(false);
+    expect(tour?.wrongNotes, 'the tour went on the record with no wrong notes, as if notes were judged').toBe('not measured');
+
+    document.body.replaceChildren();
+    recordRunSpy.mockClear();
+    findItemSpy.mockResolvedValue(checklistItem());
+    await mount('drill.posture.checklist');
+    for (const box of document.querySelectorAll<HTMLInputElement>('#drill-checklist input[type="checkbox"]')) {
+      box.checked = true;
+      box.dispatchEvent(new Event('change'));
+    }
+    document.querySelector<HTMLButtonElement>('#drill-checklist-done')?.click();
+    await vi.waitFor(() => {
+      expect(recordRunSpy).toHaveBeenCalledTimes(1);
+    });
+    const checklist = recordRunSpy.mock.calls[0]?.[0];
+    expect(checklist?.tempoMeasured).toBe(false);
+    expect(checklist?.wrongNotes).toBe('not measured');
+    expect(checklist?.missed, 'what the checklist does record is what was left unticked').toBe(0);
+  });
+
   it('Again on the sheet puts it back to the first step in place', async () => {
     await mount();
     click('drill-walkthrough-next');

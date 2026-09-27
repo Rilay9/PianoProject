@@ -147,8 +147,15 @@ test.describe('Skills review', () => {
     const first = page.locator('#skills-list .list-row').first();
     await expect(first).toBeVisible();
     // Revised (C5): *introduced* is a state too — the ladder's first, which the
-    // concepts of rungs carried over from before C5 show.
-    await expect(first).toHaveAttribute('data-state', /^(unseen|introduced|learning|known|rusty)$/);
+    // concepts of rungs carried over from before C5 show. Revised (C7): one
+    // state, the ladder's own, or *not judged* for a concept the app cannot
+    // measure; the skills store's *unseen*, *learning*, *known* and the
+    // calendar's *rusty* are gone (rusty is `data-rusty`, the ladder's "not
+    // shown recently").
+    await expect(first).toHaveAttribute(
+      'data-state',
+      /^(not-judged|not-introduced|introduced|practised|familiar|proficient|transfer-demonstrated|retained|mastered)$/,
+    );
   });
 
   test('lists every exercise for a concept, easiest first, collapsed after three', async ({
