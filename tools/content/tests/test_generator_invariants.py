@@ -433,6 +433,13 @@ FAMILIES: dict[str, dict] = {
         build=lambda: G.make_clave(list(G.CLAVE_PATTERNS)[0]),
         bars=8, bars_says="docstring: 'eight bars rather than four' — the clave is a two-bar unit",
     ),
+    "study": dict(
+        maker="make_study",
+        build=lambda: G.make_study(__import__("study").PLAN[0]),
+        bars=8, bars_says="the recipe's length: study.PLAN[0] is an eight-bar period",
+        lh_max=MIDDLE_C,
+        lh_says="the realiser keeps the left hand off ledger lines, at or under middle C (study.LH_HIGH)",
+    ),
     "tumbao": dict(
         maker="make_tumbao",
         build=lambda: G.make_tumbao("C"),

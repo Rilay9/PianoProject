@@ -282,7 +282,10 @@ class TestTheQueue(Built):
             self.assertEqual(item["role"], "canonical")
             self.assertEqual(review.promise_of(FC.contract(family), FC.recipe_of(item)), "music")
         music = {f for f, row in FC.contracts().items() if row["promise"][-1]["promise"] == "music"}
-        self.assertEqual(len(music), 14)
+        # Revised (D3; the old assumption: the music families are D0's fourteen): D0's fourteen and
+        # the generated study, whose six canonical items the tier takes by the same rule.
+        self.assertEqual(len(music), 15)
+        self.assertIn("study", music)
         self.assertLessEqual(music, families, "a music family with no canonical item in the first tier")
 
     def test_then_the_not_judged_families_then_the_unmeasurable_claims(self) -> None:

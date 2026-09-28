@@ -340,7 +340,20 @@ class TestTheMutationCensus(unittest.TestCase):
             if not FC.physical_faults(unsourced, recipe, sc, claimed):
                 unreddened.append(f"{family}: verified fingering without a source")
             count += 1
-            if FC.musical_gate(row).get("evaluated"):
+            # Revised (D3; the old assumption: no family has a musical evaluator, so any family's
+            # gate claiming an evaluation was the fault). A row naming an evaluator must refuse its
+            # own item once the floor is raised above the item's score; every other music family's
+            # gate stays "not evaluated", and a drill's does not apply.
+            gate = FC.musical_gate(row, sc, entry)
+            if row.get("musical"):
+                if not gate.get("evaluated") or not gate.get("passes"):
+                    unreddened.append(f"{family}: the evaluator does not pass its own item: {gate.get('why')}")
+                strict = copy.deepcopy(row)
+                strict["musical"]["floor"] = gate.get("total", 0) + 0.01
+                if FC.musical_gate(strict, sc, entry).get("passes"):
+                    unreddened.append(f"{family}: raising the musical floor above the item's score")
+                count += 1
+            elif gate.get("evaluated"):
                 unreddened.append(f"{family}: the musical hook claims an evaluation")
             reddened[family] = count
         self.assertEqual(unreddened, [], "promises whose mutation did not fail the gate")

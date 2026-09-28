@@ -228,6 +228,11 @@
       "items": 4,
       "digest": "78d7e8bd533d6ec0a1400886ffd99340838bc68b00509283d44fe6d6646cb14d"
     },
+    "study": {
+      "version": 1,
+      "items": 24,
+      "digest": "e8fc91ac36ad7565d67c12d50696c280e1705325beb55b76d5b3e75150c25dfc"
+    },
     "swing_pair": {
       "version": 1,
       "items": 3,

@@ -21,9 +21,14 @@ This module owns the table's reading and the gates:
   move of the hand beyond an octave and the time it has, a fast repeated note and its
   solution, the fastest rate in one hand, continuous playing, the keys, the printed
   fingering against its source, and a printed crossing that goes against the hand;
-* **musical** (`musical_gate`) is only the hook: a `music` family is marked "not
-  evaluated" until the sight-reading and study briefs (D1, D3) and the human review (D2)
-  fill it, and a drill is never judged as music, so its repetition is never a defect.
+* **musical** (`musical_gate`) evaluates the families whose row names an evaluator — the
+  generated study (D3), read by `musical_evaluator.py`, the Python port of D1's scorer with
+  the study's multi-phrase and minor semantics — and refuses an item below the row's floor or
+  with a cadence on a note outside its chord; a `music` family with no evaluator (the grooves
+  and style families) stays "not evaluated": the evaluator judges phrase shape, never idiom,
+  and idiom needs hearing (D2). A drill is never judged as music, so its repetition is never
+  a defect. A study's pedagogical gate adds one rule of its own, read on the written notes:
+  a bar repeated exactly beyond the grammar's restatement (`repetition_faults`).
 
 Nothing here decides a demand. A demand has one definition and it is the app's
 (`app/src/demands/detect.ts`, `docs/03` "A demand has one definition").
@@ -438,13 +443,81 @@ def physical_faults(row: dict, recipe: dict, score, entry: dict | None = None) -
 # --------------------------------------------------------------------------------------
 
 
-def musical_gate(row: dict) -> dict:
+def _promises_music(row: dict) -> bool:
+    return any(rule["promise"] == "music" for rule in row["promise"])
+
+
+def musical_gate(row: dict, score=None, entry: dict | None = None) -> dict:
     """
-    Only the hook (D0 item 3): a drill is not judged as music, and a family promising music
-    is "not evaluated" until D1 and D3 write the evaluator and D2 records a hearing. Never
-    a pass: nothing here can say a generated groove is idiomatic.
+    The musical gate (D0 item 3; D3).
+
+    - A drill: does not apply; its repetition is the point.
+    - A music family whose row names an evaluator (`row["musical"]`, the study): the evaluator
+      on the written score and the form the item declares (`entry["drill"]["study"]`), refused
+      below the row's floor or with any cadence on a note outside its chord. Without the score
+      it says it needs the written notes and passes nothing. What it judges is phrase shape
+      from the notation: it is never a hearing, and `heard` stays the record's (D2).
+    - Any other music family (the grooves and style families): "not evaluated" — the evaluator
+      judges phrase shape, not idiom (Part 15 §17), and idiom needs hearing. Never a pass.
+
+    D0's hook compared `row["promise"]`, a list, with the string "drill", so it never matched
+    and every family, drills included, read as "not evaluated"; a drill now reads as one.
     """
-    if row["promise"] == "drill":
+    promise = "music" if _promises_music(row) else "drill"
+    if entry is not None:
+        recipe = recipe_of(entry)
+        promise = next((rule["promise"] for rule in row["promise"] if matches(rule.get("when"), recipe)),
+                       row["promise"][-1]["promise"])
+    if promise != "music":
         return {"applies": False, "why": "a drill is judged as a drill; its repetition is the point"}
-    return {"applies": True, "evaluated": False,
-            "why": "no musical evaluator yet (D1, D3) and no hearing recorded (D2); unheard"}
+    musical = row.get("musical")
+    if not musical:
+        return {"applies": True, "evaluated": False,
+                "why": "not evaluated: idiom needs hearing — the evaluator judges phrase shape, not idiom (D3), "
+                       "and no hearing is recorded (D2); unheard"}
+    if score is None or entry is None:
+        return {"applies": True, "evaluated": False, "why": "the evaluator reads the written notes; none given"}
+    import musical_evaluator as ME
+
+    facts = (entry.get("drill") or {}).get("study")
+    if not facts:
+        return {"applies": True, "evaluated": True, "passes": False, "total": 0.0, "parts": {}, "wrong": [],
+                "floor": musical["floor"], "why": "the item declares no form for the evaluator to read"}
+    scored = ME.score_study(ME.study_model(score, facts))
+    passes = scored["total"] >= musical["floor"] and not scored["wrong"]
+    why = (f"phrase shape {scored['total']:.3f} against the floor {musical['floor']}"
+           + (f"; {'; '.join(scored['wrong'])}" if scored["wrong"] else "")
+           + " (notation, not hearing; unheard)")
+    return {"applies": True, "evaluated": True, "passes": passes, "total": scored["total"], "parts": scored["parts"],
+            "wrong": scored["wrong"], "floor": musical["floor"], "why": why}
+
+
+def repetition_faults(bars: list[str], restated, allowed: int = 1) -> list[str]:
+    """
+    A study is not a drill: a bar of the tune repeated exactly — rhythm and pitches — beyond the
+    grammar's own restatement is overconcentration, and more than `allowed` such repeats is a
+    fault (D1's motif rule lets one exact repeat stand). `bars` holds each bar's melody as a
+    comparable string; `restated` the bars the grammar restates, which are never counted.
+    """
+    repeats = []
+    for b in range(1, len(bars)):
+        if b in restated:
+            continue
+        if bars[b] and any(bars[a] == bars[b] for a in range(b)):
+            repeats.append(b + 1)
+    if len(repeats) > allowed:
+        return [f"repetition: bars {', '.join(str(b) for b in repeats)} repeat an earlier bar exactly, "
+                "beyond the grammar's restatement"]
+    return []
+
+
+def written_repetition_faults(row: dict, score, entry: dict) -> list[str]:
+    """`repetition_faults` on the written tune (the upper staff) of an item whose row states the rule."""
+    rule = row.get("repetition")
+    if not rule:
+        return []
+    import musical_evaluator as ME
+
+    bars = [" ".join(f"{n.midi}:{n.duration:g}" for n in bar if not n.chord) for bar in ME.lines_of(score, 0)]
+    restated = set(((entry.get("drill") or {}).get("study") or {}).get("restated") or [])
+    return repetition_faults(bars, restated, rule["maxUndeclaredExactRepeats"])
