@@ -1,0 +1,116 @@
+mutant ladder on session.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-aaa20169ef5952602/app
+
+ ❯ tests/unit/gateAtTheConsumers.test.ts (25 tests | 6 failed) 1009ms
+   ❯ the session card’s rows drawn straight from a rung’s list pass the same admission (D3b) (9)
+     × runs: the rung’s own groove is not what it asks for until approved; the warm-up takes the next valid step, and a drill and a notated song beside it are offered as before 4ms
+     × done: a requirement naming the groove stays unmet and no row claims it; the next valid step fills the warm-up, or the rung’s other option 1ms
+     × measure: the rung’s groove of the measured kind is refused; a generated drill of the same kind beside it is what the rung asks for 1ms
+     × the ladder’s rung step: the rung’s groove is passed over for the next step, or for a drill of the rung beside it 1ms
+     × the ladder’s prerequisite step: the prerequisite rung’s groove is passed over for exposure, or for its notated exercise beside it 1ms
+   ❯ the card on the built catalogue offers no music-promising generated item without an affirmative teaching-use decision (D3b) (3)
+     × every rung, a fresh learner placed there, every track on, every length: no row is one 621ms
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 19 passed (25)
+   Start at  18:01:00
+   Duration  1.75s (tests 62%, transform 26%, import 12%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > the session card’s rows drawn straight from a rung’s list pass the same admission (D3b) > runs: the rung’s own groove is not what it asks for until approved; the warm-up takes the next valid step, and a drill and a notated song beside it are offered as before
+AssertionError: teaching null: expected [ 'ex.groove', 'ex.pre' ] to not include 'ex.groove'
+ ❯ tests/unit/gateAtTheConsumers.test.ts:507:62
+    505|     for (const teaching of REFUSED) {
+    506|       const slots = card(only, [groove('ex.groove', teaching), pre]);
+    507|       expect(ids(slots), `teaching ${String(teaching)}`).not.toContain…
+       |                                                              ^
+    508|       expect(row(slots, 'technique'), `teaching ${String(teaching)}`).…
+    509|       expect(claimsNext(slots)).toBe(false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > the session card’s rows drawn straight from a rung’s list pass the same admission (D3b) > done: a requirement naming the groove stays unmet and no row claims it; the next valid step fills the warm-up, or the rung’s other option
+AssertionError: teaching null: expected [ 'ex.groove', 'ex.pre' ] to not include 'ex.groove'
+ ❯ tests/unit/gateAtTheConsumers.test.ts:538:62
+    536|     for (const teaching of REFUSED) {
+    537|       const slots = card(only, [groove('ex.groove', teaching), pre]);
+    538|       expect(ids(slots), `teaching ${String(teaching)}`).not.toContain…
+       |                                                              ^
+    539|       expect(slots.some((slot) => slot.claim?.kind === 'asked' && slot…
+    540|       expect(row(slots, 'technique')).toMatchObject({ item: { id: 'ex.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > the session card’s rows drawn straight from a rung’s list pass the same admission (D3b) > measure: the rung’s groove of the measured kind is refused; a generated drill of the same kind beside it is what the rung asks for
+AssertionError: teaching null: expected [ 'ex.groove', 'ex.pre' ] to not include 'ex.groove'
+ ❯ tests/unit/gateAtTheConsumers.test.ts:560:62
+    558|     for (const teaching of REFUSED) {
+    559|       const slots = card(only, [groove('ex.groove', teaching), pre]);
+    560|       expect(ids(slots), `teaching ${String(teaching)}`).not.toContain…
+       |                                                              ^
+    561|       expect(row(slots, 'technique')).toMatchObject({ item: { id: 'ex.…
+    562|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > the session card’s rows drawn straight from a rung’s list pass the same admission (D3b) > the ladder’s rung step: the rung’s groove is passed over for the next step, or for a drill of the rung beside it
+AssertionError: teaching null: expected [ 'ex.groove', 'ex.pre' ] to not include 'ex.groove'
+ ❯ tests/unit/gateAtTheConsumers.test.ts:578:62
+    576|     for (const teaching of REFUSED) {
+    577|       const slots = card(only, [gone, groove('ex.groove', teaching), p…
+    578|       expect(ids(slots), `teaching ${String(teaching)}`).not.toContain…
+       |                                                              ^
+    579|       expect(row(slots, 'technique')).toMatchObject({ item: { id: 'ex.…
+    580|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > the session card’s rows drawn straight from a rung’s list pass the same admission (D3b) > the ladder’s prerequisite step: the prerequisite rung’s groove is passed over for exposure, or for its notated exercise beside it
+AssertionError: teaching null: expected [ 'ex.groove', 'ex.expo' ] to not include 'ex.groove'
+ ❯ tests/unit/gateAtTheConsumers.test.ts:598:62
+    596|     for (const teaching of REFUSED) {
+    597|       const slots = card(only, [gone, groove('ex.groove', teaching), e…
+    598|       expect(ids(slots), `teaching ${String(teaching)}`).not.toContain…
+       |                                                              ^
+    599|       expect(row(slots, 'technique')).toMatchObject({ item: { id: 'ex.…
+    600|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/unit/gateAtTheConsumers.test.ts > the card on the built catalogue offers no music-promising generated item without an affirmative teaching-use decision (D3b) > every rung, a fresh learner placed there, every track on, every length: no row is one
+AssertionError: 50 rows: expected [ …(12) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "jazz.5 (120 min): review exercise.boogie.c.pinetop (rung)",
++   "holiday.5 (120 min): review exercise.boogie.c.pinetop (rung)",
++   "ragtime.5 (120 min): review exercise.boogie.c.pinetop (rung)",
++   "theory.5 (120 min): review exercise.boogie.c.pinetop (rung)",
++   "improv.5 (120 min): review exercise.boogie.c.pinetop (rung)",
++   "latin (120 min): review exercise.boogie.c.pinetop (rung)",
++   "technique.5 (120 min): review exercise.boogie.c.pinetop (rung)",
++   "rock.5 (120 min): review exercise.boogie.c.pinetop (rung)",
++   "jam.5 (120 min): review exercise.boogie.c.pinetop (rung)",
++   "hymns.5 (120 min): review exercise.boogie.c.pinetop (rung)",
++   "classical.6 (120 min): review exercise.boogie.c.pinetop (rung)",
++   "ragtime.6 (120 min): review exercise.boogie.c.pinetop (rung)",
++ ]
+
+ ❯ tests/unit/gateAtTheConsumers.test.ts:795:68
+    793|       }
+    794|     }
+    795|     expect(offered.slice(0, 12), `${String(offered.length)} rows`).toE…
+       |                                                                    ^
+    796|   }, 300_000);
+    797|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+exit 1

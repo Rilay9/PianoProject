@@ -10,7 +10,7 @@
 
 ## Waiting
 
-- **D3** — **approved with one required change** (`responses/ee70b43.md`); **D3a** approved with one required change (`responses/c8717be.md`); **D3b** approved (`responses/e0d1a3a.md`) and **dispatched** (Entry 103, port 4193). Unheard; unverified as music.
+- **D3** — **approved with one required change** (`responses/ee70b43.md`); **D3a** approved with one required change (`responses/c8717be.md`); **D3b** **landed** (Entry 103, handoff `handoffs/4478793.md`); awaiting the reviewer. Unheard; unverified as music.
 
 - **D2a** — **closed**, accepted (`responses/b118750.md`).
 

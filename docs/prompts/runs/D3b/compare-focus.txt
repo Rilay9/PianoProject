@@ -1,0 +1,80 @@
+cards: 12; unapproved rows before 15, after 0
+cards whose rows change: 12, on 4 rungs
+what took an unapproved row's place, by the claim of the row after: {'asked': 6, 'prerequisite': 3, 'rung': 3, 'exposure': 3}
+
+latin.3
+  15 min
+    new (the groove's row):
+      before: exercise.clave.son-2-3 — Clave — son 2-3 [UNAPPROVED] · asked · "Latin asks for it — not counted yet"
+      after:  song.folk.exercise-cielito-lindo.pdmx — Cielito Lindo · asked · "Latin asks for it — not counted yet"
+  30 min
+    new (the groove's row):
+      before: exercise.clave.son-2-3 — Clave — son 2-3 [UNAPPROVED] · asked · "Latin asks for it — not counted yet"
+      after:  song.folk.exercise-cielito-lindo.pdmx — Cielito Lindo · asked · "Latin asks for it — not counted yet"
+  60 min
+    new (the groove's row):
+      before: exercise.clave.son-2-3 — Clave — son 2-3 [UNAPPROVED] · asked · "Latin asks for it — not counted yet"
+      after:  song.folk.exercise-cielito-lindo.pdmx — Cielito Lindo · asked · "Latin asks for it — not counted yet"
+
+latin.6
+  15 min
+    technique (the groove's row):
+      before: exercise.tumbao.g — Tumbao — latin bass in G minor [UNAPPROVED] · asked · "Latin asks for it — not counted yet"
+      after:  exercise.rhythm.syncopated.4bar — Rhythm: syncopated — 4 bars · prerequisite · "From Clave, tumbao and montuno, which this lesson builds on"
+    review (the groove's row):
+      before: exercise.montuno.d.3note.son-3-2 — Montuno — 3 notes on son 3 2 in D minor [UNAPPROVED] · rung · "Nothing due for review — more from Latin"
+      after:  song.folk.por-una-cabeza-carlos-gardel.pdmx — Por Una Cabeza - Carlos Gardel · rung · "Nothing due for review — more from Latin"
+  30 min
+    technique (the groove's row):
+      before: exercise.tumbao.g — Tumbao — latin bass in G minor [UNAPPROVED] · asked · "Latin asks for it — not counted yet"
+      after:  exercise.rhythm.syncopated.4bar — Rhythm: syncopated — 4 bars · prerequisite · "From Clave, tumbao and montuno, which this lesson builds on"
+    review (the groove's row):
+      before: exercise.montuno.d.3note.son-3-2 — Montuno — 3 notes on son 3 2 in D minor [UNAPPROVED] · rung · "Nothing due for review — more from Latin"
+      after:  song.jazz.the-crave — The Crave · rung · "Nothing due for review — more from Latin"
+  60 min
+    technique (the groove's row):
+      before: exercise.tumbao.g — Tumbao — latin bass in G minor [UNAPPROVED] · asked · "Latin asks for it — not counted yet"
+      after:  exercise.rhythm.syncopated.4bar — Rhythm: syncopated — 4 bars · prerequisite · "From Clave, tumbao and montuno, which this lesson builds on"
+    review (the groove's row):
+      before: exercise.montuno.d.3note.son-3-2 — Montuno — 3 notes on son 3 2 in D minor [UNAPPROVED] · rung · "Nothing due for review — more from Latin"
+      after:  song.jazz.the-crave — The Crave · rung · "Nothing due for review — more from Latin"
+
+jam
+  15 min
+    review (the groove's row):
+      before: exercise.walking-bass.d.blues.intro — Walking bass over a 12-bar blues in D [UNAPPROVED] · exposure · "Walking bass lines, from your lessons — not played yet"
+      after:  drill.reading.note-flash-extended — Note flash — C2 to C6 · exposure · "Note reading, from your lessons — not played yet"
+  30 min
+    review (the groove's row):
+      before: exercise.walking-bass.d.blues.intro — Walking bass over a 12-bar blues in D [UNAPPROVED] · exposure · "Walking bass lines, from your lessons — not played yet"
+      after:  drill.reading.note-flash-extended — Note flash — C2 to C6 · exposure · "Note reading, from your lessons — not played yet"
+  60 min
+    review (the groove's row):
+      before: exercise.walking-bass.d.blues.intro — Walking bass over a 12-bar blues in D [UNAPPROVED] · exposure · "Walking bass lines, from your lessons — not played yet"
+      after:  drill.reading.note-flash-extended — Note flash — C2 to C6 · exposure · "Note reading, from your lessons — not played yet"
+
+holiday.5
+  15 min
+    technique (the groove's row):
+      before: exercise.ostinato.a.arpeggio — Ostinato over a pedal bass in A minor — broken minor triad [UNAPPROVED] · asked · "Holiday asks for it — not counted yet"
+      after:  exercise.arpeggio.e-major.2oct.both — E major arpeggio — 2 oct, both · asked · "Holiday asks for it — not counted yet"
+    review (knock-on):
+      before: exercise.arpeggio.e-major.2oct.both — E major arpeggio — 2 oct, both · rung · "Nothing due for review — more from Holiday"
+      after:  exercise.independence.c.2v1 — Hand independence 2:1 in C · rung · "Nothing due for review — more from Holiday"
+  30 min
+    technique (the groove's row):
+      before: exercise.ostinato.a.arpeggio — Ostinato over a pedal bass in A minor — broken minor triad [UNAPPROVED] · asked · "Holiday asks for it — not counted yet"
+      after:  exercise.arpeggio.e-major.2oct.both — E major arpeggio — 2 oct, both · asked · "Holiday asks for it — not counted yet"
+    review (knock-on):
+      before: exercise.arpeggio.e-major.2oct.both — E major arpeggio — 2 oct, both · rung · "Nothing due for review — more from Holiday"
+      after:  exercise.independence.c.2v1 — Hand independence 2:1 in C · rung · "Nothing due for review — more from Holiday"
+  60 min
+    technique (the groove's row):
+      before: exercise.ostinato.a.arpeggio — Ostinato over a pedal bass in A minor — broken minor triad [UNAPPROVED] · asked · "Holiday asks for it — not counted yet"
+      after:  exercise.arpeggio.e-major.2oct.both — E major arpeggio — 2 oct, both · asked · "Holiday asks for it — not counted yet"
+    review (knock-on):
+      before: exercise.arpeggio.e-major.2oct.both — E major arpeggio — 2 oct, both · rung · "Nothing due for review — more from Holiday"
+      after:  exercise.independence.c.2v1 — Hand independence 2:1 in C · rung · "Nothing due for review — more from Holiday"
+
+OK: no unapproved row after; every changed card had one before
+exit 0
