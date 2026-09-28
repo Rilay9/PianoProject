@@ -10,7 +10,7 @@
 
 ## Waiting
 
-- **D3** — **approved with one required change** (`responses/ee70b43.md`); **D3a** (unreviewed music-promising items out of automatic offers) drafted from the finding, dispatch after the weekly reset. Unheard; unverified as music.
+- **D3** — **approved with one required change** (`responses/ee70b43.md`); **D3a**'s brief at the reviewer's gate (`handoffs/d483be4.md`), dispatch on APPROVE (port 4193). Unheard; unverified as music.
 
 - **D2a** — **closed**, accepted (`responses/b118750.md`).
 
@@ -19,7 +19,7 @@
 - **D0 / D0a** — **closed**: D0a accepted (`responses/3b9c37d.md`); B7 kept (G53), the arpeggios' notation to G52.
 - **Q24** — **closed**, approved by the reviewer (`responses/e32d0ef.md`, unprompted); the MAESTRO download decided yes for testing by the owner on 2026-09-28 (Q47; licence re-read and quoted in the row; one small H seam with Q46).
 - **D4** — brief **approved with one required change, applied** (`responses/612288e.md`); implementation after E1 lands.
-- **E1** — brief **approved with one required change, applied** (`responses/bf2666a.md`: no owner or teacher gate; placement on a stated non-owner gate); dispatch after D3 lands and after the weekly usage reset.
+- **E1** — **dispatched 2026-09-28** (Entry 101) on its approved brief (`responses/bf2666a.md`); port 4183.
 - **E0 / E0a / E0b** — **closed**: E0b accepted (`responses/c95ac32.md`).
 
 ## Standing rules in force tonight
