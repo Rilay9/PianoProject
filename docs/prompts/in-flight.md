@@ -10,7 +10,7 @@
 
 ## Waiting
 
-- **D3** — **approved with one required change** (`responses/ee70b43.md`); **D3a**'s brief at the reviewer's gate (`handoffs/d483be4.md`), dispatch on APPROVE (port 4193). Unheard; unverified as music.
+- **D3** — **approved with one required change** (`responses/ee70b43.md`); **D3a** approved with one change applied (`responses/d483be4.md`) and **dispatched** (Entry 102, port 4193). Unheard; unverified as music.
 
 - **D2a** — **closed**, accepted (`responses/b118750.md`).
 
