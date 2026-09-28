@@ -266,6 +266,23 @@ fallback until C6 and are deleted.
   retention, a demand-ready piece — and only then the fallbacks, so a fallback never takes what a
   claim asked for; a review with nothing due chooses last. No slot offers an item a
   requirement has counted while something the rung asks for waits.
+- **An automatic row is an offer, and passes the teaching-use admission (D3b, 2026-09-28).** A
+  rung listing an item is its authored placement, not a decision that the item is fit to teach
+  (the reviewer's ruling on D3a). So every slot that takes an item straight from a rung's list
+  without asking the gate — a rung's `runs`, `done` and `measure` asks, the fallback ladder's rung
+  and prerequisite steps, the jam slot and the exposure rule — chooses only among items that pass
+  the same admission the gate applies (`eligibility.admittedForTeaching`, read once, in
+  `session.usable`): a generated item whose family promises music (the studies, the grooves, the
+  12/8 blues) is on no row until a person's `goodTeachingUse: yes` on its current identity is
+  built. Where that leaves a rung's ask with nothing to offer, the ask stays unmet in the rung
+  state and the slot takes the next step of the fallback ladder that passes (a prerequisite rung's
+  option, the exposure rule), or the row is dropped; no row says the ask is met or offers the next
+  lesson as though it were, and no row says anything waits for review, which is the content
+  pipeline's business and not a thing to practise. On the current build, `latin.3`'s and
+  `latin.6`'s exercise asks have only grooves to count and stay unmet until a decision exists; for
+  a fresh learner placed at any rung, every groove's row was filled by an admitted item, through
+  the slot's own rule or the ladder's next step, and no row was dropped (Entry 103's probe). The
+  Library and exploration never ask.
 
 The line is the session row's second line and is cut at the owner's width, so the claim comes
 in its first words and the detail after the dash:
@@ -324,8 +341,8 @@ you like — no scoring, no cursor", `chose` "You chose this one".
   identity is in D2's record and built (D3a: the gate's reason is *not approved for teaching use*,
   never "not yet reviewed", because a `no` or a `fix` is a reviewed decision too). The Library
   still lists every one of them, and opening one from there is exploration, which no gate
-  refuses; a groove a rung lists can still be the card's own row for that rung, since the card
-  takes a rung's list as it stands and nothing is removed from a rung. A shared concept tag or a step every tune has
+  refuses; since D3b a groove a rung lists is not the card's own row for that rung either (the
+  card's rows pass the same admission, above), though nothing is removed from a rung. A shared concept tag or a step every tune has
   matches nothing: the `repertoire` tag on every quarried piece made the old third tier a level
   window over the quarry. The words state the strongest fact known, never "similar difficulty".
   Each tier's words are printed once over its options, and a row keeps `data-tier`; a chosen

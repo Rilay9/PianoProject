@@ -49,7 +49,10 @@
  * `teaching-use-not-approved`, and passes to the questions only for exploration; the
  * Library does not call this gate. A drill's promise is its contract, and a notated
  * item's notes are its truth, so neither is touched. The route to `true` is D2's record:
- * a `goodTeachingUse: yes` on the item's current identity, merged and built.
+ * a `goodTeachingUse: yes` on the item's current identity, merged and built. The same
+ * reading, exported alone as `admittedForTeaching` (D3b), is what the session card's
+ * rows drawn straight from a rung's list pass (`session.usable`): one definition, two
+ * askers.
  */
 import densityJson from '../../../content/sources/opportunity-density.json';
 import { READING_CONTROLS } from '../engine/readingControls';
@@ -279,6 +282,20 @@ function unapprovedMusic(item: CatalogItem): null | false | undefined {
   const provenance = item.provenance;
   if (provenance?.facts.promise?.value !== 'music') return undefined;
   return provenance.review.teaching === true ? undefined : provenance.review.teaching;
+}
+
+/**
+ * The teaching-use admission, alone (D3b; the reviewer's required change on D3a): false only for a
+ * generated item whose family promises music for its recipe and has no affirmative teaching-use
+ * decision; true for everything else — a drill, a runtime reading row, a notated item. The same
+ * reading `eligibleFor` makes (`unapprovedMusic`, defined once), for the session card's paths that
+ * take an item straight from a rung's list without asking the gate — a rung's `runs`, `done` and
+ * `measure` asks, the fallback ladder's rung and prerequisite steps, the jam slot, the exposure rule —
+ * which `session.usable` puts through it: an authored placement is not a teaching-use decision.
+ * Exploration and the Library never ask it.
+ */
+export function admittedForTeaching(item: CatalogItem): boolean {
+  return unapprovedMusic(item) === undefined;
 }
 
 /** The one gate: can the learner cope, and does the candidate provide the opportunity wanted. */
