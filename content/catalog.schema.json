@@ -509,7 +509,8 @@
             "checklist",
             "placement",
             "walkthrough",
-            "simon"
+            "simon",
+            "study"
               ],
               "description": "on a type=drill item this selects the runtime screen; on a type=exercise item it records what generated the notation and needs no screen (docs/05 §7)"
             },

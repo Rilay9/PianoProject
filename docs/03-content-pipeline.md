@@ -120,7 +120,15 @@ caught by the merge rather than by whichever wrote last:
    row is silent, and anything that is neither word fails the build in `catalog_item`.
 5. **generate [GEN]** (`generate_exercises.py`) — scales, arpeggios, Hanon-style cells, harmony
    families, rhythm rows, levelled from one table (`02` Part E amendment); how many there are
-   is in `docs/generated/ladder.md`.
+   is in `docs/generated/ladder.md`. Since D3 also the generated studies (`study.py`, `02` Part
+   E2): each composed from its recipe and refused, stopping the build with the reason, where no
+   candidate keeps the hard layer and clears the musical floor. Every item passes two gates as
+   it is written — the physical (`confirm_physical`, D0) and, for a family whose contract names
+   an evaluator, the musical (`confirm_musical`, D3), which reads the written page again. The
+   studies are measured by step 7's attach step like every generated item and listed on no rung;
+   `python tools/content/study.py --candidate-rungs <catalog.json> <curriculum.json>` writes the
+   candidate-rungs report from a build's output (the rungs whose taught set holds every demand a
+   study carries and whose claims its notes establish), for the placement decision that is F's.
 6. **author [AUTH]** (`author.py`) — the hand-written ABC and music21 sources, with metadata
    from each file's YAML front-matter.
 7. **merge catalog** — the fragments into one `catalog.json`, with `content/sources/sections.json`

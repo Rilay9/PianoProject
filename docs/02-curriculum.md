@@ -745,6 +745,13 @@ printed fingers included.
   chords, extended chords, chord-scale, transposition, Roman-numeral reading and
   learn-a-tune-by-ear; sight-reading levels 5–7.
 
+**Amendment 2026-09-27 (D3): generated studies.** The "Studies" column above names published
+études, which stay repertoire. Beside them the generator now writes a *study* of its own: eight to
+sixteen bars in four-bar phrases around one target, harmony first from a small grammar, a cadence
+closing every phrase, the left hand an accompaniment texture, judged by the musical gate (Part E2's
+note below). The first set is in the Library and on no rung: placement waits for a person's
+teaching-use decision, which is F's and the owner's.
+
 **Amendment 2026-09-25 (T39):** five-finger patterns are levelled by key from rows 1 and 2 above (`five_finger_level`, beside `scale_level`): C and G one hand 1.1; the rest of C G F D A, major and minor, at stage 2, a step above 2.0 for each of both hands, a black key under the hand and the minor third (2.1–2.3); every other key at its own one-octave scale's level (E and B one hand 3.2, the flat keys 4.2, hands together 4.1–5.2), never above that scale. Until then every one-hand pattern was 1.1 and every hands-together one 2.1, whatever the key.
 
 ### Part E2 — the non-scale exercise families (`00` D21; **built in P5b**)
@@ -774,8 +781,9 @@ printed fingers included.
 >   rung lists against what that rung has taught — D0 changes no placement, so what the rung
 >   check finds is recorded in `tools/content/tests/fixtures/untaught_on_rung.json` for E.
 >   Physical reads the score, and the build refuses an item that fails it (`confirm_physical`);
->   the two open voicings were its first refusals (G38). Musical is a hook only: no `music`
->   family passes it until D1–D3 write the evaluator and D2 records a hearing.
+>   the two open voicings were its first refusals (G38). Musical was a hook only in D0; since D3
+>   it evaluates the study (phrase shape from the notation, the note below) and stays "not
+>   evaluated" for every other `music` family, whose idiom needs hearing (D2).
 > - **Identity (G21).** `drill.generator` holds family, version and seed; the recipe is
 >   `drill.params`. A family's version changes when its music does, and a test pins each
 >   family's music to its version. Version 2 so far: `five_finger` and `triad_inversions`
@@ -844,6 +852,63 @@ printed fingers included.
 > authored lists stay authoritative, the report is what F, G and the owner rewrite from, and
 > `validate.py` warns with its count. The same report carries the untaught-on-rung demands of
 > every option, D0's 71 generated combinations among them.
+
+> **The generated study (D3, 2026-09-27): the middle between a drill and a piece.** A drill
+> repeats a pattern and says so; repertoire is somebody's music; the study is eight to sixteen bars
+> written around one target with only what its rung has taught, promised as music and judged as
+> music — by phrase shape from the notation, never by ear. `tools/content/study.py` owns the recipe,
+> the grammar and the realiser; `generate_exercises.make_study` is its maker; the `study` row in
+> `family_contracts.json` says what it is for.
+>
+> - **The recipe.** A target — a vocabulary skill (`interval-reading`, `position-shift`,
+>   `subdivision`, `syncopation`) or a vocabulary demand the study provides as an opportunity
+>   (`metre.compound`, whose coping skill is `6/8`; `texture.hands-together`, whose coping skill is
+>   `hands-together`), never a skill invented to label a recipe — a key and mode, a metre, a length
+>   of 8, 12 or 16 bars, a left-hand texture (a held root, blocked chords, broken chords, Alberti, a
+>   waltz bass), **the rung whose taught set bounds every demand** (its ancestry, the reading
+>   `claims.py` and the app share), a seed and a tempo. The recipe is `drill.params`; with family,
+>   version and seed it is the identity (G21). A recipe asking for what its rung has not taught (a
+>   minor key before accidentals, 6/8 before 4.5, a pattern in the left hand before 3.6, blocked
+>   chords before the hand may leave its position, a syncopation study over a left hand that holds
+>   through the beat it is felt against) is refused with the reason before a note is drawn.
+> - **The grammar, harmony first.** Phrases of four bars. Eight bars are an antecedent closing on the
+>   dominant and a consequent restating its first two bars and closing on an authentic cadence;
+>   twelve put a contrasting phrase between them; sixteen are antecedent, consequent, contrast and
+>   the consequent again. The antecedent is `I x y V` (`x y` one of `IV I`, `vi IV`, `I IV`, `V I`,
+>   `ii IV`); the consequent keeps its first two chords and closes `V I`, `V7 I`, `IV V | I` or
+>   `ii V | I`; the contrasting phrase is `IV I IV V`, `vi IV I V`, `IV V I V` or `ii IV I V`. The
+>   minor forms use `i`, `iv`, `VI` and the dominant with its leading tone (`i x y V`; closing `V i`,
+>   `V7 i`, `iv V | i`). The hands-together target moves the opening bars of each phrase through two
+>   chords a bar. A chord whose root the left hand cannot reach at the rung (at 2.1, `vi` lies
+>   outside the five-note position the hand keeps) is not drawn. A grammar and a distribution, not
+>   a template: the distribution suite measures what it writes over seeds.
+> - **The realiser.** The left hand is the texture over the progression, every chord spelled by
+>   interval from a root spelled by the key, off ledger lines. The melody is drawn: a rhythmic cell
+>   for the first bar (the motif) restated or varied, a cadence cell holding each phrase's last note
+>   a beat or more, pitches by a walk guided toward a contour chosen per phrase, strong beats on the
+>   chord's tones, a leap recovered by a step back, no melodic tritone or augmented second, the
+>   consequent restating the antecedent's opening and the contrasting phrase carrying the motif's
+>   shape to its own chord. **Valid first, then scored** (D1's rule): a draw breaking the hard layer —
+>   the rung's taught set, the leap cap, the target at the recipe's density, every cadence on its
+>   chord's tone, no bar repeated exactly beyond the grammar's restatement — is never scored; the
+>   valid draws are scored by the musical evaluator and the earliest within a tolerance of the best,
+>   at the valid draws' own density, is kept if it clears the floor. **Fail closed**: a recipe whose
+>   budget yields nothing that does is refused at build time with the reason, and the build stops.
+> - **The musical gate** (`family_contracts.musical_gate`, `musical_evaluator.py`): D1's parts ported
+>   to Python and held equal to the TypeScript scorer on a shared fixture of constructed phrases,
+>   with the study's semantics stated — an arrival and a cadence per phrase, the authentic cadence at
+>   the close, the harmony read from the declared progression rather than from the left hand, degrees
+>   read in the minor, the grammar's restatement never counted as repetition. It refuses an item
+>   below the row's floor or with any cadence on a note outside its chord. The groove and style
+>   families stay "not evaluated": the evaluator judges phrase shape, not idiom, and idiom needs
+>   hearing.
+> - **No placement.** The first set — each target canonical, in two variable realisations and in
+>   transfer (a key, texture and register the drill family that teaches the same skill never writes,
+>   measured item against item) — is in the Library and the contract and on no rung, `heard: false`.
+>   A study can meet every detector and still read to a teacher as an exercise with an accompaniment;
+>   the candidate-rungs report beside D3's entry lists, for each study, the rungs whose taught set
+>   holds every demand it carries and whose claims its notes establish — the material a later
+>   placement decision reads beside a resolved teaching-use review in D2's record.
 
 The table above is a technique syllabus in the conservatoire sense. It is not the whole of
 what a learner practises, and a skill with no generated exercise ends up either untested or

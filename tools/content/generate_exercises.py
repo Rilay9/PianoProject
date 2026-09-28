@@ -847,6 +847,26 @@ class PhysicallyIndefensible(AssertionError):
     """A generated item its family's contract says no hand should be asked to play."""
 
 
+class MusicallyRefused(AssertionError):
+    """A generated item its family promises as music, below its evaluator's floor or with a wrong cadence."""
+
+
+def confirm_musical(sc: stream.Score, entry: dict) -> stream.Score:
+    """
+    The musical gate (D3), run by the build on every item whose family names an evaluator.
+
+    The study's realiser already refuses a candidate below the floor; this reads the *written*
+    page again through `family_contracts.musical_gate`, so nothing ships that the gate did not
+    see as it was written. A family with no evaluator passes through: its gate says "not
+    evaluated", which is not a refusal and never a pass.
+    """
+    family = entry["drill"]["generator"]["family"]
+    verdict = family_contracts.musical_gate(family_contracts.contract(family), sc, entry)
+    if verdict.get("evaluated") and not verdict.get("passes"):
+        raise MusicallyRefused(f"{entry['id']}: {verdict['why']}")
+    return sc
+
+
 def confirm_physical(sc: stream.Score, entry: dict) -> stream.Score:
     """
     The physical gate (D0), run by the build on every item it writes.
@@ -5889,6 +5909,41 @@ def make_ostinato(
     return sc, entry
 
 
+def make_study(recipe) -> tuple[stream.Score, dict]:
+    """
+    A generated study (D3): eight to sixteen bars in four-bar phrases around one target,
+    composed by `study.py` — harmony first from a small grammar, a cadence closing each phrase,
+    the melody drawn and kept only where it keeps the hard layer and clears the musical floor,
+    the left hand an accompaniment texture — and refused at build time, with the reason, where
+    no candidate does (`study.StudyRefusal`). `recipe` is a `study.Recipe`: the target, key and
+    mode, metre, length, texture, the rung whose taught set bounds every demand, the seed and
+    the tempo; it is the item's `drill.params` and, with family, version and seed, its identity.
+
+    The row's `drill.study` carries what the study declares beside its notes — the progression
+    per bar, the phrases and their cadences, the bars the grammar restates, the leap cap — which
+    the musical gate reads, and how the candidate was chosen (draws, valid candidates, its score).
+    It is listed on no rung: placement waits for a person's teaching-use decision (D3's reviewer).
+    """
+    import study as S  # late: the realiser imports this module's staff helpers
+
+    sc, facts, report = S.compose(recipe)
+    target = S.TARGETS[recipe.target]
+    item_id = S.item_id(recipe)
+    concepts = [*target["concepts"], "study", "hands-together", f"{note_name(recipe.key)}-{recipe.mode}"]
+    entry = catalog_entry(
+        item_id, S.title_of(recipe), float(recipe.rung), list(dict.fromkeys(concepts)), "both", recipe.bpm,
+        "study", recipe.params(), f"scores/generated/{item_id}.mxl", tracks=["core", "technique"],
+        family="study",
+    )
+    entry["drill"]["study"] = {
+        **facts,
+        "chosen": {"draws": report["draws"], "valid": report["valid"], "draw": report["chosen"],
+                   "score": round(report["score"], 4),
+                   "parts": {name: round(value, 4) for name, value in report["parts"].items()}},
+    }
+    return sc, entry
+
+
 # --------------------------------------------------------------------------------------
 # main
 # --------------------------------------------------------------------------------------
@@ -6239,6 +6294,14 @@ def default_plan(quick: bool, full: bool = False) -> list[tuple[stream.Score, di
         for pattern in latin_comping_patterns():
             for tier, *_ in COMPING_TIERS:
                 items.append(make_comping(k, pattern, tier))
+
+    # ---- the generated study (D3): the first targets, each canonical, in two variable
+    # realisations and in transfer, sixteen bars at most. In the Library and the contract, on
+    # no rung: placement waits for a person's teaching-use decision (the reviewer's change).
+    import study as S
+
+    for recipe in (S.PLAN[:2] if quick else S.PLAN):
+        items.append(make_study(recipe))
     return items
 
 
@@ -6312,6 +6375,7 @@ def main() -> None:
     entries = []
     for sc, entry in default_plan(args.quick, args.full):
         confirm_physical(sc, entry)
+        confirm_musical(sc, entry)
         write(sc, args.out, entry["id"])
         # The one place both the score and its row are in hand. `catalog_entry`
         # cannot do this: it never sees the score, which is the only thing that

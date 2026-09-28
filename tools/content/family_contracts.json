@@ -5960,6 +5960,531 @@
       },
       "admission": "The eighths placed within the window over eight bars; loudness drift is not judged. Unheard.",
       "heard": false
+    },
+    "study": {
+      "maker": "make_study",
+      "version": 1,
+      "name": "an 8-, 12- or 16-bar study in four-bar phrases around one target: a melody over a progression from a small grammar, a cadence closing each phrase, the left hand an accompaniment texture (a held root, blocked or broken chords, an Alberti or a waltz bass)",
+      "promise": [
+        {
+          "promise": "music",
+          "why": "a miniature in phrases — an opening cell, a phrase that varies or develops it, a cadence that closes each phrase and an authentic cadence at the end — around one target: it promises phrase shape, and the musical gate judges that shape from the notation (musical_evaluator.py); whether it reads as a small piece to a listener is unheard"
+        }
+      ],
+      "target": {
+        "primary": [
+          {
+            "skill": "interval-reading",
+            "when": {
+              "target": "interval-reading"
+            }
+          },
+          {
+            "skill": "position-shift",
+            "when": {
+              "target": "position-shift"
+            }
+          },
+          {
+            "skill": "subdivision",
+            "when": {
+              "target": "subdivision"
+            }
+          },
+          {
+            "skill": "syncopation",
+            "when": {
+              "target": "syncopation"
+            }
+          },
+          {
+            "skill": "6/8",
+            "when": {
+              "target": "metre.compound"
+            },
+            "why": "the recipe's target is the demand metre.compound (a metre, not a skill); the vocabulary's skill that copes with it is 6/8"
+          },
+          {
+            "skill": "hands-together",
+            "when": {
+              "target": "texture.hands-together"
+            },
+            "why": "the recipe's target is the demand texture.hands-together (a texture, not a skill); the vocabulary's skill that copes with it is hands-together"
+          }
+        ],
+        "secondary": [
+          {
+            "skill": "hands-together",
+            "why": "every study is for both hands, the left hand striking under the tune"
+          },
+          {
+            "skill": "hand-independence",
+            "when": {
+              "texture": [
+                "broken",
+                "alberti",
+                "waltz"
+              ]
+            },
+            "why": "a left-hand pattern in every bar under the tune (texture.left-hand-pattern, measured)"
+          },
+          {
+            "skill": "subdivision",
+            "when": {
+              "target": [
+                "syncopation",
+                "metre.compound"
+              ]
+            },
+            "why": "the syncopated cells and the compound metre are written in eighths"
+          }
+        ]
+      },
+      "assumes": [
+        "clef.bass",
+        "interval.step",
+        "interval.skip",
+        "interval.leap",
+        "texture.hands-together",
+        "key.signature",
+        "pitch.chromatic",
+        "rhythm.eighths",
+        "rhythm.shorter-than-quarter",
+        "rhythm.dotted-quarter",
+        "range.beyond-position",
+        "texture.left-hand-pattern"
+      ],
+      "requires": [
+        {
+          "demand": "texture.hands-together",
+          "min": 1,
+          "why": "every study is for two hands together"
+        },
+        {
+          "demand": "clef.bass",
+          "min": 8,
+          "why": "the left hand sounds in every bar of the bass staff"
+        },
+        {
+          "demand": "interval.skip",
+          "min": 6,
+          "minPer": [
+            "bar",
+            0.75
+          ],
+          "when": {
+            "target": "interval-reading"
+          },
+          "why": "a skip in three bars of four and six at least: the reading is step against skip throughout, not a skip now and then (the density table's skip rule is 0.5 a bar; a study that targets it asks for more)"
+        },
+        {
+          "demand": "interval.step",
+          "min": 4,
+          "when": {
+            "target": "interval-reading"
+          },
+          "why": "both kinds present throughout, so the reading is step against skip: four at least (the realiser writes one every other bar and more)"
+        },
+        {
+          "demand": "range.beyond-position",
+          "min": 2,
+          "when": {
+            "target": "position-shift"
+          },
+          "why": "the hand leaves its five-note position and the line widens past it at least twice (the contrasting phrase in another position)"
+        },
+        {
+          "demand": "rhythm.eighths",
+          "min": 8,
+          "minPer": [
+            "bar",
+            1.0
+          ],
+          "when": {
+            "target": "subdivision"
+          },
+          "why": "eighths in the tune, eight at least and one a bar on average: the division of the beat recurs rather than decorates"
+        },
+        {
+          "demand": "rhythm.syncopation",
+          "min": 4,
+          "minPer": [
+            "bar",
+            0.5
+          ],
+          "when": {
+            "target": "syncopation"
+          },
+          "why": "a note of a quarter or longer off the beat in half the bars and four at least, over a left hand that keeps the beat"
+        },
+        {
+          "demand": "metre.compound",
+          "minPer": [
+            "bar",
+            1
+          ],
+          "when": {
+            "target": "metre.compound"
+          },
+          "why": "the whole study in 6/8"
+        },
+        {
+          "demand": "texture.hands-together",
+          "min": 8,
+          "minPer": [
+            "bar",
+            1.0
+          ],
+          "when": {
+            "target": "texture.hands-together"
+          },
+          "why": "the left hand changes chord with the tune, twice a bar in the opening bars of each phrase: coordination located once a bar at least"
+        }
+      ],
+      "overconcentration": [
+        {
+          "demand": "interval.skip",
+          "of": "note",
+          "maxShare": 0.8,
+          "when": {
+            "target": "interval-reading"
+          },
+          "why": "a tune of skips alone is an arpeggio shape the hand learns, not step read against skip"
+        }
+      ],
+      "forbids": [
+        {
+          "demand": "rhythm.sixteenths",
+          "why": "taught at no rung"
+        },
+        {
+          "demand": "rhythm.triplets"
+        },
+        {
+          "demand": "rhythm.ties",
+          "why": "the realiser writes no tie: a tie is a device of its own (2.4), not a study's"
+        },
+        {
+          "demand": "texture.walking-bass",
+          "why": "no texture of the study walks; a reading of one would be a misreading to look at"
+        },
+        {
+          "demand": "pitch.ledger",
+          "why": "the realiser keeps both hands off ledger lines beyond middle C, for reading at the rung the recipe names"
+        },
+        {
+          "demand": "rhythm.syncopation",
+          "when": {
+            "target": [
+              "interval-reading",
+              "position-shift",
+              "subdivision",
+              "metre.compound",
+              "texture.hands-together"
+            ]
+          },
+          "why": "syncopation only where it is the target: elsewhere every note of a quarter or longer starts on the beat"
+        },
+        {
+          "demand": "metre.compound",
+          "when": {
+            "target": [
+              "interval-reading",
+              "position-shift",
+              "subdivision",
+              "syncopation",
+              "texture.hands-together"
+            ]
+          }
+        }
+      ],
+      "repetition": {
+        "maxUndeclaredExactRepeats": 1,
+        "why": "a study is not a drill: a bar of the tune repeated exactly — rhythm and pitches — beyond the grammar's own restatement (the consequent's opening, the return) is overconcentration, and more than one such repeat is a fault (D1's motif rule lets one stand)"
+      },
+      "musical": {
+        "evaluator": "musical_evaluator.score_study",
+        "floor": 0.8,
+        "why": "the phrase-shape evaluator's total, below which the realiser refuses a candidate and the gate refuses an item, and any cadence closing on a note outside its chord refused whatever the total: every study the grammar wrote on the distribution suite's seeds cleared it, and the random walk's median fell below it for every recipe (Entry 100's table); it judges phrase shape from the notation, never idiom or sound"
+      },
+      "physical": {
+        "maxSpan": 12,
+        "maxRate": 3.0,
+        "leaps": {
+          "max": 13,
+          "minSeconds": 0.35,
+          "why": "a pattern left hand returning from the top of one chord to the next root (a waltz's chord to the next bar's bass; a broken figure's fifth to the next root), where both hands keep off ledger lines and the next root has only its lower octave: the accompaniment family's own move (its waltz, 13), here in an eighth at the fastest study tempo; the realiser voice-leads every other chord change within an octave"
+        },
+        "fingering": {
+          "printed": "none",
+          "source": null,
+          "note": "no finger is printed: a printed number is a claim (G47), and no source covers a generated melody; the family starts clean"
+        }
+      },
+      "roles": {
+        "provides": [
+          "canonical",
+          "variable",
+          "transfer"
+        ],
+        "assign": [
+          {
+            "role": "canonical",
+            "when": {
+              "target": "interval-reading",
+              "key": "C",
+              "timeSig": "4/4",
+              "bars": 8,
+              "texture": "sustained",
+              "seed": 1
+            }
+          },
+          {
+            "role": "canonical",
+            "when": {
+              "target": "position-shift",
+              "key": "C",
+              "timeSig": "4/4",
+              "bars": 12,
+              "texture": "blocked",
+              "seed": 1
+            }
+          },
+          {
+            "role": "canonical",
+            "when": {
+              "target": "subdivision",
+              "key": "C",
+              "timeSig": "4/4",
+              "bars": 8,
+              "texture": "sustained",
+              "seed": 1
+            }
+          },
+          {
+            "role": "canonical",
+            "when": {
+              "target": "syncopation",
+              "key": "C",
+              "timeSig": "4/4",
+              "bars": 8,
+              "texture": "broken",
+              "seed": 1
+            }
+          },
+          {
+            "role": "canonical",
+            "when": {
+              "target": "metre.compound",
+              "key": "C",
+              "timeSig": "6/8",
+              "bars": 8,
+              "texture": "broken",
+              "seed": 1
+            }
+          },
+          {
+            "role": "canonical",
+            "when": {
+              "target": "texture.hands-together",
+              "key": "C",
+              "timeSig": "4/4",
+              "bars": 8,
+              "texture": "sustained",
+              "seed": 1
+            }
+          },
+          {
+            "role": "transfer",
+            "when": {
+              "target": "interval-reading",
+              "key": "G",
+              "texture": "blocked"
+            }
+          },
+          {
+            "role": "transfer",
+            "when": {
+              "target": "position-shift",
+              "key": "B-",
+              "texture": "broken"
+            }
+          },
+          {
+            "role": "transfer",
+            "when": {
+              "target": "subdivision",
+              "key": "F",
+              "texture": "waltz"
+            }
+          },
+          {
+            "role": "transfer",
+            "when": {
+              "target": "syncopation",
+              "key": "D",
+              "quality": "minor"
+            }
+          },
+          {
+            "role": "transfer",
+            "when": {
+              "target": "metre.compound",
+              "key": "E-",
+              "texture": "blocked"
+            }
+          },
+          {
+            "role": "transfer",
+            "when": {
+              "target": "texture.hands-together",
+              "key": "B-",
+              "texture": "broken"
+            }
+          },
+          {
+            "role": "variable"
+          }
+        ],
+        "transfer": "the target on another family's surface: a study in a key, a texture and a register the drill family that teaches the same skill never writes, each dimension declared and measured item against item (test_roles.py); intent and provenance, never proof (Part 26): first contact and the evidence decide. Another key, texture, metre, length or seed of the same recipe is variable, never transfer",
+        "transferOf": [
+          {
+            "when": {
+              "target": "interval-reading"
+            },
+            "skill": "interval-reading",
+            "from": [
+              "interval_reading"
+            ],
+            "differs": [
+              "family",
+              "key",
+              "hands",
+              "texture",
+              "register"
+            ],
+            "notMeasured": [
+              "reading by interval rather than naming notes: a name-reader plays the same notes"
+            ]
+          },
+          {
+            "when": {
+              "target": "position-shift"
+            },
+            "skill": "position-shift",
+            "from": [
+              "position_shift"
+            ],
+            "differs": [
+              "family",
+              "key",
+              "hands",
+              "texture",
+              "register"
+            ],
+            "notMeasured": [
+              "how the hand moved: only that the right notes followed the shift"
+            ]
+          },
+          {
+            "when": {
+              "target": "subdivision"
+            },
+            "skill": "subdivision",
+            "from": [
+              "rhythm"
+            ],
+            "differs": [
+              "family",
+              "key",
+              "hands",
+              "texture",
+              "clef"
+            ],
+            "notMeasured": [
+              "whether the eighths were counted or copied from the left hand"
+            ]
+          },
+          {
+            "when": {
+              "target": "syncopation"
+            },
+            "skill": "syncopation",
+            "from": [
+              "rhythm"
+            ],
+            "differs": [
+              "family",
+              "key",
+              "hands",
+              "texture",
+              "clef"
+            ],
+            "notMeasured": [
+              "whether the off-beat notes were felt against the beat: onsets in the window are what a run shows"
+            ]
+          },
+          {
+            "when": {
+              "target": "metre.compound"
+            },
+            "skill": "6/8",
+            "from": [
+              "rhythm"
+            ],
+            "differs": [
+              "family",
+              "key",
+              "hands",
+              "texture",
+              "clef"
+            ],
+            "notMeasured": [
+              "whether the bar was felt in two"
+            ]
+          },
+          {
+            "when": {
+              "target": "texture.hands-together"
+            },
+            "skill": "hands-together",
+            "from": [
+              "coordination"
+            ],
+            "differs": [
+              "family",
+              "key",
+              "texture",
+              "register"
+            ],
+            "notMeasured": [
+              "whether the hands were coordinated or the left hand was played by rote"
+            ]
+          }
+        ]
+      },
+      "assessment": {
+        "judged": [
+          {
+            "quality": "the written notes, in order",
+            "input": "pitch",
+            "precision": "each written key matched: in Wait the step completes on it; in Keep tempo it sounds inside the onset window"
+          },
+          {
+            "quality": "time",
+            "input": "onset-timing",
+            "precision": "each onset within ±150 ms of the written beat (engine toleranceMs), Keep tempo only; Wait has no clock"
+          }
+        ],
+        "unjudged": [
+          "whether it reads as a small piece or as an exercise with an accompaniment: nothing about this family has been heard by a person (unheard); the musical gate judges phrase shape from the notation, not the sound",
+          "which finger played: no fingering is printed",
+          "the balance of tune over accompaniment: velocity is not judged",
+          "that the target was practised as it is meant (read by interval, felt off the beat, counted): right notes in time are what a run shows"
+        ]
+      },
+      "admission": "Right notes in time are what a run shows. The target's opportunity is measured on the notes by the app's detectors, and the phrase shape by the musical gate on the notation; neither is hearing. Whether a study reads to a teacher as a small piece or as an exercise with an accompaniment is unheard, and no study is placed on any rung until a person has decided its teaching use (D3, the reviewer's required change).",
+      "heard": false
     }
   }
 }

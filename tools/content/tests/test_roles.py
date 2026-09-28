@@ -26,9 +26,38 @@ import family_contracts as FC  # noqa: E402
 from tests import planned  # noqa: E402
 
 
-def surface(entry: dict, measured: dict, dimension: str) -> object:
+def transfer_rules(row: dict) -> list[dict]:
+    """
+    A row's transfer declarations, each `{when?, skill, from, differs, notMeasured}`. One object for a
+    family whose every item is the transfer (the pentatonic); a list, each with its `when`, for a
+    family that transfers several skills recipe by recipe (the study, D3).
+    """
+    of = row["roles"].get("transferOf")
+    if not of:
+        return []
+    return of if isinstance(of, list) else [of]
+
+
+def transfer_rule_for(row: dict, recipe: dict) -> dict | None:
+    return next((rule for rule in transfer_rules(row) if FC.matches(rule.get("when"), recipe)), None)
+
+
+def register(sc) -> tuple[int, int]:
+    """The compass of the staff that carries the tune: the upper staff where it sounds, else the lower."""
+    for part in sc.parts:
+        pitches = [p.midi for n in part.recurse().notes for p in getattr(n, "pitches", [])]
+        if pitches:
+            return min(pitches), max(pitches)
+    return 0, 0
+
+
+def surface(entry: dict, measured: dict, dimension: str, sc=None) -> object:
     """One measurable dimension of an item's surface."""
     demands = measured["demands"]
+    if dimension == "register":
+        if sc is None:
+            raise KeyError("register is measured on the score")
+        return register(sc)
     if dimension == "family":
         return entry["drill"]["generator"]["family"]
     if dimension == "rhythm":
@@ -53,7 +82,7 @@ def transfer_faults(rows: dict[str, dict], items: list) -> list[str]:
         role = FC.role_of(rows[family], FC.recipe_of(entry))
         if role != "transfer":
             continue
-        of = rows[family]["roles"].get("transferOf")
+        of = transfer_rule_for(rows[family], FC.recipe_of(entry))
         if not of or family in of.get("from", []):
             faults.append(f"{entry['id']}: transfer with no other family named")
     by_constraints: dict[tuple, list] = defaultdict(list)
@@ -106,25 +135,36 @@ class TestATransferItemDiffersInSurfaceAsItsContractSays(unittest.TestCase):
         by_family = planned.by_family()
         declared = [(f, row) for f, row in FC.contracts().items() if "transfer" in row["roles"]["provides"]]
         self.assertTrue(declared, "no family declares transfer: the check saw nothing")
+        checked = 0
         for family, row in declared:
-            of = row["roles"]["transferOf"]
-            self.assertIn("family", of["differs"])
-            for _sc, entry in by_family[family]:
-                for source in of["from"]:
-                    self.assertNotEqual(source, family)
-                    for _ssc, other in by_family[source]:
-                        for dimension in of["differs"]:
-                            with self.subTest(item=entry["id"], against=other["id"], dimension=dimension):
-                                self.assertNotEqual(surface(entry, measured[entry["id"]], dimension),
-                                                    surface(other, measured[other["id"]], dimension))
-            with self.subTest(family=family):
-                # the primary skill is the one transferred, and the source family targets it too
-                recipe = FC.recipe_of(by_family[family][0][1])
-                self.assertEqual(FC.primary_skill(row, recipe), of["skill"])
+            for of in transfer_rules(row):
+                self.assertIn("family", of["differs"])
+                # Revised (D3; the old assumption: a family declares one transfer and every item of it
+                # is that transfer). The items a declaration covers are its family's transfer items
+                # whose recipe matches its `when`; a family with one declaration and no `when` is
+                # still every item (the pentatonic).
+                covered = [(sc, entry) for sc, entry in by_family[family]
+                           if entry["role"] == "transfer" and FC.matches(of.get("when"), FC.recipe_of(entry))]
+                with self.subTest(family=family, skill=of["skill"]):
+                    self.assertTrue(covered, "a transfer declaration no item of the plan carries")
+                for sc, entry in covered:
+                    checked += 1
+                    for source in of["from"]:
+                        self.assertNotEqual(source, family)
+                        for ssc, other in by_family[source]:
+                            for dimension in of["differs"]:
+                                with self.subTest(item=entry["id"], against=other["id"], dimension=dimension):
+                                    self.assertNotEqual(surface(entry, measured[entry["id"]], dimension, sc),
+                                                        surface(other, measured[other["id"]], dimension, ssc))
+                    with self.subTest(item=entry["id"]):
+                        # the primary skill is the one transferred, and the source family targets it too
+                        self.assertEqual(FC.primary_skill(row, FC.recipe_of(entry)), of["skill"])
                 for source in of["from"]:
                     src_row = FC.contract(source)
-                    src_recipe = FC.recipe_of(by_family[source][0][1])
-                    self.assertEqual(FC.primary_skill(src_row, src_recipe), of["skill"])
+                    judged = [e for _s, e in by_family[source] if FC.primary_skill(src_row, FC.recipe_of(e)) == of["skill"]]
+                    with self.subTest(family=family, source=source):
+                        self.assertTrue(judged, f"{source} has no item whose primary skill is {of['skill']}")
+        self.assertGreater(checked, 0)
 
     def test_a_claimed_dimension_the_items_share_would_fail(self) -> None:
         """The adversary: a contract claiming the pentatonic differs from the position shift by hand."""

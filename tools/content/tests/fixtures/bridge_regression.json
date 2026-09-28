@@ -61,6 +61,11 @@
       "id": "exercise.stride.c",
       "demands": ["clef.bass", "pitch.ledger", "interval.leap", "range.beyond-position", "texture.hands-together", "texture.left-hand-pattern", "texture.walking-bass"],
       "read": "LH C2, E3-G3, E3, E3-G3 (and on G, C, F) under RH whole-note chords; C2 below and F4 above the bass staff; no steps in either line. The left hand's lowest notes never turn back within a bar, so walkingBass reads a walk (see the comment)."
+    },
+    {
+      "id": "exercise.study.interval-reading.c-major.4-4.8bar.sustained.01",
+      "demands": ["clef.bass", "interval.step", "interval.skip", "interval.leap", "texture.hands-together"],
+      "read": "D3's canonical study, read from its notation: RH C4 D4 C4 | E4 G4 F4 | F4 D4 E4 | D4 C4 D4, bars 5-6 restating 1-2, then D4 E4 D4 | C4 (whole), in quarters and halves (the halves on beats 2 and 3), every note on its beat, no rest; steps (C-D, F-E, D-C), skips (C-E, E-G, F-D) and no leap in the tune, and the left hand's held roots C3 F3 G3 moving by leaps (C-F, G-C); C4 to G4 and C3 to G3, a fifth in each hand, so no note beyond the position; middle C and nothing beyond it on a ledger line; no key signature, no accidental; the left hand one note a bar under the tune: hands together, no pattern, no walk"
     }
   ]
 }
