@@ -1,0 +1,9 @@
+
+Running 3 tests using 1 worker
+
+  ok 1 ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D3a\pw\probe\swapSheets.spec.ts:51:3 › every row's swap sheet at 2.1 (1.9s)
+  ok 2 ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D3a\pw\probe\swapSheets.spec.ts:51:3 › every row's swap sheet at 4.5 (1.3s)
+  ok 3 ..\..\..\..\..\..\..\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\D3a\pw\probe\swapSheets.spec.ts:91:1 › the Library lists the generated studies (326ms)
+
+  3 passed (7.8s)
+exit 0

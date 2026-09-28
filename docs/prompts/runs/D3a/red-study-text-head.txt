@@ -1,0 +1,18 @@
+study loaded from HEAD
+test_the_report_makes_placement_no_owners (tests.test_study.TestTheCandidateRungsReport.test_the_report_makes_placement_no_owners)
+D3a (`responses/ee70b43.md`): placement is F's on a stated gate that needs no owner — a ... FAIL
+
+======================================================================
+FAIL: test_the_report_makes_placement_no_owners (tests.test_study.TestTheCandidateRungsReport.test_the_report_makes_placement_no_owners)
+D3a (`responses/ee70b43.md`): placement is F's on a stated gate that needs no owner — a
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af414581e137851f7\tools\content\tests\test_study.py", line 379, in test_the_report_makes_placement_no_owners
+    self.assertNotIn("owner's", text, "the report makes placement the owner's")
+AssertionError: "owner's" unexpectedly found in "# Candidate rungs for the generated studies (D3, Entry 100)\n\nRead from the built catalogue and curriculum by `study.candidate_rungs`: for each study, the rungs\nwhose taught set contains every demand it carries (`claims.untaught_on` empty, the rung's ancestry)\nand whose claims its measured demands establish at a useful density (`claims.status_of`). **Nothing\nis placed**: no rung lists a study, and placement stays F's and the owner's, on a resolved\nteaching-use review in D2's record. Unheard; unverified as music.\n\n" : the report makes placement the owner's
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (failures=1)
+exit 1
