@@ -18,7 +18,8 @@
 
 - **D0 / D0a** — **closed**: D0a accepted (`responses/3b9c37d.md`); B7 kept (G53), the arpeggios' notation to G52.
 - **Q24** — **closed**, approved by the reviewer (`responses/e32d0ef.md`, unprompted); the MAESTRO download stays the owner's question (Q47).
-- **E0 / E0a / E0b** — **closed**: E0b accepted (`responses/c95ac32.md`); E1's brief released (drafting).
+- **E1** — brief drafted (`tasks/E1-excerpts-first-class.md`), **at the reviewer's gate** (a brief handoff); dispatch only on APPROVE and after the weekly usage reset.
+- **E0 / E0a / E0b** — **closed**: E0b accepted (`responses/c95ac32.md`).
 
 ## Standing rules in force tonight
 
