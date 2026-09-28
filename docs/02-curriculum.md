@@ -749,8 +749,11 @@ printed fingers included.
 études, which stay repertoire. Beside them the generator now writes a *study* of its own: eight to
 sixteen bars in four-bar phrases around one target, harmony first from a small grammar, a cadence
 closing every phrase, the left hand an accompaniment texture, judged by the musical gate (Part E2's
-note below). The first set is in the Library and on no rung: placement waits for a person's
-teaching-use decision, which is F's and the owner's.
+note below). The first set is in the Library and on no rung: placement is F's, on a stated gate
+that needs no owner — a candidate-rungs line established on the combined build and a current
+`goodTeachingUse: yes` in D2's record by a named reviewer — and no owner review or placement is
+required (corrected 2026-09-28, D3a: this said the decision was "F's and the owner's"). Until
+that decision exists a study reaches the learner only through the Library (Part E2's note).
 
 **Amendment 2026-09-25 (T39):** five-finger patterns are levelled by key from rows 1 and 2 above (`five_finger_level`, beside `scale_level`): C and G one hand 1.1; the rest of C G F D A, major and minor, at stage 2, a step above 2.0 for each of both hands, a black key under the hand and the minor third (2.1–2.3); every other key at its own one-octave scale's level (E and B one hand 3.2, the flat keys 4.2, hands together 4.1–5.2), never above that scale. Until then every one-hand pattern was 1.1 and every hands-together one 2.1, whatever the key.
 
@@ -818,7 +821,9 @@ teaching-use decision, which is F's and the owner's.
 > item whose demands are `unmeasured` is eligible for exploration only, never as an equivalent,
 > on every path — same-lesson options and `alternatives[]` included. A declared large-hand voicing
 > (the add9) is recommended by no selector until its smaller-hand alternative reaches the learner
-> (D0 finding 5). Level orders eligible candidates and rescues nothing. The readiness floor is
+> (D0 finding 5). A generated item that promises music is offered by no automatic path without an
+> affirmative teaching-use decision (D3a; the study note below). Level orders eligible candidates
+> and rescues nothing. The readiness floor is
 > `familiar`, the rule the repertoire slot already used; the brief's comparison with `introduced`
 > is in Entry 92. **"Taught at or below the rung" is the rung's ancestry (E0a, 2026-09-27), never
 > the file's order:** a demand is taught at a rung when a rung its `taughtAt` lists is the rung itself,
@@ -849,7 +854,8 @@ teaching-use decision, which is F's and the owner's.
 > three Lemoine études, `technique.5`'s syncopation by none of its options, `technique.6`'s moving
 > left hand only by the two 3:1 independence drills and by none of the Czerny studies, and
 > `technique.7` claims nothing the vocabulary can measure. **Nothing is removed from a rung**: the
-> authored lists stay authoritative, the report is what F, G and the owner rewrite from, and
+> authored lists stay authoritative, the report is what F and G rewrite from (no owner review or
+> placement is required; corrected 2026-09-28, D3a), and
 > `validate.py` warns with its count. The same report carries the untaught-on-rung demands of
 > every option, D0's 71 generated combinations among them.
 
@@ -909,6 +915,20 @@ teaching-use decision, which is F's and the owner's.
 >   the candidate-rungs report beside D3's entry lists, for each study, the rungs whose taught set
 >   holds every demand it carries and whose claims its notes establish — the material a later
 >   placement decision reads beside a resolved teaching-use review in D2's record.
+> - **Out of every automatic offer until a teaching use is approved (D3a, 2026-09-28).** A study
+>   promises music, and so do the grooves and the 12/8 blues; nobody has heard one. The build
+>   writes each generated item's promise for its recipe as an authored provenance fact
+>   (`docs/03` §4a), and the one gate refuses a music-promising item whose
+>   `provenance.review.teaching` is not `true` for a skill, a requirement, a demand and an
+>   equivalent — the swap sheet's four tiers and its last resort, a lesson's own option and an
+>   authored alternative included, since authorship establishes the relationship and not that
+>   unheard generated music is fit to teach — as *not approved for teaching use*: undecided and a
+>   `no` or a `fix` on record alike, the stored bit kept. The Library lists every study, and
+>   exploration passes. The route in needs no owner: a named reviewer's `goodTeachingUse: yes` on
+>   the item's current identity, through the microscope's export and `review.py --merge`, built
+>   into `provenance.review.teaching === true`, admits it to the same gates as everything else; a
+>   stale decision (a changed identity) does not. Before D3a the demand and skill tiers offered the
+>   2.1 studies as *Also practises both hands together* on 2.1's rows.
 
 The table above is a technique syllabus in the conservatoire sense. It is not the whole of
 what a learner practises, and a skill with no generated exercise ends up either untested or

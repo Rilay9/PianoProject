@@ -220,7 +220,12 @@ export interface Provenance {
   composition?: string;
   arrangement?: string;
   converter?: { name: string; version?: string | number };
-  facts: Record<string, { kind: FactKind; via?: string; why?: string; untrusted?: string[] }>;
+  /**
+   * `value` is what an authored or reviewed fact states: a reviewed decision's `yes`, `no` or `fix`
+   * (D2), and a generated item's `promise` — `music` or `drill`, its family contract's rule for its
+   * recipe (D3a), which the one gate reads with `review.teaching`.
+   */
+  facts: Record<string, { kind: FactKind; via?: string; why?: string; untrusted?: string[]; value?: string }>;
   /** R42's two decisions, apart: a usable, faithful score; a good teaching use. `null`: no person has decided. */
   review: { score: boolean | null; teaching: boolean | null };
   /** A declared large-hand voicing, with what a smaller hand does instead (D0 finding 5). */

@@ -318,7 +318,14 @@ you like — no scoring, no cursor", `chose` "You chose this one".
   rung, nothing is offered that carries a demand no lesson up to it has taught (a reading row by
   what C4b's map says it may write); nothing unmeasured is offered as an equivalent, the lesson's
   own options and the named stand-ins included; a declared large-hand voicing is not offered
-  until its alternative reaches the learner. A shared concept tag or a step every tune has
+  until its alternative reaches the learner; and a generated item whose family promises music
+  (the studies, the grooves, the 12/8 blues) is not offered in any tier, the lesson's own options
+  and the named stand-ins included, until a person's `goodTeachingUse: yes` on its current
+  identity is in D2's record and built (D3a: the gate's reason is *not approved for teaching use*,
+  never "not yet reviewed", because a `no` or a `fix` is a reviewed decision too). The Library
+  still lists every one of them, and opening one from there is exploration, which no gate
+  refuses; a groove a rung lists can still be the card's own row for that rung, since the card
+  takes a rung's list as it stands and nothing is removed from a rung. A shared concept tag or a step every tune has
   matches nothing: the `repertoire` tag on every quarried piece made the old third tier a level
   window over the quarry. The words state the strongest fact known, never "similar difficulty".
   Each tier's words are printed once over its options, and a row keeps `data-tier`; a chosen

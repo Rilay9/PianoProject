@@ -1343,8 +1343,10 @@ def candidate_rungs_markdown(report: list[dict]) -> str:
              "Read from the built catalogue and curriculum by `study.candidate_rungs`: for each study, the rungs",
              "whose taught set contains every demand it carries (`claims.untaught_on` empty, the rung's ancestry)",
              "and whose claims its measured demands establish at a useful density (`claims.status_of`). **Nothing",
-             "is placed**: no rung lists a study, and placement stays F's and the owner's, on a resolved",
-             "teaching-use review in D2's record. Unheard; unverified as music.", ""]
+             "is placed**: no rung lists a study. Placement is F's, on a stated gate that needs no owner: a line",
+             "below established on the combined build, and a current `goodTeachingUse: yes` in D2's record by a",
+             "named reviewer. No owner review or placement is required. Until that decision exists a study stays in",
+             "the Library and out of every automatic offer (D3a). Unheard; unverified as music.", ""]
     for row in report:
         lines.append(f"## {row['title']}")
         lines.append("")

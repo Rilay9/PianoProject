@@ -3,8 +3,10 @@
 Read from the built catalogue and curriculum by `study.candidate_rungs`: for each study, the rungs
 whose taught set contains every demand it carries (`claims.untaught_on` empty, the rung's ancestry)
 and whose claims its measured demands establish at a useful density (`claims.status_of`). **Nothing
-is placed**: no rung lists a study, and placement stays F's and the owner's, on a resolved
-teaching-use review in D2's record. Unheard; unverified as music.
+is placed**: no rung lists a study. Placement is F's, on a stated gate that needs no owner: a line
+below established on the combined build, and a current `goodTeachingUse: yes` in D2's record by a
+named reviewer. No owner review or placement is required. Until that decision exists a study stays in
+the Library and out of every automatic offer (D3a). Unheard; unverified as music.
 
 ## Study in C major in 3/4 — steps and skips, held bass
 
@@ -13,6 +15,7 @@ teaching-use review in D2's record. Unheard; unverified as music.
 | Rung | Claims it establishes | Claims it does not |
 | --- | --- | --- |
 | 2.1 (Hands together: the left hand holds) | skill hands-together (concept); demand texture.hands-together (taughtAt) | — |
+| holiday (Carols you can play this year) | skill hands-together (concept); demand texture.hands-together (taughtAt) | — |
 | blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
 | ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
 
@@ -23,6 +26,7 @@ teaching-use review in D2's record. Unheard; unverified as music.
 | Rung | Claims it establishes | Claims it does not |
 | --- | --- | --- |
 | 2.1 (Hands together: the left hand holds) | skill hands-together (concept); demand texture.hands-together (taughtAt) | — |
+| holiday (Carols you can play this year) | skill hands-together (concept); demand texture.hands-together (taughtAt) | — |
 | blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
 | ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
 
@@ -33,6 +37,7 @@ teaching-use review in D2's record. Unheard; unverified as music.
 | Rung | Claims it establishes | Claims it does not |
 | --- | --- | --- |
 | 2.1 (Hands together: the left hand holds) | skill hands-together (concept); demand texture.hands-together (taughtAt) | — |
+| holiday (Carols you can play this year) | skill hands-together (concept); demand texture.hands-together (taughtAt) | — |
 | blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
 | ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
 
@@ -283,6 +288,7 @@ teaching-use review in D2's record. Unheard; unverified as music.
 | Rung | Claims it establishes | Claims it does not |
 | --- | --- | --- |
 | 2.1 (Hands together: the left hand holds) | skill hands-together (concept); demand texture.hands-together (taughtAt) | — |
+| holiday (Carols you can play this year) | skill hands-together (concept); demand texture.hands-together (taughtAt) | — |
 | blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
 | ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
 
@@ -293,6 +299,7 @@ teaching-use review in D2's record. Unheard; unverified as music.
 | Rung | Claims it establishes | Claims it does not |
 | --- | --- | --- |
 | 2.1 (Hands together: the left hand holds) | skill hands-together (concept); demand texture.hands-together (taughtAt) | — |
+| holiday (Carols you can play this year) | skill hands-together (concept); demand texture.hands-together (taughtAt) | — |
 | blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
 | ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
 
@@ -303,6 +310,7 @@ teaching-use review in D2's record. Unheard; unverified as music.
 | Rung | Claims it establishes | Claims it does not |
 | --- | --- | --- |
 | 2.1 (Hands together: the left hand holds) | skill hands-together (concept); demand texture.hands-together (taughtAt) | — |
+| holiday (Carols you can play this year) | skill hands-together (concept); demand texture.hands-together (taughtAt) | — |
 | blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
 | ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
 
