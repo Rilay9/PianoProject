@@ -41,7 +41,7 @@ import { measured } from './helpers/measured';
 /** Vocabulary v0 with eighth notes taught at the constructed lesson E. */
 const VOCABULARY: Vocabulary = {
   ...VOCABULARY_V0,
-  demands: VOCABULARY_V0.demands.map((demand) => (demand.id === 'rhythm.eighths' ? { ...demand, taughtAt: 'E' } : demand)),
+  demands: VOCABULARY_V0.demands.map((demand) => (demand.id === 'rhythm.eighths' ? { ...demand, taughtAt: ['E'] } : demand)),
 };
 
 const TODAY = new Date(2026, 9, 20, 9);

@@ -17,21 +17,31 @@
  *
  * Each case is written to fail on the committed predicate with the demand, the rung
  * and the lesson the file's order credited.
+ *
+ * Since E0b a demand can name more than one teaching rung (`taughtAt` is a list, one
+ * rung per path): the walking bass is `blues.5`'s, `jazz.6`'s and `jam.6`'s, and is
+ * taught wherever any of them is on the rung's path or in the learner's reached set
+ * (the last `describe`).
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import * as session from '../../src/curriculum/session';
-import { buildSession, swapOptions, taughtAtRung, type SessionSlot } from '../../src/curriculum/session';
+import { buildSession, readingOptions, swapOptions, taughtAtRung, type SessionSlot } from '../../src/curriculum/session';
+import { targetDemandsFor } from '../../src/curriculum/eligibility';
 import { indexCatalog } from '../../src/curriculum/selectors';
 import { EVERY_DECLARED_SKILL } from '../../src/curriculum/skillActivation';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
+import type { SessionRow } from '../../src/data/db';
+import { READING_CONTROLS } from '../../src/engine/readingControls';
+import { EVIDENCE_DEFINITIONS, type MeasuredEvidence } from '../../src/evidence/evidence';
 import { rungState } from '../../src/evidence/rungState';
 import { VOCABULARY_V0, type Vocabulary } from '../../src/evidence/vocabulary';
 import { measured } from './helpers/measured';
 
 const CONTENT = join(process.cwd(), 'public', 'content');
 const SHIPPED = JSON.parse(readFileSync(join(CONTENT, 'curriculum.json'), 'utf8')) as Curriculum;
+const CATALOG = JSON.parse(readFileSync(join(CONTENT, 'catalog.json'), 'utf8')) as CatalogItem[];
 const TODAY = new Date(2026, 9, 20, 9);
 const WALK = 'texture.walking-bass';
 
@@ -89,11 +99,13 @@ function twoTracks(options: { b6?: Partial<Lesson>; b5?: Partial<Lesson> } = {})
   };
 }
 
-/** Vocabulary v0 with the walking bass taught at A.5. */
-const X_AT_A5: Vocabulary = {
+/** Vocabulary v0 with the walking bass taught at the listed rungs (E0b: `taughtAt` is a list). */
+const walkTaughtAt = (...rungs: string[]): Vocabulary => ({
   ...VOCABULARY_V0,
-  demands: VOCABULARY_V0.demands.map((demand) => (demand.id === WALK ? { ...demand, taughtAt: 'A.5' } : demand)),
-};
+  demands: VOCABULARY_V0.demands.map((demand) => (demand.id === WALK ? { ...demand, taughtAt: rungs } : demand)),
+});
+/** Vocabulary v0 with the walking bass taught at A.5. */
+const X_AT_A5: Vocabulary = walkTaughtAt('A.5');
 
 describe('two sibling tracks: a demand taught on one is not taught on the other', () => {
   const curriculum = twoTracks();
@@ -133,11 +145,13 @@ describe('two sibling tracks: a demand taught on one is not taught on the other'
 describe('the shipped curriculum', () => {
   const taught = (rung: string, demand: string): boolean | undefined => taughtAtRung(SHIPPED, rung)?.(demand);
 
-  it('the walking bass is taught at blues.5 and blues.6, not at jazz.5, jazz.6 or classical.5', () => {
+  // Revised (E0b): jazz.6 left this case. Old assumption (E0a's brief, item 3): jazz.6 is not a teaching
+  // rung, so the walking bass is untaught there. Its lesson teaches a walking line and assigns one, and
+  // the vocabulary lists it (`describe` 'a demand taught at more than one rung', below).
+  it('the walking bass is taught at blues.5 and blues.6, not at jazz.5 or classical.5', () => {
     expect(taught('blues.5', WALK), `${WALK} at blues.5, the rung that teaches it`).toBe(true);
     expect(taught('blues.6', WALK), `${WALK} at blues.6, which builds on blues.5`).toBe(true);
     expect(taught('jazz.5', WALK), `${WALK} at jazz.5: the file’s order credited blues.5, stored before jazz.5`).toBe(false);
-    expect(taught('jazz.6', WALK), `${WALK} at jazz.6: the file’s order credited blues.5, stored before jazz.6`).toBe(false);
     expect(taught('classical.5', WALK), `${WALK} at classical.5`).toBe(false);
   });
 
@@ -270,5 +284,139 @@ describe('the gate’s consumers read the learner’s own path', () => {
     expect(withA?.claim?.kind, 'the skill step, for a learner who reached A.5').toBe('skill');
     const withoutA = warmup(['core', 'B']);
     expect(withoutA?.claim?.kind, 'the exposure rule on B.6, never the skill step: the file’s order credited A.5').toBe('exposure');
+  });
+});
+
+/**
+ * A demand taught at more than one rung (E0b; the reviewer's finding 2 on E0a,
+ * `docs/review/responses/5bfe6d2.md`). `taughtAt` named one rung, the first in the
+ * file whose concepts named the demand, so the walking bass was `blues.5`'s alone and a
+ * learner through `jazz.6` — whose lesson teaches a walking line and assigns one — was
+ * withheld it at `jazz.8`. It is now every rung that teaches the demand, one per path,
+ * and a demand is taught when any listed rung is in the rung's ancestry or the
+ * learner's reached set. Each case fails on the committed vocabulary and predicate with
+ * the demand and the rung, except the ones marked as holding already.
+ */
+describe('a demand taught at more than one rung', () => {
+  const WALK_ON_TWO_TRACKS = walkTaughtAt('A.5', 'B.6');
+
+  it('two listed rungs on sibling tracks: taught on each path from its own rung, never before it', () => {
+    const curriculum = twoTracks();
+    const at = (rung: string, reached?: readonly string[]) => taughtAtRung(curriculum, rung, WALK_ON_TWO_TRACKS, reached);
+    expect(at('A.5')?.(WALK), 'X at A.5, a listed rung').toBe(true);
+    expect(at('A.6')?.(WALK), 'X at A.6, which builds on A.5').toBe(true);
+    expect(at('B.6')?.(WALK), 'X at B.6, the other listed rung, whose path never reaches A.5').toBe(true);
+    expect(at('B.5')?.(WALK), 'X at B.5, before B.6 on its track: B.6 teaches it later').toBe(false);
+    expect(at('core.4')?.(WALK), 'X at core.4, before either track').toBe(false);
+    expect(at('B.5', ['core.1', 'core.4', 'A.5', 'B.5'])?.(WALK), 'X at B.5 for a learner who reached A.5').toBe(true);
+  });
+
+  const taught = (rung: string, demand: string, reached?: readonly string[]): boolean | undefined =>
+    taughtAtRung(SHIPPED, rung, VOCABULARY_V0, reached)?.(demand);
+
+  it('(a) jazz.6 teaches the walking bass to a learner who never reached blues.5, and so does every jazz rung after it', () => {
+    expect(ancestryOf(SHIPPED)?.get('jazz.6')?.has('blues.5'), 'jazz.6’s path goes through blues.5').toBe(false);
+    for (const rung of ['jazz.6', 'jazz.7', 'jazz.8', 'jazz.9']) {
+      expect(taught(rung, WALK), `${WALK} at ${rung}: jazz.6 teaches it, on ${rung}’s path`).toBe(true);
+    }
+    expect(taught('jam.6', WALK), `${WALK} at jam.6: “Walking bass, when there is no bass player”`).toBe(true);
+  });
+
+  it('(b) reading row 7 at jazz.8 may write its walking bass again; at theory.9 it still may not', () => {
+    const row = CATALOG.find((one) => one.id === 'drill.reading.sight-reading-7') as CatalogItem;
+    const walks = READING_CONTROLS[WALK] as (typeof READING_CONTROLS)[string];
+    const mayWrite = (rung: string) => walks.mayWrite(readingOptions(row, undefined, 1, taughtAtRung(SHIPPED, rung)));
+    expect(mayWrite('jazz.8'), `row 7 opened from jazz.8: ${WALK} held out though jazz.6 taught it`).toBe(true);
+    // Holding already: theory.9's path reaches no teaching rung (the reviewer's finding 3).
+    expect(mayWrite('theory.9'), `row 7 opened from theory.9: ${WALK} written off the path`).toBe(false);
+    expect(taught('theory.9', WALK), `${WALK} at theory.9`).toBe(false);
+  });
+
+  it('(c) classical.6 and chords-pop.6 still do not inherit it by adjacency (holding already); a learner who reached jazz.6 carries it there', () => {
+    expect(taught('classical.6', WALK), `${WALK} at classical.6`).toBe(false);
+    expect(taught('chords-pop.6', WALK), `${WALK} at chords-pop.6, the track jazz.5 builds on`).toBe(false);
+    expect(taught('chords-pop.6', WALK, ['chords-pop.5', 'chords-pop.6']), `${WALK} at chords-pop.6 for a learner who stayed on it`).toBe(false);
+    expect(taught('chords-pop.6', WALK, ['jazz.5', 'jazz.6']), `${WALK} at chords-pop.6 for a learner who reached jazz.6`).toBe(true);
+  });
+
+  it('“something else like this” on jazz.6: the demand tier wants the walking bass jazz.6 teaches', () => {
+    const walking: CatalogItem = { id: 'song.walks', type: 'song', title: 'A walk', level: 6, hands: 'both', tracks: ['jazz'], concepts: [], file: 'scores/song.walks.mxl', ...measured([WALK]) };
+    expect(targetDemandsFor(walking, 'jazz.6'), `${WALK} is among what jazz.6 teaches`).toEqual([WALK]);
+    expect(targetDemandsFor(walking, 'blues.5')).toEqual([WALK]);
+    expect(targetDemandsFor(walking, 'jazz.7'), 'jazz.7 teaches nothing of it itself').toEqual([]);
+  });
+
+  /** A stored run showing hand independence at the practice standard: familiar on one supporting record. */
+  const handsShown = (): SessionRow => ({
+    itemId: 'drill.walks',
+    mode: 'tempo',
+    tempoPct: 100,
+    tempoMeasured: true,
+    accuracy: 1,
+    accuracyEstimated: false,
+    wrongNotes: 0,
+    missed: 0,
+    durationMs: 1000,
+    at: new Date(2026, 9, 19, 12).toISOString(),
+    evidenceDefinitions: EVIDENCE_DEFINITIONS,
+    evidence: [
+      {
+        kind: 'measured',
+        skill: 'hand-independence',
+        standard: 'practice',
+        n: 8,
+        right: 8,
+        at: new Date(2026, 9, 19, 12).toISOString(),
+        observationId: 1,
+        context: { itemId: 'drill.walks', firstContact: true, met: ['keep-tempo', 'both-hands'], unattributed: 0, estimated: false },
+        byDemand: [],
+      } as unknown as MeasuredEvidence,
+    ],
+  });
+
+  it('the repertoire slot’s claim on the shipped jazz.6: its strand’s edges name the walking bass', () => {
+    const TODAY_AT = new Date(2026, 9, 20, 9);
+    const shown = handsShown();
+    const walks: CatalogItem = { id: 'song.walks', type: 'song', title: 'A walk', level: 6, hands: 'both', tracks: ['jazz'], concepts: [], file: 'scores/song.walks.mxl', ...measured([WALK]) };
+    const slot = buildSession({
+      curriculum: SHIPPED,
+      catalog: indexCatalog([walks]),
+      items: [walks],
+      states: rungState([shown], SHIPPED, VOCABULARY_V0, TODAY_AT),
+      rows: [shown],
+      learned: [],
+      lastPlayed: new Map(),
+      activeTracks: ['core', 'jazz'],
+      minutes: 30,
+      startAt: 'jazz.6',
+      today: TODAY_AT,
+    }).slots.find((one) => one.kind === 'repertoire');
+    expect(slot?.claim, `the repertoire claim for a learner placed at jazz.6, which teaches ${WALK}`).toMatchObject({ kind: 'ready', demand: WALK });
+  });
+
+  it('the repertoire slot’s claim on B.6: a strand on a listed rung offers a piece with the demand it teaches', () => {
+    const TODAY_AT = new Date(2026, 9, 20, 9);
+    const curriculum = twoTracks({ b6: { songOptions: ['song.b6'] } });
+    const shown = handsShown();
+    const items: CatalogItem[] = [
+      { id: 'song.b6', type: 'song', title: 'B6', level: 6, hands: 'both', tracks: ['B'], concepts: [], file: 'scores/song.b6.mxl', ...measured([]) },
+      { id: 'song.walks', type: 'song', title: 'A walk', level: 6, hands: 'both', tracks: ['B'], concepts: [], file: 'scores/song.walks.mxl', ...measured([WALK]) },
+    ];
+    const slot = buildSession({
+      curriculum,
+      catalog: indexCatalog(items),
+      items,
+      states: rungState([shown], curriculum, WALK_ON_TWO_TRACKS, TODAY_AT),
+      rows: [shown],
+      learned: [],
+      lastPlayed: new Map(),
+      activeTracks: ['core', 'B'],
+      minutes: 30,
+      startAt: 'B.6',
+      today: TODAY_AT,
+      vocabulary: WALK_ON_TWO_TRACKS,
+    }).slots.find((one) => one.kind === 'repertoire');
+    expect(slot?.claim, `the repertoire claim on B.6, which the vocabulary lists for ${WALK}`).toMatchObject({ kind: 'ready', demand: WALK });
+    expect(slot?.item?.id).toBe('song.walks');
   });
 });

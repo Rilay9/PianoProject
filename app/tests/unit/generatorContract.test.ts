@@ -14,8 +14,8 @@
  *   taught (`heldToRung`): on 2.2 the right-hand row inside C position (S16),
  *   everywhere else the row as it stands. The base keeps the rung's promises
  *   and writes nothing the rung has not taught.
- * - **On**: a demand the rung has taught (`taughtAt` at or before it, in the
- *   curriculum's order) that the base does not already write in every phrase
+ * - **On**: a demand the rung has taught (a rung its `taughtAt` lists on the
+ *   rung's path, `taughtAtRung`; E0a, E0b) that the base does not already write in every phrase
  *   is turned on with its control (`readingControls.ts`). Over the seeds, every
  *   phrase contains it; the rung's and the row's promises hold; nothing a
  *   later rung teaches appears; and nothing appears that the base never wrote
@@ -41,7 +41,7 @@ import { join } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { sightReadingOptionsFor, unrealisable, type SightReadingOptions } from '../../src/engine/sightReading';
 import { heldToRung, READING_CONTROLS, UNREALISABLE_AT, type Unrealisable } from '../../src/engine/readingControls';
-import { nextRecommended, readingOffer } from '../../src/curriculum/session';
+import { nextRecommended, readingOffer, taughtAtRung } from '../../src/curriculum/session';
 import type { CatalogItem, Curriculum } from '../../src/curriculum/types';
 import { detectAll } from '../../src/demands/detect';
 import type { DemandsFile } from '../../src/demands/vocabulary';
@@ -64,7 +64,6 @@ const ORDER: string[] = curriculum.stages.flatMap((stage) => stage.units.flatMap
 const CORE: string[] = curriculum.stages.flatMap((stage) =>
   stage.units.filter((unit) => unit.track === 'core').flatMap((unit) => unit.lessons.map((lesson) => lesson.id)),
 );
-const at = (rung: string): number => ORDER.indexOf(rung);
 
 // --- the rungs, as the reader meets them ------------------------------------------
 
@@ -94,7 +93,11 @@ function groups(): Group[] {
     });
     if (!offer?.anchored || position?.lesson.id !== rung) continue;
     const row = authored.get(offer.item.id) ?? offer.item;
-    const taught = new Set(demands.filter((d) => d.taughtAt !== null && at(d.taughtAt) <= at(rung)).map((d) => d.id));
+    // Revised (E0b): what the rung has taught is `taughtAtRung` (its ancestry). Old assumption: one
+    // `taughtAt` rung, read at or before the rung in the file's order — which, once syncopation is
+    // listed at `latin.3` too (stored before 4.1), would credit 4.1–4.4 with it.
+    const taughtHere = taughtAtRung(curriculum, rung) ?? (() => false);
+    const taught = new Set(demands.filter((d) => taughtHere(d.id)).map((d) => d.id));
     const base = heldToRung(sightReadingOptionsFor(row.drill?.params ?? {}), (d) => taught.has(d));
     const lessonId = offer.lessonId ?? rung;
     const key = JSON.stringify([row.id, lessonId, base, [...taught].sort()]);
@@ -110,7 +113,7 @@ function groups(): Group[] {
       base,
       taught,
       promises: [...row.concepts.flatMap((c) => CLAIMED_BY_CONCEPT[c] ?? []), ...(PROMISED_BY_RUNG[lessonId] ?? [])],
-      untaught: untaughtChecks(rung, ORDER, demands),
+      untaught: untaughtChecks(rung, ORDER, demands, () => false, (d) => taught.has(d)),
     });
   }
   return out;

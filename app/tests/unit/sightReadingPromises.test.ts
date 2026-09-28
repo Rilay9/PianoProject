@@ -27,8 +27,10 @@
  *   the rung's ancestry since E0a, where it was the curriculum's order at the
  *   earliest listing): no eighths before 2.2, no ties or dotted quarters before
  *   2.4, no key signature before 3.1, no syncopation, triplets or compound time
- *   before 4.5 — and 4/4 only before 4.5; no walking bass off blues.5's path;
- *   and, since C4b, nothing no rung teaches at all (sixteenths, S23);
+ *   before 4.5 — and 4/4 only before 4.5; no walking bass off the paths of
+ *   blues.5, jazz.6 and jam.6 (E0b: `taughtAt` lists every rung that teaches a
+ *   demand, one per path); and, since C4b, nothing no rung teaches at all
+ *   (sixteenths, S23);
  * - **declared** — every skill the row says it practises (`targetSkills`) has
  *   its opportunity somewhere in the row's phrases;
  * - **well formed** — a rest inside a triplet is a triplet rest, and short
@@ -109,7 +111,7 @@ const position = (id: string): number => {
  */
 function unintended(rung: string): Check[] {
   position(rung);
-  for (const d of demands) if (d.taughtAt !== null) position(d.taughtAt);
+  for (const d of demands) for (const at of d.taughtAt) position(at);
   const taught = taughtAtRung(curriculum, rung);
   expect(taught, `rung ${rung} has no ancestry`).toBeDefined();
   return untaughtChecks(rung, ORDER, demands, () => false, taught);
@@ -121,15 +123,19 @@ function unintended(rung: string): Check[] {
  * kept there; this names each such pair rather than letting the check pass on
  * the file's order. Row 7 promises a walking bass (its `walking-bass` concept,
  * and theory.9's lesson: "with triplets and a walking bass"); the vocabulary
- * teaches the walking bass at `blues.5` alone, and neither jazz.8's path
- * (jazz.7, jazz.6, jazz.5, chords-pop.5 …) nor theory.9's goes through it.
- * Before E0a the file's order credited both with `blues.5`, stored before
- * them. The vocabulary's and the curriculum's to settle (jazz.6's lesson
- * teaches a walking line; Entry 93); an entry fails here once its rung has
- * been taught the demand, or a phrase carries it.
+ * teaches the walking bass at `blues.5`, `jazz.6` and `jam.6` (E0b), and
+ * theory.9's path (theory.8 … theory.3, the core path) goes through none of
+ * them. Before E0a the file's order credited theory.9 with `blues.5`, stored
+ * before it. The curriculum's to settle (F: the lesson's sentence and the
+ * row's placement, the reviewer's finding 3 on E0a); the entry fails here once
+ * theory.9 has been taught the demand, or a phrase carries it.
+ *
+ * Revised (E0b): jazz.8 left the list. Old assumption: the walking bass is
+ * taught at `blues.5` alone, so jazz.8's path never meets it; `jazz.6`, on that
+ * path, teaches a walking line, and row 7 at jazz.8 writes its walking bass in
+ * every phrase again (the promise check above, on every seed).
  */
 const PROMISED_OFF_THE_PATH: readonly { row: string; rung: string; demand: string }[] = [
-  { row: 'drill.reading.sight-reading-7', rung: 'jazz.8', demand: 'texture.walking-bass' },
   { row: 'drill.reading.sight-reading-7', rung: 'theory.9', demand: 'texture.walking-bass' },
 ];
 

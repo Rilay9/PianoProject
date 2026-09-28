@@ -380,7 +380,7 @@ describe('the warm-up trains the unmet skill the evidence has shown least', () =
   ];
   const VOCABULARY: Vocabulary = {
     ...VOCABULARY_V0,
-    demands: VOCABULARY_V0.demands.map((demand) => (demand.id === 'rhythm.eighths' || demand.id === 'rhythm.ties' ? { ...demand, taughtAt: 'R' } : demand)),
+    demands: VOCABULARY_V0.demands.map((demand) => (demand.id === 'rhythm.eighths' || demand.id === 'rhythm.ties' ? { ...demand, taughtAt: ['R'] } : demand)),
   };
   const R: Lesson = {
     id: 'R',

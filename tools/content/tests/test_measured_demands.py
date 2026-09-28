@@ -18,7 +18,8 @@ in the music. Thresholds are the family's own, each with its reason in the row; 
 universal percentage.
 
 **And the rung.** The combination appropriate to the rung the item sits on: every measured demand
-of an item a rung lists, against the rung's ancestry and `demands.json`'s `taughtAt`, on the
+of an item a rung lists, against the rung's ancestry and every rung `demands.json`'s `taughtAt`
+lists (one teaching rung per path since E0b), on the
 earliest rung listing it on that rung's path (the sight-reading promise test's rule). Since E0a the
 reading is the build report's own (`claims.rung_ancestry`, `claims.first_listings`,
 `claims.untaught_on`): what the rung builds on, never the file's order across tracks. D0 changes
@@ -162,6 +163,28 @@ class TestTheRungTheItemSitsOn(unittest.TestCase):
         gone = {f"{k[0]} on {k[1]}: {k[2]} x{n}" for k, n in pinned.items() if found.get(k) != n}
         self.assertEqual(sorted(new), [], "untaught combinations the record does not hold")
         self.assertEqual(sorted(gone), [], "recorded combinations no longer found: remove them from the record")
+
+    def test_no_recorded_combination_has_a_teaching_rung_on_its_path(self) -> None:
+        """
+        E0b: a demand is taught at every rung `taughtAt` lists, one per path, so it is taught on a
+        rung whose ancestry holds any of them. Read against the vocabulary directly, without the
+        bridge run: no recorded combination names a demand one of whose teaching rungs is on its
+        rung's path (the stride exercises' misread walk on jazz.7 and jazz.9 left the record when
+        jazz.6 became a teaching rung; on ragtime.9 and holiday.7, whose paths reach none, it
+        stays), and each record row's `taughtAt` is the vocabulary's list.
+        """
+        ancestry = claims.rung_ancestry(curriculum_sources())
+        _skills, vocabulary = claims.load_vocabulary()
+        recorded = json.loads((FIXTURES / "untaught_on_rung.json").read_text(encoding="utf-8"))["found"]
+        covered = [f"{r['family']} on {r['rung']}: {r['demand']}, taught at "
+                   f"{', '.join(t for t in vocabulary[r['demand']]['taughtAt'] if t in ancestry.get(r['rung'], set()))}"
+                   f" on its path"
+                   for r in recorded
+                   if any(t in ancestry.get(r["rung"], set()) for t in vocabulary[r["demand"]]["taughtAt"])]
+        self.assertEqual(covered, [], "recorded combinations a teaching rung on the rung's path covers")
+        stale = [f"{r['family']} on {r['rung']}: {r['demand']} recorded as taught at {r['taughtAt']!r}"
+                 for r in recorded if r["taughtAt"] != vocabulary[r["demand"]]["taughtAt"]]
+        self.assertEqual(stale, [], "the record's taughtAt is not the vocabulary's list")
 
 
 if __name__ == "__main__":

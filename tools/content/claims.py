@@ -10,7 +10,9 @@ says otherwise):
 
 **The rung-claims report.** A rung makes claims about its options: the skills its
 requirements name, the vocabulary skills and notated facts its concepts name, and the
-demands the vocabulary says it teaches (`demands.json`'s `taughtAt`). Each option either
+demands the vocabulary says it teaches (`demands.json`'s `taughtAt`: since E0b every rung
+that teaches a demand, one per path, `teaching_rungs` the derivation from the lessons'
+concepts). Each option either
 establishes each claim from its measured demands at a useful density
 (`measurement.established`, written by `build.attach_demands`), carries it only
 incidentally (present, below the density), lacks it, or was not measured. A concept the
@@ -107,6 +109,55 @@ def load_vocabulary() -> tuple[dict[str, dict], dict[str, dict]]:
     skills = json.loads((VOCABULARY / "skills.json").read_text(encoding="utf-8"))["skills"]
     demands = json.loads((VOCABULARY / "demands.json").read_text(encoding="utf-8"))["demands"]
     return {s["id"]: s for s in skills}, {d["id"]: d for d in demands}
+
+
+def taught_at(demand: dict | None) -> list[str]:
+    """
+    The rungs a demand is taught at (E0b): `taughtAt` is every rung that teaches it, one per path,
+    `[]` where none does. It was one rung or `null`, the first rung in the file whose concepts
+    named the demand.
+    """
+    return list((demand or {}).get("taughtAt") or [])
+
+
+def concepts_naming(skills: dict[str, dict], demands: dict[str, dict]) -> dict[str, set[str]]:
+    """
+    The lesson concepts that name each demand (E0b): `CONCEPT_DEMANDS`, and a vocabulary skill whose
+    opportunity is that demand alone (`syncopation` names `rhythm.syncopation`, `key-signature`
+    names `key.signature`). A skill whose opportunity is several demands (`interval-reading`,
+    `subdivision`, `hand-independence`) names none of them: which one the lesson means is not in the
+    concept.
+    """
+    out: dict[str, set[str]] = defaultdict(set)
+    for concept, demand in CONCEPT_DEMANDS.items():
+        out[demand].add(concept)
+    for skill in skills.values():
+        opportunity = skill.get("opportunity")
+        if isinstance(opportunity, list) and len(opportunity) == 1 and opportunity[0] in demands:
+            out[opportunity[0]].add(skill["id"])
+    return dict(out)
+
+
+def teaching_rungs(curriculum: dict, skills: dict[str, dict], demands: dict[str, dict],
+                   ancestry: dict[str, set[str]] | None = None) -> dict[str, list[str]]:
+    """
+    `{demand id: the rungs whose concepts name it and whose path holds no other such rung}`, in the
+    curriculum's order (E0b): one teaching rung per path, read from the lessons' own concepts under
+    the ancestry — what `taughtAt` is derived from. `blues.6` names walking-bass and stands on
+    `blues.5`, so it is not a second teaching rung; `jazz.6` names it and its path never reaches
+    `blues.5`, so it is. `validate.py` holds the vocabulary to this and warns where a list differs
+    (a lesson naming a concept in passing, or a hand reading its note writes down).
+    """
+    ancestry = ancestry if ancestry is not None else rung_ancestry(curriculum)
+    naming = concepts_naming(skills, demands)
+    lessons = [lesson for _stage, _unit, lesson in lessons_in_order(curriculum)]
+    out: dict[str, list[str]] = {}
+    for demand_id in demands:
+        concepts = naming.get(demand_id, set())
+        rungs = [lesson["id"] for lesson in lessons if concepts & set(lesson.get("concepts") or [])]
+        out[demand_id] = [rung for rung in rungs
+                          if not any(other != rung and other in ancestry.get(rung, set()) for other in rungs)]
+    return out
 
 
 def lessons_in_order(curriculum: dict) -> list[tuple[dict, dict, dict]]:
@@ -209,7 +260,7 @@ def rung_claims_of(lesson: dict, skills: dict[str, dict], demands: dict[str, dic
         else:
             unmeasurable.append(concept)
     for demand in demands.values():
-        if demand.get("taughtAt") == lesson["id"]:
+        if lesson["id"] in taught_at(demand):
             add("demand", demand["id"], "taughtAt")
     return claims, unmeasurable
 
@@ -263,13 +314,14 @@ def e22_notes(claim: dict, item: dict | None, verdict: str, skills: dict[str, di
 def untaught_on(item: dict, rung: str, ancestry: dict[str, set[str]], demands: dict[str, dict]) -> list[str]:
     """
     The item's measured demands `rung` has not taught (D0's rung check): taught nowhere
-    (`taughtAt: null`), or taught at a rung outside its ancestry (E0a; before, a rung stored
-    after it in the file).
+    (`taughtAt: []`), or at no rung in its ancestry (E0a; before, a rung stored after it in the
+    file). Since E0b a demand is taught where any rung its `taughtAt` lists is on the rung's path.
     """
     if not isinstance(item.get("demands"), list) or rung not in ancestry:
         return []
     taught_by = ancestry[rung]
-    return [demand for demand in item["demands"] if demands.get(demand, {}).get("taughtAt") not in taught_by]
+    return [demand for demand in item["demands"]
+            if not any(at in taught_by for at in taught_at(demands.get(demand)))]
 
 
 def rung_claims(catalog: list[dict], curriculum: dict) -> dict:
@@ -362,7 +414,7 @@ def rung_claims(catalog: list[dict], curriculum: dict) -> dict:
         "keptByNone": [{"rung": r["rung"], "title": r["title"], **c} for r, c in kept_by_none],
         "servesNone": [o["item"] + " on " + o["rung"] for o in serves_none],
         "generatedUntaught": [{"family": k[0], "rung": k[1], "demand": k[2], "items": n,
-                               "taughtAt": demands.get(k[2], {}).get("taughtAt")}
+                               "taughtAt": taught_at(demands.get(k[2]))}
                               for k, n in sorted(generated_untaught.items())],
         "recordedUntaught": len(recorded),
         # Every rung's ancestry as the build read it: `taughtByAncestry.test.ts` holds the app's
@@ -479,14 +531,15 @@ def render_rung_claims(report: dict) -> str:
     lines += [f"- {entry}" for entry in report["servesNone"]] or ["- none"]
     lines += ["", "## Untaught on the earliest rung listing them", "",
               "Every measured demand of an option that the curriculum has not taught by the earliest rung listing it "
-              "on that rung's path: `taughtAt` outside the rung's ancestry (the rung, what it builds on, and on a track "
-              "the core path to its stage; never the file's order, E0a), or `null`, taught nowhere. An option listed on "
+              "on that rung's path: no rung its `taughtAt` lists (every rung that teaches it, one per path, E0b) in the "
+              "rung's ancestry (the rung, what it builds on, and on a track the core path to its stage; never the file's "
+              "order, E0a), or `[]`, taught nowhere. An option listed on "
               "two paths is read where each first meets it. For the generated items this is D0's rung check (L101): "
               "inputs to placement, never permission to activate a family.", "",
               "### Generated items, family by rung by demand", "",
               "| Family | Rung | Demand | Taught at | Items |", "| --- | --- | --- | --- | --- |"]
     for row in report["generatedUntaught"]:
-        lines.append(f"| {row['family']} | {row['rung']} | {row['demand']} | {row['taughtAt']} | {row['items']} |")
+        lines.append(f"| {row['family']} | {row['rung']} | {row['demand']} | {', '.join(row['taughtAt']) or 'nowhere'} | {row['items']} |")
     lines += ["", "### Notated items", "", "| Item | Rung | Untaught demands |", "| --- | --- | --- |"]
     for option in report["options"]:
         if option["untaught"] and option["source"] not in ("generated",):
@@ -551,7 +604,7 @@ def inventory(catalog: list[dict], curriculum: dict) -> dict:
         ids = lesson.get("exerciseOptions", []) + lesson.get("songOptions", [])
         items = [by_id[i] for i in ids if i in by_id]
         provided = Counter(d for item in items for d in ((item.get("measurement") or {}).get("established") or []))
-        taught = [d["id"] for d in demands.values() if d.get("taughtAt") == lesson["id"]]
+        taught = [d["id"] for d in demands.values() if lesson["id"] in taught_at(d)]
         coverage.append({"rung": lesson["id"], "options": len(ids), "taught": taught,
                          "taughtEstablishedOn": {d: provided.get(d, 0) for d in taught},
                          "provided": dict(provided)})

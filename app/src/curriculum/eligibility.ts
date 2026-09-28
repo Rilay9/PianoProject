@@ -230,7 +230,8 @@ export function targetDemandsFor(
 ): string[] {
   if (rungId === undefined) return [];
   const measurement = measurementOf(item);
-  const taughtHere = vocabulary.demands.filter((demand) => demand.taughtAt === rungId).map((demand) => demand.id);
+  // E0b: `taughtAt` lists every rung that teaches the demand; this rung is one of them.
+  const taughtHere = vocabulary.demands.filter((demand) => demand.taughtAt.includes(rungId)).map((demand) => demand.id);
   if (measurement.status === 'measured') return taughtHere.filter((demand) => measurement.established.includes(demand));
   if (measurement.status === 'runtime') {
     const promised = new Set(

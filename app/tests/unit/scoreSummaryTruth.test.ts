@@ -864,10 +864,9 @@ describe('C4: the recipe reaches the phrase and the record; a drawn phrase is on
       stages: [{ number: 2, units: [{ id: 'u2', lessons: [lesson('2.2', 0.9, 0.7), lesson('2.5', 0.9, 0.7)] }] }],
     } as unknown as Curriculum;
     const order = ['2.2', '2.5'];
-    const taughtAt22 = (demand: string): boolean => {
-      const at = VOCABULARY_V0.demands.find((d) => d.id === demand)?.taughtAt;
-      return at !== null && at !== undefined && order.indexOf(at) >= 0 && order.indexOf(at) <= order.indexOf('2.2');
-    };
+    // Revised (E0b): `taughtAt` is a list; taught when any listed rung is at or before 2.2 on this one line.
+    const taughtAt22 = (demand: string): boolean =>
+      (VOCABULARY_V0.demands.find((d) => d.id === demand)?.taughtAt ?? []).some((at) => order.indexOf(at) >= 0 && order.indexOf(at) <= order.indexOf('2.2'));
     curriculumRef.current = HELD;
     findItemSpy.mockResolvedValue(readerItem(PARAMS));
     const own = generateSightReading(sightReadingOptionsFor(PARAMS, 4242)).musicXml;

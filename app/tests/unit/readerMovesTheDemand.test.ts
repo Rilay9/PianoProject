@@ -31,7 +31,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { nextRecommended, readingOffer, readingOptions, type ReadingOffer } from '../../src/curriculum/session';
+import { nextRecommended, readingOffer, readingOptions, taughtAtRung, type ReadingOffer } from '../../src/curriculum/session';
 import { generateSightReading } from '../../src/engine/sightReading';
 import { demandReadings, type DemandReading } from '../../src/evidence/demandReadings';
 import type { MeasuredEvidence } from '../../src/evidence/evidence';
@@ -49,14 +49,15 @@ const curriculum = JSON.parse(readFileSync(join(CONTENT, 'curriculum.json'), 'ut
 const TWO_RIGHT = catalog.find((item) => item.id === 'drill.reading.sight-reading-2-right') as CatalogItem;
 const FIXTURE = join(process.cwd(), 'tests', 'e2e', 'fixtures', 'reader-learners.json');
 
-const ORDER = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons.map((lesson) => lesson.id)));
-/** What a rung has taught, by the vocabulary's `taughtAt` in the curriculum's order (this file's own reading of it). */
+/**
+ * What a rung has taught: `taughtAtRung`, the rung's ancestry, as the Score screen holds a phrase.
+ * Revised (E0b): this file's own reading was one `taughtAt` rung at or before the rung in the file's
+ * order; with `taughtAt` a list that order credits 4.1–4.4 with the syncopation `latin.3` teaches.
+ */
 const taughtAt =
   (rung: string) =>
-  (demand: string): boolean => {
-    const at = VOCABULARY_V0.demands.find((d) => d.id === demand)?.taughtAt;
-    return at !== null && at !== undefined && ORDER.indexOf(at) >= 0 && ORDER.indexOf(at) <= ORDER.indexOf(rung);
-  };
+  (demand: string): boolean =>
+    taughtAtRung(curriculum, rung)?.(demand) ?? false;
 /** The options the Score screen writes for a recipe opened on this rung: the row held to what the rung has taught (C4c). */
 const written = (item: CatalogItem, recipe: ReadingRecipe, seed: number, rung: string) =>
   readingOptions(item, recipe, seed, taughtAt(rung));

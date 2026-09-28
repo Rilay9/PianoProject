@@ -156,7 +156,7 @@ describe('learners on 2.2: one failing everywhere, one misreading the skips, one
     const repertoire = card(skipLearner).find((slot) => slot.kind === 'repertoire');
     expect(repertoire?.claim?.kind).toBe('ready');
     const demand = repertoire?.claim?.kind === 'ready' ? repertoire.claim.demand : '';
-    expect(VOCABULARY_V0.demands.find((one) => one.id === demand)?.taughtAt, 'a demand 2.2 teaches').toBe('2.2');
+    expect(VOCABULARY_V0.demands.find((one) => one.id === demand)?.taughtAt, 'a demand 2.2 teaches (E0b: a list)').toContain('2.2');
     const measurement = repertoire?.item?.measurement;
     expect(measurement?.status === 'measured' ? measurement.established : [], 'provided at a useful density').toContain(demand);
     expect(repertoire?.reason).toMatch(/ — your reads support them$/);
