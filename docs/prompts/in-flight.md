@@ -10,7 +10,7 @@
 
 ## Waiting
 
-- **D1** — approved with one required change (`responses/b15758e.md`): **D1a** dispatched (Entry 97; the fail-closed fallback, the record field, the flip); on landing: merge, tsc, the sight-reading suites and the seven revised tests, the evidence files, three phrases per level rendered, record, handoff, push. Its ACCEPT closes D1. **D2** (Entry 95) — **landed**, merged with E0a's claims by hand; the orchestrator's chain running; record, handoff, push follow.
+- **D1** — approved with one required change (`responses/b15758e.md`): **D1a** dispatched (Entry 97; the fail-closed fallback, the record field, the flip); on landing: merge, tsc, the sight-reading suites and the seven revised tests, the evidence files, three phrases per level rendered, record, handoff, push. Its ACCEPT closes D1. **D2** (Entry 95) — **landed** and handed off (`handoffs/7e148e0.md`); awaiting the reviewer; U67 (Hear it silent after a reload) is a P1 for a small X seam.
 
 - **D0 / D0a** — **closed**: D0a accepted (`responses/3b9c37d.md`); B7 kept (G53), the arpeggios' notation to G52.
 - **Q24** — **closed**, approved by the reviewer (`responses/e32d0ef.md`, unprompted); the MAESTRO download stays the owner's question (Q47).

@@ -1,0 +1,79 @@
+test_check_lists_the_queue_music_families_first_and_passes_a_sound_record (tools.content.tests.test_review_record.TestCheck.test_check_lists_the_queue_music_families_first_and_passes_a_sound_record) ... ok
+test_every_case (tools.content.tests.test_review_record.TestCurrentValues.test_every_case) ... ok
+test_the_fact_written_for_a_decision_carries_value_basis_date_and_event (tools.content.tests.test_review_record.TestCurrentValues.test_the_fact_written_for_a_decision_carries_value_basis_date_and_event) ... ok
+test_refused_with_their_line_numbers (tools.content.tests.test_review_record.TestMalformedLines.test_refused_with_their_line_numbers) ... ok
+test_a_malformed_line_in_the_export_is_refused_with_its_line_number (tools.content.tests.test_review_record.TestMerge.test_a_malformed_line_in_the_export_is_refused_with_its_line_number) ... ok
+test_every_case (tools.content.tests.test_review_record.TestMerge.test_every_case) ... ok
+test_the_command_is_idempotent_and_refuses_an_unknown_identity (tools.content.tests.test_review_record.TestMerge.test_the_command_is_idempotent_and_refuses_an_unknown_identity) ... ok
+test_a_fixture_with_one_decision (tools.content.tests.test_review_record.TestTheBuildFillsTheReviewedFacts.test_a_fixture_with_one_decision) ... ok
+test_every_item_s_reviewed_facts_are_its_current_decisions (tools.content.tests.test_review_record.TestTheBuiltCatalogueIsTheRecord.test_every_item_s_reviewed_facts_are_its_current_decisions) ... ok
+test_the_record_is_well_formed (tools.content.tests.test_review_record.TestTheBuiltCatalogueIsTheRecord.test_the_record_is_well_formed) ... ok
+test_one_vocabulary_for_both_implementations (tools.content.tests.test_review_record.TestTheFieldsAreTheCases.test_one_vocabulary_for_both_implementations) ... ok
+test_every_item_once (tools.content.tests.test_review_record.TestTheQueue.test_every_item_once) ... ok
+test_the_music_families_canonical_items_come_first (tools.content.tests.test_review_record.TestTheQueue.test_the_music_families_canonical_items_come_first) ... ok
+test_the_screen_reads_the_same_queue (tools.content.tests.test_review_record.TestTheQueue.test_the_screen_reads_the_same_queue) ... ok
+test_then_the_not_judged_families_then_the_unmeasurable_claims (tools.content.tests.test_review_record.TestTheQueue.test_then_the_not_judged_families_then_the_unmeasurable_claims) ... ok
+test_the_review_column (tools.content.tests.test_review_record.TestTheReportShowsTheTeachingUseDecision.test_the_review_column) ... ok
+test_every_family_in_the_table_is_in_the_plan (tools.content.tests.test_family_contracts.TestEveryItemCarriesItsContract.test_every_family_in_the_table_is_in_the_plan) ... ok
+test_target_skills_role_and_identity_are_the_rows (tools.content.tests.test_family_contracts.TestEveryItemCarriesItsContract.test_target_skills_role_and_identity_are_the_rows) ... ok
+test_each_maker_passes_its_own_family_to_catalog_entry (tools.content.tests.test_family_contracts.TestEveryMakerHasExactlyOneContract.test_each_maker_passes_its_own_family_to_catalog_entry) ... ok
+test_the_invariant_census_and_the_table_name_the_same_families (tools.content.tests.test_family_contracts.TestEveryMakerHasExactlyOneContract.test_the_invariant_census_and_the_table_name_the_same_families) ... ok
+test_the_table_and_the_module_name_the_same_families (tools.content.tests.test_family_contracts.TestEveryMakerHasExactlyOneContract.test_the_table_and_the_module_name_the_same_families) ... ok
+test_a_family_s_music_changes_only_with_its_version (tools.content.tests.test_family_contracts.TestIdentity.test_a_family_s_music_changes_only_with_its_version) ... ok
+test_one_identity_is_one_piece_of_music (tools.content.tests.test_family_contracts.TestIdentity.test_one_identity_is_one_piece_of_music) ... ok
+test_an_item_no_primary_rule_matches_is_declared_not_judged (tools.content.tests.test_family_contracts.TestTheContractsNameTheVocabulary.test_an_item_no_primary_rule_matches_is_declared_not_judged) ... ok
+test_every_skill_and_demand_a_row_names_exists (tools.content.tests.test_family_contracts.TestTheContractsNameTheVocabulary.test_every_skill_and_demand_a_row_names_exists) ... ok
+test_every_promise_can_fail (tools.content.tests.test_family_contracts.TestTheMutationCensus.test_every_promise_can_fail) ... ok
+test_a_family_marked_heard_without_a_heard_decision_fails (tools.content.tests.test_family_contracts.TestTheRowsAreWellFormed.test_a_family_marked_heard_without_a_heard_decision_fails)
+The adversaries of the rule above, on a copy of the table with `tumbao` marked heard. ... ok
+test_every_field (tools.content.tests.test_family_contracts.TestTheRowsAreWellFormed.test_every_field) ... ok
+test_heard_is_held_to_the_record (tools.content.tests.test_family_contracts.TestTheRowsAreWellFormed.test_heard_is_held_to_the_record)
+D2 item 4 (revised from D0's "every music family is marked unheard", whose assumption was ... ok
+test_the_groove_and_style_families_promise_music (tools.content.tests.test_family_contracts.TestTheRowsAreWellFormed.test_the_groove_and_style_families_promise_music)
+Item 6: clave, tumbao, montuno, boogie, stride, comping, walking bass, rag, vamp, riff, ostinato. ... ok
+test_every_bundled_score_file_was_measured (tools.content.tests.test_measured_truth.TestEveryNotatedEntryIsMeasuredOrSaysWhyNot.test_every_bundled_score_file_was_measured)
+A file the build ships is measured; `unmeasured` is for what the detectors could not read. ... ok
+test_one_row_per_entry (tools.content.tests.test_measured_truth.TestEveryNotatedEntryIsMeasuredOrSaysWhyNot.test_one_row_per_entry) ... ok
+test_a_duplicate_pdmx_edition_shares_its_arrangement (tools.content.tests.test_measured_truth.TestIdentitySurvivesTheBuild.test_a_duplicate_pdmx_edition_shares_its_arrangement) ... ok
+test_authored_variants_name_one_composition (tools.content.tests.test_measured_truth.TestIdentitySurvivesTheBuild.test_authored_variants_name_one_composition) ... ok
+test_one_row_per_entry (tools.content.tests.test_measured_truth.TestIdentitySurvivesTheBuild.test_one_row_per_entry) ... ok
+test_a_quarry_keep_is_the_decision_not_the_reviewers_prose (tools.content.tests.test_measured_truth.TestProvenanceLabelsEveryFact.test_a_quarry_keep_is_the_decision_not_the_reviewers_prose) ... ok
+test_measured_facts_name_their_definitions (tools.content.tests.test_measured_truth.TestProvenanceLabelsEveryFact.test_measured_facts_name_their_definitions) ... ok
+test_one_row_per_entry (tools.content.tests.test_measured_truth.TestProvenanceLabelsEveryFact.test_one_row_per_entry) ... ok
+test_the_level_estimate_is_inferred_and_a_judged_level_is_not (tools.content.tests.test_measured_truth.TestProvenanceLabelsEveryFact.test_the_level_estimate_is_inferred_and_a_judged_level_is_not) ... ok
+test_a_defaulted_tempo_never_reads_as_written (tools.content.tests.test_measured_truth.TestTempoProvenance.test_a_defaulted_tempo_never_reads_as_written) ... ok
+test_no_tempo_sensitive_demand_is_trusted_where_the_tempo_is_inferred (tools.content.tests.test_measured_truth.TestTempoProvenance.test_no_tempo_sensitive_demand_is_trusted_where_the_tempo_is_inferred) ... ok
+test_anh_113 (tools.content.tests.test_measured_truth.TestTheBridgeRegressionOnTheBuild.test_anh_113) ... ok
+test_the_pinned_generated_items (tools.content.tests.test_measured_truth.TestTheBridgeRegressionOnTheBuild.test_the_pinned_generated_items) ... ok
+test_an_unestablished_claim_is_counted_and_listed (tools.content.tests.test_measured_truth.TestTheReports.test_an_unestablished_claim_is_counted_and_listed)
+The adversary: empty one measured option's opportunities and the report must see it. ... ok
+test_every_priority_rung_option_is_listed_with_every_claim (tools.content.tests.test_measured_truth.TestTheReports.test_every_priority_rung_option_is_listed_with_every_claim) ... ok
+test_the_committed_markdown_is_this_catalogues (tools.content.tests.test_measured_truth.TestTheReports.test_the_committed_markdown_is_this_catalogues) ... ok
+test_the_generated_untaught_combinations_are_d0s_record (tools.content.tests.test_measured_truth.TestTheReports.test_the_generated_untaught_combinations_are_d0s_record) ... ok
+test_the_inventory_reports_works_arrangements_and_coverage (tools.content.tests.test_measured_truth.TestTheReports.test_the_inventory_reports_works_arrangements_and_coverage) ... ok
+test_the_three_misreadings_are_marked (tools.content.tests.test_measured_truth.TestTheReports.test_the_three_misreadings_are_marked) ... ok
+test_untaught_here_is_the_rungs_path_never_the_files_order (tools.content.tests.test_measured_truth.TestTheReports.test_untaught_here_is_the_rungs_path_never_the_files_order)
+E0a: "untaught here" is read from the rung's ancestry. A walking-bass option on jazz.5 is ... ok
+test_a_family_density_rule_establishes_what_it_measures (tools.content.tests.test_measured_truth.TestUsefulDensity.test_a_family_density_rule_establishes_what_it_measures) ... ok
+test_a_presence_only_family_rule_establishes_nothing (tools.content.tests.test_measured_truth.TestUsefulDensity.test_a_presence_only_family_rule_establishes_nothing)
+The tie drill: one tie in four bars is the family's promise and not adequate practice (D0 finding 6). ... ok
+test_a_reading_the_clef_assumption_spoils_never_establishes (tools.content.tests.test_measured_truth.TestUsefulDensity.test_a_reading_the_clef_assumption_spoils_never_establishes)
+detect.ts reads staff 1 as treble: a one-staff bass-clef part's ledger lines are the misreading, marked. ... ok
+test_every_vocabulary_demand_has_its_own_rule_and_none_is_universal (tools.content.tests.test_measured_truth.TestUsefulDensity.test_every_vocabulary_demand_has_its_own_rule_and_none_is_universal) ... ok
+test_incidental_presence_is_not_an_opportunity (tools.content.tests.test_measured_truth.TestUsefulDensity.test_incidental_presence_is_not_an_opportunity) ... ok
+test_the_built_rows_follow_the_rule (tools.content.tests.test_measured_truth.TestUsefulDensity.test_the_built_rows_follow_the_rule) ... ok
+test_a_contract_claiming_an_opportunity_the_music_lacks_fails (tools.content.tests.test_measured_demands.TestEveryItemSatisfiesItsContract.test_a_contract_claiming_an_opportunity_the_music_lacks_fails)
+The adversary: the same measured item, a contract that claims what is not there. ... ok
+test_no_threshold_is_universal (tools.content.tests.test_measured_demands.TestEveryItemSatisfiesItsContract.test_no_threshold_is_universal)
+Part 15 §13: family-specific thresholds, never one universal percentage. ... ok
+test_presence_density_overconcentration_and_absence_hold_for_every_item (tools.content.tests.test_measured_demands.TestEveryItemSatisfiesItsContract.test_presence_density_overconcentration_and_absence_hold_for_every_item) ... ok
+test_the_five_finger_patterns_are_spelled_in_their_key (tools.content.tests.test_measured_demands.TestEveryItemSatisfiesItsContract.test_the_five_finger_patterns_are_spelled_in_their_key)
+What the measured demands found: twenty patterns spelled by pitch class (B major as B C-sharp ... ok
+test_the_bridge_measures_the_whole_plan_and_misses_nothing (tools.content.tests.test_measured_demands.TestTheBridgeReturnsTheDetectorsIds.test_the_bridge_measures_the_whole_plan_and_misses_nothing) ... ok
+test_the_pinned_generated_items_through_the_bridge (tools.content.tests.test_measured_demands.TestTheBridgeReturnsTheDetectorsIds.test_the_pinned_generated_items_through_the_bridge) ... ok
+test_untaught_demands_on_the_earliest_listing_rung_are_the_recorded_ones (tools.content.tests.test_measured_demands.TestTheRungTheItemSitsOn.test_untaught_demands_on_the_earliest_listing_rung_are_the_recorded_ones) ... ok
+
+----------------------------------------------------------------------
+Ran 63 tests in 509.945s
+
+OK

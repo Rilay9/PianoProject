@@ -1,0 +1,160 @@
+[WebServer] (node:45216) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/curriculum/load.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/curriculum/tips.ts, src/data/planStore.ts, src/score/estimateImport.ts, src/ui/assignSheet.ts, src/ui/screens/ChordChartScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [plugin builtin:vite-reporter] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/planStore.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/data/backup.ts, src/data/rungStates.ts, src/ui/screens/DrillScreen.ts, src/ui/screens/LessonScreen.ts, src/ui/screens/PlanScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/evidenceJob.ts is dynamically imported by src/main.ts but also statically imported by src/ui/screens/SettingsScreen.ts, dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] (node:54528) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:56296) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+MICROSCOPE_TEXT_START
+Today
+Plan
+Library
+Progress
+Settings
+← Today
+Microscope (dev)
+1. Music families · 46 · decided 0
+2. Not judged by the app · 165 · decided 0
+3. Claims no detector checks · 604 · decided 0
+4. Everything else · 1246 · decided 0
+◀
+·· Boogie — pinetop in C, both hands
+·· Minor-blues boogie — pinetop in C minor, both hands
+·· Boogie — root fifth in C, both hands
+·· Minor-blues boogie — root fifth in C minor, both hands
+·· Boogie — walking eighths in C, both hands
+·· Minor-blues boogie — walking eighths in C minor, both hands
+·· Clave — bossa
+·· Clave — bossa over a quarter-note pulse
+·· Clave — rumba 2-3
+·· Clave — rumba 2-3 over a quarter-note pulse
+·· Clave — rumba 3-2
+·· Clave — rumba 3-2 over a quarter-note pulse
+·· Clave — son 2-3
+·· Clave — son 2-3 over a quarter-note pulse
+·· Clave — son 3-2
+·· Clave — son 3-2 over a quarter-note pulse
+·· Comping — anticipated in C
+·· Comping — anticipated on triads in C
+·· Comping — bossa in C minor
+·· Comping — bossa on triads in C minor
+·· Comping — charleston in C
+·· Comping — charleston on triads in C
+·· Comping — four on the floor in C
+·· Comping — four on the floor on triads in C
+·· Comping — off beats in C
+·· Comping — off beats on triads in C
+·· Four-bar introduction in C — the vamp before the tune
+·· Latin groove — tumbao and montuno on son 3 2 in C minor
+·· 12/8 slow blues in C — counting in 4 groups of 3
+·· Minor vamp in A — i, flat seven, flat six
+·· Montuno — 2 notes on bossa in C minor
+·· Montuno — 2 notes on son 3 2 in C minor
+·· Montuno — 3 notes on son 3 2 in C minor
+·· Ostinato over a pedal bass in A minor — broken minor triad
+·· Ostinato over a pedal bass in A minor — root and fifth
+·· Riff in A minor — the hook falls back to where it started
+·· Riff in A minor — two notes rocking, then a walk home
+·· Secondary rag in C — three sixteenths against four
+·· Stride in C, both hands
+·· Tresillo bass in C — three, three, two
+✓· Tumbao — latin bass in C minor
+·· Walking bass over a 12-bar blues in C
+·· Walking bass over a 12-bar blues in C
+·· Walking bass over ii-V-I in C
+·· Walking bass over ii-V-I in C
+·· Walking bass over a minor 12-bar blues in C minor
+▶
+Tumbao — latin bass in C minor
+
+exercise.tumbao.c · generated · exercise · level 5.2 · left hand
+
+Cm
+Nothing on beat one. The note on four belongs to the next bar's chord
+Nothing on beat one. The note on four belongs to the next bar's chord
+2
+5
+Fm
+2
+5
+2
+Cm
+2
+5
+3
+◀ Bars
+Bars ▶
+bars 1–2 of 8
+Hear it — both hands
+Right hand alone
+Left hand alone
+Stop
+
+Hear it plays the whole piece at the written tempo (♩ = 88). Only a complete both-hands playback lets a decision rest on hearing.
+
+Identity a decision binds to
+
+generator tumbao v1, seed null, recipe {"key":"C","offsets":[1.5,3],"bars":8,"hands":"left"}, ♩ = 88
+
+Family
+
+tumbao — a tumbao bass pattern over a two-bar minor vamp, left hand alone
+
+Version
+
+v1
+
+Seed
+
+null (a deterministic family: the recipe is the identity)
+
+Role
+
+canonical
+
+Promise
+
+music: a bass pattern with the chord anticipated: it promises that rhythmic relationship
+
+Onsets in the window and right notes; whether it grooves is unheard.
+
+Heard
+
+unheard: no person has heard this family
+
+Target
+
+syncopation; also tie, dotted-quarter
+
+Musical quality
+
+Promised as music: not evaluated — no musical evaluator exists and no hearing counts until a person hears it here.
+
+unjudged: the pattern's feel
+unjudged: nothing about this family has been heard by a person; the musical gate is not evaluated (D1, D2)
+Measured demands (the app’s detectors) and the contract’s verdict
+Demand	Located	Verdict
+clef.bass	16	established (useful density; not the point); assumed
+pitch.ledger	4	established (useful density; not the point); assumed
+interval.step	4	incidental (below useful density); assumed
+interval.leap	11	established (useful density; not the point); assumed
+rhythm.dotted-quarter	7	established (useful density; not the point); assumed
+rhythm.ties	7	established (useful density; not the point); assumed
+rhythm.syncopation	8	required, at d
+MICROSCOPE_TEXT_END
+  ok 1 tests\e2e\zz-d2-look.spec.ts:22:1 › the microscope on the tumbao in C (1.9s)
+
+  1 passed (44.6s)
