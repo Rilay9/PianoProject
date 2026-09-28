@@ -16,6 +16,7 @@ import { exportAll, importAll } from '../data/backup';
 import { openDatabase, STORE_NAMES } from '../data/db';
 import { connectForTest } from '../data/folderLibrary';
 import { recordRun, resetProgressForTest } from '../data/progressStore';
+import type { AudioStartSource } from '../audio/audioStarts';
 
 export interface TestHooks {
   recordRun: typeof recordRun;
@@ -51,6 +52,13 @@ export interface TestHooks {
    * from a page, and it is read by `mounted-once.spec.ts`.
    */
   screenMounts: Readonly<Record<string, number>>;
+  /**
+   * Sounds handed to the audio clock since the page loaded (U67): piano notes at
+   * `Piano.start` with the samples loaded, metronome clicks as each is scheduled.
+   * Written by `audio/audioStarts`, read by `score.hearIt.spec.ts`; a test reads a
+   * baseline before the tap and the count after it, and writes nothing.
+   */
+  audioStarts: Readonly<Record<AudioStartSource, number>>;
   /** What the score screen's fit is holding; set while a score is open. */
   scoreFit?: () => unknown;
   /** Where the running score is and what it is waiting for; null when no run is on. */
@@ -90,6 +98,7 @@ export function installTestHooks(target: Window = window): void {
     },
     lendFolderFiles: connectForTest,
     screenMounts: {},
+    audioStarts: { piano: 0, metronome: 0 },
   };
 }
 

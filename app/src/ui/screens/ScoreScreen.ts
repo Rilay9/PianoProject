@@ -351,6 +351,11 @@ export function ScoreScreen(router: Router): HTMLElement {
    */
   let hearing = false;
   /**
+   * A `Hear it` tap is waiting for the sound to start (U67), so a second tap in
+   * that moment does not start a second demonstration.
+   */
+  let startingSound = false;
+  /**
    * Whether this run has already said the app is playing a hand (P21c B3).
    *
    * `playbackHands` defaults to `non-focused`, so choosing `R` means the app
@@ -2244,8 +2249,38 @@ export function ScoreScreen(router: Router): HTMLElement {
     if (parts.length > 0) status.textContent = parts.join(' · ');
   }
 
-  /** `Hear it`: start a Listen run, or stop the one this button started. */
+  /**
+   * `Hear it`, pressed: the sound started inside the tap, then the toggle (U67).
+   *
+   * Where the context is not running yet (the first tap after a reload on a
+   * phone, which will not start audio without one) the tap awaits the engine's
+   * start before anything is scheduled, as the microscope does, so the piece is
+   * not timed on a clock that has not begun. Where it is running, or there is
+   * no Web Audio to start, the toggle runs at once as it always did. A stop
+   * needs no sound and never waits. With no sound to be had the demonstration
+   * still moves, silent, as it did before.
+   */
   function toggleHear(): void {
+    if (!session) return;
+    if (hearing || !audioEngine.supported || audioEngine.state === 'running') {
+      toggleHearNow();
+      return;
+    }
+    if (startingSound) return;
+    startingSound = true;
+    const tapped = session;
+    void audioEngine
+      .ensureStarted()
+      .catch(() => undefined)
+      .then(() => {
+        startingSound = false;
+        if (leaving || session !== tapped) return;
+        toggleHearNow();
+      });
+  }
+
+  /** `Hear it`: start a Listen run, or stop the one this button started. */
+  function toggleHearNow(): void {
     if (!session) return;
     // `Hear it` stops the session outright, and a stop is not a finish the
     // screen hears back, so a preview left running under it would never end.
@@ -4255,15 +4290,18 @@ export function ScoreScreen(router: Router): HTMLElement {
       keysRange = stripRangeFor(loaded.steps.flatMap((step) => step.notes.map((note) => note.midi)));
       mountKeys()?.scrollToNote(loaded.steps[0]?.notes[0]?.midi ?? 60, 'auto');
 
-      const context = audioEngine.contextOrNull;
       session = new ScoreSession({
         model: loaded,
         renderer,
         strip,
         stripOptions: { guide: guideFor(), fingers: settings.keysFingerNumbers, flash: settings.keysFlash },
         piano: null,
-        audioContext: context,
-        destination: audioEngine.masterGain,
+        // Asked at every start, frame, latch and resume, not taken now (U67):
+        // this runs as the piece loads, which on a reload or a link straight to
+        // a piece is before any tap, when the engine has no context and no
+        // master gain, and a pair fixed here was none for the whole visit. The
+        // engine stays the one owner of the context; this only reads it.
+        audio: () => ({ context: audioEngine.contextOrNull, destination: audioEngine.masterGain }),
         onChange: render,
         onBeat: (tick) => onBeat(tick),
       onFinished: (score, looped) => {
