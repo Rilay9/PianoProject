@@ -1,0 +1,28 @@
+F
+======================================================================
+FAIL: test_concepts_are_the_targets_where_the_vocabulary_names_them_once (tools.content.tests.test_excerpts.TheRow.test_concepts_are_the_targets_where_the_vocabulary_names_them_once)
+One detector finds every left-hand pattern (claims.CONCEPT_DEMANDS maps alberti, waltz, oom-pah,
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_excerpts.py", line 336, in test_concepts_are_the_targets_where_the_vocabulary_names_them_once
+    self.assertEqual(X.concepts_for(["texture.left-hand-pattern"]), [])
+AssertionError: Lists differ: ['alberti', 'alberti-bass', 'boogie-bass',[70 chars]ass'] != []
+
+First list contains 7 additional elements.
+First extra element 0:
+'alberti'
+
++ []
+- ['alberti',
+-  'alberti-bass',
+-  'boogie-bass',
+-  'broken-chord-accompaniment',
+-  'oom-pah-bass',
+-  'stride-bass',
+-  'waltz-bass']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.008s
+
+FAILED (failures=1)
+exit 1

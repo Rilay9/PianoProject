@@ -1,0 +1,28 @@
+F
+======================================================================
+FAIL: test_the_candidate_rungs_say_where_one_detector_answers_for_several_concepts (tools.content.tests.test_measured_truth.TestExcerptsOnTheBuild.test_the_candidate_rungs_say_where_one_detector_answers_for_several_concepts)
+`texture.left-hand-pattern` is one detector for alberti, waltz, oom-pah, boogie and stride
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_measured_truth.py", line 312, in test_the_candidate_rungs_say_where_one_detector_answers_for_several_concepts
+    self.assertEqual(sorted(claim.get("sharedBy") or []), sharing, f"{row['item']} at {candidate['rung']}")
+AssertionError: Lists differ: [] != ['alberti', 'alberti-bass', 'boogie-bass',[70 chars]ass']
+
+Second list contains 7 additional elements.
+First extra element 0:
+'alberti'
+
+- []
++ ['alberti',
++  'alberti-bass',
++  'boogie-bass',
++  'broken-chord-accompaniment',
++  'oom-pah-bass',
++  'stride-bass',
++  'waltz-bass'] : excerpt.classical.beethoven-ode-to-joy.easy.b9-12 at 3.6
+
+----------------------------------------------------------------------
+Ran 1 test in 0.088s
+
+FAILED (failures=1)
+exit 1

@@ -1,0 +1,201 @@
+...........................................................................C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5103: MusicXMLWarning: Cannot put in an element with a missing voice tag when no previous voice tag was given.  Assuming voice 1... 
+  thisVoice = self.findM21VoiceFromXmlVoice(mxVoice)
+...................................................................................................................ssC:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 1 in part Pianois overfull: 721/480 > 1.5,assuming 1.5 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+.....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................FFFFF...........F.......FFF..........................................................................note: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\build\.content-lock is 2.0 hours old (a crashed run (pid 1)) — assuming a crashed run and taking it over
+...............18 row(s) have no decision in C:\Users\yalir\AppData\Local\Temp\pdmx-e2e-zcpal9o0\run\review-empty\review.csv. Nothing is committed that a person has not marked keep, drop or later (replan §2.5). Run review.py --check to list them.
+....C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_pdmx.py:567: ResourceWarning: unclosed file <_io.TextIOWrapper name='C:\\Users\\yalir\\AppData\\Local\\Temp\\pdmx-e2e-zcpal9o0\\run\\review-decided\\review.csv' mode='r' encoding='utf-8'>
+  decided = list(csv.DictReader(sheet.open(encoding="utf-8", newline="")))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+................................................................s...........................................................................................s....................................  127.0.0.1  code 404, message File not found
+  127.0.0.1  "GET /nope.js HTTP/1.1" 404 -
+.  127.0.0.1  "GET /score.mxl HTTP/1.1" 200 -
+.  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+.  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+.  127.0.0.1  "GET /manifest.webmanifest HTTP/1.1" 200 -
+.  127.0.0.1  "GET /sw.js HTTP/1.1" 200 -
+.  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+  127.0.0.1  "GET /sw.js HTTP/1.1" 200 -
+  127.0.0.1  "GET /assets/app-abc123.js HTTP/1.1" 200 -
+.C:\Users\yalir\AppData\Local\Temp\tmpqi2_arbc has no index.html. Build first:
+  py -3.11 tools/content/build.py --offline --personal
+  cd app && set VITE_BASE=/ && npm run build:app
+.No certificate at C:\Users\yalir\AppData\Local\Temp\tmp9r3xtrp3\none.pem / C:\Users\yalir\AppData\Local\Temp\tmp9r3xtrp3\none.key.
+Make one once, for this laptop's address (docs/OWNER-GUIDE.md §1):
+  mkcert -cert-file C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\packaging\lan\cert.pem -key-file C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\packaging\lan\key.pem <this laptop's IP> localhost
+......................................................................................................................................................................................
+======================================================================
+FAIL: test_measured_facts_name_their_definitions (tests.test_measured_truth.TestProvenanceLabelsEveryFact.test_measured_facts_name_their_definitions) (item='excerpt.blues.wabash-blues.b1-4')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_measured_truth.py", line 147, in test_measured_facts_name_their_definitions
+    self.assertEqual(how["via"], "app/src/demands/detect.ts")
+AssertionError: "app/src/demands/detect.ts, on the cut (never the parent's)" != 'app/src/demands/detect.ts'
+- app/src/demands/detect.ts, on the cut (never the parent's)
++ app/src/demands/detect.ts
+
+
+======================================================================
+FAIL: test_measured_facts_name_their_definitions (tests.test_measured_truth.TestProvenanceLabelsEveryFact.test_measured_facts_name_their_definitions) (item='excerpt.classical.bach-menuet-bwv-anh-113.pdmx.b25-32')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_measured_truth.py", line 147, in test_measured_facts_name_their_definitions
+    self.assertEqual(how["via"], "app/src/demands/detect.ts")
+AssertionError: "app/src/demands/detect.ts, on the cut (never the parent's)" != 'app/src/demands/detect.ts'
+- app/src/demands/detect.ts, on the cut (never the parent's)
++ app/src/demands/detect.ts
+
+
+======================================================================
+FAIL: test_measured_facts_name_their_definitions (tests.test_measured_truth.TestProvenanceLabelsEveryFact.test_measured_facts_name_their_definitions) (item='excerpt.classical.beethoven-ode-to-joy.easy.b9-12')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_measured_truth.py", line 147, in test_measured_facts_name_their_definitions
+    self.assertEqual(how["via"], "app/src/demands/detect.ts")
+AssertionError: "app/src/demands/detect.ts, on the cut (never the parent's)" != 'app/src/demands/detect.ts'
+- app/src/demands/detect.ts, on the cut (never the parent's)
++ app/src/demands/detect.ts
+
+
+======================================================================
+FAIL: test_measured_facts_name_their_definitions (tests.test_measured_truth.TestProvenanceLabelsEveryFact.test_measured_facts_name_their_definitions) (item='excerpt.classical.i-got-rythm.pdmx.b15-18')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_measured_truth.py", line 147, in test_measured_facts_name_their_definitions
+    self.assertEqual(how["via"], "app/src/demands/detect.ts")
+AssertionError: "app/src/demands/detect.ts, on the cut (never the parent's)" != 'app/src/demands/detect.ts'
+- app/src/demands/detect.ts, on the cut (never the parent's)
++ app/src/demands/detect.ts
+
+
+======================================================================
+FAIL: test_measured_facts_name_their_definitions (tests.test_measured_truth.TestProvenanceLabelsEveryFact.test_measured_facts_name_their_definitions) (item='excerpt.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx.b25-28')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_measured_truth.py", line 147, in test_measured_facts_name_their_definitions
+    self.assertEqual(how["via"], "app/src/demands/detect.ts")
+AssertionError: "app/src/demands/detect.ts, on the cut (never the parent's)" != 'app/src/demands/detect.ts'
+- app/src/demands/detect.ts, on the cut (never the parent's)
++ app/src/demands/detect.ts
+
+
+======================================================================
+FAIL: test_the_inventory_reports_works_arrangements_and_coverage (tests.test_measured_truth.TestTheReports.test_the_inventory_reports_works_arrangements_and_coverage)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_measured_truth.py", line 626, in test_the_inventory_reports_works_arrangements_and_coverage
+    self.assertEqual(h["excerpts"], 0, "excerpts are E1's objects; the inventory must not count sections as them")
+AssertionError: 5 != 0 : excerpts are E1's objects; the inventory must not count sections as them
+
+======================================================================
+FAIL: test_the_built_rows_follow_the_rule (tests.test_measured_truth.TestUsefulDensity.test_the_built_rows_follow_the_rule) (item='excerpt.classical.beethoven-ode-to-joy.easy.b9-12')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_measured_truth.py", line 499, in test_the_built_rows_follow_the_rule
+    self.assertEqual(sorted((set(by_density) | set(measurement.get("contract", []))) - spoilt), sorted(measurement["established"]))
+AssertionError: Lists differ: ['cle[39 chars]p', 'range.beyond-position', 'texture.hands-to[32 chars]ern'] != ['cle[39 chars]p', 'pitch.ledger', 'range.beyond-position', '[97 chars]ern']
+
+First differing element 3:
+'range.beyond-position'
+'pitch.ledger'
+
+Second list contains 3 additional elements.
+First extra element 6:
+'rhythm.shorter-than-quarter'
+
+  ['clef.bass',
+   'interval.leap',
+   'interval.step',
++  'pitch.ledger',
+   'range.beyond-position',
++  'rhythm.eighths',
++  'rhythm.shorter-than-quarter',
+   'texture.hands-together',
+   'texture.left-hand-pattern']
+
+======================================================================
+FAIL: test_the_built_rows_follow_the_rule (tests.test_measured_truth.TestUsefulDensity.test_the_built_rows_follow_the_rule) (item='excerpt.classical.i-got-rythm.pdmx.b15-18')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_measured_truth.py", line 499, in test_the_built_rows_follow_the_rule
+    self.assertEqual(sorted((set(by_density) | set(measurement.get("contract", []))) - spoilt), sorted(measurement["established"]))
+AssertionError: Lists differ: ['cle[14 chars]rval.skip', 'key.signature', 'pitch.chromatic'[187 chars]ass'] != ['cle[14 chars]rval.leap', 'interval.skip', 'interval.step', [221 chars]ass']
+
+First differing element 1:
+'interval.skip'
+'interval.leap'
+
+Second list contains 2 additional elements.
+First extra element 12:
+'texture.left-hand-pattern'
+
+  ['clef.bass',
++  'interval.leap',
+   'interval.skip',
++  'interval.step',
+   'key.signature',
+   'pitch.chromatic',
+   'pitch.ledger',
+   'range.beyond-position',
+   'rhythm.eighths',
+   'rhythm.shorter-than-quarter',
+   'rhythm.syncopation',
+   'texture.hands-together',
+   'texture.left-hand-pattern',
+   'texture.walking-bass']
+
+======================================================================
+FAIL: test_the_built_rows_follow_the_rule (tests.test_measured_truth.TestUsefulDensity.test_the_built_rows_follow_the_rule) (item='excerpt.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx.b25-28')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_measured_truth.py", line 499, in test_the_built_rows_follow_the_rule
+    self.assertEqual(sorted((set(by_density) | set(measurement.get("contract", []))) - spoilt), sorted(measurement["established"]))
+AssertionError: Lists differ: ['interval.step', 'range.beyond-position', 'rhythm.e[71 chars]ies'] != ['interval.leap', 'interval.step', 'key.signature', [105 chars]ies']
+
+First differing element 0:
+'interval.step'
+'interval.leap'
+
+Second list contains 2 additional elements.
+First extra element 6:
+'rhythm.syncopation'
+
++ ['interval.leap',
+- ['interval.step',
+? ^
+
++  'interval.step',
+? ^
+
++  'key.signature',
+   'range.beyond-position',
+   'rhythm.eighths',
+   'rhythm.shorter-than-quarter',
+   'rhythm.syncopation',
+   'rhythm.ties']
+
+----------------------------------------------------------------------
+Ran 1238 tests in 404.321s
+
+FAILED (failures=9, skipped=4)
+wrote C:\Users\yalir\AppData\Local\Temp\tmpgq3ovr5e\out.md (3 occurrences in 1 lessons)
+committed 15 file(s) to C:\Users\yalir\AppData\Local\Temp\pdmx-e2e-zcpal9o0\run\scores
+  skipped 3 row(s) marked drop or later
+  table   C:\Users\yalir\AppData\Local\Temp\pdmx-e2e-zcpal9o0\run\pdmx.json
+  Zenodo record: unknown — the CSV matches neither published record's size.
+1 score(s) -> C:\Users\yalir\AppData\Local\Temp\tmpo83mjp2l\library\library.json (0.0 MB)
+note: 1 indexed song(s) are not unpacked and are left out
+2 file(s), 0 MB -> C:\Users\yalir\AppData\Local\Temp\tmpo83mjp2l\library.zip (0 MB)
+Copy that one file to the phone and unzip it. Then: Library -> Browse a score folder -> pick pianopath-library.
+1 score(s) -> C:\Users\yalir\AppData\Local\Temp\tmp59mreeg1\library.json (0.0 MB)
+note: 1 indexed song(s) are not unpacked and are left out
+Copy the whole folder to the phone, then: Library -> Score folder -> pick it.
+1 score(s) -> C:\Users\yalir\AppData\Local\Temp\tmpu0lonsh1\library\library.json (0.0 MB)
+note: 1 indexed song(s) are not unpacked and are left out
+2 file(s), 0 MB -> C:\Users\yalir\AppData\Local\Temp\tmpu0lonsh1\library.zip (0 MB)
+Copy that one file to the phone and unzip it. Then: Library -> Browse a score folder -> pick pianopath-library.
+wrote measured durations into C:\Users\yalir\AppData\Local\Temp\tmpbq5a__fd\catalog.json
+wrote measured durations into C:\Users\yalir\AppData\Local\Temp\tmpsj7knyct\catalog.json
+exit 1

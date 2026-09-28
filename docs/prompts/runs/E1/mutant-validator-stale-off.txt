@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_a_row_approved_on_other_parent_bytes_is_warned_stale (tools.content.tests.test_validate_excerpts.TheExcerptCheck.test_a_row_approved_on_other_parent_bytes_is_warned_stale)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_validate_excerpts.py", line 108, in test_a_row_approved_on_other_parent_bytes_is_warned_stale
+    self.assertTrue(any("stale by provenance" in w and "b4-5" in w for w in warnings), warnings)
+AssertionError: False is not true : []
+
+----------------------------------------------------------------------
+Ran 1 test in 1.415s
+
+FAILED (failures=1)
+exit 1

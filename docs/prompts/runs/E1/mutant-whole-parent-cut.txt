@@ -1,0 +1,30 @@
+FFF
+======================================================================
+FAIL: test_it_has_the_bars_of_the_range (tools.content.tests.test_excerpts.TheCut.test_it_has_the_bars_of_the_range)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_excerpts.py", line 156, in test_it_has_the_bars_of_the_range
+    self.assertEqual(made.bars, 4)
+AssertionError: 8 != 4
+
+======================================================================
+FAIL: test_1_untaught_sixteenths_outside_the_excerpt_are_not_in_it_and_the_parent_is_unchanged (tools.content.tests.test_measured_truth.TestExcerptLocalTruth.test_1_untaught_sixteenths_outside_the_excerpt_are_not_in_it_and_the_parent_is_unchanged)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_measured_truth.py", line 419, in test_1_untaught_sixteenths_outside_the_excerpt_are_not_in_it_and_the_parent_is_unchanged
+    self.assertNotIn("rhythm.sixteenths", cut["demands"])
+AssertionError: 'rhythm.sixteenths' unexpectedly found in ['clef.bass', 'interval.step', 'interval.leap', 'rhythm.shorter-than-quarter', 'rhythm.sixteenths', 'texture.hands-together']
+
+======================================================================
+FAIL: test_2_leaps_only_inside_the_passage_are_established_on_the_cut_and_not_on_the_parent (tools.content.tests.test_measured_truth.TestExcerptLocalTruth.test_2_leaps_only_inside_the_passage_are_established_on_the_cut_and_not_on_the_parent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\tools\content\tests\test_measured_truth.py", line 426, in test_2_leaps_only_inside_the_passage_are_established_on_the_cut_and_not_on_the_parent
+    self.assertIn("interval.leap", self.established(cut, window=True), "not established on the cut")
+AssertionError: 'interval.leap' not found in ['clef.bass', 'interval.step', 'texture.hands-together'] : not established on the cut
+
+----------------------------------------------------------------------
+Ran 3 tests in 2.742s
+
+FAILED (failures=3)
+exit 1

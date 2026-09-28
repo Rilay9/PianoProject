@@ -1,0 +1,12 @@
+
+> pianopath@0.1.0 lint
+> eslint . --max-warnings=0
+
+
+C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\app\tests\unit\excerptItems.test.ts
+   22:15  error  'SessionRow' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  213:23  error  Async arrow function has no 'await' expression                                @typescript-eslint/require-await
+
+✖ 2 problems (2 errors, 0 warnings)
+
+exit 1

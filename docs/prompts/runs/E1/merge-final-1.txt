@@ -1,0 +1,24 @@
+Merged C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\E1\excerpt-decisions-E1-final.jsonl: appended 22, already in the file 0, refused 0.
+  + ex-4a4c15fa-bb27-4b0e-994f-230100e132cf
+  + ex-910bdd57-861b-44eb-9aac-e43770f694ef
+  + ex-c269b41d-eaaa-46e9-97f2-bf9c31d73248
+  + ex-09bc7e6a-f4b9-471c-a550-faf0d2f58413
+  + ex-05f48703-2543-4c65-aa4d-8c0b6a9058cc
+  + ex-5cc05abe-d0f0-47ee-a665-e072d29ee577
+  + ex-b09dcf7b-663b-4461-bbf8-5531cb2a1526
+  + ex-3bb31156-d515-4bbc-87fc-6745a22cfd07
+  + ex-e1b698f4-1811-4494-9166-5a6252db18de
+  + ex-47c52e3e-fddf-4d42-a3a2-defd0a9d9de2
+  + ex-38a19133-98dc-4ae2-a328-cb3af1cf3a8c
+  + ex-5df3e14e-d58b-45bc-a188-75e4d05f29af
+  + ex-39e8b360-1f6c-4a44-b3d2-5f4414bb1667
+  + ex-28533b90-72e0-463d-8dd6-4ba39a755d43
+  + ex-7b629fa0-228f-445a-bfe1-f547f4f62a41
+  + ex-47d903f1-fbe6-43f9-ae35-19c02409cc02
+  + ex-e85995a5-ffc3-4332-958a-7ab025415849
+  + ex-da975bfe-0298-4a1e-9cda-ab0bd7e5f536
+  + ex-f30e4527-4fad-40e3-8ad7-f8f705190135
+  + ex-0fe1ee6a-7620-4979-8b42-159b06d522f9
+  + ex-a57de44f-ebc6-4a41-a93e-b7af6eeefdeb
+  + ex-af168f02-934a-481c-9513-99ce45cd139c
+exit 0

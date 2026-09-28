@@ -1,0 +1,15 @@
+interval.leap@1.5: 799 parent(s), 612211 window(s) (21164 across a repeat, never proposed), 590436 with the target; 40 candidate(s), 16 meeting every signal; 0 parent(s) skipped
+   11.80  song.classical.gurlitt-sonatina.pdmx bars 9–16 left  (every signal met)
+   11.80  song.classical.ode-to-joy.ht bars 1–8 left  (every signal met)
+   11.70  song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx bars 1–7 left  (every signal met)
+   11.60  song.classical.gurlitt-sonatina.pdmx bars 1–8 left  (every signal met)
+   11.60  song.folk.twinkle.ht bars 1–8 left  (every signal met)
+   11.60  song.folk.twinkle.ht bars 5–12 left  (every signal met)
+   11.40  song.folk.just-a-closer-walk-with-thee-easy-piano.pdmx bars 8–15 left  (every signal met)
+   11.20  song.classical.ode-to-joy.full bars 1–8 left  (every signal met)
+   10.75  song.classical.beethoven-inno-alla-gioia.pdmx bars 21–28 left  (every signal met)
+   10.60  song.holiday.jingle-bells.ht bars 5–8 left  (every signal met)
+   10.50  song.classical.ode-to-joy.full bars 13–16 left  (every signal met)
+   10.20  song.folk.london-bridge bars 1–8 left  (every signal met)
+wrote C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\build\excerpts\candidates.json and C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a28dd830f451d14cd\app\public\dev\review\excerpts.json
+exit 0

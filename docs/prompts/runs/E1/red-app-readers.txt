@@ -1,0 +1,93 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a28dd830f451d14cd/app
+
+ ❯ tests/unit/excerptItems.test.ts (14 tests | 5 failed) 32ms
+   ❯ the swap sheet (selectors.tieredAlternatives) (2)
+     × offers an unplaced excerpt from no tier that searches the whole catalogue 5ms
+     × leaves an excerpt out where it leaves songs out, even one a rung lists 1ms
+   ❯ the session (session.ts) (3)
+     × never offers an excerpt as "the same kind" of an exercise on the swap sheet’s last resort 1ms
+   ❯ the Skills screen (buildConcepts) (1)
+     × lists no excerpt as practice for a skill; an exercise it lists 6ms
+   ❯ a run of an excerpt (adversary 10, and the material it was) (4)
+     × writes the cut’s file identity into the evidence context, and the stored self-assessment keeps it 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/excerptItems.test.ts > the swap sheet (selectors.tieredAlternatives) > offers an unplaced excerpt from no tier that searches the whole catalogue
+AssertionError: expected [ 'exercise.study', …(2) ] to not include 'excerpt.minuet.b25-32'
+ ❯ tests/unit/excerptItems.test.ts:108:25
+    106|     const catalog = indexCatalog([PARENT, EXCERPT, EXERCISE, OTHER_SON…
+    107|     const offered = tieredAlternatives({ itemId: OTHER_SONG.id, lesson…
+    108|     expect(offered).not.toContain(EXCERPT.id);
+       |                         ^
+    109|     // The same catalogue offers the parent through the demand tier: t…
+    110|     expect(offered).toContain(PARENT.id);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/unit/excerptItems.test.ts > the swap sheet (selectors.tieredAlternatives) > leaves an excerpt out where it leaves songs out, even one a rung lists
+AssertionError: expected [ 'exercise.two', …(1) ] to not include 'excerpt.minuet.b25-32'
+ ❯ tests/unit/excerptItems.test.ts:118:25
+    116|     const offered = tieredAlternatives({ itemId: EXERCISE.id, lessonId…
+    117|     expect(offered).toContain('exercise.two');
+    118|     expect(offered).not.toContain(EXCERPT.id);
+       |                         ^
+    119|   });
+    120| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/unit/excerptItems.test.ts > the session (session.ts) > never offers an excerpt as "the same kind" of an exercise on the swap sheet’s last resort
+AssertionError: expected [ 'excerpt.minuet.b25-32' ] to not include 'excerpt.minuet.b25-32'
+ ❯ tests/unit/excerptItems.test.ts:170:51
+    168|       { rung: '3.2', activeTracks: ['core'] },
+    169|     );
+    170|     expect(options.map((one) => one.item.id)).not.toContain(EXCERPT.id…
+       |                                                   ^
+    171|     // The same walk offers a song for a song: the last resort still r…
+    172|     const song = item('song.lonely', measured([]));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/unit/excerptItems.test.ts > the Skills screen (buildConcepts) > lists no excerpt as practice for a skill; an exercise it lists
+AssertionError: expected [ 'exercise.study', …(1) ] to not include 'excerpt.minuet.b25-32'
+ ❯ tests/unit/excerptItems.test.ts:186:24
+    184|     const listed = entries.flatMap((entry) => entry.items.map((one) =>…
+    185|     expect(listed).toContain(EXERCISE.id);
+    186|     expect(listed).not.toContain(EXCERPT.id);
+       |                        ^
+    187|   });
+    188| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/unit/excerptItems.test.ts > a run of an excerpt (adversary 10, and the material it was) > writes the cut’s file identity into the evidence context, and the stored self-assessment keeps it
+AssertionError: expected undefined to deeply equal { kind: 'file', …(1) }
+
+- Expected:
+{
+  "kind": "file",
+  "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+}
+
++ Received:
+undefined
+
+ ❯ tests/unit/excerptItems.test.ts:268:95
+    266|     const [measuredResult] = evidenceFor({ observation, played: LEDGER…
+    267|     expect(measuredResult && !isRefusal(measuredResult), JSON.stringif…
+    268|     expect(measuredResult?.kind === 'measured' ? measuredResult.contex…
+       |                                                                                               ^
+    269|     // The learner's own word about a run nothing measured keeps the s…
+    270|     const unheard = { ...observe(LEDGER, { mode: 'tempo', itemId: EXCE…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 9 passed (14)
+   Start at  17:30:12
+   Duration  769ms (transform 75%, import 20%, tests 5%)
+
+exit 1

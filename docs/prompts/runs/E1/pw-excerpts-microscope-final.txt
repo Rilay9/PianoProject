@@ -1,0 +1,13 @@
+
+Running 7 tests using 2 workers
+
+  ok 2 tests\e2e\excerpts.spec.ts:69:3 › the excerpt view (E1) › draws the candidate on its parent, the bars outside it dimmed, and plays from before the cut to after it (2.6s)
+  ok 1 tests\e2e\excerpts.spec.ts:97:3 › the excerpt view (E1) › moving a boundary re-scores it, and the export carries the moved range to a merge that takes it once (2.9s)
+  ok 3 tests\e2e\excerpts.spec.ts:139:3 › the excerpt view (E1) › the build’s cut of an approved row opens in the item view as an item of its own (1.5s)
+  ok 4 tests\e2e\microscope.spec.ts:106:3 › the microscope (D2) › opens a generated item by id: the notation settled, every fact under its hook, Hear it enabled (2.0s)
+  ok 6 tests\e2e\microscope.spec.ts:166:3 › the microscope (D2) › a decision is exported as a file review.py --merge accepts, and the learner’s stores do not move (3.7s)
+  ok 5 tests\e2e\microscope.spec.ts:129:3 › the microscope (D2) › Hear it plays through the app’s piano: each hand alone its own pitches, both hands both (6.8s)
+  ok 7 tests\e2e\microscope.spec.ts:242:3 › the microscope (D2) › the learner’s navigation never shows the route (2.7s)
+
+  7 passed (12.0s)
+exit 0
