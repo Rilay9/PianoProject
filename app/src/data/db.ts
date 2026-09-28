@@ -35,7 +35,9 @@ export const DB_NAME = 'pianopath';
  * C1's observations (`RunObservation` on `SessionRow`) changed no store and no
  * index — every field is optional on a value, which IndexedDB does not
  * describe — so they are not a version: a row written before them reads as
- * one with none, and the `upgrade` below has nothing to do for them.
+ * one with none, and the `upgrade` below has nothing to do for them. D1a's
+ * `generator` (the phrase's family, version and seed) is one more such field:
+ * absent means version 1.
  *
  * 7 (C5) changes no store either. It is a version so that the one moment a
  * database made before C5 is first opened by C5's code can be told apart from
@@ -151,6 +153,44 @@ export interface RunHeader {
    * sight-reads recorded before C4, which read as the row's own recipe.
    */
   recipe?: ReadingRecipe;
+  /**
+   * Which generator wrote the phrase (D1a; G21, D0's `drill.generator` shape):
+   * its family, its version and its seed. Written on every run of a generated
+   * phrase from the phrase itself (`SightReadingResult.generator`), because a
+   * seed names one phrase *per version*: version 2 writes other music from
+   * most seeds version 1 read. Every reader that asks whether a run met a
+   * phrase, and the evidence job writing a stored run's phrase again, reads the
+   * version beside the seed (`phraseVersionOf`).
+   *
+   * Optional, so no `DB_VERSION` and no upgrade (C1's rule, above): absent on
+   * every run recorded before it, and absent means version 1 — the only
+   * version the app wrote until D1a, which the generator still writes note
+   * for note. Here beside `recipe`, the other half of what a generated phrase
+   * was, so `SessionRow` and the run a screen hands `recordRun` both carry it.
+   */
+  generator?: PhraseGenerator;
+}
+
+/**
+ * A generated phrase's identity on the record (D1a). `version` is a number,
+ * not the generator's own type: a row outlives the code that wrote it, and a
+ * version this build does not know is kept and never written by another in
+ * its place (`evidenceJob.candidatePhrases`).
+ */
+export interface PhraseGenerator {
+  family: 'sight-reading';
+  version: number;
+  seed: number;
+}
+
+/**
+ * The generator version a stored run's phrase was written by: the record's
+ * own, or 1 where the row has none — every run recorded before D1a, when
+ * version 1 was the only version in force (D1a; the reviewer's finding 2 on
+ * D1).
+ */
+export function phraseVersionOf(row: Pick<RunHeader, 'generator'>): number {
+  return row.generator?.version ?? 1;
 }
 
 /**
@@ -299,7 +339,8 @@ export interface SessionRow extends RunObservation {
    *
    * What makes a retry on the same music tellable from a new phrase: the Score
    * screen refuses a second first attempt at a phrase whose seed is already in
-   * a row, which is what re-opening today's read used to be.
+   * a row, which is what re-opening today's read used to be — the seed under
+   * the same version since D1a (`generator`, absent meaning version 1).
    */
   seed?: number;
 }

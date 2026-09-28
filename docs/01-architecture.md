@@ -339,6 +339,16 @@ field the run carries (`RunObservation` in `data/db.ts`):
   syncopation), and `easy: true` for a read one dimension below on purpose. Written on every
   sight-read (the row's own recipe where nothing moved it); a row from before C4 reads as the
   row's own recipe. The reader takes the learner's last recipe from it (`04` §2).
+- **The generator (D1a, 2026-09-27).** On a sight-reading run, `SessionRow.generator` is the
+  phrase's identity — `{ family: 'sight-reading', version, seed }`, the generated catalogue's
+  `drill.generator` shape (D0) — written by the Score screen from the phrase it generated
+  (declared on `RunHeader` beside `recipe`, so the run a screen hands `recordRun` carries it
+  too). A seed names one phrase per generator version (G21), so the phrase-seen check, Today's
+  daily-met check and the evidence job read the version beside the seed (`phraseVersionOf`). One
+  more optional field on a value, so, like C1's, no store, no index, no `DB_VERSION` and no
+  upgrade; the backup carries it as it is. **Absent means version 1**: every run recorded before
+  D1a was written by version 1, the only version in force until then, and the generator still
+  writes it note for note.
 
 **The folder three, and why the split.** Every score in a folder used to be an element of one
 `folderLibraries` record, and IndexedDB can read or write only whole records — so every

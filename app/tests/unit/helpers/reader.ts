@@ -104,10 +104,19 @@ export interface ReadOut {
   evidence: EvidenceResult[];
 }
 
-/** One first reading of a phrase, played, measured and evidenced as the app does it. */
+/**
+ * One first reading of a phrase, played, measured and evidenced as the app does it.
+ *
+ * Revised (D1a): the row names the generator that wrote the phrase —
+ * `generator`, family, version and seed — as the Score screen now records it.
+ * Old assumption: a run's record keeps the seed and no version, which was
+ * true until the record field; the readers now compare the version beside the
+ * seed, so a helper row without it would be version 1's (absent means 1).
+ */
 export async function readPhrase(read: Read): Promise<ReadOut> {
   const seed = read.options.seed ?? 1;
-  const model = await phraseModel(read.options, `${read.item.id}.${String(seed)}`);
+  const written = generateSightReading(read.options);
+  const model = await modelOf(written.musicXml, `${read.item.id}.${String(seed)}`);
   const observation = observe(model, {
     mode: read.mode ?? 'tempo',
     tempoPct: read.tempoPct ?? 70,
@@ -132,6 +141,7 @@ export async function readPhrase(read: Read): Promise<ReadOut> {
     ...observation,
     ...(read.opened ? { opened: read.opened } : {}),
     ...(read.recipe ? { recipe: read.recipe } : {}),
+    generator: written.generator,
     ...stampedEvidence(evidence),
   };
   const result = {

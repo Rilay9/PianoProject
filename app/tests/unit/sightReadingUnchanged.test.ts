@@ -14,6 +14,15 @@
  * a range widened, a length added — moves a hash.
  *
  * Regenerate only on purpose: `UPDATE_GOLDEN=1 npx vitest run tests/unit/sightReadingUnchanged.test.ts`.
+ *
+ * Revised (D1a, the flip): every phrase here names `version: 1`, so the golden
+ * is version 1's, whose hashes did not move — the proof that no stored run's
+ * phrase changed meaning when version 2 went into force. Old assumption: a
+ * phrase with no version named is version 1's, true until
+ * `SIGHT_READING_IN_FORCE` became 2. Version 2's phrases of the same keys are a
+ * golden of their own (`sight-reading-v2.json`), recorded when it went into
+ * force; Entry 97 reads the diff between the two. Regenerate that one alone
+ * with `UPDATE_GOLDEN=1 npx vitest run tests/unit/sightReadingUnchanged.test.ts -t "version 2"`.
  */
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -21,9 +30,11 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   generateSightReading,
+  SIGHT_READING_IN_FORCE,
   sightReadingOptionsFor,
   type SightReadingLevel,
   type SightReadingOptions,
+  type SightReadingVersion,
 } from '../../src/engine/sightReading';
 import type { CatalogItem } from '../../src/curriculum/types';
 import { expectMatchesGolden } from './helpers/golden';
@@ -88,7 +99,6 @@ const ROW_SEEDS = Array.from({ length: 40 }, (_, i) => 1 + i * 7919);
 const LEVELS: SightReadingLevel[] = [1, 2, 3, 4, 5, 6, 7];
 
 const hash = (xml: string): string => createHash('sha256').update(xml).digest('hex').slice(0, 16);
-const phrase = (options: SightReadingOptions): string => hash(generateSightReading(options).musicXml);
 
 /** Every option that existed before C4b, one at a time, as a phrase would ask it. */
 const OPTIONS_BEFORE: Record<string, Partial<SightReadingOptions>> = {
@@ -105,7 +115,9 @@ const OPTIONS_BEFORE: Record<string, Partial<SightReadingOptions>> = {
   bpm: { bpm: 60 },
 };
 
-function allPhrases(): Record<string, string> {
+/** Every phrase below, as the named version writes it. */
+function allPhrases(version: SightReadingVersion): Record<string, string> {
+  const phrase = (options: SightReadingOptions): string => hash(generateSightReading({ ...options, version }).musicXml);
   const out: Record<string, string> = {};
   for (const [id, params] of Object.entries(ROWS_BEFORE)) {
     for (const seed of ROW_SEEDS) out[`row ${id} seed ${String(seed)}`] = phrase(sightReadingOptionsFor(params, seed));
@@ -129,7 +141,21 @@ function allPhrases(): Record<string, string> {
 
 describe('the generator with every C4b option absent', () => {
   it('writes, note for note, what it wrote before: the rows, the levels and every older option', () => {
-    expectMatchesGolden('sight-reading-unchanged', allPhrases());
+    expectMatchesGolden('sight-reading-unchanged', allPhrases(1));
+  });
+
+  // Added (D1a): version 2's phrases of the same keys, in force since the flip.
+  // Its own budget (H0's rule): 1,004 phrases, each chosen from up to sixteen
+  // valid draws, is fixed work that a loaded full run stretched past the default
+  // timeout while the file alone passes inside it.
+  it('version 2, the version in force, writes what it wrote when it went into force', { timeout: 120_000 }, () => {
+    expect(SIGHT_READING_IN_FORCE).toBe(2);
+    const v2 = allPhrases(2);
+    expectMatchesGolden('sight-reading-v2', v2);
+    // A phrase with no version named is version 2's.
+    const seed = 1 + 3 * 7919;
+    const options = sightReadingOptionsFor(ROWS_BEFORE['drill.reading.sight-reading-3'] ?? {}, seed);
+    expect(hash(generateSightReading(options).musicXml)).toBe(v2[`row drill.reading.sight-reading-3 seed ${String(seed)}`]);
   });
 
   it('the nine rows ask what they asked before, but for what changed on purpose', () => {

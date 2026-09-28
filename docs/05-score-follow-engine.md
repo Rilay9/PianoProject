@@ -702,9 +702,9 @@ declared. Three parts:
   | `texture.walking-bass` | texture | `leftHand: 'walking'` | `leftHand: 'broken'` |
 
   Declared as brought, measured: the left hand added at level 2+ brings the bass staff, both
-  hands at once, and its roots' leaps; a tie at level 2 can bring a leap (its closing note is
-  set after the melody has moved on — a fault of the tie's closing, D's, declared not fixed;
-  version 2 of the generator holds the tied pitch, and the leap is gone there, D1 below);
+  hands at once, and its roots' leaps; at version 1 a tie at level 2 can bring a leap (its
+  closing note is set after the melody has moved on — the tie's closing fault, S26); version 2,
+  in force since D1a, holds the tied pitch and writes none (D1 below);
   a moving left-hand pattern brings ledger lines below the bass staff (built from C2).
 - **`unrealisable(options)`** (`sightReading.ts`, pure): what the generator cannot write, in
   words, instead of writing something else and letting it pass. The reasons, as printed:
@@ -750,10 +750,14 @@ declared. Three parts:
   | 1.3–4.7 (every row) | step off | no control: a phrase without a step is neither written nor needed |
   | 1.5, 2.1 (`sight-reading-1`) | leap on | 1.5's drill promises "only steps and skips" |
   | 2.1 (`sight-reading-1`) | hands together on | level 1 writes one hand (2.1 teaches both; the row there cannot) |
-  | 3.4–4.4 (`sight-reading-2`) | leap off | the left hand's roots move by fourths and fifths |
-  | 4.5–4.7 (`sight-reading-3`) | skip off, leap off | a tie's closing note (and the left hand's roots) |
+  | 3.4–4.7 (`sight-reading-2`, `sight-reading-3`) | leap off | the left hand's roots move by fourths and fifths |
   | 4.5–4.7 | eighths off, shorter-than-quarter off | the 6/8 figures and the syncopation figure are eighths |
   | 4.5–4.7 | compound time in every phrase | its syncopation and triplets are not asked in 6/8 (T37) |
+
+  Measured on the version in force: since D1a, version 2. Version 1's tie closing also made
+  skip off undoable at 4.5–4.7, and gave leap off there a second reason; version 2 holds the tied
+  pitch, so skip off is made there now, and the reader may offer it (`readingOffer` reads this
+  table).
 
   Everything else is made, including the S25 moves: ties and dotted quarters from 2.4 on the
   right-hand row, from 3.4 on the two-hand row and on 4.5's; a ledger line beyond middle C on
@@ -781,7 +785,25 @@ table; a fifth of four-bar units are one contour at levels 3–5). Version 2 of 
   ownership). After the first draw that keeps every promise and the hard layer the generator
   keeps drawing, up to 16 valid draws or 96 draws past the first, scores each and keeps the
   earliest within 0.05 of the best among those at or above the valid draws' lower quartile of
-  notes. A draw that breaks a hard constraint is never scored. The parts, each 0–1:
+  notes. A draw that breaks a hard constraint is never scored. **It fails closed (D1a; the
+  reviewer's finding 1 on D1, `review/responses/b15758e.md`):** until its first valid draw it
+  keeps drawing within the redraw budget (4,096 draws, the same budget version 1's promises
+  have), so the window opens wherever that draw comes, however late; if the whole budget yields
+  none it refuses — `SightReadingRefusal`, thrown by `generateSightReading` — and never hands back
+  the last draw, which D1 did ("the last draw stands, as in version 1") and which could break a
+  promise the row asked for or a rule the level sets. The refusal's reasons are sentences in
+  `unrealisable`'s shape: what was asked (the level, the hands, the bars, the metre, the key, the
+  seed), the promises and the level's rules with the draws spent, what the draws broke (the
+  promises the last draw lacked, or how many kept them and broke a rule, and which), and the
+  generator's own declared reasons where the options contradict themselves. The Score screen
+  shows it as a terminal state — the header says no phrase could be written, the reasons stand
+  where the music would have been, nothing is recorded — and Today's reader, which asks the
+  generator only for a phrase's key, takes the key the seed chose (settled before any draw) from
+  the refusal. Reached, on the app's own options, by no option set in D1a's sweep (every level
+  and hand with each control on and off, six seeds each: every phrase found a valid draw, and no
+  draw that kept its promises broke the hard layer); the regressions force it through a test
+  seam (`sightReadingFailsClosed.test.ts`). Version 1 keeps its last draw, as it always did. The
+  parts, each 0–1:
   **arrival** (weight 5, the fault named first): the final event on the last bar's downbeat 1,
   begun in the last bar and held a felt beat from the half bar 0.9, from another beat 0.7, from
   off the beat 0.5, the close on the tonic, and from level 5 the approach by step or from a chord
@@ -805,14 +827,25 @@ table; a fifth of four-bar units are one contour at levels 3–5). Version 2 of 
   handful of phrases (156 different in 200 seeds; with the tolerance 182; version 1, 192).
 - **Identity.** `SightReadingResult.generator` is `{ family: 'sight-reading', version, seed }`,
   D0's shape, and `version` is an option; version 1 writes what the committed generator wrote,
-  note for note (`sightReadingUnchanged.test.ts`). **The app still writes version 1**
-  (`SIGHT_READING_IN_FORCE`): a run's record keeps the row, the recipe, the rung and the seed and
-  no version, so a version-2 phrase from a seed already read would be the same encounter to the
-  phrase-seen check and to the evidence job's rewriting of a stored run. Carrying the version is
-  one optional field on `SessionRow` (no IndexedDB version and no upgrade, as C1's fields),
-  written by the Score screen and read by the evidence job and the seen check; D1's brief stops at
-  that line and leaves it to the reviewer (Entry 94). Once it is carried, the in-force version
-  becomes 2 and a stored run without one reads as version 1, which the generator still writes.
+  note for note (`sightReadingUnchanged.test.ts`, its hashes pinned to `version: 1`). **The app
+  writes version 2 since D1a** (`SIGHT_READING_IN_FORCE`; D1 held it at 1, Entry 94, because a
+  run's record kept no version and a version-2 phrase of a seed already read would have been the
+  same encounter to the history — G21). The record carries it now: `generator` on the session
+  row (`data/db.ts`, beside `recipe`; optional, so no IndexedDB version and no upgrade, C1's
+  rule), written by the Score screen with every run of a generated phrase; **absent means version
+  1**, which every run recorded before D1a was. Every reader that keys on the seed was found and
+  decided: the Score screen's phrase-seen check and Today's daily-met check compare the version
+  beside the seed (`phraseVersionOf`), so a run of the same seed under another version met other
+  music; the evidence job writes a stored run's phrase again by the version that wrote it, and
+  keeps out a version it cannot write (`phrase-differs`); the two sets of seeds a screen avoids
+  when it draws one — the Score screen's `seedsOnRecord` and the reader's slot seeds — keep every
+  seed on record whatever its version, because avoiding a seed costs nothing in a 32-bit space
+  and many seeds write the same notes at both versions; the store's day tick
+  (`progressStore.recordRun`) reads only the run being recorded, which the version in force
+  wrote. Most phrases change at the flip (815 of the 1,004 keys of the golden; the left hand read
+  alone at levels 2–7 and seeds whose first draw was already within the tolerance of the best do
+  not), and so does the reader at 3.1: with the tie's leap gone, two clean reads there show a
+  leap in fewer phrases, and the reader offers a leap before the key signature (Entry 97).
 - **The distribution suite** (`sightReadingDistribution.test.ts`): each level's own table (200
   seeds) and each row at each rung listing it (150), measured on the MusicXML read back and
   written as a table on request: key and metre as asked, interval classes, notes a bar, rests,
@@ -1142,8 +1175,10 @@ the row (`evidenceRecompute`), and not tried again until the version moves: `no-
 `not-generated`, `phrase-differs` (the generator writes that phrase differently now — C4d's redraw
 budget moved some). A kept-out row contributes nothing, as decided at C4d; nothing is estimated.
 The limit: a phrase that differs only in pitches where the learner played nothing early would
-match, because the generator's version is not on the row (Part 9 §8 of the outside audit wants
-it). Progress is on the storage report (`04` §3f). The same job carries the learner's history
+match, so the match is a check and not an identity; since D1a the row names the generator
+version that wrote its phrase (`generator`, absent meaning version 1), and each candidate is
+written by that version, so a change of version is never left to the match to notice (Part 9 §8
+of the outside audit asked for it). Progress is on the storage report (`04` §3f). The same job carries the learner's history
 from before C5 over once and puts back to practised the reading rows an older build passed or
 mastered (S8), before any row.
 

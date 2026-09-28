@@ -20,7 +20,12 @@ import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types
 import type { ProgressRow, SessionRow } from '../../src/data/db';
 import type { RunResult } from '../../src/data/progressStore';
 import { parseHash, type Router } from '../../src/router';
-import { generateSightReading, sightReadingOptionsFor } from '../../src/engine/sightReading';
+import {
+  generateSightReading,
+  SIGHT_READING_IN_FORCE,
+  SightReadingRefusal,
+  sightReadingOptionsFor,
+} from '../../src/engine/sightReading';
 import { heldToRung } from '../../src/engine/readingControls';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 
@@ -678,9 +683,16 @@ describe('7 and 8: a sight-read is the phrase its row asks for, recorded once', 
   // reviewer's decision 3 for heard runs is the same rule: recorded, flagged
   // `unseen: false`, and kept out of the evidence it cannot support — here the
   // reading drill's pass.
+  // Revised (D1a): the stored run names the version that wrote its phrase, as
+  // the Score screen now records it. Old assumption: a stored run with a seed
+  // and nothing else is the phrase this screen writes from that seed — true
+  // while version 1 was the only version in force; since the flip a run with
+  // no version is version 1's, another phrase (the D1a describe below).
   it('re-opening a phrase already on the record is kept as practice, not a new first attempt', async () => {
     findItemSpy.mockResolvedValue(readerItem({ level: 1, bars: 2, hands: 'right' }));
-    sessionsSpy.mockResolvedValue([{ itemId: READ_ID, seed: 777 } as unknown as SessionRow]);
+    sessionsSpy.mockResolvedValue([
+      { itemId: READ_ID, seed: 777, generator: { family: 'sight-reading', version: SIGHT_READING_IN_FORCE, seed: 777 } } as unknown as SessionRow,
+    ]);
     await open(`#/score/${READ_ID}?seed=777`);
     await vi.waitFor(() => expect(sessionsSpy).toHaveBeenCalled());
     await new Promise((resolve) => setTimeout(resolve, 0));
@@ -719,6 +731,80 @@ describe('7 and 8: a sight-read is the phrase its row asks for, recorded once', 
   });
 });
 
+// Added (D1a; the reviewer's findings 1 and 2 on D1, `responses/b15758e.md`):
+// the run's record names the generator that wrote its phrase — family, version
+// and seed — beside the seed it always kept; a stored run of the same seed
+// under another version met another phrase (G21); and a phrase version 2
+// cannot write is refused on the screen with its reason, never engraved
+// unchecked.
+describe('D1a: the phrase’s identity on the record, and a refusal on the screen', () => {
+  it('the run keeps the phrase’s identity: its family, the version that wrote it and its seed', async () => {
+    const params = { level: 1, bars: 2, hands: 'right' };
+    findItemSpy.mockResolvedValue(readerItem(params));
+    await open(`#/score/${READ_ID}?seed=4242`);
+    finish(run({}));
+    await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalled());
+    expect(lastRecorded().generator).toEqual({ family: 'sight-reading', version: SIGHT_READING_IN_FORCE, seed: 4242 });
+    expect(lastRecorded().generator).toEqual(generateSightReading(sightReadingOptionsFor(params, 4242)).generator);
+  });
+
+  /** Opens seed 777 of a two-bar level-1 row over these stored runs, plays it, and returns what was recorded. */
+  async function readSeed777Over(rows: Record<string, unknown>[]): Promise<RunResult> {
+    const params = { level: 1, bars: 2, hands: 'right' };
+    const options = sightReadingOptionsFor(params, 777);
+    expect(
+      generateSightReading({ ...options, version: 1 }).musicXml,
+      'seed 777 writes the same notes at both versions here, so the case would prove nothing',
+    ).not.toBe(generateSightReading({ ...options, version: 2 }).musicXml);
+    findItemSpy.mockResolvedValue(readerItem(params));
+    sessionsSpy.mockResolvedValue(rows.map((row) => ({ itemId: READ_ID, seed: 777, ...row }) as unknown as SessionRow));
+    await open(`#/score/${READ_ID}?seed=777`);
+    await vi.waitFor(() => expect(sessionsSpy).toHaveBeenCalled());
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    finish(run({}));
+    await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalledTimes(1));
+    return lastRecorded();
+  }
+
+  it('a stored run of the same seed under another version met another phrase: the next run is a first reading', async () => {
+    const other = SIGHT_READING_IN_FORCE === 1 ? 2 : 1;
+    const recorded = await readSeed777Over([{ generator: { family: 'sight-reading', version: other, seed: 777 } }]);
+    expect(recorded.unseen, `a version-${String(other)} run of seed 777 made the version-${String(SIGHT_READING_IN_FORCE)} phrase of seed 777 met`).toBe(true);
+  });
+
+  it('a stored run with no version on it was version 1’s, so with version 2 in force it met another phrase', async () => {
+    expect(SIGHT_READING_IN_FORCE, 'the case is about version 2 in force').toBe(2);
+    // Recorded before D1a: no generator on the row, which means version 1.
+    const recorded = await readSeed777Over([{}]);
+    expect(recorded.unseen, 'a run recorded before D1a made the version-2 phrase of its seed met').toBe(true);
+    expect(recorded.generator).toEqual({ family: 'sight-reading', version: 2, seed: 777 });
+  });
+
+  it('a phrase version 2 cannot write is refused on the screen with its reason: nothing engraved, no controls, nothing recorded', async () => {
+    const params = { level: 2, bars: 4, hands: 'right', skips: false, leaps: true };
+    findItemSpy.mockResolvedValue(readerItem(params));
+    const section = ScoreScreen(routerFor(`#/score/${READ_ID}?seed=20260927`));
+    document.body.replaceChildren(section);
+    const status = (): string => section.querySelector('#score-status')?.textContent ?? '';
+    await vi.waitFor(() => expect(status()).toBe('No phrase could be written'));
+    let refusal: unknown;
+    try {
+      generateSightReading(sightReadingOptionsFor(params, 20260927));
+    } catch (thrown) {
+      refusal = thrown;
+    }
+    expect(refusal).toBeInstanceOf(SightReadingRefusal);
+    // The reason, whole, where the music would have been: the header line is cut short at a phone's width.
+    const reason = section.querySelector('#score-stage #score-refusal')?.textContent;
+    expect(reason, 'the refusal’s reason is not on the screen').toBe((refusal as SightReadingRefusal).message);
+    expect(reason).toContain('No phrase could be written for level 2, right hand, 4 bars of 4/4 with no sharps or flats.');
+    expect(reason, 'an identifier on the screen').not.toContain('20260927');
+    expect(section.querySelector<HTMLElement>('#score-bar')?.hidden, 'live controls over a phrase that was never written').toBe(true);
+    expect(loadedXml.some((text) => text.includes('Sight-reading level')), 'a phrase was engraved').toBe(false);
+    expect(recordRunSpy).not.toHaveBeenCalled();
+  });
+});
+
 // Added (C4 items 1 and 2): Today's reader names the phrase's recipe in the
 // route (`?recipe=`: what it moved from the row, and whether it is the easy one
 // on purpose). The screen writes that phrase and keeps the recipe on the run,
@@ -740,12 +826,18 @@ describe('C4: the recipe reaches the phrase and the record; a drawn phrase is on
     vi.restoreAllMocks();
   });
 
+  // Revised (D1a, the flip): the seed. Old assumption: seed 4242's phrase of
+  // this two-bar row leaves C position, so the `position` recipe writes other
+  // music — true of version 1's phrase; version 2's phrase of 4242 already
+  // stays inside it (its choice among the draws kept a phrase that does), so
+  // the recipe wrote the same notes and the case proved nothing. 4243 leaves
+  // C position at both versions.
   it('the recipe in the route writes its phrase, and the run keeps the recipe', async () => {
     findItemSpy.mockResolvedValue(readerItem(PARAMS));
-    await open(`#/score/${READ_ID}?seed=4242&recipe=${encodeURIComponent('position:1,easy:1')}`);
+    await open(`#/score/${READ_ID}?seed=4243&recipe=${encodeURIComponent('position:1,easy:1')}`);
     const xml = loadedXml.find((text) => text.includes('Sight-reading level')) ?? '';
-    const own = generateSightReading(sightReadingOptionsFor(PARAMS, 4242)).musicXml;
-    const moved = generateSightReading(sightReadingOptionsFor({ ...PARAMS, position: true }, 4242)).musicXml;
+    const own = generateSightReading(sightReadingOptionsFor(PARAMS, 4243)).musicXml;
+    const moved = generateSightReading(sightReadingOptionsFor({ ...PARAMS, position: true }, 4243)).musicXml;
     expect(xml, 'the screen wrote the row’s own phrase over the recipe the route named').not.toBe(own);
     expect(xml).toBe(moved);
     finish(run({}));

@@ -452,10 +452,6 @@ const RIGHT_ROW_RUNGS = ['2.2', '2.3', '2.4', '2.5', '3.1', '3.2', '3.3'];
 const TWO_HAND_ROW_RUNGS = ['3.4', '3.5', '3.6', '4.1', '4.2', '4.3', '4.4'];
 const LEVEL_3_RUNGS = ['4.5', '4.6', '4.7'];
 
-const TIE_CLOSING_THIRD =
-  'A tie’s closing note is set to the tied pitch after the melody has moved on, so the note after it can be a third away.';
-const TIE_CLOSING_LEAP =
-  'A tie’s closing note is set to the tied pitch after the melody has moved on, so the note after it can be a fourth or wider away.';
 const COMPOUND_FIGURES =
   'Compound time at levels 1–4 is written in its three first figures, all of dotted quarters, quarters and eighths.';
 
@@ -466,6 +462,13 @@ const COMPOUND_FIGURES =
  * with these reasons). Everything not listed is made: the demand in every
  * phrase asked, the promises kept, nothing untaught, nothing else new but what
  * the control `brings`. The table, rung by rung, is in `05` §8.
+ *
+ * Measured on the version in force. Since D1a that is version 2, whose walk
+ * holds a tied pitch through its tie, so version 1's reason at 4.5–4.7 — a
+ * tie's closing note could leap past the cap — is gone: skips off is made there
+ * now, and leaps off is still undoable for the reason `unrealisable` gave
+ * beside the tie's all along, the left hand's roots, as on the two-hand row's
+ * rungs.
  */
 export const UNREALISABLE_AT: readonly Unrealisable[] = [
   {
@@ -491,14 +494,12 @@ export const UNREALISABLE_AT: readonly Unrealisable[] = [
     reason: 'Level 1 writes one hand at a time; both hands start at level 2.',
   },
   {
-    rungs: TWO_HAND_ROW_RUNGS,
+    rungs: [...TWO_HAND_ROW_RUNGS, ...LEVEL_3_RUNGS],
     demand: 'interval.leap',
     direction: 'off',
     kind: 'generator',
     reason: 'The left hand’s roots move between I, IV and V, by fourths and fifths.',
   },
-  { rungs: LEVEL_3_RUNGS, demand: 'interval.skip', direction: 'off', kind: 'generator', reason: TIE_CLOSING_THIRD },
-  { rungs: LEVEL_3_RUNGS, demand: 'interval.leap', direction: 'off', kind: 'generator', reason: TIE_CLOSING_LEAP },
   { rungs: LEVEL_3_RUNGS, demand: 'rhythm.eighths', direction: 'off', kind: 'generator', reason: COMPOUND_FIGURES },
   { rungs: LEVEL_3_RUNGS, demand: 'rhythm.shorter-than-quarter', direction: 'off', kind: 'generator', reason: COMPOUND_FIGURES },
   {

@@ -26,7 +26,8 @@
  * recipe (C4 on), and held to the rung that opened it (C4c on). Each candidate
  * is tried, newest first, and only one that matches the observation is used;
  * the generator's own changes (C4d's redraw budget, for one) show up here as a
- * phrase that no longer matches, which is kept out rather than guessed at.
+ * phrase that no longer matches, which is kept out rather than guessed at. Each
+ * is written by the generator version the row names (D1a; absent, version 1).
  *
  * **Which rows.** The stored runs themselves, walked from the sessions store
  * (`walkRuns`), not the catalog's items: a run of an item the catalog no
@@ -37,9 +38,9 @@
  * the row itself shows it bore evidence or could have (`boreEvidence`); a run
  * of a piece that never bore evidence is not reported as kept out.
  */
-import type { EvidenceExclusion, SessionRow } from './db';
+import { phraseVersionOf, type EvidenceExclusion, type SessionRow } from './db';
 import type { CatalogItem, Curriculum } from '../curriculum/types';
-import type { SightReadingOptions } from '../engine/sightReading';
+import { SIGHT_READING_VERSIONS, type SightReadingOptions, type SightReadingVersion } from '../engine/sightReading';
 import type { ScoreModelData, ScoreStep } from '../score/types';
 import { readingOptions, taughtAtRung } from '../curriculum/session';
 import { skillsInForce } from '../curriculum/skillActivation';
@@ -86,11 +87,18 @@ export function candidatePhrases(
   if (item.drill?.kind !== 'sight-reading') return 'not-generated';
   if (!row.steps) return 'no-steps';
   if (row.seed === undefined) return 'no-seed';
+  // The version that wrote the phrase (D1a): the row's own, absent meaning
+  // version 1, the only one in force before the record carried it. A version
+  // this build cannot write is never written by another in its place (G21):
+  // the phrase written today would not be the one the run read.
+  const version = phraseVersionOf(row);
+  if (!(SIGHT_READING_VERSIONS as readonly number[]).includes(version)) return 'phrase-differs';
   const rung = row.opened?.rung ?? row.lessonId;
   const recipe = row.recipe === undefined ? undefined : { row: row.recipe.row, ...(row.recipe.moved ? { moved: row.recipe.moved } : {}) };
   const out: SightReadingOptions[] = [];
   const seen = new Set<string>();
-  const add = (options: SightReadingOptions): void => {
+  const add = (written: SightReadingOptions): void => {
+    const options: SightReadingOptions = { ...written, version: version as SightReadingVersion };
     const key = JSON.stringify(options);
     if (seen.has(key)) return;
     seen.add(key);
@@ -115,8 +123,10 @@ function expected(step: ScoreStep | undefined, hands: 'R' | 'L' | 'both'): numbe
  * steps with nothing, bar for bar; the same count of expected notes; and every
  * note it heard early one the phrase asks for at that step. A phrase that
  * differed only in pitches where the learner played nothing early would pass
- * this; the generator's version is not on the row (Part 9 §8 wants it), so
- * that is the limit, and it is said where the job is described.
+ * this, so it is a check, not an identity: since D1a the row names the
+ * generator version that wrote its phrase (`generator`, absent meaning 1) and
+ * `candidatePhrases` writes the phrase with that version, so a change of
+ * version is never left to this check to notice.
  */
 export function phraseMatches(row: SessionRow, model: Pick<ScoreModelData, 'steps'>): boolean {
   const steps = row.steps;
