@@ -10,6 +10,8 @@
 
 ## Waiting
 
+- **D3** — briefed 2026-09-27 (`tasks/D3-the-study-middle.md`), at the gate as the brief handoff `handoffs/2c80472.md`; dispatch on that read.
+
 - **D2a** — **dispatched** (Entry 99): CI on 85b7b2c red on `offline.spec` › P19 (D2's projection under `content/` served and never cached); the projection moves to a builder-only `dev/` root; on landing: merge, the app build, the offline and microscope specs once, record, handoff, push.
 
 - **D1 / D1a** — **closed**: D1a accepted (`responses/8a13eb1.md`); version 2 live; D3's brief released. **D2** (Entry 95) — **closed**, approved (`responses/7e148e0.md`). **U67** (Hear it after a reload) — **closed**, approved (`responses/deb0b4f.md`).
