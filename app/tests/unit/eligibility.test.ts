@@ -426,6 +426,8 @@ describe('a generated item that promises music, without an affirmative teaching-
     expect(eligibleFor(reader, COPES, { for: 'skill', skill: 'sight-reading' }), reader.id).toEqual({ verdict: 'eligible', for: 'skill', practises: 'sight-reading' });
   });
 });
+
+/**
  * Q8's case on the real corpus (E1 item 7; Part 24's adversaries 1 and 2): the whole of Anh. 113
  * is refused for a Stage 3 want — it carries sixteenths (taught at no rung) and triplets (4.5),
  * which `classical.3`, its rung, has not taught — and its approved excerpt is eligible, measured on
