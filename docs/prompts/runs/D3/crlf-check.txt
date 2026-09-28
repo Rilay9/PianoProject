@@ -1,0 +1,2 @@
+app/src/ui/screens/ScoreScreen.ts: CRLF endings=True; clause as checked out=False; clause with LF=True
+app/src/style.css: CRLF endings=True; clause as checked out=False; clause with LF=True

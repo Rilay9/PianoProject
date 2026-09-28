@@ -1,0 +1,128 @@
+# eval-inferred: tools\content\musical_evaluator.py swapped, restored byte for byte after the run
+FFFFFFFFFFFFFFF
+======================================================================
+FAIL: test_the_musical_gate_passes_every_study_on_its_written_page (tools.content.tests.test_study.TestEveryStudyInThePlan.test_the_musical_gate_passes_every_study_on_its_written_page) (item='exercise.study.interval-reading.c-major.4-4.12bar.sustained.03')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study.py", line 190, in test_the_musical_gate_passes_every_study_on_its_written_page
+    self.assertTrue(verdict["passes"], verdict["why"])
+AssertionError: False is not true : phrase shape 0.772 against the floor 0.8; phrase 3 (bars 9-12): the progression has no authentic cadence (notation, not hearing; unheard)
+
+======================================================================
+FAIL: test_the_musical_gate_passes_every_study_on_its_written_page (tools.content.tests.test_study.TestEveryStudyInThePlan.test_the_musical_gate_passes_every_study_on_its_written_page) (item='exercise.study.interval-reading.g-major.4-4.8bar.blocked.01')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study.py", line 190, in test_the_musical_gate_passes_every_study_on_its_written_page
+    self.assertTrue(verdict["passes"], verdict["why"])
+AssertionError: False is not true : phrase shape 0.855 against the floor 0.8; phrase 2 (bars 5-8): the progression has no authentic cadence (notation, not hearing; unheard)
+
+======================================================================
+FAIL: test_the_musical_gate_passes_every_study_on_its_written_page (tools.content.tests.test_study.TestEveryStudyInThePlan.test_the_musical_gate_passes_every_study_on_its_written_page) (item='exercise.study.position-shift.c-major.4-4.16bar.blocked.03')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study.py", line 192, in test_the_musical_gate_passes_every_study_on_its_written_page
+    self.assertAlmostEqual(verdict["total"], entry["drill"]["study"]["chosen"]["score"], places=3)
+AssertionError: 0.889436507936508 != 0.8975 within 3 places (0.008063492063491995 difference)
+
+======================================================================
+FAIL: test_the_musical_gate_passes_every_study_on_its_written_page (tools.content.tests.test_study.TestEveryStudyInThePlan.test_the_musical_gate_passes_every_study_on_its_written_page) (item='exercise.study.subdivision.c-major.4-4.8bar.sustained.01')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study.py", line 190, in test_the_musical_gate_passes_every_study_on_its_written_page
+    self.assertTrue(verdict["passes"], verdict["why"])
+AssertionError: False is not true : phrase shape 0.867 against the floor 0.8; phrase 2 (bars 5-8): the progression has no authentic cadence (notation, not hearing; unheard)
+
+======================================================================
+FAIL: test_the_musical_gate_passes_every_study_on_its_written_page (tools.content.tests.test_study.TestEveryStudyInThePlan.test_the_musical_gate_passes_every_study_on_its_written_page) (item='exercise.study.syncopation.c-major.4-4.8bar.broken.01')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study.py", line 190, in test_the_musical_gate_passes_every_study_on_its_written_page
+    self.assertTrue(verdict["passes"], verdict["why"])
+AssertionError: False is not true : phrase shape 0.789 against the floor 0.8; phrase 2 (bars 5-8): the progression has no authentic cadence (notation, not hearing; unheard)
+
+======================================================================
+FAIL: test_the_musical_gate_passes_every_study_on_its_written_page (tools.content.tests.test_study.TestEveryStudyInThePlan.test_the_musical_gate_passes_every_study_on_its_written_page) (item='exercise.study.syncopation.g-major.4-4.8bar.broken.02')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study.py", line 192, in test_the_musical_gate_passes_every_study_on_its_written_page
+    self.assertAlmostEqual(verdict["total"], entry["drill"]["study"]["chosen"]["score"], places=3)
+AssertionError: 0.9593523469994059 != 0.9674 within 3 places (0.00804765300059418 difference)
+
+======================================================================
+FAIL: test_the_musical_gate_passes_every_study_on_its_written_page (tools.content.tests.test_study.TestEveryStudyInThePlan.test_the_musical_gate_passes_every_study_on_its_written_page) (item='exercise.study.syncopation.f-major.4-4.8bar.alberti.03')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study.py", line 190, in test_the_musical_gate_passes_every_study_on_its_written_page
+    self.assertTrue(verdict["passes"], verdict["why"])
+AssertionError: False is not true : phrase shape 0.824 against the floor 0.8; phrase 2 (bars 5-8): the progression has no authentic cadence (notation, not hearing; unheard)
+
+======================================================================
+FAIL: test_the_musical_gate_passes_every_study_on_its_written_page (tools.content.tests.test_study.TestEveryStudyInThePlan.test_the_musical_gate_passes_every_study_on_its_written_page) (item='exercise.study.syncopation.d-minor.4-4.8bar.broken.01')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study.py", line 190, in test_the_musical_gate_passes_every_study_on_its_written_page
+    self.assertTrue(verdict["passes"], verdict["why"])
+AssertionError: False is not true : phrase shape 0.827 against the floor 0.8; phrase 2 (bars 5-8): the progression has no authentic cadence (notation, not hearing; unheard)
+
+======================================================================
+FAIL: test_the_musical_gate_passes_every_study_on_its_written_page (tools.content.tests.test_study.TestEveryStudyInThePlan.test_the_musical_gate_passes_every_study_on_its_written_page) (item='exercise.study.metre-compound.c-major.6-8.8bar.broken.01')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study.py", line 190, in test_the_musical_gate_passes_every_study_on_its_written_page
+    self.assertTrue(verdict["passes"], verdict["why"])
+AssertionError: False is not true : phrase shape 0.817 against the floor 0.8; phrase 2 (bars 5-8): the progression has no authentic cadence (notation, not hearing; unheard)
+
+======================================================================
+FAIL: test_the_musical_gate_passes_every_study_on_its_written_page (tools.content.tests.test_study.TestEveryStudyInThePlan.test_the_musical_gate_passes_every_study_on_its_written_page) (item='exercise.study.metre-compound.g-major.6-8.8bar.sustained.02')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study.py", line 190, in test_the_musical_gate_passes_every_study_on_its_written_page
+    self.assertTrue(verdict["passes"], verdict["why"])
+AssertionError: False is not true : phrase shape 0.862 against the floor 0.8; phrase 2 (bars 5-8): the progression has no authentic cadence (notation, not hearing; unheard)
+
+======================================================================
+FAIL: test_the_musical_gate_passes_every_study_on_its_written_page (tools.content.tests.test_study.TestEveryStudyInThePlan.test_the_musical_gate_passes_every_study_on_its_written_page) (item='exercise.study.metre-compound.a-minor.6-8.8bar.broken.03')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study.py", line 190, in test_the_musical_gate_passes_every_study_on_its_written_page
+    self.assertTrue(verdict["passes"], verdict["why"])
+AssertionError: False is not true : phrase shape 0.841 against the floor 0.8; phrase 2 (bars 5-8): the progression has no authentic cadence (notation, not hearing; unheard)
+
+======================================================================
+FAIL: test_the_musical_gate_passes_every_study_on_its_written_page (tools.content.tests.test_study.TestEveryStudyInThePlan.test_the_musical_gate_passes_every_study_on_its_written_page) (item='exercise.study.metre-compound.e-flat-major.6-8.12bar.blocked.01')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study.py", line 190, in test_the_musical_gate_passes_every_study_on_its_written_page
+    self.assertTrue(verdict["passes"], verdict["why"])
+AssertionError: False is not true : phrase shape 0.868 against the floor 0.8; phrase 3 (bars 9-12): the progression has no authentic cadence (notation, not hearing; unheard)
+
+======================================================================
+FAIL: test_the_musical_gate_passes_every_study_on_its_written_page (tools.content.tests.test_study.TestEveryStudyInThePlan.test_the_musical_gate_passes_every_study_on_its_written_page) (item='exercise.study.texture-hands-together.c-major.4-4.8bar.sustained.01')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study.py", line 190, in test_the_musical_gate_passes_every_study_on_its_written_page
+    self.assertTrue(verdict["passes"], verdict["why"])
+AssertionError: False is not true : phrase shape 0.828 against the floor 0.8; phrase 2 (bars 5-8): the progression has no authentic cadence (notation, not hearing; unheard)
+
+======================================================================
+FAIL: test_the_musical_gate_passes_every_study_on_its_written_page (tools.content.tests.test_study.TestEveryStudyInThePlan.test_the_musical_gate_passes_every_study_on_its_written_page) (item='exercise.study.texture-hands-together.c-major.4-4.12bar.sustained.03')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study.py", line 190, in test_the_musical_gate_passes_every_study_on_its_written_page
+    self.assertTrue(verdict["passes"], verdict["why"])
+AssertionError: False is not true : phrase shape 0.801 against the floor 0.8; phrase 3 (bars 9-12): the progression has no authentic cadence (notation, not hearing; unheard)
+
+======================================================================
+FAIL: test_the_musical_gate_passes_every_study_on_its_written_page (tools.content.tests.test_study.TestEveryStudyInThePlan.test_the_musical_gate_passes_every_study_on_its_written_page) (item='exercise.study.texture-hands-together.b-flat-major.4-4.8bar.broken.01')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_study.py", line 190, in test_the_musical_gate_passes_every_study_on_its_written_page
+    self.assertTrue(verdict["passes"], verdict["why"])
+AssertionError: False is not true : phrase shape 0.833 against the floor 0.8; phrase 2 (bars 5-8): the progression has no authentic cadence (notation, not hearing; unheard)
+
+----------------------------------------------------------------------
+Ran 1 test in 146.369s
+
+FAILED (failures=15)
+
+exit 1

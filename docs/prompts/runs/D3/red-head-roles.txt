@@ -1,0 +1,41 @@
+# head-roles: tools\content\tests\test_roles.py swapped, restored byte for byte after the run
+EE.E..
+======================================================================
+ERROR: test_no_item_is_transfer_by_seed_or_by_its_own_family (tools.content.tests.test_roles.TestANewSeedIsNotTransfer.test_no_item_is_transfer_by_seed_or_by_its_own_family)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_roles.py", line 91, in test_no_item_is_transfer_by_seed_or_by_its_own_family
+    self.assertEqual(transfer_faults(FC.contracts(), planned.plan()), [])
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_roles.py", line 57, in transfer_faults
+    if not of or family in of.get("from", []):
+                           ^^^^^^
+AttributeError: 'list' object has no attribute 'get'
+
+======================================================================
+ERROR: test_the_check_fails_when_a_seed_is_marked_transfer (tools.content.tests.test_roles.TestANewSeedIsNotTransfer.test_the_check_fails_when_a_seed_is_marked_transfer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_roles.py", line 98, in test_the_check_fails_when_a_seed_is_marked_transfer
+    faults = transfer_faults(rows, planned.plan())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_roles.py", line 57, in transfer_faults
+    if not of or family in of.get("from", []):
+                           ^^^^^^
+AttributeError: 'list' object has no attribute 'get'
+
+======================================================================
+ERROR: test_every_declared_dimension_differs_from_every_item_of_the_source_family (tools.content.tests.test_roles.TestATransferItemDiffersInSurfaceAsItsContractSays.test_every_declared_dimension_differs_from_every_item_of_the_source_family)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a03d52759cf7d0388\tools\content\tests\test_roles.py", line 111, in test_every_declared_dimension_differs_from_every_item_of_the_source_family
+    self.assertIn("family", of["differs"])
+                            ~~^^^^^^^^^^^
+TypeError: list indices must be integers or slices, not str
+
+----------------------------------------------------------------------
+Ran 6 tests in 507.256s
+
+FAILED (errors=3)
+
+exit 1

@@ -1,0 +1,42 @@
+# the study's pin without interval.leap; bridge_regression.json restored byte for byte after
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a03d52759cf7d0388/app
+
+ ❯ tests/unit/demandsOfFiles.test.ts (14 tests | 1 failed | 1 skipped) 271ms
+   ❯ generated items, measured directly, give the ids the bridge regression pins (12)
+     × exercise.study.interval-reading.c-major.4-4.8bar.sustained.01: the detectors find exactly the pinned demands 13ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 passed | 1 skipped (14)
+   Start at  00:19:37
+   Duration  1.18s (environment 59%, tests 25%, import 8%, transform 7%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/demandsOfFiles.test.ts > generated items, measured directly, give the ids the bridge regression pins > exercise.study.interval-reading.c-major.4-4.8bar.sustained.01: the detectors find exactly the pinned demands
+AssertionError: expected [ 'clef.bass', 'interval.step', …(3) ] to deeply equal [ 'clef.bass', 'interval.step', …(2) ]
+
+- Expected
++ Received
+
+  [
+    "clef.bass",
+    "interval.step",
+    "interval.skip",
++   "interval.leap",
+    "texture.hands-together",
+  ]
+
+ ❯ tests/unit/demandsOfFiles.test.ts:122:65
+    120|       expect(existsSync(file), `${file} — run the content build first`…
+    121|       installTextMeasurer();
+    122|       expect(measuredDemands(await modelOfFile(file), demands)).toEqua…
+       |                                                                 ^
+    123|     });
+    124|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+exit 1

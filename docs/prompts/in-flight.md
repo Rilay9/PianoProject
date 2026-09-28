@@ -10,7 +10,7 @@
 
 ## Waiting
 
-- **D3** — brief approved with one change (`responses/2c80472.md`), **dispatched** (Entry 100); on landing: merge, the content build, the validator, the content suites, the bridge regression's direct half, the candidate-rungs report read, three studies rendered on the score screen and read, record, handoff, push.
+- **D3** — **landed** (Entry 100, merged as 79601bf, handoff `handoffs/ee70b43.md`); awaiting the reviewer. Unheard; unverified as music.
 
 - **D2a** — **closed**, accepted (`responses/b118750.md`).
 
