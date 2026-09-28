@@ -69,3 +69,5 @@ E1 the excerpt as a first-class object: identity from source, range, part and ve
 
 **E0a accepted 2026-09-27**; one more required change on the data E0a exposed (E0b, `taughtAt` as a list); E0 closes on E0b's acceptance.
 
+**E0b delivered 2026-09-27** (Entry 96); E0 closes on its acceptance.
+

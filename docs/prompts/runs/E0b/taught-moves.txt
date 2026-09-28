@@ -1,0 +1,32 @@
+Every (rung, demand) whose 'taught at this rung' moves, committed vocabulary -> E0b, by the rung's ancestry.
+
+clef.bass: ['1.3'] -> ['1.3'] (unchanged)
+pitch.ledger: ['3.4'] -> ['3.4'] (unchanged)
+interval.step: ['1.1'] -> ['1.1'] (unchanged)
+interval.skip: ['1.5'] -> ['1.5'] (unchanged)
+interval.leap: ['1.5'] -> ['1.5'] (unchanged)
+rhythm.eighths: ['2.2'] -> ['2.2'] (unchanged)
+rhythm.shorter-than-quarter: ['2.2'] -> ['2.2'] (unchanged)
+rhythm.sixteenths: [] -> [] (unchanged)
+rhythm.dotted-quarter: ['2.4'] -> ['2.4'] (unchanged)
+rhythm.ties: ['2.4'] -> ['2.4'] (unchanged)
+rhythm.syncopation: ['4.5'] -> ['4.5', 'latin.3']
+  latin.3: untaught -> taught (via latin.3)
+rhythm.triplets: ['4.5'] -> ['4.5'] (unchanged)
+metre.compound: ['4.5'] -> ['4.5'] (unchanged)
+key.signature: ['3.1'] -> ['3.1', 'theory.3']
+  theory.3: untaught -> taught (via theory.3)
+pitch.chromatic: ['3.1'] -> ['3.1'] (unchanged)
+range.beyond-position: ['2.5'] -> ['2.5'] (unchanged)
+texture.hands-together: ['2.1'] -> ['2.1', 'holiday']
+  holiday: untaught -> taught (via holiday)
+texture.left-hand-pattern: ['3.6'] -> ['3.6'] (unchanged)
+texture.walking-bass: ['blues.5'] -> ['blues.5', 'jazz.6', 'jam.6']
+  jazz.6: untaught -> taught (via jazz.6)
+  jam.6: untaught -> taught (via jam.6)
+  jazz.7: untaught -> taught (via jazz.6)
+  jam.7: untaught -> taught (via jam.6)
+  jazz.8: untaught -> taught (via jazz.6)
+  jazz.9: untaught -> taught (via jazz.6)
+
+9 readings move, 0 of them from taught to untaught (at the rung alone; a learner's reached rungs add to either).

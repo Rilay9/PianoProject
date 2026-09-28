@@ -12,13 +12,13 @@
 
 - **D3** — brief approved with one change (`responses/2c80472.md`), **dispatched** (Entry 100); on landing: merge, the content build, the validator, the content suites, the bridge regression's direct half, the candidate-rungs report read, three studies rendered on the score screen and read, record, handoff, push.
 
-- **D2a** — **dispatched** (Entry 99): CI on 85b7b2c red on `offline.spec` › P19 (D2's projection under `content/` served and never cached); the projection moves to a builder-only `dev/` root; on landing: merge, the app build, the offline and microscope specs once, record, handoff, push.
+- **D2a** — **landed** (Entry 99, handoff `handoffs/b118750.md`); CI's red closed on this tree; awaiting the reviewer.
 
 - **D1 / D1a** — **closed**: D1a accepted (`responses/8a13eb1.md`); version 2 live; D3's brief released. **D2** (Entry 95) — **closed**, approved (`responses/7e148e0.md`). **U67** (Hear it after a reload) — **closed**, approved (`responses/deb0b4f.md`).
 
 - **D0 / D0a** — **closed**: D0a accepted (`responses/3b9c37d.md`); B7 kept (G53), the arpeggios' notation to G52.
 - **Q24** — **closed**, approved by the reviewer (`responses/e32d0ef.md`, unprompted); the MAESTRO download stays the owner's question (Q47).
-- **E0 / E0a / E0b** — E0a **accepted** (`responses/5bfe6d2.md`); the reviewer decided L108 (the walking bass is taught at jazz.6): **E0b** dispatched (Entry 96; `taughtAt` as a list); on landing: merge, the named unit files and the gate consumers, the promise suite, record, handoff, push. Its ACCEPT closes E0.
+- **E0 / E0a / E0b** — E0b **landed** (Entry 96, handoff `handoffs/c95ac32.md`); awaiting the reviewer; its ACCEPT closes E0 and opens E1's brief.
 
 ## Standing rules in force tonight
 

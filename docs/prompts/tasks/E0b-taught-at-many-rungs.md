@@ -34,3 +34,6 @@ If the derivation from concepts produces a list you cannot defend for some deman
 ## Report
 
 Judgement first: the walking bass at jazz.8 for a learner through jazz.6, and at theory.9, before and after; every demand whose teaching rungs changed; then Done / Not done / Follow-ups / Questions / Files; the red lines; exit codes; unverified beside what passes.
+
+**Delivered 2026-09-27**, Entry 96, in an isolated worktree: the list, the schema, the validator's findings, the build's and the app's readers, the regressions red first, the record and report regenerated, four demands with a second teaching rung read against their lessons, three hand readings kept with notes and warned. Outside the list with reasons: four unit files that construct `taughtAt`; `inventory.md` written by the build. Found: L110.
+

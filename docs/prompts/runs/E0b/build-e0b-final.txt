@@ -1,0 +1,17 @@
+
+--- content build ---
+  ok    fetch            fetched 10 source(s), skipped 5
+  ok    import [MT]      imported 64 score(s), excluded 4, normalised 9 (9 cached, 1 converted)
+  ok    import [KERN]    imported 162 score(s), 1 placeholder(s), excluded 73 (162 cached, 0 converted)
+  ok    import [PDMX]    imported 542 score(s), 175 personal-build
+  ok    generate [GEN]   wrote 1176 items to C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3a3a98c4faa11c9f\app\public\content\scores\generated; catalog C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3a3a98c4faa11c9f\build\catalog.generated.json
+  ok    author [AUTH]    authored 38 item(s) (32 cached, 0 converted)
+  ok    merge catalog    2061 items, 22 with named sections, 100 given a track by their rung, 1982 read from the score, 628 keySig corrected, demands measured on 1982 (8 unmeasured, 71 made at runtime)
+  ok    score checks     score-checks gate: 38 high row(s), 38 allowed by content\score-checks.allow.json
+  ok    curriculum       11 file(s), 10 stage(s), 105 finder(s), 283 concept(s)
+  ok    reports          592 checkable claims on 1021 options: 356 not established, 9 kept by no option; 784 works, 813 arrangements
+  ok    lessons          109 file(s)
+  ok    tips             20 kind(s), 7 variant(s)
+  ok    validate         content validation OK: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3a3a98c4faa11c9f\app\public\content (2061 catalog items)
+  1251.7s → app\public\content
+exit 0
