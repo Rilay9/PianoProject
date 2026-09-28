@@ -37,3 +37,5 @@ Judgement first: the walking bass at jazz.8 for a learner through jazz.6, and at
 
 **Delivered 2026-09-27**, Entry 96, in an isolated worktree: the list, the schema, the validator's findings, the build's and the app's readers, the regressions red first, the record and report regenerated, four demands with a second teaching rung read against their lessons, three hand readings kept with notes and warned. Outside the list with reasons: four unit files that construct `taughtAt`; `inventory.md` written by the build. Found: L110.
 
+**Accepted by the reviewer 2026-09-28** (`responses/c95ac32.md`): E0b and E0 closed; latin's concept to F (L110); E22 unchanged; any E1 decision using the rung-claims report must use a build of the combined branch.
+

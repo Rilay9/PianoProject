@@ -71,3 +71,5 @@ E1 the excerpt as a first-class object: identity from source, range, part and ve
 
 **E0b delivered 2026-09-27** (Entry 96); E0 closes on its acceptance.
 
+**Closed 2026-09-28** on E0b's acceptance (`responses/c95ac32.md`); E1's brief may be drafted.
+
