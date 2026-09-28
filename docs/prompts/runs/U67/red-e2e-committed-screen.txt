@@ -1,0 +1,129 @@
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/curriculum/load.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/curriculum/tips.ts, src/data/planStore.ts, src/score/estimateImport.ts, src/ui/assignSheet.ts, src/ui/screens/ChordChartScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [plugin builtin:vite-reporter] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/planStore.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/data/backup.ts, src/data/rungStates.ts, src/ui/screens/DrillScreen.ts, src/ui/screens/LessonScreen.ts, src/ui/screens/PlanScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/evidenceJob.ts is dynamically imported by src/main.ts but also statically imported by src/ui/screens/SettingsScreen.ts, dynamic import will not move module into another chunk.
+[WebServer] 
+
+Running 5 tests using 2 workers
+
+  ok 2 tests\e2e\score.hearIt.spec.ts:68:1 › after a tap on another screen first: the piano plays (the control) (8.5s)
+  x  1 tests\e2e\score.hearIt.spec.ts:58:1 › opened by address, one tap on Hear it: the piano plays (46.8s)
+  x  3 tests\e2e\score.hearIt.spec.ts:80:1 › opened by address with the click on: Hear it plays the notes and the clicks (43.0s)
+PROBE autoplay without a gesture: running
+  ok 5 tests\e2e\score.hearIt.spec.ts:107:1 › probe: audio context state before any gesture (1.1s)
+  x  4 tests\e2e\score.hearIt.spec.ts:95:1 › opened by address in Listen, ▶ plays the notes and the clicks (42.7s)
+
+
+  1) tests\e2e\score.hearIt.spec.ts:58:1 › opened by address, one tap on Hear it: the piano plays ──
+
+    Error: piano notes scheduled after one tap on Hear it, opened by address
+
+    piano notes scheduled after one tap on Hear it, opened by address
+
+    expect(received).toBeGreaterThan(expected)
+
+    Expected: > 0
+    Received:   0
+
+    Call Log:
+    - Timeout 30000ms exceeded while waiting on the predicate
+
+      51 |   await expect
+      52 |     .poll(async () => (await audioStarts(page))[source], { message: what, timeout: 30_000 })
+    > 53 |     .toBeGreaterThan(from);
+         |      ^
+      54 | }
+      55 |
+      56 | test.describe.configure({ timeout: 120_000 });
+        at expectSounds (C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4f66cdb3e68c2012\app\tests\e2e\score.hearIt.spec.ts:53:6)
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4f66cdb3e68c2012\app\tests\e2e\score.hearIt.spec.ts:65:9
+
+    Error Context: test-results\score.hearIt-opened-by-add-22515--on-Hear-it-the-piano-plays\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\score.hearIt-opened-by-add-22515--on-Hear-it-the-piano-plays\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\score.hearIt-opened-by-add-22515--on-Hear-it-the-piano-plays\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\e2e\score.hearIt.spec.ts:80:1 › opened by address with the click on: Hear it plays the notes and the clicks 
+
+    Error: metronome clicks scheduled after Hear it, opened by address
+
+    metronome clicks scheduled after Hear it, opened by address
+
+    expect(received).toBeGreaterThan(expected)
+
+    Expected: > 0
+    Received:   0
+
+    Call Log:
+    - Timeout 30000ms exceeded while waiting on the predicate
+
+      51 |   await expect
+      52 |     .poll(async () => (await audioStarts(page))[source], { message: what, timeout: 30_000 })
+    > 53 |     .toBeGreaterThan(from);
+         |      ^
+      54 | }
+      55 |
+      56 | test.describe.configure({ timeout: 120_000 });
+        at expectSounds (C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4f66cdb3e68c2012\app\tests\e2e\score.hearIt.spec.ts:53:6)
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4f66cdb3e68c2012\app\tests\e2e\score.hearIt.spec.ts:86:9
+
+    Error Context: test-results\score.hearIt-opened-by-add-c58e8-ys-the-notes-and-the-clicks\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\score.hearIt-opened-by-add-c58e8-ys-the-notes-and-the-clicks\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\score.hearIt-opened-by-add-c58e8-ys-the-notes-and-the-clicks\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests\e2e\score.hearIt.spec.ts:95:1 › opened by address in Listen, ▶ plays the notes and the clicks 
+
+    Error: metronome clicks scheduled after ▶, opened by address
+
+    metronome clicks scheduled after ▶, opened by address
+
+    expect(received).toBeGreaterThan(expected)
+
+    Expected: > 0
+    Received:   0
+
+    Call Log:
+    - Timeout 30000ms exceeded while waiting on the predicate
+
+      51 |   await expect
+      52 |     .poll(async () => (await audioStarts(page))[source], { message: what, timeout: 30_000 })
+    > 53 |     .toBeGreaterThan(from);
+         |      ^
+      54 | }
+      55 |
+      56 | test.describe.configure({ timeout: 120_000 });
+        at expectSounds (C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4f66cdb3e68c2012\app\tests\e2e\score.hearIt.spec.ts:53:6)
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a4f66cdb3e68c2012\app\tests\e2e\score.hearIt.spec.ts:102:9
+
+    Error Context: test-results\score.hearIt-opened-by-add-8b4f3-ys-the-notes-and-the-clicks\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\score.hearIt-opened-by-add-8b4f3-ys-the-notes-and-the-clicks\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\score.hearIt-opened-by-add-8b4f3-ys-the-notes-and-the-clicks\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    tests\e2e\score.hearIt.spec.ts:58:1 › opened by address, one tap on Hear it: the piano plays ───
+    tests\e2e\score.hearIt.spec.ts:80:1 › opened by address with the click on: Hear it plays the notes and the clicks 
+    tests\e2e\score.hearIt.spec.ts:95:1 › opened by address in Listen, ▶ plays the notes and the clicks 
+  2 passed (2.5m)

@@ -33,3 +33,5 @@ Judgement first: a learner who reloads on a piece and presses Hear it, before an
 
 **Brief reviewed 2026-09-27** (`docs/review/responses/b2a55d0.md`): approved with one required change, applied above — the context and its destination rebound together at the tap; the real file named; the count at the `Piano.start` boundary under the test hooks; the resume paths kept to one owner. **Dispatched 2026-09-27** (Entry 98).
 
+**Delivered 2026-09-27**, Entry 98, in an isolated worktree: the provider (the setter tried first and dropped because four files' session doubles had no setter), the tap awaiting the engine's start, the pair read together at four scheduling points, the count hook, four browser cases and the cold-then-live unit case red first; `Piano.ts` and `Metronome.ts` gain one counting line each (outside the list: the click count is what proves the metronome path the reviewer's change was about). Not done: a browser case under a gesture-gated audio policy. Found on the way: U69, U70.
+
