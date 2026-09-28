@@ -1,0 +1,1104 @@
+build-and-test	E2E tests	﻿2026-09-28T00:40:36.9709208Z ##[group]Run npm run e2e
+build-and-test	E2E tests	2026-09-28T00:40:36.9709481Z ^[[36;1mnpm run e2e^[[0m
+build-and-test	E2E tests	2026-09-28T00:40:36.9775992Z shell: /usr/bin/bash -e {0}
+build-and-test	E2E tests	2026-09-28T00:40:36.9776243Z env:
+build-and-test	E2E tests	2026-09-28T00:40:36.9776486Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+build-and-test	E2E tests	2026-09-28T00:40:36.9776874Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+build-and-test	E2E tests	2026-09-28T00:40:36.9777241Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+build-and-test	E2E tests	2026-09-28T00:40:36.9777559Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+build-and-test	E2E tests	2026-09-28T00:40:36.9777882Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+build-and-test	E2E tests	2026-09-28T00:40:36.9778201Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+build-and-test	E2E tests	2026-09-28T00:40:36.9778480Z ##[endgroup]
+build-and-test	E2E tests	2026-09-28T00:40:37.0638701Z 
+build-and-test	E2E tests	2026-09-28T00:40:37.0639303Z > pianopath@0.1.0 e2e
+build-and-test	E2E tests	2026-09-28T00:40:37.0639740Z > playwright test
+build-and-test	E2E tests	2026-09-28T00:40:37.0639909Z 
+build-and-test	E2E tests	2026-09-28T00:40:49.6830891Z [WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/curriculum/load.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/curriculum/tips.ts, src/data/planStore.ts, src/score/estimateImport.ts, src/ui/assignSheet.ts, src/ui/screens/ChordChartScreen.ts, ..., dynamic import will not move module into another chunk.
+build-and-test	E2E tests	2026-09-28T00:40:49.6835568Z [WebServer] 
+build-and-test	E2E tests	2026-09-28T00:40:49.6835964Z [WebServer] [plugin builtin:vite-reporter] 
+build-and-test	E2E tests	2026-09-28T00:40:49.6836598Z [WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+build-and-test	E2E tests	2026-09-28T00:40:49.6837301Z [WebServer] - Using dynamic import() to code-split the application
+build-and-test	E2E tests	2026-09-28T00:40:49.6838362Z [WebServer] - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+build-and-test	E2E tests	2026-09-28T00:40:49.6839413Z [WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+build-and-test	E2E tests	2026-09-28T00:40:49.6841679Z [WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/planStore.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/data/backup.ts, src/data/rungStates.ts, src/ui/screens/DrillScreen.ts, src/ui/screens/LessonScreen.ts, src/ui/screens/PlanScreen.ts, ..., dynamic import will not move module into another chunk.
+build-and-test	E2E tests	2026-09-28T00:40:49.6843504Z [WebServer] 
+build-and-test	E2E tests	2026-09-28T00:40:49.6844903Z [WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/evidenceJob.ts is dynamically imported by src/main.ts but also statically imported by src/ui/screens/SettingsScreen.ts, dynamic import will not move module into another chunk.
+build-and-test	E2E tests	2026-09-28T00:40:49.6846071Z [WebServer] 
+build-and-test	E2E tests	2026-09-28T00:40:54.6034600Z 
+build-and-test	E2E tests	2026-09-28T00:40:54.6035244Z Running 805 tests using 2 workers
+build-and-test	E2E tests	2026-09-28T00:40:54.6035472Z 
+build-and-test	E2E tests	2026-09-28T00:40:57.3938118Z   ✓    1 tests/e2e/app-shell.spec.ts:12:3 › app shell › lands on Today by default and shows all five tabs (1.3s)
+build-and-test	E2E tests	2026-09-28T00:40:58.1108271Z   ✓    2 tests/e2e/app-shell.spec.ts:21:3 › app shell › clicking each tab renders its screen and updates the hash (2.0s)
+build-and-test	E2E tests	2026-09-28T00:40:58.7766406Z   ✓    3 tests/e2e/app-shell.spec.ts:31:3 › app shell › reloading on a non-default tab stays on that tab (hash survives reload) (1.4s)
+build-and-test	E2E tests	2026-09-28T00:40:59.4094978Z   ✓    4 tests/e2e/app-shell.spec.ts:40:3 › app shell › browser back navigates to the previous tab (1.3s)
+build-and-test	E2E tests	2026-09-28T00:41:00.0642127Z   ✓    5 tests/e2e/app-shell.spec.ts:48:3 › app shell › theme selector toggles data-theme on the document (1.3s)
+build-and-test	E2E tests	2026-09-28T00:41:01.4715661Z   ✓    6 tests/e2e/app-shell.spec.ts:57:3 › app shell › theme preference persists across reload (2.0s)
+build-and-test	E2E tests	2026-09-28T00:41:01.6095773Z   ✓    8 tests/e2e/audio.spec.ts:9:3 › audio › the bundled soundfont is served and is under the 20 MB budget (117ms)
+build-and-test	E2E tests	2026-09-28T00:41:02.5838604Z   ✓    7 tests/e2e/app-shell.spec.ts:78:3 › the shell holds still while a list scrolls › the tab bar stays on the bottom of the screen (2.5s)
+build-and-test	E2E tests	2026-09-28T00:41:02.5840224Z   -   10 tests/e2e/bisect-render.spec.ts:36:3 › bisect render › render each candidate slice
+build-and-test	E2E tests	2026-09-28T00:41:02.9765016Z   ✓    9 tests/e2e/audio.spec.ts:18:3 › audio › pressing "Test sound" starts the AudioContext and plays a C major chord (1.4s)
+build-and-test	E2E tests	2026-09-28T00:41:05.1555287Z   ✓   12 tests/e2e/carry-overs.spec.ts:43:3 › named sections › is absent on a piece with no sections (2.1s)
+build-and-test	E2E tests	2026-09-28T00:41:05.7205665Z   ✓   11 tests/e2e/carry-overs.spec.ts:28:3 › named sections › offers the piece’s own sections and loops one of them (3.1s)
+build-and-test	E2E tests	2026-09-28T00:41:07.0836631Z   ✓   14 tests/e2e/carry-overs.spec.ts:79:3 › drag-to-reorder tracks › moves a chip to the front and stores the new order (1.3s)
+build-and-test	E2E tests	2026-09-28T00:41:08.3314744Z   ✓   13 tests/e2e/carry-overs.spec.ts:53:3 › named sections › clearing the loop clears the section too (3.2s)
+build-and-test	E2E tests	2026-09-28T00:41:08.5408119Z   ✓   15 tests/e2e/carry-overs.spec.ts:97:3 › drag-to-reorder tracks › a drag past the threshold reorders; a tap still toggles (1.4s)
+build-and-test	E2E tests	2026-09-28T00:41:09.4745108Z   -   17 tests/e2e/carry-overs.spec.ts:132:3 › the backing loop › offers bass and drums, and turning it on turns the comp on
+build-and-test	E2E tests	2026-09-28T00:41:09.8678930Z   -   18 tests/e2e/carry-overs.spec.ts:143:3 › the backing loop › stops when the screen is left
+build-and-test	E2E tests	2026-09-28T00:41:11.0427633Z   ✓   19 tests/e2e/carry-overs.spec.ts:157:3 › strict prerequisites › is off by default — nothing is locked (00 D17) (1.2s)
+build-and-test	E2E tests	2026-09-28T00:41:11.0527145Z   ✓   16 tests/e2e/carry-overs.spec.ts:113:3 › drag-to-reorder tracks › the order survives a reload, because it is stored (2.7s)
+build-and-test	E2E tests	2026-09-28T00:41:13.1058884Z   ✓   20 tests/e2e/carry-overs.spec.ts:162:3 › strict prerequisites › shows a badge and a reason when it is on, and never a disabled card (2.0s)
+build-and-test	E2E tests	2026-09-28T00:41:13.2363591Z   ✓   21 tests/e2e/carry-overs.spec.ts:180:3 › strict prerequisites › offers a way to the rung that would unlock it (2.2s)
+build-and-test	E2E tests	2026-09-28T00:41:16.5136731Z   ✓   23 tests/e2e/carry-overs.spec.ts:207:3 › the tablet layout › the panel collapses (3.3s)
+build-and-test	E2E tests	2026-09-28T00:41:16.6581865Z   ✓   22 tests/e2e/carry-overs.spec.ts:194:3 › the tablet layout › shows the side panel and opens at two bars (3.5s)
+build-and-test	E2E tests	2026-09-28T00:41:18.4508375Z   ✓   24 tests/e2e/carry-overs.spec.ts:217:3 › the phone is untouched › has no side panel and keeps its own bars setting (1.9s)
+build-and-test	E2E tests	2026-09-28T00:41:19.1004830Z   ✓   25 tests/e2e/chart.spec.ts:37:3 › chord chart › reads the chord symbols out of an imported score (2.4s)
+build-and-test	E2E tests	2026-09-28T00:41:19.5762781Z   ✓   26 tests/e2e/chart.spec.ts:49:3 › chord chart › says so plainly when a score has no chords in it (1.1s)
+build-and-test	E2E tests	2026-09-28T00:41:20.7040794Z   ✓   28 tests/e2e/chart.spec.ts:80:3 › tablet layout (docs/04 §7a) › the browsing lists become two columns (1.1s)
+build-and-test	E2E tests	2026-09-28T00:41:21.7678646Z   ✓   29 tests/e2e/chart.spec.ts:93:3 › phone layout › stays one column and never scrolls sideways (1.1s)
+build-and-test	E2E tests	2026-09-28T00:41:21.7774735Z   ✓   27 tests/e2e/chart.spec.ts:56:3 › chord chart › offers swing and comp toggles (2.7s)
+build-and-test	E2E tests	2026-09-28T00:41:23.8466324Z   ✓   31 tests/e2e/competence.spec.ts:154:3 › one skill state on Skills and Progress › Progress says which skills moved in the last four weeks, and how (2.0s)
+build-and-test	E2E tests	2026-09-28T00:41:23.8470913Z   -   32 tests/e2e/content-render.spec.ts:221:3 › content render check › every catalog item renders and yields at least one step
+build-and-test	E2E tests	2026-09-28T00:41:24.1249027Z   ✓   30 tests/e2e/competence.spec.ts:122:3 › one skill state on Skills and Progress › Skills opens on what the evidence has not shown lately, and says what the app cannot judge (2.3s)
+build-and-test	E2E tests	2026-09-28T00:41:25.3072755Z   ✓   34 tests/e2e/converted-import.spec.ts:66:3 › a converted MIDI performance › walks the same number of steps as the cursor does (1.2s)
+build-and-test	E2E tests	2026-09-28T00:41:26.1989121Z   ✓   33 tests/e2e/converted-import.spec.ts:49:3 › a converted MIDI performance › imports, is listed under the title the converter wrote, and engraves (2.3s)
+build-and-test	E2E tests	2026-09-28T00:41:26.5453522Z   ✓   35 tests/e2e/converted-import.spec.ts:87:3 › a converted MIDI performance › keeps both hands and both staves (1.2s)
+build-and-test	E2E tests	2026-09-28T00:41:27.7352590Z   ✓   36 tests/e2e/dark-ink.spec.ts:18:1 › the drill draws its notation in light ink on a dark card (1.5s)
+build-and-test	E2E tests	2026-09-28T00:41:29.1546250Z   ✓   38 tests/e2e/doors.spec.ts:123:3 › Today's tools › Free play opens the free-play screen (1.4s)
+build-and-test	E2E tests	2026-09-28T00:41:29.2009109Z   ✓   37 tests/e2e/dark-ink.spec.ts:26:1 › and so does the score screen, which is where the rule came from (2.6s)
+build-and-test	E2E tests	2026-09-28T00:41:31.1026409Z   ✓   39 tests/e2e/doors.spec.ts:131:3 › Today's tools › Sight-read opens the same phrase the daily card offers (1.9s)
+build-and-test	E2E tests	2026-09-28T00:41:31.2924110Z   ✓   40 tests/e2e/doors.spec.ts:148:3 › Today's tools › Simon opens a Simon drill (2.1s)
+build-and-test	E2E tests	2026-09-28T00:41:32.2854953Z   ✓   41 tests/e2e/doors.spec.ts:157:3 › Today's tools › Accompaniment lab opens the lab (1.2s)
+build-and-test	E2E tests	2026-09-28T00:41:32.5489603Z   ✓   42 tests/e2e/doors.spec.ts:164:3 › Today's tools › the tools are text, so Start session is still the only filled box (R3) (1.2s)
+build-and-test	E2E tests	2026-09-28T00:41:35.1361543Z   ✓   44 tests/e2e/doors.spec.ts:192:3 › Open as… from a Library row › Rhythm only opens a rhythm run, in the one mode that has a clock (2.6s)
+build-and-test	E2E tests	2026-09-28T00:41:39.4712547Z   ✓   45 tests/e2e/doors.spec.ts:201:3 › Open as… from a Library row › and any other choice afterwards is not a rhythm run (4.3s)
+build-and-test	E2E tests	2026-09-28T00:41:40.3789311Z   ✓   43 tests/e2e/doors.spec.ts:182:3 › Open as… from a Library row › the four modes are the mode the score opens in (8.1s)
+build-and-test	E2E tests	2026-09-28T00:41:42.7485502Z   ✓   46 tests/e2e/doors.spec.ts:215:3 › Open as… from a Library row › Duet opens with a hand chosen and the app on the other one (3.3s)
+build-and-test	E2E tests	2026-09-28T00:41:43.0995706Z   ✓   47 tests/e2e/doors.spec.ts:231:3 › Open as… from a Library row › Blind hides the score and leaves the rest of the run alone (2.7s)
+build-and-test	E2E tests	2026-09-28T00:41:44.2215258Z   ✓   48 tests/e2e/doors.spec.ts:238:3 › Open as… from a Library row › the control is only on rows that open on the Score screen (R4) (1.4s)
+build-and-test	E2E tests	2026-09-28T00:41:44.4276397Z   ✓   49 tests/e2e/doors.spec.ts:276:3 › the Library rows upright › a catalog row keeps its words and its links on one line (1.3s)
+build-and-test	E2E tests	2026-09-28T00:41:45.8844000Z   ✓   51 tests/e2e/doors.spec.ts:306:3 › the Open as… sheet sideways › every one of the seven is on the screen without scrolling (1.4s)
+build-and-test	E2E tests	2026-09-28T00:41:45.9204208Z   ✓   50 tests/e2e/doors.spec.ts:283:3 › the Library rows upright › an imported row still drops its buttons to a line of their own (1.7s)
+build-and-test	E2E tests	2026-09-28T00:41:46.4769191Z   ✓   53 tests/e2e/doors.spec.ts:341:3 › Free play › an inversion is named after its root (544ms)
+build-and-test	E2E tests	2026-09-28T00:41:46.4899535Z   ✓   52 tests/e2e/doors.spec.ts:322:3 › Free play › names a held C–E–G as C major, and lets go of it (594ms)
+build-and-test	E2E tests	2026-09-28T00:41:47.0489212Z   ✓   54 tests/e2e/doors.spec.ts:351:3 › Free play › with nothing connected it says so and offers the way to connect (R4) (552ms)
+build-and-test	E2E tests	2026-09-28T00:41:47.0524184Z   ✓   55 tests/e2e/doors.spec.ts:363:3 › Free play › the keys on the screen are an input, not a diagram (550ms)
+build-and-test	E2E tests	2026-09-28T00:41:47.6852876Z   ✓   56 tests/e2e/doors.spec.ts:376:3 › Free play › Back returns to Today (619ms)
+build-and-test	E2E tests	2026-09-28T00:42:03.8766594Z   ✓   57 tests/e2e/doors.spec.ts:470:5 › pictures › every door, light (16.8s)
+build-and-test	E2E tests	2026-09-28T00:42:04.4366193Z   ✓   58 tests/e2e/doors.spec.ts:470:5 › pictures › every door, dark (16.7s)
+build-and-test	E2E tests	2026-09-28T00:42:05.7650973Z   ✓   60 tests/e2e/drills-harmony.spec.ts:55:3 › the harmony and ear drills › mode: names a mode and takes the scale, in order (1.3s)
+build-and-test	E2E tests	2026-09-28T00:42:07.0988327Z   ✓   61 tests/e2e/drills-harmony.spec.ts:64:3 › the harmony and ear drills › chord-scale: shows a chord and takes the scale that fits it (1.3s)
+build-and-test	E2E tests	2026-09-28T00:42:07.8204347Z   ✓   59 tests/e2e/doors.spec.ts:491:3 › pictures › the phone at 115 % text (3.9s)
+build-and-test	E2E tests	2026-09-28T00:42:08.8166976Z   ✓   62 tests/e2e/drills-harmony.spec.ts:71:3 › the harmony and ear drills › extended-chord: takes every note of a ninth (1.7s)
+build-and-test	E2E tests	2026-09-28T00:42:09.1980128Z   ✓   63 tests/e2e/drills-harmony.spec.ts:83:3 › the harmony and ear drills › roman-numeral: names the key it is asking in (1.3s)
+build-and-test	E2E tests	2026-09-28T00:42:11.0937402Z   ✓   65 tests/e2e/drills-harmony.spec.ts:106:3 › the harmony and ear drills › ear-tune: plays the tune, then takes it back a phrase at a time (1.9s)
+build-and-test	E2E tests	2026-09-28T00:42:11.0959757Z   ✓   64 tests/e2e/drills-harmony.spec.ts:94:3 › the harmony and ear drills › transposition: prints four bars and wants them somewhere else (2.3s)
+build-and-test	E2E tests	2026-09-28T00:42:14.2001081Z   ✓   66 tests/e2e/drills-harmony.spec.ts:114:3 › the harmony and ear drills › harmonic-dictation: hears a progression back as chords (3.1s)
+build-and-test	E2E tests	2026-09-28T00:42:14.7936186Z   ✓   67 tests/e2e/drills-review.spec.ts:284:3 › a miss keeps the card up › shows the answer on the keys and on a staff, and holds it there (3.7s)
+build-and-test	E2E tests	2026-09-28T00:42:19.4952745Z   ✓   68 tests/e2e/drills-review.spec.ts:312:3 › a miss keeps the card up › a tap moves on sooner than waiting, and a right answer never waits (5.3s)
+build-and-test	E2E tests	2026-09-28T00:42:22.5938405Z   ✓   69 tests/e2e/drills-review.spec.ts:361:3 › going over the ones you missed › is offered only when something was missed, and counts nothing (7.8s)
+build-and-test	E2E tests	2026-09-28T00:42:29.3888511Z   ✓   71 tests/e2e/drills-review.spec.ts:571:3 › Simon › shows the chain on the keys, one at a time, with its name on the card (6.8s)
+build-and-test	E2E tests	2026-09-28T00:42:29.5189789Z   ✓   70 tests/e2e/drills-review.spec.ts:426:3 › Simon › grows by one note a round, and ends on the note that breaks it (10.0s)
+build-and-test	E2E tests	2026-09-28T00:42:39.0386747Z   ✓   73 tests/e2e/drills-review.spec.ts:719:3 › Simon › draws no staff on the rungs that do not light the keys (9.5s)
+build-and-test	E2E tests	2026-09-28T00:42:46.2375865Z   ✓   74 tests/e2e/drills-review.spec.ts:751:3 › Simon › plays a missed chain back lit, then asks for the same chain again (7.2s)
+build-and-test	E2E tests	2026-09-28T00:42:49.8639573Z   ✓   75 tests/e2e/drills-review.spec.ts:818:3 › Simon › keeps the card whole on a screen with no room for a staff (3.6s)
+build-and-test	E2E tests	2026-09-28T00:42:55.4560620Z   ✓   72 tests/e2e/drills-review.spec.ts:647:3 › Simon › names the blues scale as the written scale does: F sharp, E flat, B flat (26.0s)
+build-and-test	E2E tests	2026-09-28T00:43:01.1874843Z   ✓   76 tests/e2e/drills-review.spec.ts:885:7 › Simon › pictures › the Simon card mid-chain, phone-portrait light (11.3s)
+build-and-test	E2E tests	2026-09-28T00:43:07.2258428Z   ✓   77 tests/e2e/drills-review.spec.ts:885:7 › Simon › pictures › the Simon card mid-chain, phone-portrait dark (11.7s)
+build-and-test	E2E tests	2026-09-28T00:43:16.6542704Z   ✓   79 tests/e2e/drills-review.spec.ts:885:7 › Simon › pictures › the Simon card mid-chain, phone-landscape dark (9.4s)
+build-and-test	E2E tests	2026-09-28T00:43:19.9537657Z   ✓   80 tests/e2e/drills-review.spec.ts:917:3 › Simon › remembers the rung for that item, and only for that item (3.3s)
+build-and-test	E2E tests	2026-09-28T00:43:22.9838069Z   ✓   81 tests/e2e/drills-review.spec.ts:959:3 › when a card draws a staff › harmonic dictation: nothing until the answer is judged, then the progression (3.0s)
+build-and-test	E2E tests	2026-09-28T00:43:24.5303280Z   ✓   82 tests/e2e/drills-review.spec.ts:999:3 › when a card draws a staff › the modulating card draws the numerals it is showing, keys and all (1.5s)
+build-and-test	E2E tests	2026-09-28T00:43:26.0071620Z   ✓   83 tests/e2e/drills-review.spec.ts:1012:3 › when a card draws a staff › a chord card draws nothing until the answer, then the chord — right or wrong (1.5s)
+build-and-test	E2E tests	2026-09-28T00:43:27.1094084Z   ✓   84 tests/e2e/drills-review.spec.ts:1050:3 › when a card draws a staff › the pedal card carries its chord from the first frame (1.1s)
+build-and-test	E2E tests	2026-09-28T00:43:28.0047671Z   ✓   85 tests/e2e/drills-review.spec.ts:1064:3 › when a card draws a staff › and keeps the card whole on a screen with no room for one (884ms)
+build-and-test	E2E tests	2026-09-28T00:43:29.0251338Z   ✓   86 tests/e2e/drills-review.spec.ts:1080:3 › when a card draws a staff › a note-flash card never draws a second staff, even when it is missed (1.0s)
+build-and-test	E2E tests	2026-09-28T00:43:31.3451262Z   ✓   87 tests/e2e/drills-review.spec.ts:1101:3 › when a card draws a staff › Show me still draws it and still forfeits, and the ear kinds have none (2.3s)
+build-and-test	E2E tests	2026-09-28T00:43:32.9279168Z   ✓   88 tests/e2e/drills-review.spec.ts:1139:9 › when a card draws a staff › pictures › the judged dictation card, phone-portrait light (1.6s)
+build-and-test	E2E tests	2026-09-28T00:43:34.2842872Z   ✓   89 tests/e2e/drills-review.spec.ts:1150:9 › when a card draws a staff › pictures › the judged chord card, phone-portrait light (1.3s)
+build-and-test	E2E tests	2026-09-28T00:43:35.7010637Z   ✓   78 tests/e2e/drills-review.spec.ts:885:7 › Simon › pictures › the Simon card mid-chain, phone-portrait-long light (34.5s)
+build-and-test	E2E tests	2026-09-28T00:43:35.7209922Z   ✓   90 tests/e2e/drills-review.spec.ts:1163:9 › when a card draws a staff › pictures › the shown scale card, phone-portrait light (1.4s)
+build-and-test	E2E tests	2026-09-28T00:43:37.2934799Z   ✓   91 tests/e2e/drills-review.spec.ts:1176:9 › when a card draws a staff › pictures › the reading card, phone-portrait light (1.6s)
+build-and-test	E2E tests	2026-09-28T00:43:37.7510181Z   ✓   92 tests/e2e/drills-review.spec.ts:1139:9 › when a card draws a staff › pictures › the judged dictation card, phone-portrait dark (2.0s)
+build-and-test	E2E tests	2026-09-28T00:43:39.0181796Z   ✓   93 tests/e2e/drills-review.spec.ts:1150:9 › when a card draws a staff › pictures › the judged chord card, phone-portrait dark (1.7s)
+build-and-test	E2E tests	2026-09-28T00:43:39.3962429Z   ✓   94 tests/e2e/drills-review.spec.ts:1163:9 › when a card draws a staff › pictures › the shown scale card, phone-portrait dark (1.6s)
+build-and-test	E2E tests	2026-09-28T00:43:40.4424931Z   ✓   95 tests/e2e/drills-review.spec.ts:1176:9 › when a card draws a staff › pictures › the reading card, phone-portrait dark (1.4s)
+build-and-test	E2E tests	2026-09-28T00:43:41.4225027Z   ✓   96 tests/e2e/drills-review.spec.ts:1139:9 › when a card draws a staff › pictures › the judged dictation card, phone-landscape light (2.0s)
+build-and-test	E2E tests	2026-09-28T00:43:42.2380507Z   ✓   97 tests/e2e/drills-review.spec.ts:1150:9 › when a card draws a staff › pictures › the judged chord card, phone-landscape light (1.8s)
+build-and-test	E2E tests	2026-09-28T00:43:43.0596135Z   ✓   98 tests/e2e/drills-review.spec.ts:1163:9 › when a card draws a staff › pictures › the shown scale card, phone-landscape light (1.6s)
+build-and-test	E2E tests	2026-09-28T00:43:43.4107230Z   ✓   99 tests/e2e/drills-review.spec.ts:1176:9 › when a card draws a staff › pictures › the reading card, phone-landscape light (1.2s)
+build-and-test	E2E tests	2026-09-28T00:43:45.0387557Z   ✓  100 tests/e2e/drills-review.spec.ts:1139:9 › when a card draws a staff › pictures › the judged dictation card, phone-landscape dark (2.0s)
+build-and-test	E2E tests	2026-09-28T00:43:45.1330909Z   ✓  101 tests/e2e/drills-review.spec.ts:1150:9 › when a card draws a staff › pictures › the judged chord card, phone-landscape dark (1.7s)
+build-and-test	E2E tests	2026-09-28T00:43:46.3945021Z   ✓  103 tests/e2e/drills-review.spec.ts:1176:9 › when a card draws a staff › pictures › the reading card, phone-landscape dark (1.2s)
+build-and-test	E2E tests	2026-09-28T00:43:46.7099180Z   ✓  102 tests/e2e/drills-review.spec.ts:1163:9 › when a card draws a staff › pictures › the shown scale card, phone-landscape dark (1.7s)
+build-and-test	E2E tests	2026-09-28T00:43:48.3279839Z   ✓  104 tests/e2e/drills-review.spec.ts:1139:9 › when a card draws a staff › pictures › the judged dictation card, laptop light (1.9s)
+build-and-test	E2E tests	2026-09-28T00:43:48.5716672Z   ✓  105 tests/e2e/drills-review.spec.ts:1150:9 › when a card draws a staff › pictures › the judged chord card, laptop light (1.8s)
+build-and-test	E2E tests	2026-09-28T00:43:49.9817726Z   ✓  107 tests/e2e/drills-review.spec.ts:1176:9 › when a card draws a staff › pictures › the reading card, laptop light (1.4s)
+build-and-test	E2E tests	2026-09-28T00:43:50.1244487Z   ✓  106 tests/e2e/drills-review.spec.ts:1163:9 › when a card draws a staff › pictures › the shown scale card, laptop light (1.8s)
+build-and-test	E2E tests	2026-09-28T00:43:52.0486539Z   ✓  108 tests/e2e/drills-review.spec.ts:1139:9 › when a card draws a staff › pictures › the judged dictation card, laptop dark (2.0s)
+build-and-test	E2E tests	2026-09-28T00:43:52.1357975Z   ✓  109 tests/e2e/drills-review.spec.ts:1150:9 › when a card draws a staff › pictures › the judged chord card, laptop dark (2.0s)
+build-and-test	E2E tests	2026-09-28T00:43:53.6266516Z   ✓  111 tests/e2e/drills-review.spec.ts:1176:9 › when a card draws a staff › pictures › the reading card, laptop dark (1.5s)
+build-and-test	E2E tests	2026-09-28T00:43:53.9163938Z   ✓  110 tests/e2e/drills-review.spec.ts:1163:9 › when a card draws a staff › pictures › the shown scale card, laptop dark (1.9s)
+build-and-test	E2E tests	2026-09-28T00:43:55.2287173Z   ✓  113 tests/e2e/drills.spec.ts:63:3 › the drill screen › a note-flash card draws the note on a staff and takes the key (1.3s)
+build-and-test	E2E tests	2026-09-28T00:43:56.4132363Z   ✓  114 tests/e2e/drills.spec.ts:76:3 › the drill screen › a find-key card names a key and takes it in any octave (1.2s)
+build-and-test	E2E tests	2026-09-28T00:43:57.4586582Z   ✓  112 tests/e2e/drills.spec.ts:46:3 › the drill screen › runs a chord drill: right answers score, wrong ones do not (3.8s)
+build-and-test	E2E tests	2026-09-28T00:43:57.8374395Z   ✓  115 tests/e2e/drills.spec.ts:86:3 › the drill screen › an ear drill plays without naming the answer, and replays on request (1.4s)
+build-and-test	E2E tests	2026-09-28T00:43:59.0545300Z   ✓  116 tests/e2e/drills.spec.ts:97:3 › the drill screen › the rhythm drill shows a one-line staff and marks the taps it catches (1.6s)
+build-and-test	E2E tests	2026-09-28T00:44:00.0174491Z   ✓  117 tests/e2e/drills.spec.ts:107:3 › the drill screen › the pedal drill shows a lamp that follows CC64 and reports the timing (2.2s)
+build-and-test	E2E tests	2026-09-28T00:44:00.5327134Z   ✓  118 tests/e2e/drills.spec.ts:133:3 › the drill screen › the dynamics drill meters the two phrases and compares them (1.5s)
+build-and-test	E2E tests	2026-09-28T00:44:02.1173406Z   ✓  120 tests/e2e/drills.spec.ts:168:3 › the drill screen › a call-and-response drill plays a phrase and takes it back in order (1.6s)
+build-and-test	E2E tests	2026-09-28T00:44:02.2326628Z   ✓  119 tests/e2e/drills.spec.ts:147:3 › the drill screen › the backing-track drill loops, judges nothing, and says so (2.2s)
+build-and-test	E2E tests	2026-09-28T00:44:03.4398454Z   ✓  121 tests/e2e/drills.spec.ts:181:3 › the drill screen › the on-screen keys answer a drill, for a learner with no cable (1.3s)
+build-and-test	E2E tests	2026-09-28T00:44:05.3854662Z   ✓  123 tests/e2e/drills.spec.ts:218:3 › the drill screen › ending a set early keeps it out of the history (1.9s)
+build-and-test	E2E tests	2026-09-28T00:44:08.3265081Z   ✓  124 tests/e2e/drills.spec.ts:244:3 › the drill screen › and keeping it puts it there (2.9s)
+build-and-test	E2E tests	2026-09-28T00:44:10.6147322Z   ✓  125 tests/e2e/drills.spec.ts:255:3 › the drill screen › you can listen back to what you improvised (2.3s)
+build-and-test	E2E tests	2026-09-28T00:44:12.3435594Z   ✓  126 tests/e2e/drills.spec.ts:278:3 › the drill screen › and offers nothing to listen back to when there is nothing (1.7s)
+build-and-test	E2E tests	2026-09-28T00:44:15.1268858Z   ✓  127 tests/e2e/drills.spec.ts:286:3 › the drill screen › a set that runs to its end still records itself (2.8s)
+build-and-test	E2E tests	2026-09-28T00:44:16.8009771Z   ✓  128 tests/e2e/drills.spec.ts:299:3 › the drill screen › "Again" starts a fresh set rather than repeating the same cards (1.7s)
+build-and-test	E2E tests	2026-09-28T00:44:17.7864904Z   ✓  129 tests/e2e/drills.spec.ts:309:3 › the drill screen › says so plainly when an item has no drill to run (970ms)
+build-and-test	E2E tests	2026-09-28T00:44:19.3566339Z   ✓  130 tests/e2e/drills.spec.ts:316:3 › sight-reading (docs/05 §8) › generates notation and opens it on the Score screen in Tempo mode (1.6s)
+build-and-test	E2E tests	2026-09-28T00:44:26.9454927Z   ✓  131 tests/e2e/drills.spec.ts:324:3 › sight-reading (docs/05 §8) › is different material each time it is opened (7.6s)
+build-and-test	E2E tests	2026-09-28T00:44:28.9137702Z   ✓  122 tests/e2e/drills.spec.ts:194:3 › the drill screen › finishing records the run and Progress shows it (26.7s)
+build-and-test	E2E tests	2026-09-28T00:44:29.0628188Z   ✓  132 tests/e2e/drills.spec.ts:390:5 › a drill sideways › drill.technique.five-finger-lh: its buttons are on the screen (2.1s)
+build-and-test	E2E tests	2026-09-28T00:44:30.9255801Z   ✓  133 tests/e2e/drills.spec.ts:390:5 › a drill sideways › drill.reading.grand-staff-flash: its buttons are on the screen (2.0s)
+build-and-test	E2E tests	2026-09-28T00:44:31.0588853Z   ✓  134 tests/e2e/drills.spec.ts:390:5 › a drill sideways › drill.chord.c-f-g: its buttons are on the screen (2.0s)
+build-and-test	E2E tests	2026-09-28T00:44:33.1408294Z   ✓  136 tests/e2e/drills.spec.ts:390:5 › a drill sideways › drill.theory.roman-numerals: its buttons are on the screen (2.1s)
+build-and-test	E2E tests	2026-09-28T00:44:33.2565166Z   ✓  135 tests/e2e/drills.spec.ts:390:5 › a drill sideways › drill.ear.major-minor: its buttons are on the screen (2.3s)
+build-and-test	E2E tests	2026-09-28T00:44:34.3391309Z   ✓  137 tests/e2e/drills.spec.ts:420:3 › the placement test says where you start › names the unit rather than printing its id (1.2s)
+build-and-test	E2E tests	2026-09-28T00:44:34.8586207Z   ✓  138 tests/e2e/drills.spec.ts:434:3 › the placement test says where you start › every item it can end on names a unit that exists (1.6s)
+build-and-test	E2E tests	2026-09-28T00:44:35.2670202Z   ✓  140 tests/e2e/empty-states.spec.ts:94:1 › the microphone screen never says "not connected (not connected)" (381ms)
+build-and-test	E2E tests	2026-09-28T00:44:35.6007904Z   ✓  139 tests/e2e/empty-states.spec.ts:58:1 › a chart with no chords draws the sentence and one button (1.2s)
+build-and-test	E2E tests	2026-09-28T00:44:35.6427938Z   ✓  141 tests/e2e/empty-states.spec.ts:104:1 › the score folder draws no browse controls with no folder (363ms)
+build-and-test	E2E tests	2026-09-28T00:44:36.6634833Z   ✓  142 tests/e2e/empty-states.spec.ts:113:1 › the heat map says what it measures and what the shades mean (1.0s)
+build-and-test	E2E tests	2026-09-28T00:44:37.0611615Z   ✓  143 tests/e2e/empty-states.spec.ts:126:1 › a chart for a piece that is not there draws no transport over nothing (1.4s)
+build-and-test	E2E tests	2026-09-28T00:44:37.9235019Z   ✓  144 tests/e2e/empty-states.spec.ts:150:1 › a lesson that does not exist draws one sentence, not six empty sections (1.2s)
+build-and-test	E2E tests	2026-09-28T00:44:38.3101370Z   ✓  145 tests/e2e/empty-states.spec.ts:175:1 › a search that matches nothing offers the way back to everything (1.2s)
+build-and-test	E2E tests	2026-09-28T00:44:39.2781438Z   ✓  146 tests/e2e/empty-states.spec.ts:192:1 › a filter left on behind a closed row can be undone from the empty list (1.3s)
+build-and-test	E2E tests	2026-09-28T00:44:39.6466275Z   ✓  147 tests/e2e/empty-states.spec.ts:214:1 › Progress on a fresh phone pairs each empty list with a way to fill it (1.3s)
+build-and-test	E2E tests	2026-09-28T00:44:39.8906743Z   ✓  148 tests/e2e/empty-states.spec.ts:238:1 › a refused microphone says what to do instead, and stops pretending to listen (598ms)
+build-and-test	E2E tests	2026-09-28T00:44:40.1298798Z   ✓  149 tests/e2e/empty-states.spec.ts:295:1 › a microphone prompt that was only dismissed still offers Connect (473ms)
+build-and-test	E2E tests	2026-09-28T00:44:41.4095049Z   ✓  151 tests/e2e/empty-states.spec.ts:383:1 › the error banner stays on the visible bottom edge while a long list scrolls (1.3s)
+build-and-test	E2E tests	2026-09-28T00:44:41.6859225Z   ✓  150 tests/e2e/empty-states.spec.ts:339:1 › a stage with nothing on the tracks you have on says so and offers the tracks (1.8s)
+build-and-test	E2E tests	2026-09-28T00:44:42.5315115Z   ✓  152 tests/e2e/engine.spec.ts:9:3 › Wait mode end to end › a perfect scripted run finishes and scores 100 % (1.1s)
+build-and-test	E2E tests	2026-09-28T00:44:44.1205340Z   ✓  154 tests/e2e/engine.spec.ts:40:3 › Wait mode end to end › a scripted MIDI performance drives the run through a real ReplaySource (1.6s)
+build-and-test	E2E tests	2026-09-28T00:44:44.4352786Z   ✓  153 tests/e2e/engine.spec.ts:23:3 › Wait mode end to end › the cursor follows the engine, not a clock (2.7s)
+build-and-test	E2E tests	2026-09-28T00:44:45.3966508Z   ✓  155 tests/e2e/engine.spec.ts:69:3 › Wait mode end to end › a wrong note is counted and painted red without advancing (1.3s)
+build-and-test	E2E tests	2026-09-28T00:44:45.5805455Z   ✓  156 tests/e2e/engine.spec.ts:82:3 › Wait mode end to end › a run over a repeat visits the printed bar twice (1.1s)
+build-and-test	E2E tests	2026-09-28T00:44:48.0405761Z   ✓  157 tests/e2e/engine.spec.ts:96:3 › Tempo mode end to end › the clock advances the cursor with nothing played, and reports misses (2.6s)
+build-and-test	E2E tests	2026-09-28T00:44:48.2099178Z   ✓  158 tests/e2e/engine.spec.ts:112:3 › Tempo mode end to end › a late run yields the expected timing statistics (2.6s)
+build-and-test	E2E tests	2026-09-28T00:44:49.5714698Z   ✓  160 tests/e2e/engine.spec.ts:167:3 › Tempo mode end to end › the count-in delays the first step (1.3s)
+build-and-test	E2E tests	2026-09-28T00:44:50.0491957Z   ✓  159 tests/e2e/engine.spec.ts:156:3 › Tempo mode end to end › a note far outside the tolerance is wrong and its slot is missed (2.0s)
+build-and-test	E2E tests	2026-09-28T00:44:50.7431227Z   ✓  161 tests/e2e/engine.spec.ts:184:5 › generated sight-reading renders and can be practised › level 1 renders and drives a perfect Wait run (1.2s)
+build-and-test	E2E tests	2026-09-28T00:44:51.3601633Z   ✓  162 tests/e2e/engine.spec.ts:184:5 › generated sight-reading renders and can be practised › level 2 renders and drives a perfect Wait run (1.3s)
+build-and-test	E2E tests	2026-09-28T00:44:52.0432471Z   ✓  163 tests/e2e/engine.spec.ts:184:5 › generated sight-reading renders and can be practised › level 3 renders and drives a perfect Wait run (1.3s)
+build-and-test	E2E tests	2026-09-28T00:44:52.6467426Z   ✓  164 tests/e2e/engine.spec.ts:184:5 › generated sight-reading renders and can be practised › level 4 renders and drives a perfect Wait run (1.3s)
+build-and-test	E2E tests	2026-09-28T00:44:53.4535291Z   ✓  165 tests/e2e/engine.spec.ts:205:3 › generated sight-reading renders and can be practised › the same seed gives the same exercise, a different seed does not (1.4s)
+build-and-test	E2E tests	2026-09-28T00:44:54.0640885Z   ✓  166 tests/e2e/feedback-placement.spec.ts:46:3 › the drill screen’s status line › shows the count-in sideways, on the screen rather than below it (1.4s)
+build-and-test	E2E tests	2026-09-28T00:44:54.9609931Z   ✓  167 tests/e2e/feedback-placement.spec.ts:63:3 › the drill screen’s status line › is on the screen upright too (1.5s)
+build-and-test	E2E tests	2026-09-28T00:44:56.3255188Z   ✓  169 tests/e2e/feedback-placement.spec.ts:109:3 › Settings says what it saved where the control is › puts Saved. on the row that was changed, in view (1.4s)
+build-and-test	E2E tests	2026-09-28T00:44:56.8835177Z   ✓  168 tests/e2e/feedback-placement.spec.ts:72:3 › the transposition drill’s four bars › are engraved once per card and survive the answer (2.8s)
+build-and-test	E2E tests	2026-09-28T00:44:57.4863927Z   ✓  170 tests/e2e/feedback-placement.spec.ts:131:3 › Settings says what it saved where the control is › sideways, the note stays inside its own row’s column (1.1s)
+build-and-test	E2E tests	2026-09-28T00:44:57.8995269Z   ✓  172 tests/e2e/feedback-placement.spec.ts:168:3 › "Download everything now" › says there is no network rather than counting 1,256 failures (398ms)
+build-and-test	E2E tests	2026-09-28T00:44:58.2124752Z   ✓  171 tests/e2e/feedback-placement.spec.ts:152:3 › "Download everything now" › counts as it goes and can be stopped (1.3s)
+build-and-test	E2E tests	2026-09-28T00:44:59.1785106Z   ✓  173 tests/e2e/finder.spec.ts:27:3 › the finder on a rung › says what the rung needs and hands over a search and a prompt (1.3s)
+build-and-test	E2E tests	2026-09-28T00:44:59.4837474Z   ✓  174 tests/e2e/finder.spec.ts:59:3 › the finder on a rung › marks an example as already bundled or as still missing (1.3s)
+build-and-test	E2E tests	2026-09-28T00:45:00.4958023Z   ✓  175 tests/e2e/finder.spec.ts:67:3 › the finder on a rung › copies the prompt to the clipboard (1.3s)
+build-and-test	E2E tests	2026-09-28T00:45:00.7067054Z   ✓  176 tests/e2e/finder.spec.ts:80:3 › the finder on a concept › is reachable from the Skills screen, under a readable name (1.2s)
+build-and-test	E2E tests	2026-09-28T00:45:02.2107913Z   ✓  177 tests/e2e/finder.spec.ts:116:3 › two taps from a share to a rung › the assign sheet opens by itself with the rung already chosen (1.7s)
+build-and-test	E2E tests	2026-09-28T00:45:03.5385989Z   ✓  178 tests/e2e/finder.spec.ts:131:3 › two taps from a share to a rung › Save is the second and last action, and the piece lands on the rung (2.8s)
+build-and-test	E2E tests	2026-09-28T00:45:05.9305455Z   ✓  179 tests/e2e/finder.spec.ts:144:3 › two taps from a share to a rung › the needs line counts the piece he just added (C3) (3.7s)
+build-and-test	E2E tests	2026-09-28T00:45:06.3488618Z   ✓  180 tests/e2e/finder.spec.ts:161:3 › two taps from a share to a rung › the rung survives a reload, because it is stored and not just routed (2.8s)
+build-and-test	E2E tests	2026-09-28T00:45:08.1518204Z   ✓  182 tests/e2e/finder.spec.ts:188:3 › two taps from a share to a rung › "Import for this rung" on the lesson page opens the picker on that rung (1.8s)
+build-and-test	E2E tests	2026-09-28T00:45:09.5260215Z   ✓  181 tests/e2e/finder.spec.ts:168:3 › two taps from a share to a rung › an import with no rung still works and belongs to none (3.6s)
+build-and-test	E2E tests	2026-09-28T00:45:14.8112450Z first day: the rung offers 20 options, 19 of them with a file; opening exercise.inversions.c-major.both (2 printed bars)
+build-and-test	E2E tests	2026-09-28T00:45:16.0355690Z first day: the rung offers 20 options, 19 of them with a file; opening exercise.inversions.c-major.both (2 printed bars)
+build-and-test	E2E tests	2026-09-28T00:45:33.5114932Z first day: Plan and Today say stage 4; Skills opened on 3, 4
+build-and-test	E2E tests	2026-09-28T00:45:34.2347700Z   ✓  183 tests/e2e/first-day.spec.ts:589:5 › a first day › from nothing to a recorded pass, phone upright (26.1s)
+build-and-test	E2E tests	2026-09-28T00:45:34.6103654Z first day: Plan and Today say stage 4; Skills opened on 3, 4
+build-and-test	E2E tests	2026-09-28T00:45:35.6103227Z   ✓  184 tests/e2e/first-day.spec.ts:589:5 › a first day › from nothing to a recorded pass, phone sideways (26.1s)
+build-and-test	E2E tests	2026-09-28T00:45:37.7812499Z   ✓  185 tests/e2e/folder.add.spec.ts:123:3 › adding one score from the folder › reads the file the row names and puts it in the library (3.5s)
+build-and-test	E2E tests	2026-09-28T00:45:38.7992451Z   ✓  186 tests/e2e/folder.add.spec.ts:181:3 › adding one score from the folder › survives a reload, and is not offered again (3.2s)
+build-and-test	E2E tests	2026-09-28T00:45:41.8342824Z   ✓  187 tests/e2e/folder.add.spec.ts:218:3 › adding one score from the folder › the added row is in the library list on its first paint (4.0s)
+build-and-test	E2E tests	2026-09-28T00:45:45.3225714Z folder/partial: at 342×740 the first row ends at 626px, 656px at 115 %
+build-and-test	E2E tests	2026-09-28T00:45:45.4030235Z   ✓  189 tests/e2e/folder.manifest.spec.ts:206:3 › an index that was stopped part way › says how far it got and offers to finish, and R1 still holds (3.5s)
+build-and-test	E2E tests	2026-09-28T00:45:46.0416436Z folder/manifest: first row ends at 570px (570 saying nothing), 606px at 115 % (600)
+build-and-test	E2E tests	2026-09-28T00:45:46.2000157Z   ✓  188 tests/e2e/folder.manifest.spec.ts:154:3 › a listing read out of library.json › says what it cannot see, and costs the first score nothing (7.4s)
+build-and-test	E2E tests	2026-09-28T00:45:47.9162178Z   ✓  190 tests/e2e/folder.rail-cost.spec.ts:64:1 › jumping to a late letter draws a page, not everything above it (2.5s)
+build-and-test	E2E tests	2026-09-28T00:45:49.0546712Z   ✓  191 tests/e2e/folder.rail-cost.spec.ts:101:3 › the rail keeps describing the listing after a jump — upright (2.8s)
+build-and-test	E2E tests	2026-09-28T00:45:50.6600366Z   ✓  193 tests/e2e/folder.rail-cost.spec.ts:157:1 › a letter the search has emptied is dimmed and dead (1.6s)
+build-and-test	E2E tests	2026-09-28T00:45:51.2523783Z   ✓  192 tests/e2e/folder.rail-cost.spec.ts:101:3 › the rail keeps describing the listing after a jump — sideways (3.3s)
+build-and-test	E2E tests	2026-09-28T00:45:51.3542434Z   ✓  194 tests/e2e/folder.readable.spec.ts:116:3 › the folder list held upright › a title is shown in full, or at worst over two lines (678ms)
+build-and-test	E2E tests	2026-09-28T00:45:52.0934634Z   ✓  196 tests/e2e/folder.readable.spec.ts:150:3 › the folder list held upright › and the buttons are still whole (728ms)
+build-and-test	E2E tests	2026-09-28T00:45:52.6230349Z   ✓  195 tests/e2e/folder.readable.spec.ts:137:3 › the folder list held upright › the words get most of the row, not half of it (1.3s)
+build-and-test	E2E tests	2026-09-28T00:45:53.6105972Z   ✓  197 tests/e2e/folder.readable.spec.ts:166:3 › the folder list held upright › the notice says the whole thing, and the first score is still on the screen (1.5s)
+build-and-test	E2E tests	2026-09-28T00:45:54.6480152Z   ✓  198 tests/e2e/folder.spec.ts:196:3 › a score added from the folder and the rung it has not got › says it is on no rung, and opens the assign sheet from the folder row (2.0s)
+build-and-test	E2E tests	2026-09-28T00:45:55.4473296Z   ✓  199 tests/e2e/folder.spec.ts:217:3 › a score added from the folder and the rung it has not got › assigning it on the folder screen makes the row say so, without a reload (1.8s)
+build-and-test	E2E tests	2026-09-28T00:45:56.1209802Z   ✓  200 tests/e2e/folder.spec.ts:262:3 › a score added from the folder and the rung it has not got › a score already on a rung is not asked about again (1.5s)
+build-and-test	E2E tests	2026-09-28T00:45:56.6467289Z   ✓  201 tests/e2e/folder.spec.ts:287:3 › a listing stored without its library.json ever being found › names the problem and offers the fix, instead of just showing hashes (1.2s)
+build-and-test	E2E tests	2026-09-28T00:45:56.9286355Z   ✓  202 tests/e2e/folder.spec.ts:298:3 › a listing stored without its library.json ever being found › says nothing for an ordinary folder, even with a stray untitled file (789ms)
+build-and-test	E2E tests	2026-09-28T00:46:02.3749672Z folder: 37261 rows, first paint 4517 ms
+build-and-test	E2E tests	2026-09-28T00:46:02.4664290Z folder: search over 37261 rows in 55 ms
+build-and-test	E2E tests	2026-09-28T00:46:02.6445403Z   ✓  203 tests/e2e/folder.spec.ts:307:3 › a folder of 37,261 scores › browses, filters and searches without the screen falling over (6.0s)
+build-and-test	E2E tests	2026-09-28T00:46:02.9173675Z folder: first open 4489 ms (migration), every open after 138 ms
+build-and-test	E2E tests	2026-09-28T00:46:02.9888812Z   ✓  204 tests/e2e/folder.spec.ts:343:3 › a folder of 37,261 scores › the second open is the one the owner lives with, and it is not the first (6.0s)
+build-and-test	E2E tests	2026-09-28T00:46:04.0324213Z folder: the first row starts at 439px of 780
+build-and-test	E2E tests	2026-09-28T00:46:04.2750201Z   ✓  205 tests/e2e/folder.spec.ts:379:3 › a folder of 37,261 scores › the first score is on the screen without scrolling, upright (R1) (1.6s)
+build-and-test	E2E tests	2026-09-28T00:46:06.0087866Z   ✓  207 tests/e2e/folder.spec.ts:467:3 › a folder of 37,261 scores › rescanning and forgetting are both inside How this works (R1, R3) (1.7s)
+build-and-test	E2E tests	2026-09-28T00:46:07.5858354Z   ✓  208 tests/e2e/folder.spec.ts:493:3 › a folder of 37,261 scores › says how to add when the folder is not connected, instead of failing obscurely (1.6s)
+build-and-test	E2E tests	2026-09-28T00:46:08.1439293Z folder: at 342×740 with 37,261 scores the first row starts at 469px
+build-and-test	E2E tests	2026-09-28T00:46:08.2616729Z   ✓  206 tests/e2e/folder.spec.ts:428:3 › a folder of 37,261 scores › R1 again at the owner’s real geometry, with the real number of scores (5.2s)
+build-and-test	E2E tests	2026-09-28T00:46:08.4336323Z   ✓  209 tests/e2e/folder.spec.ts:518:3 › a folder of 37,261 scores › a row that failed to add stops saying so once one succeeds (824ms)
+build-and-test	E2E tests	2026-09-28T00:46:09.2724837Z   ✓  210 tests/e2e/folder.spec.ts:531:3 › a folder of 37,261 scores › a folder with no manifest still lists and still searches (991ms)
+build-and-test	E2E tests	2026-09-28T00:46:10.4562007Z   ✓  211 tests/e2e/folder.spec.ts:546:3 › the letter rail › jumps to a letter, and grows the list to reach one that is not drawn yet (2.0s)
+build-and-test	E2E tests	2026-09-28T00:46:10.8856361Z   ✓  212 tests/e2e/folder.spec.ts:580:3 › the letter rail › says the listing is saved, and offers the folder back, when nothing is connected (1.6s)
+build-and-test	E2E tests	2026-09-28T00:46:10.8865010Z   -  214 tests/e2e/generate-audio-fixtures.spec.ts:99:3 › audio fixture generation › renders the bundled piano to WAV fixtures
+build-and-test	E2E tests	2026-09-28T00:46:10.8884208Z   -  215 tests/e2e/guide-shots.spec.ts:29:3 › guide pictures › every picture the guide shows
+build-and-test	E2E tests	2026-09-28T00:46:12.1297158Z   ✓  213 tests/e2e/folder.spec.ts:621:3 › what the archive knows about a score › Details says where the estimated level sits, and what the estimate is worth (1.7s)
+build-and-test	E2E tests	2026-09-28T00:46:12.1951481Z   ✓  216 tests/e2e/guide.spec.ts:33:3 › the guide › opens from Settings, with every section and every picture (1.3s)
+build-and-test	E2E tests	2026-09-28T00:46:12.7886086Z   ✓  218 tests/e2e/guide.spec.ts:61:3 › the guide › the contents jump within the page and the sections read in order (581ms)
+build-and-test	E2E tests	2026-09-28T00:46:13.2735549Z   ✓  217 tests/e2e/guide.spec.ts:51:3 › the guide › the section buttons open the screens they describe (1.1s)
+build-and-test	E2E tests	2026-09-28T00:46:13.4004637Z   ✓  219 tests/e2e/guide.spec.ts:71:3 › the guide › the procedures are steps and the modes are labelled, not prose (599ms)
+build-and-test	E2E tests	2026-09-28T00:46:15.7518939Z   ✓  220 tests/e2e/help-strip.spec.ts:65:3 › the Score screen says which mode this is › names the mode and what to do, above the notation, without scrolling (2.5s)
+build-and-test	E2E tests	2026-09-28T00:46:16.0577059Z   ✓  221 tests/e2e/help-strip.spec.ts:85:3 › the Score screen says which mode this is › the line follows the mode, and the ? says what the controls do (2.6s)
+build-and-test	E2E tests	2026-09-28T00:46:17.3629792Z   ✓  223 tests/e2e/help-strip.spec.ts:128:3 › a drill says what kind of thing it is › names the kind above the card, and the card says how to answer (1.3s)
+build-and-test	E2E tests	2026-09-28T00:46:18.7593152Z   ✓  224 tests/e2e/help-strip.spec.ts:143:3 › a drill says what kind of thing it is › the ? names the controls and where the drill sits (1.4s)
+build-and-test	E2E tests	2026-09-28T00:46:18.9605242Z   ✓  222 tests/e2e/help-strip.spec.ts:107:3 › the Score screen says which mode this is › the card that explains the mode comes up once, on the first meeting (3.2s)
+build-and-test	E2E tests	2026-09-28T00:46:19.9846608Z   ✓  225 tests/e2e/help-strip.spec.ts:157:3 › a drill says what kind of thing it is › the first card of a kind explains it before it asks anything (1.2s)
+build-and-test	E2E tests	2026-09-28T00:46:20.4150146Z   ✓  227 tests/e2e/help-strip.spec.ts:202:3 › the guide holds the whole list › lists every mode, drill kind and tool on one page (418ms)
+build-and-test	E2E tests	2026-09-28T00:46:20.4402525Z   ✓  226 tests/e2e/help-strip.spec.ts:167:3 › the tools say what they are › the lab, the chord chart and free play each carry the strip (1.5s)
+build-and-test	E2E tests	2026-09-28T00:46:20.9220423Z   ✓  229 tests/e2e/keyboard-strip.spec.ts:16:3 › KeyboardStrip performance › updating a chord mutates only those keys and keeps every node identical (458ms)
+build-and-test	E2E tests	2026-09-28T00:46:22.2925355Z   ✓  230 tests/e2e/keyboard-strip.spec.ts:75:3 › KeyboardStrip performance › setState through the live MIDI path repaints without rebuilding (1.3s)
+build-and-test	E2E tests	2026-09-28T00:46:22.6503959Z   ✓  228 tests/e2e/help-strip.spec.ts:215:3 › the guide holds the whole list › Skills review and a lesson both offer the way in (2.2s)
+build-and-test	E2E tests	2026-09-28T00:46:22.6838536Z   ✓  231 tests/e2e/keyboard-strip.spec.ts:89:3 › KeyboardStrip performance › the strip scrolls horizontally rather than widening the page (379ms)
+build-and-test	E2E tests	2026-09-28T00:46:24.7145159Z   ✓  232 tests/e2e/keyboard-strip.spec.ts:128:5 › the keyboard strip fits on the screen › sideways: no part of a key is below the fold (2.0s)
+build-and-test	E2E tests	2026-09-28T00:46:24.8367420Z   ✓  233 tests/e2e/keyboard-strip.spec.ts:128:5 › the keyboard strip fits on the screen › upright: no part of a key is below the fold (2.1s)
+build-and-test	E2E tests	2026-09-28T00:46:27.5252190Z   ✓  234 tests/e2e/keys-guide.spec.ts:28:3 › the keys guide › two notes ahead marks the next key in Wait mode, with the finger numbers (2.8s)
+build-and-test	E2E tests	2026-09-28T00:46:27.6248525Z   ✓  235 tests/e2e/keys-guide.spec.ts:39:3 › the keys guide › off marks nothing ahead, and no finger numbers (2.8s)
+build-and-test	E2E tests	2026-09-28T00:46:30.1603672Z   ✓  236 tests/e2e/keys-guide.spec.ts:48:3 › the keys guide › the default guide marks the note it waits for, without the next one in Wait mode (2.6s)
+build-and-test	E2E tests	2026-09-28T00:46:30.9843532Z   ✓  237 tests/e2e/keys-guide.spec.ts:57:3 › the keys guide › with the flash off a wrong note colours no key, and the guide stays (3.3s)
+build-and-test	E2E tests	2026-09-28T00:46:32.6106433Z   ✓  239 tests/e2e/lab-both-ways.spec.ts:53:3 › the two ways round › are chips in the same row as trading fours, and the jam opens on neither (1.6s)
+build-and-test	E2E tests	2026-09-28T00:46:32.6985493Z   ✓  238 tests/e2e/keys-guide.spec.ts:69:3 › the keys guide › the ribbon prints the finger after the note name (2.5s)
+build-and-test	E2E tests	2026-09-28T00:46:33.9605268Z   ✓  240 tests/e2e/lab-both-ways.spec.ts:75:3 › the two ways round › are exclusive with trading fours, in both directions (1.3s)
+build-and-test	E2E tests	2026-09-28T00:46:34.2396854Z   ✓  241 tests/e2e/lab-both-ways.spec.ts:97:3 › the two ways round › refuse a way round with nothing to play, and say why on the screen (1.5s)
+build-and-test	E2E tests	2026-09-28T00:46:34.5431258Z   ✓  242 tests/e2e/lab-both-ways.spec.ts:129:3 › the two ways round › fall back to bed only when the preset’s way round loses its hand (569ms)
+build-and-test	E2E tests	2026-09-28T00:46:34.6621034Z   ✓  243 tests/e2e/lab-both-ways.spec.ts:141:3 › the two ways round › open preselected from the preset a rung’s tool names (410ms)
+build-and-test	E2E tests	2026-09-28T00:46:35.1402363Z   ✓  245 tests/e2e/lab-both-ways.spec.ts:168:3 › the lab explains itself › says what a preset is for once it is on (464ms)
+build-and-test	E2E tests	2026-09-28T00:46:35.8277903Z   ✓  244 tests/e2e/lab-both-ways.spec.ts:151:3 › the lab explains itself › puts a line under every control and one over the two buttons (1.3s)
+build-and-test	E2E tests	2026-09-28T00:46:36.3883684Z   ✓  246 tests/e2e/lab.spec.ts:100:3 › the accompaniment lab › opens from the Library and says what it is about to build (1.2s)
+build-and-test	E2E tests	2026-09-28T00:46:37.3248357Z   ✓  247 tests/e2e/lab.spec.ts:114:3 › the accompaniment lab › what Jam it will play is settable without scrolling, from both doors (1.5s)
+build-and-test	E2E tests	2026-09-28T00:46:39.1056995Z   ✓  248 tests/e2e/lab.spec.ts:149:3 › the accompaniment lab › Read it lands on the Score screen with the bars that were chosen (2.7s)
+build-and-test	E2E tests	2026-09-28T00:46:40.8988089Z   ✓  250 tests/e2e/lab.spec.ts:196:3 › the accompaniment lab › Jam it shows the chords bar by bar, lights the keys, and stops (1.8s)
+build-and-test	E2E tests	2026-09-28T00:46:42.4668002Z   ✓  251 tests/e2e/lab.spec.ts:227:3 › the accompaniment lab › changing a setting under a running loop stops it rather than lying (1.5s)
+build-and-test	E2E tests	2026-09-28T00:46:44.1903795Z   ✓  252 tests/e2e/lab.spec.ts:240:3 › the accompaniment lab › the twelve-bar blues brings its own bar counts with it (1.7s)
+build-and-test	E2E tests	2026-09-28T00:46:45.7455590Z   ✓  249 tests/e2e/lab.spec.ts:176:3 › the accompaniment lab › building the same settings twice leaves one row, not two (8.4s)
+build-and-test	E2E tests	2026-09-28T00:46:45.8809675Z   ✓  253 tests/e2e/lab.spec.ts:257:3 › the accompaniment lab › a numeral it cannot read is named, not guessed at (1.7s)
+build-and-test	E2E tests	2026-09-28T00:46:47.6208916Z   ✓  254 tests/e2e/lab.spec.ts:277:3 › Today's sight-read › is a card of its own, with the day carried in the route (1.9s)
+build-and-test	E2E tests	2026-09-28T00:46:47.9901361Z   ✓  255 tests/e2e/lab.spec.ts:296:3 › Today's sight-read › ticks and starts counting once the day is read (2.1s)
+build-and-test	E2E tests	2026-09-28T00:47:17.3776492Z   ✓  257 tests/e2e/lab.spec.ts:399:3 › Today's sight-read › heard before its first run, the phrase is not read for the first time (29.4s)
+build-and-test	E2E tests	2026-09-28T00:47:18.7050936Z   ✓  258 tests/e2e/lab.spec.ts:477:1 › a preset sets the lab up, locks what it is about, and leaves the rest (1.3s)
+build-and-test	E2E tests	2026-09-28T00:47:19.1422315Z   ✓  259 tests/e2e/lab.spec.ts:523:1 › an unknown preset id leaves an ordinary lab (425ms)
+build-and-test	E2E tests	2026-09-28T00:47:20.7315132Z   ✓  260 tests/e2e/landscape.spec.ts:41:3 › Today sideways: no title, content near the top (1.6s)
+build-and-test	E2E tests	2026-09-28T00:47:21.7627552Z   ✓  261 tests/e2e/landscape.spec.ts:41:3 › Plan sideways: no title, content near the top (1.0s)
+build-and-test	E2E tests	2026-09-28T00:47:23.2663432Z   ✓  262 tests/e2e/landscape.spec.ts:41:3 › Library sideways: no title, content near the top (1.5s)
+build-and-test	E2E tests	2026-09-28T00:47:24.2770882Z   ✓  263 tests/e2e/landscape.spec.ts:41:3 › Progress sideways: no title, content near the top (993ms)
+build-and-test	E2E tests	2026-09-28T00:47:25.8785112Z   ✓  264 tests/e2e/landscape.spec.ts:41:3 › Settings sideways: no title, content near the top (1.6s)
+build-and-test	E2E tests	2026-09-28T00:47:27.2223459Z   ✓  265 tests/e2e/landscape.spec.ts:63:3 › Skills sideways: no h1 at heading size, content near the top (1.3s)
+build-and-test	E2E tests	2026-09-28T00:47:29.0974658Z   ✓  266 tests/e2e/landscape.spec.ts:63:3 › Shelf sideways: no h1 at heading size, content near the top (1.9s)
+build-and-test	E2E tests	2026-09-28T00:47:30.8232076Z   ✓  267 tests/e2e/landscape.spec.ts:63:3 › a lesson sideways: no h1 at heading size, content near the top (1.7s)
+build-and-test	E2E tests	2026-09-28T00:47:31.9669572Z   ✓  268 tests/e2e/landscape.spec.ts:63:3 › a drill sideways: no h1 at heading size, content near the top (1.1s)
+build-and-test	E2E tests	2026-09-28T00:47:32.8184373Z   ✓  269 tests/e2e/landscape.spec.ts:113:1 › a sub-screen puts Back and its title on one line (841ms)
+build-and-test	E2E tests	2026-09-28T00:47:33.1835612Z   ✓  270 tests/e2e/landscape.spec.ts:130:1 › a sub-screen card uses the width sideways (352ms)
+build-and-test	E2E tests	2026-09-28T00:47:34.2918756Z settings sideways: 8 rows on the first screenful
+build-and-test	E2E tests	2026-09-28T00:47:34.3141006Z   ✓  271 tests/e2e/landscape.spec.ts:145:1 › Settings sideways shows twice as many rows (B5) (1.1s)
+build-and-test	E2E tests	2026-09-28T00:47:39.0118508Z   ✓  256 tests/e2e/lab.spec.ts:347:3 › Today's sight-read › re-opened after it was read, the same phrase is not a new first attempt (51.4s)
+build-and-test	E2E tests	2026-09-28T00:47:40.3650558Z   ✓  273 tests/e2e/lesson-tools.spec.ts:33:1 › the lab tool opens the lab already in the rung’s preset (1.3s)
+build-and-test	E2E tests	2026-09-28T00:47:42.0937883Z   ✓  274 tests/e2e/lesson-tools.spec.ts:55:1 › the duet tool opens a piece from the rung with one hand chosen (1.7s)
+build-and-test	E2E tests	2026-09-28T00:47:43.8655539Z   ✓  275 tests/e2e/lesson-tools.spec.ts:76:1 › a rung that names its Simon opens that one, not the stage’s (1.8s)
+build-and-test	E2E tests	2026-09-28T00:47:44.9490138Z   ✓  276 tests/e2e/lesson-tools.spec.ts:91:1 › a rung that names no tool draws no block (1.0s)
+build-and-test	E2E tests	2026-09-28T00:47:46.4342517Z   ✓  277 tests/e2e/library.spec.ts:36:3 › Library › lists the bundled catalog and filters it (1.5s)
+build-and-test	E2E tests	2026-09-28T00:47:49.9858710Z   ✓  278 tests/e2e/library.spec.ts:53:3 › Library › imports an .mxl, opens it on the Score screen, and keeps it across a reload (3.5s)
+build-and-test	E2E tests	2026-09-28T00:47:51.7320734Z   ✓  279 tests/e2e/library.spec.ts:76:3 › Library › imports plain MusicXML too, and takes its title from the file (1.7s)
+build-and-test	E2E tests	2026-09-28T00:47:53.2655125Z   ✓  280 tests/e2e/library.spec.ts:82:3 › Library › a PDF is marked "pages, not notes" and opens in the viewer, not the Score screen (1.5s)
+build-and-test	E2E tests	2026-09-28T00:47:54.5008036Z   ✓  281 tests/e2e/library.spec.ts:96:3 › Library › a file it cannot read fails with one sentence, not a stack trace (1.2s)
+build-and-test	E2E tests	2026-09-28T00:47:55.9427869Z   ✓  282 tests/e2e/library.spec.ts:112:3 › Library › a broken MIDI file is told apart from a file that is not MIDI at all (1.4s)
+build-and-test	E2E tests	2026-09-28T00:47:56.7625251Z   ✓  272 tests/e2e/lesson-flow.spec.ts:46:1 › a run played from Today is recorded, and comes back for review (22.4s)
+build-and-test	E2E tests	2026-09-28T00:47:58.1534844Z   ✓  283 tests/e2e/library.spec.ts:138:3 › Library › an imported score can be renamed and deleted (2.2s)
+build-and-test	E2E tests	2026-09-28T00:47:58.4277389Z   ✓  284 tests/e2e/library.spec.ts:157:3 › Library › "Only mine" shows just the imports (1.6s)
+build-and-test	E2E tests	2026-09-28T00:47:59.3233428Z   ✓  285 tests/e2e/library.spec.ts:173:3 › Library obeys 04 §0 › the list starts inside the first screenful (R1) (1.2s)
+build-and-test	E2E tests	2026-09-28T00:47:59.7941203Z   ✓  286 tests/e2e/library.spec.ts:191:3 › Library obeys 04 §0 › a filter set behind the closed row is named in the count (R1) (1.3s)
+build-and-test	E2E tests	2026-09-28T00:48:00.4538604Z   ✓  287 tests/e2e/library.spec.ts:206:3 › Library obeys 04 §0 › Import, Shelf and Score folder sit above the list, not below it (R3) (1.1s)
+build-and-test	E2E tests	2026-09-28T00:48:01.0294504Z   ✓  288 tests/e2e/library.spec.ts:228:3 › Library obeys 04 §0 › the item sheet fits its last value on the screen (1.2s)
+build-and-test	E2E tests	2026-09-28T00:48:02.3575572Z   ✓  289 tests/e2e/library.spec.ts:243:3 › the letter rail in Library › waits for the title sort, then moves the window to the letter (1.9s)
+build-and-test	E2E tests	2026-09-28T00:48:02.4239910Z   ✓  290 tests/e2e/metronome.spec.ts:17:3 › metronome › is reachable from Today and back again (1.4s)
+build-and-test	E2E tests	2026-09-28T00:48:02.9965247Z   ✓  291 tests/e2e/metronome.spec.ts:26:3 › metronome › shows a tempo and changes it with the nudge buttons and the slider (606ms)
+build-and-test	E2E tests	2026-09-28T00:48:03.4923581Z   ✓  293 tests/e2e/metronome.spec.ts:44:3 › metronome › draws one dot per beat and accents the first (478ms)
+build-and-test	E2E tests	2026-09-28T00:48:03.9126630Z   ✓  292 tests/e2e/metronome.spec.ts:38:3 › metronome › clamps the tempo to the range the slider offers (1.5s)
+build-and-test	E2E tests	2026-09-28T00:48:03.9654275Z   ✓  294 tests/e2e/metronome.spec.ts:56:3 › metronome › remembers which sound is selected (458ms)
+build-and-test	E2E tests	2026-09-28T00:48:04.6381459Z   ✓  296 tests/e2e/metronome.spec.ts:90:3 › metronome › starts and stops, and the beat dots follow the click (661ms)
+build-and-test	E2E tests	2026-09-28T00:48:06.4824349Z   ✓  295 tests/e2e/metronome.spec.ts:63:3 › metronome › tap tempo sets the bpm from the gaps between taps (2.6s)
+build-and-test	E2E tests	2026-09-28T00:48:07.8551605Z   ✓  298 tests/e2e/metronome.spec.ts:152:3 › metronome › leaving the screen stops it (1.4s)
+build-and-test	E2E tests	2026-09-28T00:48:10.6325576Z   ✓  297 tests/e2e/metronome.spec.ts:122:3 › metronome › a meter chosen while it is running reaches the click (6.0s)
+build-and-test	E2E tests	2026-09-28T00:48:11.4882697Z   ✓  299 tests/e2e/microscope.spec.ts:106:3 › the microscope (D2) › opens a generated item by id: the notation settled, every fact under its hook, Hear it enabled (3.6s)
+build-and-test	E2E tests	2026-09-28T00:48:16.8328670Z   ✓  301 tests/e2e/microscope.spec.ts:166:3 › the microscope (D2) › a decision is exported as a file review.py --merge accepts, and the learner’s stores do not move (5.3s)
+build-and-test	E2E tests	2026-09-28T00:48:19.3429366Z   ✓  300 tests/e2e/microscope.spec.ts:129:3 › the microscope (D2) › Hear it plays through the app’s piano: each hand alone its own pitches, both hands both (8.7s)
+build-and-test	E2E tests	2026-09-28T00:48:21.3295321Z   ✓  303 tests/e2e/midi-import.spec.ts:72:3 › a MIDI file imported from the app › converts on the device and says what it decided before anything is agreed to (1.9s)
+build-and-test	E2E tests	2026-09-28T00:48:23.1411324Z   ✓  302 tests/e2e/microscope.spec.ts:242:3 › the microscope (D2) › the learner’s navigation never shows the route (6.3s)
+build-and-test	E2E tests	2026-09-28T00:48:23.5294224Z   ✓  304 tests/e2e/midi-import.spec.ts:101:3 › a MIDI file imported from the app › is in the Library at once and opens on the Score screen (2.2s)
+build-and-test	E2E tests	2026-09-28T00:48:24.1592190Z   ✓  306 tests/e2e/midi.spec.ts:52:3 › MIDI screen with a mocked device › injected Note-On lights the key, Note-Off clears it (605ms)
+build-and-test	E2E tests	2026-09-28T00:48:24.6862289Z   ✓  307 tests/e2e/midi.spec.ts:63:3 › MIDI screen with a mocked device › Note-On with velocity 0 releases the key too (503ms)
+build-and-test	E2E tests	2026-09-28T00:48:25.3457625Z   ✓  308 tests/e2e/midi.spec.ts:71:3 › MIDI screen with a mocked device › a held chord lights exactly its own keys (636ms)
+build-and-test	E2E tests	2026-09-28T00:48:25.5770416Z   ✓  305 tests/e2e/midi-import.spec.ts:118:3 › a MIDI file imported from the app › walks the same number of steps as the cursor does, and keeps both hands (2.4s)
+build-and-test	E2E tests	2026-09-28T00:48:25.9939860Z   ✓  309 tests/e2e/midi.spec.ts:79:3 › MIDI screen with a mocked device › All Notes Off releases every held key (624ms)
+build-and-test	E2E tests	2026-09-28T00:48:26.0916300Z   ✓  310 tests/e2e/midi.spec.ts:87:3 › MIDI screen with a mocked device › requests access without SysEx, and only on the button press (485ms)
+build-and-test	E2E tests	2026-09-28T00:48:26.5756729Z   ✓  311 tests/e2e/midi.spec.ts:93:3 › MIDI screen with a mocked device › shows the device and logs the played notes (557ms)
+build-and-test	E2E tests	2026-09-28T00:48:26.6821262Z   ✓  312 tests/e2e/midi.spec.ts:102:3 › MIDI screen with a mocked device › picks up a device plugged in after connecting (575ms)
+build-and-test	E2E tests	2026-09-28T00:48:27.2325956Z   ✓  314 tests/e2e/midi.spec.ts:123:3 › MIDI screen with a mocked device › tapping an on-screen key works with no cable at all (529ms)
+build-and-test	E2E tests	2026-09-28T00:48:27.3004895Z   ✓  313 tests/e2e/midi.spec.ts:111:3 › MIDI screen with a mocked device › pinning one input ignores notes from the other (709ms)
+build-and-test	E2E tests	2026-09-28T00:48:27.8117376Z   ✓  315 tests/e2e/midi.spec.ts:132:3 › MIDI screen with a mocked device › the strip draws all 88 keys, A0 to C8 (560ms)
+build-and-test	E2E tests	2026-09-28T00:48:28.1988658Z   ✓  316 tests/e2e/midi.spec.ts:142:3 › MIDI screen settings persistence › the pinned input survives a reload (884ms)
+build-and-test	E2E tests	2026-09-28T00:48:28.3625626Z   ✓  317 tests/e2e/midi.spec.ts:166:3 › MIDI screen error states › a denied permission explains how to re-enable it in Chrome (540ms)
+build-and-test	E2E tests	2026-09-28T00:48:28.6993973Z   ✓  318 tests/e2e/midi.spec.ts:177:3 › MIDI screen error states › an unsupported browser says so and keeps the on-screen keyboard (484ms)
+build-and-test	E2E tests	2026-09-28T00:48:28.9322898Z   ✓  319 tests/e2e/midi.spec.ts:185:3 › MIDI screen error states › with no inputs at all the screen says so instead of failing (550ms)
+build-and-test	E2E tests	2026-09-28T00:48:29.9834805Z   ✓  320 tests/e2e/midi.spec.ts:205:3 › Diagnostics screen › logs raw hex and a parsed description, newest first (1.3s)
+build-and-test	E2E tests	2026-09-28T00:48:30.6168308Z   ✓  321 tests/e2e/midi.spec.ts:215:3 › Diagnostics screen › counts active sensing instead of flooding the log with it (1.7s)
+build-and-test	E2E tests	2026-09-28T00:48:31.3846098Z   ✓  322 tests/e2e/midi.spec.ts:222:3 › Diagnostics screen › the parsed column can be turned off (1.4s)
+build-and-test	E2E tests	2026-09-28T00:48:31.9232057Z   ✓  323 tests/e2e/midi.spec.ts:230:3 › Diagnostics screen › Clear empties the log (1.3s)
+build-and-test	E2E tests	2026-09-28T00:48:32.7686272Z   ✓  324 tests/e2e/midi.spec.ts:237:3 › Diagnostics screen › the debug report carries the browser, the devices and the messages (1.4s)
+build-and-test	E2E tests	2026-09-28T00:48:33.4161433Z   ✓  326 tests/e2e/midi.unplug.spec.ts:54:3 › MIDI: the cable pulled and put back › an unplugged port stops counting as connected (624ms)
+build-and-test	E2E tests	2026-09-28T00:48:33.9252650Z   ✓  327 tests/e2e/midi.unplug.spec.ts:75:3 › MIDI: the cable pulled and put back › a key held when the cable goes does not stay lit (494ms)
+build-and-test	E2E tests	2026-09-28T00:48:34.2424265Z   ✓  325 tests/e2e/midi.spec.ts:255:3 › Diagnostics screen › reachable from Settings (2.3s)
+build-and-test	E2E tests	2026-09-28T00:48:34.5251225Z   ✓  328 tests/e2e/midi.unplug.spec.ts:90:3 › MIDI: the cable pulled and put back › the piano is heard again when it is plugged back in (578ms)
+build-and-test	E2E tests	2026-09-28T00:48:34.8835907Z   ✓  329 tests/e2e/midi.unplug.spec.ts:105:3 › MIDI: the cable pulled and put back › a second adapter going does not drop the chord held on the piano (622ms)
+build-and-test	E2E tests	2026-09-28T00:48:35.1159726Z   ✓  330 tests/e2e/midi.unplug.spec.ts:129:3 › MIDI: the pinned input that is not there › pinning one input selects it, and only it (574ms)
+build-and-test	E2E tests	2026-09-28T00:48:35.5081294Z   ✓  331 tests/e2e/midi.unplug.spec.ts:137:3 › MIDI: the pinned input that is not there › when the pinned input is unplugged, "all inputs" is selected and says why (613ms)
+build-and-test	E2E tests	2026-09-28T00:48:35.7492054Z   ✓  332 tests/e2e/midi.unplug.spec.ts:156:3 › MIDI: the pinned input that is not there › the pinned choice survives the re-plug (617ms)
+build-and-test	E2E tests	2026-09-28T00:48:36.1209737Z   ✓  334 tests/e2e/midi.unplug.spec.ts:186:3 › MIDI: nothing connected yet › does not promise live hot-plug before Connect has been tapped (353ms)
+build-and-test	E2E tests	2026-09-28T00:48:36.1689936Z   ✓  333 tests/e2e/midi.unplug.spec.ts:168:3 › MIDI: the pinned input that is not there › notes from the unpinned input reach the app once the pinned one is gone (644ms)
+build-and-test	E2E tests	2026-09-28T00:48:37.5395881Z   ✓  335 tests/e2e/modes-chart-from-a-lesson.spec.ts:75:1 › the row’s Chart action opens that piece’s chart, with its chords in it (1.4s)
+build-and-test	E2E tests	2026-09-28T00:48:37.6095189Z   ✓  336 tests/e2e/modes-chart-from-a-lesson.spec.ts:88:1 › the chart, the tracker and the transport are in one glance on a phone (1.4s)
+build-and-test	E2E tests	2026-09-28T00:48:39.2441621Z   ✓  337 tests/e2e/modes-chart-from-a-lesson.spec.ts:124:1 › the chart has keys, and a key held on them marks the sounding bar (1.7s)
+build-and-test	E2E tests	2026-09-28T00:48:40.3235390Z   ✓  339 tests/e2e/modes-chart-from-a-lesson.spec.ts:194:1 › Back from a chart opened by a lesson row returns to that rung (1.1s)
+build-and-test	E2E tests	2026-09-28T00:48:41.4100141Z   ✓  338 tests/e2e/modes-chart-from-a-lesson.spec.ts:159:1 › a count-off runs it, what is played is answered, and Stop stops (3.8s)
+build-and-test	E2E tests	2026-09-28T00:48:42.1177964Z   ✓  340 tests/e2e/modes-chart-from-a-lesson.spec.ts:214:1 › a chart opened from the Library still says Library, and goes there (1.8s)
+build-and-test	E2E tests	2026-09-28T00:48:42.5589377Z   ✓  341 tests/e2e/modes-chart-from-a-lesson.spec.ts:232:1 › a piece the build measured no chords in is offered no door (1.1s)
+build-and-test	E2E tests	2026-09-28T00:48:45.5649944Z   ✓  342 tests/e2e/modes-chart-from-the-score.spec.ts:61:1 › the sheet offers the chart, and it opens this piece’s chart (3.4s)
+build-and-test	E2E tests	2026-09-28T00:48:46.2582807Z   ✓  343 tests/e2e/modes-chart-from-the-score.spec.ts:77:1 › a piece with no chords is offered no row at all, upright or sideways (3.7s)
+build-and-test	E2E tests	2026-09-28T00:48:48.1455461Z   ✓  345 tests/e2e/modes-dictation.spec.ts:73:1 › the card gives nothing away, and the prompt is the next thing to do (1.9s)
+build-and-test	E2E tests	2026-09-28T00:48:48.9706868Z   ✓  344 tests/e2e/modes-chart-from-the-score.spec.ts:94:1 › sideways the row is still there over a piece that has chords (3.4s)
+build-and-test	E2E tests	2026-09-28T00:48:50.5624874Z   ✓  346 tests/e2e/modes-dictation.spec.ts:104:1 › the keys answer it, and the screen says so (2.4s)
+build-and-test	E2E tests	2026-09-28T00:48:50.8119456Z   ✓  347 tests/e2e/modes-dictation.spec.ts:116:1 › replaying the phrase costs nothing and leaves the card closed (1.8s)
+build-and-test	E2E tests	2026-09-28T00:48:53.5536089Z   ✓  348 tests/e2e/modes-duet.spec.ts:60:1 › the button opens one of the rung’s own pieces, with a hand chosen (3.0s)
+build-and-test	E2E tests	2026-09-28T00:48:55.4832006Z   ✓  349 tests/e2e/modes-duet.spec.ts:80:1 › the button still means it after the Duet row has been switched off once (4.7s)
+build-and-test	E2E tests	2026-09-28T00:48:56.0572250Z   ✓  350 tests/e2e/modes-duet.spec.ts:104:1 › a rung whose duet names an exercise opens the exercise (2.5s)
+build-and-test	E2E tests	2026-09-28T00:48:57.9498308Z   ✓  351 tests/e2e/modes-duet.spec.ts:128:1 › Back from a run opened by the rung’s button returns to the rung (2.5s)
+build-and-test	E2E tests	2026-09-28T00:48:59.1885976Z   ✓  352 tests/e2e/modes-duet.spec.ts:141:1 › sideways the Duet row survives, and it still names the hand (3.1s)
+build-and-test	E2E tests	2026-09-28T00:49:00.0344619Z   ✓  353 tests/e2e/modes-engraving.spec.ts:92:3 › exercise.rhythm.quarters.4bar: the single line runs through every notehead (2.0s)
+build-and-test	E2E tests	2026-09-28T00:49:01.3444640Z   ✓  354 tests/e2e/modes-engraving.spec.ts:92:3 › exercise.clave.son-3-2: the single line runs through every notehead (2.1s)
+build-and-test	E2E tests	2026-09-28T00:49:02.1444294Z   ✓  355 tests/e2e/modes-engraving.spec.ts:113:1 › an ordinary grand staff still has two staves of five lines (2.1s)
+build-and-test	E2E tests	2026-09-28T00:49:03.3363441Z   ✓  356 tests/e2e/modes-engraving.spec.ts:152:1 › a generated exercise prints its direction above the top staff (2.0s)
+build-and-test	E2E tests	2026-09-28T00:49:03.4656182Z   ✓  357 tests/e2e/modes-free-play.spec.ts:70:1 › a rung’s Free play button opens the screen with no piece and no run (1.3s)
+build-and-test	E2E tests	2026-09-28T00:49:04.5589417Z   ✓  359 tests/e2e/modes-free-play.spec.ts:95:1 › the keys are named, and three of them are named as a chord (1.1s)
+build-and-test	E2E tests	2026-09-28T00:49:04.8521323Z   ✓  358 tests/e2e/modes-free-play.spec.ts:87:1 › Today’s own door opens the same screen (1.5s)
+build-and-test	E2E tests	2026-09-28T00:49:05.0148947Z   ✓  360 tests/e2e/modes-free-play.spec.ts:141:1 › with nothing connected it says so and offers the two ways to fix it (441ms)
+build-and-test	E2E tests	2026-09-28T00:49:05.4536969Z   ✓  361 tests/e2e/modes-free-play.spec.ts:155:1 › Back leaves it, and leaves nothing running (586ms)
+build-and-test	E2E tests	2026-09-28T00:49:06.2999820Z   ✓  362 tests/e2e/modes-hold-the-chords.spec.ts:68:1 › the rung’s button opens the lab already holding the chords (1.3s)
+build-and-test	E2E tests	2026-09-28T00:49:08.5585168Z   ✓  364 tests/e2e/modes-hold-the-chords.spec.ts:134:1 › Back leaves the mode off — and the lab reopens on the preset, not on the run (2.2s)
+build-and-test	E2E tests	2026-09-28T00:49:09.6504799Z   ✓  365 tests/e2e/modes-lab-unlock.spec.ts:65:1 › the freed picker is live and the preset’s others are disabled (1.1s)
+build-and-test	E2E tests	2026-09-28T00:49:10.8066750Z   ✓  366 tests/e2e/modes-lab-unlock.spec.ts:80:1 › a locked picker pressed does not move, and the freed one does (1.1s)
+build-and-test	E2E tests	2026-09-28T00:49:12.2056751Z   ✓  367 tests/e2e/modes-lab-unlock.spec.ts:104:1 › the freed picker reaches the loop, not just the label (1.4s)
+build-and-test	E2E tests	2026-09-28T00:49:14.9755808Z   ✓  368 tests/e2e/modes-ladder.spec.ts:91:1 › the rung’s button opens its exercise, looping, with the ladder armed (2.8s)
+build-and-test	E2E tests	2026-09-28T00:49:19.9305371Z   ✓  363 tests/e2e/modes-hold-the-chords.spec.ts:79:1 › the loop runs with the chart, the counter and the keys in one glance (14.4s)
+build-and-test	E2E tests	2026-09-28T00:49:22.8993346Z   ✓  369 tests/e2e/modes-ladder.spec.ts:132:1 › the keys play into it — the run moves, so the ladder has something to judge (7.9s)
+build-and-test	E2E tests	2026-09-28T00:49:23.0348212Z   ✓  370 tests/e2e/modes-ladder.spec.ts:158:1 › sideways the ladder is still on and the controls are still reachable (3.1s)
+build-and-test	E2E tests	2026-09-28T00:49:24.5095016Z   ✓  372 tests/e2e/modes-placement.spec.ts:63:1 › the question is the screen, and the two answers are both on it (1.5s)
+build-and-test	E2E tests	2026-09-28T00:49:27.5919044Z   ✓  371 tests/e2e/modes-ladder.spec.ts:176:1 › Back leaves it off — the same exercise opened plainly is not still armed (4.7s)
+build-and-test	E2E tests	2026-09-28T00:49:28.8572550Z   ✓  374 tests/e2e/modes-play-the-tune.spec.ts:58:1 › the rung’s button opens the lab with the app on the right hand (1.2s)
+build-and-test	E2E tests	2026-09-28T00:49:28.9876957Z   ✓  373 tests/e2e/modes-placement.spec.ts:81:1 › answering it records a starting point, and Plan and Today both move to it (4.5s)
+build-and-test	E2E tests	2026-09-28T00:49:32.0403299Z   ✓  376 tests/e2e/modes-play-the-tune.spec.ts:111:1 › Back leaves the mode off, and the way round comes back from the rung (3.0s)
+build-and-test	E2E tests	2026-09-28T00:49:33.1135149Z   ✓  377 tests/e2e/modes-rhythm-only.spec.ts:66:1 › the sheet says what every choice does before one tap opens the piece (1.1s)
+build-and-test	E2E tests	2026-09-28T00:49:40.3209681Z   ✓  375 tests/e2e/modes-play-the-tune.spec.ts:70:1 › the loop runs, the chart and the keys are in one glance, and a pass is counted (11.4s)
+build-and-test	E2E tests	2026-09-28T00:49:44.1349440Z   ✓  379 tests/e2e/modes-rhythm-only.spec.ts:134:1 › the remembered setting does not leak into the next Keep tempo (3.8s)
+build-and-test	E2E tests	2026-09-28T00:49:46.2889488Z   ✓  380 tests/e2e/modes-rhythm-only.spec.ts:155:1 › the row is gone in a mode with no clock, which is where it would be dead (2.1s)
+build-and-test	E2E tests	2026-09-28T00:49:48.0197186Z   ✓  381 tests/e2e/modes-simon.spec.ts:81:1 › the rung’s button opens its own Simon, and the screen is the instruction and the keys (1.7s)
+build-and-test	E2E tests	2026-09-28T00:49:48.5864411Z   ✓  378 tests/e2e/modes-rhythm-only.spec.ts:77:1 › it opens judged on timing, answers any key, and says what the run was (15.5s)
+build-and-test	E2E tests	2026-09-28T00:49:50.4361166Z   ✓  382 tests/e2e/modes-simon.spec.ts:96:1 › the keys answer the chain, and the counter says so (2.4s)
+build-and-test	E2E tests	2026-09-28T00:49:51.7145460Z   ✓  383 tests/e2e/modes-simon.spec.ts:134:1 › Back leaves nothing running (3.1s)
+build-and-test	E2E tests	2026-09-28T00:49:57.0280797Z   ✓  384 tests/e2e/modes-technique-measure.spec.ts:125:1 › the staccato study is playable from the keys and the summary says how short (6.6s)
+build-and-test	E2E tests	2026-09-28T00:49:58.3060308Z   ✓  386 tests/e2e/modes-trading-fours.spec.ts:72:1 › the rung’s own button reaches it, in its preset, with the mode off (1.3s)
+build-and-test	E2E tests	2026-09-28T00:50:02.8963608Z   ✓  385 tests/e2e/modes-technique-measure.spec.ts:170:1 › a measure the glass cannot take says so, rather than printing a nought (11.2s)
+build-and-test	E2E tests	2026-09-28T00:50:04.9915260Z   ✓  388 tests/e2e/modes-trading-fours.spec.ts:148:1 › Back leaves the mode off — the same door opens a lab with no trade set (2.1s)
+build-and-test	E2E tests	2026-09-28T00:50:05.4405481Z   ✓  387 tests/e2e/modes-trading-fours.spec.ts:96:1 › the app leads, the turn cue is unmistakable and on screen, and a key answers (7.1s)
+build-and-test	E2E tests	2026-09-28T00:50:07.4728336Z   ✓  389 tests/e2e/mounted-once.spec.ts:64:3 › one navigation, one screen › a drill, opened from Plan and from the Library (2.5s)
+build-and-test	E2E tests	2026-09-28T00:50:07.6378666Z   ✓  390 tests/e2e/mounted-once.spec.ts:94:3 › one navigation, one screen › the accompaniment lab, opened from Plan and from the Library (2.2s)
+build-and-test	E2E tests	2026-09-28T00:50:08.7715070Z   ✓  392 tests/e2e/offline.report.spec.ts:35:3 › the offline report › says the app will not work offline when registration failed (1.1s)
+build-and-test	E2E tests	2026-09-28T00:50:10.0412264Z   ✓  393 tests/e2e/offline.report.spec.ts:63:3 › the offline report › says a new version is waiting when one is (1.3s)
+build-and-test	E2E tests	2026-09-28T00:50:11.1616528Z   ✓  394 tests/e2e/offline.report.spec.ts:87:3 › the offline report › a worker already waiting at load is offered a toast (1.1s)
+build-and-test	E2E tests	2026-09-28T00:50:11.7613823Z   ✓  391 tests/e2e/mounted-once.spec.ts:116:3 › one navigation, one screen › the chord chart, opened from a rung and from the Library (4.3s)
+build-and-test	E2E tests	2026-09-28T00:50:37.2274901Z   ✓  395 tests/e2e/offline.report.spec.ts:116:3 › the offline report › "Last update check" is never until a check has reached the server (26.0s)
+build-and-test	E2E tests	2026-09-28T00:50:37.4498809Z   ✓  397 tests/e2e/offline.spec.ts:224:3 › offline › every file the catalog names is in the precache manifest (167ms)
+build-and-test	E2E tests	2026-09-28T00:50:37.4746190Z   ✓  398 tests/e2e/offline.spec.ts:274:3 › offline › the engraver is not in the entry bundle (P19) (5ms)
+build-and-test	E2E tests	2026-09-28T00:50:37.5721364Z   ✘  399 tests/e2e/offline.spec.ts:302:3 › offline › and nothing under content/ is served without being precached (P19) (30ms)
+build-and-test	E2E tests	2026-09-28T00:50:38.8694248Z 
+build-and-test	E2E tests	2026-09-28T00:50:38.8746423Z ##[error]  1) tests/e2e/offline.spec.ts:302:3 › offline › and nothing under content/ is served without being precached (P19) 
+build-and-test	E2E tests	    Error: 1 file(s) are served but never cached
+build-and-test	E2E tests	
+build-and-test	E2E tests	    expect(received).toEqual(expected) // deep equality
+build-and-test	E2E tests	
+build-and-test	E2E tests	    - Expected  - 1
+build-and-test	E2E tests	    + Received  + 3
+build-and-test	E2E tests	
+build-and-test	E2E tests	    - Array []
+build-and-test	E2E tests	    + Array [
+build-and-test	E2E tests	    +   "content/review/microscope.json",
+build-and-test	E2E tests	    + ]
+build-and-test	E2E tests	
+build-and-test	E2E tests	      318 |     expect(served.length).toBeGreaterThan(1000);
+build-and-test	E2E tests	      319 |     const uncached = served.filter((file) => !urls.has(file));
+build-and-test	E2E tests	    > 320 |     expect(uncached, `${uncached.length} file(s) are served but never cached`).toEqual([]);
+build-and-test	E2E tests	          |                                                                                ^
+build-and-test	E2E tests	      321 |   });
+build-and-test	E2E tests	      322 | });
+build-and-test	E2E tests	      323 |
+build-and-test	E2E tests	        at /home/runner/work/PianoProject/PianoProject/app/tests/e2e/offline.spec.ts:320:80
+build-and-test	E2E tests	2026-09-28T00:50:38.8767805Z ##[error]  1) tests/e2e/offline.spec.ts:302:3 › offline › and nothing under content/ is served without being precached (P19) 
+build-and-test	E2E tests	
+build-and-test	E2E tests	    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+build-and-test	E2E tests	    Error: 1 file(s) are served but never cached
+build-and-test	E2E tests	
+build-and-test	E2E tests	    expect(received).toEqual(expected) // deep equality
+build-and-test	E2E tests	
+build-and-test	E2E tests	    - Expected  - 1
+build-and-test	E2E tests	    + Received  + 3
+build-and-test	E2E tests	
+build-and-test	E2E tests	    - Array []
+build-and-test	E2E tests	    + Array [
+build-and-test	E2E tests	    +   "content/review/microscope.json",
+build-and-test	E2E tests	    + ]
+build-and-test	E2E tests	
+build-and-test	E2E tests	      318 |     expect(served.length).toBeGreaterThan(1000);
+build-and-test	E2E tests	      319 |     const uncached = served.filter((file) => !urls.has(file));
+build-and-test	E2E tests	    > 320 |     expect(uncached, `${uncached.length} file(s) are served but never cached`).toEqual([]);
+build-and-test	E2E tests	          |                                                                                ^
+build-and-test	E2E tests	      321 |   });
+build-and-test	E2E tests	      322 | });
+build-and-test	E2E tests	      323 |
+build-and-test	E2E tests	        at /home/runner/work/PianoProject/PianoProject/app/tests/e2e/offline.spec.ts:320:80
+build-and-test	E2E tests	2026-09-28T00:50:38.8772803Z   ✘  400 tests/e2e/offline.spec.ts:302:3 › offline › and nothing under content/ is served without being precached (P19) (retry #1) (51ms)
+build-and-test	E2E tests	2026-09-28T00:50:41.3690304Z   ✓  401 tests/e2e/offline.spec.ts:325:3 › the error boundary (docs/04 §8) › an uncaught error shows a banner with copyable details (1.7s)
+build-and-test	E2E tests	2026-09-28T00:50:41.4002773Z   ✓  396 tests/e2e/offline.spec.ts:53:3 › offline › the whole app works with the network off after one online launch (29.6s)
+build-and-test	E2E tests	2026-09-28T00:50:42.5901388Z   ✓  402 tests/e2e/offline.spec.ts:354:3 › the error boundary (docs/04 §8) › an unhandled rejection is caught too, and counted (1.2s)
+build-and-test	E2E tests	2026-09-28T00:50:43.0324998Z   ✓  403 tests/e2e/offline.spec.ts:364:3 › the error boundary (docs/04 §8) › dismissing it leaves the app usable (1.6s)
+build-and-test	E2E tests	2026-09-28T00:50:44.1960237Z   ✓  404 tests/e2e/pdf-paper.spec.ts:27:3 › dark paper › the page is inverted like every other music screen (1.6s)
+build-and-test	E2E tests	2026-09-28T00:50:44.5651688Z   ✓  405 tests/e2e/pdf-paper.spec.ts:40:3 › light paper › is left alone (1.5s)
+build-and-test	E2E tests	2026-09-28T00:50:45.9785761Z   ✓  407 tests/e2e/pdf-paper.spec.ts:67:3 › turning the phone › is never said sideways, where it would be wrong (1.4s)
+build-and-test	E2E tests	2026-09-28T00:50:46.5582560Z   ✓  406 tests/e2e/pdf-paper.spec.ts:50:3 › turning the phone › is said once upright, and not sideways (2.3s)
+build-and-test	E2E tests	2026-09-28T00:50:47.9591158Z   ✓  408 tests/e2e/pdf.spec.ts:41:3 › PDF viewer › finds the two systems on the fixture page and steps between them (2.0s)
+build-and-test	E2E tests	2026-09-28T00:50:48.4339579Z   ✓  409 tests/e2e/pdf.spec.ts:53:3 › PDF viewer › tapping the right half of the page goes forward, the left half back (1.8s)
+build-and-test	E2E tests	2026-09-28T00:50:49.7554939Z   ✓  410 tests/e2e/pdf.spec.ts:66:3 › PDF viewer › offers manual, timed and loop, and hides Wait, mic and MIDI follow (1.8s)
+build-and-test	E2E tests	2026-09-28T00:50:50.9086027Z   ✓  411 tests/e2e/pdf.spec.ts:80:3 › PDF viewer › a corrected cut line is stored with the score and survives a reload (2.5s)
+build-and-test	E2E tests	2026-09-28T00:50:51.7901237Z   ✓  412 tests/e2e/pdf.spec.ts:99:3 › PDF viewer › dragging a cut line moves it and keeps the systems in order (2.0s)
+build-and-test	E2E tests	2026-09-28T00:50:56.7111112Z 2-bar window render, CPU ×4: median 42.2 ms (61.6, 57.2, 40.6, 42.2, 36.9)
+build-and-test	E2E tests	2026-09-28T00:50:56.7652412Z   ✓  413 tests/e2e/perf.spec.ts:58:3 › performance budgets (docs/01 §6) › a cold 2-bar window renders inside the first-render budget (5.8s)
+build-and-test	E2E tests	2026-09-28T00:51:21.0630020Z pre-rendered swap, CPU ×4: median 0.10 ms over 19 swaps (0.20, 0.10, 3.40, 0.20, 0.10, 0.10, 0.10, 0.20, 0.70, 0.90, 0.10, 0.10, 0.10, 0.10, 0.20, 0.10, 0.10, 0.10, 0.80)
+build-and-test	E2E tests	2026-09-28T00:51:21.0875544Z   ✓  414 tests/e2e/perf.spec.ts:83:3 › performance budgets (docs/01 §6) › a pre-rendered window swap still fits in a frame when throttled (29.3s)
+build-and-test	E2E tests	2026-09-28T00:51:24.0097697Z longest score (780 bars), CPU ×4: first window in 27087 ms
+build-and-test	E2E tests	2026-09-28T00:51:24.5135925Z   ✓  415 tests/e2e/perf.spec.ts:151:3 › performance budgets (docs/01 §6) › the longest score in the library opens on the Score screen (P19) (27.7s)
+build-and-test	E2E tests	2026-09-28T00:51:28.5084718Z Library · genre blues-boogie, CPU ×4: first row in 88.0 ms over 60 rows
+build-and-test	E2E tests	2026-09-28T00:51:28.6599242Z Library · genre chords-pop, CPU ×4: first row in 69.3 ms over 60 rows
+build-and-test	E2E tests	2026-09-28T00:51:28.7446737Z render timings, CPU ×4: input.toColourn=10 mean 12.1 ms · max 22.4 msosmd.proben=1 mean 87.9 ms · max 87.9 msosmd.probe.trimn=1 mean 0.0 ms · max 0.0 msosmd.render.backn=2 mean 62.3 ms · max 78.4 msosmd.render.frontn=4 mean 68.8 ms · max 199.9 msosmd.render.proben=1 mean 87.8 ms · max 87.8 mssession.framen=61 mean 1.0 ms · max 23.3 mswindow.swapColdn=4 mean 123.4 ms · max 328.1 ms
+build-and-test	E2E tests	2026-09-28T00:51:28.7804000Z   ✓  416 tests/e2e/perf.spec.ts:183:3 › performance budgets (docs/01 §6) › a played note is coloured within the input-to-colour budget (7.7s)
+build-and-test	E2E tests	2026-09-28T00:51:28.8030424Z Library · genre classical, CPU ×4: first row in 56.4 ms over 60 rows
+build-and-test	E2E tests	2026-09-28T00:51:28.9380804Z Library · genre core, CPU ×4: first row in 48.4 ms over 60 rows
+build-and-test	E2E tests	2026-09-28T00:51:29.0254904Z Library · genre film-game, CPU ×4: first row in 37.1 ms over 7 rows
+build-and-test	E2E tests	2026-09-28T00:51:29.1276658Z Library · genre holiday, CPU ×4: first row in 46.3 ms over 40 rows
+build-and-test	E2E tests	2026-09-28T00:51:29.2195922Z Library · genre hymns-gospel, CPU ×4: first row in 33.8 ms over 32 rows
+build-and-test	E2E tests	2026-09-28T00:51:29.3282419Z Library · genre improv-compose, CPU ×4: first row in 47.9 ms over 60 rows
+build-and-test	E2E tests	2026-09-28T00:51:29.4005818Z Library · genre jam, CPU ×4: first row in 18.4 ms over 10 rows
+build-and-test	E2E tests	2026-09-28T00:51:29.5361718Z Library · genre jazz, CPU ×4: first row in 54.8 ms over 60 rows
+build-and-test	E2E tests	2026-09-28T00:51:29.7194832Z Library · genre latin, CPU ×4: first row in 95.7 ms over 60 rows
+build-and-test	E2E tests	2026-09-28T00:51:29.8469854Z Library · genre ragtime, CPU ×4: first row in 59.6 ms over 60 rows
+build-and-test	E2E tests	2026-09-28T00:51:29.9725238Z Library · genre rock-metal, CPU ×4: first row in 60.3 ms over 34 rows
+build-and-test	E2E tests	2026-09-28T00:51:30.1224954Z Library · genre technique, CPU ×4: first row in 47.7 ms over 60 rows
+build-and-test	E2E tests	2026-09-28T00:51:30.2277628Z Library · genre theory-ear, CPU ×4: first row in 33.1 ms over 60 rows
+build-and-test	E2E tests	2026-09-28T00:51:30.4999919Z Library · search "e", CPU ×4: first row in 75.8 ms over 60 rows
+build-and-test	E2E tests	2026-09-28T00:51:30.6587972Z Library · search "ma", CPU ×4: first row in 66.0 ms over 60 rows
+build-and-test	E2E tests	2026-09-28T00:51:30.7963332Z Library · search "maj", CPU ×4: first row in 56.7 ms over 60 rows
+build-and-test	E2E tests	2026-09-28T00:51:30.9271355Z Library · search "major", CPU ×4: first row in 51.2 ms over 60 rows
+build-and-test	E2E tests	2026-09-28T00:51:30.9297036Z Library · slowest: genre latin at 95.7 ms (gate 600 = the 2-bar first-render budget under ×4)
+build-and-test	E2E tests	2026-09-28T00:51:30.9668907Z   ✓  417 tests/e2e/perf.spec.ts:334:3 › the two screens the catalog grew (T26) › the Library answers every genre filter, and the search box, inside the first-paint budget (6.4s)
+build-and-test	E2E tests	2026-09-28T00:51:31.1999258Z   ✓  419 tests/e2e/placement-branches.spec.ts:82:3 › the placement test › has branches to walk, and they are the ones in the catalog (139ms)
+build-and-test	E2E tests	2026-09-28T00:51:32.4099181Z lesson · 0.4 (1 options) first option in 42.0 ms; classical.4.shelf (52 options, 52 rows drawn) in 69.3 ms, CPU ×4
+build-and-test	E2E tests	2026-09-28T00:51:32.4324371Z   ✓  418 tests/e2e/perf.spec.ts:433:3 › the two screens the catalog grew (T26) › a lesson page with the most options is no slower to its first option than one with the fewest (3.6s)
+build-and-test	E2E tests	2026-09-28T00:51:32.4512620Z   ✓  420 tests/e2e/placement-branches.spec.ts:88:5 › the placement test › failing item 1 — Name a note on the staff. — starts at 1.1 (1.2s)
+build-and-test	E2E tests	2026-09-28T00:51:33.7648447Z   ✓  421 tests/e2e/placement-branches.spec.ts:88:5 › the placement test › failing item 3 — Play a five-finger pattern hands together. — starts at 2.1 (1.3s)
+build-and-test	E2E tests	2026-09-28T00:51:33.8726941Z   ✓  422 tests/e2e/placement-branches.spec.ts:88:5 › the placement test › failing item 2 — Clap a rhythm back. — starts at 1.2 (1.4s)
+build-and-test	E2E tests	2026-09-28T00:51:35.2767127Z   ✓  423 tests/e2e/placement-branches.spec.ts:88:5 › the placement test › failing item 4 — Play I–IV–V in G from chord symbols. — starts at 3.2 (1.5s)
+build-and-test	E2E tests	2026-09-28T00:51:35.3862923Z   ✓  424 tests/e2e/placement-branches.spec.ts:88:5 › the placement test › failing item 5 — Sight-read a four-bar phrase on the grand staff. — starts at 3.4 (1.5s)
+build-and-test	E2E tests	2026-09-28T00:51:36.7838926Z   ✓  425 tests/e2e/placement-branches.spec.ts:88:5 › the placement test › failing item 6 — Play the Petzold Minuet in G at 60% tempo. — starts at 3.4 (1.5s)
+build-and-test	E2E tests	2026-09-28T00:51:36.9022646Z   ✓  426 tests/e2e/placement-branches.spec.ts:88:5 › the placement test › failing item 7 — Play a C major scale hands together. — starts at 4.1 (1.5s)
+build-and-test	E2E tests	2026-09-28T00:51:38.4983730Z   ✓  427 tests/e2e/placement-branches.spec.ts:88:5 › the placement test › failing item 8 — Play a swung twelve-bar blues left hand. — starts at blues-boogie.4.1 (1.7s)
+build-and-test	E2E tests	2026-09-28T00:51:38.5613834Z   ✓  428 tests/e2e/placement-branches.spec.ts:114:3 › the placement test › passing everything starts at 4.3 (1.6s)
+build-and-test	E2E tests	2026-09-28T00:51:40.5525191Z   ✓  430 tests/e2e/plan.hierarchy.spec.ts:79:3 › Plan, on the phone upright › every row stays inside the budget, with every track on (R2) (2.0s)
+build-and-test	E2E tests	2026-09-28T00:51:40.6058401Z   ✓  429 tests/e2e/plan.hierarchy.spec.ts:51:3 › Plan, on the phone upright › the answer is the first thing on the screen, and the only filled one (R1, R3) (2.1s)
+build-and-test	E2E tests	2026-09-28T00:51:41.0479487Z   ✓  431 tests/e2e/plan.hierarchy.spec.ts:100:3 › Plan, on the phone upright › nothing on the screen is smaller than a thumb (R4) (478ms)
+build-and-test	E2E tests	2026-09-28T00:51:42.7095297Z   ✓  432 tests/e2e/plan.hierarchy.spec.ts:118:3 › Plan, on the phone upright › a track is named once over its rungs, with no id and no repetition (2.1s)
+build-and-test	E2E tests	2026-09-28T00:51:43.0585392Z   ✓  433 tests/e2e/plan.hierarchy.spec.ts:155:3 › Plan, on the phone upright › nothing above a rung shows more of its title than the rung itself does (2.0s)
+build-and-test	E2E tests	2026-09-28T00:51:43.8441599Z   ✓  434 tests/e2e/plan.hierarchy.spec.ts:186:3 › Plan, on the phone upright › the tracks sheet groups the ones that are off, and orders the ones that are on (1.1s)
+build-and-test	E2E tests	2026-09-28T00:51:44.2706519Z   ✓  435 tests/e2e/plan.spec.ts:29:3 › Plan › lists every stage with its completion, and expands to lessons (1.2s)
+build-and-test	E2E tests	2026-09-28T00:51:45.1605482Z   ✓  436 tests/e2e/plan.spec.ts:40:3 › Plan › opens a lesson far ahead of where the learner is — nothing is locked (1.3s)
+build-and-test	E2E tests	2026-09-28T00:51:45.6099124Z   ✓  437 tests/e2e/plan.spec.ts:48:3 › Plan › track chips filter the units, and the core path cannot be switched off (1.3s)
+build-and-test	E2E tests	2026-09-28T00:51:46.3000634Z   ✓  438 tests/e2e/plan.spec.ts:79:3 › the lesson page › shows the concept text, the options and the videos (1.1s)
+build-and-test	E2E tests	2026-09-28T00:51:47.4738905Z   ✓  440 tests/e2e/plan.spec.ts:110:3 › the lesson page › every option on a lesson offers a way to open it (1.2s)
+build-and-test	E2E tests	2026-09-28T00:51:47.8504008Z   ✓  439 tests/e2e/plan.spec.ts:93:3 › the lesson page › "I already know this" records the learner’s word with its own badge, and no item passed (2.2s)
+build-and-test	E2E tests	2026-09-28T00:51:48.7010370Z   ✓  441 tests/e2e/plan.spec.ts:141:3 › Skills review › lists every concept with a state and a way to drill it (1.2s)
+build-and-test	E2E tests	2026-09-28T00:51:49.3254335Z   ✓  442 tests/e2e/plan.spec.ts:161:3 › Skills review › lists every exercise for a concept, easiest first, collapsed after three (1.5s)
+build-and-test	E2E tests	2026-09-28T00:51:50.4803449Z   ✓  444 tests/e2e/plan.spec.ts:226:3 › Skills review › filters by stage (1.1s)
+build-and-test	E2E tests	2026-09-28T00:51:51.0692666Z   ✓  443 tests/e2e/plan.spec.ts:202:3 › Skills review › a concept with many exercises reaches the upper levels (2.4s)
+build-and-test	E2E tests	2026-09-28T00:51:51.8725183Z   ✓  445 tests/e2e/plan.spec.ts:233:3 › Skills review › drilling a concept opens whichever screen the item belongs on (1.4s)
+build-and-test	E2E tests	2026-09-28T00:51:53.0085299Z   ✓  446 tests/e2e/plan.spec.ts:251:3 › Plan obeys 04 §0 › what to practise next starts inside the first screenful, with every track on (R1) (1.9s)
+build-and-test	E2E tests	2026-09-28T00:51:53.0363490Z   ✓  447 tests/e2e/plan.spec.ts:275:3 › Plan obeys 04 §0 › a lesson card never repeats its unit title (D26) (1.1s)
+build-and-test	E2E tests	2026-09-28T00:51:54.3502249Z   ✓  449 tests/e2e/plan.spec.ts:319:3 › the lesson page obeys 04 §0 › the options start inside the first screenful (R1) (1.3s)
+build-and-test	E2E tests	2026-09-28T00:51:54.3869788Z   ✓  448 tests/e2e/plan.spec.ts:298:3 › Plan obeys 04 §0 › ordering tracks lives in the sheet, not on the screen (R3) (1.3s)
+build-and-test	E2E tests	2026-09-28T00:51:55.5278997Z   ✓  450 tests/e2e/plan.spec.ts:336:3 › the lesson page obeys 04 §0 › one filled button per option card and none in the chrome (R3) (1.2s)
+build-and-test	E2E tests	2026-09-28T00:51:55.6775148Z   ✓  451 tests/e2e/plan.spec.ts:345:3 › the lesson page obeys 04 §0 › the rarely-used things moved below the options (R1) (1.3s)
+build-and-test	E2E tests	2026-09-28T00:51:56.7331155Z   ✓  452 tests/e2e/plan.spec.ts:365:3 › Skills obeys 04 §0 › draws a page, not the whole curriculum (R1) (1.2s)
+build-and-test	E2E tests	2026-09-28T00:51:58.1352282Z   ✓  454 tests/e2e/plan.spec.ts:395:3 › Skills obeys 04 §0 › no filled button anywhere on the list (R3) (1.4s)
+build-and-test	E2E tests	2026-09-28T00:51:58.5745470Z   ✓  453 tests/e2e/plan.spec.ts:379:3 › Skills obeys 04 §0 › Show all reaches every concept, a page at a time (2.9s)
+build-and-test	E2E tests	2026-09-28T00:51:59.3080133Z   ✓  455 tests/e2e/plan.spec.ts:418:5 › the Tracks sheet is a list of tracks, not a stream of chips › each track keeps its own arrows — the owner’s phone upright (1.2s)
+build-and-test	E2E tests	2026-09-28T00:51:59.7009679Z   ✓  456 tests/e2e/plan.spec.ts:418:5 › the Tracks sheet is a list of tracks, not a stream of chips › each track keeps its own arrows — the owner’s phone sideways (1.1s)
+build-and-test	E2E tests	2026-09-28T00:52:00.4573615Z   ✓  457 tests/e2e/plan.spec.ts:418:5 › the Tracks sheet is a list of tracks, not a stream of chips › each track keeps its own arrows — a tablet (1.1s)
+build-and-test	E2E tests	2026-09-28T00:52:00.9078278Z   ✓  458 tests/e2e/progress.hierarchy.spec.ts:74:3 › Progress, on the phone upright › the answer is the first thing on the screen, with the map under it (R1) (1.2s)
+build-and-test	E2E tests	2026-09-28T00:52:01.6587938Z   ✓  459 tests/e2e/progress.hierarchy.spec.ts:101:3 › Progress, on the phone upright › the figure is the loudest thing on the screen (1.2s)
+build-and-test	E2E tests	2026-09-28T00:52:02.2875271Z   ✓  460 tests/e2e/progress.hierarchy.spec.ts:125:3 › Progress, on the phone upright › every row in the three lists stays inside the budget (R2) (1.4s)
+build-and-test	E2E tests	2026-09-28T00:52:03.1564430Z   ✓  461 tests/e2e/progress.hierarchy.spec.ts:149:3 › Progress, on the phone upright › nothing on the screen is drawn pressable and left dead (R4) (1.5s)
+build-and-test	E2E tests	2026-09-28T00:52:03.4067616Z   ✓  462 tests/e2e/progress.hierarchy.spec.ts:181:3 › Progress, on the phone upright › no filled box, because nothing here is done on most visits (R3) (1.1s)
+build-and-test	E2E tests	2026-09-28T00:52:04.3015507Z   ✓  463 tests/e2e/progress.hierarchy.spec.ts:191:3 › Today's card, on the phone upright › the button that starts the session is above the card (R1, R3) (1.1s)
+build-and-test	E2E tests	2026-09-28T00:52:04.5847701Z   ✓  464 tests/e2e/progress.hierarchy.spec.ts:209:3 › Today's card, on the phone upright › a long name takes a second line, but not beside a badge (R2) (1.2s)
+build-and-test	E2E tests	2026-09-28T00:52:05.5417554Z   ✓  465 tests/e2e/progress.hierarchy.spec.ts:265:3 › Today's card, on the phone upright › free play is not drawn as one of the rows, because it is not one (1.2s)
+build-and-test	E2E tests	2026-09-28T00:52:05.8875782Z   ✓  466 tests/e2e/progress.spec.ts:61:3 › Progress › shows the week, the heat-map and an empty repertoire on a fresh phone (1.3s)
+build-and-test	E2E tests	2026-09-28T00:52:06.8360534Z   ✓  467 tests/e2e/progress.spec.ts:69:3 › Progress › records a run and shows it in the history and the heat-map (1.3s)
+build-and-test	E2E tests	2026-09-28T00:52:07.1956725Z   ✓  468 tests/e2e/progress.spec.ts:88:3 › Progress › a piece passed and not played for two weeks comes back for review, in its own words (1.3s)
+build-and-test	E2E tests	2026-09-28T00:52:08.4067995Z   ✓  470 tests/e2e/progress.spec.ts:129:3 › Progress › refuses a file that is not a backup, with a sentence (1.2s)
+build-and-test	E2E tests	2026-09-28T00:52:08.8846486Z   ✓  469 tests/e2e/progress.spec.ts:99:3 › Progress › exports everything and restores it onto a wiped phone (2.0s)
+build-and-test	E2E tests	2026-09-28T00:52:10.3892772Z   ✓  472 tests/e2e/progress.spec.ts:154:3 › Settings › the offline-only switch persists (1.5s)
+build-and-test	E2E tests	2026-09-28T00:52:10.4861557Z   ✓  471 tests/e2e/progress.spec.ts:141:3 › Settings › groups every setting and persists a change across a reload (2.1s)
+build-and-test	E2E tests	2026-09-28T00:52:11.6641057Z   ✓  473 tests/e2e/progress.spec.ts:162:3 › Settings › reports the storage in use (1.2s)
+build-and-test	E2E tests	2026-09-28T00:52:11.9541642Z   ✓  474 tests/e2e/progress.spec.ts:170:3 › Diagnostics › reports the precache, the content counts and the errors (1.5s)
+build-and-test	E2E tests	2026-09-28T00:52:12.8980522Z   ✓  475 tests/e2e/progress.spec.ts:184:3 › Diagnostics › the debug report carries the new blocks (1.2s)
+build-and-test	E2E tests	2026-09-28T00:52:13.9281474Z   ✓  476 tests/e2e/progress.spec.ts:198:3 › the settings mirror (docs/01 §4.5) › a setting survives localStorage being cleared, because IndexedDB has it (1.9s)
+build-and-test	E2E tests	2026-09-28T00:52:15.8245493Z hot-cross-buns at 280px: bar holds score-bar-left, score-play, score-hear, score-mode, score-tempo-label, score-more
+build-and-test	E2E tests	2026-09-28T00:52:17.3575367Z hot-cross-buns at 320px: bar holds score-bar-left, score-play, score-hear, score-mode, score-tempo-label, score-more
+build-and-test	E2E tests	2026-09-28T00:52:19.2328060Z hot-cross-buns at 342px: bar holds score-bar-left, score-play, score-hear, score-mode, score-tempo-label, score-more
+build-and-test	E2E tests	2026-09-28T00:52:20.3886371Z hot-cross-buns at 360px: bar holds score-bar-left, score-play, score-hear, score-mode, score-group, score-tempo-label, score-more
+build-and-test	E2E tests	2026-09-28T00:52:22.4065189Z hot-cross-buns at 412px: bar holds score-bar-left, score-play, score-hear, score-mode, score-group, score-tempo-label, score-more
+build-and-test	E2E tests	2026-09-28T00:52:23.5212198Z hot-cross-buns at 740px: bar holds score-bar-left, score-play, score-hear, score-mode, score-group, score-tempo-label, score-more
+build-and-test	E2E tests	2026-09-28T00:52:24.9488696Z hot-cross-buns at 780px: bar holds score-bar-left, score-play, score-hear, score-mode, score-group, score-tempo-label, score-more
+build-and-test	E2E tests	2026-09-28T00:52:26.6688511Z hot-cross-buns at 1200px: bar holds score-bar-left, score-play, score-hear, score-mode, score-group, score-tempo-label, score-more
+build-and-test	E2E tests	2026-09-28T00:52:27.8565702Z when-the-saints.alternating at 280px: bar holds score-bar-left, score-play, score-hear, score-mode, score-tempo-label, score-more
+build-and-test	E2E tests	2026-09-28T00:52:29.5913201Z when-the-saints.alternating at 320px: bar holds score-bar-left, score-play, score-hear, score-mode, score-tempo-label, score-more
+build-and-test	E2E tests	2026-09-28T00:52:30.8964798Z when-the-saints.alternating at 342px: bar holds score-bar-left, score-play, score-hear, score-mode, score-tempo-label, score-more
+build-and-test	E2E tests	2026-09-28T00:52:32.7584983Z when-the-saints.alternating at 360px: bar holds score-bar-left, score-play, score-hear, score-mode, score-group, score-tempo-label, score-more
+build-and-test	E2E tests	2026-09-28T00:52:34.4797307Z when-the-saints.alternating at 412px: bar holds score-bar-left, score-play, score-hear, score-mode, score-group, score-tempo-label, score-more
+build-and-test	E2E tests	2026-09-28T00:52:36.0675290Z when-the-saints.alternating at 740px: bar holds score-bar-left, score-play, score-hear, score-mode, score-group, score-tempo-label, score-more
+build-and-test	E2E tests	2026-09-28T00:52:37.3693714Z when-the-saints.alternating at 780px: bar holds score-bar-left, score-play, score-hear, score-mode, score-group, score-tempo-label, score-more
+build-and-test	E2E tests	2026-09-28T00:52:38.8804882Z when-the-saints.alternating at 1200px: bar holds score-bar-left, score-play, score-hear, score-mode, score-group, score-tempo-label, score-more
+build-and-test	E2E tests	2026-09-28T00:52:38.9385054Z   ✓  478 tests/e2e/score.bar-targets.spec.ts:45:1 › every control on the bar is big enough to hit, and the row never wraps (25.0s)
+build-and-test	E2E tests	2026-09-28T00:52:41.0697054Z   ✓  479 tests/e2e/score.bar-targets.spec.ts:110:1 › a control that leaves the bar is still reachable, with a word for it (2.1s)
+build-and-test	E2E tests	2026-09-28T00:52:42.8011397Z   ✓  480 tests/e2e/score.blind.spec.ts:62:3 › a blind run › still hides the notation (1.7s)
+build-and-test	E2E tests	2026-09-28T00:52:44.5137058Z   ✓  481 tests/e2e/score.blind.spec.ts:70:3 › a blind run › counts you in where you can see it (1.7s)
+build-and-test	E2E tests	2026-09-28T00:52:51.2074640Z   ✓  482 tests/e2e/score.blind.spec.ts:119:3 › a blind run › keeps the beat where you can see it (6.7s)
+build-and-test	E2E tests	2026-09-28T00:52:53.5782520Z   ✓  483 tests/e2e/score.blind.spec.ts:130:3 › a blind run › still says which bar you are in (2.4s)
+build-and-test	E2E tests	2026-09-28T00:52:54.7580198Z   ✓  477 tests/e2e/score.arrange-race.spec.ts:142:1 › a run started at once is arranged the same as one started after the measurement (41.8s)
+build-and-test	E2E tests	2026-09-28T00:53:00.4905147Z   ✓  485 tests/e2e/score.countin.spec.ts:40:3 › the count-in you can see › it covers the notation but never the controls (5.7s)
+build-and-test	E2E tests	2026-09-28T00:53:00.5492282Z   ✓  484 tests/e2e/score.countin.spec.ts:24:3 › the count-in you can see › counts the bar over the notation, then gets out of the way (7.0s)
+build-and-test	E2E tests	2026-09-28T00:53:02.9572797Z   ✓  486 tests/e2e/score.countin.spec.ts:75:3 › the count-in you can see › the beat dot pulses in Tempo and stays away in Wait (2.5s)
+build-and-test	E2E tests	2026-09-28T00:53:04.9466813Z   ✓  487 tests/e2e/score.countin.spec.ts:82:3 › the count-in you can see › Wait mode shows no beat dot: there is no clock to show (4.4s)
+build-and-test	E2E tests	2026-09-28T00:53:05.0737736Z   ✓  488 tests/e2e/score.density.spec.ts:127:1 › a phone still gets the width filled (2.1s)
+build-and-test	E2E tests	2026-09-28T00:53:07.2648681Z   ✓  490 tests/e2e/score.density.spec.ts:138:3 › a 1512px screen keeps note spacing and centres it (2.2s)
+build-and-test	E2E tests	2026-09-28T00:53:07.3411642Z   ✓  489 tests/e2e/score.density.spec.ts:138:3 › a 900px screen keeps note spacing and centres it (2.4s)
+build-and-test	E2E tests	2026-09-28T00:53:08.8051305Z   -  491 tests/e2e/score.density.spec.ts:198:1 › a narrow system on a phone is centred, not pinned left
+build-and-test	E2E tests	2026-09-28T00:53:50.9379318Z   ✓  492 tests/e2e/score.fill.spec.ts:92:1 › and a piece being played uses the stage too (43.6s)
+build-and-test	E2E tests	2026-09-28T00:53:55.3116576Z   ✓  493 tests/e2e/score.fill.spec.ts:178:3 › every corpus piece uses the stage, upright (46.5s)
+build-and-test	E2E tests	2026-09-28T00:54:19.1305743Z seed 1: 45 actions, 0 long tasks, worst 0 ms, 20 s
+build-and-test	E2E tests	2026-09-28T00:54:19.1506215Z   ✓  495 tests/e2e/score.fuzz.spec.ts:191:3 › seed 1 on song.folk.mary-had-a-little-lamb at 390×844: forty-five things a restless learner does (23.8s)
+build-and-test	E2E tests	2026-09-28T00:54:35.3920964Z   ✓  494 tests/e2e/score.fill.spec.ts:178:3 › every corpus piece uses the stage, sideways (44.4s)
+build-and-test	E2E tests	2026-09-28T00:54:41.2754872Z seed 2: 45 actions, 1 long tasks, worst 54 ms, 19 s — 54 ms during "rotate" (#3)
+build-and-test	E2E tests	2026-09-28T00:54:41.3026188Z   ✓  496 tests/e2e/score.fuzz.spec.ts:191:3 › seed 2 on song.folk.mary-had-a-little-lamb at 390×844: forty-five things a restless learner does (22.1s)
+build-and-test	E2E tests	2026-09-28T00:54:57.1097675Z seed 3: 45 actions, 1 long tasks, worst 63 ms, 18 s — 63 ms during "rotate" (#30)
+build-and-test	E2E tests	2026-09-28T00:54:57.1534971Z   ✓  497 tests/e2e/score.fuzz.spec.ts:191:3 › seed 3 on song.folk.mary-had-a-little-lamb at 390×844: forty-five things a restless learner does (21.7s)
+build-and-test	E2E tests	2026-09-28T00:55:07.0420494Z seed 4: 45 actions, 0 long tasks, worst 0 ms, 22 s
+build-and-test	E2E tests	2026-09-28T00:55:07.0739998Z   ✓  498 tests/e2e/score.fuzz.spec.ts:191:3 › seed 4 on song.folk.twinkle.ht at 390×844: forty-five things a restless learner does (25.8s)
+build-and-test	E2E tests	2026-09-28T00:55:14.3424681Z   ✓  500 tests/e2e/score.head-height.spec.ts:150:3 › the score header is the same height all through a run at 342 px (7.2s)
+build-and-test	E2E tests	2026-09-28T00:55:22.1784997Z   ✓  501 tests/e2e/score.head-height.spec.ts:215:3 › a run restarted mid-piece keeps its engraving at 342 px (7.8s)
+build-and-test	E2E tests	2026-09-28T00:55:23.2165084Z seed 5: 45 actions, 2 long tasks, worst 91 ms, 22 s — 91 ms during "rotate" (#13); 65 ms during "rotate" (#33)
+build-and-test	E2E tests	2026-09-28T00:55:23.2762012Z   ✓  499 tests/e2e/score.fuzz.spec.ts:191:3 › seed 5 on song.folk.twinkle.ht at 900×1200: forty-five things a restless learner does (26.1s)
+build-and-test	E2E tests	2026-09-28T00:55:30.2952056Z   ✓  502 tests/e2e/score.head-height.spec.ts:270:3 › a run keeps its engraving when the stage's height changes at 342 px (8.1s)
+build-and-test	E2E tests	2026-09-28T00:55:30.4426447Z   ✓  503 tests/e2e/score.head-height.spec.ts:150:3 › the score header is the same height all through a run at 390 px (7.1s)
+build-and-test	E2E tests	2026-09-28T00:55:38.5158871Z   ✓  504 tests/e2e/score.head-height.spec.ts:215:3 › a run restarted mid-piece keeps its engraving at 390 px (8.2s)
+build-and-test	E2E tests	2026-09-28T00:55:38.7598482Z   ✓  505 tests/e2e/score.head-height.spec.ts:270:3 › a run keeps its engraving when the stage's height changes at 390 px (8.3s)
+build-and-test	E2E tests	2026-09-28T00:55:43.1341221Z   ✓  506 tests/e2e/score.head-height.spec.ts:317:1 › the hands control is reachable during a run when the bar has sent it to the sheet (4.6s)
+build-and-test	E2E tests	2026-09-28T00:55:46.2744772Z   ✓  508 tests/e2e/score.hearbar.spec.ts:63:3 › hearing one bar › a quick tap is not a long press (3.1s)
+build-and-test	E2E tests	2026-09-28T00:55:48.9344954Z   ✓  509 tests/e2e/score.ladder-route.spec.ts:45:1 › opens looping the whole exercise with the ladder on (2.6s)
+build-and-test	E2E tests	2026-09-28T00:55:51.1086880Z   ✓  507 tests/e2e/score.hearbar.spec.ts:44:3 › hearing one bar › plays it once and gives the screen back (12.3s)
+build-and-test	E2E tests	2026-09-28T00:55:51.7018525Z   ✓  510 tests/e2e/score.ladder-route.spec.ts:62:1 › clearing the loop switches the ladder off, exactly as it does by hand (2.8s)
+build-and-test	E2E tests	2026-09-28T00:55:53.2380235Z   ✓  511 tests/e2e/score.ladder-route.spec.ts:73:1 › does nothing at all in a mode with no tempo to move (2.1s)
+build-and-test	E2E tests	2026-09-28T00:55:53.9151990Z   ✓  512 tests/e2e/score.ladder-route.spec.ts:83:1 › does nothing in a performance, which is one pass and never repeats (2.2s)
+build-and-test	E2E tests	2026-09-28T00:55:55.3990192Z   ✓  513 tests/e2e/score.ladder-route.spec.ts:90:1 › and the screen opens with neither when nothing asks (2.1s)
+build-and-test	E2E tests	2026-09-28T00:55:59.2935194Z   ✓  514 tests/e2e/score.latch.spec.ts:82:3 › the first note starts the clock (T8) › a Tempo run on the screen keys holds on the first note until it is played (5.3s)
+build-and-test	E2E tests	2026-09-28T00:56:01.6994600Z   ✓  516 tests/e2e/score.latch.spec.ts:119:3 › the first note starts the clock (T8) › a key on the ready screen starts the run, and with no count-in is its first note (2.4s)
+build-and-test	E2E tests	2026-09-28T00:56:02.0000416Z   ✓  515 tests/e2e/score.latch.spec.ts:106:3 › the first note starts the clock (T8) › after a count-in, the count gets out of the way while it holds (6.6s)
+build-and-test	E2E tests	2026-09-28T00:56:04.1648842Z   ✓  517 tests/e2e/score.latch.spec.ts:130:3 › the first note starts the clock (T8) › Space starts a run from the ready screen (2.4s)
+build-and-test	E2E tests	2026-09-28T00:56:05.7364965Z   ✓  518 tests/e2e/score.latch.spec.ts:142:3 › the first note starts the clock (T8) › with no input, a Tempo run keeps time by the clock (3.7s)
+build-and-test	E2E tests	2026-09-28T00:56:10.7019827Z   ✓  519 tests/e2e/score.latch.spec.ts:157:3 › what the keys must not start (T8 review) › with a count-in, the key that starts the run is not its first note (6.5s)
+build-and-test	E2E tests	2026-09-28T00:56:12.2675048Z   ✓  520 tests/e2e/score.latch.spec.ts:168:3 › what the keys must not start (T8 review) › after a run finishes by itself, a key does not start another; ▶ does (6.5s)
+build-and-test	E2E tests	2026-09-28T00:56:14.4795932Z   ✓  521 tests/e2e/score.latch.spec.ts:192:3 › what the keys must not start (T8 review) › neither a key nor Space starts a run under the open ⋯ sheet (3.8s)
+build-and-test	E2E tests	2026-09-28T00:56:15.5093233Z   ✓  522 tests/e2e/score.layout.spec.ts:172:5 › score screen in landscape › 1 bar per window (3.2s)
+build-and-test	E2E tests	2026-09-28T00:56:17.7184756Z   ✓  523 tests/e2e/score.layout.spec.ts:172:5 › score screen in landscape › 2 bars per window (3.2s)
+build-and-test	E2E tests	2026-09-28T00:56:19.4185289Z   ✓  524 tests/e2e/score.layout.spec.ts:172:5 › score screen in landscape › 4 bars per window (3.9s)
+build-and-test	E2E tests	2026-09-28T00:56:24.6202688Z   ✓  525 tests/e2e/score.layout.spec.ts:233:7 › score screen in landscape › song.folk.hot-cross-buns: the next bar is on the glass while a bar is played, 1 per window (6.9s)
+build-and-test	E2E tests	2026-09-28T00:56:26.7553587Z   ✓  526 tests/e2e/score.layout.spec.ts:233:7 › score screen in landscape › song.folk.hot-cross-buns: the next bar is on the glass while a bar is played, 2 per window (7.3s)
+build-and-test	E2E tests	2026-09-28T00:56:32.1804965Z   ✓  527 tests/e2e/score.layout.spec.ts:233:7 › score screen in landscape › song.folk.hot-cross-buns: the next bar is on the glass while a bar is played, 4 per window (7.5s)
+build-and-test	E2E tests	2026-09-28T00:56:34.4560529Z   ✓  528 tests/e2e/score.layout.spec.ts:233:7 › score screen in landscape › song.folk.twinkle.rh: the next bar is on the glass while a bar is played, 1 per window (7.7s)
+build-and-test	E2E tests	2026-09-28T00:56:39.8303337Z   ✓  529 tests/e2e/score.layout.spec.ts:233:7 › score screen in landscape › song.folk.twinkle.rh: the next bar is on the glass while a bar is played, 2 per window (7.6s)
+build-and-test	E2E tests	2026-09-28T00:56:42.4320313Z   ✓  530 tests/e2e/score.layout.spec.ts:233:7 › score screen in landscape › song.folk.twinkle.rh: the next bar is on the glass while a bar is played, 4 per window (8.0s)
+build-and-test	E2E tests	2026-09-28T00:56:42.4356000Z   -  532 tests/e2e/score.layout.spec.ts:367:7 › score screen in landscape › screenshots › 1 bar per window, drawn
+build-and-test	E2E tests	2026-09-28T00:56:42.4357397Z   -  533 tests/e2e/score.layout.spec.ts:367:7 › score screen in landscape › screenshots › 2 bars per window, drawn
+build-and-test	E2E tests	2026-09-28T00:56:42.4384259Z   -  534 tests/e2e/score.layout.spec.ts:367:7 › score screen in landscape › screenshots › 4 bars per window, drawn
+build-and-test	E2E tests	2026-09-28T00:56:44.3665084Z   ✓  535 tests/e2e/score.layout.spec.ts:383:3 › score screen in landscape › the notation still has most of the height with the strip showing (1.9s)
+build-and-test	E2E tests	2026-09-28T00:56:46.5517660Z   ✓  536 tests/e2e/score.pickup-numbers.spec.ts:31:3 › bar numbers on a pickup piece › the loop says the same bar number the header does (2.2s)
+build-and-test	E2E tests	2026-09-28T00:56:48.6297845Z   ✓  537 tests/e2e/score.pickup-numbers.spec.ts:51:3 › bar numbers on a pickup piece › a piece with no pickup is numbered exactly as before (2.1s)
+build-and-test	E2E tests	2026-09-28T00:56:48.9989335Z   ✓  531 tests/e2e/score.layout.spec.ts:296:3 › score screen in landscape › the window holds more bars as the setting goes up, or the row says how many it holds (9.1s)
+build-and-test	E2E tests	2026-09-28T00:56:51.0285874Z   ✓  538 tests/e2e/score.readahead.spec.ts:41:3 › the beat of warning › Tempo marks the next step and the next key (2.4s)
+build-and-test	E2E tests	2026-09-28T00:56:53.3834977Z   ✓  539 tests/e2e/score.readahead.spec.ts:62:3 › the beat of warning › Wait mode draws neither: there is no clock to be ahead of (4.4s)
+build-and-test	E2E tests	2026-09-28T00:56:55.3137357Z   ✓  540 tests/e2e/score.readahead.spec.ts:78:3 › the picture and the engine are the same clock (A7) › the keys the strip wants are the notes the cursor is on (4.3s)
+build-and-test	E2E tests	2026-09-28T00:57:10.5998178Z   ✓  541 tests/e2e/score.renderer.fuzz.spec.ts:51:3 › seed 11: sixty moves of the cursor, and what must still hold (17.2s)
+build-and-test	E2E tests	2026-09-28T00:57:12.2629580Z   ✓  542 tests/e2e/score.renderer.fuzz.spec.ts:51:3 › seed 12: sixty moves of the cursor, and what must still hold (16.9s)
+build-and-test	E2E tests	2026-09-28T00:57:15.5181889Z   ✓  544 tests/e2e/score.rhythm-ladder.spec.ts:288:3 › rhythm first › and with the toggle off the same press is simply wrong (3.2s)
+build-and-test	E2E tests	2026-09-28T00:57:17.4181584Z   ✓  543 tests/e2e/score.rhythm-ladder.spec.ts:253:3 › rhythm first › accepts a wrong pitch on time and refuses a late one (6.8s)
+build-and-test	E2E tests	2026-09-28T00:57:29.2873551Z   ✓  545 tests/e2e/score.rhythm-ladder.spec.ts:309:3 › rhythm first › a rhythm run played perfectly is still not a pass of the piece (13.7s)
+build-and-test	E2E tests	2026-09-28T00:57:40.2614902Z   ✓  546 tests/e2e/score.rhythm-ladder.spec.ts:338:3 › the tempo ladder on a loop › a pass with misses in it slows down, and stops at the floor (22.8s)
+build-and-test	E2E tests	2026-09-28T00:57:50.6165400Z   ✓  547 tests/e2e/score.rhythm-ladder.spec.ts:369:3 › the tempo ladder on a loop › a pass nothing listened to holds the tempo, and says why (21.3s)
+build-and-test	E2E tests	2026-09-28T00:57:50.9635745Z   ✓  548 tests/e2e/score.rhythm-ladder.spec.ts:398:3 › the tempo ladder on a loop › a clean pass speeds up, and stops at the written tempo (10.7s)
+build-and-test	E2E tests	2026-09-28T00:57:53.4897628Z   ✓  549 tests/e2e/score.rhythm-ladder.spec.ts:422:3 › the tempo ladder on a loop › the Ladder row is not offered without a loop to climb (2.9s)
+build-and-test	E2E tests	2026-09-28T00:57:54.5663289Z   ✓  550 tests/e2e/score.rhythm-ladder.spec.ts:441:3 › the duet, where the hand is chosen › appears with R selected, names the hand, and is the Settings toggle (3.6s)
+build-and-test	E2E tests	2026-09-28T00:57:56.0525863Z   ✓  551 tests/e2e/score.rhythm-ladder.spec.ts:474:3 › the duet, where the hand is chosen › names the other hand when L is chosen (2.5s)
+build-and-test	E2E tests	2026-09-28T00:57:59.0824968Z   ✓  552 tests/e2e/score.rotate.spec.ts:460:7 › Hot Cross Buns · one bar per window · round › sideways, upright, and back: the music fills the screen each way up (4.5s)
+build-and-test	E2E tests	2026-09-28T00:58:00.4386211Z   ✓  553 tests/e2e/score.rotate.spec.ts:460:7 › Hot Cross Buns · one bar per window · the owner's phone › sideways, upright, and back: the music fills the screen each way up (4.4s)
+build-and-test	E2E tests	2026-09-28T00:58:03.3521985Z   ✓  554 tests/e2e/score.rotate.spec.ts:497:5 › Hot Cross Buns · two bars per window · round › a turn to upright gives the slots, each filling the width (4.2s)
+build-and-test	E2E tests	2026-09-28T00:58:04.9211081Z   ✓  555 tests/e2e/score.rotate.spec.ts:460:7 › Ode to Joy (theme) · one bar per window · round › sideways, upright, and back: the music fills the screen each way up (4.5s)
+build-and-test	E2E tests	2026-09-28T00:58:07.6491329Z   ✓  556 tests/e2e/score.rotate.spec.ts:460:7 › Ode to Joy (theme) · one bar per window · the owner's phone › sideways, upright, and back: the music fills the screen each way up (4.3s)
+build-and-test	E2E tests	2026-09-28T00:58:09.3399324Z   ✓  557 tests/e2e/score.rotate.spec.ts:497:5 › Ode to Joy (theme) · two bars per window · round › a turn to upright gives the slots, each filling the width (4.4s)
+build-and-test	E2E tests	2026-09-28T00:58:11.6295186Z   ✓  558 tests/e2e/score.rotate.spec.ts:523:3 › the edges the handoff names › turning while paused re-fits, and leaves the run paused (4.0s)
+build-and-test	E2E tests	2026-09-28T00:58:13.7076034Z   ✓  559 tests/e2e/score.rotate.spec.ts:554:3 › the edges the handoff names › two turns 100 ms apart: the second measurement wins (4.4s)
+build-and-test	E2E tests	2026-09-28T00:58:14.5745398Z   ✓  560 tests/e2e/score.rotate.spec.ts:584:3 › the edges the handoff names › Scroll: a turn engraves the piece again at the new width (2.9s)
+build-and-test	E2E tests	2026-09-28T00:58:19.1589775Z   ✓  562 tests/e2e/score.run.spec.ts:59:3 › a whole run › Wait mode: playing it correctly says the notes are ready, and where a pass is played (4.6s)
+build-and-test	E2E tests	2026-09-28T00:58:21.0470032Z   ✓  561 tests/e2e/score.rotate.spec.ts:634:3 › the edges the handoff names › the tour's miniature does not follow the window (7.3s)
+build-and-test	E2E tests	2026-09-28T00:58:26.0317452Z   ✓  564 tests/e2e/score.run.spec.ts:130:3 › a whole run › a run with a fumble is offered the loop, and it names the bar (4.9s)
+build-and-test	E2E tests	2026-09-28T00:58:31.0957140Z   ✓  565 tests/e2e/score.run.spec.ts:154:3 › a whole run › Wait mode: the score does not move on a wrong note (5.0s)
+build-and-test	E2E tests	2026-09-28T00:58:37.2691655Z   ✓  566 tests/e2e/score.run.spec.ts:210:3 › a whole run › Wait mode: playing it wrongly still finishes, with a lower score (6.2s)
+build-and-test	E2E tests	2026-09-28T00:58:38.7126629Z   ✓  563 tests/e2e/score.run.spec.ts:106:3 › a whole run › Keep tempo: played in time it passes, and says its tempo and its timing (19.5s)
+build-and-test	E2E tests	2026-09-28T00:58:41.1135880Z   ✓  567 tests/e2e/score.run.spec.ts:248:3 › stopping, restarting and looping › changing hands mid-run restarts it without a summary or a recorded run (3.8s)
+build-and-test	E2E tests	2026-09-28T00:58:44.5318228Z   ✓  569 tests/e2e/score.run.spec.ts:274:3 › stopping, restarting and looping › a loop lap puts the cursor back on the first bar (3.4s)
+build-and-test	E2E tests	2026-09-28T00:58:46.4122916Z   ✓  570 tests/e2e/score.screen.spec.ts:91:3 › score screen › opens a catalog item by id and renders it (1.8s)
+build-and-test	E2E tests	2026-09-28T00:58:47.7998019Z   ✓  571 tests/e2e/score.screen.spec.ts:97:3 › score screen › an unknown id says so instead of hanging (1.4s)
+build-and-test	E2E tests	2026-09-28T00:58:49.4351256Z   ✓  572 tests/e2e/score.screen.spec.ts:106:3 › score screen › a score whose file will not load says why, and takes the transport away (1.6s)
+build-and-test	E2E tests	2026-09-28T00:58:55.3503258Z   ✓  568 tests/e2e/score.run.spec.ts:262:3 › stopping, restarting and looping › Hear it reaching the end is not a run (16.6s)
+build-and-test	E2E tests	2026-09-28T00:58:56.3376759Z   ✓  573 tests/e2e/score.screen.spec.ts:137:3 › score screen › the control bar gets out of the way when it is taking room from the music (6.9s)
+build-and-test	E2E tests	2026-09-28T00:58:57.5982792Z   ✓  574 tests/e2e/score.screen.spec.ts:162:3 › score screen › the ⋯ sheet fits sideways without scrolling (08 §7.2) (2.2s)
+build-and-test	E2E tests	2026-09-28T00:58:59.9697044Z   ✓  576 tests/e2e/score.screen.spec.ts:225:3 › score screen › mode and input selectors change the run (2.3s)
+build-and-test	E2E tests	2026-09-28T00:59:02.3112845Z   ✓  577 tests/e2e/score.screen.spec.ts:235:3 › score screen › tempo slider moves the percentage and the bpm together (2.3s)
+build-and-test	E2E tests	2026-09-28T00:59:03.7465081Z   ✓  575 tests/e2e/score.screen.spec.ts:205:3 › score screen › and goes anyway, even when it is covering nothing (decision 5) (7.4s)
+build-and-test	E2E tests	2026-09-28T00:59:04.4167310Z   ✓  578 tests/e2e/score.screen.spec.ts:246:3 › score screen › hand focus buttons select one at a time (2.1s)
+build-and-test	E2E tests	2026-09-28T00:59:06.8752776Z   ✓  580 tests/e2e/score.screen.spec.ts:272:3 › score screen › layout is a segment that says which one you are in (2.4s)
+build-and-test	E2E tests	2026-09-28T00:59:07.0469896Z   ✓  579 tests/e2e/score.screen.spec.ts:255:3 › score screen › bars per window steps between 1 and 8 and redraws (3.3s)
+build-and-test	E2E tests	2026-09-28T00:59:10.9219721Z   ✓  581 tests/e2e/score.screen.spec.ts:283:3 › score screen › zoom, keyboard strip and playback destination all respond (4.0s)
+build-and-test	E2E tests	2026-09-28T00:59:13.3345656Z   ✓  583 tests/e2e/score.screen.spec.ts:422:3 › score screen › the metronome toggles while the sheet music is showing (2.4s)
+build-and-test	E2E tests	2026-09-28T00:59:14.8665280Z   ✓  582 tests/e2e/score.screen.spec.ts:367:3 › score screen › Size steps are monotone, and a setting draws one size whichever way it was reached (7.8s)
+build-and-test	E2E tests	2026-09-28T00:59:16.0814091Z   ✓  584 tests/e2e/score.screen.spec.ts:439:3 › score screen › play, pause and restart (2.7s)
+build-and-test	E2E tests	2026-09-28T00:59:17.4364033Z   ✓  585 tests/e2e/score.screen.spec.ts:454:3 › score screen › Hear it plays the piece without moving the mode select (B1) (2.5s)
+build-and-test	E2E tests	2026-09-28T00:59:18.6186198Z   ✓  586 tests/e2e/score.screen.spec.ts:482:5 › score screen › says once that the app is playing the left hand (B3) (2.5s)
+build-and-test	E2E tests	2026-09-28T00:59:19.9404928Z   ✓  587 tests/e2e/score.screen.spec.ts:482:5 › score screen › says once that the app is playing the right hand (B3) (2.5s)
+build-and-test	E2E tests	2026-09-28T00:59:20.7678799Z   ✓  588 tests/e2e/score.screen.spec.ts:502:3 › score screen › and says nothing when there is no other hand to play (B3) (2.1s)
+build-and-test	E2E tests	2026-09-28T00:59:22.4744911Z   ✓  589 tests/e2e/score.screen.spec.ts:508:3 › score screen › pressing Play during a Hear it run gives you your own mode back (2.5s)
+build-and-test	E2E tests	2026-09-28T00:59:23.1017638Z   ✓  590 tests/e2e/score.screen.spec.ts:521:3 › score screen › back from a deep link returns to the default tab (2.3s)
+build-and-test	E2E tests	2026-09-28T00:59:38.5543802Z   ✓  592 tests/e2e/score.screen.spec.ts:581:3 › score screen › a Keep tempo run nothing listened to marks no note and flashes no key (L42) (15.4s)
+build-and-test	E2E tests	2026-09-28T00:59:39.3341883Z   ✓  591 tests/e2e/score.screen.spec.ts:531:3 › score screen › a Keep tempo run nothing listened to says it was not measured, and asks how it went (16.8s)
+build-and-test	E2E tests	2026-09-28T00:59:54.0061463Z   ✓  593 tests/e2e/score.screen.spec.ts:597:3 › score screen › Hear it marks no note while it plays the piece (L42) (15.4s)
+build-and-test	E2E tests	2026-09-28T00:59:55.2675023Z   ✓  594 tests/e2e/score.screen.spec.ts:613:3 › score screen › the summary puts the screen behind it out of reach (15.9s)
+build-and-test	E2E tests	2026-09-28T01:00:09.9061595Z   ✓  595 tests/e2e/score.screen.spec.ts:638:3 › score screen › the summary self-report records an answer (15.9s)
+build-and-test	E2E tests	2026-09-28T01:00:11.5217605Z   ✓  596 tests/e2e/score.screen.spec.ts:665:3 › score screen › “Slower” restarts ten percent down (16.2s)
+build-and-test	E2E tests	2026-09-28T01:00:11.9768594Z   ✓  597 tests/e2e/score.screen.spec.ts:688:3 › the keyboard strip shows the piece, not the whole piano › draws the range the music uses (2.1s)
+build-and-test	E2E tests	2026-09-28T01:00:13.6818422Z   ✓  598 tests/e2e/score.screen.spec.ts:702:3 › the keyboard strip shows the piece, not the whole piano › the key it is waiting for is wide enough to hit, and on the screen (2.1s)
+build-and-test	E2E tests	2026-09-28T01:00:14.4525111Z   ✓  599 tests/e2e/score.screen.spec.ts:720:3 › the sheet fills the screen (P19b) › a two-bar window is not a third of a phone screen (2.5s)
+build-and-test	E2E tests	2026-09-28T01:00:16.8831499Z   ✓  600 tests/e2e/score.screen.spec.ts:755:3 › the sheet fills the screen (P19b) › the zoom buttons still do something, now that the fit does the work (3.2s)
+build-and-test	E2E tests	2026-09-28T01:00:19.7870632Z   ✓  602 tests/e2e/score.screen.spec.ts:878:3 › naming the note it is waiting for › says nothing until the setting is on (2.9s)
+build-and-test	E2E tests	2026-09-28T01:00:23.9095132Z   ✓  603 tests/e2e/score.screen.spec.ts:887:3 › naming the note it is waiting for › names it once the setting is on, and only in Wait mode (4.1s)
+build-and-test	E2E tests	2026-09-28T01:00:25.7118722Z   ✓  601 tests/e2e/score.screen.spec.ts:808:3 › the fit says when it has settled (T41) › a stage that loses height is unsettled until the fit at the new engraving has landed (11.2s)
+build-and-test	E2E tests	2026-09-28T01:00:30.7786910Z   ✓  604 tests/e2e/score.screen.spec.ts:920:3 › naming the note it is waiting for › in a flat key it names the flats the score writes (T41) (6.9s)
+build-and-test	E2E tests	2026-09-28T01:00:32.3635546Z   ✓  605 tests/e2e/score.screen.spec.ts:957:3 › naming the note it is waiting for › the ribbon names the flats the score writes too (C1, U44) (6.6s)
+build-and-test	E2E tests	2026-09-28T01:00:32.9656755Z   ✓  606 tests/e2e/score.screen.spec.ts:1003:3 › blind mode › hides the notation and keeps everything else (2.2s)
+build-and-test	E2E tests	2026-09-28T01:00:34.8633510Z   ✓  607 tests/e2e/score.screen.spec.ts:1049:3 › blind mode › showing the score again brings the notation back (2.5s)
+build-and-test	E2E tests	2026-09-28T01:00:36.6865495Z   ✓  608 tests/e2e/score.screen.spec.ts:1076:3 › a run interrupted by something else on the phone › Tempo pauses when the page is hidden and says how long you were away (3.7s)
+build-and-test	E2E tests	2026-09-28T01:00:37.1852472Z   ✓  609 tests/e2e/score.screen.spec.ts:1106:3 › a run interrupted by something else on the phone › Wait mode is left alone — it has no timetable to lose (2.3s)
+build-and-test	E2E tests	2026-09-28T01:00:40.9457038Z   ✓  610 tests/e2e/score.sheet-rows.spec.ts:107:1 › a control sits beside its words, not on a line under them (4.2s)
+build-and-test	E2E tests	2026-09-28T01:00:42.3165077Z   ✓  612 tests/e2e/score.slide.spec.ts:31:3 › sideways › holds the cursor a third across once the piece is under way (1.4s)
+build-and-test	E2E tests	2026-09-28T01:00:43.4909231Z   ✓  613 tests/e2e/score.slide.spec.ts:54:3 › sideways › draws more bars than the window, so there is something to read into (1.2s)
+build-and-test	E2E tests	2026-09-28T01:00:44.7279554Z   ✓  614 tests/e2e/score.slide.spec.ts:74:3 › upright › does not slide: the two slots do the reading ahead (1.2s)
+build-and-test	E2E tests	2026-09-28T01:00:48.1479925Z   ✓  615 tests/e2e/score.slots.spec.ts:61:3 › upright: stacked slots, karaoke style › the system being played is never re-drawn, and the next bar is always there (3.4s)
+build-and-test	E2E tests	2026-09-28T01:00:51.1196304Z   ✓  616 tests/e2e/score.slots.spec.ts:119:3 › upright: stacked slots, karaoke style › every drawn slot is drawn at the same size (3.0s)
+build-and-test	E2E tests	2026-09-28T01:00:52.2567342Z   ✓  617 tests/e2e/score.slots.spec.ts:143:3 › sideways: one system › does not split the stage in two (1.1s)
+build-and-test	E2E tests	2026-09-28T01:00:58.5724670Z   ✓  611 tests/e2e/score.sheet-rows.spec.ts:170:1 › no control in the sheet is split across lines (21.4s)
+build-and-test	E2E tests	2026-09-28T01:01:02.1792701Z   ✓  618 tests/e2e/score.spec.ts:22:3 › score model against a real rendered cursor › steps.length equals the number of cursor.next() calls, on every fixture (9.9s)
+build-and-test	E2E tests	2026-09-28T01:01:03.3271957Z   ✓  620 tests/e2e/score.spec.ts:55:3 › score model against a real rendered cursor › a repeat is unrolled: more played bars than printed ones (1.1s)
+build-and-test	E2E tests	2026-09-28T01:01:04.6575247Z   ✓  621 tests/e2e/score.spec.ts:63:3 › windowing › the window follows the cursor and holds exactly N bars (1.3s)
+build-and-test	E2E tests	2026-09-28T01:01:05.8701750Z   ✓  622 tests/e2e/score.spec.ts:77:3 › windowing › bars per window is clamped to 1..8 (1.2s)
+build-and-test	E2E tests	2026-09-28T01:01:07.2018917Z   ✓  623 tests/e2e/score.spec.ts:87:3 › windowing › the window jumps back on a repeat, following the printed page (1.3s)
+build-and-test	E2E tests	2026-09-28T01:01:07.6517633Z   ✓  619 tests/e2e/score.spec.ts:41:3 › score model against a real rendered cursor › no fixture throws while rendering (9.0s)
+build-and-test	E2E tests	2026-09-28T01:01:08.4514594Z   ✓  624 tests/e2e/score.spec.ts:107:3 › windowing › the cursor band sits over the notes and moves with the step (1.2s)
+build-and-test	E2E tests	2026-09-28T01:01:08.8240776Z   ✓  625 tests/e2e/score.spec.ts:126:3 › note elements and colouring › every note of the current step resolves to a drawn element (1.2s)
+build-and-test	E2E tests	2026-09-28T01:01:09.5656224Z   ✓  626 tests/e2e/score.spec.ts:136:3 › note elements and colouring › each note of a chord gets its own element, so they can differ (1.1s)
+build-and-test	E2E tests	2026-09-28T01:01:09.8594865Z   ✓  627 tests/e2e/score.spec.ts:152:3 › note elements and colouring › the current step is painted by class, not by re-rendering (1.0s)
+build-and-test	E2E tests	2026-09-28T01:01:10.7395316Z   ✓  628 tests/e2e/score.spec.ts:161:3 › note elements and colouring › drawn notes carry the hand the model assigned, cross-staff included (1.1s)
+build-and-test	E2E tests	2026-09-28T01:01:11.0353638Z   ✓  629 tests/e2e/score.spec.ts:172:3 › note elements and colouring › hand focus dims the other hand (1.2s)
+build-and-test	E2E tests	2026-09-28T01:01:11.9269155Z   ✓  630 tests/e2e/score.spec.ts:187:3 › layouts › scroll layout renders the whole piece at once (1.2s)
+build-and-test	E2E tests	2026-09-28T01:01:12.2450651Z   ✓  631 tests/e2e/score.spec.ts:197:3 › layouts › window layout draws only the window (1.2s)
+build-and-test	E2E tests	2026-09-28T01:01:13.1667477Z 2-bar window render: median 11.1 ms (samples 12.6, 17.3, 10.0, 11.1, 7.4 ms)
+build-and-test	E2E tests	2026-09-28T01:01:13.1949829Z   ✓  632 tests/e2e/score.spec.ts:224:3 › render timing budget › a 2-bar window renders in under 150 ms (1.3s)
+build-and-test	E2E tests	2026-09-28T01:01:13.4494129Z pre-rendered window swap: 0.60 ms
+build-and-test	E2E tests	2026-09-28T01:01:13.4798380Z   ✓  633 tests/e2e/score.spec.ts:246:3 › double buffering › advancing into the pre-rendered next window costs well under a frame (1.2s)
+build-and-test	E2E tests	2026-09-28T01:01:14.8028663Z   ✓  635 tests/e2e/score.spec.ts:290:3 › the dev route itself › arrow keys step the cursor and 1-8 set bars per window (1.3s)
+build-and-test	E2E tests	2026-09-28T01:01:15.0043810Z   ✓  634 tests/e2e/score.spec.ts:280:3 › the dev route itself › is reachable from Settings and lists every bundled fixture (1.8s)
+build-and-test	E2E tests	2026-09-28T01:01:15.3442722Z   ✓  636 tests/e2e/score.spec.ts:305:3 › the dev route itself › OSMD stays out of the entry bundle (526ms)
+build-and-test	E2E tests	2026-09-28T01:01:16.1271316Z   ✓  637 tests/e2e/score.spec.ts:322:5 › window layout holds its shape › the fitted score stays inside the viewport (landscape) (1.1s)
+build-and-test	E2E tests	2026-09-28T01:01:16.3993505Z   ✓  638 tests/e2e/score.spec.ts:322:5 › window layout holds its shape › the fitted score stays inside the viewport (portrait) (1.0s)
+build-and-test	E2E tests	2026-09-28T01:01:16.3994655Z   -  640 tests/e2e/score.spec.ts:485:9 › screenshots › chords-ties · 1 bar(s) · landscape
+build-and-test	E2E tests	2026-09-28T01:01:16.3997565Z   -  641 tests/e2e/score.spec.ts:485:9 › screenshots › chords-ties · 1 bar(s) · portrait
+build-and-test	E2E tests	2026-09-28T01:01:16.3998365Z   -  642 tests/e2e/score.spec.ts:485:9 › screenshots › chords-ties · 2 bar(s) · landscape
+build-and-test	E2E tests	2026-09-28T01:01:16.3999186Z   -  643 tests/e2e/score.spec.ts:485:9 › screenshots › chords-ties · 2 bar(s) · portrait
+build-and-test	E2E tests	2026-09-28T01:01:16.4000439Z   -  644 tests/e2e/score.spec.ts:485:9 › screenshots › chords-ties · 4 bar(s) · landscape
+build-and-test	E2E tests	2026-09-28T01:01:16.4001215Z   -  645 tests/e2e/score.spec.ts:485:9 › screenshots › chords-ties · 4 bar(s) · portrait
+build-and-test	E2E tests	2026-09-28T01:01:16.4002023Z   -  646 tests/e2e/score.spec.ts:485:9 › screenshots › tuplets-68 · 1 bar(s) · landscape
+build-and-test	E2E tests	2026-09-28T01:01:16.4002783Z   -  647 tests/e2e/score.spec.ts:485:9 › screenshots › tuplets-68 · 1 bar(s) · portrait
+build-and-test	E2E tests	2026-09-28T01:01:16.4003731Z   -  648 tests/e2e/score.spec.ts:485:9 › screenshots › tuplets-68 · 2 bar(s) · landscape
+build-and-test	E2E tests	2026-09-28T01:01:16.4004563Z   -  649 tests/e2e/score.spec.ts:485:9 › screenshots › tuplets-68 · 2 bar(s) · portrait
+build-and-test	E2E tests	2026-09-28T01:01:16.4005392Z   -  650 tests/e2e/score.spec.ts:485:9 › screenshots › tuplets-68 · 4 bar(s) · landscape
+build-and-test	E2E tests	2026-09-28T01:01:16.4006190Z   -  651 tests/e2e/score.spec.ts:485:9 › screenshots › tuplets-68 · 4 bar(s) · portrait
+build-and-test	E2E tests	2026-09-28T01:01:18.4957442Z   ✓  652 tests/e2e/score.spec.ts:579:5 › the score control bar › upright, 360: one row, seven controls at most (2.1s)
+build-and-test	E2E tests	2026-09-28T01:01:20.3984657Z   ✓  653 tests/e2e/score.spec.ts:579:5 › the score control bar › upright: one row, seven controls at most (1.9s)
+build-and-test	E2E tests	2026-09-28T01:01:21.0821851Z   ✓  639 tests/e2e/score.spec.ts:383:3 › window layout holds its shape › bars per window changes what the window holds, or says why not (4.9s)
+build-and-test	E2E tests	2026-09-28T01:01:22.3858784Z   ✓  654 tests/e2e/score.spec.ts:579:5 › the score control bar › sideways, 780: one row, seven controls at most (2.0s)
+build-and-test	E2E tests	2026-09-28T01:01:23.1356363Z   ✓  655 tests/e2e/score.spec.ts:579:5 › the score control bar › sideways: one row, seven controls at most (2.0s)
+build-and-test	E2E tests	2026-09-28T01:01:24.8559302Z   ✓  656 tests/e2e/score.spec.ts:579:5 › the score control bar › tablet: one row, seven controls at most (2.4s)
+build-and-test	E2E tests	2026-09-28T01:01:27.1173408Z   ✓  658 tests/e2e/score.spec.ts:716:3 › the score control bar › sideways, the whole menu is on the screen at once (2.2s)
+build-and-test	E2E tests	2026-09-28T01:01:27.4711596Z   ✓  657 tests/e2e/score.spec.ts:621:3 › the score control bar › everything that left the bar is behind ⋯ and still works (4.3s)
+build-and-test	E2E tests	2026-09-28T01:01:29.5704073Z   ✓  659 tests/e2e/score.spec.ts:737:3 › the score control bar › the tempo label opens a sheet with the slider and a typed bpm (2.4s)
+build-and-test	E2E tests	2026-09-28T01:01:31.3345586Z   ✓  660 tests/e2e/score.states.spec.ts:187:3 › the score screen, one state and one event at a time › a paused run says it is paused, in Wait (3.8s)
+build-and-test	E2E tests	2026-09-28T01:01:34.9378053Z   ✓  661 tests/e2e/score.states.spec.ts:213:3 › the score screen, one state and one event at a time › a paused run says it is paused, in Keep tempo (5.3s)
+build-and-test	E2E tests	2026-09-28T01:01:36.6666702Z   ✓  662 tests/e2e/score.states.spec.ts:236:3 › the score screen, one state and one event at a time › a bar preview cannot strand the screen in Listen (5.3s)
+build-and-test	E2E tests	2026-09-28T01:01:40.1745067Z   ✓  664 tests/e2e/score.states.spec.ts:312:3 › the score screen, one state and one event at a time › hiding the page pauses a Hear it run (3.5s)
+build-and-test	E2E tests	2026-09-28T01:01:43.8135217Z   ✓  663 tests/e2e/score.states.spec.ts:279:3 › the score screen, one state and one event at a time › taking the input away does not leave a run holding for ever (8.9s)
+build-and-test	E2E tests	2026-09-28T01:01:46.0205282Z   ✓  665 tests/e2e/score.states.spec.ts:337:3 › the score screen, one state and one event at a time › a hand chosen after a refusal starts the run the refusal asked for (5.8s)
+build-and-test	E2E tests	2026-09-28T01:01:46.5735285Z   ✓  666 tests/e2e/score.states.spec.ts:365:3 › the score screen, one state and one event at a time › the loop prompt goes when the loop it asks for is set (2.7s)
+build-and-test	E2E tests	2026-09-28T01:01:53.5585137Z   ✓  667 tests/e2e/score.states.spec.ts:393:3 › the score screen, one state and one event at a time › leaving during a demonstration leaves nothing to carry on from (7.5s)
+build-and-test	E2E tests	2026-09-28T01:02:05.6787472Z   ✓  669 tests/e2e/score.states.spec.ts:612:3 › the five choices, decided (T33) › C1: Hear it during a run puts the run back where it was, paused (12.1s)
+build-and-test	E2E tests	2026-09-28T01:02:19.8918314Z 
+build-and-test	E2E tests	2026-09-28T01:02:19.8920013Z T31 probe, 37 cells:
+build-and-test	E2E tests	2026-09-28T01:02:19.8922094Z idle | mode->wait | running=false | select=wait | engine=- | paused=false | armed=false | play=▶ | hear=Hear it | loop=Off | input=- | summary=false | line="Play the first note to start" | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.8925615Z idle | mode->tempo | running=false | select=tempo | engine=- | paused=false | armed=false | play=▶ | hear=Hear it | loop=Off | input=- | summary=false | line="Press any key to count in" | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.8927943Z idle | mode->free | running=false | select=free | engine=- | paused=false | armed=false | play=▶ | hear=Hear it | loop=Off | input=- | summary=false | line="Play the first note to start" | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.8930305Z idle | mode->listen | running=false | select=listen | engine=- | paused=false | armed=false | play=▶ | hear=Hear it | loop=Off | input=- | summary=false | line="Press Hear it and follow the cursor." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.8933871Z idle/wait | MIDI note | running=true | select=wait | engine=wait | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play the first note. Nothing moves until you do." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.8936605Z running/wait | right note | running=true | select=wait | engine=wait | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play the first note. Nothing moves until you do." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.8939428Z running/wait | wrong note | running=true | select=wait | engine=wait | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play the first note. Nothing moves until you do." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.8942299Z running/wait | pause | running=true | select=wait | engine=wait | paused=true | armed=false | play=▶ | hear=Hear it | loop=Off | input=midi | summary=false | line="Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.8945435Z paused/wait | right note | running=true | select=wait | engine=wait | paused=true | armed=false | play=▶ | hear=Hear it | loop=Off | input=midi | summary=false | line="Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.8948383Z paused/wait | metronome on | running=true | select=wait | engine=wait | paused=true | armed=false | play=▶ | hear=Hear it | loop=Off | input=midi | summary=false | line="Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.8951390Z paused/wait | hands->both (already chosen) | running=true | select=wait | engine=wait | paused=true | armed=false | play=▶ | hear=Hear it | loop=Off | input=midi | summary=false | line="Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.8954402Z paused/wait | hands->R (C2) | running=true | select=wait | engine=wait | paused=true | armed=false | play=▶ | hear=Hear it | loop=Off | input=midi | summary=false | line="Restarted at bar 1 with the right hand — ▶ when ready" | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.8957168Z restarted+paused/wait | resume | running=true | select=wait | engine=wait | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play the first note. Nothing moves until you do." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.8959978Z running/wait | pause (2) | running=true | select=wait | engine=wait | paused=true | armed=false | play=▶ | hear=Hear it | loop=Off | input=midi | summary=false | line="Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.8962639Z paused/wait | resume | running=true | select=wait | engine=wait | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play the first note. Nothing moves until you do." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.8965707Z running/wait | hands->L (refused) | running=false | select=wait | engine=- | paused=false | armed=false | play=▶ | hear=Hear it | loop=Off | input=- | summary=false | line="Play the first note to start" | status="Nothing for the left hand in this piece — choose R or Both"
+build-and-test	E2E tests	2026-09-28T01:02:19.8968839Z refused | hands->both | running=true | select=wait | engine=wait | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play the first note. Nothing moves until you do." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.8971845Z running/wait | input->screen keys | running=true | select=wait | engine=wait | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=keys | summary=false | line="Play the first note. Nothing moves until you do." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.8974915Z running/wait | Hear it (C1: run set aside) | running=true | select=wait | engine=listen | paused=false | armed=false | play=▶ | hear=Stop | loop=Off | input=midi | summary=false | line="Playing it to you — your run waits at bar 1. Stop to go back to it." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.8981524Z hearing over a run | Hear it again (C1: run back) | running=true | select=wait | engine=wait | paused=true | armed=false | play=▶ | hear=Hear it | loop=Off | input=midi | summary=false | line="Paused at bar 1 — ▶ to carry on" | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.8987129Z paused/wait | Hear it (C1: set aside again) | running=true | select=wait | engine=listen | paused=false | armed=false | play=▶ | hear=Stop | loop=Off | input=midi | summary=false | line="Playing it to you — your run waits at bar 1. Stop to go back to it." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.8995733Z hearing over a run | page hidden | running=true | select=wait | engine=listen | paused=true | armed=false | play=▶ | hear=Stop | loop=Off | input=midi | summary=false | line="Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.9000479Z hearing over a run+hidden | page shown | running=true | select=wait | engine=listen | paused=true | armed=false | play=▶ | hear=Stop | loop=Off | input=midi | summary=false | line="Paused — you were away 1 s. ▶ to carry on, or Start again in ⋯ to go back to the beginning." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.9004231Z hearing over a run | play (C1: the run carries on) | running=true | select=wait | engine=wait | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play the first note. Nothing moves until you do." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.9007072Z running/wait | page hidden | running=true | select=wait | engine=wait | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play the first note. Nothing moves until you do." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.9009733Z hidden/wait | page shown | running=true | select=wait | engine=wait | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play the first note. Nothing moves until you do." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.9012398Z running/tempo | mode->tempo (restart) | running=true | select=tempo | engine=tempo | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="The count-in clicks, then play along." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.9015442Z armed/tempo | count-in ended | running=true | select=tempo | engine=tempo | paused=false | armed=true | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play your first note to start" | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.9018890Z armed/tempo | page hidden | running=true | select=tempo | engine=tempo | paused=true | armed=true | play=▶ | hear=Hear it | loop=Off | input=midi | summary=false | line="Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.9021970Z armed+hidden/tempo | page shown | running=true | select=tempo | engine=tempo | paused=true | armed=true | play=▶ | hear=Hear it | loop=Off | input=midi | summary=false | line="Paused — you were away 1 s. ▶ to carry on, or Start again in ⋯ to go back to the beginning." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.9025242Z armed+paused/tempo | resume | running=true | select=tempo | engine=tempo | paused=false | armed=true | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play your first note to start" | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.9028089Z armed/tempo | first note | running=true | select=tempo | engine=tempo | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="The count-in clicks, then play along." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.9030709Z running/tempo | loop set | running=true | select=tempo | engine=tempo | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Bars 1–1 ✕ | input=midi | summary=false | line="The count-in clicks, then play along." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.9034425Z running/tempo+loop | clear loop | running=true | select=tempo | engine=tempo | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="The count-in clicks, then play along." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.9037584Z running/free | mode->free (restart) | running=true | select=free | engine=free | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play. The page follows you; nothing is marked." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.9040445Z running/free | pause | running=true | select=free | engine=free | paused=true | armed=false | play=▶ | hear=Hear it | loop=Off | input=midi | summary=false | line="Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.9043156Z paused/free | resume | running=true | select=free | engine=free | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play. The page follows you; nothing is marked." | status=""
+build-and-test	E2E tests	2026-09-28T01:02:19.9044364Z 
+build-and-test	E2E tests	2026-09-28T01:02:19.9240773Z   ✓  668 tests/e2e/score.states.spec.ts:422:3 › the score screen, one state and one event at a time › probe: what each event does in each state (33.3s)
+build-and-test	E2E tests	2026-09-28T01:02:31.0758528Z   ✓  671 tests/e2e/score.states.spec.ts:680:3 › the five choices, decided (T33) › T40: a performance with Hear it inside it is kept as practice (11.1s)
+build-and-test	E2E tests	2026-09-28T01:02:32.1668605Z   ✓  670 tests/e2e/score.states.spec.ts:650:3 › the five choices, decided (T33) › C1: a demonstration that plays to its end puts the run back too (26.5s)
+build-and-test	E2E tests	2026-09-28T01:02:35.9485049Z   ✓  672 tests/e2e/score.states.spec.ts:729:3 › the five choices, decided (T33) › C1: ▶ during the demonstration carries the run on from where it was (4.9s)
+build-and-test	E2E tests	2026-09-28T01:02:39.0382234Z   ✓  673 tests/e2e/score.states.spec.ts:755:3 › the five choices, decided (T33) › C2: a hand changed while paused restarts at bar 1 and stays paused (6.9s)
+build-and-test	E2E tests	2026-09-28T01:02:39.8115586Z   ✓  674 tests/e2e/score.states.spec.ts:793:3 › the five choices, decided (T33) › C2: the tempo changed while paused restarts and names the new tempo (3.8s)
+build-and-test	E2E tests	2026-09-28T01:02:44.2345647Z   ✓  675 tests/e2e/score.states.spec.ts:816:3 › the five choices, decided (T33) › C3: the metronome reads refused in Free play, and says when its click comes elsewhere (5.2s)
+build-and-test	E2E tests	2026-09-28T01:02:45.2945202Z   ✓  676 tests/e2e/score.states.spec.ts:861:3 › the five choices, decided (T33) › C4: Blind and Perform are refused while a run is going, and live once it is paused (5.5s)
+build-and-test	E2E tests	2026-09-28T01:02:57.1424195Z   ✓  678 tests/e2e/score.states.spec.ts:917:3 › the five choices, decided (T33) › C5: and what was changed after it, while the summary was up (11.8s)
+build-and-test	E2E tests	2026-09-28T01:02:57.6617759Z   ✓  677 tests/e2e/score.states.spec.ts:898:3 › the five choices, decided (T33) › C5: the summary names what changed during the run (13.4s)
+build-and-test	E2E tests	2026-09-28T01:03:00.1102137Z   ✓  680 tests/e2e/score.stepper-limits.spec.ts:73:3 › the ends of the two steppers › size: there is a number between the buttons, and it moves (2.4s)
+build-and-test	E2E tests	2026-09-28T01:03:01.0654776Z   ✓  679 tests/e2e/score.stepper-limits.spec.ts:51:3 › the ends of the two steppers › bars: the button goes dead at one bar and at eight, and only there (3.9s)
+build-and-test	E2E tests	2026-09-28T01:03:06.5030056Z   ✓  681 tests/e2e/score.stepper-limits.spec.ts:86:3 › the ends of the two steppers › size: both ends go dead where the range stops (6.4s)
+build-and-test	E2E tests	2026-09-28T01:03:09.5954928Z   ✓  682 tests/e2e/score.stepper-limits.spec.ts:101:3 › the ends of the two steppers › a press that cannot change anything does not restart the run (8.5s)
+build-and-test	E2E tests	2026-09-28T01:03:12.5266072Z   ✓  684 tests/e2e/score.strip-span.spec.ts:41:3 › every key the score is waiting for is on the strip: song.folk.twinkle.ht (2.9s)
+build-and-test	E2E tests	2026-09-28T01:03:14.8755190Z   ✓  683 tests/e2e/score.strip-span.spec.ts:41:3 › every key the score is waiting for is on the strip: song.classical.chopin-nocturne-op48-1.nifc (8.3s)
+build-and-test	E2E tests	2026-09-28T01:03:26.8462171Z   ✓  685 tests/e2e/score.strip-span.spec.ts:41:3 › every key the score is waiting for is on the strip: song.classical.chopin-scherzo-2.nifc (14.3s)
+build-and-test	E2E tests	2026-09-28T01:04:17.2905782Z   ✓  686 tests/e2e/score.window-rule.spec.ts:622:3 › the window rule holds on phone-upright-342 (1.0m)
+build-and-test	E2E tests	2026-09-28T01:04:29.0616930Z   ✓  687 tests/e2e/score.window-rule.spec.ts:622:3 › the window rule holds on phone-upright-390 (1.0m)
+build-and-test	E2E tests	2026-09-28T01:05:18.6758617Z   ✓  688 tests/e2e/score.window-rule.spec.ts:622:3 › the window rule holds on phone-sideways (1.0m)
+build-and-test	E2E tests	2026-09-28T01:05:30.6593248Z   ✓  689 tests/e2e/score.window-rule.spec.ts:622:3 › the window rule holds on tablet-upright (1.0m)
+build-and-test	E2E tests	2026-09-28T01:05:38.3215241Z   ✓  691 tests/e2e/score.window-rule.spec.ts:724:1 › a pass through one bar leaves the tablet sideways window as a fresh page draws it (7.6s)
+build-and-test	E2E tests	2026-09-28T01:05:42.2882253Z   ✓  692 tests/e2e/score.window-rule.spec.ts:763:3 › the greyed next row does not size the window at 390 x 844 (4.0s)
+build-and-test	E2E tests	2026-09-28T01:05:46.2635469Z   ✓  693 tests/e2e/score.window-rule.spec.ts:763:3 › the greyed next row does not size the window at 360 x 780 (4.0s)
+build-and-test	E2E tests	2026-09-28T01:06:15.7562278Z   ✓  694 tests/e2e/score.window-rule.spec.ts:794:1 › mid-run, every bar on a phone upright Nocturne window is drawn at its natural spacing (29.5s)
+build-and-test	E2E tests	2026-09-28T01:06:21.3896976Z   ✓  690 tests/e2e/score.window-rule.spec.ts:622:3 › the window rule holds on tablet-sideways (1.0m)
+build-and-test	E2E tests	2026-09-28T01:06:31.1035056Z   ✓  696 tests/e2e/score.window-rule.spec.ts:891:1 › mid-run on a phone sideways, the folded chrome leaves the music on the stage (9.7s)
+build-and-test	E2E tests	2026-09-28T01:06:32.0934874Z   ✓  697 tests/e2e/settings-rules.spec.ts:25:3 › Settings obeys 04 §0 › at least eight settings on the first screenful (R2) (966ms)
+build-and-test	E2E tests	2026-09-28T01:06:33.0670408Z   ✓  698 tests/e2e/settings-rules.spec.ts:38:3 › Settings obeys 04 §0 › a row without help text is a label and its control on one line (R2) (963ms)
+build-and-test	E2E tests	2026-09-28T01:06:34.1469619Z   ✓  699 tests/e2e/settings-rules.spec.ts:54:3 › Settings obeys 04 §0 › content chips print track titles, not ids (R2) (1.1s)
+build-and-test	E2E tests	2026-09-28T01:06:37.4749665Z   ✓  700 tests/e2e/setup-layout.spec.ts:252:3 › every step is laid out for a real phone, upright 342x740 (3.3s)
+build-and-test	E2E tests	2026-09-28T01:06:40.6883239Z   ✓  701 tests/e2e/setup-layout.spec.ts:252:3 › every step is laid out for a real phone, sideways 740x342 (3.2s)
+build-and-test	E2E tests	2026-09-28T01:06:42.2232297Z   ✓  702 tests/e2e/setup-layout.spec.ts:308:1 › turning the phone re-sizes the miniature instead of pushing it off the screen (1.5s)
+build-and-test	E2E tests	2026-09-28T01:06:45.6314341Z   ✓  703 tests/e2e/setup-layout.spec.ts:347:1 › leaving the tour half-way and coming back opens the step it was left on (3.4s)
+build-and-test	E2E tests	2026-09-28T01:06:47.5438100Z   ✓  704 tests/e2e/setup.spec.ts:36:3 › the setup tour › the first launch lands on the tour; skipping it is remembered (1.9s)
+build-and-test	E2E tests	2026-09-28T01:06:48.5847227Z   ✓  705 tests/e2e/setup.spec.ts:53:3 › the setup tour › a deep link on a fresh install is left alone (1.0s)
+build-and-test	E2E tests	2026-09-28T01:06:48.6774093Z   ✓  695 tests/e2e/score.window-rule.spec.ts:846:1 › the window never shrinks as the stage widens across the look-ahead breakpoint (32.9s)
+build-and-test	E2E tests	2026-09-28T01:06:50.2165634Z   ✓  706 tests/e2e/setup.spec.ts:59:3 › the setup tour › Settings brings it back, and Back returns to Settings (1.6s)
+build-and-test	E2E tests	2026-09-28T01:06:54.1598864Z   ✓  707 tests/e2e/setup.spec.ts:69:3 › the setup tour › every step is reachable, sets what it says, and Finish is remembered (5.5s)
+build-and-test	E2E tests	2026-09-28T01:06:56.8471293Z   ✓  708 tests/e2e/setup.spec.ts:189:5 › the setup tour › every step photographed, phone upright (6.6s)
+build-and-test	E2E tests	2026-09-28T01:06:58.0434846Z   ✓  710 tests/e2e/setup.spec.ts:243:3 › the setup tour › sideways on a phone the footer is on the first screenful (1.2s)
+build-and-test	E2E tests	2026-09-28T01:07:00.2544069Z   ✓  709 tests/e2e/setup.spec.ts:189:5 › the setup tour › every step photographed, phone sideways (6.1s)
+build-and-test	E2E tests	2026-09-28T01:07:00.6316060Z   ✓  711 tests/e2e/shelf.spec.ts:50:3 › the shelf › registers a book and a piece, and keeps them across a reload (2.6s)
+build-and-test	E2E tests	2026-09-28T01:07:01.9304605Z   ✓  713 tests/e2e/shelf.spec.ts:90:3 › the shelf › is reachable from Library (1.3s)
+build-and-test	E2E tests	2026-09-28T01:07:02.6701965Z   ✓  712 tests/e2e/shelf.spec.ts:58:3 › the shelf › an empty shelf leads with the one thing you can do on it (2.4s)
+build-and-test	E2E tests	2026-09-28T01:07:03.8588463Z   ✓  715 tests/e2e/shelf.spec.ts:108:3 › the rung asking for paper › prints the hint on a core rung (1.2s)
+build-and-test	E2E tests	2026-09-28T01:07:04.6255378Z   ✓  714 tests/e2e/shelf.spec.ts:97:3 › the shelf › a registered piece becomes an option of its rung (2.7s)
+build-and-test	E2E tests	2026-09-28T01:07:05.1805980Z   ✓  716 tests/e2e/shelf.spec.ts:113:3 › the rung asking for paper › with no shelf it is one line, not a section (P19 A8) (1.3s)
+build-and-test	E2E tests	2026-09-28T01:07:06.6221451Z   ✓  718 tests/e2e/shelf.spec.ts:134:3 › the rung asking for paper › "I have this on paper" opens the form with the rung already chosen (1.4s)
+build-and-test	E2E tests	2026-09-28T01:07:07.3696753Z   ✓  717 tests/e2e/shelf.spec.ts:124:3 › the rung asking for paper › the section comes back as soon as there is a book on the shelf (2.7s)
+build-and-test	E2E tests	2026-09-28T01:07:09.1569348Z   ✓  720 tests/e2e/shelf.spec.ts:189:3 › practising against paper › says what it measured and what it could not (1.8s)
+build-and-test	E2E tests	2026-09-28T01:07:10.9528249Z   ✓  721 tests/e2e/shelf.spec.ts:209:3 › practising against paper › does not say Playing over a finished run, or blame a metronome that was on (1.8s)
+build-and-test	E2E tests	2026-09-28T01:07:12.0290747Z   ✓  719 tests/e2e/shelf.spec.ts:147:3 › a twin that is no longer there › the shelf stops offering a score that was deleted (5.4s)
+build-and-test	E2E tests	2026-09-28T01:07:13.8201812Z   ✓  722 tests/e2e/shelf.spec.ts:235:3 › practising against paper › records the run under the owner’s own verdict, not a measurement (2.9s)
+build-and-test	E2E tests	2026-09-28T01:07:15.0095356Z   ✓  723 tests/e2e/shelf.spec.ts:255:3 › practising against paper › a self-assessed clean run is recorded as his answer and meets no requirement of the rung (3.0s)
+build-and-test	E2E tests	2026-09-28T01:07:15.8934318Z   ✓  724 tests/e2e/shelf.spec.ts:278:3 › blind mode › hides the score and keeps everything else (2.1s)
+build-and-test	E2E tests	2026-09-28T01:07:17.7657848Z   ✓  725 tests/e2e/shelf.spec.ts:291:3 › blind mode › is a route, so it survives a reload and can be linked to (2.7s)
+build-and-test	E2E tests	2026-09-28T01:07:18.3560463Z   ✓  727 tests/e2e/shelf.spec.ts:316:3 › the PDF viewer › takes a page in the route (568ms)
+build-and-test	E2E tests	2026-09-28T01:07:19.1514078Z   ✓  726 tests/e2e/shelf.spec.ts:303:3 › performance runs › offer no restart, and are listed apart from practice (3.2s)
+build-and-test	E2E tests	2026-09-28T01:07:20.4215020Z   ✓  728 tests/e2e/side-panel-prose.spec.ts:83:3 › on a phone › the lesson prose takes none of the notation’s room (2.0s)
+build-and-test	E2E tests	2026-09-28T01:07:21.6411835Z   ✓  729 tests/e2e/side-panel-prose.spec.ts:96:3 › on a tablet, where the panel is drawn › the lesson renders in the panel without a line overflowing it (2.4s)
+build-and-test	E2E tests	2026-09-28T01:07:24.1882480Z   ✓  730 tests/e2e/side-panel-prose.spec.ts:155:3 › on a tablet, where the panel is drawn › a piece opened from nowhere shows the rung’s teaching without its pass line (3.8s)
+build-and-test	E2E tests	2026-09-28T01:07:25.7600751Z   ✓  732 tests/e2e/start-and-return.spec.ts:49:3 › opening a lesson › says where you are, and gives one thing to press (1.5s)
+build-and-test	E2E tests	2026-09-28T01:07:27.8717779Z   ✓  733 tests/e2e/start-and-return.spec.ts:78:3 › opening a lesson › Start opens the first thing on the rung, and says which (2.1s)
+build-and-test	E2E tests	2026-09-28T01:07:30.3976893Z   ✓  734 tests/e2e/start-and-return.spec.ts:95:3 › starting a mode › says what to do before a note has been judged, in every mode (2.5s)
+build-and-test	E2E tests	2026-09-28T01:07:32.4641535Z   ✓  735 tests/e2e/start-and-return.spec.ts:105:3 › starting a mode › marks the first note it is waiting for before the run starts (2.0s)
+build-and-test	E2E tests	2026-09-28T01:07:44.5200184Z   ✓  731 tests/e2e/side-panel-prose.spec.ts:181:3 › on a tablet, where the panel is drawn › one lesson from every track fits the panel (22.9s)
+build-and-test	E2E tests	2026-09-28T01:07:46.0397199Z   ✓  736 tests/e2e/start-and-return.spec.ts:115:3 › coming back to a run left half way › says where it was left and offers both ways on (13.6s)
+build-and-test	E2E tests	2026-09-28T01:07:48.0282435Z   ✓  738 tests/e2e/start-and-return.spec.ts:163:3 › coming back to a run left half way › a piece never left half way is not asked about (2.0s)
+build-and-test	E2E tests	2026-09-28T01:07:59.1935059Z   ✓  737 tests/e2e/start-and-return.spec.ts:141:3 › coming back to a run left half way › starting from the beginning takes the offer away and leaves bar 1 (14.6s)
+build-and-test	E2E tests	2026-09-28T01:09:11.6518976Z   ✓  739 tests/e2e/sweeps.spec.ts:54:3 › every lesson page › all of them open by URL, draw their options and say what they need (1.4m)
+build-and-test	E2E tests	2026-09-28T01:09:17.1992891Z   ✓  740 tests/e2e/sweeps.spec.ts:103:3 › every lesson page › every rung that has a finder can open it (1.3m)
+build-and-test	E2E tests	2026-09-28T01:09:25.3277364Z   ✓  742 tests/e2e/sweeps.spec.ts:210:3 › where an item opens › a bundled song, a generated exercise and a quarried score open on the Score screen (8.1s)
+build-and-test	E2E tests	2026-09-28T01:09:25.7977107Z   ✓  743 tests/e2e/sweeps.spec.ts:221:3 › where an item opens › a runtime drill opens on the drill screen (450ms)
+build-and-test	E2E tests	2026-09-28T01:09:27.1035047Z   ✓  744 tests/e2e/sweeps.spec.ts:227:3 › where an item opens › a placeholder says what to do instead of opening nothing (1.3s)
+build-and-test	E2E tests	2026-09-28T01:09:28.7024794Z   ✓  745 tests/e2e/sweeps.spec.ts:240:3 › when the level model is missing › an import says "no estimate" rather than showing a made-up number (1.6s)
+build-and-test	E2E tests	2026-09-28T01:09:29.9354649Z   ✓  746 tests/e2e/tips.spec.ts:28:3 › the tips block › shows the four sections under the prompt (1.2s)
+build-and-test	E2E tests	2026-09-28T01:09:31.9722032Z   ✓  747 tests/e2e/tips.spec.ts:45:3 › the tips block › is collapsed during a set, on the first meeting and after (2.0s)
+build-and-test	E2E tests	2026-09-28T01:09:33.2535293Z   ✓  748 tests/e2e/tips.spec.ts:60:3 › the tips block › chooses a variant from the drill’s parameters (1.3s)
+build-and-test	E2E tests	2026-09-28T01:09:34.3356729Z   ✓  749 tests/e2e/tips.spec.ts:69:3 › the tips block › falls back to the kind when no variant matches (1.1s)
+build-and-test	E2E tests	2026-09-28T01:09:35.6594820Z   ✓  750 tests/e2e/tips.spec.ts:78:3 › the practice module › is reachable from Plan (1.3s)
+build-and-test	E2E tests	2026-09-28T01:09:36.0563625Z   ✓  741 tests/e2e/sweeps.spec.ts:128:3 › every kind of drill › one of each opens, draws a card and offers a way to answer (24.4s)
+build-and-test	E2E tests	2026-09-28T01:09:37.1674957Z   ✓  752 tests/e2e/tips.spec.ts:94:3 › the practice module › the plateau lesson says what to change (1.1s)
+build-and-test	E2E tests	2026-09-28T01:09:38.2244758Z   ✓  753 tests/e2e/tips.spec.ts:102:3 › the practice module › the injury lesson says to stop (1.0s)
+build-and-test	E2E tests	2026-09-28T01:09:39.3213139Z   ✓  754 tests/e2e/today.spec.ts:62:3 › Today › shows a weekly goal, an input chip, and a session card (1.1s)
+build-and-test	E2E tests	2026-09-28T01:09:39.8165151Z   ✓  751 tests/e2e/tips.spec.ts:85:3 › the practice module › every lesson is a real rung with options, not a reading list (4.1s)
+build-and-test	E2E tests	2026-09-28T01:09:41.4784826Z   ✓  755 tests/e2e/today.spec.ts:72:3 › Today › the four session lengths build different cards (2.1s)
+build-and-test	E2E tests	2026-09-28T01:09:41.7711654Z   ✓  756 tests/e2e/today.spec.ts:86:3 › Today › remembers the session length across a reload (1.9s)
+build-and-test	E2E tests	2026-09-28T01:09:43.5700926Z   ✓  757 tests/e2e/today.spec.ts:95:3 › Today › "Swap this" offers alternatives and can exclude songs (2.1s)
+build-and-test	E2E tests	2026-09-28T01:09:43.9344718Z   ✓  758 tests/e2e/today.spec.ts:114:3 › Today › the "not a song" filter removes songs from the swap sheet (2.1s)
+build-and-test	E2E tests	2026-09-28T01:09:44.9588502Z   ✓  760 tests/e2e/today.spec.ts:142:3 › Today › the tracks the data switches on are on before he touches a chip (C2) (1.0s)
+build-and-test	E2E tests	2026-09-28T01:09:45.5319645Z   ✓  759 tests/e2e/today.spec.ts:132:3 › Today › shuffle rebuilds the card (2.0s)
+build-and-test	E2E tests	2026-09-28T01:09:47.2249513Z   ✓  761 tests/e2e/today.spec.ts:171:3 › Today › Today keeps recommending after the core path, from a track he never turned on (2.2s)
+build-and-test	E2E tests	2026-09-28T01:09:47.9645305Z   ✓  762 tests/e2e/today.spec.ts:223:3 › Today › the warm-up and the review say why, for a learner whose lesson exercise is counted and a piece has gone unplayed (2.4s)
+build-and-test	E2E tests	2026-09-28T01:09:48.3942841Z   ✓  763 tests/e2e/today.spec.ts:263:3 › Today › starting the session opens the first row (1.2s)
+build-and-test	E2E tests	2026-09-28T01:09:49.4475186Z   ✓  765 tests/e2e/today.spec.ts:314:3 › Today obeys 04 §0 › the session card starts inside the first screenful (R1) (1.0s)
+build-and-test	E2E tests	2026-09-28T01:09:50.0451327Z   ✓  764 tests/e2e/today.spec.ts:287:3 › the swap sheet’s demand tier (E0) › placed at 1.5, the steps-and-skips row’s sheet names the demand tier: also practises skips, with the other demands met (2.1s)
+build-and-test	E2E tests	2026-09-28T01:09:50.6097250Z   ✓  766 tests/e2e/today.spec.ts:325:3 › Today obeys 04 §0 › a row is one line of detail and no taller than 96 px (R2) (1.1s)
+build-and-test	E2E tests	2026-09-28T01:09:51.1257698Z   ✓  767 tests/e2e/today.spec.ts:346:3 › Today obeys 04 §0 › one filled button on the screen, and it is Start session (R3) (1.1s)
+build-and-test	E2E tests	2026-09-28T01:09:53.8572837Z   ✓  768 tests/e2e/today.spec.ts:445:3 › the daily read says why this phrase (C4, C4c) › two days of misread skips on 2.2: the phrase moves by step, and the card says the skips went wrong (3.2s)
+build-and-test	E2E tests	2026-09-28T01:09:54.5800760Z   ✓  769 tests/e2e/today.spec.ts:457:3 › the daily read says why this phrase (C4, C4c) › two reads wrong only where skips and eighths coincide, on 2.5: nothing blamed, the easy read, and the card says it is not sure yet (3.4s)
+build-and-test	E2E tests	2026-09-28T01:09:55.1068927Z   ✓  770 tests/e2e/tour-practice-modes.spec.ts:46:3 › the guided tour of the practice modes › is a tour, not a notice that one is coming (1.2s)
+build-and-test	E2E tests	2026-09-28T01:09:57.0940814Z   ✓  772 tests/e2e/tour-practice-modes.spec.ts:95:3 › the guided tour of the practice modes › the Android back gesture resumes the tour the same way Back does (2.0s)
+build-and-test	E2E tests	2026-09-28T01:09:57.4436637Z   ✓  771 tests/e2e/tour-practice-modes.spec.ts:58:3 › the guided tour of the practice modes › walks all three steps on the real score screen and comes back to each (2.8s)
+build-and-test	E2E tests	2026-09-28T01:09:59.6456700Z   ✓  773 tests/e2e/tour-practice-modes.spec.ts:104:3 › the guided tour of the practice modes › can be run again from the beginning (2.5s)
+build-and-test	E2E tests	2026-09-28T01:09:59.7155493Z   ✓  774 tests/e2e/tour-practice-modes.spec.ts:122:3 › the guided tour of the practice modes › Back on a resumed step leaves the tour instead of re-entering the piece (2.3s)
+build-and-test	E2E tests	2026-09-28T01:10:00.9834887Z   ✓  775 tests/e2e/tour-practice-modes.spec.ts:143:3 › the guided tour of the practice modes › there is a way out of every step (1.3s)
+build-and-test	E2E tests	2026-09-28T01:10:01.9283105Z   ✓  776 tests/e2e/tour-practice-modes.spec.ts:155:3 › the guided tour of the practice modes › leaving the score screen any other way still returns to the tour (2.2s)
+build-and-test	E2E tests	2026-09-28T01:10:02.3887211Z   ✓  777 tests/e2e/tour-practice-modes.spec.ts:178:5 › the guided tour of the practice modes › a step reads top to bottom at upright (1.4s)
+build-and-test	E2E tests	2026-09-28T01:10:03.1161165Z   ✓  778 tests/e2e/tour-practice-modes.spec.ts:178:5 › the guided tour of the practice modes › a step reads top to bottom at sideways (1.2s)
+build-and-test	E2E tests	2026-09-28T01:10:04.2334049Z   ✓  779 tests/e2e/tour-practice-modes.spec.ts:214:3 › the guided tour of the practice modes › a piece opened outside the tour still goes back to its tab (1.8s)
+build-and-test	E2E tests	2026-09-28T01:10:04.6663274Z   ✓  780 tests/e2e/trading-fours.spec.ts:41:3 › trading fours › is off until it is asked for, and the two lengths are exclusive (1.5s)
+build-and-test	E2E tests	2026-09-28T01:10:06.7047671Z   ✓  782 tests/e2e/trading-fours.spec.ts:101:3 › trading fours › a setting changed under a trade stops it rather than lying (2.0s)
+build-and-test	E2E tests	2026-09-28T01:10:09.6691267Z   ✓  781 tests/e2e/trading-fours.spec.ts:60:3 › trading fours › takes the first bars, hands them over, and stops when it is stopped (5.4s)
+build-and-test	E2E tests	2026-09-28T01:10:10.6821726Z   ✓  784 tests/e2e/update.tab-nav.spec.ts:78:3 › the tab bar after an update reload › appears on first load despite a blocked settings database (990ms)
+build-and-test	E2E tests	2026-09-28T01:10:11.6870492Z   ✓  785 tests/e2e/update.tab-nav.spec.ts:87:3 › the tab bar after an update reload › reappears after the reload the update toast leads to (992ms)
+build-and-test	E2E tests	2026-09-28T01:10:13.4075838Z   ✓  783 tests/e2e/trading-fours.spec.ts:117:3 › trading fours › the keys answer, and the answer is measured and not marked (6.7s)
+build-and-test	E2E tests	2026-09-28T01:11:06.4071586Z   ✓  786 tests/e2e/wide.spec.ts:428:5 › phone-portrait › every screen is centred and capped, phone-portrait (54.7s)
+build-and-test	E2E tests	2026-09-28T01:11:07.4122661Z   ✓  787 tests/e2e/wide.spec.ts:428:5 › phone-landscape › every screen is centred and capped, phone-landscape (54.0s)
+build-and-test	E2E tests	2026-09-28T01:12:01.6867580Z   ✓  788 tests/e2e/wide.spec.ts:428:5 › tablet-portrait › every screen is centred and capped, tablet-portrait (55.3s)
+build-and-test	E2E tests	2026-09-28T01:12:02.3479145Z   ✓  789 tests/e2e/wide.spec.ts:428:5 › tablet-landscape › every screen is centred and capped, tablet-landscape (54.9s)
+build-and-test	E2E tests	2026-09-28T01:12:55.5075436Z   ✓  790 tests/e2e/wide.spec.ts:428:5 › laptop-1366 › every screen is centred and capped, laptop-1366 (53.8s)
+build-and-test	E2E tests	2026-09-28T01:12:56.4574839Z   ✓  791 tests/e2e/wide.spec.ts:428:5 › laptop-1536 › every screen is centred and capped, laptop-1536 (54.1s)
+build-and-test	E2E tests	2026-09-28T01:13:51.1436658Z   ✓  792 tests/e2e/wide.spec.ts:428:5 › desktop-1920 › every screen is centred and capped, desktop-1920 (55.6s)
+build-and-test	E2E tests	2026-09-28T01:14:06.8235743Z   ✓  794 tests/e2e/wide.spec.ts:582:3 › a sparse bar is not stretched › a laptop draws the bar at its natural width; a phone fills the width (15.7s)
+build-and-test	E2E tests	2026-09-28T01:14:18.2965661Z   ✓  795 tests/e2e/wide.spec.ts:639:5 › light, 115 % text › the gutters survive light at 115 % text (11.4s)
+build-and-test	E2E tests	2026-09-28T01:14:29.6925359Z   ✓  796 tests/e2e/wide.spec.ts:639:5 › dark, 115 % text › the gutters survive dark at 115 % text (11.4s)
+build-and-test	E2E tests	2026-09-28T01:14:32.5015080Z   ✓  797 tests/e2e/mic.spec.ts:258:3 › the latency measurement is only ever offered to a microphone user › a piano on the end of a cable does not get it, and is told why (1.2s)
+build-and-test	E2E tests	2026-09-28T01:14:33.5665563Z   ✓  798 tests/e2e/mic.spec.ts:275:3 › the latency measurement is only ever offered to a microphone user › plugging the piano in takes it away again (1.0s)
+build-and-test	E2E tests	2026-09-28T01:14:34.6400417Z   ✓  793 tests/e2e/wide.spec.ts:505:3 › stops growing › a wider screen is more gutter, not wider content (1.6m)
+build-and-test	E2E tests	2026-09-28T01:14:39.2451900Z   ✓  800 tests/e2e/mic.spec.ts:339:3 › drills listen to the microphone › a chord card is aimed at the detector and answered by what it hears (2.6s)
+build-and-test	E2E tests	2026-09-28T01:14:40.5685275Z   ✓  801 tests/e2e/mic.spec.ts:367:3 › drills listen to the microphone › an ear drill does not play its prompt out loud while listening (1.3s)
+build-and-test	E2E tests	2026-09-28T01:14:41.4426578Z   ✓  799 tests/e2e/mic.spec.ts:291:3 › the latency measurement is only ever offered to a microphone user › a run that hears nothing says so and leaves the number to be set by hand (7.8s)
+build-and-test	E2E tests	2026-09-28T01:14:48.1727479Z   ✘  802 tests/e2e/mic.spec.ts:74:3 › microphone input › a recorded scale drives a Wait-mode run to finished (6.7s)
+build-and-test	E2E tests	2026-09-28T01:14:54.6014065Z 
+build-and-test	E2E tests	2026-09-28T01:14:54.6037531Z ##[error]  2) tests/e2e/mic.spec.ts:74:3 › microphone input › a recorded scale drives a Wait-mode run to finished 
+build-and-test	E2E tests	    Error: expect(received).toBeGreaterThanOrEqual(expected)
+build-and-test	E2E tests	
+build-and-test	E2E tests	    Expected: >= 7
+build-and-test	E2E tests	    Received:    6
+build-and-test	E2E tests	
+build-and-test	E2E tests	      110 |     const score = await page.evaluate(() => window.__pianopathDevScore?.engineScore());
+build-and-test	E2E tests	      111 |     expect(score?.accuracyEstimated).toBe(true);
+build-and-test	E2E tests	    > 112 |     expect(score?.correctSteps).toBeGreaterThanOrEqual(SCALE_MIDI.length - 1);
+build-and-test	E2E tests	          |                                 ^
+build-and-test	E2E tests	      113 | 
+build-and-test	E2E tests	      114 |     await page.evaluate(() => window.__pianopathDevScore?.micDisconnect());
+build-and-test	E2E tests	      115 |   });
+build-and-test	E2E tests	        at /home/runner/work/PianoProject/PianoProject/app/tests/e2e/mic.spec.ts:112:33
+build-and-test	E2E tests	2026-09-28T01:14:54.6042233Z   ✓  804 tests/e2e/mic.spec.ts:74:3 › microphone input › a recorded scale drives a Wait-mode run to finished (retry #1) (5.7s)
+build-and-test	E2E tests	2026-09-28T01:14:56.1464675Z   ✓  805 tests/e2e/mic.spec.ts:117:3 › microphone input › reports level and noise floor while listening (1.5s)
+build-and-test	E2E tests	2026-09-28T01:14:57.9262348Z analysis cost x4-throttled @48000 Hz over 280 hops: mean 1.33 ms, median 1.10, p95 3.40, max 7.30
+build-and-test	E2E tests	2026-09-28T01:14:57.9469038Z   ✓  806 tests/e2e/mic.spec.ts:139:3 › microphone input › stays inside the 3 ms analysis budget with the CPU throttled x4 (1.8s)
+build-and-test	E2E tests	2026-09-28T01:14:59.5230036Z   ✓  803 tests/e2e/mic.spec.ts:172:3 › microphone input › the calibration screen runs against the fake stream and stores a table (18.0s)
+build-and-test	E2E tests	2026-09-28T01:15:20.9687842Z   ✓  807 tests/e2e/mic.spec.ts:214:3 › microphone input › Diagnostics measures the analysis cost and captures a clip (21.4s)
+build-and-test	E2E tests	2026-09-28T01:15:21.1630286Z ##[notice]  1 failed
+build-and-test	E2E tests	    tests/e2e/offline.spec.ts:302:3 › offline › and nothing under content/ is served without being precached (P19) 
+build-and-test	E2E tests	  1 flaky
+build-and-test	E2E tests	    tests/e2e/mic.spec.ts:74:3 › microphone input › a recorded scale drives a Wait-mode run to finished 
+build-and-test	E2E tests	  22 skipped
+build-and-test	E2E tests	  781 passed (34.7m)
+build-and-test	E2E tests	2026-09-28T01:15:21.1631757Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1631796Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1632375Z   1) tests/e2e/offline.spec.ts:302:3 › offline › and nothing under content/ is served without being precached (P19) 
+build-and-test	E2E tests	2026-09-28T01:15:21.1632753Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1632895Z     Error: 1 file(s) are served but never cached
+build-and-test	E2E tests	2026-09-28T01:15:21.1633266Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1633424Z     expect(received).toEqual(expected) // deep equality
+build-and-test	E2E tests	2026-09-28T01:15:21.1633634Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1633725Z     - Expected  - 1
+build-and-test	E2E tests	2026-09-28T01:15:21.1633916Z     + Received  + 3
+build-and-test	E2E tests	2026-09-28T01:15:21.1634024Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1634105Z     - Array []
+build-and-test	E2E tests	2026-09-28T01:15:21.1634275Z     + Array [
+build-and-test	E2E tests	2026-09-28T01:15:21.1634482Z     +   "content/review/microscope.json",
+build-and-test	E2E tests	2026-09-28T01:15:21.1634717Z     + ]
+build-and-test	E2E tests	2026-09-28T01:15:21.1634811Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1634959Z       318 |     expect(served.length).toBeGreaterThan(1000);
+build-and-test	E2E tests	2026-09-28T01:15:21.1635347Z       319 |     const uncached = served.filter((file) => !urls.has(file));
+build-and-test	E2E tests	2026-09-28T01:15:21.1635833Z     > 320 |     expect(uncached, `${uncached.length} file(s) are served but never cached`).toEqual([]);
+build-and-test	E2E tests	2026-09-28T01:15:21.1636284Z           |                                                                                ^
+build-and-test	E2E tests	2026-09-28T01:15:21.1636547Z       321 |   });
+build-and-test	E2E tests	2026-09-28T01:15:21.1636734Z       322 | });
+build-and-test	E2E tests	2026-09-28T01:15:21.1636899Z       323 |
+build-and-test	E2E tests	2026-09-28T01:15:21.1637241Z         at /home/runner/work/PianoProject/PianoProject/app/tests/e2e/offline.spec.ts:320:80
+build-and-test	E2E tests	2026-09-28T01:15:21.1637535Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1637865Z     Error Context: test-results/offline-offline-and-nothin-4a396-ithout-being-precached-P19-/error-context.md
+build-and-test	E2E tests	2026-09-28T01:15:21.1638211Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1638588Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+build-and-test	E2E tests	2026-09-28T01:15:21.1639115Z     test-results/offline-offline-and-nothin-4a396-ithout-being-precached-P19-/trace.zip
+build-and-test	E2E tests	2026-09-28T01:15:21.1639476Z     Usage:
+build-and-test	E2E tests	2026-09-28T01:15:21.1639571Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1639902Z         npx playwright show-trace test-results/offline-offline-and-nothin-4a396-ithout-being-precached-P19-/trace.zip
+build-and-test	E2E tests	2026-09-28T01:15:21.1640632Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1640922Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+build-and-test	E2E tests	2026-09-28T01:15:21.1641317Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1641599Z     Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+build-and-test	E2E tests	2026-09-28T01:15:21.1641820Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1641946Z     Error: 1 file(s) are served but never cached
+build-and-test	E2E tests	2026-09-28T01:15:21.1642113Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1642257Z     expect(received).toEqual(expected) // deep equality
+build-and-test	E2E tests	2026-09-28T01:15:21.1642434Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1642517Z     - Expected  - 1
+build-and-test	E2E tests	2026-09-28T01:15:21.1642704Z     + Received  + 3
+build-and-test	E2E tests	2026-09-28T01:15:21.1642802Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1642878Z     - Array []
+build-and-test	E2E tests	2026-09-28T01:15:21.1643227Z     + Array [
+build-and-test	E2E tests	2026-09-28T01:15:21.1643458Z     +   "content/review/microscope.json",
+build-and-test	E2E tests	2026-09-28T01:15:21.1643682Z     + ]
+build-and-test	E2E tests	2026-09-28T01:15:21.1643775Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1643927Z       318 |     expect(served.length).toBeGreaterThan(1000);
+build-and-test	E2E tests	2026-09-28T01:15:21.1644289Z       319 |     const uncached = served.filter((file) => !urls.has(file));
+build-and-test	E2E tests	2026-09-28T01:15:21.1644743Z     > 320 |     expect(uncached, `${uncached.length} file(s) are served but never cached`).toEqual([]);
+build-and-test	E2E tests	2026-09-28T01:15:21.1645167Z           |                                                                                ^
+build-and-test	E2E tests	2026-09-28T01:15:21.1645429Z       321 |   });
+build-and-test	E2E tests	2026-09-28T01:15:21.1645595Z       322 | });
+build-and-test	E2E tests	2026-09-28T01:15:21.1645761Z       323 |
+build-and-test	E2E tests	2026-09-28T01:15:21.1646085Z         at /home/runner/work/PianoProject/PianoProject/app/tests/e2e/offline.spec.ts:320:80
+build-and-test	E2E tests	2026-09-28T01:15:21.1646352Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1646708Z     Error Context: test-results/offline-offline-and-nothin-4a396-ithout-being-precached-P19--retry1/error-context.md
+build-and-test	E2E tests	2026-09-28T01:15:21.1647075Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1647394Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+build-and-test	E2E tests	2026-09-28T01:15:21.1647932Z     test-results/offline-offline-and-nothin-4a396-ithout-being-precached-P19--retry1/trace.zip
+build-and-test	E2E tests	2026-09-28T01:15:21.1648313Z     Usage:
+build-and-test	E2E tests	2026-09-28T01:15:21.1648406Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1648763Z         npx playwright show-trace test-results/offline-offline-and-nothin-4a396-ithout-being-precached-P19--retry1/trace.zip
+build-and-test	E2E tests	2026-09-28T01:15:21.1649151Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1649423Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+build-and-test	E2E tests	2026-09-28T01:15:21.1649636Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1649973Z   2) tests/e2e/mic.spec.ts:74:3 › microphone input › a recorded scale drives a Wait-mode run to finished 
+build-and-test	E2E tests	2026-09-28T01:15:21.1650262Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1650426Z     Error: expect(received).toBeGreaterThanOrEqual(expected)
+build-and-test	E2E tests	2026-09-28T01:15:21.1650624Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1650700Z     Expected: >= 7
+build-and-test	E2E tests	2026-09-28T01:15:21.1650891Z     Received:    6
+build-and-test	E2E tests	2026-09-28T01:15:21.1650990Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1651239Z       110 |     const score = await page.evaluate(() => window.__pianopathDevScore?.engineScore());
+build-and-test	E2E tests	2026-09-28T01:15:21.1651826Z       111 |     expect(score?.accuracyEstimated).toBe(true);
+build-and-test	E2E tests	2026-09-28T01:15:21.1652227Z     > 112 |     expect(score?.correctSteps).toBeGreaterThanOrEqual(SCALE_MIDI.length - 1);
+build-and-test	E2E tests	2026-09-28T01:15:21.1652600Z           |                                 ^
+build-and-test	E2E tests	2026-09-28T01:15:21.1652823Z       113 | 
+build-and-test	E2E tests	2026-09-28T01:15:21.1653371Z       114 |     await page.evaluate(() => window.__pianopathDevScore?.micDisconnect());
+build-and-test	E2E tests	2026-09-28T01:15:21.1653691Z       115 |   });
+build-and-test	E2E tests	2026-09-28T01:15:21.1654021Z         at /home/runner/work/PianoProject/PianoProject/app/tests/e2e/mic.spec.ts:112:33
+build-and-test	E2E tests	2026-09-28T01:15:21.1654275Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1654603Z     Error Context: test-results/mic-microphone-input-a-rec-2ba07-a-Wait-mode-run-to-finished/error-context.md
+build-and-test	E2E tests	2026-09-28T01:15:21.1654946Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1655272Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+build-and-test	E2E tests	2026-09-28T01:15:21.1655778Z     test-results/mic-microphone-input-a-rec-2ba07-a-Wait-mode-run-to-finished/trace.zip
+build-and-test	E2E tests	2026-09-28T01:15:21.1656136Z     Usage:
+build-and-test	E2E tests	2026-09-28T01:15:21.1656232Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1656561Z         npx playwright show-trace test-results/mic-microphone-input-a-rec-2ba07-a-Wait-mode-run-to-finished/trace.zip
+build-and-test	E2E tests	2026-09-28T01:15:21.1657059Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1657342Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+build-and-test	E2E tests	2026-09-28T01:15:21.1657563Z 
+build-and-test	E2E tests	2026-09-28T01:15:21.1657633Z   1 failed
+build-and-test	E2E tests	2026-09-28T01:15:21.1658086Z     tests/e2e/offline.spec.ts:302:3 › offline › and nothing under content/ is served without being precached (P19) 
+build-and-test	E2E tests	2026-09-28T01:15:21.1658467Z   1 flaky
+build-and-test	E2E tests	2026-09-28T01:15:21.1658874Z     tests/e2e/mic.spec.ts:74:3 › microphone input › a recorded scale drives a Wait-mode run to finished 
+build-and-test	E2E tests	2026-09-28T01:15:21.1659227Z   22 skipped
+build-and-test	E2E tests	2026-09-28T01:15:21.1659410Z   781 passed (34.7m)
+build-and-test	E2E tests	2026-09-28T01:15:21.1715738Z ##[error]Process completed with exit code 1.

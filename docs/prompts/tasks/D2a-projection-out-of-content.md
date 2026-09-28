@@ -25,3 +25,6 @@ If the service worker's precache cannot be told to skip a `dev/` root without to
 ## Report
 
 Judgement first: the offline case's red on the committed tree and green after, in its own words; then Done / Not done / Follow-ups / Questions / Files; exit codes; unverified beside what passes.
+
+**Delivered 2026-09-27**, Entry 99, in an isolated worktree: the move, the `dev/` case, the stale copy deleted by the build; the catalogue byte-identical but for the build-time stamp; `review.py` and `test_review_record.py` touched outside the list because the path lived there. Found: `offline.spec.ts:53` intermittent on this machine (Diagnostics' per-file cache check over about 2,000 files past 30 s under load; green in CI) — Q48's shape.
+
