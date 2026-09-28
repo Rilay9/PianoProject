@@ -10,7 +10,7 @@
 
 ## Waiting
 
-- **D3** — briefed 2026-09-27 (`tasks/D3-the-study-middle.md`), at the gate as the brief handoff `handoffs/2c80472.md`; dispatch on that read.
+- **D3** — brief approved with one change (`responses/2c80472.md`), **dispatched** (Entry 100); on landing: merge, the content build, the validator, the content suites, the bridge regression's direct half, the candidate-rungs report read, three studies rendered on the score screen and read, record, handoff, push.
 
 - **D2a** — **dispatched** (Entry 99): CI on 85b7b2c red on `offline.spec` › P19 (D2's projection under `content/` served and never cached); the projection moves to a builder-only `dev/` root; on landing: merge, the app build, the offline and microscope specs once, record, handoff, push.
 
