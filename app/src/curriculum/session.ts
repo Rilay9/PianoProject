@@ -40,6 +40,7 @@ import { ladderState, RECENT_ATTEMPTS, RETENTION_DAYS, SUPPORT_SHARE, supports, 
 import { readingState, storedEvidence, type SkillState } from '../evidence/readingState';
 import { VOCABULARY_V0, type Vocabulary } from '../evidence/vocabulary';
 import { readingReason, slotReason } from '../ui/help';
+import { isExcerpt, isExerciseKind, isPieceMaterial } from './excerpt';
 
 export type SlotKind = 'technique' | 'review' | 'new' | 'repertoire' | 'jam' | 'free' | 'sightreading';
 
@@ -668,7 +669,9 @@ function readingsOf(ctx: SlotContext, rung: Lesson): RequirementReading[] {
 /** A slot's eye on an item: playable, not on the card, never a reading row (the reading slot is the reader's, L65). */
 function usable(ctx: SlotContext, item: CatalogItem | undefined, songs: 'any' | 'none' | 'only'): item is CatalogItem {
   if (!item || !playable(item) || ctx.used.has(item.id) || isReadingRow(item)) return false;
-  if (songs === 'none' && item.type === 'song') return false;
+  // A slot that leaves songs out leaves excerpts out (a passage of a piece is not technique); a slot
+  // that wants songs wants the piece — the repertoire lifecycle keeps to songs (E1, adversary 10).
+  if (songs === 'none' && isPieceMaterial(item)) return false;
   if (songs === 'only' && item.type !== 'song') return false;
   return true;
 }
@@ -760,12 +763,12 @@ function wantsOf(ctx: SlotContext, rung: Lesson, songs: 'any' | 'none'): Want[] 
       const learner = learnerAt(ctx, rung);
       const activation = ctx.input.skillActivation ?? SHIPPED_SKILL_ACTIVATION;
       pool = own(rung.exerciseOptions).filter(
-        (item) => item.type !== 'song' && eligible(gate(ctx, item, learner, { for: 'requirement', skill: r.skill, activation })),
+        (item) => isExerciseKind(item) && eligible(gate(ctx, item, learner, { for: 'requirement', skill: r.skill, activation })),
       );
     } else {
       continue;
     }
-    if (songs === 'none') pool = pool.filter((item) => item.type !== 'song');
+    if (songs === 'none') pool = pool.filter((item) => !isPieceMaterial(item));
     if (pool.length === 0) continue;
     const want: Want = { rung, reading, ...(skill === undefined ? {} : { skill }), pool, offer: pool.filter((item) => usable(ctx, item, songs)) };
     if (skill === undefined) out.push(want);
@@ -1022,7 +1025,9 @@ function exposure(ctx: SlotContext, families: Families): Choice | undefined {
   ctx.reached.forEach((walked, at) => {
     for (const id of [...walked.lesson.exerciseOptions, ...walked.lesson.songOptions]) {
       const item = ctx.catalog.byId.get(id);
-      if (!item || isReadingRow(item) || !playable(item)) continue;
+      // The exposure rule keeps a kind of exercise or an earlier rung's songs warm; an excerpt is
+      // neither (E1: retention keeps to songs), so it is no exposure family's.
+      if (!item || isReadingRow(item) || !playable(item) || isExcerpt(item)) continue;
       let family: ExposureFamily | undefined;
       if (item.type !== 'song') {
         const kind = item.drill?.kind ?? 'study';
@@ -1522,8 +1527,12 @@ export function swapOptions(
     for (const id of [...walked.lesson.exerciseOptions, ...walked.lesson.songOptions]) {
       const item = catalog.byId.get(id);
       if (!item || skip.has(id) || !fits(item) || isReadingRow(item) !== isReadingRow(source)) continue;
-      if (excludeSongs && item.type === 'song') continue;
-      const same = source.type === 'song' ? item.type === 'song' : item.type !== 'song' && (item.drill?.kind ?? 'study') === (source.drill?.kind ?? 'study');
+      if (excludeSongs && isPieceMaterial(item)) continue;
+      // "The same kind": a song for a song, an excerpt for an excerpt, an exercise of the same drill
+      // kind for an exercise — never a passage of a piece for an exercise (E1).
+      const same = isPieceMaterial(source)
+        ? item.type === source.type
+        : isExerciseKind(item) && (item.drill?.kind ?? 'study') === (source.drill?.kind ?? 'study');
       if (!same) continue;
       skip.add(id);
       out.push({ item, tier: 'kind' });

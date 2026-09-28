@@ -136,7 +136,14 @@ caught by the merge rather than by whichever wrote last:
    the Library prints over "Key" for a score that states a signature and no mode, where
    `attach_demands()` writes every bundled score's measured demands (E0, §4 below) and
    `attach_provenance()` writes every row's provenance (E0, §4a), its two review bits and
-   `reviewed` facts read from the human review record (D2, §4b).
+   `reviewed` facts read from the human review record (D2, §4b). Since E1, after the parents'
+   files exist and before the notation, demands and provenance steps, `excerpts.attach_excerpts()`
+   cuts every approved row of `content/sources/excerpts.json` out of its parent's built file into
+   `scores/excerpts/<id>.mxl` and adds the excerpt's catalogue row (§4c), which those steps then
+   treat as any other file; a row the cutter refuses (a range across a repeat sign, a first-or-
+   second ending or a jump; a parent that is gone) stops the build with the bars named, and a
+   parent this build does not bundle gives no cut. `attach_demands` keeps the bridge's positions
+   per printed bar in `build/positions-cache.json`, beside the counts' cache, for the proposer.
 7a. **score checks** (`score_checks.py --gate`, added 2026-09-22) — the seven checks of
    `08-test-map.md`'s own row (key consistency, grace density, truncation, bar duration,
    containment, title structure, repeat structure) over the catalog this build just wrote,
@@ -579,6 +586,15 @@ imported score (`importStore.importProvenance`):
 - **`physical`**: a generated item's declared large-hand voicing, with its prerequisite and
   alternative (D0 finding 5); the gate recommends no such item until the alternative reaches
   the learner.
+- **`excerpt`** (E1, with `source: excerpt`): the definition the item was cut from (`of`,
+  `fromBar`, `toBar`, `selection`, its `targets` and approving `event`), `cutVersion`,
+  `parentSha256` (the parent's built file at cut time), `parentEdition` and `key` (sha256 over the
+  parent's bytes, the range, the selection and the cut version); `stale` where the row was
+  approved on parent bytes the parent no longer has. The parent's `composition` and
+  `arrangement` are carried down; the `edition` is the parent's; the `converter` is
+  `tools/content/excerpts.py` by its cut version; the facts say the demands were measured on the
+  cut, the level estimated on the cut, the hands and the boundary authored by the approved row.
+  §4c has the rest.
 
 ### 4b. The human review record and the merge (D2; R42, G28, G29, E16)
 
@@ -615,6 +631,75 @@ the rest — with what is decided, and exits 1 only for a fault in the record.
 holds that a family marked `heard: true` has at least one `heard` decision on a current item.
 `review.py` and `app/src/review/record.ts` implement the contract; `tests/fixtures/
 review_cases.json` holds both to it.
+
+### 4c. The excerpt (E1; Part 24, R5, R7, R15, R35, R40, R42)
+
+An excerpt is a catalogue item of its own type (`type: 'excerpt'`), never a bar range on its
+parent: a passage cut by the build from the parent's **built** file into a file of its own, so the
+measurement (§4), the provenance (§4a), the review record's identity (§4b), the one gate and the
+screens all read the passage and nothing of the piece around it. A named section
+(`sections.json`, `teaching.sections`) is a different thing — a loop over bars of a whole item —
+and nothing here touches one.
+
+- **The definition** is a row of `content/sources/excerpts.json`: `of`, `fromBar`/`toBar` (printed
+  bars, 1-based, the pickup counted as bar 1, as `sections.json` counts), `selection` (`both`,
+  `right`, `left`), `targets` (vocabulary skill or demand ids), `label`, `note`, `parentSha256`
+  (the parent's built bytes the approval was made on) and the approving `event`, `by`, `at`;
+  rejections beside them in `rejected`, with their reasons. `validate.py` checks every row beside
+  the sections: a parent that exists and is a notated item with a built file, a range inside its
+  printed bars, a selection its staves allow, targets the vocabulary has, a derived id no other
+  row or item shares, no repeat sign, ending or jump inside the range; a row approved on other
+  parent bytes is warned as stale.
+- **The id and the key.** `excerpt.<parent id without its leading "song.">.b<from>-<to>`, with
+  `.rh` or `.lh` for one hand: the definition and nothing else, never a title. The key (above)
+  makes a moved endpoint or the other hand another excerpt, leaves a renamed one or a parent
+  whose catalogue metadata changed the same, and makes a parent whose file changed detectable.
+  The cut file's own sha256 is the item's identity in the review record, and what a run of it
+  writes into its evidence context as `material`.
+- **The cut** (`excerpts.cut`): music21 by printed position; the clef, key, time and tempo in
+  force at the cut carried into its first bar; a pickup kept where the row starts at bar 1; a tie
+  into the first bar severed to a plain note, a tie out of the last dropped; a repeat sign at
+  either edge neutralised (the passage is presented once); layout and severed slurs dropped; the
+  unselected staff of a one-hand cut silenced and left out by `convert.drop_silent_staves` through
+  `convert.normalise`; the header normalised — the excerpt's id as the work title, no credits, no
+  encoding date, the archive's entry named after the excerpt — so the bytes depend on the notes
+  and the definition alone. The parent's attribution is in the excerpt's catalogue `source`
+  (the parent's, whole), which the Library's Source and Licence rows and the lesson row show.
+- **The row.** `excerptOf`, `hands` (the selection), `level` estimated by `difficulty.py` on the
+  cut, `tracks` and `source` the parent's, the licence tags the parent's (a cut of a personal-build
+  or CC BY-NC edition is one too; a build that does not bundle the parent gives no cut),
+  `concepts` the targets' where the vocabulary names them once (the left-hand pattern, one
+  detector for seven concepts, names none), `keySig` the parent's where the parent has one key and
+  the cut prints it (settled once the notation is read). An excerpt establishes a demand by the
+  **window rule** — the density file's `perBar` and `minInWindow` in place of the whole-piece
+  `min` — written as `measurement.window`.
+- **Proposed, never created.** `python tools/content/excerpts.py propose --for <skill or demand>
+  [--rung R] [--of ID] [--bars 4..8]` (`excerpt_proposer.py`) scores every window of every
+  measured song from the bridge's positions and the parent's notation: the target at the window
+  rule's density and recurring through the bars, a phrase start, an ending that resolves or leads
+  onward, the pickup included, the hands as the parent has them, a useful length — each a pure
+  function with its weight — and three gates: nothing the judging rung has not taught, nothing a
+  family contract forbids, D0's physical limits. Nothing reads a level. Left-hand windows are not
+  offered while the detectors read a one-staff bass-clef part as treble. It writes
+  `build/excerpts/candidates.json` and the builder-only `app/public/dev/review/excerpts.json`,
+  which the microscope's excerpt view (`#/dev/microscope/excerpts`) reads: the parent drawn with
+  the cut marked, played from two bars before the cut to two after, the boundaries moved a bar at a
+  time and re-scored from the proposer's own table, and a decision — approve, adjust and approve,
+  reject with a reason — exported and merged by `python tools/content/excerpts.py --merge <file>`,
+  idempotently by event id (a range approved twice is refused with the row named). For the PDMX
+  workflow this is the step after `commit.py` and before the build (`tools/content/pdmx/README.md`).
+- **Unplaced.** An approved excerpt is in the Library and on no rung. `python
+  tools/content/excerpts.py --candidate-rungs` writes, from a built catalogue, the rungs whose taught
+  set holds every demand each excerpt carries and whose claims its notes establish, a claim one
+  detector answers for several concepts marked † with the concepts named. Placement is
+  F's, on a stated gate: that line established on the combined build **and** a current
+  `goodTeachingUse: yes` on the cut's identity in D2's record by a named reviewer stating their
+  basis. No automatic offer in the app reaches an unplaced excerpt; its runs mark the parent
+  neither passed nor performed, and the repertoire lifecycle keeps to songs.
+- **An import later** (E2 with X): nothing here assumes a bundled parent except where it reads the
+  parent's built file; an import's excerpt would need its stored score's bytes as the parent's,
+  its own measurement of the cut at import (`importStore.measureImport`), and a definition kept on
+  the device rather than in `excerpts.json`.
 
 ## 5. Authoring conventions for `[AUTH]` ABC files
 

@@ -38,6 +38,7 @@ Usage (the personal build is the default — docs/00 D23, owner 2026-09-12):
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import shutil
 import sys
@@ -213,6 +214,11 @@ def merge_catalog(out_dir: Path) -> Step:
     entries.sort(key=lambda item: item["id"])
     sections = attach_sections(entries)
     tracked = attach_rung_tracks(entries)
+    # E1: the approved excerpts, cut from their parents' built files into files of their own,
+    # before the notation, demands and provenance steps read every file alike.
+    import excerpts as excerpt_step
+
+    cut, unbundled, refusals = excerpt_step.attach_excerpts(entries, out_dir)
     read = attach_notation(entries, out_dir)
     keyed = settle_key_signatures(entries)
     measured, unmeasured, runtime = attach_demands(entries, out_dir)
@@ -221,6 +227,8 @@ def merge_catalog(out_dir: Path) -> Step:
     detail = f"{len(entries)} items"
     if sections:
         detail += f", {sections} with named sections"
+    if cut or unbundled:
+        detail += f", {cut} excerpt(s) cut" + (f" ({len(unbundled)} not: the parent is not bundled here)" if unbundled else "")
     if tracked:
         detail += f", {tracked} given a track by their rung"
     if read:
@@ -228,7 +236,9 @@ def merge_catalog(out_dir: Path) -> Step:
     if keyed:
         detail += f", {keyed} keySig corrected"
     detail += f", demands measured on {measured} ({unmeasured} unmeasured, {runtime} made at runtime)"
-    return Step("merge catalog", ok=True, detail=detail)
+    # A row the cutter refuses (a range across a repeat sign, a parent that is gone) stops the
+    # build with the row and the bars named: shipping the catalogue without it would hide it.
+    return Step("merge catalog", ok=not refusals, detail=detail, warnings=["excerpts refused:\n" + "\n".join(refusals)] if refusals else [])
 
 
 #: Circle-of-fifths names, index 0 = C major / A minor. The same four tables
@@ -506,6 +516,35 @@ def established_by_density(located: dict[str, int], bars: int, table: dict, orde
     return out
 
 
+#: The window minimum where the density file states none (E1 item 9): two occurrences.
+DEFAULT_MIN_IN_WINDOW = 2
+
+
+def established_by_window(located: dict[str, int], bars: int, table: dict, order: list[str]) -> list[str]:
+    """
+    The demands an excerpt provides at a useful density (E1 item 9): the window rule — `perBar`
+    reached and the located count at least `minInWindow` (two where the file states none) — in
+    place of the whole-piece `min`, which a four-to-eight-bar cut cannot hold. The proposer reads
+    the same rule for a window (`excerpt_proposer.window_rule`). In the vocabulary's order.
+    """
+    rules = table["demands"]
+    out = []
+    for demand in order:
+        rule = rules.get(demand)
+        n = int(located.get(demand, 0))
+        if rule is None or n <= 0:
+            continue
+        if n >= rule.get("minInWindow", DEFAULT_MIN_IN_WINDOW) and n / max(bars, 1) >= rule["perBar"]:
+            out.append(demand)
+    return out
+
+
+#: The bridge's per-printed-bar positions (E1 item 5), kept apart from the counts: the proposer
+#: reads them, the catalogue never carries them, and the counts' cache stays the size it was.
+POSITIONS_CACHE = "positions-cache.json"
+POSITION_KEYS = ("positions", "everyBar", "hands", "printedBars")
+
+
 def established_by_contract(entry: dict, row: dict) -> list[str]:
     """
     The demands a generated item provides at its own family's density (D0's contract):
@@ -570,6 +609,14 @@ def attach_demands(entries: list[dict], out_dir: Path) -> tuple[int, int, int]:
     cache = read_json(cache_path) if cache_path.exists() else {}
     assert isinstance(cache, dict)
     rows: dict[str, dict] = dict(cache.get("files") or {}) if cache.get("fingerprint") == fingerprint else {}
+    # E1: the positions, beside the counts under the same fingerprint. A file whose counts are
+    # cached without its positions (a cache from before E1) is measured again.
+    positions_path = BUILD_DIR / POSITIONS_CACHE
+    positions_cache = read_json(positions_path) if positions_path.exists() else {}
+    assert isinstance(positions_cache, dict)
+    positions: dict[str, dict] = (dict(positions_cache.get("files") or {})
+                                  if positions_cache.get("fingerprint") == fingerprint else {})
+    rows = {sha: row for sha, row in rows.items() if sha in positions or "error" in row}
 
     def unmeasured(entry: dict, reason: str) -> None:
         entry["demands"] = "unmeasured"
@@ -611,7 +658,10 @@ def attach_demands(entries: list[dict], out_dir: Path) -> tuple[int, int, int]:
     if todo:
         answered = D.measure_each(list(todo.values()))
         for sha, path in todo.items():
-            rows[sha] = answered[str(path)]
+            row = dict(answered[str(path)])
+            if "error" not in row:
+                positions[sha] = {key: row.pop(key) for key in POSITION_KEYS if key in row}
+            rows[sha] = row
 
     measured = 0
     failed = 0
@@ -623,11 +673,16 @@ def attach_demands(entries: list[dict], out_dir: Path) -> tuple[int, int, int]:
             continue
         located = {demand: int(n) for demand, n in (row.get("opportunities") or {}).items() if int(n) > 0}
         by_density = established_by_density(located, int(row["measures"]), table, order)
-        by_contract = [d for d in established_by_contract(entry, row) if d not in by_density]
+        # An excerpt is a window (E1 item 9): the window rule establishes what the whole-piece
+        # count cannot, and `window` says which.
+        by_window = ([d for d in established_by_window(located, int(row["measures"]), table, order) if d not in by_density]
+                     if entry.get("type") == "excerpt" else [])
+        by_contract = [d for d in established_by_contract(entry, row) if d not in by_density and d not in by_window]
         misread = clef_misread(out_dir / entry["file"], (entry.get("notation") or {}).get("staves"))
         # A reading known to be wrong on this file never establishes an opportunity; it stays
         # among the ids, so the gate still treats it as something the learner may have to meet.
-        established = [d for d in order if (d in by_density or d in by_contract) and not (misread and d in CLEF_MISREAD)]
+        established = [d for d in order if (d in by_density or d in by_window or d in by_contract)
+                       and not (misread and d in CLEF_MISREAD)]
         entry["demands"] = list(row["demands"])
         entry["measurement"] = {
             "status": "measured",
@@ -639,11 +694,18 @@ def attach_demands(entries: list[dict], out_dir: Path) -> tuple[int, int, int]:
             "notes": int(row["notes"]),
             "established": established,
             **({"contract": [d for d in by_contract if d in established]} if [d for d in by_contract if d in established] else {}),
+            **({"window": [d for d in by_window if d in established]} if [d for d in by_window if d in established] else {}),
             **({"misread": {"demands": list(CLEF_MISREAD), "why": misread}} if misread else {}),
         }
         measured += 1
 
     write_json(cache_path, {"fingerprint": fingerprint, "files": {sha: rows[sha] for _e, sha in planned}})
+    # Compact: the proposer's input, per printed bar, a few megabytes indented would be many more.
+    positions_path.parent.mkdir(parents=True, exist_ok=True)
+    with positions_path.open("w", encoding="utf-8", newline="\n") as handle:
+        json.dump({"fingerprint": fingerprint, "files": {sha: positions[sha] for _e, sha in planned if sha in positions}},
+                  handle, ensure_ascii=False, separators=(",", ":"))
+        handle.write("\n")
 
     # A reader that fails on most files is a broken bridge, not a library of unreadable
     # scores (attach_notation's lesson): stop, rather than ship a catalog of "unmeasured".
@@ -662,6 +724,10 @@ def source_kind(entry: dict) -> str:
     tags = set(entry.get("tags") or [])
     rel = entry.get("file") or ""
     drill = entry.get("drill") or {}
+    if entry.get("type") == "excerpt":
+        # A passage cut by the build from its parent's file (E1): its own kind, whatever the
+        # parent's was, with the parent's chain carried in its `excerpt` block.
+        return "excerpt"
     if drill.get("generator") or rel.startswith("scores/generated/"):
         return "generated"
     if not rel and drill:
@@ -737,6 +803,8 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
 
     for entry in entries:
         kind = source_kind(entry)
+        if kind == "excerpt":
+            continue  # after every parent's record, below: it carries the parent's chain down
         source = entry.get("source") or {}
         checksum = str(source.get("checksum") or "").replace("sha256:", "")
         drill = entry.get("drill") or {}
@@ -849,6 +917,62 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
                         "prerequisite": large.get("prerequisite"),
                         "alternative": large.get("alternative"),
                     }
+        entry["provenance"] = record
+
+    # E1 item 4: an excerpt's record, from its parent's. Its identity is the chain the parent
+    # has — composition and arrangement carried down — plus the `excerpt` block: the definition,
+    # the cut version, the parent's bytes at cut time and edition, and the key over them.
+    import excerpts as excerpt_step
+
+    for entry in entries:
+        if source_kind(entry) != "excerpt":
+            continue
+        carried = entry.pop("_excerpt", None) or {}
+        parent = by_id.get(entry.get("excerptOf") or "") or {}
+        excerpt_step.settle_key(entry, parent)
+        parent_record = parent.get("provenance") or {}
+        parent_facts = parent_record.get("facts") or {}
+        facts: dict[str, dict] = {}
+        record: dict = {"source": "excerpt", "edition": parent_record.get("edition")}
+        for name in ("composition", "arrangement"):
+            if parent_record.get(name):
+                record[name] = parent_record[name]
+                facts[name] = {"kind": "inferred" if (parent_facts.get(name) or {}).get("kind") == "inferred" else "authored",
+                               "via": f"the parent's ({entry.get('excerptOf')})"}
+        record["converter"] = {"name": "tools/content/excerpts.py", "version": excerpt_step.CUT_VERSION}
+        measurement = entry.get("measurement") or {}
+        if measurement.get("status") == "measured":
+            facts["demands"] = {
+                "kind": "measured",
+                "via": "app/src/demands/detect.ts",
+                # The file measured: the cut, never the parent's.
+                "on": entry.get("file"),
+                "definitions": measurement.get("definitions"),
+                "detectors": measurement.get("detectors"),
+            }
+            if measurement.get("misread"):
+                facts["demands"]["misread"] = measurement["misread"]["demands"]
+                facts["demands"]["misreadWhy"] = measurement["misread"]["why"]
+        else:
+            facts["demands"] = {"kind": "unmeasured", "why": measurement.get("reason")}
+        tempo_fact = parent_facts.get("tempo")
+        if tempo_fact:
+            facts["tempo"] = {"kind": tempo_fact["kind"], "via": f"the parent's: {tempo_fact.get('via', '')}".rstrip(": ")}
+            if tempo_fact["kind"] == "inferred" and isinstance(entry.get("demands"), list):
+                untrusted = [d for d in entry["demands"] if d in tempo_sensitive]
+                if untrusted:
+                    facts["demands"]["untrusted"] = untrusted
+                    facts["demands"]["untrustedWhy"] = "their difficulty depends on a tempo the converter supplied, not one the score states"
+        facts["level"] = {"kind": "inferred", "via": "the difficulty model on the cut (tools/content/difficulty.py), never the parent's"}
+        facts["hands"] = {"kind": "authored", "via": "the approved selection (content/sources/excerpts.json)"}
+        facts["boundary"] = {"kind": "authored",
+                             "via": f"the approved row in content/sources/excerpts.json (event {carried.get('event')}, by {carried.get('by')})"}
+        if (entry.get("notation") or {}).get("keys"):
+            facts["key"] = {"kind": "measured", "via": "the cut's signature, carried in from the parent at the cut"}
+        record["facts"] = facts
+        record["review"] = {"score": None, "teaching": None}
+        if carried:
+            record["excerpt"] = excerpt_step.provenance_block({"_excerpt": carried}, parent_record)
         entry["provenance"] = record
 
     # The reviewed facts (D2 item 4): the record's current decisions, per dimension.

@@ -850,7 +850,9 @@ export interface LearnedPiece {
  * **Learned** is a measured pass or mastery, the rung's standard or the master
  * standard (`02` Part A §6: passed items come back for review); the session
  * keeps only the songs among them for repertoire retention (a scale passed is
- * technique, which its exposure rule keeps warm). Never a
+ * technique, which its exposure rule keeps warm; an excerpt passed is a passage,
+ * not the piece, and its run is keyed by its own id, so the parent is neither
+ * passed nor performed by it: E1, adversary 10, `excerptItems.test.ts`). Never a
  * generated sight-reading row, whatever an older build wrote on it (S8), and
  * never a pass that is only the learner's word (`selfPassed`, *Know it*): the
  * app keeps playable what it saw learned, and a piece the learner says they

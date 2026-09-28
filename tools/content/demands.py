@@ -26,6 +26,17 @@ notes of the model. The family contracts' density checks read those counts
 (`tools/content/tests/test_measured_demands.py`); they are the detectors' own
 `at` lists, counted in TypeScript, so this module still decides nothing.
 
+**Positions (E1).** Each row also carries where: per demand, per printed bar
+(1-based, the pickup as bar 1), how many located places, each printed note once
+however many passes the repeats make (`positions`); the printed bars where each
+every-bar detector's condition holds, the detector asked of that bar alone
+(`everyBar`: the left-hand pattern and the walking bass locate nothing unless
+every bar of the piece qualifies); each hand's lowest and highest pitch per
+printed bar (`hands`); and the printed bar count (`printedBars`). The build keeps
+them in `build/positions-cache.json`, beside the counts under the same
+fingerprint and never on a catalogue row, for the excerpt proposer
+(`excerpt_proposer.py`), which scores a window from them without cutting it.
+
     python3 tools/content/demands.py content/scores/pdmx/<file>.mxl [...]
 """
 from __future__ import annotations

@@ -33,6 +33,7 @@ import {
   type Learner,
 } from '../../src/curriculum/eligibility';
 import { indexCatalog, tieredAlternatives } from '../../src/curriculum/selectors';
+import { taughtAtRung } from '../../src/curriculum/session';
 import { SHIPPED_SKILL_ACTIVATION, EVERY_DECLARED_SKILL } from '../../src/curriculum/skillActivation';
 import type { CatalogItem, Curriculum } from '../../src/curriculum/types';
 import { addImport, correctImportHands, importToCatalogItem } from '../../src/data/importStore';
@@ -297,7 +298,7 @@ describe('one density rule, read by the build and by the gate', () => {
     expect(new Set(Object.values(OPPORTUNITY_DENSITY.demands).map((r) => `${String(r.min)}/${String(r.perBar)}`)).size).toBeGreaterThan(5);
   });
 
-  it('gives, on every measured item of the built catalog, exactly what the build wrote (the build’s rule plus the family contract)', () => {
+  it('gives, on every measured item of the built catalog, exactly what the build wrote (the build’s rule plus the family contract, and an excerpt’s window rule)', () => {
     const catalog = JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', 'catalog.json'), 'utf8')) as CatalogItem[];
     const measuredItems = catalog.filter((item) => item.measurement?.status === 'measured');
     expect(measuredItems.length, 'no measured item in the built catalog — has the content build run?').toBeGreaterThan(1000);
@@ -306,10 +307,50 @@ describe('one density rule, read by the build and by the gate', () => {
       const m = item.measurement;
       if (m?.status !== 'measured') continue;
       const spoilt = new Set(m.misread?.demands ?? []);
-      const mine = new Set([...usefulDensity(m.located, m.bars), ...(m.contract ?? [])].filter((d) => !spoilt.has(d)));
+      // E1: an excerpt also establishes by the window rule (`minInWindow`), written as `window`.
+      const mine = new Set([...usefulDensity(m.located, m.bars), ...(m.contract ?? []), ...(m.window ?? [])].filter((d) => !spoilt.has(d)));
       const theirs = new Set(m.established);
       if (mine.size !== theirs.size || [...mine].some((d) => !theirs.has(d))) differ.push(item.id);
     }
     expect(differ.slice(0, 10), `${String(differ.length)} items`).toEqual([]);
   });
 });
+
+/**
+ * Q8's case on the real corpus (E1 item 7; Part 24's adversaries 1 and 2): the whole of Anh. 113
+ * is refused for a Stage 3 want — it carries sixteenths (taught at no rung) and triplets (4.5),
+ * which `classical.3`, its rung, has not taught — and its approved excerpt is eligible, measured on
+ * the cut; the parent's demands are the parent's, unchanged by the cut. No excerpt branch in the
+ * gate: the cut's measured demands are what it reads.
+ */
+describe('Anh. 113 whole and in its excerpt, through the one gate (E1, Q8)', () => {
+  const catalog = JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', 'catalog.json'), 'utf8')) as CatalogItem[];
+  const curriculum = JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', 'curriculum.json'), 'utf8')) as Curriculum;
+  const WHOLE = 'song.classical.bach-menuet-bwv-anh-113.pdmx';
+  const whole = catalog.find((one) => one.id === WHOLE);
+  const excerpts = catalog.filter((one) => one.type === 'excerpt' && one.excerptOf === WHOLE);
+  const atClassical3: Learner = { taught: taughtAtRung(curriculum, 'classical.3') ?? ((): boolean => false) };
+
+  it('the whole is refused at classical.3 for what it carries that the rung has not taught', () => {
+    expect(whole, 'Anh. 113 is in the built catalogue').toBeDefined();
+    const result = eligibleFor(whole as CatalogItem, atClassical3, { for: 'equivalent' });
+    expect(result).toMatchObject({ verdict: 'ineligible', why: 'untaught' });
+    expect(result.verdict === 'ineligible' && result.why === 'untaught' ? [...result.demands].sort() : []).toEqual(['rhythm.sixteenths', 'rhythm.triplets']);
+  });
+
+  it('its approved excerpt is eligible there, for the key signature its bars establish, and the parent is unchanged', () => {
+    expect(excerpts.length, 'an approved excerpt of Anh. 113 is in the built catalogue').toBeGreaterThan(0);
+    for (const excerpt of excerpts) {
+      expect(eligibleFor(excerpt, atClassical3, { for: 'equivalent' }).verdict, excerpt.id).toBe('eligible');
+      expect(eligibleFor(excerpt, atClassical3, { for: 'demand', demand: 'key.signature' }), excerpt.id).toMatchObject({
+        verdict: 'eligible',
+        practises: 'key.signature',
+      });
+      expect(excerpt.demands, excerpt.id).not.toContain('rhythm.sixteenths');
+      expect(excerpt.demands, excerpt.id).not.toContain('rhythm.triplets');
+    }
+    expect(whole?.demands).toContain('rhythm.sixteenths');
+    expect(whole?.demands).toContain('rhythm.triplets');
+  });
+});
+

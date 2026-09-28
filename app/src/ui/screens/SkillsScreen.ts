@@ -27,6 +27,7 @@ import { createSubScreen } from './subScreen';
 import { badge, button, chip, el, levelLabel, listRow } from '../widgets';
 import { openFinderSheet } from '../finderSheet';
 import { openItem } from '../openItem';
+import { isExerciseKind } from '../../curriculum/excerpt';
 
 /**
  * What a concept's row says: the ladder's state for a skill the vocabulary can
@@ -126,8 +127,10 @@ export function buildConcepts(
     for (const concept of item.concepts) {
       const entry = byConcept.get(concept);
       if (!entry) continue;
-      // Songs are not practice for a *skill*: they are where the skill is used.
-      if (playable && item.type !== 'song') entry.items.push(item);
+      // Songs are not practice for a *skill*: they are where the skill is used. Nor, yet, is an
+      // excerpt: it is cut for practice, and it is unplaced with its teaching use undecided until
+      // F places it (E1), so no screen lists it as what practises a skill.
+      if (playable && isExerciseKind(item)) entry.items.push(item);
     }
   }
   for (const entry of byConcept.values()) {

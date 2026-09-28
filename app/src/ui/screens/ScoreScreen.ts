@@ -89,6 +89,8 @@ import { forgetUnfinished, rememberUnfinished, unfinishedFor } from '../../data/
 import { createHelpStrip, maybeFirstSight, openFirstSight, type HelpStrip } from '../helpStrip';
 import { openSheet } from '../widgets';
 import { hasChordSymbols } from '../openItem';
+import { cutIdentity, isExcerpt } from '../../curriculum/excerpt';
+import type { Identity } from '../../review/record';
 
 /**
  * What the four modes are called on the screen (P21c B2).
@@ -416,6 +418,8 @@ export function ScoreScreen(router: Router): HTMLElement {
   let phraseSeed: number | undefined;
   /** The generated phrase's identity — family, version, seed — which the run keeps (D1a). */
   let phraseGenerator: PhraseGenerator | undefined;
+  /** An excerpt's cut, as its file identity, which the run keeps as its `material` (E1 item 7). */
+  let runMaterial: Identity | undefined;
   /**
    * A stored run already carries this phrase's seed (T37), under the version
    * that wrote this phrase (D1a).
@@ -3166,6 +3170,8 @@ export function ScoreScreen(router: Router): HTMLElement {
             // And which generator wrote it (D1a): a seed names one phrase per
             // version, so the history compares the version beside the seed.
             ...(phraseGenerator === undefined ? {} : { generator: phraseGenerator }),
+            // The passage's own bytes for an excerpt (E1 item 7): the run names its cut, never the parent.
+            ...(runMaterial === undefined ? {} : { material: runMaterial }),
             mode,
             tempoPct: score.tempoPct,
             // Nothing heard, nothing measured (T40, C1): not a zero.
@@ -4250,7 +4256,10 @@ export function ScoreScreen(router: Router): HTMLElement {
       } else {
         const response = await fetch(contentUrl(item.file as string));
         if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
-        musicXml = toMusicXml(new Uint8Array(await response.arrayBuffer()));
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        // An excerpt's run carries the cut's file identity (E1 item 7), hashed from the bytes played.
+        if (isExcerpt(item)) runMaterial = await cutIdentity(bytes);
+        musicXml = toMusicXml(bytes);
       }
 
       // The model comes from an instance with no draw range: a windowed OSMD

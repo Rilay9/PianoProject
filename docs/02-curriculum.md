@@ -909,6 +909,19 @@ teaching-use decision, which is F's and the owner's.
 >   the candidate-rungs report beside D3's entry lists, for each study, the rungs whose taught set
 >   holds every demand it carries and whose claims its notes establish — the material a later
 >   placement decision reads beside a resolved teaching-use review in D2's record.
+>
+> **The excerpt (E1, 2026-09-28): the passage where a whole piece is the wrong unit.** Nine rung
+> claims were kept by no whole piece; the four bars where the leaps are, or the phrase in the
+> Minuet a Stage 3 learner could read while the whole Minuet is beyond them, are what an excerpt
+> is for (`03` §4c). The gate needs no excerpt branch: it reads the cut's measured demands, so the
+> whole Anh. 113 is refused at `classical.3` (sixteenths, taught nowhere, and triplets) and its
+> excerpt of bars 25–32 is not. An excerpt is **on no rung**: it is placed by F only where the
+> candidate-rungs report establishes the rung's claim on the combined build with nothing untaught
+> **and** D2's record holds a current `goodTeachingUse: yes` on the cut's identity by a named
+> reviewer stating their basis; until then it is a Library item, its boundary by rule and unheard.
+> No automatic offer reaches an unplaced one (the swap sheet's tiers, the session's slots), a
+> slot or swap that leaves songs out leaves excerpts out, the repertoire lifecycle and retention
+> keep to songs, and a run of an excerpt marks the parent neither passed nor performed.
 
 The table above is a technique syllabus in the conservatoire sense. It is not the whole of
 what a learner practises, and a skill with no generated exercise ends up either untested or
