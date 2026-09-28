@@ -928,7 +928,12 @@ that decision exists a study reaches the learner only through the Library (Part 
 >   the item's current identity, through the microscope's export and `review.py --merge`, built
 >   into `provenance.review.teaching === true`, admits it to the same gates as everything else; a
 >   stale decision (a changed identity) does not. Before D3a the demand and skill tiers offered the
->   2.1 studies as *Also practises both hands together* on 2.1's rows.
+>   2.1 studies as *Also practises both hands together* on 2.1's rows. Since D3b (2026-09-28) the
+>   session card's rows that take an item straight from a rung's list — its asks, the fallback's
+>   rung and prerequisite steps, the jam slot, the exposure rule — pass the same admission
+>   (`eligibility.admittedForTeaching`), because a rung listing a groove is placement, not a
+>   decision to teach it; a rung's ask whose every candidate is refused (`latin.3`'s and
+>   `latin.6`'s exercises, all grooves) stays unmet, and the card takes the next valid step.
 
 The table above is a technique syllabus in the conservatoire sense. It is not the whole of
 what a learner practises, and a skill with no generated exercise ends up either untested or

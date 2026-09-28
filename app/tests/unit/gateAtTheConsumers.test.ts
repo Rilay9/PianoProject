@@ -10,17 +10,21 @@
  * same-lesson option, a declared skill the notes do not carry, a level-close
  * candidate the learner is not ready for, a declared large-hand voicing, and a
  * repertoire piece whose new demand is only incidental.
+ *
+ * Since D3a and D3b, also the teaching-use admission: at the gate (D3a), and on the
+ * session card's rows drawn straight from a rung's list without the gate (D3b).
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { buildSession, swapOptions, type SessionSlot } from '../../src/curriculum/session';
+import { admittedForTeaching, eligibleFor } from '../../src/curriculum/eligibility';
+import { buildSession, swapOptions, type BuildInput, type SessionSlot } from '../../src/curriculum/session';
 import { indexCatalog, tieredAlternatives } from '../../src/curriculum/selectors';
 import { EVERY_DECLARED_SKILL, SHIPPED_SKILL_ACTIVATION } from '../../src/curriculum/skillActivation';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
 import type { SessionRow } from '../../src/data/db';
 import { EVIDENCE_DEFINITIONS, type MeasuredEvidence } from '../../src/evidence/evidence';
-import { rungState } from '../../src/evidence/rungState';
+import { rungState, type RungReading } from '../../src/evidence/rungState';
 import { VOCABULARY_V0, type Vocabulary } from '../../src/evidence/vocabulary';
 import { matches as libraryMatches } from '../../src/ui/screens/LibraryScreen';
 
@@ -390,5 +394,411 @@ describe('the session’s skill requirement and its skill and demand steps refus
     };
     expect(kindOf(null)).toEqual([]);
     expect(kindOf(true)).toEqual([['ex.groove-b', 'kind']]);
+  });
+});
+
+/**
+ * D3b: the session card's rows that take an item straight from a rung's list — a rung's `runs`, `done` and
+ * `measure` asks, the fallback ladder's rung and prerequisite steps, the jam slot and the exposure rule —
+ * are automatic offers too, and pass the same teaching-use admission as the gate (the reviewer's required
+ * change on D3a, `responses/c8717be.md`): an authored placement is not a teaching-use decision. Each path
+ * on constructed rungs, for `teaching: null` and `false` (refused alike) and `true` (offered again, the
+ * card then exactly what it is for the same item with no promise at all), with a generated drill and a
+ * notated song beside it offered as before; where the refused item was the row's only candidate, the row
+ * is filled by the next step that already passes, or dropped — never by the refused item, and never by a
+ * line saying the rung's asks are met.
+ */
+describe('the session card’s rows drawn straight from a rung’s list pass the same admission (D3b)', () => {
+  const TODAY = new Date(2026, 9, 20, 9);
+  /** Vocabulary v0 with eighth notes taught at the constructed lesson E (as `fallbackOrder.test.ts`). */
+  const VOCABULARY: Vocabulary = {
+    ...VOCABULARY_V0,
+    demands: VOCABULARY_V0.demands.map((demand) => (demand.id === 'rhythm.eighths' ? { ...demand, taughtAt: ['E'] } : demand)),
+  };
+  const exercise = (id: string, over: Partial<CatalogItem> = {}): CatalogItem => ({
+    id,
+    type: 'exercise',
+    title: id,
+    level: 1.5,
+    hands: 'right',
+    tracks: ['core'],
+    concepts: [],
+    file: `scores/${id}.mxl`,
+    ...over,
+  });
+  /** A generated groove as the build writes one: a file, a drill kind, the family's promise `music`, the stored bit. */
+  const groove = (id: string, teaching: boolean | null, kind = 'clave'): CatalogItem => exercise(id, { drill: { kind, params: {} }, ...measured([]), ...musical(teaching) });
+  /** The same item with no promise fact: what every one of these paths offered before D3b, whatever the bit. */
+  const unpromised = (item: CatalogItem): CatalogItem => ({ ...item, provenance: { source: 'authored', facts: {}, review: { score: null, teaching: null } } });
+  /** A generated drill: its family promises a drill, and no person has decided its teaching use. */
+  const drill = (id: string, kind = 'scale'): CatalogItem =>
+    exercise(id, {
+      drill: { kind, params: {} },
+      ...measured([]),
+      provenance: { source: 'generated', facts: { promise: { kind: 'authored', via: 'family_contracts.json', value: 'drill' } }, review: { score: null, teaching: null } },
+    });
+  /** A notated song no person has decided on: its notes are its truth. */
+  const notated = (id: string): CatalogItem => song(id, { ...measured([]), provenance: { source: 'pdmx', facts: {}, review: { score: null, teaching: null } } });
+  /** P's exercise, an ordinary notated one: what the ladder's prerequisite step finds. */
+  const pre = exercise('ex.pre', measured([]));
+  /** R's own exercise training the skill it asks for, never playable: the skill requirement has a pool and nothing to offer. */
+  const gone = exercise('ex.r-gone', { targetSkills: ['subdivision'], file: null, ...measured(['rhythm.eighths']) });
+  const REFUSED = [null, false] as const;
+
+  /**
+   * The rung after R asks for an exercise the card can have: a card that treated a refused ask as met would
+   * offer it as "The next lesson asks for it", which is false while R's ask waits (`claimsNext`).
+   */
+  const next = exercise('ex.next', measured([]));
+  /** E and P before R (placed at R, so both behind the placement); R builds on P; R2 after R. */
+  const core = (r: Partial<Lesson>, p: string[] = ['ex.pre'], e: string[] = []): Curriculum => ({
+    version: 1,
+    tracks: [{ id: 'core', title: 'Core', description: '', startsAtStage: 0 }],
+    stages: [
+      {
+        number: 1,
+        title: 'One',
+        summary: '',
+        units: [
+          {
+            id: 'u',
+            title: 'U',
+            track: 'core',
+            lessons: [
+              lesson('E', { exerciseOptions: e, requirements: [{ kind: 'runs', from: 'exercises', count: 1 }] }),
+              lesson('P', { title: 'The lesson R builds on', exerciseOptions: p, requirements: [{ kind: 'runs', from: 'exercises', count: 1 }] }),
+              lesson('R', { prerequisites: ['P'], ...r }),
+              lesson('R2', { title: 'The lesson after R', exerciseOptions: ['ex.next'], requirements: [{ kind: 'runs', from: 'exercises', count: 1 }] }),
+            ],
+          },
+        ],
+      },
+    ],
+  });
+  const card = (curriculum: Curriculum, listed: CatalogItem[], over: Partial<BuildInput> = {}): SessionSlot[] => {
+    const items = [...listed, next];
+    return buildSession({
+      curriculum,
+      catalog: indexCatalog(items),
+      items,
+      states: rungState([], curriculum, VOCABULARY_V0, TODAY),
+      rows: [],
+      learned: [],
+      lastPlayed: new Map(),
+      activeTracks: ['core'],
+      minutes: 15,
+      startAt: 'R',
+      today: TODAY,
+      skillActivation: EVERY_DECLARED_SKILL,
+      vocabulary: VOCABULARY,
+      ...over,
+    }).slots;
+  };
+  const row =(slots: SessionSlot[], kind: SessionSlot['kind']): SessionSlot | undefined => slots.find((slot) => slot.kind === kind);
+  const shape = (slots: SessionSlot[]) => slots.map((slot) => [slot.kind, slot.item?.id, slot.claim?.kind, slot.reason]);
+  const ids = (slots: SessionSlot[]) => slots.map((slot) => slot.item?.id);
+  /** No row says the rung's asks are met: none offers the next lesson's as "the next lesson asks for it". */
+  const claimsNext = (slots: SessionSlot[]) => slots.some((slot) => slot.claim?.kind === 'asked' && slot.claim.next);
+
+  it('runs: the rung’s own groove is not what it asks for until approved; the warm-up takes the next valid step, and a drill and a notated song beside it are offered as before', () => {
+    const only = core({ exerciseOptions: ['ex.groove'], requirements: [{ kind: 'runs', from: 'exercises', count: 1 }] });
+    for (const teaching of REFUSED) {
+      const slots = card(only, [groove('ex.groove', teaching), pre]);
+      expect(ids(slots), `teaching ${String(teaching)}`).not.toContain('ex.groove');
+      expect(row(slots, 'technique'), `teaching ${String(teaching)}`).toMatchObject({ item: { id: 'ex.pre' }, claim: { kind: 'prerequisite', rung: { id: 'P' } } });
+      expect(claimsNext(slots)).toBe(false);
+    }
+    const approved = card(only, [groove('ex.groove', true), pre]);
+    expect(row(approved, 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'asked', requirement: { kind: 'runs' } } });
+    expect(shape(approved)).toEqual(shape(card(only, [unpromised(groove('ex.groove', true)), pre])));
+
+    const beside = core({
+      exerciseOptions: ['ex.groove', 'ex.drill'],
+      songOptions: ['song.notated'],
+      requirements: [
+        { kind: 'runs', from: 'exercises', count: 1 },
+        { kind: 'runs', from: 'songs', count: 1 },
+      ],
+    });
+    const items = (teaching: boolean | null) => [groove('ex.groove', teaching), drill('ex.drill'), notated('song.notated'), pre];
+    for (const teaching of REFUSED) {
+      const slots = card(beside, items(teaching));
+      expect(row(slots, 'technique'), `teaching ${String(teaching)}`).toMatchObject({ item: { id: 'ex.drill' }, claim: { kind: 'asked', requirement: { kind: 'runs', from: 'exercises' } } });
+      expect(row(slots, 'new'), `teaching ${String(teaching)}`).toMatchObject({ item: { id: 'song.notated' }, claim: { kind: 'asked', requirement: { kind: 'runs', from: 'songs' } } });
+    }
+    const both = card(beside, items(true));
+    expect([row(both, 'technique')?.item?.id, row(both, 'new')?.item?.id]).toEqual(['ex.groove', 'song.notated']);
+    expect(shape(both)).toEqual(shape(card(beside, [unpromised(groove('ex.groove', true)), drill('ex.drill'), notated('song.notated'), pre])));
+  });
+
+  it('done: a requirement naming the groove stays unmet and no row claims it; the next valid step fills the warm-up, or the rung’s other option', () => {
+    const only = core({ exerciseOptions: ['ex.groove'], requirements: [{ kind: 'done', item: 'ex.groove' }] });
+    for (const teaching of REFUSED) {
+      const slots = card(only, [groove('ex.groove', teaching), pre]);
+      expect(ids(slots), `teaching ${String(teaching)}`).not.toContain('ex.groove');
+      expect(slots.some((slot) => slot.claim?.kind === 'asked' && slot.claim.requirement.kind === 'done')).toBe(false);
+      expect(row(slots, 'technique')).toMatchObject({ item: { id: 'ex.pre' }, claim: { kind: 'prerequisite' } });
+      expect(claimsNext(slots)).toBe(false);
+    }
+    expect(row(card(only, [groove('ex.groove', true), pre]), 'technique')).toMatchObject({
+      item: { id: 'ex.groove' },
+      claim: { kind: 'asked', requirement: { kind: 'done', item: 'ex.groove' } },
+    });
+
+    const beside = core({ exerciseOptions: ['ex.groove', 'ex.drill'], requirements: [{ kind: 'done', item: 'ex.groove' }] });
+    for (const teaching of REFUSED) {
+      // The rung asks for the groove and cannot have it: its other option, said as the rung's own, never as what it asks.
+      expect(row(card(beside, [groove('ex.groove', teaching), drill('ex.drill'), pre]), 'technique')).toMatchObject({ item: { id: 'ex.drill' }, claim: { kind: 'rung', rung: { id: 'R' } } });
+    }
+    expect(row(card(beside, [groove('ex.groove', true), drill('ex.drill'), pre]), 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'asked' } });
+  });
+
+  it('measure: the rung’s groove of the measured kind is refused; a generated drill of the same kind beside it is what the rung asks for', () => {
+    const only = core({ exerciseOptions: ['ex.groove'], requirements: [{ kind: 'measure', measure: 'clave' }] });
+    for (const teaching of REFUSED) {
+      const slots = card(only, [groove('ex.groove', teaching), pre]);
+      expect(ids(slots), `teaching ${String(teaching)}`).not.toContain('ex.groove');
+      expect(row(slots, 'technique')).toMatchObject({ item: { id: 'ex.pre' }, claim: { kind: 'prerequisite' } });
+    }
+    expect(row(card(only, [groove('ex.groove', true), pre]), 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'asked', requirement: { kind: 'measure' } } });
+
+    const beside = core({ exerciseOptions: ['ex.groove', 'ex.clave-drill'], requirements: [{ kind: 'measure', measure: 'clave' }] });
+    const items = (teaching: boolean | null) => [groove('ex.groove', teaching), drill('ex.clave-drill', 'clave'), pre];
+    for (const teaching of REFUSED) {
+      expect(row(card(beside, items(teaching)), 'technique'), `teaching ${String(teaching)}`).toMatchObject({ item: { id: 'ex.clave-drill' }, claim: { kind: 'asked', requirement: { kind: 'measure' } } });
+    }
+    expect(row(card(beside, items(true)), 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'asked' } });
+  });
+
+  it('the ladder’s rung step: the rung’s groove is passed over for the next step, or for a drill of the rung beside it', () => {
+    const skill = [{ kind: 'skill' as const, skill: 'subdivision', state: 'familiar' as const }];
+    const only = core({ exerciseOptions: ['ex.r-gone', 'ex.groove'], requirements: skill });
+    for (const teaching of REFUSED) {
+      const slots = card(only, [gone, groove('ex.groove', teaching), pre]);
+      expect(ids(slots), `teaching ${String(teaching)}`).not.toContain('ex.groove');
+      expect(row(slots, 'technique')).toMatchObject({ item: { id: 'ex.pre' }, claim: { kind: 'prerequisite' } });
+    }
+    const approved = card(only, [gone, groove('ex.groove', true), pre]);
+    expect(row(approved, 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'rung', rung: { id: 'R' } } });
+    expect(shape(approved)).toEqual(shape(card(only, [gone, unpromised(groove('ex.groove', true)), pre])));
+
+    const beside = core({ exerciseOptions: ['ex.r-gone', 'ex.groove', 'ex.drill'], requirements: skill });
+    for (const teaching of REFUSED) {
+      expect(row(card(beside, [gone, groove('ex.groove', teaching), drill('ex.drill'), pre]), 'technique')).toMatchObject({ item: { id: 'ex.drill' }, claim: { kind: 'rung' } });
+    }
+    expect(row(card(beside, [gone, groove('ex.groove', true), drill('ex.drill'), pre]), 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'rung' } });
+  });
+
+  it('the ladder’s prerequisite step: the prerequisite rung’s groove is passed over for exposure, or for its notated exercise beside it', () => {
+    const skill = [{ kind: 'skill' as const, skill: 'subdivision', state: 'familiar' as const }];
+    const expo = exercise('ex.expo', { file: null, drill: { kind: 'scale', params: {} } });
+    const only = core({ exerciseOptions: ['ex.r-gone'], requirements: skill }, ['ex.groove'], ['ex.expo']);
+    for (const teaching of REFUSED) {
+      const slots = card(only, [gone, groove('ex.groove', teaching), expo]);
+      expect(ids(slots), `teaching ${String(teaching)}`).not.toContain('ex.groove');
+      expect(row(slots, 'technique')).toMatchObject({ item: { id: 'ex.expo' }, claim: { kind: 'exposure', family: { by: 'kind', id: 'scale' } } });
+    }
+    const approved = card(only, [gone, groove('ex.groove', true), expo]);
+    expect(row(approved, 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'prerequisite', rung: { id: 'P' }, of: { id: 'R' } } });
+    expect(shape(approved)).toEqual(shape(card(only, [gone, unpromised(groove('ex.groove', true)), expo])));
+
+    const beside = core({ exerciseOptions: ['ex.r-gone'], requirements: skill }, ['ex.groove', 'ex.pre'], ['ex.expo']);
+    for (const teaching of REFUSED) {
+      expect(row(card(beside, [gone, groove('ex.groove', teaching), pre, expo]), 'technique')).toMatchObject({ item: { id: 'ex.pre' }, claim: { kind: 'prerequisite' } });
+    }
+    expect(row(card(beside, [gone, groove('ex.groove', true), pre, expo]), 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'prerequisite' } });
+  });
+
+  it('the jam slot: a reached jam rung’s groove is not the jam; with nothing else there the row is dropped, and a song beside it is the jam', () => {
+    /** The core path's C, the learner's rung; the jazz rung J met, so reached and not a strand. */
+    const jamCurriculum = (exercises: string[], songs: string[]): Curriculum => ({
+      version: 1,
+      tracks: [
+        { id: 'core', title: 'Core', description: '', startsAtStage: 0 },
+        { id: 'jazz', title: 'Jazz', description: '', startsAtStage: 1 },
+      ],
+      stages: [
+        {
+          number: 1,
+          title: 'One',
+          summary: '',
+          units: [
+            {
+              id: 'u',
+              title: 'U',
+              track: 'core',
+              lessons: [
+                lesson('C', {
+                  exerciseOptions: ['ex.c'],
+                  songOptions: ['song.c'],
+                  requirements: [
+                    { kind: 'runs', from: 'exercises', count: 1 },
+                    { kind: 'runs', from: 'songs', count: 1 },
+                  ],
+                }),
+              ],
+            },
+            { id: 'j', title: 'J', track: 'jazz', lessons: [lesson('J', { title: 'Comping behind somebody', exerciseOptions: exercises, songOptions: songs, requirements: [{ kind: 'runs', from: 'any', count: 1 }] })] },
+          ],
+        },
+      ],
+    });
+    const jamCard = (curriculum: Curriculum, items: CatalogItem[]) => {
+      const j = curriculum.stages[0]?.units[1]?.lessons[0] as Lesson;
+      const met: RungReading = { rung: j, status: 'met', judged: true, carried: false, requirements: [] };
+      return card(curriculum, [exercise('ex.c', measured([])), notated('song.c'), ...items], {
+        states: { byRung: new Map([['J', met]]) },
+        activeTracks: ['core', 'jazz'],
+        minutes: 60,
+        startAt: undefined,
+      });
+    };
+    const only = jamCurriculum(['ex.groove'], []);
+    for (const teaching of REFUSED) {
+      const slots = jamCard(only, [groove('ex.groove', teaching)]);
+      expect(ids(slots), `teaching ${String(teaching)}`).not.toContain('ex.groove');
+      expect(row(slots, 'jam'), `teaching ${String(teaching)}`).toBeUndefined();
+    }
+    const approved = jamCard(only, [groove('ex.groove', true)]);
+    expect(row(approved, 'jam')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'jam', rung: { id: 'J' } } });
+    expect(shape(approved)).toEqual(shape(jamCard(only, [unpromised(groove('ex.groove', true))])));
+
+    const beside = jamCurriculum(['ex.groove'], ['song.j']);
+    for (const teaching of REFUSED) {
+      expect(row(jamCard(beside, [groove('ex.groove', teaching), notated('song.j')]), 'jam')).toMatchObject({ item: { id: 'song.j' }, claim: { kind: 'jam' } });
+    }
+    expect(row(jamCard(beside, [groove('ex.groove', true), notated('song.j')]), 'jam')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'jam' } });
+  });
+
+  it('the exposure rule: a family whose only member is the groove is not "from your lessons"; with nothing else the warm-up is dropped, and a drill’s family beside it is chosen', () => {
+    /** R asks only for a song, so the warm-up has nothing asked of it and takes the exposure rule over E's exercises. */
+    const exposureCurriculum = (e: string[]): Curriculum => ({
+      version: 1,
+      tracks: [{ id: 'core', title: 'Core', description: '', startsAtStage: 0 }],
+      stages: [
+        {
+          number: 1,
+          title: 'One',
+          summary: '',
+          units: [
+            {
+              id: 'u',
+              title: 'U',
+              track: 'core',
+              lessons: [
+                lesson('E', { exerciseOptions: e, requirements: [{ kind: 'runs', from: 'exercises', count: 1 }] }),
+                lesson('R', { songOptions: ['song.r'], requirements: [{ kind: 'runs', from: 'songs', count: 1 }] }),
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    const only = exposureCurriculum(['ex.groove']);
+    for (const teaching of REFUSED) {
+      const slots = card(only, [groove('ex.groove', teaching), notated('song.r')]);
+      expect(ids(slots), `teaching ${String(teaching)}`).not.toContain('ex.groove');
+      expect(row(slots, 'technique'), `teaching ${String(teaching)}`).toBeUndefined();
+      expect(row(slots, 'new')).toMatchObject({ item: { id: 'song.r' }, claim: { kind: 'asked' } });
+    }
+    const approved = card(only, [groove('ex.groove', true), notated('song.r')]);
+    expect(row(approved, 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'exposure', family: { by: 'kind', id: 'clave' } } });
+    expect(shape(approved)).toEqual(shape(card(only, [unpromised(groove('ex.groove', true)), notated('song.r')])));
+
+    const beside = exposureCurriculum(['ex.groove', 'ex.scale']);
+    for (const teaching of REFUSED) {
+      expect(row(card(beside, [groove('ex.groove', teaching), drill('ex.scale'), notated('song.r')]), 'technique')).toMatchObject({
+        item: { id: 'ex.scale' },
+        claim: { kind: 'exposure', family: { by: 'kind', id: 'scale' } },
+      });
+    }
+    expect(row(card(beside, [groove('ex.groove', true), drill('ex.scale'), notated('song.r')]), 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'exposure' } });
+  });
+
+  it('the admission is one exported predicate: refused only for a music promise without a yes; drills, notated items, reading rows and bare items admitted', () => {
+    expect(admittedForTeaching(groove('x', null))).toBe(false);
+    expect(admittedForTeaching(groove('x', false))).toBe(false);
+    expect(admittedForTeaching(groove('x', true))).toBe(true);
+    expect(admittedForTeaching(drill('x'))).toBe(true);
+    expect(admittedForTeaching(notated('x'))).toBe(true);
+    expect(admittedForTeaching(exercise('x', { file: null, drill: { kind: 'sight-reading', params: {} } }))).toBe(true);
+    expect(admittedForTeaching(song('x'))).toBe(true);
+  });
+
+  it('session.ts reads neither the promise fact nor the teaching bit: it asks the admission', () => {
+    const source = readFileSync(join(process.cwd(), 'src', 'curriculum', 'session.ts'), 'utf8');
+    expect(source).not.toMatch(/facts\??\.promise|review\??\.teaching/);
+    expect(source).toMatch(/admittedForTeaching\(/);
+  });
+});
+
+describe('the card on the built catalogue offers no music-promising generated item without an affirmative teaching-use decision (D3b)', () => {
+  const CONTENT = join(process.cwd(), 'public', 'content');
+  const catalog = JSON.parse(readFileSync(join(CONTENT, 'catalog.json'), 'utf8')) as CatalogItem[];
+  const curriculum = JSON.parse(readFileSync(join(CONTENT, 'curriculum.json'), 'utf8')) as Curriculum;
+  const TODAY = new Date(2026, 8, 28, 9);
+  const tracks = curriculum.tracks.map((track) => track.id);
+  /** A fresh learner placed at `rung` with every track on (D3a's card probe), at `minutes`. */
+  const cardAt = (items: CatalogItem[], rung: string, minutes: number): SessionSlot[] =>
+    buildSession({
+      curriculum,
+      catalog: indexCatalog(items),
+      items,
+      states: rungState([], curriculum, VOCABULARY_V0, TODAY),
+      rows: [],
+      learned: [],
+      lastPlayed: new Map(),
+      activeTracks: tracks,
+      minutes,
+      startAt: rung,
+      today: TODAY,
+    }).slots;
+  const rungs = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons.map((lesson) => lesson.id)));
+
+  it('the gate refuses as not approved for teaching use exactly the items the admission refuses: one reading of the fact and the bit', () => {
+    const disagree: string[] = [];
+    let refused = 0;
+    for (const item of catalog) {
+      if (admittedForTeaching(item) === unapproved(item)) disagree.push(`${item.id} (against the contract table)`);
+      // A declared large-hand voicing is refused before the teaching-use check, whatever it promises.
+      if (item.provenance?.physical) continue;
+      const verdict = eligibleFor(item, COPES, { for: 'equivalent' });
+      const notApproved = verdict.verdict === 'ineligible' && verdict.why === 'teaching-use-not-approved';
+      if (notApproved) refused += 1;
+      if (notApproved === admittedForTeaching(item)) disagree.push(item.id);
+    }
+    expect(disagree.slice(0, 12), `${String(disagree.length)} disagree`).toEqual([]);
+    expect(refused).toBeGreaterThan(0);
+  });
+
+  it('every rung, a fresh learner placed there, every track on, every length: no row is one', () => {
+    const index = indexCatalog(catalog);
+    const offered: string[] = [];
+    for (const rung of rungs) {
+      for (const minutes of [15, 30, 60, 120]) {
+        const slots = buildSession({
+          curriculum,
+          catalog: index,
+          items: catalog,
+          states: rungState([], curriculum, VOCABULARY_V0, TODAY),
+          rows: [],
+          learned: [],
+          lastPlayed: new Map(),
+          activeTracks: tracks,
+          minutes,
+          startAt: rung,
+          today: TODAY,
+        }).slots;
+        for (const slot of slots) if (slot.item && unapproved(slot.item)) offered.push(`${rung} (${String(minutes)} min): ${slot.kind} ${slot.item.id} (${slot.claim?.kind ?? 'no claim'})`);
+      }
+    }
+    expect(offered.slice(0, 12), `${String(offered.length)} rows`).toEqual([]);
+  }, 300_000);
+
+  it('once a teaching-use yes is on their identity, the rungs’ own grooves are the card’s rows again', () => {
+    const items = catalog.map((item) => (promisesMusic(item) ? approved(item) : item));
+    expect(cardAt(items, 'holiday.5', 30).find((slot) => slot.kind === 'technique')).toMatchObject({ item: { id: 'exercise.ostinato.a.arpeggio' }, claim: { kind: 'asked' } });
+    expect(cardAt(items, 'jazz.9', 60).find((slot) => slot.kind === 'jam')).toMatchObject({ item: { id: 'exercise.comping.c.anticipated' }, claim: { kind: 'jam' } });
+    expect(cardAt(items, 'ragtime.9', 30).find((slot) => slot.kind === 'review')).toMatchObject({ item: { id: 'exercise.secondary-rag.c.4bar' }, claim: { kind: 'rung' } });
   });
 });

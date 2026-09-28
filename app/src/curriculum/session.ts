@@ -19,7 +19,7 @@ import {
 } from './selectors';
 import { lockState } from './prerequisites';
 import { SHIPPED_SKILL_ACTIVATION, type SkillActivation } from './skillActivation';
-import { eligible, eligibleFor, type Eligibility, type Learner, type Want as GateWant } from './eligibility';
+import { admittedForTeaching, eligible, eligibleFor, type Eligibility, type Learner, type Want as GateWant } from './eligibility';
 import type { RequirementReading, RungStates } from '../evidence/rungState';
 import { phraseVersionOf, type ReadingMoves, type ReadingRecipe, type SessionRow } from '../data/db';
 import { dayKey, daysBetween, type LearnedPiece } from '../data/progressStore';
@@ -665,9 +665,17 @@ function readingsOf(ctx: SlotContext, rung: Lesson): RequirementReading[] {
   }));
 }
 
-/** A slot's eye on an item: playable, not on the card, never a reading row (the reading slot is the reader's, L65). */
+/**
+ * A slot's eye on an item: playable, not on the card, never a reading row (the reading slot is the
+ * reader's, L65), and admitted for teaching use (D3b): a generated item whose family promises music is
+ * offered by no slot until a person's `yes` on its teaching use is built (`eligibility.admittedForTeaching`,
+ * the gate's own reading). Every slot that takes an item from a rung's list without asking the gate — a
+ * want's `offer` (`runs`, `done`, `measure`), the ladder's rung and prerequisite steps, the jam slot, the
+ * exposure rule — chooses only through here, so a rung listing one is not a decision to teach it; where it
+ * was a row's only candidate the row takes the next step that passes, or is dropped.
+ */
 function usable(ctx: SlotContext, item: CatalogItem | undefined, songs: 'any' | 'none' | 'only'): item is CatalogItem {
-  if (!item || !playable(item) || ctx.used.has(item.id) || isReadingRow(item)) return false;
+  if (!item || !playable(item) || ctx.used.has(item.id) || isReadingRow(item) || !admittedForTeaching(item)) return false;
   if (songs === 'none' && item.type === 'song') return false;
   if (songs === 'only' && item.type !== 'song') return false;
   return true;
@@ -707,7 +715,12 @@ function gate(ctx: SlotContext, item: CatalogItem, learner: Learner, want: GateW
  * One unmet requirement of a rung and the items that would serve it: the
  * unit the warm-up and the new slot choose among. `pool` is every item the
  * requirement would count, whether or not it can be offered now; `offer`
- * those that can.
+ * those that can (`usable`: the teaching-use admission included, D3b). Only
+ * `offer` is ever chosen from. A want whose pool is not empty but whose offer is
+ * empty (its candidates on the card already, unplayable, or not admitted) still
+ * says the rung asks something: the slot waits for the fallback ladder rather than
+ * moving on to the next lesson as if this one's ask were met, and `pool` only
+ * orders the new slot's wants (`fresh`'s `served`).
  */
 interface Want {
   rung: Lesson;
@@ -1250,7 +1263,9 @@ const JAM_TRACKS = new Set(['chords-pop', 'blues-boogie', 'jazz', 'jam']);
  * Jam: an option of a rung on a jam track the learner has reached — the
  * learner's own rung first where it is one — played least lately. It was any
  * item on those tracks at or below the stage number plus one; before any jam
- * rung is reached there is no jam row.
+ * rung is reached there is no jam row. The options pass `usable`, so a groove a
+ * jam rung lists is the jam only once its teaching use is approved (D3b); with
+ * nothing else on the reached jam rungs there is no jam row.
  */
 function jam(ctx: SlotContext, phase: Phase): Choice | undefined {
   if (phase === 'fallback') return undefined;
