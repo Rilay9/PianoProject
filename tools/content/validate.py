@@ -882,6 +882,116 @@ def section_errors(
     return errors
 
 
+#: The approved excerpts (E1): each row checked beside the sections, against the built catalogue.
+EXCERPTS_FILE = CONTENT_SRC / "sources" / "excerpts.json"
+
+
+def excerpt_findings(catalog: list, content_dir: Path, path: Path = EXCERPTS_FILE) -> tuple[list[str], list[str]]:
+    """
+    E1 item 2: every approved row of `content/sources/excerpts.json`, checked beside the sections.
+
+    Errors: the parent is not in the catalogue, or is not a notated item with a built file (a
+    parent this build does not bundle — a licence placeholder — is a warning: the cut is refused
+    where the parent is); the range is not inside the parent's printed bars (1-based, the pickup
+    as bar 1); the selection is not one of both/right/left, or names a hand a one-staff parent
+    does not have; a target is not a vocabulary skill or demand; two rows share parent, range and
+    selection, or the derived id is another item's; the range crosses a repeat sign, a first-or-
+    second ending or a jump (the bars named); the build has no item for a row it should have cut.
+
+    Warnings: a row approved against parent bytes the parent no longer has — stale by provenance.
+    """
+    import excerpts as X
+
+    errors: list[str] = []
+    warnings: list[str] = []
+    if not path.is_file():
+        return errors, warnings
+    rows = X.read_definitions(path).get("excerpts") or []
+    by_id = {item["id"]: item for item in catalog}
+    skills_file, demands_file = load_vocabulary()
+    targets_known = {s["id"] for s in skills_file.get("skills", [])} | {d["id"] for d in demands_file.get("demands", [])}
+    seen: dict[tuple, int] = {}
+    for number, row in enumerate(rows, start=1):
+        where = f"excerpts.json row {number}"
+        parent_id = row.get("of")
+        selection = row.get("selection") or "both"
+        try:
+            low, high = int(row["fromBar"]), int(row["toBar"])
+        except (KeyError, TypeError, ValueError):
+            errors.append(f"{where}: fromBar and toBar must be printed bar numbers")
+            continue
+        if selection not in X.SELECTIONS:
+            errors.append(f"{where}: selection {selection!r} is not one of {', '.join(X.SELECTIONS)}")
+            continue
+        eid = X.excerpt_id(str(parent_id), low, high, selection)
+        where = f"{where} ({eid})"
+        signature = (parent_id, low, high, selection)
+        if signature in seen:
+            errors.append(f"{where}: the same parent, bars and selection as row {seen[signature]}")
+            continue
+        seen[signature] = number
+        clash = by_id.get(eid)
+        if clash is not None and clash.get("type") != "excerpt":
+            errors.append(f"{where}: its id is already another item's")
+        targets = row.get("targets") or []
+        if not targets:
+            errors.append(f"{where}: no target: an approval names what the passage was approved for")
+        for target in targets:
+            if target not in targets_known:
+                errors.append(f"{where}: target {target!r} is not a vocabulary skill or demand")
+        parent = by_id.get(parent_id)
+        if parent is None:
+            errors.append(f"{where}: its parent {parent_id!r} is not in the catalogue")
+            continue
+        rel = parent.get("file")
+        if not rel:
+            if parent.get("importHint") or set(parent.get("tags") or []) & {PERSONAL_BUILD_TAG, NC_PERSONAL_TAG}:
+                warnings.append(f"{where}: not cut in this build: its parent is not bundled here, so neither is the passage")
+            else:
+                errors.append(f"{where}: its parent {parent_id} is not a notated item with a built file")
+            continue
+        parent_path = content_dir / rel
+        if not parent_path.is_file() or parent_path.suffix.lower() not in (".mxl", ".musicxml", ".xml"):
+            errors.append(f"{where}: its parent {parent_id} is not a notated item with a built file ({rel})")
+            continue
+        printed = (parent.get("notation") or {}).get("bars") or printed_bars(parent_path)
+        if printed is None:
+            errors.append(f"{where}: the parent's printed bar count could not be read, so the range cannot be checked")
+        elif not (1 <= low <= high <= printed):
+            errors.append(f"{where}: bars {low}–{high} are not inside the parent's {printed} printed bar(s)")
+            continue
+        staves = (parent.get("notation") or {}).get("staves")
+        if selection != "both" and staves is not None and staves < 2:
+            errors.append(f"{where}: selection {selection} on a parent with {staves} staff: it has no second hand to leave out")
+        try:
+            from music21 import converter  # noqa: PLC0415 — slow import, only needed here
+
+            faults = X.crossings(converter.parse(str(parent_path)), low, high)
+        except ImportError:
+            faults = []
+        if faults:
+            errors.append(f"{where}: bars {low}–{high}: " + "; ".join(faults) + " — unrolled, the cut would mean something else")
+        built = by_id.get(eid)
+        if built is None:
+            errors.append(f"{where}: the build made no item for it")
+            continue
+        approved = row.get("parentSha256")
+        current = X.sha256_of(parent_path)
+        if approved and approved != current:
+            warnings.append(f"{where}: stale by provenance — approved against the parent's bytes {approved[:12]}…, "
+                            f"the parent is now {current[:12]}…: its boundary review predates the parent's change")
+    rows_ids = {X.excerpt_id(str(r.get("of")), int(r["fromBar"]), int(r["toBar"]), r.get("selection") or "both")
+                for r in rows if "fromBar" in r and "toBar" in r and (r.get("selection") or "both") in X.SELECTIONS}
+    for item in catalog:
+        if item.get("type") != "excerpt":
+            continue
+        if item["id"] not in rows_ids:
+            errors.append(f"{item['id']}: an excerpt with no approved row in excerpts.json")
+        if item.get("excerptOf") not in by_id:
+            errors.append(f"{item['id']}: excerptOf {item.get('excerptOf')!r} is not in the catalogue")
+    return errors, warnings
+
+
 def orphan_sections(catalog: list, path: Path) -> list[str]:
     """A section keyed to an id that is not in the catalog — almost always a typo."""
     if not path.is_file():
@@ -1609,6 +1719,7 @@ def main() -> None:
         errors += video_index_errors()
         errors += section_errors(catalog, args.dir)
         errors += orphan_sections(catalog, CONTENT_SRC / "sources" / "sections.json")
+        errors += excerpt_findings(catalog, args.dir)[0]
         errors += stale_ladder_report(catalog, curriculum)
         errors += validate_tracks(catalog, curriculum, load_tracks(), load_item_labels())
         # replan §7.5: reported by P11, an error from P12a.
@@ -1733,6 +1844,11 @@ def main() -> None:
     # E0b: where the vocabulary's teaching rungs differ from the lessons' concepts, said on every run.
     for warning in taught_at_findings(skills_file, load_vocabulary()[1], curriculum)[1]:
         print(f"  {warning}")
+    # E1: an excerpt approved on parent bytes the parent no longer has, or not cut in this build.
+    excerpt_rows = sum(1 for item in catalog if item.get("type") == "excerpt")
+    print(f"  excerpts (E1): {excerpt_rows} cut, on no rung")
+    for warning in excerpt_findings(catalog, args.dir)[1]:
+        print(f"  WARNING (excerpt, E1): {warning}")
     print(f"  {rung_claims_warning(catalog, curriculum)}")
 
     # Last, so the build's one-line summary of this step is the verdict and the

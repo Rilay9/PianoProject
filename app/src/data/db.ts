@@ -22,6 +22,7 @@ import type { BarTally, HandsFilter, NotMeasured, RunMeasures } from '../engine/
 import type { TodaySlot } from '../router';
 import type { EvidenceResult } from '../evidence/evidence';
 import type { Measurement, Provenance } from '../curriculum/types';
+import type { Identity } from '../review/record';
 
 export const DB_NAME = 'pianopath';
 /**
@@ -144,6 +145,14 @@ export interface RunHeader {
   unseen?: boolean;
   /** The piece was played to the learner part way through this run (`Hear it` over it, T33). */
   demonstrated?: boolean;
+  /**
+   * The exact material played, where the run knows it (E1 item 7): for an excerpt, its cut's
+   * file identity, D2's `Identity` shape (`{ kind: 'file', sha256 }`), so the run names the
+   * passage's own bytes and never the parent's. Carried into the evidence context beside
+   * `itemId` and `seed`; read by nobody yet (Part 26's versioned fingerprint; D4 writes it on
+   * every run). Absent: a run from before E1, or of anything else.
+   */
+  material?: Identity;
   /**
    * What a generated phrase was written from (C4): the catalog row, and the
    * dimensions the reader moved away from the row's own recipe. Written on

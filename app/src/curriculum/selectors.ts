@@ -9,6 +9,7 @@ import type { MasteryCriteria } from '../engine/Scoring';
 import type { CatalogItem, Curriculum, Lesson } from './types';
 import { SHIPPED_SKILL_ACTIVATION, type SkillActivation } from './skillActivation';
 import { eligible, eligibleFor, targetDemandsFor, targetSkillsFor, type Learner } from './eligibility';
+import { isExcerpt, isPieceMaterial } from './excerpt';
 
 export interface CatalogIndex {
   byId: Map<string, CatalogItem>;
@@ -201,7 +202,8 @@ export function tieredAlternatives(
   const equivalent = (id: string, tier: AlternativeTier): void => {
     if (skip.has(id)) return;
     const item = catalog.byId.get(id);
-    if (!item || (excludeSongs && item.type === 'song')) return;
+    // Leaving songs out leaves excerpts out: a passage of a piece is music, not an exercise (E1).
+    if (!item || (excludeSongs && isPieceMaterial(item))) return;
     if (!eligible(eligibleFor(item, learner, { for: 'equivalent' }))) return;
     push(item, tier);
   };
@@ -224,7 +226,9 @@ export function tieredAlternatives(
       if (wanted.length === 0) return;
       const found: { item: CatalogItem; shared: string }[] = [];
       for (const item of catalog.byId.values()) {
-        if (skip.has(item.id) || (excludeSongs && item.type === 'song')) continue;
+        // An excerpt reaches a learner through a rung once F lists it, never through a tier
+        // that searches the whole catalogue (E1: unplaced, teaching use undecided).
+        if (skip.has(item.id) || isExcerpt(item) || (excludeSongs && item.type === 'song')) continue;
         const shared = wanted.find((one) => eligible(eligibleFor(item, learner, ask(one))));
         if (shared !== undefined) found.push({ item, shared });
       }

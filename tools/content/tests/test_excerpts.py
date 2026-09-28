@@ -1,0 +1,422 @@
+"""
+The cut (E1 item 3) and the excerpt's identity (item 4): the adversaries the cutter answers.
+
+Over constructed music21 parents written the way the build writes a score (`convert.write_mxl`),
+and one real parent (Anh. 113 as the PDMX quarry bundles it, in `content/scores/pdmx/`):
+
+- the bar count; the pickup kept when the row starts at bar 1 (adversary 5); a tie into the first
+  bar severed to a plain note and a tie out of the last bar dropped; a one-hand cut a single
+  staff; the clef, key, time and tempo in force at the cut carried into its first bar;
+- the normalised header: the excerpt's id as the title and none of the parent's credits, so a
+  parent whose title changed gives a byte-identical cut (adversary 8);
+- a moved endpoint changes the id, the key and the bytes (adversary 7); a changed parent file
+  changes the key and the bytes (adversary 9); the same bars with the other hand are a distinct
+  id, key and measurement (adversary 6, measured through the bridge);
+- a range across a repeat sign, a first-or-second ending or a jump refused with the bars named,
+  and a repeat at the range's edge neutralised; a two-hand cut of bars one hand is silent in
+  refused with the hand to select.
+"""
+from __future__ import annotations
+
+import re
+import sys
+import tempfile
+import unittest
+import zipfile
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from music21 import bar, clef, converter, key, metadata, meter, note, spanner, stream, tempo, tie  # noqa: E402
+
+import excerpts as X  # noqa: E402
+from convert import write_mxl  # noqa: E402
+
+REPO = Path(__file__).resolve().parents[3]
+FIXTURES = Path(__file__).resolve().parent / "fixtures" / "excerpts"
+ANH_113_FILE = REPO / "content" / "scores" / "pdmx" / "QmZzbCrrGH19zjfe766mDvw9C1cXYXSa5ApF7MRnRhpqjL.mxl"
+
+
+def xml_of(path: Path) -> str:
+    with zipfile.ZipFile(path) as archive:
+        name = next(n for n in archive.namelist() if not n.startswith("META-INF"))
+        return archive.read(name).decode("utf-8")
+
+
+def measures_xml(text: str) -> list[str]:
+    """Each `<measure>` of the first part, as text."""
+    part = re.search(r"<part id=\"[^\"]+\">(.*?)</part>", text, re.S)
+    return re.findall(r"<measure\b.*?</measure>", part.group(1) if part else "", re.S)
+
+
+def grand(bars: int, *, title: str = "A constructed parent", pickup: bool = False, tie_bars: tuple[int, ...] = (),
+          key_change_at: int | None = None, clef_change_at: int | None = None, tempo_change_at: int | None = None,
+          time_change_at: int | None = None, repeat_over: tuple[int, int] | None = None,
+          volta_at: int | None = None, silent_left: tuple[int, ...] = (), right_pitch=None) -> stream.Score:
+    """
+    A two-staff parent: the right hand plays quarters (C5 D5 E5 F5 by default) and the left hand a
+    whole C3 in every bar. `pickup` opens with a one-beat bar 1. `tie_bars` ties the right hand's
+    last note of each named bar into the next bar's first note (made the same pitch). The other
+    options put a key, clef, tempo or time change at the start of a printed bar, a repeat over a
+    printed range, a first ending over a bar, and a silent left hand in the named bars.
+    """
+    upper, lower = stream.PartStaff(), stream.PartStaff()
+    upper.id, lower.id = "P1-Staff1", "P1-Staff2"
+    pitches = right_pitch or ["C5", "D5", "E5", "F5"]
+    for number in range(1, bars + 1):
+        short = pickup and number == 1
+        top, bottom = stream.Measure(number=0 if pickup and number == 1 else (number - 1 if pickup else number)), stream.Measure()
+        bottom.number = top.number
+        if number == 1:
+            top.append([clef.TrebleClef(), key.KeySignature(0), meter.TimeSignature("4/4"), tempo.MetronomeMark(number=84)])
+            bottom.append([clef.BassClef(), key.KeySignature(0), meter.TimeSignature("4/4")])
+        if key_change_at == number:
+            top.append(key.KeySignature(2))
+            bottom.append(key.KeySignature(2))
+        if clef_change_at == number:
+            bottom.append(clef.TrebleClef())
+        if tempo_change_at == number:
+            top.append(tempo.MetronomeMark(number=132))
+        if time_change_at == number:
+            top.append(meter.TimeSignature("3/4"))
+            bottom.append(meter.TimeSignature("3/4"))
+        beats = 3 if time_change_at is not None and number >= time_change_at else 4
+        if short:
+            top.append(note.Note("G4", quarterLength=1))
+            bottom.append(note.Rest(quarterLength=1))
+            top.paddingLeft = 3
+            bottom.paddingLeft = 3
+        else:
+            row = [note.Note(p, quarterLength=1) for p in pitches[:beats]]
+            if (number - 1) in tie_bars and number > 1:
+                row[0] = note.Note(pitches[beats - 1], quarterLength=1)
+                row[0].tie = tie.Tie("stop")
+            if number in tie_bars:
+                row[-1].tie = tie.Tie("start")
+            top.append(row)
+            if number in silent_left:
+                bottom.append(note.Rest(quarterLength=beats))
+            else:
+                bottom.append(note.Note("C3", quarterLength=beats))
+        if repeat_over and number == repeat_over[0]:
+            top.leftBarline = bar.Repeat(direction="start")
+            bottom.leftBarline = bar.Repeat(direction="start")
+        if repeat_over and number == repeat_over[1]:
+            top.rightBarline = bar.Repeat(direction="end")
+            bottom.rightBarline = bar.Repeat(direction="end")
+        upper.append(top)
+        lower.append(bottom)
+    score = stream.Score()
+    score.metadata = metadata.Metadata()
+    score.metadata.title = title
+    score.metadata.composer = "A Composer"
+    score.insert(0, upper)
+    score.insert(0, lower)
+    if volta_at is not None:
+        tops = list(upper.getElementsByClass(stream.Measure))
+        score.insert(0, spanner.RepeatBracket(tops[volta_at - 1], number=1))
+    return score
+
+
+class Parent:
+    """A constructed parent written to a temporary built file."""
+
+    def __init__(self, test: unittest.TestCase, score: stream.Score, name: str = "parent.mxl") -> None:
+        self.dir = Path(tempfile.mkdtemp(prefix="excerpt-test-"))
+        test.addCleanup(lambda: __import__("shutil").rmtree(self.dir, ignore_errors=True))
+        self.path = self.dir / name
+        write_mxl(score, self.path)
+
+    def cut(self, low: int, high: int, selection: str = "both", eid: str | None = None, name: str | None = None) -> X.Cut:
+        eid = eid or X.excerpt_id("song.test.parent", low, high, selection)
+        return X.cut(self.path, low, high, selection, eid, self.dir / (name or f"{eid}.mxl"))
+
+
+class TheIdentity(unittest.TestCase):
+    def test_the_id_is_derived_from_the_definition(self) -> None:
+        self.assertEqual(X.excerpt_id("song.classical.bach-menuet-bwv-anh-113.pdmx", 1, 8, "both"),
+                         "excerpt.classical.bach-menuet-bwv-anh-113.pdmx.b1-8")
+        self.assertEqual(X.excerpt_id("song.folk.x", 5, 12, "right"), "excerpt.folk.x.b5-12.rh")
+        self.assertEqual(X.excerpt_id("song.folk.x", 5, 12, "left"), "excerpt.folk.x.b5-12.lh")
+        with self.assertRaises(ValueError):
+            X.excerpt_id("song.folk.x", 5, 12, "both-hands")
+
+    def test_the_key_covers_the_parent_bytes_the_range_the_selection_and_the_version(self) -> None:
+        base = X.chain_key("a" * 64, 5, 12, "both")
+        self.assertEqual(base, X.chain_key("a" * 64, 5, 12, "both"))
+        for other in (X.chain_key("b" * 64, 5, 12, "both"), X.chain_key("a" * 64, 5, 13, "both"),
+                      X.chain_key("a" * 64, 4, 12, "both"), X.chain_key("a" * 64, 5, 12, "right"),
+                      X.chain_key("a" * 64, 5, 12, "both", X.CUT_VERSION + 1)):
+            self.assertNotEqual(base, other)
+
+
+class TheCut(unittest.TestCase):
+    def test_it_has_the_bars_of_the_range(self) -> None:
+        made = Parent(self, grand(8)).cut(3, 6)
+        self.assertEqual(made.bars, 4)
+        self.assertEqual(len(measures_xml(xml_of(made.path))), 4)
+        self.assertEqual(made.staves, 2)
+
+    def test_a_pickup_the_row_includes_is_kept(self) -> None:
+        """Adversary 5 at the cutter: the anacrusis is bar 1, one beat long, before the first full bar."""
+        made = Parent(self, grand(6, pickup=True)).cut(1, 3)
+        text = xml_of(made.path)
+        bars = measures_xml(text)
+        self.assertEqual(len(bars), 3)
+        self.assertIn('number="0"', bars[0], "the pickup keeps the number an engraver gives it")
+        first = converter.parse(str(made.path)).parts[0].getElementsByClass(stream.Measure)[0]
+        self.assertEqual(first.duration.quarterLength, 1.0, "the pickup is still one beat")
+        self.assertEqual(float(first.paddingLeft), 3.0)
+
+    def test_a_cut_from_bar_two_of_a_piece_with_a_pickup_starts_on_a_full_bar(self) -> None:
+        made = Parent(self, grand(6, pickup=True)).cut(2, 4)
+        first = converter.parse(str(made.path)).parts[0].getElementsByClass(stream.Measure)[0]
+        self.assertEqual(first.number, 1)
+        self.assertEqual(first.duration.quarterLength, 4.0)
+
+    def test_a_tie_into_the_first_bar_is_severed_and_a_tie_out_of_the_last_is_dropped(self) -> None:
+        # Ties from bar 2 into 3 and from bar 5 into 6; the cut is bars 3-5.
+        made = Parent(self, grand(8, tie_bars=(2, 5))).cut(3, 5)
+        bars = measures_xml(xml_of(made.path))
+        self.assertEqual(len(bars), 3)
+        self.assertNotIn('<tie type="stop"', bars[0], "the first note of the cut is plain: its tie came from outside")
+        self.assertNotIn('<tied type="stop"', bars[0])
+        self.assertNotIn('<tie type="start"', bars[-1], "the last bar ties into nothing")
+        self.assertNotIn('<tied type="start"', bars[-1])
+        # The parent's own ties are there, so the test would see one kept.
+        parent_bars = measures_xml(xml_of(Parent(self, grand(8, tie_bars=(2, 5))).path))
+        self.assertIn('<tie type="stop"', parent_bars[2])
+        self.assertIn('<tie type="start"', parent_bars[4])
+
+    def test_a_one_hand_cut_is_a_single_staff(self) -> None:
+        parent = Parent(self, grand(6))
+        right = xml_of(parent.cut(2, 4, "right").path)
+        left = xml_of(parent.cut(2, 4, "left").path)
+        for text, sign, hand in ((right, "G", "right"), (left, "F", "left")):
+            self.assertNotIn("<staves>2</staves>", text, hand)
+            self.assertEqual(re.findall(r"<clef[^>]*>\s*<sign>([A-Z])</sign>", text), [sign], hand)
+        self.assertIn("<octave>5</octave>", right)
+        self.assertNotIn("<octave>3</octave>", right)
+        self.assertIn("<octave>3</octave>", left)
+        self.assertNotIn("<octave>5</octave>", left)
+
+    def test_the_clef_key_time_and_tempo_in_force_are_carried_in(self) -> None:
+        score = grand(10, key_change_at=3, clef_change_at=4, tempo_change_at=5, time_change_at=6)
+        first = measures_xml(xml_of(Parent(self, score).cut(7, 9).path))[0]
+        self.assertIn("<fifths>2</fifths>", first, "the key changed at bar 3")
+        self.assertIn("<beats>3</beats>", first, "the time changed at bar 6")
+        signs = re.findall(r"<clef number=\"(\d)\">\s*<sign>([A-Z])</sign>", first)
+        self.assertIn(("2", "G"), signs, "the lower staff moved to the treble clef at bar 4")
+        self.assertIn(("1", "G"), signs)
+        self.assertRegex(first, r'<sound tempo="132', "the tempo changed at bar 5")
+
+    def test_the_header_is_the_excerpts_id_and_none_of_the_parents_credits(self) -> None:
+        made = Parent(self, grand(6)).cut(2, 4, eid="excerpt.test.parent.b2-4")
+        text = xml_of(made.path)
+        self.assertIn("<work-title>excerpt.test.parent.b2-4</work-title>", text)
+        self.assertIn("<movement-title>excerpt.test.parent.b2-4</movement-title>", text)
+        for gone in ("A constructed parent", "A Composer", "<identification>", "<credit", "<encoding-date>", "<creator"):
+            self.assertNotIn(gone, text)
+
+
+class TheAdversariesOfIdentity(unittest.TestCase):
+    def test_8_a_parent_whose_title_changed_gives_a_byte_identical_cut(self) -> None:
+        one = Parent(self, grand(6, title="Minuet"))
+        two = Parent(self, grand(6, title="Menuet (renamed)"))
+        self.assertNotEqual(X.sha256_of(one.path), X.sha256_of(two.path), "the parents' files differ in their title")
+        eid = "excerpt.test.parent.b2-4"
+        self.assertEqual(one.cut(2, 4, eid=eid).path.read_bytes(), two.cut(2, 4, eid=eid).path.read_bytes())
+
+    def test_8_catalogue_metadata_leaves_the_key_and_the_cut_alone(self) -> None:
+        parent = Parent(self, grand(6))
+        sha = X.sha256_of(parent.path)
+        eid = "excerpt.test.parent.b2-4"
+        first = parent.cut(2, 4, eid=eid, name="first.mxl").path.read_bytes()
+        # A catalogue title is not in the file: the parent's bytes, the key and the cut are what they were.
+        self.assertEqual(X.sha256_of(parent.path), sha)
+        self.assertEqual(parent.cut(2, 4, eid=eid, name="second.mxl").path.read_bytes(), first)
+        self.assertEqual(X.chain_key(sha, 2, 4, "both"), X.chain_key(X.sha256_of(parent.path), 2, 4, "both"))
+
+    def test_7_an_endpoint_moved_one_bar_changes_the_id_the_key_and_the_bytes(self) -> None:
+        parent = Parent(self, grand(8))
+        sha = X.sha256_of(parent.path)
+        a, b = parent.cut(2, 5), parent.cut(2, 6)
+        self.assertNotEqual(X.excerpt_id("song.test.parent", 2, 5, "both"), X.excerpt_id("song.test.parent", 2, 6, "both"))
+        self.assertNotEqual(X.chain_key(sha, 2, 5, "both"), X.chain_key(sha, 2, 6, "both"))
+        self.assertNotEqual(a.path.read_bytes(), b.path.read_bytes())
+
+    def test_9_a_changed_parent_file_changes_the_key_and_the_bytes(self) -> None:
+        before = Parent(self, grand(6))
+        after = Parent(self, grand(6, right_pitch=["C5", "D5", "E5", "G5"]))
+        old, new = X.sha256_of(before.path), X.sha256_of(after.path)
+        self.assertNotEqual(old, new)
+        self.assertNotEqual(X.chain_key(old, 2, 4, "both"), X.chain_key(new, 2, 4, "both"))
+        eid = "excerpt.test.parent.b2-4"
+        self.assertNotEqual(before.cut(2, 4, eid=eid).path.read_bytes(), after.cut(2, 4, eid=eid).path.read_bytes())
+
+    def test_9_the_old_provenance_no_longer_matches_the_parent(self) -> None:
+        """The build's block names the approval as stale when the parent's bytes moved."""
+        entry = {"_excerpt": {"of": "song.x", "fromBar": 2, "toBar": 4, "selection": "both", "targets": ["interval.leap"],
+                              "event": "ex-1", "approvedParentSha256": "a" * 64, "parentSha256": "b" * 64}}
+        block = X.provenance_block(entry, {"edition": "pdmx:Qm"})
+        self.assertEqual(block["key"], X.chain_key("b" * 64, 2, 4, "both"))
+        self.assertEqual(block["stale"]["approvedParentSha256"], "a" * 64)
+        entry["_excerpt"]["approvedParentSha256"] = "b" * 64
+        self.assertNotIn("stale", X.provenance_block(entry, {"edition": "pdmx:Qm"}))
+
+    def test_6_the_same_bars_with_the_other_hand_are_another_id_key_and_measurement(self) -> None:
+        import demands
+
+        parent = Parent(self, grand(6))
+        sha = X.sha256_of(parent.path)
+        right, left = parent.cut(2, 4, "right"), parent.cut(2, 4, "left")
+        self.assertNotEqual(X.excerpt_id("song.test.parent", 2, 4, "right"), X.excerpt_id("song.test.parent", 2, 4, "left"))
+        self.assertNotEqual(X.chain_key(sha, 2, 4, "right"), X.chain_key(sha, 2, 4, "left"))
+        measured = demands.measure_each([right.path, left.path])
+        r, l = measured[str(right.path)], measured[str(left.path)]
+        self.assertNotIn("error", r)
+        self.assertNotIn("error", l)
+        self.assertNotEqual(r["demands"], l["demands"])
+        self.assertIn("interval.step", r["demands"], "the right hand's quarters move by step")
+        self.assertNotIn("interval.step", l["demands"], "the left hand holds one note a bar")
+
+
+class WhatTheCutterRefuses(unittest.TestCase):
+    def test_a_range_across_a_repeat_sign_is_refused_with_the_bars_named(self) -> None:
+        parent = Parent(self, grand(8, repeat_over=(3, 5)))
+        with self.assertRaises(X.CutRefused) as caught:
+            parent.cut(2, 4)
+        self.assertIn("a repeat sign opens bar 3", str(caught.exception))
+        with self.assertRaises(X.CutRefused) as caught:
+            parent.cut(4, 7)
+        self.assertIn("a repeat sign closes bar 5", str(caught.exception))
+
+    def test_a_repeat_at_the_edges_is_neutralised_and_the_passage_presented_once(self) -> None:
+        made = Parent(self, grand(8, repeat_over=(3, 5))).cut(3, 5)
+        text = xml_of(made.path)
+        self.assertEqual(made.bars, 3)
+        self.assertNotIn("<repeat ", text)
+
+    def test_a_first_or_second_ending_is_refused(self) -> None:
+        with self.assertRaises(X.CutRefused) as caught:
+            Parent(self, grand(8, volta_at=6)).cut(4, 7)
+        self.assertIn("a first-or-second ending over bar 6", str(caught.exception))
+
+    def test_the_real_parent_refuses_its_repeat(self) -> None:
+        """Anh. 113 as bundled: a repeat closes bar 12 and opens bar 13."""
+        score = converter.parse(str(ANH_113_FILE))
+        faults = X.crossings(score, 11, 14)
+        self.assertIn("a repeat sign closes bar 12", faults)
+        self.assertIn("a repeat sign opens bar 13", faults)
+        self.assertEqual(X.crossings(score, 17, 24), [])
+        self.assertEqual(X.crossings(score, 13, 16), [], "a repeat at the range's first barline is its edge")
+
+    def test_a_two_hand_cut_of_bars_one_hand_is_silent_in_is_refused(self) -> None:
+        with self.assertRaises(X.CutRefused) as caught:
+            Parent(self, grand(8, silent_left=(3, 4, 5))).cut(3, 5)
+        self.assertIn("select right", str(caught.exception))
+
+    def test_a_range_outside_the_printed_bars_is_refused(self) -> None:
+        with self.assertRaises(X.CutRefused):
+            Parent(self, grand(4)).cut(3, 6)
+
+    def test_the_fixture_with_a_pickup_and_a_repeat(self) -> None:
+        path = FIXTURES / "pickup-and-repeat.musicxml"
+        score = converter.parse(str(path))
+        self.assertEqual(X.crossings(score, 1, 3), ["a repeat sign opens bar 2"])
+        self.assertEqual(X.crossings(score, 2, 3), [])
+
+
+class TheRow(unittest.TestCase):
+    def test_concepts_are_the_targets_where_the_vocabulary_names_them_once(self) -> None:
+        """
+        One detector finds every left-hand pattern (claims.CONCEPT_DEMANDS maps alberti, waltz, oom-pah,
+        boogie and stride to it): which pattern the passage has is not in the demand, so no concept.
+        """
+        self.assertEqual(X.concepts_for(["texture.left-hand-pattern"]), [])
+        self.assertEqual(X.concepts_for(["texture.walking-bass"]), ["walking-bass"])
+        self.assertEqual(X.concepts_for(["syncopation"]), ["syncopation"])
+        self.assertIn("chromatic", X.concepts_for(["pitch.chromatic"]))
+
+
+class TheMerge(unittest.TestCase):
+    """`excerpts.py --merge`: idempotent by event id; a range approved twice refused with the row named."""
+
+    def line(self, **over) -> str:
+        import json
+
+        event = {"v": 1, "event": "ex-test-0001", "decision": "approve", "of": "song.test.parent", "fromBar": 5,
+                 "toBar": 8, "selection": "both", "targets": ["interval.leap"], "note": "by rule", "parentSha256": "a" * 64,
+                 "by": "a test", "at": "2026-09-28T00:00:00.000Z"}
+        event.update(over)
+        return json.dumps(event)
+
+    def test_an_approval_becomes_a_row_and_a_rerun_appends_nothing(self) -> None:
+        data = X.read_definitions(Path("does-not-exist.json"))
+        first = X.merge_text(data, self.line() + "\n", {"song.test.parent"})
+        self.assertEqual((first["appended"], first["refused"]), (["ex-test-0001"], []))
+        row = first["data"]["excerpts"][0]
+        self.assertEqual((row["of"], row["fromBar"], row["toBar"], row["selection"], row["targets"], row["parentSha256"]),
+                         ("song.test.parent", 5, 8, "both", ["interval.leap"], "a" * 64))
+        again = X.merge_text(first["data"], self.line() + "\n", {"song.test.parent"})
+        self.assertEqual((again["appended"], again["skipped"], again["refused"]), ([], ["ex-test-0001"], []))
+        self.assertEqual(X.serialise_definitions(again["data"]), X.serialise_definitions(first["data"]))
+
+    def test_the_same_event_with_other_content_is_refused(self) -> None:
+        first = X.merge_text(X.read_definitions(Path("none.json")), self.line(), {"song.test.parent"})
+        changed = X.merge_text(first["data"], self.line(toBar=9), {"song.test.parent"})
+        self.assertEqual(changed["appended"], [])
+        self.assertIn("already in the file with other content", changed["refused"][0][1])
+
+    def test_an_approval_of_a_range_already_present_is_refused_with_the_row_named(self) -> None:
+        first = X.merge_text(X.read_definitions(Path("none.json")), self.line(), {"song.test.parent"})
+        twice = X.merge_text(first["data"], self.line(event="ex-test-0002", note="again"), {"song.test.parent"})
+        self.assertEqual(twice["appended"], [])
+        self.assertIn("excerpt.test.parent.b5-8 is already approved (event ex-test-0001)", twice["refused"][0][1])
+        # The other hand is another excerpt, and a moved endpoint another.
+        other = X.merge_text(first["data"], self.line(event="ex-test-0003", selection="right") + "\n"
+                             + self.line(event="ex-test-0004", toBar=9, decision="adjust", proposed={"fromBar": 5, "toBar": 8}),
+                             {"song.test.parent"})
+        self.assertEqual(other["appended"], ["ex-test-0003", "ex-test-0004"])
+        self.assertEqual(other["data"]["excerpts"][-1]["proposed"], {"fromBar": 5, "toBar": 8})
+
+    def test_a_rejection_is_kept_with_its_reason_and_needs_one(self) -> None:
+        merged = X.merge_text(X.read_definitions(Path("none.json")),
+                              self.line(event="ex-test-0005", decision="reject", reason="mid-phrase at both ends"), {"song.test.parent"})
+        self.assertEqual(merged["data"]["excerpts"], [])
+        self.assertEqual(merged["data"]["rejected"][0]["reason"], "mid-phrase at both ends")
+        refused = X.merge_text(X.read_definitions(Path("none.json")), self.line(event="ex-test-0006", decision="reject"), {"song.test.parent"})
+        self.assertEqual(refused["refused"][0][1], "a rejection needs a reason")
+
+    def test_a_line_naming_a_parent_the_catalogue_lacks_or_malformed_is_refused(self) -> None:
+        merged = X.merge_text(X.read_definitions(Path("none.json")), "\n".join([
+            self.line(of="song.gone"), "not json", self.line(event="bad id!"), self.line(event="ex-test-0007", selection="middle"),
+            self.line(event="ex-test-0008", targets=[]), self.line(event="ex-test-0009", at="2026-09-28")]), {"song.test.parent"})
+        self.assertEqual(merged["appended"], [])
+        reasons = [why for _n, why in merged["refused"]]
+        self.assertEqual(len(reasons), 6)
+        self.assertIn("song.gone is not in the built catalogue", reasons[0])
+
+    def test_the_committed_file_is_the_merges_own_serialisation(self) -> None:
+        """A round-trip through the merge's one serialiser is byte-identical to the file (no re-serialising hazard)."""
+        if not X.DEFINITIONS.is_file():
+            self.skipTest("no excerpts.json yet")
+        raw = X.DEFINITIONS.read_bytes().decode("utf-8").replace(chr(13) + chr(10), chr(10))
+        self.assertEqual(X.serialise_definitions(X.read_definitions()), raw)
+
+
+class TheRealParent(unittest.TestCase):
+    def test_anh_113_bars_17_to_24(self) -> None:
+        directory = Path(tempfile.mkdtemp(prefix="excerpt-anh-"))
+        self.addCleanup(lambda: __import__("shutil").rmtree(directory, ignore_errors=True))
+        eid = X.excerpt_id("song.classical.bach-menuet-bwv-anh-113.pdmx", 17, 24, "both")
+        made = X.cut(ANH_113_FILE, 17, 24, "both", eid, directory / f"{eid}.mxl")
+        self.assertEqual((made.bars, made.staves, made.time, made.tempo_bpm), (8, 2, "3/4", 96.0))
+        text = xml_of(made.path)
+        self.assertIn("<fifths>-1</fifths>", measures_xml(text)[0])
+        self.assertIn(f"<work-title>{eid}</work-title>", text)
+        self.assertNotIn("Anna Magdalena", text)
+
+
+if __name__ == "__main__":
+    unittest.main()

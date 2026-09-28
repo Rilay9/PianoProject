@@ -40,7 +40,7 @@ BUILT = REPO / "app" / "public" / "content"
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 DENSITY = REPO / "content" / "sources" / "opportunity-density.json"
 KINDS = {"measured", "inferred", "authored", "reviewed", "unmeasured", "runtime"}
-SOURCES = {"authored", "pdmx", "kern", "musetrainer", "generated", "runtime", "placeholder"}
+SOURCES = {"authored", "pdmx", "kern", "musetrainer", "generated", "runtime", "placeholder", "excerpt"}
 ANH_113 = "song.classical.bach-menuet-bwv-anh-113.pdmx"
 
 
@@ -301,6 +301,209 @@ class TestThePromiseFact(Built):
         self.assertEqual(len(readers), 9)
         for item in readers:
             self.assertEqual(item["measurement"]["status"], "runtime", item["id"])
+class TestExcerptsOnTheBuild(Built):
+    """
+    The excerpt on the combined build (E1; Part 24): every approved row is an item of its own, measured
+    on its cut and never the parent's, its identity the key over the parent's bytes and its definition,
+    its attribution the parent's, on no rung and with no named section; and Q8's case on the real
+    catalogue — the whole Anh. 113 refused at `classical.3`, its excerpt not.
+    """
+
+    def excerpts(self) -> list[dict]:
+        return [item for item in self.catalog if item.get("type") == "excerpt"]
+
+    def test_every_approved_row_is_an_item_and_there_are_some(self) -> None:
+        import excerpts as X
+
+        rows = X.read_definitions().get("excerpts") or []
+        self.assertGreater(len(rows), 0, "no approved excerpt in content/sources/excerpts.json")
+        built_ids = {item["id"] for item in self.excerpts()}
+        for row in rows:
+            eid = X.excerpt_id(row["of"], row["fromBar"], row["toBar"], row["selection"])
+            with self.subTest(excerpt=eid):
+                self.assertIn(eid, built_ids)
+
+    def test_each_is_measured_on_its_cut_and_identified_by_its_definition(self) -> None:
+        import excerpts as X
+
+        for item in self.excerpts():
+            with self.subTest(item=item["id"]):
+                parent = self.by_id[item["excerptOf"]]
+                block = item["provenance"]["excerpt"]
+                self.assertEqual(item["id"], X.excerpt_id(parent["id"], block["fromBar"], block["toBar"], block["selection"]))
+                self.assertEqual(item["file"], f"scores/excerpts/{item['id']}.mxl")
+                self.assertEqual(item["measurement"]["status"], "measured")
+                self.assertEqual(item["provenance"]["facts"]["demands"]["kind"], "measured")
+                self.assertEqual(item["provenance"]["facts"]["demands"]["on"], item["file"], "measured on another file than the cut")
+                self.assertNotEqual(item["measurement"]["bars"], parent["measurement"]["bars"],
+                                    "the cut measured as many bars as the whole piece")
+                self.assertEqual(item["measurement"]["bars"], block["toBar"] - block["fromBar"] + 1)
+                parent_file = BUILT / parent["file"]
+                self.assertEqual(block["parentSha256"], X.sha256_of(parent_file))
+                self.assertEqual(block["key"], X.chain_key(block["parentSha256"], block["fromBar"], block["toBar"],
+                                                           block["selection"], block["cutVersion"]))
+                self.assertEqual(block["parentEdition"], parent["provenance"].get("edition"))
+                self.assertNotIn("stale", block, "approved on other parent bytes")
+                self.assertEqual(item["levelSource"], "estimated")
+                self.assertEqual(item["hands"], block["selection"])
+
+    def test_the_attribution_and_the_chain_are_the_parents(self) -> None:
+        for item in self.excerpts():
+            with self.subTest(item=item["id"]):
+                parent = self.by_id[item["excerptOf"]]
+                self.assertEqual(item["source"], parent["source"], "the excerpt's attribution is not the parent's")
+                self.assertEqual(item["provenance"]["source"], "excerpt")
+                self.assertEqual(item["provenance"]["composition"], parent["provenance"]["composition"])
+                self.assertEqual(item["provenance"]["arrangement"], parent["provenance"]["arrangement"])
+                for tag in ("personal-build", "nc-personal-build"):
+                    self.assertEqual(tag in (item.get("tags") or []), tag in (parent.get("tags") or []), tag)
+
+    def test_the_key_is_the_pieces_where_it_has_one_and_the_cut_prints_it(self) -> None:
+        """The Library prints the key: an excerpt of a one-key piece whose cut opens in that key says it."""
+        seen = 0
+        for item in self.excerpts():
+            parent = self.by_id[item["excerptOf"]]
+            keys = (parent.get("notation") or {}).get("keys") or []
+            mine = (item.get("notation") or {}).get("keys") or []
+            with self.subTest(item=item["id"]):
+                if len(keys) == 1 and parent.get("keySig") and mine and mine[0].get("fifths") == keys[0].get("fifths"):
+                    seen += 1
+                    self.assertEqual(item.get("keySig"), parent["keySig"])
+                else:
+                    self.assertNotIn("keySig", item)
+        self.assertGreater(seen, 0, "no excerpt of a one-key piece to read")
+
+    def test_the_candidate_rungs_say_where_one_detector_answers_for_several_concepts(self) -> None:
+        """
+        `texture.left-hand-pattern` is one detector for alberti, waltz, oom-pah, boogie and stride
+        (claims.CONCEPT_DEMANDS): a rung reached through it is a pattern in the notes, not the rung's
+        pattern, and the report says so beside the line, where F reads it.
+        """
+        import claims
+        import excerpts as X
+
+        sharing = sorted(c for c, d in claims.CONCEPT_DEMANDS.items() if d == "texture.left-hand-pattern")
+        report = X.candidate_rungs(self.catalog, self.curriculum)
+        found = 0
+        for row in report:
+            for candidate in row["candidates"]:
+                for claim in candidate["established"]:
+                    if claim["kind"] == "demand" and claim["id"] == "texture.left-hand-pattern" and claim["from"].startswith("concept "):
+                        found += 1
+                        self.assertEqual(sorted(claim.get("sharedBy") or []), sharing, f"{row['item']} at {candidate['rung']}")
+                    elif claim["id"] != "texture.left-hand-pattern":
+                        self.assertNotIn("sharedBy", claim, f"{row['item']} at {candidate['rung']}: {claim['id']}")
+        self.assertGreater(found, 0, "no candidate reached through the left-hand pattern to read")
+        self.assertIn("one detector", X.candidate_rungs_markdown(report))
+
+    def test_on_no_rung_and_no_named_section(self) -> None:
+        listed = {option for stage in self.curriculum["stages"] for unit in stage["units"] for lesson in unit["lessons"]
+                  for option in lesson.get("exerciseOptions", []) + lesson.get("songOptions", [])}
+        for item in self.excerpts():
+            with self.subTest(item=item["id"]):
+                self.assertNotIn(item["id"], listed, "an excerpt placed on a rung: placement is F's")
+                self.assertNotIn("sections", item.get("teaching") or {})
+
+    def test_the_score_checks_read_an_excerpt_as_its_parents_declared_passage(self) -> None:
+        """An excerpt is short and inside its parent by definition: never a truncated copy or an undeclared containment."""
+        report = json.loads((REPO / "build" / "score-checks.json").read_text(encoding="utf-8"))
+        excerpt_ids = {item["id"] for item in self.excerpts()}
+        found = [f"{flag['item']}: {flag['check']} {flag.get('kind')}" for flag in report["flags"]
+                 if flag["item"] in excerpt_ids and flag["check"] in ("truncation", "containment")]
+        self.assertEqual(found, [])
+
+    def test_q8_the_whole_anh_113_is_refused_at_classical_3_and_its_excerpt_is_not(self) -> None:
+        import claims
+
+        _skills, demands = claims.load_vocabulary()
+        ancestry = claims.rung_ancestry(self.curriculum)
+        whole = self.by_id[ANH_113]
+        self.assertEqual(sorted(claims.untaught_on(whole, "classical.3", ancestry, demands)),
+                         ["rhythm.sixteenths", "rhythm.triplets"])
+        cuts = [item for item in self.excerpts() if item["excerptOf"] == ANH_113]
+        self.assertGreater(len(cuts), 0, "no excerpt of Anh. 113 on the build")
+        for cut in cuts:
+            with self.subTest(item=cut["id"]):
+                self.assertEqual(claims.untaught_on(cut, "classical.3", ancestry, demands), [])
+        # The parent's demands are the parent's: the cut leaves them as the bridge measured them.
+        self.assertIn("rhythm.sixteenths", whole["demands"])
+        self.assertIn("rhythm.triplets", whole["demands"])
+
+
+class TestExcerptLocalTruth(unittest.TestCase):
+    """
+    Part 24's adversaries 1 and 2 through the bridge, on constructed parents: what an excerpt carries
+    is what its bars carry.
+    """
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        import tempfile
+
+        from music21 import clef, key, meter, note, stream, tempo
+
+        from convert import write_mxl
+        import demands as D
+        import excerpts as X
+
+        cls.dir = Path(tempfile.mkdtemp(prefix="excerpt-truth-"))
+
+        def parent(name: str, bars: list[list[tuple[str, float]]]) -> Path:
+            upper, lower = stream.PartStaff(), stream.PartStaff()
+            for number, row in enumerate(bars, start=1):
+                top, bottom = stream.Measure(number=number), stream.Measure(number=number)
+                if number == 1:
+                    top.append([clef.TrebleClef(), key.KeySignature(0), meter.TimeSignature("4/4"), tempo.MetronomeMark(number=80)])
+                    bottom.append([clef.BassClef(), key.KeySignature(0), meter.TimeSignature("4/4")])
+                top.append([note.Note(p, quarterLength=q) for p, q in row])
+                bottom.append(note.Note("C3", quarterLength=4))
+                upper.append(top)
+                lower.append(bottom)
+            score = stream.Score()
+            score.insert(0, upper)
+            score.insert(0, lower)
+            path = cls.dir / f"{name}.mxl"
+            write_mxl(score, path)
+            return path
+
+        steps = [("C5", 1), ("D5", 1), ("E5", 1), ("D5", 1)]
+        sixteenths = [(p, 0.25) for p in ["C5", "D5", "E5", "F5"] * 4]
+        leaps = [("C5", 1), ("G5", 1), ("C5", 1), ("F5", 1)]
+        cls.sixteenths_parent = parent("sixteenths-outside", [sixteenths, sixteenths] + [steps] * 6)
+        cls.leaps_parent = parent("leaps-inside", [steps] * 12 + [leaps] + [steps] * 11)
+        cls.sixteenths_sha = X.sha256_of(cls.sixteenths_parent)
+        cls.cut_clean = X.cut(cls.sixteenths_parent, 5, 8, "both", "excerpt.test.sixteenths-outside.b5-8", cls.dir / "clean.mxl")
+        cls.cut_leaps = X.cut(cls.leaps_parent, 13, 16, "both", "excerpt.test.leaps-inside.b13-16", cls.dir / "leaps.mxl")
+        cls.rows = D.measure_each([cls.sixteenths_parent, cls.cut_clean.path, cls.leaps_parent, cls.cut_leaps.path])
+        cls.table = json.loads(DENSITY.read_text(encoding="utf-8"))
+        cls.order = [d["id"] for d in json.loads((REPO / "content" / "curriculum" / "vocabulary" / "demands.json").read_text(encoding="utf-8"))["demands"]]
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        import shutil
+
+        shutil.rmtree(cls.dir, ignore_errors=True)
+
+    def established(self, row: dict, window: bool) -> list[str]:
+        import build
+
+        located = {d: int(n) for d, n in row["opportunities"].items() if int(n) > 0}
+        rule = build.established_by_window if window else build.established_by_density
+        return rule(located, int(row["measures"]), self.table, self.order)
+
+    def test_1_untaught_sixteenths_outside_the_excerpt_are_not_in_it_and_the_parent_is_unchanged(self) -> None:
+        import excerpts as X
+
+        parent, cut = self.rows[str(self.sixteenths_parent)], self.rows[str(self.cut_clean.path)]
+        self.assertIn("rhythm.sixteenths", parent["demands"])
+        self.assertNotIn("rhythm.sixteenths", cut["demands"])
+        self.assertEqual(X.sha256_of(self.sixteenths_parent), self.sixteenths_sha, "the cut changed the parent's file")
+
+    def test_2_leaps_only_inside_the_passage_are_established_on_the_cut_and_not_on_the_parent(self) -> None:
+        parent, cut = self.rows[str(self.leaps_parent)], self.rows[str(self.cut_leaps.path)]
+        self.assertIn("interval.leap", parent["demands"], "the parent has the leaps somewhere")
+        self.assertNotIn("interval.leap", self.established(parent, window=False), "established on the whole piece")
+        self.assertIn("interval.leap", self.established(cut, window=True), "not established on the cut")
 
 
 class TestTheBridgeRegressionOnTheBuild(Built):
@@ -341,6 +544,30 @@ class TestUsefulDensity(unittest.TestCase):
         # A skip every bar: practice.
         self.assertEqual(self.build.established_by_density({"interval.skip": 40}, 40, self.table, self.order), ["interval.skip"])
 
+    def test_the_window_rule_reads_the_window_minimum_never_the_whole_piece_min(self) -> None:
+        """
+        E1 item 9: a passage of up to eight bars meets a demand at `minInWindow` occurrences and the
+        rule's `perBar`, where the whole-piece `min` would refuse it. Each rule whose window minimum
+        is below its `min`, at exactly that many in the fewest bars that reach `perBar`.
+        """
+        import math
+
+        checked = 0
+        for demand, rule in self.table["demands"].items():
+            window_min = rule.get("minInWindow", self.build.DEFAULT_MIN_IN_WINDOW)
+            if window_min >= rule["min"] or rule["perBar"] <= 0:
+                continue
+            bars = max(1, min(8, math.floor(window_min / rule["perBar"])))
+            if window_min / bars < rule["perBar"]:
+                continue
+            checked += 1
+            with self.subTest(demand=demand):
+                located = {demand: window_min}
+                self.assertEqual(self.build.established_by_window(located, bars, self.table, self.order), [demand])
+                self.assertEqual(self.build.established_by_density(located, bars, self.table, self.order), [])
+                self.assertEqual(self.build.established_by_window({demand: window_min - 1}, bars, self.table, self.order), [])
+        self.assertGreater(checked, 0, "no rule whose window minimum is below its whole-piece min")
+
     def test_every_vocabulary_demand_has_its_own_rule_and_none_is_universal(self) -> None:
         self.assertEqual(sorted(self.table["demands"]), sorted(self.order))
         rules = {(rule["min"], rule["perBar"]) for rule in self.table["demands"].values()}
@@ -374,7 +601,12 @@ class TestUsefulDensity(unittest.TestCase):
             with self.subTest(item=item["id"]):
                 by_density = self.build.established_by_density(measurement["located"], measurement["bars"], self.table, self.order)
                 spoilt = set((measurement.get("misread") or {}).get("demands", []))
-                self.assertEqual(sorted((set(by_density) | set(measurement.get("contract", []))) - spoilt), sorted(measurement["established"]))
+                # E1: an excerpt is a window and also establishes by the window rule (`minInWindow`);
+                # nothing else does. Computed here, not read from the row's `window`.
+                by_window = (set(self.build.established_by_window(measurement["located"], measurement["bars"], self.table, self.order))
+                             if item.get("type") == "excerpt" else set())
+                self.assertEqual(sorted((set(by_density) | set(measurement.get("contract", [])) | by_window) - spoilt), sorted(measurement["established"]))
+                self.assertEqual(sorted(measurement.get("window", [])), sorted(by_window - set(by_density) - spoilt))
 
     def test_a_reading_the_clef_assumption_spoils_never_establishes(self) -> None:
         """detect.ts reads staff 1 as treble: a one-staff bass-clef part's ledger lines are the misreading, marked."""
@@ -508,7 +740,9 @@ class TestTheReports(Built):
         self.assertGreater(h["works"], 0)
         self.assertGreaterEqual(h["arrangements"], h["works"] // 2)
         self.assertEqual(len(inventory["coverage"]), len(list(self.claims.lessons_in_order(self.curriculum))))
-        self.assertEqual(h["excerpts"], 0, "excerpts are E1's objects; the inventory must not count sections as them")
+        # E1 makes them: the count is the excerpt items, never the items with named sections.
+        excerpts = [item for item in self.catalog if item.get("type") == "excerpt"]
+        self.assertEqual(h["excerpts"], len(excerpts), "the inventory must count excerpt items, not sections")
 
 
 if __name__ == "__main__":

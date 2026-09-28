@@ -60,6 +60,7 @@ import {
   type TriageEvent,
 } from '../../review/record';
 import type { Router } from '../../router';
+import { DevExcerptView, EXCERPT_VIEW } from './DevExcerptView';
 
 // --- the build's data -----------------------------------------------------------------
 
@@ -276,6 +277,8 @@ const STYLE = `
 // --- the screen -------------------------------------------------------------------------
 
 export function DevMicroscopeScreen(router: Router): HTMLElement {
+  // The excerpt view (E1): the proposer's candidates, beside the item view, by address.
+  if (router.route.devItem === EXCERPT_VIEW) return DevExcerptView(router);
   const { section, card } = createSubScreen(router, {
     id: 'dev-microscope',
     title: 'Microscope (dev)',

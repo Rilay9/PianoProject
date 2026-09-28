@@ -1,0 +1,338 @@
+{
+  "_comment": [
+    "Approved excerpts: each row a passage of a bundled score that the build cuts into its own file",
+    "and catalogue item (E1; docs/03 §4c). Written by `python tools/content/excerpts.py --merge` from",
+    "the microscope's excerpt view (#/dev/microscope/excerpts) and read by the build; not edited by hand.",
+    "",
+    "`fromBar`/`toBar` are **1-based positions in the printed score**: bar 1 is the first printed bar, a",
+    "pickup included — what `sections.json` counts and the model's `sourceMeasureIndex` counts from. A",
+    "range across a repeat sign, a first-or-second ending or a jump refuses at build, with the bars named.",
+    "",
+    "`selection` is the hands the learner is given: `both`, `right` (the upper staff alone) or `left`.",
+    "`targets` are vocabulary skill or demand ids the passage was approved for, never an invented name.",
+    "`parentSha256` is the parent's built file the approval was made against: when the parent's file",
+    "changes the validator names the row as stale. `event`, `by` and `at` are the approving decision.",
+    "",
+    "`rejected` keeps the refusals with their reasons, so a re-merge of the same export appends nothing.",
+    "",
+    "An excerpt is on no rung: placement is F's, on a candidate-rungs line established on the combined",
+    "build and a current `goodTeachingUse: yes` on the cut's identity in D2's record by a named reviewer."
+  ],
+  "excerpts": [
+    {
+      "of": "song.classical.bach-menuet-bwv-anh-113.pdmx",
+      "fromBar": 25,
+      "toBar": 32,
+      "selection": "both",
+      "targets": [
+        "key.signature"
+      ],
+      "label": "",
+      "note": "Boundary by rule, unheard. Signals: phrase start after the long note (D, a dotted half) that ends bar 24; ending at the piece’s last bar (the final repeat sign); no pickup before bar 25; key signature located 8 times in 8 bars (B-flats in bars 26, 28, 30 and 31, the window rule met); both hands in every bar; eight bars. Nothing untaught at classical.3, where the whole piece carries sixteenths and triplets. Read on the page: F major, 3/4, eighths over quarters, E-flat and F-sharp written in bars 25 and 27, a grace note before the last bar. Usable score by the notation; teaching use undecided.",
+      "parentSha256": "c64c189e8d78cfae168e6b978fbbbec28582229f6d13377aa540f09eb5c7c514",
+      "event": "ex-4a4c15fa-bb27-4b0e-994f-230100e132cf",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T21:48:08.280Z"
+    },
+    {
+      "of": "song.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx",
+      "fromBar": 25,
+      "toBar": 28,
+      "selection": "both",
+      "targets": [
+        "syncopation"
+      ],
+      "label": "",
+      "note": "Boundary by rule, unheard. Signals — opportunity: rhythm.syncopation: 7 located in 4 bars (meets the window rule: at least 3 and 0.25 a bar); occurrences: rhythm.syncopation in 4 of 4 bars; phraseStart: a double bar before bar 25; ending: a repeat sign closes bar 28; pickup: no upbeat before bar 25; texture: one staff; length: 4 bars. Read on the page: B-flat major, one staff with chord symbols (a lead sheet): eighth-note lines whose off-beat eighths are tied over the beat in every bar (F5, D5, C5, B-flat4, G4 each tied from the and of a beat), the syncopation by the first clause of T37’s definition, a note or tie starting off the beat. Usable score by the notation; teaching use undecided.",
+      "parentSha256": "e313972422452314b5335621958dd56b6070a5c0ea2ee5a08caffc73f5d57172",
+      "event": "ex-05f48703-2543-4c65-aa4d-8c0b6a9058cc",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T21:48:47.972Z"
+    },
+    {
+      "of": "song.classical.beethoven-ode-to-joy.easy",
+      "fromBar": 9,
+      "toBar": 12,
+      "selection": "both",
+      "targets": [
+        "texture.left-hand-pattern"
+      ],
+      "label": "",
+      "note": "Boundary by rule, unheard. Signals — opportunity: texture.left-hand-pattern: every bar of 4; occurrences: texture.left-hand-pattern in 4 of 4 bars; phraseStart: a double bar before bar 9; ending: a double bar closes bar 12; pickup: no upbeat before bar 9; texture: both hands sound in 4 of 4 bars; length: 4 bars. Read on the page: G major, 4/4: the left hand strikes D2 on beat 1 and the chord D3 G3 B3 on beat 3 in bars 9–11, C-sharp3 then D3 F-sharp3 A3 in bar 12 — a bass note then a chord, the oom-pah in half notes; the right hand a stepwise tune in quarters and eighths; a double bar before bar 9 and after bar 12. Usable score by the notation; teaching use undecided.",
+      "parentSha256": "96e7b89cd7509749e554f8e7aaa4e566a33fdc9b7968115ed44b96da8c2f12b1",
+      "event": "ex-b09dcf7b-663b-4461-bbf8-5531cb2a1526",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T21:49:37.229Z"
+    },
+    {
+      "of": "song.classical.i-got-rythm.pdmx",
+      "fromBar": 15,
+      "toBar": 18,
+      "selection": "both",
+      "targets": [
+        "texture.walking-bass"
+      ],
+      "label": "",
+      "note": "Boundary by rule, unheard. Signals — opportunity: texture.walking-bass: every bar of 4; occurrences: texture.walking-bass in 4 of 4 bars; phraseStart: after a rest in the melody at the end of bar 14; ending: a double bar closes bar 18; pickup: no upbeat before bar 15; texture: both hands sound in 4 of 4 bars; length: 4 bars. Read on the page: B-flat major, 4/4: the left hand walks in single quarter notes on every beat — G2 B-flat2 D3 D-flat3, C3 G2 C2 E2, C2 E-flat2 G2 G-flat2, F2 A2 C3 E-flat2 — chord tones with chromatic approach notes, never a repeated or chordal bass; the right hand comps in chords off the beat, with rests; a double bar closes bar 18. The walk is read on the page, beside E22’s caution about the detector. Usable score by the notation; teaching use undecided.",
+      "parentSha256": "253e4039a0fa51377982f3bbd0ce87cd644efc48859015f282e9515967e2dd8b",
+      "event": "ex-0fe1ee6a-7620-4979-8b42-159b06d522f9",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T21:49:47.411Z"
+    },
+    {
+      "of": "song.blues.wabash-blues",
+      "fromBar": 1,
+      "toBar": 4,
+      "selection": "both",
+      "targets": [
+        "pitch.chromatic"
+      ],
+      "label": "",
+      "note": "Boundary by rule, unheard. Signals — opportunity: pitch.chromatic: 7 located in 4 bars (meets the window rule: at least 3 and 0.1 a bar); occurrences: pitch.chromatic in 2 of 4 bars; phraseStart: the piece's first bar; ending: resolves: a rest over the tonic in the bass; pickup: no pickup before bar 1; texture: one staff; length: 4 bars. Read on the page: B-flat major, one staff with chord symbols (a lead sheet): D5 and D-flat5 alternating in eighths through bars 1–2, each D-flat a flat outside the key and each D after it a natural sign, then C5 and D5 in halves and B-flat4 held into a rest. Usable score by the notation; teaching use undecided.",
+      "parentSha256": "60f8d018899c70b1dd3c09e0d48e7e24d61efedb68e6ac67d5451c8572338208",
+      "event": "ex-a57de44f-ebc6-4a41-a93e-b7af6eeefdeb",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T22:14:29.004Z"
+    }
+  ],
+  "rejected": [
+    {
+      "of": "song.classical.bizet-overture-to-carmen-for-piano-solo-by-georges-bizet.pdmx",
+      "fromBar": 51,
+      "toBar": 54,
+      "selection": "right",
+      "targets": [
+        "pitch.chromatic"
+      ],
+      "reason": "The right hand repeats one dyad, F4 over A4, eight times in the four bars: the notes outside the key are one accidental read once and repeated, with no line to read. The signals are met; a passage the page shows as one repeated chord is left for a reviewer.",
+      "parentSha256": "af500e24a31ad6fb4eb290c53688a4cc41a8f27c263da8d60ca7383f1f4b3440",
+      "event": "ex-910bdd57-861b-44eb-9aac-e43770f694ef",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T21:48:32.546Z"
+    },
+    {
+      "of": "song.classical.lemoine-etude-op-37-no-44.pdmx",
+      "fromBar": 1,
+      "toBar": 8,
+      "selection": "both",
+      "targets": [
+        "syncopation"
+      ],
+      "reason": "The syncopation the detector reads here is only T37’s clause for a bar whose melody opens on a rest: the right hand enters on beats 2 and 4 after the left hand on 1 and 3, the hands alternating on the beat; no note or tie starts off the beat in bars 1–8. The signals are met; a reading the detector’s definition gives by one clause alone is not approved as syncopation.",
+      "parentSha256": "e4ebecb78ac757a3690274fe9f18afb2b9afdc7618962a25c8b341c760b4df59",
+      "event": "ex-c269b41d-eaaa-46e9-97f2-bf9c31d73248",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T21:48:46.574Z"
+    },
+    {
+      "of": "song.classical.lemoine-etude-op-37-no-44.pdmx",
+      "fromBar": 1,
+      "toBar": 8,
+      "selection": "right",
+      "targets": [
+        "syncopation"
+      ],
+      "reason": "The syncopation the detector reads here is only T37’s clause for a bar whose melody opens on a rest: the right hand enters on beats 2 and 4 after the left hand on 1 and 3, the hands alternating on the beat; no note or tie starts off the beat in bars 1–8. The signals are met; a reading the detector’s definition gives by one clause alone is not approved as syncopation.",
+      "parentSha256": "e4ebecb78ac757a3690274fe9f18afb2b9afdc7618962a25c8b341c760b4df59",
+      "event": "ex-09bc7e6a-f4b9-471c-a550-faf0d2f58413",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T21:48:47.060Z"
+    },
+    {
+      "of": "song.classical.beethoven-beethoven-symphony-7-2nd-movement-allegretto-simple-piano-arrangement.pdmx",
+      "fromBar": 1,
+      "toBar": 8,
+      "selection": "both",
+      "targets": [
+        "texture.left-hand-pattern"
+      ],
+      "reason": "The left hand is a broken chord in eighths and quarters (A2 E3 A3, G-sharp2 E3 G-sharp3 E3, E2 B2 E3), not the oom-pah the rung names — a bass note on the beat and a chord after it. The vocabulary maps every left-hand pattern to one detector (claims.CONCEPT_DEMANDS: alberti, waltz, oom-pah, boogie, stride), which cannot tell them apart; the page can.",
+      "parentSha256": "c443cf36e294ce4115693928f25f9551cef53eb167ef1407983c63653a0b080d",
+      "event": "ex-5cc05abe-d0f0-47ee-a665-e072d29ee577",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T21:49:36.325Z"
+    },
+    {
+      "of": "song.classical.chopin-waltz-op34-1.nifc",
+      "fromBar": 17,
+      "toBar": 20,
+      "selection": "both",
+      "targets": [
+        "texture.walking-bass"
+      ],
+      "reason": "The detector reads the left hand’s waltz figure — a bass note, then the same chord on beats 2 and 3 — as a walk: its lowest line repeats the chord’s bottom note and never turns back, E22’s recorded misreading of a stride or oom-pah left hand. On the page: bass then chord, chord, in every bar; no walking line.",
+      "parentSha256": "7441482dd99cdd13f7364f8fa76caccbab132fd905363c264e8d417e8ace6369",
+      "event": "ex-3bb31156-d515-4bbc-87fc-6745a22cfd07",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T21:49:38.415Z"
+    },
+    {
+      "of": "song.classical.fikrimin-ince-gulu-piyano-notlara.pdmx",
+      "fromBar": 1,
+      "toBar": 4,
+      "selection": "both",
+      "targets": [
+        "texture.walking-bass"
+      ],
+      "reason": "The detector reads the left hand’s waltz figure — a bass note, then the same chord on beats 2 and 3 — as a walk: its lowest line repeats the chord’s bottom note and never turns back, E22’s recorded misreading of a stride or oom-pah left hand. On the page: bass then chord, chord, in every bar; no walking line.",
+      "parentSha256": "9d7d7b2809526e176addd1d13c78a3955687594f2700eca115c178138d65d98d",
+      "event": "ex-e1b698f4-1811-4494-9166-5a6252db18de",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T21:49:39.113Z"
+    },
+    {
+      "of": "song.classical.fikrimin-ince-gulu-piyano-notlara.pdmx",
+      "fromBar": 13,
+      "toBar": 20,
+      "selection": "both",
+      "targets": [
+        "texture.walking-bass"
+      ],
+      "reason": "The detector reads the left hand’s waltz figure — a bass note, then the same chord on beats 2 and 3 — as a walk: its lowest line repeats the chord’s bottom note and never turns back, E22’s recorded misreading of a stride or oom-pah left hand. On the page: bass then chord, chord, in every bar; no walking line.",
+      "parentSha256": "9d7d7b2809526e176addd1d13c78a3955687594f2700eca115c178138d65d98d",
+      "event": "ex-47c52e3e-fddf-4d42-a3a2-defd0a9d9de2",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T21:49:39.867Z"
+    },
+    {
+      "of": "song.classical.fikrimin-ince-gulu-piyano-notlara.pdmx",
+      "fromBar": 21,
+      "toBar": 28,
+      "selection": "both",
+      "targets": [
+        "texture.walking-bass"
+      ],
+      "reason": "The detector reads the left hand’s waltz figure — a bass note, then the same chord on beats 2 and 3 — as a walk: its lowest line repeats the chord’s bottom note and never turns back, E22’s recorded misreading of a stride or oom-pah left hand. On the page: bass then chord, chord, in every bar; no walking line.",
+      "parentSha256": "9d7d7b2809526e176addd1d13c78a3955687594f2700eca115c178138d65d98d",
+      "event": "ex-38a19133-98dc-4ae2-a328-cb3af1cf3a8c",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T21:49:40.613Z"
+    },
+    {
+      "of": "song.classical.streabbog-la-violette.pdmx",
+      "fromBar": 37,
+      "toBar": 40,
+      "selection": "both",
+      "targets": [
+        "texture.walking-bass"
+      ],
+      "reason": "The detector reads the left hand’s waltz figure — a bass note, then the same chord on beats 2 and 3 — as a walk: its lowest line repeats the chord’s bottom note and never turns back, E22’s recorded misreading of a stride or oom-pah left hand. On the page: bass then chord, chord, in every bar; no walking line.",
+      "parentSha256": "6ab0625b78677b63b381f55a8b82c08468fe6c13d765d86d5eebf43e63251cc0",
+      "event": "ex-5df3e14e-d58b-45bc-a188-75e4d05f29af",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T21:49:41.245Z"
+    },
+    {
+      "of": "song.classical.chopin-mazurka-op33-4.nifc",
+      "fromBar": 66,
+      "toBar": 69,
+      "selection": "both",
+      "targets": [
+        "texture.walking-bass"
+      ],
+      "reason": "The detector reads the left hand’s waltz figure — a bass note, then the same chord on beats 2 and 3 — as a walk: its lowest line repeats the chord’s bottom note and never turns back, E22’s recorded misreading of a stride or oom-pah left hand. On the page: bass then chord, chord, in every bar; no walking line.",
+      "parentSha256": "74075acbb40febb4fa384d5fcd0cf1b5485e5f8a18873a0c219204d9884f5eb9",
+      "event": "ex-39e8b360-1f6c-4a44-b3d2-5f4414bb1667",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T21:49:42.037Z"
+    },
+    {
+      "of": "song.classical.chopin-mazurka-op33-4.nifc",
+      "fromBar": 194,
+      "toBar": 197,
+      "selection": "both",
+      "targets": [
+        "texture.walking-bass"
+      ],
+      "reason": "The detector reads the left hand’s waltz figure — a bass note, then the same chord on beats 2 and 3 — as a walk: its lowest line repeats the chord’s bottom note and never turns back, E22’s recorded misreading of a stride or oom-pah left hand. On the page: bass then chord, chord, in every bar; no walking line.",
+      "parentSha256": "74075acbb40febb4fa384d5fcd0cf1b5485e5f8a18873a0c219204d9884f5eb9",
+      "event": "ex-28533b90-72e0-463d-8dd6-4ba39a755d43",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T21:49:42.942Z"
+    },
+    {
+      "of": "song.classical.czerny-czerny-air-napolitain-santa-lucia.pdmx",
+      "fromBar": 13,
+      "toBar": 16,
+      "selection": "both",
+      "targets": [
+        "texture.walking-bass"
+      ],
+      "reason": "The detector reads the left hand’s waltz figure — a bass note, then the same chord on beats 2 and 3 — as a walk: its lowest line repeats the chord’s bottom note and never turns back, E22’s recorded misreading of a stride or oom-pah left hand. On the page: bass then chord, chord, in every bar; no walking line.",
+      "parentSha256": "12514a59d9c2975c5cdba603e6a228ae4596dbcb12ca3896a02ed70c451d190e",
+      "event": "ex-7b629fa0-228f-445a-bfe1-f547f4f62a41",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T21:49:43.628Z"
+    },
+    {
+      "of": "song.classical.elgar-pomp-and-circumstance.pdmx",
+      "fromBar": 1,
+      "toBar": 8,
+      "selection": "both",
+      "targets": [
+        "texture.walking-bass"
+      ],
+      "reason": "The detector reads repeated quarter notes as a walk (a line that never turns back): the left hand repeats one note or octave for two or four beats before it moves, E22’s recorded misreading of a one-line pulse. On the page: a pulse, not a walking line.",
+      "parentSha256": "c9339fe73cf7818b3b2c6524eca2423ae521979a85425746157396e71da18ee6",
+      "event": "ex-47d903f1-fbe6-43f9-ae35-19c02409cc02",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T21:49:44.268Z"
+    },
+    {
+      "of": "song.pop.andrew-prahlow-solanum-s-theme-outer-wilds.pdmx",
+      "fromBar": 1,
+      "toBar": 8,
+      "selection": "both",
+      "targets": [
+        "texture.walking-bass"
+      ],
+      "reason": "The detector reads repeated quarter notes as a walk (a line that never turns back): the left hand repeats one note or octave for two or four beats before it moves, E22’s recorded misreading of a one-line pulse. On the page: a pulse, not a walking line.",
+      "parentSha256": "c827a67e36a4e7802f50df9075e39431c7e2fe73cb24950ed184f7fe6fe02bd0",
+      "event": "ex-e85995a5-ffc3-4332-958a-7ab025415849",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T21:49:44.905Z"
+    },
+    {
+      "of": "song.classical.elgar-pomp-and-circumstance.pdmx",
+      "fromBar": 29,
+      "toBar": 36,
+      "selection": "both",
+      "targets": [
+        "texture.walking-bass"
+      ],
+      "reason": "The detector reads repeated quarter notes as a walk (a line that never turns back): the left hand repeats one note or octave for two or four beats before it moves, E22’s recorded misreading of a one-line pulse. On the page: a pulse, not a walking line.",
+      "parentSha256": "c9339fe73cf7818b3b2c6524eca2423ae521979a85425746157396e71da18ee6",
+      "event": "ex-da975bfe-0298-4a1e-9cda-ab0bd7e5f536",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T21:49:45.527Z"
+    },
+    {
+      "of": "song.classical.duvernoy-etude-op-176-no-18.pdmx",
+      "fromBar": 1,
+      "toBar": 4,
+      "selection": "both",
+      "targets": [
+        "texture.walking-bass"
+      ],
+      "reason": "The left hand is the same triad rising through each bar of 3/4 (A3 C4 E4, A3 D4 F4): a broken chord that never comes back within the bar, which the walk rule accepts; on the page it is one arpeggio a bar, not a line walking between chords.",
+      "parentSha256": "b3138168f8429a70ad612c20315bb0de82d5b39cb7d56a582f61ca7af7a4f14e",
+      "event": "ex-f30e4527-4fad-40e3-8ad7-f8f705190135",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T21:49:46.162Z"
+    },
+    {
+      "of": "song.classical.grieg-ase-s-tod.pdmx",
+      "fromBar": 29,
+      "toBar": 32,
+      "selection": "right",
+      "targets": [
+        "pitch.chromatic"
+      ],
+      "reason": "Read on the Score screen after the cut was built: the edition writes the upper staff in the bass clef, so the right hand’s E5 to A4 sit four to six ledger lines above the bass staff on every beat — not a page a learner reads as notes outside the key, and the detectors misread the staff as treble (detect.ts’s clef assumption; the build marks the parent and the cut). Withdrawn from approval; the proposer now skips a parent whose clef the detectors misread.",
+      "parentSha256": "58ea27924b1333949550c18ec58123db6bcf2e7d9edb3a58020b9e9c6cc3b8c7",
+      "event": "ex-af168f02-934a-481c-9513-99ce45cd139c",
+      "by": "E1 builder (Entry 101)",
+      "at": "2026-09-28T22:14:40.027Z"
+    }
+  ]
+}

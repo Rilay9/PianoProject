@@ -630,7 +630,8 @@ def inventory(catalog: list[dict], curriculum: dict) -> dict:
             "runtime": sum(1 for i in catalog if (i.get("measurement") or {}).get("status") == "runtime"),
             "works": len(works),
             "arrangements": len(arrangements),
-            "excerpts": 0,
+            # E1: an excerpt is its own item, cut from its parent's file; it is not a work or an arrangement of its own.
+            "excerpts": sum(1 for i in catalog if i.get("type") == "excerpt"),
             "withSections": sections,
             # A decision either way is a review: `no` and `fix` count as much as `yes` (D2).
             "scoreReviewed": sum(1 for i in catalog if ((i.get("provenance") or {}).get("review") or {}).get("score") is not None),

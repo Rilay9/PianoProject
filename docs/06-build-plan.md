@@ -72,7 +72,18 @@ the navigation, lazily loaded): `score`, the renderer harness above; `microscope
 by the Score screen's renderer, played by its Hear it path (hands together and each alone),
 beside its contract and measured facts, and records per-dimension review decisions that are
 exported and merged by `tools/content/review.py --merge` (`03` §4b). Nothing on a learner screen
-links to it, and it writes no learner store (`microscope.spec.ts`).
+links to it, and it writes no learner store (`microscope.spec.ts`). Beside the item view,
+`#/dev/microscope/excerpts` is the excerpt view (E1, `DevExcerptView.ts`, routed by
+`DevMicroscopeScreen` and nothing else): the proposer's candidates by target with their part
+scores; the parent drawn by the Score screen's renderer with the bars outside the cut dimmed, the
+cut in full on the page opened and the two bars before it on that page wherever they fit with it,
+the two after on the read-ahead page when it is what is played next (`excerptPage.ts`; the words
+under the score say when a margin is a page away); Hear it from two bars before
+the cut to two after, through the Score session's Listen run over a loop stopped at its first lap;
+each boundary moved a bar at a time and re-scored from the table the proposer wrote (no signal
+is computed in the browser); approve, adjust and approve, or reject with a reason, kept under
+`pianopath.microscope.excerpts` and exported for `tools/content/excerpts.py --merge`
+(`excerpts.spec.ts`).
 
 ### P3 — Practice engine · the stronger model · 1–2 sessions
 Deliverables per `05`: `PracticeEngine` with Wait/Tempo/Listen/Free, loops, scoring, drills

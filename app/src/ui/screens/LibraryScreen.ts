@@ -30,6 +30,7 @@
 import { createAlphaRail, letterFor } from '../alphaRail';
 import type { Router } from '../../router';
 import { allItems } from '../../curriculum/load';
+import { excerptLine } from '../../curriculum/excerpt';
 import type { CatalogItem } from '../../curriculum/types';
 import {
   IMPORT_ACCEPT,
@@ -69,7 +70,7 @@ type SortKey = 'level' | 'title' | 'recent';
 
 interface Filters {
   query: string;
-  type: 'all' | 'song' | 'exercise' | 'drill';
+  type: 'all' | 'song' | 'exercise' | 'drill' | 'excerpt';
   track: string;
   status: 'all' | 'new' | 'started' | 'passed' | 'mastered';
   hands: 'all' | 'both' | 'right' | 'left';
@@ -479,6 +480,8 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
         { value: 'song', label: 'Songs' },
         { value: 'exercise', label: 'Exercises' },
         { value: 'drill', label: 'Drills' },
+        // E1: a passage of a piece, cut into its own item; listed under its own title, the piece named.
+        { value: 'excerpt', label: 'Excerpts' },
       ],
       (value) => {
         filters.type = value as Filters['type'];
@@ -641,6 +644,9 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
   function showDetail(item: CatalogItem): void {
     const sheet = openSheet(item.title, { id: 'library-detail' });
     const facts: [string, string][] = [
+      // An excerpt names the piece it was cut from first (E1); its Source and Licence below are
+      // the parent's, carried whole into its catalogue row, since the cut's file carries no credits.
+      ...(excerptLine(item, byIdForExcerpts()) === undefined ? [] : [['From', (excerptLine(item, byIdForExcerpts()) ?? '').replace(/^From /, '')] as [string, string]]),
       ['Level', levelLabel(item.level, item.levelSource)],
       ['Hands', handsLabel(item.hands)],
       ['Type', item.type],
@@ -870,6 +876,13 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     sheet.body.append(list);
   }
 
+  /** The catalogue by id, for naming an excerpt's parent (built once per list of items). */
+  let excerptIndex: { from: CatalogItem[]; byId: Map<string, CatalogItem> } | null = null;
+  function byIdForExcerpts(): Map<string, CatalogItem> {
+    if (excerptIndex?.from !== items) excerptIndex = { from: items, byId: new Map(items.map((one) => [one.id, one])) };
+    return excerptIndex.byId;
+  }
+
   function rowFor(item: CatalogItem): HTMLElement {
     const badges: HTMLElement[] = [];
     const progressBadge = statusBadge(progress.get(item.id));
@@ -913,7 +926,8 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
 
     return listRow({
       title: item.title,
-      subtitle: item.composer ?? undefined,
+      // An excerpt is listed under its own title with the piece it was cut from named (E1).
+      subtitle: excerptLine(item, byIdForExcerpts()) ?? item.composer ?? undefined,
       // `Hands together` was on very nearly every one of 1,533 rows — three
       // words that never distinguish one row from another, in the middle of
       // the line that is supposed to tell them apart, pushing the type off the

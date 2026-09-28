@@ -24,14 +24,20 @@
       "properties": {
         "id": {
           "type": "string",
-          "pattern": "^(song|exercise|drill)\\.[a-z0-9.-]+$"
+          "pattern": "^(song|exercise|drill|excerpt)\\.[a-z0-9.-]+$"
         },
         "type": {
           "enum": [
             "song",
             "exercise",
-            "drill"
-          ]
+            "drill",
+            "excerpt"
+          ],
+          "description": "`excerpt` (E1): a passage of another item cut by the build into its own file (docs/03 §4c), with `excerptOf` naming the parent; measured on the cut, identified by its `provenance.excerpt` block, on no rung until F places it."
+        },
+        "excerptOf": {
+          "type": "string",
+          "description": "For type=excerpt: the catalogue id of the item the passage was cut from (E1). Display and provenance only: the excerpt's demands, level and identity are the cut's own, never the parent's."
         },
         "title": {
           "type": "string",
@@ -183,6 +189,13 @@
                 "type": "string"
               }
             },
+            "window": {
+              "type": "array",
+              "description": "Of an excerpt's `established` (E1 item 9), the demands only the window rule establishes: `perBar` reached and at least the density file's `minInWindow`, where the whole-piece `min` is more than a short cut can hold.",
+              "items": {
+                "type": "string"
+              }
+            },
             "misread": {
               "type": "object",
               "description": "Detector readings known to be wrong on this file, and why (the clef assumption: an upper staff written in the bass clef). They stay among the ids and never establish an opportunity.",
@@ -224,6 +237,7 @@
                 "generated",
                 "runtime",
                 "placeholder",
+                "excerpt",
                 "imported-midi",
                 "imported-musicxml",
                 "imported-pdf"
@@ -254,6 +268,72 @@
             "physical": {
               "type": "object",
               "description": "A generated item's declared large-hand voicing, with its prerequisite and alternative (D0 finding 5)."
+            },
+            "excerpt": {
+              "type": "object",
+              "description": "An excerpt's identity (E1 item 4): the definition it was cut from, the cut version, the parent's built file at cut time and its edition, and `key`, sha256 over the parent's bytes, the range, the selection and the cut version. The cut file's own sha256 is the item's identity in the review record. `stale` names an approval made on other parent bytes.",
+              "required": [
+                "of",
+                "fromBar",
+                "toBar",
+                "selection",
+                "cutVersion",
+                "parentSha256",
+                "key"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "of": {
+                  "type": "string"
+                },
+                "fromBar": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "toBar": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "selection": {
+                  "enum": [
+                    "both",
+                    "right",
+                    "left"
+                  ]
+                },
+                "cutVersion": {
+                  "type": "integer"
+                },
+                "parentSha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "parentEdition": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "key": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "targets": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "event": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "stale": {
+                  "type": "object"
+                }
+              }
             },
             "facts": {
               "type": "object",

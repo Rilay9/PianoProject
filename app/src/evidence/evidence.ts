@@ -72,6 +72,7 @@ import { detect, type DemandAt } from '../demands/detect';
 import type { ScoreModelData, ScoreNote } from '../score/types';
 import { isMeasurement, codeAt, takeMeasurements, type Measurement, type Observed, type StepMeasure } from './measurement';
 import type { Vocabulary } from './vocabulary';
+import type { Identity } from '../review/record';
 
 export type Standard = 'practice' | 'full';
 
@@ -99,6 +100,12 @@ export interface Refusal {
 export interface EvidenceContext {
   itemId: string;
   seed?: number;
+  /**
+   * The exact material the run played, where it knows it (E1 item 7): an excerpt's cut, as its
+   * file identity (D2's `Identity`). Stored beside `itemId` and `seed`, read by nobody yet; the
+   * chain key stays in the item's `provenance.excerpt`.
+   */
+  material?: Identity;
   /** A generated phrase read for the first time (`unseen: true`): first contact with the material. */
   firstContact: boolean;
   /** Of the conditions the skill's standards name, those this run met. */
@@ -201,7 +208,7 @@ export interface SelfAssessedEvidence {
   observationId: number | null;
   report: 'rough' | 'ok' | 'clean';
   at: string;
-  context: Pick<EvidenceContext, 'itemId' | 'seed'>;
+  context: Pick<EvidenceContext, 'itemId' | 'seed' | 'material'>;
 }
 
 export type Evidence = MeasuredEvidence | SelfAssessedEvidence;
@@ -552,6 +559,7 @@ function evidenceFrom(
     context: {
       itemId: observation.itemId,
       ...(observation.seed === undefined ? {} : { seed: observation.seed }),
+      ...(observation.material === undefined ? {} : { material: observation.material }),
       firstContact: observation.unseen === true,
       met,
       unattributed,
@@ -569,7 +577,11 @@ function selfAssessed(skill: Skill, observation: Observed, report: 'rough' | 'ok
     observationId: observation.id ?? null,
     report,
     at,
-    context: { itemId: observation.itemId, ...(observation.seed === undefined ? {} : { seed: observation.seed }) },
+    context: {
+      itemId: observation.itemId,
+      ...(observation.seed === undefined ? {} : { seed: observation.seed }),
+      ...(observation.material === undefined ? {} : { material: observation.material }),
+    },
   } as unknown as SelfAssessedEvidence;
 }
 

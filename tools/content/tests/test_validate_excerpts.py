@@ -1,0 +1,157 @@
+"""
+The validator's excerpt check (E1 item 2), beside the sections check: each rule on a fixture.
+
+A row of `content/sources/excerpts.json` names a parent that exists and is a notated item with a
+built file, a range inside its printed bars (1-based, the pickup as bar 1), a selection its staves
+allow, targets the vocabulary has, a derived id no other row or item shares; a range across a
+repeat sign is refused with the bars named; a row approved against parent bytes the parent no
+longer has is warned as stale; a parent this build does not bundle is a warning, not an error.
+"""
+from __future__ import annotations
+
+import json
+import shutil
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+import excerpts as X  # noqa: E402
+from validate import excerpt_findings  # noqa: E402
+
+FIXTURE = Path(__file__).resolve().parent / "fixtures" / "excerpts" / "pickup-and-repeat.musicxml"
+PARENT = "song.test.pickup-and-repeat"
+
+
+class TheExcerptCheck(unittest.TestCase):
+    def setUp(self) -> None:
+        self.dir = Path(tempfile.mkdtemp(prefix="validate-excerpts-"))
+        self.addCleanup(lambda: shutil.rmtree(self.dir, ignore_errors=True))
+        (self.dir / "scores").mkdir()
+        shutil.copyfile(FIXTURE, self.dir / "scores" / "parent.musicxml")
+        self.sha = X.sha256_of(self.dir / "scores" / "parent.musicxml")
+        self.parent = {"id": PARENT, "type": "song", "title": "Pickup and repeat", "file": "scores/parent.musicxml",
+                       "notation": {"bars": 5, "staves": 2}, "tags": []}
+
+    def check(self, rows: list[dict], catalog: list[dict] | None = None, built: bool = True) -> tuple[list[str], list[str]]:
+        path = self.dir / "excerpts.json"
+        path.write_text(json.dumps({"excerpts": rows, "rejected": []}), encoding="utf-8")
+        items = list(catalog if catalog is not None else [self.parent])
+        if built:
+            for row in rows:
+                if row.get("selection") not in X.SELECTIONS:
+                    continue
+                eid = X.excerpt_id(row["of"], row["fromBar"], row["toBar"], row["selection"])
+                if not any(i["id"] == eid for i in items):
+                    items.append({"id": eid, "type": "excerpt", "excerptOf": row["of"], "title": eid})
+        return excerpt_findings(items, self.dir, path)
+
+    def row(self, **over) -> dict:
+        made = {"of": PARENT, "fromBar": 4, "toBar": 5, "selection": "both", "targets": ["interval.leap"],
+                "label": "", "note": "", "parentSha256": self.sha, "event": "ex-test-1", "by": "a test", "at": "2026-09-28T00:00:00.000Z"}
+        made.update(over)
+        return made
+
+    def test_a_clean_row_passes(self) -> None:
+        self.assertEqual(self.check([self.row()]), ([], []))
+
+    def test_the_parent_must_exist(self) -> None:
+        errors, _ = self.check([self.row(of="song.not-there")])
+        self.assertTrue(any("its parent 'song.not-there' is not in the catalogue" in e for e in errors), errors)
+
+    def test_the_parent_must_be_a_notated_item_with_a_built_file(self) -> None:
+        drill = {"id": "drill.runtime", "type": "drill", "title": "A drill", "file": None, "drill": {"kind": "rhythm"}}
+        errors, _ = self.check([self.row(of="drill.runtime")], [self.parent, drill])
+        self.assertTrue(any("is not a notated item with a built file" in e for e in errors), errors)
+
+    def test_a_parent_this_build_does_not_bundle_is_a_warning_not_an_error(self) -> None:
+        placeholder = {**self.parent, "file": None, "tags": ["personal-build"]}
+        errors, warnings = self.check([self.row()], [placeholder], built=False)
+        self.assertEqual(errors, [])
+        self.assertTrue(any("not cut in this build" in w for w in warnings), warnings)
+
+    def test_the_range_lies_inside_the_printed_bars(self) -> None:
+        errors, _ = self.check([self.row(fromBar=4, toBar=6)])
+        self.assertTrue(any("are not inside the parent's 5 printed bar(s)" in e for e in errors), errors)
+
+    def test_the_selection_is_valid_for_the_parents_staves(self) -> None:
+        errors, _ = self.check([self.row(selection="middle")])
+        self.assertTrue(any("selection 'middle' is not one of" in e for e in errors), errors)
+        one_staff = {**self.parent, "notation": {"bars": 5, "staves": 1}}
+        errors, _ = self.check([self.row(selection="right")], [one_staff])
+        self.assertTrue(any("no second hand" in e for e in errors), errors)
+
+    def test_the_targets_exist(self) -> None:
+        errors, _ = self.check([self.row(targets=["interval.giant-leap"])])
+        self.assertTrue(any("target 'interval.giant-leap' is not a vocabulary skill or demand" in e for e in errors), errors)
+        errors, _ = self.check([self.row(targets=[])])
+        self.assertTrue(any("no target" in e for e in errors), errors)
+        self.assertEqual(self.check([self.row(targets=["syncopation", "rhythm.eighths"])])[0], [])
+
+    def test_no_two_rows_share_parent_range_and_selection(self) -> None:
+        errors, _ = self.check([self.row(), self.row(event="ex-test-2", label="Another name")])
+        self.assertTrue(any("the same parent, bars and selection as row 1" in e for e in errors), errors)
+        # The other hand is another excerpt.
+        self.assertEqual(self.check([self.row(), self.row(event="ex-test-2", selection="left")])[0], [])
+
+    def test_a_range_across_a_repeat_sign_is_refused_with_the_bars_named(self) -> None:
+        errors, _ = self.check([self.row(fromBar=1, toBar=3)])
+        self.assertTrue(any("bars 1–3: a repeat sign opens bar 2" in e for e in errors), errors)
+        # The repeated section itself: the repeat signs are its edges.
+        self.assertEqual(self.check([self.row(fromBar=2, toBar=3)])[0], [])
+
+    def test_a_row_approved_on_other_parent_bytes_is_warned_stale(self) -> None:
+        errors, warnings = self.check([self.row(parentSha256="0" * 64)])
+        self.assertEqual(errors, [])
+        self.assertTrue(any("stale by provenance" in w and "b4-5" in w for w in warnings), warnings)
+
+    def test_the_build_made_an_item_for_every_row_and_no_other(self) -> None:
+        errors, _ = self.check([self.row()], built=False)
+        self.assertTrue(any("the build made no item for it" in e for e in errors), errors)
+        stray = {"id": "excerpt.test.stray.b1-2", "type": "excerpt", "excerptOf": PARENT, "title": "stray"}
+        errors, _ = self.check([self.row()], [self.parent, stray])
+        self.assertTrue(any("excerpt.test.stray.b1-2: an excerpt with no approved row" in e for e in errors), errors)
+
+
+class TheLicence(unittest.TestCase):
+    """
+    A cut carries its parent's attribution and licence tags (`excerpts.entry_for`), so the catalogue's
+    own licence check refuses it where it refuses the parent: a CC BY-NC edition under a strict build,
+    a personal-build parent's cut in a strict build; the personal build bundles both.
+    """
+
+    def rows(self, licence: str, tags: list[str]) -> list[dict]:
+        directory = Path(tempfile.mkdtemp(prefix="validate-excerpt-licence-"))
+        self.addCleanup(lambda: shutil.rmtree(directory, ignore_errors=True))
+        (directory / "scores" / "excerpts").mkdir(parents=True)
+        shutil.copyfile(FIXTURE, directory / "scores" / "parent.musicxml")
+        shutil.copyfile(FIXTURE, directory / "scores" / "excerpts" / "cut.musicxml")
+        self.dir = directory
+        parent = {"id": PARENT, "type": "song", "title": "Pickup and repeat", "file": "scores/parent.musicxml",
+                  "source": {"name": "an edition", "license": licence}, "tags": tags, "tracks": ["core"], "level": 2}
+        made = X.Cut(path=directory / "scores" / "excerpts" / "cut.musicxml", bars=2, staves=2, notes=4,
+                     tempo_bpm=96.0, time="3/4", level=1.5)
+        row = {"of": PARENT, "fromBar": 4, "toBar": 5, "selection": "both", "targets": ["interval.leap"]}
+        return [parent, X.entry_for(row, parent, made, "scores/excerpts/cut.musicxml")]
+
+    def refused(self, catalog: list[dict], strict: bool, allow_nc: bool = False) -> set[str]:
+        from validate import validate_catalog
+
+        errors = validate_catalog(catalog, self.dir, strict, allow_nc=allow_nc)
+        return {item["id"] for item in catalog
+                if any(e.startswith(f"{item['id']}: licence") or e.startswith(f"{item['id']}: tagged") for e in errors)}
+
+    def test_a_personal_build_parents_cut_is_refused_in_a_strict_build_with_it(self) -> None:
+        catalog = self.rows("Public Domain", ["personal-build"])
+        self.assertEqual(self.refused(catalog, strict=True), {item["id"] for item in catalog})
+        self.assertEqual(self.refused(catalog, strict=False), set())
+
+    def test_a_cc_by_nc_editions_cut_is_refused_in_a_strict_build_with_it(self) -> None:
+        catalog = self.rows("CC BY-NC 4.0", [])
+        self.assertEqual(self.refused(catalog, strict=True), {item["id"] for item in catalog})
+
+
+if __name__ == "__main__":
+    unittest.main()
