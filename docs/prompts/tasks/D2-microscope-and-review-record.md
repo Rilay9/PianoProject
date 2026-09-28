@@ -54,3 +54,5 @@ D1 the sight-reading phrase (its own brief, drafted with this one); D3 the gener
 
 **Delivered 2026-09-27**, Entry 95, in an isolated worktree: the route, the record with its first real line (the tumbao's score usable, from the notation; teaching use undecided until a person hears it), `review.py --merge` idempotent and `--check`, the build reading the record into the provenance and the report, `heard` held to the record; the hypotheses answered (Hear it plays any item through `ScoreSession`'s Listen run without a product change; a generated item's identity is D0's triple plus the recipe and tempo, since seeds are null; a notated item's is the file's sha256). Found on the way: U67 (Hear it silent after a reload, P1), U68, G54. The microscope's data reaches the screen through the build (`app/public/content/review/microscope.json`, out of the precache) — outside "the reviewed facts only", with the reason.
 
+**Approved by the reviewer 2026-09-27** (`responses/7e148e0.md`): closed; the departures from the brief's list judged necessary parts of the named behaviour; U67 to a small independent seam; D3 may be drafted once D1a lands.
+
