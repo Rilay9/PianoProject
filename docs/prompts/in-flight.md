@@ -10,7 +10,7 @@
 
 ## Waiting
 
-- **D3** — **approved with one required change** (`responses/ee70b43.md`); **D3a** approved with one required change (`responses/c8717be.md`); **D3b** (the session card's direct paths behind the same admission) at the reviewer's gate. Unheard; unverified as music.
+- **D3** — **approved with one required change** (`responses/ee70b43.md`); **D3a** approved with one required change (`responses/c8717be.md`); **D3b** approved (`responses/e0d1a3a.md`) and **dispatched** (Entry 103, port 4193). Unheard; unverified as music.
 
 - **D2a** — **closed**, accepted (`responses/b118750.md`).
 
