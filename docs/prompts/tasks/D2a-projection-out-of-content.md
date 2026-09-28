@@ -28,3 +28,5 @@ Judgement first: the offline case's red on the committed tree and green after, i
 
 **Delivered 2026-09-27**, Entry 99, in an isolated worktree: the move, the `dev/` case, the stale copy deleted by the build; the catalogue byte-identical but for the build-time stamp; `review.py` and `test_review_record.py` touched outside the list because the path lived there. Found: `offline.spec.ts:53` intermittent on this machine (Diagnostics' per-file cache check over about 2,000 files past 30 s under load; green in CI) — Q48's shape.
 
+**Accepted by the reviewer 2026-09-27** (`responses/b118750.md`): closed; the builder screen's error text when the projection is absent noted as a later-wave item.
+

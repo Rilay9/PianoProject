@@ -12,7 +12,7 @@
 
 - **D3** — brief approved with one change (`responses/2c80472.md`), **dispatched** (Entry 100); on landing: merge, the content build, the validator, the content suites, the bridge regression's direct half, the candidate-rungs report read, three studies rendered on the score screen and read, record, handoff, push.
 
-- **D2a** — **landed** (Entry 99, handoff `handoffs/b118750.md`); CI's red closed on this tree; awaiting the reviewer.
+- **D2a** — **closed**, accepted (`responses/b118750.md`).
 
 - **D1 / D1a** — **closed**: D1a accepted (`responses/8a13eb1.md`); version 2 live; D3's brief released. **D2** (Entry 95) — **closed**, approved (`responses/7e148e0.md`). **U67** (Hear it after a reload) — **closed**, approved (`responses/deb0b4f.md`).
 
