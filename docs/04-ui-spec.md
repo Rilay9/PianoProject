@@ -1665,7 +1665,11 @@ current Sound destination, cursor moving, nothing judged; a second tap stops it.
 mode without having to know Listen mode exists, and it does **not** move the mode selector:
 what it interrupts is put back when it ends, and `▶` during one ends it and starts the run
 you chose. The screen carries `data-hearing` so the run's mode and the selected mode stay two
-facts rather than one.
+facts rather than one. **It sounds from the first tap**, a reload or a link straight to the piece
+included (U67, 2026-09-27): the tap starts the app's audio, and the session plays through the
+context and master gain the app has then, not the ones it had when the piece loaded, which
+before any tap were none. The session asks for the pair at every start, frame and resume, so
+`▶` and a held bar play through it too.
 
 **`Hear it` during a run keeps the run** (decided 2026-09-23, built by T33 — the state-machine
 document's C1). It used to end the run: the middle of a good pass thrown away, silently, by

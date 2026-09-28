@@ -11,6 +11,7 @@
 // how loud) belongs to the practice engine.
 
 import { Soundfont } from 'smplr';
+import { countAudioStart } from './audioStarts';
 
 export type PianoState = 'idle' | 'loading' | 'ready' | 'error';
 
@@ -115,6 +116,7 @@ export class Piano {
       ...(note.timeSec === undefined ? {} : { time: note.timeSec }),
       ...(note.durationSec === undefined ? {} : { duration: note.durationSec }),
     });
+    countAudioStart('piano');
     return () => stop();
   }
 
