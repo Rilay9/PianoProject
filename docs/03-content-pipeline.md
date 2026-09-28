@@ -147,10 +147,12 @@ caught by the merge rather than by whichever wrote last:
    `--out` or `--quick` build never rewrites what the reviewer reads. `validate.py` prints the
    report's count as a warning, never a failure, until the reviewer says otherwise. Since D2 the
    priority rungs' tables carry a teaching-review column (the current teaching-use decision and
-   its basis), and the same step writes `review/microscope.json` into the built content for the
-   builder's microscope (§4b): the queue, each item's contract verdicts and rung claims, and the
-   record's events. The PWA does not precache `content/review/` (`vite.config.ts`
-   `globIgnores`), so no learner downloads it.
+   its basis), and the same step writes the builder's microscope data (§4b) — the queue, each
+   item's contract verdicts and rung claims, and the record's events — to
+   `app/public/dev/review/microscope.json`: a builder-only `dev/` root beside the built content,
+   not inside it (D2a), gitignored and left out of the precache (`vite.config.ts` `globIgnores`),
+   so no learner downloads it and every file under `content/` stays precached (`offline.spec.ts`,
+   P19). A `--out DIR` build writes it under `dev/` beside `DIR`.
 9. **validate** (`validate.py`) — everything in §4 and more: schemas, every referenced file
    present, every curriculum option in the catalog, the three-alternative floor, finders, tips
    files, section bar numbers, track definitions, orphan exercises, licences, the committed
@@ -590,8 +592,9 @@ form:
   participate; the latest valid human event (`at`, then the later line) supersedes the earlier;
   an event on one dimension never touches the other.
 
-Decisions are made on the builder's microscope (`#/dev/microscope/<item id>`; §3's reports step
-writes its data) and leave the device as an exported file, merged by
+Decisions are made on the builder's microscope (`#/dev/microscope/<item id>`, which reads
+`app/public/dev/review/microscope.json`, written by §3's reports step — builder-only, never
+precached, and outside `content/` since D2a) and leave the device as an exported file, merged by
 `python tools/content/review.py --merge <file>`: a line that is malformed, names an item the
 built catalogue does not have, or names an identity it does not have is refused with its line
 number; an event id already in the record is skipped when identical and refused when not, so a

@@ -715,13 +715,21 @@ def microscope_data(catalog: list[dict], report: dict, out_dir: Path | None, rec
     }
 
 
-#: Where the build writes the screen's data, inside the built content. Not precached
-#: (`vite.config.ts` ignores `content/review/`): no learner downloads it.
+#: Where the build writes the screen's data, under the builder-only root beside the built
+#: content and never inside it (D2a): the offline invariant holds every file under `content/`
+#: to the learner's precache (`offline.spec.ts`, P19), and this one is megabytes no learner
+#: opens. `vite.config.ts` leaves `dev/` out of the precache and `.gitignore` out of git.
 MICROSCOPE_FILE = Path("review") / "microscope.json"
 
 
+def dev_root(out_dir: Path) -> Path:
+    """The builder-only root beside a build's content directory: `app/public/dev` for the default build."""
+    return out_dir.parent / "dev"
+
+
 def write_microscope(out_dir: Path, catalog: list[dict], report: dict) -> Path:
-    path = out_dir / MICROSCOPE_FILE
+    """The screen's data, from the catalogue built in `out_dir`, written to `dev_root(out_dir)`."""
+    path = dev_root(out_dir) / MICROSCOPE_FILE
     path.parent.mkdir(parents=True, exist_ok=True)
     data = microscope_data(catalog, report, out_dir)
     with path.open("w", encoding="utf-8", newline="\n") as handle:

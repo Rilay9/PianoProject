@@ -128,11 +128,21 @@ interface MicroscopeData {
 
 let dataPromise: Promise<MicroscopeData> | null = null;
 
+/**
+ * A file under the builder-only root beside `content/` (D2a), base-aware as `contentUrl` is.
+ * Nothing there is precached (`vite.config.ts`), so the offline invariant holds every file
+ * under `content/` to the precache without an exception (`offline.spec.ts`, P19).
+ */
+function devUrl(path: string, base: string = import.meta.env.BASE_URL): string {
+  const prefix = base.endsWith('/') ? base : `${base}/`;
+  return `${prefix}dev/${path}`;
+}
+
 /** The build's microscope data (`review.write_microscope`), fetched once per page. */
 function loadData(): Promise<MicroscopeData> {
-  dataPromise ??= fetch(contentUrl('review/microscope.json'))
+  dataPromise ??= fetch(devUrl('review/microscope.json'))
     .then(async (response) => {
-      if (!response.ok) throw new Error(`review/microscope.json: ${String(response.status)} — run the content build`);
+      if (!response.ok) throw new Error(`dev/review/microscope.json: ${String(response.status)} — run the content build`);
       return (await response.json()) as MicroscopeData;
     })
     .catch((cause: unknown) => {

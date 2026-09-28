@@ -1028,6 +1028,10 @@ def step_reports(out_dir: Path, write_docs: bool) -> Step:
     just wrote (E0 items 5 and 6; `claims.py`). Always as JSON under `build/`; as the two
     markdown files in `docs/prompts/` only for the default build, so a `--out` or
     `--quick` build never rewrites what the reviewer reads with a partial catalogue.
+
+    Also the builder's microscope data (D2), under the builder-only `dev/` root beside the
+    content directory (`app/public/dev/review/microscope.json` for the default build; D2a),
+    never inside it: every file under `content/` is in the learner's precache (P19).
     """
     import claims
 
@@ -1039,10 +1043,20 @@ def step_reports(out_dir: Path, write_docs: bool) -> Step:
     write_json(BUILD_DIR / "rung-claims.json", report)
     write_json(BUILD_DIR / "inventory.json", inventory)
     # The builder's microscope reads the report's data, the contracts' verdicts, the queue and
-    # the record beside the catalogue (D2): one file in the built content, never precached.
+    # the record beside the catalogue (D2): one file under `dev/`, beside the built content and
+    # never precached (D2a).
     import review
 
     review.write_microscope(out_dir, catalog, report)
+    # D2 wrote it inside the built content; a checkout built before D2a still holds that copy,
+    # served there and never precached, which the offline invariant refuses (P19).
+    stale = out_dir / "review" / "microscope.json"
+    if stale.is_file():
+        stale.unlink()
+        try:
+            stale.parent.rmdir()
+        except OSError:
+            pass
     if write_docs:
         RUNG_CLAIMS_MD.write_text(claims.render_rung_claims(report), encoding="utf-8", newline="\n")
         INVENTORY_MD.write_text(claims.render_inventory(inventory), encoding="utf-8", newline="\n")
