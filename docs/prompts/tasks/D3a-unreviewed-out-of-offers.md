@@ -34,4 +34,4 @@ If a consumer renders a verdict's reason from a closed list and `unreviewed` can
 
 Judgement first: what the swap sheet at 2.1 and at 4.5 offers after the change and what it offered before, in its own words; then Done / Not done / Follow-ups / Questions / Files; the call-site table; the red lines; exit codes; unverified beside what passes.
 
-**Dispatched from the reviewer's required change** (`responses/ee70b43.md`), no brief handoff, after the weekly usage reset of 2026-09-28.
+**Written from the reviewer's required change** (`responses/ee70b43.md`) and amended for the runtime reading rows; **posted as its own brief handoff on 2026-09-28** at the owner's word that briefs are reviewed before dispatch; dispatch on APPROVE. Port 4193 (E1 has 4183; 4173 is the orchestrator's).
