@@ -56,3 +56,5 @@ D1 the sight-reading phrase (its own brief, drafted with this one); D3 the gener
 
 **Approved by the reviewer 2026-09-27** (`responses/7e148e0.md`): closed; the departures from the brief's list judged necessary parts of the named behaviour; U67 to a small independent seam; D3 may be drafted once D1a lands.
 
+**CI red 2026-09-27** on the first full run of D2's tree: `offline.spec` › P19 refuses the projection under `content/review/` (served, never cached). D2a moves it out of `content/`; P19 keeps its rule.
+
