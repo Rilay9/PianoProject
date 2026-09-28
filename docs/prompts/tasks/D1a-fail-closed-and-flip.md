@@ -36,3 +36,5 @@ Judgement first: what a learner meets after the flip — three phrases per level
 
 **Delivered 2026-09-27**, Entry 97, in an isolated worktree: fail closed with the refusal on screen; the record field on `RunHeader` with every phrase-seen reader compared by version; version 2 in force; the seven tests revised with traced assumptions; 21 phrases rendered on the app's score screen and read. One deviation for the reviewer: the avoid-sets keep every seed regardless of version. Outside the brief's list with reasons: `readingControls.ts` (`UNREALISABLE_AT` lives there), `style.css` (`.score-refusal`, the header status line is one clipped line on a phone), the regenerated reader-learners fixture (by its own test). Found on the way: S38, S39.
 
+**Accepted by the reviewer 2026-09-27** (`responses/8a13eb1.md`): the fallback, the stored identity, the seed-avoidance deviation and the 3.1 reader order all accepted; D1 closed; D3 constrained to consume the versioned identity, never the seed alone.
+

@@ -12,7 +12,7 @@
 
 - **D2a** — **dispatched** (Entry 99): CI on 85b7b2c red on `offline.spec` › P19 (D2's projection under `content/` served and never cached); the projection moves to a builder-only `dev/` root; on landing: merge, the app build, the offline and microscope specs once, record, handoff, push.
 
-- **D1 / D1a** — D1a **landed** (Entry 97, handoff `handoffs/8a13eb1.md`): version 2 live; awaiting the reviewer; its ACCEPT closes D1 and opens D3's brief. **D2** (Entry 95) — **closed**, approved (`responses/7e148e0.md`). **U67** (Hear it after a reload) — **closed**, approved (`responses/deb0b4f.md`).
+- **D1 / D1a** — **closed**: D1a accepted (`responses/8a13eb1.md`); version 2 live; D3's brief released. **D2** (Entry 95) — **closed**, approved (`responses/7e148e0.md`). **U67** (Hear it after a reload) — **closed**, approved (`responses/deb0b4f.md`).
 
 - **D0 / D0a** — **closed**: D0a accepted (`responses/3b9c37d.md`); B7 kept (G53), the arpeggios' notation to G52.
 - **Q24** — **closed**, approved by the reviewer (`responses/e32d0ef.md`, unprompted); the MAESTRO download stays the owner's question (Q47).

@@ -54,3 +54,5 @@ Judgement first: three phrases per level as a first reader meets them, before an
 
 **D1a delivered 2026-09-27** (Entry 97): version 2 live; D1 closes on D1a's acceptance.
 
+**Closed 2026-09-27** on D1a's acceptance (`responses/8a13eb1.md`); D3's brief may be drafted.
+
