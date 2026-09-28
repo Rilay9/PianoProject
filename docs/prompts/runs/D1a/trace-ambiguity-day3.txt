@@ -1,0 +1,8 @@
+start 3 Nov 2026, version 1: day 1: 4 skip-eighths, 18/22 (against); day 2: 5 skip-eighths, 14/19 (against); day 3 offer: unsure
+start 3 Nov 2026, version 2: day 1: 0 skip-eighths, 13/13 (not against); day 2: 2 skip-eighths, 13/15 (against); day 3 offer: hold
+version 2, start Sun Nov 01 2026: day 1: 1 skip-eighths, 15/16 (not against); day 2: 1 skip-eighths, 15/16 (not against); day 3 offer: unsure
+version 2, start Mon Nov 02 2026: day 1: 1 skip-eighths, 15/16 (not against); day 2: 0 skip-eighths, 13/13 (not against); day 3 offer: unsure
+version 2, start Tue Nov 03 2026: day 1: 0 skip-eighths, 13/13 (not against); day 2: 2 skip-eighths, 13/15 (against); day 3 offer: hold
+version 2, start Wed Nov 04 2026: day 1: 2 skip-eighths, 13/15 (against); day 2: 0 skip-eighths, 19/19 (not against); day 3 offer: hold
+version 2, start Thu Nov 05 2026: day 1: 0 skip-eighths, 19/19 (not against); day 2: 2 skip-eighths, 13/15 (against); day 3 offer: hold
+version 2, start Fri Nov 06 2026: day 1: 2 skip-eighths, 13/15 (against); day 2: 2 skip-eighths, 16/18 (against); day 3 offer: unsure

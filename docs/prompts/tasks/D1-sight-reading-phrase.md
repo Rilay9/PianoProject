@@ -52,3 +52,5 @@ Judgement first: three phrases per level as a first reader meets them, before an
 
 **Reviewed 2026-09-27** (`responses/b15758e.md`): approved with one required change — the zero-valid-candidate fallback must fail closed (S37); the record field approved (S33); the capped chord-tone move and the stricter tie rule accepted. D1a does the fallback, the field and the flip; D1 closes on its acceptance.
 
+**D1a delivered 2026-09-27** (Entry 97): version 2 live; D1 closes on D1a's acceptance.
+

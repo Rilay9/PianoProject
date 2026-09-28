@@ -1,0 +1,25 @@
+[WebServer] (node:52416) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/curriculum/load.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/curriculum/tips.ts, src/data/planStore.ts, src/score/estimateImport.ts, src/ui/assignSheet.ts, src/ui/screens/ChordChartScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [plugin builtin:vite-reporter] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/planStore.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/data/backup.ts, src/data/rungStates.ts, src/ui/screens/DrillScreen.ts, src/ui/screens/LessonScreen.ts, src/ui/screens/PlanScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/evidenceJob.ts is dynamically imported by src/main.ts but also statically imported by src/ui/screens/SettingsScreen.ts, dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] (node:59580) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:52756) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\e2e\zz-d1a-look.spec.ts:26:3 › look at drill.reading.sight-reading-1 seed 20260927 (1.8s)
+  ok 2 tests\e2e\zz-d1a-look.spec.ts:26:3 › look at drill.reading.sight-reading-3 seed 20260927 (2.5s)
+  ok 3 tests\e2e\zz-d1a-look.spec.ts:26:3 › look at drill.reading.sight-reading-6 seed 20260927 (2.7s)
+
+  3 passed (47.7s)

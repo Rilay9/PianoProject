@@ -1,0 +1,129 @@
+815 of 1004 phrases differ between version 1 and version 2
+  level 1 L 4 bars: 5 of 8 differ
+  level 1 L 8 bars: 8 of 8 differ
+  level 1 R 4 bars: 5 of 8 differ
+  level 1 R 8 bars: 8 of 8 differ
+  level 1 both 4 bars: 5 of 8 differ
+  level 1 both 8 bars: 8 of 8 differ
+  level 1 option 3/4: 1 of 4 differ
+  level 1 option 6/8: 3 of 4 differ
+  level 1 option accidentals: 3 of 4 differ
+  level 1 option bpm: 2 of 4 differ
+  level 1 option eighths: 3 of 4 differ
+  level 1 option fifths list: 2 of 4 differ
+  level 1 option fifths one: 2 of 4 differ
+  level 1 option position: 2 of 4 differ
+  level 1 option skips: 2 of 4 differ
+  level 1 option syncopation: 3 of 4 differ
+  level 1 option triplets: 4 of 4 differ
+  level 2 L 4 bars: 0 of 8 differ
+  level 2 L 8 bars: 0 of 8 differ
+  level 2 R 4 bars: 8 of 8 differ
+  level 2 R 8 bars: 7 of 8 differ
+  level 2 both 4 bars: 8 of 8 differ
+  level 2 both 8 bars: 7 of 8 differ
+  level 2 option 3/4: 3 of 4 differ
+  level 2 option 6/8: 4 of 4 differ
+  level 2 option accidentals: 4 of 4 differ
+  level 2 option bpm: 4 of 4 differ
+  level 2 option eighths: 4 of 4 differ
+  level 2 option fifths list: 4 of 4 differ
+  level 2 option fifths one: 4 of 4 differ
+  level 2 option position: 4 of 4 differ
+  level 2 option skips: 4 of 4 differ
+  level 2 option syncopation: 4 of 4 differ
+  level 2 option triplets: 4 of 4 differ
+  level 3 L 4 bars: 0 of 8 differ
+  level 3 L 8 bars: 0 of 8 differ
+  level 3 R 4 bars: 8 of 8 differ
+  level 3 R 8 bars: 8 of 8 differ
+  level 3 both 4 bars: 8 of 8 differ
+  level 3 both 8 bars: 8 of 8 differ
+  level 3 option 3/4: 4 of 4 differ
+  level 3 option 6/8: 4 of 4 differ
+  level 3 option accidentals: 4 of 4 differ
+  level 3 option bpm: 4 of 4 differ
+  level 3 option eighths: 4 of 4 differ
+  level 3 option fifths list: 4 of 4 differ
+  level 3 option fifths one: 4 of 4 differ
+  level 3 option position: 4 of 4 differ
+  level 3 option skips: 4 of 4 differ
+  level 3 option syncopation: 4 of 4 differ
+  level 3 option triplets: 4 of 4 differ
+  level 4 L 4 bars: 0 of 8 differ
+  level 4 L 8 bars: 0 of 8 differ
+  level 4 R 4 bars: 8 of 8 differ
+  level 4 R 8 bars: 8 of 8 differ
+  level 4 both 4 bars: 8 of 8 differ
+  level 4 both 8 bars: 8 of 8 differ
+  level 4 option 3/4: 4 of 4 differ
+  level 4 option 6/8: 4 of 4 differ
+  level 4 option accidentals: 4 of 4 differ
+  level 4 option bpm: 4 of 4 differ
+  level 4 option eighths: 4 of 4 differ
+  level 4 option fifths list: 4 of 4 differ
+  level 4 option fifths one: 4 of 4 differ
+  level 4 option position: 4 of 4 differ
+  level 4 option skips: 4 of 4 differ
+  level 4 option syncopation: 4 of 4 differ
+  level 4 option triplets: 4 of 4 differ
+  level 5 L 4 bars: 0 of 8 differ
+  level 5 L 8 bars: 0 of 8 differ
+  level 5 R 4 bars: 7 of 8 differ
+  level 5 R 8 bars: 7 of 8 differ
+  level 5 both 4 bars: 7 of 8 differ
+  level 5 both 8 bars: 7 of 8 differ
+  level 5 option 3/4: 4 of 4 differ
+  level 5 option 6/8: 4 of 4 differ
+  level 5 option accidentals: 3 of 4 differ
+  level 5 option bpm: 4 of 4 differ
+  level 5 option eighths: 4 of 4 differ
+  level 5 option fifths list: 4 of 4 differ
+  level 5 option fifths one: 4 of 4 differ
+  level 5 option position: 4 of 4 differ
+  level 5 option skips: 4 of 4 differ
+  level 5 option syncopation: 4 of 4 differ
+  level 5 option triplets: 4 of 4 differ
+  level 6 L 4 bars: 0 of 8 differ
+  level 6 L 8 bars: 0 of 8 differ
+  level 6 R 4 bars: 7 of 8 differ
+  level 6 R 8 bars: 8 of 8 differ
+  level 6 both 4 bars: 7 of 8 differ
+  level 6 both 8 bars: 8 of 8 differ
+  level 6 option 3/4: 4 of 4 differ
+  level 6 option 6/8: 4 of 4 differ
+  level 6 option accidentals: 3 of 4 differ
+  level 6 option bpm: 4 of 4 differ
+  level 6 option eighths: 4 of 4 differ
+  level 6 option fifths list: 4 of 4 differ
+  level 6 option fifths one: 4 of 4 differ
+  level 6 option position: 4 of 4 differ
+  level 6 option skips: 4 of 4 differ
+  level 6 option syncopation: 3 of 4 differ
+  level 6 option triplets: 4 of 4 differ
+  level 7 L 4 bars: 0 of 8 differ
+  level 7 L 8 bars: 0 of 8 differ
+  level 7 R 4 bars: 8 of 8 differ
+  level 7 R 8 bars: 8 of 8 differ
+  level 7 both 4 bars: 8 of 8 differ
+  level 7 both 8 bars: 8 of 8 differ
+  level 7 option 3/4: 3 of 4 differ
+  level 7 option 6/8: 4 of 4 differ
+  level 7 option accidentals: 2 of 4 differ
+  level 7 option bpm: 4 of 4 differ
+  level 7 option eighths: 4 of 4 differ
+  level 7 option fifths list: 4 of 4 differ
+  level 7 option fifths one: 4 of 4 differ
+  level 7 option position: 4 of 4 differ
+  level 7 option skips: 4 of 4 differ
+  level 7 option syncopation: 4 of 4 differ
+  level 7 option triplets: 4 of 4 differ
+  row drill.reading.sight-reading-1: 29 of 40 differ
+  row drill.reading.sight-reading-1-left: 21 of 40 differ
+  row drill.reading.sight-reading-2: 32 of 40 differ
+  row drill.reading.sight-reading-2-right: 30 of 40 differ
+  row drill.reading.sight-reading-3: 40 of 40 differ
+  row drill.reading.sight-reading-4: 40 of 40 differ
+  row drill.reading.sight-reading-5: 40 of 40 differ
+  row drill.reading.sight-reading-6: 38 of 40 differ
+  row drill.reading.sight-reading-7: 38 of 40 differ
