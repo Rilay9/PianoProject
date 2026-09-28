@@ -10,7 +10,7 @@
 
 ## Waiting
 
-- **D3** — **landed** (Entry 100, merged as 79601bf, handoff `handoffs/ee70b43.md`); awaiting the reviewer. Unheard; unverified as music.
+- **D3** — **approved with one required change** (`responses/ee70b43.md`); **D3a** (unreviewed music-promising items out of automatic offers) drafted from the finding, dispatch after the weekly reset. Unheard; unverified as music.
 
 - **D2a** — **closed**, accepted (`responses/b118750.md`).
 
