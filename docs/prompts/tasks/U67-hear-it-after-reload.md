@@ -35,3 +35,5 @@ Judgement first: a learner who reloads on a piece and presses Hear it, before an
 
 **Delivered 2026-09-27**, Entry 98, in an isolated worktree: the provider (the setter tried first and dropped because four files' session doubles had no setter), the tap awaiting the engine's start, the pair read together at four scheduling points, the count hook, four browser cases and the cold-then-live unit case red first; `Piano.ts` and `Metronome.ts` gain one counting line each (outside the list: the click count is what proves the metronome path the reviewer's change was about). Not done: a browser case under a gesture-gated audio policy. Found on the way: U69, U70.
 
+**Approved by the reviewer 2026-09-27** (`responses/deb0b4f.md`): closed. The evidence claim constrained: scheduling at the piano and metronome boundaries in the tested Chromium, not audible output on a device; U69 and U70 stay separate seams.
+

@@ -12,7 +12,7 @@
 
 - **D2a** — **dispatched** (Entry 99): CI on 85b7b2c red on `offline.spec` › P19 (D2's projection under `content/` served and never cached); the projection moves to a builder-only `dev/` root; on landing: merge, the app build, the offline and microscope specs once, record, handoff, push.
 
-- **D1** — approved with one required change (`responses/b15758e.md`): **D1a** dispatched (Entry 97; the fail-closed fallback, the record field, the flip); on landing: merge, tsc, the sight-reading suites and the seven revised tests, the evidence files, three phrases per level rendered, record, handoff, push. Its ACCEPT closes D1. **D2** (Entry 95) — **closed**, approved (`responses/7e148e0.md`). **U67** (Hear it after a reload) — **landed** (Entry 98, merged as 0358768, handoff `handoffs/deb0b4f.md`); awaiting the reviewer.
+- **D1** — approved with one required change (`responses/b15758e.md`): **D1a** dispatched (Entry 97; the fail-closed fallback, the record field, the flip); on landing: merge, tsc, the sight-reading suites and the seven revised tests, the evidence files, three phrases per level rendered, record, handoff, push. Its ACCEPT closes D1. **D2** (Entry 95) — **closed**, approved (`responses/7e148e0.md`). **U67** (Hear it after a reload) — **closed**, approved (`responses/deb0b4f.md`).
 
 - **D0 / D0a** — **closed**: D0a accepted (`responses/3b9c37d.md`); B7 kept (G53), the arpeggios' notation to G52.
 - **Q24** — **closed**, approved by the reviewer (`responses/e32d0ef.md`, unprompted); the MAESTRO download stays the owner's question (Q47).
