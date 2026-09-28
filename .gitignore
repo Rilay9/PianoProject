@@ -15,6 +15,9 @@ app/public/content/*
 # this directory, so keeping the samples here costs the build nothing and makes
 # `npm run dev` work without running the Python pipeline first.
 !app/public/content/audio/
+# Builder-only build output beside the content (D2a): the microscope's data, written by the
+# content build's reports step, served to the one builder screen and never precached.
+app/public/dev/*
 app/public/icons/
 app/dev-dist/
 app/dist/

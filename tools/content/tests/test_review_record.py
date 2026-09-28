@@ -196,8 +196,8 @@ class TestTheBuildFillsTheReviewedFacts(unittest.TestCase):
         self.assertEqual(entries[1]["provenance"]["review"], {"score": None, "teaching": None})
 
 
-def built(name: str):
-    path = BUILT / name
+def built(name: str | Path, root: Path = BUILT):
+    path = root / name
     if not path.is_file():
         raise AssertionError(f"{path} is missing, and this test reads the built content: run "
                              "`python tools/content/build.py` first (CI: the step 'Build content')")
@@ -307,7 +307,8 @@ class TestTheQueue(Built):
         self.assertEqual(set(self.tiers[2]["items"]), listed - set(self.tiers[0]["items"]) - set(self.tiers[1]["items"]))
 
     def test_the_screen_reads_the_same_queue(self) -> None:
-        data = built("review/microscope.json")
+        # Beside the built content, in the builder-only root, not inside it (D2a).
+        data = built(review.MICROSCOPE_FILE, review.dev_root(BUILT))
         self.assertEqual(data["queue"], self.tiers)
         self.assertEqual(set(data["items"]), set(self.by_id))
         for item_id, item in data["items"].items():
