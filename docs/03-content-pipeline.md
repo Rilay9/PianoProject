@@ -568,6 +568,15 @@ imported score (`importStore.importProvenance`):
   inferred, the tempo-sensitive demands (the density file's `tempoSensitive`: notes shorter
   than the beat) are listed `untrusted` beside the measured ones: measured in the notation,
   their difficulty resting on a tempo the converter supplied. Never flattened into one field.
+- **`facts.promise`** (D3a, 2026-09-28): on every generated item, its family's promise for its
+  recipe — `{kind: "authored", via: "family_contracts.json (the rule matching the recipe)",
+  value: "music" | "drill"}` — resolved by `review.promise_of`, the microscope's reading: the
+  first of the row's rules whose `when` the recipe matches (`family_contracts.selected`), never the
+  row's first rule, so the `meter` family's 5/4 walk is `drill` and its 12/8 blues `music`. The
+  app's one gate reads it beside `review.teaching` and refuses a `music` item for every automatic
+  offer until that bit is `true` (`docs/02` Part E2's study note); nothing at runtime reads the
+  contract table. A runtime drill (the nine reading rows among them) and a notated item carry no
+  promise fact. `test_measured_truth.TestThePromiseFact` holds it on the built catalogue.
 - **`review`**: R42's two decisions as separate bits, `score` (usable, faithful) and `teaching`
   (a good teaching use for its claimed role), filled since D2 from the human review record (§4b):
   each dimension's current decision on the item's current identity, `yes` true, `no` and `fix`

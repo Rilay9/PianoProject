@@ -369,6 +369,20 @@ class TestTheCandidateRungsReport(unittest.TestCase):
             self.assertEqual(claims.untaught_on(item, row["recipeRung"], ancestry, vocabulary), [])
         self.assertGreater(some, 0, "no study has a candidate rung: the report saw nothing")
 
+    def test_the_report_makes_placement_no_owners(self) -> None:
+        """
+        D3a (`responses/ee70b43.md`): placement is F's on a stated gate that needs no owner — a
+        candidate-rungs line on the combined build and a current `goodTeachingUse: yes` in D2's record
+        by a named reviewer — and the committed report says what its source writes.
+        """
+        text = S.candidate_rungs_markdown([])
+        self.assertNotIn("owner's", text, "the report makes placement the owner's")
+        self.assertIn("No owner review or placement is required", text)
+        self.assertIn("goodTeachingUse: yes", text)
+        committed = (Path(__file__).resolve().parents[3] / "docs" / "prompts" / "runs" / "D3" / "candidate-rungs.md")
+        header = committed.read_text(encoding="utf-8").replace("\r\n", "\n").split("\n## ")[0].rstrip("\n")
+        self.assertEqual(header, text.split("\n## ")[0].rstrip("\n"), "the committed report's opening is not its source's")
+
 
 if __name__ == "__main__":
     unittest.main()

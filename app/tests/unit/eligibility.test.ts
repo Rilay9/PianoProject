@@ -313,3 +313,114 @@ describe('one density rule, read by the build and by the gate', () => {
     expect(differ.slice(0, 10), `${String(differ.length)} items`).toEqual([]);
   });
 });
+
+/**
+ * D3a (the reviewer's required change on D3, `responses/ee70b43.md`, and on D3a's brief,
+ * `responses/d483be4.md`): a generated item whose family promises music for its recipe
+ * (`provenance.facts.promise`, the build's authored fact from the contract table) and whose
+ * `provenance.review.teaching` is not `true` is refused for every automatic offer — a skill, a
+ * requirement, a demand and an equivalent (an authored alternative or a lesson's own option
+ * included) — as `teaching-use-not-approved`, with the stored bit (`null` undecided, `false` a
+ * `no` or a `fix` on record) kept in the verdict; `exploration` passes to the existing questions.
+ * An affirmative decision admits it to the same gates as everything else. Drills, notated songs
+ * and the runtime reading rows are untouched. Read from the built catalogue.
+ */
+describe('a generated item that promises music, without an affirmative teaching-use decision (D3a)', () => {
+  const built = JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', 'catalog.json'), 'utf8')) as CatalogItem[];
+  const byId = new Map(built.map((item) => [item.id, item]));
+  const familyOf = (item: CatalogItem): string | undefined => (item.drill as { generator?: { family?: string } } | null | undefined)?.generator?.family;
+  const study = built.find((item) => familyOf(item) === 'study') as CatalogItem;
+  const get = (id: string): CatalogItem => {
+    const item = byId.get(id);
+    if (item === undefined) throw new Error(`${id} is not in the built catalogue — has the content build run?`);
+    return item;
+  };
+  /** A learner who copes with every demand anything carries. */
+  const COPES: Learner = { taught: () => true };
+  /** The item with a teaching-use decision on its current identity, as D2's build writes it: the bit and its `reviewed` fact. */
+  const decided = (item: CatalogItem, value: 'yes' | 'no' | 'fix'): CatalogItem => {
+    const provenance = item.provenance as NonNullable<CatalogItem['provenance']>;
+    return {
+      ...item,
+      provenance: {
+        ...provenance,
+        facts: { ...provenance.facts, reviewedTeaching: { kind: 'reviewed', via: 'content/review/decisions.jsonl', value } },
+        review: { ...provenance.review, teaching: value === 'yes' },
+      },
+    };
+  };
+  const skill = (): string => targetSkillsFor(study)[0] as string;
+  const demand = (): string => (study.measurement?.status === 'measured' ? study.measurement.established : []).find((d) => d === 'texture.hands-together') as string;
+
+  it('the study read from the build promises music, and no person has decided its teaching use', () => {
+    expect(study, 'no generated study in the built catalogue').toBeDefined();
+    expect(study.provenance?.facts.promise, `${study.id}: the promise fact`).toMatchObject({ kind: 'authored', value: 'music' });
+    expect(study.provenance?.review.teaching, study.id).toBeNull();
+    expect(skill(), `${study.id}: a declared skill its notes establish`).toBeDefined();
+    expect(demand(), `${study.id}: hands together established`).toBe('texture.hands-together');
+  });
+
+  it('is refused for a skill, a demand it measurably provides, a requirement and an equivalent: teaching-use-not-approved, undecided', () => {
+    for (const want of [
+      { for: 'skill', skill: skill(), activation: EVERY_DECLARED_SKILL },
+      { for: 'requirement', skill: skill(), activation: EVERY_DECLARED_SKILL },
+      { for: 'demand', demand: demand() },
+      { for: 'equivalent' },
+    ] as const) {
+      expect(eligibleFor(study, COPES, want), `${study.id} for ${want.for}`).toEqual({ verdict: 'ineligible', why: 'teaching-use-not-approved', teaching: null });
+    }
+  });
+
+  it('passes to the existing questions for exploration: the one exemption, deliberate', () => {
+    expect(eligibleFor(study, COPES, { for: 'exploration' }), study.id).toEqual({ verdict: 'eligible', for: 'exploration' });
+  });
+
+  it('a no and a fix on record are refused the same way, their stored bit kept distinct from undecided', () => {
+    for (const value of ['no', 'fix'] as const) {
+      const reviewed = decided(study, value);
+      expect(reviewed.provenance?.review.teaching).toBe(false);
+      for (const want of [{ for: 'skill', skill: skill() }, { for: 'demand', demand: demand() }, { for: 'equivalent' }] as const) {
+        expect(eligibleFor(reviewed, COPES, want), `${study.id} with a ${value} for ${want.for}`).toEqual({
+          verdict: 'ineligible',
+          why: 'teaching-use-not-approved',
+          teaching: false,
+        });
+      }
+      expect(eligibleFor(reviewed, COPES, { for: 'exploration' }).verdict, `${study.id} with a ${value}, exploring`).toBe('eligible');
+    }
+  });
+
+  it('an affirmative decision admits it to the existing gates: eligible where the learner copes and the opportunity is established, still refused for an untaught demand', () => {
+    const approved = decided(study, 'yes');
+    expect(eligibleFor(approved, COPES, { for: 'skill', skill: skill() }), study.id).toMatchObject({ verdict: 'eligible', for: 'skill', practises: skill() });
+    expect(eligibleFor(approved, COPES, { for: 'demand', demand: demand() }), study.id).toMatchObject({ verdict: 'eligible', for: 'demand', practises: demand() });
+    expect(eligibleFor(approved, COPES, { for: 'equivalent' }), study.id).toEqual({ verdict: 'eligible', for: 'equivalent' });
+    // A learner taught steps and skips only: the study's bass clef, leaps and hands together are not met.
+    expect(eligibleFor(approved, STEPS_AND_SKIPS, { for: 'demand', demand: demand() }), study.id).toMatchObject({ verdict: 'ineligible', why: 'untaught' });
+  });
+
+  it('the promise is the recipe’s: the meter family’s 12/8 blues is refused, its 5/4 drill is not', () => {
+    expect(eligibleFor(get('exercise.meter.12-8'), COPES, { for: 'equivalent' })).toEqual({ verdict: 'ineligible', why: 'teaching-use-not-approved', teaching: null });
+    expect(get('exercise.meter.5-4').provenance?.facts.promise, 'exercise.meter.5-4').toMatchObject({ value: 'drill' });
+    expect(eligibleFor(get('exercise.meter.5-4'), COPES, { for: 'equivalent' })).toEqual({ verdict: 'eligible', for: 'equivalent' });
+  });
+
+  it('leaves a drill, a notated song and a runtime reading row exactly as before, each with no teaching-use decision', () => {
+    const drill = get('exercise.interval-reading.c-position.right.01');
+    expect(drill.provenance?.review.teaching).toBeNull();
+    expect(eligibleFor(drill, COPES, { for: 'skill', skill: 'interval-reading' }), drill.id).toMatchObject({ verdict: 'eligible', practises: 'interval-reading' });
+    expect(eligibleFor(drill, COPES, { for: 'demand', demand: 'interval.skip' }), drill.id).toMatchObject({ verdict: 'eligible', practises: 'interval.skip' });
+
+    const song = get('song.folk.twinkle.ht');
+    expect(song.provenance?.review.teaching).toBeNull();
+    expect(song.provenance?.facts.promise, song.id).toBeUndefined();
+    expect(eligibleFor(song, COPES, { for: 'equivalent' }), song.id).toEqual({ verdict: 'eligible', for: 'equivalent' });
+    expect(eligibleFor(song, COPES, { for: 'demand', demand: 'texture.hands-together' }), song.id).toMatchObject({ verdict: 'eligible', practises: 'texture.hands-together' });
+
+    const reader = get('drill.reading.sight-reading-1');
+    expect(reader.measurement?.status).toBe('runtime');
+    expect(reader.provenance?.facts.promise, reader.id).toBeUndefined();
+    expect(eligibleFor(reader, COPES, { for: 'requirement', skill: 'sight-reading' }), reader.id).toEqual({ verdict: 'eligible', for: 'requirement', practises: 'sight-reading' });
+    expect(eligibleFor(reader, COPES, { for: 'skill', skill: 'sight-reading' }), reader.id).toEqual({ verdict: 'eligible', for: 'skill', practises: 'sight-reading' });
+  });
+});

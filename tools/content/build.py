@@ -710,10 +710,17 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
       files are, for a notated item's identity (the file's sha256).
     - `physical`: a generated item's declared large-hand voicing, with its prerequisite
       and alternative (D0 finding 5), so no selector recommends it without them.
+    - `facts.promise` (D3a): a generated item's promise, `music` or `drill`, as an `authored`
+      fact from the contract table — the rule matching the item's recipe (`review.promise_of`,
+      the microscope's reading; the `meter` family is a drill in 5/4 and music in 12/8), never
+      the row's first rule — so the app's one gate can keep a music-promising item with no
+      affirmative teaching-use decision out of automatic offers without reading the table. A
+      runtime drill and a notated item carry none.
     """
     import family_contracts as FC
     from convert import tool_fingerprint
     from pdmx.shortlist import work_key
+    from review import promise_of
 
     table = read_json(DENSITY_FILE)
     assert isinstance(table, dict)
@@ -842,6 +849,8 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
         if kind == "generated":
             family = (drill.get("generator") or {}).get("family")
             if family in FC.contracts():
+                facts["promise"] = {"kind": "authored", "via": "family_contracts.json (the rule matching the recipe)",
+                                    "value": promise_of(FC.contract(family), FC.recipe_of(entry))}
                 large = (FC.contract(family).get("physical") or {}).get("largeHand")
                 if large and FC.matches(large.get("when"), FC.recipe_of(entry)):
                     record["physical"] = {

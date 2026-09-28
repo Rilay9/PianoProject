@@ -38,6 +38,18 @@
  * demand steps (`fallbackStep`) and the repertoire slot's claim (`repertoire`).
  * Same-lesson options and explicit `alternatives[]` go through it too: provenance,
  * never immunity (Part 23).
+ *
+ * **Before the two questions, a teaching-use decision where the item promises music**
+ * (D3a; the reviewer's required change on D3). A generated item whose family promises
+ * music for its recipe — the build's authored fact `provenance.facts.promise`, from the
+ * contract table — and whose `provenance.review.teaching` is not `true` is refused for
+ * every automatic offer (a skill, a requirement, a demand, an equivalent: a lesson's own
+ * option and an authored alternative included, since authorship establishes the
+ * relationship and never that unheard generated music is fit to teach) as
+ * `teaching-use-not-approved`, and passes to the questions only for exploration; the
+ * Library does not call this gate. A drill's promise is its contract, and a notated
+ * item's notes are its truth, so neither is touched. The route to `true` is D2's record:
+ * a `goodTeachingUse: yes` on the item's current identity, merged and built.
  */
 import densityJson from '../../../content/sources/opportunity-density.json';
 import { READING_CONTROLS } from '../engine/readingControls';
@@ -127,7 +139,14 @@ export type Eligibility =
   | { verdict: 'ineligible'; why: 'incidental'; wanted: string; located: number }
   | { verdict: 'ineligible'; why: 'not-a-target'; skill: string }
   | { verdict: 'ineligible'; why: 'no-learner' }
-  | { verdict: 'ineligible'; why: 'physical'; prerequisite: string; alternative: string };
+  | { verdict: 'ineligible'; why: 'physical'; prerequisite: string; alternative: string }
+  /**
+   * A generated item whose family promises music for its recipe, with no affirmative teaching-use
+   * decision (D3a): `teaching` is the stored bit — `null`, no person has decided; `false`, a `no` or
+   * a `fix` on record — refused alike and never collapsed. Said as "not approved for teaching use",
+   * never "not yet reviewed", which would be false of a reviewed rejection.
+   */
+  | { verdict: 'ineligible'; why: 'teaching-use-not-approved'; teaching: null | false };
 
 /**
  * How the candidate's demands are known. An item with no record at all is a catalogue
@@ -251,6 +270,17 @@ function untrustedOf(item: CatalogItem): readonly string[] | undefined {
   return untrusted !== undefined && untrusted.length > 0 ? untrusted : undefined;
 }
 
+/**
+ * The stored teaching-use bit of a generated item whose family promises music for its recipe,
+ * where it is not an affirmative decision (D3a): `null` undecided, `false` a `no` or a `fix` on
+ * record; `undefined` for an approved one and for anything that does not promise music.
+ */
+function unapprovedMusic(item: CatalogItem): null | false | undefined {
+  const provenance = item.provenance;
+  if (provenance?.facts.promise?.value !== 'music') return undefined;
+  return provenance.review.teaching === true ? undefined : provenance.review.teaching;
+}
+
 /** The one gate: can the learner cope, and does the candidate provide the opportunity wanted. */
 export function eligibleFor(candidate: CatalogItem, learner: Learner, want: Want, vocabulary: Vocabulary = VOCABULARY_V0): Eligibility {
   const physical = candidate.provenance?.physical;
@@ -258,6 +288,9 @@ export function eligibleFor(candidate: CatalogItem, learner: Learner, want: Want
     // D0 finding 5: a declared large-hand voicing is not recommended until its smaller-hand alternative reaches the learner.
     return { verdict: 'ineligible', why: 'physical', prerequisite: physical.prerequisite, alternative: physical.alternative };
   }
+  // D3a: generated music nobody has approved for teaching reaches the learner only by exploration.
+  const teaching = unapprovedMusic(candidate);
+  if (teaching !== undefined && want.for !== 'exploration') return { verdict: 'ineligible', why: 'teaching-use-not-approved', teaching };
   const measurement = measurementOf(candidate);
   const untrusted = untrustedOf(candidate);
   const withTrust = <T extends object>(result: T): T & { untrusted?: readonly string[] } => (untrusted ? { ...result, untrusted } : result);

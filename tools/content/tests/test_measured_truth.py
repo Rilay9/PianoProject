@@ -18,7 +18,9 @@ Table-driven over the built catalogue, one row per entry, never one file per ent
   never one universal threshold, and a generated family's presence-only rule establishes
   nothing (the tie drill, D0 finding 6);
 - **the rung-claims report and the inventory** are what the build wrote from this catalogue,
-  list every unestablished claim, and report works, arrangements and coverage.
+  list every unestablished claim, and report works, arrangements and coverage;
+- **the promise fact** (D3a): every generated item carries its family's promise for its recipe,
+  the rule the recipe matches, as an authored fact the app's one gate reads.
 
 These read the built catalogue: run `python tools/content/build.py` first (CI: the step
 'Build content', before 'Content pipeline tests').
@@ -221,6 +223,86 @@ class TestIdentitySurvivesTheBuild(Built):
                                      else f"variant-of:{item['variantOf']}")
 
 
+class TestThePromiseFact(Built):
+    """
+    D3a: every generated item carries its family's promise for its recipe as an authored fact,
+    `provenance.facts.promise` (`value` `music` or `drill`, via the contract table), which the one gate
+    reads to keep a music-promising item with no affirmative teaching-use decision out of automatic
+    offers; nothing at runtime reads the table itself. The fact is the rule that matches the recipe
+    (`family_contracts.selected`), never the row's first rule; a runtime drill and a notated item carry
+    none.
+    """
+
+    maxDiff = None
+
+    def promise_rule(self, item: dict) -> str | None:
+        import family_contracts as FC
+
+        rules = FC.selected(FC.contract(item["drill"]["generator"]["family"])["promise"], FC.recipe_of(item))
+        return rules[0]["promise"] if rules else None
+
+    def test_every_generated_item_carries_the_promise_its_recipe_matches(self) -> None:
+        generated = [item for item in self.catalog if item["provenance"]["source"] == "generated"]
+        self.assertGreater(len(generated), 1000)
+        faults = []
+        for item in generated:
+            fact = item["provenance"]["facts"].get("promise")
+            wanted = self.promise_rule(item)
+            if wanted is None:
+                faults.append(f"{item['id']}: no promise rule matches its recipe")
+            elif fact is None:
+                faults.append(f"{item['id']}: no promise fact (its recipe's rule says {wanted})")
+            elif (fact.get("kind"), fact.get("value")) != ("authored", wanted) or "family_contracts.json" not in str(fact.get("via")):
+                faults.append(f"{item['id']}: {fact} where the recipe's rule says authored {wanted} from family_contracts.json")
+        self.assertEqual(faults[:10], [], f"{len(faults)} generated items")
+
+    def test_music_families_carry_music_and_drills_carry_drill(self) -> None:
+        import family_contracts as FC
+
+        by_value: dict[str, set[str]] = {"music": set(), "drill": set()}
+        faults = []
+        for item in self.catalog:
+            if item["provenance"]["source"] != "generated":
+                continue
+            family = item["drill"]["generator"]["family"]
+            value = (item["provenance"]["facts"].get("promise") or {}).get("value")
+            rules = FC.contract(family)["promise"]
+            if all(rule["promise"] == "music" for rule in rules) and value != "music":
+                faults.append(f"{item['id']}: the {family} family promises music, the fact says {value}")
+            elif all(rule["promise"] == "drill" for rule in rules) and value != "drill":
+                faults.append(f"{item['id']}: the {family} family is a drill, the fact says {value}")
+            if value in by_value:
+                by_value[value].add(family)
+        self.assertEqual(faults[:10], [], f"{len(faults)} generated items")
+        self.assertIn("study", by_value["music"])
+        self.assertTrue({"clave", "tumbao", "boogie", "walking_bass"} <= by_value["music"])
+        self.assertTrue({"scale", "interval_reading", "hanon"} <= by_value["drill"])
+
+    def test_the_matching_rule_never_the_first_on_a_conditional_family(self) -> None:
+        import family_contracts as FC
+
+        rules = FC.contract("meter")["promise"]
+        # The row's first rule is the conditional music rule: a first-rule reading would call 5/4 music.
+        self.assertEqual((rules[0]["promise"], rules[0].get("when")), ("music", {"timeSig": "12/8"}))
+        five = self.by_id["exercise.meter.5-4"]
+        twelve = self.by_id["exercise.meter.12-8"]
+        self.assertEqual(five["drill"]["params"]["timeSig"], "5/4")
+        self.assertEqual(twelve["drill"]["params"]["timeSig"], "12/8")
+        self.assertEqual((five["provenance"]["facts"].get("promise") or {}).get("value"), "drill",
+                         "exercise.meter.5-4: the 5/4 walk is a drill by its recipe's rule")
+        self.assertEqual((twelve["provenance"]["facts"].get("promise") or {}).get("value"), "music",
+                         "exercise.meter.12-8: the 12/8 blues promises music by its recipe's rule")
+
+    def test_no_runtime_or_notated_item_carries_one(self) -> None:
+        carrying = [item["id"] for item in self.catalog
+                    if item["provenance"]["source"] != "generated" and "promise" in item["provenance"]["facts"]]
+        self.assertEqual(carrying[:10], [], f"{len(carrying)} items that are not generated carry a promise")
+        readers = [item for item in self.catalog if (item.get("drill") or {}).get("kind") == "sight-reading"]
+        self.assertEqual(len(readers), 9)
+        for item in readers:
+            self.assertEqual(item["measurement"]["status"], "runtime", item["id"])
+
+
 class TestTheBridgeRegressionOnTheBuild(Built):
     """The build's attach step and the direct reading agree, on D0's pinned items and Anh. 113."""
 
@@ -327,6 +409,13 @@ class TestTheReports(Built):
                 self.assertTrue(path.is_file(), f"{path} is missing: the build writes it")
                 self.assertEqual(path.read_text(encoding="utf-8").replace("\r\n", "\n"), text,
                                  f"{path.name} is stale: rebuild")
+
+    def test_the_report_makes_rewriting_the_rungs_no_owners(self) -> None:
+        # D3a (`responses/ee70b43.md`, `bf2666a.md`): no owner review or placement is required, so the
+        # report never names the owner among those who rewrite the rungs from it.
+        text = self.claims.render_rung_claims(self.report)
+        self.assertNotIn("owner", text.split("**How to read it.**")[0], "the report makes rewriting the rungs the owner's")
+        self.assertIn("this is what F and G rewrite from", text)
 
     def test_every_priority_rung_option_is_listed_with_every_claim(self) -> None:
         options = {(o["rung"], o["item"]) for o in self.report["options"]}
