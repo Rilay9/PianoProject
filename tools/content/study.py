@@ -147,14 +147,18 @@ def curriculum_sources() -> dict:
 
 @lru_cache(maxsize=None)
 def taught_at(rung: str) -> frozenset[str]:
-    """The demands a rung has taught: those whose `taughtAt` is in its ancestry (E0a, `claims.rung_ancestry`)."""
+    """
+    The demands a rung has taught: those taught at any rung in its ancestry (E0a,
+    `claims.rung_ancestry`). Since E0b `taughtAt` is a list, one teaching rung per path, read
+    through `claims.taught_at` so this and the report agree on what a rung has taught.
+    """
     import claims
 
     ancestry = claims.rung_ancestry(curriculum_sources())
     if rung not in ancestry:
         raise StudyRefusal(f"the rung {rung} is not in the curriculum")
     _skills, demands = claims.load_vocabulary()
-    return frozenset(d for d, row in demands.items() if row.get("taughtAt") in ancestry[rung])
+    return frozenset(d for d, row in demands.items() if any(r in ancestry[rung] for r in claims.taught_at(row)))
 
 
 @dataclass(frozen=True)
