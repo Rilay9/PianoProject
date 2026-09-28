@@ -160,20 +160,22 @@ export const SIGHT_READING_VERSIONS: readonly SightReadingVersion[] = [1, 2];
 export const SIGHT_READING_LATEST: SightReadingVersion = 2;
 
 /**
- * The version a phrase is written in when its options name none.
+ * The version a phrase is written in when its options name none: 2, since
+ * D1a.
  *
- * Still 1. A run's record (`SessionRow`, `data/db.ts`) keeps the row, the
- * recipe, the rung and the seed, and no version, so a phrase written by
- * version 2 from a seed a learner already read under version 1 would be
- * treated by the history as the same encounter — the phrase-seen check and the
- * evidence job's rewrite of a stored run both key on the seed. D1's brief
- * stops at that line: carrying the version is a change to the history's
- * record and its writer, left for the reviewer (Entry 94). Once the record
- * carries it, this becomes {@link SIGHT_READING_LATEST} and a stored run
- * without one reads as version 1, which this generator can still write, note
- * for note.
+ * D1 kept it at 1 because a run's record kept the row, the recipe, the rung
+ * and the seed and no version, so a phrase version 2 wrote from a seed a
+ * learner had read under version 1 would have been the same encounter to the
+ * history (Entry 94). D1a put the version on the record (`generator` on the
+ * session row, `data/db.ts`): the Score screen writes it with every run of a
+ * generated phrase, the phrase-seen check and the daily read's check compare
+ * it beside the seed, and the evidence job writes a stored run's phrase again
+ * by the version that wrote it — absent meaning 1, which this generator still
+ * writes note for note (`sightReadingUnchanged.test.ts`). And version 2 fails
+ * closed: a phrase it could not check is refused ({@link SightReadingRefusal}),
+ * never handed back.
  */
-export const SIGHT_READING_IN_FORCE: SightReadingVersion = 1;
+export const SIGHT_READING_IN_FORCE: SightReadingVersion = 2;
 
 /** The left-hand patterns an option can ask for (the table's `none` is `hands: 'R'`). */
 export type LeftHandPattern = 'whole' | 'chord' | 'alberti' | 'broken' | 'walking';
@@ -201,11 +203,46 @@ export interface SightReadingResult {
   /**
    * The phrase's identity beside the row and the recipe, in the shape of the
    * generated catalogue's `drill.generator` (D0): the family, the version that
-   * wrote it, and the seed. What a run's record would keep so a later reader
-   * can write the same phrase again (D1; not yet kept, see
-   * {@link SIGHT_READING_IN_FORCE}).
+   * wrote it, and the seed. What a run's record keeps so a later reader can
+   * write the same phrase again (D1; kept since D1a, `generator` on the
+   * session row).
    */
   generator: { family: 'sight-reading'; version: SightReadingVersion; seed: number };
+}
+
+/**
+ * Version 2 could not write what the options ask from this seed (D1a; the
+ * reviewer's finding 1 on D1): no draw within the redraw budget kept every
+ * promise and the hard layer, so there is no phrase it has checked, and it
+ * hands back none. Thrown by {@link generateSightReading} (and the report)
+ * instead of a result, never in place of one that passed.
+ *
+ * `reasons` are sentences in the shape {@link unrealisable} gives, for the
+ * caller to show: what was asked (the level, the hands, the bars, the metre
+ * and the key), the promises and the level's rules, the draws spent,
+ * what the draws broke, and the generator's own declared reasons where the
+ * options contradict themselves. Version 1 never throws this: it keeps its
+ * last draw, as it always did, so no stored run changes meaning.
+ */
+export class SightReadingRefusal extends Error {
+  readonly reasons: readonly string[];
+  /** Draws made from the seed before refusing: the whole budget. */
+  readonly attempts: number;
+  /** The identity the phrase would have had. */
+  readonly generator: SightReadingResult['generator'];
+  /** The key and the metre the seed chose, which are settled before any draw. */
+  readonly fifths: number;
+  readonly timeSig: TimeSig;
+
+  constructor(reasons: readonly string[], attempts: number, generator: SightReadingResult['generator'], fifths: number, timeSig: TimeSig) {
+    super(reasons.join(' '));
+    this.name = 'SightReadingRefusal';
+    this.reasons = reasons;
+    this.attempts = attempts;
+    this.generator = generator;
+    this.fifths = fifths;
+    this.timeSig = timeSig;
+  }
 }
 
 /**
@@ -1081,9 +1118,11 @@ function keysAsked(options: SightReadingOptions): number[] {
  * The curriculum–generator contract's "never silent": where an option cannot
  * be honoured — the level has no room for it, two options contradict, or the
  * phrase's metre does not admit it — the generator does not hand back
- * different material and let it pass as the thing asked for. It still writes
- * its best phrase, and this says, in words for a reader of `05` §8, what that
- * phrase will not be. Pure: the options alone decide it, never the seed.
+ * different material and let it pass as the thing asked for. Version 1 still
+ * writes its best phrase, and this says, in words for a reader of `05` §8, what
+ * that phrase will not be; version 2, where no draw can keep a promise these
+ * reasons rule out, refuses with them (D1a, {@link SightReadingRefusal}). Pure:
+ * the options alone decide it, never the seed.
  *
  * `generatorContract.test.ts` holds this to the phrases: every combination the
  * reading curriculum can ask for either keeps its promise on every seed tried,
@@ -1476,6 +1515,12 @@ function addAccidentals(
  * {@link CANDIDATE_WINDOW} draws past the first, scores each valid one
  * (`sightReadingScore.ts`) and keeps the best, the earliest on a tie. Still
  * one phrase per seed.
+ *
+ * And fails closed (D1a): until its first valid draw it keeps drawing within
+ * the redraw budget ({@link PROMISE_ATTEMPTS}), so the window opens wherever
+ * that draw comes; if the whole budget yields none it throws
+ * {@link SightReadingRefusal} with the reason, never the last draw, which it
+ * has not checked. Version 1 keeps its last draw, as it always did.
  */
 export function generateSightReading(options: SightReadingOptions): SightReadingResult {
   return compose(options, false).result;
@@ -1501,6 +1546,31 @@ export interface SightReadingReport {
 
 export function sightReadingReport(options: SightReadingOptions): SightReadingReport {
   const composed = compose(options, true);
+  if (!composed.phrase) throw new Error('a report always carries its phrase');
+  return { ...composed, phrase: composed.phrase };
+}
+
+/**
+ * A test seam (D1a), never called by the app: the search with a smaller redraw
+ * budget than {@link PROMISE_ATTEMPTS}, or a hard layer held to a tighter leap
+ * cap than the walk draws to. In D1a's sweep (every level, hand and metre, each
+ * control on and off, six seeds each; Entry 97) every phrase found a valid
+ * draw, and no draw of version 2's walk that kept its promises broke the hard
+ * layer, so without this a test reaches the zero-valid-candidate path only
+ * through options that contradict themselves; with it a test can drive that
+ * path on ordinary options: the budget ending before the first valid draw, and
+ * every promise-keeping draw breaking a cap the walk does not respect.
+ */
+export interface SearchSeam {
+  /** The redraw budget, in draws; at most {@link PROMISE_ATTEMPTS}. */
+  attempts?: number;
+  /** The hard layer's leap cap, in scale steps, in place of the one the options give the walk. */
+  maxLeap?: number;
+}
+
+/** {@link sightReadingReport} within a {@link SearchSeam}: tests only. */
+export function sightReadingReportWithin(options: SightReadingOptions, seam: SearchSeam): SightReadingReport {
+  const composed = compose(options, true, seam);
   if (!composed.phrase) throw new Error('a report always carries its phrase');
   return { ...composed, phrase: composed.phrase };
 }
@@ -1568,6 +1638,80 @@ export function phraseRules(options: SightReadingOptions): PhraseRules {
   };
 }
 
+/** A promise in words, for a refusal (D1a): what a phrase asked for would have held. */
+const PROMISE_WORDS: Readonly<Record<PhrasePromise | ControlPromise | 'beyond' | 'underTune', string>> = {
+  skips: 'a skip beside a step',
+  eighths: 'an eighth note',
+  syncopation: 'a syncopation',
+  triplets: 'a triplet',
+  accidentals: 'the raised fourth',
+  ties: 'a tie over the bar line',
+  dottedQuarters: 'a dotted quarter',
+  ledger: 'a ledger line beyond middle C',
+  leaps: 'a leap of a fourth or wider',
+  sixteenths: 'a sixteenth note',
+  beyond: 'a melody reaching beyond one five-finger position',
+  underTune: 'a melody note in every bar',
+};
+
+/** A melodic interval of this many scale steps, in words. */
+const INTERVAL_WORDS = ['a unison', 'a step', 'a third', 'a fourth', 'a fifth', 'a sixth', 'a seventh', 'an octave'];
+
+/** `a, b and c`. */
+function listed(items: readonly string[]): string {
+  if (items.length <= 1) return items.join('');
+  return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1] ?? ''}`;
+}
+
+/**
+ * Why version 2 refused (D1a), in sentences a caller can show: what was asked
+ * — the level, the hands, the bars, the metre and the key — then the promises
+ * and the level's rules with the draws spent, then what the draws broke, then
+ * the generator's own reasons where the options contradict themselves
+ * (`unrealisable`, the same sentences it gives a reader of `05` §8). Not the
+ * seed: an identifier is not a reason, and the screen shows these words; the
+ * refusal carries it as data (`generator`).
+ */
+function refusalReasons(asked: {
+  options: SightReadingOptions;
+  level: SightReadingLevel;
+  hands: string;
+  bars: number;
+  timeSig: TimeSig;
+  fifths: number;
+  promised: readonly (PhrasePromise | ControlPromise | 'beyond' | 'underTune')[];
+  rules: PhraseRules;
+  tiesPossible: boolean;
+  attempts: number;
+  keptDraws: number;
+  lastViolations: readonly string[];
+  lastMissing: readonly string[];
+}): string[] {
+  const accidentals = Math.abs(asked.fifths);
+  const key =
+    accidentals === 0 ? 'no sharps or flats' : `${String(accidentals)} ${asked.fifths > 0 ? 'sharp' : 'flat'}${accidentals === 1 ? '' : 's'}`;
+  const wording = (promise: string): string => PROMISE_WORDS[promise as keyof typeof PROMISE_WORDS] ?? promise;
+  const rules = [
+    `no interval wider than ${INTERVAL_WORDS[asked.rules.maxLeap] ?? `${String(asked.rules.maxLeap)} scale steps`}`,
+    ...(asked.rules.tiesOnBeatOnly && asked.tiesPossible ? ['a tie only from a note on the beat'] : []),
+  ].join(', ');
+  const promises = asked.promised.map(wording);
+  const kept =
+    promises.length === 0
+      ? `the level’s rules (${rules})`
+      : `its promise${promises.length === 1 ? '' : 's'} (${listed(promises)}) within the level’s rules (${rules})`;
+  const broke =
+    asked.keptDraws > 0
+      ? `${String(asked.keptDraws)} kept every promise and broke a rule, the last with ${asked.lastViolations[0] ?? 'a rule broken'}.`
+      : `None kept every promise; the last draw lacked ${listed(asked.lastMissing.map(wording))}.`;
+  return [
+    `No phrase could be written for level ${String(asked.level)}, ${asked.hands}, ${String(asked.bars)} bar${asked.bars === 1 ? '' : 's'} of ${String(asked.timeSig.beats)}/${String(asked.timeSig.beatType)} with ${key}.`,
+    `In ${String(asked.attempts)} draws none kept ${kept}.`,
+    broke,
+    ...unrealisable(asked.options),
+  ];
+}
+
 /** One draw that kept every promise, for version 2 to choose among. */
 interface Draw {
   attempt: number;
@@ -1581,8 +1725,13 @@ interface Draw {
 }
 
 /** A report, whose phrase is worked out only when one is asked for (`report`), so the app's own calls pay nothing for it. */
-function compose(options: SightReadingOptions, report: boolean): Omit<SightReadingReport, 'phrase'> & { phrase: PhraseModel | undefined } {
+function compose(
+  options: SightReadingOptions,
+  report: boolean,
+  seam: SearchSeam = {},
+): Omit<SightReadingReport, 'phrase'> & { phrase: PhraseModel | undefined } {
   const level = (Math.min(7, Math.max(1, Math.round(options.level))) || 1) as SightReadingLevel;
+  const budget = Math.max(1, Math.min(PROMISE_ATTEMPTS, Math.floor(seam.attempts ?? PROMISE_ATTEMPTS)));
   const version: SightReadingVersion = options.version === 2 ? 2 : options.version === 1 ? 1 : SIGHT_READING_IN_FORCE;
   const scored = version >= 2;
   const seed = options.seed ?? Math.floor(Math.random() * 0xffffffff);
@@ -1607,7 +1756,9 @@ function compose(options: SightReadingOptions, report: boolean): Omit<SightReadi
   // no syncopation of its own. Version 1 set it only where an option asked for
   // ties or kept syncopation out (C4b), so levels 3-4's own ties could leave the
   // beat below 4.5.
-  const rules = phraseRules(options);
+  const optionRules = phraseRules(options);
+  // The seam's tighter cap reaches the hard layer and not the walk (tests only).
+  const rules = seam.maxLeap === undefined ? optionRules : { ...optionRules, maxLeap: seam.maxLeap };
   const spec = scored && rules.tiesOnBeatOnly ? { ...ranged, tieOnBeat: true } : ranged;
   const bars = Math.max(1, Math.min(32, options.bars ?? 4));
   const bpm = options.bpm ?? 72;
@@ -1648,7 +1799,9 @@ function compose(options: SightReadingOptions, report: boolean): Omit<SightReadi
   let firstValid = -1;
   let validDraws = 0;
   const pool: Draw[] = [];
-  for (let attempt = 0; attempt < PROMISE_ATTEMPTS; attempt += 1) {
+  // What the last draw missed of the promises, for a refusal's reason (D1a).
+  let lastMissing: readonly string[] = [];
+  for (let attempt = 0; attempt < budget; attempt += 1) {
     if (scored && firstValid >= 0 && attempt > firstValid + CANDIDATE_WINDOW) break;
     attempts = attempt + 1;
     chosen = attempt;
@@ -1694,7 +1847,11 @@ function compose(options: SightReadingOptions, report: boolean): Omit<SightReadi
     }
     // Version 2: a draw that keeps its promises is a candidate, valid where it
     // keeps the hard constraints S26 adds too; an invalid one is never scored.
-    if (!kept) continue;
+    if (!kept) {
+      lastMissing = promised.filter((promise) => tally[promise] <= 0);
+      continue;
+    }
+    lastMissing = [];
     const model = modelOf(melodyBars, leftBars);
     const violations = hardViolations(model, rules);
     const valid = violations.length === 0;
@@ -1719,13 +1876,38 @@ function compose(options: SightReadingOptions, report: boolean): Omit<SightReadi
       SCORE_TOLERANCE,
     );
     const kept = best === undefined ? undefined : pool[best];
-    // None valid within the budget: the last draw stands, as in version 1.
-    if (kept) {
-      rightBars = kept.right;
-      leftBars = kept.left;
-      chosen = kept.attempt;
-      phrase = kept.model;
+    // None valid within the budget: refused (D1a). D1 let the last draw stand,
+    // "as in version 1", and that draw could break a promise the row asked for
+    // or a rule the level sets — a phrase nobody had checked. The search above
+    // already continued through the whole budget before its window opened, so
+    // what is left is to say why, never to hand back what was not checked.
+    if (!kept) {
+      throw new SightReadingRefusal(
+        refusalReasons({
+          options,
+          level,
+          hands: leftOnlyMelody || options.hands === 'L' ? 'left hand' : wantsLeft ? 'both hands' : 'right hand',
+          bars,
+          timeSig,
+          fifths,
+          promised,
+          rules,
+          tiesPossible: spec.allowTies,
+          attempts,
+          keptDraws: pool.length,
+          lastViolations: pool[pool.length - 1]?.violations ?? [],
+          lastMissing,
+        }),
+        attempts,
+        { family: 'sight-reading', version, seed },
+        fifths,
+        timeSig,
+      );
     }
+    rightBars = kept.right;
+    leftBars = kept.left;
+    chosen = kept.attempt;
+    phrase = kept.model;
     if (report) {
       for (const draw of pool) {
         const scoreOf = scores.get(draw);

@@ -19,7 +19,7 @@ import { parseFrontMatter, renderMarkdown } from '../markdown';
 import { barsPerWindowFor, isTablet, sidePanelProse } from '../tablet';
 import { getImport } from '../../data/importStore';
 import { isSightReading } from '../../engine/drills/fromCatalog';
-import { generateSightReading } from '../../engine/sightReading';
+import { generateSightReading, SightReadingRefusal } from '../../engine/sightReading';
 import { readingOptions, taughtAtRung } from '../../curriculum/session';
 import type { CatalogItem, Curriculum, Lesson } from '../../curriculum/types';
 import { findLesson, masteryCriteriaFor, proseRungFor } from '../../curriculum/selectors';
@@ -45,7 +45,14 @@ import { evidenceFor, isRefusal, stampedEvidence, type EvidenceResult } from '..
 import { VOCABULARY_V0 } from '../../evidence/vocabulary';
 import { nextLadderTempo } from '../../engine/PracticeEngine';
 import { MASTER_DAYS, recordRun, sessionsForItem, type RunResult } from '../../data/progressStore';
-import { OBSERVATION_DEFINITIONS, type ReadingRecipe, type RunHeader, type SessionRow } from '../../data/db';
+import {
+  OBSERVATION_DEFINITIONS,
+  phraseVersionOf,
+  type PhraseGenerator,
+  type ReadingRecipe,
+  type RunHeader,
+  type SessionRow,
+} from '../../data/db';
 import { NOT_MEASURED, type Mode, type SessionScore } from '../../engine/types';
 import type { InputNoteEvent } from '../../midi/types';
 import { toMusicXml } from '../../score/mxl';
@@ -188,15 +195,20 @@ export const CONTROL_BAR_START_HIDE_MS = 700;
  * the rung that opened it (C4c): the row held to what that rung has taught
  * (`taught`), so 2.2's row stays inside C position until 2.5 teaches leaving
  * it; opened from nowhere, the row as it stands.
+ *
+ * And the phrase's identity (D1a): the generator's family, the version that
+ * wrote it and the seed, which the run keeps (`generator`) so the history can
+ * tell version 2's phrase of a seed from version 1's. A phrase the generator
+ * cannot write throws `SightReadingRefusal`, which the load below shows.
  */
 function generateSightReadingFor(
   item: CatalogItem,
   seed: number,
   recipe?: RouteRecipe,
   taught?: (demand: string) => boolean,
-): { musicXml: string; seed: number } {
+): { musicXml: string; seed: number; generator: PhraseGenerator } {
   const phrase = generateSightReading(readingOptions(item, recipe, seed, taught));
-  return { musicXml: phrase.musicXml, seed: phrase.seed };
+  return { musicXml: phrase.musicXml, seed: phrase.seed, generator: phrase.generator };
 }
 
 /**
@@ -402,19 +414,30 @@ export function ScoreScreen(router: Router): HTMLElement {
   let sightReadAttempts = 0;
   /** The generated phrase's seed, on a sight-reading item (T37). */
   let phraseSeed: number | undefined;
+  /** The generated phrase's identity — family, version, seed — which the run keeps (D1a). */
+  let phraseGenerator: PhraseGenerator | undefined;
   /**
-   * A stored run already carries this phrase's seed (T37).
+   * A stored run already carries this phrase's seed (T37), under the version
+   * that wrote this phrase (D1a).
    *
    * "First attempt" was a counter that started at nought on every visit, so
    * re-opening today's read regenerated the identical phrase and recorded its
    * first run as a first attempt again. The seed is on the session row now, so
-   * a retry on the same music is told from a new phrase across visits too.
+   * a retry on the same music is told from a new phrase across visits too. A
+   * seed names one phrase per generator version (G21): a run of the same seed
+   * under another version — or with no version on it, version 1's — read
+   * other music, so it does not make this phrase met.
    */
   let phraseSeen = false;
   /**
    * Every seed a stored run of this item carries (C4 item 2), so a phrase the
    * screen draws for itself — a fresh open, *New phrase* — is never one the
    * learner has played or heard. Filled as the item's rows are read.
+   *
+   * Every seed, whatever version wrote its phrase (D1a): the question here is
+   * which seed may be drawn, and avoiding one read under another version costs
+   * nothing in a 32-bit space, while drawing it again could hand back the very
+   * notes read before — many seeds write the same phrase at both versions.
    */
   const seedsOnRecord = new Set<number>();
   /**
@@ -3140,6 +3163,9 @@ export function ScoreScreen(router: Router): HTMLElement {
             // (the run carrying the day's seed, `04` §2) from any other run,
             // and a retry on the same music from a new phrase (T37).
             ...(phraseSeed === undefined ? {} : { seed: phraseSeed }),
+            // And which generator wrote it (D1a): a seed names one phrase per
+            // version, so the history compares the version beside the seed.
+            ...(phraseGenerator === undefined ? {} : { generator: phraseGenerator }),
             mode,
             tempoPct: score.tempoPct,
             // Nothing heard, nothing measured (T40, C1): not a zero.
@@ -4188,13 +4214,34 @@ export function ScoreScreen(router: Router): HTMLElement {
         const heldBy = judgingRungId();
         const taught =
           heldBy === undefined ? undefined : await loadCurriculum().then((curriculum) => taughtAtRung(curriculum, heldBy), () => undefined);
-        const phrase = generateSightReadingFor(item, named ?? freshSeed(seedsOnRecord), routeRecipe, taught);
+        let phrase: ReturnType<typeof generateSightReadingFor>;
+        try {
+          phrase = generateSightReadingFor(item, named ?? freshSeed(seedsOnRecord), routeRecipe, taught);
+        } catch (cause: unknown) {
+          if (!(cause instanceof SightReadingRefusal)) throw cause;
+          // No phrase the generator checked (D1a): a terminal state with its
+          // reason, as a score with no notes is — never the draw it could not
+          // check, and nothing recorded, because nothing was read. The header
+          // line says what happened, in words short enough to fit beside the
+          // title (with the title in it, the news was cut off at 342 px); the
+          // reason, a few sentences, goes where the music would have been.
+          status.textContent = 'No phrase could be written';
+          const reason = document.createElement('p');
+          reason.className = 'score-refusal';
+          reason.id = 'score-refusal';
+          reason.textContent = cause.message;
+          stage.replaceChildren(reason);
+          bar.hidden = true;
+          render();
+          return;
+        }
         musicXml = phrase.musicXml;
         phraseSeed = phrase.seed;
-        const seen = phrase.seed;
+        phraseGenerator = phrase.generator;
+        const seen = phrase.generator;
         void history.then((rows) => {
           remember(rows);
-          if (rows.some((row) => row.seed === seen)) phraseSeen = true;
+          if (rows.some((row) => row.seed === seen.seed && phraseVersionOf(row) === seen.version)) phraseSeen = true;
         });
       } else if (item.imported) {
         const row = await getImport(item.id);

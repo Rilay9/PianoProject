@@ -2744,6 +2744,19 @@ input[type='checkbox'] {
   text-overflow: ellipsis;
 }
 
+/* Why a sight-reading phrase could not be written (D1a): the generator's reason,
+   a few sentences, in the stage where the music would have been. The header's
+   `.score-status` is one line cut short at a phone's width, so it carries only
+   what happened. */
+.score-refusal {
+  margin: 1.5rem 1rem;
+  max-width: 34rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 /* The note Wait mode is waiting for, when the owner has turned note names on.
    Quiet by default — it is there for the moment he is stuck, not as a running
    commentary. */

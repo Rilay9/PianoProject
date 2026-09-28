@@ -21,12 +21,14 @@ import { lockState } from './prerequisites';
 import { SHIPPED_SKILL_ACTIVATION, type SkillActivation } from './skillActivation';
 import { eligible, eligibleFor, type Eligibility, type Learner, type Want as GateWant } from './eligibility';
 import type { RequirementReading, RungStates } from '../evidence/rungState';
-import type { ReadingMoves, ReadingRecipe, SessionRow } from '../data/db';
+import { phraseVersionOf, type ReadingMoves, type ReadingRecipe, type SessionRow } from '../data/db';
 import { dayKey, daysBetween, type LearnedPiece } from '../data/progressStore';
 import { heldToRung, READING_CONTROLS, UNREALISABLE_AT, type ControlPatch } from '../engine/readingControls';
 import {
   dailySeed,
   generateSightReading,
+  SIGHT_READING_IN_FORCE,
+  SightReadingRefusal,
   sightReadingOptionsFor,
   unrealisable,
   type SightReadingOptions,
@@ -2125,6 +2127,22 @@ export function readingMoves(input: {
 }
 
 /**
+ * The key a phrase of these options is written in, for the line that names it.
+ * The seed chooses the key before any draw, so a phrase the generator refuses
+ * (D1a: no draw kept its promises and the level's rules) still has one, carried
+ * on the refusal; the offer is not lost to it, and the Score screen shows the
+ * refusal when the phrase is opened.
+ */
+function keyOfPhrase(options: SightReadingOptions): number {
+  try {
+    return generateSightReading(options).fifths;
+  } catch (cause: unknown) {
+    if (cause instanceof SightReadingRefusal) return cause.fifths;
+    throw cause;
+  }
+}
+
+/**
  * The next sight-reading phrase for a learner (C4, C4c): Today's daily read and
  * the session's reading slot, from one rule.
  *
@@ -2184,10 +2202,19 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
   const base = { item: anchor.item, ...(anchor.lessonId === undefined ? {} : { lessonId: anchor.lessonId }), anchored: anchor.anchored };
 
   // Today's phrase already met: the card shows it as read (or heard), not as a new one.
+  // Today's phrase is the day's seed under the version in force (D1a, G21): a
+  // run of that seed under another version — or with none, version 1's — read
+  // other music, and today's phrase is still to be read.
   const dailyToday = dailySeed(day);
   if (input.purpose === 'daily') {
     const met = input.rows
-      .filter((row) => row.seed === dailyToday && byId.has(row.itemId) && dayKey(new Date(row.at)) === day)
+      .filter(
+        (row) =>
+          row.seed === dailyToday &&
+          phraseVersionOf(row) === SIGHT_READING_IN_FORCE &&
+          byId.has(row.itemId) &&
+          dayKey(new Date(row.at)) === day,
+      )
       .sort((a, b) => a.at.localeCompare(b.at));
     const first = met[0];
     if (first) {
@@ -2219,7 +2246,10 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
   const lastEasyAt = here.map((row) => recipeOf(row).easy === true).lastIndexOf(true);
   const sinceEasy = here.length - 1 - lastEasyAt;
 
-  // The seed: one no stored run of the row carries.
+  // The seed: one no stored run of the row carries — under any version (D1a):
+  // the question is which seed may be offered, and a seed read under another
+  // version can write the very notes read then (many seeds write the same
+  // phrase at both), while skipping it costs nothing.
   const onRecord = new Set(input.rows.filter((row) => row.itemId === anchor.item.id && row.seed !== undefined).map((row) => row.seed));
   let seed = dailyToday;
   if (input.purpose === 'slot') {
@@ -2337,7 +2367,7 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
       if (shown(demand) || failing(states, vocabulary.demands.find((d) => d.id === demand)?.copedWithBy, policy)) continue;
       const up = moveFor(ctx, demand, 'on');
       if (!up || !up.brings.every(taught)) continue;
-      const key = demand === 'key.signature' ? generateSightReading(readingOptions(anchor.item, up.recipe, seed, hold)).fifths : undefined;
+      const key = demand === 'key.signature' ? keyOfPhrase(readingOptions(anchor.item, up.recipe, seed, hold)) : undefined;
       return offer(up.recipe, { kind: 'forward', last: measure, move: key === undefined ? up : { ...up, key } });
     }
   }
@@ -2355,6 +2385,6 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
     return finding ? offer(working, { kind: 'hold', last: measure, wrong: finding }) : offer(working, { kind: 'unsure', last: measure });
   }
   const keys = current.fifths;
-  const key = Array.isArray(keys) && keys.length > 1 ? generateSightReading(readingOptions(anchor.item, working, seed, hold)).fifths : undefined;
+  const key = Array.isArray(keys) && keys.length > 1 ? keyOfPhrase(readingOptions(anchor.item, working, seed, hold)) : undefined;
   return offer(working, { kind: 'hold', last: measure, ...(key === undefined ? {} : { key }) });
 }

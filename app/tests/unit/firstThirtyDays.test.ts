@@ -28,10 +28,17 @@
  *   reviewer's profile: the same learner goes on — skips in quarters and steps
  *   in eighths read right, the skip-eighths still wrong. And (a), the variant:
  *   from day 3 every eighth is misread, skips in quarters still right. The
- *   calendar starts on 3 November 2026, the first date from the 1st whose two
+ *   calendar starts on 6 November 2026, the first date from the 1st whose two
  *   daily phrases carry enough skip-eighths for this learner's misreads to go
  *   against the recipe (a probe read forty days of phrases; the learner is
  *   constructed, and this is its condition).
+ *
+ *   Revised (D1a, the flip): the start. Old assumption: 3 November is that
+ *   date — true of version 1's phrases (4 and 5 skip-eighths, 18 of 22 and 14
+ *   of 19 right, both against); version 2's phrase of 3 November's seed has
+ *   none, the read is 13 of 13, and day 3 held the recipe ("Another like it")
+ *   where the learner's condition wants "not sure". 6 November is the first
+ *   date whose two version-2 phrases both go against it (Entry 97's trace).
  *
  * C4c's four demonstrations (the reviewer's second stop) are asserted on these
  * days: repeated skip-specific failure moves the interval control, not the
@@ -134,14 +141,14 @@ const SKIP_LEARNER: Learner = {
 const SKIP_EIGHTHS: Misread = { wrong: skipEighthSteps, label: 'misread every skip-eighth' };
 const AMBIGUITY_B: Learner = {
   name: 'ambiguity-b',
-  start: [2026, 10, 3],
+  start: [2026, 10, 6],
   days: 10,
   rungOn: () => '2.5',
   misreads: () => SKIP_EIGHTHS,
 };
 const AMBIGUITY_A: Learner = {
   name: 'ambiguity-a',
-  start: [2026, 10, 3],
+  start: [2026, 10, 6],
   days: 10,
   rungOn: () => '2.5',
   misreads: (n) => (n <= 2 ? SKIP_EIGHTHS : { wrong: eighthSteps, label: 'misread every eighth' }),

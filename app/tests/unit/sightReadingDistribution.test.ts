@@ -10,10 +10,10 @@
  * (`sightReadingScore.ts`) — over a deterministic seed set per configuration:
  * each level's own table, and each of the nine rows as the app writes it at
  * each rung listing it (`readingOptions` held to what the rung has taught,
- * C4c). It measures the newest version (`SIGHT_READING_LATEST`), which is the
- * one D1 built and not yet the one the app writes (`SIGHT_READING_IN_FORCE`,
- * Entry 94): the suite holds the phrases the app will write when the history
- * keeps the version.
+ * C4c). It measures the newest version (`SIGHT_READING_LATEST`), the one D1
+ * built, which since D1a is also the one the app writes
+ * (`SIGHT_READING_IN_FORCE`, Entry 97; D1 kept the app on version 1 until the
+ * history kept the version, Entry 94).
  *
  * **The bounds are hypotheses with their reasons** (`BOUNDS`, `GUARDS`), set
  * from the distributions of version 1 (the committed generator, note for note)

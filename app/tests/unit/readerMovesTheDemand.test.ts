@@ -301,16 +301,42 @@ describe('two reads against the recipe, nothing singled out: nothing blamed, the
 
 describe('a key signature is a key to read, never a harder key', () => {
   const READY: ReadingRecipe = { row: TWO_RIGHT.id, moved: { hands: 'both', position: false, dottedQuarters: true, ties: true } };
+  const READY_WITH_LEAPS: ReadingRecipe = { row: TWO_RIGHT.id, moved: { ...READY.moved, leaps: true } };
   let ready: SessionRow[];
+  let readyWithLeaps: SessionRow[];
 
   beforeAll(async () => {
     const seeds = await seedsWhere(READY, '3.1', 2, 7000, () => true);
     ready = await readDays(seeds.map((seed) => ({ recipe: READY, seed })), '3.1');
+    const leapSeeds = await seedsWhere(READY_WITH_LEAPS, '3.1', 2, 7000, () => true);
+    readyWithLeaps = await readDays(leapSeeds.map((seed) => ({ recipe: READY_WITH_LEAPS, seed })), '3.1');
   }, 120_000);
 
-  it('on 3.1, clean at everything 2.x taught: the key signature comes on as a set of keys, and the line names the key this phrase is in', () => {
+  // Revised (D1a, the flip): the reader's order at 3.1, traced (Entry 97).
+  // Old assumption: two clean reads of READY show a leap (a fourth or wider)
+  // in both phrases, so leaps count as shown and the next taught demand is the
+  // key signature. Under version 1 they did: seed 7001's melody leapt a fourth
+  // in bar 4 from a tie's closing note (the tie fault, S26: every melodic leap
+  // version 1 wrote in 200 phrases of this recipe followed a tie's closing
+  // note, none came elsewhere), and the leaps detector, which reads both
+  // staves, also found the left hand's roots moving by a fourth or fifth in
+  // both phrases. Version 2 holds the tied pitch, and the phrase it keeps for
+  // seed 7001 leaps on neither staff, so the reads show a leap in one phrase
+  // of two: not yet shown. The new order: a leap first — the earliest taught
+  // demand (1.5) the phrase does not promise and the reads have not shown —
+  // then, once the reads show one, the key signature (the case after this).
+  it('on 3.1, clean at everything 2.x taught but not yet shown a leap: the leap comes on first', () => {
+    const next = offer(ready, '3.1', morning(3));
+    expect(next.why.kind).toBe('forward');
+    const why = next.why as Extract<ReadingOffer['why'], { kind: 'forward' }>;
+    expect(why.move.demand).toBe('interval.leap');
+    expect(why.move.direction).toBe('on');
+    expect(next.recipe.moved).toEqual({ ...READY.moved, leaps: true });
+  });
+
+  it('on 3.1, clean at everything 2.x taught, leaps shown: the key signature comes on as a set of keys, and the line names the key this phrase is in', () => {
     const today = morning(3);
-    const next = offer(ready, '3.1', today);
+    const next = offer(readyWithLeaps, '3.1', today);
     expect(next.why.kind).toBe('forward');
     const why = next.why as Extract<ReadingOffer['why'], { kind: 'forward' }>;
     expect(why.move.demand).toBe('key.signature');
