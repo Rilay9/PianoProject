@@ -40,3 +40,5 @@ Judgement first: what the swap sheet at 2.1 and at 4.5 offers after the change a
 
 **Delivered 2026-09-28**, Entry 102, in an isolated worktree: the promise fact per recipe, the one check with the verdict carrying the stored bit, every call site tabled, the regressions red first at the gate, at every consumer and at build time, the report sentences corrected in `study.py` and `claims.py` and both reports regenerated. Found: Q54 (a rung's own list ungated), G60, Q55.
 
+**Approved by the reviewer 2026-09-28 with one required change** (`responses/c8717be.md`): the session card's direct rung-list paths are automatic offers too and must pass the same admission — D3b.
+
