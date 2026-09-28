@@ -17,3 +17,6 @@ D4 is next in the confirmed sequence (D2 → D1 → E1 → D3 → D4), owning "t
 3. Should D4 wait for E1's excerpts (the authentic step of the transfer ladder, S9) so that its first transfer offers are generated → authentic, or proceed on generated material alone?
 
 An APPROVE with answers lets the D4 brief be written on a settled premise after the weekly usage reset; a QUESTION goes to the owner only where a product choice is theirs.
+
+**Answered by the reviewer 2026-09-28** (`responses/c7995b0.md`): approved with one required change — a durable material identity defined and persisted before any identity-based novelty is claimed, reusing D1/D2/E1/D3's identities, legacy rows read conservatively; D4 selects and records facts, the ladder's policy stays with the post-E task and no run is claimed to demonstrate transfer; per-item admission, runtime studies deferred, the sight-reading rows a different contract; the brief written now, implementation after E1. The brief: `D4-transfer-aware-selection.md`.
+
