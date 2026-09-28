@@ -174,7 +174,7 @@ describe('the swap sheet reads the same tiers', () => {
   // rung teaches no demand at all, so no tier of the gate has anything to offer for it.
   it('with no lesson and nothing shared, the last resort is the same kind of exercise from the lessons reached, not a level window', () => {
     const lessons = curriculum.stages.flatMap((s) => s.units.flatMap((u) => u.lessons));
-    const teaches = (rung: string): boolean => VOCABULARY_V0.demands.some((d) => d.taughtAt === rung);
+    const teaches = (rung: string): boolean => VOCABULARY_V0.demands.some((d) => d.taughtAt.includes(rung));
     const firstRung = (id: string) => lessons.find((l) => l.exerciseOptions.includes(id) || l.songOptions.includes(id));
     const scale = catalog.find((one) => {
       const rung = firstRung(one.id);

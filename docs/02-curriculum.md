@@ -813,13 +813,17 @@ printed fingers included.
 > (D0 finding 5). Level orders eligible candidates and rescues nothing. The readiness floor is
 > `familiar`, the rule the repertoire slot already used; the brief's comparison with `introduced`
 > is in Entry 92. **"Taught at or below the rung" is the rung's ancestry (E0a, 2026-09-27), never
-> the file's order:** a demand is taught at a rung when its `taughtAt` rung is the rung itself,
+> the file's order:** a demand is taught at a rung when a rung its `taughtAt` lists is the rung itself,
 > a rung it builds on through `prerequisites` followed back, or — the core path being walked in
 > order and a track opening once the spine reaches its stage — a core rung before it in
 > stage-and-unit order, for a track rung every core rung of an earlier stage
 > (`session.rungAncestry`; `claims.rung_ancestry` for the report); where the gate has a learner
 > (the session, the swap sheet) a demand taught by any rung they have reached counts too, so the
-> walking bass `blues.5` teaches is not taught at `jazz.5` except to a learner who did the blues.
+> walking bass `blues.5` teaches is not taught at `jazz.5` except to a learner who did the blues;
+> and `taughtAt` lists every rung whose lesson teaches the demand, one per path (E0b: no listed
+> rung on another's path, derived from the lessons' concepts and held to them by `validate.py`),
+> so the walking bass is also `jazz.6`'s and `jam.6`'s and is taught at `jazz.8`, never at
+> `theory.9`, whose path reaches none of them.
 
 > **What the notes establish of each rung's claims (E0, 2026-09-27).** Every bundled score now
 > carries the demands the app's detectors measured on it (`docs/03` §4), and the build writes the
@@ -1175,8 +1179,8 @@ grown only when a reader needs it and its observable exists).
 - **A demand** is something the notation contains, found by a detector and located in steps:
   an eighth, a skip, a note on a ledger line beyond middle C. `demands.json` gives each its
   detector (a function in `app/src/demands/detect.ts`, reading the score model the engine
-  plays), the skill that copes with it (`copedWithBy`), and the rung that teaches it
-  (`taughtAt`). Nineteen demands. `steps`, `skips` and `eighth-notes` stay concepts but are
+  plays), the skill that copes with it (`copedWithBy`), and the rungs that teach it
+  (`taughtAt`: since E0b a list, one rung per path, `[]` where none does). Nineteen demands. `steps`, `skips` and `eighth-notes` stay concepts but are
   demands here; C position is a range (`range.beyond-position` absent).
 - **Items.** `targetSkills` (declared, never evidence) is on the nine sight-reading rows only.
   `demands` (measured by the build, E) and `role` (D) exist in the schema and nothing writes
@@ -1196,7 +1200,7 @@ grown only when a reader needs it and its observable exists).
   skill requirement is shown by a reading of the rung's own row from its page.
 - **Taught at.** `sightReadingPromises.test.ts` holds every sight-reading row to *nothing the
   earliest rung listing it has not taught*, read from `taughtAt` — and, since C4b, to nothing
-  no rung teaches (`taughtAt: null`): row 7 stopped writing sixteenths (S23; below). One known
+  no rung teaches (`taughtAt: []`, `null` before E0b): row 7 stopped writing sixteenths (S23; below). One known
   exception: `sight-reading-2-right` reaches C5 on 2.2, three rungs before 2.5 teaches leaving
   C position (S16). C4b proved the generator side: held to 2.2 (`heldToRung`) the row stays in
   C position and keeps 2.2's promises; the app asks for that shape once the reader's one writer
@@ -1220,4 +1224,4 @@ grown only when a reader needs it and its observable exists).
   and the rungs that touch them (ragtime.5's short–long–short, technique.6's page of
   sixteenths) are on tracks a jazz or theory learner need not take before jazz.8 or theory.9,
   where row 7 sits. So row 7 asks `sixteenths: false` and no longer claims the concept, until
-  F gives a rung on that path the teaching; `taughtAt` stays `null`, not guessed.
+  F gives a rung on that path the teaching; `taughtAt` stays empty, not guessed.

@@ -290,13 +290,16 @@ export const PROMISED_BY_RUNG: Record<string, Check[]> = {
 
 /**
  * Every demand a rung has not taught, as checks a phrase must pass (C2's
- * `unintended()`): each demand whose `taughtAt` comes after the rung in the
- * curriculum's order, and every demand no rung teaches (`taughtAt: null`,
- * S23: "never teach wrong" — a demand nothing teaches is not written); and 4/4
- * only before 4.5. `skip` names demands a caller knows arrive early. `taught`,
- * where given, is what the rung has taught (`session.taughtAtRung`, its
- * ancestry: E0a) and stands in for the order, which is only right on the core
- * path — on a track, the file's order credits what a sibling track taught.
+ * `unintended()`): each demand every rung of whose `taughtAt` comes after the
+ * rung in the curriculum's order, and every demand no rung teaches (`taughtAt:
+ * []`, S23: "never teach wrong" — a demand nothing teaches is not written); and
+ * 4/4 only before 4.5. `skip` names demands a caller knows arrive early.
+ * `taught`, where given, is what the rung has taught (`session.taughtAtRung`,
+ * its ancestry: E0a) and stands in for the order, which is only right on one
+ * line of rungs — on a track, the file's order credits what a sibling track
+ * taught, and since E0b a demand can be taught on a track stored before a core
+ * rung (syncopation at `latin.3`, stored before 4.1), so every caller walking
+ * the shipped curriculum passes it.
  */
 export function untaughtChecks(
   rung: string,
@@ -307,13 +310,13 @@ export function untaughtChecks(
 ): Check[] {
   const at = (id: string): number => order.indexOf(id);
   const before = (other: string): boolean => at(rung) < at(other);
-  const untaught = (d: Demand): boolean => d.taughtAt === null || (taught ? !taught(d.id) : before(d.taughtAt));
+  const untaught = (d: Demand): boolean => d.taughtAt.length === 0 || (taught ? !taught(d.id) : d.taughtAt.every(before));
   return [
     ...demands
       .filter(untaught)
       .filter((d) => !skip(d.id))
       .map((d) =>
-        every(`no ${d.id} (taught at ${String(d.taughtAt)})`, (p) => !has(d.detector)(p), [d.id]),
+        every(`no ${d.id} (taught at ${d.taughtAt.join(', ') || 'no rung'})`, (p) => !has(d.detector)(p), [d.id]),
       ),
     ...((taught ? !taught('metre.compound') : before('4.5'))
       ? [every('4/4 only (before 4.5)', (p) => p.model.timeSigMap.every((t) => t.beats === 4 && t.beatType === 4), ['metre.compound'])]

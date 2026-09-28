@@ -366,6 +366,35 @@ class TestTheReports(Built):
                         "an option on two tracks is met first on each")
         self.assertEqual(rows["blues.6"]["untaught"], [])
 
+    def test_a_demand_taught_on_two_paths_is_taught_on_both_and_on_neither_sibling(self) -> None:
+        """
+        E0b: `taughtAt` lists every rung that teaches a demand, one per path. The walking bass is
+        taught at jazz.6 as well as blues.5, so a walking-bass option on jazz.8 (whose path goes
+        through jazz.6, never blues.5) is taught there; on theory.9 and classical.6, whose paths
+        reach no teaching rung, it is still untaught; and the inventory's coverage row for jazz.6
+        names the walking bass among what the rung teaches.
+        """
+        catalog = copy.deepcopy(self.catalog)
+        curriculum = copy.deepcopy(self.curriculum)
+        probe = {"id": "song.e0b.walking-probe", "type": "song", "title": "E0b probe",
+                 "demands": ["texture.walking-bass"],
+                 "measurement": {"status": "measured", "established": ["texture.walking-bass"]}}
+        catalog.append(probe)
+        lessons = {lesson["id"]: lesson for _s, _u, lesson in self.claims.lessons_in_order(curriculum)}
+        for rung in ("jazz.8", "theory.9", "classical.6"):
+            lessons[rung]["songOptions"].append(probe["id"])
+        report = self.claims.rung_claims(catalog, curriculum)
+        rows = {o["rung"]: o for o in report["options"] if o["item"] == probe["id"]}
+        self.assertEqual(rows["jazz.8"]["untaught"], [],
+                         "texture.walking-bass on jazz.8: jazz.6 teaches it, on jazz.8's path")
+        self.assertEqual(rows["theory.9"]["untaught"], ["texture.walking-bass"], "theory.9's path reaches no teaching rung")
+        self.assertEqual(rows["classical.6"]["untaught"], ["texture.walking-bass"], "a sibling track inherits nothing")
+        coverage = {row["rung"]: row for row in self.claims.inventory(self.catalog, self.curriculum)["coverage"]}
+        self.assertIn("texture.walking-bass", coverage["jazz.6"]["taught"],
+                      "the inventory: jazz.6 teaches the walking bass (texture.walking-bass)")
+        self.assertIn("texture.walking-bass", coverage["blues.5"]["taught"])
+        self.assertNotIn("texture.walking-bass", coverage["theory.9"]["taught"])
+
     def test_the_generated_untaught_combinations_are_d0s_record(self) -> None:
         self.assertTrue(self.report["summary"]["generatedUntaughtMatchesRecord"],
                         "the build's untaught-on-rung combinations differ from tests/fixtures/untaught_on_rung.json")

@@ -54,7 +54,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { buildSession, nextRecommended, readingOffer, readingOptions, recipeDistance, type ReadingOffer, type SessionSlot } from '../../src/curriculum/session';
+import { buildSession, nextRecommended, readingOffer, readingOptions, recipeDistance, taughtAtRung, type ReadingOffer, type SessionSlot } from '../../src/curriculum/session';
 import { indexCatalog } from '../../src/curriculum/selectors';
 import { rungState } from '../../src/evidence/rungState';
 import { dailySeed, generateSightReading, type SightReadingOptions } from '../../src/engine/sightReading';
@@ -76,16 +76,17 @@ const INDEX = indexCatalog(catalog);
 const curriculum = JSON.parse(readFileSync(join(CONTENT, 'curriculum.json'), 'utf8')) as Curriculum;
 const readers = catalog.filter((item) => item.drill?.kind === 'sight-reading');
 const byId = new Map(catalog.map((item) => [item.id, item]));
-const ORDER = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons.map((lesson) => lesson.id)));
 const DETECTOR = new Map(VOCABULARY_V0.demands.map((d) => [d.id, d.detector]));
 
-/** What a rung has taught, by the vocabulary's `taughtAt` in the curriculum's order (this file's own reading of it). */
+/**
+ * What a rung has taught: `taughtAtRung`, the rung's ancestry, as the Score screen holds a phrase.
+ * Revised (E0b): this file's own reading was one `taughtAt` rung at or before the rung in the file's
+ * order; with `taughtAt` a list that order credits 4.1–4.4 with the syncopation `latin.3` teaches.
+ */
 const taughtAt =
   (rung: string) =>
-  (demand: string): boolean => {
-    const at = VOCABULARY_V0.demands.find((d) => d.id === demand)?.taughtAt;
-    return at !== null && at !== undefined && ORDER.indexOf(at) >= 0 && ORDER.indexOf(at) <= ORDER.indexOf(rung);
-  };
+  (demand: string): boolean =>
+    taughtAtRung(curriculum, rung)?.(demand) ?? false;
 
 interface Misread {
   wrong: (model: ScoreModel) => number[];
@@ -621,7 +622,8 @@ describe('the other slots, every morning (C6)', () => {
       const repertoire = day.card.find((slot) => slot.kind === 'repertoire');
       const claim = repertoire?.claim;
       if (claim?.kind === 'ready') {
-        expect(VOCABULARY_V0.demands.find((d) => d.id === claim.demand)?.taughtAt, `day ${String(day.n)}`).toBe(day.rung);
+        // Revised (E0b): `taughtAt` is a list; the claim's demand is one the learner's rung teaches.
+        expect(VOCABULARY_V0.demands.find((d) => d.id === claim.demand)?.taughtAt, `day ${String(day.n)}`).toContain(day.rung);
         const measurement = repertoire?.item?.measurement;
         expect(measurement?.status === 'measured' ? measurement.established : [], `day ${String(day.n)}`).toContain(claim.demand);
         expect(repertoire?.reason).toMatch(/^A piece with .+ — your reads support them$/);

@@ -46,8 +46,7 @@ import {
 import { drillFromCatalog } from '../../src/engine/drills/fromCatalog';
 import { masteryCriteriaFor } from '../../src/curriculum/selectors';
 import { DEFAULT_MASTERY } from '../../src/engine/Scoring';
-import { nextRecommended, readingMoves, readingOffer } from '../../src/curriculum/session';
-import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
+import { nextRecommended, readingMoves, readingOffer, taughtAtRung } from '../../src/curriculum/session';
 import { hasChordSymbols } from '../../src/ui/openItem';
 import type { CatalogItem, Curriculum, Lesson, LessonTool } from '../../src/curriculum/types';
 
@@ -1439,12 +1438,9 @@ const T12_APP: [string, string, () => boolean][] = [
     () => {
       const position = nextRecommended(curriculum, NO_RUNS, ['core'], { startAt: '3.4' });
       const offer = readingOffer({ curriculum, items: catalog, position, activeTracks: ['core'], rows: [], today: new Date(2026, 9, 1), purpose: 'daily' });
-      // What the curriculum has taught by 3.4 (the vocabulary's `taughtAt`, in the curriculum's own order).
-      const order = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons.map((lesson) => lesson.id)));
-      const taught = (demand: string): boolean => {
-        const rung = VOCABULARY_V0.demands.find((d) => d.id === demand)?.taughtAt;
-        return rung !== null && rung !== undefined && order.indexOf(rung) >= 0 && order.indexOf(rung) <= order.indexOf('3.4');
-      };
+      // What the curriculum has taught by 3.4: `taughtAtRung`, 3.4's ancestry. Revised (E0b): it was one
+      // `taughtAt` rung in the curriculum's own order; `taughtAt` is a list now, one rung per path.
+      const taught = (demand: string): boolean => taughtAtRung(curriculum, '3.4')?.(demand) ?? false;
       const row = item('drill.reading.sight-reading-2');
       const moves = readingMoves({ curriculum, item: row, recipe: { row: row.id }, rung: '3.4' });
       const on = moves.filter((move) => move.direction === 'on');

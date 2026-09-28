@@ -76,8 +76,13 @@ export interface Demand {
   detector: DetectorId;
   /** The skill that copes with it: one reviewed table, the start of `needsSkills`. */
   copedWithBy: string;
-  /** The rung that teaches it, or `null` with `taughtAtNote` where none does. */
-  taughtAt: string | null;
+  /**
+   * Every rung that teaches it, one per path (E0b): no listed rung is on another's
+   * path, and a demand is taught at a rung when any listed rung is in the rung's
+   * ancestry or the learner's reached set (`session.taughtAtRung`). `[]`, with
+   * `taughtAtNote`, where none does. It was one rung or `null`.
+   */
+  taughtAt: readonly string[];
   taughtAtNote?: string;
 }
 

@@ -1062,7 +1062,8 @@ def vocabulary_errors(
     The schemas answer the shape; this answers the references: a skill's
     opportunity names demands that exist and its standards name declared
     conditions, a demand is coped with by a skill whose opportunity names it and
-    is taught at a rung the curriculum has, and every `targetSkills` and
+    is taught at rungs the curriculum has, one per path, whose concepts name it
+    (E0b, `taught_at_findings`, whose warnings `main` prints), and every `targetSkills` and
     `demands` id on a catalog row is in the vocabulary. Whether each demand's
     detector exists is the app's to say: `app/tests/unit/vocabulary.test.ts`
     imports the module.
@@ -1084,7 +1085,6 @@ def vocabulary_errors(
     skills = {s["id"]: s for s in skills_file.get("skills", [])}
     demands = {d["id"]: d for d in demands_file.get("demands", [])}
     conditions = {c["id"] for c in skills_file.get("conditions", [])}
-    rungs = {lesson.get("id") for lesson in _rungs(curriculum)}
 
     for skill in skills.values():
         opportunity = skill["opportunity"]
@@ -1113,10 +1113,8 @@ def vocabulary_errors(
                 f"vocabulary: demand {demand['id']} is coped with by {coper['id']}, "
                 f"whose opportunity does not name it"
             )
-        if demand["taughtAt"] is not None and demand["taughtAt"] not in rungs:
-            errors.append(
-                f"vocabulary: demand {demand['id']} is taught at {demand['taughtAt']!r}, which is not a rung"
-            )
+    # E0b: every rung `taughtAt` lists exists, one per path, and names the demand in its concepts.
+    errors += taught_at_findings(skills_file, demands_file, curriculum)[0]
     for item in catalog:
         for skill_id in item.get("targetSkills") or []:
             if skill_id not in skills:
@@ -1141,6 +1139,67 @@ def vocabulary_errors(
                     f"{item.get('id')}: measurement establishes {demand_id!r}, which its measured demands lack"
                 )
     return errors
+
+
+def _names_rung(note: str, rung: str) -> bool:
+    """Whether a note names the rung by its id (`3.1`, not `3.10` or `13.1`)."""
+    return re.search(rf"(?<![\w.]){re.escape(rung)}(?!\w)", note) is not None
+
+
+def taught_at_findings(skills_file: dict, demands_file: dict, curriculum: dict) -> tuple[list[str], list[str]]:
+    """
+    Where each demand is taught (E0b; the reviewer's finding 2 on E0a): `taughtAt` is every rung
+    that teaches the demand, one per path — a rung whose ancestry (`claims.rung_ancestry`) already
+    holds a listed rung of the same demand is not a second teaching rung. Returns `(errors,
+    warnings)`.
+
+    Errors: a listed rung the curriculum lacks; a listed rung on another listed rung's path; a
+    listed rung whose concepts name none of the concepts that name the demand
+    (`claims.concepts_naming`), unless `taughtAtNote` names that rung — a hand reading of its
+    lesson, which is a warning until F reads the lesson. Warnings: those hand readings, and every
+    rung the derivation from the lessons' concepts gives (`claims.teaching_rungs`) with no listed
+    rung on its path — a teaching rung the list omits, or a lesson naming a concept in passing
+    (`latin`'s walking-bass, whose lesson teaches a tumbao). Printed on every build; never silent.
+    """
+    import claims
+
+    skills = {s["id"]: s for s in skills_file.get("skills", [])}
+    demands = {d["id"]: d for d in demands_file.get("demands", [])}
+    lessons = {lesson.get("id"): lesson for lesson in _rungs(curriculum)}
+    ancestry = claims.rung_ancestry(curriculum)
+    naming = claims.concepts_naming(skills, demands)
+    derived = claims.teaching_rungs(curriculum, skills, demands, ancestry)
+    errors: list[str] = []
+    warnings: list[str] = []
+    for demand in demands.values():
+        ident = demand["id"]
+        listed = claims.taught_at(demand)
+        note = demand.get("taughtAtNote") or ""
+        concepts = naming.get(ident, set())
+        for rung in listed:
+            if rung not in lessons:
+                errors.append(f"vocabulary: demand {ident} is taught at {rung!r}, which is not a rung")
+                continue
+            for other in listed:
+                if other != rung and other in ancestry.get(rung, set()):
+                    errors.append(
+                        f"vocabulary: demand {ident} is taught at {rung!r} and at {other!r}, which is on "
+                        f"{rung}'s path: one teaching rung per path"
+                    )
+            if concepts and not concepts & set(lessons[rung].get("concepts") or []):
+                words = f"demand {ident} is taught at {rung!r}, whose concepts name none of {', '.join(sorted(concepts))}"
+                if _names_rung(note, rung):
+                    warnings.append(f"WARNING (taught at, E0b): {words}; its taughtAtNote reads the lesson by hand, until F reads it")
+                else:
+                    errors.append(f"vocabulary: {words}, and its taughtAtNote does not name {rung} with the reading")
+        for rung in derived.get(ident, []):
+            if not any(at in ancestry.get(rung, set()) for at in listed):
+                named = sorted(concepts & set(lessons.get(rung, {}).get("concepts") or []))
+                warnings.append(
+                    f"WARNING (taught at, E0b): demand {ident} is taught at no rung on the path to {rung!r}, whose "
+                    f"concepts name {', '.join(named)}: a teaching rung taughtAt omits, or a concept named in passing"
+                )
+    return errors, warnings
 
 
 def rung_claims_warning(catalog: list, curriculum: dict) -> str:
@@ -1671,6 +1730,9 @@ def main() -> None:
     )
     if gate_unjudged:
         print(f"    unjudged: {', '.join(gate_unjudged)}")
+    # E0b: where the vocabulary's teaching rungs differ from the lessons' concepts, said on every run.
+    for warning in taught_at_findings(skills_file, load_vocabulary()[1], curriculum)[1]:
+        print(f"  {warning}")
     print(f"  {rung_claims_warning(catalog, curriculum)}")
 
     # Last, so the build's one-line summary of this step is the verdict and the

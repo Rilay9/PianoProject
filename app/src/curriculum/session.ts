@@ -1220,7 +1220,8 @@ function repertoire(ctx: SlotContext, phase: Phase, onCard: readonly Choice[]): 
   const learner: Learner = learnerAt(ctx, undefined);
   const ready: { item: CatalogItem; demand: string; distance: number }[] = [];
   for (const strand of ctx.strands) {
-    const edges = vocabulary.demands.filter((d) => d.taughtAt === strand.rung.id).map((d) => d.id);
+    // What the strand's rung teaches (E0b: `taughtAt` lists every rung that teaches a demand).
+    const edges = vocabulary.demands.filter((d) => d.taughtAt.includes(strand.rung.id)).map((d) => d.id);
     if (edges.length === 0) continue;
     const [low, high] = strand.rung.levelBand ?? [strand.stage, strand.stage + 0.99];
     for (const item of ctx.input.items) {
@@ -1755,10 +1756,13 @@ export function rungAncestry(curriculum: Curriculum): ReadonlyMap<string, Readon
 }
 
 /**
- * What a rung has taught (E0a): a demand whose `taughtAt` rung is in the rung's
- * ancestry (`rungAncestry`) — the rung, what it builds on, and on a track the
- * core path up to its stage. A demand taught on one track is not taught on its
- * sibling, whatever the file's order.
+ * What a rung has taught (E0a): a demand one of whose `taughtAt` rungs is in the
+ * rung's ancestry (`rungAncestry`) — the rung, what it builds on, and on a track
+ * the core path up to its stage. A demand taught on one track is not taught on its
+ * sibling, whatever the file's order. Since E0b `taughtAt` lists every rung that
+ * teaches the demand, one per path: the walking bass is `blues.5`'s, `jazz.6`'s
+ * and `jam.6`'s, so it is taught at `jazz.8` and not at `theory.9` or
+ * `classical.6`.
  *
  * `reached`, where the caller has a learner, is the second reading: the rungs
  * the learner has been placed on or passed (the session's `reached`: met, set
@@ -1781,11 +1785,7 @@ export function taughtAtRung(
   if (here === undefined) return undefined;
   const theirs = reached.map((id) => ancestry.get(id)).filter((one): one is ReadonlySet<string> => one !== undefined);
   const taughtBy: ReadonlySet<string> = theirs.length === 0 ? here : new Set([...here, ...theirs.flatMap((one) => [...one])]);
-  return (demand) => {
-    const at = vocabulary.demands.find((d) => d.id === demand)?.taughtAt;
-    if (at === null || at === undefined) return false;
-    return taughtBy.has(at);
-  };
+  return (demand) => (vocabulary.demands.find((d) => d.id === demand)?.taughtAt ?? []).some((at) => taughtBy.has(at));
 }
 
 /**
@@ -2236,7 +2236,7 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
 
   // The phrase is held to what the row's rung has taught (as the Score screen holds it); moves are gated by the learner's.
   const rung = input.position?.lesson.id;
-  const taught = taughtAtRung(input.curriculum, rung, vocabulary) ?? ((demand: string) => vocabulary.demands.some((d) => d.id === demand && d.taughtAt !== null));
+  const taught = taughtAtRung(input.curriculum, rung, vocabulary) ?? ((demand: string) => vocabulary.demands.some((d) => d.id === demand && d.taughtAt.length > 0));
   const hold = taughtAtRung(input.curriculum, anchor.lessonId, vocabulary);
   const ctx: MoveContext = {
     item: anchor.item,
@@ -2246,9 +2246,15 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
   };
   const current = ctx.options(working);
   const order = lessonOrder(input.curriculum);
+  // Where the learner's rung was taught the demand (E0b): its listed rung on the rung's path — one
+  // per path — else, with no rung, the earliest listed. One ancestry, where the file's order is a
+  // linear extension of it (E0a).
+  const onPath = rung === undefined ? undefined : rungAncestry(input.curriculum).get(rung);
   const taughtIndex = (demand: string): number => {
-    const at = vocabulary.demands.find((d) => d.id === demand)?.taughtAt;
-    return at ? order.indexOf(at) : Number.POSITIVE_INFINITY;
+    const listed = vocabulary.demands.find((d) => d.id === demand)?.taughtAt ?? [];
+    const here = onPath === undefined ? [] : listed.filter((at) => onPath.has(at));
+    const at = (here.length > 0 ? here : listed).map((one) => order.indexOf(one));
+    return at.length > 0 ? Math.min(...at) : Number.POSITIVE_INFINITY;
   };
   const vocabularyIndex = (demand: string): number => vocabulary.demands.findIndex((d) => d.id === demand);
 
