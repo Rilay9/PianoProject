@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **L120a** — `handoffs/0bcd3be0.md` (respond in `responses/0bcd3be0.md`). The table of the rung-own options the gate reads as untaught (Entry 149).
 - **Q83+Q84** — `handoffs/c80e33f2.md` (respond in `responses/c80e33f2.md`). A runner's log names a fetch failure (Entry 148).
 - **U92** — `handoffs/4de29cdd.md` (respond in `responses/4de29cdd.md`). The Skills detail line never shows a cut count (Entry 143).
 - **X31** — `handoffs/aa16c702.md` (respond in `responses/aa16c702.md`). The content build reads a file's opening tempo as the app does (Entry 144).
