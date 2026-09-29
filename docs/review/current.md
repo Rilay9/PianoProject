@@ -3,6 +3,7 @@
 Open handoffs, each with its own file:
 
 - **D4** — `handoffs/9193261.md` (respond in `responses/9193261.md`). Transfer-aware selection landed (Entry 106); five decisions listed, three questions.
+- **G1 brief** — `handoffs/7863bee.md` (respond in `responses/7863bee.md`). A brief handoff: no implementation to review. The encounter model, the plan's G1 split from the lifecycle (G1b); six decisions, three questions. Dispatches on approval as the third lane.
 
 Building: **E2** (Entry 107, `responses/12af708.md`) and **F2** (Entry 108, `responses/12af708.md`), the first two-builder overlap under the cadence; each gets its own handoff when it lands.
 
