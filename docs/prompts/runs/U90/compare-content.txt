@@ -1,0 +1,13 @@
+$ python docs/prompts/runs/U90/scripts-compare-content.py
+worktree content: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ad2c7fa0d7525fa87\app\public\content
+top-level keys equal: True ['concepts', 'stages', 'tracks', 'version']
+  curriculum.version: same
+  curriculum.tracks: same
+  curriculum.stages: differs
+  curriculum.concepts: same
+catalog items: worktree 1862 main 2090
+  only in main: 228  only in worktree: 0
+  the types of the items only in main: {'excerpt': 1, 'song': 227}
+  of them exercises or drills (the only items Skills lists): 0
+lessons: 109 worktree, 109 main; the lesson fields that differ: ['needs']
+exit=0

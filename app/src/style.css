@@ -3685,6 +3685,19 @@ input[type='checkbox'] {
   white-space: nowrap;
 }
 
+/* On Skills a name is never cut: it wraps to the lines it needs (U90). As one line with an
+   ellipsis, "Leaps: a fourth or fifth" was cut on CI's runner and here under a face wider than
+   Segoe UI (Verdana) or at 115 % text; on Segoe UI itself "Finger numbers" read "Finger num…"
+   beside Drill it and Find more, and both coordination exercises in A read "Hands together in
+   A — left ha…", cut before the word that tells them apart. A cut name says neither thing. The
+   words keep their 5rem basis, so the actions stay where they were and the row grows by a line;
+   a word longer than the room breaks rather than being cut. */
+.skill-concept .list-row__title {
+  white-space: normal;
+  text-overflow: clip;
+  overflow-wrap: break-word;
+}
+
 /* The reason, one line, cut rather than wrapped (`04` §0 R2). */
 .list-row__sub {
   font-size: 0.85rem;

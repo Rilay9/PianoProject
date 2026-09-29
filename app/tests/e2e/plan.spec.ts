@@ -250,16 +250,32 @@ test.describe('Skills review', () => {
  * or fifth; the advanced jump keeps its own entry, "Wide leaps", filed where its technique rungs
  * are, with its own finder. Each name is read whole at this width, and no entry is called just
  * "Leaps".
+ *
+ * On every font (U90). CI's full run on 248c6138 read "Leaps: a fourth or fifth" cut to an ellipsis
+ * on the runner while it read whole here. The title was one line with an ellipsis, and on Segoe UI,
+ * which the stack's `system-ui` gives here, its text filled its box with nothing to spare; forcing a
+ * wider face cut it here exactly as on the runner, whose own face is not known. A learner's phone may
+ * carry any. So the case runs twice, on the stack and with every element forced to a wider face
+ * (Verdana, or DejaVu Sans where Verdana is absent), and ends by reading every name the list draws
+ * over every stage, a concept's and an exercise's: each wraps to the lines it needs.
  */
 test.describe('the two leaps on Skills (F2b)', () => {
   test.use({ viewport: { width: 342, height: 740 } });
 
-  /** A one-line title is read whole where nothing of it is cut by the ellipsis: a name cut to "Leaps: an o…" says neither leap. */
+  /** A title is read whole where nothing of it is cut: a name cut to "Leaps: an o…" says neither leap. */
   const readWhole = (title: Locator): Promise<boolean> => title.evaluate((node) => node.scrollWidth <= node.clientWidth);
 
-  test('the leap a learner at 2.1 opens is the fourth or fifth; the octave-or-more jump keeps its own entry', async ({ page }) => {
+  const FACES = [
+    { name: 'on the app’s font stack', css: null },
+    // Wider than Segoe UI: on the committed one-line title this face cut the beginner's name here,
+    // the runner's failure (`docs/prompts/runs/U90/`).
+    { name: 'on a wider face', css: "body, body * { font-family: Verdana, 'DejaVu Sans', sans-serif !important; }" },
+  ] as const;
+
+  for (const face of FACES) test(`the leap a learner at 2.1 opens is the fourth or fifth; the octave-or-more jump keeps its own entry — ${face.name}`, async ({ page }) => {
     await page.goto('/#/plan/skills');
     await expect(page.locator('#skills-list .list-row').first()).toBeVisible();
+    if (face.css !== null) await page.addStyleTag({ content: face.css });
     await page.locator('#skills-stage').selectOption('2');
     const beginner = page.locator('#skills-list .list-row[data-concept="leap"]');
     await expect(beginner).toBeVisible();
@@ -297,6 +313,13 @@ test.describe('the two leaps on Skills (F2b)', () => {
     for (let i = 0; i < 12 && (await showAll.count()) > 0; i += 1) await showAll.click();
     const titles = await page.locator('#skills-list .list-row[data-concept] .list-row__title').allTextContents();
     expect(titles.filter((title) => /leaps/i.test(title)).sort()).toEqual(['Leaps: a fourth or fifth', 'Wide leaps']);
+
+    // Every name the list draws is read whole (U90): "Hands together in A — left hand changes" and
+    // "… holds" were both cut before the word that tells them apart.
+    const cut = await page
+      .locator('#skills-list .list-row .list-row__title')
+      .evaluateAll((nodes) => nodes.filter((node) => node.scrollWidth > node.clientWidth).map((node) => node.textContent ?? ''));
+    expect(cut, 'names on Skills cut to an ellipsis').toEqual([]);
   });
 });
 
