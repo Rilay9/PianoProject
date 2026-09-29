@@ -214,12 +214,14 @@ The scheduled reviewer must derive this state from:
 
 Do not manufacture status from an old snapshot. If the repository and this section disagree, the repository wins and this section must be corrected.
 
-Current snapshot, refreshed after reviewing F2 and the sweep briefs on 2026-09-29:
-- F2 implementation `b41e19e`: **APPROVE WITH ONE REQUIRED CHANGE**. Response: `docs/review/responses/b41e19e.md`. F2a must reconcile (1) core teaching truth for leap/chromatic demands with actual establishing opportunities and (2) the practice-track ancestry/floor defect before X1 or another downstream consumer treats F2's curriculum claims as settled. The five whole-piece density deferrals are temporarily accepted and constrain E22, not unrelated lanes.
-- E-tail/Q-tooling brief packet `d1562ef`: **APPROVE TO PROCEED**. Response: `docs/review/responses/d1562ef.md`. E33 may re-cut now if old decisions are invalidated and listed for re-decision. Q65 unmatched paths must fall back to conservative full suites rather than refusal.
-- Q47 implementation `8668afb`: review is **OPEN**. Its required proof is CI run 36523543429 on landing commit `ca06e94d40c89dd146bedd44e6b5413831a22f0b`. At the last reviewer check, that run was still in progress at the content-build step and had not yet reached the MAESTRO restore/fetch/save, converter harness, or parity-reference steps. Do not create `responses/8668afb.md` until that runner proof is observed.
-- Independent running lanes reported by the orchestrator: E2a, G1, U74, E-tail, Q-tooling. Their post-build immutable handoffs remain independent review seams.
-- F2a may dispatch as the narrow required fix-forward; unrelated file-disjoint lanes do not wait for it.
-- X1, or any downstream consumer that assumes F2's curriculum teaching claims are settled, waits for F2a ACCEPT.
-- Q47 blocks only work that consumes its CI/tooling contract; it does not freeze unrelated implementation lanes.
-- No owner decision is currently required by the reviewer for F2 or the sweep briefs.
+Current snapshot, refreshed after E2a review on 2026-09-29:
+- E2a implementation `9571a7b`: **APPROVE**. Response: `docs/review/responses/9571a7b.md`. E2 is closed.
+- L113 is reassigned as a required X1 boundary: automatic rung-owned/assigned material must pass the canonical unknown-forbidden gate; explicit learner-chosen exploration may remain reachable with unknowns named. This blocks X1 completion, not E2 closure.
+- Lesson-level seed wiring remains held until E46 can filter seed works by the lesson's own level/key/metre/genre constraints. Concept-level seed wiring is accepted.
+- F2a brief `f6b5fa4`: no objection. It matches the required F2a exactly and may continue without a pre-build response file. Post-build review remains the gate before X1 consumes F2's settled curriculum truth.
+- Q47 implementation `8668afb`: still open. Required proof is CI run 36525222177 on commit `05c9e018a7c04a380fe3ddcda8ebccb40e15e9c8`. At the last check it was still in the content-build step; MAESTRO restore/fetch/save, MIDI converter harness and parity-reference steps had not yet run. Do not create `responses/8668afb.md` until those runner steps pass.
+- Independent running lanes reported by the orchestrator: G1, U74, E-tail, Q-tooling, F2a.
+- E-tail/Q-tooling are approved to proceed under `responses/d1562ef.md`.
+- F2 requires F2a before X1 consumes its curriculum claims.
+- X3 may consume the now-closed E2 material layer.
+- No owner decision is currently required by the reviewer.
