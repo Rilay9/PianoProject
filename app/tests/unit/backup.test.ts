@@ -287,6 +287,25 @@ describe('a backup of a phone that has been used (P19 §C3)', () => {
         },
       ],
     });
+    // G1: what the learner met beside the runs, and the summary of runs the
+    // cap deleted — learner history, so the backup carries both.
+    await db?.put('encounters', {
+      id: 'visit-1:1',
+      key: `file:${'a'.repeat(64)}`,
+      material: { kind: 'file', sha256: 'a'.repeat(64) },
+      itemId: 'song.a',
+      kind: 'heard',
+      at: '2026-09-01T00:00:00.000Z',
+      source: { tab: 'library' },
+      visit: 'visit-1',
+    });
+    await db?.put('contacts', {
+      key: 'id:song.gone',
+      material: { kind: 'id', itemId: 'song.gone' },
+      itemIds: ['song.gone'],
+      byId: true,
+      spans: [{ run: 'practised', first: '2019-01-01T00:00:00.000Z', last: '2019-01-01T00:00:00.000Z', sources: ['library'] }],
+    });
     // The one store the backup leaves out on purpose: 6 MB of listing that is
     // rebuilt by picking the folder again.
     await db?.put('folderLibraries', {
@@ -329,6 +348,9 @@ describe('a backup of a phone that has been used (P19 §C3)', () => {
       latencyMs: 42,
       noiseFloor: 0.01,
     });
+
+    expect((await fresh?.get('encounters', 'visit-1:1'))?.kind).toBe('heard');
+    expect((await fresh?.get('contacts', 'id:song.gone'))?.byId).toBe(true);
 
     // And the folder listing did not come back, which is the design.
     expect(await fresh?.get('folderLibraries', 'Mine')).toBeUndefined();

@@ -434,7 +434,9 @@ describe('what the learner had heard', () => {
     const row = await storedRow();
     expect(row.demonstrated).toBe(true);
     expect(row.performance).toBeUndefined();
-    // A piece is not a generated phrase: first sight is not a claim it makes.
-    expect(row.unseen).toBeUndefined();
+    // Revised (G1): first contact is written on every run since G1, a piece's
+    // included — an audit fact, never a gate on its pass. This take had the
+    // piece played to the learner inside it, so it was not a first contact.
+    expect(row.unseen).toBe(false);
   });
 });

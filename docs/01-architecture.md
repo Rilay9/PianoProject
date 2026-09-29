@@ -48,7 +48,8 @@ app/                     – the PWA (Vite + TypeScript)
     audio/pitch/         – AudioWorklet + score-informed note/chord detector + calibration
     data/                – IndexedDB (db.ts) + one store module each: progressStore, planStore, skillsStore, importStore,
                            booksStore (the shelf), folderLibrary + folderWalk.worker (a folder of scores on the phone, 04 §4b),
-                           levelOverrides, micCalibrationStore, midiSettings, setupStore, settingsStore/persist, backup (export/import)
+                           levelOverrides, micCalibrationStore, midiSettings, setupStore, settingsStore/persist, backup (export/import),
+                           encounterStore (what the learner met beside the runs, and the one familiarity query, G1)
     curriculum/          – loaders + selectors over curriculum.json/catalog.json, and session.ts (today's session from the Part A §8 templates)
     util/
   tests/
@@ -260,9 +261,14 @@ IndexedDB stores (via `idb`):
 | `folderScores` | `[folder, file]` | one score in one folder, one record each: title, composer, estimated level, bars, rating, plus the folded title the `byTitle` index is built on and a `missingAt` stamp when the file behind it has gone. Indexed `byTitle` on `[folder, sort]`, which is what makes the A-to-Z rail a key-range question rather than a walk of the listing. The *files* are not stored — a picked folder is lent for one visit — so these rows are what make browsing work with nothing plugged in. Fetched by key, for the page about to be drawn. |
 | `folderIndexes` | folder name | one compact record per folder holding the parallel arrays the browse screen filters over — path, folded haystack, letter, level, style id, status id, rated flag, and the tally of placeholder titles. About 2 MB for the owner's 37,261 against the 40-odd the full rows cost, and **opening the screen reads this and not the rows**. Rebuilt whole by a scan; deliberately untouched by a one-row change. |
 | `books` | id | a book the owner owns on paper: title, and the pieces in it with their page numbers and the rungs they are options of (replan §5.1). Typed in by hand; nothing is scanned. |
+| `encounters` | `<visit>:<n>` | what the learner met that is not a run (G1): the notation drawn for them on the Score screen (`viewed`, once a visit), a playback they asked for (`heard`), a demonstration (`demonstrated`: `Hear it`, a bar held down) — the material (D4's identity, or the item id where there is none), the item, when, what opened the screen, the visit, the printed bars where only some were covered. Indexed `byKey` (the material's key) and `byItem`. Never pruned; in the backup. |
+| `contacts` | material key | one durable summary per material of the runs the retention cap deleted (G1): the item ids, whether the facts rest on an id alone, and per span what happened (`practised` or `performed`), the printed bars, first and last, the screens — the encounter projection only, never evidence. Written in the transaction that deletes the runs; merged, never replaced, by a restore. |
 
-**`DB_VERSION` is 6.** Every upgrade is keyed on `oldVersion` and creates only the stores that
-version lacked, so a phone that skipped a version arrives correct. C1 (2026-09-26) grew
+**`DB_VERSION` is 8.** Every upgrade is keyed on `oldVersion` and creates only the stores that
+version lacked, so a phone that skipped a version arrives correct. 7 (C5) made no store: it marks
+a database from before C5 as due its one carry-over. 8 (G1) makes `encounters` and `contacts` and
+touches no other store (`encounterModel.test.ts` opens a version-7 database with a row in every
+store and finds every row as it was). C1 (2026-09-26) grew
 `SessionRow` and changed no store and no index: every new field is optional on a value, which
 IndexedDB does not describe, so there is nothing for an upgrade to do and no version to spend.
 A row written before C1 reads as a run with no observation.
@@ -303,6 +309,15 @@ field the run carries (`RunObservation` in `data/db.ts`):
   (64 MiB of structured clone at the cap, measured on a stored row with `v8.serialize`), a small
   share of the quota the storage report (Settings → Content) showed where it was looked at —
   gigabytes, in a desktop Chromium; not yet looked at on the owner's phone.
+- **What the learner met, beside the runs (G1, 2026-09-29; Part 27, L97).** `SessionRow` stays the
+  record of runs; `encounters` holds the smallest complement — viewings, hearings, demonstrations —
+  and `contacts` the summary of each run the cap deleted, so `attempted`, `practised` and
+  `performed` (derived from the runs, never copied) survive retention. `encounterStore.familiarity`
+  is the one query over the three, per facet the most recent time or null, passage by passage over
+  the catalogue's hierarchy (an excerpt's bars in its parent's; the composition beside). Since G1
+  `unseen` is written on every Score-screen run as the first-contact fact, and the readers that
+  gave it sight-reading's consequences (`recordRun`, the rung state, the history line, the
+  evidence job) read it on a phrase's run only (`db.isPhraseRun`).
 - **The backup carries it as it is.** Rows are plain JSON — strings, numbers, arrays — so an
   export writes them whole and `importAll` restores them whole, `not measured` included
   (`backup.test.ts`); `BACKUP_VERSION` did not change, because the file's shape did not.

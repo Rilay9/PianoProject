@@ -18,10 +18,11 @@
  * nothing else reads. One dependency-free file that a text editor can open is
  * worth the third.
  */
-import { openDatabase, STORE_NAMES, type ImportRow, type ProgressRow, type StoreName } from './db';
+import { openDatabase, STORE_NAMES, type ContactSummaryRow, type ImportRow, type ProgressRow, type StoreName } from './db';
 import { importsChanged } from './importStore';
-import { forgetCachedProgress } from './progressStore';
+import { forgetCachedProgress, mergeSummaries } from './progressStore';
 import { forgetCachedPlan } from './planStore';
+import { forgetCachedEncounters } from './encounterStore';
 
 export const BACKUP_VERSION = 1;
 
@@ -299,6 +300,12 @@ export async function importAll(
         const session = { ...(row as Record<string, unknown>) };
         if (!options.replace) delete session.id;
         await db.put('sessions', session as never);
+      } else if (store === 'contacts' && !options.replace) {
+        // A pruned run's summary (G1) joins the device's summary of the same
+        // material rather than replacing it: the device may have pruned runs
+        // since the export, and a join restored twice changes nothing.
+        const incoming = row as ContactSummaryRow;
+        await db.put('contacts', mergeSummaries(await db.get('contacts', incoming.key), incoming));
       } else if (OUT_OF_LINE.includes(store)) {
         const key = raw.keys?.[store]?.[index];
         if (key === undefined) continue;
@@ -319,6 +326,9 @@ export async function importAll(
   // no copy in memory since C7: it is read where it is shown.)
   forgetCachedProgress();
   forgetCachedPlan();
+  // The encounters written for the session with no database are not the
+  // restored history (G1): what is on the device now is.
+  forgetCachedEncounters();
   if (Array.isArray(raw.stores.imports)) importsChanged();
   return report;
 }

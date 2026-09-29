@@ -38,7 +38,7 @@
  * the row itself shows it bore evidence or could have (`boreEvidence`); a run
  * of a piece that never bore evidence is not reported as kept out.
  */
-import { phraseVersionOf, type EvidenceExclusion, type SessionRow } from './db';
+import { isPhraseRun, phraseVersionOf, type EvidenceExclusion, type SessionRow } from './db';
 import type { CatalogItem, Curriculum } from '../curriculum/types';
 import { SIGHT_READING_VERSIONS, type SightReadingOptions, type SightReadingVersion } from '../engine/sightReading';
 import type { ScoreModelData, ScoreStep } from '../score/types';
@@ -53,14 +53,16 @@ export type RecomputeExclusion = EvidenceExclusion;
 /**
  * Whether a row itself shows it bore evidence, or was a generated phrase that
  * could have: evidence stored, a stamp, or a generated phrase's marks (the
- * first-reading flag, the recipe, the seed). For a run whose item the catalog
- * no longer has, this is all there is to go on.
+ * first-reading flag on a phrase's run, the recipe, the seed). For a run whose
+ * item the catalog no longer has, this is all there is to go on. Since G1 the
+ * first-contact flag is on every Score-screen run, so on its own it marks a
+ * phrase only where `isPhraseRun` says the run was one.
  */
 export function boreEvidence(row: SessionRow): boolean {
   return (
     row.evidence !== undefined ||
     row.evidenceDefinitions !== undefined ||
-    row.unseen !== undefined ||
+    (row.unseen !== undefined && isPhraseRun(row)) ||
     row.recipe !== undefined ||
     row.seed !== undefined
   );

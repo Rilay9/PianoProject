@@ -14,7 +14,7 @@ import './ScoreScreen.css';
 import { audioEngine } from '../../audio/AudioEngine';
 import { metronomeSoundFor } from '../../audio/inputPolicy';
 import { getPiano, micSource, screenKeyboardSource, webMidiSource } from '../../app/services';
-import { findItem, contentUrl, loadCurriculum } from '../../curriculum/load';
+import { catalogIndex, findItem, contentUrl, loadCurriculum } from '../../curriculum/load';
 import { parseFrontMatter, renderMarkdown } from '../markdown';
 import { barsPerWindowFor, isTablet, sidePanelProse } from '../tablet';
 import { getImport } from '../../data/importStore';
@@ -90,7 +90,17 @@ import { forgetUnfinished, rememberUnfinished, unfinishedFor } from '../../data/
 import { createHelpStrip, maybeFirstSight, openFirstSight, type HelpStrip } from '../helpStrip';
 import { openSheet } from '../widgets';
 import { hasChordSymbols } from '../openItem';
-import { runFacts } from '../../curriculum/material';
+import { playedMaterial, runFacts, textIdentity } from '../../curriculum/material';
+import {
+  familiarityIn,
+  firstContactIn,
+  historyFor,
+  newVisitId,
+  recordEncounter,
+  type EncounterHistory,
+  type EncounterTarget,
+} from '../../data/encounterStore';
+import type { EncounterKind, EncounterSource } from '../../data/db';
 import type { Relationship } from '../../curriculum/transfer';
 import { loadOffer, type OfferRead, type OfferRefusal } from '../../data/offerSnapshot';
 
@@ -499,8 +509,41 @@ export function ScoreScreen(router: Router): HTMLElement {
    * which every fresh start empties; played before ▶, the run that followed
    * went on the record as the first reading. One phrase per visit, so it is
    * never cleared.
+   *
+   * Since G1 it is the fast path within the visit, for any item: the hearing
+   * is also written as an encounter (`recordEncounter`), which is what
+   * survives the visit, and a later visit reads it back (`history`).
    */
   let phraseHeard = false;
+  /**
+   * This opening of the screen (G1; the reviewer's constraint,
+   * `docs/review/responses/7863bee.md`): every encounter written here names
+   * it, and first contact compares visits, never times. The viewing the
+   * reading needs is this visit's and does not count against it; one from any
+   * other visit — before a reload, before Back and a return, in another tab —
+   * is prior contact.
+   */
+  const visit = newVisitId();
+  /**
+   * What this visit is about once the score is loaded (G1): the item, the
+   * material a run of it plays (`playedMaterial` — the phrase's identity, an
+   * import's loaded bytes, else the row's), and its length in bars.
+   */
+  let encounterTarget: EncounterTarget | null = null;
+  /**
+   * What the learner had met of it when the screen opened (G1 item 4): its
+   * encounters, the passages around it, the runs and the summaries of pruned
+   * runs, read before play (`historyFor`) — so nothing can start before it has
+   * answered — and read again before a run claiming first contact is stored,
+   * in case another tab met it meanwhile. Null where it could not be read: the
+   * visit's own flags then decide, as they did before G1.
+   */
+  let history: EncounterHistory | null = null;
+  let historyRead: Promise<EncounterHistory | null> | null = null;
+  /** The notation has been drawn for the learner on this visit and the viewing written (G1). */
+  let viewingWritten = false;
+  /** An import's file identity: the sha256 of the text this screen loaded (G1), which its runs carry. */
+  let loadedIdentity: Awaited<ReturnType<typeof textIdentity>>;
   /**
    * The run waiting for its *How did it go?* answer (T37).
    *
@@ -2125,7 +2168,14 @@ export function ScoreScreen(router: Router): HTMLElement {
     }
     // The app is about to play the music to the learner (T40): a sight-read
     // of it is no longer a first reading, whatever run comes next.
-    if (runMode === 'listen') phraseHeard = true;
+    if (runMode === 'listen') {
+      phraseHeard = true;
+      // …and it is written down (G1), as the learner asked for it: `Hear it`
+      // and a bar held down are the app demonstrating, *Play it to me* is a
+      // hearing — one playback, one row, one kind — over the bars the loop
+      // confines it to, or the whole.
+      noteHearing(hearing || hearingBar ? 'demonstrated' : 'heard', loop === undefined || loopBars === null ? undefined : [loopBars.from, loopBars.to]);
+    }
     sayWhatThisRunIs(runMode);
     // **After the refusal above, and it has to stay there.** `attachInput`
     // detaches the old source and subscribes a new one, and `WebMidiSource`
@@ -3073,10 +3123,77 @@ export function ScoreScreen(router: Router): HTMLElement {
    * Whether the run about to be summarised is a sight-read of a phrase met
    * before — read already, on the record or this visit, or played to the
    * learner (T37, T33, T40). Read before `sightReadAttempts` counts this run.
+   *
+   * Since G1 the record includes what no run left: a hearing or a
+   * demonstration on any visit, a viewing on another visit, a run of the same
+   * phrase under another row (`historyFirstContact`). The phrase is judged
+   * whole: a bar of it heard is the phrase heard, as within the visit.
    */
   function firstReadingRefused(): boolean {
     if (item === undefined || !isSightReading(item)) return false;
-    return sightReadAttempts > 0 || phraseSeen || phraseHeard;
+    return sightReadAttempts > 0 || phraseSeen || phraseHeard || !historyFirstContact(undefined);
+  }
+
+  /**
+   * First contact by the history read when the screen opened (G1 item 4), over
+   * `bars` of the item (printed positions; absent, the whole). True where no
+   * history could be read: the visit's own flags then decide, as before G1.
+   */
+  function historyFirstContact(bars: readonly [number, number] | undefined, from: EncounterHistory | null = history): boolean {
+    if (!encounterTarget || !from) return true;
+    return firstContactIn({ ...encounterTarget, ...(bars === undefined ? {} : { bars }) }, from, visit);
+  }
+
+  /**
+   * First contact for a run of anything but a phrase (G1 item 4; the
+   * reviewer's answer 3): no run of it on this visit before this one, no
+   * playback of it this visit, and nothing in the history over the bars the
+   * run covered. An audit fact, written on the run, gating nothing: a piece
+   * played again passes as it always did.
+   */
+  function firstContactOfRun(bars: readonly [number, number] | undefined): boolean {
+    return sightReadAttempts === 0 && !phraseHeard && historyFirstContact(bars);
+  }
+
+  /** The printed bars a run covered (1-based positions), from what the engine judged under. */
+  function barsOfRun(range: { fromMeasure: number; toMeasure: number } | undefined): [number, number] | undefined {
+    return range === undefined ? undefined : [range.fromMeasure + 1, range.toMeasure + 1];
+  }
+
+  /** What opened this screen, as an encounter keeps it (G1): the run header's `opened`, in its own shape. */
+  function encounterSource(): EncounterSource {
+    const rungId = judgingRungId();
+    return {
+      tab: router.route.tab,
+      ...(todaySlot === undefined ? {} : { slot: todaySlot }),
+      ...(rungId === undefined ? {} : { rung: rungId }),
+      ...(tourId === undefined ? {} : { tour: tourId }),
+      ...(transferIntent === undefined ? {} : { intent: 'transfer' as const }),
+    };
+  }
+
+  /**
+   * The notation has been drawn for the learner: one viewing, once a visit
+   * (G1). Never in Blind, where the engraving is hidden — toggling Blind off
+   * opens the screen again, a new visit that draws it.
+   */
+  function noteViewing(): void {
+    if (viewingWritten || blind || !item || !encounterTarget) return;
+    viewingWritten = true;
+    void recordEncounter({ kind: 'viewed', itemId: item.id, material: encounterTarget.material, source: encounterSource(), visit });
+  }
+
+  /** A playback to the learner, by the kind their action was (G1). */
+  function noteHearing(kind: Exclude<EncounterKind, 'viewed'>, bars: readonly [number, number] | undefined): void {
+    if (!item || !encounterTarget) return;
+    void recordEncounter({
+      kind,
+      itemId: item.id,
+      material: encounterTarget.material,
+      source: encounterSource(),
+      visit,
+      ...(bars === undefined ? {} : { bars }),
+    });
   }
 
   function showSummary(score: SessionScore): void {
@@ -3171,10 +3288,20 @@ export function ScoreScreen(router: Router): HTMLElement {
     // Nor one the phrase was played to the learner *before* (T40): the reason
     // is the same, and `phraseHeard` holds it for the phrase, not the run.
     const sightReading = item !== undefined && isSightReading(item);
-    const alreadyMet = sightReadAttempts > 0 || phraseSeen;
+    // What the history holds of the phrase (G1), for the sentence that says
+    // why a reading is refused: a run of it, a playback, or a viewing on
+    // another visit.
+    const metBefore = sightReading && encounterTarget && history ? familiarityIn(encounterTarget, history, { visit }) : null;
+    const ranBefore = metBefore !== null && (metBefore.attempted !== null || metBefore.partly.attempted !== null);
+    const heardBefore = phraseHeard || (metBefore !== null && (metBefore.heard !== null || metBefore.partly.heard !== null));
+    const alreadyMet = sightReadAttempts > 0 || phraseSeen || ranBefore;
     // One rule, read once more before this run is counted: `judged` above
     // asked the same question.
     const sightReadRepeat = firstReadingRefused();
+    // First contact (G1 item 4): sight-reading's claim for a phrase; for
+    // anything else the audited fact of first contact over the bars the run
+    // covered, read before this run is counted.
+    const firstContact = sightReading ? !sightReadRepeat : firstContactOfRun(barsOfRun(score.judgedUnder));
     if (item !== undefined) sightReadAttempts += 1;
     // Such a run is recorded (C1, reviewer decision 3): it is practice, and
     // its minutes, its attempt and its row are kept. It is not a reading, so
@@ -3205,9 +3332,11 @@ export function ScoreScreen(router: Router): HTMLElement {
     // What the run measured, by the record's one definition (C1), read once:
     // the record keeps it, and the sheet's *Accents* line reads the same value
     // so the two cannot disagree (U46).
-    /** The generated phrase the run played, for its material (D4), where it was one. */
-    const playedPhrase =
-      phraseGenerator !== undefined && phraseWritten !== undefined ? { phrase: { generator: phraseGenerator, ...phraseWritten } } : {};
+    /** The generated phrase the run played, for its material (D4), where it was one; an import's loaded bytes (G1). */
+    const playedPhrase = {
+      ...(phraseGenerator !== undefined && phraseWritten !== undefined ? { phrase: { generator: phraseGenerator, ...phraseWritten } } : {}),
+      ...(loadedIdentity === undefined ? {} : { loaded: loadedIdentity }),
+    };
     const measures = measuresOf(score, {
       heard,
       technique,
@@ -3266,7 +3395,9 @@ export function ScoreScreen(router: Router): HTMLElement {
             ...(rhythmRun ? { rhythmOnly: true } : {}),
             // What the run was and what it measured, by its own definitions,
             // with every channel it did not measure marked so (C1).
-            ...runHeader(score, sightReading ? { unseen: !sightReadRepeat, recipe: phraseRecipe(item.id) } : {}, demonstrated),
+            // First contact on every run (G1): a phrase's with its recipe; a
+            // piece's, an excerpt's or an import's as the audited fact alone.
+            ...runHeader(score, sightReading ? { unseen: firstContact, recipe: phraseRecipe(item.id) } : { unseen: firstContact }, demonstrated),
             ...measures,
           }
         : null;
@@ -3291,12 +3422,16 @@ export function ScoreScreen(router: Router): HTMLElement {
     // rather than swallowed — practice history is the one thing here that
     // cannot be regenerated.
     function save(result: RunResult, then?: () => void): void {
-      // The run as answered is another observation (a self-report): its
-      // evidence is its own.
-      const evidence = result === run ? runEvidence : evidenceOf(result);
       if (phraseSeed !== undefined) seedsOnRecord.add(phraseSeed);
-      // Stamped with the evidence's own version (C4a, L66), not the observation's.
-      void recordRun(evidence === undefined ? result : { ...result, ...stampedEvidence(evidence) })
+      void confirmFirstContact(result)
+        .then((checked) => {
+          // The run as answered is another observation (a self-report): its
+          // evidence is its own — and so is a run another tab's encounter
+          // turned from a first contact (G1).
+          const evidence = checked === run ? runEvidence : evidenceOf(checked);
+          // Stamped with the evidence's own version (C4a, L66), not the observation's.
+          return recordRun(evidence === undefined ? checked : { ...checked, ...stampedEvidence(evidence) });
+        })
         .then((row) => {
           // The heading follows the store (T37): a master-standard run reads
           // *Passed* until the row it was written into says what it came to,
@@ -3314,6 +3449,40 @@ export function ScoreScreen(router: Router): HTMLElement {
         .catch((cause: unknown) => {
           status.textContent = `Could not save this run: ${String(cause)}`;
         });
+    }
+
+    /**
+     * A run about to be stored as a first contact is read against the history
+     * once more (G1; the visit id's two-tab case): a viewing or a playback
+     * another tab wrote after this screen read it is prior contact too. Only
+     * ever turns a first contact into none; where the run was a reading, the
+     * sheet says so, as it would have had the history shown it at the start.
+     */
+    async function confirmFirstContact(result: RunResult): Promise<RunResult> {
+      if (result.unseen !== true || !encounterTarget) return result;
+      const target = encounterTarget;
+      const fresh = await historyFor(target, history?.byId === undefined ? {} : { byId: history.byId }).catch(() => null);
+      if (fresh === null) return result;
+      const bars = sightReading ? undefined : barsOfRun(result.range);
+      if (historyFirstContact(bars, fresh)) return result;
+      if (!sightReading) return { ...result, unseen: false };
+      const now = familiarityIn(target, fresh, { visit });
+      const sentence =
+        now.attempted !== null || now.partly.attempted !== null
+          ? SUMMARY_TEXT.sightReadRepeat
+          : now.heard !== null || now.partly.heard !== null
+            ? SUMMARY_TEXT.sightReadHeard
+            : SUMMARY_TEXT.sightReadSeen;
+      if (title.textContent === 'Passed') setHeading('Run finished');
+      let note = sheet.querySelector<HTMLElement>('#summary-note');
+      if (!note) {
+        note = document.createElement('p');
+        note.className = 'summary-note';
+        note.id = 'summary-note';
+        title.after(note);
+      }
+      note.textContent = [note.textContent, sentence].filter((part) => part !== null && part !== '').join(' ');
+      return { ...result, unseen: false, passed: false, masterEligible: false };
     }
     if (run && askSelfReport) {
       pendingRecord = (report) => {
@@ -3379,7 +3548,9 @@ export function ScoreScreen(router: Router): HTMLElement {
       said.push(SUMMARY_TEXT.notMeasured);
       if (input === 'none') said.push(SUMMARY_TEXT.notMeasuredNoInput);
     }
-    if (sightReadRepeat) said.push(alreadyMet ? SUMMARY_TEXT.sightReadRepeat : SUMMARY_TEXT.sightReadHeard);
+    // Why a reading is refused, in the learner's words: read before, heard
+    // (on any visit), or looked at on an earlier visit (G1).
+    if (sightReadRepeat) said.push(alreadyMet ? SUMMARY_TEXT.sightReadRepeat : heardBefore ? SUMMARY_TEXT.sightReadHeard : SUMMARY_TEXT.sightReadSeen);
     if (said.length > 0) {
       const note = document.createElement('p');
       note.className = 'summary-note';
@@ -4328,12 +4499,30 @@ export function ScoreScreen(router: Router): HTMLElement {
         const row = await getImport(item.id);
         if (typeof row?.data !== 'string') throw new Error('the imported file is missing');
         musicXml = row.data;
+        // An import is its stored bytes (G1): hashed here, where they are in
+        // hand, so a duplicate import under a new id is the same material.
+        loadedIdentity = await textIdentity(musicXml);
       } else {
         const response = await fetch(contentUrl(item.file as string));
         if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
         const bytes = new Uint8Array(await response.arrayBuffer());
         musicXml = toMusicXml(bytes);
       }
+      // What a run of this item plays, and what the learner had met of it
+      // before this visit (G1): read beside the engraving, answered before play.
+      encounterTarget = {
+        itemId: item.id,
+        material: playedMaterial(item, {
+          ...(phraseGenerator !== undefined && phraseWritten !== undefined ? { phrase: { generator: phraseGenerator, ...phraseWritten } } : {}),
+          ...(loadedIdentity === undefined ? {} : { loaded: loadedIdentity }),
+        }),
+        idNamesMaterial: !sightReading,
+      };
+      const target = encounterTarget;
+      historyRead = catalogIndex()
+        .then((index) => index.byId, () => undefined)
+        .then((byId) => historyFor(target, byId === undefined ? {} : { byId }))
+        .catch(() => null);
       // The model comes from an instance with no draw range: a windowed OSMD
       // clamps its cursor iterator, so extracting from the renderer's own view
       // would yield a model that stops at the end of the first window.
@@ -4350,6 +4539,8 @@ export function ScoreScreen(router: Router): HTMLElement {
         return;
       }
       model = loaded;
+      // The whole of it, in printed bars, which a run over every bar covers (G1).
+      encounterTarget = { ...encounterTarget, extent: loaded.sourceMeasureCount };
 
       renderer = await WindowRenderer.create({
         container: stage,
@@ -4409,6 +4600,8 @@ export function ScoreScreen(router: Router): HTMLElement {
       // does not commit to a position: the first `showStep` is what puts notes
       // on the screen, and without it the stage is two empty divs.
       renderer.showStep(0);
+      // The notation is on the screen: this visit's viewing (G1).
+      noteViewing();
 
       // The range this piece uses, not all 88 keys. With the full keyboard
       // on a 360 px phone every key is about seven pixels, and the blue key
@@ -4510,6 +4703,9 @@ export function ScoreScreen(router: Router): HTMLElement {
       // leaves it so, never a practice run in the offer's place. Started when the screen was built,
       // beside the score's own fetch.
       if (offerRead) settleOffer(await offerRead);
+      // And what the learner had met of it (G1), before anything can start:
+      // a run's first contact is judged against it.
+      history = historyRead === null ? null : await historyRead;
 
       input = pickInput();
       mode = input === 'none' ? settings.defaultModeWithoutInput : settings.defaultModeWithInput;

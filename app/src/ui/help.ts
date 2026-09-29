@@ -235,6 +235,14 @@ export const SUMMARY_TEXT = {
    */
   sightReadHeard: 'Sight-reading counts only on music you have not heard — this run is kept as practice.',
   /**
+   * A sight-read of a phrase the learner looked at on an earlier visit and
+   * never played or heard (G1): the notation has been read before, so the
+   * run is not a first reading of it. The viewing is a stored encounter now,
+   * read back when the phrase is opened again; looking at it on this visit,
+   * before playing, is what sight-reading is and costs nothing.
+   */
+  sightReadSeen: 'Sight-reading counts only on music you have not seen before — this run is kept as practice.',
+  /**
    * The second half of a performance's heading when the piece was played to
    * the learner part way through it (T40): the take is kept as practice, not
    * as a performance, and the *Changed* line under it names the bar.

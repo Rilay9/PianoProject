@@ -24,6 +24,7 @@ import {
 import { getSetupRecord } from '../../data/setupStore';
 import { openDatabase } from '../../data/db';
 import { forgetCachedProgress } from '../../data/progressStore';
+import { forgetCachedEncounters } from '../../data/encounterStore';
 import { directoryPickerAvailable } from '../../data/folderLibrary';
 import { getThemePreference, setThemePreference, type ThemePreference } from '../theme';
 import {
@@ -632,7 +633,8 @@ export function SettingsScreen(router: Router): HTMLElement {
           void (async () => {
             const db = await openDatabase();
             if (!db) return;
-            for (const store of ['progress', 'sessions', 'streak', 'skills'] as const) {
+            // What the learner met, beside the runs, is practice history too (G1).
+            for (const store of ['progress', 'sessions', 'streak', 'skills', 'encounters', 'contacts'] as const) {
               await db.clear(store);
             }
             // The stores are cleared; the write-through caches in front of them
@@ -641,6 +643,7 @@ export function SettingsScreen(router: Router): HTMLElement {
             // minutes straight back into the emptied store — the reset was
             // undone rather than merely unrendered.
             forgetCachedProgress();
+            forgetCachedEncounters();
             status.textContent = 'Progress reset. Reload the app to see it.';
           })();
         },
