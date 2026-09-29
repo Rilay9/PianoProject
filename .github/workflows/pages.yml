@@ -37,6 +37,29 @@ jobs:
         with:
           python-version: '3.11'
 
+      # CI's conversion cache and render manifest: the same path, key and
+      # restore-keys as ci.yml's "Restore content build cache", so the deploy
+      # starts from the cache the tested build left (Q75). Restore only, never
+      # save: CI's job is the one that writes this cache, and a deploy should
+      # not write one the tested build did not (actions/cache would save on a
+      # miss; actions/cache/restore does not). The cache changes how long the
+      # content build takes and never what it produces: each entry carries its
+      # own key, and a miss converts the same sources to the same files
+      # (docs/03 §3a). In particular it does not change the placeholders. This
+      # job's build is the strict one (PIANOPATH_STRICT_LICENSE below), and a
+      # strict build placeholders the CC BY-NC editions and the PDMX rows whose
+      # composition is not public domain however warm the cache is (docs/03
+      # §3a, "The public build's placeholders").
+      - name: Restore content build cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            build/cache
+            build/render-manifest.json
+          key: content-${{ hashFiles('tools/content/*.py', 'content/sources/*.json', 'app/package-lock.json') }}
+          restore-keys: |
+            content-
+
       - name: Install Python content-pipeline dependencies
         run: pip install -r tools/content/requirements.txt
 
