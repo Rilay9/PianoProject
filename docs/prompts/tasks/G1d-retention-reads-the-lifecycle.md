@@ -38,3 +38,5 @@ If `session.ts` cannot import `materialOfItem` or `projectIn` without a cycle, s
 ## Report
 
 Judgement first: Today's review row before and after with a paused project, at 342 × 740; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes. Entry 142; every run file under `docs/prompts/runs/G1d/`; the entry as `docs/prompts/runs/G1d/ENTRY.md`, starting `### Entry 142 — G1d`.
+
+**Landed 2026-09-29** (Entry 142; d59f2ef8, merged 85dee758); handoff `handoffs/d59f2ef8.md`.
