@@ -9,7 +9,7 @@
  * evidence: it marks no item passed and never makes the rung complete
  * (`04` §3f).
  */
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
@@ -238,6 +238,65 @@ test.describe('Skills review', () => {
       .getByRole('button', { name: 'Drill it' })
       .click();
     await expect(page).toHaveURL(/#\/(score|drill)\//);
+  });
+});
+
+/**
+ * The two leaps (F2b; the reviewer's required change on F2a, `docs/review/responses/fc91e5a.md`,
+ * part 2), on the glass at the owner's width. "Leaps" was one entry: 2.1 teaches the left hand's
+ * fourth and fifth, and the entry a learner there opened described jumping "an octave or more" at
+ * Grades 5–6, with stride and oom-pah exercises to drill. The beginner's leap is its own concept
+ * now: its entry is filed under Stage 2, says it is taught in 2.1, and its finder asks for a fourth
+ * or fifth; the advanced jump keeps its own entry, "Wide leaps", filed where its technique rungs
+ * are, with its own finder. Each name is read whole at this width, and no entry is called just
+ * "Leaps".
+ */
+test.describe('the two leaps on Skills (F2b)', () => {
+  test.use({ viewport: { width: 342, height: 740 } });
+
+  /** A one-line title is read whole where nothing of it is cut by the ellipsis: a name cut to "Leaps: an o…" says neither leap. */
+  const readWhole = (title: Locator): Promise<boolean> => title.evaluate((node) => node.scrollWidth <= node.clientWidth);
+
+  test('the leap a learner at 2.1 opens is the fourth or fifth; the octave-or-more jump keeps its own entry', async ({ page }) => {
+    await page.goto('/#/plan/skills');
+    await expect(page.locator('#skills-list .list-row').first()).toBeVisible();
+    await page.locator('#skills-stage').selectOption('2');
+    const beginner = page.locator('#skills-list .list-row[data-concept="leap"]');
+    await expect(beginner).toBeVisible();
+    await expect(beginner.locator('.list-row__title')).toHaveText('Leaps: a fourth or fifth');
+    expect(await readWhole(beginner.locator('.list-row__title')), 'the beginner name is cut').toBe(true);
+    await expect(beginner.locator('.list-row__meta')).toContainText('Stage 2 · core');
+    const block = page.locator('#skills-list .skill-concept', { has: page.locator('.list-row[data-concept="leap"]') });
+    await expect(block).toContainText('Taught in Hands together: the left hand holds');
+    await expect(block).not.toContainText(/octave|Grade/);
+    await expect(page.locator('#skills-list .list-row[data-concept="leaps"]'), 'the advanced jump is not filed under Stage 2').toHaveCount(0);
+    await beginner.getByRole('button', { name: 'Find more' }).click();
+    const sheet = page.locator('#finder-sheet');
+    await expect(sheet).toBeVisible();
+    await expect(sheet).toContainText('What this needs: reading and playing a jump of a fourth or fifth without feeling for it.');
+    await expect(sheet).toContainText('Level: easy, elementary.');
+    await expect(page.locator('#finder-prompt')).not.toHaveValue(/octave or more|Grade/);
+    await page.locator('#finder-sheet-close').click();
+    await expect(sheet).toHaveCount(0);
+
+    await page.locator('#skills-stage').selectOption('7');
+    const advanced = page.locator('#skills-list .list-row[data-concept="leaps"]');
+    await expect(advanced).toBeVisible();
+    expect(await readWhole(advanced.locator('.list-row__title')), 'the advanced name is cut beside Drill it and Find more').toBe(true);
+    await expect(advanced.locator('.list-row__title')).toHaveText('Wide leaps');
+    await expect(advanced.locator('.list-row__meta')).toContainText('Stage 7, 9');
+    await advanced.getByRole('button', { name: 'Find more' }).click();
+    await expect(sheet).toContainText('What this needs: jumping accurately to a note you cannot feel for.');
+    await expect(sheet).toContainText('Level: advanced, Grade 5 to 6.');
+    await expect(page.locator('#finder-prompt')).toHaveValue(/leaps of an octave or more/);
+    await page.locator('#finder-sheet-close').click();
+
+    // No two entries share either name, over every stage, and none is called just "Leaps".
+    await page.locator('#skills-stage').selectOption('all');
+    const showAll = page.locator('#skills-show-all');
+    for (let i = 0; i < 12 && (await showAll.count()) > 0; i += 1) await showAll.click();
+    const titles = await page.locator('#skills-list .list-row[data-concept] .list-row__title').allTextContents();
+    expect(titles.filter((title) => /leaps/i.test(title)).sort()).toEqual(['Leaps: a fourth or fifth', 'Wide leaps']);
   });
 });
 

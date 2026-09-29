@@ -31,6 +31,7 @@ import { buildSession, readingOptions, swapOptions, taughtAtRung, type SessionSl
 import { targetDemandsFor } from '../../src/curriculum/eligibility';
 import { indexCatalog } from '../../src/curriculum/selectors';
 import { EVERY_DECLARED_SKILL } from '../../src/curriculum/skillActivation';
+import { defaultActiveTracks } from '../../src/curriculum/tracks';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
 import type { SessionRow } from '../../src/data/db';
 import { READING_CONTROLS } from '../../src/engine/readingControls';
@@ -555,5 +556,64 @@ describe('the core teaches the leap at 2.1 and the note outside the key at 3.3 (
       .filter(([rung, members]) => !rung.startsWith('practice.') && [...members].some((one) => one.startsWith('practice.')))
       .map(([rung]) => rung);
     expect(outside, 'a practice prerequisite changed another rung’s ancestry').toEqual([]);
+  });
+});
+
+/**
+ * The practice floor stands on 1.1 (F2b; the reviewer's required change on F2a,
+ * `docs/review/responses/fc91e5a.md`, part 1). `practice.1` named no core rung, so its
+ * path stopped at Stage 0 and the five-finger pattern and *Ode to Joy* on it read as
+ * untaught, though a learner there stands on 1.1. It names 1.1 now: its path, and every
+ * practice rung's after it, holds 1.1 and no later Stage 1 rung, so what 1.1 teaches is
+ * taught on the track and the steps-and-skips study's skips (1.5's) are not. The track
+ * opens once 1.1 is met, set aside or behind the placement (`strandsOf`): from the
+ * second rung of Stage 1 (`docs/02` D8a). Each case fails on the stage file before F2b.
+ */
+describe('the practice floor stands on 1.1 (F2b)', () => {
+  const taught = (rung: string, demand: string): boolean | undefined => taughtAtRung(SHIPPED, rung)?.(demand);
+
+  it('every practice rung’s path holds 1.1 and no later Stage 1 rung; steps are taught there and skips are not', () => {
+    const ancestry = ancestryOf(SHIPPED);
+    for (let n = 1; n <= 5; n += 1) {
+      const rung = `practice.${String(n)}`;
+      const stageOne = [...(ancestry?.get(rung) ?? [])].filter((one) => one.startsWith('1.')).sort();
+      expect(stageOne, `${rung}'s Stage 1 path`).toEqual(['1.1']);
+    }
+    expect(taught('practice.1', 'interval.step'), 'interval.step at practice.1: 1.1 teaches it, on its path').toBe(true);
+    expect(taught('practice.1', 'interval.skip'), 'interval.skip at practice.1: 1.5 teaches it, off its path').toBe(false);
+    expect(taught('practice.3', 'interval.step'), 'interval.step at practice.3, which stands on practice.1').toBe(true);
+  });
+
+  it('Today’s practice row: absent for a learner placed at 1.1, there from 1.2, and the floor case at 1.5 unchanged', () => {
+    const items = CATALOG;
+    const practiceRows = (startAt: string): string[] =>
+      buildSession({
+        curriculum: SHIPPED,
+        catalog: indexCatalog(items),
+        items,
+        states: rungState([], SHIPPED, VOCABULARY_V0, TODAY),
+        rows: [],
+        learned: [],
+        lastPlayed: new Map(),
+        activeTracks: defaultActiveTracks(SHIPPED),
+        minutes: 30,
+        startAt,
+        today: TODAY,
+      })
+        .slots.filter((slot) => {
+          const claim = slot.claim;
+          const rung = claim !== undefined && 'rung' in claim ? claim.rung.id : undefined;
+          return rung?.startsWith('practice.') === true;
+        })
+        .map((slot) => `${slot.kind} ${slot.item?.id ?? '-'} (${slot.claim !== undefined && 'rung' in slot.claim ? slot.claim.rung.id : '-'})`);
+    expect(defaultActiveTracks(SHIPPED), 'the practice track is on by default').toContain('practice');
+    expect(practiceRows('1.1'), 'placed at 1.1: practice.1 waits for 1.1').toEqual([]);
+    expect(practiceRows('1.2'), 'placed at 1.2: 1.1 is behind the placement, so the track is open').toEqual([
+      'new exercise.five-finger.c-major.right (practice.1)',
+    ]);
+    expect(practiceRows('1.5'), 'placed at 1.5 (F2’s floor case in today.spec)').toEqual([
+      'new exercise.five-finger.c-major.right (practice.1)',
+    ]);
+    expect(practiceRows('2.1'), 'placed at 2.1: the placement puts the whole track behind (holding already)').toEqual([]);
   });
 });

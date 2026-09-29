@@ -478,22 +478,33 @@ class TestExcerptsOnTheBuild(Built):
         `texture.left-hand-pattern` is one detector for alberti, waltz, oom-pah, boogie and stride
         (claims.CONCEPT_DEMANDS): a rung reached through it is a pattern in the notes, not the rung's
         pattern, and the report says so beside the line, where F reads it.
+
+        Revised (F2b part 2). Old assumption: the left-hand pattern is the only demand several concepts
+        share. The leap is now two concepts, the beginner's `leap` (a fourth or fifth, 2.1) and the
+        advanced `leaps` (an octave or more, `blues.7`, `ragtime.9`), and the one detector finds a fourth
+        or wider under both: a Bach menuet's fourths make an excerpt a candidate for `blues.7` by that
+        reading, and the line now says the demand is shared, which is the truth F needs there.
         """
         import claims
         import excerpts as X
 
-        sharing = sorted(c for c, d in claims.CONCEPT_DEMANDS.items() if d == "texture.left-hand-pattern")
+        sharing: dict[str, list[str]] = {}
+        for concept, demand in claims.CONCEPT_DEMANDS.items():
+            sharing.setdefault(demand, []).append(concept)
+        shared = {demand: sorted(concepts) for demand, concepts in sharing.items() if len(concepts) > 1}
+        self.assertEqual(shared["interval.leap"], ["leap", "leaps"])
         report = X.candidate_rungs(self.catalog, self.curriculum)
-        found = 0
+        found: dict[str, int] = {}
         for row in report:
             for candidate in row["candidates"]:
                 for claim in candidate["established"]:
-                    if claim["kind"] == "demand" and claim["id"] == "texture.left-hand-pattern" and claim["from"].startswith("concept "):
-                        found += 1
-                        self.assertEqual(sorted(claim.get("sharedBy") or []), sharing, f"{row['item']} at {candidate['rung']}")
-                    elif claim["id"] != "texture.left-hand-pattern":
-                        self.assertNotIn("sharedBy", claim, f"{row['item']} at {candidate['rung']}: {claim['id']}")
-        self.assertGreater(found, 0, "no candidate reached through the left-hand pattern to read")
+                    where = f"{row['item']} at {candidate['rung']}: {claim['id']}"
+                    if claim["kind"] == "demand" and claim["id"] in shared and claim["from"].startswith("concept "):
+                        found[claim["id"]] = found.get(claim["id"], 0) + 1
+                        self.assertEqual(sorted(claim.get("sharedBy") or []), shared[claim["id"]], where)
+                    else:
+                        self.assertNotIn("sharedBy", claim, where)
+        self.assertGreater(found.get("texture.left-hand-pattern", 0), 0, "no candidate reached through the left-hand pattern to read")
         self.assertIn("one detector", X.candidate_rungs_markdown(report))
 
     def test_on_no_rung_and_no_named_section(self) -> None:
@@ -985,6 +996,12 @@ class TestPlacementReconciled(Built):
         self.assertEqual(introduced[("demand", "interval.leap")]["established"], 0, "1.5 introduces the leap; no option establishes it")
         claims, _introduced = self.claims_of("2.1")
         self.assertGreater(claims[("demand", "interval.leap")]["established"], 0, "2.1's options establish the leap")
+        # Added (F2b part 2): the claim and the introduction come from the beginner's `leap` (a fourth or
+        # fifth); `blues.7` and `ragtime.9` still claim the demand through the advanced `leaps`, as before.
+        self.assertEqual(introduced[("demand", "interval.leap")]["from"], "introduces leap")
+        self.assertEqual(claims[("demand", "interval.leap")]["from"], "concept leap")
+        for rung in ("blues.7", "ragtime.9"):
+            self.assertEqual(self.claims_of(rung)[0][("demand", "interval.leap")]["from"], "concept leaps", rung)
         self.assertIn("this rung only introduces it", self.text("1.5"), "1.5's lesson says it introduces the leap")
         self.assertIn("a fourth and a fifth", self.text("2.1"), "2.1's lesson names the leaps its left hand makes")
 
@@ -1026,6 +1043,27 @@ class TestPlacementReconciled(Built):
                 self.assertEqual([i for i in items if rows[i]["earliest"]], [],
                                  f"{rung}: an option a practice rung it stands on lists is read there, not here")
                 self.assertEqual([o["item"] for o in rows.values() if o["untaught"]], [], f"{rung}: nothing read untaught here")
+
+    def test_the_practice_floor_stands_on_1_1_and_its_false_rows_are_gone(self) -> None:
+        """
+        F2b (the reviewer's required change on F2a, `responses/fc91e5a.md`, part 1): `practice.1` names 1.1,
+        so the floor's path holds 1.1 and the track opens from the second rung of Stage 1. The report reads
+        the five-finger pattern, *Hot Cross Buns* and *Ode to Joy* at 1.1, which lists them; the one row the
+        floor still reads untaught is the steps-and-skips study's skips, which 1.5 teaches; and no practice
+        rung reads a step untaught, since every one stands on 1.1. Red on the build before F2b, where the
+        floor's path was Stage 0 and its five-finger, *Ode* and study rows read their steps as untaught.
+        """
+        self.assertEqual(self.lessons["practice.1"].get("prerequisites"), ["1.1"])
+        rows = {o["item"]: o for o in self.report["options"] if o["rung"] == "practice.1"}
+        for item_id in ("exercise.five-finger.c-major.right", "song.folk.hot-cross-buns", "song.classical.ode-to-joy.rh"):
+            with self.subTest(read_at_1_1=item_id):
+                self.assertFalse(rows[item_id]["earliest"], f"{item_id}: 1.1 lists it and practice.1 stands on 1.1")
+        self.assertEqual([(o["item"], o["untaught"]) for o in rows.values() if o["untaught"]],
+                         [("exercise.reading.steps-and-skips-c", ["interval.skip"])],
+                         "practice.1: the study's skips (1.5's) are the one row left, and true for a learner at 1.2-1.4")
+        stepped = [(o["rung"], o["item"]) for o in self.report["options"]
+                   if o["rung"].startswith("practice.") and "interval.step" in o["untaught"]]
+        self.assertEqual(stepped, [], "a practice rung reads a step untaught, though every one stands on 1.1")
 
 
 if __name__ == "__main__":
