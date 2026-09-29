@@ -1,6 +1,8 @@
 # Reviewer handoff (latest)
 
-Open handoffs: none.
+Open handoffs, each with its own file:
+
+- **Q47 brief** — `handoffs/f52ebde.md` (respond in `responses/f52ebde.md`). A brief handoff: the MAESTRO performances and the split-hands parity in CI (Q47, Q46); dispatch waits for the lanes' measurement and E2's landing.
 
 Building: **E2** (Entry 107, `responses/12af708.md`), **F2** (Entry 108, `responses/12af708.md`), **D4a** (Entry 109, `responses/1cbc38a.md`; D4 closes on its review), **D5** (Entry 110, `responses/4088dfc.md`); each gets its own handoff when it lands. **G1** approved (`responses/7863bee.md`) and dispatches on D4a's landing.
 
