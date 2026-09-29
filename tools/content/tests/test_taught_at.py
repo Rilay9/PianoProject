@@ -111,14 +111,27 @@ class TestTheListIsTheLessons(Vocabulary):
                         f"{WALK} at classical.6, whose concepts do not name walking-bass; got {errors}")
 
     def test_a_hand_reading_the_note_writes_down_warns_instead(self) -> None:
-        # 3.1 teaches sharps, flats and the accidental that lasts a bar; no rung's concepts name
-        # `accidentals`. The note says so, naming 3.1: a warning, never a silent pass.
-        self.assertEqual(self.errors(self.demands), [])
-        warned = [w for w in self.warnings(self.demands) if "pitch.chromatic" in w and "'3.1'" in w]
-        self.assertEqual(len(warned), 1, f"pitch.chromatic at 3.1 is a hand reading and is warned; got {self.warnings(self.demands)}")
-        errors = self.errors(self.with_taught_at("pitch.chromatic", ["3.1"], note="Read by hand from a lesson."))
-        self.assertTrue(any("pitch.chromatic" in e and "'3.1'" in e for e in errors),
-                        f"pitch.chromatic at 3.1 with a note that does not name 3.1 fails; got {errors}")
+        """
+        A listed rung whose concepts do not name the demand is a hand reading: warned where the note
+        names the rung, failed where it does not, and failed whatever the note says where the rung
+        only introduces the demand.
+
+        Revised (F2a). Old assumption: the committed vocabulary holds a hand reading to read, 3.1's
+        accidentals. F2a moved them to 3.3, which names them, and 3.1 introduces them; so the case is
+        constructed on 3.2, whose concepts name neither `chromatic` nor `accidentals`, and 3.1 is the
+        introducing rung no note may list.
+        """
+        errors = self.errors(self.with_taught_at("pitch.chromatic", ["3.2"], note="3.2 reads it by hand."))
+        self.assertEqual(errors, [], "pitch.chromatic at 3.2 with a note naming 3.2 is a warning, not an error")
+        warned = [w for w in self.warnings(self.with_taught_at("pitch.chromatic", ["3.2"], note="3.2 reads it by hand."))
+                  if "pitch.chromatic" in w and "'3.2'" in w]
+        self.assertEqual(len(warned), 1, "pitch.chromatic at 3.2 is a hand reading and is warned")
+        errors = self.errors(self.with_taught_at("pitch.chromatic", ["3.2"], note="Read by hand from a lesson."))
+        self.assertTrue(any("pitch.chromatic" in e and "'3.2'" in e for e in errors),
+                        f"pitch.chromatic at 3.2 with a note that does not name 3.2 fails; got {errors}")
+        errors = self.errors(self.with_taught_at("pitch.chromatic", ["3.1"], note="3.1 reads it by hand."))
+        self.assertTrue(any("pitch.chromatic" in e and "'3.1'" in e and "only introduces it" in e for e in errors),
+                        f"pitch.chromatic at 3.1, which introduces accidentals: no note makes it a teaching rung; got {errors}")
 
     def test_jazz_6_naming_the_walking_bass_must_make_the_list(self) -> None:
         # Revised (F2): blues.6 for blues.5, which introduces the walking bass and so may not be listed.
@@ -130,22 +143,29 @@ class TestTheListIsTheLessons(Vocabulary):
 
     def test_the_committed_lists_are_the_lessons_readings(self) -> None:
         """
-        The committed vocabulary holds together, and what the build says about it is exactly what
-        the entry says: 1.5's leap and 3.1's accidentals are hand readings the notes name.
+        The committed vocabulary holds together and every listed rung is one whose concepts name the
+        demand: no hand reading is left, so the build warns about none.
 
         Revised (F2, L110). Old assumption: four warnings, `latin` naming walking-bass (its lesson
         teaches a tumbao, never a walking bass) and 1.1's steps read by hand beside 1.5's and 3.1's.
         F2 removed `latin`'s concept and named `steps` in 1.1's concepts, so the derivation gives
-        1.1 itself. 1.5's leap and 3.1's accidentals stay hand readings: moving either to the
-        rung's `introduces` list takes the demand off the whole core path, which is F2's question 1.
+        1.1 itself.
+
+        Revised (F2a; the reviewer's required change, `responses/b41e19e.md`). Old assumption: 1.5's
+        leap and 3.1's accidentals stay hand readings, warned. No option on either rung establishes
+        its demand, and a hand reading may not grant taught status where no option does: 1.5 and 3.1
+        now introduce them, 2.1 and 3.3 name them, and the two notes that read the lessons by hand
+        are gone.
         """
         self.assertEqual(self.errors(self.demands), [])
-        warnings = self.warnings(self.demands)
-        expected = [("interval.leap", "1.5"), ("pitch.chromatic", "3.1")]
-        for demand_id, rung in expected:
-            self.assertEqual(sum(1 for w in warnings if f"demand {demand_id} " in w and f"'{rung}'" in w), 1,
-                             f"{demand_id} at {rung}: one warning; got {warnings}")
-        self.assertEqual(len(warnings), len(expected), warnings)
+        self.assertEqual(self.warnings(self.demands), [], "no hand reading and no teaching rung the lists omit")
+        by_id = {d["id"]: d for d in self.demands["demands"]}
+        self.assertEqual(by_id["interval.leap"]["taughtAt"], ["2.1"])
+        self.assertEqual(by_id["pitch.chromatic"]["taughtAt"], ["3.3"])
+        for demand_id, rung in (("interval.leap", "1.5"), ("pitch.chromatic", "3.1")):
+            note = by_id[demand_id].get("taughtAtNote") or ""
+            self.assertFalse(validate._names_rung(note, rung),
+                             f"{demand_id}: the note still reads {rung}, which introduces it, by hand: {note!r}")
 
 
 class TestTheDerivation(Vocabulary):
@@ -171,6 +191,11 @@ class TestTheDerivation(Vocabulary):
         self.assertEqual(derived["rhythm.syncopation"], ["latin.3", "4.5"])
         self.assertEqual(derived["key.signature"], ["3.1", "theory.3"])
         self.assertEqual(derived["texture.hands-together"], ["2.1", "holiday"])
+        # Added (F2a): the leap is 2.1's and the note outside the key 3.3's, read from their concepts;
+        # 1.5 and 3.1 introduce them (`introduces`), which the derivation never reads. It gave blues.7
+        # and ragtime.9 (leaps) and technique.4 (chromatic) while no core rung named either.
+        self.assertEqual(derived["interval.leap"], ["2.1"])
+        self.assertEqual(derived["pitch.chromatic"], ["3.3"])
         # Every other derived rung is the listed one: the lists differ from the derivation only where
         # the entry says, per demand, why.
         ancestry = claims.rung_ancestry(self.curriculum)
@@ -219,6 +244,94 @@ class TestTheWalkingBassOnThePaths(unittest.TestCase):
         self.assertEqual(self.untaught("blues.5"), [WALK], f"{WALK} at blues.5: introduced there, not taught")
         for rung in ("blues.6", "blues.7", "blues.8", "blues.9"):
             self.assertEqual(self.untaught(rung), [], f"{WALK} at {rung}: blues.6 teaches it, on {rung}'s path")
+
+
+class TestTheCoreTeachesWhereAnOptionEstablishes(unittest.TestCase):
+    """
+    F2a (the reviewer's required change on F2, `responses/b41e19e.md`): the leap and the note outside
+    the key are taught on the core where an option on the rung practises them. 1.5 introduces the leap
+    (no option there establishes one) and 2.1 teaches it, where the left hand moves from C to F and to
+    G; 3.1 introduces accidentals (its songs have none) and 3.3 teaches them, where A minor's raised
+    seventh is written as one every time. So a later option carrying either demand is untaught after
+    the introduction and taught from the teaching rung, on the build's reading (`claims.untaught_on`
+    over the rung's ancestry, which the report, D0's record and the app's gate share). Red on the
+    committed vocabulary, which listed 1.5 and 3.1 by hand reading.
+    """
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.curriculum = source_curriculum()
+        cls.ancestry = claims.rung_ancestry(cls.curriculum)
+        _skills, cls.demands = claims.load_vocabulary()
+        cls.lessons = {lesson["id"]: lesson for _s, _u, lesson in claims.lessons_in_order(cls.curriculum)}
+
+    def untaught(self, demand: str, rung: str) -> list[str]:
+        item = {"id": f"song.f2a.{demand}-probe", "demands": [demand],
+                "measurement": {"status": "measured", "established": [demand]}}
+        return claims.untaught_on(item, rung, self.ancestry, self.demands)
+
+    def test_the_leap_is_untaught_after_1_5_and_taught_from_2_1(self) -> None:
+        self.assertIn("leaps", self.lessons["1.5"].get("introduces") or [], "1.5 introduces the leap")
+        self.assertNotIn("leaps", self.lessons["1.5"]["concepts"])
+        self.assertIn("leaps", self.lessons["2.1"]["concepts"], "2.1 names the leap it practises")
+        for rung in ("1.4", "1.5"):
+            self.assertEqual(self.untaught("interval.leap", rung), ["interval.leap"],
+                             f"interval.leap at {rung}: 1.5 only introduces it")
+        for rung in ("2.1", "2.2", "2.5", "3.1"):
+            self.assertEqual(self.untaught("interval.leap", rung), [], f"interval.leap at {rung}: 2.1 teaches it, on its path")
+
+    def test_the_note_outside_the_key_is_untaught_after_3_1_and_taught_from_3_3(self) -> None:
+        self.assertIn("accidentals", self.lessons["3.1"].get("introduces") or [], "3.1 introduces accidentals")
+        self.assertNotIn("accidentals", self.lessons["3.1"]["concepts"])
+        self.assertIn("accidentals", self.lessons["3.3"]["concepts"], "3.3 names the accidentals it practises")
+        for rung in ("3.1", "3.2"):
+            self.assertEqual(self.untaught("pitch.chromatic", rung), ["pitch.chromatic"],
+                             f"pitch.chromatic at {rung}: 3.1 only introduces it")
+        for rung in ("3.3", "3.4", "4.1", "technique.4"):
+            self.assertEqual(self.untaught("pitch.chromatic", rung), [], f"pitch.chromatic at {rung}: 3.3 teaches it, on its path")
+
+    def test_a_track_whose_path_leaves_the_core_before_the_teaching_rung_is_not_credited(self) -> None:
+        # holiday's path leaves the core at 1.5 and blues.3's at 3.2 (E0a): each stood on a hand reading's
+        # rung and no longer inherits a demand its path does not teach.
+        self.assertEqual(self.untaught("interval.leap", "holiday"), ["interval.leap"])
+        self.assertEqual(self.untaught("pitch.chromatic", "blues.3"), ["pitch.chromatic"])
+
+
+class TestThePracticeTrackWalksItsOwnRungs(unittest.TestCase):
+    """
+    F2a item 3, its track half (L109's data half): each practice rung after the first names the one
+    before as its prerequisite, as the app walks the track (`strandsOf`: a track's next rung is the first
+    of its line not passed), so its ancestry holds its own track's earlier rungs and an option two of its
+    rungs list is read where the track first meets it. No rung outside the practice track names a
+    practice rung, so no other rung's ancestry changes. Red on the committed stage file, where the
+    practice rungs carry no prerequisites.
+    """
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.curriculum = source_curriculum()
+        cls.ancestry = claims.rung_ancestry(cls.curriculum)
+        cls.lessons = {lesson["id"]: lesson for _s, _u, lesson in claims.lessons_in_order(cls.curriculum)}
+
+    def test_each_practice_rung_stands_on_the_one_before(self) -> None:
+        for n in range(2, 6):
+            rung, before = f"practice.{n}", f"practice.{n - 1}"
+            with self.subTest(rung=rung):
+                self.assertIn(before, self.lessons[rung].get("prerequisites") or [])
+                self.assertTrue({f"practice.{k}" for k in range(1, n)} <= self.ancestry[rung],
+                                f"{rung}'s ancestry holds every practice rung before it")
+
+    def test_no_rung_off_the_practice_track_stands_on_one(self) -> None:
+        outside = sorted(rung for rung, members in self.ancestry.items()
+                         if not rung.startswith("practice.") and any(m.startswith("practice.") for m in members))
+        self.assertEqual(outside, [], "a practice prerequisite changed another rung's ancestry")
+
+    def test_the_floor_s_shared_options_are_read_where_the_track_first_meets_them(self) -> None:
+        firsts = claims.first_listings(self.curriculum, self.ancestry)
+        for item_id in ("exercise.five-finger.c-major.right", "exercise.reading.steps-and-skips-c"):
+            with self.subTest(item=item_id):
+                self.assertIn("practice.1", firsts[item_id])
+                self.assertNotIn("practice.2", firsts[item_id], "practice.2 stands on practice.1, which lists it")
 
 
 def fixture_path(first: dict) -> dict:

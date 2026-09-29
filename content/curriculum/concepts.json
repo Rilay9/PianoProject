@@ -260,6 +260,23 @@
       }
     },
     {
+      "id": "accidentals",
+      "display": "Accidentals",
+      "finder": {
+        "skill": "reading a sharp, flat or natural written beside a note, and letting it last to the end of the bar",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "accidentals written in the music",
+          "a minor key with its raised seventh"
+        ],
+        "avoid": [
+          "chromatic runs",
+          "changes of key"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
       "id": "add9",
       "display": "Add9 chords",
       "finder": {

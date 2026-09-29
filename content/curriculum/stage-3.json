@@ -22,6 +22,9 @@
                 "major-scale-formula",
                 "key-signature"
               ],
+              "introduces": [
+                "accidentals"
+              ],
               "textFile": "lessons/3.1.md",
               "exerciseOptions": [
                 "exercise.scale.g-major.1oct.similar.right.2",
@@ -192,7 +195,8 @@
                 "relative-minor",
                 "harmonic-minor",
                 "minor-triads",
-                "E7"
+                "E7",
+                "accidentals"
               ],
               "textFile": "lessons/3.3.md",
               "exerciseOptions": [

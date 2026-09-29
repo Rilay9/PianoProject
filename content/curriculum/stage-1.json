@@ -357,6 +357,9 @@
                 "interval-reading",
                 "sight-reading"
               ],
+              "introduces": [
+                "leaps"
+              ],
               "textFile": "lessons/1.5.md",
               "exerciseOptions": [
                 "drill.reading.sight-reading-1",
@@ -529,6 +532,9 @@
                   "why": "No run records which way of practising was used."
                 }
               ],
+              "prerequisites": [
+                "practice.1"
+              ],
               "songOptional": true,
               "estimatedDays": 7,
               "levelBand": [
@@ -586,6 +592,9 @@
                   "why": "No run records which way of practising was used."
                 }
               ],
+              "prerequisites": [
+                "practice.2"
+              ],
               "songOptional": true,
               "estimatedDays": 7,
               "levelBand": [
@@ -641,6 +650,9 @@
                   "says": "Use the method on a passage of your own.",
                   "why": "No run records which way of practising was used."
                 }
+              ],
+              "prerequisites": [
+                "practice.3"
               ],
               "songOptional": true,
               "estimatedDays": 7,
@@ -699,6 +711,9 @@
                   "says": "Use the method on a passage of your own.",
                   "why": "No run records which way of practising was used."
                 }
+              ],
+              "prerequisites": [
+                "practice.4"
               ],
               "songOptional": true,
               "estimatedDays": 7,

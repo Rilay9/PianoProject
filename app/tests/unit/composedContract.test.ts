@@ -466,13 +466,18 @@ describe('the walk is the reader’s, and covers what the diaries read', () => {
       expect(mine.length, `${rung}: no recipe with two moves or more`).toBeGreaterThan(0);
     }
     const at31 = new Set(judged.filter((j) => j.reached.group.rungs.includes('3.1')).map((j) => recipeKey(j.reached.recipe)));
+    // Revised (F2a, Entry 117). Old assumption: the diary's 3.1 recipes carry `accidentals: true`, the note
+    // outside the key the reader added there while 3.1 taught it by a hand reading of its lesson. 3.1 now
+    // introduces accidentals and 3.3 teaches them (no option on 3.1 has one), so the reader at 3.1 says
+    // the next step waits where it asked for one, and the diary's working recipes there are these.
     for (const moved of [
-      { hands: 'both', dottedQuarters: true, ties: true, fifths: [1, -1], accidentals: true },
-      { hands: 'both', leaps: true, dottedQuarters: true, ties: true, fifths: [1, -1], accidentals: true },
+      { hands: 'both', dottedQuarters: true, ties: true, fifths: [1, -1] },
+      { hands: 'both', leaps: true, dottedQuarters: true, ties: true, fifths: [1, -1] },
     ]) {
       const key = [...at31].find((k) => same(Object.entries(JSON.parse(k) as object).sort(), Object.entries(moved).sort()));
       expect(key, `3.1 did not reach ${JSON.stringify(moved)}`).toBeDefined();
     }
+    expect([...at31].filter((k) => (JSON.parse(k) as { accidentals?: boolean }).accidentals === true), '3.1 asked for a note outside the key, which 3.3 teaches').toEqual([]);
   });
 
   it('it is the reachable set, not every combination: where three controls or more are moved, fewer recipes than the combinations of their values', () => {

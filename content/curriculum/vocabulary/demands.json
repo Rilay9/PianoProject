@@ -39,15 +39,7 @@
       "taughtAtNote": "1.1 names steps in its concepts (F2): its five-finger walks are steps; 1.5 teaches reading them as steps."
     },
     { "id": "interval.skip", "display": "A skip (a third)", "dimension": "interval", "detector": "skips", "copedWithBy": "interval-reading", "taughtAt": ["1.5"] },
-    {
-      "id": "interval.leap",
-      "display": "A leap (a fourth or wider)",
-      "dimension": "interval",
-      "detector": "leaps",
-      "copedWithBy": "interval-reading",
-      "taughtAt": ["1.5"],
-      "taughtAtNote": "1.5's song has a leap of a fourth, D up to G, read with the same habit; its video is 'Steps, Skips & Leaps'. Its drill promises steps and skips only."
-    },
+    { "id": "interval.leap", "display": "A leap (a fourth or wider)", "dimension": "interval", "detector": "leaps", "copedWithBy": "interval-reading", "taughtAt": ["2.1"] },
     { "id": "rhythm.eighths", "display": "Eighth notes", "dimension": "rhythm", "detector": "eighths", "copedWithBy": "subdivision", "taughtAt": ["2.2"] },
     { "id": "rhythm.shorter-than-quarter", "display": "Notes shorter than a quarter", "dimension": "rhythm", "detector": "shorterThanQuarter", "copedWithBy": "subdivision", "taughtAt": ["2.2"] },
     {
@@ -81,15 +73,7 @@
       "taughtAt": ["3.1", "theory.3"],
       "taughtAtNote": "3.1 on the core path. theory.3, whose path leaves the core at 2.5, teaches key signatures to three sharps and flats, the order they arrive in and the rules that name the key, and asks for one named without pausing."
     },
-    {
-      "id": "pitch.chromatic",
-      "display": "A note outside the key",
-      "dimension": "accidental",
-      "detector": "chromatic",
-      "copedWithBy": "accidentals",
-      "taughtAt": ["3.1"],
-      "taughtAtNote": "A hand reading of 3.1's lesson: sharps, flats, and an accidental written in the music lasting the rest of its bar. No rung's concepts name accidentals; technique.4's chromatic scale stands on 3.1."
-    },
+    { "id": "pitch.chromatic", "display": "A note outside the key", "dimension": "accidental", "detector": "chromatic", "copedWithBy": "accidentals", "taughtAt": ["3.3"] },
     { "id": "range.beyond-position", "display": "One hand wider than a five-finger position", "dimension": "range", "detector": "beyondPosition", "copedWithBy": "position-shift", "taughtAt": ["2.5"] },
     {
       "id": "texture.hands-together",
