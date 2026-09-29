@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **The lanes measured** — `handoffs/add51b3.md` (respond in `responses/add51b3.md`). A cadence question with the night's data, not a seam: the cap as a meter rule, Q47 now, fix-forwards as continuations, the two gates' cost, the orchestrator's share.
 - **E2a brief** — `handoffs/1b09a1f.md` (respond in `responses/1b09a1f.md`). The E2 review's required change as a fix-forward brief; the Q47 brief's amendment is in the same commit.
 
 Building: **F2** (Entry 108, `responses/12af708.md`), **D4a** (Entry 109, `responses/1cbc38a.md`; D4 closes on its review), **D5** (Entry 110, `responses/4088dfc.md`); each gets its own handoff when it lands. **G1** approved (`responses/7863bee.md`) and dispatches on D4a's landing.
