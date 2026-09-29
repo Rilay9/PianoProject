@@ -10,8 +10,9 @@
  *   (G1d; G1e);
  *   the thin card in the real app: a learner on the placement rung, *Hot Cross Buns* mastered on 0.3
  *   and paused → on no row of Today's card (the repertoire row used to bring it back as *A piece you
- *   know*); placed at 1.1, whose rung asks for it, the rung's row still names it (G1e: a rung's own ask
- *   is not touched).
+ *   know*); placed at 1.1, whose rung asks for a song, another of its songs is asked for; every one of
+ *   1.1's songs paused → none on the card, and the new row says the lesson waits (G1e, the reviewer's
+ *   ruling: a pause reaches a rung's own list too).
  *
  * Nothing is seeded for the first two: the run is played through the screen keys, in time, as
  * `lesson-flow.spec.ts` plays it, and every project change is a tap on the sheet. The last two seed the
@@ -281,10 +282,12 @@ test('a piece passed and unplayed past the window, paused on its sheet: Today st
 // Buns* (0.3's), mastered twenty days ago and not played since, seeded as the G1d case seeds. Kept playable
 // by the review; paused on its sheet, the review stepped past it (G1d) and the repertoire row brought it back
 // as *A piece you know — for variety* — the exposure rule's songs of earlier lessons (`runs/G1e/probe.txt`
-// found this state on the shipped content). Now it is on no row. Placed at 1.1, whose
-// rung lists it and asks for a song, the rung's own row still names it: a rung's ask is not an automatic
-// offer (the brief's item 3, asked of the reviewer).
-test('a piece paused on its sheet is on no row of the thin card; the rung that asks for it still names it (G1e)', async ({ page }) => {
+// found this state on the shipped content). Now it is on no row. Placed at 1.1, whose rung lists it and asks
+// for a song: revised by the reviewer's ruling on G1e (`responses/questions-ea14b1fe.md`), the rung's ask no
+// longer revives it — another of 1.1's songs is what the lesson asks for; and with every one of 1.1's songs
+// paused (the other five seeded as the sheet keeps an id's row), none is on the card, the rung is not taken
+// as met, and the new row says the lesson waits. Old assumption: the rung's row still named the paused piece.
+test('a piece paused on its sheet is on no row of the thin card, nor asked for by its rung; with every song of the rung paused the lesson says it waits (G1e)', async ({ page }) => {
   test.setTimeout(180_000);
   await page.setViewportSize({ width: 342, height: 740 });
   const day = 86_400_000;
@@ -327,11 +330,24 @@ test('a piece paused on its sheet is on no row of the thin card; the rung that a
   await expect(card).not.toContainText('Hot Cross Buns');
   await expect(card).not.toContainText(/paus|put away/i);
 
-  // Placed at 1.1, whose rung lists it and asks for a song: the rung's own row still names it.
+  // Placed at 1.1, whose rung lists it and asks for a song: another of its songs is what the lesson asks for.
+  const OTHERS = ['song.folk.mary-had-a-little-lamb', 'song.folk.merrily-we-roll-along', 'song.folk.au-clair-de-la-lune', 'song.classical.ode-to-joy.rh', 'song.folk.kum-ba-yah.pdmx'];
   await putRows(page, { plan: [placedAt('1.1')] });
   await openToday('1.1');
-  await expect(piece).toHaveCount(1);
-  await expect(piece).toHaveAttribute('data-slot', 'new');
-  await expect(piece).toHaveAttribute('data-claim', 'asked');
-  await expect(piece.locator('.list-row__sub')).toHaveText('This lesson asks for it — not counted yet');
+  await expect(piece, 'the rung revived the paused piece').toHaveCount(0);
+  const asked = card.locator('.list-row[data-slot="new"]');
+  await expect(asked).toHaveAttribute('data-claim', 'asked');
+  expect(OTHERS, 'the new row is not another of 1.1’s songs').toContain(await asked.getAttribute('data-item'));
+  await expect(asked.locator('.list-row__sub')).toHaveText('This lesson asks for it — not counted yet');
+
+  // Every one of 1.1's songs paused: none is revived, and the new row says the lesson waits, with more from it.
+  const at = new Date().toISOString();
+  await putRows(page, {
+    projects: OTHERS.map((itemId) => ({ id: `id:${itemId}`, material: { kind: 'id', itemId }, itemId, state: 'paused', since: at, history: [{ state: 'paused', at, why: 'pause' }] })),
+  });
+  await openToday('1.1');
+  for (const itemId of [ITEM, ...OTHERS]) await expect(card.locator(`.list-row[data-item="${itemId}"]`), `${itemId} is back on the card`).toHaveCount(0);
+  const waits = card.locator('.list-row[data-slot="new"]');
+  await expect(waits).toHaveAttribute('data-claim', 'rung');
+  await expect(waits.locator('.list-row__sub')).toHaveText('This lesson waits on pieces you paused or put away — more from this lesson');
 });

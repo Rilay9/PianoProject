@@ -1,0 +1,15 @@
+session.ts and help.ts at HEAD's bytes (the committed G1e)
+
+
+ RUN  v5.0.0 <worktree>/app
+
+
+ Test Files  2 passed (2)
+      Tests  3 passed (3)
+   Start at  18:15:01
+   Duration  9.96s (tests 90%, transform 7%, import 3%)
+
+
+exit=0
+app/src/curriculum/session.ts restored, sha256 6a124865408aa23ce4a45fa0e78a7856c9a218c7f2adfb34eef73b5de305b5ca
+app/src/ui/help.ts restored, sha256 e2f49b51df2ca05bebd5768ad1475fba424c3c523c05102ebd1c6ab83b703e21

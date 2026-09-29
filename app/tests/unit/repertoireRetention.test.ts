@@ -25,7 +25,9 @@
  * once for the whole card, and no automatic chooser — retention, the
  * repertoire slot's demand-based choice, the fallback ladder's skill, demand
  * and prerequisite steps, the exposure rule, the jam slot — offers a piece the
- * learner paused or put away; a rung's own ask is left as it was.
+ * learner paused or put away; and, by the reviewer's ruling on G1e, neither does
+ * a rung's own ask or the ladder's rung step: the rung's other option is chosen,
+ * and a rung whose every piece is paused revives none and says it waits.
  */
 import { describe, expect, it } from 'vitest';
 import {
@@ -391,8 +393,11 @@ describe('a piece the learner paused or put away is not kept playable by the rev
       expect(buildSession(inputAfter(DUE, { projects: [project(state, PIECE.id)] })).slots, state).toEqual(before);
     }
     expect(buildSession(inputAfter(DUE, { projects: [] })).slots, 'no project').toEqual(before);
-    // Another piece's project, paused or put away, is that piece's.
-    const elsewhere = [project('paused', 'song.now'), project('retired', 'song.now.2')];
+    // Another piece's project, paused or put away, is that piece's. Revised (G1e, the reviewer's ruling on
+    // G1e): these were 2.2's own songs, and a pause now withdraws a rung's song from the card too (the G1e
+    // block below), so the other pieces are ones no rung of this card lists. Old assumption: a paused song
+    // the learner's rung asks for leaves the card as it was.
+    const elsewhere = [project('paused', 'song.elsewhere'), project('retired', 'song.elsewhere.2')];
     expect(buildSession(inputAfter(DUE, { projects: elsewhere })).slots, 'another piece’s project').toEqual(before);
   });
 
@@ -446,12 +451,14 @@ describe('a piece the learner paused or put away is not kept playable by the rev
  * `transferOffer.test.ts`, beside its learner) — so that no chooser has a piece paused or put away among its
  * candidates: on each learner here the card is the card of the catalogue without it. (What the learner
  * played stays played: the exposure rule's *none played since* still reads every play of a family, the one
- * place a paused piece still counts, and none of these learners turns on it.) A rung's own ask (its `runs`,
- * `done` and `measure` asks, this lesson's or the next's) and the ladder's rung step are the curriculum
- * assigning material and are left exactly as they were (the brief's item 3, asked of the reviewer). Silent,
- * as G1d.
+ * place a paused piece still counts, and none of these learners turns on it.) Revised (the reviewer's
+ * required change on G1e, `responses/questions-ea14b1fe.md`): a rung's own ask (its `runs`, `done` and
+ * `measure` asks, this lesson's or the next's) and the ladder's rung step read the same rule — the rung's
+ * other option is chosen; with every piece option paused or put away none is revived, the rung is not taken
+ * as met, and the new row says the lesson waits (the (d) cases). Old assumption: the brief's item 3 left the
+ * rung's own list exactly as it was. Silent otherwise, as G1d.
  */
-describe('a piece paused or put away is offered by no automatic chooser; a rung’s own ask is untouched (G1e; G89)', () => {
+describe('a piece paused or put away is offered by no automatic chooser, a rung’s own ask and the rung step included (G1e; G89; the reviewer’s ruling)', () => {
   const DUE = REPERTOIRE_WINDOW_DAYS + 1;
   const WITHDRAWN: readonly ProjectState[] = ['paused', 'retired'];
   const KEPT: readonly ProjectState[] = PROJECT_STATES.filter((state) => !WITHDRAWN.includes(state));
@@ -635,39 +642,271 @@ describe('a piece paused or put away is offered by no automatic chooser; a rung�
     expect(rows(paused, PIECE.id)).toEqual([expect.stringMatching(/^repertoire \(exposure\): A piece you know — for variety: /)]);
   });
 
-  // --- (d): a rung's own ask ----------------------------------------------------------------------
+  // --- (d): a rung's own list — the reviewer's ruling on G1e -------------------------------------------
+  //
+  // Revised (the reviewer's required change, `responses/questions-ea14b1fe.md` § G1e): a rung assigning a
+  // piece is a teaching relationship, and it does not authorize the app to override a later pause. The rule
+  // reaches the rung's own ask (`runs`, `done`, `measure`, this lesson's and the next lesson's) and the
+  // ladder's rung step: another eligible option of the rung is chosen; with every piece option paused or put
+  // away, none is revived, the rung is not taken as met, and the row that serves the rung says so. Old
+  // assumption (G1e as first built, item 3): a rung's ask and the rung step left the paused piece on the card.
 
-  it('(d) a rung’s own ask is not touched: the song the learner’s rung asks for, paused or put away, is still what the lesson asks for, and the card is as it was (the brief’s item 3)', () => {
-    const before = buildSession(thin()).slots;
-    expect(rows(before, 'song.now')).toEqual(['new (asked): This lesson asks for it — not counted yet']);
-    for (const state of WITHDRAWN) expect(buildSession(thin({ projects: [rowFor(state, 'song.now')] })).slots, state).toEqual(before);
-  });
-
-  it('(d) nor the ladder’s rung step: the rung’s other song, mastered and then paused, is still the repertoire row’s *more music from this lesson* — in the words *a piece you know* (item 3, the reviewer’s question)', () => {
-    // 2.2 lists two songs (the file's curriculum): the new slot takes the first as asked, and the repertoire
-    // row the second from the rung. The learner met 2.1 three days ago, and mastered 2.2's second song two
-    // days ago on a run no rung counted (constructed: `learned` is handed in beside the runs).
+  /** The file's curriculum at 2.2, which lists two songs: the new slot asks for the first, the repertoire row takes the second from the rung. */
+  function atTwoTwo(extra: Partial<BuildInput> = {}): BuildInput {
     const runs = [passedOn21(3), readYesterday(1)];
-    const input: BuildInput = {
+    return {
       curriculum: CURRICULUM,
       catalog: indexCatalog(MEASURED),
       items: MEASURED,
       states: rungState(runs, CURRICULUM, VOCABULARY_V0, TODAY),
       rows: runs,
       readingRows: runs.filter((row) => row.itemId === READING_ROW.id),
-      learned: [{ itemId: 'song.now.2', status: 'mastered', lastPlayed: daysAgo(2) }],
-      lastPlayed: new Map([...runs.map((row): [string, string] => [row.itemId, row.at]), ['song.now.2', daysAgo(2)]]),
+      learned: [],
+      lastPlayed: new Map(runs.map((row): [string, string] => [row.itemId, row.at])),
       activeTracks: ['core'],
       minutes: 30,
       today: TODAY,
+      ...extra,
     };
-    const before = buildSession(input).slots;
+  }
+
+  it('(d) the rung’s ask: the song the learner’s rung asks for, paused or put away, is not offered — its other song is what the lesson asks for', () => {
+    const before = buildSession(atTwoTwo()).slots;
     expect(rows(before, 'song.now')).toEqual(['new (asked): This lesson asks for it — not counted yet']);
-    expect(rows(before, 'song.now.2')).toEqual(['repertoire (rung): A piece you know — more music from this lesson']);
     for (const state of WITHDRAWN) {
-      expect(buildSession({ ...input, projects: [rowFor(state, 'song.now.2')] }).slots, state).toEqual(before);
-      expect(buildSession({ ...input, projects: [rowFor(state, 'song.now')] }).slots, state).toEqual(before);
+      const card = buildSession(atTwoTwo({ projects: [rowFor(state, 'song.now')] })).slots;
+      expect(rows(card, 'song.now'), `${state}: the paused song is still asked for`).toEqual([]);
+      expect(rows(card, 'song.now.2'), state).toEqual(['new (asked): This lesson asks for it — not counted yet']);
     }
+    // To the rung's ask the paused song is as if the catalogue did not hold it: another option is there.
+    holds(atTwoTwo(), 'song.now', 'asked');
+  });
+
+  it('(d) the ladder’s rung step: the rung’s other song, mastered and then paused, is not the repertoire row’s *a piece you know — more music from this lesson*', () => {
+    // The learner mastered 2.2's second song two days ago on a run no rung counted (constructed: `learned`
+    // is handed in beside the runs).
+    const input = atTwoTwo({
+      learned: [{ itemId: 'song.now.2', status: 'mastered', lastPlayed: daysAgo(2) }],
+      lastPlayed: new Map([[READING_ROW.id, daysAgo(1, 9)], [PIECE.id, daysAgo(3)], ['song.now.2', daysAgo(2)]]),
+    });
+    expect(rows(buildSession(input).slots, 'song.now.2')).toEqual(['repertoire (rung): A piece you know — more music from this lesson']);
+    holds(input, 'song.now.2', 'rung');
+  });
+
+  /**
+   * R, the learner's first rung, asks for an exercise and a song and lists two of each; S, the next lesson,
+   * lists a song. Nothing is played yet: the warm-up takes R's first exercise, the new slot R's first song,
+   * the repertoire row R's second song and the review R's second exercise.
+   */
+  const R_AND_S: Curriculum = {
+    version: 1,
+    tracks: [{ id: 'core', title: 'Core', description: '', startsAtStage: 0 }],
+    stages: [
+      {
+        number: 1,
+        title: 'One',
+        summary: '',
+        units: [
+          {
+            id: 'u',
+            title: 'U',
+            track: 'core',
+            lessons: [
+              lesson('R', {
+                exerciseOptions: ['ex.r1', 'ex.r2'],
+                songOptions: ['song.r1', 'song.r2'],
+                requirements: [
+                  { kind: 'runs', from: 'exercises', count: 1 },
+                  { kind: 'runs', from: 'songs', count: 1 },
+                ],
+              }),
+              lesson('S', { exerciseOptions: ['ex.s1'], songOptions: ['song.s1'] }),
+            ],
+          },
+        ],
+      },
+    ],
+  };
+  const R_ITEMS: CatalogItem[] = [
+    item('ex.r1', { type: 'exercise', ...measured([]) }),
+    item('ex.r2', { type: 'exercise', ...measured([]) }),
+    item('song.r1', measured([])),
+    item('song.r2', measured([])),
+    item('ex.s1', { type: 'exercise', ...measured([]) }),
+    item('song.s1', measured([])),
+  ];
+  function onR(curriculum: Curriculum = R_AND_S, extra: Partial<BuildInput> = {}): BuildInput {
+    const items = R_ITEMS.filter((one) => curriculum.stages.some((stage) => stage.units.some((unit) => unit.lessons.some((l) => [...l.exerciseOptions, ...l.songOptions].includes(one.id)))));
+    return {
+      curriculum,
+      catalog: indexCatalog(items),
+      items,
+      states: rungState([], curriculum, VOCABULARY_V0, TODAY),
+      rows: [],
+      learned: [],
+      lastPlayed: new Map(),
+      activeTracks: ['core'],
+      minutes: 30,
+      today: TODAY,
+      ...extra,
+    };
+  }
+  const HELD = /^This lesson waits on pieces you paused or put away — more from this lesson$/;
+
+  it('(d) every song the rung lists paused or put away: none is revived, the rung is not taken as met, and the new row says the lesson waits, with more from it', () => {
+    const before = buildSession(onR()).slots;
+    expect(before.map((slot) => `${slot.kind} ${slot.item?.id ?? '-'} ${slot.claim?.kind ?? '-'}`)).toEqual([
+      'technique ex.r1 asked',
+      'review ex.r2 rung',
+      'new song.r1 asked',
+      'repertoire song.r2 rung',
+    ]);
+    const mixed = [rowFor('paused', 'song.r1'), rowFor('retired', 'song.r2')];
+    for (const projects of [...WITHDRAWN.map((state) => [rowFor(state, 'song.r1'), rowFor(state, 'song.r2')]), mixed]) {
+      const label = projects.map((one) => `${one.itemId} ${one.state}`).join(', ');
+      const card = buildSession(onR(R_AND_S, { projects })).slots;
+      // No revival: neither song on any row.
+      expect([...rows(card, 'song.r1'), ...rows(card, 'song.r2')], `${label}: a paused song is back`).toEqual([]);
+      // Not taken as met: nothing of the next lesson is offered.
+      expect(card.filter((slot) => slot.claim?.kind === 'asked' && slot.claim.next), `${label}: the rung was taken as met`).toEqual([]);
+      expect(rows(card, 'song.s1'), label).toEqual([]);
+      // Surfaced honestly, once: the new row is the rung's other material, saying the lesson waits on the learner.
+      const held = card.filter((slot) => slot.claim?.kind === 'rung' && slot.claim.held === true);
+      expect(held.map((slot) => `${slot.kind} ${slot.item?.id ?? '-'}`), label).toEqual(['new ex.r2']);
+      expect(held[0]?.reason, label).toMatch(HELD);
+      expect(card.filter((slot) => HELD.test(slot.reason)), `${label}: said more than once`).toHaveLength(1);
+    }
+    // Brought back (`refreshing`), or any other state, and the card is as it was: the learner's own resume undoes it.
+    for (const state of KEPT) {
+      expect(buildSession(onR(R_AND_S, { projects: [rowFor(state, 'song.r1'), rowFor(state, 'song.r2')] })).slots, state).toEqual(before);
+    }
+  });
+
+  it('(d) said once: with a third exercise on the rung, the review’s rung step brings it in its own words, not the waiting line again', () => {
+    const THREE: Curriculum = {
+      ...R_AND_S,
+      stages: [
+        {
+          ...(R_AND_S.stages[0] as Curriculum['stages'][number]),
+          units: [
+            {
+              id: 'u',
+              title: 'U',
+              track: 'core',
+              lessons: [
+                { ...(R_AND_S.stages[0]?.units[0]?.lessons[0] as Lesson), exerciseOptions: ['ex.r1', 'ex.r2', 'ex.r3'] },
+                R_AND_S.stages[0]?.units[0]?.lessons[1] as Lesson,
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    const items = [...R_ITEMS, item('ex.r3', { type: 'exercise', ...measured([]) })];
+    const input = onR(THREE, { items, catalog: indexCatalog(items), projects: [rowFor('paused', 'song.r1'), rowFor('paused', 'song.r2')] });
+    const card = buildSession(input).slots;
+    expect(card.map((slot) => `${slot.kind} ${slot.item?.id ?? '-'} ${slot.claim?.kind ?? '-'}`)).toEqual(['technique ex.r1 asked', 'review ex.r3 rung', 'new ex.r2 rung']);
+    expect(card.filter((slot) => HELD.test(slot.reason)).map((slot) => slot.kind)).toEqual(['new']);
+    expect(card.find((slot) => slot.kind === 'review')?.reason).toBe('Nothing due for review — more from this lesson');
+  });
+
+  it('(d) a warm-up stuck on the rung, and nothing else of it left for the new slot: the warm-up’s row is the one that says the lesson waits', () => {
+    // R asks for one exercise it cannot offer (ex.gone has no file) and for a song; both songs paused. The
+    // warm-up falls to the rung's other exercise; the new slot then has nothing of R left to bring.
+    const STUCK: Curriculum = {
+      ...R_AND_S,
+      stages: [
+        {
+          ...(R_AND_S.stages[0] as Curriculum['stages'][number]),
+          units: [
+            {
+              id: 'u',
+              title: 'U',
+              track: 'core',
+              lessons: [
+                lesson('R', {
+                  exerciseOptions: ['ex.gone', 'ex.r2'],
+                  songOptions: ['song.r1', 'song.r2'],
+                  requirements: [
+                    { kind: 'runs', from: 'exercises', items: ['ex.gone'], count: 1 },
+                    { kind: 'runs', from: 'songs', count: 1 },
+                  ],
+                }),
+                R_AND_S.stages[0]?.units[0]?.lessons[1] as Lesson,
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    const items = [...R_ITEMS, item('ex.gone', { type: 'exercise', file: null, ...measured([]) })];
+    const input = onR(STUCK, { items, catalog: indexCatalog(items), projects: [rowFor('paused', 'song.r1'), rowFor('paused', 'song.r2')] });
+    const card = buildSession(input).slots;
+    expect([...rows(card, 'song.r1'), ...rows(card, 'song.r2')]).toEqual([]);
+    expect(card.filter((slot) => HELD.test(slot.reason)).map((slot) => `${slot.kind} ${slot.item?.id ?? '-'}`)).toEqual(['technique ex.r2']);
+  });
+
+  it('(d) one of the two songs paused: the other is asked for, and nothing says the lesson waits', () => {
+    const card = buildSession(onR(R_AND_S, { projects: [rowFor('paused', 'song.r1')] })).slots;
+    expect(rows(card, 'song.r1')).toEqual([]);
+    expect(rows(card, 'song.r2')).toEqual(['new (asked): This lesson asks for it — not counted yet']);
+    expect(words(card)).not.toMatch(/paus|put away|waits on/i);
+  });
+
+  it('(d) a rung whose only material is the paused pieces — a `runs` ask and a `done` ask: nothing is revived and the next lesson is not offered in its place', () => {
+    const only = (requirements: Lesson['requirements'], songs: string[]): Curriculum => ({
+      ...R_AND_S,
+      stages: [
+        {
+          ...(R_AND_S.stages[0] as Curriculum['stages'][number]),
+          units: [
+            {
+              id: 'u',
+              title: 'U',
+              track: 'core',
+              lessons: [lesson('R', { songOptions: songs, ...(requirements ? { requirements } : {}) }), lesson('S', { exerciseOptions: ['ex.s1'], songOptions: ['song.s1'] })],
+            },
+          ],
+        },
+      ],
+    });
+    for (const curriculum of [only([{ kind: 'runs', from: 'songs', count: 1 }], ['song.r1', 'song.r2']), only([{ kind: 'done', item: 'song.r1' }], ['song.r1'])]) {
+      const ask = curriculum.stages[0]?.units[0]?.lessons[0]?.requirements?.[0]?.kind ?? '';
+      const listed = curriculum.stages[0]?.units[0]?.lessons[0]?.songOptions ?? [];
+      expect(buildSession(onR(curriculum)).slots.map((slot) => slot.item?.id), ask).toContain('song.r1');
+      const card = buildSession(onR(curriculum, { projects: listed.map((id) => rowFor('paused', id)) })).slots;
+      expect(card.map((slot) => slot.item?.id).filter((id) => id !== undefined && listed.includes(id)), `${ask}: revived`).toEqual([]);
+      expect(rows(card, 'song.s1'), `${ask}: the next lesson took the rung's place`).toEqual([]);
+      expect(rows(card, 'ex.s1'), `${ask}: the next lesson took the rung's place`).toEqual([]);
+    }
+  });
+
+  it('(d) the next lesson’s ask: while the rung waits for its reads, a paused song of the next lesson is passed over for its other', () => {
+    const WAITS: Curriculum = {
+      ...R_AND_S,
+      stages: [
+        {
+          ...(R_AND_S.stages[0] as Curriculum['stages'][number]),
+          units: [
+            {
+              id: 'u',
+              title: 'U',
+              track: 'core',
+              lessons: [
+                lesson('R', { exerciseOptions: ['ex.r1'], requirements: [{ kind: 'reads', skill: 'sight-reading', standard: 'full', share: 0.9, count: 5 }] }),
+                lesson('S', { songOptions: ['song.s1', 'song.r2'] }),
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    const next = (projects?: ProjectRow[]): SessionSlot | undefined => buildSession(onR(WAITS, projects ? { projects } : {})).slots.find((slot) => slot.kind === 'new');
+    expect(next()).toMatchObject({ item: { id: 'song.s1' }, claim: { kind: 'asked', next: true, waitsForReads: true } });
+    for (const state of WITHDRAWN) {
+      expect(next([rowFor(state, 'song.s1')]), state).toMatchObject({ item: { id: 'song.r2' }, claim: { kind: 'asked', next: true, waitsForReads: true } });
+    }
+    holds(onR(WAITS), 'song.s1', 'asked');
   });
 
   // --- (f): each automatic chooser, on its own learner ----------------------------------------------

@@ -22,5 +22,8 @@ if [ "$missing" -ne 0 ]; then echo "exit=2 (a named spec is missing)" >> "$LOG";
 if [ "$DIST" != "-" ]; then export G1E_DIST="$DIST"; fi
 export G1E_OUT="${G1E_OUT:-$W/build/g1e-pw-out}"
 npx playwright test --config playwright.g1e-4443.config.ts --workers="$WORKERS" "$@" >> "$LOG" 2>&1
-echo "exit=$?" >> "$LOG"
+code=$?
+echo "exit=$code" >> "$LOG"
 tail -1 "$LOG"
+# The script's own exit is Playwright's (it was tail's until the ruling's chain read a 0 over a failed run).
+exit $code

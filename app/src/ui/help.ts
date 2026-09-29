@@ -1125,6 +1125,12 @@ export const SLOT_TEXT = {
   fromThisLesson: 'From this lesson',
   moreFromThisLesson: 'more from this lesson',
   moreMusic: 'More music from this lesson',
+  /**
+   * A rung whose every piece for an ask is one the learner paused or put away (G1e, the reviewer's ruling):
+   * "This lesson waits on pieces you paused or put away — more from this lesson", on the row that brings
+   * the rung's other material. Said once; the paused pieces are never offered in its place.
+   */
+  heldByPause: 'waits on pieces you paused or put away',
   trains: 'Trains',
   has: 'Has',
   whichAsked: 'which this lesson asks for',
@@ -1389,6 +1395,12 @@ export function slotReason(kind: SlotKind, claim: SlotClaim | undefined, today: 
       case 'ready':
         return `${SLOT_TEXT.readyWith} ${demandName(claim.demand)} — ${SLOT_TEXT.readySupported}`;
       case 'rung': {
+        // The rung waits on the learner's pause (G1e): said as such, whatever the slot, with where the row is from.
+        if (claim.held === true) {
+          return claim.strand === undefined
+            ? `${SLOT_TEXT.thisLesson} ${SLOT_TEXT.heldByPause} — ${SLOT_TEXT.moreFromThisLesson}`
+            : `${claim.strand} ${SLOT_TEXT.heldByPause} — more from ${claim.strand}`;
+        }
         // "this lesson" is the core path's; a track's own rung is named by its track.
         if (claim.strand !== undefined) {
           if (kind === 'review') return `${SLOT_TEXT.nothingDue} — more from ${claim.strand}`;

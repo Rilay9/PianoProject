@@ -1,0 +1,22 @@
+UNMATCHED: app/playwright.g1e-4443.config.ts: no pattern in checks.json names it; the full required suites run. Add a pattern for it.
+# checks for 8 path(s): 7 matched, 1 unmatched
+# UNMATCHED app/playwright.g1e-4443.config.ts: no pattern names it; the full required suites run
+# app/src/curriculum/session.ts: app/src/**, app/src/curriculum/session.ts, app/src/curriculum/**
+# app/src/ui/help.ts: app/src/**, app/src/ui/*.ts, app/src/ui/help*.ts
+# docs/04-ui-spec.md: docs/04-ui-spec.md, docs/**
+# app/tests/unit/repertoireRetention.test.ts: app/tests/unit/*.test.ts
+# app/tests/e2e/projects.spec.ts: app/tests/e2e/*.spec.ts
+# docs/prompts/runs/G1e/ENTRY.md: docs/**
+# docs/prompts/pictures/g1e/ruling/after-facts.json: docs/**
+converter-harness	.	python -m unittest discover -s tools/midi-cleanup/tests -v
+parity-reference	.	python tools/midi-cleanup/tests/parity_reference.py
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test --workers=4
+exit=0

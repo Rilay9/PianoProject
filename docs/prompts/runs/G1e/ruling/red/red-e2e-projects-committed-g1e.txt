@@ -1,0 +1,47 @@
+spec present: tests/e2e/projects.spec.ts
+
+Running 1 test using 1 worker
+
+  x  1 tests\e2e\projects.spec.ts:290:1 › a piece paused on its sheet is on no row of the thin card, nor asked for by its rung; with every song of the rung paused the lesson says it waits (G1e) (11.7s)
+
+
+  1) tests\e2e\projects.spec.ts:290:1 › a piece paused on its sheet is on no row of the thin card, nor asked for by its rung; with every song of the rung paused the lesson says it waits (G1e) 
+
+    Error: the rung revived the paused piece
+
+    expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('#today-card .list-row[data-item="song.folk.hot-cross-buns"]')
+    Expected: 0
+    Received: 1
+    Timeout:  5000ms
+
+    Call log:
+      - the rung revived the paused piece locator('#today-card .list-row[data-item="song.folk.hot-cross-buns"]') with timeout 5000ms
+      - waiting for locator('#today-card .list-row[data-item="song.folk.hot-cross-buns"]')
+        14 × locator resolved to 1 element
+           - unexpected value "1"
+
+
+      335 |   await putRows(page, { plan: [placedAt('1.1')] });
+      336 |   await openToday('1.1');
+    > 337 |   await expect(piece, 'the rung revived the paused piece').toHaveCount(0);
+          |                                                            ^
+      338 |   const asked = card.locator('.list-row[data-slot="new"]');
+      339 |   await expect(asked).toHaveAttribute('data-claim', 'asked');
+      340 |   expect(OTHERS, 'the new row is not another of 1.1’s songs').toContain(await asked.getAttribute('data-item'));
+        at <worktree>\app\tests\e2e\projects.spec.ts:337:60
+
+    Error Context: ..\build\g1e-pw-out\projects-a-piece-paused-on-c9f0b-e-lesson-says-it-waits-G1e-\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\build\g1e-pw-out\projects-a-piece-paused-on-c9f0b-e-lesson-says-it-waits-G1e-\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\build\g1e-pw-out\projects-a-piece-paused-on-c9f0b-e-lesson-says-it-waits-G1e-\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\projects.spec.ts:290:1 › a piece paused on its sheet is on no row of the thin card, nor asked for by its rung; with every song of the rung paused the lesson says it waits (G1e) 
+exit=1
