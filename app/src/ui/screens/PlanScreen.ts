@@ -49,7 +49,8 @@ import { indexAtPoint, isDrag, moveDown, moveItem, moveUp } from '../reorder';
 import type { Curriculum, Lesson, Stage, Track, Unit } from '../../curriculum/types';
 import { loadRungStates } from '../../data/rungStates';
 import type { RungStates } from '../../evidence/rungState';
-import { RUNG_TEXT, rungBadge, stageCountWords } from '../help';
+import { PROJECT_TEXT, RUNG_TEXT, rungBadge, stageCountWords } from '../help';
+import { PROJECT_STAGES } from '../../data/projectStore';
 import { getPlan, updatePlan } from '../../data/planStore';
 import { onScreenDispose } from '../screenLifecycle';
 import { badge, button, chip, el, listRow, openSheet } from '../widgets';
@@ -118,6 +119,23 @@ function familyOf(trackId: string, units: number): FamilyId {
  */
 function onActiveTrack(unit: Unit, activeTracks: string[]): boolean {
   return unit.track === 'core' || activeTracks.length === 0 || activeTracks.includes(unit.track);
+}
+
+/**
+ * Whether a stage's units are projects, not rungs to pass (G1c; G83, L86): Stage 9 says of itself
+ * "Nothing here is a rung to pass; they are pieces to live with". The lesson page's own constant
+ * (`projectStore.PROJECT_STAGES`), so Plan and the page read one fact.
+ *
+ * The units keep their rung state in the data and the evidence (G1b's ruling); Plan stops
+ * presenting it. The stage's line counts nothing — no *x of y*, no *by your word*, no *done
+ * before* — and says what the stage is in its page's words (`PROJECT_TEXT.stageNine`); it draws
+ * no bar (a bar is a count drawn, and an empty one says "none of it done yet") and wears no
+ * *complete*; and no row wears a rung's word. A unit there lists several pieces (six, four, or
+ * none), so one row cannot wear their several project states either: it wears nothing, and the
+ * page it opens shows each piece's.
+ */
+function isProjectStage(stage: Stage): boolean {
+  return PROJECT_STAGES.has(stage.number);
 }
 
 /**
@@ -217,7 +235,7 @@ export function PlanScreen(router: Router): HTMLElement {
     return curriculum?.tracks.find((candidate) => candidate.id === id);
   }
 
-  function lessonRow(lesson: Lesson, options: { next: boolean }): HTMLElement {
+  function lessonRow(lesson: Lesson, options: { next: boolean; project: boolean }): HTMLElement {
     // Only what the detail line does not already say (`04` §0 R2). "No song
     // needed" is *in* the detail line, where it replaces the "0 songs" it used
     // to sit beside; as a badge as well it cost the row a fourth line and put
@@ -225,15 +243,18 @@ export function PlanScreen(router: Router): HTMLElement {
     //
     // The rung's state from the evidence (C5): complete, in progress, or the
     // learner's word or the carry-over, each named apart. A rung not started
-    // wears nothing, as before.
+    // wears nothing, as before. A project stage's row wears none of them
+    // (G1c, `isProjectStage`): its page says there is no rung to pass.
     const state = states?.byRung.get(lesson.id);
     const word = state ? rungBadge(state) : RUNG_TEXT.notStarted;
     const badges: HTMLElement[] =
-      state?.status === 'met'
-        ? [badge(word, 'passed')]
-        : word === RUNG_TEXT.notStarted
-          ? []
-          : [badge(word)];
+      options.project
+        ? []
+        : state?.status === 'met'
+          ? [badge(word, 'passed')]
+          : word === RUNG_TEXT.notStarted
+            ? []
+            : [badge(word)];
     // The title, and nothing else. It used to be `${lesson.id} · ${title}` —
     // `classical.5 · Sonatina form and Romantic…` — so an internal id the
     // learner has no use for took the room that then truncated the words that
@@ -302,8 +323,11 @@ export function PlanScreen(router: Router): HTMLElement {
     drawNext(recommended);
     list.replaceChildren();
     // The two fills of a stage's bar, named once (C5): the rungs carried over
-    // from before C5 in a fill of their own, never the measured one.
-    const anyCarried = curriculum.stages.some((stage) => completion(stage, states, activeTracks).before > 0);
+    // from before C5 in a fill of their own, never the measured one. A project
+    // stage draws no bar (G1c), so its carried rungs name no fill here.
+    const anyCarried = curriculum.stages.some(
+      (stage) => !isProjectStage(stage) && completion(stage, states, activeTracks).before > 0,
+    );
     legendBox.replaceChildren(
       ...(anyCarried
         ? [
@@ -320,6 +344,7 @@ export function PlanScreen(router: Router): HTMLElement {
     );
 
     for (const stage of curriculum.stages) {
+      const project = isProjectStage(stage);
       const { done, total, byWord, before } = completion(stage, states, activeTracks);
       const open = expanded.has(stage.number);
       const current = recommended?.stageNumber === stage.number;
@@ -330,10 +355,18 @@ export function PlanScreen(router: Router): HTMLElement {
         // the keyboard, how…", which is an explanation that has stopped
         // explaining. It moves *below the thing it explains* (R1): in full,
         // wrapping, as the first line inside the stage once it is open.
-        meta: `${stageCountWords({ done, total, byWord, before })}${
-          stage.approxDuration ? ` · ${stage.approxDuration}` : ''
-        }`,
-        badges: done === total && total > 0 ? [badge('complete', 'passed')] : [],
+        //
+        // A project stage's line counts nothing (G1c, `isProjectStage`): it
+        // says what the stage is, in the words its page says it. Its duration
+        // ("open-ended") has no room beside that sentence in the detail line's
+        // characters, and the summary under the open stage says it: "for as long
+        // as it takes".
+        meta: project
+          ? PROJECT_TEXT.stageNine
+          : `${stageCountWords({ done, total, byWord, before })}${
+              stage.approxDuration ? ` · ${stage.approxDuration}` : ''
+            }`,
+        badges: !project && done === total && total > 0 ? [badge('complete', 'passed')] : [],
         // The row is the toggle; the chevron only says which way a tap will
         // go. It rides in `indicator`, not `actions` — `actions` stops a
         // click from reaching the row (right for a real button beside it,
@@ -356,18 +389,21 @@ export function PlanScreen(router: Router): HTMLElement {
       // The rungs carried over from before C5 come first, in a fill of their
       // own (C5): the learner's place, kept, and never drawn as measured
       // progress — the solid fill is the rungs the evidence met, and nothing
-      // else. The legend above the list names the two.
-      const share = (n: number): string => `${String(total > 0 ? Math.round((n / total) * 100) : 0)}%`;
-      const bar = el('span.plan-stage-bar', { 'aria-hidden': 'true' });
-      if (before > 0) {
-        const carriedPart = el('span.plan-stage-bar__carried');
-        carriedPart.style.width = share(before);
-        bar.append(carriedPart);
+      // else. The legend above the list names the two. A project stage draws
+      // none (G1c): there is nothing in it to be through.
+      if (!project) {
+        const share = (n: number): string => `${String(total > 0 ? Math.round((n / total) * 100) : 0)}%`;
+        const bar = el('span.plan-stage-bar', { 'aria-hidden': 'true' });
+        if (before > 0) {
+          const carriedPart = el('span.plan-stage-bar__carried');
+          carriedPart.style.width = share(before);
+          bar.append(carriedPart);
+        }
+        const fill = el('span.plan-stage-bar__fill');
+        fill.style.width = share(done);
+        bar.append(fill);
+        head.append(bar);
       }
-      const fill = el('span.plan-stage-bar__fill');
-      fill.style.width = share(done);
-      bar.append(fill);
-      head.append(bar);
       list.append(head);
       if (!open) continue;
       if (stage.summary) {
@@ -420,7 +456,7 @@ export function PlanScreen(router: Router): HTMLElement {
             list.append(el('p.plan-unit.muted', { 'data-unit': unit.id, text: unit.title }));
           }
           for (const lesson of unit.lessons) {
-            list.append(lessonRow(lesson, { next: recommended?.lesson.id === lesson.id }));
+            list.append(lessonRow(lesson, { next: recommended?.lesson.id === lesson.id, project }));
           }
         }
       }
