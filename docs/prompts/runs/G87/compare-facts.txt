@@ -1,0 +1,17 @@
+ok   Stage 1's Start block byte-equal — Opens “Right-hand five-finger walk”, the first thing on this rung.
+ok   Stage 9 before: the long line — Opens “Hanon No. 20 (C major) — both”, the first thing on this rung.
+ok   Stage 9 after: Opens “X”. for the same X — Opens “Hanon No. 20 (C major) — both”.
+ok   Stage 9's project sentence unchanged — A project: there is no rung to pass here.
+ok   light: before, the date box unlike the goal box — {"fontFamily": "monospace", "fontSize": "13.3333px", "border": "2px inset rgb(118, 118, 118)", "radius": "0px", "padding": "0px 0px 0px 1px", "background": "rgb(255, 255, 255)", "color": "rgb(0, 0, 0)"}
+ok   light: after, the date box like the goal box — {"fontFamily": "Arial", "fontSize": "16px", "border": "1px solid rgb(226, 227, 232)", "radius": "10px", "padding": "0px 10px 0px 10px", "background": "rgb(247, 247, 249)", "color": "rgb(20, 22, 26)"}
+ok   light: the goal box itself unchanged — {"fontFamily": "Arial", "fontSize": "16px", "border": "1px solid rgb(226, 227, 232)", "radius": "10px", "padding": "0px 10px 0px 10px", "background": "rgb(247, 247, 249)", "color": "rgb(20, 22, 26)"}
+ok   dark: before, the date box unlike the goal box — {"fontFamily": "monospace", "fontSize": "13.3333px", "border": "2px inset rgb(133, 133, 133)", "radius": "0px", "padding": "0px 0px 0px 1px", "background": "rgb(59, 59, 59)", "color": "rgb(255, 255, 255)"}
+ok   dark: after, the date box like the goal box — {"fontFamily": "Arial", "fontSize": "16px", "border": "1px solid rgb(42, 46, 53)", "radius": "10px", "padding": "0px 10px 0px 10px", "background": "rgb(15, 17, 21)", "color": "rgb(238, 240, 243)"}
+ok   dark: the goal box itself unchanged — {"fontFamily": "Arial", "fontSize": "16px", "border": "1px solid rgb(42, 46, 53)", "radius": "10px", "padding": "0px 10px 0px 10px", "background": "rgb(15, 17, 21)", "color": "rgb(238, 240, 243)"}
+ok   item 3 before: the paused badge in the pass style with its tick — {"text": "Paused", "kind": "passed", "mark": "\"✓ \"", "color": "rgb(47, 111, 237)"}
+ok   item 3 after: the paused badge says Paused, neutral, no tick — {"text": "Paused", "kind": "neutral", "mark": "none", "color": "rgb(91, 96, 104)"}
+ok   item 3 after: the paused badge drawn as not started is (colour and mark) — {"text": "not started", "kind": "neutral", "mark": "none", "color": "rgb(91, 96, 104)"}
+ok   item 3: not started unchanged — {"text": "not started", "kind": "neutral", "mark": "none", "color": "rgb(91, 96, 104)"}
+ok   after: the date box inside the 342 px screen — {"x": 167, "y": 326, "width": 137, "height": 44}
+ok   the actions row: taller after (a relationship, not a number) — before < after
+exit=0 (16 of 16 ok)

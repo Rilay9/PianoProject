@@ -264,10 +264,12 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     const row = progress.get(id);
     const badges: HTMLElement[] = [];
     // A project stage's song (G1b item 7): the learner's project state, or *not started* — never a
-    // pass or a requirement. Anywhere else, the item's own progress, as before.
+    // pass or a requirement. Anywhere else, the item's own progress, as before. In the neutral style
+    // whatever the state (G87 item 3): the pass style's tick made a paused or put-away piece read
+    // "✓ Paused", an achievement mark on a stated intention.
     const project = asProject ? projectIn(projects, { itemId: id, material: materialOfItem(item) }) : undefined;
     if (asProject) {
-      badges.push(badge(project ? PROJECT_TEXT.states[project.state] : PROJECT_TEXT.notStarted, project ? 'passed' : 'neutral'));
+      badges.push(badge(project ? PROJECT_TEXT.states[project.state] : PROJECT_TEXT.notStarted, 'neutral'));
     } else if (row && row.status !== 'new') {
       badges.push(badge(row.selfPassed && row.status === 'passed' ? 'you said you know it' : row.status, row.status));
     }
@@ -756,10 +758,16 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     // over the rung's first option, the list below begins with that option, and
     // the line would be false about the row right under it. It names what it
     // opens and says no more — no "waiting for review", which is the content
-    // pipeline's business and not a thing to practise.
+    // pipeline's business and not a thing to practise. And never on a project
+    // stage's page (G87): that page says there is no rung to pass, and a line
+    // calling its first option "the first thing on this rung" under it said the
+    // opposite. `isProjectRung` reads the `PROJECT_STAGES` the page's other
+    // presentation reads (and Plan's, G1c).
     const first = [...rung.exerciseOptions, ...rung.songOptions][0];
     startWhat.textContent =
-      target.id === first ? `Opens “${target.title}”, the first thing on this rung.` : `Opens “${target.title}”.`;
+      target.id === first && !isProjectRung(rung)
+        ? `Opens “${target.title}”, the first thing on this rung.`
+        : `Opens “${target.title}”.`;
     startBlock.append(
       button('Start', () => open(target), { id: 'lesson-start', variant: 'primary' }),
       startWhat,

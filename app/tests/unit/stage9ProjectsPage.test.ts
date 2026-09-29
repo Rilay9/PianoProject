@@ -18,6 +18,7 @@ import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
 import type { CatalogItem, Lesson } from '../../src/curriculum/types';
 import type { Router } from '../../src/router';
 import type { Identity } from '../../src/review/record';
+import type { ProjectRow } from '../../src/data/projectStore';
 
 const file = (c: string): Identity => ({ kind: 'file', sha256: c.repeat(64) });
 
@@ -101,6 +102,7 @@ const { skillLadders } = await import('../../src/evidence/rungState');
 const { VOCABULARY_V0 } = await import('../../src/evidence/vocabulary');
 const { admittedForTeaching } = await import('../../src/curriculum/eligibility');
 const { openDatabase } = await import('../../src/data/db');
+const { PROJECT_TEXT } = await import('../../src/ui/help');
 
 const router = { navigate: vi.fn(), navigateLesson: vi.fn(), navigateScore: vi.fn() };
 
@@ -215,6 +217,45 @@ describe('a Stage 9 unit’s page', () => {
     await applyProjectAction({ itemId: 'song.ballade', material: file('b') }, 'retire', { at: new Date('2026-09-29T13:00:00.000Z') });
     expect(stateOf(await mount('classical.9'), 'song.ballade')).toEqual({ word: 'Put away', state: 'retired' });
   });
+
+  // G87 (G1b's follow-up 3): the page says there is no rung to pass, and the Start line under it
+  // said *Opens "X", the first thing on this rung.* — a sentence contradicting the one above it.
+  // A project stage's line names what Start opens and no more, read through the same
+  // `PROJECT_STAGES` the page's other presentation reads.
+  it('its Start line names what Start opens and no more — never “the first thing on this rung”', async () => {
+    const section = await mount('classical.9');
+    expect(section.querySelector('#lesson-start'), 'Start is drawn on the project page').not.toBeNull();
+    // The fixture's first option is the one Start opens, the case that drew the long line.
+    expect(section.querySelector('#lesson-start-what')?.textContent).toBe('Opens “Title of 9”.');
+    expect(section.textContent).not.toContain('the first thing on this rung');
+  });
+
+  // G87 item 3 (found by G85's builder; the reviewer's Library ruling: a project badge is a stated
+  // intention, never a pass). The row's badge was drawn in the `passed` style, whose tick made a
+  // paused or put-away piece read "✓ Paused": an achievement mark on a plan. Every project state
+  // now wears the neutral style, as *not started* already did.
+  it('a paused project’s badge says Paused with no tick: the neutral style, never the pass style', async () => {
+    await applyProjectAction({ itemId: 'song.ballade', material: file('b') }, 'learn', { at: new Date('2026-09-29T12:00:00.000Z') });
+    await applyProjectAction({ itemId: 'song.ballade', material: file('b') }, 'pause', { at: new Date('2026-09-29T13:00:00.000Z') });
+    const mark = songRow(await mount('classical.9'), 'song.ballade').querySelector<HTMLElement>('.badge');
+    expect({ word: mark?.textContent, kind: mark?.dataset.kind }).toEqual({ word: 'Paused', kind: 'neutral' });
+  });
+
+  it('no project state wears the tick: each is its words in the neutral style, as not started is', async () => {
+    const db = await openDatabase();
+    const at = '2026-09-29T12:00:00.000Z';
+    const said: unknown[] = [];
+    for (const state of Object.keys(PROJECT_TEXT.states) as ProjectRow['state'][]) {
+      // The Ballade's project as the sheet keys it (`material.materialKey`), in each state in turn.
+      const row: ProjectRow = { id: `file:${'b'.repeat(64)}`, material: { kind: 'file', sha256: 'b'.repeat(64) }, itemId: 'song.ballade', state, since: at, history: [{ state, at, why: 'learn' }] };
+      await db?.put('projects', row);
+      const mark = songRow(await mount('classical.9'), 'song.ballade').querySelector<HTMLElement>('.badge');
+      said.push({ state, word: mark?.textContent, kind: mark?.dataset.kind });
+    }
+    expect(said).toEqual(Object.entries(PROJECT_TEXT.states).map(([state, word]) => ({ state, word, kind: 'neutral' })));
+    const untouched = songRow(await mount('classical.9'), 'song.campanella').querySelector<HTMLElement>('.badge');
+    expect({ word: untouched?.textContent, kind: untouched?.dataset.kind }).toEqual({ word: 'not started', kind: 'neutral' });
+  });
 });
 
 describe('an ordinary rung’s page is as it was', () => {
@@ -226,5 +267,10 @@ describe('an ordinary rung’s page is as it was', () => {
     expect(section.querySelector('#lesson-know')).not.toBeNull();
     expect(section.querySelector<HTMLElement>('#lesson-project')?.hidden ?? true, 'the project sentence on an ordinary rung').toBe(true);
     expect(songRow(section, 'song.1.1').dataset.projectState).toBeUndefined();
+  });
+
+  it('its Start line still calls its first option the first thing on this rung (G87: every other stage unchanged)', async () => {
+    const section = await mount('1.1');
+    expect(section.querySelector('#lesson-start-what')?.textContent).toBe('Opens “Title of 1”, the first thing on this rung.');
   });
 });

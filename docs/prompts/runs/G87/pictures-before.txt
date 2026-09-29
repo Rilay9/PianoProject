@@ -1,0 +1,9 @@
+specs: tests/e2e/zz-g87-pictures.spec.ts
+exists: tests/e2e/zz-g87-pictures.spec.ts
+
+Running 1 test using 1 worker
+
+  ok 1 tests\e2e\zz-g87-pictures.spec.ts:83:1 › G87 pictures (11.2s)
+
+  1 passed (33.5s)
+exit=0

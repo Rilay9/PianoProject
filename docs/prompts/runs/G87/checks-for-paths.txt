@@ -1,0 +1,15 @@
+# checks for 8 path(s): 8 matched, 0 unmatched
+# app/src/style.css: app/src/**, app/src/style.css
+# app/src/ui/screens/LessonScreen.ts: app/src/**, app/src/ui/screens/LessonScreen.ts
+# app/tests/unit/projectSheet.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/stage9ProjectsPage.test.ts: app/tests/unit/*.test.ts
+# app/tests/e2e/projects.spec.ts: app/tests/e2e/*.spec.ts
+# docs/prompts/tasks/G87-project-sheet-small-truths.md: docs/**
+# docs/prompts/runs/G87/ENTRY.md: docs/**
+# docs/prompts/pictures/g87/after-facts.json: docs/**
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test --workers=4
+exit=0

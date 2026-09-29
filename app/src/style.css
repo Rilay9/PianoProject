@@ -3828,6 +3828,27 @@ input[type='checkbox'] {
   font-size: 1rem;
 }
 
+/* The date box beside *I performed it* on the project sheet (G87; G1b's
+   follow-up 6). The rule above names text and number boxes, so this one was
+   the browser's own control: a grey inset border, square corners, the
+   browser's small default type and, in Chromium, a monospace face (the
+   browser's own rule for a date box) — the one raw box among the sheet's
+   styled ones. It takes the rule above's box, border, corners and size. The
+   face is the one the browser gives every other input, the sheet's text boxes
+   among them (`-webkit-small-control`), so it follows them on each browser
+   rather than naming a family here. The control is still the browser's: its
+   picker, its value and its `max` are untouched. */
+.sheet__body input[type='date'] {
+  min-height: 44px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font: -webkit-small-control;
+  font-size: 1rem;
+}
+
 .status--error {
   color: #cf3b3b;
 }

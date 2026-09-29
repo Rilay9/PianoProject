@@ -11,6 +11,8 @@
  *
  * And *Reset progress* clears the projects with the rest of the learner's history (item 8).
  */
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
 import type { CatalogItem } from '../../src/curriculum/types';
@@ -217,6 +219,61 @@ describe('the learner’s actions on the sheet', () => {
     click('project-section-add');
     await vi.waitFor(() => expect(text('project-section-status')).toBe('Bars run from 1 to 8.'));
     expect((await allProjects())[0]?.sections).toHaveLength(1);
+  });
+});
+
+/**
+ * Every rule of the app's stylesheet as written: its selectors and its declarations in order, comments
+ * stripped. A rule inside an at-rule is read as its own rule (the sheet's rules sit at the top level).
+ */
+function stylesheetRules(): { selectors: string[]; declarations: [string, string][] }[] {
+  const css = readFileSync(join(process.cwd(), 'src', 'style.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  return [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(([, head = '', body = '']) => ({
+    selectors: head.split(',').map((one) => one.trim().replace(/\s+/g, ' ')).filter(Boolean),
+    declarations: body
+      .split(';')
+      .map((one) => one.trim())
+      .filter((one) => one.includes(':'))
+      .map((one) => [one.slice(0, one.indexOf(':')).trim(), one.slice(one.indexOf(':') + 1).trim().replace(/\s+/g, ' ')] as [string, string]),
+  }));
+}
+
+/** What the stylesheet's rules that reach `node` declare, the later rule winning (specificity aside). */
+function declaredFor(node: Element): Map<string, string> {
+  const reaches = (selector: string): boolean => {
+    try {
+      return node.matches(selector);
+    } catch {
+      return false; // a selector the test's DOM cannot match (a pseudo-element, `:has`) reaches nothing here
+    }
+  };
+  const out = new Map<string, string>();
+  for (const rule of stylesheetRules()) if (rule.selectors.some(reaches)) for (const [property, value] of rule.declarations) out.set(property, value);
+  return out;
+}
+
+describe('the date box beside I performed it wears the sheet’s input look (G87; G1b’s follow-up 6)', () => {
+  // The sheet's rule named text and number boxes only, so the date box was the browser's own
+  // control, the one raw box among the sheet's styled ones. The face itself (the browser draws a
+  // date box in its own monospace) is the browser case's to measure: this DOM computes no fonts.
+  it('a rule of the stylesheet reaches the date box and gives it the box, border, radius and type size of the sheet’s text box, and a face', async () => {
+    await applyProjectAction({ itemId: SONG, material: file('s') }, 'learn', { at: new Date(YESTERDAY) });
+    await open();
+    const date = document.getElementById('project-performed-on') as HTMLInputElement;
+    // Still the browser's own date control: its picker, today's date, and no day after today.
+    expect(date.type).toBe('date');
+    expect(date.value).toBe(dayKey(new Date()));
+    expect(date.max).toBe(dayKey(new Date()));
+    expect(date.closest('.sheet__body'), 'the date box is not in the sheet’s body').not.toBeNull();
+
+    const dated = declaredFor(date);
+    expect([...dated.keys()].filter((property) => property !== 'box-sizing'), 'no rule in style.css reaches the date box').not.toEqual([]);
+    const text = declaredFor(document.getElementById('project-goal') as HTMLElement);
+    for (const property of ['min-height', 'padding', 'border', 'border-radius', 'background', 'color', 'font-size']) {
+      expect(dated.get(property), `the date box's ${property}`).toBe(text.get(property));
+      expect(dated.get(property), `the sheet's text box declares no ${property}`).toBeDefined();
+    }
+    expect(dated.has('font') || dated.has('font-family'), 'the date box keeps the browser’s monospace face').toBe(true);
   });
 });
 
