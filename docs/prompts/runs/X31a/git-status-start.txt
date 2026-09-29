@@ -1,0 +1,3 @@
+23ae3654a01cec5a5c06a10b4dd912ede9937ff8
+?? docs/prompts/runs/X31a/
+?? docs/prompts/tasks/X31a-late-tempo-keeps-the-default-opening.md

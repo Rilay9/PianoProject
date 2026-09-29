@@ -231,24 +231,37 @@ def opening_quarter_bpm(score) -> float:  # noqa: ANN001 - music21 Score
     The tempo the duration feature is computed at: the opening mark in quarter
     notes a minute, or `DEFAULT_BPM` (X31; X3d's follow-up 1).
 
-    The opening is the readable mark at the earliest offset in the score
+    The first tempo is the readable mark at the earliest offset in the score
     (`getOffsetInHierarchy`), not the first `recurse()` meets: the walk takes
     each staff whole before the next, so a mark in the upper staff's bar 5 used
     to come before one in the lower staff's bar 1. Two at one offset go to the
     first in that walk, which is the first part's.
 
+    **That mark opens the piece only where nothing has sounded before it**
+    (X31a; the app's rule, approved in X3d, `responses/aa16c702.md`). If a note
+    in any part begins strictly before it, the piece opens at `DEFAULT_BPM`
+    and the mark is a later change; after rests only (Beethoven's Fifth's
+    opening eighth rest, a bar of rest) it is the opening. Sounding is what the
+    app counts as sounding: a Note or a Chord, a grace note included (music21
+    places one, with no duration, at the offset of what follows it); a Rest is
+    not, nor a chord symbol (`sounding`). Decided from the parsed score, never
+    from the XML text.
+
     **One definition, the app's, read through music21 — not a copy of the app's
     reader.** The app's `app/src/score/tempoFromXml.ts` normalises each
-    `<metronome>` the same way, so a marked score's duration feature is now
-    computed at the tempo the app computes it at. Where music21 reads the file
-    otherwise the build keeps music21's reading and the gap is named, not closed
-    (`tests/test_difficulty.py`, `TestTheAppsTempoShapes`; X31's entry counts
-    the bundled scores): music21 drops a `<sound tempo>` from a direction that
-    holds a `<metronome>`, so where the two disagree the mark wins here and the
-    sound in the app; two tempos at one place go to the first in the file here
-    and to the sound in the app; "c. 108" is no number here; and the app opens
-    at its default until a tempo written after a note has sounded, where this
-    takes the earliest mark anywhere.
+    `<metronome>` the same way and opens by the same rule, so a marked score's
+    duration feature is computed at the tempo the app computes it at. Where
+    music21 reads the file otherwise the build keeps music21's reading and the
+    gap is named, not closed (`tests/test_difficulty.py`,
+    `TestTheAppsTempoShapes`; X31's and X31a's entries count the bundled
+    scores): music21 drops a `<sound tempo>` from a direction that holds a
+    `<metronome>`, so where the two disagree the mark wins here and the sound
+    in the app; two tempos at one place go to the first in the file here and
+    to the sound in the app; "c. 108" is no number here; a `<cue/>` note (not
+    played; the app leaves it out) is a note to music21; and music21 moves a
+    direction by its `<offset>` even where that offset does not sound (the app
+    reads it where it stands), so the last two can put a note before a mark
+    here that the app opens with.
     """
     from music21.sites import SitesException
 
@@ -265,6 +278,18 @@ def opening_quarter_bpm(score) -> float:  # noqa: ANN001 - music21 Score
         if best is None or (offset, order) < best:
             best = (offset, order)
             opening = bpm
+    if best is None or best[0] <= 0:
+        return opening
+    # A note that began before the first tempo was played at the default. One
+    # less than a millionth of a quarter note earlier stands at the mark's place
+    # (the app rounds places to a millionth).
+    for element in sounding(score.recurse().notes):
+        try:
+            at = float(element.getOffsetInHierarchy(score))
+        except SitesException:
+            continue
+        if at < best[0] - 1e-6:
+            return DEFAULT_BPM
     return opening
 
 

@@ -1,0 +1,30 @@
+== no-sound-check: killed (exit 1); 5 failing
+   FAIL: test_the_build_and_the_app_differ_only_where_named (test_difficulty.TestTheAppsTempoShapes.test_the_build_and_the_app_differ_only_where_named)
+   FAIL: test_the_build_reads_each_shape_as_music21_does (test_difficulty.TestTheAppsTempoShapes.test_the_build_reads_each_shape_as_music21_does)
+   FAIL: test_a_grace_note_before_the_mark_has_sounded (test_difficulty.TestTheOpeningTempo.test_a_grace_note_before_the_mark_has_sounded)
+   FAIL: test_a_mark_after_a_note_has_sounded_is_a_change_not_the_opening (test_difficulty.TestTheOpeningTempo.test_a_mark_after_a_note_has_sounded_is_a_change_not_the_opening)
+   FAIL: test_every_staff_decides_what_has_sounded (test_difficulty.TestTheOpeningTempo.test_every_staff_decides_what_has_sounded)
+   Ran 23 tests in 0.972s; FAILED (failures=5)
+== rests-count: killed (exit 1); 4 failing
+   FAIL: test_the_build_and_the_app_differ_only_where_named (test_difficulty.TestTheAppsTempoShapes.test_the_build_and_the_app_differ_only_where_named)
+   FAIL: test_the_build_reads_each_shape_as_music21_does (test_difficulty.TestTheAppsTempoShapes.test_the_build_reads_each_shape_as_music21_does)
+   FAIL: test_a_chord_symbol_over_the_rests_has_not_sounded (test_difficulty.TestTheOpeningTempo.test_a_chord_symbol_over_the_rests_has_not_sounded)
+   FAIL: test_a_mark_after_rests_only_opens_the_piece (test_difficulty.TestTheOpeningTempo.test_a_mark_after_rests_only_opens_the_piece)
+   Ran 23 tests in 0.858s; FAILED (failures=4)
+== chord-symbols-count: killed (exit 1); 1 failing
+   FAIL: test_a_chord_symbol_over_the_rests_has_not_sounded (test_difficulty.TestTheOpeningTempo.test_a_chord_symbol_over_the_rests_has_not_sounded)
+   Ran 23 tests in 0.956s; FAILED (failures=1)
+== first-staff-only: killed (exit 1); 1 failing
+   FAIL: test_every_staff_decides_what_has_sounded (test_difficulty.TestTheOpeningTempo.test_every_staff_decides_what_has_sounded)
+   Ran 23 tests in 0.834s; FAILED (failures=1)
+== not-strict: killed (exit 1); 4 failing
+   FAIL: test_the_build_and_the_app_differ_only_where_named (test_difficulty.TestTheAppsTempoShapes.test_the_build_and_the_app_differ_only_where_named)
+   FAIL: test_the_build_reads_each_shape_as_music21_does (test_difficulty.TestTheAppsTempoShapes.test_the_build_reads_each_shape_as_music21_does)
+   FAIL: test_a_chord_symbol_over_the_rests_has_not_sounded (test_difficulty.TestTheOpeningTempo.test_a_chord_symbol_over_the_rests_has_not_sounded)
+   FAIL: test_a_mark_after_rests_only_opens_the_piece (test_difficulty.TestTheOpeningTempo.test_a_mark_after_rests_only_opens_the_piece)
+   Ran 23 tests in 0.855s; FAILED (failures=4)
+== graces-left-out: killed (exit 1); 1 failing
+   FAIL: test_a_grace_note_before_the_mark_has_sounded (test_difficulty.TestTheOpeningTempo.test_a_grace_note_before_the_mark_has_sounded)
+   Ran 23 tests in 0.876s; FAILED (failures=1)
+killed 6 of 6
+exit=0
