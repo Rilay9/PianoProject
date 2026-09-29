@@ -51,6 +51,10 @@ CANDIDATES = BUILD_DIR / "excerpts" / "candidates.json"
 PROJECTION = Path("review") / "excerpts.json"
 POSITIONS = BUILD_DIR / "positions-cache.json"
 DENSITY_FILE = CONTENT_SRC / "sources" / "opportunity-density.json"
+#: The seed list of teaching repertoire (E28; E2 item 5): a proposal source. A run offers the
+#: catalogue's editions of the works it knows for a concept naming the target first within each
+#: pass; it adds, removes and rescores no window, and admits nothing.
+SEED_FILE = CONTENT_SRC / "sources" / "teaching-repertoire.json"
 
 #: A window is four to eight printed bars unless the command asks otherwise (two to sixteen allowed).
 DEFAULT_BARS = (4, 8)
@@ -856,6 +860,67 @@ def parents_of(catalog: list[dict], only: list[str] | None) -> list[dict]:
 # --------------------------------------------------------------------------------------
 
 
+def load_seed(path: Path = SEED_FILE) -> dict:
+    """The seed list of teaching repertoire, or an empty one where the file is absent."""
+    return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else {"works": []}
+
+
+def seed_works_for(target_demands: list[str], seed: dict, skills: dict, demands: dict) -> list[dict]:
+    """
+    The seed's works known for a concept that names one of the target's demands, in the file's
+    order: `claims.concepts_naming`, the reading the rung-claims report makes of a lesson's
+    concepts (a concept in `CONCEPT_DEMANDS`, or a skill whose opportunity is that one demand).
+    """
+    import claims
+
+    naming = claims.concepts_naming(skills, demands)
+    concepts: set[str] = set()
+    for demand in target_demands:
+        concepts |= naming.get(demand, set())
+    return [work for work in seed.get("works", []) if concepts & set(work.get("concepts", []))]
+
+
+def seeded_parents(catalog: list[dict], works: list[dict]) -> dict[str, dict]:
+    """
+    `{parent id: the seed work}` for every catalogue entry whose composition key a seed work lists
+    (`provenance.composition`, the build's identity), a variant through the entry it is a variant of.
+    """
+    keys = {key: work for work in works for key in work.get("catalogue", [])}
+    by_id = {entry["id"]: entry for entry in catalog}
+    out: dict[str, dict] = {}
+    for entry in catalog:
+        composition = (entry.get("provenance") or {}).get("composition") or ""
+        if composition.startswith("variant-of:"):
+            parent = by_id.get(composition[len("variant-of:"):]) or {}
+            composition = (parent.get("provenance") or {}).get("composition") or ""
+        if composition in keys:
+            out[entry["id"]] = keys[composition]
+    return out
+
+
+def seed_note(work: dict | None) -> dict | None:
+    """What a candidate row says of its parent's place in the seed list: the work and what it is known for, or nothing."""
+    if work is None:
+        return None
+    return {"work": work["work"], "composer": work["composer"], "concepts": work["concepts"], "known": work["known"],
+            "confidence": work["confidence"], "why": "a proposal source (E28): reputation orders the shortlist; the signals and gates decide"}
+
+
+def acceptance_order(scored: list[Scored], seeded: set[str]) -> list[Scored]:
+    """
+    The order a run considers its ranked windows for acceptance: the windows meeting every signal,
+    then the rest; within each, a seeded parent's windows first (E28); each group by score, as ranked.
+    A window a gate refuses is never considered. The seed orders and nothing else: the same windows,
+    the same scores.
+    """
+    out: list[Scored] = []
+    for meeting in (True, False):
+        for first in (True, False):
+            out.extend(one for one in scored
+                       if not one.refused_by and all(p.fired for p in one.parts) == meeting and (one.parent in seeded) == first)
+    return out
+
+
 def target_demands_of(target: str, skills: dict, demands: dict) -> list[str]:
     if target in demands:
         return [target]
@@ -944,13 +1009,14 @@ def overlaps(a: Scored, b: Scored) -> bool:
 
 def propose(catalog: list[dict], curriculum: dict, content: Path, target: str, rung: str | None = None,
             only: list[str] | None = None, wanted: tuple[int, int] = DEFAULT_BARS, positions_path: Path = POSITIONS,
-            keep: int = KEEP) -> dict:
+            keep: int = KEEP, seed_path: Path = SEED_FILE) -> dict:
     """One run: every window of every parent scored for `target`, judged at `rung`; the run's section."""
     import claims
     from music21 import converter
 
     skills, vocabulary = claims.load_vocabulary()
     target_demands = target_demands_of(target, skills, vocabulary)
+    seeded = seeded_parents(catalog, seed_works_for(target_demands, load_seed(seed_path), skills, vocabulary))
     rung = rung or default_rung(target_demands, vocabulary)
     ancestry = claims.rung_ancestry(curriculum)
     if rung is not None and rung not in ancestry:
@@ -988,21 +1054,19 @@ def propose(catalog: list[dict], curriculum: dict, content: Path, target: str, r
     accepted: list[Scored] = []
     checked = 0
     # Two passes: the windows meeting every weighted signal first (a higher-scoring overlapping
-    # window that misses one never hides them), then the rest; each pass by score.
-    for meeting in (True, False):
-        for one in scored:
-            if one.refused_by or all(p.fired for p in one.parts) != meeting:
-                continue
-            if any(overlaps(one, kept) for kept in accepted):
-                continue
-            if checked >= PHYSICAL_CHECKED or len(accepted) >= keep:
-                break
-            if one.parent not in parsed:
-                parsed[one.parent] = converter.parse(str(contexts[one.parent].path))
-            one.physical = physical_gate(parsed[one.parent], one.low, one.high, one.selection, contexts[one.parent].entry.get("tempoBpm"))
-            checked += 1
-            if not one.physical:
-                accepted.append(one)
+    # window that misses one never hides them), then the rest; each pass by score, a seeded
+    # parent's windows first within it (E28: the seed orders, and admits nothing).
+    for one in acceptance_order(scored, set(seeded)):
+        if any(overlaps(one, kept) for kept in accepted):
+            continue
+        if checked >= PHYSICAL_CHECKED or len(accepted) >= keep:
+            break
+        if one.parent not in parsed:
+            parsed[one.parent] = converter.parse(str(contexts[one.parent].path))
+        one.physical = physical_gate(parsed[one.parent], one.low, one.high, one.selection, contexts[one.parent].entry.get("tempoBpm"))
+        checked += 1
+        if not one.physical:
+            accepted.append(one)
     run_id = f"{target}@{rung or 'none'}" + (f"@{'+'.join(only)}" if only else "")
     refused: dict[str, Scored] = {}
     for one in scored:
@@ -1021,8 +1085,10 @@ def propose(catalog: list[dict], curriculum: dict, content: Path, target: str, r
         "rules": {d: table["demands"].get(d) for d in target_demands},
         "scanned": {"parents": len(contexts), "windows": windows, "crossing": crossings, "skipped": skipped[:50],
                     "skippedCount": len(skipped), "withTarget": len(scored)},
-        "candidates": [candidate_row(one, contexts[one.parent], target, rung, target_demands, table, ancestry, vocabulary, run_id)
+        "candidates": [dict(candidate_row(one, contexts[one.parent], target, rung, target_demands, table, ancestry, vocabulary, run_id),
+                            seed=seed_note(seeded.get(one.parent)))
                        for one in accepted],
+        "seeded": sorted(seeded),
         "refused": [
             {"of": one.parent, "title": contexts[one.parent].entry.get("title"), "fromBar": one.low, "toBar": one.high,
              "selection": one.selection, "score": one.score, "refusedBy": one.refused_by, "untaught": one.untaught,

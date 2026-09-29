@@ -95,6 +95,17 @@ import {
   spellingFor,
 } from './key';
 
+/**
+ * The version of what this converter decides — the grid, the hands, the key, the metre and the
+ * tempo it writes (E26; R35). The import's provenance names it (`converter: { name, version }`,
+ * `importStore.importProvenance`), so a later reader can tell which rules inferred an imported
+ * score's split and tempo, and the launch's measurement of stored imports can tell a row converted
+ * under an older version (`importStore.measurementDue`). Move it whenever those decisions change.
+ * The command-line converter (`tools/midi-cleanup/midi_to_musicxml.py`) keeps its own, written into
+ * the MusicXML it emits.
+ */
+export const MIDI_CONVERTER_VERSION = 1;
+
 export interface ConvertOptions {
   /** What the score is called. The import path passes the file's own name. */
   title: string;

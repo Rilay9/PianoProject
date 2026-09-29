@@ -69,6 +69,16 @@ from music21 import (
     tie,
 )
 
+#: This converter's name and the version of what it decides — the grid, the swing, the hands, the
+#: key, the metre and the tempo it writes (E26; R35). Every file it writes carries both in its
+#: MusicXML `<encoding>` block as `<software>tools/midi-cleanup/midi_to_musicxml.py v.N</software>`,
+#: beside music21's own `<software>` (the element may repeat there, so no comment is needed), and
+#: the app's import reads it back into the score's provenance (`importStore.converterStampOf`).
+#: Move the version whenever those decisions change. The app's in-browser port keeps its own
+#: (`MIDI_CONVERTER_VERSION`, `app/src/import/midi/convert.ts`): the two are separate programs.
+CONVERTER_NAME = "tools/midi-cleanup/midi_to_musicxml.py"
+CONVERTER_VERSION = 1
+
 #: How each of the twelve pitch classes above the tonic is spelled, as an
 #: interval. The seven notes of the scale take the key's own names. The five
 #: chromatic ones follow common practice for a melody line: in a major key the
@@ -1012,7 +1022,11 @@ def convert(
     # music21 writes "Music21 Fragment", and the app's import path takes its
     # library row's name from the title (`04` §4) - so every converted file
     # would arrive called the same thing.
-    score.insert(0, metadata.Metadata(title=input_path.stem.replace("-", " ").replace("_", " ")))
+    score_metadata = metadata.Metadata(title=input_path.stem.replace("-", " ").replace("_", " "))
+    # Which converter and version decided this file (E26): music21 writes each `software` entry
+    # into the `<encoding>` block after its own, and the app's import reads it back.
+    score_metadata.add("software", f"{CONVERTER_NAME} v.{CONVERTER_VERSION}")
+    score.insert(0, score_metadata)
     clefs = {"Right hand": clef.TrebleClef(), "Left hand": clef.BassClef()}
     # Exactly two parts is a piano: one instrument on two staves, braced. More
     # than two is an ensemble and each one keeps its own part.

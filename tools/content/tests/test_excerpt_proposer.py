@@ -361,6 +361,76 @@ class NothingRanksByLowestDifficulty(unittest.TestCase):
         self.assertEqual((ranked[0].parent, ranked[0].low, ranked[0].high), ("song.test.harder", 5, 8))
 
 
+class TheSeedOrdersParentsAndAdmitsNothing(unittest.TestCase):
+    """E28 (E2 item 5): the seed list of teaching repertoire orders the parents a run offers, and
+    admits nothing — the reviewer's ruling: reputation puts a work on the shortlist; only measured
+    presence on the file admits it to a claim.
+
+    Within each pass (the windows meeting every signal, then the rest) the catalogue's editions of
+    a work the seed knows for a concept naming the target are offered first; no window is added,
+    removed or rescored by it, and a refused window stays refused.
+    """
+
+    def setUp(self) -> None:
+        import claims
+
+        self.skills, self.demands = claims.load_vocabulary()
+        self.seed = P.load_seed()
+
+    def test_the_works_known_for_a_concept_that_names_the_target(self) -> None:
+        works = lambda demand: [w["work"] for w in P.seed_works_for([demand], self.seed, self.skills, self.demands)]  # noqa: E731
+        self.assertEqual(works("texture.left-hand-pattern"),
+                         ["Piano Sonata in C major, K. 545, first movement", "Für Elise, WoO 59", "The Entertainer", "Maple Leaf Rag"])
+        self.assertEqual(works("rhythm.syncopation"), ["The Entertainer", "Maple Leaf Rag"])
+        self.assertEqual(works("key.signature"), ["Minuet in G major, BWV Anh. 114"])
+        self.assertEqual(works("interval.leap"), [])
+
+    def test_a_seeded_parent_is_an_edition_of_the_work_or_a_variant_of_one(self) -> None:
+        catalog = [
+            {"id": "song.a", "provenance": {"composition": "work:scott joplin|the entertainer"}},
+            {"id": "song.a.alt", "provenance": {"composition": "variant-of:song.a"}},
+            {"id": "song.b", "provenance": {"composition": "work:somebody|something else"}},
+            {"id": "song.c"},
+        ]
+        works = [{"work": "The Entertainer", "catalogue": ["work:scott joplin|the entertainer"]}]
+        self.assertEqual(sorted(P.seeded_parents(catalog, works)), ["song.a", "song.a.alt"])
+
+    def test_the_seed_orders_the_windows_considered_and_adds_removes_or_rescores_none(self) -> None:
+        seeded = context(PHRASES, LEAPS, item="song.test.seeded")
+        other = context(PHRASES, LEAPS, item="song.test.other")
+        windows = [window(other, 5, 8), window(seeded, 5, 8), window(seeded, 3, 6), window(other, 3, 6)]
+        self.assertTrue(all(p.fired for p in windows[0].parts), "bars 5-8 meet every signal")
+        self.assertFalse(all(p.fired for p in windows[2].parts), "bars 3-6 start mid-phrase")
+        self.assertEqual(windows[0].score, windows[1].score, "the same bars score the same, seed or no seed")
+        ranked = sorted(windows, key=P.rank_key)
+        plain = [(w.parent, w.low) for w in P.acceptance_order(ranked, set())]
+        first = [(w.parent, w.low) for w in P.acceptance_order(ranked, {"song.test.seeded"})]
+        self.assertEqual(plain, [("song.test.other", 5), ("song.test.seeded", 5), ("song.test.other", 3), ("song.test.seeded", 3)])
+        self.assertEqual(first, [("song.test.seeded", 5), ("song.test.other", 5), ("song.test.seeded", 3), ("song.test.other", 3)])
+        self.assertEqual(sorted(first), sorted(plain))
+
+    def test_a_refused_window_stays_refused_on_a_seeded_parent(self) -> None:
+        import claims
+
+        curriculum = json.loads((REPO / "app" / "public" / "content" / "curriculum.json").read_text(encoding="utf-8"))
+        ctx = context(NARROW, {"interval.leap": {"1": [2, 0], "2": [3, 0], "3": [2, 0]}, "clef.bass": {str(b): [0, 1] for b in range(1, 5)}},
+                      item="song.test.seeded")
+        refused = window(ctx, 1, 4, "both", rung="1.5", ancestry=claims.rung_ancestry(curriculum), vocabulary=self.demands)
+        self.assertEqual(refused.refused_by, ["untaught"])
+        self.assertEqual(P.acceptance_order([refused], {"song.test.seeded"}), [])
+
+    def test_the_catalogues_editions_of_the_seeds_works_are_found_on_the_build(self) -> None:
+        built = REPO / "app" / "public" / "content" / "catalog.json"
+        if not built.is_file():
+            self.skipTest("no built catalogue: run the content build")
+        catalog = json.loads(built.read_text(encoding="utf-8"))
+        found = P.seeded_parents(catalog, P.seed_works_for(["texture.left-hand-pattern"], self.seed, self.skills, self.demands))
+        self.assertIn("song.classical.mozart-k545-i", found)
+        self.assertIn("song.classical.mozart-k545-i.alt", found)
+        self.assertIn("song.ragtime.joplin-entertainer.kern", found)
+        self.assertNotIn("song.classical.bach-menuet-bwv-anh-113.pdmx", found)
+
+
 class TheEditionMarks(unittest.TestCase):
     def test_a_double_bar_a_fermata_and_a_long_slur_are_the_editions_marks(self) -> None:
         bars = [("C5:1 D5:1 E5:1 F5:1", "C3:4")] * 8

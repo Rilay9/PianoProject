@@ -1467,6 +1467,15 @@ out.
     were guesses (the metre, the key and the grid — the
     notes and their timing are not). The note lives in memory for the visit, not on the row:
     it is a fact about this moment, not about the score.
+  - **What the notes ask** (E2): under the conversion note, one line reads the stored row's
+    measured demands in the swap sheet's words — *Measured in the notes: the bass-staff notes,
+    steps, skips and both hands together.* — measured on the score as it is stored, the learner's
+    corrected one where the hands were corrected; or why none were read: *A PDF: the app reads no
+    notes from it, so nothing is measured.*, *The app could not measure its notes (…)*, and for a
+    score imported before the app measured demands, *Not measured yet: the app measures it in the
+    background.* — which the next launch does (`03` §4a, `facts.measuredUnder`). A reading the app
+    knows it gets wrong on the file (the detectors' clef assumption) is left out, and the line says
+    so. A description of the notes, never a judgement of the piece and never a claim about the rung.
   - Assigning is optional: "No rung — just put it in my library" is the first choice, and is
     what an import used to be.
   - Typing over the estimate makes the level *judged* rather than *estimated*, so the app

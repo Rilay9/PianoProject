@@ -22,10 +22,12 @@ import { isMxl, toMusicXml } from '../score/mxl';
 import {
   ConvertError,
   convertMidi,
+  MIDI_CONVERTER_VERSION,
   titleFromFilename,
   type ConversionReport,
 } from '../import/midi/convert';
 import { MidiReadError } from '../import/midi/readMidi';
+import densityJson from '../../../content/sources/opportunity-density.json';
 
 /** docs/00 D19: this is a personal build, but a 100 MB PDF still helps nobody. */
 export const MAX_IMPORT_BYTES = 64 * 1024 * 1024;
@@ -333,13 +335,62 @@ export async function getImport(id: string): Promise<ImportRow | undefined> {
 }
 
 /**
- * The version of what the app's MIDI converter decides (`src/import/midi/`), stamped
- * on an imported score's provenance so a later reader can tell which rules inferred
- * its hands, key, grid and tempo (E0; R35). Move it when the converter's decisions
- * change. The converter owning its own version is a follow-up; until then it lives
- * beside the one writer of the provenance.
+ * The version of what the app's MIDI converter decides, stamped on an imported score's
+ * provenance (E0; R35). The converter owns it since E2 (`import/midi/convert.ts`, E26);
+ * re-exported here, where its callers have always found it.
  */
-export const MIDI_CONVERTER_VERSION = 1;
+export { MIDI_CONVERTER_VERSION };
+
+/** The app's converter, as an import's provenance names it. */
+const APP_CONVERTER = 'app/src/import/midi/convert.ts';
+
+/**
+ * The stamp the command-line converter writes into the MusicXML it emits (E26):
+ * `<software>tools/midi-cleanup/midi_to_musicxml.py v.N</software>` in the encoding block,
+ * beside music21's own. Read back so an import of its output names the converter and the
+ * version that inferred its hands and key; `undefined` for any other file.
+ */
+export function converterStampOf(xml: string): { name: string; version: number } | undefined {
+  const match = /<software>\s*([^<]*?midi_to_musicxml\.py)\s+v\.(\d+)\s*<\/software>/.exec(xml);
+  if (!match?.[1] || !match[2]) return undefined;
+  return { name: match[1].trim(), version: Number(match[2]) };
+}
+
+/** The tempo-sensitive demands (the density file's `tempoSensitive`, the build's list too). */
+const TEMPO_SENSITIVE = new Set((densityJson as unknown as { tempoSensitive: string[] }).tempoSensitive);
+
+/**
+ * How an import's demands are known, as the build writes a bundled row's (`build.attach_provenance`,
+ * `docs/03` §4a): measured by the detectors, and — where the file states no tempo — the
+ * tempo-sensitive ones among them listed `untrusted`, measured in the notation with their
+ * difficulty resting on the app's default tempo (R11). The import path never listed them before
+ * E2, so an import was the one notated candidate whose inferred tempo the gate could not see.
+ */
+function demandsFact(measured: ImportMeasurement, tempoInferred: boolean, via: string): Provenance['facts'][string] {
+  if (measured.measurement.status !== 'measured') {
+    return { kind: 'unmeasured', why: measured.measurement.status === 'unmeasured' ? measured.measurement.reason : 'not notation' };
+  }
+  const untrusted = tempoInferred && Array.isArray(measured.demands) ? measured.demands.filter((demand) => TEMPO_SENSITIVE.has(demand)) : [];
+  return {
+    kind: 'measured',
+    via,
+    ...(untrusted.length > 0 ? { untrusted, why: 'their difficulty depends on a tempo the app supplied, not one the score states' } : {}),
+  };
+}
+
+/**
+ * The version the app measured a row under (E25): the app's converter version in force then,
+ * written beside the measurement — an unmeasurable verdict included, so a PDF is not tried again
+ * launch after launch, only when the version moves (the reviewer's constraint,
+ * `responses/12af708.md`). Not the converter that wrote the notes: that stays `converter`.
+ */
+function measuredUnderFact(measured: ImportMeasurement, version: number): Provenance['facts'][string] {
+  return {
+    kind: measured.measurement.status === 'measured' ? 'measured' : 'unmeasured',
+    via: 'app/src/data/importStore.ts: the app’s converter version in force when the notes were measured',
+    value: String(version),
+  };
+}
 
 /** A measured score's demands, or why they could not be measured. */
 export interface ImportMeasurement {
@@ -439,11 +490,11 @@ export function importProvenance(
   report: ConversionReport | null,
 ): Provenance {
   const facts: Provenance['facts'] = {};
-  facts.demands =
-    measured.measurement.status === 'measured'
-      ? { kind: 'measured', via: 'app/src/demands/detect.ts' }
-      : { kind: 'unmeasured', why: measured.measurement.status === 'unmeasured' ? measured.measurement.reason : 'not notation' };
+  facts.demands = demandsFact(measured, xml !== null && !writesTempo(xml), 'app/src/demands/detect.ts');
   facts.level = { kind: 'inferred', via: 'the runtime level estimate, until the learner types one' };
+  // A MusicXML file the command-line converter wrote says so (E26): its staves and key are that
+  // converter's decisions, not an edition's, and the provenance names the converter and its version.
+  const stamped = kind === 'musicxml' && xml !== null ? converterStampOf(xml) : undefined;
   if (kind === 'midi' && report) {
     facts.hands =
       report.hands === 'split into two'
@@ -452,6 +503,10 @@ export function importProvenance(
     facts.key = { kind: report.keyFrom === 'chosen' ? 'authored' : 'inferred', via: report.keyFrom };
     facts.timeSig = { kind: 'inferred', via: 'the file’s meta events, or the converter’s default' };
     facts.grid = { kind: 'inferred', via: `quantised to ${report.grid}` };
+  } else if (kind === 'musicxml' && stamped) {
+    const by = `${stamped.name} v.${String(stamped.version)}`;
+    facts.hands = { kind: 'inferred', via: `the staves ${by} wrote from a MIDI file: its tracks kept as recorded, or one line split by the shape of its voices — the file does not say which` };
+    facts.key = { kind: 'inferred', via: `${by}: estimated from the notes unless a key was chosen — the file does not say which` };
   } else if (kind === 'musicxml') {
     facts.hands = { kind: 'authored', via: 'the file’s staves' };
     facts.key = { kind: 'authored', via: 'the file’s signature' };
@@ -461,10 +516,11 @@ export function importProvenance(
       ? { kind: 'authored', via: kind === 'midi' ? 'the file’s tempo map' : 'the file' }
       : { kind: 'inferred', via: 'no tempo in the file: the app’s default' };
   }
+  facts.measuredUnder = measuredUnderFact(measured, MIDI_CONVERTER_VERSION);
   return {
     source: kind === 'midi' ? 'imported-midi' : kind === 'pdf' ? 'imported-pdf' : 'imported-musicxml',
     edition: null,
-    ...(kind === 'midi' ? { converter: { name: 'app/src/import/midi/convert.ts', version: MIDI_CONVERTER_VERSION } } : {}),
+    ...(kind === 'midi' ? { converter: { name: APP_CONVERTER, version: MIDI_CONVERTER_VERSION } } : stamped ? { converter: stamped } : {}),
     facts,
     review: { score: null, teaching: null },
   };
@@ -627,11 +683,9 @@ export async function correctImportHands(
     ...before,
     facts: {
       ...before.facts,
-      demands:
-        measured.measurement.status === 'measured'
-          ? { kind: 'measured', via: 'app/src/demands/detect.ts, on the corrected score' }
-          : { kind: 'unmeasured', why: measured.measurement.status === 'unmeasured' ? measured.measurement.reason : 'not notation' },
+      demands: demandsFact(measured, !writesTempo(correctedXml), CORRECTED_VIA),
       hands: { kind: 'authored', via: `the learner’s correction, ${now.toISOString().slice(0, 10)}` },
+      measuredUnder: measuredUnderFact(measured, MIDI_CONVERTER_VERSION),
     },
   };
   const next: ImportRow = {
@@ -652,6 +706,192 @@ export async function correctImportHands(
   await db.put('imports', next);
   notify();
   return next;
+}
+
+/** How a demands fact names a measurement of the learner's corrected score. */
+const CORRECTED_VIA = 'app/src/demands/detect.ts, on the corrected score';
+
+// --- the launch's measurement of stored imports (E25) ------------------------------------
+
+/**
+ * Why a stored import is measured on this launch, or `undefined` when it is not (E25, E26):
+ *
+ * - `never-measured` — imported before E0: no measurement, no demands or no demands fact;
+ * - `unreadable-here` — measured where there was no document to parse it in, a reason that no
+ *   longer holds in the page;
+ * - `version` — unmeasured (a PDF, a file the app could not read) under an older version than
+ *   the one in force: tried once more, and not again until the version moves;
+ * - `converter` — converted by an older version of the app's converter and not measured since
+ *   the version moved. The stored score is what that converter wrote; the MIDI file is not kept,
+ *   so the score is measured again, never converted again, and the row goes on naming the
+ *   converter version that wrote its notes.
+ */
+export type MeasureDue = 'never-measured' | 'unreadable-here' | 'version' | 'converter';
+
+/** `measureImport`'s reason where there is no document to parse a score in. */
+const NO_DOCUMENT = 'the score could not be read here: no document to parse it in';
+
+/** The version a row was last measured under; a row measured before E2 wrote none, and only version 1 existed then. */
+function measuredUnderOf(row: Pick<ImportRow, 'provenance'>): number | undefined {
+  if (!row.provenance) return undefined;
+  const value = Number(row.provenance.facts.measuredUnder?.value);
+  return Number.isInteger(value) && value > 0 ? value : 1;
+}
+
+export function measurementDue(row: ImportSummary, current: number = MIDI_CONVERTER_VERSION): MeasureDue | undefined {
+  const measurement = row.measurement;
+  if (!row.provenance?.facts.demands || !measurement || row.demands === undefined) return 'never-measured';
+  const under = measuredUnderOf(row) ?? 1;
+  if (measurement.status !== 'measured') {
+    if (measurement.status === 'unmeasured' && measurement.reason === NO_DOCUMENT) return 'unreadable-here';
+    return under < current ? 'version' : undefined;
+  }
+  const converter = row.provenance.converter;
+  if (converter?.name === APP_CONVERTER && typeof converter.version === 'number' && converter.version < current && under < current) return 'converter';
+  return undefined;
+}
+
+/**
+ * The row with a fresh measurement written in, and nothing else of it changed: the stored score
+ * (the learner's corrected one where they corrected it), its level, its rungs and every fact of
+ * its provenance but the demands and the version they were measured under. A row imported before
+ * E0 gets the provenance its stored file shows — never the hands or the key as the file's own
+ * unless a converter's stamp says whose they are, because a MIDI file's converted score is stored
+ * as MusicXML too and the door it came through is not on the row.
+ */
+export function withMeasurement(row: ImportRow, measured: ImportMeasurement, current: number = MIDI_CONVERTER_VERSION): ImportRow {
+  const xml = row.kind === 'musicxml' && typeof row.data === 'string' ? row.data : null;
+  let provenance: Provenance;
+  if (row.provenance) {
+    const corrected = row.provenance.facts.hands?.kind === 'authored' && /learner/.test(row.provenance.facts.hands.via ?? '');
+    provenance = {
+      ...row.provenance,
+      facts: { ...row.provenance.facts, demands: demandsFact(measured, xml !== null && !writesTempo(xml), corrected ? CORRECTED_VIA : 'app/src/demands/detect.ts') },
+    };
+  } else {
+    provenance = importProvenance(row.kind, measured, xml, null);
+    if (row.kind === 'musicxml' && (xml === null || converterStampOf(xml) === undefined)) {
+      const facts = { ...provenance.facts };
+      delete facts.hands;
+      delete facts.key;
+      provenance = { ...provenance, facts };
+    }
+  }
+  provenance = { ...provenance, facts: { ...provenance.facts, measuredUnder: measuredUnderFact(measured, current) } };
+  return { ...row, demands: measured.demands, measurement: measured.measurement, provenance };
+}
+
+/** What the launch's measurement of stored imports did. */
+export interface ImportMeasureStatus {
+  state: 'running' | 'done';
+  /** Measured now, and the demands read. */
+  measured: number;
+  /** Tried now and unmeasurable (a PDF, a file the app cannot read), the verdict written with the version. */
+  unmeasurable: number;
+  /** Not due: measured under the version in force, or unmeasurable under it. */
+  current: number;
+  /** Left for the next launch: the store failed, or nothing could be read here. */
+  pending: number;
+  stopped?: boolean;
+}
+
+export interface ImportMeasureOptions {
+  /** The measurement (`measureImport`); a test hands in its own. */
+  measure?: (xml: string, id: string) => Promise<ImportMeasurement>;
+  /** The converter version in force (`MIDI_CONVERTER_VERSION`); a test moves it. */
+  current?: number;
+  /** Waits for the browser to be idle between rows; resolves at once in a test. */
+  idle?: () => Promise<void>;
+}
+
+/**
+ * Measures every stored import that is due (E25; `measurementDue`) once, one row per idle slice,
+ * through the store: each row is read on its own, measured, and written back in one transaction
+ * onto the row as it is then — only if its score is still the one measured, so a correction or an
+ * assignment saved meanwhile is never overwritten. The screens hear of it once, at the end, and
+ * read the measured truth. Never throws: a store that fails leaves the rest for the next launch.
+ */
+export async function measureStoredImports(options: ImportMeasureOptions = {}): Promise<ImportMeasureStatus> {
+  const measure = options.measure ?? measureImport;
+  const current = options.current ?? MIDI_CONVERTER_VERSION;
+  const idle = options.idle ?? (() => Promise.resolve());
+  const status: ImportMeasureStatus = { state: 'running', measured: 0, unmeasurable: 0, current: 0, pending: 0 };
+  let changed = false;
+  try {
+    const db = await openDatabase();
+    const summaries = db ? await importSummaries() : [];
+    const due = summaries.filter((row) => measurementDue(row, current) !== undefined);
+    status.current = summaries.length - due.length;
+    status.pending = due.length;
+    for (const summary of due) {
+      await idle();
+      const row = await db?.get('imports', summary.id);
+      if (!db || !row || measurementDue(row, current) === undefined) {
+        status.pending -= 1;
+        continue;
+      }
+      const measured: ImportMeasurement =
+        row.kind === 'pdf' || typeof row.data !== 'string'
+          ? { demands: 'unmeasured', measurement: { status: 'unmeasured', reason: 'a PDF: the app reads no notes from it' } }
+          : await measure(row.data, row.id);
+      // Nothing learned where there is no document to parse in: left as it was, for a launch that has one.
+      if (measured.measurement.status === 'unmeasured' && measured.measurement.reason === NO_DOCUMENT) continue;
+      const tx = db.transaction('imports', 'readwrite');
+      const latest = await tx.store.get(row.id);
+      if (latest && sameData(latest.data, row.data)) {
+        await tx.store.put(withMeasurement(latest, measured, current));
+        changed = true;
+        if (measured.measurement.status === 'measured') status.measured += 1;
+        else status.unmeasurable += 1;
+      }
+      await tx.done;
+      status.pending -= 1;
+    }
+  } catch {
+    status.stopped = true;
+  }
+  status.state = 'done';
+  if (changed) notify();
+  return status;
+}
+
+/**
+ * Whether a stored file is still the one that was measured. A PDF's bytes come back from the store
+ * as a new `ArrayBuffer` on every read, so they are compared by content, never by reference.
+ */
+function sameData(a: ImportRow['data'], b: ImportRow['data']): boolean {
+  if (typeof a === 'string' || typeof b === 'string') return a === b;
+  if (a.byteLength !== b.byteLength) return false;
+  const x = new Uint8Array(a);
+  const y = new Uint8Array(b);
+  for (let i = 0; i < x.length; i += 1) if (x[i] !== y[i]) return false;
+  return true;
+}
+
+/** Resolves when the browser next has nothing to do, or after `timeoutMs` at the latest (as the evidence job waits). */
+function whenIdle(timeoutMs = 2000): Promise<void> {
+  return new Promise((resolve) => {
+    const idle = (globalThis as { requestIdleCallback?: (cb: () => void, options?: { timeout: number }) => number }).requestIdleCallback;
+    if (typeof idle === 'function') idle(() => resolve(), { timeout: timeoutMs });
+    else setTimeout(resolve, 50);
+  });
+}
+
+let measuring: Promise<ImportMeasureStatus> | null = null;
+
+/**
+ * Starts the measurement of stored imports once per open (E25): `delayMs` after the first screen,
+ * then one row per idle slice, so it never holds up a screen, a score being drawn or a run being
+ * taken. OSMD loads only when a row needs measuring. A second call returns the same run.
+ */
+export function startImportMeasurement(delayMs = 2000): Promise<ImportMeasureStatus> {
+  measuring ??= new Promise<void>((resolve) => setTimeout(resolve, delayMs)).then(() => measureStoredImports({ idle: () => whenIdle() }));
+  return measuring;
+}
+
+/** Test hook: forget this open's measurement run, as a reload would. */
+export function resetImportMeasurementForTest(): void {
+  measuring = null;
 }
 
 /** Must match `public/share-target.js`. */

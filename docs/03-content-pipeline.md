@@ -566,7 +566,15 @@ imported score (`importStore.importProvenance`):
   labelled `inferred`). A generated item or runtime drill is identified by its `generator`
   and names no composition: an exercise is not a work (the inventory counts none).
 - **`converter`**: `convert.py` by its tool fingerprint, `author.py`, or the app's MIDI converter
-  by `MIDI_CONVERTER_VERSION`.
+  by `MIDI_CONVERTER_VERSION` — owned since E2 by the converter itself (`app/src/import/midi/convert.ts`,
+  re-exported by `importStore.ts`; E26). The command-line converter (`tools/midi-cleanup/midi_to_musicxml.py`)
+  keeps its own `CONVERTER_VERSION` and writes it into every file it emits as
+  `<software>tools/midi-cleanup/midi_to_musicxml.py v.N</software>` in the MusicXML `<encoding>` block,
+  beside music21's own (the element may repeat there, so no comment is needed); an import of such a
+  file names that converter and version in `converter`, and its `hands` and `key` facts are
+  `inferred` — the staves and the key are that converter's decisions, and the file does not say
+  whether it kept the tracks or split one line. The two converters are separate programs and
+  their versions move separately.
 - **`facts`**: each fact with how it is known — `measured` (the detectors, with their
   definitions; the key a song's signature and final bass give), `inferred` (the converter's
   default tempo, a level estimate, a hand split, a key guess, an identity key), `authored`
@@ -575,6 +583,25 @@ imported score (`importStore.importProvenance`):
   inferred, the tempo-sensitive demands (the density file's `tempoSensitive`: notes shorter
   than the beat) are listed `untrusted` beside the measured ones: measured in the notation,
   their difficulty resting on a tempo the converter supplied. Never flattened into one field.
+  (The import path wrote no `untrusted` list until E2, so an import whose file states no tempo was
+  the one notated candidate whose inferred tempo the gate could not see; it writes the build's
+  rule now, at import, at a hand correction and at the launch's measurement below.)
+- **`facts.measuredUnder`** (an import, E2; E25): `value` is the app's converter version in force
+  when the row's notes were measured — an unmeasurable verdict included — and absent on a row
+  measured before E2, which reads as version 1, the only one there was. It is not the converter
+  that wrote the notes; that stays `converter`. On each launch (`main.ts`, after the first screen,
+  one row per idle slice) `importStore.measureStoredImports` measures once, through the store,
+  every stored import that is due (`measurementDue`): never measured (imported before E0), measured
+  where there was no document to parse it in, unmeasurable under an older version than the one in
+  force, or converted by an older version of the app's converter and not measured since. A PDF is
+  never handed to the detectors, and its verdict is written with the version, so it is tried again
+  only when the version moves. The MIDI file is not stored, so an older converter's score is
+  measured again, never converted again. Each row is written in one transaction onto the row as it
+  is then, only if its score is still the one measured: the learner's corrected score, its
+  correction provenance, its level and its rungs are never overwritten. A row imported before E0
+  gets the provenance its stored file shows, with no `hands` or `key` fact unless a converter's
+  stamp says whose they are, because a converted MIDI file is stored as MusicXML too and the door
+  it came through is not on the row.
 - **`facts.promise`** (D3a, 2026-09-28): on every generated item, its family's promise for its
   recipe — `{kind: "authored", via: "family_contracts.json (the rule matching the recipe)",
   value: "music" | "drill"}` — resolved by `review.promise_of`, the microscope's reading: the
