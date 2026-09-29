@@ -1,0 +1,1 @@
+The builder's captures for D4 (Entry 106): each run's exit-and-summary file, the red lines (`red-*`, `mutant-*`), and the orchestrator's chain on the merged tree (`orchestrator-exit.txt`). Left out for size: vitest-full-1.txt, vitest-full-final.txt.

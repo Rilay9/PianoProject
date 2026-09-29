@@ -51,3 +51,4 @@ Judgement first: what a learner with a proficient skill is offered and what the 
 
 **Dispatched 2026-09-28** (Entry 106) on E1a's acceptance (`responses/4f7227d.md`), port 4183: D4 consumes the shared `admittedForTeaching` contract and adds no excerpt-bit check beside it; its positive case on a fixture with a current `teaching: true`.
 
+**Landed 2026-09-29** (Entry 106; 9193261, merged da9d0e7); handoff `handoffs/9193261.md`. The builder's deviation: a runtime phrase's recipe is the generator options it was written from (the row's params with the reader's moves and the rung's hold), not the `ReadingRecipe` alone, which does not determine the phrase.

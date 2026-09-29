@@ -18,8 +18,8 @@
 
 - **D0 / D0a** — **closed**: D0a accepted (`responses/3b9c37d.md`); B7 kept (G53), the arpeggios' notation to G52.
 - **Q24** — **closed**, approved by the reviewer (`responses/e32d0ef.md`, unprompted); the MAESTRO download decided yes for testing by the owner on 2026-09-28 (Q47; licence re-read and quoted in the row; one small H seam with Q46).
-- **D4** — **dispatched 2026-09-28** (Entry 106, port 4183) on E1a's acceptance; consumes the shared admission.
-- **E2** and **F2** — briefs drafted 2026-09-29 under the accelerated cadence (`plan-2026-09-25.md` §"The accelerated cadence"); both **approved with one required change, applied** (`responses/12af708.md`). E2 is file-disjoint from D4 and **dispatched 2026-09-29** beside it (Entry 107, port 4203); F2 shares `docs/02` and `test_measured_truth.py` with D4's worktree and dispatches after D4 lands (port 4193). X1 drafted while they build.
+- **D4** — **landed** 2026-09-29 (Entry 106, merged da9d0e7, chain green); handoff `handoffs/9193261.md`, with the reviewer. Nothing heard; unverified as music.
+- **E2** and **F2** — briefs drafted 2026-09-29 under the accelerated cadence (`plan-2026-09-25.md` §"The accelerated cadence"); both **approved with one required change, applied** (`responses/12af708.md`). E2 is file-disjoint from D4 and **dispatched 2026-09-29** beside it (Entry 107, port 4203); F2 **dispatched 2026-09-29** (Entry 108, port 4193) on D4's merged tree; its docs/08 rows go in its entry for the orchestrator to splice, so its files stay disjoint from E2's. X1 drafted while they build.
 - **E1** — **closed** (approved `responses/8326ff3.md`; E1a accepted `4f7227d.md`). Nothing heard; unverified as music.
 - **E0 / E0a / E0b** — **closed**: E0b accepted (`responses/c95ac32.md`).
 

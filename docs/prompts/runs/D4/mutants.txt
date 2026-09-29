@@ -1,0 +1,17 @@
+legacy-read-as-unmet: caught (exit 1)
+lookup-by-id-only: caught (exit 1)
+none-meets-none: caught (exit 1)
+same-family-offered: caught (exit 1)
+nothing-differs-offered: caught (exit 1)
+met-by-id-offered: caught (exit 1)
+no-day-rule: caught (exit 1)
+displaces-the-rungs-ask: SURVIVED (exit 0)
+beyond-proficient-offered: caught (exit 1)
+unplaced-excerpt-offered: caught (exit 1)
+excerpt-admission-bypassed: caught (exit 1)
+legacy-given-current-identity: caught (exit 1)
+shown-on-not-the-ladders: SURVIVED (exit 0)
+phrase-recipe-keeps-the-seed: caught (exit 1)
+offer-not-recorded-as-intent: caught (exit 1)
+15 mutants, 13 caught, survived: ['displaces-the-rungs-ask', 'shown-on-not-the-ladders']
+exit 0

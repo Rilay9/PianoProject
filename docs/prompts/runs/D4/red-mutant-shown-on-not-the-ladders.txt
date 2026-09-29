@@ -1,0 +1,66 @@
+mutant shown-on-not-the-ladders: src/curriculum/transfer.ts
+--- old
+  const full = measured.slice(0, reach + 1).filter(
+--- new
+  const full = measured.filter(
+
+$ npx vitest run tests/unit/transferRelationship.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a64cf9b42ff36e1ca/app
+
+ ❯ tests/unit/transferRelationship.test.ts (11 tests | 1 failed) 18ms
+   ❯ what the skill was shown on: the ladder’s answer, as references (4)
+     × nor is a later read of the same row: the records up to the reading that reached proficiency 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/transferRelationship.test.ts > what the skill was shown on: the ladder’s answer, as references > nor is a later read of the same row: the records up to the reading that reached proficiency
+AssertionError: expected [ { …(2) }, { …(2) }, { …(2) } ] to deeply equal [ { …(2) }, { …(2) } ]
+
+- Expected
++ Received
+
+@@ -33,6 +33,24 @@
+        "seed": 11,
+        "tempoBpm": 72,
+        "version": 2,
+      },
+    },
++   {
++     "itemId": "drill.reading.sight-reading-2-right",
++     "material": {
++       "family": "sight-reading",
++       "kind": "generator",
++       "recipe": {
++         "bars": 4,
++         "eighths": true,
++         "fifths": 0,
++         "hands": "R",
++         "level": 2,
++         "skips": true,
++       },
++       "seed": 13,
++       "tempoBpm": 72,
++       "version": 2,
++     },
++   },
+  ]
+
+ ❯ tests/unit/transferRelationship.test.ts:82:64
+     80|   it('nor is a later read of the same row: the records up to the readi…
+     81|     const later = read(13, { material: phraseOf(13) });
+     82|     expect(establishedOn('position-shift', [...SHOWN, later])).toEqual…
+       |                                                                ^
+     83|       { itemId: READING_ROW, material: phraseOf(10) },
+     84|       { itemId: READING_ROW, material: phraseOf(11) },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 10 passed (11)
+   Start at  22:25:41
+   Duration  594ms (transform 68%, import 27%, tests 4%, worker 1%)
+
+
+exit 1

@@ -1,0 +1,15 @@
+$ (cwd .) npx playwright test --config playwright.d4-4183.config.ts
+[WebServer] (node:68944) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:65692) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:56720) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\e2e\transfer-offer.spec.ts:164:3 › the transfer offer (D4) › a learner proficient at shifting position is offered transfer material on Today, and its run keeps what was played and why (4.8s)
+
+  1 passed (6.5s)
+
+exit 0
