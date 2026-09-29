@@ -279,7 +279,10 @@ one song HT-alternating at 70 bpm ≥ 90 %.
 on the staff (line→space vs line→line), reading by interval not by name, looking ahead one
 beat. The leap (a 4th or wider) is introduced here and not taught: no option on the rung
 establishes one (two songs carry the odd leap), so it sits under the rung's `introduces` list and
-2.1 teaches it (F2a, 2026-09-29; the reviewer's required change on F2). Exercises: `[GEN]` **Sight-reading generator level 1** (random 4-bar RH melodies in C
+2.1 teaches it (F2a, 2026-09-29; the reviewer's required change on F2). The concept is `leap`,
+"Leaps: a fourth or fifth" (F2b, 2026-09-29; the reviewer on F2a, `responses/fc91e5a.md`): the
+beginner's reading leap, apart from the advanced `leaps`, "Wide leaps" (an octave or more, Grades
+5–6), which only `blues.7` and `ragtime.9` name; the one detector finds a fourth or wider under both. Exercises: `[GEN]` **Sight-reading generator level 1** (random 4-bar RH melodies in C
 position, quarters/halves; new one each time — this is the app's killer practice feature),
 `[GEN]` interval ear drill (2nd vs 3rd; learner plays back), `[GEN]` **Simon** on the
 white keys around middle C (hear a chain, play it back, one note longer each round). Songs: *Old MacDonald Had a Farm* `[AUTH]`, *Lightly Row* `[AUTH]`, *Ode to Joy (theme)* `[AUTH]`, *The Water Is Wide* `[PDMX]`. Mastery: 5 generated melodies at ≥ 90 % first
@@ -289,8 +292,10 @@ attempt.
 
 **2.1 Hands together: LH holds, RH moves.** Concepts: LH whole/half notes under RH melody;
 vertical alignment; "LH is the floor"; leaps — the left hand's moves from C to F and from C to G,
-a fourth and a fifth (the rung names `leaps` since F2a: 6 of its 10 checked options establish the
-leap, and the derivation makes 2.1 the core's one teaching rung for it). Exercises: `[GEN]` HT pattern drills (LH C hold, RH
+a fourth and a fifth (the rung names the leap since F2a: 6 of its 10 checked options establish the
+leap, and the derivation makes 2.1 the core's one teaching rung for it; since F2b the concept is
+`leap`, a fourth or fifth, so the Skills entry a learner here opens describes this leap and not the
+advanced jump of an octave or more, which keeps its own `leaps` entry). Exercises: `[GEN]` HT pattern drills (LH C hold, RH
 5-finger), `[GEN]` HT with LH changing every bar (C / G). Songs: *Ode to Joy (hands together)* `[AUTH]`, *Twinkle, Twinkle, Little Star (hands together)* `[AUTH]`, *Jingle Bells (chorus, hands together)* `[AUTH]`, *Mary Had a Little Lamb (hands together)* `[AUTH]`, *Simple Gifts* `[PDMX]`. Videos: Bill Hilton (hands together), Hoffman Unit 3–4. Mastery: HT ≥ 90 % at
 60 bpm Tempo mode.
 
@@ -421,7 +426,7 @@ generated exercises rather than repertoire — this is the material that has no 
 ### The "how to practise" module (`practice.1`–`practice.5`)
 
 *Added in P17; described here in P19.* Five short lessons that are about practising rather than
-about the piano, on their own track and open from Stage 1. They exist because the owner
+about the piano, on their own track and open from the second rung of Stage 1 (F2b; D8a). They exist because the owner
 plateaued once after a few lessons, and the coaching rules link into them: three flat runs in a
 row on the same piece points at `practice.5`.
 
@@ -435,10 +440,10 @@ row on the same piece points at `practice.5`.
 
 Each rung after the first names the one before as its prerequisite (F2a, 2026-09-29; L109's
 data half), which is the order the app walks the track in, so an option two of its rungs list is
-read where the track first meets it. `practice.1` names no core rung: every Stage 1 core rung as a
-prerequisite would close the track for part of Stage 1 (a track rung opens only once its
-prerequisites are met, set aside or behind the placement), which D8a's "from Stage 1" rules out,
-so where the floor stands on the core is Entry 117's open question.
+read where the track first meets it. `practice.1` names 1.1 (F2b, 2026-09-29; the reviewer on
+F2a, `responses/fc91e5a.md`): a track rung opens only once its prerequisites are met, set aside or
+behind the placement, so the track opens from the second rung of Stage 1, and the floor's
+five-finger and *Ode to Joy* material stands on the rung that teaches it.
 
 ---
 
@@ -608,11 +613,12 @@ shows piano-roll; notation export is a later feature). Stage 6: modal vamps, LH 
 motif development. Stage 7+: reharmonising melodies, arranging a PD song, composing in a form.
 Teachers: Bill Hilton (improvisation videos), Nahre Sol, Aimee Nolte, Open Studio.
 
-### D8a. How to practise (P17, from Stage 1)
+### D8a. How to practise (P17, from the second rung of Stage 1)
 
 A five-lesson mini-module on the *method* rather than the music, on its own
 `practice` track, active by default and running alongside everything else from
-Stage 1. The comprehensiveness check (replan §8) found practising efficiently,
+the second rung of Stage 1 (F2b: `practice.1` stands on 1.1; it said "from Stage 1"
+while the track named no core rung). The comprehensiveness check (replan §8) found practising efficiently,
 plateaus and injury covered once in lesson 0.3 and nowhere after.
 
 1. **Chunking, and the loop** — the smallest unit that still makes sense, the
@@ -654,6 +660,18 @@ path is Stage 0: a Stage 1 track rung stands on the core path before its stage. 
 prerequisite would say what the floor depends on, and would also close the track until that rung
 is met: 1.1 until the first rung is passed (the study's skips still untaught), 1.5 for all of
 Stage 1. That is a product choice against this section's "from Stage 1", left open in Entry 117.
+
+**The floor on 1.1 (F2b, 2026-09-29; the reviewer on F2a, `responses/fc91e5a.md`).**
+`practice.1` names 1.1 as its core prerequisite, the choice Entry 117 measured and recommended:
+1.5 would close the track for all of Stage 1, and no prerequisite kept a Stage-0 ancestry the
+floor does not have. The track now opens from the second rung of Stage 1 — a learner placed at 1.1
+has no practice row until 1.1 is behind them, one placed at 1.2 to 1.5 has it (placed from 2.1 on,
+the placement puts the track behind them, as before) — and every
+practice rung's path holds 1.1, so the five-finger pattern, *Hot Cross Buns* and *Ode to Joy* are
+read at 1.1, which teaches their steps. The one row the floor still reads as untaught is the
+steps-and-skips study's skips, which 1.5 teaches: true for a learner at 1.2–1.4. `practice.2`–`.5`
+stay chained through the practice rung before; the core rungs `practice.3`–`.5`'s material assumes
+(2.1 and 3.6) are not named, since they would close those rungs until Stage 2 or 3.
 
 ### D8. Mini-modules (optional; `holiday` and `hymns-gospel` open at Stage 2, `rock-metal` and `latin` at Stage 3, `jam` at Stage 4)
 

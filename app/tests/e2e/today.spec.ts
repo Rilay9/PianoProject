@@ -36,7 +36,9 @@ test.beforeEach(async ({ page }) => {
  * evidence nor a rung can fill is dropped, where it used to be filled from a
  * level window over the whole catalog. The tests about the card's shape, the
  * swap sheet and Shuffle need a rung with more on it, so they place the learner
- * at 1.1 (its exercises and songs, and How to practise beside it).
+ * at 1.1 (its exercises and songs). Revised (F2b): How to practise is no longer
+ * beside it there — `practice.1` stands on 1.1 and opens once 1.1 is behind the
+ * learner, so the track's row comes from 1.2 (`taughtByAncestry.test.ts`).
  */
 async function placeAt(page: Page, rung: string, stores: Record<string, unknown[]> = {}): Promise<void> {
   await page.goto('/');

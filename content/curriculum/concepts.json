@@ -1902,8 +1902,23 @@
       }
     },
     {
+      "id": "leap",
+      "display": "Leaps: a fourth or fifth",
+      "finder": {
+        "skill": "reading and playing a jump of a fourth or fifth without feeling for it",
+        "levelWords": "easy, elementary",
+        "constraints": [
+          "a few leaps of a fourth or fifth in a stepwise melody"
+        ],
+        "avoid": [
+          "octave leaps"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
       "id": "leaps",
-      "display": "Leaps",
+      "display": "Wide leaps",
       "finder": {
         "skill": "jumping accurately to a note you cannot feel for",
         "levelWords": "advanced, Grade 5 to 6",

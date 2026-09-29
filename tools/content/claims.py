@@ -60,6 +60,10 @@ CONCEPT_DEMANDS = {
     "grand-staff": "clef.bass",
     "steps": "interval.step",
     "skips": "interval.skip",
+    # F2b: the beginner's leap, a fourth or fifth (1.5 introduces it, 2.1 teaches it), and the advanced
+    # jump of an octave or more (`blues.7`, `ragtime.9`) are two concepts; the one detector finds a
+    # fourth or wider under both, so the demand is shared, as the left-hand pattern's is.
+    "leap": "interval.leap",
     "leaps": "interval.leap",
     "eighth-notes": "rhythm.eighths",
     "tied-across-bar": "rhythm.ties",

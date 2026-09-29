@@ -358,7 +358,7 @@
                 "sight-reading"
               ],
               "introduces": [
-                "leaps"
+                "leap"
               ],
               "textFile": "lessons/1.5.md",
               "exerciseOptions": [
@@ -475,6 +475,9 @@
                   "says": "Use the method on a passage of your own.",
                   "why": "No run records which way of practising was used."
                 }
+              ],
+              "prerequisites": [
+                "1.1"
               ],
               "songOptional": true,
               "estimatedDays": 7,

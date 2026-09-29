@@ -271,9 +271,12 @@ class TestTheCoreTeachesWhereAnOptionEstablishes(unittest.TestCase):
         return claims.untaught_on(item, rung, self.ancestry, self.demands)
 
     def test_the_leap_is_untaught_after_1_5_and_taught_from_2_1(self) -> None:
-        self.assertIn("leaps", self.lessons["1.5"].get("introduces") or [], "1.5 introduces the leap")
-        self.assertNotIn("leaps", self.lessons["1.5"]["concepts"])
-        self.assertIn("leaps", self.lessons["2.1"]["concepts"], "2.1 names the leap it practises")
+        # Revised (F2b part 2; the reviewer's required change on F2a, `responses/fc91e5a.md`). Old
+        # assumption: 1.5 and 2.1 name `leaps`, the advanced jump's concept ("leaps of an octave or more",
+        # Grades 5-6). They name the beginner's `leap`, a fourth or fifth; the demand is the same.
+        self.assertIn("leap", self.lessons["1.5"].get("introduces") or [], "1.5 introduces the leap")
+        self.assertNotIn("leap", self.lessons["1.5"]["concepts"])
+        self.assertIn("leap", self.lessons["2.1"]["concepts"], "2.1 names the leap it practises")
         for rung in ("1.4", "1.5"):
             self.assertEqual(self.untaught("interval.leap", rung), ["interval.leap"],
                              f"interval.leap at {rung}: 1.5 only introduces it")
@@ -295,6 +298,91 @@ class TestTheCoreTeachesWhereAnOptionEstablishes(unittest.TestCase):
         # rung and no longer inherits a demand its path does not teach.
         self.assertEqual(self.untaught("interval.leap", "holiday"), ["interval.leap"])
         self.assertEqual(self.untaught("pitch.chromatic", "blues.3"), ["pitch.chromatic"])
+
+
+class TestTheTwoLeapsAreTwoConcepts(unittest.TestCase):
+    """
+    F2b part 2 (the reviewer's required change on F2a, `responses/fc91e5a.md`): "leaps" meant two things
+    under one id, the beginner's fourth or fifth that 1.5 introduces and 2.1 teaches, and the advanced
+    jump of an octave or more that `blues.7` and `ragtime.9` name (Grades 5-6). A learner at 2.1 opening
+    the entry read about a skill years away. The beginner's leap is its own concept, `leap`; the advanced
+    `leaps` keeps its id and finder and is named only on those two technique rungs; each entry's name says
+    which leap it is; and the detector reads the new concept as the leap demand, so the teaching rung is
+    still 2.1. Red on the stage and concept files before F2b, where 1.5 and 2.1 name `leaps`.
+    """
+
+    #: Display names two concept ids already share, each pair with both ids named by lessons, so the Skills
+    #: screen lists two entries under one name (found by F2b's case, not F2b's to merge; a follow-up in
+    #: Entry 123). The case fails on a new collision, and on one of these being fixed without this line.
+    KNOWN_COLLISIONS = {
+        "alberti bass": ["alberti", "alberti-bass"],
+        "broken chords": ["broken-chord", "broken-chords"],
+        "call and response": ["call-and-response", "call-response"],
+        "contrary motion": ["contrary", "contrary-motion"],
+        "key signatures": ["key-signature", "key-signatures"],
+        "open voicings": ["open-voicing", "open-voicings"],
+        "slash chords": ["slash-chord", "slash-chords"],
+        "suspended chords": ["sus", "sus-chords"],
+        "the sustain pedal": ["CC64", "sustain-pedal"],
+        "trills": ["trill", "trills"],
+    }
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.curriculum = source_curriculum()
+        cls.lessons = {lesson["id"]: lesson for _s, _u, lesson in claims.lessons_in_order(cls.curriculum)}
+        cls.stage_of = {lesson["id"]: stage["number"] for stage, _u, lesson in claims.lessons_in_order(cls.curriculum)}
+        data = json.loads((CONTENT / "curriculum" / "concepts.json").read_text(encoding="utf-8"))
+        cls.concepts = {entry["id"]: entry for entry in data["concepts"]}
+
+    def naming(self, concept: str) -> list[str]:
+        return sorted(rung for rung, lesson in self.lessons.items()
+                      if concept in list(lesson.get("concepts") or []) + list(lesson.get("introduces") or []))
+
+    def test_the_beginner_leap_is_introduced_at_1_5_and_taught_at_2_1(self) -> None:
+        self.assertIn("leap", self.lessons["1.5"].get("introduces") or [], "1.5 introduces the fourth or fifth")
+        self.assertIn("leap", self.lessons["2.1"]["concepts"], "2.1 teaches it")
+        self.assertEqual(self.naming("leap"), ["1.5", "2.1"])
+
+    def test_the_advanced_jump_is_named_only_on_its_technique_rungs(self) -> None:
+        self.assertEqual(self.naming("leaps"), ["blues.7", "ragtime.9"],
+                         "leaps (an octave or more) is named where the technique rungs name it, and nowhere else")
+        early = [rung for rung in self.naming("leaps") if self.stage_of[rung] <= 3]
+        self.assertEqual(early, [], "a Stage 1-3 rung names the advanced jump")
+
+    def test_each_entry_says_which_leap_it_is(self) -> None:
+        leap, leaps = self.concepts["leap"], self.concepts["leaps"]
+        self.assertEqual(leap["display"], "Leaps: a fourth or fifth")
+        self.assertEqual(leap["finder"]["skill"], "reading and playing a jump of a fourth or fifth without feeling for it")
+        self.assertEqual(leap["finder"]["levelWords"], "easy, elementary")
+        self.assertEqual(leap["finder"]["constraints"], ["a few leaps of a fourth or fifth in a stepwise melody"])
+        self.assertEqual(leap["finder"]["avoid"], ["octave leaps"])
+        self.assertEqual(leap["finder"]["formats"], leaps["finder"]["formats"], "the shared formats line")
+        self.assertNotIn("octave or more", json.dumps(leap), "the beginner's entry speaks of the advanced jump")
+        # The advanced entry keeps its finder and its Grades 5-6 words; its name says which leap it is, in
+        # words short enough to be read whole beside Drill it and Find more at 342 px ("Leaps: an octave or
+        # more" was cut to "Leaps: an o…" there; plan.spec.ts measures it).
+        self.assertEqual(leaps["display"], "Wide leaps")
+        self.assertEqual(leaps["finder"]["skill"], "jumping accurately to a note you cannot feel for")
+        self.assertEqual(leaps["finder"]["levelWords"], "advanced, Grade 5 to 6")
+        self.assertIn("leaps of an octave or more", leaps["finder"]["constraints"])
+
+    def test_no_two_entries_share_a_name_where_the_leaps_are(self) -> None:
+        by_name: dict[str, list[str]] = {}
+        for ident, entry in self.concepts.items():
+            by_name.setdefault(" ".join(entry["display"].split()).casefold(), []).append(ident)
+        for ident in ("leap", "leaps"):
+            name = " ".join(self.concepts[ident]["display"].split()).casefold()
+            self.assertEqual(by_name[name], [ident], f"{ident}'s name {name!r} is shared")
+        self.assertNotIn("leaps", by_name, "an entry is called just 'Leaps', which says neither leap")
+        shared = {name: sorted(ids) for name, ids in by_name.items() if len(ids) > 1}
+        self.assertEqual(shared, self.KNOWN_COLLISIONS, "a display name is shared that is not recorded (or a recorded one was fixed)")
+
+    def test_the_detector_reads_the_beginner_leap_as_the_leap_and_2_1_still_teaches_it(self) -> None:
+        self.assertEqual(claims.CONCEPT_DEMANDS.get("leap"), "interval.leap", "the leap demand's concept is the beginner's")
+        skills, demands = claims.load_vocabulary()
+        self.assertEqual(claims.teaching_rungs(self.curriculum, skills, demands)["interval.leap"], ["2.1"])
+        self.assertEqual(demands["interval.leap"]["taughtAt"], ["2.1"], "demands.json unchanged")
 
 
 class TestThePracticeTrackWalksItsOwnRungs(unittest.TestCase):
@@ -327,11 +415,48 @@ class TestThePracticeTrackWalksItsOwnRungs(unittest.TestCase):
         self.assertEqual(outside, [], "a practice prerequisite changed another rung's ancestry")
 
     def test_the_floor_s_shared_options_are_read_where_the_track_first_meets_them(self) -> None:
+        """
+        Revised (F2b; the reviewer's required change on F2a, `responses/fc91e5a.md`, part 1). Old
+        assumption: the five-finger pattern is first met on `practice.1`, whose path stopped at Stage 0.
+        `practice.1` now stands on 1.1, which lists the pattern and *Ode to Joy*, so both are read at 1.1;
+        the steps-and-skips study, which 1.5 lists and 1.1 does not, is still first met on `practice.1`.
+        """
         firsts = claims.first_listings(self.curriculum, self.ancestry)
-        for item_id in ("exercise.five-finger.c-major.right", "exercise.reading.steps-and-skips-c"):
-            with self.subTest(item=item_id):
-                self.assertIn("practice.1", firsts[item_id])
-                self.assertNotIn("practice.2", firsts[item_id], "practice.2 stands on practice.1, which lists it")
+        for item_id in ("exercise.five-finger.c-major.right", "song.classical.ode-to-joy.rh"):
+            with self.subTest(read_at_1_1=item_id):
+                self.assertIn("1.1", firsts[item_id])
+                self.assertNotIn("practice.1", firsts[item_id], "practice.1 stands on 1.1, which lists it")
+        study = "exercise.reading.steps-and-skips-c"
+        self.assertIn("practice.1", firsts[study])
+        self.assertNotIn("practice.2", firsts[study], "practice.2 stands on practice.1, which lists it")
+
+    def test_the_floor_stands_on_1_1(self) -> None:
+        """
+        F2b (the reviewer's required change on F2a, `responses/fc91e5a.md`, part 1): `practice.1` names
+        1.1 as its core prerequisite, so the track's path holds the first Stage 1 rung and no later one,
+        and the track opens from the second rung of Stage 1. What 1.1 teaches (its steps: the five-finger
+        pattern, *Ode to Joy*) is taught on the floor; the steps-and-skips study's skips stay untaught
+        there until 1.5, truthfully. Red on the committed stage file, where `practice.1` names no
+        prerequisite and its path stops at Stage 0.
+        """
+        self.assertEqual(self.lessons["practice.1"].get("prerequisites"), ["1.1"])
+        for n in range(1, 6):
+            rung = f"practice.{n}"
+            with self.subTest(path=rung):
+                self.assertEqual(sorted(r for r in self.ancestry[rung] if r.startswith("1.")), ["1.1"],
+                                 f"{rung} stands on 1.1 and on no later Stage 1 rung")
+        _skills, demands = claims.load_vocabulary()
+
+        def untaught(demand_ids: list[str], rung: str) -> list[str]:
+            probe = {"id": "exercise.f2b.probe", "demands": demand_ids,
+                     "measurement": {"status": "measured", "established": demand_ids}}
+            return claims.untaught_on(probe, rung, self.ancestry, demands)
+
+        # The demands the floor's rows carry on the build (the report's rows before F2b, census-before.txt).
+        self.assertEqual(untaught(["interval.step"], "practice.1"), [], "the five-finger pattern and Ode: 1.1 teaches steps")
+        self.assertEqual(untaught(["interval.step", "interval.skip"], "practice.1"), ["interval.skip"],
+                         "the steps-and-skips study: its skips are 1.5's, still untaught on the floor")
+        self.assertEqual(untaught(["interval.step", "interval.skip"], "1.5"), [], "and taught where 1.5 lists it (holding already)")
 
 
 def fixture_path(first: dict) -> dict:
