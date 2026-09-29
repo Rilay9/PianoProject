@@ -1,0 +1,7 @@
+$ (cwd .) python -m unittest tools.content.tests.test_named_by_what_they_are tools.content.tests.test_prompt_views
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 30.713s
+
+OK
+exit=0

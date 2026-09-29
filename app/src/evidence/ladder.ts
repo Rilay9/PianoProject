@@ -18,10 +18,14 @@
  * mastery (`countsTowardsMovingDown`, a hypothesis): first contact, on material
  * measurably different on one of the skill's dimensions or carrying a demand no
  * establishing record carried — a stretch onto harder material is evidence
- * about that material, not a loss of the skill shown on the easier one. Where a
- * fact is unknown the attempt counts, and another cut of a composition already
- * played is unknown (G2a): its dimensions spare nothing, a demand no establishing
- * record carried still does. Time alone lowers nothing: a skill with no
+ * about that material, not a loss of the skill shown on the easier one. An
+ * unknown fact spares nothing, and protection needs a known fact: an attempt
+ * whose first contact is not recorded counts, and otherwise only a skill
+ * dimension measured to differ, or a demand no establishing record carried,
+ * spares it (the demands are compared only where the attempt's and every
+ * establishing record's are known). Another cut of a composition already played
+ * is unknown (G2a): its dimensions spare nothing, a demand no establishing record
+ * carried still does. Time alone lowers nothing: a skill with no
  * supporting evidence for `RETENTION_DAYS` keeps its state and says it has not
  * been shown recently.
  *
@@ -88,8 +92,11 @@ export const RECENT_ATTEMPTS = 2;
  * establishing record carried). A learner proficient at level 2 who
  * reads two level-4 phrases badly at sight still reads level 2; a teacher would
  * say "level 4 is a stretch for now", not "back to familiar" (C3, the history
- * *the stretch*). Where any fact is unknown the attempt counts (G2: unknown
- * facts are never guessed into a protection verdict).
+ * *the stretch*). An unknown fact spares nothing (G2: unknown facts are never
+ * guessed into a protection verdict): contact not recorded counts, and otherwise
+ * only a known fact spares — a skill dimension measured to differ, or a demand
+ * no establishing record carried, read only where the attempt's and every
+ * establishing record's demands are known.
  */
 export function countsTowardsMovingDown(
   attempt: MeasuredEvidence,
