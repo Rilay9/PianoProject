@@ -889,6 +889,8 @@ export class WindowRenderer {
   private prerenderHandle: number | null = null;
   /** Watches the stage, because its height settles after the first draw. */
   private stageObserver: ResizeObserver | null = null;
+  /** `data-settled`, on its way: a frame later, once the stage has held still (`publishSettled`). */
+  private settledCheck: { frame: number | null; timer: number | null } | null = null;
   private disposed = false;
 
   private constructor(options: WindowRendererOptions, buffers: Buffer[]) {
@@ -946,6 +948,10 @@ export class WindowRenderer {
     if (typeof ResizeObserver !== 'undefined') {
       this.stageObserver = new ResizeObserver(() => {
         if (this.disposed || this.fitting) return;
+        // The stage moved, so whatever was said about the fit was about the
+        // stage before; it is said again a frame after the refit (U74).
+        this.cancelSettledCheck();
+        delete this.el.dataset.settled;
         this.stageHeight = -1;
         // The drawn scale first, and always: it is a CSS transform, it costs
         // nothing, and without it the sheet keeps the size it was fitted to
@@ -985,9 +991,6 @@ export class WindowRenderer {
       view.zoom = options.zoom ?? 1;
       buffers.push({ view, wrapper, range: null, elements: new Map() });
     }
-    const renderer = new WindowRenderer(options, buffers);
-    renderer.slotRanges = buffers.map(() => null);
-    renderer.updateSlotClasses();
     // The probe. Loaded like the slots, drawn only when the zoom changes, and
     // never visible: `.score-buffer` without `is-front` is `visibility:
     // hidden`, which is what the second slot was for years.
@@ -995,16 +998,7 @@ export class WindowRenderer {
     probeWrapper.className = 'score-buffer score-probe';
     probeWrapper.setAttribute('aria-hidden', 'true');
     options.container.appendChild(probeWrapper);
-    // Not loaded here: loading a 780-bar score into OSMD a third time is
-    // seconds on a throttled phone, and the first window must not wait for a
-    // measurement that only refines it. Loaded on idle, after the first paint.
-    // And loaded from the first `PROBE_MAX_BARS` only (`measurePiece`): the
-    // probe draws no more than that, but the engraver loads the whole
-    // document to draw any of it, and on the Scherzo that load was five
-    // seconds of the first window's budget. Without a probe at all the
-    // Scherzo's run shrank 13 % and its stave jumped 45 px at bar 16 — the
-    // corpus measured both — so the measurement stays; the document is cut.
-    renderer.probe = new OsmdView(probeWrapper, {
+    let probe: OsmdView | null = new OsmdView(probeWrapper, {
       timingLabel: 'osmd.render.probe',
       ...(options.drawFingerings === undefined ? {} : { drawFingerings: options.drawFingerings }),
       ...(options.drawMetronomeMarks === undefined
@@ -1013,6 +1007,42 @@ export class WindowRenderer {
       ...(options.drawLyrics === undefined ? {} : { drawLyrics: options.drawLyrics }),
       ...(options.drawChordSymbols === undefined ? {} : { drawChordSymbols: options.drawChordSymbols }),
     });
+    // A long piece's probe is not loaded here: loading a 780-bar score into
+    // OSMD a third time is seconds on a throttled phone, and the first window
+    // must not wait for it. It is loaded on idle, after the first paint, and
+    // from the first `PROBE_MAX_BARS` only (`loadProbe`): the probe draws no
+    // more than that, but the engraver loads the whole document to draw any of
+    // it, and on the Scherzo that load was five seconds of the first window's
+    // budget. Without a probe at all the Scherzo's run shrank 13 % and its
+    // stave jumped 45 px at bar 16 — the corpus measured both — so the
+    // measurement stays; the document is cut.
+    //
+    // **A piece within the probe's reach is loaded here (U74).** Its four slots
+    // have each just loaded the whole document, so this is one load more of
+    // the same — and without it the first window was priced with nothing
+    // measured: `chooseWindowShape` fell back to one system for the whole
+    // window, and the measurement that corrected it landed on idle, half a
+    // second or more after the sheet appeared. D4's pictures of the two-bar
+    // blues scale were taken in that half second: one small system at the top
+    // of an empty stage, on every path in, until the re-plan drew two systems
+    // each larger than the one had been (the matrix's U42 and U74). Loaded here,
+    // the piece is measured before the first window is priced
+    // (`measureBeforePricing`). Before the renderer exists, so that nothing
+    // its stage observer is told can arrive while this is in flight.
+    if (options.model.sourceMeasureCount <= PROBE_MAX_BARS) {
+      try {
+        await probe.load(options.musicXml);
+      } catch {
+        // Measured the slow way, window by window, as a probe that cannot load always was.
+        probeWrapper.remove();
+        probe.dispose();
+        probe = null;
+      }
+    }
+    const renderer = new WindowRenderer(options, buffers);
+    renderer.slotRanges = buffers.map(() => null);
+    renderer.updateSlotClasses();
+    renderer.probe = probe;
     renderer.probeSource = options.musicXml;
     return renderer;
   }
@@ -1660,6 +1690,8 @@ export class WindowRenderer {
         shown: Math.max(1, this.shownBars),
       };
     }
+    // Priced from the piece's measurement, taken now if it can be (U74).
+    this.measureBeforePricing();
     const stage = this.measure(this.el);
     const mostSlots = Math.max(1, Math.min(this.buffers.length, arrangement === 'slots' ? MAX_SLOTS : 1));
     // **The piece's own measurement, never the held one**, and this is the
@@ -1679,6 +1711,19 @@ export class WindowRenderer {
     // Two systems is the old default, the window is what was asked for, and
     // the fit is redone the moment the measurement lands.
     if (!(height > 0) || !(staff > 0) || !(bar > 0) || stage.height <= 0 || stage.width <= 0) {
+      // **Except inside the engraving search (U74).** Each zoom it tries is a
+      // zoom nothing has measured, and falling back here engraved the default
+      // at every one of them: the search then sized a sheet of another shape
+      // from the one on the glass before it and after it, and settled on a zoom
+      // for that sheet. The shape it started from is the one it is sizing; the
+      // fit after the search measures at the zoom it chose and prices again.
+      if (this.fitting) {
+        return {
+          slots: Math.max(1, Math.min(this.buffers.length, this.slotCount)),
+          systems: Math.max(1, this.systemsPerWindow),
+          shown: Math.max(1, this.shownBars),
+        };
+      }
       this.windowWhy(null);
       return { slots: Math.max(1, Math.min(2, mostSlots)), systems: 1, shown: wanted };
     }
@@ -2480,6 +2525,7 @@ export class WindowRenderer {
       this.freezeHandle = null;
     }
     this.cancelSettle();
+    this.cancelSettledCheck();
     if (this.measureHandle !== null) {
       const w = window as Window & { cancelIdleCallback?: (id: number) => void };
       if (typeof w.cancelIdleCallback === 'function') w.cancelIdleCallback(this.measureHandle);
@@ -2686,6 +2732,10 @@ export class WindowRenderer {
     if (slots.length === 0) return;
     const available = this.measure(this.el);
     if (available.width <= 0 || available.height <= 0) return;
+    // The scale below is priced from the piece's measurement as well as the
+    // shape: the first fit after an engraving search has none at the new zoom
+    // until this takes it (U74).
+    this.measureBeforePricing();
     this.stageHeight = Math.round(available.height);
 
     const boxes: { slot: Buffer; box: { x: number; y: number; width: number; height: number; bar: number } }[] =
@@ -2983,15 +3033,52 @@ export class WindowRenderer {
   }
 
   /**
-   * `data-settled` on the stage, while `fitSettled` holds. Written at the end
+   * `data-settled` on the stage, while `fitSettled` holds. Asked for at the end
    * of every fit, and where fit work is queued outside one (the engraving
    * search, a run's freeze) or ends without one (a measurement that could not
    * be taken, a run stopped before it froze), so it is never left claiming a
-   * fit that has work still queued.
+   * fit that has work still queued. Taken back at once; said a frame later,
+   * once the stage has held still through that frame (U74, below).
    */
   private publishSettled(): void {
-    if (this.fitSettled()) this.el.dataset.settled = 'true';
-    else delete this.el.dataset.settled;
+    if (!this.fitSettled()) {
+      this.cancelSettledCheck();
+      delete this.el.dataset.settled;
+      return;
+    }
+    if (this.el.dataset.settled === 'true' || this.settledCheck !== null) return;
+    // **Said a frame later, once that frame's resize observations are in
+    // (U74).** The fit can now finish in the task that drew the first window —
+    // the piece is measured before it is priced — and the Score screen's
+    // header and bar measure themselves a frame after that, taking height off
+    // the stage. Said at once, the word was true for a frame about a stage
+    // that was about to change, and a test reading on it read the stage before
+    // the screen had laid itself out. The idle measurement used to cover that
+    // frame by accident. Observations are delivered after a frame's animation
+    // callbacks, so the word waits for the task after the next frame; a stage
+    // change before then takes it back and starts the wait again (the
+    // observer), and whatever is queued by then keeps it unsaid.
+    const check: { frame: number | null; timer: number | null } = { frame: null, timer: null };
+    this.settledCheck = check;
+    check.frame = requestAnimationFrame(() => {
+      check.frame = null;
+      check.timer = window.setTimeout(() => {
+        check.timer = null;
+        if (this.settledCheck !== check) return;
+        this.settledCheck = null;
+        if (this.fitSettled()) this.el.dataset.settled = 'true';
+        else delete this.el.dataset.settled;
+      }, 0);
+    });
+  }
+
+  /** Takes back a word about the fit that has not been said yet. */
+  private cancelSettledCheck(): void {
+    const check = this.settledCheck;
+    if (!check) return;
+    this.settledCheck = null;
+    if (check.frame !== null) cancelAnimationFrame(check.frame);
+    if (check.timer !== null) window.clearTimeout(check.timer);
   }
 
   /** The last bar of the window the cursor is in, at the shown count. */
@@ -3907,33 +3994,64 @@ export class WindowRenderer {
     const probe = this.probe;
     if (!probe || this.pieceInkZoom === this.zoomLevel) return;
     if (!probe.isLoaded) {
-      if (!this.probeSource) return;
-      // One load, shared: the idle path and a run's freeze can both ask
-      // while it is in flight, and two `load`s on one engraver is a race.
-      this.probeLoad ??= (async (): Promise<boolean> => {
-        this.probeLoading = true;
-        try {
-          const started = performance.now();
-          const source =
-            this.model.sourceMeasureCount > PROBE_MAX_BARS
-              ? trimMusicXml(this.probeSource, PROBE_MAX_BARS)
-              : this.probeSource;
-          recordRenderTiming('osmd.probe.trim', performance.now() - started);
-          await probe.load(source);
-          return true;
-        } catch {
-          // A piece the probe cannot load is measured the slow way, window by
-          // window, held and never released.
-          this.probe = null;
-          return false;
-        } finally {
-          this.probeLoading = false;
-        }
-      })();
-      const loaded = await this.probeLoad;
+      const loaded = await this.loadProbe();
       if (!loaded || this.disposed) return;
     }
     this.measureLoaded();
+  }
+
+  /**
+   * Loads the probe's document, once: the first `PROBE_MAX_BARS` of the piece.
+   * False when there is no probe or it cannot load.
+   */
+  private loadProbe(): Promise<boolean> {
+    const probe = this.probe;
+    if (!probe || !this.probeSource) return Promise.resolve(false);
+    if (probe.isLoaded) return Promise.resolve(true);
+    // One load, shared: the idle path, a run's freeze and `create` can all
+    // ask while it is in flight, and two `load`s on one engraver is a race.
+    this.probeLoad ??= (async (): Promise<boolean> => {
+      this.probeLoading = true;
+      try {
+        const started = performance.now();
+        const source =
+          this.model.sourceMeasureCount > PROBE_MAX_BARS
+            ? trimMusicXml(this.probeSource, PROBE_MAX_BARS)
+            : this.probeSource;
+        recordRenderTiming('osmd.probe.trim', performance.now() - started);
+        await probe.load(source);
+        return true;
+      } catch {
+        // A piece the probe cannot load is measured the slow way, window by
+        // window, held and never released.
+        this.probe = null;
+        return false;
+      } finally {
+        this.probeLoading = false;
+      }
+    })();
+    return this.probeLoad;
+  }
+
+  /**
+   * Measures the piece now, at the zoom the sheet is engraved at, when the
+   * probe is loaded and the measurement is missing — before anything is priced
+   * from it (U74).
+   *
+   * Only before the learner has played anything and outside the engraving
+   * search. Before the first note is the one moment `08` §9.6 lets the shape be
+   * re-planned, and without the measurement the chooser has nothing to price
+   * with and answers one system for the whole window: the first window of
+   * every piece was drawn that way, and so was the first window after every
+   * engraving search, because a new zoom is a measurement the idle path has not
+   * taken yet. The search's own intermediate engravings are never painted, so
+   * the probe is not drawn for them; the fit after the search measures at the
+   * zoom it settled on. During a run the idle path and the freeze are
+   * unchanged: a measurement that lands then is for the next run.
+   */
+  private measureBeforePricing(): void {
+    if (this.disposed || this.fitting || this.running || this.layout !== 'window' || this.currentStep > 0) return;
+    if (this.probe?.isLoaded && this.pieceInkZoom !== this.zoomLevel) this.measureLoaded();
   }
 
   /** The synchronous half: the probe is loaded, draw and measure it. */
