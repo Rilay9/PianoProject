@@ -14,7 +14,7 @@ import './ScoreScreen.css';
 import { audioEngine } from '../../audio/AudioEngine';
 import { metronomeSoundFor } from '../../audio/inputPolicy';
 import { getPiano, micSource, screenKeyboardSource, webMidiSource } from '../../app/services';
-import { catalogIndex, findItem, contentUrl, loadCurriculum } from '../../curriculum/load';
+import { findItem, contentUrl, loadCurriculum } from '../../curriculum/load';
 import { parseFrontMatter, renderMarkdown } from '../markdown';
 import { barsPerWindowFor, isTablet, sidePanelProse } from '../tablet';
 import { getImport } from '../../data/importStore';
@@ -44,7 +44,7 @@ import {
 import { evidenceFor, isRefusal, stampedEvidence, type EvidenceResult } from '../../evidence/evidence';
 import { VOCABULARY_V0 } from '../../evidence/vocabulary';
 import { nextLadderTempo } from '../../engine/PracticeEngine';
-import { MASTER_DAYS, recordRun, rungRows, sessionsForItem, type RunResult } from '../../data/progressStore';
+import { MASTER_DAYS, dayKey, recordRun, sessionsForItem, type RunResult } from '../../data/progressStore';
 import {
   OBSERVATION_DEFINITIONS,
   phraseVersionOf,
@@ -76,6 +76,7 @@ import {
   LADDER_TEXT,
   MODE_HELP,
   NOT_JUDGED_TEXT,
+  OFFER_TEXT,
   RESTARTED_WITH,
   ROW_TEXT,
   STATE_TEXT,
@@ -90,7 +91,8 @@ import { createHelpStrip, maybeFirstSight, openFirstSight, type HelpStrip } from
 import { openSheet } from '../widgets';
 import { hasChordSymbols } from '../openItem';
 import { runFacts } from '../../curriculum/material';
-import { relationshipOf, type Relationship } from '../../curriculum/transfer';
+import type { Relationship } from '../../curriculum/transfer';
+import { loadOffer, type OfferRead, type OfferRefusal } from '../../data/offerSnapshot';
 
 /**
  * What the four modes are called on the screen (P21c B2).
@@ -431,12 +433,40 @@ export function ScoreScreen(router: Router): HTMLElement {
    */
   let phraseWritten: { options: SightReadingOptions; bpm: number } | undefined;
   /**
-   * Opened from Today's transfer offer (D4, `?intent=transfer&skill=`): the intent the run keeps, and the
-   * relationship facts, read at load from the stored runs by the function the offer used
-   * (`transfer.relationshipOf`), so the run records what the offer was made on.
+   * Opened from Today's transfer offer (D4, `?intent=transfer&skill=&offer=`): the run keeps the intent
+   * and the relationship the offer was made on, together, or neither (D4a; the reviewer's required
+   * change on D4, `docs/review/responses/9193261.md`).
+   *
+   * D4 computed the relationship here, from the stored runs, in a read nothing waited for: a run
+   * finished before it landed was stored with the intent and no relationship, and one after it with a
+   * relationship recomputed at opening rather than the card's. Now Today keeps the offer it showed
+   * (`data/offerSnapshot.ts`) and this screen reads it as it opens, before play:
+   *
+   * - `pending`: the read is out. ▶ is disabled, no run can start (`startRun`), and a finish that
+   *   somehow came would store nothing — a pending read is never a completed practice run;
+   * - `kept`: the snapshot is this route's offer (its token, this item, this skill, today): the run's
+   *   facts carry `intent` and the snapshot's relationship, byte for byte, and nothing recomputes it;
+   * - `refused`: missing, superseded, another item, skill or day, corrupt or unreadable: the item opens
+   *   as practice, one line under the header says so (`OFFER_TEXT`), and the run carries neither.
+   *
+   * No transfer route, no read: `none`.
    */
+  type OfferState =
+    | { kind: 'none' }
+    | { kind: 'pending' }
+    | { kind: 'kept'; relationship: Relationship }
+    | { kind: 'refused'; why: OfferRefusal };
   const transferIntent = router.route.scoreIntent;
-  let transferRelationship: Relationship | undefined;
+  let offer: OfferState = transferIntent === undefined ? { kind: 'none' } : { kind: 'pending' };
+  /** Started as the screen is built, beside the score's own fetch, and awaited before play. */
+  const offerRead: Promise<OfferRead> | undefined =
+    transferIntent === undefined
+      ? undefined
+      : loadOffer({ token: transferIntent.offer, itemId, skill: transferIntent.skill, today: dayKey(new Date()) });
+  /** The read has not answered: nothing may start and nothing may be stored. */
+  function offerPending(): boolean {
+    return offer.kind === 'pending';
+  }
   /**
    * A stored run already carries this phrase's seed (T37), under the version
    * that wrote this phrase (D1a).
@@ -838,6 +868,17 @@ export function ScoreScreen(router: Router): HTMLElement {
   resumeRow.hidden = true;
   head.append(resumeRow);
 
+  /**
+   * "This offer is no longer on today's card; opened as practice" (D4a): a transfer route whose offer
+   * the snapshot does not name, said once, in the header that folds away when a run starts — so the
+   * learner knows the run is practice before playing it, and it is never furniture during one.
+   */
+  const offerNote = document.createElement('p');
+  offerNote.className = 'score-offer-note';
+  offerNote.id = 'score-offer-note';
+  offerNote.hidden = true;
+  head.append(offerNote);
+
   /** A span of plain words inside the offer. */
   function said(className: string, text: string, id?: string): HTMLElement {
     const node = document.createElement('span');
@@ -1019,6 +1060,8 @@ export function ScoreScreen(router: Router): HTMLElement {
 
   const playPause = button('▶', () => togglePlay(), 'score-play');
   playPause.setAttribute('aria-label', 'Play');
+  // Held while a transfer offer's snapshot is unread (D4a): `render` keeps it in step.
+  playPause.disabled = offerPending();
   bar.appendChild(playPause);
 
   // Words, not a glyph: there is no symbol for "play it to me rather than
@@ -1978,6 +2021,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     } = {},
   ): void {
     if (!session || !model) return;
+    // A transfer route whose offer is not yet read starts nothing (D4a): every start comes here — ▶,
+    // a key, a restart, the ladder, a demonstration — so this is the one gate.
+    if (offerPending()) return;
     // The last run's question, if it was never answered: let go (T37, T40).
     flushPendingRecord();
     if (options.fresh !== false) resetChanges();
@@ -3159,6 +3205,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     // What the run measured, by the record's one definition (C1), read once:
     // the record keeps it, and the sheet's *Accents* line reads the same value
     // so the two cannot disagree (U46).
+    /** The generated phrase the run played, for its material (D4), where it was one. */
+    const playedPhrase =
+      phraseGenerator !== undefined && phraseWritten !== undefined ? { phrase: { generator: phraseGenerator, ...phraseWritten } } : {};
     const measures = measuresOf(score, {
       heard,
       technique,
@@ -3173,8 +3222,11 @@ export function ScoreScreen(router: Router): HTMLElement {
     // Every run of a judging mode leaves a record (C1): a sight-read met before
     // is kept as practice, flagged `unseen: false`, where T37 and T40 dropped
     // it with its minutes. Listen and Free judge nothing and record nothing.
+    // Nor does a run on a transfer route whose offer is still unread (D4a):
+    // none can start (`startRun`), and should one finish anyway it is not
+    // written as practice in the offer's place.
     const run: RunResult | null =
-      item && mode !== 'listen' && mode !== 'free'
+      item && mode !== 'listen' && mode !== 'free' && !offerPending()
         ? {
             itemId: item.id,
             // Which rung judged it: the one that opened the screen, where one
@@ -3188,13 +3240,10 @@ export function ScoreScreen(router: Router): HTMLElement {
             // version, so the history compares the version beside the seed.
             ...(phraseGenerator === undefined ? {} : { generator: phraseGenerator }),
             // What was played and why (D4): the exact material — the phrase's complete identity, or the
-            // row's (an excerpt's cut, never the parent: E1 item 7) — the item's role, and the transfer
-            // offer's intent and relationship where the run came from one.
-            ...runFacts(item, {
-              ...(phraseGenerator !== undefined && phraseWritten !== undefined ? { phrase: { generator: phraseGenerator, ...phraseWritten } } : {}),
-              ...(transferIntent === undefined ? {} : { intent: transferIntent.intent }),
-              ...(transferRelationship === undefined ? {} : { relationship: transferRelationship }),
-            }),
+            // row's (an excerpt's cut, never the parent: E1 item 7) — the item's role, and, where the
+            // run came from a transfer offer whose snapshot this route named, the intent and that
+            // offer's relationship as one fact (D4a): never one without the other.
+            ...runFacts(item, offer.kind === 'kept' ? { ...playedPhrase, intent: 'transfer', relationship: offer.relationship } : playedPhrase),
             mode,
             tempoPct: score.tempoPct,
             // Nothing heard, nothing measured (T40, C1): not a zero.
@@ -4085,6 +4134,8 @@ export function ScoreScreen(router: Router): HTMLElement {
     const playing = session?.running === true && !session.paused && !hearing;
     playPause.textContent = playing ? '⏸' : '▶';
     playPause.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+    // Nothing starts while a transfer offer's snapshot is unread (D4a).
+    playPause.disabled = offerPending();
     stripHost.hidden = settings.keys === 'off';
     stripHost.dataset.keys = settings.keys;
     section.dataset.running = String(session?.running === true);
@@ -4283,17 +4334,6 @@ export function ScoreScreen(router: Router): HTMLElement {
         const bytes = new Uint8Array(await response.arrayBuffer());
         musicXml = toMusicXml(bytes);
       }
-      // Opened from a transfer offer (D4): the relationship facts the offer was made on, for the run.
-      if (transferIntent !== undefined) {
-        const opened = item;
-        void Promise.all([rungRows(), catalogIndex()]).then(
-          ([rows, index]) => {
-            transferRelationship = relationshipOf(transferIntent.skill, opened, rows, index.byId);
-          },
-          () => undefined,
-        );
-      }
-
       // The model comes from an instance with no draw range: a windowed OSMD
       // clamps its cursor iterator, so extracting from the renderer's own view
       // would yield a model that stops at the end of the first window.
@@ -4465,6 +4505,12 @@ export function ScoreScreen(router: Router): HTMLElement {
           /* No playback. Everything else on this screen still works. */
         });
 
+      // A transfer route's offer (D4a), read before anything can start: until it answers the screen
+      // is still loading — no bar, no keys listening, ▶ disabled — and a read that never answers
+      // leaves it so, never a practice run in the offer's place. Started when the screen was built,
+      // beside the score's own fetch.
+      if (offerRead) settleOffer(await offerRead);
+
       input = pickInput();
       mode = input === 'none' ? settings.defaultModeWithoutInput : settings.defaultModeWithInput;
       // Tempo mode, always, for a sight-read: waiting for each note is not
@@ -4541,6 +4587,20 @@ export function ScoreScreen(router: Router): HTMLElement {
       bar.hidden = true;
     }
   })();
+
+  /**
+   * What the offer's snapshot said (D4a): the offer's relationship for the run, or practice and the
+   * line that says so. Before the bar is shown and the sheet fitted, so the line's room is counted.
+   */
+  function settleOffer(read: OfferRead): void {
+    if (read.kind === 'kept') {
+      offer = { kind: 'kept', relationship: read.snapshot.relationship };
+      return;
+    }
+    offer = { kind: 'refused', why: read.why };
+    offerNote.textContent = read.why === 'corrupt' || read.why === 'unreadable' ? OFFER_TEXT.unreadable : OFFER_TEXT.gone;
+    offerNote.hidden = false;
+  }
 
   function pickInput(): FollowInput {
     for (const candidate of settings.inputPriority) {

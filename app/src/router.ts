@@ -109,6 +109,9 @@ function looksLikeLessonId(id: string): boolean {
 /** A vocabulary skill id (`sight-reading`, `position-shift`, `6/8`): letters, digits, `-` and `/`. */
 const SKILL_ID_PATTERN = /^[0-9a-z][0-9a-z/-]{0,39}$/;
 
+/** A transfer offer's instance token (D4a, `data/offerSnapshot.newOfferToken`): lower-case letters and digits. */
+const OFFER_TOKEN_PATTERN = /^[0-9a-z]{6,32}$/;
+
 export const DEFAULT_TAB: TabId = 'today';
 
 export interface Route {
@@ -269,11 +272,14 @@ export interface Route {
   /** `#/score/<id>?slot=new` — the Today slot that opened this run (L50), for the record. */
   scoreSlot?: TodaySlot;
   /**
-   * `#/score/<id>?intent=transfer&skill=position-shift` — the run was opened from Today's transfer
-   * offer for that skill (D4), and the run keeps the intent and the relationship facts, for the
-   * record. Both or neither: an intent with no skill, or a skill with no intent, is dropped.
+   * `#/score/<id>?intent=transfer&skill=position-shift&offer=<token>` — the run was opened from
+   * Today's transfer offer for that skill (D4), and `offer` names that offer's instance (D4a): the
+   * Score screen reads the snapshot Today kept of it, and the run keeps the intent and the offer's
+   * relationship only where the snapshot is that offer's. Intent and skill both or neither: an intent
+   * with no skill, or a skill with no intent, is dropped. A malformed or absent token is dropped and
+   * the intent kept, so the screen refuses the offer out loud rather than guessing it.
    */
-  scoreIntent?: { intent: 'transfer'; skill: string };
+  scoreIntent?: { intent: 'transfer'; skill: string; offer?: string };
   /**
    * `#/score/<id>?recipe=hands:both,easy:1` — the phrase's recipe, as Today's
    * reader chose it (C4): what it moved from the row's own params, and whether
@@ -503,11 +509,16 @@ export function parseHash(hash: string): Route {
   const wantedSlot = params?.get('slot');
   const scoreSlot = isTodaySlot(wantedSlot) ? wantedSlot : undefined;
   const scoreRecipe = parseRecipeParam(params?.get('recipe'));
-  // The transfer offer's intent and its skill (D4), both or neither.
+  // The transfer offer's intent and its skill (D4), both or neither; and the offer's token (D4a).
   const wantedSkill = params?.get('skill');
+  const wantedOffer = params?.get('offer');
   const scoreIntent =
     params?.get('intent') === 'transfer' && wantedSkill !== null && wantedSkill !== undefined && SKILL_ID_PATTERN.test(wantedSkill)
-      ? { intent: 'transfer' as const, skill: wantedSkill }
+      ? {
+          intent: 'transfer' as const,
+          skill: wantedSkill,
+          ...(wantedOffer !== null && wantedOffer !== undefined && OFFER_TOKEN_PATTERN.test(wantedOffer) ? { offer: wantedOffer } : {}),
+        }
       : undefined;
   if (query) {
     const value = new URLSearchParams(query).get('for');
@@ -689,7 +700,13 @@ export function routeToHash(route: Route): string {
       ...(route.scoreRung === undefined ? [] : [`rung=${encodeURIComponent(route.scoreRung)}`]),
       ...(route.scoreSlot === undefined ? [] : [`slot=${route.scoreSlot}`]),
       ...(route.scoreRecipe === undefined ? [] : [`recipe=${encodeURIComponent(recipeParam(route.scoreRecipe))}`]),
-      ...(route.scoreIntent === undefined ? [] : [`intent=${route.scoreIntent.intent}`, `skill=${encodeURIComponent(route.scoreIntent.skill)}`]),
+      ...(route.scoreIntent === undefined
+        ? []
+        : [
+            `intent=${route.scoreIntent.intent}`,
+            `skill=${encodeURIComponent(route.scoreIntent.skill)}`,
+            ...(route.scoreIntent.offer === undefined ? [] : [`offer=${route.scoreIntent.offer}`]),
+          ]),
       ...(route.seed === undefined ? [] : [`seed=${String(route.seed >>> 0)}`]),
     ];
     const base = `#/score/${encodeURIComponent(route.score)}`;
@@ -792,8 +809,8 @@ export class Router {
       seed?: number;
       /** The phrase's recipe, as Today's reader chose it (C4). */
       recipe?: RouteRecipe;
-      /** Opened from Today's transfer offer for this skill (D4). */
-      intent?: { intent: 'transfer'; skill: string };
+      /** Opened from Today's transfer offer for this skill (D4), naming that offer's instance (D4a). */
+      intent?: { intent: 'transfer'; skill: string; offer?: string };
     } = {},
   ): void {
     const route: Route = {
@@ -960,8 +977,9 @@ export class Router {
       // run this is, for the reason `from` is (L50).
       route.scoreRung === this.current.scoreRung &&
       route.scoreSlot === this.current.scoreSlot &&
-      // By value: the same offer's intent is the same run (D4).
+      // By value: the same offer's intent is the same run (D4), and another offer's is another (D4a).
       route.scoreIntent?.skill === this.current.scoreIntent?.skill &&
+      route.scoreIntent?.offer === this.current.scoreIntent?.offer &&
       // By value, as the loop is: the same recipe is the same phrase (C4).
       (route.scoreRecipe === undefined ? '' : recipeParam(route.scoreRecipe)) ===
         (this.current.scoreRecipe === undefined ? '' : recipeParam(this.current.scoreRecipe)) &&

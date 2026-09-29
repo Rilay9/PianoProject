@@ -61,6 +61,12 @@ export interface TestHooks {
   audioStarts: Readonly<Record<AudioStartSource, number>>;
   /** What the score screen's fit is holding; set while a score is open. */
   scoreFit?: () => unknown;
+  /**
+   * Today's card as composed (D4a), set while Today is open: the offer instance its transfer offer
+   * would be kept under, and each row's slot, item and claim. `transfer-offer.spec.ts` holds the offer's
+   * relationship from here before opening it, and compares the run the store keeps.
+   */
+  todayCard?: () => TodayCardView;
   /** Where the running score is and what it is waiting for; null when no run is on. */
   scoreRun?: () => {
     step: number;
@@ -78,6 +84,12 @@ export interface TestHooks {
     engineMode: string;
     input: string;
   } | null;
+}
+
+/** Today's card as `todayCard` reads it (D4a). */
+export interface TodayCardView {
+  token: string;
+  slots: { kind: string; itemId?: string; claim?: unknown }[];
 }
 
 declare global {

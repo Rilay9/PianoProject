@@ -5973,6 +5973,15 @@ input[type='checkbox'] {
   flex: 1 0 100%;
 }
 
+/* A transfer offer the snapshot does not name (D4a): the run is practice, said in a sentence that
+   wraps rather than being cut like the status line, in the header that folds away mid-run. */
+.score-offer-note {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: normal;
+}
+
 /* Sideways, a lesson's address shares the title's line.
 
    `04` section 0 R5: a pushed screen keeps its title on the back link's line,

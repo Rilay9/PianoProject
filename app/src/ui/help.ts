@@ -526,6 +526,18 @@ export const ROW_TEXT = {
 } as const;
 
 /**
+ * A transfer offer the Score screen could not find (D4a; `data/offerSnapshot.ts`), on a line of its own
+ * under the header, which folds away when the run starts: the item opens as ordinary practice, and the
+ * run records no intent and no relationship. `gone` for an offer no longer on today's card — the card
+ * recomposed, the row swapped, another day's or another item's link; `unreadable` where what was kept
+ * could not be read, which is not the learner's doing and is not said to be.
+ */
+export const OFFER_TEXT = {
+  gone: 'This offer is no longer on today’s card; opened as practice.',
+  unreadable: 'This offer could not be read back; opened as practice.',
+} as const;
+
+/**
  * Why Today offers this sight-reading phrase, in one line (C4, C4c; `04` §2,
  * design §11 item 4, backlog I1).
  *

@@ -17,7 +17,6 @@
  *   reviewer): no tier that searches the whole catalogue offers one, so it reaches a learner
  *   through the Library, or through a rung once a rung lists it — never by an automatic offer.
  */
-import type { Identity } from '../review/record';
 import type { CatalogItem } from './types';
 
 /** A passage cut from another item (E1). */
@@ -57,16 +56,4 @@ export function excerptLine(item: CatalogItem, byId: ReadonlyMap<string, Catalog
   const bars = barsOf(item);
   const from = parent?.title ?? item.excerptOf ?? 'another piece';
   return `From ${from}${bars ? `, ${bars}` : ''}`;
-}
-
-/**
- * The cut's file identity, D2's `Identity` shape (`{ kind: 'file', sha256 }`), from a cut's bytes. Until
- * D4 the Score screen hashed the bytes it loaded with this to write an excerpt run's `material`; since D4
- * every run writes its catalogue row's `provenance.identity`, which the build computes over the same file
- * (`material.runFacts`), and nothing in the app calls this. Kept for E1's case that pins the hash.
- */
-export async function cutIdentity(bytes: Uint8Array<ArrayBuffer>): Promise<Identity> {
-  const digest = await crypto.subtle.digest('SHA-256', bytes);
-  const sha256 = [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
-  return { kind: 'file', sha256 };
 }

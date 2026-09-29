@@ -69,32 +69,51 @@ export function phraseMaterial(generator: PhraseGenerator, options: SightReading
   };
 }
 
-/** The facts a run keeps about what was played and why (D4 item 2): what the Score screen writes. */
-export interface RunFacts {
+/**
+ * A transfer-intended run's one fact: the intent and the relationship the offer was made on, together
+ * (D4a; the reviewer's required change on D4, `docs/review/responses/9193261.md`). Never one without
+ * the other: a run that says it was transfer-intended and not what the offer related it to is the
+ * partial record D4's race stored.
+ */
+export interface TransferFact {
+  intent: 'transfer';
+  relationship: Relationship;
+}
+
+/** No transfer fact: neither half may appear alone. */
+interface NoTransferFact {
+  intent?: never;
+  relationship?: never;
+}
+
+/** What a run was played on, whatever it was for. */
+interface MaterialFacts {
   material?: Identity;
   role?: 'canonical' | 'variable' | 'transfer';
-  intent?: 'transfer';
-  relationship?: Relationship;
 }
 
 /**
- * A run's facts: its material — the phrase's for a sight-reading run, else the row's — the item's
- * role where it has one, and, only for a run that came from a transfer offer, the intent and the
- * relationship facts the offer had. Nothing is invented: a row with no identity gives no material.
+ * The facts a run keeps about what was played and why (D4 item 2): what the Score screen writes. The
+ * transfer fact is the pair or nothing (D4a), so no code can construct an intent-only `RunFacts`.
  */
-export function runFacts(
-  item: CatalogItem,
-  run: {
-    phrase?: { generator: PhraseGenerator; options: SightReadingOptions; bpm: number };
-    intent?: 'transfer';
-    relationship?: Relationship;
-  } = {},
-): RunFacts {
+export type RunFacts = MaterialFacts & (TransferFact | NoTransferFact);
+
+/** What `runFacts` is told about the run: its phrase, if generated, and the offer's pair, if it came from one. */
+export type RunOrigin = { phrase?: { generator: PhraseGenerator; options: SightReadingOptions; bpm: number } } & (TransferFact | NoTransferFact);
+
+/**
+ * A run's facts: its material — the phrase's for a sight-reading run, else the row's — the item's
+ * role where it has one, and, only for a run that came from a transfer offer whose snapshot the Score
+ * screen found (`data/offerSnapshot.ts`), the intent and the relationship that offer was made on, as
+ * one fact. Nothing is invented: a row with no identity gives no material, and an intent handed in
+ * without its relationship (which only a cast past the type can do) gives no transfer fact at all.
+ */
+export function runFacts(item: CatalogItem, run: RunOrigin = {}): RunFacts {
   const material = run.phrase ? phraseMaterial(run.phrase.generator, run.phrase.options, run.phrase.bpm) : materialOfItem(item);
-  return {
+  const facts: MaterialFacts = {
     ...(material === undefined ? {} : { material }),
     ...(item.role === undefined ? {} : { role: item.role }),
-    ...(run.intent === undefined ? {} : { intent: run.intent }),
-    ...(run.intent === undefined || run.relationship === undefined ? {} : { relationship: run.relationship }),
   };
+  const transfer = run.intent === 'transfer' && run.relationship !== undefined ? run.relationship : undefined;
+  return transfer === undefined ? facts : { ...facts, intent: 'transfer', relationship: transfer };
 }
