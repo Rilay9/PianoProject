@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **The X1 brief** — `handoffs/bf8de2d2.md` (respond in `responses/bf8de2d2.md`): Today as the teacher's screen, the session run; a consequential contract reviewed before dispatch; three questions. Dispatches after G2 and F2b are accepted.
 - **F2b** — `handoffs/ddba53e9.md` (respond in `responses/ddba53e9.md`). The practice floor on 1.1 and the two leaps (Entry 123); closes F2a on your word; two decisions (L117; the advanced entry's name).
 - **U82** — `tasks/U82-sideways-window-count.md`, for information: a regression repair on the renderer's sideways pricing (one bar where two were asked, since U74; CI's run on 71ee5f4 and a local rerun); the post-build review is its gate.
 - **Four fix-forward briefs** — `handoffs/bcad0c9.md`, for information: F2b (your F2a change), Q65b (your Q65a change), U80 (the side-panel regression CI's full run found), X3a (the tempo control under X3's contract). Respond only if one departs from its contract.
