@@ -21,6 +21,7 @@
 - **D4** — **landed** 2026-09-29 (Entry 106, merged da9d0e7, chain green); handoff `handoffs/9193261.md`, with the reviewer. Nothing heard; unverified as music.
 - **E2** and **F2** — briefs drafted 2026-09-29 under the accelerated cadence (`plan-2026-09-25.md` §"The accelerated cadence"); both **approved with one required change, applied** (`responses/12af708.md`). E2 is file-disjoint from D4 and **dispatched 2026-09-29** beside it (Entry 107, port 4203); F2 **dispatched 2026-09-29** (Entry 108, port 4193) on D4's merged tree; its docs/08 rows go in its entry for the orchestrator to splice, so its files stay disjoint from E2's. X1 drafted while they build.
 - **G1** — brief drafted 2026-09-29 (`G1-encounter-model.md`; the plan's G1 split: the encounter model now, the lifecycle as G1b); at the reviewer's gate (`handoffs/7863bee.md`); dispatches on approval as the third lane (port 4183). The owner, 2026-09-29: a usage reset is in hand, so throughput first — lanes open as briefs clear, the measurement recorded as it comes.
+- **D5** — the microscope sweep (G55, G56, G60), brief drafted 2026-09-29 (`D5-microscope-sweep.md`); at the reviewer's gate (`handoffs/4088dfc.md`); a small fourth lane on approval (port 4223).
 - **E1** — **closed** (approved `responses/8326ff3.md`; E1a accepted `4f7227d.md`). Nothing heard; unverified as music.
 - **E0 / E0a / E0b** — **closed**: E0b accepted (`responses/c95ac32.md`).
 
