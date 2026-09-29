@@ -1,0 +1,48 @@
+# Q75 — The phone's build has failed since F2: the Pages workflow builds the content cold, its cold build leaves 222 scores as placeholders, and F2's claim rule counts a placeholder as a checked option that establishes nothing — make the rule judge only what this build measured, and give the Pages build the cache CI's build already has
+
+**Read first:** `docs/prompts/operating-procedure.md` §1–§5 and §11–§13; `docs/prompts/entry-108.md` (F2: a rung claims only what its options establish, the validator's rule; the reviewer's required change in `docs/review/responses/12af708.md`); `tools/content/validate.py` at `concept_claim_findings` (the rule and its docstring: "A rung whose options no detector can check ... is not judged"); `tools/content/claims.py` at `status_of` (established / incidental / absent / unmeasured / runtime / missing) and `rung_claims` (the `measurable` count, which today includes `unmeasured`); `.github/workflows/pages.yml` (the build step: `npm run build` with `PIANOPATH_STRICT_LICENSE`, no content cache) and `.github/workflows/ci.yml` at "Restore content build cache" (`build/cache` and `build/render-manifest.json`, keyed on the pipeline scripts, the source list and the lockfile, with `restore-keys`); `docs/03-content-pipeline.md` on placeholders, the cache and what a cold runner can convert; `docs/00-invariants.md` on evidence (E0: unmeasured material establishes nothing).
+
+## The goal, in the orchestrator's words
+
+The owner's phone runs the build from 14866282 (the last Pages deploy that succeeded, 2026-09-29 00:21 local). Every push since 70c483cc (00:36 local, the first after F2 landed at b41e19ea) has failed the Pages workflow at the content build's validation, with the same two lines each time:
+
+```
+FAIL  validate  content validation FAILED (2 error(s)):
+  - 2.4: its concepts name tie (tie) and none of its 8 checked options establishes it: move it to introduces ...
+  - ragtime.8: its concepts name stride-bass (texture.left-hand-pattern) and none of its 11 checked options establishes it: ...
+```
+
+Locally and on CI the same rule passes: 2.4's tie is established by one of its eight checked options and ragtime.8's left-hand pattern by one of eleven (`docs/prompts/rung-claims.md`). The difference is the runner's content, not the rule's input: CI restores `build/cache` before it builds (its log: KERN 162 imported, 1 placeholder, 162 cached; PDMX 542 imported, 175 personal-build; 2090 items); the Pages job restores nothing and converts cold (its log: KERN 116 imported, 47 placeholders, 0 cached; PDMX 367 imported, 175 placeholders; 2089 items). On the cold build the one option that establishes each claim is a placeholder, `status_of` says `unmeasured`, and `rung_claims` counts `unmeasured` among the `measurable` options, so the rule sees eight checked options and none establishing, and fails the build. The same rule would fail CI on a cache miss.
+
+Two faults, in tier order. Product: the phone has had none of the twenty-four landings since F2 (the window rule, the import door, the transfer policy, the practice floor, all of it), and a cold build ships 222 placeholders where CI's build has scores. Technical: a validator that fails a build over material the build could not measure is asserting what it does not know; E0's rule is that unmeasured material establishes nothing, not that it refutes anything.
+
+## What is decided
+
+1. **The rule judges only what this build measured.** In `rung_claims`, an option whose status is `unmeasured` is not a checked option: `measurable` counts established, incidental and absent only, and the row carries the unmeasured count beside it. In `concept_claim_findings`, a claim with no checked option at all (every option unmeasured, missing or runtime here) is not judged — a warning naming the rung, the concept and how many of its options this build could not measure, in the same voice as `rung_claims_warning` — and a claim with at least one checked option and none establishing still fails as F2 wrote it. The message that fails says how many options were checked and how many were unmeasured, so a reader of the runner's log can tell a cold build from a wrong claim. The deferral table is untouched.
+2. **The report says it too.** `docs/prompts/rung-claims.md` (written by the build) shows the unmeasured count where it shows the checked count, so the report read on a cold build does not look like the report read here. Regenerate the reports with the content build and commit them by name with the change.
+3. **The Pages build restores the same content cache as CI.** Add CI's "Restore content build cache" step to `pages.yml` before the build, the same `path`, `key` and `restore-keys`, with a comment saying why the two jobs must build from the same cache (a cold conversion differs from a cached one in what it can produce, and the deployed catalog must be the one CI tested). The cache is read-only in effect for the Pages job (a hit restores; a miss builds cold and saves — say in the entry whether the job should save at all, and choose: CI's cache is the one that should be authoritative, so if `actions/cache` lets the Pages job restore without saving, do that). **This item changes a workflow: the orchestrator holds the push until the reviewer has read this brief** (2026-09-29's rule: workflow, landing-rule and test-map changes go to the reviewer before the push). Build it; do not wait for the word to build.
+4. **What the cold build cannot convert is recorded, not fixed.** Say what the 47 KERN placeholders and the 175 PDMX placeholders are on a cold runner: which tool, dataset or personal build the cache's producer had that a fresh runner lacks, and whether any runner could ever produce them or the cache is seeded only from the owner's machine (`docs/03` should say; if it does not, read `tools/content/build.py` at the import steps and the source list). That is a row for the backlog (which entries the phone shows as placeholders on a cold build), not this seam's fix.
+5. **Not Q75's:** the two claims themselves (2.4's tie and ragtime.8's stride bass are established on the measured build; nothing in the curriculum changes); the `--strict-license` build; CI's e2e failures; any rung's options.
+
+## Verification layers
+
+- Unit, red first, in `tools/content/tests/test_validate_claims.py`: a rung with one option that establishes the claim and that option `unmeasured` in the catalog under test → today an error, after the change a warning naming one unmeasured option and no error; the same rung with the option measured and absent → still an error; a rung with two options, one unmeasured and one measured and establishing → no finding. `python -m unittest tools.content.tests.test_validate_claims tools.content.tests.test_validate` green.
+- The content build locally (`python tools/content/build.py`, from the cache this machine has) green with the reports regenerated; the validator's exit unchanged here; `python tools/docs/checks_for_paths.py` over the changed paths and its unit tests (`tools.content.tests.test_checks_for_paths`) green, with any new row the map needs.
+- A cold build cannot be reproduced on this machine (it has the tools and the cache the runner lacks), so the cold case is proved by the unit test and by the runner after the push; say so in the entry as unverified until the Pages run on the record commit is read. Do not delete or move `build/cache`.
+- The workflow change is proved by reading only: `pages.yml` and `ci.yml` side by side in the entry, the two steps identical but for the comment.
+
+## Rules and files
+
+You own `tools/content/claims.py` at `rung_claims`, `tools/content/validate.py` at `concept_claim_findings`, `tools/content/tests/test_validate_claims.py`, `.github/workflows/pages.yml`, `docs/03-content-pipeline.md` (a paragraph on the cache and the cold build, if it lacks one) and the regenerated reports (`docs/prompts/rung-claims.md`, `docs/prompts/inventory.md`) as the build writes them. Not `ci.yml`, not the curriculum, not any option. Never name an AI model. Never assert a number measured on this machine (the runner's counts above are the runner's logs, quoted; the local counts are the report's). No commits, pushes, stashes or checkouts. Content edits go through `build.py` (Q24: `python tools/midi-cleanup/tests/parity_reference.py` first in a fresh worktree; the offline build may not produce `app/public/content` here — if it does not, copy the folder from `C:\Users\yalir\repos\Piano Stuff\PianoProject\app\public\content` and say so). Before re-serialising any JSON, compare a round-trip against the raw bytes; splice as text otherwise.
+
+## Sequencing
+
+A fix-forward under F2's accepted rule (788427c): items 1, 2 and 4 dispatched now with a for-information line to the reviewer; item 3 is a workflow change, built now and pushed only after the reviewer's word on this brief. The post-build review is the gate on all of it.
+
+## When to deviate
+
+If the cache's contents cannot be produced by any runner (item 4 finds a personal build only the owner's machine holds), say so and stop at item 3's restore step: the phone's build then depends on CI having saved a cache, which is the state today, and the entry says it. If `actions/cache` cannot restore without saving, use `actions/cache/restore` and say so.
+
+## Report
+
+Judgement first: what the phone's build will hold after this lands, from the cache and cold, in item counts and placeholders; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes (the cold build's validation is unverified until the runner reads it).

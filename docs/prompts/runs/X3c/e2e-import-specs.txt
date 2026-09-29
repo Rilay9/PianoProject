@@ -1,0 +1,27 @@
+npx playwright test --config playwright.x3c-4353.config.ts --workers=2 tests/e2e/import-experience.spec.ts tests/e2e/converted-import.spec.ts tests/e2e/midi-import.spec.ts tests/e2e/finder.spec.ts (in app)
+
+Running 20 tests using 2 workers
+
+  ok  2 tests\e2e\converted-import.spec.ts:66:3 › a converted MIDI performance › walks the same number of steps as the cursor does (2.1s)
+  ok  3 tests\e2e\converted-import.spec.ts:87:3 › a converted MIDI performance › keeps both hands and both staves (1.2s)
+  ok  1 tests\e2e\converted-import.spec.ts:49:3 › a converted MIDI performance › imports, is listed under the title the converter wrote, and engraves (4.5s)
+  ok  4 tests\e2e\finder.spec.ts:27:3 › the finder on a rung › says what the rung needs and hands over a search and a prompt (2.5s)
+  ok  5 tests\e2e\finder.spec.ts:59:3 › the finder on a rung › marks an example as already bundled or as still missing (1.9s)
+  ok  6 tests\e2e\finder.spec.ts:67:3 › the finder on a rung › copies the prompt to the clipboard (2.3s)
+  ok  7 tests\e2e\finder.spec.ts:80:3 › the finder on a concept › is reachable from the Skills screen, under a readable name (1.6s)
+  ok  8 tests\e2e\finder.spec.ts:116:3 › two taps from a share to a rung › the assign sheet opens by itself with the rung already chosen (2.2s)
+  ok  9 tests\e2e\finder.spec.ts:131:3 › two taps from a share to a rung › Save is the second and last action, and the piece lands on the rung (4.7s)
+  ok 10 tests\e2e\finder.spec.ts:144:3 › two taps from a share to a rung › the needs line counts the piece he just added (C3) (5.3s)
+  ok 11 tests\e2e\finder.spec.ts:161:3 › two taps from a share to a rung › the rung survives a reload, because it is stored and not just routed (3.1s)
+  ok 13 tests\e2e\finder.spec.ts:188:3 › two taps from a share to a rung › "Import for this rung" on the lesson page opens the picker on that rung (3.2s)
+  ok 12 tests\e2e\finder.spec.ts:168:3 › two taps from a share to a rung › an import with no rung still works and belongs to none (4.4s)
+  ok 14 tests\e2e\import-experience.spec.ts:102:3 › the import experience › import a MIDI file, see what was read and guessed, swap the hands, assign to no rung, find it in the Library with its state, and open it (3.6s)
+  ok 16 tests\e2e\import-experience.spec.ts:232:3 › the import experience › a file shared into the app opens the sheet from the row the Library got back (2.4s)
+  ok 15 tests\e2e\import-experience.spec.ts:175:3 › the import experience › state the tempo on the sheet, then state it again: the line, the stored score, the fact, the row and the Score screen’s tempo label carry the second statement (5.4s)
+  ok 18 tests\e2e\midi-import.spec.ts:163:3 › a MIDI file imported from the app › converts on the device and says what it decided before anything is agreed to (2.1s)
+  ok 19 tests\e2e\midi-import.spec.ts:192:3 › a MIDI file imported from the app › is in the Library at once and opens on the Score screen (2.2s)
+  ok 17 tests\e2e\midi-import.spec.ts:131:3 › a MIDI file imported from the app › an import stored before the app measured demands shows them on the assign sheet after the next launch (E2; E25) (5.5s)
+  ok 20 tests\e2e\midi-import.spec.ts:209:3 › a MIDI file imported from the app › walks the same number of steps as the cursor does, and keeps both hands (2.5s)
+
+  20 passed (41.4s)
+exit=0

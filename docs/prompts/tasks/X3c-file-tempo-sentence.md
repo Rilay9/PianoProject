@@ -28,3 +28,5 @@ If the stored score's first `<sound tempo>` and the first printed mark disagree 
 ## Report
 
 Judgement first: the tempo line for a half-note-marked file and for a text-marked one, as observations; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes.
+
+**Landed 2026-09-29** (Entry 129; b71a55ca, merged 7e50c31c); handoff `handoffs/b71a55ca.md`.

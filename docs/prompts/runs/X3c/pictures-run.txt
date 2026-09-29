@@ -1,0 +1,8 @@
+npx playwright test --config playwright.x3c-4353.config.ts --workers=1 tests/e2e/x3c-pictures.spec.ts (in app)
+
+Running 1 test using 1 worker
+
+  ok 1 tests\e2e\x3c-pictures.spec.ts:86:1 › the file’s own tempo line: a half-note mark, a text mark, a fractional tempo (3.6s)
+
+  1 passed (6.3s)
+exit=0
