@@ -238,5 +238,188 @@ class TestAChangeBesideAFetchFailure(LadderCase):
         self.assertIn("a build that fetched", errors[0])
 
 
+# ---------------------------------------------------------------------------
+# Q82: the kern and MuseTrainer steps' own placeholders
+# ---------------------------------------------------------------------------
+
+KERN_ID = "song.ragtime.kern-rag"
+KERN_KEY = "nifc/kern/rag.krn"
+MT_ID = "song.folk.mt-tune"
+MT_FILE = "tune.mxl"
+LICENCE_FILES = {
+    "CC BY 4.0": "Licensed under Creative Commons Attribution 4.0 International (CC BY 4.0) "
+                 "https://creativecommons.org/licenses/by/4.0\n",
+    "CC BY-NC-SA 4.0": "Licensed with Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) "
+                       "https://creativecommons.org/licenses/by-nc-sa/4.0\n",
+}
+
+
+def humdrum(licence: str) -> str:
+    """Two bars of a two-staff rag; tab-separated, as music21 wants it."""
+    rows = [["**kern", "**kern"], ["*staff2", "*staff1"], ["*clefF4", "*clefG2"], ["*k[b-e-]", "*k[b-e-]"],
+            ["*M2/4", "*M2/4"], ["*MM88", "*MM88"], ["=1", "=1"], ["4BB-", "4d"], ["4F", "4f"], ["=2", "=2"],
+            ["4BB-", "4d"], ["4F", "4f"], ["==", "=="], ["*-", "*-"]]
+    return ("!!!COM: Tester, Terry\n!!!OTL: Kern Rag\n!!!ODT: 1902\n" + "\n".join("\t".join(r) for r in rows)
+            + f"\n!!!ENC: A. Editor\n!!!YEC: 2021 A. Editor\n!!!YEM: Licence: ({licence}) https://creativecommons.org/\n")
+
+
+def kern_rows(tmp: Path, *, cloned: bool, licence: str = "CC BY 4.0", allow_nc: bool = False) -> list[dict]:
+    """What `import_kern.import_kern` writes for one table row, with its clone on this build or not."""
+    import import_kern as K
+
+    root = Path(tempfile.mkdtemp(dir=tmp, prefix="kern-"))
+    kern_dir = root / "kern"
+    repo = KERN_KEY.split("/", 1)[0]
+    kern_dir.mkdir()
+    if cloned:  # otherwise the folder of kern clones is there and this repository's clone is not
+        (kern_dir / repo / "kern").mkdir(parents=True)
+        (kern_dir / repo / "LICENSE.txt").write_text(LICENCE_FILES[licence], encoding="utf-8")
+        (kern_dir / KERN_KEY).write_text(humdrum(licence), encoding="utf-8")
+    table = {
+        "repos": {repo: {"name": "A test edition", "url": "https://example.org/nifc"}},
+        "mustStayExcluded": {},
+        "items": {KERN_KEY: {"id": KERN_ID, "title": "Kern Rag", "composer": "Terry Tester", "publishedYear": 1902,
+                             "level": 7.2, "tracks": ["ragtime"], "concepts": ["syncopation"]}},
+    }
+    table_path = root / "kern.json"
+    table_path.write_text(json.dumps(table), encoding="utf-8")
+    saved = (K.KERN_DIR, K.TABLE_PATH)
+    K.KERN_DIR, K.TABLE_PATH = kern_dir, table_path
+    try:
+        K.import_kern(root / "out", root / "catalog.json", allow_nc=allow_nc)
+    finally:
+        K.KERN_DIR, K.TABLE_PATH = saved
+    return json.loads((root / "catalog.json").read_text(encoding="utf-8"))
+
+
+MUSICXML = """<?xml version="1.0" encoding="UTF-8"?>
+<score-partwise version="4.0">
+  <part-list><score-part id="P1"><part-name>Piano</part-name></score-part></part-list>
+  <part id="P1"><measure number="1">
+    <attributes><divisions>1</divisions><key><fifths>0</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time></attributes>
+    <sound tempo="80"/>
+    <note><pitch><step>C</step><octave>4</octave></pitch><duration>4</duration><type>whole</type></note>
+  </measure></part>
+</score-partwise>
+"""
+
+
+def mt_rows(tmp: Path, *, fetched: bool, free: bool = True, personal: bool = False) -> list[dict]:
+    """What `import_musetrainer.import_library` writes for one table row, with its file on this build or not."""
+    import zipfile
+
+    import import_musetrainer as T
+
+    root = Path(tempfile.mkdtemp(dir=tmp, prefix="mt-"))
+    library = root / "library"
+    library.mkdir()
+    if fetched:
+        with zipfile.ZipFile(library / MT_FILE, "w") as archive:
+            archive.writestr("META-INF/container.xml",
+                             '<container><rootfiles><rootfile full-path="score.xml"/></rootfiles></container>')
+            archive.writestr("score.xml", MUSICXML)
+    row = {"id": MT_ID, "title": "Mt Tune", "level": 7.3, "tracks": ["ragtime"], "concepts": ["legato"],
+           "composer": "Johann Sebastian Bach", "publishedYear": 1725}
+    if not free:
+        row.update(composer="Richard Clayderman", publishedYear=1977,
+                   exclude="composition: published 1977, still in copyright")
+    table_path = root / "musetrainer.json"
+    table_path.write_text(json.dumps({"items": {MT_FILE: row}}), encoding="utf-8")
+    saved = (T.TABLE_PATH, T.LIBRARY_DIR)
+    T.TABLE_PATH, T.LIBRARY_DIR = table_path, library
+    try:
+        T.import_library(root / "out", root / "catalog.json", personal=personal)
+    finally:
+        T.TABLE_PATH, T.LIBRARY_DIR = saved
+    return json.loads((root / "catalog.json").read_text(encoding="utf-8"))
+
+
+class TestTheKernAndMuseTrainerStepsOwnPlaceholders(unittest.TestCase):
+    """
+    Q82: the kern and MuseTrainer steps placeholder a file they cannot find with the fetch reason, as Mutopia's
+    step does, and the check reads those placeholders as the build's own.
+
+    Every row here is built by the step itself, with its file there (the committed report's view) and without it
+    (the build that could not fetch), so a change to either step's wording turns this red rather than the check
+    quiet. A licence placeholder of either step is still the catalogue's: a change, and the error stands.
+    """
+
+    def setUp(self) -> None:
+        BUILD_DIR.mkdir(parents=True, exist_ok=True)
+        self._tmp = tempfile.TemporaryDirectory(dir=BUILD_DIR, prefix="q82-ladder-")
+        self.tmp = Path(self._tmp.name)
+        self._original = ladder_report.DEFAULT_OUT
+        ladder_report.DEFAULT_OUT = self.tmp / "ladder.md"
+        self.others = [exercise(i, 5.0) for i in EXERCISES] + [song("song.ragtime.one", 7.0)]
+        self.cur = curriculum(["song.ragtime.one", KERN_ID, MT_ID])
+
+    def tearDown(self) -> None:
+        ladder_report.DEFAULT_OUT = self._original
+        self._tmp.cleanup()
+
+    def commit(self, catalog: list) -> None:
+        ladder_report.DEFAULT_OUT.write_text(ladder_report.render(catalog, self.cur), encoding="utf-8")
+
+    def fetched(self) -> list:
+        kern, mt = kern_rows(self.tmp, cloned=True), mt_rows(self.tmp, fetched=True)
+        self.assertTrue(kern[0].get("file") and mt[0].get("file"), "both rows bundled when their files are here")
+        self.assertTrue(ladder_report.shippable(kern[0]) and ladder_report.shippable(mt[0]))
+        return kern + mt
+
+    def test_a_kern_file_whose_clone_did_not_arrive_is_the_builds_own_and_warned(self) -> None:
+        from validate import ladder_report_findings
+
+        self.commit(self.others + self.fetched())
+        catalog = self.others + kern_rows(self.tmp, cloned=False) + mt_rows(self.tmp, fetched=True)
+        errors, warnings = ladder_report_findings(catalog, self.cur)
+        self.assertEqual(errors, [])
+        self.assertEqual(len(warnings), 1, warnings)
+        self.assertIn("WARNING (ladder report, Q80)", warnings[0])
+        self.assertIn(f"{KERN_ID} ({KERN_KEY} was not fetched: the kern clone is not on this build)", warnings[0])
+
+    def test_a_musetrainer_file_the_library_lacks_is_the_builds_own_and_warned(self) -> None:
+        from validate import ladder_report_findings
+
+        self.commit(self.others + self.fetched())
+        catalog = self.others + kern_rows(self.tmp, cloned=True) + mt_rows(self.tmp, fetched=False)
+        errors, warnings = ladder_report_findings(catalog, self.cur)
+        self.assertEqual(errors, [])
+        self.assertEqual(len(warnings), 1, warnings)
+        self.assertIn(f"{MT_ID} ({MT_FILE} was not fetched: the MuseTrainer library is not on this build)",
+                      warnings[0])
+
+    def test_both_reasons_are_read_as_this_builds_on_either_flavour(self) -> None:
+        from validate import unfetched_placeholders
+
+        expected = [
+            (KERN_ID, f"{KERN_KEY} was not fetched: the kern clone is not on this build"),
+            (MT_ID, f"{MT_FILE} was not fetched: the MuseTrainer library is not on this build"),
+        ]
+        for personal in (True, False):
+            rows = kern_rows(self.tmp, cloned=False, allow_nc=personal) + mt_rows(self.tmp, fetched=False,
+                                                                                   personal=personal)
+            self.assertEqual(unfetched_placeholders(rows), expected)
+        # A composition the owner's build carries, not fetched either: its placeholder says so too.
+        self.assertEqual(unfetched_placeholders(mt_rows(self.tmp, fetched=False, free=False)), expected[1:])
+
+    def test_both_steps_licence_placeholders_are_still_the_catalogues(self) -> None:
+        """Pins, green before Q82 and after: a licence placeholder is a change, and the error names no fetch."""
+        from validate import stale_ladder_report, unfetched_placeholders
+
+        self.commit(self.others + self.fetched())
+        kern_licence = kern_rows(self.tmp, cloned=True, licence="CC BY-NC-SA 4.0", allow_nc=False)
+        mt_licence = mt_rows(self.tmp, fetched=True, free=False, personal=False)
+        for rows in (kern_licence, mt_licence):
+            self.assertIsNone(rows[0].get("file"))
+            self.assertTrue(rows[0].get("importHint"))
+            self.assertEqual(unfetched_placeholders(rows), [])
+        for catalog in (self.others + kern_licence + mt_rows(self.tmp, fetched=True),
+                        self.others + kern_rows(self.tmp, cloned=True) + mt_licence):
+            errors = stale_ladder_report(catalog, self.cur)
+            self.assertEqual(len(errors), 1, errors)
+            self.assertIn("is stale — the catalog has changed since it was written", errors[0])
+            self.assertNotIn("could not fetch", errors[0])
+
+
 if __name__ == "__main__":  # pragma: no cover
     unittest.main()

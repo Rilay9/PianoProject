@@ -91,6 +91,19 @@ IMPORT_HINT = (
     "your own copy of the score."
 )
 
+#: Q82: why a row has no file when the file did not arrive: the fetch step skipped the clone (a source it cannot
+#: reach is a smaller build, not a broken one, `build.py` step 1) or the clone lacks the file. The same words on
+#: every such row, so one pattern reads them: `validate.UNFETCHED_REASONS` takes them as this build's own, as it
+#: takes `import_mutopia`'s. The hint is in `import_mutopia.IMPORT_HINT`'s shape: the reason, then what to do.
+UNFETCHED_REASON = "{key} was not fetched: the kern clone is not on this build"
+UNFETCHED_HINT = (
+    "Not bundled in this build: {why}. Clone it with `python tools/content/fetch.py --only kern` on a machine "
+    "that can reach github.com, or import your own copy of the score."
+)
+#: What such a row says of its licence: the repository's LICENSE and the file's own rights records are what state
+#: it, and neither is on this build, so nothing is claimed.
+UNFETCHED_LICENSE = "not read on this build: the file was not fetched"
+
 
 class ExcludedRepositoryError(RuntimeError):
     """A repository that must stay excluded got past the licence gate."""
@@ -555,12 +568,17 @@ def build_entry(
     repo_name = key.split("/", 1)[0]
     repo_meta = table.get("repos", {}).get(repo_name, {})
     source_path = KERN_DIR / key
-    if not source_path.exists():
-        report.missing.append(key)
-        return None
+    # The table's own exclusion first: a row it excludes stays out whether or not its file arrived (Q82).
     if "exclude" in spec:
         report.excluded.append((key, spec["exclude"]))
         return None
+    if not source_path.exists():
+        # Q82: a file this build does not have is a placeholder that says so, as `import_mutopia`'s is, so every
+        # id the curriculum, a `variantOf` or an `alternatives` list names still resolves. It used to be dropped,
+        # and a clone that failed on the runner failed validation on cross-references (Q80's stop finding: the
+        # `kern/joplin` clone aside, 21 unknown items and a `variantOf`). Counted in `missing`, which the log names.
+        report.missing.append(key)
+        return unfetched_placeholder(key, spec, repo_name, repo_meta)
 
     if repo_name not in decisions:
         decisions[repo_name] = repo_decision(KERN_DIR / repo_name, allow_nc=allow_nc)
@@ -722,6 +740,49 @@ def build_entry(
     )
 
 
+def unfetched_placeholder(key: str, spec: dict, repo_name: str, repo_meta: dict) -> dict:
+    """
+    Q82: the row for a file this build does not have, in the licence placeholder's shape.
+
+    Everything comes from the table row, as the licence placeholder's level, tracks, concepts and
+    `alternatives` do; what only the file could say (its licence records, key, metre and tempo) is left out
+    rather than guessed. The same row on either flavour: a missing file is not a licence matter.
+    """
+    banded = bool(spec.get("_banded") or spec.get("levelBanded"))
+    return catalog_item(
+        item_id=spec["id"],
+        item_type="song",
+        title=spec["title"],
+        level=spec["level"],
+        level_source="estimated" if banded else "judged",
+        hands="both",
+        tracks=spec["tracks"],
+        concepts=spec["concepts"],
+        source=SourceBlock(
+            name=repo_meta.get("name", repo_name),
+            url=repo_meta.get("url"),
+            license=UNFETCHED_LICENSE,
+            pd_region="worldwide",
+            fetchedAt=None,
+            checksum=None,
+            editionNotes=" ".join(
+                part for part in (spec.get("editionNotes"), repo_meta.get("editionNotes")) if part
+            )
+            or None,
+        ),
+        subtitle=spec.get("subtitle"),
+        composer=spec.get("composer"),
+        genre=["ragtime"] if "ragtime" in spec["tracks"] else ["classical"],
+        abrsmGradeApprox=spec.get("abrsmGradeApprox"),
+        file=None,
+        importHint=UNFETCHED_HINT.format(why=UNFETCHED_REASON.format(key=key)),
+        alternatives=spec.get("alternatives"),
+        variantOf=spec.get("variantOf"),
+        variantLabel=spec.get("variantLabel"),
+        tags=["kern", repo_name, "import-only"],
+    )
+
+
 def import_kern(out_dir: Path, catalog_path: Path, *, allow_nc: bool, limit: int | None = None) -> ImportReport:
     table = read_json(TABLE_PATH)
     assert isinstance(table, dict)
@@ -789,12 +850,13 @@ def main() -> None:
         os.environ["PIANOPATH_NO_CACHE"] = "1"
 
     if not KERN_DIR.exists():
+        # Q82: no early exit. A runner whose clones all failed still writes every row the table names, each a
+        # placeholder saying it was not fetched, so the curriculum's ids resolve.
         print(
-            f"no kern repositories at {KERN_DIR}; run tools/content/fetch.py first",
+            f"no kern repositories at {KERN_DIR}; every row the table names is a placeholder saying it was not "
+            "fetched (run tools/content/fetch.py to clone them)",
             file=sys.stderr,
         )
-        write_json(args.catalog, [])
-        sys.exit(0)
 
     report = import_kern(args.out, args.catalog, allow_nc=args.allow_nc, limit=args.limit)
     for name, reason in report.guarded:
@@ -812,15 +874,21 @@ def main() -> None:
         for key, why in report.excluded:
             print(f"  - {key}: {why}")
     if report.missing:
-        print(f"missing {len(report.missing)} file(s) named in the table", file=sys.stderr)
+        print(
+            f"missing {len(report.missing)} file(s) named in the table, each a placeholder saying it was not fetched",
+            file=sys.stderr,
+        )
         for key in report.missing:
             print(f"  - {key}", file=sys.stderr)
-    # Last, so the build's one-line summary of this step is the count.
+    # Last, so the build's one-line summary of this step is the count. `build.py` prints this line and no other,
+    # so what was not fetched is counted here (Q82), and only when there is any: a build that fetched everything
+    # prints the line it always did.
     from convert import CACHE_STATS  # late import: music21 is slow to load
 
+    unfetched = f", {len(report.missing)} not fetched (placeheld)" if report.missing else ""
     print(
         f"imported {len(report.imported)} score(s), {len(report.placeheld)} placeholder(s), "
-        f"excluded {len(report.excluded)} ({CACHE_STATS.summary()})"
+        f"excluded {len(report.excluded)}{unfetched} ({CACHE_STATS.summary()})"
     )
 
 

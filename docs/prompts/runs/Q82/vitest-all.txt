@@ -1,0 +1,19 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-af3e3368f50c0e179/app
+
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts (284 tests | 2 failed) 887ms
+   ❯ the 2026-09-19 lesson corrections, second-read and under test: the app (80)
+     × blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them 17ms
+     × 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot 25ms
+ ❯ tests/unit/expectedNote.test.ts (12 tests | 1 failed) 5740ms
+   ❯ the spelling comes from the notation (T41) (3)
+     × every black key in every fixture carries its written spelling 5650ms
+
+ Test Files  2 failed | 310 passed (312)
+      Tests  3 failed | 7182 passed | 5 skipped | 1 todo (7191)
+   Start at  17:26:45
+   Duration  320.37s (tests 69%, environment 22%, import 7%, transform 2%)
+
+    Isolate  312 workers spawned · ~3.00s startup each (spawn + environment, per file)
+             at least ~46.32s faster with isolate: false — reuses workers across files instead of one per file
+

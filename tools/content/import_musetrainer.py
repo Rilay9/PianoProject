@@ -57,6 +57,16 @@ IMPORT_HINT = (
     "copy of the score otherwise."
 )
 
+#: Q82: why a row has no file when the file did not arrive: the fetch step skipped the library (a source it cannot
+#: reach is a smaller build, not a broken one, `build.py` step 1) or the library lacks the file. The same words on
+#: every such row, so one pattern reads them: `validate.UNFETCHED_REASONS` takes them as this build's own, as it
+#: takes `import_mutopia`'s. The hint is in `import_mutopia.IMPORT_HINT`'s shape: the reason, then what to do.
+UNFETCHED_REASON = "{file} was not fetched: the MuseTrainer library is not on this build"
+UNFETCHED_HINT = (
+    "Not bundled in this build: {why}. Clone it with `python tools/content/fetch.py --only musetrainer` on a "
+    "machine that can reach github.com, or import your own copy of the score."
+)
+
 #: Tag on an item whose *composition* is not public domain (docs/00 D23).
 #: The same tag import_pdmx.py uses: one mechanism, every source.
 PERSONAL_BUILD_TAG = "personal-build"
@@ -155,9 +165,6 @@ def import_library(
         if limit is not None and index >= limit:
             break
         source_path = LIBRARY_DIR / filename
-        if not source_path.exists():
-            report.missing.append(filename)
-            continue
         # One mechanism, every source (replan §2.2): an exclusion that is about
         # the *composition* is now an admission with a label. The Senneville
         # and Clayderman files are real piano music the owner may practise on
@@ -186,6 +193,50 @@ def import_library(
         if verdict.verdict is not Verdict.BUNDLE:
             personal_build = True
 
+        tags = ["musetrainer"]
+        if personal_build:
+            tags.append(PERSONAL_BUILD_TAG)
+
+        # Q82: a file this build does not have is a placeholder that says so, as `import_mutopia`'s is, so every id
+        # the curriculum, a `variantOf`, `sections.json` or an excerpt names still resolves. It used to be dropped
+        # (and a library that did not arrive at all left an empty fragment), so a clone that failed on the runner
+        # failed the build. After the edition exclusion, which stays an exclusion, and the composition verdict,
+        # whose label and tag the row keeps: the same row on either flavour, since a missing file is not a licence
+        # matter. The strict-build placeholder's shape; what only the file could say (key, metre, tempo) is left
+        # out rather than guessed. Counted in `missing`, which the log names.
+        if not source_path.exists():
+            report.missing.append(filename)
+            entries.append(
+                catalog_item(
+                    item_id=spec["id"],
+                    item_type="song",
+                    title=spec["title"],
+                    level=spec["level"],
+                    level_source="judged",
+                    hands="both",
+                    tracks=spec["tracks"],
+                    concepts=spec["concepts"],
+                    source=SourceBlock(
+                        name="MuseTrainer public-domain MusicXML library",
+                        url=SOURCE_URL,
+                        license=STATED_LICENSE,
+                        pd_region=spec.get("pd_region", "worldwide"),
+                        fetchedAt=None,
+                        editionNotes=spec.get("editionNotes"),
+                    ),
+                    composer=spec.get("composer"),
+                    arranger=spec.get("arranger"),
+                    genre=["classical"] if "classical" in spec["tracks"] else None,
+                    abrsmGradeApprox=spec.get("abrsmGradeApprox"),
+                    importHint=UNFETCHED_HINT.format(why=UNFETCHED_REASON.format(file=filename)),
+                    variantOf=spec.get("variantOf"),
+                    variantLabel=spec.get("variantLabel"),
+                    compositionStatus="in-copyright" if personal_build else "pd",
+                    tags=tags,
+                )
+            )
+            continue
+
         # A composition that is not free is a *placeholder* in a strict build,
         # never a missing id. Dropping it made the two builds' catalogs differ
         # by six items, and one committed ladder report can only be fresh for
@@ -196,10 +247,6 @@ def import_library(
         why = str(spec.get("exclude") or verdict.reason)
         if personal_build:
             (report.placeheld if placeholder else report.personal_build).append((filename, why))
-
-        tags = ["musetrainer"]
-        if personal_build:
-            tags.append(PERSONAL_BUILD_TAG)
 
         if placeholder:
             # Read, not copied. The facts about the music — its tempo, key and
@@ -336,12 +383,13 @@ def main() -> None:
         os.environ["PIANOPATH_NO_CACHE"] = "1"
 
     if not LIBRARY_DIR.exists():
+        # Q82: no early exit. A runner whose clone failed still writes every row the table names, each a
+        # placeholder saying it was not fetched, so the curriculum's ids resolve.
         print(
-            f"musetrainer library not present at {LIBRARY_DIR}; run tools/content/fetch.py first",
+            f"musetrainer library not present at {LIBRARY_DIR}; every row the table names is a placeholder saying "
+            "it was not fetched (run tools/content/fetch.py to clone it)",
             file=sys.stderr,
         )
-        write_json(args.catalog, [])
-        sys.exit(0)
 
     report = import_library(args.out, args.catalog, limit=args.limit, personal=args.personal)
     if report.placeheld:
@@ -365,14 +413,22 @@ def main() -> None:
         for name, why in report.excluded:
             print(f"  - {name}: {why}")
     if report.missing:
-        print(f"missing {len(report.missing)} file(s) named in the table", file=sys.stderr)
+        print(
+            f"missing {len(report.missing)} file(s) named in the table, each a placeholder saying it was not fetched",
+            file=sys.stderr,
+        )
+        for name in report.missing:
+            print(f"  - {name}", file=sys.stderr)
     # Last, so the build's one-line summary of this step is the count rather
-    # than whichever exclusion happened to print last.
+    # than whichever exclusion happened to print last. `build.py` prints this
+    # line and no other, so what was not fetched is counted here (Q82), and only
+    # when there is any: a build that fetched everything prints the line it did.
     from convert import CACHE_STATS  # late import: music21 is slow to load
 
+    unfetched = f", {len(report.missing)} not fetched (placeheld)" if report.missing else ""
     print(
         f"imported {len(report.imported)} score(s), excluded {len(report.excluded)}, "
-        f"normalised {len(report.normalised)} ({CACHE_STATS.summary()})"
+        f"normalised {len(report.normalised)}{unfetched} ({CACHE_STATS.summary()})"
     )
 
 

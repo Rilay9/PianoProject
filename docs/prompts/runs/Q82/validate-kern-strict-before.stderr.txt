@@ -1,0 +1,24 @@
+content validation FAILED (23 error(s)):
+  - song.ragtime.joplin-pine-apple-rag.mutopia: variantOf song.ragtime.joplin-pine-apple-rag is not in the catalog
+  - lesson ragtime.5: songOptions references unknown item song.ragtime.joplin-augustan-club-waltz
+  - lesson ragtime.5: songOptions references unknown item song.ragtime.joplin-combination-march
+  - lesson ragtime.5: songOptions references unknown item song.ragtime.joplin-rose-bud-march
+  - lesson ragtime.6: songOptions references unknown item song.ragtime.joplin-school-of-ragtime
+  - lesson ragtime.6: songOptions references unknown item song.ragtime.joplin-easy-winners
+  - lesson ragtime.6: songOptions references unknown item song.ragtime.joplin-peacherine-rag
+  - lesson ragtime.6: songOptions references unknown item song.ragtime.joplin-swipesy-cakewalk
+  - lesson ragtime.6: songOptions references unknown item song.ragtime.joplin-sunflower-slow-drag
+  - lesson ragtime.7: songOptions references unknown item song.ragtime.joplin-elite-syncopations
+  - lesson ragtime.7: songOptions references unknown item song.ragtime.joplin-solace
+  - lesson ragtime.7: songOptions references unknown item song.ragtime.joplin-bethena
+  - lesson ragtime.7: songOptions references unknown item song.ragtime.joplin-heliotrope-bouquet
+  - lesson ragtime.7: songOptions references unknown item song.ragtime.joplin-sugar-cane
+  - lesson ragtime.8: songOptions references unknown item song.ragtime.joplin-pine-apple-rag
+  - lesson ragtime.8: songOptions references unknown item song.ragtime.joplin-gladiolus-rag
+  - lesson ragtime.8: songOptions references unknown item song.ragtime.joplin-magnetic-rag
+  - lesson ragtime.8: songOptions references unknown item song.ragtime.joplin-cascades
+  - lesson ragtime.8: songOptions references unknown item song.ragtime.joplin-new-rag
+  - lesson ragtime.9: songOptions references unknown item song.ragtime.joplin-original-rags
+  - lesson ragtime.9: songOptions references unknown item song.ragtime.joplin-breeze-from-alabama
+  - lesson ragtime.9: songOptions references unknown item song.ragtime.joplin-chrysanthemum
+  - docs\generated\ladder.md is stale — the catalog has changed since it was written. Run `python3 tools/content/ladder_report.py` and commit it (replan §2.6).

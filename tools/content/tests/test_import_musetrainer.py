@@ -14,12 +14,16 @@ test that would have caught it is the last one here.
 """
 from __future__ import annotations
 
+import io
 import json
+import shutil
 import sys
 import tempfile
 import unittest
 import zipfile
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -176,6 +180,125 @@ class TestBothBuildsAgree(unittest.TestCase):
         self.assertEqual(modern["tracks"], ["classical"])
         self.assertEqual(modern["concepts"], ["legato"])
         self.assertEqual(modern["levelSource"], "judged")
+
+
+def not_fetched(filename: str) -> str:
+    """Q82: the reason the step gives for a file the library lacks, as `validate.UNFETCHED_REASONS` reads it."""
+    return f"{filename} was not fetched: the MuseTrainer library is not on this build"
+
+
+class TestAFileTheLibraryLacks(unittest.TestCase):
+    """
+    Q82: a file the library lacks is a placeholder that says it was not fetched, on both flavours.
+
+    The fetch step skips a source it cannot reach, and a skipped source is a smaller build, not a broken one.
+    Before Q82 this step dropped a file it could not find (`report.missing`, nothing in the catalogue), and a
+    library that did not arrive at all left an empty fragment, so every rung that named one of its songs pointed
+    at nothing (Q80 simulated it: 65 unknown items). One file is here; three the table names are not — one plainly
+    free, one the owner's build carries for its composition, one the table excludes for its edition.
+    """
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self.tmp.name)
+        self.library = self.root / "library"
+        mxl(self.library / "free.mxl")
+        table = {
+            "items": {
+                "free.mxl": spec("song.classical.free"),
+                "gone.mxl": spec("song.classical.gone"),
+                "modern.mxl": spec(
+                    "song.classical.modern",
+                    composer="Richard Clayderman",
+                    publishedYear=1977,
+                    exclude="composition: published 1977, still in copyright",
+                ),
+                "edition.mxl": spec("song.classical.edition", exclude="edition: no licence granted for this engraving"),
+            }
+        }
+        self.table_path = self.root / "musetrainer.json"
+        self.table_path.write_text(json.dumps(table), encoding="utf-8")
+        self._saved = (import_musetrainer.TABLE_PATH, import_musetrainer.LIBRARY_DIR)
+        import_musetrainer.TABLE_PATH = self.table_path
+        import_musetrainer.LIBRARY_DIR = self.library
+
+    def tearDown(self) -> None:
+        import_musetrainer.TABLE_PATH, import_musetrainer.LIBRARY_DIR = self._saved
+        self.tmp.cleanup()
+
+    def build(self, *, personal: bool) -> tuple[dict, object]:
+        flavour = "personal" if personal else "strict"
+        catalog = self.root / f"catalog.{flavour}.json"
+        report = import_musetrainer.import_library(self.root / f"out-{flavour}", catalog, personal=personal)
+        return {item["id"]: item for item in json.loads(catalog.read_text(encoding="utf-8"))}, report
+
+    def test_a_filename_the_library_lacks_is_a_placeholder_with_the_reason(self) -> None:
+        for personal in (True, False):
+            items, report = self.build(personal=personal)
+            self.assertIn("song.classical.gone", items, "the id resolves")
+            gone = items["song.classical.gone"]
+            self.assertIsNone(gone.get("file"))
+            self.assertIn(not_fetched("gone.mxl"), gone["importHint"])
+            self.assertEqual(report.missing, ["gone.mxl", "modern.mxl"])
+            self.assertEqual(report.imported, ["free.mxl"])
+            # Neither a licence placeholder nor a file the owner's build carries: it is not here at all.
+            self.assertEqual(report.placeheld, [])
+            self.assertEqual(report.personal_build, [])
+
+    def test_a_composition_the_owners_build_carries_keeps_its_label_and_says_why_it_is_missing(self) -> None:
+        for personal in (True, False):
+            items, _ = self.build(personal=personal)
+            modern = items["song.classical.modern"]
+            self.assertIsNone(modern.get("file"))
+            self.assertIn(not_fetched("modern.mxl"), modern["importHint"])
+            self.assertNotIn("--personal", modern["importHint"])
+            self.assertIn(import_musetrainer.PERSONAL_BUILD_TAG, modern["tags"])
+            self.assertEqual(modern["compositionStatus"], "in-copyright")
+            gone = items["song.classical.gone"]
+            self.assertEqual(gone["tags"], ["musetrainer"])
+            self.assertEqual(gone["compositionStatus"], "pd")
+
+    def test_it_keeps_the_metadata_the_rung_needs(self) -> None:
+        items, _ = self.build(personal=False)
+        gone = items["song.classical.gone"]
+        self.assertEqual((gone["level"], gone["levelSource"]), (3.0, "judged"))
+        self.assertEqual((gone["tracks"], gone["concepts"]), (["classical"], ["legato"]))
+        self.assertEqual(gone["source"]["license"], import_musetrainer.STATED_LICENSE)
+        self.assertIsNone(gone["source"].get("fetchedAt"), "a file that did not arrive has no fetch date")
+
+    def test_the_two_builds_carry_the_same_placeholders(self) -> None:
+        personal, _ = self.build(personal=True)
+        strict, _ = self.build(personal=False)
+        self.assertEqual(set(personal), set(strict))
+        for item_id in ("song.classical.gone", "song.classical.modern"):
+            self.assertEqual(personal[item_id], strict[item_id], item_id)
+
+    def test_an_edition_exclusion_stays_an_exclusion_when_its_file_is_missing(self) -> None:
+        items, report = self.build(personal=True)
+        self.assertNotIn("song.classical.edition", items)
+        self.assertIn("edition.mxl", [name for name, _ in report.excluded])
+        self.assertNotIn("edition.mxl", report.missing)
+
+    def run_main(self) -> tuple[str, dict]:
+        catalog = self.root / "catalog.main.json"
+        argv = ["import_musetrainer.py", "--out", str(self.root / "out-main"), "--catalog", str(catalog)]
+        out, err = io.StringIO(), io.StringIO()
+        with mock.patch.object(sys, "argv", argv), redirect_stdout(out), redirect_stderr(err):
+            import_musetrainer.main()
+        return out.getvalue(), {item["id"]: item for item in json.loads(catalog.read_text(encoding="utf-8"))}
+
+    def test_the_steps_last_line_counts_what_was_not_fetched(self) -> None:
+        # `build.py` shows a step's last line and nothing else, so that is where a runner's log says it.
+        out, _ = self.run_main()
+        self.assertIn("2 not fetched", out.strip().splitlines()[-1])
+
+    def test_no_library_at_all_placeholds_every_row(self) -> None:
+        # What a runner has when the clone failed: the library folder itself is absent.
+        shutil.rmtree(self.library)
+        out, items = self.run_main()
+        self.assertEqual(sorted(items), ["song.classical.free", "song.classical.gone", "song.classical.modern"])
+        self.assertIn(not_fetched("free.mxl"), items["song.classical.free"]["importHint"])
+        self.assertIn("3 not fetched", out.strip().splitlines()[-1])
 
 
 if __name__ == "__main__":  # pragma: no cover
