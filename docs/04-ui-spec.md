@@ -330,6 +330,7 @@ in its first words and the detail after the dash:
 | repertoire retention | Keeping this piece playable — last played on 10 Sep |
 | a piece the reads are ready for | A piece with dotted quarters — your reads support them |
 | the rung's own option | From this lesson · More from this lesson · More music from this lesson · Nothing due for review — more from this lesson |
+| the rung's own option, where every piece the rung asks for is one the learner paused or put away (G1e, the reviewer's ruling: none is revived and the rung is not passed over; said once) | This lesson waits on pieces you paused or put away — more from this lesson |
 | the same target skill | Trains subdivision, which this lesson asks for |
 | the same demand | Has eighth notes, which this lesson asks for |
 | a prerequisite rung | From Hands together: the left hand holds, which this lesson builds on |
@@ -348,7 +349,7 @@ with Perform on", `nextUp` "Next lesson", `waitsForReads` "this one waits for yo
 `keepPlayable` "Keeping this piece playable", `lastPlayed` "last played", `readyWith` "A piece
 with", `readySupported` "your reads support them", `nothingDue` "Nothing due for review",
 `fromThisLesson` "From this lesson", `moreFromThisLesson` "more from this lesson", `moreMusic`
-"More music from this lesson", `trains` "Trains", `has` "Has", `whichAsked` "which this lesson
+"More music from this lesson", `heldByPause` "waits on pieces you paused or put away" (G1e), `trains` "Trains", `has` "Has", `whichAsked` "which this lesson
 asks for", `whichBuildsOn` "which this lesson builds on", `forVariety` "For variety",
 `fromLessonsSoFar` "from your lessons", `notPlayedYet` "not played yet", `nonePlayedYet` "none
 played yet", `nonePlayedSince` "none played since", `earlierSong` "a song from an earlier

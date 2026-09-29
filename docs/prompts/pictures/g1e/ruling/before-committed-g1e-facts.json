@@ -1,0 +1,114 @@
+{
+  "unpaused": [
+    {
+      "slot": "technique",
+      "claim": "asked",
+      "item": "drill.placement.stage-0",
+      "title": "Placement test",
+      "sub": "This lesson asks for it — finished, nothing left undone",
+      "meta": "Warm-up · 5 min · L0.4"
+    },
+    {
+      "slot": "review",
+      "claim": "piece-retention",
+      "item": "song.folk.hot-cross-buns",
+      "title": "Hot Cross Buns",
+      "sub": "Keeping this piece playable — last played on 9 Sep",
+      "meta": "Review · 5 min · L1.1 · RH"
+    },
+    {
+      "slot": "new",
+      "claim": "exposure",
+      "item": "drill.reading.find-key",
+      "title": "Find the key",
+      "sub": "Finding notes on the keyboard, from your lessons — not played yet",
+      "meta": "New · 10 min · L0.2"
+    }
+  ],
+  "paused": [
+    {
+      "slot": "technique",
+      "claim": "asked",
+      "item": "drill.placement.stage-0",
+      "title": "Placement test",
+      "sub": "This lesson asks for it — finished, nothing left undone",
+      "meta": "Warm-up · 5 min · L0.4"
+    },
+    {
+      "slot": "new",
+      "claim": "exposure",
+      "item": "drill.reading.find-key",
+      "title": "Find the key",
+      "sub": "Finding notes on the keyboard, from your lessons — not played yet",
+      "meta": "New · 10 min · L0.2"
+    }
+  ],
+  "rung": [
+    {
+      "slot": "technique",
+      "claim": "asked",
+      "item": "drill.technique.five-finger-rh",
+      "title": "Right-hand five-finger walk",
+      "sub": "This lesson asks for it — not counted yet",
+      "meta": "Warm-up · 5 min · L1.1 · RH"
+    },
+    {
+      "slot": "review",
+      "claim": "rung",
+      "item": "drill.reading.note-flash-treble-c4-g4",
+      "title": "Note flash — treble C4 to G4",
+      "sub": "Nothing due for review — more from this lesson",
+      "meta": "Review · 5 min · L1.1 · RH"
+    },
+    {
+      "slot": "new",
+      "claim": "asked",
+      "item": "song.folk.hot-cross-buns",
+      "title": "Hot Cross Buns",
+      "sub": "This lesson asks for it — not counted yet",
+      "meta": "New · 10 min · L1.1 · RH"
+    },
+    {
+      "slot": "repertoire",
+      "claim": "rung",
+      "item": "song.folk.mary-had-a-little-lamb",
+      "title": "Mary Had a Little Lamb",
+      "sub": "More music from this lesson",
+      "meta": "Repertoire · 7 min · L1.1 · RH"
+    }
+  ],
+  "allPaused": [
+    {
+      "slot": "technique",
+      "claim": "asked",
+      "item": "drill.technique.five-finger-rh",
+      "title": "Right-hand five-finger walk",
+      "sub": "This lesson asks for it — not counted yet",
+      "meta": "Warm-up · 5 min · L1.1 · RH"
+    },
+    {
+      "slot": "review",
+      "claim": "rung",
+      "item": "drill.reading.note-flash-treble-c4-g4",
+      "title": "Note flash — treble C4 to G4",
+      "sub": "Nothing due for review — more from this lesson",
+      "meta": "Review · 5 min · L1.1 · RH"
+    },
+    {
+      "slot": "new",
+      "claim": "asked",
+      "item": "song.folk.hot-cross-buns",
+      "title": "Hot Cross Buns",
+      "sub": "This lesson asks for it — not counted yet",
+      "meta": "New · 10 min · L1.1 · RH"
+    },
+    {
+      "slot": "repertoire",
+      "claim": "rung",
+      "item": "song.folk.mary-had-a-little-lamb",
+      "title": "Mary Had a Little Lamb",
+      "sub": "More music from this lesson",
+      "meta": "Repertoire · 7 min · L1.1 · RH"
+    }
+  ]
+}
