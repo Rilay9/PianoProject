@@ -1,0 +1,13 @@
+﻿New-Item -ItemType Junction -Path app\node_modules -Target "C:\Users\yalir\repos\Piano Stuff\PianoProject\app\node_modules" (in .; after npm ci failed ENOSPC with 0 bytes free on C:, its partial app\node_modules removed; the main checkout's app\package.json and app\package-lock.json are sha256-identical to this worktree's: 4EC63F54... and 885AE982...)
+
+
+    Directory: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a20bd5674e425dc2c\app
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d----l         9/29/2026   4:02 AM                node_modules                                                         
+
+
+
+exit=0

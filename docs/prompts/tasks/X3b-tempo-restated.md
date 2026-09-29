@@ -28,3 +28,5 @@ If seeding from the returned score's opening tempo disagrees with `facts.tempo.v
 ## Report
 
 Judgement first: the tempo line after a first and a second statement, as observations; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes.
+
+**Landed 2026-09-29** (Entry 128; f9d36867, merged dafd2ed6); handoff `handoffs/f9d36867.md`. X26 recorded.

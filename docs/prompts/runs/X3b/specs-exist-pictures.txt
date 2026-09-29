@@ -1,0 +1,3 @@
+ls tests/e2e/x3b-pictures.spec.ts (in app)
+tests/e2e/x3b-pictures.spec.ts
+exit=0
