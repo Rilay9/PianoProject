@@ -23,7 +23,9 @@ import { recordPlacement, recordRungWord } from '../../data/planStore';
 import { loadRungStates } from '../../data/rungStates';
 import type { RungReading, RungStates } from '../../evidence/rungState';
 import { VOCABULARY_V0 } from '../../evidence/vocabulary';
-import { RUNG_TEXT, requirementState, requirementWords, rungBadge } from '../help';
+import { PROJECT_TEXT, RUNG_TEXT, requirementState, requirementWords, rungBadge } from '../help';
+import { PROJECT_STAGES, allProjects, projectIn, type ProjectRow } from '../../data/projectStore';
+import { materialOfItem } from '../../curriculum/material';
 import type { ProgressRow } from '../../data/db';
 import { parseFrontMatter, renderMarkdown } from '../markdown';
 import { badge, button, el, handsLabel, levelLabel, listRow, openSheet } from '../widgets';
@@ -96,6 +98,11 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
    */
   const counts = el('details.lesson-counts', { id: 'lesson-counts' });
   /**
+   * A project stage's line (G1b item 7; L86): Stage 9 says "Nothing here is a rung to pass", so its
+   * page says so in place of *What the app counts*, and shows its songs as projects.
+   */
+  const projectLine = el('p.lesson-project', { id: 'lesson-project', text: PROJECT_TEXT.stageNine, hidden: true });
+  /**
    * The modes this rung recommends, as controls (`04` §3d).
    *
    * Above the options rather than below them, and deliberately: a mode is a way
@@ -160,6 +167,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     startBlock,
     actions,
     counts,
+    projectLine,
     lockLine,
     toolsBlock,
     el('section.block', {}, el('h2', { text: 'Exercise options' }), exercises),
@@ -185,11 +193,25 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   let lock: LockState = { locked: false, missing: [], reason: '' };
   /** Where the learner is, from the evidence (C5): every rung's state, this one's among them. */
   let states: RungStates | null = null;
+  /** The learner's projects (G1b): what a project stage's song rows show. */
+  let projects: ProjectRow[] = [];
+
+  /**
+   * Whether this rung is a project stage's (Stage 9, `PROJECT_STAGES`): its page reads the projects
+   * store for its songs and presents no requirement met or unmet, no count and no completion. The
+   * rung's `requirements` stay in the data and the rung state reads them as before (`rungState`,
+   * unchanged); this page stops presenting them.
+   */
+  function isProjectRung(rung: Lesson): boolean {
+    const stage = curriculum?.stages.find((one) => one.units.some((unit) => unit.lessons.some((entry) => entry.id === rung.id)));
+    return stage !== undefined && PROJECT_STAGES.has(stage.number);
+  }
 
   /** Reads the rung state again after the learner's word or a pass changed it. */
   async function refresh(): Promise<void> {
     progress = new Map((await allProgress()).map((row) => [row.itemId, row]));
     if (curriculum) states = await loadRungStates(curriculum);
+    projects = await allProjects();
   }
 
   /**
@@ -233,14 +255,19 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     return null;
   }
 
-  function optionRow(id: string): HTMLElement {
+  function optionRow(id: string, asProject = false): HTMLElement {
     const item = items.get(id);
     if (!item) {
       return listRow({ title: id, meta: 'Not in the catalog', badges: [badge('missing', 'warn')] });
     }
     const row = progress.get(id);
     const badges: HTMLElement[] = [];
-    if (row && row.status !== 'new') {
+    // A project stage's song (G1b item 7): the learner's project state, or *not started* — never a
+    // pass or a requirement. Anywhere else, the item's own progress, as before.
+    const project = asProject ? projectIn(projects, { itemId: id, material: materialOfItem(item) }) : undefined;
+    if (asProject) {
+      badges.push(badge(project ? PROJECT_TEXT.states[project.state] : PROJECT_TEXT.notStarted, project ? 'passed' : 'neutral'));
+    } else if (row && row.status !== 'new') {
       badges.push(badge(row.selfPassed && row.status === 'passed' ? 'you said you know it' : row.status, row.status));
     }
     const importNeeded = !isPlayable(item);
@@ -282,7 +309,7 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
             button('Know it', () => void markKnown(item.id), { variant: 'quiet' }),
           ],
       onClick: importNeeded ? undefined : () => open(item),
-      dataset: { 'data-item': item.id },
+      dataset: { 'data-item': item.id, ...(asProject ? { 'data-project-state': project?.state ?? 'none' } : {}) },
     });
   }
 
@@ -808,10 +835,11 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
       .filter((node): node is HTMLElement => node !== null);
     toolRow.replaceChildren(...tools);
     toolsBlock.hidden = tools.length === 0;
-    exercises.replaceChildren(...lesson.exerciseOptions.map(optionRow));
+    const asProjects = isProjectRung(rung);
+    exercises.replaceChildren(...lesson.exerciseOptions.map((id) => optionRow(id)));
     songs.replaceChildren(
       ...(lesson.songOptions.length > 0
-        ? lesson.songOptions.map(optionRow)
+        ? lesson.songOptions.map((id) => optionRow(id, asProjects))
         : [el('p.muted', { text: noSongsSentence(lesson) })]),
     );
 
@@ -820,7 +848,12 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     drawLock();
 
     const reading = states?.byRung.get(lesson.id);
-    drawCounts(lesson, reading);
+    // A project stage: no count, no state badge, no learner's word about a rung to pass (G1b item
+    // 7). The sentence says what the page is instead; Quick check stays, a run like any other.
+    projectLine.hidden = !asProjects;
+    counts.hidden = asProjects;
+    if (asProjects) counts.replaceChildren();
+    else drawCounts(lesson, reading);
     // Met by the evidence its requirements name (C5), where it was the items
     // marked passed, counted over the rung's lists.
     const done = reading?.status === 'met';
@@ -880,6 +913,9 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
         { id: 'lesson-done', variant: 'quiet' },
       ),
     );
+    // A project stage (G1b item 7): no state badge, which could say *complete*, and no learner's word
+    // about a rung, which would be a word about passing a rung the page says is not there.
+    if (asProjects) for (const node of actions.querySelectorAll('#lesson-state, #lesson-know, #lesson-done')) node.remove();
 
     // docs/02 Stage 0.4: the placement test's answer sets where the plan starts.
     if (lessonId === '0.4') {
@@ -898,12 +934,14 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
   }
 
   void (async () => {
-    const [loaded, loadedItems, rows, pieces] = await Promise.all([
+    const [loaded, loadedItems, rows, pieces, projectList] = await Promise.all([
       loadCurriculum(),
       allItems(),
       allProgress(),
       allShelfPieces(),
+      allProjects(),
     ]);
+    projects = projectList;
     shelf = pieces;
     curriculum = loaded;
     items = new Map(loadedItems.map((item) => [item.id, item]));

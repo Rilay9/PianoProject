@@ -77,6 +77,7 @@ import {
   MODE_HELP,
   NOT_JUDGED_TEXT,
   OFFER_TEXT,
+  PROJECT_TEXT,
   RESTARTED_WITH,
   ROW_TEXT,
   STATE_TEXT,
@@ -89,6 +90,8 @@ import {
 import { forgetUnfinished, rememberUnfinished, unfinishedFor } from '../../data/unfinishedRun';
 import { createHelpStrip, maybeFirstSight, openFirstSight, type HelpStrip } from '../helpStrip';
 import { openSheet } from '../widgets';
+import { openProjectSheet } from '../projectSheet';
+import { isProjectable } from '../../data/projectStore';
 import { hasChordSymbols } from '../openItem';
 import { playedMaterial, runFacts, textIdentity } from '../../curriculum/material';
 import {
@@ -3750,6 +3753,8 @@ export function ScoreScreen(router: Router): HTMLElement {
     }
     sheet.appendChild(lines);
 
+    // A piece the project sheet can be opened for (G1b): a song, never a phrase or a drill.
+    const projectPiece = item !== undefined && isProjectable(item) ? item : undefined;
     const actions = document.createElement('div');
     actions.className = 'summary-actions';
     actions.append(
@@ -3796,6 +3801,22 @@ export function ScoreScreen(router: Router): HTMLElement {
       // appears exactly when the sheet has already named the bars it means.
       ...(weakest.length > 0
         ? [button('Loop the weak bars', () => loopWeakBars(score), 'summary-loop')]
+        : []),
+      // What next with this piece? (G1b item 5): the project sheet's first door, at the moment the
+      // question is natural. A piece only — a generated phrase or a drill is none (C5, S8) — and it
+      // opens the sheet, which makes nothing until the learner chooses an action there. The material
+      // is what this visit played: an import's loaded bytes, else the row's (G1).
+      ...(projectPiece
+        ? [
+            button(PROJECT_TEXT.door, () => {
+              openProjectSheet({
+                item: projectPiece,
+                material: encounterTarget?.material ?? playedMaterial(projectPiece, loadedIdentity === undefined ? {} : { loaded: loadedIdentity }),
+                ...(model ? { bars: model.sourceMeasureCount } : {}),
+                owner: section,
+              });
+            }, 'summary-project'),
+          ]
         : []),
       button('Done', () => {
         flushPendingRecord();

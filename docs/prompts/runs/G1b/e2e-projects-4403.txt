@@ -1,0 +1,9 @@
+
+Running 3 tests using 2 workers
+
+  ok 2 tests\e2e\projects.spec.ts:77:1 › finish a run, What next with this piece?, Learn this — Progress lists the project (19.4s)
+  ok 1 tests\e2e\projects.spec.ts:99:1 › Put it away, then Bring it back: the history line and the encounter line (19.6s)
+  ok 3 tests\e2e\projects.spec.ts:124:1 › a Stage 9 unit’s page shows its songs as projects and no count; one project’s state shows on its row alone (1.4s)
+
+  3 passed (23.9s)
+exit=0

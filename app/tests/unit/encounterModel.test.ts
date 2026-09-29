@@ -249,7 +249,8 @@ describe('the store, and the upgrade that makes it', () => {
 
     const db = await openDatabase();
     expect(db?.version).toBe(DB_VERSION);
-    expect(DB_VERSION).toBe(8);
+    // Revised (G1b): the version-7 database now opens at 9, which adds `projects` and touches no store either.
+    expect(DB_VERSION).toBeGreaterThanOrEqual(8);
     for (const name of names) {
       expect({ rows: await db?.getAll(name as never), keys: await db?.getAllKeys(name as never) }, `${name} changed in the upgrade`).toEqual(before[name]);
     }

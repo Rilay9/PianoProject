@@ -1,0 +1,101 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/projectLifecycle.test.ts (32 tests | 1 failed) 289ms
+   ❯ never the bridge, never the source (the brief’s item 3; its refuting test kept as a guard) (2)
+     × learned pieces, contact, familiarity, the rung state and the skills read the same with projects in every state 21ms
+ ❯ tests/unit/stage9ProjectsPage.test.ts (4 tests | 1 failed) 556ms
+   ❯ an ordinary rung’s page is as it was (1)
+     × its state, its count and its learner’s-word buttons, and no project sentence 116ms
+ ❯ tests/unit/projectSheet.test.ts (7 tests | 1 failed) 1889ms
+   ❯ the learner’s actions on the sheet (4)
+     × the notes: the words typed are kept; a section outside the piece is refused in words and stores nothing 1073ms
+ ❯ tests/unit/projectOnTheFinishSheet.test.ts (3 tests | 1 failed) 1825ms
+   ❯ What next with this piece? (3)
+     × a piece’s finish sheet offers it; the sheet it opens says the piece was just played, and makes nothing until the learner acts 1474ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/projectLifecycle.test.ts > never the bridge, never the source (the brief’s item 3; its refuting test kept as a guard) > learned pieces, contact, familiarity, the rung state and the skills read the same with projects in every state
+Error: “keep” is not offered for a piece that is polishing.
+ ❯ applyProjectAction src/data/projectStore.ts:213:11
+    211|   const existing = await projectFor(target);
+    212|   if (!actionsFor(existing?.state).includes(action)) {
+    213|     throw new Error(`“${action}” is not offered for a piece that is ${…
+       |           ^
+    214|   }
+    215|   if (options.performedOn !== undefined && action !== 'performed') {
+ ❯ tests/unit/projectLifecycle.test.ts:489:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/projectOnTheFinishSheet.test.ts > What next with this piece? > a piece’s finish sheet offers it; the sheet it opens says the piece was just played, and makes nothing until the learner acts
+AssertionError: expected 'You last played part of it on 2026-09…' to be 'You last played it on 2026-09-29.' // Object.is equality
+
+Expected: "You last played it on 2026-09-29."
+Received: "You last played part of it on 2026-09-29."
+
+ ❯ tests/unit/projectOnTheFinishSheet.test.ts:345:88
+    343|     await vi.waitFor(() => expect(document.querySelector('#project-she…
+    344|     expect(document.getElementById('project-state')?.textContent).toBe…
+    345|     await vi.waitFor(() => expect(document.getElementById('project-met…
+       |                                                                                        ^
+    346|     expect(await allProjects(), 'opening the sheet made a project').to…
+    347|     click('project-action-learn');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/projectSheet.test.ts > the learner’s actions on the sheet > the notes: the words typed are kept; a section outside the piece is refused in words and stores nothing
+AssertionError: expected { …(7) } to match object { …(2) }
+(8 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "goal": "Hands together to bar 4",
+    "problem": "The jump in bar 3",
+  }
+
+ ❯ tests/unit/projectSheet.test.ts:202:67
+    200|     problem.value = 'The jump in bar 3';
+    201|     problem.dispatchEvent(new Event('change'));
+    202|     await vi.waitFor(async () => expect((await allProjects())[0]).toMa…
+       |                                                                   ^
+    203|
+    204|     const set = (id: string, value: string): void => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/stage9ProjectsPage.test.ts > an ordinary rung’s page is as it was > its state, its count and its learner’s-word buttons, and no project sentence
+AssertionError: expected <p class="lesson-project" …(2)></p> to be null
+
+- Expected:
+null
+
++ Received:
+<p
+  class="lesson-project"
+  hidden=""
+  id="lesson-project"
+>
+  A project: there is no rung to pass here.
+</p>
+
+ ❯ tests/unit/stage9ProjectsPage.test.ts:227:54
+    225|     expect(section.querySelector('#lesson-done')).not.toBeNull();
+    226|     expect(section.querySelector('#lesson-know')).not.toBeNull();
+    227|     expect(section.querySelector('#lesson-project')).toBeNull();
+       |                                                      ^
+    228|     expect(songRow(section, 'song.1.1').dataset.projectState).toBeUnde…
+    229|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  4 failed | 3 passed (7)
+      Tests  4 failed | 95 passed (99)
+   Start at  11:17:48
+   Duration  24.54s (environment 84%, transform 7%, tests 6%, import 3%)
+
+exit=1
