@@ -1,0 +1,18 @@
+no-suppression: CAUGHT (vitest exit 1); red: × paused, and put away: not offered, nothing on the card says why, and the review is the ladder’s — the row of a learner with no piece to keep 5ms | × the project is found as the lesson page and Progress find it: the same file under another id is the piece; another id’s id-only row is not 1ms | × pieces due, the most overdue one paused: the next is offered in its own words, and the order of the rest is untouched 4ms
+  app/src/curriculum/session.ts restored, sha256 1af05cab1b7ed82460ff464ccb126090e3a52101f239f5d6f88f6159f8b1e5e1
+paused-only: CAUGHT (vitest exit 1); red: × paused, and put away: not offered, nothing on the card says why, and the review is the ladder’s — the row of a learner with no piece to keep 6ms | × the project is found as the lesson page and Progress find it: the same file under another id is the piece; another id’s id-only row is not 1ms
+  app/src/curriculum/session.ts restored, sha256 1af05cab1b7ed82460ff464ccb126090e3a52101f239f5d6f88f6159f8b1e5e1
+retired-only: CAUGHT (vitest exit 1); red: × paused, and put away: not offered, nothing on the card says why, and the review is the ladder’s — the row of a learner with no piece to keep 5ms | × the project is found as the lesson page and Progress find it: the same file under another id is the piece; another id’s id-only row is not 1ms | × pieces due, the most overdue one paused: the next is offered in its own words, and the order of the rest is untouched 4ms
+  app/src/curriculum/session.ts restored, sha256 1af05cab1b7ed82460ff464ccb126090e3a52101f239f5d6f88f6159f8b1e5e1
+maintaining-suppressed: CAUGHT (vitest exit 1); red: × every other state — maintaining, refreshing, saved and the rest — and no project leave the whole card as it was 9ms
+  app/src/curriculum/session.ts restored, sha256 1af05cab1b7ed82460ff464ccb126090e3a52101f239f5d6f88f6159f8b1e5e1
+any-project-suppresses: CAUGHT (vitest exit 1); red: × every other state — maintaining, refreshing, saved and the rest — and no project leave the whole card as it was 9ms
+  app/src/curriculum/session.ts restored, sha256 1af05cab1b7ed82460ff464ccb126090e3a52101f239f5d6f88f6159f8b1e5e1
+identity-by-id-only: CAUGHT (vitest exit 1); red: × the project is found as the lesson page and Progress find it: the same file under another id is the piece; another id’s id-only row is not 3ms
+  app/src/curriculum/session.ts restored, sha256 1af05cab1b7ed82460ff464ccb126090e3a52101f239f5d6f88f6159f8b1e5e1
+suppression-stops-the-loop: CAUGHT (vitest exit 1); red: × pieces due, the most overdue one paused: the next is offered in its own words, and the order of the rest is untouched 7ms
+  app/src/curriculum/session.ts restored, sha256 1af05cab1b7ed82460ff464ccb126090e3a52101f239f5d6f88f6159f8b1e5e1
+session-opens-the-store: CAUGHT (vitest exit 1); red: × only the project sheet acts; the session reads a project for one thing, retention’s suppression (G1d; G82); no evidence, skill, eligibility or Library code reads one 35ms
+  app/src/curriculum/session.ts restored, sha256 1af05cab1b7ed82460ff464ccb126090e3a52101f239f5d6f88f6159f8b1e5e1
+second-lookup-outside-review: CAUGHT (vitest exit 1); red: × only the project sheet acts; the session reads a project for one thing, retention’s suppression (G1d; G82); no evidence, skill, eligibility or Library code reads one 35ms
+  app/src/curriculum/session.ts restored, sha256 1af05cab1b7ed82460ff464ccb126090e3a52101f239f5d6f88f6159f8b1e5e1

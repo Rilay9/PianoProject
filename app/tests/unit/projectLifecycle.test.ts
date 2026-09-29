@@ -7,8 +7,9 @@
  * identity (an id-only row where the item names none), the state the learner last chose with when,
  * an append-only history, and the learner's own goal, problem and sections. Every transition is the
  * learner's action on the project sheet; the app proposes nothing and moves nothing. Nothing here
- * writes an encounter, a run, a progress row or an evidence record, and no evidence, skill,
- * eligibility or session code reads a project.
+ * writes an encounter, a run, a progress row or an evidence record, and no evidence, skill or
+ * eligibility code reads a project; the session reads one for one thing, the repertoire retention's
+ * suppression of a piece paused or put away (G1d; the reviewer's G82 ruling).
  *
  * The cases, in the brief's order: the store and the upgrade from a version-8 database with rows in
  * every store; the transitions table (every action from every state the sheet offers it, the history
@@ -499,13 +500,21 @@ describe('never the bridge, never the source (the brief’s item 3; its refuting
     expect(await everyOtherStore(), 'a project action wrote outside the projects store').toEqual(stores);
   });
 
-  it('only the project sheet acts, and no evidence, skill, eligibility, session or Library code reads a project', () => {
+  // Revised (G1d item 5; the reviewer's G82 ruling): the session reads a project for one thing, the
+  // repertoire retention's suppression — `review()` steps past a learned piece whose project is paused
+  // or put away — over the rows Today hands it (`BuildInput.projects`, from `allProjects`). So Today and
+  // the session are readers now, and the pin is on what the session does with the rows: `projectIn`,
+  // once, inside `review()`, and nothing that opens the store. No evidence, skill or eligibility file
+  // imports from the store; the sheet alone acts.
+  it('only the project sheet acts; the session reads a project for one thing, retention’s suppression (G1d; G82); no evidence, skill, eligibility or Library code reads one', () => {
     const src = join(process.cwd(), 'src');
     const readers: string[] = [];
     // Revised (G1c item 1; G84): the files that import the project stages' numbers and nothing else
     // from the store — which stages are projects, never a project row.
     const stageReaders: string[] = [];
     const actors: string[] = [];
+    /** What each file imports from the store, binding by binding (`type` kept where it is written). */
+    const bindings = new Map<string, string[]>();
     const walk = (dir: string): void => {
       for (const entry of readdirSync(dir, { withFileTypes: true })) {
         const path = join(dir, entry.name);
@@ -518,6 +527,7 @@ describe('never the bridge, never the source (the brief’s item 3; its refuting
           const named = [...text.matchAll(/import \{([^}]*)\} from '[./]*(?:data\/)?projectStore'/g)].map((found) =>
             (found[1] ?? '').split(',').map((binding) => binding.trim()).filter((binding) => binding !== ''),
           );
+          if (fromStore.length > 0) bindings.set(name, named.flat());
           const stagesOnly =
             fromStore.length > 0 && named.length === fromStore.length && named.every((names) => names.length === 1 && names[0] === 'PROJECT_STAGES');
           if (/from '[./]*projectSheet'/.test(text) || (fromStore.length > 0 && !stagesOnly)) readers.push(name);
@@ -530,16 +540,31 @@ describe('never the bridge, never the source (the brief’s item 3; its refuting
     // The learner's action has one door: the sheet's buttons. Nothing proposes, drifts or infers.
     expect(actors).toEqual(['ui/projectSheet.ts']);
     expect(readers.sort()).toEqual([
+      'curriculum/session.ts',
       'data/backup.ts',
       'ui/projectSheet.ts',
       'ui/screens/LessonScreen.ts',
       'ui/screens/ProgressScreen.ts',
       'ui/screens/ScoreScreen.ts',
       'ui/screens/SettingsScreen.ts',
+      'ui/screens/TodayScreen.ts',
     ]);
-    // The session and Plan read which stages are projects (`PROJECT_STAGES`, the one constant) and
-    // import nothing else from the store: neither reads a project.
-    expect(stageReaders.sort()).toEqual(['curriculum/session.ts', 'ui/screens/PlanScreen.ts']);
+    // Plan reads which stages are projects (`PROJECT_STAGES`, the one constant) and nothing else.
+    expect(stageReaders.sort()).toEqual(['ui/screens/PlanScreen.ts']);
+    // No evidence, skill or eligibility file imports from the store, for the stages or for a row.
+    expect([...bindings.keys()].filter((name) => name.startsWith('evidence/') || /eligibility|skill/i.test(name))).toEqual([]);
+    // The session: the stages, the one lookup and the row's type — nothing that opens the store (`allProjects`,
+    // `projectFor`) or writes to it. It stays a function of its input; Today reads the store.
+    expect(bindings.get('curriculum/session.ts')).toEqual(['PROJECT_STAGES', 'projectIn', 'type ProjectRow']);
+    // And it looks a project up once, inside `review()`: the repertoire retention's loop, nowhere else.
+    const session = readFileSync(join(src, 'curriculum', 'session.ts'), 'utf8');
+    const lookups = [...session.matchAll(/projectIn\(/g)].map((found) => found.index);
+    expect(lookups, 'the session looks a project up other than once').toHaveLength(1);
+    const start = session.indexOf('\nfunction review(');
+    const end = session.indexOf('\n}', start);
+    expect(start, 'review() not found').toBeGreaterThan(0);
+    expect(lookups[0], 'the lookup is outside review()').toBeGreaterThan(start);
+    expect(lookups[0], 'the lookup is outside review()').toBeLessThan(end);
   });
 });
 

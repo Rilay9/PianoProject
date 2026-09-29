@@ -1,0 +1,8 @@
+copy app/public/content from the main checkout (read only)
+tar app/public/content exit=0
+catalogue items: 2092
+restored docs/prompts/inventory.md to HEAD's bytes exit=0
+restored docs/prompts/rung-claims.md to HEAD's bytes exit=0
+ M docs/prompts/inventory.md
+ M docs/prompts/rung-claims.md
+?? docs/prompts/runs/G1d/

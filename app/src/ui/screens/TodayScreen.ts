@@ -72,6 +72,7 @@ import {
   type ContactHistory,
 } from '../../data/progressStore';
 import { allEncounters } from '../../data/encounterStore';
+import { allProjects } from '../../data/projectStore';
 import { isSightReading } from '../../engine/drills/fromCatalog';
 import { simonForStage } from '../../engine/drills/simon';
 import { getPlan } from '../../data/planStore';
@@ -1100,7 +1101,11 @@ export function TodayScreen(router: Router): HTMLElement {
     // piece heard once or practised and pruned is never offered as new. A store that cannot be read
     // gives none, which reads as the runs alone, as before.
     const contactHistory = Promise.all([allEncounters().catch(() => []), contactSummaries().catch(() => [])]);
-    void Promise.all([getPlan(), loadRungStates(curriculum, now), rungRows(), contactHistory]).then(([plan, states, rows, [encounters, summaries]]) => {
+    // The learner's projects (G1d; the reviewer's G82 ruling), for one thing: the review's repertoire
+    // retention steps past a piece they paused or put away. A store that cannot be read gives none,
+    // which suppresses nothing, as before.
+    const projectRows = allProjects().catch(() => []);
+    void Promise.all([getPlan(), loadRungStates(curriculum, now), rungRows(), contactHistory, projectRows]).then(([plan, states, rows, [encounters, summaries], projects]) => {
       // The same active set Plan and Settings show, so the three screens
       // cannot disagree about what is switched on.
       const active = activeTracksFor(plan, curriculum as Curriculum);
@@ -1116,6 +1121,7 @@ export function TodayScreen(router: Router): HTMLElement {
         // generated sight-reading row is never one, whatever an older build
         // wrote on it. The item calendar they replace is gone.
         learned: learnedPieces(progress, generated),
+        projects,
         lastPlayed: new Map(progress.map((row) => [row.itemId, row.lastPracticedAt])),
         rows,
         activeTracks: active,

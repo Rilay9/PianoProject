@@ -15,9 +15,12 @@
  *   is refused (`OFFERS`).
  * - **Nothing is written but the project.** No encounter, run, progress row or evidence — *I
  *   performed it* records the learner's day on the project and is never a performance run or a
- *   `performed` encounter. No state is read by evidence, skill, eligibility or session code;
- *   `ProgressRow.status`, `learnedPieces`, the repertoire retention and *A piece you know* read
- *   exactly what they read before.
+ *   `performed` encounter. No state is read by evidence, skill or eligibility code. The session reads
+ *   one thing, for one purpose (G1d; the reviewer's G82 ruling): Today hands it the rows, and the
+ *   review's repertoire retention does not offer a piece whose project is `paused` or `retired`
+ *   (`projectIn`, over the rows it is given; it never opens the store). `ProgressRow.status`,
+ *   `learnedPieces`, *A piece you know* and the rest of the session read exactly what they read
+ *   before.
  * - **The history is appended, never rewritten**, and pausing or putting a piece away deletes
  *   nothing anywhere.
  * - **Identity fails conservatively.** A project is keyed by the piece's material where it has one

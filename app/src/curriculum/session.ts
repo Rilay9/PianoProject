@@ -25,9 +25,11 @@ import { phraseVersionOf, type ReadingMoves, type ReadingRecipe, type SessionRow
 import { contactIn, dayKey, daysBetween, type Contact, type ContactHistory, type LearnedPiece } from '../data/progressStore';
 // The stages whose rungs are projects, not rungs to meet (Stage 9: "Nothing here is a rung to pass;
 // they are pieces to live with"): no slot advances into one as "the next lesson", and its asks are
-// offered as a project. The one constant the lesson page and Plan read too (G1c item 1; G84). The
-// stage numbers only: nothing here reads a project.
-import { PROJECT_STAGES } from '../data/projectStore';
+// offered as a project. The one constant the lesson page and Plan read too (G1c item 1; G84). And one
+// read of a learner's project (G1d; the reviewer's G82 ruling): `review()`'s repertoire retention
+// steps past a piece its project says was paused or put away, found by `projectIn` over the rows Today
+// hands in (`BuildInput.projects`). Nothing here opens the store, and nothing else reads a state.
+import { PROJECT_STAGES, projectIn, type ProjectRow } from '../data/projectStore';
 import type { Identity } from '../review/record';
 import { knownMaterial, materialOfItem } from './material';
 import { relationshipOf, shownOnRecords, type Relationship, type ShownOn } from './transfer';
@@ -178,6 +180,16 @@ export interface BuildInput {
    * item calendar, and `mastered`.
    */
   learned?: readonly LearnedPiece[];
+  /**
+   * The learner's projects (G1b's `projects` store), read for one thing (G1d; the reviewer's G82
+   * ruling): the review's repertoire retention does not offer a learned piece whose project is
+   * `paused` or `retired` — *Keeping this piece playable* would contradict what the learner said on
+   * the sheet. Every other state, `maintaining` and `refreshing` among them, and no project leave the
+   * offer as it was; *a piece you know* and everything else that reads `learned` do not read this.
+   * Absent: nothing suppressed. Today loads it (`projectStore.allProjects`); the session never opens
+   * the store.
+   */
+  projects?: readonly ProjectRow[];
   /**
    * When each item was last played, by any run (the progress rows'
    * `lastPracticedAt`): what the exposure rule reads. None: nothing played.
@@ -1363,6 +1375,11 @@ function review(ctx: SlotContext, phase: Phase, onCard: readonly Choice[]): Choi
     const item = ctx.catalog.byId.get(piece.itemId);
     // A piece: a scale or a drill passed is technique, kept warm by the exposure rule, not "a piece to keep playable".
     if (!usable(ctx, item, 'only')) continue;
+    // The learner paused it or put it away on its project sheet (G1d; G82): retention does not bring it
+    // back over their word, and nothing on the card says so — the sheet did. The piece's project as the
+    // lesson page and Progress find it: its material's, whatever id it was made under, else its id's.
+    const project = projectIn(ctx.input.projects ?? [], { itemId: piece.itemId, material: materialOfItem(item) });
+    if (project?.state === 'paused' || project?.state === 'retired') continue;
     const since = daysSince(piece.lastPlayed, ctx.today);
     if (since === undefined || since < REPERTOIRE_WINDOW_DAYS) continue;
     due.push({ item, claim: { kind: 'piece-retention', lastPlayed: piece.lastPlayed }, over: since - REPERTOIRE_WINDOW_DAYS, retained: false, skill: false });

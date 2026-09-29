@@ -15,23 +15,33 @@
  * retires the repertoire slot's mastered-piece-every-session habit (L17): a
  * learned piece comes back when it has gone unplayed for the window, in the
  * review row.
+ *
+ * The last block is G1d's: the review reads the learner's project for one
+ * thing — a piece they paused or put away on its project sheet is not offered
+ * as a piece to keep playable (the reviewer's G82 ruling). Every case before it
+ * passes no projects, which suppresses nothing.
  */
 import { describe, expect, it } from 'vitest';
 import {
   buildSession,
+  FALLBACK_ORDER,
   REPERTOIRE_WINDOW_DAYS,
   type BuildInput,
   type SessionSlot,
 } from '../../src/curriculum/session';
+import { knownMaterial, materialKey } from '../../src/curriculum/material';
 import { indexCatalog } from '../../src/curriculum/selectors';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
 import type { ProgressRow, SessionRow } from '../../src/data/db';
 import * as progressStore from '../../src/data/progressStore';
 import { learnedPieces, type LearnedPiece } from '../../src/data/progressStore';
+import { ACTION_STATE, PROJECT_STATES, type ProjectAction, type ProjectRow, type ProjectState } from '../../src/data/projectStore';
 import { EVIDENCE_DEFINITIONS, type MeasuredEvidence } from '../../src/evidence/evidence';
 import { RETENTION_DAYS } from '../../src/evidence/ladder';
 import { rungState } from '../../src/evidence/rungState';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
+import type { Identity } from '../../src/review/record';
+import { measured } from './helpers/measured';
 
 const TODAY = new Date(2026, 9, 20, 9);
 const daysAgo = (n: number, hour = 12): string => new Date(2026, 9, 20 - n, hour).toISOString();
@@ -278,5 +288,140 @@ describe('neither reason is dropped for the other', () => {
     const kinds = new Set([0, 1, 2, 3].map((seed) => review(seed)?.claim?.kind));
     expect(kinds).toContain('skill-retention');
     expect(kinds).toContain('piece-retention');
+  });
+});
+
+// ---------------------------------------------------------------------------------------------------
+
+/**
+ * The learner's project, read for one thing (G1d; the reviewer's G82 ruling, `responses/536d9bc2.md`):
+ * a piece the learner paused or put away on its project sheet is not offered as *Keeping this piece
+ * playable* — the sentence would contradict what they said there. Every other state (`maintaining`, the
+ * positive retention state; `refreshing`, active work; `saved`, `learning`, `polishing`,
+ * `performance-ready`) and no project leave the offer exactly as it was. The project is the one the
+ * lesson page and Progress find (`projectStore.projectIn` over `materialOfItem`). Nothing on the card says
+ * why. With `projects` absent, as in every case above, nothing is suppressed.
+ */
+describe('a piece the learner paused or put away is not kept playable by the review (G1d; G82)', () => {
+  const DUE = REPERTOIRE_WINDOW_DAYS + 1;
+  const SUPPRESSED: readonly ProjectState[] = ['paused', 'retired'];
+  /**
+   * The file's items measured, with no demands, as the build writes every bundled row: the ladder's
+   * rung step asks the one gate, which offers no unmeasured option automatically (X1, L113), so with
+   * the unmeasured items above a review with nothing due has no row at all, and "the ladder's row"
+   * would be a missing row.
+   */
+  const MEASURED: CatalogItem[] = ITEMS.map((one) => (one.id === READING_ROW.id ? one : { ...one, ...measured([]) }));
+
+  /** The input `reviewAfter` builds, on the measured items, whole, so a case can read every slot of the card. */
+  function inputAfter(days: number, extra: Partial<BuildInput> = {}): BuildInput {
+    const rows = [passedOn21(days), readYesterday(1)];
+    return {
+      curriculum: CURRICULUM,
+      catalog: indexCatalog(MEASURED),
+      items: MEASURED,
+      states: rungState(rows, CURRICULUM, VOCABULARY_V0, TODAY),
+      rows,
+      readingRows: rows.filter((row) => row.itemId === READING_ROW.id),
+      learned: [{ itemId: PIECE.id, status: 'passed', lastPlayed: daysAgo(days) }],
+      lastPlayed: new Map(rows.map((row) => [row.itemId, row.at])),
+      activeTracks: ['core'],
+      minutes: 15,
+      today: TODAY,
+      ...extra,
+    };
+  }
+  const reviewOf = (input: BuildInput): SessionSlot | undefined => buildSession(input).slots.find((slot) => slot.kind === 'review');
+  /** What the learner reads on the row, and what chose it. */
+  const shown = (slot: SessionSlot | undefined): { item?: string; claim?: SessionSlot['claim']; reason?: string } => ({
+    item: slot?.item?.id,
+    claim: slot?.claim,
+    reason: slot?.reason,
+  });
+
+  /**
+   * A project row as the sheet keeps one: keyed by the piece's material where it has one, else by its
+   * id (`projectStore.projectKey`). The history is one line entering the state; the session reads the
+   * state alone.
+   */
+  function project(state: ProjectState, itemId: string, material?: Identity): ProjectRow {
+    const at = daysAgo(3);
+    const why = (Object.keys(ACTION_STATE) as ProjectAction[]).find((action) => ACTION_STATE[action] === state) as ProjectAction;
+    return {
+      id: materialKey(material, itemId),
+      material: knownMaterial(material) ? material : { kind: 'id', itemId },
+      itemId,
+      state,
+      since: at,
+      history: [{ state, at, why }],
+    };
+  }
+
+  it('paused, and put away: not offered, nothing on the card says why, and the review is the ladder’s — the row of a learner with no piece to keep', () => {
+    // Without a project the piece is due and offered, in its own words.
+    expect(shown(reviewOf(inputAfter(DUE)))).toMatchObject({ item: PIECE.id, claim: { kind: 'piece-retention' } });
+    // The ladder's row: the same learner with nothing learned, so nothing due.
+    const ladder = shown(reviewOf(inputAfter(DUE, { learned: [] })));
+    expect(FALLBACK_ORDER as readonly string[]).toContain(ladder.claim?.kind);
+    for (const state of SUPPRESSED) {
+      const card = buildSession(inputAfter(DUE, { projects: [project(state, PIECE.id)] })).slots;
+      const review = card.find((slot) => slot.kind === 'review');
+      expect(review?.item?.id, `${state}: the piece is still offered`).not.toBe(PIECE.id);
+      expect(review?.claim?.kind, `${state}: still a piece to keep playable`).not.toBe('piece-retention');
+      expect(shown(review), `${state}: the review is not the ladder's`).toEqual(ladder);
+      // Silent (the brief's item 3): the learner said it on the sheet, and no line on the card repeats it.
+      expect(card.map((slot) => slot.reason).join(' · '), state).not.toMatch(/paus|put away|project|not offered/i);
+    }
+  });
+
+  it('every other state — maintaining, refreshing, saved and the rest — and no project leave the whole card as it was', () => {
+    const before = buildSession(inputAfter(DUE)).slots;
+    expect(before.find((slot) => slot.kind === 'review')?.claim?.kind).toBe('piece-retention');
+    const others = PROJECT_STATES.filter((state) => !SUPPRESSED.includes(state));
+    // The ruling names two states; a state added to the lifecycle asks for its own decision here.
+    expect(others).toEqual(['saved', 'learning', 'polishing', 'performance-ready', 'maintaining', 'refreshing']);
+    for (const state of others) {
+      expect(buildSession(inputAfter(DUE, { projects: [project(state, PIECE.id)] })).slots, state).toEqual(before);
+    }
+    expect(buildSession(inputAfter(DUE, { projects: [] })).slots, 'no project').toEqual(before);
+    // Another piece's project, paused or put away, is that piece's.
+    const elsewhere = [project('paused', 'song.now'), project('retired', 'song.now.2')];
+    expect(buildSession(inputAfter(DUE, { projects: elsewhere })).slots, 'another piece’s project').toEqual(before);
+  });
+
+  it('the project is found as the lesson page and Progress find it: the same file under another id is the piece; another id’s id-only row is not', () => {
+    const FILE: Identity = { kind: 'file', sha256: 'f'.repeat(64) };
+    const EARLIER: Identity = { kind: 'file', sha256: 'e'.repeat(64) };
+    const provenance = { source: 'kern' as const, facts: {}, review: { score: null, teaching: null }, identity: FILE };
+    const items = MEASURED.map((one) => (one.id === PIECE.id ? { ...one, provenance } : one));
+    const offered = (projects: ProjectRow[]): SessionSlot | undefined => reviewOf(inputAfter(DUE, { items, catalog: indexCatalog(items), projects }));
+    expect(offered([])?.claim?.kind, 'a piece with a file is offered like any').toBe('piece-retention');
+    // The same file, its project made under another catalogue id: one piece, one project.
+    expect(offered([project('paused', 'song.learned.twin', FILE)])?.item?.id, 'the same file under another id').not.toBe(PIECE.id);
+    // Its own id, the project made on a file the catalogue has since built again: still its project.
+    expect(offered([project('retired', PIECE.id, EARLIER)])?.item?.id, 'its own id, an earlier file').not.toBe(PIECE.id);
+    // Never guessed: another id's id-only row, or another file's row under another id, is not this piece's.
+    expect(shown(offered([project('paused', 'song.learned.twin')])), 'another id’s id-only row').toEqual(shown(offered([])));
+    expect(shown(offered([project('paused', 'song.other', EARLIER)])), 'another file under another id').toEqual(shown(offered([])));
+  });
+
+  it('pieces due, the most overdue one paused: the next is offered in its own words, and the order of the rest is untouched', () => {
+    const SECOND = item('song.learned.2', measured([]));
+    const THIRD = item('song.learned.3', measured([]));
+    const items = [...MEASURED, SECOND, THIRD];
+    const learned: LearnedPiece[] = [
+      { itemId: PIECE.id, status: 'passed', lastPlayed: daysAgo(40) },
+      { itemId: SECOND.id, status: 'passed', lastPlayed: daysAgo(30) },
+      { itemId: THIRD.id, status: 'passed', lastPlayed: daysAgo(20) },
+    ];
+    const at = (seed: number, projects?: ProjectRow[]): ReturnType<typeof shown> =>
+      shown(reviewOf(inputAfter(40, { items, catalog: indexCatalog(items), learned, seed, ...(projects ? { projects } : {}) })));
+    // Without a project: the most overdue first, and Shuffle reaches the others in order.
+    const before = [0, 1, 2].map((seed) => at(seed));
+    expect(before.map((one) => one.item)).toEqual([PIECE.id, SECOND.id, THIRD.id]);
+    expect(before.map((one) => one.claim?.kind)).toEqual(['piece-retention', 'piece-retention', 'piece-retention']);
+    // The most overdue paused: the second is offered, exactly as it was offered second, then the third.
+    const paused = [project('paused', PIECE.id)];
+    expect([0, 1].map((seed) => at(seed, paused))).toEqual([before[1], before[2]]);
   });
 });
