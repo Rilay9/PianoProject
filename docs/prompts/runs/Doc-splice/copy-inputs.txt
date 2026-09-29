@@ -1,0 +1,8 @@
+$ python docs/prompts/runs/Doc-splice/scripts/copy_inputs.py
+copied content/scores/imported/kern: 2231 file(s) now under it
+copied content/scores/imported/musetrainer: 76 file(s) now under it
+copied build/cache/convert: 7078 file(s) now under it
+copied build/positions-cache.json
+copied build/demands-cache.json
+copied build/notation-cache.json
+exit=0

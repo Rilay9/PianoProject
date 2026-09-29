@@ -30,3 +30,5 @@ If a row cannot be verified because the code it names is not at HEAD (renamed, m
 ## Report
 
 Judgement first: which rows the code contradicted and how the spec now reads there, as observations; then Done / Not done / Follow-ups / Questions / Files; the table of item 5; exit codes; unverified beside anything not checked at the code.
+
+**Landed 2026-09-29** (Entry 121; bdc988d, merged a1b6f44c). Docs work under 788427c, no handoff of its own; the reviewer sees it through `docs/08` and the entry.

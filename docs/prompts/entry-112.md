@@ -176,6 +176,8 @@ In the worktree `agent-afc0715835fd56ff3`; nothing committed, nothing staged.
 
 **Amended 2026-09-29 (Q65a's finding, Entry 120).** The chain's browser step named `tests/e2e/sight-reading.spec.ts`, a file that does not exist; Playwright dropped the name silently and the step's exit was the other specs': `midi-import.spec.ts`, `converted-import.spec.ts`, `transfer-offer.spec.ts`, `lab.spec.ts`. So this note's "sight-reading" spec did not run; nothing else in the step changes, and the sight-reading path on this tree is CI's full run to show.
 
+**Amended 2026-09-29 (Doc-splice's finding, Entry 121).** This note's claim that the `docs/08` rows were spliced in the record commit was false: at 71ee5f4 none of them was in the file. Doc-splice spliced them, checked against the code first, at its landing.
+
 
 ## Doc rows
 
