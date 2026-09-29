@@ -46,3 +46,16 @@ Judgement first: what the sheet and Progress say for a piece learned, put away a
 1. The state set and the rule that the app moves nothing: is `maintaining` after "I performed it" right as a learner's action, or should any state be app-driven (a long-unplayed `maintaining` project drifting to `paused`)?
 2. Stage 9's page reading projects instead of counting runs, with the data left to F: the right split of L86?
 3. The finish sheet as the first door in G1b, the Library after X3: acceptable, or should the Library's row wait for one seam that does both?
+
+## Approved 2026-09-29 (`responses/a96395d.md`, the second section of that file; read it whole before building)
+
+The reviewer's rulings are part of this brief:
+
+1. **Every lifecycle transition is learner-driven.** No app-driven drift: `maintaining` never becomes `paused` by elapsed time; `learning`, `polishing`, `refreshing` and `retired` are never inferred from runs or history. The app may later *suggest* an action from history; the stored lifecycle changes only when the learner chooses. `I performed it` → `maintaining` is a learner action; a date or reason it records is a learner-stated project fact and must not manufacture a `performed` encounter, a performance run, a competence result or an evidence event — **pinned by a test.**
+2. **Stage 9 / L86.** The Stage 9 learner-facing page reads project lifecycle instead of counting runs; the Stage 9 curriculum data stays F's. `rungState` and session progression never treat project states as requirements. Acceptance proves: the page shows project state or *not started*; no "x of y met" or rung-completion claim there; changing a project state changes only that project's presentation; the same action changes no rung state, evidence, eligibility or skill state. If the page cannot be made truthful without changing `rungState`, stop that subpart.
+3. **The finish sheet is the first door**; the Library integration is not held for; Progress is the second door. After X3 the Library may expose the same project state and open the same sheet, consuming the one `projectStore` truth.
+4. **Constraints.** Identity migration fails conservatively (a project keyed by known material identity may unify renamed or duplicate catalogue ids; an id-only project is never guessed to be another piece later). Retire and pause never erase facts. Refreshing is not novelty (an old piece may enter `refreshing` while encounter history still says familiar). Project state is not session policy yet (goal, problem and sections choose nothing in G1b). Stage 9 presentation never mutates the rung or evidence model to suppress counts.
+5. **Sequencing.** G1a and X3 closed, so G1b dispatches now; its post-build review is required before X or session composition consumes project lifecycle as an input; no unrelated lane waits on it.
+
+**The invariant, in the reviewer's words:** encounter history says what was met; evidence says what was measured; skill and rung state say what the evidence supports; project lifecycle says what the learner intends to do with the music; session state says today's plan.
+
