@@ -1,0 +1,6 @@
+python docs/prompts/runs/F2b/leap_candidates.py
+excerpt candidate lines reached through interval.leap, by rung and source:
+  blues.7    concept leaps    4
+  ragtime.9  concept leaps    3
+sharedBy notes on those lines: {('leap', 'leaps'): 7}
+exit=0
