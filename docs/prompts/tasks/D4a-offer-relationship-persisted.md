@@ -36,3 +36,5 @@ Judgement first: what the stored row says after a quick run and after a run with
 **Approved with one required change 2026-09-29** (`responses/1cbc38a.md`), applied: the snapshot bound to the exact offer instance by a token carried in the route and superseded on recomposition or swap; pending means play disabled and no row; the type invariant on `runFacts`'s return; the six verifications named for the implementation handoff. **Dispatched 2026-09-29** (Entry 109, port 4183) beside E2 and F2; G1 follows its landing.
 
 **Landed 2026-09-29** (Entry 109; 5193338, merged 1476d8d); handoff `handoffs/5193338.md`. The builder's call: every recomposition supersedes the kept offer, not only a different one.
+
+**Approved 2026-09-29** (`responses/5193338.md`); D4 closed. Pre-D4a rows with the intent and no relationship stay as transfer-intended with the relationship unknown (G68).

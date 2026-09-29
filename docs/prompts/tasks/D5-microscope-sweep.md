@@ -35,3 +35,5 @@ Judgement first: the three lines at one study, one groove and one drill, before 
 **Approved with one required change 2026-09-29** (`responses/4088dfc.md`), applied: the evaluator's contract version carried with the verdict and printed beside it, carried-or-recomputed stated per item, the projection telling two versions apart, the screen test pinning the version text, the recomputation's build cost reported as a relationship. **Dispatched 2026-09-29** (Entry 110, port 4223) as the fourth lane.
 
 **Landed 2026-09-29** (Entry 110; 458159e, merged 93ecc1e); handoff `handoffs/458159e.md`. Every study's verdict recomputed by the projection (no build step persists one, G66); the doc rows spliced by the orchestrator.
+
+**Closed 2026-09-29** — approved (`responses/458159e.md`): the version travels with every verdict; evaluator changes bump it in the same seam; G66 and G67 later.
