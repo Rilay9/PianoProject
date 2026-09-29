@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **X31a** — `handoffs/dd9aea36.md` (respond in `responses/dd9aea36.md`). The build's opening tempo keeps the default where a note has sounded before the first readable mark (Entry 154).
 - **U96** — `handoffs/c48857ca.md` (respond in `responses/c48857ca.md`). The session's end sheets say only what was measured (Entry 152).
 - **G85** — `handoffs/ba4c6fea.md` (respond in `responses/ba4c6fea.md`). The Library shows the project state and opens the one sheet (Entry 147).
 - **X31a** — `tasks/X31a-late-tempo-keeps-the-default-opening.md`, your X31 required change building: the default opening where a note sounded before the first readable mark, from the parsed score; its own handoff when it lands.
