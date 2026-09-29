@@ -705,6 +705,15 @@ and nothing here touches one.
   `goodTeachingUse: yes` on the cut's identity in D2's record by a named reviewer stating their
   basis. No automatic offer in the app reaches an unplaced excerpt; its runs mark the parent
   neither passed nor performed, and the repertoire lifecycle keeps to songs.
+- **The teaching-use bit is the cut's (E1a, 2026-09-28).** `review.fill_reviewed` fills an
+  excerpt's `provenance.review.teaching` only from a decision on its current identity, the cut
+  file's sha256 (§4b): a `yes` recorded on an earlier cut of the same definition — the parent's
+  file changed and the cut rebuilt under the same id — is stale, and the bit stays `null`
+  (`test_review_record.py` › `TestAStaleDecisionOnAnOlderCutAdmitsNothing`). The app's one
+  admission (`eligibility.admittedForTeaching`) reads that bit for an excerpt as it reads it for a
+  music-promising generated item: without `true`, no automatic offer takes the cut, whatever a
+  rung lists; the Library and exploration do not ask. A moved endpoint or the other hand is
+  another id, so a decision on the old range names an item the catalogue no longer has.
 - **An import later** (E2 with X): nothing here assumes a bundled parent except where it reads the
   parent's built file; an import's excerpt would need its stored score's bytes as the parent's,
   its own measurement of the cut at import (`importStore.measureImport`), and a definition kept on

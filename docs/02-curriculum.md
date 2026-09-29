@@ -938,15 +938,24 @@ that decision exists a study reaches the learner only through the Library (Part 
 > **The excerpt (E1, 2026-09-28): the passage where a whole piece is the wrong unit.** Nine rung
 > claims were kept by no whole piece; the four bars where the leaps are, or the phrase in the
 > Minuet a Stage 3 learner could read while the whole Minuet is beyond them, are what an excerpt
-> is for (`03` §4c). The gate needs no excerpt branch: it reads the cut's measured demands, so the
-> whole Anh. 113 is refused at `classical.3` (sixteenths, taught nowhere, and triplets) and its
-> excerpt of bars 25–32 is not. An excerpt is **on no rung**: it is placed by F only where the
+> is for (`03` §4c). The gate's two questions need no excerpt branch: they read the cut's measured
+> demands, so the whole Anh. 113 is refused at `classical.3` (sixteenths, taught nowhere, and
+> triplets) and its excerpt of bars 25–32 is not refused for its demands. An excerpt is **on no rung**: it is placed by F only where the
 > candidate-rungs report establishes the rung's claim on the combined build with nothing untaught
 > **and** D2's record holds a current `goodTeachingUse: yes` on the cut's identity by a named
 > reviewer stating their basis; until then it is a Library item, its boundary by rule and unheard.
 > No automatic offer reaches an unplaced one (the swap sheet's tiers, the session's slots), a
 > slot or swap that leaves songs out leaves excerpts out, the repertoire lifecycle and retention
-> keep to songs, and a run of an excerpt marks the parent neither passed nor performed.
+> keep to songs, and a run of an excerpt marks the parent neither passed nor performed. **Since
+> E1a (2026-09-28) the one teaching-use admission covers the excerpt** (the reviewer's required
+> change on E1, Q59): an excerpt is music whose teaching suitability is not established until a
+> person says so, like a study, so the gate refuses one for every automatic offer as *not approved
+> for teaching use*, and the card's rows and the swap sheet's tiers with it, until a
+> `goodTeachingUse: yes` is on the cut's current identity — the cut file's sha256, so a decision on
+> an earlier cut of the same definition (a moved endpoint, a changed parent) admits nothing. "Not
+> placed" is only why today's five happen not to surface; a rung that lists one offers it only
+> once that `yes` exists. The Library lists every excerpt and exploration opens one, whatever its
+> bit. Today the five are on no rung and undecided, so nothing a learner sees changes.
 
 The table above is a technique syllabus in the conservatoire sense. It is not the whole of
 what a learner practises, and a skill with no generated exercise ends up either untested or

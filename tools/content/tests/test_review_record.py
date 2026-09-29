@@ -196,6 +196,68 @@ class TestTheBuildFillsTheReviewedFacts(unittest.TestCase):
         self.assertEqual(entries[1]["provenance"]["review"], {"score": None, "teaching": None})
 
 
+class TestAStaleDecisionOnAnOlderCutAdmitsNothing(unittest.TestCase):
+    """
+    E1a item 3: an excerpt's identity is its cut file's sha256, so a teaching-use `yes` recorded on an
+    earlier cut of the same definition — here the parent's file changed and the cut was rebuilt under
+    the same id — resolves to nothing on the new cut: the build writes the bit `null` and no reviewed
+    fact, and the app's one admission (`eligibility.admittedForTeaching`, which reads only the bit)
+    refuses it (`eligibility.test.ts` › E1a, the app side). The same record over the old cut fills the
+    bit: the decision is refused for its identity, not for being about an excerpt.
+    """
+
+    def test_a_yes_on_the_older_cut_leaves_the_rebuilt_cut_undecided(self) -> None:
+        import build  # noqa: PLC0415
+        import excerpts as X  # noqa: PLC0415
+        from convert import write_mxl  # noqa: PLC0415
+        from tests.test_excerpts import grand  # noqa: PLC0415
+
+        eid = "excerpt.test.parent.b2-4"
+        rel = f"scores/excerpts/{eid}.mxl"
+
+        def entry() -> dict:
+            return {"id": eid, "type": "excerpt", "excerptOf": "song.test.parent", "file": rel, "hands": "both",
+                    "measurement": {"status": "unmeasured", "reason": "a fixture"}, "demands": "unmeasured"}
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            before, after = root / "parent-before.mxl", root / "parent-after.mxl"
+            write_mxl(grand(6), before)
+            write_mxl(grand(6, right_pitch=["C5", "D5", "E5", "G5"]), after)
+            older, rebuilt = root / "older", root / "rebuilt"
+            (older / "scores" / "excerpts").mkdir(parents=True)
+            (rebuilt / "scores" / "excerpts").mkdir(parents=True)
+            X.cut(before, 2, 4, "both", eid, older / rel)
+            X.cut(after, 2, 4, "both", eid, rebuilt / rel)
+            old_sha, new_sha = X.sha256_of(older / rel), X.sha256_of(rebuilt / rel)
+            self.assertNotEqual(old_sha, new_sha, "the rebuilt cut is other bytes under the same id")
+
+            yes = {"v": 1, "event": "ev-e1a-older-cut", "item": eid, "identity": {"kind": "file", "sha256": old_sha},
+                   "dimension": "goodTeachingUse", "value": "yes", "basis": "heard", "category": "usefulness",
+                   "reason": "a constructed decision on the older cut", "by": "A. Reviewer",
+                   "at": "2026-09-28T10:00:00.000Z"}
+            self.assertIsNone(review.event_fault(yes))
+            record = root / "decisions.jsonl"
+            record.write_text(lines_of([yes]), encoding="utf-8")
+
+            on_older, on_rebuilt = [entry()], [entry()]
+            with mock.patch.object(review, "RECORD", record):
+                build.attach_provenance(on_older, older)
+                build.attach_provenance(on_rebuilt, rebuilt)
+            events, errors = review.read_record(record)
+            self.assertEqual(errors, [])
+            _, status = review.resolve(events, review.identities(on_rebuilt, rebuilt))
+
+        # Over the cut it was made on, the yes is current: the bit true and its fact written.
+        self.assertIs(on_older[0]["provenance"]["review"]["teaching"], True)
+        self.assertEqual(on_older[0]["provenance"]["facts"]["reviewedTeaching"]["event"], "ev-e1a-older-cut")
+        # Over the rebuilt cut it is stale: the bit null, no reviewed fact, nothing admitted.
+        self.assertEqual(status["ev-e1a-older-cut"], "stale")
+        self.assertEqual(on_rebuilt[0]["provenance"]["review"], {"score": None, "teaching": None})
+        self.assertNotIn("reviewedTeaching", on_rebuilt[0]["provenance"]["facts"])
+        self.assertEqual(on_rebuilt[0]["provenance"]["source"], "excerpt")
+
+
 def built(name: str | Path, root: Path = BUILT):
     path = root / name
     if not path.is_file():
