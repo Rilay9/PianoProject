@@ -484,6 +484,11 @@ class TestExcerptsOnTheBuild(Built):
         advanced `leaps` (an octave or more, `blues.7`, `ragtime.9`), and the one detector finds a fourth
         or wider under both: a Bach menuet's fourths make an excerpt a candidate for `blues.7` by that
         reading, and the line now says the demand is shared, which is the truth F needs there.
+
+        Revised (F2c; the reviewer's required change on F2b, `responses/ddba53e9.md`). Old assumption: the
+        leap is shared by `leap` and `leaps`. The detector finds a fourth or wider and cannot tell a fourth
+        from an octave, so the advanced `leaps` maps to no demand: the leap is the beginner's alone, and
+        the shared note on those lines was the false relationship.
         """
         import claims
         import excerpts as X
@@ -492,7 +497,7 @@ class TestExcerptsOnTheBuild(Built):
         for concept, demand in claims.CONCEPT_DEMANDS.items():
             sharing.setdefault(demand, []).append(concept)
         shared = {demand: sorted(concepts) for demand, concepts in sharing.items() if len(concepts) > 1}
-        self.assertEqual(shared["interval.leap"], ["leap", "leaps"])
+        self.assertNotIn("interval.leap", shared, "the leap shared with the advanced jump, which no fourth proves")
         report = X.candidate_rungs(self.catalog, self.curriculum)
         found: dict[str, int] = {}
         for row in report:
@@ -506,6 +511,29 @@ class TestExcerptsOnTheBuild(Built):
                         self.assertNotIn("sharedBy", claim, where)
         self.assertGreater(found.get("texture.left-hand-pattern", 0), 0, "no candidate reached through the left-hand pattern to read")
         self.assertIn("one detector", X.candidate_rungs_markdown(report))
+
+    def test_a_primer_fourth_satisfies_no_claim_of_the_advanced_rungs(self) -> None:
+        """
+        F2c (the reviewer's required change on F2b, `responses/ddba53e9.md`): a fourth-or-wider reading
+        never satisfies a claim attributed to `blues.7` or `ragtime.9`, whose leap is an octave or more and
+        is measured by no detector yet. On the built candidate report, the Anh. 113 menuet's cut (bars
+        25-32, whose leaps the detector establishes) is a candidate for neither rung, and no excerpt is; the
+        leap still reaches a rung only through the beginner's `leap`. Red on the build before F2c, where
+        the menuet's cut was a candidate for both through `concept leaps`.
+        """
+        import excerpts as X
+
+        report = X.candidate_rungs(self.catalog, self.curriculum)
+        cuts = [row for row in report if row["of"] == ANH_113]
+        self.assertGreater(len(cuts), 0, "no excerpt of Anh. 113 on the build")
+        for row in cuts:
+            self.assertIn("interval.leap", row["established"] or [], f"{row['item']}: the detector's leaps are the case")
+        for row in report:
+            with self.subTest(item=row["item"]):
+                advanced = [c["rung"] for c in row["candidates"] if c["rung"] in ("blues.7", "ragtime.9")]
+                self.assertEqual(advanced, [], "a fourth-or-wider reading makes the cut a candidate for an octave-or-more rung")
+                sources = {claim["from"] for c in row["candidates"] for claim in c["established"] if claim["id"] == "interval.leap"}
+                self.assertLessEqual(sources, {"concept leap", "taughtAt"}, "the leap reached through another concept")
 
     def test_on_no_rung_and_no_named_section(self) -> None:
         listed = {option for stage in self.curriculum["stages"] for unit in stage["units"] for lesson in unit["lessons"]
@@ -997,11 +1025,18 @@ class TestPlacementReconciled(Built):
         claims, _introduced = self.claims_of("2.1")
         self.assertGreater(claims[("demand", "interval.leap")]["established"], 0, "2.1's options establish the leap")
         # Added (F2b part 2): the claim and the introduction come from the beginner's `leap` (a fourth or
-        # fifth); `blues.7` and `ragtime.9` still claim the demand through the advanced `leaps`, as before.
+        # fifth).
         self.assertEqual(introduced[("demand", "interval.leap")]["from"], "introduces leap")
         self.assertEqual(claims[("demand", "interval.leap")]["from"], "concept leap")
+        # Revised (F2c; the reviewer's required change on F2b, `responses/ddba53e9.md`). Old assumption:
+        # `blues.7` and `ragtime.9` claim the demand through the advanced `leaps`. The detector finds a
+        # fourth or wider and cannot prove an octave or more, so neither rung claims the leap demand and
+        # `leaps` is among the concepts no detector measures on both, in the report's "Not measurable".
         for rung in ("blues.7", "ragtime.9"):
-            self.assertEqual(self.claims_of(rung)[0][("demand", "interval.leap")]["from"], "concept leaps", rung)
+            with self.subTest(rung=rung):
+                self.assertNotIn(("demand", "interval.leap"), self.claims_of(rung)[0], f"{rung} claims the leap demand")
+                row = next(r for r in self.report["rungs"] if r["rung"] == rung)
+                self.assertIn("leaps", row["unmeasurable"], f"{rung}: the octave-or-more jump is not measurable yet")
         self.assertIn("this rung only introduces it", self.text("1.5"), "1.5's lesson says it introduces the leap")
         self.assertIn("a fourth and a fifth", self.text("2.1"), "2.1's lesson names the leaps its left hand makes")
 

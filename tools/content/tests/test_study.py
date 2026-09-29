@@ -326,27 +326,35 @@ class TestTheGatesOnTheirAdversaries(unittest.TestCase):
         self.assertEqual(FC.musical_gate(self.row)["evaluated"], False, "no score, no evaluation")
 
 
+def _study_catalogue() -> list[dict]:
+    """
+    Every plan study's catalogue row as the build's attach step writes it (`build.attach_demands`): the
+    detectors' ids and located counts, and what they establish by the density table or by the family
+    contract's own density.
+    """
+    measured = planned.measured()
+    table = build.read_json(build.DENSITY_FILE)
+    order = list(claims.load_vocabulary()[1])
+    catalog = []
+    for _sc, entry in studies():
+        row = measured[entry["id"]]
+        located = {d: int(n) for d, n in row["opportunities"].items() if int(n) > 0}
+        by_density = build.established_by_density(located, int(row["measures"]), table, order)
+        by_contract = build.established_by_contract(entry, row)
+        item = copy.deepcopy(entry)
+        item["demands"] = list(row["demands"])
+        item["measurement"] = {"status": "measured", "located": located,
+                               "established": [d for d in order if d in by_density or d in by_contract]}
+        catalog.append(item)
+    return catalog
+
+
 class TestTheCandidateRungsReport(unittest.TestCase):
     """`study.candidate_rungs` is claims.py's reading of the studies, and places nothing."""
 
     def test_the_report_is_exactly_the_rung_claims_reading(self) -> None:
-        measured = planned.measured()
-        table = build.read_json(build.DENSITY_FILE)
-        order = list(claims.load_vocabulary()[1])
-        catalog = []
-        for _sc, entry in studies():
-            # Each study's row as the build's attach step writes it (`build.attach_demands`): the
-            # detectors' ids and located counts, and what they establish by the density table or
-            # by the family contract's own density.
-            row = measured[entry["id"]]
-            located = {d: int(n) for d, n in row["opportunities"].items() if int(n) > 0}
-            by_density = build.established_by_density(located, int(row["measures"]), table, order)
-            by_contract = build.established_by_contract(entry, row)
-            item = copy.deepcopy(entry)
-            item["demands"] = list(row["demands"])
-            item["measurement"] = {"status": "measured", "located": located,
-                                   "established": [d for d in order if d in by_density or d in by_contract]}
-            catalog.append(item)
+        # The rows are built by `_study_catalogue` (F2c moved them there unchanged, for the case below).
+        catalog = _study_catalogue()
         curriculum = S.curriculum_sources()
         report = S.candidate_rungs(catalog, curriculum)
         self.assertEqual(len(report), len(catalog))
@@ -368,6 +376,29 @@ class TestTheCandidateRungsReport(unittest.TestCase):
             # the recipe's own rung taught every demand; whether it is a candidate depends on its claims
             self.assertEqual(claims.untaught_on(item, row["recipeRung"], ancestry, vocabulary), [])
         self.assertGreater(some, 0, "no study has a candidate rung: the report saw nothing")
+
+    def test_a_primer_fourth_satisfies_no_claim_of_the_advanced_rungs(self) -> None:
+        """
+        F2c (the reviewer's required change on F2b, `responses/ddba53e9.md`): the studies written for 2.1
+        leap by a fourth or fifth (the held root moving C to F and to G), which the leap detector reads as
+        a leap, a fourth or wider. That reading keeps 2.1's beginner claim and never a claim of `blues.7` or
+        `ragtime.9`, whose leap is an octave or more and measured by no detector yet: no study is a candidate
+        for either rung. Red before F2c, where every 2.1 study was a candidate for both through
+        `concept leaps`.
+        """
+        report = S.candidate_rungs(_study_catalogue(), S.curriculum_sources())
+        primer = [row for row in report if row["recipeRung"] == "2.1"]
+        self.assertGreater(len(primer), 0, "no study written for 2.1 to read")
+        for row in primer:
+            with self.subTest(item=row["item"]):
+                self.assertIn("interval.leap", row["established"], "the detector's leap is the case")
+                at_2_1 = next(c for c in row["candidates"] if c["rung"] == "2.1")
+                self.assertIn({"kind": "demand", "id": "interval.leap", "from": "concept leap"}, at_2_1["established"],
+                              "2.1's beginner leap is a fourth's to keep")
+        for row in report:
+            with self.subTest(item=row["item"]):
+                advanced = [c["rung"] for c in row["candidates"] if c["rung"] in ("blues.7", "ragtime.9")]
+                self.assertEqual(advanced, [], "a fourth-or-wider reading makes a study a candidate for an octave-or-more rung")
 
     def test_the_report_makes_placement_no_owners(self) -> None:
         """

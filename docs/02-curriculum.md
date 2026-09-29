@@ -282,7 +282,10 @@ establishes one (two songs carry the odd leap), so it sits under the rung's `int
 2.1 teaches it (F2a, 2026-09-29; the reviewer's required change on F2). The concept is `leap`,
 "Leaps: a fourth or fifth" (F2b, 2026-09-29; the reviewer on F2a, `responses/fc91e5a.md`): the
 beginner's reading leap, apart from the advanced `leaps`, "Wide leaps" (an octave or more, Grades
-5–6), which only `blues.7` and `ragtime.9` name; the one detector finds a fourth or wider under both. Exercises: `[GEN]` **Sight-reading generator level 1** (random 4-bar RH melodies in C
+5–6), which only `blues.7` and `ragtime.9` name. The leap detector finds a fourth or wider, so it
+can establish the beginner's leap and cannot tell a fourth from an octave: since F2c (the reviewer on F2b,
+`responses/ddba53e9.md`) `leaps` maps to no demand, and on those two rungs the octave-or-more leap
+is a claim no detector measures yet. Exercises: `[GEN]` **Sight-reading generator level 1** (random 4-bar RH melodies in C
 position, quarters/halves; new one each time — this is the app's killer practice feature),
 `[GEN]` interval ear drill (2nd vs 3rd; learner plays back), `[GEN]` **Simon** on the
 white keys around middle C (hear a chain, play it back, one note longer each round). Songs: *Old MacDonald Had a Farm* `[AUTH]`, *Lightly Row* `[AUTH]`, *Ode to Joy (theme)* `[AUTH]`, *The Water Is Wide* `[PDMX]`. Mastery: 5 generated melodies at ≥ 90 % first
@@ -516,7 +519,7 @@ Music Theory "Pop/Rock" chapters.
 | 4 | 12-bar blues form in C (I7 IV7 V7), shuffle feel, LH "boogie" bass (root-5-6-b7), simple RH riffs, blues scale | *Twelve-bar blues shuffle in C* `[GEN]`; *Twelve-bar blues shuffle in F* `[GEN]`; *Twelve-bar blues shuffle in G* `[GEN]`; *Careless Love* `[PDMX]`; *12 Bar Blues* `[PDMX]`; *Handy — St. Louis Blues (1914)* `[PDMX]` |
 | 5 | Turnarounds, RH "tremolo" 3rds, blue notes, call-and-response phrases, blues in F & G, the walking bass introduced (the line alone, left hand; F2) | *Twelve-bar blues shuffle in F* `[GEN]`; *Twelve-bar blues shuffle in G* `[GEN]`; *Twelve-bar blues shuffle in C* `[GEN]`; *Swanstone — Blues My Naughty Sweetie Gives to Me (1919)* `[PDMX]`; *Handy — The Memphis Blues (1912)* `[PDMX]`; *Williams — Royal Garden Blues (1919)* `[PDMX]` |
 | 6 | Boogie-woogie LH patterns (Pinetop, Yancey, "Honky Tonk Train" style), RH chorus building, slow blues 12/8, minor blues, the walking line under a right hand (the track's teaching rung for the walking bass since F2) | *Boogie (easy, for beginners)* `[PDMX]`; *Boogie-woogie and blues piano exercises* `[PDMX]`; *Smith — Pinetop's Boogie Woogie (1928)* `[PDMX]` |
-| 7 | Improvising full choruses, tritone subs in blues, gospel-blues, New Orleans style (Professor Longhair rumba-boogie *concepts*, no copyrighted tunes) | *Boogie (easy, for beginners)* `[PDMX]`; *Rhythm and Boogie* `[PDMX]`; *Boogie-Boogie en Sol* `[PDMX]` (the rung is song-optional; *Pinetop's Boogie Woogie* stays on Stage 6) |
+| 7 | Improvising full choruses, tritone subs in blues, gospel-blues, New Orleans style (Professor Longhair rumba-boogie *concepts*, no copyrighted tunes); the leaping left hand, whose octave-or-more leap (`leaps`) is a claim no detector measures yet (F2c: the leap detector finds a fourth or wider) | *Boogie (easy, for beginners)* `[PDMX]`; *Rhythm and Boogie* `[PDMX]`; *Boogie-Boogie en Sol* `[PDMX]` (the rung is song-optional; *Pinetop's Boogie Woogie* stays on Stage 6) |
 | 8 | The form in twelve keys, ninths on every dominant, comping over your own walking bass | song-optional — the piece is the learner's own written chorus in two keys, and these are what to read while writing it: *Smith — Pinetop's Boogie Woogie (1928)* `[PDMX]`; *Blake — The Chevy Chase (1914)* `[PDMX]`; *Morton — Black Bottom Stomp (1926)* `[PDMX]` |
 | 9 | Improvising over the form and making it yours; fast boogie, stride-blues hybrids, transcription projects | song-optional — yours first, then three written choruses: *Confrey — Stumbling (1922)* `[PDMX]`; *Morton — Black Bottom Stomp (1926)* `[PDMX]`; *Waller — Handful of Keys (1929)* `[PDMX]` |
 
@@ -557,7 +560,8 @@ syncopated RH, "not fast" (Joplin's own instruction), stride precursor.
 
 *(Extended 2026-09-22: the track now runs Stage 5 to Stage 9. `ragtime.9` is the memory and
 performance rung — four long multi-strain Joplin rags nothing else offers, played without
-the page. `ragtime.4`, the cakewalk before the syncopation, was **not built**: see Part A
+the page; its octave-or-more leap (`leaps`) is a claim no detector measures yet (F2c: the leap
+detector finds a fourth or wider). `ragtime.4`, the cakewalk before the syncopation, was **not built**: see Part A
 item 5 and `pending-review.md` Entry 37 for the searches that came back empty. The Stage 8
 line above wants *Euphonic Sounds* and Lamb's *Ragtime Nightingale* and neither is in any
 reachable source, which is the same hole Entry 37 found one stage higher.)*

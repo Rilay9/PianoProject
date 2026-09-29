@@ -384,6 +384,33 @@ class TestTheTwoLeapsAreTwoConcepts(unittest.TestCase):
         self.assertEqual(claims.teaching_rungs(self.curriculum, skills, demands)["interval.leap"], ["2.1"])
         self.assertEqual(demands["interval.leap"]["taughtAt"], ["2.1"], "demands.json unchanged")
 
+    def test_a_fourth_never_establishes_the_advanced_jump(self) -> None:
+        """
+        F2c (the reviewer's required change on F2b, `responses/ddba53e9.md`): the leap detector finds a
+        fourth or wider, so it can establish the beginner's fourth or fifth and cannot tell a fourth from the
+        advanced jump of an octave or more. `leaps` maps to no demand until a detector proves octave-or-more material: on
+        `blues.7` and `ragtime.9` it is a concept no detector measures, never a claim a fourth keeps. A
+        fourth-only reading (a measured item whose one established demand is the leap) still keeps 2.1's
+        claim. Red before F2c, where `leaps` mapped to `interval.leap` and that item kept a claim on both.
+        """
+        self.assertNotIn("leaps", claims.CONCEPT_DEMANDS,
+                         "the advanced jump is read by the fourth-or-wider detector, which cannot tell a fourth from an octave")
+        skills, demands = claims.load_vocabulary()
+        self.assertEqual(claims.concepts_naming(skills, demands)["interval.leap"], {"leap"})
+        fourth = {"id": "song.f2c.fourth-only-probe", "demands": ["interval.leap"],
+                  "measurement": {"status": "measured", "established": ["interval.leap"]}}
+        for rung in ("blues.7", "ragtime.9"):
+            with self.subTest(rung=rung):
+                rung_claims, unmeasurable = claims.rung_claims_of(self.lessons[rung], skills, demands)
+                self.assertEqual([c for c in rung_claims if c["id"] == "interval.leap"], [], f"{rung} claims the leap demand")
+                self.assertEqual([c for c in rung_claims if claims.status_of(c, fourth, skills) == "established"], [],
+                                 f"a fourth keeps a claim of {rung}")
+                self.assertIn("leaps", unmeasurable, f"{rung}: the octave-or-more jump is a concept no detector measures")
+        rung_claims, _unmeasurable = claims.rung_claims_of(self.lessons["2.1"], skills, demands)
+        leap = [c for c in rung_claims if c["id"] == "interval.leap"]
+        self.assertEqual(leap, [{"kind": "demand", "id": "interval.leap", "from": "concept leap"}])
+        self.assertEqual(claims.status_of(leap[0], fourth, skills), "established", "the beginner's claim is a fourth's to keep")
+
 
 class TestThePracticeTrackWalksItsOwnRungs(unittest.TestCase):
     """

@@ -1,0 +1,31 @@
+python docs/prompts/runs/F2c/candidate_diff.py docs/prompts/runs/F2c/excerpt-candidate-rungs-before.md docs/prompts/runs/F2c/excerpt-candidate-rungs.md
+before: 86 lines; table lines at blues.7 or ragtime.9 7; table lines crediting interval.leap through a concept 7 (through leaps 7, through leap 0); shared-detector notes on interval.leap 4, on texture.left-hand-pattern 1
+after: 71 lines; table lines at blues.7 or ragtime.9 0; table lines crediting interval.leap through a concept 0 (through leaps 0, through leap 0); shared-detector notes on interval.leap 0, on texture.left-hand-pattern 1
+as multisets: lines only before 15 (at blues.7 or ragtime.9 7), lines only after 0: []
+  the lines only before that are not at blues.7 or ragtime.9: ['', '† `interval.leap` is one detector for 2 concepts (leap, leaps): the line says the demand is in the notes, not which of them the passage is; the page says that.']
+diff lines: 24
+--- before
++++ after
+@@ -27,4 +26,0 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) † | — |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) † | — |
+-
+-† `interval.leap` is one detector for 2 concepts (leap, leaps): the line says the demand is in the notes, not which of them the passage is; the page says that.
+@@ -45 +40,0 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) † | — |
+@@ -47,3 +41,0 @@
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) † | — |
+-
+-† `interval.leap` is one detector for 2 concepts (leap, leaps): the line says the demand is in the notes, not which of them the passage is; the page says that.
+@@ -62 +53,0 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) † | — |
+@@ -65,2 +55,0 @@
+-
+-† `interval.leap` is one detector for 2 concepts (leap, leaps): the line says the demand is in the notes, not which of them the passage is; the page says that.
+@@ -80 +68,0 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) † | — |
+@@ -82,3 +69,0 @@
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) † | — |
+-
+-† `interval.leap` is one detector for 2 concepts (leap, leaps): the line says the demand is in the notes, not which of them the passage is; the page says that.
+exit=0

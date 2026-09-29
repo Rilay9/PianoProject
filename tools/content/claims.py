@@ -61,10 +61,11 @@ CONCEPT_DEMANDS = {
     "steps": "interval.step",
     "skips": "interval.skip",
     # F2b: the beginner's leap, a fourth or fifth (1.5 introduces it, 2.1 teaches it), and the advanced
-    # jump of an octave or more (`blues.7`, `ragtime.9`) are two concepts; the one detector finds a
-    # fourth or wider under both, so the demand is shared, as the left-hand pattern's is.
+    # jump of an octave or more (`blues.7`, `ragtime.9`) are two concepts. F2c (the reviewer's required
+    # change, `responses/ddba53e9.md`): the detector finds a fourth or wider, so it can establish the
+    # beginner's leap and cannot tell a fourth from an octave; `leaps` maps to no demand, a claim no
+    # detector measures on those two rungs, until a detector proves octave-or-more material.
     "leap": "interval.leap",
-    "leaps": "interval.leap",
     "eighth-notes": "rhythm.eighths",
     "tied-across-bar": "rhythm.ties",
     "key-signatures": "key.signature",
