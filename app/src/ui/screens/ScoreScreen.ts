@@ -3065,7 +3065,7 @@ export function ScoreScreen(router: Router): HTMLElement {
    * where the route carries none (only a Today card names one, L50), and
    * anything the engine did not report.
    */
-  function runHeader(score: SessionScore, first: { unseen?: boolean; recipe?: ReadingRecipe }, demonstrated: boolean): RunHeader {
+  function runHeader(score: SessionScore, first: { firstContact: boolean; unseen?: boolean; recipe?: ReadingRecipe }, demonstrated: boolean): RunHeader {
     const under = score.judgedUnder;
     const base = model?.tempoMap[0];
     const judgedBy = judgingRungId();
@@ -3298,10 +3298,16 @@ export function ScoreScreen(router: Router): HTMLElement {
     // One rule, read once more before this run is counted: `judged` above
     // asked the same question.
     const sightReadRepeat = firstReadingRefused();
-    // First contact (G1 item 4): sight-reading's claim for a phrase; for
-    // anything else the audited fact of first contact over the bars the run
-    // covered, read before this run is counted.
+    // First contact (G1 item 4; G1a item 1): the encounter relation of what
+    // this run played — a phrase whole, anything else over the bars the run
+    // covered — read before this run is counted, and written on every run as
+    // `firstContact`.
     const firstContact = sightReading ? !sightReadRepeat : firstContactOfRun(barsOfRun(score.judgedUnder));
+    // Sight-reading's condition, a phrase's only (G1a item 2): derived from
+    // that relation and the visit rule, which today give the same value — one
+    // derivation with two names, so a change to the visit rule moves `unseen`
+    // here and leaves the fact alone.
+    const unseen = firstContact;
     if (item !== undefined) sightReadAttempts += 1;
     // Such a run is recorded (C1, reviewer decision 3): it is practice, and
     // its minutes, its attempt and its row are kept. It is not a reading, so
@@ -3395,9 +3401,11 @@ export function ScoreScreen(router: Router): HTMLElement {
             ...(rhythmRun ? { rhythmOnly: true } : {}),
             // What the run was and what it measured, by its own definitions,
             // with every channel it did not measure marked so (C1).
-            // First contact on every run (G1): a phrase's with its recipe; a
-            // piece's, an excerpt's or an import's as the audited fact alone.
-            ...runHeader(score, sightReading ? { unseen: firstContact, recipe: phraseRecipe(item.id) } : { unseen: firstContact }, demonstrated),
+            // First contact on every run (G1, G1a): the relation as
+            // `firstContact`; a phrase's run carries sight-reading's `unseen`
+            // and its recipe beside it, a piece's, an excerpt's or an import's
+            // the relation alone.
+            ...runHeader(score, sightReading ? { firstContact, unseen, recipe: phraseRecipe(item.id) } : { firstContact }, demonstrated),
             ...measures,
           }
         : null;
@@ -3457,15 +3465,19 @@ export function ScoreScreen(router: Router): HTMLElement {
      * another tab wrote after this screen read it is prior contact too. Only
      * ever turns a first contact into none; where the run was a reading, the
      * sheet says so, as it would have had the history shown it at the start.
+     *
+     * It asks the relation, which every run carries (G1a): a piece's run has no
+     * `unseen` to ask. A phrase's condition goes with its relation, as it was
+     * derived from it.
      */
     async function confirmFirstContact(result: RunResult): Promise<RunResult> {
-      if (result.unseen !== true || !encounterTarget) return result;
+      if (result.firstContact !== true || !encounterTarget) return result;
       const target = encounterTarget;
       const fresh = await historyFor(target, history?.byId === undefined ? {} : { byId: history.byId }).catch(() => null);
       if (fresh === null) return result;
       const bars = sightReading ? undefined : barsOfRun(result.range);
       if (historyFirstContact(bars, fresh)) return result;
-      if (!sightReading) return { ...result, unseen: false };
+      if (!sightReading) return { ...result, firstContact: false };
       const now = familiarityIn(target, fresh, { visit });
       const sentence =
         now.attempted !== null || now.partly.attempted !== null
@@ -3482,7 +3494,7 @@ export function ScoreScreen(router: Router): HTMLElement {
         title.after(note);
       }
       note.textContent = [note.textContent, sentence].filter((part) => part !== null && part !== '').join(' ');
-      return { ...result, unseen: false, passed: false, masterEligible: false };
+      return { ...result, firstContact: false, unseen: false, passed: false, masterEligible: false };
     }
     if (run && askSelfReport) {
       pendingRecord = (report) => {
