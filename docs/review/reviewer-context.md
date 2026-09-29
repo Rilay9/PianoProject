@@ -192,36 +192,17 @@ If GitHub write capability is unavailable during the scheduled run, do not prete
 
 ## Live reviewer state
 
-This section is mutable. Every autonomous reviewer pass must refresh it from the repository before finishing, even if no review is performed. Do not rely on the previous contents without re-checking GitHub.
+This section is mutable. Every autonomous reviewer pass must refresh it from the repository before finishing when a substantive review changes the frontier. Idle checks must not create a context-only commit.
 
-Record:
-- last autonomous check time;
-- latest branch HEAD observed;
-- current architectural frontier and next gated brief;
-- latest accepted/closed seams;
-- unreviewed immutable handoffs currently present;
-- blocking fix-forwards currently required;
-- independent seams in progress or awaiting review;
-- next allowed implementation steps;
-- anything that still requires the owner's decision.
-
-The scheduled reviewer must derive this state from:
-1. `docs/prompts/tasks/README.md`;
-2. immutable `docs/review/handoffs/`;
-3. immutable `docs/review/responses/`;
-4. the latest relevant task/entry/backlog files named by those artifacts;
-5. current branch state.
-
-Do not manufacture status from an old snapshot. If the repository and this section disagree, the repository wins and this section must be corrected.
-
-Current snapshot, refreshed after reviewing the G1a/Q65a briefs on 2026-09-29:
-- G1 core implementation `b48342f`: accepted with required G1a. G1a brief in `docs/review/handoffs/9cfa808.md` **matches the required change and may proceed without a pre-build response**. It introduces `RunHeader.firstContact` as the general encounter fact, keeps `unseen` phrase-only as sight-reading evidence semantics, preserves legacy rows without manufacturing contact, and requires every `unseen` reader to be classified. Post-build review remains the gate before G2/X consumes general first-contact.
-- Q-tooling implementation `198c148`: accepted with required Q65a. Q65a brief in `docs/review/handoffs/9cfa808.md` **matches the required change and may proceed without a pre-build response**. It reclassifies whole-suite map entries into honest fan-out versus targeted discriminating specs, adds specific coverage for machine-read docs above the empty docs catch-all, preserves union semantics and the unmatched full-suite fallback, and leaves full integrated suites to CI.
-- No `docs/review/responses/9cfa808.md` should be created unless one of those briefs later departs from the agreed mechanism.
-- Q47/Q46 are closed with runner proof recorded.
-- U74 is closed; `docs/04` §5 now states the current code's window/look-ahead rule. E30 remains unchanged pending a deliberate later revisit with U77/U78.
-- G2 waits for G1a post-build acceptance before consuming general first-contact/run-header truth.
-- Q65a must land before the path map may suppress checks based on its narrowed minimums; until then the map is advisory.
-- F2 still requires F2a before X1 consumes its curriculum claims.
-- X1 still owns L113 and must route automatic rung-owned/assigned material through the canonical E2 gate while preserving explicit exploration.
-- No owner decision is currently required by the G1a/Q65a briefs.
+Current snapshot, refreshed after the 400e69c8 review packet on 2026-09-29:
+- G1b pre-dispatch brief `a96395d`: **APPROVE**. The G1b section is appended to `docs/review/responses/a96395d.md`. Repertoire/project lifecycle remains entirely learner-driven; no state drifts automatically. Stage 9 may present project lifecycle instead of rung counts without changing evidence/rung state. The finish sheet is a sufficient first door; Library integration may follow later through the same `projectStore` truth. G1b may dispatch now that G1a and X3 are closed.
+- U82 implementation `be8802c3`: **APPROVE**. Response: `docs/review/responses/be8802c3.md`. The sideways failure was a stale test of pre-measurement metadata, not a learner-visible U74 regression. Renderer unchanged; U82 closes.
+- Debugging/implementation answers for branch packet `400e69c8`: `docs/review/responses/questions-400e69c8.md`.
+  - U95: the lesson section mounts before async initial data is ready; the test snapshots rows before waiting for the duet tool. Wait for `#lesson-tool-duet` before reading offered rows; do not add a product readiness protocol unless the race is shown on the actual learner surface.
+  - Q76: if python-ly loses the ragtime left-hand pattern, first try the Mutopia-published MIDI for the same edition/work through the existing MIDI→MusicXML converter; if that fails, use a reproducible LilyPond-backed route; one-time committed MusicXML is last resort with full provenance. Do not use MIDI for 2.4's tie truth.
+  - Docs splice: batch once after X1, Q76 and X3e land unless a seam's own acceptance requires an immediate canonical-doc change.
+- G2 is closed through G2a per current.md. X1 is building under its approved brief.
+- X3e and Q76 are information-only while building; each gets its own implementation handoff when it lands.
+- Four-fix-forward packet `bcad0c9` is information-only. The individual seams in it have since landed/been reviewed per current.md where applicable; do not re-review the brief packet.
+- G1a/Q65a information packet `9cfa808` remains no-response because the briefs matched the required changes and later post-build seams have already been reviewed.
+- Scheduled fallback review is active at :00/:15/:30/:45. Each timer prompt now carries the user's explicit authorization to use the connected GitHub app for the normal reviewer read/write actions (review response files and material reviewer-context updates) without asking again. That authorization does not extend to implementation edits, merges, deploys, deletes or history rewrites.
