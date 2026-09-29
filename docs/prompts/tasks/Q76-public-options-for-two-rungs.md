@@ -37,3 +37,5 @@ If python-ly cannot convert the rags ragtime.8 needs without losing the left-han
 ## Report
 
 Judgement first: the Score screen on one rag and on the tie piece at 342 × 740, and the two rungs' rows in the strict build's claims report before and after; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes (the runner's build until the Pages run is read; the music unheard).
+
+**Landed 2026-09-29** (Entry 136; e4f9d3f2, merged 7bfcb0fc); handoff `handoffs/e4f9d3f2.md`.

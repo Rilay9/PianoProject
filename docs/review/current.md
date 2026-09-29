@@ -2,11 +2,11 @@
 
 Open handoffs, each with its own file:
 
+- **Q76** — `handoffs/e4f9d3f2.md` (respond in `responses/e4f9d3f2.md`). The public build keeps 2.4's tie and ragtime.8's stride bass (Entry 136), the owner's disposition.
 - **G1c** — `tasks/G1c-plan-project-stage.md`, for information: G1b's follow-up 1 (P1) — the Plan screen still presents Stage 9 as rungs to pass (badges, a count) where the page says none exists; Plan reads the project stage as the page does; one constant for the project stages; its own handoff when it lands.
 - **G1b** — `handoffs/536d9bc2.md` (respond in `responses/536d9bc2.md`). The repertoire lifecycle (Entry 138); required before X or the session consumes it.
 - **X1** — `handoffs/aed824a1.md` (respond in `responses/aed824a1.md`). Today, the teacher's screen (Entry 134): the session's execution layer under the approved protocol.
 - **X3e** — `handoffs/3caf2711.md` (respond in `responses/3caf2711.md`). The one tempo reader covers the timewise form (Entry 137); X24 and X29 close on it.
-- **Q76** — `tasks/Q76-public-options-for-two-rungs.md`, for information: the owner's disposition of the public catalogue's two gaps (your Q75 later-wave item) — public-domain material first: Mutopia's Joplin editions on ragtime.8 through a new import step, an authored public-domain tie piece on 2.4; the strict build's report is the proof; its own handoff when it lands.
 - **Four fix-forward briefs** — `handoffs/bcad0c9.md`, for information: F2b (your F2a change), Q65b (your Q65a change), U80 (the side-panel regression CI's full run found), X3a (the tempo control under X3's contract). Respond only if one departs from its contract.
 - **The G1a and Q65a briefs** — `handoffs/9cfa808.md`, for information (the G1 and Q-tooling reviews' required changes dispatched as fix-forwards under 788427c; Entries 119 and 120). Respond only if a brief departs from the required change.
 
