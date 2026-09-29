@@ -235,7 +235,19 @@ class TestThePlacement(unittest.TestCase):
         report = claims.rung_claims(strict, curriculum)
         rung = next(r for r in report["rungs"] if r["rung"] == "ragtime.8")
         stride = next(c for c in rung["claims"] if c["id"] == "texture.left-hand-pattern")
-        self.assertGreaterEqual(stride["established"], 1, "ragtime.8's stride bass is kept by no option on the strict flavour")
+        # Q83: on a build that could not fetch the edition (CI during a Mutopia outage) this fails by design; the
+        # message says so, naming the placeholder and the reason its import step wrote. The condition is unchanged.
+        why = "ragtime.8's stride bass is kept by no option on the strict flavour"
+        rag = next((i for i in catalog if i["id"] == RAG), None)
+        if rag is not None and not rag.get("file"):
+            from import_mutopia import IMPORT_HINT
+
+            hint = " ".join((rag.get("importHint") or "").split())
+            head, _, tail = IMPORT_HINT.partition("{why}")
+            reason = (hint[len(head):len(hint) - len(tail)] if hint.startswith(head) and hint.endswith(tail)
+                      else hint or "no importHint")
+            why += f": {RAG} is a placeholder ({reason})"
+        self.assertGreaterEqual(stride["established"], 1, why)
         option = next(o for o in report["options"] if o["rung"] == "ragtime.8" and o["item"] == RAG)
         self.assertEqual({c["id"]: c["status"] for c in option["claims"] if c["id"] == "texture.left-hand-pattern"},
                          {"texture.left-hand-pattern": "established"})

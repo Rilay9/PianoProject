@@ -1358,6 +1358,14 @@ def copy_level_model(out_dir: Path) -> None:
 def step_validate(
     out_dir: Path, strict_license: bool, allow_nc: bool = False, personal: bool = False
 ) -> Step:
+    """
+    The validator: on a pass its verdict line is the detail, on a failure its whole output.
+
+    Its `WARNING` lines are the step's warnings, on a pass and a failure alike (Q84): since Q75 and Q80 they name what
+    this build could not measure or could not fetch, and keeping the verdict alone on a pass dropped them, so the one
+    log a Pages deploy leaves said "content validation OK" and nothing else. The summary prints them under the step,
+    in the validator's own words, as it prints the `[MUTO]` step's placeholders.
+    """
     args = ["--dir", str(out_dir)]
     if strict_license:
         args.append("--strict-license")
@@ -1366,7 +1374,8 @@ def step_validate(
     if personal:
         args.append("--personal")
     code, output = python("validate.py", *args)
-    return Step("validate", ok=code == 0, detail=output if code else summary_line(output))
+    warned = [line.strip() for line in output.splitlines() if line.strip().startswith("WARNING")]
+    return Step("validate", ok=code == 0, detail=output if code else summary_line(output), warnings=warned)
 
 
 def step_render(out_dir: Path, limit: int) -> Step:
