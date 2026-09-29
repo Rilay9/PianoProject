@@ -1,0 +1,21 @@
+$ (cwd .) python -m unittest discover -s tools/content/tests -t tools/content -p test_checks_for_paths.py -v
+test_a_docs_path_needs_nothing_and_says_so (tests.test_checks_for_paths.OnAFixtureMap.test_a_docs_path_needs_nothing_and_says_so) ... ok
+test_a_glob_expands_against_the_tree (tests.test_checks_for_paths.OnAFixtureMap.test_a_glob_expands_against_the_tree) ... ok
+test_a_path_under_no_pattern_takes_the_full_suites_and_is_named (tests.test_checks_for_paths.OnAFixtureMap.test_a_path_under_no_pattern_takes_the_full_suites_and_is_named) ... ok
+test_a_pattern_naming_an_unknown_check_is_refused_when_the_map_loads (tests.test_checks_for_paths.OnAFixtureMap.test_a_pattern_naming_an_unknown_check_is_refused_when_the_map_loads) ... ok
+test_self_names_the_changed_file (tests.test_checks_for_paths.OnAFixtureMap.test_self_names_the_changed_file) ... ok
+test_the_union_is_deduplicated_and_in_the_chain_s_order (tests.test_checks_for_paths.OnAFixtureMap.test_the_union_is_deduplicated_and_in_the_chain_s_order) ... ok
+test_the_unmatched_path_is_conspicuous_and_never_a_refusal (tests.test_checks_for_paths.OnAFixtureMap.test_the_unmatched_path_is_conspicuous_and_never_a_refusal) ... ok
+test_the_whole_suite_wins_over_named_files (tests.test_checks_for_paths.OnAFixtureMap.test_the_whole_suite_wins_over_named_files) ... ok
+test_windows_and_dotted_paths_are_read_as_repository_paths (tests.test_checks_for_paths.OnAFixtureMap.test_windows_and_dotted_paths_are_read_as_repository_paths) ... ok
+test_a_docs_only_change_runs_nothing (tests.test_checks_for_paths.TheCommittedMap.test_a_docs_only_change_runs_nothing) ... ok
+test_a_lesson_edit_is_covered_and_not_a_fallback (tests.test_checks_for_paths.TheCommittedMap.test_a_lesson_edit_is_covered_and_not_a_fallback) ... ok
+test_every_named_file_exists (tests.test_checks_for_paths.TheCommittedMap.test_every_named_file_exists) ... ok
+test_every_pattern_carries_a_reason (tests.test_checks_for_paths.TheCommittedMap.test_every_pattern_carries_a_reason) ... ok
+test_every_pattern_matches_a_path_in_the_tree (tests.test_checks_for_paths.TheCommittedMap.test_every_pattern_matches_a_path_in_the_tree) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.286s
+
+OK
+exit 0
