@@ -38,3 +38,5 @@ If a screen today shows a related-composition run as *transfer demonstrated* to 
 Judgement first: what a learner who played one cut and reads another now sees on Skills and Progress, before and after, as pictures if a screen shows it, else as the verdict and its words; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes.
 
 **Landed 2026-09-29** (Entry 132; 337a0324, merged f9aa295f); handoff `handoffs/337a0324.md`.
+
+**Accepted 2026-09-29** (`responses/337a0324.md`, APPROVE). The protection question ruled: keep as built — a failed reading of another cut counts unless a separately known new demand spares it; no measured dimension is borrowed across the missing arrangement/section fact. G80 (the facts, relationship-owned) and G81 (the offer's wording) recorded. G2 closed; X1 released.
