@@ -26604,6 +26604,8 @@ Not run: Playwright (no browser layer). Unverified:
 
 **The held workflow part, merged (2026-09-29).** After the reviewer's word (`responses/56a4b9b7.md`: restore-only, CI's path and key, never semantic input to validation), the builder's second commit (55722e54: `pages.yml`'s `actions/cache/restore` step and the map row for `pages.yml`) merged at 0c2d7100; the map's test and minimum green on it; the Pages run on that push is the proof of the step (a restore hit or a miss that neither saves nor fails), recorded when read.
 
+**The restore step's proof, read (2026-09-29).** The Pages run 36564690416 on 2ce412c4 (the first with the cache-restore step) completed *success*: the runner's lines: `Run actions/cache/restore@v4 … path: build/cache`, then `import [KERN] imported 116 score(s), 47 placeholder(s), excluded 73 (116 cached, 0 converted)` where the cold run read `0 cached, 116 converted`, `validate content validation OK (2089 catalog items)`, and the content build's own timing line shorter than the cold runs' (the runner's figures, not this machine's). The deploy's content is the strict catalogue as before; the step changed the build's duration and nothing it produced.
+
 ## Doc rows
 
 - **`docs/08` — a new row** after F2's:
