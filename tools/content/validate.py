@@ -385,9 +385,34 @@ def validate_curriculum(curriculum: dict, catalog: list, min_options: int = MIN_
     return errors
 
 
-def stale_ladder_report(catalog: list, curriculum: dict) -> list[str]:
+#: Q80: the reasons an import step writes on a placeholder that is *this build's*, not the catalogue's: the
+#: source's files were not fetched, or what was fetched is not the pinned file. Read from the placeholder's
+#: `importHint`, where the step says why. Only `import_mutopia.build_entry` writes them; the kern and MuseTrainer
+#: steps leave a file they cannot find out of the catalogue (`report.missing`) instead of placeholding it, so
+#: there is no reason of theirs to read. `tests/test_validate_ladder.py` builds these placeholders with the import
+#: step itself, so a change to its wording turns that test red rather than this check quiet.
+UNFETCHED_REASONS = (
+    re.compile(r"the edition's \.(?:ly|mid) file was not fetched"),
+    re.compile(r"\S+ is not the pinned file \(sha256 [^)]*\)"),
+)
+
+
+def unfetched_placeholders(catalog: list) -> list[tuple[str, str]]:
+    """Each placeholder whose reason is this build's fetch, with the reason as the step wrote it (Q80)."""
+    found: list[tuple[str, str]] = []
+    for item in catalog:
+        if item.get("file"):
+            continue
+        hint = " ".join((item.get("importHint") or "").split())
+        match = next((m for m in (pattern.search(hint) for pattern in UNFETCHED_REASONS) if m), None)
+        if match:
+            found.append((item["id"], match.group(0)))
+    return found
+
+
+def ladder_report_findings(catalog: list, curriculum: dict) -> tuple[list[str], list[str]]:
     """
-    replan §2.6: the committed ladder report has to match the catalog.
+    replan §2.6: the committed ladder report has to match the catalog. Errors, and warnings (Q80).
 
     Part D is a *report* of what is on each rung, and a generated report that
     nobody regenerates is exactly the hand-written table it replaced. So the
@@ -399,18 +424,66 @@ def stale_ladder_report(catalog: list, curriculum: dict) -> list[str]:
     though — see `ladder_report_note` — because a rule that disappears in
     silence when its input is missing is a rule that stops working the day
     somebody deletes the file, and nobody finds out.
+
+    **A build's own placeholder is not a change to the catalogue (Q80).** A build that could not
+    fetch a source (Mutopia's site or the GitHub mirror unreachable, a fetched file that is not the
+    pinned one) carries a placeholder the committed report, written on a build that fetched it,
+    does not (in Q76's first landing chain the difference was the "may not be shipped" count and
+    nothing that named the item), and validation failed for a reason that says nothing about the
+    content; on the runner, a network hiccup would have failed CI and the Pages deploy. So
+    where the reports differ and this build holds such placeholders (`unfetched_placeholders`), the
+    report is rendered again with those items bundled, as a build that fetched them has them, and
+    compared once more. Equal, and the difference was the fetch alone: **warned**, naming each item
+    and its reason, never failed, as Q75 treats a claim this build could not measure. Still
+    different, and the error stands, naming what it set aside, since a report regenerated on this
+    build would list those items as not bundled.
+
+    The render is untouched: what `ladder_report.py` writes is always this catalogue's truth,
+    placeholders and all (its module note). Only this comparison takes a fetching build's view, and
+    only of placeholders whose reason is a fetch. A licence placeholder is the catalogue's own state
+    on that flavour and is compared as it is; the strict build's already compare equal to the
+    owner's build's bundled files, because `ladder_report.shippable` reads a personal-only tag as
+    not shipped.
     """
     from ladder_report import DEFAULT_OUT, render
 
     if not DEFAULT_OUT.is_file():
-        return []
-    if DEFAULT_OUT.read_text(encoding="utf-8") == render(catalog, curriculum):
-        return []
-    return [
-        f"{DEFAULT_OUT.relative_to(CONTENT_SRC.parent)} is stale — the catalog has changed "
+        return [], []
+    committed = DEFAULT_OUT.read_text(encoding="utf-8")
+    if committed == render(catalog, curriculum):
+        return [], []
+    report = DEFAULT_OUT.relative_to(CONTENT_SRC.parent)
+    unfetched = unfetched_placeholders(catalog)
+    count = f"{len(unfetched)} item{'' if len(unfetched) == 1 else 's'}"
+    named = "; ".join(f"{item_id} ({reason})" for item_id, reason in unfetched)
+    if unfetched:
+        ids = {item_id for item_id, _ in unfetched}
+        # The render reads only whether a file is there; the path is the one the import step writes.
+        as_fetched = [
+            dict(item, file=f"scores/imported/{item['id']}.mxl") if item["id"] in ids else item for item in catalog
+        ]
+        if committed == render(as_fetched, curriculum):
+            return [], [
+                f"WARNING (ladder report, Q80): {report} compared without the {count} this build could not "
+                f"fetch (read as bundled, as the committed report has them): {named}; a placeholder made for "
+                "want of a fetch is not a change to the catalogue"
+            ]
+    error = (
+        f"{report} is stale — the catalog has changed "
         "since it was written. Run `python3 tools/content/ladder_report.py` and commit it "
         "(replan §2.6)."
-    ]
+    )
+    if unfetched:
+        error += (
+            f" The comparison already set aside the {count} this build could not fetch ({named}): "
+            "regenerate the report on a build that fetched them, or it will list them as not bundled."
+        )
+    return [error], []
+
+
+def stale_ladder_report(catalog: list, curriculum: dict) -> list[str]:
+    """The errors of `ladder_report_findings`: the committed ladder report differs beyond this build's own placeholders."""
+    return ladder_report_findings(catalog, curriculum)[0]
 
 
 def ladder_report_note() -> str:
@@ -2078,6 +2151,9 @@ def main() -> None:
     print(f"  {rung_claims_warning(catalog, curriculum)}")
     # F2: each deferred claim with its reason, and any introduced concept an option now establishes.
     for warning in concept_claim_findings(catalog, curriculum)[1]:
+        print(f"  {warning}")
+    # Q80: the ladder report compared without the placeholders this build made for want of a fetch, said.
+    for warning in ladder_report_findings(catalog, curriculum)[1]:
         print(f"  {warning}")
 
     # Q-tooling (2026-09-29): the reviewer's views of the audit file and the matrix regenerated
