@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **The E-tail and Q-tooling sweep briefs** — `handoffs/d1562ef.md` (respond in `responses/d1562ef.md`, one status per row). Brief handoffs drafted while the reviewer was out of usage.
 - **F2** — `handoffs/b41e19e.md` (respond in `responses/b41e19e.md`). Placement reconciled with the measured claims landed (Entry 108); six decisions, four questions (where leaps and accidentals are taught on the core; the five deferred every-bar claims; whether item 2 may add an option; the practice rungs' data).
 
 Building: **U74** (Entry 114, `responses/a1c1fd6.md`), **E2a** (Entry 111, `responses/1b09a1f.md`), **G1** (Entry 112, `responses/7863bee.md`), **Q47** (Entry 113, `responses/f52ebde.md`), **F2** (Entry 108, `responses/12af708.md`), each gets its own handoff when it lands. **G1** approved (`responses/7863bee.md`) and dispatches on D4a's landing.
