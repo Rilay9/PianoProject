@@ -38,3 +38,5 @@ If a kern licence placeholder takes its level from a source a missing file canno
 ## Report
 
 Judgement first: the two builds with clones moved aside, before and after, as a runner's log would show them; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes. Entry 145; every run file under `docs/prompts/runs/Q82/`; the entry as `docs/prompts/runs/Q82/ENTRY.md`, starting `### Entry 145 — Q82`.
+
+**Landed 2026-09-29** (Entry 145; 7cdc0f72, merged 6143a26e); handoff `handoffs/7cdc0f72.md`.
