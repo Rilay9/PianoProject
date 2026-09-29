@@ -34,3 +34,5 @@ If the mechanism is in the screen and not the renderer, stop as above. If E30's 
 Judgement first: the two-bar scale from Today at 342 × 740 before and after, as observations; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes.
 
 **Approved with one required change 2026-09-29** (`responses/a1c1fd6.md`), applied: the renderer's existing observer, fit queue, settled state and disposal are the starting mechanism; the red case tells four causes apart; a resize lost while fitting is retried once the fit settles; the run-size contract kept (width during a run, height-only deferred); the two paths compared at `data-settled` on the final stage box, systems, bars and staff height. **Dispatched 2026-09-29** (Entry 114, port 4233) as the fourth lane.
+
+**Landed 2026-09-29** (Entry 114; 9c9cf86, merged b2b5dd5); handoff `handoffs/9c9cf86.md`. The premise corrected by the builder: the first draw, not a path difference.

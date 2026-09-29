@@ -1,0 +1,34 @@
+﻿node.exe : [WebServer] (node:66608) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:50976) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 4 workers
+
+(node:67040) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67164) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:71848) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:66000) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 2 tests\e2e\zz-u74-probe.spec.ts:189:1 › probe: from Today (5.7s)
+  ok 1 tests\e2e\zz-u74-probe.spec.ts:189:1 › probe: from Today (5.9s)
+(node:67920) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:62916) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 3 tests\e2e\zz-u74-probe.spec.ts:171:1 › probe: by a link after a fresh load (the route Today opens) (6.9s)
+  ok 4 tests\e2e\zz-u74-probe.spec.ts:171:1 › probe: by a link after a fresh load (the route Today opens) (7.2s)
+  ok 6 tests\e2e\zz-u74-probe.spec.ts:189:1 › probe: from Today (4.4s)
+  ok 5 tests\e2e\zz-u74-probe.spec.ts:171:1 › probe: by a link after a fresh load (the route Today opens) (5.8s)
+
+  6 passed (15.5s)
+probe exit 0
