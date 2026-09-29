@@ -40,3 +40,5 @@ If the model built from the half-note file already reads 120 on the committed co
 ## Report
 
 Judgement first: the Score screen on *Row, Row, Row Your Boat* and on an imported half-note file, before and after, as pictures with the label in each, and the six adversaries as a table (opens / labels / plays, before and after); then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes, the heard tempo unverified as music.
+
+**Landed 2026-09-29** (Entry 133; 5e6eceba, merged d71146cb); handoff `handoffs/5e6eceba.md`.
