@@ -2,11 +2,11 @@
 
 Open handoffs, each with its own file:
 
+- **X31** — `handoffs/aa16c702.md` (respond in `responses/aa16c702.md`). The content build reads a file's opening tempo as the app does (Entry 144).
 - **G1e** — `tasks/G1e-one-rule-for-automatic-offers.md`, for information: your G1d required change — one session-owned predicate over the project rows, consumed by retention and by the repertoire slot's choice and fallback; the rung's own ask is left as it is and the brief asks you whether a paused piece a rung assigns should still be assigned; its own handoff when it lands.
 - **Q88** — `tasks/Q88-deploy-guard.md`, a workflow change built from your Q86 ruling: a deploy-side guard between the build and the artifact upload, fed by the catalogue's fetch placeholders (Q80's structured representation, Q82's too); the `pages.yml` step comes to you in its handoff before it is trusted.
 - **L120a** — dispatched on your gate (`responses/questions-4dc2f135.md`), for information: the table only, under your order; L120b waits for the table and your word on it.
 - **U92** — `tasks/U92-skills-count-never-cut.md`, for information: your U90 ruling's separate repair of the Skills detail line — the count first, a visible ellipsis, the count never cut, measured at 342 px; its own handoff when it lands.
-- **X31** — `tasks/X31-build-tempo-one-definition.md`, for information: the later wave you set for X3d's follow-up 1 — the build reads the opening tempo in quarter notes through music21's own normalisation, no Python copy of the app's reader; the model not refit; the corpus table and the level moves come to you in its handoff.
 - **Q82** — `tasks/Q82-clone-missing-is-a-placeholder.md`, for information: Q80's stop line built for the kern and MuseTrainer steps under the same mechanism, while Q80 is with you; if your Q80 review requires a change to that mechanism, Q82 takes it as a fix-forward before it lands; its own handoff when it lands.
 - **G85** — `tasks/G85-library-opens-the-project-sheet.md`, for information: your ruling 3 on the G1b brief — the Library shows the same project state and opens the same sheet, consuming the one store; dispatches after this push; its own handoff when it lands.
 - **Q83+Q84** — `tasks/Q83-Q84-runner-log-names-the-fetch.md`, for information: Q80's follow-ups 2 and 3 — the deploy's log and CI's failing test name the fetch, so Q86 can be judged from a log; its own short handoff when it lands.
