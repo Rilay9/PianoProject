@@ -321,6 +321,92 @@ test.describe('the two leaps on Skills (F2b)', () => {
       .evaluateAll((nodes) => nodes.filter((node) => node.scrollWidth > node.clientWidth).map((node) => node.textContent ?? ''));
     expect(cut, 'names on Skills cut to an ellipsis').toEqual([]);
   });
+
+  /**
+   * The count is never cut, and a cut is seen (U92). The detail line read `Stage 2 · core · 15 to
+   * practise` on one line beside Drill it and Find more, clipped at the edge without a mark: at this
+   * width "Shifting position" read `Stage 2 · core · 1` and "Primary chords with the dominant seventh"
+   * `Stage 3 · core · 2` on the stack (U90's follow-up 1), and the wide face cut the line to `Stage 2 ·
+   * co`. A cut count reads as another number. So the count leads the line, and the line wraps: with
+   * the count first on one line and an ellipsis, the wide face still cut it to `15 to prac…`, and the
+   * stack a three-figure count (`docs/prompts/runs/U92/`). Read on every row the list draws over every
+   * stage, concept and exercise rows alike: the text up to the first ` · ` lies inside the line's
+   * visible box and clear of the ellipsis where there is one; a line cut anywhere shows an ellipsis;
+   * and the line sits inside its row, so a wrapped detail still reads as the row's.
+   */
+  for (const face of FACES) test(`every Skills row’s count is read whole, and a cut detail line says it is cut — ${face.name}`, async ({ page }) => {
+    await page.goto('/#/plan/skills');
+    await expect(page.locator('#skills-list .list-row').first()).toBeVisible();
+    if (face.css !== null) await page.addStyleTag({ content: face.css });
+    await page.locator('#skills-stage').selectOption('all');
+    const showAll = page.locator('#skills-show-all');
+    for (let i = 0; i < 12 && (await showAll.count()) > 0; i += 1) await showAll.click();
+    await expect(showAll).toHaveCount(0);
+    await page.evaluate(() => document.fonts.ready);
+
+    const shifting = page.locator('#skills-list .list-row[data-concept="position-shift"] .list-row__metatext');
+    await expect.soft(shifting, 'the count leads the detail line').toHaveText(/^\d+ to practise · Stage 2 · core$/);
+
+    const lines = await page.locator('#skills-list .list-row .list-row__metatext').evaluateAll((nodes) =>
+      nodes.map((node) => {
+        const line = node as HTMLElement;
+        const data = line.textContent ?? '';
+        const ellipsis = getComputedStyle(line).textOverflow === 'ellipsis';
+        const mark = document.createElement('span');
+        mark.textContent = '…';
+        line.append(mark);
+        const markWidth = mark.getBoundingClientRect().width;
+        mark.remove();
+        // The characters where they are laid out, not where an ellipsis folds away the ones it hides:
+        // read with it off, then put it back.
+        line.style.textOverflow = 'clip';
+        // The visible box, in fractions of a pixel: the line's own (no border, no padding) inside the
+        // meta line, which clips as well. `scrollWidth` rounds, and a line over its box by less than
+        // half a pixel still draws the ellipsis.
+        const own = line.getBoundingClientRect();
+        const meta = (line.closest('.list-row__meta') ?? line).getBoundingClientRect();
+        const row = (line.closest('.list-row') ?? line).getBoundingClientRect();
+        const left = Math.max(own.left, meta.left);
+        const top = Math.max(own.top, meta.top);
+        const bottom = Math.min(own.bottom, meta.bottom);
+        const edge = Math.min(own.right, meta.right);
+        const all = document.createRange();
+        all.selectNodeContents(line);
+        const drawn = [...all.getClientRects()].filter((r) => r.width > 0);
+        const cut =
+          line.scrollWidth > line.clientWidth ||
+          line.scrollHeight > line.clientHeight + 1 ||
+          drawn.some((r) => r.right > edge + 0.02 || r.bottom > bottom + 0.5);
+        const right = edge - (cut && ellipsis ? markWidth : 0);
+        const end = data.includes(' · ') ? data.indexOf(' · ') : data.length;
+        const range = document.createRange();
+        const text = line.firstChild;
+        if (text instanceof Text) {
+          range.setStart(text, 0);
+          range.setEnd(text, end);
+        }
+        const rects = [...range.getClientRects()].filter((r) => r.width > 0);
+        const whole =
+          rects.length > 0 && rects.every((r) => r.left >= left - 0.5 && r.right <= right + 0.5 && r.top >= top - 0.5 && r.bottom <= bottom + 0.5);
+        line.style.textOverflow = '';
+        const inRow = own.top >= row.top - 0.5 && own.bottom <= row.bottom + 0.5 && own.right <= row.right + 0.5;
+        return { data, first: data.slice(0, end), cut, ellipsis, whole, inRow };
+      }),
+    );
+    expect(lines.length, 'the list drew no detail lines').toBeGreaterThan(0);
+    expect.soft(
+      lines.filter((line) => !line.whole).map((line) => `"${line.first}" in "${line.data}"`),
+      'counts on Skills that are not read whole',
+    ).toEqual([]);
+    expect.soft(
+      lines.filter((line) => line.cut && !line.ellipsis).map((line) => line.data),
+      'detail lines on Skills cut without an ellipsis',
+    ).toEqual([]);
+    expect.soft(
+      lines.filter((line) => !line.inRow).map((line) => line.data),
+      'detail lines on Skills that leave their row',
+    ).toEqual([]);
+  });
 });
 
 /**

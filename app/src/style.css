@@ -3743,6 +3743,19 @@ input[type='checkbox'] {
   white-space: nowrap;
 }
 
+/* On Skills the detail line takes the lines it needs, and a cut says so (U92). It leads with the
+   count, "15 to practise", then the stages and the tracks. As one line clipped at the edge, beside
+   Drill it and Find more, it said a different number: "Shifting position" read "Stage 2 · core · 1"
+   for fifteen, with no sign that anything was missing. With the count first and an ellipsis, a face
+   wider than Segoe UI (Verdana) still cut the count itself to "15 to prac…", and so did Segoe UI on
+   a three-figure count ("120 to practise" on Arpeggios). A wrap costs the row a line; a cut count
+   costs the truth. The ellipsis stays for a single word wider than the column. The rule above holds
+   everywhere else, for the lines `fitDetail` has already trimmed. */
+#skills-list .list-row__metatext {
+  white-space: normal;
+  text-overflow: ellipsis;
+}
+
 /* Kept for the screens that still build their own strip. */
 .list-row__badges {
   display: flex;

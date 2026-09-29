@@ -1,0 +1,20 @@
+$ (.) python tools/docs/checks_for_paths.py app/src/ui/screens/SkillsScreen.ts app/src/style.css app/tests/e2e/plan.spec.ts app/tests/unit/skillsCountFirst.test.ts app/playwright.u92-4423.config.ts
+UNMATCHED: app/playwright.u92-4423.config.ts: no pattern in checks.json names it; the full required suites run. Add a pattern for it.
+# checks for 5 path(s): 4 matched, 1 unmatched
+# UNMATCHED app/playwright.u92-4423.config.ts: no pattern names it; the full required suites run
+# app/src/ui/screens/SkillsScreen.ts: app/src/**, app/src/ui/screens/SkillsScreen.ts
+# app/src/style.css: app/src/**, app/src/style.css
+# app/tests/e2e/plan.spec.ts: app/tests/e2e/*.spec.ts
+# app/tests/unit/skillsCountFirst.test.ts: app/tests/unit/*.test.ts
+converter-harness	.	python -m unittest discover -s tools/midi-cleanup/tests -v
+parity-reference	.	python tools/midi-cleanup/tests/parity_reference.py
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test --workers=4
+exit=0

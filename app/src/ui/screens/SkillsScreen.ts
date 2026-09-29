@@ -311,9 +311,13 @@ export function SkillsScreen(router: Router): HTMLElement {
       // never its id): the one thing the screen can say about it.
       judged ? null : el('span.muted.skill-taught', { text: `${SKILL_TEXT.taughtIn} ${entry.lesson.title}` }),
     );
+    // The count first, then the stage or stages, then the track or tracks (U92). Last, it was the
+    // part the row's edge cut: at 342 px "Shifting position" read `Stage 2 · core · 1` for fifteen,
+    // a different number with no sign that anything was missing, and on a long line `fitDetail`
+    // dropped it whole (`Stage 0, 4, 7`), since it keeps the first fact and drops from the end.
     const row = listRow({
       title: meta?.display ?? entry.concept,
-      meta: `Stage ${entry.stages.join(', ')} · ${entry.tracks.join(', ')} · ${String(entry.items.length)} to practise`,
+      meta: `${String(entry.items.length)} to practise · Stage ${entry.stages.join(', ')} · ${entry.tracks.join(', ')}`,
       actions,
       dataset: {
         'data-concept': entry.concept,
