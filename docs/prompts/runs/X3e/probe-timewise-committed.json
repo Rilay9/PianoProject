@@ -1,0 +1,62 @@
+{
+  "partwise": {
+    "tempoEventsOfTheFile": [
+      [
+        0,
+        0,
+        120,
+        "sound"
+      ]
+    ],
+    "engraver": "loads: 4 measures",
+    "storedRoot": "<score-partwise",
+    "measurement": "measured, 4 bars",
+    "tempoFact": {
+      "kind": "authored",
+      "via": "the file"
+    },
+    "sheetTempoLine": "Tempo · from the file — The file says 𝅗𝅥 = 60 (120 quarter notes a minute).",
+    "sheetTempoWhose": "file",
+    "sheetField": "120",
+    "sheetRead": "What the app readLength4 barsKey signatureno sharps or flats",
+    "e48StatedWritesAt": "<measure number=\"1\"><attributes><divisions>1</divisions><key><fifths>0</fifths><",
+    "e48TempoEventsAfter": [
+      [
+        0,
+        0,
+        72,
+        "sound"
+      ]
+    ],
+    "e48Engraver": "loads: 4 measures",
+    "swap": "swapped"
+  },
+  "timewise": {
+    "tempoEventsOfTheFile": [],
+    "engraver": "refused: OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML",
+    "storedRoot": "<score-timewise",
+    "measurement": {
+      "status": "unmeasured",
+      "reason": "the app could not read the score's notes (Error: OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML)"
+    },
+    "tempoFact": {
+      "kind": "authored",
+      "via": "the file"
+    },
+    "sheetTempoLine": "Tempo · the app’s guess — The file states no tempo, so the app chose ♩ = 100.",
+    "sheetTempoWhose": "guess",
+    "sheetField": "100",
+    "sheetRead": "What the app readLength1 barKey signatureno sharps or flats",
+    "e48StatedWritesAt": "<measure number=\"1\"><part id=\"P1\"><attributes><divisions>1</divisions><key><fift",
+    "e48TempoEventsAfter": [],
+    "e48Engraver": "refused: OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML",
+    "swap": "The file writes its hands as separate parts; the app swaps only a piano’s two staves."
+  },
+  "e48OnATimewiseFileWithNoTempo": {
+    "writerOnTheTimewiseText": "<measure number=\"1\"><sound tempo=\"72\"/><part id=\"P1\"><attrib",
+    "readerOnIt": [],
+    "throughTheStoreWritesAt": "<measure number=\"1\"><sound tempo=\"72\"/><part id=\"P1\"><attrib",
+    "readerThroughTheStore": [],
+    "engraverThroughTheStore": "refused: OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML"
+  }
+}

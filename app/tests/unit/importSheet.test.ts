@@ -39,6 +39,12 @@
  *   at all come from `score/tempoFromXml.ts`, the reader the score model's tempo map is placed from, so
  *   the number the line names is the number the Score screen opens at. A mark with no `<sound tempo>`
  *   now names its tempo in quarters (the reader normalises it), where X3c's line named none.
+ * - **A timewise file's sheet is its partwise twin's** (X3e; the X3d review's required change,
+ *   `responses/5e6eceba.md`): the door accepts `<score-timewise>`, and a file imported in that form says
+ *   what the same file says partwise — the tempo line, the length, what the notes ask, the hands it can
+ *   swap. On the committed door the timewise file's line said the app chose ♩ = 100 over the file's
+ *   written tempo, the length one bar, the notes unmeasured and the swap refused as separate parts
+ *   (`docs/prompts/runs/X3e/probe-timewise-committed.json`).
  */
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -60,7 +66,7 @@ vi.mock('../../src/data/importStore', async (importOriginal) => {
 
 import type { ImportRow } from '../../src/data/db';
 import type { Curriculum, Measurement, Provenance } from '../../src/curriculum/types';
-import { addImport, forgetConversionsForTest, getImport, measureImport, stateImportTempo, withOpeningTempo } from '../../src/data/importStore';
+import { addImport, correctImportHands, forgetConversionsForTest, getImport, measureImport, stateImportTempo, withOpeningTempo } from '../../src/data/importStore';
 import { convertMidi } from '../../src/import/midi/convert';
 import { DEFAULT_BPM } from '../../src/score/extractScoreModel';
 import { allProgress, recordRun, resetProgressForTest, walkSessions } from '../../src/data/progressStore';
@@ -69,6 +75,7 @@ import { IMPORT_TEXT, importStateWords } from '../../src/ui/help';
 import { openImportSheet, swapHands } from '../../src/ui/importSheet';
 import { clearFakeIndexedDb, fakeFile, useFakeIndexedDb } from './helpers/idb';
 import { installTextMeasurer } from './helpers/scoreCatalog';
+import { timewiseTwin } from './helpers/timewise';
 
 const FIXTURES = join(process.cwd(), 'tests', 'fixtures', 'imports');
 const midi = (name: string): File => fakeFile(name, new Uint8Array(readFileSync(join(FIXTURES, name))));
@@ -747,6 +754,66 @@ describe('the file’s own tempo (X3c)', () => {
   });
 });
 
+/**
+ * A timewise file's sheet is its partwise twin's (X3e): each shape the tempo line has words for, imported
+ * through the door in both forms (the timewise one its fixture re-nested, `helpers/timewise.ts`), and the
+ * learner's statement made on each stored row; the sheet a learner then meets, read whole.
+ */
+describe('a timewise file’s sheet reads as its partwise twin’s (X3e)', () => {
+  const said = (): string => text('#import-tempo').split(' — ')[1] ?? '';
+  interface Line {
+    whose: string | null;
+    said: string;
+    field: string;
+    sheet: string;
+  }
+  /** The sheet after importing `xml` (and stating `stated`, where given): the tempo line — whose, its words, the field's number — and the whole sheet's text. */
+  async function sheetOf(name: string, xml: string, stated?: number): Promise<Line> {
+    const imported = await addImport(fakeFile(`${name}.musicxml`, xml));
+    const row = stated === undefined ? imported : ((await stateImportTempo(imported.id, stated)) ?? imported);
+    document.body.replaceChildren();
+    openImportSheet(row, CURRICULUM);
+    const line: Line = {
+      whose: document.getElementById('import-tempo')?.getAttribute('data-whose') ?? null,
+      said: said(),
+      field: (document.getElementById('import-tempo-bpm') as HTMLInputElement | null)?.value ?? '',
+      sheet: text('#assign-sheet'),
+    };
+    document.body.replaceChildren();
+    return line;
+  }
+
+  it('the tempo line — whose, its words, the number the field starts at — and the whole sheet, for each shape the line has words for and after the learner states a tempo', async () => {
+    const shapes: [string, string, string, string, number?][] = [
+      ['half = 60, sound 120', twoStaves({ tempo: 60, beatUnit: 'half', sound: 120, time: [2, 2] }), 'The file says \u{1D15E} = 60 (120 quarter notes a minute).', '120'],
+      ['half = 60 alone', twoStaves({ tempo: 60, beatUnit: 'half', sound: null, time: [2, 2] }), 'The file says \u{1D15E} = 60 (120 quarter notes a minute).', '120'],
+      ['dotted quarter = 60, sound 90', twoStaves({ tempo: 60, beatUnit: 'quarter', dotted: true, sound: 90, time: [6, 8] }), 'The file says ♩. = 60 (90 quarter notes a minute).', '90'],
+      ['quarter = 96', twoStaves({ tempo: 96 }), 'The file says ♩ = 96.', '96'],
+      ['sound 100 at the opening, quarter = 132 in bar 2', twoStaves({ tempo: 132, tempoBar: 2, openingSound: 100 }), 'The file says ♩ = 100.', '100'],
+      ['a mark only in bar 2', twoStaves({ tempo: 132, tempoBar: 2 }), 'The file writes no tempo at its opening, only later in the piece.', ''],
+      ['half = 60, sound 100', twoStaves({ tempo: 60, beatUnit: 'half', sound: 100, time: [2, 2] }), 'The file prints \u{1D15E} = 60; its playback tempo is 100 quarter notes a minute.', '100'],
+      [
+        'a text mark "= 60" in cut time (E32)',
+        twoStaves({ words: '= 60', time: [2, 2] }),
+        'The file’s mark says “= 60”, with no note; the app reads it as a half note, the metre’s beat: 120 quarter notes a minute.',
+        '120',
+      ],
+      ['stated 72 on half = 60, sound 120 (E48)', twoStaves({ tempo: 60, beatUnit: 'half', sound: 120, time: [2, 2] }), 'You stated ♩ = 72.', '72', 72],
+      ['stated 72 on no tempo (E48)', twoStaves(), 'You stated ♩ = 72.', '72', 72],
+    ];
+    const got: Record<string, { partwise: Line; timewise: Line }> = {};
+    const wanted: Record<string, { partwise: Line; timewise: Line }> = {};
+    for (const [shape, xml, words, number, stated] of shapes) {
+      const partwise = await sheetOf(`${shape}, partwise`, xml, stated);
+      got[shape] = { partwise, timewise: await sheetOf(`${shape}, timewise`, timewiseTwin(xml), stated) };
+      // The rest of the sheet (the length, the key, the hands, what the notes ask, where it belongs) is the partwise file's.
+      const line: Line = { whose: stated === undefined ? 'file' : 'yours', said: words, field: number, sheet: partwise.sheet };
+      wanted[shape] = { partwise: line, timewise: line };
+    }
+    expect(got).toEqual(wanted);
+  }, 60_000);
+});
+
 describe('the conversion note follows the correction (U72)', () => {
   it('says the converter’s split only while it stands, on the import sheet and on the assign sheet', async () => {
     const imported = await addImport(midi('two-hands.mid'));
@@ -825,6 +892,23 @@ describe('swapping the hands', () => {
     expect(text('#assign-conversion-hands')).toContain('the hands are yours');
     expect(text('#assign-demands')).toBe(demandsLine(stored));
     expect(text('#assign-demands')).not.toBe(before);
+  });
+
+  it('a piano file imported in the timewise form swaps like its partwise twin, and a corrected score handed over timewise is kept in the form the engraver loads (X3e)', async () => {
+    // One part on two staves, imported timewise: the swap reads the stored score as the partwise one.
+    const imported = await addImport(fakeFile('two-staves-timewise.musicxml', timewiseTwin(twoStaves({ tempo: 96 }))));
+    const swapped = swapHands(imported.data as string);
+    const partwiseSwap = swapHands(twoStaves({ tempo: 96 }));
+    expect('xml' in swapped ? swapped.xml : swapped.refused).toBe('xml' in partwiseSwap ? partwiseSwap.xml : partwiseSwap.refused);
+
+    // The store's other door: a corrected score in the timewise form is measured and kept as its partwise twin.
+    const corrected = 'xml' in partwiseSwap ? partwiseSwap.xml : '';
+    const kept = (await correctImportHands(imported.id, timewiseTwin(corrected))) as ImportRow;
+    expect({ data: kept.data, measured: kept.measurement?.status, bars: kept.measurement?.status === 'measured' ? kept.measurement.bars : undefined }).toEqual({
+      data: corrected,
+      measured: 'measured',
+      bars: 2,
+    });
   });
 });
 
