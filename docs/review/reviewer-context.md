@@ -214,13 +214,14 @@ The scheduled reviewer must derive this state from:
 
 Do not manufacture status from an old snapshot. If the repository and this section disagree, the repository wins and this section must be corrected.
 
-Current snapshot, refreshed after G1/Q47/Q-tooling/U74 reviews on 2026-09-29:
-- G1 implementation `b48342f`: **APPROVE WITH ONE REQUIRED CHANGE**. Response: `docs/review/responses/b48342f.md`. G1 core encounter model is accepted. Required G1a: separate general `firstContact` run truth from sight-reading `unseen` before G2/X consumes it. G2 then owns wiring durable encounter/contact into the transfer offer; X1 must consume that one truth rather than invent another novelty reader.
-- Q47/Q46 implementation `8668afb`: **APPROVE**. Response: `docs/review/responses/8668afb.md`. Cold-cache/download path proved on CI run 36523543429 before later cancellation; cache-hit validation path proved on run 36525222177. Q47/Q46 close.
-- Q-tooling implementation `198c148`: **APPROVE WITH ONE REQUIRED CHANGE**. Response: `docs/review/responses/198c148.md`. Q64 manifest, prompt-view refresh and matrix helper are accepted. Q65 must encode discriminating seam-level minimum checks rather than duplicating full integration CI; full suites remain the merged-tree proof and the fallback for unmatched paths. Machine-read docs need specific check-map coverage instead of being swallowed by generic `docs/** -> no checks`.
-- U74 implementation `9c9cf86`: **APPROVE**. Response: `docs/review/responses/9c9cf86.md`. First-draw repair is accepted; U74 closes. E30 remains unchanged and should only be reopened later with U77/U78 and gallery/corpus evidence.
-- E2/E2a remain closed. X3 brief remains approved with its UI/store boundary correction and tempo control held unless a truthful semantic store write exists.
+Current snapshot, refreshed after reviewing the G1a/Q65a briefs on 2026-09-29:
+- G1 core implementation `b48342f`: accepted with required G1a. G1a brief in `docs/review/handoffs/9cfa808.md` **matches the required change and may proceed without a pre-build response**. It introduces `RunHeader.firstContact` as the general encounter fact, keeps `unseen` phrase-only as sight-reading evidence semantics, preserves legacy rows without manufacturing contact, and requires every `unseen` reader to be classified. Post-build review remains the gate before G2/X consumes general first-contact.
+- Q-tooling implementation `198c148`: accepted with required Q65a. Q65a brief in `docs/review/handoffs/9cfa808.md` **matches the required change and may proceed without a pre-build response**. It reclassifies whole-suite map entries into honest fan-out versus targeted discriminating specs, adds specific coverage for machine-read docs above the empty docs catch-all, preserves union semantics and the unmatched full-suite fallback, and leaves full integrated suites to CI.
+- No `docs/review/responses/9cfa808.md` should be created unless one of those briefs later departs from the agreed mechanism.
+- Q47/Q46 are closed with runner proof recorded.
+- U74 is closed; `docs/04` §5 now states the current code's window/look-ahead rule. E30 remains unchanged pending a deliberate later revisit with U77/U78.
+- G2 waits for G1a post-build acceptance before consuming general first-contact/run-header truth.
+- Q65a must land before the path map may suppress checks based on its narrowed minimums; until then the map is advisory.
 - F2 still requires F2a before X1 consumes its curriculum claims.
-- G2 waits for G1a before consuming general first-contact/run-header truth.
 - X1 still owns L113 and must route automatic rung-owned/assigned material through the canonical E2 gate while preserving explicit exploration.
-- No owner decision is currently required by these four reviews.
+- No owner decision is currently required by the G1a/Q65a briefs.
