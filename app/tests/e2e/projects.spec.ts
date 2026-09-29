@@ -268,3 +268,76 @@ test('a piece passed and unplayed past the window, paused on its sheet: Today st
   await page.goto('/#/progress');
   await expect(page.locator(`#progress-projects [data-project][data-item="${ODE}"] .list-row__sub`)).toHaveText(`Paused since ${today()}`);
 });
+
+/** What a box looks like, as the browser computed it: the face and size, the box, the border and its corners. */
+async function look(page: Page, selector: string): Promise<Record<string, unknown>> {
+  return page.locator(selector).evaluate((node) => {
+    const s = getComputedStyle(node);
+    const sides = ['Top', 'Right', 'Bottom', 'Left'] as const;
+    return {
+      fontFamily: s.fontFamily,
+      fontSize: s.fontSize,
+      fontWeight: s.fontWeight,
+      fontStyle: s.fontStyle,
+      border: sides.map((side) => `${s.getPropertyValue(`border-${side.toLowerCase()}-width`)} ${s.getPropertyValue(`border-${side.toLowerCase()}-style`)} ${s.getPropertyValue(`border-${side.toLowerCase()}-color`)}`),
+      radius: [s.borderTopLeftRadius, s.borderTopRightRadius, s.borderBottomRightRadius, s.borderBottomLeftRadius],
+      padding: [s.paddingTop, s.paddingRight, s.paddingBottom, s.paddingLeft],
+      minHeight: s.minHeight,
+      background: s.backgroundColor,
+      color: s.color,
+    };
+  });
+}
+
+// G87 (G1b's follow-up 6): the date box beside *I performed it* was the browser's own control — an
+// inset grey border, square corners, small default type, and in Chromium a monospace face — the one raw box
+// among the sheet's styled ones. It now wears the sheet's text box's face, size, box, border and
+// corners, and is still the browser's date control. The project is seeded as the Stage 9 case seeds
+// its own, keyed by the catalogue's identity, and the sheet opened from Progress, the second door.
+test('the project sheet’s date box beside I performed it wears the sheet’s text box’s font, border, corners and box at 342 × 740 (G87)', async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.setViewportSize({ width: 342, height: 740 });
+  await page.goto('/#/progress');
+  await expect(page.locator('#progress-projects')).toHaveAttribute('data-drawn', 'true', { timeout: 30_000 });
+  const identity = await page.evaluate(async (id) => {
+    const catalog = (await (await fetch('content/catalog.json')).json()) as { id: string; provenance?: { identity?: { kind: string; sha256?: string } } }[];
+    return catalog.find((one) => one.id === id)?.provenance?.identity ?? null;
+  }, ITEM);
+  if (identity?.kind !== 'file' || identity.sha256 === undefined) throw new Error(`${ITEM} has no file identity`);
+  const at = new Date().toISOString();
+  await putRows(page, {
+    projects: [{ id: `file:${identity.sha256}`, material: identity, itemId: ITEM, state: 'learning', since: at, history: [{ state: 'learning', at, why: 'learn' }] }],
+  });
+  await page.reload();
+  await page.locator(`#progress-projects [data-project][data-item="${ITEM}"]`).click();
+  await expect(page.locator('#project-state')).toHaveText(`Learning since ${today()}`);
+  const date = page.locator('#project-performed-on');
+  await expect(date).toBeVisible();
+  await expect(page.locator('#project-goal')).toBeVisible();
+
+  // Still the browser's own date control: its picker, today's date, no day after today.
+  await expect(date).toHaveAttribute('type', 'date');
+  await expect(date).toHaveValue(today());
+  await expect(date).toHaveAttribute('max', today());
+  // The same face, size, border, corners and box as the sheet's other input, the goal's text box.
+  expect(await look(page, '#project-performed-on')).toEqual(await look(page, '#project-goal'));
+  // And it fits the phone: no part of it past the screen's right edge.
+  const box = await date.boundingBox();
+  expect((box?.x ?? 0) + (box?.width ?? 0), 'the date box runs past the screen').toBeLessThanOrEqual(342);
+});
+
+// G87 (G1b's follow-up 3): a Stage 9 page says there is no rung to pass, and its Start line said
+// *Opens "X", the first thing on this rung.* under it. A project stage's line names what Start
+// opens and no more; an ordinary rung's line, where Start opens its first option, is as it was.
+test('a Stage 9 page’s Start line names what Start opens and no more; a Stage 1 page’s still calls it the first thing on this rung (G87)', async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.setViewportSize({ width: 342, height: 740 });
+  await page.goto('/#/lesson/1.1');
+  await expect(page.locator('#lesson-start-what')).toHaveText(/^Opens “[^”]+”, the first thing on this rung\.$/, { timeout: 60_000 });
+
+  await page.goto('/#/lesson/classical.9');
+  await expect(page.locator('#lesson-project')).toHaveText('A project: there is no rung to pass here.');
+  await expect(page.locator('#lesson-start')).toBeVisible();
+  await expect(page.locator('#lesson-start-what')).toHaveText(/^Opens “[^”]+”\.$/);
+  await expect(page.locator('[data-screen="lesson"]')).not.toContainText('the first thing on this rung');
+});

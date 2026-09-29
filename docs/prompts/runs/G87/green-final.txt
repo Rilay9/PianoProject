@@ -1,0 +1,11 @@
+files: tests/unit/projectSheet.test.ts tests/unit/stage9ProjectsPage.test.ts
+
+ RUN  v5.0.0 <worktree>/app
+
+
+ Test Files  2 passed (2)
+      Tests  17 passed (17)
+   Start at  18:50:23
+   Duration  2.89s (tests 43%, environment 26%, transform 25%, import 6%)
+
+exit=0
