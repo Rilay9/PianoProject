@@ -7,9 +7,11 @@
  * (whose the hands are, the tempo, the key where it was estimated — each with its provenance as the
  * store holds it, `help.whoseFact`, never reworded into certainty), **what the notes ask** (E2's
  * line, unchanged), and then **where it belongs** — the assign sheet's own body, T52's sentence
- * first. Under the guesses, the one correction the store can take: **Swap the hands**, saved through
- * `importStore.correctImportHands`, which makes the corrected score the score and measures it again;
- * the sheet then re-reads the row the store returned.
+ * first. Among the guesses, the two corrections the store can take: **the learner's tempo** on the
+ * tempo line (X3a), saved through `importStore.stateImportTempo` (E48), which writes it into the
+ * score, measures it again and names the learner; and **Swap the hands**, saved through
+ * `importStore.correctImportHands`, which makes the corrected score the score and measures it again.
+ * Either way the sheet then re-reads the row the store returned.
  *
  * **The UI opens this; the store never does** (the reviewer's required change,
  * `responses/ef80e86.md`). `addImport` parses, measures, stores and returns the row; the Library's
@@ -30,7 +32,7 @@
 import type { Curriculum } from '../curriculum/types';
 import type { ImportRow } from '../data/db';
 import { loadCurriculum } from '../curriculum/load';
-import { composerFromMusicXml, conversionFor, correctImportHands, getImport, ImportError } from '../data/importStore';
+import { composerFromMusicXml, conversionFor, correctImportHands, getImport, ImportError, stateImportTempo } from '../data/importStore';
 import { estimateLevelFor } from '../score/estimateImport';
 import { DEFAULT_BPM } from '../score/extractScoreModel';
 import {
@@ -84,6 +86,17 @@ export function swapHands(xml: string): { xml: string } | { refused: string } {
 /** The tempo the file writes, rounded to a whole beat per minute, or `undefined`. */
 function fileTempo(xml: string): number | undefined {
   const written = /<per-minute>\s*([\d.]+)\s*<\/per-minute>/.exec(xml)?.[1] ?? /<sound[^>]*\btempo="([\d.]+)"/.exec(xml)?.[1];
+  const bpm = Number(written);
+  return written !== undefined && Number.isFinite(bpm) && bpm > 0 ? Math.round(bpm) : undefined;
+}
+
+/**
+ * The tempo the score opens at, in quarter notes a minute, rounded to a whole beat: its first
+ * `<sound tempo>` — what the player reads, and where the store writes a learner's stated tempo
+ * (`withOpeningTempo` gives the first bar one). `undefined` where the score sounds no tempo.
+ */
+function openingTempo(xml: string): number | undefined {
+  const written = /<sound\b[^>]*\btempo="([\d.]+)"/.exec(xml)?.[1];
   const bpm = Number(written);
   return written !== undefined && Number.isFinite(bpm) && bpm > 0 ? Math.round(bpm) : undefined;
 }
@@ -159,18 +172,24 @@ function handsWords(row: ImportRow): { whose: Whose; words: string | Node } {
   return { whose, words: source === 'imported-midi' ? IMPORT_TEXT.handsTracks : IMPORT_TEXT.handsStaves };
 }
 
-function tempoWords(row: ImportRow, xml: string): { whose: Whose; words: string } {
+/** The tempo line: whose the tempo is, its words, and the number it names (the control starts there). */
+function tempoWords(row: ImportRow, xml: string): { whose: Whose; words: string; bpm: number | undefined } {
   const fact = row.provenance?.facts.tempo;
   const written = fileTempo(xml);
   // A row with no tempo fact (imported before the app kept one) is said from the file itself: a
   // tempo written in it is the file's, and none written is the app's choice.
   const whose = fact ? whoseFact(fact) : written === undefined ? 'guess' : 'file';
   if (whose === 'yours') {
+    // The number where the store wrote it (X3a): the store's fact names the learner and carries no
+    // number (E48's `stateImportTempo`), and the stated tempo is what the score now opens at. Never
+    // the printed mark's number, which is in the mark's own note (a half note at half the tempo) and
+    // may be a later bar's.
     const stated = Number(fact?.value);
-    return { whose, words: IMPORT_TEXT.tempoYours(Number.isFinite(stated) && stated > 0 ? Math.round(stated) : written) };
+    const bpm = openingTempo(xml) ?? (Number.isFinite(stated) && stated > 0 ? Math.round(stated) : undefined);
+    return { whose, words: IMPORT_TEXT.tempoYours(bpm), bpm };
   }
-  if (whose === 'file' && written !== undefined) return { whose, words: IMPORT_TEXT.tempoFile(written) };
-  return { whose: 'guess', words: IMPORT_TEXT.tempoChosen(DEFAULT_BPM) };
+  if (whose === 'file' && written !== undefined) return { whose, words: IMPORT_TEXT.tempoFile(written), bpm: written };
+  return { whose: 'guess', words: IMPORT_TEXT.tempoChosen(DEFAULT_BPM), bpm: DEFAULT_BPM };
 }
 
 function guessedSection(row: ImportRow): HTMLElement {
@@ -195,15 +214,9 @@ function guessedSection(row: ImportRow): HTMLElement {
       guessLine('import-key', IMPORT_TEXT.key, 'guess', stamped ? IMPORT_TEXT.keyStamped : IMPORT_TEXT.keyEstimated(printedSignature(xml) ?? 'no key signature')),
     );
   }
-  // **Set the tempo: held, not built (X3; E48).** A learner's stated tempo needs one store
-  // operation that owns the whole mutation — the tempo fact `authored` with the learner in `via`,
-  // every tempo-sensitive demand measured again under the stated tempo, `measuredUnder`, only the
-  // `untrusted` facts the new measurement resolves cleared, and no stale background measurement
-  // writing over the learner's newer word (`responses/ef80e86.md`). `importStore.ts` has no such
-  // operation in this tree, and `updateImport` patches metadata only and is not widened from here,
-  // so no control is drawn: the tempo line says whose the tempo is and invites nothing the app
-  // cannot do. When the operation lands, its control sits beside Swap and its row renders through
-  // `tempoWords`, which already reads a learner's tempo as theirs.
+  // **The learner's tempo (X3a; E48)** is drawn by the sheet on this section's tempo line while the
+  // tempo is the app's guess or the file's (`openImportSheet`): the store's `stateImportTempo` owns
+  // the whole change (`responses/ef80e86.md` question 1), and this line then reads the row it returned.
   //
   // **No key control** (the reviewer, question 2; E49): a key correction is a semantic correction
   // path like the hands', not a confirmation button, and it is a later row.
@@ -232,12 +245,30 @@ export function openImportSheet(row: ImportRow, curriculum: Curriculum, options:
   const swap = button(IMPORT_TEXT.swap, () => void swapTheHands(), { id: 'import-swap' });
   const swapBlock = el('div', {}, el('div.row', {}, swap), swapSaid);
 
+  // The learner's tempo (X3a; E48): a number and *Use this tempo*, on the tempo line while the tempo
+  // is the app's guess or the file's. Drawn once, like the swap, so a number typed and a refusal said
+  // survive a redraw; gone once the tempo is the learner's (the line then says it).
+  const tempoField = el('input', { id: 'import-tempo-bpm', type: 'number', step: '1', inputMode: 'numeric' }) as HTMLInputElement;
+  const tempoUse = button(IMPORT_TEXT.tempoUse, () => void stateTheTempo(), { id: 'import-tempo-use' });
+  const tempoSaid = el('p.muted', { id: 'import-tempo-said', 'aria-live': 'polite', hidden: true });
+  const tempoBlock = el('div', { id: 'import-tempo-set' }, el('div.row', {}, el('label', {}, `${IMPORT_TEXT.tempoField} `, tempoField), tempoUse), tempoSaid);
+  const sayTempo = (words: string): void => {
+    tempoSaid.textContent = words;
+    tempoSaid.hidden = words === '';
+  };
+
   const render = (): void => {
     own.textContent = current.kind === 'pdf' ? IMPORT_TEXT.ownPdf : IMPORT_TEXT.own;
     read.replaceChildren(readSection(current));
     const guesses = guessedSection(current);
     guessed.replaceChildren(guesses);
     if (current.kind === 'musicxml' && typeof current.data === 'string') {
+      const tempo = tempoWords(current, current.data);
+      if (tempo.whose !== 'yours') {
+        // It starts at the number the line names: the one a learner who knows better corrects.
+        if (tempoField.value === '' && tempo.bpm !== undefined) tempoField.value = String(tempo.bpm);
+        guesses.querySelector('#import-tempo')?.after(tempoBlock);
+      }
       const can = swapHands(current.data);
       swap.disabled = 'refused' in can;
       // A control that cannot act says why, on the sheet (`04` §0 R4).
@@ -250,6 +281,8 @@ export function openImportSheet(row: ImportRow, curriculum: Curriculum, options:
 
   async function swapTheHands(): Promise<void> {
     swap.disabled = true;
+    // And no tempo stated meanwhile (X3a): one change to the score at a time (`stateTheTempo`).
+    tempoUse.disabled = true;
     swapSaid.textContent = IMPORT_TEXT.swapping;
     try {
       // The stored bytes, read now: the score is whatever the store holds, not what the sheet opened on.
@@ -274,6 +307,36 @@ export function openImportSheet(row: ImportRow, curriculum: Curriculum, options:
       swapSaid.textContent = cause instanceof ImportError ? cause.message : IMPORT_TEXT.swapFailed;
     } finally {
       swap.disabled = current.kind !== 'musicxml' || typeof current.data !== 'string' || 'refused' in swapHands(current.data);
+      tempoUse.disabled = false;
+    }
+  }
+
+  /**
+   * The learner states the tempo through the store, which owns the whole change (E48): the tempo
+   * written into the score's first bar, the score measured again, the fact naming the learner, the
+   * level estimated again where it is an estimate. The sheet sends the number as typed — the store's
+   * bounds decide, in its words, and the sheet clamps nothing — then re-reads the row it returned.
+   */
+  async function stateTheTempo(): Promise<void> {
+    tempoUse.disabled = true;
+    // One change at a time: a swap computed from the score before this statement would save a score
+    // without the stated tempo under a fact that says it is the learner's.
+    swap.disabled = true;
+    sayTempo('');
+    try {
+      const saved = await stateImportTempo(current.id, Number(tempoField.value), new Date(), { estimate: estimateLevelFor });
+      if (!saved) {
+        sayTempo(IMPORT_TEXT.tempoFailed);
+        return;
+      }
+      current = saved;
+      render();
+      if (saved.levelSource !== 'judged' && saved.level !== undefined) controls.setEstimated(saved.level);
+    } catch (cause) {
+      sayTempo(cause instanceof ImportError ? cause.message : IMPORT_TEXT.tempoFailed);
+    } finally {
+      tempoUse.disabled = false;
+      swap.disabled = typeof current.data !== 'string' || 'refused' in swapHands(current.data);
     }
   }
 
@@ -284,7 +347,7 @@ export function openImportSheet(row: ImportRow, curriculum: Curriculum, options:
   // The assign sheet's body, unchanged, T52's sentence first (a paragraph of the body's own, as on
   // the assign sheet). Its Save writes the assignment; nothing here writes a run.
   sheet.body.append(el('h3', { id: 'import-belongs', text: IMPORT_TEXT.belongs }), el('p.muted', { text: ASSIGN_SENTENCE }));
-  // Declared after the swap's handler reads it, which it can only do once the sheet is drawn.
+  // Declared after the swap's and the tempo's handlers read it, which they can only do once the sheet is drawn.
   const controls = appendAssignControls(sheet, row, curriculum, options);
   return sheet;
 }

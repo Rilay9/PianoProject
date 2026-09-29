@@ -18,11 +18,17 @@
  *
  * And the share door (`takeSharedFiles`): a file Android parked in the share cache is imported by
  * the Library on its way in, and the Library opens the sheet from the row it got back.
+ *
+ * And the learner's stated tempo (X3a; E48): on the same fixture, whose file states no tempo, the
+ * learner types the tempo on the sheet's tempo line and presses *Use this tempo*; the store writes it
+ * into the score and measures it again, the line and the Library row say the tempo is theirs, and the
+ * Score screen's tempo label, at 100 %, reads the stated tempo rather than the app's 100.
  */
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { setTempoPercent } from './scoreControls';
 
 const FIXTURES = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'fixtures', 'imports');
 const LEFT_HAND_FIRST = path.join(FIXTURES, 'left-hand-first.mid');
@@ -113,8 +119,8 @@ test.describe('the import experience', () => {
     await expect(sheet.locator('#assign-conversion-hands')).toContainText('the first (Left hand) is the upper staff');
     await expect(sheet.locator('#import-tempo')).toContainText('the app’s guess');
     await expect(sheet.locator('#import-tempo')).toContainText('The file states no tempo, so the app chose ♩ = 100.');
-    // The tempo control is held (E48): nothing to type a tempo into.
-    await expect(sheet.locator('#import-guessed input')).toHaveCount(0);
+    // The tempo is the app's guess, so the line offers the learner's own (X3a; stated in the case below).
+    await expect(sheet.locator('#import-tempo-use')).toBeVisible();
 
     // What the notes ask, before: the bass line under the treble staff and the tune over the bass.
     const demands = sheet.locator('#assign-demands');
@@ -161,6 +167,43 @@ test.describe('the import experience', () => {
     await row.click();
     await expect(page).toHaveURL(new RegExp(`#/score/${ITEM.replace('.', '\\.')}`));
     await expect(page.locator('#score-stage .is-front svg').first()).toBeVisible({ timeout: 30_000 });
+  });
+
+  test('state the tempo on the sheet: the line and the row say it is the learner’s, and the Score screen’s tempo label reads it', async ({ page }) => {
+    test.setTimeout(90_000);
+    await page.goto('/#/library');
+    await page.locator('#library-file').setInputFiles(LEFT_HAND_FIRST);
+    const sheet = page.locator('#assign-sheet[data-sheet="import"]');
+    await expect(sheet).toBeVisible();
+    const tempo = sheet.locator('#import-tempo');
+    await expect(tempo).toContainText('The file states no tempo, so the app chose ♩ = 100.');
+
+    // The learner knows the piece goes at 60 and says so.
+    await sheet.locator('#import-tempo-bpm').fill('60');
+    await sheet.locator('#import-tempo-use').click();
+    await expect(tempo).toContainText('yours');
+    await expect(tempo).toContainText('You stated ♩ = 60.');
+    await expect(tempo).not.toContainText('the app’s guess');
+    await expect(sheet.locator('#import-tempo-use')).toHaveCount(0);
+
+    // The store's change: the score opens at 60, and the fact names the learner.
+    const stated = await stored<StoredRow>(page, 'imports', ITEM);
+    expect(stated?.data).toContain('<sound tempo="60"/>');
+    expect(stated?.provenance?.facts.tempo?.kind).toBe('authored');
+    expect(stated?.provenance?.facts.tempo?.via).toMatch(/learner/);
+
+    // No rung; the Library row says the tempo is the learner's (the hands are the file's, so no hands word).
+    await sheet.locator('#assign-save').click();
+    await expect(sheet).toBeHidden();
+    const row = page.locator(`.list-row[data-item="${ITEM}"]`);
+    await expect(row.locator('.library-import-state')).toHaveText('measured · tempo yours');
+
+    // The Score screen plays it at the stated tempo: at 100 % the label reads 60, not the app's 100.
+    await row.click();
+    await expect(page).toHaveURL(new RegExp(`#/score/${ITEM.replace('.', '\\.')}`));
+    await expect(page.locator('#score-stage .is-front svg').first()).toBeVisible({ timeout: 30_000 });
+    await setTempoPercent(page, 100);
+    await expect(page.locator('#score-tempo-label')).toHaveText(/\b60 bpm$/);
   });
 
   test('a file shared into the app opens the sheet from the row the Library got back', async ({ page }) => {

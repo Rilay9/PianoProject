@@ -1744,6 +1744,15 @@ export const IMPORT_TEXT = {
   tempoFile: (bpm: number): string => `The file says ♩ = ${String(bpm)}.`,
   tempoChosen: (bpm: number): string => `The file states no tempo, so the app chose ♩ = ${String(bpm)}.`,
   tempoYours: (bpm: number | undefined): string => (bpm === undefined ? 'You stated it.' : `You stated ♩ = ${String(bpm)}.`),
+  /**
+   * The learner's tempo, on the tempo line while it is the app's guess or the file's (X3a; E48): the
+   * field's label, in the line's own notation, and the button. A tempo the store refuses is said in
+   * the store's words (`stateImportTempo`); `tempoFailed` only where the store saved nothing and said
+   * no reason.
+   */
+  tempoField: '♩ =',
+  tempoUse: 'Use this tempo',
+  tempoFailed: 'The tempo could not be saved; the score is as it was.',
   key: 'Key',
   keyEstimated: (signature: string): string => `Estimated from the notes; the app printed ${signature}.`,
   keyStamped: 'The command-line converter may have estimated it from the notes; the file does not say.',
