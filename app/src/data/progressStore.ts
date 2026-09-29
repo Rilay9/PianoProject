@@ -180,9 +180,10 @@ export async function recordRun(result: RunResult, now = new Date()): Promise<Pr
    * in the store every writer goes through, so a writer that forgets cannot
    * turn practice into evidence.
    *
-   * A phrase's rule only (`isPhraseRun`, G1): since G1 every run the Score
-   * screen records carries the first-contact fact, and a piece played again
-   * (`unseen: false`) is practice that passes as it always did.
+   * A phrase's rule only (`isPhraseRun`, G1): `unseen` is the phrase's field
+   * (G1a; the relation on every run is `firstContact`, which gates nothing
+   * here), and a piece's run G1's app stored with `unseen: false` is practice
+   * that passes as it always did.
    */
   const evidence = !(result.unseen === false && isPhraseRun(result));
   // The same exercise opened from Plan or the Library is a different phrase
@@ -198,9 +199,9 @@ export async function recordRun(result: RunResult, now = new Date()): Promise<Pr
    * and "mastered" would be claims about the row that no reading supports;
    * what a reading shows is its evidence, on the session row, which the
    * reader and `rungState` read. `unseen` (or the recipe) is written on every
-   * run of a generated phrase (C1, C4); since G1 `unseen` is on every Score
+   * run of a generated phrase (C1, C4); G1's app wrote `unseen` on every Score
    * screen run, so which runs are phrases is `isPhraseRun`'s to say, and every
-   * row written before G1 reads as it did. The row keeps its practice — the
+   * row written before G1a reads as it did. The row keeps its practice — the
    * attempt, the minutes, when — and the day's tick above stays: a habit, not
    * a mastery.
    */

@@ -150,20 +150,40 @@ export interface RunHeader {
     latencyMs: number | NotMeasured;
   };
   /**
-   * First contact (C1; since G1 derived from the encounter history,
-   * `encounterStore.firstContactIn`): `true` where nothing of this material had
-   * been met before the run — no run of it, no playback or demonstration of it
-   * on any visit, no viewing of it on another visit (the view that reading it
-   * needs, this visit's, does not count). `false` otherwise.
+   * First contact, the fact (G1a; the reviewer's required change on G1,
+   * `docs/review/responses/b48342f.md`): the encounter relation of the run's
+   * material at the moment of the run, derived from the encounter history
+   * (`encounterStore.firstContactIn`) and read again before the run is stored.
+   * `true` where nothing of this material had been met before — no run of it,
+   * no playback or demonstration of it on any visit, no viewing of it on
+   * another visit (the view that reading it needs, this visit's, does not
+   * count); `false` otherwise.
    *
-   * On a generated phrase it is sight-reading's claim, and `false` keeps the run
-   * practice and never evidence of reading (reviewer decision 3): `recordRun`,
-   * the rung state and the history read it so, through `isPhraseRun`. Since G1
-   * the Score screen writes it on every run — a notated piece, an excerpt, an
-   * import — as the audited fact of first contact, read by nothing new yet (G2
-   * and X read it), and never a gate on a piece's pass: a piece practised again
-   * is not refused anything. Absent on a run written before G1 of anything but a
-   * phrase, and on the drill and paper screens' runs.
+   * Written by the Score screen on every run it records — a notated piece, an
+   * excerpt, an import, a generated phrase. A fact, never a competence or an
+   * evidence state, and never a gate on a pass: a piece practised again is
+   * refused nothing. This is the field a consumer of general contact reads (G2's
+   * offer, X's session, the later lifecycle), and it needs no `isPhraseRun` to
+   * read it. Absent — unknown, never inferred from `unseen` — on every run
+   * written before G1a, and on the drill and paper screens' runs.
+   */
+  firstContact?: boolean;
+  /**
+   * The generated phrase's sight-reading condition (C1): `true` on a first
+   * reading, `false` where the phrase was read, heard or seen before — which
+   * keeps the run practice and never evidence of reading (reviewer decision
+   * 3). `recordRun`, the rung state, the history line and the evidence job read
+   * it so, through `isPhraseRun`; the evidence's `unseen` condition and the
+   * ladder's first-contact context read it on the phrase runs that alone have
+   * evidence (`skillActivation`). Written on phrase runs only, beside
+   * `firstContact` and derived from that relation and the visit rule — today
+   * the same value, one derivation with two names, so a later change to the
+   * visit rule moves this field and not the fact (G1a).
+   *
+   * Absent on anything but a phrase — with one window: G1's app wrote it on
+   * every Score-screen run as the first-contact fact, between G1's landing and
+   * G1a's, so a piece's run stored then carries it (and no `firstContact`);
+   * `isPhraseRun` reads such a row as no phrase.
    */
   unseen?: boolean;
   /** The piece was played to the learner part way through this run (`Hear it` over it, T33). */
@@ -249,11 +269,17 @@ export function phraseVersionOf(row: Pick<RunHeader, 'generator'>): number {
  * says *not first sight* on its history line.
  *
  * Until G1 the first-reading flag alone said so — C1 wrote `unseen` on phrases and on nothing else —
- * and every reader asked `unseen !== undefined`. G1 writes the flag on every run the Score screen
- * records, as the first-contact fact; a piece played again is `unseen: false` and must not lose its
- * pass. So: a phrase's recipe (every sight-read since C4), or the flag on a run whose material is none
- * but a phrase's — a sight-reading generator identity (D4), or no material at all, which is a run from
- * before D4, when only phrases carried the flag. Every row written before G1 reads exactly as before.
+ * and every reader asked `unseen !== undefined`. G1's app wrote the flag on every run the Score screen
+ * recorded, as the first-contact fact; a piece played again stored then is `unseen: false` and must
+ * not lose its pass. So: a phrase's recipe (every sight-read since C4), or the flag on a run whose
+ * material is none but a phrase's — a sight-reading generator identity (D4), or no material at all,
+ * which is a run from before D4, when only phrases carried the flag. Every row written before G1 reads
+ * exactly as before, and so does every row G1's app wrote.
+ *
+ * Since G1a the fact has its own field (`firstContact`) and `unseen` is a phrase's again, so this is
+ * the classifier for the phrase readers and for rows without a recipe, not a question a consumer of
+ * general contact asks: that consumer reads `firstContact`. The relation alone never makes a run a
+ * phrase.
  */
 export function isPhraseRun(row: Pick<RunHeader, 'unseen' | 'recipe' | 'material'>): boolean {
   if (row.recipe !== undefined) return true;

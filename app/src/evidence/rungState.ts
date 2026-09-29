@@ -33,9 +33,10 @@
  *
  * **What a run measured** is read, never assumed: accuracy a number (a run
  * nothing heard is `not measured`, C1), not rhythm only, not a phrase met
- * before (`unseen: false` on a phrase's run, `isPhraseRun`: since G1 a piece
- * played again carries it too, and meets its rung as it always did), not the
- * learner's own answer (`selfReport`). A
+ * before (`unseen: false` on a phrase's run, `isPhraseRun`: a piece played
+ * again that G1's app stored carries it too, and meets its rung as it always
+ * did; since G1a a piece's run carries the relation as `firstContact`, which
+ * no requirement reads), not the learner's own answer (`selfReport`). A
  * Keep tempo run reaches the rung's tempo on what it measured; a Wait run has
  * no tempo, so it meets only a rung that asks for none (T37). A drill has no
  * tempo and is judged on its accuracy, and Simon on its chain, as its screen

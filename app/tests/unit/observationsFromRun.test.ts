@@ -411,6 +411,8 @@ describe('what the learner had heard', () => {
     finish(tempoRun(TWO_BARS));
     const row = await storedRow();
     expect(row.unseen).toBe(false);
+    // G1a: the encounter relation beside sight-reading's condition, the same value today.
+    expect(row.firstContact).toBe(false);
     expect(row.demonstrated).toBe(false);
   });
 
@@ -422,6 +424,7 @@ describe('what the learner had heard', () => {
     finish(tempoRun(TWO_BARS));
     const row = await storedRow();
     expect(row.unseen).toBe(true);
+    expect(row.firstContact).toBe(true);
   });
 
   it('a demonstrated take stores demonstrated: true and no performance flag', async () => {
@@ -437,6 +440,9 @@ describe('what the learner had heard', () => {
     // Revised (G1): first contact is written on every run since G1, a piece's
     // included — an audit fact, never a gate on its pass. This take had the
     // piece played to the learner inside it, so it was not a first contact.
-    expect(row.unseen).toBe(false);
+    // Revised (G1a): under its own name, `firstContact`; `unseen` is the
+    // generated phrase's field again, and a piece's run carries none.
+    expect(row.firstContact).toBe(false);
+    expect('unseen' in row, 'a piece’s run carries sight-reading’s field').toBe(false);
   });
 });

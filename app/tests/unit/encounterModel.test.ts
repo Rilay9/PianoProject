@@ -549,7 +549,10 @@ describe('the first-contact fact on a piece is an audit fact, never a gate on it
   });
   afterEach(() => clearFakeIndexedDb());
 
+  /** A piece's run as G1's app wrote it: the relation under sight-reading's name. */
   const pieceRun = (unseen: boolean): RunResult => ({ ...run(PARENT, file('p'), NOON), unseen, passed: true, masterEligible: false });
+  /** A piece's run as G1a writes it: `firstContact`, and no `unseen` (the reviewer's required change, `responses/b48342f.md`). */
+  const pieceRunG1a = (firstContact: boolean): RunResult => ({ ...run(PARENT, file('p'), NOON), firstContact, passed: true, masterEligible: false });
 
   it('which runs are generated phrases: the recipe, or the flag on a run whose material is none but a phrase’s', () => {
     expect(isPhraseRun({ recipe: { row: 'drill.reading.x' } })).toBe(true);
@@ -559,8 +562,30 @@ describe('the first-contact fact on a piece is an audit fact, never a gate on it
     expect(isPhraseRun({ unseen: true, material: scale('A') })).toBe(false);
     expect(isPhraseRun({ unseen: false, material: { kind: 'none' } })).toBe(false);
     expect(isPhraseRun({})).toBe(false);
+    // G1a: the relation is not sight-reading's mark — a run carrying `firstContact` alone is no phrase,
+    // whatever its value; a phrase's run carries both and is one by its recipe.
+    const pieceG1a: SessionRow = { ...run(PARENT, file('p'), NOON), firstContact: false };
+    const firstPieceG1a: SessionRow = { ...run(PARENT, undefined, NOON), firstContact: true };
+    const phraseG1a: SessionRow = { ...run('drill.reading.x', phrase(3), NOON), firstContact: true, unseen: true, recipe: { row: 'drill.reading.x' } };
+    expect(isPhraseRun(pieceG1a)).toBe(false);
+    expect(isPhraseRun(firstPieceG1a)).toBe(false);
+    expect(isPhraseRun(phraseG1a)).toBe(true);
   });
 
+  it('a piece played again as G1a stores it (firstContact: false, no unseen) passes, meets its rung and is flagged nothing', async () => {
+    await recordRun(pieceRunG1a(true), new Date(2026, 8, 28, 12));
+    const row = await recordRun(pieceRunG1a(false), new Date(2026, 8, 29, 12));
+    expect(row.status).toBe('passed');
+    expect(row.passedOn).toEqual(['2026-09-28', '2026-09-29']);
+    expect((await getProgress(PARENT)).bestAccuracy).toBe(0.9);
+    const stored: SessionRow = { ...run(PARENT, file('p'), NOON), firstContact: false, accuracy: 0.95 };
+    expect(meetsStandard(stored, { passAccuracy: 0.9, passTempoPct: 80, masterAccuracy: 0.97, masterTempoPct: 100 })).toBe(true);
+    expect(historyDetail(stored)).not.toContain('not first sight');
+  });
+
+  // Kept (G1a): G1's app wrote `unseen: false` on a piece played again, between G1's landing and
+  // G1a's — the only window in which an ordinary row carries `unseen`. `isPhraseRun` still reads it
+  // as no phrase, so it keeps its pass and its rung credit.
   it('a piece played again (unseen: false) still passes, and the rung state still reads it', async () => {
     await recordRun(pieceRun(true), new Date(2026, 8, 28, 12));
     const row = await recordRun(pieceRun(false), new Date(2026, 8, 29, 12));

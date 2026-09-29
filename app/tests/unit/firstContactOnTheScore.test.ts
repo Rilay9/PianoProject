@@ -20,6 +20,15 @@
  *   the run is stored;
  * - a notated piece, an excerpt and an import carry the fact too, and a piece played again still
  *   passes.
+ *
+ * Revised (G1a; the reviewer's required change, `docs/review/responses/b48342f.md`): the fact has its
+ * own name. Every run carries `firstContact`, the encounter relation; a phrase's run carries `unseen`
+ * beside it, sight-reading's condition, equal to it today (one derivation, two names); a piece's, an
+ * excerpt's or an import's carries no `unseen`. G1 wrote `unseen` on every run and scoped its four
+ * readers through `isPhraseRun`; the cases below asserted `unseen` on a piece's run and now assert
+ * `firstContact` and the absence of `unseen`. And a consumer of general contact reads the one field
+ * over a mixed history — phrase runs, piece runs, a row G1's app wrote, rows from before G1 — without
+ * asking whether a run was a phrase, and finds nothing manufactured on the old rows.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
@@ -175,8 +184,9 @@ vi.mock('../../src/score/ScoreSession', () => ({
 
 const { ScoreScreen } = await import('../../src/ui/screens/ScoreScreen');
 const { disposeScreen } = await import('../../src/ui/screenLifecycle');
-const { recentSessions, recordRun, resetProgressForTest, contact, getProgress } = await import('../../src/data/progressStore');
-const { openDatabase, resetDatabaseForTest } = await import('../../src/data/db');
+const { recentSessions, recordRun, resetProgressForTest, contact, getProgress, rungRows } = await import('../../src/data/progressStore');
+const { openDatabase, resetDatabaseForTest, isPhraseRun } = await import('../../src/data/db');
+const { meetsStandard } = await import('../../src/evidence/rungState');
 const encounters = await import('../../src/data/encounterStore');
 const { textIdentity } = await import('../../src/curriculum/material');
 const { historyDetail } = await import('../../src/ui/screens/ProgressScreen');
@@ -311,6 +321,11 @@ async function lastStored(count = 1): Promise<SessionRow> {
   return rows[rows.length - 1] as SessionRow;
 }
 
+/** The two first-contact fields as stored (G1a): the relation, and sight-reading's condition or its absence. */
+function contactFields(row: SessionRow): { firstContact: boolean | undefined; unseen: boolean | 'absent' } {
+  return { firstContact: row.firstContact, unseen: 'unseen' in row ? (row.unseen as boolean) : 'absent' };
+}
+
 async function storedEncounters(): Promise<EncounterRow[]> {
   const db = await openDatabase();
   return ((await db?.getAll('encounters')) ?? []).slice().sort((a, b) => a.at.localeCompare(b.at) || a.id.localeCompare(b.id));
@@ -420,6 +435,8 @@ describe('first contact, from the history and the visit', () => {
     expect(document.querySelector('#summary-note')?.textContent, 'the sheet did not say why as it was drawn').toContain('not heard');
     const row = await lastStored();
     expect(row.unseen, 'a phrase heard on an earlier visit went on the record as a first reading').toBe(false);
+    // G1a: the relation beside it, the same value (one derivation, two names).
+    expect(contactFields(row)).toEqual({ firstContact: false, unseen: false });
     expect(historyDetail(row)).toContain('not first sight');
     // The evidence the run was judged on: no first contact reaches the ladder.
     const judged = (row.evidence ?? []).filter((one) => one.kind === 'measured');
@@ -438,7 +455,7 @@ describe('first contact, from the history and the visit', () => {
     leave();
     await open(PHRASE);
     playThrough();
-    expect((await lastStored()).unseen).toBe(false);
+    expect(contactFields(await lastStored())).toEqual({ firstContact: false, unseen: false });
     expect(document.querySelector('#summary-note')?.textContent).toContain('not seen');
   });
 
@@ -447,7 +464,7 @@ describe('first contact, from the history and the visit', () => {
     await encounterRows(1);
     playThrough();
     const row = await lastStored();
-    expect(row.unseen).toBe(true);
+    expect(contactFields(row)).toEqual({ firstContact: true, unseen: true });
     expect(row.evidence?.some((one) => one.kind === 'measured' && (one as { context?: { firstContact?: boolean } }).context?.firstContact === true)).toBe(true);
   });
 
@@ -457,7 +474,7 @@ describe('first contact, from the history and the visit', () => {
     reload();
     await open(PHRASE);
     playThrough();
-    expect((await lastStored()).unseen).toBe(false);
+    expect(contactFields(await lastStored())).toEqual({ firstContact: false, unseen: false });
     const rows = await storedEncounters();
     expect(rows).toHaveLength(2);
     expect(rows[1]?.visit).not.toBe(before?.visit);
@@ -474,7 +491,7 @@ describe('first contact, from the history and the visit', () => {
     encounters.resetEncountersForTest();
     await open(PHRASE);
     playThrough();
-    expect((await lastStored()).unseen, 'a viewing in another tab before this one opened was not read').toBe(false);
+    expect(contactFields(await lastStored()), 'a viewing in another tab before this one opened was not read').toEqual({ firstContact: false, unseen: false });
 
     // (b) the other tab writes while this one is open, after its history was read.
     reload();
@@ -485,7 +502,20 @@ describe('first contact, from the history and the visit', () => {
     const [own] = await encounterRows(1);
     await (await openDatabase())?.put('encounters', { ...(own as EncounterRow), id: 'tab-c:1', visit: 'tab-c' });
     playThrough();
-    expect((await lastStored()).unseen, 'a viewing in another tab after this one opened was not read before storing').toBe(false);
+    expect(contactFields(await lastStored()), 'a viewing in another tab after this one opened was not read before storing').toEqual({ firstContact: false, unseen: false });
+  });
+
+  it('a notated piece, two tabs: a viewing another tab wrote after this one opened is read before the run is stored (G1a)', async () => {
+    // The recheck asks the relation, which a piece's run carries; it asked `unseen`, which since
+    // G1a a piece's run does not.
+    await open(`#/score/${SONG_ID}`);
+    const [own] = await encounterRows(1);
+    await (await openDatabase())?.put('encounters', { ...(own as EncounterRow), id: 'tab-d:1', visit: 'tab-d' });
+    playThrough();
+    const row = await lastStored();
+    expect(contactFields(row), 'a viewing in another tab after this one opened was not read before storing a piece’s run').toEqual({ firstContact: false, unseen: 'absent' });
+    // The fact refuses the piece nothing.
+    await vi.waitFor(async () => expect((await getProgress(SONG_ID)).status).toBe('passed'));
   });
 
   it('a run of the phrase on record under another row id: not first contact', async () => {
@@ -512,18 +542,20 @@ describe('first contact, from the history and the visit', () => {
     });
     await open(PHRASE);
     playThrough();
-    expect((await lastStored(2)).unseen).toBe(false);
+    expect(contactFields(await lastStored(2))).toEqual({ firstContact: false, unseen: false });
   });
 });
 
 describe('a piece, an excerpt and an import carry the fact too', () => {
+  // Revised (G1a): these asserted `unseen` on a piece's run, which G1 wrote there; the relation
+  // is `firstContact` now, and a piece's run carries no `unseen` (the reviewer's required change).
   it('a notated piece: its first run is first contact, the second is not, and both pass', async () => {
     await open(`#/score/${SONG_ID}`);
     playThrough();
-    expect((await lastStored(1)).unseen).toBe(true);
+    expect(contactFields(await lastStored(1))).toEqual({ firstContact: true, unseen: 'absent' });
     playThrough();
     const second = await lastStored(2);
-    expect(second.unseen).toBe(false);
+    expect(contactFields(second)).toEqual({ firstContact: false, unseen: 'absent' });
     expect(historyDetail(second)).not.toContain('not first sight');
     await vi.waitFor(async () => expect((await getProgress(SONG_ID)).status).toBe('passed'));
   });
@@ -544,14 +576,14 @@ describe('a piece, an excerpt and an import carry the fact too', () => {
     await recordRun({ ...earlier, itemId: EXCERPT_A, material: file('a') }, new Date(2026, 8, 28, 12));
     await open(`#/score/${EXCERPT_B}`);
     playThrough();
-    expect((await lastStored(2)).unseen, 'excerpt A played made excerpt B met').toBe(true);
+    expect(contactFields(await lastStored(2)), 'excerpt A played made excerpt B met').toEqual({ firstContact: true, unseen: 'absent' });
   });
 
   it('the piece played whole before: its excerpt is not a first contact', async () => {
     await recordRun({ ...earlier, itemId: PARENT_ID, material: file('p') }, new Date(2026, 8, 28, 13));
     await open(`#/score/${EXCERPT_B}`);
     playThrough();
-    expect((await lastStored(2)).unseen, 'the whole piece played left its excerpt a first contact').toBe(false);
+    expect(contactFields(await lastStored(2)), 'the whole piece played left its excerpt a first contact').toEqual({ firstContact: false, unseen: 'absent' });
   });
 
   it('an import is its stored bytes: a duplicate under a new id is the same material, met and not first contact', async () => {
@@ -560,13 +592,75 @@ describe('a piece, an excerpt and an import carry the fact too', () => {
     playThrough();
     const first = await lastStored(1);
     expect(first.material).toEqual(identity);
-    expect(first.unseen).toBe(true);
+    expect(contactFields(first)).toEqual({ firstContact: true, unseen: 'absent' });
     leave();
     expect(await contact(IMPORT_TWO, identity)).toMatchObject({ contact: 'met', metAs: [IMPORT_ONE] });
     await open(`#/score/${IMPORT_TWO}`);
     playThrough();
     const second = await lastStored(2);
     expect(second.material).toEqual(identity);
-    expect(second.unseen, 'a duplicate import restored first contact').toBe(false);
+    expect(contactFields(second), 'a duplicate import restored first contact').toEqual({ firstContact: false, unseen: 'absent' });
+  });
+});
+
+describe('a consumer of general contact reads firstContact alone (G1a)', () => {
+  /**
+   * General contact as G2's offer and X's session will read it off a run: the run's own field and
+   * nothing else — no `isPhraseRun`, no `unseen`. `undefined` is unknown: a row written before G1a
+   * says nothing about the relation, and nothing reads one into it.
+   */
+  const contactOf = (row: SessionRow): boolean | undefined => row.firstContact;
+
+  it('over phrase runs, piece runs, a row G1’s app wrote and rows from before G1: the relation where it was written, unknown where it was not', async () => {
+    // Stored as their writers stored them, before the screen opens (the rung rows are read from
+    // the store as it opens). Nothing rewrites them: no database version, no upgrade.
+    const legacy = { mode: 'tempo', tempoPct: 100, accuracy: 1, accuracyEstimated: false, wrongNotes: 0, missed: 0, durationMs: 1000 } as const;
+    const db = await openDatabase();
+    // Before G1, a piece: neither field.
+    await db?.add('sessions', { ...legacy, itemId: 'song.before-g1', at: '2026-09-01T10:00:00.000Z' });
+    // Before G1 (and before C4 and D4), a phrase: `unseen` only — no recipe, no material.
+    await db?.add('sessions', { ...legacy, itemId: READ_ID, seed: 11, unseen: true, at: '2026-09-02T10:00:00.000Z' });
+    // G1's app, between its landing and G1a's: a piece played again carried `unseen: false`.
+    await db?.add('sessions', { ...legacy, itemId: 'song.g1-era', material: file('g'), unseen: false, at: '2026-09-28T10:00:00.000Z' });
+
+    // A phrase read for the first time, then read again on the same visit.
+    await open(PHRASE);
+    playThrough();
+    await storedRows(4);
+    playThrough();
+    await storedRows(5);
+    leave();
+    // A piece played for the first time, then again.
+    await open(`#/score/${SONG_ID}`);
+    playThrough();
+    await storedRows(6);
+    playThrough();
+    await storedRows(7);
+
+    // In store order: the rows the session reads (`rungRows`, the projection G2's input will use).
+    const rows = await rungRows();
+    expect(rows.map((row) => row.itemId)).toEqual(['song.before-g1', READ_ID, 'song.g1-era', READ_ID, READ_ID, SONG_ID, SONG_ID]);
+    expect(rows.map(contactOf), 'the relation as a consumer reads it, without asking what kind of run it was').toEqual([
+      undefined, // before G1: nothing manufactured
+      undefined, // a phrase before G1: its `unseen` is sight-reading's, not the relation
+      undefined, // G1's app: unknown, never inferred from the old flag
+      true,
+      false,
+      true,
+      false,
+    ]);
+    // Sight-reading's field: a phrase's, equal to the relation where G1a wrote both; never on a piece
+    // G1a wrote; the old rows as they were.
+    expect(rows.map((row) => ('unseen' in row ? row.unseen : 'absent'))).toEqual(['absent', true, false, true, false, 'absent', 'absent']);
+    // The phrase classifier reads every row as it did: the old rows by their flag and material, the
+    // new by their recipe; the relation alone never makes a run a phrase.
+    expect(rows.map((row) => isPhraseRun(row))).toEqual([false, true, false, true, true, false, false]);
+    // The row G1's app wrote keeps its pass and its rung credit, and says nothing on its history line.
+    const g1Era = rows[2] as SessionRow;
+    expect(meetsStandard(g1Era, { passAccuracy: 0.9, passTempoPct: 80, masterAccuracy: 0.97, masterTempoPct: 100 })).toBe(true);
+    expect(historyDetail(g1Era)).not.toContain('not first sight');
+    // The piece played again, as G1a stores it, the same.
+    expect(historyDetail(rows[6] as SessionRow)).not.toContain('not first sight');
+    await vi.waitFor(async () => expect((await getProgress(SONG_ID)).status).toBe('passed'));
   });
 });

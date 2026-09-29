@@ -219,6 +219,40 @@ describe('the job finds stale rows in the store, not through the catalog', () =>
     expect(writes.size).toBe(0);
     expect(status.excluded).toEqual({});
   });
+
+  // Added (G1a): the first-contact relation every Score-screen run carries is no mark of a phrase,
+  // and neither is the `unseen: false` G1's app wrote on a piece's run; the flag alone marks a
+  // phrase from before the recipe and the seed were stored. No case held that reading until this
+  // one: moving it to the relation changed no verdict in the suite (`runs/G1a/reader-moves.txt`, r8).
+  it('a piece’s run of a gone item carrying the relation, or G1’s flag, is not the job’s; a phrase row of a gone reading row carrying only the flag is', async () => {
+    const piece: SessionRow = {
+      id: 62,
+      itemId: 'song.folk.no-longer-here',
+      mode: 'tempo',
+      tempoPct: 100,
+      accuracy: 1,
+      accuracyEstimated: false,
+      wrongNotes: 0,
+      missed: 0,
+      durationMs: 30_000,
+      at: '2026-09-29T10:00:00.000Z',
+      material: { kind: 'file', sha256: 'f'.repeat(64) },
+    };
+    const asG1aStoresIt: SessionRow = { ...piece, firstContact: false };
+    const asG1aStoresTheFirst: SessionRow = { ...piece, id: 63, firstContact: true };
+    const asG1StoredIt: SessionRow = { ...piece, id: 64, unseen: false };
+    const writes = new Map<number, Partial<SessionRow>>();
+    const status = await runEvidenceJob(deps([asG1aStoresIt, asG1aStoresTheFirst, asG1StoredIt], writes));
+    expect(writes.size, 'a piece that never bore evidence was reported as kept out').toBe(0);
+    expect(status.excluded).toEqual({});
+
+    const { material: _m, ...unknownMaterial } = piece;
+    const oldPhrase: SessionRow = { ...unknownMaterial, id: 65, itemId: 'drill.reading.sight-reading-retired', unseen: true };
+    const phraseWrites = new Map<number, Partial<SessionRow>>();
+    const phraseStatus = await runEvidenceJob(deps([oldPhrase], phraseWrites));
+    expect(phraseWrites.get(65)?.evidenceRecompute).toEqual({ definitions: EVIDENCE_DEFINITIONS, excluded: 'item-gone' });
+    expect(phraseStatus.excluded['item-gone']).toBe(1);
+  });
 });
 
 describe('paced so it never holds up a screen', () => {

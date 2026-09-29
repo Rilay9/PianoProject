@@ -165,8 +165,10 @@ export function historyDetail(session: SessionRow): string {
   }
   const flags: string[] = [];
   // Sight-reading's claim, on a phrase's run only (G1): a piece played again
-  // carries `unseen: false` too, as its first-contact fact, and every repeat of
-  // a piece is not news worth a flag.
+  // that G1's app stored carries `unseen: false` too, as its first-contact
+  // fact, and every repeat of a piece is not news worth a flag. Since G1a a
+  // piece's run carries the relation as `firstContact`, which this line does
+  // not print.
   if (session.unseen === false && isPhraseRun(session)) flags.push(HISTORY_TEXT.notFirstSight);
   if (session.demonstrated === true) flags.push(HISTORY_TEXT.heardPartWay);
   if (session.rhythmOnly === true) flags.push(HISTORY_TEXT.rhythmOnly);

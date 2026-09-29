@@ -54,9 +54,10 @@ export type RecomputeExclusion = EvidenceExclusion;
  * Whether a row itself shows it bore evidence, or was a generated phrase that
  * could have: evidence stored, a stamp, or a generated phrase's marks (the
  * first-reading flag on a phrase's run, the recipe, the seed). For a run whose
- * item the catalog no longer has, this is all there is to go on. Since G1 the
- * first-contact flag is on every Score-screen run, so on its own it marks a
- * phrase only where `isPhraseRun` says the run was one.
+ * item the catalog no longer has, this is all there is to go on. G1's app
+ * wrote the first-reading flag on every Score-screen run, so on its own it
+ * marks a phrase only where `isPhraseRun` says the run was one. The relation
+ * every run carries since G1a (`firstContact`) is no mark of a phrase.
  */
 export function boreEvidence(row: SessionRow): boolean {
   return (
