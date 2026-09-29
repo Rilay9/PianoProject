@@ -1,0 +1,150 @@
+﻿[6/8] Six-eight time
+  level: moderate, Grade 2 to 3
+  must: 6/8 time; quavers grouped in threes
+  avoid: straight 4/4; duplets
+  before: 
+  after:  The Wild Horseman, Op. 68 No. 8 (Robert Schumann)
+[alberti-bass] Alberti bass
+  level: easy, elementary
+  must: Alberti bass in the left hand; melody in the right
+  avoid: block chords only; wide left-hand leaps
+  before: 
+  after:  Piano Sonata in C major, K. 545, first movement (Wolfgang Amadeus Mozart)
+[baroque-dance] Baroque dances
+  level: easy, elementary
+  must: a Baroque dance movement; two voices
+  avoid: Romantic pedalling; arrangements
+  before: 
+  after:  Minuet in G major, BWV Anh. 114 (Christian Petzold)
+[broken-chord-accompaniment] Broken-chord accompaniment
+  level: moderate, Grade 2 to 3
+  must: broken-chord left hand; melody above it
+  avoid: block chords; left-hand melody
+  before: 
+  after:  Für Elise, WoO 59 (Ludwig van Beethoven)
+[broken-chords] Broken chords
+  level: easy, elementary
+  must: broken-chord figuration; clear harmony
+  avoid: block chords only
+  before: 
+  after:  Prelude in C major, BWV 846 (Johann Sebastian Bach)
+[chromatic] Chromatic movement
+  level: moderate, Grade 2 to 3
+  must: chromatic passages; printed fingering
+  avoid: diatonic writing only
+  before: 
+  after:  Für Elise, WoO 59 (Ludwig van Beethoven)
+[chromatic-harmony] Chromatic harmony
+  level: advanced, Grade 6 to 7
+  must: borrowed or altered chords; functional context
+  avoid: diatonic harmony only; atonal writing
+  before: 
+  after:  Prelude in E minor, Op. 28 No. 4 (Frédéric Chopin)
+[counterpoint] Counterpoint
+  level: advanced, Grade 5 to 6
+  must: two or three voice counterpoint; urtext edition
+  avoid: homophonic accompaniment; arrangements
+  before: 
+  after:  Invention No. 1 in C major, BWV 772 (Johann Sebastian Bach)
+[finger-independence] Finger independence
+  level: moderate, Grade 2 to 3
+  must: a pattern holding some fingers while others move; printed fingering
+  avoid: chordal writing
+  before: 
+  after:  The Virtuoso Pianist, No. 1 (Charles-Louis Hanon)
+[hand-independence] Hand independence
+  level: moderate to advancing, Grade 3 to 4
+  must: different rhythms in each hand; hands together
+  avoid: hands in unison
+  before: 
+  after:  The Happy Farmer, Op. 68 No. 10 (Robert Schumann)
+[hands-together] Playing hands together
+  level: easy, beginner
+  must: hands playing at the same time; grand staff
+  avoid: hands alternating; single-staff writing
+  before: 
+  after:  Minuet in G major, BWV Anh. 114 (Christian Petzold)
+[hanon] Hanon patterns
+  level: moderate, Grade 2 to 3, up to moderate to advancing, Grade 3 to 4
+  must: a repeating pattern sequenced up the keyboard; hands together in octaves
+  avoid: expressive pieces; pedal
+  before: 
+  after:  The Virtuoso Pianist, No. 1 (Charles-Louis Hanon)
+[key-signatures] Key signatures
+  level: easy, elementary
+  must: a clear key signature; one key throughout
+  avoid: frequent modulation
+  before: 
+  after:  Minuet in G major, BWV Anh. 114 (Christian Petzold)
+[left-hand] The left hand
+  level: advancing, Grade 4 to 5
+  must: an active left-hand part; bass clef
+  avoid: left hand holding whole notes only
+  before: 
+  after:  The Happy Farmer, Op. 68 No. 10 (Robert Schumann)
+[motif] Motifs
+  level: easy, elementary
+  must: a short idea that repeats and develops; clear phrase structure
+  avoid: through-composed writing
+  before: 
+  after:  Invention No. 1 in C major, BWV 772 (Johann Sebastian Bach)
+[oom-pah-bass] The oom-pah bass
+  level: moderate to advancing, Grade 3 to 4, up to advanced, Grade 5 to 6
+  must: oom-pah left hand; ragtime or march
+  avoid: block chords; walking bass
+  before: 
+  after:  The Entertainer (Scott Joplin) and Maple Leaf Rag (Scott Joplin)
+[ornamentation] Ornamentation
+  level: moderate to advancing, Grade 3 to 4
+  must: ornaments marked or written out; Baroque or Classical writing
+  avoid: unornamented editions
+  before: 
+  after:  Nocturne in E-flat major, Op. 9 No. 2 (Frédéric Chopin)
+[pedalling] Pedalling
+  level: moderate, Grade 2 to 3, up to advanced, Grade 6 to 7
+  must: detailed pedal markings; changing harmony
+  avoid: unmarked pedal
+  before: 
+  after:  Gymnopédie No. 1 (Erik Satie)
+[rubato] Rubato
+  level: moderate to advancing, Grade 3 to 4, up to advanced, Grade 5 to 6
+  must: rubato marked; a singing melody
+  avoid: strict tempo throughout; dance rhythms
+  before: 
+  after:  Nocturne in E-flat major, Op. 9 No. 2 (Frédéric Chopin)
+[sonatina-form] Sonatina form
+  level: moderate to advancing, Grade 3 to 4
+  must: a sonatina movement; Alberti bass
+  avoid: arrangements; single-page fragments
+  before: 
+  after:  Sonatina in C major, Op. 36 No. 1 (Muzio Clementi)
+[staccato] Staccato
+  level: moderate, Grade 2 to 3
+  must: staccato marked; articulation contrast
+  avoid: legato throughout; pedal covering it
+  before: 
+  after:  Arabesque, Op. 100 No. 2 (Johann Friedrich Burgmüller)
+[syncopation] Syncopation
+  level: moderate, Grade 2 to 3, up to advanced, Grade 6 to 7
+  must: syncopated melody; a steady accompaniment underneath
+  avoid: everything on the beat
+  before: 
+  after:  The Entertainer (Scott Joplin) and Maple Leaf Rag (Scott Joplin)
+[two-voice-texture] Two-voice texture
+  level: easy, elementary
+  must: two independent voices; Baroque writing
+  avoid: homophonic accompaniment
+  before: 
+  after:  Invention No. 1 in C major, BWV 772 (Johann Sebastian Bach)
+[velocity] Velocity
+  level: advanced, Grade 6 to 7
+  must: continuous fast passagework; printed fingering
+  avoid: slow expressive writing
+  before: 
+  after:  The School of Velocity, Op. 299 (Carl Czerny)
+[voice-leading] Voice leading
+  level: easy, elementary, up to advancing, Grade 4 to 5
+  must: smooth movement between chords; inversions
+  avoid: root position leaps
+  before: 
+  after:  Prelude in E minor, Op. 28 No. 4 (Frédéric Chopin)
