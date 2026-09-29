@@ -1,0 +1,31 @@
+$ (cwd .) python -m unittest tools.content.tests.test_checks_for_paths.TheMinimumSemantics.test_a_test_side_helper_names_every_file_that_reads_it -v
+test_a_test_side_helper_names_every_file_that_reads_it (tools.content.tests.test_checks_for_paths.TheMinimumSemantics.test_a_test_side_helper_names_every_file_that_reads_it) ... 
+  test_a_test_side_helper_names_every_file_that_reads_it (tools.content.tests.test_checks_for_paths.TheMinimumSemantics.test_a_test_side_helper_names_every_file_that_reads_it) (pattern='app/tests/fixtures/**', check='e2e') ... FAIL
+
+======================================================================
+FAIL: test_a_test_side_helper_names_every_file_that_reads_it (tools.content.tests.test_checks_for_paths.TheMinimumSemantics.test_a_test_side_helper_names_every_file_that_reads_it) (pattern='app/tests/fixtures/**', check='e2e')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a7c7ef2448ad5f323\tools\content\tests\test_checks_for_paths.py", line 347, in test_a_test_side_helper_names_every_file_that_reads_it
+    self.assertEqual([r for r in readers if r not in (value or [])], [],
+AssertionError: Lists differ: ['tests/e2e/chart.spec.ts', 'tests/e2e/doo[181 chars].ts'] != []
+
+First list contains 8 additional elements.
+First extra element 0:
+'tests/e2e/chart.spec.ts'
+
++ []
+- ['tests/e2e/chart.spec.ts',
+-  'tests/e2e/doors.spec.ts',
+-  'tests/e2e/finder.spec.ts',
+-  'tests/e2e/import-experience.spec.ts',
+-  'tests/e2e/library.spec.ts',
+-  'tests/e2e/pdf.spec.ts',
+-  'tests/e2e/shelf.spec.ts',
+-  'tests/e2e/wide.spec.ts'] : app/tests/fixtures/**: e2e does not name every file that reads it
+
+----------------------------------------------------------------------
+Ran 1 test in 0.164s
+
+FAILED (failures=1)
+exit=1

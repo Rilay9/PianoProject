@@ -1,0 +1,53 @@
+$ (cwd .) python docs/prompts/runs/Q65b/scripts-union.py .
+default suite: 112 spec files under app/tests/e2e; 108 outside the environment-gated four
+
+== app/src/ui/screens/screenFrame.ts
+   direct importers (11): ChordChartScreen.ts DrillScreen.ts FreePlayScreen.ts LabScreen.ts LessonScreen.ts LibraryScreen.ts PaperScreen.ts PlanScreen.ts ProgressScreen.ts SettingsScreen.ts TodayScreen.ts
+   reached transitively, mounts not walked (11): screens 11, other files 0
+   transitive only: -
+   mounts met and not walked: app/src/ui/AppShell.ts
+   importer | patterns | e2e the map gives it
+   ChordChartScreen.ts (direct) | app/src/**, app/src/ui/screens/ChordChartScreen.ts | 3: chart.spec.ts modes-chart-from-a-lesson.spec.ts modes-chart-from-the-score.spec.ts
+   DrillScreen.ts (direct) | app/src/**, app/src/ui/screens/DrillScreen.* | 5: drills-harmony.spec.ts drills-review.spec.ts drills.spec.ts feedback-placement.spec.ts tips.spec.ts
+   FreePlayScreen.ts (direct) | app/src/**, app/src/ui/screens/FreePlayScreen.* | 1: modes-free-play.spec.ts
+   LabScreen.ts (direct) | app/src/**, app/src/ui/screens/LabScreen.* | 5: lab-both-ways.spec.ts lab.spec.ts modes-hold-the-chords.spec.ts modes-lab-unlock.spec.ts trading-fours.spec.ts
+   LessonScreen.ts (direct) | app/src/**, app/src/ui/screens/LessonScreen.ts | 4: lesson-flow.spec.ts lesson-tools.spec.ts plan.spec.ts start-and-return.spec.ts
+   LibraryScreen.ts (direct) | app/src/**, app/src/ui/screens/LibraryScreen.ts | 4: doors.spec.ts finder.spec.ts library.spec.ts modes-rhythm-only.spec.ts
+   PaperScreen.ts (direct) | app/src/**, app/src/ui/screens/PaperScreen.ts | 2: pdf-paper.spec.ts shelf.spec.ts
+   PlanScreen.ts (direct) | app/src/**, app/src/ui/screens/PlanScreen.ts | 3: modes-placement.spec.ts plan.hierarchy.spec.ts plan.spec.ts
+   ProgressScreen.ts (direct) | app/src/**, app/src/ui/screens/ProgressScreen.ts | 2: progress.hierarchy.spec.ts progress.spec.ts
+   SettingsScreen.ts (direct) | app/src/**, app/src/ui/screens/SettingsScreen.ts | 3: keys-guide.spec.ts progress.spec.ts settings-rules.spec.ts
+   TodayScreen.ts (direct) | app/src/**, app/src/ui/screens/TodayScreen.ts | 11: app-shell.spec.ts doors.spec.ts first-day.spec.ts lab.spec.ts lesson-flow.spec.ts modes-free-play.spec.ts modes-placement.spec.ts progress.hierarchy.spec.ts progress.spec.ts today.spec.ts transfer-offer.spec.ts
+   union over the direct importers: 34
+   union over every importer reached: 34; importers with no named set: none
+   equals the whole default suite: False (default specs outside the union: 74)
+   the union, sorted: app-shell.spec.ts chart.spec.ts doors.spec.ts drills-harmony.spec.ts drills-review.spec.ts drills.spec.ts feedback-placement.spec.ts finder.spec.ts first-day.spec.ts keys-guide.spec.ts lab-both-ways.spec.ts lab.spec.ts lesson-flow.spec.ts lesson-tools.spec.ts library.spec.ts modes-chart-from-a-lesson.spec.ts modes-chart-from-the-score.spec.ts modes-free-play.spec.ts modes-hold-the-chords.spec.ts modes-lab-unlock.spec.ts modes-placement.spec.ts modes-rhythm-only.spec.ts pdf-paper.spec.ts plan.hierarchy.spec.ts plan.spec.ts progress.hierarchy.spec.ts progress.spec.ts settings-rules.spec.ts shelf.spec.ts start-and-return.spec.ts tips.spec.ts today.spec.ts trading-fours.spec.ts transfer-offer.spec.ts
+
+== app/src/ui/screens/subScreen.ts
+   direct importers (12): DevExcerptView.ts DevMicroscopeScreen.ts DevScoreScreen.ts DiagnosticsScreen.ts FolderScreen.ts GuideScreen.ts MetronomeScreen.ts MicScreen.ts MidiScreen.ts SetupScreen.ts ShelfScreen.ts SkillsScreen.ts
+   reached transitively, mounts not walked (13): screens 13, other files 0
+   transitive only: LessonScreen.ts
+   mounts met and not walked: app/src/ui/AppShell.ts
+   importer | patterns | e2e the map gives it
+   DevExcerptView.ts (direct) | app/src/**, app/src/ui/screens/DevExcerptView.ts | 2: excerpts.spec.ts microscope.spec.ts
+   DevMicroscopeScreen.ts (direct) | app/src/**, app/src/ui/screens/DevMicroscopeScreen.ts | 1: microscope.spec.ts
+   DevScoreScreen.ts (direct) | app/src/**, app/src/ui/screens/DevScoreScreen.ts | 3: engine.spec.ts score.renderer.fuzz.spec.ts score.spec.ts
+   DiagnosticsScreen.ts (direct) | app/src/**, app/src/ui/screens/DiagnosticsScreen.ts | 2: offline.report.spec.ts progress.spec.ts
+   FolderScreen.ts (direct) | app/src/**, app/src/ui/screens/FolderScreen.ts | 5: folder.add.spec.ts folder.manifest.spec.ts folder.rail-cost.spec.ts folder.readable.spec.ts folder.spec.ts
+   GuideScreen.ts (direct) | app/src/**, app/src/ui/screens/GuideScreen.ts | 1: guide.spec.ts
+   LessonScreen.ts (transitive) | app/src/**, app/src/ui/screens/LessonScreen.ts | 4: lesson-flow.spec.ts lesson-tools.spec.ts plan.spec.ts start-and-return.spec.ts
+   MetronomeScreen.ts (direct) | app/src/**, app/src/ui/screens/MetronomeScreen.ts | 1: metronome.spec.ts
+   MicScreen.ts (direct) | app/src/**, app/src/ui/screens/MicScreen.ts | 1: mic.spec.ts
+   MidiScreen.ts (direct) | app/src/**, app/src/ui/screens/MidiScreen.ts | 2: midi.spec.ts midi.unplug.spec.ts
+   SetupScreen.ts (direct) | app/src/**, app/src/ui/screens/Setup* | 3: first-day.spec.ts setup-layout.spec.ts setup.spec.ts
+   ShelfScreen.ts (direct) | app/src/**, app/src/ui/screens/ShelfScreen.ts | 1: shelf.spec.ts
+   SkillsScreen.ts (direct) | app/src/**, app/src/ui/screens/SkillsScreen.ts | 2: competence.spec.ts plan.spec.ts
+   union over the direct importers: 23
+   union over every importer reached: 26; importers with no named set: none
+   equals the whole default suite: False (default specs outside the union: 82)
+   the union, sorted: competence.spec.ts engine.spec.ts excerpts.spec.ts first-day.spec.ts folder.add.spec.ts folder.manifest.spec.ts folder.rail-cost.spec.ts folder.readable.spec.ts folder.spec.ts guide.spec.ts lesson-flow.spec.ts lesson-tools.spec.ts metronome.spec.ts mic.spec.ts microscope.spec.ts midi.spec.ts midi.unplug.spec.ts offline.report.spec.ts plan.spec.ts progress.spec.ts score.renderer.fuzz.spec.ts score.spec.ts setup-layout.spec.ts setup.spec.ts shelf.spec.ts start-and-return.spec.ts
+
+# the rows' e2e lists as JSON (sorted, deduplicated)
+app/src/ui/screens/screenFrame.ts ["tests/e2e/app-shell.spec.ts", "tests/e2e/chart.spec.ts", "tests/e2e/doors.spec.ts", "tests/e2e/drills-harmony.spec.ts", "tests/e2e/drills-review.spec.ts", "tests/e2e/drills.spec.ts", "tests/e2e/feedback-placement.spec.ts", "tests/e2e/finder.spec.ts", "tests/e2e/first-day.spec.ts", "tests/e2e/keys-guide.spec.ts", "tests/e2e/lab-both-ways.spec.ts", "tests/e2e/lab.spec.ts", "tests/e2e/lesson-flow.spec.ts", "tests/e2e/lesson-tools.spec.ts", "tests/e2e/library.spec.ts", "tests/e2e/modes-chart-from-a-lesson.spec.ts", "tests/e2e/modes-chart-from-the-score.spec.ts", "tests/e2e/modes-free-play.spec.ts", "tests/e2e/modes-hold-the-chords.spec.ts", "tests/e2e/modes-lab-unlock.spec.ts", "tests/e2e/modes-placement.spec.ts", "tests/e2e/modes-rhythm-only.spec.ts", "tests/e2e/pdf-paper.spec.ts", "tests/e2e/plan.hierarchy.spec.ts", "tests/e2e/plan.spec.ts", "tests/e2e/progress.hierarchy.spec.ts", "tests/e2e/progress.spec.ts", "tests/e2e/settings-rules.spec.ts", "tests/e2e/shelf.spec.ts", "tests/e2e/start-and-return.spec.ts", "tests/e2e/tips.spec.ts", "tests/e2e/today.spec.ts", "tests/e2e/trading-fours.spec.ts", "tests/e2e/transfer-offer.spec.ts"]
+app/src/ui/screens/subScreen.ts ["tests/e2e/competence.spec.ts", "tests/e2e/engine.spec.ts", "tests/e2e/excerpts.spec.ts", "tests/e2e/first-day.spec.ts", "tests/e2e/folder.add.spec.ts", "tests/e2e/folder.manifest.spec.ts", "tests/e2e/folder.rail-cost.spec.ts", "tests/e2e/folder.readable.spec.ts", "tests/e2e/folder.spec.ts", "tests/e2e/guide.spec.ts", "tests/e2e/lesson-flow.spec.ts", "tests/e2e/lesson-tools.spec.ts", "tests/e2e/metronome.spec.ts", "tests/e2e/mic.spec.ts", "tests/e2e/microscope.spec.ts", "tests/e2e/midi.spec.ts", "tests/e2e/midi.unplug.spec.ts", "tests/e2e/offline.report.spec.ts", "tests/e2e/plan.spec.ts", "tests/e2e/progress.spec.ts", "tests/e2e/score.renderer.fuzz.spec.ts", "tests/e2e/score.spec.ts", "tests/e2e/setup-layout.spec.ts", "tests/e2e/setup.spec.ts", "tests/e2e/shelf.spec.ts", "tests/e2e/start-and-return.spec.ts"]
+exit=0

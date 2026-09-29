@@ -33,3 +33,5 @@ If a screen's own row is missing from the map (an importer with no `e2e` set of 
 ## Report
 
 Judgement first: what the map now says for a change to `screenFrame.ts` and to `subScreen.ts`, as the reader's output; then Done / Not done / Follow-ups / Questions / Files; the importers table per helper; the red lines; the tests table; exit codes; unverified beside what passes.
+
+**Landed 2026-09-29** (Entry 124; b690be15, merged 9505e1f2); handoff `handoffs/b690be15.md`.

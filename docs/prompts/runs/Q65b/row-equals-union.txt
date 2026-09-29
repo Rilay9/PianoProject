@@ -1,0 +1,6 @@
+$ (cwd .) python docs/prompts/runs/Q65b/scripts-row-equals-union.py .
+app/src/ui/screens/screenFrame.ts: importers 11 (ChordChartScreen DrillScreen FreePlayScreen LabScreen LessonScreen LibraryScreen PaperScreen PlanScreen ProgressScreen SettingsScreen TodayScreen)
+   row 34, union 34, row == union: True; in the row only: -; in the union only: -
+app/src/ui/screens/subScreen.ts: importers 13 (DevExcerptView DevMicroscopeScreen DevScoreScreen DiagnosticsScreen FolderScreen GuideScreen LessonScreen MetronomeScreen MicScreen MidiScreen SetupScreen ShelfScreen SkillsScreen)
+   row 26, union 26, row == union: True; in the row only: -; in the union only: -
+exit=0

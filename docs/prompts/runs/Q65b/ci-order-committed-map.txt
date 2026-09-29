@@ -1,0 +1,18 @@
+$ (cwd .) python -m unittest tools.content.tests.test_ci_order -v
+test_ci_runs_every_check_the_path_map_names (tools.content.tests.test_ci_order.TheWorkflowOrder.test_ci_runs_every_check_the_path_map_names) ... ok
+test_record_and_review_pushes_start_no_run_and_nothing_else_is_ignored (tools.content.tests.test_ci_order.TheWorkflowOrder.test_record_and_review_pushes_start_no_run_and_nothing_else_is_ignored) ... ok
+test_the_build_follows_what_it_needs (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_build_follows_what_it_needs) ... ok
+test_the_content_is_built_before_the_content_tests_read_it (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_content_is_built_before_the_content_tests_read_it) ... ok
+test_the_converter_harness_runs (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_converter_harness_runs) ... ok
+test_the_parity_reference_is_written_before_the_unit_tests_compare_against_it (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_parity_reference_is_written_before_the_unit_tests_compare_against_it) ... ok
+test_the_recordings_are_fetched_before_anything_reads_them (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_recordings_are_fetched_before_anything_reads_them) ... ok
+test_the_render_check_and_the_second_validation_keep_their_places (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_render_check_and_the_second_validation_keep_their_places) ... ok
+test_the_run_in_progress_completes_and_the_newest_tree_waits (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_run_in_progress_completes_and_the_newest_tree_waits) ... ok
+test_the_steps_the_failure_messages_name_exist (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_steps_the_failure_messages_name_exist) ... ok
+test_the_unit_tests_run_after_the_content_build_they_read (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_unit_tests_run_after_the_content_build_they_read) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.002s
+
+OK
+exit=0
