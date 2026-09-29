@@ -34,7 +34,9 @@ note) and a tie out of the last bar dropped; a repeat sign at either edge neutra
 passage is presented once) and one inside the range refused with its bar named, as is a first-or-
 second ending or a jump (segno, coda, D.C., D.S.) — unrolled, the cut would mean something else;
 the unselected staff of a one-hand cut silenced and left out by `convert.drop_silent_staves`
-through `convert.normalise`, the pipeline every score goes through; and a normalised header —
+through `convert.normalise`, the pipeline every score goes through; the edition's texts that are not
+the music left out — a direction to other players, a copyright or licence line, a swing the app does
+not play — each listed in the provenance's `dropped` with its kind (E33, `EDITION_TEXTS`); and a normalised header —
 the excerpt's id as the work title, none of the parent's credits, no encoding date — so the
 cut's bytes depend on the notes and the definition alone. Attribution is never lost by that: the
 excerpt's catalogue `source` is the parent's, and every screen that shows an item's source shows
@@ -64,8 +66,19 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from common import CONTENT_SRC, DEFAULT_OUT  # noqa: E402
 
-#: Bumped with the cutter: every excerpt's key changes, and the build re-cuts every file.
-CUT_VERSION = 1
+#: Bumped with the cutter: every excerpt's key changes, and the build re-cuts every file. Version 2
+#: (E33) drops the edition's texts that are not the music (`EDITION_TEXTS`). An approval merged under an
+#: older cutter is stale by cut version (`provenance_block`, `validate.excerpt_findings`): nothing carries
+#: it to the new cut, and a person re-decides it.
+CUT_VERSION = 2
+
+#: The cutter every approval merged before E33 was made under: a row with no `cutVersion` predates the field.
+CUT_VERSION_BEFORE_THE_FIELD = 1
+
+
+def approved_cut_version(row: dict) -> int:
+    """The cutter an approval was merged under (`cutVersion`; version 1 where the row predates the field)."""
+    return int(row.get("cutVersion") or CUT_VERSION_BEFORE_THE_FIELD)
 
 SELECTIONS = ("both", "right", "left")
 HAND_SUFFIX = {"both": "", "right": ".rh", "left": ".lh"}
@@ -129,6 +142,8 @@ COMMENT = [
     "`targets` are vocabulary skill or demand ids the passage was approved for, never an invented name.",
     "`parentSha256` is the parent's built file the approval was made against: when the parent's file",
     "changes the validator names the row as stale. `event`, `by` and `at` are the approving decision.",
+    "`cutVersion` is the cutter the approval was merged under (a row without one predates the field: version",
+    "1); an approval under an older cutter is stale by cut version, and nothing carries it to the new cut.",
     "",
     "`rejected` keeps the refusals with their reasons, so a re-merge of the same export appends nothing.",
     "",
@@ -179,6 +194,53 @@ class Cut:
     level: float
     drivers: list = field(default_factory=list)
     warnings: list = field(default_factory=list)
+    #: The edition's texts the cutter left out (E33), each `{bar, parentBar, staff, kind, text, why}`.
+    dropped: list = field(default_factory=list)
+
+
+#: E33: the edition's texts that are not the music a learner plays, left out of a cut, by kind and in this
+#: order (the first that matches names the kind). Everything else a `<words>` direction says is kept: a
+#: tempo or expression word, a chord symbol written as words, a metronome mark written as text — and
+#: dynamics, rehearsal letters and tempo marks are not words at all. The word lists are read off the
+#: approved cuts and PDMX's lead sheets (hypotheses, each a list of words and never a reading of the
+#: passage); "bass" is not among the players, since a piano score's own bass is the left hand.
+EDITION_TEXTS: tuple[tuple[str, re.Pattern[str], str], ...] = (
+    ("copyright",
+     re.compile(r"public\s+domain|copyright|©|\(c\)\s*\d|all\s+rights\s+reserved|creative\s+commons|"
+                r"\bcc[\s-]?(?:by|0|zero)\b|https?://|www\.", re.I),
+     "a copyright or licence line: the attribution is the catalogue row's, not the page's"),
+    ("swing",
+     re.compile(r"\b(?:swing|swung|shuffle)\b", re.I),
+     "a swing the app does not play: its playback keeps the eighths straight, so the cut does not print it"),
+    ("band",
+     re.compile(r"\b(?:sax(?:ophone)?s?|drums?|drummer|guitars?|trumpets?|trombones?|horns?|clarinets?|violins?|"
+                r"vocals?|singers?|band|rhythm\s+section|tutti|tacet|solos?|impro(?:v(?:isation)?)?)\b", re.I),
+     "a direction to other players: the learner plays the piano part alone"),
+)
+
+
+def edition_text_kind(text: str) -> tuple[str, str] | None:
+    """The kind of edition text a `<words>` direction is, and why a cut leaves it out; None for the music's."""
+    for kind, pattern, why in EDITION_TEXTS:
+        if pattern.search(text):
+            return kind, why
+    return None
+
+
+def _drop_edition_texts(measure) -> list[tuple[str, str, str]]:
+    """Removes the edition's texts from one bar of a cut: `(kind, text, why)` each; an empty one silently."""
+    from music21 import expressions
+
+    dropped: list[tuple[str, str, str]] = []
+    for element in list(measure.recurse().getElementsByClass(expressions.TextExpression)):
+        text = (element.content or "").strip()
+        found = edition_text_kind(text) if text else ("empty", "")
+        if found is None:
+            continue
+        element.activeSite.remove(element)
+        if text:
+            dropped.append((found[0], text, found[1]))
+    return dropped
 
 
 def _measures(staff) -> list:
@@ -269,7 +331,10 @@ def _carry_state_in(staff, first_measure, source_staff, first_offset: float) -> 
 
 
 def cut_score(score, from_bar: int, to_bar: int, selection: str, excerpt: str):
-    """The cut as a normalised music21 score and the converter's result for it."""
+    """
+    The cut as a normalised music21 score, the converter's result for it, and the edition's texts left
+    out of it (E33, `EDITION_TEXTS`), each with the cut's bar, the parent's printed bar and the staff.
+    """
     from music21 import bar, layout, metadata
 
     from convert import ConversionError, normalise
@@ -290,6 +355,7 @@ def cut_score(score, from_bar: int, to_bar: int, selection: str, excerpt: str):
     pickup = from_bar == 1 and (float(_measures(parts[0])[0].paddingLeft or 0) > 0 or _measures(parts[0])[0].number == 0)
     excerpt_score = score.measures(from_bar - 1, to_bar, indicesNotNumbers=True)
     staves = list(excerpt_score.parts)
+    dropped: list[dict] = []
     for index, staff in enumerate(staves):
         measures = _measures(staff)
         if not measures:
@@ -305,6 +371,11 @@ def cut_score(score, from_bar: int, to_bar: int, selection: str, excerpt: str):
         measures[-1].rightBarline = bar.Barline("final")
         for position, measure in enumerate(measures):
             measure.number = position if pickup else position + 1
+            for kind, text, why in _drop_edition_texts(measure):
+                # The unselected staff of a one-hand cut leaves with all it says; only the kept staves' are listed.
+                if selection == "both" or index == KEEP_STAFF[selection]:
+                    dropped.append({"bar": measure.number, "parentBar": from_bar + position, "staff": index + 1,
+                                    "kind": kind, "text": text, "why": why})
         if selection != "both" and index != KEEP_STAFF[selection]:
             for element in list(staff.recurse().notes):
                 element.activeSite.remove(element)
@@ -334,7 +405,9 @@ def cut_score(score, from_bar: int, to_bar: int, selection: str, excerpt: str):
         silent = [i for i, p in enumerate(staves) if not any(True for _ in p.recurse().notes)]
         hand = "right" if silent == [1] else "left"
         raise CutRefused(f"bars {from_bar}–{to_bar}: one hand is silent throughout; select {hand}")
-    return normalised, result
+    # By bar, then staff; within one bar and staff, in the order the page prints them.
+    dropped.sort(key=lambda one: (one["bar"], one["staff"]))
+    return normalised, result, dropped
 
 
 #: The header lines whose bytes depend on when and by what the file was written, or on the
@@ -397,13 +470,13 @@ def cut(parent_path: Path, from_bar: int, to_bar: int, selection: str, excerpt: 
     import difficulty
 
     score = converter.parse(str(parent_path))
-    normalised, result = cut_score(score, from_bar, to_bar, selection, excerpt)
+    normalised, result, dropped = cut_score(score, from_bar, to_bar, selection, excerpt)
     write_cut(normalised, dest, excerpt)
     estimate = difficulty.estimate(difficulty.features(normalised))
     times = [f"{t.numerator}/{t.denominator}" for t in normalised.recurse().getElementsByClass(meter.TimeSignature)]
     return Cut(path=dest, bars=result.measures, staves=result.staves, notes=result.note_events,
                tempo_bpm=result.tempo_bpm, time=times[0] if times else None, level=estimate.level,
-               drivers=list(estimate.drivers), warnings=list(result.warnings))
+               drivers=list(estimate.drivers), warnings=list(result.warnings), dropped=dropped)
 
 
 # --------------------------------------------------------------------------------------
@@ -542,6 +615,8 @@ def attach_excerpts(entries: list[dict], out_dir: Path, path: Path = DEFINITIONS
             "by": row.get("by"),
             "approvedParentSha256": row.get("parentSha256"),
             "parentSha256": parent_sha,
+            "approvedCutVersion": approved_cut_version(row),
+            "dropped": cutting.dropped,
             "levelDrivers": [[name, value] for name, value in cutting.drivers],
             "cutWarnings": cutting.warnings,
         }
@@ -566,6 +641,13 @@ def provenance_block(entry: dict, parent_record: dict) -> dict:
         "targets": carried["targets"],
         "event": carried["event"],
     }
+    # E33: the edition's texts the cutter left out, the swing it plays straight among them — said here, not printed.
+    if carried.get("dropped"):
+        block["dropped"] = list(carried["dropped"])
+    # E33: the cutter the approval was merged under, beside the one that cut this file. Below `cutVersion`,
+    # the approval is stale by cut version: it was made before this cutter, and nothing carries it over
+    # (the validator names the row). `stale` keeps its one meaning: an approval made on other parent bytes.
+    block["approvedCutVersion"] = int(carried.get("approvedCutVersion") or CUT_VERSION_BEFORE_THE_FIELD)
     approved = carried.get("approvedParentSha256")
     if approved and approved != carried["parentSha256"]:
         block["stale"] = {
@@ -630,7 +712,18 @@ def _row_of(event: dict) -> dict:
     if event.get("parentSha256"):
         row["parentSha256"] = event["parentSha256"]
     row.update({"event": event["event"], "by": event["by"], "at": event["at"]})
+    if event["decision"] != "reject":
+        # E33: the cutter the approval is merged under; a later cutter makes it stale by cut version.
+        row["cutVersion"] = CUT_VERSION
     return row
+
+
+def _same_decision(stored: dict, incoming: dict) -> bool:
+    """One event's row as stored and as merged again: the same decision whichever cutter each merge ran under."""
+    def strip(row: dict) -> dict:
+        return {k: v for k, v in row.items() if k != "cutVersion"}
+
+    return strip(stored) == strip(incoming)
 
 
 def merge_text(data: dict, incoming: str, known_ids: set[str] | None = None) -> dict:
@@ -663,7 +756,7 @@ def merge_text(data: dict, incoming: str, known_ids: set[str] | None = None) -> 
             continue
         row = _row_of(event)
         if event["event"] in by_event:
-            if by_event[event["event"]] == row:
+            if _same_decision(by_event[event["event"]], row):
                 skipped.append(event["event"])
             else:
                 refused.append((number, f"event {event['event']} is already in the file with other content"))

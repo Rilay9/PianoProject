@@ -6,6 +6,8 @@ built file, a range inside its printed bars (1-based, the pickup as bar 1), a se
 allow, targets the vocabulary has, a derived id no other row or item shares; a range across a
 repeat sign is refused with the bars named; a row approved against parent bytes the parent no
 longer has is warned as stale; a parent this build does not bundle is a warning, not an error.
+Since E-tail: a built cut that does not establish a target its approval names is warned with the
+count (E29), and a row merged under an older cutter is warned stale by cut version (E33).
 """
 from __future__ import annotations
 
@@ -23,9 +25,12 @@ from validate import excerpt_findings  # noqa: E402
 
 FIXTURE = Path(__file__).resolve().parent / "fixtures" / "excerpts" / "pickup-and-repeat.musicxml"
 PARENT = "song.test.pickup-and-repeat"
+ALL_DEMANDS = sorted(__import__("claims").load_vocabulary()[1])
 
 
-class TheExcerptCheck(unittest.TestCase):
+class Fixture:
+    """A parent on disk and the check run over rows of `excerpts.json` (shared by the classes below)."""
+
     def setUp(self) -> None:
         self.dir = Path(tempfile.mkdtemp(prefix="validate-excerpts-"))
         self.addCleanup(lambda: shutil.rmtree(self.dir, ignore_errors=True))
@@ -45,15 +50,22 @@ class TheExcerptCheck(unittest.TestCase):
                     continue
                 eid = X.excerpt_id(row["of"], row["fromBar"], row["toBar"], row["selection"])
                 if not any(i["id"] == eid for i in items):
-                    items.append({"id": eid, "type": "excerpt", "excerptOf": row["of"], "title": eid})
+                    # A measured stand-in that establishes every demand, as a built cut is measured (E29 reads it).
+                    items.append({"id": eid, "type": "excerpt", "excerptOf": row["of"], "title": eid, "demands": ALL_DEMANDS,
+                                  "measurement": {"status": "measured", "definitions": 3, "located": {d: 8 for d in ALL_DEMANDS},
+                                                  "bars": 2, "steps": 8, "notes": 8, "established": ALL_DEMANDS}})
         return excerpt_findings(items, self.dir, path)
 
     def row(self, **over) -> dict:
+        # Merged under the cutter in force (E33): a row with no `cutVersion` is stale by cut version.
         made = {"of": PARENT, "fromBar": 4, "toBar": 5, "selection": "both", "targets": ["interval.leap"],
-                "label": "", "note": "", "parentSha256": self.sha, "event": "ex-test-1", "by": "a test", "at": "2026-09-28T00:00:00.000Z"}
+                "label": "", "note": "", "parentSha256": self.sha, "event": "ex-test-1", "by": "a test", "at": "2026-09-28T00:00:00.000Z",
+                "cutVersion": X.CUT_VERSION}
         made.update(over)
         return made
 
+
+class TheExcerptCheck(Fixture, unittest.TestCase):
     def test_a_clean_row_passes(self) -> None:
         self.assertEqual(self.check([self.row()]), ([], []))
 
@@ -113,6 +125,80 @@ class TheExcerptCheck(unittest.TestCase):
         stray = {"id": "excerpt.test.stray.b1-2", "type": "excerpt", "excerptOf": PARENT, "title": "stray"}
         errors, _ = self.check([self.row()], [self.parent, stray])
         self.assertTrue(any("excerpt.test.stray.b1-2: an excerpt with no approved row" in e for e in errors), errors)
+
+
+class TheTargetCheck(Fixture, unittest.TestCase):
+    """
+    E29: a built excerpt whose measured `established` set lacks a target its approval names is warned,
+    naming the cut, the target and the count — the approval's claim is not what the passage carries.
+    Read with the rung-claims report's one reading of "establishes" (`claims.status_of`): a skill target
+    by the demands it stands for, a demand target by itself.
+    """
+
+    def measured(self, located: dict[str, int], established: list[str], bars: int = 2) -> dict:
+        return {"status": "measured", "definitions": 3, "located": located, "bars": bars, "steps": 8, "notes": 8,
+                "established": established}
+
+    def built(self, row: dict, measurement: dict) -> list[dict]:
+        eid = X.excerpt_id(row["of"], row["fromBar"], row["toBar"], row["selection"])
+        return [self.parent, {"id": eid, "type": "excerpt", "excerptOf": row["of"], "title": eid,
+                              "demands": sorted(measurement.get("located") or {}), "measurement": measurement}]
+
+    def test_a_cut_approved_for_a_target_its_notes_do_not_establish_is_warned_with_the_count(self) -> None:
+        row = self.row(targets=["interval.leap"])
+        errors, warnings = self.check([row], self.built(row, self.measured({"interval.leap": 1, "interval.step": 6}, ["interval.step"])))
+        self.assertEqual(errors, [])
+        named = [w for w in warnings if "does not establish" in w]
+        self.assertEqual(len(named), 1, warnings)
+        self.assertIn("excerpt.test.pickup-and-repeat.b4-5", named[0])
+        self.assertIn("interval.leap", named[0])
+        self.assertIn("1 located in 2 bar(s)", named[0])
+
+    def test_a_cut_that_establishes_its_target_is_not_warned(self) -> None:
+        row = self.row(targets=["interval.leap"])
+        self.assertEqual(self.check([row], self.built(row, self.measured({"interval.leap": 4}, ["interval.leap"]))), ([], []))
+
+    def test_a_skill_target_is_read_by_the_demand_it_stands_for(self) -> None:
+        row = self.row(targets=["syncopation"])
+        self.assertEqual(self.check([row], self.built(row, self.measured({"rhythm.syncopation": 5}, ["rhythm.syncopation"]))), ([], []))
+        _, warnings = self.check([row], self.built(row, self.measured({"rhythm.syncopation": 1}, [])))
+        named = [w for w in warnings if "does not establish" in w]
+        self.assertEqual(len(named), 1, warnings)
+        self.assertIn("syncopation (rhythm.syncopation: 1 located in 2 bar(s))", named[0])
+
+    def test_a_target_absent_from_the_cut_is_warned_with_none_located(self) -> None:
+        row = self.row(targets=["pitch.chromatic"])
+        _, warnings = self.check([row], self.built(row, self.measured({"interval.step": 6}, ["interval.step"])))
+        self.assertTrue(any("pitch.chromatic" in w and "0 located in 2 bar(s)" in w for w in warnings), warnings)
+
+    def test_an_unmeasured_cut_is_warned_that_its_targets_cannot_be_checked(self) -> None:
+        row = self.row(targets=["interval.leap"])
+        _, warnings = self.check([row], self.built(row, {"status": "unmeasured", "reason": "no notes"}))
+        self.assertTrue(any("is not measured" in w and "interval.leap" in w for w in warnings), warnings)
+
+    def test_the_approved_cuts_on_the_build_each_establish_their_targets(self) -> None:
+        """The five approved cuts: none warned by this check (the stale warnings are the cut version's, E33)."""
+        from validate import load
+
+        content = Path(__file__).resolve().parents[3] / "app" / "public" / "content"
+        if not (content / "catalog.json").is_file():
+            self.skipTest("no built catalogue")
+        catalog = load(content / "catalog.json")
+        if not any(item.get("type") == "excerpt" for item in catalog):
+            self.skipTest("no excerpt in the built catalogue")
+        _, warnings = excerpt_findings(catalog, content)
+        self.assertEqual([w for w in warnings if "does not establish" in w or "is not measured" in w], [])
+
+
+class TheCutVersionCheck(Fixture, unittest.TestCase):
+    """E33: an approval merged under an older cutter is stale by cut version, warned with the row named."""
+
+    def test_a_row_merged_before_the_cutter_moved_is_warned_stale_by_cut_version(self) -> None:
+        before_e33 = {k: v for k, v in self.row().items() if k != "cutVersion"}
+        errors, warnings = self.check([before_e33])
+        self.assertEqual(errors, [])
+        self.assertTrue(any("stale by cut version" in w and "b4-5" in w and "version 1" in w for w in warnings), warnings)
+        self.assertEqual(self.check([self.row()]), ([], []))
 
 
 class TheLicence(unittest.TestCase):

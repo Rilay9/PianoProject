@@ -15,7 +15,8 @@ import { fileURLToPath } from 'node:url';
  *   adjusted approval with the proposed range kept, which `tools/content/excerpts.py --merge` takes
  *   once and a rerun appends nothing;
  * - the build's cut of an approved row is an item the microscope's item view opens, measured and
- *   identified as its own file.
+ *   identified as its own file;
+ * - the view says at its top that it is a desktop tool and how wide it wants the window (E35).
  *
  * The candidates are the proposer's own output for Anh. 113 (`excerpts.py propose --for
  * key.signature --rung classical.3 --of song.classical.bach-menuet-bwv-anh-113.pdmx`), kept as a
@@ -134,6 +135,21 @@ test.describe('the excerpt view (E1)', () => {
     expect(again.code, again.out).toBe(0);
     expect(again.out).toContain('appended 0, already in the file 1');
     expect(readFileSync(definitions, 'utf8')).toBe(written);
+  });
+
+  test('says at the top that it is a desktop tool and how wide it wants the window (E35)', async ({ page }) => {
+    await openView(page);
+    const line = page.locator('#excerpts-desktop');
+    await expect(line).toBeVisible();
+    await expect(line).toContainText('A desktop tool');
+    await expect(line).toContainText('960 px');
+    // Above everything else the view draws: the lists, the score, the decisions.
+    const first = await page.evaluate(() => {
+      const desktop = document.querySelector('#excerpts-desktop');
+      const run = document.querySelector('#excerpts-run');
+      return Boolean(desktop && run && desktop.compareDocumentPosition(run) & Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+    expect(first).toBe(true);
   });
 
   test('the build’s cut of an approved row opens in the item view as an item of its own', async ({ page }) => {

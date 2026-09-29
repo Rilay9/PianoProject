@@ -177,6 +177,38 @@ describe('the session (session.ts)', () => {
     expect(review?.claim?.kind === 'piece-retention' && review.item?.id === EXCERPT.id).toBe(false);
   });
 
+  /**
+   * E37: the case above never reaches retention's own rule — the excerpt is on the rung, so the new slot
+   * takes it first, and letting excerpts through the `only` filter left it green. Here no rung lists the
+   * excerpt, so retention is the one reader that meets it learned: the control shows retention bringing a
+   * learned song back in the same session, and the excerpt learned in its place comes back as nothing.
+   */
+  it('never brings back an excerpt learned where retention alone would meet it: the `only` filter keeps to songs (E37)', () => {
+    const LEARNED_SONG = item('song.learned', measured(['key.signature']));
+    const unlisted = curriculum([
+      lesson('3.1', { exerciseOptions: [EXERCISE.id], songOptions: [OTHER_SONG.id], requirements: [{ kind: 'runs', from: 'any', count: 1 }] }),
+    ]);
+    const items = [PARENT, APPROVED, EXERCISE, OTHER_SONG, LEARNED_SONG];
+    const build = (learnedId: string): ReturnType<typeof buildSession> =>
+      buildSession({
+        curriculum: unlisted,
+        catalog: indexCatalog(items),
+        items,
+        states: rungState([], unlisted, VOCABULARY_V0, TODAY),
+        rows: [],
+        activeTracks: ['core'],
+        minutes: 30,
+        today: TODAY,
+        learned: [{ itemId: learnedId, status: 'passed' as const, lastPlayed: daysAgo(60) }],
+        lastPlayed: new Map([[learnedId, daysAgo(60)]]),
+      });
+    const control = build(LEARNED_SONG.id).slots.find((slot) => slot.kind === 'review');
+    expect([control?.claim?.kind, control?.item?.id], 'retention brings a learned song back here').toEqual(['piece-retention', LEARNED_SONG.id]);
+    const withExcerpt = build(APPROVED.id);
+    for (const slot of withExcerpt.slots) expect(slot.item?.id, slot.kind).not.toBe(APPROVED.id);
+    expect(withExcerpt.slots.some((slot) => slot.claim?.kind === 'piece-retention')).toBe(false);
+  });
+
   it('never offers an excerpt as "the same kind" of an exercise on the swap sheet’s last resort', () => {
     // An exercise alone on 3.2 with nothing for any tier, and an excerpt a reached rung (3.1) lists.
     const lonely = item('exercise.lonely', { type: 'exercise', ...measured([]) });

@@ -898,7 +898,10 @@ def excerpt_findings(catalog: list, content_dir: Path, path: Path = EXCERPTS_FIL
     selection, or the derived id is another item's; the range crosses a repeat sign, a first-or-
     second ending or a jump (the bars named); the build has no item for a row it should have cut.
 
-    Warnings: a row approved against parent bytes the parent no longer has — stale by provenance.
+    Warnings: a row approved against parent bytes the parent no longer has — stale by provenance; a row
+    merged under an older cutter — stale by cut version (E33: nothing carries the approval to the new
+    cut); a built cut that does not establish a target its approval names, with the count (E29,
+    `excerpt_target_warnings`).
     """
     import excerpts as X
 
@@ -909,7 +912,8 @@ def excerpt_findings(catalog: list, content_dir: Path, path: Path = EXCERPTS_FIL
     rows = X.read_definitions(path).get("excerpts") or []
     by_id = {item["id"]: item for item in catalog}
     skills_file, demands_file = load_vocabulary()
-    targets_known = {s["id"] for s in skills_file.get("skills", [])} | {d["id"] for d in demands_file.get("demands", [])}
+    skills_by_id = {s["id"]: s for s in skills_file.get("skills", [])}
+    targets_known = set(skills_by_id) | {d["id"] for d in demands_file.get("demands", [])}
     seen: dict[tuple, int] = {}
     for number, row in enumerate(rows, start=1):
         where = f"excerpts.json row {number}"
@@ -980,6 +984,11 @@ def excerpt_findings(catalog: list, content_dir: Path, path: Path = EXCERPTS_FIL
         if approved and approved != current:
             warnings.append(f"{where}: stale by provenance — approved against the parent's bytes {approved[:12]}…, "
                             f"the parent is now {current[:12]}…: its boundary review predates the parent's change")
+        under = X.approved_cut_version(row)
+        if under != X.CUT_VERSION:
+            warnings.append(f"{where}: stale by cut version — approved when the cutter was version {under}, the cutter "
+                            f"is now version {X.CUT_VERSION}: nothing carries the approval to this cut; a person re-decides it")
+        warnings += excerpt_target_warnings(where, [str(t) for t in targets if t in targets_known], built, skills_by_id)
     rows_ids = {X.excerpt_id(str(r.get("of")), int(r["fromBar"]), int(r["toBar"]), r.get("selection") or "both")
                 for r in rows if "fromBar" in r and "toBar" in r and (r.get("selection") or "both") in X.SELECTIONS}
     for item in catalog:
@@ -990,6 +999,45 @@ def excerpt_findings(catalog: list, content_dir: Path, path: Path = EXCERPTS_FIL
         if item.get("excerptOf") not in by_id:
             errors.append(f"{item['id']}: excerptOf {item.get('excerptOf')!r} is not in the catalogue")
     return errors, warnings
+
+
+def excerpt_target_warnings(where: str, targets: list[str], built: dict, skills: dict[str, dict]) -> list[str]:
+    """
+    E29: the targets an approval names that the built cut does not establish, each warned with the cut, the
+    target and the count — the approval's claim is not what the passage carries. "Establishes" is the
+    rung-claims report's one reading (`claims.status_of`): a demand target by itself, a skill target by the
+    demands its opportunity names (the window rule included, as the build writes `established`). A skill
+    whose opportunity is every step no detector establishes, so an approval naming one is warned too; an
+    unmeasured cut is warned that its targets cannot be checked. A warning, never an error: a person
+    decides what a passage was approved for, and the proposer's estimate from positions can exceed the
+    cut's count at the edges (Hark! 25–28: 7 syncopations by position, 5 on the cut).
+    """
+    import claims
+
+    if not targets:
+        return []
+    measurement = built.get("measurement") or {}
+    if measurement.get("status") != "measured":
+        return [f"{where}: the cut is not measured ({measurement.get('reason') or measurement.get('status') or 'no measurement'}), "
+                f"so whether it establishes {', '.join(targets)} is not known"]
+    located = measurement.get("located") or {}
+    bars = measurement.get("bars")
+    out: list[str] = []
+    for target in targets:
+        skill = skills.get(target)
+        if skill is not None and not isinstance(skill.get("opportunity"), list):
+            out.append(f"{where}: approved for {target}, whose opportunity is {skill.get('opportunity')!r}: no detector "
+                       f"establishes it, so the cut does not establish it")
+            continue
+        claim = {"kind": "skill" if skill is not None else "demand", "id": target}
+        if claims.status_of(claim, built, skills) == "established":
+            continue
+        demands = list(skill["opportunity"]) if skill is not None else [target]
+        counts = "; ".join(f"{d}: {int(located.get(d, 0))} located in {bars} bar(s)" for d in demands)
+        named = f"{target} ({counts})" if skill is not None else f"{target}: {counts.split(': ', 1)[1]}"
+        out.append(f"{where}: approved for {named}, and the built cut does not establish it (E29): the approval "
+                   f"names a target the passage does not carry at a useful density")
+    return out
 
 
 def orphan_sections(catalog: list, path: Path) -> list[str]:

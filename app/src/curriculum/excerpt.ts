@@ -15,7 +15,9 @@
  * - it is **unplaced until F places it** on a stated gate (a candidate-rungs line established on
  *   the combined build and a current `goodTeachingUse: yes` on the cut's identity by a named
  *   reviewer): no tier that searches the whole catalogue offers one, so it reaches a learner
- *   through the Library, or through a rung once a rung lists it — never by an automatic offer.
+ *   through the Library (exploration), or through a rung that lists it once that `yes` on the cut's
+ *   current identity admits it (`eligibility.admittedForTeaching`, since E1a) — an automatic offer
+ *   never takes an excerpt without one, placed or not.
  */
 import type { CatalogItem } from './types';
 
