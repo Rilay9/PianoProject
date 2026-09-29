@@ -1,0 +1,10 @@
+(in app) npx playwright test --config=playwright.u80-4313.config.ts --workers=2 --grep "tablet layout|phone is untouched" tests/e2e/carry-overs.spec.ts
+
+Running 3 tests using 2 workers
+
+  ok 1 tests\e2e\carry-overs.spec.ts:207:3 › the tablet layout › the panel collapses (1.8s)
+  ok 2 tests\e2e\carry-overs.spec.ts:194:3 › the tablet layout › shows the side panel and opens at two bars (1.9s)
+  ok 3 tests\e2e\carry-overs.spec.ts:217:3 › the phone is untouched › has no side panel and keeps its own bars setting (823ms)
+
+  3 passed (5.5s)
+exit=0

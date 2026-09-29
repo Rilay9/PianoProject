@@ -1,0 +1,110 @@
+(in app) for f in tests/e2e/zz-u80-probe.spec.ts; do test -f "$f" || { echo "specs-exist: missing $f"; exit 2; }; done; echo "specs-exist: ok"; U80_WHEN=after U80_LATE_MS=3000 npx playwright test --config=playwright.u80-4313.config.ts --workers=2 --reporter=line --grep "1000x1000 each piece" tests/e2e/zz-u80-probe.spec.ts
+specs-exist: ok
+
+Running 1 test using 1 worker
+
+[1/1] tests\e2e\zz-u80-probe.spec.ts:190:5 › 1000x1000 › each piece on a fresh load (after lessons-late)
+tests\e2e\zz-u80-probe.spec.ts:190:5 › 1000x1000 › each piece on a fresh load (after lessons-late)
+[after lessons-late 1000x1000 fresh] core song.folk.hot-cross-buns (0.3)
+  side at the screen's first frame: (no frame); side marks: text (drawn before: true; stage 680x791)
+  what the sweep reads when the screen is visible: panel hidden
+  panel shown: yes, AFTER the first draw (stage at the mark 680x791)
+  first frame with the panel against the first frame with music: after; data-settled against the panel: panel after settled
+  stage at the first draw: 680x843; at the end: 680x791; stage boxes music was drawn on: 680x843 then 680x791
+[after lessons-late 1000x1000 fresh] practice song.folk.hot-cross-buns (practice.1)
+  side at the screen's first frame: (no frame); side marks: text (drawn before: true; stage 680x791)
+  what the sweep reads when the screen is visible: panel hidden
+  panel shown: yes, AFTER the first draw (stage at the mark 680x791)
+  first frame with the panel against the first frame with music: after; data-settled against the panel: panel after settled
+  stage at the first draw: 680x843; at the end: 680x791; stage boxes music was drawn on: 680x843 then 680x791
+[after lessons-late 1000x1000 fresh] holiday song.holiday.jingle-bells.rh (holiday)
+  side at the screen's first frame: (no frame); side marks: text (drawn before: true; stage 680x791)
+  what the sweep reads when the screen is visible: panel hidden
+  panel shown: yes, AFTER the first draw (stage at the mark 680x791)
+  first frame with the panel against the first frame with music: after; data-settled against the panel: panel after settled
+  stage at the first draw: 680x843; at the end: 680x791; stage boxes music was drawn on: 680x843 then 680x791
+[after lessons-late 1000x1000 fresh] hymns-gospel song.folk.when-the-saints.alternating (hymns.2)
+  side at the screen's first frame: (no frame); side marks: text (drawn before: true; stage 680x791)
+  what the sweep reads when the screen is visible: panel hidden
+  panel shown: yes, AFTER the first draw (stage at the mark 680x791)
+  first frame with the panel against the first frame with music: after; data-settled against the panel: panel after settled
+  stage at the first draw: 680x843; at the end: 680x791; stage boxes music was drawn on: 680x843 then 680x791
+[after lessons-late 1000x1000 fresh] classical song.classical.petzold-minuet-g-bwv-anh114 (classical.3)
+  side at the screen's first frame: (no frame); side marks: text (drawn before: true; stage 680x791)
+  what the sweep reads when the screen is visible: panel hidden
+  panel shown: yes, AFTER the first draw (stage at the mark 680x791)
+  first frame with the panel against the first frame with music: after; data-settled against the panel: panel after settled
+  stage at the first draw: 680x843; at the end: 680x791; stage boxes music was drawn on: 680x843 then 680x791
+[after lessons-late 1000x1000 fresh] chords-pop song.folk.happy-birthday.simple (chords-pop.3)
+  side at the screen's first frame: (no frame); side marks: text (drawn before: true; stage 680x791)
+  what the sweep reads when the screen is visible: panel hidden
+  panel shown: yes, AFTER the first draw (stage at the mark 680x791)
+  first frame with the panel against the first frame with music: after; data-settled against the panel: panel after settled
+  stage at the first draw: 680x843; at the end: 680x791; stage boxes music was drawn on: 680x843 then 680x791
+[after lessons-late 1000x1000 fresh] blues-boogie song.pop.careless-love-blues.pdmx (blues.3)
+  side at the screen's first frame: (no frame); side marks: text (drawn before: true; stage 680x791)
+  what the sweep reads when the screen is visible: panel hidden
+  panel shown: yes, AFTER the first draw (stage at the mark 680x791)
+  first frame with the panel against the first frame with music: after; data-settled against the panel: panel after settled
+  stage at the first draw: 680x843; at the end: 680x791; stage boxes music was drawn on: 680x843 then 680x791
+[after lessons-late 1000x1000 fresh] improv-compose exercise.cadence.c.root (improv.3)
+  side at the screen's first frame: (no frame); side marks: text (drawn before: true; stage 680x791)
+  what the sweep reads when the screen is visible: panel hidden
+  panel shown: yes, AFTER the first draw (stage at the mark 680x791)
+  first frame with the panel against the first frame with music: after; data-settled against the panel: panel after settled
+  stage at the first draw: 680x843; at the end: 680x791; stage boxes music was drawn on: 680x843 then 680x791
+[after lessons-late 1000x1000 fresh] rock-metal song.classical.pachelbel-canon-d.easy (rock.overview)
+  side at the screen's first frame: (no frame); side marks: text (drawn before: true; stage 680x791)
+  what the sweep reads when the screen is visible: panel hidden
+  panel shown: yes, AFTER the first draw (stage at the mark 680x791)
+  first frame with the panel against the first frame with music: after; data-settled against the panel: panel after settled
+  stage at the first draw: 680x843; at the end: 680x791; stage boxes music was drawn on: 680x843 then 680x791
+[after lessons-late 1000x1000 fresh] latin song.folk.exercise-cielito-lindo.pdmx (latin.3)
+  side at the screen's first frame: (no frame); side marks: text (drawn before: true; stage 680x791)
+  what the sweep reads when the screen is visible: panel hidden
+  panel shown: yes, AFTER the first draw (stage at the mark 680x791)
+  first frame with the panel against the first frame with music: after; data-settled against the panel: panel after settled
+  stage at the first draw: 680x843; at the end: 680x791; stage boxes music was drawn on: 680x843 then 680x791
+[after lessons-late 1000x1000 fresh] jazz song.folk.anonymous-swing-low-sweet-chariot.pdmx (jazz.3)
+  side at the screen's first frame: (no frame); side marks: text (drawn before: true; stage 680x791)
+  what the sweep reads when the screen is visible: panel hidden
+  panel shown: yes, AFTER the first draw (stage at the mark 680x791)
+  first frame with the panel against the first frame with music: after; data-settled against the panel: panel after settled
+  stage at the first draw: 680x843; at the end: 680x791; stage boxes music was drawn on: 680x843 then 680x791
+[after lessons-late 1000x1000 fresh] jam exercise.blues.twelve-bar-shuffle.e (jam)
+  side at the screen's first frame: (no frame); side marks: text (drawn before: true; stage 680x791)
+  what the sweep reads when the screen is visible: panel hidden
+  panel shown: yes, AFTER the first draw (stage at the mark 680x791)
+  first frame with the panel against the first frame with music: after; data-settled against the panel: panel after settled
+  stage at the first draw: 680x843; at the end: 680x791; stage boxes music was drawn on: 680x843 then 680x791
+[after lessons-late 1000x1000 fresh] technique song.classical.lemoine-etude-op-37-no-1.pdmx (technique.4)
+  side at the screen's first frame: (no frame); side marks: text (drawn before: true; stage 680x791)
+  what the sweep reads when the screen is visible: panel hidden
+  panel shown: yes, AFTER the first draw (stage at the mark 680x791)
+  first frame with the panel against the first frame with music: after; data-settled against the panel: panel after settled
+  stage at the first draw: 680x843; at the end: 680x791; stage boxes music was drawn on: 680x843 then 680x791
+[after lessons-late 1000x1000 fresh] ragtime song.folk.greensleeves.waltz (ragtime.5)
+  side at the screen's first frame: (no frame); side marks: text (drawn before: true; stage 680x791)
+  what the sweep reads when the screen is visible: panel hidden
+  panel shown: yes, AFTER the first draw (stage at the mark 680x791)
+  first frame with the panel against the first frame with music: after; data-settled against the panel: panel after settled
+  stage at the first draw: 680x843; at the end: 680x791; stage boxes music was drawn on: 680x843 then 680x791
+
+  1) tests\e2e\zz-u80-probe.spec.ts:190:5 › 1000x1000 › each piece on a fresh load (after lessons-late) 
+
+    Error: browserContext.close: ENOSPC: no space left on device, write
+
+    Error Context: test-results-u80\zz-u80-probe-1000x1000-eac-68848-sh-load-after-lessons-late-\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results-u80\zz-u80-probe-1000x1000-eac-68848-sh-load-after-lessons-late-\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results-u80\zz-u80-probe-1000x1000-eac-68848-sh-load-after-lessons-late-\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    tests\e2e\zz-u80-probe.spec.ts:190:5 › 1000x1000 › each piece on a fresh load (after lessons-late) 
+exit=1

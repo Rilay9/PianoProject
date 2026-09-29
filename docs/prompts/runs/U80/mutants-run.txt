@@ -1,0 +1,21 @@
+python docs/prompts/runs/U80/scripts-mutants.py
+no-wait: exit=1; red cases: 3
+    × filled: undecided until the lesson reads, then text, and the renderer is made after 157ms
+    × left out, a piece on no rung: empty, and the renderer is made with it 60ms
+    × left out, a lesson that will not read: empty, and the renderer is made with it 1133ms
+no-bound: exit=1; red cases: 1
+    × a lesson that never answers holds the first draw no longer than the bound, and decides nothing 4568ms
+no-rung-undecided: exit=1; red cases: 1
+    × left out, a piece on no rung: empty, and the renderer is made with it 1080ms
+failure-undecided: exit=1; red cases: 1
+    × left out, a lesson that will not read: empty, and the renderer is made with it 1074ms
+found-by-id: exit=1; red cases: 1
+    × reopened: the next piece starts undecided and is decided by its own lesson, whenever the last one answers 257ms
+decided-at-build: exit=1; red cases: 5
+    × filled: undecided until the lesson reads, then text, and the renderer is made after 75ms
+    × left out, a piece on no rung: empty, and the renderer is made with it 59ms
+    × left out, a lesson that will not read: empty, and the renderer is made with it 63ms
+    × reopened: the next piece starts undecided and is decided by its own lesson, whenever the last one answers 66ms
+    × a lesson that never answers holds the first draw no longer than the bound, and decides nothing 4570ms
+source restored byte for byte: True
+exit=0

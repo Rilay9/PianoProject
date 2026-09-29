@@ -35,3 +35,5 @@ If the measurement refutes the hypothesis (the panel is decided before the first
 ## Report
 
 Judgement first: what a tablet learner sees in the first frame before and after, as observations with the pictures; then Done / Not done / Follow-ups / Questions / Files; the measurement table; the red lines; the tests table; exit codes; unverified beside what passes.
+
+**Landed 2026-09-29** (Entry 125; ba86d75c, merged ebad0720); handoff `handoffs/ba86d75c.md`. U86, U87 recorded.

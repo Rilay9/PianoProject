@@ -1,0 +1,73 @@
+(in app) for f in tests/e2e/zz-u80-red-harness.spec.ts tests/e2e/side-panel-prose.spec.ts; do test -f "$f" || { echo "specs-exist: missing $f"; exit 2; }; done; echo "specs-exist: ok"; npx playwright test --config=playwright.u80-4313.config.ts --workers=2 tests/e2e/zz-u80-red-harness.spec.ts tests/e2e/side-panel-prose.spec.ts
+specs-exist: ok
+
+Running 6 tests using 2 workers
+
+  ok 1 tests\e2e\side-panel-prose.spec.ts:97:3 › on a phone › the lesson prose takes none of the notation’s room (1.6s)
+  ok 2 tests\e2e\side-panel-prose.spec.ts:110:3 › on a tablet, where the panel is drawn › the lesson renders in the panel without a line overflowing it (1.6s)
+  ok 3 tests\e2e\side-panel-prose.spec.ts:169:3 › on a tablet, where the panel is drawn › a piece opened from nowhere shows the rung’s teaching without its pass line (2.0s)
+  x  5 tests\e2e\zz-u80-red-harness.spec.ts:61:1 › the committed sweep, lessons late (3.6s)
+  ok 4 tests\e2e\side-panel-prose.spec.ts:195:3 › on a tablet, where the panel is drawn › one lesson from every track fits the panel (11.4s)
+  x  6 tests\e2e\zz-u80-red-harness.spec.ts:76:1 › U80’s sweep, lessons late (4.9s)
+
+
+  1) tests\e2e\zz-u80-red-harness.spec.ts:61:1 › the committed sweep, lessons late ─────────────────
+
+    Error: no piece in the sweep drew a side panel at all
+
+    expect(received).toBeGreaterThan(expected)
+
+    Expected: > 7
+    Received:   0
+
+      71 |     await expect(page.locator('#score-side-body')).not.toBeEmpty({ timeout: 60_000 });
+      72 |   }
+    > 73 |   expect(drawn, 'no piece in the sweep drew a side panel at all').toBeGreaterThan(PER_TRACK.length / 2);
+         |                                                                   ^
+      74 | });
+      75 |
+      76 | test('U80’s sweep, lessons late', async ({ page }) => {
+        at <worktree>\app\tests\e2e\zz-u80-red-harness.spec.ts:73:67
+
+    Error Context: test-results-u80\zz-u80-red-harness-the-committed-sweep-lessons-late\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results-u80\zz-u80-red-harness-the-committed-sweep-lessons-late\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results-u80\zz-u80-red-harness-the-committed-sweep-lessons-late\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\e2e\zz-u80-red-harness.spec.ts:76:1 › U80’s sweep, lessons late ─────────────────────────
+
+    Error: no piece in the sweep drew a side panel at all
+
+    expect(received).toBeGreaterThan(expected)
+
+    Expected: > 7
+    Received:   0
+
+      86 |     await expect(page.locator('#score-side-body')).not.toBeEmpty({ timeout: 60_000 });
+      87 |   }
+    > 88 |   expect(drawn, 'no piece in the sweep drew a side panel at all').toBeGreaterThan(PER_TRACK.length / 2);
+         |                                                                   ^
+      89 | });
+      90 |
+        at <worktree>\app\tests\e2e\zz-u80-red-harness.spec.ts:88:67
+
+    Error Context: test-results-u80\zz-u80-red-harness-U80’s-sweep-lessons-late\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results-u80\zz-u80-red-harness-U80’s-sweep-lessons-late\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results-u80\zz-u80-red-harness-U80’s-sweep-lessons-late\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests\e2e\zz-u80-red-harness.spec.ts:61:1 › the committed sweep, lessons late ──────────────────
+    tests\e2e\zz-u80-red-harness.spec.ts:76:1 › U80’s sweep, lessons late ──────────────────────────
+  4 passed (16.2s)
+exit=1

@@ -1,0 +1,89 @@
+(in app) for f in tests/e2e/zz-u80-red-harness.spec.ts tests/e2e/side-panel-prose.spec.ts; do test -f "$f" || { echo "specs-exist: missing $f"; exit 2; }; done; echo "specs-exist: ok"; npx playwright test --config=playwright.u80-4313.config.ts --workers=2 tests/e2e/zz-u80-red-harness.spec.ts tests/e2e/side-panel-prose.spec.ts
+specs-exist: ok
+
+Running 6 tests using 2 workers
+
+  ok 1 tests\e2e\side-panel-prose.spec.ts:97:3 › on a phone › the lesson prose takes none of the notation’s room (1.7s)
+  ok 2 tests\e2e\side-panel-prose.spec.ts:110:3 › on a tablet, where the panel is drawn › the lesson renders in the panel without a line overflowing it (1.7s)
+  ok 3 tests\e2e\side-panel-prose.spec.ts:169:3 › on a tablet, where the panel is drawn › a piece opened from nowhere shows the rung’s teaching without its pass line (1.7s)
+  x  5 tests\e2e\zz-u80-red-harness.spec.ts:61:1 › the committed sweep, lessons late (3.7s)
+  x  6 tests\e2e\zz-u80-red-harness.spec.ts:76:1 › U80’s sweep, lessons late (1.0m)
+  x  4 tests\e2e\side-panel-prose.spec.ts:195:3 › on a tablet, where the panel is drawn › one lesson from every track fits the panel (57.3s)
+
+
+  1) tests\e2e\side-panel-prose.spec.ts:195:3 › on a tablet, where the panel is drawn › one lesson from every track fits the panel 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForFunction: Test timeout of 30000ms exceeded.
+
+      206 |       const before = sameRoute ? null : await page.$('[data-screen="score"]');
+      207 |       await page.goto(`/#/score/${entry.piece}`);
+    > 208 |       if (before) await page.waitForFunction((el) => !el.isConnected, before, { timeout: 60_000 });
+          |                              ^
+      209 |       await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
+      210 |       // A piece on no rung, or a lesson whose file will not read, leaves the
+      211 |       // panel out on purpose (`empty`) — that is not this test's business.
+        at <worktree>\app\tests\e2e\side-panel-prose.spec.ts:208:30
+
+    Test timeout of 30000ms exceeded.
+
+    Error Context: test-results-u80\side-panel-prose-on-a-tabl-b5d69--every-track-fits-the-panel\error-context.md
+
+  2) tests\e2e\zz-u80-red-harness.spec.ts:61:1 › the committed sweep, lessons late ─────────────────
+
+    Error: no piece in the sweep drew a side panel at all
+
+    expect(received).toBeGreaterThan(expected)
+
+    Expected: > 7
+    Received:   0
+
+      71 |     await expect(page.locator('#score-side-body')).not.toBeEmpty({ timeout: 60_000 });
+      72 |   }
+    > 73 |   expect(drawn, 'no piece in the sweep drew a side panel at all').toBeGreaterThan(PER_TRACK.length / 2);
+         |                                                                   ^
+      74 | });
+      75 |
+      76 | test('U80’s sweep, lessons late', async ({ page }) => {
+        at <worktree>\app\tests\e2e\zz-u80-red-harness.spec.ts:73:67
+
+    Error Context: test-results-u80\zz-u80-red-harness-the-committed-sweep-lessons-late\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results-u80\zz-u80-red-harness-the-committed-sweep-lessons-late\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results-u80\zz-u80-red-harness-the-committed-sweep-lessons-late\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests\e2e\zz-u80-red-harness.spec.ts:76:1 › U80’s sweep, lessons late ─────────────────────────
+
+    TimeoutError: page.waitForFunction: Timeout 60000ms exceeded.
+
+      82 |     const before = sameRoute ? null : await page.$('[data-screen="score"]');
+      83 |     await page.goto(`/#/score/${entry.piece}`);
+    > 84 |     if (before) await page.waitForFunction((el) => !el.isConnected, before, { timeout: 60_000 });
+         |                            ^
+      85 |     await expect(page.locator('[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
+      86 |     if ((await panelDecided(page)) !== 'text') continue;
+      87 |     await expect(page.locator('#score-side')).toBeVisible();
+        at <worktree>\app\tests\e2e\zz-u80-red-harness.spec.ts:84:28
+
+    Error Context: test-results-u80\zz-u80-red-harness-U80’s-sweep-lessons-late\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results-u80\zz-u80-red-harness-U80’s-sweep-lessons-late\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results-u80\zz-u80-red-harness-U80’s-sweep-lessons-late\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    tests\e2e\side-panel-prose.spec.ts:195:3 › on a tablet, where the panel is drawn › one lesson from every track fits the panel 
+    tests\e2e\zz-u80-red-harness.spec.ts:61:1 › the committed sweep, lessons late ──────────────────
+    tests\e2e\zz-u80-red-harness.spec.ts:76:1 › U80’s sweep, lessons late ──────────────────────────
+  3 passed (1.6m)
+exit=1

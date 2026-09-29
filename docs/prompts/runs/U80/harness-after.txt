@@ -1,0 +1,41 @@
+(in app) for f in tests/e2e/zz-u80-red-harness.spec.ts; do test -f "$f" || { echo "specs-exist: missing $f"; exit 2; }; done; echo "specs-exist: ok"; npx playwright test --config=playwright.u80-4313.config.ts --workers=2 tests/e2e/zz-u80-red-harness.spec.ts
+specs-exist: ok
+
+Running 2 tests using 2 workers
+
+  x  1 tests\e2e\zz-u80-red-harness.spec.ts:61:1 › the committed sweep, lessons late (3.3s)
+  ok 2 tests\e2e\zz-u80-red-harness.spec.ts:76:1 › U80’s sweep, lessons late (25.4s)
+
+
+  1) tests\e2e\zz-u80-red-harness.spec.ts:61:1 › the committed sweep, lessons late ─────────────────
+
+    Error: no piece in the sweep drew a side panel at all
+
+    expect(received).toBeGreaterThan(expected)
+
+    Expected: > 7
+    Received:   0
+
+      71 |     await expect(page.locator('#score-side-body')).not.toBeEmpty({ timeout: 60_000 });
+      72 |   }
+    > 73 |   expect(drawn, 'no piece in the sweep drew a side panel at all').toBeGreaterThan(PER_TRACK.length / 2);
+         |                                                                   ^
+      74 | });
+      75 |
+      76 | test('U80’s sweep, lessons late', async ({ page }) => {
+        at <worktree>\app\tests\e2e\zz-u80-red-harness.spec.ts:73:67
+
+    Error Context: test-results-u80\zz-u80-red-harness-the-committed-sweep-lessons-late\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results-u80\zz-u80-red-harness-the-committed-sweep-lessons-late\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results-u80\zz-u80-red-harness-the-committed-sweep-lessons-late\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\zz-u80-red-harness.spec.ts:61:1 › the committed sweep, lessons late ──────────────────
+  1 passed (28.3s)
+exit=1
