@@ -40,3 +40,5 @@ Judgement first: the card at the affected rungs before and after, in its own wor
 
 **Delivered 2026-09-28**, Entry 103, in an isolated worktree: the exported predicate read in `usable()` (the jam slot already passed through it, so the brief's premise about a separate pick was wrong), the pool left unfiltered on purpose so a refused ask stays unmet rather than the next lesson's ask being claimed, regressions per path with six mutants, 146 rows on 59 cards replaced or dropped. Found: Q56 (the rung page's picks), Q57 (the Latin track's asks), G61.
 
+**Approved by the reviewer 2026-09-28 with one required change** (`responses/4478793.md`): the rung page's automatic picks are offers too — D3c; the Latin asks stay unmet; G61 a later wave. D3 closes on D3c's review.
+
