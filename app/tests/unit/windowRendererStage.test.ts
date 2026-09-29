@@ -19,6 +19,11 @@
  * measurement landed on idle. The browser trace said the same on the glass (`score-fit-paths.spec.ts`,
  * and Entry 114).
  *
+ * U82 adds the sideways count (`04` §5): with one sliding system the size comes from the height, and
+ * the window holds as many of the asked bars as reach across at that size with the next bar's start
+ * after them — fewer said as `across` — from the first draw. `score.slide.spec.ts`'s sideways case
+ * had read the count the renderer said before the piece was measured; the rule itself is unchanged.
+ *
  * **The engraver is a stand-in**, and that is the limit of this file: bars laid out left to right at
  * a natural width that scales with the zoom, systems broken at the page's width, a grand staff of two
  * five-line staves. What it proves is the renderer's bookkeeping — which shape it prices, when it
@@ -501,6 +506,61 @@ describe('the renderer against a stage that changes after it is made (U74)', () 
     expect(FakeOsmdView.all.filter((v) => v.label !== 'osmd.render.probe').reduce((sum, v) => sum + v.renders, 0), 're-engravings').toBe(renders);
     expect(renderer.stepIndex).toBe(1);
     renderer.setRunning(false);
+    renderer.dispose();
+  });
+});
+
+describe('sideways, the count follows what reaches across at the size the height gives (U82)', () => {
+  /** Three bars of quarter notes, so the window's second bar has a bar after it to begin. */
+  function threeBars(): ScoreModel {
+    return makeModel(
+      Array.from({ length: 12 }, (_, index) => ({ onset: index, notes: [note({ midi: 60 + (index % 8) })] })),
+      { handsPresent: { R: true, L: true } },
+    );
+  }
+
+  /** The phone held sideways, a stage shorter than two systems: one sliding system (`08` §4.1). */
+  function sideways(): Stage {
+    Object.defineProperty(window, 'innerWidth', { value: 740, configurable: true });
+    Object.defineProperty(window, 'innerHeight', { value: 342, configurable: true });
+    return stageOf(740, 260);
+  }
+
+  const said = (stage: Stage, renderer: WindowRenderer): { shown: number; why: string | null } => ({
+    shown: renderer.barsShown,
+    why: stage.el.dataset.windowWhy ?? null,
+  });
+
+  it('bars wider than the stage holds two of at that size: one bar, said as "across", from the first draw', async () => {
+    // Two of these bars with the opening and the next bar's start are wider than the stage at the
+    // size its height gives; one bar with the next one's start is not (the size is the height's:
+    // the read-ahead cap is looser for a bar this wide on this stage).
+    FakeOsmdView.bars = [30, 30, 30];
+    const stage = sideways();
+    const renderer = await open(stage, threeBars());
+    const first = said(stage, renderer);
+    await settle();
+    const settled = said(stage, renderer);
+    const priced = JSON.stringify((renderer.debugFit() as { priced?: unknown }).priced);
+    expect(stage.el.dataset.readAhead, 'the sideways arrangement').toBe('single');
+    expect(stage.el.dataset.fit, `the size is the height's: ${priced}`).toBe('height');
+    expect(settled.shown, `fewer than the two asked: ${priced}`).toBeLessThan(renderer.bars);
+    expect(settled.why, `the reason the row turns into words: ${priced}`).toBe('across');
+    expect(first, 'the first draw said what the settled fit says').toEqual(settled);
+    renderer.dispose();
+  });
+
+  it('the same stage and the same two bars asked, over bars that reach across: both shown', async () => {
+    FakeOsmdView.bars = [14, 14, 14];
+    const stage = sideways();
+    const renderer = await open(stage, threeBars());
+    const first = said(stage, renderer);
+    await settle();
+    const settled = said(stage, renderer);
+    const priced = JSON.stringify((renderer.debugFit() as { priced?: unknown }).priced);
+    expect(settled.shown, `the asked count: ${priced}`).toBe(renderer.bars);
+    expect(settled.why, priced).toBeNull();
+    expect(first, 'the first draw said what the settled fit says').toEqual(settled);
     renderer.dispose();
   });
 });
