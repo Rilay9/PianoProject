@@ -506,7 +506,9 @@ describe('never the bridge, never the source (the brief’s item 3; its refuting
   // the session are readers now, and the pin is on what the session does with the rows: `projectIn`,
   // once, inside `review()`, and nothing that opens the store. No evidence, skill or eligibility file
   // imports from the store; the sheet alone acts.
-  it('only the project sheet acts; the session reads a project for one thing, retention’s suppression (G1d; G82); no evidence, skill, eligibility or Library code reads one', () => {
+  // Revised (G85 item 5; the reviewer's ruling 3 on the G1b brief): the Library is a reader — its song
+  // rows wear the project's state and its Project filter reads it — and moves no project.
+  it('only the project sheet acts; the session reads a project for one thing, retention’s suppression (G1d; G82); the Library shows one (G85); no evidence, skill or eligibility code reads one', () => {
     const src = join(process.cwd(), 'src');
     const readers: string[] = [];
     // Revised (G1c item 1; G84): the files that import the project stages' numbers and nothing else
@@ -544,6 +546,7 @@ describe('never the bridge, never the source (the brief’s item 3; its refuting
       'data/backup.ts',
       'ui/projectSheet.ts',
       'ui/screens/LessonScreen.ts',
+      'ui/screens/LibraryScreen.ts',
       'ui/screens/ProgressScreen.ts',
       'ui/screens/ScoreScreen.ts',
       'ui/screens/SettingsScreen.ts',

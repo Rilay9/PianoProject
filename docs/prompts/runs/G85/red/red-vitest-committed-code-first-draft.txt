@@ -1,0 +1,252 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/projectLifecycle.test.ts (32 tests | 1 failed) 419ms
+   ❯ never the bridge, never the source (the brief’s item 3; its refuting test kept as a guard) (2)
+     × only the project sheet acts; the session reads a project for one thing, retention’s suppression (G1d; G82); the Library shows one and opens the sheet (G85); no evidence, skill or eligibility code reads one 231ms
+ ❯ tests/unit/libraryProjects.test.ts (14 tests | 11 failed) 1686ms
+   ❯ matches: the project filter, read like status (G85 item 3) (5)
+     × each state lists the piece whose project is in it, and no other piece 10ms
+     × any project lists every piece with a project, in whatever state, and not the piece without one 2ms
+     × a caller that sets no project filter and hands in no projects is answered as before 2ms
+   ❯ the Library row wears the learner’s project and opens its sheet (G85 items 1, 2) (4)
+     × a song with a project wears one badge in the state’s words; a song with none, and an exercise, wear none 106ms
+     × every song that opens on the Score screen has one Project action, an exercise none; it opens the sheet and navigates nowhere 62ms
+     × what the learner does on the sheet redraws the row’s badge, under the open sheet, without leaving the Library 1077ms
+   ❯ the Project filter (G85 item 3) (4)
+     × offers every piece, any project, and each state in the sheet’s words, beside the status filter 65ms
+     × a state lists its pieces and hides the rest; any project lists every piece with one; the count line names it 172ms
+     × a state with nothing in it empties the list with the sentence and the control, and Show everything clears it 62ms
+     × pausing on the sheet with Learning chosen takes the piece out of the list, and the sheet stays open 61ms
+   ❯ the Library reads the store once and looks each row up in a map (G85 items 1, 4) (1)
+     × one read of the store, one identity rule, no per-row read, and no project moved here 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 12 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/libraryProjects.test.ts > matches: the project filter, read like status (G85 item 3) > each state lists the piece whose project is in it, and no other piece
+AssertionError: saved: expected [ 'song.saved', 'song.learning', …(7) ] to deeply equal [ 'song.saved' ]
+
+- Expected
++ Received
+
+  [
+    "song.saved",
++   "song.learning",
++   "song.polishing",
++   "song.performance-ready",
++   "song.maintaining",
++   "song.refreshing",
++   "song.paused",
++   "song.retired",
++   "song.none",
+  ]
+
+ ❯ tests/unit/libraryProjects.test.ts:94:29
+     92|     for (const state of PROJECT_STATES) {
+     93|       const listed = [...pieces, none].filter((item) => matches(item, …
+     94|       expect(listed, state).toEqual([`song.${state}`]);
+       |                             ^
+     95|     }
+     96|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/12]⎯
+
+ FAIL  tests/unit/libraryProjects.test.ts > matches: the project filter, read like status (G85 item 3) > any project lists every piece with a project, in whatever state, and not the piece without one
+AssertionError: expected [ 'song.saved', 'song.learning', …(7) ] to deeply equal [ 'song.saved', 'song.learning', …(6) ]
+
+- Expected
++ Received
+
+@@ -5,6 +5,7 @@
+    "song.performance-ready",
+    "song.maintaining",
+    "song.refreshing",
+    "song.paused",
+    "song.retired",
++   "song.none",
+  ]
+
+ ❯ tests/unit/libraryProjects.test.ts:100:20
+     98|   it('any project lists every piece with a project, in whatever state,…
+     99|     const listed = [...pieces, none].filter((item) => matches(item, { …
+    100|     expect(listed).toEqual(pieces.map((item) => item.id));
+       |                    ^
+    101|   });
+    102|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/12]⎯
+
+ FAIL  tests/unit/libraryProjects.test.ts > matches: the project filter, read like status (G85 item 3) > a caller that sets no project filter and hands in no projects is answered as before
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/libraryProjects.test.ts:110:102
+    108|     for (const item of [...pieces, none]) expect(matches(item, BROWSE …
+    109|     // And a project filter with no projects handed in finds nothing t…
+    110|     expect(matches(pieces[1] as CatalogItem, { ...BROWSE, project: 'le…
+       |                                                                                                      ^
+    111|   });
+    112|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/12]⎯
+
+ FAIL  tests/unit/libraryProjects.test.ts > the Library row wears the learner’s project and opens its sheet (G85 items 1, 2) > a song with a project wears one badge in the state’s words; a song with none, and an exercise, wear none
+AssertionError: expected undefined to be 'Learning' // Object.is equality
+
+- Expected:
+"Learning"
+
++ Received:
+undefined
+
+ ❯ tests/unit/libraryProjects.test.ts:176:67
+    174|     await seed();
+    175|     const section = await mount();
+    176|     expect(projectBadgeOf(section, 'song.learning')?.textContent).toBe…
+       |                                                                   ^
+    177|     expect(projectBadgeOf(section, 'song.paused')?.textContent).toBe(P…
+    178|     // The same file under another id: the store's own identity rule.
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/12]⎯
+
+ FAIL  tests/unit/libraryProjects.test.ts > the Library row wears the learner’s project and opens its sheet (G85 items 1, 2) > every song that opens on the Score screen has one Project action, an exercise none; it opens the sheet and navigates nowhere
+AssertionError: song.learning: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/libraryProjects.test.ts:201:129
+    199|   it('every song that opens on the Score screen has one Project action…
+    200|     const section = await mount();
+    201|     for (const id of ['song.learning', 'song.paused', 'song.none', 'so…
+       |                                                                                                                                 ^
+    202|     expect(doorOf(section, 'exercise.five')).toHaveLength(0);
+    203|     doorOf(section, 'song.none')[0]?.click();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/12]⎯
+
+ FAIL  tests/unit/libraryProjects.test.ts > the Library row wears the learner’s project and opens its sheet (G85 items 1, 2) > what the learner does on the sheet redraws the row’s badge, under the open sheet, without leaving the Library
+AssertionError: expected null not to be null
+ ❯ tests/unit/libraryProjects.test.ts:219:67
+    217|     doorOf(section, 'song.none')[0]?.click();
+    218|     await vi.waitFor(() => {
+    219|       expect(document.querySelector('#project-action-learn')).not.toBe…
+       |                                                                   ^
+    220|     });
+    221|     document.querySelector<HTMLButtonElement>('#project-action-learn')…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/12]⎯
+
+ FAIL  tests/unit/libraryProjects.test.ts > the Project filter (G85 item 3) > offers every piece, any project, and each state in the sheet’s words, beside the status filter
+AssertionError: expected undefined to be 'Project' // Object.is equality
+
+- Expected:
+"Project"
+
++ Received:
+undefined
+
+ ❯ tests/unit/libraryProjects.test.ts:255:48
+    253|     const section = await mount();
+    254|     const select = section.querySelector<HTMLSelectElement>('#library-…
+    255|     expect(select?.getAttribute('aria-label')).toBe('Project');
+       |                                                ^
+    256|     expect([...(select?.options ?? [])].map((option) => option.value))…
+    257|     expect([...(select?.options ?? [])].map((option) => option.textCon…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/12]⎯
+
+ FAIL  tests/unit/libraryProjects.test.ts > the Project filter (G85 item 3) > a state lists its pieces and hides the rest; any project lists every piece with one; the count line names it
+Error: no project filter
+ ❯ choose tests/unit/libraryProjects.test.ts:154:22
+    152| function choose(section: HTMLElement, value: string): void {
+    153|   const select = section.querySelector<HTMLSelectElement>('#library-pr…
+    154|   if (!select) throw new Error('no project filter');
+       |                      ^
+    155|   select.value = value;
+    156|   select.dispatchEvent(new Event('change'));
+ ❯ tests/unit/libraryProjects.test.ts:270:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/12]⎯
+
+ FAIL  tests/unit/libraryProjects.test.ts > the Project filter (G85 item 3) > a state with nothing in it empties the list with the sentence and the control, and Show everything clears it
+Error: no project filter
+ ❯ choose tests/unit/libraryProjects.test.ts:154:22
+    152| function choose(section: HTMLElement, value: string): void {
+    153|   const select = section.querySelector<HTMLSelectElement>('#library-pr…
+    154|   if (!select) throw new Error('no project filter');
+       |                      ^
+    155|   select.value = value;
+    156|   select.dispatchEvent(new Event('change'));
+ ❯ tests/unit/libraryProjects.test.ts:283:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/12]⎯
+
+ FAIL  tests/unit/libraryProjects.test.ts > the Project filter (G85 item 3) > pausing on the sheet with Learning chosen takes the piece out of the list, and the sheet stays open
+Error: no project filter
+ ❯ choose tests/unit/libraryProjects.test.ts:154:22
+    152| function choose(section: HTMLElement, value: string): void {
+    153|   const select = section.querySelector<HTMLSelectElement>('#library-pr…
+    154|   if (!select) throw new Error('no project filter');
+       |                      ^
+    155|   select.value = value;
+    156|   select.dispatchEvent(new Event('change'));
+ ❯ tests/unit/libraryProjects.test.ts:294:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/12]⎯
+
+ FAIL  tests/unit/libraryProjects.test.ts > the Library reads the store once and looks each row up in a map (G85 items 1, 4) > one read of the store, one identity rule, no per-row read, and no project moved here
+AssertionError: one place reads the store: Target cannot be null or undefined.
+ ❯ tests/unit/libraryProjects.test.ts:310:73
+    308|   it('one read of the store, one identity rule, no per-row read, and n…
+    309|     const source = readFileSync(join(process.cwd(), 'src', 'ui', 'scre…
+    310|     expect(source.match(/allProjects\(/g), 'one place reads the store'…
+       |                                                                         ^
+    311|     expect(source.match(/projectIn\(/g), 'one place applies the identi…
+    312|     expect(source).not.toMatch(/projectFor\(|applyProjectAction|setPro…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/12]⎯
+
+ FAIL  tests/unit/projectLifecycle.test.ts > never the bridge, never the source (the brief’s item 3; its refuting test kept as a guard) > only the project sheet acts; the session reads a project for one thing, retention’s suppression (G1d; G82); the Library shows one and opens the sheet (G85); no evidence, skill or eligibility code reads one
+AssertionError: expected [ 'curriculum/session.ts', …(7) ] to deeply equal [ 'curriculum/session.ts', …(8) ]
+
+- Expected
++ Received
+
+  [
+    "curriculum/session.ts",
+    "data/backup.ts",
+    "ui/projectSheet.ts",
+    "ui/screens/LessonScreen.ts",
+-   "ui/screens/LibraryScreen.ts",
+    "ui/screens/ProgressScreen.ts",
+    "ui/screens/ScoreScreen.ts",
+    "ui/screens/SettingsScreen.ts",
+    "ui/screens/TodayScreen.ts",
+  ]
+
+ ❯ tests/unit/projectLifecycle.test.ts:544:28
+    542|     // The learner's action has one door: the sheet's buttons. Nothing…
+    543|     expect(actors).toEqual(['ui/projectSheet.ts']);
+    544|     expect(readers.sort()).toEqual([
+       |                            ^
+    545|       'curriculum/session.ts',
+    546|       'data/backup.ts',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/12]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  12 failed | 34 passed (46)
+   Start at  16:17:08
+   Duration  4.42s (tests 36%, transform 29%, environment 27%, import 8%)
+
+exit 1 

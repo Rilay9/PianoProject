@@ -9,7 +9,9 @@
  * The list is built by hand rather than virtualised. 570 rows of three
  * elements each is about 15 ms on the S25, and it only rebuilds when a filter
  * changes — a virtual list would cost more in scroll-position bugs than it
- * saves.
+ * saves. The learner's projects (G85) keep that budget: the store is read with
+ * the catalogue and again when a project changes, never on a filter change,
+ * and indexed by song once per read, so a draw pays one map lookup a row.
  *
  * ## What this screen is for, in order
  *
@@ -17,9 +19,11 @@
  *    is a door out of it.
  * 2. **A row's name, and whose it is.** The title, then the composer.
  * 3. **What it is** — level, hands where hands are news, type — and its state,
- *    as badges that only appear when there is something to say.
- * 4. **The doors: import, Shelf, score folder, the six filters.** Text in the
- *    header and one chip, never boxes (`04` §0 R3).
+ *    as badges that only appear when there is something to say: its progress,
+ *    and the learner's project on it where there is one (G85).
+ * 4. **The doors: import, Shelf, score folder, the seven filters.** Text in the
+ *    header and one chip, never boxes (`04` §0 R3). This screen reads the
+ *    learner's projects and moves none: the project sheet is the one actor.
  *
  * The pass that produced this ranking found two things worth naming. The
  * detail line said `Hands together` on nearly every row of 1,533 — see
@@ -64,15 +68,33 @@ import { getSettings, updateSettings } from '../../data/settingsStore';
 import { screenFrame, statusLine } from './screenFrame';
 import { openImportSheetFor } from '../importSheet';
 import { loadCurriculum } from '../../curriculum/load';
-import { IMPORT_TEXT, importSourceWords, importStateWords } from '../help';
+import { materialOfItem } from '../../curriculum/material';
+import {
+  PROJECT_STATES,
+  allProjects,
+  isProjectable,
+  onProjectsChange,
+  projectIn,
+  type ProjectRow,
+  type ProjectState,
+} from '../../data/projectStore';
+import { IMPORT_TEXT, PROJECT_TEXT, importSourceWords, importStateWords } from '../help';
 
 type SortKey = 'level' | 'title' | 'recent';
+
+/** What the Project filter asks (G85): every piece, a piece with a project in any state, or one state. */
+type ProjectFilter = 'all' | 'any' | ProjectState;
 
 interface Filters {
   query: string;
   type: 'all' | 'song' | 'exercise' | 'drill' | 'excerpt';
   track: string;
   status: 'all' | 'new' | 'started' | 'passed' | 'mastered';
+  /**
+   * The learner's project on the piece (G85), read as `status` is. Absent is `all`: the filters built
+   * outside this screen (the tests of `matches` that browse the catalogue) name no project.
+   */
+  project?: ProjectFilter;
   hands: 'all' | 'both' | 'right' | 'left';
   minLevel: number;
   maxLevel: number;
@@ -85,6 +107,7 @@ const DEFAULT_FILTERS: Filters = {
   type: 'all',
   track: 'all',
   status: 'all',
+  project: 'all',
   hands: 'all',
   minLevel: 0,
   maxLevel: 10,
@@ -101,7 +124,33 @@ function statusBadge(row: ProgressRow | undefined): HTMLElement | null {
   return badge(label, row.status);
 }
 
-export function matches(item: CatalogItem, filters: Filters, progress: Map<string, ProgressRow>): boolean {
+/**
+ * The learner's project on a song row (G85): the state in the sheet's words, a badge as the Stage 9
+ * page's rows wear it (`LessonScreen`'s option rows), but plain rather than that page's `passed` kind:
+ * `passed` draws a ✓, and *✓ Paused* or *✓ Put away* beside a status badge's own ✓ would say the
+ * learner achieved something where they said what they intend. None where there is no project —
+ * exploring is the absence of a row, and fifteen hundred *not started* badges would say nothing.
+ */
+function projectBadge(project: ProjectRow | undefined): HTMLElement | null {
+  if (!project) return null;
+  const node = badge(PROJECT_TEXT.states[project.state], 'project');
+  node.dataset.project = project.state;
+  return node;
+}
+
+const NO_PROJECTS: ReadonlyMap<string, ProjectRow> = new Map();
+
+/**
+ * Whether an item passes the filters. `projects` is the screen's index of the learner's projects by
+ * item id (built from one read of the store, G85), handed in as `progress` is: this never reads the
+ * store. A piece absent from it has no project.
+ */
+export function matches(
+  item: CatalogItem,
+  filters: Filters,
+  progress: Map<string, ProgressRow>,
+  projects: ReadonlyMap<string, ProjectRow> = NO_PROJECTS,
+): boolean {
   if (filters.importedOnly && !item.imported) return false;
   if (filters.type !== 'all' && item.type !== filters.type) return false;
   if (filters.hands !== 'all' && item.hands !== filters.hands) return false;
@@ -110,6 +159,11 @@ export function matches(item: CatalogItem, filters: Filters, progress: Map<strin
   if (filters.status !== 'all') {
     const status = progress.get(item.id)?.status ?? 'new';
     if (status !== filters.status) return false;
+  }
+  const project = filters.project ?? 'all';
+  if (project !== 'all') {
+    const state = projects.get(item.id)?.state;
+    if (state === undefined || (project !== 'any' && state !== project)) return false;
   }
   const query = filters.query.trim().toLowerCase();
   if (query) {
@@ -274,6 +328,10 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
    */
   let trackTitles = new Map<string, string>();
   let progress = new Map<string, ProgressRow>();
+  /** Every project, as the store last answered (G85): read with the catalogue and again on a change. */
+  let projectRows: ProjectRow[] = [];
+  /** Song id → its project, built once per read of the store (`indexProjects`): one lookup a row. */
+  let projectOf: ReadonlyMap<string, ProjectRow> = NO_PROJECTS;
   let shown = PAGE_SIZE;
   /** What `draw` last put on the screen, which is what the rail moves through. */
   let drawn: CatalogItem[] = [];
@@ -509,6 +567,20 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
         filters.status = value as Filters['status'];
       },
     ),
+    // The learner's project on the piece (G85), read as the status is and in the project sheet's
+    // words: every piece, the pieces with a project, then each state in the order a piece meets them.
+    selectRow(
+      'library-project',
+      PROJECT_TEXT.filter,
+      [
+        { value: 'all', label: PROJECT_TEXT.filterAll },
+        { value: 'any', label: PROJECT_TEXT.filterAny },
+        ...PROJECT_STATES.map((state) => ({ value: state, label: PROJECT_TEXT.states[state] })),
+      ],
+      (value) => {
+        filters.project = value as ProjectFilter;
+      },
+    ),
     selectRow(
       'library-hands',
       'Hands',
@@ -536,7 +608,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     ),
   );
 
-  // The six selects live behind one chip (`04` §0 R1). They pushed the first
+  // The selects live behind one chip (`04` §0 R1). They pushed the first
   // item to about 640 px down a 780 px screen — the list is what the screen is
   // for, and it began below the fold on every visit.
   //
@@ -910,6 +982,10 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     const badges: HTMLElement[] = [];
     const progressBadge = statusBadge(progress.get(item.id));
     if (progressBadge) badges.push(progressBadge);
+    // Beside the status: the learner's project, where there is one (G85).
+    const project = projectOf.get(item.id);
+    const projectMark = projectBadge(project);
+    if (projectMark) badges.push(projectMark);
     if (item.imported) badges.push(badge(item.kind === 'pdf' ? 'PDF · pages, not notes' : 'yours', 'imported'));
     if (!isPlayable(item)) badges.push(badge('import needed', 'warn'));
 
@@ -932,6 +1008,10 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       );
     }
     actions.push(button('Details', () => showDetail(item), { variant: 'quiet' }));
+    // No project door on the row (G85, the brief's "When to deviate"): a word beside *Details* and `⋯`,
+    // tried at 342 px, took about two fifths of a song title's width — one-line titles wrapped, the
+    // rows grew, two-line titles were cut — the room the title needs (R2; the reason `⋯` is a glyph).
+    // The row wears the project's state; where the door goes is Entry 147's question 1.
     // Last, where the Score screen's own `⋯` is, and only where the modes mean
     // something: a PDF has pages and not notes, a drill is a prompt loop, and
     // an import placeholder has nothing to open at all (`04` §0 R4). A glyph
@@ -976,6 +1056,8 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
         // was written for the rows carrying archive titles *and* a strip of
         // actions, which is the imports; said here, it cannot drift again.
         ...(item.imported ? { 'data-tall': 'true' } : {}),
+        // The learner's project state, where there is one (G85); none is exploring.
+        ...(project ? { 'data-project-state': project.state } : {}),
       },
     });
     // An import's state, one line in the learner's words (X3): whose the hands are, whether the app
@@ -1019,7 +1101,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     letters: () => presentLetters,
     onMissing: (letter) => {
       const ordered = sortItems(
-        items.filter((item) => matches(item, filters, progress)),
+        items.filter((item) => matches(item, filters, progress, projectOf)),
         filters.sort,
       );
       const at = ordered.findIndex((item) => letterFor(item.title) === letter);
@@ -1045,7 +1127,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
 
   function draw(): void {
     const filtered = sortItems(
-      items.filter((item) => matches(item, filters, progress)),
+      items.filter((item) => matches(item, filters, progress, projectOf)),
       filters.sort,
     );
     // The count names whatever is set, because the selects can be closed and a
@@ -1061,6 +1143,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       chosen('library-type'),
       chosen('library-track'),
       chosen('library-status-filter'),
+      chosen('library-project'),
       chosen('library-hands'),
       filters.importedOnly ? 'Only mine' : '',
     ].filter(Boolean);
@@ -1102,7 +1185,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       // and the only way to act on it was to guess that the Filter chip hid it.
       //
       // One button, not two, and it says what it will do rather than which
-      // control it will touch: a search box and four selects can each empty the
+      // control it will touch: a search box and five selects can each empty the
       // list and the sentence has to work whichever one did it.
       const query = filters.query.trim();
       const narrowedBy = [query ? `“${query}”` : '', ...active].filter(Boolean);
@@ -1136,12 +1219,13 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     filters.type = DEFAULT_FILTERS.type;
     filters.track = DEFAULT_FILTERS.track;
     filters.status = DEFAULT_FILTERS.status;
+    filters.project = DEFAULT_FILTERS.project;
     filters.hands = DEFAULT_FILTERS.hands;
     filters.minLevel = DEFAULT_FILTERS.minLevel;
     filters.maxLevel = DEFAULT_FILTERS.maxLevel;
     filters.importedOnly = DEFAULT_FILTERS.importedOnly;
     search.value = '';
-    for (const id of ['library-type', 'library-track', 'library-status-filter', 'library-hands']) {
+    for (const id of ['library-type', 'library-track', 'library-status-filter', 'library-project', 'library-hands']) {
       const select = document.getElementById(id);
       if (select instanceof HTMLSelectElement) select.value = 'all';
     }
@@ -1186,21 +1270,74 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
   /** True until the list has been drawn once, which is when the wait ends. */
   let stillLoading = true;
 
+  /**
+   * The learner's projects, read (G85). A read overtaken by a later one gives way to it (`null`), so
+   * rows the store has since moved past are never drawn. A store that cannot be read gives none, as
+   * Today's read does: the list stands, without project badges.
+   */
+  let projectReads = 0;
+  async function readProjects(): Promise<ProjectRow[] | null> {
+    const read = ++projectReads;
+    const rows = await allProjects().catch((): ProjectRow[] => []);
+    return read === projectReads ? rows : null;
+  }
+
+  /**
+   * Which song has which project, once per read of the store: `projectIn` over the catalogue row's
+   * material, the store's own rule — the same file under another id finds it, an import (whose row
+   * names no material) is found by its id, another id's id-only row never is. Songs only
+   * (`isProjectable`): a row under an exercise's id is not the Library's to show.
+   */
+  function indexProjects(): void {
+    const next = new Map<string, ProjectRow>();
+    if (projectRows.length > 0) {
+      for (const item of items) {
+        if (!isProjectable(item)) continue;
+        const project = projectIn(projectRows, { itemId: item.id, material: materialOfItem(item) });
+        if (project) next.set(item.id, project);
+      }
+    }
+    projectOf = next;
+  }
+
+  /**
+   * A project changed while the list is on the screen (`onProjectsChange`): one read, a task later so
+   * a burst of writes is answered once, then the index and one draw. Before the first draw there is
+   * nothing to redraw — `refresh` reads the projects with the catalogue.
+   */
+  let projectsPending: ReturnType<typeof setTimeout> | undefined;
+  function projectsChanged(): void {
+    if (projectsPending !== undefined) return;
+    projectsPending = setTimeout(() => {
+      projectsPending = undefined;
+      void readProjects().then((rows) => {
+        if (rows === null) return;
+        projectRows = rows;
+        if (stillLoading) return;
+        indexProjects();
+        draw();
+      });
+    }, 0);
+  }
+
   async function refresh(): Promise<void> {
     // The track names come with the rows, so the filter is never drawn with
     // ids in it — but a curriculum that will not read costs the list its
     // names, not its rows, which is why this one failure is swallowed where
-    // the other two are not.
-    const [loaded, rows, curriculum] = await Promise.all([
+    // the other two are not. The projects (G85) are read with them, once.
+    const [loaded, rows, curriculum, projects] = await Promise.all([
       allItems(),
       allProgress(),
       loadCurriculum().catch(() => null),
+      readProjects(),
     ]);
     if (curriculum) {
       trackTitles = new Map(curriculum.tracks.map((track) => [track.id, track.title]));
     }
     items = loaded;
     progress = new Map(rows.map((row) => [row.itemId, row]));
+    if (projects !== null) projectRows = projects;
+    indexProjects();
     if (stillLoading) {
       stillLoading = false;
       surfaceJustAdded();
@@ -1269,8 +1406,12 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
   });
 
   const stopWatchingImports = onImportsChange(() => void refresh().catch(sayLoadFailed));
+  // A write to the projects store while the list is on the screen redraws the badges (G85).
+  const stopWatchingProjects = onProjectsChange(projectsChanged);
   onScreenDispose(section, () => {
     stopWatchingImports();
+    stopWatchingProjects();
+    if (projectsPending !== undefined) clearTimeout(projectsPending);
     dropZone.removeEventListener('dragover', onDragOver);
     dropZone.removeEventListener('dragleave', onDragLeave);
     dropZone.removeEventListener('drop', onDrop);
