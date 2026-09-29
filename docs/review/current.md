@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **Four fix-forward briefs** — `handoffs/bcad0c9.md`, for information: F2b (your F2a change), Q65b (your Q65a change), U80 (the side-panel regression CI's full run found), X3a (the tempo control under X3's contract). Respond only if one departs from its contract.
 - **X3** — `handoffs/070a6f7.md` (respond in `responses/070a6f7.md`). The import experience landed (Entry 118); Question 1 (every import opens the sheet?) is yours; X3a for information.
 - **The G1b brief** — `handoffs/a96395d.md` (G2 answered in `responses/a96395d.md`; G1b still open there): the repertoire lifecycle, a consequential contract reviewed before dispatch; three questions.
 - **E-tail** — `handoffs/f972756.md` (respond in `responses/f972756.md`). The E sweep landed (Entry 115); three questions: the stale approvals' consequence and E51, E31's placement, E50's timing.
