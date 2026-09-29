@@ -6,13 +6,12 @@
  * demonstrated anything.
  *
  * **What the skill was shown on** (`establishedOn`) is the ladder's own answer, never a second
- * reading of its rules. The items: those the ladder's proficiency was shown on (its `shownOn`), asked
- * of `ladderState` itself — a probe, a supporting full-standard first contact on an item dated after
- * the history, turns `transfer` on exactly when the item is not among them. The records: the
- * supporting full-standard ones on those items up to the reading that last reached proficiency (a
- * replay of the ladder over the history's prefixes). A reset the ladder makes below proficiency is not
- * visible to either question, so a record on the same item before such a reset can be included: more
- * material than established the skill, never less, which only makes a candidate less likely to differ.
+ * reading of its rules: since G2 the ladder's replay keeps it (`LadderReading.established`, the
+ * supporting full-standard records before proficiency, since proficiency was last lost) and this module
+ * reads it from one `ladderState` call — the ladder calls nothing here, so nothing recurses (the
+ * reviewer's fact path, `responses/a96395d.md`). D4 asked the ladder with probes over every prefix of
+ * the history and could not see a reset below proficiency, so it could include a record from before
+ * one; the replay sees the reset, and the list is exactly the records since.
  * A record whose run stored no material (a legacy run, from before D4) is an **unknown historical
  * reference**: its item id and nothing else, never the catalogue item's current identity in its place.
  *
@@ -40,7 +39,7 @@
  */
 import type { SessionRow } from '../data/db';
 import type { Evidence, MeasuredEvidence } from '../evidence/evidence';
-import { LADDER_STATES, ladderState, supports } from '../evidence/ladder';
+import { LADDER_STATES, ladderState } from '../evidence/ladder';
 import { storedEvidence } from '../evidence/readingState';
 import type { Identity } from '../review/record';
 import { knownMaterial, materialOfItem, sameMaterial } from './material';
@@ -90,54 +89,32 @@ export interface Established {
   row: SessionRow;
 }
 
-function probe(skill: string, itemId: string, at: string): MeasuredEvidence {
-  return {
-    kind: 'measured',
-    skill,
-    observationId: null,
-    standard: 'full',
-    n: 1,
-    right: 1,
-    at,
-    context: { itemId, firstContact: true, met: [], unattributed: 0, estimated: false },
-    byDemand: [],
-  } as unknown as MeasuredEvidence;
-}
-
-/** The records a skill was shown on, with their rows (see the module note). */
+/**
+ * The records a skill was shown on, with their rows (see the module note): the ladder's own
+ * `established` list (G2; the reviewer's fact path, item 2), read from **one** call — the supporting
+ * full-standard records before proficiency, since proficiency was last lost — each found back to the
+ * row it came from. None for a skill not proficient.
+ */
 function establishing(skill: string, rows: readonly SessionRow[]): Established[] {
-  const records: { evidence: Evidence; row: SessionRow }[] = [];
-  for (const row of rows) for (const evidence of storedEvidence(row)) if (evidence.skill === skill) records.push({ evidence, row });
-  const measured = records
-    .filter((one): one is { evidence: MeasuredEvidence; row: SessionRow } => one.evidence.kind === 'measured')
-    .sort((a, b) => a.evidence.at.localeCompare(b.evidence.at));
-  const last = measured.at(-1)?.evidence.at;
+  const rowOf = new Map<Evidence, SessionRow>();
+  const all: Evidence[] = [];
+  for (const row of rows) {
+    for (const evidence of storedEvidence(row)) {
+      if (evidence.skill !== skill) continue;
+      rowOf.set(evidence, row);
+      all.push(evidence);
+    }
+  }
+  const last = all.filter((one) => one.kind === 'measured').reduce<string | undefined>((latest, one) => (latest === undefined || one.at > latest ? one.at : latest), undefined);
   if (last === undefined) return [];
-  const today = new Date(last);
-  const all = records.map((one) => one.evidence);
-  const reading = ladderState({ evidence: all, today });
+  const reading = ladderState({ evidence: all, today: new Date(last) });
   if (LADDER_STATES.indexOf(reading.state) < PROFICIENT) return [];
-  // The reading that last reached proficiency: the ladder over each prefix of the history.
-  let reach = -1;
-  let before = false;
-  measured.forEach((_, index) => {
-    const now = LADDER_STATES.indexOf(ladderState({ evidence: measured.slice(0, index + 1).map((one) => one.evidence), today }).state) >= PROFICIENT;
-    if (now && !before) reach = index;
-    before = now;
+  return reading.establishing.flatMap((record: MeasuredEvidence) => {
+    const row = rowOf.get(record);
+    if (row === undefined) return [];
+    const material = record.context.material ?? row.material;
+    return [{ reference: { itemId: record.context.itemId, ...(knownMaterial(material) ? { material } : {}) }, row }];
   });
-  const full = measured.slice(0, reach + 1).filter((one) => one.evidence.standard === 'full' && supports(one.evidence));
-  // The items the ladder says it was shown on, asked of the ladder: a probe on an item among them changes nothing.
-  const after = new Date(Date.parse(last) + 1000).toISOString();
-  const items = [...new Set(full.map((one) => one.evidence.context.itemId))];
-  const shownOn = reading.transfer
-    ? new Set(items)
-    : new Set(items.filter((itemId) => !ladderState({ evidence: [...all, probe(skill, itemId, after)], today }).transfer));
-  return full
-    .filter((one) => shownOn.has(one.evidence.context.itemId))
-    .map((one) => {
-      const material = one.evidence.context.material ?? one.row.material;
-      return { reference: { itemId: one.evidence.context.itemId, ...(knownMaterial(material) ? { material } : {}) }, row: one.row };
-    });
 }
 
 /** What a skill was shown on, as references (see the module note); none for a skill not proficient. */

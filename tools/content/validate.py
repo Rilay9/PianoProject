@@ -1198,6 +1198,25 @@ def load_vocabulary(directory: Path = VOCABULARY_DIR) -> tuple[dict, dict]:
     return skills, demands
 
 
+#: Where the relationship's dimensions are declared (D4, `curriculum/transfer.ts`). Read, never
+#: copied: a skill's `transfer.dimensions` (G2) must name entries of that list, which the app's
+#: transfer policy compares against the relationship's measured facts.
+TRANSFER_FILE = CONTENT_SRC.parent / "app" / "src" / "curriculum" / "transfer.ts"
+
+
+def transfer_dimensions(path: Path = TRANSFER_FILE) -> list[str]:
+    """The `DIMENSIONS` array, parsed out of the TypeScript (as `runtime_drill_kinds` reads its list)."""
+    if not path.is_file():
+        return []
+    match = re.search(r"export const DIMENSIONS\s*=\s*\[(.*?)\]", path.read_text(encoding="utf-8"), re.S)
+    return re.findall(r"'([^']+)'", match.group(1)) if match else []
+
+
+def skills_without_transfer(skills_file: dict) -> list[str]:
+    """G2: the skills with no `transfer` block, which the app credits no transfer: listed on every build."""
+    return [skill["id"] for skill in skills_file.get("skills", []) if not skill.get("transfer")]
+
+
 def _rungs(curriculum: dict) -> list[dict]:
     return [
         lesson
@@ -1259,6 +1278,19 @@ def vocabulary_errors(
                         f"vocabulary: skill {skill['id']} {standard} names condition {condition!r}, "
                         f"which is not declared"
                     )
+    # G2: a skill's transfer dimensions are the relationship's, read out of transfer.ts.
+    if any(skill.get("transfer") for skill in skills.values()):
+        known_dimensions = transfer_dimensions()
+        if not known_dimensions:
+            errors.append("could not read DIMENSIONS from transfer.ts — the skills' transfer check cannot run")
+        else:
+            for skill in skills.values():
+                for dimension in (skill.get("transfer") or {}).get("dimensions", []):
+                    if dimension not in known_dimensions:
+                        errors.append(
+                            f"vocabulary: skill {skill['id']} names transfer dimension {dimension!r}, "
+                            f"which transfer.ts's DIMENSIONS lacks"
+                        )
     for demand in demands.values():
         coper = skills.get(demand["copedWithBy"])
         if coper is None:
@@ -2004,6 +2036,13 @@ def main() -> None:
     )
     if gate_unjudged:
         print(f"    unjudged: {', '.join(gate_unjudged)}")
+    # G2: the skills the data has not given transfer dimensions, credited no transfer, said on every run.
+    unstated = skills_without_transfer(skills_file)
+    print(
+        f"  transfer (G2): {len(skills_file.get('skills', [])) - len(unstated)} skill(s) name their transfer dimensions; "
+        f"{len(unstated)} without the block, credited no transfer"
+        + (f": {', '.join(unstated)}" if unstated else "")
+    )
     # E0b: where the vocabulary's teaching rungs differ from the lessons' concepts, said on every run.
     for warning in taught_at_findings(skills_file, load_vocabulary()[1], curriculum)[1]:
         print(f"  {warning}")

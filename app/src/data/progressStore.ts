@@ -22,8 +22,11 @@ import {
   type SessionRow,
   type StreakRow,
 } from './db';
-import { knownMaterial, materialKey, sameMaterial } from '../curriculum/material';
+import { knownMaterial, materialKey, materialOfItem, sameMaterial } from '../curriculum/material';
 import type { Identity } from '../review/record';
+import type { CatalogItem, Hands } from '../curriculum/types';
+import type { Relationship } from '../curriculum/transfer';
+import type { EvidenceResult, MeasuredEvidence } from '../evidence/evidence';
 
 /**
  * One finished run, as its screen hands it to the store.
@@ -239,7 +242,8 @@ export async function recordRun(result: RunResult, now = new Date()): Promise<Pr
   else if (row.status === 'new') row.status = 'started';
 
   memory.set(row.itemId, row);
-  const session = sessionRowFor(result, now);
+  // Each attempt carries its own transfer facts (G2), measured before this run joins the rows.
+  const session = sessionRowFor(await withAttemptFacts(result), now);
 
   const db = await openDatabase();
   if (db) {
@@ -254,6 +258,93 @@ export async function recordRun(result: RunResult, now = new Date()): Promise<Pr
   await addMinutes(result.durationMs / 60_000, now);
   notify();
   return row;
+}
+
+/**
+ * The demands a run measured (G2): every demand its measured records located — each record's
+ * `byDemand` and `otherDemands`, the same entries `curriculum/transfer.ts` reads a reference's texture
+ * and rhythm from — once each, sorted. Undefined where the run has no measured record.
+ */
+export function attemptDemands(results: readonly EvidenceResult[] | undefined): string[] | undefined {
+  const measured = (results ?? []).filter((one): one is MeasuredEvidence => one.kind === 'measured');
+  if (measured.length === 0) return undefined;
+  return [...new Set(measured.flatMap((one) => [...one.byDemand.map((entry) => entry.demand), ...(one.otherDemands ?? []).map((entry) => entry.demand)]))].sort();
+}
+
+const PLAYED_HANDS: Readonly<Record<string, Hands>> = { R: 'right', L: 'left', both: 'both' };
+
+/**
+ * The item as this run played it (G2): the candidate `relationshipOf` measures at `recordRun`, so the
+ * run's side of the facts is read the way a reference's is (`referenceFacts`) — its identity the run's
+ * material, its key the phrase recipe's where the material is a generator that fixes one (else the
+ * row's measured key where the run played the row's own material), its hands the hands played, its
+ * demands the run's measured ones. A reading row's catalogue entry has no key, demands or identity (its
+ * phrase is made when it opens), so the row alone would leave every phrase's key, texture and rhythm
+ * unknown. The family and the composition stay the row's: a phrase's family is its generator's.
+ */
+export function playedCandidate(item: CatalogItem, run: Pick<SessionRow, 'material' | 'hands'>, demands: readonly string[] | undefined): CatalogItem {
+  const material = run.material;
+  const recipeFifths = material?.kind === 'generator' && typeof material.recipe.fifths === 'number' ? material.recipe.fifths : undefined;
+  const keys =
+    recipeFifths !== undefined ? [{ fifths: recipeFifths }] : sameMaterial(material, materialOfItem(item)) ? item.notation?.keys : undefined;
+  const { imported: _imported, ...rest } = item;
+  return {
+    ...rest,
+    provenance: { ...(item.provenance ?? {}), ...(material === undefined ? {} : { identity: material }) } as CatalogItem['provenance'],
+    hands: PLAYED_HANDS[run.hands?.played ?? ''] ?? item.hands,
+    demands: demands === undefined ? undefined : [...demands],
+    notation: item.notation ? { ...item.notation, keys: keys ?? [] } : keys ? ({ keys }) : item.notation,
+  };
+}
+
+/**
+ * Each measured record of a run with a material, given its own transfer facts (G2; the reviewer's
+ * fact path, `docs/review/responses/a96395d.md`): `demands`, the run's measured list, and
+ * `relationship` — the offer's as it was made, for the offer's skill on a transfer-offer run, else
+ * `relationshipOf` over the item as played, against the rows stored before this run and the contexts
+ * they established then (`shownOnRecords`, the ladder's own list). Written once, here; a reader never
+ * fills one in later. Absent — unknown — for a run with no material, and the relationship where the
+ * catalogue cannot be read or no longer has the item, or on a transfer-intended run with no
+ * relationship (G68's shape, which a new write cannot take). The modules are imported where they are
+ * needed: `transfer.ts` reads the ladder, which reads this module.
+ */
+async function withAttemptFacts(result: RunResult): Promise<RunResult> {
+  const results = result.evidence;
+  if (!Array.isArray(results) || !knownMaterial(result.material)) return result;
+  const demands = attemptDemands(results);
+  if (demands === undefined) return result;
+  const skills = [...new Set(results.filter((one) => one.kind === 'measured').map((one) => one.skill))];
+  const relationships = new Map<string, Relationship>();
+  // The offer's relationship, as the offer made it, for the offer's skill (D4a's one fact).
+  if (result.intent === 'transfer' && result.relationship !== undefined) relationships.set(result.relationship.skill, result.relationship);
+  // A transfer-intended run without its relationship is G68's shape: nothing of it is measured afresh.
+  const orphaned = result.intent === 'transfer' && result.relationship === undefined;
+  const toMeasure = orphaned ? [] : skills.filter((skill) => !relationships.has(skill));
+  if (toMeasure.length > 0) {
+    try {
+      const [{ relationshipOf, shownOnRecords }, { catalogIndex }, rows] = await Promise.all([
+        import('../curriculum/transfer'),
+        import('../curriculum/load'),
+        rungRows(),
+      ]);
+      const index = await catalogIndex();
+      const item = index.byId.get(result.itemId);
+      if (item !== undefined) {
+        const candidate = playedCandidate(item, result, demands);
+        for (const skill of toMeasure) relationships.set(skill, relationshipOf(skill, candidate, rows, index.byId, shownOnRecords(skill, rows)));
+      }
+    } catch {
+      // Unknown, and said so by its absence: never guessed.
+    }
+  }
+  return {
+    ...result,
+    evidence: results.map((one) => {
+      if (one.kind !== 'measured') return one;
+      const relationship = relationships.get(one.skill);
+      return { ...one, context: { ...one.context, demands, ...(relationship === undefined ? {} : { relationship }) } };
+    }),
+  };
 }
 
 /**

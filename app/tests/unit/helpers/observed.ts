@@ -44,6 +44,11 @@ export interface RunPlan {
   silent?: boolean;
   loop?: { fromStep: number; toStep: number };
   unseen?: boolean;
+  /**
+   * The run header's first-contact relation (G1a). Unless said, the `unseen` given: a phrase run the
+   * Score screen stores carries both from one derivation, and the evidence context reads this one (G2).
+   */
+  firstContact?: boolean;
   guide?: 'next' | 'next-two' | 'off';
   id?: number;
   at?: string;
@@ -147,6 +152,7 @@ export function observe(data: ScoreModelData, plan: RunPlan = {}): Observed {
       latencyMs: under?.inputLatencyMs ?? NOT_MEASURED,
     },
     ...(plan.unseen === undefined ? {} : { unseen: plan.unseen }),
+    ...((plan.firstContact ?? plan.unseen) === undefined ? {} : { firstContact: plan.firstContact ?? plan.unseen }),
     demonstrated: false,
     ...measures,
   } as Observed;

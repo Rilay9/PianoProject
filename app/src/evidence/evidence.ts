@@ -73,6 +73,7 @@ import type { ScoreModelData, ScoreNote } from '../score/types';
 import { isMeasurement, codeAt, takeMeasurements, type Measurement, type Observed, type StepMeasure } from './measurement';
 import type { Vocabulary } from './vocabulary';
 import type { Identity } from '../review/record';
+import type { Relationship } from '../curriculum/transfer';
 
 export type Standard = 'practice' | 'full';
 
@@ -104,17 +105,38 @@ export interface EvidenceContext {
    * The exact material the run played (E1 item 7; D4 item 2), D2's `Identity` as the run stored it
    * (`RunHeader.material`): a generated item's generator, a notated item's built file (an excerpt's
    * cut), a sight-reading phrase's complete generator identity. A stable reference, never a copied
-   * catalogue object; absent on a legacy run. Read by no evidence reader (the ladder reads `itemId`
-   * and `firstContact`): the facts the post-E transfer policy will read.
+   * catalogue object; absent on a legacy run. The transfer policy (G2, `transferPolicy.ts`) reads it
+   * beside the establishing references': a new seed of material the skill was shown on is no transfer.
    */
   material?: Identity;
   /**
    * `transfer` where the run came from the session's transfer offer (D4 item 2): intent, never
-   * evidence that anything transferred. Read by no evidence reader.
+   * evidence that anything transferred. The policy reads it only to say why a transfer-intended row
+   * with no relationship is unknown (G68).
    */
   intent?: 'transfer';
-  /** A generated phrase read for the first time (`unseen: true`): first contact with the material. */
-  firstContact: boolean;
+  /**
+   * First contact, the fact (G1a's relation): the run header's `firstContact`, copied as the run stored
+   * it — never `unseen`, the phrase's sight-reading condition, and absent where the header's is absent
+   * (a row from before G1a, or a drill or paper run), never rebuilt from `unseen`, the item's identity or
+   * the encounter history (the G1a review, `responses/5b14b7a.md`). Evidence stored before G2 carried
+   * `unseen === true` here, which on the phrase runs that alone had evidence was the same value.
+   */
+  firstContact?: boolean;
+  /**
+   * How the run's material relates to what established the skill (G2; the reviewer's fact path): D4's
+   * `relationshipOf`, measured and declared apart, written once by `recordRun` against the establishing
+   * contexts as they stood before the run — or, on a transfer-offer run, the offer's relationship for
+   * its skill, as the offer made it. Absent: unknown (a legacy row, a D4 race row, a row from before
+   * G2, a run with no material), never reconstructed later.
+   */
+  relationship?: Relationship;
+  /**
+   * The demands the run measured (G2): every demand its measured records located — each record's
+   * `byDemand` and `otherDemands` — once each, sorted; written by `recordRun` with the relationship.
+   * What challenge protection compares with the establishing records' demands. Absent: unknown.
+   */
+  demands?: string[];
   /** Of the conditions the skill's standards name, those this run met. */
   met: ConditionId[];
   /** Opportunity steps counted in `n` whose own note the record cannot tell right from wrong (a chord partly missed). */
@@ -568,7 +590,8 @@ function evidenceFrom(
       ...(observation.seed === undefined ? {} : { seed: observation.seed }),
       ...(observation.material === undefined ? {} : { material: observation.material }),
       ...(observation.intent === undefined ? {} : { intent: observation.intent }),
-      firstContact: observation.unseen === true,
+      // The relation as the run header stored it (G1a), never `unseen`: absent stays absent.
+      ...(observation.firstContact === undefined ? {} : { firstContact: observation.firstContact }),
       met,
       unattributed,
       estimated: measurements.some((m) => m.estimated),
@@ -657,7 +680,29 @@ export function recomputeEvidence(
 ): StoredEvidence | undefined {
   const skills = targetSkills ?? [...new Set((row.evidence ?? []).map((result) => result.skill))];
   if (skills.length === 0) return undefined;
-  return stampedEvidence(evidenceFor({ observation: row, played, targetSkills: skills, vocabulary }));
+  return stampedEvidence(keptAttemptFacts(evidenceFor({ observation: row, played, targetSkills: skills, vocabulary }), row.evidence));
+}
+
+/**
+ * The facts `recordRun` wrote on the attempt (G2) — each measured record's `relationship` and
+ * `demands` — kept across a recompute, skill by skill: written once, at the run, against the
+ * contexts established then, so a later job carries them forward and never computes or fills one.
+ * A skill whose stored result carried none stays without.
+ */
+function keptAttemptFacts(fresh: EvidenceResult[], stored: readonly EvidenceResult[] | undefined): EvidenceResult[] {
+  const facts = new Map<string, Pick<EvidenceContext, 'relationship' | 'demands'>>();
+  for (const result of stored ?? []) {
+    if (result.kind !== 'measured') continue;
+    const { relationship, demands } = result.context;
+    if (relationship !== undefined || demands !== undefined) {
+      facts.set(result.skill, { ...(relationship === undefined ? {} : { relationship }), ...(demands === undefined ? {} : { demands }) });
+    }
+  }
+  if (facts.size === 0) return fresh;
+  return fresh.map((result) => {
+    const kept = result.kind === 'measured' ? facts.get(result.skill) : undefined;
+    return kept === undefined ? result : ({ ...result, context: { ...(result as MeasuredEvidence).context, ...kept } } as unknown as MeasuredEvidence);
+  });
 }
 
 function evidenceForSkill(

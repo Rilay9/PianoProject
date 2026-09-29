@@ -227,6 +227,109 @@ test.describe('the transfer offer (D4)', () => {
     await expect(page.locator('#today-card [data-claim="transfer"]')).toHaveCount(0);
   });
 
+  // G2 item 6: the offer reads the learner's whole contact history through the session's one contact
+  // reader — runs, encounters and pruned runs' summaries — so a piece heard once is met, never new.
+  test('a piece heard yesterday is not offered as new (G2)', async ({ page }) => {
+    await page.setViewportSize({ width: 342, height: 740 });
+    await seed(page);
+    await page.goto('/');
+    const offer = page.locator('#today-card .list-row[data-slot="new"][data-claim="transfer"]');
+    await expect(offer).toHaveCount(1, { timeout: 30_000 });
+    const itemId = (await offer.getAttribute('data-item')) ?? '';
+    expect(itemId).toMatch(/^exercise\.pentatonic\./);
+
+    // Yesterday the learner played it to themselves in the Library and never played it: one `heard`
+    // encounter of its exact material, merged in through the app's own backup import.
+    await page.evaluate(async (id) => {
+      const response = await fetch('/PianoProject/content/catalog.json');
+      const items = (await response.json()) as { id: string; provenance?: { identity?: Record<string, unknown> } }[];
+      const material = items.find((item) => item.id === id)?.provenance?.identity;
+      if (material === undefined) throw new Error(`${id} has no identity`);
+      const canonical = (value: unknown): string => {
+        if (Array.isArray(value)) return `[${value.map(canonical).join(',')}]`;
+        if (value !== null && typeof value === 'object') {
+          const entries = Object.entries(value as Record<string, unknown>)
+            .filter(([, inner]) => inner !== undefined)
+            .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+          return `{${entries.map(([key, inner]) => `${JSON.stringify(key)}:${canonical(inner)}`).join(',')}}`;
+        }
+        return JSON.stringify(value);
+      };
+      const { family, version, seed, recipe, tempoBpm } = material;
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      yesterday.setHours(17, 0, 0, 0);
+      const hooks = (window as unknown as Hooked).__pianopath;
+      if (!hooks) throw new Error('storage hooks not exposed');
+      await hooks.importAll({
+        app: 'pianopath',
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        stores: {
+          encounters: [
+            {
+              id: 'yesterday-visit:1',
+              key: `generator:${canonical({ family, version, seed, recipe, tempoBpm })}`,
+              material,
+              itemId: id,
+              kind: 'heard',
+              at: yesterday.toISOString(),
+              source: { tab: 'library' },
+              visit: 'yesterday-visit',
+            },
+          ],
+        },
+      });
+    }, itemId);
+    const stored = await page.evaluate(async () => {
+      const file = await (window as unknown as Hooked).__pianopath?.exportAll();
+      return (file?.stores.encounters ?? []) as { itemId: string; kind: string }[];
+    });
+    expect(stored).toEqual([expect.objectContaining({ itemId, kind: 'heard' })]);
+
+    // Today again: that piece is met by hearing, and no row offers it as something new.
+    await page.reload();
+    await expect(page.locator('#today-card .list-row').first()).toBeVisible({ timeout: 30_000 });
+    await expect(page.locator('#today-status')).toHaveAttribute('data-lesson', '3.4', { timeout: 30_000 });
+    await expect(page.locator(`#today-card .list-row[data-claim="transfer"][data-item="${itemId}"]`)).toHaveCount(0);
+    const card = await page.evaluate(() => (window as unknown as Hooked).__pianopath?.todayCard?.() ?? null);
+    expect(card?.slots.some((slot) => slot.itemId === itemId && slot.claim?.kind === 'transfer'), 'the heard piece is still offered as new').toBe(false);
+  });
+
+  // G2's fact path on the phone: a read stored through the Score screen carries, on every measured
+  // record, the relationship `recordRun` measured against what established the skill, and the demands
+  // the run measured — the catalogue read inside the store, as the built app loads it.
+  test('a read played on the phone stores its transfer facts on its evidence (G2)', async ({ page }) => {
+    await page.setViewportSize({ width: 342, height: 740 });
+    await seed(page);
+    const before = (await sessions(page)).length;
+    await page.goto('/');
+    await page.locator('#today-read').click();
+    await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-mode', /wait|tempo/, { timeout: 60_000 });
+    await page.waitForFunction(() => {
+      const svg = document.querySelector('#score-stage .is-front svg');
+      return svg instanceof SVGElement && svg.getBoundingClientRect().height > 20;
+    }, undefined, { timeout: 60_000 });
+    await withScoreMenu(page, async () => {
+      await page.locator('#score-input').selectOption('keys');
+    });
+    await page.locator('#score-mode').selectOption('wait');
+    await page.locator('#score-play').click();
+    await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-running', 'true');
+    await playThrough(page);
+    await expect.poll(async () => (await sessions(page)).length, { timeout: 15_000 }).toBe(before + 1);
+    // The newest run: the one just played (the store's keys count up).
+    const rows = await sessions(page);
+    const read = [...rows].sort((a, b) => String(a.at).localeCompare(String(b.at))).at(-1);
+    const measured = ((read?.evidence ?? []) as { kind: string; skill: string; context: Record<string, unknown> }[]).filter((one) => one.kind === 'measured');
+    expect(measured.length, 'the read stored no measured evidence to carry facts').toBeGreaterThan(0);
+    for (const record of measured) {
+      expect(Array.isArray(record.context.demands), `${record.skill}: no demands on the attempt`).toBe(true);
+      expect(record.context.relationship, `${record.skill}: no relationship on the attempt`).toMatchObject({ skill: record.skill });
+      expect(record.context.firstContact, `${record.skill}: the context's first contact is not the header's`).toBe(read?.firstContact);
+    }
+  });
+
   // D4a: the relationship travels with the choice — Today keeps the offer it showed, the route names that
   // offer, and the run stores the card's relationship beside the intent, never a recomputation.
   test('the run stores the relationship the card offered, beside the intent, through the offer Today kept (D4a)', async ({ page }) => {

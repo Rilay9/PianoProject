@@ -57,6 +57,7 @@ import {
 } from '../../curriculum/session';
 import {
   allProgress,
+  contactSummaries,
   dailyReadDays,
   dailyReadStreak,
   dayKey,
@@ -68,6 +69,7 @@ import {
   sessionsForItem,
   weekSoFar,
 } from '../../data/progressStore';
+import { allEncounters } from '../../data/encounterStore';
 import { isSightReading } from '../../engine/drills/fromCatalog';
 import { simonForStage } from '../../engine/drills/simon';
 import { getPlan } from '../../data/planStore';
@@ -683,7 +685,11 @@ export function TodayScreen(router: Router): HTMLElement {
     // Where the learner is comes from the evidence (C5: `rungState`), where it
     // was the items marked passed, counted over each rung; the same rows carry
     // the learner's skills, which the review and the warm-up read (C6).
-    void Promise.all([getPlan(), loadRungStates(curriculum, now), rungRows()]).then(([plan, states, rows]) => {
+    // The contact history beside the runs (G2 item 6): encounters and pruned runs' summaries, so a
+    // piece heard once or practised and pruned is never offered as new. A store that cannot be read
+    // gives none, which reads as the runs alone, as before.
+    const contactHistory = Promise.all([allEncounters().catch(() => []), contactSummaries().catch(() => [])]);
+    void Promise.all([getPlan(), loadRungStates(curriculum, now), rungRows(), contactHistory]).then(([plan, states, rows, [encounters, summaries]]) => {
       // The same active set Plan and Settings show, so the three screens
       // cannot disagree about what is switched on.
       const active = activeTracksFor(plan, curriculum as Curriculum);
@@ -710,6 +716,7 @@ export function TodayScreen(router: Router): HTMLElement {
         // The reading slot's phrase comes from the learner's reads (C4).
         readingRows,
         today: now,
+        contact: { encounters, summaries },
       });
       slots = built.slots;
       // A composed card is a new decision (D4a): its offer gets a new instance, and an offer kept from
