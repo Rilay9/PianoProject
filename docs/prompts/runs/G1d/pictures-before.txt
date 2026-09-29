@@ -1,0 +1,9 @@
+spec present: tests/e2e/zz-g1d-pictures.spec.ts
+
+Running 2 tests using 1 worker
+
+  ok 1 tests\e2e\zz-g1d-pictures.spec.ts:112:1 › Today’s review row with the piece unpaused, then paused on its sheet (2.9s)
+  ok 2 tests\e2e\zz-g1d-pictures.spec.ts:125:1 › X1’s stored run: a session started with the piece on it, the piece paused, Today opened again (2.1s)
+
+  2 passed (6.7s)
+exit=0

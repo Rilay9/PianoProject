@@ -4,10 +4,14 @@
  *
  *   finish a run → *What next with this piece?* → *Learn this* → Progress lists the project;
  *   its row → *Put it away* → *Bring it back* → the history line and the encounter line;
- *   a Stage 9 unit's page → its songs as projects, no count, and one project's state shown.
+ *   a Stage 9 unit's page → its songs as projects, no count, and one project's state shown;
+ *   a piece passed and unplayed past the window → Today keeps it playable → *Keep it playable* on its
+ *   sheet changes nothing → *Pause* → Today stops offering it, Progress and the Library as before (G1d).
  *
  * Nothing is seeded for the first two: the run is played through the screen keys, in time, as
- * `lesson-flow.spec.ts` plays it, and every project change is a tap on the sheet.
+ * `lesson-flow.spec.ts` plays it, and every project change is a tap on the sheet. The last seeds the
+ * run twenty days back straight into the stores, as the Stage 9 case seeds its project — a run cannot
+ * be played in the past through the screen — and makes every project change on the sheet.
  */
 import { expect, test, type Page } from '@playwright/test';
 
@@ -164,4 +168,103 @@ test('a Stage 9 unit’s page shows its songs as projects and no count; one proj
   await expect(page.locator(`#lesson-songs [data-item="${BALLADE}"] .badge`)).toHaveText('Preparing for performance');
   expect(await page.locator('#lesson-songs [data-project-state]:not([data-project-state="none"])').count()).toBe(1);
   await expect(page.locator('#lesson-counts')).toBeHidden();
+});
+
+/** Rows put straight into the app's stores, in one transaction, once the app has opened its database. */
+async function putRows(page: Page, stores: Record<string, unknown[]>): Promise<void> {
+  await page.evaluate(async (rows) => {
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open('pianopath');
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(new Error(String(request.error)));
+    });
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(Object.keys(rows), 'readwrite');
+      for (const [name, list] of Object.entries(rows)) for (const row of list) tx.objectStore(name).put(row);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(new Error(String(tx.error)));
+    });
+    db.close();
+  }, stores);
+}
+
+// G1d (the reviewer's G82 ruling): the review's repertoire retention reads the learner's project and
+// steps past a piece they paused or put away; every other state, *Keep it playable* among them, leaves
+// the offer as it was. The learner is `today.spec.ts`'s on 2.2 — Ode to Joy passed on 2.1 twenty days
+// ago and not played since — seeded as the Stage 9 case seeds its project. Nothing on Today says why.
+test('a piece passed and unplayed past the window, paused on its sheet: Today stops keeping it playable; Progress and the Library show it as before (G1d)', async ({ page }) => {
+  test.setTimeout(180_000);
+  await page.setViewportSize({ width: 342, height: 740 });
+  const ODE = 'song.classical.ode-to-joy.ht';
+  const day = 86_400_000;
+  const yesterday = new Date(Date.now() - day).toISOString();
+  const long = new Date(Date.now() - 20 * day).toISOString();
+  await page.goto('/');
+  await expect(page.locator('#today-card .list-row').first()).toBeVisible({ timeout: 30_000 });
+  await putRows(page, {
+    plan: [{ id: 'current', stage: 1, unitId: '2.2', trackOrder: ['core'], placement: { unitId: '2.2', at: new Date().toISOString() } }],
+    sessions: [
+      { itemId: 'drill.rhythm.eighths', lessonId: '2.2', mode: 'drill:rhythm', tempoPct: 100, tempoMeasured: false, accuracy: 0.97, accuracyEstimated: false, wrongNotes: 0, missed: 0, durationMs: 120_000, at: yesterday },
+      { itemId: ODE, lessonId: '2.1', mode: 'tempo', tempoPct: 100, tempoMeasured: true, accuracy: 0.95, accuracyEstimated: false, wrongNotes: 0, missed: 0, durationMs: 120_000, at: long },
+    ],
+    progress: [
+      { itemId: 'drill.rhythm.eighths', status: 'passed', bestAccuracy: 0.97, bestTempoPct: 0, attempts: 1, lastPracticedAt: yesterday, minutes: 2, passedOn: [yesterday.slice(0, 10)] },
+      { itemId: ODE, status: 'passed', bestAccuracy: 0.95, bestTempoPct: 100, attempts: 1, lastPracticedAt: long, minutes: 2, passedOn: [long.slice(0, 10)] },
+    ],
+  });
+
+  const review = page.locator('#today-card .list-row[data-slot="review"]');
+  const openToday = async (): Promise<void> => {
+    await page.goto('/#/today');
+    await page.reload();
+    await expect(page.locator('#today-status')).toHaveAttribute('data-lesson', /./, { timeout: 30_000 });
+    await expect(review).toHaveAttribute('data-claim', /./, { timeout: 30_000 });
+  };
+  const keptPlayable = async (): Promise<void> => {
+    await expect(review).toHaveAttribute('data-claim', 'piece-retention');
+    await expect(review.locator('.list-row__title')).toContainText('Ode to Joy');
+    await expect(review.locator('.list-row__sub')).toHaveText(/^Keeping this piece playable — last played on \d+ \w+$/);
+  };
+  /** What Progress and the Library show of the piece: its run on Progress, the mastered list, its Library row. */
+  const shownElsewhere = async (): Promise<{ history: string; repertoire: string; library: string }> => {
+    await page.goto('/#/progress');
+    await expect(page.locator('#progress-projects')).toHaveAttribute('data-drawn', 'true', { timeout: 30_000 });
+    const history = (await page.locator(`#progress-history .list-row[data-item="${ODE}"]`).innerText()).trim();
+    const repertoire = (await page.locator('#progress-repertoire').innerText()).trim();
+    await page.goto('/#/library');
+    await page.locator('#library-search').fill('ode to joy');
+    const row = page.locator(`#library-list .list-row[data-item="${ODE}"]`);
+    await expect(row).toBeVisible({ timeout: 30_000 });
+    return { history, repertoire, library: (await row.innerText()).trim() };
+  };
+
+  await openToday();
+  await keptPlayable();
+  const before = await shownElsewhere();
+  expect(before.history, 'the seeded run is not on Progress').not.toBe('');
+
+  // Kept playable on its sheet: the positive retention state, and Today's row is as it was.
+  await page.goto('/#/progress');
+  await page.locator(`#progress-projects [data-offer][data-item="${ODE}"]`).getByRole('button', { name: 'Make it a project' }).click();
+  await expect(page.locator('#project-state')).toHaveText('Not a project yet');
+  await page.locator('#project-action-keep').click();
+  await expect(page.locator('#project-state')).toHaveText(`Keeping it playable since ${today()}`);
+  await openToday();
+  await keptPlayable();
+
+  // Paused on its sheet: Today no longer offers it to keep playable, and says nothing about why.
+  await page.goto('/#/progress');
+  await page.locator(`#progress-projects [data-project][data-item="${ODE}"]`).click();
+  await page.locator('#project-action-pause').click();
+  await expect(page.locator('#project-state')).toHaveText(`Paused since ${today()}`);
+  await openToday();
+  await expect(review).not.toHaveAttribute('data-claim', 'piece-retention');
+  await expect(review.locator('.list-row__title')).not.toContainText('Ode to Joy');
+  await expect(review.locator('.list-row__sub')).not.toContainText('Keeping this piece playable');
+  await expect(page.locator('#today-card')).not.toContainText(/paus|put away/i);
+
+  // Still on Progress and in the Library as before: the pause suppressed an offer and hid nothing.
+  expect(await shownElsewhere()).toEqual(before);
+  await page.goto('/#/progress');
+  await expect(page.locator(`#progress-projects [data-project][data-item="${ODE}"] .list-row__sub`)).toHaveText(`Paused since ${today()}`);
 });
