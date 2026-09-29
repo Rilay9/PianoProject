@@ -1,0 +1,605 @@
+// @vitest-environment jsdom
+/**
+ * The real `WindowRenderer` against a stage whose box the test controls (U74).
+ *
+ * D4's and D4a's pictures showed a two-bar item opened from Today as one small system at the top of
+ * an empty stage, and the builder saw the same item fill two systems when opened by a link. Four
+ * causes were on the table (`docs/prompts/tasks/U74-window-fit.md` item 1), and each is a case here,
+ * on the renderer itself, with only the engraver and the browser's layout stood in for:
+ *
+ * (a) a stage change delivered while a fit is in flight, which the observer's callback returns from;
+ * (b) a settled height change off a run, which the observer should refit;
+ * (c) a width change, which re-plans, and during a run releases the size it holds and keeps the step;
+ * (d) the same final stage reached by different timing — the stage the renderer met first, and when
+ *     the piece was measured.
+ *
+ * What told them apart: (a), (b) and (c), and (d)'s taller stage first, came out as a renderer made on
+ * the final stage comes out before U74's change as after it; what differed was the first draw, priced
+ * before the piece was measured — one system for the whole window, the picture D4 took — until the
+ * measurement landed on idle. The browser trace said the same on the glass (`score-fit-paths.spec.ts`,
+ * and Entry 114).
+ *
+ * **The engraver is a stand-in**, and that is the limit of this file: bars laid out left to right at
+ * a natural width that scales with the zoom, systems broken at the page's width, a grand staff of two
+ * five-line staves. What it proves is the renderer's bookkeeping — which shape it prices, when it
+ * measures, what it keeps and what it says — not how OpenSheetMusicDisplay engraves.
+ */
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { makeModel, note } from './helpers/engineHarness';
+import type { ScoreModel } from '../../src/score/types';
+
+const engraver = vi.hoisted(() => {
+  /** In the engraver's own units: one is ten CSS pixels at zoom 1, and scales with the zoom (`OSMD_UNIT`). */
+  const U = { staff: 4, gap: 6, above: 3, below: 2, systemGap: 4, left: 1, openingFirst: 6, openingLater: 4, end: 0.5 };
+  const SVG = 'http://www.w3.org/2000/svg';
+  const rect = (left: number, top: number, width: number, height: number): DOMRect =>
+    ({ left, top, width, height, right: left + width, bottom: top + height, x: left, y: top, toJSON: () => ({}) });
+  interface Laid {
+    bar: number;
+    begin: number;
+    entries: number;
+    end: number;
+    drawn: number;
+    factor: number;
+  }
+  class FakeOsmdView {
+    static all: FakeOsmdView[] = [];
+    /** Each bar's natural width without an opening, in engraver units, by printed bar. */
+    static bars: number[] = [14, 14];
+    /** Called at the start of every render, so a test can act in the middle of a fit. */
+    static onRender: ((view: FakeOsmdView) => void) | null = null;
+    readonly container: HTMLElement;
+    readonly label: string;
+    zoomValue = 1;
+    range: { fromMeasure: number; toMeasure: number } | null = null;
+    loaded = false;
+    stretch = false;
+    natural = false;
+    svgEl: SVGSVGElement | null = null;
+    sheet: { MusicPages: unknown[]; MeasureList: unknown[] } = { MusicPages: [], MeasureList: [] };
+    renders = 0;
+    loads = 0;
+    constructor(container: HTMLElement, options: { timingLabel?: string } = {}) {
+      this.container = container;
+      this.label = options.timingLabel ?? '';
+      FakeOsmdView.all.push(this);
+    }
+    get instance(): unknown {
+      return { GraphicSheet: this.sheet };
+    }
+    get isLoaded(): boolean {
+      return this.loaded;
+    }
+    async load(): Promise<void> {
+      this.loads += 1;
+      await Promise.resolve();
+      this.loaded = true;
+    }
+    get zoom(): number {
+      return this.zoomValue;
+    }
+    set zoom(value: number) {
+      this.zoomValue = value;
+    }
+    set stretchLastSystem(value: boolean) {
+      this.stretch = value;
+    }
+    set naturalLastSystem(value: boolean) {
+      this.natural = value;
+    }
+    setRange(range: { fromMeasure: number; toMeasure: number } | null): void {
+      this.range = range;
+    }
+    clearRange(): void {
+      this.range = null;
+    }
+    get svg(): SVGSVGElement | null {
+      return this.svgEl;
+    }
+    render(): number {
+      FakeOsmdView.onRender?.(this);
+      this.renders += 1;
+      const bars = FakeOsmdView.bars;
+      const from = Math.max(0, this.range?.fromMeasure ?? 0);
+      const to = Math.min(bars.length - 1, Number.isFinite(this.range?.toMeasure) ? (this.range?.toMeasure ?? 0) : bars.length - 1);
+      const px = 10 * this.zoomValue;
+      const stage = this.container.parentElement;
+      const pageWidthPx = Number.parseFloat(this.container.style.width) || (stage ? stage.getBoundingClientRect().width : 0);
+      const pageUnits = pageWidthPx / px;
+      const room = pageUnits - 2 * U.left;
+      const systems: Laid[][] = [];
+      for (let b = from; b <= to; b += 1) {
+        const current = systems[systems.length - 1];
+        const own = (bars[b] ?? 14) + U.end;
+        const width = current ? current.reduce((sum, m) => sum + m.begin + m.entries + m.end, 0) : 0;
+        if (!current || width + own > room) {
+          const begin = b === 0 ? U.openingFirst : U.openingLater;
+          systems.push([{ bar: b, begin, entries: bars[b] ?? 14, end: U.end, drawn: 0, factor: 1 }]);
+        } else {
+          current.push({ bar: b, begin: 0, entries: bars[b] ?? 14, end: U.end, drawn: 0, factor: 1 });
+        }
+      }
+      systems.forEach((system, index) => {
+        const fixed = system.reduce((sum, m) => sum + m.begin + m.end, 0);
+        const entries = system.reduce((sum, m) => sum + m.entries, 0);
+        // Every system but the last is justified to the page; the last only when asked to stretch.
+        const justify = index < systems.length - 1 || (this.stretch && !this.natural);
+        const factor = justify && entries > 0 ? Math.max(1, (room - fixed) / entries) : 1;
+        for (const m of system) {
+          m.factor = factor;
+          m.drawn = m.begin + m.entries * factor + m.end;
+        }
+      });
+      const systemHeight = U.above + 2 * U.staff + U.gap + U.below;
+      const totalUnits = systems.length * systemHeight + Math.max(0, systems.length - 1) * U.systemGap;
+      const widths = systems.map((system) => system.reduce((sum, m) => sum + m.drawn, 0));
+      const widest = Math.max(0, ...widths);
+      const svg = document.createElementNS(SVG, 'svg');
+      svg.setAttribute('width', String(pageWidthPx));
+      svg.setAttribute('height', String(totalUnits * px));
+      Object.defineProperty(svg, 'viewBox', { value: { baseVal: { x: 0, y: 0, width: pageUnits * 10, height: totalUnits * 10 } } });
+      Object.defineProperty(svg, 'getBBox', { value: () => ({ x: U.left * 10, y: 0, width: widest * 10, height: totalUnits * 10 }) });
+      Object.defineProperty(svg, 'getBoundingClientRect', { value: () => rect(0, 0, pageWidthPx, totalUnits * px) });
+      const musicSystems = systems.map((system, index) => {
+        const top = index * (systemHeight + U.systemGap);
+        // The system's whole ink, for the measurement's buckets.
+        const ink = document.createElementNS(SVG, 'rect');
+        Object.defineProperty(ink, 'getBBox', {
+          value: () => ({ x: U.left * 10, y: top * 10, width: (widths[index] ?? 0) * 10, height: systemHeight * 10 }),
+        });
+        svg.appendChild(ink);
+        return {
+          StaffLines: [0, 1].map((staff) => ({
+            PositionAndShape: {
+              AbsolutePosition: { x: U.left, y: top + U.above + staff * (U.staff + U.gap) },
+              Size: { width: widths[index] ?? 0, height: U.staff },
+            },
+            StaffHeight: U.staff,
+            TopLineOffset: 0,
+          })),
+          GraphicalMeasures: system.map((m) =>
+            [0, 1].map(() => ({
+              beginInstructionsWidth: m.begin,
+              minimumStaffEntriesWidth: m.entries,
+              endInstructionsWidth: m.end,
+              parentSourceMeasure: { measureListIndex: m.bar },
+              MeasureNumber: m.bar + 1,
+              PositionAndShape: { Size: { width: m.drawn } },
+              staffEntriesScaleFactor: m.factor,
+            })),
+          ),
+        };
+      });
+      this.sheet = {
+        MusicPages: [{ MusicSystems: musicSystems }],
+        MeasureList: systems.flat().map((m) => [{ minimumStaffEntriesWidth: m.entries }]),
+      };
+      this.container.replaceChildren(svg);
+      this.svgEl = svg;
+      return 1;
+    }
+    elementsForNotes(notes: readonly { id: string; sourceMeasureIndex: number }[]): Map<string, SVGGElement> {
+      const out = new Map<string, SVGGElement>();
+      const svg = this.svgEl;
+      const range = this.range;
+      if (!svg || !range) return out;
+      for (const n of notes) {
+        if (n.sourceMeasureIndex < range.fromMeasure || n.sourceMeasureIndex > range.toMeasure) continue;
+        const g = document.createElementNS(SVG, 'g');
+        svg.appendChild(g);
+        out.set(n.id, g);
+      }
+      return out;
+    }
+    dispose(): void {
+      /* nothing held */
+    }
+  }
+  return { FakeOsmdView, rect, U };
+});
+
+vi.mock('../../src/score/OsmdView', () => ({ OsmdView: engraver.FakeOsmdView }));
+
+import { WindowRenderer } from '../../src/score/WindowRenderer';
+
+const { FakeOsmdView, rect } = engraver;
+
+/** The browser's frame and idle queues and the stage observer, run by the test. */
+const frames = new Map<number, FrameRequestCallback>();
+let frameId = 0;
+const idle: (() => void)[] = [];
+const observers: { callback: () => void; gone: boolean }[] = [];
+
+function flushFrames(): void {
+  for (let round = 0; round < 50 && frames.size > 0; round += 1) {
+    const batch = [...frames.values()];
+    frames.clear();
+    for (const callback of batch) callback(performance.now());
+  }
+}
+
+function flushIdle(): void {
+  for (let round = 0; round < 50 && idle.length > 0; round += 1) {
+    const batch = idle.splice(0);
+    for (const callback of batch) callback();
+  }
+}
+
+/** A resize observation, as the browser delivers one after a frame's callbacks. */
+function observe(): void {
+  for (const o of observers) if (!o.gone) o.callback();
+}
+
+const tick = (ms = 0): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+
+/** Frames, idle time and the tasks after them, until nothing is queued. */
+async function settle(): Promise<void> {
+  for (let round = 0; round < 40; round += 1) {
+    flushFrames();
+    flushIdle();
+    await tick();
+    if (frames.size === 0 && idle.length === 0) {
+      await tick();
+      if (frames.size === 0 && idle.length === 0) return;
+    }
+  }
+}
+
+beforeEach(() => {
+  FakeOsmdView.all = [];
+  FakeOsmdView.bars = [14, 14];
+  FakeOsmdView.onRender = null;
+  frames.clear();
+  idle.length = 0;
+  observers.length = 0;
+  vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
+    frameId += 1;
+    frames.set(frameId, callback);
+    return frameId;
+  });
+  vi.stubGlobal('cancelAnimationFrame', (id: number) => {
+    frames.delete(id);
+  });
+  vi.stubGlobal('requestIdleCallback', (callback: () => void) => {
+    idle.push(callback);
+    return idle.length;
+  });
+  vi.stubGlobal('cancelIdleCallback', () => {
+    /* the queue is flushed or discarded by the test */
+  });
+  vi.stubGlobal(
+    'ResizeObserver',
+    class {
+      private readonly entry: { callback: () => void; gone: boolean };
+      constructor(callback: () => void) {
+        this.entry = { callback, gone: false };
+        observers.push(this.entry);
+      }
+      observe(): void {}
+      disconnect(): void {
+        this.entry.gone = true;
+      }
+    },
+  );
+  // The owner's phone, upright.
+  Object.defineProperty(window, 'innerWidth', { value: 342, configurable: true });
+  Object.defineProperty(window, 'innerHeight', { value: 740, configurable: true });
+  document.body.replaceChildren();
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
+/** Two bars of quarter notes over a grand staff, like D4's two-bar scale: bars 0 and 1. */
+function twoBars(): ScoreModel {
+  return makeModel(
+    [69, 72, 74, 75, 76, 79, 81, 79].map((midi, index) => ({ onset: index, notes: [note({ midi })] })),
+    { handsPresent: { R: true, L: true } },
+  );
+}
+
+interface Stage {
+  el: HTMLElement;
+  box: { width: number; height: number };
+}
+
+function stageOf(width: number, height: number): Stage {
+  const el = document.createElement('div');
+  el.id = 'score-stage';
+  document.body.appendChild(el);
+  const stage: Stage = { el, box: { width, height } };
+  Object.defineProperty(el, 'getBoundingClientRect', { value: () => rect(0, 85, stage.box.width, stage.box.height) });
+  return stage;
+}
+
+/**
+ * The renderer, created and asked for its first window and then for its fit, in one task, as the
+ * Score screen does it (`ScoreScreen.ts`: `showStep(0)`, then `fitToStage()` once the score has loaded).
+ */
+async function open(stage: Stage, model = twoBars()): Promise<WindowRenderer> {
+  const renderer = await WindowRenderer.create({ container: stage.el, model, musicXml: '<score-partwise/>', barsPerWindow: 2 });
+  renderer.showStep(0);
+  renderer.fitToStage();
+  return renderer;
+}
+
+interface Drawn {
+  /** The drawn slots' bars, top to bottom, as `from-to`. */
+  rows: string[];
+  /** The size on the glass: the engraving zoom times the CSS scale. */
+  size: number;
+  zoom: number;
+}
+
+function drawn(stage: Stage, renderer: WindowRenderer): Drawn {
+  const rows: { from: number; text: string }[] = [];
+  let scale = 0;
+  for (const buffer of stage.el.querySelectorAll<HTMLElement>('.score-buffer.is-front:not(.score-probe)')) {
+    const bars = buffer.dataset.bars;
+    if (!bars) continue;
+    rows.push({ from: Number(bars.split('-')[0]), text: bars });
+    const match = /scale\(([\d.]+)\)/.exec(buffer.style.transform);
+    if (match) scale = Number(match[1]);
+  }
+  const zoom = renderer.zoom;
+  return { rows: rows.sort((a, b) => a.from - b.from).map((r) => r.text), size: zoom * scale, zoom };
+}
+
+/** Two drawn states are the same picture: the same rows, and sizes within rounding. */
+function expectSamePicture(a: Drawn, b: Drawn, said: string): void {
+  expect(a.rows, said).toEqual(b.rows);
+  expect(Math.abs(a.size - b.size) / b.size, `${said}: size ${a.size.toFixed(4)} against ${b.size.toFixed(4)}`).toBeLessThan(0.01);
+}
+
+describe('the renderer against a stage that changes after it is made (U74)', () => {
+  it('(d) the first window drawn is the window the fit settles on, not one priced before the piece was measured', async () => {
+    const stage = stageOf(342, 531);
+    const renderer = await open(stage);
+    // Before any frame, idle moment or observation: what the first paint would show.
+    const first = drawn(stage, renderer);
+    await settle();
+    const settled = drawn(stage, renderer);
+    expect(settled.rows, 'the settled window: each bar on a system of its own').toEqual(['0-0', '1-1']);
+    expectSamePicture(first, settled, 'first draw against the settled one');
+    renderer.dispose();
+  });
+
+  it('(d) a renderer that met a taller stage first settles as one made on the final stage', async () => {
+    const direct = stageOf(342, 531);
+    const a = await open(direct);
+    await settle();
+    const want = drawn(direct, a);
+    a.dispose();
+    document.body.replaceChildren();
+    observers.length = 0;
+
+    const moved = stageOf(342, 658);
+    const b = await open(moved);
+    await settle();
+    moved.box = { width: 342, height: 531 };
+    observe();
+    await settle();
+    expectSamePicture(drawn(moved, b), want, 'met 658 first, then 531');
+    b.dispose();
+  });
+
+  it('(b) a settled height change off a run is refit, to the shape and size of the new stage', async () => {
+    const direct = stageOf(342, 420);
+    const a = await open(direct);
+    await settle();
+    const want = drawn(direct, a);
+    a.dispose();
+    document.body.replaceChildren();
+    observers.length = 0;
+
+    const stage = stageOf(342, 658);
+    const b = await open(stage);
+    await settle();
+    const before = drawn(stage, b);
+    stage.box = { width: 342, height: 420 };
+    observe();
+    await settle();
+    const after = drawn(stage, b);
+    expect(stage.el.dataset.settled, 'the refit said it was done').toBe('true');
+    expectSamePicture(after, want, 'refit off a run');
+    expect(after.size, 'a shorter stage draws no larger').toBeLessThanOrEqual(before.size * 1.001);
+    b.dispose();
+  });
+
+  it('(a) a stage change delivered while a fit is in flight: the window drawn is the final stage’s', async () => {
+    const direct = stageOf(342, 531);
+    const a = await open(direct);
+    await settle();
+    const want = drawn(direct, a);
+    a.dispose();
+    document.body.replaceChildren();
+    observers.length = 0;
+
+    const stage = stageOf(342, 658);
+    const b = await open(stage);
+    // The engraving search re-engraves the slots; in its first render the stage shrinks and the
+    // observer is told at once — which a browser never does inside a frame's callback, so this is
+    // the worst case, not the usual one.
+    let delivered = false;
+    FakeOsmdView.onRender = (view) => {
+      if (delivered || view.label !== 'osmd.render.front' || view.zoomValue === 1) return;
+      delivered = true;
+      stage.box = { width: 342, height: 531 };
+      observe();
+    };
+    await settle();
+    FakeOsmdView.onRender = null;
+    expect(delivered, 'the search never re-engraved, so nothing was delivered inside it').toBe(true);
+    expectSamePicture(drawn(stage, b), want, 'a change delivered inside the fit');
+    b.dispose();
+  });
+
+  it('(c) a width change off a run re-plans for the new width', async () => {
+    const direct = stageOf(390, 600);
+    Object.defineProperty(window, 'innerWidth', { value: 390, configurable: true });
+    Object.defineProperty(window, 'innerHeight', { value: 844, configurable: true });
+    const a = await open(direct);
+    await settle();
+    const want = drawn(direct, a);
+    a.dispose();
+    document.body.replaceChildren();
+    observers.length = 0;
+
+    Object.defineProperty(window, 'innerWidth', { value: 342, configurable: true });
+    Object.defineProperty(window, 'innerHeight', { value: 740, configurable: true });
+    const stage = stageOf(342, 531);
+    const b = await open(stage);
+    await settle();
+    Object.defineProperty(window, 'innerWidth', { value: 390, configurable: true });
+    Object.defineProperty(window, 'innerHeight', { value: 844, configurable: true });
+    stage.box = { width: 390, height: 600 };
+    observe();
+    await settle();
+    expectSamePicture(drawn(stage, b), want, 'after the width change');
+    b.dispose();
+  });
+
+  it('(c) a width change during a run releases the held size, takes a new one and keeps the step', async () => {
+    const stage = stageOf(342, 531);
+    const renderer = await open(stage);
+    await settle();
+    renderer.setRunning(true);
+    await tick(200);
+    await settle();
+    renderer.showStep(2);
+    const heldBefore = (renderer.debugFit() as { frozen: { scale: number } | null }).frozen;
+    expect(heldBefore, 'the run took a size').not.toBeNull();
+    stage.box = { width: 390, height: 600 };
+    observe();
+    await tick(200);
+    await settle();
+    const heldAfter = (renderer.debugFit() as { frozen: { scale: number } | null }).frozen;
+    expect(renderer.stepIndex, 'the step the run was on').toBe(2);
+    expect(heldAfter, 'the run holds a size on the new stage').not.toBeNull();
+    expect(drawn(stage, renderer).rows.some((r) => r.startsWith('0-')), 'the bar being played is on the glass').toBe(true);
+    renderer.setRunning(false);
+    renderer.dispose();
+  });
+
+  it('a height-only change during a run keeps the drawn size and the shape, and re-engraves nothing', async () => {
+    const stage = stageOf(342, 531);
+    const renderer = await open(stage);
+    await settle();
+    renderer.setRunning(true);
+    await tick(200);
+    await settle();
+    renderer.showStep(1);
+    const before = drawn(stage, renderer);
+    const renders = FakeOsmdView.all.filter((v) => v.label !== 'osmd.render.probe').reduce((sum, v) => sum + v.renders, 0);
+    stage.box = { width: 342, height: 500 };
+    observe();
+    await settle();
+    const after = drawn(stage, renderer);
+    expect(after.rows, 'the window’s shape').toEqual(before.rows);
+    expect(Math.abs(after.size - before.size) / before.size, 'the drawn size').toBeLessThan(0.001);
+    expect(FakeOsmdView.all.filter((v) => v.label !== 'osmd.render.probe').reduce((sum, v) => sum + v.renders, 0), 're-engravings').toBe(renders);
+    expect(renderer.stepIndex).toBe(1);
+    renderer.setRunning(false);
+    renderer.dispose();
+  });
+});
+
+describe('the measurement taken before the first window is priced (U74)', () => {
+  it('measures the piece once per engraving zoom it settles on, never at a zoom the search only tries', async () => {
+    // On this stage the search's first trial engraves a hair taller than a slot and is not kept.
+    const stage = stageOf(342, 531);
+    const renderer = await open(stage);
+    // Every zoom a slot is engraved at, and the zooms the page is left at between tasks: the first
+    // window's and each the fit settles on.
+    const engravedAt = new Set<number>();
+    FakeOsmdView.onRender = (view) => {
+      if (view.label !== 'osmd.render.probe') engravedAt.add(view.zoomValue);
+    };
+    const settledZooms = new Set<number>([renderer.zoom]);
+    await settle();
+    settledZooms.add(renderer.zoom);
+    for (const height of [480, 420]) {
+      stage.box = { width: 342, height };
+      observe();
+      settledZooms.add(renderer.zoom);
+      await settle();
+      settledZooms.add(renderer.zoom);
+    }
+    FakeOsmdView.onRender = null;
+    const tried = [...engravedAt].filter((zoom) => !settledZooms.has(zoom));
+    expect(tried.length, 'the search kept every zoom it tried, so this proves nothing').toBeGreaterThan(0);
+    const probe = FakeOsmdView.all.find((v) => v.label === 'osmd.render.probe');
+    expect(probe?.loads, 'one load').toBe(1);
+    expect(probe?.renders ?? 0).toBeGreaterThan(0);
+    expect(
+      probe?.renders ?? 0,
+      `probe drawn ${String(probe?.renders)} times; settled at ${[...settledZooms].join(', ')}; tried and not kept ${tried.join(', ')}`,
+    ).toBeLessThanOrEqual(settledZooms.size);
+    renderer.dispose();
+  });
+
+  it('the engraving search re-engraves the window it is sizing, never a default of another shape', async () => {
+    // A stage whose slots are taller than the first engraving by more than the search's threshold.
+    const stage = stageOf(342, 560);
+    const renderer = await open(stage);
+    const first = drawn(stage, renderer).rows;
+    // Every range a slot is engraved with from here until the fit has settled: the search's trial
+    // zooms are never painted, but they are what the search measures.
+    const engraved = new Set<string>();
+    FakeOsmdView.onRender = (view) => {
+      if (view.label !== 'osmd.render.probe' && view.range) engraved.add(`${String(view.range.fromMeasure)}-${String(view.range.toMeasure)}`);
+    };
+    await settle();
+    FakeOsmdView.onRender = null;
+    expect(renderer.zoom, 'the search never moved the zoom, so this proves nothing').not.toBe(1);
+    expect([...engraved].sort(), `the window drawn first was ${first.join(', ')}`).toEqual([...first].sort());
+    renderer.dispose();
+  });
+
+  it('a longer piece than the probe reaches keeps the idle load: nothing loaded before the first window', async () => {
+    FakeOsmdView.bars = Array.from({ length: 60 }, () => 14);
+    const model = makeModel(
+      Array.from({ length: 240 }, (_, index) => ({ onset: index, notes: [note({ midi: 60 + (index % 12) })] })),
+      { handsPresent: { R: true, L: true } },
+    );
+    const stage = stageOf(342, 531);
+    const renderer = await open(stage, model);
+    const probe = FakeOsmdView.all.find((v) => v.label === 'osmd.render.probe');
+    expect(probe?.loads, 'loaded before the first window').toBe(0);
+    await settle();
+    expect(probe?.loads, 'loaded on idle').toBe(1);
+    renderer.dispose();
+  });
+
+  it('a fit finished in the task that drew the window is not said settled until a frame has passed, and a stage change in that frame takes it back', async () => {
+    // A stage on which the window is two systems whose slots are the height the first engraving
+    // already has, so the fit queues no search and has nothing left to do once the window is drawn.
+    const stage = stageOf(300, 380);
+    const renderer = await open(stage);
+    expect(stage.el.dataset.settled, 'said in the task that drew the window, before the screen has laid itself out').toBeUndefined();
+    // One frame, with nothing moving in it, and the task after it.
+    flushFrames();
+    await tick();
+    expect(drawn(stage, renderer).rows, 'the window this case is about').toEqual(['0-0', '1-1']);
+    expect(stage.el.dataset.settled, 'a frame passed with nothing moving and nothing queued').toBe('true');
+    // The screen's bar measures itself in a later frame and the stage loses a little height — too
+    // little for a new engraving, so nothing but the word says the stage moved.
+    stage.box = { width: 300, height: 370 };
+    observe();
+    expect(stage.el.dataset.settled, 'the stage moved').toBeUndefined();
+    await settle();
+    expect(stage.el.dataset.settled, 'said once the stage held still and the fit was done').toBe('true');
+    renderer.dispose();
+  });
+
+  it('a renderer disposed before its word is said says nothing and draws nothing more', async () => {
+    const stage = stageOf(342, 531);
+    const renderer = await open(stage);
+    const renders = FakeOsmdView.all.reduce((sum, v) => sum + v.renders, 0);
+    renderer.dispose();
+    await settle();
+    expect(stage.el.dataset.settled).toBeUndefined();
+    expect(FakeOsmdView.all.reduce((sum, v) => sum + v.renders, 0)).toBe(renders);
+  });
+});
