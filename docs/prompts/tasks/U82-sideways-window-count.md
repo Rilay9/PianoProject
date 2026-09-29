@@ -36,3 +36,5 @@ If the case also fails at the tree before U74 (the regression is older), say whi
 Judgement first: what a sideways learner sees on the dev piece and on one real piece, before and after, as pictures with the count and the staff height; then Done / Not done / Follow-ups / Questions / Files; the discriminating measurement; the gallery comparison; the red lines; the tests table; exit codes; unverified beside what passes.
 
 **Landed 2026-09-29** (Entry 127; be8802c3, merged a36fbfaf); handoff `handoffs/be8802c3.md`. The brief's premise refuted: the spec, not the renderer. U88, U89 recorded.
+
+**Accepted 2026-09-29** (`responses/be8802c3.md`, APPROVE). The diagnosis stands: U74 changed when the truthful count could be stated, not the picture; the revised test asserts the window rule on the glass; no renderer change; U74 and E30 not reopened.
