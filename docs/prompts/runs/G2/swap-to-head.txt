@@ -1,0 +1,12 @@
+﻿(cd .) python docs/prompts/runs/G2/scripts-swap_head.py swap "C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\g2\swap"
+head 27c82fd1f61de8f7301083c655cb35847d74481c28aa6538db8037611cf2a46e app/src/evidence/ladder.ts
+head 44f0ae76c02d62eac5e1fbc54a7e1e03f19256e8ad330f013fd68b0539a7449c app/src/evidence/evidence.ts
+head a23d84da7f3da1ee8bdfa83356ef84cab09b24c55eeaaa98443954f2d4c3db0c app/src/curriculum/transfer.ts
+head 7bc221d08760be2c0504f91dbd0a2f3e9be25a8bb6197ae0baef8e168a551af5 app/src/curriculum/session.ts
+head 8c447dcc32954c97769af217ff3790c5c944e9dad2e2e33667a37c7df751f59d app/src/data/progressStore.ts
+head b45899741a6282cb6b8c558412692585a4f67d55403e3f1603e59ac77979a460 app/src/demands/vocabulary.ts
+head 28219e7bfd3918ef6dfd6d30ca3f2c67e6718f62e2a9924e6cf114a648454af5 app/src/ui/screens/TodayScreen.ts
+head 4167185b945ff8497cf13b3a45979d001d2a5993cedcf3f6f656021aa59e0a8c app/tests/unit/helpers/observed.ts
+head baf43a3e97a84bd0a3597da8f282b0db4255e13c18114e3f930a3ceb8223fd62 content/curriculum/vocabulary/skills.json
+head d4f6b6a4dbd688ddad864cce9fd01cd303764f88dd443ca9e86dfa7578ba894b content/curriculum/vocabulary/skills.schema.json
+exit=0

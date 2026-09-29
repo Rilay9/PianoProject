@@ -71,18 +71,25 @@ test.describe('Today', () => {
 
   // Revised (C6): placed at 1.1 (`placeAt`); on a fresh phone 0.1 asks for two things and nothing
   // else fills a row now, so every length is the same two rows.
+  // Revised (G2's landing): the length button is pressed at once and the card is rebuilt after the
+  // stores are read (the plan, the rung states, the runs and, since G2, the contact history), so a
+  // count taken right after the click read the card from before the click. Each count waits for a
+  // mark only that length's card carries (docs/02 §8, verbatim in `SESSION_TEMPLATES`): the
+  // fifteen-minute card's first slot is the only four-minute one, and only the two-hour card has
+  // the break.
   test('the four session lengths build different cards', async ({ page }) => {
     await placeAt(page, '1.1');
     await expect(page.locator('#today-length-15')).toBeVisible();
     await page.locator('#today-length-15').click();
     await expect(page.locator('#today-length-15')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('#today-card .list-row').first()).toContainText('4 min');
     const short = await page.locator('#today-card .list-row').count();
 
     await page.locator('#today-length-120').click();
-    const long = await page.locator('#today-card .list-row').count();
-    expect(long).toBeGreaterThan(short);
     // docs/02 §8: the two-hour session is two halves with a break between.
     await expect(page.locator('#today-break')).toBeVisible();
+    const long = await page.locator('#today-card .list-row').count();
+    expect(long).toBeGreaterThan(short);
   });
 
   test('remembers the session length across a reload', async ({ page }) => {

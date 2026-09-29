@@ -1,0 +1,13 @@
+(cd .) python docs/prompts/runs/G2/scripts-mutants.py
+differsOn-read-as-evidence (app/src/evidence/transferPolicy.ts): caught, exit=1; Tests  3 failed | 70 passed (73); restored sha256 84fb9e99b5fda6d4f0948bc68f4c52b454c0728a285bdcbf623f966e1e362277
+declared-read-as-evidence (app/src/evidence/transferPolicy.ts): caught, exit=1; Tests  2 failed | 71 passed (73); restored sha256 84fb9e99b5fda6d4f0948bc68f4c52b454c0728a285bdcbf623f966e1e362277
+no-new-seed-rule (app/src/evidence/transferPolicy.ts): caught, exit=1; Tests  2 failed | 71 passed (73); restored sha256 84fb9e99b5fda6d4f0948bc68f4c52b454c0728a285bdcbf623f966e1e362277
+unknown-first-contact-read-as-first (app/src/evidence/transferPolicy.ts): caught, exit=1; Tests  1 failed | 72 passed (73); restored sha256 84fb9e99b5fda6d4f0948bc68f4c52b454c0728a285bdcbf623f966e1e362277
+protection-guesses-unknown-contact (app/src/evidence/transferPolicy.ts): caught, exit=1; Tests  7 failed | 66 passed (73); restored sha256 84fb9e99b5fda6d4f0948bc68f4c52b454c0728a285bdcbf623f966e1e362277
+skill-without-block-gets-every-dimension (app/src/evidence/transferPolicy.ts): caught, exit=1; Tests  1 failed | 72 passed (73); restored sha256 84fb9e99b5fda6d4f0948bc68f4c52b454c0728a285bdcbf623f966e1e362277
+context-first-contact-from-unseen (app/src/evidence/evidence.ts): caught, exit=1; Tests  2 failed | 71 passed (73); restored sha256 d8947dcab01f74b9132ea732393bb06102b33528279eb9f93e24fa70630b96be
+no-relationship-on-ordinary-runs (app/src/data/progressStore.ts): caught, exit=1; Tests  3 failed | 70 passed (73); restored sha256 9fdf6a3cb8940c7a5ab8114f445cf4431fdb8db12e68a8583e9647d1bd544821
+offer-reads-runs-alone (app/src/curriculum/session.ts): caught, exit=1; Tests  3 failed | 70 passed (73); restored sha256 9c17f01845f8423f9fa249543200681efc4f0d75aff5bc0692d72e4f69068d47
+established-not-reset-on-demotion (app/src/evidence/ladder.ts): SURVIVED, exit=0; Tests  73 passed (73); restored sha256 12bda3dadf83a5d9fa3abdef9ea6b1e85bdb2d321c625c2e5b418a0bd8aff62c
+9 of 10 caught
+exit=1

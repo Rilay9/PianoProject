@@ -1,0 +1,83 @@
+﻿(cd app) npx playwright test --config playwright.g2-4293-head.config.ts --workers=2 tests/e2e/transfer-offer.spec.ts -g "(G2)"
+[WebServer] (node:70588) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:76492) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:74200) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:64692) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\e2e\transfer-offer.spec.ts:302:3 ΓÇ║ the transfer offer (D4) ΓÇ║ a read played on the phone stores its transfer facts on its evidence (G2) (6.1s)
+  x  2 tests\e2e\transfer-offer.spec.ts:232:3 ΓÇ║ the transfer offer (D4) ΓÇ║ a piece heard yesterday is not offered as new (G2) (8.9s)
+
+
+  1) tests\e2e\transfer-offer.spec.ts:232:3 ΓÇ║ the transfer offer (D4) ΓÇ║ a piece heard yesterday is not offered as new (G2) 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('#today-card .list-row[data-claim="transfer"][data-item="exercise.pentatonic.a.blues"]')
+    Expected: 0
+    Received: 1
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" locator('#today-card .list-row[data-claim="transfer"][data-item="exercise.pentatonic.a.blues"]') with timeout 5000ms
+      - waiting for locator('#today-card .list-row[data-claim="transfer"][data-item="exercise.pentatonic.a.blues"]')
+        14 ├ù locator resolved to 1 element
+           - unexpected value "1"
+
+
+      292 |     await expect(page.locator('#today-card .list-row').first()).toBeVisible({ timeout: 30_000 });
+      293 |     await expect(page.locator('#today-status')).toHaveAttribute('data-lesson', '3.4', { timeout: 30_000 });
+    > 294 |     await expect(page.locator(`#today-card .list-row[data-claim="transfer"][data-item="${itemId}"]`)).toHaveCount(0);
+          |                                                                                                       ^
+      295 |     const card = await page.evaluate(() => (window as unknown as Hooked).__pianopath?.todayCard?.() ?? null);
+      296 |     expect(card?.slots.some((slot) => slot.itemId === itemId && slot.claim?.kind === 'transfer'), 'the heard piece is still offered as new').toBe(false);
+      297 |   });
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a6d274c20b3e170c9\app\tests\e2e\transfer-offer.spec.ts:294:103
+
+    Error Context: test-results-g2-head\transfer-offer-the-transfe-0795a-y-is-not-offered-as-new-G2-\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results-g2-head\transfer-offer-the-transfe-0795a-y-is-not-offered-as-new-G2-\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results-g2-head\transfer-offer-the-transfe-0795a-y-is-not-offered-as-new-G2-\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  2) tests\e2e\transfer-offer.spec.ts:302:3 ΓÇ║ the transfer offer (D4) ΓÇ║ a read played on the phone stores its transfer facts on its evidence (G2) 
+
+    Error: hands-together: no demands on the attempt
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      325 |     expect(measured.length, 'the read stored no measured evidence to carry facts').toBeGreaterThan(0);
+      326 |     for (const record of measured) {
+    > 327 |       expect(Array.isArray(record.context.demands), `${record.skill}: no demands on the attempt`).toBe(true);
+          |                                                                                                   ^
+      328 |       expect(record.context.relationship, `${record.skill}: no relationship on the attempt`).toMatchObject({ skill: record.skill });
+      329 |       expect(record.context.firstContact, `${record.skill}: the context's first contact is not the header's`).toBe(read?.firstContact);
+      330 |     }
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a6d274c20b3e170c9\app\tests\e2e\transfer-offer.spec.ts:327:99
+
+    Error Context: test-results-g2-head\transfer-offer-the-transfe-33c87-r-facts-on-its-evidence-G2-\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results-g2-head\transfer-offer-the-transfe-33c87-r-facts-on-its-evidence-G2-\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results-g2-head\transfer-offer-the-transfe-33c87-r-facts-on-its-evidence-G2-\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  2 failed
+    tests\e2e\transfer-offer.spec.ts:232:3 ΓÇ║ the transfer offer (D4) ΓÇ║ a piece heard yesterday is not offered as new (G2) 
+    tests\e2e\transfer-offer.spec.ts:302:3 ΓÇ║ the transfer offer (D4) ΓÇ║ a read played on the phone stores its transfer facts on its evidence (G2) 
+exit=1

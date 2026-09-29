@@ -61,3 +61,5 @@ Judgement first: what the ladder now says for the D4 pentatonic offer played at 
 **Approved with one required change 2026-09-29** (`responses/a96395d.md`), applied above under "The fact path": each attempt carries its own facts, the establishing contexts come from the replay, a non-offer run's measured relationship is written at the run, one path for both consumers, the five tests named. Dispatches after G1a lands.
 
 **Dispatched 2026-09-29** (Entry 126, port 4293) on G1a's acceptance (`responses/5b14b7a.md`), its two constraints written into the fact path.
+
+**Landed 2026-09-29** (Entry 126; 030ce744, merged de7832c6); handoff `handoffs/030ce744.md`. G75–G77 recorded.

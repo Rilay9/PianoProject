@@ -1,0 +1,11 @@
+﻿(cd app) npx vitest run tests/unit/transferFactsOnTheAttempt.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a6d274c20b3e170c9/app
+
+
+ Test Files  1 passed (1)
+      Tests  16 passed (16)
+   Start at  04:55:12
+   Duration  740ms (transform 55%, import 23%, tests 22%, worker 1%)
+
+exit=0

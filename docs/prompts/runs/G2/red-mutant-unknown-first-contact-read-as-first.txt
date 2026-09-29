@@ -1,0 +1,45 @@
+(cd app) npx vitest run tests/unit/transferPolicy.test.ts tests/unit/transferFactsOnTheAttempt.test.ts tests/unit/transferOffer.test.ts tests/unit/masteryLadder.test.ts   # mutant unknown-first-contact-read-as-first in app/src/evidence/transferPolicy.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a6d274c20b3e170c9/app
+
+ ❯ tests/unit/transferPolicy.test.ts (23 tests | 1 failed) 18ms
+   ❯ declared and measured apart; unknown never guessed (9)
+     × first contact not recorded (a row from before G1a) is unknown, never read from anything else 6ms
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  1 failed | 72 passed (73)
+   Start at  04:54:16
+   Duration  766ms (transform 66%, import 22%, tests 11%, worker 1%)
+
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/transferPolicy.test.ts > declared and measured apart; unknown never guessed > first contact not recorded (a row from before G1a) is unknown, never read from anything else
+AssertionError: expected { verdict: 'demonstrated', …(3) } to match object { verdict: 'unknown', on: [] }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "on": [],
+-   "verdict": "unknown",
++   "on": [
++     "key",
++   ],
++   "verdict": "demonstrated",
+  }
+
+ ❯ tests/unit/transferPolicy.test.ts:272:58
+    270|   it('first contact not recorded (a row from before G1a) is unknown, n…
+    271|     const run = attempt({ material: file('6'.repeat(64)), relationship…
+    272|     expect(transferReading(INTERVALS, ESTABLISHED, run)).toMatchObject…
+       |                                                          ^
+    273|     expect(sparesFailure(transferReading(INTERVALS, ESTABLISHED, { ...…
+    274|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+exit=1
