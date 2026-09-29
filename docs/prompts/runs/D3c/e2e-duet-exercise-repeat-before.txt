@@ -1,0 +1,40 @@
+﻿node.exe : [WebServer] (node:68488) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:68772) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 2 workers
+
+(node:64092) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:68344) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\e2e\modes-duet.spec.ts:104:1 › a rung whose duet names an exercise opens the exercise (1.6s)
+  ok 2 tests\e2e\modes-duet.spec.ts:104:1 › a rung whose duet names an exercise opens the exercise (1.7s)
+(node:68956) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:66996) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 4 tests\e2e\modes-duet.spec.ts:104:1 › a rung whose duet names an exercise opens the exercise (1.4s)
+  ok 3 tests\e2e\modes-duet.spec.ts:104:1 › a rung whose duet names an exercise opens the exercise (1.5s)
+(node:69600) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:48868) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 5 tests\e2e\modes-duet.spec.ts:104:1 › a rung whose duet names an exercise opens the exercise (1.5s)
+  ok 6 tests\e2e\modes-duet.spec.ts:104:1 › a rung whose duet names an exercise opens the exercise (1.5s)
+(node:65140) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:65572) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 7 tests\e2e\modes-duet.spec.ts:104:1 › a rung whose duet names an exercise opens the exercise (1.5s)
+  ok 8 tests\e2e\modes-duet.spec.ts:104:1 › a rung whose duet names an exercise opens the exercise (1.5s)
+
+  8 passed (9.2s)
+exit 0

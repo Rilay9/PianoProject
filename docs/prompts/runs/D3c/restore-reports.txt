@@ -1,0 +1,3 @@
+﻿docs/prompts/rung-claims.md: HEAD's text; line endings restored to CRLF
+docs/prompts/inventory.md: HEAD's text; line endings restored to CRLF
+exit 0

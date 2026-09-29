@@ -1,0 +1,132 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a465c0bc54863c9b3/app
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts (30 tests | 7 failed) 8511ms
+   ❯ each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) (26)
+     × Start, teaching null: the rung’s groove is passed over for the next playable option until approved 80ms
+     × Start, teaching false: the rung’s groove is passed over for the next playable option until approved 57ms
+     × Start, teaching null: past every exercise to the first playable song; with nothing admitted, no Start at all 63ms
+     × Start, teaching false: past every exercise to the first playable song; with nothing admitted, no Start at all 63ms
+     × the option rows are the learner’s own choice: every authored option stays listed and tappable, the refused groove among them 64ms
+   ❯ every rung of the built curriculum, on the built catalogue: no automatic control on the rung page resolves to an item the admission refuses (D3c) (4)
+     × every rung: no control resolves to an item the admission refuses 2ms
+     × every rung: each control opens the rung’s next admitted option for it, and is gone only where the rung has none 1ms
+
+ Test Files  1 failed (1)
+      Tests  7 failed | 23 passed (30)
+   Start at  20:34:41
+   Duration  9.84s (tests 87%, environment 7%, transform 4%, import 2%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > Start, teaching null: the rung’s groove is passed over for the next playable option until approved
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > Start, teaching false: the rung’s groove is passed over for the next playable option until approved
+AssertionError: expected 'ex.groove' to be 'ex.next' // Object.is equality
+
+Expected: "ex.next"
+Received: "ex.groove"
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:179:34
+    177|     expect(admittedForTeaching(first)).toBe(teaching === true);
+    178|     const section = await mount(rung({ exerciseOptions: ['ex.groove', …
+    179|     expect(picks(section).start).toBe(teaching === true ? 'ex.groove' …
+       |                                  ^
+    180|     // The line names what Start opens, and calls it the first thing o…
+    181|     const said = section.querySelector('#lesson-start-what')?.textCont…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > Start, teaching null: past every exercise to the first playable song; with nothing admitted, no Start at all
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > Start, teaching false: past every exercise to the first playable song; with nothing admitted, no Start at all
+AssertionError: expected 'ex.groove' to be 'song.a' // Object.is equality
+
+Expected: "song.a"
+Received: "ex.groove"
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:187:95
+    185|   it.each(REFUSED)('Start, teaching %s: past every exercise to the fir…
+    186|     const listed = rung({ exerciseOptions: ['ex.groove'], songOptions:…
+    187|     expect(picks(await mount(listed, [groove('ex.groove', teaching), s…
+       |                                                                                               ^
+    188|     const alone = await mount(rung({ exerciseOptions: ['ex.groove'] })…
+    189|     expect(alone.querySelector('#lesson-start')).toBeNull();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > each automatic pick on the rung page takes the next admitted option, or is gone truthfully (D3c) > the option rows are the learner’s own choice: every authored option stays listed and tappable, the refused groove among them
+AssertionError: expected [ 'ex.groove', 'ex.next', …(3) ] to not include 'ex.groove'
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:264:47
+    262|     expect(tap(play as HTMLElement)).toBe('ex.groove');
+    263|     // …while no automatic control resolves to it.
+    264|     expect(Object.values(picks(section))).not.toContain('ex.groove');
+       |                                               ^
+    265|   });
+    266|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > every rung of the built curriculum, on the built catalogue: no automatic control on the rung page resolves to an item the admission refuses (D3c) > every rung: no control resolves to an item the admission refuses
+AssertionError: 11 controls: expected [ …(11) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "latin.3 start: exercise.clave.son-2-3",
++   "jazz.4 start: exercise.comping.f.charleston.intro",
++   "holiday.5 start: exercise.ostinato.a.arpeggio",
++   "jam.5 start: exercise.comping.e.charleston.intro",
++   "jazz.6 start: exercise.comping.c.charleston",
++   "blues.6 start: exercise.boogie.c.pinetop",
++   "rock.6 start: exercise.ostinato.a.arpeggio",
++   "jam.6 start: exercise.walking-bass.e.blues.intro",
++   "latin.6 start: exercise.tumbao.g",
++   "blues.7 start: exercise.stride.f",
++   "blues.8 start: exercise.walking-bass.e-flat.blues",
++ ]
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:334:59
+    332|       }
+    333|     }
+    334|     expect(offered, `${String(offered.length)} controls`).toEqual([]);
+       |                                                           ^
+    335|   });
+    336|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  tests/unit/lessonPagePicksPassTheAdmission.test.ts > every rung of the built curriculum, on the built catalogue: no automatic control on the rung page resolves to an item the admission refuses (D3c) > every rung: each control opens the rung’s next admitted option for it, and is gone only where the rung has none
+AssertionError: 11 controls: expected [ …(11) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "latin.3 start: drew exercise.clave.son-2-3, next admitted song.folk.exercise-cielito-lindo.pdmx",
++   "jazz.4 start: drew exercise.comping.f.charleston.intro, next admitted exercise.rhythm.shuffle-eighths.4bar",
++   "holiday.5 start: drew exercise.ostinato.a.arpeggio, next admitted exercise.arpeggio.e-major.2oct.both",
++   "jam.5 start: drew exercise.comping.e.charleston.intro, next admitted drill.jam.form-tracker",
++   "jazz.6 start: drew exercise.comping.c.charleston, next admitted exercise.voicing7.c.shell",
++   "blues.6 start: drew exercise.boogie.c.pinetop, next admitted exercise.turnaround.c.i-vi-ii-v",
++   "rock.6 start: drew exercise.ostinato.a.arpeggio, next admitted exercise.accompaniment.broken.a-minor.both",
++   "jam.6 start: drew exercise.walking-bass.e.blues.intro, next admitted exercise.blues.twelve-bar-shuffle.e",
++   "latin.6 start: drew exercise.tumbao.g, next admitted song.classical.tango-la-cumparsita-piano-solo-tutorial-parte-b.pdmx",
++   "blues.7 start: drew exercise.stride.f, next admitted exercise.turnaround.f.iii-vi-ii-v",
++   "blues.8 start: drew exercise.walking-bass.e-flat.blues, next admitted drill.jazz.extended-chords",
++ ]
+
+ ❯ tests/unit/lessonPagePicksPassTheAdmission.test.ts:344:57
+    342|       for (const control of CONTROLS) if (now[control] !== want[contro…
+    343|     }
+    344|     expect(differ, `${String(differ.length)} controls`).toEqual([]);
+       |                                                         ^
+    345|   });
+    346|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+
+exit 1
