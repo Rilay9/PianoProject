@@ -157,22 +157,32 @@ class TheWorkflowOrder(unittest.TestCase):
             "the render check writes durations into the catalogue",
         )
 
-    def test_one_run_per_branch_at_a_time_and_every_code_push_gets_its_conclusion(self) -> None:
-        # Revised 2026-09-29 (Q63): the group stays, so one run per branch runs at a time, but a
-        # newer push no longer cancels the run in progress — it queues behind it. Cancelling was
-        # written for one landing a night; at a landing every twenty to forty minutes it cancelled
-        # seven runs in a row and no tree got a conclusion. Docs-only pushes start no run at all
-        # (`paths-ignore`), which is what keeps the queue to trees whose code changed.
+    def test_the_run_in_progress_completes_and_the_newest_tree_waits(self) -> None:
+        # Revised 2026-09-29 (Q63, corrected by the outside reviewer the same night): the group
+        # stays, so one run per branch runs at a time, and a newer push no longer cancels the run
+        # in progress. GitHub keeps one pending run per group and replaces it with a newer one, so
+        # the contract is: the run in progress completes, the newest code tree waits and runs
+        # next, a superseded pending tree gets no conclusion of its own. Not "every push gets its
+        # conclusion", and not `queue: max`. Docs-only pushes start no run (`paths-ignore`).
         block = re.search(r"^concurrency:\n((?:[ \t]+.*\n)+)", self.text, re.MULTILINE)
         self.assertIsNotNone(block, f"{WORKFLOW.name} lost its `concurrency` block")
         self.assertRegex(block.group(1), r"group:\s*ci-\$\{\{\s*github\.ref\s*\}\}")
         self.assertRegex(block.group(1), r"cancel-in-progress:\s*false")
 
-    def test_docs_only_pushes_start_no_run(self) -> None:
-        # Q63's first half: the record and the review stream never trigger or cancel a run.
+    def test_record_and_review_pushes_start_no_run_and_nothing_else_is_ignored(self) -> None:
+        # Q63's first half, narrowed on the reviewer's correction: only the record and the review
+        # stream are ignored; documentation that tests read stays under docs-integrity.yml; the
+        # `pull_request` event is gone (its `branches` filter names the base, never this branch).
         on = re.search(r"^on:\n((?:[ \t]+.*\n)+)", self.text, re.MULTILINE)
         self.assertIsNotNone(on, f"{WORKFLOW.name} lost its `on` block")
-        self.assertRegex(on.group(1), r"paths-ignore:\n\s+- 'docs/\*\*'")
+        block = on.group(1)
+        for path in ("docs/review/**", "docs/prompts/runs/**", "docs/prompts/pictures/**", "docs/prompts/entry-*.md", "docs/pending-review.md", "docs/prompts/in-flight.md"):
+            self.assertIn(f"- '{path}'", block, f"{path} is record or reviewer churn and must start no run")
+        self.assertNotIn("'docs/**'", block, "docs/** is too broad: the views and the maps are machine contracts")
+        self.assertNotIn("pull_request", block, "the pull_request event never fired for the standing PR and was removed")
+        docs = WORKFLOW.with_name("docs-integrity.yml").read_text(encoding="utf-8")
+        self.assertIn("test_prompt_views", docs, "the views' freshness moved to docs-integrity.yml")
+        self.assertNotIn("playwright", docs.lower(), "the docs workflow never runs the app's suites")
 
     def test_the_steps_the_failure_messages_name_exist(self) -> None:
         names = [step.get("name", "") for step in self.steps]

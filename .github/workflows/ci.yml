@@ -4,25 +4,33 @@ on:
   push:
     branches: [claude/piano-teaching-app-bo19td]
     # A push that touches only the record and the review stream does not start a run, and
-    # so cannot cancel the one in progress (Q63, 2026-09-29: the reviewer's response pushes
-    # and the orchestrator's record pushes were cancelling every full run before it finished;
-    # the owner asked for CI to run on the code and the review stream to stay out of its way).
-    # The docs' own checks (the test map, the reviewer's views) run on the next code push.
+    # so cannot take the group's one pending slot from a code tree (Q63, 2026-09-29). Only the
+    # high-volume documentary paths are ignored: the reviewer's handoffs and responses, the
+    # entries and captures, the running record. Documentation that tests read (the prompt
+    # views, the test map, the checks map) is checked by docs-integrity.yml on every push,
+    # without the app, Playwright, rendering or the recordings. The `pull_request` event was
+    # removed the same day: its `branches` filter names the PR's base, and the standing
+    # reviewer PR's base is another branch, so it never fired; the branch push is the one
+    # source of CI for this integration branch (the outside reviewer's correction).
     paths-ignore:
-      - 'docs/**'
-      - '.claude/**'
-  pull_request:
-    branches: [claude/piano-teaching-app-bo19td]
-    paths-ignore:
-      - 'docs/**'
+      - 'docs/review/**'
+      - 'docs/prompts/runs/**'
+      - 'docs/prompts/pictures/**'
+      - 'docs/prompts/entry-*.md'
+      - 'docs/pending-review.md'
+      - 'docs/prompts/in-flight.md'
       - '.claude/**'
 
-# One CI run per branch at a time, and every code push gets its conclusion: runs queue in the
-# group instead of cancelling the one in progress (2026-09-29; until then a newer push cancelled
-# the run in progress, which at one landing a night let the latest HEAD go first, but at a
-# landing every twenty to forty minutes meant no run finished at all — seven cancellations in a
-# row on the night of the four lanes, Q63). Docs-only pushes start no run (paths-ignore above),
-# so the queue holds only trees whose code changed.
+# One CI run per branch at a time, and the run in progress always completes: a newer push
+# waits in the group's one pending slot instead of cancelling it (2026-09-29; until then a
+# newer push cancelled the run in progress, which at one landing a night let the latest HEAD go
+# first, but at a landing every twenty to forty minutes meant no run finished at all — seven
+# cancellations in a row on the night of the four lanes, Q63). The contract, as GitHub runs it:
+# the run in progress completes; among the pushes that arrive while it runs, the newest code
+# tree holds the one pending slot and runs next; a superseded pending tree gets no conclusion of
+# its own (a later tree contains it). Not `queue: max`: at these landing rates it would test
+# stale trees for hours. A seam whose acceptance needs the runner's own proof at its exact tree
+# (Q47's fetch) is pushed when its run can enter `in_progress` before the next code push.
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: false
