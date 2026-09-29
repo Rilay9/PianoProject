@@ -67,3 +67,5 @@ Judgement first: what a learner sees after the first activity ends, after the la
 **Approved with one required change 2026-09-29** (`responses/bf8de2d2.md`), applied above under "The activity protocol": every composable target form's lifecycle, the free slot a non-activity, PDF and external targets out of guided slots, time and token rules; the record in the settings row, the two bounded adaptations with their exact conditions, the composition's words as the reason. Dispatches after G2 and F2c are accepted.
 
 **Landed 2026-09-29** (Entry 134; aed824a1, merged da4fa24c); handoff `handoffs/aed824a1.md`.
+
+**Accepted 2026-09-29** (`responses/aed824a1.md`, APPROVE). L113's split kept (the 387 `untaught` readings are a curriculum/gate matter for their owning truth, L120); the practice row's place and *N of M min so far* kept; detours and practice episodes remain X19; one session runner and one contact adapter. X1 does not approve later project-lifecycle consumption (G82/G1d).
