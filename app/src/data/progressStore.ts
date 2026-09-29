@@ -10,8 +10,19 @@
 import { dailySeed } from '../engine/sightReading';
 import { compactSteps } from '../engine/Scoring';
 import type { NotMeasured } from '../engine/types';
-import { openDatabase, type ProgressRow, type RunObservation, type SessionRow, type StreakRow } from './db';
-import { knownMaterial, sameMaterial } from '../curriculum/material';
+import {
+  isPhraseRun,
+  openDatabase,
+  type ContactSpan,
+  type ContactSummaryRow,
+  type EncounterKind,
+  type EncounterRow,
+  type ProgressRow,
+  type RunObservation,
+  type SessionRow,
+  type StreakRow,
+} from './db';
+import { knownMaterial, materialKey, sameMaterial } from '../curriculum/material';
 import type { Identity } from '../review/record';
 
 /**
@@ -168,8 +179,12 @@ export async function recordRun(result: RunResult, now = new Date()): Promise<Pr
    * it passes nothing, masters nothing, sets no best and ticks no day. Here,
    * in the store every writer goes through, so a writer that forgets cannot
    * turn practice into evidence.
+   *
+   * A phrase's rule only (`isPhraseRun`, G1): since G1 every run the Score
+   * screen records carries the first-contact fact, and a piece played again
+   * (`unseen: false`) is practice that passes as it always did.
    */
-  const evidence = result.unseen !== false;
+  const evidence = !(result.unseen === false && isPhraseRun(result));
   // The same exercise opened from Plan or the Library is a different phrase
   // and does not tick the day; a day already ticked stays ticked when the
   // stage moves on and Today picks another item. It used to be read off the
@@ -183,11 +198,13 @@ export async function recordRun(result: RunResult, now = new Date()): Promise<Pr
    * and "mastered" would be claims about the row that no reading supports;
    * what a reading shows is its evidence, on the session row, which the
    * reader and `rungState` read. `unseen` (or the recipe) is written on every
-   * run of a generated phrase and on nothing else (C1, C4). The row keeps
-   * its practice — the attempt, the minutes, when — and the day's tick above
-   * stays: a habit, not a mastery.
+   * run of a generated phrase (C1, C4); since G1 `unseen` is on every Score
+   * screen run, so which runs are phrases is `isPhraseRun`'s to say, and every
+   * row written before G1 reads as it did. The row keeps its practice — the
+   * attempt, the minutes, when — and the day's tick above stays: a habit, not
+   * a mastery.
    */
-  const generated = result.unseen !== undefined || result.recipe !== undefined;
+  const generated = isPhraseRun(result);
   const passed = evidence && result.passed && !generated;
   const masterEligible = evidence && result.masterEligible && !generated;
 
@@ -484,31 +501,179 @@ export async function sessionsForItem(itemId: string, limit = 5): Promise<Sessio
  * so (`materialUnknown`). `rows` are every stored run (`rungRows`, which the rung state already holds
  * in memory): one pass over them, rather than an index on a nested, discriminated value that would
  * need a schema version — and `sessionsForItem`, one item's index, cannot see a renamed id at all.
+ *
+ * **G1 extends it** over the rest of the history, and keeps every verdict D4's rows gave: an
+ * encounter that is not a run (`EncounterRow`: viewed, heard, demonstrated) meets a material as a run
+ * does, and so does the durable summary of runs the retention cap deleted (`ContactSummaryRow`), so a
+ * run pruned is still `met`. `unmet` is unmet by any kind. `met` says how (`how`: `played` for a run,
+ * live or summarised, then the encounter kinds, in that order), which a later reader weighs — whether
+ * a hearing counts as contact for its purpose is its policy, never this function's.
  */
+export type ContactHow = 'played' | EncounterKind;
+const HOW_ORDER: readonly ContactHow[] = ['played', 'heard', 'demonstrated', 'viewed'];
+
 export interface Contact {
   contact: 'met' | 'met-by-id' | 'unmet';
-  /** Some stored row shares the candidate's item id, whatever material it carries. */
+  /** Some stored row — a run, an encounter, a pruned run's summary — shares the candidate's item id, whatever material it carries. */
   metById: boolean;
-  /** The item ids of the rows that carry the candidate's material, in the order stored. */
+  /** The item ids of the rows that carry the candidate's material, in the order stored: runs, encounters, summaries. */
   metAs?: string[];
+  /** How the material was met (G1): `played` for a run, live or summarised, and each encounter kind. On `met` only. */
+  how?: ContactHow[];
   /** The candidate has no material to compare: novelty was read by its id alone. */
   materialUnknown?: true;
 }
 
-export function contactIn(rows: readonly Pick<SessionRow, 'itemId' | 'material'>[], itemId: string, material: Identity | undefined): Contact {
-  const byId = rows.filter((row) => row.itemId === itemId);
-  if (!knownMaterial(material)) {
-    return { contact: byId.length > 0 ? 'met-by-id' : 'unmet', metById: byId.length > 0, materialUnknown: true };
-  }
-  const as = [...new Set(rows.filter((row) => sameMaterial(row.material, material)).map((row) => row.itemId))];
-  if (as.length > 0) return { contact: 'met', metById: byId.length > 0, metAs: as };
-  if (byId.some((row) => !knownMaterial(row.material))) return { contact: 'met-by-id', metById: true };
-  return { contact: 'unmet', metById: byId.length > 0 };
+/** The rest of the history `contactIn` reads beside the runs (G1): absent, the runs alone, as D4 read them. */
+export interface ContactHistory {
+  encounters?: readonly Pick<EncounterRow, 'itemId' | 'material' | 'kind'>[];
+  summaries?: readonly Pick<ContactSummaryRow, 'itemIds' | 'material' | 'byId'>[];
 }
 
-/** `contactIn` over every stored run (`rungRows`). */
+/** A row's material as `sameMaterial` reads it: an id-only encounter or summary names none. */
+function asIdentity(material: EncounterRow['material'] | Identity | undefined): Identity | undefined {
+  return material === undefined || material.kind === 'id' ? undefined : material;
+}
+
+export function contactIn(
+  rows: readonly Pick<SessionRow, 'itemId' | 'material'>[],
+  itemId: string,
+  material: Identity | undefined,
+  history: ContactHistory = {},
+): Contact {
+  const encounters = history.encounters ?? [];
+  const summaries = history.summaries ?? [];
+  const idRows = rows.filter((row) => row.itemId === itemId);
+  const idEncounters = encounters.filter((row) => row.itemId === itemId);
+  const idSummaries = summaries.filter((row) => row.itemIds.includes(itemId));
+  const metById = idRows.length > 0 || idEncounters.length > 0 || idSummaries.length > 0;
+  if (!knownMaterial(material)) {
+    return { contact: metById ? 'met-by-id' : 'unmet', metById, materialUnknown: true };
+  }
+  const playedRuns = rows.filter((row) => sameMaterial(row.material, material));
+  const heard = encounters.filter((row) => sameMaterial(asIdentity(row.material), material));
+  const summarised = summaries.filter((row) => sameMaterial(asIdentity(row.material), material));
+  const as = [...new Set([...playedRuns.map((row) => row.itemId), ...heard.map((row) => row.itemId), ...summarised.flatMap((row) => row.itemIds)])];
+  if (as.length > 0) {
+    const kinds = new Set<ContactHow>(heard.map((row) => row.kind));
+    if (playedRuns.length > 0 || summarised.length > 0) kinds.add('played');
+    return { contact: 'met', metById, metAs: as, how: HOW_ORDER.filter((kind) => kinds.has(kind)) };
+  }
+  const unknownById =
+    idRows.some((row) => !knownMaterial(row.material)) ||
+    idEncounters.some((row) => !knownMaterial(asIdentity(row.material))) ||
+    idSummaries.some((row) => row.byId);
+  if (unknownById) return { contact: 'met-by-id', metById: true };
+  return { contact: 'unmet', metById };
+}
+
+/**
+ * `contactIn` over the whole store (G1): every stored run (`rungRows`), the encounters of this
+ * material or this id, and the summaries of pruned runs of either. The encounters are read here from
+ * their store directly (the store's writer is `encounterStore`, which reads this module; this one
+ * does not import it back).
+ */
 export async function contact(itemId: string, material: Identity | undefined): Promise<Contact> {
-  return contactIn(await rungRows(), itemId, material);
+  const [rows, encounters, summaries] = await Promise.all([rungRows(), encountersOf(materialKey(material, itemId), itemId), contactSummaries()]);
+  return contactIn(rows, itemId, material, { encounters, summaries });
+}
+
+/** The encounter rows of this material (`EncounterRow.key`) or under this item id, from the store; none without one. */
+async function encountersOf(key: string, itemId: string): Promise<EncounterRow[]> {
+  const db = await openDatabase();
+  if (!db) return [];
+  try {
+    const [byKey, byItem] = await Promise.all([db.getAllFromIndex('encounters', 'byKey', key), db.getAllFromIndex('encounters', 'byItem', itemId)]);
+    const seen = new Set(byKey.map((row) => row.id));
+    return [...byKey, ...byItem.filter((row) => !seen.has(row.id))];
+  } catch {
+    return [];
+  }
+}
+
+// --- the durable summary of pruned runs (G1) ------------------------------------------------------
+
+/** The printed bars a stored run covered — 1-based positions in its own item — or undefined for the whole (a row with no range). */
+export function runBars(row: Pick<SessionRow, 'range'>): [number, number] | undefined {
+  return row.range === undefined ? undefined : [row.range.fromMeasure + 1, row.range.toMeasure + 1];
+}
+
+/** Where a run came from, in a summary's words: the tab, with the Today slot where a card named one. */
+function sourceOf(row: Pick<SessionRow, 'opened'>): string {
+  const opened = row.opened;
+  if (!opened) return 'not measured';
+  return typeof opened.slot === 'string' && opened.slot !== 'not measured' ? `${opened.tab}:${opened.slot}` : opened.tab;
+}
+
+/**
+ * One run as the summary keeps it (G1): its material or its id, and one span — what happened
+ * (`performed` for a performance take, `practised` for every other run: evidence, passing and first
+ * contact never rename it), the bars, when, from where. Nothing else of the run is kept.
+ */
+export function foldRun(row: Pick<SessionRow, 'itemId' | 'material' | 'range' | 'performance' | 'at' | 'opened'>): ContactSummaryRow {
+  const known = knownMaterial(row.material) ? row.material : undefined;
+  const bars = runBars(row);
+  const span: ContactSpan = {
+    run: row.performance === true ? 'performed' : 'practised',
+    ...(bars === undefined ? {} : { bars }),
+    first: row.at,
+    last: row.at,
+    sources: [sourceOf(row)],
+  };
+  return {
+    key: materialKey(known, row.itemId),
+    material: known ?? { kind: 'id', itemId: row.itemId },
+    itemIds: [row.itemId],
+    byId: known === undefined,
+    spans: [span],
+  };
+}
+
+const spanKey = (span: ContactSpan): string => `${span.run}|${span.bars === undefined ? 'whole' : `${String(span.bars[0])}-${String(span.bars[1])}`}`;
+
+/**
+ * Two summaries of one material as one (G1): the item ids and sources as sets, each span's first the
+ * earlier and last the later, spans of the same kind and bars merged. A join: folding the same run
+ * twice, or restoring the same backup twice, changes nothing.
+ */
+export function mergeSummaries(mine: ContactSummaryRow | undefined, theirs: ContactSummaryRow): ContactSummaryRow {
+  if (mine === undefined) return mergeSummaries({ ...theirs, itemIds: [], spans: [] }, theirs);
+  const spans = new Map<string, ContactSpan>();
+  for (const span of [...mine.spans, ...theirs.spans]) {
+    const key = spanKey(span);
+    const was = spans.get(key);
+    spans.set(
+      key,
+      was === undefined
+        ? { ...span, sources: [...new Set(span.sources)] }
+        : {
+            ...was,
+            first: span.first < was.first ? span.first : was.first,
+            last: span.last > was.last ? span.last : was.last,
+            sources: [...new Set([...was.sources, ...span.sources])],
+          },
+    );
+  }
+  return {
+    key: mine.key,
+    material: mine.material,
+    itemIds: [...new Set([...mine.itemIds, ...theirs.itemIds])],
+    byId: mine.byId || theirs.byId,
+    spans: [...spans.values()].sort((a, b) => spanKey(a).localeCompare(spanKey(b))),
+  };
+}
+
+/** The summaries of pruned runs under these keys, or every one; none without a database. */
+export async function contactSummaries(keys?: readonly string[]): Promise<ContactSummaryRow[]> {
+  const db = await openDatabase();
+  if (!db) return [];
+  try {
+    if (keys === undefined) return await db.getAll('contacts');
+    const found = await Promise.all(keys.map((key) => db.get('contacts', key)));
+    return found.filter((row): row is ContactSummaryRow => row !== undefined);
+  } catch {
+    return [];
+  }
 }
 
 /**
@@ -713,6 +878,15 @@ let pruneStalledAt: number | null = null;
  * version refuses a kept row's old claim (it contributes nothing, and the job
  * keeps it out with its reason) rather than deleting it.
  *
+ * **Cleanup never erases an encounter either (G1; the reviewer's required
+ * change, `docs/review/responses/7863bee.md`).** A run with no evidence and no
+ * rung can be the only proof that a passage was practised or an item met (D4's
+ * contact, G63). Before deleting it the walk folds what a familiarity query
+ * reads of it — its material or its id, the bars it covered, practised or
+ * performed, when, from where — into its material's summary in `contacts`
+ * (`foldRun`, `mergeSummaries`), in the same transaction: a join, so folding a
+ * run twice changes nothing, and never evidence.
+ *
  * Failure is deliberately silent: a phone that cannot prune keeps every row,
  * which is exactly the behaviour that shipped, and is far better than a run
  * that will not record because tidying up threw.
@@ -730,16 +904,24 @@ export async function pruneSessions(
     if (total <= max + slack) return 0;
     if (pruneStalledAt !== null && total <= pruneStalledAt + slack) return 0;
     const edge = new Date(now.getTime() - windowDays * DAY_MS).toISOString();
-    const tx = db.transaction('sessions', 'readwrite');
-    let cursor = await tx.store.index('byDate').openCursor(IDBKeyRange.upperBound(edge, true));
+    // One transaction over both stores (G1): a run is deleted only with its
+    // facts folded into its material's summary, and if either fails neither
+    // happens.
+    const tx = db.transaction(['sessions', 'contacts'], 'readwrite');
+    let cursor = await tx.objectStore('sessions').index('byDate').openCursor(IDBKeyRange.upperBound(edge, true));
     let dropped = 0;
+    const folded = new Map<string, ContactSummaryRow>();
     while (cursor && total - dropped > max) {
       if (!holdsEvidence(cursor.value)) {
+        const summary = foldRun(cursor.value);
+        folded.set(summary.key, mergeSummaries(folded.get(summary.key), summary));
         await cursor.delete();
         dropped += 1;
       }
       cursor = await cursor.continue();
     }
+    const contacts = tx.objectStore('contacts');
+    for (const [key, summary] of folded) await contacts.put(mergeSummaries(await contacts.get(key), summary));
     await tx.done;
     pruneStalledAt = total - dropped > max ? total - dropped : null;
     // The rung state's copy is read again from what is left (C5).

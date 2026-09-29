@@ -457,6 +457,72 @@ test.describe("Today's sight-read", () => {
     await expect(card).toBeVisible({ timeout: 30_000 });
     await expect(card).toHaveAttribute('data-done', 'false');
   });
+
+  test('heard at noon, left, read in the evening: not a first reading, and the history says so', async ({ page }) => {
+    // G1 (Part 27's adversary: a planned sight-read heard at noon, read in the
+    // evening). A hearing was remembered for the visit only: played to the
+    // learner, the screen left, the phrase opened again later the same day,
+    // its run went on the record as the first reading. The hearing is a stored
+    // encounter now, and the second visit reads it before judging.
+    test.setTimeout(240_000);
+    const sessions = (): Promise<{ itemId: string; seed?: number; unseen?: boolean; at: string }[]> =>
+      page.evaluate(async () => {
+        const hooks = (window as unknown as {
+          __pianopath: { exportAll: () => Promise<{ stores: Record<string, unknown[]> }> };
+        }).__pianopath;
+        return (await hooks.exportAll()).stores.sessions as { itemId: string; seed?: number; unseen?: boolean; at: string }[];
+      });
+    const openTheRead = async (): Promise<string | null> => {
+      const row = page.locator('#today-daily .list-row');
+      await expect(row).toBeVisible({ timeout: 30_000 });
+      const seed = await row.getAttribute('data-seed');
+      await row.locator('button[aria-label="Open today\'s sight-read"]').click();
+      const screen = page.locator('section[data-screen="score"]');
+      await expect(screen).toHaveAttribute('data-mode', 'tempo', { timeout: 60_000 });
+      await expect(page.locator('#score-stage .is-front svg').first()).toBeVisible({ timeout: 60_000 });
+      await withScoreMenu(page, async () => {
+        await page.locator('#score-input').selectOption('keys');
+      });
+      return seed;
+    };
+
+    // Noon: opened, played to the learner, and left without a run.
+    await page.clock.setFixedTime(new Date('2026-09-29T12:00:00'));
+    await page.goto('/');
+    const seed = await openTheRead();
+    const screen = page.locator('section[data-screen="score"]');
+    await pressControl(page, '#score-hear');
+    await expect(screen).toHaveAttribute('data-hearing', 'true', { timeout: 5_000 });
+    await page.waitForTimeout(1_500);
+    await pressControl(page, '#score-hear');
+    await expect(screen).toHaveAttribute('data-hearing', 'false', { timeout: 5_000 });
+    await page.locator('#score-back').click();
+    await expect(page.locator('#today-daily .list-row')).toBeVisible({ timeout: 30_000 });
+    expect(await sessions(), 'a hearing was recorded as a run').toEqual([]);
+
+    // Evening, the same day: the same phrase, read.
+    await page.clock.setFixedTime(new Date('2026-09-29T19:00:00'));
+    await page.goto('/');
+    expect(await openTheRead()).toBe(seed);
+    await pressControl(page, '#score-play');
+    await expect(screen).toHaveAttribute('data-running', 'true');
+    await playInTime(page, 'keys');
+    const sheet = page.locator('#score-summary');
+    await expect(sheet).toBeVisible({ timeout: 60_000 });
+    await expect.poll(async () => (await sessions()).length, { timeout: 30_000 }).toBe(1);
+    const [stored] = await sessions();
+    expect(String(stored?.seed)).toBe(seed);
+    expect(stored?.unseen, 'a phrase heard at noon went on the record as a first reading in the evening').toBe(false);
+    await expect(sheet.locator('#summary-note')).toHaveText(
+      'Sight-reading counts only on music you have not heard — this run is kept as practice.',
+    );
+
+    // The history line says what the record says.
+    await page.goto('/#/progress');
+    const line = page.locator(`#progress-history .list-row[data-item="${stored?.itemId ?? ''}"]`).first();
+    await expect(line).toBeVisible({ timeout: 30_000 });
+    await expect(line.locator('.list-row__meta')).toContainText('not first sight');
+  });
 });
 
 /**

@@ -2296,6 +2296,25 @@ Notation area:
   not refused during a performance (the reviewer chose "not an undemonstrated performance",
   not "refused"), and one heard *before* the take began leaves it a performance.
 
+  **What the screen writes of what the learner met, and reads back (G1, 2026-09-29).** A hearing
+  used to be remembered for the visit only: a phrase played to the learner, the screen left and
+  the phrase opened again later, its run went on the record as the first reading. Now the screen
+  writes encounters (`data/encounterStore.ts`, `DB_VERSION` 8): **one viewing a visit**, where the
+  notation is first drawn (never in Blind, which draws none); **a demonstration** for `Hear it`
+  and a bar held down; **a hearing** for *Play it to me* — one row a playback, of the kind the
+  learner's action was, never both, over the loop's bars or the whole. Each names what opened the
+  screen and the **visit**, one opening of the screen minted when it opens: a reload, Back and a
+  return, a second tab are each another visit. Before ▶ is live the screen reads what the learner
+  had met of the material (its runs, playbacks and viewings, the passages around it, the summaries
+  of runs the cap deleted); a run's `unseen` is first contact — no run of it, no playback of it on
+  any visit, no viewing of it on another visit (looking at it on this visit, before playing, is
+  what reading it needs) — read again before the run is stored, in case another tab met it
+  meanwhile. A sight-read refused for a viewing alone says *Sight-reading counts only on music
+  you have not seen before — this run is kept as practice.* A piece, an excerpt and an import
+  carry the fact too, over the bars the run covered, as an audit fact that refuses them nothing;
+  an import is its stored bytes (their sha256), so a duplicate under a new id is the same
+  material. The Library's text row is not a viewing.
+
   **The sheet names what changed during the run** (decided 2026-09-23, built by T33 — C5),
   in one line labelled **Changed**, first, before the numbers it qualifies: *hands changed
   to R at bar 3; metronome on at bar 1; heard it played at bar 5*. A mode, a hand, a tempo, a
@@ -2922,7 +2941,11 @@ at bar 2*, *duet off at bar 2*, *metronome on at bar 1*, *heard it played at bar
 change made while the sheet is up, *after the run* in place of the bar. A sight-read the
 phrase was played to — part way through, or before the run began (T40) — is kept as practice
 (C1), and says: *Sight-reading counts only on music you have not heard — this run is kept as
-practice.*
+practice.* Since G1 the hearing can be on an earlier visit — a playback is a stored encounter,
+read back when the phrase is opened again — and a sight-read of a phrase looked at on an earlier
+visit and never played or heard says: *Sight-reading counts only on music you have not seen
+before — this run is kept as practice.* Looking at the phrase on this visit, before ▶, is what
+sight-reading is and costs nothing.
 
 **What the sheet says a run is, under its heading** (T40, 2026-09-25). One line of sentences,
 `#summary-note`, where the header's status line used to carry the second of them: the sheet
@@ -3345,6 +3368,11 @@ the drills themselves, so a measurement added and not named fails.
   nothing judged, a jam over a backing track: *Not judged · 42 notes played · 3 min* — it
   printed "0%" too. Before the minutes, a sight-read met before says *not first sight*, a run the
   piece was played to part way through *heard part way*, and a rhythm-only run *rhythm only*.
+  *Not first sight* is a phrase's alone (G1): since G1 every run the Score screen records carries
+  the first-contact fact, and a piece played again (`unseen: false`) says nothing of it — every
+  repeat of a piece is not news. A phrase is *not first sight* when it was read, heard or
+  demonstrated before on any visit, or looked at on another visit — a phrase played to the
+  learner at noon and read in the evening among them.
   A drill's tempo is a placeholder and is not printed. Rows written before C1 are read by what
   they can say: a Wait row's mode, a row's self-report, a backing track's kind.
 - Export / Import all data (JSON). "Copy debug report".

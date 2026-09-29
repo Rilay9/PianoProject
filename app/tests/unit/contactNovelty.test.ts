@@ -53,11 +53,11 @@ const phrase = (version: number, seed: number, hands = 'R'): Identity => ({
 
 describe('contactIn: the facts, by material across every item id, and by id for rows that know none', () => {
   it('met: a row carries the same material under the same id', () => {
-    expect(contactIn([row('song.a', file('a'))], 'song.a', file('a'))).toEqual({ contact: 'met', metById: true, metAs: ['song.a'] });
+    expect(contactIn([row('song.a', file('a'))], 'song.a', file('a'))).toEqual({ contact: 'met', metById: true, metAs: ['song.a'], how: ['played'] });
   });
 
   it('met through the material index: the same identity under a renamed id (adversaries 3 and 10)', () => {
-    expect(contactIn([row('song.old-name', file('a'))], 'song.new-name', file('a'))).toEqual({ contact: 'met', metById: false, metAs: ['song.old-name'] });
+    expect(contactIn([row('song.old-name', file('a'))], 'song.new-name', file('a'))).toEqual({ contact: 'met', metById: false, metAs: ['song.old-name'], how: ['played'] });
     // A duplicate edition with the same bytes under a third id: met, both ids named.
     expect(contactIn([row('song.old-name', file('a')), row('song.copy', file('a'))], 'song.new-name', file('a')).metAs).toEqual(['song.old-name', 'song.copy']);
   });
@@ -129,7 +129,7 @@ describe('contact: the store’s every row, not one item’s index', () => {
   it('finds the material under a renamed id, and the legacy row by its id', async () => {
     await recordRun(run('song.old-name', file('a')), new Date(2026, 9, 1, 12));
     await recordRun(run('song.legacy'), new Date(2026, 9, 2, 12));
-    expect(await contact('song.new-name', file('a'))).toEqual({ contact: 'met', metById: false, metAs: ['song.old-name'] });
+    expect(await contact('song.new-name', file('a'))).toEqual({ contact: 'met', metById: false, metAs: ['song.old-name'], how: ['played'] });
     expect(await contact('song.legacy', file('z'))).toEqual({ contact: 'met-by-id', metById: true });
     expect(await contact('song.never', file('y'))).toEqual({ contact: 'unmet', metById: false });
   });

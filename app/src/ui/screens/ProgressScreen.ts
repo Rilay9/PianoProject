@@ -40,7 +40,7 @@ import { allItems, loadCurriculum } from '../../curriculum/load';
 import { allShelfPieces } from '../../data/booksStore';
 import type { CatalogItem } from '../../curriculum/types';
 import { importAll, isBackupFile, writeBackup } from '../../data/backup';
-import type { ProgressRow, SessionRow } from '../../data/db';
+import { isPhraseRun, type ProgressRow, type SessionRow } from '../../data/db';
 import { NOT_MEASURED } from '../../engine/types';
 import { HISTORY_TEXT, SKILL_TEXT, skillMoveWords } from '../help';
 import { getPlan } from '../../data/planStore';
@@ -164,7 +164,10 @@ export function historyDetail(session: SessionRow): string {
     ].join(' · ');
   }
   const flags: string[] = [];
-  if (session.unseen === false) flags.push(HISTORY_TEXT.notFirstSight);
+  // Sight-reading's claim, on a phrase's run only (G1): a piece played again
+  // carries `unseen: false` too, as its first-contact fact, and every repeat of
+  // a piece is not news worth a flag.
+  if (session.unseen === false && isPhraseRun(session)) flags.push(HISTORY_TEXT.notFirstSight);
   if (session.demonstrated === true) flags.push(HISTORY_TEXT.heardPartWay);
   if (session.rhythmOnly === true) flags.push(HISTORY_TEXT.rhythmOnly);
   let lead: string[];

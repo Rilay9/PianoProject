@@ -33,7 +33,9 @@
  *
  * **What a run measured** is read, never assumed: accuracy a number (a run
  * nothing heard is `not measured`, C1), not rhythm only, not a phrase met
- * before (`unseen: false`), not the learner's own answer (`selfReport`). A
+ * before (`unseen: false` on a phrase's run, `isPhraseRun`: since G1 a piece
+ * played again carries it too, and meets its rung as it always did), not the
+ * learner's own answer (`selfReport`). A
  * Keep tempo run reaches the rung's tempo on what it measured; a Wait run has
  * no tempo, so it meets only a rung that asks for none (T37). A drill has no
  * tempo and is judged on its accuracy, and Simon on its chain, as its screen
@@ -44,7 +46,7 @@
  * and never make a rung met; `nextRecommended` holds such a rung back, as it
  * holds back the rungs behind a placement.
  */
-import type { PlanRow, SessionRow } from '../data/db';
+import { isPhraseRun, type PlanRow, type SessionRow } from '../data/db';
 import type { Curriculum, Lesson, Requirement, RunsRequirement } from '../curriculum/types';
 import { masteryCriteriaFor } from '../curriculum/selectors';
 import { DEFAULT_MASTERY, type MasteryCriteria } from '../engine/Scoring';
@@ -182,7 +184,7 @@ function measured(row: SessionRow): row is SessionRow & { accuracy: number } {
   return (
     typeof row.accuracy === 'number' &&
     row.rhythmOnly !== true &&
-    row.unseen !== false &&
+    !(row.unseen === false && isPhraseRun(row)) &&
     row.selfReport === undefined
   );
 }

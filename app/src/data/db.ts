@@ -49,8 +49,17 @@ export const DB_NAME = 'pianopath';
  * every other open: that upgrade marks the old record as due to be carried
  * over (`CARRY_OVER_DUE_KEY`, `data/carryOver.ts`), and a database C5 makes
  * never is.
+ *
+ * 8 (G1; Part 27, L97) adds two stores and touches no other: `encounters`, what
+ * the learner met that is not a run — the notation drawn for them on the Score
+ * screen, a playback to them, a demonstration — one small row each
+ * (`EncounterRow`); and `contacts`, one durable summary per material of the runs
+ * the retention cap deleted (`ContactSummaryRow`), folded in the same
+ * transaction as the deletion, so no fact a familiarity query reads is lost to
+ * the cap (the reviewer's constraint, `docs/review/responses/9193261.md`). Runs
+ * stay in `sessions`, the record of runs; neither new store copies a live run.
  */
-export const DB_VERSION = 7;
+export const DB_VERSION = 8;
 
 /**
  * Set in the `settings` store by the version 7 upgrade of a database made
@@ -141,10 +150,20 @@ export interface RunHeader {
     latencyMs: number | NotMeasured;
   };
   /**
-   * A generated phrase read for the first time, never heard: `true`. Heard
-   * before or during the run, or read before, it is `false`, and the run is
-   * practice and not evidence of reading (reviewer decision 3). Absent on
-   * anything that is not a generated phrase, where first sight is no claim.
+   * First contact (C1; since G1 derived from the encounter history,
+   * `encounterStore.firstContactIn`): `true` where nothing of this material had
+   * been met before the run — no run of it, no playback or demonstration of it
+   * on any visit, no viewing of it on another visit (the view that reading it
+   * needs, this visit's, does not count). `false` otherwise.
+   *
+   * On a generated phrase it is sight-reading's claim, and `false` keeps the run
+   * practice and never evidence of reading (reviewer decision 3): `recordRun`,
+   * the rung state and the history read it so, through `isPhraseRun`. Since G1
+   * the Score screen writes it on every run — a notated piece, an excerpt, an
+   * import — as the audited fact of first contact, read by nothing new yet (G2
+   * and X read it), and never a gate on a piece's pass: a piece practised again
+   * is not refused anything. Absent on a run written before G1 of anything but a
+   * phrase, and on the drill and paper screens' runs.
    */
   unseen?: boolean;
   /** The piece was played to the learner part way through this run (`Hear it` over it, T33). */
@@ -153,8 +172,10 @@ export interface RunHeader {
    * The exact material played (E1 item 7; D4 item 2), D2's `Identity`: the catalogue row's
    * `provenance.identity` for a bundled item — a generated item's generator, a notated item's built
    * file (an excerpt's cut, never the parent's) — the phrase's complete generator identity for a
-   * sight-reading run (`curriculum/material.phraseMaterial`), `none` for an import or a drill made
-   * when it opens. Carried into the evidence context beside `itemId` and `seed`; read by contact
+   * sight-reading run (`curriculum/material.phraseMaterial`), an import's stored bytes by their
+   * sha256 since G1 (`material.textIdentity`, hashed where the Score screen loads them; `none` before
+   * G1, or where the browser offers no digest), `none` for a drill made when it opens. Carried into
+   * the evidence context beside `itemId` and `seed`; read by contact
    * novelty (`progressStore.contactIn`) across every item id. Absent: a legacy run, from before D4
    * (or E1), whose material is unknown and is never guessed.
    */
@@ -220,6 +241,25 @@ export interface PhraseGenerator {
  */
 export function phraseVersionOf(row: Pick<RunHeader, 'generator'>): number {
   return row.generator?.version ?? 1;
+}
+
+/**
+ * Whether a run is of a generated sight-reading phrase (C1, C4, D1a), which is what the first-reading
+ * rules read: a phrase read before passes nothing, masters nothing, ticks no day, meets no rung and
+ * says *not first sight* on its history line.
+ *
+ * Until G1 the first-reading flag alone said so — C1 wrote `unseen` on phrases and on nothing else —
+ * and every reader asked `unseen !== undefined`. G1 writes the flag on every run the Score screen
+ * records, as the first-contact fact; a piece played again is `unseen: false` and must not lose its
+ * pass. So: a phrase's recipe (every sight-read since C4), or the flag on a run whose material is none
+ * but a phrase's — a sight-reading generator identity (D4), or no material at all, which is a run from
+ * before D4, when only phrases carried the flag. Every row written before G1 reads exactly as before.
+ */
+export function isPhraseRun(row: Pick<RunHeader, 'unseen' | 'recipe' | 'material'>): boolean {
+  if (row.recipe !== undefined) return true;
+  if (row.unseen === undefined) return false;
+  const material = row.material;
+  return material === undefined || (material.kind === 'generator' && material.family === 'sight-reading');
 }
 
 /**
@@ -520,6 +560,89 @@ export interface LevelOverrideRow {
   at: string;
 }
 
+/**
+ * The non-run encounters (G1; Part 27, L97): the notation drawn for the learner on the Score screen
+ * (`viewed`, once per visit), the piece played to them because they asked to hear it (`heard`: *Play
+ * it to me*, a Listen run), and the app demonstrating it (`demonstrated`: *Hear it*, a bar held down).
+ * A playback writes one kind, by the learner's action, never two. Runs are not here: `attempted`,
+ * `practised` and `performed` are the runs' own (`sessions`, and `contacts` for those the cap deleted).
+ */
+export type EncounterKind = 'viewed' | 'heard' | 'demonstrated';
+
+/** What an encounter was of: a known material (D2's `Identity`, never `none`), or the item id where there is none. */
+export type EncounterMaterial = Exclude<Identity, { kind: 'none' }> | { kind: 'id'; itemId: string };
+
+/** What opened the screen the encounter happened on, as `RunHeader.opened` says it of a run. */
+export interface EncounterSource {
+  tab: string;
+  /** The Today slot that opened it, where a card did. */
+  slot?: TodaySlot;
+  /** The rung that opened it or judges its runs (`?from=`, `?rung=`). */
+  rung?: string;
+  tour?: string;
+  /** Opened from Today's transfer offer (D4). */
+  intent?: 'transfer';
+}
+
+/** One encounter that is not a run (G1). Small, never pruned, carried by the backup. */
+export interface EncounterRow {
+  /** `<visit>:<n>`: unique, and the same after a restore, so restoring a backup twice adds nothing. */
+  id: string;
+  /** `material.materialKey` of the material, or `id:<itemId>`: what the `byKey` index finds it by. */
+  key: string;
+  material: EncounterMaterial;
+  itemId: string;
+  kind: EncounterKind;
+  /** ISO date-time. */
+  at: string;
+  source: EncounterSource;
+  /**
+   * The visit it happened on: one opening of the Score screen (a reload, a return and a second tab
+   * are each another), minted when the screen opens. First contact compares visits, never times: the
+   * viewing reading needs is this visit's; one from any other visit is prior contact.
+   */
+  visit: string;
+  /**
+   * The printed bars it covered — 1-based positions in the item's own score, a pickup counted as bar
+   * 1, as `provenance.excerpt` counts them (E1) — where it covered only some: a held bar, a section
+   * played to the learner. Absent: the whole.
+   */
+  bars?: [number, number];
+}
+
+/**
+ * What one run the retention cap deleted leaves behind, merged with others of its material (G1; the
+ * reviewer's required change, `docs/review/responses/7863bee.md`): what happened — `performed` for a
+ * performance take (`SessionRow.performance`), `practised` for any other run, and every span an
+ * attempt — over which printed bars (1-based positions in the run's own item, as `EncounterRow.bars`;
+ * absent, the whole), when first and last, and from which screens.
+ */
+export interface ContactSpan {
+  run: 'practised' | 'performed';
+  bars?: [number, number];
+  first: string;
+  last: string;
+  /** `opened.tab`, with `:slot` where a Today card opened it; `not measured` where the run did not say. */
+  sources: string[];
+}
+
+/**
+ * The durable summary of the deleted runs of one material (G1): the encounter projection only —
+ * material or the id, the item ids, the spans — never evidence, accuracy or a verdict. Written in the
+ * transaction that deletes the runs (`progressStore.pruneSessions`), merged idempotently
+ * (`progressStore.mergeSummaries`), carried by the backup. A live run is never copied here.
+ */
+export interface ContactSummaryRow {
+  /** `material.materialKey`: one row per material, or per item id for runs that knew none. */
+  key: string;
+  material: EncounterMaterial;
+  /** The item ids the runs were stored under. */
+  itemIds: string[];
+  /** Folded from runs that knew no material (a legacy run, or `none`): the facts rest on the id alone. */
+  byId: boolean;
+  spans: ContactSpan[];
+}
+
 /** One score sitting in a folder on the phone (docs/04 §4b). */
 export interface FolderScore {
   /** Path relative to the picked folder, e.g. `bb/Qmbb4….mxl`. The identity. */
@@ -749,6 +872,8 @@ interface PianoPathDb extends DBSchema {
   };
   folderIndexes: { key: string; value: FolderIndexRow };
   books: { key: string; value: BookRow };
+  encounters: { key: string; value: EncounterRow; indexes: { byKey: string; byItem: string } };
+  contacts: { key: string; value: ContactSummaryRow };
 }
 
 let dbPromise: Promise<IDBPDatabase<PianoPathDb> | null> | null = null;
@@ -971,6 +1096,15 @@ function upgrade(
         // job, where nothing is waiting on it.
         void tx.objectStore('settings').put(true, CARRY_OVER_DUE_KEY);
       }
+      if (oldVersion < 8) {
+        // G1: two stores made, nothing else touched or rewritten. What the
+        // learner met beside the runs, found by material; and one durable
+        // summary per material of the runs the retention cap deleted.
+        const encounters = db.createObjectStore('encounters', { keyPath: 'id' });
+        encounters.createIndex('byKey', 'key');
+        encounters.createIndex('byItem', 'itemId');
+        db.createObjectStore('contacts', { keyPath: 'key' });
+      }
 }
 
 /**
@@ -1076,6 +1210,9 @@ function askToPersist(): void {
  * files that are on the phone anyway, rebuilt by pointing at the folder again
  * — putting it in the backup would multiply the size of the one file that
  * holds a year of practice, to save a single tap.
+ *
+ * `encounters` and `contacts` (G1) are in it: what the learner met is learner
+ * history, and follows a restore (U31, E10).
  */
 export const STORE_NAMES = [
   'settings',
@@ -1088,6 +1225,8 @@ export const STORE_NAMES = [
   'skills',
   'levelOverrides',
   'books',
+  'encounters',
+  'contacts',
 ] as const;
 
 export type StoreName = (typeof STORE_NAMES)[number];
