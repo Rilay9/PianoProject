@@ -1,0 +1,36 @@
+npx vitest run tests/unit/importSheet.test.ts (in app)
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a069b575703e603b8/app
+
+ ❯ tests/unit/importSheet.test.ts (20 tests | 1 failed) 1014ms
+   ❯ the learner states the tempo (X3a; E48’s stateImportTempo) (6)
+     × one change at a time: the hands cannot be swapped while the tempo is being saved, nor the tempo stated while the hands are 95ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/importSheet.test.ts > the learner states the tempo (X3a; E48’s stateImportTempo) > one change at a time: the hands cannot be swapped while the tempo is being saved, nor the tempo stated while the hands are
+AssertionError: Use this tempo open while the hands are being swapped: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/importSheet.test.ts:388:85
+    386|     expect(use().disabled).toBe(false);
+    387|     swap().click();
+    388|     expect(use().disabled, 'Use this tempo open while the hands are be…
+       |                                                                                     ^
+    389|     await vi.waitFor(() => {
+    390|       expect(text('#import-swap-said')).toMatch(/swapped/i);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 19 passed (20)
+   Start at  03:31:58
+   Duration  3.24s (environment 35%, tests 33%, transform 23%, import 9%)
+
+exit=1

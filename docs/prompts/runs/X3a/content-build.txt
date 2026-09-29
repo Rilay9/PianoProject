@@ -1,0 +1,141 @@
+python tools/content/build.py --offline (in .)
+
+--- content build ---
+  ok    fetch            fetched 0 source(s), skipped 15
+  ok    import [MT]      musetrainer library not present at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a069b575703e603b8\content\scores\imported\musetrainer\scores; run tools/content/fetch.py first
+  ok    import [KERN]    no kern repositories at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a069b575703e603b8\content\scores\imported\kern; run tools/content/fetch.py first
+  ok    import [PDMX]    imported 542 score(s), 175 personal-build
+  ok    generate [GEN]   wrote 1200 items to C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a069b575703e603b8\app\public\content\scores\generated; catalog C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a069b575703e603b8\build\catalog.generated.json
+  ok    author [AUTH]    authored 38 item(s) (0 cached, 32 converted)
+  FAIL  merge catalog    1862 items, 14 with named sections, 4 excerpt(s) cut, 94 given a track by their rung, 1784 read from the score, 545 keySig corrected, demands measured on 1784 (7 unmeasured, 71 made at runtime)
+          excerpts refused:
+          excerpt.classical.beethoven-ode-to-joy.easy.b9-12: its parent 'song.classical.beethoven-ode-to-joy.easy' is not in the catalogue
+  ok    score checks     score-checks gate: 22 high row(s), 22 allowed by content\score-checks.allow.json
+  ok    curriculum       11 file(s), 10 stage(s), 105 finder(s), 284 concept(s)
+  ok    reports          490 checkable claims on 1015 options: 280 not established, 9 kept by no option; 567 works, 586 arrangements
+  ok    lessons          109 file(s)
+  ok    tips             20 kind(s), 7 variant(s)
+  FAIL  validate         content validation FAILED (121 error(s)):
+  - song.folk.greensleeves.simple: variantOf song.folk.greensleeves is not in the catalog
+  - song.folk.happy-birthday.simple: variantOf song.folk.happy-birthday is not in the catalog
+  - song.rock.a7x-fiction: alternatives names song.classical.satie-gnossienne-1, which is not in the catalog
+  - song.rock.a7x-seize-the-day: alternatives names song.classical.beethoven-moonlight-i, which is not in the catalog
+  - song.rock.a7x-seize-the-day: alternatives names song.classical.chopin-prelude-op28-4, which is not in the catalog
+  - song.rock.a7x-so-far-away: alternatives names song.classical.chopin-prelude-op28-4, which is not in the catalog
+  - song.rock.lp-final-masquerade: alternatives names song.classical.chopin-prelude-op28-4, which is not in the catalog
+  - song.rock.lp-final-masquerade: alternatives names song.classical.satie-gnossienne-1, which is not in the catalog
+  - song.rock.lp-shadow-of-the-day: alternatives names song.classical.beethoven-moonlight-i, which is not in the catalog
+  - song.rock.lp-waiting-for-the-end: alternatives names song.classical.satie-gymnopedie-1, which is not in the catalog
+  - lesson 2.3: songOptions references unknown item song.folk.happy-birthday
+  - lesson 2.4: songOptions references unknown item song.folk.greensleeves
+  - lesson 2.5: songOptions references unknown item song.classical.beethoven-ode-to-joy.easy
+  - lesson 3.3: songOptions references unknown item song.folk.greensleeves
+  - lesson 3.4: songOptions references unknown item song.classical.petzold-minuet-g-bwv-anh114
+  - lesson 3.4: songOptions references unknown item song.classical.petzold-minuet-g-bwv-anh114.alt
+  - lesson 3.4: songOptions references unknown item song.classical.beethoven-fur-elise.beginner
+  - lesson 3.5: songOptions references unknown item song.classical.pachelbel-canon-d.easy
+  - lesson 3.6: songOptions references unknown item song.classical.pachelbel-canon-d.easy
+  - lesson classical.3: songOptions references unknown item song.classical.petzold-minuet-g-bwv-anh114
+  - lesson rock.overview: songOptions references unknown item song.classical.pachelbel-canon-d.easy
+  - lesson 4.1: songOptions references unknown item song.classical.beethoven-fur-elise.easy
+  - lesson 4.1: songOptions references unknown item song.classical.beethoven-ode-to-joy.easy
+  - lesson 4.2: songOptions references unknown item song.folk.bella-ciao
+  - lesson 4.2: songOptions references unknown item song.classical.beethoven-fur-elise.beginner
+  - lesson 4.3: songOptions references unknown item song.classical.pachelbel-canon-d.easy
+  - lesson 4.3: songOptions references unknown item song.folk.greensleeves
+  - lesson 4.4: songOptions references unknown item song.classical.petzold-minuet-g-bwv-anh114
+  - lesson 4.4: songOptions references unknown item song.classical.petzold-minuet-g-bwv-anh114.alt
+  - lesson 4.4: songOptions references unknown item song.classical.beethoven-ode-to-joy.easy
+  - lesson 4.6: songOptions references unknown item song.classical.beethoven-fur-elise.easy
+  - lesson 4.6: songOptions references unknown item song.classical.pachelbel-canon-d.easy
+  - lesson 4.6: songOptions references unknown item song.classical.petzold-minuet-g-bwv-anh114
+  - lesson 4.6: songOptions references unknown item song.holiday.carol-of-the-bells.easy
+  - lesson 4.7: songOptions references unknown item song.classical.beethoven-fur-elise.easy
+  - lesson 4.7: songOptions references unknown item song.classical.petzold-minuet-g-bwv-anh114
+  - lesson 4.7: songOptions references unknown item song.classical.pachelbel-canon-d.easy
+  - lesson classical.4.shelf: songOptions references unknown item song.classical.pachelbel-canon-d.easy
+  - lesson classical.4.shelf: songOptions references unknown item song.classical.beethoven-fur-elise.easy
+  - lesson classical.4.shelf: songOptions references unknown item song.holiday.carol-of-the-bells.easy
+  - lesson classical.4.shelf: songOptions references unknown item song.classical.satie-gymnopedie-1
+  - lesson classical.4.shelf: songOptions references unknown item song.classical.bach-air-on-g-string
+  - lesson classical.4.shelf: songOptions references unknown item song.classical.chopin-prelude-op28-7.nifc
+  - lesson classical.4.shelf: songOptions references unknown item song.classical.chopin-prelude-op28-20.nifc
+  - lesson classical.4.shelf: songOptions references unknown item song.classical.chopin-prelude-op28-6.nifc
+  - lesson classical.4.shelf: songOptions references unknown item song.classical.chopin-nocturne-op9-2.easy
+  - lesson classical.4.shelf: songOptions references unknown item song.beautiful.hungarian-sonata
+  - lesson classical.4.shelf: songOptions references unknown item song.beautiful.mariage-damour
+  - lesson classical.4.shelf: songOptions references unknown item song.classical.chopin-nocturne-20.alt
+  - lesson classical.4.shelf: songOptions references unknown item song.classical.chopin-prelude-op28-4.nifc
+  - lesson classical.4.shelf: songOptions references unknown item song.classical.chopin-waltz-op64-2
+  - lesson classical.4.shelf: songOptions references unknown item song.classical.schubert-liszt-standchen
+  - lesson classical.4.shelf: songOptions references unknown item song.classical.tchaikovsky-swan-lake
+  - lesson classical.4.shelf: songOptions references unknown item song.beautiful.g-minor-bach
+  - lesson chords-pop.5: songOptions references unknown item song.folk.greensleeves
+  - lesson holiday.5: songOptions references unknown item song.holiday.carol-of-the-bells.easy
+  - lesson ragtime.5: songOptions references unknown item song.ragtime.joplin-entertainer
+  - lesson ragtime.5: songOptions references unknown item song.ragtime.joplin-augustan-club-waltz
+  - lesson ragtime.5: songOptions references unknown item song.ragtime.joplin-combination-march
+  - lesson ragtime.5: songOptions references unknown item song.ragtime.joplin-rose-bud-march
+  - lesson classical.6: songOptions references unknown item song.classical.bach-wtc1-prelude-1
+  - lesson classical.6: songOptions references unknown item song.classical.chopin-prelude-op28-4
+  - lesson classical.6: songOptions references unknown item song.classical.chopin-prelude-op28-7.nifc
+  - lesson classical.6: songOptions references unknown item song.classical.chopin-waltz-a-minor
+  - lesson classical.6: songOptions references unknown item song.classical.satie-gymnopedie-1
+  - lesson classical.6: songOptions references unknown item song.classical.beethoven-fur-elise
+  - lesson ragtime.6: songOptions references unknown item song.ragtime.joplin-school-of-ragtime
+  - lesson ragtime.6: songOptions references unknown item song.ragtime.joplin-easy-winners
+  - lesson ragtime.6: songOptions references unknown item song.ragtime.joplin-peacherine-rag
+  - lesson ragtime.6: songOptions references unknown item song.ragtime.joplin-swipesy-cakewalk
+  - lesson ragtime.6: songOptions references unknown item song.ragtime.joplin-sunflower-slow-drag
+  - lesson ragtime.6: songOptions references unknown item song.ragtime.joplin-entertainer
+  - lesson holiday.6: songOptions references unknown item song.holiday.carol-of-the-bells
+  - lesson rock.6: songOptions references unknown item song.classical.chopin-prelude-op28-20.nifc
+  - lesson rock.6: songOptions references unknown item song.classical.beethoven-moonlight-i
+  - lesson classical.7: songOptions references unknown item song.classical.mozart-k545-i
+  - lesson classical.7: songOptions references unknown item song.classical.beethoven-moonlight-i
+  - lesson classical.7: songOptions references unknown item song.classical.beethoven-pathetique-ii
+  - lesson classical.7: songOptions references unknown item song.classical.chopin-mazurka-op7-1.nifc
+  - lesson ragtime.7: songOptions references unknown item song.ragtime.joplin-maple-leaf-rag
+  - lesson ragtime.7: songOptions references unknown item song.ragtime.joplin-elite-syncopations
+  - lesson ragtime.7: songOptions references unknown item song.ragtime.joplin-solace
+  - lesson ragtime.7: songOptions references unknown item song.ragtime.joplin-bethena
+  - lesson ragtime.7: songOptions references unknown item song.ragtime.joplin-heliotrope-bouquet
+  - lesson ragtime.7: songOptions references unknown item song.ragtime.joplin-sugar-cane
+  - lesson holiday.7: songOptions references unknown item song.classical.tchaikovsky-waltz-flowers
+  - lesson holiday.7: songOptions references unknown item song.classical.tchaikovsky-sugar-plum
+  - lesson rock.7: songOptions references unknown item song.classical.beethoven-moonlight-iii
+  - lesson classical.8: songOptions references unknown item song.classical.mozart-rondo-alla-turca
+  - lesson classical.8: songOptions references unknown item song.classical.debussy-clair-de-lune
+  - lesson classical.8: songOptions references unknown item song.classical.beethoven-moonlight-iii
+  - lesson classical.8: songOptions references unknown item song.classical.chopin-waltz-op64-2.nifc
+  - lesson classical.8: songOptions references unknown item song.classical.chopin-nocturne-op9-1
+  - lesson classical.8: songOptions references unknown item song.classical.debussy-arabesque-1
+  - lesson ragtime.8: songOptions references unknown item song.ragtime.joplin-pine-apple-rag
+  - lesson ragtime.8: songOptions references unknown item song.ragtime.joplin-gladiolus-rag
+  - lesson ragtime.8: songOptions references unknown item song.ragtime.joplin-magnetic-rag
+  - lesson ragtime.8: songOptions references unknown item song.ragtime.joplin-cascades
+  - lesson ragtime.8: songOptions references unknown item song.ragtime.joplin-new-rag
+  - lesson classical.9: songOptions references unknown item song.classical.chopin-ballade-1
+  - lesson classical.9: songOptions references unknown item song.classical.liszt-la-campanella
+  - lesson classical.9: songOptions references unknown item song.classical.chopin-fantaisie-impromptu.nifc
+  - lesson classical.9: songOptions references unknown item song.classical.chopin-polonaise-op53.nifc
+  - lesson classical.9: songOptions references unknown item song.classical.chopin-etude-op10-4.nifc
+  - lesson classical.9: songOptions references unknown item song.classical.chopin-sonata-2-3.nifc
+  - lesson ragtime.9: songOptions references unknown item song.ragtime.joplin-original-rags
+  - lesson ragtime.9: songOptions references unknown item song.ragtime.joplin-breeze-from-alabama
+  - lesson ragtime.9: songOptions references unknown item song.ragtime.joplin-chrysanthemum
+  - sections.json names 'song.classical.beethoven-fur-elise.beginner', which is not in the catalog
+  - sections.json names 'song.classical.beethoven-fur-elise.easy', which is not in the catalog
+  - sections.json names 'song.classical.beethoven-ode-to-joy.easy', which is not in the catalog
+  - sections.json names 'song.classical.pachelbel-canon-d.easy', which is not in the catalog
+  - sections.json names 'song.classical.petzold-minuet-g-bwv-anh114', which is not in the catalog
+  - sections.json names 'song.classical.petzold-minuet-g-bwv-anh114.alt', which is not in the catalog
+  - sections.json names 'song.folk.greensleeves', which is not in the catalog
+  - sections.json names 'song.holiday.carol-of-the-bells.easy', which is not in the catalog
+  - excerpts.json row 3 (excerpt.classical.beethoven-ode-to-joy.easy.b9-12): its parent 'song.classical.beethoven-ode-to-joy.easy' is not in the catalogue
+  - 3.4: its concepts name ledger-lines (ledger-lines) and none of its 2 checked options establishes it: move it to introduces (the rung introduces it, and its lesson says no piece there practises it yet), or keep an option that establishes it
+  - ragtime.6: its concepts name syncopation (syncopation) and none of its 5 checked options establishes it: move it to introduces (the rung introduces it, and its lesson says no piece there practises it yet), or keep an option that establishes it
+  - ragtime.8: its concepts name stride-bass (texture.left-hand-pattern) and none of its 6 checked options establishes it: move it to introduces (the rung introduces it, and its lesson says no piece there practises it yet), or keep an option that establishes it
+  - docs\generated\ladder.md is stale — the catalog has changed since it was written. Run `python3 tools/content/ladder_report.py` and commit it (replan §2.6).
+  339.3s → app\public\content
+exit=1

@@ -34,3 +34,5 @@ If `stateImportTempo`'s signature or bounds differ from E48's entry, follow the 
 ## Report
 
 Judgement first: the sheet's tempo line and the score's tempo label after a statement, as observations; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes.
+
+**Landed 2026-09-29** (Entry 122; 564e8e5f, merged fadfbe2e); handoff `handoffs/564e8e5f.md`. X24, X25 recorded.
