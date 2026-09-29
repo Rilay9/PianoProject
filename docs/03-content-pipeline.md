@@ -252,6 +252,13 @@ in the directory is a mystery:
   it whenever `difficulty.py` or `level-model.json` changes: after the 2026-09-22 refit and
   before the 2026-09-23 port, 18 of its 49 comparisons were failing.
 - `finder.py` — turns a lesson's `finder` block into the search line and chat prompt (`04` §3).
+  Since E2a the build (`copy_curriculum`) passes a concept entry its own id, so the seed list of
+  teaching repertoire (`content/sources/teaching-repertoire.json`) names its works among the concept
+  prompt's examples where it knows the concept, within the prompt's limit — a proposal for the
+  owner's search, never an admission. A lesson's `concepts` are deliberately not passed: a rung's
+  finder states a key, a metre, a genre and a level the seed's works carry none of, and wired, most
+  of the seeded lesson examples contradicted the rung's own constraints (Entry 111). Held by
+  `test_finder.TestTheBuildPassesTheSeedConcepts`.
 - `ladder_report.py` — writes `docs/generated/ladder.md`; `validate.py` fails a build whose
   committed copy is stale.
 - `add_technique_units.py` — the one-off that gave the technique track a rung per stage (P12a);
@@ -631,6 +638,23 @@ imported score (`importStore.importProvenance`):
   `tools/content/excerpts.py` by its cut version; the facts say the demands were measured on the
   cut, the level estimated on the cut, the hands and the boundary authored by the approved row.
   §4c has the rest.
+- **The one gate over these facts, and the contact it reads** (E2a; the E2 review's required
+  change, `docs/review/responses/2532022.md`). Every automatic offer asks `eligibility.eligibleFor`,
+  which since E2a is the material gate (`candidates.eligibleForMaterial`) asked of the want as the
+  simplest requirements over the candidate contract; the established questions — the teaching-use
+  admission over `facts.promise` and `review.teaching`, the coping and opportunity questions over
+  the measurement, the `untrusted` marker — are one private core (`eligibilityCore.ts`) that only
+  the material gate asks and that imports neither gate. A row whose demands are unmeasured (a
+  placeholder, a score imported before E0 until the launch measures it, a PDF) is refused for an
+  automatic want as `unknown-forbidden`, naming the demands it cannot rule out, wherever the learner
+  is not prepared for every demand, and stays open to exploration; every other verdict is the one
+  it was. A row the card takes straight from a rung's own list (an authored placement, or the
+  learner's assignment of an import) asks the teaching-use admission alone, as before. Novelty,
+  where a requirement asks it, reads the row's material identity (`provenance.identity` through
+  D4's `material.materialOfItem`: an excerpt's cut, never its parent; an import `none`, read by its
+  id, and the verdict says so) against D4's contact reading (`progressStore.contactIn`) over the
+  stored runs the caller passes (`candidates.contactFromRuns`): the gate reads no store, and no
+  caller asks for novelty yet.
 
 ### 4b. The human review record and the merge (D2; R42, G28, G29, E16)
 

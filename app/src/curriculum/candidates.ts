@@ -33,18 +33,30 @@
  * answer makes it `exploration-only` for that requirement. Never eligible by silence, never a
  * competence claim by absence.
  *
- * **A sibling of `eligibleFor`, not its overload** — the brief's own deviation clause. The
- * reviewer's rule cannot keep every existing verdict byte-identical: an unmeasured candidate asked
- * for a skill, a requirement, a demand or an equivalent by a learner who does not cope with every
- * demand was `exploration-only`, and is `unknown-forbidden` here. That is the one case that moves
- * (`materialLayer.test.ts` sweeps the built catalogue and names every moved case); every other
- * verdict is `eligibleFor`'s own, because this gate asks it the two questions and adds only what
- * the requirements add. `eligibleFor` is untouched, no caller changes, and the reviewer rules on
- * which becomes the path.
+ * **The one gate** (E2a; the E2 review's required change, `docs/review/responses/2532022.md`, and the
+ * E2a brief's, `responses/1b09a1f.md`). E2 built this gate beside `eligibleFor`; since E2a the exported
+ * `eligibleFor` *is* this gate asked of a want's requirements, so every automatic offer is judged
+ * here. The established questions — the teaching-use admission, the coping question, the opportunity
+ * question, the untrusted-tempo marker and their verdicts — are one private core,
+ * `eligibilityCore.ts`, which this module asks and which imports neither gate: core ← candidates ←
+ * eligibility, no edge back, no recursion. The reviewer's rule moves one case of a want's verdict: an
+ * unmeasured candidate asked for a skill, a requirement, a demand or an equivalent by a learner who
+ * does not cope with every demand was `exploration-only`, and is `unknown-forbidden`
+ * (`materialLayer.test.ts` sweeps the built catalogue and names every moved case against the core).
+ *
+ * **Novelty bound to D4** (E2a). A candidate's contact identity is D4's material identity
+ * (`material.materialOfItem`: the build's `provenance.identity` — a generator's whole identity, a
+ * notated file's sha256, an excerpt's cut; `none` for an import); the learner's contact is D4's
+ * reading (`progressStore.contactIn`) over the stored runs the caller already holds, passed in through
+ * {@link contactFromRuns}. The gate reads no store.
  */
-import { eligibleFor, measurementOf, uncoped, type Eligibility, type Learner, type Want } from './eligibility';
-import { isExcerpt } from './excerpt';
+import { contactIn, type Contact } from '../data/progressStore';
+import type { SessionRow } from '../data/db';
 import { VOCABULARY_V0, type Vocabulary } from '../evidence/vocabulary';
+import type { Identity } from '../review/record';
+import { establishedQuestions, knowsTheLearner, measurementOf, uncoped, type CoreVerdict, type Learner, type Want } from './eligibilityCore';
+import { isExcerpt } from './excerpt';
+import { materialOfItem } from './material';
 import type { CatalogItem, Measurement, Provenance } from './types';
 
 /** Where a candidate's material comes from (Part 25 layer 4). Origin is never purpose. */
@@ -157,7 +169,7 @@ export interface MaterialRequirements {
   hands?: 'one' | 'both';
   /** Seconds, either bound optional. */
   duration?: { minSec?: number; maxSec?: number };
-  /** `first-contact`: material the learner has not met (D4's `contact` reading, a fixture until it lands); `familiar`: material they have. */
+  /** `first-contact`: material the learner has not met (D4's contact reading, `MaterialLearner.contact`); `familiar`: material they have. */
   novelty?: 'first-contact' | 'familiar';
   /** At least this much of a piece of music: `phrase` takes a phrase, a section or a whole; `whole` only a whole. */
   completeness?: Exclude<Completeness, 'isolation'>;
@@ -242,9 +254,28 @@ export function completenessOf(candidate: Candidate): Completeness | undefined {
   return fact.answers ? (fact.value as Completeness) : undefined;
 }
 
-/** The identity a learner's contact record is keyed by: the item's id (D4's `contact` names its own when it lands). */
-export function contactIdentity(candidate: Candidate): string | undefined {
-  return candidate.source === 'external' ? undefined : candidate.id;
+/**
+ * The identity a learner's contact is read by (E2a): D4's material identity (`materialOfItem`) — the
+ * build's `provenance.identity` for a catalogue item (a generator's family, version, seed, recipe and
+ * tempo; a notated file's sha256; an excerpt's cut, never its parent), `none` for an import (D4 keys
+ * none: its contact is read by its id, and the verdict says so), undefined for a catalogue row built
+ * before D4 (by id too) and for an external recommendation (the app keeps no record of it).
+ */
+export function contactIdentity(candidate: Candidate): Identity | undefined {
+  return candidate.source === 'external' ? undefined : materialOfItem(candidate.item);
+}
+
+/**
+ * The learner's contact as the material gate reads it, from the stored runs the caller already holds
+ * (E2a): D4's `progressStore.contactIn` over those rows, keyed by the candidate's id and its material
+ * (`contactIdentity`) — `met` across every item id that carries the material, `met-by-id` for a run of
+ * the id that knows no material (a legacy run), `unmet` otherwise. The gate stays pure: it reads no
+ * store, and a caller that asks for novelty passes this. The session's card holds the rows
+ * (`BuildInput.rows`); no caller asks for novelty yet (the four `eligibleFor` callers ask wants, which
+ * carry none).
+ */
+export function contactFromRuns(rows: readonly Pick<SessionRow, 'itemId' | 'material'>[]): (itemId: string, material: Identity | undefined) => Contact {
+  return (itemId, material) => contactIn(rows, itemId, material);
 }
 
 /** The promise a generated item's family makes for its recipe (D3a), where the build wrote one. */
@@ -392,26 +423,31 @@ export function validityOf(candidate: Candidate): Validity {
 /** The learner as the material gate asks of them: the one gate's learner, and their contact with material. */
 export interface MaterialLearner extends Learner {
   /**
-   * Whether the learner has met the material with this identity (`met`), has not (`unmet`), or the
-   * record cannot say (undefined). D4's `contact` reading when it lands; a fixture until then.
+   * The learner's contact with the material a candidate id and identity name: D4's reading
+   * (`progressStore.Contact`), passed by the caller from the stored runs it holds
+   * ({@link contactFromRuns}). Absent: the record was not given, and a novelty requirement waits.
    */
-  contact?: (identity: string) => 'met' | 'unmet' | undefined;
+  contact?: (itemId: string, material: Identity | undefined) => Contact;
 }
 
-/** The material gate's verdict: the one gate's, and the three things only the material layer can say. */
+type CoreEligible = Extract<CoreVerdict, { verdict: 'eligible' }>;
+
+/** The material gate's verdict: the established questions', and the three things only the material layer can say. */
 export type MaterialVerdict =
-  | Eligibility
+  | Exclude<CoreVerdict, { verdict: 'eligible' }>
+  | (CoreEligible & {
+      /**
+       * Novelty was asked and the learner's contact was read by the item id alone (D4's `met-by-id`, or
+       * a candidate with no material to compare — an import, D4's `none`): said, not hidden.
+       */
+      contactBy?: 'id';
+    })
   /** A forbidden or unprepared demand the source cannot rule out, under an automatic experience (the reviewer's required change). */
   | { verdict: 'ineligible'; why: 'unknown-forbidden'; demands: readonly string[]; missing: string }
   /** D0's limits asked of material whose source checked no reach, under an automatic experience. */
   | { verdict: 'ineligible'; why: 'unknown-physical'; missing: string }
   /** A material requirement the candidate's facts answer, and fail. */
   | { verdict: 'ineligible'; why: 'requirement'; requirement: RequirementName; found: string };
-
-/** Whether the gate has a learner to judge the first question by (the one gate's own test, private there). */
-function knowsTheLearner(learner: Learner): boolean {
-  return learner.taught !== undefined || learner.skillState !== undefined;
-}
 
 /** Every vocabulary demand the learner is not prepared for: the one gate's first question, asked of the whole vocabulary. */
 export function unpreparedDemands(learner: Learner, vocabulary: Vocabulary = VOCABULARY_V0): string[] {
@@ -469,7 +505,7 @@ function materialRequirements(
   candidate: Extract<Candidate, { item: CatalogItem }>,
   validity: Validity,
   learner: MaterialLearner,
-  passed: Extract<Eligibility, { verdict: 'eligible' }>,
+  passed: CoreEligible,
   vocabulary: Vocabulary,
 ): MaterialVerdict {
   const item = candidate.item;
@@ -525,21 +561,29 @@ function materialRequirements(
     } else unanswered('duration', fact);
   }
 
+  let byId = false;
   if (requirements.novelty !== undefined) {
-    // A phrase the reader writes when it opens is new each time, from an unseen seed (C4): first contact by construction.
-    const identity = contactIdentity(candidate);
-    const met = candidate.source === 'runtime' ? 'unmet' : identity === undefined ? undefined : learner.contact?.(identity);
-    if (met === undefined) open.push('novelty: no record of the learner’s contact with it');
-    else if (requirements.novelty === 'first-contact' && met === 'met') return refuse('novelty', 'met');
-    else if (requirements.novelty === 'familiar' && met === 'unmet') return refuse('novelty', 'unmet');
+    if (candidate.source === 'runtime') {
+      // A phrase the reader writes when it opens is new each time, from an unseen seed (C4): first contact by construction.
+      if (requirements.novelty === 'familiar') return refuse('novelty', 'unmet');
+    } else {
+      // D4's reading, over the runs the caller holds: `met` and `met-by-id` are contact — a legacy run of the
+      // id is never first contact — and `unmet` is none; read by the id alone, the verdict says so.
+      const reading = learner.contact?.(candidate.id, contactIdentity(candidate));
+      if (reading === undefined) open.push('novelty: no record of the learner’s contact with it');
+      else if (requirements.novelty === 'first-contact' && reading.contact !== 'unmet') return refuse('novelty', reading.contact);
+      else if (requirements.novelty === 'familiar' && reading.contact === 'unmet') return refuse('novelty', 'unmet');
+      else byId = reading.contact === 'met-by-id' || reading.materialUnknown === true;
+    }
   }
 
+  const judged = byId ? { ...passed, contactBy: 'id' as const } : passed;
   if (open.length > 0) {
     // A chosen exploration keeps its own verdict and names what is missing; any other claim waits for the fact.
-    if (passed.for === 'exploration') return { ...passed, missing: [passed.missing, ...open].filter(Boolean).join('; ') };
+    if (passed.for === 'exploration') return { ...judged, missing: [passed.missing, ...open].filter(Boolean).join('; ') };
     return { verdict: 'exploration-only', missing: open.join('; ') };
   }
-  return passed;
+  return judged;
 }
 
 /**
@@ -573,8 +617,10 @@ function externalVerdict(requirements: MaterialRequirements, candidate: Extract<
 
 /**
  * The one gate asked of a candidate under material requirements (items 2 and 3; Part 25 layer 6):
- * validity before the questions, the one gate's two questions (`eligibleFor`, asked of the want
- * the requirements name), then the material requirements beyond the want.
+ * validity before the questions, the established questions (the private core, asked of the want the
+ * requirements name — never the exported `eligibleFor`, which delegates here), then the material
+ * requirements beyond the want. Exported beside `eligibleFor` for a caller whose requirements go
+ * beyond a want (none yet; X's chooser, with novelty and the contact it holds).
  */
 export function eligibleForMaterial(
   requirements: MaterialRequirements,
@@ -584,7 +630,7 @@ export function eligibleForMaterial(
 ): MaterialVerdict {
   if (candidate.source === 'external') return externalVerdict(requirements, candidate, learner, vocabulary);
   const validity = validityOf(candidate);
-  const asked = eligibleFor(candidate.item, learner, wantOf(requirements), vocabulary);
+  const asked = establishedQuestions(candidate.item, learner, wantOf(requirements), vocabulary);
   const demands = validity.facts.demands;
   if (!demands.answers && asked.verdict !== 'ineligible' && requirements.experience === 'automatic') {
     // An unknown is not an observed absence: what the source cannot rule out, an automatic experience may not risk.

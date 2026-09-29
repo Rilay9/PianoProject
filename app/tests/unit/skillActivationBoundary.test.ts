@@ -163,6 +163,7 @@ describe('one boundary', () => {
       .filter((path) => !path.endsWith(join('curriculum', 'skillActivation.ts')))
       .filter((path) => /\bdeclaredSkills\b/.test(readFileSync(path, 'utf8')))
       .map((path) => relative(SRC, path).replace(/\\/g, '/'));
-    expect(readers).toEqual(['curriculum/eligibility.ts']);
+    // Since E2a the one gate is its public surface and its private core, where the questions moved.
+    expect(readers.sort()).toEqual(['curriculum/eligibility.ts', 'curriculum/eligibilityCore.ts']);
   });
 });
