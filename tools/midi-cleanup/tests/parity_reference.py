@@ -8,18 +8,25 @@ down. This writes it: one JSON file per fixture under `build/midi-parity/`,
 holding what each stage of the Python decided.
 
 `build/` is gitignored, exactly as `build/midi-real/` is, so the reference is
-produced rather than committed and the port's parity test skips with a message
-naming this script when it is absent. That is the same convention
-`test_converter.py` already uses for the three recordings, and for the same
-reason: the recordings are not redistributable, and a reference derived from
-them says as much about them as they do.
+produced rather than committed, and the port's parity test fails naming this
+script when it is absent (Q24). The recordings are test input this project
+never commits (`fetch_maestro.py` fetches them; CI's step "Fetch the MAESTRO
+test recordings"), and a reference derived from them stays beside them.
 
 Three groups of fixtures: the three Disklavier recordings (`hands="split"`),
-two renderings of a committed exercise (`hands="keep"`), and the app's own
-committed MIDI fixtures (`hands="auto"`, which is what the app passes). The
-last group is what covers the **hands rule** — one note track is split, two
-are kept as recorded, and `crossed-hands.mid` is written so those two answers
-differ.
+two renderings of a committed exercise (`hands="keep"`), and committed MIDI
+fixtures (`hands="auto"`, which is what the app passes). The last group is what
+covers the **hands rule** — one note track is split, two are kept as recorded:
+`crossed-hands.mid` is written so those two answers differ, and
+`one-track-two-hands.mid` is the committed file that is split, so the port's
+split is compared on every run whether or not the recordings are present
+(Q46).
+
+**What fails.** A missing committed fixture, anywhere: it comes with the
+checkout. A missing recording under CI (`CI` set), after every other reference
+is written: CI fetches them, so their absence is a failed fetch, and writing
+the rest must not hide it. On a developer's checkout a missing recording is
+reported and skipped. A fixture listed as split whose reference holds no split.
 
 Nothing here changes a rule. It reads the converter and reports; the rules live
 in `midi_to_musicxml.py` and the harness that checks them is
@@ -32,6 +39,7 @@ Run from the repository root:
 from __future__ import annotations
 
 import json
+import os
 import sys
 from fractions import Fraction
 from pathlib import Path
@@ -59,15 +67,24 @@ OUT = REPO / "build" / "midi-parity"
 RENDERED = FIXTURES / "exercise.five-finger.c-major.both.mxl"
 RENDERED_CASES = ((0.0, "rendered-clean"), (35.0, "rendered-jitter35"))
 
-#: The app's own committed fixtures, converted with `hands="auto"` — which is
-#: what the app itself passes and what nothing else here covers. `two-hands.mid`
-#: and `crossed-hands.mid` both have **two note tracks**, so `convert` keeps
-#: them as recorded; `crossed-hands.mid` is built so that keeping them and
-#: splitting them by voice-leading give different hands, which is what makes
-#: the port's test of that rule able to fail. Neither is copyrighted: the
-#: scripts beside them write the bytes.
-APP_FIXTURES_DIR = REPO / "app" / "tests" / "fixtures" / "imports"
-APP_FIXTURES = ("crossed-hands.mid", "two-hands.mid")
+#: Committed MIDI fixtures, converted with `hands="auto"` — which is what the app
+#: itself passes and what nothing else here covers — each as (path from the
+#: repository root, whether its reference must hold a hand split).
+#: `two-hands.mid` and `crossed-hands.mid`, the app's own, both have **two note
+#: tracks**, so `convert` keeps them as recorded; `crossed-hands.mid` is built so
+#: that keeping them and splitting them by voice-leading give different hands,
+#: which is what makes the port's test of that rule able to fail.
+#: `one-track-two-hands.mid` has **one**, so it is split, and the writer refuses
+#: a reference for it without the split (Q46). None is copyrighted: the scripts
+#: beside them write the bytes.
+APP_FIXTURES: tuple[tuple[str, bool], ...] = (
+    ("app/tests/fixtures/imports/crossed-hands.mid", False),
+    ("app/tests/fixtures/imports/two-hands.mid", False),
+    ("tools/midi-cleanup/tests/fixtures/one-track-two-hands.mid", True),
+)
+
+#: The CI step that fetches the recordings, which a missing one under CI names.
+FETCH_STEP = "Fetch the MAESTRO test recordings"
 
 
 def f(value: Fraction | float) -> str:
@@ -182,12 +199,14 @@ def reference(midi_path: Path, out_path: Path, hands: str, respell: bool) -> dic
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     written: list[str] = []
-    missing: list[str] = []
+    missing: list[str] = []  # committed inputs: a failure anywhere
+    unfetched: list[str] = []  # the recordings: a failure under CI
+    refused: list[str] = []
 
     for name in REAL_FILES:
         path = REAL_DIR / name
         if not path.exists():
-            missing.append(str(path))
+            unfetched.append(str(path))
             continue
         # The same options `test_converter.TestRealRecordings.one` uses.
         data = reference(path, OUT / Path(name).stem, hands="split", respell=True)
@@ -207,23 +226,40 @@ def main() -> int:
     else:
         missing.append(str(RENDERED))
 
-    for name in APP_FIXTURES:
-        path = APP_FIXTURES_DIR / name
+    for relative, must_split in APP_FIXTURES:
+        path = REPO / relative
         if not path.exists():
             missing.append(str(path))
             continue
         # `hands="auto"`, which is what the app itself passes and the only
         # option under which the one-track / two-track / many-track rule is
         # the thing being compared.
-        data = reference(path, OUT / Path(name).stem, hands="auto", respell=True)
-        data["fixtureFrom"] = "app/tests/fixtures/imports"
-        (OUT / f"{Path(name).stem}.json").write_text(json.dumps(data, indent=1), encoding="utf-8")
-        written.append(f"{Path(name).stem}.json")
+        data = reference(path, OUT / path.stem, hands="auto", respell=True)
+        data["fixtureFrom"] = Path(relative).parent.as_posix()
+        if must_split and data["handSplit"] is None:
+            refused.append(f"{relative}: expected a handSplit (one note track, hands=auto), "
+                           f"and the reference has none ({data['handsReport']})")
+            # An earlier run's reference must not stand in for the refused one.
+            (OUT / f"{path.stem}.json").unlink(missing_ok=True)
+            continue
+        (OUT / f"{path.stem}.json").write_text(json.dumps(data, indent=1), encoding="utf-8")
+        written.append(f"{path.stem}.json")
 
     print(f"wrote {len(written)} reference file(s) to {OUT}: {', '.join(written)}")
+    in_ci = bool(os.environ.get("CI"))
     for path in missing:
-        print(f"  skipped, missing: {path}")
-    return 0 if written else 1
+        print(f"  FAILED, a committed input is missing: {path}")
+    for line in refused:
+        print(f"  FAILED, {line}")
+    for path in unfetched:
+        if in_ci:
+            print(f"  FAILED, missing under CI: {path}: the step '{FETCH_STEP}' "
+                  "(before 'MIDI converter harness') fetches it")
+        else:
+            print(f"  skipped, missing: {path}: run "
+                  "`python tools/midi-cleanup/tests/fetch_maestro.py` to fetch it")
+    failed = bool(missing or refused or (unfetched and in_ci) or not written)
+    return 1 if failed else 0
 
 
 if __name__ == "__main__":

@@ -28,6 +28,7 @@ CITED = (
     "MIDI converter harness",
     "Write the MIDI parity reference",
     "Unit tests",
+    "Fetch the MAESTRO test recordings",
 )
 
 KEY = re.compile(r"^([A-Za-z][A-Za-z-]*):\s*(.*)$")
@@ -130,6 +131,18 @@ class TheWorkflowOrder(unittest.TestCase):
             "tools/midi-cleanup/tests/parity_reference.py", "npm run test",
             "midiParity.test.ts fails without build/midi-parity/",
         )
+
+    def test_the_recordings_are_fetched_before_anything_reads_them(self) -> None:
+        # Q47: the converter harness's real-recording class and parity_reference.py fail
+        # under CI without the three MAESTRO performances, naming the fetch step; the cache
+        # is restored before the fetch validates it, and saved only after a fetch passed.
+        fetch = "tools/midi-cleanup/tests/fetch_maestro.py"
+        self.assertBefore("actions/cache/restore@", fetch, "the fetch validates what was restored")
+        self.assertBefore(fetch, "actions/cache/save@", "only a verified directory is cached")
+        self.assertBefore(fetch, "unittest discover -s tools/midi-cleanup/tests",
+                          "the real-recording class fails in CI without the recordings")
+        self.assertBefore(fetch, "tools/midi-cleanup/tests/parity_reference.py",
+                          "the reference writer fails in CI without the recordings")
 
     def test_the_unit_tests_run_after_the_content_build_they_read(self) -> None:
         self.assertBefore("tools/content/build.py", "npm run test", "they read app/public/content")

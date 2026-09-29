@@ -84,17 +84,66 @@ jobs:
         # skipping; tools/content/tests/test_ci_order.py holds this order.
         run: python3 -m unittest discover -s tools/content/tests -t tools/content -v
 
+      # The three MAESTRO performances the converter harness's real-recording
+      # class and the parity reference read (Q47; the owner's decision of
+      # 2026-09-28). MAESTRO v3.0.0, MIDI only, from
+      # https://magenta.withgoogle.com/datasets/maestro, whose licence reads:
+      # "The dataset is made available by Google LLC under a Creative Commons
+      # Attribution Non-Commercial Share-Alike 4.0 (CC BY-NC-SA 4.0) license".
+      # Cited as the dataset asks, with the version: Curtis Hawthorne et al.,
+      # "Enabling Factorized Piano Music Modeling and Generation with the
+      # MAESTRO Dataset", International Conference on Learning Representations
+      # 2019 (https://openreview.net/forum?id=r1lYRjC9F7); MAESTRO v3.0.0.
+      # Test input for this personal, non-commercial project: never committed,
+      # never bundled into the app, never uploaded as an artefact. The cache
+      # holds the three files and their SOURCE.md, not the zip. Its key is the
+      # archive's published SHA256 plus the fetch script, so a changed mapping
+      # or check fetches afresh instead of failing on an older cache.
+      - name: Restore the MAESTRO test recordings
+        id: maestro
+        uses: actions/cache/restore@v4
+        with:
+          path: build/midi-real
+          key: maestro-v3.0.0-midi-70470ee253295c8d2c71e6d9d4a815189e35c89624b76d22fce5a019d5dde12c-${{ hashFiles('tools/midi-cleanup/tests/fetch_maestro.py') }}
+
+      - name: Fetch the MAESTRO test recordings
+        # On a miss: download maestro-v3.0.0-midi.zip, verify its SHA256
+        # against the publisher's figure before opening it, map each alias to
+        # its archive member by path (checked against the archive's own
+        # metadata, maestro-v3.0.0.csv, and the member's pinned SHA256), refuse
+        # a member listed zero or several times, absent or empty, and write the
+        # three files and SOURCE.md into build/midi-real/:
+        #   bach-bwv885-prelude-2011.mid <- maestro-v3.0.0/2011/MIDI-Unprocessed_22_R1_2011_MID--AUDIO_R1-D8_12_Track12_wav.midi
+        #   grieg-op38-7-waltz-2014.mid  <- maestro-v3.0.0/2014/MIDI-UNPROCESSED_21-22_R1_2014_MID--AUDIO_21_R1_2014_wav--2.midi
+        #   scarlatti-k525-2008.mid      <- maestro-v3.0.0/2008/MIDI-Unprocessed_09_R3_2008_01-07_ORIG_MID--AUDIO_09_R3_2008_wav--2.midi
+        # On a hit: validate what was restored (the three files, their bytes,
+        # SOURCE.md naming them) and fail rather than trust it. The mapping and
+        # the checks are the script's, tested on a fixture archive by
+        # tools/midi-cleanup/tests/test_fetch_maestro.py.
+        run: python3 tools/midi-cleanup/tests/fetch_maestro.py --cache-hit "${{ steps.maestro.outputs.cache-hit }}"
+
+      - name: Save the MAESTRO test recordings
+        # Straight after a fetch that passed, not at the end of the job, so a
+        # later red step does not send the next run back to the download.
+        if: steps.maestro.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: build/midi-real
+          key: ${{ steps.maestro.outputs.cache-primary-key }}
+
       - name: MIDI converter harness
         # tools/midi-cleanup/midi_to_musicxml.py's own tests, on the committed
-        # fixture. The three MAESTRO recordings its real-recording class reads
-        # are not redistributable and nothing here fetches them, so that class
-        # skips with its reason.
+        # fixtures and on the three MAESTRO performances fetched above. Without
+        # the performances the real-recording class fails here (CI is set),
+        # naming the fetch step; on a developer's checkout it skips.
         run: python3 -m unittest discover -s tools/midi-cleanup/tests -v
 
       - name: Write the MIDI parity reference
-        # What the Python converter decides for the committed fixtures, written
-        # to build/midi-parity/ for midiParity.test.ts to hold the app's
-        # TypeScript port to. Without it the unit tests fail naming this step.
+        # What the Python converter decides for the committed fixtures and the
+        # three recordings, written to build/midi-parity/ for midiParity.test.ts
+        # to hold the app's TypeScript port to. Without it the unit tests fail
+        # naming this step; a recording missing here fails this step, after the
+        # other references are written.
         run: python3 tools/midi-cleanup/tests/parity_reference.py
 
       - name: Generate icons
