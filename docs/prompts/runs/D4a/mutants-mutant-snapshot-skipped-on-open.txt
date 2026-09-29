@@ -1,0 +1,78 @@
+$ npx.cmd vitest run tests/unit/todayOfferSnapshot.test.ts
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/todayOfferSnapshot.test.ts (7 tests | 4 failed) 1046ms
+   ❯ written, then opened (3)
+     × the claim as shown, with the card’s token, stored before the route is opened; the route carries the token 101ms
+     × a second tap while the first is on its way opens the offer once 155ms
+     × another visit’s card is another offer: a new token 253ms
+   ❯ a recomposed card or a swapped row supersedes the stored offer (4)
+     × a composition landing after the tap does not clear the snapshot the tap wrote 217ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/todayOfferSnapshot.test.ts > written, then opened > the claim as shown, with the card’s token, stored before the route is opened; the route carries the token
+AssertionError: expected "vi.fn()" to be called 1 times, but got 0 times
+ ❯ tests/unit/todayOfferSnapshot.test.ts:193:42
+    191|     offerButton(section).click();
+    192|     await new Promise((resolve) => setTimeout(resolve, 20));
+    193|     expect(snapshots.writeOfferSnapshot).toHaveBeenCalledTimes(1);
+       |                                          ^
+    194|     expect(navigateScore, 'opened before the offer was kept').not.toHa…
+    195|     release();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/todayOfferSnapshot.test.ts > written, then opened > a second tap while the first is on its way opens the offer once
+AssertionError: expected "vi.fn()" to be called 1 times, but got 0 times
+ ❯ tests/unit/todayOfferSnapshot.test.ts:219:42
+    217|     await new Promise((resolve) => setTimeout(resolve, 20));
+    218|     expect(navigateScore).toHaveBeenCalledTimes(1);
+    219|     expect(snapshots.writeOfferSnapshot).toHaveBeenCalledTimes(1);
+       |                                          ^
+    220|   });
+    221|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/todayOfferSnapshot.test.ts > written, then opened > another visit’s card is another offer: a new token
+TypeError: Cannot read properties of undefined (reading 'token')
+ ❯ tests/unit/todayOfferSnapshot.test.ts:233:69
+    231|     expect(tokens[1]).toBeTruthy();
+    232|     expect(tokens[0]).not.toBe(tokens[1]);
+    233|     expect(((await snapshots.readOfferSnapshot()) as OfferSnapshot).to…
+       |                                                                     ^
+    234|   });
+    235| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/todayOfferSnapshot.test.ts > a recomposed card or a swapped row supersedes the stored offer > a composition landing after the tap does not clear the snapshot the tap wrote
+AssertionError: expected undefined to be 'mum5iz1jajo2gok' // Object.is equality
+
+- Expected:
+"mum5iz1jajo2gok"
+
++ Received:
+undefined
+
+ ❯ tests/unit/todayOfferSnapshot.test.ts:279:89
+    277|     await vi.waitFor(() => expect(buildSpy.mock.calls.length).toBeGrea…
+    278|     await new Promise((resolve) => setTimeout(resolve, 20));
+    279|     expect(((await snapshots.readOfferSnapshot()) as OfferSnapshot | u…
+       |                                                                                         ^
+    280|   });
+    281| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 3 passed (7)
+   Start at  00:03:37
+   Duration  2.49s (tests 44%, environment 29%, transform 21%, import 6%)
+
+
+exit 1
+snapshot-skipped-on-open: caught; src/ui/screens/TodayScreen.ts restored by sha256

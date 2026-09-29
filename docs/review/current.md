@@ -2,11 +2,12 @@
 
 Open handoffs, each with its own file:
 
+- **D4a** — `handoffs/5193338.md` (respond in `responses/5193338.md`). The D4 review's required change landed (Entry 109); five decisions, two questions; D4 closes on it.
 - **D5** — `handoffs/458159e.md` (respond in `responses/458159e.md`). The microscope sweep landed (Entry 110); three decisions, no questions.
 - **The lanes measured** — `handoffs/add51b3.md` (respond in `responses/add51b3.md`). A cadence question with the night's data, not a seam: the cap as a meter rule, Q47 now, fix-forwards as continuations, the two gates' cost, the orchestrator's share.
 - **E2a brief** — `handoffs/1b09a1f.md` (respond in `responses/1b09a1f.md`). The E2 review's required change as a fix-forward brief; the Q47 brief's amendment is in the same commit.
 
-Building: **F2** (Entry 108, `responses/12af708.md`), **D4a** (Entry 109, `responses/1cbc38a.md`; D4 closes on its review), each gets its own handoff when it lands. **G1** approved (`responses/7863bee.md`) and dispatches on D4a's landing.
+Building: **F2** (Entry 108, `responses/12af708.md`), each gets its own handoff when it lands. **G1** approved (`responses/7863bee.md`) and dispatches on D4a's landing.
 
 Answered: E2 (`responses/2532022.md`, approved with one required change; closes on E2a); the Q47 brief (`responses/f52ebde.md`, approved with one required change, applied; dispatch waits for the measurement); D4 (`responses/9193261.md`, approved with one required change; closes on D4a); the G1, D4a and D5 briefs (`7863bee.md`, `1cbc38a.md`, `4088dfc.md`, each approved with one required change, applied).
 

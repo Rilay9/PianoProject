@@ -236,9 +236,7 @@ fallback until C6 and are deleted.
   gate); differing from what the skill was shown on in at least one dimension measured or declared,
   and never of the family that established it (`curriculum/transfer.ts`). Its line says what it is
   for — *Shifting position: something new, for a skill you have shown — it should feel different* —
-  and never that it will prove or has proved anything. Opened, it carries `?intent=transfer&skill=`
-  and no rung (it is no rung's ask, so no rung judges it or is credited by listing it); the run
-  keeps its material, role, intent and the relationship facts. The ladder's v0 state keeps C7's
+  and never that it will prove or has proved anything. Opened, it carries `?intent=transfer&skill=&offer=` and no rung (it is no rung's ask, so no rung judges it or is credited by listing it). Before it opens, Today keeps the offer as shown — the item, the skill, its material, the relationship and the contact the session chose it on, the card's day — under the card's offer token (D4a; `data/offerSnapshot.ts`, one `settings` row); composing the card again, or swapping the offer's row away, supersedes it. The Score screen reads it before ▶ is enabled — until it answers the screen is still loading, and nothing can start or be stored. Where it names this route's token, this item, this skill and today, the run keeps its material, role, the intent and that relationship, byte for byte, never a recomputation; where it does not (missing, superseded, another item, skill or day, unreadable), one line under the header says *This offer is no longer on today's card; opened as practice.* (or, where what was kept could not be read, *This offer could not be read back; opened as practice.*), and the run is ordinary practice with neither intent nor relationship. The ladder's v0 state keeps C7's
   words (*shown on different material*) and nothing ties it to the offer. A swap drops the claim,
   and with it the intent.
 - **Review has two reasons, and the line says which** (the reviewer's correction): *skill

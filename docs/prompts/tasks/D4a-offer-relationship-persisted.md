@@ -34,3 +34,5 @@ If the `settings` and `plan` stores both prove wrong for the snapshot (a key-val
 Judgement first: what the stored row says after a quick run and after a run with the history changed, as observations; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes.
 
 **Approved with one required change 2026-09-29** (`responses/1cbc38a.md`), applied: the snapshot bound to the exact offer instance by a token carried in the route and superseded on recomposition or swap; pending means play disabled and no row; the type invariant on `runFacts`'s return; the six verifications named for the implementation handoff. **Dispatched 2026-09-29** (Entry 109, port 4183) beside E2 and F2; G1 follows its landing.
+
+**Landed 2026-09-29** (Entry 109; 5193338, merged 1476d8d); handoff `handoffs/5193338.md`. The builder's call: every recomposition supersedes the kept offer, not only a different one.

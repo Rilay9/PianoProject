@@ -1,0 +1,8 @@
+$ npx.cmd tsc -b
+src/curriculum/material.ts(84,11): error TS6196: 'NoTransferFact' is declared but never used.
+tests/unit/transferOfferOnTheRun.test.ts(485,5): error TS2578: Unused '@ts-expect-error' directive.
+tests/unit/transferOfferOnTheRun.test.ts(487,5): error TS2578: Unused '@ts-expect-error' directive.
+tests/unit/transferOfferOnTheRun.test.ts(489,5): error TS2578: Unused '@ts-expect-error' directive.
+
+exit 2
+RunFacts-type-widened: caught; src/curriculum/material.ts restored by sha256

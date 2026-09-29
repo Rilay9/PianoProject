@@ -1,0 +1,239 @@
+$ npx.cmd vitest run tests/unit/todayOfferSnapshot.test.ts
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/todayOfferSnapshot.test.ts (7 tests | 6 failed) 4733ms
+   ❯ written, then opened (3)
+     × the claim as shown, with the card’s token, stored before the route is opened; the route carries the token 105ms
+     × a second tap while the first is on its way opens the offer once 1064ms
+     × another visit’s card is another offer: a new token 127ms
+   ❯ a recomposed card or a swapped row supersedes the stored offer (4)
+     × composing the card clears an offer stored before it 1072ms
+     × Shuffle recomposes it: the offer stored since is cleared 1103ms
+     × swapping the offer’s row away clears it, and the row no longer carries the claim 1104ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/todayOfferSnapshot.test.ts > written, then opened > the claim as shown, with the card’s token, stored before the route is opened; the route carries the token
+AssertionError: expected "vi.fn()" to be called 1 times, but got 0 times
+ ❯ tests/unit/todayOfferSnapshot.test.ts:193:42
+    191|     offerButton(section).click();
+    192|     await new Promise((resolve) => setTimeout(resolve, 20));
+    193|     expect(snapshots.writeOfferSnapshot).toHaveBeenCalledTimes(1);
+       |                                          ^
+    194|     expect(navigateScore, 'opened before the offer was kept').not.toHa…
+    195|     release();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/unit/todayOfferSnapshot.test.ts > written, then opened > a second tap while the first is on its way opens the offer once
+AssertionError: expected "vi.fn()" to be called 1 times, but got 2 times
+ ❯ tests/unit/todayOfferSnapshot.test.ts:216:50
+    214|     offerButton(section).click();
+    215|     offerButton(section).click();
+    216|     await vi.waitFor(() => expect(navigateScore).toHaveBeenCalledTimes…
+       |                                                  ^
+    217|     await new Promise((resolve) => setTimeout(resolve, 20));
+    218|     expect(navigateScore).toHaveBeenCalledTimes(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/unit/todayOfferSnapshot.test.ts > written, then opened > another visit’s card is another offer: a new token
+AssertionError: expected undefined to be truthy
+
+- Expected:
+true
+
++ Received:
+undefined
+
+ ❯ tests/unit/todayOfferSnapshot.test.ts:230:23
+    228|     await vi.waitFor(() => expect(navigateScore).toHaveBeenCalledTimes…
+    229|     const tokens = navigateScore.mock.calls.map((call) => (call as Ope…
+    230|     expect(tokens[0]).toBeTruthy();
+       |                       ^
+    231|     expect(tokens[1]).toBeTruthy();
+    232|     expect(tokens[0]).not.toBe(tokens[1]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/unit/todayOfferSnapshot.test.ts > a recomposed card or a swapped row supersedes the stored offer > composing the card clears an offer stored before it
+AssertionError: expected { token: 'k3older0001', …(5) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "contact": {
+    "contact": "unmet",
+    "metById": false,
+  },
+  "itemId": "exercise.test.offer",
+  "offeredOn": "2026-09-28",
+  "relationship": {
+    "differsOn": [
+      "family",
+    ],
+    "measured": [
+      {
+        "candidate": "pentatonic",
+        "differs": true,
+        "dimension": "family",
+        "shownOn": [
+          "sight-reading",
+        ],
+      },
+    ],
+    "shownOn": [
+      {
+        "itemId": "drill.reading.sight-reading-2-right",
+        "material": {
+          "family": "sight-reading",
+          "kind": "generator",
+          "recipe": {
+            "level": 2,
+          },
+          "seed": 101,
+          "tempoBpm": 72,
+          "version": 2,
+        },
+      },
+    ],
+    "skill": "position-shift",
+  },
+  "skill": "position-shift",
+  "token": "k3older0001",
+}
+
+ ❯ tests/unit/todayOfferSnapshot.test.ts:241:78
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/unit/todayOfferSnapshot.test.ts > a recomposed card or a swapped row supersedes the stored offer > Shuffle recomposes it: the offer stored since is cleared
+AssertionError: expected { token: 'k3older0002', …(5) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "contact": {
+    "contact": "unmet",
+    "metById": false,
+  },
+  "itemId": "exercise.test.offer",
+  "offeredOn": "2026-09-28",
+  "relationship": {
+    "differsOn": [
+      "family",
+    ],
+    "measured": [
+      {
+        "candidate": "pentatonic",
+        "differs": true,
+        "dimension": "family",
+        "shownOn": [
+          "sight-reading",
+        ],
+      },
+    ],
+    "shownOn": [
+      {
+        "itemId": "drill.reading.sight-reading-2-right",
+        "material": {
+          "family": "sight-reading",
+          "kind": "generator",
+          "recipe": {
+            "level": 2,
+          },
+          "seed": 101,
+          "tempoBpm": 72,
+          "version": 2,
+        },
+      },
+    ],
+    "skill": "position-shift",
+  },
+  "skill": "position-shift",
+  "token": "k3older0002",
+}
+
+ ❯ tests/unit/todayOfferSnapshot.test.ts:250:78
+    248|     expect(await snapshots.readOfferSnapshot()).toBeDefined();
+    249|     section.querySelector<HTMLButtonElement>('#today-shuffle')?.click(…
+    250|     await vi.waitFor(async () => expect(await snapshots.readOfferSnaps…
+       |                                                                              ^
+    251|   });
+    252|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/unit/todayOfferSnapshot.test.ts > a recomposed card or a swapped row supersedes the stored offer > swapping the offer’s row away clears it, and the row no longer carries the claim
+AssertionError: expected { token: 'k3older0003', …(5) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "contact": {
+    "contact": "unmet",
+    "metById": false,
+  },
+  "itemId": "exercise.test.offer",
+  "offeredOn": "2026-09-28",
+  "relationship": {
+    "differsOn": [
+      "family",
+    ],
+    "measured": [
+      {
+        "candidate": "pentatonic",
+        "differs": true,
+        "dimension": "family",
+        "shownOn": [
+          "sight-reading",
+        ],
+      },
+    ],
+    "shownOn": [
+      {
+        "itemId": "drill.reading.sight-reading-2-right",
+        "material": {
+          "family": "sight-reading",
+          "kind": "generator",
+          "recipe": {
+            "level": 2,
+          },
+          "seed": 101,
+          "tempoBpm": 72,
+          "version": 2,
+        },
+      },
+    ],
+    "skill": "position-shift",
+  },
+  "skill": "position-shift",
+  "token": "k3older0003",
+}
+
+ ❯ tests/unit/todayOfferSnapshot.test.ts:265:78
+    263|     });
+    264|     option.click();
+    265|     await vi.waitFor(async () => expect(await snapshots.readOfferSnaps…
+       |                                                                              ^
+    266|     expect(section.querySelector('#today-card [data-claim="transfer"]'…
+    267|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 1 passed (7)
+   Start at  23:54:40
+   Duration  6.22s (tests 78%, environment 12%, transform 8%, import 2%)
+
+
+exit 1
