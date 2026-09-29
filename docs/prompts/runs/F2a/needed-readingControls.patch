@@ -1,0 +1,17 @@
+--- a/app/src/engine/readingControls.ts
++++ b/app/src/engine/readingControls.ts
+@@ -479,12 +479,12 @@
+     reason: 'A phrase that never moves by step is not one the generator writes, nor one a reader needs.',
+   },
+   {
+-    rungs: LEVEL_1_RUNGS,
++    rungs: ['2.1'],
+     demand: 'interval.leap',
+     direction: 'on',
+     kind: 'promise',
+     reason:
+-      '1.5 teaches the leap in its song, but its reading drill promises "only steps and skips" ("every interval is a 2nd or a 3rd"); a leap there breaks it.',
++      '2.1 teaches the leap (the left hand moves from C to F and to G), but the reader’s row there is 1.5’s, whose drill promises "only steps and skips" ("every interval is a 2nd or a 3rd"); a leap there breaks it. 1.5 only introduces the leap (F2a).',
+   },
+   {
+     rungs: ['2.1'],

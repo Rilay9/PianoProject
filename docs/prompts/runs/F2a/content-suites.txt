@@ -1,0 +1,15 @@
+test_taught_at exit=0
+test_measured_truth exit=0
+test_validate_claims exit=0
+test_technique_units exit=0
+test_measured_demands exit=0
+suite-taught-at.log:Ran 24 tests
+suite-taught-at.log:OK
+suite-measured-truth.log:Ran 57 tests
+suite-measured-truth.log:OK
+suite-validate-claims.log:Ran 11 tests
+suite-validate-claims.log:OK
+suite-technique-units.log:Ran 7 tests
+suite-technique-units.log:OK
+suite-measured-demands.log:Ran 8 tests
+suite-measured-demands.log:OK

@@ -1,0 +1,57 @@
+17 differing lines across the diaries
+== c4c/ambiguity-a.txt: identical
+== c4c/ambiguity-b.txt: identical
+== c4c/skip.txt: 14 lines differ of 330
+  line 254
+    before: Day 24 · Sat 24 Oct · rung 3.1 · Today: “Now with a note outside the key — 18 of 18 right and in time yesterday” · played: both hands, F major, inside one hand position, dotted quarters, ties · 15/15 right and in time
+    after:  Day 24 · Sat 24 Oct · rung 3.1 · Today: “The next step waits for a later lesson — 18 of 18 right and in time yesterday” · played: both hands, F major, beyond one hand position, dotted quarters, ties · 17/17 right and in time
+  line 259
+    before:         sightreading Sight-reading generator, level 2, right hand — “Now with a note outside the key — 18 of 18 right and in time yesterday”
+    after:          sightreading Sight-reading generator, level 2, right hand — “The next step waits for a later lesson — 18 of 18 right and in time yesterday”
+  line 265
+    before: Day 25 · Sun 25 Oct · rung 3.1 · Today: “Another like it: G major, one sharp — 15 of 15 right and in time yesterday” · played: both hands, G major, beyond one hand position, dotted quarters, ties · 19/19 right and in time
+    after:  Day 25 · Sun 25 Oct · rung 3.1 · Today: “The next step waits for a later lesson — 17 of 17 right and in time yesterday” · played: both hands, G major, inside one hand position, dotted quarters, ties · 12/12 right and in time
+  line 270
+    before:         sightreading Sight-reading generator, level 2, right hand — “Another like it: G major, one sharp — 15 of 15 right and in time yesterday”
+    after:          sightreading Sight-reading generator, level 2, right hand — “The next step waits for a later lesson — 17 of 17 right and in time yesterday”
+  line 276
+    before: Day 26 · Mon 26 Oct · rung 3.1 · Today: “Now with a leap — 19 of 19 right and in time yesterday” · played: both hands, G major, inside one hand position, dotted quarters, ties · 17/17 right and in time
+    after:  Day 26 · Mon 26 Oct · rung 3.1 · Today: “Now with a leap — 12 of 12 right and in time yesterday” · played: both hands, G major, inside one hand position, dotted quarters, ties · 16/16 right and in time
+  line 281
+    before:         sightreading Sight-reading generator, level 2, right hand — “Now with a leap — 19 of 19 right and in time yesterday”
+    after:          sightreading Sight-reading generator, level 2, right hand — “Now with a leap — 12 of 12 right and in time yesterday”
+  line 287
+    before: Day 27 · Tue 27 Oct · rung 3.1 · Today: “An easy one, for fluency: without notes outside the key” · played: both hands, F major, beyond one hand position, dotted quarters, ties (the easy one) · 14/14 right and in time
+    after:  Day 27 · Tue 27 Oct · rung 3.1 · Today: “An easy one, for fluency: in C major” · played: both hands, C major, inside C position, dotted quarters, ties (the easy one) · 14/14 right and in time
+  line 292
+    before:         sightreading Sight-reading generator, level 2, right hand — “An easy one, for fluency: without notes outside the key”
+    after:          sightreading Sight-reading generator, level 2, right hand — “An easy one, for fluency: in C major”
+  line 298
+    before: Day 28 · Wed 28 Oct · rung 3.1 · Today: “Another like it: G major, one sharp — 17 of 17 right and in time on Monday” · played: both hands, G major, beyond one hand position, dotted quarters, ties · 12/12 right and in time
+    after:  Day 28 · Wed 28 Oct · rung 3.1 · Today: “Another like it: G major, one sharp — 16 of 16 right and in time on Monday” · played: both hands, G major, beyond one hand position, dotted quarters, ties · 19/19 right and in time
+  line 303
+    before:         sightreading Sight-reading generator, level 2, right hand — “Another like it: G major, one sharp — 17 of 17 right and in time on Monday”
+    after:          sightreading Sight-reading generator, level 2, right hand — “Another like it: G major, one sharp — 16 of 16 right and in time on Monday”
+  line 309
+    before: Day 29 · Thu 29 Oct · rung 3.1 · Today: “The next step waits for a later lesson — 12 of 12 right and in time yesterday” · played: both hands, G major, beyond one hand position, dotted quarters, ties · 22/22 right and in time
+    after:  Day 29 · Thu 29 Oct · rung 3.1 · Today: “The next step waits for a later lesson — 19 of 19 right and in time yesterday” · played: both hands, G major, beyond one hand position, dotted quarters, ties · 14/14 right and in time
+  line 314
+    before:         sightreading Sight-reading generator, level 2, right hand — “The next step waits for a later lesson — 12 of 12 right and in time yesterday”
+    after:          sightreading Sight-reading generator, level 2, right hand — “The next step waits for a later lesson — 19 of 19 right and in time yesterday”
+  line 320
+    before: Day 30 · Fri 30 Oct · rung 3.1 · Today: “The next step waits for a later lesson — 22 of 22 right and in time yesterday” · played: both hands, G major, beyond one hand position, dotted quarters, ties · 19/19 right and in time
+    after:  Day 30 · Fri 30 Oct · rung 3.1 · Today: “The next step waits for a later lesson — 14 of 14 right and in time yesterday” · played: both hands, G major, inside one hand position, dotted quarters, ties · 14/14 right and in time
+  line 325
+    before:         sightreading Sight-reading generator, level 2, right hand — “The next step waits for a later lesson — 22 of 22 right and in time yesterday”
+    after:          sightreading Sight-reading generator, level 2, right hand — “The next step waits for a later lesson — 14 of 14 right and in time yesterday”
+== c6/intermediate.txt: 3 lines differ of 330
+  line 29
+    before:             swap technique    [From the same lesson] Ear drill — major or minor
+    after:              swap technique    [From the same lesson] Ear drill — major or minor; [Also practises the notes outside the key, with the other demands you have met] C blues scale — 1 oct, right; [Also practises the notes outside the key, with the other demands you have met] F blues scale — 1 oct, right; [Also practises the notes outside the key, with the other demands you have met] G blues scale — 1 oct, right; [Also practises the notes outside the key, with the other demands you have met] Chromatic scale from C — 1 oct, both; [Also practises the notes outside the key, with the other demands you have met] Chromatic scale from C — 1 oct, left (+6 more)
+  line 31
+    before:             swap new          [From the same lesson] Ear drill — major or minor
+    after:              swap new          [From the same lesson] Ear drill — major or minor; [Also practises the notes outside the key, with the other demands you have met] Whispering (1920); [Also practises the notes outside the key, with the other demands you have met] 12 Bar Blues; [Also practises the notes outside the key, with the other demands you have met] C blues scale — 1 oct, right; [Also practises the notes outside the key, with the other demands you have met] F blues scale — 1 oct, right; [Also practises the notes outside the key, with the other demands you have met] G blues scale — 1 oct, right (+6 more)
+  line 32
+    before:             swap repertoire   [From the same lesson] Ear drill — major or minor
+    after:              swap repertoire   [From the same lesson] Ear drill — major or minor; [Also practises the notes outside the key, with the other demands you have met] Tremolo in 3rds in C — right; [Also practises the notes outside the key, with the other demands you have met] Tremolo in 3rds in F — left; [Also practises the notes outside the key, with the other demands you have met] Tremolo in 3rds in F — right; [Also practises the notes outside the key, with the other demands you have met] Tremolo in 3rds in G — left; [Also practises the notes outside the key, with the other demands you have met] Tremolo in 3rds in G — right (+6 more)
+== c6/musician.txt: identical

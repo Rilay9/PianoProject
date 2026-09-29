@@ -1,0 +1,6 @@
+content/curriculum/stage-1.json: crlf=True indent=2 identical=True identical-ignoring-final-newline=True
+content/curriculum/stage-2.json: crlf=True indent=2 identical=True identical-ignoring-final-newline=True
+content/curriculum/stage-3.json: crlf=True indent=2 identical=True identical-ignoring-final-newline=True
+content/curriculum/vocabulary/demands.json: crlf=True indent=2 identical=False identical-ignoring-final-newline=False
+content/curriculum/concepts.json: crlf=True indent=2 identical=True identical-ignoring-final-newline=True
+tools/content/tests/fixtures/untaught_on_rung.json: crlf=True indent=2 identical=True identical-ignoring-final-newline=True

@@ -25,3 +25,5 @@ If 2.1's or 3.3's options do not establish the demand on the combined build (F2 
 ## Report
 
 Judgement first (what a learner at 1.5 and at 2.1 is asked, before and after; the practice floor's rows), then Done / Not done / Follow-ups / Questions / Files, the census, the red lines, the tests table, exit codes, unverified beside what passes.
+
+**Landed 2026-09-29** (Entry 117; fc91e5a, merged 067d49a); handoff `handoffs/fc91e5a.md`. The generator's table added to the file list at the landing (the same fact in a third place); `practice.1`'s prerequisite for the reviewer.

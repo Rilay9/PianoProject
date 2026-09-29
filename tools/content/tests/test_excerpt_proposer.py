@@ -294,8 +294,12 @@ class TheGates(unittest.TestCase):
         self.assertIn("texture.hands-together", both.untaught, "hands together is taught at 2.1")
         self.assertEqual(both.refused_by, ["untaught"])
         right = window(ctx, 1, 4, "right", rung="1.5", ancestry=self.ancestry, vocabulary=self.vocabulary)
-        self.assertEqual(right.untaught, [], "the right hand alone: leaps within a fifth, nothing 1.5 has not taught")
-        self.assertEqual(right.refused_by, [])
+        # F2a: 1.5 introduces the leap and 2.1 teaches it, so at 1.5 the right hand's leaps are untaught too.
+        self.assertEqual(right.untaught, ["interval.leap"], "the right hand alone at 1.5: the leap is introduced there, taught at 2.1 (F2a)")
+        self.assertEqual(right.refused_by, ["untaught"])
+        taught = window(ctx, 1, 4, "right", rung="2.1", ancestry=self.ancestry, vocabulary=self.vocabulary)
+        self.assertEqual(taught.untaught, [], "the right hand alone at 2.1: leaps within a fifth, nothing 2.1 has not taught")
+        self.assertEqual(taught.refused_by, [])
 
     def test_the_shift_is_read_from_the_windows_span(self) -> None:
         ctx = context(PHRASES, LEAPS)

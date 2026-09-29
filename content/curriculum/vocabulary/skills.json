@@ -174,14 +174,14 @@
     },
     {
       "id": "accidentals",
-      "newId": true,
+      
       "display": "Accidentals",
       "sentence": "Reading a sharp, flat or natural written beside a note, and letting it last to the end of the bar.",
       "kind": "reading",
       "opportunity": ["pitch.chromatic"],
       "observable": ["pitch"],
       "standards": { "practice": [], "full": ["unseen", "guide-off"] },
-      "note": "New because no concept names it: `sharps` and `flats` are the two signs as 3.1 teaches them (notes and key signatures), `chromatic` is moving by semitones (a technique rung). The level-4 row promises an accidental in the bar, which is this."
+      "note": "Its concept `accidentals` exists since F2a (3.1 introduces it, 3.3 names it); before that no concept named it — `sharps` and `flats` are the two signs as 3.1 teaches them (notes and key signatures), `chromatic` is moving by semitones (a technique rung). The level-4 row promises an accidental in the bar, which is this."
     },
     {
       "id": "hands-together",

@@ -1,0 +1,4 @@
+﻿npx vitest run tests/unit/composedContract.test.ts   (after the UNREALISABLE_AT change; it imports the constant)
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+exit=0
