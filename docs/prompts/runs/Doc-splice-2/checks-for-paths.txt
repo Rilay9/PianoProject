@@ -1,0 +1,12 @@
+$ (cwd .) python tools/docs/checks_for_paths.py docs/01-architecture.md docs/02-curriculum.md docs/03-content-pipeline.md docs/04-ui-spec.md docs/05-score-follow-engine.md docs/08-test-map.md docs/prompts/runs/Doc-splice-2/ENTRY.md
+# checks for 7 path(s): 7 matched, 0 unmatched
+# docs/01-architecture.md: docs/**
+# docs/02-curriculum.md: docs/02-curriculum.md, docs/**
+# docs/03-content-pipeline.md: docs/03-content-pipeline.md, docs/**
+# docs/04-ui-spec.md: docs/04-ui-spec.md, docs/**
+# docs/05-score-follow-engine.md: docs/**
+# docs/08-test-map.md: docs/**
+# docs/prompts/runs/Doc-splice-2/ENTRY.md: docs/**
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_named_by_what_they_are.py
+unit	app	npx vitest run tests/unit/docsConsistency.test.ts tests/unit/help.test.ts tests/unit/labHelp.test.ts tests/unit/progressHistoryLines.test.ts tests/unit/sightReadingFromReadingState.test.ts
+exit=0

@@ -633,6 +633,11 @@ the second rung of Stage 1 (F2b: `practice.1` stands on 1.1; it said "from Stage
 while the track named no core rung). The comprehensiveness check (replan §8) found practising efficiently,
 plateaus and injury covered once in lesson 0.3 and nowhere after.
 
+On Today, How to practise's row comes after the learner's own rung's new
+material, never in its place (X1, a stated teaching policy,
+`session.METHOD_TRACKS`): the track is how to practise beside the core, not
+instead of it.
+
 1. **Chunking, and the loop** — the smallest unit that still makes sense, the
    bar before the one you stumbled on, and five correct in a row.
 2. **Slow practice and the tempo ladder** — if you can play it faster than you
@@ -1084,6 +1089,12 @@ that decision exists a study reaches the learner only through the Library (Part 
 >   run under any item id carries the material; *met by id* where only a run that stored no material
 >   shares the id (prior contact proven, the material unknown — never read as unmet); unmet only
 >   where neither exists, with the id's contact beside it (a new seed or version is new material).
+>   Since G1 (`progressStore.contact`) contact reads the encounters that are not runs and the
+>   summaries of runs the retention cap deleted as well: material viewed, heard or demonstrated
+>   and never played is *met*, a pruned run's material is still *met*, and a *met* says how
+>   (`how`: `played`, `heard`, `demonstrated`, `viewed`). Since G2 the session's offer reads the
+>   same contact (`session.contactOf` over `BuildInput.contact`, which Today loads), so a piece
+>   heard once or practised and pruned is never offered as new (G1, G2).
 > - **The offer** (`session.ts`, the `transfer` claim; the words `04` §2): for a skill proficient and
 >   not beyond, the `new` slot — after the rung's own new work, never in place of an unmet
 >   requirement of a strand's rung, at most one a day — offers an item whose role is `transfer` for
@@ -1302,7 +1313,15 @@ suggestions** with a note on where to buy/obtain MusicXML.
   run or during it — is not a first reading, the same rule as a repeat, and is recorded
   only as practice (C1, below);
   the sheet offers *New phrase*, a fresh phrase of the same row, which is. So hearing today's
-  phrase first means the day is not ticked by it. *A performance the piece was played to the
+  phrase first means the day is not ticked by it. A phrase heard on any visit since G1 is not a
+  first reading either — a playback is a stored encounter (`encounterStore`), read back when
+  the phrase is opened again — and neither is a phrase looked at on another visit; looking at
+  it on this visit, before playing, is what sight-reading is. A visit is one opening of the
+  Score screen: a reload, Back and a return, a second tab are each another. A notated piece, an
+  excerpt or an import carries the first-contact relation on its run (`firstContact`, over the
+  bars the run covered; since G1a, never `unseen`) as an audit fact that refuses it nothing: a
+  piece played again passes and meets its rung as before (the first-reading rules read
+  `unseen`, a phrase's field; G1, G1a). *A performance the piece was played to the
   learner in the middle of* is recorded as practice, not as a performance (`04` §5e); heard
   before the take began, it is still a performance.
 - **What a run leaves behind (2026-09-26, C1; the reviewer's decisions 3 and 5).** Every run
