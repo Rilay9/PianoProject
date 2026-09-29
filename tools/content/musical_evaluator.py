@@ -45,12 +45,24 @@ declares. So, for a `Model` that carries phrases:
 
 The groove and style families are not evaluated here: the evaluator judges phrase shape, not
 idiom (Part 15 §17), and `family_contracts.musical_gate` says so for them.
+
+**The contract's version** (`VERSION`, D5): the microscope prints it beside every verdict it shows
+(`review.musical_verdict`), so two totals for the same item from different evaluators are never
+read as one fact. It is provenance for the displayed assessment, never part of an item's identity
+(a review decision binds to the material, `review.current_identity`), and never a hearing.
 """
 from __future__ import annotations
 
 import math
 from dataclasses import dataclass, field, replace
 from typing import Callable, Iterable
+
+#: The evaluator's contract version. Bump it in the same change as anything that can move a total
+#: or a wrong cadence for the same written notes: a part's function, the parts a study is scored on,
+#: a weight (`WEIGHTS`, `STUDY_WEIGHTS`), the cadence semantics, how a page is read into a `Model`.
+#: The floor is the contract row's (`family_contracts.json`, `study.musical.floor`) and travels
+#: beside the verdict on its own; a change to it moves a pass, never a total.
+VERSION = 1
 
 #: Divisions of a quarter, as the app's writer (`musicXmlWriter.ts` `DIVISIONS`) counts them: the
 #: twin fixture's durations are in these, so both implementations read the same numbers.

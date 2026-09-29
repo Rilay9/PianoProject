@@ -16,13 +16,22 @@ import { fileURLToPath } from 'node:url';
  *   --merge` accepts, and a rerun of the merge appends nothing;
  * - the learner's navigation never shows the route, and a review mutates nothing of the
  *   learner's: every IndexedDB store and every other localStorage key byte-identical before
- *   and after (the reviewer's constraint, `docs/review/responses/7ab175a.md`).
+ *   and after (the reviewer's constraint, `docs/review/responses/7ab175a.md`);
+ * - three lines tell what the build knows (D5; G55, G56, G60), at a study, a groove and a
+ *   drill: the musical gate's verdict with the evaluator's version and where it came from,
+ *   "unheard" beside it, the contract's "not evaluated" words for a groove and a drill as a
+ *   drill; "requires but the notes lack" only of what the recipe selects; every provenance
+ *   fact with its value.
  */
 
 const APP = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const REPO = join(APP, '..');
 /** A music family's canonical item, generated, both hands: the Latin groove on the son clave. */
 const ITEM = 'exercise.latin-groove.c.son-3-2';
+/** The generated study D3 walked (2.1's interval reading), whose phrase shape the gate evaluates. */
+const STUDY = 'exercise.study.interval-reading.c-major.4-4.8bar.sustained.01';
+/** A drill whose family requires the bass clef of its left-hand recipes only: this one is right-handed. */
+const DRILL = 'exercise.interval-reading.c-position.right.01';
 const FACTS = [
   'identity',
   'family',
@@ -237,6 +246,52 @@ test.describe('the microscope (D2)', () => {
     expect(readFileSync(record, 'utf8')).toBe(written);
 
     expect(await settledLearnerState(page)).toBe(before);
+  });
+
+  test('three lines tell what the build knows: the gate’s verdict, the selected requirements, every fact’s value (D5)', async ({
+    page,
+  }) => {
+    const UNHEARD = 'unheard: no hearing counts until a person’s decision.';
+    const open = async (id: string): Promise<void> => {
+      await openItem(page, id);
+      await expect(page.locator(`[data-screen="dev-microscope"][data-ready="true"] [data-hook="item"][data-item="${id}"]`)).toBeVisible();
+    };
+    const musical = page.locator('[data-fact="musical"]');
+    const demands = page.locator('[data-fact="demands"]');
+    const provenance = page.locator('[data-fact="provenance"]');
+
+    // A study: the gate evaluated its phrase shape from the notation, and says with which evaluator.
+    await open(STUDY);
+    await expect(musical).toContainText(
+      'Evaluated from the notation by musical_evaluator.score_study v1, recomputed by the projection from the built notes: passes — phrase shape 0.',
+    );
+    await expect(musical).toContainText('against the floor 0.8 (notation, not hearing; unheard); no wrong cadence.');
+    await expect(musical).toContainText(UNHEARD);
+    await expect(musical).not.toContainText('no musical evaluator exists');
+    // The other targets' requirements are not this study's (it lacked four of them on the old screen).
+    await expect(demands).not.toContainText('Contract requires but the notes lack');
+    await expect(provenance).toContainText('promise: music (authored) — family_contracts.json (the rule matching the recipe)');
+    await expect(provenance).toContainText('reviewedScore: yes (reviewed) — content/review/decisions.jsonl — basis notation');
+    await expect(provenance).toContainText('reviewedTeaching: no decision');
+
+    // A groove: promised as music, not evaluated, in the contract's words; no version, no total.
+    await open(ITEM);
+    await expect(musical).toContainText(
+      'Promised as music — not evaluated: idiom needs hearing — the evaluator judges phrase shape, not idiom',
+    );
+    await expect(musical).toContainText(UNHEARD);
+    await expect(musical).not.toContainText('no musical evaluator exists');
+    await expect(musical).not.toContainText('musical_evaluator');
+    await expect(provenance).toContainText('promise: music (authored)');
+    await expect(provenance).toContainText('reviewedScore: no decision');
+    await expect(provenance).toContainText('reviewedTeaching: no decision');
+
+    // A drill: judged as a drill; a right hand is not told it lacks the bass clef.
+    await open(DRILL);
+    await expect(musical).toContainText('A drill: judged as a drill, never as music; its repetition is the point.');
+    await expect(musical).not.toContainText(UNHEARD);
+    await expect(demands).not.toContainText('Contract requires but the notes lack');
+    await expect(provenance).toContainText('promise: drill (authored)');
   });
 
   test('the learner’s navigation never shows the route', async ({ page }) => {

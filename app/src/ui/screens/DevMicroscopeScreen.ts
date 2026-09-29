@@ -9,10 +9,12 @@
 //
 // Per item it shows the notation as the Score screen draws it; Hear it, hands together and
 // each hand alone, at the written tempo; the facts — family, version, seed, role, promise
-// and `heard`, the target or "not judged" with its candidate, every measured demand with its
-// located count and the contract's verdict, the physical limits, the provenance facts as E0
-// labels them, the rungs listing the item and what each claims of it, and every review of
-// it. And it records a person's decisions, one dimension per event (`review/record.ts`).
+// and `heard`, the target or "not judged" with its candidate, the musical gate's verdict as the
+// build's projection carries it (D5), every measured demand with its located count and the
+// contract's verdict, what the notes lack of the requirements the recipe selects, the physical
+// limits, the provenance facts as E0 labels them with their values, the rungs listing the item
+// and what each claims of it, and every review of it. And it records a person's decisions, one
+// dimension per event (`review/record.ts`).
 //
 // **It writes nothing of the learner's.** Its decisions live under its own localStorage keys
 // (`pianopath.microscope.*`); it reads the bundled catalogue (never the learner's imports or
@@ -27,7 +29,7 @@ import { onScreenDispose } from '../screenLifecycle';
 import { el, button } from '../widgets';
 import { barsPerWindowFor, isTablet } from '../tablet';
 import { contentUrl, loadCatalog } from '../../curriculum/load';
-import type { CatalogItem, FactKind } from '../../curriculum/types';
+import type { CatalogItem, FactKind, Provenance } from '../../curriculum/types';
 import { DEFAULT_SETTINGS, getSettings } from '../../data/settingsStore';
 import { audioEngine } from '../../audio/AudioEngine';
 import type { Piano } from '../../audio/Piano';
@@ -84,7 +86,7 @@ interface RungFact {
   earliest: boolean;
 }
 
-interface ItemFacts {
+export interface ItemFacts {
   tier: string;
   identity: Identity;
   family?: string;
@@ -95,9 +97,43 @@ interface ItemFacts {
   demands: DemandFact[];
   rungs: RungFact[];
   events?: (ReviewEvent & { line: number; status: EventStatus })[];
+  /** The musical gate's verdict as the build's projection carries it (`review.musical_verdict`, D5; G55). */
+  musical?: MusicalVerdict;
+  /** The requirements the recipe selects (`family_contracts.selected`) and those the notes lack (D5; G56). */
+  requires?: string[];
+  missing?: string[];
 }
 
-interface FamilyRow {
+/**
+ * `family_contracts.musical_gate`'s answer for one generated item, carried by the projection: a
+ * drill (`applies: false`), a music family the evaluator does not judge (`evaluated: false`, the
+ * contract's words in `why`), or the evaluator's verdict on the written notes with the evaluator's
+ * contract version and whether the build carried it or the projection recomputed it.
+ */
+export type MusicalVerdict =
+  | { applies: false; why: string }
+  | { applies: true; evaluated: false; why: string }
+  | {
+      applies: true;
+      evaluated: true;
+      passes: boolean;
+      total: number;
+      parts: Record<string, number>;
+      wrong: string[];
+      floor: number;
+      why: string;
+      evaluator: string;
+      version: number;
+      source: 'carried' | 'recomputed';
+    };
+
+/** The evaluator the projection recomputes with now (`microscope.json` `evaluator`). */
+export interface EvaluatorRef {
+  name: string | null;
+  version: number;
+}
+
+export interface FamilyRow {
   name: string;
   version: number;
   promise: { promise: string; why: string; when?: Record<string, unknown> }[];
@@ -124,6 +160,7 @@ interface MicroscopeData {
   record: { path: string; events: number; errors: { line: number; why: string }[] };
   queue: { id: string; title: string; items: string[] }[];
   families: Record<string, FamilyRow>;
+  evaluator?: EvaluatorRef;
   items: Record<string, ItemFacts>;
 }
 
@@ -207,6 +244,76 @@ const KIND_WORDS: Record<FactKind, string> = {
   unmeasured: 'unmeasured',
   runtime: 'runtime',
 };
+
+// --- three lines of the facts, as text -------------------------------------------------
+
+const UNHEARD = 'unheard: no hearing counts until a person’s decision.';
+
+/**
+ * The musical line (D5; G55): the musical gate's verdict as the build's projection carries it,
+ * never computed here. A study reads passes or refused, the gate's own words (the total against
+ * the floor, any wrong cadence), the evaluator with its contract version, and whether the build
+ * carried the verdict or the projection recomputed it from the built notes; a verdict written
+ * under another version than the evaluator's current one says so. A music family the evaluator
+ * does not judge keeps the contract's "not evaluated" words. Either way "unheard" follows as a
+ * sentence of its own: a notation score is never a hearing. A drill stays a drill.
+ */
+export function musicalLines(facts: ItemFacts, family: FamilyRow | undefined, evaluator?: EvaluatorRef): string[] {
+  if (!family) return ['Not evaluated by any code.'];
+  const verdict = facts.musical;
+  if (!verdict) return ['The build’s data carries no musical verdict for this item: rebuild the content.'];
+  if (!verdict.applies) return ['A drill: judged as a drill, never as music; its repetition is the point.'];
+  if (!verdict.evaluated) return [`Promised as music — ${verdict.why}.`, UNHEARD];
+  const source =
+    verdict.source === 'carried' ? 'carried from the build' : 'recomputed by the projection from the built notes';
+  return [
+    `Evaluated from the notation by ${verdict.evaluator} v${String(verdict.version)}, ${source}: ${
+      verdict.passes ? 'passes' : 'refused'
+    } — ${verdict.why}${verdict.wrong.length === 0 ? '; no wrong cadence' : ''}.`,
+    ...(evaluator && evaluator.version !== verdict.version
+      ? [`Written by ${verdict.version < evaluator.version ? 'an earlier' : 'another'} evaluator: the evaluator is now v${String(evaluator.version)}.`]
+      : []),
+    UNHEARD,
+  ];
+}
+
+/**
+ * "Contract requires but the notes lack" (D5; G56): the projection's `missing`, the requirements
+ * the recipe selects (`family_contracts.selected`) that the measured demands lack. The screen
+ * never reads a family's rules for it, so a rule whose `when` the recipe does not meet is never named.
+ */
+export function contractWarning(facts: ItemFacts): string | null {
+  const missing = facts.missing ?? [];
+  return missing.length > 0 ? `Contract requires but the notes lack: ${missing.join(', ')}` : null;
+}
+
+/** The two review dimensions' facts (`review.FACT`): each printed on its own line, decided or not. */
+const REVIEWED_FACTS = ['reviewedScore', 'reviewedTeaching'] as const;
+
+/**
+ * The provenance list (D5; G60): the source, then every fact with its kind, its value as the
+ * record holds it — a promise's `music` or `drill`, a decision's `yes`, `no` or `fix`, never
+ * reworded into a conclusion — and its `via`; a reviewed fact adds its basis, date and event.
+ * A review dimension with no current decision reads "no decision".
+ */
+export function provenanceLines(provenance: Provenance): string[] {
+  const lines = Object.entries(provenance.facts).map(([name, how]) => {
+    const reviewed = how as { basis?: string; date?: string; event?: string; value?: string | null };
+    const kind = KIND_WORDS[how.kind];
+    const head =
+      reviewed.value === null ? `no decision (${kind})` : reviewed.value !== undefined ? `${reviewed.value} (${kind})` : kind;
+    const decided = [
+      reviewed.basis ? `basis ${reviewed.basis}` : '',
+      reviewed.date ?? '',
+      reviewed.event ? `event ${reviewed.event}` : '',
+    ].filter(Boolean);
+    return `${name}: ${head}${how.via ? ` — ${how.via}` : ''}${how.why ? ` — ${how.why}` : ''}${
+      decided.length ? ` — ${decided.join(', ')}` : ''
+    }${how.untrusted?.length ? ` (untrusted: ${how.untrusted.join(', ')})` : ''}`;
+  });
+  const undecided = REVIEWED_FACTS.filter((name) => !(name in provenance.facts)).map((name) => `${name}: no decision`);
+  return [`source: ${provenance.source}`, ...lines, ...undecided];
+}
 
 /** The handle `microscope.spec.ts` reads; attached only by this builder-only screen. */
 export interface MicroscopeHandle {
@@ -733,11 +840,7 @@ export function DevMicroscopeScreen(router: Router): HTMLElement {
         fact(
           'musical',
           'Musical quality',
-          text(
-            facts.promise === 'music'
-              ? 'Promised as music: not evaluated — no musical evaluator exists and no hearing counts until a person hears it here.'
-              : 'A drill: judged as a drill, never as music; its repetition is the point.',
-          ),
+          ...musicalLines(facts, family, data.evaluator).map((line) => text(line)),
           list(family.unjudged.map((line) => `unjudged: ${line}`)),
         ),
       );
@@ -746,7 +849,7 @@ export function DevMicroscopeScreen(router: Router): HTMLElement {
         fact('promise', 'Promise', text('— (a family contract states a promise; this item has none)')),
         fact('heard', 'Heard', text('— (heard is a family declaration)')),
         fact('target', 'Target', text('— (declared by a family contract or a reading row; not this item)')),
-        fact('musical', 'Musical quality', text('Not evaluated by any code.')),
+        fact('musical', 'Musical quality', ...musicalLines(facts, undefined).map((line) => text(line))),
       );
     }
 
@@ -782,15 +885,13 @@ export function DevMicroscopeScreen(router: Router): HTMLElement {
               ? `Not measured: ${item.measurement.reason}`
               : 'No demands measured.',
           );
-    const missing = family
-      ? family.requires.filter((rule) => !facts.demands.some((one) => one.demand === rule.demand)).map((rule) => rule.demand)
-      : [];
+    const warning = contractWarning(facts);
     factsBlock.append(
       fact(
         'demands',
         'Measured demands (the app’s detectors) and the contract’s verdict',
         demandsBody,
-        ...(missing.length > 0 ? [text(`Contract requires but the notes lack: ${missing.join(', ')}`, 'microscope__warn')] : []),
+        ...(warning ? [text(warning, 'microscope__warn')] : []),
       ),
     );
 
@@ -814,15 +915,7 @@ export function DevMicroscopeScreen(router: Router): HTMLElement {
       fact(
         'provenance',
         'Provenance (as E0 labels each fact)',
-        provenance
-          ? list([
-              `source: ${provenance.source}`,
-              ...Object.entries(provenance.facts).map(
-                ([name, how]) =>
-                  `${name}: ${KIND_WORDS[how.kind]}${how.via ? ` — ${how.via}` : ''}${how.why ? ` — ${how.why}` : ''}${how.untrusted?.length ? ` (untrusted: ${how.untrusted.join(', ')})` : ''}`,
-              ),
-            ])
-          : text('No provenance record.'),
+        provenance ? list(provenanceLines(provenance)) : text('No provenance record.'),
       ),
     );
 
