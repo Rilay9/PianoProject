@@ -14,11 +14,13 @@ own MusicXML, because the claim it settles is about that edition.
 
 The last two classes are the duration feature's tempo (X31): the tempo
 `notesPerSecond` is computed at, read back from the features. The first holds
-the build to quarter notes a minute from the opening mark; the second builds the
-MusicXML of `app/tests/unit/tempoFromXml.test.ts` (the app's one tempo reader)
-and states, shape by shape, where music21's reading and the app's agree and
-where they do not — the build keeps music21's reading, and the gap is named
-here rather than closed by a second copy of the app's reader.
+the build to quarter notes a minute from the opening mark, and (X31a) to the
+app's opening rule: a mark after a note has sounded is a change, not the
+opening. The second builds the MusicXML of
+`app/tests/unit/tempoFromXml.test.ts` (the app's one tempo reader) and states,
+shape by shape, where music21's reading and the app's agree and where they do
+not — the build keeps music21's reading, and the gap is named here rather than
+closed by a second copy of the app's reader.
 """
 from __future__ import annotations
 
@@ -260,6 +262,42 @@ def _marked(marks_by_part, *, bars: int = 1, beats: int = 4, beat_type: int = 4)
     return score
 
 
+def _written(parts, *, beats: int = 4, beat_type: int = 4):
+    """
+    A score of one staff per entry of `parts`; each staff is a list of bars,
+    each bar what stands in it in order: `("note", length)` or `("rest", length)`
+    in quarter notes, `("grace",)` a grace note (no time), and a music21 object
+    (a tempo mark, a chord symbol) standing where the bar has reached (no time).
+    """
+    from music21 import meter, note, stream
+
+    score = stream.Score()
+    for bars in parts:
+        part = stream.PartStaff()
+        for number, events in enumerate(bars, start=1):
+            measure = stream.Measure(number=number)
+            if number == 1:
+                measure.insert(0.0, meter.TimeSignature(f"{beats}/{beat_type}"))
+            at = 0.0
+            for event in events:
+                if event == ("grace",):
+                    measure.insert(at, note.Note(midi=62).getGrace())
+                elif isinstance(event, tuple):
+                    kind, length = event
+                    element = note.Note(midi=60) if kind == "note" else note.Rest()
+                    element.quarterLength = length
+                    measure.insert(at, element)
+                    at += length
+                else:
+                    measure.insert(at, event)
+            part.append(measure)
+        score.insert(0.0, part)
+    return score
+
+
+_BAR = [("note", 1.0)] * 4
+
+
 class TestTheOpeningTempo(unittest.TestCase):
     """
     The duration feature's tempo is quarter notes a minute from the opening mark
@@ -270,7 +308,69 @@ class TestTheOpeningTempo(unittest.TestCase):
     takes the first entry of the score model's map, which is in quarter notes a
     minute since X3d, so a half note = 60 read as 60 here was half the tempo the
     app computes the same feature at.
+
+    That mark opens the piece only where nothing has sounded before it (X31a;
+    the app's rule, `app/src/score/tempoFromXml.ts`, approved in X3d): after
+    rests only it is the opening; after a note in any staff it is a later
+    change, and the piece opens at the default 100. What counts as sounding is
+    what the app counts: a note or a chord, a grace note included; not a rest,
+    not a chord symbol. The app also leaves out a `<cue/>` note, which music21
+    reads as an ordinary note (a named gap, `_GAPS`).
     """
+
+    def test_a_mark_after_rests_only_opens_the_piece(self) -> None:
+        # (a) A bar of rest, then the mark on bar 2's first note: nothing has
+        # sounded before it (Beethoven's Fifth in the bundled edition is this
+        # shape, an eighth rest long).
+        from music21 import tempo
+
+        score = _written([[[("rest", 4.0)], [tempo.MetronomeMark(number=72), *_BAR]]])
+        self.assertAlmostEqual(_tempo_read(score, beats=4), 72.0, places=6)
+
+    def test_a_mark_after_a_note_has_sounded_is_a_change_not_the_opening(self) -> None:
+        # (b) Bar 1 is played at the default before bar 2's mark changes it.
+        from music21 import tempo
+
+        score = _written([[_BAR, [tempo.MetronomeMark(number=72), *_BAR]]])
+        self.assertAlmostEqual(_tempo_read(score, beats=4), 100.0, places=6)
+
+    def test_a_mark_at_the_first_bars_start_opens_the_piece_over_its_note(self) -> None:
+        # (c) A note beginning where the mark stands has not sounded before it.
+        from music21 import tempo
+
+        score = _written([[[tempo.MetronomeMark(number=72), *_BAR], _BAR]])
+        self.assertAlmostEqual(_tempo_read(score, beats=4), 72.0, places=6)
+
+    def test_every_staff_decides_what_has_sounded(self) -> None:
+        # (d) The upper staff rests a beat and has its mark on beat 2; the
+        # lower staff has already played beat 1.
+        from music21 import tempo
+
+        score = _written(
+            [
+                [[("rest", 1.0), tempo.MetronomeMark(number=72), *[("note", 1.0)] * 3]],
+                [_BAR],
+            ]
+        )
+        self.assertAlmostEqual(_tempo_read(score, beats=4), 100.0, places=6)
+
+    def test_a_chord_symbol_over_the_rests_has_not_sounded(self) -> None:
+        # music21 yields a chord symbol from `notes` as a chord at its offset;
+        # nobody plays it (`difficulty.sounding`), and the app reads no
+        # `<harmony>` as a note.
+        from music21 import harmony, tempo
+
+        score = _written([[[harmony.ChordSymbol("C"), ("rest", 4.0)], [tempo.MetronomeMark(number=72), *_BAR]]])
+        self.assertAlmostEqual(_tempo_read(score, beats=4), 72.0, places=6)
+
+    def test_a_grace_note_before_the_mark_has_sounded(self) -> None:
+        # music21 gives a grace note no duration, at the offset of what follows
+        # it; the app counts it as played (only a rest, a chord's later notes
+        # and a `<cue/>` note are not), so bar 2's mark is a change.
+        from music21 import tempo
+
+        score = _written([[[("grace",), ("rest", 4.0)], [tempo.MetronomeMark(number=72), *_BAR]]])
+        self.assertAlmostEqual(_tempo_read(score, beats=4), 100.0, places=6)
 
     def test_a_half_note_mark_is_counted_in_quarter_notes(self) -> None:
         from music21 import tempo
@@ -387,8 +487,7 @@ def _app_shapes() -> dict[str, tuple[str, int, float, float]]:
         # Fractions kept (the second is equal to a millionth: music21 reads the mark, 100.5).
         "quarter = 90.00009000009 with its sound": (_xml([_direction(_metronome("quarter", "90.00009000009"), _sound("90.00009000009"))]), 4, 90.00009000009, 90.00009000009),
         "dotted quarter = 67 with sound 100.49999999999999": (_xml([_direction(_metronome("quarter", "67", 1), _sound("100.49999999999999"))]), 4, 100.49999999999999, 100.5),
-        # Positions: a visual offset, a sounding one after an opening sound; every part, the first first.
-        "a visual offset": (_xml([_direction(_metronome("quarter", "60"), f"<offset>2</offset>{_sound(60)}")]), 4, 60, 60),
+        # Positions: a sounding offset after an opening sound; every part, the first first.
         "an opening sound, then a sounding offset": (_xml([_sound(50) + _direction(_metronome("quarter", "60"), f'<offset sound="yes">2</offset>{_sound(60)}')]), 4, 50, 50),
         "two parts at one place: the first part's": (two_parts, 4, 60, 60),
         # Not tempos, on both sides: the default.
@@ -399,38 +498,47 @@ def _app_shapes() -> dict[str, tuple[str, int, float, float]]:
         "a tempo word alone": (_xml([_direction("<words>Allegro</words>")]), 4, 100, 100),
         "a sound in a comment": (_xml([f"<!-- {_sound(99)} -->"]), 4, 100, 100),
         "no tempo at all": (_xml([""]), 4, 100, 100),
-        # The opening.
+        # The opening: the first tempo opens the piece after rests only; after a note has sounded it is a
+        # change, and the piece opens at the default. The last three differed until X31a brought the rule here.
         "an opening sound, a mark in bar 2": (_xml([_sound(100), _direction(_metronome("quarter", "132"), _sound(132))]), 4, 100, 100),
         "a tempo after an opening rest (the Fifth's shape)": (_xml(["", ""]).replace(_OPENING + _QUARTER * 4, f"{_OPENING}{_rest(1)}{_direction('<words>Allegro con brio</words>', _sound(164))}{_QUARTER * 3}"), 4, 164, 164),
-        "a mark on bar 2 after a cue note and rests": (_xml(["", _direction(_metronome("quarter", "72"), _sound(72))]).replace(_OPENING + _QUARTER * 4, f"{_OPENING}{cue}{_rest(3)}"), 4, 72, 72),
         "E48's form: a sound opening bar 1, a mark in bar 2": (_xml(["", _direction(_metronome("quarter", "132"), _sound(132))]).replace('<measure number="1">', f'<measure number="1">{_sound(72)}'), 4, 72, 72),
-        # Where music21 and the app part ways (the build keeps music21's reading; X31's entry counts the corpus).
+        "a mark only in bar 2": (_xml(["", _direction(_metronome("quarter", "132"), _sound(132))]), 4, 100, 100),
+        "a tempo after the first note of bar 1": (_xml([""]).replace(_OPENING, f"{_OPENING}{_QUARTER}{_sound(90)}"), 4, 100, 100),
+        "an upbeat before bar 1's tempo": (_xml(["", _direction(_metronome("quarter", "60", 1), _sound(90)), ""], implicit_first=True), 4, 100, 100),
+        # Added in X31a. The first is the app test's `afterANote`; the second is not in the app's test, and
+        # its app number is the app reader's own on this XML (`docs/prompts/runs/X31a/shapes-app.txt`).
+        "a mark after the first note of bar 1": (_xml(["", ""]).replace(_OPENING + _QUARTER * 4, f"{_OPENING}{_QUARTER}{_direction(_metronome('quarter', '90'), _sound(90))}{_QUARTER * 3}"), 4, 100, 100),
+        "a bar of rest, then a mark in bar 2": (_xml(["", _direction(_metronome("quarter", "72"))]).replace(_OPENING + _QUARTER * 4, f"{_OPENING}{_rest(4)}"), 4, 72, 72),
+        # Where music21 and the app part ways (the build keeps music21's reading; X31's and X31a's entries count the corpus).
         "a mark and a sound that disagree in one direction": (_xml([_direction(_metronome("half", "60"), _sound(100))]), 4, 100, 120),
         "a sound standing beside a mark at one place (E32's form)": (_xml([f"{_direction(_metronome('quarter', '132'))}{_sound(100)}"]), 4, 100, 132),
         "a pickup whose mark and sound disagree": (_xml([_direction(_metronome("quarter", "60", 1), _sound(70)), _sound(90), ""], implicit_first=True), 4, 70, 90),
         "'c. 108'": (_xml([_direction(_metronome("quarter", "c. 108"))]), 4, 108, 100),
-        "a mark only in bar 2": (_xml(["", _direction(_metronome("quarter", "132"), _sound(132))]), 4, 100, 132),
-        "a tempo after the first note of bar 1": (_xml([""]).replace(_OPENING, f"{_OPENING}{_QUARTER}{_sound(90)}"), 4, 100, 90),
-        "an upbeat before bar 1's tempo": (_xml(["", _direction(_metronome("quarter", "60", 1), _sound(90)), ""], implicit_first=True), 4, 100, 90),
+        # Agreed until X31a, when the opening rule reached Python: music21 places these two marks after a note.
+        "a mark on bar 2 after a cue note and rests": (_xml(["", _direction(_metronome("quarter", "72"), _sound(72))]).replace(_OPENING + _QUARTER * 4, f"{_OPENING}{cue}{_rest(3)}"), 4, 72, 100),
+        "a visual offset": (_xml([_direction(_metronome("quarter", "60"), f"<offset>2</offset>{_sound(60)}")]), 4, 60, 100),
     }
     return shapes
 
 
-#: Where music21's reading and the app's differ, and why. Each is music21's
-#: MusicXML reader or the app's opening rule, never a Python choice: a sound in a
+#: Where music21's reading and the app's differ, and why. Each is information
+#: music21's MusicXML reader does not keep, never a Python choice: a sound in a
 #: direction that also holds a `<metronome>` is dropped (music21's `xmlDirection`:
 #: "avoiding doubled metronomes"), so the mark wins where the app's sound does;
 #: two tempos at one offset go to the first in the file; "c." before a number is
-#: not read; and the app opens at its default until a tempo written after a note
-#: has sounded, where the build takes the earliest mark anywhere.
+#: not read; a `<cue/>` note (not played) is read as a note; and a direction's
+#: `<offset>` moves it whether or not it says `sound="yes"`. The last two place a
+#: mark after a note that the app does not count, so since X31a (the app's
+#: opening rule, in Python from the parsed score) the build opens at the default
+#: there. The late-tempo shapes X31 named here agree since X31a.
 _GAPS = {
     "a mark and a sound that disagree in one direction": "music21 drops the sound in a direction that holds a mark",
     "a sound standing beside a mark at one place (E32's form)": "two tempos at one offset: music21's first in the file is the mark; the app's sound wins",
     "a pickup whose mark and sound disagree": "music21 drops the sound in a direction that holds a mark",
     "'c. 108'": "music21 reads no number from 'c. 108'",
-    "a mark only in bar 2": "the app opens at its default before a tempo written after notes have sounded",
-    "a tempo after the first note of bar 1": "the app opens at its default before a tempo written after notes have sounded",
-    "an upbeat before bar 1's tempo": "the app opens at its default before a tempo written after notes have sounded",
+    "a mark on bar 2 after a cue note and rests": "music21 reads a <cue/> note as a note, sounding before the mark",
+    "a visual offset": "music21 moves a direction by an <offset> that does not sound, after two notes",
 }
 
 
@@ -440,7 +548,8 @@ class TestTheAppsTempoShapes(unittest.TestCase):
     (`app/tests/unit/tempoFromXml.test.ts`, X3d), read through the build's
     duration feature. The three forms the reviewer named — a `<metronome>` with
     a beat unit and dots, a `<sound tempo>` alone, both in one direction — agree
-    wherever the file agrees with itself; `_GAPS` is where they do not.
+    wherever the file agrees with itself, and so does the opening rule (X31a);
+    `_GAPS` is where they do not.
     """
 
     maxDiff = None

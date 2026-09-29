@@ -1,0 +1,55 @@
+== a mark on bar 2 after a cue note and rests
+   marks (offset, quarterBpm, number, numberSounding): [(4.0, 72.0, 72, None)]
+   Note         offset 0  grace False  isCue (no attribute)  noteSize None
+   Rest         offset 1  grace False  isCue (no attribute)  noteSize None
+   Note         offset 4  grace False  isCue (no attribute)  noteSize None
+== a visual offset
+   marks (offset, quarterBpm, number, numberSounding): [(2.0, 60.0, 60, None)]
+   Note         offset 0  grace False  isCue (no attribute)  noteSize None
+   Note         offset 1  grace False  isCue (no attribute)  noteSize None
+   Note         offset 2  grace False  isCue (no attribute)  noteSize None
+== a mark only in bar 2
+   marks (offset, quarterBpm, number, numberSounding): [(4.0, 132.0, 132, None)]
+   Note         offset 0  grace False  isCue (no attribute)  noteSize None
+   Note         offset 1  grace False  isCue (no attribute)  noteSize None
+   Note         offset 2  grace False  isCue (no attribute)  noteSize None
+   Note         offset 3  grace False  isCue (no attribute)  noteSize None
+   Note         offset 4  grace False  isCue (no attribute)  noteSize None
+== a tempo after the first note of bar 1
+   marks (offset, quarterBpm, number, numberSounding): [(1.0, 90.0, None, 90)]
+   Note         offset 0  grace False  isCue (no attribute)  noteSize None
+   Note         offset 1  grace False  isCue (no attribute)  noteSize None
+== an upbeat before bar 1's tempo
+   marks (offset, quarterBpm, number, numberSounding): [(1.0, 90.0, 60, None)]
+   Note         offset 0  grace False  isCue (no attribute)  noteSize None
+   Note         offset 1  grace False  isCue (no attribute)  noteSize None
+== a tempo after an opening rest (the Fifth's shape)
+   marks (offset, quarterBpm, number, numberSounding): [(1.0, 164.0, None, 164)]
+   Rest         offset 0  grace False  isCue (no attribute)  noteSize None
+   Note         offset 1  grace False  isCue (no attribute)  noteSize None
+== an opening sound, then a sounding offset
+   marks (offset, quarterBpm, number, numberSounding): [(0.0, 50.0, None, 50), (2.0, 60.0, 60, None)]
+   Note         offset 0  grace False  isCue (no attribute)  noteSize None
+   Note         offset 1  grace False  isCue (no attribute)  noteSize None
+   Note         offset 2  grace False  isCue (no attribute)  noteSize None
+== a pickup whose mark and sound disagree
+   marks (offset, quarterBpm, number, numberSounding): [(0.0, 90.0, 60, None), (1.0, 90.0, None, 90)]
+   Note         offset 0  grace False  isCue (no attribute)  noteSize None
+   Note         offset 1  grace False  isCue (no attribute)  noteSize None
+== a grace note, a bar's rest, a mark in bar 2
+   marks (offset, quarterBpm, number, numberSounding): [(4.0, 72.0, 72, None)]
+   Note         offset 0  grace True  isCue (no attribute)  noteSize None
+   Rest         offset 0  grace False  isCue (no attribute)  noteSize None
+   Note         offset 4  grace False  isCue (no attribute)  noteSize None
+== a chord symbol over a bar's rest, a mark in bar 2
+   marks (offset, quarterBpm, number, numberSounding): [(4.0, 72.0, 72, None)]
+   ChordSymbol  offset 0  grace False  isCue (no attribute)  noteSize None
+   Rest         offset 0  grace False  isCue (no attribute)  noteSize None
+   Note         offset 4  grace False  isCue (no attribute)  noteSize None
+   Harmony elements (class, offset): [('ChordSymbol', 0.0)]; in recurse().notes: ['ChordSymbol']
+== a cue-sized note that plays, rests, a mark in bar 2
+   marks (offset, quarterBpm, number, numberSounding): [(4.0, 72.0, 72, None)]
+   Note         offset 0  grace False  isCue (no attribute)  noteSize cue
+   Rest         offset 1  grace False  isCue (no attribute)  noteSize None
+   Note         offset 4  grace False  isCue (no attribute)  noteSize None
+exit=0

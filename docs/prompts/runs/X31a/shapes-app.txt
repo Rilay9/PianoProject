@@ -1,0 +1,38 @@
+equal    	half = 60 with sound 120, cut time	the app's reader 120	the table's app 120	the table's build 120
+equal    	half = 60 alone, cut time	the app's reader 120	the table's app 120	the table's build 120
+equal    	dotted quarter = 60 with sound 90, 6/8	the app's reader 90	the table's app 90	the table's build 90
+equal    	eighth = 120 alone	the app's reader 60	the table's app 60	the table's build 60
+equal    	whole = 30 alone	the app's reader 120	the table's app 120	the table's build 120
+equal    	16th = 240 alone	the app's reader 60	the table's app 60	the table's build 60
+equal    	breve = 10 alone	the app's reader 80	the table's app 80	the table's build 80
+equal    	dotted half = 61 alone	the app's reader 183	the table's app 183	the table's build 183
+equal    	dotted eighth = 120 alone	the app's reader 90	the table's app 90	the table's build 90
+equal    	double-dotted quarter = 40 alone	the app's reader 70	the table's app 70	the table's build 70
+equal    	a sound alone in the bar, 72.5	the app's reader 72.5	the table's app 72.5	the table's build 72.5
+equal    	a tempo word with its sound, 132	the app's reader 132	the table's app 132	the table's build 132
+equal    	quarter = 90.00009000009 with its sound	the app's reader 90.00009000009	the table's app 90.00009000009	the table's build 90.00009000009
+equal    	dotted quarter = 67 with sound 100.49999999999999	the app's reader 100.49999999999999	the table's app 100.49999999999999	the table's build 100.5
+equal    	an opening sound, then a sounding offset	the app's reader 50	the table's app 50	the table's build 50
+equal    	two parts at one place: the first part's	the app's reader 60	the table's app 60	the table's build 60
+equal    	a metric modulation	the app's reader 100	the table's app 100	the table's build 100
+equal    	the metronome-note form	the app's reader 100	the table's app 100	the table's build 100
+equal    	a mark with no number	the app's reader 100	the table's app 100	the table's build 100
+equal    	a range	the app's reader 100	the table's app 100	the table's build 100
+equal    	a tempo word alone	the app's reader 100	the table's app 100	the table's build 100
+equal    	a sound in a comment	the app's reader 100	the table's app 100	the table's build 100
+equal    	no tempo at all	the app's reader 100	the table's app 100	the table's build 100
+equal    	an opening sound, a mark in bar 2	the app's reader 100	the table's app 100	the table's build 100
+equal    	a tempo after an opening rest (the Fifth's shape)	the app's reader 164	the table's app 164	the table's build 164
+equal    	E48's form: a sound opening bar 1, a mark in bar 2	the app's reader 72	the table's app 72	the table's build 72
+equal    	a mark only in bar 2	the app's reader 100	the table's app 100	the table's build 100
+equal    	a tempo after the first note of bar 1	the app's reader 100	the table's app 100	the table's build 100
+equal    	an upbeat before bar 1's tempo	the app's reader 100	the table's app 100	the table's build 100
+equal    	a mark after the first note of bar 1	the app's reader 100	the table's app 100	the table's build 100
+equal    	a bar of rest, then a mark in bar 2	the app's reader 72	the table's app 72	the table's build 72
+equal    	a mark and a sound that disagree in one direction	the app's reader 100	the table's app 100	the table's build 120
+equal    	a sound standing beside a mark at one place (E32's form)	the app's reader 100	the table's app 100	the table's build 132
+equal    	a pickup whose mark and sound disagree	the app's reader 70	the table's app 70	the table's build 90
+equal    	'c. 108'	the app's reader 108	the table's app 108	the table's build 100
+equal    	a mark on bar 2 after a cue note and rests	the app's reader 72	the table's app 72	the table's build 100
+equal    	a visual offset	the app's reader 60	the table's app 60	the table's build 100
+shapes: 37; the table's app number equals the app's reader on 37
