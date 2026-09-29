@@ -16,6 +16,15 @@ Two layers in one file:
   report's review column shows the teaching-use decision and its basis, the queue puts the
   music families' canonical items first and places every item once, and `--merge` and
   `--check` do what the brief says from the command line.
+
+And the microscope's projection (D5; G55, G56), on the built data: a study carries the musical
+gate's verdict — evaluated, passes, the total, the floor, the wrong cadences, the evaluator and
+its contract version, and whether the verdict was carried from the build or recomputed by the
+projection — while a groove keeps the contract's "not evaluated" words and a drill stays a drill;
+two evaluator versions on the same item are told apart; and "requires but the notes lack" names
+only the rules the recipe selects (`family_contracts.selected`), as the forbidden verdicts and the
+secondary targets already do. The provenance line (G60) has nothing in the projection: the screen
+reads the catalogue's facts, and `app/tests/unit/microscopeLines.test.ts` holds how it prints them.
 """
 from __future__ import annotations
 
@@ -378,6 +387,172 @@ class TestTheQueue(Built):
         self.assertEqual(set(data["items"]), set(self.by_id))
         for item_id, item in data["items"].items():
             self.assertEqual(item["identity"], self.current[item_id], item_id)
+
+
+#: One study, one groove and one drill, as the entry walks them (D5): the 2.1 interval-reading
+#: study (the one D3 walked), the son-clave groove `microscope.spec.ts` opens, and a right-hand
+#: interval drill, whose family requires the bass clef only of a left-hand recipe.
+STUDY = "exercise.study.interval-reading.c-major.4-4.8bar.sustained.01"
+GROOVE = "exercise.latin-groove.c.son-3-2"
+DRILL = "exercise.interval-reading.c-position.right.01"
+
+
+def family_of(entry: dict) -> str | None:
+    return (((entry.get("drill") or {}).get("generator")) or {}).get("family")
+
+
+class Projected(Built):
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+        cls.data = built(review.MICROSCOPE_FILE, review.dev_root(BUILT))
+        cls.generated = [e for e in cls.catalog if family_of(e) in cls.data["families"]]
+
+
+class TestTheMicroscopesMusicalLine(Projected):
+    """G55: the gate's verdict where the gate evaluates, the contract's words where it does not."""
+
+    def test_every_study_carries_the_gate_s_verdict_its_numbers_its_version_and_its_source(self) -> None:
+        import family_contracts as FC  # noqa: PLC0415
+        import musical_evaluator as ME  # noqa: PLC0415
+
+        row = FC.contract("study")
+        studies = [e for e in self.generated if family_of(e) == "study"]
+        self.assertEqual(len(studies), 24)
+        for entry in studies:
+            with self.subTest(item=entry["id"]):
+                verdict = self.data["items"][entry["id"]]["musical"]
+                self.assertIs(verdict["applies"], True)
+                self.assertIs(verdict["evaluated"], True)
+                self.assertIs(verdict["passes"], True, verdict.get("why"))
+                self.assertEqual(verdict["wrong"], [])
+                self.assertEqual(verdict["floor"], row["musical"]["floor"])
+                self.assertEqual(verdict["evaluator"], row["musical"]["evaluator"])
+                self.assertEqual(verdict["version"], ME.VERSION)
+                # No build step persists the gate's verdict on the item at this commit
+                # (`confirm_musical` raises or passes), so every one is the projection's.
+                self.assertNotIn("verdict", entry["drill"]["study"])
+                self.assertEqual(verdict["source"], "recomputed")
+                # The page the projection read is the candidate the realiser chose and scored.
+                self.assertAlmostEqual(verdict["total"], entry["drill"]["study"]["chosen"]["score"], places=3)
+                self.assertIn(f"{verdict['total']:.3f} against the floor {verdict['floor']}", verdict["why"])
+
+    def test_the_verdict_is_the_gate_s_own_on_the_built_notes(self) -> None:
+        import family_contracts as FC  # noqa: PLC0415
+        from music21 import converter  # noqa: PLC0415
+
+        entry = self.by_id[STUDY]
+        gate = FC.musical_gate(FC.contract("study"), converter.parse(str(BUILT / entry["file"])), entry)
+        verdict = self.data["items"][STUDY]["musical"]
+        for key in ("applies", "evaluated", "passes", "total", "parts", "wrong", "floor", "why"):
+            self.assertEqual(verdict[key], gate[key], key)
+
+    def test_a_groove_is_not_evaluated_in_the_contract_s_words(self) -> None:
+        import family_contracts as FC  # noqa: PLC0415
+
+        verdict = self.data["items"][GROOVE]["musical"]
+        gate = FC.musical_gate(FC.contract("latin_groove"), None, self.by_id[GROOVE])
+        self.assertEqual(verdict, gate)
+        self.assertEqual(verdict["evaluated"], False)
+        self.assertIn("the evaluator judges phrase shape, not idiom", verdict["why"])
+        self.assertNotIn("no musical evaluator exists", verdict["why"])
+        for key in ("total", "version", "source"):
+            self.assertNotIn(key, verdict)
+
+    def test_a_drill_is_judged_as_a_drill_and_the_promise_is_read_per_recipe(self) -> None:
+        self.assertEqual(self.data["items"][DRILL]["musical"]["applies"], False)
+        # The meter family: a drill in 5/4, music (and not evaluated) in 12/8.
+        self.assertEqual(self.data["items"]["exercise.meter.5-4"]["musical"]["applies"], False)
+        twelve = self.data["items"]["exercise.meter.12-8"]["musical"]
+        self.assertEqual((twelve["applies"], twelve["evaluated"]), (True, False))
+        for entry in self.generated:
+            with self.subTest(item=entry["id"]):
+                facts = self.data["items"][entry["id"]]
+                self.assertEqual(facts["musical"]["applies"], facts["promise"] == "music")
+
+    def test_two_evaluator_versions_on_the_same_item_are_told_apart(self) -> None:
+        import family_contracts as FC  # noqa: PLC0415
+        import musical_evaluator as ME  # noqa: PLC0415
+
+        row = FC.contract("study")
+        entry = copy.deepcopy(self.by_id[STUDY])
+        current = review.musical_verdict(entry, row, BUILT)
+        self.assertEqual((current["source"], current["version"]), ("recomputed", ME.VERSION))
+        self.assertEqual(self.data["evaluator"], {"name": row["musical"]["evaluator"], "version": ME.VERSION})
+        # The same item, carrying a verdict an earlier evaluator wrote: carried with its own
+        # version and numbers, never presented as the current evaluator's.
+        older = {key: value for key, value in current.items() if key != "source"}
+        older.update(version=ME.VERSION - 1, total=0.85, why="phrase shape 0.850 against the floor 0.8 (notation, not hearing; unheard)")
+        entry["drill"]["study"]["verdict"] = older
+        carried = review.musical_verdict(entry, row, None)
+        self.assertEqual((carried["source"], carried["version"], carried["total"]), ("carried", ME.VERSION - 1, 0.85))
+        self.assertNotEqual(carried["version"], current["version"])
+        # A verdict carried at the current version is carried, and nothing is recomputed:
+        # there are no built notes to read here.
+        entry["drill"]["study"]["verdict"] = {key: value for key, value in current.items() if key != "source"}
+        self.assertEqual(review.musical_verdict(entry, row, None), {**current, "source": "carried"})
+
+    def test_without_the_built_notes_or_a_carried_verdict_it_says_so(self) -> None:
+        import family_contracts as FC  # noqa: PLC0415
+
+        verdict = review.musical_verdict(copy.deepcopy(self.by_id[STUDY]), FC.contract("study"), None)
+        self.assertEqual((verdict["applies"], verdict["evaluated"]), (True, False))
+        self.assertEqual(verdict["why"], "evaluated at build: verdict not carried")
+        self.assertNotIn("total", verdict)
+
+
+class TestTheMicroscopesContractWarning(Projected):
+    """G56: "requires but the notes lack" names only the requirements the recipe selects."""
+
+    def test_the_warning_is_the_selected_requirements_the_notes_lack_on_every_item(self) -> None:
+        import family_contracts as FC  # noqa: PLC0415
+
+        for entry in self.generated:
+            with self.subTest(item=entry["id"]):
+                row = FC.contract(family_of(entry))
+                recipe = FC.recipe_of(entry)
+                facts = self.data["items"][entry["id"]]
+                selected = list(dict.fromkeys(r["demand"] for r in FC.selected(row.get("requires"), recipe)))
+                have = {one["demand"] for one in facts["demands"]}
+                self.assertEqual(facts["requires"], selected)
+                self.assertEqual(facts["missing"], [d for d in selected if d not in have])
+        # The rules that selected nothing on the three items walked (the old warning's words).
+        self.assertEqual(self.data["items"][STUDY]["missing"], [])
+        for demand in ("range.beyond-position", "rhythm.eighths", "rhythm.syncopation", "metre.compound"):
+            self.assertNotIn(demand, self.data["items"][STUDY]["requires"])
+        self.assertNotIn("clef.bass", self.data["items"][DRILL]["requires"])
+        self.assertEqual(self.data["items"][DRILL]["missing"], [])
+
+    def test_a_study_whose_recipe_selects_one_of_two_conditional_requirements(self) -> None:
+        # A subdivision study selects `rhythm.eighths` and not `rhythm.syncopation`; with both
+        # taken out of its measured demands, only the selected one is named.
+        entry = copy.deepcopy(self.by_id["exercise.study.subdivision.c-major.4-4.8bar.sustained.01"])
+        entry["demands"] = [d for d in entry["demands"] if d not in ("rhythm.eighths", "rhythm.syncopation")]
+        warning = review.contract_warning(entry)
+        self.assertIn("rhythm.eighths", warning["missing"])
+        self.assertNotIn("rhythm.syncopation", warning["missing"])
+        self.assertNotIn("rhythm.syncopation", warning["requires"])
+
+    def test_forbidden_verdicts_and_secondary_targets_follow_the_recipe(self) -> None:
+        import family_contracts as FC  # noqa: PLC0415
+
+        for entry in self.generated:
+            with self.subTest(item=entry["id"]):
+                row = FC.contract(family_of(entry))
+                recipe = FC.recipe_of(entry)
+                facts = self.data["items"][entry["id"]]
+                forbids = {r["demand"] for r in FC.selected(row.get("forbids"), recipe)}
+                for one in facts["demands"]:
+                    if one["verdict"] == "forbidden":
+                        self.assertIn(one["demand"], forbids)
+                self.assertEqual(facts["target"]["secondary"], FC.target_skills(row, recipe)[1:])
+        # A syncopation study's syncopation is what it requires, never what the other targets forbid.
+        syncopation = self.data["items"]["exercise.study.syncopation.c-major.4-4.8bar.broken.01"]
+        verdicts = {one["demand"]: one["verdict"] for one in syncopation["demands"]}
+        self.assertEqual(verdicts["rhythm.syncopation"], "required")
+        # Hand independence is a secondary target only of a study whose left hand is a pattern.
+        self.assertNotIn("hand-independence", self.data["items"][STUDY]["target"]["secondary"])
+        self.assertIn("hand-independence", syncopation["target"]["secondary"])
 
 
 class TestCheck(Built):

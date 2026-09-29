@@ -634,6 +634,64 @@ def demand_verdicts(entry: dict, option_untaught: list[str], taught_at: dict[str
     return out
 
 
+def contract_warning(entry: dict) -> dict:
+    """
+    The requirements the family contract selects for this item's recipe
+    (`family_contracts.selected`, the reading every gate uses) and those among them the notes lack
+    (D5; G56): what the microscope prints as "Contract requires but the notes lack". A rule whose
+    `when` the recipe does not meet is never named — a study is not told it lacks the other targets'
+    requirements, nor a right-hand interval drill the bass clef its left-hand recipes need.
+    """
+    import family_contracts as FC
+
+    family = (((entry.get("drill") or {}).get("generator")) or {}).get("family")
+    if family not in FC.contracts():
+        return {"requires": [], "missing": []}
+    rules = FC.selected(FC.contract(family).get("requires"), FC.recipe_of(entry))
+    requires = list(dict.fromkeys(rule["demand"] for rule in rules))
+    have = set(entry.get("demands") if isinstance(entry.get("demands"), list) else [])
+    return {"requires": requires, "missing": [demand for demand in requires if demand not in have]}
+
+
+#: What the microscope prints for a study built by a projection that could neither carry the gate's
+#: verdict nor read the built notes (the brief's "when to deviate" line): the gate ran at build time
+#: (`generate_exercises.confirm_musical`), and nothing here says what it found.
+NOT_CARRIED = "evaluated at build: verdict not carried"
+
+
+def musical_verdict(entry: dict, row: dict, out_dir: Path | None) -> dict:
+    """
+    The musical gate's verdict on one generated item, as the microscope prints it (D5; G55).
+
+    - A drill, or a music family whose row names no evaluator (the grooves and style families):
+      the gate's own answer, which needs no notes — "a drill is judged as a drill", or "not
+      evaluated" in the contract's words.
+    - A family whose row names an evaluator (the study): the verdict the build carried on the item
+      (`drill.study.verdict`), with the evaluator version it was written under, `source:
+      "carried"`; otherwise the same gate (`family_contracts.musical_gate`) run on the exact built
+      notes (`out_dir / entry["file"]`), `source: "recomputed"`, stamped with this evaluator's
+      `VERSION`. At this commit no build step persists the verdict — `confirm_musical` raises or
+      passes — so every study's verdict is recomputed here, from the page the learner is sent.
+      Never computed in the browser; notation, never a hearing.
+    """
+    import family_contracts as FC
+
+    gate = FC.musical_gate(row, None, entry)
+    if not gate.get("applies") or not row.get("musical"):
+        return gate
+    carried = ((entry.get("drill") or {}).get("study") or {}).get("verdict")
+    if carried:
+        return {**carried, "source": "carried"}
+    path = out_dir / entry["file"] if out_dir is not None and entry.get("file") else None
+    if path is None or not path.is_file():
+        return {"applies": True, "evaluated": False, "why": NOT_CARRIED}
+    import musical_evaluator as ME
+    from music21 import converter
+
+    verdict = FC.musical_gate(row, converter.parse(str(path)), entry)
+    return {**verdict, "evaluator": row["musical"]["evaluator"], "version": ME.VERSION, "source": "recomputed"}
+
+
 def family_projection(row: dict) -> dict:
     """What the screen shows of a family's contract row."""
     return {
@@ -654,7 +712,15 @@ def family_projection(row: dict) -> dict:
 
 
 def microscope_data(catalog: list[dict], report: dict, out_dir: Path | None, record: Path | None = None) -> dict:
+    """
+    The microscope's data: the queue, each family's contract row, and per item its identity,
+    tier, target, role, measured demands with the contract's verdicts, rungs and review events —
+    and, for a generated item, the musical gate's verdict (`musical`, `musical_verdict`) and the
+    requirements its recipe selects with those the notes lack (`requires`, `missing`,
+    `contract_warning`), so the screen prints what the build decided (D5).
+    """
     import family_contracts as FC
+    import musical_evaluator as ME
 
     _skills, demands_vocab = __import__("claims").load_vocabulary()
     taught_at = {d: v.get("taughtAt") for d, v in demands_vocab.items()}
@@ -699,6 +765,10 @@ def microscope_data(catalog: list[dict], report: dict, out_dir: Path | None, rec
             if primary is None:
                 not_judged = row["target"].get("notJudged") or {}
                 data["notJudged"] = {"candidate": not_judged.get("candidate"), "why": not_judged.get("why")}
+            # The musical line (G55) and the contract warning (G56): what the build decided, so the
+            # screen prints it and never reimplements the gate or a rule's `when`.
+            data["musical"] = musical_verdict(entry, row, out_dir)
+            data.update(contract_warning(entry))
         data["demands"] = demand_verdicts(entry, earliest_untaught.get(entry["id"], []), taught_at)
         data["rungs"] = [{**r, "title": rung_titles.get(r["rung"])} for r in rungs_of.get(entry["id"], [])]
         if events_of.get(entry["id"]):
@@ -712,6 +782,10 @@ def microscope_data(catalog: list[dict], report: dict, out_dir: Path | None, rec
                    "categories": {k: list(v) for k, v in CATEGORIES.items()}},
         "queue": tiers,
         "families": {family: family_projection(row) for family, row in contracts.items()},
+        # The evaluator a verdict is recomputed with now, so the screen can say when a carried
+        # verdict was written under another version (D5, the reviewer's change on 4088dfc).
+        "evaluator": {"name": next((row["musical"]["evaluator"] for row in contracts.values() if row.get("musical")), None),
+                      "version": ME.VERSION},
         "items": items,
     }
 
