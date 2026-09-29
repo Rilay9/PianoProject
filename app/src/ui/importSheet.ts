@@ -214,8 +214,8 @@ function guessedSection(row: ImportRow): HTMLElement {
       guessLine('import-key', IMPORT_TEXT.key, 'guess', stamped ? IMPORT_TEXT.keyStamped : IMPORT_TEXT.keyEstimated(printedSignature(xml) ?? 'no key signature')),
     );
   }
-  // **The learner's tempo (X3a; E48)** is drawn by the sheet on this section's tempo line while the
-  // tempo is the app's guess or the file's (`openImportSheet`): the store's `stateImportTempo` owns
+  // **The learner's tempo (X3a; E48)** is drawn by the sheet on this section's tempo line, whoever's
+  // the tempo is, the learner's included (X3b; `openImportSheet`): the store's `stateImportTempo` owns
   // the whole change (`responses/ef80e86.md` question 1), and this line then reads the row it returned.
   //
   // **No key control** (the reviewer, question 2; E49): a key correction is a semantic correction
@@ -245,9 +245,11 @@ export function openImportSheet(row: ImportRow, curriculum: Curriculum, options:
   const swap = button(IMPORT_TEXT.swap, () => void swapTheHands(), { id: 'import-swap' });
   const swapBlock = el('div', {}, el('div.row', {}, swap), swapSaid);
 
-  // The learner's tempo (X3a; E48): a number and *Use this tempo*, on the tempo line while the tempo
-  // is the app's guess or the file's. Drawn once, like the swap, so a number typed and a refusal said
-  // survive a redraw; gone once the tempo is the learner's (the line then says it).
+  // The learner's tempo (X3a; E48): a number and *Use this tempo*, on the tempo line of every MusicXML
+  // score — the store can state a tempo on any of them — including one whose tempo the learner already
+  // stated (X3b, `responses/564e8e5f.md`): a learner-authored tempo says whose statement it is and does
+  // not make it the last one, so a slip has a way back. Drawn once, like the swap, so a number typed and
+  // a refusal said survive a redraw; after a statement it starts again at the tempo the score opens at.
   const tempoField = el('input', { id: 'import-tempo-bpm', type: 'number', step: '1', inputMode: 'numeric' }) as HTMLInputElement;
   const tempoUse = button(IMPORT_TEXT.tempoUse, () => void stateTheTempo(), { id: 'import-tempo-use' });
   const tempoSaid = el('p.muted', { id: 'import-tempo-said', 'aria-live': 'polite', hidden: true });
@@ -264,11 +266,10 @@ export function openImportSheet(row: ImportRow, curriculum: Curriculum, options:
     guessed.replaceChildren(guesses);
     if (current.kind === 'musicxml' && typeof current.data === 'string') {
       const tempo = tempoWords(current, current.data);
-      if (tempo.whose !== 'yours') {
-        // It starts at the number the line names: the one a learner who knows better corrects.
-        if (tempoField.value === '' && tempo.bpm !== undefined) tempoField.value = String(tempo.bpm);
-        guesses.querySelector('#import-tempo')?.after(tempoBlock);
-      }
+      // Every MusicXML score, the learner's stated tempo included (X3b). It starts at the number the line
+      // names, the one a learner who knows better corrects: for a stated tempo, the one the score opens at.
+      if (tempoField.value === '' && tempo.bpm !== undefined) tempoField.value = String(tempo.bpm);
+      guesses.querySelector('#import-tempo')?.after(tempoBlock);
       const can = swapHands(current.data);
       swap.disabled = 'refused' in can;
       // A control that cannot act says why, on the sheet (`04` §0 R4).
@@ -330,6 +331,10 @@ export function openImportSheet(row: ImportRow, curriculum: Curriculum, options:
         return;
       }
       current = saved;
+      // Seeded again from the row the store returned (X3b): the number the line now names, the tempo the
+      // stored score opens at (`openingTempo`, to the whole beat, as the line says it) — never the
+      // characters typed. A refusal keeps the field as typed.
+      tempoField.value = '';
       render();
       if (saved.levelSource !== 'judged' && saved.level !== undefined) controls.setEstimated(saved.level);
     } catch (cause) {
