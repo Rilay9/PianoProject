@@ -18,8 +18,12 @@
  * - **The UI opens the sheet and the store opens none**, and nothing the sheet does writes a run:
  *   importing, correcting, assigning and closing create no evidence; a run is what the Score screen
  *   records when the learner plays.
- * - **The tempo control is held** (E48): no store operation states a tempo in this tree, so none is
- *   drawn.
+ * - **The learner states the tempo** (X3a; E48): where the tempo is the app's guess or the file's, a
+ *   number field and *Use this tempo* on the tempo line call `importStore.stateImportTempo` — which
+ *   writes the tempo into the score, measures it again and names the learner — and the sheet re-reads
+ *   the row the store returned: "You stated ♩ = N", *yours*, no control. A tempo the store refuses is
+ *   refused in the store's words, never clamped by the sheet. The number on the line is the one the
+ *   stored score now opens at: the store's tempo fact names the learner and carries no number.
  */
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -32,13 +36,20 @@ vi.mock('../../src/score/estimateImport', () => ({
   loadLevelModel: () => Promise.resolve(null),
 }));
 
+// The store's own `stateImportTempo`, watched: every call goes through to the real operation, so a
+// case can read the arguments the sheet passed and the row the store wrote (X3a).
+vi.mock('../../src/data/importStore', async (importOriginal) => {
+  const original = await importOriginal<typeof import('../../src/data/importStore')>();
+  return { ...original, stateImportTempo: vi.fn(original.stateImportTempo) };
+});
+
 import type { ImportRow } from '../../src/data/db';
 import type { Curriculum, Measurement, Provenance } from '../../src/curriculum/types';
-import { addImport, forgetConversionsForTest, getImport } from '../../src/data/importStore';
+import { addImport, forgetConversionsForTest, getImport, measureImport, stateImportTempo, withOpeningTempo } from '../../src/data/importStore';
 import { convertMidi } from '../../src/import/midi/convert';
 import { allProgress, recordRun, resetProgressForTest, walkSessions } from '../../src/data/progressStore';
 import { demandsLine, openAssignSheet } from '../../src/ui/assignSheet';
-import { IMPORT_TEXT } from '../../src/ui/help';
+import { IMPORT_TEXT, importStateWords } from '../../src/ui/help';
 import { openImportSheet, swapHands } from '../../src/ui/importSheet';
 import { clearFakeIndexedDb, fakeFile, useFakeIndexedDb } from './helpers/idb';
 import { installTextMeasurer } from './helpers/scoreCatalog';
@@ -55,8 +66,19 @@ const CURRICULUM: Curriculum = {
 const T52 =
   'Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.';
 
-/** Two bars on a piano's two staves, the key signature, the mode and the tempo as asked. */
-function twoStaves({ tempo, fifths = 1, mode }: { tempo?: number; fifths?: number; mode?: string } = {}): string {
+/**
+ * Two bars on a piano's two staves, the key signature, the mode and the tempo as asked: the printed
+ * mark `tempo` in its `beatUnit` (a quarter unless asked), playing at `sound` quarter notes a minute
+ * (the mark's own number unless asked), in bar `tempoBar` (the first unless asked).
+ */
+function twoStaves({
+  tempo,
+  fifths = 1,
+  mode,
+  beatUnit = 'quarter',
+  sound = tempo,
+  tempoBar = 1,
+}: { tempo?: number; fifths?: number; mode?: string; beatUnit?: string; sound?: number; tempoBar?: number } = {}): string {
   const note = (step: string, octave: number, staff: 1 | 2): string =>
     `<note><pitch><step>${step}</step><octave>${String(octave)}</octave></pitch><duration>4</duration><voice>${staff === 1 ? '1' : '5'}</voice><type>whole</type><staff>${String(staff)}</staff></note>`;
   const attributes =
@@ -66,9 +88,9 @@ function twoStaves({ tempo, fifths = 1, mode }: { tempo?: number; fifths?: numbe
   const metronome =
     tempo === undefined
       ? ''
-      : `<direction placement="above"><direction-type><metronome><beat-unit>quarter</beat-unit><per-minute>${String(tempo)}</per-minute></metronome></direction-type><staff>1</staff><sound tempo="${String(tempo)}"/></direction>`;
+      : `<direction placement="above"><direction-type><metronome><beat-unit>${beatUnit}</beat-unit><per-minute>${String(tempo)}</per-minute></metronome></direction-type><staff>1</staff><sound tempo="${String(sound)}"/></direction>`;
   const bar = (n: number): string =>
-    `<measure number="${String(n)}">${n === 1 ? attributes + metronome : ''}${note('E', 4, 1)}<backup><duration>4</duration></backup>${note('C', 3, 2)}</measure>`;
+    `<measure number="${String(n)}">${n === 1 ? attributes : ''}${n === tempoBar ? metronome : ''}${note('E', 4, 1)}<backup><duration>4</duration></backup>${note('C', 3, 2)}</measure>`;
   return (
     '<?xml version="1.0" encoding="UTF-8"?><score-partwise version="4.0"><work><work-title>Two staves</work-title></work>' +
     '<identification><creator type="composer">A. Composer</creator></identification>' +
@@ -139,6 +161,7 @@ beforeEach(() => {
   installTextMeasurer();
   resetProgressForTest();
   forgetConversionsForTest();
+  vi.mocked(stateImportTempo).mockClear();
   document.body.replaceChildren();
 });
 afterEach(() => {
@@ -221,12 +244,178 @@ describe('the import sheet says what the app read and what it guessed, from the 
     expect(text('#import-own')).not.toMatch(/measures its notes/);
   });
 
-  it('the tempo control is held: nothing is drawn that would state a tempo the store cannot take', () => {
+});
+
+describe('the learner states the tempo (X3a; E48’s stateImportTempo)', () => {
+  const field = (): HTMLInputElement => document.getElementById('import-tempo-bpm') as HTMLInputElement;
+  const use = (): HTMLButtonElement => document.getElementById('import-tempo-use') as HTMLButtonElement;
+  /** Types a tempo into the field and presses *Use this tempo*. */
+  function state(value: string): void {
+    field().value = value;
+    use().click();
+  }
+
+  /** A row whose tempo the learner has stated, as the store writes it: `authored`, the learner in `via`. */
+  const STATED = row({
+    data: withOpeningTempo(twoStaves(), 72),
+    provenance: provenance('imported-midi', {
+      hands: { kind: 'authored', via: 'the file’s own tracks, kept as recorded' },
+      tempo: { kind: 'authored', via: 'the learner’s stated tempo, 72 quarter notes a minute, 2026-09-29' },
+    }),
+  });
+
+  it('the app’s guess and the file’s tempo offer a number field and Use this tempo on the tempo line; a stated tempo and a PDF offer none', () => {
     openImportSheet(INFERRED, CURRICULUM);
-    const guessed = document.getElementById('import-guessed');
-    expect(guessed?.querySelector('input')).toBeNull();
-    expect([...(guessed?.querySelectorAll('button') ?? [])].map((b) => b.textContent)).toEqual(['Swap the hands']);
-    expect(guessed?.textContent ?? '').not.toMatch(/tell it|set the tempo/i);
+    const control = document.getElementById('import-tempo-set');
+    expect(control, 'no control under the app’s guess').not.toBeNull();
+    // On the tempo line: the control follows it, before anything else the section says.
+    expect(document.getElementById('import-tempo')?.nextElementSibling).toBe(control);
+    expect(field().type).toBe('number');
+    expect(use().textContent).toBe('Use this tempo');
+    expect(IMPORT_TEXT.tempoUse).toBe('Use this tempo');
+    // The field starts at the number the line names: the one a learner who knows better corrects.
+    expect(field().value).toBe('100');
+    expect(control?.textContent).toContain(IMPORT_TEXT.tempoField);
+    document.body.replaceChildren();
+
+    openImportSheet(AUTHORED, CURRICULUM);
+    expect(document.getElementById('import-tempo-set'), 'no control under the file’s tempo').not.toBeNull();
+    expect(field().value).toBe('96');
+    document.body.replaceChildren();
+
+    openImportSheet(STATED, CURRICULUM);
+    expect(text('#import-tempo')).toContain('yours');
+    expect(document.getElementById('import-tempo-set'), 'a control under the learner’s own tempo').toBeNull();
+    expect(document.querySelector('#import-guessed input')).toBeNull();
+    document.body.replaceChildren();
+
+    openImportSheet(PDF, CURRICULUM);
+    expect(document.getElementById('import-tempo-set')).toBeNull();
+  });
+
+  it('Use this tempo calls stateImportTempo with the row’s id and the number, and the sheet re-reads the row: “You stated ♩ = N”, yours, no control, the row’s state “tempo yours”', async () => {
+    const imported = await addImport(midi('left-hand-first.mid'));
+    openImportSheet(imported, CURRICULUM);
+    expect(text('#import-tempo')).toContain('The file states no tempo, so the app chose ♩ = 100.');
+
+    state('72');
+    await vi.waitFor(() => {
+      expect(text('#import-tempo')).toContain('yours');
+    });
+
+    // One call, the arguments the sheet passed: the id, the number as typed, now, and the level's
+    // estimate (the store estimates an estimated level again from the stated score, as for the swap).
+    const calls = vi.mocked(stateImportTempo).mock.calls;
+    expect(calls).toHaveLength(1);
+    const [id, bpm, now, options] = calls[0] ?? [];
+    expect(id).toBe(imported.id);
+    expect(bpm).toBe(72);
+    expect(now).toBeInstanceOf(Date);
+    expect(typeof options?.estimate).toBe('function');
+
+    // The line, from the row the store returned.
+    expect(text('#import-tempo')).toContain('You stated ♩ = 72.');
+    expect(text('#import-tempo')).not.toContain('the app’s guess');
+    expect(document.getElementById('import-tempo-set')).toBeNull();
+
+    // The stored row is the store's: the score states the tempo (the sheet never edits the XML), the
+    // fact names the learner, and the demands are the measurement of the stated score.
+    const stored = (await getImport(imported.id)) as ImportRow;
+    expect(stored.data).toBe(withOpeningTempo(imported.data as string, 72));
+    expect(stored.provenance?.facts.tempo?.kind).toBe('authored');
+    expect(stored.provenance?.facts.tempo?.via).toMatch(/learner/);
+    expect(stored.demands).toEqual((await measureImport(stored.data as string, stored.id)).demands);
+    // What the Library row says of it.
+    expect(importStateWords(stored)).toContain('tempo yours');
+    expect(importStateWords(stored)).not.toContain('tempo guessed');
+  });
+
+  it('a tempo outside the store’s bounds is refused in the store’s own words, never clamped, and the row is as it was', async () => {
+    const imported = await addImport(midi('left-hand-first.mid'));
+    const reasonFor = (bpm: number): Promise<string> =>
+      stateImportTempo(imported.id, bpm).then(
+        () => '',
+        (cause: unknown) => (cause instanceof Error ? cause.message : String(cause)),
+      );
+    const tooFast = await reasonFor(500);
+    const tooSlow = await reasonFor(5);
+    expect(tooFast).toMatch(/500/);
+    vi.mocked(stateImportTempo).mockClear();
+    openImportSheet(imported, CURRICULUM);
+
+    state('500');
+    await vi.waitFor(() => {
+      expect(text('#import-tempo-said')).toBe(tooFast);
+    });
+    // The number as typed went to the store: not clamped to its bound.
+    expect(vi.mocked(stateImportTempo).mock.calls[0]?.[1]).toBe(500);
+    expect(field().value).toBe('500');
+
+    state('5');
+    await vi.waitFor(() => {
+      expect(text('#import-tempo-said')).toBe(tooSlow);
+    });
+    expect(vi.mocked(stateImportTempo).mock.calls[1]?.[1]).toBe(5);
+
+    // Nothing written: the score, the fact and the line are as they were, and the control is still there.
+    const stored = (await getImport(imported.id)) as ImportRow;
+    expect(stored.data).toBe(imported.data);
+    expect(stored.provenance?.facts.tempo).toEqual(imported.provenance?.facts.tempo);
+    expect(text('#import-tempo')).toContain('the app’s guess');
+    expect(document.getElementById('import-tempo-set')).not.toBeNull();
+    expect(use().disabled).toBe(false);
+  });
+
+  it('one change at a time: the hands cannot be swapped while the tempo is being saved, nor the tempo stated while the hands are', async () => {
+    // Two writers on one sheet: a swap computed from the score before the statement would save a score
+    // without the stated tempo under a fact that says it is the learner's.
+    const imported = await addImport(midi('left-hand-first.mid'));
+    openImportSheet(imported, CURRICULUM);
+    const swap = (): HTMLButtonElement => document.getElementById('import-swap') as HTMLButtonElement;
+    expect(swap().disabled).toBe(false);
+    state('72');
+    expect(swap().disabled, 'Swap open while the tempo is being saved').toBe(true);
+    await vi.waitFor(() => {
+      expect(text('#import-tempo')).toContain('yours');
+    });
+    expect(swap().disabled).toBe(false);
+    document.body.replaceChildren();
+
+    const plain = await addImport(fakeFile('plain.musicxml', twoStaves()));
+    openImportSheet(plain, CURRICULUM);
+    expect(use().disabled).toBe(false);
+    swap().click();
+    expect(use().disabled, 'Use this tempo open while the hands are being swapped').toBe(true);
+    await vi.waitFor(() => {
+      expect(text('#import-swap-said')).toMatch(/swapped/i);
+    });
+    expect(use().disabled).toBe(false);
+  });
+
+  // The store's tempo fact names the learner and carries no number (E48), so the line reads the number
+  // where the store wrote it: the tempo the stored score now opens at, in quarter notes a minute.
+  it('the line says the tempo the learner stated in quarter notes, not the number a half-note mark prints', async () => {
+    // A cut-time mark, a half note = 60, which plays 120 quarter notes a minute: stated as 100, the
+    // store prints the half note at 50 and plays 100.
+    const cut = await addImport(fakeFile('cut-time.musicxml', twoStaves({ tempo: 60, beatUnit: 'half', sound: 120 })));
+    openImportSheet(cut, CURRICULUM);
+    state('100');
+    await vi.waitFor(() => {
+      expect(text('#import-tempo')).toContain('yours');
+    });
+    expect(text('#import-tempo')).toContain('You stated ♩ = 100.');
+  });
+
+  it('the line says the tempo the piece now opens at, not a later mark the file prints', async () => {
+    // A mark only in the second bar, a later change the store leaves as the file's: stated as 72, the
+    // piece opens at 72.
+    const later = await addImport(fakeFile('later-mark.musicxml', twoStaves({ tempo: 132, tempoBar: 2 })));
+    openImportSheet(later, CURRICULUM);
+    state('72');
+    await vi.waitFor(() => {
+      expect(text('#import-tempo')).toContain('yours');
+    });
+    expect(text('#import-tempo')).toContain('You stated ♩ = 72.');
   });
 });
 
@@ -379,5 +568,7 @@ describe('the UI opens the sheet; the store opens none (responses/ef80e86.md)', 
     const imports = [...source.matchAll(/from '([^']+)'/g)].map((match) => match[1]);
     expect(imports.filter((path) => /session|selectors|Today|progressStore|rungState/.test(path ?? ''))).toEqual([]);
     expect(source).not.toMatch(/\bupdateImport\(/);
+    // The stated tempo is the store's whole change (X3a): the sheet writes no score and no row itself.
+    expect(source).not.toMatch(/\bwithOpeningTempo\(|\.put\(/);
   });
 });
