@@ -9,14 +9,16 @@
  * reading slot's phrase heard at noon from the card, the session started in the evening, and its reading
  * activity repurposed with the reason said on the transition.
  *
- * Pictures at 342 × 740 and 768 × 1024 under `docs/prompts/pictures/x1/`. Nothing here is heard: the runs are
- * the keyboard strip's taps, and whether the music sounds right is not touched.
+ * Pictures at 342 × 740 and 768 × 1024 under Playwright's own output folder (`test-results/pictures/x1/`,
+ * ignored): the record's pictures under `docs/prompts/pictures/x1/` were captured once at the landing and
+ * a committed spec never writes under `docs/` (U97: this spec overwrote them on every run). Nothing here
+ * is heard: the runs are the keyboard strip's taps, and whether the music sounds right is not touched.
  */
 import { expect, test, type Page } from '@playwright/test';
 import { playInTime } from './fixtures/playInTime';
 import { pressControl } from './scoreControls';
 
-const PICTURES = '../docs/prompts/pictures/x1';
+const PICTURES = 'test-results/pictures/x1';
 
 test.use({ viewport: { width: 342, height: 740 } });
 
