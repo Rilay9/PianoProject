@@ -663,6 +663,14 @@ export const PROJECT_TEXT = {
   empty: 'No projects yet. At the end of a run, “What next with this piece?” makes one.',
   /** Said after the learner's action, beside the actions. */
   saved: 'Saved.',
+  /**
+   * The Library's Project filter (G85): its name, every piece whatever its project, and every piece
+   * with a project in any state; each state is `states`. Not *Any project* for the second: the status
+   * filter beside it says *Any status* for no filter at all, and the same shape would read the same.
+   */
+  filter: 'Project',
+  filterAll: 'Project or not',
+  filterAny: 'Your projects',
 } as const;
 
 /** "Learning since 2026-09-29": a project's state and the local day it was entered. */

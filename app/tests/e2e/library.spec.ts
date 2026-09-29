@@ -239,6 +239,95 @@ test.describe('Library obeys 04 §0', () => {
   });
 });
 
+/**
+ * The learner's project in the Library (G85; the reviewer's ruling 3 on the G1b brief: the Library
+ * may expose the same project state and open the same sheet, consuming the one `projectStore` truth).
+ * At the owner's phone width. The project is put straight into the store as the sheet writes it,
+ * keyed by the catalogue's own identity (`projects.spec.ts`'s Stage 9 path); the change after that is
+ * a tap on the sheet, opened from Progress's row — the row here wears the state and keeps the actions
+ * it had, because a door beside them did not fit at this width (Entry 147, question 1).
+ */
+test.describe('the learner’s project in the Library (G85)', () => {
+  test.use({ viewport: { width: 342, height: 740 } });
+
+  const ITEM = 'song.folk.hot-cross-buns';
+
+  /** The local day, as the app names days (`progressStore.dayKey`). */
+  function today(): string {
+    const now = new Date();
+    return `${String(now.getFullYear())}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  }
+
+  test('a piece Learning wears the badge, the Project filter finds it alone, and paused on its sheet it wears Paused and is found under Paused', async ({ page }) => {
+    await page.goto('/#/library');
+    await expect(page.locator('#library-count')).toContainText(/of \d+ items/);
+    await page.evaluate(async (id) => {
+      const catalog = (await (await fetch('content/catalog.json')).json()) as { id: string; provenance?: { identity?: { kind: string; sha256?: string } } }[];
+      const identity = catalog.find((one) => one.id === id)?.provenance?.identity;
+      if (identity?.kind !== 'file' || identity.sha256 === undefined) throw new Error(`${id} has no file identity`);
+      const db = await new Promise<IDBDatabase>((resolve, reject) => {
+        const request = indexedDB.open('pianopath');
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(new Error(String(request.error)));
+      });
+      const at = new Date().toISOString();
+      await new Promise<void>((resolve, reject) => {
+        const tx = db.transaction('projects', 'readwrite');
+        tx.objectStore('projects').put({ id: `file:${identity.sha256}`, material: identity, itemId: id, state: 'learning', since: at, history: [{ state: 'learning', at, why: 'learn' }] });
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(new Error(String(tx.error)));
+      });
+      db.close();
+    }, ITEM);
+    await page.reload();
+    await expect(page.locator('#library-count')).toContainText(/of \d+ items/);
+
+    const row = page.locator(`#library-list .list-row[data-item="${ITEM}"]`);
+    await page.locator('#library-search').fill('hot cross');
+    await expect(row).toBeVisible();
+    await expect(row.locator('.badge[data-project]')).toHaveText('Learning');
+    // One badge, and none on the rows beside it that have no project; the row's actions as they were.
+    expect(await page.locator('#library-list .badge[data-project]').count()).toBe(1);
+    await expect(row.locator('.list-row__actions button')).toHaveText(['Details', '⋯']);
+
+    // The Project filter, set to Learning: the piece alone, and the count line says why.
+    await page.locator('#library-search').fill('');
+    const total = Number(/of (\d+) items/.exec((await page.locator('#library-count').textContent()) ?? '')?.[1]);
+    expect(total).toBeGreaterThan(1);
+    await page.locator('#library-filter-toggle').click();
+    await page.locator('#library-project').selectOption('learning');
+    await expect(page.locator('#library-list .list-row')).toHaveCount(1);
+    await expect(row).toBeVisible();
+    await expect(page.locator('#library-count')).toHaveText(`1 of ${String(total)} items · Learning`);
+    await page.locator('#library-project').selectOption('all');
+    await expect(page.locator('#library-count')).toHaveText(`${String(total)} of ${String(total)} items`);
+    await page.locator('#library-filter-toggle').click();
+
+    // Paused on the one sheet, opened from the project's row on Progress: back in the Library the row
+    // says so, read from the same store.
+    await page.goto('/#/progress');
+    await page.locator(`#progress-projects [data-project][data-item="${ITEM}"]`).click();
+    await expect(page.locator('#project-sheet h2')).toHaveText('Hot Cross Buns');
+    await expect(page.locator('#project-state')).toHaveText(`Learning since ${today()}`);
+    await page.locator('#project-action-pause').click();
+    await expect(page.locator('#project-state')).toHaveText(`Paused since ${today()}`);
+    await page.goto('/#/library');
+    await expect(page.locator('#library-count')).toContainText(/of \d+ items/);
+    await page.locator('#library-search').fill('hot cross');
+    await expect(row.locator('.badge[data-project]')).toHaveText('Paused');
+    expect(await page.locator('#library-list .badge[data-project]').count()).toBe(1);
+
+    // And the filter follows: nothing Learning now, the piece under Paused.
+    await page.locator('#library-search').fill('');
+    await page.locator('#library-filter-toggle').click();
+    await page.locator('#library-project').selectOption('learning');
+    await expect(page.locator('#library-empty')).toContainText('Learning');
+    await page.locator('#library-project').selectOption('paused');
+    await expect(page.locator('#library-list .list-row')).toHaveCount(1);
+    await expect(row.locator('.badge[data-project]')).toHaveText('Paused');
+  });
+});
+
 test.describe('the letter rail in Library', () => {
   test('waits for the title sort, then moves the window to the letter', async ({ page }) => {
     await page.goto('/#/library');

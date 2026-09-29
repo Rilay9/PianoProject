@@ -1,0 +1,55 @@
+python.exe : Traceback (most recent call last):
+At <worktree>\build\g85\setup.ps1:7 char:1
++ & python tools/content/build.py --offline *> (Join-Path $runs 'conten ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "<home>\repos\Piano 
+Stuff\PianoProject\.claude\worktrees\agent-af48d71ff71bb2248\tools\content\build.py", line 1525, in <module>
+    main()
+  File "<home>\repos\Piano 
+Stuff\PianoProject\.claude\worktrees\agent-af48d71ff71bb2248\tools\content\build.py", line 1461, in main
+    run_build(args, started)
+  File "<home>\repos\Piano 
+Stuff\PianoProject\.claude\worktrees\agent-af48d71ff71bb2248\tools\content\build.py", line 1497, in run_build
+    steps.append(merge_catalog(args.out))
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+  File "<home>\repos\Piano 
+Stuff\PianoProject\.claude\worktrees\agent-af48d71ff71bb2248\tools\content\build.py", line 246, in merge_catalog
+    measured, unmeasured, runtime = attach_demands(entries, out_dir)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<home>\repos\Piano 
+Stuff\PianoProject\.claude\worktrees\agent-af48d71ff71bb2248\tools\content\build.py", line 681, in attach_demands
+    answered = D.measure_each(list(todo.values()))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<home>\repos\Piano 
+Stuff\PianoProject\.claude\worktrees\agent-af48d71ff71bb2248\tools\content\demands.py", line 130, in measure_each
+    raise DemandsError(
+demands.DemandsError: the detector run wrote no report (exit 1):
+vitest.config.ts (1:506) [33m[UNRESOLVED_IMPORT] [0mCould not resolve 'vitest/config' in vitest.config.ts
+ - Module not found, treating it as an external dependency in vitest.config.ts at 506..521
+
+failed to load config from <home>\repos\Piano 
+Stuff\PianoProject\.claude\worktrees\agent-af48d71ff71bb2248\app\vitest.config.ts
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Startup Error ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'vitest' imported from <home>\repos\Piano 
+Stuff\PianoProject\node_modules\.vite-temp\vitest.config.ts.timestamp-1790712602324-f80e40357662e8.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+
+
+
+exit 1

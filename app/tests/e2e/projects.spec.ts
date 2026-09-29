@@ -6,7 +6,8 @@
  *   its row → *Put it away* → *Bring it back* → the history line and the encounter line;
  *   a Stage 9 unit's page → its songs as projects, no count, and one project's state shown;
  *   a piece passed and unplayed past the window → Today keeps it playable → *Keep it playable* on its
- *   sheet changes nothing → *Pause* → Today stops offering it, Progress and the Library as before (G1d).
+ *   sheet changes nothing → *Pause* → Today stops offering it, Progress and the Library as before (G1d),
+ *   the Library's row wearing *Paused* beside it (G85).
  *
  * Nothing is seeded for the first two: the run is played through the screen keys, in time, as
  * `lesson-flow.spec.ts` plays it, and every project change is a tap on the sheet. The last seeds the
@@ -225,8 +226,12 @@ test('a piece passed and unplayed past the window, paused on its sheet: Today st
     await expect(review.locator('.list-row__title')).toContainText('Ode to Joy');
     await expect(review.locator('.list-row__sub')).toHaveText(/^Keeping this piece playable — last played on \d+ \w+$/);
   };
-  /** What Progress and the Library show of the piece: its run on Progress, the mastered list, its Library row. */
-  const shownElsewhere = async (): Promise<{ history: string; repertoire: string; library: string }> => {
+  /**
+   * What Progress and the Library show of the piece: its run on Progress, the mastered list, its Library
+   * row — and, apart, the row's project badge, which since G85 wears the learner's own word (`library`
+   * is the row's text without it).
+   */
+  const shownElsewhere = async (): Promise<{ history: string; repertoire: string; library: string; libraryProject: string }> => {
     await page.goto('/#/progress');
     await expect(page.locator('#progress-projects')).toHaveAttribute('data-drawn', 'true', { timeout: 30_000 });
     const history = (await page.locator(`#progress-history .list-row[data-item="${ODE}"]`).innerText()).trim();
@@ -235,7 +240,13 @@ test('a piece passed and unplayed past the window, paused on its sheet: Today st
     await page.locator('#library-search').fill('ode to joy');
     const row = page.locator(`#library-list .list-row[data-item="${ODE}"]`);
     await expect(row).toBeVisible({ timeout: 30_000 });
-    return { history, repertoire, library: (await row.innerText()).trim() };
+    const library = await row.evaluate((node) => {
+      const copy = node.cloneNode(true) as HTMLElement;
+      for (const badge of copy.querySelectorAll('.badge[data-project]')) badge.remove();
+      return (copy.textContent ?? '').trim();
+    });
+    const project = row.locator('.badge[data-project]');
+    return { history, repertoire, library, libraryProject: (await project.count()) === 0 ? '' : (await project.innerText()).trim() };
   };
 
   await openToday();
@@ -263,8 +274,11 @@ test('a piece passed and unplayed past the window, paused on its sheet: Today st
   await expect(review.locator('.list-row__sub')).not.toContainText('Keeping this piece playable');
   await expect(page.locator('#today-card')).not.toContainText(/paus|put away/i);
 
-  // Still on Progress and in the Library as before: the pause suppressed an offer and hid nothing.
-  expect(await shownElsewhere()).toEqual(before);
+  // Still on Progress and in the Library as before: the pause suppressed an offer and hid nothing. The
+  // Library's row now wears the learner's word beside what it showed (G85; revised: G1d asserted the
+  // row's whole text unchanged, written when the Library read no project).
+  expect(before.libraryProject, 'a project badge before there was a project').toBe('');
+  expect(await shownElsewhere()).toEqual({ ...before, libraryProject: 'Paused' });
   await page.goto('/#/progress');
   await expect(page.locator(`#progress-projects [data-project][data-item="${ODE}"] .list-row__sub`)).toHaveText(`Paused since ${today()}`);
 });
