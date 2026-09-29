@@ -13,12 +13,18 @@
  * ignored): the record's pictures under `docs/prompts/pictures/x1/` were captured once at the landing and
  * a committed spec never writes under `docs/` (U97: this spec overwrote them on every run). Nothing here
  * is heard: the runs are the keyboard strip's taps, and whether the music sounds right is not touched.
+ *
+ * U96: the session's end sheets say only what was measured. A drill ended before any answer is headed *Not
+ * measured* with the reason and prints no *Accuracy* (X1's follow-up 2); the placement test ended in a session
+ * has one filled box, the transition's *Start*, with its own *Start here* outlined (follow-up 4). Pictures under
+ * `test-results/pictures/u96/`.
  */
 import { expect, test, type Page } from '@playwright/test';
 import { playInTime } from './fixtures/playInTime';
 import { pressControl } from './scoreControls';
 
 const PICTURES = 'test-results/pictures/x1';
+const U96_PICTURES = 'test-results/pictures/u96';
 
 test.use({ viewport: { width: 342, height: 740 } });
 
@@ -201,4 +207,55 @@ test('heard at noon from the card, the session’s reading in the evening: reche
   await expect(summary.locator('#summary-note')).toHaveText('Sight-reading counts only on music you have not heard — this run is kept as practice.');
   await expect(summary.locator('#session-next')).toContainText('You heard this one earlier today, so it is practice now, not a first read', { timeout: 30_000 });
   await page.screenshot({ path: `${PICTURES}/transition-repurposed-342x740.png` });
+});
+
+test('a drill ended before any answer: Not measured with the reason, no Accuracy, and the transition under it (U96)', async ({ page }) => {
+  test.setTimeout(180_000);
+  await placeAt(page, '1.1');
+  await page.locator('#today-start').click();
+  await expect(page).toHaveURL(/#\/drill\/.+session=[0-9a-z]+/, { timeout: 30_000 });
+  await endDrill(page);
+  const sheet = page.locator('#drill-summary');
+  // Soft, so a red shows every claim the sheet makes at once.
+  await expect.soft(sheet.locator('#drill-outcome'), 'a verdict over a set nobody answered').toHaveText('Not measured');
+  await expect.soft(sheet.locator('#drill-outcome-note')).toHaveText('Nothing was answered, so there is nothing to mark.');
+  await expect.soft(sheet.locator('[data-stat="accuracy"]'), 'an accuracy nobody measured').toHaveCount(0);
+  await expect.soft(sheet.locator('[data-stat="answered"]')).toHaveText(/^0 of \d+$/);
+  await expect.soft(sheet).not.toContainText('Not passed');
+  await expect.soft(sheet).not.toContainText('keep going');
+  // The transition under it is X1's, unchanged: the next activity in the composition's words, one filled box.
+  await expect.soft(sheet.locator('#session-next')).toContainText(/^Next: .+, 5 min — /);
+  await expect.soft(sheet.locator('.button--primary:visible')).toHaveCount(1);
+  await expect.soft(sheet.locator('#session-start-next')).toHaveClass(/button--primary/);
+  await sheet.evaluate((node) => node.scrollIntoView({ block: 'start' }));
+  await page.screenshot({ path: `${U96_PICTURES}/drill-ended-early-sheet-342x740.png` });
+  await sheet.locator('#session-next').evaluate((node) => node.scrollIntoView({ block: 'end' }));
+  await page.screenshot({ path: `${U96_PICTURES}/drill-ended-early-transition-342x740.png` });
+});
+
+test('the placement test ended in a session: the transition’s Start is the one filled box, Start here outlined (U96)', async ({ page }) => {
+  test.setTimeout(180_000);
+  await placeAt(page, '0.4');
+  const placement = 'drill.placement.stage-0';
+  await expect(page.locator(`#today-card [data-item="${placement}"]`)).toBeVisible({ timeout: 30_000 });
+  await page.locator('#today-start').click();
+  await expect(page).toHaveURL(/session=/, { timeout: 30_000 });
+  if (!page.url().includes(encodeURIComponent(placement)) && !page.url().includes(placement)) {
+    // Not the first activity: chosen from the running card, as a learner would.
+    await page.goto('/#/today');
+    await page.locator(`#today-card [data-item="${placement}"][data-activity] button[aria-label^="Open"]`).click();
+  }
+  await expect(page).toHaveURL(/#\/drill\/drill\.placement\.stage-0\?.*session=/, { timeout: 30_000 });
+  await expect(page.locator('#drill-placement-fail')).toBeVisible({ timeout: 60_000 });
+  await page.locator('#drill-placement-fail').click();
+  const sheet = page.locator('#drill-summary');
+  await expect(sheet.locator('#session-next')).toBeVisible({ timeout: 30_000 });
+  await expect(sheet.locator('[data-unit]')).toContainText('Start here:', { timeout: 30_000 });
+  await expect.soft(sheet.locator('.button--primary:visible'), 'two filled boxes on one sheet').toHaveCount(1);
+  await expect.soft(sheet.locator('#session-start-next')).toHaveClass(/button--primary/);
+  // Still there: it is the only thing that records the test's answer.
+  await expect.soft(sheet.locator('#drill-placement-start')).toBeVisible();
+  await expect.soft(sheet.locator('#drill-placement-start')).toHaveClass(/button--secondary/);
+  await sheet.evaluate((node) => node.scrollIntoView({ block: 'start' }));
+  await page.screenshot({ path: `${U96_PICTURES}/placement-in-session-342x740.png` });
 });
