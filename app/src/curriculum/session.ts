@@ -26,9 +26,10 @@ import { contactIn, dayKey, daysBetween, type Contact, type ContactHistory, type
 // The stages whose rungs are projects, not rungs to meet (Stage 9: "Nothing here is a rung to pass;
 // they are pieces to live with"): no slot advances into one as "the next lesson", and its asks are
 // offered as a project. The one constant the lesson page and Plan read too (G1c item 1; G84). And one
-// read of a learner's project (G1d; the reviewer's G82 ruling): `review()`'s repertoire retention
-// steps past a piece its project says was paused or put away, found by `projectIn` over the rows Today
-// hands in (`BuildInput.projects`). Nothing here opens the store, and nothing else reads a state.
+// read of the learner's projects (G1d, the reviewer's G82 ruling; G1e, its review's required change):
+// `buildSession` looks each piece's project up with `projectIn` over the rows Today hands in
+// (`BuildInput.projects`), once, as the card's one rule for automatic offers (`SlotContext.pausedOrPutAway`),
+// and every chooser that offers a piece of its own accord reads that. Nothing here opens the store.
 import { PROJECT_STAGES, projectIn, type ProjectRow } from '../data/projectStore';
 import type { Identity } from '../review/record';
 import { knownMaterial, materialOfItem } from './material';
@@ -181,13 +182,17 @@ export interface BuildInput {
    */
   learned?: readonly LearnedPiece[];
   /**
-   * The learner's projects (G1b's `projects` store), read for one thing (G1d; the reviewer's G82
-   * ruling): the review's repertoire retention does not offer a learned piece whose project is
-   * `paused` or `retired` — *Keeping this piece playable* would contradict what the learner said on
-   * the sheet. Every other state, `maintaining` and `refreshing` among them, and no project leave the
-   * offer as it was; *a piece you know* and everything else that reads `learned` do not read this.
-   * Absent: nothing suppressed. Today loads it (`projectStore.allProjects`); the session never opens
-   * the store.
+   * The learner's projects (G1b's `projects` store), read for one thing: automatic eligibility (G1d, the
+   * reviewer's G82 ruling; G1e, the G1d review's required change). A piece whose project is `paused` or
+   * `retired` is offered by no automatic chooser — the review's repertoire retention (*Keeping this piece
+   * playable* would contradict what the learner said on the sheet), the repertoire slot's demand-based
+   * choice, the fallback ladder's skill, demand and prerequisite steps, the exposure rule, the jam slot
+   * and the transfer offer — never among their candidates; nothing on the card says why. A rung's
+   * own ask (`runs`, `done`, `measure`, this lesson's or the next's) and the ladder's rung step are the
+   * curriculum assigning material and do not read it (G1e item 3, a question for the reviewer). Every
+   * other state, `maintaining` and `refreshing` among them, and no project leave every offer as it was.
+   * Read once per card, in `buildSession` (`SlotContext.pausedOrPutAway`). Absent: nothing withdrawn.
+   * Today loads it (`projectStore.allProjects`); the session never opens the store.
    */
   projects?: readonly ProjectRow[];
   /**
@@ -539,6 +544,15 @@ interface SlotContext {
   reached: Walked[];
   skills: ReadonlyMap<string, SkillEvidence>;
   learned: ReadonlyMap<string, LearnedPiece>;
+  /**
+   * The session's one reading of the learner's projects (G1e; `BuildInput.projects`): whether the learner
+   * paused this piece or put it away on its project sheet — its project, found by `projectIn` as the
+   * lesson page and Progress find it (its material's, whatever id it was made under, else its id's), is
+   * `paused` or `retired`. Built once per card in `buildSession`, the only place the session looks a
+   * project up. Every chooser that offers a piece of its own accord reads it and steps past such a
+   * piece; a rung's own ask and the ladder's rung step do not.
+   */
+  pausedOrPutAway: (item: CatalogItem) => boolean;
   lastPlayed: (id: string) => string | undefined;
   today: Date;
   used: Set<string>;
@@ -729,6 +743,10 @@ function readingsOf(ctx: SlotContext, rung: Lesson): RequirementReading[] {
  * want's `offer` (`runs`, `done`, `measure`), the ladder's rung and prerequisite steps, the jam slot, the
  * exposure rule — chooses only through here, so a rung listing one is not a decision to teach it; where it
  * was a row's only candidate the row takes the next step that passes, or is dropped.
+ *
+ * Not the learner's projects (G1e): a rung's own ask takes its items through here too, and a rung's ask
+ * is not an automatic offer (G1e item 3), so each automatic chooser reads `ctx.pausedOrPutAway` beside
+ * this instead.
  */
 function usable(ctx: SlotContext, item: CatalogItem | undefined, songs: 'any' | 'none' | 'only'): item is CatalogItem {
   if (!item || !playable(item) || ctx.used.has(item.id) || isReadingRow(item) || !admittedForTeaching(item)) return false;
@@ -1009,6 +1027,10 @@ function fallbackStep(
       if (item) taught.push(item);
     }
   }
+  // The rung step offers the strand's rung's own list, the curriculum assigning material; every later step
+  // chooses of the session's own accord, so a piece the learner paused or put away is not among its
+  // candidates (G1e; item 3 leaves the rung's own list as it was, a question for the reviewer).
+  const automatic = step !== 'rung';
   const choose = (
     items: CatalogItem[],
     claim: (item: CatalogItem) => SlotClaim,
@@ -1016,7 +1038,11 @@ function fallbackStep(
     /** The rung whose own list the step draws from (L113, X1): its listing asks the one gate too. */
     listedOn?: Lesson,
   ): Choice | undefined => {
-    const offer = order(items.filter((item) => usable(ctx, item, songs) && (listedOn === undefined || fromList(ctx, item, listedOn))));
+    const offer = order(
+      items.filter(
+        (item) => usable(ctx, item, songs) && !(automatic && ctx.pausedOrPutAway(item)) && (listedOn === undefined || fromList(ctx, item, listedOn)),
+      ),
+    );
     const item = pick(offer, ctx.seed);
     if (!item) return undefined;
     const from = lessonId?.(item);
@@ -1144,14 +1170,18 @@ function exposure(ctx: SlotContext, families: Families): Choice | undefined {
       found.set(key, entry);
     }
   });
+  // What the rule may offer: a piece the learner paused or put away is not (G1e) — a family holding only
+  // such pieces is passed over for the next, as if it held nothing. When the family was last played still
+  // counts every play of it: what the learner played is history, and the pause withdraws the offer alone.
+  const offerable = (item: CatalogItem): boolean => usable(ctx, item, 'any') && !ctx.pausedOrPutAway(item);
   const ranked = [...found.values()]
-    .filter((entry) => entry.items.some((one) => usable(ctx, one.item, 'any')))
+    .filter((entry) => entry.items.some((one) => offerable(one.item)))
     .filter((entry) => !entry.items.some((one) => ctx.used.has(one.item.id)))
     .sort((a, b) => (a.last ?? '').localeCompare(b.last ?? '') || b.latest - a.latest);
   const entry = pick(ranked, ctx.seed);
   if (!entry) return undefined;
   const chosen = entry.items
-    .filter((one) => usable(ctx, one.item, 'any'))
+    .filter((one) => offerable(one.item))
     .sort(
       (a, b) =>
         (ctx.learned.has(a.item.id) ? 1 : 0) - (ctx.learned.has(b.item.id) ? 1 : 0) ||
@@ -1296,7 +1326,8 @@ function transferOffer(ctx: SlotContext): Choice | undefined {
     const demands = skill.opportunity === 'every-step' ? [] : skill.opportunity;
     let shownOn: ShownOn | undefined;
     for (const item of ctx.input.items) {
-      if (!usable(ctx, item, 'any')) continue;
+      // An offer of the session's own accord: never a piece the learner paused or put away (G1e).
+      if (!usable(ctx, item, 'any') || ctx.pausedOrPutAway(item)) continue;
       const declared = item.role === 'transfer' && item.provenance?.transferOf?.skill === skill.id && !isExcerpt(item);
       const offerable = declared
         ? eligible(gate(ctx, item, learner, { for: 'skill', skill: skill.id, activation }))
@@ -1333,7 +1364,8 @@ function transferOffer(ctx: SlotContext): Choice | undefined {
  * - **Repertoire retention**: a learned piece (a song passed or mastered) not
  *   played for `REPERTOIRE_WINDOW_DAYS`, however recently its skills were
  *   shown elsewhere. A scale or a drill passed is technique, which the
- *   exposure rule keeps warm, not a piece to keep playable.
+ *   exposure rule keeps warm, not a piece to keep playable. Never a piece
+ *   the learner paused or put away (G1d; `ctx.pausedOrPutAway`, G1e).
  *
  * Whichever is further past its own span first; Shuffle reaches the rest.
  * Nothing due for either: the fallback ladder — a strand's rung (its counted
@@ -1376,10 +1408,9 @@ function review(ctx: SlotContext, phase: Phase, onCard: readonly Choice[]): Choi
     // A piece: a scale or a drill passed is technique, kept warm by the exposure rule, not "a piece to keep playable".
     if (!usable(ctx, item, 'only')) continue;
     // The learner paused it or put it away on its project sheet (G1d; G82): retention does not bring it
-    // back over their word, and nothing on the card says so — the sheet did. The piece's project as the
-    // lesson page and Progress find it: its material's, whatever id it was made under, else its id's.
-    const project = projectIn(ctx.input.projects ?? [], { itemId: piece.itemId, material: materialOfItem(item) });
-    if (project?.state === 'paused' || project?.state === 'retired') continue;
+    // back over their word, and nothing on the card says so — the sheet did. The card's one reading of
+    // the projects (G1e), which every automatic chooser reads.
+    if (ctx.pausedOrPutAway(item)) continue;
     const since = daysSince(piece.lastPlayed, ctx.today);
     if (since === undefined || since < REPERTOIRE_WINDOW_DAYS) continue;
     due.push({ item, claim: { kind: 'piece-retention', lastPlayed: piece.lastPlayed }, over: since - REPERTOIRE_WINDOW_DAYS, retained: false, skill: false });
@@ -1402,7 +1433,9 @@ function review(ctx: SlotContext, phase: Phase, onCard: readonly Choice[]): Choi
  * song, a prerequisite rung's, a piece not yet counted or learned before one that
  * is — and the exposure rule over the songs taught last. A mastered piece is still
  * "a piece you know" (L18), but it is no longer offered every session (L17):
- * keeping it playable is the review's repertoire retention.
+ * keeping it playable is the review's repertoire retention. A piece the learner
+ * paused or put away is chosen by neither the claim nor the fallback's automatic
+ * steps (G1e; `ctx.pausedOrPutAway`); the rung step is the rung's own list (G1e item 3).
  */
 function repertoire(ctx: SlotContext, phase: Phase, onCard: readonly Choice[]): Choice | undefined {
   if (phase === 'fallback') {
@@ -1427,7 +1460,8 @@ function repertoire(ctx: SlotContext, phase: Phase, onCard: readonly Choice[]): 
     if (edges.length === 0) continue;
     const [low, high] = strand.rung.levelBand ?? [strand.stage, strand.stage + 0.99];
     for (const item of ctx.input.items) {
-      if (!usable(ctx, item, 'only') || ready.some((one) => one.item.id === item.id)) continue;
+      // A piece chosen of the session's own accord: never one the learner paused or put away (G1e).
+      if (!usable(ctx, item, 'only') || ctx.pausedOrPutAway(item) || ready.some((one) => one.item.id === item.id)) continue;
       const demand = edges.find((one) => eligible(gate(ctx, item, learner, { for: 'demand', demand: one })));
       if (demand === undefined) continue;
       ready.push({ item, demand, distance: item.level < low ? low - item.level : item.level > high ? item.level - high : 0 });
@@ -1463,7 +1497,8 @@ function jam(ctx: SlotContext, phase: Phase): Choice | undefined {
     // "Chords, form and feel". Its listing asks the one gate (L113, X1).
     const offer = [...lesson.exerciseOptions, ...lesson.songOptions]
       .map((id) => ctx.catalog.byId.get(id))
-      .filter((item): item is CatalogItem => usable(ctx, item, 'any') && fromList(ctx, item, lesson))
+      // Chosen of the session's own accord, not asked by the rung: never a piece paused or put away (G1e).
+      .filter((item): item is CatalogItem => usable(ctx, item, 'any') && !ctx.pausedOrPutAway(item) && fromList(ctx, item, lesson))
       .map((item, at) => ({ item, at, feel: chordAndFeel(item) }))
       .sort((a, b) => Number(b.feel) - Number(a.feel) || (ctx.lastPlayed(a.item.id) ?? '').localeCompare(ctx.lastPlayed(b.item.id) ?? '') || a.at - b.at)
       .map((one) => one.item);
@@ -1524,6 +1559,21 @@ export function buildSession(input: BuildInput): {
     return value === undefined || value === '' ? undefined : value;
   };
   const { strands, reached } = strandsOf({ input, walk, lastPlayed });
+  // The card's one reading of the learner's projects (G1e; the G1d review's required change): each piece's
+  // project looked up once, by the identity the lesson page and Progress use, and the answer kept for the
+  // card. The only `projectIn` in the session; the choosers read the answer, never the rows.
+  const projects = input.projects ?? [];
+  const withdrawn = new Map<string, boolean>();
+  const pausedOrPutAway = (item: CatalogItem): boolean => {
+    if (projects.length === 0) return false;
+    let answer = withdrawn.get(item.id);
+    if (answer === undefined) {
+      const state = projectIn(projects, { itemId: item.id, material: materialOfItem(item) })?.state;
+      answer = state === 'paused' || state === 'retired';
+      withdrawn.set(item.id, answer);
+    }
+    return answer;
+  };
   const ctx: SlotContext = {
     input,
     catalog: input.catalog,
@@ -1533,6 +1583,7 @@ export function buildSession(input: BuildInput): {
     reached,
     skills: skillEvidenceOf(input.rows ?? input.readingRows ?? [], input.vocabulary ?? VOCABULARY_V0, today),
     learned: new Map((input.learned ?? []).map((piece) => [piece.itemId, piece])),
+    pausedOrPutAway,
     lastPlayed,
     today,
     used: new Set<string>(),

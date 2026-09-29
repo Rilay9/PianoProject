@@ -25,7 +25,7 @@ import { eligibleFor } from '../../src/curriculum/eligibility';
 import { buildSession, contactOf, type BuildInput, type SessionSlot } from '../../src/curriculum/session';
 import { indexCatalog } from '../../src/curriculum/selectors';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
-import type { EncounterRow, SessionRow } from '../../src/data/db';
+import type { EncounterRow, ProjectAction, ProjectRow, ProjectState, SessionRow } from '../../src/data/db';
 import { contactIn, foldRun } from '../../src/data/progressStore';
 import { materialKey } from '../../src/curriculum/material';
 import { evidenceFor, stampedEvidence } from '../../src/evidence/evidence';
@@ -378,5 +378,51 @@ describe('an excerpt: a current teaching-use yes on its cut, placed on a reached
     };
     const curriculum = curriculumWith({}, { songOptions: [same.id] });
     expect(offers(card({ rows: gone, curriculum, vocabulary: everything }, [...others, same]))).toEqual([]);
+  });
+});
+
+/**
+ * G1e (the G1d review's required change, `responses/d59f2ef8.md`): the transfer offer chooses a piece of
+ * the session's own accord, so it reads the session's one rule for automatic offers — a piece whose
+ * project the learner paused or put away is not offered, and the card is the card of the catalogue without
+ * it. No song in the shipped catalogue carries a transfer role (the G1e probe,
+ * `runs/G1e/probe.txt`), and a project is made of a song alone, so the candidate here is the pentatonic in
+ * A remade as a song: constructed.
+ */
+describe('a transfer candidate the learner paused or put away is not offered (G1e)', () => {
+  const AS_A_SONG: CatalogItem = { ...PENT_A, id: 'song.pentatonic-a', type: 'song' };
+  const items = [...ITEMS.filter((item) => item.id !== PENT_A.id), AS_A_SONG];
+  const ACTION: Record<ProjectState, ProjectAction> = {
+    saved: 'save',
+    learning: 'learn',
+    polishing: 'polish',
+    'performance-ready': 'ready',
+    maintaining: 'keep',
+    refreshing: 'bring-back',
+    paused: 'pause',
+    retired: 'retire',
+  };
+  const row = (state: ProjectState): ProjectRow => ({
+    id: materialKey(undefined, AS_A_SONG.id),
+    material: { kind: 'id', itemId: AS_A_SONG.id },
+    itemId: AS_A_SONG.id,
+    state,
+    since: on(17),
+    history: [{ state, at: on(17), why: ACTION[state] }],
+  });
+
+  it('offered with no project; paused or put away, on no row, and the card is the card without it; every other state leaves the card as it was', () => {
+    const before = card({}, items);
+    expect(offerOf(before)?.item?.id).toBe(AS_A_SONG.id);
+    const absent = card({}, ITEMS.filter((item) => item.id !== PENT_A.id));
+    for (const state of ['paused', 'retired'] as const) {
+      const slots = card({ projects: [row(state)] }, items);
+      expect(slots.map((slot) => slot.item?.id), `${state}: still offered`).not.toContain(AS_A_SONG.id);
+      expect(slots, `${state}: the card is not the card without it`).toEqual(absent);
+      expect(slots.map((slot) => slot.reason).join(' · '), state).not.toMatch(/paus|put away|project/i);
+    }
+    for (const state of ['saved', 'learning', 'polishing', 'performance-ready', 'maintaining', 'refreshing'] as const) {
+      expect(card({ projects: [row(state)] }, items), state).toEqual(before);
+    }
   });
 });

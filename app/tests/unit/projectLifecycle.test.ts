@@ -8,8 +8,9 @@
  * an append-only history, and the learner's own goal, problem and sections. Every transition is the
  * learner's action on the project sheet; the app proposes nothing and moves nothing. Nothing here
  * writes an encounter, a run, a progress row or an evidence record, and no evidence, skill or
- * eligibility code reads a project; the session reads one for one thing, the repertoire retention's
- * suppression of a piece paused or put away (G1d; the reviewer's G82 ruling).
+ * eligibility code reads a project; the session reads them for one thing, once per card: a piece paused
+ * or put away is offered by no automatic chooser (G1d, the reviewer's G82 ruling; G1e, its review's
+ * required change).
  *
  * The cases, in the brief's order: the store and the upgrade from a version-8 database with rows in
  * every store; the transitions table (every action from every state the sheet offers it, the history
@@ -500,13 +501,15 @@ describe('never the bridge, never the source (the brief’s item 3; its refuting
     expect(await everyOtherStore(), 'a project action wrote outside the projects store').toEqual(stores);
   });
 
-  // Revised (G1d item 5; the reviewer's G82 ruling): the session reads a project for one thing, the
-  // repertoire retention's suppression — `review()` steps past a learned piece whose project is paused
-  // or put away — over the rows Today hands it (`BuildInput.projects`, from `allProjects`). So Today and
-  // the session are readers now, and the pin is on what the session does with the rows: `projectIn`,
-  // once, inside `review()`, and nothing that opens the store. No evidence, skill or eligibility file
-  // imports from the store; the sheet alone acts.
-  it('only the project sheet acts; the session reads a project for one thing, retention’s suppression (G1d; G82); no evidence, skill, eligibility or Library code reads one', () => {
+  // Revised (G1d item 5; the reviewer's G82 ruling): the session reads a project for one thing over the
+  // rows Today hands it (`BuildInput.projects`, from `allProjects`). So Today and the session are readers
+  // now, and the pin is on what the session does with the rows: `projectIn`, once, and nothing that opens
+  // the store. No evidence, skill or eligibility file imports from the store; the sheet alone acts.
+  // Revised again (G1e; the G1d review's required change, `responses/d59f2ef8.md`): the one thing is
+  // automatic eligibility — a piece paused or put away is offered by no automatic chooser — read once per
+  // composition, so the one lookup sits in `buildSession`'s context assembly, not in `review()`: a lookup
+  // in a chooser is the scattered policy the review ruled out. Old assumption: the lookup inside `review()`.
+  it('only the project sheet acts; the session reads a project for one thing, automatic eligibility, once per card (G1d; G82; G1e); no evidence, skill, eligibility or Library code reads one', () => {
     const src = join(process.cwd(), 'src');
     const readers: string[] = [];
     // Revised (G1c item 1; G84): the files that import the project stages' numbers and nothing else
@@ -556,15 +559,18 @@ describe('never the bridge, never the source (the brief’s item 3; its refuting
     // The session: the stages, the one lookup and the row's type — nothing that opens the store (`allProjects`,
     // `projectFor`) or writes to it. It stays a function of its input; Today reads the store.
     expect(bindings.get('curriculum/session.ts')).toEqual(['PROJECT_STAGES', 'projectIn', 'type ProjectRow']);
-    // And it looks a project up once, inside `review()`: the repertoire retention's loop, nowhere else.
+    // And it looks a project up once, in `buildSession`: the context assembly's one predicate, which every
+    // automatic chooser reads (G1e), nowhere else — not in `review()`, `repertoire()` or any other chooser.
     const session = readFileSync(join(src, 'curriculum', 'session.ts'), 'utf8');
     const lookups = [...session.matchAll(/projectIn\(/g)].map((found) => found.index);
     expect(lookups, 'the session looks a project up other than once').toHaveLength(1);
-    const start = session.indexOf('\nfunction review(');
-    const end = session.indexOf('\n}', start);
-    expect(start, 'review() not found').toBeGreaterThan(0);
-    expect(lookups[0], 'the lookup is outside review()').toBeGreaterThan(start);
-    expect(lookups[0], 'the lookup is outside review()').toBeLessThan(end);
+    const start = session.indexOf('\nexport function buildSession(');
+    // Its own closing brace: the first `}` alone on its line after it (its return type's closes as `} {`).
+    const end = start + session.slice(start).search(/\n\}\r?\n/);
+    expect(start, 'buildSession() not found').toBeGreaterThan(0);
+    expect(end, 'buildSession()’s end not found').toBeGreaterThan(start);
+    expect(lookups[0], 'the lookup is outside buildSession()').toBeGreaterThan(start);
+    expect(lookups[0], 'the lookup is outside buildSession()').toBeLessThan(end);
   });
 });
 

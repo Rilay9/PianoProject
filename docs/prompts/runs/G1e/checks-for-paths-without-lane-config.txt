@@ -1,0 +1,16 @@
+# checks for 9 path(s): 9 matched, 0 unmatched
+# app/src/curriculum/session.ts: app/src/**, app/src/curriculum/session.ts, app/src/curriculum/**
+# app/tests/e2e/projects.spec.ts: app/tests/e2e/*.spec.ts
+# app/tests/unit/projectLifecycle.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/repertoireRetention.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/transferOffer.test.ts: app/tests/unit/*.test.ts
+# docs/prompts/tasks/G1e-one-rule-for-automatic-offers.md: docs/**
+# docs/review/responses/d59f2ef8.md: docs/**
+# docs/prompts/runs/G1e/ENTRY.md: docs/**
+# docs/prompts/pictures/g1e/after-thin-paused-342x740.png: docs/**
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/first-day.spec.ts tests/e2e/lab.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/modes-placement.spec.ts tests/e2e/placement-branches.spec.ts tests/e2e/plan.spec.ts tests/e2e/progress.spec.ts tests/e2e/projects.spec.ts tests/e2e/session-run.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/today.spec.ts tests/e2e/transfer-offer.spec.ts --workers=4
+exit=0
