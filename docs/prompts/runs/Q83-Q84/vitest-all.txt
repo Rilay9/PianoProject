@@ -1,0 +1,23 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-afba154b2e72a57f9/app
+
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts (284 tests | 2 failed) 925ms
+   ❯ the 2026-09-19 lesson corrections, second-read and under test: the app (80)
+     × blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them 16ms
+     × 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot 35ms
+ ❯ tests/unit/simonTurnCue.test.ts (6 tests | 1 failed) 4491ms
+   ❯ the chain hands over in words, not only by going quiet (6)
+     × does not take a key pressed while the app is still playing as the answer 1075ms
+ ❯ tests/unit/expectedNote.test.ts (12 tests | 1 failed) 8825ms
+   ❯ the spelling comes from the notation (T41) (3)
+     × every black key in every fixture carries its written spelling 8498ms
+
+ Test Files  3 failed | 308 passed (312)
+      Tests  4 failed | 7100 passed | 5 skipped | 1 todo (7191)
+     Errors  1 error
+   Start at  16:52:55
+   Duration  345.83s (tests 63%, environment 24%, import 9%, transform 4%)
+
+    Isolate  312 workers spawned · ~2.29s startup each (spawn + environment, per file)
+             at least ~35.26s faster with isolate: false — reuses workers across files instead of one per file
+
