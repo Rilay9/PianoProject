@@ -2,7 +2,7 @@
 
 Open handoffs, each with its own file:
 
-- **X3e** — `tasks/X3e-timewise-tempo.md`, for information: your X3d required change (the one reader covers `score-timewise`; a real-path regression against the partwise twin); its own handoff when it lands; X24 and X29 close on it.
+- **X3e** — `handoffs/3caf2711.md` (respond in `responses/3caf2711.md`). The one tempo reader covers the timewise form (Entry 137); X24 and X29 close on it.
 - **Q76** — `tasks/Q76-public-options-for-two-rungs.md`, for information: the owner's disposition of the public catalogue's two gaps (your Q75 later-wave item) — public-domain material first: Mutopia's Joplin editions on ragtime.8 through a new import step, an authored public-domain tie piece on 2.4; the strict build's report is the proof; its own handoff when it lands.
 - **Four fix-forward briefs** — `handoffs/bcad0c9.md`, for information: F2b (your F2a change), Q65b (your Q65a change), U80 (the side-panel regression CI's full run found), X3a (the tempo control under X3's contract). Respond only if one departs from its contract.
 - **The G1a and Q65a briefs** — `handoffs/9cfa808.md`, for information (the G1 and Q-tooling reviews' required changes dispatched as fix-forwards under 788427c; Entries 119 and 120). Respond only if a brief departs from the required change.
