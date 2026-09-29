@@ -46,11 +46,15 @@ test.beforeEach(async ({ page }) => {
 async function duetFromTheRung(page: Page, rung: string): Promise<string[]> {
   await page.goto(`/#/lesson/${rung}`);
   await expect(page.locator('section[data-screen="lesson"]')).toBeVisible();
+  // The lesson section mounts before its first draw: the rows and the rung tools are drawn together,
+  // synchronously, once the curriculum, items, progress, shelf and rung states have loaded. Reading the
+  // rows as soon as the section is visible read them empty under load (U95: three runs by 2026-09-29),
+  // so the duet button, built in that same draw, is the readiness mark; the rows are read after it.
+  const tool = page.locator('#lesson-tool-duet');
+  await expect(tool, `${rung} draws no duet button`).toBeVisible();
   const offered = await page
     .locator('#lesson-songs .list-row[data-item], #lesson-exercises .list-row[data-item]')
     .evaluateAll((rows) => rows.map((row) => row.getAttribute('data-item') ?? ''));
-  const tool = page.locator('#lesson-tool-duet');
-  await expect(tool, `${rung} draws no duet button`).toBeVisible();
   await tool.click();
   await expect(page.locator('section[data-screen="score"]')).toBeVisible({ timeout: 60_000 });
   await expect(page.locator('#score-stage svg').first()).toBeVisible({ timeout: 60_000 });

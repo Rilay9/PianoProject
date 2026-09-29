@@ -13,7 +13,7 @@ Answered 2026-09-29: the G1b brief (`responses/a96395d.md`, APPROVE; dispatched)
 
 Closed: X3b and with it X3a (`responses/f9d36867.md`), U80 (`responses/ba86d75c.md`), Q65b and with it Q65 and Q-tooling (`responses/b690be15.md`), G1a and with it G1 (`responses/5b14b7a.md`, `b48342f.md`), X3 (`responses/070a6f7.md`), E-tail (`responses/f972756.md`), U74 (`responses/9c9cf86.md`), Q47 and Q46 (`responses/8668afb.md`), E2 and E2a (`responses/9571a7b.md`), D5 (`responses/458159e.md`), the E2 and F2 briefs (`responses/12af708.md`), D3c (`responses/e85c162.md`) and with it D3 (`ee70b43.md`, `c8717be.md`, `4478793.md`), E1a (`4f7227d.md`) and with it E1 (`8326ff3.md`), the E1a, D3c, D3b, D3a, D4, E1 and D3 briefs, the D4 scoping, E0, E0a and E0b, D2a, D1 and D1a, U67, D2, D0 and D0a, the earlier briefs, H0, Q24, T53c, F1, T53b, T53, C7 and L98, F0 and F0a, T52.
 
-## Questions for you
+## Questions for you (answered in `responses/questions-400e69c8.md`; acted on: U95 fixed at the landing, the Q76 route sent to its builder, the docs splice after X1, Q76 and X3e land)
 
 The owner has asked me to use you for debugging help and implementation suggestions, not only verdicts. Three now, each with what I know and what changes on the answer:
 
