@@ -179,10 +179,10 @@ class TheWorkflowOrder(unittest.TestCase):
         for path in ("docs/review/**", "docs/prompts/runs/**", "docs/prompts/pictures/**", "docs/prompts/entry-*.md", "docs/pending-review.md", "docs/prompts/in-flight.md"):
             self.assertIn(f"- '{path}'", block, f"{path} is record or reviewer churn and must start no run")
         self.assertNotIn("'docs/**'", block, "docs/** is too broad: the views and the maps are machine contracts")
-        self.assertNotIn("pull_request", block, "the pull_request event never fired for the standing PR and was removed")
+        self.assertIsNone(re.search(r"^\s+pull_request:", block, re.MULTILINE), "the pull_request event never fired for the standing PR and was removed")
         docs = WORKFLOW.with_name("docs-integrity.yml").read_text(encoding="utf-8")
         self.assertIn("test_prompt_views", docs, "the views' freshness moved to docs-integrity.yml")
-        self.assertNotIn("playwright", docs.lower(), "the docs workflow never runs the app's suites")
+        self.assertIsNone(re.search(r"run:.*(playwright|vitest|build:app|render_check)", docs, re.IGNORECASE), "the docs workflow never runs the app's suites")
 
     def test_the_steps_the_failure_messages_name_exist(self) -> None:
         names = [step.get("name", "") for step in self.steps]

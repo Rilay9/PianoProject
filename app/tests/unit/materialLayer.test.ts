@@ -734,7 +734,7 @@ describe('novelty bound to D4 (E2a): the candidate’s contact identity is its m
     it('the same material under another id is met: not first contact', async () => {
       await recordRun(run('excerpt.an-earlier-id', CUT.provenance?.identity), new Date(2026, 9, 1, 12));
       const learner = await learnerFrom();
-      expect(learner.contact?.(CUT.id, contactIdentity(approved))).toEqual({ contact: 'met', metById: false, metAs: ['excerpt.an-earlier-id'] });
+      expect(learner.contact?.(CUT.id, contactIdentity(approved))).toEqual({ contact: 'met', metById: false, metAs: ['excerpt.an-earlier-id'], how: ['played'] }); // `how` since G1 (Entry 112): the adapter passes D4's reading through, hearings included
       expect(eligibleForMaterial(FIRST, approved, learner)).toEqual({ verdict: 'ineligible', why: 'requirement', requirement: 'novelty', found: 'met' });
       expect(eligibleForMaterial(FAMILIAR, approved, learner)).toMatchObject({ verdict: 'eligible', practises: 'key.signature' });
     });
