@@ -22,6 +22,17 @@
  *    same generator family, version and recipe as an establishing reference, the seed apart (Part 26's
  *    first adversary). D4's texture and rhythm facts compare the sets of demands present, so a seed
  *    that happens to carry another rhythm would otherwise "measure" a difference no contract made.
+ *    Then, still before the dimensions, **a composition already played** (`relationship.composition`
+ *    with `playedAs` non-empty) is `unknown` and credits nothing (G2a; the G2 review's one required
+ *    change, `responses/030ce744.md`). The relationship names the composition and the items of it this
+ *    learner has runs of — nothing that tells a new section of one arrangement from another
+ *    arrangement, or either from familiarity with the tune, its structure or its arrangement, which
+ *    can carry a first reading of another cut. The measured dimensions compare the run with what
+ *    established the skill, which need not include the cut already played, so they cannot say this is
+ *    an independent context; they are not read for such a run — not to credit, not to spare a failure,
+ *    not to refuse. Where nothing of the composition has been played (`playedAs: []`) the tune is new
+ *    and the dimensions decide. Until the relationship's owner carries the arrangement or section
+ *    fact, a section and an arrangement read alike.
  * 3. **The claim** (the skill's `transfer.dimensions`, the vocabulary's data): a skill without the
  *    block reads `unknown` and credits nothing until the data names what matters for it.
  *    `demonstrated` where at least one of the skill's dimensions measurably differs **and** the run
@@ -33,10 +44,10 @@
  * counted against the skill where first contact is `true` and either a skill dimension measurably
  * differs (`differs`) or the attempt's demands carry one no establishing record carried (`newDemands`,
  * only where the attempt's and every establishing record's demands are known). Unknown facts are never
- * guessed into either verdict. A composition already played (`relationship.composition`) is named in
- * `why` and judged like any material on the skill's dimensions: first contact with this notation
- * stands (Part 26: a section is "recognised, not the same piece", an arrangement "related, neither
- * blindly new nor familiar"; the relationship holds no fact that tells the two apart).
+ * guessed into either verdict. A composition already played reads `unknown` for both: promotion never
+ * promotes on it, and protection gets what it gets of any `unknown` reading — no differing dimension,
+ * the new demands as known — so a failure on it counts unless it carries a demand no establishing
+ * record carried. (Until G2a it was named in `why` and judged on the dimensions like new material.)
  *
  * This module reads the attempt it is handed and the list it is handed, and calls nothing that reads
  * the ladder (no `ladderState`, nothing in `curriculum/transfer.ts`): the ladder calls it while it
@@ -79,7 +90,7 @@ export interface TransferReading {
   /**
    * The skill's dimensions this attempt measurably differs on, whatever its outcome: what protection
    * reads. Empty where the reading is decided before the dimensions (contact, no relationship, a new
-   * seed, a skill without dimensions).
+   * seed, a composition already played, a skill without dimensions).
    */
   differs: Dimension[];
   /**
@@ -124,10 +135,17 @@ function demandsNoneCarried(demands: readonly string[] | undefined, established:
   return [...new Set(demands)].filter((demand) => !carried.has(demand)).sort();
 }
 
-function composed(relationship: Relationship): string {
+/**
+ * A composition this learner has already played, in words for `why`; undefined where the relationship
+ * names none or nothing of it has been played (see the module note).
+ */
+function alreadyPlayed(relationship: Relationship): string | undefined {
   const composition = relationship.composition;
-  if (composition === undefined || composition.playedAs.length === 0) return '';
-  return `; a composition already played (${composition.key}, as ${composition.playedAs.join(', ')}): this notation is still first contact`;
+  if (composition === undefined || composition.playedAs.length === 0) return undefined;
+  return (
+    `a composition already played (${composition.key}, as ${composition.playedAs.join(', ')}): the relationship does not yet ` +
+    'carry the arrangement or section fact that would tell an independent context from familiarity with the tune — not credited'
+  );
 }
 
 /**
@@ -172,6 +190,8 @@ export function transferReading(
   if (shownAgain !== undefined) {
     return none('not-transfer', `a new seed of material the skill was shown on (${shownAgain.itemId}: family, version and recipe the same)`, []);
   }
+  const composition = alreadyPlayed(relationship);
+  if (composition !== undefined) return none('unknown', composition, newDemands);
 
   // 3. The skill's claim.
   const dimensions = skill.transfer?.dimensions ?? [];
@@ -188,7 +208,7 @@ export function transferReading(
       notes.push(`${dimension}: declared to differ, measured ${measured === false ? 'the same' : 'unknown'} — not credited`);
     }
   }
-  const tail = `${notes.length > 0 ? `; ${notes.join('; ')}` : ''}${composed(relationship)}`;
+  const tail = notes.length > 0 ? `; ${notes.join('; ')}` : '';
   if (differs.length === 0) {
     return unknown
       ? none('unknown', `no dimension of ${skill.id} known to differ, and one not known${tail}`, newDemands)

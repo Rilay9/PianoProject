@@ -8,6 +8,13 @@
  * Written first against a stub that answered `unknown` to everything, one case per adversary of
  * Part 26's fourteen, so any adversary the three facts could not tell apart would show before a
  * line of the policy was written (the entry's premise table).
+ *
+ * Revised (G2a; the G2 review's one required change, `docs/review/responses/030ce744.md`): a
+ * composition the learner has already played (`relationship.composition.playedAs` non-empty) is read
+ * before the dimensions and credits nothing. The relationship names the composition and the items of
+ * it played, and nothing that tells a new section of one arrangement from another arrangement — or
+ * either from familiarity with the tune — so adversaries 4, 5 and 6 read `unknown` with today's facts,
+ * and may diverge only once the relationship's owner carries the arrangement or section fact.
  */
 import { describe, expect, it } from 'vitest';
 import { line, phrase } from './helpers/phrase';
@@ -143,35 +150,67 @@ describe('Part 26’s fourteen adversaries, each on the facts the attempt carrie
     expect(result).toMatchObject({ kind: 'refusal', reason: 'no-opportunity' });
   });
 
-  it('4. a neighbouring excerpt with the same pattern is not transfer: nothing the skill names differs', () => {
+  // Revised (G2a): this read `not-transfer` from the dimensions (nothing interval-reading names
+  // differs). The composition is now read before the dimensions, so a neighbouring cut of a piece
+  // already played is decided on that fact alone and credits nothing: no consumer tells the two
+  // verdicts apart (promotion takes `demonstrated`; protection reads `differs` and `newDemands`,
+  // empty and the same either way).
+  it('4. a neighbouring excerpt with the same pattern credits nothing: the composition already played is read before the dimensions', () => {
     const run = attempt({
       material: file('b'.repeat(64)),
       firstContact: true,
       relationship: relation({ source: true }, { composition: { key: 'work:anh113', playedAs: ['excerpt.anh113.1-8'] } }),
     });
-    expect(transferReading(INTERVALS, ESTABLISHED, run)).toMatchObject({ verdict: 'not-transfer', on: [] });
-  });
-
-  it('5. a substantially different section of the same composition is recognised (named) and judged on the skill’s dimensions', () => {
-    const run = attempt({
-      material: file('c'.repeat(64)),
-      firstContact: true,
-      relationship: relation({ source: true, key: true, texture: true }, { composition: { key: 'work:anh113', playedAs: ['excerpt.anh113.1-8'] } }),
-    });
     const reading = transferReading(INTERVALS, ESTABLISHED, run);
-    expect(reading).toMatchObject({ verdict: 'demonstrated', on: ['key', 'texture'] });
+    expect(reading).toMatchObject({ verdict: 'unknown', on: [], differs: [] });
     expect(reading.why).toMatch(/work:anh113/);
   });
 
-  it('6. a different arrangement is related (named), neither blindly new nor familiar: first contact with this notation, judged on its dimensions', () => {
-    const run = attempt({
+  // Rewritten (G2a; the reviewer's discriminating case): this read `demonstrated` on key and texture,
+  // the composition named in `why`. Familiarity with the tune, its structure or its arrangement can
+  // carry a first reading of another cut; the relationship cannot say whether this is an independent
+  // context, so the honest verdict with today's facts is `unknown`.
+  it('5. a new section of the same arrangement is unknown with today’s facts: the composition met before, the section fact not carried, not credited', () => {
+    const facts = {
+      material: file('c'.repeat(64)),
+      firstContact: true,
+      relationship: relation({ source: true, key: true, texture: true }, { composition: { key: 'work:anh113', playedAs: ['excerpt.anh113.1-8'] } }),
+    };
+    const reading = transferReading(INTERVALS, ESTABLISHED, attempt(facts));
+    expect(reading).toMatchObject({ verdict: 'unknown', on: [], differs: [] });
+    expect(reading.why).toMatch(/work:anh113/);
+    expect(reading.why).toMatch(/excerpt\.anh113\.1-8/);
+    expect(reading.why).toMatch(/arrangement or section/);
+    expect(reading.why).toMatch(/not credited/);
+    // Protection reads the same unknown: the measured key and texture are not a stretch it can lean
+    // on (the cut played before may have been in that key), so two bad readings count.
+    const failed = attempt({ ...facts, ...BADLY });
+    expect(sparesFailure(transferReading(INTERVALS, ESTABLISHED, failed), failed)).toBe(false);
+  });
+
+  // Rewritten (G2a; the reviewer's discriminating case): this read `demonstrated` on hands, "related"
+  // in `why`. A different arrangement carries the same shape of fact as case 5 — the composition's key
+  // and the items of it played — so the two cannot diverge until the relationship says which it is.
+  it('6. a different arrangement is unknown with the same facts as a new section: the composition met before, the arrangement fact not carried, not credited', () => {
+    const facts = {
       material: file('d'.repeat(64)),
       firstContact: true,
       relationship: relation({ source: true, hands: true }, { composition: { key: 'work:ode', playedAs: ['kern.ode.easy'] } }),
-    });
-    const reading = transferReading(INTERVALS, ESTABLISHED, run);
-    expect(reading).toMatchObject({ verdict: 'demonstrated', on: ['hands'] });
+    };
+    const reading = transferReading(INTERVALS, ESTABLISHED, attempt(facts));
+    expect(reading).toMatchObject({ verdict: 'unknown', on: [], differs: [] });
     expect(reading.why).toMatch(/work:ode/);
+    expect(reading.why).toMatch(/kern\.ode\.easy/);
+    expect(reading.why).toMatch(/arrangement or section/);
+    expect(reading.why).toMatch(/not credited/);
+    // Protection as for any unknown reading: a demand no establishing record carried still spares a
+    // failure (a separate, known fact); without one the failure counts.
+    const failed = attempt({ ...facts, ...BADLY });
+    expect(sparesFailure(transferReading(INTERVALS, ESTABLISHED, failed), failed)).toBe(false);
+    const stretched = attempt({ ...facts, ...BADLY, demands: ['interval.leap'] });
+    const stretchedReading = transferReading(INTERVALS, ESTABLISHED, stretched);
+    expect(stretchedReading.newDemands).toEqual(['interval.leap']);
+    expect(sparesFailure(stretchedReading, stretched)).toBe(true);
   });
 
   it('7. a duplicate or imported copy regains no first contact (G1 met it by its bytes): not transfer, whatever its row claims', () => {
@@ -239,6 +278,34 @@ describe('Part 26’s fourteen adversaries, each on the facts the attempt carrie
     const reading = transferReading(INTERVALS, ESTABLISHED, run);
     expect(reading).toMatchObject({ verdict: 'unknown', on: [], differs: [] });
     expect(sparesFailure(transferReading(INTERVALS, ESTABLISHED, { ...run, ...BADLY }), { ...run, ...BADLY })).toBe(false);
+  });
+});
+
+// --- the composition fact's boundary (G2a) -----------------------------------------------------
+
+describe('a composition already played fails closed, and only that fact', () => {
+  it('the same material facts with no composition relationship still read demonstrated on the differing dimension', () => {
+    const section = attempt({ material: file('c'.repeat(64)), firstContact: true, relationship: relation({ source: true, key: true, texture: true }) });
+    expect(transferReading(INTERVALS, ESTABLISHED, section)).toMatchObject({ verdict: 'demonstrated', on: ['key', 'texture'] });
+    const arrangement = attempt({ material: file('d'.repeat(64)), firstContact: true, relationship: relation({ source: true, hands: true }) });
+    expect(transferReading(INTERVALS, ESTABLISHED, arrangement)).toMatchObject({ verdict: 'demonstrated', on: ['hands'] });
+  });
+
+  it('a composition with nothing of it played (the first cut met) is no familiarity fact: judged on the dimensions', () => {
+    // `relationshipOf` writes `composition` wherever the item names one, `playedAs: []` where no run
+    // of it exists (`transferRelationship.test.ts`, adversary 6): the tune is new to this learner.
+    const run = attempt({ material: file('c'.repeat(64)), firstContact: true, relationship: relation({ source: true, key: true }, { composition: { key: 'work:anh113', playedAs: [] } }) });
+    const reading = transferReading(INTERVALS, ESTABLISHED, run);
+    expect(reading).toMatchObject({ verdict: 'demonstrated', on: ['key'] });
+    expect(reading.why).not.toMatch(/work:anh113/);
+  });
+
+  it('the earlier facts keep their verdicts: not first contact and unknown contact are read before the composition', () => {
+    const played = { composition: { key: 'work:ode', playedAs: ['kern.ode.easy'] } };
+    const again = attempt({ material: file('d'.repeat(64)), firstContact: false, relationship: relation({ hands: true }, played) });
+    expect(transferReading(INTERVALS, ESTABLISHED, again)).toMatchObject({ verdict: 'not-transfer', on: [] });
+    const unrecorded = attempt({ material: file('d'.repeat(64)), relationship: relation({ hands: true }, played) });
+    expect(transferReading(INTERVALS, ESTABLISHED, unrecorded).why).toMatch(/first contact not recorded/);
   });
 });
 

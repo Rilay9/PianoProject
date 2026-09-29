@@ -1,0 +1,11 @@
+npx vitest run tests/unit/transferPolicy.test.ts tests/unit/masteryLadder.test.ts tests/unit/transferFactsOnTheAttempt.test.ts tests/unit/transferOffer.test.ts (in app)
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a67160964ddcfe0e7/app
+
+
+ Test Files  4 passed (4)
+      Tests  79 passed (79)
+   Start at  08:05:58
+   Duration  720ms (transform 65%, import 25%, tests 10%, worker 1%)
+
+exit=0

@@ -68,7 +68,19 @@ const phraseOf = (seed: number, recipe: Record<string, unknown>): Identity => ({
  * measured, and — for a read after proficiency — its relationship to the reads before it, whose
  * measured facts differ on `differs` and on nothing else.
  */
-function withFacts(e: Evidence, facts: { seed: number; recipe?: Record<string, unknown>; differs?: Dimension[]; extraDemands?: string[] }): Evidence {
+function withFacts(
+  e: Evidence,
+  facts: {
+    seed: number;
+    recipe?: Record<string, unknown>;
+    differs?: Dimension[];
+    extraDemands?: string[];
+    /** A notated cut's own material in place of a phrase's (G2a). */
+    material?: Identity;
+    /** The relationship's composition fact: the composition and the items of it already played (G2a). */
+    composition?: { key: string; playedAs: string[] };
+  },
+): Evidence {
   const measured = e as MeasuredEvidence;
   const located = [...new Set([...measured.byDemand.map((d) => d.demand), ...(measured.otherDemands ?? []).map((d) => d.demand)])].sort();
   const relationship: Relationship | undefined =
@@ -79,12 +91,13 @@ function withFacts(e: Evidence, facts: { seed: number; recipe?: Record<string, u
           shownOn: [{ itemId: LEVEL_2, material: phraseOf(0, LEVEL_2_RECIPE) }],
           measured: DIMENSIONS.map((dimension) => ({ dimension, candidate: 'this', shownOn: ['that'], differs: facts.differs?.includes(dimension) === true })),
           differsOn: [...facts.differs],
+          ...(facts.composition === undefined ? {} : { composition: facts.composition }),
         };
   return {
     ...measured,
     context: {
       ...measured.context,
-      material: phraseOf(facts.seed, facts.recipe ?? LEVEL_2_RECIPE),
+      material: facts.material ?? phraseOf(facts.seed, facts.recipe ?? LEVEL_2_RECIPE),
       demands: [...located, ...(facts.extraDemands ?? [])].sort(),
       ...(relationship === undefined ? {} : { relationship }),
     },
@@ -197,6 +210,34 @@ describe('transfer needs unfamiliar material; retained needs a later day', () =>
       cites: ['unseen'],
     });
     expect(ladderState({ evidence: shown(), today }).state).toBe('proficient');
+  });
+
+  // G2a (the G2 review's required change): another cut of a composition the learner has played is
+  // not an independent context the relationship can vouch for. The earlier cut's run is in the store
+  // (so the relationship names it) and is no evidence of reading here — in the shipped app only the
+  // reading rows are — so this learner's only transfer-quality read is the related one.
+  const CUT_25_32: Identity = { kind: 'file', sha256: 'c'.repeat(64) };
+  const ANH_113 = { key: 'work:anh113', playedAs: ['excerpt.anh113.1-8'] };
+  const relatedRead = (at: string, plan: RunPlan & { wrongSteps?: number[] } = {}, composition: typeof ANH_113 | null = ANH_113): Evidence =>
+    withFacts(read(at, { itemId: 'excerpt.anh113.25-32', ...plan }), { seed: 0, material: CUT_25_32, differs: ['key'], ...(composition === null ? {} : { composition }) });
+
+  it('a first reading of another cut of a piece already played, another key measured, is not transfer demonstrated: the composition fails closed', () => {
+    const related = ladderState({ evidence: [...shown(), relatedRead(day(2))], today });
+    expect(related.state, 'a related cut read as transfer').toBe('proficient');
+    expect(related.transfer).toBe(false);
+    expect(related.transferScope).toEqual([]);
+    // The same read with no composition fact is transfer, on the key: the gate is that fact alone.
+    const unrelated = ladderState({ evidence: [...shown(), relatedRead(day(2), {}, null)], today });
+    expect(unrelated.state).toBe('transfer demonstrated');
+    expect(unrelated.transferScope).toEqual([{ on: ['key'], since: day(2) }]);
+  });
+
+  it('two bad first readings of another cut of a piece already played count, as any unknown reading does: back to familiar', () => {
+    const failed = [...shown(), relatedRead(day(2), BADLY), relatedRead(day(3), BADLY)];
+    expect(ladderState({ evidence: failed, today }).state, 'a related cut spared as a stretch').toBe('familiar');
+    // Without the composition fact the measured key is a stretch, and the two are spared.
+    const stretched = [...shown(), relatedRead(day(2), BADLY, null), relatedRead(day(3), BADLY, null)];
+    expect(ladderState({ evidence: stretched, today }).state).toBe('proficient');
   });
 
   it(`retained is a first attempt of a day, supporting, ${String(RETENTION_DAYS)} days or more after the last support`, () => {

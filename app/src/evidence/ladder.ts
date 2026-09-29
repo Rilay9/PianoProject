@@ -8,7 +8,7 @@
  * | practised | at least one measured evidence record, of either outcome |
  * | familiar | supporting evidence at the practice standard, on at least one day |
  * | proficient | supporting evidence at the full standard on two different days, the most recent full-standard attempt supporting |
- * | transfer demonstrated | proficient, and supporting full-standard evidence the transfer policy reads as `demonstrated` (G2: first contact, on material that measurably differs from what established the skill on one of the skill's own dimensions) |
+ * | transfer demonstrated | proficient, and supporting full-standard evidence the transfer policy reads as `demonstrated` (G2: first contact, on material that measurably differs from what established the skill on one of the skill's own dimensions; never another cut of a composition already played, G2a) |
  * | retained | transfer demonstrated, and supporting full-standard evidence on the first attempt of a day at least `RETENTION_DAYS` after the previous supporting evidence |
  * | mastered | retained, with no full-standard attempt against the skill among the last `RECENT_ATTEMPTS` (a stretch onto new material excepted) |
  *
@@ -19,7 +19,9 @@
  * measurably different on one of the skill's dimensions or carrying a demand no
  * establishing record carried — a stretch onto harder material is evidence
  * about that material, not a loss of the skill shown on the easier one. Where a
- * fact is unknown the attempt counts. Time alone lowers nothing: a skill with no
+ * fact is unknown the attempt counts, and another cut of a composition already
+ * played is unknown (G2a): its dimensions spare nothing, a demand no establishing
+ * record carried still does. Time alone lowers nothing: a skill with no
  * supporting evidence for `RETENTION_DAYS` keeps its state and says it has not
  * been shown recently.
  *
@@ -81,8 +83,9 @@ export const RECENT_ATTEMPTS = 2;
  * Whether a full-standard attempt against the skill counts towards moving it
  * down (and against mastery). **A hypothesis**, like the two numbers above: not
  * where the transfer policy spares it (`sparesFailure`: first contact, and a
- * dimension of the skill measurably different from what established it, or a
- * demand no establishing record carried). A learner proficient at level 2 who
+ * dimension of the skill measurably different from what established it — never
+ * read for another cut of a composition already played, G2a — or a demand no
+ * establishing record carried). A learner proficient at level 2 who
  * reads two level-4 phrases badly at sight still reads level 2; a teacher would
  * say "level 4 is a stretch for now", not "back to familiar" (C3, the history
  * *the stretch*). Where any fact is unknown the attempt counts (G2: unknown
