@@ -60,3 +60,5 @@ The reviewer's rulings are part of this brief:
 **The invariant, in the reviewer's words:** encounter history says what was met; evidence says what was measured; skill and rung state say what the evidence supports; project lifecycle says what the learner intends to do with the music; session state says today's plan.
 
 **Landed 2026-09-29** (Entry 138; 536d9bc2, merged dc8c3109); handoff `handoffs/536d9bc2.md`.
+
+**Accepted 2026-09-29** (`responses/536d9bc2.md`, APPROVE). The invariant stands in code and tests. Rulings: automatic retention must not override `paused` or `retired` once the session consumes the lifecycle (G82 → G1d); *I performed it* offered from Learning; songs only; the same-id fallback as built. G1c judged against this presentation truth.
