@@ -18,12 +18,17 @@
  * - **The UI opens the sheet and the store opens none**, and nothing the sheet does writes a run:
  *   importing, correcting, assigning and closing create no evidence; a run is what the Score screen
  *   records when the learner plays.
- * - **The learner states the tempo** (X3a; E48): where the tempo is the app's guess or the file's, a
- *   number field and *Use this tempo* on the tempo line call `importStore.stateImportTempo` — which
- *   writes the tempo into the score, measures it again and names the learner — and the sheet re-reads
- *   the row the store returned: "You stated ♩ = N", *yours*, no control. A tempo the store refuses is
- *   refused in the store's words, never clamped by the sheet. The number on the line is the one the
- *   stored score now opens at: the store's tempo fact names the learner and carries no number.
+ * - **The learner states the tempo** (X3a; E48): on every MusicXML score's tempo line — the app's
+ *   guess, the file's, or one the learner already stated — a number field and *Use this tempo* call
+ *   `importStore.stateImportTempo`, which writes the tempo into the score, measures it again and names
+ *   the learner, and the sheet re-reads the row the store returned: "You stated ♩ = N", *yours*. A tempo
+ *   the store refuses is refused in the store's words, never clamped by the sheet. The number on the
+ *   line is the one the stored score now opens at: the store's tempo fact names the learner and carries
+ *   no number.
+ * - **A stated tempo can be stated again** (X3b; the X3a review's required change,
+ *   `responses/564e8e5f.md`): the control stays after a statement, seeded from the tempo the returned
+ *   score opens at, and a second statement goes through the same store operation, so a slip has a way
+ *   back without deleting the import.
  */
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -264,7 +269,7 @@ describe('the learner states the tempo (X3a; E48’s stateImportTempo)', () => {
     }),
   });
 
-  it('the app’s guess and the file’s tempo offer a number field and Use this tempo on the tempo line; a stated tempo and a PDF offer none', () => {
+  it('the app’s guess, the file’s tempo and the learner’s own offer a number field and Use this tempo on the tempo line; a PDF offers none', () => {
     openImportSheet(INFERRED, CURRICULUM);
     const control = document.getElementById('import-tempo-set');
     expect(control, 'no control under the app’s guess').not.toBeNull();
@@ -283,17 +288,22 @@ describe('the learner states the tempo (X3a; E48’s stateImportTempo)', () => {
     expect(field().value).toBe('96');
     document.body.replaceChildren();
 
+    // A tempo the learner stated can be stated again (X3b): the control stays, on the line, starting at
+    // the tempo the score opens at.
     openImportSheet(STATED, CURRICULUM);
     expect(text('#import-tempo')).toContain('yours');
-    expect(document.getElementById('import-tempo-set'), 'a control under the learner’s own tempo').toBeNull();
-    expect(document.querySelector('#import-guessed input')).toBeNull();
+    expect(text('#import-tempo')).toContain('You stated ♩ = 72.');
+    const again = document.getElementById('import-tempo-set');
+    expect(again, 'no control under the learner’s own tempo').not.toBeNull();
+    expect(document.getElementById('import-tempo')?.nextElementSibling).toBe(again);
+    expect(field().value).toBe('72');
     document.body.replaceChildren();
 
     openImportSheet(PDF, CURRICULUM);
     expect(document.getElementById('import-tempo-set')).toBeNull();
   });
 
-  it('Use this tempo calls stateImportTempo with the row’s id and the number, and the sheet re-reads the row: “You stated ♩ = N”, yours, no control, the row’s state “tempo yours”', async () => {
+  it('Use this tempo calls stateImportTempo with the row’s id and the number, and the sheet re-reads the row: “You stated ♩ = N”, yours, the control still there, the row’s state “tempo yours”', async () => {
     const imported = await addImport(midi('left-hand-first.mid'));
     openImportSheet(imported, CURRICULUM);
     expect(text('#import-tempo')).toContain('The file states no tempo, so the app chose ♩ = 100.');
@@ -316,7 +326,8 @@ describe('the learner states the tempo (X3a; E48’s stateImportTempo)', () => {
     // The line, from the row the store returned.
     expect(text('#import-tempo')).toContain('You stated ♩ = 72.');
     expect(text('#import-tempo')).not.toContain('the app’s guess');
-    expect(document.getElementById('import-tempo-set')).toBeNull();
+    // The control stays (X3b): a stated tempo can be stated again.
+    expect(document.getElementById('import-tempo-set')).not.toBeNull();
 
     // The stored row is the store's: the score states the tempo (the sheet never edits the XML), the
     // fact names the learner, and the demands are the measurement of the stated score.
@@ -416,6 +427,115 @@ describe('the learner states the tempo (X3a; E48’s stateImportTempo)', () => {
       expect(text('#import-tempo')).toContain('yours');
     });
     expect(text('#import-tempo')).toContain('You stated ♩ = 72.');
+  });
+
+  /** Every `<sound tempo>` the score sounds, in order, as written. */
+  const soundTempos = (xml: string): string[] => [...xml.matchAll(/<sound\b[^>]*\btempo="([^"]*)"/g)].map((match) => match[1] ?? '');
+
+  /**
+   * The tempo the Score screen's label is computed from at the start (`ScoreScreen.writtenBpm` →
+   * `bpmAt(model.tempoMap, …)`): the score model's first tempo, read from the score through OSMD as the
+   * Score screen and the measurement read it.
+   */
+  async function openingTempoThePlayerReads(xml: string): Promise<number | undefined> {
+    const [{ OpenSheetMusicDisplay }, { extractScoreModel }] = await Promise.all([import('opensheetmusicdisplay'), import('../../src/score/extractScoreModel')]);
+    const osmd = new OpenSheetMusicDisplay(document.createElement('div'), { autoResize: false, drawingParameters: 'compact' });
+    await osmd.load(xml);
+    return extractScoreModel(osmd, { id: 'opening' }).tempoMap[0]?.bpm;
+  }
+
+  // X3b, the X3a review's required change (`responses/564e8e5f.md`): a learner-authored fact records whose
+  // statement it is; it must not make the statement irreversible.
+  it('stated twice without closing the sheet: the line, the stored score, the measurement, the fact and the tempo the player reads carry the second statement, and the first is nowhere', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    try {
+      vi.setSystemTime(new Date('2026-09-28T09:00:00.000Z'));
+      const imported = await addImport(midi('left-hand-first.mid'));
+      openImportSheet(imported, CURRICULUM);
+      state('72');
+      await vi.waitFor(() => {
+        expect(text('#import-tempo')).toContain('You stated ♩ = 72.');
+      });
+      const first = (await getImport(imported.id)) as ImportRow;
+      expect(soundTempos(first.data as string)).toEqual(['72']);
+      expect(first.provenance?.facts.tempo?.via).toMatch(/\b72 quarter notes a minute, 2026-09-28$/);
+
+      // A day later, on the same sheet, the learner states it again.
+      vi.setSystemTime(new Date('2026-09-29T09:00:00.000Z'));
+      state('160');
+      await vi.waitFor(() => {
+        expect(text('#import-tempo')).toContain('You stated ♩ = 160.');
+      });
+
+      // Through the same store operation, as the first: the id, the number, the second time, the estimate.
+      const calls = vi.mocked(stateImportTempo).mock.calls;
+      expect(calls).toHaveLength(2);
+      const [id, bpm, now, options] = calls[1] ?? [];
+      expect(id).toBe(imported.id);
+      expect(bpm).toBe(160);
+      expect(now?.toISOString()).toBe('2026-09-29T09:00:00.000Z');
+      expect(typeof options?.estimate).toBe('function');
+
+      // The line: the second number, the learner's, and the first nowhere on it.
+      const line = text('#import-tempo');
+      expect(line).toContain('yours');
+      expect(line).not.toMatch(/\b72\b/);
+      // The control still there, on the line, at the tempo the score now opens at.
+      expect(document.getElementById('import-tempo')?.nextElementSibling).toBe(document.getElementById('import-tempo-set'));
+      expect(field().value).toBe('160');
+
+      const stored = (await getImport(imported.id)) as ImportRow;
+      const xml = stored.data as string;
+      // The stored score: the imported score opening at 160, every tempo it sounds the second number.
+      expect(xml).toBe(withOpeningTempo(imported.data as string, 160));
+      expect(soundTempos(xml)).toEqual(['160']);
+      expect(xml).not.toMatch(/tempo="72"/);
+      // The measurement: the store's measurement of the score that opens at 160.
+      const fresh = await measureImport(xml, stored.id);
+      expect(stored.demands).toEqual(fresh.demands);
+      expect(stored.measurement).toEqual(fresh.measurement);
+      // The fact: the learner's, the second number and the second day, and neither of the first.
+      expect(stored.provenance?.facts.tempo?.kind).toBe('authored');
+      expect(stored.provenance?.facts.tempo?.via).toMatch(/learner/);
+      expect(stored.provenance?.facts.tempo?.via).toMatch(/\b160 quarter notes a minute, 2026-09-29$/);
+      expect(stored.provenance?.facts.tempo?.via).not.toMatch(/\b72\b|2026-09-28/);
+      // Nowhere in the row: no field of it still sounds or says the first statement.
+      expect(JSON.stringify(stored)).not.toMatch(/tempo=\\"72\\"|\b72 quarter notes/);
+      // The tempo the Score screen's label is computed from.
+      expect(await openingTempoThePlayerReads(xml)).toBe(160);
+      expect(importStateWords(stored)).toContain('tempo yours');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('after a statement the field starts at the tempo the stored score opens at, the number the line says, not what was typed; a refused restatement keeps the store’s words and the field as typed', async () => {
+    const imported = await addImport(midi('left-hand-first.mid'));
+    openImportSheet(imported, CURRICULUM);
+    // A fraction: the store writes it as stated, and the line says the whole beat (X3a).
+    state('72.5');
+    await vi.waitFor(() => {
+      expect(text('#import-tempo')).toContain('yours');
+    });
+    const stated = (await getImport(imported.id)) as ImportRow;
+    expect(soundTempos(stated.data as string)).toEqual(['72.5']);
+    expect(text('#import-tempo')).toContain('You stated ♩ = 73.');
+    // Seeded from the score the store returned — what the line says — never the characters typed.
+    expect(field().value).toBe('73');
+
+    // A refused restatement: the store's words, the field as typed, the line and the score as they were.
+    const reason = await stateImportTempo(imported.id, 500).then(
+      () => '',
+      (cause: unknown) => (cause instanceof Error ? cause.message : String(cause)),
+    );
+    state('500');
+    await vi.waitFor(() => {
+      expect(text('#import-tempo-said')).toBe(reason);
+    });
+    expect(field().value).toBe('500');
+    expect(text('#import-tempo')).toContain('You stated ♩ = 73.');
+    expect(((await getImport(imported.id)) as ImportRow).data).toBe(stated.data);
+    expect(use().disabled).toBe(false);
   });
 });
 

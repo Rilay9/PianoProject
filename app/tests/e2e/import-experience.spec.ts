@@ -22,7 +22,10 @@
  * And the learner's stated tempo (X3a; E48): on the same fixture, whose file states no tempo, the
  * learner types the tempo on the sheet's tempo line and presses *Use this tempo*; the store writes it
  * into the score and measures it again, the line and the Library row say the tempo is theirs, and the
- * Score screen's tempo label, at 100 %, reads the stated tempo rather than the app's 100.
+ * Score screen's tempo label, at 100 %, reads the stated tempo rather than the app's 100. A slip has a
+ * way back (X3b, `responses/564e8e5f.md`): the control stays after a statement, and a second statement
+ * on the same sheet goes through the same store operation — the line, the stored score, the fact and
+ * the Score screen then carry the second number, and the first is nowhere.
  */
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
@@ -169,28 +172,48 @@ test.describe('the import experience', () => {
     await expect(page.locator('#score-stage .is-front svg').first()).toBeVisible({ timeout: 30_000 });
   });
 
-  test('state the tempo on the sheet: the line and the row say it is the learner’s, and the Score screen’s tempo label reads it', async ({ page }) => {
+  test('state the tempo on the sheet, then state it again: the line, the stored score, the fact, the row and the Score screen’s tempo label carry the second statement', async ({
+    page,
+  }) => {
     test.setTimeout(90_000);
     await page.goto('/#/library');
     await page.locator('#library-file').setInputFiles(LEFT_HAND_FIRST);
     const sheet = page.locator('#assign-sheet[data-sheet="import"]');
     await expect(sheet).toBeVisible();
     const tempo = sheet.locator('#import-tempo');
+    const field = sheet.locator('#import-tempo-bpm');
     await expect(tempo).toContainText('The file states no tempo, so the app chose ♩ = 100.');
 
-    // The learner knows the piece goes at 60 and says so.
-    await sheet.locator('#import-tempo-bpm').fill('60');
+    // The learner means 160 and drops the 1: 60, which the store takes (it is between 20 and 400).
+    await field.fill('60');
     await sheet.locator('#import-tempo-use').click();
     await expect(tempo).toContainText('yours');
     await expect(tempo).toContainText('You stated ♩ = 60.');
     await expect(tempo).not.toContainText('the app’s guess');
-    await expect(sheet.locator('#import-tempo-use')).toHaveCount(0);
+    // The control stays (X3b), starting at the tempo the score now opens at.
+    await expect(sheet.locator('#import-tempo-use')).toBeEnabled();
+    await expect(field).toHaveValue('60');
 
     // The store's change: the score opens at 60, and the fact names the learner.
-    const stated = await stored<StoredRow>(page, 'imports', ITEM);
-    expect(stated?.data).toContain('<sound tempo="60"/>');
-    expect(stated?.provenance?.facts.tempo?.kind).toBe('authored');
-    expect(stated?.provenance?.facts.tempo?.via).toMatch(/learner/);
+    const first = await stored<StoredRow>(page, 'imports', ITEM);
+    expect(first?.data).toContain('<sound tempo="60"/>');
+    expect(first?.provenance?.facts.tempo?.kind).toBe('authored');
+    expect(first?.provenance?.facts.tempo?.via).toMatch(/learner.*\b60 quarter notes a minute/);
+
+    // The way back: on the same sheet, without closing it or importing again, the tempo meant.
+    await field.fill('160');
+    await sheet.locator('#import-tempo-use').click();
+    await expect(tempo).toContainText('You stated ♩ = 160.');
+    await expect(tempo).not.toContainText('♩ = 60.');
+    await expect(field).toHaveValue('160');
+
+    // The stored score opens at 160 and sounds no 60; the fact is the learner's, the second number.
+    const second = await stored<StoredRow>(page, 'imports', ITEM);
+    expect(second?.data).toContain('<sound tempo="160"/>');
+    expect(second?.data).not.toContain('tempo="60"');
+    expect(second?.provenance?.facts.tempo?.kind).toBe('authored');
+    expect(second?.provenance?.facts.tempo?.via).toMatch(/learner.*\b160 quarter notes a minute/);
+    expect(second?.provenance?.facts.tempo?.via).not.toMatch(/\b60 quarter notes/);
 
     // No rung; the Library row says the tempo is the learner's (the hands are the file's, so no hands word).
     await sheet.locator('#assign-save').click();
@@ -198,12 +221,12 @@ test.describe('the import experience', () => {
     const row = page.locator(`.list-row[data-item="${ITEM}"]`);
     await expect(row.locator('.library-import-state')).toHaveText('measured · tempo yours');
 
-    // The Score screen plays it at the stated tempo: at 100 % the label reads 60, not the app's 100.
+    // The Score screen plays it at the second statement: at 100 % the label reads 160, not 60 or the app's 100.
     await row.click();
     await expect(page).toHaveURL(new RegExp(`#/score/${ITEM.replace('.', '\\.')}`));
     await expect(page.locator('#score-stage .is-front svg').first()).toBeVisible({ timeout: 30_000 });
     await setTempoPercent(page, 100);
-    await expect(page.locator('#score-tempo-label')).toHaveText(/\b60 bpm$/);
+    await expect(page.locator('#score-tempo-label')).toHaveText(/\b160 bpm$/);
   });
 
   test('a file shared into the app opens the sheet from the row the Library got back', async ({ page }) => {
