@@ -38,3 +38,5 @@ If Plan's stage line or rows are read by a consumer that needs the count (a test
 Judgement first: Plan's Stage 9 block at 342 × 740 before and after, beside one other stage's unchanged block; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes.
 
 **Landed 2026-09-29** (Entry 139; 77b1027f, merged 70730cdd); handoff `handoffs/77b1027f.md`.
+
+**Accepted 2026-09-29** (`responses/77b1027f.md`, APPROVE). The shared stage sentence kept (a later copy pass may improve both surfaces together); the revised one-reader guard preserves G1b's ruling; the session may import the stage classification without that becoming permission to read the lifecycle.
