@@ -1,0 +1,4 @@
+python docs/prompts/runs/X1/scripts-mutants.py recheck-invalidates-by-id no-contact-assumption
+recheck-invalidates-by-id: caught (tests/unit/sessionRecheck.test.ts); app/src/ui/sessionRunner.ts restored sha256 equal
+no-contact-assumption: caught (tests/unit/sessionRecheck.test.ts, tests/unit/todaySessionRun.test.ts, tests/unit/sessionProtocol.test.ts); app/src/curriculum/session.ts restored sha256 equal
+exit=0

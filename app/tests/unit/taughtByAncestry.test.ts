@@ -608,12 +608,39 @@ describe('the practice floor stands on 1.1 (F2b)', () => {
         .map((slot) => `${slot.kind} ${slot.item?.id ?? '-'} (${slot.claim !== undefined && 'rung' in slot.claim ? slot.claim.rung.id : '-'})`);
     expect(defaultActiveTracks(SHIPPED), 'the practice track is on by default').toContain('practice');
     expect(practiceRows('1.1'), 'placed at 1.1: practice.1 waits for 1.1').toEqual([]);
+    // Revised (X1 item 7, the practice row's place as a stated teaching policy; the F2b review's constraint):
+    // the new piece is the learner's own rung's new material first, and How to practise's row second — here
+    // the repertoire slot takes practice.1's song. Old assumption: the balance rule's order, which gave the
+    // new slot to the newly opened practice rung because the warm-up had served the spine already.
     expect(practiceRows('1.2'), 'placed at 1.2: 1.1 is behind the placement, so the track is open').toEqual([
-      'new exercise.five-finger.c-major.right (practice.1)',
+      'repertoire song.folk.hot-cross-buns (practice.1)',
     ]);
     expect(practiceRows('1.5'), 'placed at 1.5 (F2’s floor case in today.spec)').toEqual([
-      'new exercise.five-finger.c-major.right (practice.1)',
+      'repertoire song.folk.hot-cross-buns (practice.1)',
     ]);
     expect(practiceRows('2.1'), 'placed at 2.1: the placement puts the whole track behind (holding already)').toEqual([]);
+  });
+
+  it('the new piece at 1.2 and 1.5 is the rung’s own new material, never the practice row (X1 item 7)', () => {
+    const items = CATALOG;
+    const newRow = (startAt: string): string => {
+      const slot = buildSession({
+        curriculum: SHIPPED,
+        catalog: indexCatalog(items),
+        items,
+        states: rungState([], SHIPPED, VOCABULARY_V0, TODAY),
+        rows: [],
+        learned: [],
+        lastPlayed: new Map(),
+        activeTracks: defaultActiveTracks(SHIPPED),
+        minutes: 30,
+        startAt,
+        today: TODAY,
+      }).slots.find((one) => one.kind === 'new');
+      const claim = slot?.claim;
+      return `${slot?.item?.id ?? '-'} (${claim?.kind ?? '-'} ${claim !== undefined && 'rung' in claim ? claim.rung.id : '-'})`;
+    };
+    expect(newRow('1.2')).toBe('song.folk.lightly-row (asked 1.2)');
+    expect(newRow('1.5')).toBe('exercise.reading.steps-and-skips-c (asked 1.5)');
   });
 });

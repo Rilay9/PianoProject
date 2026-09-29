@@ -51,8 +51,9 @@
  * transfer offer (`transferOffer`, D4). Same-lesson options and explicit `alternatives[]`
  * go through it too: provenance, never immunity (Part 23). A row the card takes straight
  * from a rung's own list — an authored placement, or the learner's own assignment of an
- * import — asks the teaching-use admission below and not this gate (D3b; E2a's boundary
- * test, `oneGateBoundary.test.ts`, shows that scope).
+ * import — asks this gate too since X1 (L113, `automaticFromList`): an unmeasured one is
+ * refused as any automatic offer of it is, and a measured one keeps its placement
+ * (`oneGateBoundary.test.ts`, the rung's-list case, revised by X1).
  *
  * **Before the two questions, a teaching-use decision where the item promises music**
  * (D3a; the reviewer's required change on D3). A generated item whose family promises
@@ -182,4 +183,33 @@ export function eligibleFor(candidate: CatalogItem, learner: Learner, want: Want
 /** Whether the verdict lets the caller offer the candidate for the want it asked. */
 export function eligible(result: Eligibility): boolean {
   return result.verdict === 'eligible';
+}
+
+/**
+ * A row the session card takes straight from a rung's own list, automatically (L113; X1; the E2a review's
+ * rule, `docs/review/responses/9571a7b.md`: "an authored rung listing or assignment is not evidence that an
+ * unmeasured item is safe for an automatic constrained recommendation"). The rung's ask (`runs`, `done`,
+ * `measure`), the fallback ladder's rung and prerequisite steps, the jam slot and the exposure rule ask this,
+ * never a copy of it: the one gate asked as an automatic experience claiming no opportunity (`equivalent`),
+ * for the learner at the rung the row is offered from.
+ *
+ * - **Refused** where the gate refuses what the candidate's facts cannot answer — `unknown-forbidden`,
+ *   `unknown-physical` and `exploration-only`: a bundled row with no measurement, a score imported before the
+ *   app measured demands, a learner's assigned import the launch has not measured, a PDF. An assignment
+ *   waives nothing. And where the teaching-use admission refuses (D3b), as before.
+ * - **Placed** where the candidate is measured and the gate's refusal is the coping question's (`untaught`,
+ *   `physical`, `requirement`): the rung's own option stays the rung's ask, as it was. X1's reading, recorded as
+ *   a deviation in Entry 134 for the reviewer: on the shipped curriculum 387 of the rungs' own options carry a
+ *   measured demand their rung's ancestry does not teach (Hot Cross Buns on 0.3 among them), so refusing those
+ *   would take the rung's own music off Today and leave its ask unmeetable from the card — a curriculum-claims
+ *   question (F's), not the unknown L113 names.
+ *
+ * Explicit exploration never asks this: the Library lists the item and opens it, the missing measurement said.
+ */
+export function automaticFromList(candidate: CatalogItem, learner: Learner, vocabulary: Vocabulary = VOCABULARY_V0): { offered: boolean; verdict: Eligibility } {
+  const verdict = eligibleFor(candidate, learner, { for: 'equivalent' }, vocabulary);
+  if (verdict.verdict === 'eligible') return { offered: true, verdict };
+  if (verdict.verdict === 'exploration-only') return { offered: false, verdict };
+  const refused = verdict.why === 'unknown-forbidden' || verdict.why === 'unknown-physical' || verdict.why === 'teaching-use-not-approved';
+  return { offered: !refused, verdict };
 }

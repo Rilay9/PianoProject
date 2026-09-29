@@ -511,7 +511,7 @@ than guessing. The words (`READING_TEXT`, `DEMAND_WORDS` in `help.ts`):
 | a taught demand on | Now with dotted quarters — *n* of *m* right and in time yesterday |
 | the key signature on | A key signature to read: G major, one sharp — *n* of *m* … |
 | a demand singled out, its control off | This one by step only — skips went wrong in 3 phrases |
-| a demand singled out, nothing here keeps it out | Another like it — steps went wrong in 2 phrases, and every phrase here has them |
+| a demand singled out, nothing here keeps it out | Another like it — steps went wrong in 2 phrases, and they can’t be left out here |
 | two reads against it, nothing singled out | An easy one: in C position — not sure yet what went wrong |
 | the same, no easy read below | Another like it — not sure yet what went wrong |
 | the rung moved on | This lesson’s phrases can reach beyond C position |
@@ -525,8 +525,8 @@ and the rest of `DEMAND_WORDS`; a move reads "by step only", "without eighth not
 dotted quarters", "with tied notes", "with a leap", "with a note outside the key", "with both
 hands", "right hand only", "in C position", "beyond C position", "in C major", "in 6/8". The
 fixed pieces: `READING_TEXT.easy` "An easy one, for fluency", `easyUnsure` "An easy one",
-`hold` "Another like it", `unsure` "not sure yet what went wrong", `kept` "and every phrase
-here has them", `keySignature` "A key signature to read", `lesson` "This lesson’s phrases",
+`hold` "Another like it", `unsure` "not sure yet what went wrong", `kept` "and they can’t be
+left out here" (X1's voice pass, U57: it said "and every phrase here has them", true only where the recipe promises the demand in every phrase, U58), `keySignature` "A key signature to read", `lesson` "This lesson’s phrases",
 `stayTaught` "The next step waits for a later lesson", `rightInTime` "right and in time",
 `wentWrong` "went wrong in".
 - With no reading exercises in the build there is no card at all, rather than an empty one

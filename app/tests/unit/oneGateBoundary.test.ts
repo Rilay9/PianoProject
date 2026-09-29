@@ -15,11 +15,11 @@
  * The Library opens it: browsing never asks the gate, and an exploration want is eligible with the missing
  * measurement said.
  *
- * What the proof does not cover, by E0's and D3b's design: a row the card takes straight from a rung's own
- * list (the `runs`, `done` and `measure` asks, the ladder's rung and prerequisite steps, the jam slot, the
- * exposure rule) passes the teaching-use admission (`session.usable`) and not the gate — an authored
- * placement, or the learner's own assignment of an import to a rung, is not a selection. The last case
- * shows it, so the claim above is read at its scope.
+ * Since X1 (L113) a row the card takes straight from a rung's own list (the `runs`, `done` and `measure`
+ * asks, the ladder's rung and prerequisite steps, the jam slot, the exposure rule) asks the gate too
+ * (`eligibility.automaticFromList`): an unmeasured option, or the learner's assignment of an import the app
+ * has not measured, is refused as any automatic offer of it is. Until X1 it passed the teaching-use admission
+ * alone, and the last block asserted that scope; it now asserts the rule, beside the Library's exploration.
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -38,6 +38,12 @@ vi.mock('../../src/curriculum/eligibility', async (importOriginal) => {
       recorder.calls.push({ id: args[0].id, want: args[2], verdict });
       return verdict;
     },
+    // The rung's own list's question (X1, L113): the gate asked as an equivalent, recorded as the others are.
+    automaticFromList: (...args: Parameters<typeof actual.automaticFromList>) => {
+      const answer = actual.automaticFromList(...args);
+      recorder.calls.push({ id: args[0].id, want: { for: 'equivalent' }, verdict: answer.verdict });
+      return answer;
+    },
   };
 });
 
@@ -53,6 +59,7 @@ import { rungState } from '../../src/evidence/rungState';
 import { VOCABULARY_V0, type Vocabulary } from '../../src/evidence/vocabulary';
 import type { Identity } from '../../src/review/record';
 import { matches as libraryMatches } from '../../src/ui/screens/LibraryScreen';
+import { importStateWords } from '../../src/ui/help';
 import { measured, unmeasured } from './helpers/measured';
 import { observe } from './helpers/observed';
 import { line, phrase } from './helpers/phrase';
@@ -247,14 +254,46 @@ describe('the Library opens it: browsing is not an offer, and exploration is eli
   });
 });
 
-describe('the proof’s scope: a rung’s own list is placement, not selection (E0, D3b)', () => {
-  it('a rung that lists the unmeasured song as its songs option offers it from its own list: the admission is asked, not the gate', () => {
-    const listing = curriculumWith({ songOptions: [SONG_UNREAD.id], requirements: [{ kind: 'runs', from: 'songs', count: 1 }] });
-    const kinds = card([...BASE, SONG_UNREAD], 30, listing)
-      .filter((slot) => slot.item?.id === SONG_UNREAD.id)
+/**
+ * Revised (X1, L113; the E2a review's rule, `responses/9571a7b.md`). Old assumption: a rung's own list is
+ * placement, not selection, so the card offered an unmeasured song the rung listed through the teaching-use
+ * admission alone (E0, D3b) — the case asserted it as the proof's scope. Now: "an authored rung listing or
+ * assignment is not evidence that an unmeasured item is safe for an automatic constrained recommendation", so
+ * the rung's own list asks the one gate too (`eligibility.automaticFromList`), and the same item stays one tap
+ * away as explicit exploration, the missing measurement named.
+ */
+describe('a rung’s own list asks the one gate too (X1, L113)', () => {
+  const listing = (ids: string[]): Curriculum => curriculumWith({ songOptions: ids, requirements: [{ kind: 'runs', from: 'songs', count: 1 }] });
+
+  it('control: the rung’s own song, measured and clean, is the rung’s ask', () => {
+    const kinds = card([...BASE, SONG_READ], 30, listing([SONG_READ.id]))
+      .filter((slot) => slot.item?.id === SONG_READ.id)
       .map((slot) => slot.claim?.kind);
-    // The rung's own ask, or the fallback ladder's rung step: both take the rung's list through `usable`.
     expect(kinds).toHaveLength(1);
     expect(['asked', 'rung']).toContain(kinds[0]);
+  });
+
+  it('an unmeasured song the rung lists, and an import assigned to it before the app measured it: on no row at any length, each asked and refused unknown-forbidden, and the ask stays unmet', () => {
+    const rungs = listing([SONG_UNREAD.id, OLD_IMPORT.id]);
+    for (const minutes of [15, 30, 60, 120]) {
+      const held = card([...BASE, SONG_UNREAD, OLD_IMPORT], minutes, rungs).filter((slot) => [SONG_UNREAD.id, OLD_IMPORT.id].includes(slot.item?.id ?? ''));
+      expect(held.map((slot) => `${slot.item?.id ?? ''} (${slot.claim?.kind ?? ''})`), `${String(minutes)} min`).toEqual([]);
+    }
+    const { automatic, otherwise } = asked([SONG_UNREAD.id, OLD_IMPORT.id]);
+    expect(otherwise.slice(0, 6), `${String(otherwise.length)} automatic questions not refused unknown-forbidden`).toEqual([]);
+    for (const id of [SONG_UNREAD.id, OLD_IMPORT.id]) expect(automatic.some((call) => call.id === id && call.want.for === 'equivalent'), id).toBe(true);
+    // Nothing counted it: the rung's songs ask is unmet, and no row says otherwise.
+    const reading = rungState(SHOWN, rungs, VOCABULARY_V0, TODAY).byRung.get('B')?.requirements.find((one) => one.requirement.kind === 'runs');
+    expect(reading?.holds).toBe(false);
+  });
+
+  it('the same items from the Library: listed, eligible for exploration with the missing measurement said, and the import’s row says it is not measured yet', () => {
+    const browse = { query: '', type: 'all', track: 'all', status: 'all', hands: 'all', minLevel: 0, maxLevel: 10, importedOnly: false, sort: 'level' } as const;
+    expect(libraryMatches(SONG_UNREAD, browse as never, new Map())).toBe(true);
+    expect(libraryMatches(OLD_IMPORT, { ...browse, importedOnly: true }, new Map())).toBe(true);
+    const learner = { taught: (demand: string) => demand === 'interval.step' };
+    expect(eligibleFor(SONG_UNREAD, learner, { for: 'exploration' })).toMatchObject({ verdict: 'eligible', missing: 'no measurement record' });
+    expect(eligibleFor(OLD_IMPORT, learner, { for: 'exploration' })).toMatchObject({ verdict: 'eligible', missing: 'imported before the app measured demands' });
+    expect(importStateWords(OLD_IMPORT)).toContain('not measured yet');
   });
 });

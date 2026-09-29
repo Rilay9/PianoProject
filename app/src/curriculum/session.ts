@@ -19,7 +19,7 @@ import {
 } from './selectors';
 import { lockState } from './prerequisites';
 import { SHIPPED_SKILL_ACTIVATION, type SkillActivation } from './skillActivation';
-import { admittedForTeaching, eligible, eligibleFor, type Eligibility, type Learner, type Want as GateWant } from './eligibility';
+import { admittedForTeaching, automaticFromList, eligible, eligibleFor, type Eligibility, type Learner, type Want as GateWant } from './eligibility';
 import type { RequirementReading, RungStates } from '../evidence/rungState';
 import { phraseVersionOf, type ReadingMoves, type ReadingRecipe, type SessionRow } from '../data/db';
 import { contactIn, dayKey, daysBetween, type Contact, type ContactHistory, type LearnedPiece } from '../data/progressStore';
@@ -76,6 +76,15 @@ export interface SessionSlot {
    * item and the recipe stops applying.
    */
   reading?: ReadingOffer;
+  /**
+   * What the slot assumes about the learner's contact with its material, as composed (X1 item 6; Part 27's
+   * session interaction): `first-contact` where the slot's point is that the material is new — the reading
+   * slot's phrase (the reader's premise), the transfer offer (chosen unmet by its exact material) — and
+   * otherwise what G2's one adapter (`contactOf`) answers now: `met`, or `none` where nothing rests on
+   * novelty. The session runner records it with the activity and rechecks a first contact when the activity
+   * starts, through the same adapter; this module computes no second novelty. Absent on the free prompt.
+   */
+  contact?: 'first-contact' | 'met' | 'none';
 }
 
 export interface SessionTemplate {
@@ -454,8 +463,12 @@ export type SlotClaim =
   | { kind: 'prerequisite'; rung: Lesson; of: Lesson }
   /** The exposure rule: the family of taught material played least lately (never, first). */
   | { kind: 'exposure'; family: ExposureFamily; lastPlayed?: string }
-  /** Jam: an option of a rung on a jam track the learner has reached. */
-  | { kind: 'jam'; rung: Lesson }
+  /**
+   * Jam: an option of a rung on a jam track the learner has reached. `plain`: none of that rung's usable
+   * options is chord-and-feel material (G61), so the line names the rung and does not promise chords, form
+   * and feel.
+   */
+  | { kind: 'jam'; rung: Lesson; plain?: true }
   /**
    * The transfer offer (D4 item 4): material this learner has not met, for a skill the ladder reads
    * as proficient and not beyond, that differs from what the skill was shown on — offered as
@@ -522,6 +535,10 @@ interface SlotContext {
   today: Date;
   used: Set<string>;
   seed: number;
+  /** The learner at each rung a row was offered from, as the gate reads them (`learnerAt`), worked out once. */
+  learners: Map<string, Learner>;
+  /** `fromList`'s answers, by rung and item, worked out once per card. */
+  listed: Map<string, boolean>;
 }
 
 /** One skill's evidence, as the slots read it. */
@@ -715,6 +732,27 @@ function usable(ctx: SlotContext, item: CatalogItem | undefined, songs: 'any' | 
 }
 
 /**
+ * A row taken straight from a rung's list, automatically (L113, X1): the one gate's answer for the listing
+ * (`eligibility.automaticFromList`) for the learner at `rung` — an unmeasured option, an unmeasured assigned
+ * import or a PDF the rung lists is refused as any automatic offer of it is; a measured option keeps its
+ * placement. Asked beside `usable` by the rung's asks, the ladder's rung and prerequisite steps, the jam slot
+ * and the exposure rule; the gate's own logic is never copied here.
+ */
+function fromList(ctx: SlotContext, item: CatalogItem, rung: Lesson): boolean {
+  const key = `${rung.id} ${item.id}`;
+  const known = ctx.listed.get(key);
+  if (known !== undefined) return known;
+  let learner = ctx.learners.get(rung.id);
+  if (learner === undefined) {
+    learner = learnerAt(ctx, rung);
+    ctx.learners.set(rung.id, learner);
+  }
+  const offered = automaticFromList(item, learner, ctx.input.vocabulary ?? VOCABULARY_V0).offered;
+  ctx.listed.set(key, offered);
+  return offered;
+}
+
+/**
  * The learner as the one gate reads them (E0, `eligibility.ts`): the ladder state
  * of each skill from every stored run, and what `rung` — the rung judging the
  * offer — has taught, with what the rungs the learner has reached taught them
@@ -813,7 +851,9 @@ function wantsOf(ctx: SlotContext, rung: Lesson, songs: 'any' | 'none'): Want[] 
     }
     if (songs === 'none') pool = pool.filter((item) => !isPieceMaterial(item));
     if (pool.length === 0) continue;
-    const want: Want = { rung, reading, ...(skill === undefined ? {} : { skill }), pool, offer: pool.filter((item) => usable(ctx, item, songs)) };
+    // Offered only where the rung's listing passes the one gate for an automatic offer (L113, X1); `pool` keeps
+    // every item the requirement would count, so an unmeasured one leaves the ask waiting, never met.
+    const want: Want = { rung, reading, ...(skill === undefined ? {} : { skill }), pool, offer: pool.filter((item) => usable(ctx, item, songs) && fromList(ctx, item, rung)) };
     if (skill === undefined) out.push(want);
     else skillWants.push(want);
   }
@@ -961,8 +1001,14 @@ function fallbackStep(
       if (item) taught.push(item);
     }
   }
-  const choose = (items: CatalogItem[], claim: (item: CatalogItem) => SlotClaim, lessonId?: (item: CatalogItem) => string | undefined): Choice | undefined => {
-    const offer = order(items.filter((item) => usable(ctx, item, songs)));
+  const choose = (
+    items: CatalogItem[],
+    claim: (item: CatalogItem) => SlotClaim,
+    lessonId?: (item: CatalogItem) => string | undefined,
+    /** The rung whose own list the step draws from (L113, X1): its listing asks the one gate too. */
+    listedOn?: Lesson,
+  ): Choice | undefined => {
+    const offer = order(items.filter((item) => usable(ctx, item, songs) && (listedOn === undefined || fromList(ctx, item, listedOn))));
     const item = pick(offer, ctx.seed);
     if (!item) return undefined;
     const from = lessonId?.(item);
@@ -972,7 +1018,7 @@ function fallbackStep(
     let found: Choice | undefined;
     if (step === 'rung' && rung) {
       const own = [...rung.exerciseOptions, ...rung.songOptions].map((id) => ctx.catalog.byId.get(id)).filter((item): item is CatalogItem => item !== undefined);
-      found = choose(own, () => ({ kind: 'rung', rung, ...(strand?.title === undefined ? {} : { strand: strand.title }) }), () => rung.id);
+      found = choose(own, () => ({ kind: 'rung', rung, ...(strand?.title === undefined ? {} : { strand: strand.title }) }), () => rung.id, rung);
     } else if (step === 'skill' && rung && want?.skill !== undefined) {
       // Practice of the skill the rung asks for, through the one gate (E0): declared, its opportunity in
       // the notes, nothing the learner cannot cope with. Practice, never credit: the claim says it trains it.
@@ -1001,7 +1047,8 @@ function fallbackStep(
         const before = ctx.walk.find((walked) => walked.lesson.id === id)?.lesson;
         if (!before) continue;
         const own = [...before.exerciseOptions, ...before.songOptions].map((one) => ctx.catalog.byId.get(one)).filter((item): item is CatalogItem => item !== undefined);
-        found = choose(own, () => ({ kind: 'prerequisite', rung: before, of: rung }), () => before.id);
+        // The prerequisite rung's own list, judged for the learner at their own rung, which builds on it.
+        found = choose(own, () => ({ kind: 'prerequisite', rung: before, of: rung }), () => before.id, rung);
         if (found) break;
       }
     } else if (step === 'exposure') {
@@ -1069,8 +1116,9 @@ function exposure(ctx: SlotContext, families: Families): Choice | undefined {
     for (const id of [...walked.lesson.exerciseOptions, ...walked.lesson.songOptions]) {
       const item = ctx.catalog.byId.get(id);
       // The exposure rule keeps a kind of exercise or an earlier rung's songs warm; an excerpt is
-      // neither (E1: retention keeps to songs), so it is no exposure family's.
-      if (!item || isReadingRow(item) || !playable(item) || isExcerpt(item)) continue;
+      // neither (E1: retention keeps to songs), so it is no exposure family's. Taught material is a rung's
+      // own list, so its listing asks the one gate (L113, X1).
+      if (!item || isReadingRow(item) || !playable(item) || isExcerpt(item) || !fromList(ctx, item, walked.lesson)) continue;
       let family: ExposureFamily | undefined;
       if (item.type !== 'song') {
         const kind = item.drill?.kind ?? 'study';
@@ -1142,6 +1190,19 @@ function warmup(ctx: SlotContext, phase: Phase): Choice | undefined {
 }
 
 /**
+ * The tracks that teach how to practise rather than what to play (D8a's How to practise). **A teaching
+ * policy, stated** (X1 item 7; the F2b review, `docs/review/responses/ddba53e9.md`: the ordering is kept or
+ * changed as a decision, never as a by-product of source ranking): the new piece is the learner's own rung's
+ * new material first, and a method track's ask second. D8a's track is how to practise *beside* the core, not
+ * instead of it; until X1 the balance rule — a strand not yet on the card first — gave the new slot to the
+ * newly opened practice rung on every 1.2 card, because the warm-up had already served the spine, and 1.2's
+ * own song ask waited behind it. The method track's row is not lost: the next slot that takes a strand's own
+ * option (the review's fallback, a strand not yet on the card first) takes it, so on the 30-minute card at 1.2
+ * the practice row comes second, after the rung's song.
+ */
+const METHOD_TRACKS: ReadonlySet<string> = new Set(['practice']);
+
+/**
  * New (C6 item 3): a strand's next unmet requirement's item, in the order its
  * lesson states them — a strand the card does not serve yet first, so no one
  * track takes the warm-up, the new piece and the repertoire (the
@@ -1151,7 +1212,11 @@ function warmup(ctx: SlotContext, phase: Phase): Choice | undefined {
  * stage into a project. Otherwise the fallback ladder.
  */
 function fresh(ctx: SlotContext, onCard: readonly Choice[], phase: Phase): Choice | undefined {
-  const strands = [...ctx.strands.filter((one) => !servedBy(onCard, one)), ...ctx.strands.filter((one) => servedBy(onCard, one))];
+  const balanced = [...ctx.strands.filter((one) => !servedBy(onCard, one)), ...ctx.strands.filter((one) => servedBy(onCard, one))];
+  // The practice row's place (X1 item 7, a teaching-policy decision; the F2b review's constraint): How to
+  // practise is taken after every other strand for the new piece, never ahead of the learner's own rung's
+  // new material. See `METHOD_TRACKS`.
+  const strands = [...balanced.filter((one) => !METHOD_TRACKS.has(one.track)), ...balanced.filter((one) => METHOD_TRACKS.has(one.track))];
   if (phase === 'fallback') {
     const first = strands.map((strand) => ({ strand, wants: wantsOf(ctx, strand.rung, 'any') })).find((one) => one.wants.length > 0);
     return fallback(ctx, 'any', first ? { ...(first.wants[0]?.skill === undefined ? {} : { skill: first.wants[0]?.skill }), strand: first.strand } : undefined, (items) => uncountedFirst(ctx, items), onCard);
@@ -1380,16 +1445,31 @@ function jam(ctx: SlotContext, phase: Phase): Choice | undefined {
   if (phase === 'fallback') return undefined;
   const rungs = ctx.reached.filter((walked) => JAM_TRACKS.has(walked.track)).map((walked) => walked.lesson).reverse();
   for (const lesson of rungs) {
+    // Chord-and-feel material first (G61): the slot's own condition, before when each was last played and
+    // the list's order, which is exercises first and put a transposition page or an ear drill under
+    // "Chords, form and feel". Its listing asks the one gate (L113, X1).
     const offer = [...lesson.exerciseOptions, ...lesson.songOptions]
       .map((id) => ctx.catalog.byId.get(id))
-      .filter((item): item is CatalogItem => usable(ctx, item, 'any'))
-      .map((item, at) => ({ item, at }))
-      .sort((a, b) => (ctx.lastPlayed(a.item.id) ?? '').localeCompare(ctx.lastPlayed(b.item.id) ?? '') || a.at - b.at)
+      .filter((item): item is CatalogItem => usable(ctx, item, 'any') && fromList(ctx, item, lesson))
+      .map((item, at) => ({ item, at, feel: chordAndFeel(item) }))
+      .sort((a, b) => Number(b.feel) - Number(a.feel) || (ctx.lastPlayed(a.item.id) ?? '').localeCompare(ctx.lastPlayed(b.item.id) ?? '') || a.at - b.at)
       .map((one) => one.item);
     const item = pick(offer, ctx.seed);
-    if (item) return { item, claim: { kind: 'jam', rung: lesson }, lessonId: lesson.id };
+    // An item that is not chord-and-feel material (the rung has none, or Shuffle reached past them): the line
+    // names the rung and promises nothing more.
+    if (item) return { item, claim: { kind: 'jam', rung: lesson, ...(chordAndFeel(item) ? {} : { plain: true as const }) }, lessonId: lesson.id };
   }
   return undefined;
+}
+
+/**
+ * Chord-and-feel material (G61): what the jam slot's line promises — a score with chord symbols to play from
+ * (measured from the file, `notation.chordCount`, as the chart door reads it) or a groove to play over (a
+ * backing-track drill). Anything else a jam rung lists (a transposition page, an ear or theory drill) is still
+ * offered, after these, and the line then says only where it is from.
+ */
+function chordAndFeel(item: CatalogItem): boolean {
+  return (item.notation?.chordCount ?? 0) > 0 || item.drill?.kind === 'backing-track';
 }
 
 /**
@@ -1444,6 +1524,8 @@ export function buildSession(input: BuildInput): {
     today,
     used: new Set<string>(),
     seed: input.seed ?? 0,
+    learners: new Map(),
+    listed: new Map(),
   };
 
   const filled = new Map<number, { item?: CatalogItem; claim?: SlotClaim; lessonId?: string; reading?: ReadingOffer; phrase?: SessionSlot['phrase']; reason: string }>();
@@ -1518,6 +1600,7 @@ export function buildSession(input: BuildInput): {
       ...(one.claim ? { claim: one.claim } : {}),
       ...(one.reading ? { reading: one.reading } : {}),
       ...(one.phrase ? { phrase: one.phrase } : {}),
+      ...(one.item ? { contact: contactAssumption(input, slot.kind, one.item, one.claim) } : {}),
     });
   });
   return {
@@ -1525,6 +1608,23 @@ export function buildSession(input: BuildInput): {
     slots,
     reached: reached.map((walked) => walked.lesson.id),
   };
+}
+
+/**
+ * A slot's contact assumption as composed (X1 item 6; `SessionSlot.contact`): the two slots whose point is
+ * new material assume a first contact — the reading slot (the reader's phrase is one no stored run of the row
+ * carries) and the transfer offer (chosen unmet by its exact material, D4); any other slot is what G2's one
+ * adapter answers for its item now (`contactOf`): met by its material or by its id, `met`; unmet, `none`,
+ * since nothing about the slot rests on its being new.
+ */
+export function contactAssumption(
+  input: Pick<BuildInput, 'rows' | 'readingRows' | 'contact'>,
+  kind: SlotKind,
+  item: CatalogItem,
+  claim: SlotClaim | undefined,
+): 'first-contact' | 'met' | 'none' {
+  if (kind === 'sightreading' || claim?.kind === 'transfer') return 'first-contact';
+  return contactOf(input, item.id, materialOfItem(item)).contact === 'unmet' ? 'none' : 'met';
 }
 
 /**

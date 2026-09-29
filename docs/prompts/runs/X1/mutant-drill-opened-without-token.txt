@@ -1,0 +1,138 @@
+mutant drill-opened-without-token in app/src/ui/sessionRunner.ts; npx vitest run tests/unit/todaySessionRun.test.ts tests/unit/sessionTransition.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app
+
+ ❯ tests/unit/sessionTransition.test.ts (9 tests | 2 failed) 2231ms
+   ❯ after a completed activity (4)
+     × Next with the composition’s own words and the clock’s time; Start opens it through the router with its token 1031ms
+   ❯ where the session really is (4)
+     × a screen moved on from before its summary (a stopped drill, a run left unanswered): Start moves on and opens the next 1012ms
+ ❯ tests/unit/todaySessionRun.test.ts (11 tests | 2 failed) 3011ms
+   ❯ Start session opens execution state, not the first slot (1)
+     × the record is the card as composed: three activities with their words and contact, the PDF and the free prompt outside the cursor 137ms
+   ❯ leaving and reopening resumes today’s session (3)
+     × Continue, the one filled box, with where the session is; it opens the current activity with its token 1196ms
+
+ Test Files  2 failed (2)
+      Tests  4 failed | 16 passed (20)
+   Start at  09:56:58
+   Duration  4.46s (tests 67%, environment 18%, transform 12%, import 3%)
+
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/sessionTransition.test.ts > after a completed activity > Next with the composition’s own words and the clock’s time; Start opens it through the router with its token
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'drill.eighths', …(1) ]
+
+Received:
+
+  1st vi.fn() call:
+
+  [
+    "drill.eighths",
+    {
+      "rung": "1.2",
+-     "session": "transb002",
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ tests/unit/sessionTransition.test.ts:114:50
+    112|     expect(into.querySelector('#session-start-next')?.getAttribute('da…
+    113|     click(into, 'session-start-next');
+    114|     await vi.waitFor(() => expect(navigateDrill).toHaveBeenCalledWith(…
+       |                                                  ^
+    115|     expect(navigate).not.toHaveBeenCalledWith('today');
+    116|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/sessionTransition.test.ts > where the session really is > a screen moved on from before its summary (a stopped drill, a run left unanswered): Start moves on and opens the next
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'drill.eighths', …(1) ]
+
+Received:
+
+  1st vi.fn() call:
+
+  [
+    "drill.eighths",
+    {
+      "rung": "1.2",
+-     "session": "transb002",
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ tests/unit/sessionTransition.test.ts:194:50
+    192|     expect(await drawTransition(into, options)).toBe('next');
+    193|     click(into, 'session-start-next');
+    194|     await vi.waitFor(() => expect(navigateDrill).toHaveBeenCalledWith(…
+       |                                                  ^
+    195|     const read = await readSessionRun();
+    196|     expect(read.kind === 'run' && read.run.activities[0]?.state).toBe(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/todaySessionRun.test.ts > Start session opens execution state, not the first slot > the record is the card as composed: three activities with their words and contact, the PDF and the free prompt outside the cursor
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'drill.test.warm', …(1) ]
+
+Received:
+
+  1st vi.fn() call:
+
+  [
+    "drill.test.warm",
+    {
+      "rung": "1.2",
+-     "session": "mumqq0sw2iiqq31",
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ tests/unit/todaySessionRun.test.ts:179:27
+    177|     expect(store.plannedMinutes(run)).toBe(20);
+    178|     // The first activity opened with its own token, and the rung that…
+    179|     expect(navigateDrill).toHaveBeenCalledWith(WARM.id, { rung: '1.2',…
+       |                           ^
+    180|     expect(navigateScore).not.toHaveBeenCalled();
+    181|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/todaySessionRun.test.ts > leaving and reopening resumes today’s session > Continue, the one filled box, with where the session is; it opens the current activity with its token
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'drill.test.warm', …(1) ]
+
+Received:
+
+  1st vi.fn() call:
+
+  [
+    "drill.test.warm",
+    {
+      "rung": "1.2",
+-     "session": "mumqq0w97nebhc5",
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ tests/unit/todaySessionRun.test.ts:195:50
+    193|     expect(section.querySelector('#today-continue-line')?.textContent)…
+    194|     (filled[0] as HTMLButtonElement).click();
+    195|     await vi.waitFor(() => expect(navigateDrill).toHaveBeenCalledWith(…
+       |                                                  ^
+    196|   });
+    197|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+exit=1

@@ -112,6 +112,9 @@ const SKILL_ID_PATTERN = /^[0-9a-z][0-9a-z/-]{0,39}$/;
 /** A transfer offer's instance token (D4a, `data/offerSnapshot.newOfferToken`): lower-case letters and digits. */
 const OFFER_TOKEN_PATTERN = /^[0-9a-z]{6,32}$/;
 
+/** A session activity's token (X1, `ui/sessionRunner.newActivityToken`): the offer token's form. */
+const SESSION_TOKEN_PATTERN = OFFER_TOKEN_PATTERN;
+
 export const DEFAULT_TAB: TabId = 'today';
 
 export interface Route {
@@ -349,6 +352,14 @@ export interface Route {
   labBed?: LabBed;
   /** Free play (`04` §2b), addressed as `#/play`. */
   play?: boolean;
+  /**
+   * `#/score/<id>?session=<token>`, `#/drill/<id>?session=<token>` — X1: the activity instance of today's session this
+   * screen runs (`data/sessionRun.ts`): the screen reports its lifecycle to the runner under this token, and
+   * its closing action becomes the transition to the next activity. In the hash so a reload, a back gesture
+   * or a closed app reopens the same activity; a malformed token is dropped and the screen is an ordinary
+   * one. The runner refuses every write whose token is not the current activity's.
+   */
+  session?: string;
 }
 
 /**
@@ -520,6 +531,9 @@ export function parseHash(hash: string): Route {
           ...(wantedOffer !== null && wantedOffer !== undefined && OFFER_TOKEN_PATTERN.test(wantedOffer) ? { offer: wantedOffer } : {}),
         }
       : undefined;
+  // The session activity's token (X1): the offer token's form, or nothing.
+  const wantedSession = params?.get('session');
+  const session = wantedSession !== null && wantedSession !== undefined && SESSION_TOKEN_PATTERN.test(wantedSession) ? wantedSession : undefined;
   if (query) {
     const value = new URLSearchParams(query).get('for');
     // A lesson id, or nothing. An unrecognised one is dropped rather than
@@ -554,6 +568,7 @@ export function parseHash(hash: string): Route {
       ...(scoreRecipe === undefined ? {} : { scoreRecipe }),
       ...(scoreIntent === undefined ? {} : { scoreIntent }),
       ...(seed === undefined ? {} : { seed }),
+      ...(session === undefined ? {} : { session }),
     };
   }
   // The accompaniment lab (`04` §3c). Not a tab and not a sub-screen of one:
@@ -624,7 +639,7 @@ export function parseHash(hash: string): Route {
       return { tab: DEFAULT_TAB };
     }
     if (!looksLikeCatalogId(id)) return { tab: DEFAULT_TAB };
-    return { tab: DEFAULT_TAB, drill: id, ...(scoreRung === undefined ? {} : { drillRung: scoreRung }) };
+    return { tab: DEFAULT_TAB, drill: id, ...(scoreRung === undefined ? {} : { drillRung: scoreRung }), ...(session === undefined ? {} : { session }) };
   }
   if (tab === 'chart') {
     let id: string;
@@ -708,6 +723,7 @@ export function routeToHash(route: Route): string {
             ...(route.scoreIntent.offer === undefined ? [] : [`offer=${route.scoreIntent.offer}`]),
           ]),
       ...(route.seed === undefined ? [] : [`seed=${String(route.seed >>> 0)}`]),
+      ...(route.session === undefined ? [] : [`session=${route.session}`]),
     ];
     const base = `#/score/${encodeURIComponent(route.score)}`;
     return flags.length ? `${base}?${flags.join('&')}` : base;
@@ -723,7 +739,11 @@ export function routeToHash(route: Route): string {
   }
   if (route.drill) {
     const base = `#/drill/${encodeURIComponent(route.drill)}`;
-    return route.drillRung === undefined ? base : `${base}?rung=${encodeURIComponent(route.drillRung)}`;
+    const drillFlags = [
+      ...(route.drillRung === undefined ? [] : [`rung=${encodeURIComponent(route.drillRung)}`]),
+      ...(route.session === undefined ? [] : [`session=${route.session}`]),
+    ];
+    return drillFlags.length > 0 ? `${base}?${drillFlags.join('&')}` : base;
   }
   if (route.dev) {
     return route.dev === 'microscope' && route.devItem !== undefined
@@ -811,6 +831,8 @@ export class Router {
       recipe?: RouteRecipe;
       /** Opened from Today's transfer offer for this skill (D4), naming that offer's instance (D4a). */
       intent?: { intent: 'transfer'; skill: string; offer?: string };
+      /** The session activity this run is (X1): its token. */
+      session?: string;
     } = {},
   ): void {
     const route: Route = {
@@ -829,6 +851,7 @@ export class Router {
       ...(options.recipe === undefined || recipeParam(options.recipe) === '' ? {} : { scoreRecipe: options.recipe }),
       ...(options.intent === undefined ? {} : { scoreIntent: options.intent }),
       ...(options.seed === undefined ? {} : { seed: options.seed }),
+      ...(options.session === undefined ? {} : { session: options.session }),
     };
     this.win.location.hash = routeToHash(route);
     this.setRoute(route);
@@ -852,11 +875,12 @@ export class Router {
   }
 
   /** Runs a drill (`#/drill/<itemId>`), judged by the rung that opened it, if one did (C5). */
-  navigateDrill(itemId: string, options: { rung?: string } = {}): void {
+  navigateDrill(itemId: string, options: { rung?: string; session?: string } = {}): void {
     const route: Route = {
       tab: this.current.tab,
       drill: itemId,
       ...(options.rung === undefined ? {} : { drillRung: options.rung }),
+      ...(options.session === undefined ? {} : { session: options.session }),
     };
     this.win.location.hash = routeToHash(route);
     this.setRoute(route);
@@ -1015,7 +1039,9 @@ export class Router {
       route.chartFrom === this.current.chartFrom &&
       route.drill === this.current.drill &&
       // The rung that judges the drill is part of which run it is (C5).
-      route.drillRung === this.current.drillRung
+      route.drillRung === this.current.drillRung &&
+      // The session activity a run is, for the same reason (X1).
+      route.session === this.current.session
     ) {
       return;
     }

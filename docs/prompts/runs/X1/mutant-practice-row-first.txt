@@ -1,0 +1,57 @@
+mutant practice-row-first in app/src/curriculum/session.ts; npx vitest run tests/unit/taughtByAncestry.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app
+
+ ❯ tests/unit/taughtByAncestry.test.ts (32 tests | 2 failed) 50ms
+   ❯ the practice floor stands on 1.1 (F2b) (3)
+     × Today’s practice row: absent for a learner placed at 1.1, there from 1.2, and the floor case at 1.5 unchanged 21ms
+     × the new piece at 1.2 and 1.5 is the rung’s own new material, never the practice row (X1 item 7) 3ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 30 passed (32)
+   Start at  09:57:09
+   Duration  623ms (transform 66%, import 23%, tests 10%, worker 1%)
+
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/taughtByAncestry.test.ts > the practice floor stands on 1.1 (F2b) > Today’s practice row: absent for a learner placed at 1.1, there from 1.2, and the floor case at 1.5 unchanged
+AssertionError: placed at 1.2: 1.1 is behind the placement, so the track is open: expected [ Array(1) ] to deeply equal [ Array(1) ]
+
+- Expected
++ Received
+
+  [
+-   "repertoire song.folk.hot-cross-buns (practice.1)",
++   "new exercise.five-finger.c-major.right (practice.1)",
+  ]
+
+ ❯ tests/unit/taughtByAncestry.test.ts:615:101
+    613|     // the repertoire slot takes practice.1's song. Old assumption: th…
+    614|     // new slot to the newly opened practice rung because the warm-up …
+    615|     expect(practiceRows('1.2'), 'placed at 1.2: 1.1 is behind the plac…
+       |                                                                                                     ^
+    616|       'repertoire song.folk.hot-cross-buns (practice.1)',
+    617|     ]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/taughtByAncestry.test.ts > the practice floor stands on 1.1 (F2b) > the new piece at 1.2 and 1.5 is the rung’s own new material, never the practice row (X1 item 7)
+AssertionError: expected 'exercise.five-finger.c-major.right (a…' to be 'song.folk.lightly-row (asked 1.2)' // Object.is equality
+
+Expected: "song.folk.lightly-row (asked 1.2)"
+Received: "exercise.five-finger.c-major.right (asked practice.1)"
+
+ ❯ tests/unit/taughtByAncestry.test.ts:643:27
+    641|       return `${slot?.item?.id ?? '-'} (${claim?.kind ?? '-'} ${claim …
+    642|     };
+    643|     expect(newRow('1.2')).toBe('song.folk.lightly-row (asked 1.2)');
+       |                           ^
+    644|     expect(newRow('1.5')).toBe('exercise.reading.steps-and-skips-c (as…
+    645|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+exit=1

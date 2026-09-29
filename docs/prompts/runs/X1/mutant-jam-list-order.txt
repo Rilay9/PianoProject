@@ -1,0 +1,42 @@
+mutant jam-list-order in app/src/curriculum/session.ts; npx vitest run tests/unit/sessionProtocol.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app
+
+ ❯ tests/unit/sessionProtocol.test.ts (6 tests | 1 failed) 508ms
+   ❯ G61: the jam slot’s own condition (2)
+     × a chart to play from comes before transposition pages listed ahead of it, and the line says chords, form and feel 6ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  09:57:11
+   Duration  1.10s (tests 51%, transform 35%, import 13%)
+
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/sessionProtocol.test.ts > G61: the jam slot’s own condition > a chart to play from comes before transposition pages listed ahead of it, and the line says chords, form and feel
+AssertionError: expected { item: 'ex.transpose.b', …(1) } to deeply equal { item: 'song.chart', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "item": "song.chart",
+-   "line": "Chords, form and feel: from Rung jam.1",
++   "item": "ex.transpose.b",
++   "line": "From Rung jam.1",
+  }
+
+ ❯ tests/unit/sessionProtocol.test.ts:126:38
+    124|     const pages = ['a', 'b'].map((one) => item(`ex.transpose.${one}`, …
+    125|     const chart = item('song.chart', { type: 'song', notation: { chord…
+    126|     expect(jamOf([...pages, chart])).toEqual({ item: 'song.chart', lin…
+       |                                      ^
+    127|   });
+    128|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+exit=1

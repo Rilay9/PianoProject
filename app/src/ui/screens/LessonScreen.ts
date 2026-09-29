@@ -32,6 +32,7 @@ import { screenFrame, statusLine } from './screenFrame';
 import { openFinderSheet } from '../finderSheet';
 import { confirmMessage, lockState, type LockState } from '../../curriculum/prerequisites';
 import { openPieceSheet } from './ShelfScreen';
+import { measuresARun } from './DrillScreen';
 import { allBooks, addBook, allShelfPieces, type BookRow, type ShelfPiece } from '../../data/booksStore';
 import { plural } from '../../util/plural';
 import { simonForStage } from '../../engine/drills/simon';
@@ -855,9 +856,14 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
           // A 2–3 minute measured test: the lesson's first playable drill,
           // opened for a real run rather than self-assessed. An offer, so the
           // first that passes the teaching-use admission (D3c, `firstOffered`);
-          // with none, the sentence below, which stays true.
-          const drill = firstOffered(lesson?.exerciseOptions ?? [], (item) => Boolean(item.drill || item.file));
+          // with none, the sentence below, which stays true. A drill whose run
+          // measures nothing (a backing track, a checklist, the tour) is no
+          // measured test (G62, X1): *Quick check* takes the first that does,
+          // and where the lesson has only those it says so and opens nothing.
+          const drill = firstOffered(lesson?.exerciseOptions ?? [], measuresARun);
           if (drill) open(drill);
+          else if (firstOffered(lesson?.exerciseOptions ?? [], (item) => Boolean(item.drill || item.file)))
+            status.textContent = 'This lesson has no drill that measures a run yet.';
           else status.textContent = 'This lesson has no drill to check against yet.';
         },
         { id: 'lesson-check' },

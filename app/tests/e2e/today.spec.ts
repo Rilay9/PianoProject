@@ -324,14 +324,20 @@ test.describe('the swap sheet’s demand tier (E0)', () => {
 test.describe('the practice track’s floor (F2)', () => {
   test.use({ viewport: { width: 342, height: 740 } });
 
-  test('placed at 1.5, the practice row is a Stage 1 exercise, never Hanon', async ({ page }) => {
+  // Revised (X1 item 7, the practice row's place as a stated policy): the new piece is 1.5's own new material,
+  // and How to practise's row comes after it — on the thirty-minute card, practice.1's song in the repertoire
+  // slot. Old assumption: the practice row was the new slot's five-finger exercise. What the case guards is
+  // unchanged: practice.1's own Stage 1 material, never Hanon.
+  test('placed at 1.5, the practice row is practice.1’s own Stage 1 material, never Hanon, and after the rung’s new piece', async ({ page }) => {
     await placeAt(page, '1.5');
     const card = page.locator('#today-card');
     await expect(card.locator('.list-row').first()).toBeVisible();
     await expect(card.locator('.list-row[data-item^="exercise.hanon."]')).toHaveCount(0);
     const practice = card.locator('.list-row', { hasText: 'How to practise' });
     await expect(practice).toHaveCount(1);
-    await expect(practice).toHaveAttribute('data-item', 'exercise.five-finger.c-major.right');
+    await expect(practice).toHaveAttribute('data-item', 'song.folk.hot-cross-buns');
+    await expect(practice).toHaveAttribute('data-slot', 'repertoire');
+    await expect(card.locator('.list-row[data-slot="new"]')).toHaveAttribute('data-item', 'exercise.reading.steps-and-skips-c');
   });
 });
 

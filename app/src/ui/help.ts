@@ -581,8 +581,13 @@ export const READING_TEXT = {
   hold: 'Another like it',
   /** Two reads against the recipe, and the reads single nothing out (C4c). */
   unsure: 'not sure yet what went wrong',
-  /** A demand singled out, and no control here keeps it out (C4c). */
-  kept: 'and every phrase here has them',
+  /**
+   * A demand singled out, and no control here keeps it out (C4c). X1's voice pass (U57): it said "and every
+   * phrase here has them", which is the reader's reason in the reader's terms — and true only where the recipe
+   * promises the demand in every phrase (U58). What the learner needs is what the app can do about it: it
+   * cannot take them out on this row, so the next phrase has them too.
+   */
+  kept: 'and they can’t be left out here',
   /** The key signature's control, on: a key to read, not a harder one (C4c, U52). */
   keySignature: 'A key signature to read',
   /** The rung that holds the row has moved on, and its phrases may hold more (C4c). */
@@ -1038,6 +1043,72 @@ export const SLOT_TEXT = {
    */
   somethingNew: 'something new, for a skill you have shown',
   feelDifferent: 'it should feel different',
+  /** The same line's head, which is all the card's one line holds at 342 px (U71; the invitation is on the transition sheet). */
+  somethingNewHead: 'something new',
+} as const;
+
+/**
+ * A row's line on Today's card (U71). The composition's own words (`slotReason`), whole, except the transfer
+ * offer's: its line is the skill and "something new", cut at the clause rather than by an ellipsis, because at
+ * 342 px the card kept "Shifting position: something n…" and lost the words that make it an invitation. The
+ * whole line is what the transition sheet says when the offer is next (the composition's words, unchanged).
+ */
+export function cardLine(reason: string, claim: { kind: string; skill?: string } | undefined): string {
+  if (claim?.kind !== 'transfer' || claim.skill === undefined) return reason;
+  return `${bareSkill(claim.skill)}: ${SLOT_TEXT.somethingNewHead}`;
+}
+
+/**
+ * Today's session as it is run (X1; Part 18; `04` §2 and §5): the transition after each activity, the resume
+ * line, the finish line and the runner's adaptations — the one voice between activities. The transition's
+ * reason is never here: it is the composition's own words for the slot (`slotReason`, the reader's line), the
+ * reviewer's ruling, so nothing on this sheet adds a relationship the composition did not claim. None of it
+ * judges the learner or claims a competence; ending early marks nothing failed and says what waits, without
+ * guilt.
+ */
+export const SESSION_TEXT = {
+  /** Today, while a session is running: its one filled box. */
+  continue: 'Continue',
+  /** "Continue today's session · 18 of 30 min · next: Minuet excerpt". */
+  continueLine: (elapsedMin: number, plannedMin: number, next: string | undefined): string =>
+    `Continue today’s session · ${String(elapsedMin)} of ${String(plannedMin)} min${next === undefined ? '' : ` · next: ${next}`}`,
+  /** The quiet way out, beside it. */
+  endSession: 'End today’s session',
+  /** The transition's line: "Next: Minuet excerpt, 4 min — <the composition's words>". */
+  nextLine: (title: string, minutes: number, reason: string): string => `Next: ${title}, ${String(minutes)} min — ${reason}`,
+  /** Elapsed of planned, from the visible-time clock (never wall time since *Start session*). */
+  timeLine: (elapsedMin: number, plannedMin: number): string => `${String(elapsedMin)} of ${String(plannedMin)} min so far`,
+  start: 'Start',
+  skipOrChange: 'Skip or change',
+  tryAgain: 'Try again',
+  moveOn: 'Move on anyway',
+  /** Failure keeps the learner here (the reviewer's bounded rule). */
+  keptHere: 'Still unstable, so we’re not moving on',
+  /** Easy first-attempt success skipped the controlled practice after it (the reviewer's bounded rule). */
+  easier: (skipped: string): string => `Easier than expected — ${skipped} is skipped`,
+  /** A first-contact activity whose material was met after the card was composed (G2's adapter at its start). */
+  repurposed: (how: string): string =>
+    `You ${how === 'played' ? 'played' : how === 'viewed' ? 'saw' : 'heard'} this one earlier today, so it is practice now, not a first read`,
+  /** After the last activity. */
+  lastOne: 'That was the last one — today’s session is done',
+  done: 'Done',
+  /** The finish line on Today: the head, then what each activity came to. */
+  finishedHead: (minutes: number): string => `Today’s session done · ${String(minutes)} min`,
+  endedHead: (minutes: number): string => `Today’s session ended · ${String(minutes)} min`,
+  /** What each activity came to, in the finish line and on the running card: done, played (tried and moved on), skipped. */
+  stateDone: 'done',
+  statePlayed: 'played',
+  stateSkipped: 'skipped',
+  /** The running card's current row. */
+  stateNext: 'next',
+  /** A row of a card composed after today's session, done in it. */
+  doneToday: 'done today',
+  /** An early end: what waits, and no more than that. */
+  deferred: 'left for another day',
+  /** A write the runner refused (a stale tab, an older screen): the view is reloaded, and says so. */
+  moved: 'Today’s session moved on elsewhere; this is where it is now',
+  /** The transfer offer could not be kept before opening (U73): nothing opened, said on Today. */
+  offerNotKept: 'This offer could not be kept on this phone, so it was not opened. Try again.',
 } as const;
 
 function lowerFirst(text: string): string {
@@ -1240,7 +1311,8 @@ export function slotReason(kind: SlotKind, claim: SlotClaim | undefined, today: 
         return `Keeping ${yours} warm — ${SLOT_TEXT.lastPlayed} ${readDay(claim.lastPlayed, today)}`;
       }
       case 'jam':
-        return `${SLOT_TEXT.jam}: from ${claim.rung.title}`;
+        // Only chord-and-feel material is promised as such (G61); anything else says where it is from.
+        return claim.plain === true ? `From ${claim.rung.title}` : `${SLOT_TEXT.jam}: from ${claim.rung.title}`;
       case 'transfer':
         // The skill first, where the line is cut; an invitation, never a test (D4).
         return `${bareSkill(claim.skill)}: ${SLOT_TEXT.somethingNew} — ${SLOT_TEXT.feelDifferent}`;

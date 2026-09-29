@@ -1,0 +1,36 @@
+mutant recheck-invalidates-by-id in app/src/ui/sessionRunner.ts; npx vitest run tests/unit/sessionRecheck.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app
+
+ ❯ tests/unit/sessionRecheck.test.ts (8 tests | 1 failed) 20ms
+   ❯ the recheck at the activity’s start (7)
+     × a row under the same id with no material (an older run) is not contact with this material: held, never guessed 7ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 passed (8)
+   Start at  09:57:58
+   Duration  683ms (transform 75%, import 21%, tests 4%, worker 1%)
+
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/sessionRecheck.test.ts > the recheck at the activity’s start > a row under the same id with no material (an older run) is not contact with this material: held, never guessed
+AssertionError: expected { assumed: 'first-contact', …(1) } to deeply equal { assumed: 'first-contact', …(1) }
+
+- Expected
++ Received
+
+  {
+    "assumed": "first-contact",
+-   "rechecked": "held",
++   "rechecked": "invalidated",
+  }
+
+ ❯ tests/unit/sessionRecheck.test.ts:109:31
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+exit=1

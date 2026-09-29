@@ -57,6 +57,8 @@ import {
   type DrillResult,
 } from '../../engine/drills';
 import { Metronome } from '../../audio/Metronome';
+import { drillOutcomeOf, type Outcome } from '../../data/sessionRun';
+import { drawTransition, sessionHandle } from '../sessionRunner';
 import { audioTimeToPerformanceMs, captureAudioClockAnchor, type AudioClockAnchor } from '../../audio/clock';
 import { metronomeSoundFor, shouldMuteExpectedPlayback } from '../../audio/inputPolicy';
 import { noteLabel, worthRecording, type DrillKind } from '../../engine/drills/types';
@@ -223,6 +225,21 @@ const DICTATION_TICK_MS = 60;
 const FORM_TICK_MS = 100;
 
 /**
+ * Drill kinds whose run measures nothing a check could read (T41; G62, X1): a backing track judges nothing,
+ * and the orientation kinds — a checklist the learner ticks, the guided tour, the placement test — measure no
+ * playing. One list for the verdict (`drillOutcome`) and for the rung page's *Quick check*, which promises a
+ * measured test (`measuresARun`).
+ */
+export const UNJUDGED_DRILL_KINDS: ReadonlySet<string> = new Set(['backing-track', 'checklist', 'walkthrough', 'placement']);
+
+/** Whether a run of the item is measured: notation on the Score screen, or a drill of a kind that judges. */
+export function measuresARun(item: CatalogItem): boolean {
+  if (item.file) return true;
+  const kind = item.drill?.kind;
+  return kind !== undefined && !UNJUDGED_DRILL_KINDS.has(kind);
+}
+
+/**
  * docs/02 Part G: a drill passes at the same accuracy a piece does.
  *
  * `judged` says whether there was a verdict at all (T41). A backing track
@@ -237,7 +254,7 @@ export function drillOutcome(
 ): { passed: boolean; masterEligible: boolean; judged: boolean } {
   // A backing track judges nothing, so it can neither pass nor fail; it is
   // recorded as time spent and nothing more.
-  if (result.kind === 'backing-track') return { passed: false, masterEligible: false, judged: false };
+  if (UNJUDGED_DRILL_KINDS.has(result.kind)) return { passed: false, masterEligible: false, judged: false };
   if (result.answered === 0) return { passed: false, masterEligible: false, judged: true };
   // Simon is scored by how far the chain got, not by a share of the cards:
   // breaking at the sixth round is five chains right out of six, which as an
@@ -359,6 +376,49 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   let startedAtMs = Date.now();
   let disposed = false;
   let finished = false;
+  /**
+   * Today's session activity this drill is, where the runner opened it (X1, `?session=`): opened, started,
+   * finished and visible time are reported through the handle, and the end sheet's closing action becomes
+   * the transition to the next activity. None: an ordinary drill.
+   */
+  const sessionRun = sessionHandle(router.route.session);
+  const stopSessionClock = sessionRun?.startClock();
+  /** Draws the transition on the end sheet on show, again once the finished set is stored and completed. */
+  let redrawSessionNext: (() => void) | null = null;
+
+  /**
+   * The end sheet's closing action becomes the session's next step (X1): a transition block before the sheet's
+   * buttons, drawn from the stored record; *Back to the plan* gives way to it where the record answers.
+   * `drawNow` false where a stored set is still on its way: it is drawn when the completion is written.
+   */
+  function sessionNext(buttons: HTMLElement, back: HTMLElement, again: () => void, drawNow: boolean): HTMLElement | null {
+    if (!sessionRun) return null;
+    const handle = sessionRun;
+    const host = el('div.session-next', { id: 'session-next', hidden: true });
+    buttons.before(host);
+    redrawSessionNext = () => {
+      void drawTransition(host, {
+        router,
+        handle,
+        button: (label, onClick, id, primary) => button(label, onClick, { id, variant: primary ? 'primary' : 'secondary' }),
+        tryAgain: again,
+      }).then((kind) => {
+        back.hidden = kind !== 'none' && kind !== 'closed';
+      });
+    };
+    if (drawNow) redrawSessionNext();
+    return host;
+  }
+
+  /** A finished set is stored: the activity completes with what it judged, and the transition is drawn (X1). */
+  function completeSession(stored: Promise<unknown>, outcome: Outcome): void {
+    if (!sessionRun) return;
+    const handle = sessionRun;
+    void stored
+      .then(() => handle.completed(outcome))
+      .catch(() => null)
+      .then(() => redrawSessionNext?.());
+  }
   /** What the last finished set came to, so the summary's button can record it. */
   /** The notes of the last improvisation, for `Listen back`; not persisted. */
   let lastRecording: { midi: number; velocity: number; tMs: number }[] = [];
@@ -2391,6 +2451,44 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     disposeReading();
     prompt.textContent = '';
     sheet.hidden = false;
+    // In a session the transition's *Start* is the sheet's one filled box (`04` §0 R3), so *Again* is outlined.
+    const backButton = button('Back to the plan', () => router.navigate('plan'), { id: 'drill-done' });
+    const buttonsRow = el(
+      'div.row',
+      {},
+      button('Again', () => restart(), { id: 'drill-again', variant: sessionRun ? 'secondary' : 'primary' }),
+      // The three you got wrong are the only three worth playing again, and
+      // until this the sheet's only offer was a fresh set of ten. Outlined
+      // rather than filled: *Again* is what most sheets end with, and `04`
+      // §0 R3 allows one filled box (docs/04 §5c).
+      ...(goOver.length > 0
+        ? [
+            button(
+              goOver.length === 1
+                ? 'Go over the one you missed'
+                : `Go over the ${String(goOver.length)} you missed`,
+              () => startGoingOver(),
+              { id: 'drill-review' },
+            ),
+          ]
+        : []),
+      // Only where there is something to hear. A drill that judges every
+      // answer has nothing to play back that the learner did not just hear.
+      ...(lastRecording.length > 0
+        ? [
+            button('Listen back', () => playRecording(lastRecording), { id: 'drill-listen' }),
+          ]
+        : []),
+      // Only on a set that was stopped. A set that ran to its end has already
+      // been recorded, and a button offering to do it again would be asking a
+      // question that has no answer.
+      ...(how === 'stopped'
+        ? [
+            keepButton,
+          ]
+        : []),
+      backButton,
+    );
     sheet.replaceChildren(
       el(
         'div.row',
@@ -2421,42 +2519,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       // worth reading and a sentence under a "Back to the plan" button is a
       // sentence nobody sees.
       el('p.drill-coaching', { id: 'drill-coaching', hidden: true }),
-      el(
-        'div.row',
-        {},
-        button('Again', () => restart(), { id: 'drill-again', variant: 'primary' }),
-        // The three you got wrong are the only three worth playing again, and
-        // until this the sheet's only offer was a fresh set of ten. Outlined
-        // rather than filled: *Again* is what most sheets end with, and `04`
-        // §0 R3 allows one filled box (docs/04 §5c).
-        ...(goOver.length > 0
-          ? [
-              button(
-                goOver.length === 1
-                  ? 'Go over the one you missed'
-                  : `Go over the ${String(goOver.length)} you missed`,
-                () => startGoingOver(),
-                { id: 'drill-review' },
-              ),
-            ]
-          : []),
-        // Only where there is something to hear. A drill that judges every
-        // answer has nothing to play back that the learner did not just hear.
-        ...(lastRecording.length > 0
-          ? [
-              button('Listen back', () => playRecording(lastRecording), { id: 'drill-listen' }),
-            ]
-          : []),
-        // Only on a set that was stopped. A set that ran to its end has already
-        // been recorded, and a button offering to do it again would be asking a
-        // question that has no answer.
-        ...(how === 'stopped'
-          ? [
-              keepButton,
-            ]
-          : []),
-        button('Back to the plan', () => router.navigate('plan'), { id: 'drill-done' }),
-      ),
+      buttonsRow,
       // Said where the thing that caused it is (`04` §0 R6), not in a status
       // line at the other end of the screen.
       ...(how === 'stopped'
@@ -2487,6 +2550,11 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // right. Slow down until you are getting them right."
     if (outcome.judged) void showCoaching(result);
 
+    // The session's next step (X1): a set that ran out and is worth keeping completes the activity once it is
+    // stored (`keep`), and the transition is drawn then; a stopped set completes nothing (a stop is not a
+    // finish, `08` §16), so the transition — the way on, never a failure — is drawn from the record now.
+    sessionNext(buttonsRow, backButton, () => restart(), !(how === 'ran-out' && worthRecording(result)));
+
     // A set that ran out records itself; one that was stopped waits to be
     // asked. A set with no cards in it records nothing either way: `worthRecording`
     // says why, and the sentence below is what is owed instead — an empty
@@ -2514,7 +2582,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // are stored as that (C1, L49). They were written as 0 and "every note
     // played was wrong", and the Progress history printed the jam as "0%".
     const judged = outcome.judged;
-    void recordRun({
+    const saved = recordRun({
       itemId: item.id,
       // Which rung judged it — see the Score screen's note on the same field.
       ...(rung === undefined ? {} : { lessonId: rung.id }),
@@ -2536,10 +2604,15 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       durationMs,
       passed: outcome.passed,
       masterEligible: outcome.masterEligible,
-    }).catch((cause: unknown) => {
+    });
+    saved.catch((cause: unknown) => {
       status.textContent = `Could not save this drill: ${String(cause)}`;
       status.classList.add('status--error');
     });
+    // Stored: the session's activity completes with the drill's judged result where it judges, none where
+    // it judges nothing (X1; a backing track drives neither adaptation). A stopped set the learner chose to
+    // count is theirs to count, so it completes too.
+    completeSession(saved, drillOutcomeOf(outcome, result.answered));
   }
 
   /**
@@ -2769,6 +2842,8 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     section.dataset.drill = 'running';
     section.dataset.kind = 'checklist';
     startedAtMs = Date.now();
+    // Started: the session's activity is attempted (X1).
+    sessionRun?.attempted();
     prompt.textContent = 'Go through the list before you play. Come back to it any time.';
     hint.hidden = true;
 
@@ -2797,7 +2872,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       const done = ticked.filter(Boolean).length;
       finished = true;
       section.dataset.drill = 'finished';
-      void recordRun({
+      const saved = recordRun({
         itemId: target.id,
         ...(rung === undefined ? {} : { lessonId: rung.id }),
         ...runFacts(target),
@@ -2815,7 +2890,8 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         durationMs: Date.now() - startedAtMs,
         passed: done === items.length,
         masterEligible: done === items.length,
-      }).catch((cause: unknown) => {
+      });
+      saved.catch((cause: unknown) => {
         status.textContent = `Could not save this checklist: ${String(cause)}`;
         status.classList.add('status--error');
       });
@@ -2823,6 +2899,13 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       stage.replaceChildren();
       prompt.textContent = '';
       sheet.hidden = false;
+      const again = (): void => {
+        finished = false;
+        sheet.hidden = true;
+        runChecklist(target);
+      };
+      const backButton = button('Back to the plan', () => router.navigate('plan'), { id: 'drill-done' });
+      const buttonsRow = el('div.row', {}, button('Again', again, { id: 'drill-again', variant: sessionRun ? 'secondary' : 'primary' }), backButton);
       sheet.replaceChildren(
         el(
           'div.row',
@@ -2831,21 +2914,12 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
           done === items.length ? badge('passed', 'passed') : badge('keep going'),
         ),
         el('p', { text: `${String(done)} of ${String(items.length)} checked off.` }),
-        el(
-          'div.row',
-          {},
-          button(
-            'Again',
-            () => {
-              finished = false;
-              sheet.hidden = true;
-              runChecklist(target);
-            },
-            { id: 'drill-again', variant: 'primary' },
-          ),
-          button('Back to the plan', () => router.navigate('plan'), { id: 'drill-done' }),
-        ),
+        buttonsRow,
       );
+      // The session's next step (X1): the ticks are the learner's own check, never a measurement, so the
+      // activity completes with no outcome either adaptation may read.
+      sessionNext(buttonsRow, backButton, again, false);
+      completeSession(saved, 'unknown');
       sheet.scrollIntoView({ block: 'start', behavior: 'smooth' });
     }
 
@@ -2891,6 +2965,8 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     section.dataset.drill = 'running';
     section.dataset.kind = 'placement';
     startedAtMs = Date.now();
+    // Started: the session's activity is attempted (X1).
+    sessionRun?.attempted();
     hint.textContent = 'Be strict — if you are unsure whether you can do it cleanly, call it a fail.';
     hint.hidden = false;
     // The same empty card the walkthrough had, for the same reason: a placement
@@ -2991,7 +3067,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       controls.replaceChildren();
       stage.replaceChildren();
       prompt.textContent = '';
-      void recordRun({
+      const saved = recordRun({
         itemId: target.id,
         ...(rung === undefined ? {} : { lessonId: rung.id }),
         ...runFacts(target),
@@ -3010,8 +3086,15 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         // and what it produces is a starting point, not a score.
         passed: true,
         masterEligible: false,
-      }).catch(() => undefined);
+      });
+      saved.catch(() => undefined);
       sheet.hidden = false;
+      const again = (): void => {
+        finished = false;
+        sheet.hidden = true;
+        runPlacement(target);
+      };
+      const backButton = button('Back to the plan', () => router.navigate('plan'), { id: 'drill-done', variant: 'quiet' });
       const where = el('p', {
         text: unitId
           ? 'Working out where to start\u2026'
@@ -3051,18 +3134,15 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
                 ),
               ]
             : []),
-          button(
-            'Again',
-            () => {
-              finished = false;
-              sheet.hidden = true;
-              runPlacement(target);
-            },
-            { id: 'drill-again' },
-          ),
-          button('Back to the plan', () => router.navigate('plan'), { id: 'drill-done', variant: 'quiet' }),
+          button('Again', again, { id: 'drill-again' }),
+          backButton,
         ),
       );
+      // The session's next step (X1): a placement answers questions about the learner and measures no
+      // playing, so the activity completes with no outcome either adaptation may read.
+      const buttonsRow = backButton.parentElement;
+      if (buttonsRow) sessionNext(buttonsRow, backButton, again, false);
+      completeSession(saved, 'unknown');
       sheet.scrollIntoView({ block: 'start', behavior: 'smooth' });
     }
 
@@ -3392,6 +3472,9 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // rung's, so a tour that lost its rung could never meet it).
     const openedFrom = router.route.drillRung ?? (isWalkthrough(item) ? resumedWalkthroughRung(item.id) : undefined);
     openedRungId = openedFrom;
+    // The session's activity is open (X1). A drill made when it opens has no fixed material, and no drill is a
+    // first contact, so the runner's recheck holds without a read.
+    void sessionRun?.opened({ itemId: item.id });
     void loadCurriculum()
       .then((curriculum) => {
         rung = openedFrom === undefined ? undefined : findLesson(curriculum, openedFrom);
@@ -3473,6 +3556,8 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
 
     section.dataset.drill = 'running';
     startedAtMs = Date.now();
+    // The drill started: the session's activity is attempted (X1).
+    sessionRun?.attempted();
     advance();
   })().catch((cause: unknown) => {
     status.textContent = `That drill could not be opened: ${String(cause)}`;
@@ -3481,6 +3566,9 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
 
   onScreenDispose(section, () => {
     disposed = true;
+    // The session's clock writes what it holds; a drill left before its end sheet leaves the activity active
+    // for *Continue* (X1: interrupted, never completed).
+    stopSessionClock?.();
     clearPlayback();
     cancelFeedback();
     stopMetronome();
