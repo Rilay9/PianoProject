@@ -27,3 +27,5 @@ If `build.py`'s last step cannot take the split without touching E2a's region, p
 Judgement first (what the manifest for F2 says in its first ten lines, and what the map says a change to `content/lessons/*.md` needs, as observations); then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes.
 
 **Approved with one required change 2026-09-29** (`responses/198c148.md`): Q64, the views step and the matrix helper accepted; Q65a (`Q65a-map-minimum.md`) makes the map the discriminating minimum and names the machine-read docs paths; the map advisory until it lands.
+
+**Closed 2026-09-29**: Q64 accepted, Q65 closed through Q65a and Q65b (`responses/b690be15.md`).
