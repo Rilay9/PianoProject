@@ -18,11 +18,12 @@
  * nothing else reads. One dependency-free file that a text editor can open is
  * worth the third.
  */
-import { openDatabase, STORE_NAMES, type ContactSummaryRow, type ImportRow, type ProgressRow, type StoreName } from './db';
+import { openDatabase, STORE_NAMES, type ContactSummaryRow, type ImportRow, type ProgressRow, type ProjectRow, type StoreName } from './db';
 import { importsChanged } from './importStore';
 import { forgetCachedProgress, mergeSummaries } from './progressStore';
 import { forgetCachedPlan } from './planStore';
 import { forgetCachedEncounters } from './encounterStore';
+import { forgetCachedProjects, mergeProjects } from './projectStore';
 
 export const BACKUP_VERSION = 1;
 
@@ -306,6 +307,13 @@ export async function importAll(
         // since the export, and a join restored twice changes nothing.
         const incoming = row as ContactSummaryRow;
         await db.put('contacts', mergeSummaries(await db.get('contacts', incoming.key), incoming));
+      } else if (store === 'projects' && !options.replace) {
+        // A project (G1b) joins the device's project of the same piece: the
+        // history is the learner's actions, appended on either side since the
+        // export, and a join restored twice changes nothing — a plain put would
+        // take away what the learner chose on this device since.
+        const incoming = row as ProjectRow;
+        await db.put('projects', mergeProjects(await db.get('projects', incoming.id), incoming));
       } else if (OUT_OF_LINE.includes(store)) {
         const key = raw.keys?.[store]?.[index];
         if (key === undefined) continue;
@@ -329,6 +337,7 @@ export async function importAll(
   // The encounters written for the session with no database are not the
   // restored history (G1): what is on the device now is.
   forgetCachedEncounters();
+  forgetCachedProjects();
   if (Array.isArray(raw.stores.imports)) importsChanged();
   return report;
 }

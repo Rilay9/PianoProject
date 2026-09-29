@@ -36,7 +36,7 @@ import type { Skill } from '../demands/vocabulary';
 import type { ExposureFamily, ReadingMove, ReadingWhy, SlotClaim, SlotKind } from '../curriculum/session';
 import type { AlternativeTier } from '../curriculum/selectors';
 import { VOCABULARY_V0 } from '../evidence/vocabulary';
-import type { ReadingRecipe } from '../data/db';
+import type { ProjectAction, ProjectState, ReadingRecipe } from '../data/db';
 import type { RequirementReading, RungReading } from '../evidence/rungState';
 import type { LadderState } from '../evidence/ladder';
 import type { EvidenceJobStatus } from '../data/evidenceJob';
@@ -599,6 +599,112 @@ export const READING_TEXT = {
   /** A singled-out demand's words: "skips went wrong in 3 phrases". */
   wentWrong: 'went wrong in',
 } as const;
+
+/**
+ * What the project sheet, Progress and Stage 9's page say about a project (G1b; `04` §5, §6, §3f
+ * rows in Entry 138). The actions are the learner's words for what they are doing with the piece;
+ * the states are the same facts said as where the piece is now. Nothing here says the app decided,
+ * judged or scheduled anything: every change is the learner's.
+ */
+export const PROJECT_TEXT = {
+  /** The finish sheet's door, and the empty Progress list's pointer to it. */
+  door: 'What next with this piece?',
+  /** A piece with no project: the sheet's state line. */
+  none: 'Not a project yet',
+  /** A Stage 9 song option with no project. */
+  notStarted: 'not started',
+  /** Stage 9's page, in place of *What the app counts*. */
+  stageNine: 'A project: there is no rung to pass here.',
+  actions: {
+    save: 'Save for later',
+    learn: 'Learn this',
+    polish: 'Prepare it for performance',
+    ready: 'It is ready',
+    performed: 'I performed it',
+    keep: 'Keep it playable',
+    'bring-back': 'Bring it back',
+    pause: 'Pause',
+    retire: 'Put it away',
+  } satisfies Record<ProjectAction, string>,
+  states: {
+    saved: 'Saved for later',
+    learning: 'Learning',
+    polishing: 'Preparing for performance',
+    'performance-ready': 'Ready to perform',
+    maintaining: 'Keeping it playable',
+    refreshing: 'Bringing it back',
+    paused: 'Paused',
+    retired: 'Put away',
+  } satisfies Record<ProjectState, string>,
+  /** The date field beside *I performed it*. */
+  performedWhen: 'When',
+  /** What the encounter history says of the piece (`encounterStore.familiarity`). */
+  checking: 'Looking at what you have played…',
+  heardOnly: 'You have listened to it and not played it yet.',
+  viewedOnly: 'You have opened it and not played it yet.',
+  never: 'You have never opened it.',
+  /** R18's three facts. */
+  goal: 'This week’s goal',
+  problem: 'The problem right now',
+  sections: 'Sections',
+  sectionFrom: 'Bars',
+  sectionTo: 'to',
+  /** The two bar boxes' names for a screen reader, where the visible words are short. */
+  sectionFirst: 'First bar',
+  sectionLast: 'Last bar',
+  sectionName: 'Name',
+  addSection: 'Add section',
+  removeSection: 'Remove',
+  noSections: 'No sections yet.',
+  /** Progress. */
+  heading: 'Projects',
+  makeProject: 'Make it a project',
+  learnedHeading: 'Pieces you have passed, not yet projects',
+  empty: 'No projects yet. At the end of a run, “What next with this piece?” makes one.',
+  /** Said after the learner's action, beside the actions. */
+  saved: 'Saved.',
+} as const;
+
+/** "Learning since 2026-09-29": a project's state and the local day it was entered. */
+export function projectSince(state: ProjectState, sinceIso: string, day: (at: Date) => string): string {
+  return `${PROJECT_TEXT.states[state]} since ${day(new Date(sinceIso))}`;
+}
+
+/** The history's last line: *I performed it*'s day, or the state before this one and its day. */
+export function projectHistoryLine(
+  history: readonly { state: ProjectState; at: string; performedOn?: string }[],
+  day: (at: Date) => string,
+): string | null {
+  const last = history[history.length - 1];
+  if (last?.performedOn !== undefined) return `You performed it on ${last.performedOn}.`;
+  const before = history[history.length - 2];
+  return before ? `Before this: ${PROJECT_TEXT.states[before.state]}, from ${day(new Date(before.at))}.` : null;
+}
+
+/** "You last played it on 2026-09-28." — or part of it, where a run covered only some of its bars. */
+export function playedLine(dayPlayed: string, part: boolean): string {
+  return part ? `You last played part of it on ${dayPlayed}.` : `You last played it on ${dayPlayed}.`;
+}
+
+/** A project's goal on its Progress row. */
+export function goalWords(goal: string): string {
+  return `Goal: ${goal}`;
+}
+
+/**
+ * A passed piece offered as a project on Progress: "Last played 2026-09-28". The list's own line says
+ * the pieces are passed, so the row does not say it again (`04` §0 R2), and at 342 px beside *Make it
+ * a project* the date is what the line has room for.
+ */
+export function lastPlayedLine(lastPlayed: string): string {
+  return `Last played ${lastPlayed}`;
+}
+
+/** Where a section is: "Bars 1–8 · The tune". */
+export function sectionWords(section: { from: number; to: number; label: string }): string {
+  const bars = section.from === section.to ? `Bar ${String(section.from)}` : `Bars ${String(section.from)}–${String(section.to)}`;
+  return section.label === '' ? bars : `${bars} · ${section.label}`;
+}
 
 /**
  * What a rung asks and what the evidence shows, in the learner's words (C5):

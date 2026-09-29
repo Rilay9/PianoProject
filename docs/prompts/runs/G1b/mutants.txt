@@ -1,0 +1,110 @@
+26 mutant(s); each file restored by its bytes after its run
+no-upgrade (src/data/db.ts; the version-9 upgrade makes the store): caught, exit 1
+    × a version-8 database with a row in every store opens at version 9 with every row as it was and the projects store empty 14ms
+    × a project is one row: the material, the item, the state and since, an append-only history 3ms
+    × a replace restores them; a merge restored twice adds nothing; a change made on the device since the export is kept 1ms
+    FAIL  tests/unit/projectLifecycle.test.ts > the store, and the upgrade that makes it > a version-8 database with a row in every store opens at version 9 with every row as it was and the projects store empty
+not-in-backup (src/data/db.ts; the backup carries the store): caught, exit 1
+    × a project is one row: the material, the item, the state and since, an append-only history 7ms
+    × a replace restores them; a merge restored twice adds nothing; a change made on the device since the export is kept 1ms
+    FAIL  tests/unit/projectLifecycle.test.ts > the store, and the upgrade that makes it > a project is one row: the material, the item, the state and since, an append-only history
+    FAIL  tests/unit/projectLifecycle.test.ts > the backup carries the projects, and a restore follows the learner > a replace restores them; a merge restored twice adds nothing; a change made on the device since the export is kept
+backup-overwrites (src/data/backup.ts; a merge restore joins, never overwrites): caught, exit 1
+    × a replace restores them; a merge restored twice adds nothing; a change made on the device since the export is kept 6ms
+    FAIL  tests/unit/projectLifecycle.test.ts > the backup carries the projects, and a restore follows the learner > a replace restores them; a merge restored twice adds nothing; a change made on the device since the export is kept
+retired-offers-learn (src/data/projectStore.ts; the transitions table): caught, exit 1
+    × the offers are the table, the states Part 27’s eight, and every action enters the state it names 5ms
+    × from retired: each offered action moves the project and appends one line; every other action is refused and writes nothing 2ms
+    FAIL  tests/unit/projectLifecycle.test.ts > the transitions table: every action from every state the sheet offers it, and nothing else > the offers are the table, the states Part 27’s eight, and every action enters the state it names
+    FAIL  tests/unit/projectLifecycle.test.ts > the transitions table: every action from every state the sheet offers it, and nothing else > from retired: each offered action moves the project and appends one line; every other action is refused and writes nothing
+offers-not-checked (src/data/projectStore.ts; an action not offered is refused): caught, exit 1
+    × from none: each offered action moves the project and appends one line; every other action is refused and writes nothing 9ms
+    × from saved: each offered action moves the project and appends one line; every other action is refused and writes nothing 1ms
+    × from learning: each offered action moves the project and appends one line; every other action is refused and writes nothing 1ms
+    × from polishing: each offered action moves the project and appends one line; every other action is refused and writes nothing 1ms
+history-rewritten (src/data/projectStore.ts; the history is appended, never rewritten): caught, exit 1
+    × a project is one row: the material, the item, the state and since, an append-only history 7ms
+    × from saved: each offered action moves the project and appends one line; every other action is refused and writes nothing 2ms
+    × from learning: each offered action moves the project and appends one line; every other action is refused and writes nothing 2ms
+    × from polishing: each offered action moves the project and appends one line; every other action is refused and writes nothing 2ms
+id-only-matches-any-id (src/data/projectStore.ts; an id-only project answers for its own id alone): caught, exit 1
+    × an id-only project answers for its own id alone; a material project answers for its own id when the file was rebuilt 5ms
+    FAIL  tests/unit/projectLifecycle.test.ts > identity: known material may unify two ids; an id-only project is never guessed to be another piece > an id-only project answers for its own id alone; a material project answers for its own id when the file was rebuilt
+material-ignored (src/data/projectStore.ts; one piece under two ids is one project): caught, exit 1
+    × a project on an import is its stored bytes, and the Library’s id-only view of the import still finds it 7ms
+    × the same piece under two ids is one project, whichever id acts on it 2ms
+    × an id-only project answers for its own id alone; a material project answers for its own id when the file was rebuilt 1ms
+    FAIL  tests/unit/projectLifecycle.test.ts > identity: known material may unify two ids; an id-only project is never guessed to be another piece > a project on an import is its stored bytes, and the Library’s id-only view of the import still finds it
+writes-race (src/data/projectStore.ts; two quick edits never lose one): caught, exit 1
+    × the notes: the words typed are kept; a section outside the piece is refused in words and stores nothing 1082ms
+    FAIL  tests/unit/projectSheet.test.ts > the learner’s actions on the sheet > the notes: the words typed are kept; a section outside the piece is refused in words and stores nothing
+performed-makes-a-performance (src/data/projectStore.ts; I performed it manufactures no performance run): caught, exit 1
+    × learned pieces, contact, familiarity, the rung state and the skills read the same with projects in every state 15ms
+    × it records the date on the project and manufactures no performed encounter, performance run, competence result or evidence event 2ms
+    × I performed it, with the learner’s date: kept playable, the date on the history line, and nothing written but the project 130ms
+    FAIL  tests/unit/projectLifecycle.test.ts > never the bridge, never the source (the brief’s item 3; its refuting test kept as a guard) > learned pieces, contact, familiarity, the rung state and the skills read the same with projects in every state
+performed-makes-an-encounter (src/data/projectStore.ts; I performed it manufactures no encounter): caught, exit 1
+    × learned pieces, contact, familiarity, the rung state and the skills read the same with projects in every state 18ms
+    × it records the date on the project and manufactures no performed encounter, performance run, competence result or evidence event 6ms
+    × I performed it, with the learner’s date: kept playable, the date on the history line, and nothing written but the project 131ms
+    FAIL  tests/unit/projectLifecycle.test.ts > never the bridge, never the source (the brief’s item 3; its refuting test kept as a guard) > learned pieces, contact, familiarity, the rung state and the skills read the same with projects in every state
+future-performance-day (src/data/projectStore.ts; a performance day is on or before today): caught, exit 1
+    × I performed it keeps the learner’s date, the run’s day by default, and refuses a date that is not a day or not yet 7ms
+    FAIL  tests/unit/projectLifecycle.test.ts > the transitions table: every action from every state the sheet offers it, and nothing else > I performed it keeps the learner’s date, the run’s day by default, and refuses a date that is not a day or not yet
+sections-unbounded (src/data/projectStore.ts; the piece's bars bound the sections): caught, exit 1
+    × sections are added one at a time, bounded by the piece’s bars; a range outside them is refused and writes nothing 8ms
+    × the notes: the words typed are kept; a section outside the piece is refused in words and stores nothing 1207ms
+    FAIL  tests/unit/projectLifecycle.test.ts > R18: the learner’s goal, problem and sections — free text, optional, choosing nothing > sections are added one at a time, bounded by the piece’s bars; a range outside them is refused and writes nothing
+    FAIL  tests/unit/projectSheet.test.ts > the learner’s actions on the sheet > the notes: the words typed are kept; a section outside the piece is refused in words and stores nothing
+merge-takes-theirs (src/data/projectStore.ts; a merge keeps the latest state): caught, exit 1
+    × a replace restores them; a merge restored twice adds nothing; a change made on the device since the export is kept 12ms
+    × the merge is a join: order does not matter, and a history is never shortened 3ms
+    FAIL  tests/unit/projectLifecycle.test.ts > the backup carries the projects, and a restore follows the learner > a replace restores them; a merge restored twice adds nothing; a change made on the device since the export is kept
+    FAIL  tests/unit/projectLifecycle.test.ts > the backup carries the projects, and a restore follows the learner > the merge is a join: order does not matter, and a history is never shortened
+stage9-reads-runs (src/ui/screens/LessonScreen.ts; the Stage 9 page reads projects, not runs): caught, exit 1
+    × shows each song option as a project — not started — says there is no rung to pass, and counts nothing 71ms
+    × runs that meet the unit’s requirements change nothing there: the page reads projects, not runs 74ms
+    × changing one project’s state changes only that project’s row, and no rung state, evidence, eligibility or skill state 124ms
+    FAIL  tests/unit/stage9ProjectsPage.test.ts > a Stage 9 unit’s page > shows each song option as a project — not started — says there is no rung to pass, and counts nothing
+stage9-shows-counts (src/ui/screens/LessonScreen.ts; no count on a Stage 9 page): caught, exit 1
+    × shows each song option as a project — not started — says there is no rung to pass, and counts nothing 74ms
+    × runs that meet the unit’s requirements change nothing there: the page reads projects, not runs 69ms
+    × changing one project’s state changes only that project’s row, and no rung state, evidence, eligibility or skill state 125ms
+    FAIL  tests/unit/stage9ProjectsPage.test.ts > a Stage 9 unit’s page > shows each song option as a project — not started — says there is no rung to pass, and counts nothing
+stage9-keeps-mark-done (src/ui/screens/LessonScreen.ts; no completion claim on a Stage 9 page): caught, exit 1
+    × shows each song option as a project — not started — says there is no rung to pass, and counts nothing 69ms
+    FAIL  tests/unit/stage9ProjectsPage.test.ts > a Stage 9 unit’s page > shows each song option as a project — not started — says there is no rung to pass, and counts nothing
+progress-offers-every-pass (src/ui/screens/ProgressScreen.ts; a piece with a project is offered none): caught, exit 1
+    × a passed piece with no project offers Make it a project; a piece with one, a piece only started and an exercise do not 60ms
+    × the offer is the learner’s: it opens the sheet and makes nothing until an action is chosen 122ms
+    FAIL  tests/unit/progressProjects.test.ts > Projects on Progress > a passed piece with no project offers Make it a project; a piece with one, a piece only started and an exercise do not
+    FAIL  tests/unit/progressProjects.test.ts > Projects on Progress > the offer is the learner’s: it opens the sheet and makes nothing until an action is chosen
+progress-makes-projects (src/ui/screens/ProgressScreen.ts; a pass is never made a project automatically): caught, exit 1
+    × only the project sheet acts, and no evidence, skill, eligibility, session or Library code reads a project 62ms
+    × the offer is the learner’s: it opens the sheet and makes nothing until an action is chosen 74ms
+    FAIL  tests/unit/progressProjects.test.ts > Projects on Progress > the offer is the learner’s: it opens the sheet and makes nothing until an action is chosen
+    FAIL  tests/unit/projectLifecycle.test.ts > never the bridge, never the source (the brief’s item 3; its refuting test kept as a guard) > only the project sheet acts, and no evidence, skill, eligibility, session or Library code reads a project
+progress-oldest-first (src/ui/screens/ProgressScreen.ts; newest change first): caught, exit 1
+    × lists every project under one heading, newest change first: title, state, since, and the goal where one is typed 88ms
+    FAIL  tests/unit/progressProjects.test.ts > Projects on Progress > lists every project under one heading, newest change first: title, state, since, and the goal where one is typed
+door-on-a-phrase (src/ui/screens/ScoreScreen.ts; a phrase is no piece): caught, exit 1
+    × a sight-reading phrase is no piece: its finish sheet offers no project 128ms
+    FAIL  tests/unit/projectOnTheFinishSheet.test.ts > What next with this piece? > a sight-reading phrase is no piece: its finish sheet offers no project
+door-forgets-the-bytes (src/ui/screens/ScoreScreen.ts; an import's project is its stored bytes): caught, exit 1
+    × a piece’s finish sheet offers it; the sheet it opens says the piece was just played, and makes nothing until the learner acts 1246ms
+    × an import’s project is its stored bytes 1136ms
+    FAIL  tests/unit/projectOnTheFinishSheet.test.ts > What next with this piece? > a piece’s finish sheet offers it; the sheet it opens says the piece was just played, and makes nothing until the learner acts
+    FAIL  tests/unit/projectOnTheFinishSheet.test.ts > What next with this piece? > an import’s project is its stored bytes
+met-line-without-length (src/ui/projectSheet.ts; the encounter line reads the whole piece as played): caught, exit 1
+    × a piece’s finish sheet offers it; the sheet it opens says the piece was just played, and makes nothing until the learner acts 1189ms
+    FAIL  tests/unit/projectOnTheFinishSheet.test.ts > What next with this piece? > a piece’s finish sheet offers it; the sheet it opens says the piece was just played, and makes nothing until the learner acts
+sheet-saves-on-open: SKIPPED — the text to change is not in src/ui/projectSheet.ts exactly once
+sheet-outlives-its-screen (src/ui/projectSheet.ts; leaving the screen closes the sheet): caught, exit 1
+    × a project’s row opens its sheet 128ms
+    × a piece’s finish sheet offers it; the sheet it opens says the piece was just played, and makes nothing until the learner acts 284ms
+    × leaving that screen closes the sheet 6ms
+    FAIL  tests/unit/progressProjects.test.ts > Projects on Progress > a project’s row opens its sheet
+reset-keeps-projects (src/ui/screens/SettingsScreen.ts; Reset progress clears the projects): caught, exit 1
+    × the store is on the reset’s list, and the reset leaves it empty 6ms
+    FAIL  tests/unit/projectSheet.test.ts > Reset progress clears the projects with the rest of the learner’s history (item 8) > the store is on the reset’s list, and the reset leaves it empty
+25 of 26 caught

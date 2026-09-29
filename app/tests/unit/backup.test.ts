@@ -306,6 +306,17 @@ describe('a backup of a phone that has been used (P19 §C3)', () => {
       byId: true,
       spans: [{ run: 'practised', first: '2019-01-01T00:00:00.000Z', last: '2019-01-01T00:00:00.000Z', sources: ['library'] }],
     });
+    // G1b: the learner's projects — what they intend to do with a piece — are
+    // the learner's own record, so the backup carries them too.
+    await db?.put('projects', {
+      id: `file:${'a'.repeat(64)}`,
+      material: { kind: 'file', sha256: 'a'.repeat(64) },
+      itemId: 'song.a',
+      state: 'learning',
+      since: '2026-09-01T00:00:00.000Z',
+      history: [{ state: 'learning', at: '2026-09-01T00:00:00.000Z', why: 'learn' }],
+      goal: 'Hands together',
+    });
     // The one store the backup leaves out on purpose: 6 MB of listing that is
     // rebuilt by picking the folder again.
     await db?.put('folderLibraries', {

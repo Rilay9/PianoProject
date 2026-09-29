@@ -42,7 +42,7 @@ import type { CatalogItem } from '../../curriculum/types';
 import { importAll, isBackupFile, writeBackup } from '../../data/backup';
 import { isPhraseRun, type ProgressRow, type SessionRow } from '../../data/db';
 import { NOT_MEASURED } from '../../engine/types';
-import { HISTORY_TEXT, SKILL_TEXT, skillMoveWords } from '../help';
+import { HISTORY_TEXT, PROJECT_TEXT, SKILL_TEXT, goalWords, lastPlayedLine, projectSince, skillMoveWords } from '../help';
 import { getPlan } from '../../data/planStore';
 import { learnerExposures, skillMoves, type SkillMove } from '../../data/skillsStore';
 import { VOCABULARY_V0 } from '../../evidence/vocabulary';
@@ -58,6 +58,10 @@ import {
 } from '../../data/progressStore';
 import { button, el, listRow, minutesLabel, numberControl } from '../widgets';
 import { openItem } from '../openItem';
+import { openProjectSheet } from '../projectSheet';
+import { allProjects, isProjectable, projectIn, type ProjectRow } from '../../data/projectStore';
+import { materialOfItem } from '../../curriculum/material';
+import type { Identity } from '../../review/record';
 import { screenFrame, statusLine } from './screenFrame';
 import { plural } from '../../util/plural';
 
@@ -249,6 +253,8 @@ export function ProgressScreen(router: Router): HTMLElement {
   // What the learner's evidence has changed lately (C7, X3): one state, the
   // ladder's, the same the Skills screen shows.
   const skills = el('div.list', { id: 'progress-skills' });
+  // What the learner says they are doing with each piece (G1b item 6): the project sheet's second door.
+  const projects = el('div.list', { id: 'progress-projects' });
   const repertoire = el('div.list', { id: 'progress-repertoire' });
   const history = el('div.list', { id: 'progress-history' });
   const performances = el('div.list', { id: 'progress-performances' });
@@ -262,6 +268,10 @@ export function ProgressScreen(router: Router): HTMLElement {
   let repertoireRows: ProgressRow[] = [];
   let repertoireItems: Map<string, CatalogItem> = new Map();
   let repertoireShown = REPERTOIRE_PAGE_SIZE;
+  // The same for the projects section, which is drawn again after each change on the sheet.
+  let projectsProgress: ProgressRow[] = [];
+  let projectsItems: Map<string, CatalogItem> = new Map();
+  let learnedShown = REPERTOIRE_PAGE_SIZE;
 
   summary.append(
     weekLine,
@@ -280,6 +290,7 @@ export function ProgressScreen(router: Router): HTMLElement {
   body.append(
     summary,
     el('section.block', {}, el('h2', { text: SKILL_TEXT.heading }), skills),
+    el('section.block', {}, el('h2', { text: PROJECT_TEXT.heading }), projects),
     el('section.block', {}, el('h2', { text: 'Repertoire' }), repertoire),
     el('section.block', {}, el('h2', { text: 'Performances' }), performances),
     el('section.block', {}, el('h2', { text: 'Recent sessions' }), history),
@@ -379,6 +390,77 @@ export function ProgressScreen(router: Router): HTMLElement {
         : [el('p.muted', { text: SKILL_TEXT.nothingMoved })]),
       el('div.row', {}, review),
     );
+  }
+
+  /**
+   * The learner's projects (G1b item 6), newest change first: the piece, its state and since, and
+   * the goal where one is typed; a row opens the piece's sheet. Under them, the pieces passed or
+   * mastered that are no project yet, each offering *Make it a project* — which opens the sheet and
+   * makes nothing until the learner chooses there. Never automatic: a pass is not a project.
+   */
+  function drawProjects(rows: ProgressRow[], items: Map<string, CatalogItem>, list: readonly ProjectRow[]): void {
+    projectsProgress = rows;
+    projectsItems = items;
+    const reload = (): void => {
+      void allProjects().then((fresh) => {
+        drawProjects(projectsProgress, projectsItems, fresh);
+      });
+    };
+    const barsOf = (item: CatalogItem): number | undefined => (item.measurement?.status === 'measured' ? item.measurement.bars : undefined);
+    const open = (item: CatalogItem, material: Identity | undefined): void => {
+      const bars = barsOf(item);
+      openProjectSheet({ item, material, ...(bars === undefined ? {} : { bars }), onChange: reload, owner: section });
+    };
+    const projectRows = [...list]
+      .sort((a, b) => b.since.localeCompare(a.since))
+      .map((project) => {
+        const item = items.get(project.itemId);
+        return listRow({
+          title: titleFor(item),
+          subtitle: projectSince(project.state, project.since, dayKey),
+          ...(project.goal === undefined ? {} : { meta: goalWords(project.goal) }),
+          ...(item ? { onClick: () => open(item, project.material.kind === 'id' ? undefined : project.material) } : {}),
+          dataset: { 'data-project': project.id, 'data-item': project.itemId, 'data-state': project.state },
+        });
+      });
+    const learned = rows
+      .filter((row) => row.status === 'passed' || row.status === 'mastered')
+      .map((row) => ({ row, item: items.get(row.itemId) }))
+      .filter((entry): entry is { row: ProgressRow; item: CatalogItem } => entry.item !== undefined && isProjectable(entry.item))
+      .filter(({ row, item }) => projectIn(list, { itemId: row.itemId, material: materialOfItem(item) }) === undefined)
+      .sort((a, b) => b.row.lastPracticedAt.localeCompare(a.row.lastPracticedAt));
+    const page = learned.slice(0, learnedShown);
+    const offers = page.map(({ row, item }) =>
+      listRow({
+        title: item.title,
+        meta: lastPlayedLine(row.lastPracticedAt ? dayKey(new Date(row.lastPracticedAt)) : '—'),
+        actions: [button(PROJECT_TEXT.makeProject, () => open(item, materialOfItem(item)), { variant: 'quiet' })],
+        dataset: { 'data-offer': 'true', 'data-item': row.itemId },
+      }),
+    );
+    const more = learned.length - page.length;
+    projects.replaceChildren(
+      ...(projectRows.length > 0
+        ? projectRows
+        : [
+            el('p.muted', { text: PROJECT_TEXT.empty }),
+            ...(offers.length > 0 ? [] : [button('Pick a piece', () => router.navigate('library'), { id: 'progress-projects-pick', variant: 'quiet' })]),
+          ]),
+      ...(offers.length > 0 ? [el('p.muted', { text: PROJECT_TEXT.learnedHeading }), ...offers] : []),
+      ...(more > 0
+        ? [
+            el(
+              'div.row',
+              {},
+              button(`Show ${String(Math.min(REPERTOIRE_PAGE_SIZE, more))} more`, () => {
+                learnedShown += REPERTOIRE_PAGE_SIZE;
+                reload();
+              }, { id: 'progress-projects-more', variant: 'quiet' }),
+            ),
+          ]
+        : []),
+    );
+    projects.dataset.drawn = 'true';
   }
 
   function drawRepertoire(rows: ProgressRow[], items: Map<string, CatalogItem>): void {
@@ -618,7 +700,7 @@ export function ProgressScreen(router: Router): HTMLElement {
   );
 
   async function load(): Promise<void> {
-    const [rows, streak, sessions, performed, items, shelf] = await Promise.all([
+    const [rows, streak, sessions, performed, items, shelf, projectList] = await Promise.all([
       allProgress(),
       getStreak(),
       // Thirty, which is what the history list draws. It asked for a hundred
@@ -632,6 +714,7 @@ export function ProgressScreen(router: Router): HTMLElement {
       recentPerformances(20),
       allItems(),
       allShelfPieces(),
+      allProjects(),
     ]);
     const byId = new Map(items.map((item) => [item.id, item]));
     // A book piece is not in the catalog — the app has no copy of it — but it
@@ -655,6 +738,7 @@ export function ProgressScreen(router: Router): HTMLElement {
     }
     drawSummary(rows, streak.minutesByDay, streak.weeklyGoalMinutes);
     drawHeatmap(streak.minutesByDay);
+    drawProjects(rows, byId, projectList);
     drawRepertoire(rows, byId);
     drawPerformances(performed, byId);
     drawHistory(sessions, byId);

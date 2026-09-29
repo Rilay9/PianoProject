@@ -1,0 +1,7 @@
+1 mutant(s); each file restored by its bytes after its run
+sheet-outlives-its-screen (src/ui/projectSheet.ts; leaving the screen closes the sheet): caught, exit 1
+    × a project’s row opens its sheet 130ms
+    × a piece’s finish sheet offers it; the sheet it opens says the piece was just played, and makes nothing until the learner acts 344ms
+    × leaving that screen closes the sheet 11ms
+    FAIL  tests/unit/progressProjects.test.ts > Projects on Progress > a project’s row opens its sheet
+1 of 1 caught

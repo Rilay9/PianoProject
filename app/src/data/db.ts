@@ -58,8 +58,16 @@ export const DB_NAME = 'pianopath';
  * transaction as the deletion, so no fact a familiarity query reads is lost to
  * the cap (the reviewer's constraint, `docs/review/responses/9193261.md`). Runs
  * stay in `sessions`, the record of runs; neither new store copies a live run.
+ *
+ * 9 (G1b; R19, R47, R18, L86) adds one store and touches no other: `projects`,
+ * what the learner says they are doing with a piece — saved, learning,
+ * polishing, ready, kept playable, brought back, paused, put away — one row per
+ * piece (`ProjectRow`), written only by the learner's action on the project
+ * sheet. Intention, never a fact about what was met (the encounters and runs)
+ * or measured (the evidence); nothing is carried into it from a store already
+ * there, so a database from before G1b opens with no project.
  */
-export const DB_VERSION = 8;
+export const DB_VERSION = 9;
 
 /**
  * Set in the `settings` store by the version 7 upgrade of a database made
@@ -669,6 +677,80 @@ export interface ContactSummaryRow {
   spans: ContactSpan[];
 }
 
+/**
+ * What the learner says they are doing with a piece (G1b; R19, Part 27's list). *Exploring* is the
+ * absence of a row: meeting a piece, playing it once, passing it, makes no project.
+ *
+ * - `saved` — "Save for later": the piece kept to come back to.
+ * - `learning` — "Learn this", before or after any success.
+ * - `polishing` — "Prepare it for performance".
+ * - `performance-ready` — "It is ready".
+ * - `maintaining` — "Keep it playable", or "I performed it" with the day it was performed.
+ * - `refreshing` — "Bring it back", from paused, put away or kept playable: relearning while the
+ *   encounter history truthfully says the music is familiar (R47).
+ * - `paused` — "Pause". `retired` — "Put it away". Neither deletes anything.
+ */
+export type ProjectState =
+  | 'saved'
+  | 'learning'
+  | 'polishing'
+  | 'performance-ready'
+  | 'maintaining'
+  | 'refreshing'
+  | 'paused'
+  | 'retired';
+
+/** The learner's action on the project sheet that entered a state (`projectStore.ACTION_STATE`). */
+export type ProjectAction = 'save' | 'learn' | 'polish' | 'ready' | 'performed' | 'keep' | 'bring-back' | 'pause' | 'retire';
+
+/** One line of a project's history: the state entered, when, and by which action of the learner's. */
+export interface ProjectStep {
+  state: ProjectState;
+  /** ISO date-time the learner chose it. */
+  at: string;
+  /** The action: two states can be entered two ways (`maintaining` by "Keep it playable" or "I performed it"). */
+  why: ProjectAction;
+  /**
+   * "I performed it": the day the learner says they performed it (`YYYY-MM-DD`, local), a fact they
+   * state about the project — never a performance run, an encounter, a result or evidence (the
+   * reviewer's ruling on G1b). Absent on every other action.
+   */
+  performedOn?: string;
+}
+
+/** A passage the learner named (R18): printed bars, 1-based, within the piece's own bars. */
+export interface ProjectSection {
+  from: number;
+  to: number;
+  label: string;
+}
+
+/**
+ * One project (G1b): the learner's stated relationship with one piece. Keyed by the piece's material
+ * where it has one (`material.materialKey`: an import's stored bytes, a notated item's built file),
+ * so two catalogue ids of one file are one project; by the item id where it has none, and then never
+ * another id's. `since` is when the current state was entered; `history` every state the project
+ * has been in, appended and never rewritten. `goal`, `problem` and `sections` are the learner's own
+ * words (R18), and choose nothing. Read by the project sheet, Progress and Stage 9's page — never
+ * by evidence, skill, eligibility or session code. Carried by the backup, cleared by *Reset progress*.
+ */
+export interface ProjectRow {
+  /** `material.materialKey` of the material, or `id:<itemId>`. */
+  id: string;
+  material: EncounterMaterial;
+  /** The id the project was made under. */
+  itemId: string;
+  state: ProjectState;
+  /** ISO date-time the current state was entered. */
+  since: string;
+  history: ProjectStep[];
+  /** This week's goal, as the learner typed it. */
+  goal?: string;
+  /** The current problem, as the learner typed it. */
+  problem?: string;
+  sections?: ProjectSection[];
+}
+
 /** One score sitting in a folder on the phone (docs/04 §4b). */
 export interface FolderScore {
   /** Path relative to the picked folder, e.g. `bb/Qmbb4….mxl`. The identity. */
@@ -900,6 +982,7 @@ interface PianoPathDb extends DBSchema {
   books: { key: string; value: BookRow };
   encounters: { key: string; value: EncounterRow; indexes: { byKey: string; byItem: string } };
   contacts: { key: string; value: ContactSummaryRow };
+  projects: { key: string; value: ProjectRow; indexes: { byItem: string } };
 }
 
 let dbPromise: Promise<IDBPDatabase<PianoPathDb> | null> | null = null;
@@ -1131,6 +1214,12 @@ function upgrade(
         encounters.createIndex('byItem', 'itemId');
         db.createObjectStore('contacts', { keyPath: 'key' });
       }
+      if (oldVersion < 9) {
+        // G1b: one store made, nothing else touched or rewritten, and nothing
+        // carried into it — a passed piece is no project until the learner says so.
+        const projects = db.createObjectStore('projects', { keyPath: 'id' });
+        projects.createIndex('byItem', 'itemId');
+      }
 }
 
 /**
@@ -1238,7 +1327,8 @@ function askToPersist(): void {
  * holds a year of practice, to save a single tap.
  *
  * `encounters` and `contacts` (G1) are in it: what the learner met is learner
- * history, and follows a restore (U31, E10).
+ * history, and follows a restore (U31, E10). So is `projects` (G1b): what the
+ * learner said they are doing with a piece is theirs, and no other copy exists.
  */
 export const STORE_NAMES = [
   'settings',
@@ -1253,6 +1343,7 @@ export const STORE_NAMES = [
   'books',
   'encounters',
   'contacts',
+  'projects',
 ] as const;
 
 export type StoreName = (typeof STORE_NAMES)[number];

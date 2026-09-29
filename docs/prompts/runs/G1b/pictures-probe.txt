@@ -1,0 +1,7 @@
+
+Running 1 test using 1 worker
+
+  ok 1 tests\e2e\zz-g1b-pictures.spec.ts:62:1 › the finish sheet, the project sheet through a piece’s life, Progress and a Stage 9 page (38.4s)
+
+  1 passed (41.7s)
+exit=0

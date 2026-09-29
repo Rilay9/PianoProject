@@ -25,6 +25,7 @@ import { getSetupRecord } from '../../data/setupStore';
 import { openDatabase } from '../../data/db';
 import { forgetCachedProgress } from '../../data/progressStore';
 import { forgetCachedEncounters } from '../../data/encounterStore';
+import { forgetCachedProjects } from '../../data/projectStore';
 import { directoryPickerAvailable } from '../../data/folderLibrary';
 import { getThemePreference, setThemePreference, type ThemePreference } from '../theme';
 import {
@@ -65,6 +66,29 @@ const DOWNLOAD_PROGRESS_MS = 150;
  * more times to find that out.
  */
 const DOWNLOAD_GIVE_UP_AFTER = 10;
+
+/**
+ * What *Reset progress* clears: the practice history and what came of it — the progress rows, the
+ * runs, the minutes, the retired skills store — what the learner met beside the runs (G1), and the
+ * projects, what the learner said they are doing with each piece (G1b item 8). Imports, books,
+ * settings and the plan are kept.
+ */
+export const RESET_STORES = ['progress', 'sessions', 'streak', 'skills', 'encounters', 'contacts', 'projects'] as const;
+
+/**
+ * Clears `RESET_STORES`, and the write-through caches in front of them. The stores are cleared;
+ * the caches are not, and they are what the next run reads: without forgetting them the first drill
+ * after a reset put the old attempt count and the old minutes straight back into the emptied store —
+ * the reset was undone rather than merely unrendered.
+ */
+export async function resetPracticeHistory(): Promise<void> {
+  const db = await openDatabase();
+  if (!db) return;
+  for (const store of RESET_STORES) await db.clear(store);
+  forgetCachedProgress();
+  forgetCachedEncounters();
+  forgetCachedProjects();
+}
 
 export function SettingsScreen(router: Router): HTMLElement {
   const { section, body } = screenFrame('settings', 'Settings');
@@ -631,19 +655,10 @@ export function SettingsScreen(router: Router): HTMLElement {
           if (!confirm('Delete all practice history and progress? Imported scores are kept.')) return;
           if (!confirm('Really? There is no undo, and only your backup file would bring it back.')) return;
           void (async () => {
-            const db = await openDatabase();
-            if (!db) return;
-            // What the learner met, beside the runs, is practice history too (G1).
-            for (const store of ['progress', 'sessions', 'streak', 'skills', 'encounters', 'contacts'] as const) {
-              await db.clear(store);
-            }
-            // The stores are cleared; the write-through caches in front of them
-            // are not, and they are what the next run reads. Without this the
-            // first drill after a reset put the old attempt count and the old
-            // minutes straight back into the emptied store — the reset was
-            // undone rather than merely unrendered.
-            forgetCachedProgress();
-            forgetCachedEncounters();
+            if (!(await openDatabase())) return;
+            // What the learner met beside the runs (G1) and their projects (G1b)
+            // go with the practice history (`RESET_STORES`).
+            await resetPracticeHistory();
             status.textContent = 'Progress reset. Reload the app to see it.';
           })();
         },

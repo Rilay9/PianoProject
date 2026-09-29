@@ -1,0 +1,89 @@
+
+Running 42 tests using 2 workers
+
+  ok  1 tests\e2e\progress.spec.ts:61:3 › Progress › shows the week, the heat-map and an empty repertoire on a fresh phone (2.5s)
+  ok  3 tests\e2e\progress.spec.ts:69:3 › Progress › records a run and shows it in the history and the heat-map (2.4s)
+  ok  4 tests\e2e\progress.spec.ts:88:3 › Progress › a piece passed and not played for two weeks comes back for review, in its own words (1.4s)
+  ok  5 tests\e2e\progress.spec.ts:99:3 › Progress › exports everything and restores it onto a wiped phone (2.9s)
+  ok  6 tests\e2e\progress.spec.ts:129:3 › Progress › refuses a file that is not a backup, with a sentence (1.2s)
+  ok  7 tests\e2e\progress.spec.ts:141:3 › Settings › groups every setting and persists a change across a reload (1.5s)
+  ok  8 tests\e2e\progress.spec.ts:154:3 › Settings › the offline-only switch persists (2.1s)
+  ok  9 tests\e2e\progress.spec.ts:162:3 › Settings › reports the storage in use (1.1s)
+  ok 10 tests\e2e\progress.spec.ts:170:3 › Diagnostics › reports the precache, the content counts and the errors (1.2s)
+  ok 11 tests\e2e\progress.spec.ts:184:3 › Diagnostics › the debug report carries the new blocks (1.4s)
+  ok 12 tests\e2e\progress.spec.ts:198:3 › the settings mirror (docs/01 §4.5) › a setting survives localStorage being cleared, because IndexedDB has it (2.7s)
+  ok  2 tests\e2e\lesson-flow.spec.ts:46:1 › a run played from Today is recorded, and comes back for review (23.9s)
+  ok 13 tests\e2e\score.spec.ts:22:3 › score model against a real rendered cursor › steps.length equals the number of cursor.next() calls, on every fixture (9.7s)
+  ok 15 tests\e2e\score.spec.ts:55:3 › score model against a real rendered cursor › a repeat is unrolled: more played bars than printed ones (990ms)
+  ok 16 tests\e2e\score.spec.ts:63:3 › windowing › the window follows the cursor and holds exactly N bars (1.0s)
+  ok 14 tests\e2e\score.spec.ts:41:3 › score model against a real rendered cursor › no fixture throws while rendering (8.7s)
+  ok 17 tests\e2e\score.spec.ts:77:3 › windowing › bars per window is clamped to 1..8 (982ms)
+  ok 18 tests\e2e\score.spec.ts:87:3 › windowing › the window jumps back on a repeat, following the printed page (1.1s)
+  ok 19 tests\e2e\score.spec.ts:107:3 › windowing › the cursor band sits over the notes and moves with the step (1.0s)
+  ok 20 tests\e2e\score.spec.ts:126:3 › note elements and colouring › every note of the current step resolves to a drawn element (949ms)
+  ok 21 tests\e2e\score.spec.ts:136:3 › note elements and colouring › each note of a chord gets its own element, so they can differ (898ms)
+  ok 22 tests\e2e\score.spec.ts:152:3 › note elements and colouring › the current step is painted by class, not by re-rendering (957ms)
+  ok 23 tests\e2e\score.spec.ts:161:3 › note elements and colouring › drawn notes carry the hand the model assigned, cross-staff included (906ms)
+  ok 24 tests\e2e\score.spec.ts:172:3 › note elements and colouring › hand focus dims the other hand (1.0s)
+  ok 25 tests\e2e\score.spec.ts:187:3 › layouts › scroll layout renders the whole piece at once (1.0s)
+2-bar window render: median 5.7 ms (samples 6.0, 6.1, 4.0, 5.1, 5.7 ms)
+  ok 27 tests\e2e\score.spec.ts:224:3 › render timing budget › a 2-bar window renders in under 150 ms (978ms)
+pre-rendered window swap: 3.90 ms
+  ok 28 tests\e2e\score.spec.ts:246:3 › double buffering › advancing into the pre-rendered next window costs well under a frame (857ms)
+  ok 29 tests\e2e\score.spec.ts:280:3 › the dev route itself › is reachable from Settings and lists every bundled fixture (1.8s)
+  ok 30 tests\e2e\score.spec.ts:290:3 › the dev route itself › arrow keys step the cursor and 1-8 set bars per window (1.2s)
+  x  26 tests\e2e\score.spec.ts:197:3 › layouts › window layout draws only the window (5.4s)
+  ok 31 tests\e2e\score.spec.ts:305:3 › the dev route itself › OSMD stays out of the entry bundle (426ms)
+  ok 32 tests\e2e\score.spec.ts:322:5 › window layout holds its shape › the fitted score stays inside the viewport (portrait) (893ms)
+  ok 34 tests\e2e\score.spec.ts:322:5 › window layout holds its shape › the fitted score stays inside the viewport (landscape) (1.1s)
+  ok 35 tests\e2e\score.spec.ts:579:5 › the score control bar › upright, 360: one row, seven controls at most (1.6s)
+  ok 33 tests\e2e\score.spec.ts:383:3 › window layout holds its shape › bars per window changes what the window holds, or says why not (3.8s)
+  ok 36 tests\e2e\score.spec.ts:579:5 › the score control bar › upright: one row, seven controls at most (1.6s)
+  ok 37 tests\e2e\score.spec.ts:579:5 › the score control bar › sideways, 780: one row, seven controls at most (1.7s)
+  ok 38 tests\e2e\score.spec.ts:579:5 › the score control bar › sideways: one row, seven controls at most (1.7s)
+  ok 39 tests\e2e\score.spec.ts:579:5 › the score control bar › tablet: one row, seven controls at most (1.7s)
+  ok 41 tests\e2e\score.spec.ts:716:3 › the score control bar › sideways, the whole menu is on the screen at once (1.8s)
+  ok 40 tests\e2e\score.spec.ts:621:3 › the score control bar › everything that left the bar is behind ⋯ and still works (3.4s)
+  ok 42 tests\e2e\score.spec.ts:737:3 › the score control bar › the tempo label opens a sheet with the slider and a typed bpm (1.8s)
+
+
+  1) tests\e2e\score.spec.ts:197:3 › layouts › window layout draws only the window ─────────────────
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: locator('.card h1')
+    Expected: "Score renderer (dev)"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveText" locator('.card h1') with timeout 5000ms
+      - waiting for locator('.card h1')
+
+
+       at fixtures\devScore.ts:214
+
+      212 | export async function openDevScore(page: Page): Promise<DevScoreDriver> {
+      213 |   await page.goto('/#/dev/score');
+    > 214 |   await expect(page.locator('.card h1')).toHaveText('Score renderer (dev)');
+          |                                          ^
+      215 |   // The chunk carries OpenSheetMusicDisplay; allow for a cold cache.
+      216 |   await page.waitForFunction(() => window.__pianopathDevScore !== undefined, undefined, {
+      217 |     timeout: 60_000,
+        at openDevScore (<worktree>\app\tests\e2e\fixtures\devScore.ts:214:42)
+        at <worktree>\app\tests\e2e\score.spec.ts:202:17
+
+    Error Context: test-results-g1b\score-layouts-window-layout-draws-only-the-window\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results-g1b\score-layouts-window-layout-draws-only-the-window\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results-g1b\score-layouts-window-layout-draws-only-the-window\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\score.spec.ts:197:3 › layouts › window layout draws only the window ──────────────────
+  41 passed (60.0s)
+exit=1

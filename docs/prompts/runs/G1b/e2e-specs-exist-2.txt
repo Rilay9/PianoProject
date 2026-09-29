@@ -1,0 +1,3 @@
+exists tests/e2e/progress.spec.ts
+exists tests/e2e/lesson-flow.spec.ts
+exists tests/e2e/score.spec.ts
