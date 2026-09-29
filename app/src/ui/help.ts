@@ -42,6 +42,7 @@ import type { LadderState } from '../evidence/ladder';
 import type { EvidenceJobStatus } from '../data/evidenceJob';
 import type { SkillMove } from '../data/skillsStore';
 import type { EvidenceExclusion } from '../data/db';
+import type { Measurement, Provenance } from '../curriculum/types';
 
 /** One control, and what it says back. */
 export interface HelpControl {
@@ -1670,4 +1671,144 @@ export const DRILL_DETAIL_LABEL: Readonly<Record<string, string>> = {
 /** The words for one of a drill's extra measurements. */
 export function drillDetailLabel(key: string): string {
   return DRILL_DETAIL_LABEL[key] ?? key.replace(/([A-Z])/g, ' $1').toLowerCase();
+}
+
+// --- an import, in the learner's words (X3; E21, U72, U75) ------------------------------------
+
+/**
+ * Whose a fact about an import is, as the store holds it (`Provenance.facts`): `inferred` is the
+ * app's guess, `authored` is the file's — or the learner's, where the provenance names the learner
+ * as its source (the store's own reading, `importStore.withMeasurement`; the reviewer's rule for a
+ * stated tempo, `responses/ef80e86.md`: `authored`, with the learner in `via`). A fact the row does
+ * not carry is not recorded. Never promoted: a guess is never said as the file's.
+ */
+export type Whose = 'guess' | 'file' | 'yours' | 'unknown';
+
+export function whoseFact(fact: Provenance['facts'][string] | undefined): Whose {
+  if (!fact) return 'unknown';
+  if (fact.kind === 'inferred') return 'guess';
+  if (fact.kind === 'authored') return /learner/.test(fact.via ?? '') ? 'yours' : 'file';
+  return 'unknown';
+}
+
+const MAJOR_BY_FIFTHS = ['C♭', 'G♭', 'D♭', 'A♭', 'E♭', 'B♭', 'F', 'C', 'G', 'D', 'A', 'E', 'B', 'F♯', 'C♯'];
+const MINOR_BY_FIFTHS = ['A♭', 'E♭', 'B♭', 'F', 'C', 'G', 'D', 'A', 'E', 'B', 'F♯', 'C♯', 'G♯', 'D♯', 'A♯'];
+const SIGNATURE_COUNTS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven'];
+
+/**
+ * The key signature a score printed: "one sharp", "no sharps or flats" — and the key's name only
+ * where the file states its mode ("E minor: one sharp"). A signature alone does not say whether a
+ * piece is in G major or E minor, so the name is never guessed from it (nothing taught wrong).
+ */
+export function signatureWords(fifths: number, mode?: string): string {
+  const count = Math.abs(fifths);
+  const signature =
+    count === 0 ? 'no sharps or flats' : `${SIGNATURE_COUNTS[count] ?? String(count)} ${fifths > 0 ? 'sharp' : 'flat'}${count === 1 ? '' : 's'}`;
+  const names = mode === 'major' ? MAJOR_BY_FIFTHS : mode === 'minor' ? MINOR_BY_FIFTHS : undefined;
+  const name = names?.[fifths + 7];
+  return name && mode ? `${name} ${mode}: ${signature}` : signature;
+}
+
+/**
+ * The import sheet's words and the Library's for an import (X3; E21, U72, U75): one table, so the
+ * sheet, the row and `04` §4 say one thing. What the app read from the file, what it guessed, whose
+ * each fact is (`whoseFact`), and what a learner can do about a piece the catalogue wants and does
+ * not bundle. Nothing here says "approved" or "counts": an import is the learner's own material,
+ * measured, and it goes where they put it (T52's sentence on the assign sheet's body says what a
+ * rung does with it).
+ */
+export const IMPORT_TEXT = {
+  read: 'What the app read',
+  guessed: 'What the app guessed',
+  notes: 'What the notes ask',
+  belongs: 'Where does it belong?',
+  /** The sheet's lead line: the learner's own material, measured, never graded or placed for them. */
+  own: 'Your own score. The app measures what its notes ask and does not grade the piece; where it belongs is yours to choose.',
+  ownPdf: 'Your own PDF. The app shows its pages and reads no notes from it; where it belongs is yours to choose.',
+  composer: 'Composer',
+  length: 'Length',
+  signature: 'Key signature',
+  bars: (count: number): string => (count === 1 ? '1 bar' : `${String(count)} bars`),
+  pdfRead: 'A PDF: pages, not notes — the app reads no notes from it.',
+  pdfGuessed: 'Nothing about the notes: the app reads none from a PDF.',
+  /** Whose a fact is, beside it. */
+  whose: { guess: 'the app’s guess', file: 'from the file', yours: 'yours', unknown: 'not recorded' } satisfies Record<Whose, string>,
+  hands: 'Hands',
+  handsSplit: 'Split by the shape of the lines, not at a fixed middle C.',
+  handsTracks: 'The file’s own two tracks, kept as recorded: the first is the upper staff.',
+  handsStaves: 'The file’s own staves.',
+  handsStamped: 'Written by the command-line converter from a MIDI file, which does not say whether it kept the tracks or split one line.',
+  handsYours: 'You corrected them, and the notes were measured again on your score.',
+  handsUnknown: 'Not recorded: imported before the app kept track of whose the hands are.',
+  tempo: 'Tempo',
+  tempoFile: (bpm: number): string => `The file says ♩ = ${String(bpm)}.`,
+  tempoChosen: (bpm: number): string => `The file states no tempo, so the app chose ♩ = ${String(bpm)}.`,
+  tempoYours: (bpm: number | undefined): string => (bpm === undefined ? 'You stated it.' : `You stated ♩ = ${String(bpm)}.`),
+  key: 'Key',
+  keyEstimated: (signature: string): string => `Estimated from the notes; the app printed ${signature}.`,
+  keyStamped: 'The command-line converter may have estimated it from the notes; the file does not say.',
+  swap: 'Swap the hands',
+  swapHint: 'If the upper staff is really the left hand’s, this gives each staff’s notes to the other hand. Each staff keeps its clef.',
+  swapping: 'Swapping…',
+  swapped: 'Swapped: the hands are yours now, and the notes were measured again.',
+  swapFailed: 'The hands could not be swapped; the score is as it was.',
+  swapOneStaff: 'One staff: there is no other hand to swap with.',
+  swapParts: 'The file writes its hands as separate parts; the app swaps only a piano’s two staves.',
+  swapUnmarked: 'The file does not say which staff every note is on, so the app cannot swap them.',
+  /** U72: the conversion note once the learner has corrected the hands. */
+  conversionHandsYours: 'You corrected the hands after the conversion, so what the converter decided about them no longer stands: the hands are yours.',
+  /** Where an import's notes came from, on its Library row's detail line (`importSourceWords`). */
+  source: { file: 'read from the file', midi: 'converted from MIDI' },
+  /**
+   * The Library row's state, a token each (`importStateWords`). *Tempo guessed*, not "tempo not
+   * stated": the sheet's word for the same fact (`whose.guess`), and short enough that the line is
+   * whole at 342 px.
+   */
+  state: {
+    handsCorrected: 'hands corrected',
+    handsGuessed: 'hands guessed',
+    measured: 'measured',
+    notYet: 'not measured yet',
+    notMeasurable: 'could not be measured',
+    tempoGuessed: 'tempo guessed',
+    tempoYours: 'tempo yours',
+  },
+  /** The placeholder sheet for a piece the catalogue wants and does not bundle (U75). */
+  wanted: 'Import your own copy; the app reads MusicXML, MXL and MIDI.',
+  formats: 'The app reads MusicXML, MXL and MIDI; a PDF opens as pages.',
+  importButton: 'Import a score',
+} as const;
+
+/**
+ * Where an import's notes came from, for its Library row's detail line in place of the type every
+ * import shares ("song"): converted from MIDI — by the app, or by the command-line converter whose
+ * stamp the file carries — or read from the file. `''` where the row does not say (a PDF, whose
+ * badge does; a row imported before the app kept provenance).
+ */
+export function importSourceWords(row: { kind?: string; provenance?: Provenance }): string {
+  if (row.kind === 'pdf' || !row.provenance) return '';
+  const converted = row.provenance.source === 'imported-midi' || row.provenance.converter !== undefined;
+  return converted ? IMPORT_TEXT.source.midi : IMPORT_TEXT.source.file;
+}
+
+/**
+ * One line of an import's state for its Library row, in the words above: whose the hands are where
+ * they are not the file's, whether the app has measured it, and the tempo where the file states
+ * none. From the row's provenance, the facts the import sheet renders; `''` for a PDF, whose badge
+ * already says what it is.
+ */
+export function importStateWords(row: { kind?: string; demands?: unknown; measurement?: Measurement; provenance?: Provenance }): string {
+  if (row.kind === 'pdf') return '';
+  const words = IMPORT_TEXT.state;
+  const facts = row.provenance?.facts;
+  const tokens: string[] = [];
+  const hands = whoseFact(facts?.hands);
+  if (hands === 'yours') tokens.push(words.handsCorrected);
+  else if (hands === 'guess') tokens.push(words.handsGuessed);
+  if (row.measurement === undefined || row.demands === undefined) tokens.push(words.notYet);
+  else tokens.push(row.measurement.status === 'measured' && Array.isArray(row.demands) ? words.measured : words.notMeasurable);
+  const tempo = whoseFact(facts?.tempo);
+  if (tempo === 'yours') tokens.push(words.tempoYours);
+  else if (tempo === 'guess') tokens.push(words.tempoGuessed);
+  return tokens.join(' · ');
 }
