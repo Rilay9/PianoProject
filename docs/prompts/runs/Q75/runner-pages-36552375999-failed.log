@@ -1,0 +1,39 @@
+build	Build (content + icons via prebuild, then the app)	﻿2026-09-29T09:56:53.9738313Z ##[group]Run npm run build
+build	Build (content + icons via prebuild, then the app)	2026-09-29T09:56:53.9738635Z ^[[36;1mnpm run build^[[0m
+build	Build (content + icons via prebuild, then the app)	2026-09-29T09:56:53.9802283Z shell: /usr/bin/bash -e {0}
+build	Build (content + icons via prebuild, then the app)	2026-09-29T09:56:53.9802545Z env:
+build	Build (content + icons via prebuild, then the app)	2026-09-29T09:56:53.9802816Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+build	Build (content + icons via prebuild, then the app)	2026-09-29T09:56:53.9803263Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+build	Build (content + icons via prebuild, then the app)	2026-09-29T09:56:53.9803694Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+build	Build (content + icons via prebuild, then the app)	2026-09-29T09:56:53.9804091Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+build	Build (content + icons via prebuild, then the app)	2026-09-29T09:56:53.9804512Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+build	Build (content + icons via prebuild, then the app)	2026-09-29T09:56:53.9804921Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+build	Build (content + icons via prebuild, then the app)	2026-09-29T09:56:53.9805263Z   PIANOPATH_STRICT_LICENSE: 1
+build	Build (content + icons via prebuild, then the app)	2026-09-29T09:56:53.9805513Z ##[endgroup]
+build	Build (content + icons via prebuild, then the app)	2026-09-29T09:56:54.0814137Z 
+build	Build (content + icons via prebuild, then the app)	2026-09-29T09:56:54.0814493Z > pianopath@0.1.0 prebuild
+build	Build (content + icons via prebuild, then the app)	2026-09-29T09:56:54.0815238Z > npm run content:build && node scripts/generate-icons.mjs
+build	Build (content + icons via prebuild, then the app)	2026-09-29T09:56:54.0815591Z 
+build	Build (content + icons via prebuild, then the app)	2026-09-29T09:56:54.1772358Z 
+build	Build (content + icons via prebuild, then the app)	2026-09-29T09:56:54.1772771Z > pianopath@0.1.0 content:build
+build	Build (content + icons via prebuild, then the app)	2026-09-29T09:56:54.1773312Z > node ../tools/content/python.cjs ../tools/content/build.py
+build	Build (content + icons via prebuild, then the app)	2026-09-29T09:56:54.1773629Z 
+build	Build (content + icons via prebuild, then the app)	2026-09-29T10:11:38.3089819Z 
+build	Build (content + icons via prebuild, then the app)	2026-09-29T10:11:38.3094252Z --- content build ---
+build	Build (content + icons via prebuild, then the app)	2026-09-29T10:11:38.3094905Z   ok    fetch            fetched 10 source(s), skipped 5
+build	Build (content + icons via prebuild, then the app)	2026-09-29T10:11:38.3095764Z   ok    import [MT]      imported 64 score(s), excluded 4, normalised 8 (0 cached, 9 converted)
+build	Build (content + icons via prebuild, then the app)	2026-09-29T10:11:38.3097055Z   ok    import [KERN]    imported 116 score(s), 47 placeholder(s), excluded 73 (0 cached, 116 converted)
+build	Build (content + icons via prebuild, then the app)	2026-09-29T10:11:38.3098006Z   ok    import [PDMX]    imported 367 score(s), 175 placeholder(s)
+build	Build (content + icons via prebuild, then the app)	2026-09-29T10:11:38.3099706Z   ok    generate [GEN]   wrote 1200 items to /home/runner/work/PianoProject/PianoProject/app/public/content/scores/generated; catalog /home/runner/work/PianoProject/PianoProject/build/catalog.generated.json
+build	Build (content + icons via prebuild, then the app)	2026-09-29T10:11:38.3101283Z   ok    author [AUTH]    authored 38 item(s) (0 cached, 32 converted)
+build	Build (content + icons via prebuild, then the app)	2026-09-29T10:11:38.3103161Z   ok    merge catalog    2089 items, 22 with named sections, 4 excerpt(s) cut (1 not: the parent is not bundled here), 100 given a track by their rung, 1783 read from the score, 417 keySig corrected, demands measured on 1783 (235 unmeasured, 71 made at runtime)
+build	Build (content + icons via prebuild, then the app)	2026-09-29T10:11:38.3105112Z   ok    score checks     score-checks gate: 32 high row(s), 32 allowed by content/score-checks.allow.json
+build	Build (content + icons via prebuild, then the app)	2026-09-29T10:11:38.3106132Z   ok    curriculum       11 file(s), 10 stage(s), 105 finder(s), 285 concept(s)
+build	Build (content + icons via prebuild, then the app)	2026-09-29T10:11:38.3107466Z   ok    reports          550 checkable claims on 1015 options: 336 not established, 8 kept by no option; 784 works, 813 arrangements
+build	Build (content + icons via prebuild, then the app)	2026-09-29T10:11:38.3108740Z   ok    lessons          109 file(s)
+build	Build (content + icons via prebuild, then the app)	2026-09-29T10:11:38.3109279Z   ok    tips             20 kind(s), 7 variant(s)
+build	Build (content + icons via prebuild, then the app)	2026-09-29T10:11:38.3109993Z   FAIL  validate         content validation FAILED (2 error(s)):
+build	Build (content + icons via prebuild, then the app)	2026-09-29T10:11:38.3111693Z   - 2.4: its concepts name tie (tie) and none of its 8 checked options establishes it: move it to introduces (the rung introduces it, and its lesson says no piece there practises it yet), or keep an option that establishes it
+build	Build (content + icons via prebuild, then the app)	2026-09-29T10:11:38.3114492Z   - ragtime.8: its concepts name stride-bass (texture.left-hand-pattern) and none of its 11 checked options establishes it: move it to introduces (the rung introduces it, and its lesson says no piece there practises it yet), or keep an option that establishes it
+build	Build (content + icons via prebuild, then the app)	2026-09-29T10:11:38.3116313Z   884.0s → app/public/content
+build	Build (content + icons via prebuild, then the app)	2026-09-29T10:11:38.3874701Z ##[error]Process completed with exit code 1.

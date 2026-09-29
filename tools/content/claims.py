@@ -15,7 +15,9 @@ that teaches a demand, one per path, `teaching_rungs` the derivation from the le
 concepts). Each option either
 establishes each claim from its measured demands at a useful density
 (`measurement.established`, written by `build.attach_demands`), carries it only
-incidentally (present, below the density), lacks it, or was not measured. A concept the
+incidentally (present, below the density), lacks it, or was not measured; an option this build
+did not measure is counted apart from the checked ones, since it establishes nothing and refutes
+nothing (Q75: a strict build's licence placeholder, a file the app could not load). A concept the
 vocabulary has no detector for — rootless voicings, a montuno, four independent voices,
 healthy wrist rotation — cannot be established by the notes at all: it is listed as a
 claim that needs a person's judgement, with the review bit the provenance holds (none,
@@ -295,6 +297,13 @@ def introduced_of(lesson: dict, skills: dict[str, dict]) -> list[dict]:
     return out
 
 
+#: The verdicts of a checked option (Q75): the build measured it, so its answer is its own. An
+#: `unmeasured` option (a strict build's licence placeholder, a file the app could not load) is not
+#: one: it establishes nothing and refutes nothing, and the rows count it apart as `unmeasured`. A
+#: runtime drill or a missing id is neither checked nor unmeasured (no build measures it).
+CHECKED = ("established", "incidental", "absent")
+
+
 def status_of(claim: dict, item: dict | None, skills: dict[str, dict]) -> str:
     """established, incidental (present below the density), absent, unmeasured, runtime or missing."""
     if item is None:
@@ -370,7 +379,8 @@ def rung_claims(catalog: list[dict], curriculum: dict) -> dict:
         for claim in claims:
             verdicts = {item_id: status_of(claim, by_id.get(item_id), skills) for item_id in ids}
             claim_rows.append({**claim, "established": sum(1 for v in verdicts.values() if v == "established"),
-                               "measurable": sum(1 for v in verdicts.values() if v in ("established", "incidental", "absent", "unmeasured"))})
+                               "measurable": sum(1 for v in verdicts.values() if v in CHECKED),
+                               "unmeasured": sum(1 for v in verdicts.values() if v == "unmeasured")})
         for item_id in ids:
             item = by_id.get(item_id)
             per = []
@@ -403,18 +413,21 @@ def rung_claims(catalog: list[dict], curriculum: dict) -> dict:
         introduced_rows = []
         for introduced in introduced_of(lesson, skills):
             if introduced["kind"] is None:
-                introduced_rows.append({**introduced, "established": 0, "measurable": 0})
+                introduced_rows.append({**introduced, "established": 0, "measurable": 0, "unmeasured": 0})
                 continue
             verdicts = [status_of(introduced, by_id.get(item_id), skills) for item_id in ids]
             introduced_rows.append({**introduced, "established": verdicts.count("established"),
-                                    "measurable": sum(1 for v in verdicts if v in ("established", "incidental", "absent", "unmeasured"))})
+                                    "measurable": sum(1 for v in verdicts if v in CHECKED),
+                                    "unmeasured": verdicts.count("unmeasured")})
         rungs.append({"rung": lesson["id"], "stage": stage.get("number"), "track": unit.get("track"),
                       "title": lesson.get("title"), "claims": claim_rows, "unmeasurable": unmeasurable,
                       "introduced": introduced_rows, "options": len(ids)})
 
     pairs = [(o, c) for o in options for c in o["claims"]]
-    measurable = [p for p in pairs if p[1]["status"] in ("established", "incidental", "absent", "unmeasured")]
+    measurable = [p for p in pairs if p[1]["status"] in CHECKED]
     unestablished = [p for p in measurable if p[1]["status"] != "established"]
+    # Counted by its claims' `measurable`, so a claim whose every option is unmeasured here is not
+    # one no option keeps: this build did not look (Q75).
     kept_by_none = [(r, c) for r in rungs for c in r["claims"] if c["measurable"] > 0 and c["established"] == 0]
     serves_none = [o for o in options
                    if o["claims"] and o["measured"] == "measured"
@@ -438,6 +451,8 @@ def rung_claims(catalog: list[dict], curriculum: dict) -> dict:
             "measurable": len(measurable),
             "established": len(measurable) - len(unestablished),
             "unestablished": len(unestablished),
+            # Q75: the pairs whose option this build did not measure, neither checkable nor unestablished.
+            "unmeasured": sum(1 for p in pairs if p[1]["status"] == "unmeasured"),
             "byStatus": dict(Counter(p[1]["status"] for p in pairs)),
             "unmeasurableConcepts": sum(len(r["unmeasurable"]) for r in rungs),
             "rungClaimsKeptByNoOption": len(kept_by_none),
@@ -482,6 +497,12 @@ def _claim_words(claim: dict, skills: dict[str, dict], demands: dict[str, dict])
     return f"{demands.get(claim['id'], {}).get('display', claim['id']).lower()} ({claim['id']})"
 
 
+def _unmeasured_here(row: dict) -> str:
+    """Beside a checked count, the options this build did not measure (Q75), where there are any."""
+    count = row.get("unmeasured", 0)
+    return f" (+{count} unmeasured here)" if count else ""
+
+
 def render_rung_claims(report: dict) -> str:
     """The markdown report: summary, the priority rungs in full, then every rung's claims."""
     skills, demands = load_vocabulary()
@@ -509,11 +530,12 @@ def render_rung_claims(report: dict) -> str:
         "## Summary",
         "",
         f"- {s['rungs']} rungs, {s['options']} rung options, {s['claims']} option-claim pairs, of which "
-        f"{s['measurable']} can be checked against notation.",
+        f"{s['measurable']} can be checked against notation; unmeasured on this build: {s['unmeasured']} (an "
+        "option the build did not measure — a strict build's licence placeholder, a file the app could not load — "
+        "establishes nothing and refutes nothing, so it is counted apart from the checked, Q75).",
         f"- **{s['established']} established, {s['unestablished']} not established** "
-        f"(incidental {by_status.get('incidental', 0)}, absent {by_status.get('absent', 0)}, unmeasured "
-        f"{by_status.get('unmeasured', 0)}); the reading rows' own claims {by_status.get(READER, 0)}, "
-        f"other runtime drills {by_status.get('runtime', 0)}.",
+        f"(incidental {by_status.get('incidental', 0)}, absent {by_status.get('absent', 0)}); the reading rows' own "
+        f"claims {by_status.get(READER, 0)}, other runtime drills {by_status.get('runtime', 0)}.",
         f"- **{s['rungClaimsKeptByNoOption']} rung claims that no option of the rung establishes** (listed below: the "
         "promises the notes do not keep).",
         f"- {s['introduced']} concepts a rung introduces under `introduces` (F2): named by its lesson and practised by "
@@ -561,9 +583,10 @@ def render_rung_claims(report: dict) -> str:
         lines.append("")
 
     lines += ["## Rung claims no option establishes", "",
-              "| Rung | Claim | From | Options checked |", "| --- | --- | --- | --- |"]
+              "| Rung | Claim | From | Options checked (and unmeasured here, where any) |", "| --- | --- | --- | --- |"]
     for row in report["keptByNone"]:
-        lines.append(f"| {row['rung']} — {row['title']} | {_claim_words(row, skills, demands)} | {row['from']} | {row['measurable']} |")
+        lines.append(f"| {row['rung']} — {row['title']} | {_claim_words(row, skills, demands)} | {row['from']} | "
+                     f"{row['measurable']}{_unmeasured_here(row)} |")
     lines += ["", "## Concepts a rung introduces", "",
               "A rung's lesson may introduce a demand no piece on the rung practises yet (`introduces`, F2): the report "
               "shows it here and claims nothing for it, the derivation of `taughtAt` never reads it, and no requirement is "
@@ -571,14 +594,16 @@ def render_rung_claims(report: dict) -> str:
               "| Rung | Introduces | Options establishing it (of checked) |", "| --- | --- | --- |"]
     for row in report["introduced"]:
         words = _claim_words(row, skills, demands) if row["kind"] else f"{row['id']} (no detector)"
-        lines.append(f"| {row['rung']} — {row['title']} | {words} | {row['established']} of {row['measurable']} |")
+        lines.append(f"| {row['rung']} — {row['title']} | {words} | {row['established']} of {row['measurable']}{_unmeasured_here(row)} |")
     if not report["introduced"]:
         lines.append("| — | none | — |")
     lines += ["", "## Every rung, claim by claim", "",
-              "How many of the rung's options establish each measurable claim, and the concepts no detector measures.", "",
+              "How many of the rung's options establish each measurable claim, and the concepts no detector measures. "
+              "Where this build did not measure some of the options, their count follows the checked one (Q75).", "",
               "| Rung | Options | Claims (established / checked) | Not measurable |", "| --- | --- | --- | --- |"]
     for rung in report["rungs"]:
-        claims = "; ".join(f"{_claim_words(c, skills, demands)} {c['established']}/{c['measurable']}" for c in rung["claims"]) or "—"
+        claims = "; ".join(f"{_claim_words(c, skills, demands)} {c['established']}/{c['measurable']}{_unmeasured_here(c)}"
+                           for c in rung["claims"]) or "—"
         lines.append(f"| {rung['rung']} | {rung['options']} | {claims} | {', '.join(rung['unmeasurable']) or '—'} |")
     lines += ["", "## Options that establish none of their rung's measurable claims", ""]
     lines += [f"- {entry}" for entry in report["servesNone"]] or ["- none"]
