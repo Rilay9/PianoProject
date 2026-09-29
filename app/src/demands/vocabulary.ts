@@ -9,6 +9,7 @@
  * `validate.py` checks them and their references on every build.
  */
 import type { DetectorId } from './detect';
+import type { Dimension } from '../curriculum/transfer';
 
 /** What kind of ability a skill is (design §11 item 1); decides the shape of its criterion. */
 export type SkillKind = 'reading' | 'rhythm' | 'coordination' | 'technique' | 'continuity';
@@ -48,6 +49,18 @@ export interface Skill {
   /** The run conditions for the practice standard and for the full one (design §4(c)). */
   standards: { practice: ConditionId[]; full: ConditionId[] };
   note?: string;
+  /**
+   * The dimensions on which a change of material is transfer for this skill, with the reason (G2:
+   * `evidence/transferPolicy.ts` reads it). Absent: the data has not said which changes matter, and
+   * the skill is credited no transfer (the build's report lists it).
+   */
+  transfer?: SkillTransfer;
+}
+
+/** A skill's transfer claim (G2): each dimension a `curriculum/transfer.ts` `DIMENSIONS` entry (`validate.py` checks). */
+export interface SkillTransfer {
+  dimensions: Dimension[];
+  why: string;
 }
 
 /**

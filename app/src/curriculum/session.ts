@@ -22,7 +22,8 @@ import { SHIPPED_SKILL_ACTIVATION, type SkillActivation } from './skillActivatio
 import { admittedForTeaching, eligible, eligibleFor, type Eligibility, type Learner, type Want as GateWant } from './eligibility';
 import type { RequirementReading, RungStates } from '../evidence/rungState';
 import { phraseVersionOf, type ReadingMoves, type ReadingRecipe, type SessionRow } from '../data/db';
-import { contactIn, dayKey, daysBetween, type Contact, type LearnedPiece } from '../data/progressStore';
+import { contactIn, dayKey, daysBetween, type Contact, type ContactHistory, type LearnedPiece } from '../data/progressStore';
+import type { Identity } from '../review/record';
 import { knownMaterial, materialOfItem } from './material';
 import { relationshipOf, shownOnRecords, type Relationship, type ShownOn } from './transfer';
 import { heldToRung, READING_CONTROLS, UNREALISABLE_AT, type ControlPatch } from '../engine/readingControls';
@@ -215,6 +216,26 @@ export interface BuildInput {
    * a clock; Today says.
    */
   today?: Date;
+  /**
+   * The rest of the learner's contact history beside the runs (G2 item 6; G1's model): the
+   * encounters — viewed, heard, demonstrated — and the durable summaries of runs the retention cap
+   * pruned. `contactOf` reads it with the rows, and it is the session's only contact reader: the
+   * transfer offer asks it, and X's later readers consume it rather than a second novelty. Absent,
+   * the runs alone, as D4 read them. Today loads it (`encounterStore.allEncounters`,
+   * `progressStore.contactSummaries`).
+   */
+  contact?: ContactHistory;
+}
+
+/**
+ * Has this learner met this material, by the session's input (G2 item 6): `progressStore.contactIn`
+ * over the input's runs and its contact field — a piece heard once, or practised and pruned, is `met`
+ * — never a scan of the runs alone. The one contact reader on the session side (the reviewer's seam,
+ * `responses/b48342f.md` question 2): the offer reads it, and whether a hearing counts for a purpose is
+ * that reader's policy, never this function's.
+ */
+export function contactOf(input: Pick<BuildInput, 'rows' | 'readingRows' | 'contact'>, itemId: string, material: Identity | undefined): Contact {
+  return contactIn(input.rows ?? input.readingRows ?? [], itemId, material, input.contact ?? {});
 }
 
 export interface LessonPosition {
@@ -1210,7 +1231,8 @@ function transferOffer(ctx: SlotContext): Choice | undefined {
       if (!offerable) continue;
       const material = materialOfItem(item);
       if (!knownMaterial(material)) continue;
-      const contact = contactIn(rows, item.id, material);
+      // Unmet by any kind of contact (G2 item 6): runs, encounters and pruned runs' summaries.
+      const contact = contactOf(ctx.input, item.id, material);
       if (contact.contact !== 'unmet') continue;
       shownOn ??= shownOnRecords(skill.id, rows);
       const relationship = relationshipOf(skill.id, item, rows, ctx.catalog.byId, shownOn);

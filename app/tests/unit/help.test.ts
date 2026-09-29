@@ -341,7 +341,8 @@ describe('the skill words are the ones `04` §3a and §6 print', () => {
     const section = flat(between('## 6. Progress', '\n## 7.'));
     const today = new Date('2026-10-29T12:00:00');
     const reading = (state: 'practised' | 'familiar', notShownRecently = false) =>
-      ({ state, transfer: false, retained: false, notShownRecently, selfAssessed: [] });
+      // G2: a reading also carries its scope and what established it; none here.
+      ({ state, transfer: false, retained: false, notShownRecently, selfAssessed: [], transferScope: [], established: [], establishing: [] });
     const said = [
       skillMoveWords({ kind: 'up', then: reading('practised'), now: reading('familiar') }, today),
       skillMoveWords({ kind: 'unshown', then: reading('familiar'), now: reading('familiar', true), lastSupport: '2026-10-01T12:00:00' }, today),

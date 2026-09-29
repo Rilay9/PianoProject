@@ -12,7 +12,10 @@
  * - **the stored row keeps what the run carried** — `material`, `role`, `intent`, `relationship` —
  *   and a row without `material` is a legacy row, read as one;
  * - **no ladder state and no rung state moves for any of it** (item 6): the same history read
- *   with and without the D4 fields gives the same reading, on every constructed history here.
+ *   with and without the D4 fields gives the same reading, on every constructed history here —
+ *   revised (G2): **except where the transfer policy says `demonstrated`**, which needs the facts G2
+ *   writes on the attempt (a relationship whose measured facts differ on one of the skill's
+ *   dimensions, first contact); a D4 field alone moves nothing.
  */
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -101,7 +104,9 @@ describe('every built row carries the build’s material identity (D4 item 1)', 
 describe('the evidence context carries the material and the intent (D4 item 2)', () => {
   const observation = { ...observe(SHIFT, { mode: 'tempo', unseen: true, guide: 'off', itemId: READING_ROW, seed: 101 }), material: PHRASE, intent: 'transfer' as const };
 
-  it('a measured record: material and intent beside itemId and seed, first contact as before', () => {
+  // Revised (G2): first contact is the run header's `firstContact` (the helper's run carries both,
+  // as a phrase run does), never read from `unseen` (the G1a review).
+  it('a measured record: material and intent beside itemId and seed, first contact as the header says', () => {
     const results = evidenceFor({ observation, played: SHIFT, targetSkills: ['sight-reading', 'position-shift'], vocabulary: VOCABULARY_V0 });
     const shift = results.find((result): result is MeasuredEvidence => result.kind === 'measured' && result.skill === 'position-shift');
     expect(shift?.context).toMatchObject({ itemId: READING_ROW, seed: 101, material: PHRASE, intent: 'transfer', firstContact: true });
@@ -151,7 +156,11 @@ describe('the stored row keeps what the run carried (D4 item 2)', () => {
   });
 });
 
-describe('no ladder state and no rung state moves for the D4 fields (item 6)', () => {
+// Revised (G2, the brief's item 3): v0's ladder read none of these fields, so every reading was equal.
+// The transfer policy reads the attempt's own facts, so a history now changes exactly where the policy
+// says `demonstrated`: the four D4 histories carry no relationship on their evidence (they were not
+// stored through `recordRun`) and read as before; a fifth carries one, as `recordRun` writes it.
+describe('no ladder state and no rung state moves for the D4 fields, but where the policy says demonstrated (item 6; G2 item 3)', () => {
   /** A read of SHIFT on a day, its evidence as the Score screen stores it; `extra` are the D4 fields. */
   const read = (day: number, itemId: string, extra: Partial<SessionRow> = {}, plan: { wrong?: number[]; unseen?: boolean } = {}): SessionRow => {
     const at = new Date(2026, 9, day, 12).toISOString();
@@ -162,10 +171,35 @@ describe('no ladder state and no rung state moves for the D4 fields (item 6)', (
   const strip = (row: SessionRow): SessionRow => {
     const { material: _m, role: _r, intent: _i, relationship: _rel, ...rest } = row;
     const evidence = rest.evidence?.map((result) =>
-      result.kind === 'refusal' ? result : ({ ...result, context: (({ material: _cm, intent: _ci, ...context }) => context)(result.context) } as EvidenceResult),
+      result.kind === 'refusal'
+        ? result
+        : ({ ...result, context: (({ material: _cm, intent: _ci, relationship: _cr, demands: _cd, ...context }) => context)(result.context as MeasuredEvidence['context']) }),
     );
     return { ...rest, ...(evidence ? { evidence } : {}) };
   };
+  /** A read carrying the facts `recordRun` writes (G2): a relationship measured against the two reads before it, the key differing. */
+  const withRelationship = (row: SessionRow, shown: SessionRow[]): SessionRow => ({
+    ...row,
+    evidence: row.evidence?.map((result) =>
+      result.kind !== 'measured'
+        ? result
+        : ({
+            ...result,
+            context: {
+              ...result.context,
+              relationship: {
+                skill: result.skill,
+                shownOn: shown.map((one) => ({ itemId: one.itemId, ...(one.material ? { material: one.material } : {}) })),
+                measured: [
+                  { dimension: 'key', candidate: '1', shownOn: shown.map(() => '0'), differs: true },
+                  { dimension: 'hands', candidate: 'right', shownOn: shown.map(() => 'right'), differs: false },
+                ],
+                differsOn: ['key'],
+              },
+            },
+          }),
+    ),
+  });
   const other = (seed: number): Identity => ({ ...PHRASE, seed });
   const pentatonic = byId.get('exercise.pentatonic.a.pentatonic') as CatalogItem;
   const HISTORIES: Record<string, SessionRow[]> = {
@@ -182,22 +216,51 @@ describe('no ladder state and no rung state moves for the D4 fields (item 6)', (
       read(4, pentatonic.id, { material: pentatonic.provenance?.identity, intent: 'transfer' }, { wrong: [0, 1, 2, 3, 4, 5] }),
     ],
     'a phrase met before, read again': [read(1, READING_ROW, { material: other(1) }), read(2, READING_ROW, { material: other(1) }, { unseen: false }), read(3, READING_ROW, { material: other(3) })],
+    // G2: the one history whose third read carries its relationship — first contact, another key.
+    'two reads, then a first reading in another key with its relationship recorded': (() => {
+      const shown = [read(1, READING_ROW, { material: other(1) }), read(2, READING_ROW, { material: other(2) })];
+      const inAnotherKey = { ...PHRASE, seed: 3, recipe: { ...(PHRASE as { recipe: Record<string, unknown> }).recipe, fifths: 1 } } as Identity;
+      return [...shown, withRelationship(read(3, READING_ROW, { material: inAnotherKey }), shown)];
+    })(),
   };
 
+  const summary = (reading: ReturnType<typeof ladderState>) => ({
+    state: reading.state,
+    transfer: reading.transfer,
+    retained: reading.retained,
+    notShownRecently: reading.notShownRecently,
+    selfAssessed: reading.selfAssessed.length,
+    established: reading.established.map((one) => one.itemId),
+  });
+  const DEMONSTRATED = 'two reads, then a first reading in another key with its relationship recorded';
+
   for (const [name, rows] of Object.entries(HISTORIES)) {
-    it(`the same reading with and without them: ${name}`, () => {
+    it(`the same reading with and without them, but where the policy says demonstrated: ${name}`, () => {
       const today = new Date(2026, 9, 30, 9);
       const bare = rows.map(strip);
+      let moved = false;
       for (const skill of ['sight-reading', 'interval-reading', 'position-shift']) {
         const of = (list: SessionRow[]) => ladderState({ evidence: list.flatMap(storedEvidence).filter((e) => e.skill === skill), today });
         const withFields = of(rows);
+        const without = of(bare);
         expect(LADDER_STATES).toContain(withFields.state);
-        expect({ ...withFields, selfAssessed: withFields.selfAssessed.length }, `${name}: ${skill}`).toEqual({ ...of(bare), selfAssessed: of(bare).selfAssessed.length });
+        expect(without.transferScope, `${name}: ${skill} without the facts`).toEqual([]);
+        if (withFields.transferScope.length === 0) {
+          expect(summary(withFields), `${name}: ${skill}`).toEqual(summary(without));
+        } else {
+          // Only here: the policy read the attempt's relationship as demonstrated, on the key.
+          moved = true;
+          expect(withFields.transferScope, `${name}: ${skill}`).toEqual([{ on: ['key'], since: new Date(2026, 9, 3, 12).toISOString() }]);
+          expect([withFields.state, without.state], `${name}: ${skill}`).toEqual(['transfer demonstrated', 'proficient']);
+        }
       }
-      const states = rungState(rows, curriculum, VOCABULARY_V0, today);
-      const bareStates = rungState(bare, curriculum, VOCABULARY_V0, today);
-      for (const id of ['2.5', '3.1', '3.4']) {
-        expect(states.byRung.get(id)?.status, `${name}: ${id}`).toBe(bareStates.byRung.get(id)?.status);
+      expect(moved, name).toBe(name === DEMONSTRATED);
+      if (!moved) {
+        const states = rungState(rows, curriculum, VOCABULARY_V0, today);
+        const bareStates = rungState(bare, curriculum, VOCABULARY_V0, today);
+        for (const id of ['2.5', '3.1', '3.4']) {
+          expect(states.byRung.get(id)?.status, `${name}: ${id}`).toBe(bareStates.byRung.get(id)?.status);
+        }
       }
     });
   }

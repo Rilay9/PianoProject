@@ -58,7 +58,17 @@
               "full": { "type": "array", "items": { "type": "string" } }
             }
           },
-          "note": { "type": "string" }
+          "note": { "type": "string" },
+          "transfer": {
+            "type": "object",
+            "description": "G2: the dimensions on which a change of material is transfer for this skill, each an entry of app/src/curriculum/transfer.ts DIMENSIONS (validate.py reads that list), and why. A skill without the block is credited no transfer, and the build lists it.",
+            "required": ["dimensions", "why"],
+            "additionalProperties": false,
+            "properties": {
+              "dimensions": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
+              "why": { "type": "string", "minLength": 20 }
+            }
+          }
         },
         "if": { "properties": { "observable": { "const": "none" } } },
         "then": { "required": ["unobserved"] }

@@ -43,6 +43,7 @@
     "latencyMs": 0
    },
    "unseen": true,
+   "firstContact": true,
    "demonstrated": false,
    "pitch": {
     "definition": "tempo-notes",
@@ -368,6 +369,7 @@
     "latencyMs": 0
    },
    "unseen": true,
+   "firstContact": true,
    "demonstrated": false,
    "pitch": {
     "definition": "tempo-notes",
@@ -697,6 +699,7 @@
     "latencyMs": 0
    },
    "unseen": true,
+   "firstContact": true,
    "demonstrated": false,
    "pitch": {
     "definition": "tempo-notes",
@@ -1075,6 +1078,7 @@
     "latencyMs": 0
    },
    "unseen": true,
+   "firstContact": true,
    "demonstrated": false,
    "pitch": {
     "definition": "tempo-notes",
@@ -1426,6 +1430,7 @@
     "latencyMs": 0
    },
    "unseen": true,
+   "firstContact": true,
    "demonstrated": false,
    "pitch": {
     "definition": "tempo-notes",
@@ -1848,6 +1853,7 @@
     "latencyMs": 0
    },
    "unseen": true,
+   "firstContact": true,
    "demonstrated": false,
    "pitch": {
     "definition": "tempo-notes",
@@ -2292,6 +2298,7 @@
     "latencyMs": 0
    },
    "unseen": true,
+   "firstContact": true,
    "demonstrated": false,
    "pitch": {
     "definition": "tempo-notes",

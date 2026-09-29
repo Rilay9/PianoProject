@@ -22,10 +22,12 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { eligibleFor } from '../../src/curriculum/eligibility';
-import { buildSession, type BuildInput, type SessionSlot } from '../../src/curriculum/session';
+import { buildSession, contactOf, type BuildInput, type SessionSlot } from '../../src/curriculum/session';
 import { indexCatalog } from '../../src/curriculum/selectors';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
-import type { SessionRow } from '../../src/data/db';
+import type { EncounterRow, SessionRow } from '../../src/data/db';
+import { contactIn, foldRun } from '../../src/data/progressStore';
+import { materialKey } from '../../src/curriculum/material';
 import { evidenceFor, stampedEvidence } from '../../src/evidence/evidence';
 import { ladderState } from '../../src/evidence/ladder';
 import { storedEvidence } from '../../src/evidence/readingState';
@@ -269,11 +271,68 @@ describe('not offered (the adversaries held at the selection layer)', () => {
     }
   });
 
-  it('beyond proficient: shown on different material by v0’s rule, the skill is offered nothing — the offer reads proficient alone', () => {
-    const third = read(12, { itemId: 'drill.reading.sight-reading-1', material: phraseOf(12) });
-    const rows = [...SHOWN, third];
+  // Revised (G2): v0's rule put the skill beyond proficient on a first read of another row; the
+  // transfer policy does not (no relationship on that read: unknown). Beyond proficient is now a read
+  // the policy calls demonstrated — first contact, in another key, the relationship recorded with it as
+  // `recordRun` records it — and the offer still reads proficient alone.
+  it('beyond proficient: transfer demonstrated by the policy, the skill is offered nothing — the offer reads proficient alone', () => {
+    const inAnotherKey: Identity = { kind: 'generator', family: 'sight-reading', version: 2, seed: 12, recipe: { level: 2, bars: 4, hands: 'R', fifths: 1, eighths: true, skips: true }, tempoBpm: 72 };
+    const third = read(12, { itemId: 'drill.reading.sight-reading-1', material: inAnotherKey });
+    const keyDiffers = {
+      skill: 'position-shift',
+      shownOn: SHOWN.map((row) => ({ itemId: row.itemId, ...(row.material ? { material: row.material } : {}) })),
+      measured: [{ dimension: 'key' as const, candidate: '1', shownOn: ['0', '0'], differs: true }],
+      differsOn: ['key'],
+    };
+    const withFacts = {
+      ...third,
+      evidence: third.evidence?.map((one) => (one.kind === 'measured' ? { ...one, context: { ...one.context, relationship: { ...keyDiffers, skill: one.skill } } } : one)),
+    } as SessionRow;
+    const rows = [...SHOWN, withFacts];
     expect(ladderState({ evidence: rows.flatMap(storedEvidence).filter((e) => e.skill === 'position-shift'), today: TODAY }).state).toBe('transfer demonstrated');
     expect(offers(card({ rows }))).toEqual([]);
+    // v0's rule alone (the same read with no facts) is no longer beyond proficient: the pentatonic is offered.
+    expect(ladderState({ evidence: [...SHOWN, third].flatMap(storedEvidence).filter((e) => e.skill === 'position-shift'), today: TODAY }).state).toBe('proficient');
+  });
+});
+
+describe('the offer’s contact is the session input’s: runs, encounters and pruned runs’ summaries through the one adapter (G2 item 6)', () => {
+  const material = PENT_A.provenance?.identity as Exclude<Identity, { kind: 'none' }>;
+  const heard: EncounterRow = {
+    id: 'visit-1:1',
+    key: materialKey(material, PENT_A.id),
+    material,
+    itemId: PENT_A.id,
+    kind: 'heard',
+    at: on(19),
+    source: { tab: 'library' },
+    visit: 'visit-1',
+  };
+
+  it('without contact beyond the runs, the pentatonic is offered: the baseline the next two cases move', () => {
+    expect(offerOf(card({ contact: { encounters: [], summaries: [] } }))?.item?.id).toBe(PENT_A.id);
+  });
+
+  it('heard once in the Library and never played: met, and never offered as new', () => {
+    expect(offers(card({ contact: { encounters: [heard], summaries: [] } })).map((slot) => slot.item?.id)).not.toContain(PENT_A.id);
+  });
+
+  it('practised and pruned: the durable summary of its run makes it met, and it is never offered', () => {
+    const run = read(14, { itemId: PENT_A.id, material, skills: [] });
+    const summary = foldRun(run);
+    expect(summary.itemIds).toEqual([PENT_A.id]);
+    // The run itself is gone from the rows (pruned); only its summary remains.
+    expect(offers(card({ contact: { encounters: [], summaries: [summary] } })).map((slot) => slot.item?.id)).not.toContain(PENT_A.id);
+  });
+
+  it('the session’s one contact reader is `contactIn` over the input’s rows and its contact field; the offer’s claim carries its answer', () => {
+    const history = { encounters: [heard], summaries: [] };
+    expect(contactOf({ rows: SHOWN, contact: history }, PENT_A.id, material)).toEqual(contactIn(SHOWN, PENT_A.id, material, history));
+    expect(contactOf({ rows: SHOWN, contact: history }, PENT_A.id, material)).toMatchObject({ contact: 'met', how: ['heard'] });
+    // Absent, the runs alone (D4's reading): the field is what carries the rest of the history.
+    expect(contactOf({ rows: SHOWN }, PENT_A.id, material)).toEqual({ contact: 'unmet', metById: false });
+    const offered = offerOf(card({ contact: { encounters: [], summaries: [] } }));
+    expect((offered?.claim as unknown as { contact: unknown }).contact).toEqual(contactOf({ rows: SHOWN, contact: { encounters: [], summaries: [] } }, PENT_A.id, material));
   });
 });
 
