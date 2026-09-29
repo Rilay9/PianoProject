@@ -35,3 +35,5 @@ If the tempo control needs a store write E2 did not build, stop that control, ke
 Judgement first (what a learner sees after importing a one-line MIDI, before and after swapping the hands, and what the Library says of it), then Done / Not done / Follow-ups / Questions / Files, the red lines, the tests table, exit codes, unverified beside what passes.
 
 **Approved with one required change 2026-09-29** (`responses/ef80e86.md`), applied: the sheet opened by the UI caller from the returned row, never by the store; the tempo stated only through a semantic store operation (`authored`, the learner in `via`; E-tail asked to add it as E48) else held; no key control (a later row). **Dispatched 2026-09-29** (Entry 118, port 4263).
+
+**Landed 2026-09-29** (Entry 118; 070a6f7, merged 6f6fa6e); handoff `handoffs/070a6f7.md`. The tempo control held (E48 landed after this tree was cut): X3a. Question 1 for the reviewer.

@@ -1,0 +1,13 @@
+== tsc  03:03:47
+tsc exit=0
+== lint  03:03:55
+lint exit=0
+== vitest-all  03:04:28
+vitest-all exit=1
+== build-app  03:08:08
+build-app exit=0
+== specs-exist  03:08:27
+specs-exist exit=0
+== e2e-targeted  03:08:27
+e2e-targeted exit=0
+CHAIN DONE 03:09:32

@@ -1,0 +1,29 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a1a6623478c1a2198/app
+
+ ❯ tests/unit/importSheet.test.ts (15 tests | 1 failed) 735ms
+   ❯ swapping the hands (3)
+     × saves through correctImportHands: the hands become the learner’s, the notes are measured again on the corrected score, and the sheet re-reads the row 212ms
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 22 passed (23)
+   Start at  02:14:36
+   Duration  5.84s (environment 47%, transform 25%, tests 19%, import 9%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/importSheet.test.ts > swapping the hands > saves through correctImportHands: the hands become the learner’s, the notes are measured again on the corrected score, and the sheet re-reads the row
+AssertionError: expected '<?xml version="1.0" encoding="UTF-8"?…' not to be '<?xml version="1.0" encoding="UTF-8"?…' // Object.is equality
+ ❯ tests/unit/importSheet.test.ts:300:29
+    298|
+    299|     const stored = (await getImport(imported.id)) as ImportRow;
+    300|     expect(stored.data).not.toBe(imported.data);
+       |                             ^
+    301|     expect(stored.provenance?.facts.hands?.kind).toBe('authored');
+    302|     expect(stored.provenance?.facts.hands?.via).toMatch(/learner/);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+exit 1

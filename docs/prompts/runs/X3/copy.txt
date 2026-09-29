@@ -1,0 +1,103 @@
+﻿
+robocopy kern
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :        35        26         9         0         0         0
+   Files :      2231      2231         0         0         0         0
+   Bytes :  356.05 m  356.05 m         0         0         0         0
+   Times :   0:00:02   0:00:02                       0:00:00   0:00:00
+
+
+   Speed :           185,839,557 Bytes/sec.
+   Speed :            10,633.825 MegaBytes/min.
+   Ended : Tuesday, September 29, 2026 1:38:51 AM
+
+exit 1
+robocopy musetrainer
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         5         4         1         0         0         0
+   Files :        76        76         0         0         0         0
+   Bytes :    1.46 m    1.46 m         0         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :           26,410,758 Bytes/sec.
+   Speed :            1,511.236 MegaBytes/min.
+   Ended : Tuesday, September 29, 2026 1:38:51 AM
+
+exit 1
+robocopy build/cache/convert
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         1         0         0         0         0
+   Files :      7070      7070         0         0         0         0
+   Bytes :   45.01 m   45.01 m         0         0         0         0
+   Times :   0:00:05   0:00:05                       0:00:00   0:00:00
+
+
+   Speed :           8,785,935 Bytes/sec.
+   Speed :             502.735 MegaBytes/min.
+   Ended : Tuesday, September 29, 2026 1:38:57 AM
+
+exit 1
+robocopy build/positions-cache.json
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :         1         1         0         0         0         0
+   Bytes :    7.43 m    7.43 m         0         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :           1,298,523,833 Bytes/sec.
+   Speed :              74,302.133 MegaBytes/min.
+   Ended : Tuesday, September 29, 2026 1:38:57 AM
+
+exit 1
+robocopy build/demands-cache.json
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :         1         1         0         0         0         0
+   Bytes :    2.14 m    2.14 m         0         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :           749,044,666 Bytes/sec.
+   Speed :            42,860.680 MegaBytes/min.
+   Ended : Tuesday, September 29, 2026 1:38:57 AM
+
+exit 1
+robocopy build/notation-cache.json
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :         1         1         0         0         0         0
+   Bytes :   852.6 k   852.6 k         0         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :           291,045,666 Bytes/sec.
+   Speed :            16,653.768 MegaBytes/min.
+   Ended : Tuesday, September 29, 2026 1:38:57 AM
+
+exit 1
