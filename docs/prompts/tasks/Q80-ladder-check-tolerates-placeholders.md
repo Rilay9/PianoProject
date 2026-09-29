@@ -37,3 +37,5 @@ If the import steps write no distinguishable reason for a fetch failure, stop at
 Judgement first: what the runner's log says on a build with an unreachable source, before and after; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes.
 
 **Landed 2026-09-29** (Entry 141; 2d9e7e2c, merged 589a7860); handoff `handoffs/2d9e7e2c.md`. The kern and MuseTrainer steps write no placeholder for a missing clone (the stop line; Q82); the deploy question is Q86.
+
+**Accepted 2026-09-29** (`responses/2d9e7e2c.md`, APPROVE). Q86 ruled: guard the deploy, not the validator (Q88).

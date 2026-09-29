@@ -40,3 +40,5 @@ If `session.ts` cannot import `materialOfItem` or `projectIn` without a cycle, s
 Judgement first: Today's review row before and after with a paused project, at 342 × 740; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes. Entry 142; every run file under `docs/prompts/runs/G1d/`; the entry as `docs/prompts/runs/G1d/ENTRY.md`, starting `### Entry 142 — G1d`.
 
 **Landed 2026-09-29** (Entry 142; d59f2ef8, merged 85dee758); handoff `handoffs/d59f2ef8.md`.
+
+**Approved with one required change 2026-09-29** (`responses/d59f2ef8.md`). Retention's suppression, the identity, Today's rows, the guard and the silence as built; the repertoire fallback must honour `paused` and `retired` too, through one session-owned predicate (G1e); a pause after *Start session* is a live veto at the activity boundary for the session-run seam.
