@@ -1,0 +1,106 @@
+python docs/prompts/runs/F2c/candidate_diff.py docs/prompts/runs/F2c/study-candidate-rungs-before.md docs/prompts/runs/F2c/study-candidate-rungs.md
+before: 311 lines; table lines at blues.7 or ragtime.9 48; table lines crediting interval.leap through a concept 54 (through leaps 48, through leap 6); shared-detector notes on interval.leap 0, on texture.left-hand-pattern 0
+after: 262 lines; table lines at blues.7 or ragtime.9 0; table lines crediting interval.leap through a concept 6 (through leaps 0, through leap 6); shared-detector notes on interval.leap 0, on texture.left-hand-pattern 0
+as multisets: lines only before 50 (at blues.7 or ragtime.9 48), lines only after 1: ['No rung: none both teaches every demand it carries and has a claim it establishes.']
+  the lines only before that are not at blues.7 or ragtime.9: ['| --- | --- | --- |', '| Rung | Claims it establishes | Claims it does not |']
+diff lines: 99
+--- before
++++ after
+@@ -18,2 +17,0 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
+@@ -28,2 +25,0 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
+@@ -38,2 +33,0 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
+@@ -45,4 +39 @@
+-| Rung | Claims it establishes | Claims it does not |
+-| --- | --- | --- |
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
++No rung: none both teaches every demand it carries and has a claim it establishes.
+@@ -62,3 +53 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.8 (The late rags, and where ragtime was going) | demand texture.left-hand-pattern (concept stride-bass) | skill syncopation: absent |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
++| ragtime.8 (The late rags, and where ragtime was going) | demand texture.left-hand-pattern (concept stride-bass) | skill syncopation: absent |
+@@ -78,3 +67 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.8 (The late rags, and where ragtime was going) | demand texture.left-hand-pattern (concept stride-bass) | skill syncopation: absent |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
++| ragtime.8 (The late rags, and where ragtime was going) | demand texture.left-hand-pattern (concept stride-bass) | skill syncopation: absent |
+@@ -89,2 +75,0 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
+@@ -99,2 +83,0 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
+@@ -115,3 +98 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.8 (The late rags, and where ragtime was going) | demand texture.left-hand-pattern (concept stride-bass) | skill syncopation: absent |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
++| ragtime.8 (The late rags, and where ragtime was going) | demand texture.left-hand-pattern (concept stride-bass) | skill syncopation: absent |
+@@ -126,2 +106,0 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
+@@ -136,2 +114,0 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
+@@ -146,2 +122,0 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
+@@ -156,2 +130,0 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
+@@ -166,2 +138,0 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
+@@ -176,2 +146,0 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
+@@ -192,3 +161 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.8 (The late rags, and where ragtime was going) | demand texture.left-hand-pattern (concept stride-bass) | skill syncopation: absent |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
++| ragtime.8 (The late rags, and where ragtime was going) | demand texture.left-hand-pattern (concept stride-bass) | skill syncopation: absent |
+@@ -209,3 +176 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.8 (The late rags, and where ragtime was going) | skill syncopation (concept); demand texture.left-hand-pattern (concept stride-bass) | — |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
++| ragtime.8 (The late rags, and where ragtime was going) | skill syncopation (concept); demand texture.left-hand-pattern (concept stride-bass) | — |
+@@ -226,3 +191 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.8 (The late rags, and where ragtime was going) | skill syncopation (concept); demand texture.left-hand-pattern (concept stride-bass) | — |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
++| ragtime.8 (The late rags, and where ragtime was going) | skill syncopation (concept); demand texture.left-hand-pattern (concept stride-bass) | — |
+@@ -243,3 +206 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.8 (The late rags, and where ragtime was going) | skill syncopation (concept); demand texture.left-hand-pattern (concept stride-bass) | — |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
++| ragtime.8 (The late rags, and where ragtime was going) | skill syncopation (concept); demand texture.left-hand-pattern (concept stride-bass) | — |
+@@ -260,3 +221 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.8 (The late rags, and where ragtime was going) | skill syncopation (concept); demand texture.left-hand-pattern (concept stride-bass) | — |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
++| ragtime.8 (The late rags, and where ragtime was going) | skill syncopation (concept); demand texture.left-hand-pattern (concept stride-bass) | — |
+@@ -277,3 +236 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.8 (The late rags, and where ragtime was going) | demand texture.left-hand-pattern (concept stride-bass) | skill syncopation: absent |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
++| ragtime.8 (The late rags, and where ragtime was going) | demand texture.left-hand-pattern (concept stride-bass) | skill syncopation: absent |
+@@ -288,2 +244,0 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
+@@ -298,2 +252,0 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
+@@ -308,4 +261,2 @@
+-| blues.7 (The leaping left hand and the two bars that send you back) | demand interval.leap (concept leaps) | — |
+-| ragtime.9 (The whole rag, without the page) | demand interval.leap (concept leaps) | — |
+-
+-
++
++
+exit=0

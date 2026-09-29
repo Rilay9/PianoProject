@@ -1,0 +1,2 @@
+python tools/content/study.py --candidate-rungs app/public/content/catalog.json app/public/content/curriculum.json --out docs/prompts/runs/F2c/study-candidate-rungs.md
+exit=0

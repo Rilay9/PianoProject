@@ -1,0 +1,2 @@
+python tools/content/excerpts.py --candidate-rungs --out C:/Users/yalir/AppData/Local/Temp/claude/C--Users-yalir-repos-Piano-Stuff/9b647b56-e651-4563-9f4f-ce3e1e36a4a2/scratchpad/excerpt-candidate-rungs-before.md
+exit=0

@@ -1,0 +1,98 @@
+(in tools/content) python -m unittest tests.test_measured_truth
+....FFFF.....F..........FF.....................................
+======================================================================
+FAIL: test_a_primer_fourth_satisfies_no_claim_of_the_advanced_rungs (tests.test_measured_truth.TestExcerptsOnTheBuild.test_a_primer_fourth_satisfies_no_claim_of_the_advanced_rungs) (item='excerpt.classical.bach-menuet-bwv-anh-113.pdmx.b25-32')
+F2c (the reviewer's required change on F2b, `responses/ddba53e9.md`): a fourth-or-wider reading
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a2a9fff96c03c4b30\tools\content\tests\test_measured_truth.py", line 534, in test_a_primer_fourth_satisfies_no_claim_of_the_advanced_rungs
+    self.assertEqual(advanced, [], "a fourth-or-wider reading makes the cut a candidate for an octave-or-more rung")
+AssertionError: Lists differ: ['blues.7', 'ragtime.9'] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+'blues.7'
+
+- ['blues.7', 'ragtime.9']
++ [] : a fourth-or-wider reading makes the cut a candidate for an octave-or-more rung
+
+======================================================================
+FAIL: test_a_primer_fourth_satisfies_no_claim_of_the_advanced_rungs (tests.test_measured_truth.TestExcerptsOnTheBuild.test_a_primer_fourth_satisfies_no_claim_of_the_advanced_rungs) (item='excerpt.classical.beethoven-ode-to-joy.easy.b9-12')
+F2c (the reviewer's required change on F2b, `responses/ddba53e9.md`): a fourth-or-wider reading
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a2a9fff96c03c4b30\tools\content\tests\test_measured_truth.py", line 534, in test_a_primer_fourth_satisfies_no_claim_of_the_advanced_rungs
+    self.assertEqual(advanced, [], "a fourth-or-wider reading makes the cut a candidate for an octave-or-more rung")
+AssertionError: Lists differ: ['blues.7', 'ragtime.9'] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+'blues.7'
+
+- ['blues.7', 'ragtime.9']
++ [] : a fourth-or-wider reading makes the cut a candidate for an octave-or-more rung
+
+======================================================================
+FAIL: test_a_primer_fourth_satisfies_no_claim_of_the_advanced_rungs (tests.test_measured_truth.TestExcerptsOnTheBuild.test_a_primer_fourth_satisfies_no_claim_of_the_advanced_rungs) (item='excerpt.classical.i-got-rythm.pdmx.b15-18')
+F2c (the reviewer's required change on F2b, `responses/ddba53e9.md`): a fourth-or-wider reading
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a2a9fff96c03c4b30\tools\content\tests\test_measured_truth.py", line 534, in test_a_primer_fourth_satisfies_no_claim_of_the_advanced_rungs
+    self.assertEqual(advanced, [], "a fourth-or-wider reading makes the cut a candidate for an octave-or-more rung")
+AssertionError: Lists differ: ['blues.7'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'blues.7'
+
+- ['blues.7']
++ [] : a fourth-or-wider reading makes the cut a candidate for an octave-or-more rung
+
+======================================================================
+FAIL: test_a_primer_fourth_satisfies_no_claim_of_the_advanced_rungs (tests.test_measured_truth.TestExcerptsOnTheBuild.test_a_primer_fourth_satisfies_no_claim_of_the_advanced_rungs) (item='excerpt.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx.b25-28')
+F2c (the reviewer's required change on F2b, `responses/ddba53e9.md`): a fourth-or-wider reading
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a2a9fff96c03c4b30\tools\content\tests\test_measured_truth.py", line 534, in test_a_primer_fourth_satisfies_no_claim_of_the_advanced_rungs
+    self.assertEqual(advanced, [], "a fourth-or-wider reading makes the cut a candidate for an octave-or-more rung")
+AssertionError: Lists differ: ['blues.7', 'ragtime.9'] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+'blues.7'
+
+- ['blues.7', 'ragtime.9']
++ [] : a fourth-or-wider reading makes the cut a candidate for an octave-or-more rung
+
+======================================================================
+FAIL: test_the_candidate_rungs_say_where_one_detector_answers_for_several_concepts (tests.test_measured_truth.TestExcerptsOnTheBuild.test_the_candidate_rungs_say_where_one_detector_answers_for_several_concepts)
+`texture.left-hand-pattern` is one detector for alberti, waltz, oom-pah, boogie and stride
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a2a9fff96c03c4b30\tools\content\tests\test_measured_truth.py", line 500, in test_the_candidate_rungs_say_where_one_detector_answers_for_several_concepts
+    self.assertNotIn("interval.leap", shared, "the leap shared with the advanced jump, which no fourth proves")
+AssertionError: 'interval.leap' unexpectedly found in {'interval.leap': ['leap', 'leaps'], 'texture.left-hand-pattern': ['alberti', 'alberti-bass', 'boogie-bass', 'broken-chord-accompaniment', 'oom-pah-bass', 'stride-bass', 'waltz-bass']} : the leap shared with the advanced jump, which no fourth proves
+
+======================================================================
+FAIL: test_the_leap_is_introduced_at_1_5_and_taught_where_2_1_s_options_establish_it (tests.test_measured_truth.TestPlacementReconciled.test_the_leap_is_introduced_at_1_5_and_taught_where_2_1_s_options_establish_it) (rung='blues.7')
+F2a (Entry 117; the reviewer's required change, `responses/b41e19e.md`): no option on 1.5
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a2a9fff96c03c4b30\tools\content\tests\test_measured_truth.py", line 1037, in test_the_leap_is_introduced_at_1_5_and_taught_where_2_1_s_options_establish_it
+    self.assertNotIn(("demand", "interval.leap"), self.claims_of(rung)[0], f"{rung} claims the leap demand")
+AssertionError: ('demand', 'interval.leap') unexpectedly found in {('demand', 'interval.leap'): {'kind': 'demand', 'id': 'interval.leap', 'from': 'concept leaps', 'established': 7, 'measurable': 8}} : blues.7 claims the leap demand
+
+======================================================================
+FAIL: test_the_leap_is_introduced_at_1_5_and_taught_where_2_1_s_options_establish_it (tests.test_measured_truth.TestPlacementReconciled.test_the_leap_is_introduced_at_1_5_and_taught_where_2_1_s_options_establish_it) (rung='ragtime.9')
+F2a (Entry 117; the reviewer's required change, `responses/b41e19e.md`): no option on 1.5
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a2a9fff96c03c4b30\tools\content\tests\test_measured_truth.py", line 1037, in test_the_leap_is_introduced_at_1_5_and_taught_where_2_1_s_options_establish_it
+    self.assertNotIn(("demand", "interval.leap"), self.claims_of(rung)[0], f"{rung} claims the leap demand")
+AssertionError: ('demand', 'interval.leap') unexpectedly found in {('demand', 'interval.leap'): {'kind': 'demand', 'id': 'interval.leap', 'from': 'concept leaps', 'established': 7, 'measurable': 7}} : ragtime.9 claims the leap demand
+
+----------------------------------------------------------------------
+Ran 59 tests in 28.909s
+
+FAILED (failures=7)
+exit=1
