@@ -81,6 +81,38 @@ class TestChatPrompt(unittest.TestCase):
         self.assertIn("It must have", finder.chat_prompt(block, what="x"))
 
 
+class TestTheSeedList(unittest.TestCase):
+    """E28 (E2 item 5): the seed list of teaching repertoire as a proposal source for the prompts.
+
+    Asked with a concept, the chat prompt names the works the seed knows it for among its examples
+    of the right kind — reputation, for the owner's search, admitting nothing. Asked without one,
+    the prompt is what it was. The search query is keywords about the rung and stays so.
+    """
+
+    def test_a_concept_the_seed_knows_names_its_works_as_examples(self) -> None:
+        block = finder.generate(SAMPLE, what="x", concepts=["alberti-bass"])
+        self.assertIn("Piano Sonata in C major, K. 545, first movement (Wolfgang Amadeus Mozart)", block["chatPrompt"])
+        self.assertIn("Ode to Joy (Beethoven)", block["chatPrompt"])
+        self.assertLessEqual(len(block["chatPrompt"]), finder.MAX_CHAT_PROMPT)
+        self.assertEqual(block["searchQuery"], finder.search_query(SAMPLE))
+
+    def test_without_a_concept_or_with_one_the_seed_does_not_know_the_prompt_is_unchanged(self) -> None:
+        plain = finder.chat_prompt(SAMPLE, what="x")
+        self.assertEqual(finder.generate(SAMPLE, what="x")["chatPrompt"], plain)
+        self.assertEqual(finder.generate(SAMPLE, what="x", concepts=["wait-mode"])["chatPrompt"], plain)
+
+    def test_the_seed_works_are_read_in_the_files_order_by_concept(self) -> None:
+        titles = [work["work"] for work in finder.seed_works(["syncopation"])]
+        self.assertEqual(titles, ["The Entertainer", "Maple Leaf Rag"])
+        self.assertEqual(finder.seed_works([]), [])
+
+    def test_the_prompt_stays_under_the_limit_however_many_works_the_seed_has(self) -> None:
+        concepts = sorted({c for work in finder.seed_works_all() for c in work["concepts"]})
+        block = finder.generate(SAMPLE, what='Stage 2, "Hands together"', concepts=concepts)
+        self.assertLessEqual(len(block["chatPrompt"]), finder.MAX_CHAT_PROMPT)
+        self.assertEqual(validate.finder_errors({"stages": [{"units": [{"lessons": [{"id": "x", "finder": block}]}]}], "concepts": []}), [])
+
+
 class TestValidatorRules(unittest.TestCase):
     """The four rules from §4.1, each proved by something that breaks it."""
 

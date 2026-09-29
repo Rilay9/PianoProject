@@ -15,6 +15,7 @@ import type { ImportRow } from '../data/db';
 import { loadCurriculum } from '../curriculum/load';
 import { conversionFor, updateImport, type ConversionNote } from '../data/importStore';
 import { estimateLevelFor } from '../score/estimateImport';
+import { DEMAND_WORDS } from './help';
 import { button, el, openSheet } from './widgets';
 
 export interface AssignResult {
@@ -39,6 +40,36 @@ export interface AssignOptions {
   /** The runtime estimate (§4.4), shown as `≈` and editable. */
   estimated?: number;
   onSaved?: (row: ImportRow) => void;
+}
+
+/**
+ * What the app read in a stored import's notes, in one sentence: its measured demands in the words
+ * the swap sheet uses, or why none were read. Nothing here is a judgement of the piece.
+ */
+export function demandsLine(row: Pick<ImportRow, 'kind' | 'demands' | 'measurement'>): string {
+  const measurement = row.measurement;
+  if (row.kind === 'pdf') return 'A PDF: the app reads no notes from it, so nothing is measured.';
+  if (!measurement || row.demands === undefined) return 'Not measured yet: the app measures it in the background.';
+  if (measurement.status !== 'measured' || !Array.isArray(row.demands)) {
+    return `The app could not measure its notes (${measurement.status === 'unmeasured' ? measurement.reason : 'not notation'}).`;
+  }
+  // A reading the app knows to be wrong on this file (the detectors' clef assumption, E0) is never
+  // said as measured; the sentence says it was left out and why.
+  const misread = new Set(measurement.misread?.demands ?? []);
+  const demands = row.demands.filter((demand) => !misread.has(demand));
+  const leftOut = misread.size > 0 ? ' The app misreads this file’s clef, so its bass-staff and ledger-line notes are left out.' : '';
+  // "Shorter than a quarter" is the eighths' and the sixteenths' union: named only where neither is.
+  const union = demands.includes('rhythm.eighths') || demands.includes('rhythm.sixteenths');
+  const names = [
+    ...new Set(
+      demands
+        .filter((demand) => demand !== 'rhythm.shorter-than-quarter' || !union)
+        .map((demand) => (demand === 'rhythm.shorter-than-quarter' ? 'notes shorter than a quarter' : (DEMAND_WORDS[demand]?.name ?? demand))),
+    ),
+  ];
+  if (names.length === 0) return `Measured in the notes: none of the things the app measures.${leftOut}`;
+  const list = names.length === 1 ? (names[0] as string) : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1] as string}`;
+  return `Measured in the notes: ${list}.${leftOut}`;
 }
 
 /** Every rung, flattened, in the order the plan lists them. */
@@ -101,6 +132,15 @@ export function openAssignSheet(
     );
     sheet.body.append(block);
   }
+
+  // --- what the notes ask --------------------------------------------------
+  // The stored row's measured demands (E0; E2): what the app's detectors read in the score as
+  // it is stored — the learner's corrected one where the hands were corrected — or why nothing
+  // was read. A row imported before E0 is measured in the background on the next launch
+  // (`importStore.measureStoredImports`), and says so until it has been.
+  sheet.body.append(
+    el('section.block', {}, el('h3', { text: 'What the notes ask' }), el('p.muted', { id: 'assign-demands', text: demandsLine(row) })),
+  );
 
   // --- the rung ----------------------------------------------------------
   const rungSelect = el('select', { id: 'assign-lesson' }) as HTMLSelectElement;

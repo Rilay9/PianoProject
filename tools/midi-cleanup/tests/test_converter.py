@@ -436,6 +436,44 @@ class TestRenderedInput(unittest.TestCase):
         self.assertEqual([(m, d) for _, m, d in after], [(m, d) for _, m, d in before])
 
 
+class TestTheConverterNamesItsVersion(unittest.TestCase):
+    """E26: the converter owns a version, and every file it writes carries it.
+
+    The app's import of this converter's output reads the stamp back into the score's provenance
+    (`importStore.converterStampOf`, `importMeasuredTruth.test.ts` on the committed fixture
+    `app/tests/fixtures/imports/stamped-by-the-converter.musicxml`), so a later reader can tell
+    which rules inferred the hands and the key. MusicXML has a place for it: `<software>` in the
+    `<encoding>` block, which may repeat, beside music21's own.
+    """
+
+    fixture = FIXTURES / "exercise.five-finger.c-major.both.mxl"
+
+    def test_the_version_is_a_positive_whole_number(self) -> None:
+        from midi_to_musicxml import CONVERTER_VERSION
+
+        self.assertIsInstance(CONVERTER_VERSION, int)
+        self.assertGreaterEqual(CONVERTER_VERSION, 1)
+
+    def test_the_written_file_says_which_converter_and_version_wrote_it(self) -> None:
+        import xml.etree.ElementTree as ET
+
+        from midi_to_musicxml import CONVERTER_NAME, CONVERTER_VERSION
+
+        with tempfile.TemporaryDirectory() as tmp:
+            midi = Path(tmp) / "rendered.mid"
+            out = Path(tmp) / "rendered.musicxml"
+            render_midi(self.fixture, midi)
+            convert(midi, out, divisors=(4, 3), respell=False, force=True, hands="keep")
+            root = ET.parse(out).getroot()
+        encoding = root.find("identification/encoding")
+        self.assertIsNotNone(encoding, "no <encoding> block in the written file")
+        software = [element.text for element in encoding.findall("software")]  # type: ignore[union-attr]
+        self.assertIn(f"{CONVERTER_NAME} v.{CONVERTER_VERSION}", software)
+        # music21's own stamp stays: the two say different things.
+        self.assertTrue(any((text or "").startswith("music21 v.") for text in software), software)
+        self.assertEqual(CONVERTER_NAME, "tools/midi-cleanup/midi_to_musicxml.py")
+
+
 @unittest.skipUnless(have_real, real_reason)
 class TestRealRecordings(unittest.TestCase):
     """The three Disklavier performances, one test method per file."""
