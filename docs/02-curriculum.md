@@ -318,7 +318,7 @@ Songs (as on the rung 2026-09-16): *Happy Birthday to You* `[AUTH]` and its full
 **2.4 Ties, dotted quarter, dynamics, tempo words.** Concepts: tie vs slur, dotted quarter +
 eighth, p/mp/mf/f, crescendo/diminuendo, Andante/Moderato/Allegro, ritardando. Exercises:
 `[GEN]` dotted-rhythm reading, dynamics drill (MIDI velocity: app shows a meter; play a
-phrase p then f). Songs: *Greensleeves (simple)* `[AUTH]`, *Greensleeves* `[MT]`, *Greensleeves (with chords)* `[AUTH]`, *Ga je mee op zoek naar het Koningskind* `[PDMX]`, *Streets of Laredo* `[PDMX]`. Mastery: one song; dynamics drill ≥ 80 % contrast (avg velocity f ≥ 1.6× p).
+phrase p then f). Songs: *Greensleeves (simple)* `[AUTH]`, *Greensleeves* `[MT]`, *Greensleeves (with chords)* `[AUTH]`, *Ga je mee op zoek naar het Koningskind* `[PDMX]`, *Streets of Laredo* `[PDMX]`, *Careless Love* `[PDMX]`, *Cielito Lindo (simple)* `[AUTH]`. *Cielito Lindo* is the rung's public-domain tie (Q76): its long notes carried over the bar line are written as ties by independent PDMX editions (the verse by two, the chorus by three), so the ties are the tune's, and the right hand is one of those editions note for note; *Ga je mee*, the other option that practises ties, is a placeholder on the public build (its composition is not public domain). Mastery: one song; dynamics drill ≥ 80 % contrast (avg velocity f ≥ 1.6× p).
 
 **2.5 Moving out of C position: thumb-under and finger-crossing preview; the octave leap.**
 Concepts: extending the hand, shifting positions marked by fingering numbers, reading
@@ -557,6 +557,14 @@ Stage 5: *The Entertainer* (easy arr.) `[MT]`; Stage 6: *The Entertainer* (origi
 James Scott *Frog Legs Rag*, Joseph Lamb *Ragtime Nightingale*. All Joplin via the
 `craigsapp/joplin` kern repository (verified reachable). Concepts: oom-pah LH with leaps,
 syncopated RH, "not fast" (Joplin's own instruction), stride precursor.
+*(Q76, 2026-09-29: the Sapp editions are CC BY-NC-SA, so on the public, licence-strict build — the
+one the phone runs — every one of them is a placeholder. `ragtime.8` therefore also lists *Pine Apple
+Rag* in the Mutopia Project's public-domain edition `[MUTO]`, bundled by both builds: taken from the
+MIDI file Mutopia publishes for it, because python-ly cannot convert Mutopia's LilyPond rags faithfully,
+with every note spelled and the trio's key change placed as the edition's `.ly` has them. Its notes and
+times are the edition's and its page is the converter's: the repeats written out, two voices in one
+hand merged into chords (`docs/03` §2 on `[MUTO]`). It is the option that keeps the rung's stride bass
+on the phone.)*
 
 *(Extended 2026-09-22: the track now runs Stage 5 to Stage 9. `ragtime.9` is the memory and
 performance rung — four long multi-strain Joplin rags nothing else offers, played without
@@ -1202,6 +1210,7 @@ marked a `full` LH (broken chords/waltz/Alberti). Stage tag gives the *simple* v
 | The Ash Grove | Welsh trad. | G/F | 3.5 | |
 | Beautiful Dreamer | Foster 1864 | C/F | 3.6 | waltz |
 | Streets of Laredo | US trad. | G | 2.4 | waltz; `[PDMX]` quarried 2026-09-16, level 2.2; on 2.4 |
+| Cielito Lindo | Mendoza y Cortés 1882 | C | 2.4 | 3/4; `[AUTH]` simple, 2026-09-29 (Q76), the right hand as the PDMX *Exercise* edition writes it; on 2.4 for the public build's tie. Measured against PDMX editions first: *Silent Night* and *Auld Lang Syne*, the wishes above, write almost no ties |
 | Simple Gifts | Shaker 1848 | C/G/F | 2.1 | `[PDMX]` quarried 2026-09-16, level 2.1; on 2.1 |
 | Morning Has Broken (Bunessan) | Scottish trad. | C/D | 4.3 | 3/4 |
 | Loch Lomond | Scottish trad. | F/G | 4.3 | |

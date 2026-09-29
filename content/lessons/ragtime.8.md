@@ -30,26 +30,25 @@ strain by strain.
 **Stop-time.** Bars where the accompaniment stops and the pulse is kept by what
 is left. In *Stoptime Rag* the left hand drops out under the tune and the player
 stamps a heel on the floor — Joplin printed the instruction, though the copy in
-this app's Library does not show it. It is not a joke and it is not optional:
+the Library does not show it. It is not a joke and it is not optional:
 those bars fall apart if you cannot keep time without hearing the beat.
-*Stoptime Rag* is in the Library, not on this rung.
 
 **Still not fast.** Late rags reward being slower, not faster, because there is
 more happening per bar. If the syncopation is not audible as syncopation, the
 tempo is wrong.
 
-**What to play.** Six options. Five Joplin rags — *Gladiolus*, *Pine Apple*,
+**What to play.** Seven options. Five Joplin rags — *Gladiolus*, *Pine Apple*,
 *Scott Joplin's New Rag* and *Magnetic* from his last decade, and *The
-Cascades* from a decade before — and one that is not Joplin's. *Stoptime*,
-*Wall Street*, *Reflection Rag* and the lighter early rags are under Ragtime in
-the Library.
+Cascades* from a decade before — and one that is not Joplin's; *Pine Apple*
+comes twice, once with its repeats written out. *Stoptime*, *Wall Street*,
+*Reflection Rag* and the lighter early rags are under Ragtime in the Library.
 
-**Not only Joplin.** James Scott's *Frog Legs Rag* (1906) is the sixth — the
+**Not only Joplin.** James Scott's *Frog Legs Rag* (1906) is the sixth piece — the
 other great rag of the Sedalia school, and a good test of whether the habits
 above transfer to a hand that is not Joplin's. Two more belong on this rung
-and are still missing: Joplin's *Euphonic Sounds*, which is not in the
+and are still missing: Joplin's *Euphonic Sounds*, which is in neither
 edition these Joplin rags come from, and Joseph Lamb's *Ragtime
-Nightingale*. The six here are enough for a year.
+Nightingale*. The six pieces here are enough for a year.
 
 **Common mistake.** Treating these as harder versions of *The Entertainer*. They
 are not — they are later music, and the difficulty is in hearing the harmony,
@@ -61,7 +60,7 @@ in Keep tempo, and the dense syncopation comes
 back as four or five placings you can count, after which finding every bar
 they occur in is reading rather than hearing. That setting is in the ⋯ controls, not a
 button. The one button here is *Play it blind*, which opens *Pine Apple Rag*,
-first of the six, with the notation hidden and the run still marked: a figure
+first of the seven, with the notation hidden and the run still marked: a figure
 you can only play with the page in front of you is one you have not named yet.
 
 **How you'll know you've got it.** One late rag played at a tempo where every

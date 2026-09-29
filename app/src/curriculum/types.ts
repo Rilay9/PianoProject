@@ -233,6 +233,7 @@ export interface Provenance {
     | 'pdmx'
     | 'kern'
     | 'musetrainer'
+    | 'mutopia'
     | 'generated'
     | 'runtime'
     | 'placeholder'

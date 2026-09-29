@@ -10,6 +10,7 @@ reported separately:
   2. import [MT]      — the MuseTrainer library, per-file licence decisions
   3. import [KERN]    — the Humdrum editions, per-file licence decisions
   4. import [PDMX]    — the reviewed quarry slice, checksummed (step_import_pdmx)
+  4a. import [MUTO]   — Mutopia's public-domain editions from their published MIDI, spelled from the .ly (Q76)
   5. generate         — scales, arpeggios, Hanon, harmony families, rhythm rows
   6. author           — our own ABC and music21 sources
   7. merge            — the fragments into one catalog, sections attached
@@ -73,6 +74,7 @@ FRAGMENTS = (
     "catalog.generated.json",
     "catalog.authored.json",
     "catalog.pdmx.json",
+    "catalog.mutopia.json",
 )
 
 
@@ -138,6 +140,26 @@ def step_import_pdmx(out_dir: Path, personal: bool, strict_license: bool) -> Ste
     code, output = python("import_pdmx.py", *args)
     return Step("import [PDMX]", ok=code == 0, detail=summary_line(output),
                 warnings=[] if code == 0 else [output])
+
+
+def step_import_mutopia(out_dir: Path, offline: bool, no_cache: bool = False) -> Step:
+    """
+    Mutopia's public-domain editions (Q76): `content/sources/mutopia.json`'s rows, each from the MIDI file Mutopia
+    publishes for it, converted by the repository's MIDI converter and spelled and keyed from the edition's .ly.
+
+    It fetches only the files the table names, and not at all when the build is offline or asked not to refresh
+    what is fetched; a row whose files are missing or not the pinned ones is a placeholder saying so, which is a
+    smaller build, never a failed one (the fetch step's rule), and the placeholder is printed under the step.
+    """
+    args = ["--out", str(out_dir), "--catalog", str(BUILD_DIR / "catalog.mutopia.json")]
+    if offline:
+        args.append("--offline")
+    if no_cache:
+        args.append("--no-cache")
+    code, output = python("import_mutopia.py", *args)
+    placeheld = [line.strip() for line in output.splitlines() if line.strip().startswith("placeholder ")]
+    return Step("import [MUTO]", ok=code == 0, detail=summary_line(output),
+                warnings=([] if code == 0 else [output]) + placeheld)
 
 
 def step_score_checks(out_dir: Path) -> Step:
@@ -738,6 +760,8 @@ def source_kind(entry: dict) -> str:
         return "kern"
     if "musetrainer" in tags:
         return "musetrainer"
+    if "mutopia" in tags:
+        return "mutopia"
     if "authored" in tags or rel.startswith("scores/authored/"):
         return "authored"
     if not rel:
@@ -750,8 +774,10 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
     Where every item came from and how each fact about it is known (E0 item 2; R35,
     R15, R11, Part 21 §B): `provenance` on every row.
 
-    - `source`: authored, pdmx, kern, musetrainer, generated (with D0's identity),
-      runtime (a drill the app makes when it opens), placeholder (not bundled).
+    - `source`: authored, pdmx, kern, musetrainer, mutopia (Q76: its `converter` names the MIDI
+      converter, the published MIDI it read by checksum and the .ly its spelling came from),
+      generated (with D0's identity), runtime (a drill the app makes when it opens), placeholder
+      (not bundled).
     - `edition`, `composition`, `arrangement`: R15's chain as far as the data knows it.
       An authored variant names its tune by `variantOf` (authored); otherwise the
       composition is `work_key` of the title and composer — the PDMX identity function,
@@ -818,6 +844,8 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
 
     for entry in entries:
         kind = source_kind(entry)
+        # Q76: what the [MUTO] import did, carried on the row only as far as this step.
+        mutopia = entry.pop("_mutopia", None)
         if kind == "excerpt":
             continue  # after every parent's record, below: it carries the parent's chain down
         source = entry.get("source") or {}
@@ -852,6 +880,10 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
                 decision = (row.get("review") or {}).get("decision")
                 if decision:
                     record["quarryKeep"] = decision
+            elif kind == "mutopia" and mutopia:
+                record["edition"] = mutopia["edition"]
+                record["arrangement"] = entry["id"]
+                facts["arrangement"] = {"kind": "authored", "via": "one catalogue entry per edition"}
             else:
                 record["edition"] = f"{kind}:sha256:{checksum[:16]}" if checksum else None
                 record["arrangement"] = entry["id"]
@@ -866,6 +898,10 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
                 facts["composition"] = {"kind": "inferred", "via": "work_key (title and composer)"}
             if kind in ("pdmx", "kern", "musetrainer"):
                 record["converter"] = converter
+            elif kind == "mutopia" and mutopia:
+                # The source artifact is the MIDI Mutopia publishes, never its notation (the reviewer, Q76).
+                record["converter"] = {**mutopia["converter"], "normaliser": converter,
+                                       "artifact": mutopia["artifact"], "spelling": mutopia["spelling"]}
             elif kind == "authored":
                 record["converter"] = {"name": "tools/content/author.py", "version": converter["version"]}
 
@@ -895,6 +931,10 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
         elif kind in ("kern", "musetrainer"):
             facts["tempo"] = ({"kind": "authored", "via": "the edition"} if entry.get("tempoBpm")
                               else {"kind": "inferred", "via": "convert.py's default (the edition has no tempo of its own)"})
+        elif kind == "mutopia":
+            facts["tempo"] = ({"kind": "authored", "via": "the edition's tempo mark, as its published MIDI carries it"}
+                              if (mutopia or {}).get("tempoFromEdition")
+                              else {"kind": "inferred", "via": "the published MIDI's tempo, LilyPond's default where the edition states none"})
         if facts.get("tempo", {}).get("kind") == "inferred" and isinstance(entry.get("demands"), list):
             untrusted = [d for d in entry["demands"] if d in tempo_sensitive]
             if untrusted:
@@ -909,6 +949,8 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
             facts["hands"] = {"kind": "authored", "via": "the recipe" if kind == "generated" else "this repository's score"}
         elif kind in ("pdmx", "kern", "musetrainer"):
             facts["hands"] = {"kind": "authored", "via": "the edition's staves"}
+        elif kind == "mutopia":
+            facts["hands"] = {"kind": "authored", "via": "the edition's staves, a MIDI track each"}
         if entry.get("type") == "song" and (entry.get("notation") or {}).get("keys"):
             facts["key"] = {"kind": "measured", "via": "the file's signature and final bass (build.settle_key_signatures)"}
         elif kind == "generated":
@@ -1449,6 +1491,7 @@ def run_build(args: argparse.Namespace, started: float) -> None:
     steps.append(step_import(args.out, args.no_cache, args.personal))
     steps.append(step_import_kern(args.out, allow_nc, args.no_cache))
     steps.append(step_import_pdmx(args.out, args.personal, args.strict_license))
+    steps.append(step_import_mutopia(args.out, args.offline or args.skip_fetch, args.no_cache))
     steps.append(step_generate(args.out, args.quick))
     steps.append(step_author(args.out, args.no_cache))
     steps.append(merge_catalog(args.out))

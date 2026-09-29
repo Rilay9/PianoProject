@@ -29,7 +29,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 2 | `2.1` | 6 | 5 | 2.1–2.6 | Simple Gifts (2.1), Ode to Joy (hands together) (2.1), Twinkle, Twinkle, Little Star (hands together) (2.1), Jingle Bells (chorus, hands together) (2.1), Mary Had a Little Lamb (hands together) (2.1) |
 | 2 | `2.2` | 6 | 8 | 1.1–2.4 | Merrily We Roll Along (1.1), Michael, Row the Boat Ashore (1.4), London Bridge Is Falling Down (2.2), Old MacDonald Had a Farm (2.2), Sakura (2.2), Alouette (2.3), … and 2 more |
 | 2 | `2.3` | 3 | 7 | 2.0–4.1 | Was wollen wir trinken (2.0), Happy Birthday to You (2.3), Dark Eyes (2.3), Skip to My Lou (2.5), Auld Lang Syne (2.8), Jingle Bells (chorus, in G major with block chords) (3.2), … and 1 more |
-| 2 | `2.4` | 4 | 6 | 2.2–5.1 | Greensleeves (simple) (2.4), Streets of Laredo (first half, 17 bars) (2.5), Careless Love (2.6), Greensleeves (with chords) (3.3), Ga je mee op zoek naar het Koningskind (3.4), Greensleeves (5.1) |
+| 2 | `2.4` | 4 | 7 | 2.2–5.1 | Greensleeves (simple) (2.4), Streets of Laredo (first half, 17 bars) (2.5), Careless Love (2.6), Cielito Lindo (simple) (3.0), Greensleeves (with chords) (3.3), Ga je mee op zoek naar het Koningskind (3.4), … and 1 more |
 | 2 | `2.5` *(song-optional)* | 8 | 2 | 2.2–4.1 | Ode to Joy (full theme) (2.5), Ode to Joy (easy variation) (4.1) |
 | 3 | `3.1` | 7 | 6 | 1.1–3.2 | Korobeiniki (2.1), Loch Lomond (2.2), Scarborough Fair (2.3), Ode to Joy (in G major) (3.1), Twinkle, Twinkle, Little Star (in F major) (3.1), Oh When the Saints Go Marching In (in F major) (3.2) |
 | 3 | `3.2` | 6 | 5 | 2.3–4.3 | Happy Birthday to You (2.3), Jingle Bells (chorus, in G major with block chords) (3.2), Oh When the Saints Go Marching In (in F major) (3.2), Yankee Doodle (4.0), Oh My Darling Clementine (4.3) |
@@ -222,7 +222,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 5 | `ragtime.5` | 4 | 6 | 3.2–7.1 | Greensleeves (waltz bass) (3.6), 12th Street Rag (1914) (4.1), Augustan Club Waltz (6.8), Combination March (6.8), The Rose-bud March (7.0), The Entertainer (7.1) |
 | 6 | `ragtime.6` | 6 | 6 | 3.3–7.1 | School of Ragtime (6.4), Swipesy Cake Walk (6.8), The Easy Winners (7.0), Peacherine Rag (7.0), Sunflower Slow Drag (7.0), The Entertainer (7.1) |
 | 7 | `ragtime.7` | 6 | 6 | 3.2–7.4 | Solace (6.8), Maple Leaf Rag (7.2), Elite Syncopations (7.2), Sugar Cane (7.2), Bethena (7.3), Heliotrope Bouquet (7.4) |
-| 8 | `ragtime.8` | 6 | 6 | 3.3–7.6 | Pine Apple Rag (7.4), Frog Legs Rag (1906) (7.4), Gladiolus Rag (7.6), Magnetic Rag (7.6), The Cascades (7.6), Scott Joplin's New Rag (7.6) |
+| 8 | `ragtime.8` | 6 | 7 | 3.3–7.6 | Pine Apple Rag (7.4), Pine Apple Rag (repeats written out) (7.4), Frog Legs Rag (1906) (7.4), Gladiolus Rag (7.6), Magnetic Rag (7.6), The Cascades (7.6), … and 1 more |
 | 9 | `ragtime.9` | 4 | 4 | 5.6–8.4 | Original Rags (7.2), A Breeze from Alabama (7.2), The Chrysanthemum (7.4), Search-Light Rag (8.0) |
 
 ## Wanted, and not bundled

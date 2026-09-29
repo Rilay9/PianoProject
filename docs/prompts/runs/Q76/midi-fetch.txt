@@ -1,0 +1,14 @@
+PineappleRag/PineappleRag.mid: 21312 bytes, sha256 a8ff24b340900baaa53e43ad575bc1857721706f0bd420425446f8b14e252420
+PineappleRag/PineappleRag.ly: 11816 bytes, sha256 747778b06d95d58e17eada42246326b05fbb7e1416dc9196f94d101934b3f67f
+  published .ly identical to the mirror's (line endings aside): True
+  MIDI format 1, ticks per quarter 384, 3 track(s)
+  track 0: name [b'control track'] notes 0 channels [] tempo events 1 time signatures 1
+  track 1: name [b'right:'] notes 1460 channels [1] tempo events 0 time signatures 0
+  track 2: name [b'left:'] notes 1023 channels [2] tempo events 0 time signatures 0
+magnetic/magnetic.mid: 26102 bytes, sha256 2a0e2c6b4e6c4075e238baeedbf743847080d1f847d8460489aad8385a488069
+magnetic/magnetic.ly: 15873 bytes, sha256 a22a48f077bb0370d3ad0a786aa1e19d27fc91a9459490dc7859a2d4bd985b25
+  published .ly identical to the mirror's (line endings aside): True
+  MIDI format 1, ticks per quarter 384, 3 track(s)
+  track 0: name [b'control track'] notes 0 channels [] tempo events 1 time signatures 1
+  track 1: name [b'up'] notes 1539 channels [2] tempo events 0 time signatures 0
+  track 2: name [b'down'] notes 1481 channels [3] tempo events 0 time signatures 0

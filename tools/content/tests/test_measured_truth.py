@@ -42,7 +42,7 @@ BUILT = REPO / "app" / "public" / "content"
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 DENSITY = REPO / "content" / "sources" / "opportunity-density.json"
 KINDS = {"measured", "inferred", "authored", "reviewed", "unmeasured", "runtime"}
-SOURCES = {"authored", "pdmx", "kern", "musetrainer", "generated", "runtime", "placeholder", "excerpt"}
+SOURCES = {"authored", "pdmx", "kern", "musetrainer", "mutopia", "generated", "runtime", "placeholder", "excerpt"}
 ANH_113 = "song.classical.bach-menuet-bwv-anh-113.pdmx"
 
 
