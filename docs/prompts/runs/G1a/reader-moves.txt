@@ -1,0 +1,64 @@
+(cd app) PYTHONIOENCODING=utf-8 python ../docs/prompts/runs/G1a/scripts-mutants.py - r1-session-daily-read r2-session-reads r3-evidence-context r4-evidence-condition r5-recordRun r6-rungState-measured r7-history-line r8-evidenceJob-mark
+r1-session-daily-read (src/curriculum/session.ts, 41 files): CAUGHT / verdict changed; exit 1; Tests  1 failed | 645 passed | 1 todo (647)
+    × today’s phrase, once met, is not offered as a read again: the card says it is read 9ms
+    restored: sha256 7f67bc622dfde2fe matches
+r2-session-reads (src/curriculum/session.ts, 41 files): CAUGHT / verdict changed; exit 1; Tests  22 failed | 624 passed | 1 todo (647)
+    × misread the skips on two days: the skip control, off — the same row by step only, and the line says why 11ms
+    × read the eighths cleanly every day: one dimension on — the left hand joins 2ms
+    × the three are three different recipes 2ms
+    × the reason line cites what the reads singled out, with its number, and nothing else 25ms
+    × the clean reader on 2.2 moves hands (taught at 2.1), never the key (3.1) or the metre (4.5) 3ms
+    × the same reader, already with both hands: on 2.5 and on 3.1 the next is the earliest taught demand not yet shown, never a key first 2ms
+    × a rung whose row’s promises fix every dimension keeps the phrase at the row, and says why 2ms
+    × appears within 4 reads, one dimension below the working recipe, and says so 202ms
+    × 1. accurate steps, inaccurate skips (two reads): the skips went wrong in both phrases and the steps held where no skip was: a pattern; the skip control, off 62ms
+    × 1b. the same, one read: one read against the recipe is not two (the policy’s step-down count), whatever it singles out 3ms
+    × 2. accurate pitch, poor rhythm: every note after the first was early, so under sight-reading every demand fell together and none is singled out; nothing sits below 2.2’s own recipe for an easy read 7ms
+    × 3. accurate right hand, poor left hand (two reads): the bass-staff notes went wrong where no skip was and the right hand held where no bass note was: a pattern on the bass staff, which the hands control governs; hands together is not singled out 7ms
+    restored: sha256 7f67bc622dfde2fe matches
+r3-evidence-context (src/evidence/evidence.ts, 41 files): CAUGHT / verdict changed; exit 1; Tests  10 failed | 636 passed | 1 todo (647)
+    × a measured record: material and intent beside itemId and seed, first contact as before 12ms
+    × beyond proficient: shown on different material by v0’s rule, the skill is offered nothing — the offer reads proficient alone 14ms
+    × another phrase of the same row is not transfer; a first reading of another row is 16ms
+    × retained is a first attempt of a day, supporting, 21 days or more after the last support 4ms
+    × mastered needs no full-standard attempt against it among the last 2 3ms
+    × the steady reader: five first readings on five days, then a harder row first time — transfer demonstrated 11ms
+    × the stretch: proficient at level 2, then two first readings of level 4 that go badly — still proficient 6ms
+    × (1) pruning erased no established evidence: every skill and every rung reads as before 6ms
+    × (2) the provenance survives: each kept run is the run as stored — skill, demands, standard, material, first contact, rung, when, versions 2ms
+    × (4) "not shown recently" still says what is uncertain now, and time alone lowers nothing 3ms
+    restored: sha256 44f0ae76c02d62ea matches
+r4-evidence-condition (src/evidence/evidence.ts, 41 files): CAUGHT / verdict changed; exit 1; Tests  87 failed | 559 passed | 1 todo (647)
+    × one run against the skill is practised; one run with it, guided, is familiar and never more 18ms
+    × one day at the full standard is familiar; two different days, the latest supporting, is proficient 3ms
+    × one full-standard attempt against it keeps proficient; two in a row put it back to familiar 3ms
+    × time alone lowers nothing: evidence weeks old keeps its state and says it has not been shown recently 3ms
+    × another phrase of the same row is not transfer; a first reading of another row is 2ms
+    × retained is a first attempt of a day, supporting, 21 days or more after the last support 2ms
+    × mastered needs no full-standard attempt against it among the last 2 2ms
+    × the steady reader: five first readings on five days, then a harder row first time — transfer demonstrated 7ms
+    × the stretch: proficient at level 2, then two first readings of level 4 that go badly — still proficient 1ms
+    × is proficient at shifting position, reading by interval and sight-reading, and at nothing beyond 51ms
+    × the same cut with a current teaching: true may enter, subject to the gate and the relationship 2ms
+    × one first reading, recorded as every run is, moves the skills it evidences and writes no skill state anywhere 44ms
+    restored: sha256 44f0ae76c02d62ea matches
+r5-recordRun (src/data/progressStore.ts, 41 files): CAUGHT / verdict changed; exit 1; Tests  3 failed | 643 passed | 1 todo (647)
+    × a piece played again as G1a stores it (firstContact: false, no unseen) passes, meets its rung and is flagged nothing 12ms
+    × keeps its minutes, its attempt and its row, and gives no pass, no best and no day’s tick 11ms
+    × a notated piece, two tabs: a viewing another tab wrote after this one opened is read before the run is stored (G1a) 1131ms
+    restored: sha256 8c447dcc32954c97 matches
+r6-rungState-measured (src/evidence/rungState.ts, 41 files): CAUGHT / verdict changed; exit 1; Tests  3 failed | 643 passed | 1 todo (647)
+    × a piece played again as G1a stores it (firstContact: false, no unseen) passes, meets its rung and is flagged nothing 13ms
+    × a phrase read before still passes nothing and says so on its history line 1ms
+    × what a run did not measure is not a qualifying run: nothing heard, rhythm only, a phrase met before 10ms
+    restored: sha256 e57c402037d05a33 matches
+r7-history-line (src/ui/screens/ProgressScreen.ts, 41 files): CAUGHT / verdict changed; exit 1; Tests  5 failed | 641 passed | 1 todo (647)
+    × a piece played again as G1a stores it (firstContact: false, no unseen) passes, meets its rung and is flagged nothing 14ms
+    × a phrase read before still passes nothing and says so on its history line 2ms
+    × a sight-read met before, and a take heard part way 74ms
+    × a notated piece: its first run is first contact, the second is not, and both pass 195ms
+    × over phrase runs, piece runs, a row G1’s app wrote and rows from before G1: the relation where it was written, unknown where it was not 380ms
+    restored: sha256 8f12026a32bc846a matches
+r8-evidenceJob-mark (src/data/evidenceJob.ts, 41 files): SURVIVED / no verdict changed; exit 0; Tests  646 passed | 1 todo (647)
+    restored: sha256 37a41ce912db1777 matches
+exit=0

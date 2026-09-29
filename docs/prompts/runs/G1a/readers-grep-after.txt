@@ -1,0 +1,78 @@
+grep -rn -e unseen -e firstContact app/src   (after G1a)
+app/src/app/testHooks.ts:49:   * That is exactly how the double mount Entry 52 found went unseen until a
+app/src/curriculum/candidates.ts:567:      // A phrase the reader writes when it opens is new each time, from an unseen seed (C4): first contact by construction.
+app/src/curriculum/session.ts:2328:      const read = met.some((row) => row.unseen === true);
+app/src/curriculum/session.ts:2334:    .filter((row) => row.unseen === true && byId.has(row.itemId))
+app/src/curriculum/transfer.ts:102:    context: { itemId, firstContact: true, met: [], unattributed: 0, estimated: false },
+app/src/data/db.ts:156:   * (`encounterStore.firstContactIn`) and read again before the run is stored.
+app/src/data/db.ts:167:   * read it. Absent — unknown, never inferred from `unseen` — on every run
+app/src/data/db.ts:170:  firstContact?: boolean;
+app/src/data/db.ts:176:   * it so, through `isPhraseRun`; the evidence's `unseen` condition and the
+app/src/data/db.ts:179:   * `firstContact` and derived from that relation and the visit rule — today
+app/src/data/db.ts:185:   * G1a's, so a piece's run stored then carries it (and no `firstContact`);
+app/src/data/db.ts:188:  unseen?: boolean;
+app/src/data/db.ts:271: * Until G1 the first-reading flag alone said so — C1 wrote `unseen` on phrases and on nothing else —
+app/src/data/db.ts:272: * and every reader asked `unseen !== undefined`. G1's app wrote the flag on every run the Score screen
+app/src/data/db.ts:273: * recorded, as the first-contact fact; a piece played again stored then is `unseen: false` and must
+app/src/data/db.ts:279: * Since G1a the fact has its own field (`firstContact`) and `unseen` is a phrase's again, so this is
+app/src/data/db.ts:281: * general contact asks: that consumer reads `firstContact`. The relation alone never makes a run a
+app/src/data/db.ts:284:export function isPhraseRun(row: Pick<RunHeader, 'unseen' | 'recipe' | 'material'>): boolean {
+app/src/data/db.ts:286:  if (row.unseen === undefined) return false;
+app/src/data/db.ts:565: * (or drops it, for `unseen`); an older backup restores rows of this shape.
+app/src/data/db.ts:569:  state: 'unseen' | 'learning' | 'known';
+app/src/data/encounterStore.ts:43: * **First contact** (`firstContactIn`) is derived from it: no run of the material or of any bar of
+app/src/data/encounterStore.ts:367:export function firstContactIn(target: EncounterTarget, history: EncounterHistory, visit: string): boolean {
+app/src/data/evidenceJob.ts:60: * every run carries since G1a (`firstContact`) is no mark of a phrase.
+app/src/data/evidenceJob.ts:66:    (row.unseen !== undefined && isPhraseRun(row)) ||
+app/src/data/progressStore.ts:177:   * decision 3). A generated phrase heard or read before (`unseen: false`) is
+app/src/data/progressStore.ts:183:   * A phrase's rule only (`isPhraseRun`, G1): `unseen` is the phrase's field
+app/src/data/progressStore.ts:184:   * (G1a; the relation on every run is `firstContact`, which gates nothing
+app/src/data/progressStore.ts:185:   * here), and a piece's run G1's app stored with `unseen: false` is practice
+app/src/data/progressStore.ts:188:  const evidence = !(result.unseen === false && isPhraseRun(result));
+app/src/data/progressStore.ts:201:   * reader and `rungState` read. `unseen` (or the recipe) is written on every
+app/src/data/progressStore.ts:202:   * run of a generated phrase (C1, C4); G1's app wrote `unseen` on every Score
+app/src/data/skillsStore.ts:5: * Until C7 this module kept its own truth per concept — `unseen`, `learning`
+app/src/data/skillsStore.ts:22: *   the day it is carried over, in place (`SkillRow`), and an `unseen` row is
+app/src/data/skillsStore.ts:46: * `unseen` is dropped, and a row already carried over is untouched. Returns
+app/src/data/skillsStore.ts:58:      if (row.state === 'unseen') await cursor.delete();
+app/src/demands/vocabulary.ts:19:/** A run condition a skill's standard can require (Keep tempo, unseen, the guide off, both hands). */
+app/src/demands/vocabulary.ts:20:export type ConditionId = 'keep-tempo' | 'unseen' | 'guide-off' | 'both-hands';
+app/src/engine/drills/harmony.ts:313: * The music comes from the sight-reading writer, so the exercise is unseen
+app/src/engine/sightReading.ts:4:// the material is *unseen*, so it is generated on the phone rather than
+app/src/engine/sightReading.ts:1501: * Generates an unseen exercise as MusicXML.
+app/src/evidence/evidence.ts:108:   * and `firstContact`): the facts the post-E transfer policy will read.
+app/src/evidence/evidence.ts:116:  /** A generated phrase read for the first time (`unseen: true`): first contact with the material. */
+app/src/evidence/evidence.ts:117:  firstContact: boolean;
+app/src/evidence/evidence.ts:238:  unseen: { field: 'SessionRow.unseen', met: (o) => o.unseen === true },
+app/src/evidence/evidence.ts:246:  unseen: ['unseen'],
+app/src/evidence/evidence.ts:571:      firstContact: observation.unseen === true,
+app/src/evidence/ladder.ts:32: * evidence's `context.itemId` with `firstContact`. The design asks for a
+app/src/evidence/ladder.ts:68:  return !(attempt.context.firstContact && !shownOn.has(attempt.context.itemId));
+app/src/evidence/ladder.ts:159:          if (e.context.firstContact && !shownOn.has(e.context.itemId)) transfer = true;
+app/src/evidence/rungState.ts:36: * before (`unseen: false` on a phrase's run, `isPhraseRun`: a piece played
+app/src/evidence/rungState.ts:38: * did; since G1a a piece's run carries the relation as `firstContact`, which
+app/src/evidence/rungState.ts:188:    !(row.unseen === false && isPhraseRun(row)) &&
+app/src/ui/AppShell.ts:284:    // the first — which is how Entry 52's double mount went unseen until an
+app/src/ui/help.ts:311:  unseen: 'it counts only on music you have not seen or heard',
+app/src/ui/help.ts:366:      case 'condition:unseen':
+app/src/ui/help.ts:367:        add(skillLines, NOT_JUDGED_TEXT.unseen, refusal);
+app/src/ui/screens/ProgressScreen.ts:168:  // that G1's app stored carries `unseen: false` too, as its first-contact
+app/src/ui/screens/ProgressScreen.ts:170:  // piece's run carries the relation as `firstContact`, which this line does
+app/src/ui/screens/ProgressScreen.ts:172:  if (session.unseen === false && isPhraseRun(session)) flags.push(HISTORY_TEXT.notFirstSight);
+app/src/ui/screens/ScoreScreen.ts:96:  firstContactIn,
+app/src/ui/screens/ScoreScreen.ts:3068:  function runHeader(score: SessionScore, first: { firstContact: boolean; unseen?: boolean; recipe?: ReadingRecipe }, demonstrated: boolean): RunHeader {
+app/src/ui/screens/ScoreScreen.ts:3144:    return firstContactIn({ ...encounterTarget, ...(bars === undefined ? {} : { bars }) }, from, visit);
+app/src/ui/screens/ScoreScreen.ts:3154:  function firstContactOfRun(bars: readonly [number, number] | undefined): boolean {
+app/src/ui/screens/ScoreScreen.ts:3304:    // `firstContact`.
+app/src/ui/screens/ScoreScreen.ts:3305:    const firstContact = sightReading ? !sightReadRepeat : firstContactOfRun(barsOfRun(score.judgedUnder));
+app/src/ui/screens/ScoreScreen.ts:3308:    // derivation with two names, so a change to the visit rule moves `unseen`
+app/src/ui/screens/ScoreScreen.ts:3310:    const unseen = firstContact;
+app/src/ui/screens/ScoreScreen.ts:3358:    // is kept as practice, flagged `unseen: false`, where T37 and T40 dropped
+app/src/ui/screens/ScoreScreen.ts:3405:            // `firstContact`; a phrase's run carries sight-reading's `unseen`
+app/src/ui/screens/ScoreScreen.ts:3408:            ...runHeader(score, sightReading ? { firstContact, unseen, recipe: phraseRecipe(item.id) } : { firstContact }, demonstrated),
+app/src/ui/screens/ScoreScreen.ts:3470:     * `unseen` to ask. A phrase's condition goes with its relation, as it was
+app/src/ui/screens/ScoreScreen.ts:3474:      if (result.firstContact !== true || !encounterTarget) return result;
+app/src/ui/screens/ScoreScreen.ts:3480:      if (!sightReading) return { ...result, firstContact: false };
+app/src/ui/screens/ScoreScreen.ts:3497:      return { ...result, firstContact: false, unseen: false, passed: false, masterEligible: false };
+app/src/ui/screens/ScoreScreen.ts:3960:   * never be in unseen (`05` §6).
+exit=0

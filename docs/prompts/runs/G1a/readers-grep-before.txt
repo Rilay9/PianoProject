@@ -1,0 +1,219 @@
+grep -rn "unseen" app/src app/tests   (taken at 76c9ade before any change)
+app/src/app/testHooks.ts:49:   * That is exactly how the double mount Entry 52 found went unseen until a
+app/src/curriculum/candidates.ts:567:      // A phrase the reader writes when it opens is new each time, from an unseen seed (C4): first contact by construction.
+app/src/curriculum/session.ts:2328:      const read = met.some((row) => row.unseen === true);
+app/src/curriculum/session.ts:2334:    .filter((row) => row.unseen === true && byId.has(row.itemId))
+app/src/data/db.ts:168:  unseen?: boolean;
+app/src/data/db.ts:251: * Until G1 the first-reading flag alone said so — C1 wrote `unseen` on phrases and on nothing else —
+app/src/data/db.ts:252: * and every reader asked `unseen !== undefined`. G1 writes the flag on every run the Score screen
+app/src/data/db.ts:253: * records, as the first-contact fact; a piece played again is `unseen: false` and must not lose its
+app/src/data/db.ts:258:export function isPhraseRun(row: Pick<RunHeader, 'unseen' | 'recipe' | 'material'>): boolean {
+app/src/data/db.ts:260:  if (row.unseen === undefined) return false;
+app/src/data/db.ts:539: * (or drops it, for `unseen`); an older backup restores rows of this shape.
+app/src/data/db.ts:543:  state: 'unseen' | 'learning' | 'known';
+app/src/data/evidenceJob.ts:65:    (row.unseen !== undefined && isPhraseRun(row)) ||
+app/src/data/progressStore.ts:177:   * decision 3). A generated phrase heard or read before (`unseen: false`) is
+app/src/data/progressStore.ts:185:   * (`unseen: false`) is practice that passes as it always did.
+app/src/data/progressStore.ts:187:  const evidence = !(result.unseen === false && isPhraseRun(result));
+app/src/data/progressStore.ts:200:   * reader and `rungState` read. `unseen` (or the recipe) is written on every
+app/src/data/progressStore.ts:201:   * run of a generated phrase (C1, C4); since G1 `unseen` is on every Score
+app/src/data/skillsStore.ts:5: * Until C7 this module kept its own truth per concept — `unseen`, `learning`
+app/src/data/skillsStore.ts:22: *   the day it is carried over, in place (`SkillRow`), and an `unseen` row is
+app/src/data/skillsStore.ts:46: * `unseen` is dropped, and a row already carried over is untouched. Returns
+app/src/data/skillsStore.ts:58:      if (row.state === 'unseen') await cursor.delete();
+app/src/demands/vocabulary.ts:19:/** A run condition a skill's standard can require (Keep tempo, unseen, the guide off, both hands). */
+app/src/demands/vocabulary.ts:20:export type ConditionId = 'keep-tempo' | 'unseen' | 'guide-off' | 'both-hands';
+app/src/engine/drills/harmony.ts:313: * The music comes from the sight-reading writer, so the exercise is unseen
+app/src/engine/sightReading.ts:4:// the material is *unseen*, so it is generated on the phone rather than
+app/src/engine/sightReading.ts:1501: * Generates an unseen exercise as MusicXML.
+app/src/evidence/evidence.ts:116:  /** A generated phrase read for the first time (`unseen: true`): first contact with the material. */
+app/src/evidence/evidence.ts:238:  unseen: { field: 'SessionRow.unseen', met: (o) => o.unseen === true },
+app/src/evidence/evidence.ts:246:  unseen: ['unseen'],
+app/src/evidence/evidence.ts:571:      firstContact: observation.unseen === true,
+app/src/evidence/rungState.ts:36: * before (`unseen: false` on a phrase's run, `isPhraseRun`: since G1 a piece
+app/src/evidence/rungState.ts:187:    !(row.unseen === false && isPhraseRun(row)) &&
+app/src/ui/AppShell.ts:284:    // the first — which is how Entry 52's double mount went unseen until an
+app/src/ui/help.ts:311:  unseen: 'it counts only on music you have not seen or heard',
+app/src/ui/help.ts:366:      case 'condition:unseen':
+app/src/ui/help.ts:367:        add(skillLines, NOT_JUDGED_TEXT.unseen, refusal);
+app/src/ui/screens/ProgressScreen.ts:168:  // carries `unseen: false` too, as its first-contact fact, and every repeat of
+app/src/ui/screens/ProgressScreen.ts:170:  if (session.unseen === false && isPhraseRun(session)) flags.push(HISTORY_TEXT.notFirstSight);
+app/src/ui/screens/ScoreScreen.ts:3068:  function runHeader(score: SessionScore, first: { unseen?: boolean; recipe?: ReadingRecipe }, demonstrated: boolean): RunHeader {
+app/src/ui/screens/ScoreScreen.ts:3352:    // is kept as practice, flagged `unseen: false`, where T37 and T40 dropped
+app/src/ui/screens/ScoreScreen.ts:3400:            ...runHeader(score, sightReading ? { unseen: firstContact, recipe: phraseRecipe(item.id) } : { unseen: firstContact }, demonstrated),
+app/src/ui/screens/ScoreScreen.ts:3462:      if (result.unseen !== true || !encounterTarget) return result;
+app/src/ui/screens/ScoreScreen.ts:3468:      if (!sightReading) return { ...result, unseen: false };
+app/src/ui/screens/ScoreScreen.ts:3485:      return { ...result, unseen: false, passed: false, masterEligible: false };
+app/src/ui/screens/ScoreScreen.ts:3948:   * never be in unseen (`05` §6).
+app/tests/e2e/competence.spec.ts:57:    context: { itemId, firstContact: true, met: standard === 'full' ? ['unseen', 'guide-off'] : [], unattributed: 0, estimated: false },
+app/tests/e2e/competence.spec.ts:77:    unseen: true,
+app/tests/e2e/fixtures/reader-learners.json:45:   "unseen": true,
+app/tests/e2e/fixtures/reader-learners.json:134:       "unseen",
+app/tests/e2e/fixtures/reader-learners.json:205:       "unseen",
+app/tests/e2e/fixtures/reader-learners.json:269:       "unseen"
+app/tests/e2e/fixtures/reader-learners.json:370:   "unseen": true,
+app/tests/e2e/fixtures/reader-learners.json:461:       "unseen",
+app/tests/e2e/fixtures/reader-learners.json:534:       "unseen",
+app/tests/e2e/fixtures/reader-learners.json:598:       "unseen"
+app/tests/e2e/fixtures/reader-learners.json:699:   "unseen": true,
+app/tests/e2e/fixtures/reader-learners.json:794:       "unseen",
+app/tests/e2e/fixtures/reader-learners.json:881:       "unseen",
+app/tests/e2e/fixtures/reader-learners.json:959:       "unseen"
+app/tests/e2e/fixtures/reader-learners.json:1077:   "unseen": true,
+app/tests/e2e/fixtures/reader-learners.json:1167:       "unseen",
+app/tests/e2e/fixtures/reader-learners.json:1256:       "unseen",
+app/tests/e2e/fixtures/reader-learners.json:1328:       "unseen"
+app/tests/e2e/fixtures/reader-learners.json:1428:   "unseen": true,
+app/tests/e2e/fixtures/reader-learners.json:1532:       "unseen",
+app/tests/e2e/fixtures/reader-learners.json:1641:       "unseen",
+app/tests/e2e/fixtures/reader-learners.json:1731:       "unseen"
+app/tests/e2e/fixtures/reader-learners.json:1850:   "unseen": true,
+app/tests/e2e/fixtures/reader-learners.json:1942:       "unseen",
+app/tests/e2e/fixtures/reader-learners.json:2048:       "unseen",
+app/tests/e2e/fixtures/reader-learners.json:2140:       "unseen"
+app/tests/e2e/fixtures/reader-learners.json:2294:   "unseen": true,
+app/tests/e2e/fixtures/reader-learners.json:2390:       "unseen",
+app/tests/e2e/fixtures/reader-learners.json:2508:       "unseen",
+app/tests/e2e/fixtures/reader-learners.json:2604:       "unseen"
+app/tests/e2e/lab.spec.ts:355:    // all. It is recorded now, flagged as not a first reading (`unseen:
+app/tests/e2e/lab.spec.ts:358:    const sessions = (): Promise<{ itemId: string; seed?: number; unseen?: boolean }[]> =>
+app/tests/e2e/lab.spec.ts:363:        return (await hooks.exportAll()).stores.sessions as { itemId: string; seed?: number; unseen?: boolean }[];
+app/tests/e2e/lab.spec.ts:386:    expect(first?.unseen).toBe(true);
+app/tests/e2e/lab.spec.ts:395:    expect(rows.filter((row) => row.unseen === true), 'the same phrase was recorded as a first attempt twice').toHaveLength(1);
+app/tests/e2e/lab.spec.ts:396:    expect(rows.filter((row) => row.unseen === false && row.seed === first?.seed)).toHaveLength(1);
+app/tests/e2e/lab.spec.ts:406:    // it; it is recorded now, flagged `unseen: false`, so the practice counts
+app/tests/e2e/lab.spec.ts:409:    const sessions = (): Promise<{ itemId: string; seed?: number; unseen?: boolean }[]> =>
+app/tests/e2e/lab.spec.ts:414:        return (await hooks.exportAll()).stores.sessions as { itemId: string; seed?: number; unseen?: boolean }[];
+app/tests/e2e/lab.spec.ts:442:    expect(stored?.unseen, 'a phrase the learner had heard, recorded as a first reading').toBe(false);
+app/tests/e2e/lab.spec.ts:468:    const sessions = (): Promise<{ itemId: string; seed?: number; unseen?: boolean; at: string }[]> =>
+app/tests/e2e/lab.spec.ts:473:        return (await hooks.exportAll()).stores.sessions as { itemId: string; seed?: number; unseen?: boolean; at: string }[];
+app/tests/e2e/lab.spec.ts:515:    expect(stored?.unseen, 'a phrase heard at noon went on the record as a first reading in the evening').toBe(false);
+app/tests/e2e/metronome.spec.ts:157:    // Coming back gives a stopped metronome, not one that kept running unseen.
+app/tests/e2e/plan.spec.ts:152:    // measure; the skills store's *unseen*, *learning*, *known* and the
+app/tests/e2e/score-fit-paths.spec.ts:117:      const context = { itemId: row, seed, material, firstContact: true, met: ['keep-tempo', 'unseen', 'guide-off'], unattributed: 0, estimated: false };
+app/tests/e2e/score-fit-paths.spec.ts:133:        unseen: true,
+app/tests/e2e/transfer-offer.spec.ts:72:      const context = { itemId: row, seed, material, firstContact: true, met: ['keep-tempo', 'unseen', 'guide-off'], unattributed: 0, estimated: false };
+app/tests/e2e/transfer-offer.spec.ts:88:        unseen: true,
+app/tests/unit/backup.test.ts:388:      unseen: false,
+app/tests/unit/competenceSurvivesPruning.test.ts:204:    expect(read?.unseen).toBe(true);
+app/tests/unit/demandIsNotAbility.test.ts:63:    const run = observe(DEMANDING, { mode: 'tempo', unseen: true, guide: 'off' });
+app/tests/unit/demandIsNotAbility.test.ts:75:      observe(easy, { mode: 'tempo', unseen: true, guide: 'off', at: '2026-09-20T10:00:00.000Z' }),
+app/tests/unit/demandIsNotAbility.test.ts:76:      observe(easy, { mode: 'tempo', unseen: true, guide: 'off', at: '2026-09-21T10:00:00.000Z' }),
+app/tests/unit/demandIsNotAbility.test.ts:86:    const failed = observe(DEMANDING, { mode: 'tempo', unseen: true, guide: 'off', skip, at: '2026-09-27T10:00:00.000Z' });
+app/tests/unit/demandIsNotAbility.test.ts:119:    const run = observe(DEMANDING, { mode: 'tempo', unseen: true, guide: 'off' });
+app/tests/unit/demandReadings.test.ts:58:    unseen: true,
+app/tests/unit/encounterModel.test.ts:358:    const notFirst = familiarityIn(target(PARENT), history({ runs: [run(PARENT, file('p'), NOON, { unseen: false })] }));
+app/tests/unit/encounterModel.test.ts:424:    const legacyReads = familiarityIn(phraseTarget, history({ runs: [run(reader, undefined, YESTERDAY, { seed: 3, unseen: true })] }));
+app/tests/unit/encounterModel.test.ts:552:  const pieceRun = (unseen: boolean): RunResult => ({ ...run(PARENT, file('p'), NOON), unseen, passed: true, masterEligible: false });
+app/tests/unit/encounterModel.test.ts:556:    expect(isPhraseRun({ unseen: true })).toBe(true);
+app/tests/unit/encounterModel.test.ts:557:    expect(isPhraseRun({ unseen: false, material: phrase(3) })).toBe(true);
+app/tests/unit/encounterModel.test.ts:558:    expect(isPhraseRun({ unseen: false, material: file('p') })).toBe(false);
+app/tests/unit/encounterModel.test.ts:559:    expect(isPhraseRun({ unseen: true, material: scale('A') })).toBe(false);
+app/tests/unit/encounterModel.test.ts:560:    expect(isPhraseRun({ unseen: false, material: { kind: 'none' } })).toBe(false);
+app/tests/unit/encounterModel.test.ts:564:  it('a piece played again (unseen: false) still passes, and the rung state still reads it', async () => {
+app/tests/unit/encounterModel.test.ts:570:    const stored = { ...run(PARENT, file('p'), NOON), unseen: false, accuracy: 0.95 } as SessionRow;
+app/tests/unit/encounterModel.test.ts:576:    const reread: SessionRow = { ...run('drill.reading.sight-reading-2-right', phrase(4), NOON), unseen: false, recipe: { row: 'drill.reading.sight-reading-2-right' }, seed: 4 };
+app/tests/unit/encounterRetention.test.ts:70:  unseen: true,
+app/tests/unit/encounterRetention.test.ts:74:const LEGACY: SessionRow = { ...PRACTISED, itemId: 'song.legacy', at: LEGACY_AT, range: undefined, unseen: undefined, material: undefined };
+app/tests/unit/evidenceAdversarial.test.ts:35:    unseen: true,
+app/tests/unit/evidenceAdversarial.test.ts:294:    ['heard before it was read', { unseen: false }],
+app/tests/unit/evidenceAdversarial.test.ts:295:    ['demonstrated inside the run', { unseen: false, demonstrated: true }],
+app/tests/unit/evidenceAdversarial.test.ts:296:    ['read before', { unseen: false }],
+app/tests/unit/evidenceAdversarial.test.ts:301:      expect(results.find((r) => r.skill === 'sight-reading')).toMatchObject({ kind: 'refusal', reason: 'condition:unseen' });
+app/tests/unit/evidenceByDemand.test.ts:28:/** The run every case plays unless it says otherwise: Keep tempo at 70 %, unseen, the guide off, both hands. */
+app/tests/unit/evidenceByDemand.test.ts:29:const FIRST_READ: RunPlan = { mode: 'tempo', tempoPct: 70, unseen: true, guide: 'off', hands: 'both' };
+app/tests/unit/evidenceJobRecomputes.test.ts:259:    const heard: SessionRow = { ...read, unseen: false, evidenceDefinitions: 2 };
+app/tests/unit/evidenceJobRecomputes.test.ts:264:    expect(sight && isRefusal(sight) ? sight.reason : sight).toBe('condition:unseen');
+app/tests/unit/evidenceOnlyMeasured.test.ts:126:    const observation = observe(RHYTHMIC, { mode: 'tempo', unseen: true, guide: 'off' });
+app/tests/unit/evidenceOnlyMeasured.test.ts:158:      const heard = observe(RHYTHMIC, { mode: 'tempo', unseen: false, guide });
+app/tests/unit/evidenceOnlyMeasured.test.ts:160:        reason: 'condition:unseen',
+app/tests/unit/evidenceOnlyMeasured.test.ts:161:        cites: ['unseen'],
+app/tests/unit/evidenceOnlyMeasured.test.ts:169:    // full standard (unseen, guide off, Keep tempo), each judged by 1.5, and
+app/tests/unit/evidenceProperty.test.ts:14: * 3. everything met — Keep tempo, both hands, unseen, the guide off, a window
+app/tests/unit/evidenceProperty.test.ts:140:const FULL = { mode: 'tempo' as const, hands: 'both' as const, unseen: true, guide: 'off' as const, toleranceMs: 20 };
+app/tests/unit/evidenceTouchesNamedSkills.test.ts:65:    const run = observe(PHRASE, { mode: 'tempo', unseen: true, guide: 'off', at: '2026-09-27T10:00:00.000Z', id: 7 });
+app/tests/unit/evidenceTouchesNamedSkills.test.ts:88:    const run = observe(PHRASE, { mode: 'tempo', unseen: true, guide: 'off' });
+app/tests/unit/feedbackFromMeasurements.test.ts:374:    expect(row.unseen).toBe(true);
+app/tests/unit/firstContactOnTheScore.test.ts:16: * - the run's `unseen` derived from the history and the visit: heard yesterday, viewed on another
+app/tests/unit/firstContactOnTheScore.test.ts:422:    expect(row.unseen, 'a phrase heard on an earlier visit went on the record as a first reading').toBe(false);
+app/tests/unit/firstContactOnTheScore.test.ts:427:    expect(row.evidence?.some((one) => one.kind === 'refusal' && (one as { reason?: string }).reason === 'condition:unseen')).toBe(true);
+app/tests/unit/firstContactOnTheScore.test.ts:441:    expect((await lastStored()).unseen).toBe(false);
+app/tests/unit/firstContactOnTheScore.test.ts:450:    expect(row.unseen).toBe(true);
+app/tests/unit/firstContactOnTheScore.test.ts:460:    expect((await lastStored()).unseen).toBe(false);
+app/tests/unit/firstContactOnTheScore.test.ts:477:    expect((await lastStored()).unseen, 'a viewing in another tab before this one opened was not read').toBe(false);
+app/tests/unit/firstContactOnTheScore.test.ts:488:    expect((await lastStored()).unseen, 'a viewing in another tab after this one opened was not read before storing').toBe(false);
+app/tests/unit/firstContactOnTheScore.test.ts:510:      unseen: true,
+app/tests/unit/firstContactOnTheScore.test.ts:515:    expect((await lastStored(2)).unseen).toBe(false);
+app/tests/unit/firstContactOnTheScore.test.ts:523:    expect((await lastStored(1)).unseen).toBe(true);
+app/tests/unit/firstContactOnTheScore.test.ts:526:    expect(second.unseen).toBe(false);
+app/tests/unit/firstContactOnTheScore.test.ts:547:    expect((await lastStored(2)).unseen, 'excerpt A played made excerpt B met').toBe(true);
+app/tests/unit/firstContactOnTheScore.test.ts:554:    expect((await lastStored(2)).unseen, 'the whole piece played left its excerpt a first contact').toBe(false);
+app/tests/unit/firstContactOnTheScore.test.ts:563:    expect(first.unseen).toBe(true);
+app/tests/unit/firstContactOnTheScore.test.ts:570:    expect(second.unseen, 'a duplicate import restored first contact').toBe(false);
+app/tests/unit/firstThirtyDays.test.ts:514:        .filter((row) => row.unseen === true && row.itemId === day.offer.item.id)
+app/tests/unit/help.test.ts:214:      NOT_JUDGED_TEXT.unseen,
+app/tests/unit/helpers/observed.ts:46:  unseen?: boolean;
+app/tests/unit/helpers/observed.ts:149:    ...(plan.unseen === undefined ? {} : { unseen: plan.unseen }),
+app/tests/unit/helpers/reader.ts:124:    unseen: true,
+app/tests/unit/helpers/skillEvidence.ts:27:  /** `off` (unseen, guide off: the full standard) unless said. */
+app/tests/unit/helpers/skillEvidence.ts:29:  unseen?: boolean;
+app/tests/unit/helpers/skillEvidence.ts:41:    unseen: plan.unseen ?? true,
+app/tests/unit/legacySkillsAreExposures.test.ts:6: * Until C7 the store held its own truth per concept — `unseen`, `learning` or
+app/tests/unit/legacySkillsAreExposures.test.ts:37:  { conceptId: 'ledger-lines', state: 'unseen', lastReviewedAt: '2026-07-01T10:00:00.000Z' },
+app/tests/unit/legacySkillsAreExposures.test.ts:76:  it('known and learning rows yield at most introduced; a row that said unseen yields nothing', async () => {
+app/tests/unit/legacySkillsAreExposures.test.ts:83:    expect(exposures.has('ledger-lines'), 'a row that said unseen was carried over as met').toBe(false);
+app/tests/unit/legacySkillsAreExposures.test.ts:133:    expect(JSON.stringify(rows)).not.toMatch(/itemId|viewed|heard|demonstrated|played|unseen|state/);
+app/tests/unit/masteryLadder.test.ts:33:const FIRST_READING: RunPlan = { mode: 'tempo', unseen: true, guide: 'off' };
+app/tests/unit/masteryLadder.test.ts:138:    // standard: the run is refused, citing the record's `unseen`, and the
+app/tests/unit/masteryLadder.test.ts:140:    const heard = observe(PHRASE, { ...FIRST_READING, itemId: LEVEL_4, at: day(2), unseen: false });
+app/tests/unit/masteryLadder.test.ts:144:      reason: 'condition:unseen',
+app/tests/unit/masteryLadder.test.ts:145:      cites: ['unseen'],
+app/tests/unit/materialOnTheRecord.test.ts:102:  const observation = { ...observe(SHIFT, { mode: 'tempo', unseen: true, guide: 'off', itemId: READING_ROW, seed: 101 }), material: PHRASE, intent: 'transfer' as const };
+app/tests/unit/materialOnTheRecord.test.ts:117:    const plain = observe(SHIFT, { mode: 'tempo', unseen: true, guide: 'off', itemId: READING_ROW });
+app/tests/unit/materialOnTheRecord.test.ts:156:  const read = (day: number, itemId: string, extra: Partial<SessionRow> = {}, plan: { wrong?: number[]; unseen?: boolean } = {}): SessionRow => {
+app/tests/unit/materialOnTheRecord.test.ts:158:    const observation = { ...observe(SHIFT, { mode: 'tempo', unseen: plan.unseen ?? true, guide: 'off', itemId, at, ...(plan.wrong ? { skip: plan.wrong } : {}) }), ...extra };
+app/tests/unit/materialOnTheRecord.test.ts:184:    'a phrase met before, read again': [read(1, READING_ROW, { material: other(1) }), read(2, READING_ROW, { material: other(1) }, { unseen: false }), read(3, READING_ROW, { material: other(3) })],
+app/tests/unit/observationsFromRun.test.ts:404:  it('a sight-read heard before its first run is recorded, flagged unseen: false', async () => {
+app/tests/unit/observationsFromRun.test.ts:413:    expect(row.unseen).toBe(false);
+app/tests/unit/observationsFromRun.test.ts:417:  it('a first reading of a phrase nobody played is unseen: true', async () => {
+app/tests/unit/observationsFromRun.test.ts:424:    expect(row.unseen).toBe(true);
+app/tests/unit/observationsFromRun.test.ts:440:    expect(row.unseen).toBe(false);
+app/tests/unit/oneGateBoundary.test.ts:83:  const observation = { ...observe(SHIFT, { mode: 'tempo', unseen: true, guide: 'off', itemId: READING_ROW, at: on(day), hands: 'R' }), material };
+app/tests/unit/oneSkillState.test.ts:6: * — `unseen`, `learning`, `known` — written by the lesson page when a rung
+app/tests/unit/progressHistoryLines.test.ts:137:      row('drill.reading.seen', { unseen: false, tempoMeasured: true }),
+app/tests/unit/readerAdversarial.test.ts:52:  was: { unseen?: boolean; demonstrated?: boolean } = {},
+app/tests/unit/readerAdversarial.test.ts:57:    unseen: true,
+app/tests/unit/readerAdversarial.test.ts:230:      read(RHYTHMIC, 1, OWN, '2.2', {}, { unseen: false }),
+app/tests/unit/readerAdversarial.test.ts:231:      read(RHYTHMIC, 2, OWN, '2.2', {}, { unseen: false, demonstrated: true }),
+app/tests/unit/recordTruth.test.ts:169:      { ...RUN, seed: dailySeed(dayKey(now)), unseen: false, passed: true, masterEligible: true },
+app/tests/unit/recordTruth.test.ts:181:    expect(session?.unseen).toBe(false);
+app/tests/unit/recordTruth.test.ts:187:  it('an unseen run of today’s phrase still ticks the day, and passes nothing', async () => {
+app/tests/unit/recordTruth.test.ts:189:    const row = await recordRun({ ...RUN, seed: dailySeed(dayKey(now)), unseen: true }, now);
+app/tests/unit/repertoireRetention.test.ts:121:    unseen: true,
+app/tests/unit/requirementsCanBeShown.test.ts:15: * through the real engine at the default 70 %, unseen, the guide off — and the
+app/tests/unit/rungStateFromEvidence.test.ts:145:      run('ex.a', { lessonId: 'A', unseen: false }),
+app/tests/unit/scoreSummaryTruth.test.ts:684:  // `unseen: false`, and kept out of the evidence it cannot support — here the
+app/tests/unit/scoreSummaryTruth.test.ts:701:    expect(lastRecorded().unseen).toBe(false);
+app/tests/unit/scoreSummaryTruth.test.ts:772:    expect(recorded.unseen, `a version-${String(other)} run of seed 777 made the version-${String(SIGHT_READING_IN_FORCE)} phrase of seed 777 met`).toBe(true);
+app/tests/unit/scoreSummaryTruth.test.ts:779:    expect(recorded.unseen, 'a run recorded before D1a made the version-2 phrase of its seed met').toBe(true);
+app/tests/unit/scoreSummaryTruth.test.ts:913:    expect(lastRecorded().unseen).toBe(true);
+app/tests/unit/scoreSummaryTruth.test.ts:943:  // flagged `unseen: false`, and the flag keeps it out of the reading drill's
+app/tests/unit/scoreSummaryTruth.test.ts:953:    expect(lastRecorded().unseen).toBe(false);
+app/tests/unit/scoreSummaryTruth.test.ts:973:    expect(lastRecorded().unseen).toBe(false);
+app/tests/unit/scoreSummaryTruth.test.ts:987:    // The way to unseen music, on the sheet where the learner is told this
+app/tests/unit/sightReadingFromReadingState.test.ts:195:describe('unseen is guaranteed: no phrase the learner has been recorded playing or hearing is offered', () => {
+app/tests/unit/sightReadingFromReadingState.test.ts:214:    const heard = { ...readToday, unseen: false };
+app/tests/unit/sightReadingFromReadingState.test.ts:248:    expect(next.seed, 'a seed read under version 1 was offered again as unseen').not.toBe(first.seed);
+app/tests/unit/sightReadingIsNotAPiece.test.ts:43:  unseen: true,
+app/tests/unit/sightReadingIsNotAPiece.test.ts:103:    const before = await recordRun({ ...PHRASE, seed: 21, unseen: undefined, recipe: undefined }, new Date('2026-10-01T10:00:00'));
+app/tests/unit/slotsFromEvidence.test.ts:225:      unseen: true,
+app/tests/unit/transferOffer.test.ts:72:  unseen?: boolean;
+app/tests/unit/transferOffer.test.ts:79:    ...observe(SHIFT, { mode: 'tempo', unseen: plan.unseen ?? true, guide: 'off', itemId, at: on(day), hands: plan.hands ?? 'R' }),
+app/tests/unit/transferOfferOnTheRun.test.ts:209:    ...observe(SHIFT, { mode: 'tempo', unseen: true, guide: 'off', itemId: READING_ROW, at: on(day), hands: 'R', ...(wrong ? { wrongInstead: [0, 1, 2, 3, 4, 5, 6, 7] } : {}) }),
+app/tests/unit/transferRelationship.test.ts:55:function read(day: number, plan: { itemId?: string; material?: Identity; skills?: string[]; unseen?: boolean; hands?: 'R' | 'both' } = {}): SessionRow {
+app/tests/unit/transferRelationship.test.ts:58:    ...observe(SHIFT, { mode: 'tempo', unseen: plan.unseen ?? true, guide: 'off', itemId, at: on(day), hands: plan.hands ?? 'R' }),
+app/tests/unit/transferRelationship.test.ts:76:    const later = read(12, { itemId: 'drill.reading.sight-reading-1', material: phraseOf(12), unseen: false });
+app/tests/unit/transferRelationship.test.ts:122:      const observation = { ...observe(EIGHTHS, { mode: 'tempo', unseen: true, guide: 'off', itemId: READING_ROW, at: on(day), hands: 'R' }), material: phraseOf(day) };
+app/tests/unit/tripletPrecision.test.ts:61:      unseen: true,
+app/tests/unit/tripletPrecision.test.ts:113:      observation: observe(TRIPLETS, { mode: 'tempo', tempoPct: slow, unseen: true, guide: 'off' }),
+exit=0
