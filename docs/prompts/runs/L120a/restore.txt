@@ -1,0 +1,12 @@
+﻿restored from build\l120a-snapshot after the build
+ M docs/prompts/tasks/L120-untaught-readings-at-their-truth.md
+?? docs/prompts/runs/L120a/
+?? docs/review/responses/questions-4dc2f135.md
+?? tools/content/tests/test_untaught_options.py
+?? tools/content/untaught_options.py
+--- git status --short at the end (after the checks chain and the probe's removal)
+ M docs/prompts/tasks/L120-untaught-readings-at-their-truth.md
+?? docs/prompts/runs/L120a/
+?? docs/review/responses/questions-4dc2f135.md
+?? tools/content/tests/test_untaught_options.py
+?? tools/content/untaught_options.py

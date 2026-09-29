@@ -1,0 +1,8 @@
+python docs/prompts/runs/L120a/scripts-compare-head.py
+tool lines 388; app probe `untaught` at this head 389
+  only the app: ('2.2', 'drill.reading.sight-reading-2-right') ('range.beyond-position',) (a runtime reading row, listed unread by the tool)
+  same option, different demands: 0
+tool lines + shadowed 400; app `uncoped` at this head (the coping question alone) 401
+  only the app: ('2.2', 'drill.reading.sight-reading-2-right') ('range.beyond-position',) (a runtime reading row, listed unread by the tool)
+  same option, different demands: 0
+exit=0

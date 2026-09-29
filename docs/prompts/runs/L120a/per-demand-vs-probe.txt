@@ -1,0 +1,27 @@
+PYTHONIOENCODING=utf-8 python docs/prompts/runs/L120a/scripts-per-demand.py
+lines: X1 probe 387, app probe at this head 389, tool 388
+pairs: X1 probe 640, app probe at this head 642, tool 641
+
+demand                            X1  head  tool  difference
+rhythm.sixteenths                206   207   207  head +1: ragtime.8 song.ragtime.joplin-pine-apple-rag.mutopia
+rhythm.syncopation               125   125   125  —
+pitch.ledger                      64    64    64  —
+range.beyond-position             42    43    42  head +1: 2.4 song.folk.cielito-lindo.simple; tool -1: 2.2 drill.reading.sight-reading-2-right
+key.signature                     34    34    34  —
+pitch.chromatic                   26    26    26  —
+rhythm.triplets                   26    26    26  —
+interval.leap                     20    20    20  —
+interval.skip                     19    19    19  —
+rhythm.shorter-than-quarter       16    16    16  —
+rhythm.eighths                    16    16    16  —
+metre.compound                    14    14    14  —
+rhythm.dotted-quarter             10    10    10  —
+texture.left-hand-pattern          8     8     8  —
+rhythm.ties                        5     5     5  —
+clef.bass                          4     4     4  —
+texture.hands-together             4     4     4  —
+interval.step                      1     1     1  —
+
+head +: options Q76 added to rungs after X1's head (e4f9d3f2: stage-2.json 2.4, stage-8.json ragtime.8);
+tool -: the runtime reading row the build does not read (listed unread, never as coped with).
+exit=0
