@@ -387,13 +387,15 @@ def validate_curriculum(curriculum: dict, catalog: list, min_options: int = MIN_
 
 #: Q80: the reasons an import step writes on a placeholder that is *this build's*, not the catalogue's: the
 #: source's files were not fetched, or what was fetched is not the pinned file. Read from the placeholder's
-#: `importHint`, where the step says why. Only `import_mutopia.build_entry` writes them; the kern and MuseTrainer
-#: steps leave a file they cannot find out of the catalogue (`report.missing`) instead of placeholding it, so
-#: there is no reason of theirs to read. `tests/test_validate_ladder.py` builds these placeholders with the import
-#: step itself, so a change to its wording turns that test red rather than this check quiet.
+#: `importHint`, where the step says why: `import_mutopia.build_entry`'s two, and since Q82 the one the kern and
+#: MuseTrainer steps write for a file their clone does not have (`import_kern.UNFETCHED_REASON`,
+#: `import_musetrainer.UNFETCHED_REASON`; before Q82 they left such a file out of the catalogue, and every id that
+#: named it pointed at nothing). `tests/test_validate_ladder.py` builds these placeholders with the import steps
+#: themselves, so a change to their wording turns that test red rather than this check quiet.
 UNFETCHED_REASONS = (
     re.compile(r"the edition's \.(?:ly|mid) file was not fetched"),
     re.compile(r"\S+ is not the pinned file \(sha256 [^)]*\)"),
+    re.compile(r"\S+ was not fetched: the (?:kern clone|MuseTrainer library) is not on this build"),
 )
 
 
@@ -896,11 +898,11 @@ def printed_bars(path: Path) -> int | None:
         return None
 
 
-def section_errors(
+def section_findings(
     catalog: list, content_dir: Path, report_path: Path = RENDER_REPORT
-) -> list[str]:
+) -> tuple[list[str], list[str]]:
     """
-    replan/`04` §5: a named section has to name bars the piece actually has.
+    replan/`04` §5: a named section has to name bars the piece actually has. Errors, and warnings (Q82).
 
     Bars are 1-based positions in the printed score, so the bound is the
     *printed* count. Checking against the unrolled count instead would pass a
@@ -913,13 +915,23 @@ def section_errors(
     to hold on a fresh checkout: an ordering between two build steps is not a
     thing to hang a correctness check on, and the first thing a clean CI runner
     does is prove it.
+
+    **A placeholder this build could not fetch is warned, not failed (Q82).** `build.attach_sections`
+    puts the sections on every item by id, a placeholder too. A fetch placeholder (`unfetched_placeholders`:
+    the kern or MuseTrainer clone, or Mutopia's files, did not arrive) has no file, and a fresh runner has no
+    render report when it validates, so there its count cannot be established for a reason that says nothing
+    about the sections: the check says it did not look, naming the item and the fetch, as Q75 treats a claim
+    this build could not measure. Only that case moves. A licence placeholder, a bundled file whose bars cannot
+    be counted, and a fetch placeholder the render report does count are checked as before.
     """
     errors: list[str] = []
+    warnings: list[str] = []
     with_sections = [
         item for item in catalog if (item.get("teaching") or {}).get("sections")
     ]
     if not with_sections:
-        return errors
+        return errors, warnings
+    unfetched = dict(unfetched_placeholders(with_sections))
     printed: dict[str, int | None] = {}
     if report_path.is_file():
         report = json.loads(report_path.read_text(encoding="utf-8"))
@@ -933,6 +945,9 @@ def section_errors(
         sections = (item.get("teaching") or {})["sections"]
         if bars is None and item.get("file"):
             bars = printed_bars(content_dir / item["file"])
+        if bars is None and item["id"] in unfetched and not item.get("file"):
+            warnings.append(f"{item['id']}: named sections not checked on this build: {unfetched[item['id']]}")
+            continue
         if bars is None:
             errors.append(
                 f"{item['id']}: has named sections but its printed bar count could not be "
@@ -952,7 +967,14 @@ def section_errors(
                     f"{item['id']}: section {label!r} runs to bar {high} but the piece has "
                     f"{bars} printed bar(s)"
                 )
-    return errors
+    return errors, warnings
+
+
+def section_errors(
+    catalog: list, content_dir: Path, report_path: Path = RENDER_REPORT
+) -> list[str]:
+    """The errors of `section_findings`: a named section that names bars the piece does not have (replan/`04` §5)."""
+    return section_findings(catalog, content_dir, report_path)[0]
 
 
 #: The approved excerpts (E1): each row checked beside the sections, against the built catalogue.
@@ -1980,6 +2002,7 @@ def main() -> None:
     args = parser.parse_args()
 
     errors: list[str] = []
+    section_warnings: list[str] = []
     errors += validate_schema(
         "catalog.json", args.dir / "catalog.json", CONTENT_SRC / "catalog.schema.json"
     )
@@ -2007,7 +2030,9 @@ def main() -> None:
         errors += paper_hint_errors(curriculum)
         errors += tip_errors(catalog, CONTENT_SRC / "tips")
         errors += video_index_errors()
-        errors += section_errors(catalog, args.dir)
+        # Q82: once, since the fallback parses each sectioned file; its warnings are printed with the others below.
+        found_section_errors, section_warnings = section_findings(catalog, args.dir)
+        errors += found_section_errors
         errors += orphan_sections(catalog, CONTENT_SRC / "sources" / "sections.json")
         errors += excerpt_findings(catalog, args.dir)[0]
         # F2: a rung's concepts claim only what its options establish, or it introduces the concept.
@@ -2155,6 +2180,9 @@ def main() -> None:
     # Q80: the ladder report compared without the placeholders this build made for want of a fetch, said.
     for warning in ladder_report_findings(catalog, curriculum)[1]:
         print(f"  {warning}")
+    # Q82: the named sections of a placeholder this build could not fetch, not checked, said.
+    for warning in section_warnings:
+        print(f"  WARNING (sections, Q82): {warning}")
 
     # Q-tooling (2026-09-29): the reviewer's views of the audit file and the matrix regenerated
     # and then compared, so a built tree never carries stale views (six record commits did on

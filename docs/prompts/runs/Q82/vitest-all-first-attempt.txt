@@ -1,0 +1,37 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-af3e3368f50c0e179/app
+
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts (284 tests | 2 failed) 1549ms
+   ❯ the 2026-09-19 lesson corrections, second-read and under test: the app (80)
+     × blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them 39ms
+     × 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot 33ms
+ ❯ tests/unit/firstContactOnTheScore.test.ts (17 tests | 1 failed) 9790ms
+   ❯ what the screen writes (5)
+     × one viewing per visit, where the notation is drawn, with its source and the visit 1908ms
+ ❯ tests/unit/materialOnTheRecord.test.ts (12 tests | 1 failed) 7362ms
+   ❯ every built row carries the build’s material identity (D4 item 1) (3)
+     × a generated row’s is the app’s own reading of its generator; a notated row’s is its built file’s sha256; a runtime drill’s is none 7298ms
+ ❯ tests/unit/libraryImportWords.test.ts (8 tests | 3 failed) 5969ms
+   ❯ an import’s row says its state in words (2)
+     × on the row itself, for the score just imported: the source on the detail line, the state under it 1403ms
+   ❯ the UI opens the import sheet from the row addImport returned (2)
+     × the picker’s import of a MIDI file opens it, the store having opened nothing 2220ms
+     × a score whose staves and signature are the file’s files quietly; its row’s Assign opens the same sheet 1441ms
+ ❯ tests/unit/simonTurnCue.test.ts (6 tests | 1 failed) 5385ms
+   ❯ the chain hands over in words, not only by going quiet (6)
+     × does not take a key pressed while the app is still playing as the answer 1138ms
+ ❯ tests/unit/oneSkillState.test.ts (8 tests | 1 failed) 10902ms
+   ❯ the store’s writers are gone, not bypassed (2)
+     × only the retired rows’ migration writes the skills store 9496ms
+ ❯ tests/unit/expectedNote.test.ts (12 tests | 1 failed) 17716ms
+   ❯ the spelling comes from the notation (T41) (3)
+     × every black key in every fixture carries its written spelling 16867ms
+
+ Test Files  7 failed | 305 passed (312)
+      Tests  10 failed | 7175 passed | 5 skipped | 1 todo (7191)
+   Start at  16:45:25
+   Duration  455.86s (tests 55%, environment 33%, import 8%, transform 4%)
+
+    Isolate  312 workers spawned · ~5.41s startup each (spawn + environment, per file)
+             at least ~83.46s faster with isolate: false — reuses workers across files instead of one per file
+

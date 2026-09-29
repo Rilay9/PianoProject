@@ -1,0 +1,20 @@
+﻿
+16:29:00 phase after2
+16:29:00 aside: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\content\scores\imported\musetrainer\scores\Happy_Birthday_To_You_C_Major.mxl -> C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\build\q82-aside-after2\mt\Happy_Birthday_To_You_C_Major.mxl (gone from the worktree: True)
+16:29:00 aside: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\content\scores\imported\musetrainer\scores\Greensleeves_for_Piano_easy_and_beautiful.mxl -> C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\build\q82-aside-after2\mt\Greensleeves_for_Piano_easy_and_beautiful.mxl (gone from the worktree: True)
+16:29:00 aside: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\content\scores\imported\musetrainer\scores\Ode_to_Joy_Easy_variation.mxl -> C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\build\q82-aside-after2\mt\Ode_to_Joy_Easy_variation.mxl (gone from the worktree: True)
+16:29:00 aside: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\content\scores\imported\musetrainer\scores\Mariage_dAmour.mxl -> C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\build\q82-aside-after2\mt\Mariage_dAmour.mxl (gone from the worktree: True)
+16:29:00 aside: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\content\scores\imported\musetrainer\scores\Canon_in_D_3.mxl -> C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\build\q82-aside-after2\mt\Canon_in_D_3.mxl (gone from the worktree: True)
+16:29:00 start build-mt-personal-after2 (--offline, out=C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\build\q82-mt-personal-after2\content, strict=0; caches copied from the main checkout)
+16:34:54 done build-mt-personal-after2 exit 0
+16:35:12 done validate-mt-personal-after2 exit 0
+16:35:12 start build-mt-strict-after2 (--offline, out=C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\build\q82-mt-strict-after2\content, strict=1; caches copied from the main checkout)
+16:43:31 done build-mt-strict-after2 exit 0
+16:44:04 done validate-mt-strict-after2 exit 0
+16:44:04 back: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\content\scores\imported\musetrainer\scores\Happy_Birthday_To_You_C_Major.mxl (present: True)
+16:44:04 back: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\content\scores\imported\musetrainer\scores\Greensleeves_for_Piano_easy_and_beautiful.mxl (present: True)
+16:44:04 back: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\content\scores\imported\musetrainer\scores\Ode_to_Joy_Easy_variation.mxl (present: True)
+16:44:04 back: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\content\scores\imported\musetrainer\scores\Mariage_dAmour.mxl (present: True)
+16:44:04 back: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-af3e3368f50c0e179\content\scores\imported\musetrainer\scores\Canon_in_D_3.mxl (present: True)
+16:44:04 every clone back: joplin True, musetrainer 69 files in scores, chopin-first-editions True
+16:44:04 chain finished
