@@ -148,10 +148,12 @@ describe('the shipped curriculum', () => {
   // Revised (E0b): jazz.6 left this case. Old assumption (E0a's brief, item 3): jazz.6 is not a teaching
   // rung, so the walking bass is untaught there. Its lesson teaches a walking line and assigns one, and
   // the vocabulary lists it (`describe` 'a demand taught at more than one rung', below).
-  it('the walking bass is taught at blues.5 and blues.6, not at jazz.5 or classical.5', () => {
-    expect(taught('blues.5', WALK), `${WALK} at blues.5, the rung that teaches it`).toBe(true);
-    expect(taught('blues.6', WALK), `${WALK} at blues.6, which builds on blues.5`).toBe(true);
-    expect(taught('jazz.5', WALK), `${WALK} at jazz.5: the file’s order credited blues.5, stored before jazz.5`).toBe(false);
+  // Revised (F2 item 1): blues.5 introduces the walking bass (its exercise is the line alone, left hand
+  // only) and blues.6, whose exercise puts a right hand over it, teaches it. Old assumption: blues.5 teaches it.
+  it('the walking bass is taught at blues.6, not at blues.5, jazz.5 or classical.5', () => {
+    expect(taught('blues.5', WALK), `${WALK} at blues.5, which introduces it`).toBe(false);
+    expect(taught('blues.6', WALK), `${WALK} at blues.6, the blues path's teaching rung`).toBe(true);
+    expect(taught('jazz.5', WALK), `${WALK} at jazz.5: the file’s order credited the blues track, stored before jazz.5`).toBe(false);
     expect(taught('classical.5', WALK), `${WALK} at classical.5`).toBe(false);
   });
 
@@ -342,7 +344,9 @@ describe('a demand taught at more than one rung', () => {
   it('“something else like this” on jazz.6: the demand tier wants the walking bass jazz.6 teaches', () => {
     const walking: CatalogItem = { id: 'song.walks', type: 'song', title: 'A walk', level: 6, hands: 'both', tracks: ['jazz'], concepts: [], file: 'scores/song.walks.mxl', ...measured([WALK]) };
     expect(targetDemandsFor(walking, 'jazz.6'), `${WALK} is among what jazz.6 teaches`).toEqual([WALK]);
-    expect(targetDemandsFor(walking, 'blues.5')).toEqual([WALK]);
+    // Revised (F2 item 1): blues.6 teaches it and blues.5 only introduces it; the old line held blues.5.
+    expect(targetDemandsFor(walking, 'blues.6')).toEqual([WALK]);
+    expect(targetDemandsFor(walking, 'blues.5'), 'blues.5 introduces the walking bass: nothing it teaches').toEqual([]);
     expect(targetDemandsFor(walking, 'jazz.7'), 'jazz.7 teaches nothing of it itself').toEqual([]);
   });
 
@@ -418,5 +422,73 @@ describe('a demand taught at more than one rung', () => {
     }).slots.find((one) => one.kind === 'repertoire');
     expect(slot?.claim, `the repertoire claim on B.6, which the vocabulary lists for ${WALK}`).toMatchObject({ kind: 'ready', demand: WALK });
     expect(slot?.item?.id).toBe('song.walks');
+  });
+});
+
+/**
+ * A demand a rung only introduces is not taught (F2 item 7; the reviewer's required change,
+ * `docs/review/responses/12af708.md`). A lesson's `introduces` list names a measurable demand the rung
+ * introduces while no piece there practises it yet. The build's derivation (`claims.teaching_rungs`)
+ * reads `concepts` alone, so `taughtAt` never names an introducing rung, and the app reads `taughtAt`,
+ * never a lesson's lists: a later option carrying the demand on the same path stays untaught for every
+ * gate consumer. The constructed vocabularies below are what the derivation gives each curriculum (no
+ * rung for an introduction, A.5 for a lesson that names the concept). The shipped case: `blues.5`
+ * introduces the walking bass (its exercise is the line alone), `blues.6` teaches it.
+ */
+describe('a demand a rung only introduces is not taught (F2)', () => {
+  const withA = (a5: Partial<Lesson>, a6: Partial<Lesson>): Curriculum => {
+    const curriculum = twoTracks();
+    for (const stage of curriculum.stages) {
+      for (const unit of stage.units) {
+        unit.lessons = unit.lessons.map((one) => (one.id === 'A.5' ? { ...one, ...a5 } : one.id === 'A.6' ? { ...one, ...a6 } : one));
+      }
+    }
+    return curriculum;
+  };
+  const item = (id: string, demands: readonly string[]): CatalogItem => ({
+    id,
+    type: 'song',
+    title: id,
+    level: 6,
+    hands: 'both',
+    tracks: ['A'],
+    concepts: [],
+    file: `scores/${id}.mxl`,
+    ...measured([...demands]),
+  });
+
+  const offeredOnA6 = (curriculum: Curriculum, vocabulary: Vocabulary): string[] => {
+    const row = item('song.a6', []);
+    const items = [row, item('song.walks', [WALK])];
+    const slot: SessionSlot = { kind: 'repertoire', minutes: 5, item: row, lessonId: 'A.6', reason: '' };
+    return swapOptions(slot, [slot], curriculum, indexCatalog(items), { items, rung: 'A.6', vocabulary }).map((option) => option.item.id);
+  };
+
+  it('a later option carrying the demand on the same path is untaught when the earlier rung only introduces it', () => {
+    // `introduces` is the build's field; the app's `Lesson` type does not name it because nothing in the app reads it.
+    const introducing = { introduces: ['walking-bass'] } as Partial<Lesson & { introduces: readonly string[] }>;
+    const curriculum = withA(introducing, { songOptions: ['song.a6', 'song.walks'] });
+    const nothingTeachesIt = walkTaughtAt();
+    expect(taughtAtRung(curriculum, 'A.6', nothingTeachesIt)?.(WALK), `${WALK} at A.6: A.5 only introduced it`).toBe(false);
+    expect(offeredOnA6(curriculum, nothingTeachesIt), 'song.walks on A.6’s sheet: its walk is untaught there').not.toContain('song.walks');
+  });
+
+  it('and taught when an earlier rung genuinely teaches it', () => {
+    const curriculum = withA({ concepts: ['walking-bass'] }, { songOptions: ['song.a6', 'song.walks'] });
+    const a5TeachesIt = walkTaughtAt('A.5');
+    expect(taughtAtRung(curriculum, 'A.6', a5TeachesIt)?.(WALK), `${WALK} at A.6: A.5 teaches it, on A.6’s path`).toBe(true);
+    expect(offeredOnA6(curriculum, a5TeachesIt), 'song.walks on A.6’s sheet once A.5 teaches the walk').toContain('song.walks');
+  });
+
+  it('on the shipped curriculum: blues.5 introduces the walking bass and is no teaching rung; blues.6 teaches it', () => {
+    const blues5 = SHIPPED.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons)).find((one) => one.id === 'blues.5') as Lesson & {
+      introduces?: readonly string[];
+    };
+    expect(blues5.introduces, 'blues.5’s introduces list names the walking bass').toContain('walking-bass');
+    expect(blues5.concepts).not.toContain('walking-bass');
+    const listed = VOCABULARY_V0.demands.find((demand) => demand.id === WALK)?.taughtAt ?? [];
+    expect(listed, 'taughtAt never names an introducing rung').not.toContain('blues.5');
+    expect(taughtAtRung(SHIPPED, 'blues.5')?.(WALK), `${WALK} at blues.5`).toBe(false);
+    expect(taughtAtRung(SHIPPED, 'blues.6')?.(WALK), `${WALK} at blues.6`).toBe(true);
   });
 });

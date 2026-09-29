@@ -203,7 +203,6 @@
               "textFile": "lessons/2.3.md",
               "exerciseOptions": [
                 "drill.chord.c-f-g",
-                "exercise.inversions.c-major.both",
                 "exercise.cadence.c.root",
                 "exercise.cadence.c.voice-led"
               ],

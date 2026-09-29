@@ -143,10 +143,15 @@ def teaching_rungs(curriculum: dict, skills: dict[str, dict], demands: dict[str,
     """
     `{demand id: the rungs whose concepts name it and whose path holds no other such rung}`, in the
     curriculum's order (E0b): one teaching rung per path, read from the lessons' own concepts under
-    the ancestry — what `taughtAt` is derived from. `blues.6` names walking-bass and stands on
-    `blues.5`, so it is not a second teaching rung; `jazz.6` names it and its path never reaches
-    `blues.5`, so it is. `validate.py` holds the vocabulary to this and warns where a list differs
+    the ancestry — what `taughtAt` is derived from. `blues.8` names walking-bass and stands on
+    `blues.6`, so it is not a second teaching rung; `jazz.6` names it and its path never reaches
+    `blues.6`, so it is. `validate.py` holds the vocabulary to this and warns where a list differs
     (a lesson naming a concept in passing, or a hand reading its note writes down).
+
+    `concepts` alone (F2 item 7, the reviewer's required change): a lesson's `introduces` list
+    names a demand the rung introduces while no piece there practises it, and it never makes the
+    rung a teaching rung, so `taughtAt` never names it (`blues.5` introduces the walking bass: its
+    exercise is the line alone, left hand only).
     """
     ancestry = ancestry if ancestry is not None else rung_ancestry(curriculum)
     naming = concepts_naming(skills, demands)
@@ -265,6 +270,26 @@ def rung_claims_of(lesson: dict, skills: dict[str, dict], demands: dict[str, dic
     return claims, unmeasurable
 
 
+def introduced_of(lesson: dict, skills: dict[str, dict]) -> list[dict]:
+    """
+    What a rung introduces and does not claim (F2 item 7): each measurable concept its `introduces`
+    list names, `{kind, id, from}` as `rung_claims_of` writes a claim. The rung says it introduces
+    the demand and that no piece there practises it yet; the report shows it as *introduced*, neither
+    established nor a promise the notes must keep, and it is no claim, no teaching rung (`teaching_rungs`
+    reads `concepts` alone) and no requirement met. A concept no detector measures is listed with
+    `kind` None.
+    """
+    out: list[dict] = []
+    for concept in lesson.get("introduces") or []:
+        if concept in skills and skills[concept]["opportunity"] != "every-step":
+            out.append({"kind": "skill", "id": concept, "from": f"introduces {concept}"})
+        elif concept in CONCEPT_DEMANDS:
+            out.append({"kind": "demand", "id": CONCEPT_DEMANDS[concept], "from": f"introduces {concept}"})
+        else:
+            out.append({"kind": None, "id": concept, "from": f"introduces {concept}"})
+    return out
+
+
 def status_of(claim: dict, item: dict | None, skills: dict[str, dict]) -> str:
     """established, incidental (present below the density), absent, unmeasured, runtime or missing."""
     if item is None:
@@ -370,9 +395,17 @@ def rung_claims(catalog: list[dict], curriculum: dict) -> dict:
                 ],
                 "measured": ((item or {}).get("measurement") or {}).get("status"),
             })
+        introduced_rows = []
+        for introduced in introduced_of(lesson, skills):
+            if introduced["kind"] is None:
+                introduced_rows.append({**introduced, "established": 0, "measurable": 0})
+                continue
+            verdicts = [status_of(introduced, by_id.get(item_id), skills) for item_id in ids]
+            introduced_rows.append({**introduced, "established": verdicts.count("established"),
+                                    "measurable": sum(1 for v in verdicts if v in ("established", "incidental", "absent", "unmeasured"))})
         rungs.append({"rung": lesson["id"], "stage": stage.get("number"), "track": unit.get("track"),
                       "title": lesson.get("title"), "claims": claim_rows, "unmeasurable": unmeasurable,
-                      "options": len(ids)})
+                      "introduced": introduced_rows, "options": len(ids)})
 
     pairs = [(o, c) for o in options for c in o["claims"]]
     measurable = [p for p in pairs if p[1]["status"] in ("established", "incidental", "absent", "unmeasured")]
@@ -403,6 +436,8 @@ def rung_claims(catalog: list[dict], curriculum: dict) -> dict:
             "byStatus": dict(Counter(p[1]["status"] for p in pairs)),
             "unmeasurableConcepts": sum(len(r["unmeasurable"]) for r in rungs),
             "rungClaimsKeptByNoOption": len(kept_by_none),
+            # F2: what the rungs introduce under `introduces` — no claim, no teaching rung, no requirement met.
+            "introduced": sum(len(r["introduced"]) for r in rungs),
             "optionsServingNoneOfTheirRungsClaims": len(serves_none),
             "generatedUntaught": sum(1 for _ in generated_untaught),
             "generatedUntaughtMatchesRecord": generated_untaught == recorded_counter,
@@ -412,6 +447,7 @@ def rung_claims(catalog: list[dict], curriculum: dict) -> dict:
         "rungs": rungs,
         "options": options,
         "keptByNone": [{"rung": r["rung"], "title": r["title"], **c} for r, c in kept_by_none],
+        "introduced": [{"rung": r["rung"], "title": r["title"], **c} for r in rungs for c in r["introduced"]],
         "servesNone": [o["item"] + " on " + o["rung"] for o in serves_none],
         "generatedUntaught": [{"family": k[0], "rung": k[1], "demand": k[2], "items": n,
                                "taughtAt": taught_at(demands.get(k[2]))}
@@ -475,6 +511,8 @@ def render_rung_claims(report: dict) -> str:
         f"other runtime drills {by_status.get('runtime', 0)}.",
         f"- **{s['rungClaimsKeptByNoOption']} rung claims that no option of the rung establishes** (listed below: the "
         "promises the notes do not keep).",
+        f"- {s['introduced']} concepts a rung introduces under `introduces` (F2): named by its lesson and practised by "
+        "no piece there yet, so no claim, never a teaching rung, never `taughtAt`, never a requirement met.",
         f"- {s['optionsServingNoneOfTheirRungsClaims']} measured options establish none of their rung's measurable claims.",
         f"- {s['unmeasurableConcepts']} concept claims across the rungs name something no detector measures; "
         f"{s['humanReviewed']} options carry a human teaching-use review.",
@@ -521,6 +559,16 @@ def render_rung_claims(report: dict) -> str:
               "| Rung | Claim | From | Options checked |", "| --- | --- | --- | --- |"]
     for row in report["keptByNone"]:
         lines.append(f"| {row['rung']} — {row['title']} | {_claim_words(row, skills, demands)} | {row['from']} | {row['measurable']} |")
+    lines += ["", "## Concepts a rung introduces", "",
+              "A rung's lesson may introduce a demand no piece on the rung practises yet (`introduces`, F2): the report "
+              "shows it here and claims nothing for it, the derivation of `taughtAt` never reads it, and no requirement is "
+              "met by it. An option establishing one is a sign it belongs in `concepts` (`validate.py` warns).", "",
+              "| Rung | Introduces | Options establishing it (of checked) |", "| --- | --- | --- |"]
+    for row in report["introduced"]:
+        words = _claim_words(row, skills, demands) if row["kind"] else f"{row['id']} (no detector)"
+        lines.append(f"| {row['rung']} — {row['title']} | {words} | {row['established']} of {row['measurable']} |")
+    if not report["introduced"]:
+        lines.append("| — | none | — |")
     lines += ["", "## Every rung, claim by claim", "",
               "How many of the rung's options establish each measurable claim, and the concepts no detector measures.", "",
               "| Rung | Options | Claims (established / checked) | Not measurable |", "| --- | --- | --- | --- |"]

@@ -135,9 +135,15 @@ function unintended(rung: string): Check[] {
  * path, teaches a walking line, and row 7 at jazz.8 writes its walking bass in
  * every phrase again (the promise check above, on every seed).
  */
-const PROMISED_OFF_THE_PATH: readonly { row: string; rung: string; demand: string }[] = [
-  { row: 'drill.reading.sight-reading-7', rung: 'theory.9', demand: 'texture.walking-bass' },
-];
+/*
+ * Revised (F2 item 4, L110): theory.9 left the list, which is empty. Old assumption: theory.9 lists row 7
+ * and its lesson promises "triplets and a walking bass". theory.9's path teaches no walking bass, so the
+ * hold kept it out of every phrase there, and row 7 opened from theory.9 differed from the level-6 row the
+ * rung also lists by nothing else; F2 took row 7 off theory.9 (it stays on jazz.8, whose path teaches the
+ * walk) and rewrote the sentence to the level-6 row's settings. The list stays, empty, so the next
+ * promise off a path is named here instead of passing on the hold.
+ */
+const PROMISED_OFF_THE_PATH: readonly { row: string; rung: string; demand: string }[] = [];
 
 const readers = catalog.filter((row) => row.drill?.kind === 'sight-reading');
 const paramsOf = (row: CatalogItem): Readonly<Record<string, unknown>> => (authored.get(row.id) ?? row).drill?.params ?? {};

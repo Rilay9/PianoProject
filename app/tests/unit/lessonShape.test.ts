@@ -111,13 +111,15 @@ const QUOTED: { where: string; says: RegExp; from: string; holds: RegExp }[] = [
     holds: /ScaleSpec\(k, "major", "both", 4, "similar", 0\.25, 120\)/,
   },
   {
-    // `theory.9` describes the level-7 sight-reading generator by three of its
+    // `theory.9` describes the level-6 sight-reading generator by three of its
     // settings. All three are real, and all three are one edit away from not
     // being — the table is a plain object literal with no test over it.
+    // Revised (F2 item 4): it described level 7 and its walking bass, which
+    // theory.9's path never teaches; the rung now lists level 6 alone.
     where: 'theory.9.md',
-    says: /keys with four accidentals, with triplets and a walking bass/,
+    says: /keys up to four sharps or flats, with triplets and a left hand in broken chords/,
     from: 'src/engine/sightReading.ts',
-    holds: /maxFifths: 4,[\s\S]{0,200}?leftHand: 'walking',[\s\S]{0,120}?triplets: true,/,
+    holds: /6: \{[\s\S]{0,200}?maxFifths: 4,[\s\S]{0,200}?leftHand: 'broken',[\s\S]{0,120}?triplets: true,/,
   },
   {
     // Stated in figures in `0.3` and in words in `practice.3`; the figures were

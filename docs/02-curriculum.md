@@ -253,7 +253,7 @@ play a swung 12-bar blues LH). The first failure sets the starting stage/unit. A
 
 **1.1 Right hand C position (C-D-E-F-G, fingers 1–5).** Concepts: hand position, one finger
 per key, quarter note = 1 beat, the staff (5 lines, 4 spaces), treble clef, Middle C on a ledger
-line, D–G stepping up, bar lines, 4/4, counting "1 2 3 4". Exercises: `[GEN]` RH 5-finger
+line, D–G stepping up (each a step: the rung names `steps`, F2), bar lines, 4/4, counting "1 2 3 4". Exercises: `[GEN]` RH 5-finger
 walk up/down (quarter notes, 60 bpm), `[GEN]` "note-name flash" (treble C4–G4), rhythm clap
 drill (quarters/rests; learner taps any key). Songs: *Hot Cross Buns* `[AUTH]`, *Mary Had a Little Lamb* `[AUTH]`, *Merrily We Roll Along* `[AUTH]`, *Au Clair de la Lune* `[AUTH]`, *Ode to Joy (theme)* `[AUTH]`, *Kum Ba Yah* `[PDMX]`. Videos: Bill Hilton (right-hand first tune), Hoffman Unit 1,
 Lypur lesson 2. Mastery: one song, Wait mode ≥ 95 %, then Tempo mode ≥ 90 % at 60 bpm.
@@ -493,8 +493,8 @@ Music Theory "Pop/Rock" chapters.
 |------:|-------|------------|
 | 3 | The blue notes before the form: flat third, flat seventh and the crushed fourth; the published blues as melody with chord symbols, right hand on the tune and left hand holding the symbol; one of them in the minor | *12 Bar Blues* `[PDMX]`; *Careless Love* `[PDMX]`; *Handy — St. Louis Blues (1914)* `[PDMX]`; *St. James Infirmary (traditional, minor)* `[PDMX]`; *Ringle & Meinken — Wabash Blues (1921)* `[PDMX]`; *Williams — Tishomingo Blues (1917)* `[PDMX]` |
 | 4 | 12-bar blues form in C (I7 IV7 V7), shuffle feel, LH "boogie" bass (root-5-6-b7), simple RH riffs, blues scale | *Twelve-bar blues shuffle in C* `[GEN]`; *Twelve-bar blues shuffle in F* `[GEN]`; *Twelve-bar blues shuffle in G* `[GEN]`; *Careless Love* `[PDMX]`; *12 Bar Blues* `[PDMX]`; *Handy — St. Louis Blues (1914)* `[PDMX]` |
-| 5 | Turnarounds, RH "tremolo" 3rds, blue notes, call-and-response phrases, blues in F & G, walking bass | *Twelve-bar blues shuffle in F* `[GEN]`; *Twelve-bar blues shuffle in G* `[GEN]`; *Twelve-bar blues shuffle in C* `[GEN]`; *Swanstone — Blues My Naughty Sweetie Gives to Me (1919)* `[PDMX]`; *Handy — The Memphis Blues (1912)* `[PDMX]`; *Williams — Royal Garden Blues (1919)* `[PDMX]` |
-| 6 | Boogie-woogie LH patterns (Pinetop, Yancey, "Honky Tonk Train" style), RH chorus building, slow blues 12/8, minor blues | *Boogie (easy, for beginners)* `[PDMX]`; *Boogie-woogie and blues piano exercises* `[PDMX]`; *Smith — Pinetop's Boogie Woogie (1928)* `[PDMX]` |
+| 5 | Turnarounds, RH "tremolo" 3rds, blue notes, call-and-response phrases, blues in F & G, the walking bass introduced (the line alone, left hand; F2) | *Twelve-bar blues shuffle in F* `[GEN]`; *Twelve-bar blues shuffle in G* `[GEN]`; *Twelve-bar blues shuffle in C* `[GEN]`; *Swanstone — Blues My Naughty Sweetie Gives to Me (1919)* `[PDMX]`; *Handy — The Memphis Blues (1912)* `[PDMX]`; *Williams — Royal Garden Blues (1919)* `[PDMX]` |
+| 6 | Boogie-woogie LH patterns (Pinetop, Yancey, "Honky Tonk Train" style), RH chorus building, slow blues 12/8, minor blues, the walking line under a right hand (the track's teaching rung for the walking bass since F2) | *Boogie (easy, for beginners)* `[PDMX]`; *Boogie-woogie and blues piano exercises* `[PDMX]`; *Smith — Pinetop's Boogie Woogie (1928)* `[PDMX]` |
 | 7 | Improvising full choruses, tritone subs in blues, gospel-blues, New Orleans style (Professor Longhair rumba-boogie *concepts*, no copyrighted tunes) | *Boogie (easy, for beginners)* `[PDMX]`; *Rhythm and Boogie* `[PDMX]`; *Boogie-Boogie en Sol* `[PDMX]` (the rung is song-optional; *Pinetop's Boogie Woogie* stays on Stage 6) |
 | 8 | The form in twelve keys, ninths on every dominant, comping over your own walking bass | song-optional — the piece is the learner's own written chorus in two keys, and these are what to read while writing it: *Smith — Pinetop's Boogie Woogie (1928)* `[PDMX]`; *Blake — The Chevy Chase (1914)* `[PDMX]`; *Morton — Black Bottom Stomp (1926)* `[PDMX]` |
 | 9 | Improvising over the form and making it yours; fast boogie, stride-blues hybrids, transcription projects | song-optional — yours first, then three written choruses: *Confrey — Stumbling (1922)* `[PDMX]`; *Morton — Black Bottom Stomp (1926)* `[PDMX]`; *Waller — Handful of Keys (1929)* `[PDMX]` |
@@ -616,6 +616,18 @@ Each is a real rung with three options from existing material, not a reading
 list: `optionsExempt` would have been the easy way to ship five essays, and the
 point of the module is that the method gets applied to something.
 
+**The floor (F2, 2026-09-29; L104).** The track is on by default, and its rung's
+`runs` ask takes the first admitted exercise in list order, so `practice.1`'s
+first exercise is the day's new row for a learner still on it. That was Hanon
+No. 1 hands together — level 4.4, sixteenths, ledger lines and both hands
+beyond a five-finger position — given to a learner placed at 1.5. `practice.1`
+and `practice.2` now list what a Stage 1 hand plays, from the Stage 1 core rungs'
+own lists: the right-hand five-finger pattern, the steps-and-skips study, and
+the rhythm drill (`practice.1`) or the right-hand five-finger walk
+(`practice.2`). Hanon stays on 4.4, `technique.4` and `classical.4`, which
+listed it besides; no rung teaches its sixteenths yet (L101). `practice.2`'s
+one-octave hands-together scale (level 4.1) left the rung and is on no other.
+
 ### D8. Mini-modules (optional; `holiday` and `hymns-gospel` open at Stage 2, `rock-metal` and `latin` at Stage 3, `jam` at Stage 4)
 
 *(Corrected 2026-09-22: this line said `hymns-gospel` opened at Stage 3. `hymns-gospel.2.1`
@@ -637,14 +649,16 @@ Stages 3, 5, 6 and 7.)*
   lyrics are copyrighted), Auld Lang Syne, Hanukkah: Ma'oz Tzur, Sevivon, Hanerot Halalu.
 - **Latin** `[AUTH]`: La Cucaracha, Cielito Lindo, La Paloma, El Choclo, La Cumparsita,
   Tico-Tico; concepts: clave, tumbao LH, montuno RH.
-- **Rock & metal piano** (owner's bands: Avenged Sevenfold, Linkin Park, Sleep Token; all
-  songs `[IMPORT]`, techniques taught on PD material `[AUTH]`/`[GEN]`). **Owner's target
-  songs, in this order:** Avenged Sevenfold — *Seize the Day*, *Dear God*, *So Far Away*,
-  *Fiction*; Linkin Park — *Final Masquerade*, *Waiting for the End*, *Shadow of the Day*.
-  These are copyrighted and are **never bundled**; the module's lesson for each song is a
-  *technique brief* (what textures the piano part needs, which PD vehicle trains them, what
-  to listen for), plus the import screen where the owner adds the MusicXML he obtains
-  himself (he has a source for the Avenged Sevenfold transcriptions). Builders must not
+- **Rock & metal piano** — rock as technique on public-domain material (`00` D18): the
+  textures band piano parts use, taught with `[AUTH]`/`[GEN]` material, and an import path
+  for the songs themselves. **The owner's songs are not the track's reason (the owner,
+  2026-09-28; I4; unwound in F2):** Avenged Sevenfold's *Seize the Day*, *Dear God*, *So Far
+  Away* and *Fiction* and Linkin Park's *Final Masquerade*, *Waiting for the End* and *Shadow
+  of the Day* are not forced onto rungs and no rung lists them. A learner finds them in the
+  Library, where each has a placeholder row with no file behind it (`file: null`), badged
+  *import needed*, whose sheet says how to get the MusicXML in and offers public-domain pieces
+  with the same textures to play instead; that is why the seven rows stay (F2 looked at them in
+  the Library on the build). They are copyrighted and **never bundled**, and builders must not
   fetch or embed transcriptions of these songs from any website. Textures to cover: minor-key ostinatos
   and riffs (Linkin Park-style 8th-note piano figures over a pedal bass); octave and
   power-chord (root–5th–octave) LH; suspended and add9 chords, open voicings, "ambient" pedal
@@ -832,7 +846,8 @@ that decision exists a study reaches the learner only through the Library (Part 
 > stage-and-unit order, for a track rung every core rung of an earlier stage
 > (`session.rungAncestry`; `claims.rung_ancestry` for the report); where the gate has a learner
 > (the session, the swap sheet) a demand taught by any rung they have reached counts too, so the
-> walking bass `blues.5` teaches is not taught at `jazz.5` except to a learner who did the blues;
+> walking bass `blues.6` teaches (`blues.5` introduces it, F2) is not taught at `jazz.5` except to
+> a learner who did the blues;
 > and `taughtAt` lists every rung whose lesson teaches the demand, one per path (E0b: no listed
 > rung on another's path, derived from the lessons' concepts and held to them by `validate.py`),
 > so the walking bass is also `jazz.6`'s and `jam.6`'s and is taught at `jazz.8`, never at
@@ -858,6 +873,43 @@ that decision exists a study reaches the learner only through the Library (Part 
 > placement is required; corrected 2026-09-28, D3a), and
 > `validate.py` warns with its count. The same report carries the untaught-on-rung demands of
 > every option, D0's 71 generated combinations among them.
+
+> **The rungs reconciled with the report (F2, 2026-09-29; Entry 108).** A rung claims only what
+> its options establish, or it says it introduces the concept:
+>
+> - **`introduces`**, beside `concepts` in the stage files: a measurable concept the lesson
+>   introduces while no piece on the rung practises it yet. It is no claim the notes must keep
+>   (the report lists it as *introduced*), never a teaching rung (`claims.teaching_rungs` reads
+>   `concepts` alone, so `taughtAt` never names it; `validate.py` refuses a listed rung that only
+>   introduces the demand, whatever its note), and never a requirement met (the evidence gate reads
+>   `targetSkills`). `blues.5` introduces the walking bass: its exercise is the line alone, left
+>   hand only, and the demand is a walk under a right hand, so `blues.6`, whose exercise puts a
+>   right hand over the same line, is the blues path's teaching rung.
+> - **The rule the validator holds:** a rung's `concepts` naming a measurable skill or demand that
+>   no checkable option establishes fails the build; the same concept under `introduces` passes; an
+>   option establishing an introduced concept is warned back to `concepts`. Where the claim's
+>   failure is a detector's reading known to be wrong — the walking bass on `blues.6`, `blues.8`,
+>   `jazz.6` and `jam.6`, whose exercises walk in all but one bar by the detector's own reading of
+>   each bar, and the oom-pah on `ragtime.5`, whose Joplin pieces carry it in all but their opening
+>   and closing bars — `validate.py` names the claim in `DEFERRED_CONCEPT_CLAIMS` with that reason
+>   and warns; the report still lists it, and a deferral that stops describing the build fails.
+>   This proves the rungs agree with the report, not that either is true (Part 10's rule).
+> - **Concepts where taught:** 1.1 names `steps`; `latin` no longer names the walking bass (its
+>   bass is the tumbao); `technique.5` no longer names syncopation (its lesson teaches ties across
+>   the bar line, which `tied-across-bar` claims). 1.5's leap and 3.1's accidentals stay hand
+>   readings, warned: introducing either would take the demand off the whole core path, since no
+>   core rung's options practise it where its lesson teaches it (the entry's question 1).
+> - **Options moved** only by leaving the rung their notes are untaught at, where a later rung on
+>   the same track already lists them and teaches everything they carry, so nothing that needs a
+>   teaching-use decision is added to any rung (the practice floor lists items the Stage 1 core
+>   rungs already list, none of them held by the admission): the both-hands five-finger pattern off 1.1 and 1.3 (2.1
+>   keeps it), the inversions off 2.3 (4.3), the two-octave A minor arpeggio off 3.3 (3.6), *10,000
+>   Reasons* off `hymns` (`hymns.6`), Hanon No. 1 off `practice.1` and `practice.2` (Part C's
+>   floor), and row 7 off `theory.9`, whose lesson now names the level-6 row it lists. Every other
+>   option with an untaught demand stays with the report's warning and its reason in the entry.
+> - **The Latin rungs** (`latin.3`, `latin`) carry no duet tool while the grooves it named have no
+>   teaching-use decision; their exercise asks stay unmet (Q57, the reviewer's ruling), no song is
+>   put in their place, and their lessons say how to open the two-staff exercise from its own row.
 
 > **The generated study (D3, 2026-09-27): the middle between a drill and a piece.** A drill
 > repeats a pattern and says so; repertoire is somebody's music; the study is eight to sixteen bars
@@ -1146,9 +1198,11 @@ marked a `full` LH (broken chords/waltz/Alberti). Stage tag gives the *simple* v
 | Jingle Bells; Deck the Halls; We Wish You; Joy to the World; Hark the Herald; O Holy Night; God Rest Ye; Carol of the Bells (melody) ; Ma'oz Tzur; Sevivon | trad./19th c. | var. | 2–5 (holiday) | |
 | Ode to Joy (full); Canon in D (easy); Air on G; Jesu Joy (easy); Habanera (Carmen); In the Hall of the Mountain King; Morning Mood; Blue Danube (easy); Swan Lake theme; Dance of the Sugar Plum Fairy (easy); Spring (Vivaldi, easy); William Tell (easy); Hungarian Dance 5 (easy); Eine kleine Nachtmusik (easy); Radetzky March (easy) | classical themes | var. | 2–5 | "famous themes" easy arrangements — high motivation value; several already in `[MT]` |
 
-**Owner's import list (copyright, never bundled; catalog entries with `file: null` and an
-`importHint`):** Avenged Sevenfold — Seize the Day, Dear God, So Far Away, Fiction; Linkin
-Park — Final Masquerade, Waiting for the End, Shadow of the Day; Sleep Token — owner to pick.
+**Import placeholders in the Library (copyright, never bundled; catalog entries with
+`file: null` and an `importHint`, on no rung — the owner, 2026-09-28; F2):** Avenged Sevenfold —
+Seize the Day, Dear God, So Far Away, Fiction; Linkin Park — Final Masquerade, Waiting for the
+End, Shadow of the Day. A learner finds each in the Library, which says how to import it; the
+rock track teaches the textures on public-domain material (`00` D18) and does not wait for them.
 
 **Explicitly excluded from bundling (copyright):** anything by living or post-1955 composers
 and any song published after 1930 (e.g. Over the Rainbow 1939, You Are My Sunshine 1940,
@@ -1305,6 +1359,25 @@ suggestions** with a note on where to buy/obtain MusicXML.
 - The placement test sets where the plan starts (a floor): rungs behind it are held back and
   come back when nothing is left in front. It meets no requirement — its answers are the
   learner's own account, not runs of each rung's material (C5 keeps placement a floor).
+- **Placing an item on a rung (F2, 2026-09-29), as the reviewer stated it.** A measured claim is
+  not a teaching-use judgement: "A measured opportunity is a valid demand fact, but it is not a
+  teaching-use decision" (`docs/review/responses/ee70b43.md`), and "rung placement, measured
+  demand, or the need to fill a card is not approval" (`4478793.md`). An item goes onto a rung
+  for a claim only where the candidate-rungs report lists the rung on the combined build **and**
+  the review record holds a current `goodTeachingUse: yes` on the item's identity by a named
+  reviewer (`bf2666a.md`, `2c80472.md`: "a later placement decision can use that report together
+  with a resolved human teaching-use record"); an excerpt needs its `yes` on its own cut
+  (`4f7227d.md`). Nothing is added as filler ("Do not add or admit material merely as filler",
+  `4478793.md`), and where a decision "genuinely requires expertise beyond substantiated rules,
+  keep it undecided and out of learner assignments until an appropriate reviewer is available"
+  (`bf2666a.md`). A rung that introduces a concept no piece there practises grants no taught
+  status: "an introduction without a real teaching opportunity cannot satisfy the gate's
+  preparation/teaching claim" (`12af708.md`). On F2's build no item had a `yes`, so no item was
+  placed for a claim; options moved only by leaving a rung whose path had not taught what they
+  carry, where a later rung on the same track already listed them; and the practice track's first
+  two rungs list items the Stage 1 core rungs already list — a generated five-finger drill, two
+  runtime drills and the authored steps-and-skips study — none of which D3a's admission holds for
+  a teaching-use decision (Part C, *The floor*).
 
 ## Part H — Vocabulary v0: what a skill is and what a demand is (2026-09-26, C2)
 

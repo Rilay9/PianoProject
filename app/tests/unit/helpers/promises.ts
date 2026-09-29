@@ -275,16 +275,15 @@ export const PROMISED_BY_RUNG: Record<string, Check[]> = {
     ...(CLAIMED_BY_CONCEPT.triplets ?? []),
     ...(CLAIMED_BY_CONCEPT.syncopation ?? []),
   ],
-  // theory.9: "The sight-reading generator at level 7 makes music … in keys
-  // with four accidentals, with triplets and a walking bass". The rung also
-  // lists level 6, whose left hand is a broken chord in quarters: the walking
-  // bass is the level-7 row's, which is what the sentence says. (The helper
-  // this used to call counted any four left-hand quarters as a walk, so level
-  // 6 passed it on a broken chord.)
+  // theory.9: "The sight-reading generator at level 6 makes music … in keys up
+  // to four sharps or flats, with triplets and a left hand in broken chords".
+  // Revised (F2 item 4): the sentence named level 7 and "a walking bass", which
+  // theory.9's path never teaches, so every phrase there held it out; level 7
+  // left the rung and the sentence names the level-6 row it lists.
   'theory.9': [
-    some('a key with four accidentals', (p) => Math.abs(keyFifths(p.model)) === 4, ['key.signature']),
+    some('a key with four sharps or flats', (p) => Math.abs(keyFifths(p.model)) === 4, ['key.signature']),
     ...(CLAIMED_BY_CONCEPT.triplets ?? []),
-    every('a walking bass, at the level the lesson names (7)', (p) => p.level !== 7 || has('walkingBass')(p), ['texture.walking-bass']),
+    ...(CLAIMED_BY_CONCEPT['accompaniment-patterns'] ?? []),
   ],
 };
 
