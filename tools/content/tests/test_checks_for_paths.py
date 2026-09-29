@@ -161,6 +161,52 @@ WHOLE_UNIT = ("unit", "app", "npx vitest run")
 #: (`test.skip(!process.env...)` in each): naming one runs nothing, so no list names them.
 ENV_GATED = {"bisect-render.spec.ts", "content-render.spec.ts", "generate-audio-fixtures.spec.ts", "guide-shots.spec.ts"}
 
+#: The two shared frames the screens are drawn in (Q65b): what a change to one reaches is the screens
+#: that import it, so its row names the union of the specs the map gives those screens.
+FRAME_HELPERS = ("app/src/ui/screens/screenFrame.ts", "app/src/ui/screens/subScreen.ts")
+
+#: The shell and the entry import every screen to mount it, and their own rows are the whole suite
+#: because their code runs on every spec's path; a frame's code runs only where a screen that reaches
+#: it is mounted, so the walk from a frame to its screens stops at them.
+MOUNTS = frozenset({"app/src/ui/AppShell.ts", "app/src/main.ts"})
+
+#: A relative specifier after `from`, `import`, `import(`, `glob(` or `require(`: the import graph of
+#: Q65a's importer script (docs/prompts/runs/Q65a/scripts-importers.py).
+IMPORT = re.compile(r"""(?:from\s+|import\s*\(\s*|import\s+|glob\(\s*|require\(\s*)['"](\.{1,2}/[^'"]+)['"]""")
+
+
+def app_importers(root: Path = ROOT) -> dict[str, set[str]]:
+    """Each file under app/src -> the files under app/src that import it, read from the source."""
+    rev: dict[str, set[str]] = {}
+    for f in (root / "app" / "src").rglob("*"):
+        if f.suffix not in (".ts", ".js", ".mjs") or not f.is_file():
+            continue
+        rel = f.relative_to(root).as_posix()
+        for m in IMPORT.finditer(f.read_text(encoding="utf-8", errors="replace")):
+            spec = m.group(1)
+            if "*" in spec:
+                hits = [p for p in f.parent.glob(spec) if p.is_file()]
+            else:
+                hits = next(([Path(f"{f.parent / spec}{ext}")] for ext in ("", ".ts", ".js", ".mjs", ".json", ".css", "/index.ts")
+                             if Path(f"{f.parent / spec}{ext}").is_file()), [])
+            for p in hits:
+                rev.setdefault(p.resolve().relative_to(root.resolve()).as_posix(), set()).add(rel)
+    return rev
+
+
+def frame_importers(helper: str, root: Path = ROOT) -> list[str]:
+    """The files that reach a frame helper by imports, directly or through another file (a screen
+    that imports another screen's sheet reaches that screen's frame too); the walk stops at MOUNTS."""
+    rev = app_importers(root)
+    seen: set[str] = set()
+    todo = [helper]
+    while todo:
+        for importer in rev.get(todo.pop(), ()):
+            if importer not in MOUNTS and importer != helper and importer not in seen:
+                seen.add(importer)
+                todo.append(importer)
+    return sorted(seen)
+
 
 class TheMinimumSemantics(unittest.TestCase):
     """Q65a, the reviewer's ruling on Q-tooling (`docs/review/responses/198c148.md`): the map is the
@@ -274,7 +320,9 @@ class TheMinimumSemantics(unittest.TestCase):
             "app/tests/e2e/fixtures/devScore.ts": (r"""fixtures/devScore['"]""", ("e2e",)),
             "app/tests/e2e/fixtures/reader-learners.json": (r"reader-learners\.json", ("e2e", "unit", "content-tests")),
             "app/tests/e2e/fixtures/excerpt-candidates.json": (r"excerpt-candidates\.json", ("e2e", "unit", "content-tests")),
-            "app/tests/fixtures/**": (r"""tests/fixtures/|'tests', 'fixtures'|fixtures/devScore['"]""", ("e2e",)),
+            # A spec reaches the shared fixtures by a path spelled out, a path.join from its own folder
+            # ('..', 'fixtures', on one line or several), a URL ('../fixtures/'), or the harness's handle.
+            "app/tests/fixtures/**": (r"""tests/fixtures/|'tests', 'fixtures'|['"]\.\.['"],\s*['"]fixtures['"]|\.\./fixtures/|fixtures/devScore['"]""", ("e2e",)),
         }
         readers_in = {
             "e2e": ("app/tests/e2e", "*.spec.ts", lambda p: PurePosixPath(p).name not in ENV_GATED, lambda p: f"tests/e2e/{PurePosixPath(p).name}"),
@@ -304,6 +352,51 @@ class TheMinimumSemantics(unittest.TestCase):
         if midi:
             for check in ("converter-harness", "parity-reference"):
                 self.assertIn(check, patterns["app/tests/fixtures/**"].checks)
+
+    def e2e_set(self, path: str) -> object:
+        """What the map gives one path in the browser: "*" for the whole suite, else the spec names
+        (an empty set where no row names any)."""
+        e2e = [c for c in self.result(path).commands if c[0] == "e2e"]
+        if WHOLE_E2E in e2e:
+            return "*"
+        return {PurePosixPath(n).name for c in e2e for n in c[2].split() if n.endswith(".spec.ts")}
+
+    def test_a_frame_helper_names_the_union_of_its_screens_specs(self) -> None:
+        # Q65b, the reviewer's required change on Q65a (docs/review/responses/3c661d4.md): a change to
+        # screenFrame.ts or subScreen.ts reaches the screens that import it, so its row names the
+        # union of the specs the map gives those screens. The importers are discovered from the
+        # source: one whose row names a spec the helper's row lacks is red here with the file named,
+        # and so is one with no browser set of its own, which makes the helper's row the whole suite.
+        # "*" stands only where the union is the whole default suite or such an importer exists. The
+        # reason names every importer; it is the map's one list of the frames' screens, held here.
+        default = {p.name for p in (ROOT / "app" / "tests" / "e2e").rglob("*.spec.ts")} - ENV_GATED
+        rows = {p.pattern: p for p in self.map.patterns}
+        for helper in FRAME_HELPERS:
+            importers = frame_importers(helper)
+            with self.subTest(helper=helper, part="discovery"):
+                self.assertTrue(importers, f"{helper}: no file imports it; the discovery is broken or the helper is gone")
+                self.assertIn(helper, rows, f"{helper}: the map has no row of its own for it")
+            if not importers or helper not in rows:
+                continue
+            sets = {importer: self.e2e_set(importer) for importer in importers}
+            whole_for = [importer for importer, value in sets.items() if value == "*" or not value]
+            union = set().union(*(value for value in sets.values() if isinstance(value, set)))
+            named = self.e2e_set(helper)
+            with self.subTest(helper=helper, part="union"):
+                if named == "*":
+                    self.assertTrue(whole_for or default <= union,
+                                    f"{helper}: the row is the whole suite, but the specs its importing screens' rows name "
+                                    f"are not the whole default suite; name their union: {sorted(union)}")
+                else:
+                    self.assertEqual(whole_for, [], f"{helper}: these importers have no browser set of their own, "
+                                                    "so the helper's row is the whole suite and its reason says which")
+                    lacking = {importer: sorted(value - named) for importer, value in sets.items()
+                               if isinstance(value, set) and value - named}
+                    self.assertEqual(lacking, {}, f"{helper}: its row lacks specs its importing screens' rows name")
+            with self.subTest(helper=helper, part="reason"):
+                reason = rows[helper].reason
+                self.assertEqual([PurePosixPath(i).stem for i in importers if PurePosixPath(i).stem not in reason], [],
+                                 f"{helper}: the reason does not name every file that imports it")
 
 
 if __name__ == "__main__":
