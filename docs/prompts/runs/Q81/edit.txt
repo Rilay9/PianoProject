@@ -1,0 +1,20 @@
+$ (cwd .) python docs/prompts/runs/Q81/scripts-edit.py
+ladder-module-note: replaced
+ladder-counts-comment: replaced
+db-version: replaced
+import-guessed: replaced
+ladder-state-words: replaced
+taughtByAncestry-kept-line: replaced
+taughtByAncestry-duplicate: removed (was line 473)
+tools/content/tests: test_import_mutopia.py: inserted after line 726
+tools/content/tests: test_public_tie_option.py: inserted after line 742
+tools/content/tests: test_skill_transfer.py: inserted after line 750
+app/tests/unit: firstThirtyDays.test.ts: inserted after line 440
+app/tests/unit: recommendRespondsToEvidence.test.ts: inserted after line 567
+app/tests/unit: sightReadingFromReadingState.test.ts: inserted after line 626
+app/tests/unit: textGlyphs.test.ts: inserted after line 653
+wrote app/src/evidence/ladder.ts
+wrote docs/01-architecture.md
+wrote docs/04-ui-spec.md
+wrote docs/08-test-map.md
+exit=0

@@ -238,8 +238,15 @@ fallback until C6 and are deleted.
   gate); differing from what the skill was shown on in at least one dimension measured or declared,
   and never of the family that established it (`curriculum/transfer.ts`). Its line says what it is
   for — *Shifting position: something new, for a skill you have shown — it should feel different* —
-  and never that it will prove or has proved anything. Opened, it carries `?intent=transfer&skill=&offer=` and no rung (it is no rung's ask, so no rung judges it or is credited by listing it). Before it opens, Today keeps the offer as shown — the item, the skill, its material, the relationship and the contact the session chose it on, the card's day — under the card's offer token (D4a; `data/offerSnapshot.ts`, one `settings` row); composing the card again, or swapping the offer's row away, supersedes it. It opens only once it is kept: a write that fails opens nothing, and Today says *This offer could not be kept on this phone, so it was not opened. Try again.* (U73, X1). The Score screen reads it before ▶ is enabled — until it answers the screen is still loading, and nothing can start or be stored. Where it names this route's token, this item, this skill and today, the run keeps its material, role, the intent and that relationship, byte for byte, never a recomputation; where it does not (missing, superseded, another item, skill or day, unreadable), one line under the header says *This offer is no longer on today's card; opened as practice.* (or, where what was kept could not be read, *This offer could not be read back; opened as practice.*), and the run is ordinary practice with neither intent nor relationship. The ladder's v0 state keeps C7's
-  words (*shown on different material*) and nothing ties it to the offer. A swap drops the claim,
+  and never that it will prove or has proved anything. Opened, it carries `?intent=transfer&skill=&offer=` and no rung (it is no rung's ask, so no rung judges it or is credited by listing it). Before it opens, Today keeps the offer as shown — the item, the skill, its material, the relationship and the contact the session chose it on, the card's day — under the card's offer token (D4a; `data/offerSnapshot.ts`, one `settings` row); composing the card again, or swapping the offer's row away, supersedes it. It opens only once it is kept: a write that fails opens nothing, and Today says *This offer could not be kept on this phone, so it was not opened. Try again.* (U73, X1). The Score screen reads it before ▶ is enabled — until it answers the screen is still loading, and nothing can start or be stored. Where it names this route's token, this item, this skill and today, the run keeps its material, role, the intent and that relationship, byte for byte, never a recomputation; where it does not (missing, superseded, another item, skill or day, unreadable), one line under the header says *This offer is no longer on today's card; opened as practice.* (or, where what was kept could not be read, *This offer could not be read back; opened as practice.*), and the run is ordinary practice with neither intent nor relationship. The ladder's state for a
+  transfer is *transfer demonstrated* (`LADDER_STATES`), which the Skills screen, Progress and a
+  lesson page's requirement lines say in C7's words, *shown on different material*
+  (`SKILL_TEXT.transfer`, §3a); the transfer policy decides it from the facts each run carries
+  (G2), and the offer gives it one of them — the offer's relationship for the offer's skill, as the
+  offer made it (`recordRun`), read like any run's — so opening the offer credits nothing by
+  itself. (Q81: this said the ladder's *v0 state* kept C7's words and nothing tied it to the offer;
+  since G2 the state is the policy's reading, and an offer run carries the offer's relationship.)
+  A swap drops the claim,
   and with it the intent.
 - **Review has two reasons, and the line says which** (the reviewer's correction): *skill
   retention* — a skill the reads have not shown for the ladder's 21 days (`RETENTION_DAYS`), a
@@ -1532,9 +1539,16 @@ out.
   - **Wherever the app guessed is the exception** (T29; X3): a file that arrived as MIDI from any
     door, or a score whose stored provenance says its hands or key were inferred (the command-line
     converter's MusicXML).
-    That is the one import where the app decided things on his behalf — the metre, the key,
-    the grid, which hand played what — so the sheet opens by itself and says so *before* he
-    agrees to any of it, in three lines: the self-check's own answer ("all N notes the reader
+    In either case the app decided things on his behalf — for a MIDI file the metre, the key,
+    the grid and, where it split them, the hands; for the converter's MusicXML the hands or the key its
+    provenance calls inferred — so the import sheet (below) opens by itself and says so *before*
+    he agrees to any of it, and it writes only what he does on it (*Swap the hands*, *Use this
+    tempo*, *Save*). (Q81: this said "the one import where the app decided things", written when
+    MIDI was the only case; X3 added the converter's MusicXML.) For the converter's MusicXML the
+    line of each fact inferred, the hands or the key, says the command-line converter wrote the
+    score and the file does not say how it chose. For a MIDI file converted in this visit it is
+    three lines, the first under *What the app read* and the other two under *What the app
+    guessed*: the self-check's own answer ("all N notes the reader
     found are in the score, and every bar adds up", or what it found instead, in red), what
     happened to the hands — and that sentence has to be the true one of the two: either the
     file's own two tracks were **kept as recorded**, in which case the app decided nothing

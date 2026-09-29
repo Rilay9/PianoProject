@@ -1,0 +1,8 @@
+$ (cwd .) git status --short
+ M app/src/evidence/ladder.ts
+ M docs/01-architecture.md
+ M docs/04-ui-spec.md
+ M docs/08-test-map.md
+?? docs/prompts/runs/Q81/
+?? docs/prompts/tasks/Q81-docs-drift-pass.md
+exit=0

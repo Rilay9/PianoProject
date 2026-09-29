@@ -265,11 +265,14 @@ IndexedDB stores (via `idb`):
 | `contacts` | material key | one durable summary per material of the runs the retention cap deleted (G1): the item ids, whether the facts rest on an id alone, and per span what happened (`practised` or `performed`), the printed bars, first and last, the screens — the encounter projection only, never evidence. Written in the transaction that deletes the runs; merged, never replaced, by a restore. |
 | `projects` | id | one row per piece of the learner's stated intention (G1b, version 9): `ProjectRow` — the material or the id, the state and since, the append-only history, goal, problem, sections — written only by the project sheet; indexed `byItem`; in the backup (a merge joins histories), cleared by *Reset progress*. |
 
-**`DB_VERSION` is 8.** Every upgrade is keyed on `oldVersion` and creates only the stores that
-version lacked, so a phone that skipped a version arrives correct. 7 (C5) made no store: it marks
-a database from before C5 as due its one carry-over. 8 (G1) makes `encounters` and `contacts` and
-touches no other store (`encounterModel.test.ts` opens a version-7 database with a row in every
-store and finds every row as it was). C1 (2026-09-26) grew
+**`DB_VERSION` is 9** (Q81: this said 8, from before G1b). Every upgrade is keyed on `oldVersion`
+and creates only the stores that version lacked, so a phone that skipped a version arrives correct.
+7 (C5) made no store: it marks a database from before C5 as due its one carry-over. 8 (G1) makes
+`encounters` and `contacts` and touches no other store (`encounterModel.test.ts` opens a version-7
+database with a row in every store and finds every row as it was). 9 (G1b) makes `projects`,
+indexed `byItem`, touches no other store and carries nothing into it, so a database from before
+G1b opens with no project (`projectLifecycle.test.ts` opens a version-8 database with a row in
+every store and finds every row as it was and `projects` empty). C1 (2026-09-26) grew
 `SessionRow` and changed no store and no index: every new field is optional on a value, which
 IndexedDB does not describe, so there is nothing for an upgrade to do and no version to spend.
 A row written before C1 reads as a run with no observation.

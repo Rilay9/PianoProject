@@ -1,0 +1,28 @@
+$ (cwd .) python docs/prompts/runs/Q81/scripts-index_check.py <scratchpad>/08-at-head.md
+app/tests/e2e: 114 files, 114 with a line
+no file line: app/tests/unit/firstThirtyDays.test.ts
+no file line: app/tests/unit/perfectPerformance.1.test.ts
+no file line: app/tests/unit/perfectPerformance.2.test.ts
+no file line: app/tests/unit/perfectPerformance.3.test.ts
+no file line: app/tests/unit/perfectPerformance.4.test.ts
+no file line: app/tests/unit/perfectPerformance.5.test.ts
+no file line: app/tests/unit/perfectPerformance.6.test.ts
+no file line: app/tests/unit/perfectPerformance.7.test.ts
+no file line: app/tests/unit/recommendRespondsToEvidence.test.ts
+no file line: app/tests/unit/sightReadingFromReadingState.test.ts
+no file line: app/tests/unit/textGlyphs.test.ts
+2 lines beginning with `autoFit.test.ts` in app/tests/unit
+2 lines beginning with `sightReadingPromises.test.ts` in app/tests/unit
+2 lines beginning with `sightReadingUnchanged.test.ts` in app/tests/unit
+2 lines beginning with `taughtByAncestry.test.ts` in app/tests/unit
+app/tests/unit: 312 files, 301 with a line
+app/tests/states: 1 files, 1 with a line
+app/tests/tour: 7 files, 7 with a line
+no file line: tools/content/tests/test_import_mutopia.py
+no file line: tools/content/tests/test_public_tie_option.py
+no file line: tools/content/tests/test_skill_transfer.py
+no file line: tools/content/tests/test_validate_ladder.py
+tools/content/tests: 67 files, 63 with a line
+tools/midi-cleanup/tests: 3 files, 3 with a line
+missing: 15
+exit=0
