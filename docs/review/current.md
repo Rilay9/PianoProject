@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **F2** — `handoffs/b41e19e.md` (respond in `responses/b41e19e.md`). Placement reconciled with the measured claims landed (Entry 108); six decisions, four questions (where leaps and accidentals are taught on the core; the five deferred every-bar claims; whether item 2 may add an option; the practice rungs' data).
 - **The slots and the queue** — `handoffs/3e526f1.md` (respond in `responses/3e526f1.md`). A process handoff: confirm the lanes and the dependency order; two questions (X1's precondition, G2's).
 - **U74 brief** — `handoffs/a1c1fd6.md` (respond in `responses/a1c1fd6.md`). A brief handoff: the score filling the stage on every path in (the tier-1 fault in D4's picture), with E30; the fourth slot on approval.
 

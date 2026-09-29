@@ -1,0 +1,5 @@
+﻿build:app (after) exit 0
+precache  2229 entries (27918.91 KiB)
+files generated
+  dist/sw.js
+  dist/workbox-9c191d2f.js

@@ -1,0 +1,14 @@
+﻿today spec (before, baseline build) exit 1
+
+    Error: expect(locator).toHaveCount(expected) failed
+    Expected: 0
+    Received: 1
+           - unexpected value "1"
+      321 |     await expect(card.locator('.list-row').first()).toBeVisible();
+    > 322 |     await expect(card.locator('.list-row[data-item^="exercise.hanon."]')).toHaveCount(0);
+      324 |     await expect(practice).toHaveCount(1);
+      325 |     await expect(practice).toHaveAttribute('data-item', 'exercise.five-finger.c-major.right');
+  1 failed
+  16 passed (16.8s)
+
+

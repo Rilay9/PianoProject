@@ -365,10 +365,11 @@ describe('every rung of the built curriculum, on the built catalogue: no automat
 
 /**
  * The controls that open nothing on the built catalogue, each because every option it could take is
- * refused: `latin`'s and `latin.3`'s duets name a groove (the Latin groove, the son 3-2 clave over a
- * pulse), and every exercise `latin.3` and `latin.6` list is a clave, a tresillo, a tumbao, a montuno or
- * a Latin groove, so their Quick check says there is no drill. A teaching-use yes on one of them, or an
- * admitted exercise added to those rungs through its own seam, brings its control back and changes this
- * list.
+ * refused: every exercise `latin.3` and `latin.6` list is a clave, a tresillo, a tumbao, a montuno or
+ * a Latin groove, so their Quick check says there is no drill. `latin`'s and `latin.3`'s duets were on
+ * this list until F2 (Entry 108) took the duet tool off those two rungs, since the lesson named a button
+ * the page no longer drew (L111): a control the rung does not carry is not gone, it is absent, and the
+ * clave exercise opens from its own row. A teaching-use yes on one of the grooves, or an admitted
+ * exercise added to those rungs through its own seam, brings a Quick check back and changes this list.
  */
-const GONE = ['latin duet', 'latin.3 check', 'latin.3 duet', 'latin.6 check'];
+const GONE = ['latin.3 check', 'latin.6 check'];
