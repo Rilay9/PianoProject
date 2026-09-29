@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **The L120 brief** — `tasks/L120-untaught-readings-at-their-truth.md`, **for your gate before dispatch** (respond in `responses/<the record commit's sha>.md` or on this line): your X1 constraint built as a diagnosis first — the 387 classified by owning truth (a claim gap; an incidental demand read as asked; a demand no concept maps to, `rhythm.sixteenths` about two hundred of them; a misplacement) with the test that tells each apart, then the corrections per class. Three questions in the brief: is an incidental demand asked; a demand no rung teaches — a new concept or not a refusal ground; the order of truths.
 - **Q80** — `handoffs/2d9e7e2c.md` (respond in `responses/2d9e7e2c.md`). The stale-ladder check tolerates a build's own placeholders (Entry 141); one product question, Q86: deploy without a fetched piece, or guard the deploy.
 - **G1d** — `tasks/G1d-retention-reads-the-lifecycle.md`, for information: your G82 ruling built as the narrow seam you named — the session's retention reader skips a `paused` or `retired` project, nothing else consumes a project, the one-reader guard revised to pin the one read; its own handoff when it lands.
 - **U92** — `tasks/U92-skills-count-never-cut.md`, for information: your U90 ruling's separate repair of the Skills detail line — the count first, a visible ellipsis, the count never cut, measured at 342 px; its own handoff when it lands.
