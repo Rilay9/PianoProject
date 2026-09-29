@@ -19,6 +19,7 @@
 import { openDatabase, type ImportKind, type ImportRow } from './db';
 import type { CatalogItem, Measurement, Provenance } from '../curriculum/types';
 import { isMxl, toMusicXml } from '../score/mxl';
+import { toPartwise } from '../score/toPartwise';
 import {
   ConvertError,
   convertMidi,
@@ -752,6 +753,9 @@ export async function addImport(file: File, now = new Date()): Promise<ImportRow
         `${file.name} does not look like MusicXML — if it came from a scan, export it from MuseScore first.`,
       );
     }
+    // X3e: the store keeps one form. The engraver loads only partwise and every reader of the stored text
+    // walks parts around measures, so a timewise file is kept as its partwise twin (`toPartwise`).
+    xml = toPartwise(xml);
     const title = titleFromMusicXml(xml, file.name);
     const composer = composerFromMusicXml(xml);
     // E32: a metronome mark the file prints only as text becomes the score's tempo, in its own direction.
@@ -812,22 +816,24 @@ export async function correctImportHands(
   if (!/<score-partwise|<score-timewise/i.test(correctedXml)) {
     throw new ImportError('The corrected score is not MusicXML, so it was not saved.');
   }
-  const measured = await measureImport(correctedXml, id);
+  // X3e: kept in the one form the door keeps (`toPartwise`).
+  const corrected = toPartwise(correctedXml);
+  const measured = await measureImport(corrected, id);
   const fingerprint = measured.measurement.status === 'measured' ? await currentFingerprint() : undefined;
-  const before = row.provenance ?? importProvenance('musicxml', measured, correctedXml, null);
+  const before = row.provenance ?? importProvenance('musicxml', measured, corrected, null);
   const provenance: Provenance = {
     ...before,
     facts: {
       ...before.facts,
-      demands: demandsFact(measured, !writesTempo(correctedXml), CORRECTED_VIA),
+      demands: demandsFact(measured, !writesTempo(corrected), CORRECTED_VIA),
       hands: { kind: 'authored', via: `the learner’s correction, ${now.toISOString().slice(0, 10)}` },
       measuredUnder: measuredUnderFact(measured, MIDI_CONVERTER_VERSION, fingerprint),
     },
   };
   const next: ImportRow = {
     ...row,
-    data: correctedXml,
-    bytes: byteSizeOf(correctedXml),
+    data: corrected,
+    bytes: byteSizeOf(corrected),
     demands: measured.demands,
     measurement: measured.measurement,
     provenance,

@@ -1,0 +1,113 @@
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/planStore.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/data/backup.ts, src/data/rungStates.ts, src/ui/screens/DrillScreen.ts, src/ui/screens/LessonScreen.ts, src/ui/screens/PlanScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [plugin builtin:vite-reporter] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/evidenceJob.ts is dynamically imported by src/main.ts but also statically imported by src/ui/screens/SettingsScreen.ts, dynamic import will not move module into another chunk.
+[WebServer] 
+
+Running 1 test using 1 worker
+
+  x  1 tests\e2e\import-experience.spec.ts:353:3 › a timewise file, as the door accepts it (X3e) › the half-note file in the timewise form: the sheet says 120 quarter notes a minute and four bars, and the Score screen opens it at 120 (19.8s)
+
+
+  1) tests\e2e\import-experience.spec.ts:353:3 › a timewise file, as the door accepts it (X3e) › the half-note file in the timewise form: the sheet says 120 quarter notes a minute and four bars, and the Score screen opens it at 120 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('#assign-sheet[data-sheet="import"]').locator('#import-tempo')
+    Expected substring: "from the file — The file says 𝅗𝅥 = 60 (120 quarter notes a minute)."
+    Received string:    "Tempo · the app’s guess — The file states no tempo, so the app chose ♩ = 100."
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "soft toContainText" locator('#assign-sheet[data-sheet="import"]').locator('#import-tempo') with timeout 5000ms
+      - waiting for locator('#assign-sheet[data-sheet="import"]').locator('#import-tempo')
+        14 × locator resolved to <p id="import-tempo" data-whose="guess">…</p>
+           - unexpected value "Tempo · the app’s guess — The file states no tempo, so the app chose ♩ = 100."
+
+
+      358 |     await importMarked(page, title, xml);
+      359 |     const sheet = page.locator('#assign-sheet[data-sheet="import"]');
+    > 360 |     await expect.soft(sheet.locator('#import-tempo')).toContainText('from the file — The file says \u{1D15E} = 60 (120 quarter notes a minute).');
+          |                                                       ^
+      361 |     await expect.soft(sheet.locator('#import-tempo-bpm')).toHaveValue('120');
+      362 |     await expect.soft(sheet.locator('#import-read')).toContainText('4 bars');
+      363 |     await page.getByRole('button', { name: 'Not now' }).click();
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a7ad2cfdf974de0ab\app\tests\e2e\import-experience.spec.ts:360:55
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  locator('#assign-sheet[data-sheet="import"]').locator('#import-tempo-bpm')
+    Expected: "120"
+    Received: "100"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "soft toHaveValue" locator('#assign-sheet[data-sheet="import"]').locator('#import-tempo-bpm') with timeout 5000ms
+      - waiting for locator('#assign-sheet[data-sheet="import"]').locator('#import-tempo-bpm')
+        14 × locator resolved to <input step="1" type="number" inputmode="numeric" id="import-tempo-bpm"/>
+           - unexpected value "100"
+
+
+      359 |     const sheet = page.locator('#assign-sheet[data-sheet="import"]');
+      360 |     await expect.soft(sheet.locator('#import-tempo')).toContainText('from the file — The file says \u{1D15E} = 60 (120 quarter notes a minute).');
+    > 361 |     await expect.soft(sheet.locator('#import-tempo-bpm')).toHaveValue('120');
+          |                                                           ^
+      362 |     await expect.soft(sheet.locator('#import-read')).toContainText('4 bars');
+      363 |     await page.getByRole('button', { name: 'Not now' }).click();
+      364 |     await expect(sheet).toBeHidden();
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a7ad2cfdf974de0ab\app\tests\e2e\import-experience.spec.ts:361:59
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('#assign-sheet[data-sheet="import"]').locator('#import-read')
+    Expected substring: "4 bars"
+    Received string:    "What the app readLength1 barKey signatureno sharps or flats"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "soft toContainText" locator('#assign-sheet[data-sheet="import"]').locator('#import-read') with timeout 5000ms
+      - waiting for locator('#assign-sheet[data-sheet="import"]').locator('#import-read')
+        14 × locator resolved to <section class="block" id="import-read">…</section>
+           - unexpected value "What the app readLength1 barKey signatureno sharps or flats"
+
+
+      360 |     await expect.soft(sheet.locator('#import-tempo')).toContainText('from the file — The file says \u{1D15E} = 60 (120 quarter notes a minute).');
+      361 |     await expect.soft(sheet.locator('#import-tempo-bpm')).toHaveValue('120');
+    > 362 |     await expect.soft(sheet.locator('#import-read')).toContainText('4 bars');
+          |                                                      ^
+      363 |     await page.getByRole('button', { name: 'Not now' }).click();
+      364 |     await expect(sheet).toBeHidden();
+      365 |
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a7ad2cfdf974de0ab\app\tests\e2e\import-experience.spec.ts:362:54
+
+    Error: expect(received).not.toContain(expected) // indexOf
+
+    Expected substring: not "Could not open"
+    Received string:        "Could not open this score: OpenSheetMusicDisplay: Document is not a valid 'partwise' MusicXML"
+
+      369 |     const drawn = page.locator('#score-stage .is-front svg').first();
+      370 |     await expect(drawn.or(page.locator('#score-status', { hasText: 'Could not open' })).first()).toBeVisible({ timeout: 30_000 });
+    > 371 |     expect(await page.locator('#score-status').textContent()).not.toContain('Could not open');
+          |                                                                   ^
+      372 |     await setTempoPercent(page, 100);
+      373 |     await expect(page.locator('#score-tempo-label')).toHaveText(/\b120 bpm$/);
+      374 |     await expect(page.locator('#score-bpm')).toHaveValue('120');
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a7ad2cfdf974de0ab\app\tests\e2e\import-experience.spec.ts:371:67
+
+    Error Context: test-results\import-experience-a-timewi-13183-core-screen-opens-it-at-120\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\import-experience-a-timewi-13183-core-screen-opens-it-at-120\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\import-experience-a-timewi-13183-core-screen-opens-it-at-120\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\import-experience.spec.ts:353:3 › a timewise file, as the door accepts it (X3e) › the half-note file in the timewise form: the sheet says 120 quarter notes a minute and four bars, and the Score screen opens it at 120 
+exit 1

@@ -34,6 +34,11 @@
  * and the count-in read (the dev harness's model summary: its tempo and the length its clock gives four
  * bars, computed from the map); and the learner's stated 100 on that file is what the Score screen
  * then says. On the committed map the screen said 60 and, after the statement, 50.
+ *
+ * And the same file in MusicXML's timewise form (X3e; the X3d review's required change,
+ * `responses/5e6eceba.md`), which the door accepts: its sheet says what the partwise file's says and the
+ * Score screen opens it at the same 120. On the committed door the sheet said the app chose ♩ = 100 and
+ * the Score screen could not open the score, the engraver refusing the timewise form.
  */
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
@@ -334,5 +339,38 @@ test.describe('the tempo a marked file states, played (X3d)', () => {
     await openAtFullTempo(page, title);
     await expect(page.locator('#score-tempo-label')).toHaveText(/\b100 bpm$/);
     await expect(page.locator('#score-bpm')).toHaveValue('100');
+  });
+});
+
+/** A one-part partwise file in MusicXML's timewise form: the same measures, each holding the part (X3e). */
+function timewise(partwise: string): string {
+  const [, head = '', part = '', inner = ''] = /^([\s\S]*?)<part (id="[^"]*")>([\s\S]*)<\/part><\/score-partwise>$/.exec(partwise) ?? [];
+  const measures = [...inner.matchAll(/<measure( [^>]*)>([\s\S]*?)<\/measure>/g)].map(([, attributes = '', content = '']) => `<measure${attributes}><part ${part}>${content}</part></measure>`);
+  return `${head.replace('<score-partwise', '<score-timewise')}${measures.join('')}</score-timewise>`;
+}
+
+test.describe('a timewise file, as the door accepts it (X3e)', () => {
+  test('the half-note file in the timewise form: the sheet says 120 quarter notes a minute and four bars, and the Score screen opens it at 120', async ({ page }) => {
+    test.setTimeout(120_000);
+    const title = 'Half note timewise';
+    const xml = timewise(halfNoteMarked(title));
+    expect(xml).toContain('<score-timewise version="4.0">');
+    await importMarked(page, title, xml);
+    const sheet = page.locator('#assign-sheet[data-sheet="import"]');
+    await expect.soft(sheet.locator('#import-tempo')).toContainText('from the file — The file says \u{1D15E} = 60 (120 quarter notes a minute).');
+    await expect.soft(sheet.locator('#import-tempo-bpm')).toHaveValue('120');
+    await expect.soft(sheet.locator('#import-read')).toContainText('4 bars');
+    await page.getByRole('button', { name: 'Not now' }).click();
+    await expect(sheet).toBeHidden();
+
+    // The Score screen, settled one way or the other: the engraving drawn, or its sentence that it could not open the score.
+    await page.locator('.list-row', { hasText: title }).click();
+    await expect(page).toHaveURL(/#\/score\//);
+    const drawn = page.locator('#score-stage .is-front svg').first();
+    await expect(drawn.or(page.locator('#score-status', { hasText: 'Could not open' })).first()).toBeVisible({ timeout: 30_000 });
+    expect(await page.locator('#score-status').textContent()).not.toContain('Could not open');
+    await setTempoPercent(page, 100);
+    await expect(page.locator('#score-tempo-label')).toHaveText(/\b120 bpm$/);
+    await expect(page.locator('#score-bpm')).toHaveValue('120');
   });
 });

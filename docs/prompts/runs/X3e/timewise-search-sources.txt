@@ -1,0 +1,4 @@
+folders: content/scores, app/tests/fixtures
+files read: 603
+score-partwise: 603
+exit 0

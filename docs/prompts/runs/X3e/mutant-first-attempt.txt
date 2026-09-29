@@ -1,0 +1,15 @@
+The first run of scripts-mutant.sh (three mutants in a row) died on each at
+"scripts-mutant.sh: line 24: $3: unbound variable" (the first line of each of the three mutant logs of
+that run), after the mutant was applied and before the restore.
+
+So src/score/toPartwise.ts carried the first two mutants and src/data/importStore.ts the third.
+Restored by hand from the script's aside copies, identified by content (the toPartwise copy with neither
+mutant's text; the importStore copy holding "const corrected = toPartwise(correctedXml);"), then checked:
+
+  src/score/toPartwise.ts: "const masked = xml.replace(" present, "measures.filter" absent;
+    sha256 7100404181e3f6dc998b5dc417af2d593dd52d51cfd0f6626769dfc88566c98b
+  src/data/importStore.ts: "const corrected = toPartwise(correctedXml);" present;
+    sha256 6576c2dd7b792c46ff9ff13453cbafe7d4b6712572fbb8be095779a3742833b4
+
+The script now restores in an EXIT trap; the three mutants were rerun with it (mutant-*.txt, each ending
+"restored: sha256 OK" with the sha256 above).

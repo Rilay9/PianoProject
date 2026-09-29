@@ -44,9 +44,16 @@
  * their tempo rather than having set it). A pickup is no exception: an upbeat that sounds before a tempo
  * written over bar 1 plays at the default (no bundled score has that shape; `docs/prompts/runs/X3d/`).
  *
+ * **The partwise form only, and that is every score the app holds** (X3e). The walk is parts around
+ * measures, so a measure's ordinal is its place in its part and `<divisions>` carry from bar to bar within
+ * a part. A `<score-timewise>` file (measures around parts) never reaches this reader: the import door keeps
+ * it as its partwise twin (`toPartwise.ts`), because the engraver loads nothing else, and every bundled
+ * score is partwise (X3e's search, `docs/prompts/runs/X3e/timewise-search.txt`). Handed timewise text, this
+ * finds no measure inside a part and reads no tempo.
+ *
  * **Not read:** `<sound time-only>` (which passes of a repeat a sound applies to; every pass hears it), a
- * tempo in a `<note>`'s `<play>`, the timewise form, and tempo marks printed only as text (E32's door reads
- * those and writes a `<sound tempo>` beside them, which this reads).
+ * tempo in a `<note>`'s `<play>`, and tempo marks printed only as text (E32's door reads those and writes a
+ * `<sound tempo>` beside them, which this reads).
  */
 
 /** A `<beat-unit>`'s length in quarter notes: MusicXML's note-type values. */
