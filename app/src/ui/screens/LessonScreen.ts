@@ -13,6 +13,7 @@
  */
 import type { Router } from '../../router';
 import { allItems, loadCurriculum, fetchMarkdown } from '../../curriculum/load';
+import { admittedForTeaching } from '../../curriculum/eligibility';
 import { findLesson, masteryCriteriaFor } from '../../curriculum/selectors';
 import { lessonShortfall } from '../../curriculum/needs';
 import type { CatalogItem, Curriculum, Lesson, LessonTool } from '../../curriculum/types';
@@ -208,6 +209,29 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     if (lock.locked && !window.confirm(confirmMessage(lock))) return;
     void openItem(router, target, { from: lessonId });
   };
+
+  /**
+   * The first of these rung options that passes `valid` and the teaching-use admission, in the
+   * rung's own order; null where none does (D3c; the reviewer's required change on D3b).
+   *
+   * *Start*, *Climb the ladder*, *Quick check* and the duet and blind tools' piece each choose an
+   * item for the learner, so each is an offer (`04` §3e): a rung listing an item is its authored
+   * placement, not a decision that the item is fit to teach. `admittedForTeaching` is the gate's own
+   * reading, exported once from `eligibility.ts`; this page never reads the promise fact or the
+   * teaching bit itself. `valid` is the control's own question about the item, asked of `openItem`'s
+   * helpers, which stay questions about the item rather than offers. A control with nothing to take
+   * is not drawn, or says so — never kept by skipping the admission.
+   *
+   * The option rows are not picks: they are the learner's own choice, like the Library, and every
+   * authored option stays listed and tappable there.
+   */
+  function firstOffered(ids: readonly string[], valid: (item: CatalogItem) => boolean): CatalogItem | null {
+    for (const id of ids) {
+      const item = items.get(id);
+      if (item !== undefined && valid(item) && admittedForTeaching(item)) return item;
+    }
+    return null;
+  }
 
   function optionRow(id: string): HTMLElement {
     const item = items.get(id);
@@ -509,6 +533,12 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
    * this rung's material as a duet" is the instruction and any of its songs
    * satisfies it. Where the rung has no playable song at all the button is not
    * drawn — a duet with nothing to duet against is a dead control.
+   *
+   * Either way the piece is an offer and passes the teaching-use admission
+   * (D3c, `firstOffered`): the first playable song is the first *admitted*
+   * one, and a named item without it draws no button, exactly as a named item
+   * that is not the rung's own does — never the song instead, because the rung
+   * said which piece it meant and that piece is not on offer.
    */
   function toolButton(tool: LessonTool, rung: Lesson, sameKindBefore = 0): HTMLElement | null {
     const scorePiece = (): string | null => {
@@ -525,15 +555,9 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
         const offered =
           rung.songOptions.includes(tool.item) || rung.exerciseOptions.includes(tool.item);
         if (!offered) return null;
-        const named = items.get(tool.item);
-        return named !== undefined && targetFor(named) === 'score' ? tool.item : null;
+        return firstOffered([tool.item], (named) => targetFor(named) === 'score')?.id ?? null;
       }
-      return (
-        rung.songOptions.find((id) => {
-          const item = items.get(id);
-          return item !== undefined && isPlayable(item) && item.type === 'song';
-        }) ?? null
-      );
+      return firstOffered(rung.songOptions, (item) => isPlayable(item) && item.type === 'song')?.id ?? null;
     };
     /**
      * What *Play it as a duet* does, and why it writes a setting first (T17).
@@ -623,12 +647,9 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
         // is skipped — `4.3` leads with `drill.chord.inversions`, which has no
         // file — and where a rung offers nothing that opens as a score the
         // button is not drawn, the way a duet with nothing to duet against is
-        // not drawn.
-        const id =
-          rung.exerciseOptions.find((option) => {
-            const found = items.get(option);
-            return found !== undefined && targetFor(found) === 'score';
-          }) ?? null;
+        // not drawn. The exercise is an offer (D3c): the first that opens as a
+        // score *and* passes the teaching-use admission (`firstOffered`).
+        const id = firstOffered(rung.exerciseOptions, (found) => targetFor(found) === 'score')?.id ?? null;
         if (id === null) return null;
         const node = make('Climb the ladder', () => {
           router.navigateScore(id, { mode: 'tempo', ladder: true, from: rung.id });
@@ -685,13 +706,12 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
    * — so "the first one that is playable" is the recommendation, not a guess
    * made here. An import placeholder is skipped because pressing Start on one
    * would open a sheet about a missing file.
+   *
+   * And Start is an offer (D3c): an option without the teaching-use admission
+   * is skipped too, for the next one in the rung's order (`firstOffered`).
    */
   function startItem(rung: Lesson): CatalogItem | null {
-    for (const id of [...rung.exerciseOptions, ...rung.songOptions]) {
-      const item = items.get(id);
-      if (item && isPlayable(item)) return item;
-    }
-    return null;
+    return firstOffered([...rung.exerciseOptions, ...rung.songOptions], isPlayable);
   }
 
   function drawStart(rung: Lesson): void {
@@ -699,12 +719,19 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
     startBlock.replaceChildren();
     if (!target) {
       // `04` §0 R4: no furniture. A rung whose options are all waiting on an
-      // import has nothing for this button to open, and the rows below say so
-      // one at a time.
+      // import, or none of them offered, has nothing for this button to open,
+      // and the rows below are still there to choose from.
       startBlock.hidden = true;
       return;
     }
-    startWhat.textContent = `Opens “${target.title}”, the first thing on this rung.`;
+    // "The first thing on this rung" only when it is (D3c): where Start passes
+    // over the rung's first option, the list below begins with that option, and
+    // the line would be false about the row right under it. It names what it
+    // opens and says no more — no "waiting for review", which is the content
+    // pipeline's business and not a thing to practise.
+    const first = [...rung.exerciseOptions, ...rung.songOptions][0];
+    startWhat.textContent =
+      target.id === first ? `Opens “${target.title}”, the first thing on this rung.` : `Opens “${target.title}”.`;
     startBlock.append(
       button('Start', () => open(target), { id: 'lesson-start', variant: 'primary' }),
       startWhat,
@@ -826,10 +853,10 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
         'Quick check',
         () => {
           // A 2–3 minute measured test: the lesson's first playable drill,
-          // opened for a real run rather than self-assessed.
-          const drill = (lesson?.exerciseOptions ?? [])
-            .map((id) => items.get(id))
-            .find((item) => item && (item.drill || item.file));
+          // opened for a real run rather than self-assessed. An offer, so the
+          // first that passes the teaching-use admission (D3c, `firstOffered`);
+          // with none, the sentence below, which stays true.
+          const drill = firstOffered(lesson?.exerciseOptions ?? [], (item) => Boolean(item.drill || item.file));
           if (drill) open(drill);
           else status.textContent = 'This lesson has no drill to check against yet.';
         },
