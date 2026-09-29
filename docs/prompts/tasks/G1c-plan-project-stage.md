@@ -36,3 +36,5 @@ If Plan's stage line or rows are read by a consumer that needs the count (a test
 ## Report
 
 Judgement first: Plan's Stage 9 block at 342 × 740 before and after, beside one other stage's unchanged block; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes.
+
+**Landed 2026-09-29** (Entry 139; 77b1027f, merged 70730cdd); handoff `handoffs/77b1027f.md`.

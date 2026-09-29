@@ -37,3 +37,5 @@ If the timewise walk cannot reproduce the partwise offsets for some shape (a `<b
 Judgement first: what a learner importing a timewise file saw and sees (the sheet's sentence, the Score label) and the twins' table (partwise / timewise: events, opening, label, count-in, map) for each shape; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes.
 
 **Landed 2026-09-29** (Entry 137; 3caf2711, merged 3134a38a); handoff `handoffs/3caf2711.md`.
+
+**Accepted 2026-09-29** (`responses/3caf2711.md`, APPROVE). X24 and X29 closed: the import door's tempo truth is complete.
