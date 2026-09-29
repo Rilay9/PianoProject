@@ -170,6 +170,33 @@
       "source": "model"
     },
     {
+      "name": "spelling",
+      "dir": "edge",
+      "features": {
+        "bars": 2.0,
+        "notesPerBar": 5.5,
+        "notesPerSecond": 2.291667,
+        "maxSimultaneousRight": 1.0,
+        "maxSimultaneousLeft": 1.0,
+        "maxSpanRight": 0.0,
+        "maxSpanLeft": 0.0,
+        "maxLeapRight": 5.0,
+        "maxLeapLeft": 21.0,
+        "rangeRight": 9.0,
+        "rangeLeft": 21.0,
+        "blackKeyRatio": 0.454545,
+        "keyAccidentals": 1.0,
+        "shortestValue": 1.0,
+        "voicesPerStaff": 0.0,
+        "handCrossings": 0.0,
+        "ornaments": 0.0,
+        "ledgerRatio": 0.0,
+        "distinctRhythms": 3.0
+      },
+      "level": 3.08,
+      "source": "model"
+    },
+    {
       "name": "tempo-change",
       "dir": "edge",
       "features": {
@@ -202,7 +229,7 @@
       "features": {
         "bars": 2.0,
         "notesPerBar": 5.5,
-        "notesPerSecond": 1.833333,
+        "notesPerSecond": 0.916667,
         "maxSimultaneousRight": 1.0,
         "maxSimultaneousLeft": 0.0,
         "maxSpanRight": 0.0,
@@ -220,7 +247,7 @@
         "ledgerRatio": 0.0,
         "distinctRhythms": 3.0
       },
-      "level": 1.34,
+      "level": 1.16,
       "source": "model"
     },
     {

@@ -1,0 +1,36 @@
+﻿scores the built catalogue names with a MusicXML file: 2013 (build probe 2013, app probe 2013); unreadable on either side: 1
+compared: 2012
+the build's opening equals the app's (to a hundredth): before X31 1833; after X31 2007
+differing after X31: 5
+  late-tempo: 4 — the file's first tempo stands after notes have sounded: the app opens at its default 100 until it, the build takes the earliest mark anywhere (X3d's opening rule, not copied into Python)
+  mark-over-sound: 0 — a mark and a <sound tempo> at the opening disagree (in one direction, or side by side): music21 keeps the mark, the app the sound
+  dropped-sound: 1 — the app's opening <sound tempo> stands in a direction whose <metronome> music21 cannot read: music21 drops the sound with the mark and takes another tempo at the same place
+  no-number: 0 — music21 reads no tempo at the opening where the app reads one (a number music21 cannot read, or a <sound tempo> music21 drops beside an unreadable <metronome>)
+  other: 0 — not explained by the three forms: read by hand
+the build's opening moved by X31 (before != after): 178; of them now equal to the app's: 175; equal before and not after: 1
+scores whose opening is not the first mark recurse() meets: 1
+scores with a mark whose number music21 took from a tempo word (not a tempo now): 0
+
+X3d's moved openings: 179 listed; found in both probes: 179
+  the build's opening, as the label rounds, equals the app's label after X3d: before X31 62; after X31 175
+  the build's opening equals the app's reader to a hundredth, after X31: 175
+  of the 179, differing after X31 (id, build before → after, app label before → after, the app's reader, the catalogue, form):
+  song.classical.bach-wtc1-prelude-2	100 → 145	label 145 → 100	reader 100	catalogue 145	late-tempo
+  song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx	152 → 152	label 152 → 100	reader 100	catalogue 152	late-tempo
+  song.pop.camille-le-festin-piano-arr-kno.pdmx	150 → 150	label 150 → 100	reader 100	catalogue 150	late-tempo
+  song.pop.misc-computer-games-fallout-4-trailer-soundtrack.pdmx	72 → 144	label 72 → 100	reader 100	catalogue 144	late-tempo
+
+== late-tempo (4): the file's first tempo stands after notes have sounded: the app opens at its default 100 until it, the build takes the earliest mark anywhere (X3d's opening rule, not copied into Python)
+id	build before	build after	app opening	app from	app mark at the opening	app first event	catalogue tempoBpm	in X3d's 179
+song.classical.bach-wtc1-prelude-2	100	145	100 (default)	-	-	bar ordinal 27 +0: 145 (sound)	145.0	yes
+song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx	152	152	100 (default)	-	-	bar ordinal 24 +0: 152 (sound)	152.0	yes
+song.pop.camille-le-festin-piano-arr-kno.pdmx	150	150	100 (default)	-	-	bar ordinal 5 +0: 150 (sound)	150.0	yes
+song.pop.misc-computer-games-fallout-4-trailer-soundtrack.pdmx	72	144	100 (default)	-	-	bar ordinal 44 +1: 144 (sound)	144.0	yes
+
+== dropped-sound (1): the app's opening <sound tempo> stands in a direction whose <metronome> music21 cannot read: music21 drops the sound with the mark and takes another tempo at the same place
+id	build before	build after	app opening	app from	app mark at the opening	app first event	catalogue tempoBpm	in X3d's 179
+song.classical.satie-gymnopedie-1	100	76.0002	60	sound	quarter = 76 (76 quarters)	bar ordinal 0 +0: 60 (sound)	60.0	no
+
+unreadable:
+song.classical.mozart-k545-i.alt	MusicXMLImportException: In part (Piano), measure (18): incorrect accidental 9.0 for pitch F3	
+exit=0
