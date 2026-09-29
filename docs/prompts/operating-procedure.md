@@ -182,6 +182,8 @@ at a time on port 4173; `npx tsc -b`, not `tsc --noEmit -p`; commit named paths 
 agents never commit; before re-serialising JSON compare a round-trip against the raw bytes
 and splice text if it differs.
 
+**Two finished seams may share one landing chain** (the reviewer's batching rule, approved with conditions 2026-09-29, `responses/questions-b11e4f89.md`) when each keeps its own implementation HEAD, entry and handoff. The chain records the exact union of changed paths (the map's minimum over the diff from the pre-merge head to the last merge); the seam-specific targeted tests still run where the map requires them; a failure is attributed to the seam or the shared interaction that caused it, never inferred green for one seam because the combined chain passed; a shared-file merge is inspected and both contracts kept. Never batched: a workflow or deploy-gate seam awaiting review, or two seams where one's fix changes the other's expected test oracle.
+
 ## 12. The report
 
 Judgement first, then Done / Not done / Follow-ups / Questions / Files. Under Done,

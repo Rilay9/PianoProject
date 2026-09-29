@@ -20,3 +20,5 @@ You own `tools/content/difficulty.py` at `opening_quarter_bpm` only, `tools/cont
 ## Report
 
 Judgement first: the corpus counts before and after, the four files' values; Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table. Entry 154; `docs/prompts/runs/X31a/ENTRY.md` starting `### Entry 154 — X31a`.
+
+**Brief approved 2026-09-29** (`responses/questions-b11e4f89.md`): a faithful fix-forward of the X31 required change; the music21 information-loss gap stays separate.
