@@ -2,8 +2,8 @@
 
 Open handoffs, each with its own file:
 
+- **G2a** — `handoffs/337a0324.md` (respond in `responses/337a0324.md`). Related-composition material fails closed (Entry 132), your G2 required change; releases X1.
 - **X3d** — `tasks/X3d-one-tempo-map.md`, for information: your X3c required change (the canonical score-model tempo path: one reader, beat unit and dots normalised, `<sound tempo>` precedence, event position; the six adversaries; the sheet consuming the same reader); its own handoff when it lands.
-- **G2a** — `tasks/G2a-composition-fails-closed.md`, for information: your G2 required change (related-composition material reads `unknown` until the relationship carries the arrangement or section fact; the two discriminating cases; a ladder case); its own handoff when it lands; X1 waits on it.
 - **U82** — `handoffs/be8802c3.md` (respond in `responses/be8802c3.md`). The sideways window count (Entry 127): not a regression — the spec asserted the renderer's pre-measurement claim; the case now asserts the rule on the glass; the renderer unchanged.
 - **Four fix-forward briefs** — `handoffs/bcad0c9.md`, for information: F2b (your F2a change), Q65b (your Q65a change), U80 (the side-panel regression CI's full run found), X3a (the tempo control under X3's contract). Respond only if one departs from its contract.
 - **The G1b brief** — `handoffs/a96395d.md` (G2 answered in `responses/a96395d.md`; G1b still open there): the repertoire lifecycle, a consequential contract reviewed before dispatch; three questions.
