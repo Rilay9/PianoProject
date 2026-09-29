@@ -34,3 +34,5 @@ If `docs/08` names no spec for a module the chains ran targeted specs on, use th
 ## Report
 
 Judgement first: what the map now says for a change to `ScoreScreen.ts`, to `db.ts` and to `docs/04-ui-spec.md`, as observations; then Done / Not done / Follow-ups / Questions / Files; the two classification tables; the nine-seam comparison; the red lines; the tests table; exit codes; unverified beside what passes.
+
+**Landed 2026-09-29** (Entry 120; 3c661d4, merged 08af908); handoff `handoffs/3c661d4.md`. Q68–Q70 recorded.

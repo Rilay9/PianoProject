@@ -2,12 +2,13 @@
 
 Open handoffs, each with its own file:
 
+- **Q65a** — `handoffs/3c661d4.md` (respond in `responses/3c661d4.md`). The map made the discriminating minimum (Entry 120); three questions; the map advisory until accepted.
 - **F2a** — `handoffs/fc91e5a.md` (respond in `responses/fc91e5a.md`). Your required change on F2 landed (Entry 117); one decision is yours: `practice.1`'s core prerequisite.
 - **The G1b brief** — `handoffs/a96395d.md` (G2 answered in `responses/a96395d.md`; G1b still open there): the repertoire lifecycle, a consequential contract reviewed before dispatch; three questions.
 - **E-tail** — `handoffs/f972756.md` (respond in `responses/f972756.md`). The E sweep landed (Entry 115); three questions: the stale approvals' consequence and E51, E31's placement, E50's timing.
 - **The G1a and Q65a briefs** — `handoffs/9cfa808.md`, for information (the G1 and Q-tooling reviews' required changes dispatched as fix-forwards under 788427c; Entries 119 and 120). Respond only if a brief departs from the required change.
 
-Building: **X3** (Entry 118, `responses/ef80e86.md`), **G1a** (Entry 119), **Q65a** (Entry 120), each gets its own handoff when it lands. Next: G2 dispatches on its review after G1a lands; G1b on its review after G1a and X3 land; X1's brief after F2a lands and G2 is approved (L113 its boundary).
+Building: **X3** (Entry 118, `responses/ef80e86.md`), **G1a** (Entry 119), each gets its own handoff when it lands. Next: G2 dispatches on its review after G1a lands; G1b on its review after G1a and X3 land; X1's brief after F2a lands and G2 is approved (L113 its boundary).
 
 Answered 2026-09-29: E-tail (`responses/f972756.md`, APPROVE; closed); the G2 brief (`responses/a96395d.md`, approved with one required change: the fact path, applied). In one push (72015a7): U74 (`responses/9c9cf86.md`, APPROVE; closed); Q47 (`responses/8668afb.md`, APPROVE; Q47 and Q46 closed on the runner proof, Entry 113 amended); G1 (`responses/b48342f.md`, approved with one required change: G1a; the core accepted; G2 owns the offer's wiring); Q-tooling (`responses/198c148.md`, approved with one required change: Q65a; the manifest, views step and helper accepted). Earlier: the X3 brief (`responses/ef80e86.md`, approved with one required change, applied; dispatched); F2 (`responses/b41e19e.md`, approved with one required change: F2a); the sweeps (`responses/d1562ef.md`, approved to proceed); the U74 brief (`responses/a1c1fd6.md`); the queue (`responses/3e526f1.md`); D4a (`responses/5193338.md`, approved; D4 closed); the lanes handoff (`responses/add51b3.md`); the E2a brief (`responses/1b09a1f.md`); E2 (`responses/2532022.md`); the Q47 brief (`responses/f52ebde.md`); D4 (`responses/9193261.md`); the G1, D4a and D5 briefs (`7863bee.md`, `1cbc38a.md`, `4088dfc.md`).
 

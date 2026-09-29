@@ -1,0 +1,5 @@
+$ (cwd .) python tools/docs/checks_for_paths.py docs/00-invariants.md
+# checks for 1 path(s): 1 matched, 0 unmatched
+# docs/00-invariants.md: docs/**
+# no checks: nothing the map names reads these paths
+exit=0

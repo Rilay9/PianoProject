@@ -38,6 +38,7 @@
 - **U74** — **closed** 2026-09-29 (`responses/9c9cf86.md`, APPROVE; Entry 114). E30 unchanged; U77 and U78 are its inputs when it is deliberately reopened; docs/04 §5 states the code's rule.
 - **X3** — brief drafted 2026-09-29 (`X3-import-experience.md`) on E2's closed layer; brief **approved with one required change, applied** (`responses/ef80e86.md`: the UI opens the sheet, the store mutates; the tempo through a semantic store operation or held; no key control); **dispatched 2026-09-29** (Entry 118, port 4263).
 - **E-tail** — **closed** 2026-09-29 (`responses/f972756.md`, APPROVE; Entry 115). E51 is the next excerpt-approval repair (before any renewed approval); E50 a converter seam that need not block X3; no automatic carry-over for the three byte-identical cuts. **Doc-splice** (Entry 121) dispatched: the six landed entries' doc rows into the specs. 
+- **Q65a** — **landed** 2026-09-29 (Entry 120, merged 08af908, chain green); handoff `handoffs/3c661d4.md`, with the reviewer (three questions); the map advisory until accepted. Its nine-seam comparison found three chains naming a spec that does not exist (Q69; Entries 112, 114, 115 amended).
 
 - From Q24 (Entry 89): a fresh worktree's `npx vitest run` needs `python tools/midi-cleanup/tests/parity_reference.py` first (or `build/midi-parity/` copied from the main checkout), and its content tests fail rather than skip until the build has run with the Joplin edition present. Every brief that runs vitest in a new worktree says so.
 
