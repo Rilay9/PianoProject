@@ -1,0 +1,23 @@
+== map-tests  18:18:42
+map-tests exit=0
+== map-min  18:18:44
+map-min exit=0
+== tsc  18:18:45
+tsc exit=0
+== lint  18:19:02
+lint exit=0
+== vitest-all  18:20:16
+vitest-all exit=1
+== build-app  18:24:53
+build-app exit=0
+SPECS: tests/e2e/app-shell.spec.ts tests/e2e/doors.spec.ts tests/e2e/drills-harmony.spec.ts tests/e2e/drills-review.spec.ts tests/e2e/drills.spec.ts tests/e2e/empty-states.spec.ts tests/e2e/feedback-placement.spec.ts tests/e2e/finder.spec.ts tests/e2e/help-strip.spec.ts tests/e2e/landscape.spec.ts tests/e2e/library.spec.ts tests/e2e/modes-rhythm-only.spec.ts tests/e2e/projects.spec.ts tests/e2e/session-run.spec.ts tests/e2e/tips.spec.ts tests/e2e/wide.spec.ts
+== specs-exist  18:25:27
+specs-exist exit=0
+== e2e-targeted  18:25:27
+e2e-targeted exit=1
+CHAIN DONE 18:32:42
+== vitest-timeouts-rerun  18:33:13
+vitest-timeouts-rerun exit=0
+== e2e-rerun  18:33:38
+e2e-rerun exit=0
+RERUN DONE 18:38:39

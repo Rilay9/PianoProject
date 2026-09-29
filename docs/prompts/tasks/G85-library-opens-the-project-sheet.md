@@ -38,3 +38,5 @@ If the Library's draw cost rises visibly on the full catalogue with the store re
 ## Report
 
 Judgement first: one Library row before and after with a project on it, the filter's chips, at 342 × 740; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes. Entry 147; every run file under `docs/prompts/runs/G85/`; the entry as `docs/prompts/runs/G85/ENTRY.md`, starting `### Entry 147 — G85`.
+
+**Landed 2026-09-29** (Entry 147; ba4c6fea, merged 760b8f61); handoff `handoffs/ba4c6fea.md`.

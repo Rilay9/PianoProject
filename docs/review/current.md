@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **G85** — `handoffs/ba4c6fea.md` (respond in `responses/ba4c6fea.md`). The Library shows the project state and opens the one sheet (Entry 147).
 - **X31a** — `tasks/X31a-late-tempo-keeps-the-default-opening.md`, your X31 required change building: the default opening where a note sounded before the first readable mark, from the parsed score; its own handoff when it lands.
 - **L120a** — `handoffs/0bcd3be0.md` (respond in `responses/0bcd3be0.md`). The table of the rung-own options the gate reads as untaught (Entry 149).
 - **U92** — `handoffs/4de29cdd.md`, answered on the paste (keep; closes on your mechanical read-back now that origin holds the code). The Skills detail line never shows a cut count (Entry 143).
@@ -11,7 +12,6 @@ Open handoffs, each with its own file:
 - **U96** — `tasks/U96-session-sheets-say-what-was-measured.md`, for information: X1's follow-ups 2 and 4 — an unanswered drill is *Not measured* (T40's words), the placement sheet in a session has one primary action; the fallback's words untouched as you ruled; its own short handoff when it lands.
 - **G87** — `tasks/G87-project-sheet-small-truths.md`, for information: G1b's follow-ups 3 and 7 — the sheet's date box styled, a project stage's Start line without *the first thing on this rung*; its own short handoff when it lands.
 - **Q82** — `tasks/Q82-clone-missing-is-a-placeholder.md`, for information: Q80's stop line built for the kern and MuseTrainer steps under the same mechanism, while Q80 is with you; if your Q80 review requires a change to that mechanism, Q82 takes it as a fix-forward before it lands; its own handoff when it lands.
-- **G85** — `tasks/G85-library-opens-the-project-sheet.md`, for information: your ruling 3 on the G1b brief — the Library shows the same project state and opens the same sheet, consuming the one store; dispatches after this push; its own handoff when it lands.
 - **Four fix-forward briefs** — `handoffs/bcad0c9.md`, for information: F2b (your F2a change), Q65b (your Q65a change), U80 (the side-panel regression CI's full run found), X3a (the tempo control under X3's contract). Respond only if one departs from its contract.
 - **The G1a and Q65a briefs** — `handoffs/9cfa808.md`, for information (the G1 and Q-tooling reviews' required changes dispatched as fix-forwards under 788427c; Entries 119 and 120). Respond only if a brief departs from the required change.
 
