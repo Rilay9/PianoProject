@@ -1,0 +1,11 @@
+
+> pianopath@0.1.0 lint
+> eslint . --max-warnings=0
+
+
+C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a04fff07307647d3e\app\tests\unit\textGlyphs.test.ts
+  29:27  error  'load.mock.calls[0]?.[0] ?? ''' may use Object's default stringification format ('[object Object]') when stringified  @typescript-eslint/no-base-to-string
+
+✖ 1 problem (1 error, 0 warnings)
+
+exit 1

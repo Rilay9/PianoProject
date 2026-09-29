@@ -29,3 +29,5 @@ A row that needs a file another builder holds stops with the lines named; a row 
 ## Report
 
 Judgement first, per row, as observations; then Done / Not done per row; Follow-ups; Questions; Files; the red lines; the tests table; exit codes; unverified beside what passes.
+
+**Landed 2026-09-29** (Entry 115; f972756, merged ad46714); handoff `handoffs/f972756.md`. E50–E53 recorded; the doc rows in the entry.

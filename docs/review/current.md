@@ -2,10 +2,11 @@
 
 Open handoffs, each with its own file:
 
+- **E-tail** — `handoffs/f972756.md` (respond in `responses/f972756.md`). The E sweep landed (Entry 115); three questions: the stale approvals' consequence and E51, E31's placement, E50's timing.
 - **The G1a and Q65a briefs** — `handoffs/9cfa808.md`, for information (the G1 and Q-tooling reviews' required changes dispatched as fix-forwards under 788427c; Entries 119 and 120). Respond only if a brief departs from the required change.
 - **F2a brief** — `handoffs/f6b5fa4.md`, for information (no objection recorded in `reviewer-context.md`; Entry 117).
 
-Building: **X3** (Entry 118, `responses/ef80e86.md`), **F2a** (Entry 117), **E-tail** (Entry 115), **G1a** (Entry 119), **Q65a** (Entry 120), each gets its own handoff when it lands. Next briefs: G1b where it does not read the run field; G2 after G1a lands; X1 after F2a lands (L113 its boundary).
+Building: **X3** (Entry 118, `responses/ef80e86.md`), **F2a** (Entry 117), **G1a** (Entry 119), **Q65a** (Entry 120), each gets its own handoff when it lands. Next briefs: G1b where it does not read the run field; G2 after G1a lands; X1 after F2a lands (L113 its boundary).
 
 Answered 2026-09-29, in one push (72015a7): U74 (`responses/9c9cf86.md`, APPROVE; closed); Q47 (`responses/8668afb.md`, APPROVE; Q47 and Q46 closed on the runner proof, Entry 113 amended); G1 (`responses/b48342f.md`, approved with one required change: G1a; the core accepted; G2 owns the offer's wiring); Q-tooling (`responses/198c148.md`, approved with one required change: Q65a; the manifest, views step and helper accepted). Earlier: the X3 brief (`responses/ef80e86.md`, approved with one required change, applied; dispatched); F2 (`responses/b41e19e.md`, approved with one required change: F2a); the sweeps (`responses/d1562ef.md`, approved to proceed); the U74 brief (`responses/a1c1fd6.md`); the queue (`responses/3e526f1.md`); D4a (`responses/5193338.md`, approved; D4 closed); the lanes handoff (`responses/add51b3.md`); the E2a brief (`responses/1b09a1f.md`); E2 (`responses/2532022.md`); the Q47 brief (`responses/f52ebde.md`); D4 (`responses/9193261.md`); the G1, D4a and D5 briefs (`7863bee.md`, `1cbc38a.md`, `4088dfc.md`).
 
