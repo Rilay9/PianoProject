@@ -1,0 +1,84 @@
+test_a_fetched_file_that_is_not_the_pinned_one_is_the_builds_too (tools.content.tests.test_validate_ladder.TestABuildsOwnPlaceholders.test_a_fetched_file_that_is_not_the_pinned_one_is_the_builds_too) ... FAIL
+test_a_report_written_without_the_fetch_matches_a_build_without_it_and_needs_no_warning (tools.content.tests.test_validate_ladder.TestABuildsOwnPlaceholders.test_a_report_written_without_the_fetch_matches_a_build_without_it_and_needs_no_warning) ... ERROR
+test_an_edition_this_build_did_not_fetch_is_not_an_error (tools.content.tests.test_validate_ladder.TestABuildsOwnPlaceholders.test_an_edition_this_build_did_not_fetch_is_not_an_error) ... FAIL
+test_nothing_to_set_aside_says_nothing (tools.content.tests.test_validate_ladder.TestABuildsOwnPlaceholders.test_nothing_to_set_aside_says_nothing) ... ERROR
+test_the_warning_names_the_item_and_its_reason (tools.content.tests.test_validate_ladder.TestABuildsOwnPlaceholders.test_the_warning_names_the_item_and_its_reason) ... ERROR
+test_a_song_added_beside_an_unfetched_edition_is_still_an_error (tools.content.tests.test_validate_ladder.TestAChangeBesideAFetchFailure.test_a_song_added_beside_an_unfetched_edition_is_still_an_error) ... ok
+test_that_error_names_what_it_set_aside (tools.content.tests.test_validate_ladder.TestAChangeBesideAFetchFailure.test_that_error_names_what_it_set_aside) ... FAIL
+test_a_kern_licence_placeholder_is_a_change (tools.content.tests.test_validate_ladder.TestTheCataloguesOwnChanges.test_a_kern_licence_placeholder_is_a_change) ... ok
+test_a_licence_the_gate_refuses_is_a_change (tools.content.tests.test_validate_ladder.TestTheCataloguesOwnChanges.test_a_licence_the_gate_refuses_is_a_change) ... ok
+test_a_song_added_to_the_rung_is_a_change (tools.content.tests.test_validate_ladder.TestTheCataloguesOwnChanges.test_a_song_added_to_the_rung_is_a_change) ... ok
+test_the_strict_flavours_licence_placeholders_compare_as_the_owners_build (tools.content.tests.test_validate_ladder.TestTheCataloguesOwnChanges.test_the_strict_flavours_licence_placeholders_compare_as_the_owners_build)
+`ladder_report.shippable` reads a personal-only tag as not shipped, so one report serves both flavours. ... ok
+
+======================================================================
+ERROR: test_a_report_written_without_the_fetch_matches_a_build_without_it_and_needs_no_warning (tools.content.tests.test_validate_ladder.TestABuildsOwnPlaceholders.test_a_report_written_without_the_fetch_matches_a_build_without_it_and_needs_no_warning)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f4947aae693d7cc\tools\content\tests\test_validate_ladder.py", line 162, in test_a_report_written_without_the_fetch_matches_a_build_without_it_and_needs_no_warning
+    from validate import ladder_report_findings
+ImportError: cannot import name 'ladder_report_findings' from 'validate' (C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f4947aae693d7cc\tools\content\validate.py)
+
+======================================================================
+ERROR: test_nothing_to_set_aside_says_nothing (tools.content.tests.test_validate_ladder.TestABuildsOwnPlaceholders.test_nothing_to_set_aside_says_nothing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f4947aae693d7cc\tools\content\tests\test_validate_ladder.py", line 157, in test_nothing_to_set_aside_says_nothing
+    from validate import ladder_report_findings
+ImportError: cannot import name 'ladder_report_findings' from 'validate' (C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f4947aae693d7cc\tools\content\validate.py)
+
+======================================================================
+ERROR: test_the_warning_names_the_item_and_its_reason (tools.content.tests.test_validate_ladder.TestABuildsOwnPlaceholders.test_the_warning_names_the_item_and_its_reason)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f4947aae693d7cc\tools\content\tests\test_validate_ladder.py", line 130, in test_the_warning_names_the_item_and_its_reason
+    from validate import ladder_report_findings
+ImportError: cannot import name 'ladder_report_findings' from 'validate' (C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f4947aae693d7cc\tools\content\validate.py)
+
+======================================================================
+FAIL: test_a_fetched_file_that_is_not_the_pinned_one_is_the_builds_too (tools.content.tests.test_validate_ladder.TestABuildsOwnPlaceholders.test_a_fetched_file_that_is_not_the_pinned_one_is_the_builds_too)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f4947aae693d7cc\tools\content\tests\test_validate_ladder.py", line 149, in test_a_fetched_file_that_is_not_the_pinned_one_is_the_builds_too
+    self.assertEqual(stale_ladder_report(self.with_rag(mismatched), curriculum(SONGS)), [])
+AssertionError: Lists differ: ['build\\q80-ladder-45hl11q9\\ladder.md is[125 chars]6).'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'build\\q80-ladder-45hl11q9\\ladder.md is stale — the catalog has changed since it was written. Run `python3 tools/content/ladder_report.py` and commit it (replan §2.6).'
+
++ []
+- ['build\\q80-ladder-45hl11q9\\ladder.md is stale — the catalog has changed '
+-  'since it was written. Run `python3 tools/content/ladder_report.py` and '
+-  'commit it (replan §2.6).']
+
+======================================================================
+FAIL: test_an_edition_this_build_did_not_fetch_is_not_an_error (tools.content.tests.test_validate_ladder.TestABuildsOwnPlaceholders.test_an_edition_this_build_did_not_fetch_is_not_an_error)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f4947aae693d7cc\tools\content\tests\test_validate_ladder.py", line 127, in test_an_edition_this_build_did_not_fetch_is_not_an_error
+    self.assertEqual(stale_ladder_report(self.with_rag(self.unfetched), curriculum(SONGS)), [])
+AssertionError: Lists differ: ['build\\q80-ladder-5q5u9y0_\\ladder.md is[125 chars]6).'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'build\\q80-ladder-5q5u9y0_\\ladder.md is stale — the catalog has changed since it was written. Run `python3 tools/content/ladder_report.py` and commit it (replan §2.6).'
+
++ []
+- ['build\\q80-ladder-5q5u9y0_\\ladder.md is stale — the catalog has changed '
+-  'since it was written. Run `python3 tools/content/ladder_report.py` and '
+-  'commit it (replan §2.6).']
+
+======================================================================
+FAIL: test_that_error_names_what_it_set_aside (tools.content.tests.test_validate_ladder.TestAChangeBesideAFetchFailure.test_that_error_names_what_it_set_aside)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f4947aae693d7cc\tools\content\tests\test_validate_ladder.py", line 237, in test_that_error_names_what_it_set_aside
+    self.assertIn(f"{RAG} (the edition's .ly file was not fetched)", errors[0])
+AssertionError: "song.ragtime.joplin-pine-apple-rag.mutopia (the edition's .ly file was not fetched)" not found in 'build\\q80-ladder-alwr18ad\\ladder.md is stale — the catalog has changed since it was written. Run `python3 tools/content/ladder_report.py` and commit it (replan §2.6).'
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.173s
+
+FAILED (failures=3, errors=3)
+exit 1

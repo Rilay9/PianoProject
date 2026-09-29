@@ -1,0 +1,9 @@
+== ladder_report.py --check --content build/q80-strict/content
+C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f4947aae693d7cc\docs\generated\ladder.md is up to date
+exit 0
+== ladder_report.py --check --content app/public/content
+C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f4947aae693d7cc\docs\generated\ladder.md is up to date
+exit 0
+== ladder_report.py --check --content build/q80-unfetched/content
+C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3f4947aae693d7cc\docs\generated\ladder.md is stale — the catalog has changed since it was written. Run `python3 tools/content/ladder_report.py` and commit the result.
+exit 1
