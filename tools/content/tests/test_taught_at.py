@@ -88,8 +88,9 @@ class TestTheShape(Vocabulary):
 
 class TestOneTeachingRungPerPath(Vocabulary):
     def test_two_paths_two_rungs(self) -> None:
-        errors = self.errors(self.with_taught_at(WALK, ["blues.5", "jazz.6"]))
-        self.assertEqual(errors, [], f"{WALK} at blues.5 and jazz.6, neither on the other's path, is valid")
+        # Revised (F2): blues.6 for blues.5, which introduces the walking bass and so may not be listed.
+        errors = self.errors(self.with_taught_at(WALK, ["blues.6", "jazz.6"]))
+        self.assertEqual(errors, [], f"{WALK} at blues.6 and jazz.6, neither on the other's path, is valid")
 
     def test_a_listed_rung_on_another_listed_rung_s_path_fails(self) -> None:
         errors = self.errors(self.with_taught_at(WALK, ["blues.5", "blues.6"]))
@@ -120,7 +121,8 @@ class TestTheListIsTheLessons(Vocabulary):
                         f"pitch.chromatic at 3.1 with a note that does not name 3.1 fails; got {errors}")
 
     def test_jazz_6_naming_the_walking_bass_must_make_the_list(self) -> None:
-        demands = self.with_taught_at(WALK, ["blues.5", "jam.6"])
+        # Revised (F2): blues.6 for blues.5, which introduces the walking bass and so may not be listed.
+        demands = self.with_taught_at(WALK, ["blues.6", "jam.6"])
         self.assertEqual(self.errors(demands), [])
         warned = [w for w in self.warnings(demands) if WALK in w and "jazz.6" in w]
         self.assertEqual(len(warned), 1,
@@ -129,12 +131,17 @@ class TestTheListIsTheLessons(Vocabulary):
     def test_the_committed_lists_are_the_lessons_readings(self) -> None:
         """
         The committed vocabulary holds together, and what the build says about it is exactly what
-        the entry says: `latin` names walking-bass and its lesson never teaches one (warned, not
-        listed); 1.1's steps, 1.5's leap and 3.1's accidentals are hand readings the notes name.
+        the entry says: 1.5's leap and 3.1's accidentals are hand readings the notes name.
+
+        Revised (F2, L110). Old assumption: four warnings, `latin` naming walking-bass (its lesson
+        teaches a tumbao, never a walking bass) and 1.1's steps read by hand beside 1.5's and 3.1's.
+        F2 removed `latin`'s concept and named `steps` in 1.1's concepts, so the derivation gives
+        1.1 itself. 1.5's leap and 3.1's accidentals stay hand readings: moving either to the
+        rung's `introduces` list takes the demand off the whole core path, which is F2's question 1.
         """
         self.assertEqual(self.errors(self.demands), [])
         warnings = self.warnings(self.demands)
-        expected = [("interval.step", "1.1"), ("interval.leap", "1.5"), ("pitch.chromatic", "3.1"), (WALK, "latin")]
+        expected = [("interval.leap", "1.5"), ("pitch.chromatic", "3.1")]
         for demand_id, rung in expected:
             self.assertEqual(sum(1 for w in warnings if f"demand {demand_id} " in w and f"'{rung}'" in w), 1,
                              f"{demand_id} at {rung}: one warning; got {warnings}")
@@ -143,16 +150,24 @@ class TestTheListIsTheLessons(Vocabulary):
 
 class TestTheDerivation(Vocabulary):
     def test_the_walking_bass_is_taught_on_three_paths(self) -> None:
+        """
+        Revised (F2 item 1). Old assumption: `blues.5` teaches the walking bass. Its one walking-bass
+        exercise is the line alone, left hand only, and the demand is a walk under a right hand that
+        plays; `blues.5` now introduces it (`introduces`), and `blues.6`, whose walking-bass exercise
+        puts a right hand over the same line, is the blues path's teaching rung by the derivation.
+        """
         by_id = {d["id"]: d for d in self.demands["demands"]}
-        self.assertEqual(by_id[WALK]["taughtAt"], ["blues.5", "jazz.6", "jam.6"],
-                         f"{WALK}: blues.5, jazz.6 ('Comping, walking bass, and hearing the changes') and jam.6 "
-                         "('Walking bass, when there is no bass player')")
+        self.assertEqual(by_id[WALK]["taughtAt"], ["jazz.6", "blues.6", "jam.6"],
+                         f"{WALK}: jazz.6 ('Comping, walking bass, and hearing the changes'), blues.6 ('a line that "
+                         "walks') and jam.6 ('Walking bass, when there is no bass player'), in the curriculum's order")
 
     def test_the_rungs_whose_concepts_name_a_demand_one_per_path(self) -> None:
+        # Revised (F2): `latin` no longer names walking-bass (L110) and `blues.5` introduces it, so the
+        # derivation's walking-bass rungs are the listed ones and the `latin` exception below is gone.
         skills = {s["id"]: s for s in self.skills["skills"]}
         demands = {d["id"]: d for d in self.demands["demands"]}
         derived = claims.teaching_rungs(self.curriculum, skills, demands)
-        self.assertEqual(derived[WALK], ["blues.5", "latin", "jazz.6", "jam.6"])
+        self.assertEqual(derived[WALK], ["jazz.6", "blues.6", "jam.6"])
         self.assertEqual(derived["rhythm.syncopation"], ["latin.3", "4.5"])
         self.assertEqual(derived["key.signature"], ["3.1", "theory.3"])
         self.assertEqual(derived["texture.hands-together"], ["2.1", "holiday"])
@@ -163,9 +178,6 @@ class TestTheDerivation(Vocabulary):
             listed = demands[demand_id]["taughtAt"]
             for rung in rungs:
                 on_path = [r for r in listed if r in ancestry[rung]]
-                if demand_id == WALK and rung == "latin":
-                    self.assertEqual(on_path, [], "latin: named in passing, not a teaching rung")
-                    continue
                 self.assertTrue(on_path, f"{demand_id}: {rung}'s concepts name it and nothing on its path is listed")
 
 
@@ -196,6 +208,57 @@ class TestTheWalkingBassOnThePaths(unittest.TestCase):
         # Holding already on the committed vocabulary: adding jazz.6 must not change these.
         for rung in ("theory.9", "classical.6", "chords-pop.6", "jazz.5", "latin"):
             self.assertEqual(self.untaught(rung), [WALK], f"{WALK} at {rung}: no teaching rung on its path")
+
+    def test_blues_5_introduces_it_and_blues_6_teaches_it(self) -> None:
+        """
+        F2 item 1: `blues.5` names the walking bass under `introduces` (its exercise is the line
+        alone), which never makes it a teaching rung, so a walk is untaught there; from `blues.6`,
+        whose walking-bass exercise has a right hand over it, the blues path has been taught one.
+        Red on the committed vocabulary, where `blues.5` was listed.
+        """
+        self.assertEqual(self.untaught("blues.5"), [WALK], f"{WALK} at blues.5: introduced there, not taught")
+        for rung in ("blues.6", "blues.7", "blues.8", "blues.9"):
+            self.assertEqual(self.untaught(rung), [], f"{WALK} at {rung}: blues.6 teaches it, on {rung}'s path")
+
+
+def fixture_path(first: dict) -> dict:
+    """Three core rungs in order: `first`, then F.2 naming nothing, then F.3 whose option carries a walk."""
+    lessons = [first,
+               {"id": "F.2", "concepts": [], "exerciseOptions": [], "songOptions": []},
+               {"id": "F.3", "concepts": [], "exerciseOptions": ["exercise.f2.walk"], "songOptions": []}]
+    return {"stages": [{"number": 6, "units": [{"id": "F", "track": "core", "lessons": lessons}]}]}
+
+
+class TestIntroducedIsNeverTaught(unittest.TestCase):
+    """
+    F2 item 7 (the reviewer's required change): an `introduces` entry never makes its rung a
+    teaching rung, never enters `taughtAt`, and so leaves a later option carrying the demand on the
+    same path untaught; the same concept in `concepts` teaches it. Read through the build's own
+    functions: the derivation (`teaching_rungs`), then the report's and the gate's reading
+    (`untaught_on`) with the vocabulary's list set to what the derivation gives.
+    """
+
+    ITEM = {"id": "exercise.f2.walk", "demands": [WALK], "measurement": {"status": "measured", "established": [WALK]}}
+
+    def untaught_at_f3(self, first: dict) -> tuple[list[str], list[str]]:
+        skills, demands = claims.load_vocabulary()
+        curriculum = fixture_path(first)
+        derived = claims.teaching_rungs(curriculum, skills, demands)[WALK]
+        vocabulary = copy.deepcopy(demands)
+        vocabulary[WALK]["taughtAt"] = derived
+        return derived, claims.untaught_on(self.ITEM, "F.3", claims.rung_ancestry(curriculum), vocabulary)
+
+    def test_an_earlier_rung_that_only_introduces_it_leaves_it_untaught(self) -> None:
+        derived, untaught = self.untaught_at_f3(
+            {"id": "F.1", "concepts": [], "introduces": ["walking-bass"], "exerciseOptions": [], "songOptions": []})
+        self.assertEqual(derived, [], "F.1 introduces the walking bass: no teaching rung")
+        self.assertEqual(untaught, [WALK], "F.3's option carries a walk F.1 only introduced")
+
+    def test_an_earlier_rung_that_teaches_it_covers_the_later_option(self) -> None:
+        derived, untaught = self.untaught_at_f3(
+            {"id": "F.1", "concepts": ["walking-bass"], "exerciseOptions": [], "songOptions": []})
+        self.assertEqual(derived, ["F.1"])
+        self.assertEqual(untaught, [], "F.1 teaches the walking bass, on F.3's path")
 
 
 if __name__ == "__main__":

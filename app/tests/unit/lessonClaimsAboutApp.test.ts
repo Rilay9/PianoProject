@@ -3286,16 +3286,23 @@ const T19_APP: [string, string, () => boolean][] = [
   ],
 
   // --- three duets that now name an exercise, because the songs cannot ------
+  // Revised (F2 item 5, L111): the two Latin rows. Old assumption: the rung carries a duet tool naming its
+  // two-staff groove, and the lesson says *Play it as a duet* opens it. The groove is generated music with
+  // no teaching-use decision, so the page draws no button for it (D3c); the tool and the sentence went
+  // together, and the rows now hold that no duet is claimed while the one two-staff option is still the
+  // rung's and still undecided. The songs are printed on one staff, as before.
   [
     'latin.3',
-    'the duet names the son clave over a quarter-note pulse — the one option here with two staves — because all three of the rung’s songs are printed on one',
+    'no duet: the son clave over a pulse, the one option here with two staves, has no teaching-use decision, so the rung carries no duet tool and the lesson names none; the songs are printed on one staff each',
     () => {
-      const named = t19Item('latin.3', 'duet');
+      const pulse = item('exercise.clave.son-3-2.pulse');
       const songs = rung('latin.3').songOptions;
       return (
-        named === 'exercise.clave.son-3-2.pulse' &&
-        rung('latin.3').exerciseOptions.includes(named) &&
-        t19Staves(named) === 2 &&
+        !t19Kinds('latin.3').includes('duet') &&
+        rung('latin.3').exerciseOptions.includes(pulse.id) &&
+        t19Staves(pulse.id) === 2 &&
+        pulse.provenance?.facts.promise?.value === 'music' &&
+        pulse.provenance.review.teaching !== true &&
         songs.length === 3 &&
         songs.every((id) => t19Staves(id) === 1)
       );
@@ -3303,14 +3310,16 @@ const T19_APP: [string, string, () => boolean][] = [
   ],
   [
     'latin',
-    'the duet names the tumbao-and-montuno exercise, because five of the rung’s six songs are printed on one staff',
+    'no duet: the tumbao-and-montuno groove, the rung’s two-staff exercise, has no teaching-use decision, so the rung carries no duet tool and the lesson names none; five of its six songs are printed on one staff',
     () => {
-      const named = t19Item('latin', 'duet');
+      const groove = item('exercise.latin-groove.c.son-3-2');
       const songs = rung('latin').songOptions;
       return (
-        named === 'exercise.latin-groove.c.son-3-2' &&
-        rung('latin').exerciseOptions.includes(named) &&
-        t19Staves(named) === 2 &&
+        !t19Kinds('latin').includes('duet') &&
+        rung('latin').exerciseOptions.includes(groove.id) &&
+        t19Staves(groove.id) === 2 &&
+        groove.provenance?.facts.promise?.value === 'music' &&
+        groove.provenance.review.teaching !== true &&
         songs.filter((id) => t19Staves(id) === 1).length === 5
       );
     },

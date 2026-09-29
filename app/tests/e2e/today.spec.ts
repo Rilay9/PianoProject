@@ -302,6 +302,31 @@ test.describe('the swap sheet’s demand tier (E0)', () => {
 });
 
 /**
+ * The practice track's floor (F2, L104), on the glass at the owner's width.
+ *
+ * The practice track is on by default, and its first rung's `runs` ask takes the rung's first
+ * admitted exercise, in list order. `practice.1` listed Hanon No. 1 hands together first — level
+ * 4.4, sixteenths, ledger lines and both hands beyond a five-finger position — so a learner placed
+ * at 1.5 was handed it as the day's new row. `practice.1` now lists what a Stage 1 hand plays, the
+ * three kinds the brief names (the right-hand five-finger pattern, the steps-and-skips study, the
+ * rhythm drill), and Hanon stays on the rungs that listed it besides (4.4, `classical.4`,
+ * `technique.4`).
+ */
+test.describe('the practice track’s floor (F2)', () => {
+  test.use({ viewport: { width: 342, height: 740 } });
+
+  test('placed at 1.5, the practice row is a Stage 1 exercise, never Hanon', async ({ page }) => {
+    await placeAt(page, '1.5');
+    const card = page.locator('#today-card');
+    await expect(card.locator('.list-row').first()).toBeVisible();
+    await expect(card.locator('.list-row[data-item^="exercise.hanon."]')).toHaveCount(0);
+    const practice = card.locator('.list-row', { hasText: 'How to practise' });
+    await expect(practice).toHaveCount(1);
+    await expect(practice).toHaveAttribute('data-item', 'exercise.five-finger.c-major.right');
+  });
+});
+
+/**
  * The rules of `04` §0, on the screen they were written for.
  *
  * These are pixel assertions on purpose. R1 and R2 are claims about what a

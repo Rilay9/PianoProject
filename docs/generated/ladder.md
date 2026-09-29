@@ -21,19 +21,19 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 0 | `0.2` *(exempt)* | 2 | 0 | 0.2–0.2 | — |
 | 0 | `0.3` *(exempt)* | 1 | 1 | 0.3–1.1 | Hot Cross Buns (1.1) |
 | 0 | `0.4` *(exempt)* | 1 | 0 | 0.4–0.4 | — |
-| 1 | `1.1` | 7 | 6 | 1.1–2.1 | Hot Cross Buns (1.1), Mary Had a Little Lamb (1.1), Merrily We Roll Along (1.1), Au Clair de la Lune (1.1), Ode to Joy (theme) (1.1), Kum Ba Yah (1.6) |
+| 1 | `1.1` | 6 | 6 | 1.1–1.6 | Hot Cross Buns (1.1), Mary Had a Little Lamb (1.1), Merrily We Roll Along (1.1), Au Clair de la Lune (1.1), Ode to Joy (theme) (1.1), Kum Ba Yah (1.6) |
 | 1 | `1.2` | 4 | 5 | 1.1–1.9 | Lightly Row (1.2), Jingle Bells (chorus) (1.2), Twinkle, Twinkle, Little Star (1.2), Frère Jacques (1.2), Ah! vous dirai-je, Maman (1.9) |
-| 1 | `1.3` | 6 | 3 | 1.1–2.1 | Hot Cross Buns (left hand) (1.3), Mary Had a Little Lamb (left hand) (1.3), Ode to Joy (left hand) (1.3) |
+| 1 | `1.3` | 5 | 3 | 1.1–1.6 | Hot Cross Buns (left hand) (1.3), Mary Had a Little Lamb (left hand) (1.3), Ode to Joy (left hand) (1.3) |
 | 1 | `1.4` | 6 | 3 | 1.2–1.6 | Lightly Row (1.2), Ode to Joy (hands alternating) (1.4), Oh When the Saints Go Marching In (hands alternating) (1.4) |
 | 1 | `1.5` *(song-optional)* | 8 | 4 | 1.1–2.2 | Ode to Joy (theme) (1.1), Lightly Row (1.2), The Water Is Wide (1.9), Old MacDonald Had a Farm (2.2) |
 | 2 | `2.1` | 6 | 5 | 2.1–2.6 | Simple Gifts (2.1), Ode to Joy (hands together) (2.1), Twinkle, Twinkle, Little Star (hands together) (2.1), Jingle Bells (chorus, hands together) (2.1), Mary Had a Little Lamb (hands together) (2.1) |
 | 2 | `2.2` | 6 | 8 | 1.1–2.4 | Merrily We Roll Along (1.1), Michael, Row the Boat Ashore (1.4), London Bridge Is Falling Down (2.2), Old MacDonald Had a Farm (2.2), Sakura (2.2), Alouette (2.3), … and 2 more |
-| 2 | `2.3` | 4 | 7 | 2.0–4.3 | Was wollen wir trinken (2.0), Happy Birthday to You (2.3), Dark Eyes (2.3), Skip to My Lou (2.5), Auld Lang Syne (2.8), Jingle Bells (chorus, in G major with block chords) (3.2), … and 1 more |
+| 2 | `2.3` | 3 | 7 | 2.0–4.1 | Was wollen wir trinken (2.0), Happy Birthday to You (2.3), Dark Eyes (2.3), Skip to My Lou (2.5), Auld Lang Syne (2.8), Jingle Bells (chorus, in G major with block chords) (3.2), … and 1 more |
 | 2 | `2.4` | 4 | 6 | 2.2–5.1 | Greensleeves (simple) (2.4), Streets of Laredo (first half, 17 bars) (2.5), Careless Love (2.6), Greensleeves (with chords) (3.3), Ga je mee op zoek naar het Koningskind (3.4), Greensleeves (5.1) |
 | 2 | `2.5` *(song-optional)* | 8 | 2 | 2.2–4.1 | Ode to Joy (full theme) (2.5), Ode to Joy (easy variation) (4.1) |
 | 3 | `3.1` | 7 | 6 | 1.1–3.2 | Korobeiniki (2.1), Loch Lomond (2.2), Scarborough Fair (2.3), Ode to Joy (in G major) (3.1), Twinkle, Twinkle, Little Star (in F major) (3.1), Oh When the Saints Go Marching In (in F major) (3.2) |
 | 3 | `3.2` | 6 | 5 | 2.3–4.3 | Happy Birthday to You (2.3), Jingle Bells (chorus, in G major with block chords) (3.2), Oh When the Saints Go Marching In (in F major) (3.2), Yankee Doodle (4.0), Oh My Darling Clementine (4.3) |
-| 3 | `3.3` | 7 | 3 | 2.4–5.1 | Greensleeves (simple) (2.4), Greensleeves (with chords) (3.3), Greensleeves (5.1) |
+| 3 | `3.3` | 6 | 3 | 2.4–5.1 | Greensleeves (simple) (2.4), Greensleeves (with chords) (3.3), Greensleeves (5.1) |
 | 3 | `3.4` | 4 | 3 | 1.5–5.1 | Für Elise (beginner) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Minuet in G major, BWV Anh. 114 (alternative edition) (5.1) |
 | 3 | `3.5` | 5 | 3 | 2.5–5.1 | Ode to Joy (full theme) (2.5), Greensleeves (waltz bass) (3.6), Canon in D (easy) (5.1) |
 | 3 | `3.6` *(song-optional)* | 8 | 2 | 3.6–5.1 | Greensleeves (waltz bass) (3.6), Canon in D (easy) (5.1) |
@@ -51,8 +51,8 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
-| 1 | `practice.1` *(song-optional)* | 3 | 2 | 1.1–4.4 | Hot Cross Buns (1.1), Ode to Joy (theme) (1.1) |
-| 1 | `practice.2` *(song-optional)* | 3 | 1 | 1.1–4.4 | Ode to Joy (theme) (1.1) |
+| 1 | `practice.1` *(song-optional)* | 3 | 2 | 1.1–1.5 | Hot Cross Buns (1.1), Ode to Joy (theme) (1.1) |
+| 1 | `practice.2` *(song-optional)* | 3 | 1 | 1.1–1.5 | Ode to Joy (theme) (1.1) |
 | 1 | `practice.3` *(song-optional)* | 3 | 2 | 0.1–2.2 | Hot Cross Buns (1.1), Mary Had a Little Lamb (1.1) |
 | 1 | `practice.4` *(song-optional)* | 3 | 1 | 1.1–2.1 | Hot Cross Buns (1.1) |
 | 1 | `practice.5` *(song-optional)* | 3 | 1 | 1.1–4.1 | Ode to Joy (theme) (1.1) |
@@ -77,7 +77,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | stage | rung | exercises | songs | level | options |
 |---|---|---:|---:|---|---|
 | 2 | `hymns.2` | 3 | 4 | 1.4–3.2 | Oh When the Saints Go Marching In (hands alternating) (1.4), Be Thou My Vision (2.2), Swing Low, Sweet Chariot (2.4), Joyful, Joyful, We Adore Thee (2.5) |
-| 3 | `hymns` | 5 | 12 | 2.6–5.7 | What a Friend We Have in Jesus (2.6), Come Thou Fount of Every Blessing (2.7), Just a Closer Walk with Thee (3.1), Oh When the Saints Go Marching In (in F major) (3.2), Greensleeves (with chords) (3.3), Simple Gifts (2-Part Round) (3.9), … and 6 more |
+| 3 | `hymns` | 5 | 11 | 2.6–5.4 | What a Friend We Have in Jesus (2.6), Come Thou Fount of Every Blessing (2.7), Just a Closer Walk with Thee (3.1), Oh When the Saints Go Marching In (in F major) (3.2), Greensleeves (with chords) (3.3), Simple Gifts (2-Part Round) (3.9), … and 5 more |
 | 4 | `hymns.4` | 3 | 5 | 3.2–5.7 | Amazing Grace (four parts) (4.6), Rock of Ages (4.9), Abide with Me (5.3), Joyful joyful we adore thee (5.4), O sacred head - Johann Sebastian Bach on a tune by Hans Leo Hassler (5.7) |
 | 5 | `hymns.5` | 3 | 5 | 2.6–5.4 | What a Friend We Have in Jesus (2.6), This Little Light of Mine (2.7), Down By The Riverside (2.8), Just a Closer Walk with Thee (3.1), As the Deer (4.5) |
 | 6 | `hymns.6` | 3 | 4 | 5.4–7.0 | Holy holy holy Lord God of hosts (Hugg) - Geo. C. Hugg (5.4), 10,000 Reasons (5.7), Amazing Grace (in G major) (6.5), Down by the Riverside (7.0) |
@@ -163,7 +163,7 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 6 | `theory.6` *(song-optional)* | 6 | 0 | 5.0–6.4 | — |
 | 7 | `theory.7` *(song-optional)* | 5 | 0 | 6.4–7.5 | — |
 | 8 | `theory.8` *(song-optional)* | 5 | 0 | 6.5–8.3 | — |
-| 9 | `theory.9` *(song-optional)* | 5 | 0 | 6.5–8.4 | — |
+| 9 | `theory.9` *(song-optional)* | 4 | 0 | 6.5–8.4 | — |
 
 ## Jam with a friend (`jam`)
 

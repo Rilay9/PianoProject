@@ -1036,13 +1036,13 @@ def paper_hint_errors(curriculum: dict) -> list[str]:
 
 
 def unknown_concepts(curriculum: dict) -> list[str]:
-    """Every concept a lesson names has to have a display name and a finder."""
+    """Every concept a lesson names, in `concepts` or `introduces` (F2), has to have a display name and a finder."""
     known = {c["id"] for c in curriculum.get("concepts", [])}
     missing: set[str] = set()
     for stage in curriculum.get("stages", []):
         for unit in stage.get("units", []):
             for lesson in unit.get("lessons", []):
-                for concept in lesson.get("concepts", []):
+                for concept in list(lesson.get("concepts", [])) + list(lesson.get("introduces") or []):
                     if concept not in known:
                         missing.add(concept)
     return [
@@ -1290,6 +1290,15 @@ def taught_at_findings(skills_file: dict, demands_file: dict, curriculum: dict) 
             if rung not in lessons:
                 errors.append(f"vocabulary: demand {ident} is taught at {rung!r}, which is not a rung")
                 continue
+            # F2 item 7 (the reviewer's required change): a rung that only introduces the demand is never
+            # a teaching rung, whatever a note reads by hand.
+            introduced = sorted(concepts & set(lessons[rung].get("introduces") or []))
+            if introduced:
+                errors.append(
+                    f"vocabulary: demand {ident} is taught at {rung!r}, which only introduces it "
+                    f"({', '.join(introduced)} under introduces): an introduction is never a teaching rung"
+                )
+                continue
             for other in listed:
                 if other != rung and other in ancestry.get(rung, set()):
                     errors.append(
@@ -1309,6 +1318,110 @@ def taught_at_findings(skills_file: dict, demands_file: dict, curriculum: dict) 
                     f"WARNING (taught at, E0b): demand {ident} is taught at no rung on the path to {rung!r}, whose "
                     f"concepts name {', '.join(named)}: a teaching rung taughtAt omits, or a concept named in passing"
                 )
+    return errors, warnings
+
+
+#: Rung claims no option establishes, where the non-establishment is a detector's reading known to be
+#: wrong, not the notes' (F2, Entry 108; the entry's question 2). Each warns on every build with its
+#: reason instead of failing; `concept_claim_findings` fails once one no longer describes the build.
+#: The claims stay taught as they were (`taughtAt` unchanged) and stay listed among the claims no
+#: option keeps in `docs/prompts/rung-claims.md`: a deferral passes the build, never the report.
+#: The counts are each option's own per-bar readings (the bridge's every-bar places, E1), against
+#: the whole-piece every-bar rule the density file keeps for these two demands.
+DEFERRED_CONCEPT_CLAIMS: dict[tuple[str, str], str] = {
+    ("blues.6", "walking-bass"): (
+        "its walking-bass exercise walks in 11 of its 12 bars under a right hand by the detector's own reading of "
+        "each bar; the whole-piece every-bar rule refuses it for the bar that returns to its third (C E G E), "
+        "E22's recorded misreading"),
+    ("blues.8", "walking-bass"): (
+        "its walking-bass exercise in E flat walks in 11 of its 12 bars by the detector's own reading of each bar; "
+        "the whole-piece rule refuses it for one bar that returns to a pitch (E22)"),
+    ("jazz.6", "walking-bass"): (
+        "its walking-bass exercises walk in 11 of 12 bars (C blues) and 3 of 4 (ii-V-I in F) by the detector's "
+        "own reading of each bar; the whole-piece rule refuses each for a bar that returns to a pitch (E22)"),
+    ("jam.6", "walking-bass"): (
+        "its two-hand walking-bass exercise in A walks in 11 of its 12 bars by the detector's own reading of each "
+        "bar (E22); its three intro exercises are the line alone, which is not the demand"),
+    ("ragtime.5", "oom-pah-bass"): (
+        "the Joplin pieces carry a left-hand pattern in 87 of 92, 80 of 85, 87 of 94 and 109 of 148 bars and the "
+        "waltz-bass Greensleeves in 15 of 16, by the detector's own reading of each bar; the whole-piece "
+        "every-bar rule refuses a piece for its introduction and closing bars"),
+}
+
+
+def concept_claim_findings(
+    catalog: list, curriculum: dict, deferred: dict[tuple[str, str], str] | None = None
+) -> tuple[list[str], list[str]]:
+    """
+    A rung claims only what its options establish, or says it introduces it (F2 item 7; the reviewer's
+    required change on the F2 brief, `docs/review/responses/12af708.md`). Returns `(errors, warnings)`.
+
+    Read from the rung-claims report (`claims.rung_claims`), the one reading of "establishes":
+
+    - **fails** where a rung's `concepts` name a measurable skill or demand (a vocabulary skill with an
+      opportunity, or a notated fact `claims.CONCEPT_DEMANDS` maps) that no checkable option of the rung
+      establishes. A rung whose options no detector can check (runtime drills only) is not judged, as
+      the report counts such a claim unchecked. The same concept under the rung's `introduces` list
+      passes: the lesson says the rung introduces it and no piece there practises it yet;
+    - **fails** where a concept is in both lists, and where a deferral no longer describes the build (the
+      claim established, or no longer made): a deferral never outlives its reason;
+    - **warns** for each deferral (`DEFERRED_CONCEPT_CLAIMS`, with its reason), and where an option
+      establishes a concept the rung only introduces: it belongs in `concepts`.
+
+    What `introduces` never does is checked where it would: `taught_at_findings` refuses a listed rung
+    that only introduces the demand, `teaching_rungs` reads `concepts` alone, and the evidence gate's
+    requirement check reads `targetSkills`, never a lesson's lists. The concept claims no detector can
+    measure are warned by `rung_claims_warning`, never failed. This proves the rungs agree with the
+    report, not that the report or the lessons are true (Part 10's permanent rule).
+    """
+    import claims
+
+    deferred = DEFERRED_CONCEPT_CLAIMS if deferred is None else deferred
+    skills, _demands = claims.load_vocabulary()
+    report = claims.rung_claims(catalog, curriculum)
+    lessons = {lesson.get("id"): lesson for lesson in _rungs(curriculum)}
+
+    def claim_of(concept: str) -> tuple[str, str] | None:
+        if concept in skills:
+            return ("skill", concept) if skills[concept]["opportunity"] != "every-step" else None
+        if concept in claims.CONCEPT_DEMANDS:
+            return ("demand", claims.CONCEPT_DEMANDS[concept])
+        return None
+
+    errors: list[str] = []
+    warnings: list[str] = []
+    used: set[tuple[str, str]] = set()
+    for row in report["rungs"]:
+        rung_id = row["rung"]
+        lesson = lessons.get(rung_id, {})
+        concepts = list(lesson.get("concepts") or [])
+        introduced = list(lesson.get("introduces") or [])
+        for both in sorted(set(concepts) & set(introduced)):
+            errors.append(f"{rung_id}: {both} is in both concepts and introduces: a rung teaches a concept or introduces it")
+        counts = {(c["kind"], c["id"]): c for c in row["claims"]}
+        for concept in concepts:
+            key = claim_of(concept)
+            claim = counts.get(key) if key else None
+            if claim is None or claim["measurable"] == 0 or claim["established"] > 0:
+                continue
+            reason = deferred.get((rung_id, concept))
+            if reason is not None:
+                used.add((rung_id, concept))
+                warnings.append(f"WARNING (rung claims, F2): {rung_id} claims {concept} ({key[1]}) and none of its "
+                                f"{claim['measurable']} checked options establishes it; deferred: {reason}")
+                continue
+            errors.append(
+                f"{rung_id}: its concepts name {concept} ({key[1]}) and none of its {claim['measurable']} checked "
+                f"options establishes it: move it to introduces (the rung introduces it, and its lesson says no piece "
+                f"there practises it yet), or keep an option that establishes it"
+            )
+        for item in row.get("introduced") or []:
+            if item["kind"] is not None and item["established"] > 0:
+                warnings.append(f"WARNING (rung claims, F2): {rung_id} introduces {item['from'].split(' ', 1)[1]} "
+                                f"({item['id']}) and {item['established']} of its options establish it: it belongs in concepts")
+    for rung_id, concept in sorted(set(deferred) - used):
+        errors.append(f"{rung_id}: the deferral of {concept} no longer describes the build (the claim is kept, or "
+                      f"no longer made): remove it from DEFERRED_CONCEPT_CLAIMS")
     return errors, warnings
 
 
@@ -1720,6 +1833,8 @@ def main() -> None:
         errors += section_errors(catalog, args.dir)
         errors += orphan_sections(catalog, CONTENT_SRC / "sources" / "sections.json")
         errors += excerpt_findings(catalog, args.dir)[0]
+        # F2: a rung's concepts claim only what its options establish, or it introduces the concept.
+        errors += concept_claim_findings(catalog, curriculum)[0]
         errors += stale_ladder_report(catalog, curriculum)
         errors += validate_tracks(catalog, curriculum, load_tracks(), load_item_labels())
         # replan §7.5: reported by P11, an error from P12a.
@@ -1850,6 +1965,9 @@ def main() -> None:
     for warning in excerpt_findings(catalog, args.dir)[1]:
         print(f"  WARNING (excerpt, E1): {warning}")
     print(f"  {rung_claims_warning(catalog, curriculum)}")
+    # F2: each deferred claim with its reason, and any introduced concept an option now establishes.
+    for warning in concept_claim_findings(catalog, curriculum)[1]:
+        print(f"  {warning}")
 
     # Last, so the build's one-line summary of this step is the verdict and the
     # item count rather than whichever detail happened to print last — the same

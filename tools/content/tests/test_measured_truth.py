@@ -672,9 +672,10 @@ class TestTheReports(Built):
     def test_untaught_here_is_the_rungs_path_never_the_files_order(self) -> None:
         """
         E0a: "untaught here" is read from the rung's ancestry. A walking-bass option on jazz.5 is
-        untaught there (blues.5 teaches it, on another track, stored before jazz.5 in the file); the
-        same option on blues.6, which builds on blues.5, is taught; and listed on both, it is read at
-        both, since neither rung comes before the other on its path.
+        untaught there (the blues track teaches it, on another track, stored before jazz.5 in the
+        file); the same option on blues.6, the blues path's teaching rung since F2 (blues.5 introduces
+        the line), is taught; and listed on both, it is read at both, since neither rung comes before
+        the other on its path.
         """
         catalog = copy.deepcopy(self.catalog)
         curriculum = copy.deepcopy(self.curriculum)
@@ -718,7 +719,10 @@ class TestTheReports(Built):
         coverage = {row["rung"]: row for row in self.claims.inventory(self.catalog, self.curriculum)["coverage"]}
         self.assertIn("texture.walking-bass", coverage["jazz.6"]["taught"],
                       "the inventory: jazz.6 teaches the walking bass (texture.walking-bass)")
-        self.assertIn("texture.walking-bass", coverage["blues.5"]["taught"])
+        # Revised (F2 item 1): blues.5 introduces the walking bass (its exercise is the line alone) and
+        # blues.6 teaches it; the old line held blues.5 here.
+        self.assertIn("texture.walking-bass", coverage["blues.6"]["taught"])
+        self.assertNotIn("texture.walking-bass", coverage["blues.5"]["taught"])
         self.assertNotIn("texture.walking-bass", coverage["theory.9"]["taught"])
 
     def test_the_generated_untaught_combinations_are_d0s_record(self) -> None:
@@ -743,6 +747,122 @@ class TestTheReports(Built):
         # E1 makes them: the count is the excerpt items, never the items with named sections.
         excerpts = [item for item in self.catalog if item.get("type") == "excerpt"]
         self.assertEqual(h["excerpts"], len(excerpts), "the inventory must count excerpt items, not sections")
+
+
+class TestPlacementReconciled(Built):
+    """
+    F2 (Entry 108): the rungs reconciled with the report on the combined build. Every claim no
+    option keeps is accounted for — introduced (`introduces`), deferred by the validator with its
+    reason (a detector's every-bar rule refusing music its own per-bar reading finds), or one of the
+    two hand readings F2 stopped at (1.5's leap, 3.1's accidentals: the question in the entry) — and
+    nothing else; the moved options left the rung their notes were untaught at and stay where they
+    are taught; the practice track's first rungs hold what a Stage 1 hand plays; no rung lists a rock
+    placeholder; the lessons F2 changed say what the rung does. Red on the build before F2.
+    """
+
+    HAND_READINGS = {("1.5", "interval.leap"), ("3.1", "pitch.chromatic")}
+    MOVED = {
+        ("1.1", "exercise.five-finger.c-major.both"): "2.1",
+        ("1.3", "exercise.five-finger.c-major.both"): "2.1",
+        ("2.3", "exercise.inversions.c-major.both"): "4.3",
+        ("3.3", "exercise.arpeggio.a-minor.2oct.both"): "3.6",
+        ("hymns", "song.folk.10000-reasons-matt-redman.pdmx"): "hymns.6",
+        ("practice.1", "exercise.hanon.01.both"): "4.4",
+        ("practice.2", "exercise.hanon.01.both"): "4.4",
+    }
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+        import claims
+        import validate
+
+        cls.claims = claims
+        cls.validate = validate
+        cls.report = claims.rung_claims(cls.catalog, cls.curriculum)
+        cls.lessons = {lesson["id"]: lesson for _s, _u, lesson in claims.lessons_in_order(cls.curriculum)}
+
+    def text(self, rung: str) -> str:
+        return " ".join((REPO / "content" / self.lessons[rung]["textFile"]).read_text(encoding="utf-8").split())
+
+    def test_every_claim_no_option_keeps_is_accounted_for(self) -> None:
+        skills, _demands = self.claims.load_vocabulary()
+
+        def claim_of(concept: str) -> str:
+            # A skill concept is claimed as the skill; a notated fact as the demand its detector finds.
+            return concept if concept in skills else self.claims.CONCEPT_DEMANDS[concept]
+
+        deferred = {(rung, claim_of(concept)) for rung, concept in self.validate.DEFERRED_CONCEPT_CLAIMS}
+        kept_by_none = {(row["rung"], row["id"]) for row in self.report["keptByNone"]}
+        self.assertEqual(kept_by_none, deferred | self.HAND_READINGS,
+                         "a rung claim no option keeps must be introduced, deferred with its reason, or a stopped hand reading")
+        errors, warnings = self.validate.concept_claim_findings(self.catalog, self.curriculum)
+        self.assertEqual(errors, [], "the validator's rule holds on the build")
+        self.assertEqual(len([w for w in warnings if "deferred" in w]), len(self.validate.DEFERRED_CONCEPT_CLAIMS), warnings)
+
+    def test_blues_5_introduces_the_walking_bass_and_claims_it_no_more(self) -> None:
+        row = next(r for r in self.report["rungs"] if r["rung"] == "blues.5")
+        self.assertIn("texture.walking-bass", [c["id"] for c in row["introduced"]])
+        self.assertNotIn("texture.walking-bass", [c["id"] for c in row["claims"]])
+        self.assertIn("walking-bass", self.lessons["blues.5"].get("introduces", []))
+        self.assertNotIn("walking-bass", self.lessons["blues.5"]["concepts"])
+        self.assertIn("introduced here", self.text("blues.5"), "the lesson says the rung introduces it")
+        self.assertIn("none of this rung's pieces has one yet", self.text("blues.5"))
+
+    def test_the_concepts_named_where_taught_and_dropped_where_not(self) -> None:
+        self.assertIn("steps", self.lessons["1.1"]["concepts"], "1.1 names the steps its five-finger walks are")
+        steps = next(c for r in self.report["rungs"] if r["rung"] == "1.1" for c in r["claims"] if c["id"] == "interval.step")
+        self.assertGreater(steps["established"], 0, "1.1's steps are established by its options")
+        self.assertNotIn("walking-bass", self.lessons["latin"]["concepts"], "latin's bass is the tumbao; it names no walking bass")
+        self.assertNotIn("syncopation", self.lessons["technique.5"]["concepts"],
+                         "technique.5 teaches ties across the bar line, which its tied-across-bar concept claims")
+
+    def test_the_moved_options_left_where_untaught_and_stay_where_taught(self) -> None:
+        _skills, demands = self.claims.load_vocabulary()
+        ancestry = self.claims.rung_ancestry(self.curriculum)
+        for (source, item_id), stays in self.MOVED.items():
+            with self.subTest(item=item_id, source=source):
+                lesson = self.lessons[source]
+                self.assertNotIn(item_id, lesson["exerciseOptions"] + lesson["songOptions"])
+                there = self.lessons[stays]
+                self.assertIn(item_id, there["exerciseOptions"] + there["songOptions"])
+        for (source, item_id), stays in self.MOVED.items():
+            if item_id == "exercise.hanon.01.both":
+                continue  # sixteenths are taught at no rung (L101): Hanon stays untaught wherever it is
+            with self.subTest(taught=item_id, at=stays):
+                self.assertEqual(self.claims.untaught_on(self.by_id[item_id], stays, ancestry, demands), [])
+
+    def test_the_practice_floor_is_what_a_stage_1_hand_plays(self) -> None:
+        stage_1_core = {item for _s, unit, lesson in self.claims.lessons_in_order(self.curriculum)
+                        if unit.get("track") == "core" and lesson["id"].startswith("1.")
+                        for item in lesson["exerciseOptions"]}
+        for rung in ("practice.1", "practice.2"):
+            with self.subTest(rung=rung):
+                exercises = self.lessons[rung]["exerciseOptions"]
+                self.assertGreaterEqual(len(exercises), 3)
+                self.assertEqual([e for e in exercises if e not in stage_1_core], [],
+                                 f"{rung}: every exercise one a Stage 1 core rung lists")
+        self.assertEqual(self.lessons["practice.1"]["exerciseOptions"][0], "exercise.five-finger.c-major.right",
+                         "the practice row a learner placed at 1.5 is given is the right-hand five-finger pattern")
+
+    def test_no_rung_lists_a_rock_placeholder_and_the_library_keeps_them(self) -> None:
+        listed = [(rung, item) for rung, lesson in self.lessons.items()
+                  for item in lesson["exerciseOptions"] + lesson["songOptions"] if item.startswith("song.rock.")]
+        self.assertEqual(listed, [])
+        rows = [item for item in self.catalog if item["id"].startswith("song.rock.")]
+        self.assertEqual(len(rows), 7)
+        for item in rows:
+            self.assertIsNone(item.get("file"), item["id"])
+            self.assertTrue(item.get("importHint"), f"{item['id']}: the Library draws its import hint")
+            self.assertNotIn("module", item["source"]["editionNotes"], f"{item['id']}: no module points at it")
+
+    def test_theory_9_promises_no_walking_bass_and_the_latin_rungs_no_duet(self) -> None:
+        self.assertNotIn("drill.reading.sight-reading-7", self.lessons["theory.9"]["exerciseOptions"])
+        self.assertNotIn("walking bass", self.text("theory.9").lower())
+        for rung in ("latin.3", "latin"):
+            with self.subTest(rung=rung):
+                self.assertFalse(any(t.get("kind") == "duet" for t in self.lessons[rung].get("tools") or []))
+                self.assertNotIn("Play it as a duet", self.text(rung))
 
 
 if __name__ == "__main__":

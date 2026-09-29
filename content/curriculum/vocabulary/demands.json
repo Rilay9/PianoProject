@@ -36,7 +36,7 @@
       "detector": "steps",
       "copedWithBy": "interval-reading",
       "taughtAt": ["1.1"],
-      "taughtAtNote": "A hand reading: the five-finger walks of the first rung (1.1) are steps; 1.5 teaches reading them as steps."
+      "taughtAtNote": "1.1 names steps in its concepts (F2): its five-finger walks are steps; 1.5 teaches reading them as steps."
     },
     { "id": "interval.skip", "display": "A skip (a third)", "dimension": "interval", "detector": "skips", "copedWithBy": "interval-reading", "taughtAt": ["1.5"] },
     {
@@ -115,8 +115,8 @@
       "dimension": "texture",
       "detector": "walkingBass",
       "copedWithBy": "hand-independence",
-      "taughtAt": ["blues.5", "jazz.6", "jam.6"],
-      "taughtAtNote": "Three paths teach it: blues.5; jazz.6 ('Comping, walking bass, and hearing the changes': four notes to the bar with a semitone approach to the next root, a walking line hands separately and then together under shells); and jam.6 ('Walking bass, when there is no bass player'). latin names walking-bass among its concepts, and its lesson never teaches one (its bass is the tumbao): not listed, and the build warns until F reads it. theory.9's path reaches none of the three."
+      "taughtAt": ["jazz.6", "blues.6", "jam.6"],
+      "taughtAtNote": "Three paths teach it: jazz.6 ('Comping, walking bass, and hearing the changes': four notes to the bar with a semitone approach to the next root, a walking line hands separately and then together under shells); blues.6 ('a line that walks', the walking-bass exercise with a right hand over the line; blues.5 introduces the line alone, left hand only, under its introduces list, F2); and jam.6 ('Walking bass, when there is no bass player'). latin no longer names it (its bass is the tumbao, F2). theory.9's path reaches none of the three."
     }
   ]
 }

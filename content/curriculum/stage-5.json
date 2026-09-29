@@ -190,10 +190,12 @@
               "concepts": [
                 "turnaround",
                 "tremolo-thirds",
-                "walking-bass",
                 "blue-note",
                 "crushed-note",
                 "call-and-response"
+              ],
+              "introduces": [
+                "walking-bass"
               ],
               "textFile": "lessons/blues.5.md",
               "exerciseOptions": [
@@ -680,7 +682,6 @@
                 "montuno",
                 "syncopation",
                 "comping",
-                "walking-bass",
                 "bossa-nova",
                 "tango"
               ],
@@ -727,12 +728,6 @@
                 "4.5"
               ],
               "estimatedDays": 45,
-              "tools": [
-                {
-                  "kind": "duet",
-                  "item": "exercise.latin-groove.c.son-3-2"
-                }
-              ],
               "levelBand": [
                 1.9,
                 6.4
@@ -775,7 +770,6 @@
                 "diminuendo",
                 "phrasing",
                 "rhythm",
-                "syncopation",
                 "tied-across-bar",
                 "odd-meter",
                 "meter-5-4",

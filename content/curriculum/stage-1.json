@@ -20,14 +20,14 @@
                 "C-position",
                 "quarter-notes",
                 "treble-clef",
-                "4/4"
+                "4/4",
+                "steps"
               ],
               "textFile": "lessons/1.1.md",
               "exerciseOptions": [
                 "drill.technique.five-finger-rh",
                 "drill.reading.note-flash-treble-c4-g4",
                 "drill.rhythm.quarters-rests",
-                "exercise.five-finger.c-major.both",
                 "exercise.five-finger.c-major.right",
                 "exercise.five-finger.g-major.right",
                 "exercise.riff.c.falling"
@@ -199,7 +199,6 @@
                 "drill.reading.sight-reading-1-left",
                 "drill.technique.five-finger-lh",
                 "drill.reading.note-flash-bass-f2-c4",
-                "exercise.five-finger.c-major.both",
                 "exercise.five-finger.c-major.left",
                 "exercise.five-finger.g-major.left"
               ],
@@ -449,8 +448,8 @@
               ],
               "textFile": "lessons/practice.1.md",
               "exerciseOptions": [
-                "exercise.hanon.01.both",
-                "exercise.five-finger.c-major.both",
+                "exercise.five-finger.c-major.right",
+                "exercise.reading.steps-and-skips-c",
                 "drill.rhythm.mixed-values"
               ],
               "songOptions": [
@@ -506,9 +505,9 @@
               ],
               "textFile": "lessons/practice.2.md",
               "exerciseOptions": [
-                "exercise.hanon.01.both",
-                "exercise.scale.c-major.1oct.similar.both.2",
-                "drill.technique.five-finger-rh"
+                "drill.technique.five-finger-rh",
+                "exercise.five-finger.c-major.right",
+                "exercise.reading.steps-and-skips-c"
               ],
               "songOptions": [
                 "song.classical.ode-to-joy.rh"
