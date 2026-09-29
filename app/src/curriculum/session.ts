@@ -1641,7 +1641,7 @@ export function swapOptions(
 /**
  * "Play this instead" for an item that is not bundled (docs/04 §2).
  *
- * A rock-module song you have not imported is not a dead row: its
+ * A song you have not imported yet is not a dead row: its
  * `alternatives[]` name the public-domain vehicle that trains the same thing.
  */
 export function playInstead(

@@ -62,9 +62,9 @@ import {
 import { isPlayable, openItem, targetFor } from '../openItem';
 import { getSettings, updateSettings } from '../../data/settingsStore';
 import { screenFrame, statusLine } from './screenFrame';
-import { openAssignSheet } from '../assignSheet';
+import { openImportSheetFor } from '../importSheet';
 import { loadCurriculum } from '../../curriculum/load';
-import { estimateLevelFor } from '../../score/estimateImport';
+import { IMPORT_TEXT, importSourceWords, importStateWords } from '../help';
 
 type SortKey = 'level' | 'title' | 'recent';
 
@@ -361,27 +361,34 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     // asks. A plain Library import is not — he is filing something, and a
     // sheet over the list would be in the way of the list he came to see. It
     // is one tap away on the row's Assign button when he does want it.
-    // ...and for a file that came in as MIDI, whatever it was imported from.
-    // That is the one import where the app decided things on the learner's
-    // behalf - the metre, the key, the grid, which hand played what - and the
-    // sheet is where it says so, before the score is trusted (T29).
-    const wasConverted = lastRow !== undefined && conversionFor(lastRow.id) !== undefined;
-    if (lastRow && (assign || wasConverted)) await openAssignFor(lastRow);
+    // ...and wherever the app guessed on the learner's behalf (T29; X3): a
+    // file that came in as MIDI, whatever it was imported from — the metre,
+    // the key, the grid, which hand played what — or a score whose stored
+    // provenance says its hands or its key were inferred (the command-line
+    // converter's MusicXML). The sheet is where the guesses are said and the
+    // hands can be corrected, before the score is trusted. Opened here, by the
+    // UI that received the row `addImport` returned; the store opens nothing
+    // (`responses/ef80e86.md`).
+    if (lastRow && (assign || guessedFor(lastRow))) await openImportFor(lastRow);
+  }
+
+  /** Whether the app guessed anything about this import's notation that the sheet should say first. */
+  function guessedFor(row: ImportRow): boolean {
+    if (conversionFor(row.id) !== undefined) return true;
+    const facts = row.provenance?.facts;
+    return facts?.hands?.kind === 'inferred' || facts?.key?.kind === 'inferred';
   }
 
   /**
-   * The assign sheet, with everything it can know already filled in.
-   *
-   * The level is estimated here rather than in the sheet because estimating
-   * means parsing the score, which is the one slow thing in the path; doing it
-   * before the sheet opens means the number is there when it appears.
+   * The import sheet (X3), with everything it can know already filled in:
+   * what the app read and guessed, the hands' correction, what the notes ask,
+   * and where the piece belongs — the assign sheet's body, with the rung from
+   * the route and the level estimated before the sheet opens (the one slow
+   * step, so the number is there when it appears).
    */
-  async function openAssignFor(row: ImportRow): Promise<void> {
-    const curriculum = await loadCurriculum();
-    const estimated = row.kind === 'musicxml' ? await estimateLevelFor(row) : undefined;
-    openAssignSheet(row, curriculum, {
+  async function openImportFor(row: ImportRow): Promise<void> {
+    await openImportSheetFor(row, {
       ...(options.importFor === undefined ? {} : { preselect: options.importFor }),
-      ...(estimated === undefined ? {} : { estimated }),
       onSaved: () => {
         void refresh().catch(sayLoadFailed);
         status.textContent = `${row.title} is in your library.`;
@@ -643,6 +650,13 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
 
   function showDetail(item: CatalogItem): void {
     const sheet = openSheet(item.title, { id: 'library-detail' });
+    // A piece the catalogue wants and does not bundle (a placeholder) is on no track a learner can
+    // follow and trains nothing until it is imported, so its sheet says neither: it said "Tracks:
+    // film-game" and "What it trains: import-only" — a label's id and a marker (U75; `00` §1, no
+    // ids on screen). Any sheet names a track by its title only, and leaves out an id with none.
+    const placeholder = !isPlayable(item);
+    const tracks = item.tracks.map((track) => trackTitles.get(track)).filter((title): title is string => title !== undefined);
+    const trains = item.concepts.filter((concept) => concept !== 'import-only');
     const facts: [string, string][] = [
       // An excerpt names the piece it was cut from first (E1); its Source and Licence below are
       // the parent's, carried whole into its catalogue row, since the cut's file carries no credits.
@@ -650,10 +664,10 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       ['Level', levelLabel(item.level, item.levelSource)],
       ['Hands', handsLabel(item.hands)],
       ['Type', item.type],
-      ['Tracks', item.tracks.map((track) => trackTitles.get(track) ?? track).join(', ') || '—'],
+      ...(placeholder || tracks.length === 0 ? [] : [['Tracks', tracks.join(', ')] as [string, string]]),
       // The assign sheet and the lesson page both call this *What it trains*;
       // *Concepts* is the catalog's field name (`04` §3a).
-      ['What it trains', item.concepts.join(', ') || '—'],
+      ...(placeholder ? [] : [['What it trains', trains.join(', ') || '—'] as [string, string]]),
       ['Source', item.source?.name ?? '—'],
       ['Licence', item.source?.license ?? '—'],
     ];
@@ -692,13 +706,22 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       sheet.body.append(el('p', {}, link, el('span.muted', { text: ' — needs internet' })));
     }
 
-    if (!isPlayable(item)) {
+    if (placeholder) {
+      // What a learner can do (U75): the piece's own words where the catalogue has them
+      // (`importHint`, the source of the words), what the app reads, and the control that imports
+      // — the sentence and the control that does what it suggests (`04` §0 R4), since the header's
+      // *Import a score* is under this sheet.
+      sheet.body.append(el('p.notice', { id: 'library-detail-wanted', text: item.importHint ?? IMPORT_TEXT.wanted }));
+      if (item.importHint) sheet.body.append(el('p.muted', { text: IMPORT_TEXT.formats }));
       sheet.body.append(
-        el('p.notice', {
-          text:
-            item.importHint ??
-            'This one is not bundled — import your own copy from Library, or play one of the alternatives.',
-        }),
+        button(
+          IMPORT_TEXT.importButton,
+          () => {
+            sheet.close();
+            picker.click();
+          },
+          { id: 'library-detail-import' },
+        ),
       );
       for (const altId of item.alternatives ?? []) {
         const alt = items.find((candidate) => candidate.id === altId);
@@ -893,13 +916,15 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     const actions: HTMLElement[] = [];
     if (item.imported) {
       actions.push(button('Edit', () => showEditor(item.id), { variant: 'quiet' }));
-      // The way to reach the assign sheet for a file already in the library.
+      // The way back to the import sheet for a file already in the library:
+      // what the app read and guessed, the hands' correction, and where it
+      // belongs (X3). Still called *Assign*: the sheet ends in that decision.
       actions.push(
         button(
           'Assign',
           () => {
             void getImport(item.id).then((row) => {
-              if (row) void openAssignFor(row);
+              if (row) void openImportFor(row);
             });
           },
           { variant: 'quiet' },
@@ -924,7 +949,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       );
     }
 
-    return listRow({
+    const drawnRow = listRow({
       title: item.title,
       // An excerpt is listed under its own title with the piece it was cut from named (E1).
       subtitle: excerptLine(item, byIdForExcerpts()) ?? item.composer ?? undefined,
@@ -934,7 +959,8 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       // end. It is the same fact `shortHandsLabel` exists for on Today: silent
       // for both hands, `RH`/`LH` where it is actually news. The full sentence
       // is still on the item's detail sheet, where it is read once.
-      meta: [levelLabel(item.level, item.levelSource), shortHandsLabel(item.hands), item.type]
+      // An import's type is "song" on every one of them; where its notes came from is news (X3).
+      meta: [levelLabel(item.level, item.levelSource), shortHandsLabel(item.hands), (item.imported ? importSourceWords(item) : '') || item.type]
         .filter(Boolean)
         .join(' · '),
       badges,
@@ -952,6 +978,20 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
         ...(item.imported ? { 'data-tall': 'true' } : {}),
       },
     });
+    // An import's state, one line in the learner's words (X3): whose the hands are, whether the app
+    // has measured it, the tempo where the file states none — the facts the import sheet renders,
+    // from the same provenance; where its notes came from is on the detail line above, in place of
+    // "song", because the four together cut mid-word at 342 px. Above the badges; an import row is
+    // a tall row already (`data-tall`).
+    const state = item.imported ? importStateWords(item) : '';
+    if (state) {
+      const line = el('div.list-row__sub.library-import-state', { text: state });
+      const text = drawnRow.querySelector('.list-row__text');
+      const badgeLine = text?.querySelector('.list-row__badges');
+      if (badgeLine) badgeLine.before(line);
+      else text?.append(line);
+    }
+    return drawnRow;
   }
 
   /**
@@ -1212,11 +1252,12 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
   }
 
   void takeSharedFiles().then(({ added, errors }) => {
-    // A shared file goes straight to the assign sheet: a share is the path
+    // A shared file goes straight to the import sheet: a share is the path
     // this phase exists to shorten, and it is the one where the owner is
-    // furthest from the Library row he would otherwise have to find.
+    // furthest from the Library row he would otherwise have to find. Opened
+    // here, from the rows the store returned; the store opens nothing.
     const last = added[added.length - 1];
-    if (last) void openAssignFor(last);
+    if (last) void openImportFor(last);
     if (added.length === 0 && errors.length === 0) return;
     status.textContent = [
       added.length ? `Shared in: ${added.map((row) => row.title).join(', ')}.` : '',

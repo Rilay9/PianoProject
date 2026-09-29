@@ -15,8 +15,8 @@ import type { ImportRow } from '../data/db';
 import { loadCurriculum } from '../curriculum/load';
 import { conversionFor, updateImport, type ConversionNote } from '../data/importStore';
 import { estimateLevelFor } from '../score/estimateImport';
-import { DEMAND_WORDS } from './help';
-import { button, el, openSheet } from './widgets';
+import { DEMAND_WORDS, IMPORT_TEXT, whoseFact } from './help';
+import { button, el, openSheet, type Sheet } from './widgets';
 
 export interface AssignResult {
   lessonIds: string[];
@@ -83,6 +83,42 @@ export function allLessons(curriculum: Curriculum): { lesson: Lesson; stage: num
   return out;
 }
 
+/** T52's sentence: what assigning a piece to a rung does, and nothing about finishing it. */
+export const ASSIGN_SENTENCE =
+  'Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.';
+
+/**
+ * The conversion note's hands sentence as the row now stands (U72): the converter's wording only
+ * while its guess stands; once the learner has corrected the hands, that they are the learner's.
+ * Derived from the row's provenance at render, never kept from the import moment — the note in
+ * memory describes the conversion, and after a correction its hands sentence describes a decision
+ * the learner has undone.
+ */
+export function conversionHands(note: ConversionNote, row: Pick<ImportRow, 'provenance'>): string {
+  return whoseFact(row.provenance?.facts.hands) === 'yours' ? IMPORT_TEXT.conversionHandsYours : note.hands;
+}
+
+/** The self-check's sentence, in red where the check found trouble. */
+export function conversionCheck(note: ConversionNote): HTMLElement {
+  return el('p', { id: 'assign-conversion-check', text: note.check, className: note.passed ? 'muted' : 'status--error' });
+}
+
+/** What the conversion guessed besides the hands: the metre, the key and the grid. */
+export function conversionGuesses(note: ConversionNote): HTMLElement {
+  return el('p.muted', {
+    id: 'assign-conversion-guesses',
+    text:
+      `Written in ${note.report.timeSignature}, key of ${note.report.key} ` +
+      `(${note.report.keyFrom}), on a grid of ${note.report.grid} chosen bar by bar. ` +
+      'Those three are guesses; the notes and their timing are not.',
+  });
+}
+
+/** E2's line under its heading: what the stored row's notes ask, measured. */
+export function notesBlock(row: Pick<ImportRow, 'kind' | 'demands' | 'measurement'>, heading = 'What the notes ask'): HTMLElement {
+  return el('section.block', {}, el('h3', { text: heading }), el('p.muted', { id: 'assign-demands', text: demandsLine(row) }));
+}
+
 /**
  * Opens the sheet for one freshly imported row.
  *
@@ -95,41 +131,24 @@ export function openAssignSheet(
   options: AssignOptions = {},
 ) {
   const sheet = openSheet(`Where does ${row.title} go?`, { id: 'assign-sheet' });
-  const lessons = allLessons(curriculum);
-  const preselected = new Set(options.preselect ? [options.preselect] : []);
 
-  sheet.body.append(
-    el('p.muted', {
-      text: 'Assigning it to a rung makes it one of that rung’s practice options. The app can suggest it there, and qualifying practice can count toward that rung’s requirements.',
-    }),
-  );
+  sheet.body.append(el('p.muted', { text: ASSIGN_SENTENCE }));
 
   // --- what the conversion decided ---------------------------------------
-  // Looked up here rather than passed in, because every screen that can reach
-  // this sheet reaches *this function* — the Library calls it directly, the
-  // share path and the lesson page through `openAssignSheetFor` — and a note
-  // shown by one door and not the others is the fault this sheet exists to
-  // avoid.
+  // Looked up here rather than passed in, because a note shown by one door and
+  // not the others is the fault this sheet exists to avoid. Since X3 the
+  // Library's doors (its picker, the share path, *Import for this rung*, the
+  // row's Assign) open the import sheet, which draws the same note from the
+  // same helpers; the score folder's Assign still reaches this function
+  // through `openAssignSheetFor`. Its hands sentence is derived from the row
+  // as it stands (U72).
   const conversion = options.conversion ?? conversionFor(row.id);
   if (conversion) {
     const block = el('section.block', { id: 'assign-conversion' });
     block.append(el('h3', { text: 'Converted from MIDI' }));
-    const check = el('p', {
-      id: 'assign-conversion-check',
-      text: conversion.check,
-      className: conversion.passed ? 'muted' : 'status--error',
-    });
-    block.append(check);
-    block.append(el('p.muted', { id: 'assign-conversion-hands', text: conversion.hands }));
-    block.append(
-      el('p.muted', {
-        id: 'assign-conversion-guesses',
-        text:
-          `Written in ${conversion.report.timeSignature}, key of ${conversion.report.key} ` +
-          `(${conversion.report.keyFrom}), on a grid of ${conversion.report.grid} chosen bar by bar. ` +
-          'Those three are guesses; the notes and their timing are not.',
-      }),
-    );
+    block.append(conversionCheck(conversion));
+    block.append(el('p.muted', { id: 'assign-conversion-hands', text: conversionHands(conversion, row) }));
+    block.append(conversionGuesses(conversion));
     sheet.body.append(block);
   }
 
@@ -138,9 +157,30 @@ export function openAssignSheet(
   // it is stored — the learner's corrected one where the hands were corrected — or why nothing
   // was read. A row imported before E0 is measured in the background on the next launch
   // (`importStore.measureStoredImports`), and says so until it has been.
-  sheet.body.append(
-    el('section.block', {}, el('h3', { text: 'What the notes ask' }), el('p.muted', { id: 'assign-demands', text: demandsLine(row) })),
-  );
+  sheet.body.append(notesBlock(row));
+
+  appendAssignControls(sheet, row, curriculum, options);
+  return sheet;
+}
+
+/** What the import sheet can change in the controls after a correction re-estimates the level. */
+export interface AssignControls {
+  /** A new runtime estimate, shown unless the learner has typed a level of their own. */
+  setEstimated: (estimated: number | undefined) => void;
+}
+
+/**
+ * The assign sheet's body after its sentence: the rung, the level, the concepts, Save and Not now —
+ * the part the import sheet reuses under *Where does it belong?* (X3), unchanged.
+ */
+export function appendAssignControls(
+  sheet: Sheet,
+  row: ImportRow,
+  curriculum: Curriculum,
+  options: AssignOptions = {},
+): AssignControls {
+  const lessons = allLessons(curriculum);
+  const preselected = new Set(options.preselect ? [options.preselect] : []);
 
   // --- the rung ----------------------------------------------------------
   const rungSelect = el('select', { id: 'assign-lesson' }) as HTMLSelectElement;
@@ -171,16 +211,19 @@ export function openAssignSheet(
     max: '9',
     step: '0.1',
   }) as HTMLInputElement;
-  const estimated = options.estimated;
+  let estimated = options.estimated;
   if (estimated !== undefined) levelInput.value = String(estimated);
   else if (row.level !== undefined) levelInput.value = String(row.level);
 
-  const levelHint = el('p.muted', {
-    id: 'assign-level-hint',
-    text:
-      estimated === undefined
-        ? 'No estimate — the app could not read the notes. Type a level if you know one.'
-        : `≈ ${String(estimated)}, estimated from the notes. Change it if it feels wrong.`,
+  const hintFor = (value: number | undefined): string =>
+    value === undefined
+      ? 'No estimate — the app could not read the notes. Type a level if you know one.'
+      : `≈ ${String(value)}, estimated from the notes. Change it if it feels wrong.`;
+  const levelHint = el('p.muted', { id: 'assign-level-hint', text: hintFor(estimated) });
+  // A level the learner typed is theirs, and a later estimate never writes over it.
+  let levelTouched = false;
+  levelInput.addEventListener('input', () => {
+    levelTouched = true;
   });
   sheet.body.append(
     el('section.block', {}, el('h3', { text: 'Level' }), levelInput, levelHint),
@@ -254,7 +297,14 @@ export function openAssignSheet(
   sheet.body.append(
     el('div.row', {}, save, button('Not now', () => sheet.close(), { variant: 'quiet' })),
   );
-  return sheet;
+  return {
+    setEstimated: (next) => {
+      if (levelTouched) return;
+      estimated = next;
+      levelInput.value = next === undefined ? (row.level === undefined ? '' : String(row.level)) : String(next);
+      levelHint.textContent = hintFor(next);
+    },
+  };
 }
 
 /**
