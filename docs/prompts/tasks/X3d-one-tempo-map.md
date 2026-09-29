@@ -42,3 +42,5 @@ If the model built from the half-note file already reads 120 on the committed co
 Judgement first: the Score screen on *Row, Row, Row Your Boat* and on an imported half-note file, before and after, as pictures with the label in each, and the six adversaries as a table (opens / labels / plays, before and after); then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes, the heard tempo unverified as music.
 
 **Landed 2026-09-29** (Entry 133; 5e6eceba, merged d71146cb); handoff `handoffs/5e6eceba.md`.
+
+**Approved with one required change 2026-09-29** (`responses/5e6eceba.md`): the one reader must cover the timewise form the import door accepts — X3e (`X3e-timewise-tempo.md`). The rests-only opening rule accepted; the after-sounding rule kept (X32 closed); `<sound time-only>`, X31 and the store's regex later waves with their owners; OSMD's tempo heuristics never a fallback.
