@@ -27,6 +27,8 @@
 
 ## Standing rules in force tonight
 
+- The reviewer's ruling of 2026-09-29 on the lanes: four running, no fifth; the three-seam measurement kept (each meter separately; building, waiting, integrating, reviewing and fixing times); near the five-hour limit stop dispatches first, then bring builders to a clean checkpoint (worktree committed, a short handoff: done, running, next command), resume the existing seams after the reset before any new one; D4a before G1, E2 before X3; drafting allowed, dispatch waits for the measurement.
+
 - From Q24 (Entry 89): a fresh worktree's `npx vitest run` needs `python tools/midi-cleanup/tests/parity_reference.py` first (or `build/midi-parity/` copied from the main checkout), and its content tests fail rather than skip until the build has run with the Joplin edition present. Every brief that runs vitest in a new worktree says so.
 
 - From F1's review: the reviewer treats uncommitted worktree logs as reported, not verified — on each landing, copy the seam's run captures (the exit-code and summary files, not the megabyte logs) into `docs/prompts/runs/<seam>/` beside the entry so the handoff's numbers can be checked.
