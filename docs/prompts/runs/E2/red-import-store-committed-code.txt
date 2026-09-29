@@ -1,0 +1,210 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ab0ca07b13a3644b6/app
+
+ ❯ tests/unit/importMeasuredTruth.test.ts (12 tests | 12 failed) 125ms
+   ❯ each converter names its version, and the provenance reads it (E26) (3)
+     × the app’s converter owns its version; the store re-exports the same constant 5ms
+     × a MIDI file converted in the app names the app’s converter and its version 71ms
+     × a MusicXML file the command-line converter wrote names that converter and its version, and says its hands and key were inferred 12ms
+   ❯ an import is a candidate like any other: its inferred tempo marks its tempo-sensitive demands (item 4d) (1)
+     × lists them untrusted where the file states no tempo, and the gate says so; a file with a tempo trusts them 12ms
+   ❯ the stored imports measured once on the next launch (E25), through the store (6)
+     × says which rows are due and why, before anything is measured 7ms
+     × measures each due row once and writes it through the store; a second launch measures nothing; the screens hear of it once 1ms
+     × never tries an unmeasurable PDF or an unreadable score again under the same version, and tries each once when the version moves 1ms
+     × measures a row converted by an older converter once, on the stored score, and it goes on naming the converter that wrote its notes 1ms
+     × keeps a corrected import’s score, its correction provenance and its judged level when it is measured again 1ms
+     × writes nothing over a row whose score changed while it was being measured, and nothing over an assignment saved meanwhile 1ms
+   ❯ the assign sheet shows the measured truth (E21, E25) (2)
+     × names what the app read in the notes, in the swap sheet’s words, or why nothing was read 1ms
+     × draws the line on the sheet, and the sheet still says assignment is an option, never progress (T52) 10ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 12 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/importMeasuredTruth.test.ts > each converter names its version, and the provenance reads it (E26) > the app’s converter owns its version; the store re-exports the same constant
+AssertionError: expected undefined to be 1 // Object.is equality
+
+- Expected:
+1
+
++ Received:
+undefined
+
+ ❯ tests/unit/importMeasuredTruth.test.ts:68:32
+     66|
+     67|   it('the app’s converter owns its version; the store re-exports the s…
+     68|     expect(FROM_THE_CONVERTER).toBe(MIDI_CONVERTER_VERSION);
+       |                                ^
+     69|     expect(Number.isInteger(FROM_THE_CONVERTER) && FROM_THE_CONVERTER …
+     70|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/12]⎯
+
+ FAIL  tests/unit/importMeasuredTruth.test.ts > each converter names its version, and the provenance reads it (E26) > a MIDI file converted in the app names the app’s converter and its version
+AssertionError: expected { …(2) } to deeply equal { …(2) }
+
+- Expected
++ Received
+
+  {
+    "name": "app/src/import/midi/convert.ts",
+-   "version": undefined,
++   "version": 1,
+  }
+
+ ❯ tests/unit/importMeasuredTruth.test.ts:75:39
+     73|     const row = await addImport(fakeFile('two-hands.mid', new Uint8Arr…
+     74|     expect(row.provenance?.source).toBe('imported-midi');
+     75|     expect(row.provenance?.converter).toEqual({ name: 'app/src/import/…
+       |                                       ^
+     76|   });
+     77|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/12]⎯
+
+ FAIL  tests/unit/importMeasuredTruth.test.ts > each converter names its version, and the provenance reads it (E26) > a MusicXML file the command-line converter wrote names that converter and its version, and says its hands and key were inferred
+AssertionError: expected undefined to deeply equal { …(2) }
+
+- Expected:
+{
+  "name": "tools/midi-cleanup/midi_to_musicxml.py",
+  "version": 1,
+}
+
++ Received:
+undefined
+
+ ❯ tests/unit/importMeasuredTruth.test.ts:82:39
+     80|     const row = await addImport(fakeFile('stamped-by-the-converter.mus…
+     81|     expect(row.provenance?.source).toBe('imported-musicxml');
+     82|     expect(row.provenance?.converter).toEqual({ name: 'tools/midi-clea…
+       |                                       ^
+     83|     expect(row.provenance?.facts.hands?.kind).toBe('inferred');
+     84|     expect(row.provenance?.facts.key?.kind).toBe('inferred');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/12]⎯
+
+ FAIL  tests/unit/importMeasuredTruth.test.ts > an import is a candidate like any other: its inferred tempo marks its tempo-sensitive demands (item 4d) > lists them untrusted where the file states no tempo, and the gate says so; a file with a tempo trusts them
+AssertionError: expected undefined to deeply equal [ 'rhythm.eighths', …(1) ]
+
+- Expected:
+[
+  "rhythm.eighths",
+  "rhythm.shorter-than-quarter",
+]
+
++ Received:
+undefined
+
+ ❯ tests/unit/importMeasuredTruth.test.ts:104:55
+    102|     expect(bare.demands).toEqual(expect.arrayContaining(['rhythm.eight…
+    103|     expect(bare.provenance?.facts.tempo?.kind).toBe('inferred');
+    104|     expect(bare.provenance?.facts.demands?.untrusted).toEqual(['rhythm…
+       |                                                       ^
+    105|     expect(eligibleFor(importToCatalogItem(bare), { taught: () => true…
+    106|       verdict: 'eligible',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/12]⎯
+
+ FAIL  tests/unit/importMeasuredTruth.test.ts > the stored imports measured once on the next launch (E25), through the store > says which rows are due and why, before anything is measured
+TypeError: measurementDue is not a function
+ ❯ tests/unit/importMeasuredTruth.test.ts:198:84
+    196|
+    197|   it('says which rows are due and why, before anything is measured', a…
+    198|     const due = Object.fromEntries((await importSummaries()).map((row)…
+       |                                                                                    ^
+    199|     expect(due).toEqual({
+    200|       'import.before-e0': 'never-measured',
+ ❯ tests/unit/importMeasuredTruth.test.ts:198:62
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/12]⎯
+
+ FAIL  tests/unit/importMeasuredTruth.test.ts > the stored imports measured once on the next launch (E25), through the store > measures each due row once and writes it through the store; a second launch measures nothing; the screens hear of it once
+TypeError: measureStoredImports is not a function
+ ❯ tests/unit/importMeasuredTruth.test.ts:213:25
+    211|     const heard = vi.fn();
+    212|     const stop = onImportsChange(heard);
+    213|     const first = await measureStoredImports({ measure, current: CURRE…
+       |                         ^
+    214|     // The PDF is never handed to the detectors: its verdict is the PD…
+    215|     expect(measured.sort()).toEqual(['import.before-e0', 'import.no-do…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/12]⎯
+
+ FAIL  tests/unit/importMeasuredTruth.test.ts > the stored imports measured once on the next launch (E25), through the store > never tries an unmeasurable PDF or an unreadable score again under the same version, and tries each once when the version moves
+TypeError: measureStoredImports is not a function
+ ❯ tests/unit/importMeasuredTruth.test.ts:247:11
+    245|
+    246|   it('never tries an unmeasurable PDF or an unreadable score again und…
+    247|     await measureStoredImports({ measure, current: CURRENT });
+       |           ^
+    248|     const next = CURRENT + 1;
+    249|     measured.length = 0;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/12]⎯
+
+ FAIL  tests/unit/importMeasuredTruth.test.ts > the stored imports measured once on the next launch (E25), through the store > measures a row converted by an older converter once, on the stored score, and it goes on naming the converter that wrote its notes
+TypeError: measurementDue is not a function
+ ❯ tests/unit/importMeasuredTruth.test.ts:266:12
+    264|     const next = CURRENT + 1;
+    265|     const due = await importSummaries();
+    266|     expect(measurementDue(due.find((row) => row.id === 'import.midi-me…
+       |            ^
+    267|     await measureStoredImports({ measure, current: next });
+    268|     expect(measured).toContain('import.midi-measured');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/12]⎯
+
+ FAIL  tests/unit/importMeasuredTruth.test.ts > the stored imports measured once on the next launch (E25), through the store > keeps a corrected import’s score, its correction provenance and its judged level when it is measured again
+TypeError: measureStoredImports is not a function
+ ❯ tests/unit/importMeasuredTruth.test.ts:279:11
+    277|   it('keeps a corrected import’s score, its correction provenance and …
+    278|     const next = CURRENT + 1;
+    279|     await measureStoredImports({ measure, current: next });
+       |           ^
+    280|     expect(measured).toContain('import.corrected');
+    281|     const row = (await getImport('import.corrected')) as ImportRow;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/12]⎯
+
+ FAIL  tests/unit/importMeasuredTruth.test.ts > the stored imports measured once on the next launch (E25), through the store > writes nothing over a row whose score changed while it was being measured, and nothing over an assignment saved meanwhile
+TypeError: measureStoredImports is not a function
+ ❯ tests/unit/importMeasuredTruth.test.ts:297:11
+    295|       return measure(xml, id);
+    296|     };
+    297|     await measureStoredImports({ measure: racing, current: CURRENT });
+       |           ^
+    298|     const assigned = (await getImport('import.before-e0')) as ImportRo…
+    299|     expect(assigned.lessonIds).toEqual(['2.1']);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/12]⎯
+
+ FAIL  tests/unit/importMeasuredTruth.test.ts > the assign sheet shows the measured truth (E21, E25) > names what the app read in the notes, in the swap sheet’s words, or why nothing was read
+TypeError: demandsLine is not a function
+ ❯ tests/unit/importMeasuredTruth.test.ts:324:12
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/12]⎯
+
+ FAIL  tests/unit/importMeasuredTruth.test.ts > the assign sheet shows the measured truth (E21, E25) > draws the line on the sheet, and the sheet still says assignment is an option, never progress (T52)
+AssertionError: expected undefined to be 'Measured in the notes: steps.' // Object.is equality
+
+- Expected:
+"Measured in the notes: steps."
+
++ Received:
+undefined
+
+ ❯ tests/unit/importMeasuredTruth.test.ts:341:68
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/12]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  12 failed (12)
+   Start at  22:52:52
+   Duration  1.41s (environment 52%, transform 26%, import 12%, tests 10%)
+
+exit 1
+restored 3 file(s), sha256 checked

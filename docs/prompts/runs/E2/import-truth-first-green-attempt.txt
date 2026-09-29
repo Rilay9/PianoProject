@@ -1,0 +1,61 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ab0ca07b13a3644b6/app
+
+ ❯ tests/unit/importMeasuredTruth.test.ts (12 tests | 2 failed) 132ms
+   ❯ the stored imports measured once on the next launch (E25), through the store (6)
+     × measures each due row once and writes it through the store; a second launch measures nothing; the screens hear of it once 7ms
+     × never tries an unmeasurable PDF or an unreadable score again under the same version, and tries each once when the version moves 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/importMeasuredTruth.test.ts > the stored imports measured once on the next launch (E25), through the store > measures each due row once and writes it through the store; a second launch measures nothing; the screens hear of it once
+AssertionError: expected { state: 'done', measured: 1, …(3) } to match object { state: 'done', measured: 1, …(2) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "measured": 1,
+    "pending": 1,
+    "state": "done",
+-   "unmeasurable": 1,
++   "unmeasurable": 0,
+  }
+
+ ❯ tests/unit/importMeasuredTruth.test.ts:216:19
+    214|     // The PDF is never handed to the detectors: its verdict is the PD…
+    215|     expect(measured.sort()).toEqual(['import.before-e0', 'import.no-do…
+    216|     expect(first).toMatchObject({ state: 'done', measured: 1, unmeasur…
+       |                   ^
+    217|     expect(heard).toHaveBeenCalledTimes(1);
+    218|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/importMeasuredTruth.test.ts > the stored imports measured once on the next launch (E25), through the store > never tries an unmeasurable PDF or an unreadable score again under the same version, and tries each once when the version moves
+AssertionError: expected 1 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 1
+
+ ❯ tests/unit/importMeasuredTruth.test.ts:254:32
+    252|     // the rows the older converter wrote (the next case) and the one …
+    253|     expect(measured.sort()).toEqual(['import.corrected', 'import.midi-…
+    254|     expect(moved.unmeasurable).toBe(3);
+       |                                ^
+    255|     for (const id of ['import.pdf-before-e0', 'import.pdf-since-e0', '…
+    256|       expect((await getImport(id))?.provenance?.facts.measuredUnder?.v…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 10 passed (12)
+   Start at  22:53:05
+   Duration  1.44s (environment 51%, transform 26%, import 12%, tests 10%)
+
+exit 1

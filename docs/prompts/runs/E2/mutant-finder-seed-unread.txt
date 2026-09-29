@@ -1,0 +1,15 @@
+F...
+======================================================================
+FAIL: test_a_concept_the_seed_knows_names_its_works_as_examples (tools.content.tests.test_finder.TestTheSeedList.test_a_concept_the_seed_knows_names_its_works_as_examples)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ab0ca07b13a3644b6\tools\content\tests\test_finder.py", line 94, in test_a_concept_the_seed_knows_names_its_works_as_examples
+    self.assertIn("Piano Sonata in C major, K. 545, first movement (Wolfgang Amadeus Mozart)", block["chatPrompt"])
+AssertionError: 'Piano Sonata in C major, K. 545, first movement (Wolfgang Amadeus Mozart)' not found in 'I am learning piano, working on x. I need piano music that trains hands together with a held left hand. Level: very easy, beginner, C position. It must have: C major, left hand whole notes and 8 to 16 bars. Avoid: chords in the right hand or 6/8. Roughly the right kind: Ode to Joy (Beethoven). MusicXML or .mxl preferred; a PDF works but cannot be scored. Music still in copyright is fine — I am finding it for myself and will buy it or use a licensed source. Prefer sources with MusicXML: MuseScore, IMSLP, or a retailer that exports it. List ten, with composer and where to get each.'
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.001s
+
+FAILED (failures=1)
+
+exit 1

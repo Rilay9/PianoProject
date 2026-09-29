@@ -36,3 +36,5 @@ If the `Want`-to-requirements overload cannot keep every existing verdict byte-i
 Judgement first: what an import shows on the assign sheet before and after its correction, and what the gate now says of an external recommendation, as observations; then Done / Not done / Follow-ups / Questions / Files; the validity table; the adversaries; the red lines; the tests table; exit codes; unverified beside what passes.
 
 **Approved with one required change 2026-09-29** (`responses/12af708.md`), the change applied in item 3 (an unknown forbidden demand is ineligible for an automatic constrained experience, available for explicit exploration with the unknown named; adversary 13) and the migration constraint in item 4(b); dispatches beside D4 on this approval, port 4203.
+
+**Landed 2026-09-29** (Entry 107; 2532022, merged 6cf08b2); handoff `handoffs/2532022.md`. The builder's two deviations: the overload is a sibling (`eligibleForMaterial`) because the reviewer's rule moves one existing verdict; item 4(d)'s premise was wrong at the lines (E0's untrusted rule is eligible with the list carried) and the import path now writes the list instead.

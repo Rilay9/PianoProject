@@ -1,0 +1,4 @@
+tests/unit/materialLayer.test.ts(93,27): error TS2352: Conversion of type '{ 'interval-reading': string; subdivision: string; 'bass-clef': string; }' to type 'Record<string, never>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Property ''interval-reading'' is incompatible with index signature.
+    Type 'string' is not comparable to type 'never'.
+exit 2
