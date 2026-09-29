@@ -13,11 +13,14 @@
  * `importStore.correctImportHands`, which makes the corrected score the score and measures it again.
  * Either way the sheet then re-reads the row the store returned.
  *
- * **The tempo line reads one number** (X3c): the tempo the score opens at, its first bar's `<sound tempo>`
- * in quarter notes a minute (`openingTempo`), for the learner's line, the file's and the control's number
- * alike. The file's line adds the first bar's printed mark in its own note where it counts another note
- * (`openingMark`), and says a mark the door read from the file's text (E32) as the store recorded it.
- * Nothing on the line is a later tempo change, and nothing here writes the score.
+ * **The tempo line reads one number** (X3c): the tempo the score opens at in quarter notes a minute, for
+ * the learner's line, the file's and the control's number alike. The file's line adds the printed mark at
+ * the opening in its own note where it counts another note (`openingMark`), and says a mark the door read
+ * from the file's text (E32) as the store recorded it. Nothing on the line is a later tempo change, and
+ * nothing here writes the score. **The reader is the player's** (X3d): the opening tempo, the mark beside
+ * it and whether the file writes a tempo at all are `score/tempoFromXml.ts`'s answers, the module the
+ * score model's tempo map is placed from, so the number the line names is the number the Score screen
+ * opens at and plays — by construction, not by two readers agreeing.
  *
  * **The UI opens this; the store never does** (the reviewer's required change,
  * `responses/ef80e86.md`). `addImport` parses, measures, stores and returns the row; the Library's
@@ -41,7 +44,7 @@ import { loadCurriculum } from '../curriculum/load';
 import { composerFromMusicXml, conversionFor, correctImportHands, getImport, ImportError, stateImportTempo } from '../data/importStore';
 import { estimateLevelFor } from '../score/estimateImport';
 import { DEFAULT_BPM } from '../score/extractScoreModel';
-import { noteLengthInQuarters } from '../score/textGlyphs';
+import { openingTempo, openingTempoEvent, writesTempo } from '../score/tempoFromXml';
 import {
   ASSIGN_SENTENCE,
   appendAssignControls,
@@ -90,29 +93,13 @@ export function swapHands(xml: string): { xml: string } | { refused: string } {
 
 // --- what the file says ---------------------------------------------------------------------------
 
-/** The score's first bar: where the tempo it opens at and the mark it opens with are written. */
-function firstBar(xml: string): string {
-  return /<measure\b[^>]*>[\s\S]*?<\/measure>/.exec(xml)?.[0] ?? '';
-}
-
-/** Whether the score writes a tempo anywhere: a `<sound tempo>` or a `<metronome>` (the store's own test). */
-function writesTempo(xml: string): boolean {
-  return /<sound\b[^>]*\btempo="/i.test(xml) || /<metronome\b/i.test(xml);
-}
-
-/**
- * The tempo the score opens at, in quarter notes a minute, as the score carries it: its first bar's first
- * `<sound tempo>` — where the store writes a learner's stated tempo (`withOpeningTempo`), the door a text
- * mark's reading (E32), and a file its own playback tempo. `undefined` where the first bar sounds none: a
- * later change is never the opening. **The one reader for every quarter-note number the sheet says**
- * (X3c; the X3a and X3b reviews' prune line): the learner's line, the file's line and the number the
- * control starts at. Said to the store's three places, or "about" the whole beat (`help.tempoNumber`).
- */
-function openingTempo(xml: string): number | undefined {
-  const written = /<sound\b[^>]*\btempo="([\d.]+)"/.exec(firstBar(xml))?.[1];
-  const bpm = Number(written);
-  return written !== undefined && Number.isFinite(bpm) && bpm > 0 ? bpm : undefined;
-}
+// The tempo the score opens at is `tempoFromXml.openingTempo` (X3d): a `<sound tempo>` at the opening —
+// where the store writes a learner's stated tempo, the door a text mark's reading, and a file its own
+// playback tempo — else the printed mark there, normalised; `undefined` where the file states none at its
+// opening, since a later change is never the opening. **The one reader for every quarter-note number the
+// sheet says** (X3c; the X3a and X3b reviews' prune line), and the player's: the learner's line, the file's
+// line and the number the control starts at. Said to the store's three places, or "about" the whole beat
+// (`help.tempoNumber`).
 
 /** A metronome mark as the page prints it, and the quarter notes a minute it means. */
 interface PrintedMark {
@@ -120,28 +107,23 @@ interface PrintedMark {
   note: string;
   dots: number;
   perMinute: number;
-  /** The mark's number in quarter notes a minute: only to tell whether it and the opening tempo agree. */
+  /** The mark's number in quarter notes a minute (`tempoFromXml`): only to tell whether it and the opening tempo agree. */
   quarters: number;
 }
 
 /**
- * The metronome mark the score opens with, as the page prints it (X3c): the first bar's first
- * `<metronome>` — its `<beat-unit>`, `<beat-unit-dot>`s and `<per-minute>`. `undefined` where the first bar
- * prints none, or prints an equation of two notes, a note the sheet has no symbol for, or no number.
- * Read only to say the mark's own note beside the opening tempo, never as a tempo claim of its own: the
- * quarter notes a minute the sheet says are `openingTempo`'s.
+ * The metronome mark the score opens with, as the page prints it (X3c): the mark `tempoFromXml` read at
+ * the opening — its `<beat-unit>`, `<beat-unit-dot>`s and `<per-minute>`, and what it means in quarters.
+ * `undefined` where the opening prints none (or a mark the reader does not take as a tempo: an equation of
+ * two notes, no number), or a note the sheet has no symbol for. Read to say the mark's own note beside the
+ * opening tempo and to tell whether the two agree.
  */
 function openingMark(xml: string): PrintedMark | undefined {
-  const mark = /<metronome\b[^>]*>([\s\S]*?)<\/metronome>/.exec(firstBar(xml))?.[1];
+  const mark = openingTempoEvent(xml)?.mark;
   if (mark === undefined) return undefined;
-  const units = [...mark.matchAll(/<beat-unit>\s*([a-z0-9]+)\s*<\/beat-unit>/g)].map((match) => match[1] ?? '');
-  const perMinute = Number(/<per-minute>\s*([\d.]+)\s*<\/per-minute>/.exec(mark)?.[1]);
-  if (units.length !== 1 || !Number.isFinite(perMinute) || perMinute <= 0) return undefined;
-  const note = (IMPORT_TEXT.noteSymbols as Readonly<Record<string, string | undefined>>)[units[0] ?? ''];
-  const length = note === undefined ? undefined : noteLengthInQuarters(note);
-  if (note === undefined || length === undefined) return undefined;
-  const dots = mark.match(/<beat-unit-dot\s*\/>/g)?.length ?? 0;
-  return { note, dots, perMinute, quarters: perMinute * length * (2 - 0.5 ** dots) };
+  const note = (IMPORT_TEXT.noteSymbols as Readonly<Record<string, string | undefined>>)[mark.beatUnit];
+  if (note === undefined) return undefined;
+  return { note, dots: mark.dots, perMinute: mark.perMinute, quarters: mark.quarters };
 }
 
 /**
@@ -160,10 +142,11 @@ function textMarkRead(fact: Provenance['facts'][string] | undefined): { text: st
 
 /**
  * The file's own tempo, as the file writes it (X3c; X24): the tempo the score opens at in quarter notes a
- * minute, with the first bar's printed mark in its own note where it counts another note; the two apart
+ * minute, with the printed mark at the opening in its own note where it counts another note; the two apart
  * where they disagree, so no conversion is said that the file does not make; a mark the door read from the
- * file's text (E32) as printed and as read; the mark alone where the first bar sounds no tempo; and never
- * a later tempo as the opening. `undefined` where the file writes no tempo at all.
+ * file's text (E32) as printed and as read; and never a later tempo as the opening. `undefined` where the
+ * file writes no tempo at all. A mark at the opening always comes with an opening tempo since X3d (the
+ * reader normalises a mark with no `<sound tempo>`), so X3c's "the mark alone" words are no longer reached.
  */
 function fileTempoWords(fact: Provenance['facts'][string] | undefined, xml: string, opening: number | undefined): string | undefined {
   const text = textMarkRead(fact);
@@ -171,9 +154,8 @@ function fileTempoWords(fact: Provenance['facts'][string] | undefined, xml: stri
     return text.unit === undefined ? IMPORT_TEXT.tempoTextMark(text.text, opening) : IMPORT_TEXT.tempoTextMarkNoNote(text.text, text.unit, opening);
   }
   const mark = openingMark(xml);
-  if (mark !== undefined) {
+  if (mark !== undefined && opening !== undefined) {
     const printed = IMPORT_TEXT.tempoMark(mark.note, mark.dots, mark.perMinute);
-    if (opening === undefined) return IMPORT_TEXT.tempoFileMarkOnly(printed);
     // Agreeing to a hundredth of a beat: a converter's rounding is not a disagreement.
     if (Math.abs(mark.quarters - opening) >= 0.01) return IMPORT_TEXT.tempoFileApart(printed, opening);
     return mark.note === IMPORT_TEXT.noteSymbols.quarter && mark.dots === 0 ? IMPORT_TEXT.tempoFile(opening) : IMPORT_TEXT.tempoFileMark(printed, opening);

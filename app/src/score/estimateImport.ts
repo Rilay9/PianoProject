@@ -52,7 +52,7 @@ export async function estimateLevelFor(row: ImportRow): Promise<number | undefin
     const host = document.createElement('div');
     const osmd = new OpenSheetMusicDisplay(host, { autoResize: false, drawingParameters: 'compact' });
     await osmd.load(row.data);
-    const scoreModel = extractScoreModel(osmd, { id: row.id });
+    const scoreModel = extractScoreModel(osmd, { id: row.id, musicXml: row.data });
     return estimate(features(scoreModel), model).level;
   } catch {
     return undefined;

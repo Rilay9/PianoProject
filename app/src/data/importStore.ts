@@ -476,7 +476,7 @@ export async function measureImport(xml: string, id: string): Promise<ImportMeas
     const host = document.createElement('div');
     const osmd = new OpenSheetMusicDisplay(host, { autoResize: false, drawingParameters: 'compact' });
     await osmd.load(xml);
-    const model = extractScoreModel(osmd, { id });
+    const model = extractScoreModel(osmd, { id, musicXml: xml });
     const located: Record<string, number> = {};
     for (const demand of VOCABULARY_V0.demands) {
       const n = detectors.detect(model, demand.detector).at.length;

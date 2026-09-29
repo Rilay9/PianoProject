@@ -38,7 +38,7 @@ async function toModel(musicXml: string, id: string) {
   document.body.appendChild(container);
   const osmd = new OpenSheetMusicDisplay(container, { autoResize: false, backend: 'svg' });
   await osmd.load(musicXml);
-  const model = extractScoreModel(osmd, { id });
+  const model = extractScoreModel(osmd, { id, musicXml });
   container.remove();
   return model;
 }

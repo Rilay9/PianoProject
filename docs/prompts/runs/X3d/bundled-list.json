@@ -1,0 +1,303 @@
+[
+  {
+    "file": "authored/song.folk.greensleeves.68.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 58",
+    "firstSound": "87",
+    "markInBar1": true
+  },
+  {
+    "file": "authored/song.folk.row-row-row-your-boat.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 54",
+    "firstSound": "81",
+    "markInBar1": true
+  },
+  {
+    "file": "imported/song.beautiful.mariage-damour.mxl",
+    "why": "first mark after bar 1, bar 1 sounding its own tempo",
+    "mark": "quarter = 10",
+    "firstSound": "75",
+    "markInBar1": false
+  },
+  {
+    "file": "imported/song.classical.beethoven-symphony-5-i-piano.mxl",
+    "why": "first mark after bar 1, bar 1 sounding its own tempo",
+    "mark": "quarter = 60",
+    "firstSound": "164",
+    "markInBar1": false
+  },
+  {
+    "file": "imported/song.classical.debussy-clair-de-lune.alt.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 50",
+    "firstSound": "75",
+    "markInBar1": true
+  },
+  {
+    "file": "imported/song.classical.liszt-la-campanella.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "eighth = 194",
+    "firstSound": "97",
+    "markInBar1": true
+  },
+  {
+    "file": "imported/song.classical.mozart-lacrimosa.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "half = 32",
+    "firstSound": "64.0002",
+    "markInBar1": true
+  },
+  {
+    "file": "imported/song.classical.pachelbel-canon-d.easy.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "half = 50",
+    "firstSound": "100",
+    "markInBar1": true
+  },
+  {
+    "file": "imported/song.classical.tchaikovsky-waltz-flowers.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "half. = 61",
+    "firstSound": "183",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmavZZZRxHYcu1BX1CQPHXx1jt3mYhdWJo43ZrTtmW8sai.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 75",
+    "firstSound": "112.5",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmbQLJvk1wKpvt5FUccvtH2cBUzcrsmuqXemG97G13gP7b.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 60",
+    "firstSound": "90",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmbqmQjEVxiyCmmdmGPBAMDYTSDsfDFxgS8HdQe7kgFm6v.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "eighth = 130",
+    "firstSound": "65",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmcibUVKciUYWV84FmNEgG1Fz1KBDoGPapXVx6Y3KfS6B6.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "half. = 80",
+    "firstSound": "240",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/Qmdahxmap93SycYLJdkE4ASrpWunSugocrTDibMSjN7txA.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 90",
+    "firstSound": "135",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmdBfR996vfyD22i7aR5N2i94XcBU71KfneDWcgTrKM1t1.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 67",
+    "firstSound": "100.49999999999999",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmdE9gDzNjsgAvwtF4vd6ddcceBHSspZCM79gqwGQuiBYC.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 80",
+    "firstSound": "120",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/Qmdfbk7NKM7aMGSm3nKtahjCG9guY88pGa86hYq73JsWQM.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 77",
+    "firstSound": "115.49999999999999",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmdnDDmUhttjN2XpTUJHgk5NsnTyYPFbedPP1tP14Ce31j.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "eighth = 70",
+    "firstSound": "35",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmeL4DFPXz6yfY3bD9cqVsvqtEPHPFzsRYTVkaF5FFeDLE.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 69",
+    "firstSound": "103.5",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmfBxaKfzYZuvUMhBDFdJYgWLJeLQeDJASFDqW3DYHv6j5.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 80",
+    "firstSound": "120",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmNR8R4g3MJYDxTEPzSR9W4baosPFtMMTM6iZWtjpkDnDq.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 100",
+    "firstSound": "150",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmNyaupjnP2L7AgSvjuq5TmDoDhqCJiKhGd8rT9CefbkMY.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 46",
+    "firstSound": "69",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmP8mqJ2dS2cgD38fZNKJkjXY2gfPonVyYzMwbWv344Ekp.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "half = 92",
+    "firstSound": "184",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmPYnWB1njn2PqjQcdTXDo7XFuybDjarHUjTVT2XXzgxML.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "eighth = 240",
+    "firstSound": "120",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmQ28Yxrk2nx7uWVcDZF5ZXanRrBCQSdegzyCoaJXX79KJ.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "half = 110",
+    "firstSound": "220",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmQrPg74NzJjkcFJjnGLTnZtaVH931RjUd8iGXukJSoLec.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 130",
+    "firstSound": "195",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmSA7uSefMpiTtFE9t32a9X7sp6qFr8FZ3ynMSxgNcVayw.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "half = 72",
+    "firstSound": "144",
+    "markInBar1": false
+  },
+  {
+    "file": "pdmx/QmSaLqZXgH393WBEDfpXV4VonWAtqDhyDRdYgoGqjW7kGm.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "eighth = 134",
+    "firstSound": "67",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmSSpxWJcGsVEFHcm8NUh7DFF2hTc8ffu6kcRsFzY8NNqq.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 80",
+    "firstSound": "120",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmStQQYDfkCHKZCuRufd2KBh9ssgqdaxN8F5rpVjkU5kLU.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "eighth = 220",
+    "firstSound": "110",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmUZSdMpnmadMnkRaiLVxQAwyMbvu5SFsT2vXpx6zjYJu1.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 130",
+    "firstSound": "195",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmVhEjy7RH7GBVDMmZ3xE9gkSsygd4yuJEnCxh3iBD7AzV.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 136",
+    "firstSound": "204",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmVK5kNzsxHWu5ffkKcjejk4ySL1uAHXLcarBsuxTpagRR.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "eighth = 160",
+    "firstSound": "80",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmVL6zf28ftTHyAdRAnZzBP9DT3fiQDv9KNE5XQ4uvgbg2.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "eighth = 250",
+    "firstSound": "125",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmWQGeMMH6h27WrVL62zjr5zRmRx1DA89Bkv5oNNEDLstW.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 56",
+    "firstSound": "84",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmX4y9HqzeCv1rTcbd5dCjkJKEC5yyjNagY3VRm6MPqyHp.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "half = 84",
+    "firstSound": "168",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmXrV8VzEXWj5Cb7DTsMnQrEJabUrX6eHJQazGGN4zBAF2.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 95",
+    "firstSound": "142.5",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmY8XeRQK9L3q6Rndkex64R2N5X4LGiQ9CA6qG7U61YyE7.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "eighth = 80",
+    "firstSound": "40",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmYQaSQ1qfK2gGYztT1xJ353ibiZE9D2Z9W1LNQDitVp7p.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 100",
+    "firstSound": "150",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmYrei1PJ3CosDZ7G6XssfMWRkFocjM72goA3oEzBy9vGS.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "quarter. = 92",
+    "firstSound": "138",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmZ31v5ggoN6i7BuE9UwK7aiovN1bxAWaePNCfBLnqher8.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "eighth. = 120",
+    "firstSound": "90",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmZ8qaMvH2sZtWgYjMXDP91mErvbvhfFDdvr8V4jnMjUrq.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "half = 80",
+    "firstSound": "160",
+    "markInBar1": true
+  },
+  {
+    "file": "pdmx/QmZFmBizj98vteXpGqpWfQ9Xf9oAKEJ8zw1WPQ5azLiCJ5.mxl",
+    "why": "first mark not an undotted quarter",
+    "mark": "half = 110",
+    "firstSound": "220",
+    "markInBar1": true
+  }
+]

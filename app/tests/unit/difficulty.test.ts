@@ -14,7 +14,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
-import { edgeFixtures, generatedFixtures, loadFixture, type Fixture } from './helpers/fixtures';
+import { edgeFixtures, fixtureModel, generatedFixtures, type Fixture } from './helpers/fixtures';
 import { extractScoreModel, keySignatureName } from '../../src/score/extractScoreModel';
 import type { ScoreModel } from '../../src/score/types';
 import {
@@ -52,8 +52,7 @@ const models = new Map<string, ScoreModel>();
 async function modelFor(fixture: Fixture): Promise<ScoreModel> {
   const cached = models.get(fixture.name);
   if (cached) return cached;
-  const osmd = await loadFixture(fixture.path);
-  const model = extractScoreModel(osmd, { id: fixture.name });
+  const model = await fixtureModel(fixture.path, { id: fixture.name });
   models.set(fixture.name, model);
   return model;
 }
@@ -196,7 +195,7 @@ describe('a printed chord symbol is not a sounding note', () => {
       document.body.appendChild(container);
       const osmd = new OpenSheetMusicDisplay(container, { autoResize: false, backend: 'svg' });
       await osmd.load(LEAD_SHEET);
-      model = extractScoreModel(osmd, { id: 'lead-sheet' });
+      model = extractScoreModel(osmd, { id: 'lead-sheet', musicXml: LEAD_SHEET });
     } finally {
       canvas.getContext = original;
     }

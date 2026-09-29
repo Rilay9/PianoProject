@@ -1,0 +1,82 @@
+npx vitest run tests/unit/tempoFromXml.test.ts tests/unit/scoreModelTempo.test.ts (in app)
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a6cb245891137756b/app
+
+ ❯ tests/unit/tempoFromXml.test.ts (14 tests | 1 failed) 13ms
+   ❯ the opening (4)
+     × a tempo that stands before any note sounds opens the piece: after an opening rest, after a bar of rest; not after a note has sounded 5ms
+ ❯ tests/unit/scoreModelTempo.test.ts (12 tests | 1 failed) 293ms
+   ❯ the score model’s tempo map is the file’s, in quarter notes a minute (X3d) (12)
+     × a tempo hung on the first note after an opening rest opens the piece, and the count-in counts in at it (Beethoven’s Fifth’s shape) 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/scoreModelTempo.test.ts > the score model’s tempo map is the file’s, in quarter notes a minute (X3d) > a tempo hung on the first note after an opening rest opens the piece, and the count-in counts in at it (Beethoven’s Fifth’s shape)
+AssertionError: expected { map: [ …(2) ], countsIn: 100 } to deeply equal { …(2) }
+
+- Expected
++ Received
+
+  {
+-   "countsIn": 164,
++   "countsIn": 100,
+    "map": [
+      {
+        "atBeat": 0,
++       "bpm": 100,
++     },
++     {
++       "atBeat": 1,
+        "bpm": 164,
+      },
+    ],
+  }
+
+ ❯ tests/unit/scoreModelTempo.test.ts:252:90
+    250|     const model = await modelOf(fifth);
+    251|     const prepared = prepareSession(model, { mode: 'tempo', tempoPct: …
+    252|     expect({ map: model.tempoMap, countsIn: round3((2 * 60_000) / prep…
+       |                                                                                          ^
+    253|   });
+    254|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/tempoFromXml.test.ts > the opening > a tempo that stands before any note sounds opens the piece: after an opening rest, after a bar of rest; not after a note has sounded
+AssertionError: expected [ [ +0, 1, 164, 'sound' ] ] to deeply equal [ [ +0, +0, 164, 'sound' ], …(1) ]
+
+- Expected
++ Received
+
+  [
+    [
+      0,
+-     0,
+-     164,
+-     "sound",
+-   ],
+-   [
+-     0,
+      1,
+      164,
+      "sound",
+    ],
+  ]
+
+ ❯ tests/unit/tempoFromXml.test.ts:169:31
+    167|     // rest (here a quarter rest). A copy opens the piece; the event a…
+    168|     const afterARest = score(['', '']).replace(opening + QUARTER.repea…
+    169|     expect(brief(afterARest)).toEqual([
+       |                               ^
+    170|       [0, 0, 164, 'sound'],
+    171|       [0, 1, 164, 'sound'],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 24 passed (26)
+   Start at  08:38:21
+   Duration  1.44s (environment 49%, tests 22%, transform 19%, import 9%, worker 1%)
+
+exit=1

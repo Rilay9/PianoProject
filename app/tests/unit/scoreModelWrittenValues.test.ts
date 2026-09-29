@@ -11,14 +11,13 @@
  * nothing to say, so every other golden stays as it was.
  */
 import { describe, expect, it } from 'vitest';
-import { edgeFixtures, loadFixture } from './helpers/fixtures';
-import { extractScoreModel } from '../../src/score/extractScoreModel';
+import { edgeFixtures, fixtureModel } from './helpers/fixtures';
 import type { ScoreModel } from '../../src/score/types';
 
 async function model(name: string): Promise<ScoreModel> {
   const fixture = edgeFixtures().find((f) => f.name === name);
   if (!fixture) throw new Error(`no edge fixture ${name}`);
-  return extractScoreModel(await loadFixture(fixture.path), { id: name });
+  return fixtureModel(fixture.path, { id: name });
 }
 
 describe('the written parts of a tie chain', () => {

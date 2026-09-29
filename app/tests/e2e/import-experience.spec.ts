@@ -26,11 +26,20 @@
  * way back (X3b, `responses/564e8e5f.md`): the control stays after a statement, and a second statement
  * on the same sheet goes through the same store operation — the line, the stored score, the fact and
  * the Score screen then carry the second number, and the first is nowhere.
+ *
+ * And the tempo a marked file states, played (X3d; the X3c review's required change,
+ * `responses/b71a55ca.md`): a file whose metronome mark counts half notes — cut time, half note = 60
+ * with `<sound tempo="120">`, MuseScore's export shape, made in memory — is said on the sheet as 120
+ * quarter notes a minute and opens on the Score screen at 120, the one tempo map the label, the clock
+ * and the count-in read (the dev harness's model summary: its tempo and the length its clock gives four
+ * bars, computed from the map); and the learner's stated 100 on that file is what the Score screen
+ * then says. On the committed map the screen said 60 and, after the statement, 50.
  */
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { openDevScore } from './fixtures/devScore';
 import { setTempoPercent } from './scoreControls';
 
 const FIXTURES = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'fixtures', 'imports');
@@ -243,5 +252,87 @@ test.describe('the import experience', () => {
     await expect(sheet).toBeVisible({ timeout: 30_000 });
     await expect(sheet.locator('#import-read')).toContainText('4 bars');
     await expect(page.locator('#library-status')).toContainText('Shared in: left hand first');
+  });
+});
+
+/** Four bars of cut time on a piano's two staves, a half note = 60 playing 120 quarter notes a minute (X3c's picture file). */
+function halfNoteMarked(title: string): string {
+  const note = (step: string, octave: number, staff: 1 | 2): string =>
+    `<note><pitch><step>${step}</step><octave>${String(octave)}</octave></pitch><duration>2</duration><voice>${staff === 1 ? '1' : '5'}</voice><type>half</type><staff>${String(staff)}</staff></note>`;
+  const attributes =
+    '<attributes><divisions>1</divisions><key><fifths>0</fifths></key><time symbol="cut"><beats>2</beats><beat-type>2</beat-type></time><staves>2</staves>' +
+    '<clef number="1"><sign>G</sign><line>2</line></clef><clef number="2"><sign>F</sign><line>4</line></clef></attributes>';
+  const mark =
+    '<direction placement="above"><direction-type><metronome parentheses="no"><beat-unit>half</beat-unit><per-minute>60</per-minute></metronome></direction-type><staff>1</staff><sound tempo="120"/></direction>';
+  const steps = ['C', 'D', 'E', 'F', 'G', 'F', 'E', 'D'];
+  const bar = (n: number): string =>
+    `<measure number="${String(n)}">${n === 1 ? attributes + mark : ''}` +
+    `${note(steps[(n - 1) * 2] ?? 'C', 5, 1)}${note(steps[(n - 1) * 2 + 1] ?? 'C', 5, 1)}<backup><duration>4</duration></backup>${note('C', 3, 2)}${note('G', 2, 2)}</measure>`;
+  return (
+    `<?xml version="1.0" encoding="UTF-8"?><score-partwise version="4.0"><work><work-title>${title}</work-title></work>` +
+    `<part-list><score-part id="P1"><part-name>Piano</part-name></score-part></part-list><part id="P1">${bar(1)}${bar(2)}${bar(3)}${bar(4)}</part></score-partwise>`
+  );
+}
+
+/** Imports one MusicXML file on the Library and opens its sheet from the row's Assign (a plain import opens none). */
+async function importMarked(page: Page, title: string, xml: string): Promise<void> {
+  await page.goto('/#/library');
+  await page.locator('#library-file').setInputFiles({ name: `${title}.musicxml`, mimeType: 'application/vnd.recordare.musicxml+xml', buffer: Buffer.from(xml, 'utf8') });
+  await expect(page.locator('#library-status')).toContainText('Imported 1:');
+  await page.locator('.list-row', { hasText: title }).getByRole('button', { name: 'Assign' }).click();
+  await expect(page.locator('#assign-sheet[data-sheet="import"]')).toBeVisible({ timeout: 30_000 });
+}
+
+/** Opens the piece from its Library row and waits for the engraving, the tempo at 100 %. */
+async function openAtFullTempo(page: Page, title: string): Promise<void> {
+  await page.locator('.list-row', { hasText: title }).click();
+  await expect(page).toHaveURL(/#\/score\//);
+  await expect(page.locator('#score-stage .is-front svg').first()).toBeVisible({ timeout: 30_000 });
+  await setTempoPercent(page, 100);
+}
+
+test.describe('the tempo a marked file states, played (X3d)', () => {
+  test('a half-note mark of 60 with a playback tempo of 120: the sheet says 120 quarter notes a minute, and the Score screen and its clock run at 120', async ({ page }) => {
+    test.setTimeout(120_000);
+    const title = 'Half note mark';
+    await importMarked(page, title, halfNoteMarked(title));
+    const sheet = page.locator('#assign-sheet[data-sheet="import"]');
+    await expect(sheet.locator('#import-tempo')).toContainText('(120 quarter notes a minute)');
+    await expect(sheet.locator('#import-tempo-bpm')).toHaveValue('120');
+    await page.getByRole('button', { name: 'Not now' }).click();
+    await expect(sheet).toBeHidden();
+
+    // The Score screen's label and its bpm field at 100 %: the map's tempo at the cursor.
+    await openAtFullTempo(page, title);
+    await expect(page.locator('#score-tempo-label')).toHaveText(/\b120 bpm$/);
+    await expect(page.locator('#score-bpm')).toHaveValue('120');
+
+    // The clock: the same file's model in the dev harness — its tempo, and the length the map gives its
+    // four bars of cut time (sixteen quarters) at 100 %, computed, not timed.
+    await openDevScore(page);
+    await page.evaluate(async (source) => {
+      await window.__pianopathDevScore?.loadMusicXml(source, 'half-note-mark');
+    }, halfNoteMarked(title));
+    expect(await page.evaluate(() => window.__pianopathDevScore?.lastError())).toBeFalsy();
+    const summary = await page.evaluate(() => window.__pianopathDevScore?.modelSummary());
+    expect({ tempoBpm: summary?.tempoBpm, durationSec: summary?.durationSec }).toEqual({ tempoBpm: 120, durationSec: (16 * 60) / 120 });
+  });
+
+  test('the learner states 100 on the half-note-marked file: the line and the Score screen say 100', async ({ page }) => {
+    test.setTimeout(120_000);
+    const title = 'Half note stated';
+    await importMarked(page, title, halfNoteMarked(title));
+    const sheet = page.locator('#assign-sheet[data-sheet="import"]');
+    await sheet.locator('#import-tempo-bpm').fill('100');
+    await sheet.locator('#import-tempo-use').click();
+    await expect(sheet.locator('#import-tempo')).toContainText('You stated ♩ = 100.');
+    await page.getByRole('button', { name: 'Not now' }).click();
+    await expect(sheet).toBeHidden();
+
+    // E48 wrote 100 into the score's opening <sound tempo> and the half note at 50; the Score screen reads
+    // the sound, so at 100 % it says 100 — not the 50 the committed map took from the mark.
+    await openAtFullTempo(page, title);
+    await expect(page.locator('#score-tempo-label')).toHaveText(/\b100 bpm$/);
+    await expect(page.locator('#score-bpm')).toHaveValue('100');
   });
 });

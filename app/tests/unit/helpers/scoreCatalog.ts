@@ -84,8 +84,9 @@ export async function modelForItem(item: CatalogItem & { file: string }): Promis
   document.body.appendChild(container);
   try {
     const osmd = new OpenSheetMusicDisplay(container, { autoResize: false, backend: 'svg' });
-    await osmd.load(toMusicXml(bytes));
-    return extractScoreModel(osmd, { id: item.id });
+    const musicXml = toMusicXml(bytes);
+    await osmd.load(musicXml);
+    return extractScoreModel(osmd, { id: item.id, musicXml });
   } finally {
     container.remove();
   }

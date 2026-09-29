@@ -1,0 +1,8 @@
+npx playwright test --config playwright.x3d-4363.config.ts --workers=2 tests/e2e/score.spec.ts --grep tempo|bpm (in app)
+
+Running 1 test using 1 worker
+
+  ok 1 tests\e2e\score.spec.ts:737:3 › the score control bar › the tempo label opens a sheet with the slider and a typed bpm (1.0s)
+
+  1 passed (3.9s)
+exit=0

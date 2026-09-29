@@ -1,0 +1,14 @@
+bash ../docs/prompts/runs/X3d/scripts-specs-exist.sh tests/e2e/import-experience.spec.ts tests/e2e/score.countin.spec.ts tests/e2e/score.screen.spec.ts tests/e2e/converted-import.spec.ts tests/e2e/midi-import.spec.ts tests/e2e/microscope.spec.ts tests/e2e/engine.spec.ts tests/e2e/library.spec.ts tests/e2e/folder.add.spec.ts tests/e2e/finder.spec.ts tests/e2e/score.spec.ts tests/e2e/x3d-pictures.spec.ts (in app)
+present: tests/e2e/import-experience.spec.ts
+present: tests/e2e/score.countin.spec.ts
+present: tests/e2e/score.screen.spec.ts
+present: tests/e2e/converted-import.spec.ts
+present: tests/e2e/midi-import.spec.ts
+present: tests/e2e/microscope.spec.ts
+present: tests/e2e/engine.spec.ts
+present: tests/e2e/library.spec.ts
+present: tests/e2e/folder.add.spec.ts
+present: tests/e2e/finder.spec.ts
+present: tests/e2e/score.spec.ts
+present: tests/e2e/x3d-pictures.spec.ts
+exit=0

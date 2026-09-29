@@ -1,0 +1,18 @@
+{"adversary":"1","shape":"half = 60, <sound tempo=\"120\"> (2/2)","map":[{"atBeat":0,"bpm":120}],"opens":120,"label":"120 bpm","plays":120,"countsIn":120}
+{"adversary":"1","shape":"half = 60, no <sound tempo> (2/2)","map":[{"atBeat":0,"bpm":120}],"opens":120,"label":"120 bpm","plays":120,"countsIn":120}
+{"adversary":"2","shape":"dotted quarter = 60, <sound tempo=\"90\"> (6/8)","map":[{"atBeat":0,"bpm":90}],"opens":90,"label":"90 bpm","plays":90,"countsIn":90}
+{"adversary":"3","shape":"<sound tempo=\"100\"> in bar 1, quarter = 132 only in bar 2","map":[{"atBeat":0,"bpm":100},{"atBeat":4,"bpm":132}],"opens":100,"label":"100 bpm","plays":100,"countsIn":100}
+{"adversary":"4","shape":"E48 100 on (1)","map":[{"atBeat":0,"bpm":100}],"opens":100,"label":"100 bpm","plays":100,"countsIn":100}
+{"adversary":"4","shape":"E48 72 on (1)","map":[{"atBeat":0,"bpm":72}],"opens":72,"label":"72 bpm","plays":72,"countsIn":72}
+{"adversary":"4","shape":"E48 100 on (2)","map":[{"atBeat":0,"bpm":100}],"opens":100,"label":"100 bpm","plays":100,"countsIn":100}
+{"adversary":"4","shape":"E48 72 on (2)","map":[{"atBeat":0,"bpm":72}],"opens":72,"label":"72 bpm","plays":72,"countsIn":72}
+{"adversary":"4","shape":"E48 72 on a mark only in bar 2 (quarter = 132)","map":[{"atBeat":0,"bpm":72},{"atBeat":4,"bpm":132}],"opens":72,"label":"72 bpm","plays":72,"countsIn":72}
+{"adversary":"5","shape":"quarter = 60, then half = 60 in bar 2","map":[{"atBeat":0,"bpm":60},{"atBeat":4,"bpm":120}],"opens":60,"label":"60 bpm","plays":60,"countsIn":60}
+{"adversary":"5","shape":"quarter = 60, then quarter = 144 in bar 2","map":[{"atBeat":0,"bpm":60},{"atBeat":4,"bpm":144}],"opens":60,"label":"60 bpm","plays":60,"countsIn":60}
+{"adversary":"6","shape":"quarter = 60, <sound tempo=\"60\">","map":[{"atBeat":0,"bpm":60}],"opens":60,"label":"60 bpm","plays":60,"countsIn":60}
+{"adversary":"6","shape":"the converter’s fixture, quarter = 90.00009000009","map":[{"atBeat":0,"bpm":90}],"opens":90,"label":"90 bpm","plays":90,"countsIn":90}
+{"adversary":"bundled","shape":"Row, Row, Row Your Boat (dotted quarter = 54, <sound tempo=\"81\">)","map":[{"atBeat":0,"bpm":81}],"opens":81,"label":"81 bpm","plays":81,"countsIn":81}
+{"adversary":"bundled","shape":"Canon in D, easy (half = 50, <sound tempo=\"100\">)","map":[{"atBeat":0,"bpm":100}],"opens":100,"label":"100 bpm","plays":100,"countsIn":100}
+{"adversary":"lesson","shape":"The Entertainer (ragtime.6: 70)","map":[{"atBeat":0,"bpm":70}],"opens":70,"label":"70 bpm","plays":70,"countsIn":70}
+{"adversary":"lesson","shape":"Peacherine Rag (ragtime.6: 100)","map":[{"atBeat":0,"bpm":100}],"opens":100,"label":"100 bpm","plays":100,"countsIn":100}
+{"adversary":"lesson","shape":"The Easy Winners (ragtime.6: 72)","map":[{"atBeat":0,"bpm":72}],"opens":72,"label":"72 bpm","plays":72,"countsIn":72}

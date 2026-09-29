@@ -1,0 +1,7 @@
+python -m unittest tools.content.tests.test_checks_for_paths (in .)
+...........................
+----------------------------------------------------------------------
+Ran 27 tests in 1.001s
+
+OK
+exit=0
