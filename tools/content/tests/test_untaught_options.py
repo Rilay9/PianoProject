@@ -1,0 +1,370 @@
+"""
+The rung-own options the one gate's coping question refuses at their own rung (L120a).
+
+`untaught_options.table` is the build's reading of the app's `eligibilityCore.uncoped` for a rung's
+own options: the demands the item asks (the catalogue row's `demands` for a measured item), less
+those the rung's ancestry teaches (`demands.json`'s `taughtAt`, `claims.rung_ancestry`), after the
+gate's earlier refusals (a declared large-hand voicing, the teaching-use admission, an unmeasured
+item). Two groups of cases:
+
+- **The shipped curriculum** (reads the built content: run `python tools/content/build.py` first;
+  CI: the step 'Build content', before 'Content pipeline tests'). The tool's lines equal the app's
+  probe, `docs/prompts/runs/X1/probe-head-refusals.txt` (387 `untaught` at X1's head, written by
+  `eligibility.eligibleFor` over every rung's own options), line for line and demand for demand,
+  apart from the differences recorded in `RECORDED_DIFFERENCES`, each with its reason. The probe
+  is a snapshot: a change to a rung's lists, a row's demands or `taughtAt` changes the app's
+  reading too, so this goes red until the probe is re-run at the new head
+  (`docs/prompts/runs/L120a/scripts-zzL120aProbe.test.ts`) and the record here says why the two
+  differ. Nothing is forced equal.
+- **A constructed curriculum** with one case of each class, under the reviewer's order of truths
+  (`docs/review/responses/questions-4dc2f135.md`): (A) the material reading is in doubt,
+  (B) a lesson at or below the rung teaches it and fails to declare or map it, (C) no lesson at
+  or below the rung teaches it — a placement. An incidental demand is asked (the reviewer's first
+  answer): it is a line, never an exemption.
+
+Nothing here writes a file.
+"""
+from __future__ import annotations
+
+import json
+import re
+import sys
+import unittest
+from collections import Counter
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+import claims  # noqa: E402
+import untaught_options as U  # noqa: E402
+
+REPO = Path(__file__).resolve().parents[3]
+BUILT = REPO / "app" / "public" / "content"
+PROBE = REPO / "docs" / "prompts" / "runs" / "X1" / "probe-head-refusals.txt"
+
+#: Where the tool's lines on the shipped curriculum differ from X1's probe, and why. Keyed by
+#: (rung, item); `side` says which reading has the line. Nothing else may differ.
+RECORDED_DIFFERENCES: dict[tuple[str, str], dict] = {
+    ("2.2", "drill.reading.sight-reading-2-right"): {
+        "side": "probe",
+        "why": "a runtime reading row: the app asks the demands its reading controls may write "
+               "(`readingControls.ts`, app code); the build does not read them, so the tool lists "
+               "the row apart as not read (`unread`), never as coped with",
+    },
+    ("2.4", "song.folk.cielito-lindo.simple"): {
+        "side": "tool",
+        "why": "added to 2.4's songOptions after X1's head (stage-2.json, Q76, e4f9d3f2); the app's "
+               "probe re-run at 4dc2f135 has the same line (docs/prompts/runs/L120a/probe-head-refusals.txt)",
+    },
+    ("ragtime.8", "song.ragtime.joplin-pine-apple-rag.mutopia"): {
+        "side": "tool",
+        "why": "added to ragtime.8's songOptions after X1's head (stage-8.json, Q76, e4f9d3f2); the app's "
+               "probe re-run at 4dc2f135 has the same line (docs/prompts/runs/L120a/probe-head-refusals.txt)",
+    },
+}
+
+LINE = re.compile(r"^(\S+) (\S+): (\{.*\})$")
+
+
+def built(name: str):
+    path = BUILT / name
+    if not path.is_file():
+        raise AssertionError(
+            f"{path} is missing, and this test reads the built content: run "
+            "`python tools/content/build.py` first (CI: the step 'Build content', "
+            "before 'Content pipeline tests')"
+        )
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def probe_untaught(path: Path) -> dict[tuple[str, str], tuple[str, ...]]:
+    """The probe's `untaught` lines: {(rung, item): the demands the gate found untaught, in its order}."""
+    out: dict[tuple[str, str], tuple[str, ...]] = {}
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        match = LINE.match(raw.strip())
+        if not match:
+            continue
+        verdict = json.loads(match.group(3))
+        if verdict.get("why") == "untaught":
+            out[(match.group(1), match.group(2))] = tuple(verdict["demands"])
+    return out
+
+
+class TheShippedCurriculum(unittest.TestCase):
+    """The tool's reading of the built content against the app's probe."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.catalog = built("catalog.json")
+        cls.curriculum = built("curriculum.json")
+        cls.report = U.table(cls.catalog, cls.curriculum)
+        cls.mine = {(line["rung"], line["item"]): tuple(d["id"] for d in line["demands"]) for line in cls.report["lines"]}
+        cls.probe = probe_untaught(PROBE)
+
+    def test_the_probe_is_the_one_the_brief_names(self) -> None:
+        self.assertEqual(len(self.probe), 387, "X1's probe recorded 387 `untaught` rung-own options")
+
+    def test_the_lines_equal_the_probe_but_for_the_recorded_differences(self) -> None:
+        only_probe = {key for key in self.probe if key not in self.mine}
+        only_mine = {key for key in self.mine if key not in self.probe}
+        recorded_probe = {key for key, why in RECORDED_DIFFERENCES.items() if why["side"] == "probe"}
+        recorded_mine = {key for key, why in RECORDED_DIFFERENCES.items() if why["side"] == "tool"}
+        self.assertEqual(only_probe, recorded_probe, "lines the app's probe has and the tool does not, unrecorded")
+        self.assertEqual(only_mine, recorded_mine, "lines the tool has and the app's probe does not, unrecorded")
+        both = [key for key in self.probe if key in self.mine]
+        differing = {key: (self.probe[key], self.mine[key]) for key in both if self.probe[key] != self.mine[key]}
+        self.assertEqual(differing, {}, "the same option read with different untaught demands")
+        # The count, said as the brief says it: 387 at X1's head, less what only the probe reads, plus what
+        # was added since.
+        self.assertEqual(len(self.mine), len(self.probe) - len(recorded_probe) + len(recorded_mine))
+
+    def test_the_probe_only_line_is_listed_apart_as_not_read(self) -> None:
+        unread = {(row["rung"], row["item"]) for row in self.report["unread"]}
+        for key, why in RECORDED_DIFFERENCES.items():
+            if why["side"] == "probe":
+                self.assertIn(key, unread, f"{key}: recorded as a row the build does not read, and not listed so")
+
+    def test_the_per_demand_counts_equal_the_probe_but_for_the_recorded_lines(self) -> None:
+        probe_counts = Counter(d for key, demands in self.probe.items()
+                               if RECORDED_DIFFERENCES.get(key, {}).get("side") != "probe" for d in demands)
+        mine_counts = Counter(d for key, demands in self.mine.items()
+                              if RECORDED_DIFFERENCES.get(key, {}).get("side") != "tool" for d in demands)
+        self.assertEqual(mine_counts, probe_counts)
+        self.assertEqual(Counter(self.report["summary"]["pairsByDemand"]),
+                         Counter(d for demands in self.mine.values() for d in demands))
+
+    def test_hot_cross_buns_at_0_3_is_read_as_the_probe_reads_it(self) -> None:
+        line = next(line for line in self.report["lines"] if (line["rung"], line["item"]) == ("0.3", "song.folk.hot-cross-buns"))
+        self.assertEqual([d["id"] for d in line["demands"]],
+                         ["interval.step", "interval.skip", "rhythm.eighths", "rhythm.shorter-than-quarter"])
+        step = line["demands"][0]
+        self.assertEqual(step["concepts"], ["steps"])
+        self.assertEqual(step["taughtAt"], ["1.1"])
+        self.assertIn(step["verdict"], ("established", "incidental"))
+
+    def test_every_line_is_classified_and_the_counts_add_up(self) -> None:
+        summary = self.report["summary"]
+        self.assertEqual(summary["options"], len(self.report["lines"]))
+        self.assertEqual(sum(summary["linesByResolution"].values()), summary["options"])
+        self.assertEqual(sum(summary["pairsByClass"].values()), summary["pairs"])
+        for line in self.report["lines"]:
+            for demand in line["demands"]:
+                self.assertIn(demand["class"], U.CLASSES, f"{line['rung']} {line['item']} {demand['id']}")
+
+
+# --- a constructed curriculum ----------------------------------------------------------------
+
+SKILLS = {
+    "interval-reading": {"id": "interval-reading", "opportunity": ["interval.step", "interval.skip", "interval.leap"]},
+    "subdivision": {"id": "subdivision", "opportunity": ["rhythm.eighths", "rhythm.shorter-than-quarter", "rhythm.sixteenths"]},
+    "triplets": {"id": "triplets", "opportunity": ["rhythm.triplets"]},
+    "bass-clef": {"id": "bass-clef", "opportunity": ["clef.bass"]},
+}
+
+
+def demand(ident: str, taught: list[str]) -> dict:
+    return {"id": ident, "display": ident, "taughtAt": taught}
+
+
+def measured(ident: str, demands: list[str], established: list[str] | None = None, **extra) -> dict:
+    measurement = {"status": "measured", "established": established if established is not None else list(demands),
+                   "located": {d: 4 for d in demands}}
+    measurement.update(extra.pop("measurement", {}))
+    return {"id": ident, "type": "song", "title": ident, "demands": list(demands), "measurement": measurement, **extra}
+
+
+def lesson(ident: str, songs: list[str], concepts: list[str] | None = None, exercises: list[str] | None = None) -> dict:
+    return {"id": ident, "concepts": concepts or [], "songOptions": songs, "exerciseOptions": exercises or [],
+            "textFile": f"lessons/{ident}.md"}
+
+
+def curriculum_of(*stages: tuple[int, list[dict]], tracks: dict[int, list[tuple[str, list[dict]]]] | None = None) -> dict:
+    out = []
+    for number, lessons in stages:
+        units = [{"track": "core", "lessons": lessons}]
+        for track, track_lessons in (tracks or {}).get(number, []):
+            units.append({"track": track, "lessons": track_lessons})
+        out.append({"number": number, "units": units})
+    return {"stages": out}
+
+
+class OneCaseOfEachClass(unittest.TestCase):
+    """(A) the reading in doubt, (B) a lesson teaches it undeclared, (C) no lesson teaches it: one line each."""
+
+    def setUp(self) -> None:
+        self.demands = {
+            "clef.bass": demand("clef.bass", ["1.1"]),
+            "interval.skip": demand("interval.skip", ["1.1"]),
+            "rhythm.triplets": demand("rhythm.triplets", ["1.1"]),
+        }
+        self.catalog = [
+            # A: the build recorded the detector's clef reading as a misreading on this file.
+            measured("song.a", ["clef.bass"], measurement={"misread": {"demands": ["clef.bass"]}}),
+            # B: 0.2's lesson teaches the skip in its words; no concept of 0.2 or below claims it.
+            measured("song.b", ["interval.skip"]),
+            # C: no lesson at or below 0.2 says a word about triplets; 1.1 teaches them.
+            measured("song.c", ["rhythm.triplets"]),
+        ]
+        self.curriculum = curriculum_of(
+            (0, [lesson("0.1", ["song.a"]), lesson("0.2", ["song.b", "song.c"])]),
+            (1, [lesson("1.1", ["song.a", "song.b", "song.c"], concepts=["skips", "triplets", "grand-staff"])]),
+        )
+        self.texts = {"0.2": "Now the tune moves by a skip: from a line to the next line, one key left out between."}
+
+    def report(self) -> dict:
+        return U.table(self.catalog, self.curriculum, SKILLS, self.demands, text_of=lambda one: self.texts.get(one["id"], ""))
+
+    def test_one_line_in_each_class(self) -> None:
+        report = self.report()
+        classes = {line["item"]: [d["class"] for d in line["demands"]] for line in report["lines"]}
+        self.assertEqual(classes, {"song.a": ["A"], "song.b": ["B-claim"], "song.c": ["C-later"]})
+        self.assertEqual({line["item"]: line["resolution"] for line in report["lines"]},
+                         {"song.a": "reading", "song.b": "ownership", "song.c": "placement"})
+        self.assertEqual(report["summary"]["linesByResolution"], {"reading": 1, "ownership": 1, "placement": 1})
+
+    def test_the_rungs_that_teach_them_raise_no_line(self) -> None:
+        self.assertFalse([line for line in self.report()["lines"] if line["rung"] == "1.1"])
+
+    def test_each_line_carries_the_facts_it_was_classified_from(self) -> None:
+        by_item = {line["item"]: line["demands"][0] for line in self.report()["lines"]}
+        self.assertIn("clef assumption", by_item["song.a"]["doubt"][0])
+        self.assertEqual(by_item["song.b"]["concepts"], ["skips"])
+        self.assertEqual([m["rung"] for m in by_item["song.b"]["mentions"]], ["0.2"])
+        self.assertEqual(by_item["song.c"]["earliest"], "1.1")
+        self.assertEqual(by_item["song.c"]["later"], "1.1")
+        self.assertEqual(by_item["song.c"]["mentions"], [])
+
+
+class TheSubclasses(unittest.TestCase):
+    """Within B, an existing concept's claim before a mapping; within C, a later rung before none."""
+
+    def test_a_mention_with_no_concept_mapping_it_is_a_mapping_gap_and_nowhere_is_said(self) -> None:
+        demands = {"rhythm.sixteenths": demand("rhythm.sixteenths", [])}
+        catalog = [measured("song.d", ["rhythm.sixteenths"]), measured("song.e", ["rhythm.sixteenths"])]
+        curriculum = curriculum_of((0, [lesson("0.1", ["song.d"])]), (1, [lesson("1.1", ["song.e"])]),
+                                   tracks={1: [("jazz", [lesson("jazz.1", ["song.e"])])]})
+        texts = {"0.1": "Four sixteenth notes to the beat, counted 1-e-and-a."}
+        report = U.table(catalog, curriculum, SKILLS, demands, text_of=lambda one: texts.get(one["id"], ""))
+        classes = {(line["rung"], line["item"]): line["demands"][0]["class"] for line in report["lines"]}
+        # 1.1 stands on 0.1, whose lesson names sixteenths; jazz.1 opens on the core path before stage 1 (0.1).
+        self.assertEqual(classes, {("0.1", "song.d"): "B-mapping", ("1.1", "song.e"): "B-mapping",
+                                   ("jazz.1", "song.e"): "B-mapping"})
+        texts.clear()
+        report = U.table(catalog, curriculum, SKILLS, demands, text_of=lambda one: "")
+        self.assertEqual({line["demands"][0]["class"] for line in report["lines"]}, {"C-nowhere"})
+        self.assertTrue(all(line["demands"][0]["earliest"] is None for line in report["lines"]))
+
+    def test_a_demand_taught_off_this_path_is_elsewhere_not_nowhere(self) -> None:
+        # The practice floor's shape: a track standing on 1.1 that nothing stands on, the demand taught at 1.2.
+        demands = {"interval.skip": demand("interval.skip", ["1.2"])}
+        floor = lesson("floor.1", ["song.p"])
+        floor["prerequisites"] = ["1.1"]
+        curriculum = curriculum_of((0, [lesson("0.1", [])]),
+                                   (1, [lesson("1.1", ["song.p"]), lesson("1.2", [], concepts=["skips"])]),
+                                   tracks={1: [("floor", [floor])]})
+        report = U.table([measured("song.p", ["interval.skip"])], curriculum, SKILLS, demands, text_of=lambda one: "")
+        rows = {line["rung"]: line["demands"][0] for line in report["lines"]}
+        self.assertEqual({rung: row["class"] for rung, row in rows.items()}, {"1.1": "C-later", "floor.1": "C-elsewhere"})
+        self.assertEqual((rows["floor.1"]["earliest"], rows["floor.1"]["later"]), ("1.2", None))
+
+    def test_a_caution_that_the_detector_sees_less_is_no_doubt_about_presence(self) -> None:
+        # E22's syncopation note says the detector misses some syncopations: an incidental reading may
+        # understate the density, never invent the demand. Kept as a caution; the pair stays a placement.
+        demands = {"rhythm.syncopation": demand("rhythm.syncopation", ["1.1"])}
+        skills = {**SKILLS, "syncopation": {"id": "syncopation", "opportunity": ["rhythm.syncopation"]}}
+        curriculum = curriculum_of((0, [lesson("0.1", ["song.s"])]), (1, [lesson("1.1", [], concepts=["syncopation"])]))
+        report = U.table([measured("song.s", ["rhythm.syncopation"], established=[])], curriculum, skills, demands,
+                         text_of=lambda one: "")
+        row = report["lines"][0]["demands"][0]
+        self.assertEqual(row["class"], "C-later")
+        self.assertEqual(row["doubt"], [])
+        self.assertEqual(row["caution"], [claims.E22_NOTATED_SYNC])
+
+    def test_a_demand_located_nowhere_and_three_eight_read_as_compound_are_the_readings_question(self) -> None:
+        demands = {"key.signature": demand("key.signature", ["1.1"]), "metre.compound": demand("metre.compound", ["1.1"])}
+        nowhere = measured("song.k", ["key.signature"], established=[])
+        nowhere["measurement"]["located"] = {"key.signature": 0}
+        three_eight = measured("song.m", ["metre.compound", "rhythm.sixteenths"], timeSig="3/8")
+        demands["rhythm.sixteenths"] = demand("rhythm.sixteenths", [])
+        six_eight = measured("song.n", ["metre.compound"], timeSig="6/8")
+        curriculum = curriculum_of((0, [lesson("0.1", ["song.k", "song.m", "song.n"])]),
+                                   (1, [lesson("1.1", [], concepts=["key-signature", "6/8"])]))
+        skills = {**SKILLS, "key-signature": {"id": "key-signature", "opportunity": ["key.signature"]},
+                  "6/8": {"id": "6/8", "opportunity": ["metre.compound"]}}
+        report = U.table([nowhere, three_eight, six_eight], curriculum, skills, demands, text_of=lambda one: "")
+        rows = {line["item"]: line["demands"][0] for line in report["lines"]}
+        self.assertEqual({item: row["class"] for item, row in rows.items()}, {"song.k": "A", "song.m": "A", "song.n": "C-later"})
+        self.assertEqual(rows["song.k"]["doubt"], [U.NOWHERE])
+        self.assertEqual(rows["song.m"]["doubt"], [U.THREE_EIGHT])
+        sixteenths = next(line for line in report["lines"] if line["item"] == "song.m")["demands"][1]
+        self.assertEqual((sixteenths["class"], sixteenths["doubt"]), ("A", [U.SIXTEENTHS_IN_THREE_EIGHT]))
+
+    def test_a_mention_read_as_not_teaching_and_the_front_matter_do_not_count(self) -> None:
+        demands = {"rhythm.triplets": demand("rhythm.triplets", ["1.1"])}
+        curriculum = curriculum_of((0, [lesson("0.1", ["song.t"]), lesson("0.2", ["song.t"])]),
+                                   (1, [lesson("1.1", [], concepts=["triplets"])]))
+        texts = {"0.1": "---\ntitle: Triplets and more\n---\nThe triplets you meet later are built on these.",
+                 "0.2": "---\ntitle: Triplets and more\n---\nNothing about rhythm here."}
+        catalog = [measured("song.t", ["rhythm.triplets"])]
+        unread = U.table(catalog, curriculum, SKILLS, demands, text_of=lambda one: texts.get(one["id"], ""), readings={})
+        self.assertEqual([(l["rung"], l["demands"][0]["class"]) for l in unread["lines"]], [("0.1", "B-claim"), ("0.2", "B-claim")])
+        self.assertEqual({m["rung"] for l in unread["lines"] for m in l["demands"][0]["mentions"]}, {"0.1"})
+        read = U.table(catalog, curriculum, SKILLS, demands, text_of=lambda one: texts.get(one["id"], ""),
+                       readings={("0.1", "rhythm.triplets"): "named once as something met later"})
+        self.assertEqual([(l["rung"], l["demands"][0]["class"]) for l in read["lines"]], [("0.1", "C-later"), ("0.2", "C-later")])
+        self.assertEqual(read["lines"][0]["demands"][0]["mentions"][0]["read"], "named once as something met later")
+        self.assertEqual(read["summary"]["readAsNotTeaching"], 2)
+
+    def test_a_concept_named_under_introduces_below_the_rung_is_the_claims_question(self) -> None:
+        demands = {"interval.skip": demand("interval.skip", ["1.1"])}
+        intro = lesson("0.1", ["song.f"])
+        intro["introduces"] = ["skips"]
+        curriculum = curriculum_of((0, [intro]), (1, [lesson("1.1", [], concepts=["skips"])]))
+        report = U.table([measured("song.f", ["interval.skip"])], curriculum, SKILLS, demands, text_of=lambda one: "")
+        line = report["lines"][0]["demands"][0]
+        self.assertEqual(line["class"], "B-claim")
+        self.assertEqual(line["introduced"], ["0.1"])
+
+
+class TheGatesOrder(unittest.TestCase):
+    """What the gate asks before the coping question, and an incidental demand, as the app reads them."""
+
+    def setUp(self) -> None:
+        self.demands = {"interval.skip": demand("interval.skip", ["1.1"])}
+        self.curriculum = curriculum_of((0, [lesson("0.1", ["song.g", "song.h", "song.i", "song.j", "song.k"],
+                                                     exercises=["drill.reading.row"])]),
+                                        (1, [lesson("1.1", [], concepts=["skips"])]))
+
+    def test_an_incidental_demand_is_asked(self) -> None:
+        catalog = [measured("song.g", ["interval.skip"], established=[])]
+        report = U.table(catalog, self.curriculum, SKILLS, self.demands, text_of=lambda one: "")
+        self.assertEqual(len(report["lines"]), 1, "the reviewer's first answer: incidental presence is no exemption")
+        self.assertEqual(report["lines"][0]["demands"][0]["verdict"], "incidental")
+
+    def test_an_earlier_refusal_is_the_gates_verdict_and_is_listed_apart(self) -> None:
+        excerpt = measured("song.h", ["interval.skip"], type="excerpt", provenance={"facts": {}, "review": {"teaching": None}})
+        physical = measured("song.i", ["interval.skip"], provenance={"physical": {"prerequisite": "a ninth", "alternative": "roll it"}})
+        approved = measured("song.j", ["interval.skip"], type="excerpt", provenance={"facts": {}, "review": {"teaching": True}})
+        unmeasured = {"id": "song.k", "type": "song", "title": "k", "demands": "unmeasured",
+                      "measurement": {"status": "unmeasured", "reason": "no file"}}
+        report = U.table([excerpt, physical, approved, unmeasured], self.curriculum, SKILLS, self.demands, text_of=lambda one: "")
+        self.assertEqual([line["item"] for line in report["lines"]], ["song.j"])
+        self.assertEqual({row["item"]: row["why"] for row in report["shadowed"]},
+                         {"song.h": "teaching-use-not-approved", "song.i": "physical"})
+        self.assertEqual({row["item"]: row["demands"] for row in report["shadowed"]},
+                         {"song.h": ["interval.skip"], "song.i": ["interval.skip"]})
+
+    def test_a_runtime_reading_row_is_listed_as_not_read(self) -> None:
+        row = {"id": "drill.reading.row", "type": "drill", "title": "row", "file": None,
+               "drill": {"kind": "sight-reading", "params": {"level": 2}},
+               "measurement": {"status": "runtime", "reason": "made when it opens"}}
+        report = U.table([row], self.curriculum, SKILLS, self.demands, text_of=lambda one: "")
+        self.assertEqual(report["lines"], [])
+        self.assertEqual([(r["rung"], r["item"]) for r in report["unread"]], [("0.1", "drill.reading.row")])
+
+    def test_the_ancestry_is_the_claims_modules(self) -> None:
+        self.assertIs(U.rung_ancestry, claims.rung_ancestry)
+
+
+if __name__ == "__main__":
+    unittest.main()
