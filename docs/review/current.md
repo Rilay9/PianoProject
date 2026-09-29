@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **G1c** — `tasks/G1c-plan-project-stage.md`, for information: G1b's follow-up 1 (P1) — the Plan screen still presents Stage 9 as rungs to pass (badges, a count) where the page says none exists; Plan reads the project stage as the page does; one constant for the project stages; its own handoff when it lands.
 - **G1b** — `handoffs/536d9bc2.md` (respond in `responses/536d9bc2.md`). The repertoire lifecycle (Entry 138); required before X or the session consumes it.
 - **X1** — `handoffs/aed824a1.md` (respond in `responses/aed824a1.md`). Today, the teacher's screen (Entry 134): the session's execution layer under the approved protocol.
 - **X3e** — `handoffs/3caf2711.md` (respond in `responses/3caf2711.md`). The one tempo reader covers the timewise form (Entry 137); X24 and X29 close on it.
