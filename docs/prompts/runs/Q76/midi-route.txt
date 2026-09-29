@@ -1,0 +1,6 @@
+== Pine Apple Rag (repeats written out)
+   the import's report: {"converter": {"name": "tools/midi-cleanup/midi_to_musicxml.py", "version": 1, "parts": ["right:", "left:"], "timeSignature": "2/4", "lost": [], "added": [], "brokenBars": [], "grid": "1/4 quarter"}, "spelling": [{"variable": "right", "notes": 1460, "editionNotes": 1463, "aligned": 1344, "paired": 116, "unspelled": 0, "foreign": {}}, {"variable": "left", "notes": 1023, "editionNotes": 1056, "aligned": 1009, "paired": 14, "unspelled": 0, "foreign": {}}], "keyChanges": [{"quarter": 0.0, "sharps": -2}, {"quarter": 168.0, "sharps": -3}]}
+   written: 148 bars, 1425 note events, tempo 100.0 (added by the converter: False)
+   left-hand pattern: in every bar; ties located 244; level model 7.41
+   the converter alone spells 95 note(s) differently from the edition; the first: ["D-4 for the edition's C#4", "G-4 for the edition's F#4", "D-5 for the edition's C#5", "D-5 for the edition's C#5", "D-5 for the edition's C#5", "D-5 for the edition's C#5"]
+== Magnetic Rag: refused: the top staff cannot be spelled as the edition spells it: 11 left, spellings the edition never uses {}

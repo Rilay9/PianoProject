@@ -1,0 +1,233 @@
+extracted; 0 member(s) not found
+== auld lang syne: 6 edition(s)
+   QmTgrTW7qVmPtr publicdomain rated=True 'Auld Lang Syne - Anonymous (Traditional)' {"bars": 20, "metre": "4/4", "fifths": -1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [60.0, 74.0]}
+   QmPYTGunZqRpM8 cc-zero      rated=True 'Auld Lang Syne' {"bars": 17, "metre": "4/4", "fifths": -3, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [58.0, 72.0]}
+   Qmb8dASMJEX7LJ cc-zero      rated=True 'Auld lang syne G Major' {"bars": 17, "metre": "4/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 79.0]}
+   QmbVdgkLoTrsnb cc-zero      rated=True 'Auld Lang Syne' {"bars": 18, "metre": "4/4", "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [57.0, 77.0]}
+   QmbuL3eU5vjKFM cc-zero      rated=False 'auld lang syne' {"bars": 17, "metre": "4/4", "fifths": 2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [69.0, 86.0]}
+   Qmcs7jywfvcPux publicdomain rated=False 'Auld Lang Syne Primo. & Secondo WHL.[extra_2]' {"bars": 36, "metre": "2/4", "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [64.0, 84.0]}
+== silent night: 6 edition(s)
+   QmRBjmr9j7S2PF cc-zero      rated=True 'Silent Night: Theme and Variations for Cello and' {"bars": 36, "metre": "6/8", "fifths": -2, "melodyTies": 1, "onBeat": 1, "perBar": 0.03, "allStaffTies": 1, "range": [45.0, 77.0]}
+   QmTqgKcJsEY72w cc-zero      rated=True 'Dream About Silent Night - C. Nielsen CNW 85' {"bars": 25, "metre": "6/8", "fifths": 4, "melodyTies": 10, "onBeat": 1, "perBar": 0.4, "allStaffTies": 13, "range": [64.0, 93.0]}
+   QmXECddqykjxzN cc-zero      rated=True 'Silent Night Intermediate' {"bars": 28, "metre": "3/4", "fifths": 0, "melodyTies": 2, "onBeat": 1, "perBar": 0.07, "allStaffTies": 6, "range": [60.0, 84.0]}
+   Qmb6B5xMaPXBgd publicdomain rated=True 'Silent Night for Cello very simple' {"bars": 23, "metre": "3/4", "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [48.0, 65.0]}
+   QmScfwUgAHKPkB publicdomain rated=True 'Silent Night! Holy Night! - Stille Nacht - SATB' {"bars": 12, "metre": "6/8", "fifths": -2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 5, "range": [58.0, 75.0]}
+   QmbLKy759gFLL5 cc-zero      rated=True 'Silent Night! Holy Night! - Best Free Score' {"bars": 12, "metre": "6/8", "fifths": -2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 2, "range": [58.0, 75.0]}
+== amazing grace: 6 edition(s)
+   QmTqz2bPZSxriQ publicdomain rated=True 'Amazing grace - New Britain in Virginia Harmony' {"bars": 15, "metre": "3/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 74.0]}
+   QmTR2hibtqMbYy cc-zero      rated=True 'Amazing Grace Trumpet' {"bars": 72, "metre": "3/4", "fifths": -1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": null}
+   QmfXrFiFkk24uk cc-zero      rated=True 'Amazing Grace' {"bars": 32, "metre": "3/4", "fifths": 2, "melodyTies": 11, "onBeat": 11, "perBar": 0.34, "allStaffTies": 23, "range": [57.0, 69.0]}
+   QmQnTd8DBifKHH cc-zero      rated=True 'Amazing Grace' {"bars": 17, "metre": "3/4", "fifths": -1, "melodyTies": 2, "onBeat": 2, "perBar": 0.12, "allStaffTies": 5, "range": [60.0, 72.0]}
+   Qmd39Bwcob2maQ cc-zero      rated=True 'Amazing Grace' {"bars": 52, "metre": "3/4", "fifths": 1, "melodyTies": 9, "onBeat": 9, "perBar": 0.17, "allStaffTies": 9, "range": [62.0, 86.0]}
+   QmWCMYT4Knxf3s cc-zero      rated=True 'Amazing Grace in G' {"bars": 38, "metre": "3/4", "fifths": 1, "melodyTies": 4, "onBeat": 4, "perBar": 0.11, "allStaffTies": 14, "range": [52.0, 76.0]}
+== down in the valley: 6 edition(s)
+   QmWqBLuviQ5nPi publicdomain rated=False 'Traditional music - As I Went Down In The Valley' {"bars": 17, "metre": "4/4", "fifths": 1, "melodyTies": 1, "onBeat": 0, "perBar": 0.06, "allStaffTies": 1, "range": [59.0, 74.0]}
+   QmdUCrXMrKVgYp publicdomain rated=False 'Down in the valley 'midst lilies sweet scented' {"bars": 24, "metre": "2/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [66.0, 74.0]}
+   QmdBbMvWn9s7pM publicdomain rated=False 'Down in the valley' {"bars": 16, "metre": "3/4", "fifths": -1, "melodyTies": 4, "onBeat": 4, "perBar": 0.25, "allStaffTies": 4, "range": [60.0, 70.0]}
+   QmYGPXPMbAvyBC publicdomain rated=False 'Down in the valley of sorrow and sin - W. E. M. ' {"bars": 32, "metre": "3/4", "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [64.0, 76.0]}
+   QmUwjsGmGoTiM2 publicdomain rated=False 'Down in the valley among the sweet lilies - Thom' {"bars": 24, "metre": "4/4", "fifths": -3, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 2, "range": [62.0, 75.0]}
+   QmR9oAk8coPA2U publicdomain rated=False 'Traditional music - Bog Down in the Valley-O Arr' {"bars": 18, "metre": "2/2", "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [69.0, 81.0]}
+== shenandoah: 6 edition(s)
+   QmPtYPy8mHanF8 cc-zero      rated=False 'Shenandoah Duet tenor-bas' {"bars": 31, "metre": "4/4", "fifths": 4, "melodyTies": 24, "onBeat": 12, "perBar": 0.77, "allStaffTies": 34, "range": [52.0, 69.0]}
+   QmVK5kNzsxHWu5 publicdomain rated=False 'Traditional music - Shenandoah' {"bars": 10, "metre": "4/4", "fifths": 1, "melodyTies": 2, "onBeat": 1, "perBar": 0.2, "allStaffTies": 2, "range": [62.0, 79.0]}
+   QmbToUXQjRDX24 publicdomain rated=False 'Shenandoah Falls' {"bars": 18, "metre": "4/4", "fifths": 3, "melodyTies": 3, "onBeat": 0, "perBar": 0.17, "allStaffTies": 3, "range": [64.0, 78.0]}
+   Qmb13Cjsfjcs5u publicdomain rated=False 'Shenandoah' {"bars": 11, "metre": null, "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 79.0]}
+   QmPQCrfhmASdU7 publicdomain rated=False 'Shenandoah Falls' {"bars": 18, "metre": "4/4", "fifths": 3, "melodyTies": 3, "onBeat": 0, "perBar": 0.17, "allStaffTies": 3, "range": [64.0, 78.0]}
+   QmP37iDkRYXVBh publicdomain rated=False 'Shenandoah' {"bars": 11, "metre": null, "fifths": 2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [57.0, 74.0]}
+== home on the range: 6 edition(s)
+   QmVv1x1xhfTcd8 parse failed: ValueError
+   QmWxata9BPTide publicdomain rated=False 'Traditional music - Home on the Range' {"bars": 32, "metre": "3/4", "fifths": 2, "melodyTies": 5, "onBeat": 5, "perBar": 0.16, "allStaffTies": 5, "range": [57.0, 69.0]}
+   QmWfMNaBzHkfW7 publicdomain rated=False 'Traditional music - Home on the Range' {"bars": 32, "metre": "3/4", "fifths": 2, "melodyTies": 5, "onBeat": 5, "perBar": 0.16, "allStaffTies": 5, "range": [57.0, 69.0]}
+   QmPH6D7q3zg9u5 publicdomain rated=False 'Home on the range' {"bars": 33, "metre": "3/4", "fifths": 1, "melodyTies": 5, "onBeat": 5, "perBar": 0.15, "allStaffTies": 5, "range": [62.0, 74.0]}
+   QmdZWvedEHAdy3 publicdomain rated=False 'Home on the range' {"bars": 33, "metre": "3/4", "fifths": 1, "melodyTies": 5, "onBeat": 5, "perBar": 0.15, "allStaffTies": 5, "range": [62.0, 74.0]}
+   QmNNoFJRbACjfD publicdomain rated=False 'Home on the range' {"bars": 33, "metre": "3/4", "fifths": 1, "melodyTies": 5, "onBeat": 5, "perBar": 0.15, "allStaffTies": 5, "range": [62.0, 74.0]}
+== scarborough fair: 6 edition(s)
+   QmZ4awSS5Ytdkb publicdomain rated=True 'Scarborough Fair (Ocarina)' {"bars": 19, "metre": "3/4", "fifths": 0, "melodyTies": 3, "onBeat": 3, "perBar": 0.16, "allStaffTies": 3, "range": [60.0, 74.0]}
+   QmTJENYHPL17Yj cc-zero      rated=True 'Scarborough Fair' {"bars": 18, "metre": "3/4", "fifths": 0, "melodyTies": 2, "onBeat": 2, "perBar": 0.11, "allStaffTies": 2, "range": [59.0, 76.0]}
+   QmWc4DZGFTQBaY cc-zero      rated=True 'Scarborough Fair' {"bars": 20, "metre": "3/4", "fifths": 0, "melodyTies": 4, "onBeat": 4, "perBar": 0.2, "allStaffTies": 4, "range": [67.0, 81.0]}
+   QmbF3PeUcRACn6 cc-zero      rated=False 'Scarborough fair' {"bars": 17, "metre": "3/4", "fifths": -1, "melodyTies": 1, "onBeat": 1, "perBar": 0.06, "allStaffTies": 1, "range": [60.0, 74.0]}
+   QmbGfCQu2CdXqi publicdomain rated=False 'Scarborough Fair' {"bars": 19, "metre": "3/4", "fifths": 2, "melodyTies": 3, "onBeat": 3, "perBar": 0.16, "allStaffTies": 3, "range": [62.0, 76.0]}
+   QmWaaWygKnsSML cc-zero      rated=False 'Scarborough Fair' {"bars": 8, "metre": "6/8", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [74.0, 88.0]}
+== the water is wide: 6 edition(s)
+   QmcuFk5FJ1fYjP cc-zero      rated=False 'The water is wide' {"bars": 9, "metre": "4/4", "fifths": -1, "melodyTies": 7, "onBeat": 7, "perBar": 0.78, "allStaffTies": 7, "range": [60.0, 72.0]}
+   QmZA6tTkAZeaY6 publicdomain rated=False 'The Water Is Wide' {"bars": 17, "metre": "4/4", "fifths": 2, "melodyTies": 8, "onBeat": 8, "perBar": 0.47, "allStaffTies": 8, "range": [69.0, 81.0]}
+   QmTqFFPKZ6hNcQ publicdomain rated=False 'The Water Is Wide' {"bars": 15, "metre": "3/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 74.0]}
+   QmVNDCaUQziUPo cc-zero      rated=False 'Descant for The Gift of Love - The Water is Wide' {"bars": 16, "metre": "4/4", "fifths": 0, "melodyTies": 1, "onBeat": 1, "perBar": 0.06, "allStaffTies": 4, "range": [71.0, 84.0]}
+   QmNrJgW7f23Kc8 publicdomain rated=False 'The Water is Wide' {"bars": 17, "metre": "4/4", "fifths": 2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [57.0, 69.0]}
+   QmcbX75uv8PX3F publicdomain rated=False 'the Water is Wide' {"bars": 16, "metre": "4/4", "fifths": 1, "melodyTies": 7, "onBeat": 7, "perBar": 0.44, "allStaffTies": 7, "range": [62.0, 74.0]}
+== kumbaya: 6 edition(s)
+   QmYXxo6f3yMpi7 cc-zero      rated=True 'Kumbaya my Lord' {"bars": 17, "metre": "3/4", "fifths": 2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 71.0]}
+   QmSu7YPSk8cepE cc-zero      rated=True 'Kumbaya' {"bars": 16, "metre": "3/4", "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [60.0, 71.0]}
+   QmdrVHYvXo8N1y publicdomain rated=False 'Kum ba yah - African-American spiritual.' {"bars": 27, "metre": "3/4", "fifths": 2, "melodyTies": 3, "onBeat": 3, "perBar": 0.11, "allStaffTies": 6, "range": [62.0, 71.0]}
+   QmatNip68G4V2D publicdomain rated=False 'Kum ba yah' {"bars": 9, "metre": "3/4", "fifths": 0, "melodyTies": 1, "onBeat": 1, "perBar": 0.11, "allStaffTies": 1, "range": [60.0, 69.0]}
+   QmQdk4xggDNEpK publicdomain rated=False 'Kum Ba Yah' {"bars": 9, "metre": "3/4", "fifths": 2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 71.0]}
+   QmQiEzhxiSxLxb cc-zero      rated=False 'Kumbaya' {"bars": 8, "metre": "4/4", "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [67.0, 76.0]}
+== cielito lindo: 5 edition(s)
+   QmdotJP1ctgJZG cc-zero      rated=True 'Exercise - Cielito Lindo' {"bars": 32, "metre": "3/4", "fifths": 0, "melodyTies": 13, "onBeat": 13, "perBar": 0.41, "allStaffTies": 13, "range": [60.0, 77.0]}
+   QmPeNkeB5bQroi cc-zero      rated=True 'Cielito Lindo' {"bars": 39, "metre": "3/4", "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [55.0, 84.0]}
+   Qmbr6bsCo19TmP cc-zero      rated=False 'Cielito Lindo (Melody)' {"bars": 16, "metre": "6/8", "fifths": 0, "melodyTies": 3, "onBeat": 1, "perBar": 0.19, "allStaffTies": 3, "range": [60.0, 77.0]}
+   QmPbR5ngH5hsCG publicdomain rated=False 'Cielito Lindo' {"bars": 35, "metre": "3/4", "fifths": 0, "melodyTies": 14, "onBeat": 13, "perBar": 0.4, "allStaffTies": 14, "range": [60.0, 83.0]}
+   Qme9EcbJRfXVLf publicdomain rated=False 'Cielito Lindo' {"bars": 35, "metre": "3/4", "fifths": 0, "melodyTies": 14, "onBeat": 13, "perBar": 0.4, "allStaffTies": 14, "range": [60.0, 83.0]}
+== red river valley: 6 edition(s)
+   QmY4rmYbmrS3zm cc-zero      rated=True 'Exercise - Red River Valley' {"bars": 17, "metre": "4/4", "fifths": 1, "melodyTies": 4, "onBeat": 4, "perBar": 0.24, "allStaffTies": 4, "range": [62.0, 74.0]}
+   QmUfpDDWbDj9Q2 publicdomain rated=True 'James Kernigan - Red River Valley' {"bars": 17, "metre": "2/2", "fifths": 2, "melodyTies": 4, "onBeat": 2, "perBar": 0.24, "allStaffTies": 4, "range": [57.0, 69.0]}
+   Qmbk6UF1nmss2s publicdomain rated=False 'Red River Valley' {"bars": 9, "metre": "4/4", "fifths": 1, "melodyTies": 2, "onBeat": 0, "perBar": 0.22, "allStaffTies": 2, "range": [60.0, 74.0]}
+   Qmcy2x7owkMdHE publicdomain rated=False 'Red River Valley' {"bars": 17, "metre": "4/4", "fifths": 0, "melodyTies": 2, "onBeat": 2, "perBar": 0.12, "allStaffTies": 2, "range": [62.0, 74.0]}
+   Qmc8UhuT8zKcMv publicdomain rated=False 'Red River Valley' {"bars": 17, "metre": "2/2", "fifths": 1, "melodyTies": 4, "onBeat": 2, "perBar": 0.24, "allStaffTies": 4, "range": [62.0, 74.0]}
+   QmUXanwabxMzLR publicdomain rated=False 'Red River Valley' {"bars": 17, "metre": "4/4", "fifths": 1, "melodyTies": 4, "onBeat": 4, "perBar": 0.24, "allStaffTies": 4, "range": [62.0, 74.0]}
+== aura lee: 1 edition(s)
+   QmZdP6gM3ewirP publicdomain rated=False 'Aura Lee' {"bars": 28, "metre": "4/4", "fifths": 0, "melodyTies": 2, "onBeat": 2, "perBar": 0.07, "allStaffTies": 2, "range": [53.0, 74.0]}
+== loch lomond: 6 edition(s)
+   QmQeddaTKVBgXM cc-zero      rated=True 'The Bonnie Banks o' Loch Lomond' {"bars": 17, "metre": "4/4", "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [67.0, 81.0]}
+   QmbhsfeusXT5sE publicdomain rated=False 'Traditional music - Loch Lomond' {"bars": 35, "metre": "4/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 76.0]}
+   QmQcHBHqZxBdgn publicdomain rated=False 'Loch Lomond' {"bars": 13, "metre": "2/2", "fifths": 2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 81.0]}
+   QmTpVn6jiN2pCW publicdomain rated=False 'Loch Lomond' {"bars": 9, "metre": "4/4", "fifths": 2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [57.0, 71.0]}
+   QmNPuB26568Aah cc-zero      rated=False 'Loch Lomond - Harms' {"bars": 17, "metre": "4/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [74.0, 88.0]}
+   Qmb4vKCYKjEn1g publicdomain rated=False 'Loch Lomond' {"bars": 9, "metre": "4/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [67.0, 76.0]}
+== my bonnie: 6 edition(s)
+   QmeZQofmCknVH2 publicdomain rated=True 'My Bonnie Lies Over The Ocean - Charles E. Pratt' {"bars": 33, "metre": "3/4", "fifths": -2, "melodyTies": 5, "onBeat": 5, "perBar": 0.15, "allStaffTies": 9, "range": [62.0, 74.0]}
+   QmX6TyCWmytdQU publicdomain rated=True 'My Bony Is Over The Ocean' {"bars": 33, "metre": "3/4", "fifths": -2, "melodyTies": 5, "onBeat": 5, "perBar": 0.15, "allStaffTies": 11, "range": [62.0, 74.0]}
+   QmT9Bz1ydZbnxZ publicdomain rated=True 'Gods love is as high as the heavens - My Bonnie ' {"bars": 32, "metre": "3/4", "fifths": -2, "melodyTies": 5, "onBeat": 5, "perBar": 0.16, "allStaffTies": 9, "range": [62.0, 74.0]}
+   QmPs2xzU63qy2S publicdomain rated=False 'How Auld Are Ye My Bonnie Lass' {"bars": 16, "metre": "2/4", "fifths": 2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [67.0, 81.0]}
+   QmeX2TiEFUeJmb publicdomain rated=False 'Smile again my Bonnie Lassie. CJF.172' {"bars": 24, "metre": "2/4", "fifths": 2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [66.0, 83.0]}
+   Qmf71MKmjSfeQT publicdomain rated=False 'My Bonnie' {"bars": 32, "metre": "3/4", "fifths": 0, "melodyTies": 4, "onBeat": 4, "perBar": 0.12, "allStaffTies": 4, "range": [64.0, 76.0]}
+== oh susanna: 6 edition(s)
+   QmcCg1Zfn95kaH cc-zero      rated=True 'Oh! Susanna (Simple Lead Sheet)' {"bars": 25, "metre": "4/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [67.0, 76.0]}
+   QmWY8qwejrP1LF cc-zero      rated=True 'Oh! Susanna' {"bars": 17, "metre": "4/4", "fifths": 2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 71.0]}
+   QmccFW5Hk5yfYy cc-zero      rated=False 'Oh! Susanna - SATB' {"bars": 25, "metre": "4/4", "fifths": 1, "melodyTies": 1, "onBeat": 0, "perBar": 0.04, "allStaffTies": 7, "range": [59.0, 76.0]}
+   QmQEm61u8Sb35G cc-zero      rated=False 'Oh Susanna' {"bars": 17, "metre": "2/4", "fifths": 2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 71.0]}
+   Qmcu2J3VSfvhx5 cc-zero      rated=False 'Oh Susanna Jazz' {"bars": 17, "metre": "2/4", "fifths": 1, "melodyTies": 9, "onBeat": 8, "perBar": 0.53, "allStaffTies": 9, "range": [60.0, 76.0]}
+   QmchjwvtpXykrx publicdomain rated=False 'Stephen Foster - Oh Susanna' {"bars": 17, "metre": "4/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [67.0, 76.0]}
+== clementine: 6 edition(s)
+   QmSp7snHaW2LVp cc-zero      rated=True 'Oh My Darling Clementine' {"bars": 17, "metre": "3/4", "fifths": 2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 7, "range": [57.0, 69.0]}
+   Qme6kbC9VxbzvX cc-zero      rated=True 'Oh My Darling Clementine' {"bars": 17, "metre": "3/4", "fifths": -1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [60.0, 72.0]}
+   QmcW622H93X9Ad cc-zero      rated=False 'Oh My Darling Clementine' {"bars": 17, "metre": "3/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 86.0]}
+   Qmck6aSzzLvVbB publicdomain rated=False 'Traditional music - Clementine' {"bars": 18, "metre": "3/4", "fifths": 2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [69.0, 81.0]}
+   QmPKvbEFmmx1fj publicdomain rated=False 'Traditional music - Clementine' {"bars": 18, "metre": "3/4", "fifths": 2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [57.0, 69.0]}
+   QmZdTVU1KYSxiL publicdomain rated=False 'My Darling Clementine (with harmonica tabs)' {"bars": 9, "metre": "3/4", "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [67.0, 79.0]}
+== skye boat song: 6 edition(s)
+   QmZ8qaMvH2sZtW cc-zero      rated=True 'The Skye boat song (Outlander theme song)' {"bars": 48, "metre": "3/4", "fifths": 1, "melodyTies": 5, "onBeat": 5, "perBar": 0.1, "allStaffTies": 10, "range": [62.0, 74.0]}
+   Qmbkf9Y45G21Uo publicdomain rated=False 'Traditional music - The Skye Boat Song CCPB Sep-' {"bars": 14, "metre": "6/8", "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [69.0, 81.0]}
+   Qmc1jXdDybLqjp publicdomain rated=False 'Skye boat song' {"bars": 12, "metre": "6/8", "fifths": -1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [60.0, 72.0]}
+   QmdCNqwpkAZ8Pw publicdomain rated=False 'Skye Boat Song' {"bars": 16, "metre": "3/4", "fifths": 3, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [64.0, 76.0]}
+   QmSEW3bP1Rqguq publicdomain rated=False 'Skye Boat Song' {"bars": 29, "metre": "3/4", "fifths": 1, "melodyTies": 2, "onBeat": 2, "perBar": 0.07, "allStaffTies": 4, "range": [62.0, 74.0]}
+   QmeXDvFZtqr5sp cc-zero      rated=False 'The Skye Boat Song' {"bars": 13, "metre": "6/8", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [74.0, 86.0]}
+== drink to me only: 6 edition(s)
+   QmcttHGGhwukvj cc-zero      rated=True 'Quilter. Roger- Drink to me only with thine eyes' {"bars": 39, "metre": "6/8", "fifths": -3, "melodyTies": 5, "onBeat": 5, "perBar": 0.13, "allStaffTies": 27, "range": [63.0, 75.0]}
+   Qmb5zGoUKkGcsW publicdomain rated=False 'Drink to me Only With Thine Eyes.2voices RH.065' {"bars": 18, "metre": "6/8", "fifths": 2, "melodyTies": 4, "onBeat": 4, "perBar": 0.22, "allStaffTies": 6, "range": [74.0, 86.0]}
+   QmWi2cf9YiMXGN publicdomain rated=False 'Drink to me only.' {"bars": 9, "metre": "6/8", "fifths": 3, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [69.0, 81.0]}
+   QmST6G67gqh7Zt publicdomain rated=False 'Drink to Me Only With Thine Eyes' {"bars": 16, "metre": "6/8", "fifths": -3, "melodyTies": 3, "onBeat": 3, "perBar": 0.19, "allStaffTies": 18, "range": [63.0, 75.0]}
+   QmUt9FcTWkGAiw publicdomain rated=False 'Drink to me only with thine eyes - Elizabeth Tur' {"bars": 38, "metre": "4/4", "fifths": -2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 79.0]}
+   QmehKZNYh5dAyj publicdomain rated=False 'Drink to me only.' {"bars": 13, "metre": "6/8", "fifths": 3, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [69.0, 81.0]}
+== long long ago: 6 edition(s)
+   QmWt5wU525Tgaj publicdomain rated=False 'There's a very sweet old story that I heard long' {"bars": 23, "metre": "4/4", "fifths": -3, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [58.0, 75.0]}
+   QmSp6rSEEkY4ka publicdomain rated=False 'Long long ago some shepherds - J. Lincoln Hall' {"bars": 30, "metre": "4/4", "fifths": -3, "melodyTies": 2, "onBeat": 2, "perBar": 0.07, "allStaffTies": 2, "range": [58.0, 87.0]}
+   QmSnsGivGUvkhX parse failed: MusicXMLImportException
+   Qma63drNUC5TJV publicdomain rated=False 'Long Long Ago (Cluster of Nuts)' {"bars": 16, "metre": "4/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 76.0]}
+   QmVmKPU4xy4egR publicdomain rated=False 'Long Long Ago' {"bars": 16, "metre": "4/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 76.0]}
+   QmV8pQ6LboRajY publicdomain rated=False 'Long Long Ago The Angel Throng - Frederick A. Ke' {"bars": 24, "metre": "4/4", "fifths": -2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [65.0, 77.0]}
+== londonderry air: 6 edition(s)
+   QmYM5YCtBPPygp cc-zero      rated=True 'Danny Boy C major' {"bars": 17, "metre": "4/4", "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [69.0, 88.0]}
+   QmXzn9pMQ77ExK cc-zero      rated=True 'Danny Boy' {"bars": 30, "metre": "4/4", "fifths": -3, "melodyTies": 12, "onBeat": 12, "perBar": 0.4, "allStaffTies": 16, "range": [58.0, 84.0]}
+   QmPEb1HrBCEgRM cc-zero      rated=True 'Londonderry Air (O' Danny Boy) Piano solo' {"bars": 18, "metre": "4/4", "fifths": -3, "melodyTies": 6, "onBeat": 6, "perBar": 0.33, "allStaffTies": 12, "range": [56.0, 79.0]}
+   Qmcdvizk2JR8CR cc-zero      rated=True 'Above the Hills of Time the Cross is Calling (Lo' {"bars": 16, "metre": "4/4", "fifths": 0, "melodyTies": 4, "onBeat": 4, "perBar": 0.25, "allStaffTies": 14, "range": [57.0, 76.0]}
+   QmZhkU7df4ekxq cc-zero      rated=True 'Danny Boy' {"bars": 39, "metre": "4/4", "fifths": -3, "melodyTies": 16, "onBeat": 16, "perBar": 0.41, "allStaffTies": 37, "range": [60.0, 79.0]}
+   QmbAXMQu9c7n1g parse failed: ValueError
+== swing low: 5 edition(s)
+   QmbZaNDzKXjgR2 cc-zero      rated=False 'Swing Low Sweet Chariot' {"bars": 16, "metre": "4/4", "fifths": -1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [60.0, 74.0]}
+   Qmdv399sukoCPP publicdomain rated=False 'Swing Low' {"bars": 19, "metre": "4/4", "fifths": -1, "melodyTies": 3, "onBeat": 2, "perBar": 0.16, "allStaffTies": 7, "range": [60.0, 74.0]}
+   QmewcJvvvjfC7t publicdomain rated=False 'Anonymous - Swing Low Sweet Chariot' {"bars": 16, "metre": "4/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 76.0]}
+   QmTxJGkKnD7Q8C publicdomain rated=False 'Swing low sweet chariot - African-American spiri' {"bars": 18, "metre": "2/4", "fifths": -1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [60.0, 74.0]}
+   QmTyamjDWbWCJH publicdomain rated=False 'Anonymous - Swing Low Sweet Chariot' {"bars": 16, "metre": "4/4", "fifths": 2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [57.0, 71.0]}
+== simple gifts: 6 edition(s)
+   QmNp1U4z125oim publicdomain rated=True 'Simple Gifts' {"bars": 18, "metre": "4/4", "fifths": -1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [72.0, 84.0]}
+   QmfEXWMzsuRJRD publicdomain rated=True 'Simple Gifts duet for Soprano & Cello' {"bars": 42, "metre": "4/4", "fifths": -2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 5, "range": [70.0, 82.0]}
+   QmXj8TvCjLvBoF cc-zero      rated=True 'Simple Gifts' {"bars": 29, "metre": "4/4", "fifths": 2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [57.0, 83.0]}
+   QmUiDWgHsV5ok2 cc-zero      rated=True 'Simple Gifts (2-Part Round)' {"bars": 17, "metre": "4/4", "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 3, "range": [67.0, 79.0]}
+   QmW6WHhMoqrUVq publicdomain rated=False 'Traditional music - Simple Gifts' {"bars": 33, "metre": "4/4", "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [69.0, 81.0]}
+   QmYASLeDcio1oL publicdomain rated=False 'Simple Gifts (key of G)' {"bars": 17, "metre": "4/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 74.0]}
+== beautiful dreamer: 3 edition(s)
+   QmStRtYknkrBt6 cc-zero      rated=True 'Beautiful Dreamer' {"bars": 25, "metre": "9/8", "fifths": -3, "melodyTies": 9, "onBeat": 9, "perBar": 0.36, "allStaffTies": 13, "range": [62.0, 77.0]}
+   QmVdu61ncXj971 cc-zero      rated=False 'Beautiful Dreamer Bass' {"bars": 32, "metre": "3/4", "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [35.0, 50.0]}
+   QmP8yr6DL7opc1 publicdomain rated=False 'Beautiful Dreamer' {"bars": 18, "metre": "3/4", "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [59.0, 74.0]}
+== sakura: 6 edition(s)
+   QmUdjFRayhizaL cc-zero      rated=True 'Sakura Kiss OHSHC OP for Bb Clarinet' {"bars": 50, "metre": "4/4", "fifths": 3, "melodyTies": 23, "onBeat": 3, "perBar": 0.46, "allStaffTies": 23, "range": [64.0, 83.0]}
+   QmQ7qBDzkUc3NP cc-zero      rated=True 'Cardcaptor Sakura: Sakura no Theme II for Trumpe' {"bars": 49, "metre": "4/4", "fifths": -1, "melodyTies": 16, "onBeat": 9, "perBar": 0.33, "allStaffTies": 16, "range": [55.0, 78.0]}
+   QmQ2V2JBKPsYPk cc-zero      rated=True 'Sakura' {"bars": 15, "metre": "4/4", "fifths": 0, "melodyTies": 1, "onBeat": 1, "perBar": 0.07, "allStaffTies": 1, "range": [59.0, 72.0]}
+   QmPujj9GYC7AxT cc-zero      rated=False 'Sakura Variations Wip IBMUSic' {"bars": 35, "metre": "4/4", "fifths": 2, "melodyTies": 1, "onBeat": 1, "perBar": 0.03, "allStaffTies": 1, "range": [61.0, 81.0]}
+   QmPEyQ3TWU9xEd publicdomain rated=False 'Sakura' {"bars": 14, "metre": "4/4", "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [59.0, 72.0]}
+   QmYxdaqQz3DB1R cc-zero      rated=False 'Twilight: No.1 Sakura Shed' {"bars": 40, "metre": "4/4", "fifths": 2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [57.0, 95.0]}
+== molly malone: 6 edition(s)
+   QmXr3HjXfyTX6W cc-zero      rated=True 'Molly Malone (Cockles & Mussels)' {"bars": 25, "metre": "3/4", "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [67.0, 79.0]}
+   QmbthENPodkpcw publicdomain rated=False 'Sweet Molly Malone (Cockles And Mussels) (song) ' {"bars": 17, "metre": "3/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 74.0]}
+   QmbnUMhJBS2tQz publicdomain rated=False 'Sweet Molly Malone' {"bars": 17, "metre": "3/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 74.0]}
+   QmPqQKSQr4Z6Mf cc-zero      rated=False 'Molly Malone' {"bars": 68, "metre": "3/4", "fifths": -2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 3, "range": [65.0, 89.0]}
+   QmUnHCVxkWJcMG parse failed: ValueError
+   QmWepBawfsYFRM publicdomain rated=False 'Molly Malone' {"bars": 18, "metre": "2/2", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 83.0]}
+== morning has broken: 6 edition(s)
+   QmNyGNfDXhyXa3 cc-zero      rated=True '002 MORNING HAS BROKEN' {"bars": 48, "metre": "3/4", "fifths": 2, "melodyTies": 4, "onBeat": 4, "perBar": 0.08, "allStaffTies": 8, "range": [62.0, 76.0]}
+   QmcmabE2dqQ23S cc-zero      rated=True 'Morning has broken' {"bars": 40, "metre": "3/4", "fifths": 0, "melodyTies": 1, "onBeat": 1, "perBar": 0.03, "allStaffTies": 3, "range": [60.0, 74.0]}
+   QmVTjHqYbLYhNx cc-zero      rated=True 'Morning Has Broken' {"bars": 9, "metre": "9/4", "fifths": 0, "melodyTies": 2, "onBeat": 2, "perBar": 0.22, "allStaffTies": 7, "range": [60.0, 74.0]}
+   QmcZSvcvKQLUnj publicdomain rated=False 'Bunessan' {"bars": 24, "metre": "3/4", "fifths": 2, "melodyTies": 2, "onBeat": 2, "perBar": 0.08, "allStaffTies": 2, "range": [62.0, 76.0]}
+   Qmf1PfxMmngCer publicdomain rated=False 'Morning has broken' {"bars": 9, "metre": "9/4", "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [60.0, 74.0]}
+   QmNb4q2zPmHrgv cc-zero      rated=False 'Morning has Broken' {"bars": 25, "metre": "3/4", "fifths": 2, "melodyTies": 3, "onBeat": 3, "perBar": 0.12, "allStaffTies": 3, "range": [59.0, 76.0]}
+== early one morning: 6 edition(s)
+   QmNvRJDuokaf9Y cc-zero      rated=False 'Early One Morning' {"bars": 16, "metre": "2/4", "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [55.0, 72.0]}
+   QmW9MKgDpjkdnY publicdomain rated=False 'Early One Morning' {"bars": 17, "metre": "2/4", "fifths": -1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [64.0, 77.0]}
+   QmdNKAxb7qEMo3 publicdomain rated=False 'Early one morning' {"bars": 16, "metre": "2/4", "fifths": 2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [57.0, 74.0]}
+   QmdzLAiSwvKUv2 publicdomain rated=False 'Early One Morning' {"bars": 16, "metre": "2/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 79.0]}
+   QmQ3jgvkkno54F publicdomain rated=False 'Early One Morning' {"bars": 16, "metre": "2/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 79.0]}
+   QmZXaFKMpEJ2Qr publicdomain rated=False 'Early One Morning' {"bars": 16, "metre": "2/4", "fifths": -1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [60.0, 77.0]}
+== we wish you a merry christmas: 6 edition(s)
+   QmUPsV1KkfFUVe cc-zero      rated=True 'Scherzo on We Wish You a Merry Christmas' {"bars": 50, "metre": "3/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 81.0]}
+   QmZKUb1TLsv5a5 cc-zero      rated=True 'Christmas Songs for Four Little Hands - Beginner' {"bars": 26, "metre": "4/4", "fifths": 0, "melodyTies": 1, "onBeat": 1, "perBar": 0.04, "allStaffTies": 3, "range": [67.0, 79.0]}
+   QmRavoTqkSJjEC cc-zero      rated=True 'We wish you a merry Christmas' {"bars": 17, "metre": "3/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 74.0]}
+   Qmavwniavih7EL cc-zero      rated=True 'We Wish You a Merry Christmas' {"bars": 59, "metre": "3/4", "fifths": -2, "melodyTies": 1, "onBeat": 0, "perBar": 0.02, "allStaffTies": 3, "range": [60.0, 106.0]}
+   QmZ731fqYGeM85 publicdomain rated=True 'We Wish You a Merry Christmas' {"bars": 21, "metre": "3/4", "fifths": -2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [65.0, 77.0]}
+   QmQ8wxBLCwCxG2 cc-zero      rated=True 'We wish you a merry christmas' {"bars": 17, "metre": "3/4", "fifths": 2, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [61.0, 81.0]}
+== o come all ye faithful: 6 edition(s)
+   QmPLemSwhs2bqn publicdomain rated=True 'Adeste Fideles' {"bars": 21, "metre": "4/4", "fifths": -4, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [61.0, 75.0]}
+   QmZSA3nybQLabh cc-zero      rated=True 'Adeste Fideles' {"bars": 23, "metre": null, "fifths": 0, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [67.0, 79.0]}
+   QmecQWPCnhNjyg cc-zero      rated=True 'O Come All Ye Faithful (Piano Duo Arrangement)' {"bars": 61, "metre": "4/4", "fifths": -4, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [63.0, 75.0]}
+   QmU1u6EyQtz2wr cc-zero      rated=True 'O Come All Ye Faithful - Adeste Fideles (Wade) S' {"bars": 23, "metre": "4/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 4, "range": [61.0, 74.0]}
+   QmcoQSuUJWzoBo publicdomain rated=False 'O Come All Ye Faithful (G)' {"bars": 21, "metre": "4/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [60.0, 74.0]}
+   Qmci4fGDrVuak5 publicdomain rated=False 'John Francis Wade - Adeste Fideles / O Come All ' {"bars": 21, "metre": "4/4", "fifths": -1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [60.0, 72.0]}
+== away in a manger: 6 edition(s)
+   QmfVuVRyFPBjuE publicdomain rated=True 'Away in a manger - James R. Murray' {"bars": 17, "metre": "4/4", "fifths": -1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [60.0, 72.0]}
+   QmVgS9cYzFWrEH publicdomain rated=True 'Away in a Manger' {"bars": 17, "metre": "3/4", "fifths": -1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [60.0, 72.0]}
+   QmNNcK8ct3qnEo publicdomain rated=True 'Away in a Manger - Cradle Song SATB' {"bars": 17, "metre": "3/4", "fifths": -1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 3, "range": [58.0, 74.0]}
+   QmRbY9fx5Ak6Xs cc-zero      rated=True 'Away in a Manger' {"bars": 17, "metre": "3/4", "fifths": -1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [53.0, 82.0]}
+   QmW3CBbcjY7Npb publicdomain rated=False 'Away In A Manger - Mueller by James Ramsey Murra' {"bars": 18, "metre": "4/4", "fifths": -1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [58.0, 72.0]}
+   QmdfQ3uzLtGRV2 publicdomain rated=False 'Away in a manger - James R. Murray' {"bars": 17, "metre": "3/4", "fifths": 1, "melodyTies": 0, "onBeat": 0, "perBar": 0.0, "allStaffTies": 0, "range": [62.0, 74.0]}
+
+== summary (melody ties per bar across editions; the claim rule wants 4 or more and 0.2 per bar)
+   cielito lindo                    {'editions': 5, 'medianMelodyTiesPerBar': 0.4, 'editionsAtOrAbove0.2': 3}
+   londonderry air                  {'editions': 5, 'medianMelodyTiesPerBar': 0.33, 'editionsAtOrAbove0.2': 4}
+   the water is wide                {'editions': 6, 'medianMelodyTiesPerBar': 0.25, 'editionsAtOrAbove0.2': 3}
+   red river valley                 {'editions': 6, 'medianMelodyTiesPerBar': 0.24, 'editionsAtOrAbove0.2': 5}
+   shenandoah                       {'editions': 6, 'medianMelodyTiesPerBar': 0.17, 'editionsAtOrAbove0.2': 2}
+   home on the range                {'editions': 5, 'medianMelodyTiesPerBar': 0.15, 'editionsAtOrAbove0.2': 0}
+   scarborough fair                 {'editions': 6, 'medianMelodyTiesPerBar': 0.135, 'editionsAtOrAbove0.2': 1}
+   my bonnie                        {'editions': 6, 'medianMelodyTiesPerBar': 0.135, 'editionsAtOrAbove0.2': 0}
+   amazing grace                    {'editions': 6, 'medianMelodyTiesPerBar': 0.11499999999999999, 'editionsAtOrAbove0.2': 1}
+   morning has broken               {'editions': 6, 'medianMelodyTiesPerBar': 0.08, 'editionsAtOrAbove0.2': 1}
+   aura lee                         {'editions': 1, 'medianMelodyTiesPerBar': 0.07, 'editionsAtOrAbove0.2': 0}
+   drink to me only                 {'editions': 6, 'medianMelodyTiesPerBar': 0.065, 'editionsAtOrAbove0.2': 1}
+   sakura                           {'editions': 6, 'medianMelodyTiesPerBar': 0.05, 'editionsAtOrAbove0.2': 2}
+   silent night                     {'editions': 6, 'medianMelodyTiesPerBar': 0.015, 'editionsAtOrAbove0.2': 1}
+   auld lang syne                   {'editions': 6, 'medianMelodyTiesPerBar': 0.0, 'editionsAtOrAbove0.2': 0}
+   down in the valley               {'editions': 6, 'medianMelodyTiesPerBar': 0.0, 'editionsAtOrAbove0.2': 1}
+   kumbaya                          {'editions': 6, 'medianMelodyTiesPerBar': 0.0, 'editionsAtOrAbove0.2': 0}
+   loch lomond                      {'editions': 6, 'medianMelodyTiesPerBar': 0.0, 'editionsAtOrAbove0.2': 0}
+   oh susanna                       {'editions': 6, 'medianMelodyTiesPerBar': 0.0, 'editionsAtOrAbove0.2': 1}
+   clementine                       {'editions': 6, 'medianMelodyTiesPerBar': 0.0, 'editionsAtOrAbove0.2': 0}
+   skye boat song                   {'editions': 6, 'medianMelodyTiesPerBar': 0.0, 'editionsAtOrAbove0.2': 0}
+   long long ago                    {'editions': 5, 'medianMelodyTiesPerBar': 0.0, 'editionsAtOrAbove0.2': 0}
+   swing low                        {'editions': 5, 'medianMelodyTiesPerBar': 0.0, 'editionsAtOrAbove0.2': 0}
+   simple gifts                     {'editions': 6, 'medianMelodyTiesPerBar': 0.0, 'editionsAtOrAbove0.2': 0}
+   beautiful dreamer                {'editions': 3, 'medianMelodyTiesPerBar': 0.0, 'editionsAtOrAbove0.2': 1}
+   molly malone                     {'editions': 5, 'medianMelodyTiesPerBar': 0.0, 'editionsAtOrAbove0.2': 0}
+   early one morning                {'editions': 6, 'medianMelodyTiesPerBar': 0.0, 'editionsAtOrAbove0.2': 0}
+   we wish you a merry christmas    {'editions': 6, 'medianMelodyTiesPerBar': 0.0, 'editionsAtOrAbove0.2': 0}
+   o come all ye faithful           {'editions': 6, 'medianMelodyTiesPerBar': 0.0, 'editionsAtOrAbove0.2': 0}
+   away in a manger                 {'editions': 6, 'medianMelodyTiesPerBar': 0.0, 'editionsAtOrAbove0.2': 0}

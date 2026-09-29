@@ -1,0 +1,9 @@
+wrote C:\Users\yalir\AppData\Local\Temp\claude\C--Users-yalir-repos-Piano-Stuff\9b647b56-e651-4563-9f4f-ce3e1e36a4a2\scratchpad\midi-route\magnetic.musicxml
+parts: up, down (2 as recorded)
+key: B- major (--key)
+  key signature(s) in the MIDI, replaced: <music21.key.KeySignature of 2 flats>, <music21.key.KeySignature of 5 flats>
+time signature: 4/4
+grid: 1/4 quarter, chosen per bar; largest onset moved 0.125 quarters
+respelled 352 note(s) to the key
+checked: all 3020 notes the reader found are in the score, every bar adds up
+exit=0

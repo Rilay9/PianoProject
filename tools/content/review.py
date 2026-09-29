@@ -492,7 +492,7 @@ def merge_file(incoming: Path, record: Path, catalog: list[dict], out_dir: Path)
 #: Generated items first, then authored, then imported sources (D2 item 1), then what has
 #: no score of its own.
 #: An excerpt (E1) is queued beside the scores it is cut from: reviewed on its own identity, the cut's file.
-SOURCE_ORDER = ("generated", "authored", "pdmx", "kern", "musetrainer", "excerpt", "runtime", "placeholder", "unknown")
+SOURCE_ORDER = ("generated", "authored", "pdmx", "kern", "musetrainer", "mutopia", "excerpt", "runtime", "placeholder", "unknown")
 
 TIERS = (
     ("music", "The music families' canonical items: promised as music, and unheard"),

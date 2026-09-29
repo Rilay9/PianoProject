@@ -2752,15 +2752,23 @@ const T12B_APP: [string, string, () => boolean][] = [
   ],
   [
     'ragtime.8',
-    'Euphonic Sounds is in no catalog row, and the rung\'s five Joplin rags all come from the same non-public-domain edition',
+    // Q76: the rung gained Pine Apple Rag's public-domain Mutopia edition, so "five Joplin rags, all from the
+    // same non-public-domain edition" became five from that edition and Pine Apple Rag again from Mutopia, and
+    // Euphonic Sounds is in neither source.
+    'Euphonic Sounds is in no catalog row, and the rung\'s five Joplin rags come from one non-public-domain edition, with Pine Apple Rag also in a public-domain one',
     () => {
       const songs = rung('ragtime.8').songOptions ?? [];
       const joplin = songs.filter((id) => id.includes('joplin-'));
+      const nc = joplin.filter((id) => t12bFields(id).tags.includes('nc-personal-build'));
+      const publicDomain = joplin.filter((id) => !t12bFields(id).tags.includes('nc-personal-build'));
       return (
         catalog.filter((row) => /euphonic/i.test(`${row.id} ${row.title ?? ''}`)).length === 0 &&
         t12Repo('content/sources/kern.json').includes('joplin/euphonic') &&
-        joplin.length === 5 &&
-        joplin.every((id) => t12bFields(id).tags.includes('nc-personal-build'))
+        !/euphonic/i.test(t12Repo('content/sources/mutopia.json')) &&
+        nc.length === 5 &&
+        publicDomain.length === 1 &&
+        publicDomain[0] === 'song.ragtime.joplin-pine-apple-rag.mutopia' &&
+        t12bFields(publicDomain[0]).tags.includes('mutopia')
       );
     },
   ],
@@ -3208,11 +3216,13 @@ const T19_APP: [string, string, () => boolean][] = [
   ],
   [
     'ragtime.8',
-    'the one button is blind, and it opens Pine Apple Rag — first of the rung’s six',
+    // Q76: seven since Pine Apple Rag's public-domain edition joined the rung, second, after its other edition.
+    'the one button is blind, and it opens Pine Apple Rag — first of the rung’s seven',
     () =>
       t19Kinds('ragtime.8').join(',') === 'blind' &&
       t19FirstSong('ragtime.8') === 'song.ragtime.joplin-pine-apple-rag' &&
-      rung('ragtime.8').songOptions.length === 6,
+      rung('ragtime.8').songOptions[1] === 'song.ragtime.joplin-pine-apple-rag.mutopia' &&
+      rung('ragtime.8').songOptions.length === 7,
   ],
   [
     'blues.5',
