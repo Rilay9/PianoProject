@@ -1,0 +1,29 @@
+npx vitest run tests/unit/windowRendererStage.test.ts   # under the mutant (scripts-mutant.py apply): the sideways count asked by fiat
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/windowRendererStage.test.ts (14 tests | 1 failed) 1497ms
+   ❯ sideways, the count follows what reaches across at the size the height gives (U82) (2)
+     × bars wider than the stage holds two of at that size: one bar, said as "across", from the first draw 65ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > sideways, the count follows what reaches across at the size the height gives (U82) > bars wider than the stage holds two of at that size: one bar, said as "across", from the first draw
+AssertionError: fewer than the two asked: {"arrangement":"single","scale":1.305263157894737,"room":558,"shown":2,"staffPx":52.2}: expected 2 to be less than 2
+ ❯ tests/unit/windowRendererStage.test.ts:542:66
+    540|     expect(stage.el.dataset.readAhead, 'the sideways arrangement').toB…
+    541|     expect(stage.el.dataset.fit, `the size is the height's: ${priced}`…
+    542|     expect(settled.shown, `fewer than the two asked: ${priced}`).toBeL…
+       |                                                                  ^
+    543|     expect(settled.why, `the reason the row turns into words: ${priced…
+    544|     expect(first, 'the first draw said what the settled fit says').toE…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 passed (14)
+   Start at  04:30:11
+   Duration  2.63s (tests 59%, environment 28%, transform 10%, import 2%)
+
+exit=1

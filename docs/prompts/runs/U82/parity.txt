@@ -1,0 +1,6 @@
+python tools/midi-cleanup/tests/parity_reference.py
+wrote 5 reference file(s) to <worktree>\build\midi-parity: rendered-clean.json, rendered-jitter35.json, crossed-hands.json, two-hands.json, one-track-two-hands.json
+  skipped, missing: <worktree>\build\midi-real\bach-bwv885-prelude-2011.mid: run `python tools/midi-cleanup/tests/fetch_maestro.py` to fetch it
+  skipped, missing: <worktree>\build\midi-real\grieg-op38-7-waltz-2014.mid: run `python tools/midi-cleanup/tests/fetch_maestro.py` to fetch it
+  skipped, missing: <worktree>\build\midi-real\scarlatti-k525-2008.mid: run `python tools/midi-cleanup/tests/fetch_maestro.py` to fetch it
+exit=0

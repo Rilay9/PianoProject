@@ -1,0 +1,6 @@
+npm run build:app   # under the mutant (the first attempt failed on a type error in the temporary probe spec, fixed)
+precache  2236 entries (28608.56 KiB)
+files generated
+  dist/sw.js
+  dist/workbox-9c191d2f.js
+exit=0

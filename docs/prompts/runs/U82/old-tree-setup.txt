@@ -1,0 +1,14 @@
+﻿cmd /c mklink /J "<worktree>\build\u82-old\app\node_modules" "<main checkout>\app\node_modules"; robocopy "<worktree>\app\public\content" "<worktree>\build\u82-old\app\public\content" /E /XC /XN /XO /NFL /NDL /NJH /NP
+# the old tree's package-lock.json is byte-identical to the main checkout's (cmp); content is the same copy this worktree uses (the dev piece is a bundled fixture and does not read it)
+Junction created for <worktree>\build\u82-old\app\node_modules <<===>> <main checkout>\app\node_modules
+   Bytes :   23.64 m   21.13 m    2.51 m         0         0         0
+   Times :   0:00:01   0:00:01                       0:00:00   0:00:00
+
+
+   Speed :           21,452,988 Bytes/sec.
+   Speed :            1,227.550 MegaBytes/min.
+   Ended : Tuesday, September 29, 2026 4:09:37 AM
+
+junction exit 0; robocopy exit 1 (1 = files copied)
+free MB after: 415
+exit=0

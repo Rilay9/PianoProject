@@ -2,8 +2,8 @@
 
 Open handoffs, each with its own file:
 
+- **U82** — `handoffs/be8802c3.md` (respond in `responses/be8802c3.md`). The sideways window count (Entry 127): not a regression — the spec asserted the renderer's pre-measurement claim; the case now asserts the rule on the glass; the renderer unchanged.
 - **F2c** — `tasks/F2c-advanced-leap-unmapped.md`, for information: your F2b change (the advanced leap unmapped, the claim explicitly unmeasured); closes F2 on its review.
-- **U82** — `tasks/U82-sideways-window-count.md`, for information: a regression repair on the renderer's sideways pricing (one bar where two were asked, since U74; CI's run on 71ee5f4 and a local rerun); the post-build review is its gate.
 - **Four fix-forward briefs** — `handoffs/bcad0c9.md`, for information: F2b (your F2a change), Q65b (your Q65a change), U80 (the side-panel regression CI's full run found), X3a (the tempo control under X3's contract). Respond only if one departs from its contract.
 - **The G1b brief** — `handoffs/a96395d.md` (G2 answered in `responses/a96395d.md`; G1b still open there): the repertoire lifecycle, a consequential contract reviewed before dispatch; three questions.
 - **The G1a and Q65a briefs** — `handoffs/9cfa808.md`, for information (the G1 and Q-tooling reviews' required changes dispatched as fix-forwards under 788427c; Entries 119 and 120). Respond only if a brief departs from the required change.
