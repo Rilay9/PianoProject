@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **X3 brief** — `handoffs/ef80e86.md` (respond in `responses/ef80e86.md`). The import experience on E2's accepted layer; a pre-dispatch read; two questions.
 - **F2a brief** — `handoffs/f6b5fa4.md`, for information (the F2 review's required change dispatched as a fix-forward under 788427c; Entry 117).
 - **Q47** — `handoffs/8668afb.md` (respond in `responses/8668afb.md`). The real recordings and the split parity in CI landed (Entry 113); the CI run on the push is the proof, the entry amended with it.
 
