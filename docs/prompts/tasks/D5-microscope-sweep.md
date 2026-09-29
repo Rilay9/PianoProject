@@ -33,3 +33,5 @@ If the gate's verdict is not on the built item and computing it in the projectio
 Judgement first: the three lines at one study, one groove and one drill, before and after, as observations; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes.
 
 **Approved with one required change 2026-09-29** (`responses/4088dfc.md`), applied: the evaluator's contract version carried with the verdict and printed beside it, carried-or-recomputed stated per item, the projection telling two versions apart, the screen test pinning the version text, the recomputation's build cost reported as a relationship. **Dispatched 2026-09-29** (Entry 110, port 4223) as the fourth lane.
+
+**Landed 2026-09-29** (Entry 110; 458159e, merged 93ecc1e); handoff `handoffs/458159e.md`. Every study's verdict recomputed by the projection (no build step persists one, G66); the doc rows spliced by the orchestrator.

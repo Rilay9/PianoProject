@@ -1,0 +1,1 @@
+The builder's captures for D5 (Entry 110): each run's exit-and-summary file, the red lines and mutants, and the orchestrator's chain on the merged tree (`orchestrator-exit.txt`). Left out for size: nothing.
