@@ -46,8 +46,14 @@ const VOCABULARY: Vocabulary = {
 
 const TODAY = new Date(2026, 9, 20, 9);
 
+/**
+ * Revised (X1, L113): every constructed item is measured unless it says otherwise (`measured([])`, no demands),
+ * as every bundled row is. Old assumption: an item with no measurement record could be the rung's own option
+ * on the card; since X1 a rung's own list asks the one gate, and an unmeasured option is refused as any
+ * automatic offer of it is (`oneGateBoundary.test.ts`). The ladder's order under test is unchanged.
+ */
 function item(id: string, over: Partial<CatalogItem> = {}): CatalogItem {
-  return { id, type: 'exercise', title: id, level: 1.5, hands: 'right', tracks: ['core'], concepts: [], file: `scores/${id}.mxl`, ...over };
+  return { id, type: 'exercise', title: id, level: 1.5, hands: 'right', tracks: ['core'], concepts: [], file: `scores/${id}.mxl`, ...measured([]), ...over };
 }
 
 const lesson = (id: string, title: string, over: Partial<Lesson>): Lesson => ({

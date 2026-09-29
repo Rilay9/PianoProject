@@ -103,6 +103,8 @@ import {
 import type { EncounterKind, EncounterSource } from '../../data/db';
 import type { Relationship } from '../../curriculum/transfer';
 import { loadOffer, type OfferRead, type OfferRefusal } from '../../data/offerSnapshot';
+import { scoreOutcome } from '../../data/sessionRun';
+import { drawTransition, sessionHandle } from '../sessionRunner';
 
 /**
  * What the four modes are called on the screen (P21c B2).
@@ -317,6 +319,15 @@ export function ScoreScreen(router: Router): HTMLElement {
   /** The phrase's recipe, where Today's reader named one (C4, `?recipe=`). */
   const routeRecipe = router.route.scoreRecipe;
   /**
+   * Today's session activity this run is, where the runner opened it (X1, `?session=`): the screen reports
+   * its lifecycle through the handle — opened, attempted, completed, visible time — and the summary's closing
+   * action becomes the transition to the next activity. It reads no encounter history and chooses no next
+   * activity itself. None: an ordinary screen.
+   */
+  const sessionRun = sessionHandle(router.route.session);
+  /** Visible time on this screen, for the session (X1): a hidden page accrues nothing; stopped when the screen goes. */
+  const stopSessionClock = sessionRun?.startClock();
+  /**
    * The tour's parameters, for a navigation that has to keep them.
    *
    * Blind and Perform are routes, so pressing either rebuilds the screen from
@@ -340,6 +351,8 @@ export function ScoreScreen(router: Router): HTMLElement {
     ...(routeRecipe === undefined ? {} : { recipe: routeRecipe }),
     // A transfer offer's run toggled into Blind is still that offer's run (D4).
     ...(router.route.scoreIntent === undefined ? {} : { intent: router.route.scoreIntent }),
+    // And a session's activity is still that activity (X1): Blind, Perform and *New phrase* keep its token.
+    ...(router.route.session === undefined ? {} : { session: router.route.session }),
   };
   /**
    * Where Back goes: the tour that opened this, the rung that opened it, or
@@ -1975,6 +1988,8 @@ export function ScoreScreen(router: Router): HTMLElement {
         startFromKey(event);
         return;
       }
+      // A note into a judging run (Wait for me has no count-in to pass): the activity is attempted (X1).
+      if (session?.running === true && (session.mode === 'wait' || session.mode === 'tempo')) sessionRun?.attempted();
       session?.feed(event.midi, event.velocity, event.tMs, event.confidence ?? 1);
     } else {
       session?.feedOff(event.midi, event.tMs);
@@ -2692,6 +2707,8 @@ export function ScoreScreen(router: Router): HTMLElement {
     } else {
       countIn.hidden = true;
       countIn.replaceChildren();
+      // The count-in is over and a judging run is on: the session's activity is attempted (X1).
+      if (runMode === 'wait' || runMode === 'tempo') sessionRun?.attempted();
     }
 
     beatDot.hidden = !clocked;
@@ -3245,6 +3262,17 @@ export function ScoreScreen(router: Router): HTMLElement {
     // (`08` §6.3).
     status.textContent = '';
     sheet.replaceChildren();
+    /** Where the session's transition is drawn (X1, `drawNext`); on the sheet only where the run is a session's activity. */
+    const nextHost = document.createElement('div');
+    nextHost.className = 'session-next';
+    nextHost.id = 'session-next';
+    nextHost.hidden = true;
+    /** The sheet's closing action where no session step replaces it. */
+    const doneButton = button('Done', () => {
+      flushPendingRecord();
+      summaryUp(false);
+      leaveScore();
+    }, 'summary-done');
     /**
      * A rhythm run is not a run of the piece (`05` §3a).
      *
@@ -3467,8 +3495,11 @@ export function ScoreScreen(router: Router): HTMLElement {
     // cannot be regenerated.
     function save(result: RunResult, then?: () => void): void {
       if (phraseSeed !== undefined) seedsOnRecord.add(phraseSeed);
+      /** The run as stored, after the recheck: what the session's completion reads (X1). */
+      let stored: RunResult = result;
       void confirmFirstContact(result)
         .then((checked) => {
+          stored = checked;
           // The run as answered is another observation (a self-report): its
           // evidence is its own — and so is a run another tab's encounter
           // turned from a first contact (G1).
@@ -3489,10 +3520,43 @@ export function ScoreScreen(router: Router): HTMLElement {
             );
           }
           then?.();
+          // Stored: the session's activity completes with what the stored run measured (X1: the protocol's
+          // `completed`, never self-report as a measured pass), and the closing action is drawn from the record
+          // the completion wrote.
+          if (sessionRun) void sessionRun.completed(scoreOutcome(stored)).then(drawNext, drawNext);
         })
         .catch((cause: unknown) => {
           status.textContent = `Could not save this run: ${String(cause)}`;
+          // Nothing stored, nothing completed: the transition still offers the way on, from the record.
+          drawNext();
         });
+    }
+
+    /**
+     * The transition (X1; `04` §5): where the run is a session's activity, the sheet's closing action becomes
+     * the next step — *Start* and *Skip or change*, or *Try again* and *Move on anyway* after a measured
+     * failure, or *Done* after the last — drawn from the stored record, with the composition's own words for
+     * the next slot. Done gives way to it; where the record says nothing (another session's token, a closed
+     * one) Done stays.
+     */
+    function drawNext(): void {
+      if (!sessionRun) return;
+      void drawTransition(nextHost, {
+        router,
+        handle: sessionRun,
+        button: (label, onClick, id, primary) => {
+          const made = button(label, onClick, id);
+          if (primary) made.classList.add('score-button--primary');
+          return made;
+        },
+        tryAgain: () => startRun(),
+        beforeLeaving: () => {
+          flushPendingRecord();
+          summaryUp(false);
+        },
+      }).then((kind) => {
+        doneButton.hidden = kind !== 'none' && kind !== 'closed';
+      });
     }
 
     /**
@@ -3606,6 +3670,9 @@ export function ScoreScreen(router: Router): HTMLElement {
       note.textContent = said.join(' ');
       sheet.appendChild(note);
     }
+    // The session's next step, under the result and above the numbers (X1): at the piano the heading and
+    // "Next: …" are what is read; the numbers are there to scroll to. Hidden until the record answers.
+    if (sessionRun) sheet.appendChild(nextHost);
 
     const lines = document.createElement('dl');
     lines.className = 'summary-stats';
@@ -3797,13 +3864,12 @@ export function ScoreScreen(router: Router): HTMLElement {
       ...(weakest.length > 0
         ? [button('Loop the weak bars', () => loopWeakBars(score), 'summary-loop')]
         : []),
-      button('Done', () => {
-        flushPendingRecord();
-        summaryUp(false);
-        leaveScore();
-      }, 'summary-done'),
+      doneButton,
     );
     sheet.appendChild(actions);
+    // A stored run completes the activity first and draws the transition when it has (`save`); with nothing
+    // to store — a run waiting for *How did it go?*, a Listen or Free run — it is drawn from the record now.
+    if (sessionRun && !(run && !askSelfReport)) drawNext();
 
     // With nothing heard there is nothing to be accurate *about*, so the
     // learner says how it went instead of being shown a number they did not
@@ -4569,6 +4635,9 @@ export function ScoreScreen(router: Router): HTMLElement {
         idNamesMaterial: !sightReading,
       };
       const target = encounterTarget;
+      // The session's activity is open, and this is what it plays (X1): the runner marks it active and
+      // rechecks a first-contact assumption through G2's adapter, this visit's own viewing aside.
+      void sessionRun?.opened({ itemId: item.id, ...(target.material === undefined ? {} : { material: target.material }), visit });
       historyRead = catalogIndex()
         .then((index) => index.byId, () => undefined)
         .then((byId) => historyFor(target, byId === undefined ? {} : { byId }))
@@ -5008,6 +5077,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     document.removeEventListener('visibilitychange', onVisibilityChange);
     document.removeEventListener('keydown', onKeyDown);
     if (hideTimer !== null) window.clearTimeout(hideTimer);
+    // The session's clock writes what it holds; a screen left before its summary leaves the activity as it
+    // was — active, for *Continue* — and never completes it (X1: interrupted).
+    stopSessionClock?.();
     detachInput();
     releaseWakeLock();
     session?.dispose();

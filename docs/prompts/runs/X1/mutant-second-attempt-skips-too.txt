@@ -1,0 +1,35 @@
+mutant second-attempt-skips-too in app/src/data/sessionRun.ts; npx vitest run tests/unit/sessionAdaptation.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app
+
+ ❯ tests/unit/sessionAdaptation.test.ts (12 tests | 1 failed) 10ms
+   ❯ easy success skips the redundant controlled practice (7)
+     × not on a second attempt 4ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 11 passed (12)
+   Start at  09:56:36
+   Duration  347ms (transform 76%, import 18%, tests 4%, worker 2%)
+
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/sessionAdaptation.test.ts > easy success skips the redundant controlled practice > not on a second attempt
+AssertionError: expected 'skipped' to be 'pending' // Object.is equality
+
+Expected: "pending"
+Received: "skipped"
+
+ ❯ tests/unit/sessionAdaptation.test.ts:65:36
+     63|     let r = complete(runOf(EASY), 0, 'failed');
+     64|     r = complete(r, 0, 'passed-full');
+     65|     expect(r.activities[1]?.state).toBe('pending');
+       |                                    ^
+     66|     expect(r.current).toBe(1);
+     67|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+exit=1

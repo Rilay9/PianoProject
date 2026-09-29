@@ -4775,6 +4775,69 @@ input[type='checkbox'] {
   color: var(--text-muted);
 }
 
+/* Today's session, run (X1): where the session is, above *Continue*; the
+   finish line above *Start session*; and the running card's current row, so
+   the next thing is found without reading five rows. Each line takes the row's
+   whole width, and the button stays the one filled box (R3). */
+.today-session-line,
+.today-finish {
+  flex: 1 1 100%;
+  margin: 0;
+}
+
+.today-session-line {
+  font-size: 0.9rem;
+}
+
+.today-finish__head {
+  margin: 0;
+  font-weight: 600;
+}
+
+.today-finish__detail {
+  margin: 2px 0 0;
+  font-size: 0.9rem;
+}
+
+#today-card .list-row.today-row--current {
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+/* The transition a finished activity's closing action becomes (X1, `04` §5):
+   the next step under the result, above the numbers. */
+.session-next {
+  margin: 0.5rem 0 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.16));
+  border-radius: 10px;
+}
+
+.session-next__line {
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+}
+
+.session-next__note {
+  margin: 0 0 0.25rem;
+}
+
+.session-next__time {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+}
+
+.session-next__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.score-button.score-button--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+}
+
 /* The two that change the day and the five doors under them (R3). Quiet in
    weight, still a thumb in height — the same treatment Plan's link row has.
 

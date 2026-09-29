@@ -1,0 +1,11 @@
+X1_PROBE_OUT=../docs/prompts/runs/X1/probe-head npx vitest run tests/unit/zzX1CardProbe.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  08:33:26
+   Duration  1.14s (tests 48%, transform 38%, import 14%)
+
+exit=0

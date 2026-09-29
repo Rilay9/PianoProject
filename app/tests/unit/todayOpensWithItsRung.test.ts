@@ -15,6 +15,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Router } from '../../src/router';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
+import { measured } from './helpers/measured';
 
 vi.mock('../../src/app/services', () => ({
   webMidiSource: { inputs: [] as unknown[], onStateChange: () => () => undefined },
@@ -68,6 +69,9 @@ function item(id: string, over: Partial<CatalogItem> = {}): CatalogItem {
     concepts: [],
     tags: [],
     file: `scores/${id}.mxl`,
+    // Revised (X1, L113): measured, as every bundled row is. An unmeasured option on a rung's list is refused
+    // as any automatic offer of it is (`oneGateBoundary.test.ts`), and the card here would be empty.
+    ...measured([]),
     ...over,
   } as unknown as CatalogItem;
 }
@@ -168,13 +172,18 @@ describe('Today opens a card with its rung and its slot (L50)', () => {
     expect(opened.options).toEqual({ rung: '1.2', slot: 'review' });
   });
 
+  // Revised (X1): *Start session* writes today's session first and then opens its first activity, so the
+  // navigation is awaited, and the route carries the activity's token (`session`) beside the rung and slot.
+  // Old assumption: the button opened the first populated slot at once, with no session.
   it('Start session opens the first card the same way', async () => {
     const section = await openToday();
     await vi.waitFor(() => expect(section.querySelector('#today-start')).not.toBeNull());
     navigateScore.mockClear();
     section.querySelector<HTMLButtonElement>('#today-start')?.click();
-    expect(navigateScore).toHaveBeenCalledTimes(1);
-    expect(navigateScore.mock.calls[0]?.[1]).toMatchObject({ rung: '1.2', slot: 'technique' });
+    await vi.waitFor(() => expect(navigateScore).toHaveBeenCalledTimes(1));
+    const options = navigateScore.mock.calls[0]?.[1] as { rung?: string; slot?: string; session?: string } | undefined;
+    expect(options).toMatchObject({ rung: '1.2', slot: 'technique' });
+    expect(options?.session).toMatch(/^[0-9a-z]{6,32}$/);
   });
 
   it('the daily read says it is the daily read, and names no rung for a row on none', async () => {

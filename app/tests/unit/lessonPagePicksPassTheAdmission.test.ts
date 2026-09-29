@@ -27,6 +27,7 @@ import { admittedForTeaching } from '../../src/curriculum/eligibility';
 import type { CatalogItem, Curriculum, Lesson, LessonTool, Provenance } from '../../src/curriculum/types';
 import type { Router } from '../../src/router';
 import { isPlayable, targetFor } from '../../src/ui/openItem';
+import { measuresARun } from '../../src/ui/screens/DrillScreen';
 
 /** What the mocked loader hands the screen: the curriculum and catalogue of the case being mounted. */
 const { held } = vi.hoisted(() => {
@@ -289,7 +290,7 @@ describe('every rung of the built curriculum, on the built catalogue: no automat
    * without it (what the page drew before D3c). The conditions are the page's, asked of `openItem`'s
    * helpers; the admission is the predicate's.
    */
-  function chosen(lesson: Lesson, admit: boolean): Picks {
+  function chosen(lesson: Lesson, admit: boolean, check: (item: CatalogItem) => boolean = measuresARun): Picks {
     const tool = (kind: LessonTool['kind']) => (lesson.tools ?? []).find((one) => one.kind === kind);
     const piece = (named: LessonTool | undefined): string | null => {
       if (named === undefined) return null;
@@ -300,7 +301,9 @@ describe('every rung of the built curriculum, on the built catalogue: no automat
     return {
       start: nextOf([...lesson.exerciseOptions, ...lesson.songOptions], isPlayable, admit),
       ladder: tool('ladder') === undefined ? null : nextOf(lesson.exerciseOptions, (item) => targetFor(item) === 'score', admit),
-      check: nextOf(lesson.exerciseOptions, (item) => Boolean(item.drill || item.file), admit),
+      // Revised (X1, G62): *Quick check* takes the first option whose run is measured (`measuresARun`), never a
+      // drill that judges nothing. Old assumption: any drill or file.
+      check: nextOf(lesson.exerciseOptions, check, admit),
       duet: piece(tool('duet')),
       blind: piece(tool('blind')),
     };
@@ -361,6 +364,17 @@ describe('every rung of the built curriculum, on the built catalogue: no automat
     // Quick check's button stays and says there is no drill; the duet is gone where its named item is refused.
     expect(gone.sort()).toEqual(GONE);
   });
+
+  it('Quick check takes a drill that measures a run (G62, X1): the rungs whose check moved, and where to', () => {
+    const moved: string[] = [];
+    for (const lesson of rungs) {
+      const was = chosen(lesson, true, (item) => Boolean(item.drill || item.file)).check;
+      const now = (drawn.get(lesson.id) as Picks).check;
+      if (was !== now) moved.push(`${lesson.id} check: ${String(was)} → ${String(now)}`);
+      if (now !== null) expect(measuresARun(byId.get(now) as CatalogItem), `${lesson.id} check opens ${now}`).toBe(true);
+    }
+    expect(moved.sort()).toEqual([...G62_MOVES].sort());
+  });
 });
 
 /**
@@ -372,4 +386,25 @@ describe('every rung of the built curriculum, on the built catalogue: no automat
  * clave exercise opens from its own row. A teaching-use yes on one of the grooves, or an admitted
  * exercise added to those rungs through its own seam, brings a Quick check back and changes this list.
  */
-const GONE = ['latin.3 check', 'latin.6 check'];
+// Revised (X1, G62): jam.5's Quick check joins them — its one measured option is an unapproved groove, and its
+// form tracker, which the check took before, measures nothing.
+const GONE = ['jam.5 check', 'latin.3 check', 'latin.6 check'];
+
+/**
+ * X1's G62 moves (the reviewer's row, `responses/e85c162.md`: a Quick check selection rule, a drill that
+ * measures): each rung whose Quick check took a drill that measures nothing now takes its first measured
+ * option, or — on 0.3 (the tour), 0.4 (the placement test) and jam.5 (the form tracker) — says the lesson has
+ * no drill that measures a run and opens nothing (in `GONE` above).
+ */
+const G62_MOVES = [
+  '0.1 check: drill.setup.posture-checklist → drill.technique.finger-numbers',
+  '0.3 check: drill.tour.app-basics → null',
+  '0.4 check: drill.placement.stage-0 → null',
+  'blues.4 check: drill.blues.lh-patterns → exercise.rhythm.syncopated.4bar',
+  'blues.5 check: drill.improv.blues-backing → exercise.arpeggio7.f-dominant7.2oct.both',
+  'improv.3 check: drill.improv.loop-i-iv-v → exercise.cadence.c.root',
+  'improv.5 check: drill.improv.blues-backing → drill.improv.call-response',
+  'jam check: drill.jam.form-tracker → exercise.rhythm.shuffle-eighths.4bar',
+  'jam.5 check: drill.jam.form-tracker → null',
+  'jam.7 check: drill.jam.form-tracker → exercise.blues-scale.e-flat.1oct.both',
+];

@@ -1,0 +1,32 @@
+specs-exist check: tests/e2e/zz-duet-probe.spec.ts
+  exists: tests/e2e/zz-duet-probe.spec.ts
+npx playwright test --config playwright.x1-4373.config.ts --workers=2 tests/e2e/zz-duet-probe.spec.ts
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/planStore.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/data/backup.ts, src/data/rungStates.ts, src/ui/screens/DrillScreen.ts, src/ui/screens/LessonScreen.ts, src/ui/screens/PlanScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [plugin builtin:vite-reporter] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/evidenceJob.ts is dynamically imported by src/main.ts but also statically imported by src/ui/screens/SettingsScreen.ts, dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [PLUGIN_TIMINGS] Plugin hooks ran for 8.5s. The build took 3.9s. Hooks such as `closeBundle` run after the build ends, so hook time can be more than build time.
+[WebServer] The slowest hooks, timed inside each callback (the wait before a callback starts is excluded, the time it awaits is included):
+[WebServer]   - vite-plugin-pwa:build closeBundle (100%, 5.0s, 1 call)
+[WebServer]   - vite:prepare-out-dir renderStart (85%, 3.3s, 1 call)
+[WebServer] Additional hook time came from the hooks below and from hooks under 1s.
+[WebServer] 2 hooks are listed without a time. Their calls overlapped, so the time inside one call includes work from other calls. To find their cost, profile the build with `node --cpu-prof`:
+[WebServer]   - vite:asset load (48 calls)
+[WebServer]   - vite:worker load (2 calls)
+[WebServer] See https://rolldown.rs/reference/InputOptions.checks#plugintimings for more details.
+[WebServer] 
+
+Running 1 test using 1 worker
+
+X1-PROBE at once: ["exercise.broken-octaves.a.1oct.left","exercise.broken7.a-dominant7.both","exercise.double-sixth.c.1oct.left","exercise.double-third.c.1oct.left","exercise.pedal.half-pedal.a","exercise.independence.c.2v3","exercise.octave-scale.a.1oct.both","exercise.tremolo.c.left","exercise.broken-octaves.a.1oct.right","exercise.broken7.a-flat-dominant7.both","exercise.double-sixth.c.1oct.right","exercise.double-third.c.1oct.right","exercise.independence.c.3v2","song.classical.czerny-the-school-of-velocity-op-299-no-5.pdmx","song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx","song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx"]
+X1-PROBE later: ["exercise.broken-octaves.a.1oct.left","exercise.broken7.a-dominant7.both","exercise.double-sixth.c.1oct.left","exercise.double-third.c.1oct.left","exercise.pedal.half-pedal.a","exercise.independence.c.2v3","exercise.octave-scale.a.1oct.both","exercise.tremolo.c.left","exercise.broken-octaves.a.1oct.right","exercise.broken7.a-flat-dominant7.both","exercise.double-sixth.c.1oct.right","exercise.double-third.c.1oct.right","exercise.independence.c.3v2","song.classical.czerny-the-school-of-velocity-op-299-no-5.pdmx","song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx","song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx"]
+X1-PROBE duet buttons: 1; sections: ["lesson-back","lesson-where","lesson-status","lesson-start-block","lesson-start","lesson-start-what","lesson-actions","lesson-state","lesson-know","lesson-check","lesson-done","lesson-counts","lesson-lock","lesson-tools-block","lesson-tools","lesson-tool-ladder","lesson-tool-duet","lesson-guide-link","lesson-open-guide","lesson-exercises","lesson-songs","lesson-paper-block","lesson-paper","lesson-more","lesson-needs","lesson-find","lesson-find-more","lesson-import-for","lesson-have-paper","lesson-paper-hint","lesson-text","lesson-videos"]
+  ok 1 tests\e2e\zz-duet-probe.spec.ts:7:1 › technique.7: the rows at once, after a moment, and the duet (3.8s)
+
+  1 passed (33.0s)
+exit=0

@@ -1,0 +1,38 @@
+mutant hidden-time-counts in app/src/ui/sessionRunner.ts; npx vitest run tests/unit/sessionClock.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a193e270fb5e43820/app
+
+ ❯ tests/unit/sessionClock.test.ts (2 tests | 1 failed) 1123ms
+   ❯ the visible-time clock (2)
+     × visible time counts; hidden time and time after the screen is gone do not 1066ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  09:56:49
+   Duration  2.48s (tests 47%, environment 29%, transform 19%, import 5%)
+
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/sessionClock.test.ts > the visible-time clock > visible time counts; hidden time and time after the screen is gone do not
+AssertionError: expected 1805000 to be 15000 // Object.is equality
+
+- Expected
++ Received
+
+- 15000
++ 1805000
+
+ ❯ tests/unit/sessionClock.test.ts:62:58
+     60|     vi.advanceTimersByTime(5_000);
+     61|     stop?.();
+     62|     await vi.waitFor(async () => expect(await elapsed()).toBe(15_000));
+       |                                                          ^
+     63|     // After the screen is gone, nothing more.
+     64|     vi.advanceTimersByTime(10 * CLOCK_FLUSH_MS);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+exit=1

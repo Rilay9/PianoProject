@@ -15,6 +15,8 @@ import { withScoreMenu } from './scoreControls';
 
 const READING_ROW = 'drill.reading.sight-reading-2-right';
 const WORDS = 'Shifting position: something new, for a skill you have shown — it should feel different';
+/** The card's one line (U71, X1): the skill and "something new", cut at the clause; the whole of `WORDS` is the transition's. */
+const CARD_LINE = 'Shifting position: something new';
 
 type Hooked = Window & {
   __pianopath?: {
@@ -173,11 +175,15 @@ test.describe('the transfer offer (D4)', () => {
     const before = (await skillLine.textContent()) ?? '';
     expect(before).toContain('proficient');
 
-    // Today: the new slot is the offer, in its own words.
+    // Today: the new slot is the offer, in its own words. Revised (X1, U71): at 342 px the card's one line
+    // was cut to "Shifting position: something n…", losing the words that make it an invitation; it is now
+    // the skill and "something new", whole, and the composition's full words (`WORDS`) are the ones the
+    // session's transition says. Old assumption: the whole line on the card.
     await page.goto('/');
     const offer = page.locator('#today-card .list-row[data-slot="new"][data-claim="transfer"]');
     await expect(offer).toHaveCount(1, { timeout: 30_000 });
-    await expect(offer.locator('.list-row__sub')).toHaveText(WORDS);
+    await expect(offer.locator('.list-row__sub')).toHaveText(CARD_LINE);
+    expect(WORDS.startsWith(CARD_LINE)).toBe(true);
     await expect(page.locator('#today-card [data-claim="transfer"]')).toHaveCount(1);
     const itemId = (await offer.getAttribute('data-item')) ?? '';
     expect(itemId).toMatch(/^exercise\.pentatonic\./);
