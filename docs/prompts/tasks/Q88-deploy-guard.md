@@ -33,3 +33,5 @@ The reviewer's Q86 ruling designed this guard; a workflow change, so its handoff
 ## Report
 
 Judgement first: the guard's two logs (unfetched, full) as a runner would print them; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes. Entry 151; every run file under `docs/prompts/runs/Q88/`; the entry as `docs/prompts/runs/Q88/ENTRY.md`, starting `### Entry 151 — Q88`.
+
+**Architecture approved 2026-09-29** (`responses/questions-ea14b1fe.md`); the step's read-back on the handoff.

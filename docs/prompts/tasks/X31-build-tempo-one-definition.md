@@ -41,3 +41,5 @@ If music21's `MetronomeMark` lacks `getQuarterBPM()` in the installed version, s
 Judgement first: the corpus table's three counts and the largest level moves, read as a learner would meet them; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes. Entry 144; every run file under `docs/prompts/runs/X31/`; the entry as `docs/prompts/runs/X31/ENTRY.md`, starting `### Entry 144 — X31`.
 
 **Landed 2026-09-29** (Entry 144; aa16c702, merged 91790446); handoff `handoffs/aa16c702.md`.
+
+**Approved with one required change 2026-09-29** (`responses/aa16c702.md`): the late-tempo opening keeps the default where a note has sounded (X31a); the rest as built; the Satie gap stays named.

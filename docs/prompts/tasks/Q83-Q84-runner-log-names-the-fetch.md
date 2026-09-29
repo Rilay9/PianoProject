@@ -34,3 +34,5 @@ Q80's follow-ups 2 and 3 (P3), one lane: a narrow fix-forward under 788427c with
 Judgement first: the build step's log lines under *validate* before and after on the unfetched build, as a runner would show them; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes. Entry 148; every run file under `docs/prompts/runs/Q83-Q84/`; the entry as `docs/prompts/runs/Q83-Q84/ENTRY.md`, starting `### Entry 148 — Q83 + Q84`.
 
 **Landed 2026-09-29** (Entry 148; c80e33f2, merged 36282f6f); handoff `handoffs/c80e33f2.md`.
+
+**Accepted 2026-09-29** (`responses/c80e33f2.md`, APPROVE). Q89 ruled: fetch warnings first for display, from structured knowledge only.

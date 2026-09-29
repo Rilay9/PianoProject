@@ -37,3 +37,5 @@ If some automatic chooser cannot read the predicate without a second `projectIn`
 ## Report
 
 Judgement first: the thin-catalogue card before and after with a paused mastered piece, and the rung-assigned case; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes. Entry 150; every run file under `docs/prompts/runs/G1e/`; the entry as `docs/prompts/runs/G1e/ENTRY.md`, starting `### Entry 150 — G1e`.
+
+**Boundary changed on the reviewer's word 2026-09-29** (`responses/questions-ea14b1fe.md`): the one predicate applies to rung-owned automatic piece choice and the rung step too; no silent revival; applied before closure.

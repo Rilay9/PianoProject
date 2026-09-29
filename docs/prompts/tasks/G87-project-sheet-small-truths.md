@@ -31,3 +31,5 @@ G1b's follow-ups 3 and 7 (P3), released by G1b's acceptance; a narrow fix-forwar
 ## Report
 
 Judgement first: the sheet's date box and the Stage 9 Start line before and after at 342 × 740; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes. Entry 153; every run file under `docs/prompts/runs/G87/`; the entry as `docs/prompts/runs/G87/ENTRY.md`, starting `### Entry 153 — G87`.
+
+**Brief approved 2026-09-29** (`responses/questions-ea14b1fe.md`).

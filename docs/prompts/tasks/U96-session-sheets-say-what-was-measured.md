@@ -31,3 +31,5 @@ X1's follow-ups 2 and 4 (P3), released by X1's acceptance; a narrow fix-forward 
 ## Report
 
 Judgement first: the two sheets before and after at 342 × 740; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes. Entry 152; every run file under `docs/prompts/runs/U96/`; the entry as `docs/prompts/runs/U96/ENTRY.md`, starting `### Entry 152 — U96`.
+
+**Brief approved 2026-09-29** (`responses/questions-ea14b1fe.md`).
