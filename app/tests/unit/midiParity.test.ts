@@ -16,9 +16,11 @@
  * `two-hands.mid` converted with `hands=auto`, which is what the app passes
  * and what puts the **hands rule** itself under comparison: one note track is
  * split, two are kept as recorded, and `crossed-hands.mid` is written so
- * those two answers differ. `build/` is gitignored (the recordings are not redistributable,
- * and `build/midi-real/SOURCE.md` says so), so these tests **skip with a
- * message naming the script** rather than passing when it has not been run.
+ * those two answers differ; and `tools/midi-cleanup/tests/fixtures/one-track-two-hands.mid`,
+ * the committed file that is split (Q46). `build/` is gitignored (the recordings
+ * are test input the project never commits; `fetch_maestro.py` fetches them and
+ * `build/midi-real/SOURCE.md` records where from), so without the reference these
+ * tests **fail with a message naming the script** rather than passing (Q24).
  *
  * **What parity proves.** That the port decides what the converter decides.
  * It says nothing about whether either is right about the music — nothing here
@@ -206,8 +208,9 @@ describe('the port agrees with the Python converter', () => {
       // Skipped by design for a reference that holds no split: `keep`, or `auto` on a
       // file with two note tracks, which both sides keep as recorded; the hands
       // decision itself is compared above. A split is written only for `split` (the
-      // MAESTRO performances) or `auto` on a one-track file, and no committed fixture
-      // is converted either way, so this runs only where build/midi-real/ holds them.
+      // MAESTRO performances) or `auto` on a one-track file: `one-track-two-hands.mid`
+      // is that file, committed, so this runs on every run (Q46), and on the three
+      // performances wherever build/midi-real/ holds them (in CI, always: Q47).
       it.skipIf(reference.handSplit === null)('splits the hands the same way', () => {
         const split = splitHands(report.events);
         expect(eventsOf(split.right)).toEqual(asEvents(reference.handSplit?.right ?? []));

@@ -27,7 +27,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from add_technique_units import UNITS, build_unit, merge_unit  # noqa: E402
-from common import CONTENT_SRC, read_json  # noqa: E402
+from common import BUILD_DIR, CONTENT_SRC, read_json  # noqa: E402
 
 CURRICULUM = CONTENT_SRC / "curriculum"
 
@@ -84,7 +84,9 @@ class TestAgainstTheCurriculumAsItStands(unittest.TestCase):
     """The real files, not a fixture: this is the run that did the damage."""
 
     def setUp(self) -> None:
-        catalog_path = Path("build") / "catalog.generated.json"
+        # From the repository, not the working directory (Q46): `Path("build")` found the
+        # catalogue only when the tests were started from the root.
+        catalog_path = BUILD_DIR / "catalog.generated.json"
         if not catalog_path.is_file():
             self.fail(
                 f"{catalog_path.resolve()} is missing, and these tests read the generated "
