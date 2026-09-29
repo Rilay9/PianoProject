@@ -19,25 +19,31 @@
  * plus the reason text, the declared large-hand voicing (D0 finding 5), the rung
  * requirement that only evidence can meet (the reviewer's constraint (a)), the
  * readiness floor the brief asked to compare, and the density rule held equal to the
- * build's on every built item.
+ * build's on every built item; since D3a and E1a, the teaching-use admission for a
+ * music-promising generated item and for an excerpt.
  */
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
 import {
+  admittedForTeaching,
   eligibleFor,
   OPPORTUNITY_DENSITY,
   targetDemandsFor,
   targetSkillsFor,
+  uncoped,
   usefulDensity,
   type Learner,
 } from '../../src/curriculum/eligibility';
+import { isExcerpt } from '../../src/curriculum/excerpt';
 import { indexCatalog, tieredAlternatives } from '../../src/curriculum/selectors';
 import { taughtAtRung } from '../../src/curriculum/session';
 import { SHIPPED_SKILL_ACTIVATION, EVERY_DECLARED_SKILL } from '../../src/curriculum/skillActivation';
 import type { CatalogItem, Curriculum } from '../../src/curriculum/types';
 import { addImport, correctImportHands, importToCatalogItem } from '../../src/data/importStore';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
+import { bits, identityOf, resolve, type HumanEvent, type Identity } from '../../src/review/record';
 import { swapTierWords } from '../../src/ui/help';
 import { clearFakeIndexedDb, fakeFile, useFakeIndexedDb } from './helpers/idb';
 import { measured, unmeasured } from './helpers/measured';
@@ -428,13 +434,33 @@ describe('a generated item that promises music, without an affirmative teaching-
 });
 
 /**
+ * The item with a teaching-use decision on its current identity, as D2's build writes it: the bit
+ * (`yes` true; `no` and `fix` false) and its `reviewed` fact. No excerpt in the built catalogue has
+ * one, so every row this makes is constructed from a built one.
+ */
+function withTeachingUse(item: CatalogItem, value: 'yes' | 'no' | 'fix'): CatalogItem {
+  const provenance = item.provenance as NonNullable<CatalogItem['provenance']>;
+  return {
+    ...item,
+    provenance: {
+      ...provenance,
+      facts: { ...provenance.facts, reviewedTeaching: { kind: 'reviewed', via: 'content/review/decisions.jsonl', value } },
+      review: { ...provenance.review, teaching: value === 'yes' },
+    },
+  };
+}
+
+/**
  * Q8's case on the real corpus (E1 item 7; Part 24's adversaries 1 and 2): the whole of Anh. 113
  * is refused for a Stage 3 want — it carries sixteenths (taught at no rung) and triplets (4.5),
- * which `classical.3`, its rung, has not taught — and its approved excerpt is eligible, measured on
- * the cut; the parent's demands are the parent's, unchanged by the cut. No excerpt branch in the
- * gate: the cut's measured demands are what it reads.
+ * which `classical.3`, its rung, has not taught — and its excerpt of bars 25–32 (the boundary
+ * approved by the rules, E1) is eligible there once a teaching-use `yes` is on the cut, and refused
+ * until then (E1a): measured on the cut, the parent's demands the parent's, unchanged by the cut.
+ * No excerpt branch in the gate's two questions: the cut's measured demands are what they read.
+ * The teaching-use admission before them is the one every excerpt and every music-promising
+ * generated item passes.
  */
-describe('Anh. 113 whole and in its excerpt, through the one gate (E1, Q8)', () => {
+describe('Anh. 113 whole and in its excerpt, through the one gate (E1, Q8; revised by E1a)', () => {
   const catalog = JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', 'catalog.json'), 'utf8')) as CatalogItem[];
   const curriculum = JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', 'curriculum.json'), 'utf8')) as Curriculum;
   const WHOLE = 'song.classical.bach-menuet-bwv-anh-113.pdmx';
@@ -449,11 +475,18 @@ describe('Anh. 113 whole and in its excerpt, through the one gate (E1, Q8)', () 
     expect(result.verdict === 'ineligible' && result.why === 'untaught' ? [...result.demands].sort() : []).toEqual(['rhythm.sixteenths', 'rhythm.triplets']);
   });
 
-  it('its approved excerpt is eligible there, for the key signature its bars establish, and the parent is unchanged', () => {
-    expect(excerpts.length, 'an approved excerpt of Anh. 113 is in the built catalogue').toBeGreaterThan(0);
+  it('its excerpt is eligible there once approved for teaching use, for the key signature its bars establish, and refused until then; the parent is unchanged', () => {
+    expect(excerpts.length, 'an excerpt of Anh. 113 is in the built catalogue').toBeGreaterThan(0);
     for (const excerpt of excerpts) {
-      expect(eligibleFor(excerpt, atClassical3, { for: 'equivalent' }).verdict, excerpt.id).toBe('eligible');
-      expect(eligibleFor(excerpt, atClassical3, { for: 'demand', demand: 'key.signature' }), excerpt.id).toMatchObject({
+      // As built: no person has decided its teaching use, so no automatic offer takes it.
+      expect(excerpt.provenance?.review.teaching, excerpt.id).toBeNull();
+      const refused = { verdict: 'ineligible', why: 'teaching-use-not-approved', teaching: null };
+      expect(eligibleFor(excerpt, atClassical3, { for: 'equivalent' }), excerpt.id).toEqual(refused);
+      expect(eligibleFor(excerpt, atClassical3, { for: 'demand', demand: 'key.signature' }), excerpt.id).toEqual(refused);
+      // Once a yes is on the cut (the built row with `teaching: true` set, constructed): eligible.
+      const approved = withTeachingUse(excerpt, 'yes');
+      expect(eligibleFor(approved, atClassical3, { for: 'equivalent' }).verdict, excerpt.id).toBe('eligible');
+      expect(eligibleFor(approved, atClassical3, { for: 'demand', demand: 'key.signature' }), excerpt.id).toMatchObject({
         verdict: 'eligible',
         practises: 'key.signature',
       });
@@ -462,6 +495,139 @@ describe('Anh. 113 whole and in its excerpt, through the one gate (E1, Q8)', () 
     }
     expect(whole?.demands).toContain('rhythm.sixteenths');
     expect(whole?.demands).toContain('rhythm.triplets');
+  });
+});
+
+/**
+ * E1a (the reviewer's required change on E1, `responses/8326ff3.md`; Q59; the brief approved in
+ * `responses/7bdd8a0.md`): an excerpt is music whose teaching suitability is not established until a
+ * person says so, exactly like a study, so the one admission reads its stored bit as it reads a
+ * music-promising generated item's. Measured notes, a boundary approved by the rules and a rung's
+ * listing establish no teaching use. The built Anh. 113 cut has otherwise eligible measured demands at
+ * `classical.3`; the build declares no target skill on a cut, so the skill and requirement wants are
+ * asked of the same row with `key-signature` declared (constructed). A `yes` recorded on an older cut
+ * of the same definition resolves to nothing on the current cut, because the identity a decision binds
+ * to is the cut file's sha256 (D2; the app's own implementation of the resolution, `review/record.ts`):
+ * the bit stays `null` and the cut unadmitted. The build side of the same proof is
+ * `test_review_record.py` › `TestAStaleDecisionOnAnOlderCutAdmitsNothing`.
+ */
+describe('an excerpt reaches an automatic offer only with a current teaching-use yes on its cut (E1a)', () => {
+  const catalog = JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', 'catalog.json'), 'utf8')) as CatalogItem[];
+  const curriculum = JSON.parse(readFileSync(join(process.cwd(), 'public', 'content', 'curriculum.json'), 'utf8')) as Curriculum;
+  const CUT = 'excerpt.classical.bach-menuet-bwv-anh-113.pdmx.b25-32';
+  const cut = catalog.find((one) => one.id === CUT) as CatalogItem;
+  const atClassical3: Learner = { taught: taughtAtRung(curriculum, 'classical.3') ?? ((): boolean => false) };
+  /** A learner who copes with every demand anything carries. */
+  const COPES: Learner = { taught: () => true };
+  /** The row with the key signature declared as its target skill: what the skill and requirement wants ask of. */
+  const declaring = (item: CatalogItem): CatalogItem => ({ ...item, targetSkills: ['key-signature'] });
+  const WANTS = [
+    { for: 'skill', skill: 'key-signature', activation: EVERY_DECLARED_SKILL },
+    { for: 'requirement', skill: 'key-signature', activation: EVERY_DECLARED_SKILL },
+    { for: 'demand', demand: 'key.signature' },
+    { for: 'equivalent' },
+  ] as const;
+
+  it('the built cut is an excerpt no person has decided on, whose bars establish the key signature and carry nothing classical.3 has not taught', () => {
+    expect(cut, `${CUT} is not in the built catalogue — has the content build run?`).toBeDefined();
+    expect(isExcerpt(cut)).toBe(true);
+    expect(cut.provenance?.review.teaching, CUT).toBeNull();
+    expect(cut.provenance?.facts.promise, CUT).toBeUndefined();
+    expect(cut.measurement?.status === 'measured' ? cut.measurement.established : [], CUT).toContain('key.signature');
+    expect(uncoped(cut, atClassical3), CUT).toEqual([]);
+  });
+
+  it('undecided, and with a no or a fix on record, it is refused for a skill, a requirement, a demand its bars establish and an equivalent: teaching-use-not-approved, the bit kept', () => {
+    const rows = [
+      [declaring(cut), null],
+      [declaring(withTeachingUse(cut, 'no')), false],
+      [declaring(withTeachingUse(cut, 'fix')), false],
+    ] as const;
+    for (const [row, teaching] of rows) {
+      expect(admittedForTeaching(row), `${CUT} at ${String(teaching)}`).toBe(false);
+      for (const want of WANTS) {
+        expect(eligibleFor(row, atClassical3, want), `${CUT} at ${String(teaching)} for ${want.for}`).toEqual({
+          verdict: 'ineligible',
+          why: 'teaching-use-not-approved',
+          teaching,
+        });
+      }
+    }
+  });
+
+  it('exploration opens it whatever the bit: the one exemption, deliberate', () => {
+    for (const row of [cut, withTeachingUse(cut, 'no'), withTeachingUse(cut, 'fix'), withTeachingUse(cut, 'yes')]) {
+      expect(eligibleFor(row, atClassical3, { for: 'exploration' }), `${CUT} at ${String(row.provenance?.review.teaching)}`).toMatchObject({
+        verdict: 'eligible',
+        for: 'exploration',
+      });
+    }
+  });
+
+  it('with a yes on the cut it is admitted to the existing gates: eligible at classical.3 for each want, still refused for a learner who has not met what it carries', () => {
+    const approved = declaring(withTeachingUse(cut, 'yes'));
+    expect(admittedForTeaching(approved)).toBe(true);
+    expect(eligibleFor(approved, atClassical3, WANTS[0])).toMatchObject({ verdict: 'eligible', for: 'skill', practises: 'key-signature' });
+    expect(eligibleFor(approved, atClassical3, WANTS[1])).toMatchObject({ verdict: 'eligible', for: 'requirement', practises: 'key-signature' });
+    expect(eligibleFor(approved, atClassical3, WANTS[2])).toMatchObject({ verdict: 'eligible', for: 'demand', practises: 'key.signature' });
+    expect(eligibleFor(approved, atClassical3, WANTS[3])).toMatchObject({ verdict: 'eligible', for: 'equivalent' });
+    // A learner taught steps and skips only: the cut's bass clef, ledger lines, leaps, eighths and key signature are not met.
+    expect(eligibleFor(approved, STEPS_AND_SKIPS, WANTS[2])).toMatchObject({ verdict: 'ineligible', why: 'untaught' });
+  });
+
+  it('every excerpt the build cut is undecided, admitted to no automatic offer and open to exploration', () => {
+    const cuts = catalog.filter(isExcerpt);
+    expect(cuts.length, 'no excerpt in the built catalogue').toBeGreaterThan(0);
+    for (const excerpt of cuts) {
+      expect(excerpt.provenance?.review.teaching, excerpt.id).toBeNull();
+      expect(admittedForTeaching(excerpt), excerpt.id).toBe(false);
+      expect(eligibleFor(excerpt, COPES, { for: 'equivalent' }), excerpt.id).toEqual({ verdict: 'ineligible', why: 'teaching-use-not-approved', teaching: null });
+      expect(eligibleFor(excerpt, COPES, { for: 'exploration' }).verdict, excerpt.id).toBe('eligible');
+    }
+  });
+
+  it('a yes recorded on an older cut of the same definition admits nothing: the current cut resolves no decision, its bit null, the admission false, the verdict not approved', () => {
+    const sha256 = createHash('sha256')
+      .update(readFileSync(join(process.cwd(), 'public', 'content', cut.file as string)))
+      .digest('hex');
+    const current = identityOf(cut, sha256);
+    expect(current).toEqual({ kind: 'file', sha256 });
+    /** An earlier cut's sha256 (constructed; the build side makes a real one from a changed parent). */
+    const OLDER: Identity = { kind: 'file', sha256: 'e1a0'.repeat(16) };
+    expect(OLDER).not.toEqual(current);
+    const yes = (event: string, identity: Identity): HumanEvent => ({
+      v: 1,
+      event,
+      item: CUT,
+      identity,
+      dimension: 'goodTeachingUse',
+      value: 'yes',
+      basis: 'heard',
+      category: 'usefulness',
+      reason: 'a constructed decision for the staleness case',
+      by: 'A. Reviewer',
+      at: '2026-09-28T10:00:00.000Z',
+    });
+    /** The row as the build fills it from a record: the bit of the current decision on the cut's current identity. */
+    const built = (events: HumanEvent[]) => {
+      const { decided, status } = resolve(events, (item) => (item === CUT ? current : undefined));
+      const provenance = cut.provenance as NonNullable<CatalogItem['provenance']>;
+      return { status, row: { ...cut, provenance: { ...provenance, review: bits(decided.get(CUT)) } } };
+    };
+
+    const stale = built([yes('ev-e1a-older-cut', OLDER)]);
+    expect(stale.status.get('ev-e1a-older-cut')).toBe('stale');
+    expect(stale.row.provenance.review.teaching).toBeNull();
+    expect(admittedForTeaching(stale.row)).toBe(false);
+    expect(eligibleFor(stale.row, atClassical3, { for: 'equivalent' })).toEqual({ verdict: 'ineligible', why: 'teaching-use-not-approved', teaching: null });
+    expect(eligibleFor(stale.row, atClassical3, { for: 'demand', demand: 'key.signature' })).toEqual({ verdict: 'ineligible', why: 'teaching-use-not-approved', teaching: null });
+
+    // The same yes on the cut as it is now: current, the bit true, admitted.
+    const fresh = built([yes('ev-e1a-this-cut', current)]);
+    expect(fresh.status.get('ev-e1a-this-cut')).toBe('current');
+    expect(fresh.row.provenance.review.teaching).toBe(true);
+    expect(admittedForTeaching(fresh.row)).toBe(true);
+    expect(eligibleFor(fresh.row, atClassical3, { for: 'equivalent' })).toMatchObject({ verdict: 'eligible', for: 'equivalent' });
   });
 });
 

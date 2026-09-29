@@ -47,18 +47,23 @@
  * option and an authored alternative included, since authorship establishes the
  * relationship and never that unheard generated music is fit to teach) as
  * `teaching-use-not-approved`, and passes to the questions only for exploration; the
- * Library does not call this gate. A drill's promise is its contract, and a notated
- * item's notes are its truth, so neither is touched. The route to `true` is D2's record:
- * a `goodTeachingUse: yes` on the item's current identity, merged and built. The same
- * reading, exported alone as `admittedForTeaching` (D3b), is what the session card's
- * rows drawn straight from a rung's list pass (`session.usable`): one definition, two
- * askers.
+ * Library does not call this gate. **An excerpt is refused the same way** (E1a; the
+ * reviewer's required change on E1 and Q59): a passage cut from a piece is music whose
+ * teaching suitability is not established until a person says so, and its measured notes,
+ * a boundary approved by the rules and a rung's listing establish none of it. A drill's
+ * promise is its contract, and a notated song's notes are its truth, so neither is
+ * touched. The route to `true` is D2's record: a `goodTeachingUse: yes` on the item's
+ * current identity, merged and built — for an excerpt, the cut file's sha256, so a
+ * decision on an earlier cut of the same definition fills nothing. The same reading,
+ * exported alone as `admittedForTeaching` (D3b), is what the session card's rows drawn
+ * straight from a rung's list pass (`session.usable`): one definition for every asker.
  */
 import densityJson from '../../../content/sources/opportunity-density.json';
 import { READING_CONTROLS } from '../engine/readingControls';
 import { sightReadingOptionsFor } from '../engine/sightReading';
 import { LADDER_STATES, type LadderState } from '../evidence/ladder';
 import { VOCABULARY_V0, type Vocabulary } from '../evidence/vocabulary';
+import { isExcerpt } from './excerpt';
 import { declaredSkills, SHIPPED_SKILL_ACTIVATION, skillsInForce, type SkillActivation } from './skillActivation';
 import type { CatalogItem, Measurement } from './types';
 
@@ -144,9 +149,9 @@ export type Eligibility =
   | { verdict: 'ineligible'; why: 'no-learner' }
   | { verdict: 'ineligible'; why: 'physical'; prerequisite: string; alternative: string }
   /**
-   * A generated item whose family promises music for its recipe, with no affirmative teaching-use
-   * decision (D3a): `teaching` is the stored bit — `null`, no person has decided; `false`, a `no` or
-   * a `fix` on record — refused alike and never collapsed. Said as "not approved for teaching use",
+   * A generated item whose family promises music for its recipe (D3a), or an excerpt (E1a), with no
+   * affirmative teaching-use decision: `teaching` is the stored bit — `null`, no person has decided;
+   * `false`, a `no` or a `fix` on record — refused alike and never collapsed. Said as "not approved for teaching use",
    * never "not yet reviewed", which would be false of a reviewed rejection.
    */
   | { verdict: 'ineligible'; why: 'teaching-use-not-approved'; teaching: null | false };
@@ -274,25 +279,31 @@ function untrustedOf(item: CatalogItem): readonly string[] | undefined {
 }
 
 /**
- * The stored teaching-use bit of a generated item whose family promises music for its recipe,
- * where it is not an affirmative decision (D3a): `null` undecided, `false` a `no` or a `fix` on
- * record; `undefined` for an approved one and for anything that does not promise music.
+ * The stored teaching-use bit of music whose teaching suitability rests on a person's decision, where
+ * it is not an affirmative one: a generated item whose family promises music for its recipe (D3a) and
+ * an excerpt (E1a) — `null` undecided (or no record at all), `false` a `no` or a `fix` on record;
+ * `undefined` for an approved one and for anything else (a drill, a runtime reading row, a notated
+ * song). The bit is the build's (`review.fill_reviewed`), filled only from a decision on the item's
+ * current identity; for an excerpt that is the cut file's sha256, so a `yes` on an earlier cut of the
+ * same definition leaves it `null` here.
  */
 function unapprovedMusic(item: CatalogItem): null | false | undefined {
   const provenance = item.provenance;
-  if (provenance?.facts.promise?.value !== 'music') return undefined;
-  return provenance.review.teaching === true ? undefined : provenance.review.teaching;
+  if (provenance?.facts.promise?.value !== 'music' && !isExcerpt(item)) return undefined;
+  const teaching = provenance?.review.teaching;
+  return teaching === true ? undefined : teaching === false ? false : null;
 }
 
 /**
- * The teaching-use admission, alone (D3b; the reviewer's required change on D3a): false only for a
- * generated item whose family promises music for its recipe and has no affirmative teaching-use
- * decision; true for everything else — a drill, a runtime reading row, a notated item. The same
- * reading `eligibleFor` makes (`unapprovedMusic`, defined once), for the session card's paths that
- * take an item straight from a rung's list without asking the gate — a rung's `runs`, `done` and
- * `measure` asks, the fallback ladder's rung and prerequisite steps, the jam slot, the exposure rule —
- * which `session.usable` puts through it: an authored placement is not a teaching-use decision.
- * Exploration and the Library never ask it.
+ * The teaching-use admission, alone (D3b; the reviewer's required change on D3a; extended to excerpts
+ * by E1a): false for a generated item whose family promises music for its recipe and for an excerpt,
+ * each without an affirmative teaching-use decision on its current identity; true for everything
+ * else — a drill, a runtime reading row, a notated song. The same reading `eligibleFor` makes
+ * (`unapprovedMusic`, defined once), for the paths that take an item straight from a rung's list
+ * without asking the gate — the session card's `runs`, `done` and `measure` asks, the fallback
+ * ladder's rung and prerequisite steps, the jam slot, the exposure rule, which `session.usable` puts
+ * through it: an authored placement is not a teaching-use decision. No offer path reads the promise
+ * fact or the bit beside it. Exploration and the Library never ask it.
  */
 export function admittedForTeaching(item: CatalogItem): boolean {
   return unapprovedMusic(item) === undefined;
@@ -305,7 +316,7 @@ export function eligibleFor(candidate: CatalogItem, learner: Learner, want: Want
     // D0 finding 5: a declared large-hand voicing is not recommended until its smaller-hand alternative reaches the learner.
     return { verdict: 'ineligible', why: 'physical', prerequisite: physical.prerequisite, alternative: physical.alternative };
   }
-  // D3a: generated music nobody has approved for teaching reaches the learner only by exploration.
+  // D3a, E1a: generated music or an excerpt nobody has approved for teaching reaches the learner only by exploration.
   const teaching = unapprovedMusic(candidate);
   if (teaching !== undefined && want.for !== 'exploration') return { verdict: 'ineligible', why: 'teaching-use-not-approved', teaching };
   const measurement = measurementOf(candidate);

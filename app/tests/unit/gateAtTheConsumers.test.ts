@@ -12,7 +12,8 @@
  * repertoire piece whose new demand is only incidental.
  *
  * Since D3a and D3b, also the teaching-use admission: at the gate (D3a), and on the
- * session card's rows drawn straight from a rung's list without the gate (D3b).
+ * session card's rows drawn straight from a rung's list without the gate (D3b); since
+ * E1a, for an excerpt as for a music-promising generated item.
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -191,7 +192,8 @@ describe('the repertoire slot’s claim', () => {
  *
  * Which items promise music is read here from the contract table, rule by recipe as
  * `family_contracts.selected` reads it: the oracle, independent of the fact the build writes (the
- * app never reads the table).
+ * app never reads the table). Since E1a the oracle also names every excerpt (its `type`) without a
+ * `yes`: an excerpt is music whose teaching suitability rests on a person's decision on the cut.
  */
 type PromiseRule = { promise: string; when?: Record<string, unknown> };
 const CONTRACTS = JSON.parse(readFileSync(join(process.cwd(), '..', 'tools', 'content', 'family_contracts.json'), 'utf8')) as {
@@ -207,7 +209,8 @@ function promisesMusic(item: CatalogItem): boolean {
     Object.entries(when ?? {}).every(([name, wanted]) => (Array.isArray(wanted) ? wanted : [wanted]).includes(recipe[name]));
   return (row.promise.find((rule) => fits(rule.when)) ?? row.promise[row.promise.length - 1])?.promise === 'music';
 }
-const unapproved = (item: CatalogItem): boolean => promisesMusic(item) && item.provenance?.review.teaching !== true;
+/** What no automatic offer may take: music-promising generated items (D3a) and excerpts (E1a), each without a yes. */
+const unapproved = (item: CatalogItem): boolean => (promisesMusic(item) || item.type === 'excerpt') && item.provenance?.review.teaching !== true;
 /** The item with an affirmative teaching-use decision on its current identity, as D2's build writes it. */
 function approved(item: CatalogItem): CatalogItem {
   const provenance = item.provenance as NonNullable<CatalogItem['provenance']>;
@@ -227,7 +230,7 @@ const musical = (teaching: boolean | null): Partial<CatalogItem> => ({
 /** A learner who copes with every demand anything carries. */
 const COPES = { taught: () => true };
 
-describe('the swap sheet on the built catalogue offers no music-promising generated item without an affirmative teaching-use decision (D3a)', () => {
+describe('the swap sheet on the built catalogue offers no music-promising generated item (D3a) or excerpt (E1a) without an affirmative teaching-use decision', () => {
   const CONTENT = join(process.cwd(), 'public', 'content');
   const catalog = JSON.parse(readFileSync(join(CONTENT, 'catalog.json'), 'utf8')) as CatalogItem[];
   const curriculum = JSON.parse(readFileSync(join(CONTENT, 'curriculum.json'), 'utf8')) as Curriculum;
@@ -715,7 +718,7 @@ describe('the session card’s rows drawn straight from a rung’s list pass the
     expect(row(card(beside, [groove('ex.groove', true), drill('ex.scale'), notated('song.r')]), 'technique')).toMatchObject({ item: { id: 'ex.groove' }, claim: { kind: 'exposure' } });
   });
 
-  it('the admission is one exported predicate: refused only for a music promise without a yes; drills, notated items, reading rows and bare items admitted', () => {
+  it('the admission is one exported predicate: refused for a music promise without a yes (an excerpt, E1a, below); drills, notated songs, reading rows and bare items admitted', () => {
     expect(admittedForTeaching(groove('x', null))).toBe(false);
     expect(admittedForTeaching(groove('x', false))).toBe(false);
     expect(admittedForTeaching(groove('x', true))).toBe(true);
@@ -732,7 +735,7 @@ describe('the session card’s rows drawn straight from a rung’s list pass the
   });
 });
 
-describe('the card on the built catalogue offers no music-promising generated item without an affirmative teaching-use decision (D3b)', () => {
+describe('the card on the built catalogue offers no music-promising generated item (D3b) or excerpt (E1a) without an affirmative teaching-use decision', () => {
   const CONTENT = join(process.cwd(), 'public', 'content');
   const catalog = JSON.parse(readFileSync(join(CONTENT, 'catalog.json'), 'utf8')) as CatalogItem[];
   const curriculum = JSON.parse(readFileSync(join(CONTENT, 'curriculum.json'), 'utf8')) as Curriculum;
@@ -800,5 +803,237 @@ describe('the card on the built catalogue offers no music-promising generated it
     expect(cardAt(items, 'holiday.5', 30).find((slot) => slot.kind === 'technique')).toMatchObject({ item: { id: 'exercise.ostinato.a.arpeggio' }, claim: { kind: 'asked' } });
     expect(cardAt(items, 'jazz.9', 60).find((slot) => slot.kind === 'jam')).toMatchObject({ item: { id: 'exercise.comping.c.anticipated' }, claim: { kind: 'jam' } });
     expect(cardAt(items, 'ragtime.9', 30).find((slot) => slot.kind === 'review')).toMatchObject({ item: { id: 'exercise.secondary-rag.c.4bar' }, claim: { kind: 'rung' } });
+  });
+});
+
+/**
+ * E1a (the reviewer's required change on E1, `responses/8326ff3.md`; Q59): an excerpt is music whose
+ * teaching suitability is not established until a person's `yes` is on its cut, so the admission the
+ * gate and the card already read refuses it — no excerpt branch in any consumer. E1's rule that no tier
+ * searching the whole catalogue offers an unplaced excerpt stays; it is no longer the only guard. Here, a
+ * cut a rung lists: the card's rows (`session.usable`) and the swap sheet's lesson tier and last resort
+ * (the gate) refuse it at `teaching: null` and `false` and offer it at `true`; an unplaced one reaches
+ * no card row at any bit; and on the built catalogue, each excerpt placed as the one song of the first
+ * rung that teaches what it was cut for is offered by no card row and no swap-sheet tier until a yes, and
+ * by the lesson tier and the card's songs ask once one is on it.
+ */
+describe('a rung-listed excerpt passes the same admission on the card and the swap sheet; an unplaced one reaches neither (E1a)', () => {
+  const TODAY = new Date(2026, 9, 20, 9);
+  const REFUSED = [null, false] as const;
+  /** A cut as the build writes one: its own file and measurement, the stored teaching-use bit. */
+  const cut = (id: string, teaching: boolean | null): CatalogItem => ({
+    id,
+    type: 'excerpt',
+    title: id,
+    level: 2,
+    hands: 'both',
+    tracks: ['core'],
+    concepts: [],
+    file: `scores/excerpts/${id}.mxl`,
+    excerptOf: 'song.parent',
+    ...measured(['interval.step', 'interval.skip']),
+    provenance: {
+      source: 'excerpt',
+      facts: {},
+      review: { score: null, teaching },
+      excerpt: { of: 'song.parent', fromBar: 1, toBar: 4, selection: 'both', cutVersion: 1, parentSha256: 'a'.repeat(64), key: 'b'.repeat(64) },
+    },
+  });
+  const exercise = (id: string): CatalogItem => ({ id, type: 'exercise', title: id, level: 1.5, hands: 'right', tracks: ['core'], concepts: [], file: `scores/${id}.mxl`, ...measured([]) });
+  /** P before R; R builds on P and asks for a run of one of its songs, which it lists. */
+  const listing = (songs: string[]): Curriculum => ({
+    version: 1,
+    tracks: [{ id: 'core', title: 'Core', description: '', startsAtStage: 0 }],
+    stages: [
+      {
+        number: 1,
+        title: 'One',
+        summary: '',
+        units: [
+          {
+            id: 'u',
+            title: 'U',
+            track: 'core',
+            lessons: [
+              lesson('P', { exerciseOptions: ['ex.pre'], requirements: [{ kind: 'runs', from: 'exercises', count: 1 }] }),
+              lesson('R', { prerequisites: ['P'], exerciseOptions: ['ex.r'], songOptions: songs, requirements: [{ kind: 'runs', from: 'songs', count: 1 }] }),
+            ],
+          },
+        ],
+      },
+    ],
+  });
+  const card = (curriculum: Curriculum, items: CatalogItem[]): SessionSlot[] =>
+    buildSession({
+      curriculum,
+      catalog: indexCatalog(items),
+      items,
+      states: rungState([], curriculum, VOCABULARY_V0, TODAY),
+      rows: [],
+      learned: [],
+      lastPlayed: new Map(),
+      activeTracks: ['core'],
+      minutes: 30,
+      startAt: 'R',
+      today: TODAY,
+    }).slots;
+  const ids = (slots: SessionSlot[]) => slots.map((slot) => slot.item?.id);
+  /** The row that says R's songs ask is what it serves. */
+  const songsAsk = (slots: SessionSlot[]) =>
+    slots.find((slot) => slot.claim?.kind === 'asked' && slot.claim.rung.id === 'R' && slot.claim.requirement.kind === 'runs' && slot.claim.requirement.from === 'songs');
+
+  it('the admission itself: an excerpt is refused at null and false and admitted at true; with no provenance at all, refused', () => {
+    expect(admittedForTeaching(cut('excerpt.x', null))).toBe(false);
+    expect(admittedForTeaching(cut('excerpt.x', false))).toBe(false);
+    expect(admittedForTeaching(cut('excerpt.x', true))).toBe(true);
+    const { provenance: _none, ...bare } = cut('excerpt.x', true);
+    expect(admittedForTeaching(bare)).toBe(false);
+  });
+
+  it('the card: a rung listing the cut does not offer it until a yes is on the cut, and no row claims the songs ask for it; with a yes it is the ask’s row', () => {
+    const only = listing(['excerpt.x']);
+    const items = (teaching: boolean | null) => [cut('excerpt.x', teaching), exercise('ex.r'), exercise('ex.pre')];
+    for (const teaching of REFUSED) {
+      const slots = card(only, items(teaching));
+      expect(ids(slots), `teaching ${String(teaching)}`).not.toContain('excerpt.x');
+      expect(songsAsk(slots), `teaching ${String(teaching)}`).toBeUndefined();
+    }
+    expect(songsAsk(card(only, items(true)))).toMatchObject({ item: { id: 'excerpt.x' }, claim: { kind: 'asked', next: false } });
+
+    const beside = listing(['excerpt.x', 'song.r']);
+    const withSong = (teaching: boolean | null) => [...items(teaching), song('song.r', measured([]))];
+    for (const teaching of REFUSED) {
+      const slots = card(beside, withSong(teaching));
+      expect(ids(slots), `teaching ${String(teaching)}`).not.toContain('excerpt.x');
+      expect(songsAsk(slots)?.item?.id, `teaching ${String(teaching)}`).toBe('song.r');
+    }
+    expect(songsAsk(card(beside, withSong(true)))?.item?.id).toBe('excerpt.x');
+  });
+
+  it('the card: an unplaced cut is no row at any bit — placement and admission answer different questions', () => {
+    const curriculum = listing(['song.r']);
+    for (const teaching of [null, false, true] as const) {
+      const slots = card(curriculum, [cut('excerpt.x', teaching), song('song.r', measured([])), exercise('ex.r'), exercise('ex.pre')]);
+      expect(ids(slots), `teaching ${String(teaching)}`).not.toContain('excerpt.x');
+    }
+  });
+
+  it('the swap sheet’s lesson tier: another option of the rung does not offer the cut until a yes is on it; with a yes it does', () => {
+    const curriculum = listing(['song.r', 'excerpt.x']);
+    const tiers = (teaching: boolean | null) =>
+      tieredAlternatives(
+        { itemId: 'song.r', lessonId: 'R', limit: 50 },
+        curriculum,
+        indexCatalog([song('song.r', measured(['interval.step'])), cut('excerpt.x', teaching)]),
+        SHIPPED_SKILL_ACTIVATION,
+        COPES,
+      ).map((one) => [one.item.id, one.tier]);
+    for (const teaching of REFUSED) expect(tiers(teaching), `teaching ${String(teaching)}`).toEqual([]);
+    expect(tiers(true)).toEqual([['excerpt.x', 'lesson']]);
+  });
+
+  it('the swap sheet’s last resort, an excerpt for an excerpt from the lessons reached: not offered until a yes is on it; then offered', () => {
+    const curriculum: Curriculum = {
+      version: 1,
+      tracks: [{ id: 'core', title: 'Core', description: '', startsAtStage: 0 }],
+      stages: [{ number: 1, title: 'One', summary: '', units: [{ id: 'u', title: 'U', track: 'core', lessons: [lesson('L', { songOptions: ['excerpt.a', 'excerpt.b'] })] }] }],
+    };
+    // Cuts carrying no demand, so the rung's learner copes and only the admission can refuse one.
+    const bare = (id: string, teaching: boolean | null): CatalogItem => ({ ...cut(id, teaching), ...measured([]) });
+    const kindOf = (teaching: boolean | null) => {
+      const items = [bare('excerpt.a', null), bare('excerpt.b', teaching)];
+      // A review row carries no lesson, so the tiers have nothing and the sheet walks to its last resort.
+      const slot: SessionSlot = { kind: 'review', minutes: 5, item: items[0], reason: '' };
+      return swapOptions(slot, [slot], curriculum, indexCatalog(items), { items, rung: 'L', activeTracks: ['core'] }).map((one) => [one.item.id, one.tier]);
+    };
+    for (const teaching of REFUSED) expect(kindOf(teaching), `teaching ${String(teaching)}`).toEqual([]);
+    expect(kindOf(true)).toEqual([['excerpt.b', 'kind']]);
+  });
+
+  describe('on the built catalogue, each excerpt placed on the first rung that teaches what it was cut for', () => {
+    const CONTENT = join(process.cwd(), 'public', 'content');
+    const catalog = JSON.parse(readFileSync(join(CONTENT, 'catalog.json'), 'utf8')) as CatalogItem[];
+    const curriculum = JSON.parse(readFileSync(join(CONTENT, 'curriculum.json'), 'utf8')) as Curriculum;
+    const lessons = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons));
+    const excerpts = catalog.filter((item) => item.type === 'excerpt');
+    /** The core path and the track the rung is on: a learner on that path, so the rung's own asks reach the card. */
+    const tracksFor = (rung: string): string[] => ['core', curriculum.stages.flatMap((stage) => stage.units).find((unit) => unit.lessons.some((one) => one.id === rung))?.track ?? 'core'];
+    /** A target is a demand, or a skill standing for its opportunity's demands; the first rung teaching one, in curriculum order. */
+    const rungFor = (item: CatalogItem): string | undefined => {
+      const demands = (item.provenance?.excerpt?.targets ?? []).flatMap((target) => {
+        const skill = VOCABULARY_V0.skills.find((one) => one.id === target);
+        return skill === undefined ? [target] : Array.isArray(skill.opportunity) ? [...skill.opportunity] : [];
+      });
+      const teaches = new Set(demands.flatMap((demand) => VOCABULARY_V0.demands.find((one) => one.id === demand)?.taughtAt ?? []));
+      return lessons.find((lesson) => teaches.has(lesson.id))?.id;
+    };
+    /** The curriculum with the excerpt as that rung's one song: a rung that lists the cut where it listed its pieces. */
+    const placing = (item: CatalogItem, rung: string): Curriculum => ({
+      ...curriculum,
+      stages: curriculum.stages.map((stage) => ({
+        ...stage,
+        units: stage.units.map((unit) => ({
+          ...unit,
+          lessons: unit.lessons.map((lesson) => (lesson.id === rung ? { ...lesson, songOptions: [item.id] } : lesson)),
+        })),
+      })),
+    });
+    const withBit = (teaching: true | null) => (teaching === true ? catalog.map((item) => (item.type === 'excerpt' ? approved(item) : item)) : catalog);
+    /** For each placement: every card a fresh learner placed there gets (the core path and the rung's track, every length), and every swap sheet of the rung's exercises. */
+    const offers = (teaching: true | null) => {
+      const items = withBit(teaching);
+      const index = indexCatalog(items);
+      const found: { card: string[]; sheet: string[] } = { card: [], sheet: [] };
+      for (const item of excerpts) {
+        const rung = rungFor(item) as string;
+        const placed = placing(item, rung);
+        for (const minutes of [15, 30, 60, 120]) {
+          const slots = buildSession({
+            curriculum: placed,
+            catalog: index,
+            items,
+            states: rungState([], placed, VOCABULARY_V0, TODAY),
+            rows: [],
+            learned: [],
+            lastPlayed: new Map(),
+            activeTracks: tracksFor(rung),
+            minutes,
+            startAt: rung,
+            today: TODAY,
+          }).slots;
+          for (const slot of slots) if (slot.item?.type === 'excerpt') found.card.push(`${rung} (${String(minutes)} min): ${slot.kind} ${slot.item.id}`);
+        }
+        const lesson = lessons.find((one) => one.id === rung) as Lesson;
+        for (const id of lesson.exerciseOptions) {
+          for (const one of tieredAlternatives({ itemId: id, lessonId: rung, limit: 10_000 }, placed, index, SHIPPED_SKILL_ACTIVATION, COPES)) {
+            if (one.item.type === 'excerpt') found.sheet.push(`${one.item.id} (${one.tier}) for ${id} on ${rung}`);
+          }
+        }
+      }
+      return found;
+    };
+
+    it('every built excerpt is undecided and has a rung that teaches what it was cut for', () => {
+      expect(excerpts.length, 'no excerpt in the built catalogue').toBeGreaterThan(0);
+      for (const item of excerpts) {
+        expect(item.provenance?.review.teaching, item.id).toBeNull();
+        expect(rungFor(item), item.id).toBeDefined();
+      }
+    });
+
+    it('undecided: no card row and no swap-sheet tier offers one', () => {
+      const found = offers(null);
+      expect(found.card.slice(0, 12), `${String(found.card.length)} card rows`).toEqual([]);
+      expect(found.sheet.slice(0, 12), `${String(found.sheet.length)} swap-sheet offers`).toEqual([]);
+    }, 300_000);
+
+    it('with a yes on each cut: the lesson tier offers each on its rung, and the card offers the rungs’ songs asks with them', () => {
+      const found = offers(true);
+      for (const item of excerpts) {
+        expect(found.sheet.some((line) => line.startsWith(`${item.id} (lesson)`)), `${item.id} on ${String(rungFor(item))}`).toBe(true);
+      }
+      // A rung that asks for a run of one of its songs offers the placed cut, its one song, as that ask.
+      expect(found.card.filter((line) => line.includes(': new ')).length, 'no card row offers an approved placed excerpt').toBeGreaterThan(0);
+    }, 300_000);
   });
 });

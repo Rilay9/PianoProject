@@ -274,7 +274,9 @@ fallback until C6 and are deleted.
   the same admission the gate applies (`eligibility.admittedForTeaching`, read once, in
   `session.usable`): a generated item whose family promises music (the studies, the grooves, the
   12/8 blues) is on no row until a person's `goodTeachingUse: yes` on its current identity is
-  built. Where that leaves a rung's ask with nothing to offer, the ask stays unmet in the rung
+  built, and since E1a (2026-09-28) neither is an excerpt a rung lists, until the `yes` is on the
+  cut's current identity (its file's sha256, so a decision on an earlier cut admits nothing):
+  measured notes and a boundary approved by the rules establish no teaching use. Where that leaves a rung's ask with nothing to offer, the ask stays unmet in the rung
   state and the slot takes the next step of the fallback ladder that passes (a prerequisite rung's
   option, the exposure rule), or the row is dropped; no row says the ask is met or offers the next
   lesson as though it were, and no row says anything waits for review, which is the content
@@ -339,9 +341,11 @@ you like — no scoring, no cursor", `chose` "You chose this one".
   (the studies, the grooves, the 12/8 blues) is not offered in any tier, the lesson's own options
   and the named stand-ins included, until a person's `goodTeachingUse: yes` on its current
   identity is in D2's record and built (D3a: the gate's reason is *not approved for teaching use*,
-  never "not yet reviewed", because a `no` or a `fix` is a reviewed decision too). The Library
-  still lists every one of them, and opening one from there is exploration, which no gate
-  refuses; since D3b a groove a rung lists is not the card's own row for that rung either (the
+  never "not yet reviewed", because a `no` or a `fix` is a reviewed decision too); since E1a the
+  same holds for an excerpt, on its cut's identity, and an unplaced excerpt is in no tier that
+  searches the whole catalogue whatever its bit (E1: placement and admission are different
+  questions). The Library still lists every one of them, and opening one from there is
+  exploration, which no gate refuses; since D3b a groove a rung lists is not the card's own row for that rung either (the
   card's rows pass the same admission, above), though nothing is removed from a rung. A shared concept tag or a step every tune has
   matches nothing: the `repertoire` tag on every quarried piece made the old third tier a level
   window over the quarry. The words state the strongest fact known, never "similar difficulty".
