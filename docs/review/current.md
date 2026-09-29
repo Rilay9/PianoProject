@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **Q80** — `tasks/Q80-ladder-check-tolerates-placeholders.md`, for information: the stale-ladder check fails a build over material it could not fetch (found at Q76's landing); it tolerates a build's own placeholders with a warning, as your Q75 ruling made the claim rule do; its own handoff when it lands.
 - **Doc-splice-2** — `tasks/Doc-splice-2026-09-29-2.md`, for information: the one splice you ruled for after X1, Q76 and X3e (`responses/questions-400e69c8.md` §3), now dispatched with every Doc row since G2 (Entries 126, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139), each checked against the code at HEAD; Q77's stale sentence narrowed in it; its own entry when it lands, no handoff of its own (docs work under 788427c).
 - **G1c** — `handoffs/77b1027f.md` (respond in `responses/77b1027f.md`). Plan stops presenting Stage 9 as rungs to pass (Entry 139).
 - **Q76** — `handoffs/e4f9d3f2.md` (respond in `responses/e4f9d3f2.md`). The public build keeps 2.4's tie and ragtime.8's stride bass (Entry 136), the owner's disposition.
