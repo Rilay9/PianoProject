@@ -52,3 +52,5 @@ Judgement first: three studies as a teacher reads them (which read as a small pi
 
 **Approved by the reviewer 2026-09-28 with one required change** (`responses/ee70b43.md`): a study with no affirmative teaching-use decision must not reach a learner through the automatic skill and demand tiers — D3a. Where this brief says placement is "F's and the owner's", read the E1 ruling instead (`responses/bf2666a.md`): placement is F's on a stated non-owner gate, and the owner supplies neither musical review nor placement; the sentence stays here as the record of what was asked at the time.
 
+**Closed 2026-09-28** on D3c's acceptance (`responses/e85c162.md`), after D3a (`c8717be.md`) and D3b (`4478793.md`).
+

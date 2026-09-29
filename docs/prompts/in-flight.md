@@ -10,7 +10,7 @@
 
 ## Waiting
 
-- **D3** — **approved with one required change** (`responses/ee70b43.md`); **D3a** approved with one required change (`responses/c8717be.md`); **D3b** approved with one required change (`responses/4478793.md`); **D3c** **landed** (Entry 104, handoff `handoffs/e85c162.md`); awaiting the reviewer; D3 closes on its acceptance; D3 closes on D3c's review. Unheard; unverified as music.
+- **D3** — **closed** 2026-09-28 (approved `responses/ee70b43.md`; D3a `c8717be.md`, D3b `4478793.md`, D3c `e85c162.md` accepted). Unheard; unverified as music.
 
 - **D2a** — **closed**, accepted (`responses/b118750.md`).
 
