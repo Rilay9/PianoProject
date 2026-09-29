@@ -4,6 +4,8 @@ Open handoffs, each with its own file:
 
 - **Q80** — `handoffs/2d9e7e2c.md` (respond in `responses/2d9e7e2c.md`). The stale-ladder check tolerates a build's own placeholders (Entry 141); one product question, Q86: deploy without a fetched piece, or guard the deploy.
 - **G1d** — `tasks/G1d-retention-reads-the-lifecycle.md`, for information: your G82 ruling built as the narrow seam you named — the session's retention reader skips a `paused` or `retired` project, nothing else consumes a project, the one-reader guard revised to pin the one read; its own handoff when it lands.
+- **U92** — `tasks/U92-skills-count-never-cut.md`, for information: your U90 ruling's separate repair of the Skills detail line — the count first, a visible ellipsis, the count never cut, measured at 342 px; its own handoff when it lands.
+- **X31** — `tasks/X31-build-tempo-one-definition.md`, for information: the later wave you set for X3d's follow-up 1 — the build reads the opening tempo in quarter notes through music21's own normalisation, no Python copy of the app's reader; the model not refit; the corpus table and the level moves come to you in its handoff.
 - **Four fix-forward briefs** — `handoffs/bcad0c9.md`, for information: F2b (your F2a change), Q65b (your Q65a change), U80 (the side-panel regression CI's full run found), X3a (the tempo control under X3's contract). Respond only if one departs from its contract.
 - **The G1a and Q65a briefs** — `handoffs/9cfa808.md`, for information (the G1 and Q-tooling reviews' required changes dispatched as fix-forwards under 788427c; Entries 119 and 120). Respond only if a brief departs from the required change.
 
