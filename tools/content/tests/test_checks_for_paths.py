@@ -12,12 +12,13 @@ from __future__ import annotations
 
 import io
 import json
+import re
 import subprocess
 import sys
 import tempfile
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "tools" / "docs"))
@@ -150,6 +151,159 @@ class TheCommittedMap(unittest.TestCase):
     def test_a_docs_only_change_runs_nothing(self) -> None:
         result = cfp.checks_for(["docs/pending-review.md", "docs/prompts/in-flight.md"], self.map, ROOT)
         self.assertEqual((result.commands, result.unmatched), ([], []))
+
+
+#: The whole default Playwright configuration and the whole unit suite, as the reader prints them.
+WHOLE_E2E = ("e2e", "app", "npx playwright test --workers=4")
+WHOLE_UNIT = ("unit", "app", "npx vitest run")
+
+#: Specs that skip in the default configuration unless an environment variable asks for them
+#: (`test.skip(!process.env...)` in each): naming one runs nothing, so no list names them.
+ENV_GATED = {"bisect-render.spec.ts", "content-render.spec.ts", "generate-audio-fixtures.spec.ts", "guide-shots.spec.ts"}
+
+
+class TheMinimumSemantics(unittest.TestCase):
+    """Q65a, the reviewer's ruling on Q-tooling (`docs/review/responses/198c148.md`): the map is the
+    smallest set that discriminates the mechanisms a changed path reaches, plus the cheap universal
+    guards; the whole browser suite only where a module's behaviour runs on every spec's path. The
+    full suites are merged-tree CI's and the fallback's."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.map = cfp.load_map_data(json.loads((ROOT / "docs" / "prompts" / "checks.json").read_text(encoding="utf-8")))
+
+    def result(self, *paths: str) -> cfp.Result:
+        return cfp.checks_for(list(paths), self.map, ROOT)
+
+    def e2e_names(self, *paths: str) -> list[str]:
+        """The spec files the map names for these paths; fails if it asks for the whole suite."""
+        commands = self.result(*paths).commands
+        self.assertNotIn(WHOLE_E2E, commands, f"{paths}: the whole browser suite, where docs/08 and the chains name specs")
+        e2e = [c for c in commands if c[0] == "e2e"]
+        self.assertEqual(len(e2e), 1, f"{paths}: one e2e command naming its specs")
+        return [PurePosixPath(n).name for n in e2e[0][2].split() if n.endswith(".spec.ts")]
+
+    def test_a_score_screen_change_names_its_specs_and_keeps_the_gallery(self) -> None:
+        names = self.e2e_names("app/src/ui/screens/ScoreScreen.ts")
+        # docs/08: score.screen (one test per control), score.states (the state machine cell by
+        # cell); G1's chain: lab; D4's, D4a's and G1's chains: transfer-offer.
+        for spec in ("score.screen.spec.ts", "score.states.spec.ts", "lab.spec.ts", "transfer-offer.spec.ts"):
+            self.assertIn(spec, names)
+        ids = [c[0] for c in self.result("app/src/ui/screens/ScoreScreen.ts").commands]
+        self.assertIn("states", ids, "the state gallery stays with the Score screen")
+
+    def test_the_six_blanket_modules_name_their_specs_and_keep_the_cheap_guards(self) -> None:
+        cited = {  # one spec each that docs/08's file lines or a landing chain tie to the module
+            "app/src/score/WindowRenderer.ts": "score.window-rule.spec.ts",   # docs/08; U74's chain
+            "app/src/ui/screens/ScoreScreen.ts": "score.screen.spec.ts",      # docs/08
+            "app/src/data/db.ts": "progress.spec.ts",                         # docs/08: the backup round trip
+            "app/src/curriculum/session.ts": "today.spec.ts",                 # docs/08: the session from the templates
+            "app/src/ui/screens/TodayScreen.ts": "app-shell.spec.ts",         # docs/08: lands on Today
+            "app/src/engine/PracticeEngine.ts": "engine.spec.ts",             # docs/08: the P3 acceptance criteria
+        }
+        for path, spec in cited.items():
+            with self.subTest(path=path):
+                self.assertIn(spec, self.e2e_names(path))
+                commands = self.result(path).commands
+                self.assertIn(WHOLE_UNIT, commands, "the unit suite stays the cheap universal guard")
+                for check in ("tsc", "lint", "build-app"):
+                    self.assertIn(check, [c[0] for c in commands])
+
+    def test_a_renderer_change_names_the_fit_paths_spec_its_chain_ran(self) -> None:
+        # U74's chain ran score-fit-paths, which no docs/08 line names (a finding in Q65a's entry).
+        self.assertIn("score-fit-paths.spec.ts", self.e2e_names("app/src/score/WindowRenderer.ts"))
+
+    def test_a_test_side_helper_names_its_importers_not_the_whole_suite(self) -> None:
+        # scoreControls.ts is imported by about a third of the spec files, not by every spec.
+        names = self.e2e_names("app/tests/e2e/scoreControls.ts")
+        self.assertIn("score.screen.spec.ts", names)
+        self.assertNotIn("audio.spec.ts", names)
+
+    def test_the_playwright_harness_is_the_whole_suite(self) -> None:
+        # playwright.config.ts imports chromium.ts and loads storageState.json for every spec.
+        for path in ("app/tests/e2e/fixtures/chromium.ts", "app/tests/e2e/fixtures/storageState.json"):
+            with self.subTest(path=path):
+                self.assertIn(WHOLE_E2E, self.result(path).commands)
+
+    def test_a_renderer_file_with_a_harness_file_is_the_whole_suite(self) -> None:
+        self.assertIn(WHOLE_E2E, self.result("app/src/score/WindowRenderer.ts", "app/tests/e2e/fixtures/chromium.ts").commands)
+
+    def test_a_module_on_every_spec_s_path_is_the_whole_suite(self) -> None:
+        for path in ("app/src/router.ts", "app/src/main.ts", "app/src/style.css", "app/src/ui/AppShell.ts"):
+            with self.subTest(path=path):
+                self.assertIn(WHOLE_E2E, self.result(path).commands)
+
+    def test_a_machine_read_docs_path_runs_its_readers(self) -> None:
+        # docs/04 is read by five unit files (readFileSync of docs/04-ui-spec.md), not one.
+        commands = self.result("docs/04-ui-spec.md").commands
+        unit = [c for c in commands if c[0] == "unit"]
+        self.assertEqual(len(unit), 1)
+        for name in ("docsConsistency.test.ts", "help.test.ts", "labHelp.test.ts",
+                     "progressHistoryLines.test.ts", "sightReadingFromReadingState.test.ts"):
+            self.assertIn(f"tests/unit/{name}", unit[0][2].split())
+        self.assertNotIn("e2e", [c[0] for c in commands])
+
+    def test_a_prose_docs_path_runs_nothing_and_is_not_unmatched(self) -> None:
+        # docs/00-invariants.md is cited in comments; no script, test or workflow opens it.
+        result = self.result("docs/00-invariants.md")
+        self.assertEqual((result.commands, result.unmatched), ([], []))
+        self.assertIn("docs/00-invariants.md", result.matched)
+
+    def test_a_shared_fixture_the_converter_reads_runs_the_converter_s_checks(self) -> None:
+        # tools/midi-cleanup/tests/parity_reference.py and test_parity_reference.py read
+        # app/tests/fixtures/imports/two-hands.mid; test_converter.py reads fixtures/scores/generated.
+        ids = [c[0] for c in self.result("app/tests/fixtures/imports/two-hands.mid").commands]
+        for check in ("converter-harness", "parity-reference"):
+            self.assertIn(check, ids)
+
+    def test_the_score_model_the_detectors_read_runs_the_content_measurement(self) -> None:
+        # app/src/demands/detect.ts imports extractScoreModel.ts; the build measures every file's
+        # demands through tests/unit/demandsOfFiles.test.ts, so the catalogue is the model's too.
+        ids = [c[0] for c in self.result("app/src/score/extractScoreModel.ts").commands]
+        for check in ("content-build", "content-validate", "review-check"):
+            self.assertIn(check, ids)
+
+    def test_a_test_side_helper_names_every_file_that_reads_it(self) -> None:
+        # A helper or fixture reaches exactly the files that read it. Its pattern names them, and
+        # this keeps the names true: a spec, unit file or content test that starts reading one is
+        # red here until the map names it. (`"*"` names everything.)
+        read_by = {  # pattern -> (the reference a reader makes, the reader sets to hold it to)
+            "app/tests/e2e/scoreControls.ts": (r"""['"]\./scoreControls['"]""", ("e2e",)),
+            "app/tests/e2e/fixtures/midiMock.ts": (r"""fixtures/midiMock['"]""", ("e2e",)),
+            "app/tests/e2e/fixtures/playInTime.ts": (r"""fixtures/playInTime['"]""", ("e2e",)),
+            "app/tests/e2e/fixtures/devScore.ts": (r"""fixtures/devScore['"]""", ("e2e",)),
+            "app/tests/e2e/fixtures/reader-learners.json": (r"reader-learners\.json", ("e2e", "unit", "content-tests")),
+            "app/tests/e2e/fixtures/excerpt-candidates.json": (r"excerpt-candidates\.json", ("e2e", "unit", "content-tests")),
+            "app/tests/fixtures/**": (r"""tests/fixtures/|'tests', 'fixtures'|fixtures/devScore['"]""", ("e2e",)),
+        }
+        readers_in = {
+            "e2e": ("app/tests/e2e", "*.spec.ts", lambda p: PurePosixPath(p).name not in ENV_GATED, lambda p: f"tests/e2e/{PurePosixPath(p).name}"),
+            "unit": ("app/tests/unit", "*.test.ts", lambda p: True, lambda p: f"tests/unit/{PurePosixPath(p).name}"),
+            "content-tests": ("tools/content/tests", "test_*.py", lambda p: PurePosixPath(p).name != "test_checks_for_paths.py", lambda p: PurePosixPath(p).name),
+        }
+        patterns = {p.pattern: p for p in self.map.patterns}
+        for pattern, (reference, sets) in read_by.items():
+            with self.subTest(pattern=pattern):
+                self.assertIn(pattern, patterns, f"{pattern}: the map has no pattern for it")
+            if pattern not in patterns:
+                continue
+            named = patterns[pattern].checks
+            for check_id in sets:
+                folder, glob, keep, as_named = readers_in[check_id]
+                readers = sorted(as_named(p.as_posix()) for p in (ROOT / folder).glob(glob)
+                                 if keep(p.as_posix()) and re.search(reference, p.read_text(encoding="utf-8", errors="replace")))
+                value = named.get(check_id)
+                with self.subTest(pattern=pattern, check=check_id):
+                    if value == "*":
+                        continue
+                    self.assertEqual([r for r in readers if r not in (value or [])], [],
+                                     f"{pattern}: {check_id} does not name every file that reads it")
+        # The converter reads the shared fixture folder too.
+        midi = [p for p in (ROOT / "tools" / "midi-cleanup" / "tests").glob("*.py")
+                if re.search(r'app/tests/fixtures|"app" / "tests" / "fixtures"', p.read_text(encoding="utf-8"))]
+        if midi:
+            for check in ("converter-harness", "parity-reference"):
+                self.assertIn(check, patterns["app/tests/fixtures/**"].checks)
 
 
 if __name__ == "__main__":
