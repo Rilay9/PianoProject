@@ -32,3 +32,5 @@ Docs work under 788427c: no handoff of its own; the reviewer sees it through `do
 ## Report
 
 Judgement first: which lines were wrong and what a reader would have believed; then Done / Not done / Follow-ups / Questions / Files; the code lines quoted; the tests table; exit codes. Entry 146; every run file under `docs/prompts/runs/Q81/`; the entry as `docs/prompts/runs/Q81/ENTRY.md`, starting `### Entry 146 — Q81`.
+
+**Landed 2026-09-29** (Entry 146; 4d9365eb, merged fbc66d37). Docs work under 788427c, no handoff of its own; the map pattern with the reviewer; Q87 records the drift it found and left.
