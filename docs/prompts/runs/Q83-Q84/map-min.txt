@@ -1,0 +1,69 @@
+# checks for 62 path(s): 62 matched, 0 unmatched
+# docs/prompts/runs/Q83-Q84/ENTRY.md: docs/**
+# docs/prompts/runs/Q83-Q84/build-app.exit: docs/**
+# docs/prompts/runs/Q83-Q84/build-app.stderr.txt: docs/**
+# docs/prompts/runs/Q83-Q84/build-app.txt: docs/**
+# docs/prompts/runs/Q83-Q84/build-baseline-personal.exit: docs/**
+# docs/prompts/runs/Q83-Q84/build-baseline-personal.stderr.txt: docs/**
+# docs/prompts/runs/Q83-Q84/build-baseline-personal.txt: docs/**
+# docs/prompts/runs/Q83-Q84/build-final-personal.exit: docs/**
+# docs/prompts/runs/Q83-Q84/build-final-personal.stderr.txt: docs/**
+# docs/prompts/runs/Q83-Q84/build-final-personal.txt: docs/**
+# docs/prompts/runs/Q83-Q84/build-strict-unfetched-after.exit: docs/**
+# docs/prompts/runs/Q83-Q84/build-strict-unfetched-after.stderr.txt: docs/**
+# docs/prompts/runs/Q83-Q84/build-strict-unfetched-after.txt: docs/**
+# docs/prompts/runs/Q83-Q84/build-strict-unfetched-before.exit: docs/**
+# docs/prompts/runs/Q83-Q84/build-strict-unfetched-before.stderr.txt: docs/**
+# docs/prompts/runs/Q83-Q84/build-strict-unfetched-before.txt: docs/**
+# docs/prompts/runs/Q83-Q84/build-unfetched-after.exit: docs/**
+# docs/prompts/runs/Q83-Q84/build-unfetched-after.stderr.txt: docs/**
+# docs/prompts/runs/Q83-Q84/build-unfetched-after.txt: docs/**
+# docs/prompts/runs/Q83-Q84/build-unfetched-before.exit: docs/**
+# docs/prompts/runs/Q83-Q84/build-unfetched-before.stderr.txt: docs/**
+# docs/prompts/runs/Q83-Q84/build-unfetched-before.txt: docs/**
+# docs/prompts/runs/Q83-Q84/chain-unfetched-after.exit: docs/**
+# docs/prompts/runs/Q83-Q84/chain-unfetched-after.txt: docs/**
+# docs/prompts/runs/Q83-Q84/chain-unfetched-before.exit: docs/**
+# docs/prompts/runs/Q83-Q84/chain-unfetched-before.txt: docs/**
+# docs/prompts/runs/Q83-Q84/checks-for-paths.txt: docs/**
+# docs/prompts/runs/Q83-Q84/ci-tests-unfetched-after.txt: docs/**
+# docs/prompts/runs/Q83-Q84/ci-tests-unfetched-before.txt: docs/**
+# docs/prompts/runs/Q83-Q84/content-tests-all.exit: docs/**
+# docs/prompts/runs/Q83-Q84/content-tests-all.stdout.txt: docs/**
+# docs/prompts/runs/Q83-Q84/content-tests-all.txt: docs/**
+# docs/prompts/runs/Q83-Q84/copy.txt: docs/**
+# docs/prompts/runs/Q83-Q84/green-targeted.txt: docs/**
+# docs/prompts/runs/Q83-Q84/mutants-build.txt: docs/**
+# docs/prompts/runs/Q83-Q84/mutants-test.txt: docs/**
+# docs/prompts/runs/Q83-Q84/npm-ci.txt: docs/**
+# docs/prompts/runs/Q83-Q84/parity.txt: docs/**
+# docs/prompts/runs/Q83-Q84/red-q84-test_runner_log.txt: docs/**
+# docs/prompts/runs/Q83-Q84/red-test_runner_log.txt: docs/**
+# docs/prompts/runs/Q83-Q84/reports-diff-final.txt: docs/**
+# docs/prompts/runs/Q83-Q84/restore.txt: docs/**
+# docs/prompts/runs/Q83-Q84/review-check.txt: docs/**
+# docs/prompts/runs/Q83-Q84/scripts-chain-unfetched.ps1: docs/**
+# docs/prompts/runs/Q83-Q84/scripts-ci-tests-unfetched.py: docs/**
+# docs/prompts/runs/Q83-Q84/scripts-copy.ps1: docs/**
+# docs/prompts/runs/Q83-Q84/scripts-mutants.py: docs/**
+# docs/prompts/runs/Q83-Q84/scripts-run-build.ps1: docs/**
+# docs/prompts/runs/Q83-Q84/scripts-suites.ps1: docs/**
+# docs/prompts/runs/Q83-Q84/scripts-warnings-verbatim.py: docs/**
+# docs/prompts/runs/Q83-Q84/suites.exit: docs/**
+# docs/prompts/runs/Q83-Q84/validate-final-map.txt: docs/**
+# docs/prompts/runs/Q83-Q84/validate-final-personal.txt: docs/**
+# docs/prompts/runs/Q83-Q84/validate-strict-unfetched-after.txt: docs/**
+# docs/prompts/runs/Q83-Q84/vitest-all.exit: docs/**
+# docs/prompts/runs/Q83-Q84/vitest-all.txt: docs/**
+# docs/prompts/runs/Q83-Q84/vitest-rerun-three.txt: docs/**
+# docs/prompts/runs/Q83-Q84/warnings-verbatim-after.txt: docs/**
+# docs/prompts/runs/Q83-Q84/warnings-verbatim-before.txt: docs/**
+# tools/content/build.py: tools/content/*.py
+# tools/content/tests/test_import_mutopia.py: tools/content/tests/test_*.py
+# tools/content/tests/test_runner_log.py: tools/content/tests/test_*.py
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+unit	app	npx vitest run
+build-app	app	npm run build:app
