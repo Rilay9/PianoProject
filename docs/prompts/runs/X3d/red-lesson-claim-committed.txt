@@ -1,0 +1,36 @@
+npx vitest run tests/unit/lessonClaimsAboutApp.test.ts -t tempo comes from the file (in app)
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a6cb245891137756b/app
+
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts (284 tests | 1 failed | 283 skipped) 10ms
+   ❯ the batch-4 and batch-5 corrections, second-read and under test: the app (44)
+     × ragtime.6: the score's tempo comes from the file, and the app's own default is used only when the file states none 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > ragtime.6: the score's tempo comes from the file, and the app's own default is used only when the file states none
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:2879:23
+    2877|   for (const [lesson, says, holds] of T12B_APP) {
+    2878|     it(`${lesson}: ${says}`, () => {
+    2879|       expect(holds()).toBe(true);
+       |                       ^
+    2880|     });
+    2881|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 283 skipped (284)
+   Start at  08:42:14
+   Duration  806ms (transform 76%, import 22%, tests 1%)
+
+exit=1

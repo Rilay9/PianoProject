@@ -20,20 +20,19 @@
  */
 import { describe, expect, it } from 'vitest';
 import { join } from 'node:path';
-import { EDGE_DIR, loadFixture } from './helpers/fixtures';
-import { extractScoreModel } from '../../src/score/extractScoreModel';
+import { EDGE_DIR, fixtureModel } from './helpers/fixtures';
 import { accentScore } from '../../src/engine/Scoring';
 import { prepareSession } from '../../src/engine/prepareSession';
 import type { PreparedStep, RecordedNote } from '../../src/engine/types';
 import type { ScoreModel } from '../../src/score/types';
 
 async function accentsModel(): Promise<ScoreModel> {
-  return extractScoreModel(await loadFixture(join(EDGE_DIR, 'accents.musicxml')));
+  return fixtureModel(join(EDGE_DIR, 'accents.musicxml'));
 }
 
 /** The prepared steps of a fixture, which is what the scorer is given. */
 async function preparedSteps(name: string): Promise<readonly PreparedStep[]> {
-  const model = extractScoreModel(await loadFixture(join(EDGE_DIR, name)));
+  const model = await fixtureModel(join(EDGE_DIR, name));
   return prepareSession(model, { mode: 'tempo', countInBars: 0 }).steps;
 }
 
@@ -80,7 +79,7 @@ describe('the extractor reads the accent the score prints', () => {
   it('adds nothing to a fixture that prints no accent', async () => {
     // Said out loud because it is what keeps thirty-eight golden files from
     // changing: the field is absent rather than `false`.
-    const model = extractScoreModel(await loadFixture(join(EDGE_DIR, 'chords-ties.musicxml')));
+    const model = await fixtureModel(join(EDGE_DIR, 'chords-ties.musicxml'));
     expect(model.steps.flatMap((s) => s.notes).some((n) => n.accent !== undefined)).toBe(false);
   });
 });

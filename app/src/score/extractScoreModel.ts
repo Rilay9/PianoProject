@@ -17,7 +17,15 @@
 //
 // The extractor never renders and never touches the DOM beyond what OSMD's
 // `load()` already did, so it runs in Node under jsdom.
+//
+// Tempo is the one thing it does not take from OSMD (X3d): the tempo map is
+// read from the MusicXML itself (`tempoFromXml.ts`) and placed on the
+// unrolled timeline this walk builds. OSMD reads a metronome mark's number as
+// quarter notes whatever its note, lets it replace the `<sound tempo>` beside
+// it, and opens the piece at the first tempo it finds anywhere — a half note
+// = 60 in cut time played at half its tempo (X3c's probe).
 
+import { tempoEvents, type TempoEvent } from './tempoFromXml';
 import {
   makeNoteId,
   roundBeats,
@@ -55,7 +63,10 @@ export const OSMD_HALFTONE_TO_MIDI = 12;
  */
 export const ACCENT_ARTICULATIONS = new Set([0, 1]);
 
-/** OSMD's own fallback when a sheet carries no tempo at all. */
+/**
+ * The tempo a piece opens at where its file states none at its opening, in quarter notes a minute (the
+ * number OSMD's own default happens to be). The import sheet names it as the app's choice.
+ */
 export const DEFAULT_BPM = 100;
 
 /**
@@ -82,7 +93,12 @@ export interface OsmdIterator {
   CurrentMeasure?: OsmdSourceMeasure;
   CurrentEnrolledTimestamp: { RealValue: number };
   CurrentSourceTimestamp: { RealValue: number };
-  CurrentBpm: number;
+  /**
+   * Where the current entry stands in its measure, in whole notes: the enrolled timestamp less this is
+   * the measure's own start on the unrolled timeline, where its tempo events are placed (X3d). Optional
+   * for a hand-built iterator, whose first entry in a measure is then taken as the measure's start.
+   */
+  CurrentRelativeInMeasureTimestamp?: { RealValue: number };
   CurrentRepetitionIteration: number;
   CurrentVisibleVoiceEntries(): OsmdVoiceEntry[];
   moveToNextVisibleVoiceEntry(notesOnly: boolean): void;
@@ -120,12 +136,17 @@ export interface OsmdNote {
 }
 
 export interface ExtractOptions {
+  /**
+   * The MusicXML the sheet was loaded from (X3d): the tempo map is read from it (`tempoFromXml`), never
+   * from OSMD's iterator. Required, so no caller can build a model whose tempo quietly falls back to a
+   * second reading; `OsmdView.extractModel` passes the text it loaded.
+   */
+  musicXml: string;
   /** Model id; defaults to the sheet title slug or `'score'`. */
   id?: string;
   /**
-   * Tempo used when the sheet has none. OSMD seeds its own iterator with
-   * `DefaultStartTempoInBpm`, so this only bites on sheets with no tempo
-   * information at all.
+   * The tempo the piece opens at where the file states none at its opening, in quarter notes a minute
+   * (`DEFAULT_BPM` unless asked). A tempo the file writes later is a change where it stands.
    */
   defaultBpm?: number;
   /**
@@ -337,7 +358,7 @@ function voiceHomeStaves(sheet: OsmdLikeSheet, maxSteps: number): Map<number, 1 
  */
 export function extractScoreModelFromSheet(
   sheet: OsmdLikeSheet,
-  options: ExtractOptions = {},
+  options: ExtractOptions,
 ): ScoreModel {
   const maxSteps = options.maxSteps ?? DEFAULT_MAX_STEPS;
   const title = sheet.TitleString?.trim() ?? '';
@@ -349,11 +370,30 @@ export function extractScoreModelFromSheet(
   const timeSigMap: TimeSignatureEntry[] = [];
   const handsPresent = { R: false, L: false };
 
+  // The file's tempo events by printed measure (the reader's measure ordinal is OSMD's source-measure index).
+  const tempoByMeasure = new Map<number, TempoEvent[]>();
+  for (const event of tempoEvents(options.musicXml)) {
+    const here = tempoByMeasure.get(event.measure);
+    if (here) here.push(event);
+    else tempoByMeasure.set(event.measure, [event]);
+  }
+  /**
+   * One tempo at a beat of the unrolled timeline: a later event at the same beat replaces the earlier, and
+   * an entry that changes nothing is not kept, so every entry is a change. Never earlier than the last
+   * entry: the map is in beat order for `beatToMs`.
+   */
+  const placeTempo = (atBeat: number, bpm: number): void => {
+    const last = tempoMap[tempoMap.length - 1];
+    const beat = last ? Math.max(atBeat, last.atBeat) : atBeat;
+    if (last && last.atBeat === beat) tempoMap.pop();
+    if (tempoMap[tempoMap.length - 1]?.bpm !== bpm) tempoMap.push({ atBeat: beat, bpm });
+  };
+
   const it = sheet.MusicPartManager.getIterator();
   let index = 0;
   let measureIndex = -1;
   let previousSourceMeasureIndex = -1;
-  let previousBpm = Number.NaN;
+  let previousInMeasure = 0;
   let previousTimeSig = '';
 
   while (!it.EndReached) {
@@ -387,15 +427,17 @@ export function extractScoreModelFromSheet(
       }
     }
 
-    // Tempo comes from the iterator, not from SourceMeasure.TempoExpressions:
-    // the iterator's bpm already follows the *unrolled* timeline, so a tempo
-    // change inside a repeated section is emitted once per pass, which is what
-    // playback needs. (Expressions carry printed timestamps instead.)
-    const bpm = it.CurrentBpm;
-    if (Number.isFinite(bpm) && bpm > 0 && bpm !== previousBpm) {
-      tempoMap.push({ atBeat: onset, bpm });
-      previousBpm = bpm;
+    // The file's tempo events in this measure, each at the measure's start on the unrolled timeline plus
+    // its own offset, every time the walk enters the measure: a repeat plays a change again where the file
+    // writes it (X3d). The measure's start is this entry's onset less its place in the measure. A bar
+    // repeated on its own is entered again without the printed measure changing: its place goes back.
+    const inMeasure = wholeNotesToBeats(it.CurrentRelativeInMeasureTimestamp?.RealValue ?? 0);
+    if (isMeasureStart || inMeasure < previousInMeasure) {
+      for (const event of tempoByMeasure.get(sourceMeasureIndex) ?? []) {
+        placeTempo(roundBeats(Math.max(0, onset - inMeasure + event.offset)), event.bpm);
+      }
     }
+    previousInMeasure = inMeasure;
 
     const notes: ScoreNote[] = [];
     for (const entry of it.CurrentVisibleVoiceEntries()) {
@@ -456,8 +498,10 @@ export function extractScoreModelFromSheet(
     index += 1;
   }
 
+  // Nothing stated at the opening: the default until the file's first tempo (kept only where that differs).
   if (tempoMap.length === 0 || (tempoMap[0]?.atBeat ?? 0) > 0) {
     tempoMap.unshift({ atBeat: 0, bpm: options.defaultBpm ?? DEFAULT_BPM });
+    if (tempoMap[1]?.bpm === tempoMap[0]?.bpm) tempoMap.splice(1, 1);
   }
   if (timeSigMap.length === 0) {
     timeSigMap.push({ atMeasure: 0, beats: 4, beatType: 4 });
@@ -485,10 +529,13 @@ function slugify(value: string): string | undefined {
   return slug.length > 0 ? slug : undefined;
 }
 
-/** Convenience wrapper for an `OpenSheetMusicDisplay` instance. */
+/**
+ * Convenience wrapper for an `OpenSheetMusicDisplay` instance, with the MusicXML it was loaded from
+ * (`options.musicXml`: OSMD keeps no copy of the text, and the tempo map is read from it).
+ */
 export function extractScoreModel(
   osmd: { Sheet?: unknown },
-  options: ExtractOptions = {},
+  options: ExtractOptions,
 ): ScoreModel {
   const sheet = osmd.Sheet as OsmdLikeSheet | undefined;
   if (!sheet?.MusicPartManager) {

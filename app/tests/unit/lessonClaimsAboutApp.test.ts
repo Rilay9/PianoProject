@@ -2322,10 +2322,14 @@ const T12B_APP: [string, string, () => boolean][] = [
     'ragtime.6',
     "the score's tempo comes from the file, and the app's own default is used only when the file states none",
     () => {
+      // Revised in X3d: the map is placed from the file's own tempo events (`tempoFromXml`), no longer from
+      // the engraver's `CurrentBpm`, which misread a metronome mark's note; the default still fills only a
+      // map that is empty or starts after beat 0 (the claim holds, and more exactly than before).
       const extract = source('score/extractScoreModel.ts');
       return (
-        extract.includes('const bpm = it.CurrentBpm;') &&
-        extract.includes('tempoMap.push({ atBeat: onset, bpm })') &&
+        extract.includes('tempoEvents(options.musicXml)') &&
+        extract.includes('placeTempo(') &&
+        !extract.includes('CurrentBpm') &&
         extract.includes('tempoMap.length === 0') &&
         extract.includes('options.defaultBpm ?? DEFAULT_BPM')
       );

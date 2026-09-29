@@ -29,7 +29,7 @@ export async function modelOf(musicXml: string, id: string): Promise<ScoreModel>
   try {
     const osmd = new OpenSheetMusicDisplay(container, { autoResize: false, backend: 'svg' });
     await osmd.load(musicXml);
-    return extractScoreModel(osmd, { id });
+    return extractScoreModel(osmd, { id, musicXml });
   } finally {
     container.remove();
   }

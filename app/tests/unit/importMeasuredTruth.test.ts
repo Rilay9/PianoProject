@@ -211,7 +211,7 @@ describe('an import reads a metronome mark printed as text (E32)', () => {
     const [{ OpenSheetMusicDisplay }, { extractScoreModel }] = await Promise.all([import('opensheetmusicdisplay'), import('../../src/score/extractScoreModel')]);
     const osmd = new OpenSheetMusicDisplay(document.createElement('div'), { autoResize: false });
     await osmd.load(xml);
-    return extractScoreModel(osmd, { id: 'probe', defaultBpm: 1 }).tempoMap[0]?.bpm;
+    return extractScoreModel(osmd, { id: 'probe', defaultBpm: 1, musicXml: xml }).tempoMap[0]?.bpm;
   }
 
   it('reads the Wabash Blues shape — "= 120", the note glyph missing — as a quarter at 120, the score’s tempo', async () => {
@@ -618,7 +618,7 @@ describe('the learner states an import’s tempo (E48)', () => {
     const [{ OpenSheetMusicDisplay }, { extractScoreModel }] = await Promise.all([import('opensheetmusicdisplay'), import('../../src/score/extractScoreModel')]);
     const osmd = new OpenSheetMusicDisplay(document.createElement('div'), { autoResize: false });
     await osmd.load(xml);
-    return extractScoreModel(osmd, { id: 'probe', defaultBpm: 1 }).tempoMap[0]?.bpm;
+    return extractScoreModel(osmd, { id: 'probe', defaultBpm: 1, musicXml: xml }).tempoMap[0]?.bpm;
   }
   const NOW = new Date('2026-09-29T10:00:00.000Z');
 

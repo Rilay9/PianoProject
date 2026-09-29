@@ -1,7 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
-import { edgeFixtures, generatedFixtures, loadFixture } from './helpers/fixtures';
-import { extractScoreModel } from '../../src/score/extractScoreModel';
+import { edgeFixtures, fixtureModel, generatedFixtures } from './helpers/fixtures';
 
 describe('fixture loading', () => {
   it('has the hand-written edge cases and the generated exercises', () => {
@@ -12,8 +11,7 @@ describe('fixture loading', () => {
   it('extracts a model from a hand-written fixture', async () => {
     const first = edgeFixtures()[0];
     if (!first) throw new Error('no edge fixtures');
-    const osmd = await loadFixture(first.path);
-    const model = extractScoreModel(osmd);
+    const model = await fixtureModel(first.path);
     expect(model.steps.length).toBeGreaterThan(0);
   });
 });

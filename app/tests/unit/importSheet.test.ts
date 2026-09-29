@@ -30,11 +30,15 @@
  *   score opens at, and a second statement goes through the same store operation, so a slip has a way
  *   back without deleting the import.
  * - **The file's own tempo is said truthfully** (X3c; X24 in the X3a review): the tempo the score opens
- *   at, in quarter notes a minute — the first bar's `<sound tempo>`, the one reader the learner's line and
- *   the control's number use — with the first bar's printed mark in its own note where that is not a
- *   quarter; a mark the door read from the file's text (E32) as the file printed it and as the app read
+ *   at, in quarter notes a minute, with the printed mark at the opening in its own note where that is not
+ *   a quarter; a mark the door read from the file's text (E32) as the file printed it and as the app read
  *   it; never a later change as the opening. A fractional tempo is kept as the file wrote it and said as
  *   the score carries it (to the store's three places), or "about" the whole beat where it carries more.
+ * - **The line and the player read one tempo** (X3d; the X3c review's required change,
+ *   `responses/b71a55ca.md`): the opening tempo, the mark beside it and whether the file writes a tempo
+ *   at all come from `score/tempoFromXml.ts`, the reader the score model's tempo map is placed from, so
+ *   the number the line names is the number the Score screen opens at. A mark with no `<sound tempo>`
+ *   now names its tempo in quarters (the reader normalises it), where X3c's line named none.
  */
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -58,6 +62,7 @@ import type { ImportRow } from '../../src/data/db';
 import type { Curriculum, Measurement, Provenance } from '../../src/curriculum/types';
 import { addImport, forgetConversionsForTest, getImport, measureImport, stateImportTempo, withOpeningTempo } from '../../src/data/importStore';
 import { convertMidi } from '../../src/import/midi/convert';
+import { DEFAULT_BPM } from '../../src/score/extractScoreModel';
 import { allProgress, recordRun, resetProgressForTest, walkSessions } from '../../src/data/progressStore';
 import { demandsLine, openAssignSheet } from '../../src/ui/assignSheet';
 import { IMPORT_TEXT, importStateWords } from '../../src/ui/help';
@@ -186,6 +191,17 @@ const text = (selector: string): string => document.querySelector(selector)?.tex
 
 /** Every `<sound tempo>` the score sounds, in order, as written. */
 const soundTempos = (xml: string): string[] => [...xml.matchAll(/<sound\b[^>]*\btempo="([^"]*)"/g)].map((match) => match[1] ?? '');
+
+/**
+ * The tempo the Score screen opens at for a score (X3d): the model's first tempo through the real extraction,
+ * OSMD loading the score and `extractScoreModel` reading its tempo — `ScoreScreen.writtenBpm`'s source.
+ */
+async function modelOpensAt(xml: string): Promise<number | undefined> {
+  const [{ OpenSheetMusicDisplay }, { extractScoreModel }] = await Promise.all([import('opensheetmusicdisplay'), import('../../src/score/extractScoreModel')]);
+  const osmd = new OpenSheetMusicDisplay(document.createElement('div'), { autoResize: false, drawingParameters: 'compact' });
+  await osmd.load(xml);
+  return extractScoreModel(osmd, { id: 'opens-at', musicXml: xml }).tempoMap[0]?.bpm;
+}
 
 function sectionOrder(): string[] {
   return [...document.querySelectorAll('#assign-sheet h3')].map((heading) => heading.textContent ?? '');
@@ -468,7 +484,7 @@ describe('the learner states the tempo (X3a; E48’s stateImportTempo)', () => {
     const [{ OpenSheetMusicDisplay }, { extractScoreModel }] = await Promise.all([import('opensheetmusicdisplay'), import('../../src/score/extractScoreModel')]);
     const osmd = new OpenSheetMusicDisplay(document.createElement('div'), { autoResize: false, drawingParameters: 'compact' });
     await osmd.load(xml);
-    return extractScoreModel(osmd, { id: 'opening' }).tempoMap[0]?.bpm;
+    return extractScoreModel(osmd, { id: 'opening', musicXml: xml }).tempoMap[0]?.bpm;
   }
 
   // X3b, the X3a review's required change (`responses/564e8e5f.md`): a learner-authored fact records whose
@@ -656,16 +672,49 @@ describe('the file’s own tempo (X3c)', () => {
     expect(field().value).toBe('120');
   });
 
-  it('where the printed mark and the file’s playback tempo disagree, each is said apart, never as a conversion; a mark with no playback tempo is said alone', () => {
+  it('where the printed mark and the file’s playback tempo disagree, each is said apart, never as a conversion; a mark with no playback tempo is said with the tempo it means', () => {
     openImportSheet(fileRow(twoStaves({ tempo: 60, beatUnit: 'half', sound: 100, time: [2, 2] })), CURRICULUM);
     expect(said()).toBe('The file prints \u{1D15E} = 60; its playback tempo is 100 quarter notes a minute.');
     expect(said()).not.toContain('(100 quarter notes a minute)');
     expect(field().value).toBe('100');
     document.body.replaceChildren();
 
+    // Revised in X3d: a mark alone is the file's tempo, normalised by the one reader the player reads
+    // (`tempoFromXml`), so the line names the quarter notes it means and the field starts there. X3c's line
+    // said the mark alone and left the field empty, and a press then sent nothing the store would take
+    // (X3c follow-up 2).
     openImportSheet(fileRow(twoStaves({ tempo: 60, beatUnit: 'half', sound: null, time: [2, 2] })), CURRICULUM);
-    expect(said()).toBe('The file says \u{1D15E} = 60.');
-    expect(field().value).toBe('');
+    expect(said()).toBe('The file says \u{1D15E} = 60 (120 quarter notes a minute).');
+    expect(field().value).toBe('120');
+  });
+
+  it('the number the line names is the tempo the Score screen opens at, for every shape the line says (X3d)', async () => {
+    // Each shape the file's line has words for, through the real extraction: the field's number (the
+    // tempo the line names in quarters) against the score model's first tempo. Where the line names no
+    // number (a tempo written only later), the model opens at the app's default until the file's tempo.
+    const shapes: [string, string][] = [
+      ['half = 60, sound 120', twoStaves({ tempo: 60, beatUnit: 'half', sound: 120, time: [2, 2] })],
+      ['dotted quarter = 60, sound 90', twoStaves({ tempo: 60, beatUnit: 'quarter', dotted: true, sound: 90, time: [6, 8] })],
+      ['quarter = 96', twoStaves({ tempo: 96 })],
+      ['sound 100 at the opening, quarter = 132 in bar 2', twoStaves({ tempo: 132, tempoBar: 2, openingSound: 100 })],
+      ['half = 60 alone', twoStaves({ tempo: 60, beatUnit: 'half', sound: null, time: [2, 2] })],
+      ['half = 60, sound 100', twoStaves({ tempo: 60, beatUnit: 'half', sound: 100, time: [2, 2] })],
+      ['quarter = 72.5', twoStaves({ tempo: 72.5 })],
+    ];
+    const got: Record<string, [string, number | undefined]> = {};
+    const wanted: Record<string, [string, number | undefined]> = {};
+    for (const [shape, xml] of shapes) {
+      openImportSheet(fileRow(xml), CURRICULUM);
+      const opens = await modelOpensAt(xml);
+      got[shape] = [field().value, opens];
+      wanted[shape] = [String(opens), opens];
+      document.body.replaceChildren();
+    }
+    expect(got).toEqual(wanted);
+
+    openImportSheet(fileRow(twoStaves({ tempo: 132, tempoBar: 2 })), CURRICULUM);
+    expect(said()).toBe('The file writes no tempo at its opening, only later in the piece.');
+    expect(await modelOpensAt(twoStaves({ tempo: 132, tempoBar: 2 }))).toBe(DEFAULT_BPM);
   });
 
   it('a fractional tempo is kept as the file wrote it and said as the score carries it, or “about” the whole beat where the file carries more; a press states the number the line names', async () => {

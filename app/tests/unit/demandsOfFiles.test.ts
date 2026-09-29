@@ -46,8 +46,9 @@ async function modelOfFile(path: string): Promise<ScoreModel> {
   document.body.appendChild(container);
   try {
     const osmd = new OpenSheetMusicDisplay(container, { autoResize: false, backend: 'svg' });
-    await osmd.load(toMusicXml(new Uint8Array(readFileSync(path))));
-    return extractScoreModel(osmd, { id: path });
+    const musicXml = toMusicXml(new Uint8Array(readFileSync(path)));
+    await osmd.load(musicXml);
+    return extractScoreModel(osmd, { id: path, musicXml });
   } finally {
     container.remove();
   }

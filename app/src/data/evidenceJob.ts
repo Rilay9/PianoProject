@@ -350,7 +350,7 @@ async function modelInTheBrowser(musicXml: string, id: string): Promise<ScoreMod
   const host = document.createElement('div');
   const osmd = new OpenSheetMusicDisplay(host, { autoResize: false, drawingParameters: 'compact' });
   await osmd.load(musicXml);
-  return extractScoreModel(osmd, { id });
+  return extractScoreModel(osmd, { id, musicXml });
 }
 
 /**
