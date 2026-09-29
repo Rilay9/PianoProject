@@ -3,6 +3,7 @@
 Open handoffs, each with its own file:
 
 - **Q80** — `tasks/Q80-ladder-check-tolerates-placeholders.md`, for information: the stale-ladder check fails a build over material it could not fetch (found at Q76's landing); it tolerates a build's own placeholders with a warning, as your Q75 ruling made the claim rule do; its own handoff when it lands.
+- **G1d** — `tasks/G1d-retention-reads-the-lifecycle.md`, for information: your G82 ruling built as the narrow seam you named — the session's retention reader skips a `paused` or `retired` project, nothing else consumes a project, the one-reader guard revised to pin the one read; its own handoff when it lands.
 - **Four fix-forward briefs** — `handoffs/bcad0c9.md`, for information: F2b (your F2a change), Q65b (your Q65a change), U80 (the side-panel regression CI's full run found), X3a (the tempo control under X3's contract). Respond only if one departs from its contract.
 - **The G1a and Q65a briefs** — `handoffs/9cfa808.md`, for information (the G1 and Q-tooling reviews' required changes dispatched as fix-forwards under 788427c; Entries 119 and 120). Respond only if a brief departs from the required change.
 
