@@ -43,6 +43,9 @@ const LONG_TITLE = 'song.folk.when-the-saints.alternating';
 const PLAIN = 'song.folk.hot-cross-buns';
 
 test('every control on the bar is big enough to hit, and the row never wraps', async ({ page }) => {
+  // A sweep of two pieces at every width, each a score load: its budget is by its size, not the
+  // default thirty seconds, which it overran on both attempts of CI's run on 3d87a2f5 (U83, U91).
+  test.setTimeout(120_000);
   const faults: string[] = [];
   for (const song of [PLAIN, LONG_TITLE]) {
     for (const width of WIDTHS) {

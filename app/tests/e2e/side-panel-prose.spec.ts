@@ -193,6 +193,9 @@ test.describe('on a tablet, where the panel is drawn', () => {
   });
 
   test('one lesson from every track fits the panel', async ({ page }) => {
+    // A sweep of one lesson per track, each a score load with its panel: its budget is by its size,
+    // not the default thirty seconds, which it overran on both attempts of CI's run on 3d87a2f5 (U91).
+    test.setTimeout(180_000);
     expect(PER_TRACK.length, 'no track offered a playable piece').toBeGreaterThan(1);
     const bad: string[] = [];
     /** How many of them actually drew a panel, so this cannot pass vacuously. */
