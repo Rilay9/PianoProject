@@ -17,12 +17,15 @@ on:
       - 'docs/**'
       - '.claude/**'
 
-# One CI run per branch at a time: a newer push cancels the runs queued behind it, so the
-# latest HEAD gets its conclusion instead of waiting behind every record commit (2026-09-26,
-# when fourteen runs were in progress at once). A cancelled run is not a red one.
+# One CI run per branch at a time, and every code push gets its conclusion: runs queue in the
+# group instead of cancelling the one in progress (2026-09-29; until then a newer push cancelled
+# the run in progress, which at one landing a night let the latest HEAD go first, but at a
+# landing every twenty to forty minutes meant no run finished at all — seven cancellations in a
+# row on the night of the four lanes, Q63). Docs-only pushes start no run (paths-ignore above),
+# so the queue holds only trees whose code changed.
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 # NOTE: this repository's default branch is `claude/piano-teaching-app-bo19td`
 # (there is no `main`). See docs/decisions/2026-09-05-default-branch.md.
