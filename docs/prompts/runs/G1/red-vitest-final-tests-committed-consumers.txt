@@ -1,0 +1,274 @@
+﻿at HEAD: app/src/ui/screens/ScoreScreen.ts
+at HEAD: app/src/evidence/rungState.ts
+at HEAD: app/src/ui/screens/ProgressScreen.ts
+at HEAD: app/src/data/evidenceJob.ts
+at HEAD: app/src/data/backup.ts
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/encounterModel.test.ts (35 tests | 3 failed) 98ms
+   ❯ the backup carries the history, and a restore follows the learner (1)
+     × both stores are in the file; a replace restores them; a merge restored twice adds nothing and joins the summaries 10ms
+   ❯ the first-contact fact on a piece is an audit fact, never a gate on its pass (3)
+     × a piece played again (unseen: false) still passes, and the rung state still reads it 2ms
+   ❯ nothing but a viewing or a playback writes an encounter (1)
+     × the Score screen is the one writer: no status, lifecycle action or assignment calls it 61ms
+ ❯ tests/unit/firstContactOnTheScore.test.ts (15 tests | 14 failed) 11812ms
+   ❯ what the screen writes (5)
+     × one viewing per visit, where the notation is drawn, with its source and the visit 1107ms
+     × Hear it writes one demonstration and no hearing 1081ms
+     × Play it to me writes one hearing and no demonstration 1070ms
+     × a bar held down writes a demonstration of that bar 1526ms
+   ❯ first contact, from the history and the visit (6)
+     × heard, left, returned later, read: not first contact, and the history says so 1072ms
+     × viewed on an earlier visit and never played or heard: not first contact, and the sheet says seen 1071ms
+     × viewed only on this visit: first contact, and the ladder sees it 1073ms
+     × a reload is another visit: the viewing before it is an earlier one 1073ms
+     × two tabs: a viewing another tab wrote before this one opened, or after it opened and before the run was stored, is another visit’s 1071ms
+     × a run of the phrase on record under another row id: not first contact 1072ms
+   ❯ a piece, an excerpt and an import carry the fact too (4)
+     × a notated piece: its first run is first contact, the second is not, and both pass 127ms
+     × an excerpt of other bars played before leaves this excerpt a first contact 131ms
+     × the piece played whole before: its excerpt is not a first contact 119ms
+     × an import is its stored bytes: a duplicate under a new id is the same material, met and not first contact 126ms
+python : 
+At line:3 char:1
++ python '<scratch> ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+⎯⎯⎯⎯⎯⎯ Failed Tests 17 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/encounterModel.test.ts > the backup carries the history, and a restore follows the learner > both 
+stores are in the file; a replace restores them; a merge restored twice adds nothing and joins the summaries
+AssertionError: expected [ [ 'practised', [ 1, 8 ], …(2) ] ] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
++ [
+    [
+      "practised",
+      [
+        1,
+        8,
+      ],
+      "2026-09-28T12:00:00.000Z",
+      "2026-09-28T12:00:00.000Z",
+-   ],
+-   [
+-     "performed",
+-     [
+-       25,
+-       32,
+-     ],
+-     "2026-09-29T19:00:00.000Z",
+-     "2026-09-29T19:00:00.000Z",
+    ],
+  ]
+
+ ❯ tests/unit/encounterModel.test.ts:328:90
+    326|     const joined = (await restored?.getAll('contacts')) as ContactSumm…
+    327|     expect(joined).toHaveLength(1);
+    328|     expect(joined[0]?.spans.map((span) => [span.run, span.bars, span.f…
+       |                                                                                          ^
+    329|       expect.arrayContaining([
+    330|         ['practised', [1, 8], YESTERDAY, YESTERDAY],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/17]⎯
+
+ FAIL  tests/unit/encounterModel.test.ts > the first-contact fact on a piece is an audit fact, never a gate on its 
+pass > a piece played again (unseen: false) still passes, and the rung state still reads it
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/encounterModel.test.ts:571:119
+    569|     expect((await getProgress(PARENT)).bestAccuracy).toBe(0.9);
+    570|     const stored = { ...run(PARENT, file('p'), NOON), unseen: false, a…
+    571|     expect(meetsStandard(stored, { passAccuracy: 0.9, passTempoPct: 80…
+       |                                                                                                               
+        ^
+    572|     expect(historyDetail(stored)).not.toContain('not first sight');
+    573|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/17]⎯
+
+ FAIL  tests/unit/encounterModel.test.ts > nothing but a viewing or a playback writes an encounter > the Score screen 
+is the one writer: no status, lifecycle action or assignment calls it
+AssertionError: expected [ 'data/encounterStore.ts' ] to deeply equal [ 'data/encounterStore.ts', …(1) ]
+
+- Expected
++ Received
+
+  [
+    "data/encounterStore.ts",
+-   "ui/screens/ScoreScreen.ts",
+  ]
+
+ ❯ tests/unit/encounterModel.test.ts:594:28
+    592|     };
+    593|     walk(src);
+    594|     expect(callers.sort()).toEqual(['data/encounterStore.ts', 'ui/scre…
+       |                            ^
+    595|     const screen = readFileSync(join(src, 'ui', 'screens', 'ScoreScree…
+    596|     expect(screen.match(/recordEncounter\(/g)).toHaveLength(2);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/17]⎯
+
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > what the screen writes > one viewing per visit, where the notation 
+is drawn, with its source and the visit
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > viewed on an 
+earlier visit and never played or heard: not first contact, and the sheet says seen
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > viewed only on this 
+visit: first contact, and the ladder sees it
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > a reload is another 
+visit: the viewing before it is an earlier one
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > two tabs: a viewing 
+another tab wrote before this one opened, or after it opened and before the run was stored, is another visit’s
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > a run of the phrase 
+on record under another row id: not first contact
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/firstContactOnTheScore.test.ts:324:25
+    322|   await vi.waitFor(async () => {
+    323|     rows = await storedEncounters();
+    324|     expect(rows.length).toBe(count);
+       |                         ^
+    325|   });
+    326|   return rows;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/17]⎯
+
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > what the screen writes > Hear it writes one demonstration and no 
+hearing
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > what the screen writes > Play it to me writes one hearing and no 
+demonstration
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > what the screen writes > a bar held down writes a demonstration of 
+that bar
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > first contact, from the history and the visit > heard, left, 
+returned later, read: not first contact, and the history says so
+AssertionError: expected +0 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 0
+
+ ❯ tests/unit/firstContactOnTheScore.test.ts:324:25
+    322|   await vi.waitFor(async () => {
+    323|     rows = await storedEncounters();
+    324|     expect(rows.length).toBe(count);
+       |                         ^
+    325|   });
+    326|   return rows;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/17]⎯
+
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > a piece, an excerpt and an import carry the fact too > a notated 
+piece: its first run is first contact, the second is not, and both pass
+AssertionError: expected undefined to be true // Object.is equality
+
+
+ Test Files  2 failed | 1 passed (3)
+      Tests  17 failed | 45 passed (62)
+   Start at  01:09:50
+   Duration  13.64s (tests 81%, transform 11%, environment 5%, import 3%)
+
+- Expected:
+true
+
++ Received:
+undefined
+
+ ❯ tests/unit/firstContactOnTheScore.test.ts:523:42
+    521|     await open(`#/score/${SONG_ID}`);
+    522|     playThrough();
+    523|     expect((await lastStored(1)).unseen).toBe(true);
+       |                                          ^
+    524|     playThrough();
+    525|     const second = await lastStored(2);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/17]⎯
+
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > a piece, an excerpt and an import carry the fact too > an excerpt 
+of other bars played before leaves this excerpt a first contact
+AssertionError: excerpt A played made excerpt B met: expected undefined to be true // Object.is equality
+
+- Expected:
+true
+
++ Received:
+undefined
+
+ ❯ tests/unit/firstContactOnTheScore.test.ts:547:81
+    545|     await open(`#/score/${EXCERPT_B}`);
+    546|     playThrough();
+    547|     expect((await lastStored(2)).unseen, 'excerpt A played made excerp…
+       |                                                                                 ^
+    548|   });
+    549|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/17]⎯
+
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > a piece, an excerpt and an import carry the fact too > the piece 
+played whole before: its excerpt is not a first contact
+AssertionError: the whole piece played left its excerpt a first contact: expected undefined to be false // Object.is 
+equality
+
+- Expected:
+false
+
++ Received:
+undefined
+
+ ❯ tests/unit/firstContactOnTheScore.test.ts:554:101
+    552|     await open(`#/score/${EXCERPT_B}`);
+    553|     playThrough();
+    554|     expect((await lastStored(2)).unseen, 'the whole piece played left …
+       |                                                                                                     ^
+    555|   });
+    556|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/17]⎯
+
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > a piece, an excerpt and an import carry the fact too > an import is 
+its stored bytes: a duplicate under a new id is the same material, met and not first contact
+AssertionError: expected { kind: 'none', …(1) } to deeply equal { kind: 'file', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "kind": "file",
+-   "sha256": "de367c66583c4c355d163a126d01b2fabafc20db6dee66f48cc4e3b3f2e1a695",
++   "kind": "none",
++   "why": "an imported score: no build identity",
+  }
+
+ ❯ tests/unit/firstContactOnTheScore.test.ts:562:28
+    560|     playThrough();
+    561|     const first = await lastStored(1);
+    562|     expect(first.material).toEqual(identity);
+       |                            ^
+    563|     expect(first.unseen).toBe(true);
+    564|     leave();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/17]⎯
+
+command exit 1
+restored 5 file(s) by sha256
+exit 1

@@ -1,0 +1,99 @@
+﻿upgrade-makes-no-store: CAUGHT (exit 1) — src/data/db.ts
+    × a version-7 database with a row in every store opens at version 8 with every row as it was and the two new stores empty 12ms
+    × both stores are in the file; a replace restores them; a merge restored twice adds nothing and joins the summaries 1ms
+    × contact over the store: heard from the Library and never played is met 2ms
+    Tests  3 failed | 30 passed (33)
+backup-leaves-out-encounters: CAUGHT (exit 1) — src/data/db.ts
+    × round-trips every store it covers, and leaves out the one it does not 6ms
+    × both stores are in the file; a replace restores them; a merge restored twice adds nothing and joins the summaries 5ms
+    Tests  2 failed | 43 passed (45)
+restore-overwrites-summary: CAUGHT (exit 1) — src/data/backup.ts
+    × both stores are in the file; a replace restores them; a merge restored twice adds nothing and joins the summaries 9ms
+    Tests  1 failed | 32 passed (33)
+range-touch-counts-as-cover: CAUGHT (exit 1) — src/data/encounterStore.ts
+    × the range rule: an encounter meets a range only by covering it; one that touches part of it answers under partly 4ms
+    × parent to excerpt through the printed range, never both ways: the whole played makes its excerpt familiar; excerpt A leaves excerpt B novel and the whole unmet 1ms
+    Tests  2 failed | 46 passed (48)
+range-part-covers-whole: CAUGHT (exit 1) — src/data/encounterStore.ts
+    × the range rule: an encounter meets a range only by covering it; one that touches part of it answers under partly 4ms
+    × parent to excerpt through the printed range, never both ways: the whole played makes its excerpt familiar; excerpt A leaves excerpt B novel and the whole unmet 1ms
+    Tests  2 failed | 31 passed (33)
+range-first-contact-ignores-partly: CAUGHT (exit 1) — src/data/encounterStore.ts
+    × one bar of it held down yesterday: not first contact 5ms
+    × a passage: bars 1–8 practised leave bars 25–32 a first contact, the whole piece not 1ms
+    Tests  2 failed | 46 passed (48)
+excerpt-bars-not-in-parent-scope: CAUGHT (exit 1) — src/data/encounterStore.ts
+    × parent to excerpt through the printed range, never both ways: the whole played makes its excerpt familiar; excerpt A leaves excerpt B novel and the whole unmet 4ms
+    Tests  1 failed | 32 passed (33)
+excerpt-inherits-both-ways: CAUGHT (exit 1) — src/data/encounterStore.ts
+    × parent to excerpt through the printed range, never both ways: the whole played makes its excerpt familiar; excerpt A leaves excerpt B novel and the whole unmet 7ms
+    Tests  1 failed | 47 passed (48)
+composition-claims-the-notation: CAUGHT (exit 1) — src/data/encounterStore.ts
+    × the range rule: an encounter meets a range only by covering it; one that touches part of it answers under partly 5ms
+    × parent to excerpt through the printed range, never both ways: the whole played makes its excerpt familiar; excerpt A leaves excerpt B novel and the whole unmet 5ms
+    × the composition facet: another arrangement heard makes the composition heard and claims nothing of this notation 2ms
+    × a legacy history answers from its runs by the item id, and says so; a phrase is never met by its row’s id 1ms
+visit-own-viewing-counts: CAUGHT (exit 1) — src/data/encounterStore.ts
+    × a viewing of this visit is not an earlier viewing; one of any other visit is 4ms
+    × viewed today, only on this visit: first contact — looking before reading is what sight-reading is 2ms
+    × viewed only on this visit: first contact 129ms
+    × a notated piece: its first run is first contact, the second is not, and both pass 126ms
+visit-every-viewing-skipped: CAUGHT (exit 1) — src/data/encounterStore.ts
+    × a viewing of this visit is not an earlier viewing; one of any other visit is 4ms
+    × viewed yesterday: not first contact 1ms
+    × viewed on an earlier visit and never played or heard: not first contact, and the sheet says seen 190ms
+    × a reload is another visit: the viewing before it is an earlier one 188ms
+heard-not-the-superset: CAUGHT (exit 1) — src/data/encounterStore.ts
+    × each kind answers its own facet; heard is the superset of any playback, demonstrated the demonstrations alone 7ms
+    × one bar of it held down yesterday: not first contact 1ms
+    Tests  2 failed | 31 passed (33)
+phrase-met-by-its-row-id: CAUGHT (exit 1) — src/data/encounterStore.ts
+    × a legacy history answers from its runs by the item id, and says so; a phrase is never met by its row’s id 7ms
+    Tests  1 failed | 32 passed (33)
+no-recheck-before-storing: CAUGHT (exit 1) — src/ui/screens/ScoreScreen.ts
+    × two tabs: a viewing another tab wrote before this one opened, or after it opened and before the run was stored, is another visit’s 317ms
+    Tests  1 failed | 14 passed (15)
+hear-it-writes-heard: CAUGHT (exit 1) — src/ui/screens/ScoreScreen.ts
+    × Hear it writes one demonstration and no hearing 76ms
+    × a bar held down writes a demonstration of that bar 517ms
+    × heard, left, returned later, read: not first contact, and the history says so 184ms
+    Tests  3 failed | 12 passed (15)
+viewing-written-in-blind: CAUGHT (exit 1) — src/ui/screens/ScoreScreen.ts
+    × Blind draws no notation, so it writes no viewing 98ms
+    Tests  1 failed | 14 passed (15)
+phrase-history-not-read: SURVIVED (exit 0) — src/ui/screens/ScoreScreen.ts
+    Tests  15 passed (15)
+piece-unseen-gates-its-pass: CAUGHT (exit 1) — src/data/db.ts
+    × which runs are generated phrases: the recipe, or the flag on a run whose material is none but a phrase’s 5ms
+    × a piece played again (unseen: false) still passes, and the rung state still reads it 3ms
+    × a notated piece: its first run is first contact, the second is not, and both pass 191ms
+    Tests  3 failed | 45 passed (48)
+rung-state-unscoped: CAUGHT (exit 1) — src/evidence/rungState.ts
+    × a piece played again (unseen: false) still passes, and the rung state still reads it 6ms
+    Tests  1 failed | 32 passed (33)
+history-line-unscoped: CAUGHT (exit 1) — src/ui/screens/ProgressScreen.ts
+    × a piece played again (unseen: false) still passes, and the rung state still reads it 6ms
+    × a notated piece: its first run is first contact, the second is not, and both pass 192ms
+    Tests  2 failed | 46 passed (48)
+summary-not-a-join: CAUGHT (exit 1) — src/data/progressStore.ts
+    × folding the same run twice changes nothing; the summary holds the encounter projection and no evidence 6ms
+    Tests  1 failed | 32 passed (33)
+summary-forgets-the-id: CAUGHT (exit 1) — src/data/progressStore.ts
+    × an encounter by id alone is met by id; a pruned run’s summary is still played 5ms
+    × a run with no material folds by its id, and says so 1ms
+    Tests  2 failed | 31 passed (33)
+contact-ignores-encounters: CAUGHT (exit 1) — src/data/progressStore.ts
+    × heard and never played is met, and says heard 6ms
+    × played, demonstrated and viewed under another id: met, every way it was 1ms
+    × contact over the store: heard from the Library and never played is met 2ms
+    Tests  3 failed | 45 passed (48)
+import-not-its-bytes: CAUGHT (exit 1) — src/curriculum/material.ts
+    × an import is its stored bytes: a duplicate under a new id is the same material, met and not first contact 134ms
+    Tests  1 failed | 14 passed (15)
+prune-folds-nothing: CAUGHT (exit 1) — src/data/progressStore.ts
+    × after it: the passage still attempted and practised, the other passage novel, the excerpts right, contact met with how, the legacy run met by its id 215ms
+    × the summary holds the encounter projection and nothing else 1ms
+    × a backup taken after the pruning restores the same answers 6839ms
+    Tests  3 failed | 2 passed (5)
+24 of 25 caught
+exit 0

@@ -40,3 +40,5 @@ If the upgrade to version 8 cannot leave every other store byte-identical on the
 Judgement first: what the run's history line says after a phrase was heard the day before, as an observation; then Done / Not done / Follow-ups / Questions / Files; the query's table; the adversaries; the red lines; the tests table; exit codes; unverified beside what passes.
 
 **Approved with one required change 2026-09-29** (`responses/7863bee.md`), applied: the durable summary before pruning with the facets defined by what happened and the retention adversary (item 1), the visit id and the hearing kinds (item 1), `unseen` written for the first notated or imported reading (item 4, the reviewer's answer 3), the sequencing after D4a. Dispatches on D4a's landing, port 4183.
+
+**Landed 2026-09-29** (Entry 112; b48342f, merged e13f9c3); handoff `handoffs/b48342f.md`.
