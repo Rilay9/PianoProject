@@ -9,12 +9,15 @@ from __future__ import annotations
 
 import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 TOOLS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(TOOLS))
 
+import build  # noqa: E402
 import finder  # noqa: E402
 import validate  # noqa: E402
 
@@ -111,6 +114,56 @@ class TestTheSeedList(unittest.TestCase):
         block = finder.generate(SAMPLE, what='Stage 2, "Hands together"', concepts=concepts)
         self.assertLessEqual(len(block["chatPrompt"]), finder.MAX_CHAT_PROMPT)
         self.assertEqual(validate.finder_errors({"stages": [{"units": [{"lessons": [{"id": "x", "finder": block}]}]}], "concepts": []}), [])
+
+
+class TestTheBuildPassesTheSeedConcepts(unittest.TestCase):
+    """E2a (the E2 review's required change): the build's concept call site passes the entry's own id,
+    so the seed list reaches the concept prompts where it knows the concept — a proposal for the
+    owner's search, never an admission. The lesson call site passes none, deliberately (Entry 111): a
+    rung's finder states a key, a metre, a genre and a level the seed's works carry none of, and on the
+    built curriculum most seeded lesson examples contradicted the rung's own "must" or "avoid". Read at
+    the call site: `build.copy_curriculum` on a fixture curriculum, its written `curriculum.json` read back.
+    """
+
+    def build_with(self, lessons: list[dict], concepts: list[dict]) -> dict:
+        with tempfile.TemporaryDirectory() as tmp:
+            src = Path(tmp) / "content"
+            (src / "curriculum").mkdir(parents=True)
+            stage = {"number": 9, "title": "Nine", "units": [{"id": "u", "title": "U", "track": "core", "lessons": lessons}]}
+            (src / "curriculum" / "stage-9.json").write_text(json.dumps({"tracks": [], "stages": [stage]}), encoding="utf-8")
+            (src / "curriculum" / "concepts.json").write_text(json.dumps({"concepts": concepts}), encoding="utf-8")
+            out = Path(tmp) / "out"
+            out.mkdir()
+            with mock.patch.object(build, "CONTENT_SRC", src):
+                step = build.copy_curriculum(out)
+            self.assertTrue(step.ok, step.detail)
+            return json.loads((out / "curriculum.json").read_text(encoding="utf-8"))
+
+    def test_a_lesson_keeps_the_prompt_it_had_byte_for_byte_whatever_its_concepts_name(self) -> None:
+        # Held: a seeded concept on a lesson does not reach its prompt (the rung's constraints are not the seed's to overrule).
+        lessons = [
+            {"id": "9.1", "title": "Syncopation", "concepts": ["syncopation"], "finder": SAMPLE},
+            {"id": "9.2", "title": "Hands together", "concepts": [], "finder": SAMPLE},
+            {"id": "9.3", "title": "Waiting", "concepts": ["wait-mode"], "finder": SAMPLE},
+            {"id": "9.4", "title": "No concepts field", "finder": SAMPLE},
+        ]
+        built = self.build_with(lessons, [])
+        for lesson in built["stages"][0]["units"][0]["lessons"]:
+            self.assertEqual(lesson["finder"], finder.generate(SAMPLE, what=finder.lesson_what(9, lesson["title"])), lesson["id"])
+        self.assertNotIn("The Entertainer", built["stages"][0]["units"][0]["lessons"][0]["finder"]["chatPrompt"])
+        self.assertEqual(validate.finder_errors(built), [])
+
+    def test_a_concept_entry_passes_its_own_id(self) -> None:
+        concepts = [
+            {"id": "alberti-bass", "display": "Alberti bass", "finder": SAMPLE},
+            {"id": "a-concept-the-seed-does-not-know", "display": "Something else", "finder": SAMPLE},
+        ]
+        built = self.build_with([], concepts)
+        alberti, other = built["concepts"]
+        self.assertIn("Piano Sonata in C major, K. 545, first movement (Wolfgang Amadeus Mozart)", alberti["finder"]["chatPrompt"])
+        self.assertLessEqual(len(alberti["finder"]["chatPrompt"]), finder.MAX_CHAT_PROMPT)
+        self.assertEqual(other["finder"], finder.generate(SAMPLE, what=finder.concept_what("something else")))
+        self.assertEqual(validate.finder_errors(built), [])
 
 
 class TestValidatorRules(unittest.TestCase):

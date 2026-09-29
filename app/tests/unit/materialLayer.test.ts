@@ -14,16 +14,23 @@
  *    an unknown opportunity fact leaves the candidate for exploration only.
  * 4. **The thirteen adversaries** (Part 25's twelve and the reviewer's), each holding the fact
  *    this layer supplies and naming the later layer that finishes the case.
+ * 5. **One public gate** (E2a; the E2 review's required change): `eligibleFor` is the material gate
+ *    asked of the want's requirements, the established questions one private core
+ *    (`eligibilityCore.ts`) that neither gate imports back; and novelty bound to D4 — the candidate's
+ *    contact identity its material, the learner's contact D4's reading of the stored runs the
+ *    caller holds.
  *
  * Nothing here is heard: every verdict is the notes' as the detectors read them, or a source's
  * estimate said as one.
  */
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { afterAll, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   candidateOf,
   completenessOf,
+  contactFromRuns,
+  contactIdentity,
   eligibleForMaterial,
   externalCandidate,
   materialFor,
@@ -40,13 +47,16 @@ import {
   type TeachingRepertoire,
 } from '../../src/curriculum/candidates';
 import { eligibleFor, measurementOf, type Learner, type Want } from '../../src/curriculum/eligibility';
+import { materialOfItem } from '../../src/curriculum/material';
 import { EVERY_DECLARED_SKILL } from '../../src/curriculum/skillActivation';
 import type { CatalogItem, Curriculum } from '../../src/curriculum/types';
 import { taughtAtRung } from '../../src/curriculum/session';
 import { addImport, correctImportHands, importToCatalogItem } from '../../src/data/importStore';
 import type { ImportRow } from '../../src/data/db';
+import { recordRun, resetProgressForTest, rungRows, type RunResult } from '../../src/data/progressStore';
 import type { LadderState } from '../../src/evidence/ladder';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
+import type { Identity } from '../../src/review/record';
 import { clearFakeIndexedDb, fakeFile, useFakeIndexedDb } from './helpers/idb';
 import { measured, unmeasured } from './helpers/measured';
 import { installTextMeasurer } from './helpers/scoreCatalog';
@@ -181,13 +191,17 @@ describe('material requirements as data; a Want is the simplest of them (item 2)
   /**
    * Every built item and a constructed set (an unmeasured song, a score imported before E0, a
    * measured import, a PDF, the four large-hand voicings on the build), under every want kind and
-   * five learners: the material gate's verdict on the want's requirements is the one gate's, byte
-   * for byte, except where the reviewer's rule moves it. The moved cases are exactly: the
-   * candidate unmeasured, the want automatic, a learner described who is not prepared for every
-   * demand, and the one gate's verdict `exploration-only` — which becomes `unknown-forbidden`
-   * naming those demands and the same missing measurement. No other verdict moves.
+   * five learners: the exported gate's verdict (E2a: the material gate asked of the want's
+   * requirements) is the established questions' (the private core, what `eligibleFor` answered
+   * before E2a), byte for byte, except where the reviewer's rule moves it. The moved cases are
+   * exactly: the candidate unmeasured, the want automatic, a learner described who is not prepared
+   * for every demand, and the established verdict `exploration-only` — which becomes
+   * `unknown-forbidden` naming those demands and the same missing measurement. No other verdict
+   * moves. (Revised by E2a: in E2 the comparison was the sibling against `eligibleFor`, which is now
+   * the sibling itself; the core is what it was.)
    */
-  it('keeps every verdict the one gate gives, except the one case the reviewer’s rule moves, and moves every instance of that case', () => {
+  it('keeps every verdict the established questions give, except the one case the reviewer’s rule moves, and moves every instance of that case — through the exported gate', async () => {
+    const { establishedQuestions } = await import('../../src/curriculum/eligibilityCore');
     const constructed = [
       song('song.unread', unmeasured('the app could not load the file')),
       song('song.no-record'),
@@ -218,11 +232,11 @@ describe('material requirements as data; a Want is the simplest of them (item 2)
     let moved = 0;
     let compared = 0;
     for (const item of items) {
-      const candidate = candidateOf(item);
       for (const want of wants) {
         for (const [name, learner] of learners) {
-          const before = eligibleFor(item, learner, want);
-          const after = eligibleForMaterial(requirementsFromWant(want), candidate, learner);
+          const before = establishedQuestions(item, learner, want);
+          // The exported gate (the material gate asked of the want's requirements; the case below holds the delegation).
+          const after = eligibleFor(item, learner, want);
           compared += 1;
           const knows = learner.taught !== undefined || learner.skillState !== undefined;
           const unprepared = unpreparedDemands(learner);
@@ -242,7 +256,8 @@ describe('material requirements as data; a Want is the simplest of them (item 2)
     expect(notMoved.slice(0, 10), `${String(notMoved.length)} instances of the rule’s case not moved`).toEqual([]);
     expect(moved, 'the rule’s case occurs on the build and among the constructed').toBeGreaterThan(0);
     expect(compared).toBeGreaterThan(moved);
-  });
+    // A sweep of the whole build: its own time limit, so a loaded parallel run does not read as a failure.
+  }, 120_000);
 });
 
 describe('source-specific validity, per source kind (item 3)', () => {
@@ -427,7 +442,8 @@ describe('the material requirements beyond a want, read from the facts the candi
 describe('the thirteen adversaries at the material layer (Part 25, Q8; the reviewer’s thirteenth)', () => {
   it('1. a generated transfer study and an authentic excerpt compared for transfer: each its own source and validity, neither pretending the other’s origin (the choice is ranking’s, layer 7, X)', () => {
     const transfer: MaterialRequirements = { experience: 'automatic', target: { for: 'demand', demand: 'texture.hands-together' }, novelty: 'first-contact' };
-    const learner: MaterialLearner = { ...COPES, contact: () => 'unmet' };
+    // No run on record: D4's reading says unmet for both materials (E2a; a fixture reading in E2).
+    const learner: MaterialLearner = { ...COPES, contact: contactFromRuns([]) };
     const study = candidateOf(withTeachingUse(TRANSFER_STUDY, 'yes'));
     const cut = candidateOf(withTeachingUse(CUT, 'yes'));
     expect(TRANSFER_STUDY.role).toBe('transfer');
@@ -444,9 +460,9 @@ describe('the thirteen adversaries at the material layer (Part 25, Q8; the revie
     expect(b.facts.tempo.answers).toBe(false);
   });
 
-  it('2. a PDMX excerpt the learner has seen: eligible for practice, refused for first contact (novelty from a fixture contact reading until D4’s lands)', () => {
+  it('2. a PDMX excerpt the learner has seen: eligible for practice, refused for first contact (novelty from D4’s reading of a run of the cut’s material, E2a; a fixture reading in E2)', () => {
     const cut = candidateOf(withTeachingUse(CUT, 'yes'));
-    const seen: MaterialLearner = { ...COPES, contact: (identity) => (identity === CUT.id ? 'met' : 'unmet') };
+    const seen: MaterialLearner = { ...COPES, contact: contactFromRuns([{ itemId: CUT.id, material: materialOfItem(CUT) }]) };
     const practice: MaterialRequirements = { experience: 'automatic', target: { for: 'demand', demand: 'key.signature' } };
     expect(CUT.id).toContain('.pdmx.');
     expect(eligibleForMaterial(practice, cut, seen)).toMatchObject({ verdict: 'eligible', practises: 'key.signature' });
@@ -575,7 +591,8 @@ describe('the thirteen adversaries at the material layer (Part 25, Q8; the revie
   it('10. one piece under two requirements on one identity: two verdicts, the candidate unchanged and carrying no purpose (the purpose records are the session’s)', () => {
     const piece = candidateOf(TWINKLE);
     const frozen = JSON.stringify(piece);
-    const learner: MaterialLearner = { ...COPES, contact: () => 'met' };
+    // A run of the piece's material on record (D4's reading, E2a; a fixture reading in E2).
+    const learner: MaterialLearner = { ...COPES, contact: contactFromRuns([{ itemId: TWINKLE.id, material: materialOfItem(TWINKLE) }]) };
     const retention = eligibleForMaterial({ experience: 'automatic', target: { for: 'equivalent' }, novelty: 'familiar' }, piece, learner);
     const project = eligibleForMaterial({ experience: 'chosen', target: { for: 'demand', demand: 'texture.hands-together' } }, piece, learner);
     expect(retention).toEqual({ verdict: 'eligible', for: 'equivalent' });
@@ -586,14 +603,16 @@ describe('the thirteen adversaries at the material layer (Part 25, Q8; the revie
 
   it('11. a sight-reading requirement met by a generator phrase, an approved excerpt or suitable imported notation alike — sight-reading never implies the generator', () => {
     const firstRead: MaterialRequirements = { experience: 'automatic', novelty: 'first-contact', completeness: 'phrase' };
-    const learner: MaterialLearner = { ...COPES, contact: () => 'unmet' };
+    // No run on record (D4's reading, E2a; a fixture reading in E2).
+    const learner: MaterialLearner = { ...COPES, contact: contactFromRuns([]) };
     const imported = candidateOf(importToCatalogItem(importRow('import.a-minuet', measured(['interval.step', 'interval.skip']))));
     const three = [candidateOf(READER), candidateOf(withTeachingUse(CUT, 'yes')), imported];
     expect(three.map((one) => one.source)).toEqual(['runtime', 'excerpt', 'import']);
     for (const candidate of three) expect(eligibleForMaterial(firstRead, candidate, learner), candidate.id).toMatchObject({ verdict: 'eligible' });
-    // The requirement names no source, and a seen piece is refused whatever its source.
-    const seen: MaterialLearner = { ...COPES, contact: () => 'met' };
-    expect(eligibleForMaterial(firstRead, imported, seen)).toMatchObject({ requirement: 'novelty', found: 'met' });
+    // The requirement names no source, and a seen piece is refused whatever its source: a run of the
+    // import, which D4 reads by its id (an import has no build identity), is contact by id.
+    const seen: MaterialLearner = { ...COPES, contact: contactFromRuns([{ itemId: 'import.a-minuet' }]) };
+    expect(eligibleForMaterial(firstRead, imported, seen)).toMatchObject({ requirement: 'novelty', found: 'met-by-id' });
   });
 
   it('12. interest is not a fact validity or eligibility reads: two recommendations alike but for the learner’s interest, and a piece whose tags say jazz, are judged the same (a tie-break is ranking’s)', () => {
@@ -621,6 +640,133 @@ describe('the thirteen adversaries at the material layer (Part 25, Q8; the revie
       // The same object, the same learner: only `experience` differs between the first two.
       expect({ ...SYNCOPATION_PRACTICE, experience: 'chosen' }).toEqual(SYNCOPATION_PROJECT);
     }
+  });
+});
+
+describe('one public gate (E2a; the E2 review’s required change, the E2a brief’s, responses/1b09a1f.md)', () => {
+  const source = (path: string): string => readFileSync(join(process.cwd(), 'src', ...path.split('/')), 'utf8');
+  const importsOf = (text: string): string[] => [...text.matchAll(/from '([^']+)'/g)].map((match) => match[1] as string);
+
+  it('eligibleFor answers exactly as the material gate asked of the want’s requirements, for every want kind, source and learner, and returns (no recursion)', () => {
+    const wants: Want[] = [
+      { for: 'equivalent' },
+      { for: 'exploration' },
+      { for: 'demand', demand: 'interval.skip' },
+      { for: 'skill', skill: 'interval-reading' },
+      { for: 'requirement', skill: 'sight-reading' },
+    ];
+    for (const item of [TWINKLE, DRILL, READER, TRANSFER_STUDY, CUT, PLACEHOLDER, OLD_IMPORT, PDF]) {
+      for (const want of wants) {
+        for (const learner of [COPES, STEPS_AND_SKIPS, NOBODY, LADDER]) {
+          expect(eligibleFor(item, learner, want), `${item.id} ${want.for}`).toEqual(eligibleForMaterial(requirementsFromWant(want), candidateOf(item), learner));
+        }
+      }
+    }
+  });
+
+  it('the import graph is core ← candidates ← eligibility: the core imports neither gate, candidates.ts does not import eligibility.ts, and no other app module imports the core', () => {
+    const core = source('curriculum/eligibilityCore.ts');
+    expect(importsOf(core)).not.toContain('./candidates');
+    expect(importsOf(core)).not.toContain('./eligibility');
+    expect(importsOf(source('curriculum/candidates.ts'))).toContain('./eligibilityCore');
+    expect(importsOf(source('curriculum/candidates.ts'))).not.toContain('./eligibility');
+    const root = join(process.cwd(), 'src');
+    const importers = readdirSync(root, { recursive: true, encoding: 'utf8' })
+      .filter((path) => path.endsWith('.ts'))
+      .map((path) => path.replace(/\\/g, '/'))
+      .filter((path) => importsOf(source(path)).some((from) => from.endsWith('/eligibilityCore') || from === './eligibilityCore'));
+    expect(importers.sort()).toEqual(['curriculum/candidates.ts', 'curriculum/eligibility.ts']);
+  });
+
+  it('eligibility.ts computes no verdict of its own and does not expose the established questions: the old path is not public', async () => {
+    expect(source('curriculum/eligibility.ts')).not.toMatch(/verdict:\s*'/);
+    const gate = await import('../../src/curriculum/eligibility');
+    expect(Object.keys(gate)).not.toContain('establishedQuestions');
+    expect(Object.keys(gate)).toEqual(expect.arrayContaining(['eligibleFor', 'eligible', 'admittedForTeaching', 'measurementOf', 'uncoped', 'usefulDensity', 'targetSkillsFor', 'targetDemandsFor']));
+  });
+});
+
+describe('novelty bound to D4 (E2a): the candidate’s contact identity is its material, the learner’s contact D4’s reading of the stored runs the caller holds', () => {
+  it('the identity: every built row’s is the build’s material (materialOfItem), an excerpt’s the cut’s file, an import’s none, a recommendation none at all', () => {
+    const differ = catalog.filter((item) => JSON.stringify(contactIdentity(candidateOf(item))) !== JSON.stringify(materialOfItem(item))).map((item) => item.id);
+    expect(differ.slice(0, 10), `${String(differ.length)} rows`).toEqual([]);
+    expect(contactIdentity(candidateOf(CUT))).toEqual(CUT.provenance?.identity);
+    expect(contactIdentity(candidateOf(CUT))).toMatchObject({ kind: 'file' });
+    expect(contactIdentity(candidateOf(OLD_IMPORT))).toEqual({ kind: 'none', why: 'an imported score: no build identity' });
+    expect(contactIdentity(externalCandidate(RAG))).toBeUndefined();
+  });
+
+  describe('on stored runs: written by recordRun, read back by rungRows — the rows a caller holds — through contactFromRuns', () => {
+    beforeEach(() => {
+      useFakeIndexedDb();
+      resetProgressForTest();
+    });
+    afterEach(() => clearFakeIndexedDb());
+
+    const run = (itemId: string, material?: Identity): RunResult => ({
+      itemId,
+      mode: 'tempo',
+      tempoPct: 100,
+      accuracy: 1,
+      accuracyEstimated: false,
+      wrongNotes: 0,
+      missed: 0,
+      durationMs: 1000,
+      passed: true,
+      masterEligible: false,
+      ...(material === undefined ? {} : { material }),
+    });
+    const approved = candidateOf(withTeachingUse(CUT, 'yes'));
+    const KEYS: MaterialRequirements = { experience: 'automatic', target: { for: 'demand', demand: 'key.signature' } };
+    const FIRST: MaterialRequirements = { ...KEYS, novelty: 'first-contact' };
+    const FAMILIAR: MaterialRequirements = { ...KEYS, novelty: 'familiar' };
+    const learnerFrom = async (): Promise<MaterialLearner> => ({ ...COPES, contact: contactFromRuns(await rungRows()) });
+
+    it('a changed excerpt cut — the same definition, a new cut — is unmet with metById: first contact, and not familiar', async () => {
+      const earlierCut: Identity = { kind: 'file', sha256: 'e'.repeat(64) };
+      await recordRun(run(CUT.id, earlierCut), new Date(2026, 9, 1, 12));
+      const learner = await learnerFrom();
+      expect(learner.contact?.(CUT.id, contactIdentity(approved))).toEqual({ contact: 'unmet', metById: true });
+      expect(eligibleForMaterial(FIRST, approved, learner)).toMatchObject({ verdict: 'eligible', practises: 'key.signature' });
+      expect(eligibleForMaterial(FAMILIAR, approved, learner)).toEqual({ verdict: 'ineligible', why: 'requirement', requirement: 'novelty', found: 'unmet' });
+    });
+
+    it('the same material under another id is met: not first contact', async () => {
+      await recordRun(run('excerpt.an-earlier-id', CUT.provenance?.identity), new Date(2026, 9, 1, 12));
+      const learner = await learnerFrom();
+      expect(learner.contact?.(CUT.id, contactIdentity(approved))).toEqual({ contact: 'met', metById: false, metAs: ['excerpt.an-earlier-id'] });
+      expect(eligibleForMaterial(FIRST, approved, learner)).toEqual({ verdict: 'ineligible', why: 'requirement', requirement: 'novelty', found: 'met' });
+      expect(eligibleForMaterial(FAMILIAR, approved, learner)).toMatchObject({ verdict: 'eligible', practises: 'key.signature' });
+    });
+
+    it('a legacy run of the id, no material on it, is met-by-id — never first contact; familiar by the id alone, and the verdict says so', async () => {
+      await recordRun(run(CUT.id), new Date(2026, 9, 1, 12));
+      const learner = await learnerFrom();
+      expect(learner.contact?.(CUT.id, contactIdentity(approved))).toEqual({ contact: 'met-by-id', metById: true });
+      expect(eligibleForMaterial(FIRST, approved, learner)).toEqual({ verdict: 'ineligible', why: 'requirement', requirement: 'novelty', found: 'met-by-id' });
+      expect(eligibleForMaterial(FAMILIAR, approved, learner)).toMatchObject({ verdict: 'eligible', practises: 'key.signature', contactBy: 'id' });
+    });
+
+    it('an import, whose material D4 leaves none, is judged by its id and says so: unmet before a run of it, met-by-id after', async () => {
+      const minuet = candidateOf(importToCatalogItem(importRow('import.a-minuet', measured(['interval.step', 'interval.skip']))));
+      const firstRead: MaterialRequirements = { experience: 'automatic', novelty: 'first-contact' };
+      expect(eligibleForMaterial(firstRead, minuet, await learnerFrom())).toEqual({ verdict: 'eligible', for: 'equivalent', contactBy: 'id' });
+      await recordRun(run('import.a-minuet', contactIdentity(minuet)), new Date(2026, 9, 1, 12));
+      resetProgressForTest();
+      const after = await learnerFrom();
+      expect(after.contact?.('import.a-minuet', contactIdentity(minuet))).toEqual({ contact: 'met-by-id', metById: true, materialUnknown: true });
+      expect(eligibleForMaterial(firstRead, minuet, after)).toEqual({ verdict: 'ineligible', why: 'requirement', requirement: 'novelty', found: 'met-by-id' });
+    });
+
+    /*
+     * Pending G1, written against the interface G1 supplies (its brief, item 5: `contact`'s `met` gains
+     * `how: ('played' | 'heard' | 'demonstrated' | 'viewed')[]`, read from the encounter store as well as
+     * the runs). A hearing stored for the cut — no run of it — would read `{ contact: 'met', how: ['heard'] }`
+     * through the same adapter, and `eligibleForMaterial(FIRST, approved, learner)` would refuse it
+     * (`found: 'met'`): the gate reads any contact as contact. Today D4's reading sees runs only, so a
+     * hearing cannot be represented without faking it as a run, which this case refuses to do.
+     */
+    it.todo('a previously heard item, never played, is not first contact — pending G1 (the encounter store; `contact` gaining `how` with `heard`)');
   });
 });
 

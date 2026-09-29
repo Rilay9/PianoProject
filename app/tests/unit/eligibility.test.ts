@@ -13,7 +13,9 @@
  * 5. level-far but a clean ready target → eligible (4 and 5 on one swap sheet);
  * 6. an explicit `alternatives[]` entry contradicting measured demands → refused;
  * 7. an import whose corrected hand split moves it between eligible and ineligible;
- * 8. `demands: unmeasured` → eligible for exploration only, the missing measurement said;
+ * 8. `demands: unmeasured` → refused for every automatic want where the learner is not prepared for
+ *    every demand (`unknown-forbidden`, the one gate since E2a), exploration-only where nothing is left
+ *    to rule out, eligible for exploration — the missing measurement said in each;
  * 9. genre and tags satisfy no requirement;
  *
  * plus the reason text, the declared large-hand voicing (D0 finding 5), the rung
@@ -98,14 +100,19 @@ describe('Part 23’s adversaries, through the gate', () => {
     expect(ids).toEqual([['song.named-and-clean', 'alternative']]);
   });
 
-  it('8. demands unmeasured: eligible for exploration and project work only, with the missing measurement said', () => {
+  it('8. demands unmeasured: refused for every automatic want where the learner is not prepared for every demand (unknown-forbidden, E2a), exploration-only with nothing to rule out, eligible for exploration — the missing measurement said in each', () => {
     const candidate = song('song.unread', unmeasured('the app could not load the file'));
+    // An unknown is not an observed absence (the E2 review's required change, through the exported gate): every demand but steps and skips.
+    const unprepared = VOCABULARY_V0.demands.map((demand) => demand.id).filter((id) => id !== 'interval.step' && id !== 'interval.skip');
     for (const want of [{ for: 'equivalent' }, { for: 'demand', demand: 'interval.skip' }, { for: 'skill', skill: 'interval-reading' }, { for: 'requirement', skill: 'interval-reading' }] as const) {
-      expect(eligibleFor(candidate, STEPS_AND_SKIPS, want), want.for).toEqual({ verdict: 'exploration-only', missing: 'the app could not load the file' });
+      expect(eligibleFor(candidate, STEPS_AND_SKIPS, want), want.for).toEqual({ verdict: 'ineligible', why: 'unknown-forbidden', demands: unprepared, missing: 'the app could not load the file' });
     }
     expect(eligibleFor(candidate, STEPS_AND_SKIPS, { for: 'exploration' })).toEqual({ verdict: 'eligible', for: 'exploration', missing: 'the app could not load the file' });
-    // An item with no measurement record at all (a catalogue from before E0) is not "no demands".
-    expect(eligibleFor(song('song.no-record'), STEPS_AND_SKIPS, { for: 'equivalent' }).verdict).toBe('exploration-only');
+    // An item with no measurement record at all (a catalogue from before E0) is not "no demands": refused the same way.
+    expect(eligibleFor(song('song.no-record'), STEPS_AND_SKIPS, { for: 'equivalent' })).toEqual({ verdict: 'ineligible', why: 'unknown-forbidden', demands: unprepared, missing: 'no measurement record' });
+    // Nothing to rule out — a learner prepared for every demand, or none described — and the claim waits for the measurement, as before.
+    expect(eligibleFor(candidate, { taught: () => true }, { for: 'equivalent' })).toEqual({ verdict: 'exploration-only', missing: 'the app could not load the file' });
+    expect(eligibleFor(candidate, {}, { for: 'equivalent' })).toEqual({ verdict: 'exploration-only', missing: 'the app could not load the file' });
   });
 
   it('8, on every entry path: an unmeasured same-lesson option and named stand-in are not offered as equivalent', () => {

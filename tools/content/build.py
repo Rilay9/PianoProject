@@ -1141,7 +1141,13 @@ def copy_curriculum(out_dir: Path) -> Step:
     stages.sort(key=lambda stage: stage["number"])
 
     # The prompts are generated here, not authored (replan §4.1): one wording
-    # change fixes every rung at once, and what ships can be checked.
+    # change fixes every rung at once, and what ships can be checked. A lesson's
+    # concepts are deliberately not passed to the seed list (E2a, Entry 111): a
+    # rung's finder states a key, a metre, a genre and a level the seed's works
+    # carry none of, and matched on any one of the lesson's concepts, most of the
+    # seeded examples contradicted the rung's own "must" or "avoid" (Minuet in G
+    # beside "C major" and "avoid moving left hand"). The concept entries below
+    # pass their own id, where the seed's claim and the prompt's subject agree.
     lessons_with_finders = 0
     for stage in stages:
         for unit in stage.get("units", []):
@@ -1168,8 +1174,13 @@ def copy_curriculum(out_dir: Path) -> Step:
                 # about a button.
                 out["appFeature"] = True
             elif entry.get("finder"):
+                # The concept's own id reaches the seed list (E2a): its works are named
+                # among the examples where the seed knows the concept — a proposal for
+                # the owner's search, never an admission.
                 out["finder"] = finder.generate(
-                    entry["finder"], what=finder.concept_what(entry["display"].lower())
+                    entry["finder"],
+                    what=finder.concept_what(entry["display"].lower()),
+                    concepts=[entry["id"]],
                 )
             concepts.append(out)
 
