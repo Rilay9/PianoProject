@@ -1443,8 +1443,18 @@ def concept_claim_findings(
       establishes. A rung whose options no detector can check (runtime drills only) is not judged, as
       the report counts such a claim unchecked. The same concept under the rung's `introduces` list
       passes: the lesson says the rung introduces it and no piece there practises it yet;
+    - judges only the options this build measured (Q75). An `unmeasured` option (a strict build's
+      licence placeholder, a file the app could not load) establishes nothing and refutes nothing
+      (E0), so it is not a checked option (`claims.CHECKED`), and where one sits on a rung whose
+      checked options do not establish the claim, the claim is **warned** as not judged on this build,
+      naming how many options were unmeasured, never failed: the option this build could not read may
+      be the one that keeps it. The Pages deploy is the strict build, which placeholders the one
+      option establishing 2.4's tie and the five Joplin rags among ragtime.8's options. A claim fails
+      only where every option the rung holds was checked or is a runtime drill, and the failing message
+      says so ("0 unmeasured on this build"), so the runner's log tells a placeholder from a wrong claim;
     - **fails** where a concept is in both lists, and where a deferral no longer describes the build (the
-      claim established, or no longer made): a deferral never outlives its reason;
+      claim established, or no longer made): a deferral never outlives its reason. A deferral whose
+      options this build could not measure is not stale: the build did not look (Q75);
     - **warns** for each deferral (`DEFERRED_CONCEPT_CLAIMS`, with its reason), and where an option
       establishes a concept the rung only introduces: it belongs in `concepts`.
 
@@ -1482,18 +1492,31 @@ def concept_claim_findings(
         for concept in concepts:
             key = claim_of(concept)
             claim = counts.get(key) if key else None
-            if claim is None or claim["measurable"] == 0 or claim["established"] > 0:
+            if claim is None or claim["established"] > 0:
                 continue
+            checked, unmeasured = claim["measurable"], claim.get("unmeasured", 0)
+            if checked == 0 and unmeasured == 0:
+                continue  # runtime drills or missing ids only: no build checks the claim (F2)
+            looked = (f"none of its {checked} checked options establishes it" if checked
+                      else "none of its options was checked")
             reason = deferred.get((rung_id, concept))
             if reason is not None:
                 used.add((rung_id, concept))
-                warnings.append(f"WARNING (rung claims, F2): {rung_id} claims {concept} ({key[1]}) and none of its "
-                                f"{claim['measurable']} checked options establishes it; deferred: {reason}")
+                here = f" ({unmeasured} unmeasured on this build)" if unmeasured else ""
+                warnings.append(f"WARNING (rung claims, F2): {rung_id} claims {concept} ({key[1]}) and {looked}{here}; "
+                                f"deferred: {reason}")
+                continue
+            if unmeasured:
+                warnings.append(
+                    f"WARNING (rung claims, Q75): {rung_id} claims {concept} ({key[1]}), not judged on this build: "
+                    f"{unmeasured} of its options unmeasured here (a placeholder, or a file the app could not load) and "
+                    f"{looked}; an unmeasured option establishes nothing and refutes nothing"
+                )
                 continue
             errors.append(
-                f"{rung_id}: its concepts name {concept} ({key[1]}) and none of its {claim['measurable']} checked "
-                f"options establishes it: move it to introduces (the rung introduces it, and its lesson says no piece "
-                f"there practises it yet), or keep an option that establishes it"
+                f"{rung_id}: its concepts name {concept} ({key[1]}) and {looked} (0 unmeasured on this build): "
+                f"move it to introduces (the rung introduces it, and its lesson says no piece there practises it yet), "
+                f"or keep an option that establishes it"
             )
         for item in row.get("introduced") or []:
             if item["kind"] is not None and item["established"] > 0:
@@ -1517,7 +1540,8 @@ def rung_claims_warning(catalog: list, curriculum: dict) -> str:
     s = claims.rung_claims(catalog, curriculum)["summary"]
     return (
         f"WARNING (rung claims, E0): {s['unestablished']} of {s['measurable']} checkable claims on rung options "
-        f"are not established by the options' measured demands; {s['rungClaimsKeptByNoOption']} rung claims "
+        f"are not established by the options' measured demands ({s['unmeasured']} unmeasured on this build, "
+        f"neither established nor refuted, Q75); {s['rungClaimsKeptByNoOption']} rung claims "
         f"no option establishes; {s['unmeasurableConcepts']} concept claims no detector can measure, with "
         f"{s['humanReviewed']} human teaching-use reviews. Nothing is removed from a rung: "
         f"docs/prompts/rung-claims.md."

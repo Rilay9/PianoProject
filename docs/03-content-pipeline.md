@@ -328,6 +328,33 @@ or through `.github/workflows/render-full.yml`, which is dispatched by hand.
 existed. It is gone: it made an edited source silently stale in `npm run build`, and with
 the cache the build is cheap enough to always run.
 
+**The public build's placeholders, which no cache changes (Q75, 2026-09-29).** The Pages
+deploy builds the content strict (`PIANOPATH_STRICT_LICENSE=1`, §1); CI's content build is
+the personal one. The strict build writes a placeholder — the id, the title, an
+`importHint`, no file, `measurement.status: "unmeasured"` — for every Sapp Joplin rag
+(`craigsapp/joplin`, CC BY-NC-SA; the other Kern rows are the Chopin Institute's CC BY first
+editions, bundled), every PDMX row whose composition is not public domain (`personal-build`),
+and the MuseTrainer rows likewise (six *Beautiful* pieces), and it cuts no excerpt from a
+parent it does not bundle. The eight
+rows that are placeholders in every build stay so (the seven rock import rows and the
+Op. 25 no. 7 étude, `importHint` in the table). The runners' logs of 2026-09-29 show the
+split: the Pages run (strict, no cache) reads KERN 116 imported, 47 placeholders, excluded 73,
+and PDMX 367 imported, 175 placeholders, 2,089 items with demands measured on 1,783 and 235
+unmeasured; CI's run (personal, cache restored) reads KERN 162 imported, 1 placeholder,
+excluded 73, and PDMX 542 imported, 175 personal-build, 2,090 items with 2,011 measured and 8
+unmeasured. None of that difference is the cache's: the Pages run converted its 116 Kern
+files cold with CI's 73 exclusions, a strict build with every conversion cached writes the
+same counts, and every source is one any runner fetches (the Sapp and Chopin Institute
+repositories, MuseTrainer) or one the repository commits (the PDMX slice); the cache is
+written only on runners (CI's job, and `render-full.yml` when dispatched), never seeded from
+the owner's machine. The owner's phone runs the Pages
+build, so it shows those placeholders for as long as the deploy is strict (§1: until the
+repository is private). `pages.yml` restores CI's cache without saving one, for speed only.
+The claim rule counts a placeholder neither as an option that keeps a claim nor as one that
+refutes it (`validate.concept_claim_findings`, `claims.CHECKED`): on the strict build 2.4's
+tie and ragtime.8's stride bass, each established on the personal build only by an option the
+strict build placeholders, are warned as not judged there, not failed.
+
 ### 3b. The note-loss gate (step 2, inside `convert.py`)
 
 Nothing in the pipeline counted notes, so two ways of losing them ran unseen: music21's
