@@ -37,3 +37,5 @@ If the wide-face pass does not cut the name here, stop at the finding and say wh
 ## Report
 
 Judgement first: the Skills row at 342 × 740 before and after, on the app's stack and under the wide face, as pictures; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes (the runner's font itself is unverified until CI reads the record commit).
+
+**Landed 2026-09-29** (Entry 135; 994586f9, merged 994586f9); handoff `handoffs/994586f9.md`.

@@ -1,10 +1,67 @@
-$ python tools/docs/checks_for_paths.py app/src/style.css app/tests/e2e/plan.spec.ts
-# checks for 2 path(s): 2 matched, 0 unmatched
+# checks for 61 path(s): 61 matched, 0 unmatched
 # app/src/style.css: app/src/**, app/src/style.css
 # app/tests/e2e/plan.spec.ts: app/tests/e2e/*.spec.ts
+# docs/prompts/pictures/u90/committed-stack-115-longest-342x740.png: docs/**
+# docs/prompts/pictures/u90/committed-stack-115-stage2-342x740.png: docs/**
+# docs/prompts/pictures/u90/committed-stack-longest-342x740.png: docs/**
+# docs/prompts/pictures/u90/committed-stack-sideways-longest-740x342.png: docs/**
+# docs/prompts/pictures/u90/committed-stack-sideways-stage2-740x342.png: docs/**
+# docs/prompts/pictures/u90/committed-stack-stage2-342x740.png: docs/**
+# docs/prompts/pictures/u90/committed-wide-longest-342x740.png: docs/**
+# docs/prompts/pictures/u90/committed-wide-stage2-342x740.png: docs/**
+# docs/prompts/pictures/u90/fixed-stack-115-longest-342x740.png: docs/**
+# docs/prompts/pictures/u90/fixed-stack-115-stage2-342x740.png: docs/**
+# docs/prompts/pictures/u90/fixed-stack-longest-342x740.png: docs/**
+# docs/prompts/pictures/u90/fixed-stack-sideways-longest-740x342.png: docs/**
+# docs/prompts/pictures/u90/fixed-stack-sideways-stage2-740x342.png: docs/**
+# docs/prompts/pictures/u90/fixed-stack-stage2-342x740.png: docs/**
+# docs/prompts/pictures/u90/fixed-wide-longest-342x740.png: docs/**
+# docs/prompts/pictures/u90/fixed-wide-stage2-342x740.png: docs/**
+# docs/prompts/runs/U90/ENTRY.md: docs/**
+# docs/prompts/runs/U90/build-app-committed-2.txt: docs/**
+# docs/prompts/runs/U90/build-app-committed.txt: docs/**
+# docs/prompts/runs/U90/build-app-fixed.txt: docs/**
+# docs/prompts/runs/U90/ci-36559774455-log-failed.txt: docs/**
+# docs/prompts/runs/U90/compare-content.txt: docs/**
+# docs/prompts/runs/U90/content-build-offline.txt: docs/**
+# docs/prompts/runs/U90/diff.txt: docs/**
+# docs/prompts/runs/U90/e2e-plan-final.txt: docs/**
+# docs/prompts/runs/U90/e2e-plan-fixed.txt: docs/**
+# docs/prompts/runs/U90/e2e-skills-readers-fixed.txt: docs/**
+# docs/prompts/runs/U90/e2e-wide-phones-fixed.txt: docs/**
+# docs/prompts/runs/U90/lint.txt: docs/**
+# docs/prompts/runs/U90/map-min.txt: docs/**
+# docs/prompts/runs/U90/npm-ci.txt: docs/**
+# docs/prompts/runs/U90/parity-reference.txt: docs/**
+# docs/prompts/runs/U90/probe-committed-stack-115.json: docs/**
+# docs/prompts/runs/U90/probe-committed-stack-sideways.json: docs/**
+# docs/prompts/runs/U90/probe-committed-stack.json: docs/**
+# docs/prompts/runs/U90/probe-committed-summary.txt: docs/**
+# docs/prompts/runs/U90/probe-committed-wide.json: docs/**
+# docs/prompts/runs/U90/probe-committed.txt: docs/**
+# docs/prompts/runs/U90/probe-fixed-stack-115.json: docs/**
+# docs/prompts/runs/U90/probe-fixed-stack-sideways.json: docs/**
+# docs/prompts/runs/U90/probe-fixed-stack.json: docs/**
+# docs/prompts/runs/U90/probe-fixed-summary.txt: docs/**
+# docs/prompts/runs/U90/probe-fixed-wide.json: docs/**
+# docs/prompts/runs/U90/probe-fixed.txt: docs/**
+# docs/prompts/runs/U90/red-f2b-committed-css.txt: docs/**
+# docs/prompts/runs/U90/scripts-compare-content.py: docs/**
+# docs/prompts/runs/U90/scripts-playwright.u90-4383.config.ts: docs/**
+# docs/prompts/runs/U90/scripts-run-e2e.sh: docs/**
+# docs/prompts/runs/U90/scripts-summarise-probe.py: docs/**
+# docs/prompts/runs/U90/scripts-u90-probe.spec.ts: docs/**
+# docs/prompts/runs/U90/scripts-vitest-compare.sh: docs/**
+# docs/prompts/runs/U90/tsc.txt: docs/**
+# docs/prompts/runs/U90/vitest-all.txt: docs/**
+# docs/prompts/runs/U90/vitest-compare.txt: docs/**
+# docs/prompts/runs/U90/vitest-failing-files-committed-css.txt: docs/**
+# docs/prompts/runs/U90/vitest-failing-files-fixed-css.txt: docs/**
+# docs/prompts/runs/U90/vitest-failing-names-all.txt: docs/**
+# docs/prompts/runs/U90/vitest-failing-names-committed-css.txt: docs/**
+# docs/prompts/runs/U90/vitest-failing-names-fixed-css.txt: docs/**
 tsc	app	npx tsc -b
 lint	app	npm run lint
 unit	app	npx vitest run
 build-app	app	npm run build:app
 e2e	app	npx playwright test --workers=4
-exit=0

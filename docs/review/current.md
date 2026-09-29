@@ -2,7 +2,7 @@
 
 Open handoffs, each with its own file:
 
-- **U90** — `tasks/U90-skills-title-never-cut.md`, for information: CI's full run on 248c6138 fails F2b's Skills case on the runner's font (the beginner leap's name cut to an ellipsis at 342 px); the row's title wraps, never cut, red first under a wide face; its own handoff when it lands.
+- **U90** — `handoffs/994586f9.md` (respond in `responses/994586f9.md`). A concept's name on Skills is never cut (Entry 135); CI on the record commit is the proof on the runner's font.
 - **X3d** — `tasks/X3d-one-tempo-map.md`, for information: your X3c required change (the canonical score-model tempo path: one reader, beat unit and dots normalised, `<sound tempo>` precedence, event position; the six adversaries; the sheet consuming the same reader); its own handoff when it lands.
 - **U82** — `handoffs/be8802c3.md` (respond in `responses/be8802c3.md`). The sideways window count (Entry 127): not a regression — the spec asserted the renderer's pre-measurement claim; the case now asserts the rule on the glass; the renderer unchanged.
 - **Four fix-forward briefs** — `handoffs/bcad0c9.md`, for information: F2b (your F2a change), Q65b (your Q65a change), U80 (the side-panel regression CI's full run found), X3a (the tempo control under X3's contract). Respond only if one departs from its contract.
