@@ -695,3 +695,5 @@ File lines, revised or added:
 - `test_validate_claims.py` (new line, after `test_validate_tools.py`) — "a rung claims only what its options establish, or introduces it (F2): the rule, the deferrals and their staleness, the requirement an introduction never meets, the introducing rung `taughtAt` may not list".
 - `test_measured_truth.py` — append: "and since F2 every claim no option keeps accounted for (introduced, deferred or a stopped hand reading), the moved options, the practice floor, the rock placeholders on no rung".
 - `today.spec.ts` — append: "and the practice track's floor at 1.5 (F2): no Hanon row, the practice row the right-hand five-finger pattern".
+
+**Addendum at Q47's landing (2026-09-29).** `add_technique_units.py`'s table still listed syncopation for `technique.5` after F2's claim 5 removed it from the stage file; `test_technique_units`'s second-run case, running from the root for the first time after Q47's path fix, caught it. The orchestrator removed the one word from the table (a source-backed correction under the accepted claim; the lesson never taught syncopation), reran the test green, and notes it here; F2's handoff stands.

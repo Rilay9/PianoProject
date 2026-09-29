@@ -2,10 +2,11 @@
 
 Open handoffs, each with its own file:
 
+- **Q47** — `handoffs/8668afb.md` (respond in `responses/8668afb.md`). The real recordings and the split parity in CI landed (Entry 113); the CI run on the push is the proof, the entry amended with it.
 - **The E-tail and Q-tooling sweep briefs** — `handoffs/d1562ef.md` (respond in `responses/d1562ef.md`, one status per row). Brief handoffs drafted while the reviewer was out of usage.
 - **F2** — `handoffs/b41e19e.md` (respond in `responses/b41e19e.md`). Placement reconciled with the measured claims landed (Entry 108); six decisions, four questions (where leaps and accidentals are taught on the core; the five deferred every-bar claims; whether item 2 may add an option; the practice rungs' data).
 
-Building: **U74** (Entry 114, `responses/a1c1fd6.md`), **E2a** (Entry 111, `responses/1b09a1f.md`), **G1** (Entry 112, `responses/7863bee.md`), **Q47** (Entry 113, `responses/f52ebde.md`), **F2** (Entry 108, `responses/12af708.md`), each gets its own handoff when it lands. **G1** approved (`responses/7863bee.md`) and dispatches on D4a's landing.
+Building: **U74** (Entry 114, `responses/a1c1fd6.md`), **E2a** (Entry 111, `responses/1b09a1f.md`), **G1** (Entry 112, `responses/7863bee.md`), **F2** (Entry 108, `responses/12af708.md`), each gets its own handoff when it lands. **G1** approved (`responses/7863bee.md`) and dispatches on D4a's landing.
 
 Answered: the U74 brief (`responses/a1c1fd6.md`, approved with one required change, applied; dispatched); the queue (`responses/3e526f1.md`, approved); D4a (`responses/5193338.md`, approved; D4 closed); the lanes handoff (`responses/add51b3.md`, approved: four lanes the cap, Q47 in a freed slot); the E2a brief (`responses/1b09a1f.md`, approved with one required change, applied; ready in E2's lane); E2 (`responses/2532022.md`, approved with one required change; closes on E2a); the Q47 brief (`responses/f52ebde.md`, approved with one required change, applied; dispatch waits for the measurement); D4 (`responses/9193261.md`, approved with one required change; closes on D4a); the G1, D4a and D5 briefs (`7863bee.md`, `1cbc38a.md`, `4088dfc.md`, each approved with one required change, applied).
 
