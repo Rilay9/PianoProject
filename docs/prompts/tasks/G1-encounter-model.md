@@ -42,3 +42,5 @@ Judgement first: what the run's history line says after a phrase was heard the d
 **Approved with one required change 2026-09-29** (`responses/7863bee.md`), applied: the durable summary before pruning with the facets defined by what happened and the retention adversary (item 1), the visit id and the hearing kinds (item 1), `unseen` written for the first notated or imported reading (item 4, the reviewer's answer 3), the sequencing after D4a. Dispatches on D4a's landing, port 4183.
 
 **Landed 2026-09-29** (Entry 112; b48342f, merged e13f9c3); handoff `handoffs/b48342f.md`.
+
+**Approved with one required change 2026-09-29** (`responses/b48342f.md`): the core accepted; G1a (`G1a-first-contact-field.md`) gives the first-contact fact its own field before G2 or X consume it; G2 owns the offer's wiring, X1 consumes that one truth.

@@ -35,3 +35,5 @@ Judgement first: which tests newly run in CI and what the harness said of the th
 **Approved with one required change 2026-09-29** (`responses/f52ebde.md`), applied: the explicit member-to-alias mapping verified against the published archive's SHA256 and metadata, zero or several matches and empty files failing, `SOURCE.md` carrying members, aliases, version, checksum, licence URL and citation, a cache hit validated; the parity script failing under CI on any missing real input; the fixture's split asserted; the licence wording corrected (never bundled or redistributed by this project); `docs/00`'s licence notes in scope. Dispatch waits for the lanes' measurement.
 
 **Landed 2026-09-29** (Entry 113; 8668afb, merged f52679a); handoff `handoffs/8668afb.md`; the CI run on the push is the proof.
+
+**Closed 2026-09-29** (`responses/8668afb.md`, APPROVE): the runner proof read on the runs at ca06e94 (download and save) and 05c9e01 (the restored cache validated); Entry 113 amended. Q46 closes with it.

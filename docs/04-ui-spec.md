@@ -2100,8 +2100,10 @@ without distortion and being able to look ahead are paramount."* So:
    after any number of presses.
 
 The layout that follows: the asked bars are laid over as many systems as the stage holds, at
-the largest size where every asked bar and the next bar are on the stage. The size is frozen
-for the run; a rotation re-fits under the same rule.
+the largest size where every asked bar is on the stage; the next bar is shown from the room
+left over and never enters the sizing (T38, next paragraph; `chooseWindowShape` is the rule
+the gallery was judged on, and this sentence once claimed more — U74's E30 reading, U77).
+The size is frozen for the run; a rotation re-fits under the same rule.
 
 **The next row never sizes the window (T38).** The window's size comes from its own rows. The
 greyed next row below is drawn at that size, and when it is wider than the stage there — a

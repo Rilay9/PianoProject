@@ -36,3 +36,5 @@ Judgement first: the two-bar scale from Today at 342 × 740 before and after, as
 **Approved with one required change 2026-09-29** (`responses/a1c1fd6.md`), applied: the renderer's existing observer, fit queue, settled state and disposal are the starting mechanism; the red case tells four causes apart; a resize lost while fitting is retried once the fit settles; the run-size contract kept (width during a run, height-only deferred); the two paths compared at `data-settled` on the final stage box, systems, bars and staff height. **Dispatched 2026-09-29** (Entry 114, port 4233) as the fourth lane.
 
 **Landed 2026-09-29** (Entry 114; 9c9cf86, merged b2b5dd5); handoff `handoffs/9c9cf86.md`. The premise corrected by the builder: the first draw, not a path difference.
+
+**Closed 2026-09-29** (`responses/9c9cf86.md`, APPROVE): the first-draw repair accepted; E30 unchanged, U77 and U78 its inputs when reopened.
