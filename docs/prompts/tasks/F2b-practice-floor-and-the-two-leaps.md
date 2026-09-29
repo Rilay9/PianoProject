@@ -35,3 +35,5 @@ If a technique rung names `leaps` for the beginner meaning (a Stage 1–3 rung w
 Judgement first: what a learner at 2.1 reads when they open the leap entry, and whether the practice row is on Today at 1.1 and at 1.2, as observations; then Done / Not done / Follow-ups / Questions / Files; the census; the red lines; the tests table; exit codes; unverified beside what passes.
 
 **Landed 2026-09-29** (Entry 123; ddba53e9, merged 51fd9e6c); handoff `handoffs/ddba53e9.md`. L116, L117 recorded.
+
+**Approved with one required change 2026-09-29** (`responses/ddba53e9.md`): F2c (`F2c-advanced-leap-unmapped.md`) unmaps the advanced leap; the practice floor accepted.
