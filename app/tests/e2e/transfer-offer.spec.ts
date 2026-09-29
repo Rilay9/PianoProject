@@ -21,6 +21,7 @@ type Hooked = Window & {
     importAll: (raw: unknown) => Promise<unknown>;
     exportAll: () => Promise<{ stores: Record<string, unknown[]> }>;
     scoreRun?: () => { step: number; expected: number[]; armed: boolean } | null;
+    todayCard?: () => { token: string; slots: { kind: string; itemId?: string; claim?: { kind: string; relationship?: unknown } }[] };
   };
 };
 
@@ -224,5 +225,48 @@ test.describe('the transfer offer (D4)', () => {
     await page.goto('/');
     await expect(page.locator('#today-card .list-row').first()).toBeVisible({ timeout: 30_000 });
     await expect(page.locator('#today-card [data-claim="transfer"]')).toHaveCount(0);
+  });
+
+  // D4a: the relationship travels with the choice — Today keeps the offer it showed, the route names that
+  // offer, and the run stores the card's relationship beside the intent, never a recomputation.
+  test('the run stores the relationship the card offered, beside the intent, through the offer Today kept (D4a)', async ({ page }) => {
+    await page.setViewportSize({ width: 342, height: 740 });
+    await seed(page);
+    await page.goto('/');
+    const offer = page.locator('#today-card .list-row[data-slot="new"][data-claim="transfer"]');
+    await expect(offer).toHaveCount(1, { timeout: 30_000 });
+    const itemId = (await offer.getAttribute('data-item')) ?? '';
+
+    // The card as Today composed it, captured before opening: its offer token and the offer's relationship.
+    const card = await page.evaluate(() => (window as unknown as Hooked).__pianopath?.todayCard?.() ?? null);
+    expect(card, 'Today exposes no card to read').not.toBeNull();
+    const shown = card?.slots.find((slot) => slot.claim?.kind === 'transfer');
+    expect(shown?.itemId).toBe(itemId);
+    const relationship = shown?.claim?.relationship;
+    expect(relationship).toMatchObject({ skill: 'position-shift' });
+
+    const title = (await offer.locator('.list-row__title').innerText()).trim();
+    await offer.getByRole('button', { name: `Open ${title}` }).click();
+    await expect(page).toHaveURL(new RegExp(`[?&]offer=${card?.token ?? 'missing'}(&|$)`));
+    await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-mode', /wait|tempo/, { timeout: 60_000 });
+    await page.waitForFunction(() => {
+      const svg = document.querySelector('#score-stage .is-front svg');
+      return svg instanceof SVGElement && svg.getBoundingClientRect().height > 20;
+    }, undefined, { timeout: 60_000 });
+    // The offer was found: nothing says it was downgraded.
+    await expect(page.locator('#score-offer-note')).toBeHidden();
+    await withScoreMenu(page, async () => {
+      await page.locator('#score-input').selectOption('keys');
+    });
+    await page.locator('#score-mode').selectOption('wait');
+    await page.locator('#score-play').click();
+    await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-running', 'true');
+    await playThrough(page);
+
+    await expect.poll(async () => (await sessions(page)).filter((row) => row.itemId === itemId).length, { timeout: 15_000 }).toBe(1);
+    const stored = (await sessions(page)).find((row) => row.itemId === itemId) as Record<string, unknown>;
+    expect(stored.intent).toBe('transfer');
+    expect(stored.relationship, 'a transfer-intended row without its relationship').toBeDefined();
+    expect(JSON.stringify(stored.relationship), 'the stored relationship is not the card’s').toBe(JSON.stringify(relationship));
   });
 });

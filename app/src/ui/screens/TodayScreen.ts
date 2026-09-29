@@ -59,6 +59,7 @@ import {
   allProgress,
   dailyReadDays,
   dailyReadStreak,
+  dayKey,
   getStreak,
   onProgressChange,
   readToday,
@@ -70,6 +71,8 @@ import {
 import { isSightReading } from '../../engine/drills/fromCatalog';
 import { simonForStage } from '../../engine/drills/simon';
 import { getPlan } from '../../data/planStore';
+import { clearOfferSnapshot, newOfferToken, writeOfferSnapshot } from '../../data/offerSnapshot';
+import { materialOfItem } from '../../curriculum/material';
 import { getSettings, updateSettings } from '../../data/settingsStore';
 import type { ProgressRow, SessionRow } from '../../data/db';
 import { readingReason, readingTitle, swapChoiceWords, swapTierWords } from '../help';
@@ -77,6 +80,7 @@ import { webMidiSource, micSource } from '../../app/services';
 import { onScreenDispose } from '../screenLifecycle';
 import { badge, button, chip, el, handsLabel, levelLabel, listRow, openSheet, shortHandsLabel } from '../widgets';
 import { openItem, targetFor } from '../openItem';
+import type { TodayCardView } from '../../app/testHooks';
 import { screenFrame, statusLine } from './screenFrame';
 
 const SLOT_LABELS: Record<SessionSlot['kind'], string> = {
@@ -163,6 +167,19 @@ export function TodayScreen(router: Router): HTMLElement {
   let learnerRows: SessionRow[] = [];
   // The rungs the learner has reached, as the session read them: their own path, for the sheet's gate (E0a).
   let learnerReached: string[] = [];
+  /**
+   * The composed card's offer instance (D4a): minted each time the card is composed and again when its
+   * transfer offer's row is swapped away, kept with the offer Today opens (`data/offerSnapshot.ts`) and
+   * carried by its route (`?offer=`), so a route issued for one composition never consumes another's
+   * relationship. A recomposed card is a new teaching decision even where it lands on the same item.
+   */
+  let cardToken = '';
+  /**
+   * Set when the transfer offer is tapped: the snapshot is on its way and the screen is leaving. A
+   * composition that lands after that (a rebuild already in flight) must not clear the offer just kept,
+   * and a second tap must not open it twice.
+   */
+  let leaving = false;
 
   const goalLine = el('p.today-goal', { id: 'today-goal' });
   const inputChip = chip('…', {
@@ -248,6 +265,17 @@ export function TodayScreen(router: Router): HTMLElement {
   // --- rows ---------------------------------------------------------------
 
   /**
+   * A new offer instance for the card (D4a), and whatever offer was kept before it cleared: the card was
+   * composed again, or its transfer row swapped away. Not once the offer has been tapped — the snapshot
+   * written then is the one the route about to open names.
+   */
+  function supersedeOffer(): void {
+    if (leaving) return;
+    cardToken = newOfferToken();
+    void clearOfferSnapshot().catch(() => undefined);
+  }
+
+  /**
    * Opens a card's item with the rung the run is for and the slot it fills
    * (C3 item 0b, L50), each its own route parameter and never `from`, which
    * would also send Back to the rung's page. Only the Score screen reads them;
@@ -269,10 +297,31 @@ export function TodayScreen(router: Router): HTMLElement {
       return;
     }
     // The transfer offer (D4): offered from no rung's ask, so no rung judges its run and none is
-    // credited by listing it; the run keeps the intent and the skill, for the relationship it records.
+    // credited by listing it. The offer as shown — the session's own claim, never recomputed — is kept
+    // with the card's token before the route opens (D4a), and the route names that offer, so the run
+    // records the relationship this card was made on or, where the snapshot is gone, no transfer at all.
     const transfer = slot.claim?.kind === 'transfer' && slot.item?.id === target.id ? slot.claim : undefined;
     if (transfer && targetFor(target) === 'score') {
-      router.navigateScore(target.id, { slot: slot.kind, intent: { intent: 'transfer', skill: transfer.skill } });
+      if (leaving) return;
+      leaving = true;
+      const offer = cardToken;
+      const material = materialOfItem(target);
+      const opening = writeOfferSnapshot({
+        token: offer,
+        itemId: target.id,
+        skill: transfer.skill,
+        ...(material === undefined ? {} : { material }),
+        relationship: transfer.relationship,
+        contact: transfer.contact,
+        offeredOn: dayKey(now),
+      });
+      // Only once it is kept. A write that failed opens the route all the same: the Score screen finds
+      // no snapshot for this token and says the item is opened as practice, never a partial record.
+      void opening
+        .catch(() => undefined)
+        .then(() => {
+          router.navigateScore(target.id, { slot: slot.kind, intent: { intent: 'transfer', skill: transfer.skill, offer } });
+        });
       return;
     }
     const rung = transfer ? undefined : curriculum ? rungForSlot(curriculum, target, slot.lessonId) : undefined;
@@ -335,6 +384,9 @@ export function TodayScreen(router: Router): HTMLElement {
             meta: `${levelLabel(choice.level, choice.levelSource)} · ${handsLabel(choice.hands)} · ${choice.type}`,
             dataset: { 'data-swap': choice.id, 'data-tier': option.tier },
             onClick: () => {
+              // The transfer offer swapped away (D4a): no longer on the card, so whatever was kept of
+              // it is superseded, and the card's offer instance is another.
+              if (slot.claim?.kind === 'transfer') supersedeOffer();
               // The learner's choice, and the claim the option had; what chose the row before no longer applies.
               const { claim: _claim, phrase: _phrase, ...rest } = slot;
               slots[slotIndex] = { ...rest, item: choice, reason: swapChoiceWords(option.tier) };
@@ -660,6 +712,9 @@ export function TodayScreen(router: Router): HTMLElement {
         today: now,
       });
       slots = built.slots;
+      // A composed card is a new decision (D4a): its offer gets a new instance, and an offer kept from
+      // an earlier composition no longer stands for anything on it.
+      supersedeOffer();
       learnerReached = built.reached;
       breakAfter = built.template.breakAfterSlot;
       drawCard();
@@ -784,6 +839,23 @@ export function TodayScreen(router: Router): HTMLElement {
   onScreenDispose(section, () => {
     for (const stop of stopWatchingInput) stop();
   });
+
+  // The card as composed, for the end-to-end tests (D4a): its offer instance and each row's item and
+  // claim, so a spec can hold the offer's relationship before opening it and compare the stored run.
+  if (window.__pianopath) {
+    const readCard = (): TodayCardView => ({
+      token: cardToken,
+      slots: slots.map((slot) => ({
+        kind: slot.kind,
+        ...(slot.item ? { itemId: slot.item.id } : {}),
+        ...(slot.claim ? { claim: slot.claim } : {}),
+      })),
+    });
+    window.__pianopath.todayCard = readCard;
+    onScreenDispose(section, () => {
+      if (window.__pianopath?.todayCard === readCard) delete window.__pianopath.todayCard;
+    });
+  }
 
   const stopWatchingProgress = onProgressChange(() => {
     // The daily days too: the store ticks the day when a seeded run is

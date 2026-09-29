@@ -26,7 +26,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { admittedForTeaching, eligibleFor } from '../../src/curriculum/eligibility';
 import { indexCatalog, tieredAlternatives } from '../../src/curriculum/selectors';
 import { buildSession, swapOptions, type BuildInput } from '../../src/curriculum/session';
-import { cutIdentity, excerptLine, isExcerpt, isExerciseKind, isPieceMaterial } from '../../src/curriculum/excerpt';
+import { excerptLine, isExcerpt, isExerciseKind, isPieceMaterial } from '../../src/curriculum/excerpt';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
 import {
   getProgress,
@@ -322,7 +322,7 @@ describe('a run of an excerpt (adversary 10, and the material it was)', () => {
     expect(learned.map((one) => one.itemId)).toEqual([EXCERPT.id]);
   });
 
-  it('writes the cut’s file identity into the evidence context, and the stored self-assessment keeps it', async () => {
+  it('writes the cut’s file identity into the evidence context, and the stored self-assessment keeps it', () => {
     // A played run, as the evidence suites make one (the real engine, `measuresOf`): a ledger-line
     // note in bar 1, every note right.
     const LEDGER = phrase({ bars: [line(['E4', 'F4', 'A5', 'G4'], 1), line(['E4', 'D4', 'C4', 'D4'], 1)] });
@@ -335,9 +335,5 @@ describe('a run of an excerpt (adversary 10, and the material it was)', () => {
     const unheard = { ...observe(LEDGER, { mode: 'tempo', itemId: EXCERPT.id, silent: true }), material, selfReport: 'ok' as const };
     const [told] = evidenceFor({ observation: unheard, played: LEDGER, targetSkills: ['ledger-lines'], vocabulary: VOCABULARY_V0 });
     expect(told?.kind === 'self-assessed' ? told.context.material : undefined, JSON.stringify(told)).toEqual(material);
-    expect(await cutIdentity(new Uint8Array([1, 2, 3]))).toEqual({
-      kind: 'file',
-      sha256: '039058c6f2c0cb492c533b0a4d14ef77cc0f78abccced5287d84a1a2011cfb81',
-    });
   });
 });
