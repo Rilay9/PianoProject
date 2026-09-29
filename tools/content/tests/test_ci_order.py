@@ -13,6 +13,7 @@ indentation (one job, one `steps:` list, single-line or `|` values).
 """
 from __future__ import annotations
 
+import json
 import re
 import unittest
 from pathlib import Path
@@ -32,6 +33,13 @@ CITED = (
 )
 
 KEY = re.compile(r"^([A-Za-z][A-Za-z-]*):\s*(.*)$")
+
+#: The path-to-checks map (Q65) whose checks CI must be a superset of.
+CHECKS_MAP = ROOT / "docs" / "prompts" / "checks.json"
+
+#: The map's checks CI cannot run, each with its reason in the map. The state gallery compares
+#: against reference pictures written locally and never committed.
+NOT_IN_CI = ("states",)
 
 
 def read_steps(text: str) -> list[dict[str, str]]:
@@ -166,6 +174,21 @@ class TheWorkflowOrder(unittest.TestCase):
     def test_the_steps_the_failure_messages_name_exist(self) -> None:
         names = [step.get("name", "") for step in self.steps]
         self.assertEqual([name for name in CITED if name not in names], [])
+
+    def test_ci_runs_every_check_the_path_map_names(self) -> None:
+        # Q65: docs/prompts/checks.json is the orchestrator's minimum for a landing; CI must run
+        # a superset, so a check the map names has one step running it (the whole suite: `npm run
+        # test`, `npm run e2e`, the content tests' discover). A check CI cannot run says why and is
+        # pinned here, so a new exception is an edit to this file rather than a quiet null.
+        checks = json.loads(CHECKS_MAP.read_text(encoding="utf-8"))["checks"]
+        for check in checks:
+            if check.get("ci") is None:
+                self.assertIn(check["id"], NOT_IN_CI, f"{check['id']}: the map names no CI step for it")
+                self.assertTrue(check.get("not_in_ci", "").strip(), f"{check['id']}: say why CI cannot run it")
+                continue
+            with self.subTest(check=check["id"]):
+                self.at(check["ci"])
+        self.assertEqual(sorted(c["id"] for c in checks if c.get("ci") is None), sorted(NOT_IN_CI))
 
 
 if __name__ == "__main__":

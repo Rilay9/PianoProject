@@ -1969,6 +1969,19 @@ def main() -> None:
     for warning in concept_claim_findings(catalog, curriculum)[1]:
         print(f"  {warning}")
 
+    # Q-tooling (2026-09-29): the reviewer's views of the audit file and the matrix regenerated
+    # and then compared, so a built tree never carries stale views (six record commits did on
+    # 2026-09-29). On GitHub's runner they are compared, not written, so test_prompt_views still
+    # sees the views as pushed. Here rather than in build.py, which another builder held this wave.
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools" / "docs"))
+    import split_prompt_views  # noqa: E402
+
+    views_ok, views_line = split_prompt_views.refresh_for_validator()
+    print(f"  {views_line}")
+    if not views_ok:
+        print(f"content validation FAILED: {views_line}", file=sys.stderr)
+        sys.exit(1)
+
     # Last, so the build's one-line summary of this step is the verdict and the
     # item count rather than whichever detail happened to print last — the same
     # rule the importers follow. Everything above is the detail behind it.
