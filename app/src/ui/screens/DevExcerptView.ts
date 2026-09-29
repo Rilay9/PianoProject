@@ -218,6 +218,13 @@ export function DevExcerptView(router: Router): HTMLElement {
   });
   card.classList.add('excerpt-view');
   if (!document.getElementById(STYLE_ID)) document.head.append(el('style', { id: STYLE_ID, text: STYLE }));
+  // E35: said on the page rather than laid out for a phone — no reviewer works here on one (the row's decision).
+  card.append(
+    el('p.excerpt-view__muted', {
+      id: 'excerpts-desktop',
+      text: 'A desktop tool: it wants a window at least 960 px wide, where the score and its facts sit side by side. On a phone its eight-bar pages are too small to read, and it has no phone layout.',
+    }),
+  );
   const status = el('p.excerpt-view__muted', { id: 'excerpts-status', text: 'Loading the catalogue and the candidates…' });
   card.append(status);
 

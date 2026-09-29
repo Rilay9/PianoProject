@@ -27,6 +27,7 @@ import {
   type ScoreNote,
 } from './types';
 import { measureRender } from '../util/renderTiming';
+import { mapTextGlyphs } from './textGlyphs';
 
 export interface MeasureRange {
   /** 0-based *printed* measure index, inclusive. */
@@ -197,8 +198,14 @@ export class OsmdView {
     return this.osmd.Sheet?.SourceMeasures.length ?? 0;
   }
 
+  /**
+   * Loads a score. The edition's private-use accidentals and metronome notes (SMuFL's code points, which
+   * MuseScore's text fonts write into a chord symbol or a tempo mark) are handed to the engraver as the
+   * Unicode characters they stand for, so a chord symbol prints its flat rather than a box (E31,
+   * `textGlyphs.ts`). Every drawing path goes through here; the file itself is not changed.
+   */
   async load(musicXml: string): Promise<void> {
-    await this.osmd.load(musicXml);
+    await this.osmd.load(mapTextGlyphs(musicXml));
     this.loaded = true;
     this.range = null;
   }

@@ -271,7 +271,7 @@
             },
             "excerpt": {
               "type": "object",
-              "description": "An excerpt's identity (E1 item 4): the definition it was cut from, the cut version, the parent's built file at cut time and its edition, and `key`, sha256 over the parent's bytes, the range, the selection and the cut version. The cut file's own sha256 is the item's identity in the review record. `stale` names an approval made on other parent bytes.",
+              "description": "An excerpt's identity (E1 item 4): the definition it was cut from, the cut version, the parent's built file at cut time and its edition, and `key`, sha256 over the parent's bytes, the range, the selection and the cut version. The cut file's own sha256 is the item's identity in the review record. `stale` names an approval made on other parent bytes; `approvedCutVersion` below `cutVersion` one merged under an older cutter (E33). `dropped` lists the edition's texts the cutter left out.",
               "required": [
                 "of",
                 "fromBar",
@@ -304,6 +304,10 @@
                 "cutVersion": {
                   "type": "integer"
                 },
+                "approvedCutVersion": {
+                  "type": "integer",
+                  "description": "The cutter the approval was merged under (E33). Below `cutVersion`, the approval is stale by cut version: made before this cutter, and nothing carries it to this cut."
+                },
                 "parentSha256": {
                   "type": "string",
                   "pattern": "^[0-9a-f]{64}$"
@@ -332,6 +336,21 @@
                 },
                 "stale": {
                   "type": "object"
+                },
+                "dropped": {
+                  "type": "array",
+                  "description": "The edition's texts the cutter left out (E33): each with the cut's bar, the parent's printed bar, the staff, the kind (a copyright or licence line, a direction to other players, a swing the app plays straight) and why.",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "bar",
+                      "parentBar",
+                      "staff",
+                      "kind",
+                      "text",
+                      "why"
+                    ]
+                  }
                 }
               }
             },

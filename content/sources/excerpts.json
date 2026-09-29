@@ -12,6 +12,8 @@
     "`targets` are vocabulary skill or demand ids the passage was approved for, never an invented name.",
     "`parentSha256` is the parent's built file the approval was made against: when the parent's file",
     "changes the validator names the row as stale. `event`, `by` and `at` are the approving decision.",
+    "`cutVersion` is the cutter the approval was merged under (a row without one predates the field: version",
+    "1); an approval under an older cutter is stale by cut version, and nothing carries it to the new cut.",
     "",
     "`rejected` keeps the refusals with their reasons, so a re-merge of the same export appends nothing.",
     "",

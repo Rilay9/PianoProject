@@ -405,6 +405,132 @@ class TheMerge(unittest.TestCase):
         self.assertEqual(X.serialise_definitions(X.read_definitions()), raw)
 
 
+PDMX = REPO / "content" / "scores" / "pdmx"
+HARK_FILE = PDMX / "QmZ71TE67XH7Mot39E8efbNmqK4yvNron44ufpN3Aj1oy1.mxl"
+WABASH_FILE = PDMX / "QmWwJDFTEwoHzX3qXiVR8koWxt8Vc2oP9BHJSd68BfEVMt.mxl"
+I_GOT_RHYTHM_FILE = PDMX / "QmPhAvchMjTLZuhQH2sWzVFR3uCugUjh9akyizjiy1ck98.mxl"
+
+
+def words_of(text: str) -> list[str]:
+    """Every `<words>` text of a written score, in order."""
+    return [w.strip() for w in re.findall(r"<words[^>]*>([^<]*)</words>", text)]
+
+
+class TheEditionTexts(unittest.TestCase):
+    """
+    E33: the cutter drops from a cut the edition's texts that are not the music the learner plays —
+    a direction to other players, a copyright or licence line, and a swing the app does not play
+    (said in the cut's provenance, not printed) — and keeps tempo, expression, dynamics, chord
+    symbols written as words, rehearsal letters and a metronome mark written as text.
+    """
+
+    def parent_with_texts(self) -> Parent:
+        from music21 import dynamics, expressions
+
+        score = grand(6)
+        tops = list(score.parts[0].getElementsByClass(stream.Measure))
+        bottoms = list(score.parts[1].getElementsByClass(stream.Measure))
+        for text in ("Medium swing", "Sax intro: start drums here", "Allegro", "dolce", "E6", "= 120"):
+            tops[2].insert(0, expressions.TextExpression(text))
+        tops[2].insert(0, dynamics.Dynamic("mf"))
+        tops[2].insert(0, expressions.RehearsalMark("A"))
+        bottoms[3].insert(0, expressions.TextExpression("Public Domain"))
+        tops[4].insert(1, expressions.TextExpression("cresc."))
+        tops[4].insert(2, expressions.TextExpression("Repeat for solos"))
+        return Parent(self, score)
+
+    def test_each_kind_is_dropped_and_the_music_is_kept(self) -> None:
+        made = self.parent_with_texts().cut(3, 5)
+        text = xml_of(made.path)
+        kept = words_of(text)
+        for word in ("Allegro", "dolce", "E6", "= 120", "cresc."):
+            self.assertIn(word, kept, f"{word!r} is the music's and stays")
+        for word in ("Medium swing", "Sax intro: start drums here", "Public Domain", "Repeat for solos"):
+            self.assertNotIn(word, kept, f"{word!r} is not the music a learner plays")
+        self.assertIn("<mf", text, "a dynamic stays")
+        self.assertIn(">A</rehearsal>", text, "a rehearsal letter stays")
+        self.assertEqual([(d["bar"], d["parentBar"], d["kind"], d["text"]) for d in made.dropped], [
+            (1, 3, "swing", "Medium swing"),
+            (1, 3, "band", "Sax intro: start drums here"),
+            (2, 4, "copyright", "Public Domain"),
+            (3, 5, "band", "Repeat for solos"),
+        ])
+        swing = next(d for d in made.dropped if d["kind"] == "swing")
+        self.assertIn("straight", swing["why"], "the provenance says the app plays the eighths straight")
+
+    def test_the_parents_texts_are_there_so_the_test_would_see_one_kept(self) -> None:
+        parent = xml_of(self.parent_with_texts().path)
+        for word in ("Medium swing", "Sax intro: start drums here", "Public Domain", "Repeat for solos", "Allegro"):
+            self.assertIn(word, words_of(parent))
+
+    def test_the_provenance_block_says_what_was_dropped(self) -> None:
+        dropped = [{"bar": 1, "parentBar": 25, "staff": 1, "kind": "swing", "text": "Medium swing", "why": "the app plays the eighths straight"}]
+        carried = {"of": "song.test.parent", "fromBar": 25, "toBar": 28, "selection": "both", "targets": ["syncopation"],
+                   "event": "ex-test", "by": "a test", "approvedParentSha256": "a" * 64, "parentSha256": "a" * 64,
+                   "approvedCutVersion": X.CUT_VERSION, "dropped": dropped}
+        block = X.provenance_block({"_excerpt": carried}, {"edition": "pdmx:test"})
+        self.assertEqual(block["dropped"], dropped)
+        self.assertNotIn("stale", block)
+        self.assertNotIn("dropped", X.provenance_block({"_excerpt": {**carried, "dropped": []}}, {}))
+
+    def test_the_real_cuts_drop_what_their_pages_showed_and_nothing_of_the_music(self) -> None:
+        """The five approved cuts' parents: Hark!'s band direction and swing, the Minuet's staff text; the rest nothing."""
+        directory = Path(tempfile.mkdtemp(prefix="excerpt-texts-"))
+        self.addCleanup(lambda: __import__("shutil").rmtree(directory, ignore_errors=True))
+        cases = (
+            (HARK_FILE, 25, 28, [("swing", "Medium swing"), ("band", "Sax intro: start drums here")], []),
+            (ANH_113_FILE, 25, 32, [("copyright", "Public Domain")], []),
+            (WABASH_FILE, 1, 4, [], ["= 120"]),
+            (I_GOT_RHYTHM_FILE, 15, 18, [], ["Gm11", "E6", "\uE262", "13", "Cm9", "Cdim7/G"]),
+        )
+        for path, low, high, gone, kept in cases:
+            made = X.cut(path, low, high, "both", f"excerpt.test.real.b{low}-{high}", directory / f"{path.stem}.mxl")
+            self.assertEqual([(d["kind"], d["text"]) for d in made.dropped], gone, path.name)
+            self.assertEqual([w for w in words_of(xml_of(made.path)) if w], kept, path.name)
+
+
+class TheCutVersion(unittest.TestCase):
+    """
+    E33 moves the cutter to version 2: every cut's key changes, and an approval merged under an older
+    cutter is stale by cut version (the block's `approvedCutVersion` below its `cutVersion`, and the
+    validator's warning) — nothing carries it to the new cut. A row with no `cutVersion` was merged
+    before E33, under version 1. `stale` keeps its one meaning, an approval on other parent bytes.
+    """
+
+    def test_the_cutter_is_version_2(self) -> None:
+        self.assertEqual(X.CUT_VERSION, 2)
+
+    def test_a_row_with_no_cut_version_was_approved_under_version_1(self) -> None:
+        self.assertEqual(X.approved_cut_version({"of": "song.x"}), 1)
+        self.assertEqual(X.approved_cut_version({"of": "song.x", "cutVersion": 2}), 2)
+
+    def test_an_approval_under_an_older_cutter_is_stale_in_the_provenance(self) -> None:
+        carried = {"of": "song.test.parent", "fromBar": 5, "toBar": 8, "selection": "both", "targets": ["interval.leap"],
+                   "event": "ex-test", "by": "a test", "approvedParentSha256": "a" * 64, "parentSha256": "a" * 64,
+                   "approvedCutVersion": 1, "dropped": []}
+        block = X.provenance_block({"_excerpt": carried}, {})
+        self.assertEqual((block["cutVersion"], block["approvedCutVersion"]), (X.CUT_VERSION, 1))
+        self.assertEqual(block["key"], X.chain_key("a" * 64, 5, 8, "both", X.CUT_VERSION), "the key is the new cutter's")
+        self.assertNotIn("stale", block, "the parent's bytes did not move")
+        current = X.provenance_block({"_excerpt": {**carried, "approvedCutVersion": X.CUT_VERSION}}, {})
+        self.assertEqual(current["approvedCutVersion"], current["cutVersion"])
+        # A carried definition from before the field reads as version 1, as its row does.
+        self.assertEqual(X.provenance_block({"_excerpt": {k: v for k, v in carried.items() if k != "approvedCutVersion"}}, {})["approvedCutVersion"], 1)
+
+    def test_the_merge_records_the_cutter_an_approval_was_merged_under_and_an_old_export_still_merges_once(self) -> None:
+        import json
+
+        event = {"v": 1, "event": "ex-test-0101", "decision": "approve", "of": "song.test.parent", "fromBar": 5,
+                 "toBar": 8, "selection": "both", "targets": ["interval.leap"], "note": "by rule", "parentSha256": "a" * 64,
+                 "by": "a test", "at": "2026-09-28T00:00:00.000Z"}
+        merged = X.merge_text(X.read_definitions(Path("none.json")), json.dumps(event), {"song.test.parent"})
+        self.assertEqual(merged["data"]["excerpts"][0]["cutVersion"], X.CUT_VERSION)
+        # A row merged before E33 carries no cutVersion; the same export merged again is the same decision.
+        old = {**merged["data"], "excerpts": [{k: v for k, v in merged["data"]["excerpts"][0].items() if k != "cutVersion"}]}
+        again = X.merge_text(old, json.dumps(event), {"song.test.parent"})
+        self.assertEqual((again["appended"], again["skipped"], again["refused"]), ([], ["ex-test-0101"], []))
+
+
 class TheRealParent(unittest.TestCase):
     def test_anh_113_bars_17_to_24(self) -> None:
         directory = Path(tempfile.mkdtemp(prefix="excerpt-anh-"))
