@@ -748,7 +748,7 @@ declared. Three parts:
   | rungs (the reader's row) | cannot | why |
   |---|---|---|
   | 1.3–4.7 (every row) | step off | no control: a phrase without a step is neither written nor needed |
-  | 1.5, 2.1 (`sight-reading-1`) | leap on | 1.5's drill promises "only steps and skips" |
+  | 2.1 (`sight-reading-1`) | leap on | 2.1 teaches the leap, but the row there is 1.5's, whose drill promises "only steps and skips" (1.5 only introduces the leap since F2a, so nothing asks for it there) |
   | 2.1 (`sight-reading-1`) | hands together on | level 1 writes one hand (2.1 teaches both; the row there cannot) |
   | 3.4–4.7 (`sight-reading-2`, `sight-reading-3`) | leap off | the left hand's roots move by fourths and fifths |
   | 4.5–4.7 | eighths off, shorter-than-quarter off | the 6/8 figures and the syncopation figure are eighths |

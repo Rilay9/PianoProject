@@ -277,7 +277,9 @@ one song HT-alternating at 70 bpm ≥ 90 %.
 
 **1.5 Steps and skips; the first "sight-reading" habit.** Concepts: steps (2nd) vs skips (3rd)
 on the staff (line→space vs line→line), reading by interval not by name, looking ahead one
-beat. Exercises: `[GEN]` **Sight-reading generator level 1** (random 4-bar RH melodies in C
+beat. The leap (a 4th or wider) is introduced here and not taught: no option on the rung
+establishes one (two songs carry the odd leap), so it sits under the rung's `introduces` list and
+2.1 teaches it (F2a, 2026-09-29; the reviewer's required change on F2). Exercises: `[GEN]` **Sight-reading generator level 1** (random 4-bar RH melodies in C
 position, quarters/halves; new one each time — this is the app's killer practice feature),
 `[GEN]` interval ear drill (2nd vs 3rd; learner plays back), `[GEN]` **Simon** on the
 white keys around middle C (hear a chain, play it back, one note longer each round). Songs: *Old MacDonald Had a Farm* `[AUTH]`, *Lightly Row* `[AUTH]`, *Ode to Joy (theme)* `[AUTH]`, *The Water Is Wide* `[PDMX]`. Mastery: 5 generated melodies at ≥ 90 % first
@@ -286,7 +288,9 @@ attempt.
 ### Stage 2 — Two hands
 
 **2.1 Hands together: LH holds, RH moves.** Concepts: LH whole/half notes under RH melody;
-vertical alignment; "LH is the floor". Exercises: `[GEN]` HT pattern drills (LH C hold, RH
+vertical alignment; "LH is the floor"; leaps — the left hand's moves from C to F and from C to G,
+a fourth and a fifth (the rung names `leaps` since F2a: 6 of its 10 checked options establish the
+leap, and the derivation makes 2.1 the core's one teaching rung for it). Exercises: `[GEN]` HT pattern drills (LH C hold, RH
 5-finger), `[GEN]` HT with LH changing every bar (C / G). Songs: *Ode to Joy (hands together)* `[AUTH]`, *Twinkle, Twinkle, Little Star (hands together)* `[AUTH]`, *Jingle Bells (chorus, hands together)* `[AUTH]`, *Mary Had a Little Lamb (hands together)* `[AUTH]`, *Simple Gifts* `[PDMX]`. Videos: Bill Hilton (hands together), Hoffman Unit 3–4. Mastery: HT ≥ 90 % at
 60 bpm Tempo mode.
 
@@ -317,7 +321,9 @@ C major scale HS at 60 bpm in eighths, ≥ 95 %.
 ### Stage 3 — Keys, chords, reading
 
 **3.1 Sharps, flats, half/whole steps, the major scale formula.** Concepts: W-W-H-W-W-W-H;
-G major (F#) and F major (Bb); key signatures; accidentals last for the bar. Exercises: `[GEN]`
+G major (F#) and F major (Bb); key signatures; accidentals last for the bar — introduced, not
+taught: no song on the rung has a note outside its key signature, so `accidentals` sits under the
+rung's `introduces` list and 3.3 teaches them (F2a). Exercises: `[GEN]`
 G & F major scales HS, `[GEN]` "build a major scale from any note" ear+key drill, `[GEN]`
 note-flash with sharps/flats. Songs: *Ode to Joy (in G major)* `[AUTH]`, *Twinkle, Twinkle, Little Star (in F major)* `[AUTH]`, *Oh When the Saints Go Marching In (in F major)* `[AUTH]`, *Korobeiniki* `[PDMX]`, *Loch Lomond* `[PDMX]`, *Scarborough Fair* `[PDMX]`. Videos: Bill Hilton
 (sharps/flats & keys), Lypur theory 1–3, Open Music Theory "Scales". Mastery: both scales HS.
@@ -329,7 +335,10 @@ C/G/F (root position and smooth versions), `[GEN]` chord-symbol flash. Songs: *J
 Hoffman "V7". Mastery: chord-chart song at 80 bpm HT.
 
 **3.3 A minor & the relative minor; natural/harmonic minor; minor chords.** Concepts:
-relative minor shares key sig; raised 7th; Am, Dm, Em, E7. Exercises: `[GEN]` A harmonic minor
+relative minor shares key sig; raised 7th; Am, Dm, Em, E7; accidentals — the raised seventh
+written as one every time it is used (the rung names `accidentals` since F2a: 4 of its 7 checked
+options establish a note outside the key, and 3.3 is the core's one teaching rung for it).
+Exercises: `[GEN]` A harmonic minor
 scale HS, `[GEN]` Am–Dm–E7 changes, `[GEN]` major-vs-minor chord ear drill. Songs: *Greensleeves (with chords)* `[AUTH]`, *Greensleeves* `[MT]`, *Greensleeves (simple)* `[AUTH]`. Videos: Bill Hilton (minor chords), Lypur "minor scales". Mastery: one song HT.
 
 **3.4 Reading ledger lines and wider ranges; 8va; both hands away from Middle C.** Concepts:
@@ -423,6 +432,13 @@ row on the same piece points at `practice.5`.
 4. **When to stop** — warm-up, tension, pain, and the difference between tired and hurt.
 5. **The plateau, and the three things to change** — the rung the app sends you to when
    nothing has improved for three runs.
+
+Each rung after the first names the one before as its prerequisite (F2a, 2026-09-29; L109's
+data half), which is the order the app walks the track in, so an option two of its rungs list is
+read where the track first meets it. `practice.1` names no core rung: every Stage 1 core rung as a
+prerequisite would close the track for part of Stage 1 (a track rung opens only once its
+prerequisites are met, set aside or behind the placement), which D8a's "from Stage 1" rules out,
+so where the floor stands on the core is Entry 117's open question.
 
 ---
 
@@ -627,6 +643,17 @@ the rhythm drill (`practice.1`) or the right-hand five-finger walk
 (`practice.2`). Hanon stays on 4.4, `technique.4` and `classical.4`, which
 listed it besides; no rung teaches its sixteenths yet (L101). `practice.2`'s
 one-octave hands-together scale (level 4.1) left the rung and is on no other.
+
+**The track's ancestry (F2a, 2026-09-29; L109's data half; the reviewer on F2,
+`responses/b41e19e.md`).** `practice.2` to `practice.5` each name the rung before as their
+prerequisite, as the app walks the line, and no rung off the track names a practice rung, so no
+other track's ancestry changed. The floor's shared options are now read at `practice.1`, where
+the track first meets them. There they still read as untaught — the five-finger pattern's and
+*Ode to Joy*'s steps (1.1) and the steps-and-skips study's skips (1.5) — because `practice.1`'s
+path is Stage 0: a Stage 1 track rung stands on the core path before its stage. A core
+prerequisite would say what the floor depends on, and would also close the track until that rung
+is met: 1.1 until the first rung is passed (the study's skips still untaught), 1.5 for all of
+Stage 1. That is a product choice against this section's "from Stage 1", left open in Entry 117.
 
 ### D8. Mini-modules (optional; `holiday` and `hymns-gospel` open at Stage 2, `rock-metal` and `latin` at Stage 3, `jam` at Stage 4)
 
@@ -896,9 +923,11 @@ that decision exists a study reaches the learner only through the Library (Part 
 >   This proves the rungs agree with the report, not that either is true (Part 10's rule).
 > - **Concepts where taught:** 1.1 names `steps`; `latin` no longer names the walking bass (its
 >   bass is the tumbao); `technique.5` no longer names syncopation (its lesson teaches ties across
->   the bar line, which `tied-across-bar` claims). 1.5's leap and 3.1's accidentals stay hand
->   readings, warned: introducing either would take the demand off the whole core path, since no
->   core rung's options practise it where its lesson teaches it (the entry's question 1).
+>   the bar line, which `tied-across-bar` claims). 1.5's leap and 3.1's accidentals stayed hand
+>   readings at F2, warned (the entry's question 1). Revised (F2a, 2026-09-29; the reviewer's
+>   required change): 1.5 introduces the leap and 2.1, whose options establish it, teaches it; 3.1
+>   introduces accidentals and 3.3, whose options establish them, teaches them. No hand reading is
+>   left, and no option was added to 1.5 or 3.1.
 > - **Options moved** only by leaving the rung their notes are untaught at, where a later rung on
 >   the same track already lists them and teaches everything they carry, so nothing that needs a
 >   teaching-use decision is added to any rung (the practice floor lists items the Stage 1 core
@@ -1438,8 +1467,8 @@ grown only when a reader needs it and its observable exists).
   rung's promises and adding nothing untaught — or the reason it cannot is declared
   (`UNREALISABLE_AT`, printed in `05` §8, held to exactly the undoable set by
   `generatorContract.test.ts`). The declared gaps a teacher would notice: at 2.1, which
-  teaches hands together, the reader's row is 1.5's level-1 row, which writes one hand; on
-  1.5's row a leap breaks its drill's "only steps and skips", though 1.5's song has one.
+  teaches hands together and (since F2a) the leap, the reader's row is 1.5's level-1 row, which
+  writes one hand and whose drill promises "only steps and skips", so neither can be asked there.
 - **Sixteenths (S23, C4b).** No rung teaches reading sixteenths: the core track never does,
   and the rungs that touch them (ragtime.5's short–long–short, technique.6's page of
   sixteenths) are on tracks a jazz or theory learner need not take before jazz.8 or theory.9,

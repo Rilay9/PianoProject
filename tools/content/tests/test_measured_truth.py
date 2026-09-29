@@ -852,15 +852,19 @@ class TestTheReports(Built):
 class TestPlacementReconciled(Built):
     """
     F2 (Entry 108): the rungs reconciled with the report on the combined build. Every claim no
-    option keeps is accounted for — introduced (`introduces`), deferred by the validator with its
-    reason (a detector's every-bar rule refusing music its own per-bar reading finds), or one of the
-    two hand readings F2 stopped at (1.5's leap, 3.1's accidentals: the question in the entry) — and
+    option keeps is accounted for — introduced (`introduces`) or deferred by the validator with its
+    reason (a detector's every-bar rule refusing music its own per-bar reading finds) — and
     nothing else; the moved options left the rung their notes were untaught at and stay where they
     are taught; the practice track's first rungs hold what a Stage 1 hand plays; no rung lists a rock
     placeholder; the lessons F2 changed say what the rung does. Red on the build before F2.
+
+    Revised (F2a, Entry 117; the reviewer's required change, `responses/b41e19e.md`). Old assumption:
+    two hand readings F2 stopped at (1.5's leap, 3.1's accidentals) are claims no option keeps and
+    stay. 1.5 and 3.1 now introduce them and 2.1 and 3.3, whose options establish them, name them.
     """
 
-    HAND_READINGS = {("1.5", "interval.leap"), ("3.1", "pitch.chromatic")}
+    #: Revised (F2a): empty. It held 1.5's leap and 3.1's accidentals, which no option on those rungs keeps.
+    HAND_READINGS: set[tuple[str, str]] = set()
     MOVED = {
         ("1.1", "exercise.five-finger.c-major.both"): "2.1",
         ("1.3", "exercise.five-finger.c-major.both"): "2.1",
@@ -895,7 +899,7 @@ class TestPlacementReconciled(Built):
         deferred = {(rung, claim_of(concept)) for rung, concept in self.validate.DEFERRED_CONCEPT_CLAIMS}
         kept_by_none = {(row["rung"], row["id"]) for row in self.report["keptByNone"]}
         self.assertEqual(kept_by_none, deferred | self.HAND_READINGS,
-                         "a rung claim no option keeps must be introduced, deferred with its reason, or a stopped hand reading")
+                         "a rung claim no option keeps must be introduced or deferred with its reason")
         errors, warnings = self.validate.concept_claim_findings(self.catalog, self.curriculum)
         self.assertEqual(errors, [], "the validator's rule holds on the build")
         self.assertEqual(len([w for w in warnings if "deferred" in w]), len(self.validate.DEFERRED_CONCEPT_CLAIMS), warnings)
@@ -963,6 +967,65 @@ class TestPlacementReconciled(Built):
             with self.subTest(rung=rung):
                 self.assertFalse(any(t.get("kind") == "duet" for t in self.lessons[rung].get("tools") or []))
                 self.assertNotIn("Play it as a duet", self.text(rung))
+
+    def claims_of(self, rung: str) -> tuple[dict, dict]:
+        row = next(r for r in self.report["rungs"] if r["rung"] == rung)
+        return ({(c["kind"], c["id"]): c for c in row["claims"]},
+                {(c["kind"], c["id"]): c for c in row["introduced"]})
+
+    def test_the_leap_is_introduced_at_1_5_and_taught_where_2_1_s_options_establish_it(self) -> None:
+        """
+        F2a (Entry 117; the reviewer's required change, `responses/b41e19e.md`): no option on 1.5
+        establishes a leap, so 1.5 introduces it and claims nothing; 2.1's options establish it (the left
+        hand's moves from C to F and to G), so 2.1 names it and is the one teaching rung. Red on the build
+        before F2a, where 1.5 claimed the leap by `taughtAt` and 2.1 did not.
+        """
+        claims, introduced = self.claims_of("1.5")
+        self.assertNotIn(("demand", "interval.leap"), claims, "1.5 claims no leap")
+        self.assertEqual(introduced[("demand", "interval.leap")]["established"], 0, "1.5 introduces the leap; no option establishes it")
+        claims, _introduced = self.claims_of("2.1")
+        self.assertGreater(claims[("demand", "interval.leap")]["established"], 0, "2.1's options establish the leap")
+        self.assertIn("this rung only introduces it", self.text("1.5"), "1.5's lesson says it introduces the leap")
+        self.assertIn("a fourth and a fifth", self.text("2.1"), "2.1's lesson names the leaps its left hand makes")
+
+    def test_accidentals_are_introduced_at_3_1_and_taught_where_3_3_s_options_establish_them(self) -> None:
+        """
+        F2a: no option on 3.1 establishes a note outside the key (its songs are in G and F with none), so
+        3.1 introduces accidentals; 3.3's options establish them (the harmonic minor's raised seventh), so
+        3.3 names them. Red on the build before F2a, where 3.1 claimed the demand by `taughtAt`.
+        """
+        claims, introduced = self.claims_of("3.1")
+        self.assertNotIn(("demand", "pitch.chromatic"), claims, "3.1 claims no note outside the key")
+        self.assertNotIn(("skill", "accidentals"), claims)
+        self.assertEqual(introduced[("skill", "accidentals")]["established"], 0, "3.1 introduces accidentals; no option establishes one")
+        claims, _introduced = self.claims_of("3.3")
+        self.assertGreater(claims[("skill", "accidentals")]["established"], 0, "3.3's options establish accidentals")
+        self.assertGreater(claims[("demand", "pitch.chromatic")]["established"], 0)
+        self.assertIn("only introduced here", self.text("3.1"), "3.1's lesson says it introduces the accidental")
+        self.assertIn("appears as an accidental every time it is used", self.text("3.3"),
+                      "3.3's lesson teaches the raised seventh as an accidental (unchanged)")
+
+    def test_the_practice_track_walks_its_own_rungs_and_keeps_its_floor(self) -> None:
+        """
+        F2a item 3, its track half: each practice rung after the first stands on the one before, so an
+        option two practice rungs list is read where the track first meets it, and every practice rung
+        keeps D21's three exercise options. Red on the build before F2a, where `practice.2` and
+        `practice.4` were read as first listings of what `practice.1` and `practice.3` list.
+        """
+        for n in range(1, 6):
+            rung = f"practice.{n}"
+            with self.subTest(rung=rung):
+                self.assertGreaterEqual(len(self.lessons[rung]["exerciseOptions"]), 3, f"{rung}: D21's three exercise options")
+                if n > 1:
+                    self.assertEqual(self.lessons[rung].get("prerequisites"), [f"practice.{n - 1}"])
+        shared = {"practice.2": ("exercise.five-finger.c-major.right", "exercise.reading.steps-and-skips-c", "song.classical.ode-to-joy.rh"),
+                  "practice.4": ("exercise.five-finger.c-major.both", "exercise.five-finger.c-major.right")}
+        for rung, items in shared.items():
+            with self.subTest(read_at=rung):
+                rows = {o["item"]: o for o in self.report["options"] if o["rung"] == rung}
+                self.assertEqual([i for i in items if rows[i]["earliest"]], [],
+                                 f"{rung}: an option a practice rung it stands on lists is read there, not here")
+                self.assertEqual([o["item"] for o in rows.values() if o["untaught"]], [], f"{rung}: nothing read untaught here")
 
 
 if __name__ == "__main__":

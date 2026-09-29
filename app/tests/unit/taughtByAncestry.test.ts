@@ -492,3 +492,68 @@ describe('a demand a rung only introduces is not taught (F2)', () => {
     expect(taughtAtRung(SHIPPED, 'blues.6')?.(WALK), `${WALK} at blues.6`).toBe(true);
   });
 });
+
+/**
+ * The core's teaching truth at actual opportunity (F2a; the reviewer's required change on F2,
+ * `docs/review/responses/b41e19e.md`). No option on 1.5 establishes a leap and none on 3.1 a note
+ * outside the key; they were taught there by a hand reading of the lessons. 1.5 and 3.1 now introduce
+ * them, and 2.1 (the left hand's moves from C to F and to G) and 3.3 (A minor's raised seventh) name
+ * them, so the vocabulary's derived `taughtAt` is 2.1 and 3.3. Every gate consumer reads `taughtAt`
+ * against the rung's ancestry: what a rung has taught, what it teaches itself (`targetDemandsFor`),
+ * and the reading hold (`readingOptions`). Each case below fails on the vocabulary before F2a, except
+ * the ones marked as holding already.
+ */
+describe('the core teaches the leap at 2.1 and the note outside the key at 3.3 (F2a)', () => {
+  const LEAP = 'interval.leap';
+  const CHROMATIC = 'pitch.chromatic';
+  const taught = (rung: string, demand: string): boolean | undefined => taughtAtRung(SHIPPED, rung)?.(demand);
+
+  it('the leap: untaught at 1.5, which only introduces it, and on holiday, whose path leaves the core there; taught from 2.1', () => {
+    expect(taught('1.4', LEAP), `${LEAP} at 1.4 (holding already)`).toBe(false);
+    expect(taught('1.5', LEAP), `${LEAP} at 1.5, which introduces it`).toBe(false);
+    expect(taught('holiday', LEAP), `${LEAP} at holiday, whose path leaves the core at 1.5`).toBe(false);
+    expect(taught('2.1', LEAP), `${LEAP} at 2.1, the core's teaching rung`).toBe(true);
+    expect(taught('2.2', LEAP), `${LEAP} at 2.2`).toBe(true);
+  });
+
+  it('the note outside the key: untaught at 3.1, which only introduces it, at 3.2 and on blues.3; taught from 3.3', () => {
+    expect(taught('3.1', CHROMATIC), `${CHROMATIC} at 3.1, which introduces accidentals`).toBe(false);
+    expect(taught('3.2', CHROMATIC), `${CHROMATIC} at 3.2`).toBe(false);
+    expect(taught('blues.3', CHROMATIC), `${CHROMATIC} at blues.3, whose path leaves the core at 3.2`).toBe(false);
+    expect(taught('3.3', CHROMATIC), `${CHROMATIC} at 3.3, the core's teaching rung (holding already)`).toBe(true);
+    expect(taught('technique.4', CHROMATIC), `${CHROMATIC} at technique.4, whose chromatic scale stands on 3.3 (holding already)`).toBe(true);
+  });
+
+  it('a later option carrying the demand: 2.1 and 3.3 teach it themselves, 1.5 and 3.1 teach it no more', () => {
+    const song = (id: string, demand: string): CatalogItem => ({ id, type: 'song', title: id, level: 2, hands: 'both', tracks: ['core'], concepts: [], file: `scores/${id}.mxl`, ...measured([demand]) });
+    const leaping = song('song.leaps', LEAP);
+    const outside = song('song.outside', CHROMATIC);
+    expect(targetDemandsFor(leaping, '1.5'), `${LEAP}: 1.5 introduces it, it teaches nothing of it`).toEqual([]);
+    expect(targetDemandsFor(leaping, '2.1'), `${LEAP} is among what 2.1 teaches`).toEqual([LEAP]);
+    expect(targetDemandsFor(outside, '3.1'), `${CHROMATIC}: 3.1 introduces it`).toEqual([]);
+    expect(targetDemandsFor(outside, '3.3'), `${CHROMATIC} is among what 3.3 teaches`).toEqual([CHROMATIC]);
+  });
+
+  it('the reading hold follows it: row 2 opened from 1.5 holds its leaps out and from 2.1 writes them; row 4 opened from 3.1 holds its accidentals out and from 3.3 writes them', () => {
+    const row = (id: string): CatalogItem => CATALOG.find((one) => one.id === id) as CatalogItem;
+    const held = (id: string, rung: string) => readingOptions(row(id), undefined, 1, taughtAtRung(SHIPPED, rung));
+    const leaps = READING_CONTROLS[LEAP] as (typeof READING_CONTROLS)[string];
+    const accidentals = READING_CONTROLS[CHROMATIC] as (typeof READING_CONTROLS)[string];
+    expect(held('drill.reading.sight-reading-2', '1.5').leaps, `row 2 opened from 1.5: ${LEAP} not held out`).toBe(false);
+    expect(leaps.mayWrite(held('drill.reading.sight-reading-2', '2.1')), `row 2 opened from 2.1: ${LEAP} held out though 2.1 teaches it`).toBe(true);
+    expect(accidentals.mayWrite(held('drill.reading.sight-reading-4', '3.1')), `row 4 opened from 3.1: ${CHROMATIC} written though untaught`).toBe(false);
+    expect(accidentals.mayWrite(held('drill.reading.sight-reading-4', '3.3')), `row 4 opened from 3.3: ${CHROMATIC} held out though 3.3 teaches it`).toBe(true);
+  });
+
+  it('the practice track walks its own rungs (F2a item 3): each stands on the one before, and no other rung stands on one', () => {
+    const ancestry = ancestryOf(SHIPPED);
+    for (let n = 2; n <= 5; n += 1) {
+      const members = ancestry?.get(`practice.${String(n)}`);
+      for (let k = 1; k < n; k += 1) expect(members?.has(`practice.${String(k)}`), `practice.${String(n)} stands on practice.${String(k)}`).toBe(true);
+    }
+    const outside = [...(ancestry?.entries() ?? [])]
+      .filter(([rung, members]) => !rung.startsWith('practice.') && [...members].some((one) => one.startsWith('practice.')))
+      .map(([rung]) => rung);
+    expect(outside, 'a practice prerequisite changed another rung’s ancestry').toEqual([]);
+  });
+});
