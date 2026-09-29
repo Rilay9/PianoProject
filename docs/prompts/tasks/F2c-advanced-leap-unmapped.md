@@ -29,3 +29,5 @@ If removing the mapping makes the validator refuse blues.7 or ragtime.9 (a conce
 ## Report
 
 Judgement first: the two rungs' rows in the rung-claims report before and after, and what a learner at blues.7 is told about the leap (the Skills entry, unchanged), as observations; then Done / Not done / Follow-ups / Questions / Files; the census; the red lines; the tests table; exit codes; unverified beside what passes.
+
+**Landed 2026-09-29** (Entry 130; 267cac32, merged fb89e790); handoff `handoffs/267cac32.md`. L119 recorded.
