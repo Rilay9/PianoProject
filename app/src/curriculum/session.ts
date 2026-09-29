@@ -23,6 +23,11 @@ import { admittedForTeaching, automaticFromList, eligible, eligibleFor, type Eli
 import type { RequirementReading, RungStates } from '../evidence/rungState';
 import { phraseVersionOf, type ReadingMoves, type ReadingRecipe, type SessionRow } from '../data/db';
 import { contactIn, dayKey, daysBetween, type Contact, type ContactHistory, type LearnedPiece } from '../data/progressStore';
+// The stages whose rungs are projects, not rungs to meet (Stage 9: "Nothing here is a rung to pass;
+// they are pieces to live with"): no slot advances into one as "the next lesson", and its asks are
+// offered as a project. The one constant the lesson page and Plan read too (G1c item 1; G84). The
+// stage numbers only: nothing here reads a project.
+import { PROJECT_STAGES } from '../data/projectStore';
 import type { Identity } from '../review/record';
 import { knownMaterial, materialOfItem } from './material';
 import { relationshipOf, shownOnRecords, type Relationship, type ShownOn } from './transfer';
@@ -483,15 +488,6 @@ interface Walked {
   track: string;
   stage: number;
 }
-
-/**
- * The stages whose rungs are projects, not rungs to meet: Stage 9 says of
- * itself "Nothing here is a rung to pass; they are pieces to live with"
- * (`content/curriculum/stage-9.json`). No slot advances into one as "the next
- * lesson", and its asks are offered as a project. By number, because the
- * curriculum does not mark the stage (a report item for the curriculum).
- */
-const PROJECT_STAGES: ReadonlySet<number> = new Set([9]);
 
 /**
  * One line of study the learner is on (the reviewer's parallel-strand finding,

@@ -1,0 +1,180 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/planProjectStage.test.ts (6 tests | 5 failed) 471ms
+   ❯ Plan reads a project stage as the lesson page does (G1c) (5)
+     × with a Stage 9 rung met in the evidence, the stage line counts nothing and says what the stage is, and no row wears a rung’s word 80ms
+     × with the evidence alone meeting one Stage 9 rung: no "1 of N", no bar and no complete on its row (the brief’s red) 64ms
+     × with every Stage 9 rung met, the stage wears no complete and says no count 54ms
+     × the legend names only the fills on screen: rungs carried over in Stage 9 alone draw none 64ms
+   ❯ one constant names the project stages (G1c item 1; G84) (1)
+     × only projectStore declares PROJECT_STAGES; the session and Plan import it 19ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/planProjectStage.test.ts > Plan reads a project stage as the lesson page does (G1c) > with a Stage 9 rung met in the evidence, the stage line counts nothing and says what the stage is, and no row wears a rung’s word
+AssertionError: expected '1 of 4 done before · 1 counted since' to be 'A project: there is no rung to pass h…' // Object.is equality
+
+Expected: "A project: there is no rung to pass here."
+Received: "1 of 4 done before · 1 counted since"
+
+ ❯ tests/unit/planProjectStage.test.ts:225:26
+    223|     const nine = head(section, 9);
+    224|     // The line: what the stage is, in the words its page uses (`PROJE…
+    225|     expect(metaOf(nine)).toBe('A project: there is no rung to pass her…
+       |                          ^
+    226|     expect(text(nine)).not.toMatch(RUNG_CLAIM);
+    227|     expect(badgesOf(nine), 'the project stage wears a completion badge…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  tests/unit/planProjectStage.test.ts > Plan reads a project stage as the lesson page does (G1c) > with the evidence alone meeting one Stage 9 rung: no "1 of N", no bar and no complete on its row (the brief’s red)
+AssertionError: expected '1 of 4 lessons · open-ended' to be 'A project: there is no rung to pass h…' // Object.is equality
+
+Expected: "A project: there is no rung to pass here."
+Received: "1 of 4 lessons · open-ended"
+
+ ❯ tests/unit/planProjectStage.test.ts:254:43
+    252|     openStage(section, 9);
+    253|     // Soft, so the committed screen's every claim is in the red line,…
+    254|     expect.soft(metaOf(head(section, 9))).toBe('A project: there is no…
+       |                                           ^
+    255|     expect.soft(head(section, 9).querySelector('.plan-stage-bar'), 'th…
+    256|     expect.soft(badgesOf(section.querySelector('[data-lesson="classica…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  tests/unit/planProjectStage.test.ts > Plan reads a project stage as the lesson page does (G1c) > with the evidence alone meeting one Stage 9 rung: no "1 of N", no bar and no complete on its row (the brief’s red)
+AssertionError: the project stage draws a completion bar: expected <span class="plan-stage-bar" …(1)>…(1)</span> to be null
+
+- Expected:
+null
+
++ Received:
+<span
+  aria-hidden="true"
+  class="plan-stage-bar"
+>
+  <span
+    class="plan-stage-bar__fill"
+    style="width: 25%;"
+  />
+</span>
+
+ ❯ tests/unit/planProjectStage.test.ts:255:112
+    253|     // Soft, so the committed screen's every claim is in the red line,…
+    254|     expect.soft(metaOf(head(section, 9))).toBe('A project: there is no…
+    255|     expect.soft(head(section, 9).querySelector('.plan-stage-bar'), 'th…
+       |                                                                                                                ^
+    256|     expect.soft(badgesOf(section.querySelector('[data-lesson="classica…
+    257|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  tests/unit/planProjectStage.test.ts > Plan reads a project stage as the lesson page does (G1c) > with the evidence alone meeting one Stage 9 rung: no "1 of N", no bar and no complete on its row (the brief’s red)
+AssertionError: the met Stage 9 rung wears the evidence’s word: expected [ 'complete' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "complete",
++ ]
+
+ ❯ tests/unit/planProjectStage.test.ts:256:131
+    254|     expect.soft(metaOf(head(section, 9))).toBe('A project: there is no…
+    255|     expect.soft(head(section, 9).querySelector('.plan-stage-bar'), 'th…
+    256|     expect.soft(badgesOf(section.querySelector('[data-lesson="classica…
+       |                                                                                                                                   ^
+    257|   });
+    258|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  tests/unit/planProjectStage.test.ts > Plan reads a project stage as the lesson page does (G1c) > with every Stage 9 rung met, the stage wears no complete and says no count
+AssertionError: expected [ 'complete' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "complete",
++ ]
+
+ ❯ tests/unit/planProjectStage.test.ts:271:28
+    269|     const section = await mount();
+    270|     const nine = head(section, 9);
+    271|     expect(badgesOf(nine)).toEqual([]);
+       |                            ^
+    272|     expect(metaOf(nine)).toBe('A project: there is no rung to pass her…
+    273|     expect(nine.querySelector('.plan-stage-bar')).toBeNull();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  tests/unit/planProjectStage.test.ts > Plan reads a project stage as the lesson page does (G1c) > the legend names only the fills on screen: rungs carried over in Stage 9 alone draw none
+AssertionError: a legend for a fill no stage draws: expected <p class="plan-legend muted" …(1)>…(4)</p> to be null
+
+- Expected:
+null
+
++ Received:
+<p
+  class="plan-legend muted"
+  id="plan-legend"
+>
+  <span
+    aria-hidden="true"
+    class="plan-legend__swatch plan-legend__swatch--carried"
+  />
+  <span>
+    done before
+  </span>
+  <span
+    aria-hidden="true"
+    class="plan-legend__swatch plan-legend__swatch--counted"
+  />
+  <span>
+    counted since
+  </span>
+</p>
+
+ ❯ tests/unit/planProjectStage.test.ts:304:90
+    302|     state.carried = ['theory.9'];
+    303|     const nineOnly = await mount();
+    304|     expect(nineOnly.querySelector('#plan-legend'), 'a legend for a fil…
+       |                                                                                          ^
+    305|
+    306|     state.carried = ['theory.9', 'technique.8'];
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  tests/unit/planProjectStage.test.ts > one constant names the project stages (G1c item 1; G84) > only projectStore declares PROJECT_STAGES; the session and Plan import it
+AssertionError: expected [ 'curriculum/session.ts', …(1) ] to deeply equal [ 'data/projectStore.ts' ]
+
+- Expected
++ Received
+
+  [
++   "curriculum/session.ts",
+    "data/projectStore.ts",
+  ]
+
+ ❯ tests/unit/planProjectStage.test.ts:329:22
+    327|     };
+    328|     walk(src);
+    329|     expect(declared).toEqual(['data/projectStore.ts']);
+       |                      ^
+    330|     for (const file of ['curriculum/session.ts', 'ui/screens/PlanScree…
+    331|       const source = readFileSync(join(src, file), 'utf8');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 1 passed (6)
+   Start at  12:44:13
+   Duration  1.76s (environment 43%, tests 29%, transform 23%, import 5%)
+
+exit=1

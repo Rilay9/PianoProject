@@ -1,0 +1,18 @@
+# checks for 11 path(s): 11 matched, 0 unmatched
+# app/src/ui/screens/PlanScreen.ts: app/src/**, app/src/ui/screens/PlanScreen.ts
+# app/src/curriculum/session.ts: app/src/**, app/src/curriculum/session.ts, app/src/curriculum/**
+# app/tests/unit/planProjectStage.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/projectLifecycle.test.ts: app/tests/unit/*.test.ts
+# app/tests/e2e/plan.spec.ts: app/tests/e2e/*.spec.ts
+# docs/prompts/runs/G1c/ENTRY.md: docs/**
+# docs/prompts/runs/G1c/scripts-mutants.py: docs/**
+# docs/prompts/runs/G1c/scripts-playwright.g1c-4413.config.ts: docs/**
+# docs/prompts/runs/G1c/scripts-zz-g1c-pictures.spec.ts: docs/**
+# docs/prompts/pictures/g1c/after-stage9-342x740.png: docs/**
+# docs/prompts/pictures/g1c/after-facts.json: docs/**
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/first-day.spec.ts tests/e2e/lab.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/modes-placement.spec.ts tests/e2e/placement-branches.spec.ts tests/e2e/plan.hierarchy.spec.ts tests/e2e/plan.spec.ts tests/e2e/progress.spec.ts tests/e2e/session-run.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/today.spec.ts tests/e2e/transfer-offer.spec.ts --workers=4
+exit=0

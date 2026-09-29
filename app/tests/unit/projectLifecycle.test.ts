@@ -502,6 +502,9 @@ describe('never the bridge, never the source (the brief’s item 3; its refuting
   it('only the project sheet acts, and no evidence, skill, eligibility, session or Library code reads a project', () => {
     const src = join(process.cwd(), 'src');
     const readers: string[] = [];
+    // Revised (G1c item 1; G84): the files that import the project stages' numbers and nothing else
+    // from the store — which stages are projects, never a project row.
+    const stageReaders: string[] = [];
     const actors: string[] = [];
     const walk = (dir: string): void => {
       for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -511,7 +514,14 @@ describe('never the bridge, never the source (the brief’s item 3; its refuting
           const text = readFileSync(path, 'utf8');
           const name = relative(src, path).split(sep).join('/');
           if (name === 'data/projectStore.ts') continue;
-          if (/from '[./]*(data\/)?projectStore'/.test(text) || /from '[./]*projectSheet'/.test(text)) readers.push(name);
+          const fromStore = text.match(/from '[./]*(data\/)?projectStore'/g) ?? [];
+          const named = [...text.matchAll(/import \{([^}]*)\} from '[./]*(?:data\/)?projectStore'/g)].map((found) =>
+            (found[1] ?? '').split(',').map((binding) => binding.trim()).filter((binding) => binding !== ''),
+          );
+          const stagesOnly =
+            fromStore.length > 0 && named.length === fromStore.length && named.every((names) => names.length === 1 && names[0] === 'PROJECT_STAGES');
+          if (/from '[./]*projectSheet'/.test(text) || (fromStore.length > 0 && !stagesOnly)) readers.push(name);
+          else if (stagesOnly) stageReaders.push(name);
           if (text.includes('applyProjectAction(')) actors.push(name);
         }
       }
@@ -527,6 +537,9 @@ describe('never the bridge, never the source (the brief’s item 3; its refuting
       'ui/screens/ScoreScreen.ts',
       'ui/screens/SettingsScreen.ts',
     ]);
+    // The session and Plan read which stages are projects (`PROJECT_STAGES`, the one constant) and
+    // import nothing else from the store: neither reads a project.
+    expect(stageReaders.sort()).toEqual(['curriculum/session.ts', 'ui/screens/PlanScreen.ts']);
   });
 });
 
