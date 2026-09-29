@@ -36,3 +36,5 @@ If the Skills row's meta is built somewhere other than the line named, name it. 
 ## Report
 
 Judgement first: the two rows U90 pictured, at 342 × 740 before and after, and under the wide face; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes. Entry 143; every run file under `docs/prompts/runs/U92/`; the entry as `docs/prompts/runs/U92/ENTRY.md`, starting `### Entry 143 — U92`.
+
+**Landed 2026-09-29** (Entry 143; 4de29cdd, merged 51b15bac); handoff `handoffs/4de29cdd.md`.
