@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **The slots and the queue** — `handoffs/3e526f1.md` (respond in `responses/3e526f1.md`). A process handoff: confirm the lanes and the dependency order; two questions (X1's precondition, G2's).
 - **U74 brief** — `handoffs/a1c1fd6.md` (respond in `responses/a1c1fd6.md`). A brief handoff: the score filling the stage on every path in (the tier-1 fault in D4's picture), with E30; the fourth slot on approval.
 
 Building: **E2a** (Entry 111, `responses/1b09a1f.md`), **G1** (Entry 112, `responses/7863bee.md`), **Q47** (Entry 113, `responses/f52ebde.md`), **F2** (Entry 108, `responses/12af708.md`), each gets its own handoff when it lands. **G1** approved (`responses/7863bee.md`) and dispatches on D4a's landing.
