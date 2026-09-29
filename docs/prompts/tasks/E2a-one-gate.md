@@ -40,3 +40,5 @@ Judgement first: what an unprepared learner's card and tiers hold when an unmeas
 **Approved with one required change 2026-09-29** (`responses/1b09a1f.md`), applied: the question logic in a private core module that neither gate imports back (core ← candidates ← eligibility), the exported `eligibleFor` delegating to the material gate, the public verdict type widened for the material verdicts, the tests through the exported path; the heard case pending G1 kept explicit; contact passed by the caller, the adapters tested on stored runs, the first novelty consumer named. Dispatch: in E2's lane on the lanes ruling (`handoffs/add51b3.md`) or the owner's word.
 
 **Landed 2026-09-29** (Entry 111; 9571a7b, merged 1cc897e); handoff `handoffs/9571a7b.md`. The lesson seed site held (E46); the rung's own list passing only the admission is L113, the reviewer's call.
+
+**Approved 2026-09-29** (`responses/9571a7b.md`); E2 closed. L113 to X1, E46 owns the lesson seed site.
