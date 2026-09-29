@@ -2,7 +2,7 @@
 
 Open handoffs, each with its own file:
 
-- **Q75** — `handoffs/56a4b9b7.md` (respond in `responses/56a4b9b7.md`). The Pages build's placeholders and the claim rule (Entry 131); the phone's next build is the proof.
+- **Q75** — `handoffs/56a4b9b7.md` (the Pages run on 248c6138 succeeded: the deploy is back) (respond in `responses/56a4b9b7.md`). The Pages build's placeholders and the claim rule (Entry 131); the phone's next build is the proof.
 - **F2c** — `handoffs/267cac32.md` (respond in `responses/267cac32.md`). The advanced leap unmapped (Entry 130); closes F2 on your word and, with G2, releases X1.
 - **X3c** — `handoffs/b71a55ca.md` (respond in `responses/b71a55ca.md`). The file's own tempo sentence (Entry 129): X24, X26 and X27; X29 (the player's reading of a metronome mark, P1) recorded for a seam after your word.
 - **G2** — `handoffs/030ce744.md` (respond in `responses/030ce744.md`). The transfer policy landed (Entry 126); three decisions, G75 first (existing learners' retained and mastered fall to proficient on pre-G2 reads); X1 dispatches on its acceptance and F2c's.
