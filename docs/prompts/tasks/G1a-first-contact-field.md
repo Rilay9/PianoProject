@@ -38,3 +38,5 @@ If a reader of `unseen` is a general-contact read whose move to `firstContact` w
 Judgement first: the history line and the rung credit for a piece played again, before and after, as observations; then Done / Not done / Follow-ups / Questions / Files; the readers table (every `unseen` reader: which field now, why); the red lines; the tests table; exit codes; unverified beside what passes.
 
 **Landed 2026-09-29** (Entry 119; 5b14b7a, merged 7002ee5); handoff `handoffs/5b14b7a.md`. G72 recorded.
+
+**Closed 2026-09-29** (`responses/5b14b7a.md`, APPROVE): the boundary the G1 review asked for; G2 released.
