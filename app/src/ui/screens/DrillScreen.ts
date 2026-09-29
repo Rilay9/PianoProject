@@ -84,7 +84,7 @@ import type { OsmdView } from '../../score/OsmdView';
 import { KeyboardStrip } from '../KeyboardStrip';
 import { rhythmRow, staffCard } from '../StaffCard';
 import { onScreenDispose } from '../screenLifecycle';
-import { DRILL_HELP, drillDetailLabel } from '../help';
+import { DRILL_HELP, SUMMARY_TEXT, drillDetailLabel } from '../help';
 import { createHelpStrip, maybeFirstSight, openFirstSight, type HelpStrip } from '../helpStrip';
 import { badge, button, chip, el } from '../widgets';
 import { screenFrame, statusLine } from './screenFrame';
@@ -390,8 +390,17 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    * The end sheet's closing action becomes the session's next step (X1): a transition block before the sheet's
    * buttons, drawn from the stored record; *Back to the plan* gives way to it where the record answers.
    * `drawNow` false where a stored set is still on its way: it is drawn when the completion is written.
+   * `giveWay`: the sheet's own filled boxes, outlined while the transition is drawn, so its *Start* is the
+   * sheet's one filled box (`04` §0 R3; U96, the placement test's *Start here*); filled again where the record
+   * offers nothing and the sheet keeps its own way on.
    */
-  function sessionNext(buttons: HTMLElement, back: HTMLElement, again: () => void, drawNow: boolean): HTMLElement | null {
+  function sessionNext(
+    buttons: HTMLElement,
+    back: HTMLElement,
+    again: () => void,
+    drawNow: boolean,
+    giveWay: readonly HTMLElement[] = [],
+  ): HTMLElement | null {
     if (!sessionRun) return null;
     const handle = sessionRun;
     const host = el('div.session-next', { id: 'session-next', hidden: true });
@@ -403,7 +412,12 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         button: (label, onClick, id, primary) => button(label, onClick, { id, variant: primary ? 'primary' : 'secondary' }),
         tryAgain: again,
       }).then((kind) => {
-        back.hidden = kind !== 'none' && kind !== 'closed';
+        const drawn = kind !== 'none' && kind !== 'closed';
+        back.hidden = drawn;
+        for (const own of giveWay) {
+          own.classList.toggle('button--primary', !drawn);
+          own.classList.toggle('button--secondary', drawn);
+        }
       });
     };
     if (drawNow) redrawSessionNext();
@@ -2489,6 +2503,18 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         : []),
       backButton,
     );
+    // A set of a judging kind that ended with no card answered — *End drill* before the first answer, or
+    // *Next*/*Done* with nothing played on a kind closed card by card; a skipped card counts as answered,
+    // wrong (`PromptDrill.next`) — measured nothing (U96): its sheet printed *Not passed yet* over *Accuracy
+    // 0%*, a verdict and a share of nothing. It is headed with T40's *Not measured*, as the Score screen heads a run
+    // it heard nothing of, and says why. The verdict itself (`drillOutcome`) is unchanged: the record and the
+    // session read it, and neither reads this sheet.
+    const unanswered = outcome.judged && result.answered === 0;
+    const note = !outcome.judged
+      ? 'Nothing here is judged, so there is no accuracy and no pass — only what you played.'
+      : unanswered
+        ? SUMMARY_TEXT.notAnswered
+        : null;
     sheet.replaceChildren(
       el(
         'div.row',
@@ -2498,23 +2524,23 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         // passed yet* over a pass nobody could have earned.
         el('h2', {
           id: 'drill-outcome',
-          text: !outcome.judged ? 'Practice' : outcome.passed ? 'Passed' : 'Not passed yet',
+          text: !outcome.judged
+            ? 'Practice'
+            : unanswered
+              ? SUMMARY_TEXT.notMeasuredHeading
+              : outcome.passed
+                ? 'Passed'
+                : 'Not passed yet',
         }),
-        ...(outcome.judged ? [outcome.passed ? badge('passed', 'passed') : badge('keep going')] : []),
+        ...(outcome.judged && !unanswered ? [outcome.passed ? badge('passed', 'passed') : badge('keep going')] : []),
       ),
-      ...(outcome.judged
-        ? []
-        : [
-            el('p.muted', {
-              id: 'drill-outcome-note',
-              text: 'Nothing here is judged, so there is no accuracy and no pass — only what you played.',
-            }),
-          ]),
+      ...(note === null ? [] : [el('p.muted', { id: 'drill-outcome-note', text: note })]),
       statSheet(result, outcome.judged),
       // The one number a Simon run is about, said in words: the stat list can
       // print "longest chain 5" from `detail`, and it cannot say that five is
-      // further than you have ever got.
-      ...(result.kind === 'simon' ? [chainLine(result)] : []),
+      // further than you have ever got. None where nothing was answered: a
+      // chain of nought is not a chain the learner played (U96).
+      ...(result.kind === 'simon' && !unanswered ? [chainLine(result)] : []),
       // The coaching line goes in before the buttons, because it is the thing
       // worth reading and a sentence under a "Back to the plan" button is a
       // sentence nobody sees.
@@ -2620,18 +2646,26 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    * answered count, because a drill that asks nothing has neither — only the
    * kind's own measurements from `detail`, which for a backing track is the
    * notes played.
+   *
+   * A judged set with no card answered (U96) prints *Answered 0 of N* and
+   * nothing else: the accuracy, the time to answer and the kind's own numbers
+   * are each taken over the answers, so with none they are a share, a mean or
+   * a ratio of nothing — *Accuracy 0%*, and on the dynamics sheet *Loud
+   * against soft 0*. The kind's settings in `detail` (a tempo, a target) go
+   * with them: they are what a result would be read against, and there is none.
    */
   function statSheet(result: DrillResult, judged: boolean): HTMLElement {
-    const rows: [string, string][] = judged
-      ? [
-          ['Accuracy', `${String(Math.round(result.accuracy * 100))}%`],
-          ['Answered', `${String(result.correct)} of ${String(result.total || result.answered)}`],
-        ]
-      : [];
-    if (result.meanReactionMs > 0) {
+    const unanswered = judged && result.answered === 0;
+    const answeredRow: [string, string] = ['Answered', `${String(result.correct)} of ${String(result.total || result.answered)}`];
+    const rows: [string, string][] = !judged
+      ? []
+      : unanswered
+        ? [answeredRow]
+        : [['Accuracy', `${String(Math.round(result.accuracy * 100))}%`], answeredRow];
+    if (result.meanReactionMs > 0 && !unanswered) {
       rows.push(['Average time to answer', `${String(Math.round(result.meanReactionMs))} ms`]);
     }
-    for (const [key, value] of Object.entries(result.detail ?? {})) {
+    for (const [key, value] of unanswered ? [] : Object.entries(result.detail ?? {})) {
       // In words, not the field's own name: this printed *boundary ms*, *soft
       // velocity*, *flat velocity* and *count in beats* at a learner, which is
       // the code's word for the thing (`00-invariants` §1).
@@ -3108,40 +3142,36 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
             : 'Nothing is locked — you can open any stage yourself.';
         });
       }
+      // *Start here* is the one thing that records the test's answer (`recordPlacement`), so it stays on the
+      // sheet in a session too; there the transition's *Start* is the filled box and it is outlined (U96,
+      // `sessionNext`'s `giveWay`). Outside a session it is the sheet's one filled box, as before.
+      const startHere = unitId
+        ? button(
+            'Start here',
+            () => {
+              void unitExists(unitId).then((real) => {
+                if (!real) {
+                  status.textContent = `${unitId} is not a unit in the plan, so nothing was recorded — this drill's items need correcting.`;
+                  status.classList.add('status--error');
+                  return;
+                }
+                void recordPlacement(unitId).then(() => {
+                  status.textContent = 'Placement recorded. Today will build from here.';
+                });
+              });
+            },
+            { id: 'drill-placement-start', variant: 'primary' },
+          )
+        : null;
       sheet.replaceChildren(
         el('div.row', {}, el('h2', { text: 'Placement result' })),
         where,
-        el(
-          'div.row',
-          {},
-          ...(unitId
-            ? [
-                button(
-                  'Start here',
-                  () => {
-                    void unitExists(unitId).then((real) => {
-                      if (!real) {
-                        status.textContent = `${unitId} is not a unit in the plan, so nothing was recorded — this drill's items need correcting.`;
-                        status.classList.add('status--error');
-                        return;
-                      }
-                      void recordPlacement(unitId).then(() => {
-                        status.textContent = 'Placement recorded. Today will build from here.';
-                      });
-                    });
-                  },
-                  { id: 'drill-placement-start', variant: 'primary' },
-                ),
-              ]
-            : []),
-          button('Again', again, { id: 'drill-again' }),
-          backButton,
-        ),
+        el('div.row', {}, ...(startHere ? [startHere] : []), button('Again', again, { id: 'drill-again' }), backButton),
       );
       // The session's next step (X1): a placement answers questions about the learner and measures no
       // playing, so the activity completes with no outcome either adaptation may read.
       const buttonsRow = backButton.parentElement;
-      if (buttonsRow) sessionNext(buttonsRow, backButton, again, false);
+      if (buttonsRow) sessionNext(buttonsRow, backButton, again, false, startHere ? [startHere] : []);
       completeSession(saved, 'unknown');
       sheet.scrollIntoView({ block: 'start', behavior: 'smooth' });
     }

@@ -1,0 +1,178 @@
+$ (cd app) npx vitest run tests/unit/drillSheetsSayWhatWasMeasured.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a217e9f7b4bcda352/app
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts (5 tests | 3 failed) 626ms
+   ❯ a drill set ended before any answer (2)
+     × is headed Not measured with the reason, prints no Accuracy and no verdict, and keeps Answered 0 of N 160ms
+     × in a session: the same sheet, and the transition under it unchanged — Start the one filled box 137ms
+   ❯ the placement test’s end sheet (2)
+     × in a session: the transition’s Start is the one filled box, and Start here is outlined 136ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > a drill set ended before any answer > is headed Not measured with the reason, prints no Accuracy and no verdict, and keeps Answered 0 of N
+AssertionError: a verdict over a set nobody answered: expected 'Not passed yet' to be 'Not measured' // Object.is equality
+
+Expected: "Not measured"
+Received: "Not passed yet"
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:188:68
+    186|
+    187|     // Soft, so a red shows every claim the sheet makes at once.
+    188|     expect.soft(heading(), 'a verdict over a set nobody answered').toB…
+       |                                                                    ^
+    189|     expect.soft(document.querySelector('#drill-outcome-note')?.textCon…
+    190|     expect.soft(document.querySelector('[data-stat="accuracy"]')?.text…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > a drill set ended before any answer > is headed Not measured with the reason, prints no Accuracy and no verdict, and keeps Answered 0 of N
+AssertionError: an accuracy nobody measured: expected '0%' to be undefined
+
+- Expected:
+undefined
+
++ Received:
+"0%"
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:190:111
+    188|     expect.soft(heading(), 'a verdict over a set nobody answered').toB…
+    189|     expect.soft(document.querySelector('#drill-outcome-note')?.textCon…
+    190|     expect.soft(document.querySelector('[data-stat="accuracy"]')?.text…
+       |                                                                                                               ^
+    191|     expect.soft(document.querySelector('[data-stat="answered"]')?.text…
+    192|     const said = sheet().textContent ?? '';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > a drill set ended before any answer > is headed Not measured with the reason, prints no Accuracy and no verdict, and keeps Answered 0 of N
+AssertionError: expected 'Not passed yetkeep goingAccuracy0%Ans…' not to contain 'Not passed'
+
+Expected: "Not passed"
+Received: "Not passed yetkeep goingAccuracy0%Answered0 of 10AgainCount this setBack to the planEnded early, so this is not in your practice history unless you keep it."
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:193:27
+    191|     expect.soft(document.querySelector('[data-stat="answered"]')?.text…
+    192|     const said = sheet().textContent ?? '';
+    193|     expect.soft(said).not.toContain('Not passed');
+       |                           ^
+    194|     expect.soft(said).not.toContain('keep going');
+    195|     expect.soft(said).not.toContain('Accuracy');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > a drill set ended before any answer > is headed Not measured with the reason, prints no Accuracy and no verdict, and keeps Answered 0 of N
+AssertionError: expected 'Not passed yetkeep goingAccuracy0%Ans…' not to contain 'keep going'
+
+Expected: "keep going"
+Received: "Not passed yetkeep goingAccuracy0%Answered0 of 10AgainCount this setBack to the planEnded early, so this is not in your practice history unless you keep it."
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:194:27
+    192|     const said = sheet().textContent ?? '';
+    193|     expect.soft(said).not.toContain('Not passed');
+    194|     expect.soft(said).not.toContain('keep going');
+       |                           ^
+    195|     expect.soft(said).not.toContain('Accuracy');
+    196|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > a drill set ended before any answer > is headed Not measured with the reason, prints no Accuracy and no verdict, and keeps Answered 0 of N
+AssertionError: expected 'Not passed yetkeep goingAccuracy0%Ans…' not to contain 'Accuracy'
+
+Expected: "Accuracy"
+Received: "Not passed yetkeep goingAccuracy0%Answered0 of 10AgainCount this setBack to the planEnded early, so this is not in your practice history unless you keep it."
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:195:27
+    193|     expect.soft(said).not.toContain('Not passed');
+    194|     expect.soft(said).not.toContain('keep going');
+    195|     expect.soft(said).not.toContain('Accuracy');
+       |                           ^
+    196|   });
+    197|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > a drill set ended before any answer > in a session: the same sheet, and the transition under it unchanged — Start the one filled box
+AssertionError: expected 'Not passed yet' to be 'Not measured' // Object.is equality
+
+Expected: "Not measured"
+Received: "Not passed yet"
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:203:28
+    201|     document.querySelector<HTMLButtonElement>('#drill-end')?.click();
+    202|     await vi.waitFor(() => expect(document.querySelector<HTMLElement>(…
+    203|     expect.soft(heading()).toBe(SUMMARY_TEXT.notMeasuredHeading);
+       |                            ^
+    204|     expect.soft(document.querySelector('[data-stat="accuracy"]')?.text…
+    205|     expect.soft(document.querySelector('#session-next')?.textContent).…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > a drill set ended before any answer > in a session: the same sheet, and the transition under it unchanged — Start the one filled box
+AssertionError: an accuracy nobody measured: expected '0%' to be undefined
+
+- Expected:
+undefined
+
++ Received:
+"0%"
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:204:111
+    202|     await vi.waitFor(() => expect(document.querySelector<HTMLElement>(…
+    203|     expect.soft(heading()).toBe(SUMMARY_TEXT.notMeasuredHeading);
+    204|     expect.soft(document.querySelector('[data-stat="accuracy"]')?.text…
+       |                                                                                                               ^
+    205|     expect.soft(document.querySelector('#session-next')?.textContent).…
+    206|     expect.soft(filled()).toEqual(['session-start-next']);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > the placement test’s end sheet > in a session: the transition’s Start is the one filled box, and Start here is outlined
+AssertionError: two filled boxes on one sheet: expected [ 'session-start-next', …(1) ] to deeply equal [ 'session-start-next' ]
+
+- Expected
++ Received
+
+  [
+    "session-start-next",
++   "drill-placement-start",
+  ]
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:231:60
+    229|     await vi.waitFor(() => expect(document.querySelector<HTMLElement>(…
+    230|     await vi.waitFor(() => expect(document.querySelector('#session-sta…
+    231|     expect.soft(filled(), 'two filled boxes on one sheet').toEqual(['s…
+       |                                                            ^
+    232|     const startHere = document.querySelector<HTMLElement>('#drill-plac…
+    233|     expect(startHere, 'the only thing that records the test’s answer')…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > the placement test’s end sheet > in a session: the transition’s Start is the one filled box, and Start here is outlined
+AssertionError: Start here outlined: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:235:92
+    233|     expect(startHere, 'the only thing that records the test’s answer')…
+    234|     expect.soft(startHere?.hidden).toBe(false);
+    235|     expect.soft(startHere?.classList.contains('button--secondary'), 'S…
+       |                                                                                            ^
+    236|   });
+    237|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 2 passed (5)
+   Start at  17:23:45
+   Duration  3.21s (transform 39%, environment 31%, tests 20%, import 9%)
+
+exit=1

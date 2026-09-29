@@ -222,6 +222,14 @@ export const SUMMARY_TEXT = {
   /** …and where nothing was listening, how to be heard next time. */
   notMeasuredNoInput: 'To be marked, connect a piano or choose Screen keys in ⋯.',
   /**
+   * The line under the same heading on a drill's end sheet when the set ended with no card answered (U96):
+   * *End drill* before the first answer, or, on a kind the learner closes card by card (loud and soft, a
+   * rhythm), *Next* or *Done* with nothing played. (A skipped card is not this: it counts as answered, wrong,
+   * `PromptDrill.next`.) Its sheet printed *Not passed yet* over *Accuracy 0%*, a verdict and a share of
+   * nothing. No answers rather than no notes, so a sentence of its own.
+   */
+  notAnswered: 'Nothing was answered, so there is nothing to mark.',
+  /**
    * A sight-read of a phrase already on the record, or run again (T37): the
    * material has been seen, so the run is not a first reading (`05` §7). It is
    * kept as practice (C1): its minutes and its attempt count, and it is
