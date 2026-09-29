@@ -1710,6 +1710,24 @@ export function signatureWords(fifths: number, mode?: string): string {
 }
 
 /**
+ * A tempo as the score carries it (X3c; the fractional policy the X3b review asked for,
+ * `responses/f9d36867.md`): to the store's own three places (`importStore.round3`), so 72.5 is 72.5, and
+ * where the file carries more than that — a MIDI file's microseconds a beat, 90.00009000009 — the whole
+ * beat, marked as not exact. Never a whole number the score does not carry. `exact` false marks the
+ * second; `figure` is the number said, and the one the tempo field starts at.
+ */
+export function tempoFigure(bpm: number): { figure: number; exact: boolean } {
+  const three = Math.round(bpm * 1000) / 1000;
+  return Math.abs(three - bpm) < 1e-9 ? { figure: three, exact: true } : { figure: Math.round(bpm), exact: false };
+}
+
+/** A tempo in words (`tempoFigure`): "72.5", or "about 90" where the file carries more than three places. */
+export function tempoNumber(bpm: number): string {
+  const { figure, exact } = tempoFigure(bpm);
+  return exact ? String(figure) : `about ${String(figure)}`;
+}
+
+/**
  * The import sheet's words and the Library's for an import (X3; E21, U72, U75): one table, so the
  * sheet, the row and `04` §4 say one thing. What the app read from the file, what it guessed, whose
  * each fact is (`whoseFact`), and what a learner can do about a piece the catalogue wants and does
@@ -1741,14 +1759,38 @@ export const IMPORT_TEXT = {
   handsYours: 'You corrected them, and the notes were measured again on your score.',
   handsUnknown: 'Not recorded: imported before the app kept track of whose the hands are.',
   tempo: 'Tempo',
-  tempoFile: (bpm: number): string => `The file says ♩ = ${String(bpm)}.`,
-  tempoChosen: (bpm: number): string => `The file states no tempo, so the app chose ♩ = ${String(bpm)}.`,
-  tempoYours: (bpm: number | undefined): string => (bpm === undefined ? 'You stated it.' : `You stated ♩ = ${String(bpm)}.`),
+  /*
+   * The tempo line's words. Every number is a tempo as the score carries it (`tempoNumber`), in quarter
+   * notes a minute — "♩ =" — unless a printed mark's own note is named beside it (X3c).
+   */
+  tempoFile: (bpm: number): string => `The file says ♩ = ${tempoNumber(bpm)}.`,
+  /** The first bar's printed mark counts another note (X3c): the mark as printed, then the tempo the score opens at. */
+  tempoFileMark: (mark: string, bpm: number): string => `The file says ${mark} (${tempoNumber(bpm)} quarter notes a minute).`,
+  /** The printed mark and the tempo the file plays at disagree (X3c): each said apart, never as a conversion. */
+  tempoFileApart: (mark: string, bpm: number): string => `The file prints ${mark}; its playback tempo is ${tempoNumber(bpm)} quarter notes a minute.`,
+  /** A printed mark in the first bar with no playback tempo there (X3c): the mark alone. */
+  tempoFileMarkOnly: (mark: string): string => `The file says ${mark}.`,
+  /** A tempo the file writes only after its first bar (X3c): never said as the opening. */
+  tempoFileLater: 'The file writes no tempo at its opening, only later in the piece.',
+  /** A metronome mark the door read from the file's text (E32): as the file printed it, then as the app read it. */
+  tempoTextMark: (text: string, bpm: number): string => `The file’s mark says “${text}”; the app reads it as ${tempoNumber(bpm)} quarter notes a minute.`,
+  /** The same, where the mark printed no note and the app read the metre's beat (E32). */
+  tempoTextMarkNoNote: (text: string, unit: string, bpm: number): string =>
+    `The file’s mark says “${text}”, with no note; the app reads it as a ${unit} note, the metre’s beat: ${tempoNumber(bpm)} quarter notes a minute.`,
+  tempoChosen: (bpm: number): string => `The file states no tempo, so the app chose ♩ = ${tempoNumber(bpm)}.`,
+  tempoYours: (bpm: number | undefined): string => (bpm === undefined ? 'You stated it.' : `You stated ♩ = ${tempoNumber(bpm)}.`),
+  /** A printed metronome mark (X3c): its note, a dot for each dot, "=", its number — a half note "= 60", "♩. = 60". */
+  tempoMark: (note: string, dots: number, perMinute: number): string => `${note}${'.'.repeat(dots)} = ${tempoNumber(perMinute)}`,
   /**
-   * The learner's tempo, on the tempo line while it is the app's guess or the file's (X3a; E48): the
-   * field's label, in the line's own notation, and the button. A tempo the store refuses is said in
-   * the store's words (`stateImportTempo`); `tempoFailed` only where the store saved nothing and said
-   * no reason.
+   * The note symbol for each `<beat-unit>` the sheet prints (X3c): the Unicode symbols `textGlyphs.ts` maps
+   * SMuFL's metronome notes to, so a mark from a `<metronome>` and a mark read from text look alike.
+   */
+  noteSymbols: { whole: '\u{1D15D}', half: '\u{1D15E}', quarter: '♩', eighth: '♪', '16th': '\u{1D161}' },
+  /**
+   * The learner's tempo, on the tempo line of every MusicXML import — the app's guess, the file's, or one
+   * the learner already stated (X3a, X3b; E48): the field's label, in the line's own notation, and the
+   * button. A tempo the store refuses is said in the store's words (`stateImportTempo`); `tempoFailed`
+   * only where the store saved nothing and said no reason.
    */
   tempoField: '♩ =',
   tempoUse: 'Use this tempo',

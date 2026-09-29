@@ -29,6 +29,12 @@
  *   `responses/564e8e5f.md`): the control stays after a statement, seeded from the tempo the returned
  *   score opens at, and a second statement goes through the same store operation, so a slip has a way
  *   back without deleting the import.
+ * - **The file's own tempo is said truthfully** (X3c; X24 in the X3a review): the tempo the score opens
+ *   at, in quarter notes a minute — the first bar's `<sound tempo>`, the one reader the learner's line and
+ *   the control's number use — with the first bar's printed mark in its own note where that is not a
+ *   quarter; a mark the door read from the file's text (E32) as the file printed it and as the app read
+ *   it; never a later change as the opening. A fractional tempo is kept as the file wrote it and said as
+ *   the score carries it (to the store's three places), or "about" the whole beat where it carries more.
  */
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -73,29 +79,50 @@ const T52 =
 
 /**
  * Two bars on a piano's two staves, the key signature, the mode and the tempo as asked: the printed
- * mark `tempo` in its `beatUnit` (a quarter unless asked), playing at `sound` quarter notes a minute
- * (the mark's own number unless asked), in bar `tempoBar` (the first unless asked).
+ * mark `tempo` in its `beatUnit` (a quarter unless asked; `dotted` adds its dot), playing at `sound`
+ * quarter notes a minute (the mark's own number unless asked; `null` for a mark with no `<sound tempo>`),
+ * in bar `tempoBar` (the first unless asked). `openingSound` opens the first bar with a tempo word and a
+ * `<sound tempo>` of its own (X3c: a later mark is not the opening); `words` prints a text-only direction
+ * in the first bar (E32's text mark); `time` the metre (4/4 unless asked). The default bytes are X3's.
  */
 function twoStaves({
   tempo,
   fifths = 1,
   mode,
   beatUnit = 'quarter',
+  dotted = false,
   sound = tempo,
   tempoBar = 1,
-}: { tempo?: number; fifths?: number; mode?: string; beatUnit?: string; sound?: number; tempoBar?: number } = {}): string {
+  openingSound,
+  words,
+  time = [4, 4],
+}: {
+  tempo?: number;
+  fifths?: number;
+  mode?: string;
+  beatUnit?: string;
+  dotted?: boolean;
+  sound?: number | null;
+  tempoBar?: number;
+  openingSound?: number;
+  words?: string;
+  time?: [number, number];
+} = {}): string {
   const note = (step: string, octave: number, staff: 1 | 2): string =>
     `<note><pitch><step>${step}</step><octave>${String(octave)}</octave></pitch><duration>4</duration><voice>${staff === 1 ? '1' : '5'}</voice><type>whole</type><staff>${String(staff)}</staff></note>`;
   const attributes =
     `<attributes><divisions>1</divisions><key><fifths>${String(fifths)}</fifths>${mode ? `<mode>${mode}</mode>` : ''}</key>` +
-    '<time><beats>4</beats><beat-type>4</beat-type></time><staves>2</staves>' +
+    `<time><beats>${String(time[0])}</beats><beat-type>${String(time[1])}</beat-type></time><staves>2</staves>` +
     '<clef number="1"><sign>G</sign><line>2</line></clef><clef number="2"><sign>F</sign><line>4</line></clef></attributes>';
   const metronome =
     tempo === undefined
       ? ''
-      : `<direction placement="above"><direction-type><metronome><beat-unit>${beatUnit}</beat-unit><per-minute>${String(tempo)}</per-minute></metronome></direction-type><staff>1</staff><sound tempo="${String(sound)}"/></direction>`;
+      : `<direction placement="above"><direction-type><metronome><beat-unit>${beatUnit}</beat-unit>${dotted ? '<beat-unit-dot/>' : ''}<per-minute>${String(tempo)}</per-minute></metronome></direction-type><staff>1</staff>${sound === null || sound === undefined ? '' : `<sound tempo="${String(sound)}"/>`}</direction>`;
+  const opening =
+    (openingSound === undefined ? '' : `<direction placement="above"><direction-type><words>Moderato</words></direction-type><staff>1</staff><sound tempo="${String(openingSound)}"/></direction>`) +
+    (words === undefined ? '' : `<direction placement="above"><direction-type><words>${words}</words></direction-type><staff>1</staff></direction>`);
   const bar = (n: number): string =>
-    `<measure number="${String(n)}">${n === 1 ? attributes : ''}${n === tempoBar ? metronome : ''}${note('E', 4, 1)}<backup><duration>4</duration></backup>${note('C', 3, 2)}</measure>`;
+    `<measure number="${String(n)}">${n === 1 ? attributes + opening : ''}${n === tempoBar ? metronome : ''}${note('E', 4, 1)}<backup><duration>4</duration></backup>${note('C', 3, 2)}</measure>`;
   return (
     '<?xml version="1.0" encoding="UTF-8"?><score-partwise version="4.0"><work><work-title>Two staves</work-title></work>' +
     '<identification><creator type="composer">A. Composer</creator></identification>' +
@@ -156,6 +183,9 @@ const PDF = row({
 });
 
 const text = (selector: string): string => document.querySelector(selector)?.textContent ?? '';
+
+/** Every `<sound tempo>` the score sounds, in order, as written. */
+const soundTempos = (xml: string): string[] => [...xml.matchAll(/<sound\b[^>]*\btempo="([^"]*)"/g)].map((match) => match[1] ?? '');
 
 function sectionOrder(): string[] {
   return [...document.querySelectorAll('#assign-sheet h3')].map((heading) => heading.textContent ?? '');
@@ -429,9 +459,6 @@ describe('the learner states the tempo (X3a; E48’s stateImportTempo)', () => {
     expect(text('#import-tempo')).toContain('You stated ♩ = 72.');
   });
 
-  /** Every `<sound tempo>` the score sounds, in order, as written. */
-  const soundTempos = (xml: string): string[] => [...xml.matchAll(/<sound\b[^>]*\btempo="([^"]*)"/g)].map((match) => match[1] ?? '');
-
   /**
    * The tempo the Score screen's label is computed from at the start (`ScoreScreen.writtenBpm` →
    * `bpmAt(model.tempoMap, …)`): the score model's first tempo, read from the score through OSMD as the
@@ -512,16 +539,17 @@ describe('the learner states the tempo (X3a; E48’s stateImportTempo)', () => {
   it('after a statement the field starts at the tempo the stored score opens at, the number the line says, not what was typed; a refused restatement keeps the store’s words and the field as typed', async () => {
     const imported = await addImport(midi('left-hand-first.mid'));
     openImportSheet(imported, CURRICULUM);
-    // A fraction: the store writes it as stated, and the line says the whole beat (X3a).
+    // A fraction (X3c's policy, the X3b review's fractional line): the store writes it as stated, and the
+    // line and the field say it as the score carries it, never a whole number the score does not carry.
     state('72.5');
     await vi.waitFor(() => {
       expect(text('#import-tempo')).toContain('yours');
     });
     const stated = (await getImport(imported.id)) as ImportRow;
     expect(soundTempos(stated.data as string)).toEqual(['72.5']);
-    expect(text('#import-tempo')).toContain('You stated ♩ = 73.');
-    // Seeded from the score the store returned — what the line says — never the characters typed.
-    expect(field().value).toBe('73');
+    expect(text('#import-tempo')).toContain('You stated ♩ = 72.5.');
+    expect(text('#import-tempo')).not.toContain('73');
+    expect(field().value).toBe('72.5');
 
     // A refused restatement: the store's words, the field as typed, the line and the score as they were.
     const reason = await stateImportTempo(imported.id, 500).then(
@@ -533,9 +561,140 @@ describe('the learner states the tempo (X3a; E48’s stateImportTempo)', () => {
       expect(text('#import-tempo-said')).toBe(reason);
     });
     expect(field().value).toBe('500');
-    expect(text('#import-tempo')).toContain('You stated ♩ = 73.');
+    expect(text('#import-tempo')).toContain('You stated ♩ = 72.5.');
     expect(((await getImport(imported.id)) as ImportRow).data).toBe(stated.data);
     expect(use().disabled).toBe(false);
+
+    // Seeded from the score the store returned — what the line says — never the characters typed: the
+    // store keeps a stated tempo to three places, so 72.0004 is stored, said and seeded as 72.
+    state('72.0004');
+    await vi.waitFor(() => {
+      expect(text('#import-tempo')).toMatch(/You stated ♩ = 72\.$/);
+    });
+    expect(soundTempos(((await getImport(imported.id)) as ImportRow).data as string)).toEqual(['72']);
+    expect(field().value).toBe('72');
+  });
+});
+
+/**
+ * X3c (X24, the X3a review's never-teach-wrong line, `responses/564e8e5f.md`): the sentence for a file's
+ * own tempo. It used to take the file's first `<per-minute>` and say it as a quarter-note tempo, whatever
+ * the mark's note and wherever the mark stood. Now it says the tempo the score opens at — the first bar's
+ * `<sound tempo>`, in quarter notes a minute, the reader the learner's line and the control's number use —
+ * and, where the first bar's printed mark counts another note, the mark in its own note beside it. A mark
+ * the door read from the file's text (E32) is said as the file printed it and as the app read it. A later
+ * tempo change is never said as the opening. A fraction is said as the score carries it (to the store's
+ * three places), or "about" the whole beat where the file carries more; the sheet writes nothing.
+ */
+describe('the file’s own tempo (X3c)', () => {
+  const field = (): HTMLInputElement => document.getElementById('import-tempo-bpm') as HTMLInputElement;
+  const use = (): HTMLButtonElement => document.getElementById('import-tempo-use') as HTMLButtonElement;
+  /** The tempo line's words: what follows its name and whose it is. */
+  const said = (): string => text('#import-tempo').split(' — ')[1] ?? '';
+  const FILE = AUTHORED.provenance;
+  const fileRow = (data: string): ImportRow => row({ data, provenance: FILE });
+
+  it('a half-note mark of 60 on a score that opens at 120 quarter notes a minute says both: the mark in its own note and the tempo in quarters', () => {
+    openImportSheet(fileRow(twoStaves({ tempo: 60, beatUnit: 'half', sound: 120, time: [2, 2] })), CURRICULUM);
+    expect(text('#import-tempo')).toContain('from the file');
+    expect(said()).toBe('The file says \u{1D15E} = 60 (120 quarter notes a minute).');
+    // Never the half note's number as a quarter note's.
+    expect(said()).not.toContain('♩ = 60');
+    // The control's number is in quarter notes, as its label says: the tempo the score opens at.
+    expect(field().value).toBe('120');
+    document.body.replaceChildren();
+
+    // A dotted quarter, as a compound metre prints it.
+    openImportSheet(fileRow(twoStaves({ tempo: 60, beatUnit: 'quarter', dotted: true, sound: 90, time: [6, 8] })), CURRICULUM);
+    expect(said()).toBe('The file says ♩. = 60 (90 quarter notes a minute).');
+    expect(field().value).toBe('90');
+    document.body.replaceChildren();
+
+    // A row from before the app kept a tempo fact is said from the file the same way.
+    openImportSheet(row({ data: twoStaves({ tempo: 60, beatUnit: 'half', sound: 120, time: [2, 2] }) }), CURRICULUM);
+    expect(text('#import-tempo')).toContain('from the file');
+    expect(said()).toBe('The file says \u{1D15E} = 60 (120 quarter notes a minute).');
+  });
+
+  it('a quarter-note mark says one number', () => {
+    openImportSheet(AUTHORED, CURRICULUM);
+    expect(said()).toBe('The file says ♩ = 96.');
+    expect(said()).not.toContain('quarter notes a minute');
+    expect(field().value).toBe('96');
+  });
+
+  it('a mark only in bar 2, on a score that opens at 100, says 100 as the opening and not the bar-2 mark; a tempo written only after the opening is not said as one', () => {
+    openImportSheet(fileRow(twoStaves({ tempo: 132, tempoBar: 2, openingSound: 100 })), CURRICULUM);
+    expect(said()).toBe('The file says ♩ = 100.');
+    expect(text('#import-tempo')).not.toContain('132');
+    expect(field().value).toBe('100');
+    document.body.replaceChildren();
+
+    // Nothing at the opening, a mark in bar 2: the file's tempo, but not the one the piece opens at.
+    openImportSheet(fileRow(twoStaves({ tempo: 132, tempoBar: 2 })), CURRICULUM);
+    expect(text('#import-tempo')).toContain('from the file');
+    expect(said()).toBe('The file writes no tempo at its opening, only later in the piece.');
+    expect(text('#import-tempo')).not.toContain('132');
+    // No number the line does not name: the field waits for the learner's.
+    expect(field().value).toBe('');
+  });
+
+  it('a mark the door read from the file’s text (E32) says the mark as the file printed it and the app’s reading of it', async () => {
+    // "= 60" in cut time, its note missing: the door reads the metre's beat, a half note, and writes 120.
+    const cut = await addImport(fakeFile('text-mark-cut.musicxml', twoStaves({ words: '= 60', time: [2, 2] })));
+    expect(soundTempos(cut.data as string)).toEqual(['120']);
+    openImportSheet(cut, CURRICULUM);
+    expect(text('#import-tempo')).toContain('from the file');
+    expect(said()).toBe('The file’s mark says “= 60”, with no note; the app reads it as a half note, the metre’s beat: 120 quarter notes a minute.');
+    expect(field().value).toBe('120');
+    document.body.replaceChildren();
+
+    // The note printed as the text font's glyph: the mark as the page prints it, and the app's number.
+    const dotted = await addImport(fakeFile('text-mark-dotted.musicxml', twoStaves({ words: ' = 80' })));
+    openImportSheet(dotted, CURRICULUM);
+    expect(said()).toBe('The file’s mark says “♩. = 80”; the app reads it as 120 quarter notes a minute.');
+    expect(field().value).toBe('120');
+  });
+
+  it('where the printed mark and the file’s playback tempo disagree, each is said apart, never as a conversion; a mark with no playback tempo is said alone', () => {
+    openImportSheet(fileRow(twoStaves({ tempo: 60, beatUnit: 'half', sound: 100, time: [2, 2] })), CURRICULUM);
+    expect(said()).toBe('The file prints \u{1D15E} = 60; its playback tempo is 100 quarter notes a minute.');
+    expect(said()).not.toContain('(100 quarter notes a minute)');
+    expect(field().value).toBe('100');
+    document.body.replaceChildren();
+
+    openImportSheet(fileRow(twoStaves({ tempo: 60, beatUnit: 'half', sound: null, time: [2, 2] })), CURRICULUM);
+    expect(said()).toBe('The file says \u{1D15E} = 60.');
+    expect(field().value).toBe('');
+  });
+
+  it('a fractional tempo is kept as the file wrote it and said as the score carries it, or “about” the whole beat where the file carries more; a press states the number the line names', async () => {
+    // To the store's three places: said and seeded as carried.
+    const half = await addImport(fakeFile('seventy-two-and-a-half.musicxml', twoStaves({ tempo: 72.5 })));
+    openImportSheet(half, CURRICULUM);
+    expect(said()).toBe('The file says ♩ = 72.5.');
+    expect(field().value).toBe('72.5');
+    // A press without typing states what the file carries: the score still opens at 72.5.
+    use().click();
+    await vi.waitFor(() => {
+      expect(text('#import-tempo')).toContain('You stated ♩ = 72.5.');
+    });
+    expect(soundTempos(((await getImport(half.id)) as ImportRow).data as string)).toEqual(['72.5']);
+    document.body.replaceChildren();
+
+    // The command-line converter writes a MIDI file's microseconds a beat as 90.00009000009: the sheet
+    // claims no whole number the file does not carry, and the stored score keeps the file's number.
+    const stamped = await addImport(fakeFile('stamped-by-the-converter.musicxml', readFileSync(join(FIXTURES, 'stamped-by-the-converter.musicxml'), 'utf8')));
+    openImportSheet(stamped, CURRICULUM);
+    expect(said()).toBe('The file says ♩ = about 90.');
+    expect(((await getImport(stamped.id)) as ImportRow).data).toContain('<sound tempo="90.00009000009" />');
+    expect(field().value).toBe('90');
+    // A press is the learner's statement of the number the line names: 90, normalised by their act.
+    use().click();
+    await vi.waitFor(() => {
+      expect(text('#import-tempo')).toContain('You stated ♩ = 90.');
+    });
+    expect(soundTempos(((await getImport(stamped.id)) as ImportRow).data as string)).toEqual(['90']);
   });
 });
 
