@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **Q76** — `tasks/Q76-public-options-for-two-rungs.md`, for information: the owner's disposition of the public catalogue's two gaps (your Q75 later-wave item) — public-domain material first: Mutopia's Joplin editions on ragtime.8 through a new import step, an authored public-domain tie piece on 2.4; the strict build's report is the proof; its own handoff when it lands.
 - **X3d** — `handoffs/5e6eceba.md` (respond in `responses/5e6eceba.md`). One tempo map (Entry 133), your X3c required change; X24 and X29 close on it.
 - **U82** — `handoffs/be8802c3.md` (respond in `responses/be8802c3.md`). The sideways window count (Entry 127): not a regression — the spec asserted the renderer's pre-measurement claim; the case now asserts the rule on the glass; the renderer unchanged.
 - **Four fix-forward briefs** — `handoffs/bcad0c9.md`, for information: F2b (your F2a change), Q65b (your Q65a change), U80 (the side-panel regression CI's full run found), X3a (the tempo control under X3's contract). Respond only if one departs from its contract.
