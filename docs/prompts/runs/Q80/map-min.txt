@@ -1,0 +1,84 @@
+# checks for 77 path(s): 77 matched, 0 unmatched
+# docs/prompts/runs/Q80/ENTRY.md: docs/**
+# docs/prompts/runs/Q80/build-app.exit: docs/**
+# docs/prompts/runs/Q80/build-app.txt: docs/**
+# docs/prompts/runs/Q80/build-baseline-personal.exit: docs/**
+# docs/prompts/runs/Q80/build-baseline-personal.stderr.txt: docs/**
+# docs/prompts/runs/Q80/build-baseline-personal.txt: docs/**
+# docs/prompts/runs/Q80/build-final-personal.exit: docs/**
+# docs/prompts/runs/Q80/build-final-personal.stderr.txt: docs/**
+# docs/prompts/runs/Q80/build-final-personal.txt: docs/**
+# docs/prompts/runs/Q80/build-kern-joplin-unfetched-after-relative-out.stderr.txt: docs/**
+# docs/prompts/runs/Q80/build-kern-joplin-unfetched-after-relative-out.txt: docs/**
+# docs/prompts/runs/Q80/build-kern-joplin-unfetched-after.exit: docs/**
+# docs/prompts/runs/Q80/build-kern-joplin-unfetched-after.stderr.txt: docs/**
+# docs/prompts/runs/Q80/build-kern-joplin-unfetched-after.txt: docs/**
+# docs/prompts/runs/Q80/build-strict-fetched-after-relative-out.exit: docs/**
+# docs/prompts/runs/Q80/build-strict-fetched-after-relative-out.stderr.txt: docs/**
+# docs/prompts/runs/Q80/build-strict-fetched-after-relative-out.txt: docs/**
+# docs/prompts/runs/Q80/build-strict-fetched-after.exit: docs/**
+# docs/prompts/runs/Q80/build-strict-fetched-after.stderr.txt: docs/**
+# docs/prompts/runs/Q80/build-strict-fetched-after.txt: docs/**
+# docs/prompts/runs/Q80/build-strict-unfetched-after.exit: docs/**
+# docs/prompts/runs/Q80/build-strict-unfetched-after.stderr.txt: docs/**
+# docs/prompts/runs/Q80/build-strict-unfetched-after.txt: docs/**
+# docs/prompts/runs/Q80/build-strict-unfetched-before.exit: docs/**
+# docs/prompts/runs/Q80/build-strict-unfetched-before.stderr.txt: docs/**
+# docs/prompts/runs/Q80/build-strict-unfetched-before.txt: docs/**
+# docs/prompts/runs/Q80/build-unfetched-after-relative-out.exit: docs/**
+# docs/prompts/runs/Q80/build-unfetched-after-relative-out.stderr.txt: docs/**
+# docs/prompts/runs/Q80/build-unfetched-after-relative-out.txt: docs/**
+# docs/prompts/runs/Q80/build-unfetched-after.exit: docs/**
+# docs/prompts/runs/Q80/build-unfetched-after.stderr.txt: docs/**
+# docs/prompts/runs/Q80/build-unfetched-after.txt: docs/**
+# docs/prompts/runs/Q80/build-unfetched-before.exit: docs/**
+# docs/prompts/runs/Q80/build-unfetched-before.stderr.txt: docs/**
+# docs/prompts/runs/Q80/build-unfetched-before.txt: docs/**
+# docs/prompts/runs/Q80/chain-after.txt: docs/**
+# docs/prompts/runs/Q80/chain2-after.exit: docs/**
+# docs/prompts/runs/Q80/chain2-after.txt: docs/**
+# docs/prompts/runs/Q80/checks-for-paths.txt: docs/**
+# docs/prompts/runs/Q80/ci-tests-unfetched.txt: docs/**
+# docs/prompts/runs/Q80/content-tests-all.txt: docs/**
+# docs/prompts/runs/Q80/copy.txt: docs/**
+# docs/prompts/runs/Q80/green-after-docstring.txt: docs/**
+# docs/prompts/runs/Q80/green-test_validate_ladder.txt: docs/**
+# docs/prompts/runs/Q80/kern-unreachable.txt: docs/**
+# docs/prompts/runs/Q80/ladder-check-flavours-relative-out.txt: docs/**
+# docs/prompts/runs/Q80/ladder-check-flavours.txt: docs/**
+# docs/prompts/runs/Q80/ladder-diff-unfetched.txt: docs/**
+# docs/prompts/runs/Q80/npm-ci.txt: docs/**
+# docs/prompts/runs/Q80/parity.txt: docs/**
+# docs/prompts/runs/Q80/placeholder-reasons.txt: docs/**
+# docs/prompts/runs/Q80/red-test_validate_ladder.txt: docs/**
+# docs/prompts/runs/Q80/reports-diff-baseline.txt: docs/**
+# docs/prompts/runs/Q80/reports-diff-final.txt: docs/**
+# docs/prompts/runs/Q80/restore.txt: docs/**
+# docs/prompts/runs/Q80/review-check.txt: docs/**
+# docs/prompts/runs/Q80/scripts-app-checks.ps1: docs/**
+# docs/prompts/runs/Q80/scripts-chain-after.ps1: docs/**
+# docs/prompts/runs/Q80/scripts-chain2-after.ps1: docs/**
+# docs/prompts/runs/Q80/scripts-ci-tests-unfetched.py: docs/**
+# docs/prompts/runs/Q80/scripts-kern-unreachable.py: docs/**
+# docs/prompts/runs/Q80/scripts-placeholder-reasons.py: docs/**
+# docs/prompts/runs/Q80/scripts-run-build.ps1: docs/**
+# docs/prompts/runs/Q80/targeted-tests.txt: docs/**
+# docs/prompts/runs/Q80/unfetch.txt: docs/**
+# docs/prompts/runs/Q80/validate-final-personal.txt: docs/**
+# docs/prompts/runs/Q80/validate-strict-fetched-after-relative-out.txt: docs/**
+# docs/prompts/runs/Q80/validate-strict-fetched-after.txt: docs/**
+# docs/prompts/runs/Q80/validate-strict-unfetched-after.txt: docs/**
+# docs/prompts/runs/Q80/validate-strict-unfetched-before.txt: docs/**
+# docs/prompts/runs/Q80/validate-unfetched-after-rebuilt.txt: docs/**
+# docs/prompts/runs/Q80/validate-unfetched-after.txt: docs/**
+# docs/prompts/runs/Q80/validate-unfetched-before.txt: docs/**
+# docs/prompts/runs/Q80/vitest-all.exit: docs/**
+# docs/prompts/runs/Q80/vitest-all.txt: docs/**
+# tools/content/tests/test_validate_ladder.py: tools/content/tests/test_*.py
+# tools/content/validate.py: tools/content/*.py
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+unit	app	npx vitest run
+build-app	app	npm run build:app
