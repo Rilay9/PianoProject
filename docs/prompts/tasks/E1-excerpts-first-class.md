@@ -57,3 +57,5 @@ Judgement first: the first excerpts by their signals (where each starts and ends
 
 **Approved by the reviewer 2026-09-28 with one required change** (`responses/8326ff3.md`): the one admission predicate must cover excerpts — E1a; Q58 decided (the cut's own bar numbers), Q59 decided (an excerpt is unestablished music until a `yes`); D4 dispatches on E1a's acceptance.
 
+**Closed 2026-09-28** on E1a's acceptance (`responses/4f7227d.md`); the five cuts stay undecided and automatically unoffered; D4 dispatched.
+

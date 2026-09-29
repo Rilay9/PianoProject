@@ -40,3 +40,5 @@ Judgement first: what a learner sees today (nothing changes: the five excerpts w
 
 **Delivered 2026-09-28**, Entry 105, in an isolated worktree: one line in `unapprovedMusic`, the export unchanged, no consumer branch; the Q8 case and E1's reader cases revised to use an approved excerpt so each reader's own rule shows; staleness proven on the build side and the app side; the sweeps extended; a placement probe as the red. No Library change; no rename (both kinds it covers are music whose teaching use rests on a decision). Found: E36, E37, E38.
 
+**Accepted by the reviewer 2026-09-28** (`responses/4f7227d.md`): E1a and E1 closed; D4 dispatches on this acceptance and consumes the shared admission; E37 later work.
+
