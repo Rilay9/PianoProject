@@ -10,7 +10,7 @@
 
 ## Waiting
 
-- **D3** — **approved with one required change** (`responses/ee70b43.md`); **D3a** approved with one required change (`responses/c8717be.md`); **D3b** approved with one required change (`responses/4478793.md`); **D3c** (the rung page's picks behind the same admission) at the reviewer's gate; D3 closes on D3c's review. Unheard; unverified as music.
+- **D3** — **approved with one required change** (`responses/ee70b43.md`); **D3a** approved with one required change (`responses/c8717be.md`); **D3b** approved with one required change (`responses/4478793.md`); **D3c** approved (`responses/267c4df.md`) and **dispatched** (Entry 104, port 4193); D3 closes on D3c's review. Unheard; unverified as music.
 
 - **D2a** — **closed**, accepted (`responses/b118750.md`).
 
