@@ -127,6 +127,47 @@ Hidden/suspended time must not accumulate as active duration. No stale timers, p
 
 Session snapshots should eventually preserve exact ordered activity instances, content identity/seed/excerpt identity, purpose/reason, substitutions, cursor, activity state and resumable state. Do not recompute a running session merely because underlying evidence changes, except for an explicit adaptive intervention with a recorded reason.
 
+## Autonomy, concurrency, and review-gate policy
+
+The reviewer governs correctness, architectural dependencies, and truth boundaries. It does **not** manage Claude's compute budget, context-window percentage, token meter, lane count, wall-clock utilization, or internal orchestration strategy.
+
+Do not impose arbitrary utilization thresholds such as 75%, 85%, or 90%, and do not cap parallel builders merely because of reviewer preference. Claude may run as many independent lanes as its own environment safely supports.
+
+Concurrency is restricted only by concrete repository risks:
+- two seams would edit the same owned truth or overlapping implementation files in ways that make reconciliation unsafe;
+- one seam semantically depends on another's result;
+- a later seam would consume an architectural contract that has not yet been accepted;
+- merging them would destroy the ability to review each immutable implementation HEAD independently.
+
+Otherwise, independent seams should proceed in parallel.
+
+### Pre-build versus post-build review
+
+A post-build review is required for seams whose acceptance gates a dependent architectural step.
+
+A separate pre-build reviewer gate is **not automatically required for every seam**. Require pre-build review only when the proposed brief itself makes or changes a consequential architectural contract, resolves an owner-level product decision, or could create an expensive wrong-direction implementation.
+
+Narrow fix-forwards, test-harness repairs, documentation/voice cleanup, source-backed truth corrections with an already-approved mechanism, and other bounded independent work may proceed from an already accepted brief/doctrine without waiting for another pre-build reviewer round.
+
+The reviewer should prefer:
+- approve the governing contract once;
+- let Claude execute multiple bounded independent seams under that contract;
+- review the resulting immutable handoffs;
+- block only the dependent frontier whose prerequisite has not yet been accepted.
+
+Do not serialize unrelated work merely because one seam is waiting for review.
+
+### Throughput principle
+
+When a gated frontier is waiting on review, Claude should continue with genuinely independent, already-authorized work rather than leaving lanes idle. The reviewer should help identify safe parallel work, not become a global scheduler.
+
+A review finding should block only:
+1. the seam it applies to; and
+2. downstream work that actually depends on that seam's unresolved truth.
+
+It should not freeze unrelated lanes.
+
+
 ## Review posture
 
 Do not review only Claude's narrative. Inspect exact artifacts.
