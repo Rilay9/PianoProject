@@ -157,11 +157,22 @@ class TheWorkflowOrder(unittest.TestCase):
             "the render check writes durations into the catalogue",
         )
 
-    def test_one_run_per_branch_at_a_time(self) -> None:
+    def test_one_run_per_branch_at_a_time_and_every_code_push_gets_its_conclusion(self) -> None:
+        # Revised 2026-09-29 (Q63): the group stays, so one run per branch runs at a time, but a
+        # newer push no longer cancels the run in progress — it queues behind it. Cancelling was
+        # written for one landing a night; at a landing every twenty to forty minutes it cancelled
+        # seven runs in a row and no tree got a conclusion. Docs-only pushes start no run at all
+        # (`paths-ignore`), which is what keeps the queue to trees whose code changed.
         block = re.search(r"^concurrency:\n((?:[ \t]+.*\n)+)", self.text, re.MULTILINE)
         self.assertIsNotNone(block, f"{WORKFLOW.name} lost its `concurrency` block")
         self.assertRegex(block.group(1), r"group:\s*ci-\$\{\{\s*github\.ref\s*\}\}")
-        self.assertRegex(block.group(1), r"cancel-in-progress:\s*true")
+        self.assertRegex(block.group(1), r"cancel-in-progress:\s*false")
+
+    def test_docs_only_pushes_start_no_run(self) -> None:
+        # Q63's first half: the record and the review stream never trigger or cancel a run.
+        on = re.search(r"^on:\n((?:[ \t]+.*\n)+)", self.text, re.MULTILINE)
+        self.assertIsNotNone(on, f"{WORKFLOW.name} lost its `on` block")
+        self.assertRegex(on.group(1), r"paths-ignore:\n\s+- 'docs/\*\*'")
 
     def test_the_steps_the_failure_messages_name_exist(self) -> None:
         names = [step.get("name", "") for step in self.steps]
