@@ -1,0 +1,40 @@
+# G85 — The Library's song rows show the learner's project state and open the one project sheet, and a project filter finds them: the Library consumes the one `projectStore` truth (the reviewer's ruling 3 on the G1b brief; G1b's not-done 1 and follow-up 4; P2)
+
+**Read first:** `docs/prompts/operating-procedure.md` §1–§5 and §11–§13; `docs/review/responses/a96395d.md` (the G1b brief's approval, its third section: *the finish sheet is a sufficient first door … After X3, the Library may expose the same project state and open the same sheet, but that should consume the one `projectStore` truth*); `docs/prompts/entry-138.md` (G1b: the store, the eight states, `PROJECT_TEXT`, the sheet; the Stage 9 page's rows wear a project badge — `LessonScreen.ts` about 262–275) and `docs/prompts/entry-142.md` (G1d: the one-reader guard as it now stands, `app/tests/unit/projectLifecycle.test.ts` about 500–560 — the readers list, the one actor, the session's pinned bindings); `app/src/ui/projectSheet.ts` at `ProjectSheetOptions` and `openProjectSheet` (about 33–80: `item`, `material`, `bars?`, `onChange?`, `owner?`) and its two callers (`ProgressScreen.ts` about 405–415 — how Progress builds the target with `materialOfItem` and reloads on change; `ScoreScreen.ts` about 3879); `app/src/data/projectStore.ts` at `allProjects`, `projectIn`, `isProjectable`, `PROJECT_STATES`, `onProjectsChange`; `app/src/ui/screens/LibraryScreen.ts` whole (its header on cost: about 1,533 rows, ~15 ms each on the S25, rebuilt only when a filter changes; `Filters` about 70–90 with `status`; `statusBadge` about 98; `matches` about 104–120; the row builder and the six filter doors); `app/src/ui/help.ts` at `PROJECT_TEXT`; `app/tests/e2e/library.spec.ts` (the filters and rows cases; the seeding path); `app/tests/e2e/projects.spec.ts` (how a project is set in a browser case); `docs/04-ui-spec.md` §4 Library (about 1426 onward: the rows, the badges, the six filters).
+
+## The goal, in the orchestrator's words
+
+A learner who saved a piece, is learning it, paused it or put it away said so on the project sheet; the Library, where they go to find music, shows none of it and offers no way to say it there. The reviewer ruled that after X3 the Library may show the same project state and open the same sheet, consuming the one store. After G85 a Library song row wears the learner's project state where one exists, opens the one sheet from the row, and a project filter finds the pieces the learner has a project on — the Library reads the store and acts only through the sheet.
+
+## What is decided
+
+1. **The badge.** A song row (`isProjectable(item)`) whose project exists wears one badge in `PROJECT_TEXT.states`' words beside its status badge, in the shape the Stage 9 page uses (`LessonScreen.ts` about 270); a row with no project wears none — exploring is the absence of a row, and 1,500 *not started* badges would say nothing. The identity is `projectIn(rows, { itemId: item.id, material: materialOfItem(item) })`, the store's own rule; the rows are read once per draw (`allProjects().catch(() => [])`) and refreshed on `onProjectsChange`, never per row from the store.
+2. **The door.** Each projectable song row gets one small action that opens `openProjectSheet({ item, material, onChange, owner })` — the same options Progress passes; `onChange` redraws the row's badge (and the filter's result if a project filter is on). The row's own tap keeps opening what it opens today. The sheet is the only actor: the Library calls no `applyProjectAction`.
+3. **The filter.** A seventh filter door, *Project*: `all` (the default), each state in `PROJECT_TEXT`'s words, and *any project*; `matches` reads it like `status`. Its chips wear the same shape as the status filter's. The letters index and the status line keep working with it.
+4. **Cost.** The Library's draw budget (its header) holds: one store read per draw, one map lookup per row; measure a full draw before and after on the same catalogue here and describe the relationship, never a number as a fact.
+5. **The guard** (`projectLifecycle.test.ts`): `ui/screens/LibraryScreen.ts` joins `readers`; `actors` stays the sheet alone; nothing else in the guard moves.
+6. **Not G85's:** the Stage 9 page's rows opening the sheet (the row said *possibly*; record what you see on the page and leave it as a question), the sheet's own contents, the session, Progress, the score folder (§4b) and PDFs (not projectable), the Library's sort orders.
+7. **Red first, unit:** `matches` with the project filter (each state, *any project*, `all`) on constructed rows; the badge text for a row with a project and none for a row without; in the pattern of the existing Library unit tests (search `tests/unit` for `LibraryScreen` or `matches(`).
+8. **Red first, browser** (`library.spec.ts`'s pattern at 342 × 740, the seeding path of `projects.spec.ts`): a piece with a project set to *learning* on its sheet shows the badge in the Library, the *Project* filter set to *learning* lists it and hides the rest, the row's action opens the sheet, and pausing there changes the badge without leaving the Library. Pictures of one row before and after, and the filter's chips, under `docs/prompts/pictures/g85/`.
+
+## Verification layers
+
+- Unit, red first: item 7; `npx vitest run` on the Library and project files; `projectLifecycle.test.ts` green with the revised list; `npx tsc -b`; `npm run lint`.
+- Browser, on port 4433 through a copy of `app/playwright.config.ts` as `app/playwright.g85-4433.config.ts` (a lane config the map does not match — do not leave it for the commit; say so), `--workers=2` at most, files checked to exist: `library.spec.ts` whole, `projects.spec.ts` whole, and the specs the map names for the Library files.
+- The map: `python tools/docs/checks_for_paths.py <changed paths>`.
+
+## Rules and files
+
+You own `app/src/ui/screens/LibraryScreen.ts`, `app/src/ui/help.ts` only if a filter word is missing from `PROJECT_TEXT`, `app/tests/unit/projectLifecycle.test.ts` at the readers list, the tests named, the pictures; `docs/04` §4 rows in the entry's `## Doc rows`. Not `projectSheet.ts`, not `projectStore.ts`, not `LessonScreen.ts`, not `session.ts`. Never name an AI model. Never assert a number measured on this machine. No commits, pushes, stashes or checkouts. A fresh worktree's `npx vitest run` needs `python tools/midi-cleanup/tests/parity_reference.py` and `python tools/content/build.py --offline` first (Q24); if the offline build cannot produce `app/public/content`, copy that folder from `C:\Users\yalir\repos\Piano Stuff\PianoProject\app\public\content` and say so; `npm ci` in `app/`. Nothing on ports 4173, 4413, 4423. Other builders work on `SkillsScreen.ts`/`style.css` (do not add a Library rule to `style.css` if the existing badge and chip classes serve; if one is needed, say so and keep it to a `#library-list` selector at the end of the file), `tools/content/**`, and the docs.
+
+## Sequencing
+
+Ruled by the reviewer on the G1b brief and released by G1b's acceptance; a narrow fix-forward under 788427c with a for-information line; its own handoff when it lands. Dispatched from a tree that holds G1d's guard (the readers list moved there).
+
+## When to deviate
+
+If the Library's draw cost rises visibly on the full catalogue with the store read, say so with the relationship and stop at the finding. If `matches` cannot take the project filter without reading the store inside it, pass the project map in as it takes `progress`. If a row's action does not fit at 342 px beside the existing actions, wear the badge only and record the door as a question.
+
+## Report
+
+Judgement first: one Library row before and after with a project on it, the filter's chips, at 342 × 740; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes. Entry 147; every run file under `docs/prompts/runs/G85/`; the entry as `docs/prompts/runs/G85/ENTRY.md`, starting `### Entry 147 — G85`.
