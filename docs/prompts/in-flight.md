@@ -19,7 +19,7 @@
 - **D0 / D0a** — **closed**: D0a accepted (`responses/3b9c37d.md`); B7 kept (G53), the arpeggios' notation to G52.
 - **Q24** — **closed**, approved by the reviewer (`responses/e32d0ef.md`, unprompted); the MAESTRO download decided yes for testing by the owner on 2026-09-28 (Q47; licence re-read and quoted in the row; one small H seam with Q46).
 - **D4** — brief **approved with one required change, applied** (`responses/612288e.md`); implementation after E1 lands.
-- **E1** — **landed** (Entry 101, merged as 42b1c02 with five conflicts resolved by keeping both seams' additions, handoff `handoffs/8326ff3.md`); awaiting the reviewer. Nothing heard; unverified as music. D4 may now be dispatched on the reviewer's word.
+- **E1** — **approved with one required change** (`responses/8326ff3.md`); **E1a** (the admission covers excerpts) at the reviewer's gate; D4 dispatches on E1a's acceptance. Nothing heard; unverified as music.
 - **E0 / E0a / E0b** — **closed**: E0b accepted (`responses/c95ac32.md`).
 
 ## Standing rules in force tonight

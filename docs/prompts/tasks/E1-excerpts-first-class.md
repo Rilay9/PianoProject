@@ -55,3 +55,5 @@ Judgement first: the first excerpts by their signals (where each starts and ends
 
 **Delivered 2026-09-28**, Entry 101, in an isolated worktree: the object, the cutter, the proposer with its signals and gates, the excerpt view, the merge, five excerpts approved by the rules on no rung with the candidate-rungs report, every reader of the item type reviewed, the evidence context's `material`, no gate branch; the hypotheses tested (phrase marks: half the starts and ends agree with the editions' marks, the signals changed before any weight; positions without cutting fails for three detector kinds, each handled). Outside the list with reasons: `excerpt.ts`, `excerptPage.ts`, `score_checks.py`, `claims.py`, `docs/06`, the PDMX README. Found: E29–E35, Q58; 1.5's leaps found no window; the left hand alone not proposed (the clef assumption).
 
+**Approved by the reviewer 2026-09-28 with one required change** (`responses/8326ff3.md`): the one admission predicate must cover excerpts — E1a; Q58 decided (the cut's own bar numbers), Q59 decided (an excerpt is unestablished music until a `yes`); D4 dispatches on E1a's acceptance.
+
