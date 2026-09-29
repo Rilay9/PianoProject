@@ -7,11 +7,14 @@
  * mistake is a compile error and not an `undefined` two screens later.
  */
 
-// The only import in this file, and it is erased: `import type` compiles to
+// The only imports in this file, and they are erased: `import type` compiles to
 // nothing, so `curriculum/types` still has no runtime dependency on the engine.
 // Declaring the two unions again here was the alternative and it is the
-// "one fact, two places" shape this repository keeps paying for.
+// "one fact, two places" shape this repository keeps paying for. D2's `Identity`
+// is reused the same way (D4): one identity type for a review decision, a
+// catalogue row's material and a run's.
 import type { LabBed, LabLock } from '../engine/sightReading';
+import type { Identity } from '../review/record';
 
 /**
  * `excerpt` (E1): a passage of another item, cut by the build into its own file and measured on
@@ -103,8 +106,9 @@ export interface CatalogItem {
   provenance?: Provenance;
   /**
    * Relative to the primary target skill (design §7). Written on the generated items
-   * from their family contracts since D0; nothing in the app reads it yet (the
-   * ladder's transfer reads first contact; D4 brings roles to selection).
+   * from their family contracts since D0. Selection intent, never evidence: since D4 the
+   * session's transfer offer reads `transfer` beside `provenance.transferOf`, and a run
+   * keeps the role it was played under; the ladder's transfer still reads first contact.
    */
   role?: 'canonical' | 'variable' | 'transfer';
   /** null for an import placeholder and for a drill generated at runtime. */
@@ -160,6 +164,11 @@ export interface CatalogItem {
     chords?: string[];
     /** True when the score carries a `swing` or `shuffle` direction. */
     swungMark?: boolean;
+    /**
+     * The key signatures the file states, in order, as the build measured them (`fifths`: sharps
+     * positive, flats negative). Read by the transfer relationship's key dimension (D4).
+     */
+    keys?: { fifths: number; mode?: string | null }[];
   } | null;
   /**
    * Set on the items synthesised from the `imports` store (docs/04 §4). The
@@ -251,6 +260,33 @@ export interface Provenance {
    * own sha256 is the identity the review record and a run's `material` carry.
    */
   excerpt?: ExcerptProvenance;
+  /**
+   * The material identity (D4 item 1): D2's `Identity` as the build computes it
+   * (`review.current_identity`) — a generated item's generator family, version and seed with its
+   * recipe and tempo; a notated item's built file by its sha256, an excerpt's cut included; `none`
+   * for a drill made when it opens or a placeholder. Written on every bundled row; what a run of the
+   * row stores as its `material`, so the app never recomputes it. Absent on an import and on a
+   * catalogue from before D4.
+   */
+  identity?: Identity;
+  /**
+   * A transfer role's relationship as its family contract declares it for the recipe (D4 item 4):
+   * the skill it is transfer material for, the families it was written against, the surface
+   * dimensions declared to differ, and what stays unmeasured. Intent and relationship, never
+   * evidence; absent on every item whose role is not `transfer`.
+   */
+  transferOf?: TransferOf;
+}
+
+/** `provenance.transferOf` (D4; `catalog.schema.json`): a family contract's declaration for one recipe. */
+export interface TransferOf {
+  skill: string;
+  /** The generator families the declaration was written against. */
+  from: string[];
+  /** The surface dimensions declared to differ from those families. */
+  differs: string[];
+  /** What the difference involves that nothing measures. */
+  notMeasured: string[];
 }
 
 /** `provenance.excerpt` (E1; `catalog.schema.json`). */

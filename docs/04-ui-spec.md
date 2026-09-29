@@ -224,6 +224,23 @@ fallback until C6 and are deleted.
 - **New** is a strand's next unmet requirement's item, in the order its lesson states them; a
   requirement the warm-up is serving gives way to the next. When what is left on the rung is
   its reads, the next lesson's first, said as such.
+- **The transfer offer (D4, 2026-09-28)** takes the new slot after the rungs' own new work and
+  before the next lesson's first ask: only where no strand's rung asks anything the new slot
+  serves (offered or not), so it never stands in for an unmet requirement of the learner's rung;
+  at most one a card, and none on a day a run already came from one. For a skill the ladder
+  reads as *proficient* and not beyond, it offers material this learner has not met by its exact
+  identity (`progressStore.contactIn`: never a run of the same material under any id, never an
+  item met only by id on a run that stored no material): an item whose role is `transfer` for the
+  skill that passes the one gate, or an excerpt a reached rung lists that the gate passes for one
+  of the skill's demands (a study or an excerpt only with a current teaching-use `yes`, through the
+  gate); differing from what the skill was shown on in at least one dimension measured or declared,
+  and never of the family that established it (`curriculum/transfer.ts`). Its line says what it is
+  for — *Shifting position: something new, for a skill you have shown — it should feel different* —
+  and never that it will prove or has proved anything. Opened, it carries `?intent=transfer&skill=`
+  and no rung (it is no rung's ask, so no rung judges it or is credited by listing it); the run
+  keeps its material, role, intent and the relationship facts. The ladder's v0 state keeps C7's
+  words (*shown on different material*) and nothing ties it to the offer. A swap drops the claim,
+  and with it the intent.
 - **Review has two reasons, and the line says which** (the reviewer's correction): *skill
   retention* — a skill the reads have not shown for the ladder's 21 days (`RETENTION_DAYS`), a
   skill not yet retained first, offered as a fresh phrase of a reading row it was shown on,
@@ -312,6 +329,7 @@ in its first words and the detail after the dash:
 | exposure, songs (the ladder's last step) | For variety: a Classical piece — none played since 4 Oct · none played yet |
 | a mastered piece in the repertoire row | A piece you know — more music from this lesson |
 | jam | Chords, form and feel: from Playing from chord symbols |
+| the transfer offer (D4) | Shifting position: something new, for a skill you have shown — it should feel different |
 | after a swap | You chose this one — from the same lesson |
 
 The fixed pieces: `SLOT_TEXT.thisLesson` "This lesson", `nextLesson` "The next lesson",
@@ -326,7 +344,8 @@ asks for", `whichBuildsOn` "which this lesson builds on", `forVariety` "For vari
 `fromLessonsSoFar` "from your lessons", `notPlayedYet` "not played yet", `nonePlayedYet` "none
 played yet", `nonePlayedSince` "none played since", `earlierSong` "a song from an earlier
 lesson", `pieceYouKnow` "A piece you know", `jam` "Chords, form and feel", `free` "Play anything
-you like — no scoring, no cursor", `chose` "You chose this one".
+you like — no scoring, no cursor", `chose` "You chose this one", `somethingNew` "something new,
+for a skill you have shown", `feelDifferent` "it should feel different".
 - **"Swap this"** on every row — not just the whole-card "shuffle" — offers the alternatives
   for that slot (`00` D21), in tiers that are claims (C6; L12's third reader, L36;
   `selectors.tieredAlternatives`): the other options of the lesson the row came from (*From the

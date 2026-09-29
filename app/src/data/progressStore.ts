@@ -11,6 +11,8 @@ import { dailySeed } from '../engine/sightReading';
 import { compactSteps } from '../engine/Scoring';
 import type { NotMeasured } from '../engine/types';
 import { openDatabase, type ProgressRow, type RunObservation, type SessionRow, type StreakRow } from './db';
+import { knownMaterial, sameMaterial } from '../curriculum/material';
+import type { Identity } from '../review/record';
 
 /**
  * One finished run, as its screen hands it to the store.
@@ -20,6 +22,11 @@ import { openDatabase, type ProgressRow, type RunObservation, type SessionRow, t
  * under, and every channel it did not measure marked `not measured`. The store
  * keeps all of it on the session row; `passed`, `masterEligible` and
  * `selfPassed` are what it acts on for the item's progress.
+ *
+ * Since D4 the header also carries what was played and why (`db.RunHeader`):
+ * `material`, the exact versioned identity; `role`, the item's; `intent` and
+ * `relationship`, where the run came from a transfer offer. Facts for later
+ * readers (`contactIn` reads `material`); the store acts on none of them.
  */
 export interface RunResult extends RunObservation {
   itemId: string;
@@ -457,6 +464,51 @@ export async function sessionsForItem(itemId: string, limit = 5): Promise<Sessio
       .filter((row) => row.itemId === itemId)
       .slice(0, limit);
   }
+}
+
+/**
+ * Has this learner met this material (D4 item 3; Part 26's contact novelty)? Facts, never a verdict
+ * for the store, read conservatively:
+ *
+ * - `met` where any row, **under any item id**, carries the same material (`sameMaterial`: a file's
+ *   sha256, a generator's family, version, seed, recipe and tempo) — a renamed or duplicate id is
+ *   met, and `metAs` names the ids it was met under;
+ * - `met-by-id` where no row carries it and a row that knows no material (a legacy run from before
+ *   D4, or one whose item had no identity) shares the item id: prior contact proven, which material
+ *   unknown — never `unmet`, and never offered as transfer;
+ * - `unmet` only where no row of either kind exists, with `metById` where the id was met under other
+ *   known material (a new seed, a new generator version: new material the later policy can read
+ *   beside the id).
+ *
+ * A candidate with no material to compare (`none`, or none at all) is read by its id alone, and says
+ * so (`materialUnknown`). `rows` are every stored run (`rungRows`, which the rung state already holds
+ * in memory): one pass over them, rather than an index on a nested, discriminated value that would
+ * need a schema version — and `sessionsForItem`, one item's index, cannot see a renamed id at all.
+ */
+export interface Contact {
+  contact: 'met' | 'met-by-id' | 'unmet';
+  /** Some stored row shares the candidate's item id, whatever material it carries. */
+  metById: boolean;
+  /** The item ids of the rows that carry the candidate's material, in the order stored. */
+  metAs?: string[];
+  /** The candidate has no material to compare: novelty was read by its id alone. */
+  materialUnknown?: true;
+}
+
+export function contactIn(rows: readonly Pick<SessionRow, 'itemId' | 'material'>[], itemId: string, material: Identity | undefined): Contact {
+  const byId = rows.filter((row) => row.itemId === itemId);
+  if (!knownMaterial(material)) {
+    return { contact: byId.length > 0 ? 'met-by-id' : 'unmet', metById: byId.length > 0, materialUnknown: true };
+  }
+  const as = [...new Set(rows.filter((row) => sameMaterial(row.material, material)).map((row) => row.itemId))];
+  if (as.length > 0) return { contact: 'met', metById: byId.length > 0, metAs: as };
+  if (byId.some((row) => !knownMaterial(row.material))) return { contact: 'met-by-id', metById: true };
+  return { contact: 'unmet', metById: byId.length > 0 };
+}
+
+/** `contactIn` over every stored run (`rungRows`). */
+export async function contact(itemId: string, material: Identity | undefined): Promise<Contact> {
+  return contactIn(await rungRows(), itemId, material);
 }
 
 /**

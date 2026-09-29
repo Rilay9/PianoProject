@@ -60,8 +60,10 @@ export function excerptLine(item: CatalogItem, byId: ReadonlyMap<string, Catalog
 }
 
 /**
- * The cut's file identity, D2's `Identity` shape (`{ kind: 'file', sha256 }`), from the bytes the
- * Score screen loaded: what a run of an excerpt writes into its evidence context as `material`.
+ * The cut's file identity, D2's `Identity` shape (`{ kind: 'file', sha256 }`), from a cut's bytes. Until
+ * D4 the Score screen hashed the bytes it loaded with this to write an excerpt run's `material`; since D4
+ * every run writes its catalogue row's `provenance.identity`, which the build computes over the same file
+ * (`material.runFacts`), and nothing in the app calls this. Kept for E1's case that pins the hash.
  */
 export async function cutIdentity(bytes: Uint8Array<ArrayBuffer>): Promise<Identity> {
   const digest = await crypto.subtle.digest('SHA-256', bytes);

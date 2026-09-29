@@ -1,0 +1,228 @@
+/**
+ * The transfer offer, on the phone (D4; `04` §2, the transfer offer).
+ *
+ * A seeded learner: placed at 3.4, whose exercise and song asks are met, so what is left on the rung
+ * is its reads; and two first reads of 2.5's right-hand reading row on two days, at the full
+ * standard, that the ladder reads as proficient at shifting position. Today at 342 × 740 offers, in
+ * the new slot, an item whose role is transfer for shifting position, with its words; opened, the
+ * Score screen carries the intent and no rung; played through in Wait for me, the run stored reads
+ * back with its exact material (the catalogue row's identity), its role, the intent and the
+ * relationship facts; the Progress screen's line for the skill is what it was before the run; and
+ * Today offers nothing more of the kind that day.
+ */
+import { expect, test, type Page } from '@playwright/test';
+import { withScoreMenu } from './scoreControls';
+
+const READING_ROW = 'drill.reading.sight-reading-2-right';
+const WORDS = 'Shifting position: something new, for a skill you have shown — it should feel different';
+
+type Hooked = Window & {
+  __pianopath?: {
+    importAll: (raw: unknown) => Promise<unknown>;
+    exportAll: () => Promise<{ stores: Record<string, unknown[]> }>;
+    scoreRun?: () => { step: number; expected: number[]; armed: boolean } | null;
+  };
+};
+
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    if (sessionStorage.getItem('e2e-fresh') === null) {
+      sessionStorage.setItem('e2e-fresh', '1');
+      indexedDB.deleteDatabase('pianopath');
+      localStorage.clear();
+      localStorage.setItem('pianopath.setup', JSON.stringify({ status: 'skipped', version: 1 }));
+      localStorage.setItem('pianopath.firstSight', '["*"]');
+    }
+  });
+});
+
+/** The learner, through the app's own backup import: the plan at 3.4, 3.4's two asks met, two reads. */
+async function seed(page: Page): Promise<void> {
+  await page.goto('/');
+  await expect(page.locator('#today-card .list-row').first()).toBeVisible({ timeout: 30_000 });
+  await page.evaluate(async (row) => {
+    const day = (back: number, hour: number): string => {
+      const at = new Date();
+      at.setDate(at.getDate() - back);
+      at.setHours(hour, 0, 0, 0);
+      return at.toISOString();
+    };
+    const run = (itemId: string, at: string, over: Record<string, unknown>) => ({
+      itemId,
+      tempoPct: 100,
+      accuracy: 1,
+      accuracyEstimated: false,
+      wrongNotes: 0,
+      missed: 0,
+      durationMs: 60_000,
+      at,
+      ...over,
+    });
+    const read = (back: number, seed: number) => {
+      const at = day(back, 18);
+      const material = {
+        kind: 'generator',
+        family: 'sight-reading',
+        version: 2,
+        seed,
+        recipe: { level: 2, hands: 'R', bars: 4, fifths: 0, timeSig: { beats: 4, beatType: 4 }, eighths: true, skips: true },
+        tempoBpm: 72,
+      };
+      const context = { itemId: row, seed, material, firstContact: true, met: ['keep-tempo', 'unseen', 'guide-off'], unattributed: 0, estimated: false };
+      const evidence = (skill: string, demands: string[]) => ({
+        kind: 'measured',
+        skill,
+        observationId: null,
+        standard: 'full',
+        n: 12,
+        right: 12,
+        at,
+        context,
+        byDemand: demands.map((demand) => ({ demand, n: 4, right: 4, steps: [0, 1, 2, 3], wrong: [] })),
+      });
+      return run(row, at, {
+        mode: 'tempo',
+        tempoMeasured: true,
+        seed,
+        unseen: true,
+        generator: { family: 'sight-reading', version: 2, seed },
+        material,
+        hands: { played: 'R', appPlayed: 'none' },
+        keys: { view: 'strip', guide: 'off', fingers: false, names: false },
+        evidenceDefinitions: 3,
+        evidence: [
+          evidence('sight-reading', ['interval.step', 'interval.skip', 'rhythm.eighths', 'rhythm.shorter-than-quarter', 'range.beyond-position']),
+          evidence('interval-reading', ['interval.step', 'interval.skip']),
+          evidence('position-shift', ['range.beyond-position']),
+        ],
+      });
+    };
+    const hooks = (window as unknown as Hooked).__pianopath;
+    if (!hooks) throw new Error('storage hooks not exposed');
+    await hooks.importAll({
+      app: 'pianopath',
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      stores: {
+        // The core path with ragtime beside it: `['core']` alone reads as a fresh plan (every default track on),
+        // and ragtime opens at Stage 5, so the core path is the one strand at 3.4.
+        plan: [{ id: 'current', stage: 3, unitId: '3.4', trackOrder: ['core', 'ragtime'], placement: { unitId: '3.4', at: day(3, 9) } }],
+        sessions: [
+          read(2, 101),
+          read(1, 102),
+          run('drill.reading.note-flash-extended', day(1, 19), { mode: 'drill:note-flash', tempoMeasured: false, lessonId: '3.4' }),
+          run('song.classical.petzold-minuet-g-bwv-anh114', day(1, 20), { mode: 'tempo', tempoMeasured: true, lessonId: '3.4' }),
+        ],
+      },
+    });
+  }, READING_ROW);
+  await page.reload();
+  await expect(page.locator('#today-status')).toHaveAttribute('data-lesson', '3.4', { timeout: 30_000 });
+}
+
+async function sessions(page: Page): Promise<Record<string, unknown>[]> {
+  return page.evaluate(async () => {
+    const file = await (window as unknown as Hooked).__pianopath?.exportAll();
+    return (file?.stores.sessions ?? []) as Record<string, unknown>[];
+  });
+}
+
+/** Presses a key on the strip, which feeds the shared screen-keyboard source. */
+async function press(page: Page, midi: number): Promise<void> {
+  const key = page.locator(`.keyboard-strip [data-midi="${String(midi)}"]`);
+  await key.scrollIntoViewIfNeeded();
+  await key.dispatchEvent('pointerdown', { pointerId: 1, button: 0, isPrimary: true });
+  await key.dispatchEvent('pointerup', { pointerId: 1, button: 0, isPrimary: true });
+}
+
+/** Plays a Wait for me run through by asking the run what it waits for, step by step, to the summary. */
+async function playThrough(page: Page): Promise<void> {
+  const summary = page.locator('#score-summary');
+  for (let guard = 0; guard < 400; guard += 1) {
+    if (await summary.isVisible()) return;
+    const run = await page.evaluate(() => (window as unknown as Hooked).__pianopath?.scoreRun?.() ?? null);
+    if (run === null) {
+      await page.waitForTimeout(100);
+      continue;
+    }
+    for (const midi of run.expected) await press(page, midi);
+    await page.waitForFunction(
+      (step) => {
+        const now = (window as unknown as Hooked).__pianopath?.scoreRun?.();
+        return now === null || now === undefined || now.step !== step;
+      },
+      run.step,
+      { timeout: 10_000 },
+    );
+  }
+  await expect(summary).toBeVisible({ timeout: 30_000 });
+}
+
+test.describe('the transfer offer (D4)', () => {
+  test.setTimeout(240_000);
+
+  test('a learner proficient at shifting position is offered transfer material on Today, and its run keeps what was played and why', async ({ page }) => {
+    await page.setViewportSize({ width: 342, height: 740 });
+    await seed(page);
+
+    // Progress's line for the skill, before.
+    await page.goto('/#/progress');
+    const skillLine = page.locator('#progress-skills [data-skill="position-shift"]');
+    await expect(skillLine).toBeVisible({ timeout: 30_000 });
+    const before = (await skillLine.textContent()) ?? '';
+    expect(before).toContain('proficient');
+
+    // Today: the new slot is the offer, in its own words.
+    await page.goto('/');
+    const offer = page.locator('#today-card .list-row[data-slot="new"][data-claim="transfer"]');
+    await expect(offer).toHaveCount(1, { timeout: 30_000 });
+    await expect(offer.locator('.list-row__sub')).toHaveText(WORDS);
+    await expect(page.locator('#today-card [data-claim="transfer"]')).toHaveCount(1);
+    const itemId = (await offer.getAttribute('data-item')) ?? '';
+    expect(itemId).toMatch(/^exercise\.pentatonic\./);
+    const title = (await offer.locator('.list-row__title').innerText()).trim();
+
+    // Opened: the Score screen carries the intent and the skill, and no rung.
+    await offer.getByRole('button', { name: `Open ${title}` }).click();
+    await expect(page).toHaveURL(/intent=transfer/);
+    await expect(page).toHaveURL(/skill=position-shift/);
+    expect(page.url()).not.toMatch(/[?&]rung=/);
+    await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-mode', /wait|tempo/, { timeout: 60_000 });
+    await page.waitForFunction(() => {
+      const svg = document.querySelector('#score-stage .is-front svg');
+      return svg instanceof SVGElement && svg.getBoundingClientRect().height > 20;
+    }, undefined, { timeout: 60_000 });
+    await withScoreMenu(page, async () => {
+      await page.locator('#score-input').selectOption('keys');
+    });
+    await page.locator('#score-mode').selectOption('wait');
+    await page.locator('#score-play').click();
+    await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-running', 'true');
+    await playThrough(page);
+    await expect(page.locator('#score-summary')).toBeVisible();
+
+    // The run, read back from the store: its exact material, its role, the intent, the relationship.
+    await expect.poll(async () => (await sessions(page)).filter((row) => row.itemId === itemId).length, { timeout: 15_000 }).toBe(1);
+    const stored = (await sessions(page)).find((row) => row.itemId === itemId) as Record<string, unknown>;
+    const identity = await page.evaluate(async (id) => {
+      const response = await fetch('/PianoProject/content/catalog.json');
+      const items = (await response.json()) as { id: string; provenance?: { identity?: unknown } }[];
+      return items.find((item) => item.id === id)?.provenance?.identity;
+    }, itemId);
+    expect(identity).toMatchObject({ kind: 'generator', family: 'pentatonic' });
+    expect(stored.material).toEqual(identity);
+    expect([stored.role, stored.intent]).toEqual(['transfer', 'transfer']);
+    expect(stored.lessonId).toBeUndefined();
+    expect(stored.relationship).toMatchObject({ skill: 'position-shift', shownOn: [{ itemId: READING_ROW }, { itemId: READING_ROW }] });
+    expect((stored.relationship as { differsOn: string[] }).differsOn).toContain('family');
+
+    // The ladder's reading of the skill is what it was.
+    await page.goto('/#/progress');
+    await expect(skillLine).toHaveText(before, { timeout: 30_000 });
+
+    // And Today offers no more of the kind today.
+    await page.goto('/');
+    await expect(page.locator('#today-card .list-row').first()).toBeVisible({ timeout: 30_000 });
+    await expect(page.locator('#today-card [data-claim="transfer"]')).toHaveCount(0);
+  });
+});

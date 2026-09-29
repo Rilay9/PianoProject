@@ -335,6 +335,117 @@
                 }
               }
             },
+            "identity": {
+              "description": "The material identity (D4 item 1): D2's identity as `review.current_identity` computes it, the one a review decision binds to and a run stores as its `material` — a generated item's generator family, version and seed with its recipe and tempo; a notated item's built file by its sha256, an excerpt's cut included; `none`, with the reason, for a drill made when it opens or a placeholder.",
+              "oneOf": [
+                {
+                  "type": "object",
+                  "required": [
+                    "kind",
+                    "family",
+                    "version",
+                    "seed",
+                    "recipe",
+                    "tempoBpm"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "generator"
+                    },
+                    "family": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "version": {
+                      "type": "integer"
+                    },
+                    "seed": {
+                      "type": [
+                        "integer",
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "recipe": {
+                      "type": "object"
+                    },
+                    "tempoBpm": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "kind",
+                    "sha256"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "file"
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "kind"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "none"
+                    },
+                    "why": {
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            },
+            "transferOf": {
+              "type": "object",
+              "description": "A transfer role's relationship as its family contract declares it for the recipe (D4 item 4): the skill it is transfer material for, the families it was written against, the surface dimensions declared to differ and what stays unmeasured. Selection intent and relationship facts, never evidence.",
+              "required": [
+                "skill",
+                "from",
+                "differs",
+                "notMeasured"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "skill": {
+                  "type": "string"
+                },
+                "from": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "differs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "notMeasured": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
             "facts": {
               "type": "object",
               "additionalProperties": {

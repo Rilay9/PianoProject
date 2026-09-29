@@ -23,6 +23,7 @@ import type { TodaySlot } from '../router';
 import type { EvidenceResult } from '../evidence/evidence';
 import type { Measurement, Provenance } from '../curriculum/types';
 import type { Identity } from '../review/record';
+import type { Relationship } from '../curriculum/transfer';
 
 export const DB_NAME = 'pianopath';
 /**
@@ -38,7 +39,10 @@ export const DB_NAME = 'pianopath';
  * describe — so they are not a version: a row written before them reads as
  * one with none, and the `upgrade` below has nothing to do for them. D1a's
  * `generator` (the phrase's family, version and seed) is one more such field:
- * absent means version 1.
+ * absent means version 1. D4's `material`, `role`, `intent` and `relationship`
+ * are more: absent `material` is a legacy run, its material unknown, and no
+ * index is added for them (contact novelty reads the rows the rung state
+ * already holds in memory, `progressStore.contactIn`).
  *
  * 7 (C5) changes no store either. It is a version so that the one moment a
  * database made before C5 is first opened by C5's code can be told apart from
@@ -146,13 +150,29 @@ export interface RunHeader {
   /** The piece was played to the learner part way through this run (`Hear it` over it, T33). */
   demonstrated?: boolean;
   /**
-   * The exact material played, where the run knows it (E1 item 7): for an excerpt, its cut's
-   * file identity, D2's `Identity` shape (`{ kind: 'file', sha256 }`), so the run names the
-   * passage's own bytes and never the parent's. Carried into the evidence context beside
-   * `itemId` and `seed`; read by nobody yet (Part 26's versioned fingerprint; D4 writes it on
-   * every run). Absent: a run from before E1, or of anything else.
+   * The exact material played (E1 item 7; D4 item 2), D2's `Identity`: the catalogue row's
+   * `provenance.identity` for a bundled item — a generated item's generator, a notated item's built
+   * file (an excerpt's cut, never the parent's) — the phrase's complete generator identity for a
+   * sight-reading run (`curriculum/material.phraseMaterial`), `none` for an import or a drill made
+   * when it opens. Carried into the evidence context beside `itemId` and `seed`; read by contact
+   * novelty (`progressStore.contactIn`) across every item id. Absent: a legacy run, from before D4
+   * (or E1), whose material is unknown and is never guessed.
    */
   material?: Identity;
+  /** The item's role for its primary skill where it has one (D0, `CatalogItem.role`), as played (D4). Intent, never evidence. */
+  role?: 'canonical' | 'variable' | 'transfer';
+  /**
+   * `transfer` where the run came from the session's transfer offer (D4 item 2), else absent: the
+   * intent the material was offered with, never a claim that the run demonstrated transfer — which
+   * is the post-E evidence policy's to read from these facts.
+   */
+  intent?: 'transfer';
+  /**
+   * How the material relates to what the skill was shown on, as facts (D4 item 5,
+   * `curriculum/transfer.ts`): written with a transfer-intended run, for the later policy. No
+   * distance, no verdict.
+   */
+  relationship?: Relationship;
   /**
    * What a generated phrase was written from (C4): the catalog row, and the
    * dimensions the reader moved away from the row's own recipe. Written on

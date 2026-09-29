@@ -782,6 +782,14 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
       the row's first rule — so the app's one gate can keep a music-promising item with no
       affirmative teaching-use decision out of automatic offers without reading the table. A
       runtime drill and a notated item carry none.
+    - `identity` (D4 item 1): the material identity on every row, D2's `Identity` as
+      `review.current_identity` computes it — a generated item's generator triple, recipe and tempo;
+      a notated item's built file by its sha256 (an excerpt's cut included); `none`, with the reason,
+      for a drill made when it opens or a placeholder — so every run can store the exact versioned
+      material it played and the app never recomputes it.
+    - `transferOf` (D4 item 4): a transfer role's relationship as its family contract declares it for
+      the recipe (`transfer_of`: the skill, the families it was written against, the dimensions
+      declared to differ, what stays unmeasured), an authored fact; intent, never evidence.
     """
     import family_contracts as FC
     from convert import tool_fingerprint
@@ -926,6 +934,11 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
                         "prerequisite": large.get("prerequisite"),
                         "alternative": large.get("alternative"),
                     }
+                # D4 item 4: a transfer role's relationship as the contract declares it for the recipe.
+                relation = transfer_of(FC.contract(family), FC.recipe_of(entry)) if entry.get("role") == "transfer" else None
+                if relation is not None:
+                    record["transferOf"] = relation
+                    facts["transferOf"] = {"kind": "authored", "via": "family_contracts.json (the rule matching the recipe)"}
         entry["provenance"] = record
 
     # E1 item 4: an excerpt's record, from its parent's. Its identity is the chain the parent
@@ -988,6 +1001,28 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
     import review
 
     review.fill_reviewed(entries, out_dir)
+
+    # D4 item 1: the material identity, D2's, on every row, from the same function the record binds to.
+    for entry_id, identity in review.identities(entries, out_dir).items():
+        by_id[entry_id]["provenance"]["identity"] = identity
+
+
+def transfer_of(row: dict, recipe: dict) -> dict | None:
+    """
+    D4 item 4: the family contract's `transferOf` for a transfer item's recipe — the skill it is transfer
+    material for, the families it was written against (`from`), the surface dimensions declared to differ
+    and what stays unmeasured — as the rule matching the recipe (one object for the whole row, or a list
+    of rules each with its `when`), `when` dropped. Intent and relationship facts, never evidence.
+    """
+    import family_contracts as FC
+
+    declared = (row.get("roles") or {}).get("transferOf")
+    if declared is None:
+        return None
+    for rule in declared if isinstance(declared, list) else [declared]:
+        if FC.matches(rule.get("when"), recipe):
+            return {key: value for key, value in rule.items() if key != "when"}
+    return None
 
 
 def attach_rung_tracks(entries: list[dict]) -> int:

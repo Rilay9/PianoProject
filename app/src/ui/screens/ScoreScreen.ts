@@ -14,12 +14,12 @@ import './ScoreScreen.css';
 import { audioEngine } from '../../audio/AudioEngine';
 import { metronomeSoundFor } from '../../audio/inputPolicy';
 import { getPiano, micSource, screenKeyboardSource, webMidiSource } from '../../app/services';
-import { findItem, contentUrl, loadCurriculum } from '../../curriculum/load';
+import { catalogIndex, findItem, contentUrl, loadCurriculum } from '../../curriculum/load';
 import { parseFrontMatter, renderMarkdown } from '../markdown';
 import { barsPerWindowFor, isTablet, sidePanelProse } from '../tablet';
 import { getImport } from '../../data/importStore';
 import { isSightReading } from '../../engine/drills/fromCatalog';
-import { generateSightReading, SightReadingRefusal } from '../../engine/sightReading';
+import { generateSightReading, SightReadingRefusal, type SightReadingOptions } from '../../engine/sightReading';
 import { readingOptions, taughtAtRung } from '../../curriculum/session';
 import type { CatalogItem, Curriculum, Lesson } from '../../curriculum/types';
 import { findLesson, masteryCriteriaFor, proseRungFor } from '../../curriculum/selectors';
@@ -44,7 +44,7 @@ import {
 import { evidenceFor, isRefusal, stampedEvidence, type EvidenceResult } from '../../evidence/evidence';
 import { VOCABULARY_V0 } from '../../evidence/vocabulary';
 import { nextLadderTempo } from '../../engine/PracticeEngine';
-import { MASTER_DAYS, recordRun, sessionsForItem, type RunResult } from '../../data/progressStore';
+import { MASTER_DAYS, recordRun, rungRows, sessionsForItem, type RunResult } from '../../data/progressStore';
 import {
   OBSERVATION_DEFINITIONS,
   phraseVersionOf,
@@ -89,8 +89,8 @@ import { forgetUnfinished, rememberUnfinished, unfinishedFor } from '../../data/
 import { createHelpStrip, maybeFirstSight, openFirstSight, type HelpStrip } from '../helpStrip';
 import { openSheet } from '../widgets';
 import { hasChordSymbols } from '../openItem';
-import { cutIdentity, isExcerpt } from '../../curriculum/excerpt';
-import type { Identity } from '../../review/record';
+import { runFacts } from '../../curriculum/material';
+import { relationshipOf, type Relationship } from '../../curriculum/transfer';
 
 /**
  * What the four modes are called on the screen (P21c B2).
@@ -200,17 +200,20 @@ export const CONTROL_BAR_START_HIDE_MS = 700;
  *
  * And the phrase's identity (D1a): the generator's family, the version that
  * wrote it and the seed, which the run keeps (`generator`) so the history can
- * tell version 2's phrase of a seed from version 1's. A phrase the generator
- * cannot write throws `SightReadingRefusal`, which the load below shows.
+ * tell version 2's phrase of a seed from version 1's; with the options it was
+ * written from and its tempo, the complete identity the run keeps as its
+ * `material` (D4, `material.phraseMaterial`). A phrase the generator cannot
+ * write throws `SightReadingRefusal`, which the load below shows.
  */
 function generateSightReadingFor(
   item: CatalogItem,
   seed: number,
   recipe?: RouteRecipe,
   taught?: (demand: string) => boolean,
-): { musicXml: string; seed: number; generator: PhraseGenerator } {
-  const phrase = generateSightReading(readingOptions(item, recipe, seed, taught));
-  return { musicXml: phrase.musicXml, seed: phrase.seed, generator: phrase.generator };
+): { musicXml: string; seed: number; generator: PhraseGenerator; options: SightReadingOptions; bpm: number } {
+  const options = readingOptions(item, recipe, seed, taught);
+  const phrase = generateSightReading(options);
+  return { musicXml: phrase.musicXml, seed: phrase.seed, generator: phrase.generator, options, bpm: phrase.bpm };
 }
 
 /**
@@ -312,6 +315,8 @@ export function ScoreScreen(router: Router): HTMLElement {
     ...(todaySlot === undefined ? {} : { slot: todaySlot }),
     // And the same kind of phrase (C4): *New phrase* and Blind keep the recipe.
     ...(routeRecipe === undefined ? {} : { recipe: routeRecipe }),
+    // A transfer offer's run toggled into Blind is still that offer's run (D4).
+    ...(router.route.scoreIntent === undefined ? {} : { intent: router.route.scoreIntent }),
   };
   /**
    * Where Back goes: the tour that opened this, the rung that opened it, or
@@ -418,8 +423,20 @@ export function ScoreScreen(router: Router): HTMLElement {
   let phraseSeed: number | undefined;
   /** The generated phrase's identity — family, version, seed — which the run keeps (D1a). */
   let phraseGenerator: PhraseGenerator | undefined;
-  /** An excerpt's cut, as its file identity, which the run keeps as its `material` (E1 item 7). */
-  let runMaterial: Identity | undefined;
+  /**
+   * The options the phrase was written from and its tempo: with the generator, the phrase's complete
+   * identity, which the run keeps as its `material` (D4; `material.runFacts`). Any other item's run keeps
+   * its catalogue row's `provenance.identity` — an excerpt's is its cut's (E1 item 7), the build's hash
+   * of the bytes this screen plays.
+   */
+  let phraseWritten: { options: SightReadingOptions; bpm: number } | undefined;
+  /**
+   * Opened from Today's transfer offer (D4, `?intent=transfer&skill=`): the intent the run keeps, and the
+   * relationship facts, read at load from the stored runs by the function the offer used
+   * (`transfer.relationshipOf`), so the run records what the offer was made on.
+   */
+  const transferIntent = router.route.scoreIntent;
+  let transferRelationship: Relationship | undefined;
   /**
    * A stored run already carries this phrase's seed (T37), under the version
    * that wrote this phrase (D1a).
@@ -3170,8 +3187,14 @@ export function ScoreScreen(router: Router): HTMLElement {
             // And which generator wrote it (D1a): a seed names one phrase per
             // version, so the history compares the version beside the seed.
             ...(phraseGenerator === undefined ? {} : { generator: phraseGenerator }),
-            // The passage's own bytes for an excerpt (E1 item 7): the run names its cut, never the parent.
-            ...(runMaterial === undefined ? {} : { material: runMaterial }),
+            // What was played and why (D4): the exact material — the phrase's complete identity, or the
+            // row's (an excerpt's cut, never the parent: E1 item 7) — the item's role, and the transfer
+            // offer's intent and relationship where the run came from one.
+            ...runFacts(item, {
+              ...(phraseGenerator !== undefined && phraseWritten !== undefined ? { phrase: { generator: phraseGenerator, ...phraseWritten } } : {}),
+              ...(transferIntent === undefined ? {} : { intent: transferIntent.intent }),
+              ...(transferRelationship === undefined ? {} : { relationship: transferRelationship }),
+            }),
             mode,
             tempoPct: score.tempoPct,
             // Nothing heard, nothing measured (T40, C1): not a zero.
@@ -4244,6 +4267,7 @@ export function ScoreScreen(router: Router): HTMLElement {
         musicXml = phrase.musicXml;
         phraseSeed = phrase.seed;
         phraseGenerator = phrase.generator;
+        phraseWritten = { options: phrase.options, bpm: phrase.bpm };
         const seen = phrase.generator;
         void history.then((rows) => {
           remember(rows);
@@ -4257,9 +4281,17 @@ export function ScoreScreen(router: Router): HTMLElement {
         const response = await fetch(contentUrl(item.file as string));
         if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
         const bytes = new Uint8Array(await response.arrayBuffer());
-        // An excerpt's run carries the cut's file identity (E1 item 7), hashed from the bytes played.
-        if (isExcerpt(item)) runMaterial = await cutIdentity(bytes);
         musicXml = toMusicXml(bytes);
+      }
+      // Opened from a transfer offer (D4): the relationship facts the offer was made on, for the run.
+      if (transferIntent !== undefined) {
+        const opened = item;
+        void Promise.all([rungRows(), catalogIndex()]).then(
+          ([rows, index]) => {
+            transferRelationship = relationshipOf(transferIntent.skill, opened, rows, index.byId);
+          },
+          () => undefined,
+        );
       }
 
       // The model comes from an instance with no draw range: a windowed OSMD
