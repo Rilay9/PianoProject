@@ -282,7 +282,9 @@ fallback until C6 and are deleted.
   `latin.6`'s exercise asks have only grooves to count and stay unmet until a decision exists; for
   a fresh learner placed at any rung, every groove's row was filled by an admitted item, through
   the slot's own rule or the ladder's next step, and no row was dropped (Entry 103's probe). The
-  Library and exploration never ask.
+  Library and exploration never ask. The rung page's own picks — *Start*, *Climb the ladder*,
+  *Quick check*, the duet and blind tools' piece — are offers too and read the same predicate
+  (§3e, D3c).
 
 The line is the session row's second line and is cut at the owner's width, so the claim comes
 in its first words and the detail after the dash:
@@ -588,8 +590,8 @@ promise — the app is not marking you — and the name is the owner's word for 
 - Every lesson is openable regardless of status. Lesson page has **"I already know this"**
   (the learner's word about the rung, kept apart from the evidence and badged *you said you
   know it*; it sets the rung aside and marks no item passed — §3f, C5) and **"Quick check"**
-  (a 2–3 minute measured test built from the lesson's drills) so the owner can move on fast or
-  confirm.
+  (a 2–3 minute measured test: the lesson's first drill that passes the teaching-use admission,
+  §3e) so the owner can move on fast or confirm.
 - Lesson page, **in the order it is drawn** (`LessonScreen.ts`, `body.append`): the status
   line, the rung's own actions, *Ways to play this* (§3d, hidden where the rung names no
   tool), **Exercise options** and **Song options** as cards (title, composer, level, hands,
@@ -685,7 +687,31 @@ The first screenful now answers all three, in this order:
   thing on this rung.* The rung's own order is the teaching order (`02` builds
   `exerciseOptions` before `songOptions`, each in the order it means), so "the first playable
   option" is the recommendation and not a judgement made in the screen. A rung whose options
-  are all waiting on an import draws no Start at all (§0 R4).
+  are all waiting on an import draws no Start at all (§0 R4). Since D3c Start is the first
+  playable option **that passes the teaching-use admission** (next bullet), and the line says
+  *the first thing on this rung* only when it is: where Start passes over the rung's first
+  option it reads *Opens "X".*, because the option list right under it begins with the one
+  passed over and the longer line would be false about that row.
+- **Every pick this page makes for the learner is an offer, and passes the teaching-use
+  admission (D3c, 2026-09-28; the reviewer's ruling on D3b, `responses/4478793.md`).** Four
+  controls choose an item from the rung's lists: *Start* (the first playable exercise, then
+  song), *Climb the ladder* (§3d: the first exercise that opens as a score), *Quick check* (the
+  first exercise with a drill or a file) and the duet and blind tools' piece (§3d: the named
+  `item`, or the first playable song). Each takes the next option in the rung's order that
+  passes its own condition **and** `eligibility.admittedForTeaching`, the same exported
+  predicate the gate and the session card read (§2), called once per pick through one helper in
+  `LessonScreen.ts` (`firstOffered`); the page reads neither the promise fact nor the teaching
+  bit itself, and `openItem.ts`'s helpers stay questions about the item. Where no option passes,
+  Start is not drawn, the ladder, duet and blind buttons are not drawn (a named `item` without
+  the admission draws no button, exactly as a named item that is not the rung's own — never the
+  first song instead), and *Quick check* says *This lesson has no drill to check against yet.*
+  Nothing says an item waits for review. **The option rows are not picks**: they are the
+  learner's own choice, like the Library, and every authored option stays listed with its `▶`.
+  On the current build (Entry 104's probe, every rung) this moves Start on the eleven rungs that
+  listed a groove first, and Quick check on nine of them — `holiday.5` now opens the E major
+  arpeggio, `latin.3` *Cielito Lindo* — and leaves four controls with nothing to offer: the duets of `latin` and
+  `latin.3`, which name a groove, and *Quick check* on `latin.3` and `latin.6`, whose exercises
+  are all grooves (their asks stay unmet, §2). No ladder rung changes.
 
 R1 still holds with all three added: measured at 342 px, the first option row of `1.1` and of
 `2.1` — the rung with a *Ways to play this* block above its options — both end inside the
@@ -976,7 +1002,11 @@ play this*.
 - **A Score-screen mode needs a piece.** A rung may name one with `item`; otherwise the
   button takes the rung's **first playable song**, because "play this rung's material as a
   duet" is the instruction and any of its songs satisfies it. Where the rung has no playable
-  song the button is not drawn at all.
+  song the button is not drawn at all. Either piece is an offer (§3e, D3c): the song is the
+  first playable one that passes the teaching-use admission, and a named `item` without it
+  draws no button rather than falling back to a song — the rung said which piece it meant.
+  The lesson's prose still names the button where that happens (`latin`, `latin.3`, whose
+  duets name a groove).
 - **`validate.py` refuses two ways of pointing at nothing**: a lab preset the lab does not
   have, and an `item` that is not among this rung's own options — a lesson sending the
   learner to a piece it does not offer is the `blues.3` fault wearing a control. *Song*
@@ -1015,7 +1045,9 @@ Four things keep it that way rather than clever:
   exception is the fault `05` §6 describes.
 - **It takes no `item`.** It opens the rung's **first exercise that is notation** — `4.3` leads
   with `drill.chord.inversions`, which has no file and opens as a drill, so the button skips it
-  — and where a rung offers no such exercise the button is not drawn. `validate.py` **refuses
+  — and where a rung offers no such exercise the button is not drawn. Since D3c the exercise
+  must also pass the teaching-use admission (§3e); on the current build no ladder rung lists a
+  refused one, so none of the seven changes. `validate.py` **refuses
   an `item` on a `ladder` outright**, and says so in those words (2026-09-22 review). It used
   to be refused as a side effect: an `item` had to be one of the rung's *song* options and a
   ladder's exercise is never one, so widening that rule to songs or exercises the same day
