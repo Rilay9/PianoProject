@@ -19,6 +19,34 @@ Given session options `{ hands: 'R'|'L'|'both', loop?: {fromStep, toStep}, tempo
 4. **Repeated pitches in one step** (unison across staves): expected set is a *multiset* only
    if the two notes are in different hands; otherwise deduplicate (one key can only go down once).
 5. **Timing:** `tStep[k] = model.beatToMs(step.onset, tempoPct/100)`; `durStep[k] = tStep[k+1]-tStep[k]`.
+
+   **The tempo map is the file's** (X3d, Entry 133; X3e, Entry 137). `model.tempoMap` is placed from
+   `score/tempoFromXml.ts`, the one tempo reader, never from OSMD's iterator: each `<metronome>`
+   normalised to quarter notes a minute (per-minute × the beat unit's length in quarters; one dot ×
+   1.5, two × 1.75; a metric modulation, the metronome-note form and a mark with no number are not
+   tempos) and each `<sound tempo>` — a direction's or one standing in the bar — as written,
+   fractions kept; at one position a `<sound tempo>` wins over a mark, being what the file says it
+   plays. **The reader walks the partwise nesting only, and every score the app holds is partwise:
+   the import door keeps a `<score-timewise>` file as its partwise twin (`score/toPartwise.ts`, X3e)
+   before anything reads it, because OSMD 2.1.2 loads nothing else, and no bundled score is timewise
+   (Entry 137's search); so a timewise file's opening mark, `<sound tempo>` and later changes give
+   the map, the label, the count-in and the import sheet its partwise twin gives.** Each event
+   stands at its measure's start on the unrolled timeline plus its offset, placed every time the
+   walk enters the measure, a bar repeated on its own included. The piece opens at the event at the
+   first measure's start, or at the file's first tempo where nothing sounds before it (a tempo hung
+   on the first note after opening rests); otherwise at `DEFAULT_BPM` (or `defaultBpm`) until the
+   first event, which is a change where it stands. `extractScoreModel` requires the MusicXML it was
+   loaded from (`musicXml`); `OsmdView.extractModel` passes the text it loaded. Every consumer reads
+   the map: the Score screen's label and bpm field (`bpmAt` at the cursor, times the percentage),
+   the timetable and the count-in (`beatToMs` from the run's first step), the evidence windows
+   (`msPerQuarterAt`), the import estimate (`difficulty.ts`, the first entry), the dev screens. Why:
+   OSMD 2.1.2 read a mark's number as quarter notes whatever its note, let it replace the `<sound
+   tempo>` beside it, gave tempo words numbers of its own, took a `<sound tempo>` standing in a bar
+   only where no other tempo stood, and opened at the first tempo anywhere — a half note = 60 in cut
+   time played at 60 for 120, *The Entertainer* at 106 for its 70 (X3c's probe; Entry 133's corpus:
+   179 of 2,011 bundled openings moved, 175 to the content build's own reading); and it refuses a
+   timewise document outright, so before X3e a timewise import opened nowhere and its sheet said the
+   app chose 100 (Entry 137).
 6. **Swing** (`EngineOptions.swing`, built 2026-09-21): where the score carries a *swing* or
    *shuffle* direction, an eighth written on the off-beat is expected where a shuffle puts
    it, not where it is printed. `onset` is replaced by `swungOnset(onset)` before step 5:
@@ -1046,6 +1074,13 @@ reader selects by the skill-level counts (§8); the per-demand counts and readin
 measurement shows the skill** — right notes in a fixed position are what a note-namer plays as
 well as an interval-reader (the reviewer's principle, `audit-2026-09-25-outside.md` Part 7).
 
+**A project is not evidence (G1b; the reviewer's ruling on G1b).** The learner's project states
+(`projects`, `docs/01` §4.5) — *I performed it* and its date among them — are learner-stated
+intention: no evidence record, observation, encounter, run or competence result is written by a
+project action, and no evidence, ladder, rung or eligibility reader reads one.
+`projectLifecycle.test.ts` pins it (every other store, the rung state and the skill ladders
+deep-equal across every action).
+
 **`evidenceFor(observation, played, targetSkills, vocabulary)`** (`evidence.ts`). The notation
 played is the score model (the phrase this seed generated, the file); the run's steps are C1's
 codes, `from + i` in model step indexes, the same numbers the detectors locate demands at (checked
@@ -1198,17 +1233,34 @@ morning after the second bad read (`readerMovesTheDemand.test.ts`), not after an
 **`ladderState(evidence, today)`** (`ladder.ts`) — introduced (an exposure), practised (a record of
 either outcome), familiar (supporting at the practice standard on a day), proficient (supporting at
 the full standard on two days, the most recent full attempt supporting), transfer demonstrated
-(then a first reading of another item), retained (then a first attempt of a day supporting at least
+(then a supporting full-standard attempt the transfer policy reads as `demonstrated`: first contact,
+on material that measurably differs from what established the skill on one of the skill's own
+dimensions — `transferPolicy.ts`, G2; never another cut of a composition the learner has already
+played (`relationship.composition.playedAs` non-empty), which reads `unknown` before the dimensions
+until the relationship carries the arrangement or section fact that would tell an independent
+context from familiarity with the tune, G2a), retained (then a first attempt of a day supporting at least
 21 days after the previous support), mastered (then no full attempt against it among the last two).
 Supporting is `right / n` at or above Part G's pass share: v0 skills declare no threshold. Two full
 attempts against it in a row put anything from proficient back to familiar; time alone lowers
 nothing, and 21 days without support is shown as *not shown recently*. The history is replayed in
 order, so the state is derived every time and never stored. Three rules are named and are
 hypotheses, not measurements: `RETENTION_DAYS` (21, from the last step of the item review calendar C6 retired),
-`RECENT_ATTEMPTS` (2), and `countsTowardsMovingDown` — **an attempt against on first contact with
-material other than where proficiency was shown does not count towards moving down, nor against
-mastery** (C3 second pass): a learner proficient at level 2 who reads two level-4 phrases badly at
-sight still reads level 2, and the attempts are evidence about the harder material, not transfer.
+`RECENT_ATTEMPTS` (2), and `countsTowardsMovingDown` — **a failed full-standard attempt the transfer
+policy spares does not count towards moving down, nor against mastery**: first contact, and a
+dimension of the skill measurably different from what established it (never read for another cut of
+a composition already played: such an attempt is `unknown` and counts unless it carries a demand no
+establishing record carried, G2a) or a demand no establishing record carried; an unknown fact spares
+nothing (G2). A learner proficient at level 2 who reads two level-4 phrases badly at sight still
+reads level 2 where the phrases' facts show the harder material. **Each attempt carries its own
+facts** (G2): the evidence context's `firstContact` is the run header's (never `unseen`; absent
+where the header's is), and `recordRun` writes `relationship` (D4's `relationshipOf` over the item
+as played, against what the ladder's replay established before the run; a transfer-offer run's own
+relationship for its skill) and `demands` (every demand the run's records located) on every measured
+record of a run with a material; a recompute keeps them. The ladder exposes `established` (the
+supporting full-standard records before proficiency, since it was last lost) and `transferScope`
+(each demonstrated reading's dimensions and when, never more than the summary's `transfer`). A
+skill's transfer dimensions are the vocabulary's `transfer` block; a skill without one is credited
+no transfer.
 Since C7 the Skills screen and Progress read this ladder and nothing else, and "rusty" is its
 *not shown recently* (`04` §3a); the skills store's own state and its thirty-day rust are gone.
 

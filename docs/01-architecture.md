@@ -263,6 +263,7 @@ IndexedDB stores (via `idb`):
 | `books` | id | a book the owner owns on paper: title, and the pieces in it with their page numbers and the rungs they are options of (replan §5.1). Typed in by hand; nothing is scanned. |
 | `encounters` | `<visit>:<n>` | what the learner met that is not a run (G1): the notation drawn for them on the Score screen (`viewed`, once a visit), a playback they asked for (`heard`), a demonstration (`demonstrated`: `Hear it`, a bar held down) — the material (D4's identity, or the item id where there is none), the item, when, what opened the screen, the visit, the printed bars where only some were covered. Indexed `byKey` (the material's key) and `byItem`. Never pruned; in the backup. |
 | `contacts` | material key | one durable summary per material of the runs the retention cap deleted (G1): the item ids, whether the facts rest on an id alone, and per span what happened (`practised` or `performed`), the printed bars, first and last, the screens — the encounter projection only, never evidence. Written in the transaction that deletes the runs; merged, never replaced, by a restore. |
+| `projects` | id | one row per piece of the learner's stated intention (G1b, version 9): `ProjectRow` — the material or the id, the state and since, the append-only history, goal, problem, sections — written only by the project sheet; indexed `byItem`; in the backup (a merge joins histories), cleared by *Reset progress*. |
 
 **`DB_VERSION` is 8.** Every upgrade is keyed on `oldVersion` and creates only the stores that
 version lacked, so a phone that skipped a version arrives correct. 7 (C5) made no store: it marks
@@ -314,10 +315,14 @@ field the run carries (`RunObservation` in `data/db.ts`):
   and `contacts` the summary of each run the cap deleted, so `attempted`, `practised` and
   `performed` (derived from the runs, never copied) survive retention. `encounterStore.familiarity`
   is the one query over the three, per facet the most recent time or null, passage by passage over
-  the catalogue's hierarchy (an excerpt's bars in its parent's; the composition beside). Since G1
-  `unseen` is written on every Score-screen run as the first-contact fact, and the readers that
-  gave it sight-reading's consequences (`recordRun`, the rung state, the history line, the
-  evidence job) read it on a phrase's run only (`db.isPhraseRun`).
+  the catalogue's hierarchy (an excerpt's bars in its parent's; the composition beside). Since G1a
+  the Score screen writes the first-contact relation on every run as `RunHeader.firstContact`, the
+  field a consumer of general contact reads, and `unseen` is the generated phrase's sight-reading
+  condition again, written on phrase runs only beside it (equal today). The readers that give
+  `unseen` sight-reading's consequences (`recordRun`, the rung state, the history line, the
+  evidence job) read it through `db.isPhraseRun`, which the rows G1's app stored — `unseen` on a
+  piece's run, no `firstContact` — still need. G1a spends no `DB_VERSION`: both fields are
+  optional and nothing is rewritten.
 - **The backup carries it as it is.** Rows are plain JSON — strings, numbers, arrays — so an
   export writes them whole and `importAll` restores them whole, `not measured` included
   (`backup.test.ts`); `BACKUP_VERSION` did not change, because the file's shape did not.

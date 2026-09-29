@@ -62,6 +62,8 @@ piece rows** join the exception for the reason it was written — a piece carrie
 up to four ways in (*Practise*, *With the score*, *Open the PDF*, *Edit*), which
 upright left the words about a third of the row, `No. 12 — Stud…` over
 `page 14 · for Right h`.
+And **Skills** (U90, 2026-09-29): a skill's name and an exercise's title wrap rather
+than being cut, whatever the font (§3a).
 
 The 100 is measured on a 360 px screen and it is a floor, not a preference: the control sets the
 height of the first line (40 px for a tick box, 48 for a button — both of them a thumb) and two
@@ -236,7 +238,7 @@ fallback until C6 and are deleted.
   gate); differing from what the skill was shown on in at least one dimension measured or declared,
   and never of the family that established it (`curriculum/transfer.ts`). Its line says what it is
   for — *Shifting position: something new, for a skill you have shown — it should feel different* —
-  and never that it will prove or has proved anything. Opened, it carries `?intent=transfer&skill=&offer=` and no rung (it is no rung's ask, so no rung judges it or is credited by listing it). Before it opens, Today keeps the offer as shown — the item, the skill, its material, the relationship and the contact the session chose it on, the card's day — under the card's offer token (D4a; `data/offerSnapshot.ts`, one `settings` row); composing the card again, or swapping the offer's row away, supersedes it. The Score screen reads it before ▶ is enabled — until it answers the screen is still loading, and nothing can start or be stored. Where it names this route's token, this item, this skill and today, the run keeps its material, role, the intent and that relationship, byte for byte, never a recomputation; where it does not (missing, superseded, another item, skill or day, unreadable), one line under the header says *This offer is no longer on today's card; opened as practice.* (or, where what was kept could not be read, *This offer could not be read back; opened as practice.*), and the run is ordinary practice with neither intent nor relationship. The ladder's v0 state keeps C7's
+  and never that it will prove or has proved anything. Opened, it carries `?intent=transfer&skill=&offer=` and no rung (it is no rung's ask, so no rung judges it or is credited by listing it). Before it opens, Today keeps the offer as shown — the item, the skill, its material, the relationship and the contact the session chose it on, the card's day — under the card's offer token (D4a; `data/offerSnapshot.ts`, one `settings` row); composing the card again, or swapping the offer's row away, supersedes it. It opens only once it is kept: a write that fails opens nothing, and Today says *This offer could not be kept on this phone, so it was not opened. Try again.* (U73, X1). The Score screen reads it before ▶ is enabled — until it answers the screen is still loading, and nothing can start or be stored. Where it names this route's token, this item, this skill and today, the run keeps its material, role, the intent and that relationship, byte for byte, never a recomputation; where it does not (missing, superseded, another item, skill or day, unreadable), one line under the header says *This offer is no longer on today's card; opened as practice.* (or, where what was kept could not be read, *This offer could not be read back; opened as practice.*), and the run is ordinary practice with neither intent nor relationship. The ladder's v0 state keeps C7's
   words (*shown on different material*) and nothing ties it to the offer. A swap drops the claim,
   and with it the intent.
 - **Review has two reasons, and the line says which** (the reviewer's correction): *skill
@@ -259,7 +261,8 @@ fallback until C6 and are deleted.
   used to take the row ahead of the ladder, until the same correction). It no longer offers a
   mastered piece every session (L17): keeping a piece playable is the review's.
 - **Jam** is an option of a rung on a jam track (chords & pop, blues, jazz, jam) the learner
-  has reached, played least lately; before any is reached there is no jam row.
+  has reached, chord-and-feel material first (a score with chord symbols, a backing-track groove;
+  G61, X1), played least lately; before any is reached there is no jam row.
 - **The fallback ladder** (L14), when a slot's own claim finds nothing, in one order
   (`FALLBACK_ORDER`): the rung's own option; an item declaring the same target skill; an item
   carrying the same demand; a prerequisite rung's option; the exposure rule. Each step is tried
@@ -327,7 +330,8 @@ in its first words and the detail after the dash:
 | exposure, songs (the ladder's last step) | For variety: a Classical piece — none played since 4 Oct · none played yet |
 | a mastered piece in the repertoire row | A piece you know — more music from this lesson |
 | jam | Chords, form and feel: from Playing from chord symbols |
-| the transfer offer (D4) | Shifting position: something new, for a skill you have shown — it should feel different |
+| jam, the option not chord-and-feel material (the rung has none, or Shuffle reached past them) | From Playing from chord symbols |
+| the transfer offer (D4) | the card: *Shifting position: something new*; the whole line (*… something new, for a skill you have shown — it should feel different*) on the session's transition (U71) |
 | after a swap | You chose this one — from the same lesson |
 
 The fixed pieces: `SLOT_TEXT.thisLesson` "This lesson", `nextLesson` "The next lesson",
@@ -343,7 +347,8 @@ asks for", `whichBuildsOn` "which this lesson builds on", `forVariety` "For vari
 played yet", `nonePlayedSince` "none played since", `earlierSong` "a song from an earlier
 lesson", `pieceYouKnow` "A piece you know", `jam` "Chords, form and feel", `free` "Play anything
 you like — no scoring, no cursor", `chose` "You chose this one", `somethingNew` "something new,
-for a skill you have shown", `feelDifferent` "it should feel different".
+for a skill you have shown", `feelDifferent` "it should feel different", `somethingNewHead` "something new" (the card's head;
+U71, X1).
 - **"Swap this"** on every row — not just the whole-card "shuffle" — offers the alternatives
   for that slot (`00` D21), in tiers that are claims (C6; L12's third reader, L36;
   `selectors.tieredAlternatives`): the other options of the lesson the row came from (*From the
@@ -376,7 +381,32 @@ for a skill you have shown", `feelDifferent` "it should feel different".
   imported yet is not a dead row: it offers the public-domain vehicle its technique brief
   names ("play Moonlight I — same texture"), taken from the item's `alternatives[]`.
 - "Shuffle options" swaps every row at once, as before.
-- "Start session" runs the rows in order with a between-item summary.
+- **"Start session" runs today's session** (X1, 2026-09-29; Part 18; `data/sessionRun.ts`,
+  `ui/sessionRunner.ts`). It writes one record of the card as composed at that moment — swaps
+  included — under one `settings` key (`pianopath.sessionRun`): each activity's slot, the route
+  that opens it, the composition's own words, its contact assumption and what becomes of it. The
+  free prompt and anything whose screen owns no honest finish (a PDF, a placeholder, the guided
+  tour) stay outside the cursor. It then opens the first activity with its token (`?session=`).
+  While a session is open today the card is the session's, never a card composed since: done
+  rows say *done*, a row tried and moved on from *played*, a skipped one *skipped*, and the
+  current one *next*, with a blue edge. The one filled box is **Continue**, under *Continue
+  today's session · N of M min · next: …* (visible time on the activities' screens, never wall
+  time), beside a quiet *End today's session*. A row tapped out of order becomes current; a
+  running row's *Swap* replaces that activity with a new token. A length chip or *Shuffle*
+  recomposes the card and closes the running session. An early end says what waits — *Today's
+  session ended · N min*, *… — left for another day: Review, New* — and marks nothing failed.
+  After the last activity the finish line says *Today's session done · N min* over what each
+  came to (*Warm-up done · Review played · …*), above *Start session*, and a card composed after
+  it marks rows *done today*. Another day's open session is closed as not finished, without a
+  word. Nothing about a session is evidence.
+- **An automatic row from a rung's own list asks the one gate** (L113, X1;
+  `eligibility.automaticFromList`): an unmeasured option, or a learner's assignment of an import
+  the app has not measured, or a PDF, is on no row; a measured option keeps its placement. The
+  Library still lists and opens every one, the missing measurement said.
+- **The practice row's place** (X1, a stated teaching policy): the new piece is the learner's
+  own rung's new material first, and How to practise's row second (the next slot that takes a
+  strand's own option). At 1.2 on the 30-minute card, New is 1.2's song and the practice row is
+  `practice.1`'s song in the repertoire slot.
 - **A row the builder cannot fill is dropped, not shown empty** (P7). An empty row is a hole
   the learner has to fill by hand, which is what this card exists to avoid; free play is the
   exception, because it is a prompt and never has an item. On a fresh Stage 0 profile that is
@@ -607,7 +637,8 @@ promise — the app is not marking you — and the name is the owner's word for 
 
 **§0:** a hand screen (R2). Its one filled box (R3) is the stage being worked on; *Placement test*, *Review a skill* and *Tracks…* are text or chips. Ordering tracks is rare and lives in the **Tracks…** sheet, not on the screen (R3). A lesson card never repeats its unit's title (D26).
 
-- Stage list (0–9) with completion rings; expand → units → lessons.
+- Stage list (0–9) with completion rings — none on Stage 9, a project stage, whose line says
+  what it is (§3f) — expand → units → lessons.
 - Every lesson is openable regardless of status. Lesson page has **"I already know this"**
   (the learner's word about the rung, kept apart from the evidence and badged *you said you
   know it*; it sets the rung aside and marks no item passed — §3f, C5) and **"Quick check"**
@@ -733,6 +764,10 @@ The first screenful now answers all three, in this order:
   arpeggio, `latin.3` *Cielito Lindo* — and leaves four controls with nothing to offer: the duets of `latin` and
   `latin.3`, which name a groove, and *Quick check* on `latin.3` and `latin.6`, whose exercises
   are all grooves (their asks stay unmet, §2). No ladder rung changes.
+  *Quick check* takes the first option whose run is measured — notation, or a drill of a kind
+  that judges (`DrillScreen.measuresARun`, the list `drillOutcome` reads) — and where a lesson
+  has only unmeasured drills it says *This lesson has no drill that measures a run yet* (G62,
+  X1).
 
 R1 still holds with all three added: measured at 342 px, the first option row of `1.1` and of
 `2.1` — the rung with a *Ways to play this* block above its options — both end inside the
@@ -816,10 +851,28 @@ of their own — lighter and broken — then the rungs the evidence met, solid. 
 never the measured fill. A legend over the stage list names the two fills (*done before* ·
 *counted since*), and is drawn only where something was carried.
 
+**A project stage on Plan (G1c; G83, L86).** Stage 9 says "Nothing here is a rung to pass", and
+its page says so (*A project: there is no rung to pass here.*, below). Plan reads the same
+constant (`projectStore.PROJECT_STAGES`): a project stage's line is that sentence
+(`PROJECT_TEXT.stageNine`) — no *x of y*, no *by your word*, no *done before* — with no bar
+under it and no *complete*; its rows wear no rung badge, no learner's word and no carry-over. A
+unit there lists several pieces, so its row wears none of their project states either; the page
+it opens shows each piece's. The rungs keep their state in the evidence (`rungState.ts`,
+unchanged); Plan stops presenting it. The legend names the bar's two fills only where a stage
+that draws a bar carried rungs.
+
 **The lock line (T26).** With strict prerequisites on, *Usually comes after Right hand C
 position.* — the rung's name, never `1.1 Right hand C position` — and the button beside it is
 *Open that lesson*, not *Go to 1.1*. A prerequisite is satisfied when it is met, set aside by
 the learner's word, or carried over.
+
+**A project stage's page (G1b; L86).** Stage 9 says "Nothing here is a rung to pass", so a unit
+whose stage is a project stage (`projectStore.PROJECT_STAGES`) draws no *What the app counts*,
+no state badge, no *I already know this* and no *Mark done*: under *Quick check* one line, *A
+project: there is no rung to pass here.*, and each song option a badge of the learner's project
+state (`PROJECT_TEXT.states`) or *not started*. The unit's `requirements` stay in the data and
+the rung state reads them as before (`rungState.ts`, unchanged; the session never advances into
+the stage); this page stops presenting them. Changing one project changes that row alone.
 
 **The evidence job's line on the storage report** (Settings → Content, `#settings-evidence`):
 *Evidence from your runs: checking after the screen is up.* until the job has run once after
@@ -836,6 +889,15 @@ the app opens.* rather than reading like a finished job.
 
 **§0:** opens on what needs attention (R1): the skills the evidence has not shown lately if there are any (*Not shown lately*, pressed), otherwise the current stage and the one below, with *Show all* revealing the rest in pages. *Drill it* is the box; *Find more* is text (R3).
 
+**A name is never cut (U90, 2026-09-29).** A skill's name, and an exercise's title under it,
+wraps to the lines it needs beside *Drill it* and *Find more* and never ends in an ellipsis. The
+row grows with the name, and the actions keep their place, because the words keep their 5rem
+basis. One line with an ellipsis cut "Leaps: a fourth or fifth" on CI's runner, and here under a
+face wider than Segoe UI (Verdana) and at 115 % text. On Segoe UI itself it cut "Finger numbers"
+to "Finger num…", and both coordination exercises in A to "Hands together in A — left ha…". This
+is Skills' exception to R2's one title line. A long name beside both buttons takes three or four
+short lines, and such a row can stand past 96 px.
+
 A grid of every concept in the curriculum (from `concepts[]` across lessons), each with what
 the app knows about it and a "Drill it" button that launches the concept's drill or a matching
 short exercise. Filters by stage and track, and *Not shown lately*. This is how "go back and
@@ -846,8 +908,10 @@ observable shows the ladder's reading of the learner's evidence (`evidence/ladde
 current-stamp record whichever rung judged the run, in these words: *not shown yet* (not
 introduced), *introduced* (met — a carried rung, or a row the retired skills store wrote — and
 nothing shown), *tried, not yet shown* (practised), *familiar*, *proficient*, *shown on different
-material* (the ladder's *transfer demonstrated*, said as what v0 measured — a different item —
-and never "transferred", Part 26), *retained*, *mastered*. Beside it, where the evidence has not
+material* (the ladder's *transfer demonstrated*: a first reading at the full standard that the
+transfer policy reads as measurably different on one of the skill's own dimensions — never a new
+seed of what established it, never another cut of a piece already played (G2, G2a) — and never
+"transferred", Part 26), *retained*, *mastered*. Beside it, where the evidence has not
 supported the skill within the ladder's retention span (`RETENTION_DAYS`, 21 days, a hypothesis)
 and did before, a warning badge in Today's words: *not shown in 4 weeks*. That is what "rusty"
 means now — the ladder's `notShownRecently`, never the days since a page was drawn — and the state
@@ -875,6 +939,10 @@ are where the learner is by the derived rung state, as Plan and Today say it. Th
 | notShownFilter / notShownCount | Not shown lately · not shown lately |
 | notIntroduced / introduced / practised / transfer | not shown yet · introduced · tried, not yet shown · shown on different material |
 | heading / nothingMoved / review / shownAgain | Skills · No skill the app measures has moved in the last four weeks. · Review a skill · shown again |
+
+No screen shows the transfer policy's reading of a run (its `why` is for a reader of the
+record): the Skills screen and Progress show the ladder state's words alone, and those words did
+not change with G2 or G2a.
 
 **Named, and findable** (P15). Each row shows the concept's *display name* from
 `content/curriculum/concepts.json` — the screen used to derive a label from the id, which
@@ -1428,6 +1496,12 @@ out.
   `.midi`** and **`.pdf`**, plus share-target intents when installed and drag-and-drop on
   desktop. The list of imported items shows the kind, and offers edit (title, level, tags) and
   delete. A bad file fails with one sentence from the parser, not a stack trace (§9).
+  An import's detail line names where its notes came from (*read from the file*, *converted from
+  MIDI*) in place of the type every import shares, and a state line under it says whose the hands
+  are, whether it is measured, and whether the tempo is the app's guess (X3).
+  A MusicXML file in the timewise form is kept as its partwise twin (X3e): its sheet, its
+  measurement, its swap, a stated tempo and the Score screen read it as the same file written
+  partwise.
 - **A MIDI file is converted on the device** (2026-09-23; the owner: *"ideally I could select a
   file from the app"*). Nothing here runs on a server, so the whole of
   `tools/midi-cleanup/midi_to_musicxml.py` is ported to `app/src/import/midi/` and runs in the
@@ -1442,9 +1516,12 @@ out.
   Score screen, and its card says "pages, not notes" so it is obvious why Wait mode is not
   offered. Anything you want judged has to arrive as MusicXML.
 - Item detail sheet: metadata, sections, practice tips, media, "Open".
+  A placeholder's detail sheet (a piece the catalogue wants and does not bundle) has no *Tracks*
+  and no *What it trains*: the piece's `importHint`, what the app reads, and *Import a score*;
+  any detail sheet names a track by its title and leaves out an id with none (U75; X3).
 - **The assign sheet** (P15, replan §4.3). After an import that arrived with a rung in mind —
-  an Android share, or **Import for this rung** on a lesson page — a sheet opens by itself
-  asking where the piece goes: the rung (pre-selected from `?for=`), the level (the runtime
+  an Android share, or **Import for this rung** on a lesson page — the **import sheet** opens by
+  itself (below), which ends in the assign sheet's body asking where the piece goes: the rung (pre-selected from `?for=`), the level (the runtime
   estimate from §4.4, shown as `≈` and editable), and the concepts (the rung's). One tap on
   **Save**. From a share that is **two actions in total**, against the eight the old path
   took, and the e2e suite counts them rather than taking the claim on trust.
@@ -1452,7 +1529,9 @@ out.
     not answering; a sheet over the list would be covering the list he came to look at. The
     row carries an **Assign** button beside **Edit**, so the sheet is one tap away when he
     does want it — and it is the way back to the sheet for anything already imported.
-  - **A file that arrived as MIDI is the exception, wherever it was imported from** (T29).
+  - **Wherever the app guessed is the exception** (T29; X3): a file that arrived as MIDI from any
+    door, or a score whose stored provenance says its hands or key were inferred (the command-line
+    converter's MusicXML).
     That is the one import where the app decided things on his behalf — the metre, the key,
     the grid, which hand played what — so the sheet opens by itself and says so *before* he
     agrees to any of it, in three lines: the self-check's own answer ("all N notes the reader
@@ -1464,7 +1543,8 @@ out.
     than two) and a crossing is where that is most often wrong — and which of the decisions
     were guesses (the metre, the key and the grid — the
     notes and their timing are not). The note lives in memory for the visit, not on the row:
-    it is a fact about this moment, not about the score.
+    it is a fact about this moment, not about the score. Its hands sentence is derived from the row at
+    render (U72): once the learner has corrected the hands it says they are the learner's (X3).
   - **What the notes ask** (E2): under the conversion note, one line reads the stored row's
     measured demands in the swap sheet's words — *Measured in the notes: the bass-staff notes,
     steps, skips and both hands together.* — measured on the score as it is stored, the learner's
@@ -1488,6 +1568,46 @@ out.
     *… is now one of the practice options for <rung title>.* (2026-09-26, T52: both said the
     piece counted towards finishing the rung, which C5 made false; the folder's line also
     printed the rung's id.) It is in the backup.
+- **The import sheet** (X3, 2026-09-29). Opened by the UI that received the stored row — the
+  picker and drop target, the share path, *Import for this rung*, the row's *Assign* — never by
+  the store. The sheet's heading is the title. *What the app read*: composer, length in bars,
+  key signature as printed (the key named only where the file states its mode), and this visit's
+  self-check. *What the app guessed*: hands, tempo, and the key where estimated, each with whose
+  it is (the app's guess, from the file, yours) as the store holds it. **Swap the hands**
+  exchanges the two staves' notes, keeps each staff's clef, and saves through
+  `correctImportHands`, which measures the corrected score again. The tempo line and its control
+  are the next two bullets (X3a–X3d); there is no key control (E49). *What the notes ask* is
+  E2's line. *Where does it belong?* is the assign sheet's body (above), T52's sentence first.
+  Nothing on it is evidence; the piece is played by opening it.
+- **Use this tempo** (X3a, X3b): on the tempo line of every MusicXML import — the app's guess,
+  the file's, or one the learner already stated — "♩ =" and a number, and *Use this tempo*,
+  which saves through `importStore.stateImportTempo` (E48): the score opens at the stated tempo
+  and is measured again, the tempo fact names the learner, and an estimated level is estimated
+  again. The line then says "You stated ♩ = N" (*yours*), N read from the tempo the stored score
+  opens at, and the Library row's state says *tempo yours*. The control stays after a statement,
+  its number starting again at the tempo the score now opens at, so a slip is put right on the
+  sheet and every later statement goes through the same store operation. A tempo outside 20–400
+  is refused in the store's words and never clamped by the sheet; the field keeps what was
+  typed. No control on a PDF; the tempo and the hands are changed one at a time.
+- **The tempo line** (X3c, X3d): one number, the tempo the score opens at in quarter notes a
+  minute, read by the Score screen's own reader (`tempoFromXml`, X3d), so the number the line
+  names is the number the Score screen opens at — for the learner's line ("You stated ♩ = N"),
+  the file's and the number *Use this tempo* starts at. The file's line adds the printed mark at
+  the opening in its own note where it counts another note ("The file says 𝅗𝅥 = 60 (120 quarter
+  notes a minute)."), and a mark with no `<sound tempo>` is said with the quarter notes it means
+  in the same words, the field at that number (X3d); a quarter-note mark that agrees says one
+  number ("The file says ♩ = 96."); a mark and a playback tempo that disagree are said apart,
+  never as a conversion ("The file prints 𝅗𝅥 = 60; its playback tempo is 100 quarter notes a
+  minute."); a mark the door read from the file's text (E32) is said as printed and as read
+  ("The file’s mark says “= 60”, with no note; the app reads it as a half note, the metre’s
+  beat: 120 quarter notes a minute."); a tempo written only after the opening is never said as
+  the opening ("The file writes no tempo at its opening, only later in the piece."). The line
+  says what the file states, which since X3d is what the Score screen plays. **Fractional
+  tempos:** kept as the file wrote them (the sheet writes nothing); said as the score carries
+  them to three places (72.5), or "about" the whole beat where the file carries more
+  (90.00009000009 → "about 90"); the field starts at the number the line names, so a press keeps
+  a three-place tempo and states the whole beat for a finer one — the learner's act. A learner's
+  statement is stored to three places and said as stored.
 
 ## 4b. Score folder (browsing files that live on the phone)
 
@@ -1749,6 +1869,19 @@ still through that frame; any stage change takes it back. The observer refits ev
 change (a height alone off a run; a width always, releasing and retaking a run's size), as it
 did.
 
+**On a tablet the first draw waits for the side panel (U80, 2026-09-29).** The lesson panel's
+320 px column is part of the stage's width, so the Score screen hands the renderer its stage
+only once the panel is decided: filled (`data-side="text"`) or left out (`data-side="empty"`: a
+piece on no rung, a lesson that will not read). `data-side` is absent until then and set once
+per opening; a phone has no panel and is `empty` from the start. The panel's two reads (the
+curriculum and the lesson file, both precached) start when the item is found, beside the score's
+own, and the first draw waits for them no longer than `SIDE_PANEL_WAIT_MS` past the score being
+ready; past it the score draws with the column's track kept, so a panel that then arrives with
+text moves nothing and one left out gives the width back as a resize. Before, the panel arrived
+after the first draw on every piece `side-panel-prose.spec.ts` sweeps, at every tablet size
+measured, and where the column takes width from the stage the music was drawn across the whole
+width and then refitted narrower beside it.
+
 **Sideways, the sheet is engraved in chunks** (P21e A3): the window, two bars behind it and
 two ahead, so the bar being played always has neighbours on both sides to slide against. The
 slide holds it a third of the way across from the first chunk swap on, and the swap is
@@ -1759,6 +1892,9 @@ Control bar, in this order and **nothing else**: `▶`/`⏸` · **`Hear it`** ·
 tempo label (tap opens a sheet with the % slider, 30–130 %, and a typed bpm field) · `⋯`.
 These are the things that change during a practice; one row in every form factor, on a phone
 either way up and on a tablet.
+The bpm is the score model's tempo at the cursor, in quarter notes a minute from the file's own
+tempo (X3d): a half note = 60 with its `<sound tempo="120">` says 120 bpm at 100 %, *Row, Row,
+Row Your Boat* (dotted quarter = 54) 81; the count-in clicks at the same number.
 
 **`Hear it`** plays the piece — or the loop, if one is set — with both hands through the
 current Sound destination, cursor moving, nothing judged; a second tap stops it. It is Listen
@@ -2137,6 +2273,11 @@ window: the window is the asked bars, and the count is honoured up to as many as
 the stage at the size the height gives, with the next bar's first note after them (T38: this
 said a bar's room, and the row said *1 shown* while two bars and the start of the third were
 on the glass).
+Since U74 that count is priced from the piece's measurement from the first draw. Before, the
+window said the count asked until the measurement landed on idle, after the first paint, over
+the same picture — on the dev piece `tempo-change` at 880 × 412 "two shown" with the second bar
+past the right edge — and `score.slide.spec`'s sideways case asserted that word; it asserts the
+rule on the glass now (U82, 2026-09-29).
 
 **Both steppers say where they are and where they stop (2026-09-12).** `Bars in window` always
 read `2 bars` between its buttons; `Size` said nothing at all, so it could be pressed a dozen
@@ -2259,6 +2400,20 @@ Notation area:
   The side panel's prose is that same rung's, and the first rung listing the piece where
   nothing names one.
 
+  **What next with this piece? (G1b).** On a song's summary, before *Done*, an outlined *What
+  next with this piece?* opens the project sheet over it (never on a generated phrase or a
+  drill). The sheet: the piece's title; its state and since (*Learning since 2026-09-29*) or
+  *Not a project yet*; the history's last line (*You performed it on …*, else *Before this: Put
+  away, from …*); what the encounter history says (*You last played it on …*, *…part of it…*,
+  *You have listened to it and not played it yet.*, *You have opened it and not played it yet.*,
+  *You have never opened it.*); the choices the state offers, as quiet text (*Save for later ·
+  Learn this · Prepare it for performance · It is ready · I performed it* with a date · *Keep it
+  playable · Bring it back · Pause · Put it away*, the table in Entry 138); and once there is a
+  project, *This week's goal*, *The problem right now* and *Sections* (*Bars [ ] to [ ]*,
+  *Name*, *Add section*; *Bars run from 1 to N.* where a section falls outside the piece).
+  Opening it writes nothing; every change is the learner's choice; messages sit inside the sheet
+  (R6); leaving the screen that opened it closes it. The words are `help.ts`'s `PROJECT_TEXT`.
+
   **The sheet says only what the run measured (2026-09-25, T37).** The rule is the
   reviewer's: never display or record evidence the engine did not measure.
   - **A Wait for me run** carries no tempo: the page waited for every note, so the slider's
@@ -2322,14 +2477,24 @@ Notation area:
   screen and the **visit**, one opening of the screen minted when it opens: a reload, Back and a
   return, a second tab are each another visit. Before ▶ is live the screen reads what the learner
   had met of the material (its runs, playbacks and viewings, the passages around it, the summaries
-  of runs the cap deleted); a run's `unseen` is first contact — no run of it, no playback of it on
-  any visit, no viewing of it on another visit (looking at it on this visit, before playing, is
-  what reading it needs) — read again before the run is stored, in case another tab met it
-  meanwhile. A sight-read refused for a viewing alone says *Sight-reading counts only on music
-  you have not seen before — this run is kept as practice.* A piece, an excerpt and an import
-  carry the fact too, over the bars the run covered, as an audit fact that refuses them nothing;
+  of runs the cap deleted); a run's first contact (`firstContact`, G1a) is the relation — no
+  run of it, no playback of it on any visit, no viewing of it on another visit (looking at it on
+  this visit, before playing, is what reading it needs) — read again before the run is stored,
+  in case another tab met it meanwhile. A sight-read's run carries sight-reading's condition
+  beside it (`unseen`, the generated phrase's field since C1), derived from that relation and
+  the visit rule and equal to it today; `unseen: false` is what keeps a phrase met before from
+  passing (§2, §6). A sight-read refused for a viewing alone says *Sight-reading counts only on
+  music you have not seen before — this run is kept as practice.* A piece, an excerpt and an
+  import carry the relation alone (`firstContact` over the bars the run covered, no `unseen`),
+  an audit fact that refuses them nothing;
   an import is its stored bytes (their sha256), so a duplicate under a new id is the same
   material. The Library's text row is not a viewing.
+  Runs G1's app stored between its landing and G1a's carry the fact as `unseen` on a piece's run
+  too, and no `firstContact`: they read as they did (`db.isPhraseRun`), and their relation is
+  unknown, never inferred. A consumer of general contact never reads `unseen` for it: the
+  transfer policy reads the attempt's `firstContact` (G2), the session and the project sheet the
+  encounter history (`session.contactOf`, `encounterStore.familiarity`; X1, G1b) (G1a; the
+  reviewer's required change on G1, `responses/b48342f.md`).
 
   **The sheet names what changed during the run** (decided 2026-09-23, built by T33 — C5),
   in one line labelled **Changed**, first, before the numbers it qualifies: *hands changed
@@ -2346,6 +2511,20 @@ Notation area:
   or tempo sheet, which stays live above the summary — are added to the same line, *after the
   run* in place of a bar: the sheet stays the record of the run that produced it (§7's own
   case in the state-machine document), and *Again* then runs with what the line says.
+
+  **In today's session** (X1): where the run is a session's activity (`?session=`), the sheet's
+  closing action is the next step. The heading stands first; directly under it is one bordered
+  block with *Next: {title}, N min — {the composition's own words}*, *N of M min so far*, a
+  filled **Start** (the next activity opened straight away, never through Today) and **Skip or
+  change** (the next skipped by the learner, back to Today). After a measured failure the block
+  says *Still unstable, so we're not moving on* with *Try again* and *Move on anyway*. After
+  easy first-attempt success it says *Easier than expected — {the skipped practice} is skipped*.
+  A first contact met since the card was composed says *You heard this one earlier today, so it
+  is practice now, not a first read* (*played* or *saw* where that is how it was met). After the
+  last activity it says *That was the last one — today's session is done* and **Done**. *Done*
+  gives way to the block. The Score screen reports opened, attempted and completed (the stored
+  run's measured outcome, never a self-report) and its visible time, and reads nothing else of
+  the session.
 
 **The screen's own stylesheet** is `src/ui/screens/ScoreScreen.css`, imported by
 `ScoreScreen.ts`. `src/style.css` stays the app's shared sheet with one owner; what belongs
@@ -2709,6 +2888,10 @@ learner looks at.
   five chains right out of six, which as a percentage says the same thing as breaking at the
   twelfth, so the sheet says the longest chain and the best chain this item has seen, and the
   pass is a chain rather than a share of the cards (`engine/drills/simon.ts`).
+  In today's session the end sheet's closing action is the same transition (X1); *Back to the
+  plan* gives way to it and *Again* is outlined. A set that ran out completes the activity with
+  its judged result, or none where the drill judges nothing. A stopped set completes nothing,
+  and *Start* moves on.
 - **Sight-reading is not here.** It is generated notation and opens on the Score screen in
   Tempo mode (`05` §8), scored on the first attempt only — after that the material has been
   seen and a second run measures something else. From Today it opens the phrase the reader
@@ -3369,6 +3552,14 @@ the drills themselves, so a measurement added and not named fails.
   competence, and is not listed. Steps up first, then down, then the unshown. With nothing moved:
   *No skill the app measures has moved in the last four weeks.* Always a quiet *Review a skill*
   to the Skills screen. Never a stage number: the strands move separately (L85).
+- **Projects (G1b).** What the learner says they are doing with each piece, newest change first:
+  the title, *State since day* on the second line, *Goal: …* on the third where one is typed; a
+  row opens the project sheet (§5). Under them, *Pieces you have passed, not yet projects* —
+  songs passed or mastered with no project, *Last played day*, and a quiet *Make it a project*
+  that opens the same sheet and makes nothing until a choice there; capped at 20 with *Show N
+  more*. With no project, *No projects yet. At the end of a run, "What next with this piece?"
+  makes one.*, and with no passed song either, *Pick a piece*. A pass is never made a project by
+  the app.
 - Per-stage completion; per-track completion.
 - **Repertoire list (mastered)** with "last played", the row itself opening the piece, capped at 20 rows (same
   shape as Skills' concept grid) with a *Show N more* link — the history and the performances are
@@ -3384,9 +3575,10 @@ the drills themselves, so a measurement added and not named fails.
   nothing judged, a jam over a backing track: *Not judged · 42 notes played · 3 min* — it
   printed "0%" too. Before the minutes, a sight-read met before says *not first sight*, a run the
   piece was played to part way through *heard part way*, and a rhythm-only run *rhythm only*.
-  *Not first sight* is a phrase's alone (G1): since G1 every run the Score screen records carries
-  the first-contact fact, and a piece played again (`unseen: false`) says nothing of it — every
-  repeat of a piece is not news. A phrase is *not first sight* when it was read, heard or
+  *Not first sight* is a phrase's alone (G1, G1a): the line reads sight-reading's `unseen`,
+  which only a phrase's run carries; a piece's run carries the relation as `firstContact`, which
+  the line does not print — every repeat of a piece is not news — and a piece's run G1's app
+  stored with `unseen: false` says nothing either. A phrase is *not first sight* when it was read, heard or
   demonstrated before on any visit, or looked at on another visit — a phrase played to the
   learner at noon and read in the evening among them.
   A drill's tempo is a placeholder and is not printed. Rows written before C1 are read by what
@@ -3657,6 +3849,9 @@ two-column. Everything else identical.
 **Ships as of P18:** all of it. The two-column breakpoint (P7), and now the bars-per-window
 default of 4 and a collapsible side panel on the Score screen carrying the lesson text of the
 rung the piece belongs to.
+Since U80 the Score screen's first draw on a tablet waits for the panel's decision (§5), so the
+notation is never drawn at the width it has without the panel and then narrowed when the panel
+arrives.
 
 Two details worth stating. The test is on the **shortest side**, both dimensions: a phone in
 landscape is 915 × 412 and would pass a width-only check while having 412 px of height to put a

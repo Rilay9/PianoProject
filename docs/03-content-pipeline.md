@@ -250,8 +250,15 @@ Output is `app/public/content/`: `catalog.json`, `curriculum.json`, `scores/**.m
 
 Two flavours come out of the same table (`00` D10a, D23): the personal build — the default
 since 2026-09-12, §1 — is the owner's and carries everything; `--strict-license` is what CI
-and the Pages deploy run and turns the rest into placeholders. They differ in four fields —
-`file`, `importHint`, `tags` and `source.checksum` — and in nothing else, which is checked.
+and the Pages deploy run and turns the rest into placeholders. They differ in the rows the
+strict build does not bundle — each a placeholder, with no `file` and an `importHint` — and in
+what a missing file makes of those rows: `demands` and `measurement` unmeasured (*no notation
+is bundled*), the provenance's demands fact saying so, and no excerpt cut from such a parent
+(the public build's placeholders, below). (Q77, Doc-splice-2: this said they differ "in four
+fields — `file`, `importHint`, `tags` and `source.checksum` — and in nothing else, which is
+checked"; since E0 a bundled score is measured and a placeholder is not, and the one check
+found, `test_pdmx.py`, holds a PDMX placeholder's file, hint and tag, not that nothing else
+differs.)
 
 **The rest of `tools/content/`**, which the steps above do not name, one line each so nothing
 in the directory is a mystery:

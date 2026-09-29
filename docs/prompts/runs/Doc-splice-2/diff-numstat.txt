@@ -1,0 +1,8 @@
+$ (cwd .) git diff --numstat -- docs/01-architecture.md docs/02-curriculum.md docs/03-content-pipeline.md docs/04-ui-spec.md docs/05-score-follow-engine.md docs/08-test-map.md
+9	4	docs/01-architecture.md
+20	1	docs/02-curriculum.md
+9	2	docs/03-content-pipeline.md
+216	21	docs/04-ui-spec.md
+57	5	docs/05-score-follow-engine.md
+73	21	docs/08-test-map.md
+exit=0
