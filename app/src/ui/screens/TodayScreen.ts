@@ -268,7 +268,14 @@ export function TodayScreen(router: Router): HTMLElement {
       });
       return;
     }
-    const rung = curriculum ? rungForSlot(curriculum, target, slot.lessonId) : undefined;
+    // The transfer offer (D4): offered from no rung's ask, so no rung judges its run and none is
+    // credited by listing it; the run keeps the intent and the skill, for the relationship it records.
+    const transfer = slot.claim?.kind === 'transfer' && slot.item?.id === target.id ? slot.claim : undefined;
+    if (transfer && targetFor(target) === 'score') {
+      router.navigateScore(target.id, { slot: slot.kind, intent: { intent: 'transfer', skill: transfer.skill } });
+      return;
+    }
+    const rung = transfer ? undefined : curriculum ? rungForSlot(curriculum, target, slot.lessonId) : undefined;
     // A drill carries the rung too (C5): it judges the drill's run.
     if (targetFor(target) === 'drill') {
       if (rung === undefined) router.navigateDrill(target.id);

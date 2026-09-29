@@ -1010,6 +1010,13 @@ export const SLOT_TEXT = {
   free: 'Play anything you like — no scoring, no cursor',
   /** After a swap: the learner's choice, and the tier it came from. */
   chose: 'You chose this one',
+  /**
+   * The transfer offer (D4): "Shifting position: something new, for a skill you have shown — it should
+   * feel different". What it is for, as an invitation; never that it will prove, test or has shown
+   * anything (the ladder's words for its v0 state stay C7's, `SKILL_TEXT.transfer`).
+   */
+  somethingNew: 'something new, for a skill you have shown',
+  feelDifferent: 'it should feel different',
 } as const;
 
 function lowerFirst(text: string): string {
@@ -1213,6 +1220,9 @@ export function slotReason(kind: SlotKind, claim: SlotClaim | undefined, today: 
       }
       case 'jam':
         return `${SLOT_TEXT.jam}: from ${claim.rung.title}`;
+      case 'transfer':
+        // The skill first, where the line is cut; an invitation, never a test (D4).
+        return `${bareSkill(claim.skill)}: ${SLOT_TEXT.somethingNew} — ${SLOT_TEXT.feelDifferent}`;
     }
   })();
   return kind === 'repertoire' && options.known === true ? `${SLOT_TEXT.pieceYouKnow} — ${lowerFirst(line)}` : line;

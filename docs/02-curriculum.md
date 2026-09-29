@@ -956,6 +956,41 @@ that decision exists a study reaches the learner only through the Library (Part 
 > placed" is only why today's five happen not to surface; a rung that lists one offers it only
 > once that `yes` exists. The Library lists every excerpt and exploration opens one, whatever its
 > bit. Today the five are on no rung and undecided, so nothing a learner sees changes.
+>
+> **Transfer, selected and recorded as facts (D4, 2026-09-28; Part 26).** A skill the ladder reads
+> as proficient used to be left to whatever first read of another reading row came along. Now:
+>
+> - **One material identity, the build's.** Every catalogue row carries `provenance.identity`, D2's
+>   identity as the review record binds to it (a generated item's generator family, version and
+>   seed with its recipe and tempo; a notated item's built file by its sha256, an excerpt's cut
+>   included; `none` for a drill made when it opens), and every run stores the exact material it
+>   played as `material`: the row's, or, for a sight-reading phrase, the phrase's complete generator
+>   identity (the options it was written from — the row's params with the reader's moves and the
+>   rung's hold — never the stored triple alone). A transfer role carries its contract's
+>   `transferOf` for its recipe (`provenance.transferOf`: the skill, the families it was written
+>   against, the dimensions declared to differ, what stays unmeasured).
+> - **Contact novelty from identities, conservatively** (`progressStore.contactIn`): met where any
+>   run under any item id carries the material; *met by id* where only a run that stored no material
+>   shares the id (prior contact proven, the material unknown — never read as unmet); unmet only
+>   where neither exists, with the id's contact beside it (a new seed or version is new material).
+> - **The offer** (`session.ts`, the `transfer` claim; the words `04` §2): for a skill proficient and
+>   not beyond, the `new` slot — after the rung's own new work, never in place of an unmet
+>   requirement of a strand's rung, at most one a day — offers an item whose role is `transfer` for
+>   the skill that passes the one gate, or an excerpt a reached rung lists that the gate passes for
+>   one of the skill's demands; unmet by its exact material; differing in a dimension measured or
+>   declared, and never of the family that established the skill. Studies and excerpts need a current
+>   teaching-use `yes` through the gate, as everywhere else. On the shipped catalogue the only
+>   candidates are the six pentatonic and blues scales for *shifting position*; nothing is offered for
+>   any other skill until a study or an excerpt is approved and (an excerpt) placed.
+> - **The relationship, as facts** (`curriculum/transfer.ts`): what the skill was shown on — the
+>   ladder's own `shownOn`, asked of the ladder, with each supporting record's material, a run that
+>   stored none an unknown historical reference — and, per dimension (family, generated or notated,
+>   key signature, hands, texture, rhythm), the candidate's value, every reference's, and whether it
+>   differs; the declaration carried as declared. No distance and no verdict. A transfer-intended run
+>   stores its `intent` and this relationship; the evidence context carries `material` and `intent`.
+> - **Nothing says a run demonstrated transfer.** The ladder is unchanged: its v0 state still turns on
+>   a first read of another item, the screens still call it *shown on different material*, and the
+>   offer never reads it. Replacing v0 with a policy over these facts is the post-E evidence task's.
 
 The table above is a technique syllabus in the conservatoire sense. It is not the whole of
 what a learner practises, and a skill with no generated exercise ends up either untested or

@@ -20,7 +20,9 @@ Table-driven over the built catalogue, one row per entry, never one file per ent
 - **the rung-claims report and the inventory** are what the build wrote from this catalogue,
   list every unestablished claim, and report works, arrangements and coverage;
 - **the promise fact** (D3a): every generated item carries its family's promise for its recipe,
-  the rule the recipe matches, as an authored fact the app's one gate reads.
+  the rule the recipe matches, as an authored fact the app's one gate reads;
+- **the material identity** (D4): every row carries `provenance.identity`, D2's identity as the
+  build computes it, and a transfer role carries its contract's `transferOf` for its recipe.
 
 These read the built catalogue: run `python tools/content/build.py` first (CI: the step
 'Build content', before 'Content pipeline tests').
@@ -301,6 +303,104 @@ class TestThePromiseFact(Built):
         self.assertEqual(len(readers), 9)
         for item in readers:
             self.assertEqual(item["measurement"]["status"], "runtime", item["id"])
+
+
+class TestTheMaterialIdentity(Built):
+    """
+    D4 item 1: every row carries `provenance.identity`, D2's identity as the build computes it
+    (`review.current_identity`), so the app never recomputes it: a generated item's generator triple,
+    recipe and tempo; a notated item's built file, by the sha256 of its bytes (an excerpt's cut
+    included); `none`, with its reason, for a drill made when it opens and for a placeholder. The
+    oracle here is independent of `review.py`: the triple read off `drill.generator`, the recipe off
+    `drill.params` and `hands`, the hash taken with `hashlib` from the file the build wrote.
+
+    And a transfer role's relationship (D4 item 4): an item with `role: transfer` carries its family
+    contract's `transferOf` for its recipe as `provenance.transferOf` (an authored fact, the rule its
+    recipe matches, `when` dropped), so the session reads the declared skill and differences without
+    reading the table; no other item carries one. Intent and relationship facts, never evidence.
+    """
+
+    maxDiff = None
+
+    def test_every_row_carries_the_identity_the_build_computes(self) -> None:
+        import hashlib
+
+        faults: list[str] = []
+        kinds: dict[str, int] = {"generator": 0, "file": 0, "none": 0}
+        for item in self.catalog:
+            identity = item["provenance"].get("identity")
+            drill = item.get("drill") or {}
+            rel = item.get("file") or ""
+            if identity is None:
+                faults.append(f"{item['id']}: no provenance.identity")
+                continue
+            kinds[identity.get("kind", "?")] = kinds.get(identity.get("kind", "?"), 0) + 1
+            if drill.get("generator") and rel.startswith("scores/generated/"):
+                recipe = dict(drill.get("params") or {})
+                recipe.setdefault("hands", item.get("hands"))
+                wanted = {"kind": "generator", **{k: drill["generator"].get(k) for k in ("family", "version", "seed")},
+                          "recipe": recipe, "tempoBpm": item.get("tempoBpm")}
+            elif rel:
+                path = BUILT / rel
+                wanted = ({"kind": "file", "sha256": hashlib.sha256(path.read_bytes()).hexdigest()} if path.is_file()
+                          else {"kind": "none", "why": "the score file was not built"})
+            elif drill:
+                wanted = {"kind": "none", "why": "made when it opens: no file the build keys"}
+            else:
+                wanted = {"kind": "none", "why": "no notation is bundled"}
+            if identity != wanted:
+                faults.append(f"{item['id']}: {identity} where the build's is {wanted}")
+        self.assertEqual(faults[:10], [], f"{len(faults)} rows")
+        self.assertGreater(kinds["generator"], 1000)
+        self.assertGreater(kinds["file"], 700)
+        self.assertGreater(kinds["none"], 9, "the nine reading rows at least are made when they open")
+
+    def test_it_is_the_review_records_identity(self) -> None:
+        import review
+
+        faults = [f"{item['id']}: {review.identity_fault(item['provenance'].get('identity'))}" for item in self.catalog
+                  if review.identity_fault(item["provenance"].get("identity"))]
+        self.assertEqual(faults[:10], [], f"{len(faults)} rows whose identity D2's record would refuse")
+        differs = [item["id"] for item in self.catalog
+                   if not review.same_identity(item["provenance"].get("identity"), review.current_identity(item, BUILT))]
+        self.assertEqual(differs[:10], [], f"{len(differs)} rows whose identity is not the record's current one")
+
+    def test_every_excerpt_is_its_cuts_file_identity(self) -> None:
+        excerpts = [item for item in self.catalog if item.get("type") == "excerpt"]
+        self.assertGreater(len(excerpts), 0)
+        for item in excerpts:
+            with self.subTest(item=item["id"]):
+                self.assertEqual(item["provenance"]["identity"]["kind"], "file")
+                self.assertTrue(item["file"].startswith("scores/excerpts/"))
+
+    def test_a_transfer_role_carries_its_contracts_relationship_and_nothing_else_does(self) -> None:
+        import family_contracts as FC
+
+        faults: list[str] = []
+        transfer = 0
+        for item in self.catalog:
+            carried = item["provenance"].get("transferOf")
+            if item.get("role") != "transfer":
+                if carried is not None:
+                    faults.append(f"{item['id']}: role {item.get('role')!r} carries transferOf")
+                continue
+            transfer += 1
+            row = FC.contract(item["drill"]["generator"]["family"])["roles"]["transferOf"]
+            rules = row if isinstance(row, list) else [row]
+            matching = [rule for rule in rules if FC.matches(rule.get("when"), FC.recipe_of(item))]
+            wanted = {k: v for k, v in matching[0].items() if k != "when"} if matching else None
+            if carried != wanted:
+                faults.append(f"{item['id']}: {carried} where the contract's rule for its recipe is {wanted}")
+            fact = item["provenance"]["facts"].get("transferOf") or {}
+            if fact.get("kind") != "authored" or "family_contracts.json" not in str(fact.get("via")):
+                faults.append(f"{item['id']}: the transferOf fact is {fact}")
+        self.assertEqual(faults[:10], [], f"{len(faults)} rows")
+        self.assertEqual(transfer, 12, "six pentatonic items for shifting position and six transfer studies")
+        pentatonic = self.by_id["exercise.pentatonic.a.pentatonic"]["provenance"]["transferOf"]
+        self.assertEqual((pentatonic["skill"], pentatonic["from"], pentatonic["differs"]),
+                         ("position-shift", ["position_shift"], ["family", "rhythm"]))
+
+
 class TestExcerptsOnTheBuild(Built):
     """
     The excerpt on the combined build (E1; Part 24): every approved row is an item of its own, measured

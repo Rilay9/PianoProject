@@ -64,6 +64,7 @@ import { NOT_MEASURED, type EngineInput, type Mode } from '../../engine/types';
 import { getSettings } from '../../data/settingsStore';
 import { getMidiSettings } from '../../data/midiSettings';
 import { getProgress, recordRun, sessionsForItem } from '../../data/progressStore';
+import { runFacts } from '../../curriculum/material';
 import { recordPlacement } from '../../data/planStore';
 import { tipsFor, type Tips } from '../../curriculum/tips';
 import { coach, type Coaching } from '../../engine/drills/coaching';
@@ -2517,6 +2518,8 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       itemId: item.id,
       // Which rung judged it — see the Score screen's note on the same field.
       ...(rung === undefined ? {} : { lessonId: rung.id }),
+      // What was played (D4): the row's identity — `none` for a drill made when it opens.
+      ...runFacts(item),
       mode: `drill:${result.kind}`,
       // A drill has no tempo slider: the 100 is a placeholder, stored as a
       // tempo not measured so it is never read as one — it was made the
@@ -2797,6 +2800,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       void recordRun({
         itemId: target.id,
         ...(rung === undefined ? {} : { lessonId: rung.id }),
+        ...runFacts(target),
         mode: 'drill:checklist',
         tempoPct: 100,
         tempoMeasured: false,
@@ -2990,6 +2994,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       void recordRun({
         itemId: target.id,
         ...(rung === undefined ? {} : { lessonId: rung.id }),
+        ...runFacts(target),
         mode: 'drill:placement',
         tempoPct: 100,
         tempoMeasured: false,
@@ -3318,6 +3323,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       void recordRun({
         itemId: target.id,
         ...(rung === undefined ? {} : { lessonId: rung.id }),
+        ...runFacts(target),
         mode: 'drill:walkthrough',
         tempoPct: 100,
         tempoMeasured: false,

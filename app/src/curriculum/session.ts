@@ -22,7 +22,9 @@ import { SHIPPED_SKILL_ACTIVATION, type SkillActivation } from './skillActivatio
 import { admittedForTeaching, eligible, eligibleFor, type Eligibility, type Learner, type Want as GateWant } from './eligibility';
 import type { RequirementReading, RungStates } from '../evidence/rungState';
 import { phraseVersionOf, type ReadingMoves, type ReadingRecipe, type SessionRow } from '../data/db';
-import { dayKey, daysBetween, type LearnedPiece } from '../data/progressStore';
+import { contactIn, dayKey, daysBetween, type Contact, type LearnedPiece } from '../data/progressStore';
+import { knownMaterial, materialOfItem } from './material';
+import { relationshipOf, shownOnRecords, type Relationship, type ShownOn } from './transfer';
 import { heldToRung, READING_CONTROLS, UNREALISABLE_AT, type ControlPatch } from '../engine/readingControls';
 import {
   dailySeed,
@@ -432,7 +434,14 @@ export type SlotClaim =
   /** The exposure rule: the family of taught material played least lately (never, first). */
   | { kind: 'exposure'; family: ExposureFamily; lastPlayed?: string }
   /** Jam: an option of a rung on a jam track the learner has reached. */
-  | { kind: 'jam'; rung: Lesson };
+  | { kind: 'jam'; rung: Lesson }
+  /**
+   * The transfer offer (D4 item 4): material this learner has not met, for a skill the ladder reads
+   * as proficient and not beyond, that differs from what the skill was shown on — offered as
+   * transfer-intended, with the relationship facts and the contact facts it was chosen on. Intent,
+   * never a claim that anything will transfer or has.
+   */
+  | { kind: 'transfer'; skill: string; relationship: Relationship; contact: Contact };
 
 /** A rung in the curriculum's walk on the tracks switched on, as `nextRecommended` walks it. */
 interface Walked {
@@ -1134,6 +1143,14 @@ function fresh(ctx: SlotContext, onCard: readonly Choice[], phase: Phase): Choic
       if (item) return { item, claim: askedClaim(want, false, strand), lessonId: strand.rung.id, strand: strand.track };
     }
   }
+  // D4: after the rungs' own new work — only where no strand's rung asks anything this slot serves,
+  // offered or not, so the offer never stands in for an unmet requirement — a skill shown to
+  // proficiency is offered material it has not met. Before the next lesson's first ask, which is a
+  // look ahead and not the learner's rung's requirement.
+  if (strands.every((strand) => wantsOf(ctx, strand.rung, 'any').length === 0)) {
+    const offer = transferOffer(ctx);
+    if (offer) return offer;
+  }
   for (const strand of strands) {
     if (!strand.after || wantsOf(ctx, strand.rung, 'any').length > 0) continue;
     for (const want of wantsOf(ctx, strand.after, 'any')) {
@@ -1143,6 +1160,71 @@ function fresh(ctx: SlotContext, onCard: readonly Choice[], phase: Phase): Choic
     }
   }
   return undefined;
+}
+
+/**
+ * The transfer offer (D4 item 4; Part 26; the reviewer's answers, `responses/612288e.md`): for a skill
+ * the ladder reads as `proficient` — and not beyond: the offer depends on proficiency alone and never
+ * reads v0's `transfer demonstrated` as proof that any relationship was tested — one candidate:
+ *
+ * - **the form**: an item whose role is `transfer` for the skill (`provenance.transferOf.skill`, the
+ *   contract's declaration the build writes) that passes the one gate for the skill; or an excerpt a
+ *   rung the learner has reached lists (placement is F's question, E1: an unplaced excerpt is in no
+ *   search of the whole catalogue) whose measured notes the gate passes for one of the skill's
+ *   demands. Both through `usable` and the gate, which read the one teaching-use admission — a study
+ *   or an excerpt with no current `yes` never reaches here — and nothing else here reads the bit.
+ *   Never a reading row (`usable`): a reading drill is the reader's, in its own slot;
+ * - **unmet** for this learner by its exact material (`contactIn`: `met` and `met-by-id` are never
+ *   offered); a candidate with no material to compare is never offered either;
+ * - **differing** from what the skill was shown on in at least one dimension measured or declared
+ *   (`relationshipOf`), and **never of the family that established it** (a new seed of that family
+ *   may be variable practice elsewhere; it is not transfer).
+ *
+ * At most one a day: one `new` slot a card, and none on a day a stored run already came from an offer.
+ * The gate judges coping with the learner's rung as it does the swap sheet's tiers. Ordered by the
+ * vocabulary's skills, then the nearest level to that rung's band — an order among eligible
+ * candidates, never a filter (the chooser's ranking is E2's) — and Shuffle takes the next.
+ */
+function transferOffer(ctx: SlotContext): Choice | undefined {
+  const rows = ctx.input.rows ?? ctx.input.readingRows ?? [];
+  const today = dayKey(ctx.today);
+  if (rows.some((row) => row.intent === 'transfer' && dayKey(new Date(row.at)) === today)) return undefined;
+  const vocabulary = ctx.input.vocabulary ?? VOCABULARY_V0;
+  const activation = ctx.input.skillActivation ?? SHIPPED_SKILL_ACTIVATION;
+  const rung = ctx.position?.lesson;
+  const learner = learnerAt(ctx, rung);
+  const placed = new Set(ctx.reached.flatMap((walked) => [...walked.lesson.exerciseOptions, ...walked.lesson.songOptions]));
+  const stage = ctx.position?.stageNumber ?? 0;
+  const [low, high] = rung?.levelBand ?? [stage, stage + 0.99];
+  const found: { item: CatalogItem; claim: Extract<SlotClaim, { kind: 'transfer' }>; order: number; distance: number }[] = [];
+  vocabulary.skills.forEach((skill, order) => {
+    if (ctx.skills.get(skill.id)?.reading.state !== 'proficient') return;
+    const demands = skill.opportunity === 'every-step' ? [] : skill.opportunity;
+    let shownOn: ShownOn | undefined;
+    for (const item of ctx.input.items) {
+      if (!usable(ctx, item, 'any')) continue;
+      const declared = item.role === 'transfer' && item.provenance?.transferOf?.skill === skill.id && !isExcerpt(item);
+      const offerable = declared
+        ? eligible(gate(ctx, item, learner, { for: 'skill', skill: skill.id, activation }))
+        : isExcerpt(item) && placed.has(item.id) && demands.some((demand) => eligible(gate(ctx, item, learner, { for: 'demand', demand })));
+      if (!offerable) continue;
+      const material = materialOfItem(item);
+      if (!knownMaterial(material)) continue;
+      const contact = contactIn(rows, item.id, material);
+      if (contact.contact !== 'unmet') continue;
+      shownOn ??= shownOnRecords(skill.id, rows);
+      const relationship = relationshipOf(skill.id, item, rows, ctx.catalog.byId, shownOn);
+      if (relationship.measured.find((fact) => fact.dimension === 'family')?.differs === false) continue;
+      if (relationship.differsOn.length === 0) continue;
+      const distance = item.level < low ? low - item.level : item.level > high ? item.level - high : 0;
+      found.push({ item, claim: { kind: 'transfer', skill: skill.id, relationship, contact }, order, distance });
+    }
+  });
+  found.sort((a, b) => a.order - b.order || a.distance - b.distance || levelOrder(a.item, b.item));
+  const chosen = pick(found, ctx.seed);
+  if (!chosen) return undefined;
+  const lessonId = listingIn(ctx, chosen.item);
+  return { item: chosen.item, claim: chosen.claim, ...(lessonId === undefined ? {} : { lessonId }) };
 }
 
 /**

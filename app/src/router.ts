@@ -106,6 +106,9 @@ function looksLikeLessonId(id: string): boolean {
   return LESSON_ID_PATTERN.test(id) && !id.includes('..');
 }
 
+/** A vocabulary skill id (`sight-reading`, `position-shift`, `6/8`): letters, digits, `-` and `/`. */
+const SKILL_ID_PATTERN = /^[0-9a-z][0-9a-z/-]{0,39}$/;
+
 export const DEFAULT_TAB: TabId = 'today';
 
 export interface Route {
@@ -265,6 +268,12 @@ export interface Route {
   scoreRung?: string;
   /** `#/score/<id>?slot=new` — the Today slot that opened this run (L50), for the record. */
   scoreSlot?: TodaySlot;
+  /**
+   * `#/score/<id>?intent=transfer&skill=position-shift` — the run was opened from Today's transfer
+   * offer for that skill (D4), and the run keeps the intent and the relationship facts, for the
+   * record. Both or neither: an intent with no skill, or a skill with no intent, is dropped.
+   */
+  scoreIntent?: { intent: 'transfer'; skill: string };
   /**
    * `#/score/<id>?recipe=hands:both,easy:1` — the phrase's recipe, as Today's
    * reader chose it (C4): what it moved from the row's own params, and whether
@@ -494,6 +503,12 @@ export function parseHash(hash: string): Route {
   const wantedSlot = params?.get('slot');
   const scoreSlot = isTodaySlot(wantedSlot) ? wantedSlot : undefined;
   const scoreRecipe = parseRecipeParam(params?.get('recipe'));
+  // The transfer offer's intent and its skill (D4), both or neither.
+  const wantedSkill = params?.get('skill');
+  const scoreIntent =
+    params?.get('intent') === 'transfer' && wantedSkill !== null && wantedSkill !== undefined && SKILL_ID_PATTERN.test(wantedSkill)
+      ? { intent: 'transfer' as const, skill: wantedSkill }
+      : undefined;
   if (query) {
     const value = new URLSearchParams(query).get('for');
     // A lesson id, or nothing. An unrecognised one is dropped rather than
@@ -526,6 +541,7 @@ export function parseHash(hash: string): Route {
       ...(scoreRung === undefined ? {} : { scoreRung }),
       ...(scoreSlot === undefined ? {} : { scoreSlot }),
       ...(scoreRecipe === undefined ? {} : { scoreRecipe }),
+      ...(scoreIntent === undefined ? {} : { scoreIntent }),
       ...(seed === undefined ? {} : { seed }),
     };
   }
@@ -673,6 +689,7 @@ export function routeToHash(route: Route): string {
       ...(route.scoreRung === undefined ? [] : [`rung=${encodeURIComponent(route.scoreRung)}`]),
       ...(route.scoreSlot === undefined ? [] : [`slot=${route.scoreSlot}`]),
       ...(route.scoreRecipe === undefined ? [] : [`recipe=${encodeURIComponent(recipeParam(route.scoreRecipe))}`]),
+      ...(route.scoreIntent === undefined ? [] : [`intent=${route.scoreIntent.intent}`, `skill=${encodeURIComponent(route.scoreIntent.skill)}`]),
       ...(route.seed === undefined ? [] : [`seed=${String(route.seed >>> 0)}`]),
     ];
     const base = `#/score/${encodeURIComponent(route.score)}`;
@@ -775,6 +792,8 @@ export class Router {
       seed?: number;
       /** The phrase's recipe, as Today's reader chose it (C4). */
       recipe?: RouteRecipe;
+      /** Opened from Today's transfer offer for this skill (D4). */
+      intent?: { intent: 'transfer'; skill: string };
     } = {},
   ): void {
     const route: Route = {
@@ -791,6 +810,7 @@ export class Router {
       ...(options.rung === undefined ? {} : { scoreRung: options.rung }),
       ...(options.slot === undefined ? {} : { scoreSlot: options.slot }),
       ...(options.recipe === undefined || recipeParam(options.recipe) === '' ? {} : { scoreRecipe: options.recipe }),
+      ...(options.intent === undefined ? {} : { scoreIntent: options.intent }),
       ...(options.seed === undefined ? {} : { seed: options.seed }),
     };
     this.win.location.hash = routeToHash(route);
@@ -940,6 +960,8 @@ export class Router {
       // run this is, for the reason `from` is (L50).
       route.scoreRung === this.current.scoreRung &&
       route.scoreSlot === this.current.scoreSlot &&
+      // By value: the same offer's intent is the same run (D4).
+      route.scoreIntent?.skill === this.current.scoreIntent?.skill &&
       // By value, as the loop is: the same recipe is the same phrase (C4).
       (route.scoreRecipe === undefined ? '' : recipeParam(route.scoreRecipe)) ===
         (this.current.scoreRecipe === undefined ? '' : recipeParam(this.current.scoreRecipe)) &&

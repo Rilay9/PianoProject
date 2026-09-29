@@ -101,11 +101,18 @@ export interface EvidenceContext {
   itemId: string;
   seed?: number;
   /**
-   * The exact material the run played, where it knows it (E1 item 7): an excerpt's cut, as its
-   * file identity (D2's `Identity`). Stored beside `itemId` and `seed`, read by nobody yet; the
-   * chain key stays in the item's `provenance.excerpt`.
+   * The exact material the run played (E1 item 7; D4 item 2), D2's `Identity` as the run stored it
+   * (`RunHeader.material`): a generated item's generator, a notated item's built file (an excerpt's
+   * cut), a sight-reading phrase's complete generator identity. A stable reference, never a copied
+   * catalogue object; absent on a legacy run. Read by no evidence reader (the ladder reads `itemId`
+   * and `firstContact`): the facts the post-E transfer policy will read.
    */
   material?: Identity;
+  /**
+   * `transfer` where the run came from the session's transfer offer (D4 item 2): intent, never
+   * evidence that anything transferred. Read by no evidence reader.
+   */
+  intent?: 'transfer';
   /** A generated phrase read for the first time (`unseen: true`): first contact with the material. */
   firstContact: boolean;
   /** Of the conditions the skill's standards name, those this run met. */
@@ -208,7 +215,7 @@ export interface SelfAssessedEvidence {
   observationId: number | null;
   report: 'rough' | 'ok' | 'clean';
   at: string;
-  context: Pick<EvidenceContext, 'itemId' | 'seed' | 'material'>;
+  context: Pick<EvidenceContext, 'itemId' | 'seed' | 'material' | 'intent'>;
 }
 
 export type Evidence = MeasuredEvidence | SelfAssessedEvidence;
@@ -560,6 +567,7 @@ function evidenceFrom(
       itemId: observation.itemId,
       ...(observation.seed === undefined ? {} : { seed: observation.seed }),
       ...(observation.material === undefined ? {} : { material: observation.material }),
+      ...(observation.intent === undefined ? {} : { intent: observation.intent }),
       firstContact: observation.unseen === true,
       met,
       unattributed,
@@ -581,6 +589,7 @@ function selfAssessed(skill: Skill, observation: Observed, report: 'rough' | 'ok
       itemId: observation.itemId,
       ...(observation.seed === undefined ? {} : { seed: observation.seed }),
       ...(observation.material === undefined ? {} : { material: observation.material }),
+      ...(observation.intent === undefined ? {} : { intent: observation.intent }),
     },
   } as unknown as SelfAssessedEvidence;
 }
