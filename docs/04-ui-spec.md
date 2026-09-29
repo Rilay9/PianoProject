@@ -1730,10 +1730,24 @@ engraver draws the whole score once per zoom and the tallest system in it sets t
 a bar with a ledger line is not engraved smaller than a bar without one, and the staves of both
 slots sit at the same height in every window — anchored on the stave *lines* from the
 engraver's model, not on the drawn group, whose top is wherever the highest fingering landed.
-Until that measurement has run (one frame after the first draw) the tallest window seen so far
+Until that measurement has run (before the first draw, for a piece within the probe's reach of 48 bars; on idle after it for a longer one; U74) the tallest window seen so far
 stands in, held and never released. A run keeps the scale it started at: ink up to a tenth
 taller than the fit runs into the margin rather than shrinking the sheet; only ink taller than
 that still shrinks it, once.
+
+**The first window is the measured one (U74, 2026-09-29).** A piece within the probe's reach
+has its probe loaded with the slots and measured before the first window is priced, so the
+first frame that draws the music draws the shape and size it settles on. Before, the chooser
+had nothing to price with, drew the whole window as one system, and re-planned when the
+measurement landed on idle, after the first paint — the one small system at the top of an empty
+stage in D4's pictures of the two-bar scale, on every path in (the two paths settled alike; the
+pictures were taken before they settled). Before the first note, the piece is measured again at
+each engraving zoom the fit settles on, never at a zoom the engraving search only tries, and
+the search re-engraves the shape on the glass. A longer piece keeps the idle load and its
+first-window re-plan. `data-settled` is said a frame after the fit, once the stage has held
+still through that frame; any stage change takes it back. The observer refits every stage
+change (a height alone off a run; a width always, releasing and retaking a run's size), as it
+did.
 
 **Sideways, the sheet is engraved in chunks** (P21e A3): the window, two bars behind it and
 two ahead, so the bar being played always has neighbours on both sides to slide against. The

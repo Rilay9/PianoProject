@@ -582,6 +582,10 @@ imported score (`importStore.importProvenance`):
   `inferred` — the staves and the key are that converter's decisions, and the file does not say
   whether it kept the tracks or split one line. The two converters are separate programs and
   their versions move separately.
+  `CONVERTER_STAMPS` lists each recognised converter's stamp and what it converted from; any other
+  MusicXML keeps its staves and signature authored, and the `via` names what the encoding block
+  names and says the door does not know whether an edition or a converter from MIDI wrote them.
+  MuseScore's name is not a stamp: its exports carry it however the score was made (E42).
 - **`facts`**: each fact with how it is known — `measured` (the detectors, with their
   definitions; the key a song's signature and final bass give), `inferred` (the converter's
   default tempo, a level estimate, a hand split, a key guess, an identity key), `authored`
@@ -609,6 +613,19 @@ imported score (`importStore.importProvenance`):
   gets the provenance its stored file shows, with no `hands` or `key` fact unless a converter's
   stamp says whose they are, because a converted MIDI file is stored as MusicXML too and the door
   it came through is not on the row.
+  For a score the detectors measured, `value` is `"<converter version>;<measuring fingerprint>"`
+  (E40); the fingerprint is `app/src/data/measuringFingerprint.ts`'s (the detectors, the model, the
+  vocabulary, the density file, the engraver's release), never compared with the build's. The
+  launch also measures a measured row under other definitions or none (`definitions`), and one
+  whose tempo is inferred with a tempo-sensitive demand and no untrusted list (`untrusted`, E41); a
+  PDF or an unreadable file follows the version alone.
+- **An import's tempo** (E32, E48): where the file writes no `<sound tempo>` or `<metronome>`, a
+  words direction that is only a metronome mark is read at import (E32; the glyph mapped from
+  SMuFL's code point, the metre's beat in x/4 or x/2 where the glyph is missing) and written as a
+  measure-level `<sound tempo>` beside it; `facts.tempo` authored, quoting the mark. The learner
+  states a tempo through `importStore.stateImportTempo` (E48), which writes it into the first bar,
+  measures again, names the learner in `facts.tempo`, clears only the untrusted entries the tempo
+  resolves and never loses to a launch measurement.
 - **`facts.promise`** (D3a, 2026-09-28): on every generated item, its family's promise for its
   recipe — `{kind: "authored", via: "family_contracts.json (the rule matching the recipe)",
   value: "music" | "drill"}` — resolved by `review.promise_of`, the microscope's reading: the
@@ -637,7 +654,17 @@ imported score (`importStore.importProvenance`):
   `arrangement` are carried down; the `edition` is the parent's; the `converter` is
   `tools/content/excerpts.py` by its cut version; the facts say the demands were measured on the
   cut, the level estimated on the cut, the hands and the boundary authored by the approved row.
+  `approvedCutVersion` (the cutter the approval was merged under; below `cutVersion`, stale by cut
+  version, carried to nothing) and `dropped` (the edition's texts the cutter left out) are in the
+  block too (E33).
   §4c has the rest.
+- **An import's identity** (G1): the build keys none, and the catalogue row an import becomes
+  carries no bytes, so `material.materialOfItem` answers `none` for it; where the Score screen
+  loads the stored score it hashes the text (`material.textIdentity`: the sha256 of its UTF-8
+  bytes) and the import's runs and encounters carry `{kind: 'file', sha256}` — a duplicate import
+  under a new id is the same material. An excerpt's `fromBar`/`toBar` also scope what the learner
+  met: the encounter query normalises an excerpt's bars into its parent's by them
+  (`encounterStore.familiarityIn`).
 - **The one gate over these facts, and the contact it reads** (E2a; the E2 review's required
   change, `docs/review/responses/2532022.md`). Every automatic offer asks `eligibility.eligibleFor`,
   which since E2a is the material gate (`candidates.eligibleForMaterial`) asked of the want as the
@@ -712,6 +739,8 @@ and nothing here touches one.
   printed bars, a selection its staves allow, targets the vocabulary has, a derived id no other
   row or item shares, no repeat sign, ending or jump inside the range; a row approved on other
   parent bytes is warned as stale.
+  `cutVersion` is recorded by the merge (E33); `validate.py` also warns a row merged under an older
+  cutter and a target the built cut does not establish (E29), naming the count.
 - **The id and the key.** `excerpt.<parent id without its leading "song.">.b<from>-<to>`, with
   `.rh` or `.lh` for one hand: the definition and nothing else, never a title. The key (above)
   makes a moved endpoint or the other hand another excerpt, leaves a renamed one or a parent
@@ -727,6 +756,11 @@ and nothing here touches one.
   encoding date, the archive's entry named after the excerpt — so the bytes depend on the notes
   and the definition alone. The parent's attribution is in the excerpt's catalogue `source`
   (the parent's, whole), which the Library's Source and Licence rows and the lesson row show.
+  The edition's texts that are not the music are left out — a copyright or licence line, a swing
+  the app does not play, a direction to other players — each listed in `dropped` (E33, cut version
+  2). The renderer draws SMuFL's private-use accidentals and metronome notes in an edition's text
+  as their Unicode characters, in a cut and in every other score it loads (`OsmdView.load`, E31);
+  the file is unchanged.
 - **The row.** `excerptOf`, `hands` (the selection), `level` estimated by `difficulty.py` on the
   cut, `tracks` and `source` the parent's, the licence tags the parent's (a cut of a personal-build
   or CC BY-NC edition is one too; a build that does not bundle the parent gives no cut),
