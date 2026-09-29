@@ -38,3 +38,5 @@ Judgement first: what an import shows on the assign sheet before and after its c
 **Approved with one required change 2026-09-29** (`responses/12af708.md`), the change applied in item 3 (an unknown forbidden demand is ineligible for an automatic constrained experience, available for explicit exploration with the unknown named; adversary 13) and the migration constraint in item 4(b); dispatches beside D4 on this approval, port 4203.
 
 **Landed 2026-09-29** (Entry 107; 2532022, merged 6cf08b2); handoff `handoffs/2532022.md`. The builder's two deviations: the overload is a sibling (`eligibleForMaterial`) because the reviewer's rule moves one existing verdict; item 4(d)'s premise was wrong at the lines (E0's untrusted rule is eligible with the list carried) and the import path now writes the list instead.
+
+**Approved with one required change 2026-09-29** (`responses/2532022.md`): the material gate must be the one public admission path, novelty bound to D4's identity and contact, the seed concepts passed by the build — E2a; the sibling accepted as a step; E0's untrusted-tempo verdict kept; the assign sheet's conversion message X3's (U72).

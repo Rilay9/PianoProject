@@ -31,3 +31,5 @@ If the dataset's published location does not serve the zip to a plain download, 
 ## Report
 
 Judgement first: which tests newly run in CI and what the harness said of the three performances, as observations; then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes.
+
+**Approved with one required change 2026-09-29** (`responses/f52ebde.md`), applied: the explicit member-to-alias mapping verified against the published archive's SHA256 and metadata, zero or several matches and empty files failing, `SOURCE.md` carrying members, aliases, version, checksum, licence URL and citation, a cache hit validated; the parity script failing under CI on any missing real input; the fixture's split asserted; the licence wording corrected (never bundled or redistributed by this project); `docs/00`'s licence notes in scope. Dispatch waits for the lanes' measurement.
