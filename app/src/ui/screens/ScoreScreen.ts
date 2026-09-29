@@ -186,6 +186,17 @@ export const CONTROL_BAR_HIDE_MS = 3_000;
 export const CONTROL_BAR_START_HIDE_MS = 700;
 
 /**
+ * The longest the first draw waits for the tablet side panel's decision once
+ * the score is ready to draw (U80). The panel's two reads started when the
+ * item was found, beside the score's own, so this is time past the score's
+ * load, spent on "Loading…": long enough for a precached lesson file on a
+ * slow tablet, short enough that a read that has stalled costs the learner a
+ * moment rather than the score. Past it the score draws and the panel, if it
+ * ever comes, arrives as a resize.
+ */
+export const SIDE_PANEL_WAIT_MS = 1_500;
+
+/**
  * Sight-reading is the one drill kind that is notation (docs/05 §7–§8), so it
  * opens here rather than on the drill screen. Its parameters come from the
  * catalog item, exactly as the runtime drills' do — all of them, through
@@ -742,23 +753,38 @@ export function ScoreScreen(router: Router): HTMLElement {
    * have to leave the score to read.
    *
    * Only built on a tablet. On a phone it would be a panel with nowhere to go.
+   *
+   * **When it is decided is marked (U80).** `data-side` is absent until the
+   * panel is decided, then `text` (the lesson's words are in it) or `empty`
+   * (left out: a piece on no rung, a lesson that will not read), once per
+   * opening — every opening builds a new screen, so the next piece starts
+   * undecided. It read `empty` from the moment the screen was built, which is
+   * also what a panel left out reads, so nothing could tell "not decided yet"
+   * from "no panel" and a test reading the panel as the screen appeared read
+   * whichever the race gave it. On a phone there is no panel, so it is decided
+   * here and nothing waits for it. The word is `empty` because the
+   * stylesheet's one-column rule is keyed on it.
    */
   const sidePanel = document.createElement('details');
   sidePanel.className = 'score-side';
   sidePanel.id = 'score-side';
   sidePanel.open = true;
   sidePanel.hidden = true;
-  section.dataset.side = 'empty';
+  // Held here rather than found by id when the lesson lands: a lesson that
+  // lands after the learner has opened another piece belongs to this screen's
+  // panel, and the other piece's panel has the same ids.
+  const sideSummary = document.createElement('summary');
+  const sideBody = document.createElement('div');
   if (tablet) {
-    const summary = document.createElement('summary');
-    summary.textContent = 'Lesson notes';
-    summary.id = 'score-side-summary';
-    sidePanel.appendChild(summary);
-    const body = document.createElement('div');
-    body.className = 'score-side__body';
-    body.id = 'score-side-body';
-    sidePanel.appendChild(body);
+    sideSummary.textContent = 'Lesson notes';
+    sideSummary.id = 'score-side-summary';
+    sidePanel.appendChild(sideSummary);
+    sideBody.className = 'score-side__body';
+    sideBody.id = 'score-side-body';
+    sidePanel.appendChild(sideBody);
     section.appendChild(sidePanel);
+  } else {
+    section.dataset.side = 'empty';
   }
 
   // Both of these are put into the header row further down; they are built
@@ -2899,10 +2925,12 @@ export function ScoreScreen(router: Router): HTMLElement {
    * shows the first rung listing the piece as reading, as it always did.
    * Failure is silent and leaves the panel out: a score screen must open with
    * or without its prose.
+   *
+   * Every way out decides the panel, once (`decideSidePanel`): `text` with the
+   * words in it, `empty` for a piece on no rung or a lesson that will not
+   * read. It used to mark only `text`, so a panel left out was never decided.
    */
   async function fillSidePanel(target: CatalogItem): Promise<void> {
-    const body = document.getElementById('score-side-body');
-    if (!body) return;
     try {
       const curriculum = await loadCurriculum();
       // The prose beside the piece: the rung that judges the run, whole, and
@@ -2911,20 +2939,28 @@ export function ScoreScreen(router: Router): HTMLElement {
       // pass this run is held to: that is the Settings pair (C1; C4 item 6).
       const judging = judgingRung(curriculum);
       const found = judging ?? proseRungFor(curriculum, target.id);
-      if (!found) return;
-      const summary = document.getElementById('score-side-summary');
+      if (!found) {
+        decideSidePanel('empty');
+        return;
+      }
       // The rung's title alone. This is the heading over its text beside the
       // score, where the id said nothing and cost the words their room.
-      if (summary) summary.textContent = found.title;
+      sideSummary.textContent = found.title;
       const response = await fetch(contentUrl(found.textFile));
       if (!response.ok) throw new Error(String(response.status));
       const { body: markdown } = parseFrontMatter(await response.text());
-      sidePanel.hidden = false;
-      section.dataset.side = 'text';
-      body.replaceChildren(renderMarkdown(sidePanelProse(markdown, judging !== undefined)));
+      sideBody.replaceChildren(renderMarkdown(sidePanelProse(markdown, judging !== undefined)));
+      decideSidePanel('text');
     } catch {
-      sidePanel.hidden = true;
+      decideSidePanel('empty');
     }
+  }
+
+  /** The panel shown or left out, and `data-side` saying which: once per opening. */
+  function decideSidePanel(side: 'text' | 'empty'): void {
+    if (section.dataset.side !== undefined) return;
+    sidePanel.hidden = side !== 'text';
+    section.dataset.side = side;
   }
 
   /**
@@ -4422,7 +4458,9 @@ export function ScoreScreen(router: Router): HTMLElement {
       void findRung();
       // Shown only where the file has chord symbols in it (`openItem.ts`).
       chartRow.hidden = !hasChordSymbols(item);
-      if (tablet) void fillSidePanel(item);
+      // Started now, beside the score's own reads; the first draw waits for
+      // it further down (U80).
+      const sideDecided = tablet ? fillSidePanel(item) : null;
       sections = item.teaching?.sections ?? [];
       if (sections.length > 0) {
         sectionSelect.replaceChildren();
@@ -4553,6 +4591,33 @@ export function ScoreScreen(router: Router): HTMLElement {
       model = loaded;
       // The whole of it, in printed bars, which a run over every bar covers (G1).
       encounterTarget = { ...encounterTarget, extent: loaded.sourceMeasureCount };
+
+      // The side panel decided before the stage is priced (U80). On a tablet
+      // its column is part of the stage's width, and the renderer fits the
+      // score to the stage it is handed — so a panel that arrives after the
+      // first draw narrows the stage under music already drawn, and the sheet
+      // is fitted again, smaller. Measured on the served build (Entry 125),
+      // every piece `side-panel-prose.spec.ts` sweeps was first drawn before
+      // its panel was decided, at every tablet size tried, and refitted
+      // narrower where the column takes width from the stage. The panel's
+      // reads (the curriculum and the lesson file, both precached) have run
+      // beside the score's since the item was found, so the wait is only what
+      // the panel takes past the score's own load. Bounded all the same,
+      // because the lesson's fetch has no timeout of its own and a score must
+      // open with or without its prose: past the bound the stage is priced
+      // undecided — which on a tablet keeps the column's track, so a panel
+      // that then arrives with text moves nothing, and one left out gives the
+      // stage its width back as an ordinary resize.
+      if (sideDecided) {
+        let bound: number | undefined;
+        await Promise.race([
+          sideDecided,
+          new Promise<void>((resolve) => {
+            bound = window.setTimeout(resolve, SIDE_PANEL_WAIT_MS);
+          }),
+        ]);
+        window.clearTimeout(bound);
+      }
 
       renderer = await WindowRenderer.create({
         container: stage,
