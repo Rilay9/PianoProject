@@ -174,6 +174,8 @@ Not run: Playwright (no browser layer). Unverified:
 
 **The proof, read at 07:40 local (2026-09-29).** The Pages run 36559774503 on the record commit 248c6138 completed *success*: the strict build validated and the deploy published, the first since 14866282 (00:21 local). The runner's lines: `import [KERN] imported 116 score(s), 47 placeholder(s), excluded 73 (0 cached, 116 converted)`; `import [PDMX] imported 367 score(s), 175 placeholder(s)`; `merge catalog 2089 items`; `validate content validation OK (2089 catalog items)` — the same strict catalogue as every failed run, now validated. The published site is now 248c6138, with every landing since F2; the phone takes it when the app is next opened and its service worker updates (unverified on the phone itself). The cache-restore step is still held for the reviewer's word.
 
+**The held workflow part, merged (2026-09-29).** After the reviewer's word (`responses/56a4b9b7.md`: restore-only, CI's path and key, never semantic input to validation), the builder's second commit (55722e54: `pages.yml`'s `actions/cache/restore` step and the map row for `pages.yml`) merged at 0c2d7100; the map's test and minimum green on it; the Pages run on that push is the proof of the step (a restore hit or a miss that neither saves nor fails), recorded when read.
+
 ## Doc rows
 
 - **`docs/08` — a new row** after F2's:
