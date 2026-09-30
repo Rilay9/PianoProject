@@ -471,6 +471,28 @@ describe('2: the sheet says Mastered only once the store does', () => {
     finish(run({}));
     await vi.waitFor(() => expect(heading()).toBe('Mastered'));
   });
+
+  // E50c (Entry 190): a row can keep two master dates and stay *passed* — an old day a tempo repair made
+  // incomparable is history the store no longer counts. The heading counts what the store counted, never the dates.
+  it('heads a row the store kept passed over two dates "Mastery run 1 of 2", never "2 of 2"', async () => {
+    recordRunSpy.mockImplementationOnce((result: RunResult) =>
+      Promise.resolve({
+        itemId: result.itemId,
+        status: 'passed',
+        bestAccuracy: 1,
+        bestTempoPct: 100,
+        attempts: 2,
+        lastPracticedAt: '',
+        minutes: 1,
+        passedOn: ['2026-09-20', '2026-10-01'],
+        masteredOn: ['2026-09-20', '2026-10-01'],
+      }),
+    );
+    await open(`#/score/${SONG_ID}`);
+    finish(run({}));
+    await vi.waitFor(() => expect(heading()).toMatch(/^Mastery run \d of 2$/));
+    expect(heading(), 'the sheet counted a day the store refused').toBe('Mastery run 1 of 2');
+  });
 });
 
 describe('4: the self-report is recorded', () => {

@@ -3866,9 +3866,12 @@ export function ScoreScreen(router: Router): HTMLElement {
         .then((row) => {
           // The heading follows the store (T37): a master-standard run reads
           // *Passed* until the row it was written into says what it came to,
-          // so the sheet can never say *Mastered* before the store does.
+          // so the sheet can never say *Mastered* before the store does. Nor a
+          // count past it (E50c): a row the store did not make mastered holds
+          // fewer than MASTER_DAYS days that count, though `masteredOn` keeps
+          // every date — an old day a tempo repair made incomparable among them.
           if (result.masterEligible && !rhythmRun) {
-            const days = Math.min(MASTER_DAYS, row.masteredOn?.length ?? 1);
+            const days = Math.min(MASTER_DAYS - 1, row.masteredOn?.length ?? 1);
             setHeading(
               row.status === 'mastered'
                 ? 'Mastered'

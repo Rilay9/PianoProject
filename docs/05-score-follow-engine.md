@@ -996,7 +996,12 @@ no rung uses the defaults.*
   refuses its tempo channel as not comparable — it meets a rung that asks no tempo and none that
   asks one — rather than reading 100 % of 96 as 100 % of the printed tempo. The progress row's
   derivations (`status`, `passedOn`, `masteredOn`, `bestTempoPct`) were judged when the run was
-  recorded and stay as they are: history, neither rewritten nor recomputed.
+  recorded and stay as they are: history, neither rewritten nor recomputed. One decision is taken
+  now, not read back: a *fresh* award of *mastered* for one of those items counts only the
+  `masteredOn` days a stored run supports whose tempo is comparable and whose own numbers meet the
+  master standard (E50c, `progressStore.recordRun`), so an old day at 100 % of 96 and one new day
+  at the printed tempo are one master day, not two; the dates stay as history, a row already
+  mastered stays mastered, and the sheet's *Mastery run N of 2* never counts past the row's status.
 
 **What a run records (2026-09-26, C1).** `Scoring.measuresOf` is the one place a run's
 measures are defined for the record, beside `buildScore` for the sheet: pitch with its
