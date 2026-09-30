@@ -14,9 +14,9 @@ and it starts with an absurdly small number of notes.
 
 **The setup.** The app loops I–IV–V in C — four bars of C, two of F, two of G —
 at a slow tempo. Your right hand uses **only the five notes of C position**.
-Nothing you play can be wrong, because all five notes belong to all three
-chords or are a step away from one. That is deliberate: the first obstacle is
-not wrong notes, it is nerve.
+For pitch, any of these five notes can work here: over each of the three
+chords, each note is either a chord tone or a step from one. That is
+deliberate: the first obstacle is not wrong notes, it is nerve.
 
 **Start with rhythm, not pitch.** Play *one note*, middle C, for a whole chorus,
 in different rhythms. Long, short, on the beat, off the beat, with silence. You

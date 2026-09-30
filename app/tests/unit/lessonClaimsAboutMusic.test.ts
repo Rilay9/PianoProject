@@ -3769,3 +3769,49 @@ describe('F3a: each audited sentence says what the app does, what the page shows
     });
   }
 });
+
+// --- CL01: lesson truth, T4 and T47 (Entry 189, 2026-09-30) -----------------
+//
+// Two sentences stated a guarantee wider than their evidence. improv.3 said
+// "Nothing you play can be wrong" over a loop whose next paragraphs treat
+// rhythm and silence as things a player can get wrong; what the setup does
+// guarantee is about pitch. Over C, F and G, each of the five C-position notes
+// (C D E F G) is a chord tone or a step from one: fifteen note-and-chord
+// pairs, each worked. ragtime.9 said memory laid down fast "has the errors in
+// it, and those never come out": a practice heuristic stated as permanence.
+// Both replacements are the reviewer's decided text, verbatim
+// (`docs/review/responses/questions-e71ef3ad.md` §CL01). ragtime.9's row holds
+// the heading sentence "Memorising at full tempo." with it, because the advice
+// reads through that heading. improv.8:15 ("Every dominant chord can become
+// the dominant a tritone away") was read and kept: a dominant seventh's third
+// and seventh are the seventh and third of the dominant seventh a tritone
+// away, for all twelve, so the "every" is justified. improv.4:14–17 was read
+// and kept as already hedged (F0's rewrite). The layers: improv.3 is the
+// worked arithmetic plus a teacher's scoping; ragtime.9 is a teacher's
+// heuristic said as one, with no source. Nothing here has been heard.
+
+/** `[lesson, what the sentence now says, the words that must be gone, the words that replace them]` — F1_VOICE's shape. */
+const CL01_SENTENCES: [string, string, string[], string][] = [
+  [
+    'improv.3',
+    'T4, T47: any of the five notes can work for pitch, each a chord tone or a step from one over each chord, with no claim that nothing played can be wrong',
+    ['nothing you play can be wrong', 'all five notes belong to all three chords'],
+    'For pitch, any of these five notes can work here: over each of the three chords, each note is either a chord tone or a step from one.',
+  ],
+  [
+    'ragtime.9',
+    'T4: mistakes memorised at full tempo can be hard to unlearn, with no claim that fast memory holds the errors or that they never come out',
+    ['never come out', 'memory laid down fast has the errors in it'],
+    'Common mistake. Memorising at full tempo. If you memorise mistakes at full tempo, they can be hard to unlearn.',
+  ],
+];
+
+describe('CL01: each sentence keeps its advice and states only what its evidence carries', () => {
+  for (const [lesson, says, gone, now] of CL01_SENTENCES) {
+    it(`${lesson}: ${says}`, () => {
+      const text = f0mText(lesson);
+      for (const phrase of gone) expect.soft(text.toLowerCase()).not.toContain(phrase.toLowerCase());
+      expect.soft(text).toContain(now);
+    });
+  }
+});

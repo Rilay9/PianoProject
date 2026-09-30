@@ -1,0 +1,15 @@
+$ python docs/prompts/runs/CL01/scripts-coverage.py --check   (before the record was written; captured then)
+FAULT: no record at coverage-record.md
+exit=1
+
+$ python docs/prompts/runs/CL01/scripts-coverage.py --check build/CL01/coverage-record.damaged.md   (a copy of the record: improv.8's row dropped, ragtime.9's G3 blanked, a 1.2 count changed, 0.1's G12 dropped)
+rows 108 of 109 lessons; gate columns per row: [11, 12]; faults 4
+FAULT: improv.8: no row
+FAULT: 0.1: 11 gate cells, not 12
+FAULT: 1.2 G1: E82 (5) but the rule maps 2
+FAULT: ragtime.9 G3: empty
+exit=1
+
+$ python docs/prompts/runs/CL01/scripts-coverage.py --check
+rows 109 of 109 lessons; gate columns per row: [12]; faults 0
+exit=0

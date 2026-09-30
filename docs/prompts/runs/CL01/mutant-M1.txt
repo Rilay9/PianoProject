@@ -1,0 +1,68 @@
+$ python build/CL01/mutate.py M1
+M1: applied to improv.3.md
+$ npx vitest run tests/unit/lessonClaimsAboutMusic.test.ts -t CL01
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/lessonClaimsAboutMusic.test.ts (187 tests | 1 failed | 185 skipped) 18ms
+   ❯ CL01: each sentence keeps its advice and states only what its evidence carries (2)
+     × improv.3: T4, T47: any of the five notes can work for pitch, each a chord tone or a step from one over each chord, with no claim that nothing played can be wrong 16ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/lessonClaimsAboutMusic.test.ts > CL01: each sentence keeps its advice and states only what its evidence carries > improv.3: T4, T47: any of the five notes can work for pitch, each a chord tone or a step from one over each chord, with no claim that nothing played can be wrong
+AssertionError: expected ' improvising is not composing quickly…' not to contain 'nothing you play can be wrong'
+
+Expected: "nothing you play can be wrong"
+Received: " improvising is not composing quickly. it is a much smaller skill than it sounds and it starts with an absurdly small number of notes. the setup. the app loops i–iv–v in c — four bars of c, two of f, two of g — at a slow tempo. your right hand uses only the five notes of c position. nothing you play can be wrong, because all five notes belong to all three chords or are a step away from one. that is deliberate: the first obstacle is not wrong notes, it is nerve. start with rhythm, not pitch. play one note, middle c, for a whole chorus, in different rhythms. long, short, on the beat, off the beat, with silence. you will discover that most of what makes an improvisation sound good is rhythm and space, which is a much more useful thing to learn first than a scale. then add a second note, then a third. four notes is a lot. phrases and answers. play two bars, then leave two bars empty. then play something that answers the first phrase — same rhythm, different ending. this call-and-response shape is what makes improvisation sound like speech rather than noodling. a motif is a short idea, two or three notes, that you repeat and vary. play it, play it again a step higher, play it again with the last note longer. almost every memorable melody in western music is a motif repeated with small changes. nothing is scored. the app keeps what you played and gives you listen back at the end; it does not grade any of it. the only measure is whether you kept time and whether you would play any of it again. the recording lasts as long as you stay on the screen and is not saved anywhere, which is deliberate — it is for hearing once, not for building a collection of takes. common mistake. playing continuously because silence feels like failure. silence is where the listener catches up. count four empty bars and mean it. tools for this rung. the loop you play over is the rung's loop drill, on the drill screen: four bars of c, two of f, two of g, at 72 bpm. nothing there is judged or kept, which is what makes it safe to play badly over. how you'll know you've got it. three choruses over the loop where each phrase is answered, there is at least one full bar of silence, and you can hum back something you played. "
+
+ ❯ tests/unit/lessonClaimsAboutMusic.test.ts:3813:70
+    3811|     it(`${lesson}: ${says}`, () => {
+    3812|       const text = f0mText(lesson);
+    3813|       for (const phrase of gone) expect.soft(text.toLowerCase()).not.t…
+       |                                                                      ^
+    3814|       expect.soft(text).toContain(now);
+    3815|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/lessonClaimsAboutMusic.test.ts > CL01: each sentence keeps its advice and states only what its evidence carries > improv.3: T4, T47: any of the five notes can work for pitch, each a chord tone or a step from one over each chord, with no claim that nothing played can be wrong
+AssertionError: expected ' improvising is not composing quickly…' not to contain 'all five notes belong to all three ch…'
+
+Expected: "all five notes belong to all three chords"
+Received: " improvising is not composing quickly. it is a much smaller skill than it sounds and it starts with an absurdly small number of notes. the setup. the app loops i–iv–v in c — four bars of c, two of f, two of g — at a slow tempo. your right hand uses only the five notes of c position. nothing you play can be wrong, because all five notes belong to all three chords or are a step away from one. that is deliberate: the first obstacle is not wrong notes, it is nerve. start with rhythm, not pitch. play one note, middle c, for a whole chorus, in different rhythms. long, short, on the beat, off the beat, with silence. you will discover that most of what makes an improvisation sound good is rhythm and space, which is a much more useful thing to learn first than a scale. then add a second note, then a third. four notes is a lot. phrases and answers. play two bars, then leave two bars empty. then play something that answers the first phrase — same rhythm, different ending. this call-and-response shape is what makes improvisation sound like speech rather than noodling. a motif is a short idea, two or three notes, that you repeat and vary. play it, play it again a step higher, play it again with the last note longer. almost every memorable melody in western music is a motif repeated with small changes. nothing is scored. the app keeps what you played and gives you listen back at the end; it does not grade any of it. the only measure is whether you kept time and whether you would play any of it again. the recording lasts as long as you stay on the screen and is not saved anywhere, which is deliberate — it is for hearing once, not for building a collection of takes. common mistake. playing continuously because silence feels like failure. silence is where the listener catches up. count four empty bars and mean it. tools for this rung. the loop you play over is the rung's loop drill, on the drill screen: four bars of c, two of f, two of g, at 72 bpm. nothing there is judged or kept, which is what makes it safe to play badly over. how you'll know you've got it. three choruses over the loop where each phrase is answered, there is at least one full bar of silence, and you can hum back something you played. "
+
+ ❯ tests/unit/lessonClaimsAboutMusic.test.ts:3813:70
+    3811|     it(`${lesson}: ${says}`, () => {
+    3812|       const text = f0mText(lesson);
+    3813|       for (const phrase of gone) expect.soft(text.toLowerCase()).not.t…
+       |                                                                      ^
+    3814|       expect.soft(text).toContain(now);
+    3815|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/lessonClaimsAboutMusic.test.ts > CL01: each sentence keeps its advice and states only what its evidence carries > improv.3: T4, T47: any of the five notes can work for pitch, each a chord tone or a step from one over each chord, with no claim that nothing played can be wrong
+AssertionError: expected ' Improvising is not composing quickly…' to contain 'For pitch, any of these five notes ca…'
+
+Expected: "For pitch, any of these five notes can work here: over each of the three chords, each note is either a chord tone or a step from one."
+Received: " Improvising is not composing quickly. It is a much smaller skill than it sounds and it starts with an absurdly small number of notes. The setup. The app loops I–IV–V in C — four bars of C, two of F, two of G — at a slow tempo. Your right hand uses only the five notes of C position. Nothing you play can be wrong, because all five notes belong to all three chords or are a step away from one. That is deliberate: the first obstacle is not wrong notes, it is nerve. Start with rhythm, not pitch. Play one note, middle C, for a whole chorus, in different rhythms. Long, short, on the beat, off the beat, with silence. You will discover that most of what makes an improvisation sound good is rhythm and space, which is a much more useful thing to learn first than a scale. Then add a second note, then a third. Four notes is a lot. Phrases and answers. Play two bars, then leave two bars empty. Then play something that answers the first phrase — same rhythm, different ending. This call-and-response shape is what makes improvisation sound like speech rather than noodling. A motif is a short idea, two or three notes, that you repeat and vary. Play it, play it again a step higher, play it again with the last note longer. Almost every memorable melody in Western music is a motif repeated with small changes. Nothing is scored. The app keeps what you played and gives you Listen back at the end; it does not grade any of it. The only measure is whether you kept time and whether you would play any of it again. The recording lasts as long as you stay on the screen and is not saved anywhere, which is deliberate — it is for hearing once, not for building a collection of takes. Common mistake. Playing continuously because silence feels like failure. Silence is where the listener catches up. Count four empty bars and mean it. Tools for this rung. The loop you play over is the rung's loop drill, on the drill screen: four bars of C, two of F, two of G, at 72 bpm. Nothing there is judged or kept, which is what makes it safe to play badly over. How you'll know you've got it. Three choruses over the loop where each phrase is answered, there is at least one full bar of silence, and you can hum back something you played. "
+
+ ❯ tests/unit/lessonClaimsAboutMusic.test.ts:3814:25
+    3812|       const text = f0mText(lesson);
+    3813|       for (const phrase of gone) expect.soft(text.toLowerCase()).not.t…
+    3814|       expect.soft(text).toContain(now);
+       |                         ^
+    3815|     });
+    3816|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed | 185 skipped (187)
+   Start at  17:55:08
+   Duration  323ms (transform 48%, import 40%, tests 10%, worker 2%)
+
+exit=1
+M1 restored
