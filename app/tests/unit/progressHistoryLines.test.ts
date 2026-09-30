@@ -131,6 +131,38 @@ describe('the history line says what was measured (L41, L43, L49: one mechanism)
   });
 });
 
+describe('a drill set with nothing answered says Not measured, as its sheet does (U102)', () => {
+  // The sheet heads such a set *Not measured* (U96); the history printed the record's zero as "0%", or, once
+  // the record said `not measured`, the jam's *Not judged*. One reading (`data/accuracyReading.ts`) decides
+  // both, from the row's own answered count, or — on a row stored before it — from note-flash's proven
+  // invariant alone (Entry 162). A measured 0 % stays "0%", and so does an old 0 % of any other kind.
+  const drill = { tempoPct: 100, tempoMeasured: false };
+  it('a new row (answered 0) and a legacy note-flash row read Not measured; measured zeros and jams unchanged', async () => {
+    await seed([
+      row('drill.u102.new', { ...drill, mode: 'drill:note-flash', accuracy: NOT_MEASURED, wrongNotes: 0, missed: 10, answered: 0 }),
+      row('drill.u102.legacy', { ...drill, mode: 'drill:note-flash', accuracy: 0, wrongNotes: 0, missed: 10 }),
+      row('drill.u102.wrong', { ...drill, mode: 'drill:note-flash', accuracy: 0, wrongNotes: 3, missed: 7, answered: 3 }),
+      row('drill.u102.wrong.legacy', { ...drill, mode: 'drill:note-flash', accuracy: 0, wrongNotes: 3, missed: 7 }),
+      row('drill.u102.findkey.legacy', { ...drill, mode: 'drill:find-key', accuracy: 0, wrongNotes: 0, missed: 10 }),
+      row('drill.u102.jam', {
+        ...drill,
+        mode: 'drill:backing-track',
+        accuracy: NOT_MEASURED,
+        wrongNotes: NOT_MEASURED,
+        missed: NOT_MEASURED,
+        notesHeard: 4,
+      }),
+    ]);
+    const section = await mount();
+    expect.soft(line(section, 'drill.u102.new'), 'a new unanswered set').toBe('Not measured · 1 min');
+    expect.soft(line(section, 'drill.u102.legacy'), 'a legacy unanswered note-flash set').toBe('Not measured · 1 min');
+    expect.soft(line(section, 'drill.u102.wrong'), 'answered, all wrong: measured').toBe('0% · 1 min');
+    expect.soft(line(section, 'drill.u102.wrong.legacy')).toBe('0% · 1 min');
+    expect.soft(line(section, 'drill.u102.findkey.legacy'), 'no proven invariant: legacy 0 % kept').toBe('0% · 1 min');
+    expect.soft(line(section, 'drill.u102.jam')).toBe('Not judged · 4 notes played · 1 min');
+  });
+});
+
 describe('a run that was not a first reading, or had help, says so in a word', () => {
   it('a sight-read met before, and a take heard part way', async () => {
     await seed([

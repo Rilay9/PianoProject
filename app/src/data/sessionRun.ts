@@ -28,6 +28,7 @@
  * screens say one thing.
  */
 import { openDatabase } from './db';
+import { setMeasured } from './accuracyReading';
 import type { ReadingMoves } from './db';
 import { dayKey, type Contact } from './progressStore';
 import type { SlotKind } from '../curriculum/session';
@@ -499,9 +500,13 @@ export function scoreOutcome(run: {
   return run.passed ? 'passed-full' : 'failed';
 }
 
-/** A drill's outcome (the protocol table): its judged result where it judges; one that judges nothing, or answered nothing, has none. */
+/**
+ * A drill's outcome (the protocol table): its judged result where it judges; one that judges nothing, or answered
+ * nothing, has none. "Answered nothing" is the record's own reading of the set (`setMeasured`, U102), so the
+ * session and the stored row say one thing.
+ */
 export function drillOutcomeOf(outcome: { judged: boolean; passed: boolean }, answered: number): Outcome {
-  if (!outcome.judged || answered === 0) return 'unknown';
+  if (!setMeasured({ judged: outcome.judged, answered })) return 'unknown';
   return outcome.passed ? 'passed-full' : 'failed';
 }
 

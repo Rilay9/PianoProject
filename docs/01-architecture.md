@@ -259,7 +259,7 @@ IndexedDB stores (via `idb`):
 |-------|-----|-------|
 | `settings` | `'app'` | all settings (see 04-ui-spec.md §7) |
 | `progress` | itemId | `{ itemId, status:'new'|'started'|'passed'|'mastered', bestAccuracy, bestTempoPct, attempts, lastPracticedAt, minutes }` |
-| `sessions` | autoincrement | one row per practice run: itemId, mode, tempoPct, accuracy, date, durationMs; `performance: true` for a Perform run (`04` §5e), `rhythmOnly: true` for a rhythm run, which can never be a pass (`04` §5); since C1 the run's **observation** — what it measured by its own definitions, per step, the conditions it was played under, every channel it did not measure marked `not measured` (below) |
+| `sessions` | autoincrement | one row per practice run: itemId, mode, tempoPct, accuracy, date, durationMs; `performance: true` for a Perform run (`04` §5e), `rhythmOnly: true` for a rhythm run, which can never be a pass (`04` §5); since C1 the run's **observation** — what it measured by its own definitions, per step, the conditions it was played under, every channel it did not measure marked `not measured` (below); since U102 a judged drill set carries `answered`, and a set with nothing answered stores its accuracy as `not measured` beside `answered: 0` — every reader takes a run's accuracy through one reading, `data/accuracyReading.ts` |
 | `imports` | id | user-imported score: name, MusicXML text (or mxl bytes) **or PDF bytes**, `kind: 'musicxml' \| 'pdf'`, tags, addedAt, and for a PDF `cuts` — the corrected system boundaries. A PDF item is viewable and followable but not playable or judgeable — it has no notes (`04` §5b). |
 | `plan` | `'current'` | current stage/unit, chosen track order, placement-test result |
 | `streak` | `'streak'` | weekly-minutes goal progress and practice-day history (no daily-streak punishment) |
@@ -309,7 +309,15 @@ field the run carries (`RunObservation` in `data/db.ts`):
   and lenient chords, laps.
 - **Not measured is a value.** `NOT_MEASURED` (`'not measured'`) marks a channel the run did not
   measure — Wait's timing, a run nothing heard (its `accuracy`, `wrongNotes` and `missed` too),
-  a jam's judged channels. It was 0, and the Progress history printed it as "0%".
+  a jam's judged channels. It was 0, and the Progress history printed it as "0%". A drill set of a
+  kind that judges, with nothing answered, is the same: its accuracy is `not measured`, beside
+  `answered: 0` and its unanswered count in `missed` (U102). It was stored as 0 while its sheet said
+  *Not measured*. Rows stored before U102 have no `answered` and are never rewritten. One reading
+  (`accuracyReading`) reads them by the reviewer's compatibility order: the row's own `answered`,
+  else a field that records answers (none exists), else a kind whose rows provably tell zero answers
+  apart (note-flash alone: accuracy 0 beside wrong notes 0, proved at every writer, Entry 162), else
+  the stored number as legacy. A rhythm row's `missed` is the onsets not hit (its `answered` counts
+  extra taps too).
 - **Evidence is refused in one place.** A run with `unseen: false` is kept — minutes, attempt,
   row — and `recordRun` gives it no pass, no mastery, no best and no day's tick, whatever its
   writer said.

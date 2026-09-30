@@ -58,6 +58,7 @@ import {
 } from '../../engine/drills';
 import { Metronome } from '../../audio/Metronome';
 import { drillOutcomeOf, type Outcome } from '../../data/sessionRun';
+import { UNJUDGED_DRILL_KINDS, accuracyReading, setMeasured } from '../../data/accuracyReading';
 import { drawTransition, sessionHandle } from '../sessionRunner';
 import { audioTimeToPerformanceMs, captureAudioClockAnchor, type AudioClockAnchor } from '../../audio/clock';
 import { metronomeSoundFor, shouldMuteExpectedPlayback } from '../../audio/inputPolicy';
@@ -65,7 +66,7 @@ import { noteLabel, worthRecording, type DrillKind } from '../../engine/drills/t
 import { NOT_MEASURED, type EngineInput, type Mode } from '../../engine/types';
 import { getSettings } from '../../data/settingsStore';
 import { getMidiSettings } from '../../data/midiSettings';
-import { getProgress, recordRun, sessionsForItem } from '../../data/progressStore';
+import { getProgress, recordRun, sessionsForItem, type RunResult } from '../../data/progressStore';
 import { runFacts } from '../../curriculum/material';
 import { recordPlacement } from '../../data/planStore';
 import { tipsFor, type Tips } from '../../curriculum/tips';
@@ -224,14 +225,6 @@ const DICTATION_TICK_MS = 60;
  */
 const FORM_TICK_MS = 100;
 
-/**
- * Drill kinds whose run measures nothing a check could read (T41; G62, X1): a backing track judges nothing,
- * and the orientation kinds — a checklist the learner ticks, the guided tour, the placement test — measure no
- * playing. One list for the verdict (`drillOutcome`) and for the rung page's *Quick check*, which promises a
- * measured test (`measuresARun`).
- */
-export const UNJUDGED_DRILL_KINDS: ReadonlySet<string> = new Set(['backing-track', 'checklist', 'walkthrough', 'placement']);
-
 /** Whether a run of the item is measured: notation on the Score screen, or a drill of a kind that judges. */
 export function measuresARun(item: CatalogItem): boolean {
   if (item.file) return true;
@@ -265,6 +258,50 @@ export function drillOutcome(
     passed: result.accuracy >= passAccuracyPct / 100,
     masterEligible: result.accuracy >= 0.97,
     judged: true,
+  };
+}
+
+/** What a drill set puts on the record beside its verdict (`drillRecordCounts`). */
+export type DrillRecordCounts = Pick<RunResult, 'accuracy' | 'wrongNotes' | 'missed' | 'answered' | 'notesHeard'>;
+
+/**
+ * The record's accuracy, wrong notes, misses and answered count for a set, from the model's own counts and the
+ * verdict (`keep` stores them; U102). One reading of the result reads them back (`data/accuracyReading.ts`).
+ *
+ * - **A kind that judges nothing** (a backing track, T41): its accuracy, wrong notes and misses are not
+ *   measured (C1, L49), and what it counted is the notes played. No answered count.
+ * - **A kind that judges, nothing answered** (`setMeasured` false): `accuracy` is `not measured`, beside
+ *   `answered: 0`, no wrong notes, and every card of the set missed. It stored the model's accuracy for "no
+ *   answers", a 0 (`PromptDrill.result`: `answered > 0 ? correct / answered : 0`), and Progress printed *0%*
+ *   for a set whose sheet says *Not measured* (U96). `missed` stays a number, never 0, so the rung state's
+ *   `done` (`missed === 0` beside an unmeasured accuracy) never reads it as finished.
+ * - **One answer or more**: the model's accuracy, `answered` as the model counts it (cards; taps on a rhythm
+ *   set; attempts on a Simon set, U96a), wrong notes `answered − correct`.
+ *
+ * `missed` is the set's prompts left unanswered, `total − answered`, for every kind whose `answered` counts
+ * the set's prompts and is bounded by `total` (U96a). A rhythm set's `answered` is the onsets hit plus every
+ * extra tap, so that arithmetic stored *missed 0* for eight onsets with six hit and four extra taps, two onsets
+ * never hit; its `missed` is the onsets not hit, `total − correct`, and its extra taps stay the wrong notes
+ * (U104's item at this write, the reviewer's guard: extra taps do not erase missed onsets).
+ */
+export function drillRecordCounts(result: DrillResult, outcome: { judged: boolean }): DrillRecordCounts {
+  if (!outcome.judged) {
+    return {
+      accuracy: NOT_MEASURED,
+      wrongNotes: NOT_MEASURED,
+      missed: NOT_MEASURED,
+      notesHeard: result.detail?.notesPlayed ?? result.answered,
+    };
+  }
+  const missed = Math.max(0, result.total - (result.kind === 'rhythm' ? result.correct : result.answered));
+  if (!setMeasured({ judged: true, answered: result.answered })) {
+    return { accuracy: NOT_MEASURED, wrongNotes: 0, missed, answered: 0 };
+  }
+  return {
+    accuracy: result.accuracy,
+    wrongNotes: Math.max(0, result.answered - result.correct),
+    missed,
+    answered: result.answered,
   };
 }
 
@@ -2366,10 +2403,12 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // no history, and the plateau advice silently stopped appearing with no
     // error and nothing on the screen to show for it.
     // Only runs that measured an accuracy: a kept jam's is "not measured"
-    // (C1), and no plateau is made of that.
-    const recent = (await sessionsForItem(current.id, 2).catch(() => [])).flatMap((row) =>
-      typeof row.accuracy === 'number' ? [{ accuracy: row.accuracy, at: row.at }] : [],
-    );
+    // (C1), and no plateau is made of that — nor of a set nobody answered,
+    // whose older rows still carry a 0 (U102, `accuracyReading`).
+    const recent = (await sessionsForItem(current.id, 2).catch(() => [])).flatMap((row) => {
+      const reading = accuracyReading(row);
+      return reading.kind === 'measured' ? [{ accuracy: reading.accuracy, at: row.at }] : [];
+    });
     const coaching: Coaching | null = coach(result.kind, result, recent);
     if (!coaching) return;
     line.replaceChildren(el('span', { text: coaching.text }));
@@ -2603,11 +2642,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   function keep(): void {
     if (!item || !lastResult) return;
     const { result, outcome, durationMs } = lastResult;
-    // A set nothing judged (a backing track, T41) measured one thing, the
-    // notes played; its accuracy, wrong notes and misses are not measured and
-    // are stored as that (C1, L49). They were written as 0 and "every note
-    // played was wrong", and the Progress history printed the jam as "0%".
-    const judged = outcome.judged;
+    // What the set measured, from the model's counts and the verdict (`drillRecordCounts`): a set nothing
+    // judged (a backing track, T41) measured the notes played, its accuracy, wrong notes and misses not
+    // measured (C1, L49); a set of a judging kind with nothing answered measured nothing, beside `answered: 0`
+    // (U102). Both were written as 0, and the Progress history printed each as "0%".
     const saved = recordRun({
       itemId: item.id,
       // Which rung judged it — see the Score screen's note on the same field.
@@ -2620,13 +2658,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       // item's best tempo on a pass (L52, C7).
       tempoPct: 100,
       tempoMeasured: false,
-      accuracy: judged ? result.accuracy : NOT_MEASURED,
+      ...drillRecordCounts(result, outcome),
       // A drill's accuracy is measured, not estimated — every answer is
       // either the right pitch set or it is not.
       accuracyEstimated: false,
-      wrongNotes: judged ? Math.max(0, result.answered - result.correct) : NOT_MEASURED,
-      missed: judged ? Math.max(0, result.total - result.answered) : NOT_MEASURED,
-      ...(judged ? {} : { notesHeard: result.detail?.notesPlayed ?? result.answered }),
       durationMs,
       passed: outcome.passed,
       masterEligible: outcome.masterEligible,

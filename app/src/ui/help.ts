@@ -411,7 +411,7 @@ export function notJudgedLines(
 export const HISTORY_TEXT = {
   /** After a Wait run's accuracy, in place of "at 70%": the slider is not a tempo anyone kept. */
   tempoNotJudged: 'tempo not judged',
-  /** A run the app heard nothing of — the sheet's own heading for it. */
+  /** A run the app heard nothing of, or a drill set nobody answered (U102) — the sheet's own heading for each. */
   notMeasured: 'Not measured',
   /** …and the answer the learner gave, which is the whole of its record. */
   youSaid: (report: 'rough' | 'ok' | 'clean'): string =>
