@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **U32** — `handoffs/2f67b047.md` (respond in `responses/2f67b047.md`). A long piece keeps its look-ahead row (Entry 169).
 - **E54** — `handoffs/496fa11d.md` (respond in `responses/496fa11d.md`). A rejection of the current approval withdraws it (Entry 174).
 - **L120d** — `handoffs/4e76c768.md` (respond in `responses/4e76c768.md`). A leap inside a taught position (Entry 167).
 - **U105** — `handoffs/f51e8010.md` (respond in `responses/f51e8010.md`). Every start asks the sound (Entry 172).

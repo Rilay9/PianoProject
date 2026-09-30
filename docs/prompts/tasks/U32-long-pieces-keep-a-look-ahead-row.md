@@ -302,3 +302,5 @@ Use the existing product order:
 4. honour the requested bars count after those constraints.
 
 U32 may dispatch.
+
+**Landed 2026-09-29** (Entry 169; 2f67b047, merged 57d01fa5); handoff `handoffs/2f67b047.md`.
