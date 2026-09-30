@@ -83,8 +83,8 @@ vi.mock('../../src/curriculum/load', () => ({
 }));
 
 const { LibraryScreen, matches } = await import('../../src/ui/screens/LibraryScreen');
-const { OFFERS, PROJECT_STATES, allProjects, applyProjectAction, resetProjectsForTest } = await import('../../src/data/projectStore');
-const { dayKey, resetProgressForTest } = await import('../../src/data/progressStore');
+const { PROJECT_STATES, allProjects, applyProjectAction, resetProjectsForTest } = await import('../../src/data/projectStore');
+const { dayKey, recordRun, resetProgressForTest } = await import('../../src/data/progressStore');
 const { resetEncountersForTest } = await import('../../src/data/encounterStore');
 const { PROJECT_TEXT, projectSince } = await import('../../src/ui/help');
 
@@ -423,7 +423,9 @@ describe('the Details sheet is the door to the one project sheet (G85a)', () => 
     expect((await sheetSays(polishing)).dataset.item).toBe('import.mine');
   });
 
-  it('(d) no project on a song that opens on the Score screen: the door says so, and the sheet opens on its four offers; opening wrote nothing', async () => {
+  // Revised (G96 (s), class replace): a song never played is offered three ways in; *Keep it playable*
+  // only once the record says it is passed ((t) below). Old assumption: `OFFERS.none` on any song.
+  it('(d) no project on a song that opens on the Score screen, never played: the door says so, and the sheet opens on three offers, no Keep it playable; opening wrote nothing', async () => {
     await seed();
     const section = await mount();
     const before = await storeAsSeeded();
@@ -437,9 +439,58 @@ describe('the Details sheet is the door to the one project sheet (G85a)', () => 
     await vi.waitFor(() => {
       expect(sheet.querySelector('#project-met')?.textContent).toBe(PROJECT_TEXT.never);
     });
-    expect([...sheet.querySelectorAll('#project-actions button')].map((one) => one.textContent)).toEqual(OFFERS.none.map((action) => PROJECT_TEXT.actions[action]));
+    expect([...sheet.querySelectorAll('#project-actions button')].map((one) => one.textContent)).toEqual(
+      (['save', 'learn', 'polish'] as const).map((action) => PROJECT_TEXT.actions[action]),
+    );
+    expect(sheet.querySelector('#project-action-keep')).toBeNull();
     expect(await storeAsSeeded()).toBe(before);
     expect(projectBadgeOf(section, 'song.none')).toBeNull();
+  });
+
+  it('(t) a passed song with no project: the door opens the sheet on four offers, Keep it playable among them', async () => {
+    await recordRun({
+      itemId: 'song.none',
+      mode: 'tempo',
+      tempoPct: 100,
+      tempoMeasured: true,
+      accuracy: 1,
+      accuracyEstimated: false,
+      wrongNotes: 0,
+      missed: 0,
+      durationMs: 60_000,
+      passed: true,
+      masterEligible: false,
+      material: file('c'),
+    });
+    const section = await mount();
+    doorIn(openDetails(section, 'song.none'))?.click();
+    const sheet = await sheetSays(PROJECT_TEXT.none);
+    await vi.waitFor(() => {
+      expect([...sheet.querySelectorAll('#project-actions button')].map((one) => one.textContent)).toEqual(
+        (['save', 'learn', 'polish', 'keep'] as const).map((action) => PROJECT_TEXT.actions[action]),
+      );
+    });
+  });
+
+  it('(u) the door, Learn this, the badge redrawn behind the sheet, then Close: focus is on the piece’s row, not the page', async () => {
+    const section = await mount();
+    // A tap on *Details* leaves it focused, as a browser does; a script's click does not.
+    const details = [...(rowOf(section, 'song.none')?.querySelectorAll<HTMLButtonElement>('.list-row__actions button') ?? [])].find((one) => one.textContent === 'Details');
+    details?.focus();
+    const detail = openDetails(section, 'song.none');
+    doorIn(detail)?.click();
+    const sheet = await sheetSays(PROJECT_TEXT.none);
+    await vi.waitFor(() => expect(sheet.querySelector('#project-action-learn')).not.toBeNull());
+    sheet.querySelector<HTMLButtonElement>('#project-action-learn')?.click();
+    await vi.waitFor(() => {
+      expect(projectBadgeOf(section, 'song.none')?.textContent).toBe(PROJECT_TEXT.states.learning);
+    });
+    expect(details?.isConnected, 'the redraw put a new row in place of the old').toBe(false);
+    document.getElementById('project-sheet-close')?.click();
+    expect(document.getElementById('project-sheet')).toBeNull();
+    expect(document.activeElement).not.toBe(document.body);
+    expect(rowOf(section, 'song.none')?.contains(document.activeElement), 'focus is not on the piece’s row').toBe(true);
+    expect(document.activeElement?.textContent).toBe('Details');
   });
 
   it('(e) no project and no honest offer: no door on a placeholder, a PDF, or an exercise with a row under its id', async () => {
@@ -468,6 +519,30 @@ describe('the Details sheet is the door to the one project sheet (G85a)', () => 
     // A placeholder has no *Open*: the door goes after its import control, at the end of the sheet.
     expect(wanted.querySelector('#library-detail-open')).toBeNull();
     expect(wanted.querySelector('.sheet__body')?.lastElementChild).toBe(door);
+  });
+});
+
+describe('a PDF import’s detail line names no type: its badge says what it is (G96 (v))', () => {
+  beforeEach(() => {
+    useFakeIndexedDb();
+    resetProgressForTest();
+    resetEncountersForTest();
+    resetProjectsForTest();
+  });
+  afterEach(() => {
+    clearFakeIndexedDb();
+    document.body.replaceChildren();
+  });
+
+  it('the PDF’s line keeps its level and says no “song”; an import from before provenance and a bundled song still say “song”', async () => {
+    const section = await mount();
+    const line = (id: string): string => rowOf(section, id)?.querySelector('.list-row__metatext')?.textContent ?? '';
+    expect(line('import.pdf')).toBe('L3.0');
+    expect(line('import.pdf')).not.toMatch(/song/);
+    expect(rowOf(section, 'import.pdf')?.textContent).toContain('PDF · pages, not notes');
+    // Unchanged: a row imported before the app kept provenance says what it is, and so does a bundled song.
+    expect(line('import.mine')).toBe('L3.0 · song');
+    expect(line('song.none')).toBe('L2.0 · song');
   });
 });
 

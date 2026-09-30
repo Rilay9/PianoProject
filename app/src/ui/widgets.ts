@@ -262,7 +262,21 @@ function isolate(root: HTMLElement): () => void {
   };
 }
 
-export function openSheet(title: string, options: { id?: string } = {}): Sheet {
+export interface SheetOptions {
+  id?: string;
+  /**
+   * Where focus goes on closing when the control focused at opening has left the document: a screen
+   * that drew its list again behind the sheet, after a write the sheet made, names that control's
+   * replacement (G96; the G85a review, `docs/review/responses/9c64a9c1.md`, and the approval,
+   * `responses/questions-71bd6cee.md`). The opener answers from what it knows — its own list and the
+   * row's identity; this function never searches the page. Asked inside `close`, after the page is
+   * given back, so nothing inert is focused, and only where the control is gone: while it is there,
+   * focus goes back to it, as without the option. `null` leaves focus where it falls.
+   */
+  refocus?: () => HTMLElement | null;
+}
+
+export function openSheet(title: string, options: SheetOptions = {}): Sheet {
   const returnFocus = document.activeElement;
   const body = el('div.sheet__body');
   let release: (() => void) | null = null;
@@ -270,6 +284,10 @@ export function openSheet(title: string, options: { id?: string } = {}): Sheet {
     release?.();
     release = null;
     root.remove();
+    if (returnFocus instanceof HTMLElement && !returnFocus.isConnected && options.refocus) {
+      options.refocus()?.focus();
+      return;
+    }
     if (returnFocus instanceof HTMLElement) returnFocus.focus();
   };
   const head = el(

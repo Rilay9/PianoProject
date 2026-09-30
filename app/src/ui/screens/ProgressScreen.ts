@@ -415,9 +415,21 @@ export function ProgressScreen(router: Router): HTMLElement {
       });
     };
     const barsOf = (item: CatalogItem): number | undefined => (item.measurement?.status === 'measured' ? item.measurement.bars : undefined);
+    /**
+     * Where focus goes back to when the sheet closes after `reload` drew this list again behind it
+     * (G96): the piece's row in this list as it is now — its project row, or its offer's *Make it a
+     * project* — never its rows in the history or repertoire lists, which carry the same `data-item`.
+     */
+    const rowFocusFor = (itemId: string): HTMLElement | null => {
+      if (!projects.isConnected) return null;
+      const rows = [...projects.children].filter((one): one is HTMLElement => one instanceof HTMLElement && one.dataset.item === itemId);
+      const project = rows.find((one) => one.dataset.project !== undefined);
+      if (project) return project;
+      return rows.find((one) => one.dataset.offer !== undefined)?.querySelector<HTMLElement>('button') ?? null;
+    };
     const open = (item: CatalogItem, material: Identity | undefined): void => {
       const bars = barsOf(item);
-      openProjectSheet({ item, material, ...(bars === undefined ? {} : { bars }), onChange: reload, owner: section });
+      openProjectSheet({ item, material, ...(bars === undefined ? {} : { bars }), onChange: reload, owner: section, refocus: () => rowFocusFor(item.id) });
     };
     const projectRows = [...list]
       .sort((a, b) => b.since.localeCompare(a.since))

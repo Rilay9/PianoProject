@@ -840,12 +840,15 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
    * nothing. Tapped, Details closes and the sheet opens on the target the index resolved the row with,
    * so its own read finds the same project; the sheet is the one actor, and its writes reach the
    * Library through `onProjectsChange` (`projectsChanged`), which redraws the badge, the filter's
-   * result and the count once — so no `onChange` here, which would draw a second time.
+   * result and the count once — so no `onChange` here, which would draw a second time. That redraw
+   * replaces the row whose *Details* the sheet would give focus back to, so the sheet is told where the
+   * row is now (`refocus`, `rowFocusFor`; G96): after *Close*, focus is on the piece's row again.
    *
    * Where it appears (the honest-door rule): wherever a project exists, whatever the item; with none,
-   * on a song that opens on the Score screen, where the sheet's four offers from no project are the
-   * learner's intentions, allowed before any run (`projectStore.OFFERS`), and its line of what the
-   * learner has played reads the history that screen writes. Not, without a project, on a PDF (its
+   * on a song that opens on the Score screen, where the sheet's offers from no project are the
+   * learner's intentions, allowed before any run — *Keep it playable* among them only for a piece the
+   * record says is passed (`projectStore.actionsFor`, G96) — and its line of what the learner has
+   * played reads the history that screen writes. Not, without a project, on a PDF (its
    * viewer writes no history, so the sheet would say *never opened* of a PDF read every day), on a
    * placeholder (a project made here would stay on its id when the file arrives under its own), or on
    * anything not a song (none is ever in the index).
@@ -861,9 +864,21 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
         sheet.close();
         // The piece's length in printed bars, as Progress passes it: it bounds the sheet's sections.
         const bars = item.measurement?.status === 'measured' ? item.measurement.bars : undefined;
-        openProjectSheet({ item, material: materialOfItem(item), ...(bars === undefined ? {} : { bars }), owner: section });
+        openProjectSheet({ item, material: materialOfItem(item), ...(bars === undefined ? {} : { bars }), owner: section, refocus: () => rowFocusFor(item.id) });
       },
     });
+  }
+
+  /**
+   * Where focus goes back to when the project sheet closes after the list was drawn again behind it
+   * (G96): the piece's row as the list shows it now, on its *Details*, else the row itself. Nothing
+   * where the list no longer shows the piece, or has left the page with its screen: the next screen's
+   * rows are never searched.
+   */
+  function rowFocusFor(itemId: string): HTMLElement | null {
+    if (!list.isConnected) return null;
+    const row = [...list.children].find((one): one is HTMLElement => one instanceof HTMLElement && one.dataset.item === itemId);
+    return row?.querySelector<HTMLElement>('.library-details') ?? row ?? null;
   }
 
   /**
@@ -1050,7 +1065,8 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
         ),
       );
     }
-    actions.push(button('Details', () => showDetail(item), { variant: 'quiet' }));
+    // Named by a class so the row can be found again after a redraw, for focus (`rowFocusFor`, G96).
+    actions.push(button('Details', () => showDetail(item), { variant: 'quiet', className: 'library-details' }));
     // No project door on the row (G85, the brief's "When to deviate"): a word beside *Details* and `⋯`,
     // tried at 342 px, took about two fifths of a song title's width — one-line titles wrapped, the
     // rows grew, two-line titles were cut — the room the title needs (R2; the reason `⋯` is a glyph).
@@ -1082,8 +1098,10 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       // end. It is the same fact `shortHandsLabel` exists for on Today: silent
       // for both hands, `RH`/`LH` where it is actually news. The full sentence
       // is still on the item's detail sheet, where it is read once.
-      // An import's type is "song" on every one of them; where its notes came from is news (X3).
-      meta: [levelLabel(item.level, item.levelSource), shortHandsLabel(item.hands), (item.imported ? importSourceWords(item) : '') || item.type]
+      // An import's type is "song" on every one of them; where its notes came from is news (X3). A
+      // PDF's line names no type (G96): it has no notes to be a song of, and its badge beside the line,
+      // *PDF · pages, not notes*, already says what it is.
+      meta: [levelLabel(item.level, item.levelSource), shortHandsLabel(item.hands), (item.imported ? importSourceWords(item) : '') || (item.kind === 'pdf' ? '' : item.type)]
         .filter(Boolean)
         .join(' · '),
       badges,

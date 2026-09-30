@@ -1,0 +1,22 @@
+$ (cd .) python tools/docs/checks_for_paths.py app/src/data/projectStore.ts app/src/ui/projectSheet.ts app/src/ui/widgets.ts app/src/ui/screens/LibraryScreen.ts app/src/ui/screens/ProgressScreen.ts app/tests/unit/projectLifecycle.test.ts app/tests/unit/projectSheet.test.ts app/tests/unit/sheetIsolation.test.ts app/tests/unit/libraryProjects.test.ts app/tests/unit/progressProjects.test.ts app/tests/e2e/library.spec.ts app/tests/e2e/projects.spec.ts docs/prompts/runs/G96/ENTRY.md docs/prompts/pictures/g96/after-pdf-row-342x740.png
+# checks for 14 path(s): 14 matched, 0 unmatched
+# app/src/data/projectStore.ts: app/src/**, app/src/data/**, app/src/data/projectStore.ts
+# app/src/ui/projectSheet.ts: app/src/**, app/src/ui/*.ts, app/src/ui/projectSheet.ts
+# app/src/ui/widgets.ts: app/src/**, app/src/ui/*.ts
+# app/src/ui/screens/LibraryScreen.ts: app/src/**, app/src/ui/screens/LibraryScreen.ts
+# app/src/ui/screens/ProgressScreen.ts: app/src/**, app/src/ui/screens/ProgressScreen.ts
+# app/tests/unit/projectLifecycle.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/projectSheet.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/sheetIsolation.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/libraryProjects.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/progressProjects.test.ts: app/tests/unit/*.test.ts
+# app/tests/e2e/library.spec.ts: app/tests/e2e/*.spec.ts
+# app/tests/e2e/projects.spec.ts: app/tests/e2e/*.spec.ts
+# docs/prompts/runs/G96/ENTRY.md: docs/**
+# docs/prompts/pictures/g96/after-pdf-row-342x740.png: docs/**
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/app-shell.spec.ts tests/e2e/doors.spec.ts tests/e2e/empty-states.spec.ts tests/e2e/feedback-placement.spec.ts tests/e2e/finder.spec.ts tests/e2e/landscape.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/library.spec.ts tests/e2e/modes-rhythm-only.spec.ts tests/e2e/progress.hierarchy.spec.ts tests/e2e/progress.spec.ts tests/e2e/projects.spec.ts tests/e2e/today.spec.ts tests/e2e/transfer-offer.spec.ts tests/e2e/wide.spec.ts --workers=4
+exit=0

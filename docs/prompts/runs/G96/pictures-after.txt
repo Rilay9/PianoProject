@@ -1,0 +1,14 @@
+$ (cd app) npx playwright test -c build/g96/playwright.g96-4573.config.ts --workers=1  tests/e2e/zz-g96-pictures.spec.ts   [G96_DIST=app/dist G96_PHASE=after]
+exists: tests/e2e/zz-g96-pictures.spec.ts
+
+Running 6 tests using 1 worker
+
+  ok 1 tests\e2e\zz-g96-pictures.spec.ts:132:1 › the sheet from the Library’s Details on a song never played, then Learn this, Close, and where focus lands (1.4s)
+  ok 2 tests\e2e\zz-g96-pictures.spec.ts:146:1 › the sheet from Progress’s Make it a project on a piece passed, then Keep it playable, Close, and where focus lands (1.5s)
+  ok 3 tests\e2e\zz-g96-pictures.spec.ts:173:1 › a PDF import’s row, its detail line, and its Details (758ms)
+  ok 4 tests\e2e\zz-g96-pictures.spec.ts:194:1 › the two-line title with a project badge: Twinkle (hands together) Learning (1.0s)
+  ok 5 tests\e2e\zz-g96-pictures.spec.ts:219:1 › the sheet from Details on a piece the learner said they already know and never opened (1.3s)
+  ok 6 tests\e2e\zz-g96-pictures.spec.ts:231:1 › item 7’s scoped window: a Close before the Library’s redraw lands (2.1s)
+
+  6 passed (12.3s)
+exit=0
