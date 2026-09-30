@@ -227,9 +227,11 @@ reason. A prose summary does not stand in for the list. The list lives beside th
 (`docs/review/handoffs/<impl>.content.md`, generated from the seam's diff over `content/` and
 `scores/`, annotated where the diff does not say why) and the entry cites it. Batching is
 fine — one file lists every item of the seam — and nothing content-side is entailed and
-skipped: a correction the orchestrator makes at a landing is itemised the same way. The owner
-supplies no musical review, so the reviewer's check of each item is the one check on content
-correctness; the reviewer's verdict names the items it did not check.
+skipped: a correction the orchestrator makes at a landing is itemised the same way. The reviewer
+checks each item as a fact or a claim in text — a lesson sentence as taught, a table entry, a
+tempo as a reading of what the edition prints — and its verdict names the items it did not
+check. What needs an ear is marked *unverified as music* and goes to the owner's listening
+packet; the reviewer is never asked to hear anything.
 
 ## 13. What a brief carries
 
