@@ -90,3 +90,4 @@ index: Evidence truth: carried exposures read `introduces`, unknown observation 
 in-flight: brief drafted 2026-09-30 (`CL04-evidence-truth.md`): four evidence-truth corrections at the learner-evidence boundary (G70, L70, L73, L79; the convergence map's CL04, tier 1; the reviewer's queue item 2); with the reviewer before dispatch (Entry 175).
 state: with-reviewer 2026-09-30: with the reviewer before dispatch (the morning bundle)
 - approved 2026-09-30: APPROVE FOR DISPATCH, G70's assign-sheet half NO (`introduces` never written onto an imported piece's *What it trains*); the L79 file widening justified by the route truth (`responses/questions-eebafb5e.md`)
+- dispatched 2026-09-30: dispatched at 26a913fe, building (Entry 175); G70's assign-sheet half stays unbuilt as approved

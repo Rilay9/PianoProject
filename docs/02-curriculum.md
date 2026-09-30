@@ -1072,9 +1072,11 @@ that decision exists a study reaches the learner only through the Library (Part 
 >   transfer (a key, texture and register the drill family that teaches the same skill never writes,
 >   measured item against item) — is in the Library and the contract and on no rung, `heard: false`.
 >   A study can meet every detector and still read to a teacher as an exercise with an accompaniment;
->   the candidate-rungs report beside D3's entry lists, for each study, the rungs whose taught set
->   holds every demand it carries and whose claims its notes establish — the material a later
->   placement decision reads beside a resolved teaching-use review in D2's record.
+>   the candidate-rungs report beside D3's entry lists, for each study, the rungs whose coping
+>   question leaves nothing it carries untaught and whose claims its notes establish, each line
+>   saying whether the rung teaches every demand or admits a skip or leap only by a taught fixed
+>   position (L120e) — the material a later placement decision reads beside a resolved teaching-use
+>   review in D2's record.
 > - **Out of every automatic offer until a teaching use is approved (D3a, 2026-09-28).** A study
 >   promises music, and so do the grooves and the 12/8 blues; nobody has heard one. The build
 >   writes each generated item's promise for its recipe as an authored provenance fact

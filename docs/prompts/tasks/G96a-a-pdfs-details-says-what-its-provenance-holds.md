@@ -21,3 +21,4 @@ index: G96's required change: a PDF's Details never claims a guessed level or *T
 in-flight: dispatched 2026-09-30 (`G96a-a-pdfs-details-says-what-its-provenance-holds.md`): G96's required change under the fast path: the PDF Details sheet's level and type sentences drawn from the row's provenance, the two false statements pinned red first; closes G99 (`responses/48bfc167.md`); building (Entry 179)
 state: dispatched 2026-09-30: dispatched at 827289d0, building (Entry 179)
 - landed 2026-09-30: merged 2330337c; handoff `handoffs/67fc2523.md`
+- closed 2026-09-30: APPROVE — *PDF* stays; the guard's true boundary is level provenance, G102's; the PDF's *Hands* claim its own row; the type consumers stay observations (`responses/67fc2523.md`)

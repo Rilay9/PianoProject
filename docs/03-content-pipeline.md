@@ -190,8 +190,10 @@ caught by the merge rather than by whichever wrote last:
    an evaluator, the musical (`confirm_musical`, D3), which reads the written page again. The
    studies are measured by step 7's attach step like every generated item and listed on no rung;
    `python tools/content/study.py --candidate-rungs <catalog.json> <curriculum.json>` writes the
-   candidate-rungs report from a build's output (the rungs whose taught set holds every demand a
-   study carries and whose claims its notes establish), for the placement decision that is F's.
+   candidate-rungs report from a build's output (the rungs whose coping question leaves nothing
+   a study carries untaught — taught on the path, or since L120b coped with inside a taught
+   fixed position, which since L120e its *Admitted by* column names — and whose claims its notes
+   establish), for the placement decision that is F's.
 6. **author [AUTH]** (`author.py`) — the hand-written ABC and music21 sources, with metadata
    from each file's YAML front-matter.
 7. **merge catalog** — the fragments into one `catalog.json`, with `content/sources/sections.json`
@@ -941,9 +943,11 @@ and nothing here touches one.
   range, with its own event, is a new decision (E54, Entry 174). For the PDMX
   workflow this is the step after `commit.py` and before the build (`tools/content/pdmx/README.md`).
 - **Unplaced.** An approved excerpt is in the Library and on no rung. `python
-  tools/content/excerpts.py --candidate-rungs` writes, from a built catalogue, the rungs whose taught
-  set holds every demand each excerpt carries and whose claims its notes establish, a claim one
-  detector answers for several concepts marked † with the concepts named. Placement is
+  tools/content/excerpts.py --candidate-rungs` writes, from a built catalogue, the rungs whose coping
+  question leaves nothing each excerpt carries untaught — taught on the path, or since L120b coped
+  with inside a taught fixed position, which since L120e its *Admitted by* column names — and whose
+  claims its notes establish, a claim one detector answers for several concepts marked † with the
+  concepts named. Placement is
   F's, on a stated gate: that line established on the combined build **and** a current
   `goodTeachingUse: yes` on the cut's identity in D2's record by a named reviewer stating their
   basis. No automatic offer in the app reaches an unplaced excerpt; its runs mark the parent

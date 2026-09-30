@@ -12,9 +12,12 @@ The original brief's owned files and boundaries hold; nothing outside the requir
 
 **Base.** 827289d0, origin's head at dispatch. **Entry.** 178; the run files under `docs/prompts/runs/L120e/`, the entry at `docs/prompts/runs/L120e/ENTRY.md`.
 
+**Landed 2026-09-30** (Entry 178; 0ef15f3f, merged f915e4cf); handoff `handoffs/0ef15f3f.md`.
+
 ## Record
 
 lane: L120e · closes: — · entry: 178
 index: L120d's required change: the candidate rungs report names a coping-only admission; docs/02 tells one rule after L120b's pending paragraph (`responses/4e76c768.md`) | content | dispatched 2026-09-30 at 827289d0 (`L120e-a-coping-only-admission-is-named.md`); Entry 178 |
 in-flight: dispatched 2026-09-30 (`L120e-a-coping-only-admission-is-named.md`): L120d's required change under the fast path: `study.candidate_rungs` names a rung admitted only by the fixed-position coping route, the candidate kept; L120b's pending docs/02 paragraph applied and L120d's integrated into one rule (`responses/4e76c768.md`); building (Entry 178)
 state: dispatched 2026-09-30: dispatched at 827289d0, building (Entry 178)
+- landed 2026-09-30: merged f915e4cf; handoff `handoffs/0ef15f3f.md`
