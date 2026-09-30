@@ -1,0 +1,47 @@
+...........................................................................................................C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5103: MusicXMLWarning: Cannot put in an element with a missing voice tag when no previous voice tag was given.  Assuming voice 1... 
+  thisVoice = self.findM21VoiceFromXmlVoice(mxVoice)
+....................................................................................................................................................................................................................ssC:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 1 in part Pianois overfull: 721/480 > 1.5,assuming 1.5 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+...........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................note: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a42e749facbb7ae46\build\.content-lock is 2.0 hours old (a crashed run (pid 1)) — assuming a crashed run and taking it over
+...............18 row(s) have no decision in C:\Users\yalir\AppData\Local\Temp\pdmx-e2e-ouqylidl\run\review-empty\review.csv. Nothing is committed that a person has not marked keep, drop or later (replan §2.5). Run review.py --check to list them.
+....................................................................s............................................................................................................................................................s....................................  127.0.0.1  code 404, message File not found
+  127.0.0.1  "GET /nope.js HTTP/1.1" 404 -
+.  127.0.0.1  "GET /score.mxl HTTP/1.1" 200 -
+.  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+.  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+.  127.0.0.1  "GET /manifest.webmanifest HTTP/1.1" 200 -
+.  127.0.0.1  "GET /sw.js HTTP/1.1" 200 -
+.  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+  127.0.0.1  "GET /sw.js HTTP/1.1" 200 -
+  127.0.0.1  "GET /assets/app-abc123.js HTTP/1.1" 200 -
+.C:\Users\yalir\AppData\Local\Temp\tmpfmcfr0_l has no index.html. Build first:
+  py -3.11 tools/content/build.py --offline --personal
+  cd app && set VITE_BASE=/ && npm run build:app
+.No certificate at C:\Users\yalir\AppData\Local\Temp\tmp2s1kyv3g\none.pem / C:\Users\yalir\AppData\Local\Temp\tmp2s1kyv3g\none.key.
+Make one once, for this laptop's address (docs/OWNER-GUIDE.md §1):
+  mkcert -cert-file C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a42e749facbb7ae46\packaging\lan\cert.pem -key-file C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a42e749facbb7ae46\packaging\lan\key.pem <this laptop's IP> localhost
+..............................................................................................................................................................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 1639 tests in 727.572s
+
+OK (skipped=4)
+wrote C:\Users\yalir\AppData\Local\Temp\tmpnc9zghe5\out.md (3 occurrences in 1 lessons)
+committed 15 file(s) to C:\Users\yalir\AppData\Local\Temp\pdmx-e2e-ouqylidl\run\scores
+  skipped 3 row(s) marked drop or later
+  table   C:\Users\yalir\AppData\Local\Temp\pdmx-e2e-ouqylidl\run\pdmx.json
+  Zenodo record: unknown — the CSV matches neither published record's size.
+1 score(s) -> C:\Users\yalir\AppData\Local\Temp\tmpu0pshgbr\library\library.json (0.0 MB)
+note: 1 indexed song(s) are not unpacked and are left out
+2 file(s), 0 MB -> C:\Users\yalir\AppData\Local\Temp\tmpu0pshgbr\library.zip (0 MB)
+Copy that one file to the phone and unzip it. Then: Library -> Browse a score folder -> pick pianopath-library.
+1 score(s) -> C:\Users\yalir\AppData\Local\Temp\tmp6jwcfjux\library.json (0.0 MB)
+note: 1 indexed song(s) are not unpacked and are left out
+Copy the whole folder to the phone, then: Library -> Score folder -> pick it.
+1 score(s) -> C:\Users\yalir\AppData\Local\Temp\tmp_j9s0lai\library\library.json (0.0 MB)
+note: 1 indexed song(s) are not unpacked and are left out
+2 file(s), 0 MB -> C:\Users\yalir\AppData\Local\Temp\tmp_j9s0lai\library.zip (0 MB)
+Copy that one file to the phone and unzip it. Then: Library -> Browse a score folder -> pick pianopath-library.
+wrote measured durations into C:\Users\yalir\AppData\Local\Temp\tmpx5dqr_ou\catalog.json
+wrote measured durations into C:\Users\yalir\AppData\Local\Temp\tmp08cxu10v\catalog.json

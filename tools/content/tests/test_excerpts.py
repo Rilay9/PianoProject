@@ -917,5 +917,142 @@ class TheRealParent(unittest.TestCase):
         self.assertNotIn("Anna Magdalena", text)
 
 
+class TheRepairedCut(unittest.TestCase):
+    """
+    E50b (Entry 181; the reviewer's required change on E50, `docs/review/responses/68e0479b.md` §2). E50 re-converted
+    Wabash Blues so its printed "= 120" is its tempo, so the approved cut of its bars 1-4 was cut from other parent bytes
+    and its own bytes, and identity, moved. The cut gets one explicit old→new learner-material relation
+    (`tools/content/repaired_identities.json`'s `cuts`), and only because the old cut and the new are proved the same
+    bar/staff excerpt differing only by the parent's tempo repair: the old cut's bytes are rebuilt from the relation
+    (the new cut with the parent repair's own restore lines put back, zipped as the laptop's cutter zipped), and the
+    cutter over the old parent, itself rebuilt from the repaired parent through its proved repair, gives the same bytes.
+    Learner continuity only: the approval stays stale, its `parentSha256` still names the old parent, and the old cut
+    is never the new cut's bytes. One relation, the one derived repair the build produced; no rule for descendants.
+    """
+
+    EID = "excerpt.blues.wabash-blues.b1-4"
+    dir: Path
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        import convert
+
+        cls.dir = Path(tempfile.mkdtemp(prefix="excerpt-repaired-"))
+        data = json.loads(convert.REPAIRED_IDENTITIES_FILE.read_text(encoding="utf-8"))
+        cls.cuts = list(data.get("cuts", []))
+        cls.relations = [one for one in cls.cuts if one.get("id") == cls.EID]
+        cls.repairs = list(data["repairs"])
+        cls.repair = next(one for one in cls.repairs if one["id"] == "song.blues.wabash-blues")
+        cls.table = json.loads(convert.FORMER_IDENTITIES_FILE.read_text(encoding="utf-8"))["identities"]
+        cls.approval = next(row for row in X.read_definitions()["excerpts"] if row["of"] == "song.blues.wabash-blues")
+        # The new cut, as the build cuts it: the approved definition over the repaired parent, which the build copies as it is.
+        cls.new_cut = cls.dir / "new" / f"{cls.EID}.mxl"
+        cls.new_cut.parent.mkdir()
+        cls.new_made = X.cut(WABASH_FILE, 1, 4, "both", cls.EID, cls.new_cut)
+        # The old parent, rebuilt from the repaired one through its proved repair (the restore lines, then the date, zipped
+        # under the old machine's creating system: `convert.former_identities`' own proof), then cut with the same definition.
+        entries = convert._entries(WABASH_FILE.read_bytes())
+        at = convert._score_at(entries, undated=True)
+        restored = convert._restored(entries, at, cls.repair["restore"])
+        cls.old_parent = cls.dir / "old-parent.mxl"
+        cls.old_parent.write_bytes(convert._redated(restored, at, cls.repair["date"], cls.repair["system"]))
+        cls.old_cut = cls.dir / "old" / f"{cls.EID}.mxl"
+        cls.old_cut.parent.mkdir()
+        cls.old_made = X.cut(cls.old_parent, 1, 4, "both", cls.EID, cls.old_cut)
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        __import__("shutil").rmtree(cls.dir, ignore_errors=True)
+
+    @staticmethod
+    def sha(data: bytes) -> str:
+        import hashlib
+
+        return hashlib.sha256(data).hexdigest()
+
+    @staticmethod
+    def entries(path: Path) -> list[tuple[str, bytes]]:
+        with zipfile.ZipFile(path) as archive:
+            return [(info.filename, archive.read(info.filename)) for info in archive.infolist()]
+
+    def block(self, **over: object) -> dict:
+        """The cut's provenance block as the build writes it (`provenance_block`): its definition and the parent's bytes."""
+        return {"of": "song.blues.wabash-blues", "fromBar": 1, "toBar": 4, "selection": "both", "cutVersion": X.CUT_VERSION,
+                "parentSha256": X.sha256_of(WABASH_FILE), **over}
+
+    def test_a_one_relation_for_the_one_cut_the_build_produced(self) -> None:
+        self.assertEqual([one["id"] for one in self.cuts], [self.EID], "one relation, the one derived repair; no rule for descendants")
+        one = self.relations[0]
+        self.assertEqual(one["file"], f"scores/excerpts/{self.EID}.mxl")
+        self.assertEqual((one["of"], one["fromBar"], one["toBar"], one["selection"]),
+                         (self.approval["of"], self.approval["fromBar"], self.approval["toBar"], self.approval.get("selection") or "both"))
+        self.assertEqual(one["cutVersion"], X.CUT_VERSION)
+        self.assertEqual((one["parentFrom"], one["parentTo"]), (self.repair["from"], self.repair["to"]))
+        self.assertIs(one["tempoChanged"], True)
+        self.assertIs(self.repair["tempoChanged"], True)
+        self.assertNotEqual(one["from"], one["to"])
+
+    def test_a_the_old_cut_is_rebuilt_from_the_relation_and_is_the_cutter_on_the_old_parent(self) -> None:
+        import convert
+
+        one = self.relations[0]
+        self.assertEqual(self.sha(self.old_parent.read_bytes()), self.repair["from"], "the old parent, rebuilt through its proved repair")
+        old, new = self.entries(self.old_cut), self.entries(self.new_cut)
+        self.assertEqual(self.sha(convert.pinned_archive(old, one["system"])), one["from"],
+                         "the cutter over the old parent, zipped as the laptop's cutter zipped, is the old cut the laptop served")
+        self.assertEqual(self.sha(convert.pinned_archive(new, one["system"])), one["to"], "the build's cut of the repaired parent")
+        # The old cut from the relation alone: the new cut with the parent repair's restore lines put back.
+        at = next(i for i, (name, _data) in enumerate(new) if not name.startswith("META-INF"))
+        self.assertEqual(convert.pinned_archive(convert._restored(new, at, self.repair["restore"]), one["system"]),
+                         convert.pinned_archive(old, one["system"]))
+        # The same bars and staves: only the tempo differs.
+        self.assertEqual((self.old_made.bars, self.old_made.staves, self.old_made.notes, self.old_made.time),
+                         (self.new_made.bars, self.new_made.staves, self.new_made.notes, self.new_made.time))
+        self.assertEqual((self.old_made.tempo_bpm, self.new_made.tempo_bpm), (96.0, 120.0))
+        self.assertEqual(X.former_cut_identities(self.new_cut, self.EID, self.block(), WABASH_FILE), [one["from"]])
+
+    def test_a_nothing_is_named_that_is_not_that_excerpt_or_does_not_rebuild(self) -> None:
+        one = self.relations[0]
+        name = lambda **over: X.former_cut_identities(  # noqa: E731
+            self.new_cut, over.pop("eid", self.EID), over.pop("block", self.block()), over.pop("parent", WABASH_FILE),
+            over.pop("cuts", [one]), over.pop("repairs", self.repairs), over.pop("table", self.table))
+        self.assertEqual(name(), [one["from"]])
+        refused = {
+            "a parent repair that no longer re-proves (its old file not in E50a's table)": name(table=[]),
+            "another excerpt id": name(eid="excerpt.blues.wabash-blues.b1-5"),
+            "another bar range": name(block=self.block(toBar=5)),
+            "another selection": name(block=self.block(selection="right")),
+            "another cutter": name(block=self.block(cutVersion=1)),
+            "a relation made under another cutter": name(cuts=[{**one, "cutVersion": 1}]),
+            "the old parent, not the repaired one": name(block=self.block(parentSha256=self.repair["from"]), parent=self.old_parent),
+            "no repair of the parent": name(repairs=[]),
+            "a parent repair other than the relation's": name(cuts=[{**one, "parentFrom": "0" * 64}]),
+            "a new cut other than this one": name(cuts=[{**one, "to": "0" * 64}]),
+            "an old cut the restore does not rebuild": name(cuts=[{**one, "from": "0" * 64}]),
+            "another machine's zip": name(cuts=[{**one, "system": 3}]),
+        }
+        for why, got in refused.items():
+            with self.subTest(why):
+                self.assertEqual(got, [])
+
+    def test_a_learner_continuity_only_the_approval_stays_stale_and_names_the_old_parent(self) -> None:
+        import review
+
+        one = self.relations[0]
+        # `parentSha256` unchanged: the approval still names the old parent's bytes, which the repair relation relates.
+        self.assertEqual(self.approval["parentSha256"], one["parentFrom"])
+        why = X.approval_staleness(self.approval, one["parentTo"])
+        self.assertTrue(any(line.startswith("stale by provenance") for line in why), why)
+        carried = {"of": one["of"], "fromBar": 1, "toBar": 4, "selection": "both", "targets": self.approval["targets"],
+                   "event": self.approval["event"], "by": self.approval["by"], "approvedParentSha256": self.approval["parentSha256"],
+                   "parentSha256": one["parentTo"], "approvedCutVersion": X.approved_cut_version(self.approval), "dropped": []}
+        block = X.provenance_block({"_excerpt": carried}, {})
+        self.assertEqual(block["stale"]["approvedParentSha256"], one["parentFrom"])
+        self.assertEqual(block["parentSha256"], one["parentTo"])
+        # Never exact-byte equal: D2's identity and the cut's own bytes keep the old cut and the new apart.
+        self.assertFalse(review.same_identity({"kind": "file", "sha256": one["from"]}, {"kind": "file", "sha256": one["to"]}))
+        self.assertNotEqual(self.old_cut.read_bytes(), self.new_cut.read_bytes())
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,27 @@
+18 commits touching content/sources/pdmx.json before E50 (68e0479b^1)
+   23b1f3d7 2026-09-23: 7 of the seven present
+   55d6142f 2026-09-22: 7 of the seven present
+   ba9adb6f 2026-09-22: 7 of the seven present
+   ddd7f093 2026-09-22: 7 of the seven present
+   0cafa6dc 2026-09-19: 7 of the seven present
+   cd6be15d 2026-09-18: 7 of the seven present
+   2dd83cd0 2026-09-17: 7 of the seven present
+   05db4e0b 2026-09-16: 2 of the seven present
+   392890bc 2026-09-16: 2 of the seven present
+   b2138f82 2026-09-16: 2 of the seven present
+   1efb88ca 2026-09-15: 2 of the seven present
+   621ca3d8 2026-09-15: 2 of the seven present
+   2aef1c0d 2026-09-15: 2 of the seven present
+   4dd746ea 2026-09-13: 0 of the seven present
+   61bc40a4 2026-09-13: 0 of the seven present
+   fc1c6dfd 2026-09-06: 0 of the seven present
+   69933ee4 2026-09-06: 0 of the seven present
+   b3d2e023 2026-09-06: 0 of the seven present
+song.pop.margie.pdmx: (tempoBpm, tempoDefaulted) over every version it exists in: [(96.0, True)]
+song.jazz.django-reinhardt-limehouse-blues.pdmx: (tempoBpm, tempoDefaulted) over every version it exists in: [(96.0, True)]
+song.blues.singin-the-blues: (tempoBpm, tempoDefaulted) over every version it exists in: [(96.0, True)]
+song.blues.weary-blues: (tempoBpm, tempoDefaulted) over every version it exists in: [(96.0, True)]
+song.blues.storyville-blues: (tempoBpm, tempoDefaulted) over every version it exists in: [(96.0, True)]
+song.blues.wabash-blues: (tempoBpm, tempoDefaulted) over every version it exists in: [(96.0, True)]
+song.blues.tishomingo-blues: (tempoBpm, tempoDefaulted) over every version it exists in: [(96.0, True)]
+0 row(s) ever not at the defaulted 96 before E50: []

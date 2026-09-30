@@ -36,9 +36,15 @@
  *   (`learnerMaterialKeys`). Nothing else widens: D2's `sameIdentity` and its review record, an
  *   excerpt's `parentSha256` staleness, the committed-file integrity checks and the
  *   render/cache/checksum identities keep asking about exact bytes, and none of them reads this.
+ * - **A repaired tempo is not the old run's denominator** (E50b; the reviewer's required change on E50,
+ *   `docs/review/responses/68e0479b.md`). E50 re-converted seven PDMX scores so their printed tempo is
+ *   their mark, and their former identities carry the old files for continuity. A run of an old file
+ *   stored its `tempoPct` of the converter's defaulted 96, so the build lists those old files apart
+ *   (`provenance.tempoRepairedFrom`) and `tempoNotComparable` says which stored runs they are, for the
+ *   one reader that judges a stored run's tempo against the item's standard (`rungState.meetsStandard`).
  */
 import { sameIdentity, type Identity } from '../review/record';
-import type { PhraseGenerator } from '../data/db';
+import type { PhraseGenerator, SessionRow } from '../data/db';
 import type { SightReadingOptions } from '../engine/sightReading';
 import type { Relationship } from './transfer';
 import type { CatalogItem } from './types';
@@ -56,13 +62,18 @@ type FileIdentity = Extract<Identity, { kind: 'file' }>;
 let currentOfFormer = new Map<string, FileIdentity>();
 /** And back: a current sha256 to the former sha256s that resolve to it, for the lookups. */
 let formersOfCurrent = new Map<string, string[]>();
+/** E50b: the former sha256s whose file a reviewed repair changed the tempo of (`provenance.tempoRepairedFrom`). */
+let tempoRepairedFiles = new Set<string>();
+/** E50b: the rows whose tempo such a repair changed: a run of one that stored no material predates the repair. */
+let tempoRepairedRows = new Set<string>();
 
 /**
  * Feeds the learner-material resolution from a loaded catalogue (`load.loadCatalog` calls it with
  * `catalog.json`; a test may call it with its own rows). The table is the catalogue's alone and is
  * replaced, never added to. A row's former identity resolves to the row's current identity, with one
  * rule: a sha256 that is some row's current identity is never a former one, whichever row lists it —
- * a current file is always its own material.
+ * a current file is always its own material. The same rows feed E50b's tempo lineage
+ * (`tempoNotComparable`), under the same rule.
  */
 export function learnFormerIdentities(items: readonly CatalogItem[]): void {
   const current = new Set<string>();
@@ -72,6 +83,8 @@ export function learnFormerIdentities(items: readonly CatalogItem[]): void {
   }
   const toCurrent = new Map<string, FileIdentity>();
   const back = new Map<string, string[]>();
+  const tempoFiles = new Set<string>();
+  const tempoRows = new Set<string>();
   for (const item of items) {
     const identity = item.provenance?.identity;
     const former = item.provenance?.formerIdentities;
@@ -81,9 +94,38 @@ export function learnFormerIdentities(items: readonly CatalogItem[]): void {
       toCurrent.set(one.sha256, identity);
       back.set(identity.sha256, [...(back.get(identity.sha256) ?? []), one.sha256]);
     }
+    const listed = new Set(former.map((one) => one.sha256));
+    for (const one of item.provenance?.tempoRepairedFrom ?? []) {
+      if (one.kind !== 'file' || current.has(one.sha256) || !listed.has(one.sha256)) continue;
+      tempoFiles.add(one.sha256);
+      tempoRows.add(item.id);
+    }
   }
   currentOfFormer = toCurrent;
   formersOfCurrent = back;
+  tempoRepairedFiles = tempoFiles;
+  tempoRepairedRows = tempoRows;
+}
+
+/**
+ * Whether a stored run's tempo was measured against a tempo a reviewed repair has since corrected (E50b; the
+ * reviewer's required change on E50, `docs/review/responses/68e0479b.md` §3): its percentage is of the old
+ * file's tempo (the converter's defaulted 96 for E50's seven and the Wabash cut), not of the tempo the repaired
+ * score prints, so no tempo-dependent standard may read it as a percentage of that. True for a run that names a
+ * file a loaded row lists in `provenance.tempoRepairedFrom`, whatever id it was stored under; and, for a run of such
+ * a row's id, wherever the run does not itself show it was played against the repaired score's written tempo: it
+ * names no material (a legacy run from before D4, when every file under the id was the old one) or records no base
+ * tempo, or a base that was not the written one. What its percentage is of is never guessed. False for everything
+ * else: a run of the repaired file itself at its written base (after the repair), every run of a row no repair
+ * touched — no other legacy run is reinterpreted. It reads the run, never rewrites it, and says nothing about
+ * contact, familiarity, projects or any observation no tempo decides.
+ */
+export function tempoNotComparable(run: Pick<SessionRow, 'itemId' | 'material' | 'baseTempo'>): boolean {
+  const material = run.material;
+  if (material?.kind === 'file' && tempoRepairedFiles.has(material.sha256)) return true;
+  if (!tempoRepairedRows.has(run.itemId)) return false;
+  const base = run.baseTempo;
+  return !knownMaterial(material) || typeof base !== 'object' || base.source !== 'written';
 }
 
 /**

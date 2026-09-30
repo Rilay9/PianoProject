@@ -1,0 +1,9 @@
+﻿
+removed app\node_modules
+removed app\dist
+removed build
+removed content\scores\imported\kern
+removed content\scores\imported\musetrainer
+removed content\scores\imported\mutopia
+app\public\content left: app\public\content\audio\acoustic_grand_piano-mp3.js, app\public\content\audio\LICENSE.md
+done

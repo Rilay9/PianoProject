@@ -1112,6 +1112,12 @@ that decision exists a study reaches the learner only through the Library (Part 
 >   also carries the old identity of a reviewed musical repair (`tools/content/repaired_identities.json`:
 >   the seven PDMX scores whose printed "= N" became their tempo), so a learner who met the old file
 >   has met the piece; the old run stays a run at its recorded tempo, and no standard reads the list.
+>   Since E50b the Wabash cut, re-cut from its repaired parent, carries its old cut the same way (the
+>   table's `cuts`: the one derived repair the build produced, proved the same bars and staves differing
+>   only by the parent's repair; the approval stays stale), and each repair's old identity is also
+>   listed as tempo-changed (`provenance.tempoRepairedFrom`): a run of it, or a run of the row's id
+>   that stored no material or no base tempo, measured its percentage of the old tempo, so no
+>   tempo-dependent standard reads it against the repaired one (`rungState.meetsStandard`, below).
 > - **Contact novelty from identities, conservatively** (`progressStore.contactIn`): met where any
 >   run under any item id carries the material; *met by id* where only a run that stored no material
 >   shares the id (prior contact proven, the material unknown — never read as unmet); unmet only
@@ -1384,7 +1390,10 @@ suggestions** with a note on where to buy/obtain MusicXML.
   (`04` §3f). The kinds: **`runs`** — distinct items of the rung's exercises, songs (paper
   pieces included) or either, or items it names, each with a run *judged by this rung* at its
   standard (`mastery.minAccuracy`, and `minTempoPct` in Keep tempo; a Wait run meets only a
-  rung that asks no tempo); **`reads`** — phrases of its reading row read at sight, judged by
+  rung that asks no tempo, and so, since E50b, does a Keep tempo run whose percentage is of a
+  tempo a reviewed repair has since corrected — a run of an old file `provenance.tempoRepairedFrom`
+  lists, or a run of such a row that stored no material or no base tempo: never rescaled, never
+  rewritten, its contact and its evidence read as before); **`reads`** — phrases of its reading row read at sight, judged by
   it, whose evidence for a skill is at the practice or full standard with a share right;
   **`skill`** — a vocabulary skill's ladder state (familiar or proficient) over **every**
   evidence record, whichever rung judged the run; **`done`** — an item of this rung's alone

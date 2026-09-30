@@ -284,8 +284,19 @@ export interface Provenance {
    * by the build (`convert.former_identities`: the date put back gives its bytes). Only on a row whose
    * file the converter wrote without a date; never the row's own identity. A stored learner row that
    * names one names this row's material (`material.learnerMaterial`); D2's record never reads it.
+   * Since E50, also a reviewed repair's old file (`tools/content/repaired_identities.json`), and since
+   * E50b the Wabash cut's old cut (the one derived repair the build produced).
    */
   formerIdentities?: Extract<Identity, { kind: 'file' }>[];
+  /**
+   * E50b: the former identities whose file a reviewed repair changed the tempo of (a relation marked
+   * `tempoChanged`): a run stored against one measured its percentage of the old tempo, and a run of
+   * this row's id that stored no material or no written base tempo does not show what its percentage
+   * is of (never guessed), so no tempo-dependent standard reads either's tempo against
+   * this row's (`material.tempoNotComparable`, `rungState.meetsStandard`). Contact, familiarity and
+   * projects read the run as before; the run is never rewritten.
+   */
+  tempoRepairedFrom?: Extract<Identity, { kind: 'file' }>[];
   /**
    * A transfer role's relationship as its family contract declares it for the recipe (D4 item 4):
    * the skill it is transfer material for, the families it was written against, the surface

@@ -1,0 +1,38 @@
+base 827289d0; the working tree of the worktree
+
+## tools/content/repaired_identities.json
+- `_comment`: before, E50's text (855 characters); after, the same text with this appended:
+  " E50b (Entry 181; the reviewer's required change, docs/review/responses/68e0479b.md): every relation says tempoChanged, the repair changed the tempo a run of the old file was measured against, so the build also records the old identity as provenance.tempoRepairedFrom and no tempo-dependent standard reads such a run's percentage against the repaired tempo; and cuts holds the one derived repair relationship the build produced, the approved Wabash cut re-cut from its repaired parent (never a rule for other descendants), re-proved on every build by excerpts.former_cut_identities: the new cut with the parent repair's restore lines put back, zipped under the old machine's creating system, is the old cut's bytes. Learner continuity only, as above: the approval stays stale and its parentSha256 unchanged. Written by docs/prompts/runs/E50b/scripts-repaired-cut.py after E50's generator, which rewrites the file whole: a rerun of that generator is followed by this one."
+- `repairs[song.pop.margie.pdmx]`: added {'tempoChanged': True}; changed nothing
+- `repairs[song.jazz.django-reinhardt-limehouse-blues.pdmx]`: added {'tempoChanged': True}; changed nothing
+- `repairs[song.blues.singin-the-blues]`: added {'tempoChanged': True}; changed nothing
+- `repairs[song.blues.weary-blues]`: added {'tempoChanged': True}; changed nothing
+- `repairs[song.blues.storyville-blues]`: added {'tempoChanged': True}; changed nothing
+- `repairs[song.blues.wabash-blues]`: added {'tempoChanged': True}; changed nothing
+- `repairs[song.blues.tishomingo-blues]`: added {'tempoChanged': True}; changed nothing
+- `cuts[excerpt.blues.wabash-blues.b1-4]`: before absent; after:
+    id: "excerpt.blues.wabash-blues.b1-4"
+    file: "scores/excerpts/excerpt.blues.wabash-blues.b1-4.mxl"
+    change: "E50b (Entry 181): the approved cut of song.blues.wabash-blues, printed bars 1-4, both hands, re-cut from the repaired parent: the same bars and staves, differing from the old cut only by the parent's tempo repair (the old cut printed the words \"= 120\" beside the converter's quarter = 96)"
+    of: "song.blues.wabash-blues"
+    fromBar: 1
+    toBar: 4
+    selection: "both"
+    cutVersion: 2
+    parentFrom: "60f8d018899c70b1dd3c09e0d48e7e24d61efedb68e6ac67d5451c8572338208"
+    parentTo: "b896827d97beb8a30aad9a9fcc4ab49244959bdd663857a8a506833c2e115c13"
+    from: "ab221f8913be0384427418c639fd326119fb2f047f96eae4fa5a9a78aa9f6be8"
+    system: 0
+    to: "ed2aaa19188ac3c90ba0a1dc34c1e6e64d73ddaab3f67cdd3a5c62a82d4d8f89"
+    tempoChanged: true
+
+## content/catalog.schema.json
+- `$defs.item.properties.provenance.properties.formerIdentities.description`: before "E50a: the file identities this row's music had while the converter wrote music21's `<encoding-date>`: the recorded historical dated files (`tools/content/former_identities.json`, from the catalogues able to store a learner's material, never a rolling window) whose undated form is this row's file, each re-proved by `convert.former_identities` (the file with that entry's date put back, zipped as `normalise_archive` zips, is the entry's bytes), so a learner's run, encounter, pruned run's summary or project stored against a dated file still names this row's material (`material.learnerMaterial`). E50: beside them, the old identity a reviewed musical repair names (`tools/content/repaired_identities.json`: the seven bundled PDMX scores whose printed tempo is now their mark), re-proved by the same function (the file with the repair's restore lines and the old date put back is the old file's bytes). Only on a row whose file the converter wrote without a date; never the row's own identity. Learner continuity only: D2's review record and every exact-byte check read `identity` alone."
+  after "E50a: the file identities this row's music had while the converter wrote music21's `<encoding-date>`: the recorded historical dated files (`tools/content/former_identities.json`, from the catalogues able to store a learner's material, never a rolling window) whose undated form is this row's file, each re-proved by `convert.former_identities` (the file with that entry's date put back, zipped as `normalise_archive` zips, is the entry's bytes), so a learner's run, encounter, pruned run's summary or project stored against a dated file still names this row's material (`material.learnerMaterial`). E50: beside them, the old identity a reviewed musical repair names (`tools/content/repaired_identities.json`: the seven bundled PDMX scores whose printed tempo is now their mark), re-proved by the same function (the file with the repair's restore lines and the old date put back is the old file's bytes). E50b: on the approved Wabash cut, re-cut from that repaired parent, its old cut (the table's `cuts`: the one derived repair relationship the build produced, never a rule for other descendants), re-proved by `excerpts.former_cut_identities` (the same definition and cutter, the parent's repair still proved, and the new cut with that repair's restore lines put back, zipped under the old machine's creating system, is the old cut's bytes). Only on a row whose file the converter wrote without a date, or that cut; never the row's own identity. Learner continuity only: D2's review record, an excerpt approval's `parentSha256` and staleness, and every exact-byte check read `identity` alone."
+- `$defs.item.properties.provenance.properties.tempoRepairedFrom`: before absent
+  after {"description": "E50b: the former identities (a subset of `formerIdentities`) whose file a reviewed repair changed the tempo of (`tools/content/repaired_identities.json`, a relation marked `tempoChanged`: the seven bundled PDMX scores whose printed \"= N\" became their tempo, and the Wabash cut re-cut from one). A run stored against one of them measured its percentage of the old file's tempo (the converter's defaulted 96); a run of this row's id that stored no material (before D4, when every file under the id was the old one), or no base tempo, or a base that was not the written one, does not show what its percentage is of, which is never guessed: no tempo-dependent standard reads such a run's tempo against this row's (`material.tempoNotComparable`, `rungState.meetsStandard`), while contact, familiarity, projects and every observation no tempo decides read it as before. The run is never rewritten.", "type": "array", "minItems": 1, "items": {"type": "object", "required": ["kind", "sha256"], "additionalProperties": false, "properties": {"kind": {"const": "file"}, "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}}}
+- anything else in the schema changed: False
+
+## every path changed under content/ and scores/ against the base
+    content/catalog.schema.json | 24 +++++++++++++++++++++++-
+    1 file changed, 23 insertions(+), 1 deletion(-)
