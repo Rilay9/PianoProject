@@ -95,3 +95,10 @@ Never name an AI model. Every item is done or has an explicit not-done line.
 Entry: `docs/prompts/runs/E54/ENTRY.md`, Entry 174.
 
 **Landed 2026-09-29** (Entry 174; 496fa11d, merged 11fc6978); handoff `handoffs/496fa11d.md`.
+
+## Record
+
+lane: E54 · closes: E54 · entry: 174
+index: A rejection of the current excerpt approval withdraws it and stops the cut (the reviewer's ruling; backlog E54, P2) | content | **done 2026-09-29**, Entry 174; merged 11fc6978; handoff `handoffs/496fa11d.md`
+in-flight: brief drafted 2026-09-30 (`E54-a-rejection-withdraws-the-approval.md`): a rejection of the current excerpt approval withdraws it to `superseded` with the rejection as the event that replaced it, and the build stops cutting the range (the reviewer's ruling, `responses/questions-71bd6cee.md`; queued first under the fast path, `responses/questions-53670d2a.md`); dispatched 2026-09-30 from df275e8f without a second pre-review, as the reviewer allowed (Entry 174). **Landed** 2026-09-29 (merged 11fc6978, chain green); handoff `handoffs/496fa11d.md`, with the reviewer.
+state: landed 2026-09-30: merged 11fc6978; handoff `handoffs/496fa11d.md`

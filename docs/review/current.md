@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **T58** — `handoffs/0ba0d2d1.md` (respond in `responses/0ba0d2d1.md`). The record generates its mirrors (Entry 171).
 - **E50** — `handoffs/68e0479b.md` (respond in `responses/68e0479b.md`). Seven rows print their tempo (Entry 163).
 - **U32** — `handoffs/2f67b047.md` (respond in `responses/2f67b047.md`). A long piece keeps its look-ahead row (Entry 169).
 - **E54** — `handoffs/496fa11d.md` (respond in `responses/496fa11d.md`). A rejection of the current approval withdraws it (Entry 174).

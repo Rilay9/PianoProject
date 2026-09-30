@@ -168,9 +168,10 @@ path-to-checks map names. A push that touches only the record and the review str
 `docs/pending-review.md`, `docs/prompts/in-flight.md`, `.claude/`) starts no run (Q63,
 `paths-ignore`). One run per branch runs at a time and the run in progress completes: a push that
 arrives meanwhile waits in the one pending slot, a newer one replaces it, and the replaced tree
-gets no conclusion of its own (the concurrency rule). The reviewer's views are checked on every
-push by `.github/workflows/docs-integrity.yml` (`test_prompt_views`, without the app's suites; a
-newer push cancels an older docs run) and again in the full run's content tests; the validator's
+gets no conclusion of its own (the concurrency rule). The reviewer's views and the record's mirrors
+are checked on every push by `.github/workflows/docs-integrity.yml` (`test_prompt_views` and
+`test_record_mirrors`, without the app's suites; a newer push cancels an older docs run) and again
+in the full run's content tests; the validator's
 last step regenerates them everywhere but on GitHub's runner, where it compares and writes nothing.
 The minimum checks for the paths a landing touches are `docs/prompts/checks.json`, printed by
 `tools/docs/checks_for_paths.py`; a path no pattern names takes the full suites and is printed as

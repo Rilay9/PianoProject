@@ -115,3 +115,10 @@
 State the technical and pedagogical verdicts separately. Pedagogically, what counts as a miss is unchanged; how the new close timing reads to a learner is unverified on a device.
 
 **Entry.** Run files go under `docs/prompts/runs/U66/`, and the entry is `docs/prompts/runs/U66/ENTRY.md`, with its number given at dispatch.
+
+## Record
+
+lane: U66 · closes: U66 · entry: 176
+index: A stall is not a miss: the engine's window close follows the note's stamp, not the tick (backlog U66; SG02) | app | brief drafted 2026-09-30 (`U66-a-stall-is-not-a-miss.md`); with the reviewer before dispatch; Entry 176
+in-flight: brief drafted 2026-09-30 (`U66-a-stall-is-not-a-miss.md`): a render stall must not create a miss: the engine closes a timing window by its own tick, so a note stamped inside the window but delivered after it is judged against a closed slot; reproduction first, the close rule fixed (SG02, tier 1; the reviewer's queue item 3); with the reviewer before dispatch (Entry 176).
+state: with-reviewer 2026-09-30: with the reviewer before dispatch (the morning bundle)
