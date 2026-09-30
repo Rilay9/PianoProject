@@ -21,3 +21,4 @@ index: E50's required change: the repaired Wabash cut's old→new relation, and 
 in-flight: dispatched 2026-09-30 (`E50b-the-repaired-cut-keeps-its-history-and-the-tempo-standard-guard.md`): E50's required change under the fast path: the Wabash cut's re-proved old→new learner-material relation (no approval renewal), and the tempo-standard guard at the smallest repair-lineage boundary for the seven defaulted runs (`responses/68e0479b.md`); building (Entry 181)
 state: dispatched 2026-09-30: dispatched at 827289d0, building (Entry 181)
 - landed 2026-09-30: merged d5c6491f; handoff `handoffs/65ae9d5f.md`
+- verdict 2026-09-30: APPROVE WITH ONE REQUIRED CHANGE — a fresh mastery transition must count only days whose tempo channel is comparable under the E50b rule; old `masteredOn` dates stay historical, never rewritten or demoted; the required change dispatched as `E50c-a-fresh-mastery-award-counts-only-comparable-days.md` (`responses/65ae9d5f.md`)

@@ -21,3 +21,4 @@ index: L120d's required change: the candidate rungs report names a coping-only a
 in-flight: dispatched 2026-09-30 (`L120e-a-coping-only-admission-is-named.md`): L120d's required change under the fast path: `study.candidate_rungs` names a rung admitted only by the fixed-position coping route, the candidate kept; L120b's pending docs/02 paragraph applied and L120d's integrated into one rule (`responses/4e76c768.md`); building (Entry 178)
 state: dispatched 2026-09-30: dispatched at 827289d0, building (Entry 178)
 - landed 2026-09-30: merged f915e4cf; handoff `handoffs/0ef15f3f.md`
+- closed 2026-09-30: APPROVE — the docs/08 placement reconciled into "A skip or a leap inside a taught fixed position" rather than a new L120e row; the docs/02/docs/03 candidacy-wording splice is a later cleanup, not a block (`responses/0ef15f3f.md`)

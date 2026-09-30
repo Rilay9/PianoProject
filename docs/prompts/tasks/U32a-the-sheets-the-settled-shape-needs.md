@@ -21,3 +21,4 @@ index: U32's required change: provision the sheets the settled shape needs after
 in-flight: dispatched 2026-09-30 (`U32a-the-sheets-the-settled-shape-needs.md`): U32's required change under the fast path: the sheets the settled shape needs, loaded after the first paint, one more on a stopped-state bar change before the next run, never inside a run; Bars 8 by the chooser's priority; the arrange-race case pinned to Bars 4, T60's header with it (`responses/2f67b047.md`); building (Entry 180)
 state: dispatched 2026-09-30: dispatched at 827289d0, building (Entry 180)
 - landed 2026-09-30: merged e9b87288; handoff `handoffs/88df748b.md`
+- closed 2026-09-30: APPROVE — readable-first kept (redraw from the sheets on hand, then load and re-plan when the settled shape's sheet lands); the first-run taller-stage trade accepted, not a new correctness defect; Bars 8 stays U113's (`responses/88df748b.md`)

@@ -21,3 +21,4 @@ index: The Library row's title loses its identifying ending at 115 % text at 342
 in-flight: dispatched 2026-09-30 (`G101-the-library-title-takes-a-third-line.md`): a fast-path product correction of G85a's invariant: the Library title up to three lines in the portrait row, Folder unchanged, the 115 % text case added to `library.spec.ts:344` with the title box's numbers printed on failure (the reviewer's ruling (a), `responses/questions-eebafb5e.md` §G101; backlog G101, P1); building (Entry 177)
 state: dispatched 2026-09-30: dispatched at 827289d0, building (Entry 177)
 - landed 2026-09-30: merged 9526ee7e; handoff `handoffs/cbdfe6f0.md`
+- closed 2026-09-30: APPROVE — the no-clamp Library rule is the correct invariant expression, not an estimated line count; CI run 36751096435 on fc9f1a8b gives the runner read-back of the repaired adversary green, no additional code required (`responses/cbdfe6f0.md`)
