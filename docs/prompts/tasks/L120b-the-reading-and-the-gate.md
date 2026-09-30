@@ -154,3 +154,5 @@ Fresh-worktree setup as X31's (Q24):
 **Then** Done / Not done / Follow-ups / Questions / Files. Every item under *What is decided* is either done or has its own not-done line; technical and pedagogical verdicts are stated apart. After that: the red lines, the mutants, and the tests table.
 
 This is Entry 155: `docs/prompts/runs/L120b/ENTRY.md`, starting `### Entry 155 — L120b`.
+
+**Brief approved 2026-09-30** (`responses/questions-7fb976cb.md`): the order material reading → gate → ownership; the shared detector fact changed, not the readers; the evidence version bumped; the key-signature exception narrow; the contextual support predicate preferred over widening `copedWithBy`; the hand span a measured material fact; callers without it fail closed; one caution: report 15/8 and 18/8 explicitly if the corpus has them, never a grouped compound reading without grouping evidence.

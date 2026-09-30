@@ -35,3 +35,5 @@ Judgement first: the sheet's date box and the Stage 9 Start line before and afte
 **Brief approved 2026-09-29** (`responses/questions-ea14b1fe.md`).
 
 **Landed 2026-09-29** (Entry 153; 8f2a1e73, merged 25a0bc9c); handoff `handoffs/8f2a1e73.md`.
+
+**Accepted 2026-09-30** (`responses/8f2a1e73.md`, APPROVE). The project-stage Start line no longer describes a nonexistent rung, non-project stages unchanged; the project-state badge loses the passed treatment (a lifecycle state is intent, not achievement). The date box keeps the browser's control face where the neighbouring sheet inputs render with it: matching the visible sheet outranks the app font on one native control; a move of every sheet input onto the app font is G95's, once, never the date control alone. Chromium-only verification sufficient for this phone-first seam; H2 if another browser becomes a target. Closed.
