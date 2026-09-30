@@ -230,9 +230,11 @@ export interface MidiSource extends InputSource {
   `startOnFirstGesture`). A context the platform suspends later — a locked screen, a call;
   `AudioEngine.watchState` publishes it — starts again only when a tap calls
   `ensureStarted()`. On the Score screen `Hear it` (U67) and `▶` / `Space` (U69) do, inside
-  the gesture, where the engine is not running; `▶` waits at most `PLAY_SOUND_WAIT_MS` and then
-  goes on whether or not the start answered. Nothing resumes on `visibilitychange`, which is
-  not a gesture. Unverified on a device.
+  the gesture, where the engine is not running, through one gate (`withSound`): the tap waits
+  at most `PLAY_SOUND_WAIT_MS` and acts only if `audioEngine.state` is then `running`;
+  otherwise it starts nothing and the state line says the sound did not start (G86a). The next
+  tap asks again; a late answer only clears the sentence (`onStateChange`). Nothing resumes on
+  `visibilitychange`, which is not a gesture. Unverified on a device.
 
 ### 4.7 `audio/pitch/` — microphone note detection (`MicSource`)
 

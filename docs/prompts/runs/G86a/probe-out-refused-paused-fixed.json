@@ -1,0 +1,85 @@
+{
+  "atRefusal": {
+    "stateLine": "Sound did not start — tap ▶ again",
+    "stateLineCut": false,
+    "stateLineBox": {
+      "x": 10,
+      "y": 62,
+      "w": 283,
+      "h": 18,
+      "visible": true
+    },
+    "play": "▶",
+    "playLabel": "Play",
+    "playDisabled": false,
+    "playBusy": null,
+    "playRefused": "true",
+    "playBox": {
+      "x": 0,
+      "y": 622,
+      "w": 40,
+      "h": 40,
+      "visible": true
+    },
+    "running": "true",
+    "barVisible": "true",
+    "statusSide": "Sound did not start — tap ▶ again",
+    "statusSideBox": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "visible": false
+    },
+    "corner": "bar 1 / 4 · Sound did not start — tap ▶ again",
+    "cornerBox": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "visible": false
+    }
+  },
+  "folded": {
+    "stateLine": "Sound did not start — tap ▶ again",
+    "stateLineCut": false,
+    "stateLineBox": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "visible": false
+    },
+    "play": "▶",
+    "playLabel": "Play",
+    "playDisabled": false,
+    "playBusy": null,
+    "playRefused": "true",
+    "playBox": {
+      "x": 0,
+      "y": 622,
+      "w": 40,
+      "h": 40,
+      "visible": true
+    },
+    "running": "true",
+    "barVisible": "false",
+    "statusSide": "Sound did not start — tap ▶ again",
+    "statusSideBox": {
+      "x": 0,
+      "y": 0,
+      "w": 0,
+      "h": 0,
+      "visible": false
+    },
+    "corner": "bar 1 / 4 · Sound did not start — tap ▶ again",
+    "cornerBox": {
+      "x": 71,
+      "y": 5,
+      "w": 262,
+      "h": 17,
+      "visible": true
+    }
+  },
+  "context": "suspended"
+}

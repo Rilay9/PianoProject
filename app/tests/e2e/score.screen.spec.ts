@@ -1212,4 +1212,69 @@ test.describe('▶ after the sound was suspended (U69)', () => {
     await expect.poll(state, { message: 'the context after ▶', timeout: 10_000 }).toBe('running');
     await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-running', 'true');
   });
+
+  /**
+   * A start that never answers starts nothing, and says so (G86a, the
+   * reviewer's ruling on U69). The context's `resume` is stubbed never to
+   * answer, as G86's probe did, so ▶'s wait runs to `PLAY_SOUND_WAIT_MS` with
+   * the context still suspended. U69 carried on at the bound, silent, with ▶
+   * reading ⏸; now no run starts, ▶ reads ▶ and the state line says the sound
+   * did not start. With the stub removed the next ▶ asks again, and runs.
+   */
+  test('a start that never answers: no run, ▶ at rest, the state line says so; the next ▶ runs with the sound', async ({
+    page,
+  }) => {
+    // `STATE_TEXT.soundOff('▶')` in `help.ts`; `help.test.ts` holds it to `04` §5f.
+    const sentence = 'Sound did not start — tap ▶ again';
+    await page.addInitScript(() => {
+      const Native = window.AudioContext;
+      const made: AudioContext[] = [];
+      (window as Captured).__contexts = made;
+      window.AudioContext = class extends Native {
+        constructor(options?: AudioContextOptions) {
+          super(options);
+          made.push(this);
+        }
+      };
+    });
+    await openScore(page);
+    const state = (): Promise<string> =>
+      page.evaluate(() => (window as Captured).__contexts?.[0]?.state ?? 'none');
+    await expect.poll(state, { message: 'the app made its context as the piece loaded' }).not.toBe('none');
+    await page.locator('#score-title').click({ timeout: 5_000 });
+    await expect.poll(state).toBe('running');
+    await page.evaluate(async () => {
+      const ctx = (window as Captured).__contexts?.[0];
+      await ctx?.suspend();
+      // An own property over the prototype's: removed below, the real `resume` answers again.
+      if (ctx) ctx.resume = () => new Promise<void>(() => undefined);
+    });
+    await expect.poll(state).toBe('suspended');
+    const section = page.locator('section[data-screen="score"]');
+    const play = page.locator('#score-play');
+    await play.click({ timeout: 5_000 });
+    // Past the bound: the sentence is what says the wait is over (polled, no fixed sleep).
+    await expect(page.locator('#score-waiting'), 'the state line after the bound').toHaveText(sentence, {
+      timeout: 10_000,
+    });
+    await expect(section, 'a run started against a sound that had not started').not.toHaveAttribute(
+      'data-running',
+      'true',
+    );
+    await expect(play).toHaveText('▶');
+    await expect(play).toBeEnabled();
+    await expect(play).not.toHaveAttribute('aria-busy', 'true');
+    await expect(play).toHaveAttribute('data-sound-refused', 'true');
+    expect(await state()).toBe('suspended');
+
+    await page.evaluate(() => {
+      const ctx = (window as Captured).__contexts?.[0];
+      if (ctx) Reflect.deleteProperty(ctx, 'resume');
+    });
+    await play.click({ timeout: 5_000 });
+    await expect.poll(state, { message: 'the context after the second ▶', timeout: 10_000 }).toBe('running');
+    await expect(section).toHaveAttribute('data-running', 'true');
+    await expect(page.locator('#score-waiting')).not.toHaveText(sentence);
+    await expect(play).not.toHaveAttribute('data-sound-refused', 'true');
+  });
 });
