@@ -3,7 +3,7 @@
   "bounds": {
     "lower": "D4 (9193261b, 2026-09-28): the first catalogue carrying provenance.identity and the first app storing a material on a run; no learner row written before it names a file identity. The converter epoch it was built under (392890bc, 2026-09-16, the last change of convert.py, abc_tools.py and the music21 pin, which the tool fingerprint keys the cache on) dates every build-converted file such a catalogue can hold on or after 2026-09-16; the committed PDMX copies it serves keep their own quarry dates, from 2026-09-06.",
     "upper": "the laptop's deployable catalogues before E50a: the main checkout's app/public/content and app/dist/content (D25: the phone installs what the laptop serves), both written 2026-09-29 22:28 and identical; the latest dated identity in them is the upper bound, never a future date.",
-    "dates": "2026-09-06 to 2026-09-29"
+    "dates": "2026-09-06 to 2026-09-30"
   },
   "sources": [
     {
@@ -24,15 +24,33 @@
       "systems": {
         "0": 753
       }
+    },
+    {
+      "catalogue": "laptop app/public/content, 2026-09-30 01:08, the last pre-E50a build (L120c's landing chain)",
+      "rows": 2092,
+      "dated": 753,
+      "added": 6
+    },
+    {
+      "catalogue": "laptop app/dist/content, 2026-09-30 01:08, the same build as published",
+      "rows": 2092,
+      "dated": 753,
+      "added": 0
     }
   ],
   "identities": [
     {"file": "scores/authored/exercise.blues.twelve-bar-shuffle.a.mxl", "date": "2026-09-29", "system": 0, "sha256": "39ec49eeddea5ab8e605564aec7fe7c79356b2eb9bbc941444f50023f96d775e", "undated": "eb1e6ad98340f81b8e0290608fe05094af38b3174145aeb0ac8b70122ab03991"},
+    {"file": "scores/authored/exercise.blues.twelve-bar-shuffle.a.mxl", "date": "2026-09-30", "system": 0, "sha256": "9291a45d3d1c1c4bb7e003b1a600885fe4967838dea49cbdeef5c404082656b5", "undated": "eb1e6ad98340f81b8e0290608fe05094af38b3174145aeb0ac8b70122ab03991"},
     {"file": "scores/authored/exercise.blues.twelve-bar-shuffle.c.mxl", "date": "2026-09-29", "system": 0, "sha256": "d14e81e3881d1dfafb7d3beae68d0bfbcb90d9d47cfd7a14e0e2fba672efcf67", "undated": "fe0a75dddbea64cacab84f3d6ecd4072f84351f3cf0ec7f73d7f74cb404df4cf"},
+    {"file": "scores/authored/exercise.blues.twelve-bar-shuffle.c.mxl", "date": "2026-09-30", "system": 0, "sha256": "0b502dd441a286fc6c52d6782016997abbb8b1dcd1353d79803301d7754b83b5", "undated": "fe0a75dddbea64cacab84f3d6ecd4072f84351f3cf0ec7f73d7f74cb404df4cf"},
     {"file": "scores/authored/exercise.blues.twelve-bar-shuffle.d.mxl", "date": "2026-09-29", "system": 0, "sha256": "9ee373e539e9a47aa824653eb0b2ed6d638ff61e22ac0ab960775ed4fef1ecbc", "undated": "73b3b29ec4471fa2e6b8e412715647bf0251aa77015b043a9b445ce4a4ec1ab8"},
+    {"file": "scores/authored/exercise.blues.twelve-bar-shuffle.d.mxl", "date": "2026-09-30", "system": 0, "sha256": "b3ddf5b6e73587e4a937e9eef44173da0564970dc1706cb79edd0128ebc30e5e", "undated": "73b3b29ec4471fa2e6b8e412715647bf0251aa77015b043a9b445ce4a4ec1ab8"},
     {"file": "scores/authored/exercise.blues.twelve-bar-shuffle.e.mxl", "date": "2026-09-29", "system": 0, "sha256": "2f6fb909048f733fe9a3080eb3c1649333f98f5860b6d13481c4dea04030a846", "undated": "a8f4dc0400480471d06d5f876d9c3e3a1520f51a1a0586229a092499744a0b37"},
+    {"file": "scores/authored/exercise.blues.twelve-bar-shuffle.e.mxl", "date": "2026-09-30", "system": 0, "sha256": "80d3078ac783430b910de4974990353f928d560acb30aeb406ed50fb799daf3f", "undated": "a8f4dc0400480471d06d5f876d9c3e3a1520f51a1a0586229a092499744a0b37"},
     {"file": "scores/authored/exercise.blues.twelve-bar-shuffle.f.mxl", "date": "2026-09-29", "system": 0, "sha256": "edfd62a830f5422b42f98202ce81e9a3266403983e74abc6be72ed0631146cdf", "undated": "05324f00a7eb7970cba7c59347eb47d4a5deda8e5e9f1458f104758721a4ee4d"},
+    {"file": "scores/authored/exercise.blues.twelve-bar-shuffle.f.mxl", "date": "2026-09-30", "system": 0, "sha256": "41fdd98e6a9b9fe1cf5d158c8c8533f641093636af6530578fa625ee28dec057", "undated": "05324f00a7eb7970cba7c59347eb47d4a5deda8e5e9f1458f104758721a4ee4d"},
     {"file": "scores/authored/exercise.blues.twelve-bar-shuffle.g.mxl", "date": "2026-09-29", "system": 0, "sha256": "06fe37148a9b5460fa55fb211b38c61161a8df99d93a499ba320328c2cd4e9a4", "undated": "fa4e4f813d374b3095648972558ad3b9bc8ebe1af746367e9a5d8387557309ac"},
+    {"file": "scores/authored/exercise.blues.twelve-bar-shuffle.g.mxl", "date": "2026-09-30", "system": 0, "sha256": "3522ee98b7e3aec51f03103187a99c4264b1d9c54817769d90523aefc813681a", "undated": "fa4e4f813d374b3095648972558ad3b9bc8ebe1af746367e9a5d8387557309ac"},
     {"file": "scores/authored/exercise.reading.steps-and-skips-c.mxl", "date": "2026-09-16", "system": 0, "sha256": "0caa97b374d669baec7e2b48f92191d951d24befff1bd891ce36c36ad3a195f4", "undated": "260cd03f9a0f58ae8c28ee728209b4201b9430c6f28963e5181ca7e4f9ebc591"},
     {"file": "scores/authored/song.classical.ode-to-joy.alternating.mxl", "date": "2026-09-16", "system": 0, "sha256": "7dda7d59a402b157447cc74017927b78ac088e194215f8ec22dd136344ff1af9", "undated": "5c40e7bf49c944b3c476f3304e19e99d1fbb52dcda4f459d770f8b6c1c0ecbd8"},
     {"file": "scores/authored/song.classical.ode-to-joy.full.mxl", "date": "2026-09-27", "system": 0, "sha256": "901a3001cb015f0400b3d81d55f8c54f3f96cd16d4b8b55967bf3d8d22b741e5", "undated": "d552271ed0c90b761fbf0c66aab24a3d26b980a509b9f9bd8aee5d89100180b4"},
