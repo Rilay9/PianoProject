@@ -325,3 +325,64 @@ State the technical and pedagogical verdicts separately. The pedagogical one is 
 **Entry 166.** Every run file goes under `docs/prompts/runs/E50a/`. The entry is `docs/prompts/runs/E50a/ENTRY.md`, starting `### Entry 166 — E50a`.
 
 **Revise before dispatch 2026-09-30** (`responses/questions-ecccffb7.md`). Removing music21's volatile `<encoding-date>` is the right deterministic-conversion fix, and the red-first reproducibility proof is right. The brief's consequence — every build-converted file changing identity once, so prior runs, projects and contact appear unmet — is rejected: broad one-time identity churn is not an acceptable product cost for removing non-musical metadata. The invariant: changing only volatile conversion metadata must not change learner-facing material identity. Before the date is removed, a compatibility path that preserves existing learner truth: a canonical material identity computed from the score bytes with volatile metadata removed (the raw bytes kept separately where needed), or an explicit old→new identity alias so existing encounters, projects and runs resolve to the same material; if changing the global identity function is too broad here, that layer is a tiny prerequisite seam and E50a then removes the date. Old learner rows are never silently rewritten or deleted, and the history loss is never declared a one-time migration cost. The seven intended tempo repairs may move identity where their musical bytes change; the unrelated corpus must not move because a date disappeared. E50a waits for a history-preserving identity plan.
+
+## Reviewer's approval and conditions (`responses/questions-f7acb2c0.md`)
+
+**Approved for dispatch 2026-09-30, with a strict alias boundary** (`responses/questions-f7acb2c0.md`:5–53, the E50a section; on this revision, committed at 125b0328). The reviewer's words below, verbatim, are part of this brief's contract: where the text above differs, they govern, and the entry says where. Dispatch waits on the owner's usage reset (the orchestrator's hold; the reviewer: an orchestration choice that changes no review gate).
+
+> **APPROVE FOR DISPATCH, with a strict alias boundary.**
+>
+> The revised direction solves the problem the previous brief did not: deterministic conversion without throwing away learner continuity.
+>
+> The alias approach is preferable here to changing canonical identity globally because the historical learner rows already contain the raw dated-file hashes. Preserving those old hashes as former identities lets the app continue to recognize the same musical material without rewriting user data or changing `DB_VERSION`.
+>
+> Keep these requirements:
+>
+> 1. `<encoding-date>` is removed/canonicalized at the converter's deterministic text-normalisation boundary, beside the existing minted-id and archive timestamp normalization.
+> 2. The build records the known former dated-file identities for each self-converted current file.
+> 3. `sameMaterial` and material-key lookup paths may resolve a stored old file identity through those former identities.
+> 4. Existing stored runs, encounters, pruned summaries, projects, and their keys remain byte-for-byte untouched.
+> 5. A genuine musical-byte change, such as E50's later tempo repair, is still a new current identity unless explicitly related by another reviewed mechanism.
+>
+> ### Alias boundary: learner continuity only
+>
+> Do **not** let `formerIdentities` turn historical bytes into current provenance truth everywhere.
+>
+> The alias is for learner-state continuity and catalogue/material lookup. It must not make systems whose question is “is this the exact current file?” treat an old dated hash as the current one.
+>
+> In particular:
+> - D2/review records stay exact-byte identity. **Yes, keep D2 exact bytes.** A review on old bytes does not become a review on new bytes merely because the musical content is equivalent after removal of volatile metadata.
+> - excerpt `parentSha256` staleness remains exact bytes;
+> - committed-file integrity checks remain exact bytes;
+> - render/cache/checksum identities remain whatever their owning systems currently define unless this seam explicitly proves they are learner-material identity.
+>
+> This distinction should be explicit in naming/API shape. Prefer something like “same learner material/current row resolves former identity” over silently widening the semantics of every generic identity comparator.
+>
+> ### Former-identity table
+>
+> The date-range reconstruction is acceptable **only as a bounded compatibility source, not as an eternal dynamic date sweep.**
+>
+> At build time, derive the former identities for the finite historical window in which learner rows could actually have been written against dated converted files. The brief already has the relevant repository history to bound that window. Record the resulting aliases in the built catalogue/current row so a phone does not depend on its own wall clock to rediscover them.
+>
+> If the builder finds local installed catalogues whose dated hashes fall outside the proven range, stop and report rather than guessing more dates forever.
+>
+> A committed generated table of known old identities is acceptable if that is the only robust way to preserve already-installed historical hashes; if used, it must be generated/reviewable rather than hand-maintained.
+>
+> ### Verification that matters
+>
+> The acceptance evidence should include:
+> - same source converted on two different dates -> identical current bytes;
+> - a stored old dated identity resolves to the current catalogue item through the alias;
+> - a genuinely different musical file does not resolve merely because it shares an alias-bearing item id;
+> - project/contact/run lookup by former key still finds the same material;
+> - D2/review exact-byte comparison still reports the old identity as old, not current;
+> - no stored learner row is rewritten.
+>
+> With that boundary, E50a may dispatch. E50 proper can follow after it lands.
+
+**What they settle and ask of the builder:**
+- **Item 7's questions are answered.** (a) The alias, as a bounded compatibility source: the reconstruction over a finite, proven window, recorded in the built row, never a date sweep on the device; a committed table of known old identities only if it is the only robust way, and then generated and reviewable, never hand-maintained. (b) D2 stays exact bytes.
+- **The window.** The report states its two ends and what bounds each. A dated hash outside that range in a local installed catalogue (item 6's read of the laptop's `catalog.json` among them) stops the run and is reported; no date is added by guess.
+- **The window's last day, ruled by the orchestrator (the reviewer's read-back asked with the plan at the next paste):** a committed constant, the lane's final build day plus 14 days, the bounded landing lag and no more, never a sweep; the report states both ends and what bounds each (the first commit that produced dated conversions, and this constant); nothing past it is derived, on the device or in the build, and a dated hash outside it stops the run and is reported.
+- **Naming.** The resolution's name and API say learner material (the reviewer's *same learner material/current row resolves former identity*); no generic identity comparator is widened. The report names each exact-byte system the reviewer lists (D2/review records, excerpt `parentSha256` staleness, committed-file integrity checks, render/cache/checksum identities) and shows it untouched.
+- **The acceptance evidence.** The report names, for each of the six items, the case that shows it; where no case in item 4 does, one is added.

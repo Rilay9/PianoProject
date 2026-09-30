@@ -294,3 +294,34 @@ After that:
 - `## Doc rows`.
 
 This is Entry 167: `docs/prompts/runs/L120d/ENTRY.md`, starting `### Entry 167 — L120d`.
+
+## Reviewer's approval and conditions (`responses/questions-f7acb2c0.md`)
+
+**Approved for dispatch 2026-09-30** (`responses/questions-f7acb2c0.md`:57–77, the L120d section). The reviewer's words below, verbatim, are part of this brief's contract: where the text above differs, they govern, and the entry says where. Dispatch waits on the owner's usage reset (the orchestrator's hold; the reviewer: an orchestration choice that changes no review gate).
+
+> **APPROVE FOR DISPATCH.**
+>
+> The proposed implementation is the cleanest expression of the L120b ruling.
+>
+> Both the TypeScript and Python gates already read `fixedPositions` from the demand's own vocabulary entry. Therefore adding the same position declarations to `interval.leap` is better than special-casing leaps in code or making the leap reader borrow `interval.skip`'s data implicitly.
+>
+> Keep the important invariants:
+> - `interval.leap` remains a measured leap;
+> - `taughtAt` remains `2.1`;
+> - `copedWithBy` remains interval reading;
+> - fixed-position support changes the coping gate only;
+> - no interval-reading evidence is awarded;
+> - the whole sounding hand must fit inside its own already-taught position;
+> - material outside the position still refuses;
+> - bass-clef/hand ambiguity remains untouched.
+>
+> The duplicated two-position data is acceptable here. A larger shared-position abstraction would cost more schema/readers than it saves for two demand entries. Pinning the two lists equal is enough until a third real consumer appears.
+>
+> The five-pair expectation is useful as a hypothesis, not an oracle. Re-run against the actual base after L120c if present and report any difference rather than forcing the count.
+>
+> L120d may dispatch after the owner's usage reset.
+
+**What they settle and ask of the builder:**
+- **Item 2's choice stands:** the positions recorded on `interval.leap` as on `interval.skip`, stated twice, and item 3 (6)'s pin is enough until a third real consumer appears; the one-definition alternative stays unbuilt.
+- **The eight invariants** are the contract; the report names, for each, the case or mutant that shows it.
+- **Item 5's numbers are a hypothesis, not an oracle.** Re-run against the actual base (after L120c, if the base holds it) and report any difference; the count is never forced.
