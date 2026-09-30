@@ -2,6 +2,8 @@
 
 Open handoffs, each with its own file:
 
+- **CL01** — `handoffs/c935a64c.md` (respond in `responses/c935a64c.md`). Lesson truth: improv.3's guarantee narrowed to what its own reasoning proves (pitch), ragtime.9's *never come out* softened to a heuristic, improv.8's tritone sentence kept as a justified absolute, improv.4 kept as already hedged, and a 109-lesson record with all twelve gates (T4, T47 closed; T48 in part; T53, T54 open) (Entry 189).
+- **CL05** — `handoffs/4923be59.md` (respond in `responses/4923be59.md`). A hidden page is not practice (Entry 187).
 - **X42** — `handoffs/36b9ac3d.md` (respond in `responses/36b9ac3d.md`). A sound that agrees with the mark wins (Entry 185).
 - **U113** — `handoffs/7bba9b3b.md` (respond in `responses/7bba9b3b.md`). Look-ahead against the requested count: 24 cells measured, one trade and no strict gain, and the owner's question (Entry 186).
 - **E50c** — `handoffs/4a83af56.md` (respond in `responses/4a83af56.md`). A fresh mastery award counts only comparable days (Entry 190).

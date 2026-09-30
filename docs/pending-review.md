@@ -36048,3 +36048,445 @@ No content byte moves. What a learner hears changes at three positions; each is 
 ## Content
 
 What a learner meets differently: *Maple Leaf Rag* plays at 100 throughout, where it jumped to 120 a sixteenth into bar 1 and again at the trio. That corrects it to the file's printed quarter = 100, corroborated by the kern edition; the first edition prints no number. Satie's first *Gymnopédie* counts in and plays its first beat at 76, where it counted in at 60, then continues near 62 as before, *unverified as music*.
+
+### Entry 187 — CL05 — a hidden page is not practice: Drill, PDF, Chord Chart and Lab stop what advances and what sounds while the phone is locked or the app is behind another, come back where they were, and a card's recorded time counts visible time only (backlog X15, in part; convergence CL05; U19 and U39 named, not closed; app only) (2026-09-30)
+
+Base: `122a5224` (origin's head at dispatch). The brief is `docs/prompts/tasks/CL05-practice-lifecycle.md`, approved for dispatch by `docs/review/responses/questions-e71ef3ad.md` §CL05, with the Simon-chain ruling and the second read's notes folded in. Its line numbers were read at `43278119` and held at the base: every premise was checked at the lines before the build. Five source files changed. `ScoreScreen.ts`, `sessionRunner.ts` and `sessionRun.ts` are untouched.
+
+## Judgement
+
+**Layers.** Everything below was observed in the unit layer: jsdom, the real screens, a faked clock and a forged `document.visibilityState`. No browser case was added and no device was used. Nothing here was heard. No actor in this process can hear, and no musical claim is made: this seam changes interaction and timing, not musical content. The resume points and the count-in on return are interaction choices, listed under *Judgement calls* below.
+
+**What a learner now meets, per screen.**
+
+- **Drill.**
+  - **Recorded time counts visible time only.** This holds on all four rows the screen writes: a drill set, the checklist, the placement test and the tour. Play 20 s, lock the phone for 5 min, play 10 s, and the row says 30 s. It used to say 330 s.
+  - **The backing loop with its chart.** While hidden, the chart holds its bar and the loop is silent. On return, loop and chart resume together from the downbeat of the bar they were in: that bar's chord sounds again, and the chart is neither ahead nor back at bar 1.
+  - **A Simon chain cut off by hiding** sounds nothing more while hidden. It comes back silent, and the status line reads *Interrupted — press ▶ Play again to hear the chain.* instead of the stale *Listen — the app is playing.* A key pressed before ▶ Play again is not scored, and the card is not moved on. ▶ Play again replays the chain from its first note, and after that a key is an answer again. A drill opened while the page is already hidden behaves the same way.
+  - **A right/wrong pause that is running when the page hides** no longer runs out into the next card and its sound. On return the card is held with *Tap the card to move on.* A tap moves on, and only then does the next prompt sound.
+  - **Harmonic dictation.** Its ticker does not run while hidden and starts again on return. **Premise 9's learner-visible consequence was not reproduced.** The silence rule reads the input timeline, where a hidden span is silence either way. The ticker never changes the length of `chordsHeard`, so what the learner sees is segmented the same before and after. The only change is that nothing ticks while hidden.
+- **PDF.**
+  - **Timed turns no pages while hidden** and fires no queued turn on waking. On return, the system on screen gets its whole interval again. 20 s, hidden 5 min, 10 s at ten seconds a system is 3 turns; it used to be 33.
+  - **The 🥁 click**, if it is on, stops while hidden and starts again on return. This is beyond the brief's PDF bullet: see *Judgement calls*.
+- **Chord Chart.**
+  - **While hidden**, the click, the bass and drums and the comp chord stop, and the chart holds its bar.
+  - **On return** it counts in again, with the learner's own count-in, as *Count off ▶* does. It then resumes on the bar that was sounding, from its downbeat. It never shows *Bar 1 · chorus 1* on return, and never choruses ahead. 20 s, hidden 5 min, 10 s reads *Bar 4 of 4 · chorus 4*; it used to read *Bar 2 of 4 · chorus 42*.
+- **Lab (trading fours).**
+  - **While hidden**, the loop, the bed and the app's call stop, and notes played to the hidden page are not collected.
+  - **On return** it counts in, then plays the cut bar from its downbeat. A call that was cut off carries on from that bar.
+  - **The learner's window is their bars as heard.** It moves with the bars, and whatever was played in the cut bar goes with it.
+  - **A hidden phone is never charged *You did not come in*** for bars it did not show. The committed screen printed exactly that line after a hidden span.
+
+**Counts.**
+
+- **Tests:** 34 cases added in 5 new files, 0 replaced, 0 deleted; every existing test is unchanged.
+- **Red at HEAD:** 23 of the 25 screen cases (`unit-red-committed.txt`). The two that pass on both are guards on the resume path: the PDF click stays off on return when it was off, and Stop followed by hide and show starts nothing on the Chord Chart. The 9 primitive cases test new exports, so there is no committed behaviour for them to be red against.
+- **Mutants:** 14 applied, 14 killed (`mutants.txt`): the brief's 8 and 6 more.
+- **Exit codes:**
+  - `npx tsc -b`: 0.
+  - `npm run lint`: 0.
+  - `npx vitest run`: 1. 2 of 7,576 fail. Both are environment, not this change: `lessonClaimsAboutApp.test.ts` matches `\n` literals against `ScoreScreen.ts` and `style.css`, which this worktree checked out as CRLF. Both predicates are true on the LF blobs git commits (`chain.txt`).
+  - `npm run build:app`: 0.
+  - `checks_for_paths.py`: 0. It maps 21 browser specs to these paths, which were not run here: see *Not done*.
+
+**The three open questions, stated as questions.**
+
+1. **X16:** which non-verbal audio cue — ready, complete, next, or none — should mark a suspend or a resume, now that the suspended state exists on these four screens? That choice can be made in text. Whether a cue is heard as distinct from the click and the piano, which X16's row asks to test at the instrument, is something no one in this process can decide, so that part stays open.
+2. **U19:** should the on-screen keyboard hide while playing unless the mode needs it, with a thin tappable status strip — and on which screens?
+3. **U39:** does any of Drill, PDF, Chord Chart or Lab restart a run with nothing said when an option changes mid-run, the way Score's settings do? What was read here is scoped, not a search of every option handler:
+   - Lab's pickers stop the jam and say *Settings changed — press Jam it again to hear them* (`LabScreen.ts` `redraw`).
+   - The Chord Chart's bpm field sets the metronome's tempo live, with no restart.
+   - PDF's bpm and bars fields re-arm Timed from the system on screen. The interval starts again and nothing is said.
+   - The Simon help chips replay the chain on the learner's own tap.
+
+**The map's proof line, as stated** (`convergence-2026-09-30.md`:172). The fake-clock case (play 20 s, hidden 5 min, play 10 s, counted about 30 s) is met on each screen, and each case was red at HEAD. The figures come off the faked clock, not measurements:
+
+| Screen | After the fix | At HEAD |
+| --- | --- | --- |
+| Drill: the four recorded rows | 30 000 ms each | 330 000 ms |
+| Drill: the form chart | reads 30 s in | *Bar 2 of 4 · pass 42* |
+| PDF | 3 turns | 33 turns |
+| Chord Chart | bar 16 of the run | *chorus 42* |
+| Lab | bar 16 of the run, with trades | *pass 21* |
+
+The repeated hide-and-show case is on the Chord Chart: three visible spans with three different hidden ones count exactly the 20 s shown, with one metronome started once per return. Against the committed screen it read *Bar 1 of 4 · chorus 101*. The shared clock also has a four-cycle case (`screenLifecycle.test.ts`).
+
+**Judgement calls made in the build**, for the reviewer to confirm or overturn:
+
+1. **Drill's backing loop resumes its sound on return, with its chart.** The brief says the form ticker resumes on show, and the screen's own rule is that the chart follows the sound. The brief also has Chord Chart and Lab resume their audio. The alternative, silence until ▶ Play again, would restart the loop from bar 1.
+2. **The resume point is the downbeat of the bar that was sounding**, not the exact beat. This holds on Drill's loop, the Chord Chart and the Lab, so no material is skipped. Chord Chart and Lab count in first, with the learner's count-in setting. Part 20 §4's *count-ins under one documented policy* is not decided here.
+3. **A card whose pause was running waits for a tap on return** rather than re-arming the pause. Re-arming would start the next prompt's sound unasked, which is the reason the ruling gives for Simon.
+4. **The PDF click stops and restarts with the page.** It is not in the brief's PDF bullet, but it is the same fault: unattended sound into a hidden page, which the brief's shared hypothesis names for metronomes.
+5. **Lab drops what was played in the cut bar and over the resume's count-in.** Everything played earlier moves along with the window.
+
+**Verdicts.** *Technical:* the four screens now implement one suspend/resume contract through `screenLifecycle.ts`, and the per-attempt duration counts active time only. The contract is proved red then green per screen, with every mutant killed. *Pedagogical:* not applicable. Nothing taught or judged changes, beyond not judging bars nobody could see.
+
+## Per screen: the mechanism, the discriminating test, the red line
+
+**The shared primitive.** It lives in `app/src/ui/screenLifecycle.ts`.
+
+- `pageHidden()` (:46).
+- `watchVisibility` (:59). It is driven by `visibilitychange`, with `pagehide` as a second hidden (the pair `sessionRunner.ts` listens for) and `pageshow` as a return. It fires hidden once per hidden span, and never fires visible while the document still says hidden.
+- `onScreenSuspend(el, { onHidden, onVisible })` (:102). It is unsubscribed with the screen.
+- `activeClock(el?)` (:141): visible-only milliseconds, with `restart` and `dispose`. It uses the session clock's accounting but is a separate instance, as the brief decided and the reviewer accepted.
+
+A new case runs both clocks over one sequence: `sessionClock.test.ts`'s 10 s / 30 min / 5 s, then the map's 20 s / 5 min / 10 s. Both count the same 45 s. This is the reviewer's *keep the semantics aligned by tests*.
+
+**Drill** (`DrillScreen.ts`).
+
+- **Mechanism, duration.** `attemptClock` (:427) replaces `startedAtMs`. The four `Date.now() - startedAtMs` reads and the five restarts now go through it.
+- **Mechanism, `suspendDrill` (:1593).** In order:
+  - It bumps `suspensions`. Sound whose samples were still loading when the page hid is then never scheduled: the three `getPiano().then` blocks check it.
+  - It keeps the loop's place floored to its bar (`loopHeld`).
+  - It cancels every `playbackTimers` entry and stops the form ticker and the dictation ticker.
+  - It takes down Simon's lights, name and staff.
+  - For a chain still sounding (`performance.now() < simonAnswerFromMs`), it holds the gate at `Number.POSITIVE_INFINITY` and writes `SIMON_INTERRUPTED`. It never zeroes the gate, as `clearPlayback` would, and never calls `advance()`, so `SimonDrill.next()` does not score the unanswered chain.
+  - It turns a running `feedbackTimer` into a tap hold (`holdAwaitsTap`; `cardHeld()`, :1385, now answers the three places that read the timer).
+- **Mechanism, `resumeDrill` (:1644).** It replays the loop through `playPrompt(prompt, fromMs)`, which starts the chart at the same offset, and restarts the dictation ticker. The Simon chain and the held card wait for the learner.
+- **Mechanism, opened while hidden.** `playPromptWithHelp` ends with `if (pageHidden()) suspendDrill()` (:1140), so a card that opens behind a locked phone is suspended from its first moment.
+- **Discriminating tests and red lines at HEAD:**
+  - Duration: *expected 330000 to be 30000*, on each of the four rows.
+  - The chart held: *the chart moved while the page was hidden: expected { bar: 4, pass: 38 } to deeply equal { bar: 2, pass: 1 }*.
+  - Simon sound while hidden: *the chain kept sounding into a hidden page: … called 1 times*.
+  - The interruption: *expected 'Your turn — play it back.' to match /interrupted/i*. Its no-score assertion is red under the gate-zero mutant (*the interrupted chain was scored: expected 'wrong' to be ''*), and its silence assertion under the auto-replay mutant (*sound on return, with nothing asked for: … called 2 times*).
+  - The feedback path: *the pause advanced to the next card while hidden: expected [ 72, 60 ] to deeply equal [ 72 ]*.
+  - Opened while hidden: *the first chain sounded into a hidden page*.
+  - Dictation: *the dictation clock advanced while the page was hidden: … called 5000 times*.
+
+**PDF** (`PdfScreen.ts`).
+
+- **Mechanism.** `onScreenSuspend` (:724): hidden calls `disarm()` and `metronome?.stop()`; visible calls `arm()` if the mode is not manual, and `startClick()` if the click was on. `arm()` refuses while hidden (:271). `startClick()` (:350) is the click's start, shared by the chip and the return. It checks disposal, the chip and visibility after the audio has started.
+- **Red lines:** *the hidden span turned pages: expected 35 to be 5*; *a page turned while nobody was reading: expected 33 to be 3*; *the click kept going into a hidden page: expected [ 'start' ] to deeply equal [ 'start', 'stop' ]*.
+
+**Chord Chart** (`ChordChartScreen.ts`).
+
+- **Mechanism.**
+  - `suspend()` (:302) keeps `running`, stores `barOffset`, the held bar of the run, and stops the metronome, the kit and the comp's piano.
+  - `resume()` (:320) awaits `audioEngine.ensureStarted()`, because the platform suspends the audio context on a locked phone. It re-makes the kit, clears `barStarted` so that the resumed bar draws and comps, and calls `metronome.start()`. It does not call `start()`, which resets `bar`, `chorus` and `barStarted`.
+  - `onBeat` reads `barAt(beat.bar + barOffset, …)` (:222).
+  - `start()` and `stop()` reset the offset and a `resumeSeq` guard, so a slow resume cannot land after a Stop or a new count-off.
+  - A start whose audio answers after the page hid suspends itself (:294).
+- **Red lines:** *expected 'Bar 2 of 4 · chorus 42' to be 'Bar 4 of 4 · chorus 4'*; *the click kept going into a hidden page*; *expected 'Bar 1 of 4 · chorus 101' to be 'Bar 3 of 4 · chorus 3'* (repeated); *the count-in moved the chart*; *the click started into a hidden page*.
+- **The naive-wiring mutant** (`onHidden: stop, onVisible: start`) reds all six cases, the count-in one with *the count-in moved the chart: expected 'Bar 1 of 4 · chorus 1'*.
+
+**Lab** (`LabScreen.ts`).
+
+- **Mechanism, `suspendJam` (:745)** keeps `running`, holds the bar, remembers its downbeat on the input timeline (`heldBar`), and stops the metronome, the kit and the piano. `collectNote` ignores notes while suspended (:988).
+- **Mechanism, `resumeJam` (:767)** re-reads the clock anchor (the audio clock may have stood still), re-makes the kit and starts the metronome.
+- **Mechanism, `resumeOnDownbeat` (:718).** At the first downbeat after a return:
+  - It keeps the trade's notes played before the cut bar and moves them, and the window's start, on by exactly how far that bar's downbeat moved.
+  - It drops what was played in the cut bar and over the count-in.
+  - A call cut off is replayed from the cut bar, with its notes' beats re-based.
+- **Wiring.** `onBeat` reads `barAt(beat.bar + barOffset, …)` (:683), and trades run on the bar of the run. `startJam`, `stopJam` and a picker's `redraw` reset everything, as before.
+- **Red lines:** *expected 'Bar 6 of 8 · pass 21' to be 'Bar 8 of 8 · pass 2'*; ***hidden bars were judged: expected 'You did not come in' to match /^In on your own bars/***; *the call was left ringing*; *the loop started into a hidden page*. The window-unshifted mutant gives *expected 'Not inside your own bars' to match /^In on your own bars · 1 of 1/*.
+
+## Tests
+
+All 34 cases are class **add**. None was replaced: no existing test asserted the old behaviour.
+
+| File | Cases | The committed screen's assumption each one refutes |
+| --- | --- | --- |
+| `app/tests/unit/screenLifecycle.test.ts` | 9: 20 s / 5 min / 10 s = 30 s; repeated spans add up visible time only; a pagehide after hidden is one span; restart and dispose; made while hidden; goes with its screen; suspend fires once per span and not after disposal; never visible while still hidden; agrees with the session clock over one sequence | (new API) |
+| `app/tests/unit/drillLifecycle.test.ts` | 11: four duration rows; chart at 30 s; chart and loop held and resumed on the bar; dictation ticker idle while hidden; Simon silent while hidden; Simon interruption (silent, truthful line, no score, same card, replay from the first note); opened while hidden; a feedback pause running out while hidden | duration is wall-clock; the loop and its chart run on a clock that includes hidden time; scheduled notes play whether or not anyone is there; a chain's end opens the answer whenever it falls; a pause's timer always advances |
+| `app/tests/unit/pdfLifecycle.test.ts` | 4: 20 s / 5 min / 10 s = 3 turns; nothing turns while hidden or on waking, and the system gets its whole interval; the click stops and returns; the click stays off if it was off (guard) | Timed's timer runs regardless; the click runs regardless |
+| `app/tests/unit/chordChartLifecycle.test.ts` | 6: 20 s / 5 min / 10 s; silent and held, back on the bar; repeated hide-and-show; count-in on return holds the bar; a count-off whose audio arrives after hiding; Stop then hide and show starts nothing (guard) | the transport runs regardless; the only restart is `start()`, which rewinds |
+| `app/tests/unit/labLifecycle.test.ts` | 4: 20 s / 5 min / 10 s; never charged for hidden bars, and the cut bar's notes dropped; a jam whose audio arrives after hiding; a call cut off resumes from its bar | the jam and its trades run regardless; the answer window is wall time |
+
+**The test doubles.** The Chord Chart and Lab files use a metronome double that keeps time on the faked clock, with the real one's numbering, read from `Metronome.ts` and `BeatScheduler.ts`: count-in bars are 0, −1, …; bar 1 beat 1 is the first downbeat after them; every `start()` numbers from there again; and the first beat comes on the scheduler's next wake, never inside `start()`. The double first emitted beat 1 inside `start()`, which the real one does not. That surfaced a comp played twice on bar 1, a false fault; the double was corrected to match the real one before any red run was recorded. `chordChart.test.ts`'s hand-fired double is unchanged: it proves the first-bar comp, and it cannot show time passing while hidden.
+
+**Preserved.** The neighbouring suites were run beside the new files, green (`unit-green.txt`): `chordChart`, `pdfScreenDetection`, `labVerdictOnStop`, `simonTurnCue`, `simonDrill`, `sessionClock`, `drillWalkthrough`, `dictationCard` and `drillAfterAMiss`. So was `lessonClaimsAboutApp`, which reads `LabScreen.ts` and `DrillScreen.ts` as text; its only failures are the two CRLF claims.
+
+## What passes, and what is unverified beside it
+
+- **Passes:** every case above, in jsdom with a faked clock; the full unit suite, bar the two CRLF claims; typecheck, lint and the app build.
+- **Unverified on a device.** It is unobserved whether Android or iOS resumes the audio context on return without a gesture. Chord Chart, Lab, the PDF click and the Drill loop all call `ensureStarted()` or `getPiano()` on return. If a platform refuses and leaves the context suspended, the metronome's scheduler reads a clock that does not move. The chart or the jam would then stay held and silent, with *Count off ▶* or *Jam it* starting again from the top. That is read in the code, not observed.
+- **Unverified in a browser.** The 21 specs the check map names were not run. That headless Chromium reports these pages visible is inferred, not checked: Score's own hidden handler and the session clock already sit under specs in that suite.
+- **Unverified as copy:** *Interrupted — press ▶ Play again to hear the chain.* It was not rendered at 342 px, and it names no note, as the other two Simon lines do.
+- **Not heard:** nothing. No musical claim is made, and none rests on this seam.
+
+## Done
+
+1. **The shared suspend/resume contract** for Drill, PDF, Chord Chart and Lab: `onScreenSuspend` over `visibilitychange`, `pagehide` and `pageshow`.
+2. **The active-time primitive** is `activeClock`, written fresh in `screenLifecycle.ts`, as the orchestrator decided and the reviewer accepted. It is aligned with the session clock by a test.
+3. **Drill's wiring**, per the brief: `formTimer`, `dictationTimer`, `playbackTimers` and `feedbackTimer` on hide. The form and dictation tickers resume fresh; the loop resumes with its chart (*Judgement call* 1). The duration sites use the active clock: four reads, five restarts.
+4. **The Simon ruling** and the second read's notes, each proved:
+   - The gate is held shut and never zeroed.
+   - `advance()` is never called on hide, so `next()` never scores the chain.
+   - The feedback path is closed.
+   - The status line is truthful.
+   - ▶ Play again replays from the first note.
+5. **PDF**: `disarm()` on hide and `arm()` on show, plus the click (*Judgement call* 4).
+6. **Chord Chart and Lab** resume their audio without `start()` or `startJam()` resetting `bar`, `chorus` or `tradeIndex`. Lab's trade clock stops while hidden and its window is visible bars only.
+7. **Red first:** every case the brief names was seen red on the committed screens, quoted above.
+8. **Mutants:** the brief's 8 each killed, plus 6 for the added guards.
+9. **The repeated hide-and-show proof**, on the Chord Chart and on the primitive.
+10. **The entry**, the kept logs and the proposed doc rows.
+
+## Not done
+
+- **The map's 21 browser specs** (`checks_for_paths.py`: `app-shell`, `chart`, `drills*`, `lab*`, `pdf*`, `trading-fours`, `session-run` and the rest). Not run: the dispatch allows Playwright here only if a mutant survives jsdom, and none did. They stay with the landing chain.
+- **The whole unit suite green.** 2 of 7,576 fail: the CRLF claims described above, which hold on the LF form (as Entry 165 found for the same two).
+- **The device check.** Not done; there is no device here. See *Unverified*.
+
+## Follow-ups (recorded, not built)
+
+1. **Drill's rhythm card** keeps its click and its judged grid running while hidden. Stopping the click without re-anchoring the drill's origin would change what the taps are judged against. Restart against resume, and the count-in, are Part 20 §4's explicit choices, attached to X15.
+2. **Drill's reaction times** (`meanReactionMs`, from the engine's own clock) still include hidden time on the card the page hid on. It is not one of the four duration sites. Attached to X15.
+3. **An ear prompt other than Simon's cut off by hiding** comes back silent with ▶ Play again available. No line says it was cut off, and those kinds have no answer gate, so a key is still an answer. The ruling covers Simon. Observation for X15.
+4. **Keys and MIDI arriving while hidden** are still fed to a Drill card, except a cut-off Simon chain. The Lab now ignores them. Observation.
+5. **`sessionRunner.ts` adopting `activeClock`** is left for a seam that owns both files, as the brief records.
+
+## Questions
+
+The three open questions above (X16, U19, U39). Nothing else needs an answer before landing. The five *Judgement calls* are for the post-build review to confirm or overturn.
+
+**Orchestrator's note at the landing (2026-09-30).** CL05's worktree committed by name (4923be59) and merged (6b96d0cd). The chain on the merged main checkout: the map's test and its minimum for the merged files (`runs/CL05/map-min.txt`), typecheck, lint, the whole unit suite, the app build, the spec names checked, then the specs the map's minimum names on the default port (map-tests 0; map-min 0; tsc 0; lint 0; vitest-all 1; build-app 0; specs-exist 0; e2e-targeted 0; vitest-timeouts-rerun 0 — the unit suite's two recorded line-ending assertions in `lessonClaimsAboutApp` (Entry 101's diagnosis) fail here and pass on the runner; the other failures were load and pass alone (`vitest-timeouts-rerun`); `runs/CL05/orchestrator-exit.txt`). Approved for dispatch (`responses/questions-e71ef3ad.md` §CL05): *the four-screen boundary is correct: hidden/background time must not advance practice state, page turns, drill clocks or audio, and per-attempt duration must count active time only*; the separate `screenLifecycle.ts` active-time primitive *acceptable here … a screen-attempt clock, not the session-wide stored clock*. The Simon-chain ruling, in the reviewer's own words: *return visible silently and require the learner to ask to hear the prompt again; when they do, replay it from the start … Do not auto-replay sound merely because visibility returned. A partial Simon prompt is not resumable musical continuity, and unexpected audio on unlock/background return is the worse product behavior … do not score the interrupted prompt as an attempt.* The second read (`second-reads/1cd87af9.md` item 4) agrees, with a correction to the brief's own draft: zeroing `simonAnswerFromMs` on hide, as the brief first proposed, opens the answer gate and would score the interrupted prompt against the ruling; the gate must instead stay shut until the replay's own `cueSimonTurn` reopens it, and `feedbackTimer` needed the same cancellation `clearPlayback` already gives the other timers.. Landed: one suspend and resume contract in `screenLifecycle.ts` for Drill, PDF, Chord Chart and Lab — a hidden page advances no ticker, page turn, chart bar or trade clock, per-attempt time counts visible time only, and a Simon chain cut off by hiding stays silent until the learner asks; five judgement calls with the reviewer, the first of them the automatic resume of sound on return against the Simon ruling; the chain's unit reds were the known CRLF pair plus `tempoSoundAgainstMark`'s corpus case timing out under load, green alone (`vitest-timeouts-rerun`); the map's 21 specs green.
+
+## Doc rows (proposed, not written)
+
+**`docs/04-ui-spec.md` §0, a new rule after R6:**
+
+> **R7 — Hidden is suspended (X15, CL05, 2026-09-30).** A practice screen whose page is hidden — the phone locked, another app in front, the tab in the background — stops everything that moves on or sounds by itself. Nothing advances a card, a page, a bar or a trade while nobody can see it, and hidden time is never counted as practice. Visible puts the screen back where it was: the bar that was sounding, from its downbeat, after a count-in where the screen counts in; the system that was on screen, with its whole interval. Nothing is skipped, nothing is caught up, and nothing sounds on return unless it was already sounding as accompaniment. A prompt the learner was being asked to hear back waits to be asked for, and is not scored until it has been heard. Disposal stays terminal. Drill, PDF, Chord Chart and Lab share `screenLifecycle.ts`'s `onScreenSuspend` and `activeClock`; Score keeps its own handler, and the session clock in `sessionRunner.ts` its own accounting, aligned by test.
+
+**`docs/08-test-map.md`, a row in *The pieces*:**
+
+> | **A practice screen while hidden** (X15, in part; CL05): `ui/screenLifecycle.ts` (`pageHidden`, `onScreenSuspend`, `activeClock`); the suspend and resume paths of `DrillScreen.ts`, `PdfScreen.ts`, `ChordChartScreen.ts` and `LabScreen.ts` | hidden time counted as a card's practice; a chart, a page, a chorus or a trade advancing while hidden; sound into a hidden page; a chart rewound to bar 1 on return; a queued page turn on waking; a cut-off Simon chain replayed unasked or scored before it is heard again; a feedback pause running out into the next prompt; a hidden phone charged for bars it did not show | `tests/unit/screenLifecycle.test.ts`, `drillLifecycle.test.ts`, `pdfLifecycle.test.ts`, `chordChartLifecycle.test.ts`, `labLifecycle.test.ts` (added) — red first; 14 mutants caught | done (CL05, Entry 187); nothing heard; no device; X16, U19 and U39 open |
+
+**One line each under *Every spec file*, in alphabetical place:**
+
+> - `chordChartLifecycle.test.ts` — the chart while hidden: silent and held, back on its bar after a count-in, never rewound; repeated hide-and-show counts visible time only (X15).
+> - `drillLifecycle.test.ts` — the drill while hidden: a card's time is visible time; the loop and its chart held and resumed on the bar; no sound into a hidden page; a cut-off Simon chain silent and unscored until *▶ Play again* (X15, the reviewer's ruling).
+> - `labLifecycle.test.ts` — trading fours while hidden: the trade clock stops, the window is the bars as heard, no *You did not come in* for hidden bars, a cut-off call resumes on its bar (X15).
+> - `pdfLifecycle.test.ts` — Timed while hidden: no turn while hidden or on waking, the system's whole interval on return, the click stopped and restored (X15).
+> - `screenLifecycle.test.ts` — the shared suspended state and the attempt clock, which agrees with the session clock over one sequence (X15).
+
+## Content
+
+Nothing under `content/` or `scores/` changes, and no lesson, curriculum, catalogue or score byte is touched. There is no `*.content.md` to itemise.
+
+## Post-action gate
+
+The intent was that a backgrounded phone never advances practice or counts as practice on these four screens. It is met at the unit layer on each screen, red then green.
+
+- **Rulings.** No owner or reviewer decision is contradicted: the Simon ruling is implemented in its own words, and Score, the session clock and the session instance are untouched.
+- **Side effects.** Learner truth changes in one direction only: recorded durations get shorter where time was hidden. Evidence, material identity and curriculum are unchanged.
+- **Nothing added to the backlog.** The five follow-ups are observations attached to X15, not new rows.
+- **Status.** VERIFIED: the unit cases, the mutants and the chain above. NOT YET VERIFIED: the browser set and a device. HYPOTHESIS: that headless Chromium keeps these pages visible in the e2e suite.
+
+## Files
+
+- `app/src/ui/screenLifecycle.ts` (modified)
+- `app/src/ui/screens/DrillScreen.ts` (modified)
+- `app/src/ui/screens/PdfScreen.ts` (modified)
+- `app/src/ui/screens/ChordChartScreen.ts` (modified)
+- `app/src/ui/screens/LabScreen.ts` (modified)
+- `app/tests/unit/screenLifecycle.test.ts` (new)
+- `app/tests/unit/drillLifecycle.test.ts` (new)
+- `app/tests/unit/pdfLifecycle.test.ts` (new)
+- `app/tests/unit/chordChartLifecycle.test.ts` (new)
+- `app/tests/unit/labLifecycle.test.ts` (new)
+- `docs/prompts/runs/CL05/ENTRY.md`, `unit-red-committed.txt`, `unit-green.txt`, `mutants.txt`, `chain.txt` (new; every kept log is under 300 KB, with machine paths replaced by `<worktree>` and `<home>`)
+
+### Entry 189 — CL01 — lesson truth: improv.3's guarantee narrowed to what its own reasoning proves (pitch), ragtime.9's "never come out" softened to a heuristic, improv.8's tritone sentence kept as a justified absolute, improv.4 kept as already hedged, and a 109-lesson record with all twelve gates (T4, T47 closed; T48 in part; T53, T54 open) (2026-09-30)
+
+Built on base `122a5224` in its own worktree, under `docs/prompts/tasks/CL01-lesson-truth.md` with the reviewer's required change and decided sentences (`docs/review/responses/questions-e71ef3ad.md` §CL01). Every capture is in `docs/prompts/runs/CL01/`; each starts with its command and ends with its exit code. Nothing was committed, staged, stashed, reset or checked out. **Nothing was heard.** No screen was looked at: both changes are one sentence swapped inside its paragraph, read as text in the lesson around it.
+
+## Judgement
+
+**improv.3, as a learner now reads it** (`content/lessons/improv.3.md`:15–19): "The app loops I–IV–V in C — four bars of C, two of F, two of G — at a slow tempo. Your right hand uses only the five notes of C position. For pitch, any of these five notes can work here: over each of the three chords, each note is either a chord tone or a step from one. That is deliberate: the first obstacle is not wrong notes, it is nerve." The sentence is the reviewer's, verbatim. **Layer: worked arithmetic, plus a teacher's scoping.** Over C (C E G), F (F A C) and G (G B D), each of C D E F G is a chord tone or a half or whole step from one, fifteen note-and-chord pairs, each worked: over C, C E G are tones and D, F a step from C/E and E/G; over F, C F are tones and D, E, G a step from C, F, F/A; over G, D G are tones and C, E, F a step from B/D, D, G. The old "nothing you play can be wrong" claimed the guarantee for everything played, which the lesson's next two paragraphs deny (rhythm and continuous playing can go wrong); the new sentence claims it for pitch only.
+
+**ragtime.9, as a learner now reads it** (`content/lessons/ragtime.9.md`:60–61): "Common mistake. Memorising at full tempo. If you memorise mistakes at full tempo, they can be hard to unlearn." The heading sentence stays, as the reviewer's second read required, and the second sentence is the reviewer's, verbatim. **Layer: a teacher's heuristic said as one, with no source.** Gone: the claim that fast memory necessarily "has the errors in it" and that "those never come out".
+
+**improv.8:15 is a justified absolute and is not rewritten.** "Every dominant chord can become the dominant a tritone away": a dominant seventh on root r has its third at r+4 and its seventh at r+10; the dominant seventh on r+6 has its third at r+10 and its seventh at r+16, which is r+4. Same two notes, roles swapped, for all twelve roots in equal temperament. That is harmonic theory, checked from arithmetic, not heard. Whether the substitution sounds good in a given tune is *unverified as music*. **improv.4:14–17 is kept as already hedged** (F0's rewrite, `b8f713c6`; "most diatonic progressions", "almost anything").
+
+**Technical verdict.** Both pinned rows were red on the committed lessons and are green now. Four mutants each turned a row red: the brief's two reverts, plus two that put the old phrase back beside the new sentence, so only the "must be gone" assertion could catch them. The chain is green except two full-suite reds in `lessonClaimsAboutApp.test.ts` that come from this Windows worktree's CRLF checkout and are unrelated to this lane (below).
+
+**Pedagogical verdict: observations, nothing heard.**
+- improv.3: "For pitch" sets up the next heading, "Start with rhythm, not pitch". The paragraph now runs "pitch is safe here, rhythm is the work", where the old sentence said nothing could go wrong one paragraph before a section on what goes wrong. "That is deliberate" still points back at the setup. A teacher could say it without "well, actually". A teacher might add that the step-away notes, F over C for one, want to move on. The sentence says they "can work", not that they sound like chord tones, so it does not contradict that.
+- ragtime.9: "at full tempo" now comes twice in two sentences. It reads as an emphatic echo rather than an error. The advice (don't memorise at speed) survives, carried by the heading and "can be hard to unlearn", and a teacher could say it as written. The lesson still names no tempo for its memorising method (:22), as before.
+
+**The coverage record** (`coverage-record.md`, generated by `scripts-coverage.py`, checked by `--check`). It has 109 rows, one per lesson file, and 12 gate columns, and no cell is empty. Each cell is one or more of: `covered by E<n> (k)` (k sentences with evidence the header's rule maps to that gate); `read, open: <owner> (k)` (read by an earlier entry and left undecided, with the owning row); `not yet read`; `belongs to T16`; `belongs to CL19`. It is an inventory of evidence, not a claim that any gate is met. No mapped entry read a whole lesson against any gate, so every cell with evidence still ends in `not yet read` for the rest of the lesson. The evidence comes from 219 sentence items. 215 are still in their lessons at this tree. 3 have changed since and count for nothing, and 1 is on the ear-tune tip, outside the 109. The 215 touch 74 of the 109 lessons. The other 35 have no evidence item at all: 0.4, 1.3, 3.1, 3.2, 3.3, 3.5, 3.6, 4.1, 4.7, blues.9, chords-pop.3, chords-pop.6, holiday, holiday.4–.7, hymns, hymns.2, hymns.4–.6, improv.5, improv.7, improv.9, jam.5–.7, jazz.6, jazz.9, latin.6, latin.7, rock.overview, technique.8, theory.4.
+
+Per gate, lessons of 109. Each lesson is in exactly one of the first three counts: a `covered` part, with or without open parts; a `read, open` part with nothing covered; or `not yet read` only.
+
+| gate | `covered` part | `read, open` only | `not yet read` only | `belongs to` |
+| --- | --- | --- | --- | --- |
+| 1 factual correctness | 49 | 13 | 47 | 0 |
+| 2 technical defensibility | 7 | 1 | 101 | 0 |
+| 3 epistemic honesty | 42 | 9 | 58 | 0 |
+| 4 no fake precision | 11 | 0 | 98 | 0 |
+| 5 no unjustified absolutes | 45 | 10 | 54 | 0 |
+| 6 musical authenticity | 14 | 0 | 95 | 0 |
+| 7 experience before explanation | 0 | 0 | 0 | 109, CL19 |
+| 8 transfer | 0 | 0 | 0 | 109, T16 |
+| 9 individual variation | 10 | 1 | 98 | 0 |
+| 10 long-horizon compatibility | 5 | 0 | — | all 109 carry T16; 104 carry nothing else |
+| 11 source discipline | 31 | 7 | 71 | 0 |
+| 12 the teacher test | 57 | 11 | 41 | 0 |
+
+The same counts by entry and by owner, a lesson counted under every one its cell names:
+
+| gate | E82 (F0) | E88 (F1) | E157 (F3a) | E189 (CL01) | open: T53 | T54(A) | T54(B) | T54(C) | T56 | L33 | T48 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | 40 | 0 | 13 | 2 | 19 | 10 | 0 | 1 | 0 | 0 | 1 |
+| 2 | 5 | 0 | 2 | 0 | 0 | 0 | 4 | 0 | 0 | 0 | 0 |
+| 3 | 17 | 10 | 15 | 3 | 14 | 0 | 0 | 0 | 0 | 2 | 2 |
+| 4 | 6 | 1 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 5 | 17 | 10 | 18 | 4 | 12 | 0 | 0 | 0 | 12 | 2 | 3 |
+| 6 | 5 | 0 | 10 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 9 | 4 | 0 | 7 | 0 | 0 | 0 | 4 | 0 | 0 | 0 | 0 |
+| 10 | 1 | 0 | 2 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 11 | 25 | 0 | 9 | 0 | 6 | 10 | 0 | 1 | 0 | 0 | 0 |
+| 12 | 32 | 10 | 19 | 2 | 29 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+Gate 12's by-entry counts agree with each entry's own count of lessons corrected: F0 32, F1 11 less blues.4 (whose F1 sentence F3a later replaced), F3a 19. The rule that produces every cell is stated once, in the record's header: by layer (source, code or notation, teacher, removed), by the backlog row each table names, gate 5 by the lint's word list and the F1/F3a tables' own records, gate 12 only for sentences whose entry put them through the teacher test, and gate 4 by named rows. A gate the rule cannot map is `not yet read`.
+
+**Open questions, not built.**
+1. **T53: who takes the remaining deferrals, and in which order?** The counts are smaller than the brief's premise 10 states, because F3a resolved rows 1, 8, 9, 12, 42, 60, 67 and 81 (see *Deviations*). Still open, each still word for word in its lesson at this tree:
+   - 4 contested facts that need a source: rows 19, 23, 56, 83;
+   - 14 musical judgements, plus row 44 from outside the 85, that need a notation read (a reading of the score, possible without an ear): rows 21, 27, 28, 43, 45, 47, 50, 55, 57, 64, 65, 72, 74, 86;
+   - 2 outside-expert rows: row 2, a key pressed slowly on a digital piano, and row 22, untrained voice range;
+   - 10 absolutes: T53's own list (technique.7, blues.7, 2.3, 2.5), Part 17 §20's four voice items (improv.3, improv.6, jam, theory.9), and F1's two found on the way (classical.9:16, rock.6:49).
+
+   Can the two outside-expert rows go to T54(A) as sourceable instrument and voice facts, since no one in this process can press a key or sing?
+2. **T54: who runs the source search for parts (A) and (C), the reviewer or a builder lane?** The record maps (A) to fourteen sentences in ten lessons (technique.7, theory.5, theory.6, theory.7, chords-pop.4, jazz.4, jazz.5, jazz.7, jam, 2.2) and (C) to practice.4's referral sentence. **Part (B) is the embodied-technique wording:** the octave alternatives (technique.7), the left-hand arpeggio (4.3), and the rotation and repeated-note wording (technique.6, technique.5). It needs a playing pianist's judgement. *No one in this process can decide this*: the owner supplies no musical review, the reviewer cannot play, and builders cannot hear. It stays open. The owner's release fallback (softened or removed if not reviewed by H2) is already on record.
+
+## Mechanism
+
+**The shared hypothesis** (the brief's): every sentence in the cluster's named rows that the lint flags with an absolute word is an unjustified overclaim in the shape F0, F1 and F3a already corrected. **The refuting test, per sentence:** does the claim as written hold for everything it covers?
+
+- **improv.3:17.** The fault's mechanism is a scoped truth, a guarantee about note choice, stated as a universal ("nothing you play"). The alternative cause is that the justifying clause itself was false. The worked check ruled that out: all fifteen pairs hold for pitch, which the brief's premise 8 and the reviewer's second read also found. So the fault was the scope, not the harmony. The lesson's own "Start with rhythm, not pitch" and "Common mistake" paragraphs are the counter-evidence to "nothing". The change narrows the scope to pitch, and it also drops the old clause "all five notes belong to all three chords", which no note does; the reviewer called it "ambiguous/false-sounding". **Red line** (`red-unit-committed-lessons.txt`): `AssertionError: expected ' improvising is not composing quickly…' not to contain 'nothing you play can be wrong'`, the same for `'all five notes belong to all three ch…'`, and `expected … to contain 'For pitch, any of these five notes ca…'`.
+- **ragtime.9:61.** The mechanism is a practice heuristic ("hard to fix") stated as permanence, plus a necessity ("memory laid down fast has the errors in it"). The alternative is a source showing that errors memorised at speed are permanent. None is cited in the lesson or the record, and none was found. So the claim is softened, not sourced. **Red line:** `expected ' every rung so far handed you a metho…' not to contain 'never come out'`, the same for `'memory laid down fast has the errors …'`, and `expected … to contain 'Common mistake. Memorising at full te…'`.
+- **improv.8:15.** The test refuted the hypothesis: the identity holds for all twelve dominant sevenths. It is a justified absolute, the same shape as the lint's own example, "a dot always adds half".
+- **improv.4:14–17.** Not a live question. F0 rewrote it (row 65) and F3a read and kept it. This entry reads it as hedged and keeps it.
+
+## Tests
+
+| Test | Class | Old assumption | Now |
+| --- | --- | --- | --- |
+| `lessonClaimsAboutMusic.test.ts` › *CL01: each sentence keeps its advice and states only what its evidence carries* (`CL01_SENTENCES`, 2 rows) | add | none: no test read either sentence. The brief's premise 7 grep, and this entry's grep of the whole tree outside the score clones and builds, found no reader of the changed prose | per row, `expect.soft`: two phrases gone (the absolute, and the clause the reviewer's wording drops), the reviewer's sentence present verbatim; ragtime.9's row holds the heading sentence with it, because the advice reads through it |
+| `lessonClaimsAboutMusic.test.ts`, every earlier row | preserve | — | 185 green before and after |
+| `lessonShape.test.ts` (reading time, the three-minute cap) | preserve (not owned) | — | 21 of 21 green on both edited lessons; neither `readingTime` changed |
+| `lessonClaimsAboutApp.test.ts` › T12_APP blues.3 and 4.7 | preserve (not touched) | — | red in this worktree only. Each clause looks for `"\n"` in a source file this Windows checkout holds with `"\r\n"` (`ScoreScreen.ts`, `style.css`), and each clause is true on the same text with LF (`vitest-two-reds-are-crlf.txt`). T53c recorded the same pair. Neither file is touched here |
+
+**Mutants** (`scripts-mutate.py`, `scripts-mutants.sh`; each run alone, the lesson restored and compared byte for byte):
+
+| Mutant | Change | Result |
+| --- | --- | --- |
+| M1 | improv.3's committed sentence put back | red: 3 assertions (both phrases present, replacement absent) |
+| M1b | "Nothing you play can be wrong." put in front of the reviewer's sentence | red: 1 assertion, the "must be gone" one alone |
+| M2 | ragtime.9's committed sentence put back | red: 3 assertions |
+| M2b | "Those never come out." put after the reviewer's sentence | red: 1 assertion, the "must be gone" one alone |
+
+**The coverage record's check** (`coverage-check.txt`): red with no record (`FAULT: no record`); red on a copy with improv.8's row dropped, ragtime.9's G3 blanked, a 1.2 count changed and 0.1's G12 dropped (4 faults, each named); green on the record: `rows 109 of 109 lessons; gate columns per row: [12]; faults 0`. The check also traces every `covered by E<n> (k)` count back to the evidence items the rule maps.
+
+**The absolutes lint** (information only, `lint-absolutes-before-after.txt`): improv.3's two `all` hits on :17 are gone, 6 occurrences before and 4 after; ragtime.9's `never` on :61 is gone, 13 before and 12 after. The replacements add no listed word.
+
+## Counts and exit codes
+
+| Run | Exit | Note |
+| --- | --- | --- |
+| `npm ci` (app/) | 0 | `npm-ci.txt` |
+| `python tools/midi-cleanup/tests/parity_reference.py` | 0 | two MAESTRO files skipped as not fetched (`parity-reference.txt`) |
+| `python tools/content/build.py --offline`, before the edits | 0 | Pine Apple Rag a placeholder: the Mutopia folder was not yet copied (`content-build-offline-initial.txt`) |
+| `npx vitest run tests/unit/lessonClaimsAboutMusic.test.ts`, committed lessons | **1** | **the red line**: 2 of 187 failed, the two CL01 rows, 185 passed (`red-unit-committed-lessons.txt`) |
+| the two lesson edits | — | `git diff` below, under *Content* |
+| `npx vitest run tests/unit/lessonClaimsAboutMusic.test.ts tests/unit/lessonShape.test.ts` | 0 | 208 of 208 (`green-unit-named-files.txt`) |
+| the four mutants | 1 each | `mutant-M1.txt`, `-M1b`, `-M2`, `-M2b`; each lesson restored and compared |
+| `npx tsc -b` | 0 | `tsc.txt` |
+| `npm run lint` | 0 | `lint.txt` |
+| `python tools/content/build.py --offline`, after the edits | 0 | 109 lessons; Mutopia imported (`content-build-offline-after-edits.txt`); the built lessons carry both new sentences, and neither old phrase is anywhere in `app/public/content` |
+| `python tools/content/validate.py --allow-nc --personal` | 0 | 2092 catalogue items (`validate.txt`) |
+| `python tools/content/validate.py` (the map's line) | 0 | `validate-plain.txt` |
+| `npx vitest run` | **1** | 321 of 322 files; 7536 passed, 2 failed (the CRLF pair above), 5 skipped, 1 todo (`vitest-all.txt`, summarised; the full log is over 300 KB and was not kept) |
+| `python tools/content/review.py --check` | 0 | `review-check.txt` |
+| `python tools/docs/record_mirrors.py --check` | 0 | fresh (`record-mirrors-check.txt`) |
+| `python -m unittest discover -s tools/content/tests -t tools/content` | 0 | OK, 4 skipped (`content-tests.txt`) |
+| `npm run build:app` | 0 | `build-app.txt`; `app/dist` deleted afterwards |
+| `python tools/docs/checks_for_paths.py <every touched path>` | 0 | 7 of 7 matched (`checks-for-paths.txt`) |
+| `python docs/prompts/runs/CL01/scripts-coverage.py --check` | 1, 1, 0 | no record; damaged copy; the record (`coverage-check.txt`) |
+
+Each offline build rewrote `content/scores/imported/SOURCES.md`, `docs/prompts/inventory.md` and `docs/prompts/rung-claims.md`. All three were restored from snapshots taken before the first build, and `git status` shows none of them.
+
+## Content
+
+Every change to what a learner reads, for the reviewer's content check. Two items; nothing else under `content/` changed.
+
+1. **`content/lessons/improv.3.md`:17–19** (the *setup* paragraph).
+   - **What:** the sentence that says what the five-note setup guarantees over the I–IV–V loop.
+   - **Before:** "Nothing you play can be wrong, because all five notes belong to all three chords or are a step away from one."
+   - **After:** "For pitch, any of these five notes can work here: over each of the three chords, each note is either a chord tone or a step from one."
+   - **Why:** T4 and T47. The guarantee holds for pitch only: fifteen note-and-chord pairs over C, F and G, worked above. The lesson's next paragraphs treat rhythm and silence as things that can go wrong, and the old clause "belong to all three chords" is true of no note. The text is the reviewer's decided sentence, verbatim (`questions-e71ef3ad.md` §CL01).
+   - **Layer:** worked arithmetic plus a teacher's scoping.
+   - The following sentence, "That is deliberate: the first obstacle is not wrong notes, it is nerve.", is unchanged in its words. Its line break moved (it now starts line 19 at "deliberate:").
+2. **`content/lessons/ragtime.9.md`:60–61** (*Common mistake*).
+   - **What:** the sentence that says why memorising at full tempo is the common mistake.
+   - **Before:** "Memory laid down fast has the errors in it, and those never come out."
+   - **After:** "If you memorise mistakes at full tempo, they can be hard to unlearn."
+   - **Why:** T4. A practice heuristic had been stated as a necessity (fast memory "has the errors in it") and as permanence ("never come out"), and no source supports either. The warning is kept as a heuristic. The text is the reviewer's decided sentence, verbatim.
+   - **Layer:** a teacher's heuristic, no source.
+   - The heading sentence "Memorising at full tempo." at :60 stays, as the reviewer's second read requires (`docs/review/second-reads/1cd87af9.md`:50).
+
+Read, not changed: `improv.8.md`:15 (a justified absolute) and `improv.4.md`:14–17 (already hedged).
+
+## Deviations and premises found wrong
+
+1. **T53's counts in the brief are stale** (premise 10, and `backlog-2026-09-25.md`:583 "28 of the original 39"). F3a (Entry 157) resolved F0 deferral rows 1, 9, 12 and 81 (contested fact) and 8, 42, 60 and 67 (musical judgement), in `runs/F3a/sentences.md` rows 1, 12–13, 16, 23, 35, 29, 36 and 37. The remaining deferrals are therefore 4 contested facts, 14 musical judgements plus row 44 from outside the 85, and 2 outside-expert rows.
+2. **The convergence appendix's T53 line is wrong** (`convergence-2026-09-30.md`:923, "F3a did disposition rows 1, 2, 8, 9, 12, 19, 28, 42, 43, 47 and 50"). F3a's brief lists those rows to read (:3), but its item 3 excludes 2, 19, 28, 43, 47 and 50, and `sentences.md` has no row for any of them; each is still word for word in its lesson (`coverage-record.md`, evidence items). The line also omits 60, 67 and 81. A correction is proposed under *Doc rows*.
+3. **Gate 10 reads `belongs to T16`, not as a mechanically mapped gate.** The brief's decided text lists gates 1–6 and 9–11 as mechanical, following `convergence-2026-09-30.md`:134. But the reviewer's T16 ruling names "T16's gates 8/10", and the brief's own T16 paragraph says "(gates 8 and 10, a per-lesson sequencing read)". Under plan precedence the reviewer's ruling owns the boundary. Sentence evidence that answers gate 10 is still shown before `belongs to T16` (5 lessons), so nothing disappears.
+4. **Gate 7 reads `belongs to CL19` for all 109 lessons.** This is a judgement within the brief's rule. Gate 7 (hear, play, notice first) is a property of a lesson's order, and CL19 owns that order for every file in `content/lessons` (T17's arc, T7, the ruling "one migration/audit" under T11, CL19's proof "a gate record per lesson"). No mapped entry read any lesson for order. If the reviewer reads CL19's scope as narrower, those cells become `not yet read`, and the script changes in one line.
+5. **The record reads the whole record of each of the three entries**, not only the tables the brief names. F0's corrected sentences and their layers live in `f0-corrected-sentences.md`, not in `f0-disposition-85.md`. The record also reads F0a's addendum; `entry-82.md`:49–63 (Part 17 §20, Part 16 §7); the absolutes list in backlog T53; F1's two found on the way; F3a's *Checked and kept*; F3a's adjacent sentences (T56); and the outside-expert items (T54, by the owner's split) as open parts. Entries 84, 108, 117, 136 and 156 also changed lesson sentences, but for placement or score facts, so they are named in the header as not mapped. So are the claims rows and the pre-gate audit of 2026-09-19. A `not yet read` cell can therefore undercount, but never overcount.
+6. **Items whose words have changed since count for nothing.** They are F0 row 26 (practice.4; F0a replaced its second clause, and F0a's sentence is counted instead), F0 row 67 (4.3's warning, removed by Entry 84) and F1's blues.4 row (replaced by F3a row 19). Each item's words were matched in the lesson at this tree. Every open deferral's matched sentence was read by eye, and five fragments that were too short were tightened after that read. The F0-verified items without a quote, and the T56 items given only by line, are counted as their tables state them, not re-matched.
+7. **The pinned rows are stronger than the brief's minimum in two ways.** First, each row forbids a second phrase: for improv.3 the clause the reviewer's wording drops, for ragtime.9 "memory laid down fast has the errors in it", both of them reasons the reviewer gave. Second, ragtime.9's row pins the heading sentence together with the new one.
+8. **The Mutopia folder was copied too** (the brief listed kern and musetrainer). Without it the first build left *Pine Apple Rag* (ragtime.8) a placeholder. The folder is small and was copied read-only without version-control files, so the post-edit build is complete.
+9. **The map's browser specs for `content/lessons/**` were not run** (lesson-flow, lesson-tools, plan, side-panel-prose, start-and-return). The brief excludes browser work, and premise 7 holds: no spec asserts the changed prose. The lesson page renders the built lesson text, and that text was checked in `app/public/content`. Not done, for that reason.
+
+**Observed and not fixed** (attached to T48's combined per-lesson read by the anti-loop rule; `read, open: T48` in the record):
+- improv.3:21–24, "most of what makes an improvisation sound good is rhythm and space": a proportion.
+- improv.8:12–13, "the best way to learn composition": a superlative.
+- improv.8:16, "it works everywhere": an absolute the lint's word list does not catch. The same line's "changes the bass line from leaps into a chromatic descent" holds where the dominant resolves down a fifth.
+- improv.8:19, "Any chord can be preceded by its own dominant": a diminished triad is not conventionally tonicised.
+- ragtime.9:23–24, "Any one will fail on its own under pressure; all three will not": a heuristic said as a guarantee.
+- improv.3:35, "Almost every memorable melody", is already F0's deferral (`entry-82.md`:58, T53).
+- improv.4:16's "the reason" stays under the brief's ruling that improv.4 is unchanged.
+
+## What is unverified, beside what passes
+
+- **Nothing was heard.** improv.8's musical effect is *unverified as music*; the identity itself is verified from theory. The two new sentences were read as text.
+- ragtime.9's heuristic has no source. It is said as one ("can be hard"), not as a finding.
+- **The record is a rule applied mechanically.** The layer-to-gate and row-to-gate readings are judgements made once, at the row level, and stated in its header. A different reading would move cells between `covered` and `not yet read`; nothing is hidden in the cells.
+- The CRLF pair passes on LF text but was not run in an LF checkout here. CI's checkout is where it runs as written.
+
+## Post-action gate
+
+The destination was read back:
+- the two lessons as built;
+- the diff;
+- the record regenerated from the script and checked;
+- the tree restored to exactly the intended changes.
+
+The intent was a learner no longer told "nothing you play can be wrong" or "those never come out", and T48 given an inventory with no gate missing. Both are met: the sentences are the reviewer's, and every lesson carries all twelve gates. No owner or reviewer decision is overridden. Gate 10's reading follows the reviewer's T16 ruling. improv.4 and improv.8 are unchanged as ruled. No side effect reaches curriculum, evidence or screens: two sentences changed, and no claim, rung or tool paragraph. The observations are attached to the combined read already queued, not opened as rows. The next step is unchanged: the next content slot opens the combined per-lesson read in bounded batches. This record's 35 lessons with no evidence, and its `not yet read` cells, are its natural first input. VERIFIED: the red and green runs, the mutants, the check and the chain above. NOT YET VERIFIED: anything musical, and the CRLF pair in an LF checkout. HYPOTHESIS: none carried forward.
+
+**Orchestrator's note at the landing (2026-09-30).** CL01's worktree committed by name (c935a64c) and merged (2faa492e). The chain on the merged main checkout: the map's test and its minimum for the merged files (`runs/CL01/map-min.txt`), the content build offline (the reports compared), the validator, the record check, the whole content suite, then the app steps the map names — the whole unit suite on the rebuilt content, the app build, and the specs the map's minimum names where it names any (map-tests 0; map-min 0; content-build 0; content-validate 0; review-check 0; content-tests 1; vitest-all 1; build-app 0; specs-exist 0; e2e-targeted 0 — the content suite's two reds are the record's own mirror tests (`test_record_mirrors`), red until this landing's event exists and green after the record (`record-mirrors-tests`, appended) — the unit suite's two recorded line-ending assertions in `lessonClaimsAboutApp` (Entry 101's diagnosis) fail here and pass on the runner; `runs/CL01/orchestrator-exit.txt`). Your approval of the CL01 brief with one required change — the 109-lesson coverage record must state all twelve gate columns explicitly, never letting a gate disappear because another seam owns the work (`responses/questions-e71ef3ad.md` §CL01) — and its sentence pre-check, agreed with a note by the second read (`second-reads/1cd87af9.md` item 3). Landed: improv.3:17 says the five-note guarantee is about pitch, ragtime.9:61 says memorised mistakes are hard to unlearn — both the reviewer's decided sentences, pinned in `CL01_SENTENCES`; improv.8 kept as a justified absolute, improv.4 as already hedged; the 109 × 12 coverage record with its header rule; the content chain's unit reds are the known CRLF pair, its content-tests red the two record-mirrors transients, the map's five specs green.
+
+## Doc rows
+
+Proposed, not written here:
+- **`docs/08-test-map.md`:141** (the *Never teach wrong* row). In the tests column, after the F0 blocks, add: "`lessonClaimsAboutMusic.test.ts` › *CL01* (`CL01_SENTENCES`, added: improv.3 states the pitch guarantee its fifteen pairs prove and no longer 'nothing you play can be wrong'; ragtime.9's *Common mistake* keeps its heading and says memorised mistakes 'can be hard to unlearn', not 'never come out'; each the reviewer's decided sentence, seen red on the committed lessons, four mutants red)". In the status column, add: "CL01 (2026-09-30): T4 and T47 closed; the sentences read as text, nothing heard".
+- **`convergence-2026-09-30.md`:923** (T53's appendix row): "F3a did disposition rows 1, 8, 9, 12, 42, 60, 67 and 81 (`runs/F3a/sentences.md`); rows 2, 19, 21, 22, 23, 27, 28, 43, 44, 45, 47, 50, 55, 56, 57, 64, 65, 72, 74, 83 and 86 stand (`runs/CL01/coverage-record.md`)".
+- **`backlog-2026-09-25.md`:583** (T53's status): the deferrals still open are 4 contested facts, 14 musical judgements plus row 44, and 2 outside-expert rows (Entry 189).
+- **`docs/00-invariants.md` and `docs/04-ui-spec.md`: no change.** A search of both for "twelve gates", "lesson truth" and "twelve acceptance" found nothing, and neither states either sentence. The grep for the old and new phrases found only `help.ts`'s and `04-ui-spec.md`'s own "Nothing you play is judged" lines, which describe the app, not these lessons.
+- **`docs/prompts/checks.json`:** no rows (T58 owns the file); no new spec.
+
+## Files
+
+- `content/lessons/improv.3.md`, `content/lessons/ragtime.9.md`: the two sentences.
+- `app/tests/unit/lessonClaimsAboutMusic.test.ts`: `CL01_SENTENCES` and its `describe`.
+- `docs/prompts/runs/CL01/`:
+  - this entry;
+  - `coverage-record.md`, `scripts-coverage.py`, `coverage-check.txt`;
+  - `scripts-mutate.py`, `scripts-mutants.sh`, `mutant-M1.txt`, `mutant-M1b.txt`, `mutant-M2.txt`, `mutant-M2b.txt`;
+  - `red-unit-committed-lessons.txt`, `green-unit-named-files.txt`, `lint-absolutes-before-after.txt`;
+  - `tsc.txt`, `lint.txt`, `content-build-offline-initial.txt`, `content-build-offline-after-edits.txt`, `validate.txt`, `validate-plain.txt`, `vitest-all.txt`, `vitest-two-reds-are-crlf.txt`, `review-check.txt`, `record-mirrors-check.txt`, `content-tests.txt`, `build-app.txt`, `checks-for-paths.txt`, `parity-reference.txt`, `npm-ci.txt`.
+
+Machine paths in the kept files are replaced by `<worktree>` and `<home>`. `app/dist`, the copied clones and the copied caches are deleted, and `app/node_modules` stays.

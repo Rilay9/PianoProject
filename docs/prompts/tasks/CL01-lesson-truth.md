@@ -127,9 +127,12 @@ State the technical and pedagogical verdicts apart. Pedagogical: whether the two
 
 As `operating-procedure.md` §14: own worktree from origin's head at dispatch (the sha in the dispatch message); `npm ci` in `app/`; the content copied read-only from the main checkout where the offline build needs it (`content/scores/imported/kern` and `musetrainer` without their version-control folders, `build/cache/convert`, `build/demands-cache.json`, `build/notation-cache.json`; restore `content/scores/imported/SOURCES.md` to its committed bytes after any offline build, which rewrites it); no commit, push, stash, reset or checkout; nothing written in the main checkout; temp under the worktree's `build/`; kept logs under 300 KB with machine paths replaced; `app/node_modules` kept until the orchestrator removes the worktree. No Playwright and no config copy: this cluster changes no rendered screen (premise 7). Every item above is done or gets an explicit not-done line; a premise found wrong is said, and the better path taken.
 
+**Landed 2026-09-30** (Entry 189; c935a64c, merged 2faa492e); handoff `handoffs/c935a64c.md`.
+
 ## Record
 
 lane: CL01 · closes: T4, T47 · entry: 189
 index: Lesson truth: `improv.3.md`'s "nothing you play can be wrong" narrowed to the pitch guarantee its own reasoning proves, `ragtime.9.md`'s "those never come out" softened to a heuristic, `improv.8.md`'s tritone-substitution sentence read and confirmed a justified absolute rather than rewritten, and a per-lesson gate-coverage record answering T48's stated gap for the sentences and lessons this seam covers; T53 and T54 stay reads (the owner's three-part T54 split named, part B — the pianist/teacher packet — flagged as a capability no actor in this process has); T16's re-check open now that L120d and L120e landed, put to the reviewer (backlog T4, T16, T47, T48, T53, T54; convergence CL01) | content | brief drafted 2026-09-30 (`CL01-lesson-truth.md`); with the reviewer before dispatch; Entry 189
 in-flight: brief drafted 2026-09-30 (`CL01-lesson-truth.md`): two named lesson-truth corrections (`improv.3.md`, `ragtime.9.md`) plus a 109-lesson gate-coverage record (the convergence map's CL01, tier 0; the reviewer's queue item 6); `improv.8.md`/`improv.4.md` read and left unchanged; T48's full remaining audit, T53, T54 and T16 explicitly not built here; with the reviewer before dispatch (Entry 189).
 state: dispatched 2026-09-30: dispatched at 122a5224, building (Entry 189)
+- landed 2026-09-30: merged 2faa492e; handoff `handoffs/c935a64c.md`

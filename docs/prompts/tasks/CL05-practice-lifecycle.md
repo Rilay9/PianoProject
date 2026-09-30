@@ -125,9 +125,12 @@ State the technical verdict; there is no pedagogical verdict to separate it from
 
 As `operating-procedure.md` §14: own worktree from origin's head at dispatch (the sha in the dispatch message), `npm ci` and the copied content and build caches; no commit, push, stash, reset or checkout; nothing written in the main checkout; temp under the worktree's `build/`; kept logs under 300 KB with machine paths replaced; `app/node_modules` kept until the orchestrator removes the worktree. This lane expects no Playwright: the mechanism is timer- and event-driven and jsdom with fake timers already proves it (`sessionClock.test.ts` forges `document.visibilityState`; `chordChart.test.ts` hand-drives a `Metronome` mock). If a mutant proves jsdom insufficient, a config copy under `app/build/cl05/` on a port other than 4173, never 4173 itself.
 
+**Landed 2026-09-30** (Entry 187; 4923be59, merged 6b96d0cd); handoff `handoffs/4923be59.md`.
+
 ## Record
 
 lane: CL05 · closes: — · entry: 187
 index: Practice lifecycle: a backgrounded phone no longer advances Drill's chorus, PDF's pages, Chord Chart's bar/backing loop or Lab's trade clock, and hidden time is no longer counted as practice on any of the four (backlog X15; convergence CL05; U19/U39 named, not closed; U18 already closed) | app | brief drafted 2026-09-30 (`CL05-practice-lifecycle.md`); with the reviewer before dispatch; Entry 187
 in-flight: brief drafted 2026-09-30 (`CL05-practice-lifecycle.md`): the shared hands-busy/background suspend-resume contract for Drill, PDF, Chord Chart and Lab, and an active-time-only duration primitive for Drill (backlog X15; the convergence map's CL05, tier 1; the reviewer's queue item 4); Score, the keyboard-peek policy (U19) and the mid-run option-change notice (U39) explicitly not built here; with the reviewer before dispatch (Entry 187).
 state: dispatched 2026-09-30: dispatched at 122a5224, building (Entry 187)
+- landed 2026-09-30: merged 6b96d0cd; handoff `handoffs/4923be59.md`
