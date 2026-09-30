@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **U66** — `handoffs/342e88e7.md` (respond in `responses/342e88e7.md`). A stall is not a miss: a note stamped inside its window is judged by its stamp, whatever the main thread was doing (Entry 176).
 - **U105a** — `handoffs/d0e1b01f.md` (respond in `responses/d0e1b01f.md`). A refused summary control says so on the summary, sideways too (Entry 182).
 - **CL04** — `handoffs/9429b3c3.md` (respond in `responses/9429b3c3.md`). Evidence truth: introduced is not encountered, an unknown version is refused, a timing gap keeps the pitch, a twin run counts once (Entry 175).
 - **U32a** — `handoffs/88df748b.md` (respond in `responses/88df748b.md`). A long piece loads the sheets its settled shape needs, never the whole document inside a run (Entry 180).

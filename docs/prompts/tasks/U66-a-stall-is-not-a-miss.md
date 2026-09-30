@@ -116,6 +116,8 @@ State the technical and pedagogical verdicts separately. Pedagogically, what cou
 
 **Entry.** Run files go under `docs/prompts/runs/U66/`, and the entry is `docs/prompts/runs/U66/ENTRY.md`, with its number given at dispatch.
 
+**Landed 2026-09-30** (Entry 176; 342e88e7, merged 8a1e407e); handoff `handoffs/342e88e7.md`.
+
 ## Record
 
 lane: U66 · closes: U66 · entry: 176
@@ -123,3 +125,4 @@ index: A stall is not a miss: the engine's window close follows the note's stamp
 in-flight: brief drafted 2026-09-30 (`U66-a-stall-is-not-a-miss.md`): a render stall must not create a miss: the engine closes a timing window by its own tick, so a note stamped inside the window but delivered after it is judged against a closed slot; reproduction first, the close rule fixed (SG02, tier 1; the reviewer's queue item 3); with the reviewer before dispatch (Entry 176).
 state: with-reviewer 2026-09-30: with the reviewer before dispatch (the morning bundle)
 - approved 2026-09-30: APPROVE FOR DISPATCH WITH ONE REQUIRED BRIEF CHANGE — the last step and the lap wrap use the same bounded stall-safe rule as ordinary windows (item 3's report-only option removed in this commit); no reopened miss, no wider tolerance, no help for on-screen keys; a new arbitrary duration stops and reports (`responses/questions-eebafb5e.md`)
+- landed 2026-09-30: merged 8a1e407e; handoff `handoffs/342e88e7.md`

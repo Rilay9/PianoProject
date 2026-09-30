@@ -1,0 +1,33 @@
+# checks for 25 path(s): 25 matched, 0 unmatched
+# app/src/engine/PracticeEngine.ts: app/src/**, app/src/engine/**
+# app/tests/e2e/engine.spec.ts: app/tests/e2e/*.spec.ts
+# app/tests/unit/engineRhythmOnly.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/engineTempo.test.ts: app/tests/unit/*.test.ts
+# docs/05-score-follow-engine.md: docs/**
+# docs/08-test-map.md: docs/**
+# docs/prompts/runs/U66/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+# docs/prompts/runs/U66/build-app-tail.txt: docs/**
+# docs/prompts/runs/U66/checks-for-paths.txt: docs/**
+# docs/prompts/runs/U66/e2e-five-specs.txt: docs/**
+# docs/prompts/runs/U66/engine-file-counts.txt: docs/**
+# docs/prompts/runs/U66/green-b1-alone.txt: docs/**
+# docs/prompts/runs/U66/green-b1-repeat5.txt: docs/**
+# docs/prompts/runs/U66/green-six-engine-files.txt: docs/**
+# docs/prompts/runs/U66/lessonClaims-with-base-engine.txt: docs/**
+# docs/prompts/runs/U66/lint.txt: docs/**
+# docs/prompts/runs/U66/mutants.txt: docs/**
+# docs/prompts/runs/U66/npm-ci.txt: docs/**
+# docs/prompts/runs/U66/red-b1-base.txt: docs/**
+# docs/prompts/runs/U66/red-reproduction-base.txt: docs/**
+# docs/prompts/runs/U66/red-unit-base.txt: docs/**
+# docs/prompts/runs/U66/tsc.txt: docs/**
+# docs/prompts/runs/U66/unit-full-first-summary.txt: docs/**
+# docs/prompts/runs/U66/unit-full-summary.txt: docs/**
+# docs/prompts/runs/U66/unit-harness-artefacts-rerun.txt: docs/**
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_record_mirrors.py
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/engine.spec.ts tests/e2e/first-day.spec.ts tests/e2e/lab.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/mic.spec.ts tests/e2e/modes-ladder.spec.ts tests/e2e/modes-rhythm-only.spec.ts tests/e2e/modes-technique-measure.spec.ts tests/e2e/score.countin.spec.ts tests/e2e/score.latch.spec.ts tests/e2e/score.readahead.spec.ts tests/e2e/score.rhythm-ladder.spec.ts tests/e2e/score.run.spec.ts tests/e2e/score.screen.spec.ts --workers=4
