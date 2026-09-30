@@ -34,9 +34,9 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { indexCatalog, tieredAlternatives } from '../../src/curriculum/selectors';
-import { swapOptions, taughtAtRung, type SessionSlot } from '../../src/curriculum/session';
+import { swapOptions, taughtForLearner, type SessionSlot } from '../../src/curriculum/session';
 import { skillsInForce } from '../../src/curriculum/skillActivation';
-import { targetSkillsFor } from '../../src/curriculum/eligibility';
+import { targetSkillsFor, uncoped } from '../../src/curriculum/eligibility';
 import type { CatalogItem, Curriculum } from '../../src/curriculum/types';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 
@@ -83,7 +83,12 @@ describe('the swap sheet’s skill tier goes live only through the gate (E0)', (
     // Only a row with a target skill selection acts on has a skill tier to read.
     for (const item of catalog.filter((one) => firstRung(one.id) !== undefined && targetSkillsFor(one).length > 0)) {
       const rung = firstRung(item.id) as string;
-      const taught = taughtAtRung(curriculum, rung) ?? (() => false);
+      // Revised (L120b; the reviewer's ruling on L120a, `responses/0bcd3be0.md`; class: an assertion of the reading
+      // being corrected). It read "untaught" as every listed demand the rung's `taughtAt` does not name; the coping
+      // question no longer asks a key signature located at no sounding note (the D and E minor pentatonics' flat and
+      // sharp alter no note they play), and copes with a skip inside a taught fixed position. So it reads the
+      // gate's own coping question, for the learner the session builds at the rung.
+      const learner = taughtForLearner(curriculum, rung);
       const slot: SessionSlot = { kind: 'technique', minutes: 5, item, lessonId: rung, reason: '' };
       for (const option of swapOptions(slot, [slot], curriculum, index, { items: catalog, rung, excludeSongs: false })) {
         if (option.tier !== 'skill') continue;
@@ -98,7 +103,7 @@ describe('the swap sheet’s skill tier goes live only through the gate (E0)', (
         if (m?.status !== 'measured' || wanted === 'every-step' || !wanted.some((d) => m.established.includes(d))) {
           faults.push(`${item.id} -> ${candidate.id}: ${skill}'s opportunity not established`);
         }
-        const untaught = (Array.isArray(candidate.demands) ? candidate.demands : []).filter((d) => !taught(d));
+        const untaught = uncoped(candidate, learner);
         if (untaught.length > 0) faults.push(`${item.id} -> ${candidate.id}: untaught at ${rung}: ${untaught.join(', ')}`);
       }
     }

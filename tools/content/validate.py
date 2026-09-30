@@ -1643,6 +1643,36 @@ def rung_claims_warning(catalog: list, curriculum: dict) -> str:
     )
 
 
+def untaught_options_warnings(catalog: list, curriculum: dict) -> list[str]:
+    """
+    The rung-own options the one gate refuses `untaught` at their own rung, as a warning, never a failure
+    (L120b item 7; the L120 brief's Ruled section: the validator's warning is L120b's). The count is
+    `untaught_options.table`'s — the build's reading of the app's coping question, held equal to the app's
+    probe by `tests/test_untaught_options.py` but for its recorded differences. The runtime reading rows on
+    rungs are listed apart as not read: the demands they ask are the reading controls' (`readingControls.ts`,
+    app code), which the build does not have — the recorded exception L124 asks for, the one the app's probe
+    refuses named in `test_untaught_options.RECORDED_DIFFERENCES`. It becomes an error only when the count is
+    zero or every line has a recorded reason, which no lane has decided yet.
+    """
+    import untaught_options
+
+    report = untaught_options.table(catalog, curriculum)
+    s = report["summary"]
+    out = [
+        f"WARNING (untaught rung-own options, L120b): {s['options']} rung-own options on {s['rungs']} rungs are refused "
+        f"`untaught` at their own rung ({s['pairs']} option-demand pairs: "
+        + ", ".join(f"{kind} {n}" for kind, n in s["pairsByClass"].items())
+        + "); `python tools/content/untaught_options.py` lists and classifies them (A reading, B ownership, C placement)."
+    ]
+    if report["unread"]:
+        out.append(
+            f"WARNING (untaught rung-own options, L120b): {len(report['unread'])} runtime reading row(s) on rungs not read "
+            "(the demands they ask are the reading controls', app code; the app's probe refusal among them is recorded in "
+            "tests/test_untaught_options.py): " + ", ".join(f"{row['rung']} {row['item']}" for row in report["unread"])
+        )
+    return out
+
+
 #: The ladder state a `skill` requirement names, and the standard its evidence
 #: has to reach (`app/src/evidence/ladder.ts`): familiar is supporting evidence
 #: at the practice standard, proficient at the full one.
@@ -2174,6 +2204,9 @@ def main() -> None:
     for warning in excerpt_findings(catalog, args.dir)[1]:
         print(f"  WARNING (excerpt, E1): {warning}")
     print(f"  {rung_claims_warning(catalog, curriculum)}")
+    # L120b: the rung-own options the gate refuses `untaught`, warned (never failed), the unread reading rows apart.
+    for warning in untaught_options_warnings(catalog, curriculum):
+        print(f"  {warning}")
     # F2: each deferred claim with its reason, and any introduced concept an option now establishes.
     for warning in concept_claim_findings(catalog, curriculum)[1]:
         print(f"  {warning}")

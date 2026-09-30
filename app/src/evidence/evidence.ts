@@ -164,8 +164,16 @@ export interface EvidenceContext {
  *   note (C4d, L72: `detect.ts`). The hands-together skill's `n` and `right`
  *   and every entry for that demand change with it, so rows under 2 wait for a
  *   recompute like any other.
+ * - **4** — the same shape; 3/8 read as simple triple, three eighth-note beats,
+ *   by every detector that reads a bar's beat (L120b, `detect.ts`'s
+ *   `isCompound`): compound time is no longer located in a 3/8 bar, a quarter
+ *   entering on its second or third eighth is no longer syncopation, and a
+ *   written dotted quarter in it is a dotted quarter. Evidence stored on a 3/8
+ *   piece under 3 counted the 6/8, syncopation and dotted-quarter skills'
+ *   opportunities, and every demand's entries, by the old reading, so rows
+ *   under 3 wait for a recompute like any other.
  */
-export const EVIDENCE_DEFINITIONS = 3;
+export const EVIDENCE_DEFINITIONS = 4;
 
 /** A demand at some steps: another demand on a demand's counted steps (`overlapOf`), or one a skill does not count (`otherDemands`). */
 export interface DemandOverlap {

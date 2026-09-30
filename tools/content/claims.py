@@ -350,17 +350,87 @@ def e22_notes(claim: dict, item: dict | None, verdict: str, skills: dict[str, di
     return sorted(set(notes))
 
 
-def untaught_on(item: dict, rung: str, ancestry: dict[str, set[str]], demands: dict[str, dict]) -> list[str]:
+#: The demand a measured row can carry with nothing of it to play (L120b): a key signature none of whose
+#: altered letters sounds (`detect.ts`'s `keySignature` locates it at no note).
+KEY_SIGNATURE = "key.signature"
+
+
+def asked_of(item: dict) -> list[str]:
+    """
+    The item's demands the coping question asks, as the app's `eligibilityCore.demandsAsked` reads a
+    measured row: its `demands`, less a key signature its measurement locates at no sounding note
+    (`measurement.located` without it: the build drops zero counts) — L120b, the reviewer's ruling on
+    L120a (`docs/review/responses/0bcd3be0.md`, Question 2 A). The notation fact stays on the row; the
+    key signature alone is read so, and a row with no measurement record keeps it asked (nothing says
+    where it is located).
+    """
+    listed = item.get("demands")
+    if not isinstance(listed, list):
+        return []
+    measurement = item.get("measurement") or {}
+    if measurement.get("status") != "measured":
+        return list(listed)
+    located = measurement.get("located") or {}
+    return [demand for demand in listed if demand != KEY_SIGNATURE or int(located.get(demand, 0)) > 0]
+
+
+#: `{id(curriculum): (curriculum, {rung: its own concepts})}`: worked out once per curriculum object (the
+#: object is held, so its id is not reused while cached).
+_CONCEPTS: dict[int, tuple[dict, dict[str, set[str]]]] = {}
+
+
+def concepts_by_rung(curriculum: dict) -> dict[str, set[str]]:
+    """`{rung: the concepts its lesson names in `concepts`}` (never `introduces`: `teaching_rungs`' rule)."""
+    held = _CONCEPTS.get(id(curriculum))
+    if held is not None and held[0] is curriculum:
+        return held[1]
+    out = {lesson["id"]: set(lesson.get("concepts") or []) for _s, _u, lesson in lessons_in_order(curriculum)}
+    _CONCEPTS[id(curriculum)] = (curriculum, out)
+    return out
+
+
+def in_taught_position(item: dict, demand: dict | None, concepts_behind: set[str]) -> bool:
+    """
+    The app's `eligibilityCore.inTaughtPosition` (L120b; the reviewer's Question 1 on L120a,
+    `docs/review/responses/0bcd3be0.md`): the demand is coped with by the note reading of a taught fixed
+    position — its vocabulary entry names the positions (`fixedPositions`, `interval.skip`'s alone), the
+    measured row carries each sounding hand's range over the piece (`measurement.span`), every hand that
+    sounds lies inside that hand's position, and each such position's concept is named by a lesson whose
+    teaching counts at the rung (`concepts_behind`). Nothing for a row with no range, a hand outside its
+    position or one whose position is not taught there, or any other demand.
+    """
+    positions = (demand or {}).get("fixedPositions") or []
+    measurement = item.get("measurement") or {}
+    span = measurement.get("span") if measurement.get("status") == "measured" else None
+    if not positions or not span:
+        return False
+    hands = [hand for hand in ("R", "L") if span.get(hand)]
+    return bool(hands) and all(
+        any(p["hand"] == hand and p["low"] <= span[hand][0] and span[hand][1] <= p["high"] and p["concept"] in concepts_behind
+            for p in positions)
+        for hand in hands)
+
+
+def untaught_on(item: dict, rung: str, ancestry: dict[str, set[str]], demands: dict[str, dict],
+                curriculum: dict | None = None) -> list[str]:
     """
     The item's measured demands `rung` has not taught (D0's rung check): taught nowhere
     (`taughtAt: []`), or at no rung in its ancestry (E0a; before, a rung stored after it in the
     file). Since E0b a demand is taught where any rung its `taughtAt` lists is on the rung's path.
+    The demands read are those the coping question asks (`asked_of`, L120b): a key signature
+    located at no sounding note is not among them. With `curriculum` (L120b), a skip wholly inside a
+    fixed position whose concept a lesson on the rung's path names is coped with by that position's
+    note reading (`in_taught_position`), as the app's gate reads it; without it, no position copes
+    with anything — the refusal stays, never the reverse. Every build reader passes it.
     """
     if not isinstance(item.get("demands"), list) or rung not in ancestry:
         return []
     taught_by = ancestry[rung]
-    return [demand for demand in item["demands"]
-            if not any(at in taught_by for at in taught_at(demands.get(demand)))]
+    concepts = concepts_by_rung(curriculum) if curriculum is not None else {}
+    behind = {concept for member in taught_by for concept in concepts.get(member, set())}
+    return [demand for demand in asked_of(item)
+            if not any(at in taught_by for at in taught_at(demands.get(demand)))
+            and not in_taught_position(item, demands.get(demand), behind)]
 
 
 def rung_claims(catalog: list[dict], curriculum: dict) -> dict:
@@ -400,7 +470,7 @@ def rung_claims(catalog: list[dict], curriculum: dict) -> dict:
                 "review": provenance.get("review") or {"score": None, "teaching": None},
                 # The teaching-use decision and its basis (D2 item 4): the record's current one.
                 "teachingReview": teaching_review(provenance),
-                "untaught": untaught_on(item, lesson["id"], ancestry, demands) if item and lesson["id"] in firsts.get(item_id, set()) else [],
+                "untaught": untaught_on(item, lesson["id"], ancestry, demands, curriculum) if item and lesson["id"] in firsts.get(item_id, set()) else [],
                 "earliest": lesson["id"] in firsts.get(item_id, set()),
                 "established": ((item or {}).get("measurement") or {}).get("established") or [],
                 # The same, each reading a recorded misreading bears on marked: never teaching truth.

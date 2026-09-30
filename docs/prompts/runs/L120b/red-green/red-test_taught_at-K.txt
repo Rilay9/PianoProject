@@ -1,0 +1,39 @@
+.F....F
+======================================================================
+FAIL: test_k1_the_g_pattern_shape_at_1_1_is_not_untaught (tests.test_taught_at.TestAKeySignatureAlteringNoSoundingNoteIsNotAsked.test_k1_the_g_pattern_shape_at_1_1_is_not_untaught)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0a8cdf3dae958f4a\tools\content\tests\test_taught_at.py", line 556, in test_k1_the_g_pattern_shape_at_1_1_is_not_untaught
+    self.assertEqual(self.untaught(self.row(["interval.step", KEY], {"interval.step": 8})), [])
+AssertionError: Lists differ: ['key.signature'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'key.signature'
+
+- ['key.signature']
++ []
+
+======================================================================
+FAIL: test_k6_g_major_with_a_written_f_natural (tests.test_taught_at.TestAKeySignatureAlteringNoSoundingNoteIsNotAsked.test_k6_g_major_with_a_written_f_natural)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0a8cdf3dae958f4a\tools\content\tests\test_taught_at.py", line 577, in test_k6_g_major_with_a_written_f_natural
+    self.assertEqual(self.untaught(item), ["pitch.chromatic"])
+AssertionError: Lists differ: ['key.signature', 'pitch.chromatic'] != ['pitch.chromatic']
+
+First differing element 0:
+'key.signature'
+'pitch.chromatic'
+
+First list contains 1 additional elements.
+First extra element 1:
+'pitch.chromatic'
+
+- ['key.signature', 'pitch.chromatic']
++ ['pitch.chromatic']
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.005s
+
+FAILED (failures=2)

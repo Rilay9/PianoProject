@@ -16,9 +16,19 @@
  * Every frame is recorded by the page itself from before the tap (`00-invariants` §2: never wait on
  * a transient, observe it). The only numbers are ratios of measurements taken on the same screen.
  */
+import { readFileSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
 
 const READING_ROW = 'drill.reading.sight-reading-2-right';
+
+/**
+ * The evidence version in force, read from the module that declares it (as `competence.spec.ts` does): a row
+ * stamped with any other is read as nothing until the evidence job recomputes it (C4a), so a stamp copied here
+ * by hand seeds an empty learner the day the version moves (it moved to 4 in L120b).
+ */
+const EVIDENCE_DEFINITIONS = Number(
+  /export const EVIDENCE_DEFINITIONS = (\d+);/.exec(readFileSync('src/evidence/evidence.ts', 'utf8'))?.[1] ?? 'NaN',
+);
 
 /** The staff may differ by rounding across two engravings of one layout, no more: a pixel, as the brief says. */
 const SAME_PX = 1;
@@ -86,7 +96,7 @@ test.beforeEach(async ({ page }) => {
 async function seed(page: Page): Promise<void> {
   await page.goto('/');
   await expect(page.locator('#today-card .list-row').first()).toBeVisible({ timeout: 30_000 });
-  await page.evaluate(async (row) => {
+  await page.evaluate(async ({ row, definitions }) => {
     const day = (back: number, hour: number): string => {
       const at = new Date();
       at.setDate(at.getDate() - back);
@@ -135,7 +145,7 @@ async function seed(page: Page): Promise<void> {
         material,
         hands: { played: 'R', appPlayed: 'none' },
         keys: { view: 'strip', guide: 'off', fingers: false, names: false },
-        evidenceDefinitions: 3,
+        evidenceDefinitions: definitions,
         evidence: [
           evidence('sight-reading', ['interval.step', 'interval.skip', 'rhythm.eighths', 'rhythm.shorter-than-quarter', 'range.beyond-position']),
           evidence('interval-reading', ['interval.step', 'interval.skip']),
@@ -159,7 +169,7 @@ async function seed(page: Page): Promise<void> {
         ],
       },
     });
-  }, READING_ROW);
+  }, { row: READING_ROW, definitions: EVIDENCE_DEFINITIONS });
   await page.reload();
   await expect(page.locator('#today-status')).toHaveAttribute('data-lesson', '3.4', { timeout: 30_000 });
 }

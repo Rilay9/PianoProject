@@ -591,7 +591,9 @@ def window_demands(positions: dict, bars: list[Bar], low: int, high: int, select
             present.add("range.beyond-position")
     if bars[low - 1].fifths != 0:
         present.add("key.signature")
-    if any(t[1] == 8 and t[0] % 3 == 0 for t in (b.time for b in bars[low - 1:high])):
+    # Compound time by the detectors' rule (`detect.ts`'s `isCompound`, L120b): more than one beat of
+    # three eighths, so 3/8, simple triple, is not.
+    if any(t[1] == 8 and t[0] > 3 and t[0] % 3 == 0 for t in (b.time for b in bars[low - 1:high])):
         present.add("metre.compound")
     return sorted(present)
 

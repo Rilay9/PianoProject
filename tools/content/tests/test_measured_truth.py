@@ -1084,7 +1084,8 @@ class TestPlacementReconciled(Built):
         F2b (the reviewer's required change on F2a, `responses/fc91e5a.md`, part 1): `practice.1` names 1.1,
         so the floor's path holds 1.1 and the track opens from the second rung of Stage 1. The report reads
         the five-finger pattern, *Hot Cross Buns* and *Ode to Joy* at 1.1, which lists them; the one row the
-        floor still reads untaught is the steps-and-skips study's skips, which 1.5 teaches; and no practice
+        floor read untaught, the steps-and-skips study's skips, is coped with since L120b by the note reading
+        of right-hand C position, inside which the study lies (1.1 teaches it; 1.5 teaches the skip); and no practice
         rung reads a step untaught, since every one stands on 1.1. Red on the build before F2b, where the
         floor's path was Stage 0 and its five-finger, *Ode* and study rows read their steps as untaught.
         """
@@ -1093,9 +1094,12 @@ class TestPlacementReconciled(Built):
         for item_id in ("exercise.five-finger.c-major.right", "song.folk.hot-cross-buns", "song.classical.ode-to-joy.rh"):
             with self.subTest(read_at_1_1=item_id):
                 self.assertFalse(rows[item_id]["earliest"], f"{item_id}: 1.1 lists it and practice.1 stands on 1.1")
-        self.assertEqual([(o["item"], o["untaught"]) for o in rows.values() if o["untaught"]],
-                         [("exercise.reading.steps-and-skips-c", ["interval.skip"])],
-                         "practice.1: the study's skips (1.5's) are the one row left, and true for a learner at 1.2-1.4")
+        # Revised (L120b; the reviewer's Question 1 on L120a, `responses/0bcd3be0.md`; class: an assertion of the
+        # reading being corrected). It held the steps-and-skips study's skips as the floor's one untaught row. The
+        # study lies inside right-hand C position (C4-G4), which 1.1 teaches by note name and the floor stands on,
+        # so before 1.5 its skips are coped with by that note reading: no practice.1 row reads anything untaught.
+        self.assertEqual([(o["item"], o["untaught"]) for o in rows.values() if o["untaught"]], [],
+                         "practice.1: the study's skips lie inside right-hand C position, taught at 1.1 (L120b)")
         stepped = [(o["rung"], o["item"]) for o in self.report["options"]
                    if o["rung"].startswith("practice.") and "interval.step" in o["untaught"]]
         self.assertEqual(stepped, [], "a practice rung reads a step untaught, though every one stands on 1.1")

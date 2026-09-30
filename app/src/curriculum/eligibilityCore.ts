@@ -13,7 +13,9 @@
  * 1. **Can the learner cope?** Every measured demand of the candidate is one the learner's skill state
  *    supports — the ladder's `familiar` or above on the demand's `copedWithBy` skill, the rule the
  *    repertoire slot already used — or is taught at or below the rung judging it
- *    (`session.taughtAtRung`).
+ *    (`session.taughtAtRung`). A key signature located at no sounding note is not asked
+ *    (L120b, `demandsAsked`), and a skip wholly inside a taught fixed position is coped with by
+ *    that position's note reading (L120b, `inTaughtPosition`).
  * 2. **Does it provide the opportunity claimed?** The wanted demand, or the wanted skill's opportunity,
  *    is present at a useful density (`measurement.established`), told apart from incidental presence.
  *
@@ -38,6 +40,14 @@ export interface Learner {
   skillState?: (skill: string) => LadderState | undefined;
   /** Whether the rung judging the candidate has taught a demand, at or below it; absent: no rung judges. */
   taught?: (demand: string) => boolean;
+  /**
+   * Whether a fixed position's note reading is taught for this learner at the rung judging the
+   * candidate: a lesson on the rung's path, or on a rung the learner has reached, names the
+   * position's concept in its own `concepts` (`session.positionTaughtAtRung`, L120b). Built
+   * beside `taught`, from the same rung and reached set (`session.taughtForLearner`). Absent: no
+   * position is taught, and no skip is coped with by one — the refusal stays.
+   */
+  positionTaught?: (concept: string) => boolean;
   /**
    * The ladder state at which a skill supports its demands. `familiar`, the rule the
    * repertoire slot used before E0; `introduced` is what the brief asked to compare it
@@ -108,14 +118,28 @@ function isReadingRow(item: CatalogItem): boolean {
   return item.drill?.kind === 'sight-reading';
 }
 
+/** The demand a measured row can carry with nothing of it to play (L120b). */
+const KEY_SIGNATURE = 'key.signature';
+
 /**
  * The demands a candidate may ask of the learner: its measured ids; for a reading row
  * the demands its reading controls may write into a phrase (C4b's map, read, never
  * moved — the rung the phrase opens under holds the rest out); none for any other drill
  * the app makes at runtime.
+ *
+ * Of the measured ids, a key signature the detectors locate at no sounding note is not
+ * asked (L120b; the reviewer's ruling on L120a, `docs/review/responses/0bcd3be0.md`,
+ * Question 2 A): the signature is on the page, and where no letter it alters sounds the
+ * learner plays every written note right without applying it. The notation fact stays —
+ * the row's `demands`, question 2's opportunity reading, provenance — and only this
+ * question leaves it out. The key signature alone: any other demand located nowhere is
+ * asked as before. `claims.untaught_on` is the build's twin.
  */
 function demandsAsked(item: CatalogItem, measurement: Measurement, vocabulary: Vocabulary): readonly string[] {
-  if (measurement.status === 'measured') return Array.isArray(item.demands) ? item.demands : [];
+  if (measurement.status === 'measured') {
+    const measured = Array.isArray(item.demands) ? item.demands : [];
+    return measured.filter((demand) => demand !== KEY_SIGNATURE || (measurement.located[demand] ?? 0) > 0);
+  }
   if (measurement.status === 'runtime' && isReadingRow(item)) {
     const options = sightReadingOptionsFor(item.drill?.params ?? {}, 1);
     return vocabulary.demands.filter((demand) => READING_CONTROLS[demand.id]?.mayWrite(options) === true).map((demand) => demand.id);
@@ -123,7 +147,36 @@ function demandsAsked(item: CatalogItem, measurement: Measurement, vocabulary: V
   return [];
 }
 
-/** The candidate's measured demands the learner cannot yet cope with (question 1). */
+/**
+ * Whether a demand is coped with by the note reading of a taught fixed position (L120b; the reviewer's
+ * Question 1 on L120a, `docs/review/responses/0bcd3be0.md`): before 1.5 teaches reading by interval, a
+ * skip wholly inside C position is read by note name, as 1.1 and 1.3 taught. True when the demand's
+ * vocabulary entry names the positions (`fixedPositions`: `interval.skip`'s alone), the measured row
+ * carries each sounding hand's range over the whole piece (`measurement.span`), every hand that sounds
+ * lies inside that hand's own position, and each such position's note reading is taught for the learner
+ * (`learner.positionTaught`). Nothing for a hand outside its position, a hand whose position is not
+ * taught at this rung, a row with no range (unmeasured, runtime, measured before the build wrote one)
+ * or any other demand. It names no skill and reads no skill state: no evidence reader sees it, so a
+ * correct run of such an item is never interval-reading evidence (`evidence.ts`'s principle), and
+ * `copedWithBy` keeps its one skill.
+ */
+function inTaughtPosition(demand: string, measurement: Measurement, learner: Learner, vocabulary: Vocabulary): boolean {
+  const positions = vocabulary.demands.find((d) => d.id === demand)?.fixedPositions;
+  if (positions === undefined || positions.length === 0 || learner.positionTaught === undefined) return false;
+  if (measurement.status !== 'measured' || measurement.span === undefined) return false;
+  const hands = (['R', 'L'] as const).filter((hand) => measurement.span?.[hand] !== undefined);
+  if (hands.length === 0) return false;
+  return hands.every((hand) => {
+    const [low, high] = measurement.span?.[hand] as [number, number];
+    return positions.some((position) => position.hand === hand && position.low <= low && high <= position.high && learner.positionTaught?.(position.concept) === true);
+  });
+}
+
+/**
+ * The candidate's measured demands the learner cannot yet cope with (question 1): those the learner's
+ * evidence does not support, the rung has not taught, and — for a skip — no taught fixed position copes
+ * with (`inTaughtPosition`, L120b).
+ */
 export function uncoped(item: CatalogItem, learner: Learner, vocabulary: Vocabulary = VOCABULARY_V0): string[] {
   const floor = LADDER_STATES.indexOf(learner.floor ?? 'familiar');
   const supported = (demand: string): boolean => {
@@ -132,7 +185,10 @@ export function uncoped(item: CatalogItem, learner: Learner, vocabulary: Vocabul
     return state !== undefined && LADDER_STATES.indexOf(state) >= floor;
   };
   const taught = (demand: string): boolean => learner.taught?.(demand) === true;
-  return demandsAsked(item, measurementOf(item), vocabulary).filter((demand) => !supported(demand) && !taught(demand));
+  const measurement = measurementOf(item);
+  return demandsAsked(item, measurement, vocabulary).filter(
+    (demand) => !supported(demand) && !taught(demand) && !inTaughtPosition(demand, measurement, learner, vocabulary),
+  );
 }
 
 /** Whether the gate has anything to judge the first question by. */

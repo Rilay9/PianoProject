@@ -9,13 +9,20 @@ item). Two groups of cases:
 
 - **The shipped curriculum** (reads the built content: run `python tools/content/build.py` first;
   CI: the step 'Build content', before 'Content pipeline tests'). The tool's lines equal the app's
-  probe, `docs/prompts/runs/X1/probe-head-refusals.txt` (387 `untaught` at X1's head, written by
-  `eligibility.eligibleFor` over every rung's own options), line for line and demand for demand,
-  apart from the differences recorded in `RECORDED_DIFFERENCES`, each with its reason. The probe
-  is a snapshot: a change to a rung's lists, a row's demands or `taughtAt` changes the app's
-  reading too, so this goes red until the probe is re-run at the new head
-  (`docs/prompts/runs/L120a/scripts-zzL120aProbe.test.ts`) and the record here says why the two
-  differ. Nothing is forced equal.
+  probe, `docs/prompts/runs/L120b/after-gate/probe-refusals.txt` — L120b's final snapshot: 379
+  `untaught` at L120b's head, written by `eligibility.eligibleFor` over every rung's own options with
+  the learner the session builds at the rung (`session.taughtForLearner`: the taught set and the fixed
+  positions) — line for line and demand for demand, apart from the differences recorded in
+  `RECORDED_DIFFERENCES`, each with its reason. It replaced X1's snapshot
+  (`docs/prompts/runs/X1/probe-head-refusals.txt`, 387) when L120b changed the gate's reading
+  (L124: the pin is a snapshot, re-run and recorded, never forced). The probe is a snapshot: a change
+  to a rung's lists, a row's demands, `taughtAt`, a lesson's concepts or the gate changes the app's
+  reading too, so this goes red until the probe is re-run at the new head — copy
+  `docs/prompts/runs/L120b/scripts-zzL120bProbe.test.ts` and `scripts-vitest.l120b.config.ts` into
+  the gitignored `app/.probe/` (as `zzL120bProbe.test.ts` and `vitest.l120b.config.ts`), run
+  `L120B_PROBE_OUT=<path> npx vitest run --config .probe/vitest.l120b.config.ts` from `app/`, point
+  `PROBE` at the new `-refusals.txt` — and the record here says why the two differ. Nothing is forced
+  equal.
 - **A constructed curriculum** with one case of each class, under the reviewer's order of truths
   (`docs/review/responses/questions-4dc2f135.md`): (A) the material reading is in doubt,
   (B) a lesson at or below the rung teaches it and fails to declare or map it, (C) no lesson at
@@ -40,26 +47,17 @@ import untaught_options as U  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[3]
 BUILT = REPO / "app" / "public" / "content"
-PROBE = REPO / "docs" / "prompts" / "runs" / "X1" / "probe-head-refusals.txt"
+PROBE = REPO / "docs" / "prompts" / "runs" / "L120b" / "after-gate" / "probe-refusals.txt"
 
-#: Where the tool's lines on the shipped curriculum differ from X1's probe, and why. Keyed by
-#: (rung, item); `side` says which reading has the line. Nothing else may differ.
+#: Where the tool's lines on the shipped curriculum differ from the probe, and why. Keyed by
+#: (rung, item); `side` says which reading has the line. Nothing else may differ. Since L120b's snapshot
+#: the two options Q76 added after X1's head are in both, so the runtime reading row is the one line left.
 RECORDED_DIFFERENCES: dict[tuple[str, str], dict] = {
     ("2.2", "drill.reading.sight-reading-2-right"): {
         "side": "probe",
         "why": "a runtime reading row: the app asks the demands its reading controls may write "
                "(`readingControls.ts`, app code); the build does not read them, so the tool lists "
                "the row apart as not read (`unread`), never as coped with",
-    },
-    ("2.4", "song.folk.cielito-lindo.simple"): {
-        "side": "tool",
-        "why": "added to 2.4's songOptions after X1's head (stage-2.json, Q76, e4f9d3f2); the app's "
-               "probe re-run at 4dc2f135 has the same line (docs/prompts/runs/L120a/probe-head-refusals.txt)",
-    },
-    ("ragtime.8", "song.ragtime.joplin-pine-apple-rag.mutopia"): {
-        "side": "tool",
-        "why": "added to ragtime.8's songOptions after X1's head (stage-8.json, Q76, e4f9d3f2); the app's "
-               "probe re-run at 4dc2f135 has the same line (docs/prompts/runs/L120a/probe-head-refusals.txt)",
     },
 }
 
@@ -102,7 +100,7 @@ class TheShippedCurriculum(unittest.TestCase):
         cls.probe = probe_untaught(PROBE)
 
     def test_the_probe_is_the_one_the_brief_names(self) -> None:
-        self.assertEqual(len(self.probe), 387, "X1's probe recorded 387 `untaught` rung-own options")
+        self.assertEqual(len(self.probe), 379, "L120b's final probe recorded 379 `untaught` rung-own options")
 
     def test_the_lines_equal_the_probe_but_for_the_recorded_differences(self) -> None:
         only_probe = {key for key in self.probe if key not in self.mine}
@@ -114,8 +112,7 @@ class TheShippedCurriculum(unittest.TestCase):
         both = [key for key in self.probe if key in self.mine]
         differing = {key: (self.probe[key], self.mine[key]) for key in both if self.probe[key] != self.mine[key]}
         self.assertEqual(differing, {}, "the same option read with different untaught demands")
-        # The count, said as the brief says it: 387 at X1's head, less what only the probe reads, plus what
-        # was added since.
+        # The count: the probe's, less what only the probe reads, plus what only the tool reads.
         self.assertEqual(len(self.mine), len(self.probe) - len(recorded_probe) + len(recorded_mine))
 
     def test_the_probe_only_line_is_listed_apart_as_not_read(self) -> None:
@@ -280,24 +277,47 @@ class TheSubclasses(unittest.TestCase):
         self.assertEqual(row["doubt"], [])
         self.assertEqual(row["caution"], [claims.E22_NOTATED_SYNC])
 
-    def test_a_demand_located_nowhere_and_three_eight_read_as_compound_are_the_readings_question(self) -> None:
+    # Replaced (L120b; the reviewer's ruling on L120a, `responses/0bcd3be0.md`; class: a test asserting the
+    # readings being corrected). L120a's test held three doubts: a demand located nowhere, 3/8 read as compound
+    # and a written sixteenth in 3/8. The key signature located nowhere is no longer asked by the gate (claims.
+    # untaught_on), 3/8 is no longer compound at the detector, and a written sixteenth in 3/8 is a sixteenth:
+    # the last two doubts are gone, and a demand other than the key signature located nowhere keeps the first.
+
+    def test_s1_written_sixteenths_in_three_eight_are_classified_by_ownership_and_placement(self) -> None:
+        demands = {"rhythm.sixteenths": demand("rhythm.sixteenths", [])}
+        catalog = [measured("song.f", ["rhythm.sixteenths"], timeSig="3/8")]
+        curriculum = curriculum_of((0, [lesson("0.1", [])]), (1, [lesson("1.1", ["song.f"])]))
+        nowhere = U.table(catalog, curriculum, SKILLS, demands, text_of=lambda one: "")
+        row = nowhere["lines"][0]["demands"][0]
+        self.assertEqual((row["class"], row["doubt"]), ("C-nowhere", []), "no rung teaches sixteenths: a placement, never a doubt")
+        texts = {"0.1": "Four sixteenth notes to the beat, counted 1-e-and-a."}
+        named = U.table(catalog, curriculum, SKILLS, demands, text_of=lambda one: texts.get(one["id"], ""))
+        row = named["lines"][0]["demands"][0]
+        self.assertEqual((row["class"], row["doubt"]), ("B-mapping", []), "a lesson below names sixteenths: ownership")
+
+    def test_s2_compound_time_on_a_three_eight_row_is_not_the_readings_question(self) -> None:
+        # After the detector's correction a 3/8 row carries compound time only from a genuinely compound bar.
+        demands = {"metre.compound": demand("metre.compound", ["1.1"])}
+        skills = {**SKILLS, "6/8": {"id": "6/8", "opportunity": ["metre.compound"]}}
+        catalog = [measured("song.m", ["metre.compound"], timeSig="3/8")]
+        curriculum = curriculum_of((0, [lesson("0.1", ["song.m"])]), (1, [lesson("1.1", [], concepts=["6/8"])]))
+        row = U.table(catalog, curriculum, skills, demands, text_of=lambda one: "")["lines"][0]["demands"][0]
+        self.assertEqual((row["class"], row["doubt"]), ("C-later", []))
+
+    def test_s3_a_demand_located_nowhere_is_the_readings_question_but_the_key_signature_is_not_asked(self) -> None:
         demands = {"key.signature": demand("key.signature", ["1.1"]), "metre.compound": demand("metre.compound", ["1.1"])}
-        nowhere = measured("song.k", ["key.signature"], established=[])
-        nowhere["measurement"]["located"] = {"key.signature": 0}
-        three_eight = measured("song.m", ["metre.compound", "rhythm.sixteenths"], timeSig="3/8")
-        demands["rhythm.sixteenths"] = demand("rhythm.sixteenths", [])
-        six_eight = measured("song.n", ["metre.compound"], timeSig="6/8")
-        curriculum = curriculum_of((0, [lesson("0.1", ["song.k", "song.m", "song.n"])]),
+        key = measured("song.k", ["key.signature"], established=[])
+        key["measurement"]["located"] = {}
+        compound = measured("song.n", ["metre.compound"], established=[])
+        compound["measurement"]["located"] = {}
+        curriculum = curriculum_of((0, [lesson("0.1", ["song.k", "song.n"])]),
                                    (1, [lesson("1.1", [], concepts=["key-signature", "6/8"])]))
         skills = {**SKILLS, "key-signature": {"id": "key-signature", "opportunity": ["key.signature"]},
                   "6/8": {"id": "6/8", "opportunity": ["metre.compound"]}}
-        report = U.table([nowhere, three_eight, six_eight], curriculum, skills, demands, text_of=lambda one: "")
+        report = U.table([key, compound], curriculum, skills, demands, text_of=lambda one: "")
         rows = {line["item"]: line["demands"][0] for line in report["lines"]}
-        self.assertEqual({item: row["class"] for item, row in rows.items()}, {"song.k": "A", "song.m": "A", "song.n": "C-later"})
-        self.assertEqual(rows["song.k"]["doubt"], [U.NOWHERE])
-        self.assertEqual(rows["song.m"]["doubt"], [U.THREE_EIGHT])
-        sixteenths = next(line for line in report["lines"] if line["item"] == "song.m")["demands"][1]
-        self.assertEqual((sixteenths["class"], sixteenths["doubt"]), ("A", [U.SIXTEENTHS_IN_THREE_EIGHT]))
+        self.assertEqual(set(rows), {"song.n"}, "the key signature altering no sounding note is not asked, so no line")
+        self.assertEqual((rows["song.n"]["class"], rows["song.n"]["doubt"]), ("A", [U.NOWHERE]))
 
     def test_a_mention_read_as_not_teaching_and_the_front_matter_do_not_count(self) -> None:
         demands = {"rhythm.triplets": demand("rhythm.triplets", ["1.1"])}
@@ -364,6 +384,32 @@ class TheGatesOrder(unittest.TestCase):
 
     def test_the_ancestry_is_the_claims_modules(self) -> None:
         self.assertIs(U.rung_ancestry, claims.rung_ancestry)
+
+
+class TheValidatorsWarning(unittest.TestCase):
+    """L120b item 7: `validate.py` warns with the table's count, never fails, and lists the unread reading rows apart."""
+
+    def test_the_warning_says_the_count_and_the_rows_not_read(self) -> None:
+        import validate
+
+        demands = {"interval.skip": demand("interval.skip", ["1.1"])}
+        row = {"id": "drill.reading.row", "type": "drill", "title": "row", "file": None,
+               "drill": {"kind": "sight-reading", "params": {"level": 2}},
+               "measurement": {"status": "runtime", "reason": "made when it opens"}}
+        curriculum = curriculum_of((0, [lesson("0.1", ["song.g"], exercises=["drill.reading.row"])]),
+                                   (1, [lesson("1.1", [], concepts=["skips"])]))
+        catalog = [measured("song.g", ["interval.skip"]), row]
+        original = claims.load_vocabulary
+        claims.load_vocabulary = lambda: (SKILLS, demands)
+        try:
+            warnings = validate.untaught_options_warnings(catalog, curriculum)
+        finally:
+            claims.load_vocabulary = original
+        self.assertEqual(len(warnings), 2)
+        self.assertTrue(warnings[0].startswith("WARNING (untaught rung-own options, L120b): 1 rung-own options on 1 rungs"), warnings[0])
+        self.assertIn("(1 option-demand pairs: A 0,", warnings[0])
+        self.assertTrue(warnings[1].endswith("0.1 drill.reading.row"), warnings[1])
+        self.assertTrue(all(w.startswith("WARNING") for w in warnings), "a warning, never an error")
 
 
 if __name__ == "__main__":

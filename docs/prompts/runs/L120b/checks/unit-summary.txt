@@ -1,0 +1,27 @@
+Summary of build/l120b-checks/unit.txt (932368 bytes, over the 300 KB kept): the command, the totals, each failing test and its first error line.
+
+﻿npx vitest run
+ FAIL  tests/unit/expectedNote.test.ts > the spelling comes from the notation (T41) > every black key in every fixture carries its written spelling
+Error: Test timed out in 5000ms.
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+AssertionError: expected false to be true // Object.is equality
+ FAIL  tests/unit/libraryImportWords.test.ts > an import’s row says its state in words > on the row itself, for the score just imported: the source on the detail line, the state under it
+AssertionError: expected null not to be null
+ FAIL  tests/unit/libraryImportWords.test.ts > the UI opens the import sheet from the row addImport returned > the picker’s import of a MIDI file opens it, the store having opened nothing
+AssertionError: expected '' to contain 'Imported 1:'
+ FAIL  tests/unit/libraryImportWords.test.ts > the UI opens the import sheet from the row addImport returned > a score whose staves and signature are the file’s files quietly; its row’s Assign opens the same sheet
+AssertionError: expected <div class="sheet" …(2)>…(1)</div> to be null
+ FAIL  tests/unit/readerMovesTheDemand.test.ts > the e2e learners are the real path’s rows (C4c item 0) > tests/e2e/fixtures/reader-learners.json holds exactly what this path makes
+AssertionError: the e2e learners are not the real path’s rows: rewrite them with C4C_WRITE_E2E_ROWS=1: expected false to be true // Object.is equality
+ FAIL  tests/unit/simonTurnCue.test.ts > the chain hands over in words, not only by going quiet > does not take a key pressed while the app is still playing as the answer
+AssertionError: expected 'correct' to be '' // Object.is equality
+ FAIL  tests/unit/skillActivationBoundary.test.ts > the swap sheet’s skill tier goes live only through the gate (E0) > every skill-tier offer declares the shared skill, establishes its opportunity, and carries nothing its rung has not taught
+AssertionError: 9 of 312 skill-tier offers: expected [ …(9) ] to deeply equal []
+ FAIL  tests/unit/transferOffer.test.ts > not offered (the adversaries held at the selection layer) > met: a run of the pentatonic’s exact material is on the record
+AssertionError: expected [ { kind: 'new', minutes: 10, …(4) } ] to deeply equal []
+ FAIL  tests/unit/transferOffer.test.ts > not offered (the adversaries held at the selection layer) > met-by-id: a legacy run of the item, material unknown, is never read as unmet and never offered (adversary 8)
+ FAIL  tests/unit/transferOffer.test.ts > not offered (the adversaries held at the selection layer) > the gate refuses: the pentatonic in D brings a key signature, the blues scale notes outside the key, neither taught (adversary 2)
+ Test Files  7 failed | 309 passed (316)
+      Tests  12 failed | 7200 passed | 5 skipped | 1 todo (7218)
+   Duration  417.67s (tests 70%, environment 20%, import 7%, transform 3%)

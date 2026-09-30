@@ -22,7 +22,8 @@ of an item a rung lists, against the rung's ancestry and every rung `demands.jso
 lists (one teaching rung per path since E0b), on the
 earliest rung listing it on that rung's path (the sight-reading promise test's rule). Since E0a the
 reading is the build report's own (`claims.rung_ancestry`, `claims.first_listings`,
-`claims.untaught_on`): what the rung builds on, never the file's order across tracks. D0 changes
+`claims.untaught_on`, with the curriculum and each row as the build records it since L120b): what
+the rung builds on, never the file's order across tracks. D0 changes
 no placement (the round-robin stays, G18), so what this finds is recorded, family by rung by demand, in
 `fixtures/untaught_on_rung.json` — the pedagogical gate's report, for E's needs-versus-taught gate
 to act on. The test fails when a new combination appears or a recorded one disappears.
@@ -39,6 +40,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+import build  # noqa: E402
 import claims  # noqa: E402
 import demands  # noqa: E402
 import family_contracts as FC  # noqa: E402
@@ -154,8 +156,18 @@ class TestTheRungTheItemSitsOn(unittest.TestCase):
         measured = planned.measured()
         found: Counter = Counter()
         for _sc, entry in planned.plan():
+            row = measured[entry["id"]]
+            # L120b: the row as the build records it on the catalogue (`build.attach_demands`: the located counts,
+            # zero counts dropped, and each hand's span), read with the curriculum, so the coping question here is
+            # the rung-claims report's and the gate's — a key signature located at no note is not asked, and a skip
+            # inside a taught fixed position is coped with (`claims.untaught_on`).
+            span = build.span_of(row.get("hands"))
+            item = {"demands": row["demands"],
+                    "measurement": {"status": "measured",
+                                    "located": {d: int(n) for d, n in (row.get("opportunities") or {}).items() if int(n) > 0},
+                                    **({"span": span} if span else {})}}
             for rung in sorted(firsts.get(entry["id"], set())):
-                for demand in claims.untaught_on(measured[entry["id"]], rung, ancestry, vocabulary):
+                for demand in claims.untaught_on(item, rung, ancestry, vocabulary, curriculum):
                     found[(entry["drill"]["generator"]["family"], rung, demand)] += 1
         recorded = json.loads((FIXTURES / "untaught_on_rung.json").read_text(encoding="utf-8"))["found"]
         pinned = Counter({(r["family"], r["rung"], r["demand"]): r["items"] for r in recorded})

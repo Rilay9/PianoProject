@@ -1,0 +1,42 @@
+# checks for 32 path(s): 32 matched, 0 unmatched
+# app/src/curriculum/candidates.ts: app/src/**, app/src/curriculum/**
+# app/src/curriculum/eligibilityCore.ts: app/src/**, app/src/curriculum/**
+# app/src/curriculum/session.ts: app/src/**, app/src/curriculum/session.ts, app/src/curriculum/**
+# app/src/curriculum/types.ts: app/src/**, app/src/curriculum/**
+# app/src/demands/detect.ts: app/src/**, app/src/demands/**
+# app/src/demands/vocabulary.ts: app/src/**, app/src/demands/**
+# app/src/evidence/evidence.ts: app/src/**, app/src/evidence/**
+# app/tests/e2e/fixtures/reader-learners.json: app/tests/e2e/fixtures/**, app/tests/e2e/fixtures/reader-learners.json
+# app/tests/e2e/score-fit-paths.spec.ts: app/tests/e2e/*.spec.ts
+# app/tests/e2e/transfer-offer.spec.ts: app/tests/e2e/*.spec.ts
+# app/tests/unit/demandDetectors.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/skillActivationBoundary.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/transferOffer.test.ts: app/tests/unit/*.test.ts
+# content/catalog.schema.json: content/**, content/*.json
+# content/curriculum/vocabulary/demands.json: content/**, content/curriculum/**, content/curriculum/vocabulary/**
+# content/curriculum/vocabulary/demands.schema.json: content/**, content/curriculum/**, content/curriculum/vocabulary/**
+# tools/content/build.py: tools/content/*.py
+# tools/content/claims.py: tools/content/*.py
+# tools/content/excerpt_proposer.py: tools/content/*.py
+# tools/content/excerpts.py: tools/content/*.py
+# tools/content/study.py: tools/content/*.py
+# tools/content/tests/fixtures/untaught_on_rung.json: tools/content/tests/fixtures/**
+# tools/content/tests/test_excerpt_proposer.py: tools/content/tests/test_*.py
+# tools/content/tests/test_measured_demands.py: tools/content/tests/test_*.py
+# tools/content/tests/test_measured_truth.py: tools/content/tests/test_*.py
+# tools/content/tests/test_taught_at.py: tools/content/tests/test_*.py
+# tools/content/tests/test_untaught_options.py: tools/content/tests/test_*.py
+# tools/content/untaught_options.py: tools/content/*.py
+# tools/content/validate.py: tools/content/*.py
+# app/tests/unit/copingQuestion.test.ts: app/tests/unit/*.test.ts
+# docs/prompts/runs/L120b/ENTRY.md: docs/**
+# docs/prompts/tasks/L120b-the-reading-and-the-gate.md: docs/**
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/competence.spec.ts tests/e2e/first-day.spec.ts tests/e2e/lab.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/lesson-tools.spec.ts tests/e2e/modes-ladder.spec.ts tests/e2e/modes-placement.spec.ts tests/e2e/placement-branches.spec.ts tests/e2e/plan.spec.ts tests/e2e/progress.spec.ts tests/e2e/score-fit-paths.spec.ts tests/e2e/score.ladder-route.spec.ts tests/e2e/session-run.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/today.spec.ts tests/e2e/transfer-offer.spec.ts --workers=4

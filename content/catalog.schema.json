@@ -215,6 +215,29 @@
                   "type": "string"
                 }
               }
+            },
+            "span": {
+              "type": "object",
+              "description": "L120b: each sounding hand's lowest and highest MIDI over the whole piece, grace notes left out, from the bridge's per-printed-bar hands (build.attach_demands). The coping question reads it to say whether a skip lies inside a taught fixed position (demands.json's fixedPositions). Absent where no note sounds.",
+              "additionalProperties": false,
+              "properties": {
+                "R": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "L": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                }
+              }
             }
           }
         },

@@ -215,6 +215,13 @@ export type Measurement =
       window?: string[];
       /** Readings known to be wrong on this file (the detectors' clef assumption): kept among the ids, never established. */
       misread?: { demands: string[]; why: string };
+      /**
+       * Each sounding hand's lowest and highest MIDI over the whole piece, grace notes left out (L120b): the
+       * build's reading of the bridge's per-bar `hands` (`build.attach_demands`). The coping question reads it
+       * to say whether a skip lies inside a taught fixed position (`eligibilityCore.uncoped`). Absent on a row
+       * measured before it, on an import, and where no note sounds: then no position copes with anything.
+       */
+      span?: Partial<Record<'R' | 'L', [number, number]>>;
     }
   | { status: 'unmeasured'; reason: string }
   | { status: 'runtime'; reason: string };

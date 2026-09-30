@@ -29,7 +29,22 @@
             "items": { "type": "string", "minLength": 1 },
             "uniqueItems": true
           },
-          "taughtAtNote": { "type": "string", "minLength": 10 }
+          "taughtAtNote": { "type": "string", "minLength": 10 },
+          "fixedPositions": {
+            "description": "L120b: the fixed five-finger positions whose note reading copes with the demand where a lesson on the rung's path, or on a rung the learner has reached, names the position's concept in its own concepts (interval.skip alone: a skip inside C position is read by note name before 1.5 teaches reading by interval). Each is the concept, the hand (R or L, the bridge's hands) and the position's lowest and highest MIDI. Read by the coping question only (eligibilityCore.uncoped, claims.untaught_on).",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["concept", "hand", "low", "high"],
+              "additionalProperties": false,
+              "properties": {
+                "concept": { "type": "string", "minLength": 1 },
+                "hand": { "enum": ["R", "L"] },
+                "low": { "type": "integer", "minimum": 0, "maximum": 127 },
+                "high": { "type": "integer", "minimum": 0, "maximum": 127 }
+              }
+            }
+          }
         },
         "if": { "properties": { "taughtAt": { "type": "array", "maxItems": 0 } }, "required": ["taughtAt"] },
         "then": { "required": ["taughtAtNote"] }
