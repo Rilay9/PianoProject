@@ -22,6 +22,7 @@ import functools
 import hashlib
 import io
 import json
+import math
 import os
 import re
 import shutil
@@ -53,6 +54,7 @@ from music21 import (  # noqa: E402
     converter,
     duration,
     dynamics,
+    expressions,
     harmony,
     instrument,
     key,
@@ -1328,21 +1330,152 @@ def clean_beams(score: stream.Score) -> int:
     return cleaned
 
 
-def insert_tempo(staff: stream.PartStaff, bpm: float) -> None:
+def insert_tempo(staff: stream.PartStaff, bpm: float | tempo.MetronomeMark) -> None:
     """
-    Puts a metronome mark where MusicXML export will actually find it.
+    Puts a metronome mark where MusicXML export will actually find it: a
+    quarter note at `bpm`, or the mark given (E50: one read from the text the
+    score prints, `tempo_printed_as_text`).
 
     A mark inserted at the staff's own offset 0 is silently dropped when the
     staff is already divided into measures — measured: the LilyPond fixture
     came out with no `<sound tempo>` at all. It has to go inside the first
     measure.
     """
-    mark = tempo.MetronomeMark(number=bpm)
+    mark = bpm if isinstance(bpm, tempo.MetronomeMark) else tempo.MetronomeMark(number=bpm)
     measures = staff.getElementsByClass(stream.Measure)
     if measures:
         measures[0].insert(0, mark)
     else:
         staff.insert(0, mark)
+
+
+#: JavaScript's `\s` (ECMAScript's WhiteSpace and LineTerminator characters), so the port below reads and trims
+#: exactly the characters the app's import door reads and trims (`String.prototype.trim`, a `/u` regex's `\s`).
+JS_WHITESPACE = "\t\n\v\f\r   " + "".join(chr(c) for c in range(0x2000, 0x200B)) + "    　﻿"
+
+#: E32's `TEXT_MARK` (`app/src/data/importStore.ts`), ported verbatim: a metronome mark as text — an optional
+#: note (and dot), "=", an optional "ca.", a number of two or three digits, and nothing else; `\s`, `\S` and `\d`
+#: as a JavaScript `/u` regex reads them, and `$` as JavaScript's end of text.
+TEXT_TEMPO_MARK = re.compile(
+    rf"^[{JS_WHITESPACE}]*\(?[{JS_WHITESPACE}]*(?:([^{JS_WHITESPACE}])[{JS_WHITESPACE}]*(\.)?[{JS_WHITESPACE}]*)?="
+    rf"[{JS_WHITESPACE}]*(?:c(?:a)?\.?[{JS_WHITESPACE}]*)?([0-9]{{2,3}}(?:\.[0-9]+)?)[{JS_WHITESPACE}]*\)?[{JS_WHITESPACE}]*\Z"
+)
+
+#: SMuFL's metronome notes (U+ECA2–U+ECAA) and augmentation dot (U+ECB7) as the Unicode note symbols
+#: (`app/src/score/textGlyphs.ts`'s `METRONOME_NOTES`, by code point, whatever the font).
+METRONOME_GLYPHS = {
+    "": "\U0001D15D", "": "\U0001D15E", "": "\U0001D15E", "": "♩", "": "♩",
+    "": "♪", "": "♪", "": "\U0001D161", "": "\U0001D161", "": ".",
+}
+
+#: A metronome note's length in quarter notes, by its Unicode symbol (`textGlyphs.noteLengthInQuarters`).
+NOTE_QUARTERS = {"\U0001D15D": 4.0, "\U0001D15E": 2.0, "♩": 1.0, "\U0001D15F": 1.0, "♪": 0.5, "\U0001D160": 0.5,
+                 "\U0001D161": 0.25}
+
+#: The door's words for a note (`importStore.ts`'s `UNIT_WORDS`).
+UNIT_WORDS = {4.0: "whole note", 2.0: "half", 1.0: "quarter", 0.5: "eighth", 0.25: "sixteenth"}
+
+
+def _signature_at(score: stream.Score, offset: float) -> meter.TimeSignature | None:
+    """The time signature in force at `offset`: the latest at or before it, in walk order at one place."""
+    signatures = [(float(signature.getOffsetInHierarchy(score)), order, signature)
+                  for order, signature in enumerate(score.recurse().getElementsByClass(meter.TimeSignature))]
+    before = [one for one in signatures if one[0] <= offset + 1e-6]
+    return max(before, key=lambda one: (one[0], one[1]))[2] if before else None
+
+
+def tempo_printed_as_text(score: stream.Score, notes: list[str]) -> tuple[tempo.MetronomeMark, float] | None:
+    """
+    The opening metronome mark a score prints only as text, as a mark, with the printed words removed (E50).
+
+    E32's rule, the one the app's import door reads (`importStore.textTempoOf`), ported for the files the
+    content converter writes: seven bundled PDMX scores print `= N` as a `<words>` direction over bar 1, the
+    note glyph MuseScore's export dropped, and music21 hands the converter a `TextExpression` and no
+    `MetronomeMark`, so `normalise` inserted `DEFAULT_TEMPO_BPM` beside the printed words and the app played 96.
+
+    - **What is read:** a `TextExpression` whose text, SMuFL's metronome glyphs mapped (`METRONOME_GLYPHS`),
+      matches `TEXT_TEMPO_MARK`. Its note is the glyph's; where the glyph is missing, the beat of the time
+      signature in force at the mark, when its beat unit is a quarter (x/4) or a half (x/2) — in any other metre
+      a missing glyph could be a dotted quarter or an eighth, and nothing is read. The quarter-note tempo is
+      the number times the note's length in quarters (1.5 times for a dot), rounded to a thousandth as the door
+      rounds, and it lies in 20–400.
+    - **Only the opening:** the mark stands where nothing has sounded before it, by X31a's rule
+      (`difficulty.opening_quarter_bpm`): a note or a chord in any part, a grace note included, never a rest
+      or a chord symbol. A mark after a note has sounded is a later tempo change printed as text: it stays as
+      words, and a line in `notes` names it as not read, as it names any other mark it leaves.
+    - **What is returned:** a `MetronomeMark` of that note and number — music21 writes it as `<metronome>` with
+      a `<sound tempo>` in quarter notes a minute, which the app's reader lets win — and its quarter-note tempo.
+      The caller puts the mark where `insert_tempo` puts one. A line in `notes` names the mark as printed and,
+      where the glyph was missing, says it was read as the metre's beat. None where no mark is read.
+    """
+    from music21.sites import SitesException
+
+    candidates = []
+    for order, expression in enumerate(score.recurse().getElementsByClass(expressions.TextExpression)):
+        text = "".join(METRONOME_GLYPHS.get(char, char) for char in (expression.content or "")).strip(JS_WHITESPACE)
+        found = TEXT_TEMPO_MARK.match(text)
+        if found is None:
+            continue
+        symbol, dot, number = found.groups()
+        glyph = None if symbol is None else NOTE_QUARTERS.get(symbol)
+        if symbol is not None and glyph is None:
+            continue
+        try:
+            at = float(expression.getOffsetInHierarchy(score))
+        except SitesException:
+            continue
+        candidates.append((at, order, expression, text, glyph, dot is not None, number))
+    if not candidates:
+        return None
+    # One printed direction music21 gave to each staff of its part (a `<direction>` naming no `<staff>`) is one
+    # mark: the copies at one place with one text are read, or left, together.
+    printed_marks: dict[tuple[float, str], list] = {}
+    for candidate in sorted(candidates, key=lambda one: (one[0], one[1])):
+        printed_marks.setdefault((round(candidate[0], 6), candidate[3]), []).append(candidate)
+    onsets = []
+    for element in score.recurse().notes:
+        if isinstance(element, harmony.Harmony):
+            continue
+        try:
+            onsets.append(float(element.getOffsetInHierarchy(score)))
+        except SitesException:
+            continue
+    first_sound = min(onsets, default=math.inf)
+    read: tuple[tempo.MetronomeMark, float] | None = None
+    for copies in printed_marks.values():
+        at, _, expression, text, glyph, dotted, number = copies[0]
+        measure = expression.getContextByClass(stream.Measure)
+        where = f"bar {measure.number}" if measure is not None else "no bar"
+        printed = text.encode("ascii", "backslashreplace").decode("ascii")
+        signature = _signature_at(score, at)
+        beat = {4: 1.0, 2: 2.0}.get(signature.denominator) if signature is not None else None
+        unit = glyph if glyph is not None else beat
+        bpm = math.floor(float(number) * unit * (1.5 if dotted else 1.0) * 1000 + 0.5) / 1000 if unit is not None else None
+        if read is not None:
+            why = "the opening tempo is already read"
+        elif first_sound < at - 1e-6:
+            why = "a note sounds before it: a later tempo change printed as text"
+        elif unit is None:
+            why = f"its note glyph is missing and the metre ({signature.ratioString if signature else 'none'}) has no quarter or half beat"
+        elif not 20 <= bpm <= 400:
+            why = f"{bpm:g} quarter notes a minute is outside 20-400"
+        else:
+            why = None
+        if why is not None:
+            notes.append(f'tempo printed as text "{printed}" ({where}) not read: {why}')
+            continue
+        value = float(number)
+        mark = tempo.MetronomeMark(number=int(value) if value.is_integer() else value,
+                                   referent=duration.Duration(unit * (1.5 if dotted else 1.0)))
+        for copy in copies:
+            if copy[2].activeSite is not None:
+                copy[2].activeSite.remove(copy[2])
+        note_words = f"{'dotted ' if dotted else ''}{UNIT_WORDS[unit]}"
+        how = f"; its note glyph missing: read as a {note_words} (the metre's beat)" if glyph is None else ""
+        notes.append(f'tempo printed as text "{printed}" ({where}) read as the metronome mark {note_words} = {number}, '
+                     f"{bpm:g} quarter notes a minute{how}")
+        read = (mark, bpm)
+    return read
 
 
 def normalise(score: stream.Score, *, keep_lyrics: bool, tempo_bpm: float | None) -> tuple[stream.Score, ConversionResult]:
@@ -1430,6 +1563,11 @@ def normalise(score: stream.Score, *, keep_lyrics: bool, tempo_bpm: float | None
         for mark in existing_tempo[1:]:
             if mark.activeSite is not None:
                 mark.activeSite.remove(mark)
+    elif (printed := tempo_printed_as_text(out, notes)) is not None:
+        # E50: the opening tempo the score prints only as text ("= 120" over bar 1, the note glyph missing)
+        # is its tempo, read before any default is inserted, and written where the default would go.
+        insert_tempo(staves[0], printed[0])
+        effective = printed[1]
     else:
         insert_tempo(staves[0], float(DEFAULT_TEMPO_BPM))
         effective = float(DEFAULT_TEMPO_BPM)
@@ -1833,7 +1971,41 @@ def historical_identities() -> dict[str, tuple[dict, ...]]:
     return {undated: tuple(entries) for undated, entries in index.items()}
 
 
-def former_identities(path: Path, table: list[dict] | None = None) -> list[str]:
+#: E50: the reviewed musical repairs whose old identity the repaired file carries for learner continuity (the
+#: reviewer's conditional approval, `docs/review/responses/questions-bd7d303e.md` §4: "explicitly add the seven
+#: old identities to the repaired files' compatibility relation"). Each names an identity the table above recorded
+#: (`from`, with its date and creating system), the repaired file (`to`) and the line hunks that turn the repaired
+#: score's text back into the old one (`restore`). Generated by the script the file names, never by hand; outside
+#: the tool fingerprint for the same reason as the table.
+REPAIRED_IDENTITIES_FILE = Path(__file__).resolve().with_name("repaired_identities.json")
+
+
+@functools.lru_cache(maxsize=1)
+def repaired_identities() -> dict[str, tuple[dict, ...]]:
+    """The committed repairs, indexed by the repaired file's sha256."""
+    if not REPAIRED_IDENTITIES_FILE.is_file():
+        return {}
+    index: dict[str, list[dict]] = {}
+    for entry in json.loads(REPAIRED_IDENTITIES_FILE.read_text(encoding="utf-8")).get("repairs", []):
+        index.setdefault(entry["to"], []).append(entry)
+    return {to: tuple(entries) for to, entries in index.items()}
+
+
+def _restored(entries: list[tuple[str, bytes]], at: int, restore: list[dict]) -> list[tuple[str, bytes]] | None:
+    """The entries with each `restore` hunk's `now` text, held exactly once, put back as its `was`; else None."""
+    if not restore:
+        return None
+    text = entries[at][1].decode("utf-8")
+    for hunk in restore:
+        if not hunk["now"] or text.count(hunk["now"]) != 1:
+            return None
+        text = text.replace(hunk["now"], hunk["was"], 1)
+    restored = list(entries)
+    restored[at] = (entries[at][0], text.encode("utf-8"))
+    return restored
+
+
+def former_identities(path: Path, table: list[dict] | None = None, repairs: list[dict] | None = None) -> list[str]:
     """
     The historical identities of this file's music (E50a; the reviewer's bounded compatibility source):
     each recorded dated file (`former_identities.json`, or `table` in a test) whose undated form is this
@@ -1849,6 +2021,13 @@ def former_identities(path: Path, table: list[dict] | None = None) -> list[str]:
     one), a dated file (a committed PDMX copy while it keeps its date), a MuseScore-written copy, an
     excerpt cut (no `<encoding>`), a `.mxl` not in the converter's layout — and for music no table entry
     names: a musical change moves the undated bytes, so the old identities no longer re-prove.
+
+    **E50: a reviewed repair** (`repaired_identities.json`, or `repairs` in a test) is the one way an identity
+    of other music is named: a repair whose `to` is this file names its `from` where `from` is an entry the
+    table recorded for the same file, date and creating system (no alias names a dated file that never
+    existed), and this file with the repair's `restore` lines put back, then that date, zipped under that
+    system, is `from`'s bytes. Learner continuity only, as above: the old file stays other bytes to every
+    exact-byte check.
     """
     if path.suffix.lower() != ".mxl":
         return []
@@ -1869,6 +2048,15 @@ def former_identities(path: Path, table: list[dict] | None = None) -> list[str]:
         rebuilt = _redated(entries, at, entry["date"], entry["system"])
         if rebuilt is not None and hashlib.sha256(rebuilt).hexdigest() == entry["sha256"] and entry["sha256"] not in out:
             out.append(entry["sha256"])
+    recorded = ([entry for found in historical_identities().values() for entry in found] if table is None else table)
+    for repair in (repaired_identities().get(current, ()) if repairs is None else [r for r in repairs if r["to"] == current]):
+        if not any(entry["file"] == repair["file"] and entry["sha256"] == repair["from"] and entry["date"] == repair["date"]
+                   and entry["system"] == repair["system"] for entry in recorded):
+            continue
+        restored = _restored(entries, at, repair.get("restore") or [])
+        rebuilt = None if restored is None else _redated(restored, at, repair["date"], repair["system"])
+        if rebuilt is not None and hashlib.sha256(rebuilt).hexdigest() == repair["from"] and repair["from"] not in out:
+            out.append(repair["from"])
     return out
 
 

@@ -1108,7 +1108,10 @@ that decision exists a study reaches the learner only through the Library (Part 
 >   through a row's former identities (E50a, `provenance.formerIdentities`: the dated forms a
 >   converted file had while music21 wrote the day it ran into it), so a run, an encounter, a pruned
 >   run's summary or a project stored against a dated file names the same material after the date
->   was removed; nothing stored is rewritten, and D2's record stays exact bytes.
+>   was removed; nothing stored is rewritten, and D2's record stays exact bytes. Since E50 the list
+>   also carries the old identity of a reviewed musical repair (`tools/content/repaired_identities.json`:
+>   the seven PDMX scores whose printed "= N" became their tempo), so a learner who met the old file
+>   has met the piece; the old run stays a run at its recorded tempo, and no standard reads the list.
 > - **Contact novelty from identities, conservatively** (`progressStore.contactIn`): met where any
 >   run under any item id carries the material; *met by id* where only a run that stored no material
 >   shares the id (prior contact proven, the material unknown — never read as unmet); unmet only
