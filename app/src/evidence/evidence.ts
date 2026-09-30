@@ -35,11 +35,15 @@
  * 4. **Opportunity.** The skill's demands (or every step) inside the steps the
  *    run covered, in the hands it played.
  * 5. **Precision** (timing skills, reviewer decision 6): the window must be
- *    narrower than the error the skill is about, at the run's tempo.
+ *    narrower than the error the skill is about, at the run's tempo. It is a
+ *    refusal of the timing channel, step by step (CL04, L73): where the window
+ *    cannot resolve a step, timing measures nothing there and pitch still
+ *    counts; a skill whose window resolves no step is refused.
  *
  * Then **attribution**: `n` counts the opportunity steps the channels
- * measured, and `right` those right on every channel. A self-reported run is
- * evidence of the class `self-assessed`, which no requirement accepts.
+ * measured, and `right` those right on every channel that measured the step.
+ * A self-reported run is evidence of the class `self-assessed`, which no
+ * requirement accepts.
  *
  * **Per demand, with the overlap kept** (C4a; backlog L64; the reviewer's
  * Part 8). The same counted steps are split by demand: for each demand the
@@ -172,8 +176,18 @@ export interface EvidenceContext {
  *   piece under 3 counted the 6/8, syncopation and dotted-quarter skills'
  *   opportunities, and every demand's entries, by the old reading, so rows
  *   under 3 wait for a recompute like any other.
+ * - **5** — the same shape; the timing refusal per channel (CL04, L73): at a
+ *   step the run's window cannot resolve, timing measures nothing and pitch
+ *   still counts, so a misread note there counts against a skill that is
+ *   pitched as well as timed (sight-reading, hand-independence) and against
+ *   the step's pitch demands, and a right one counts right; the rhythm demands
+ *   there (those `TIMING_PRECISION_QUARTERS` names a precision for) are counted
+ *   by none and kept in `otherDemands` at that step. A skill whose window
+ *   resolves no step is still refused `precision`, and a timing-only skill
+ *   reads as under 4. Evidence stored under 4 left those steps out on both
+ *   channels, so rows under 4 wait for a recompute like any other.
  */
-export const EVIDENCE_DEFINITIONS = 4;
+export const EVIDENCE_DEFINITIONS = 5;
 
 /** A demand at some steps: another demand on a demand's counted steps (`overlapOf`), or one a skill does not count (`otherDemands`). */
 export interface DemandOverlap {
@@ -193,7 +207,7 @@ export interface DemandCount {
   demand: string;
   /** Its opportunity steps the run measured whose right or wrong the record can tell. */
   n: number;
-  /** Of those, the steps right on every channel of the skill. */
+  /** Of those, the steps right on every channel of the skill that measured the step (L73). */
   right: number;
   /** The `n` steps (model step indexes), ascending: what a later reader audits against the record. */
   steps: number[];
@@ -215,7 +229,7 @@ export interface MeasuredEvidence {
   standard: Standard;
   /** Opportunity steps the skill's channels measured. */
   n: number;
-  /** Of those, the steps right on every channel. */
+  /** Of those, the steps right on every channel that measured the step (L73). */
   right: number;
   /** When the run was (`SessionRow.at`). */
   at: string;
@@ -228,11 +242,13 @@ export interface MeasuredEvidence {
   byDemand: DemandCount[];
   /**
    * The vocabulary demands the skill does not count, located on its counted
-   * steps in the hands played (absent where there are none, and always for a
-   * skill read over every step, whose entries hold every demand): with
-   * `byDemand`, where every demand of those steps is, so the overlap can be
-   * derived (`overlapOf`) rather than stored beside every entry. A fact about
-   * the notation, never a cause.
+   * steps in the hands played (absent where there are none): with `byDemand`,
+   * where every demand of those steps is, so the overlap can be derived
+   * (`overlapOf`) rather than stored beside every entry. A fact about the
+   * notation, never a cause. A skill read over every step counts every demand
+   * but one kind: the rhythm demands at a step its window could not time,
+   * which land here (L73), so a pitch miss beside an eighth there is never read
+   * as the pitch demand's alone.
    */
   otherDemands?: DemandOverlap[];
 }
@@ -301,7 +317,11 @@ const CONDITION_CITES: Readonly<Record<ConditionId, string[]>> = {
  * Skills whose rhythm is the whole phrase's (`every-step` opportunity, or a
  * texture: sight-reading, hand-independence) take, step by step, the finest
  * of these among the rhythm demands located at that step, and an eighth where
- * none is; the steps the window cannot resolve are left out of their count.
+ * none is. At a step the window cannot resolve, the timing channel measures
+ * nothing and the pitch channel still counts (CL04, L73): a misread note there
+ * counts against them and a right one counts right, while the rhythm demands
+ * located there are counted by none. Where the window resolves no step at all,
+ * the skill is refused.
  */
 export const TIMING_PRECISION_QUARTERS = {
   triplets: 1 / 12,
@@ -451,6 +471,21 @@ function precisionQuartersAt(skill: Skill, rhythmAt: ReadonlyMap<number, number>
   return PRECISION_BY_SKILL[skill.id] ?? Math.min(DEFAULT_PRECISION_QUARTERS, rhythmAt.get(step) ?? DEFAULT_PRECISION_QUARTERS);
 }
 
+/** The rhythm demands: those whose coping skill has a precision in the table (`rhythmPrecisionByStep`'s). */
+function rhythmDemands(vocabulary: Vocabulary): Set<string> {
+  return new Set(vocabulary.demands.filter((demand) => PRECISION_BY_SKILL[demand.copedWithBy] !== undefined).map((demand) => demand.id));
+}
+
+/**
+ * What the timing channel measured of a skill's steps (L73): the steps its
+ * window resolves, and the rhythm demands, which only timing can tell and so
+ * are counted nowhere else. Absent for a skill with no timing channel.
+ */
+interface TimedSteps {
+  steps: ReadonlySet<number>;
+  rhythm: ReadonlySet<string>;
+}
+
 /** Step -> the finest precision any rhythm demand located there asks for. */
 function rhythmPrecisionByStep(located: Located, vocabulary: Vocabulary): Map<number, number> {
   const out = new Map<number, number>();
@@ -536,6 +571,7 @@ function evidenceFrom(
   model: ScoreModelData,
   at: string,
   where: DemandsAtSteps,
+  timed?: TimedSteps,
 ): MeasuredEvidence {
   let n = 0;
   let right = 0;
@@ -545,7 +581,10 @@ function evidenceFrom(
   const tallies = new Map<string, Tally>();
   const others = new Map<string, number[]>();
   for (const step of steps) {
-    const here = measurements.map((m) => m.at.get(step));
+    // Where the window could not time the step, timing measured nothing there
+    // (L73): it is left out, never read as a miss, and the other channels count.
+    const untimed = timed !== undefined && !timed.steps.has(step);
+    const here = (untimed ? measurements.filter((m) => m.channel !== 'timing') : measurements).map((m) => m.at.get(step));
     if (here.every((measure) => measure === undefined)) continue;
     n += 1;
     const learner = learnerNotesAt(model, step, played);
@@ -557,7 +596,9 @@ function evidenceFrom(
     // read over every step): the counts are the skill's steps split, never a
     // second reading of the run.
     for (const [demand, notes] of where.byStep.get(step) ?? []) {
-      if (named !== null && !named.has(demand)) {
+      // A demand the skill does not count here: one it does not name, or a
+      // rhythm demand at a step timing did not measure (L73). Where it is, kept.
+      if ((named !== null && !named.has(demand)) || (untimed && timed.rhythm.has(demand))) {
         others.set(demand, [...(others.get(demand) ?? []), step]);
         continue;
       }
@@ -757,24 +798,27 @@ function evidenceForSkill(
   }
 
   // 4. The opportunity, inside the run and the hands it played.
-  let steps = opportunitySteps(skill, measuredRun(observation), observation.hands?.played, model, located);
+  const steps = opportunitySteps(skill, measuredRun(observation), observation.hands?.played, model, located);
   if (steps.length === 0) return refuse(skill.id, 'no-opportunity', ['steps', 'hands.played']);
 
-  // 5. Precision, for a skill timed at all: only the steps where the window
-  // can tell the rhythm from its error count; none, and it is refused.
+  // 5. Precision, for a skill timed at all, per channel (L73): timing measures
+  // only the steps where the window can tell the rhythm from its error, and
+  // the other channels still count the rest; none resolvable, and it is refused.
   const timing = measurements.find((m) => m.channel === 'timing');
+  let timed: TimedSteps | undefined;
   if (timing) {
     const window = timing.toleranceMs;
     if (window === null) return refuse(skill.id, 'precision', ['input.toleranceMs'], 'window not recorded');
     const rhythmAt = rhythmPrecisionByStep(located, vocabulary);
-    steps = steps.filter((step) =>
+    const resolved = steps.filter((step) =>
       windowDiscriminates(window, precisionQuartersAt(skill, rhythmAt, step), model, step, observation.tempoPct),
     );
-    if (steps.length === 0) return refuse(skill.id, 'precision', ['input.toleranceMs', 'tempoPct'], `${String(window)} ms`);
+    if (resolved.length === 0) return refuse(skill.id, 'precision', ['input.toleranceMs', 'tempoPct'], `${String(window)} ms`);
+    timed = { steps: new Set(resolved), rhythm: rhythmDemands(vocabulary) };
   }
 
   // Attribution: only the opportunity steps count, per skill and per demand.
-  const evidence = evidenceFrom(measurements, skill, observation, steps, standard, met, model, at, where);
+  const evidence = evidenceFrom(measurements, skill, observation, steps, standard, met, model, at, where, timed);
   if (evidence.n === 0) {
     // Every opportunity step fell where the channel measured nothing (a note
     // never played has no onset to time).

@@ -427,7 +427,10 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
         entry.piece.itemId && items.has(entry.piece.itemId) ? entry.piece.itemId : undefined;
       if (twin) badges.push(badge('has a twin', 'passed'));
       const actions = [
-        button('Practise', () => router.navigatePaper(entry.book.id, entry.piece.id), {
+        // The rung rides along to the paper screen, which hands it to the twin
+        // (CL04, L79): the twin's run is then judged by this rung and counts for
+        // the piece this page lists.
+        button('Practise', () => router.navigatePaper(entry.book.id, entry.piece.id, { from: current.id }), {
           variant: 'primary',
         }),
       ];
@@ -786,7 +789,10 @@ export function LessonScreen(router: Router, lessonId: string): HTMLElement {
       masterAccuracy: 0.97,
       masterTempoPct: 100,
     });
-    const titleOf = (id: string): string => items.get(id)?.title ?? id;
+    // A book piece is no catalog item: since its twin's run can count for it
+    // (L79), the *Counted* line names it by the title the shelf keeps.
+    const titleOf = (id: string): string =>
+      items.get(id)?.title ?? shelf.find((entry) => entry.itemId === id)?.piece.title ?? id;
     const context = {
       accuracy: criteria.passAccuracy,
       tempoPct: criteria.passTempoPct,

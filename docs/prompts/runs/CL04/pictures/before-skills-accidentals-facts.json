@@ -1,0 +1,11 @@
+{
+ "label": "before",
+ "accidentals": {
+  "dataState": "not-introduced",
+  "badge": "not shown yet",
+  "title": "Accidentals"
+ },
+ "keySignature": {
+  "badge": "introduced"
+ }
+}

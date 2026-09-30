@@ -1,0 +1,35 @@
+............................EE......
+======================================================================
+ERROR: test_committed_mirrors_equal_generated (tests.test_record_mirrors.TheCommittedMirrors.test_committed_mirrors_equal_generated)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_record_mirrors.py", line 101, in test_committed_mirrors_equal_generated
+    expected, actual = rm.render(), rm.on_disk()
+                       ^^^^^^^^^^^
+  File "<worktree>\tools\docs\record_mirrors.py", line 626, in render
+    return render_tree(Tree(root))
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "<worktree>\tools\docs\record_mirrors.py", line 620, in render_tree
+    raise RecordError(failures)
+record_mirrors.RecordError: stale-record: docs/prompts/tasks/CL04-evidence-truth.md:92: CL04's record ends at approved, and Entry 175 (docs/prompts/runs/CL04/ENTRY.md:1) shows it landed
+
+======================================================================
+ERROR: test_the_tree_round_trips (tests.test_record_mirrors.TheCommittedMirrors.test_the_tree_round_trips)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_record_mirrors.py", line 107, in test_the_tree_round_trips
+    self.assertRoundTrip(ROOT)
+  File "<worktree>\tools\content\tests\test_record_mirrors.py", line 81, in assertRoundTrip
+    files = rm.render(root)
+            ^^^^^^^^^^^^^^^
+  File "<worktree>\tools\docs\record_mirrors.py", line 626, in render
+    return render_tree(Tree(root))
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "<worktree>\tools\docs\record_mirrors.py", line 620, in render_tree
+    raise RecordError(failures)
+record_mirrors.RecordError: stale-record: docs/prompts/tasks/CL04-evidence-truth.md:92: CL04's record ends at approved, and Entry 175 (docs/prompts/runs/CL04/ENTRY.md:1) shows it landed
+
+----------------------------------------------------------------------
+Ran 36 tests in 3.421s
+
+FAILED (errors=2)

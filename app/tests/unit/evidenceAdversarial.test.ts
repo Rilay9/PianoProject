@@ -264,19 +264,68 @@ describe('5. an easy passage performed poorly', () => {
 });
 
 describe('6. a passage containing a demand with no measurable opportunity for it', () => {
-  it('eighths at the phrase’s full tempo: the window cannot resolve them, so they are absent; the rhythm skill refused as today', () => {
-    // At 100 % of 72 bpm a quarter is 833 ms; the swung-eighth error the
-    // precision rule asks about is a sixth of it, narrower than the ±150 ms window.
-    const observation = observed(RHYTHMIC, 8, { tempoPct: 100 });
+  // Replaced (CL04, L73): the eighth-note steps (2 and 3) dropped out of
+  // sight-reading on both channels, so a misread eighth was never counted
+  // against it, while reading by interval counted the same note. The old
+  // assumption: at a step the window cannot time, pitch and time are one
+  // outcome. The refusal is per channel now: timing measures nothing there and
+  // pitch still counts; the rhythm demands stay absent from the counts.
+  // At 100 % of 72 bpm a quarter is 833 ms; the swung-eighth error the
+  // precision rule asks about is a sixth of it, narrower than the ±150 ms window.
+  it('a misread eighth at the phrase’s full tempo: counted against sight-reading by its pitch; the rhythm demands absent; the rhythm skill refused as today', () => {
+    const observation = observed(RHYTHMIC, 8, { tempoPct: 100, wrongInstead: [3] });
+    expect(observation.steps?.codes).toBe('hhhmhhhh');
     const results = evidenced(observation, RHYTHMIC);
     expect(results.find((r) => r.skill === 'subdivision')).toMatchObject({ kind: 'refusal', reason: 'precision' });
     const sight = measured(results, 'sight-reading');
+    // Every step counted, step 3 among them and wrong: 7 of 8.
+    expect(sight).toMatchObject({ n: 8, right: 7 });
+    expect(counted(sight, 'interval.skip')).toMatchObject({ n: 3, right: 2, steps: [1, 3, 5], wrong: [3] });
     expect(sight.byDemand.map((one) => one.demand)).not.toContain('rhythm.eighths');
     expect(sight.byDemand.map((one) => one.demand)).not.toContain('rhythm.shorter-than-quarter');
-    // Pitch needs no window: reading by interval still counts the eighth-note step and skip.
+    // Where they are is kept, counted by none: the overlap still sees an eighth on the misread skip.
+    expect(sight.otherDemands).toEqual([
+      { demand: 'rhythm.eighths', steps: [2, 3] },
+      { demand: 'rhythm.shorter-than-quarter', steps: [2, 3] },
+    ]);
+    // Pitch needs no window: reading by interval counts the eighth-note step and skip, as it did.
     expect(counted(measured(results, 'interval-reading'), 'interval.skip')?.steps).toContain(3);
     const readings = demandReadings([stored(observation, RHYTHMIC, 8)], VOCABULARY_V0, morningAfter(8));
     expect(readings.find((one) => one.skill === 'sight-reading' && one.demand === 'rhythm.eighths')).toBeUndefined();
+  });
+
+  // Added (CL04, L73): a right one counts right — timing's verdict at a step it
+  // could not resolve is left out, never read as a miss.
+  it('a right-pitched eighth at the same tempo is counted right', () => {
+    const results = evidenced(observed(RHYTHMIC, 12, { tempoPct: 100 }), RHYTHMIC);
+    const sight = measured(results, 'sight-reading');
+    expect(sight).toMatchObject({ n: 8, right: 8 });
+    expect(counted(sight, 'interval.step')).toMatchObject({ steps: [2, 4, 6, 7], wrong: [] });
+  });
+
+  // Added (CL04, L73): the channel rule stands — a skill timed at all whose
+  // window resolves no step of the run is refused `precision`, as before.
+  it('a phrase of eighths throughout, at the same tempo: no step resolvable, sight-reading still refused precision', () => {
+    const eighths = phrase({ bars: [line(['C4', 'D4', 'E4', 'F4', 'G4', 'F4', 'E4', 'D4'], 0.5)] });
+    const results = evidenced(observed(eighths, 14, { tempoPct: 100 }), eighths);
+    expect(results.find((r) => r.skill === 'sight-reading')).toMatchObject({ kind: 'refusal', reason: 'precision' });
+    expect(results.find((r) => r.skill === 'subdivision')).toMatchObject({ kind: 'refusal', reason: 'precision' });
+    expect(measured(results, 'interval-reading').n).toBe(7);
+  });
+
+  // Added (CL04, L73): the misses reach the readings, and the overlap keeps
+  // the eighth beside the skip, so a skip misread only on eighths is never
+  // singled out as the skip (the reviewer's Part 8 ambiguity).
+  it('two reads alike: the skip is below and not singled out — every misread skip was on an eighth the window could not time', () => {
+    const rows = [
+      stored(observed(RHYTHMIC, 8, { tempoPct: 100, wrongInstead: [3] }), RHYTHMIC, 8),
+      stored(observed(RHYTHMIC, 13, { tempoPct: 100, wrongInstead: [3] }), RHYTHMIC, 13),
+    ];
+    const readings = demandReadings(rows, VOCABULARY_V0, morningAfter(13));
+    const skip = readingOf(readings, 'sight-reading', 'interval.skip');
+    expect(skip).toMatchObject({ below: true, selectivity: 'ambiguous', basis: { alone: { wrong: 0, of: 2 } } });
+    expect(skip.basis.withoutRival.find((one) => one.demand === 'rhythm.eighths')).toEqual({ demand: 'rhythm.eighths', n: 4, right: 4 });
+    expect(named(readings)).toEqual([]);
   });
 
   it('the left hand in the notation, the right hand played: the bass staff absent, the bass clef refused as today', () => {

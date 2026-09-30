@@ -185,6 +185,15 @@ export interface Route {
    */
   paper?: { bookId: string; pieceId: string };
   /**
+   * `#/paper/<bookId>/<pieceId>?from=<lesson id>` — the rung whose page opened
+   * the paper screen (CL04, L79). The paper screen hands it to the twin's Score
+   * screen (`navigateScore(twin, { from })`), which judges the run by that rung,
+   * so the run counts for the book piece the rung lists. The same `from=` and
+   * parser as `scoreFrom` and `chartFrom`, a field of its own for their reason.
+   * None from the Shelf, which is no rung (C1).
+   */
+  paperFrom?: string;
+  /**
    * `#/score/<id>?blind=1` — play it with the score hidden (replan §8).
    *
    * The expectation is still known, so the run is judged exactly as a sighted
@@ -504,9 +513,10 @@ export function parseHash(hash: string): Route {
       : undefined;
   const wantedFrom = params?.get('from');
   // Dropped rather than carried, for the reason `tour` above is: it is only
-  // ever a navigation target. One parser for both screens that take a `from=`
-  // — the Score screen and the chord chart — because one spelling of "the rung
-  // that opened this" is what keeps the two Backs the same idea.
+  // ever a navigation target. One parser for the screens that take a `from=`
+  // — the Score screen and the chord chart, and the paper screen, which hands
+  // it to its twin (L79) — because one spelling of "the rung that opened this"
+  // is what keeps the two Backs the same idea.
   const fromLesson =
     wantedFrom !== null && wantedFrom !== undefined && looksLikeLessonId(wantedFrom)
       ? wantedFrom
@@ -610,7 +620,7 @@ export function parseHash(hash: string): Route {
       return { tab: DEFAULT_TAB };
     }
     if (!looksLikeCatalogId(bookId) || !looksLikeCatalogId(pieceId)) return { tab: DEFAULT_TAB };
-    return { tab: 'library', paper: { bookId, pieceId } };
+    return { tab: 'library', paper: { bookId, pieceId }, ...(fromLesson === undefined ? {} : { paperFrom: fromLesson }) };
   }
   if (tab === 'library' && importFor) {
     return { tab: 'library', importFor };
@@ -697,7 +707,8 @@ export function routeToHash(route: Route): string {
   }
   if (route.play) return '#/play';
   if (route.paper) {
-    return `#/paper/${encodeURIComponent(route.paper.bookId)}/${encodeURIComponent(route.paper.pieceId)}`;
+    const base = `#/paper/${encodeURIComponent(route.paper.bookId)}/${encodeURIComponent(route.paper.pieceId)}`;
+    return route.paperFrom === undefined ? base : `${base}?from=${encodeURIComponent(route.paperFrom)}`;
   }
   if (route.importFor) return `#/library?for=${encodeURIComponent(route.importFor)}`;
   if (route.score) {
@@ -796,9 +807,17 @@ export class Router {
     this.setRoute(route);
   }
 
-  /** Opens the paper-practice screen for one book piece (replan §5.3). */
-  navigatePaper(bookId: string, pieceId: string): void {
-    const route: Route = { tab: 'library', paper: { bookId, pieceId } };
+  /**
+   * Opens the paper-practice screen for one book piece (replan §5.3). `from` is
+   * the rung whose page opened it, handed on to the twin's Score screen (L79);
+   * only the lesson page passes it.
+   */
+  navigatePaper(bookId: string, pieceId: string, options: { from?: string } = {}): void {
+    const route: Route = {
+      tab: 'library',
+      paper: { bookId, pieceId },
+      ...(options.from === undefined ? {} : { paperFrom: options.from }),
+    };
     this.win.location.hash = routeToHash(route);
     this.setRoute(route);
   }
@@ -1030,6 +1049,8 @@ export class Router {
       // opened the picker on the rung before it.
       route.paper?.bookId === this.current.paper?.bookId &&
       route.paper?.pieceId === this.current.paper?.pieceId &&
+      // The rung a paper piece was opened from is which run its twin will be (L79), as `scoreFrom` is.
+      route.paperFrom === this.current.paperFrom &&
       route.lesson === this.current.lesson &&
       route.chart === this.current.chart &&
       // Where Back goes is part of which screen this is, exactly as

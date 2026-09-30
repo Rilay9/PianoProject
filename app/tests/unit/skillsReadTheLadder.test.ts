@@ -13,7 +13,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { buildConcepts } from '../../src/ui/screens/SkillsScreen';
-import { carriedExposures, skillLadders } from '../../src/evidence/rungState';
+import { carriedExposures, rungState, skillLadders } from '../../src/evidence/rungState';
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
 import type { LadderReading, LadderState } from '../../src/evidence/ladder';
@@ -67,6 +67,79 @@ describe('what the Skills screen says a concept is', () => {
     const concepts = buildConcepts(curriculum, items, ladders);
     expect(concepts.find((c) => c.concept === 'bass-clef')?.state).toBe('introduced');
     expect(concepts.find((c) => c.concept === 'LH-C-position')?.state).toBe('not judged');
+  });
+
+  // Added (CL04, G70): `carriedExposures` read a carried rung's `concepts`
+  // alone, so what its lesson `introduces` — a measurable concept met on the
+  // page while no piece on the rung practises it yet (`docs/02`, F2) — was no
+  // exposure. An introduction is an exposure: introduced, and nothing more.
+  describe('a carried rung’s introductions are exposures (G70)', () => {
+    const now = new Date('2026-10-01T10:00:00.000Z');
+    const carriedAt = '2026-09-27T08:00:00.000Z';
+    /** As `blues.5` stands in the stage file (`stage-5.json`): the walking bass introduced, not taught. */
+    const blues5: Lesson = {
+      id: 'blues.5',
+      title: 'Turnarounds, blue notes and walking bass',
+      concepts: ['turnaround', 'tremolo-thirds', 'blue-note', 'crushed-note', 'call-and-response'],
+      introduces: ['walking-bass'],
+      textFile: '',
+      exerciseOptions: ['drill.blues.lh-patterns'],
+      songOptions: [],
+      mastery: { minAccuracy: 0.9, minTempoPct: 0.8 },
+      requirements: [{ kind: 'runs', from: 'exercises', count: 1 }],
+    };
+    /** As `3.1` stands (`stage-3.json`): accidentals introduced; 3.3, whose options establish them, names them. */
+    const rung31: Lesson = {
+      id: '3.1',
+      title: 'Sharps, flats and the major scale formula',
+      concepts: ['sharps', 'flats', 'major-scale-formula', 'key-signature'],
+      introduces: ['accidentals'],
+      textFile: '',
+      exerciseOptions: ['exercise.scale.g'],
+      songOptions: ['song.g'],
+      mastery: { minAccuracy: 0.9, minTempoPct: 0.8 },
+      requirements: [
+        { kind: 'runs', from: 'exercises', count: 1 },
+        { kind: 'runs', from: 'songs', count: 1 },
+      ],
+    };
+    const rung33: Lesson = {
+      id: '3.3',
+      title: 'Minor keys',
+      concepts: ['accidentals'],
+      textFile: '',
+      exerciseOptions: ['exercise.minor'],
+      songOptions: [],
+      mastery: { minAccuracy: 0.9, minTempoPct: 0.8 },
+      requirements: [{ kind: 'skill', skill: 'accidentals', state: 'familiar' }],
+    };
+    const of = (lessons: Lesson[]): Curriculum =>
+      ({ version: 1, tracks: [], stages: [{ number: 3, title: 'Three', units: [{ id: 'u', title: 'U', track: 'core', lessons }] }] }) as unknown as Curriculum;
+
+    it('blues.5 carried: the walking bass it introduces is in the map, dated the day it was carried', () => {
+      const exposures = carriedExposures(of([blues5]), { at: carriedAt, rungs: ['blues.5'] });
+      expect(exposures.get('walking-bass')).toEqual([carriedAt]);
+      expect(exposures.get('turnaround')).toEqual([carriedAt]);
+    });
+
+    it('3.1 carried and 3.3 not: accidentals read introduced on the ladder and on the Skills list; neither rung is met by it', () => {
+      const curriculum31 = of([rung31, rung33]);
+      const exposures = carriedExposures(curriculum31, { at: carriedAt, rungs: ['3.1'] });
+      expect(exposures.get('accidentals')).toEqual([carriedAt]);
+      const ladders = skillLadders([], VOCABULARY_V0, now, exposures);
+      expect(ladders.get('accidentals')?.state).toBe('introduced');
+      const concepts = buildConcepts(curriculum31, [], ladders);
+      expect(concepts.find((c) => c.concept === 'accidentals')?.state).toBe('introduced');
+      // An exposure is no evidence: the carried rung stays carried and unmet, and 3.3's skill requirement unheld.
+      const states = rungState([], curriculum31, VOCABULARY_V0, now, { carried: ['3.1'] });
+      expect(states.byRung.get('3.1')).toMatchObject({ status: 'not started', carried: true });
+      expect(states.byRung.get('3.3')?.requirements[0]).toMatchObject({ holds: false, have: 0, state: 'not introduced' });
+    });
+
+    it('a concept a carried rung both names and introduces is one exposure, one date', () => {
+      const twice: Lesson = { ...rung31, id: '3.1b', concepts: ['accidentals'], introduces: ['accidentals'] };
+      expect(carriedExposures(of([twice]), { at: carriedAt, rungs: ['3.1b'] }).get('accidentals')).toEqual([carriedAt]);
+    });
   });
 
   // Replaced (C7): "what the learner said or showed outranks the exposure" —

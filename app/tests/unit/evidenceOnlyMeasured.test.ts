@@ -21,7 +21,8 @@ import { observe, play } from './helpers/observed';
 import { evidenceFor, isRefusal, CONDITION_MET, type EvidenceResult, type Refusal } from '../../src/evidence/evidence';
 import { SKILLS_FILE, VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import { detect } from '../../src/demands/detect';
-import type { Observed } from '../../src/evidence/measurement';
+import { KNOWN_OBSERVATION_DEFINITIONS, takeMeasurements, type Observed } from '../../src/evidence/measurement';
+import { OBSERVATION_DEFINITIONS } from '../../src/data/db';
 import { NOT_MEASURED } from '../../src/engine/types';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -87,6 +88,31 @@ describe('a channel the run did not measure yields no evidence, whatever the not
     const results = run(placeholder, ['interval-reading', 'subdivision']);
     expect(refusalOf(results, 'interval-reading')).toMatchObject({ reason: 'not-measured:pitch', cites: ['definitions'] });
     expect(refusalOf(results, 'subdivision')).toMatchObject({ reason: 'not-measured:timing', cites: ['definitions'] });
+  });
+
+  // Added (CL04, L70): only an absent `definitions` was refused, so a row
+  // written under observation definitions this build does not know was read
+  // as version 1 — its codes taken as today's codes.
+  it('a row written under observation definitions this build does not know is refused on both channels, never read as version 1 (L70)', () => {
+    const timed = observe(RHYTHMIC, { mode: 'tempo', unseen: true, guide: 'off' });
+    for (const definitions of [2, 0, 1.5]) {
+      const row = { ...timed, definitions } as Observed;
+      const readings = takeMeasurements(row);
+      expect(readings.pitch, `definitions ${String(definitions)}`).toEqual({ channel: 'pitch', why: 'unknown-definitions', cites: ['definitions'] });
+      expect(readings.timing, `definitions ${String(definitions)}`).toEqual({ channel: 'timing', why: 'unknown-definitions', cites: ['definitions'] });
+      const results = run(row, ['interval-reading', 'subdivision', 'sight-reading']);
+      expect(refusalOf(results, 'interval-reading')).toMatchObject({ reason: 'not-measured:pitch', cites: ['definitions'], detail: 'unknown-definitions' });
+      expect(refusalOf(results, 'subdivision')).toMatchObject({ reason: 'not-measured:timing', cites: ['definitions'], detail: 'unknown-definitions' });
+      expect(refusalOf(results, 'sight-reading')).toMatchObject({ reason: 'not-measured:pitch', cites: ['definitions'] });
+    }
+    // Version 1 is read as it was, and an absent block is still no measures.
+    expect(only(run({ ...timed, definitions: 1 }, ['interval-reading']), 'interval-reading')).toMatchObject({ kind: 'measured' });
+    const { definitions: _definitions, ...unstamped } = timed;
+    expect(takeMeasurements(unstamped as Observed).pitch).toEqual({ channel: 'pitch', why: 'no-measures', cites: ['definitions'] });
+  });
+
+  it('the one writer’s stamp is a version this build knows (L70)', () => {
+    expect(KNOWN_OBSERVATION_DEFINITIONS.has(OBSERVATION_DEFINITIONS)).toBe(true);
   });
 
   it('a channel stored as not measured is not measured', () => {

@@ -647,6 +647,34 @@ describe('paper and import-for routes are real changes', () => {
     expect(seen).toEqual(['#/library', '#/paper/book.czerny-599/no-1']);
   });
 
+  // Added (CL04, L79): the paper route carried no rung, so the twin its
+  // screen opens was judged by nobody. `from=` rides on it as it does on the
+  // chart's (one parser, a field each); without it nothing changes.
+  it('carries the rung a paper piece was opened from, and reads it back', () => {
+    expect(parseHash('#/paper/book.b/p?from=3.1')).toEqual({ tab: 'library', paper: { bookId: 'book.b', pieceId: 'p' }, paperFrom: '3.1' });
+    expect(routeToHash(parseHash('#/paper/book.b/p?from=3.1'))).toBe('#/paper/book.b/p?from=3.1');
+    const { win } = fakeWindow('#/lesson/3.1');
+    const router = new Router(win as unknown as Window);
+    router.navigatePaper('book.b', 'p', { from: '3.1' });
+    expect(router.route.paperFrom).toBe('3.1');
+    expect(win.location.hash).toBe('#/paper/book.b/p?from=3.1');
+    // Without it, the route is as it was: no field, no parameter.
+    expect(parseHash('#/paper/book.b/p')).toEqual({ tab: 'library', paper: { bookId: 'book.b', pieceId: 'p' } });
+    expect(routeToHash({ tab: 'library', paper: { bookId: 'book.b', pieceId: 'p' } })).toBe('#/paper/book.b/p');
+    // A from that is no lesson id is dropped, as the chart's is.
+    expect(parseHash('#/paper/book.b/p?from=../../etc').paperFrom).toBeUndefined();
+  });
+
+  it('treats the same paper piece opened from a rung and from the Shelf as two routes', () => {
+    const { win } = fakeWindow('#/library');
+    const router = new Router(win as unknown as Window);
+    const seen: (string | undefined)[] = [];
+    router.subscribe((route) => seen.push(route.paperFrom));
+    router.navigatePaper('book.b', 'p', { from: '3.1' });
+    router.navigatePaper('book.b', 'p');
+    expect(seen).toEqual([undefined, '3.1', undefined]);
+  });
+
   it('re-renders when the rung an import is for changes', () => {
     const { win } = fakeWindow('#/plan');
     const router = new Router(win as unknown as Window);
