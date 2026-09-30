@@ -1,0 +1,45 @@
+## .sha256 compared
+app/src/review/record.ts:121: if (typeof identity.sha256 !== 'string' || !SHA256.test(identity.sha256)) return "a file identity's sha256 is not 64 lowercase hex digits";
+app/src/review/record.ts:249: if (a.kind === 'file' && b.kind === 'file') return a.sha256 === b.sha256;
+## materialKey / projectKey / learnerMaterialKey(s) called
+app/src/curriculum/material.ts:163: export function materialKey(material: Identity | undefined, itemId: string): string {
+app/src/curriculum/material.ts:175: export function learnerMaterialKey(material: Identity | undefined, itemId: string): string {
+app/src/curriculum/material.ts:176: return materialKey(learnerMaterial(material), itemId);
+app/src/curriculum/material.ts:184: export function learnerMaterialKeys(material: Identity | undefined, itemId: string): string[] {
+app/src/curriculum/material.ts:186: const own = materialKey(resolved, itemId);
+app/src/data/encounterStore.ts:100: key: materialKey(known, input.itemId),
+app/src/data/encounterStore.ts:274: const itemKey = (item: CatalogItem): string => learnerMaterialKey(materialOfItem(item), item.id);
+app/src/data/encounterStore.ts:303: if (known) return { root: learnerMaterialKey(fact.material, fact.itemIds[0] ?? ''), bars: fact.bars, byId: false };
+app/src/data/encounterStore.ts:332: const ownKey = learnerMaterialKey(target.material, target.itemId);
+app/src/data/encounterStore.ts:387: const keys = new Set<string>(learnerMaterialKeys(target.material, target.itemId));
+app/src/data/encounterStore.ts:394: for (const key of learnerMaterialKeys(materialOfItem(one), one.id)) keys.add(key);
+app/src/data/progressStore.ts:669: const [rows, encounters, summaries] = await Promise.all([rungRows(), encountersOf(learnerMaterialKeys(material, itemId), itemId), contactSummaries()]);
+app/src/data/progressStore.ts:721: key: materialKey(known, row.itemId),
+app/src/data/projectStore.ts:110: export function projectKey(target: ProjectTarget): string {
+app/src/data/projectStore.ts:111: return materialKey(knownMaterial(target.material) ? target.material : undefined, target.itemId);
+app/src/data/projectStore.ts:250: id: projectKey(target),
+## sameIdentity( called
+app/src/curriculum/material.ts:104: return knownMaterial(a) && knownMaterial(b) && sameIdentity(learnerMaterial(a), learnerMaterial(b));
+app/src/review/record.ts:246: export function sameIdentity(a: Identity | undefined, b: Identity | undefined): boolean {
+app/src/review/record.ts:321: if (!sameIdentity(event.identity, identity)) {
+app/src/review/record.ts:349: return event.identity === undefined || sameIdentity(event.identity, identity);
+app/src/review/record.ts:392: if (event.identity !== undefined && !sameIdentity(event.identity, identity)) {
+app/src/ui/screens/DevMicroscopeScreen.ts:461: if (event.identity !== undefined && !sameIdentity(event.identity, buildIdentity(event.item))) return 'stale';
+app/src/ui/screens/DevMicroscopeScreen.ts:807: const buildAgrees = identity === null || sameIdentity(identity, facts.identity);
+## sameMaterial( called
+app/src/curriculum/material.ts:103: export function sameMaterial(a: Identity | undefined, b: Identity | undefined): boolean {
+app/src/curriculum/transfer.ts:173: const same = material !== undefined && sameMaterial(material, current);
+app/src/data/encounterStore.ts:299: if (item && cut && (!known || sameMaterial(fact.material, materialOfItem(item)))) {
+app/src/data/encounterStore.ts:351: if (fact.material !== undefined && sameMaterial(fact.material, target.material)) {
+app/src/data/encounterStore.ts:426: (row.material !== undefined && near.materials.some((material) => sameMaterial(row.material, material))) ||
+app/src/data/progressStore.ts:289: recipeFifths !== undefined ? [{ fifths: recipeFifths }] : sameMaterial(material, materialOfItem(item)) ? item.notation?.keys : undefined;
+app/src/data/progressStore.ts:645: const playedRuns = rows.filter((row) => sameMaterial(row.material, material));
+app/src/data/progressStore.ts:646: const heard = encounters.filter((row) => sameMaterial(asIdentity(row.material), material));
+app/src/data/progressStore.ts:647: const summarised = summaries.filter((row) => sameMaterial(asIdentity(row.material), material));
+app/src/data/projectStore.ts:122: const byMaterial = knownMaterial(target.material) ? rows.find((row) => sameMaterial(asIdentity(row.material), target.material)) : undefined;
+## a stored row read by key
+app/src/data/backup.ts:309: await db.put('contacts', mergeSummaries(await db.get('contacts', incoming.key), incoming));
+app/src/data/backup.ts:316: await db.put('projects', mergeProjects(await db.get('projects', incoming.id), incoming));
+app/src/data/encounterStore.ts:130: stored = (await Promise.all([...wanted].map((key) => db.getAllFromIndex('encounters', 'byKey', key)))).flat();
+app/src/data/progressStore.ts:682: const [byItem, ...keyed] = await Promise.all([db.getAllFromIndex('encounters', 'byItem', itemId), ...keys.map((key) => db.getAllFromIndex('encounters', 'byKey', key))]);
+app/src/data/progressStore.ts:769: const found = await Promise.all(keys.map((key) => db.get('contacts', key)));

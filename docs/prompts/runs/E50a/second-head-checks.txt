@@ -1,0 +1,12 @@
+# E50a, the second implementation HEAD: the checks on the final tree (full logs were under build/e50a and were not kept)
+- setup again (the first run's cleanup had deleted it): robocopy of build/cache and the three imported clones exit 1 (files copied), npm ci exit 0
+- the build with the final bytes into app/public/content: exit 0; every conversion re-converted (MT 0 cached 10 converted, kern 0/162, Mutopia 0/1, authored 0 cached 33 converted); its own validate step ok
+- validate --dir <out> --allow-nc --personal: exit 0, "content validation OK ... (2092 catalog items)"
+- review.py --check --content <out>: exit 0, 4 events, 4 current, 0 superseded, 0 stale (the same as before and after the first HEAD)
+- npx tsc -b --noEmit: exit 0, no output; npm run lint (eslint . --max-warnings=0): exit 0
+- the 17 content test files that import convert (test_abc_tools, test_bar_splits, test_convert, test_convert_cache, test_difficulty, test_excerpt_proposer, test_excerpts, test_export_durations, test_import_mutopia, test_loose_attributes, test_measured_truth, test_note_loss, test_pdmx, test_public_tie_option, test_renumber, test_review_record, test_silent_staff), on the final build: Ran 472 tests, OK (skipped=3), exit 0
+- the six identity unit files (formerIdentity, materialIdentity, contactNovelty, encounterModel, projectLifecycle, materialOnTheRecord), on the final build: 6 files, 117 tests passed, exit 0
+- mutants: 16 of 16 killed, every control green (mutants.txt)
+- item 5, Wabash Blues, re-run under the final bytes: equal but for the element; the committed identity (creating system 0) is the new file's one former identity (item5-representative.txt)
+- item 6 against the laptop's catalogue as rebuilt 2026-09-30 01:08 (item6-compare-second.txt): the file-by-file check 211 of 211; the committed table's 211 build-converted entries all named by the build; 205 laptop identities resolve and the six 2026-09-30 authored identities do not (the landing's addition); every converter-written file of the build carries creating system 3 (1,411: 211 converted and 1,200 generated)
+- not run (the landing chain's): the whole content suite, the whole unit suite, npm run build:app, the browser specs

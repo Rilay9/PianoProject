@@ -57,6 +57,23 @@ def built(name: str):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _encoding(path: Path) -> tuple[str | None, str | None]:
+    """E50a: (the first `<software>`, the `<encoding-date>`) of a built score's `<encoding>`, or Nones."""
+    import io
+    import re
+    import zipfile
+
+    with zipfile.ZipFile(io.BytesIO(path.read_bytes())) as archive:
+        names = [n for n in archive.namelist() if n.lower().endswith((".xml", ".musicxml")) and not n.upper().startswith("META-INF/")]
+        text = archive.read(names[0]).decode("utf-8") if names else ""
+    block = re.search(r"<encoding>(.*?)</encoding>", text, re.DOTALL)
+    if block is None:
+        return None, None
+    software = re.search(r"<software>([^<]*)</software>", block.group(1))
+    day = re.search(r"<encoding-date>([^<]*)</encoding-date>", block.group(1))
+    return (software.group(1) if software else None), (day.group(1) if day else None)
+
+
 class Built(unittest.TestCase):
     catalog: list[dict]
     curriculum: dict
@@ -354,6 +371,66 @@ class TestTheMaterialIdentity(Built):
         self.assertGreater(kinds["generator"], 1000)
         self.assertGreater(kinds["file"], 700)
         self.assertGreater(kinds["none"], 9, "the nine reading rows at least are made when they open")
+
+    def test_no_file_the_converter_wrote_carries_an_encoding_date(self) -> None:
+        # E50a: music21 writes the day it ran as `<encoding-date>`; the converter removes it, so every
+        # built file whose `<encoding>` names music21 carries none, and a conversion on another day is
+        # the same file. A committed PDMX copy keeps the date it was quarried with until a reconversion
+        # replaces it (E50), and a MuseScore-written copy is not music21's.
+        dated: list[str] = []
+        written = 0
+        for item in self.catalog:
+            if (item["provenance"].get("identity") or {}).get("kind") != "file" or item["provenance"]["source"] == "pdmx":
+                continue
+            software, day = _encoding(BUILT / item["file"])
+            if software is None or not software.startswith("music21 v."):
+                continue
+            written += 1
+            if day is not None:
+                dated.append(f"{item['id']}: {day}")
+        self.assertEqual(dated[:10], [], f"{len(dated)} of {written} files the converter wrote carry a date")
+        self.assertGreater(written, 200)
+
+    def test_former_identities_are_the_recorded_history_of_undated_files_and_never_a_current_one(self) -> None:
+        # E50a: a row whose file the converter wrote without a date carries the recorded historical
+        # identities whose undated form is that file (`tools/content/former_identities.json`), every one of
+        # them, and nothing else carries any; no former identity is any row's current identity (the app
+        # would resolve a current file away from itself). The oracle reads the table and the built files
+        # itself. On a build whose zip bytes differ from the laptop's (the creating system `zipfile` writes
+        # into every archive), no undated form matches and no row carries any: said, not hidden.
+        table = json.loads((REPO / "tools" / "content" / "former_identities.json").read_text(encoding="utf-8"))
+        by_undated: dict[str, list[str]] = {}
+        for entry in table["identities"]:
+            by_undated.setdefault(entry["undated"], []).append(entry["sha256"])
+        current = {item["provenance"]["identity"]["sha256"] for item in self.catalog
+                   if (item["provenance"].get("identity") or {}).get("kind") == "file"}
+        faults: list[str] = []
+        carrying = 0
+        for item in self.catalog:
+            former = item["provenance"].get("formerIdentities")
+            identity = item["provenance"].get("identity") or {}
+            if identity.get("kind") != "file":
+                if former is not None:
+                    faults.append(f"{item['id']}: former identities on a {identity.get('kind')} identity")
+                continue
+            software, day = _encoding(BUILT / item["file"])
+            undated_music21 = software is not None and software.startswith("music21 v.") and day is None
+            expected = by_undated.get(identity["sha256"], []) if undated_music21 else []
+            got = [one["sha256"] for one in former or []]
+            if any(one.get("kind") != "file" for one in former or []):
+                faults.append(f"{item['id']}: a former identity that is not a file's")
+            if sorted(got) != sorted(expected):
+                faults.append(f"{item['id']}: former identities {len(got)} where the record names {len(expected)}")
+            clashes = [sha[:12] for sha in got if sha in current]
+            if clashes:
+                faults.append(f"{item['id']}: former identities that are current identities: {clashes}")
+            if item["provenance"]["source"] in {"excerpt", "generated"} and got:
+                faults.append(f"{item['id']}: a {item['provenance']['source']} row carries former identities")
+            carrying += bool(got)
+        self.assertEqual(faults[:10], [], f"{len(faults)} rows")
+        # Every undated form the record names that a built file is, is one: on the laptop, all of them.
+        reached = sum(1 for item in self.catalog if (item["provenance"].get("identity") or {}).get("sha256") in by_undated)
+        self.assertEqual(carrying, reached)
 
     def test_it_is_the_review_records_identity(self) -> None:
         import review

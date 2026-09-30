@@ -455,6 +455,28 @@
                 }
               ]
             },
+            "formerIdentities": {
+              "description": "E50a: the file identities this row's music had while the converter wrote music21's `<encoding-date>`: the recorded historical dated files (`tools/content/former_identities.json`, from the catalogues able to store a learner's material, never a rolling window) whose undated form is this row's file, each re-proved by `convert.former_identities` (the file with that entry's date put back, zipped as `normalise_archive` zips, is the entry's bytes), so a learner's run, encounter, pruned run's summary or project stored against a dated file still names this row's material (`material.learnerMaterial`). Only on a row whose file the converter wrote without a date; never the row's own identity. Learner continuity only: D2's review record and every exact-byte check read `identity` alone.",
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "kind",
+                  "sha256"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "file"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                }
+              }
+            },
             "transferOf": {
               "type": "object",
               "description": "A transfer role's relationship as its family contract declares it for the recipe (D4 item 4): the skill it is transfer material for, the families it was written against, the surface dimensions declared to differ and what stays unmeasured. Selection intent and relationship facts, never evidence.",

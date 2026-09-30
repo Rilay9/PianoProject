@@ -16,11 +16,26 @@
  *   the same phrase from the same seed, and calling those two materials would be a false first
  *   contact. The tempo is determined by the recipe (its `bpm`, else the version's default), so it
  *   adds no discrimination and D2's type is kept whole.
- * - **Equality for contact** (`sameMaterial`): D2's `sameIdentity` for a file (its sha256) and a
- *   generator (family, version, seed, recipe, tempo), and **never** for `none`, which D2's record
- *   treats as one identity (a decision on a placeholder binds to "no file") but which names no
- *   material: two placeholders are not one piece, and a drill made when it opens has met nothing
- *   by that identity.
+ * - **Equality for contact** (`sameMaterial`, the learner's material equality): D2's `sameIdentity`
+ *   for a file (its sha256) and a generator (family, version, seed, recipe, tempo) after a stored
+ *   file identity is resolved through the catalogue's former identities (`learnerMaterial`, below),
+ *   and **never** for `none`, which D2's record treats as one identity (a decision on a placeholder
+ *   binds to "no file") but which names no material: two placeholders are not one piece, and a drill
+ *   made when it opens has met nothing by that identity.
+ * - **Former identities: learner continuity only** (E50a; the reviewer's alias boundary,
+ *   `docs/review/responses/questions-f7acb2c0.md`). Until E50a music21 wrote the day it ran into
+ *   every file it wrote (`<encoding-date>`), so a converted file's sha256 moved with the calendar
+ *   while its music stood still. The converter writes no date now, and each row whose file it wrote
+ *   carries the recorded historical identities of its dated forms (`provenance.formerIdentities`:
+ *   `tools/content/former_identities.json`, re-proved by `convert.former_identities` in
+ *   `build.attach_provenance`; historical data, never a rolling window).
+ *   A run, an encounter, a pruned run's summary or a project stored against a dated file names the
+ *   same learner material as the row's current file: `learnerMaterial` resolves it at read, and no
+ *   stored row is rewritten. Storage keys stay the row's own (`materialKey`); equality uses the
+ *   resolved key (`learnerMaterialKey`); a lookup asks every key the material's rows may sit under
+ *   (`learnerMaterialKeys`). Nothing else widens: D2's `sameIdentity` and its review record, an
+ *   excerpt's `parentSha256` staleness, the committed-file integrity checks and the
+ *   render/cache/checksum identities keep asking about exact bytes, and none of them reads this.
  */
 import { sameIdentity, type Identity } from '../review/record';
 import type { PhraseGenerator } from '../data/db';
@@ -35,9 +50,59 @@ export function knownMaterial(material: Identity | undefined): material is Known
   return material !== undefined && (material.kind === 'file' || material.kind === 'generator');
 }
 
-/** The same material: both known, and D2's equality (a file by its sha256, a generator by its whole identity). */
+type FileIdentity = Extract<Identity, { kind: 'file' }>;
+
+/** The loaded catalogue's former identities: a former sha256 to its row's current file identity. */
+let currentOfFormer = new Map<string, FileIdentity>();
+/** And back: a current sha256 to the former sha256s that resolve to it, for the lookups. */
+let formersOfCurrent = new Map<string, string[]>();
+
+/**
+ * Feeds the learner-material resolution from a loaded catalogue (`load.loadCatalog` calls it with
+ * `catalog.json`; a test may call it with its own rows). The table is the catalogue's alone and is
+ * replaced, never added to. A row's former identity resolves to the row's current identity, with one
+ * rule: a sha256 that is some row's current identity is never a former one, whichever row lists it —
+ * a current file is always its own material.
+ */
+export function learnFormerIdentities(items: readonly CatalogItem[]): void {
+  const current = new Set<string>();
+  for (const item of items) {
+    const identity = item.provenance?.identity;
+    if (identity?.kind === 'file') current.add(identity.sha256);
+  }
+  const toCurrent = new Map<string, FileIdentity>();
+  const back = new Map<string, string[]>();
+  for (const item of items) {
+    const identity = item.provenance?.identity;
+    const former = item.provenance?.formerIdentities;
+    if (identity?.kind !== 'file' || former === undefined) continue;
+    for (const one of former) {
+      if (one.kind !== 'file' || current.has(one.sha256)) continue;
+      toCurrent.set(one.sha256, identity);
+      back.set(identity.sha256, [...(back.get(identity.sha256) ?? []), one.sha256]);
+    }
+  }
+  currentOfFormer = toCurrent;
+  formersOfCurrent = back;
+}
+
+/**
+ * The learner material a stored identity names now: a file identity the loaded catalogue lists among a
+ * row's former identities is that row's current identity; every other identity — a current file, a
+ * file no row lists, a generator, `none`, none at all — is returned as it is. For learner continuity
+ * and catalogue lookup only (the module note): never for a question about exact bytes.
+ */
+export function learnerMaterial<T extends Identity | undefined>(material: T): T | FileIdentity {
+  if (material?.kind !== 'file') return material;
+  return currentOfFormer.get(material.sha256) ?? material;
+}
+
+/**
+ * The same learner material: both known, and D2's equality (a file by its sha256, a generator by its
+ * whole identity) after each side is resolved through the catalogue's former identities.
+ */
 export function sameMaterial(a: Identity | undefined, b: Identity | undefined): boolean {
-  return knownMaterial(a) && knownMaterial(b) && sameIdentity(a, b);
+  return knownMaterial(a) && knownMaterial(b) && sameIdentity(learnerMaterial(a), learnerMaterial(b));
 }
 
 /**
@@ -88,11 +153,13 @@ function canonical(value: unknown): string {
 }
 
 /**
- * The one string a material is looked up by (G1: the `encounters` index and the `contacts` key): equal
- * exactly where `sameMaterial` says the same material — a file by its sha256, a generator by family,
- * version, seed, the recipe with its keys in any order, and tempo. A material that names nothing
- * (`none`, or none at all: a legacy run, a drill made when it opens) is keyed by the item id, as D4's
- * `met-by-id` reads it; such a key never equals a material's.
+ * The one string a material is stored by (G1: the `encounters` index, the `contacts` key, a project's
+ * `id`), exactly as the material was when the row was written — a file by its sha256, a generator by
+ * family, version, seed, the recipe with its keys in any order, and tempo; never resolved, so a row
+ * keeps the key it was stored under (E50a). A material that names nothing (`none`, or none at all: a
+ * legacy run, a drill made when it opens) is keyed by the item id, as D4's `met-by-id` reads it; such a
+ * key never equals a material's. Two stored keys are equal where D2's exact equality holds; for the
+ * learner's equality compare `learnerMaterialKey`s, and look up by `learnerMaterialKeys`.
  */
 export function materialKey(material: Identity | undefined, itemId: string): string {
   if (material?.kind === 'file') return `file:${material.sha256}`;
@@ -100,6 +167,26 @@ export function materialKey(material: Identity | undefined, itemId: string): str
     return `generator:${canonical({ family: material.family, version: material.version, seed: material.seed, recipe: material.recipe, tempoBpm: material.tempoBpm })}`;
   }
   return `id:${itemId}`;
+}
+
+/**
+ * The key the learner's equality compares (E50a): `materialKey` of the resolved material, equal exactly
+ * where `sameMaterial` says the same material. For comparing, never for storing.
+ */
+export function learnerMaterialKey(material: Identity | undefined, itemId: string): string {
+  return materialKey(learnerMaterial(material), itemId);
+}
+
+/**
+ * Every key a material's stored rows may sit under (E50a): its current key and the key of each former
+ * identity of its row, for a lookup by key (the `encounters` index, the `contacts` store). One key for
+ * anything else.
+ */
+export function learnerMaterialKeys(material: Identity | undefined, itemId: string): string[] {
+  const resolved = learnerMaterial(material);
+  const own = materialKey(resolved, itemId);
+  if (resolved?.kind !== 'file') return [own];
+  return [own, ...(formersOfCurrent.get(resolved.sha256) ?? []).map((sha256) => `file:${sha256}`)];
 }
 
 /**

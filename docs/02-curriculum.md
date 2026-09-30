@@ -1084,7 +1084,11 @@ that decision exists a study reaches the learner only through the Library (Part 
 >   identity (the options it was written from — the row's params with the reader's moves and the
 >   rung's hold — never the stored triple alone). A transfer role carries its contract's
 >   `transferOf` for its recipe (`provenance.transferOf`: the skill, the families it was written
->   against, the dimensions declared to differ, what stays unmeasured).
+>   against, the dimensions declared to differ, what stays unmeasured). A stored identity resolves
+>   through a row's former identities (E50a, `provenance.formerIdentities`: the dated forms a
+>   converted file had while music21 wrote the day it ran into it), so a run, an encounter, a pruned
+>   run's summary or a project stored against a dated file names the same material after the date
+>   was removed; nothing stored is rewritten, and D2's record stays exact bytes.
 > - **Contact novelty from identities, conservatively** (`progressStore.contactIn`): met where any
 >   run under any item id carries the material; *met by id* where only a run that stored no material
 >   shares the id (prior contact proven, the material unknown — never read as unmet); unmet only

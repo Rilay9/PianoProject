@@ -22,7 +22,7 @@ import {
   type SessionRow,
   type StreakRow,
 } from './db';
-import { knownMaterial, materialKey, materialOfItem, sameMaterial } from '../curriculum/material';
+import { knownMaterial, learnerMaterialKeys, materialKey, materialOfItem, sameMaterial } from '../curriculum/material';
 import type { Identity } from '../review/record';
 import type { CatalogItem, Hands } from '../curriculum/types';
 import type { Relationship } from '../curriculum/transfer';
@@ -668,16 +668,21 @@ export function contactIn(
  * does not import it back).
  */
 export async function contact(itemId: string, material: Identity | undefined): Promise<Contact> {
-  const [rows, encounters, summaries] = await Promise.all([rungRows(), encountersOf(materialKey(material, itemId), itemId), contactSummaries()]);
+  const [rows, encounters, summaries] = await Promise.all([rungRows(), encountersOf(learnerMaterialKeys(material, itemId), itemId), contactSummaries()]);
   return contactIn(rows, itemId, material, { encounters, summaries });
 }
 
-/** The encounter rows of this material (`EncounterRow.key`) or under this item id, from the store; none without one. */
-async function encountersOf(key: string, itemId: string): Promise<EncounterRow[]> {
+/**
+ * The encounter rows of this material (`EncounterRow.key`: its current key and every former one, E50a's
+ * `learnerMaterialKeys`, since a row keeps the key it was stored under) or under this item id, from the
+ * store; none without one.
+ */
+async function encountersOf(keys: readonly string[], itemId: string): Promise<EncounterRow[]> {
   const db = await openDatabase();
   if (!db) return [];
   try {
-    const [byKey, byItem] = await Promise.all([db.getAllFromIndex('encounters', 'byKey', key), db.getAllFromIndex('encounters', 'byItem', itemId)]);
+    const [byItem, ...keyed] = await Promise.all([db.getAllFromIndex('encounters', 'byItem', itemId), ...keys.map((key) => db.getAllFromIndex('encounters', 'byKey', key))]);
+    const byKey = keyed.flat();
     const seen = new Set(byKey.map((row) => row.id));
     return [...byKey, ...byItem.filter((row) => !seen.has(row.id))];
   } catch {

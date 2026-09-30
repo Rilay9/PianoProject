@@ -1,0 +1,8 @@
+what the builds had changed among the four (git diff --ignore-cr-at-eol --stat, before the restore):
+    content/scores/imported/SOURCES.md | 20 ++++++++++----------
+    1 file changed, 10 insertions(+), 10 deletions(-)
+restored content/scores/imported/SOURCES.md from the snapshot taken before the first build
+restored docs/prompts/inventory.md from the snapshot taken before the first build
+restored docs/prompts/rung-claims.md from the snapshot taken before the first build
+restored docs/generated/ladder.md from the snapshot taken before the first build
+git status of the four after the restore: clean

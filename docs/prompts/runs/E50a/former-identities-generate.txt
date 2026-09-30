@@ -1,0 +1,4 @@
+the main checkout's app/public/content (catalog.json written 2026-09-29 22:28): 2092 rows, 753 dated music21 identities, 753 added
+the main checkout's app/dist/content (catalog.json written 2026-09-29 22:28): 2092 rows, 753 dated music21 identities, 0 added
+tools/content/former_identities.json: 753 identities
+exit 0

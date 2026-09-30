@@ -24,7 +24,8 @@
  * most recent time or null, for a material and a passage, over the identity hierarchy the catalogue
  * names. No boolean called familiar or novel: each consumer decides what its purpose needs.
  *
- * - **Identity** is D4's material (`material.materialKey` agrees with `sameMaterial`), or the item id
+ * - **Identity** is D4's material (`material.learnerMaterialKey` agrees with `sameMaterial`; a row is
+ *   stored under `material.materialKey`, and a former identity resolves at read, E50a), or the item id
  *   where there is none; a runtime phrase's row id names a recipe, every seed of which is other
  *   material, so a phrase is never met by its row's id (`idNamesMaterial: false`).
  * - **Passage scope.** Bars are printed positions, 1-based, a pickup counted as bar 1 — E1's count,
@@ -55,7 +56,7 @@ import {
   type SessionRow,
 } from './db';
 import { contactSummaries, runBars, rungRows } from './progressStore';
-import { knownMaterial, materialKey, materialOfItem, sameMaterial } from '../curriculum/material';
+import { knownMaterial, learnerMaterialKey, learnerMaterialKeys, materialKey, materialOfItem, sameMaterial } from '../curriculum/material';
 import { catalogIndex } from '../curriculum/load';
 import type { CatalogItem } from '../curriculum/types';
 import type { Identity } from '../review/record';
@@ -265,8 +266,12 @@ function excerptOf(item: CatalogItem | undefined, byId: ReadonlyMap<string, Cata
   return parent ? { parent, fromBar: block.fromBar, toBar: block.toBar } : undefined;
 }
 
-/** The key an item is looked up by: its current identity, or its id where it has none. */
-const itemKey = (item: CatalogItem): string => materialKey(materialOfItem(item), item.id);
+/**
+ * The key an item is compared by: its current identity, or its id where it has none — the learner's
+ * equality key (E50a: `learnerMaterialKey`), so a fact stored against a former identity of the item's
+ * file sits in the same scope as one stored against the current file.
+ */
+const itemKey = (item: CatalogItem): string => learnerMaterialKey(materialOfItem(item), item.id);
 
 /** The measured length of an item in bars, from the catalogue, where it has one. */
 function measuredBars(item: CatalogItem | undefined): number | undefined {
@@ -295,7 +300,7 @@ function scopeOfFact(fact: Fact, byId: ReadonlyMap<string, CatalogItem> | undefi
       return { root: itemKey(cut.parent), bars: intoParent(fact.bars, cut), byId: !known };
     }
   }
-  if (known) return { root: materialKey(fact.material, fact.itemIds[0] ?? ''), bars: fact.bars, byId: false };
+  if (known) return { root: learnerMaterialKey(fact.material, fact.itemIds[0] ?? ''), bars: fact.bars, byId: false };
   const itemId = fact.itemIds[0] ?? '';
   const item = byId?.get(itemId);
   return { root: item ? itemKey(item) : `id:${itemId}`, bars: fact.bars, byId: true };
@@ -324,7 +329,7 @@ function compositionOf(item: CatalogItem | undefined, byId: ReadonlyMap<string, 
 export function familiarityIn(target: EncounterTarget, history: EncounterHistory, options: { visit?: string } = {}): Familiarity {
   const byId = history.byId;
   const targetItem = byId?.get(target.itemId);
-  const ownKey = materialKey(target.material, target.itemId);
+  const ownKey = learnerMaterialKey(target.material, target.itemId);
   const cut = excerptOf(targetItem, byId);
   const extent = target.extent ?? measuredBars(targetItem);
   const ownBars: [number, number] | undefined = target.bars ? [target.bars[0], target.bars[1]] : extent === undefined ? undefined : [1, extent];
@@ -374,17 +379,19 @@ export function firstContactIn(target: EncounterTarget, history: EncounterHistor
 
 /**
  * Where a target's history is found: the keys of its material, its id, and the passages around it
- * (the parent of an excerpt, the excerpts of a piece), with those items' ids and materials.
+ * (the parent of an excerpt, the excerpts of a piece), with those items' ids and materials. A
+ * material's keys are its current key and every former one (E50a: `learnerMaterialKeys`), because a
+ * row keeps the key it was stored under.
  */
 function neighbourhood(target: EncounterTarget, byId: ReadonlyMap<string, CatalogItem> | undefined): { keys: string[]; itemIds: Set<string>; materials: Identity[] } {
-  const keys = new Set<string>([materialKey(target.material, target.itemId)]);
+  const keys = new Set<string>(learnerMaterialKeys(target.material, target.itemId));
   const itemIds = new Set<string>([target.itemId]);
   const materials: Identity[] = knownMaterial(target.material) ? [target.material] : [];
   if (target.idNamesMaterial !== false) keys.add(`id:${target.itemId}`);
   const item = byId?.get(target.itemId);
   const parent = excerptOf(item, byId)?.parent ?? (item && item.type !== 'excerpt' ? item : undefined);
   const add = (one: CatalogItem): void => {
-    keys.add(itemKey(one));
+    for (const key of learnerMaterialKeys(materialOfItem(one), one.id)) keys.add(key);
     keys.add(`id:${one.id}`);
     itemIds.add(one.id);
     const material = materialOfItem(one);
