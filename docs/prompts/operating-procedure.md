@@ -210,6 +210,18 @@ technical and pedagogical verdicts stated separately where both apply. What is u
 sits beside what passes, not at the end. Per fix: the mechanism, the discriminating test,
 the before and after measured the same way, and the red line that proves the test.
 
+**Content and corrections are itemised** (the owner's rule, 2026-09-30). A seam that changes
+what a learner is taught or hears — a lesson's text, a curriculum table, a vocabulary entry, a
+score's bytes, an edition note, a catalogue fact — lists every such change for the reviewer,
+one item per line: the file and line or row, the text or value before and after, and the
+reason. A prose summary does not stand in for the list. The list lives beside the handoff
+(`docs/review/handoffs/<impl>.content.md`, generated from the seam's diff over `content/` and
+`scores/`, annotated where the diff does not say why) and the entry cites it. Batching is
+fine — one file lists every item of the seam — and nothing content-side is entailed and
+skipped: a correction the orchestrator makes at a landing is itemised the same way. The owner
+supplies no musical review, so the reviewer's check of each item is the one check on content
+correctness; the reviewer's verdict names the items it did not check.
+
 ## 13. What a brief carries
 
 Every brief written here states: the goal in the writer's own words and the owner's, and

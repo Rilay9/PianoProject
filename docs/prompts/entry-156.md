@@ -200,6 +200,8 @@ Unverified:
 
 **Orchestrator's note at the landing (2026-09-29).** L120c's worktree committed by name (e6c20b03) and merged (afdac758). The chain on the merged main checkout: the map's test and its minimum for the merged files (`runs/L120c/map-min.txt`), the content build offline (the reports compared), the validator, the record check, the whole content suite, then the app steps the map names — the whole unit suite on the rebuilt content, the app build, and the specs the map's minimum names where it names any (map-tests 0; map-min 0; content-build 0; content-validate 0; review-check 0; content-tests 0; vitest-all 1; build-app 0; specs-exist 0; e2e-targeted 0 — the unit suite's two recorded line-ending assertions in `lessonClaimsAboutApp` (Entry 101's diagnosis) fail here and pass on the runner; `runs/L120c/orchestrator-exit.txt`). Your classes on L120a (`responses/0bcd3be0.md`) and your approval of the brief (`responses/questions-bbd7f99a.md`). The chain on the merged tree: map, content build (the regenerated inventory.md and rung-claims.md committed with this record, as the committed-markdown test reads them), validate, review, the content suite, the whole unit suite (only the known CRLF pair red), the app build, 201 browser cases over the map's specs; E50a lands next in its own chain, then G96 and U63 together.
 
+**Content items** (the owner's rule of 2026-09-30): every content change of this seam, before and after, is `docs/review/handoffs/e6c20b03.content.md`.
+
 ## Doc rows
 
 - **`docs/02`, after *The reading and the gate corrected (L120b)*.** A new paragraph:

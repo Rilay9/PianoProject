@@ -147,6 +147,8 @@ From `red-green/`, each on the base's code and vocabulary with L120d's tests:
 
 **Orchestrator's note at the landing (2026-09-29).** L120d's worktree committed by name (4e76c768) and merged (712d6321). The chain on the merged main checkout: the map's test and its minimum for the merged files (`runs/L120d/map-min.txt`), the content build offline (the reports compared), the validator, the record check, the whole content suite, then the app steps the map names — the whole unit suite on the rebuilt content, the app build, and the specs the map's minimum names where it names any (map-tests 0; map-min 0; content-build 0; content-validate 0; review-check 0; content-tests 0; vitest-all 1; build-app 0; specs-exist 0; e2e-targeted 0 — the unit suite's two recorded line-ending assertions in `lessonClaimsAboutApp` (Entry 101's diagnosis) fail here and pass on the runner; `runs/L120d/orchestrator-exit.txt`). Your ruling on L120b's question 1 (`responses/c8680b70.md`) and your approval of the brief with its eight invariants (`responses/questions-f7acb2c0.md`). Landed in one content chain with the other (merge range ef5e25fc..11fc6978): map, the content build (the regenerated rung-claims.md committed with L120d's record, as its TestTheReports reads it), validate, review, the content suite, the whole unit suite (only the known CRLF pair red), the app build and the map's nine browser specs, 97 passed.
 
+**Content items** (the owner's rule of 2026-09-30): every content change of this seam, before and after, is `docs/review/handoffs/4e76c768.content.md`.
+
 ## Doc rows
 
 Applied (Deviation 3):
