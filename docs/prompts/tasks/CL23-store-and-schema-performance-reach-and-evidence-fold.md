@@ -1,0 +1,145 @@
+# CL23 — store and schema: the performance reach and the evidence fold (L53, L69; `convergence-2026-09-30.md`:321–327; tier 3, the reviewer's ruling on the E50a recheck, `responses/questions-e71ef3ad.md` §"L53 + L69 / CL23"; app only; with the reviewer before dispatch)
+
+**Read first:** `docs/prompts/operating-procedure.md` §1–§5, §11–§14. The rows: `backlog-2026-09-25.md` L53 :349, L69 :365. The cluster entry, `convergence-2026-09-30.md`:321–327, and its two RE-CHECK rows, :742 (L53) and :748 (L69). The re-check that found both buildable, `docs/review/recheck-after-e50a-2026-09-30.md`:11–13 (scope) and :17–47 (the L53 and L69 blocks). The reviewer's ruling on that re-check, `docs/review/responses/questions-e71ef3ad.md` §"L53 + L69 / CL23" (quoted below).
+
+## Rows it closes
+
+**L53, in full:** performance rows older than `recentPerformances`'s scan reach are kept in the store but never surface on Progress; the fix is a `DB_VERSION` bump with an index (or equivalent derived field) that lets the reader find a performance however far back it is, instead of giving up after a fixed number of rows scanned.
+
+**L69, in part:** `compactObservation` folds a run's per-step detail to per-bar tallies but leaves its evidence's `byDemand`/`otherDemands` arrays untouched, so a compacted row that carries evidence is several times the size of a compacted row that does not, and the `sessionRetention` budget test never measures that real case. This brief builds the fold for the two live readers proven to need only counts or demand-id presence (`app/src/curriculum/session.ts`, `app/src/curriculum/transfer.ts`) and gives the budget test an evidence-bearing fixture. It does **not** resolve, by itself, what the fold does to `app/src/evidence/demandReadings.ts` — the one live reader that derives its selectivity classification from the same arrays this fold would remove, and a file this lane does not own. See *Hypothesis and its refuting test → L69* and *What is decided* below: that is the one question this brief carries to the reviewer rather than settling.
+
+**Not in scope:** L51 and L99 (DECISION rows in the same CL23 cluster, `convergence-2026-09-30.md`:741, :769 — a second compaction stage/byte bound and a bounded retention rule, neither ripe) and E39 (DECISION, `convergence-2026-09-30.md`:665 — keeping import MIDI bytes, `importStore.ts`'s own row). None of the three is part of the L53+L69 subset this brief was asked for, and none is touched.
+
+## Rulings that bind it
+
+Quoted verbatim, `docs/review/responses/questions-e71ef3ad.md` §"L53 + L69 / CL23":
+
+> **Yes. Make L53 and L69 the next CL23 pre-reviewed brief together.** They share the persistence/progress owner and are both now unblocked. Keep them as two separately tested invariants inside one storage seam:
+>
+> - L53 owns the `DB_VERSION` bump/index or equivalent migration needed to find performance rows beyond the 2,200 reach;
+> - L69 owns compaction of `byDemand`/`otherDemands` without losing the counts the evidence readers need.
+>
+> Do not let the version bump become a reason to change L69's evidence semantics, and itemise the migration/backup compatibility separately in the handoff.
+
+Two separately tested invariants inside one seam: the migration test proves L53 without touching evidence shape; the compaction test proves L69 without touching the index. Neither test stands in for the other.
+
+## Premises at the lines (HEAD 1cd87af9)
+
+1. `app/src/data/db.ts`:70, `DB_VERSION = 9`. The comment above it (:29–68) narrates every version 1–9 change; each is a `if (oldVersion < N)` block inside `upgrade()` (:1143–1235), guarded so a phone that skipped versions still runs every block it missed once.
+2. `db.ts`:1149–1160 (the `oldVersion < 1` block) creates `sessions` with `keyPath: 'id', autoIncrement: true` and exactly two indexes: `byItem` (:1153) and `byDate` (:1154). No index has been added to `sessions` since. `db.ts`:980, the typed schema, lists the same two: `sessions: { key: number; value: SessionRow; indexes: { byItem: string; byDate: string } }`.
+3. `db.ts`:437, `performance?: boolean` on `SessionRow` (comment :429–436: "a run played as a performance… recorded as such whatever the accuracy came out at"). IndexedDB's valid key types are numbers, strings, dates, binary and arrays of those — not booleans (a spec fact, not a property of this codebase). A grep of `createIndex(` across `db.ts` finds exactly six calls, every one keyed off a string (`itemId`, `at`, `key`) or a keyPath array of strings (`folderScores`'s `['folder','sort']`) — none off a boolean. A naive `sessions.createIndex('byPerformance', 'performance')` would index nothing: `performance: true` and `performance` absent are both invalid keys, so every row is silently left out of such an index. Reaching performance rows by index needs a derived field indexable in its own right, not the boolean itself.
+4. `db.ts`:1167–1186 (the `oldVersion < 4` block) is the one existing precedent for backfilling a derived field on old rows inside an upgrade transaction: a cursor walk over `imports` sets `levelSource: 'judged'` wherever a level exists and the field does not, then continues. This is the shape a version-10 backfill for `sessions` would follow.
+5. `db.ts`:345–357 (`RunObservation`), the field the whole seam turns on: `evidence?: EvidenceResult[]`, and the comment's own claim, verbatim at :355: *"No observation field changes for it; compaction keeps it."* This sentence is the thing L69 makes false, and the handoff must correct it in the same change (*Report*, below).
+6. `app/src/data/progressStore.ts`:910, `export const PERFORMANCE_REACH = 2_200;`, with its own comment (:900–909) naming it "the old cap and its slack." The 2,200 is not a fresh number: :853 ("A cap of 2,000 fixed that") is the store's old row cap, before C1 raised it to `MAX_SESSIONS = 25_000` (:875); `PRUNE_SLACK = 200` (:876) is the cap's own slack. 2,000 + 200 = 2,200 — the reach is the old retention boundary, kept as a scan limit after the boundary itself moved twenty-five thousand rows further out. A related comment at :544 makes the same arithmetic explicit for `recentSessions`'s own limit.
+7. `progressStore.ts`:581–601, `recentPerformances`: walks the `byDate` index newest-first and stops at whichever comes first of `limit` performances found or `scanned >= PERFORMANCE_REACH` (:588). A performance older than the 2,200th row by date is never reached, however many there are and however long the store has actually grown (now up to 25,000 + 200 rows, `pruneSessions`'s own cap). The `catch` fallback (:594–600, a full `getAll` + filter for a browser that cannot open a reverse cursor on an index) is unrelated to this fix and stays as it is.
+8. `progressStore.ts`:924–928, `compactObservation`: destructures out only `steps` and returns `{ ...rest, bars: compactSteps(steps) }`. `rest` includes `evidence` untouched, whatever it holds. The re-check (`recheck-after-e50a-2026-09-30.md`:41) cited this function at :865–869; at this HEAD it is at :924–928, twenty-odd lines further down the file than the re-check's own citation — E50a and E50c (below, item 15) both added lines above it since the re-check was written. The function itself is unmoved in behaviour; only the line numbers drifted.
+9. `app/src/engine/Scoring.ts`:349–355, `compactSteps`, the function `compactObservation` already calls: its own doc comment states the accepted contract this brief extends to `byDemand`/`otherDemands` — *"What is lost is which step in a bar a miss or a wrong note was at; the bar, the counts and the timing's mean per bar stay."* Position is lost, counts and totals are kept: the same trade this brief proposes for the evidence arrays, not a new one.
+10. `app/src/evidence/evidence.ts`:205–218 (`DemandCount`) and :192–198 (`DemandOverlap`), the shapes inside `MeasuredEvidence.byDemand`/`otherDemands` (:242–253). `DemandCount` carries `demand`, `n`, `right` (already counts) and `steps`, `wrong`, `unattributed?` (step-index arrays — "the model step indexes," :212). `DemandOverlap` carries `demand` and `steps` only.
+11. A grep of `byDemand`/`otherDemands` across `app/src` (excluding tests) finds exactly four consumers:
+    - `app/src/curriculum/session.ts`:2395–2405 (`heldBack`): reads only `entry.n`, `entry.right` and `entry.demand` — already counts, untouched by any fold that keeps them.
+    - `app/src/curriculum/transfer.ts`:161–166 (`playedDemands`): reads only `entry.demand` from both `byDemand` and `otherDemands` — presence, not position.
+    - `app/src/evidence/demandReadings.ts`:122–141 (`stepsOf`) and :148–209 (`readSkill`): build a `Map<number, StepFacts>` from `entry.steps`, `entry.wrong` and `entry.unattributed`, and from `otherDemands[].steps`, to tell which demands shared a step (the rival/alone/selective logic behind `pattern`/`isolated`/`ambiguous`). Nowhere in this path does it read `entry.n`/`entry.right` — there is no fallback to the summary counts if the index arrays are absent.
+    - `app/src/evidence/evidence.ts`:551–561 (`overlapOf`): the same index-array shape as `stepsOf`. A grep of `overlapOf(` across `app/src` and `app/tests` finds only its own definition and `app/tests/unit/evidenceByDemand.test.ts` — no caller in the app itself. Scoped to that one identifier; not a claim that nothing else ever computes an overlap.
+12. `app/src/evidence/demandReadings.ts`:219–233, `demandReadings()`, the one caller of `readSkill`: for each skill it takes the rows handed to it, keeps the last `DEMAND_WINDOW_READS` (5, :62) by date, and reads every one of them through `stepsOf`. It is called once, from `app/src/curriculum/session.ts`:2682, over `input.rows` (`ctx.input.readingRows`, session.ts:1744).
+13. `app/src/ui/screens/TodayScreen.ts`:1384, `READING_HISTORY = 500`; :1387–1395, `loadReadingRows` calls `sessionsForItem(item.id, READING_HISTORY)` per sight-reading item. `progressStore.ts`:621–637, `sessionsForItem`: walks the `byItem` index newest-first and stops at `limit` (500) rows — bounded by count, not by calendar date. So a sight-reading item read fewer than five times in the last `OBSERVATION_WINDOW_DAYS` (90, `progressStore.ts`:885) can have its last five reads span more than 90 days, meaning some can already be past the compaction window by the time `demandReadings` reads them.
+14. `app/src/data/backup.ts`:28, `export const BACKUP_VERSION = 1;` — a version number for the backup *file format* (`{app, version, exportedAt, stores, keys}`, :30–37), independent of `DB_VERSION`. `importAll` (:264–343) checks only `raw.version > BACKUP_VERSION` (:269); it never reads or checks `DB_VERSION`. Every store's rows are written with `db.put(store, row)` (e.g. :298–303 for `sessions`) directly — `importAll` never calls `db.ts`'s `upgrade()`, so a backfill written only inside an `if (oldVersion < N)` block does not run again when a backup is restored. A backup exported before this lane's migration, restored onto a device already upgraded to the new `DB_VERSION`, would put back `sessions` rows lacking whatever derived field the new index reads.
+15. `progressStore.ts`:194–215, `daysTowardMastery` and `meetsMasterTerms` — E50c, landed today at Entry 190 (commit `4a83af56`, merged `6e2f7c5d`, per `docs/prompts/entry-190.md`). Both functions live in the same file this brief edits. This brief must not change what either does or reads; see *Rules and files*.
+16. `app/tests/unit/dbUpgrades.test.ts`:1–131, "every version of the database this app has ever shipped, upgraded": a generic loop today covers versions 1–6 only (`STORES_BY_VERSION`, :21–37); versions 7, 8 and 9 each got their own dedicated test file instead (`legacyStorage.test.ts`, `encounterModel.test.ts`, `projectLifecycle.test.ts`) because each added a store or a one-time carry-over with its own fixture shape. A version 9→10 migration case can extend either shape; the file is the builder's choice.
+17. `app/tests/unit/sessionRetention.test.ts`:70–116, `observedRow` — the fixture the budget test (:210–223) measures `compactObservation` against — sets no `evidence` field at all. The budget assertion (`atCap < SESSIONS_BUDGET_BYTES`, :217–220) is therefore proven against a compacted row that was never carrying evidence in the first place, which is exactly the gap the row names ("a compacted sight-read is several times a compacted row without evidence").
+18. A scoped grep of `docs/08-test-map.md` for `db.ts`, `progressStore`, `dbUpgrades`, `sessionRetention` and `backup` finds citations only to unit test files (`dbUpgrades.test.ts`, `sessionRetention.test.ts`, `backup.test.ts`, `backupStreaming.test.ts`); no row names a browser or e2e spec covering a database migration or a compaction case for these files. Scoped to that grep, not a claim that no Playwright spec anywhere touches storage.
+
+## Hypothesis and its refuting test
+
+**Shared hypothesis.** Both rows are the same shape of fault in the same two functions: a size boundary that used to match the store's real cap and no longer does (L53), and a compaction function that folds one large field and forgot a sibling field of the same shape and the same lifecycle (L69). Neither is a product decision by itself — refuted for either if a currently-existing mechanism already covers it; premises 7 and 8 show neither does.
+
+**L53.** Refuted if `recentPerformances` already reaches performances past 2,200 rows back by some other path. Premise 7 shows the scan hard-stops at `PERFORMANCE_REACH` regardless of how many performances have actually been found — unrefuted. **Mechanism sub-hypothesis:** the fix needs a derived, indexable field, not the boolean itself, because IndexedDB cannot key an index on a boolean (premise 3). Refuted if any existing index in this database keys off a boolean — a grep of every `createIndex(` call in `db.ts` finds none — unrefuted.
+
+**L69.** Refuted if folding `byDemand`/`otherDemands` to `{ demand, n, right }` at compaction leaves every live reader's output unchanged. Premise 11 splits the four consumers in two: `session.ts:2398` and `transfer.ts:165` read only counts/presence, so the fold is refuted-safe for them. `demandReadings.ts`'s `stepsOf`/`readSkill` derive their opportunity tallies *and* the rival/alone/selective classification entirely from the step-index arrays, with no fallback to `entry.n`/`entry.right` (premise 11, third bullet) — **unrefuted**: folding those arrays away would make a compacted row's demand entries contribute nothing at all to `demandReadings`'s window (not "counted but uncorrelated" — silently zero), for exactly the case premise 13 identifies: a sight-reading item read fewer than five times inside the last 90 days, whose oldest of those five reads has already crossed the compaction edge. This is narrow (it needs a rarely-revisited item, not an actively-practised one) but real, and it is a change to what a stored row is evidence of — squarely the "evidence… or stored-data meaning" class operating-procedure §11 excludes from the orchestrator's own settling authority, and `app/src/evidence/*` is not a file this lane owns. It is carried to the reviewer as the one open question, not resolved here.
+
+## What is decided
+
+**Buildable now — L53:**
+- `DB_VERSION` moves from 9 to 10 (`db.ts`:70), with a new `if (oldVersion < 10)` block in `upgrade()` alongside the nine that already exist, following the same guarded-block shape every prior version used.
+- A derived field or index that lets `recentPerformances` retrieve performance rows in date order without a bounded scan — the exact shape (a single boolean-substitute field with its own index, a compound `[marker, at]` index, or another indexable equivalent) is the builder's implementation choice. **Decided by the orchestrator:** this is a purely mechanical choice with no learner-visible or evidence-semantic consequence either way (operating-procedure.md §11) — the constraint is the discriminating fact (premise 3: no boolean index), not a product preference, and the existing `imports`/`levelSource` backfill (premise 4) is the precedent to follow for migrating existing rows in the same transaction.
+- `recentPerformances` (`progressStore.ts`:581–601) reads the new index instead of scanning `byDate` and stopping at `PERFORMANCE_REACH`. `PERFORMANCE_REACH` itself may be retired or kept as documentation of the old boundary — the builder's call, since nothing reads it once the scan it bounded is gone, and the `catch` fallback (premise 7) is untouched.
+- A learner meets: Progress's performances list finds a performance played any number of practice runs ago, not only one inside the most recent 2,200 rows — the exact fix the row names ("an index would find them").
+
+**Buildable now — the backup/migration compatibility (itemised per the ruling, not folded into the technical description above):**
+1. **What changes on disk.** A version-10 upgrade adds a derived field to existing `sessions` rows that already have `performance: true` (backfilled in the same transaction, premise 4's pattern) and to every new performance row going forward. No existing field is removed or renamed; no row's `id` changes.
+2. **What a backup carries.** `backup.ts`'s `BACKUP_VERSION` (premise 14) does not move — the file's shape (`{app, version, exportedAt, stores, keys}`) is unchanged, and `sessions` rows still serialise as whatever `SessionRow` holds.
+3. **The gap this migration opens.** `importAll` writes each `sessions` row with a plain `db.put` (premise 14) and never runs `db.ts`'s `upgrade()`, so a backup exported *before* this lane (no derived field) and restored *after* (device already at `DB_VERSION` 10) would put back performance rows the new index cannot find — reintroducing L53's exact symptom for every restored row, silently.
+4. **Decided:** `importAll`'s `sessions` branch (`backup.ts`:296–303) must leave a restored row satisfying the same indexable invariant a freshly-recorded or freshly-upgraded row has — i.e., derive the same field on the way in when it is missing and the row is a performance. This is not a product choice (nothing about what the learner sees changes) and not left open: without it, every restore of an old backup silently reintroduces the bug this brief exists to fix. The exact call site and helper name are the builder's choice.
+5. **A backup written *after* this lane, restored onto an older build,** is not this lane's problem: `raw.version > BACKUP_VERSION` (premise 14) only guards the backup *format* version, which does not move here, and an older build reading a newer `DB_VERSION`'s extra field simply carries a field it does not use — no data loss, nothing to itemise.
+6. **Proof required:** a backup round-trip test (old-shaped export restored onto an already-upgraded store; the restored performance rows found by `recentPerformances`), not merely a migration test on a database that upgrades in place — the two are different code paths (premise 14) and one passing does not imply the other.
+
+**Buildable now — L69 (the safe part):**
+- `compactObservation` (`progressStore.ts`:924–928) additionally folds each entry of `evidence`'s `byDemand`/`otherDemands` (where the evidence is `kind: 'measured'`) to `{ demand, n, right }`, dropping `steps`, `wrong`, `unattributed` and `otherDemands[].steps` — the same "position lost, counts kept" contract `compactSteps` already applies to `steps` → `bars` (premise 9). This is safe for the two live readers proven to consume only counts or demand presence (`session.ts:2398`, `transfer.ts:165`; premise 11).
+- `app/tests/unit/sessionRetention.test.ts`'s budget case gets an evidence-bearing fixture (a realistic `byDemand`/`otherDemands` shape, at the size a real sight-read's evidence actually is) alongside `observedRow`, so the budget assertion is proven against a compacted row that once carried evidence — closing the row's own "the budget test carries evidence rows" clause (premise 17) regardless of how the open question below is answered.
+- `db.ts`:355's comment ("compaction keeps it") is corrected in the same change (*Report*, Doc rows).
+
+**Not decided — the one question for the reviewer:**
+- Does the same fold apply to a row inside `demandReadings.ts`'s five-read window (premises 11 third bullet, 12, 13)? Two honest paths, neither built here:
+  (a) accept the loss — a compacted row's evidence stops contributing to `demandReadings`'s `n`/`right`/phrase tallies and its rival/alone comparisons the moment it is folded, for the narrow case of an item read fewer than five times in 90 days; or
+  (b) keep `byDemand`/`otherDemands`'s step-index arrays intact for any row still reachable by `demandReadings`'s window, and fold only once a row has aged out of every live reader's reach — which needs either a bound this lane has no ruling to set, or a change to `app/src/evidence/demandReadings.ts` itself (out of this lane's ownership, since it would touch evidence semantics).
+  This brief does not choose between them; it is the one line for the reviewer, in CL05's own style for its own open question.
+
+None of this is a musical claim; nothing here needs an ear.
+
+## Verification layers
+
+**Unit**, red first on the base source:
+- A version 9→10 upgrade case: a database opened at version 9 with a `sessions` row that has `performance: true` and would sit past `PERFORMANCE_REACH` once enough rows follow it, upgraded, and found by `recentPerformances` afterward. Extends `dbUpgrades.test.ts`'s per-version loop or a new sibling file in `encounterModel.test.ts`/`projectLifecycle.test.ts`'s per-version shape (premise 16) — the builder's choice, stated in the handoff either way.
+- A `recentPerformances` case with more than `PERFORMANCE_REACH` sessions between two performances, proving the older one is still found (red on the base source, where the scan gives up).
+- A backup round-trip case in `backup.test.ts`: an old-version-shaped exported performance row, restored (both `replace` and merge) onto a store already at the new `DB_VERSION`, found by `recentPerformances` afterward (premise 14, item 6 above).
+- `sessionRetention.test.ts`: the extended budget case (an evidence-bearing fixture); a new case proving `compactObservation` folds a measured evidence entry's `byDemand`/`otherDemands` to counts and drops the index arrays, while a row with no evidence, or evidence of a non-`'measured'` kind, is unaffected.
+- A regression case (in `progressStore.test.ts` or beside the budget test) proving `heldBack`'s and `playedDemands`'s existing behaviour is bit-for-bit unchanged against a compacted, evidence-bearing row — the guard for the two readers this brief is allowed to affect.
+
+**Browser:** none added. Premise 18 is a scoped absence, not evidence a browser spec is needed; the mechanism is entirely store-level and already provable in jsdom against a fake IndexedDB, the same way every other `db.ts`/`progressStore.ts` seam is proven (premise 16's own precedent files).
+
+**Mutants:**
+- Revert the `DB_VERSION` bump or drop the backfill from the upgrade block → the reach case fails.
+- Revert `recentPerformances` to scan-and-stop → the reach case fails.
+- Skip the backfill in `importAll`'s `sessions` branch → the backup round-trip case fails.
+- Revert `compactObservation`'s evidence fold → the extended budget case fails.
+- Fold `entry.n`/`entry.right` themselves (not just the index arrays) → the regression case for `heldBack`/`playedDemands` fails.
+
+**Chain:** the targeted files, then `npx vitest run`; `npx tsc -b`; `npm run lint`; `npm run build:app`; `python tools/docs/checks_for_paths.py <every touched path>`.
+
+## Rules and files
+
+**Owned:** `app/src/data/db.ts`, `app/src/data/progressStore.ts`, `app/src/data/backup.ts`, and their tests (`app/tests/unit/dbUpgrades.test.ts` or a new sibling file, `sessionRetention.test.ts`, `backup.test.ts`, `progressStore.test.ts`).
+
+**Not yours:**
+- `progressStore.ts`'s `daysTowardMastery` (:194) and `meetsMasterTerms` (:215) — E50c, landed today at Entry 190 (premise 15). This lane edits the same file; it must not change what either function does or reads, only avoid colliding with their line ranges.
+- `app/src/evidence/*` (`demandReadings.ts`, `evidence.ts`, `ladder.ts`, `readingState.ts`, `rungState.ts`, `transferPolicy.ts`, `vocabulary.ts`, `measurement.ts`) — the evidence readers' semantics, per the ruling's "do not let the version bump become a reason to change L69's evidence semantics." Read for premises 10–13; not edited.
+- `app/src/data/importStore.ts` — E39's file, a DECISION row in the same cluster, not in this subset.
+- `app/src/curriculum/session.ts`, `app/src/curriculum/transfer.ts` — read for premise 11; not edited. Their behaviour is exactly what proves the fold safe for them; changing them would remove the proof.
+- `app/src/ui/screens/*`, `app/src/engine/*` (including `Scoring.ts`'s `compactSteps`, read only for its precedent) — no row this brief closes touches a screen or the engine.
+
+No row this brief closes needs one of these files, so none is deferred.
+
+## Report
+
+Handoff at `docs/prompts/runs/CL23/ENTRY.md`, starting `### Entry 191 — CL23`. **Judgement first:**
+- the technical verdict (there is no pedagogical verdict to separate it from — nothing here needs an ear, stated plainly rather than left as a silent gap);
+- the counts: tests added, replaced, preserved; exit codes;
+- the open question above, stated as a question, not folded into "done."
+
+**Then:**
+- per row, the mechanism, the discriminating test, its red line;
+- **the migration/backup compatibility, as its own itemised section** (per the ruling): each of the six points under *What is decided → the backup/migration compatibility* above, restated against what was actually built, with its own test citation;
+- the tests table (class, old assumption);
+- `## Doc rows`: `db.ts`:355's comment ("compaction keeps it") corrected to say what compaction now does to evidence; `progressStore.ts`'s `compactObservation` doc comment (:917–923) extended the same way; `docs/08-test-map.md` rows for the extended `dbUpgrades.test.ts`/new sibling, the extended `sessionRetention.test.ts`, and the extended `backup.test.ts`.
+
+**`docs/prompts/checks.json`:** no rows added here. If a spec is later proposed for this seam, it is proposed in the handoff for T58, never written directly.
+
+## Harness
+
+As `operating-procedure.md` §14: own worktree from origin's head at dispatch (the sha in the dispatch message), `npm ci` in `app/`. No commit, push, stash, reset or checkout; nothing written in the main checkout; temp under the worktree's `build/`; kept logs under 300 KB with machine paths replaced; `app/node_modules` kept until the orchestrator removes the worktree. This lane expects no Playwright and needs no port: every case is a unit test against a fake IndexedDB, the same harness `dbUpgrades.test.ts`, `sessionRetention.test.ts` and `backup.test.ts` already use. If a mutant proves jsdom insufficient, a config copy under `app/build/cl23/` on a port other than 4173, never 4173 itself.
+
+## Record
+
+lane: CL23 · closes: L53 · entry: 191
+index: Store and schema: an index lets Progress find a performance run however far back it is (L53), and compaction folds a run's per-demand evidence to counts the same way it already folds per-step detail to bars (L69, for the two readers proven to need only counts); the budget test now measures a compacted row that actually carries evidence; the migration/backup compatibility itemised; one open question carried to the reviewer (whether the same fold is safe for `demandReadings.ts`'s selectivity window, a file outside this lane) | app | brief drafted 2026-09-30 (`CL23-store-and-schema-performance-reach-and-evidence-fold.md`); with the reviewer before dispatch; Entry 191
+in-flight: brief drafted 2026-09-30 (`CL23-store-and-schema-performance-reach-and-evidence-fold.md`): a `DB_VERSION` bump and index for L53's performance reach, with its migration/backup compatibility itemised; L69's compaction fold for `byDemand`/`otherDemands`, safe for `session.ts` and `transfer.ts`, built here, with one open question carried to the reviewer on `demandReadings.ts`'s window, not built here; with the reviewer before dispatch (Entry 191).
+state: with-reviewer 2026-09-30: with the reviewer before dispatch (Entry 191)

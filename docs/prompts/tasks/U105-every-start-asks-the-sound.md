@@ -139,3 +139,4 @@ state: with-reviewer 2026-09-30: with the reviewer before dispatch (Entry 172)
 - dispatched 2026-09-30: dispatched at 8f51d473, building (Entry 172)
 - landed 2026-09-30: merged 265e319c; handoff `handoffs/f51e8010.md`
 - verdict 2026-09-30: APPROVE WITH ONE REQUIRED CHANGE — the refusal for a summary control visible within or above the summary sideways, a U105 seam though it touches `style.css`; the key paths accepted; *Sound did not start — tap ▶* confirmed without *again* (`responses/f51e8010.md`)
+- closed 2026-09-30: APPROVE — U105a satisfies U105's required change on the right surface, the refusal visible within or above the active summary sideways too, uncut; U105 closes with it (`responses/d0e1b01f.md`)
