@@ -1,0 +1,52 @@
+# The four new screen files against the committed screens: the four screen files written from HEAD's blobs
+# (git show HEAD:<file>) over the fix, the tests run, the fix copied back and byte-compared. screenLifecycle.ts
+# carried the new exports, which no committed screen imports. Full log not kept; the summary lines are.
+     × 20 s, hidden 5 min, 10 s: three turns, the thirty seconds that were read 30ms
+     × turns nothing while hidden, nothing on waking, and gives the system back its whole interval 6ms
+     × stops clicking when hidden and starts again when visible, if it was on 5ms
+     × 20 s, hidden 5 min, 10 s: the chart reads 30 s into the form 108ms
+     × goes silent while hidden and comes back on the bar it left, not ahead and not at bar 1 12ms
+     × hidden and shown again and again, the chart has counted only the visible time 33ms
+     × counts in again on return, holding the bar through the count 13ms
+     × a count-off whose audio comes up after the page hid waits, then starts from the top 8ms
+     × 20 s, hidden 5 min, 10 s: the trade clock reads 30 s 123ms
+     × is never charged with bars it did not show, and drops the notes of the bar it cut 34ms
+     × a jam whose audio comes up after the page hid waits, then starts from the top 13ms
+     × a call cut off by hiding goes on from the bar it was in when the page comes back 12ms
+     × a drill set: 20 s, hidden 5 min, 10 s is counted 30 s 87ms
+     × a checklist: the same 30 s 4ms
+     × a placement test: the same 30 s 3ms
+     × the guided tour: the same 30 s 4ms
+     × 20 s, hidden 5 min, 10 s: the chart reads 30 s into the form 219ms
+     × holds the bar while hidden and comes back on it, neither ahead nor at bar 1 83ms
+     × does not tick while hidden, and ticks again once visible 33ms
+     × asks the piano for nothing while hidden 11ms
+     × comes back silent, scores nothing, says it was interrupted, and replays from the first note when asked 11ms
+     × a drill opened while the page is already hidden sounds nothing, and waits on return like a cut-off chain 6ms
+     × a feedback pause that ends while hidden moves nothing on and plays nothing 6ms
+⎯⎯⎯⎯⎯⎯ Failed Tests 23 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected 'Bar 2 of 4 · chorus 42' to be 'Bar 4 of 4 · chorus 4' // Object.is equality
+AssertionError: the click kept going into a hidden page: expected true to be false // Object.is equality
+AssertionError: expected 'Bar 1 of 4 · chorus 101' to be 'Bar 3 of 4 · chorus 3' // Object.is equality
+AssertionError: the count-in moved the chart: expected 'Bar 1 of 4 · chorus 9' to be 'Bar 2 of 4 · chorus 1' // Object.is equality
+AssertionError: the click started into a hidden page: expected true to be false // Object.is equality
+AssertionError: expected 330000 to be 30000 // Object.is equality
+AssertionError: expected 330000 to be 30000 // Object.is equality
+AssertionError: expected 330000 to be 30000 // Object.is equality
+AssertionError: expected 330000 to be 30000 // Object.is equality
+AssertionError: expected { bar: 2, pass: 42 } to deeply equal { bar: 4, pass: 4 }
+AssertionError: the chart moved while the page was hidden: expected { bar: 4, pass: 38 } to deeply equal { bar: 2, pass: 1 }
+AssertionError: the dictation clock advanced while the page was hidden: expected "tick" to not be called at all, but actually been called 5000 times
+AssertionError: the chain kept sounding into a hidden page: expected "vi.fn()" to not be called at all, but actually been called 1 times
+AssertionError: expected 'Your turn — play it back.' to match /interrupted/i
+AssertionError: the first chain sounded into a hidden page: expected "vi.fn()" to not be called at all, but actually been called 1 times
+AssertionError: the pause advanced to the next card while hidden: expected [ 72, 60 ] to deeply equal [ 72 ]
+AssertionError: expected 'Bar 6 of 8 · pass 21' to be 'Bar 8 of 8 · pass 2' // Object.is equality
+AssertionError: hidden bars were judged: expected 'You did not come in' to match /^In on your own bars/
+AssertionError: the loop started into a hidden page: expected true to be false // Object.is equality
+AssertionError: the call was left ringing: expected "vi.fn()" to be called at least once
+AssertionError: the hidden span turned pages: expected 35 to be 5 // Object.is equality
+AssertionError: a page turned while nobody was reading: expected 33 to be 3 // Object.is equality
+AssertionError: the click kept going into a hidden page: expected [ 'start' ] to deeply equal [ 'start', 'stop' ]
+ Test Files  4 failed (4)
+      Tests  23 failed | 2 passed (25)
