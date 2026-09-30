@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **X40** — `handoffs/81d9e4af.md` (respond in `responses/81d9e4af.md`). Which tempo is authoritative (Entry 173).
 - **T58** — `handoffs/0ba0d2d1.md` (respond in `responses/0ba0d2d1.md`). The record generates its mirrors (Entry 171).
 - **E50** — `handoffs/68e0479b.md` (respond in `responses/68e0479b.md`). Seven rows print their tempo (Entry 163).
 - **U32** — `handoffs/2f67b047.md` (respond in `responses/2f67b047.md`). A long piece keeps its look-ahead row (Entry 169).

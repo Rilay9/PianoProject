@@ -114,6 +114,8 @@ Reason: the learner sees an explicit numerical instruction; an invisible conflic
 
 X40 should still test the corpus before turning that into a general reader change. If the corpus reveals legitimate cases where the first sound intentionally differs from a co-located printed mark, bring those cases back. No reader change belongs in X40 itself.
 
+**Landed 2026-09-30** (Entry 173; 81d9e4af, merged 52023e89); handoff `handoffs/81d9e4af.md`.
+
 ## Record
 
 lane: X40 · closes: X40 · entry: 173
@@ -122,3 +124,4 @@ in-flight: brief drafted 2026-09-30 (`X40-which-tempo-is-authoritative.md`): an 
 state: with-reviewer 2026-09-30: with the reviewer before dispatch (Entry 173)
 - approved 2026-09-30: APPROVE FOR DISPATCH AS AN EVIDENCE LANE (`responses/questions-bd7d303e.md` §3)
 - dispatched 2026-09-30: dispatched at eebafb5e, building (Entry 173)
+- landed 2026-09-30: merged 52023e89; handoff `handoffs/81d9e4af.md`
