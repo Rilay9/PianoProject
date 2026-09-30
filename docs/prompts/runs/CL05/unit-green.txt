@@ -1,0 +1,417 @@
+# The new files and the neighbouring suites of the four screens and the session clock, after the fix, with
+# lessonClaimsAboutApp.test.ts, which reads LabScreen.ts and DrillScreen.ts as text: its two failures are the
+# CRLF claims on ScoreScreen.ts and style.css (see chain.txt), which hold on the LF form.
+ ✓ tests/unit/drillAfterAMiss.test.ts > a miss keeps its card up for longer than a hit > holds a missed card, where there is an answer to show on it 2ms
+ ✓ tests/unit/drillAfterAMiss.test.ts > a miss keeps its card up for longer than a hit > leaves a right answer as fast as it was 0ms
+ ✓ tests/unit/drillAfterAMiss.test.ts > a miss keeps its card up for longer than a hit > changes nothing for the kinds with no keys to light 0ms
+ ✓ tests/unit/drillAfterAMiss.test.ts > going over the ones you missed > is built from the prompts that did not count, and only those 1ms
+ ✓ tests/unit/drillAfterAMiss.test.ts > going over the ones you missed > renumbers them, so the counter counts this round and not the last 1ms
+ ✓ tests/unit/drillAfterAMiss.test.ts > going over the ones you missed > counts nothing, however well it goes 1ms
+ ✓ tests/unit/drillAfterAMiss.test.ts > going over the ones you missed > has nothing to offer when nothing was missed 0ms
+ ✓ tests/unit/simonDrill.test.ts > the chain grows by one and keeps what came before > asks for one more note each round, the same ones in the same order 3ms
+ ✓ tests/unit/simonDrill.test.ts > the chain grows by one and keeps what came before > opens on a chain nobody could fail to hold, whatever rung it is on 1ms
+ ✓ tests/unit/simonDrill.test.ts > the chain grows by one and keeps what came before > stays inside its range and its degrees 1ms
+ ✓ tests/unit/simonDrill.test.ts > the chain grows by one and keeps what came before > never repeats a note immediately, which would be heard as one note 0ms
+ ✓ tests/unit/simonDrill.test.ts > a wrong note ends the chain > ends it on the note it went wrong, not at the end of the round 0ms
+ ✓ tests/unit/simonDrill.test.ts > a wrong note ends the chain > counts the octave, unlike every other drill here 0ms
+ ✓ tests/unit/simonDrill.test.ts > a wrong note ends the chain > treats a skipped round as a broken chain 0ms
+ ✓ tests/unit/simonDrill.test.ts > a wrong note ends the chain > runs out at the cap when nothing is ever missed 0ms
+ ✓ tests/unit/simonDrill.test.ts > the help ladder > runs from most help to least, with every rung a step down 0ms
+ ✓ tests/unit/simonDrill.test.ts > the help ladder > reveals the chain only where it says it does 0ms
+ ✓ tests/unit/simonDrill.test.ts > the help ladder > falls back rather than throwing on a rung it does not know 0ms
+ ✓ tests/unit/simonDrill.test.ts > the help ladder > replays a missed chain on one rung, and only after a miss 0ms
+ ✓ tests/unit/simonDrill.test.ts > the help ladder > holds the card for as long as the replay takes, and no longer elsewhere 0ms
+ ✓ tests/unit/simonDrill.test.ts > the chain as it plays, a moment at a time > gives one moment per note, each carrying everything heard so far 1ms
+ ✓ tests/unit/simonDrill.test.ts > the chain as it plays, a moment at a time > hands back a list nothing else can edit 0ms
+ ✓ tests/unit/simonDrill.test.ts > the chain as it plays, a moment at a time > counts only the steps that sound something 0ms
+ ✓ tests/unit/simonDrill.test.ts > a missed chain comes back, on the ear-first rung > asks for the same chain again rather than ending the game 0ms
+ ✓ tests/unit/simonDrill.test.ts > a missed chain comes back, on the ear-first rung > scores the chain it reached, not the number of tries it took 0ms
+ ✓ tests/unit/simonDrill.test.ts > a missed chain comes back, on the ear-first rung > still ends: the game has as many cards as the chain has notes 0ms
+ ✓ tests/unit/simonDrill.test.ts > a missed chain comes back, on the ear-first rung > leaves the other rungs ending on the note that broke them 0ms
+ ✓ tests/unit/simonDrill.test.ts > a missed chain comes back, on the ear-first rung > follows the rung the learner is standing on when the note is played 0ms
+ ✓ tests/unit/simonDrill.test.ts > the same seed is the same game > draws the same chain twice, and not every seed the same chain 0ms
+ ✓ tests/unit/simonDrill.test.ts > the same seed is the same game > replays identically when it is played identically 0ms
+ ✓ tests/unit/simonDrill.test.ts > the score is the longest chain > survives the round trip through the stored best accuracy 0ms
+ ✓ tests/unit/simonDrill.test.ts > the score is the longest chain > passes on the chain rather than on a share of the cards 0ms
+ ✓ tests/unit/simonDrill.test.ts > the two catalog items play what they say > keeps the C major game on the white keys of one octave 2ms
+ ✓ tests/unit/simonDrill.test.ts > the two catalog items play what they say > starts each of the two on the rung its learner needs 0ms
+ ✓ tests/unit/simonDrill.test.ts > the two catalog items play what they say > lets the chromatic game use the black keys, and sits above it 1ms
+ ✓ tests/unit/simonDrill.test.ts > simonForStage > offers whichever of the two the plan would offer at that stage 1ms
+ ✓ tests/unit/simonDrill.test.ts > simonForStage > gives a learner below both of them the one they will meet first 0ms
+ ✓ tests/unit/simonDrill.test.ts > a Simon seeded from the blues scale > spells by interval, so the same key has two names 1ms
+ ✓ tests/unit/simonDrill.test.ts > a Simon seeded from the blues scale > draws only the six notes of the C blues scale, and the blue note turns up 2ms
+ ✓ tests/unit/simonDrill.test.ts > a Simon seeded from the blues scale > names each note as the scale spells it: F sharp in C, D sharp in A 1ms
+ ✓ tests/unit/simonDrill.test.ts > a Simon seeded from the blues scale > writes the staff in C minor with E flat, F sharp and B flat on one line 2ms
+ ✓ tests/unit/simonDrill.test.ts > a Simon seeded from the blues scale > names the blue note as the written C blues scale on the same rungs does 3ms
+ ✓ tests/unit/simonDrill.test.ts > a Simon seeded from the blues scale > is offered on the two rungs that teach the blue note, and named on their Simon button 8ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > has a row for each sentence put back on 2026-09-21 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > 1.4: this rung asks for a tempo of its own, and the scorer uses it 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > 4.4: this rung asks for more accuracy than the app-wide pass 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > 2.5: a rung that asks for 95 % is judged at 95 %, not at 90 % 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > technique.4: the articulation exercises come in pairs, legato and staccato, in C and in D 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > technique.4: the app measures how long you hold each key here 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > technique.5: the exercise states the distance a crescendo has to travel 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > technique.6: the top note at least 1.4 times the rest — the exercise’s own number 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > 2.1: the hands-together drill has a left hand in it 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > 2.5: the position-shift drill moves the hand up to the fifth and plays it again 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > theory.4: melodic dictation plays the two bars its row asks for 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > improv.4: *Answer the phrase* is drawn from the pentatonic, so every note belongs 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > jazz.5: the ii–V–I drill asks for shells: root, third and seventh, no fifth 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > jam: the form tracker shows the twelve bars and what each one is 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > theory.4: nothing on the card names the notes until the phrase has been answered 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > 3.3: the lab opens the minor vamp with its chords left to the learner 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > improv.4: the lab opens on I–vi–IV–V, the loop drill’s own four chords 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > improv.4: …with no right hand from the app, so that part is yours 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > chords-pop.5: the chord picker is open on this rung, so `ii7 V7 I` can be typed in 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > improv.6: the minor vamp opens here with its chords handed back 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > chords-pop.8: it opens on I–IV–V–I and leaves both the key and the chords to the learner 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > improv.8: it opens a ii–V–I with the chords handed back, so an approach chord can be typed in 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > blues.9: the lab opens holding the chords, so the harmony is under you 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > chords-pop.3: the lab plays the harmony and the tune is the learner’s 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > chords-pop.7: the colours are tried over a bed that is holding the chords 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > improv.4: the loop holds the chords and the line is the learner’s 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > jazz.4: the app takes the right hand, so the Charleston has gaps to find 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > jazz.5: there is a right hand above the shells rather than silence 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > jazz.6: the app takes the right hand and leaves the chords to the learner 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > chords-pop.9: the ballad hands back its chords and its left hand, and opens with the bed alone because it writes no right hand to hand over 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > jam.5: the twelve-bar bed opens on bass and drums alone, because that preset has no right hand to hand over and the chords are the learner's 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > 3.2: the app takes the right hand, so the smooth voicing has to be found in time 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > technique.7: Play it as a duet opens the two-against-three exercise, not a Czerny etude 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > blues.4: two of this rung’s items carry the word, and the rest do not 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > jazz.5: none of this rung’s pieces writes the word 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > ragtime.5: ragtime is played straight, and none of this rung’s scores says otherwise 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > jazz.7: *Accompaniment lab* opens it with nothing fixed 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > theory.7: *Accompaniment lab* opens it with nothing fixed 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > holiday.5: the Ladder is a control the learner turns on, not a button this rung carries 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > holiday.5: *Loop* is a score-screen control, and double-tapping the sheet marks the bars 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > holiday.5: *Ladder* raises the tempo after a clean pass and drops it after a pass with a mistake 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > holiday.6: *Perform* is one pass with no restarts and no loop, kept as a performance 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > holiday.6: *Play it blind* hides the notation and keeps following you 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > holiday.7: *Perform* is one pass, start to finish, with no restarts and no loop 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > holiday.7: *Hands* chooses which hand the app waits for 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > holiday.7: the rotation and four-to-a-note studies are left-hand exercises 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > hymns.4: *Play it as a duet* opens Amazing Grace in four parts, not whichever song comes first 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > hymns.4: …and gives you the right-hand staff while the app plays the other one 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > hymns.4: the *Duet* row plays the hand you are not on 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > hymns.4: *Hands* on the score screen chooses which hand the app waits for 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > hymns.5: *Free play* prints the chord once three or more notes are down 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > hymns.6: *Accompaniment lab* opens the ballad bed 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > hymns.6: …four chords with a broken-chord left hand and no right hand at all 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > hymns.6: …in whatever key you pick: the preset does not lock the key 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > hymns.6: *Perform* is one pass, start to finish, with no restarts and no loop 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > latin.6: the Ladder is a control the learner turns on, not a button this rung carries 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > latin.6: *Loop* takes the bars you mark, and double-tapping the sheet marks them 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > latin.6: *Ladder* raises the tempo after a clean pass and drops it after a pass with a mistake 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > latin.6: La Cumparsita part A is on the rung below, and part B is the one offered here 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > latin.7: *Perform* is one pass, start to finish, with no restarts and no loop 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > latin.7: *Hands* chooses which hand the app waits for 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > latin.7: the rotation and octave studies are left-hand, the four-to-a-note one right-hand 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > jam: tap *Chart* beside a song on this page 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > 0.4: your plan begins at the placed unit from then on 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > 1.2: the mode this lesson names is the one the Score screen shows 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > a lesson says only what the app does > technique.8: …and so is the other one 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the presets a lesson may point at > names only presets the lab has, and the free lab has no preset 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the presets a lesson may point at > gives a rung with two lab buttons two different things to open 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the presets a lesson may point at > never frees a picker the rung own preset does not lock 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the three rungs T14 built last say only what the app does > has a row for every sentence those lessons make about the app 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the three rungs T14 built last say only what the app does > jazz.3: Rhythm only judges your timing and not your notes, one tap per written note or chord 8ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the three rungs T14 built last say only what the app does > jazz.3: …and Tempo is the other control it asks for 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the three rungs T14 built last say only what the app does > jazz.3: Answer the phrase plays two bars from a five-note scale 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the three rungs T14 built last say only what the app does > jazz.3: …and wants them back note for note, which is imitation and not invention 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the three rungs T14 built last say only what the app does > jazz.3: no button on this rung opens anything 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the three rungs T14 built last say only what the app does > ragtime.9: Play it blind hides the notation, and the app still follows you and still marks what you play 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the three rungs T14 built last say only what the app does > ragtime.9: …and that is what the button on the lesson page says 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the three rungs T14 built last say only what the app does > ragtime.9: Perform is one pass start to finish, no restarts and no loop, kept as a performance rather than practice 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the three rungs T14 built last say only what the app does > ragtime.9: the rung carries the blind mode and nothing else 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the three rungs T14 built last say only what the app does > jam.7: the lab preset this rung opens is called Blues — twelve bars 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the three rungs T14 built last say only what the app does > jam.7: …and it is the one the rung points at 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the three rungs T14 built last say only what the app does > jam.7: Jam it is what starts it, and Trading fours is a setting on it 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the three rungs T14 built last say only what the app does > jam.7: …and 2 bars each is one of the two choices it offers 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the three rungs T14 built last say only what the app does > jam.7: it says whether you came in inside your own bars 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the three rungs T14 built last say only what the app does > jam.7: …and counts your notes against the blues scale, because this preset plays the twelve-bar form 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the three rungs T14 built last say only what the app does > jam.7: nothing there is recorded and nothing can be passed or failed 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the three rungs T14 built last say only what the app does > jam.7: every option on this rung gets a Chart beside it 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > carries a row for each of the three batches the second read covered 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 0.2: a missed find-key card is held for the two-second pause, not the 450 ms one 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 0.2: the find-key drill serves ten cards a set 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 0.3: the two modes this lesson names are what the mode picker calls them 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 0.3: the metronome is off until it is switched on, and it lives on a ⋯ row 3ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 0.3: both modes score the notes, and only a Keep tempo run measures tempo and can pass 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 0.3: mastery is 97 % at full tempo, on two different days 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 0.3: Duet is on out of the box, so choosing a hand does not silence the other 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 0.3: most drill kinds hold a missed card for the long pause, and a few do not 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 0.4: the placement test's items are in the order the lesson prints, chords fourth and the scale seventh 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 0.4: a placement start holds the rungs behind it back and gives them back when nothing is left in front 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 1.1: this rung's own pass is the 90 % and 80 % the lesson quotes 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 1.2: nothing on this rung asks for a held-length measure, so the lesson is right that the app does not score it 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 1.3: this rung's own pass is the 90 % and 80 % the lesson quotes 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 1.4: the left-hand sight-reading drill is on this rung and the treble one is on the next 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 1.4: this rung asks for 85 % of tempo, which is what its lesson now quotes 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > practice.1: the rhythm drill this rung offers is not a card drill, so it gets no going-over 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > practice.2: the Ladder moves one notch a pass and stops at the written tempo unless the learner set it higher 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 2.1: the hands-together drill puts a low C under the walk and asks for it to be held 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 2.1: the duet button opens the rung's first playable song with the right hand chosen 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 2.1: this rung's own pass is the 90 % and 80 % the lesson quotes 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 2.2: the sight-reading drill on this rung has eighths in its pool from the first phrase 18ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 2.3: the chord drill takes the three notes one at a time as readily as together 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 2.3: the rolled-chord count is computed and shown on no screen 24ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 2.3: the chord drill is ten cards, so the rung's twenty changes is two sets 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 2.5: the position-shift drill walks the home position and then the same walk from the fifth 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 2.5: Ode to Joy in G is on the very next core rung, and this rung already carries a G setting 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 2.5: the right-hand sight-reading drill was last seen three core rungs ago 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > hymns.2: the symbol-flash drill draws minors and sevenths, and no card times out 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 3.1: only the right-hand G and F scales are on this rung, and the left-hand ones are in the catalog 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 3.2: the rung has one root-position cadence, in G, three smooth ones, and a drill over all three keys 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 3.2: the lab preset this rung opens plays a plain V where the rung teaches V7 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 3.3: the rung's only A harmonic minor scale is the hands-together one 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 3.3: the lab opens the minor vamp in A minor with the key locked and the chord picker freed 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 3.4: the daily read starts from this rung’s two-hand phrase and changes one thing at a time — adding what a lesson has taught, such as a ledger line, a dotted rhythm or a key signature, or leaving out for a while a kind of note that keeps going wrong — never something untaught 10ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 3.4: the level-2 phrase spans middle C to the C above and no further 13ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 3.6: exactly one accompaniment exercise on this rung is hands together, and it is the broken one in A minor 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 3.6: the lab's Broken left hand is the Alberti order in quarters, not root–third–fifth–third 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 3.6: the lab offers six left hands and no waltz, and writes 4/4 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > chords-pop.3: the primary-chords preset fixes the chords and the left hand and leaves the key free 0ms
+ × tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them 14ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > theory.3: the cadence ear drill first appears on the next theory rung, at Stage 4 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > theory.3: a Simon chain of eight is what counts as having got it, five is only the pass 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > improv.3: the loop is this rung's own backing-track drill, four bars of C then two each of F and G at 72 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > hymns: the Library’s track filter prints the track’s title, and the hymn settings the lesson names are on that track 3ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.1: four keys similar over two octaves, C alone in contrary, and the missing ones exist in the catalog 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.2: one contrary scale on the rung, the rest in the catalog, and no contrary melodic minor anywhere 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.3: the inversion drill deals ten cards and nothing times them 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.4: Hanon 1–5 are on the rung and 6–10 exist in the catalog for the Library to find 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.5: the blues track starts at Stage 3 and its first rung already carries the shuffle 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.5: Rhythm only judges one tap per written note or chord, on any key 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.6: this is the second-to-last core rung and 4.7 is the last 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.6: the rung's one tool is Play it blind and it opens a piece with the notation hidden 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.6: Perform removes the restart and the loop and does not change the practice mode 3ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.6: one Für Elise setting is on the rung and the beginner one is only in the catalog 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: Blind is an unconditional toggle with no prior pass required 2ms
+ × tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot 3ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: the rung's blind rule is the lesson's, which the app does not judge, and what it counts is one song played from this rung 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > classical.4.shelf: four Chopin préludes and one Chopin waltz are on the shelf 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > classical.4.shelf: the three pieces named as Stage 8 are at level 8 and the easy nocturne is not 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > classical.4.shelf: the Passacaglia on the shelf is a Stage 6 piece, not one of the Stage 8 ones 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > classical.4.shelf: every composer the lesson names among the personal-build pieces is on the shelf 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > classical.4.shelf: beyond the named composers, exactly seven non-public-domain rows are left 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > classical.4.shelf: the nocturne on the shelf is the alternative edition and its first edition is not on it 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > classical.4.shelf: the placeholder's hint says to import your own copy and does not say where to get one 8ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.4: the rung's two tools are the blues lab with a locked walking bass and the duet button 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > theory.4: the dictation phrase is eight notes and its names are withheld until it is answered 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > theory.4: the inversion drill prints a slash chord and plays nothing 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > improv.4: Answer the phrase draws two bars from the pentatonic and wants them back in order 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > improv.4: the lab opens I–vi–IV–V with a broken left hand, no right hand, holding the chords 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > improv.4: the four-chord loop changes every bar and the I–IV–V loop three times in eight 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > jam: the form-tracker row asks for a chart, the drill reads it, and the loop is twelve bars in E 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > technique.4: the four articulation exercises state their own held-length target and the rung's other nine do not 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > classical.5: the written-out mordent is a Stage 5 rung's and the trill a Stage 6 rung's 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > classical.5: a clean pass takes the ladder up one notch and a pass with a mistake takes it down one 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > chords-pop.5: the ballad opens with a broken left hand, a free key and the chord picker handed back 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > jazz.5: the ii–V–I drill asks for root, third and seventh in the four keys the lesson names 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > jazz.5: the rung's lab is the two-five-one preset, walking bass locked, key free 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > ragtime.5: the rung's one tool is the duet button and it opens the waltz-bass Greensleeves 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > scout-surfaces: no boogie or stride exercise title names one hand while its row says both 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > carries a row for each of the two batches this run second-read 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > theory.5: the every-key chain starts at Stage 4, and Stage 3's chain is the white-key one 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > improv.5: Listen back is a tapped button that replays each note's own velocity at one fixed length 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > latin: both La Cumparsita parts, El Choclo, Carioquinha and Malagueña are under Latin in the Library 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > technique.5: the shaping exercise is measured against its own minVelocityRange, and the sheet line says the distance travelled and the share in the right direction 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > technique.5: exactly one exercise on this rung asks to be scored on a slope 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > technique.5: a flat line that jumps at the end passes the slope rule, and a line that only rises a little does not 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > technique.5: the slope is reported beside the accuracy and this rung does not make it a condition of passing 5ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > jam.5: the Charleston is written in E and A, and the off-beat and anticipated figures in G and D 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > ragtime.6: the score's tempo comes from the file, and the app's own default is used only when the file states none 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > ragtime.6: a clean pass moves the ladder up one notch and a pass with a mistake moves it down one, and it needs a loop in Keep tempo 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > technique.6: the 1.4 in the prose is the voicing exercise's own topNoteRatio, and the sheet line counts chords against it 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > blues.6: Pinetop's Boogie Woogie is levelled above every other option on the rung and still inside the rung's band 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > chords-pop.6: the rung's lab preset is the ballad, whose progression is I–vi–IV–V and locked, and whose key is not 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > theory.6: F aeolian is a card this rung's mode drill can deal, and the answer sheet engraves it in four flats with no accidental 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > improv.6: the rung frees the minor vamp's progression so ii7 V7 I can be typed there, and leaves its key locked 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > improv.6: ii7 and V7 are built with a third and a seventh and I is built as a plain triad 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > rock.6: Duet chooses what to play by hand and not by voice, so Moonlight's right-hand melody and arpeggio go together 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > rock.6: three of the four exercises are levelled below every song on the rung and the half-pedal one is above all of them 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > jam.6: a line of single notes names nothing and three notes held together name a chord, and an octave doubling is not a third note 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > jam.6: the twelve-bar preset writes a walking left hand, Jam it's bass is root then fifth, and E, A and D are settable keys 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > classical.7: no nocturne is on the rung and several are in the Library under Classical 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > classical.7: the rung offers two inventions and no waltz or nocturne, and the Library holds more of all three 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > ragtime.7: the Library holds two Maple Leaf editions, the rung's and the Humdrum one 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > technique.7: the half-pedal exercise is measured on its own ccRange and the sheet reports the share of messages inside it 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > technique.7: a pedal that only ever sends 0 and 127 is named as a switch rather than scored 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > technique.7: the Duet button here opens the two-against-three exercise, which has a hand for the app to take 3ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > jazz.7: this rung's lab button fixes nothing, and both ii7 V7 I and ii7 ♭II7 I parse as typed numerals 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > blues.7: Rhythm only is a Keep-tempo score setting and is not one of the rung's tools 3ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > chords-pop.7: the ninth drill deals only ninths, minor ninths and major ninths, and it is a kind that draws Show me and Hear it 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > chords-pop.7: the rung's two tools are Free play and the ballad lab, which opens holding the chords and reports a count without recording it 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > theory.7: the chord-scale drill names ionian for a major seventh and accepts only that scale, and three of its nine chords are major sevenths 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > theory.7: the rung's lab button fixes nothing, and V/V in C parses as a D chord 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > rock.7: the Rachmaninoff is the only one of the rung's three songs a public build cannot bundle 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > classical.8: the ladder's notch is a tenth of the written tempo each way and it stops at the written tempo 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > classical.8: a loop is set in whole printed bars, and the shortest one the screen can make is a single bar 3ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > ragtime.8: Euphonic Sounds is in no catalog row, and the rung's five Joplin rags come from one non-public-domain edition, with Pine Apple Rag also in a public-domain one 5ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > blues.8: Pinetop's Boogie Woogie is on this rung and on blues.6, and not on blues.7 in between 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > blues.8: the twelve-bar preset's every chord is a seventh and its form is locked, while its key is not; three typed numerals would rotate instead 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > chords-pop.8: the rung opens the one-four-five preset with its progression freed, so the chords and the key are both the learner's 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > improv.8: the rung opens the two-five-one preset with its progression freed, so a secondary dominant can be typed into it 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > chords-pop.9: the rung frees the ballad's progression and left hand and opens it on the bed alone, so a chart can be typed and three left hands tried over it 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > jazz.9: a blind run still follows and marks the player, and it is the one thing that hides Rhythm only 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > blues.9: the blues track has seven rungs, so this one is the point of six others 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > carries a row for each of the sentences this pass wrote 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > every rung: a rung that carries tools has a Tools for this rung paragraph that names every one of them, by the label the page draws 47ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > every rung: no lesson names a button its own rung does not draw 52ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > every rung: a lab tool that opens on Play the tune names a preset that has a right hand to hand over 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > every rung: a lab tool that opens on Hold the chords names a preset with a left-hand pattern to comp in 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > 4.1: the ladder opens the two-octave C major scale hands together 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > 4.2: the ladder opens the two-octave F major scale hands together — the one whose thumb waits for the fourth finger 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > 4.3: the flash cards are a prompt loop with no notation, so the ladder skips them and takes the written-out inversions 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > 4.4: the ladder opens Hanon No. 1 hands together, and a pass of it is about sixty beats 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > technique.4: the ladder opens the legato phrase in C, which is the first of this rung’s written-out exercises 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > technique.6: the ladder opens the four-octave A flat arpeggio hands together 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > technique.7: the ladder opens the broken-octave study in A, left hand — not the octave scale the paragraph used to name 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > 2.1: the duet opens a hands-together tune 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > 3.5: the duet opens Schumann’s Chorale from the Album for the Young 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > 3.6: the duet opens Greensleeves with its waltz bass 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > hymns: the duet opens When the Saints, which is why the lesson sends you to Amazing Grace from its own row 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > rock.overview: the duet opens the easy Canon in D 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > 4.7: the blind button opens the easy Für Elise, first of the rung’s three 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > classical.4: the duet opens the Sonatina in G, first of the rung’s five 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > classical.5: the duet opens the Clementi first movement 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > classical.6: the duet opens the Bach prelude, and the rung draws no blind button — which is why the lesson sends Blind to the ⋯ menu 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > classical.7: the duet names Invention No. 1, which is one of the rung’s own songs and opens as notation 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > classical.8: both buttons take the Rondo alla turca, first of the six 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > classical.9: the one button is blind, and it opens the first Ballade 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > ragtime.6: the one button is a duet, and it opens School of Ragtime 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > ragtime.7: both buttons take Maple Leaf Rag, and Solace is on the rung but not what they open 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > ragtime.8: the one button is blind, and it opens Pine Apple Rag — first of the rung’s seven 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > blues.5: the blind button opens Blues My Naughty Sweetie Gives to Me, first of the rung’s six 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > blues.6: the duet opens the easy Boogie 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > blues.7: the duet and the blind button both take the easy Boogie, first of the rung’s three 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > blues.8: the blind button opens Pinetop’s Boogie Woogie, first of the rung’s three 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > blues.9: the blind button opens Stumbling, first of the rung’s three 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > chords-pop.8: the blind button opens Isabella’s Lullaby, first of the rung’s six 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > chords-pop.9: the blind button opens Le Festin, first of the rung’s six 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > holiday.6: the blind button takes Carol of the Bells and not Silent Night, which the list above names first 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > jazz.6: the duet opens Bye Bye Blackbird 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > jazz.7: the duet opens the jazz setting of Jingle Bells 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > jazz.9: the blind button opens Take Five, first of the rung’s six 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > latin.3: no duet: the son clave over a pulse, the one option here with two staves, has no teaching-use decision, so the rung carries no duet tool and the lesson names none; the songs are printed on one staff each 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > latin: no duet: the tumbao-and-montuno groove, the rung’s two-staff exercise, has no teaching-use decision, so the rung carries no duet tool and the lesson names none; five of its six songs are printed on one staff 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > technique.5: the duet names the two-against-one exercise, where the right hand is the moving one and the left is the steady one 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > 2.3: the lab opens playing the tune, so the three chords under it are the learner’s — which is what this rung is marked on 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > chords-pop.4: the four-chord preset carries no way round of its own, and this rung — its only one — opens it playing the tune 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > jam: the lab opens on the bed alone — bass and drums, no chords — because comping is what this rung is for 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > holiday: the lab opens holding the chords, so the tune over them is the learner’s 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > improv.6: the minor vamp opens holding the chords with its progression handed back, so a typed two-five-one runs underneath 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > jam.6: the twelve-bar preset walks a bass and, holding the chords, comps on the backbeat rather than laying a second walking line over the first 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > theory.3: Simon opens the white-key chain around middle C, which this rung lists as an exercise 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > theory.4: from Stage 4 up Simon opens the every-key chain, and this rung lists it 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > theory.5: Simon opens the every-key chain, and this rung lists it 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > theory.6: Simon opens the every-key chain, and this rung lists it 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > theory.7: Simon opens the every-key chain, which this rung does not list among its five exercises — the lesson says so rather than implying it is one 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > theory.8: the one button is Simon, opening the every-key chain, which is not one of this rung’s five exercises 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > theory.9: the one button is Simon, and the sight-reading the lesson names is an exercise of the rung rather than a button 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > improv.5: Simon here names the blues-scale chain, which is one of the rung’s own exercises, and it lights the keys only after a miss 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > blues.3: Simon here names the same blues-scale chain, and the lab opens the twelve bars holding the changes 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > 3.2: Free play names three or more notes held together and says which one is in the bass 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > 3.3: Free play is on this rung, and an E7 without its raised third is a different chord to it 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > improv.7: the one button is Free play, and a stack of fourths is not a chord the namer has a word for 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > improv.9: the one button is Free play, and the rung offers no song for any other to open 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > jazz.8: the lab opens playing the tune and Free play is the other button, so a voicing with the root taken out can be held and named 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > improv.5: trading fours is a setting on Jam it and turns the way round off, so the bed does not hold the chords through the learner’s bars 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > improv.6: the trade counts the learner’s notes against the key’s own scale here, because the twelve-bar form is the only one counted against the blues scale 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > blues.9: the trade chips offer four bars each as well as two 0ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > F0: the corrected lessons say only what the app does > 2.4: in Rhythm only a tap too far from its eighth is marked wrong and never early, a tap close enough counts, and the timing line gives the early share 4ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > F0: the corrected lessons say only what the app does > 4.5: the app finds swing only in the words on the score and then expects each off-beat eighth two thirds of the way through the beat, and the lesson says so 2ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > F0: the corrected lessons say only what the app does > 4.5, jazz.3, jazz.4, jazz.5, blues.4: every lesson that gives the swung pair its two-thirds split calls it a first or a rough model, and none says the accent is what separates swing from a shuffle 4ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > F0: the corrected lessons say only what the app does > theory.5: the four seventh qualities are the four the rung drills, and the lesson says there are others and that the modes are colour 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > F0: the corrected lessons say only what the app does > theory.6: the 120 ms chord boundary is the app’s rule, said as the app’s, and the bass is not said to name the chord in an inversion 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > F0: the corrected lessons say only what the app does > theory.7: the chord-scale drill on this rung names ionian for a major seventh and expects F natural, and the lesson calls chord-scales one framework and states modulation by its cadence 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > F0: the corrected lessons say only what the app does > jazz.8: the rung's extension drill is elevenths and thirteenths on C, E flat, F and B flat, which is what the lesson now names 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > F0: the corrected lessons say only what the app does > blues.4: the twelve-bar material in C, F and G is the rung's three generated shuffles, and the lesson names them rather than the drill of that title 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > F0: the corrected lessons say only what the app does > blues.7: Rhythm and Boogie carries no swing or shuffle mark, so the app times it straight, and the lesson says so instead of calling it a shuffle 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > F0: the corrected lessons say only what the app does > 1.5: The Water Is Wide is named with no pace, while the app plays it at convert.py's default because the upload has no tempo of its own 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > F0: the corrected lessons say only what the app does > ragtime.6: The Easy Winners is ranked by no effort the three levels do not carry, and is named for the flats its file has most of 1ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > F0: the corrected lessons say only what the app does > ragtime.7: Sugar Cane is likened to Maple Leaf at no pace, while the catalogue and the app's tempo map both give the two one tempo 16ms
+ ✓ tests/unit/lessonClaimsAboutApp.test.ts > F0: the corrected lessons say only what the app does > 4.4: Hanon 1 to 5 are in 2/4, and the metronome clicks once per quarter-note beat, so four sixteenths go to each click 2ms
+ ✓ tests/unit/pdfLifecycle.test.ts > Timed while the page is hidden > 20 s, hidden 5 min, 10 s: three turns, the thirty seconds that were read 22ms
+ ✓ tests/unit/pdfLifecycle.test.ts > Timed while the page is hidden > turns nothing while hidden, nothing on waking, and gives the system back its whole interval 4ms
+ ✓ tests/unit/pdfLifecycle.test.ts > the metronome while the page is hidden > stops clicking when hidden and starts again when visible, if it was on 4ms
+ ✓ tests/unit/pdfLifecycle.test.ts > the metronome while the page is hidden > stays off on return when it was off 6ms
+ ✓ tests/unit/chordChartLifecycle.test.ts > the chord chart while the page is hidden > 20 s, hidden 5 min, 10 s: the chart reads 30 s into the form 117ms
+ ✓ tests/unit/chordChartLifecycle.test.ts > the chord chart while the page is hidden > goes silent while hidden and comes back on the bar it left, not ahead and not at bar 1 15ms
+ ✓ tests/unit/chordChartLifecycle.test.ts > the chord chart while the page is hidden > hidden and shown again and again, the chart has counted only the visible time 12ms
+ ✓ tests/unit/chordChartLifecycle.test.ts > the chord chart while the page is hidden > counts in again on return, holding the bar through the count 13ms
+ ✓ tests/unit/chordChartLifecycle.test.ts > the chord chart while the page is hidden > a count-off whose audio comes up after the page hid waits, then starts from the top 11ms
+ ✓ tests/unit/chordChartLifecycle.test.ts > the chord chart while the page is hidden > Stop, then hidden and shown, starts nothing 14ms
+ ✓ tests/unit/pdfScreenDetection.test.ts > PdfScreen: detecting a long book > draws the opening page before the rest of the book is detected, then persists once it is 137ms
+ ✓ tests/unit/labVerdictOnStop.test.ts > stopping a jam takes its verdicts with it > clears the time-round verdict, which the settings that produced it have moved on from 29ms
+ ✓ tests/unit/labVerdictOnStop.test.ts > stopping a jam takes its verdicts with it > clears the trade verdict beside it, and its data attribute with it 6ms
+ ✓ tests/unit/labVerdictOnStop.test.ts > stopping a jam takes its verdicts with it > still hides the trade line, which was already right 7ms
+ ✓ tests/unit/pdfScreenDetection.test.ts > PdfScreen: detecting a long book > does not re-detect a page whose cuts are already stored 79ms
+ ✓ tests/unit/pdfScreenDetection.test.ts > PdfScreen: detecting a long book > says so, and opens at the start, when a typed page number is past the end of the file 62ms
+ ✓ tests/unit/labLifecycle.test.ts > trading fours while the page is hidden > 20 s, hidden 5 min, 10 s: the trade clock reads 30 s 109ms
+ ✓ tests/unit/labLifecycle.test.ts > trading fours while the page is hidden > is never charged with bars it did not show, and drops the notes of the bar it cut 22ms
+ ✓ tests/unit/labLifecycle.test.ts > trading fours while the page is hidden > a jam whose audio comes up after the page hid waits, then starts from the top 15ms
+ ✓ tests/unit/labLifecycle.test.ts > trading fours while the page is hidden > a call cut off by hiding goes on from the bar it was in when the page comes back 19ms
+ ✓ tests/unit/chordChart.test.ts > the chord chart comps and advances on the very first bar > comps bar 1 as soon as it starts, not only from bar 2 onward 307ms
+ ✓ tests/unit/screenLifecycle.test.ts > the attempt clock counts visible time only > 20 s, hidden 5 min, 10 s is 30 s (Part 20 §4) 3ms
+ ✓ tests/unit/screenLifecycle.test.ts > the attempt clock counts visible time only > hidden and shown again and again, it adds up the visible spans and nothing else 1ms
+ ✓ tests/unit/screenLifecycle.test.ts > the attempt clock counts visible time only > a pagehide after the page went hidden is one hidden span, not two 0ms
+ ✓ tests/unit/screenLifecycle.test.ts > the attempt clock counts visible time only > restart is a new attempt; dispose stops it where it was 0ms
+ ✓ tests/unit/screenLifecycle.test.ts > the attempt clock counts visible time only > made while hidden, it starts counting when the page is first seen 0ms
+ ✓ tests/unit/screenLifecycle.test.ts > the attempt clock counts visible time only > goes with the screen it was made for 1ms
+ ✓ tests/unit/screenLifecycle.test.ts > onScreenSuspend > hidden once per hidden span, visible once per return, nothing after the screen goes 1ms
+ ✓ tests/unit/screenLifecycle.test.ts > onScreenSuspend > never calls visible while the document still says hidden 0ms
+ ✓ tests/unit/screenLifecycle.test.ts > the attempt clock and the session clock agree > over one screen’s visible and hidden time, both count the same visible milliseconds 62ms
+ ✓ tests/unit/drillLifecycle.test.ts > a card’s recorded time is visible time only (Part 20 §4) > a drill set: 20 s, hidden 5 min, 10 s is counted 30 s 96ms
+ ✓ tests/unit/drillLifecycle.test.ts > a card’s recorded time is visible time only (Part 20 §4) > a checklist: the same 30 s 4ms
+ ✓ tests/unit/dictationCard.test.ts > the drill marks the label that is the answer > sets labelIsAnswer on a dictation prompt, whose label is the note names 3ms
+ ✓ tests/unit/dictationCard.test.ts > the drill marks the label that is the answer > leaves it off a five-finger pattern, whose label gives nothing away 1ms
+ ✓ tests/unit/drillWalkthrough.test.ts > the guided tour runs rather than announcing itself > opens on the first step, running, with something to read and a way in 63ms
+ ✓ tests/unit/sessionClock.test.ts > the visible-time clock > visible time counts; hidden time and time after the screen is gone do not 135ms
+ ✓ tests/unit/sessionClock.test.ts > the visible-time clock > while visible, the clock writes as it goes, so a closed app keeps the time up to its last flush 62ms
+ ✓ tests/unit/dictationCard.test.ts > the drill screen keeps the answer off the card > draws the ear glyph, not the note names, before the phrase is played back 100ms
+ ✓ tests/unit/dictationCard.test.ts > the drill screen keeps the answer off the card > still shows a pattern card its own label 67ms
+ ✓ tests/unit/drillLifecycle.test.ts > a card’s recorded time is visible time only (Part 20 §4) > a placement test: the same 30 s 4ms
+ ✓ tests/unit/drillLifecycle.test.ts > a card’s recorded time is visible time only (Part 20 §4) > the guided tour: the same 30 s 4ms
+ ✓ tests/unit/drillWalkthrough.test.ts > the guided tour runs rather than announcing itself > keeps no room for a card it has nothing to draw in 60ms
+ ✓ tests/unit/drillWalkthrough.test.ts > the guided tour runs rather than announcing itself > never asks the learner to import anything 62ms
+ ✓ tests/unit/dictationCard.test.ts > the drill screen keeps the answer off the card > offers the replay that lets the phrase be heard again 62ms
+ ✓ tests/unit/chordChart.test.ts > the chord chart comps and advances on the very first bar > a one-bar chart still advances the chorus and comps every time round 312ms
+ ✓ tests/unit/chordChart.test.ts > a catalog tempo outside the bpm field's own 40-240 range > clamps a catalog tempo of 264 to 240, same as a manual edit would be 61ms
+ ✓ tests/unit/drillLifecycle.test.ts > the backing track’s chart and loop while hidden > 20 s, hidden 5 min, 10 s: the chart reads 30 s into the form 146ms
+ ✓ tests/unit/drillLifecycle.test.ts > the backing track’s chart and loop while hidden > holds the bar while hidden and comes back on it, neither ahead nor at bar 1 27ms
+ ✓ tests/unit/drillLifecycle.test.ts > the dictation ticker while hidden > does not tick while hidden, and ticks again once visible 8ms
+ ✓ tests/unit/drillLifecycle.test.ts > a Simon chain cut off by hiding (the reviewer’s ruling, §CL05) > asks the piano for nothing while hidden 11ms
+ ✓ tests/unit/drillLifecycle.test.ts > a Simon chain cut off by hiding (the reviewer’s ruling, §CL05) > comes back silent, scores nothing, says it was interrupted, and replays from the first note when asked 11ms
+ ✓ tests/unit/drillLifecycle.test.ts > a Simon chain cut off by hiding (the reviewer’s ruling, §CL05) > a drill opened while the page is already hidden sounds nothing, and waits on return like a cut-off chain 6ms
+ ✓ tests/unit/drillLifecycle.test.ts > a Simon chain cut off by hiding (the reviewer’s ruling, §CL05) > a feedback pause that ends while hidden moves nothing on and plays nothing 8ms
+ ✓ tests/unit/drillWalkthrough.test.ts > each step opens the real Score screen in its own mode > step one asks for Wait mode on the piece the catalog names 63ms
+ ✓ tests/unit/chordChart.test.ts > a catalog tempo outside the bpm field's own 40-240 range > clamps a catalog tempo of 31 to 40, same as a manual edit would be 62ms
+ ✓ tests/unit/chordChart.test.ts > the chart’s Back > is the Library when nothing says otherwise, which is every other door in 5ms
+ ✓ tests/unit/chordChart.test.ts > the chart’s Back > is the rung when a rung opened it, and says so on the button 5ms
+ ✓ tests/unit/chordChart.test.ts > the chart’s Back > carries the rung on through the no-chords dead end, so that Back comes here too 53ms
+ ✓ tests/unit/drillWalkthrough.test.ts > each step opens the real Score screen in its own mode > resumes on the next step when the learner comes back 125ms
+ ✓ tests/unit/drillWalkthrough.test.ts > each step opens the real Score screen in its own mode > the loops step arrives with two bars already looping 65ms
+ ✓ tests/unit/drillWalkthrough.test.ts > each step opens the real Score screen in its own mode > says what Back will do, which on the last step is finish rather than advance 63ms
+ ✓ tests/unit/drillWalkthrough.test.ts > each step opens the real Score screen in its own mode > advances even if the learner never comes back through Back 62ms
+ ✓ tests/unit/simonTurnCue.test.ts > the chain hands over in words, not only by going quiet > says it is the learner’s turn once the chain has finished 613ms
+ ✓ tests/unit/drillWalkthrough.test.ts > there is a way out of every step, and it can be run again > offers Start over once past the first step, and not before 64ms
+ ✓ tests/unit/drillWalkthrough.test.ts > there is a way out of every step, and it can be run again > finishes, records the run, and starts from the top the next time 123ms
+ ✓ tests/unit/drillWalkthrough.test.ts > there is a way out of every step, and it can be run again > records the finished tour as no measurement of playing, nothing left undone, and the rung that opened it 64ms
+ ✓ tests/unit/drillWalkthrough.test.ts > there is a way out of every step, and it can be run again > a tour begun from its rung and resumed after the Score screen is still judged by that rung 186ms
+ ✓ tests/unit/drillWalkthrough.test.ts > there is a way out of every step, and it can be run again > a checklist opened from no rung is judged by none, and its ticks are not an accuracy 63ms
+ ✓ tests/unit/drillWalkthrough.test.ts > there is a way out of every step, and it can be run again > the tour and the checklist store no tempo and no wrong notes they did not measure 124ms
+ ✓ tests/unit/simonTurnCue.test.ts > the chain hands over in words, not only by going quiet > names no note in it, so the cue is not a crib 559ms
+ ✓ tests/unit/drillWalkthrough.test.ts > there is a way out of every step, and it can be run again > Again on the sheet puts it back to the first step in place 63ms
+ ✓ tests/unit/drillWalkthrough.test.ts > there is a way out of every step, and it can be run again > a stored position past the end does not strand the tour 61ms
+ ✓ tests/unit/drillWalkthrough.test.ts > steps this version does not know > skips an unknown id rather than drawing a blank step 63ms
+ ✓ tests/unit/drillWalkthrough.test.ts > steps this version does not know > says so plainly when it knows none of them 61ms
+ ✓ tests/unit/drillWalkthrough.test.ts > the header Back is a way out of the tour and not back into the piece > leaves for the tab it came from rather than stepping back into the score 125ms
+ ✓ tests/unit/drillWalkthrough.test.ts > the header Back is a way out of the tour and not back into the piece > and a drill that was opened in one hop still goes back one hop 62ms
+ ✓ tests/unit/simonTurnCue.test.ts > the chain hands over in words, not only by going quiet > does not take a key pressed while the app is still playing as the answer 593ms
+ ✓ tests/unit/simonTurnCue.test.ts > the chain hands over in words, not only by going quiet > says it on the show-keys rung 561ms
+ ✓ tests/unit/simonTurnCue.test.ts > the chain hands over in words, not only by going quiet > says it on the keys-after-miss rung 564ms
+ ✓ tests/unit/simonTurnCue.test.ts > the chain hands over in words, not only by going quiet > says it on the ear-only rung 555ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 14 passed (15)
+      Tests  2 failed | 409 passed (411)

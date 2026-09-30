@@ -1,0 +1,38 @@
+# npx tsc -b: exit 0 (no output)
+# npm run lint: exit 0
+> pianopath@0.1.0 lint
+> eslint . --max-warnings=0
+# npx vitest run, the whole unit suite on the final tree: exit 1. A first run, before the setup below, also failed
+# midiParity (no reference) and taughtByAncestry (no build/rung-claims.json); `python tools/midi-cleanup/tests/
+# parity_reference.py` and a read-only copy of the main checkout's build/rung-claims.json put those two right.
+# The two left are lessonClaimsAboutApp cases that match "\n" literals against ScoreScreen.ts and style.css, both
+# CRLF in this worktree and untouched here; the last two lines run both predicates on the LF blobs git commits.
+     × blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them 13ms
+     × 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot 2ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+ Test Files  1 failed | 326 passed (327)
+      Tests  2 failed | 7568 passed | 5 skipped | 1 todo (7576)
+blues.3 ScoreScreen text on LF: true
+4.7 style.css text on LF: true
+# npm run build:app: exit 0
+✓ built in 1.93s
+precache  2242 entries (28990.29 KiB)
+# python tools/docs/checks_for_paths.py <the ten touched paths>: exit 0
+# checks for 10 path(s): 10 matched, 0 unmatched
+# app/src/ui/screenLifecycle.ts: app/src/**, app/src/ui/*.ts, app/src/ui/screenLifecycle.ts
+# app/src/ui/screens/DrillScreen.ts: app/src/**, app/src/ui/screens/DrillScreen.*
+# app/src/ui/screens/PdfScreen.ts: app/src/**, app/src/ui/screens/PdfScreen.ts
+# app/src/ui/screens/ChordChartScreen.ts: app/src/**, app/src/ui/screens/ChordChartScreen.ts
+# app/src/ui/screens/LabScreen.ts: app/src/**, app/src/ui/screens/LabScreen.*
+# app/tests/unit/screenLifecycle.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/drillLifecycle.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/pdfLifecycle.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/chordChartLifecycle.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/labLifecycle.test.ts: app/tests/unit/*.test.ts
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/app-shell.spec.ts tests/e2e/chart.spec.ts tests/e2e/drills-harmony.spec.ts tests/e2e/drills-review.spec.ts tests/e2e/drills.spec.ts tests/e2e/empty-states.spec.ts tests/e2e/feedback-placement.spec.ts tests/e2e/lab-both-ways.spec.ts tests/e2e/lab.spec.ts tests/e2e/landscape.spec.ts tests/e2e/modes-chart-from-a-lesson.spec.ts tests/e2e/modes-chart-from-the-score.spec.ts tests/e2e/modes-hold-the-chords.spec.ts tests/e2e/modes-lab-unlock.spec.ts tests/e2e/mounted-once.spec.ts tests/e2e/pdf-paper.spec.ts tests/e2e/pdf.spec.ts tests/e2e/session-run.spec.ts tests/e2e/tips.spec.ts tests/e2e/trading-fours.spec.ts tests/e2e/wide.spec.ts --workers=4

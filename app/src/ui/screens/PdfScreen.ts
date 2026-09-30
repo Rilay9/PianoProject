@@ -37,7 +37,7 @@ import {
   type CutMap,
   type PlannedSystem,
 } from '../../pdf/systemPlan';
-import { onScreenDispose } from '../screenLifecycle';
+import { onScreenDispose, onScreenSuspend, pageHidden } from '../screenLifecycle';
 import { button, el, openSheet } from '../widgets';
 import { BEATS_PER_BAR, DEFAULT_BARS_PER_SYSTEM, intervalMs, LEARN_MAX_MS, LEARN_MIN_MS } from '../../pdf/timing';
 export { DEFAULT_BARS_PER_SYSTEM, intervalMs, LEARN_MAX_MS, LEARN_MIN_MS, secondsPerSystem } from '../../pdf/timing';
@@ -267,6 +267,8 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
   function arm(): void {
     disarm();
     if (mode === 'manual') return;
+    // Nobody is reading a hidden page; visible arms it again (X15).
+    if (pageHidden()) return;
     timer = setTimeout(() => {
       if (disposed) return;
       if (mode === 'loop') draw();
@@ -337,9 +339,19 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
       metronome?.stop();
       return;
     }
+    await startClick();
+  }
+
+  /**
+   * The click, started — from the chip, and again when a hidden page comes
+   * back with it on (X15). Checked again after the audio has started: the
+   * page can hide, the chip be turned off or the screen go while it starts.
+   */
+  async function startClick(): Promise<void> {
     // Same reason as the Score screen: a timed page-turn without a pulse is a
     // page-turn you cannot play to.
     const context = await audioEngine.ensureStarted();
+    if (disposed || !metronomeOn || pageHidden()) return;
     metronome ??= new Metronome(context, {
       ...(audioEngine.masterGain ? { destination: audioEngine.masterGain } : {}),
     });
@@ -700,6 +712,26 @@ export function PdfScreen(router: Router, importId: string, openAtPage?: number)
       status.classList.add('status--error');
     }
   })();
+
+  /**
+   * Hidden stops the page turns and the click (X15, Part 19): Timed no longer
+   * turns pages nobody is reading, and no turn that was queued when the phone
+   * locked fires the moment it wakes. Visible re-arms from the system on
+   * screen — `arm()` takes its interval afresh, so the system the reader left
+   * gets its whole interval again rather than the remainder — and puts the
+   * click back if it was on.
+   */
+  onScreenSuspend(section, {
+    onHidden: () => {
+      disarm();
+      metronome?.stop();
+    },
+    onVisible: () => {
+      if (disposed) return;
+      if (mode !== 'manual') arm();
+      if (metronomeOn) void startClick();
+    },
+  });
 
   onScreenDispose(section, () => {
     disposed = true;
