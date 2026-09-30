@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **L120c** — `handoffs/e6c20b03.md` (respond in `responses/e6c20b03.md`). Sixteenths have an owner (Entry 156).
 - **U102** — `handoffs/35efb10e.md`, answered: APPROVE, closed. An unanswered set is not measured (Entry 162).
 - **G86a** — `handoffs/d5508d7b.md`, answered: APPROVE, closed, and G86 and U69 with it. A tap that could not start the sound says so and starts nothing (Entry 165).
 - **E51a** — `handoffs/70043128.md`, answered: APPROVE, closed, and E51 with it. The map names the merge's browser consumer, and the committed file says what its format holds (Entry 164).
