@@ -2010,6 +2010,19 @@ changed while paused restarted it. The chrome folds three seconds into a pause a
 into any run (the owner's *just always fade it*); one tap on the sheet brings back the `▶` the
 line names, and the line itself is in the stage's corner while the chrome is folded.
 
+**`▶` starts the sound as well as the run** (U69, 2026-09-29). A phone suspends the app's
+audio when the screen locks or a call comes in, and the app's own first-tap start is spent on
+the visit's first tap, so `▶` after a lock carried the run on silent. Now `▶` — a new run, a
+paused run carried on, the run asked for over *Hear it* — and `Space`'s start ask the audio to
+start inside the tap where it is not running, wait for it at most a second
+(`PLAY_SOUND_WAIT_MS`, chosen: long for a device starting its output, short for the button
+pressed most), with `▶` dimmed and `aria-busy` meanwhile, then start or carry on whether or
+not it answered: a start that never answers leaves the run as silent as it was, never a button
+that did nothing. A second tap in the wait does nothing, and `⏸` never waits. Not on the page
+coming back into view, which is not a tap: Android ignores a start made outside one. A key on
+a connected piano that starts a run is not a tap to the platform either, and does not ask.
+Scheduling and the context's state are tested in Chromium; *unverified on a device*.
+
 **The note waited for is named as the score writes it** (added 2026-09-25, T41). With *Name the
 note I am waiting for* on, a Wait for me run says *Waiting for E♭5*, or the chord low to high
 (*Waiting for B♭3 + D5*). It used to name each key from its MIDI number through a table of
@@ -2303,7 +2316,11 @@ cannot change anything now does nothing at all: it used to write the setting, re
 renderer and, since a re-engraving invalidates a run's judgements, **restart the run** — so a
 tap that changed nothing threw away the pass you were in the middle of.
 The controls are moved into the sheet and back, not rebuilt, so each keeps its state and its
-id.
+id. **The sheet goes with the screen** (G86, 2026-09-29): leaving the Score screen — `← Back`,
+a tab, the browser's back — closes an open `⋯` or tempo sheet, puts its rows back, and gives
+the page back. It used to stay: a sheet sits on `body`, outside what a route change clears,
+and holds the rest of the page inert until it closes, so Back left the Controls sheet over
+the Library with the Library out of reach beneath it.
 
 Notation area:
 - **Window layout, upright — two slots.** The stage holds two systems and they are two

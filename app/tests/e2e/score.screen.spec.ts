@@ -1116,3 +1116,100 @@ test.describe('a run interrupted by something else on the phone', () => {
     await expect(page.locator('#score-status')).not.toContainText('you were away');
   });
 });
+
+/**
+ * Back with one of the screen's own sheets open (G86).
+ *
+ * The ⋯ and tempo sheets sit on `body`, outside the `main` the app shell
+ * empties on a route change, and an open sheet makes every other child of
+ * `body` inert. The screen's closers for them were never read, so Back left
+ * the sheet over the next screen with that screen out of reach beneath it.
+ *
+ * The score is reached from the Library, so Back has somewhere to go. What
+ * is left behind is read through `page.evaluate`, never by clicking: a click
+ * on an inert control retries until the test's own timeout.
+ */
+test.describe('Back with a sheet open takes the sheet with it (G86)', () => {
+  async function scoreFromLibrary(page: Page): Promise<void> {
+    await page.goto('/#/library');
+    await expect(page.locator('.screen h1')).toHaveText('Library');
+    await page.evaluate((id) => {
+      window.location.hash = `#/score/${id}`;
+    }, ITEM);
+    await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-mode', /wait|tempo/, {
+      timeout: 60_000,
+    });
+    await expect(page.locator('#score-bar')).toHaveAttribute('data-visible', 'true');
+  }
+
+  async function backToTheLibrary(page: Page, sheet: string): Promise<void> {
+    await page.goBack();
+    await expect(page.locator('.screen h1')).toHaveText('Library');
+    await expect(page.locator(`#${sheet}`), 'the sheet left over the Library').toHaveCount(0);
+    const inert = await page.evaluate(() =>
+      Array.from(document.body.children)
+        .filter((node) => node instanceof HTMLElement && node.inert)
+        .map((node) => node.id || node.className),
+    );
+    expect(inert, 'children of body left out of reach').toEqual([]);
+  }
+
+  test('the ⋯ sheet', async ({ page }) => {
+    await scoreFromLibrary(page);
+    await openScoreMenu(page);
+    await backToTheLibrary(page, 'score-more-sheet');
+  });
+
+  test('the tempo sheet', async ({ page }) => {
+    await scoreFromLibrary(page);
+    await page.locator('#score-tempo-label').click({ timeout: 5_000 });
+    await expect(page.locator('#score-tempo-sheet')).toBeVisible();
+    await backToTheLibrary(page, 'score-tempo-sheet');
+  });
+});
+
+/**
+ * ▶ asks the sound to start (U69).
+ *
+ * A phone suspends the audio context when the screen locks or a call comes
+ * in. The engine's first-gesture start is one-shot, so once the visit's first
+ * tap has gone nothing on ▶'s path started the context again, and the run
+ * went on against a suspended one. Here the page's context is captured by
+ * wrapping the constructor before the app loads (no app hook), one ordinary
+ * tap spends the first-gesture start, the page suspends the context itself,
+ * and ▶ must bring it back to `running`.
+ *
+ * What this does not exercise: a phone. This Chromium starts and resumes
+ * contexts without a gesture (`score.hearIt.spec.ts`'s header), so neither
+ * Android's lock-screen suspend nor its rule that only a tap may resume is
+ * observed; that is unverified on a device.
+ */
+test.describe('▶ after the sound was suspended (U69)', () => {
+  type Captured = Window & { __contexts?: AudioContext[] };
+
+  test('▶ brings a suspended context back to running, and the run starts', async ({ page }) => {
+    await page.addInitScript(() => {
+      const Native = window.AudioContext;
+      const made: AudioContext[] = [];
+      (window as Captured).__contexts = made;
+      window.AudioContext = class extends Native {
+        constructor(options?: AudioContextOptions) {
+          super(options);
+          made.push(this);
+        }
+      };
+    });
+    await openScore(page);
+    const state = (): Promise<string> =>
+      page.evaluate(() => (window as Captured).__contexts?.[0]?.state ?? 'none');
+    await expect.poll(state, { message: 'the app made its context as the piece loaded' }).not.toBe('none');
+    // An ordinary tap on something that is not a control: the one-shot first-gesture start is spent.
+    await page.locator('#score-title').click({ timeout: 5_000 });
+    await expect.poll(state).toBe('running');
+    await page.evaluate(() => (window as Captured).__contexts?.[0]?.suspend());
+    await expect.poll(state).toBe('suspended');
+    await page.locator('#score-play').click({ timeout: 5_000 });
+    await expect.poll(state, { message: 'the context after ▶', timeout: 10_000 }).toBe('running');
+    await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-running', 'true');
+  });
+});

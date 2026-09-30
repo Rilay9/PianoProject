@@ -226,6 +226,13 @@ export interface MidiSource extends InputSource {
   clock; `Metronome` implementing the look-ahead scheduler pattern (25 ms timer, 100 ms
   look-ahead) so ticks are sample-accurate; count-in support.
 - AudioContext MUST be created/resumed on a user gesture (Android autoplay policy).
+- The app arms a one-shot start on the first interaction (`main.ts`,
+  `startOnFirstGesture`). A context the platform suspends later — a locked screen, a call;
+  `AudioEngine.watchState` publishes it — starts again only when a tap calls
+  `ensureStarted()`. On the Score screen `Hear it` (U67) and `▶` / `Space` (U69) do, inside
+  the gesture, where the engine is not running; `▶` waits at most `PLAY_SOUND_WAIT_MS` and then
+  goes on whether or not the start answered. Nothing resumes on `visibilitychange`, which is
+  not a gesture. Unverified on a device.
 
 ### 4.7 `audio/pitch/` — microphone note detection (`MicSource`)
 
