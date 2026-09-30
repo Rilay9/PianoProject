@@ -445,3 +445,5 @@ Approved. A PDF already has its PDF badge; dropping the false fallback word `son
 Measure and record it as planned. Do not drop the project badge, shorten the title, or touch U63's stylesheet from this seam. It does not block G96's offer/focus fix.
 
 G96 may dispatch.
+
+**Landed 2026-09-29** (Entry 168; 48bfc167, merged e279c31f); handoff `handoffs/48bfc167.md`.
