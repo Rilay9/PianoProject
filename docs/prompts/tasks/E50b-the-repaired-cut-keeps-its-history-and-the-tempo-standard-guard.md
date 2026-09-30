@@ -22,3 +22,4 @@ in-flight: dispatched 2026-09-30 (`E50b-the-repaired-cut-keeps-its-history-and-t
 state: dispatched 2026-09-30: dispatched at 827289d0, building (Entry 181)
 - landed 2026-09-30: merged d5c6491f; handoff `handoffs/65ae9d5f.md`
 - verdict 2026-09-30: APPROVE WITH ONE REQUIRED CHANGE — a fresh mastery transition must count only days whose tempo channel is comparable under the E50b rule; old `masteredOn` dates stay historical, never rewritten or demoted; the required change dispatched as `E50c-a-fresh-mastery-award-counts-only-comparable-days.md` (`responses/65ae9d5f.md`)
+- closed 2026-09-30: APPROVE — E50c satisfies E50b's required change: a fresh mastery award for a tempo-repaired item counts only comparable-tempo days, `masteredOn` kept as history; E50b closes with it (`responses/4a83af56.md`)
