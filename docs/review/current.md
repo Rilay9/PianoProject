@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **L120b** — `handoffs/c8680b70.md` (respond in `responses/c8680b70.md`). The reading and the gate (Entry 155).
 - **G86** — `handoffs/970fd770.md` (respond in `responses/970fd770.md`). The Score screen's sheets close with the screen, and play asks the audio to start (Entry 158).
 - **U96a** — `handoffs/0685c9e2.md` (respond in `responses/0685c9e2.md`). The drill end sheet's Answered row counts answered cards (Entry 161).
 - **F3a** — `handoffs/02a52fdb.md` (respond in `responses/02a52fdb.md`). Lesson sentences at their truth (Entry 157).
