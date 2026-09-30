@@ -89,9 +89,12 @@ After those: the full table; the refuting-test cells; exit codes; what is unveri
 
 **Entry.** The number is Entry 186. Every run file goes under `docs/prompts/runs/U113/`, with the entry at `docs/prompts/runs/U113/ENTRY.md`.
 
+**Landed 2026-09-30** (Entry 186; 7bba9b3b, merged 286d7cbf); handoff `handoffs/7bba9b3b.md`.
+
 ## Record
 
 lane: U113 · closes: U113 · entry: 186
 index: Look-ahead against the requested count: a measured table (four pieces × Bars 4/6/8 × two canonical phones) of the chooser's existing hard-floor behaviour and what one bar fewer would buy in look-ahead, three candidate observable rules and their mechanical consequences, one product question for the reviewer and the owner — no chooser change (backlog U113, P2) | app | brief drafted 2026-09-30 (`U113-look-ahead-against-the-requested-count.md`); with the reviewer before dispatch; Entry 186 |
 in-flight: brief drafted 2026-09-30 (`U113-look-ahead-against-the-requested-count.md`): U32's required-change ruling gave the hard ordering (no distortion → frozen run → look-ahead → requested count) and the hard staff floor, but named no second "comfortable" threshold at which the chooser should trade requested bars for extra look-ahead while still above the floor (`responses/questions-26a913fe.md` §1, superseding the narrower `responses/2f67b047.md` Q2 wording); this lane measures every canonical piece at Bars 4/6/8 on both canonical phones against `main`'s unchanged chooser (verified identical to U32a's settled shapes at rest), checks whether U32a's own Nocturne-at-Bars-8 picture is the existing floor rule or a genuine instance of the open question, and hands the reviewer and owner the table, three candidate observable rules and one product question — no comfort number in code before the ruling; with the reviewer before dispatch (Entry 186).
 state: dispatched 2026-09-30: dispatched at 36be5a50, building (Entry 186)
+- landed 2026-09-30: merged 286d7cbf; handoff `handoffs/7bba9b3b.md`

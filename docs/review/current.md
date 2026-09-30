@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **U113** — `handoffs/7bba9b3b.md` (respond in `responses/7bba9b3b.md`). Look-ahead against the requested count: 24 cells measured, one trade and no strict gain, and the owner's question (Entry 186).
 - **E50c** — `handoffs/4a83af56.md` (respond in `responses/4a83af56.md`). A fresh mastery award counts only comparable days (Entry 190).
 - **U66** — `handoffs/342e88e7.md` (respond in `responses/342e88e7.md`). A stall is not a miss: a note stamped inside its window is judged by its stamp, whatever the main thread was doing (Entry 176).
 - **U105a** — `handoffs/d0e1b01f.md` (respond in `responses/d0e1b01f.md`). A refused summary control says so on the summary, sideways too (Entry 182).
