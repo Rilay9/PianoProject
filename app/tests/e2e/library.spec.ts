@@ -87,6 +87,11 @@ test.describe('Library', () => {
     const row = page.locator('.list-row[data-item="import.two-systems"]');
     await expect(row).toBeVisible();
     await expect(row).toContainText('pages, not notes');
+    // G96: the detail line names no type — it said "song", the type every import shares — and keeps the
+    // level; the badge beside it says what the row is.
+    const line = row.locator('.list-row__metatext');
+    await expect(line).not.toContainText('song');
+    await expect(line).toHaveText(/^≈ L\d+\.\d$/);
 
     await row.click();
     await expect(page).toHaveURL(/#\/pdf\/import\.two-systems/);
@@ -450,6 +455,40 @@ test.describe('the learner’s project in the Library (G85)', () => {
       return rows.map((one) => ({ id: one.id, state: one.state }));
     });
     expect(stored).toEqual([{ id: key, state: 'paused' }]);
+  });
+
+  /**
+   * G96 (the G85a review's ruling, `responses/9c64a9c1.md`): *Keep it playable* is the maintenance of
+   * something already learned, so a song never played is offered three ways in from Details' door; and
+   * after an action and *Close*, focus is back on the piece's row — the one the store's write drew again
+   * behind the sheet — not on the page.
+   */
+  test('a song never played: Details’ door offers three ways in, no Keep it playable; after Learn this and Close, focus is on its row (G96)', async ({ page }) => {
+    await page.goto('/#/library');
+    await expect(page.locator('#library-count')).toContainText(/of \d+ items/);
+    await page.locator('#library-search').fill('hot cross');
+    const row = page.locator(`#library-list .list-row[data-item="${ITEM}"]`);
+    await expect(row).toBeVisible();
+    await row.getByRole('button', { name: 'Details' }).click();
+    await page.locator('#library-detail #library-detail-project').click();
+    await expect(page.locator('#project-state')).toHaveText('Not a project yet');
+    await expect(page.locator('#project-met')).toHaveText('You have never opened it.');
+    // Soft, so the focus below is observed on the committed build too.
+    await expect.soft(page.locator('#project-actions button')).toHaveText(['Save for later', 'Learn this', 'Prepare it for performance']);
+    await page.locator('#project-action-learn').click();
+    await expect(page.locator('#project-state')).toHaveText(`Learning since ${today()}`);
+    // The Library behind the sheet drew the row again: the badge is the new row's.
+    await expect(row.locator('.badge[data-project]')).toHaveText('Learning');
+    await page.locator('#project-sheet-close').click();
+    await expect(page.locator('#project-sheet')).toHaveCount(0);
+    const focused = (): Promise<string> =>
+      page.evaluate((id) => {
+        const active = document.activeElement;
+        if (!active || active === document.body) return 'the body';
+        const inRow = active.closest(`#library-list .list-row[data-item="${id}"]`) !== null;
+        return `${inRow ? 'in the row' : 'elsewhere'}: ${active.tagName.toLowerCase()} “${(active.textContent ?? '').trim().slice(0, 30)}”`;
+      }, ITEM);
+    await expect.poll(focused).toBe('in the row: button “Details”');
   });
 });
 

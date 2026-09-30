@@ -366,6 +366,40 @@ test('a piece paused on its sheet is on no row of the thin card, nor asked for b
   await expect(waits.locator('.list-row__sub')).toHaveText('This lesson waits on pieces you paused or put away — more from this lesson');
 });
 
+// G96 (the G85a review's ruling, `responses/9c64a9c1.md`): on a piece the record says is passed, Progress's
+// *Make it a project* opens the sheet on its four ways in, *Keep it playable* among them; and after it and
+// *Close*, focus is on the piece's new project row — Progress drew the list again behind the sheet, so the
+// *Make it a project* it opened from is gone. The pass is seeded a day back, as the G1d case seeds.
+test('Make it a project on a passed piece offers Keep it playable; after it and Close, focus is on the piece’s new project row (G96)', async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.setViewportSize({ width: 342, height: 740 });
+  const at = new Date(Date.now() - 86_400_000).toISOString();
+  await page.goto('/');
+  await expect(page.locator('#today-card .list-row').first()).toBeVisible({ timeout: 30_000 });
+  await putRows(page, {
+    sessions: [{ itemId: ITEM, lessonId: '0.3', mode: 'tempo', tempoPct: 100, tempoMeasured: true, accuracy: 0.98, accuracyEstimated: false, wrongNotes: 0, missed: 0, durationMs: 120_000, at }],
+    progress: [{ itemId: ITEM, status: 'passed', bestAccuracy: 0.98, bestTempoPct: 100, attempts: 1, lastPracticedAt: at, minutes: 2, passedOn: [at.slice(0, 10)] }],
+  });
+  await page.goto('/#/progress');
+  await page.reload();
+  await expect(page.locator('#progress-projects')).toHaveAttribute('data-drawn', 'true', { timeout: 30_000 });
+  await page.locator(`#progress-projects [data-offer][data-item="${ITEM}"]`).getByRole('button', { name: 'Make it a project' }).click();
+  await expect(page.locator('#project-state')).toHaveText('Not a project yet');
+  await expect(page.locator('#project-actions button')).toHaveText(['Save for later', 'Learn this', 'Prepare it for performance', 'Keep it playable']);
+  await page.locator('#project-action-keep').click();
+  await expect(page.locator('#project-state')).toHaveText(`Keeping it playable since ${today()}`);
+  await expect(page.locator(`#progress-projects [data-project][data-item="${ITEM}"]`)).toHaveCount(1);
+  await page.locator('#project-sheet-close').click();
+  await expect(page.locator('#project-sheet')).toHaveCount(0);
+  const focused = (): Promise<string> =>
+    page.evaluate((id) => {
+      const active = document.activeElement;
+      if (!active || active === document.body) return 'the body';
+      return active.matches(`#progress-projects [data-project][data-item="${id}"]`) ? 'the project row' : `elsewhere: ${active.tagName.toLowerCase()} “${(active.textContent ?? '').trim().slice(0, 30)}”`;
+    }, ITEM);
+  await expect.poll(focused).toBe('the project row');
+});
+
 /** What a box looks like, as the browser computed it: the face and size, the box, the border and its corners. */
 async function look(page: Page, selector: string): Promise<Record<string, unknown>> {
   return page.locator(selector).evaluate((node) => {

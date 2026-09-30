@@ -52,7 +52,7 @@ import {
   setProjectNotes,
   type ProjectTarget,
 } from '../../src/data/projectStore';
-import { allProgress, contact, getProgress, learnedPieces, recordRun, resetProgressForTest, rungRows, type RunResult } from '../../src/data/progressStore';
+import { allProgress, contact, getProgress, learnedPieces, recordRun, resetProgressForTest, rungRows, selfPass, type RunResult } from '../../src/data/progressStore';
 import { familiarityIn, historyFor, recordEncounter, resetEncountersForTest } from '../../src/data/encounterStore';
 import { materialKey, materialOfItem, textIdentity } from '../../src/curriculum/material';
 import { exportAll, importAll } from '../../src/data/backup';
@@ -264,14 +264,22 @@ const TABLE: Record<ProjectState | 'none', ProjectAction[]> = {
   retired: ['bring-back'],
 };
 const EVERY_ACTION: ProjectAction[] = ['save', 'learn', 'polish', 'ready', 'performed', 'keep', 'bring-back', 'pause', 'retire'];
+/**
+ * The one entry of the table offered only for a piece the record says is passed (G96; the reviewer's
+ * ruling, `responses/9c64a9c1.md`, and its approval, `responses/questions-71bd6cee.md`): *Keep it
+ * playable* from no project. Every other entry is offered for any piece.
+ */
+const NEEDS_A_PASS: ProjectAction[] = ['keep'];
+/** What the table offers from a state to a piece with no pass on the record. */
+const offeredUnpassed = (state: ProjectState | 'none'): ProjectAction[] => (state === 'none' ? TABLE.none.filter((action) => !NEEDS_A_PASS.includes(action)) : TABLE[state]);
 
-/** The shortest path of offered actions from no project to each state. */
+/** The shortest path of offered actions from no project to each state, for a piece with no pass. */
 function pathsFromNothing(): Map<ProjectState, ProjectAction[]> {
   const paths = new Map<ProjectState, ProjectAction[]>();
   const queue: { state: ProjectState | 'none'; path: ProjectAction[] }[] = [{ state: 'none', path: [] }];
   while (queue.length > 0) {
     const { state, path } = queue.shift() as { state: ProjectState | 'none'; path: ProjectAction[] };
-    for (const action of TABLE[state]) {
+    for (const action of offeredUnpassed(state)) {
       const next = ACTION_STATE[action];
       if (paths.has(next)) continue;
       paths.set(next, [...path, action]);
@@ -282,10 +290,19 @@ function pathsFromNothing(): Map<ProjectState, ProjectAction[]> {
 }
 
 describe('the transitions table: every action from every state the sheet offers it, and nothing else', () => {
-  it('the offers are the table, the states Part 27’s eight, and every action enters the state it names', () => {
+  // Revised (G96, class replace): the table still holds every transition there is, *Keep it playable*
+  // from no project among them, and the offers are the table's row — except that entry, offered only
+  // where the piece is passed. Old assumption: every action in `OFFERS.none` is offered for any piece.
+  it('the offers are the table, from no project Keep it playable only for a piece passed; the states Part 27’s eight, and every action enters the state it names', () => {
     expect(PROJECT_STATES).toEqual(['saved', 'learning', 'polishing', 'performance-ready', 'maintaining', 'refreshing', 'paused', 'retired']);
     expect(OFFERS).toEqual(TABLE);
-    expect(actionsFor(undefined)).toEqual(TABLE.none);
+    expect(actionsFor(undefined, true)).toEqual(TABLE.none);
+    expect(actionsFor(undefined, false)).toEqual(['save', 'learn', 'polish']);
+    // With a project, whether the piece is passed changes nothing: the ruling is about no project.
+    for (const state of PROJECT_STATES) {
+      expect(actionsFor(state, false), state).toEqual(TABLE[state]);
+      expect(actionsFor(state, true), state).toEqual(TABLE[state]);
+    }
     expect(ACTION_STATE).toEqual({
       save: 'saved',
       learn: 'learning',
@@ -304,9 +321,12 @@ describe('the transitions table: every action from every state the sheet offers 
     expect(into('refreshing')).toEqual(['maintaining', 'paused', 'retired']);
   });
 
+  // Revised (G96, class replace): on a piece with no pass, as the minuet here has — so from no project
+  // *Keep it playable* is among the refused (its offer on a passed piece is the describe below). Old
+  // assumption: `keep` from `none` is accepted for any piece.
   const paths = pathsFromNothing();
   for (const from of ['none', ...PROJECT_STATES] as (ProjectState | 'none')[]) {
-    it(`from ${from}: each offered action moves the project and appends one line; every other action is refused and writes nothing`, async () => {
+    it(`from ${from}, on a piece with no pass: each offered action moves the project and appends one line; every other action is refused and writes nothing`, async () => {
       for (const action of EVERY_ACTION) {
         useFakeIndexedDb();
         resetProjectsForTest();
@@ -316,7 +336,7 @@ describe('the transitions table: every action from every state the sheet offers 
         const before = await projectFor(MINUET);
         expect(before?.state).toBe(from === 'none' ? undefined : from);
         const when = tick();
-        if (TABLE[from].includes(action)) {
+        if (offeredUnpassed(from).includes(action)) {
           const after = await applyProjectAction(MINUET, action, { at: when });
           expect(after.state, `${from} → ${action}`).toBe(ACTION_STATE[action]);
           expect(after.since).toBe(when.toISOString());
@@ -342,6 +362,87 @@ describe('the transitions table: every action from every state the sheet offers 
     // A date belongs only to I performed it.
     await expect(applyProjectAction(MINUET, 'pause', { at: new Date(EVENING), performedOn: '2026-09-27' })).rejects.toThrow(/performed/);
     expect((await projectFor(MINUET))?.history).toHaveLength(3);
+  });
+});
+
+// ---------------------------------------------------------------------------------------------------
+
+/**
+ * G96 (the reviewer's ruling, `responses/9c64a9c1.md`, and its approval, `responses/questions-71bd6cee.md`):
+ * *Keep it playable* is the maintenance of something already learned, so from no project it is offered
+ * only where the record says the piece is passed — its progress row `passed` or `mastered`, a self-pass
+ * included, under the item's own id — and the store refuses it otherwise, whoever asks. It reads that
+ * itself: no caller says "passed".
+ */
+describe('from no project, Keep it playable only for a piece the record says is passed; the store refuses it otherwise (G96)', () => {
+  it('(a) no project and no progress row: refused, no project made, nothing written anywhere', async () => {
+    const stores = await everyOtherStore();
+    await expect(applyProjectAction(MINUET, 'keep', { at: new Date(NOON) })).rejects.toThrow(/not offered/);
+    expect(await projectFor(MINUET)).toBeUndefined();
+    expect(await allProjects()).toEqual([]);
+    expect(await everyOtherStore()).toEqual(stores);
+  });
+
+  it('(b) a run that did not pass, and a pass under another id of the same file: refused', async () => {
+    await recordRun(runOf(SONG, file('m'), { accuracy: 0.5, passed: false }), new Date(YESTERDAY));
+    expect((await getProgress(SONG)).status).toBe('started');
+    await expect(applyProjectAction(MINUET, 'keep', { at: new Date(NOON) })).rejects.toThrow(/not offered/);
+    expect(await projectFor(MINUET)).toBeUndefined();
+    // Keyed by the item's own id, as Progress reads it: the copy's pass is the copy's.
+    await recordRun(runOf(SONG_COPY, file('m')), new Date(YESTERDAY));
+    expect((await getProgress(SONG_COPY)).status).toBe('passed');
+    await expect(applyProjectAction(MINUET, 'keep', { at: new Date(NOON) })).rejects.toThrow(/not offered/);
+    expect(await allProjects()).toEqual([]);
+  });
+
+  it('(c) after a passed run: accepted, kept playable, one line in the history', async () => {
+    await recordRun(runOf(SONG, file('m')), new Date(YESTERDAY));
+    const kept = await applyProjectAction(MINUET, 'keep', { at: new Date(NOON) });
+    expect(kept).toMatchObject({ itemId: SONG, state: 'maintaining', since: NOON, history: [{ state: 'maintaining', at: NOON, why: 'keep' }] });
+    expect(kept.history).toHaveLength(1);
+  });
+
+  it('(d) after I already know this (a self-pass): accepted', async () => {
+    await selfPass(SONG, new Date(YESTERDAY));
+    expect((await applyProjectAction(MINUET, 'keep', { at: new Date(NOON) })).state).toBe('maintaining');
+  });
+
+  it('(e) a mastered row: accepted', async () => {
+    await recordRun(runOf(SONG, file('m'), { masterEligible: true }), new Date(TWO_YEARS_AGO));
+    await recordRun(runOf(SONG, file('m'), { masterEligible: true }), new Date(YESTERDAY));
+    expect((await getProgress(SONG)).status).toBe('mastered');
+    expect((await applyProjectAction(MINUET, 'keep', { at: new Date(NOON) })).state).toBe('maintaining');
+  });
+
+  it('(f) Save for later, Learn this and Prepare it for performance on a piece never played: accepted, as before', async () => {
+    for (const [index, action] of (['save', 'learn', 'polish'] as ProjectAction[]).entries()) {
+      const piece = target(`song.never.${action}`, file(String(index)));
+      expect((await applyProjectAction(piece, action, { at: new Date(NOON) })).state).toBe(ACTION_STATE[action]);
+    }
+  });
+
+  it('(g) Keep it playable from learning, ready to perform and bringing it back, on a piece never played: accepted, as before', async () => {
+    const from: [ProjectState, ProjectAction[]][] = [
+      ['learning', ['learn']],
+      ['performance-ready', ['polish', 'ready']],
+      ['refreshing', ['learn', 'pause', 'bring-back']],
+    ];
+    let at = Date.parse(NOON);
+    for (const [index, [state, path]] of from.entries()) {
+      const piece = target(`song.never.${state}`, file(String(index)));
+      for (const step of path) await applyProjectAction(piece, step, { at: new Date((at += 60_000)) });
+      expect((await projectFor(piece))?.state).toBe(state);
+      expect((await applyProjectAction(piece, 'keep', { at: new Date((at += 60_000)) })).state, state).toBe('maintaining');
+    }
+  });
+
+  it('(h) the read writes nothing: every other store the same after an accepted and a refused Keep it playable', async () => {
+    await recordRun(runOf(SONG, file('m')), new Date(YESTERDAY));
+    const stores = await everyOtherStore();
+    await applyProjectAction(MINUET, 'keep', { at: new Date(NOON) });
+    await expect(applyProjectAction(target('song.never', file('n')), 'keep', { at: new Date(NOON) })).rejects.toThrow(/not offered/);
+    expect(await everyOtherStore()).toEqual(stores);
+    expect((await allProjects()).map((row) => row.itemId)).toEqual([SONG]);
   });
 });
 
@@ -485,12 +586,16 @@ describe('never the bridge, never the source (the brief’s item 3; its refuting
     const stores = await everyOtherStore();
     let at = Date.parse(NOON);
     for (const [index, action] of (['save', 'learn', 'polish', 'ready', 'performed', 'keep', 'bring-back', 'pause', 'retire'] as ProjectAction[]).entries()) {
-      // Each on a piece of its own, then the minuet walked through the table.
+      // Each on a piece of its own, then the minuet walked through the table. Revised (G96, class
+      // replace): the pieces have no pass, so the path into kept playable is *Learn this* then *I
+      // performed it*, and the minuet — passed yesterday — ends its walk with *Keep it playable*, so the
+      // action is still taken here. Old assumption: `keep`'s path from nothing was `['keep']` on a piece
+      // with no pass.
       const piece = target(`song.${action}`, file(String(index)));
       const path = pathsFromNothing().get(ACTION_STATE[action]) as ProjectAction[];
       for (const step of path) await applyProjectAction(piece, step, { at: new Date((at += 60_000)) });
     }
-    for (const step of ['learn', 'polish', 'ready', 'performed', 'bring-back', 'pause', 'retire', 'bring-back'] as ProjectAction[]) {
+    for (const step of ['learn', 'polish', 'ready', 'performed', 'bring-back', 'pause', 'retire', 'bring-back', 'keep'] as ProjectAction[]) {
       await applyProjectAction(MINUET, step, { at: new Date((at += 60_000)), ...(step === 'performed' ? { performedOn: '2026-09-28' } : {}) });
     }
     await setProjectNotes(materialKey(file('m'), SONG), { goal: 'a goal', problem: 'a problem' });

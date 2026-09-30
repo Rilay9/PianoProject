@@ -1507,6 +1507,7 @@ out.
   An import's detail line names where its notes came from (*read from the file*, *converted from
   MIDI*) in place of the type every import shares, and a state line under it says whose the hands
   are, whether it is measured, and whether the tempo is the app's guess (X3).
+  A PDF's line names no type: its badge, *PDF · pages, not notes*, says what it is (G96).
   A MusicXML file in the timewise form is kept as its partwise twin (X3e): its sheet, its
   measurement, its swap, a stated tempo and the Score screen read it as the same file written
   partwise.
@@ -2454,8 +2455,16 @@ Notation area:
   playable · Bring it back · Pause · Put it away*, the table in Entry 138); and once there is a
   project, *This week's goal*, *The problem right now* and *Sections* (*Bars [ ] to [ ]*,
   *Name*, *Add section*; *Bars run from 1 to N.* where a section falls outside the piece).
+  From no project, *Keep it playable* is offered only for a piece the learner has passed — its
+  progress row passed or mastered, *I already know this* included — and the store refuses it
+  otherwise; *Save for later*, *Learn this* and *Prepare it for performance* are offered before
+  any run. The offers are drawn once the sheet has read the record, and a pass stored while the
+  sheet is open brings *Keep it playable* in (G96).
   Opening it writes nothing; every change is the learner's choice; messages sit inside the sheet
-  (R6); leaving the screen that opened it closes it. The words are `help.ts`'s `PROJECT_TEXT`.
+  (R6); leaving the screen that opened it closes it. Closing a sheet gives focus back to the
+  control that opened it, or, where the screen drew its list again behind the sheet, to that
+  piece's row as the list shows it now (the opener names it; the sheet searches nothing; G96).
+  The words are `help.ts`'s `PROJECT_TEXT`.
 
   **The sheet says only what the run measured (2026-09-25, T37).** The rule is the
   reviewer's: never display or record evidence the engine did not measure.

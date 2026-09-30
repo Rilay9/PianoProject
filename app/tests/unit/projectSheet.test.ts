@@ -114,18 +114,46 @@ afterEach(() => {
   clearFakeIndexedDb();
 });
 
+/** Whether a *Keep it playable* button is, or ever was, among what the page added while this watched. */
+function watchForKeep(): { seen: () => boolean; stop: () => void } {
+  let seen = false;
+  const holdsKeep = (node: Node): boolean =>
+    node instanceof Element && (node.matches('[data-action="keep"]') || node.querySelector('[data-action="keep"]') !== null);
+  const observer = new MutationObserver((records) => {
+    for (const record of records) for (const node of record.addedNodes) if (holdsKeep(node)) seen = true;
+    if (document.querySelector('#project-actions [data-action="keep"]')) seen = true;
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+  return {
+    seen: () => {
+      for (const record of observer.takeRecords()) for (const node of record.addedNodes) if (holdsKeep(node)) seen = true;
+      return seen || document.querySelector('#project-actions [data-action="keep"]') !== null;
+    },
+    stop: () => observer.disconnect(),
+  };
+}
+
+/** A few turns of the event loop: long enough for any read still in flight to have answered and drawn. */
+const settle = (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 60));
+
+const THREE = ['Save for later', 'Learn this', 'Prepare it for performance'];
+
 describe('the sheet for a piece with no project', () => {
-  it('names the piece, says it is no project yet, offers four ways in, says it was never opened, and writes nothing', async () => {
+  // Revised (G96 (i), class replace): the offers from no project follow the record — a piece never
+  // opened is not offered *Keep it playable*, at any moment while the sheet's reads answer. Old
+  // assumption: four ways in for any piece (`OFFERS.none`).
+  it('names the piece, says it is no project yet, offers three ways in — no Keep it playable, ever drawn — says it was never opened, and writes nothing', async () => {
+    const keep = watchForKeep();
     await open();
+    await vi.waitFor(() => expect(actions()).toEqual(['save', 'learn', 'polish']));
+    await settle();
+    keep.stop();
+    expect(keep.seen(), 'a Keep it playable button was drawn while the reads answered').toBe(false);
+    expect(document.getElementById('project-action-keep')).toBeNull();
     expect(document.querySelector('#project-sheet h2')?.textContent).toBe('Hot Cross Buns');
     expect(text('project-state')).toBe('Not a project yet');
-    expect(actions()).toEqual(['save', 'learn', 'polish', 'keep']);
-    expect([...document.querySelectorAll('#project-actions button')].map((node) => node.textContent)).toEqual([
-      'Save for later',
-      'Learn this',
-      'Prepare it for performance',
-      'Keep it playable',
-    ]);
+    expect(actions()).toEqual(['save', 'learn', 'polish']);
+    expect([...document.querySelectorAll('#project-actions button')].map((node) => node.textContent)).toEqual(THREE);
     expect(text('project-met')).toBe('You have never opened it.');
     expect(document.getElementById('project-notes')?.hidden ?? true, 'notes before any project').toBe(true);
     expect(document.getElementById('project-history')?.hidden).toBe(true);
@@ -146,6 +174,53 @@ describe('the sheet for a piece with no project', () => {
     await recordRun(run, new Date(YESTERDAY));
     await open();
     expect(text('project-met')).toBe(`You last played it on ${dayKey(new Date(YESTERDAY))}.`);
+  });
+
+  it('(j) opened, listened to, played without a pass: no Keep it playable', async () => {
+    await recordEncounter({ kind: 'viewed', itemId: SONG, material: file('s'), source: { tab: 'library' }, visit: 'v1', at: new Date(YESTERDAY) });
+    await open();
+    await vi.waitFor(() => expect(actions()).toEqual(['save', 'learn', 'polish']));
+    document.body.replaceChildren();
+    await recordEncounter({ kind: 'heard', itemId: SONG, material: file('s'), source: { tab: 'library' }, visit: 'v2', at: new Date(YESTERDAY) });
+    await open();
+    expect(text('project-met')).toBe('You have listened to it and not played it yet.');
+    await vi.waitFor(() => expect(actions()).toEqual(['save', 'learn', 'polish']));
+    document.body.replaceChildren();
+    await recordRun({ ...run, accuracy: 0.4, passed: false }, new Date(YESTERDAY));
+    await open();
+    expect(text('project-met')).toBe(`You last played it on ${dayKey(new Date(YESTERDAY))}.`);
+    await vi.waitFor(() => expect(actions()).toEqual(['save', 'learn', 'polish']));
+    await settle();
+    expect(document.getElementById('project-action-keep')).toBeNull();
+  });
+
+  it('(k) passed: four ways in, Keep it playable among them, and tapped the sheet says kept playable', async () => {
+    await recordRun(run, new Date(YESTERDAY));
+    await open();
+    await vi.waitFor(() => expect(actions()).toEqual(['save', 'learn', 'polish', 'keep']));
+    expect([...document.querySelectorAll('#project-actions button')].map((node) => node.textContent)).toEqual([...THREE, 'Keep it playable']);
+    click('project-action-keep');
+    await vi.waitFor(() => expect(text('project-state')).toBe(`Keeping it playable since ${dayKey(new Date())}`));
+    expect((await allProjects()).map((row) => [row.itemId, row.state])).toEqual([[SONG, 'maintaining']]);
+  });
+
+  // The Score screen's finish sheet is up while its run is still being stored (`save` is not awaited),
+  // so the door can open the sheet before the pass is on the record. The sheet listens for the store's
+  // update and redraws its offers from no project (the reviewer's approval: a just-passed run never
+  // misses *Keep it playable*).
+  it('(l) opened before the pass is on the record: three ways in, and the fourth once the pass is stored', async () => {
+    await recordRun({ ...run, accuracy: 0.4, passed: false }, new Date(YESTERDAY));
+    await open();
+    await vi.waitFor(() => expect(actions()).toEqual(['save', 'learn', 'polish']));
+    await recordRun(run, new Date());
+    await vi.waitFor(() => expect(actions()).toEqual(['save', 'learn', 'polish', 'keep']));
+    click('project-action-keep');
+    await vi.waitFor(() => expect(text('project-state')).toBe(`Keeping it playable since ${dayKey(new Date())}`));
+    // Closed, the sheet hears no more: a later change to the record draws nothing and throws nothing.
+    click('project-sheet-close');
+    expect(document.getElementById('project-sheet')).toBeNull();
+    await recordRun(run, new Date());
+    expect(document.getElementById('project-actions')).toBeNull();
   });
 });
 

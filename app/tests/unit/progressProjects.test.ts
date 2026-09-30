@@ -146,10 +146,34 @@ describe('Projects on Progress', () => {
     await vi.waitFor(() => expect(document.querySelector('#project-sheet')).not.toBeNull());
     expect(document.getElementById('project-state')?.textContent).toBe('Not a project yet');
     expect(await allProjects()).toEqual([]);
+    // The offers are drawn once the sheet has read the record (G96: *Keep it playable* from no project
+    // is for a piece passed), so the tap waits for the button, as a learner's does.
+    await vi.waitFor(() => expect(document.getElementById('project-action-keep')).not.toBeNull());
     (document.getElementById('project-action-keep') as HTMLElement).click();
     await vi.waitFor(async () => expect((await allProjects()).map((row) => [row.itemId, row.state])).toEqual([['song.passed', 'maintaining']]));
     await vi.waitFor(() => expect(projectRows(section).map((row) => row.item)).toEqual(['song.passed']));
     expect(offers(section)).toEqual([]);
+  });
+
+  // G96 (w): the list is drawn again behind the sheet after the action, so the *Make it a project* the
+  // sheet opened from is gone; Progress names the piece's new row in its own list. The piece is also on
+  // the history and the repertoire rows (the same `data-item`), and focus lands on none of those.
+  it('(w) Make it a project, Keep it playable, then Close: focus is on the piece’s new project row, not the page or another list', async () => {
+    await recordRun(run('song.passed', true));
+    const section = await mount();
+    const make = section.querySelector<HTMLButtonElement>('#progress-projects [data-offer][data-item="song.passed"] button');
+    // A tap leaves the button focused, as a browser does; a script's click does not.
+    make?.focus();
+    make?.click();
+    await vi.waitFor(() => expect(document.getElementById('project-action-keep')).not.toBeNull());
+    (document.getElementById('project-action-keep') as HTMLElement).click();
+    await vi.waitFor(() => expect(projectRows(section).map((row) => row.item)).toEqual(['song.passed']));
+    expect(make?.isConnected, 'the redraw put a new list in place of the old').toBe(false);
+    const elsewhere = [...section.querySelectorAll('[data-item="song.passed"]')].filter((node) => !node.closest('#progress-projects'));
+    expect(elsewhere.length, 'the piece is on no other list of the screen').toBeGreaterThan(0);
+    document.getElementById('project-sheet-close')?.click();
+    expect(document.getElementById('project-sheet')).toBeNull();
+    expect(document.activeElement).toBe(section.querySelector('#progress-projects [data-project][data-item="song.passed"]'));
   });
 
   it('a project’s row opens its sheet', async () => {

@@ -1,13 +1,18 @@
 /**
  * The project sheet (G1b item 5): where the learner says what they are doing with a piece.
  *
- * Opened from the Score screen's finish sheet (*What next with this piece?*, the first door) and
- * from a project's row, or a passed piece's *Make it a project*, on Progress (the second). It shows
- * the piece's title; its state and since, or that it is not a project yet; the history's last line;
- * what the encounter history says of the piece (read through `encounterStore.familiarity`, never
- * written); the actions the state offers (`projectStore.actionsFor`); and, once there is a project,
- * R18's three facts as the learner types them. Opening it writes nothing: a project is made only by
- * the learner choosing one of the actions, and every change after that is the learner's too.
+ * Opened from the Score screen's finish sheet (*What next with this piece?*, the first door), from a
+ * project's row, or a passed piece's *Make it a project*, on Progress (the second), and from a piece's
+ * Details in the Library (G85a). It shows the piece's title; its state and since, or that it is not a
+ * project yet; the history's last line; what the encounter history says of the piece (read through
+ * `encounterStore.familiarity`, never written); the actions offered for the piece now
+ * (`projectStore.actionsFor`, over the store's own `readOffer`: from no project, *Keep it playable*
+ * only for a piece the record says is passed, G96), drawn once with that line when both reads have
+ * answered, so no offer is shown and then taken away; and, once there is a project, R18's three facts
+ * as the learner types them. While the piece has no project it listens for the record: the finish
+ * sheet is up while its run is still being stored, and a pass that lands then brings *Keep it
+ * playable* in. Opening it writes nothing: a project is made only by the learner choosing one of the
+ * actions, and every change after that is the learner's too.
  *
  * The one caller of `applyProjectAction` in the app (`projectLifecycle.test.ts` holds it so): no
  * screen, job or reader moves a project by itself.
@@ -16,14 +21,15 @@ import { button, el, openSheet, type Sheet } from './widgets';
 import { onScreenDispose } from './screenLifecycle';
 import { PROJECT_TEXT, playedLine, projectHistoryLine, projectSince, sectionWords } from './help';
 import { familiarity } from '../data/encounterStore';
-import { dayKey } from '../data/progressStore';
+import { dayKey, onProgressChange } from '../data/progressStore';
 import {
   actionsFor,
   addProjectSection,
   applyProjectAction,
-  projectFor,
+  readOffer,
   removeProjectSection,
   setProjectNotes,
+  type OfferReading,
   type ProjectAction,
   type ProjectRow,
 } from '../data/projectStore';
@@ -46,6 +52,12 @@ export interface ProjectSheetOptions {
    * whatever screen comes next (the shell swaps the screen, not the body the sheet hangs from).
    */
   owner?: HTMLElement;
+  /**
+   * Where focus goes on closing when the screen drew its list again behind the sheet and the control
+   * it opened from is gone (G96): the piece's row as that screen's own list shows it now
+   * (`widgets.openSheet`'s `refocus`). The Library and Progress, whose lists a write redraws.
+   */
+  refocus?: () => HTMLElement | null;
 }
 
 /**
@@ -79,7 +91,7 @@ function messageLine(id: string): HTMLElement & { say: (text: string, error?: bo
 export function openProjectSheet(options: ProjectSheetOptions): Sheet {
   const { item, material, bars } = options;
   const target = { itemId: item.id, material };
-  const sheet = openSheet(item.title, { id: 'project-sheet' });
+  const sheet = openSheet(item.title, { id: 'project-sheet', ...(options.refocus ? { refocus: options.refocus } : {}) });
   sheet.el.dataset.item = item.id;
   if (options.owner) {
     onScreenDispose(options.owner, () => {
@@ -98,13 +110,31 @@ export function openProjectSheet(options: ProjectSheetOptions): Sheet {
   sheet.body.append(stateLine, historyLine, met, actions, status, notes);
 
   let project: ProjectRow | undefined;
-  /** A write has answered: the first read, if it answers later, is older than what is drawn. */
-  let written = false;
+  /**
+   * Whether the record says the piece is passed, as the store read it with the project (`readOffer`);
+   * `undefined` until that read has answered, and nothing is offered before it (G96): a piece never
+   * played is never shown *Keep it playable* and then loses it.
+   */
+  let passed: boolean | undefined;
+  /**
+   * The newest read or write: a read that answers after a newer one, or after a write, is older than
+   * what is drawn, and is not taken.
+   */
+  let latest = 0;
 
   const say = status.say;
 
+  /** The store's reading of the offers, taken where nothing newer has answered since it was asked. */
+  const read = async (): Promise<void> => {
+    const asked = ++latest;
+    const reading = await readOffer(target).catch((): OfferReading => ({ project: undefined, passed: false }));
+    if (asked !== latest) return;
+    project = reading.project;
+    passed = reading.passed;
+  };
+
   const changed = (row: ProjectRow): void => {
-    written = true;
+    latest += 1;
     project = row;
     draw();
     options.onChange?.();
@@ -118,15 +148,17 @@ export function openProjectSheet(options: ProjectSheetOptions): Sheet {
     } catch (cause) {
       say(cause instanceof Error ? cause.message : String(cause), true);
       // What is offered now, from the store: a second tap may have come after the first moved it.
-      const now = await projectFor(target);
-      written = true;
-      project = now;
+      await read();
       draw();
     }
   }
 
   function drawActions(): void {
-    const offered = actionsFor(project?.state);
+    if (project === undefined && passed === undefined) {
+      actions.replaceChildren();
+      return;
+    }
+    const offered = actionsFor(project?.state, passed ?? false);
     const nodes: HTMLElement[] = [];
     for (const action of offered) {
       if (action === 'performed') {
@@ -161,7 +193,7 @@ export function openProjectSheet(options: ProjectSheetOptions): Sheet {
       input.addEventListener('change', () => {
         void setProjectNotes(id, { [key]: input.value })
           .then((row) => {
-            written = true;
+            latest += 1;
             project = row;
             options.onChange?.();
             say(PROJECT_TEXT.saved);
@@ -238,18 +270,34 @@ export function openProjectSheet(options: ProjectSheetOptions): Sheet {
   }
 
   draw();
-  void projectFor(target).then((row) => {
-    if (written) return;
-    project = row;
-    draw();
+  // The sheet's two reads, drawn together once both have answered: the project with the offers, and
+  // what the history says of the piece.
+  void Promise.all([
+    read(),
+    metLine(item, material, bars).then(
+      (line) => {
+        met.textContent = line;
+      },
+      () => {
+        met.hidden = true;
+      },
+    ),
+  ]).then(draw);
+
+  // The Score screen's finish sheet is up while its run is still being stored (its `save` is not
+  // awaited), so its door can open this before the pass is on the record: while the piece has no
+  // project, a change to the record reads the offers again (G96; the reviewer's approval, so a
+  // just-passed run never misses *Keep it playable*). Heard until the sheet leaves the page, however it
+  // closes.
+  const stopListening = onProgressChange(() => {
+    if (project !== undefined) return;
+    void read().then(draw);
   });
-  void metLine(item, material, bars).then(
-    (line) => {
-      met.textContent = line;
-    },
-    () => {
-      met.hidden = true;
-    },
-  );
+  const leaving = new MutationObserver(() => {
+    if (sheet.el.isConnected) return;
+    stopListening();
+    leaving.disconnect();
+  });
+  leaving.observe(document.body, { childList: true });
   return sheet;
 }

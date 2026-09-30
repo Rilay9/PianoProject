@@ -11,16 +11,19 @@
  *
  * - **Every transition is the learner's action** on the project sheet (`ui/projectSheet.ts`, the one
  *   caller of `applyProjectAction`). The app proposes nothing and moves nothing: no state drifts
- *   with time, none is inferred from a run. An action the sheet does not offer for the current state
- *   is refused (`OFFERS`).
+ *   with time, none is inferred from a run. An action the sheet does not offer for the piece now is
+ *   refused (`actionsFor`, the rule the sheet draws from).
  * - **Nothing is written but the project.** No encounter, run, progress row or evidence — *I
  *   performed it* records the learner's day on the project and is never a performance run or a
  *   `performed` encounter. No state is read by evidence, skill or eligibility code. The session reads
- *   one thing, for one purpose (G1d; the reviewer's G82 ruling): Today hands it the rows, and the
- *   review's repertoire retention does not offer a piece whose project is `paused` or `retired`
- *   (`projectIn`, over the rows it is given; it never opens the store). `ProgressRow.status`,
- *   `learnedPieces`, *A piece you know* and the rest of the session read exactly what they read
- *   before.
+ *   one thing, for one purpose (G1d; the reviewer's G82 ruling; G1e): Today hands it the rows, and no
+ *   automatic chooser offers a piece whose project is `paused` or `retired` (`buildSession` looks each
+ *   piece up once with `projectIn`, over the rows it is given, and `usable()` asks for every slot; it
+ *   never opens the store). `ProgressRow.status`, `learnedPieces`, *A piece you know* and the rest of
+ *   the session read exactly what they read before.
+ * - **One fact is read from outside** (G96), for one offer: whether the piece is passed — its progress
+ *   row, by the item's own id — because *Keep it playable* from no project is offered only then
+ *   (`readOffer`). Read, never written.
  * - **The history is appended, never rewritten**, and pausing or putting a piece away deletes
  *   nothing anywhere.
  * - **Identity fails conservatively.** A project is keyed by the piece's material where it has one
@@ -34,7 +37,7 @@
  * a database from before G1b has none, and none is manufactured from a passed piece.
  */
 import { openDatabase, type EncounterMaterial, type ProjectAction, type ProjectRow, type ProjectSection, type ProjectState, type ProjectStep } from './db';
-import { dayKey } from './progressStore';
+import { dayKey, getProgress } from './progressStore';
 import { knownMaterial, materialKey, sameMaterial } from '../curriculum/material';
 import type { CatalogItem } from '../curriculum/types';
 import type { Identity } from '../review/record';
@@ -59,11 +62,13 @@ export const ACTION_STATE: Readonly<Record<ProjectAction, ProjectState>> = {
 
 /**
  * What the sheet offers from each state — the transitions table, and the only transitions there
- * are. From no project: the first three states and *Keep it playable* (a piece already learned, made
- * a project from Progress), each before any run if the learner wishes (the brief's adversary: "learn
- * this piece" before success). *Bring it back* only from paused, put away or kept playable (item 2).
- * *I performed it* again from kept playable records another performance day. Each state keeps one
- * way out that a learner would recognise, and every state is reachable.
+ * are. From no project: the first three states, each before any run if the learner wishes (the
+ * brief's adversary: "learn this piece" before success); and *Keep it playable*, the maintenance of
+ * something already learned, only for a piece the record says is passed (G96, `actionsFor`) — a
+ * learner who knows a piece from elsewhere reaches it in two taps, *Learn this* then *Keep it
+ * playable*. *Bring it back* only from paused, put away or kept playable (item 2). *I performed it*
+ * again from kept playable records another performance day. Each state keeps one way out that a
+ * learner would recognise, and every state is reachable from no project on any piece.
  */
 export const OFFERS: Readonly<Record<ProjectState | 'none', readonly ProjectAction[]>> = {
   none: ['save', 'learn', 'polish', 'keep'],
@@ -77,16 +82,56 @@ export const OFFERS: Readonly<Record<ProjectState | 'none', readonly ProjectActi
   retired: ['bring-back'],
 };
 
-/** The actions the sheet offers for a project in this state, or for a piece with no project. */
-export function actionsFor(state: ProjectState | undefined): readonly ProjectAction[] {
-  return OFFERS[state ?? 'none'];
+/**
+ * The one entry of the table that needs a fact from outside the project (G96; the G85a review's
+ * ruling, `docs/review/responses/9c64a9c1.md`): *Keep it playable* from no project.
+ */
+const NEEDS_A_PASS: ProjectAction = 'keep';
+
+/**
+ * The actions offered for a piece: its state's row of the table — from no project, *Keep it playable*
+ * only where the piece is passed. `passed` is the store's own reading (`readOffer`), never a caller's
+ * word: the sheet draws from this with that reading, and `applyNow` checks every action against it,
+ * having read the record itself. One rule, in one place.
+ */
+export function actionsFor(state: ProjectState | undefined, passed: boolean): readonly ProjectAction[] {
+  const offered = OFFERS[state ?? 'none'];
+  return state === undefined && !passed ? offered.filter((action) => action !== NEEDS_A_PASS) : offered;
+}
+
+/**
+ * Whether the record says the learner can play the piece (G96 item 9; the reviewer's approval,
+ * `docs/review/responses/questions-71bd6cee.md`): its progress row is `passed` or `mastered`, the
+ * rows Progress lists as passed (`ProgressScreen`'s filter, `learnedPieces`' statuses). A pass the
+ * learner asserted — *I already know this* — counts: it is their word that they know the piece, as a
+ * project action is. By the item's own id, as Progress reads it: a pass under another id of the same
+ * material does not count (identity fails conservatively). Through the progress store's own lookup.
+ */
+async function passedOnRecord(itemId: string): Promise<boolean> {
+  const { status } = await getProgress(itemId);
+  return status === 'passed' || status === 'mastered';
+}
+
+/** What the offers for a piece are drawn from, read together (`readOffer`). */
+export interface OfferReading {
+  project: ProjectRow | undefined;
+  /** Whether the record says the piece is passed: read only where it has no project (with one, it changes no offer), `false` there. */
+  passed: boolean;
+}
+
+/**
+ * The piece's project and, where it has none, whether it is passed: what `actionsFor` needs, in one
+ * read. The sheet draws its offers from this, and `applyNow` checks against it.
+ */
+export async function readOffer(target: ProjectTarget): Promise<OfferReading> {
+  const project = await projectFor(target);
+  return { project, passed: project === undefined ? await passedOnRecord(target.itemId) : false };
 }
 
 /**
  * The stages whose units are projects, not rungs to pass: Stage 9 says of itself "Nothing here is a
- * rung to pass" (`content/curriculum/stage-9.json`). By number, as `session.ts` keeps its own
- * `PROJECT_STAGES` (the curriculum does not mark the stage): the two should be one constant when
- * X1 next holds `session.ts`.
+ * rung to pass" (`content/curriculum/stage-9.json`). By number, since the curriculum does not mark
+ * the stage; `session.ts` imports this constant (G88).
  */
 export const PROJECT_STAGES: ReadonlySet<number> = new Set([9]);
 
@@ -212,9 +257,11 @@ function validDay(day: string, today: string): boolean {
 /**
  * The learner's action (G1b item 2): the project enters the action's state from the state it is in
  * — or is made, where the piece has none — with one line appended to its history. Refused, writing
- * nothing, where the sheet does not offer the action for that state. `performedOn` is *I performed
- * it*'s day (the learner's, `YYYY-MM-DD`, on or before the day of the action; that day by default)
- * and belongs to no other action. Writes the `projects` store and nothing else.
+ * nothing, where the sheet does not offer the action for the piece now (`actionsFor`, over the
+ * store's own `readOffer`: from no project, *Keep it playable* only for a piece passed, whoever asks).
+ * `performedOn` is *I performed it*'s day (the learner's, `YYYY-MM-DD`, on or before the day of the
+ * action; that day by default) and belongs to no other action. Writes the `projects` store and
+ * nothing else.
  */
 export function applyProjectAction(
   target: ProjectTarget,
@@ -226,10 +273,11 @@ export function applyProjectAction(
 
 async function applyNow(target: ProjectTarget, action: ProjectAction, options: { at?: Date; performedOn?: string }): Promise<ProjectRow> {
   const at = options.at ?? new Date();
-  const existing = await projectFor(target);
-  if (!actionsFor(existing?.state).includes(action)) {
+  const { project: existing, passed } = await readOffer(target);
+  if (!actionsFor(existing?.state, passed).includes(action)) {
     // In the learner's words, no state or action names: a second tap can reach here after the first
-    // moved the project (the sheet redraws what is offered now).
+    // moved the project (the sheet redraws what is offered now), and so can a caller other than the
+    // sheet asking for *Keep it playable* on a piece with no pass.
     throw new Error('That is not offered for this piece now.');
   }
   if (options.performedOn !== undefined && action !== 'performed') {
