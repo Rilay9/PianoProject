@@ -43,3 +43,8 @@ If v0 needs more than about twenty demands or fifteen skills to cover the nine r
 ## Report
 
 Judgement first: the v0 tables, and the implementation decision with its measurement. Then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes from unpiped runs (content build and validator, `tsc -b`, lint, vitest); unverified beside what passes.
+
+## Record
+
+lane: C2 · closes: — · entry: 71 · role: history
+index: Vocabulary v0 (the reading strand) and the demand detectors; one authoritative definition; the build gate | build, content | done 2026-09-26 (Entry 71) |

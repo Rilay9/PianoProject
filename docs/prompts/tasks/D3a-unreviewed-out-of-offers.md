@@ -42,3 +42,8 @@ Judgement first: what the swap sheet at 2.1 and at 4.5 offers after the change a
 
 **Approved by the reviewer 2026-09-28 with one required change** (`responses/c8717be.md`): the session card's direct rung-list paths are automatic offers too and must pass the same admission — D3b.
 
+## Record
+
+lane: D3a · closes: — · entry: 102
+index: A generated item that promises music and has no affirmative teaching-use decision is kept out of every automatic skill and demand offer at the one gate; the Library, explicit equivalents and exploration untouched; the route to an affirmative decision is D2's record by a named reviewer; the stale "F's and the owner's" placement text corrected in the candidate-rungs report and its source (`D3a-unreviewed-out-of-offers.md`) | D3 | `eligibility.ts` (the verdict and the check), `types.ts`, `build.py` at the promise fact, `study.py` at the report's sentence, the regenerated `runs/D3/candidate-rungs.md`, the E0 unit and consumer tests, `test_measured_truth.py`, docs/02, 03, 04, 08 | **done 2026-09-28**, Entry 102; **approved with one required change** (`responses/c8717be.md`) — D3b |
+state: closed 2026-09-28: D3 closed on D3c's acceptance, D3a–D3c (D3's row); its required change built as D3b (`responses/c8717be.md`)

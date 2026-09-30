@@ -91,3 +91,10 @@ Judgement first. Show Details before and after at 342 × 740 for a project row a
 **Landed 2026-09-29** (Entry 160; 9c64a9c1, merged 61d6f4c0); handoff `handoffs/9c64a9c1.md`.
 
 **Accepted 2026-09-30** (`responses/9c64a9c1.md`, APPROVE); G85 closed with it. The Details sheet is the Library's door, the title column kept, the same project sheet opened; the Library a reader, the sheet the actor; the one-read index model kept. The narrower door rule correct (no project action for a placeholder whose identity a fetch replaces, or a PDF path whose encounter semantics are false). The door copy *What next with this piece?* kept for now; H2 judges it. G96 ruled: *Keep it playable* from no project is a real product bug, to be constrained from actual encounter and progress truth at the shared project-sheet offer policy; the focus after a store-driven redraw belongs to the reusable sheet/refocus mechanism, not a Library-only timeout.
+
+## Record
+
+lane: G85a · closes: — · entry: 160
+index: The Library's Details sheet opens the one project sheet (the G85 review's required change) | ui | **done 2026-09-29**, Entry 160; merged 61d6f4c0; handoff `handoffs/9c64a9c1.md`; **accepted 2026-09-30** (`responses/9c64a9c1.md`, APPROVE); closed |
+in-flight: brief drafted 2026-09-29 (`G85a-the-details-sheet-is-the-door.md`): the Details sheet's door to the one project sheet; a 342 px adversary; building (Entry 160). **Landed** 2026-09-29 (merged 61d6f4c0, chain green); handoff `handoffs/9c64a9c1.md`, with the reviewer. **Closed** 2026-09-30 (`responses/9c64a9c1.md`, APPROVE), and G85 with it: the Details door, the narrower door rule and the one-read model kept; *What next with this piece?* kept for now; G96 ruled a real product bug (*Keep it playable* from no project; the focus at the reusable sheet mechanism), P2.
+state: closed 2026-09-30: APPROVE (`responses/9c64a9c1.md`)

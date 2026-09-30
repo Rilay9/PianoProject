@@ -93,3 +93,7 @@ would say of it. Then Done / Not done / Follow-ups / Questions / Files; per case
 reproduction, the red line, the words; the tests table; exit codes from unpiped runs
 (`tsc -b`, lint, vitest, and the specs you touched one at a time); unverified beside what
 passes, including what you did not see on the glass.
+
+## Record
+
+lane: T40 · closes: — · entry: — · role: history

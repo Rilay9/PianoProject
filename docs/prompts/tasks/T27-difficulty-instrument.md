@@ -51,3 +51,7 @@ the verdict rule, the rung-band finding, and its follow-ups) first.**
 The three artefacts fixed or decided; the fit before and after; items re-estimated and
 how many moved; the new above(n≥2) list and what was done; rungs under the floor; the
 rung-band list; verification counts; what is unverified.
+
+## Record
+
+lane: T27 · closes: — · entry: — · role: history

@@ -30,3 +30,9 @@ Judgement first: the offline case's red on the committed tree and green after, i
 
 **Accepted by the reviewer 2026-09-27** (`responses/b118750.md`): closed; the builder screen's error text when the projection is absent noted as a later-wave item.
 
+## Record
+
+lane: D2a · closes: — · entry: 99
+index: The microscope's projection moves out of `content/` to a builder-only `dev/` root, so the offline invariant (P19) stays literal and green with no exception (`D2a-projection-out-of-content.md`) | D2 | `build.py` at the path, `vite.config.ts` at the ignore, the screen's fetch, `.gitignore`, the offline spec's `dev/` assertion, docs/03, docs/08 | **done 2026-09-27**, Entry 99; **accepted** (`responses/b118750.md`), closed |
+in-flight: **closed**, accepted (`responses/b118750.md`).
+state: closed: accepted (`responses/b118750.md`), closed

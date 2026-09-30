@@ -28,3 +28,8 @@ Judgement first: what a learner now sees on the two-octave left-hand C major arp
 
 **Delivered 2026-09-27**, Entry 84: one sourced chart and one construction for both arpeggio makers, spelling by interval, the Ode bar, the two comments, 4.3's warning gone; the mutation census in `test_generator_invariants.py` not extended (not in the files; the equivalent five mutations live in the fingering tests); the same fault found in four B♭ minor scales and the broken sevenths' spelling (G43, G44).
 
+## Record
+
+lane: T53 · closes: — · entry: 84
+index: Fingering truth: the generator's arpeggio fingering (89 of 120 items flagged; 5-3-2-5-3-2-1 ascending in the left hand), Ode to Joy bar 12, two half-pedal comments, 4.3's warning removed | build | **done 2026-09-27**, Entry 84; **accepted by the reviewer** for the triads, spelling, the Ode bar and 4.3; T53b required before D0 |
+state: closed: the T53 chain closed (T53c's row)

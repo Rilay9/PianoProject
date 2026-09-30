@@ -37,3 +37,10 @@ Judgement first: the sheet's date box and the Stage 9 Start line before and afte
 **Landed 2026-09-29** (Entry 153; 8f2a1e73, merged 25a0bc9c); handoff `handoffs/8f2a1e73.md`.
 
 **Accepted 2026-09-30** (`responses/8f2a1e73.md`, APPROVE). The project-stage Start line no longer describes a nonexistent rung, non-project stages unchanged; the project-state badge loses the passed treatment (a lifecycle state is intent, not achievement). The date box keeps the browser's control face where the neighbouring sheet inputs render with it: matching the visible sheet outranks the app font on one native control; a move of every sheet input onto the app font is G95's, once, never the date control alone. Chromium-only verification sufficient for this phone-first seam; H2 if another browser becomes a target. Closed.
+
+## Record
+
+lane: G87 · closes: G87 · entry: 153
+index: The project sheet's date box wears the sheet's style; a project stage's *Start* line no longer says *the first thing on this rung* (G1b follow-ups 3 and 7) | ui | **done 2026-09-29**, Entry 153; merged 25a0bc9c; handoff `handoffs/8f2a1e73.md`; **accepted 2026-09-30** (`responses/8f2a1e73.md`, APPROVE); closed |
+in-flight: brief drafted 2026-09-29 (`G87-project-sheet-small-truths.md`): the date box styled with the sheet's rule beside the sheet's rules; a project stage's Start line says *Opens "X".* only; the history view stays recorded. Building, for information (Entry 153). **Landed** 2026-09-29 (merged 25a0bc9c, chain green); handoff `handoffs/8f2a1e73.md`, with the reviewer. **Closed** 2026-09-30 (`responses/8f2a1e73.md`, APPROVE): the Start line and the badge right; the date box keeps the browser's control face beside the sheet's other inputs; any move to the app font is G95's, every input at once; Chromium-only verification sufficient.
+state: closed 2026-09-30: APPROVE (`responses/8f2a1e73.md`)

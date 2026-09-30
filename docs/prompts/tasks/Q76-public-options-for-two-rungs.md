@@ -41,3 +41,10 @@ Judgement first: the Score screen on one rag and on the tie piece at 342 × 740,
 **Landed 2026-09-29** (Entry 136; e4f9d3f2, merged 7bfcb0fc); handoff `handoffs/e4f9d3f2.md`.
 
 **Accepted 2026-09-29** (`responses/e4f9d3f2.md`, APPROVE). The Mutopia provenance stays explicit about the MIDI-derived conversion; the engraving observations remain observations; Q78 is the owner's next choice.
+
+## Record
+
+lane: Q76 · closes: Q76 · entry: 136
+index: The public build keeps 2.4's tie and ragtime.8's stride bass: a `[MUTO]` import step (Mutopia's public-domain Joplin editions through python-ly) placed on ragtime.8, an authored public-domain piece with real ties on 2.4, the strict build's claims report the proof | content | **done 2026-09-29**, Entry 136; merged 7bfcb0fc; handoff `handoffs/e4f9d3f2.md`; **accepted 2026-09-29** (`responses/e4f9d3f2.md`, APPROVE); closed |
+in-flight: brief drafted 2026-09-29 (`Q76-public-options-for-two-rungs.md`): the owner's disposition of the public build's two gaps — Mutopia's public-domain Joplin editions imported (a new `[MUTO]` step, python-ly) and placed on ragtime.8; an authored public-domain piece with real ties on 2.4; the strict build's claims report shows both rungs kept. Building, for information. **Landed** 2026-09-29 (merged 7bfcb0fc, chain green); handoff `handoffs/e4f9d3f2.md`, with the reviewer. **Q76 accepted** 2026-09-29 (`responses/e4f9d3f2.md`, APPROVE): grounded in measured notation; the Mutopia provenance stays explicit about the MIDI-derived conversion; the engraving refinements later waves. Closed.
+state: closed 2026-09-29: APPROVE (`responses/e4f9d3f2.md`)

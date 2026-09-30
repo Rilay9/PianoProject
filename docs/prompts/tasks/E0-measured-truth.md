@@ -73,3 +73,9 @@ E1 the excerpt as a first-class object: identity from source, range, part and ve
 
 **Closed 2026-09-28** on E0b's acceptance (`responses/c95ac32.md`); E1's brief may be drafted.
 
+## Record
+
+lane: E0 · closes: — · entry: 92
+index: Measured truth on every notated item: demands from the canonical detectors at build and import, provenance on every content object, one needs-versus-taught gate at the consumer boundary (C6's dormant tiers go live through it), the rung-claims report, the inventory | build | **done 2026-09-27**, Entry 92; closed 2026-09-28 on E0b's acceptance |
+in-flight [E0 / E0a / E0b]: **closed**: E0b accepted (`responses/c95ac32.md`).
+state: closed 2026-09-28: closed on E0b's acceptance

@@ -58,3 +58,8 @@ D1 the sight-reading phrase (its own brief, drafted with this one); D3 the gener
 
 **CI red 2026-09-27** on the first full run of D2's tree: `offline.spec` › P19 refuses the projection under `content/review/` (served, never cached). D2a moves it out of `content/`; P19 keeps its rule.
 
+## Record
+
+lane: D2 · closes: — · entry: 95
+index: The microscope and the human review record: a builder-only route where a person sees, hears and judges any item, and a record in `content/review/` that tells inspection from notation review from hearing, read by the build into provenance and the rung-claims report (`D2-microscope-and-review-record.md`) | E0 (the provenance's review bits) | one dev screen, the router's dev list, `content/review/`, `tools/content/review.py`, the provenance step, docs/03, 06, 08 | **done 2026-09-27**, Entry 95; **approved** (`responses/7e148e0.md`), closed |
+state: closed: approved (`responses/7e148e0.md`), closed

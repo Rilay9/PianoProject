@@ -80,3 +80,8 @@ drill sheet now says. Then Done / Not done / Follow-ups / Questions / Files; per
 mechanism, the red line, before and after; the tests table; exit codes from unpiped runs
 (`tsc -b`, lint, vitest, and the specs you touched one at a time); unverified beside what
 passes.
+
+## Record
+
+lane: T41 · closes: — · entry: 69 · role: history
+index: A black key named by its key on the status line; a drill sheet that stops claiming an accuracy; the renderer publishes when the fit has settled | build, browser | done 2026-09-25 (Entry 69) |

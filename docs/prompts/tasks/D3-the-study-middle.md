@@ -54,3 +54,9 @@ Judgement first: three studies as a teacher reads them (which read as a small pi
 
 **Closed 2026-09-28** on D3c's acceptance (`responses/e85c162.md`), after D3a (`c8717be.md`) and D3b (`4478793.md`).
 
+## Record
+
+lane: D3 · closes: — · entry: 100
+index: The generated study: an 8–16-bar miniature around one skill on the contract architecture, a harmony grammar first, constrained draws scored by one musical evaluator the Python families share (bridge to D1's scorer or a twinned port), the four gates with adversaries, a seeded plan placed only where the rung-claims report establishes the claim, the studies through the microscope unheard (`D3-the-study-middle.md`) | D0, D1, D2 closed; E0's attach step | `tools/content/study.py` (new), the study row, `musical_gate` and the evaluator, the tests and fixtures, new rung options only, docs/02, 03, 08 | **done 2026-09-28**, Entry 100; closed 2026-09-28 on D3c's acceptance (D3a–D3c) |
+in-flight: **closed** 2026-09-28 (approved `responses/ee70b43.md`; D3a `c8717be.md`, D3b `4478793.md`, D3c `e85c162.md` accepted). Unheard; unverified as music.
+state: closed 2026-09-28: closed on D3c's acceptance (D3a–D3c); approved (`responses/ee70b43.md`)

@@ -23,3 +23,7 @@ The sentence before and after, the test's red line, the search's other hits with
 
 **Delivered 2026-09-26**, Entry 81, in three rounds: the sheet, the owner guide, the two comments and the regression; then the folder screen's message after Save (the rung's title, never its id) and the Guide's sentence; then the second false claim the builder inferred and the orchestrator confirmed at the lines — a passed piece on no rung returns in Today's review since C6 — proven by a test through the real review path and corrected in five places.
 
+## Record
+
+lane: T52 · closes: — · entry: 81 · role: history
+index: Import truth: the assign sheet and owner guide stop saying assignment counts toward a rung; the historical comments; a regression that assignment yields no evidence and a qualifying run can | build | **done 2026-09-26**, Entry 81 (three rounds: the sheet and guide; the folder message and Guide; the false "plan does not know about it") |

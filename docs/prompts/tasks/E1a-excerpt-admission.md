@@ -42,3 +42,8 @@ Judgement first: what a learner sees today (nothing changes: the five excerpts w
 
 **Accepted by the reviewer 2026-09-28** (`responses/4f7227d.md`): E1a and E1 closed; D4 dispatches on this acceptance and consumes the shared admission; E37 later work.
 
+## Record
+
+lane: E1a · closes: — · entry: 105
+index: The one teaching-use admission covers excerpts: no automatic offer without `teaching: true` on the current cut identity, through the same exported predicate; the Library and exploration open; a stale decision on an older cut admits nothing; regressions for `null`, `false` and `true` unplaced and rung-listed, the staleness case, mutants at the gate and at a consumer (`E1a-excerpt-admission.md`) | E1 | `eligibility.ts` at the predicate, the E0, D3a, D3b and E1 tests, docs/02, 03, 04, 08 | **done 2026-09-28**, Entry 105; **accepted** (`responses/4f7227d.md`); E1 closed |
+state: closed 2026-09-28: accepted (`responses/4f7227d.md`); E1 closed on its acceptance (E1's row)

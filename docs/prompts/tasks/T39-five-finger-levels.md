@@ -78,3 +78,7 @@ Judgement first: does a learner at 1.1 still meet only C and G, and what moved. 
 Not done / Follow-ups / Questions / Files; the table of moved items; every band case under
 item 2 with its disposition; the build's and validator's exit codes from unpiped runs; the
 red line of the test. Append the same as the entry.
+
+## Record
+
+lane: T39 · closes: — · entry: — · role: history

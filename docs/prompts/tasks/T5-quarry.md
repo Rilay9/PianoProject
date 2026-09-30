@@ -69,3 +69,7 @@ The review page exists, every ok row has real and equal step counts, and
 `docs/pending-review.md` carries one entry with the gate-by-gate numbers, the refusals with
 their reasons, and **the rejection rate per band** — the two earlier runs were 89% and, at
 band 7–9, 53%, so a rate far from those is itself a finding.
+
+## Record
+
+lane: T5 · closes: — · entry: — · role: history

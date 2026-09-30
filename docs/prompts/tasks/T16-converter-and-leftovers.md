@@ -59,3 +59,7 @@ Then build, each with a test seen red first:
 
 Per item built / not built and why; tests and red lines; what the converter makes of the
 three recordings; counts; specs for the coordinator; what is unverified.
+
+## Record
+
+lane: T16 · closes: — · entry: — · role: history

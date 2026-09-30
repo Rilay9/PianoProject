@@ -40,3 +40,10 @@ Judgement first: Plan's Stage 9 block at 342 × 740 before and after, beside one
 **Landed 2026-09-29** (Entry 139; 77b1027f, merged 70730cdd); handoff `handoffs/77b1027f.md`.
 
 **Accepted 2026-09-29** (`responses/77b1027f.md`, APPROVE). The shared stage sentence kept (a later copy pass may improve both surfaces together); the revised one-reader guard preserves G1b's ruling; the session may import the stage classification without that becoming permission to read the lifecycle.
+
+## Record
+
+lane: G1c · closes: — · entry: 139
+index: The Plan screen stops presenting Stage 9 as rungs to pass (no rung badge, no *x of y* in the stage line, the stage named as pieces to live with) and one constant names the project stages (G83 P1, G84) | ui | **done 2026-09-29**, Entry 139; merged 70730cdd; handoff `handoffs/77b1027f.md`; **accepted 2026-09-29** (`responses/77b1027f.md`, APPROVE): both questions as built; closed |
+in-flight: brief drafted 2026-09-29 (`G1c-plan-project-stage.md`): G1b's follow-up 1 (P1) — Plan's stage line and rung badges for Stage 9 read the project stage as the lesson page does; one `PROJECT_STAGES` constant (G84). Building, for information. **Landed** 2026-09-29 (merged 70730cdd, chain green); handoff `handoffs/77b1027f.md`, with the reviewer. **G1c accepted** 2026-09-29 (`responses/77b1027f.md`, APPROVE): the shared sentence kept; the revised guard preserves the ruling; the session may use the stage classification without reading the lifecycle. Closed.
+state: closed 2026-09-29: APPROVE (`responses/77b1027f.md`); Closed

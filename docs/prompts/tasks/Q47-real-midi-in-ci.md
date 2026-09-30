@@ -37,3 +37,10 @@ Judgement first: which tests newly run in CI and what the harness said of the th
 **Landed 2026-09-29** (Entry 113; 8668afb, merged f52679a); handoff `handoffs/8668afb.md`; the CI run on the push is the proof.
 
 **Closed 2026-09-29** (`responses/8668afb.md`, APPROVE): the runner proof read on the runs at ca06e94 (download and save) and 05c9e01 (the restored cache validated); Entry 113 amended. Q46 closes with it.
+
+## Record
+
+lane: Q47 · closes: Q47 · entry: 113
+index: The converter's real-recording class and the split-hands parity in CI: the three MAESTRO performances fetched by a cached step with the licence quoted, the skip a failure under CI, a committed two-hand fixture for the parity, the technique-units path from the file (Q47, Q46; `Q47-real-midi-in-ci.md`) | Q24; the owner's decision 2026-09-28; E2 landed | `ci.yml`, the converter's tests folder, a fixture and its script, `test_technique_units.py`; doc rows in the entry | **closed 2026-09-29** (`responses/8668afb.md`, APPROVE; Entry 113 amended with the runner proof); Q46 closes with it |
+in-flight: **closed** 2026-09-29 (`responses/8668afb.md`, APPROVE; Entry 113 amended with the runner proof: the cold-cache path on the run at ca06e94, the restored cache on the run at 05c9e01). Q46 closed with it. `ci.yml` released to the T sweep.
+state: closed 2026-09-29: APPROVE (`responses/8668afb.md`)

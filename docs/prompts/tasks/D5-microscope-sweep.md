@@ -37,3 +37,10 @@ Judgement first: the three lines at one study, one groove and one drill, before 
 **Landed 2026-09-29** (Entry 110; 458159e, merged 93ecc1e); handoff `handoffs/458159e.md`. Every study's verdict recomputed by the projection (no build step persists one, G66); the doc rows spliced by the orchestrator.
 
 **Closed 2026-09-29** — approved (`responses/458159e.md`): the version travels with every verdict; evaluator changes bump it in the same seam; G66 and G67 later.
+
+## Record
+
+lane: D5 · closes: — · entry: 110
+index: The microscope sweep: the study gate's verdict on the musical line with "unheard" beside it, the contract warning selected by the recipe in the projection, every provenance fact with its value (G55, G56, G60; `D5-microscope-sweep.md`) | D3, D3a landed | `review.py` at the projection, `DevMicroscopeScreen.ts` at three lines; doc text in the entry | **done 2026-09-29**, Entry 110; merged 93ecc1e; handoff `handoffs/458159e.md`; **closed** — approved (`responses/458159e.md`) |
+in-flight: the microscope sweep (G55, G56, G60), brief drafted 2026-09-29 (`D5-microscope-sweep.md`); brief **approved with one required change, applied** (`responses/4088dfc.md`: the evaluator's verdict versioned and the version printed); **landed** 2026-09-29 (Entry 110, merged 93ecc1e, chain green); **closed** — approved (`responses/458159e.md`). Nothing heard; every study unverified as music.
+state: closed 2026-09-29: closed, approved (`responses/458159e.md`)

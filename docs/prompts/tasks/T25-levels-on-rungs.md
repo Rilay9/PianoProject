@@ -47,3 +47,7 @@ estimates. Entry 48 checked eight pieces; nobody has checked the rest.
 
 The count; anchors per stage in one table; "above" items and what was done; rungs that
 fell under the floor; verification counts; what is unverified.
+
+## Record
+
+lane: T25 · closes: — · entry: — · role: history

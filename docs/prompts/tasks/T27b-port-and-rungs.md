@@ -72,3 +72,7 @@ and `tools/content/export_levelling_fixture.py` first. Read nothing else whole; 
 
 Per item: what changed, the test seen red, counts; the list of moved and kept options with
 the stage maxima; the fixture agreement before and after; what is unverified.
+
+## Record
+
+lane: T27b · closes: — · entry: — · role: history

@@ -88,3 +88,7 @@ agent runs beside you under `app/` and uses the browser; you do not.
 Judgement first: in five lines, how much of the suite protects the product, how much
 protects the old model, and the three proxies most likely to let a wrong screen pass.
 Then the statistics, the four lists' sizes, and the files read (by count per suite).
+
+## Record
+
+lane: C0b · closes: — · entry: — · role: history

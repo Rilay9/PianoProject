@@ -39,3 +39,10 @@ Judgement first: what the runner's log says on a build with an unreachable sourc
 **Landed 2026-09-29** (Entry 141; 2d9e7e2c, merged 589a7860); handoff `handoffs/2d9e7e2c.md`. The kern and MuseTrainer steps write no placeholder for a missing clone (the stop line; Q82); the deploy question is Q86.
 
 **Accepted 2026-09-29** (`responses/2d9e7e2c.md`, APPROVE). Q86 ruled: guard the deploy, not the validator (Q88).
+
+## Record
+
+lane: Q80 · closes: Q80 · entry: 141
+index: The validator's stale-ladder check tolerates a build's own placeholders (a source unreachable, a file not fetched) with a warning naming them, never a validation error; licence placeholders and genuine catalogue changes unchanged | tooling | **done 2026-09-29**, Entry 141; merged 589a7860; handoff `handoffs/2d9e7e2c.md`; **accepted 2026-09-29** (`responses/2d9e7e2c.md`, APPROVE); closed; Q86 ruled: guard the deploy (Q88) |
+in-flight: brief drafted 2026-09-29 (`Q80-ladder-check-tolerates-placeholders.md`): the stale-ladder check fails a build over material it could not fetch (Q76's first chain attempt; a network hiccup on the runner would break the deploy); it tolerates a build's own placeholders with a warning, as Q75's claim rule does. Building, for information. **Landed** 2026-09-29 (merged 589a7860, chain green); handoff `handoffs/2d9e7e2c.md`, with the reviewer; the deploy question Q86. **Q80 accepted** 2026-09-29 (`responses/2d9e7e2c.md`, APPROVE); Q86 ruled: guard the deploy (Q88). Closed.
+state: closed 2026-09-29: APPROVE (`responses/2d9e7e2c.md`)

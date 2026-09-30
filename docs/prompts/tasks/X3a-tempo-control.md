@@ -40,3 +40,9 @@ Judgement first: the sheet's tempo line and the score's tempo label after a stat
 **Approved with one required change 2026-09-29** (`responses/564e8e5f.md`): X3b (`X3b-tempo-restated.md`) keeps the control after a statement; X3c (X24) follows.
 
 **Closed 2026-09-29** through X3b (`responses/f9d36867.md`).
+
+## Record
+
+lane: X3a · closes: — · entry: 122
+index: The import sheet's tempo control wired to E48's `stateImportTempo`: a number field and a button on the tempo line, the row and the sheet then say tempo yours, the score plays at the stated tempo (`X3a-tempo-control.md`) | X3 (Entry 118) not done; E48 landed (Entry 115) | `importSheet.ts` at the tempo line, `help.ts` at two strings, the two X3 test files | **closed 2026-09-29** through X3b (`responses/564e8e5f.md`, `f9d36867.md`; Entry 122); X3c (X24) next |
+state: closed 2026-09-29: closed through X3b (`responses/564e8e5f.md`, `f9d36867.md`)

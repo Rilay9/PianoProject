@@ -40,3 +40,9 @@ Judgement first: the history line and the rung credit for a piece played again, 
 **Landed 2026-09-29** (Entry 119; 5b14b7a, merged 7002ee5); handoff `handoffs/5b14b7a.md`. G72 recorded.
 
 **Closed 2026-09-29** (`responses/5b14b7a.md`, APPROVE): the boundary the G1 review asked for; G2 released.
+
+## Record
+
+lane: G1a · closes: — · entry: 119
+index: The G1 review's required change: `firstContact` on every run the Score screen records, `unseen` kept as the generated phrase's sight-reading condition, the four guarded readers reading the phrase's field only, no consumer of general contact needing `isPhraseRun`, rows from before G1 readable without manufactured contact (`G1a-first-contact-field.md`) | G1 (Entry 112); `responses/b48342f.md` | `db.ts` at `RunHeader`, `ScoreScreen.ts` at the header's write, `progressStore.ts` at `recordRun`, `rungState.ts`, `evidenceJob.ts`, `ProgressScreen.ts`, the G1 unit files; doc rows in the entry | **closed 2026-09-29** (`responses/5b14b7a.md`, APPROVE; Entry 119): the boundary the G1 review asked for; G2 released; G73, G74 recorded |
+state: closed 2026-09-29: APPROVE (`responses/5b14b7a.md`)

@@ -65,3 +65,7 @@ the very first trade, and only when the learner trades first.** Every later entr
 four bars the app has just played in audible time, and coming in on time there *is* the
 skill being practised — latching would quietly remove it. If the app trades first, there is
 no latch at all: it is T8's case 2, the app leads.
+
+## Record
+
+lane: T2 · closes: — · entry: — · role: history

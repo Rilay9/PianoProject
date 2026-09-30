@@ -24,3 +24,8 @@ jobs:
           python-version: '3.11'
       - name: The prompt views are fresh
         run: python3 -m unittest tools.content.tests.test_prompt_views -v
+      # T58: the task index and in-flight are generated from the briefs' `## Record` blocks and
+      # checked against the entries and the responses; a push touching only in-flight.md, the
+      # entries or the review stream starts no ci.yml run, so this is the one runner that sees it.
+      - name: The record's mirrors are generated
+        run: python3 -m unittest tools.content.tests.test_record_mirrors -v

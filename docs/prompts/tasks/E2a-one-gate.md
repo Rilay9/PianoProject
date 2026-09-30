@@ -42,3 +42,9 @@ Judgement first: what an unprepared learner's card and tiers hold when an unmeas
 **Landed 2026-09-29** (Entry 111; 9571a7b, merged 1cc897e); handoff `handoffs/9571a7b.md`. The lesson seed site held (E46); the rung's own list passing only the admission is L113, the reviewer's call.
 
 **Approved 2026-09-29** (`responses/9571a7b.md`); E2 closed. L113 to X1, E46 owns the lesson seed site.
+
+## Record
+
+lane: E2a · closes: — · entry: 111
+index: The E2 review's required change: `eligibleFor` becomes the material gate over the candidate contract through a private core module neither gate imports back, the one moved verdict proved at the consumer boundary through the exported path, the verdict type widened, novelty bound to D4's identity and contact passed by the caller, the seed concepts passed by the build (`E2a-one-gate.md`) | E2 (Entry 107); `responses/2532022.md` | `eligibility.ts`, `candidates.ts`, `eligibilityCore.ts` (new), the gate's test files, `build.py` at two call sites, a call-site test, docs/03, 08 | **done 2026-09-29**, Entry 111 (the lesson seed site held with the reason); merged 1cc897e; handoff `handoffs/9571a7b.md` with two questions; **approved** (`responses/9571a7b.md`) |
+state: closed 2026-09-29: approved (`responses/9571a7b.md`); E2 closed on E2a's approval (E2's row)

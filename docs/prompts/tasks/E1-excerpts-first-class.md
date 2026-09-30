@@ -59,3 +59,9 @@ Judgement first: the first excerpts by their signals (where each starts and ends
 
 **Closed 2026-09-28** on E1a's acceptance (`responses/4f7227d.md`); the five cuts stay undecided and automatically unoffered; D4 dispatched.
 
+## Record
+
+lane: E1 · closes: — · entry: 101
+index: The excerpt as a first-class content object: `type: 'excerpt'` with its own file cut by the build from the parent's built file, measured on the cut, identified by the parent's bytes, the printed range, the selection and a cut version, proposed by a miner scoring musical boundaries from the detectors' positions, approved in the microscope's excerpt view with the music outside the cut shown and played, on no rung (`E1-excerpts-first-class.md`) | E0 closed; D2 and D2a closed | `tools/content/excerpts.py` (new), `content/sources/excerpts.json` (new), `build.py` at the step and the provenance, the schema, `validate.py`, the bridge's positions, the density file's window minimums, the item type and its readers, the evidence context, `progressStore` at retention, `DevExcerptView.ts` (new), the Library listing, docs/02, 03, 04, 08 | **done 2026-09-28**, Entry 101; closed 2026-09-28 on E1a's acceptance |
+in-flight: **closed** (approved `responses/8326ff3.md`; E1a accepted `4f7227d.md`). Nothing heard; unverified as music.
+state: closed 2026-09-28: closed on E1a's acceptance (approved `responses/8326ff3.md`)

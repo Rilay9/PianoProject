@@ -32,3 +32,10 @@ Judgement first: the tempo line for a half-note-marked file and for a text-marke
 **Landed 2026-09-29** (Entry 129; b71a55ca, merged 7e50c31c); handoff `handoffs/b71a55ca.md`.
 
 **Approved with one required change 2026-09-29** (`responses/b71a55ca.md`): the sheet's words true; the score model's tempo path must consume one canonical tempo map before another import door opens — X3d (`X3d-one-tempo-map.md`). X26 (the old reader pruned) and X27 (the fractional policy) accepted; X30 (the glyph weight) a later wave.
+
+## Record
+
+lane: X3c · closes: — · entry: 129
+index: The import sheet's sentence for a file's own tempo made truthful: the opening tempo from the one reader, the printed mark's own beat unit said beside it, a later change never said as the opening (`X3c-file-tempo-sentence.md`) | X3a review (`responses/564e8e5f.md`), X24 | `importSheet.ts` at `fileTempo`, `help.ts`, the X3 test files, a fixture if needed | **done 2026-09-29**, Entry 129; merged 7e50c31c; handoff `handoffs/b71a55ca.md`; X24, X26 and X27 at the reviewer's gate; **approved with one required change** 2026-09-29 (`responses/b71a55ca.md`): the score model's tempo path, X3d; X26 and X27 closed, X30 recorded |
+in-flight: brief drafted 2026-09-29 (`X3c-file-tempo-sentence.md`: X24, the file's own tempo sentence from the one opening-tempo reader with the printed mark's unit said beside it); dispatches after X3b lands, before any other import-door brief. **Dispatched** 2026-09-29 (Entry 129, port 4353) on X3b's landing. **Landed** 2026-09-29 (merged 7e50c31c, chain green); handoff `handoffs/b71a55ca.md`, with the reviewer. **Reviewed 2026-09-29: approved with one required change (`responses/b71a55ca.md`)** — the sheet's words true; the score model's tempo path must be fixed before any other import door (X29: beat unit and dots normalised, `<sound tempo>` precedence, event position, one map for the label, clock, count-in, measurement, sheet and E48). **X3d** dispatched for it (`X3d-one-tempo-map.md`); X26 and X27 closed; X30 recorded.
+state: verdict 2026-09-29: APPROVE WITH ONE REQUIRED CHANGE (`responses/b71a55ca.md`): X3d; no text records X3c closed

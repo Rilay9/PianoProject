@@ -44,3 +44,10 @@ Judgement first: what the run's history line says after a phrase was heard the d
 **Landed 2026-09-29** (Entry 112; b48342f, merged e13f9c3); handoff `handoffs/b48342f.md`.
 
 **Approved with one required change 2026-09-29** (`responses/b48342f.md`): the core accepted; G1a (`G1a-first-contact-field.md`) gives the first-contact fact its own field before G2 or X consume it; G2 owns the offer's wiring, X1 consumes that one truth.
+
+## Record
+
+lane: G1 · closes: — · entry: 112
+index: One factual encounter model over the build's material identity: an `encounters` store for viewed, heard and demonstrated (runs stay the record of attempted, practised and performed), passage scope, one query of facts, sight-reading's first contact derived from history and still written on the run, D4's contact reading hearings, imports given a file identity; the lifecycle split off as G1b (`G1-encounter-model.md`) | D4 landed; L97 | `db.ts` at the store, `encounterStore.ts` (new), `progressStore.ts` at contact, `material.ts`, `ScoreScreen.ts`, the backup path; doc text in the entry | **approved with one required change 2026-09-29** (`responses/b48342f.md`; Entry 112): the core accepted; G1a splits `firstContact` from `unseen` before G2 or X consume it; G2 owns the offer's wiring |
+in-flight: **approved with one required change** 2026-09-29 (`responses/b48342f.md`; Entry 112): the core encounter model accepted; **G1a** — **closed** 2026-09-29 (`responses/5b14b7a.md`, APPROVE; G2 released; G73, G74 recorded); landed (Entry 119, merged 7002ee5, chain green); handoff `handoffs/5b14b7a.md`, with the reviewer; G2 dispatches on its acceptance (G2's brief approved with its fact path); G72 recorded (the context's `firstContact` name).
+state: verdict 2026-09-29: APPROVE WITH ONE REQUIRED CHANGE (`responses/b48342f.md`): G1a; no text records G1 closed

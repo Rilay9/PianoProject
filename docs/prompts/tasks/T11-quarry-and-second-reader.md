@@ -63,3 +63,7 @@ down, marks `keep` or `reject`.** Nothing is heard; say so.
 
 Rows reviewed on each page; keeps and rejects per track and band; what was committed to
 the catalog; the render verification numbers; what is unverified.
+
+## Record
+
+lane: T11 · closes: — · entry: — · role: history

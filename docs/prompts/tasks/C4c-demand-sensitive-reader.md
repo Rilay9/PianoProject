@@ -59,3 +59,8 @@ If the evidence on the constructed skip learner never isolates or patterns skips
 ## Report
 
 Judgement first: the thirty days again, read as a teacher — days 3–7, 11–20 and 22–25 against the first diary — and the four demonstrations answered with the evidence each rests on. Then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes from unpiped runs (`tsc -b`, lint, vitest, `build:app`, `today`, `doors`, `first-day`, `lesson-flow`); unverified beside what passes.
+
+## Record
+
+lane: C4c · closes: — · entry: 77 · role: history
+index: The demand-sensitive reader; a key change is different, not harder; the thirty-day skip learner rerun with the reviewer's four demonstrations; the second checkpoint | build, browser | done 2026-09-27 (Entry 77); checkpoint written |

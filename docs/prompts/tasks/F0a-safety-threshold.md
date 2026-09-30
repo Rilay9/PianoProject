@@ -22,3 +22,8 @@ The sentence before and after; the source if any, else "removed, unsourced"; the
 
 **Delivered 2026-09-26** in an isolated worktree; the brief's premise that a practice.4 row existed was wrong (none did), so the row was added, not revised.
 
+## Record
+
+lane: F0a · closes: — · entry: —
+index: The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
+state: closed: accepted by the reviewer (responses/5f79b97.md); F0 closed by the reviewer after F0a (F0's row)

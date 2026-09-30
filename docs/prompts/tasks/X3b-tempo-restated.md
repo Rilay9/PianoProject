@@ -32,3 +32,9 @@ Judgement first: the tempo line after a first and a second statement, as observa
 **Landed 2026-09-29** (Entry 128; f9d36867, merged dafd2ed6); handoff `handoffs/f9d36867.md`. X26 recorded.
 
 **Closed 2026-09-29** (`responses/f9d36867.md`, APPROVE): the correction loop; re-seeding from the returned row and the one operation are the constraints.
+
+## Record
+
+lane: X3b · closes: — · entry: 128
+index: X3a finished: the tempo control stays after a statement, seeded from the score's opening tempo, every statement through the store; the twice-stated regression (`X3b-tempo-restated.md`) | X3a (Entry 122); `responses/564e8e5f.md` | `importSheet.ts` at the tempo line, the two X3 test files | **closed 2026-09-29** (`responses/f9d36867.md`, APPROVE; Entry 128): X3a's required change closed; X24 before any other import door; X27 recorded |
+state: closed 2026-09-29: APPROVE (`responses/f9d36867.md`)

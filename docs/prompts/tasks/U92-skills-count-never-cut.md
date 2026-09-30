@@ -40,3 +40,10 @@ Judgement first: the two rows U90 pictured, at 342 × 740 before and after, and 
 **Landed 2026-09-29** (Entry 143; 4de29cdd, merged 51b15bac); handoff `handoffs/4de29cdd.md`.
 
 **Approved 2026-09-29** (`responses/questions-ea14b1fe.md`): the wrap kept; closes on the mechanical read-back.
+
+## Record
+
+lane: U92 · closes: U92 · entry: 143
+index: The Skills row's detail line never shows a cut count: the count first, a visible ellipsis where a token is cut, never a number that reads as another (U90 follow-up 1, P2; the reviewer's ruling) | ui | **done 2026-09-29**, Entry 143; merged 51b15bac; handoff `handoffs/4de29cdd.md`; **approved 2026-09-29** (`responses/questions-ea14b1fe.md`); closes on the mechanical read-back |
+in-flight: brief drafted 2026-09-29 (`U92-skills-count-never-cut.md`): the Skills detail line's count first, a visible ellipsis on `#skills-list` alone, the count itself never cut (measured at 342 px, a wrap if the wide face demands it); U90's title rule untouched. Building, for information (Entry 143). **Landed** 2026-09-29 (merged 51b15bac, chain green); handoff `handoffs/4de29cdd.md`, with the reviewer. **U92 approved** 2026-09-29 (`responses/questions-ea14b1fe.md`): the wrap kept; closes on the read-back.
+state: verdict 2026-09-29: approved (`responses/questions-ea14b1fe.md`); closes on the mechanical read-back
