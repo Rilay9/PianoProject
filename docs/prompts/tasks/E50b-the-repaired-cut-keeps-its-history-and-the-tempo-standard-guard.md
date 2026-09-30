@@ -12,9 +12,12 @@ The original brief's owned files and boundaries hold; nothing outside the requir
 
 **Base.** 827289d0, origin's head at dispatch. **Entry.** 181; the run files under `docs/prompts/runs/E50b/`, the entry at `docs/prompts/runs/E50b/ENTRY.md`.
 
+**Landed 2026-09-30** (Entry 181; 65ae9d5f, merged d5c6491f); handoff `handoffs/65ae9d5f.md`.
+
 ## Record
 
 lane: E50b · closes: — · entry: 181
 index: E50's required change: the repaired Wabash cut's old→new relation, and a tempo-dependent standard never reads an old defaulted-96 run's percentage against the repaired tempo (`responses/68e0479b.md`) | content + app | dispatched 2026-09-30 at 827289d0 (`E50b-the-repaired-cut-keeps-its-history-and-the-tempo-standard-guard.md`); Entry 181 |
 in-flight: dispatched 2026-09-30 (`E50b-the-repaired-cut-keeps-its-history-and-the-tempo-standard-guard.md`): E50's required change under the fast path: the Wabash cut's re-proved old→new learner-material relation (no approval renewal), and the tempo-standard guard at the smallest repair-lineage boundary for the seven defaulted runs (`responses/68e0479b.md`); building (Entry 181)
 state: dispatched 2026-09-30: dispatched at 827289d0, building (Entry 181)
+- landed 2026-09-30: merged d5c6491f; handoff `handoffs/65ae9d5f.md`

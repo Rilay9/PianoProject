@@ -251,7 +251,7 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **L120e** | L120d's required change: the candidate rungs report names a coping-only admission; docs/02 tells one rule after L120b's pending paragraph (`responses/4e76c768.md`) | content | dispatched 2026-09-30 at 827289d0 (`L120e-a-coping-only-admission-is-named.md`); Entry 178; landed 2026-09-30: merged f915e4cf; handoff `handoffs/0ef15f3f.md` |
 | **G96a** | G96's required change: a PDF's Details never claims a guessed level or *Type: song*; wording from the row's provenance, both false statements pinned red first (backlog G99, under G96's fast path; `responses/48bfc167.md`) | app | dispatched 2026-09-30 at 827289d0 (`G96a-a-pdfs-details-says-what-its-provenance-holds.md`); Entry 179; landed 2026-09-30: merged 2330337c; handoff `handoffs/67fc2523.md`; closed 2026-09-30: APPROVE — *PDF* stays; the guard's true boundary is level provenance, G102's; the PDF's *Hands* claim its own row; the type consumers stay observations (`responses/67fc2523.md`) |
 | **U32a** | U32's required change: provision the sheets the settled shape needs after the first paint, never `MAX_SLOTS` by default and never a whole-document load inside a run; Bars 8 by the chooser; the race pinned to Bars 4 (T60) (`responses/2f67b047.md`) | app | dispatched 2026-09-30 at 827289d0 (`U32a-the-sheets-the-settled-shape-needs.md`); Entry 180 |
-| **E50b** | E50's required change: the repaired Wabash cut's old→new relation, and a tempo-dependent standard never reads an old defaulted-96 run's percentage against the repaired tempo (`responses/68e0479b.md`) | content + app | dispatched 2026-09-30 at 827289d0 (`E50b-the-repaired-cut-keeps-its-history-and-the-tempo-standard-guard.md`); Entry 181 |
+| **E50b** | E50's required change: the repaired Wabash cut's old→new relation, and a tempo-dependent standard never reads an old defaulted-96 run's percentage against the repaired tempo (`responses/68e0479b.md`) | content + app | dispatched 2026-09-30 at 827289d0 (`E50b-the-repaired-cut-keeps-its-history-and-the-tempo-standard-guard.md`); Entry 181; landed 2026-09-30: merged d5c6491f; handoff `handoffs/65ae9d5f.md` |
 | **U105a** | U105's required change: a refused summary control's sentence visible within or above the summary, sideways too, uncut (`responses/f51e8010.md`; the second read's item B) | app | dispatched 2026-09-30 at 26a913fe (`U105a-a-refused-summary-control-says-so-on-the-summary.md`); Entry 182 |
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
@@ -369,7 +369,7 @@ G101 · landed · 177
 L120e · landed · 178
 G96a · closed · 179
 U32a · dispatched · 180
-E50b · dispatched · 181
+E50b · landed · 181
 U105a · dispatched · 182
 F0a · closed · —
 L120 · approved · —

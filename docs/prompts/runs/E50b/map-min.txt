@@ -1,0 +1,62 @@
+# checks for 51 path(s): 51 matched, 0 unmatched
+# app/src/curriculum/material.ts: app/src/**, app/src/curriculum/**
+# app/src/curriculum/types.ts: app/src/**, app/src/curriculum/**
+# app/src/evidence/rungState.ts: app/src/**, app/src/evidence/**
+# app/tests/unit/repairedTempoLineage.test.ts: app/tests/unit/*.test.ts
+# content/catalog.schema.json: content/**, content/*.json
+# docs/02-curriculum.md: docs/02-curriculum.md, docs/**
+# docs/03-content-pipeline.md: docs/03-content-pipeline.md, docs/**
+# docs/05-score-follow-engine.md: docs/**
+# docs/08-test-map.md: docs/**
+# docs/prompts/runs/E50b/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+# docs/prompts/runs/E50b/build-after.txt: docs/**
+# docs/prompts/runs/E50b/build-app.txt: docs/**
+# docs/prompts/runs/E50b/build-before.txt: docs/**
+# docs/prompts/runs/E50b/build-exits.txt: docs/**
+# docs/prompts/runs/E50b/checks-for-paths.txt: docs/**
+# docs/prompts/runs/E50b/cleanup.txt: docs/**
+# docs/prompts/runs/E50b/compare.txt: docs/**
+# docs/prompts/runs/E50b/content-items.txt: docs/**
+# docs/prompts/runs/E50b/content-suite.txt: docs/**
+# docs/prompts/runs/E50b/green-app-lineage.txt: docs/**
+# docs/prompts/runs/E50b/green-python-units.txt: docs/**
+# docs/prompts/runs/E50b/lint.txt: docs/**
+# docs/prompts/runs/E50b/mutants.txt: docs/**
+# docs/prompts/runs/E50b/parity.txt: docs/**
+# docs/prompts/runs/E50b/record-mirrors.txt: docs/**
+# docs/prompts/runs/E50b/red-app-base.txt: docs/**
+# docs/prompts/runs/E50b/red-python-base.txt: docs/**
+# docs/prompts/runs/E50b/repaired-cut-rerun.txt: docs/**
+# docs/prompts/runs/E50b/repaired-cut.txt: docs/**
+# docs/prompts/runs/E50b/review-check.txt: docs/**
+# docs/prompts/runs/E50b/scripts-cleanup.ps1: docs/**
+# docs/prompts/runs/E50b/scripts-collect-logs.py: docs/**
+# docs/prompts/runs/E50b/scripts-compare.py: docs/**
+# docs/prompts/runs/E50b/scripts-content-items.py: docs/**
+# docs/prompts/runs/E50b/scripts-mutants.py: docs/**
+# docs/prompts/runs/E50b/scripts-repaired-cut.py: docs/**
+# docs/prompts/runs/E50b/scripts-run-build.ps1: docs/**
+# docs/prompts/runs/E50b/scripts-setup.ps1: docs/**
+# docs/prompts/runs/E50b/scripts-tempo-history.py: docs/**
+# docs/prompts/runs/E50b/setup.txt: docs/**
+# docs/prompts/runs/E50b/tempo-history.txt: docs/**
+# docs/prompts/runs/E50b/tsc.txt: docs/**
+# docs/prompts/runs/E50b/validate.txt: docs/**
+# docs/prompts/runs/E50b/vitest-all.txt: docs/**
+# docs/prompts/runs/E50b/vitest-rerun.txt: docs/**
+# tools/content/build.py: tools/content/*.py
+# tools/content/excerpts.py: tools/content/*.py, tools/content/excerpts.py
+# tools/content/repaired_identities.json: tools/content/*.json
+# tools/content/tests/test_convert_cache.py: tools/content/tests/test_*.py
+# tools/content/tests/test_excerpts.py: tools/content/tests/test_*.py
+# tools/content/tests/test_measured_truth.py: tools/content/tests/test_*.py
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/competence.spec.ts tests/e2e/excerpts.spec.ts tests/e2e/modes-ladder.spec.ts tests/e2e/placement-branches.spec.ts tests/e2e/plan.spec.ts tests/e2e/progress.spec.ts tests/e2e/score.ladder-route.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/today.spec.ts tests/e2e/transfer-offer.spec.ts --workers=4

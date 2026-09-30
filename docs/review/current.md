@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **E50b** — `handoffs/65ae9d5f.md` (respond in `responses/65ae9d5f.md`). The repaired Wabash cut keeps its learner's history, and an old defaulted-tempo run never meets a standard against the repaired tempo (Entry 181).
 - **L120e** — `handoffs/0ef15f3f.md` (respond in `responses/0ef15f3f.md`). A coping-only admission is named in the candidate rungs report, and docs/02 tells one rule (Entry 178).
 - **G101** — `handoffs/cbdfe6f0.md` (respond in `responses/cbdfe6f0.md`). The Library title wraps to every line it needs, the Folder stays at two (Entry 177).
 - **G96a** — `handoffs/67fc2523.md` answered 2026-09-30: APPROVE, closed (*PDF* stays; the guard's boundary is level provenance, G102's; PDF hands its own row, G105). A PDF's Details says what its provenance holds (Entry 179).
