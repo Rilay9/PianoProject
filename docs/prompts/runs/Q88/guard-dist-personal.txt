@@ -1,0 +1,1 @@
+deploy guard: publishing — app\dist\content\catalog.json holds no fetch placeholder (2092 catalogue items)

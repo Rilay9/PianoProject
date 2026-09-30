@@ -1,0 +1,7 @@
+the guard after the upload: red — test_the_guard_runs_after_the_build_and_before_the_upload
+continue-on-error on the guard: red — test_nothing_lets_the_guards_refusal_through
+the guard reads app/public/content: red — test_the_guard_reads_the_catalogue_the_upload_publishes
+the upload runs after a failure: red — test_nothing_lets_the_guards_refusal_through, test_the_guard_reads_the_catalogue_the_upload_publishes
+the guard step removed: red — test_nothing_lets_the_guards_refusal_through, test_the_guard_reads_the_catalogue_the_upload_publishes, test_the_guard_runs_after_the_build_and_before_the_upload
+the deploy job no longer needs the build: red — test_the_deploy_needs_the_build
+exit 0

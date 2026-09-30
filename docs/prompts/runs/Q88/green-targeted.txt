@@ -1,0 +1,27 @@
+test_a_catalogue_that_cannot_be_read_is_not_published (tools.content.tests.test_deploy_guard.TestABuildThatCouldNotFetchIsNotPublished.test_a_catalogue_that_cannot_be_read_is_not_published) ... ok
+test_a_fetched_file_that_is_not_the_pinned_one_is_refused_too (tools.content.tests.test_deploy_guard.TestABuildThatCouldNotFetchIsNotPublished.test_a_fetched_file_that_is_not_the_pinned_one_is_refused_too) ... ok
+test_an_edition_this_build_did_not_fetch_is_refused_by_id_and_reason (tools.content.tests.test_deploy_guard.TestABuildThatCouldNotFetchIsNotPublished.test_an_edition_this_build_did_not_fetch_is_refused_by_id_and_reason) ... ok
+test_every_unfetched_item_is_named_once (tools.content.tests.test_deploy_guard.TestABuildThatCouldNotFetchIsNotPublished.test_every_unfetched_item_is_named_once) ... ok
+test_an_empty_catalogue_is_published (tools.content.tests.test_deploy_guard.TestTheCataloguesOwnPlaceholdersPass.test_an_empty_catalogue_is_published) ... ok
+test_licence_and_import_only_placeholders_are_published (tools.content.tests.test_deploy_guard.TestTheCataloguesOwnPlaceholdersPass.test_licence_and_import_only_placeholders_are_published) ... ok
+test_nothing_lets_the_guards_refusal_through (tools.content.tests.test_deploy_guard.TheDeployStep.test_nothing_lets_the_guards_refusal_through) ... ok
+test_the_deploy_needs_the_build (tools.content.tests.test_deploy_guard.TheDeployStep.test_the_deploy_needs_the_build) ... ok
+test_the_guard_reads_the_catalogue_the_upload_publishes (tools.content.tests.test_deploy_guard.TheDeployStep.test_the_guard_reads_the_catalogue_the_upload_publishes) ... ok
+test_the_guard_runs_after_the_build_and_before_the_upload (tools.content.tests.test_deploy_guard.TheDeployStep.test_the_guard_runs_after_the_build_and_before_the_upload) ... ok
+test_ci_runs_every_check_the_path_map_names (tools.content.tests.test_ci_order.TheWorkflowOrder.test_ci_runs_every_check_the_path_map_names) ... ok
+test_record_and_review_pushes_start_no_run_and_nothing_else_is_ignored (tools.content.tests.test_ci_order.TheWorkflowOrder.test_record_and_review_pushes_start_no_run_and_nothing_else_is_ignored) ... ok
+test_the_build_follows_what_it_needs (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_build_follows_what_it_needs) ... ok
+test_the_content_is_built_before_the_content_tests_read_it (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_content_is_built_before_the_content_tests_read_it) ... ok
+test_the_converter_harness_runs (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_converter_harness_runs) ... ok
+test_the_parity_reference_is_written_before_the_unit_tests_compare_against_it (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_parity_reference_is_written_before_the_unit_tests_compare_against_it) ... ok
+test_the_recordings_are_fetched_before_anything_reads_them (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_recordings_are_fetched_before_anything_reads_them) ... ok
+test_the_render_check_and_the_second_validation_keep_their_places (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_render_check_and_the_second_validation_keep_their_places) ... ok
+test_the_run_in_progress_completes_and_the_newest_tree_waits (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_run_in_progress_completes_and_the_newest_tree_waits) ... ok
+test_the_steps_the_failure_messages_name_exist (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_steps_the_failure_messages_name_exist) ... ok
+test_the_unit_tests_run_after_the_content_build_they_read (tools.content.tests.test_ci_order.TheWorkflowOrder.test_the_unit_tests_run_after_the_content_build_they_read) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 2.989s
+
+OK
+exit 0

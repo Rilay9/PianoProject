@@ -1,0 +1,18 @@
+﻿
+16:56:40 caches copied from the main checkout
+16:56:40 start build-personal
+17:01:57 done build-personal exit 0
+17:01:57 snapshot restored; git status in restore2.txt
+17:01:57 start validate-personal
+17:02:20 done validate-personal exit 0
+17:02:20 start review-check
+17:02:21 done review-check exit 0
+17:02:21 start content-tests-all
+17:19:11 done content-tests-all exit 0
+17:19:11 start vitest-all
+17:23:44 done vitest-all exit 1
+17:23:44 start build-app
+17:24:28 done build-app exit 0
+17:24:28 start guard-dist-personal
+17:24:29 done guard-dist-personal exit 0
+17:24:29 chain2 finished
