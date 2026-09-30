@@ -590,14 +590,13 @@ Every measured demand of an option that the curriculum has not taught by the ear
 | --- | --- | --- |
 | Hot Cross Buns (`song.folk.hot-cross-buns`) | 0.3 | interval.step, interval.skip, rhythm.eighths, rhythm.shorter-than-quarter |
 | Kum Ba Yah (`song.folk.kum-ba-yah.pdmx`) | 1.1 | interval.skip, interval.leap, range.beyond-position |
-| Jingle Bells (chorus) (`song.holiday.jingle-bells.rh`) | 1.2 | interval.leap |
 | Twinkle, Twinkle, Little Star (`song.folk.twinkle.rh`) | 1.2 | interval.leap, range.beyond-position |
 | Frère Jacques (`song.folk.frere-jacques`) | 1.2 | pitch.ledger, interval.skip, interval.leap, rhythm.eighths, rhythm.shorter-than-quarter, range.beyond-position |
 | Ah! vous dirai-je, Maman (`song.classical.ah-vous-dirais-je-maman.pdmx`) | 1.2 | interval.leap, range.beyond-position |
 | Hot Cross Buns (left hand) (`song.folk.hot-cross-buns.lh`) | 1.3 | pitch.ledger, interval.skip, rhythm.eighths, rhythm.shorter-than-quarter |
 | Mary Had a Little Lamb (left hand) (`song.folk.mary-had-a-little-lamb.lh`) | 1.3 | pitch.ledger, interval.skip |
 | Ode to Joy (left hand) (`song.classical.ode-to-joy.lh`) | 1.3 | pitch.ledger |
-| Oh When the Saints Go Marching In (hands alternating) (`song.folk.when-the-saints.alternating`) | 1.4 | interval.leap, rhythm.syncopation |
+| Oh When the Saints Go Marching In (hands alternating) (`song.folk.when-the-saints.alternating`) | 1.4 | rhythm.syncopation |
 | Old MacDonald Had a Farm (`song.folk.old-macdonald`) | 1.5 | interval.leap, range.beyond-position |
 | The Water Is Wide (`song.folk.the-water-is-wide.pdmx`) | 1.5 | interval.leap, rhythm.eighths, rhythm.shorter-than-quarter, rhythm.dotted-quarter, rhythm.ties, rhythm.syncopation, key.signature, range.beyond-position |
 | Twinkle, Twinkle, Little Star (hands together) (`song.folk.twinkle.ht`) | 2.1 | range.beyond-position |
@@ -624,7 +623,6 @@ Every measured demand of an option that the curriculum has not taught by the ear
 | Cielito Lindo (simple) (`song.folk.cielito-lindo.simple`) | 2.4 | range.beyond-position |
 | Ode to Joy (full theme) (`song.classical.ode-to-joy.full`) | 2.5 | pitch.ledger |
 | Ode to Joy (easy variation) (`song.classical.beethoven-ode-to-joy.easy`) | 2.5 | pitch.ledger, key.signature, pitch.chromatic |
-| Jingle Bells (chorus, hands together) (`song.holiday.jingle-bells.ht`) | holiday | interval.leap |
 | Silent Night (melody) (`song.classical.1818-franz-xaver-gruber-silent-night.pdmx`) | holiday | interval.leap, rhythm.eighths, rhythm.shorter-than-quarter, rhythm.sixteenths, rhythm.ties, metre.compound, range.beyond-position |
 | Jolly Old Saint Nicholas (`song.pop.misc-christmas-traditional-music-jolly-old-saint-nicholas.pdmx`) | holiday | interval.leap, rhythm.eighths, rhythm.shorter-than-quarter, key.signature, range.beyond-position |
 | Good King Wenceslas (`song.pop.misc-christmas-good-king-wenceslas.pdmx`) | holiday | interval.leap, key.signature, range.beyond-position |

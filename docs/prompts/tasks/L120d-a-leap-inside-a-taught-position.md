@@ -325,3 +325,5 @@ This is Entry 167: `docs/prompts/runs/L120d/ENTRY.md`, starting `### Entry 167 â
 - **Item 2's choice stands:** the positions recorded on `interval.leap` as on `interval.skip`, stated twice, and item 3 (6)'s pin is enough until a third real consumer appears; the one-definition alternative stays unbuilt.
 - **The eight invariants** are the contract; the report names, for each, the case or mutant that shows it.
 - **Item 5's numbers are a hypothesis, not an oracle.** Re-run against the actual base (after L120c, if the base holds it) and report any difference; the count is never forced.
+
+**Landed 2026-09-29** (Entry 167; 4e76c768, merged 712d6321); handoff `handoffs/4e76c768.md`.
