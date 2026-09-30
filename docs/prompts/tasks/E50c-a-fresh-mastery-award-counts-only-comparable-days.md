@@ -103,9 +103,12 @@ Judgement first: does the fresh mastery decision now match what a learner's hist
 
 `operating-procedure.md` §14 governs: a worktree cut from origin's head at dispatch (this brief states the sha, `e71ef3ad`), `npm ci` in `app/`, no commits/pushes/stashes/resets from the builder, no kept log over 300 KB, machine paths replaced by `<worktree>`/`<home>` in anything kept, every item done or given an explicit not-done line, no AI model named and no number measured on this machine asserted as general. This lane needs no content copy — nothing under `content/` or `tools/content/` is read or changed — and no Playwright port or config copy, since no browser spec runs (Verification layer 5); the whole harness is `npm ci`, the edit, and the vitest/tsc/lint commands named above.
 
+**Landed 2026-09-30** (Entry 190; 4a83af56, merged 6e2f7c5d); handoff `handoffs/4a83af56.md`.
+
 ## Record
 
 lane: E50c · closes: — · entry: 190
 index: E50b's required change: a fresh mastery award counts only comparable days (`responses/65ae9d5f.md`) | app | drafted 2026-09-30 (`E50c-a-fresh-mastery-award-counts-only-comparable-days.md`); Entry 190
 in-flight: drafted 2026-09-30 (`E50c-a-fresh-mastery-award-counts-only-comparable-days.md`): E50b's required change under the fast path: `recordRun`'s fresh mastery transition refuses an old day whose tempo channel a reviewed repair made incomparable (`responses/65ae9d5f.md`); awaiting dispatch (Entry 190)
 state: dispatched 2026-09-30: dispatched at 36be5a50, building (Entry 190)
+- landed 2026-09-30: merged 6e2f7c5d; handoff `handoffs/4a83af56.md`

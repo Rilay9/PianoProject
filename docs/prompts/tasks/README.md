@@ -260,7 +260,7 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **CL05** | Practice lifecycle: a backgrounded phone no longer advances Drill's chorus, PDF's pages, Chord Chart's bar/backing loop or Lab's trade clock, and hidden time is no longer counted as practice on any of the four (backlog X15; convergence CL05; U19/U39 named, not closed; U18 already closed) | app | brief drafted 2026-09-30 (`CL05-practice-lifecycle.md`); with the reviewer before dispatch; Entry 187
 | **CL15** | Generator fixes: a diatonic tremolo third, an honestly-named syncopation drill, the pentatonic items clear the five-second floor, power_chord's canonical role matched to the plan it ships, the interval-reading melody free to start on any position degree; U68's left-hand staff built pending its own hand-assignment probe; G54 closed outright, G51 and G7 in part, U68 on the probe's word (backlog G51, G54, U68, G7; CL15) | content | brief drafted 2026-09-30 (`CL15-generator-fixes.md`); with the reviewer before dispatch; Entry 188
 | **CL01** | Lesson truth: `improv.3.md`'s "nothing you play can be wrong" narrowed to the pitch guarantee its own reasoning proves, `ragtime.9.md`'s "those never come out" softened to a heuristic, `improv.8.md`'s tritone-substitution sentence read and confirmed a justified absolute rather than rewritten, and a per-lesson gate-coverage record answering T48's stated gap for the sentences and lessons this seam covers; T53 and T54 stay reads (the owner's three-part T54 split named, part B — the pianist/teacher packet — flagged as a capability no actor in this process has); T16's re-check open now that L120d and L120e landed, put to the reviewer (backlog T4, T16, T47, T48, T53, T54; convergence CL01) | content | brief drafted 2026-09-30 (`CL01-lesson-truth.md`); with the reviewer before dispatch; Entry 189
-| **E50c** | E50b's required change: a fresh mastery award counts only comparable days (`responses/65ae9d5f.md`) | app | drafted 2026-09-30 (`E50c-a-fresh-mastery-award-counts-only-comparable-days.md`); Entry 190
+| **E50c** | E50b's required change: a fresh mastery award counts only comparable days (`responses/65ae9d5f.md`) | app | drafted 2026-09-30 (`E50c-a-fresh-mastery-award-counts-only-comparable-days.md`); Entry 190; landed 2026-09-30: merged 6e2f7c5d; handoff `handoffs/4a83af56.md`
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
 
@@ -386,7 +386,7 @@ U113 · dispatched · 186
 CL05 · with-reviewer · 187
 CL15 · with-reviewer · 188
 CL01 · with-reviewer · 189
-E50c · dispatched · 190
+E50c · landed · 190
 F0a · closed · —
 L120 · approved · —
 -->
