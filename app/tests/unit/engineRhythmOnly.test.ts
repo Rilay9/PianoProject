@@ -139,3 +139,43 @@ describe('rhythm first — with the latch (T8)', () => {
     ]);
   });
 });
+
+/**
+ * U66 (U7): the stall case on a rhythm-only run. `findRhythmSlot` searches the
+ * same open windows `findSlot` does, a window a stalled tick holds among them,
+ * and measures the strike's own stamp against the same inclusive tolerance.
+ * So the pair holds across a stall: a strike stamped inside the window counts,
+ * one stamped outside it does not.
+ */
+describe('rhythm first — a stall is not a miss (U66)', () => {
+  it('a strike stamped inside the window, delivered after a stall past its close, counts', () => {
+    const h = harness(piece, rhythmRun);
+    h.engine.start();
+    h.advance(90);
+    // No tick from 90 ms to 400 ms; step 0's window closed at 150.
+    h.clock.set(400);
+    h.engine.tick();
+    h.play(ANY_KEY, { atMs: 100 });
+    const score = h.engine.state.score;
+    expect(score.hits).toBe(1);
+    expect(score.missedTotal).toBe(0);
+    expect(score.wrongNotesTotal).toBe(0);
+    expect(h.of('noteJudged').map((e) => [e.ok, e.stepIndex, e.deltaMs])).toEqual([[true, 0, 100]]);
+    h.advance(0.5 * BEAT_MS);
+    expect(h.of('missed')).toEqual([]);
+  });
+
+  it('the same strike stamped after the window closed, delivered after the same stall, does not', () => {
+    const h = harness(piece, rhythmRun);
+    h.engine.start();
+    h.advance(90);
+    h.clock.set(400);
+    h.engine.tick();
+    h.play(ANY_KEY, { atMs: 160 });
+    h.advance(0.5 * BEAT_MS);
+    const score = h.engine.state.score;
+    expect(score.hits).toBe(0);
+    expect(score.wrongNotesTotal).toBe(1);
+    expect(h.of('missed').map((e) => e.stepIndex)).toEqual([0]);
+  });
+});

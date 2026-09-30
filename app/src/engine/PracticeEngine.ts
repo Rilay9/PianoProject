@@ -70,6 +70,24 @@ const LOOP_GAP_BEATS = 1;
  */
 const BEAT_EPSILON_MS = 1e-3;
 
+/**
+ * How far an input stamp may sit from the engine's clock and still be
+ * trusted (`toMusicTime`, `latch`). Input stamps and the clock share an origin
+ * in the browser; a stamp further off than this is taken to come from some
+ * other origin, and the clock's own time is used instead. One second: enough
+ * for scheduling jitter, far short of what an unrelated origin would produce.
+ */
+const STAMP_TRUST_MS = 1000;
+
+/**
+ * The tick contract: the longest a free main thread lets pass between two
+ * ticks. `ScoreSession` ticks from every animation frame and, for the frames
+ * that do not arrive, from an interval of this length (`TICK_INTERVAL_MS`,
+ * which `engineTempo.test.ts` pins equal to this); the dev harness ticks every
+ * 16 ms. A longer gap means the thread was busy — a stall (U66).
+ */
+export const TICK_BUDGET_MS = 25;
+
 // --- the tempo ladder on a loop (docs/05 §6) --------------------------------
 //
 // A rule about what the *next* pass of a loop should be played at, so it lives
@@ -284,6 +302,38 @@ export class PracticeEngine {
   /** Tempo mode: the last tempoTick beat emitted, counting from the count-in. */
   private lastTickIndex = -1;
 
+  // --- a stall is not a miss (U66) -------------------------------------------
+  //
+  // A note is judged by its stamp (`feedTempo`), so a note stamped inside its
+  // window matches it whenever it is delivered — as long as the window is
+  // still there. The tick closes windows by the clock, and after a long task
+  // the first tick used to run before the MIDI messages queued behind the
+  // same task: it closed their windows as missed, and each message, stamped
+  // inside its window, then matched nothing and counted as a wrong note.
+  //
+  // So a tick that follows a stall — a gap longer than the tick contract
+  // allows a free thread (`TICK_BUDGET_MS`) — holds the windows it finds
+  // ended instead of closing them, until a tick at least one tick interval
+  // later. The engine cannot see the page's queue; the bound rests on the
+  // page running what the stall queued before a timer that fell due after it
+  // (Chromium does: `engine.spec.ts`'s long-task case; unverified on a phone).
+  // And never past the stamp-trust bound (`STAMP_TRUST_MS`): beyond it no
+  // note stamped inside the window could be judged in it anyway. Both bounds
+  // are the engine's existing contracts; no new duration is involved. An
+  // unstalled run closes every window on the tick it always did. Nothing is
+  // ever reopened: a held window was never marked missed, so nothing painted
+  // is taken back.
+
+  /** When the last tick (or the run's start, a resume) read the clock; null before a run. */
+  private lastTickAtMs: number | null = null;
+  /** Windows a stalled tick found ended and held: slot index → the clock time the hold ends. */
+  private readonly heldUntil = new Map<number, number>();
+  /**
+   * The music time the run ended at, while its end waits on a held window —
+   * the last lap's close, or a loop's wrap — and null otherwise.
+   */
+  private endHeldAtMusicMs: number | null = null;
+
   private readonly recorded: RecordedNote[] = [];
   private correctSteps = 0;
   private wrongNotesTotal = 0;
@@ -448,6 +498,9 @@ export class PracticeEngine {
         : start;
     this.resetRunTotals();
     this.openSlots.clear();
+    this.heldUntil.clear();
+    this.endHeldAtMusicMs = null;
+    this.lastTickAtMs = now;
     this.nextSlotToOpen = this.step;
     this.lastTickIndex = -1;
     this.anchorStep = nextPlayableStep(this.session.steps, start, this.session.lastStep);
@@ -497,6 +550,8 @@ export class PracticeEngine {
     if (recountMs > 0 && (this.mode === 'tempo' || this.mode === 'listen') && !this.armed) {
       this.recountFrom(now, recountMs, options.latch === true, options.toStep);
     }
+    // The pause was not a stall: the music clock stood still through it.
+    this.lastTickAtMs = now;
     this.emit({ kind: 'resumed', tMs: now });
   }
 
@@ -525,7 +580,9 @@ export class PracticeEngine {
    * happens *early* too, when a note lands inside the window before the cursor
    * gets there) or begun: a chord partly played is finished by the resume
    * closing the rest. A window still open and untouched, or not yet opened, is
-   * where the learner picks up.
+   * where the learner picks up — unless it is only open because a stall is
+   * holding it past its end (U66): its time is over, and the resume closes it
+   * as the miss it was.
    */
   private resumeStep(): number | null {
     // From the earliest window still open, not the cursor: with notes closer
@@ -538,7 +595,7 @@ export class PracticeEngine {
       if (!step || step.isEmpty) continue;
       const open = this.openSlots.get(index);
       const opened = index < this.nextSlotToOpen;
-      const over = opened && (!open || open.size < step.expected.length);
+      const over = opened && (!open || open.size < step.expected.length || this.heldUntil.has(index));
       if (!over) return index;
     }
     return null;
@@ -555,7 +612,9 @@ export class PracticeEngine {
     if (target === null) return;
     const targetMs = this.session.steps[target]?.tMs ?? 0;
     for (const index of [...this.openSlots.keys()]) {
-      if (index < target) this.closeSlotAsMissed(index);
+      // A held window is over wherever the count goes back to (U66): the
+      // rewound clock must not make it a window to play again.
+      if (index < target || this.heldUntil.has(index)) this.closeSlotAsMissed(index);
     }
     const startMusicMs = targetMs - recountMs;
     this.clockOriginMs = now - startMusicMs - this.session.countInMs;
@@ -573,6 +632,13 @@ export class PracticeEngine {
   stop(): void {
     if (!this.running) return;
     const now = this.clock.now();
+    // What a stall was holding is over (U66): closed as the misses the tick
+    // would have made them — every open window, when it is the run's end that
+    // was held, as the end itself closes them.
+    for (const index of [...this.openSlots.keys()]) {
+      if (this.endHeldAtMusicMs !== null || this.heldUntil.has(index)) this.closeSlotAsMissed(index);
+    }
+    this.endHeldAtMusicMs = null;
     this.finishedAtMs = this.paused ? this.pausedAtMs : now;
     if (this.armed && !this.paused) this.idleTotalMs += now - this.armedSinceMs;
     this.armed = false;
@@ -628,6 +694,12 @@ export class PracticeEngine {
       return;
     }
     if (this.mode !== 'tempo' && this.mode !== 'listen') return;
+    // A gap the tick contract does not allow a free thread: this tick follows
+    // a stall (U66). Read before the hold below, so that holding for the first
+    // note is not itself taken for one.
+    const now = this.clock.now();
+    const stalled = this.lastTickAtMs !== null && now - this.lastTickAtMs > TICK_BUDGET_MS;
+    this.lastTickAtMs = now;
     // Holding for the first note: the clock waits, so nothing else does.
     if (this.armed) return;
     const music = this.musicMs;
@@ -640,9 +712,10 @@ export class PracticeEngine {
     }
     // Open before closing: a very short step could do both within one frame.
     this.openUpcomingSlots(music);
-    this.emitTicksUpTo(music);
-    this.closeWindowsUpTo(music);
-    this.advanceClockTo(music);
+    // No beat past a held end: the run is over, only its last judgement waits.
+    if (this.endHeldAtMusicMs === null) this.emitTicksUpTo(music);
+    this.closeWindowsUpTo(music, now, stalled);
+    this.advanceClockTo(music, now, stalled);
   }
 
   /** Feeds one input event. Safe to call before `start()`; it is ignored. */
@@ -748,7 +821,7 @@ export class PracticeEngine {
     let t = rawTMs - this.session.options.inputLatencyMs;
     // Same rule as `toMusicTime`: a timestamp from some other origin is
     // replaced by the clock rather than trusted.
-    if (!Number.isFinite(t) || Math.abs(t - now) > 1000) t = now;
+    if (!Number.isFinite(t) || Math.abs(t - now) > STAMP_TRUST_MS) t = now;
     if (!this.armed) {
       // Still counting: a note inside the window at the count's end starts the
       // music; anything earlier is a hand finding its place.
@@ -984,6 +1057,15 @@ export class PracticeEngine {
     // Trust the event's own timestamp where it is sane, but a replayed or
     // synthetic event may carry an unrelated origin; fall back to the clock.
     const at = Number.isFinite(tMs) ? this.toMusicTime(tMs, music) : music;
+    // The run is over and its end waits on a held window (U66). Only a note
+    // played before the end, for a window still open, is judged: anything
+    // else is dropped, as the finished run would have dropped it — never a
+    // wrong note it did not used to be.
+    if (this.endHeldAtMusicMs !== null) {
+      const heldFor =
+        at < this.endHeldAtMusicMs ? (this.rhythmOnly ? this.findRhythmSlot(at) : this.findSlot(midi, at)) : null;
+      if (heldFor === null) return;
+    }
     // A note can arrive before the frame that would have opened its slot —
     // that is precisely what playing early means, and §3 says to match it.
     this.openUpcomingSlots(Math.max(music, at));
@@ -1053,6 +1135,7 @@ export class PracticeEngine {
       const deltaMs = at - (target?.tMs ?? at);
       this.hits += slot?.size ?? 0;
       this.openSlots.delete(match);
+      this.heldUntil.delete(match);
       // One strike settles the whole step, so the step came out right — the
       // same thing `correctSteps` counts on an ordinary Tempo run below.
       this.correctSteps += 1;
@@ -1086,6 +1169,7 @@ export class PracticeEngine {
     }
     if (slot && slot.size === 0) {
       this.openSlots.delete(match);
+      this.heldUntil.delete(match);
       // Every pitch this step expected arrived inside its window, which is
       // what `SessionScore.correctSteps` says it counts. It is counted *here*
       // because here is where a step is completed: the count used to sit in
@@ -1242,7 +1326,7 @@ export class PracticeEngine {
   }
 
   /** Moves the cursor to wherever the clock says it should be. */
-  private advanceClockTo(musicMs: number): void {
+  private advanceClockTo(musicMs: number, now: number, stalled: boolean): void {
     while (this.step < this.session.lastStep) {
       const next = this.session.steps[this.step + 1];
       if (!next || next.tMs > musicMs) break;
@@ -1252,29 +1336,84 @@ export class PracticeEngine {
     }
     const last = this.session.steps[this.session.lastStep];
     if (this.step >= this.session.lastStep && last && musicMs >= last.tMs + last.durMs) {
-      this.closeWindowsUpTo(Number.POSITIVE_INFINITY);
-      this.completeLap(this.clock.now());
+      // The end closes whatever is still open, as a miss, and completes the
+      // lap — whose score is emitted there, after which a finished run drops
+      // every note. So the end is held while a stall is (U66), the lap with it.
+      if (this.holdsTheEnd(now, stalled)) {
+        this.endHeldAtMusicMs = last.tMs + last.durMs;
+        return;
+      }
+      this.endHeldAtMusicMs = null;
+      for (const index of [...this.openSlots.keys()]) this.closeSlotAsMissed(index);
+      this.completeLap(now);
     }
+  }
+
+  /**
+   * Whether the run's end waits for a note a stall kept queued (U66).
+   *
+   * An end a stalled tick reaches holds every window still open, the one the
+   * end cuts short included (a last note shorter than the tolerance, U111):
+   * the notes played before the end may still be on their way. And an end
+   * waits while any window is held, however it came to be. The hold is the
+   * one ordinary windows get, so the end waits at most a tick interval and a
+   * tick; a note stamped after the end is dropped (`feedTempo`).
+   */
+  private holdsTheEnd(now: number, stalled: boolean): boolean {
+    if (!this.judging) return false;
+    if (stalled) {
+      for (const index of this.openSlots.keys()) {
+        if (!this.heldUntil.has(index)) this.heldUntil.set(index, now + TICK_BUDGET_MS);
+      }
+    }
+    for (const until of this.heldUntil.values()) {
+      if (now < until) return true;
+    }
+    return false;
   }
 
   /**
    * Marks every pitch whose window has closed unsatisfied as missed.
    *
    * A slot closes at `tStep + toleranceMs`, so a note played exactly at the
-   * limit still counts and one played later does not.
+   * limit still counts and one played later does not — and a window a stall
+   * may still owe a note stays open for it a little longer (`holdsForStall`).
    */
-  private closeWindowsUpTo(musicMs: number): void {
+  private closeWindowsUpTo(musicMs: number, now: number, stalled: boolean): void {
     for (const index of [...this.openSlots.keys()]) {
       const step = this.session.steps[index];
       if (!step) {
         this.openSlots.delete(index);
         continue;
       }
+      const end = step.tMs + this.session.options.toleranceMs;
       // Strictly greater: docs/05 §3 makes the tolerance inclusive, so a note
       // landing exactly on the limit still counts.
-      if (musicMs <= step.tMs + this.session.options.toleranceMs) continue;
+      if (musicMs <= end) continue;
+      if (this.holdsForStall(index, musicMs - end, now, stalled)) continue;
       this.closeSlotAsMissed(index);
     }
+  }
+
+  /**
+   * Whether a window the clock has passed stays open for a note stamped
+   * inside it that a stall kept from arriving (U66).
+   *
+   * Only a stalled tick starts a hold, and only in a run that judges. The
+   * hold ends at the first tick one tick interval (`TICK_BUDGET_MS`) after
+   * the stalled one — a tick that fell due after the messages the stall
+   * queued, which the page runs first — and at once when the window has been
+   * over for longer than a stamp can be trusted (`STAMP_TRUST_MS`), since no
+   * note stamped inside it could then be judged in it.
+   */
+  private holdsForStall(index: number, pastEndMs: number, now: number, stalled: boolean): boolean {
+    if (!this.judging) return false;
+    if (pastEndMs > STAMP_TRUST_MS) return false;
+    const until = this.heldUntil.get(index);
+    if (until !== undefined) return now < until;
+    if (!stalled) return false;
+    this.heldUntil.set(index, now + TICK_BUDGET_MS);
+    return true;
   }
 
   /**
@@ -1285,6 +1424,7 @@ export class PracticeEngine {
     const pitches = this.openSlots.get(index);
     const step = this.session.steps[index];
     this.openSlots.delete(index);
+    this.heldUntil.delete(index);
     const early = this.earlyStrikes.get(index);
     this.earlyStrikes.delete(index);
     if (!pitches || !step) return;
@@ -1357,15 +1497,16 @@ export class PracticeEngine {
   private toMusicTime(tMs: number, nowMusicMs: number): number {
     const converted = tMs - this.clockOriginMs - this.session.countInMs;
     const drift = Math.abs(converted - nowMusicMs);
-    // One second of slack: enough for scheduling jitter, far short of the
-    // difference an unrelated clock origin would produce.
-    return drift <= 1000 ? converted : nowMusicMs;
+    // One second of slack (`STAMP_TRUST_MS`): enough for scheduling jitter,
+    // far short of the difference an unrelated clock origin would produce.
+    return drift <= STAMP_TRUST_MS ? converted : nowMusicMs;
   }
 
   // --- Loops and completion (docs/05 §6) -----------------------------------
 
   private completeLap(tMs: number): void {
     const loop = this.session.options.loop;
+    this.endHeldAtMusicMs = null;
     if (!loop) {
       this.finishedAtMs = tMs;
       this.running = false;
@@ -1380,6 +1521,7 @@ export class PracticeEngine {
     this.progress = freshProgress();
     this.earlyBuffer = new Set();
     this.openSlots.clear();
+    this.heldUntil.clear();
     this.earlyStrikes.clear();
     if (this.mode === 'wait' || this.mode === 'free') {
       const start = nextPlayableStep(this.session.steps, this.session.firstStep, this.session.lastStep);
@@ -1394,7 +1536,9 @@ export class PracticeEngine {
     this.emit({ kind: 'stepAdvanced', from, to: this.step, tMs });
     // Tempo restarts on the grid: rebase the clock so step 0 is now, after a
     // one-beat gap so the lap does not run into itself. The music clock only:
-    // the run's duration carries on across laps.
+    // the run's duration carries on across laps. "Now" is the tick that
+    // completes the lap, so a wrap a stall held (U66) moves the next lap's
+    // downbeat by the hold, as the stall itself always moved it.
     this.clockOriginMs =
       this.clock.now() +
       LOOP_GAP_BEATS * this.session.msPerBeat -
