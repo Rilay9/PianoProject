@@ -1,0 +1,157 @@
+$ (cd app) npx vitest run tests/unit/drillSheetsSayWhatWasMeasured.test.ts
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts (14 tests | 7 failed) 5501ms
+   ❯ a kind’s own numbers, on a set ended before any answer (3)
+     × rhythm: Not measured, the reason, and no number at all 101ms
+   ❯ Answered counts the cards answered; Accuracy says how many were right (U96a) (6)
+     × four answered, three right: Answered 4 of N, Accuracy 75%, and the record says four 1530ms
+     × a skipped card is answered, wrong, as the drill counts it: Answered 3 of N, and the record agrees 576ms
+     × every card skipped: the set runs out and records itself — Answered N of N, Accuracy 0%, Not passed yet 109ms
+     × Simon counts its cards the same way: a skipped first card is Answered 1 of N, and the record agrees 82ms
+     × Simon: one chain right and the next card skipped is Answered 2 of N, with the chain line saying one 1144ms
+     × rhythm: no Answered row on a set that was tapped — its count is taps, not cards — and its own rows stay 1097ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > a kind’s own numbers, on a set ended before any answer > rhythm: Not measured, the reason, and no number at all
+AssertionError: a count of taps under Answered: expected [ 'answered' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "answered",
++ ]
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:333:60
+    331|     expect.soft(heading()).toBe(SUMMARY_TEXT.notMeasuredHeading);
+    332|     expect.soft(document.querySelector('#drill-outcome-note')?.textCon…
+    333|     expect.soft(stats(), 'a count of taps under Answered').toEqual([]);
+       |                                                            ^
+    334|     expect.soft(sheet().textContent ?? '').not.toContain('Answered');
+    335|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > a kind’s own numbers, on a set ended before any answer > rhythm: Not measured, the reason, and no number at all
+AssertionError: expected 'Not measuredNothing was answered, so …' not to contain 'Answered'
+
+Expected: "Answered"
+Received: "Not measuredNothing was answered, so there is nothing to mark.Answered0 of 2AgainCount this setBack to the planEnded early, so this is not in your practice history unless you keep it."
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:334:48
+    332|     expect.soft(document.querySelector('#drill-outcome-note')?.textCon…
+    333|     expect.soft(stats(), 'a count of taps under Answered').toEqual([]);
+    334|     expect.soft(sheet().textContent ?? '').not.toContain('Answered');
+       |                                                ^
+    335|   });
+    336| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > Answered counts the cards answered; Accuracy says how many were right (U96a) > four answered, three right: Answered 4 of N, Accuracy 75%, and the record says four
+AssertionError: the right answers printed under Answered: expected '3 of 10' to be '4 of 10' // Object.is equality
+
+Expected: "4 of 10"
+Received: "3 of 10"
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:368:79
+    366|     end();
+    367|     expect(section.dataset.drill).toBe('finished');
+    368|     expect.soft(stat('answered'), 'the right answers printed under Ans…
+       |                                                                               ^
+    369|     expect.soft(stat('accuracy'), 'how many were right').toBe('75%');
+    370|     document.querySelector<HTMLButtonElement>('#drill-keep')?.click();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > Answered counts the cards answered; Accuracy says how many were right (U96a) > a skipped card is answered, wrong, as the drill counts it: Answered 3 of N, and the record agrees
+AssertionError: a skip is an answer the drill marks wrong (`PromptDrill.next`): expected '1 of 10' to be '3 of 10' // Object.is equality
+
+Expected: "3 of 10"
+Received: "1 of 10"
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:387:101
+    385|     end();
+    386|     expect(section.dataset.drill).toBe('finished');
+    387|     expect.soft(stat('answered'), 'a skip is an answer the drill marks…
+       |                                                                                                     ^
+    388|     expect.soft(stat('accuracy')).toBe('33%');
+    389|     document.querySelector<HTMLButtonElement>('#drill-keep')?.click();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > Answered counts the cards answered; Accuracy says how many were right (U96a) > every card skipped: the set runs out and records itself — Answered N of N, Accuracy 0%, Not passed yet
+AssertionError: every card closed as an answer: expected '0 of 10' to be '10 of 10' // Object.is equality
+
+Expected: "10 of 10"
+Received: "0 of 10"
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:402:69
+    400|     // U96's reading, approved: skips are judged wrong, not unanswered.
+    401|     expect.soft(heading(), 'skips are wrong answers, not no answers').…
+    402|     expect.soft(stat('answered'), 'every card closed as an answer').to…
+       |                                                                     ^
+    403|     expect.soft(stat('accuracy')).toBe('0%');
+    404|     await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalledTimes(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > Answered counts the cards answered; Accuracy says how many were right (U96a) > Simon counts its cards the same way: a skipped first card is Answered 1 of N, and the record agrees
+AssertionError: the chain printed under Answered: expected '0 of 12' to be '1 of 12' // Object.is equality
+
+Expected: "1 of 12"
+Received: "0 of 12"
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:417:71
+    415|     skip();
+    416|     expect(section.dataset.drill).toBe('finished');
+    417|     expect.soft(stat('answered'), 'the chain printed under Answered').…
+       |                                                                       ^
+    418|     expect.soft(document.querySelector<HTMLElement>('#drill-chain')?.d…
+    419|     await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalledTimes(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > Answered counts the cards answered; Accuracy says how many were right (U96a) > Simon: one chain right and the next card skipped is Answered 2 of N, with the chain line saying one
+AssertionError: expected '1 of 12' to be '2 of 12' // Object.is equality
+
+Expected: "2 of 12"
+Received: "1 of 12"
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:434:35
+    432|     skip();
+    433|     expect(section.dataset.drill).toBe('finished');
+    434|     expect.soft(stat('answered')).toBe(`2 of ${String(n)}`);
+       |                                   ^
+    435|     expect.soft(document.querySelector<HTMLElement>('#drill-chain')?.d…
+    436|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  tests/unit/drillSheetsSayWhatWasMeasured.test.ts > Answered counts the cards answered; Accuracy says how many were right (U96a) > rhythm: no Answered row on a set that was tapped — its count is taps, not cards — and its own rows stay
+AssertionError: expected 'The piano samples are not loaded, so …' to contain 'first tap'
+
+Expected: "first tap"
+Received: "The piano samples are not loaded, so this drill has no sound."
+
+ ❯ tests/unit/drillSheetsSayWhatWasMeasured.test.ts:443:89
+    441|     // No audio here, so the count-in is silent and the first tap star…
+    442|     // the pattern has onsets: however they land, `answered` (hits plu…
+    443|     await vi.waitFor(() => expect(document.querySelector('#drill-statu…
+       |                                                                                         ^
+    444|     for (let tap = 0; tap < onsets + 2; tap += 1) {
+    445|       screenKeyboardSource.noteOn(60, 90);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed | 7 passed (14)
+   Start at  19:50:04
+   Duration  33.01s (environment 71%, tests 17%, transform 9%, import 3%)
+
+exit=1

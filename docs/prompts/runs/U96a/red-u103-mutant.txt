@@ -1,0 +1,48 @@
+$ (cd app) npx playwright test -c playwright.u96a-4543.config.ts --workers=1 -g the question is the screen tests/e2e/modes-placement.spec.ts
+exists: tests/e2e/modes-placement.spec.ts
+
+Running 1 test using 1 worker
+
+  x  1 tests\e2e\modes-placement.spec.ts:63:1 › the question is the screen, and the two answers are both on it (9.6s)
+
+
+  1) tests\e2e\modes-placement.spec.ts:63:1 › the question is the screen, and the two answers are both on it 
+
+    Error: the placement question has one filled box
+
+    expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('section[data-screen="drill"] .button--primary:visible')
+    Expected: 1
+    Received: 2
+    Timeout:  5000ms
+
+    Call log:
+      - the placement question has one filled box locator('section[data-screen="drill"] .button--primary:visible') with timeout 5000ms
+      - waiting for locator('section[data-screen="drill"] .button--primary:visible')
+        13 × locator resolved to 2 elements
+           - unexpected value "2"
+
+
+      73 |   // gives, so it counted nought and could not fail (U103).
+      74 |   const filled = page.locator('section[data-screen="drill"] .button--primary:visible');
+    > 75 |   await expect(filled, 'the placement question has one filled box').toHaveCount(1);
+         |                                                                     ^
+      76 |   await expect(filled, 'and it is Pass').toHaveId('drill-placement-pass');
+      77 |   await expect(page.locator('#drill-placement-fail'), 'Fail outlined').toHaveClass(/\bbutton--secondary\b/);
+      78 |   // And the instruction that makes a self-judged test mean anything is on the
+        at <worktree>\app\tests\e2e\modes-placement.spec.ts:75:69
+
+    Error Context: test-results\modes-placement-the-questi-727c8--two-answers-are-both-on-it\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\modes-placement-the-questi-727c8--two-answers-are-both-on-it\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\modes-placement-the-questi-727c8--two-answers-are-both-on-it\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\modes-placement.spec.ts:63:1 › the question is the screen, and the two answers are both on it 
+exit=1

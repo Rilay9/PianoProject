@@ -67,12 +67,14 @@ test('the question is the screen, and the two answers are both on it', async ({ 
     expect(await withoutScrolling(page, id), `${id} is below the fold on a 342 px phone`).toBe(true);
   }
   // Told apart by weight, not only by position: Pass is the filled box and
-  // Fail is not, which is `04` §0 R3 — and there is exactly one filled box on
-  // this screen.
-  const filled = await page
-    .locator('section[data-screen="drill"] button')
-    .evaluateAll((els) => els.filter((el) => el.classList.contains('btn--primary')).length);
-  expect(filled, 'the placement drew more than one filled box').toBeLessThanOrEqual(1);
+  // Fail is outlined (`button--secondary`, the default `widgets.ts` `button`
+  // gives), which is `04` §0 R3 — and Pass is the one filled box on this
+  // screen. This used to count `btn--primary`, a class nothing in `app/src`
+  // gives, so it counted nought and could not fail (U103).
+  const filled = page.locator('section[data-screen="drill"] .button--primary:visible');
+  await expect(filled, 'the placement question has one filled box').toHaveCount(1);
+  await expect(filled, 'and it is Pass').toHaveId('drill-placement-pass');
+  await expect(page.locator('#drill-placement-fail'), 'Fail outlined').toHaveClass(/\bbutton--secondary\b/);
   // And the instruction that makes a self-judged test mean anything is on the
   // screen rather than in the lesson behind it.
   await expect(page.locator('#drill-hint')).toContainText('Be strict');

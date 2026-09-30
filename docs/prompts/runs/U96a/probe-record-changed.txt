@@ -1,0 +1,11 @@
+$ (cd app) npx vitest run tests/unit/zzU96aRecordProbe.test.ts
+
+ RUN  v5.0.0 <worktree>/app
+
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  19:59:01
+   Duration  6.40s (tests 59%, transform 19%, environment 17%, import 5%)
+
+exit=0

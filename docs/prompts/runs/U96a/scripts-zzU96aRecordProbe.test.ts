@@ -23,7 +23,7 @@
  * The real screen over a real session record (`fake-indexeddb`) and a recording router. **Nothing here is
  * heard**: the answers are screen-key events, and every assertion is about what the sheet says.
  */
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { CatalogItem } from '../../src/curriculum/types';
 import type { Router } from '../../src/router';
 import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
@@ -268,216 +268,114 @@ afterEach(() => {
   clearFakeIndexedDb();
 });
 
-describe('a drill set ended before any answer', () => {
-  it('is headed Not measured with the reason, prints no Accuracy and no verdict, and keeps Answered 0 of N', async () => {
-    const section = await mount(flashItem());
-    document.querySelector<HTMLButtonElement>('#drill-end')?.click();
-    expect(section.dataset.drill).toBe('finished');
 
-    // Soft, so a red shows every claim the sheet makes at once.
-    expect.soft(heading(), 'a verdict over a set nobody answered').toBe(SUMMARY_TEXT.notMeasuredHeading);
-    expect.soft(document.querySelector('#drill-outcome-note'), 'the reason under the heading').not.toBeNull();
-    expect.soft(document.querySelector('#drill-outcome-note')?.textContent, 'the reason, in the learner’s words').toBe(SUMMARY_TEXT.notAnswered);
-    expect.soft(document.querySelector('[data-stat="accuracy"]')?.textContent, 'an accuracy nobody measured').toBeUndefined();
-    expect.soft(document.querySelector('[data-stat="answered"]')?.textContent).toMatch(/^0 of \d+$/);
-    const said = sheet().textContent ?? '';
-    expect.soft(said).not.toContain('Not passed');
-    expect.soft(said).not.toContain('keep going');
-    expect.soft(said).not.toContain('Accuracy');
-  });
+// ---------------------------------------------------------------------------------------------------------
+// U96a's record probe (not for the commit). The harness above is `drillSheetsSayWhatWasMeasured.test.ts`'s,
+// copied. Each case drives one adversary to a stored record and keeps what `keep` handed the record writer,
+// with the duration (a clock reading) blanked, plus what the sheet printed. Run on the committed
+// `DrillScreen.ts` and on the change; the two files are compared by `scripts-compare-probe.py`.
+import { writeFileSync } from 'node:fs';
 
-  it('in a session: the same sheet, and the transition under it unchanged — Start the one filled box', async () => {
-    await sessionWith(FLASH_ID);
-    await mount(flashItem(), 'u96first01');
-    document.querySelector<HTMLButtonElement>('#drill-end')?.click();
-    await vi.waitFor(() => expect(document.querySelector<HTMLElement>('#session-next')?.hidden).toBe(false));
-    expect.soft(heading()).toBe(SUMMARY_TEXT.notMeasuredHeading);
-    expect.soft(document.querySelector('[data-stat="accuracy"]')?.textContent, 'an accuracy nobody measured').toBeUndefined();
-    expect.soft(document.querySelector('#session-next')?.textContent).toContain('Next: Hot Cross Buns, 7 min — More music from this lesson');
-    expect.soft(filled()).toEqual(['session-start-next']);
-    expect.soft(document.querySelector<HTMLElement>('#drill-done')?.hidden).toBe(true);
-  });
+const kept: Record<string, { record: Record<string, unknown>; sheet: Record<string, string> }> = {};
+
+function capture(label: string): void {
+  const record = { ...lastRecord() };
+  record.durationMs = '<clock>';
+  const sheetStats: Record<string, string> = {};
+  for (const row of document.querySelectorAll<HTMLElement>('#drill-stats [data-stat]')) {
+    sheetStats[row.dataset.stat ?? ''] = row.textContent ?? '';
+  }
+  sheetStats.heading = heading();
+  sheetStats.counterTotal = String(probeTotal);
+  kept[label] = { record, sheet: sheetStats };
+}
+
+let probeTotal = 0;
+
+afterAll(() => {
+  writeFileSync(process.env.U96A_PROBE_OUT ?? 'u96a-probe.json', `${JSON.stringify(kept, null, 2)}\n`);
 });
 
-describe('a kind’s own numbers, on a set ended before any answer', () => {
-  // Every one of them is taken over the answers, so with none they are a mean or a ratio of nothing: the
-  // dynamics sheet printed *Loud against soft 0* and the chain line *Longest chain: 0 notes* under a heading
-  // that now says nothing was measured. *Answered 0 of N* is the one line, because it is true.
-  const stats = (): string[] => [...document.querySelectorAll<HTMLElement>('#drill-stats [data-stat]')].map((one) => one.dataset.stat ?? '');
-
-  it('dynamics: Not measured, and no ratio or velocity of notes nobody played', async () => {
-    const section = await mount(dynamicsItem());
-    document.querySelector<HTMLButtonElement>('#drill-end')?.click();
-    expect(section.dataset.drill).toBe('finished');
-    expect.soft(heading()).toBe(SUMMARY_TEXT.notMeasuredHeading);
-    expect.soft(stats(), 'numbers for a set nobody answered').toEqual(['answered']);
-  });
-
-  it('Simon: Not measured, and no chain line', async () => {
-    const section = await mount(simonItem());
-    document.querySelector<HTMLButtonElement>('#drill-end')?.click();
-    expect(section.dataset.drill).toBe('finished');
-    expect.soft(heading()).toBe(SUMMARY_TEXT.notMeasuredHeading);
-    expect.soft(document.querySelector('#drill-chain')?.textContent, 'a chain nobody played').toBeUndefined();
-    expect.soft(stats(), 'numbers for a set nobody answered').toEqual(['answered']);
-  });
-
-  // U96a: rhythm prints no *Answered* row at all (its count is taps, not cards), so a rhythm set nobody tapped
-  // is the heading and the reason, with no number.
-  it('rhythm: Not measured, the reason, and no number at all', async () => {
-    const section = await mount(rhythmItem());
-    end();
-    expect(section.dataset.drill).toBe('finished');
-    expect.soft(heading()).toBe(SUMMARY_TEXT.notMeasuredHeading);
-    expect.soft(document.querySelector('#drill-outcome-note')?.textContent).toBe(SUMMARY_TEXT.notAnswered);
-    expect.soft(stats(), 'a count of taps under Answered').toEqual([]);
-    expect.soft(sheet().textContent ?? '').not.toContain('Answered');
-  });
-});
-
-describe('a drill set with one answer', () => {
-  it('is judged as before: a verdict, and an Accuracy line', async () => {
+describe('U96a record probe', () => {
+  it('1: four answered, three right, kept', async () => {
     const section = await mount(flashItem());
-    const n = setSize();
-    answerOne(section);
-    document.querySelector<HTMLButtonElement>('#drill-end')?.click();
-    expect(section.dataset.drill).toBe('finished');
-    expect(['Passed', 'Not passed yet']).toContain(heading());
-    expect(document.querySelector('[data-stat="accuracy"]')?.textContent).toMatch(/^\d+%$/);
-    // Was `/^[01] of \d+$/`, which let the row print the right answers (U96a): one card was answered.
-    expect(document.querySelector('[data-stat="answered"]')?.textContent).toBe(`1 of ${String(n)}`);
-    expect(document.querySelector('#drill-outcome-note'), 'a reason for a set that was measured').toBeNull();
-  });
-});
-
-describe('Answered counts the cards answered; Accuracy says how many were right (U96a)', () => {
-  // The reviewer's three adversaries (`responses/c48857ca.md` :33–36). The second, nothing answered, is
-  // U96's first case above, kept as it is: *Answered 0 of N* and no *Accuracy*.
-
-  it('four answered, three right: Answered 4 of N, Accuracy 75%, and the record says four', async () => {
-    const section = await mount(flashItem());
-    const n = setSize();
-    expect(n, 'a set long enough to answer four and stop').toBeGreaterThan(4);
+    probeTotal = setSize();
     for (let card = 0; card < 3; card += 1) {
       answer(section, true);
       await nextCard(section);
     }
     answer(section, false);
     end();
-    expect(section.dataset.drill).toBe('finished');
-    expect.soft(stat('answered'), 'the right answers printed under Answered').toBe(`4 of ${String(n)}`);
-    expect.soft(stat('accuracy'), 'how many were right').toBe('75%');
     document.querySelector<HTMLButtonElement>('#drill-keep')?.click();
-    const record = lastRecord();
-    // The record's answered is `total − missed` (`keep`), unchanged by U96a.
-    expect.soft(record.missed, 'the record’s cards not answered').toBe(n - 4);
-    expect.soft(record.wrongNotes).toBe(1);
-    expect.soft(record.accuracy).toBe(0.75);
+    capture('1-four-answered-three-right');
   });
 
-  it('a skipped card is answered, wrong, as the drill counts it: Answered 3 of N, and the record agrees', async () => {
+  it('2: nothing answered, kept', async () => {
+    await mount(flashItem());
+    probeTotal = setSize();
+    end();
+    document.querySelector<HTMLButtonElement>('#drill-keep')?.click();
+    capture('2-nothing-answered');
+  });
+
+  it('3: one skipped, one right, one wrong, kept', async () => {
     const section = await mount(flashItem());
-    const n = setSize();
+    probeTotal = setSize();
     skip();
     answer(section, true);
     await nextCard(section);
     answer(section, false);
     end();
-    expect(section.dataset.drill).toBe('finished');
-    expect.soft(stat('answered'), 'a skip is an answer the drill marks wrong (`PromptDrill.next`)').toBe(`3 of ${String(n)}`);
-    expect.soft(stat('accuracy')).toBe('33%');
     document.querySelector<HTMLButtonElement>('#drill-keep')?.click();
-    const record = lastRecord();
-    expect.soft(record.missed, 'the record counts the skip as answered').toBe(n - 3);
-    expect.soft(record.wrongNotes, 'the skip and the miss').toBe(2);
+    capture('3-skip-right-wrong');
   });
 
-  it('every card skipped: the set runs out and records itself — Answered N of N, Accuracy 0%, Not passed yet', async () => {
+  it('3b: every card skipped, ran out', async () => {
     const section = await mount(flashItem());
-    const n = setSize();
-    for (let card = 0; card < n; card += 1) skip();
+    probeTotal = setSize();
+    for (let card = 0; card < probeTotal; card += 1) skip();
     expect(section.dataset.drill).toBe('finished');
-    // U96's reading, approved: skips are judged wrong, not unanswered.
-    expect.soft(heading(), 'skips are wrong answers, not no answers').toBe('Not passed yet');
-    expect.soft(stat('answered'), 'every card closed as an answer').toBe(`${String(n)} of ${String(n)}`);
-    expect.soft(stat('accuracy')).toBe('0%');
     await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalledTimes(1));
-    const record = lastRecord();
-    expect.soft(record.missed).toBe(0);
-    expect.soft(record.wrongNotes).toBe(n);
+    capture('3b-every-card-skipped');
   });
 
-  it('Simon counts its cards the same way: a skipped first card is Answered 1 of N, and the record agrees', async () => {
-    // `SimonDrill.next` pushes a skipped card as a wrong answer that breaks the chain, and its `answered` is
-    // bounded by the card budget, `total` (`simon.ts`, the cap in `next`), so the row is a count of cards.
-    const section = await mount(simonItem());
-    const n = setSize();
-    skip();
-    expect(section.dataset.drill).toBe('finished');
-    expect.soft(stat('answered'), 'the chain printed under Answered').toBe(`1 of ${String(n)}`);
-    expect.soft(document.querySelector<HTMLElement>('#drill-chain')?.dataset.chain).toBe('0');
-    await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalledTimes(1));
-    const record = lastRecord();
-    expect.soft(record.missed).toBe(n - 1);
-    expect.soft(record.wrongNotes).toBe(1);
-  });
-
-  it('Simon: one chain right and the next card skipped is Answered 2 of N, with the chain line saying one', async () => {
-    const section = await mount(simonItem());
-    const n = setSize();
-    // The chain plays first; a key before the turn is playing along, not answering (T23).
-    await vi.waitFor(() => expect(document.querySelector('#drill-status')?.textContent).toContain('Your turn'), { timeout: 5000 });
-    answer(section, true);
-    await nextCard(section);
-    skip();
-    expect(section.dataset.drill).toBe('finished');
-    expect.soft(stat('answered')).toBe(`2 of ${String(n)}`);
-    expect.soft(document.querySelector<HTMLElement>('#drill-chain')?.dataset.chain, 'the chain is the chain line’s').toBe('1');
-  });
-
-  it('rhythm: no Answered row on a set that was tapped — its count is taps, not cards — and its own rows stay', async () => {
-    const section = await mount(rhythmItem());
-    const onsets = setSize();
-    // No audio here, so the count-in is silent and the first tap starts the pattern (T8); a turn for the audio
-    // to fail first. Two more taps than the pattern has onsets: however they land, `answered` (hits plus extra
-    // taps) passes the onsets. Taps the drill refused would leave the set unanswered, and the heading below
-    // would say so.
+  it('rhythm: tapped two more times than it has onsets, kept', async () => {
+    await mount(rhythmItem());
+    probeTotal = setSize();
     await new Promise((resolve) => setTimeout(resolve, 50));
-    for (let tap = 0; tap < onsets + 2; tap += 1) {
+    for (let tap = 0; tap < probeTotal + 2; tap += 1) {
       screenKeyboardSource.noteOn(60, 90);
       screenKeyboardSource.noteOff(60);
     }
     end();
-    expect(section.dataset.drill).toBe('finished');
-    expect.soft(['Passed', 'Not passed yet'], 'a tapped set is judged').toContain(heading());
-    expect.soft(stat('answered'), 'taps printed as a count of the set').toBeUndefined();
-    expect.soft(sheet().textContent ?? '').not.toContain('Answered');
-    expect.soft(stat('accuracy'), 'the onsets hit, over the pattern').toMatch(/^\d+%$/);
-    expect.soft(Number(stat('taps-too-many')), 'the extra taps, on a row of their own').toBeGreaterThanOrEqual(2);
-  });
-});
-
-describe('the placement test’s end sheet', () => {
-  it('in a session: the transition’s Start is the one filled box, and Start here is outlined', async () => {
-    await sessionWith(PLACEMENT_ID);
-    await mount(placementItem(), 'u96first01');
-    document.querySelector<HTMLButtonElement>('#drill-placement-fail')?.click();
-    await vi.waitFor(() => expect(document.querySelector<HTMLElement>('#session-next')?.hidden).toBe(false));
-    await vi.waitFor(() => expect(document.querySelector('#session-start-next')).not.toBeNull());
-    expect.soft(filled(), 'two filled boxes on one sheet').toEqual(['session-start-next']);
-    const startHere = document.querySelector<HTMLElement>('#drill-placement-start');
-    expect(startHere, 'the only thing that records the test’s answer').not.toBeNull();
-    expect.soft(startHere?.hidden).toBe(false);
-    expect.soft(startHere?.classList.contains('button--secondary'), 'Start here outlined').toBe(true);
+    document.querySelector<HTMLButtonElement>('#drill-keep')?.click();
+    capture('rhythm-tapped');
   });
 
-  it('outside a session: Start here stays the one filled box', async () => {
-    await mount(placementItem());
-    document.querySelector<HTMLButtonElement>('#drill-placement-fail')?.click();
-    await vi.waitFor(() => expect(document.querySelector('#drill-placement-start')).not.toBeNull());
-    // The same turns the session's completion takes, so a late change would have happened by now.
-    await new Promise((resolve) => setTimeout(resolve, 50));
-    expect(document.querySelector('#session-next')).toBeNull();
-    expect(filled()).toEqual(['drill-placement-start']);
+  it('rhythm: not tapped, kept', async () => {
+    await mount(rhythmItem());
+    probeTotal = setSize();
+    end();
+    document.querySelector<HTMLButtonElement>('#drill-keep')?.click();
+    capture('rhythm-not-tapped');
+  });
+
+  it('Simon: first card skipped, ran out', async () => {
+    await mount(simonItem());
+    probeTotal = setSize();
+    skip();
+    await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalledTimes(1));
+    capture('simon-skipped');
+  });
+
+  it('Simon: one chain right, then skipped, ran out', async () => {
+    const section = await mount(simonItem());
+    probeTotal = setSize();
+    await vi.waitFor(() => expect(document.querySelector('#drill-status')?.textContent).toContain('Your turn'), { timeout: 5000 });
+    answer(section, true);
+    await nextCard(section);
+    skip();
+    await vi.waitFor(() => expect(recordRunSpy).toHaveBeenCalledTimes(1));
+    capture('simon-one-right-then-skipped');
   });
 });

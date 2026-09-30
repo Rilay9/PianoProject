@@ -2647,21 +2647,43 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    * kind's own measurements from `detail`, which for a backing track is the
    * notes played.
    *
+   * *Answered N of M* is the drill's own count of the set's cards closed as
+   * answers, over the set's cards (U96a). A skipped card is among them wherever
+   * the drill counts a skip as a wrong answer (`PromptDrill.next`,
+   * `SimonDrill.next`), which is also what the record keeps as not missed
+   * (`keep`: `missed` is `total − answered`). How many were right is
+   * *Accuracy*'s. The row printed `correct` under that word, so four cards
+   * answered with three right read *Answered 3 of 10*. Each kind's `answered`
+   * is bounded by its `total` — one per card, per progression, per pedal change
+   * after the first, per dynamic played, and Simon's card budget (`SimonDrill.next`
+   * stops at the chain's length, retried misses included) — except rhythm's,
+   * which counts taps: the onsets hit and every extra tap
+   * (`RhythmDrill.result`), over the pattern's onsets. A few extra taps would
+   * read *Answered 10 of 8*, two numbers that count different things, so a
+   * rhythm sheet prints no *Answered* row; its *Accuracy* (the onsets hit, over
+   * the pattern) and its own rows say what it measured. The half-pedal result
+   * would be the same case (`answered` is pedal readings), and nothing builds
+   * it (`fromCatalog` `buildPedal` passes no range).
+   *
    * A judged set with no card answered (U96) prints *Answered 0 of N* and
-   * nothing else: the accuracy, the time to answer and the kind's own numbers
-   * are each taken over the answers, so with none they are a share, a mean or
-   * a ratio of nothing — *Accuracy 0%*, and on the dynamics sheet *Loud
-   * against soft 0*. The kind's settings in `detail` (a tempo, a target) go
-   * with them: they are what a result would be read against, and there is none.
+   * nothing else — a rhythm set, nothing at all: the accuracy, the time to
+   * answer and the kind's own numbers are each taken over the answers, so with
+   * none they are a share, a mean or a ratio of nothing — *Accuracy 0%*, and on
+   * the dynamics sheet *Loud against soft 0*. The kind's settings in `detail`
+   * (a tempo, a target) go with them: they are what a result would be read
+   * against, and there is none.
    */
   function statSheet(result: DrillResult, judged: boolean): HTMLElement {
     const unanswered = judged && result.answered === 0;
-    const answeredRow: [string, string] = ['Answered', `${String(result.correct)} of ${String(result.total || result.answered)}`];
+    const answeredRows: [string, string][] =
+      result.kind === 'rhythm'
+        ? []
+        : [['Answered', `${String(result.answered)} of ${String(result.total || result.answered)}`]];
     const rows: [string, string][] = !judged
       ? []
       : unanswered
-        ? [answeredRow]
-        : [['Accuracy', `${String(Math.round(result.accuracy * 100))}%`], answeredRow];
+        ? answeredRows
+        : [['Accuracy', `${String(Math.round(result.accuracy * 100))}%`], ...answeredRows];
     if (result.meanReactionMs > 0 && !unanswered) {
       rows.push(['Average time to answer', `${String(Math.round(result.meanReactionMs))} ms`]);
     }
