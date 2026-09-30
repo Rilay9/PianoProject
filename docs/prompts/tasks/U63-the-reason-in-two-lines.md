@@ -420,3 +420,5 @@ The expected outcome is that most/all important rows can be solved by the Today-
 Approved to fold in. Paused/retired choices remain selectable because Swap is an explicit learner-choice surface, but they must visibly carry `Paused` / `Put away`, and selecting one must not alter project lifecycle state.
 
 U63 may dispatch.
+
+**Landed 2026-09-29** (Entry 170; 7a4e5605, merged b7454fb7); handoff `handoffs/7a4e5605.md`.
