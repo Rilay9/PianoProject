@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **E54** — `handoffs/496fa11d.md` (respond in `responses/496fa11d.md`). A rejection of the current approval withdraws it (Entry 174).
 - **L120d** — `handoffs/4e76c768.md` (respond in `responses/4e76c768.md`). A leap inside a taught position (Entry 167).
 - **U105** — `handoffs/f51e8010.md` (respond in `responses/f51e8010.md`). Every start asks the sound (Entry 172).
 - **U63** — `handoffs/7a4e5605.md` (respond in `responses/7a4e5605.md`). Today's reason in two lines, and the swap sheet wears the lifecycle (Entry 170).

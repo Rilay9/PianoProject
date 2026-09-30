@@ -93,3 +93,5 @@ Never name an AI model. Every item is done or has an explicit not-done line.
 **Then** Done / Not done / Follow-ups (E54's P3 half) / Questions / Files; the mechanism; the tests table (class, old assumption); the mutants; exit codes; what is unverified; technical and pedagogical verdicts, separately (pedagogical: not applicable); `## Doc rows`.
 
 Entry: `docs/prompts/runs/E54/ENTRY.md`, Entry 174.
+
+**Landed 2026-09-29** (Entry 174; 496fa11d, merged 11fc6978); handoff `handoffs/496fa11d.md`.
