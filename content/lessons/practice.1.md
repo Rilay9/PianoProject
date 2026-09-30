@@ -26,9 +26,9 @@ the hand ended up somewhere awkward. Take those two bars and nothing else.
 That last note matters more than it looks: it is what stops you learning a
 beautiful two-bar fragment that cannot join onto anything.
 
-Then play it again. Five times correct in a row, and if you get it wrong at four
-you start counting again — not because that is a punishment, but because
-"usually right" is what falls apart at tempo.
+Then play it again, until it comes out right several times in a row — five is
+one target to set yourself, with a mistake starting the count again. Not as a
+punishment: "usually right" is what tends to fall apart at tempo.
 
 **Common mistake.** Looping something you are getting wrong. Repetition does not
 know whether you meant it; you are practising whatever you actually play. If you
@@ -40,5 +40,5 @@ ends, the app offers a round of only the prompts you missed, with the answer
 up from the first moment and nothing scored — this lesson in miniature,
 because the cards you can already do stop taking the repetitions.
 
-**How you'll know you've got it.** You can play the chunk five times running,
-starting cold, and join it to the bar on either side.
+**How you'll know you've got it.** You can play the chunk right as many times
+running as you set out to, starting cold, and join it to the bar on either side.

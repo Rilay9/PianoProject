@@ -1,0 +1,83 @@
+$ (cd .) python build/f3a/scan.py   # this worktree's build; the same output from the main checkout's build (diff empty)
+== classical.5 songs (ornaments? pedal?)
+song.classical.clementi-sonatina-no-1-muzio-clementi.pdmx: 'Sonatina in C major, Op. 36 No. 1 (first movement, short edition)'
+  marks={'pedal': 0, 'trill-mark': 0, 'mordent': 0, 'inverted-mordent': 0, 'turn': 0, 'inverted-turn': 0, 'grace': 0, 'wavy-line': 0} soundTempo=['156']
+  words=[]
+  staff1 range=(55, 86) all=(36, 86)
+song.classical.clementi-sonatina-no1-2-muzio-clementi.pdmx: 'Sonatina in C major, Op. 36 No. 1 (third movement)'
+  marks={'pedal': 0, 'trill-mark': 0, 'mordent': 0, 'inverted-mordent': 0, 'turn': 0, 'inverted-turn': 0, 'grace': 0, 'wavy-line': 0} soundTempo=['80']
+  words=[]
+  staff1 range=(59, 86) all=(43, 86)
+song.classical.beethoven-sonatina-in-g-major-ahn-5.pdmx: 'Sonatina in G major, Anh. 5 No. 1'
+  marks={'pedal': 0, 'trill-mark': 0, 'mordent': 0, 'inverted-mordent': 0, 'turn': 0, 'inverted-turn': 0, 'grace': 8, 'wavy-line': 0} soundTempo=['120']
+  words=['dolce']
+  staff1 range=(59, 86) all=(43, 86)
+song.classical.burgmuller-burgmuller-arabesque-op-100-no-2.pdmx: 'Arabesque, Op. 100 No. 2'
+  marks={'pedal': 0, 'trill-mark': 0, 'mordent': 0, 'inverted-mordent': 0, 'turn': 0, 'inverted-turn': 0, 'grace': 0, 'wavy-line': 0} soundTempo=['126']
+  words=['Allegro scherzando', 'leggiero', 'cresc.', 'rit.', 'a tempo', 'risoluto']
+  staff1 range=(57, 93) all=(45, 93)
+song.folk.old-french-song.pdmx: 'Old French Song, Op. 39 No. 16'
+  marks={'pedal': 0, 'trill-mark': 0, 'mordent': 0, 'inverted-mordent': 0, 'turn': 0, 'inverted-turn': 0, 'grace': 0, 'wavy-line': 0} soundTempo=['96']
+  words=[]
+  staff1 range=(62, 77) all=(38, 77)
+song.classical.schumann-schumann-album-for-the-young-op-68-no-16-first-grief.pdmx: 'Album for the Young, Op. 68 No. 16 "First Loss"'
+  marks={'pedal': 0, 'trill-mark': 0, 'mordent': 0, 'inverted-mordent': 0, 'turn': 0, 'inverted-turn': 0, 'grace': 0, 'wavy-line': 0} soundTempo=['92']
+  words=['Nicht schnell', 'cresc.', 'Etwas langsamer', 'Im Tempo']
+  staff1 range=(55, 79) all=(40, 79)
+== 1.1 songs (C position range 60-67?)
+song.folk.hot-cross-buns: 'Hot Cross Buns'
+  marks={'pedal': 0, 'trill-mark': 0, 'mordent': 0, 'inverted-mordent': 0, 'turn': 0, 'inverted-turn': 0, 'grace': 0, 'wavy-line': 0} soundTempo=['72']
+  words=[]
+  staff1 range=(60, 64) all=(60, 64)
+song.folk.mary-had-a-little-lamb: 'Mary Had a Little Lamb'
+  marks={'pedal': 0, 'trill-mark': 0, 'mordent': 0, 'inverted-mordent': 0, 'turn': 0, 'inverted-turn': 0, 'grace': 0, 'wavy-line': 0} soundTempo=['76']
+  words=[]
+  staff1 range=(60, 67) all=(60, 67)
+song.folk.merrily-we-roll-along: 'Merrily We Roll Along'
+  marks={'pedal': 0, 'trill-mark': 0, 'mordent': 0, 'inverted-mordent': 0, 'turn': 0, 'inverted-turn': 0, 'grace': 0, 'wavy-line': 0} soundTempo=['80']
+  words=[]
+  staff1 range=(60, 67) all=(60, 67)
+song.folk.au-clair-de-la-lune: 'Au Clair de la Lune'
+  marks={'pedal': 0, 'trill-mark': 0, 'mordent': 0, 'inverted-mordent': 0, 'turn': 0, 'inverted-turn': 0, 'grace': 0, 'wavy-line': 0} soundTempo=['84']
+  words=[]
+  staff1 range=(60, 64) all=(60, 64)
+song.classical.ode-to-joy.rh: 'Ode to Joy (theme)'
+  marks={'pedal': 0, 'trill-mark': 0, 'mordent': 0, 'inverted-mordent': 0, 'turn': 0, 'inverted-turn': 0, 'grace': 0, 'wavy-line': 0} soundTempo=['88']
+  words=[]
+  staff1 range=(60, 67) all=(60, 67)
+song.folk.kum-ba-yah.pdmx: 'Kum Ba Yah'
+  marks={'pedal': 0, 'trill-mark': 0, 'mordent': 0, 'inverted-mordent': 0, 'turn': 0, 'inverted-turn': 0, 'grace': 0, 'wavy-line': 0} soundTempo=['96']
+  words=['Keys:', 'Keys:']
+  staff1 range=(67, 76) all=(67, 76)
+== technique.6 trill
+exercise.trill.c.4pb.left: 'Measured trill in C — 4 per beat, left'
+  marks={'pedal': 0, 'trill-mark': 0, 'mordent': 0, 'inverted-mordent': 0, 'turn': 0, 'inverted-turn': 0, 'grace': 0, 'wavy-line': 0} soundTempo=['60']
+  words=['4 notes to the beat — count them, do not hurry']
+  staff1 range=None all=(36, 43)
+== ragtime.7 Sugar Cane / Maple Leaf
+song.ragtime.joplin-sugar-cane: 'Sugar Cane'
+  marks={'pedal': 0, 'trill-mark': 0, 'mordent': 0, 'inverted-mordent': 0, 'turn': 0, 'inverted-turn': 0, 'grace': 0, 'wavy-line': 0} soundTempo=['100']
+  words=[]
+  staff1 range=(53, 94) all=(34, 94)
+song.ragtime.joplin-maple-leaf-rag: 'Maple Leaf Rag'
+  marks={'pedal': 0, 'trill-mark': 0, 'mordent': 0, 'inverted-mordent': 0, 'turn': 0, 'inverted-turn': 0, 'grace': 0, 'wavy-line': 0} soundTempo=['100', '120']
+  words=['Tempo Di Marcia', 'TRIO']
+  staff1 range=(60, 92) all=(32, 92)
+== 1.5 Water Is Wide
+song.folk.the-water-is-wide.pdmx: 'The Water Is Wide'
+  marks={'pedal': 0, 'trill-mark': 0, 'mordent': 0, 'inverted-mordent': 0, 'turn': 0, 'inverted-turn': 0, 'grace': 0, 'wavy-line': 0} soundTempo=['96']
+  words=['Keys:', 'Keys:', 'Keys:']
+  staff1 range=(62, 74) all=(62, 74)
+== classical.3 Petzold
+song.classical.petzold-minuet-g-bwv-anh114: 'Minuet in G major, BWV Anh. 114'
+  marks={'pedal': 0, 'trill-mark': 0, 'mordent': 0, 'inverted-mordent': 0, 'turn': 0, 'inverted-turn': 0, 'grace': 0, 'wavy-line': 0} soundTempo=['126']
+  words=['Allegro']
+  staff1 range=(59, 83) all=(43, 83)
+== generated trills: 6 rows
+  exercise.trill.c.4pb.left: first two sounding [38, 36] (upper first)
+  exercise.trill.c.4pb.right: first two sounding [62, 60] (upper first)
+  exercise.trill.f.4pb.left: first two sounding [43, 41] (upper first)
+  exercise.trill.f.4pb.right: first two sounding [67, 65] (upper first)
+  exercise.trill.g.4pb.left: first two sounding [45, 43] (upper first)
+  exercise.trill.g.4pb.right: first two sounding [69, 67] (upper first)
+exit=0

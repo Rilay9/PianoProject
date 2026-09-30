@@ -1,0 +1,19 @@
+$ (cd app) npx vitest run <the committed lessonClaimsAboutApp and lessonClaimsAboutMusic, copied to tests/unit/zzBase*.test.ts> tests/unit/lessonClaimsNeverTeachWrong.test.ts tests/unit/lessonShape.test.ts tests/unit/lessonClaims.test.ts   # before any F3a change
+# summarised from the full log (1538 bytes) by build/f3a/summarise.py:
+# the summary lines, every failing test's name, and the assertion lines under each failure
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  2 failed | 466 passed (468)
+   Start at  19:59:15
+   Duration  1.77s (transform 48%, tests 35%, import 16%, worker 1%)
+
+## failing tests (2)
+FAIL  tests/unit/zzBaseApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+FAIL  tests/unit/zzBaseApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+
+## assertion lines
+FAIL  tests/unit/zzBaseApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+FAIL  tests/unit/zzBaseApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+    AssertionError: expected false to be true // Object.is equality
+
+exit=1

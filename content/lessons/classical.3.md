@@ -26,7 +26,7 @@ its own shape and its own phrasing. Practise it alone, musically, as if it were
 the piece.
 
 **Articulation.** Baroque keyboard music has almost no marks in the original, so
-articulation is your decision. The convention that works: **stepwise notes
+articulation is your decision. One common starting point: **stepwise notes
 legato, leaps detached**, and long notes slightly separated from what follows.
 A little space between phrases is worth more than any dynamic.
 

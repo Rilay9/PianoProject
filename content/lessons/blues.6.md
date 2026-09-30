@@ -20,8 +20,7 @@ keeping eight eighths a bar going without the arm seizing up.
 **Then Pinetop's.** It climbs root, third, fifth, sixth, flat seventh and comes
 back down — eight eighths a bar, the same shape moved to each chord of the
 blues. That "moved to each chord" is the hard part: the shape is easy and the
-shift is not. Clarence "Pinetop" Smith recorded it in 1928 and every boogie bass
-since is a variation on it.
+shift is not. The pattern is named after Clarence "Pinetop" Smith.
 
 **A note on names.** Boogie figures get called after players, and a
 label does not always match what the player recorded. There is no recording or

@@ -9,8 +9,8 @@ videos:
 readingTime: 3
 ---
 
-The three skills below are what Romantic piano writing asks for, and they are
-the ones this stage of the classical ladder is here to start. The list that
+The three skills below are the ones this lesson picks out for these pieces, and
+this stage of the classical ladder is here to start them. The list that
 follows them is not a ladder; it is a shelf. These are the pieces people learn
 the piano *for*, collected in one place so you can see what you are working
 towards and take one down when you are ready — most of them sit above this
@@ -46,9 +46,9 @@ the MusicXML or transcribe it and import it; it will sit on the same shelf.
 2. **Voicing.** Playing one note of a chord louder than the others, usually the
    top. Practise the chord with the melody note *only* sounding, then add the
    others quietly underneath.
-3. **Pedalling.** Stage 3's legato pedalling, applied constantly and changed
-   with the harmony. In this repertoire a late pedal change is the difference
-   between beautiful and muddy.
+3. **Pedalling.** Stage 3's legato pedalling, changed with the harmony, used
+   where the page marks it or where you choose to add it. A change that comes
+   late lets one harmony blur into the next, so listen for it.
 
 **Choose one, not five.** The characteristic failure with this shelf is starting
 six pieces that are all slightly too hard and finishing none. Take the easiest

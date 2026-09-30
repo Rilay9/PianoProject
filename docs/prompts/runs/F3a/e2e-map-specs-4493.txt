@@ -1,0 +1,79 @@
+$ (cd app) npx playwright test tests/e2e/lesson-flow.spec.ts tests/e2e/lesson-tools.spec.ts tests/e2e/plan.spec.ts tests/e2e/side-panel-prose.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/tips.spec.ts --config=playwright.f3a-4493.config.ts --workers=2
+[WebServer] (node:71180) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/planStore.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/data/backup.ts, src/data/rungStates.ts, src/ui/screens/DrillScreen.ts, src/ui/screens/LessonScreen.ts, src/ui/screens/PlanScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [plugin builtin:vite-reporter] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/evidenceJob.ts is dynamically imported by src/main.ts but also statically imported by src/ui/screens/SettingsScreen.ts, dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] (node:81392) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:64528) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 53 tests using 2 workers
+
+(node:74768) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:85572) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  2 tests\e2e\lesson-tools.spec.ts:33:1 › the lab tool opens the lab already in the rung’s preset (2.0s)
+  ok  3 tests\e2e\lesson-tools.spec.ts:55:1 › the duet tool opens a piece from the rung with one hand chosen (1.5s)
+  ok  4 tests\e2e\lesson-tools.spec.ts:76:1 › a rung that names its Simon opens that one, not the stage’s (1.1s)
+  ok  5 tests\e2e\lesson-tools.spec.ts:91:1 › a rung that names no tool draws no block (798ms)
+  ok  6 tests\e2e\plan.spec.ts:29:3 › Plan › lists every stage with its completion, and expands to lessons (820ms)
+  ok  7 tests\e2e\plan.spec.ts:40:3 › Plan › opens a lesson far ahead of where the learner is — nothing is locked (837ms)
+  ok  8 tests\e2e\plan.spec.ts:48:3 › Plan › track chips filter the units, and the core path cannot be switched off (826ms)
+  ok  9 tests\e2e\plan.spec.ts:79:3 › the lesson page › shows the concept text, the options and the videos (830ms)
+  ok 10 tests\e2e\plan.spec.ts:93:3 › the lesson page › "I already know this" records the learner’s word with its own badge, and no item passed (1.4s)
+  ok 11 tests\e2e\plan.spec.ts:110:3 › the lesson page › every option on a lesson offers a way to open it (845ms)
+  ok 12 tests\e2e\plan.spec.ts:141:3 › Skills review › lists every concept with a state and a way to drill it (820ms)
+  ok 13 tests\e2e\plan.spec.ts:161:3 › Skills review › lists every exercise for a concept, easiest first, collapsed after three (1.1s)
+  ok 14 tests\e2e\plan.spec.ts:202:3 › Skills review › a concept with many exercises reaches the upper levels (1.5s)
+  ok 15 tests\e2e\plan.spec.ts:226:3 › Skills review › filters by stage (854ms)
+  ok 16 tests\e2e\plan.spec.ts:233:3 › Skills review › drilling a concept opens whichever screen the item belongs on (822ms)
+  ok 17 tests\e2e\plan.spec.ts:275:29 › the two leaps on Skills (F2b) › the leap a learner at 2.1 opens is the fourth or fifth; the octave-or-more jump keeps its own entry — on the app’s font stack (2.0s)
+  ok 18 tests\e2e\plan.spec.ts:275:29 › the two leaps on Skills (F2b) › the leap a learner at 2.1 opens is the fourth or fifth; the octave-or-more jump keeps its own entry — on a wider face (2.1s)
+  ok  1 tests\e2e\lesson-flow.spec.ts:46:1 › a run played from Today is recorded, and comes back for review (20.9s)
+  ok 19 tests\e2e\plan.spec.ts:337:29 › the two leaps on Skills (F2b) › every Skills row’s count is read whole, and a cut detail line says it is cut — on the app’s font stack (3.0s)
+  ok 20 tests\e2e\plan.spec.ts:337:29 › the two leaps on Skills (F2b) › every Skills row’s count is read whole, and a cut detail line says it is cut — on a wider face (3.2s)
+  ok 21 tests\e2e\plan.spec.ts:419:3 › Plan obeys 04 §0 › what to practise next starts inside the first screenful, with every track on (R1) (1.6s)
+  ok 22 tests\e2e\plan.spec.ts:443:3 › Plan obeys 04 §0 › a lesson card never repeats its unit title (D26) (1.1s)
+  ok 23 tests\e2e\plan.spec.ts:466:3 › Plan obeys 04 §0 › ordering tracks lives in the sheet, not on the screen (R3) (995ms)
+  ok 24 tests\e2e\plan.spec.ts:487:3 › the lesson page obeys 04 §0 › the options start inside the first screenful (R1) (957ms)
+  ok 25 tests\e2e\plan.spec.ts:504:3 › the lesson page obeys 04 §0 › one filled button per option card and none in the chrome (R3) (922ms)
+  ok 26 tests\e2e\plan.spec.ts:513:3 › the lesson page obeys 04 §0 › the rarely-used things moved below the options (R1) (943ms)
+  ok 27 tests\e2e\plan.spec.ts:533:3 › Skills obeys 04 §0 › draws a page, not the whole curriculum (R1) (1.1s)
+  ok 29 tests\e2e\plan.spec.ts:563:3 › Skills obeys 04 §0 › no filled button anywhere on the list (R3) (1.2s)
+  ok 28 tests\e2e\plan.spec.ts:547:3 › Skills obeys 04 §0 › Show all reaches every concept, a page at a time (2.3s)
+  ok 30 tests\e2e\plan.spec.ts:586:5 › the Tracks sheet is a list of tracks, not a stream of chips › each track keeps its own arrows — the owner’s phone upright (1.0s)
+  ok 31 tests\e2e\plan.spec.ts:586:5 › the Tracks sheet is a list of tracks, not a stream of chips › each track keeps its own arrows — the owner’s phone sideways (1.0s)
+  ok 32 tests\e2e\plan.spec.ts:586:5 › the Tracks sheet is a list of tracks, not a stream of chips › each track keeps its own arrows — a tablet (979ms)
+  ok 33 tests\e2e\plan.spec.ts:670:3 › Plan: a project stage counts nothing (G1c) › Stage 9 with a rung the evidence met: no count, bar or badge; Stage 8 as before (1.8s)
+  ok 34 tests\e2e\side-panel-prose.spec.ts:97:3 › on a phone › the lesson prose takes none of the notation’s room (1.3s)
+  ok 35 tests\e2e\side-panel-prose.spec.ts:110:3 › on a tablet, where the panel is drawn › the lesson renders in the panel without a line overflowing it (1.7s)
+  ok 36 tests\e2e\side-panel-prose.spec.ts:169:3 › on a tablet, where the panel is drawn › a piece opened from nowhere shows the rung’s teaching without its pass line (2.6s)
+  ok 38 tests\e2e\start-and-return.spec.ts:49:3 › opening a lesson › says where you are, and gives one thing to press (1.4s)
+  ok 39 tests\e2e\start-and-return.spec.ts:78:3 › opening a lesson › Start opens the first thing on the rung, and says which (1.3s)
+  ok 40 tests\e2e\start-and-return.spec.ts:93:3 › opening a lesson › Start is an offer: it passes over a listed groove no one has approved for teaching, and says what it opens instead (1.9s)
+  ok 41 tests\e2e\start-and-return.spec.ts:120:3 › starting a mode › says what to do before a note has been judged, in every mode (1.8s)
+  ok 42 tests\e2e\start-and-return.spec.ts:130:3 › starting a mode › marks the first note it is waiting for before the run starts (1.5s)
+  ok 37 tests\e2e\side-panel-prose.spec.ts:195:3 › on a tablet, where the panel is drawn › one lesson from every track fits the panel (16.8s)
+  ok 43 tests\e2e\start-and-return.spec.ts:140:3 › coming back to a run left half way › says where it was left and offers both ways on (12.8s)
+  ok 45 tests\e2e\start-and-return.spec.ts:188:3 › coming back to a run left half way › a piece never left half way is not asked about (1.3s)
+  ok 46 tests\e2e\tips.spec.ts:28:3 › the tips block › shows the four sections under the prompt (1.1s)
+  ok 47 tests\e2e\tips.spec.ts:45:3 › the tips block › is collapsed during a set, on the first meeting and after (1.7s)
+  ok 48 tests\e2e\tips.spec.ts:60:3 › the tips block › chooses a variant from the drill’s parameters (1.0s)
+  ok 49 tests\e2e\tips.spec.ts:69:3 › the tips block › falls back to the kind when no variant matches (1.0s)
+  ok 50 tests\e2e\tips.spec.ts:78:3 › the practice module › is reachable from Plan (999ms)
+  ok 44 tests\e2e\start-and-return.spec.ts:166:3 › coming back to a run left half way › starting from the beginning takes the offer away and leaves bar 1 (13.1s)
+  ok 52 tests\e2e\tips.spec.ts:94:3 › the practice module › the plateau lesson says what to change (920ms)
+  ok 53 tests\e2e\tips.spec.ts:102:3 › the practice module › the injury lesson says to stop (870ms)
+  ok 51 tests\e2e\tips.spec.ts:85:3 › the practice module › every lesson is a real rung with options, not a reading list (3.3s)
+
+  53 passed (1.7m)
+exit=0

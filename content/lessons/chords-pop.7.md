@@ -19,7 +19,7 @@ sits there sounding open. Both are one finger away from the triad you already
 play.
 
 **add9** is a major triad with the ninth added and the seventh left out. It is
-the sound of most pop piano, and it is not a ninth chord — a ninth chord has the
+a sound you will hear in pop piano, and it is not a ninth chord — a ninth chord has the
 seventh in it and sounds like jazz. Play C, Cadd9 and C9 in a row and the
 difference is obvious and worth knowing.
 

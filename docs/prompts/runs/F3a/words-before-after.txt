@@ -1,0 +1,47 @@
+$ (cd .) python build/f3a/words.py   # body words and readingTime by lessonShape's rule (words / 200, rounded up); before
+0.1                words= 354 claimed=2 want=2
+1.1                words= 418 claimed=3 want=3
+practice.1         words= 348 claimed=2 want=2
+practice.2         words= 356 claimed=2 want=2
+practice.3         words= 331 claimed=2 want=2
+practice.5         words= 411 claimed=3 want=3
+blues.4            words= 599 claimed=3 want=3
+blues.5            words= 591 claimed=3 want=3
+blues.6            words= 565 claimed=3 want=3
+blues.8            words= 462 claimed=3 want=3
+classical.3        words= 597 claimed=3 want=3
+classical.4        words= 538 claimed=3 want=3
+classical.4.shelf  words= 526 claimed=3 want=3
+classical.5        words= 598 claimed=3 want=3
+classical.6        words= 679 claimed=4 want=4  (over 3 min)
+technique.6        words= 559 claimed=3 want=3
+chords-pop.7       words= 509 claimed=3 want=3
+1.5                words= 588 claimed=3 want=3
+ragtime.6          words=1074 claimed=6 want=6  (over 3 min)
+ragtime.7          words= 590 claimed=3 want=3
+tips/ear-tune      words=178 (MAX_TIP_WORDS 250)
+exit=0
+
+$ (cd .) python build/f3a/words.py   # after
+0.1                words= 356 claimed=2 want=2
+1.1                words= 425 claimed=3 want=3
+practice.1         words= 359 claimed=2 want=2
+practice.2         words= 354 claimed=2 want=2
+practice.3         words= 336 claimed=2 want=2
+practice.5         words= 413 claimed=3 want=3
+blues.4            words= 596 claimed=3 want=3
+blues.5            words= 596 claimed=3 want=3
+blues.6            words= 556 claimed=3 want=3
+blues.8            words= 447 claimed=3 want=3
+classical.3        words= 597 claimed=3 want=3
+classical.4        words= 538 claimed=3 want=3
+classical.4.shelf  words= 538 claimed=3 want=3
+classical.5        words= 599 claimed=3 want=3
+classical.6        words= 699 claimed=4 want=4  (over 3 min)
+technique.6        words= 565 claimed=3 want=3
+chords-pop.7       words= 511 claimed=3 want=3
+1.5                words= 587 claimed=3 want=3
+ragtime.6          words=1077 claimed=6 want=6  (over 3 min)
+ragtime.7          words= 586 claimed=3 want=3
+tips/ear-tune      words=177 (MAX_TIP_WORDS 250)
+exit=0

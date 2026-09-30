@@ -3588,6 +3588,8 @@ import { SWING_OFFBEAT } from '../../src/audio/backingLoop';
 import { swungOnset } from '../../src/engine/prepareSession';
 import { CHORD_BOUNDARY_MS, chordScaleDrill } from '../../src/engine/drills/harmony';
 import { harness as f0Harness, makeModel as f0Model, note as f0Note } from './helpers/engineHarness';
+import { mxlToMusicXml } from '../../src/score/mxl';
+import { tempoEvents } from '../../src/score/tempoFromXml';
 
 const F0_LESSONS = resolve('..', 'content', 'lessons');
 
@@ -3773,6 +3775,80 @@ const F0_APP: [string, string, () => boolean][] = [
         f0Bars(id) === 40 &&
         text.includes('written in straight eighths with no swing or shuffle marking') &&
         !text.includes('forty bars of shuffle')
+      );
+    },
+  ],
+  // F3a (T52, Entry 157): the three sentences F0 found contradicting the app,
+  // each joined to the app's own fact, so the row fails if the fact moves
+  // under the sentence. A pace or effort word in these sentences would need
+  // an ear or a measure the app does not carry; the sentence says what the
+  // app does or what the page shows instead.
+  [
+    '1.5',
+    "The Water Is Wide is named with no pace, while the app plays it at convert.py's default because the upload has no tempo of its own",
+    () => {
+      const id = 'song.folk.the-water-is-wide.pdmx';
+      const text = f0Text('1.5');
+      const sentence = text.split(/(?<=[.!?])\s+/).find((s) => s.includes('The Water Is Wide')) ?? '';
+      return (
+        rung('1.5').songOptions.includes(id) &&
+        (item(id).tags ?? []).includes('tempo-defaulted') &&
+        sentence !== '' &&
+        !/\b(?:slow|slower|fast|faster|quick|brisk|gentle|gentler|lively|stately)\b/i.test(sentence) &&
+        text.includes('The Water Is Wide is the tune: a Scottish air whose melody is mostly steps')
+      );
+    },
+  ],
+  [
+    'ragtime.6',
+    'The Easy Winners is ranked by no effort the three levels do not carry, and is named for the flats its file has most of',
+    () => {
+      const winners = item('song.ragtime.joplin-easy-winners');
+      const peacherine = item('song.ragtime.joplin-peacherine-rag');
+      const entertainer = item('song.ragtime.joplin-entertainer');
+      const flattest = (row: CatalogItem): number => Math.min(...(row.notation?.keys ?? []).map((k) => k.fifths));
+      const text = f0Text('ragtime.6');
+      const entry = text.slice(text.indexOf('The Easy Winners (1901)'), text.indexOf('Two more sit behind them'));
+      const ranksByEffort = /most work|most rewarding|hardest|most demanding|most difficult/i.test(entry);
+      const levelsCarryIt = winners.level > peacherine.level && winners.level > entertainer.level;
+      return (
+        [winners, peacherine, entertainer].every((row) => rung('ragtime.6').songOptions.includes(row.id)) &&
+        (!ranksByEffort || levelsCarryIt) &&
+        (winners.notation?.keys ?? []).map((k) => k.fifths).join(',') === '-4,-5' &&
+        flattest(winners) < flattest(peacherine) &&
+        flattest(winners) < flattest(entertainer) &&
+        entry.includes('A flat, four strains, and the most flats of the three: four, then five in the trio.')
+      );
+    },
+  ],
+  [
+    // The brief's premise was that the app plays the two at one tempo. It
+    // does at the catalogue's figure and at the opening; but Maple Leaf's file
+    // writes <sound tempo="120"> beside its quarter = 100 mark at two places,
+    // and the one tempo reader (`tempoFromXml`, which the engine's map is
+    // placed from) takes the sound, so after its first beat the app plays it
+    // faster than Sugar Cane. A pace word would be true of one surface and
+    // false of the other; the sentence makes none, and the row holds both
+    // facts so that either moving sends a reader back to the sentence.
+    'ragtime.7',
+    "Sugar Cane is likened to Maple Leaf at no pace, while the catalogue gives the two one tempo and the app's tempo map does not",
+    () => {
+      const sugar = item('song.ragtime.joplin-sugar-cane');
+      const maple = item('song.ragtime.joplin-maple-leaf-rag');
+      const bpms = (row: CatalogItem): number[] =>
+        tempoEvents(mxlToMusicXml(new Uint8Array(readFileSync(join(CONTENT, row.file ?? ''))))).map((e) => e.bpm);
+      const text = f0Text('ragtime.7');
+      const sentence = text.split(/(?<=[.!?])\s+/).find((s) => s.includes('Sugar Cane')) ?? '';
+      return (
+        rung('ragtime.7').songOptions.includes(sugar.id) &&
+        rung('ragtime.7').songOptions.includes(maple.id) &&
+        typeof sugar.tempoBpm === 'number' &&
+        sugar.tempoBpm === maple.tempoBpm &&
+        bpms(sugar).join(',') === '100' &&
+        bpms(maple).join(',') === '100,120,120' &&
+        sentence !== '' &&
+        !/\b(?:pace|tempo|slow|slower|fast|faster|gentle|gentler|quick|quicker|brisk)\b/i.test(sentence) &&
+        text.includes('Beyond the five above there is Sugar Cane, a rag in the Maple Leaf mould.')
       );
     },
   ],
