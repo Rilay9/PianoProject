@@ -331,6 +331,9 @@ in the directory is a mystery:
   `test_finder.TestTheBuildPassesTheSeedConcepts`.
 - `ladder_report.py` — writes `docs/generated/ladder.md`; `validate.py` fails a build whose
   committed copy is stale.
+- `deploy_guard.py` — the Pages deploy's guard (Q88): refuses to publish a catalogue holding a
+  placeholder whose reason is this build's fetch (`validate.unfetched_placeholders`), naming
+  each; exit 0 publishes, 1 refuses, 2 cannot read the catalogue. Run by `pages.yml` only.
 - `add_technique_units.py` — the one-off that gave the technique track a rung per stage (P12a);
   not part of the build.
 - `truncation_scan.py` — the grace-16th truncation scan over every converted file (P2 §8).
@@ -424,6 +427,22 @@ The claim rule counts a placeholder neither as an option that keeps a claim nor 
 refutes it (`validate.concept_claim_findings`, `claims.CHECKED`): on the strict build 2.4's
 tie and ragtime.8's stride bass, each established on the personal build only by an option the
 strict build placeholders, are warned as not judged there, not failed.
+
+**The public build is not published without what it could not fetch (Q88, 2026-09-29; the
+reviewer's Q86 ruling).** The validator warns a build's own fetch placeholder and passes (§3
+step 9, Q80); the deploy does not. `pages.yml`'s step *Guard the deploy*, after the build and
+before `configure-pages` and the upload, runs
+`tools/content/deploy_guard.py --dir app/dist/content`, which asks
+`validate.unfetched_placeholders` of the catalogue the artifact publishes. A row whose
+`importHint` carries this build's fetch reason (today `import_mutopia`'s *file was not
+fetched* and *is not the pinned file*; any reason Q82 or a later step adds to
+`UNFETCHED_REASONS`) fails the build job, naming each id and reason, so nothing is uploaded,
+`deploy-pages` does not run and the previous deployment stays live. Licence placeholders,
+import-only rows and runtime drills pass; a catalogue it cannot read is refused. A deliberate
+removal is judged by the catalogue and the ladder report, not here. While a fetch keeps
+failing, every push's deploy is refused, whatever else it carries.
+`tools/content/tests/test_deploy_guard.py` holds the guard and the step's place; the runner's
+refusal is unverified until a Pages run with a failed fetch is read.
 
 ### 3b. The note-loss gate (step 2, inside `convert.py`)
 
