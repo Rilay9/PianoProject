@@ -307,6 +307,20 @@ class TheGates(unittest.TestCase):
         narrow = [("C5:1 E5:1 G5:1 E5:1", ""), ("D5:1 G5:1 D5:1 G5:1", ""), ("C5:1 F5:1 C5:1 G5:1", ""), ("C5:4", "")]
         self.assertNotIn("range.beyond-position", window(context(narrow, LEAPS), 1, 4, "right").demands)
 
+    def test_m6_a_three_eight_window_is_not_compound_and_a_six_eight_one_is(self) -> None:
+        """
+        M6 (L120b): the proposer predicts what a cut will measure as, so it reads compound time by the
+        detectors' rule — more than one beat of three eighths (`detect.ts`'s `isCompound`). 3/8 is simple
+        triple (the reviewer's ruling on L120a, `responses/0bcd3be0.md`); 6/8 stays compound.
+        """
+        three = [("C5:0.5 D5:0.5 E5:0.5", "C3:1.5"), ("F5:1.5", "C3:1.5"), ("E5:0.5 D5:0.5 C5:0.5", "C3:1.5"), ("C5:1.5", "C3:1.5")]
+        ctx = context(three, {"interval.step": {"1": [2, 0]}}, time=(3, 8))
+        self.assertEqual({b.time for b in ctx.bars}, {(3, 8)})
+        self.assertNotIn("metre.compound", window(ctx, 1, 4, "right").demands, "3/8 is simple triple")
+        six = [("C5:0.5 D5:0.5 E5:0.5 F5:1.5", "C3:3"), ("E5:3", "C3:3")]
+        ctx = context(six, {"interval.step": {"1": [3, 0]}}, time=(6, 8))
+        self.assertIn("metre.compound", window(ctx, 1, 2, "right").demands, "6/8 is compound")
+
     def test_the_physical_gate_refuses_an_impossible_leap(self) -> None:
         from music21 import converter
 

@@ -449,7 +449,11 @@ export type MaterialVerdict =
   /** A material requirement the candidate's facts answer, and fail. */
   | { verdict: 'ineligible'; why: 'requirement'; requirement: RequirementName; found: string };
 
-/** Every vocabulary demand the learner is not prepared for: the one gate's first question, asked of the whole vocabulary. */
+/**
+ * Every vocabulary demand the learner is not prepared for: the one gate's first question, asked of the whole vocabulary.
+ * The item it asks it of carries every demand located somewhere: a demand located nowhere can be left unasked
+ * (a key signature altering no sounding note, L120b), and an unknown item's key signature may alter any note.
+ */
 export function unpreparedDemands(learner: Learner, vocabulary: Vocabulary = VOCABULARY_V0): string[] {
   const every: CatalogItem = {
     id: 'e2.every-demand',
@@ -460,7 +464,7 @@ export function unpreparedDemands(learner: Learner, vocabulary: Vocabulary = VOC
     tracks: [],
     concepts: [],
     demands: vocabulary.demands.map((demand) => demand.id),
-    measurement: { status: 'measured', definitions: 0, located: {}, bars: 1, steps: 0, notes: 0, established: [] },
+    measurement: { status: 'measured', definitions: 0, located: Object.fromEntries(vocabulary.demands.map((demand) => [demand.id, 1])), bars: 1, steps: 0, notes: 0, established: [] },
   };
   return uncoped(every, learner, vocabulary);
 }

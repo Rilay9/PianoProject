@@ -137,7 +137,10 @@ const taughtAtA = (except: string[] = []): Vocabulary => ({
   ...VOCABULARY_V0,
   demands: VOCABULARY_V0.demands.map((demand) => (except.includes(demand.id) ? { ...demand, taughtAt: [] } : { ...demand, taughtAt: ['A'] })),
 });
-/** Key signatures and notes outside the key untaught: the pentatonic in D and the blues scale are refused. */
+/**
+ * Key signatures and notes outside the key untaught: the blues scale is refused. The pentatonic in D is not since
+ * L120b: its key signature alters no note it sounds, so the coping question does not ask it.
+ */
 const VOCABULARY = taughtAtA(['key.signature', 'pitch.chromatic']);
 
 const ITEMS = [PENT_A, PENT_D, BLUES_A, STUDY, CUT, built(READING_ROW), exercise('ex.a'), exercise('ex.b'), exercise('ex.c')];
@@ -223,24 +226,36 @@ describe('a proficient skill is offered transfer material, deliberately, in the 
 });
 
 describe('not offered (the adversaries held at the selection layer)', () => {
+  // Revised (L120b; the reviewer's ruling on L120a, `responses/0bcd3be0.md`, Question 2 A; class: assertions of the
+  // reading being corrected). These held that nothing is offered once the pentatonic in A is met, because the
+  // pentatonic in D was refused for its key signature. Its signature (one flat) alters no note it sounds (D F G A C),
+  // so the coping question no longer asks it, and the pentatonic in D is what comes next. Each adversary is still
+  // about the pentatonic in A, which is never offered once met, by its material or by its id.
   it('met: a run of the pentatonic’s exact material is on the record', () => {
     const met = read(15, { itemId: PENT_A.id, material: PENT_A.provenance?.identity, skills: [] });
-    expect(offers(card({ rows: [...SHOWN, met] }))).toEqual([]);
+    const offered = offers(card({ rows: [...SHOWN, met] })).map((slot) => slot.item?.id);
+    expect(offered).not.toContain(PENT_A.id);
+    expect(offered, 'the pentatonic in D, whose key signature alters no note it sounds (L120b)').toEqual([PENT_D.id]);
   });
 
   it('met-by-id: a legacy run of the item, material unknown, is never read as unmet and never offered (adversary 8)', () => {
     const legacy = read(15, { itemId: PENT_A.id, skills: [] });
-    expect(offers(card({ rows: [...SHOWN, legacy] }))).toEqual([]);
+    const offered = offers(card({ rows: [...SHOWN, legacy] })).map((slot) => slot.item?.id);
+    expect(offered).not.toContain(PENT_A.id);
+    expect(offered, 'the pentatonic in D, whose key signature alters no note it sounds (L120b)').toEqual([PENT_D.id]);
   });
 
-  it('the gate refuses: the pentatonic in D brings a key signature, the blues scale notes outside the key, neither taught (adversary 2)', () => {
+  it('the gate refuses: the blues scale brings notes outside the key, untaught (adversary 2); the pentatonic in D’s key signature alters no note it sounds and is not asked (L120b)', () => {
     const met = read(15, { itemId: PENT_A.id, material: PENT_A.provenance?.identity, skills: [] });
-    expect(offers(card({ rows: [...SHOWN, met] }))).toEqual([]);
     const learner = { taught: (d: string) => VOCABULARY.demands.find((x) => x.id === d)?.taughtAt.includes('A') === true };
-    expect(eligibleFor(PENT_D, learner, { for: 'skill', skill: 'position-shift' }, VOCABULARY)).toMatchObject({ verdict: 'ineligible', why: 'untaught', demands: ['key.signature'] });
-    expect(eligibleFor(BLUES_A, learner, { for: 'skill', skill: 'position-shift' }, VOCABULARY)).toMatchObject({ verdict: 'ineligible', why: 'untaught' });
-    // Taught, the pentatonic in D is what comes next.
-    expect(offerOf(card({ rows: [...SHOWN, met], vocabulary: taughtAtA(['pitch.chromatic']) }))?.item?.id).toBe(PENT_D.id);
+    expect(PENT_D.demands, 'the notation fact stays on the row').toContain('key.signature');
+    expect(eligibleFor(PENT_D, learner, { for: 'skill', skill: 'position-shift' }, VOCABULARY)).toMatchObject({ verdict: 'eligible' });
+    expect(eligibleFor(BLUES_A, learner, { for: 'skill', skill: 'position-shift' }, VOCABULARY)).toMatchObject({ verdict: 'ineligible', why: 'untaught', demands: ['pitch.chromatic'] });
+    // Both pentatonics met: the blues scale is what is left, and the gate refuses it at the selection layer.
+    const bothMet = [met, read(16, { itemId: PENT_D.id, material: PENT_D.provenance?.identity, skills: [] })];
+    expect(offers(card({ rows: [...SHOWN, ...bothMet] }))).toEqual([]);
+    // Taught, the blues scale is what comes next.
+    expect(offerOf(card({ rows: [...SHOWN, ...bothMet], vocabulary: taughtAtA([]) }))?.item?.id).toBe(BLUES_A.id);
   });
 
   it('the family that established the skill: a new seed of it is never transfer (adversary 1)', () => {

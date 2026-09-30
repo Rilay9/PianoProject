@@ -526,5 +526,134 @@ class TestIntroducedIsNeverTaught(unittest.TestCase):
         self.assertEqual(untaught, [], "F.1 teaches the walking bass, on F.3's path")
 
 
+KEY = "key.signature"
+
+
+class TestAKeySignatureAlteringNoSoundingNoteIsNotAsked(unittest.TestCase):
+    """
+    L120b, class 1 (the reviewer's ruling on L120a, `responses/0bcd3be0.md`, Question 2 A): the build's
+    mirror of the coping question (`claims.untaught_on`) leaves out a key signature the measurement
+    locates at no sounding note (`measurement.located` without it; the build drops zero counts), and
+    only that demand. The notation fact stays: the row's `demands`, and the claim verdict a practice
+    reading gives it (`claims.status_of`: incidental). The app's twin is `copingQuestion.test.ts`.
+    """
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.curriculum = source_curriculum()
+        cls.ancestry = claims.rung_ancestry(cls.curriculum)
+        cls.skills, cls.demands = claims.load_vocabulary()
+
+    @staticmethod
+    def row(demands: list[str], located: dict[str, int]) -> dict:
+        return {"id": "exercise.l120b.key", "demands": demands,
+                "measurement": {"status": "measured", "established": ["interval.step"], "located": located}}
+
+    def untaught(self, item: dict, rung: str = "1.1") -> list[str]:
+        return claims.untaught_on(item, rung, self.ancestry, self.demands)
+
+    def test_k1_the_g_pattern_shape_at_1_1_is_not_untaught(self) -> None:
+        self.assertEqual(self.untaught(self.row(["interval.step", KEY], {"interval.step": 8})), [])
+
+    def test_k2_a_sounding_f_sharp_keeps_it_asked(self) -> None:
+        self.assertEqual(self.untaught(self.row(["interval.step", KEY], {"interval.step": 8, KEY: 1})), [KEY])
+
+    def test_k3_the_notation_fact_stays(self) -> None:
+        item = self.row(["interval.step", KEY], {"interval.step": 8})
+        self.untaught(item)
+        self.assertEqual(item["demands"], ["interval.step", KEY], "the row keeps the key")
+        self.assertEqual(claims.status_of({"kind": "demand", "id": KEY}, item, self.skills), "incidental")
+
+    def test_k4_another_demand_located_nowhere_is_still_asked(self) -> None:
+        self.assertEqual(self.untaught(self.row(["interval.step", "metre.compound"], {"interval.step": 8})), ["metre.compound"])
+
+    def test_k5_a_runtime_reading_row_is_not_read_here_as_before(self) -> None:
+        reading = {"id": "drill.reading.sight-reading-5", "drill": {"kind": "sight-reading", "params": {"level": 5}},
+                   "measurement": {"status": "runtime", "reason": "made when it opens"}}
+        self.assertEqual(self.untaught(reading), [], "the build does not read a runtime row's asked demands (the table lists it apart)")
+
+    def test_k6_g_major_with_a_written_f_natural(self) -> None:
+        item = self.row(["interval.step", KEY, "pitch.chromatic"], {"interval.step": 8, "pitch.chromatic": 1})
+        self.assertEqual(self.untaught(item), ["pitch.chromatic"])
+
+    def test_a_row_with_no_measurement_record_keeps_the_key_asked(self) -> None:
+        # The rule reads a measurement's located counts; a row without one (a bridge row) says nothing of them.
+        self.assertEqual(self.untaught({"id": "exercise.l120b.bare", "demands": ["interval.step", KEY]}), [KEY])
+
+
+SKIP = "interval.skip"
+
+
+class TestASkipInsideATaughtFixedPosition(unittest.TestCase):
+    """
+    L120b, class 2 (the reviewer's Question 1 on L120a, `responses/0bcd3be0.md`): before 1.5 a skip wholly
+    inside an already taught fixed position is coped with by the note reading that position taught. The
+    build's mirror (`claims.untaught_on` with the curriculum) reads the positions from `interval.skip`'s
+    `fixedPositions` and where each is taught from the lessons' own `concepts` under the ancestry (1.1
+    names `C-position`, 1.3 `LH-C-position`); the row's range is `measurement.span`, each sounding hand's
+    lowest and highest MIDI over the piece. The app's twin is `copingQuestion.test.ts`; the fourth
+    adversary (no interval-reading evidence from a fixed-position run) is the app's alone, since the build
+    reads no evidence.
+    """
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.curriculum = source_curriculum()
+        cls.ancestry = claims.rung_ancestry(cls.curriculum)
+        _skills, cls.demands = claims.load_vocabulary()
+
+    @staticmethod
+    def row(demands: list[str], span: dict | None) -> dict:
+        measurement = {"status": "measured", "established": [], "located": {d: 4 for d in demands}}
+        if span is not None:
+            measurement["span"] = span
+        return {"id": "exercise.l120b.skip", "demands": demands, "measurement": measurement}
+
+    def untaught(self, item: dict, rung: str) -> list[str]:
+        return claims.untaught_on(item, rung, self.ancestry, self.demands, curriculum=self.curriculum)
+
+    def test_the_positions_are_recorded_on_the_skip_and_named_by_the_lessons(self) -> None:
+        self.assertEqual([d for d, entry in self.demands.items() if entry.get("fixedPositions")], [SKIP])
+        self.assertEqual(self.demands[SKIP]["fixedPositions"], [
+            {"concept": "C-position", "hand": "R", "low": 60, "high": 67},
+            {"concept": "LH-C-position", "hand": "L", "low": 48, "high": 55},
+        ])
+        self.assertEqual(self.demands[SKIP]["taughtAt"], ["1.5"], "taughtAt is not moved")
+        naming = {concept: [lesson["id"] for _s, _u, lesson in claims.lessons_in_order(self.curriculum)
+                            if concept in (lesson.get("concepts") or [])]
+                  for concept in ("C-position", "LH-C-position")}
+        self.assertEqual(naming, {"C-position": ["1.1"], "LH-C-position": ["1.3"]})
+
+    def test_1_inside_the_taught_positions_before_1_5(self) -> None:
+        self.assertEqual(self.untaught(self.row(["interval.step", SKIP], {"R": [60, 67]}), "1.2"), [])
+        self.assertEqual(self.untaught(self.row(["clef.bass", SKIP], {"R": [60, 67], "L": [48, 55]}), "1.4"), [])
+        self.assertEqual(self.untaught(self.row(["interval.step", SKIP], {"R": [60, 64]}), "practice.1"), [],
+                         "the floor stands on 1.1, which teaches right-hand C position")
+
+    def test_2_a_skip_that_leaves_the_position_or_a_hand_not_taught_there_gets_nothing(self) -> None:
+        self.assertIn(SKIP, self.untaught(self.row(["interval.step", SKIP], {"R": [60, 69]}), "1.2"), "Kum Ba Yah's shape")
+        self.assertIn(SKIP, self.untaught(self.row(["clef.bass", SKIP], {"L": [48, 55]}), "1.2"), "the left hand's position is 1.3's")
+        self.assertIn(SKIP, self.untaught(self.row(["clef.bass", SKIP], {"L": [60, 67]}), "1.2"),
+                      "the left hand in the right hand's position: a position is its own hand's")
+        self.assertIn(SKIP, self.untaught(self.row(["interval.step", SKIP], {"R": [60, 67]}), "0.3"), "no position is taught at 0.3")
+        self.assertIn(SKIP, self.untaught(self.row(["clef.bass", SKIP], {"R": [60, 67], "L": [48, 55]}), "practice.1"),
+                      "the floor stands on 1.1 alone")
+        self.assertEqual(self.untaught(self.row(["interval.step", SKIP], None), "1.2"), [SKIP], "a row with no range")
+        self.assertEqual(self.untaught({"id": "drill.reading.sight-reading-1", "drill": {"kind": "sight-reading"},
+                                        "measurement": {"status": "runtime", "reason": "made when it opens"}}, "1.2"), [],
+                         "a runtime reading row is not read by the build, as before (the table lists it apart)")
+        leap = self.untaught(self.row(["interval.leap", SKIP], {"R": [60, 67]}), "1.2")
+        self.assertIn("interval.leap", leap, "a leap inside the position gets nothing")
+        self.assertNotIn(SKIP, leap)
+
+    def test_2_a_caller_without_the_curriculum_gives_no_exemption(self) -> None:
+        item = self.row(["interval.step", SKIP], {"R": [60, 67]})
+        self.assertEqual(claims.untaught_on(item, "1.2", self.ancestry, self.demands), [SKIP], "the refusal stays, never the reverse")
+
+    def test_3_after_1_5_a_skip_outside_every_position_is_taught_as_now(self) -> None:
+        for rung in ("1.5", "2.1"):
+            self.assertEqual(self.untaught(self.row(["interval.step", SKIP], {"R": [72, 79]}), rung), [], rung)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -769,10 +769,11 @@ function fromList(ctx: SlotContext, item: CatalogItem, rung: Lesson): boolean {
  */
 function learnerAt(ctx: SlotContext, rung: Lesson | undefined): Learner {
   const vocabulary = ctx.input.vocabulary ?? VOCABULARY_V0;
+  // The taught set and the fixed positions from the same rung and reached set (L120b).
   const taught =
     rung === undefined
-      ? undefined
-      : taughtAtRung(
+      ? {}
+      : taughtForLearner(
           ctx.input.curriculum,
           rung.id,
           vocabulary,
@@ -780,7 +781,7 @@ function learnerAt(ctx: SlotContext, rung: Lesson | undefined): Learner {
         );
   return {
     skillState: (skill) => ctx.skills.get(skill)?.reading.state,
-    ...(taught === undefined ? {} : { taught }),
+    ...taught,
     ...(ctx.input.readinessFloor === undefined ? {} : { floor: ctx.input.readinessFloor }),
   };
 }
@@ -1730,12 +1731,13 @@ export function swapOptions(
   const vocabulary = options.vocabulary ?? VOCABULARY_V0;
   const excludeSongs = options.excludeSongs ?? slot.kind === 'technique';
   const exclude = slots.map((other) => other.item?.id).filter((id): id is string => Boolean(id));
-  const taught = options.rung === undefined ? undefined : taughtAtRung(curriculum, options.rung, vocabulary, options.reached);
+  // The taught set and the fixed positions from the same rung and reached set (L120b).
+  const taught = options.rung === undefined ? {} : taughtForLearner(curriculum, options.rung, vocabulary, options.reached);
   // The learner's skills from their stored runs, the session's own reading (`skillEvidenceOf`), where given.
   const evidence = options.rows === undefined ? undefined : skillEvidenceOf(options.rows, vocabulary, options.today ?? new Date());
   const skillState = options.skillState ?? (evidence === undefined ? undefined : (skill: string) => evidence.get(skill)?.reading.state);
   const learner: Learner = {
-    ...(taught === undefined ? {} : { taught }),
+    ...taught,
     ...(skillState === undefined ? {} : { skillState }),
     ...(options.readinessFloor === undefined ? {} : { floor: options.readinessFloor }),
   };
@@ -2022,13 +2024,66 @@ export function taughtAtRung(
   vocabulary: Vocabulary = VOCABULARY_V0,
   reached: readonly string[] = [],
 ): ((demand: string) => boolean) | undefined {
+  const taughtBy = rungsBehind(curriculum, rung, reached);
+  if (taughtBy === undefined) return undefined;
+  return (demand) => (vocabulary.demands.find((d) => d.id === demand)?.taughtAt ?? []).some((at) => taughtBy.has(at));
+}
+
+/** The rungs whose teaching counts at `rung`: its ancestry, and each reached rung's (`taughtAtRung`'s two readings). */
+function rungsBehind(curriculum: Curriculum, rung: string | undefined, reached: readonly string[]): ReadonlySet<string> | undefined {
   if (rung === undefined) return undefined;
   const ancestry = rungAncestry(curriculum);
   const here = ancestry.get(rung);
   if (here === undefined) return undefined;
   const theirs = reached.map((id) => ancestry.get(id)).filter((one): one is ReadonlySet<string> => one !== undefined);
-  const taughtBy: ReadonlySet<string> = theirs.length === 0 ? here : new Set([...here, ...theirs.flatMap((one) => [...one])]);
-  return (demand) => (vocabulary.demands.find((d) => d.id === demand)?.taughtAt ?? []).some((at) => taughtBy.has(at));
+  return theirs.length === 0 ? here : new Set([...here, ...theirs.flatMap((one) => [...one])]);
+}
+
+/** Worked out once per curriculum object: each rung's own `concepts`. */
+const CONCEPTS = new WeakMap<Curriculum, ReadonlyMap<string, readonly string[]>>();
+
+function conceptsByRung(curriculum: Curriculum): ReadonlyMap<string, readonly string[]> {
+  const known = CONCEPTS.get(curriculum);
+  if (known) return known;
+  const out = new Map<string, readonly string[]>();
+  for (const stage of curriculum.stages) for (const unit of stage.units) for (const lesson of unit.lessons) out.set(lesson.id, lesson.concepts);
+  CONCEPTS.set(curriculum, out);
+  return out;
+}
+
+/**
+ * Whether a fixed position's note reading is taught at a rung (L120b): a lesson among the rungs whose
+ * teaching counts there — the rung's ancestry, and each reached rung's, as `taughtAtRung` reads them —
+ * names the position's concept in its own `concepts`. 1.1 names `C-position` and 1.3 `LH-C-position`,
+ * so right-hand C position is taught from 1.1, the left hand's from 1.3, and on the practice floor, which
+ * stands on 1.1, the right hand's alone. `concepts` only, never `introduces` (`claims.teaching_rungs`'s
+ * rule); the positions themselves are the vocabulary's (`fixedPositions`). `undefined` where
+ * `taughtAtRung` is.
+ */
+export function positionTaughtAtRung(curriculum: Curriculum, rung: string | undefined, reached: readonly string[] = []): ((concept: string) => boolean) | undefined {
+  const behind = rungsBehind(curriculum, rung, reached);
+  if (behind === undefined) return undefined;
+  const concepts = conceptsByRung(curriculum);
+  const named = new Set([...behind].flatMap((id) => [...(concepts.get(id) ?? [])]));
+  return (concept) => named.has(concept);
+}
+
+/**
+ * What the rung judging an offer has taught, as the one gate's learner reads it (L120b): `taught`
+ * (`taughtAtRung`) and, from the same rung, ancestry and reached set, `positionTaught`
+ * (`positionTaughtAtRung`). Every place that builds a learner's taught set from a rung builds it here,
+ * so no learner judged at a rung has one without the other. Neither for no rung or one the curriculum
+ * lacks.
+ */
+export function taughtForLearner(
+  curriculum: Curriculum,
+  rung: string | undefined,
+  vocabulary: Vocabulary = VOCABULARY_V0,
+  reached: readonly string[] = [],
+): Pick<Learner, 'taught' | 'positionTaught'> {
+  const taught = taughtAtRung(curriculum, rung, vocabulary, reached);
+  const positionTaught = positionTaughtAtRung(curriculum, rung, reached);
+  return { ...(taught === undefined ? {} : { taught }), ...(positionTaught === undefined ? {} : { positionTaught }) };
 }
 
 /**

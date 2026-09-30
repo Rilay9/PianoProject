@@ -3,15 +3,17 @@
 The rung-own options the one gate's coping question refuses at their own rung, each untaught demand
 read under the reviewer's order of truths (L120a; `docs/prompts/tasks/L120-untaught-readings-at-their-truth.md`,
 ruled in `docs/review/responses/questions-4dc2f135.md`). Read-only: nothing here changes a rung, a
-lesson, a claim, `taughtAt` or the gate, and the validator does not run it (its warning is L120b's).
+lesson, a claim, `taughtAt` or the gate; the validator warns with its count and never fails (L120b).
 
 **The reading is the app's.** `eligibilityCore.establishedQuestions` asks a candidate, in this order:
 a declared large-hand voicing (`physical`); the teaching-use admission (generated music whose family
 promises music, or an excerpt, with no affirmative decision: `teaching-use-not-approved`); an
 unmeasured item (`exploration-only`); then the coping question, `uncoped` — the demands the item asks
-(`demandsAsked`: the catalogue row's `demands` list for a measured item, whatever its density), less
-those the learner's evidence supports, less those taught at or below the rung (`session.taughtAtRung`:
-a demand whose `taughtAt` names a rung of the rung's ancestry). A rung's own option, judged at its
+(`demandsAsked`: the catalogue row's `demands` list for a measured item, whatever its density, less a
+key signature located at no sounding note, L120b), less those the learner's evidence supports, less
+those taught at or below the rung (`session.taughtAtRung`: a demand whose `taughtAt` names a rung of
+the rung's ancestry), less a skip wholly inside a fixed position a lesson on that path teaches (L120b,
+`inTaughtPosition`; `claims.untaught_on` with the curriculum). A rung's own option, judged at its
 own rung with no evidence read, is refused `untaught` when that difference is not empty. X1's probe
 asked exactly that of every rung's `exerciseOptions` and `songOptions`
 (`docs/prompts/runs/X1/scripts-zzX1CardProbe.test.ts`); this module reads the same `demands.json`,
@@ -37,12 +39,13 @@ the reading:
   the build records the detector's reading of that demand on that item as doubtful as to presence:
   a known misreading (`claims.misreading_of`, E22's family readings and the clef assumption) or
   E22's caution on a notated walking bass (`PRESENCE_DOUBTS`); or the row's own facts under the
-  detectors' documented rules (`reading_doubts`): a demand located nowhere (a key signature none of
-  whose altered letters sounds), 3/8 read as compound time, and a written sixteenth in 3/8, which is
-  half an eighth-note beat. Only a row whose `timeSig` says 3/8 is read so; a row with no `timeSig`
-  (most PDMX rows) is not, and is not in doubt here for want of it. E22's other notes say the detector
-  sees less than is there; they are kept as `caution`. Nothing else here can say the notes do not
-  ask it; a pair not in doubt is read as present and required.
+  detectors' documented rules (`reading_doubts`): a demand located nowhere (`NOWHERE`). Since L120b
+  (the reviewer's ruling on L120a, `docs/review/responses/0bcd3be0.md`) a key signature located
+  nowhere is not a pair at all — the gate does not ask it (`claims.asked_of`) — and the two 3/8
+  doubts are gone: 3/8 is simple triple at the detector (`detect.ts`'s `isCompound`), and a written
+  sixteenth in 3/8 is a sixteenth, classified by ownership and placement like any other. E22's other
+  notes say the detector sees less than is there; they are kept as `caution`. Nothing else here can
+  say the notes do not ask it; a pair not in doubt is read as present and required.
 - **B — teaching ownership.** A lesson at or below the rung (its ancestry) owns it and fails to
   declare or map it. **B-claim**: a concept maps to the demand (`claims.concepts_naming`:
   `CONCEPT_DEMANDS` and a vocabulary skill whose opportunity is that demand alone) and a lesson at or
@@ -100,27 +103,20 @@ CLASSES =("A", "B-claim", "B-mapping", "C-later", "C-elsewhere", "C-nowhere")
 #: than is there, which leaves an asked demand asked: they are kept as `caution`, never class A.
 PRESENCE_DOUBTS = frozenset({claims.CLEF_NOTE, claims.E22_NOTATED_WALK})
 
-#: Two readings of the detectors' own documented rules that leave a demand in the row with nothing, or
-#: something else, for the learner to do (`app/src/demands/detect.ts`, read, never moved):
-NOWHERE = ("present with nowhere to point: the detector places it on no note (for a key signature, "
-           "no letter it alters sounds), so the learner has nothing of it to play")
-THREE_EIGHT = ("3/8 is read as compound time by the 6/8 rule (detect.ts, compoundMetre); a 3/8 piece is "
-               "commonly counted as simple triple, three eighths to the bar")
-#: The sixteenths detector reads the written value, whatever the metre's beat.
-SIXTEENTHS_IN_THREE_EIGHT = ("in 3/8 counted in eighths, a written sixteenth is half a beat: the subdivision "
-                             "eighths are in 3/4, which 2.2 teaches; the demand reads the written value")
+#: A reading of the detectors' own documented rule that leaves a demand in the row with nothing for the
+#: learner to do (`app/src/demands/detect.ts`, read, never moved). Since L120b the key signature located
+#: nowhere never reaches this table (the gate does not ask it, `claims.asked_of`); any other demand located
+#: nowhere keeps the doubt. L120a's two 3/8 doubts are gone (L120b, the reviewer's ruling on L120a,
+#: `docs/review/responses/0bcd3be0.md`): 3/8 read as compound time was the detector's error, corrected at
+#: the reading (`detect.ts`'s `isCompound`), so a 3/8 row that still carries compound time carries it from
+#: a genuinely compound bar; and a written sixteenth in 3/8 is a sixteenth the learner reads and times.
+NOWHERE = ("present with nowhere to point: the detector places it on no note, so the learner has nothing "
+           "of it to play")
 
 
 def reading_doubts(item: Doc, demand_id: str, located: int) -> list[str]:
     """This module's doubts on a detector's reading of an asked demand, from the row's own facts."""
-    out = []
-    if located == 0:
-        out.append(NOWHERE)
-    if item.get("timeSig") == "3/8" and demand_id == "metre.compound":
-        out.append(THREE_EIGHT)
-    if item.get("timeSig") == "3/8" and demand_id == "rhythm.sixteenths":
-        out.append(SIXTEENTHS_IN_THREE_EIGHT)
-    return out
+    return [NOWHERE] if located == 0 else []
 
 
 #: The words that name each demand in a lesson's text or a concept id (hyphens read as spaces),
@@ -302,7 +298,7 @@ def table(catalog: list[Doc], curriculum: Doc, skills: dict[str, Doc] | None = N
                 unread.append({"rung": rung, "item": item_id, "title": item.get("title"),
                                "why": "a runtime reading row: its asked demands are the reading controls' (app code)"})
                 continue
-            untaught = claims.untaught_on(item, rung, ancestry, demands) if status == "measured" else []
+            untaught = claims.untaught_on(item, rung, ancestry, demands, curriculum) if status == "measured" else []
             if not untaught:
                 continue
             if before is not None:

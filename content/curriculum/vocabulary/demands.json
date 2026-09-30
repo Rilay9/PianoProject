@@ -22,6 +22,15 @@
     "is app code (app/src/engine/readingControls.ts), so a generator can change without the",
     "vocabulary, or the evidence that names these ids, moving.",
     "",
+    "`fixedPositions` (L120b; the reviewer's Question 1 on L120a, docs/review/responses/0bcd3be0.md)",
+    "is on interval.skip alone: the fixed five-finger positions whose note reading copes with a skip",
+    "before 1.5 teaches reading by interval — right-hand C position, C4-G4 (MIDI 60-67), which 1.1",
+    "teaches by note name, and the left hand's, C3-G3 (48-55), which 1.3 teaches. Each names its lesson",
+    "concept; where it is taught is read from the lessons' own concepts under the rung's ancestry",
+    "(session.positionTaughtAtRung, claims.untaught_on), never listed here. The coping question alone",
+    "reads it (eligibilityCore.uncoped): a skip is coped with where every sounding hand of the row lies",
+    "inside its own taught position. taughtAt and copedWithBy do not move, and no evidence reader sees it.",
+    "",
     "v0 is what the nine sight-reading rows' promises name and what the taught-at table",
     "needs. validate.py checks this file against demands.schema.json and its references;",
     "vocabulary.test.ts checks every detector exists in the app."
@@ -38,7 +47,18 @@
       "taughtAt": ["1.1"],
       "taughtAtNote": "1.1 names steps in its concepts (F2): its five-finger walks are steps; 1.5 teaches reading them as steps."
     },
-    { "id": "interval.skip", "display": "A skip (a third)", "dimension": "interval", "detector": "skips", "copedWithBy": "interval-reading", "taughtAt": ["1.5"] },
+    {
+      "id": "interval.skip",
+      "display": "A skip (a third)",
+      "dimension": "interval",
+      "detector": "skips",
+      "copedWithBy": "interval-reading",
+      "taughtAt": ["1.5"],
+      "fixedPositions": [
+        { "concept": "C-position", "hand": "R", "low": 60, "high": 67 },
+        { "concept": "LH-C-position", "hand": "L", "low": 48, "high": 55 }
+      ]
+    },
     { "id": "interval.leap", "display": "A leap (a fourth or wider)", "dimension": "interval", "detector": "leaps", "copedWithBy": "interval-reading", "taughtAt": ["2.1"] },
     { "id": "rhythm.eighths", "display": "Eighth notes", "dimension": "rhythm", "detector": "eighths", "copedWithBy": "subdivision", "taughtAt": ["2.2"] },
     { "id": "rhythm.shorter-than-quarter", "display": "Notes shorter than a quarter", "dimension": "rhythm", "detector": "shorterThanQuarter", "copedWithBy": "subdivision", "taughtAt": ["2.2"] },

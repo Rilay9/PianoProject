@@ -1,0 +1,53 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a0a8cdf3dae958f4a/app
+
+ ❯ tests/unit/copingQuestion.test.ts (7 tests | 2 failed) 37ms
+   ❯ a key signature that alters no sounding note is not asked on the coping question (L120b, class 1) (7)
+     × K1: the G five-finger pattern’s shape at 1.1 — the key in `demands`, located at no note — is not uncoped 16ms
+     × K6: G major with a written F♮ — the key located nowhere is not asked, the natural is (its guard half) 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/copingQuestion.test.ts > a key signature that alters no sounding note is not asked on the coping question (L120b, class 1) > K1: the G five-finger pattern’s shape at 1.1 — the key in `demands`, located at no note — is not uncoped
+AssertionError: expected [ 'key.signature' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "key.signature",
++ ]
+
+ ❯ tests/unit/copingQuestion.test.ts:80:43
+     78|   it('K1: the G five-finger pattern’s shape at 1.1 — the key in `deman…
+     79|     const row = rowOf('exercise.k1.g-pattern', G_PATTERN);
+     80|     expect(uncoped(row, taughtAt('1.1'))).toEqual([]);
+       |                                           ^
+     81|     expect(eligibleFor(row, taughtAt('1.1'), { for: 'equivalent' })).t…
+     82|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/copingQuestion.test.ts > a key signature that alters no sounding note is not asked on the coping question (L120b, class 1) > K6: G major with a written F♮ — the key located nowhere is not asked, the natural is (its guard half)
+AssertionError: the key signature altering no sounding note is not: expected [ 'key.signature', …(2) ] to not include 'key.signature'
+ ❯ tests/unit/copingQuestion.test.ts:110:77
+    108|     const asked = uncoped(rowOf('exercise.k6.g-with-f-natural', G_WITH…
+    109|     expect(asked, 'the note outside the key is asked (guard)').toConta…
+    110|     expect(asked, 'the key signature altering no sounding note is not'…
+       |                                                                             ^
+    111|   });
+    112| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 5 passed (7)
+   Start at  19:28:29
+   Duration  4.91s (transform 61%, import 35%, worker 3%, tests 1%)
+
+  Transform  transforming modules took 2.03s · 61% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+

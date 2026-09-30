@@ -567,6 +567,22 @@ POSITIONS_CACHE = "positions-cache.json"
 POSITION_KEYS = ("positions", "everyBar", "hands", "printedBars")
 
 
+def span_of(hands: dict | None) -> dict[str, list[int]]:
+    """
+    Each sounding hand's lowest and highest MIDI over the whole piece (L120b), from the bridge's
+    per-printed-bar `hands` (`demandsOfFiles.test.ts`: grace notes left out, each printed note once):
+    `{"R": [low, high], "L": [low, high]}`, a hand that never sounds left out. The row's
+    `measurement.span`, which the coping question reads to say whether a skip lies inside a taught
+    fixed position (`demands.json`'s `fixedPositions`); the per-bar figures stay off the row.
+    """
+    out: dict[str, list[int]] = {}
+    for bar in (hands or {}).values():
+        for hand, (low, high) in (bar or {}).items():
+            held = out.get(hand)
+            out[hand] = [int(low), int(high)] if held is None else [min(held[0], int(low)), max(held[1], int(high))]
+    return {hand: out[hand] for hand in ("R", "L") if hand in out}
+
+
 def established_by_contract(entry: dict, row: dict) -> list[str]:
     """
     The demands a generated item provides at its own family's density (D0's contract):
@@ -596,8 +612,9 @@ def attach_demands(entries: list[dict], out_dir: Path) -> tuple[int, int, int]:
     The demands the app's own detectors measure on every bundled score, on its row (E0
     item 1; E23): `demands` (the ids, in the vocabulary's order) and `measurement` — the
     located count of each demand, the bars, steps and notes, which demands the item
-    provides at a useful density (`established`), and the definitions they were measured
-    under.
+    provides at a useful density (`established`), the definitions they were measured
+    under, and each sounding hand's range over the piece (`span`, L120b: `span_of` the
+    bridge's per-bar `hands`, which stay in the positions cache).
 
     **One measurement, through the bridge.** Every score file goes through
     `demands.measure_each`, which runs `app/src/demands/detect.ts` on the model the app
@@ -705,6 +722,8 @@ def attach_demands(entries: list[dict], out_dir: Path) -> tuple[int, int, int]:
         # among the ids, so the gate still treats it as something the learner may have to meet.
         established = [d for d in order if (d in by_density or d in by_window or d in by_contract)
                        and not (misread and d in CLEF_MISREAD)]
+        # L120b: each sounding hand's range over the piece, for the coping question's fixed positions.
+        span = span_of((positions.get(sha) or {}).get("hands"))
         entry["demands"] = list(row["demands"])
         entry["measurement"] = {
             "status": "measured",
@@ -718,6 +737,7 @@ def attach_demands(entries: list[dict], out_dir: Path) -> tuple[int, int, int]:
             **({"contract": [d for d in by_contract if d in established]} if [d for d in by_contract if d in established] else {}),
             **({"window": [d for d in by_window if d in established]} if [d for d in by_window if d in established] else {}),
             **({"misread": {"demands": list(CLEF_MISREAD), "why": misread}} if misread else {}),
+            **({"span": span} if span else {}),
         }
         measured += 1
 

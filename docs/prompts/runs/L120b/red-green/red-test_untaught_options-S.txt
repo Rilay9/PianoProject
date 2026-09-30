@@ -1,0 +1,49 @@
+.....FFF
+======================================================================
+FAIL: test_s1_written_sixteenths_in_three_eight_are_classified_by_ownership_and_placement (tests.test_untaught_options.TheSubclasses.test_s1_written_sixteenths_in_three_eight_are_classified_by_ownership_and_placement)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0a8cdf3dae958f4a\tools\content\tests\test_untaught_options.py", line 295, in test_s1_written_sixteenths_in_three_eight_are_classified_by_ownership_and_placement
+    self.assertEqual((row["class"], row["doubt"]), ("C-nowhere", []), "no rung teaches sixteenths: a placement, never a doubt")
+AssertionError: Tuples differ: ('A', ['in 3/8 counted in eighths, a writte[115 chars]ue']) != ('C-nowhere', [])
+
+First differing element 0:
+'A'
+'C-nowhere'
+
++ ('C-nowhere', [])
+- ('A',
+-  ['in 3/8 counted in eighths, a written sixteenth is half a beat: the '
+-   'subdivision eighths are in 3/4, which 2.2 teaches; the demand reads the '
+-   'written value']) : no rung teaches sixteenths: a placement, never a doubt
+
+======================================================================
+FAIL: test_s2_compound_time_on_a_three_eight_row_is_not_the_readings_question (tests.test_untaught_options.TheSubclasses.test_s2_compound_time_on_a_three_eight_row_is_not_the_readings_question)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0a8cdf3dae958f4a\tools\content\tests\test_untaught_options.py", line 308, in test_s2_compound_time_on_a_three_eight_row_is_not_the_readings_question
+    self.assertEqual((row["class"], row["doubt"]), ("C-later", []))
+AssertionError: Tuples differ: ('A', ['3/8 is read as compound time by the[110 chars]ar']) != ('C-later', [])
+
+First differing element 0:
+'A'
+'C-later'
+
++ ('C-later', [])
+- ('A',
+-  ['3/8 is read as compound time by the 6/8 rule (detect.ts, compoundMetre); a '
+-   '3/8 piece is commonly counted as simple triple, three eighths to the bar'])
+
+======================================================================
+FAIL: test_s3_a_demand_located_nowhere_is_the_readings_question_but_the_key_signature_is_not_asked (tests.test_untaught_options.TheSubclasses.test_s3_a_demand_located_nowhere_is_the_readings_question_but_the_key_signature_is_not_asked)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a0a8cdf3dae958f4a\tools\content\tests\test_untaught_options.py", line 322, in test_s3_a_demand_located_nowhere_is_the_readings_question_but_the_key_signature_is_not_asked
+    self.assertEqual(set(rows), {"song.n"}, "the key signature altering no sounding note is not asked, so no line")
+AssertionError: Items in the first set but not the second:
+'song.k' : the key signature altering no sounding note is not asked, so no line
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.006s
+
+FAILED (failures=3)

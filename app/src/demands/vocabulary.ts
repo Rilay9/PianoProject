@@ -97,6 +97,25 @@ export interface Demand {
    */
   taughtAt: readonly string[];
   taughtAtNote?: string;
+  /**
+   * The fixed five-finger positions whose note reading copes with this demand where a
+   * lesson on the rung's path, or on a rung the learner has reached, teaches the position
+   * (L120b; the reviewer's Question 1 on L120a, `docs/review/responses/0bcd3be0.md`): a
+   * skip inside C position is read by note name before 1.5 teaches reading by interval.
+   * Only `interval.skip` has them. Where each position is taught is read from the lessons'
+   * own `concepts` (`session.positionTaughtAtRung`), never from a rung list here; the
+   * coping question alone reads them (`eligibilityCore.uncoped`), and no evidence reader
+   * does, so no run is ever attributed to one.
+   */
+  fixedPositions?: readonly FixedPosition[];
+}
+
+/** One fixed position (L120b): the lesson concept that teaches it, the hand, and its lowest and highest MIDI. */
+export interface FixedPosition {
+  concept: string;
+  hand: 'R' | 'L';
+  low: number;
+  high: number;
 }
 
 export interface DemandsFile {

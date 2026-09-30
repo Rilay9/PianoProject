@@ -1,0 +1,10 @@
+Summary of build/l120b-checks/unit-2.txt (889561 bytes, over the 300 KB kept): the command, the totals, each failing test and its first error line.
+
+ FAIL  tests/unit/firstContactOnTheScore.test.ts > what the screen writes > Play it to me writes one hearing and no demonstration
+AssertionError: expected 1 to be 2 // Object.is equality
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+AssertionError: expected false to be true // Object.is equality
+ Test Files  2 failed | 314 passed (316)
+      Tests  3 failed | 7209 passed | 5 skipped | 1 todo (7218)
+   Duration  225.13s (tests 74%, environment 19%, import 6%, transform 2%)

@@ -813,7 +813,7 @@ def candidate_rungs(catalog: list[dict], curriculum: dict) -> list[dict]:
         rows = []
         for _stage, _unit, lesson in claims.lessons_in_order(curriculum):
             rung = lesson["id"]
-            if claims.untaught_on(item, rung, ancestry, demands):
+            if claims.untaught_on(item, rung, ancestry, demands, curriculum):
                 continue
             rung_claims, _unmeasurable = claims.rung_claims_of(lesson, skills, demands)
             established = [c for c in rung_claims if claims.status_of(c, item, skills) == "established"]
