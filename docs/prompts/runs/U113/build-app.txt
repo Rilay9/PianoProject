@@ -1,0 +1,12 @@
+[INEFFECTIVE_DYNAMIC_IMPORT] src/data/evidenceJob.ts is dynamically imported by src/main.ts but also 
+statically imported by src/ui/screens/SettingsScreen.ts, dynamic import will not move module into another chunk.
+
+✓ built in 2.09s
+
+PWA v1.3.0
+mode      generateSW
+precache  2242 entries (28986.41 KiB)
+files generated
+  ../build/u113/dist/sw.js
+  ../build/u113/dist/workbox-9c191d2f.js
+
