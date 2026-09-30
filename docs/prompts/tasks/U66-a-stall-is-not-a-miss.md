@@ -88,7 +88,7 @@
 **Not yours:** `ScoreScreen.ts` and `help.ts` (U105); `WindowRenderer.ts` (U32); `KeyboardStrip.ts`, `ScreenKeyboardSource.ts`, `style.css`.
 
 **Harness.**
-- Own worktree from origin's head (state the base sha). Fresh-worktree setup as in `tasks/G86a-*.md` "Rules and files". Never commit, push, stash, reset or checkout, and never write in the main checkout. Temp state under the worktree's `build/`. No log over 300 KB (keep the summary and the failing names). At the end, delete `app/dist`, `test-results`, `node_modules`, the copied caches and the config copy.
+- Own worktree from origin's head (state the base sha). Fresh-worktree setup as in `tasks/G86a-*.md` "Rules and files". Never commit, push, stash, reset or checkout, and never write in the main checkout. Temp state under the worktree's `build/`. No log over 300 KB (keep the summary and the failing names). At the end, delete `app/dist`, `test-results`, the copied caches and the config copy; `node_modules` stays until the orchestrator removes the worktree, so a rework or a question needs no reinstall.
 - Playwright only for B1 and the five specs: a config copy under `app/build/u66/` on port 5173 with an absolute `storageState`. No port 4173.
 
 **Rules.**

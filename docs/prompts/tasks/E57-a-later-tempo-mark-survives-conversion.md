@@ -65,7 +65,7 @@
 **Harness.**
 - Work in your own worktree. Run `npm ci` in `app/` only if a chain step needs it (this lane's own tests are Python; the map's minimum decides whether `tsc`/`lint`/vitest are required). Copy `content/scores/imported/{kern,musetrainer}` and `build/cache` read-only from the main checkout, then run `python tools/content/build.py --offline` (or copy `app/public/content` from the main checkout and say so). PDMX's archive is **not** part of this copy list — it never was, even in X40 — so do not go looking for `PIANOPATH_PDMX_DIR`; item 3's re-quarry is the owner's, not this worktree's.
 - Never commit, push, stash or reset. Never write in the main checkout. No Playwright.
-- Keep temp state under the worktree's `build/`. Keep no log over 300 KB (keep the summary and the failing names, and say the full log was not kept). When done, delete `app/node_modules`, `app/dist` and the copied clones and caches. Every item is done or has an explicit not-done line. Never name an AI model.
+- Keep temp state under the worktree's `build/`. Keep no log over 300 KB (keep the summary and the failing names, and say the full log was not kept). When done, delete `app/dist` and the copied clones and caches; `app/node_modules` stays until the orchestrator removes the worktree, so a rework or a question needs no reinstall. Every item is done or has an explicit not-done line. Never name an AI model.
 
 ## Report
 

@@ -267,3 +267,25 @@ files not to touch; the hypothesis the writer holds and the test that would refu
 the agent inherits a question and not a conclusion; when to deviate from the brief (when
 the premise is found wrong, say so and take the better path, recording why); and this
 document's §11 and §12 by reference.
+
+## 14. The builder's harness
+
+A builder works in its own worktree, cut from origin's head at dispatch (the brief states
+the sha), set up as the *Fresh-worktree setup* in `tasks/G86a-*.md`: `npm ci` in `app/`,
+the content copied read-only from the main checkout when the lane needs it. It never
+commits, pushes, stashes, resets or checks out, and never writes in the main checkout or
+in another lane's worktree. Browser tests run on the lane's own port from a config copy
+under the worktree's `app/build/<lane>/`, never on 4173. Temp files go under the
+worktree's `build/`; no kept log over 300 KB; machine paths in kept files replaced by
+`<worktree>` and `<home>`. At the end it deletes `app/dist`, `app/test-results`, the
+copied caches and the config copy; `app/node_modules` stays until the orchestrator removes
+the worktree, so a rework or a question needs no reinstall. It never names an AI model and
+never asserts a number measured on this machine as general. Every item is done or gets an
+explicit not-done line; a premise found wrong is said, and the better path taken.
+
+A brief cites this section instead of restating it and adds only what its lane changes: a
+port, a clone, a cache path. Every other rule in a brief protects something the lane can
+break. The reviewer reads a brief for its product, mechanism and evidence claims, not for
+its hygiene lines, so a rule copied from an earlier brief is re-read here, before the brief
+goes to the reviewer, for what it protects and what it costs the builder; a rule that
+protects nothing is cut.
