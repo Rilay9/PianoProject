@@ -4,6 +4,8 @@ A generated planning view over the four triage files: triage-A1.md (G, L; 95 row
 
 Lanes in flight, as given to this pass: U32, U63, U105, E50a's correction, L120c landing. Queued: L120d, E50, T58, X40. G96 is added here because its files stay owned until it lands. A row whose fix touches a file one of these owns is RE-CHECK, with its provisional disposition in brackets.
 
+**Landed since this pass (2026-09-30):** U32 (Entry 169) and U32a (180), U63 (170), U105 (172) and U105a (182), E50a (166) and E50b (181), L120c (156), L120d (167) and L120e (178), T58 (171), X40 (173), G96 (168) and G96a (179), G101 (177), E54 (174), CL04 (175), U66 (176). A row that waited only on one of these is unblocked; the rows the reviewer's amendment §5 names for re-check are being re-checked and go to the reviewer with the next handoff.
+
 ## Counts
 
 | disposition | A1 | A2 | B | C | total | triagers' own total |
@@ -132,21 +134,21 @@ Tiers: 0 correctness and irreversible truth; 1 the core teaching loop, including
 - **Learner meets:** no lesson states a heuristic, a style trait or a practice habit as a law, and every contested fact carries a source or is gone.
 - **Files:** `content/lessons/*.md` (improv.3, improv.4, improv.8, ragtime.9 and the lint's other hits), `tools/content/lint_absolutes.py`, `app/tests/unit/lessonClaimsAboutMusic.test.ts`.
 - **Proof:** each changed sentence pinned red-first on the committed lesson; every lint_absolutes hit given a disposition; a per-lesson record for gates 1-6 and 9-11 over all 109 lessons. T54 follows the owner's split: sources, one bounded pianist pass, an authoritative safety source. What cannot be sourced by H2 is removed or softened.
-- **Waits on:** nothing for the build half; sources and the pianist pass for T53 and T54; L120d for T16.
+- **Waits on:** nothing for the build half; sources and the pianist pass for T53 and T54; L120d (landed 2026-09-30, Entry 167) for T16.
 
 **CL02 — F4: rock and Latin unwinding with a fingering policy**
 - **Rows:** G30 (DECISION), L121 (RE-CHECK [DECISION] after L120d), Q57 (READ), I9 (READ).
 - **Learner meets:** no printed finger number without a source; rock and Latin rungs carry material a hand can play and that sounds like the idiom, or they say they do not.
 - **Files:** `tools/content/family_contracts.json`, `tools/content/generate_exercises.py`, `content/curriculum/stage-*.json` (rock.5, latin.3, latin.6), `content/review/decisions.jsonl`.
 - **Proof:** the contract check fails a printed fingering with no source; teaching-use decisions recorded for the clave, tresillo, tumbao and montuno items; rock.5's voicing either keeps its physical note or is replaced.
-- **Waits on:** G30's decision (the owner's T54 fallback points to "print none until sourced"); an ear for Q57 and I9; L120d for L121.
+- **Waits on:** G30's decision (the owner's T54 fallback points to "print none until sourced"); an ear for Q57 and I9; L120d (landed 2026-09-30, Entry 167) for L121.
 
 **CL03 — Conversion and tempo truth, after E50a**
 - **Rows:** R27 (R29 and E6 merged), E50 (R11 merged; the lane is queued), X40 (lane queued), X37. E32 closed.
 - **Learner meets:** whatever the MusicXML path loses is recorded; the seven rags and blues and Maple Leaf Rag play at their printed tempo; a quarried row's level has one definition.
 - **Files:** `tools/content/convert.py`, `tools/content/tests/test_convert.py`, `content/sources/pdmx.json`, `content/sources/musetrainer.json`, `tools/content/pdmx/quarry.py`, `tools/content/difficulty.py`.
 - **Proof:** an AT-5 set of pathological fixtures with a report per file; only the seven identities move under E50; X40's table of tempo facts per row; the next quarry's level diff with its placements reviewed.
-- **Waits on:** E50a (in flight), then E50 (queued); the X40 lane.
+- **Waits on:** E50a (landed 2026-09-30, Entry 166) (in flight), then E50 (queued); the X40 (landed 2026-09-30, Entry 173) lane.
 
 ### Tier 1
 
@@ -170,21 +172,21 @@ Tiers: 0 correctness and irreversible truth; 1 the core teaching loop, including
 - **Learner meets:** a backgrounded phone never advances a card, a page or a chorus, and hidden time is never counted as practice.
 - **Files:** `app/src/ui/screenLifecycle.ts`, `app/src/ui/screens/DrillScreen.ts`, `PdfScreen.ts`, `ChordChartScreen.ts`, `LabScreen.ts`.
 - **Proof:** the fake-clock case (play 20 s, hidden 5 min, play 10 s, counted about 30 s) on Drill, PDF, Chord Chart and Lab, plus a repeated hide-and-show case.
-- **Waits on:** nothing. The Score-screen parts of U19 and U39 wait on U105.
+- **Waits on:** nothing. The Score-screen parts of U19 and U39 wait on U105 (landed 2026-09-30, Entry 172).
 
 **CL06 — Outcome tests**
 - **Rows:** Q2 (corrected to P1), Q21, Q23 (BUILD NOW), Q22 (RE-CHECK after U32). Q10 merged.
 - **Learner meets:** a wrong window or a wrong drill answer key can no longer ship green.
 - **Files:** `app/tests/e2e/drills-harmony.spec.ts`, `modes-dictation.spec.ts`, `modes-simon.spec.ts`, `audio.spec.ts`, `carry-overs.spec.ts`, `shelf.spec.ts`, `score.rotate.spec.ts`, `app/tests/tour/t30-sheet.mjs`; after U32, `wide.spec.ts` and `app/tests/states/*`.
 - **Proof:** each revised test goes red on a product mutant: a wrong answer key, audio left suspended, a staff under the exported floor, a stretched bar.
-- **Waits on:** nothing for the answer-key half, Q21 or Q23; U32 for the window half and Q22. Existing specs are revised and none are added, so `checks.json`, which T58 owns, is untouched.
+- **Waits on:** nothing for the answer-key half, Q21 or Q23; U32 (landed 2026-09-30, Entry 169) for the window half and Q22. Existing specs are revised and none are added, so `checks.json`, which T58 (landed 2026-09-30, Entry 171) owns, is untouched.
 
 **CL07 — Responsive reading (after U32)**
 - **Rows:** U5, U33, U77, U78 (U8 merged), U35, U88, U41. Closed into it: U11, U14, U16.
 - **Learner meets:** on a stage with room, the next music shows whenever the staff is comfortably readable; the floor is a named number; a run's size is set once; bar 1 opens with its clef on the stage.
 - **Files:** `app/src/score/WindowRenderer.ts`, `app/tests/e2e/score.window-rule.spec.ts`, `app/tests/states/gallery.ts`, `docs/04-ui-spec.md`.
 - **Proof:** the whole gallery before and after at phone, tablet and desktop, with look-ahead and five-line size read per cell and check (a) on every sheet.
-- **Waits on:** U32 landing, then one threshold decision covering U33 and U78 together with U5 and U77.
+- **Waits on:** U32 (landed 2026-09-30, Entry 169) landing, then one threshold decision covering U33 and U78 together with U5 and U77.
 
 **CL08 — The reading strand (after L120d)**
 - **Rows:** L74, L75, L76, L77, S24, S31, S32, T27, S38 (RE-CHECK); S28 (BUILD NOW); S27 (DECISION). S22 merged; S6 closed.
@@ -195,7 +197,7 @@ Tiers: 0 correctness and irreversible truth; 1 the core teaching loop, including
   - never calls yesterday's notes unseen.
 - **Files:** `app/src/curriculum/session.ts` (readingOffer), `app/src/engine/readingControls.ts`, `content/catalog.static.json`, `content/curriculum/stage-2/3/4.json`, `app/tests/unit/generatorContract.test.ts`.
 - **Proof:** the variant (a) diary; the day-26 leap case; 3.4's walking-bass move; a unit with practice-standard reads only; generatorContract over the track rungs with UNREALISABLE_AT exact; the 189 golden keys for S38.
-- **Waits on:** L120d; S27's decision; T27's read of 2.1.md; E50a and U105 for S38.
+- **Waits on:** L120d (landed 2026-09-30, Entry 167); S27's decision; T27's read of 2.1.md; E50a (landed 2026-09-30, Entry 166) and U105 (landed 2026-09-30, Entry 172) for S38.
 
 **CL09 — Score screen truth (after U105)**
 - **Rows:** S10, U31, U34, U53 (RE-CHECK), U50 (DECISION). L28, S14 and M3 were merged into L19; the help.ts:936 residue rides here.
@@ -206,42 +208,42 @@ Tiers: 0 correctness and irreversible truth; 1 the core teaching loop, including
   - a sight-read at 70 % whose heading agrees with `evidence.ts:267`;
   - the corner read at 390×844 after a pass;
   - hide, close and reopen, then find the Carry on offer.
-- **Waits on:** U105; U32 for U34; U50's decision.
+- **Waits on:** U105 (landed 2026-09-30, Entry 172); U32 (landed 2026-09-30, Entry 169) for U34; U50's decision.
 
 **CL10 — Measured claims: the detectors and the validator**
 - **Rows:** R23 (BUILD NOW); R31, G12, L114, L47 (DECISION); R3 (RE-CHECK [DECISION]); R8, R32, R36, R37, E22 (RE-CHECK after L120d). E12 closed.
 - **Learner meets:** "taught" and "established" rest on readings that account for clef, key, metre, held tunes and the share of bars, and the validator enforces curation rather than counts.
 - **Files:** `app/src/demands/detect.ts`, `app/src/score/types.ts`, `extractScoreModel.ts`, `tools/content/validate.py`, `content/curriculum/vocabulary/demands.json`.
 - **Proof:** the demandsOfFiles pins move only where a reading changes; the untaught table is re-pinned; DEFERRED_CONCEPT_CLAIMS empties; validator tests for the one-song rule and the orphan rule.
-- **Waits on:** nothing for R23; L120d for the detector rows; decisions for R31, G12, L114, R3 and L47.
+- **Waits on:** nothing for R23; L120d (landed 2026-09-30, Entry 167) for the detector rows; decisions for R31, G12, L114, R3 and L47.
 
 **CL11 — What counts as evidence (decisions)**
 - **Rows:** L10, G80, G71 (DECISION); L23, L57, L58, L102, L105 (RE-CHECK [DECISION]). Merged in: L39 (into L21), L29 and L67 (into L24), X8 (into L23). Closed: G68, G75, G76, G77.
 - **Learner meets:** a pass means the same thing in Wait and in Tempo, and every evidence and transfer rule says what it observed.
 - **Files:** `app/src/engine/Scoring.ts`, `app/src/evidence/rungState.ts`, `evidence.ts`, `content/curriculum/vocabulary/skills.json`, `app/src/curriculum/skillActivation.ts`, `transfer.ts`, `eligibilityCore.ts`.
 - **Proof:** a unit case per decision, for example a Tempo run full of wrong notes does not meet the requirement.
-- **Waits on:** the eight decisions; L120d for `skills.json` and `eligibilityCore.ts`; E50a and X15 for G71.
+- **Waits on:** the eight decisions; L120d (landed 2026-09-30, Entry 167) for `skills.json` and `eligibilityCore.ts`; E50a (landed 2026-09-30, Entry 166) and X15 for G71.
 
 **CL12 — The composed day: purposes and episodes**
 - **Rows:** L22, L96, G64, L30, R45 (RE-CHECK); X19, X5, L91 (DECISION); L33 (READ). Merged in: L27, L89, L34, Q42, I17. R24 closed.
 - **Learner meets:** every Today row has a stated purpose (retrieval, application, development, exploration or project); an unplayed offer yields; a detour returns to its piece with a reason and an exit criterion.
 - **Files:** `app/src/curriculum/session.ts`, `app/src/ui/sessionRunner.ts`, `app/src/data/sessionRun.ts`, `app/src/ui/screens/TodayScreen.ts`, `content/tips/*.md`.
 - **Proof:** the skip learner's 30 days (L96); a four-day diary (G64); AT-3 (L30); Part 18's 25 teaching-loop cases red-first (X19).
-- **Waits on:** L22's first slice and X19's episode (decisions); L120d; U63 for R45; L33's AT-1 read.
+- **Waits on:** L22's first slice and X19's episode (decisions); L120d (landed 2026-09-30, Entry 167); U63 (landed 2026-09-30, Entry 170) for R45; L33's AT-1 read.
 
 **CL13 — Rung and item reads**
 - **Rows:** S9, M2, G18, G31, R10, R25, R41 (READ); L88, L112 (RE-CHECK [READ]); L90 (RE-CHECK [DECISION]). G32, G40 and G57 merged; R42, Q56 and Q59 closed.
 - **Learner meets:** each rung's options serve its claim, and studies and excerpts reach the learner only on a recorded teaching-use yes.
 - **Files:** `content/review/decisions.jsonl`, `app/src/ui/screens/DevMicroscopeScreen.ts`, `tools/content/rung_audit.py`, `content/curriculum/stage-*.json`.
 - **Proof:** decisions recorded per item and dimension; a per-rung report of family, role, demands, claim and observation; a goodTeachingUse yes that leads to admittedForTeaching and then to a transfer offer for a proficient skill.
-- **Waits on:** the reads (a second reader, plus an ear for the heard basis); L120d for L88, L90, L112 and G31.
+- **Waits on:** the reads (a second reader, plus an ear for the heard basis); L120d (landed 2026-09-30, Entry 167) for L88, L90, L112 and G31.
 
 **CL14 — G3: the learner's direction and return**
 - **Rows:** L92, I3, I20, I21, M9, X2 (DECISION); R47 (RE-CHECK [DECISION]). I16, T50 and M12 merged; R19 and I2 closed.
 - **Learner meets:** past the authored ladder the teacher follows the learner's goals and interests; a piece or a learner coming back after a break gets a short check; Plan shows where the learner is.
 - **Files:** `app/src/curriculum/session.ts`, `app/src/data/projectStore.ts`, `app/src/data/settingsStore.ts`, `app/src/ui/screens/PlanScreen.ts`, `content/curriculum/00-tracks.json`.
 - **Proof:** trajectory cases F and G and the 18-month return (Q40's), plus a Plan picture per track.
-- **Waits on:** seven decisions (I3's ratio is the owner's); G96; L120d.
+- **Waits on:** seven decisions (I3's ratio is the owner's); G96 (landed 2026-09-30, Entry 168); L120d (landed 2026-09-30, Entry 167).
 
 **Singles, tier 1:** SG02 (U66), SG03 (G90), SG04 (L93); see Singles below.
 
@@ -257,7 +259,7 @@ Tiers: 0 correctness and irreversible truth; 1 the core teaching loop, including
   - readable pedal marks.
 - **Files:** `tools/content/generate_exercises.py`, `tools/content/family_contracts.json`, `tools/content/tests/test_family_contracts.py`, `test_generator_invariants.py`.
 - **Proof:** a contract test that every canonical item is in the plan; an invariant that no staff is silent; measured demands per rung for the rewritten interval items; each family's version bumped, with the identity move stated.
-- **Waits on:** nothing for G51's four clear faults, G54, U68 or G7; decisions for G52, G58 and G13; the pedal picture read; L120d for L118.
+- **Waits on:** nothing for G51's four clear faults, G54, U68 or G7; decisions for G52, G58 and G13; the pedal picture read; L120d (landed 2026-09-30, Entry 167) for L118.
 
 **CL16 — Sight-reading walk, version 3**
 - **Rows:** S34, S35, G37. S18 and S30 merged; S15 closed.
@@ -271,21 +273,21 @@ Tiers: 0 correctness and irreversible truth; 1 the core teaching loop, including
 - **Learner meets:** one level with a stated derivation; the learner sees demand dimensions instead of a scalar presented as truth.
 - **Files:** `app/src/curriculum/types.ts`, `app/src/ui/widgets.ts`, `tools/content/validate.py`, `tools/content/generate_exercises.py`, `app/src/data/measuringFingerprint.ts`.
 - **Proof:** no list prints a bare scalar as fact; the band check goes with its last reader; a unit case on levelSource.
-- **Waits on:** the decision on R1 and R16; E50a (`types.ts`); G96 (`widgets.ts`).
+- **Waits on:** the decision on R1 and R16; E50a (landed 2026-09-30, Entry 166) (`types.ts`); G96 (landed 2026-09-30, Entry 168) (`widgets.ts`).
 
 **CL18 — Repertoire supply**
 - **Rows:** Q78 (RE-CHECK [BUILD NOW] after L120d; the owner decided); R6, R9, R13, R21, R26 (READ); R12, I5 (DECISION). Q76 closed; Q79 rejected.
 - **Learner meets:** rung music is kept, moved or taught through an excerpt on the strength of a musical read; thin and unbuilt rungs get public-domain music; the phone carries what the owner decides.
 - **Files:** `content/sources/mutopia.json`, `content/sources/sections.json`, `content/curriculum/stage-3/4/8.json`, `app/src/ui/tablet.ts`, `.github/workflows/pages.yml`.
 - **Proof:** the strict build's report shows Wall Street Rag and Eugenia each kept, or refused with a measured reason; sections validate; the tablet panel checked on each classical.3 piece.
-- **Waits on:** L120d (`stage-8.json`); musical and source reads; I5 (the owner's); R9 before R12.
+- **Waits on:** L120d (landed 2026-09-30, Entry 167) (`stage-8.json`); musical and source reads; I5 (the owner's); R9 before R12.
 
 **CL19 — F3 remainder: the lesson contract**
 - **Rows:** T1, T3, T5, T6, T7, T8, T10, T11, T17. S11, T12, T14, T15, M10, X11 and Q9 merged.
 - **Learner meets:** lessons teach the music one concept at a time, perception before rules, briefly, and never teach the app.
 - **Files:** `content/lessons/*.md`, `app/tests/unit/lessonShape.test.ts`; `app/src/curriculum/types.ts` and `tools/content/build.py` if the schema path is chosen.
 - **Proof:** a gate record per lesson; lessonShape extended to the contract's measurable targets.
-- **Waits on:** T11 (schema first or prose first); E50a if the schema path is chosen.
+- **Waits on:** T11 (schema first or prose first); E50a (landed 2026-09-30, Entry 166) if the schema path is chosen.
 
 **CL20 — G4: breadth and musicianship strands**
 - **Rows:** R22, R46, R20, I19 (DECISION); I6, I8, I10, I11, T21 (READ). L26 and Q11 merged.
@@ -297,7 +299,7 @@ Tiers: 0 correctness and irreversible truth; 1 the core teaching loop, including
   - arranging as the bridge.
 - **Files:** `app/src/curriculum/session.ts`, `app/src/demands/detect.ts`, `content/curriculum/stage-*.json`, `app/src/ui/screens/LabScreen.ts`, `content/lessons/theory.*.md`.
 - **Proof:** an exposure-balance test; AT-9 and AT-8 records; the one-tune arrangement trial judged.
-- **Waits on:** the decisions (R46 first); the AT-9 and AT-8 reads; L120d.
+- **Waits on:** the decisions (R46 first); the AT-9 and AT-8 reads; L120d (landed 2026-09-30, Entry 167).
 
 **CL21 — X2: the performance experience and ear training**
 - **Rows:** X7, X6, I12, T22, I18, Q43. T46 merged.
@@ -305,7 +307,7 @@ Tiers: 0 correctness and irreversible truth; 1 the core teaching loop, including
 - **Files:** `app/src/ui/screens/ScoreScreen.ts`, `app/src/engine/drills/harmony.ts`, `simon.ts`, `app/src/score/ScoreSession.ts`, `app/tests/e2e/modes-simon.spec.ts`.
 - **Proof:** Q43's 24 cases, red-first, for each experience that gets built.
 - **Tier:** 2, with I18 at tier 1.
-- **Waits on:** six decisions; L23 (CL11) for X7; U105 for `ScoreScreen.ts`.
+- **Waits on:** six decisions; L23 (CL11) for X7; U105 (landed 2026-09-30, Entry 172) for `ScoreScreen.ts`.
 
 ### Tier 3
 
@@ -314,14 +316,14 @@ Tiers: 0 correctness and irreversible truth; 1 the core teaching loop, including
 - **Learner meets:** no sheet outlives its screen; a Stage 9 row reaches the project sheet; no learner sees a fetch command; play shows only state cues; no string over-claims.
 - **Files:** `app/src/ui/widgets.ts`, `projectSheet.ts`, `helpStrip.ts`, `help.ts`, `app/src/ui/screens/LessonScreen.ts`, `LibraryScreen.ts`.
 - **Proof:** a red case per screen for the sheets; a 342 px case per door; a jsdom case on an unfetched placeholder; the AT-7 walk; the string inventory, then batched fixes.
-- **Waits on:** G96, U63 and U105; X9's read.
+- **Waits on:** G96 (landed 2026-09-30, Entry 168), U63 (landed 2026-09-30, Entry 170) and U105 (landed 2026-09-30, Entry 172); X9's read.
 
 **CL23 — Store and schema (after E50a)**
 - **Rows:** L69, L53 (RE-CHECK after E50a); L51, L99, E39 (DECISION). E40 and E48 closed.
 - **Learner meets:** the store stays inside its budget for a learner of long pieces without losing a rung or an evidence fact, and a converter fix can reach stored imports.
 - **Files:** `app/src/data/progressStore.ts`, `app/src/data/db.ts`, `app/src/data/importStore.ts`.
 - **Proof:** the budget test with evidence rows; a bound test; one DB_VERSION bump with a migration test.
-- **Waits on:** E50a (`progressStore.ts`); the decisions on L51, L99 and E39.
+- **Waits on:** E50a (landed 2026-09-30, Entry 166) (`progressStore.ts`); the decisions on L51, L99 and E39.
 
 ### Final waves
 
