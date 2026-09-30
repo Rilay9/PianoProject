@@ -1,0 +1,7 @@
+# Catalogue diff: build/l120d-base/catalog.json -> build/l120d-after/catalog.json
+
+- rows before: 2092; rows after: 2092; in both: 2092
+- the stamps set aside moved on: 2013 rows (measurement.detectors 8e8d1ca94aae -> 321e06edfda4); 2013 rows (provenance.facts.demands.detectors 8e8d1ca94aae -> 321e06edfda4); 228 rows (source.fetchedAt)
+- rows with any other field moved: 0
+
+none

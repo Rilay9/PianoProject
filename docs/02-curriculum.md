@@ -914,6 +914,26 @@ that decision exists a study reaches the learner only through the Library (Part 
 > rung on another's path, derived from the lessons' concepts and held to them by `validate.py`),
 > so the walking bass is also `jazz.6`'s and `jam.6`'s and is taught at `jazz.8`, never at
 > `theory.9`, whose path reaches none of them.
+>
+> **A skip or a leap inside a taught fixed position (L120b, 2026-09-29; L120d, 2026-09-30).** *Can
+> the learner cope* has a third route beside *supported* and *taught*: a skip or a leap wholly
+> inside a fixed five-finger position whose note reading is taught on the rung's path (or on a rung
+> the learner has reached) is coped with by that note reading — right-hand C position, C4–G4, which
+> 1.1 teaches by note name, and the left hand's, C3–G3, which 1.3 teaches
+> (`eligibilityCore.inTaughtPosition`; `claims.untaught_on` with the curriculum, the build's twin).
+> The positions are `demands.json`'s `fixedPositions`, on `interval.skip` since L120b and, the same
+> two, on `interval.leap` since L120d (the reviewer's Question 1 on L120b, `responses/c8680b70.md`),
+> pinned equal by a test in each language. Every sounding hand of the row must lie inside its own
+> hand's taught position over the whole piece (`measurement.span`); material outside the position
+> still refuses. The route changes the gate only: the row keeps the demand as measured, `taughtAt`
+> stays 1.5 for the skip and 2.1 for the leap, `copedWithBy` stays interval reading, and no
+> evidence reader sees the route, so a correct run of such an item is never interval-reading
+> evidence. Clef never supplies hand identity: a one-staff bass-clef part the model reads as the
+> right hand (1.3's left-hand *Hot Cross Buns* and *Mary*) gets no position route until the source
+> carries an independent hand assignment. L120d's learner-facing difference is the three *Jingle Bells* options,
+> no longer refused at 1.2 and on `holiday` for a leap that stays inside C position (G down to C,
+> D up to G, and the left hand's held C, F and G); both *When the Saints* options keep their
+> syncopation. The table went from 218 rung-own options (453 pairs) to 215 (448).
 
 > **What the notes establish of each rung's claims (E0, 2026-09-27).** Every bundled score now
 > carries the demands the app's detectors measured on it (`docs/03` §4), and the build writes the

@@ -9,19 +9,20 @@ item). Two groups of cases:
 
 - **The shipped curriculum** (reads the built content: run `python tools/content/build.py` first;
   CI: the step 'Build content', before 'Content pipeline tests'). The tool's lines equal the app's
-  probe, `docs/prompts/runs/L120c/after-placement/probe-refusals.txt` — L120c's final snapshot: 219
-  `untaught` at L120c's head, written by `eligibility.eligibleFor` over every rung's own options with
-  the learner the session builds at the rung (`session.taughtForLearner`: the taught set and the fixed
-  positions) — line for line and demand for demand, apart from the differences recorded in
-  `RECORDED_DIFFERENCES`, each with its reason. It replaced L120b's snapshot
-  (`docs/prompts/runs/L120b/after-gate/probe-refusals.txt`, 379) when L120c gave sixteenths a teaching
-  rung (4.4) and moved the pre-4.4 core options that asked them, as L120b's had replaced X1's (387)
-  (L124: the pin is a snapshot, re-run and recorded, never forced). The probe is a snapshot: a change
-  to a rung's lists, a row's demands, `taughtAt`, a lesson's concepts or the gate changes the app's
-  reading too, so this goes red until the probe is re-run at the new head — copy
-  `docs/prompts/runs/L120c/scripts-zzL120cProbe.test.ts` and `scripts-vitest.l120c.config.ts` into
-  the gitignored `app/.probe/` (as `zzL120cProbe.test.ts` and `vitest.l120c.config.ts`), run
-  `L120C_PROBE_OUT=<path> npx vitest run --config .probe/vitest.l120c.config.ts` from `app/`, point
+  probe, `docs/prompts/runs/L120d/after/probe-refusals.txt` — L120d's snapshot: 216 `untaught` at
+  L120d's head, written by `eligibility.eligibleFor` over every rung's own options with the learner
+  the session builds at the rung (`session.taughtForLearner`: the taught set and the fixed positions)
+  — line for line and demand for demand, apart from the differences recorded in
+  `RECORDED_DIFFERENCES`, each with its reason. It replaced L120c's final snapshot
+  (`docs/prompts/runs/L120c/after-placement/probe-refusals.txt`, 219) when L120d gave `interval.leap`
+  the fixed positions `interval.skip` carries (the three *Jingle Bells* options left; both *When the
+  Saints* options kept their syncopation), as L120c's had replaced L120b's (379) and L120b's X1's
+  (387) (L124: the pin is a snapshot, re-run and recorded, never forced). The probe is a snapshot: a
+  change to a rung's lists, a row's demands, `taughtAt`, `fixedPositions`, a lesson's concepts or the
+  gate changes the app's reading too, so this goes red until the probe is re-run at the new head —
+  copy `docs/prompts/runs/L120d/scripts-zzL120dProbe.test.ts` and `scripts-vitest.l120d.config.ts`
+  into the gitignored `app/.probe/` (as `zzL120dProbe.test.ts` and `vitest.l120d.config.ts`), run
+  `L120D_PROBE_OUT=<path> npx vitest run --config .probe/vitest.l120d.config.ts` from `app/`, point
   `PROBE` at the new `-refusals.txt` — and the record here says why the two differ. Nothing is forced
   equal.
 - **A constructed curriculum** with one case of each class, under the reviewer's order of truths
@@ -49,7 +50,7 @@ import untaught_options as U  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[3]
 BUILT = REPO / "app" / "public" / "content"
-PROBE = REPO / "docs" / "prompts" / "runs" / "L120c" / "after-placement" / "probe-refusals.txt"
+PROBE = REPO / "docs" / "prompts" / "runs" / "L120d" / "after" / "probe-refusals.txt"
 
 #: Where the tool's lines on the shipped curriculum differ from the probe, and why. Keyed by
 #: (rung, item); `side` says which reading has the line. Nothing else may differ. Since L120b's snapshot
@@ -102,7 +103,7 @@ class TheShippedCurriculum(unittest.TestCase):
         cls.probe = probe_untaught(PROBE)
 
     def test_the_probe_is_the_one_the_brief_names(self) -> None:
-        self.assertEqual(len(self.probe), 219, "L120c's final probe recorded 219 `untaught` rung-own options")
+        self.assertEqual(len(self.probe), 216, "L120d's probe recorded 216 `untaught` rung-own options")
 
     def test_the_lines_equal_the_probe_but_for_the_recorded_differences(self) -> None:
         only_probe = {key for key in self.probe if key not in self.mine}

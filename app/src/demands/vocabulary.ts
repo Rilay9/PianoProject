@@ -102,7 +102,9 @@ export interface Demand {
    * lesson on the rung's path, or on a rung the learner has reached, teaches the position
    * (L120b; the reviewer's Question 1 on L120a, `docs/review/responses/0bcd3be0.md`): a
    * skip inside C position is read by note name before 1.5 teaches reading by interval.
-   * Only `interval.skip` has them. Where each position is taught is read from the lessons'
+   * `interval.skip` has them, and `interval.leap` the same two since L120d (the reviewer's
+   * Question 1 on L120b, `docs/review/responses/c8680b70.md`: a leap inside C position is read
+   * by note name before 2.1 teaches it). Where each position is taught is read from the lessons'
    * own `concepts` (`session.positionTaughtAtRung`), never from a rung list here; the
    * coping question alone reads them (`eligibilityCore.uncoped`), and no evidence reader
    * does, so no run is ever attributed to one.

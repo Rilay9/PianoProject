@@ -584,6 +584,7 @@ class TestAKeySignatureAlteringNoSoundingNoteIsNotAsked(unittest.TestCase):
 
 
 SKIP = "interval.skip"
+LEAP = "interval.leap"
 
 
 class TestASkipInsideATaughtFixedPosition(unittest.TestCase):
@@ -614,8 +615,10 @@ class TestASkipInsideATaughtFixedPosition(unittest.TestCase):
     def untaught(self, item: dict, rung: str) -> list[str]:
         return claims.untaught_on(item, rung, self.ancestry, self.demands, curriculum=self.curriculum)
 
-    def test_the_positions_are_recorded_on_the_skip_and_named_by_the_lessons(self) -> None:
-        self.assertEqual([d for d, entry in self.demands.items() if entry.get("fixedPositions")], [SKIP])
+    def test_the_positions_are_recorded_on_the_skip_and_the_leap_and_named_by_the_lessons(self) -> None:
+        # Revised (L120d). Old assumption: the positions are the skip's alone. The reviewer ruled a leap inside a
+        # taught position is coped with the same way (`responses/c8680b70.md`, Question 1), so the leap carries them too.
+        self.assertEqual([d for d, entry in self.demands.items() if entry.get("fixedPositions")], [SKIP, LEAP])
         self.assertEqual(self.demands[SKIP]["fixedPositions"], [
             {"concept": "C-position", "hand": "R", "low": 60, "high": 67},
             {"concept": "LH-C-position", "hand": "L", "low": 48, "high": 55},
@@ -644,9 +647,8 @@ class TestASkipInsideATaughtFixedPosition(unittest.TestCase):
         self.assertEqual(self.untaught({"id": "drill.reading.sight-reading-1", "drill": {"kind": "sight-reading"},
                                         "measurement": {"status": "runtime", "reason": "made when it opens"}}, "1.2"), [],
                          "a runtime reading row is not read by the build, as before (the table lists it apart)")
-        leap = self.untaught(self.row(["interval.leap", SKIP], {"R": [60, 67]}), "1.2")
-        self.assertIn("interval.leap", leap, "a leap inside the position gets nothing")
-        self.assertNotIn(SKIP, leap)
+        # Revised (L120d). Old assumption: a leap inside the position refuses ("a leap inside the position gets
+        # nothing"). It is coped with as the skip is: TestALeapInsideATaughtFixedPosition.test_1 holds it inverted.
 
     def test_2_a_caller_without_the_curriculum_gives_no_exemption(self) -> None:
         item = self.row(["interval.step", SKIP], {"R": [60, 67]})
@@ -655,6 +657,78 @@ class TestASkipInsideATaughtFixedPosition(unittest.TestCase):
     def test_3_after_1_5_a_skip_outside_every_position_is_taught_as_now(self) -> None:
         for rung in ("1.5", "2.1"):
             self.assertEqual(self.untaught(self.row(["interval.step", SKIP], {"R": [72, 79]}), rung), [], rung)
+
+
+class TestALeapInsideATaughtFixedPosition(unittest.TestCase):
+    """
+    L120d (the reviewer's Question 1 on L120b, `responses/c8680b70.md`): a leap wholly inside an already taught
+    fixed position is coped with by that position's note reading, as a skip is. `interval.leap` carries the
+    positions `interval.skip` carries, so the build's mirror (`claims.untaught_on` with the curriculum) reads them
+    by the same predicate; the leap stays a measured leap, `taughtAt` stays `["2.1"]`, `copedWithBy` stays
+    interval reading. The reviewer's five constraints are the adversaries, each numbered as in the brief and in
+    the app's twin (`copingQuestion.test.ts`, class 3). Two are the app's alone: (3), no interval-reading evidence,
+    since the build reads no evidence; and (2)'s reached rung, since the build has no reached set. A runtime
+    reading row is not read by the build (the table lists it apart), so (4)'s runtime case is the app's too.
+    """
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.curriculum = source_curriculum()
+        cls.ancestry = claims.rung_ancestry(cls.curriculum)
+        _skills, cls.demands = claims.load_vocabulary()
+
+    @staticmethod
+    def row(demands: list[str], span: dict | None, status: str = "measured") -> dict:
+        measurement = {"status": status, "established": [], "located": {d: 4 for d in demands}}
+        if span is not None:
+            measurement["span"] = span
+        return {"id": "exercise.l120d.leap", "demands": demands, "measurement": measurement}
+
+    def untaught(self, item: dict, rung: str) -> list[str]:
+        return claims.untaught_on(item, rung, self.ancestry, self.demands, curriculum=self.curriculum)
+
+    def test_1_a_leap_inside_the_taught_positions_is_coped_with(self) -> None:
+        self.assertEqual(self.untaught(self.row([SKIP, LEAP], {"R": [60, 67]}), "1.2"), [], "C4 up to G4 at 1.2")
+        self.assertEqual(self.untaught(self.row(["clef.bass", SKIP, LEAP], {"R": [60, 67], "L": [48, 55]}), "1.4"), [],
+                         "the right hand inside 60-67 and the left inside 48-55 at 1.4")
+        self.assertEqual(self.untaught(self.row([SKIP, LEAP], {"R": [60, 67]}), "practice.1"), [],
+                         "the floor stands on 1.1, which teaches right-hand C position")
+
+    def test_2_the_position_must_be_taught_on_the_rung_s_path(self) -> None:
+        self.assertIn(LEAP, self.untaught(self.row(["clef.bass", SKIP, LEAP], {"L": [48, 55]}), "1.2"),
+                      "the left hand's position is 1.3's")
+        self.assertIn(LEAP, self.untaught(self.row([SKIP, LEAP], {"R": [60, 67]}), "0.3"), "no position is taught at 0.3")
+        self.assertIn(LEAP, self.untaught(self.row(["clef.bass", SKIP, LEAP], {"R": [60, 67], "L": [48, 55]}), "practice.1"),
+                      "the floor stands on 1.1 alone")
+        item = self.row([SKIP, LEAP], {"R": [60, 67]})
+        self.assertEqual(claims.untaught_on(item, "1.2", self.ancestry, self.demands), [SKIP, LEAP],
+                         "a caller without the curriculum: the refusal stays, never the reverse")
+
+    def test_4_material_outside_the_position_still_refuses(self) -> None:
+        for span, rung, why in (({"R": [60, 69]}, "1.2", "C4 up to A4, Kum Ba Yah's reach"),
+                                ({"R": [60, 72]}, "1.2", "C4 up to C5"),
+                                ({"L": [60, 67]}, "1.2", "the left hand in the right hand's position"),
+                                ({"R": [60, 67], "L": [48, 57]}, "1.4", "the left hand reaching A3")):
+            self.assertIn(LEAP, self.untaught(self.row(["clef.bass", SKIP, LEAP] if "L" in span else [SKIP, LEAP], span), rung), why)
+        self.assertEqual(self.untaught(self.row([SKIP, LEAP], None), "1.2"), [SKIP, LEAP], "a measured row with no span")
+        self.assertEqual(self.untaught(self.row([SKIP, LEAP], {"R": [60, 67]}, status="unmeasured"), "1.2"), [SKIP, LEAP],
+                         "an unmeasured row: its range is never read")
+
+    def test_5_the_leap_stays_a_measured_leap_taught_at_2_1(self) -> None:
+        self.assertEqual(self.demands[LEAP]["taughtAt"], ["2.1"], "taughtAt is not moved")
+        self.assertEqual(self.demands[LEAP]["copedWithBy"], "interval-reading", "copedWithBy is not moved")
+        self.assertEqual(self.demands[LEAP]["detector"], "leaps", "the detector is not moved")
+        item = self.row([SKIP, LEAP], {"R": [60, 67]})
+        self.untaught(item, "1.2")
+        self.assertEqual(item["demands"], [SKIP, LEAP], "the row keeps the leap: the reading changes nothing on it")
+        self.assertEqual(self.untaught(self.row([SKIP, LEAP], {"R": [60, 72]}), "1.5"), [LEAP],
+                         "at 1.5, between the leap's introduction and 2.1, an out-of-position leap stays untaught")
+        self.assertEqual(self.untaught(self.row([SKIP, LEAP], {"R": [60, 72]}), "2.1"), [], "taught from 2.1 as before")
+
+    def test_6_the_leap_s_positions_are_the_skip_s(self) -> None:
+        self.assertTrue(self.demands[LEAP].get("fixedPositions"), "the leap carries positions")
+        self.assertEqual(self.demands[LEAP]["fixedPositions"], self.demands[SKIP]["fixedPositions"],
+                         "one fact in two places, pinned equal")
 
 
 class TestJazz4TeachesSyncopationOnItsOwnPath(unittest.TestCase):

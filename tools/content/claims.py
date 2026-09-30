@@ -397,11 +397,12 @@ def in_taught_position(item: dict, demand: dict | None, concepts_behind: set[str
     """
     The app's `eligibilityCore.inTaughtPosition` (L120b; the reviewer's Question 1 on L120a,
     `docs/review/responses/0bcd3be0.md`): the demand is coped with by the note reading of a taught fixed
-    position — its vocabulary entry names the positions (`fixedPositions`, `interval.skip`'s alone), the
-    measured row carries each sounding hand's range over the piece (`measurement.span`), every hand that
-    sounds lies inside that hand's position, and each such position's concept is named by a lesson whose
-    teaching counts at the rung (`concepts_behind`). Nothing for a row with no range, a hand outside its
-    position or one whose position is not taught there, or any other demand.
+    position — its vocabulary entry names the positions (`fixedPositions`: `interval.skip`'s and, since
+    L120d, `interval.leap`'s, the same two; the reviewer's Question 1 on L120b, `responses/c8680b70.md`),
+    the measured row carries each sounding hand's range over the piece (`measurement.span`), every hand
+    that sounds lies inside that hand's position, and each such position's concept is named by a lesson
+    whose teaching counts at the rung (`concepts_behind`). Nothing for a row with no range, a hand outside
+    its position or one whose position is not taught there, or a demand whose entry names no positions.
     """
     positions = (demand or {}).get("fixedPositions") or []
     measurement = item.get("measurement") or {}
@@ -422,10 +423,10 @@ def untaught_on(item: dict, rung: str, ancestry: dict[str, set[str]], demands: d
     (`taughtAt: []`), or at no rung in its ancestry (E0a; before, a rung stored after it in the
     file). Since E0b a demand is taught where any rung its `taughtAt` lists is on the rung's path.
     The demands read are those the coping question asks (`asked_of`, L120b): a key signature
-    located at no sounding note is not among them. With `curriculum` (L120b), a skip wholly inside a
-    fixed position whose concept a lesson on the rung's path names is coped with by that position's
-    note reading (`in_taught_position`), as the app's gate reads it; without it, no position copes
-    with anything — the refusal stays, never the reverse. Every build reader passes it.
+    located at no sounding note is not among them. With `curriculum` (L120b), a skip (and, since L120d, a
+    leap) wholly inside a fixed position whose concept a lesson on the rung's path names is coped with by
+    that position's note reading (`in_taught_position`), as the app's gate reads it; without it, no
+    position copes with anything — the refusal stays, never the reverse. Every build reader passes it.
     """
     if not isinstance(item.get("demands"), list) or rung not in ancestry:
         return []
