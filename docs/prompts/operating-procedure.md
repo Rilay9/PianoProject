@@ -230,8 +230,9 @@ fine — one file lists every item of the seam — and nothing content-side is e
 skipped: a correction the orchestrator makes at a landing is itemised the same way. The reviewer
 checks each item as a fact or a claim in text — a lesson sentence as taught, a table entry, a
 tempo as a reading of what the edition prints — and its verdict names the items it did not
-check. What needs an ear is marked *unverified as music* and goes to the owner's listening
-packet; the reviewer is never asked to hear anything.
+check. What needs an ear is marked *unverified as music* and stays so until the owner's own H2
+walks (the owner withdrew the early listening packet on 2026-09-30: no separate listening chore;
+the musical acceptance is H2's); the reviewer is never asked to hear anything.
 
 ## 13. What a brief carries
 
