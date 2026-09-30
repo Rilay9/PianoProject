@@ -1,0 +1,69 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a8afa8b653d73a23a/app
+
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > the Score screen’s sheets go with it (G86) > leaving with ⋯ open takes the sheet, gives the page back, and parks its rows 129ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > the Score screen’s sheets go with it (G86) > and the same with the tempo sheet open 80ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > the Score screen’s sheets go with it (G86) > a sheet closed by Close leaves no closer behind; the one open at the time is the one closed 79ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > the Score screen’s sheets go with it (G86) > Close and then leaving in the same moment throws nothing and closes nothing twice 74ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > ▶ asks the sound to start inside the tap (U69) > on a paused run: the start is asked for in the tap, and the run carries on once it has answered 85ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > ▶ asks the sound to start inside the tap (U69) > with the sound running, or no Web Audio at all, ▶ acts at once and asks nothing 76ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > ▶ asks the sound to start inside the tap (U69) > the pause never waits 73ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > ▶ asks the sound to start inside the tap (U69) > a fresh start the same: asked in the tap, started once it has answered 77ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > ▶ asks the sound to start inside the tap (U69) > Space’s start the same 66ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > ▶ asks the sound to start inside the tap (U69) > ▶ during Hear it the same: the demonstration gives way once the start has answered 78ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > ▶ asks the sound to start inside the tap (U69) > leaving in the wait cancels: nothing starts on a screen that has gone 124ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > (a) a start that never answers: ▶ busy until the bound, then nothing carries on, ▶ reads ▶ and the line says so; the next tap asks again 94ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > (b) a fresh start the same: no run starts, ▶ reads ▶, the line says so; the next tap starts it 83ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > (b) and Space’s start the same, Space asking again the next time 80ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > (c) ▶ over Hear it, refused: the demonstration goes on, nothing is started, and the line says so over it 70ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > (d) a start that fails: refused the same, with the sentence 81ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > (e) a start that answers with the sound still not running: refused the same 77ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > (f) a start that answers after the bound refused: the sentence goes, and nothing starts by itself 71ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > (f) and the same where the sound starts some other way while the sentence stands 80ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > (g) the sentence reaches the bar’s left end and the stage’s corner, where the header is not drawn 73ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > Hear it with a start that never answers: no demonstration, the line says so, and ▶ is not left dead 69ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > Hear it whose start answers with the sound running: the demonstration begins 61ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > Hear it whose start fails, then answers with the sound still off: no demonstration either time, the line says so 70ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > Hear it answered after the bound: the sentence goes, and the demonstration does not start by itself 76ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a tap that could not start the sound says so and starts nothing (G86a) > with no Web Audio, Hear it still plays at once, silent, and nothing says the sound did not start 75ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > G86a’s two sentences are unchanged, byte for byte, by the widened parameter 1ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Carry on: a start that never answers changes nothing the tap would change, and the line names it 70ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Start again: a start that never answers changes nothing the tap would change, and the line names it 80ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > R: a start that never answers changes nothing the tap would change, and the line names it 76ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > bar 1: a start that never answers changes nothing the tap would change, and the line names it 75ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Try again: a start that never answers changes nothing the tap would change, and the line names it 122ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Again: a start that never answers changes nothing the tap would change, and the line names it 73ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Slower: a start that never answers changes nothing the tap would change, and the line names it 79ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Faster: a start that never answers changes nothing the tap would change, and the line names it 76ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Loop: a start that never answers changes nothing the tap would change, and the line names it 76ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Carry on: a start that fails is refused the same 70ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Start again: a start that fails is refused the same 73ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > R: a start that fails is refused the same 72ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > bar 1: a start that fails is refused the same 71ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Try again: a start that fails is refused the same 142ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Again: a start that fails is refused the same 80ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Slower: a start that fails is refused the same 82ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Faster: a start that fails is refused the same 80ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Loop: a start that fails is refused the same 75ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Carry on: a start that answers with the sound running does what the tap did, once 78ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Start again: a start that answers with the sound running does what the tap did, once 78ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > R: a start that answers with the sound running does what the tap did, once 85ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > bar 1: a start that answers with the sound running does what the tap did, once 82ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Try again: a start that answers with the sound running does what the tap did, once 142ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Again: a start that answers with the sound running does what the tap did, once 85ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Slower: a start that answers with the sound running does what the tap did, once 81ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Faster: a start that answers with the sound running does what the tap did, once 77ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > every tap that starts the sound asks for it, and a refusal names the control (U105) > Loop: a start that answers with the sound running does what the tap did, once 69ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a key that would start a run (U105) > a piano key with the sound running starts the run and is its first note, at once, as before 64ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a key that would start a run (U105) > a piano key with the sound suspended asks nothing, starts nothing, and says to tap ▶; ▶ then starts the run without that key 84ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a key that would start a run (U105) > a key on the screen with the sound running starts the run and is its first note, at once, as before 65ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a key that would start a run (U105) > a key on the screen with the sound suspended asks in its tap; the run starts once it has, and the first note fed is one played after 69ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > a key that would start a run (U105) > a key on the screen whose start never answers, or fails, starts no run, silent 83ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > the standing refusal (U105) > a start that makes ▶ read ⏸ lets the standing refusal go 73ms
+ ✓ tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts > the standing refusal (U105) > a restart held paused keeps it: still true, and ▶ reads ▶ 75ms
+
+ Test Files  1 passed (1)
+      Tests  60 passed (60)
+   Start at  01:48:41
+   Duration  7.09s (tests 69%, transform 15%, environment 13%, import 3%)
+

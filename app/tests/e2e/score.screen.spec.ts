@@ -1277,4 +1277,78 @@ test.describe('▶ after the sound was suspended (U69)', () => {
     await expect(page.locator('#score-waiting')).not.toHaveText(sentence);
     await expect(play).not.toHaveAttribute('data-sound-refused', 'true');
   });
+
+  /**
+   * The summary's *Again*, the tap that follows every judged run, goes through
+   * the same gate (U105). It called `startRun` directly, so after a suspend it
+   * started a run nobody heard. Now, with the context's `resume` never
+   * answering, nothing starts, the summary stays up, and the state line above
+   * the sheet names *Again*; with the stub removed the next *Again* runs.
+   */
+  test('the summary’s Again with a start that never answers: no run, the summary stays, the line above it names Again', async ({
+    page,
+  }) => {
+    // `STATE_TEXT.soundOff('Again')` in `help.ts`: a label ending in *again* takes no second one.
+    const sentence = 'Sound did not start — tap Again';
+    await page.addInitScript(() => {
+      const Native = window.AudioContext;
+      const made: AudioContext[] = [];
+      (window as Captured).__contexts = made;
+      window.AudioContext = class extends Native {
+        constructor(options?: AudioContextOptions) {
+          super(options);
+          made.push(this);
+        }
+      };
+    });
+    await openScore(page);
+    const state = (): Promise<string> =>
+      page.evaluate(() => (window as Captured).__contexts?.[0]?.state ?? 'none');
+    await expect.poll(state, { message: 'the app made its context as the piece loaded' }).not.toBe('none');
+    await page.locator('#score-title').click({ timeout: 5_000 });
+    await expect.poll(state).toBe('running');
+    // A run to its end, quickly: Keep tempo at the fastest speed, nothing listening.
+    await page.locator('#score-mode').selectOption('tempo');
+    await setTempoPercent(page, 130);
+    await page.locator('#score-play').click();
+    const summary = page.locator('#score-summary');
+    await expect(summary).toBeVisible({ timeout: 60_000 });
+    await page.evaluate(async () => {
+      const ctx = (window as Captured).__contexts?.[0];
+      await ctx?.suspend();
+      // An own property over the prototype's: removed below, the real `resume` answers again.
+      if (ctx) ctx.resume = () => new Promise<void>(() => undefined);
+    });
+    await expect.poll(state).toBe('suspended');
+    const section = page.locator('section[data-screen="score"]');
+    const again = page.locator('#summary-again');
+    const line = page.locator('#score-waiting');
+    await again.click({ timeout: 5_000 });
+    // Past the bound: the sentence is what says the wait is over (polled, no fixed sleep).
+    await expect(line, 'the state line after the bound').toHaveText(sentence, { timeout: 10_000 });
+    await expect(section, 'a run started against a sound that had not started').not.toHaveAttribute(
+      'data-running',
+      'true',
+    );
+    await expect(summary, 'the summary went for a run that could not sound').toBeVisible();
+    await expect(again).toHaveAttribute('data-sound-refused', 'true');
+    // The line is on screen, above the sheet, not under it.
+    await expect(line).toBeVisible();
+    const lineBox = await line.boundingBox();
+    const sheetBox = await summary.boundingBox();
+    expect(lineBox, 'the state line has no box').not.toBeNull();
+    expect(sheetBox, 'the summary has no box').not.toBeNull();
+    expect(lineBox!.y + lineBox!.height, 'the state line is under the summary').toBeLessThanOrEqual(sheetBox!.y);
+    expect(await state()).toBe('suspended');
+
+    await page.evaluate(() => {
+      const ctx = (window as Captured).__contexts?.[0];
+      if (ctx) Reflect.deleteProperty(ctx, 'resume');
+    });
+    await again.click({ timeout: 5_000 });
+    await expect.poll(state, { message: 'the context after the second Again', timeout: 10_000 }).toBe('running');
+    await expect(section).toHaveAttribute('data-running', 'true');
+    await expect(summary).toBeHidden();
+    await expect(line).not.toHaveText(sentence);
+  });
 });

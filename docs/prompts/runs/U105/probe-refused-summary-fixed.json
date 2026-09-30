@@ -1,0 +1,178 @@
+{
+  "viewport": {
+    "width": 342,
+    "height": 740
+  },
+  "contextState": "suspended",
+  "section": {
+    "running": "false"
+  },
+  "line": {
+    "text": "Sound did not start — tap Again",
+    "box": {
+      "top": 62.421875,
+      "bottom": 80.09375,
+      "left": 9.59375,
+      "right": 292.40625,
+      "hidden": false,
+      "visible": true
+    },
+    "whiteSpace": "nowrap",
+    "textOverflow": "ellipsis",
+    "overflow": "hidden",
+    "cut": false
+  },
+  "side": {
+    "text": "Sound did not start — tap Again",
+    "box": {
+      "top": 0,
+      "bottom": 0,
+      "left": 0,
+      "right": 0,
+      "hidden": false,
+      "visible": false
+    }
+  },
+  "head": {
+    "top": 0,
+    "bottom": 84.890625,
+    "left": 0,
+    "right": 342,
+    "hidden": false,
+    "visible": true
+  },
+  "bar": {
+    "top": 615.8125,
+    "bottom": 668,
+    "left": 0,
+    "right": 342,
+    "hidden": false,
+    "visible": true
+  },
+  "sheet": {
+    "top": 369.1875,
+    "bottom": 740,
+    "left": 0,
+    "right": 342,
+    "hidden": false,
+    "visible": true
+  },
+  "again": {
+    "box": {
+      "top": 559,
+      "bottom": 599,
+      "left": 20,
+      "right": 66.296875,
+      "hidden": false,
+      "visible": true
+    },
+    "refused": "true"
+  },
+  "play": "▶",
+  "fitsOnTheLine": [
+    {
+      "text": "Sound did not start — tap ▶ again",
+      "chars": 33,
+      "clientWidth": 283,
+      "scrollWidth": 283,
+      "height": 18,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap Hear it again",
+      "chars": 39,
+      "clientWidth": 283,
+      "scrollWidth": 283,
+      "height": 18,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap ▶",
+      "chars": 27,
+      "clientWidth": 283,
+      "scrollWidth": 283,
+      "height": 18,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap Carry on again",
+      "chars": 40,
+      "clientWidth": 283,
+      "scrollWidth": 283,
+      "height": 18,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap Start again",
+      "chars": 37,
+      "clientWidth": 283,
+      "scrollWidth": 283,
+      "height": 18,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap R again",
+      "chars": 33,
+      "clientWidth": 283,
+      "scrollWidth": 283,
+      "height": 18,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap Both again",
+      "chars": 36,
+      "clientWidth": 283,
+      "scrollWidth": 283,
+      "height": 18,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — hold bar 12 again",
+      "chars": 39,
+      "clientWidth": 283,
+      "scrollWidth": 283,
+      "height": 18,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap Try again",
+      "chars": 35,
+      "clientWidth": 283,
+      "scrollWidth": 283,
+      "height": 18,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap Again",
+      "chars": 31,
+      "clientWidth": 283,
+      "scrollWidth": 283,
+      "height": 18,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap Slower again",
+      "chars": 38,
+      "clientWidth": 283,
+      "scrollWidth": 283,
+      "height": 18,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap Faster again",
+      "chars": 38,
+      "clientWidth": 283,
+      "scrollWidth": 283,
+      "height": 18,
+      "cut": false
+    },
+    {
+      "text": "Sound did not start — tap Loop again",
+      "chars": 36,
+      "clientWidth": 283,
+      "scrollWidth": 283,
+      "height": 18,
+      "cut": false
+    }
+  ]
+}

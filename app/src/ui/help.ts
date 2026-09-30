@@ -491,8 +491,18 @@ export const STATE_TEXT = {
    * (or Space, its keyboard twin), or `Hear it`, which after its own refusal
    * wants the demonstration, not a run. *Did not start*, not *is off*: it is
    * about this tap, not a verdict that the phone has no sound.
+   *
+   * Every other control whose tap can start the sound names itself the same
+   * way (U105): by its label, or its first word where the label would pass the
+   * forty-odd characters (*Slower*, not *Slower (−10%)*). A label that already
+   * ends in *again* (*Start again*, *Try again*, the summary's *Again*) takes
+   * no second one. A bar held down is a hold (`verb: 'hold'`). After a key, on a
+   * connected piano or on the screen, it names ▶ with no *again*
+   * (`again: false`): ▶ was not what the learner used, and its tap can start
+   * the sound.
    */
-  soundOff: (control: '▶' | 'Hear it'): string => `Sound did not start — tap ${control} again`,
+  soundOff: (control: string, how: { verb?: 'tap' | 'hold'; again?: boolean } = {}): string =>
+    `Sound did not start — ${how.verb ?? 'tap'} ${control}${(how.again ?? !/\bagain$/i.test(control)) ? ' again' : ''}`,
 } as const;
 
 /**

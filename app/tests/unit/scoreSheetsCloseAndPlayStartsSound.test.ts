@@ -28,6 +28,19 @@
  * here. `Hear it`'s own wait (U67) is the same gate now, bounded, so a start
  * that never answers there no longer leaves ▶ dead behind it.
  *
+ * **…and so does every other tap that starts the sound (U105).** *Carry on*,
+ * *Start again*, a hand after *Nothing for the … hand*, a bar held down,
+ * *Try again*, and the summary's *Again*, *Slower*, *Faster* and *Loop the
+ * weak bars* called `startRun` directly, so with the audio suspended each
+ * started a run nobody heard. Each now runs its whole handler through the same
+ * gate: refused, nothing it would have changed is changed, and the line names
+ * the control. A key on a connected piano is not a tap the platform lets start
+ * the sound (the reviewer's ruling, `responses/questions-bd7d303e.md`): with
+ * the sound running it starts the run as before; with it suspended it asks
+ * nothing, starts nothing and says to tap ▶. A key on the screen is a tap: it
+ * asks, and where the answer comes after the key's own moment the run starts
+ * without that key, which is never fed back-dated.
+ *
  * The engine module is replaced by an object whose `state` the tests set and
  * whose `ensureStarted` is a spy that by default does what the real one does
  * when it succeeds: it returns once the context is running, and publishes the
@@ -46,11 +59,15 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { makeModel, note } from './helpers/engineHarness';
 import { DEFAULT_SETTINGS, updateSettings } from '../../src/data/settingsStore';
+import { forgetAllUnfinishedForTest, rememberUnfinished, unfinishedFor } from '../../src/data/unfinishedRun';
+import { timingStats } from '../../src/engine/Scoring';
 import type { SessionScore } from '../../src/engine/types';
+import type { InputNoteEvent } from '../../src/midi/types';
 import type { ScoreModel } from '../../src/score/types';
 import type { CatalogItem } from '../../src/curriculum/types';
 import { parseHash, type Router } from '../../src/router';
 import { disposeScreen } from '../../src/ui/screenLifecycle';
+import { screenKeyboardSource, webMidiSource } from '../../src/app/services';
 
 const SONG_ID = 'song.folk.hot-cross-buns';
 
@@ -66,17 +83,23 @@ interface SessionSpies {
   starts: ReturnType<typeof vi.fn>;
   resumes: ReturnType<typeof vi.fn>;
   pauses: ReturnType<typeof vi.fn>;
+  /** Every note played into the run: `(midi, velocity, tMs, confidence)` (U105). */
+  feeds: ReturnType<typeof vi.fn>;
   running: boolean;
   paused: boolean;
 }
 
-const { findItemSpy, modelRef, sessionRef, engine, engineListeners, sheetCloses } = vi.hoisted(() => {
+const { findItemSpy, modelRef, sessionRef, onFinishedRef, handsWithoutNotes, engine, engineListeners, sheetCloses } = vi.hoisted(() => {
   /** Who is listening to the engine's state, as `AudioEngine.onStateChange` keeps them. */
   const engineListeners = new Set<(state: string) => void>();
   return {
     findItemSpy: vi.fn((): Promise<CatalogItem | undefined> => Promise.resolve(undefined)),
     modelRef: { current: null as ScoreModel | null },
     sessionRef: { current: null as null | Record<string, unknown> },
+    /** The screen's finish handler, so a test can end a run and open the summary (U105). */
+    onFinishedRef: { current: null as null | ((score: SessionScore, looped: boolean) => void) },
+    /** Hands the piece has nothing for, so a run with one of them is refused (U105). */
+    handsWithoutNotes: new Set<string>(),
     engineListeners,
     /** What the screen sees as the app's audio engine. */
     engine: {
@@ -127,6 +150,34 @@ vi.mock('../../src/data/progressStore', () => ({
   recordRun: vi.fn(() => Promise.resolve()),
   sessionsForItem: vi.fn(() => Promise.resolve([])),
 }));
+
+// The session's transition (X1), for *Try again* (U105): a route with `?session=` gets a handle that
+// records nothing, and the transition draws only *Try again*, wired to the screen's own restart, as
+// `drawTransition` draws it after a measured failure (`sessionTransition.test.ts`).
+vi.mock('../../src/ui/sessionRunner', async (importOriginal) => {
+  const original = await importOriginal<typeof import('../../src/ui/sessionRunner')>();
+  const { SESSION_TEXT } = await import('../../src/ui/help');
+  return {
+    ...original,
+    sessionHandle: (token: string | undefined) =>
+      token === undefined || token === ''
+        ? null
+        : {
+            token,
+            record: () => Promise.resolve(null),
+            opened: () => Promise.resolve(),
+            attempted: () => undefined,
+            completed: () => Promise.resolve(null),
+            startClock: () => () => undefined,
+            write: () => Promise.resolve({ ok: false, why: 'none', run: null }),
+          },
+    drawTransition: (into: HTMLElement, host: { button: (label: string, onClick: () => void, id: string, primary: boolean) => HTMLElement; tryAgain: () => void }) => {
+      into.replaceChildren(host.button(SESSION_TEXT.tryAgain, () => host.tryAgain(), 'session-try-again', true));
+      into.hidden = false;
+      return Promise.resolve('kept-here');
+    },
+  };
+});
 
 vi.mock('../../src/score/mxl', () => ({ toMusicXml: () => '<score-partwise/>' }));
 
@@ -183,24 +234,42 @@ vi.mock('../../src/score/ScoreSession', () => ({
     }
     prepared = null;
     expectedNow: number[] = [];
-    learnerHasNotes = true;
+    /** Holding for the learner's first note: the key-started run's case (U105). */
+    armed = false;
+    /** The hands of the last run asked for, for `learnerHasNotes`. */
+    lastHands = 'both';
+    /** False for a hand the piece has nothing for (`handsWithoutNotes`), which the screen refuses. */
+    get learnerHasNotes(): boolean {
+      return !handsWithoutNotes.has(this.lastHands);
+    }
     readonly starts = vi.fn();
     readonly resumes = vi.fn();
     readonly pauses = vi.fn();
-    constructor(_options: { onFinished?: (score: SessionScore, looped: boolean) => void }) {
+    readonly feeds = vi.fn();
+    constructor(options: { onFinished?: (score: SessionScore, looped: boolean) => void }) {
       sessionRef.current = this as unknown as Record<string, unknown>;
+      onFinishedRef.current = options.onFinished ?? null;
     }
     previewFirst(): void {}
-    loopForPrintedBars(): undefined {
-      return undefined;
+    /** A loop over the bars asked for: a bar held down plays (U105), and a loop run starts. */
+    loopForPrintedBars(from: number, to: number): { from: number; to: number } {
+      return { from, to };
     }
     setStrip(): void {}
     setPiano(): void {}
     start(run: unknown): void {
       this.starts(run);
       this.running = true;
-      this.state = { paused: false, step: 0, mode: (run as { mode: string }).mode };
+      const asked = run as { mode: string; hands?: string; startPaused?: boolean };
+      this.lastHands = asked.hands ?? 'both';
+      // Held paused where the start asks for it: an option changed while paused (T33, C2).
+      this.state = { paused: asked.startPaused === true, step: 0, mode: asked.mode };
     }
+    feed(midi: number, velocity: number, tMs: number, confidence: number): void {
+      this.feeds(midi, velocity, tMs, confidence);
+    }
+    feedOff(): void {}
+    feedSustain(): void {}
     setMetronome(): void {}
     pause(): void {
       this.pauses();
@@ -343,6 +412,9 @@ beforeEach(() => {
   localStorage.setItem('pianopath.firstSight', JSON.stringify(['*']));
   modelRef.current = MODEL;
   sessionRef.current = null;
+  onFinishedRef.current = null;
+  handsWithoutNotes.clear();
+  forgetAllUnfinishedForTest();
   sheetCloses.length = 0;
   engine.supported = true;
   engine.state = 'running';
@@ -766,5 +838,469 @@ describe('a tap that could not start the sound says so and starts nothing (G86a)
     expect(section.dataset.hearing).toBe('true');
     expect(engine.ensureStarted).not.toHaveBeenCalled();
     expect(stateLine()).not.toBe(HEAR_REFUSED);
+  });
+});
+
+/**
+ * A finished Keep tempo run with one weak bar, as `scoreSummaryTruth.test.ts` builds its runs: six
+ * notes heard of eight, the first bar missed twice, so the sheet offers *Loop the weak bars*.
+ */
+function finishedRun(): SessionScore {
+  return {
+    mode: 'tempo',
+    tempoPct: 100,
+    totalSteps: 8,
+    correctSteps: 6,
+    expectedNotes: 8,
+    hits: 6,
+    missedTotal: 2,
+    wrongNotesTotal: 0,
+    accuracy: 0.75,
+    accuracyEstimated: false,
+    lenientChordSteps: 0,
+    timing: timingStats([10, -20, 5, 0, 15, -5]),
+    hotSpots: [{ measureIndex: 0, misses: 2, wrongs: 0 }],
+    durationMs: 8_000,
+    loops: 0,
+    rolledChordSteps: 0,
+    notes: Array.from({ length: 6 }, (_, index) => ({
+      midi: 64,
+      velocity: 80,
+      tMs: index * 500,
+      stepIndex: index,
+      ok: true,
+      deltaMs: 0,
+    })),
+  };
+}
+
+/** A run started with the sound running and finished by the engine: the summary is up. */
+async function withTheSummaryUp(hash?: string): Promise<HTMLElement> {
+  const section = await open(hash);
+  click('score-play');
+  expect(session().running).toBe(true);
+  // The engine reports its end with the run already over.
+  (sessionRef.current as unknown as { stop: () => void }).stop();
+  onFinishedRef.current?.(finishedRun(), false);
+  await vi.waitFor(() => expect(byId('score-summary').hidden).toBe(false));
+  return section;
+}
+
+function summaryShows(): boolean {
+  return !byId('score-summary').hidden;
+}
+
+function selected(id: string): boolean {
+  return byId(id).classList.contains('is-selected');
+}
+
+/** A control that starts the sound, as the table below drives it (U105). */
+interface SoundTapRow {
+  /** The control as the table names it, and as the sentence does. */
+  name: string;
+  /** The control's id: the one that carries `data-sound-refused` while its refusal stands. */
+  id: string;
+  /** What the state line says when its tap is refused. */
+  sentence: string;
+  /** Opens the screen and brings the control on, with the sound running. */
+  reach: () => Promise<HTMLElement>;
+  /** Taps (or holds) it. Fake timers are on. */
+  tap: () => void;
+  /** What a refused tap leaves as it was. */
+  unchanged: (section: HTMLElement) => void;
+  /** What the tap does once the sound runs, as it did before. */
+  done: (section: HTMLElement) => void;
+}
+
+/**
+ * The taps U105 puts through the gate, with how each is reached and what its refusal leaves alone
+ * (the brief's item 3). *Slower* and *Faster* change the tempo first, so a retry after a refusal that
+ * had applied it would move it twice; *Carry on* sets a loop and forgets the record; a demonstration
+ * under *Start again* would have ended.
+ */
+/** The tempo a visit opens at, which *Slower* and *Faster* move by ten. */
+const OPENING_TEMPO = DEFAULT_SETTINGS.defaultTempoPct;
+
+const SOUND_TAPS: SoundTapRow[] = [
+  {
+    name: 'Carry on',
+    id: 'score-resume-go',
+    sentence: STATE_TEXT.soundOff('Carry on'),
+    reach: async () => {
+      rememberUnfinished({ itemId: SONG_ID, bar: 2, ofBars: 2, at: new Date().toISOString() });
+      const section = await open();
+      expect(byId('score-resume').hidden, 'no offer to carry on').toBe(false);
+      return section;
+    },
+    tap: () => click('score-resume-go'),
+    unchanged: (section) => {
+      expect(byId('score-resume').hidden, 'the offer went').toBe(false);
+      expect(unfinishedFor(SONG_ID), 'the record of where the run was left was forgotten').toBeDefined();
+      expect(section.dataset.loop, 'a loop was set').toBe('');
+    },
+    done: (section) => {
+      expect(section.dataset.loop).toBe('2-2');
+      expect(unfinishedFor(SONG_ID)).toBeUndefined();
+      expect(byId('score-resume').hidden).toBe(true);
+    },
+  },
+  {
+    name: 'Start again',
+    id: 'score-restart',
+    sentence: STATE_TEXT.soundOff('Start again'),
+    reach: async () => {
+      const section = await open();
+      click('score-hear');
+      expect(section.dataset.hearing).toBe('true');
+      return section;
+    },
+    tap: () => click('score-restart'),
+    unchanged: (section) => {
+      expect(section.dataset.hearing, 'the demonstration was ended for a run that could not sound').toBe('true');
+    },
+    done: (section) => {
+      expect(section.dataset.hearing).toBe('false');
+      expect(session().starts).toHaveBeenLastCalledWith(expect.objectContaining({ mode: 'tempo' }));
+    },
+  },
+  {
+    name: 'R',
+    id: 'score-hands-R',
+    sentence: STATE_TEXT.soundOff('R'),
+    reach: async () => {
+      handsWithoutNotes.add('L');
+      const section = await open();
+      click('score-hands-L');
+      click('score-play');
+      expect(session().running).toBe(false);
+      expect(byId('score-status').textContent).toContain('Nothing for the left hand');
+      return section;
+    },
+    tap: () => click('score-hands-R'),
+    unchanged: () => {
+      expect(selected('score-hands-L'), 'the hand changed').toBe(true);
+      expect(selected('score-hands-R')).toBe(false);
+      expect(byId('score-status').textContent).toContain('Nothing for the left hand');
+    },
+    done: () => {
+      expect(selected('score-hands-R')).toBe(true);
+      expect(session().starts).toHaveBeenLastCalledWith(expect.objectContaining({ hands: 'R' }));
+    },
+  },
+  {
+    name: 'bar 1',
+    id: 'score-stage',
+    sentence: STATE_TEXT.soundOff('bar 1', { verb: 'hold' }),
+    reach: () => open(),
+    tap: () => {
+      byId('score-stage').dispatchEvent(new MouseEvent('pointerdown', { bubbles: true, clientX: 10, clientY: 10 }));
+      vi.advanceTimersByTime(400);
+    },
+    unchanged: (section) => {
+      expect(section.dataset.loop, 'the bar was made the loop').toBe('');
+      expect(byId('score-status').textContent).not.toContain('as written');
+    },
+    done: (section) => {
+      expect(session().starts).toHaveBeenLastCalledWith(expect.objectContaining({ mode: 'listen' }));
+      expect(section.dataset.loop).toBe('1-1');
+    },
+  },
+  {
+    name: 'Try again',
+    id: 'session-try-again',
+    sentence: STATE_TEXT.soundOff('Try again'),
+    reach: async () => {
+      const section = await withTheSummaryUp(`#/score/${SONG_ID}?mode=tempo&session=tok00001`);
+      await vi.waitFor(() => expect(document.getElementById('session-try-again')).not.toBeNull());
+      return section;
+    },
+    tap: () => click('session-try-again'),
+    unchanged: () => {
+      expect(summaryShows(), 'the summary went').toBe(true);
+    },
+    done: () => {
+      expect(summaryShows()).toBe(false);
+      expect(session().running).toBe(true);
+    },
+  },
+  {
+    name: 'Again',
+    id: 'summary-again',
+    sentence: STATE_TEXT.soundOff('Again'),
+    reach: () => withTheSummaryUp(),
+    tap: () => click('summary-again'),
+    unchanged: () => {
+      expect(summaryShows(), 'the summary went').toBe(true);
+    },
+    done: () => {
+      expect(summaryShows()).toBe(false);
+      expect(session().starts).toHaveBeenLastCalledWith(expect.objectContaining({ tempoPct: OPENING_TEMPO }));
+    },
+  },
+  {
+    name: 'Slower',
+    id: 'summary-slower',
+    sentence: STATE_TEXT.soundOff('Slower'),
+    reach: () => withTheSummaryUp(),
+    tap: () => click('summary-slower'),
+    unchanged: () => {
+      expect((byId('score-tempo') as HTMLInputElement).value, 'the tempo moved').toBe(String(OPENING_TEMPO));
+      expect(summaryShows()).toBe(true);
+    },
+    done: () => {
+      expect((byId('score-tempo') as HTMLInputElement).value).toBe(String(OPENING_TEMPO - 10));
+      expect(session().starts).toHaveBeenLastCalledWith(expect.objectContaining({ tempoPct: OPENING_TEMPO - 10 }));
+    },
+  },
+  {
+    name: 'Faster',
+    id: 'summary-faster',
+    sentence: STATE_TEXT.soundOff('Faster'),
+    reach: () => withTheSummaryUp(),
+    tap: () => click('summary-faster'),
+    unchanged: () => {
+      expect((byId('score-tempo') as HTMLInputElement).value, 'the tempo moved').toBe(String(OPENING_TEMPO));
+      expect(summaryShows()).toBe(true);
+    },
+    done: () => {
+      expect((byId('score-tempo') as HTMLInputElement).value).toBe(String(OPENING_TEMPO + 10));
+      expect(session().starts).toHaveBeenLastCalledWith(expect.objectContaining({ tempoPct: OPENING_TEMPO + 10 }));
+    },
+  },
+  {
+    name: 'Loop',
+    id: 'summary-loop',
+    sentence: STATE_TEXT.soundOff('Loop'),
+    reach: () => withTheSummaryUp(),
+    tap: () => click('summary-loop'),
+    unchanged: (section) => {
+      expect(section.dataset.loop, 'the weak bars were made the loop').toBe('');
+      expect(summaryShows()).toBe(true);
+    },
+    done: (section) => {
+      expect(section.dataset.loop).toBe('1-2');
+      expect(summaryShows()).toBe(false);
+    },
+  },
+];
+
+/**
+ * U105: every tap that can begin audible playback asks for the sound through `withSound`, and a
+ * refused tap leaves its whole action unapplied (the reviewer's approval,
+ * `responses/questions-bd7d303e.md`). Each row, three ways: the start never answers, it fails, it
+ * answers with the sound running.
+ */
+describe('every tap that starts the sound asks for it, and a refusal names the control (U105)', () => {
+  it('G86a’s two sentences are unchanged, byte for byte, by the widened parameter', () => {
+    expect(STATE_TEXT.soundOff('▶')).toBe('Sound did not start — tap ▶ again');
+    expect(STATE_TEXT.soundOff('Hear it')).toBe('Sound did not start — tap Hear it again');
+  });
+
+  it.each(SOUND_TAPS)('$name: a start that never answers changes nothing the tap would change, and the line names it', async (row) => {
+    const section = await row.reach();
+    const startsBefore = session().starts.mock.calls.length;
+    const label = row.id === 'score-stage' ? null : byId(row.id).textContent ?? '';
+    engine.state = 'suspended';
+    engine.ensureStarted.mockImplementation(neverAnswers);
+    vi.useFakeTimers();
+    row.tap();
+    vi.advanceTimersByTime(PLAY_SOUND_WAIT_MS);
+    await settle();
+    expect(session().starts, 'a run started against a sound that had not started').toHaveBeenCalledTimes(startsBefore);
+    expect(engine.ensureStarted, 'the tap did not ask the sound to start').toHaveBeenCalledTimes(1);
+    row.unchanged(section);
+    expect(stateLine(), 'the line does not name the control tapped').toBe(row.sentence);
+    // The name is the control's own label, or its first words (`04` §5f).
+    if (label !== null) expect(label.startsWith(row.name), `“${row.name}” is not the start of “${label}”`).toBe(true);
+    expect(byId(row.id).dataset.soundRefused, 'the tapped control is not marked').toBe('true');
+    expect(document.querySelectorAll('[data-sound-refused]'), 'another control marked').toHaveLength(1);
+    // The sentence never stands while ▶ reads ⏸ (item 6).
+    expect(playButton().textContent).toBe('▶');
+    expect(playButton().disabled, 'a tap other than ▶’s held ▶').toBe(false);
+  });
+
+  it.each(SOUND_TAPS)('$name: a start that fails is refused the same', async (row) => {
+    const section = await row.reach();
+    const startsBefore = session().starts.mock.calls.length;
+    engine.state = 'suspended';
+    engine.ensureStarted.mockImplementation(() => Promise.reject(new Error('refused')));
+    vi.useFakeTimers();
+    row.tap();
+    await settle();
+    expect(session().starts, 'a start that failed started a run').toHaveBeenCalledTimes(startsBefore);
+    row.unchanged(section);
+    expect(stateLine()).toBe(row.sentence);
+    expect(byId(row.id).dataset.soundRefused).toBe('true');
+  });
+
+  it.each(SOUND_TAPS)('$name: a start that answers with the sound running does what the tap did, once', async (row) => {
+    const section = await row.reach();
+    const startsBefore = session().starts.mock.calls.length;
+    engine.state = 'suspended';
+    vi.useFakeTimers();
+    row.tap();
+    expect(engine.ensureStarted, 'the tap did not ask the sound to start').toHaveBeenCalledTimes(1);
+    expect(session().starts, 'a run started before the sound had').toHaveBeenCalledTimes(startsBefore);
+    await settle();
+    expect(session().starts).toHaveBeenCalledTimes(startsBefore + 1);
+    row.done(section);
+    expect(stateLine()).not.toBe(row.sentence);
+    expect(document.querySelectorAll('[data-sound-refused]')).toHaveLength(0);
+  });
+});
+
+/** The keys (U105, the reviewer's required correction): a piano key and a key on the screen are different events. */
+describe('a key that would start a run (U105)', () => {
+  let screen: HTMLElement | null = null;
+  let pianoKey: ((event: InputNoteEvent) => void) | null = null;
+  let onNote: { mockRestore: () => void } | null = null;
+
+  async function openWith(input: 'midi' | 'keys'): Promise<HTMLElement> {
+    if (input === 'midi') {
+      onNote = vi.spyOn(webMidiSource, 'onNote').mockImplementation((listener) => {
+        pianoKey = listener;
+        return () => {
+          if (pianoKey === listener) pianoKey = null;
+        };
+      });
+    }
+    // Wait for me: the learner plays first and there is no count-in, so a key that starts the run
+    // is its first note (T8).
+    screen = await open(`#/score/${SONG_ID}?mode=wait`);
+    const control = byId('score-input') as HTMLSelectElement;
+    control.value = input;
+    control.dispatchEvent(new Event('change'));
+    return screen;
+  }
+
+  /** A key on a connected piano, as `WebMidiSource` hands it on. */
+  function playPianoKey(midi: number, tMs: number): void {
+    expect(pianoKey, 'the screen is not listening to the piano').not.toBeNull();
+    pianoKey?.({ kind: 'noteOn', midi, velocity: 80, tMs, confidence: 1, source: 'midi' });
+  }
+
+  const KEY_REFUSED = STATE_TEXT.soundOff('▶', { again: false });
+
+  afterEach(() => {
+    onNote?.mockRestore();
+    onNote = null;
+    pianoKey = null;
+    screenKeyboardSource.releaseAll();
+    if (screen) disposeScreen(screen);
+    screen = null;
+  });
+
+  it('a piano key with the sound running starts the run and is its first note, at once, as before', async () => {
+    await openWith('midi');
+    playPianoKey(64, 1_234);
+    expect(session().starts).toHaveBeenCalledTimes(1);
+    expect(session().feeds).toHaveBeenCalledWith(64, 80, 1_234, 1);
+    expect(engine.ensureStarted).not.toHaveBeenCalled();
+  });
+
+  it('a piano key with the sound suspended asks nothing, starts nothing, and says to tap ▶; ▶ then starts the run without that key', async () => {
+    await openWith('midi');
+    engine.state = 'suspended';
+    vi.useFakeTimers();
+    playPianoKey(64, 1_234);
+    expect(session().starts, 'a run started, silent, from a piano key').not.toHaveBeenCalled();
+    expect(engine.ensureStarted, 'a piano key asked the sound to start, outside a tap').not.toHaveBeenCalled();
+    expect(stateLine()).toBe(KEY_REFUSED);
+    expect(playButton().dataset.soundRefused).toBe('true');
+    expectPlayAtRest();
+    // Refused at once, and not held: nothing starts later on that key's behalf.
+    vi.advanceTimersByTime(PLAY_SOUND_WAIT_MS * 2);
+    await settle();
+    expect(session().starts).not.toHaveBeenCalled();
+    click('score-play');
+    expect(engine.ensureStarted).toHaveBeenCalledTimes(1);
+    await settle();
+    expect(session().starts).toHaveBeenCalledTimes(1);
+    expect(session().feeds, 'the refused key was played into the run later').not.toHaveBeenCalled();
+    expect(stateLine()).not.toBe(KEY_REFUSED);
+    expect(playButton().dataset.soundRefused).toBeUndefined();
+  });
+
+  it('a key on the screen with the sound running starts the run and is its first note, at once, as before', async () => {
+    await openWith('keys');
+    screenKeyboardSource.noteOn(64, 90, 1_234);
+    expect(session().starts).toHaveBeenCalledTimes(1);
+    expect(session().feeds).toHaveBeenCalledWith(64, 90, 1_234, 1);
+    expect(engine.ensureStarted).not.toHaveBeenCalled();
+  });
+
+  it('a key on the screen with the sound suspended asks in its tap; the run starts once it has, and the first note fed is one played after', async () => {
+    await openWith('keys');
+    engine.state = 'suspended';
+    screenKeyboardSource.noteOn(64, 90, 1_000);
+    expect(engine.ensureStarted, 'the key’s tap did not ask the sound to start').toHaveBeenCalledTimes(1);
+    expect(session().starts, 'a run started before the sound had').not.toHaveBeenCalled();
+    await settle();
+    expect(session().starts).toHaveBeenCalledTimes(1);
+    // The key was pressed before the sound had started: it started the run and is not played into it,
+    // so the run's first note is never one timed before the run began.
+    expect(session().feeds, 'the key pressed before the sound started was fed, back-dated').not.toHaveBeenCalled();
+    screenKeyboardSource.noteOff(64, 1_050);
+    screenKeyboardSource.noteOn(62, 90, 5_000);
+    expect(session().feeds).toHaveBeenCalledTimes(1);
+    expect(session().feeds).toHaveBeenCalledWith(62, 90, 5_000, 1);
+  });
+
+  it('a key on the screen whose start never answers, or fails, starts no run, silent', async () => {
+    await openWith('keys');
+    engine.state = 'suspended';
+    engine.ensureStarted.mockImplementation(neverAnswers);
+    vi.useFakeTimers();
+    screenKeyboardSource.noteOn(64, 90, 1_000);
+    vi.advanceTimersByTime(PLAY_SOUND_WAIT_MS);
+    await settle();
+    expect(session().starts, 'a run started, silent, from a key on the screen').not.toHaveBeenCalled();
+    expect(stateLine()).toBe(KEY_REFUSED);
+    expect(playButton().dataset.soundRefused).toBe('true');
+    screenKeyboardSource.noteOff(64, 1_100);
+    engine.ensureStarted.mockImplementation(() => Promise.reject(new Error('refused')));
+    screenKeyboardSource.noteOn(64, 90, 2_000);
+    await settle();
+    expect(engine.ensureStarted).toHaveBeenCalledTimes(2);
+    expect(session().starts).not.toHaveBeenCalled();
+    expect(session().feeds).not.toHaveBeenCalled();
+    expect(stateLine()).toBe(KEY_REFUSED);
+  });
+});
+
+/** Item 6: the sentence never stands while ▶ reads ⏸; a start held paused keeps it. */
+describe('the standing refusal (U105)', () => {
+  it('a start that makes ▶ read ⏸ lets the standing refusal go', async () => {
+    // A run playing, and the platform suspends the sound under it without the page going away.
+    await open();
+    click('score-play');
+    expect(session().running).toBe(true);
+    engine.state = 'suspended';
+    engine.ensureStarted.mockImplementation(neverAnswers);
+    vi.useFakeTimers();
+    click('score-hear');
+    vi.advanceTimersByTime(PLAY_SOUND_WAIT_MS);
+    await settle();
+    expect(stateLine()).toBe(HEAR_REFUSED);
+    // Another path starts the run again, playing: a hand changed restarts it (T33).
+    click('score-hands-L');
+    expect(session().starts).toHaveBeenCalledTimes(2);
+    expect(playButton().textContent).toBe('⏸');
+    expect(stateLine(), 'the refusal stood over a run that plays').not.toBe(HEAR_REFUSED);
+    expect(document.querySelectorAll('[data-sound-refused]')).toHaveLength(0);
+  });
+
+  it('a restart held paused keeps it: still true, and ▶ reads ▶', async () => {
+    await pausedRunOnASuspendedEngine();
+    engine.ensureStarted.mockImplementation(() => Promise.reject(new Error('refused')));
+    click('score-play');
+    await settle();
+    expect(stateLine()).toBe(PLAY_REFUSED);
+    click('score-hands-L');
+    expect(session().starts).toHaveBeenCalledTimes(2);
+    expect(session().paused).toBe(true);
+    expect(playButton().textContent).toBe('▶');
+    expect(stateLine()).toBe(PLAY_REFUSED);
+    expect(playButton().dataset.soundRefused).toBe('true');
   });
 });

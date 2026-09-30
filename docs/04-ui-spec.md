@@ -2030,9 +2030,27 @@ it is no longer true. `Hear it`'s own wait (U67) is the same gate, bounded: refu
 no demonstration and says *Sound did not start — tap Hear it again*. With no Web Audio at all
 both act at once, silent, as before, because no tap could ever start that sound. A second tap
 in the wait does nothing, and `⏸` never waits. Not on the page coming back into view, which is
-not a tap: Android ignores a start made outside one. A key on a connected piano that starts a
-run is not a tap to the platform either, and does not ask. Scheduling and the context's state
+not a tap: Android ignores a start made outside one. Scheduling and the context's state
 are tested in Chromium; *unverified on a device*.
+
+**Every tap that can start the sound goes through that gate** (U105, 2026-09-30): *Carry on
+from bar N*, *Start again*, a hand chosen after *Nothing for the … hand*, a bar held down,
+*Try again*, and the summary's *Again*, *Slower*, *Faster* and *Loop the weak bars*, each with
+its whole action. So a refused tap changes nothing it would have changed: the offer to carry on
+and its record stay, no loop is set, the tempo does not move (a retry would otherwise move it
+twice), the hand stays, the summary stays up, a demonstration under *Start again* goes on; and
+the state line names the control (§5f). Only `▶`'s own tap dims while it waits. A bar held
+down asks from the press's timer, before a touch lifts; whether a platform counts that as the
+tap is inferred, and the line says what happened either way. A key on a connected piano is a
+MIDI message, not a tap, so it cannot be what lets the sound start: with the sound running it
+starts the run as it always did (T8); with the sound suspended it asks nothing, starts nothing,
+is not kept to be played later, and the line says *Sound did not start — tap ▶*. A key on the
+screen is a tap and asks like one; where the answer comes after the key's own moment, the run
+starts without that key as its first note, because the key's time is from before the run began,
+and waits for the first note as after `▶`. A start that makes `▶` read `⏸` lets a standing
+refusal go; a restart held paused keeps it, still true, with `▶` reading `▶`. Sideways, with the
+summary up, the sheet covers the bar that carries the state line, so a refused summary tap
+says nothing there (U105's Question to the reviewer).
 
 **The note waited for is named as the score writes it** (added 2026-09-25, T41). With *Name the
 note I am waiting for* on, a Wait for me run says *Waiting for E♭5*, or the chord low to high
@@ -3149,7 +3167,7 @@ for §3c's ten.
 not for *something is happening that the fallback contradicts*: a paused run, a `Hear it`
 demonstration and a run holding for its first note each have something to say and say it, and
 the mode's sentence is what is left when none of them applies. The whole order —
-a tap whose sound did not start (G86a), paused, holding, demonstrating, the note names, the
+a tap (or key) whose sound did not start (G86a, U105), paused, holding, demonstrating, the note names, the
 ready line, the standing line — is `drawWaitingFor` in `ScoreScreen.ts`, and the machine it
 serves is written out in `docs/decisions/2026-09-23-score-state-machine.md`.
 
@@ -3180,6 +3198,17 @@ about forty characters and cuts the rest with an ellipsis:
   first and the control that asks again second, inside the forty-odd characters; *did not
   start*, because it is about this tap, not a verdict that there is no sound (§5, *`▶`
   starts the sound as well as the run*). *Unverified as copy.*
+  Every other control whose tap can start the sound names itself the same way (U105):
+  *Sound did not start — tap Carry on again*, *Sound did not start — tap Start again*,
+  *Sound did not start — tap L again* (`R` and `Both` the same), *Sound did not start — hold
+  bar N again* after a bar held down, *Sound did not start — tap Try again*, and on the
+  summary *Sound did not start — tap Again*, *Sound did not start — tap Slower again*, *Sound
+  did not start — tap Faster again* and *Sound did not start — tap Loop again*. A label that
+  already ends in *again* takes no second one; a label past the forty-odd characters is named
+  by its first words (*Carry on*, *Slower*, *Loop*). After a key that would start a run, on a
+  connected piano or on the screen: *Sound did not start — tap ▶*, without *again*, because
+  `▶` was not what was used and its tap can start the sound. The tapped control carries
+  `data-sound-refused` while the sentence stands (`▶` after a key). *Unverified as copy.*
 
 A refused `⋯` row says why **on its label**, not in its hint, because sideways the sheet hides
 every hint (§5):
