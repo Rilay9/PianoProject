@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **G85a** — `handoffs/9c64a9c1.md` (respond in `responses/9c64a9c1.md`). The Library's Details sheet is the door to the one project sheet (Entry 160).
 - **G87** — `handoffs/8f2a1e73.md` (respond in `responses/8f2a1e73.md`). The project sheet's date box and a project stage's Start line (Entry 153).
 - **G1e** — `handoffs/9fce3792.md` (respond in `responses/9fce3792.md`). One rule for a project's automatic eligibility (Entry 150).
 - **Q82** — `handoffs/7cdc0f72.md` (respond in `responses/7cdc0f72.md`). The kern and MuseTrainer import steps placeholder a file the clone lacks (Entry 145).

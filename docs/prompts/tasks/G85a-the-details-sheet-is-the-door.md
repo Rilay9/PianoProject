@@ -87,3 +87,5 @@ The rules:
 ## Report
 
 Judgement first. Show Details before and after at 342 × 740 for a project row and a no-project row, the sheet opened from it, and the row after *Pause* and *Close*; what item 8 found; unverified beside what passes. Then Done / Not done / Follow-ups / Questions / Files, with every decided item done or an explicit not-done line. Then the red lines; the tests table with each test's class (add, revise, preserve) and the old assumption; exit codes; and `## Doc rows`. `operating-procedure.md` §11 and §12 apply. Entry 160. Every run file goes under `docs/prompts/runs/G85a/`, and the entry is `docs/prompts/runs/G85a/ENTRY.md`, starting `### Entry 160 — G85a`.
+
+**Landed 2026-09-29** (Entry 160; 9c64a9c1, merged 61d6f4c0); handoff `handoffs/9c64a9c1.md`.
