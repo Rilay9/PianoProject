@@ -115,9 +115,12 @@ After those: the corpus-wide diff in full; the mutants; exit codes; what is unve
 
 **Entry.** The number is Entry 185. Every run file goes under `docs/prompts/runs/X42/`, with the entry at `docs/prompts/runs/X42/ENTRY.md`.
 
+**Landed 2026-09-30** (Entry 185; 36b9ac3d, merged 7474f926); handoff `handoffs/36b9ac3d.md`.
+
 ## Record
 
 lane: X42 · closes: X42 · entry: 185
 index: A sound that agrees with the mark wins: the measured `agree` rule (X40's ruling, `responses/81d9e4af.md`) amends `tempoFromXml.ts`'s precedence paragraph and `resolve`, moving exactly Maple Leaf's two positions and Satie's marked opening; Brahms HD5 pinned as an unchanged guard, Satie's body left open (backlog X42, P1) | app | brief drafted 2026-09-30 (`X42-a-sound-that-agrees-with-the-mark-wins.md`); with the reviewer before dispatch; Entry 185 |
 in-flight: brief drafted 2026-09-30 (`X42-a-sound-that-agrees-with-the-mark-wins.md`): amends `tempoFromXml.ts`'s precedence rule so that, at one position with several sounds and a co-located mark, the sound serialization-equivalent to the position's first mark (the writer's numeric noise, never a different tempo) wins over a disagreeing sibling (the measured tie-break, `runs/X40/scripts-disagreements.py:50`); moves exactly three of X40's 226 positions (Maple Leaf @1:0.25 and @51:0, 120 → 100; Satie @0:0, 60 → 76.0002), pins Brahms HD5 @65:0 as an unchanged guard, leaves Satie's unmarked body open and unverified as music; no content byte, importer or build-side file changes; Satie's new catalogue-`tempoBpm`-vs-opening divergence recorded as a follow-up on X34's row, not a new one; a lesson-claims test (`lessonClaimsAboutApp.test.ts:3851`) hard-codes today's `100,120,120` and must move to `100,100,100`, its stale comment rewritten, and whether `ragtime.7` should now make a pace comparison put to the reviewer as a question, not decided here (the reviewer's ruling, `responses/81d9e4af.md`; second read item H, `second-reads/827289d0.md`); with the reviewer before dispatch (Entry 185).
 state: dispatched 2026-09-30: dispatched at 36be5a50, building (Entry 185)
+- landed 2026-09-30: merged 7474f926; handoff `handoffs/36b9ac3d.md`

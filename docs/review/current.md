@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **X42** — `handoffs/36b9ac3d.md` (respond in `responses/36b9ac3d.md`). A sound that agrees with the mark wins (Entry 185).
 - **U113** — `handoffs/7bba9b3b.md` (respond in `responses/7bba9b3b.md`). Look-ahead against the requested count: 24 cells measured, one trade and no strict gain, and the owner's question (Entry 186).
 - **E50c** — `handoffs/4a83af56.md` (respond in `responses/4a83af56.md`). A fresh mastery award counts only comparable days (Entry 190).
 - **U66** — `handoffs/342e88e7.md` answered 2026-09-30: APPROVE, closed (the bounded hold preserves the existing musical tolerance without reopening an already-emitted miss; the last step and loop wrap wait under the same stall-safe rule; the three deviations accepted — `stop()` closing held windows as misses, the engine-local `TICK_BUDGET_MS` constant, the next lap's downbeat moving later by the bounded wait; the on-screen-key timestamp and the phone observation stay separate). A stall is not a miss: a note stamped inside its window is judged by its stamp, whatever the main thread was doing (Entry 176).
