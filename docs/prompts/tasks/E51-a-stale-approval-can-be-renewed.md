@@ -29,3 +29,5 @@ You own `tools/content/excerpts.py` at `merge_text`, `main`'s merge call, `read_
 ## Report
 
 Judgement first: what a person can now do with each of the five stale approvals, and the counts from item 5 with the rows named. Then Done / Not done / Follow-ups (a rejection of a current approval; E50's Wabash row) / Questions / Files; the mechanism, the discriminating test and its red line; the tests table; exit codes; unverified beside what passes. Entry 159; every run file under `docs/prompts/runs/E51/`; the entry as `docs/prompts/runs/E51/ENTRY.md`, starting `### Entry 159 — E51`; `## Doc rows` for the `docs/03` and `docs/08` lines the change touches.
+
+**Landed 2026-09-29** (Entry 159; dffa9c34, merged 6c858986); handoff `handoffs/dffa9c34.md`.

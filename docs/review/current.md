@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **E51** — `handoffs/dffa9c34.md` (respond in `responses/dffa9c34.md`). A stale excerpt approval can be renewed (Entry 159).
 - **G85a** — `handoffs/9c64a9c1.md` (respond in `responses/9c64a9c1.md`). The Library's Details sheet is the door to the one project sheet (Entry 160).
 - **G87** — `handoffs/8f2a1e73.md` (respond in `responses/8f2a1e73.md`). The project sheet's date box and a project stage's Start line (Entry 153).
 - **G1e** — `handoffs/9fce3792.md` (respond in `responses/9fce3792.md`). One rule for a project's automatic eligibility (Entry 150).
