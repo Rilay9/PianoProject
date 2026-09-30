@@ -726,7 +726,9 @@ class TheEditionTexts(unittest.TestCase):
         cases = (
             (HARK_FILE, 25, 28, [("swing", "Medium swing"), ("band", "Sax intro: start drums here")], []),
             (ANH_113_FILE, 25, 32, [("copyright", "Public Domain")], []),
-            (WABASH_FILE, 1, 4, [], ["= 120"]),
+            # E50: the parent's printed "= 120" is its metronome mark now (convert.tempo_printed_as_text), so bars
+            # 1-4 print no words; before E50 the cut kept them as the page showed them.
+            (WABASH_FILE, 1, 4, [], []),
             (I_GOT_RHYTHM_FILE, 15, 18, [], ["Gm11", "E6", "\uE262", "13", "Cm9", "Cdim7/G"]),
         )
         for path, low, high, gone, kept in cases:

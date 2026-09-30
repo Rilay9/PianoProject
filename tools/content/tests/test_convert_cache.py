@@ -465,6 +465,110 @@ class TestFormerIdentities(CacheCase):
         self.assertEqual(convert.former_identities(after, [{**before, "undated": sha256(after)}]), [])
 
 
+class TestRepairedIdentities(CacheCase):
+    """
+    E50: a reviewed musical repair relates the old file to the repaired one, for learner continuity only (the
+    reviewer's conditional approval, `docs/prompts/tasks/E50-seven-rows-print-their-tempo.md`'s last section,
+    `responses/questions-bd7d303e.md` §4). The seven bundled PDMX scores that printed "= N" as text were
+    re-converted so the mark is their tempo: their music changed, so E50a's date proof no longer names the old
+    files. Each relation (`repaired_identities.json`) names an old identity E50a's table recorded — a dated file
+    a catalogue able to store a learner's material served — and the repaired file, with the lines that turn the
+    one into the other (`restore`). `former_identities` re-proves it on every build by rebuilding the old file's
+    bytes from the repaired one: those lines put back, then the date, zipped as the old machine zipped. Nothing
+    is named that does not rebuild, and nothing that E50a's table did not record.
+    """
+
+    OLD_TEMPO = ("  <direction><words> = 120</words></direction>\n"
+                 '  <direction><metronome><beat-unit>quarter</beat-unit><per-minute>96</per-minute></metronome><sound tempo="96" /></direction>\n')
+    NEW_TEMPO = '  <direction><metronome><beat-unit>quarter</beat-unit><per-minute>120</per-minute></metronome><sound tempo="120" /></direction>\n'
+
+    def pinned(self, name: str, text: str, system: int | None = None) -> Path:
+        path = self.tmp / name
+        path.write_bytes(convert.pinned_archive([("META-INF/container.xml", b"<container/>"), ("score.musicxml", text.encode("utf-8"))], system))
+        return path
+
+    def fixture(self) -> tuple[Path, dict, dict]:
+        """A dated old file on the laptop (creating system 0) and its repair as the converter writes it now."""
+        closing = "  </identification>\n"
+        old = self.pinned("old.mxl", DATED_HEADER.replace(closing, closing + self.OLD_TEMPO), 0)
+        new = self.pinned("new.mxl", UNDATED_HEADER.replace(closing, closing + self.NEW_TEMPO))
+        entry = {**convert.dated_form(old.read_bytes()), "file": "scores/pdmx/x.mxl"}
+        repair = {"id": "song.x", "file": "scores/pdmx/x.mxl", "change": "the tempo printed as text read as a metronome mark",
+                  "from": entry["sha256"], "date": entry["date"], "system": entry["system"], "to": sha256(new),
+                  "restore": [{"now": self.NEW_TEMPO, "was": self.OLD_TEMPO}]}
+        return new, entry, repair
+
+    def test_a_repaired_file_names_the_old_file_it_rebuilds(self) -> None:
+        new, entry, repair = self.fixture()
+        self.assertNotEqual(entry["undated"], sha256(new), "the music changed: the date proof alone cannot name it")
+        self.assertEqual(convert.former_identities(new, [entry], []), [])
+        self.assertEqual(convert.former_identities(new, [entry], [repair]), [entry["sha256"]])
+        # The build's call names no table and no relation: it reads the committed files, here these.
+        import json
+
+        table_file, repairs_file = self.tmp / "former_identities.json", self.tmp / "repaired_identities.json"
+        table_file.write_text(json.dumps({"identities": [entry]}), encoding="utf-8")
+        repairs_file.write_text(json.dumps({"repairs": [repair]}), encoding="utf-8")
+        with mock.patch.object(convert, "FORMER_IDENTITIES_FILE", table_file), mock.patch.object(convert, "REPAIRED_IDENTITIES_FILE", repairs_file):
+            convert.historical_identities.cache_clear()
+            convert.repaired_identities.cache_clear()
+            try:
+                self.assertEqual(convert.former_identities(new), [entry["sha256"]])
+            finally:
+                convert.historical_identities.cache_clear()
+                convert.repaired_identities.cache_clear()
+
+    def test_nothing_is_named_that_does_not_rebuild_or_that_the_table_did_not_record(self) -> None:
+        new, entry, repair = self.fixture()
+        hunk = repair["restore"][0]
+        refused = {
+            "a restore line that is not what the old file held": {**repair, "restore": [{**hunk, "was": hunk["was"].replace("96", "97")}]},
+            "a line the repaired file does not hold": {**repair, "restore": [{**hunk, "now": hunk["now"].replace("120", "121")}]},
+            "no restore at all": {**repair, "restore": []},
+            "another day": {**repair, "date": "2026-09-23"},
+            "another machine": {**repair, "system": 3},
+            "another repaired file": {**repair, "to": "0" * 64},
+        }
+        for why, bad in refused.items():
+            with self.subTest(why):
+                self.assertEqual(convert.former_identities(new, [entry], [bad]), [])
+        # A line held twice is ambiguous: nothing is guessed.
+        doubled = self.pinned("doubled.mxl", UNDATED_HEADER.replace("  </identification>\n", "  </identification>\n" + self.NEW_TEMPO * 2))
+        self.assertEqual(convert.former_identities(doubled, [entry], [{**repair, "to": sha256(doubled)}]), [])
+        # No alias names a dated file that never existed: the old identity must be E50a's recorded entry, for that file.
+        self.assertEqual(convert.former_identities(new, [], [repair]), [])
+        self.assertEqual(convert.former_identities(new, [{**entry, "file": "scores/pdmx/y.mxl"}], [repair]), [])
+
+    def test_the_committed_relations_re_prove_on_the_committed_scores(self) -> None:
+        # The seven, on the committed bytes: each relation names the row's committed file (`convertedSha256`)
+        # and an old identity E50a's table recorded for that file, and re-proves against the committed score.
+        import json
+
+        repo = Path(convert.__file__).resolve().parents[2]
+        relations = json.loads(convert.REPAIRED_IDENTITIES_FILE.read_text(encoding="utf-8"))["repairs"]
+        items = {row["id"]: row for row in json.loads((repo / "content/sources/pdmx.json").read_text(encoding="utf-8"))["items"]}
+        table = json.loads(convert.FORMER_IDENTITIES_FILE.read_text(encoding="utf-8"))["identities"]
+        self.assertEqual(sorted(one["id"] for one in relations), sorted([
+            "song.pop.margie.pdmx", "song.jazz.django-reinhardt-limehouse-blues.pdmx", "song.blues.singin-the-blues",
+            "song.blues.weary-blues", "song.blues.storyville-blues", "song.blues.wabash-blues", "song.blues.tishomingo-blues"]))
+        convert.historical_identities.cache_clear()
+        convert.repaired_identities.cache_clear()
+        for one in relations:
+            with self.subTest(one["id"]):
+                row = items[one["id"]]
+                self.assertEqual(set(one), {"id", "file", "change", "from", "date", "system", "to", "restore"})
+                self.assertEqual(one["file"], f"scores/pdmx/{row['cid']}.mxl")
+                score = repo / "content" / one["file"]
+                self.assertEqual(sha256(score), row["convertedSha256"])
+                self.assertEqual(one["to"], row["convertedSha256"])
+                recorded = [e for e in table if e["file"] == one["file"] and e["sha256"] == one["from"]]
+                self.assertEqual([(e["date"], e["system"]) for e in recorded], [(one["date"], one["system"])])
+                self.assertEqual(convert.former_identities(score), [one["from"]])
+                self.assertFalse(row["tempoDefaulted"])
+                # The relation never enters the table of rows: pdmx.json names no former identity.
+                self.assertFalse({"formerIdentities", "repairs", "restore"} & set(row), row["id"])
+
+
 class TestStats(unittest.TestCase):
     def test_summary_reads_as_a_build_line(self) -> None:
         self.assertEqual(CacheStats(hits=3, misses=4).summary(), "3 cached, 4 converted")

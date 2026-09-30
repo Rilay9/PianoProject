@@ -1,0 +1,95 @@
+..........................................................................................................C:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:5103: MusicXMLWarning: Cannot put in an element with a missing voice tag when no previous voice tag was given.  Assuming voice 1... 
+  thisVoice = self.findM21VoiceFromXmlVoice(mxVoice)
+..............................................................................................................................................................................F.............................ssC:\Users\yalir\AppData\Local\Programs\Python\Python311\Lib\site-packages\music21\musicxml\xmlToM21.py:2075: MusicXMLWarning: Warning: measure 1 in part Pianois overfull: 721/480 > 1.5,assuming 1.5 is correct.
+  self.adjustTimeAttributesFromMeasure(m)
+........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................F...........................................F......................................................................................note: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\build\.content-lock is 2.0 hours old (a crashed run (pid 1)) — assuming a crashed run and taking it over
+...............18 row(s) have no decision in C:\Users\yalir\AppData\Local\Temp\pdmx-e2e-5tj9o9c2\run\review-empty\review.csv. Nothing is committed that a person has not marked keep, drop or later (replan §2.5). Run review.py --check to list them.
+....................................................................s...................................................................EE..F.........................................s....................................  127.0.0.1  code 404, message File not found
+  127.0.0.1  "GET /nope.js HTTP/1.1" 404 -
+.  127.0.0.1  "GET /score.mxl HTTP/1.1" 200 -
+.  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+.  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+.  127.0.0.1  "GET /manifest.webmanifest HTTP/1.1" 200 -
+.  127.0.0.1  "GET /sw.js HTTP/1.1" 200 -
+.  127.0.0.1  "GET /index.html HTTP/1.1" 200 -
+  127.0.0.1  "GET /sw.js HTTP/1.1" 200 -
+  127.0.0.1  "GET /assets/app-abc123.js HTTP/1.1" 200 -
+.C:\Users\yalir\AppData\Local\Temp\tmpheu97u_r has no index.html. Build first:
+  py -3.11 tools/content/build.py --offline --personal
+  cd app && set VITE_BASE=/ && npm run build:app
+.No certificate at C:\Users\yalir\AppData\Local\Temp\tmpboah3bt7\none.pem / C:\Users\yalir\AppData\Local\Temp\tmpboah3bt7\none.key.
+Make one once, for this laptop's address (docs/OWNER-GUIDE.md §1):
+  mkcert -cert-file C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\packaging\lan\cert.pem -key-file C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\packaging\lan\key.pem <this laptop's IP> localhost
+.........................................................................................................................................................................................................................................................................................................................
+======================================================================
+ERROR: setUpClass (tests.test_review_record.TestTheMicroscopesContractWarning)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\tools\content\tests\test_review_record.py", line 408, in setUpClass
+    cls.data = built(review.MICROSCOPE_FILE, review.dev_root(BUILT))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\tools\content\tests\test_review_record.py", line 273, in built
+    raise AssertionError(f"{path} is missing, and this test reads the built content: run "
+AssertionError: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\app\public\dev\review\microscope.json is missing, and this test reads the built content: run `python tools/content/build.py` first (CI: the step 'Build content')
+
+======================================================================
+ERROR: setUpClass (tests.test_review_record.TestTheMicroscopesMusicalLine)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\tools\content\tests\test_review_record.py", line 408, in setUpClass
+    cls.data = built(review.MICROSCOPE_FILE, review.dev_root(BUILT))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\tools\content\tests\test_review_record.py", line 273, in built
+    raise AssertionError(f"{path} is missing, and this test reads the built content: run "
+AssertionError: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\app\public\dev\review\microscope.json is missing, and this test reads the built content: run `python tools/content/build.py` first (CI: the step 'Build content')
+
+======================================================================
+FAIL: test_the_real_cuts_drop_what_their_pages_showed_and_nothing_of_the_music (tests.test_excerpts.TheEditionTexts.test_the_real_cuts_drop_what_their_pages_showed_and_nothing_of_the_music)
+The five approved cuts' parents: Hark!'s band direction and swing, the Minuet's staff text; the rest nothing.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\tools\content\tests\test_excerpts.py", line 735, in test_the_real_cuts_drop_what_their_pages_showed_and_nothing_of_the_music
+    self.assertEqual([w for w in words_of(xml_of(made.path)) if w], kept, path.name)
+AssertionError: Lists differ: [] != ['= 120']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'= 120'
+
+- []
++ ['= 120'] : QmWwJDFTEwoHzX3qXiVR8koWxt8Vc2oP9BHJSd68BfEVMt.mxl
+
+======================================================================
+FAIL: test_each_is_measured_on_its_cut_and_identified_by_its_definition (tests.test_measured_truth.TestExcerptsOnTheBuild.test_each_is_measured_on_its_cut_and_identified_by_its_definition) (item='excerpt.blues.wabash-blues.b1-4')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\tools\content\tests\test_measured_truth.py", line 559, in test_each_is_measured_on_its_cut_and_identified_by_its_definition
+    self.assertNotIn("stale", block, "approved on other parent bytes")
+AssertionError: 'stale' unexpectedly found in {'of': 'song.blues.wabash-blues', 'fromBar': 1, 'toBar': 4, 'selection': 'both', 'cutVersion': 2, 'parentSha256': 'b896827d97beb8a30aad9a9fcc4ab49244959bdd663857a8a506833c2e115c13', 'parentEdition': 'pdmx:QmWwJDFTEwoHzX3qXiVR8koWxt8Vc2oP9BHJSd68BfEVMt', 'key': '7a391086dde7d8f72549950011e002f4d56c3dcae7ffdb1a6cba5bf9d998ebd5', 'targets': ['pitch.chromatic'], 'event': 'ex-a57de44f-ebc6-4a41-a93e-b7af6eeefdeb', 'approvedCutVersion': 1, 'stale': {'approvedParentSha256': '60f8d018899c70b1dd3c09e0d48e7e24d61efedb68e6ac67d5451c8572338208', 'why': "the parent's built file changed since the boundary was approved: the approval was made on other bytes"}} : approved on other parent bytes
+
+======================================================================
+FAIL: test_the_committed_markdown_is_this_catalogues (tests.test_measured_truth.TestTheReports.test_the_committed_markdown_is_this_catalogues) (path='inventory.md')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\tools\content\tests\test_measured_truth.py", line 894, in test_the_committed_markdown_is_this_catalogues
+    self.assertEqual(path.read_text(encoding="utf-8").replace("\r\n", "\n"), text,
+AssertionError: "# Th[1105 chars]\n- 240 items play at a tempo the converter su[31890 chars]ce\n" != "# Th[1105 chars]\n- 232 items play at a tempo the converter su[31890 chars]ce\n"
+Diff is 33668 characters long. Set self.maxDiff to None to see it. : inventory.md is stale: rebuild
+
+======================================================================
+FAIL: test_the_screen_reads_the_same_queue (tests.test_review_record.TestTheQueue.test_the_screen_reads_the_same_queue)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\tools\content\tests\test_review_record.py", line 385, in test_the_screen_reads_the_same_queue
+    data = built(review.MICROSCOPE_FILE, review.dev_root(BUILT))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\tools\content\tests\test_review_record.py", line 273, in built
+    raise AssertionError(f"{path} is missing, and this test reads the built content: run "
+AssertionError: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a3647139d9ceabd16\app\public\dev\review\microscope.json is missing, and this test reads the built content: run `python tools/content/build.py` first (CI: the step 'Build content')
+
+----------------------------------------------------------------------
+Ran 1580 tests in 593.412s
+
+FAILED (failures=4, errors=2, skipped=4)

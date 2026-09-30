@@ -20246,7 +20246,7 @@
       "composer": "Con Conrad and J. Russel Robinson",
       "artist": "NA",
       "rawSha256": "8aa92cbb13d548348b4c9564ce5665d5149b89df54c03a7bb9ed4d8a3c9a0256",
-      "convertedSha256": "d14cbac25ca07647e94f9ea04d6f316450fcbc4196197a66d3f8269cca78d6ba",
+      "convertedSha256": "a009b402d731e7fbcfb48eaa7628d5d5c706ecec92c9a19e93fd1aba3cbd6142",
       "musescoreId": "1350401",
       "license": "cc-zero",
       "compositionStatus": "pd",
@@ -20256,14 +20256,14 @@
       "band": "3",
       "bars": 48,
       "notes": 167,
-      "tempoBpm": 96.0,
-      "tempoDefaulted": true,
+      "tempoBpm": 160.0,
+      "tempoDefaulted": false,
       "singleLine": true,
       "hands": "right",
       "features": {
         "bars": 48.0,
         "notesPerBar": 2.4375,
-        "notesPerSecond": 0.975,
+        "notesPerSecond": 1.625,
         "maxSimultaneousRight": 1.0,
         "maxSimultaneousLeft": 0.0,
         "maxSpanRight": 0.0,
@@ -20281,7 +20281,7 @@
         "ledgerRatio": 0.0,
         "distinctRhythms": 5.0
       },
-      "level": 2.67,
+      "level": 2.8,
       "levelSource": "estimated",
       "levelFrom": "model-2026-09-22",
       "levelDrivers": [
@@ -20291,7 +20291,7 @@
         ],
         [
           "notesPerSecond",
-          -0.575
+          -0.449
         ],
         [
           "notesPerBar",
@@ -20510,7 +20510,7 @@
       "composer": "Philip Braham",
       "artist": "Django Reinhardt",
       "rawSha256": "258e0d69cee8e3235ab0a019a241bea2c8bf4d756245d0824975cc8ffe7e64e0",
-      "convertedSha256": "b1b5da84429465d98ab2adda92617d7b30864ef51cc355f46193af4e2eb8106f",
+      "convertedSha256": "e7ee98fa3e09182cd9a68b1d9c58a0b47c7291e22b80b7c7e4365b8f5ba77077",
       "musescoreId": "1350251",
       "license": "cc-zero",
       "compositionStatus": "pd",
@@ -20520,14 +20520,14 @@
       "band": "3",
       "bars": 64,
       "notes": 205,
-      "tempoBpm": 96.0,
-      "tempoDefaulted": true,
+      "tempoBpm": 184.0,
+      "tempoDefaulted": false,
       "singleLine": true,
       "hands": "right",
       "features": {
         "bars": 64.0,
         "notesPerBar": 2.390625,
-        "notesPerSecond": 0.95625,
+        "notesPerSecond": 1.8328125,
         "maxSimultaneousRight": 1.0,
         "maxSimultaneousLeft": 0.0,
         "maxSpanRight": 0.0,
@@ -20545,21 +20545,21 @@
         "ledgerRatio": 0.0,
         "distinctRhythms": 4.0
       },
-      "level": 3.25,
+      "level": 3.15,
       "levelSource": "estimated",
-      "levelFrom": "model",
+      "levelFrom": "model-2026-09-22",
       "levelDrivers": [
         [
           "rangeLeft",
-          -1.614
-        ],
-        [
-          "shortestValue",
-          -0.573
+          -1.336
         ],
         [
           "notesPerBar",
-          -0.348
+          -0.453
+        ],
+        [
+          "notesPerSecond",
+          -0.415
         ]
       ],
       "duplicateOf": null,
@@ -33439,7 +33439,7 @@
       "composer": "Con Conrad and J. Russel Robinson",
       "artist": null,
       "rawSha256": "9701c75a5a3d736fe7aa2478d96df12dcb7cf5607e3c14aaa3fb09f41f13c86d",
-      "convertedSha256": "fc4e8b90f6737fb950b9e915e960f40d4709988bed475da78599f3709e93a3f9",
+      "convertedSha256": "2cbc202e52696ca6083e4366cc5c20dc6a6776d694c50dab93e9602f3863baec",
       "musescoreId": "1434226",
       "license": "cc-zero",
       "compositionStatus": "pd",
@@ -33449,14 +33449,14 @@
       "band": "3",
       "bars": 35,
       "notes": 195,
-      "tempoBpm": 96.0,
-      "tempoDefaulted": true,
+      "tempoBpm": 120.0,
+      "tempoDefaulted": false,
       "singleLine": true,
       "hands": "right",
       "features": {
         "bars": 35.0,
         "notesPerBar": 4.6571428571428575,
-        "notesPerSecond": 1.8628571428571428,
+        "notesPerSecond": 2.3285714285714287,
         "maxSimultaneousRight": 1.0,
         "maxSimultaneousLeft": 0.0,
         "maxSpanRight": 0.0,
@@ -33474,7 +33474,7 @@
         "ledgerRatio": 0.0,
         "distinctRhythms": 8.0
       },
-      "level": 3.58,
+      "level": 3.65,
       "levelSource": "estimated",
       "levelFrom": "model-2026-09-22",
       "levelDrivers": [
@@ -33484,7 +33484,7 @@
         ],
         [
           "notesPerSecond",
-          -0.411
+          -0.344
         ],
         [
           "voicesPerStaff",
@@ -33655,7 +33655,7 @@
       "composer": "Artie Matthews",
       "artist": null,
       "rawSha256": "9193306c55fb3d0b8880117147eb1580b91c08400ebb292c4df6b1d87720b0fc",
-      "convertedSha256": "cee0d8d29e95e5b6249da08b3f18b63eef6218e7f0612be6b1e917b26c98ff0b",
+      "convertedSha256": "a4fef9c8aebbdc267fd4b286aa0684dd8e936ec7190fe6bd5e0ddbcc2e032129",
       "musescoreId": "1430036",
       "license": "cc-zero",
       "compositionStatus": "pd",
@@ -33665,14 +33665,14 @@
       "band": "3",
       "bars": 43,
       "notes": 214,
-      "tempoBpm": 96.0,
-      "tempoDefaulted": true,
+      "tempoBpm": 200.0,
+      "tempoDefaulted": false,
       "singleLine": true,
       "hands": "right",
       "features": {
         "bars": 43.0,
         "notesPerBar": 4.186046511627907,
-        "notesPerSecond": 1.6744186046511629,
+        "notesPerSecond": 3.488372093023256,
         "maxSimultaneousRight": 1.0,
         "maxSimultaneousLeft": 0.0,
         "maxSpanRight": 0.0,
@@ -33690,7 +33690,7 @@
         "ledgerRatio": 0.8388888888888889,
         "distinctRhythms": 5.0
       },
-      "level": 3.09,
+      "level": 3.32,
       "levelSource": "estimated",
       "levelFrom": "model-2026-09-22",
       "levelDrivers": [
@@ -33699,12 +33699,12 @@
           -1.336
         ],
         [
-          "notesPerSecond",
-          -0.441
-        ],
-        [
           "notesPerBar",
           -0.311
+        ],
+        [
+          "voicesPerStaff",
+          -0.287
         ]
       ],
       "duplicateOf": null,
@@ -33800,7 +33800,7 @@
       "composer": "Traditional",
       "artist": null,
       "rawSha256": "86e50c9bcbb3d9dbfddb2d65219076217bc55bcd905fc3450a7567312edc7e90",
-      "convertedSha256": "d31d167ee2267a7b39c34c35e60f27ff067555027fd442adf8dc4151e4ba78e7",
+      "convertedSha256": "0b79765024437abb31f229c22ce0861654ae3a39807ead27ad8ec41008dfb463",
       "musescoreId": "1434421",
       "license": "cc-zero",
       "compositionStatus": "pd",
@@ -33810,14 +33810,14 @@
       "band": "3",
       "bars": 56,
       "notes": 285,
-      "tempoBpm": 96.0,
-      "tempoDefaulted": true,
+      "tempoBpm": 132.0,
+      "tempoDefaulted": false,
       "singleLine": true,
       "hands": "right",
       "features": {
         "bars": 56.0,
         "notesPerBar": 3.75,
-        "notesPerSecond": 1.5,
+        "notesPerSecond": 2.0625,
         "maxSimultaneousRight": 1.0,
         "maxSimultaneousLeft": 0.0,
         "maxSpanRight": 0.0,
@@ -33835,7 +33835,7 @@
         "ledgerRatio": 0.0,
         "distinctRhythms": 6.0
       },
-      "level": 4.01,
+      "level": 4.1,
       "levelSource": "estimated",
       "levelFrom": "model-2026-09-22",
       "levelDrivers": [
@@ -33844,12 +33844,12 @@
           -1.336
         ],
         [
-          "notesPerSecond",
-          -0.471
-        ],
-        [
           "rangeRight",
           -0.407
+        ],
+        [
+          "notesPerSecond",
+          -0.381
         ]
       ],
       "duplicateOf": null,
@@ -34304,7 +34304,7 @@
       "composer": "Dave Ringle and Fred Meinken",
       "artist": null,
       "rawSha256": "b4b47922a473afcde8b196d3dcb43c4900f779aa50c5b13d92344796b439906a",
-      "convertedSha256": "60f8d018899c70b1dd3c09e0d48e7e24d61efedb68e6ac67d5451c8572338208",
+      "convertedSha256": "b896827d97beb8a30aad9a9fcc4ab49244959bdd663857a8a506833c2e115c13",
       "musescoreId": "1429571",
       "license": "cc-zero",
       "compositionStatus": "pd",
@@ -34314,14 +34314,14 @@
       "band": "3",
       "bars": 57,
       "notes": 267,
-      "tempoBpm": 96.0,
-      "tempoDefaulted": true,
+      "tempoBpm": 120.0,
+      "tempoDefaulted": false,
       "singleLine": true,
       "hands": "right",
       "features": {
         "bars": 57.0,
         "notesPerBar": 3.280701754385965,
-        "notesPerSecond": 1.312280701754386,
+        "notesPerSecond": 1.6403508771929824,
         "maxSimultaneousRight": 1.0,
         "maxSimultaneousLeft": 0.0,
         "maxSpanRight": 0.0,
@@ -34339,7 +34339,7 @@
         "ledgerRatio": 0.0,
         "distinctRhythms": 6.0
       },
-      "level": 3.48,
+      "level": 3.54,
       "levelSource": "estimated",
       "levelFrom": "model-2026-09-22",
       "levelDrivers": [
@@ -34349,7 +34349,7 @@
         ],
         [
           "notesPerSecond",
-          -0.505
+          -0.446
         ],
         [
           "notesPerBar",
@@ -34376,7 +34376,7 @@
       "composer": "Spencer Williams",
       "artist": null,
       "rawSha256": "77985b1577e4aff55d6bec4a0d5287a51f83b487d0ed98f3d992b398236e2f0c",
-      "convertedSha256": "afa635593b2772f7d202792e0657a39990299ddef25ee7196ba5ad92a42a04f2",
+      "convertedSha256": "bf01005d2a878228580970663b4f84921387cb48e996d15aadc706588dc22870",
       "musescoreId": "1438331",
       "license": "cc-zero",
       "compositionStatus": "pd",
@@ -34386,14 +34386,14 @@
       "band": "1-2",
       "bars": 48,
       "notes": 228,
-      "tempoBpm": 96.0,
-      "tempoDefaulted": true,
+      "tempoBpm": 132.0,
+      "tempoDefaulted": false,
       "singleLine": true,
       "hands": "right",
       "features": {
         "bars": 48.0,
         "notesPerBar": 4.104166666666667,
-        "notesPerSecond": 1.6416666666666666,
+        "notesPerSecond": 2.2572916666666667,
         "maxSimultaneousRight": 2.0,
         "maxSimultaneousLeft": 0.0,
         "maxSpanRight": 14.0,
@@ -34411,7 +34411,7 @@
         "ledgerRatio": 0.0,
         "distinctRhythms": 6.0
       },
-      "level": 3.76,
+      "level": 3.86,
       "levelSource": "estimated",
       "levelFrom": "model-2026-09-22",
       "levelDrivers": [
@@ -34421,7 +34421,7 @@
         ],
         [
           "notesPerSecond",
-          -0.446
+          -0.354
         ],
         [
           "blackKeyRatio",

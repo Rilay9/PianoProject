@@ -394,7 +394,8 @@ class TestTheMaterialIdentity(Built):
     def test_former_identities_are_the_recorded_history_of_undated_files_and_never_a_current_one(self) -> None:
         # E50a: a row whose file the converter wrote without a date carries the recorded historical
         # identities whose undated form is that file (`tools/content/former_identities.json`), every one of
-        # them, and nothing else carries any; no former identity is any row's current identity (the app
+        # them, and, since E50, the old identity each reviewed repair of that file names
+        # (`tools/content/repaired_identities.json`), and nothing else carries any; no former identity is any row's current identity (the app
         # would resolve a current file away from itself). The oracle reads the table and the built files
         # itself. On a build whose zip bytes differ from the laptop's (the creating system `zipfile` writes
         # into every archive), no undated form matches and no row carries any: said, not hidden.
@@ -402,6 +403,11 @@ class TestTheMaterialIdentity(Built):
         by_undated: dict[str, list[str]] = {}
         for entry in table["identities"]:
             by_undated.setdefault(entry["undated"], []).append(entry["sha256"])
+        # E50: beside the date proof, a reviewed musical repair (`tools/content/repaired_identities.json`) names
+        # the old identity of the file it repaired; `test_a_repaired_file_carries_its_old_identity` reads those.
+        repairs = json.loads((REPO / "tools" / "content" / "repaired_identities.json").read_text(encoding="utf-8"))["repairs"]
+        for repair in repairs:
+            by_undated.setdefault(repair["to"], []).append(repair["from"])
         current = {item["provenance"]["identity"]["sha256"] for item in self.catalog
                    if (item["provenance"].get("identity") or {}).get("kind") == "file"}
         faults: list[str] = []
@@ -431,6 +437,36 @@ class TestTheMaterialIdentity(Built):
         # Every undated form the record names that a built file is, is one: on the laptop, all of them.
         reached = sum(1 for item in self.catalog if (item["provenance"].get("identity") or {}).get("sha256") in by_undated)
         self.assertEqual(carrying, reached)
+
+    def test_a_repaired_file_carries_its_old_identity_and_no_approval_is_renewed_by_it(self) -> None:
+        # E50: each reviewed repair's row names the repaired file as its identity and the old file among its
+        # former identities (learner continuity, the reviewer's condition); the old identity is never the
+        # row's own, never un-stales an excerpt approved on the old bytes (the cut's `stale` stays, and its
+        # `parentSha256` is the parent's current file), and never enters `pdmx.json`.
+        repairs = json.loads((REPO / "tools" / "content" / "repaired_identities.json").read_text(encoding="utf-8"))["repairs"]
+        items = {row["id"]: row for row in json.loads((REPO / "content" / "sources" / "pdmx.json").read_text(encoding="utf-8"))["items"]}
+        self.assertEqual(len(repairs), 7)
+        for repair in repairs:
+            with self.subTest(repair["id"]):
+                item = self.by_id[repair["id"]]
+                self.assertEqual(item["provenance"]["identity"], {"kind": "file", "sha256": repair["to"]})
+                self.assertIn({"kind": "file", "sha256": repair["from"]}, item["provenance"].get("formerIdentities") or [])
+                self.assertNotIn("tempo-defaulted", item.get("tags") or [])
+                self.assertFalse({"formerIdentities", "repairs", "restore"} & set(items[repair["id"]]))
+        approvals = json.loads((REPO / "content" / "sources" / "excerpts.json").read_text(encoding="utf-8"))["excerpts"]
+        for row in approvals:
+            parent = self.by_id.get(row["of"])
+            if parent is None or not row.get("parentSha256"):
+                continue
+            formers = {one["sha256"] for one in parent["provenance"].get("formerIdentities") or []}
+            if row["parentSha256"] not in formers:
+                continue
+            cut = next(item for item in self.catalog if (item["provenance"].get("excerpt") or {}).get("of") == row["of"]
+                       and item["provenance"]["excerpt"]["fromBar"] == row["fromBar"] and item["provenance"]["excerpt"]["toBar"] == row["toBar"])
+            block = cut["provenance"]["excerpt"]
+            with self.subTest(cut["id"]):
+                self.assertEqual(block["parentSha256"], parent["provenance"]["identity"]["sha256"])
+                self.assertEqual((block.get("stale") or {}).get("approvedParentSha256"), row["parentSha256"])
 
     def test_it_is_the_review_records_identity(self) -> None:
         import review
@@ -520,7 +556,15 @@ class TestExcerptsOnTheBuild(Built):
                 self.assertEqual(block["key"], X.chain_key(block["parentSha256"], block["fromBar"], block["toBar"],
                                                            block["selection"], block["cutVersion"]))
                 self.assertEqual(block["parentEdition"], parent["provenance"].get("edition"))
-                self.assertNotIn("stale", block, "approved on other parent bytes")
+                # `stale` exactly where the approval was made on other parent bytes (E50: the Wabash cut's parent
+                # was re-converted for its printed tempo, and its approval waits for a person, E51's path; before
+                # E50 no approved row was, and this line asserted none ever is).
+                approved = next((row.get("parentSha256") for row in X.read_definitions().get("excerpts") or []
+                                 if X.excerpt_id(row["of"], row["fromBar"], row["toBar"], row["selection"]) == item["id"]), None)
+                if approved and approved != block["parentSha256"]:
+                    self.assertEqual((block.get("stale") or {}).get("approvedParentSha256"), approved)
+                else:
+                    self.assertNotIn("stale", block, "approved on these parent bytes")
                 self.assertEqual(item["levelSource"], "estimated")
                 self.assertEqual(item["hands"], block["selection"])
 
