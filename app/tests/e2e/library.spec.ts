@@ -7,7 +7,7 @@
  * cover the whole round trip — pick a file, see it in the list, open it, and
  * still have it after a reload.
  */
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -275,6 +275,81 @@ test.describe('the learner’s project in the Library (G85)', () => {
   test.use({ viewport: { width: 342, height: 740 } });
 
   const ITEM = 'song.folk.hot-cross-buns';
+  /** The G85a adversary's piece: one of the four *Twinkle* rows, told apart only by its ending. */
+  const PIECE = 'song.folk.twinkle.ht';
+  const PIECE_ROW = `#library-list .list-row[data-item="${PIECE}"]`;
+
+  interface TitleBox {
+    text: string;
+    width: number;
+    clipped: boolean;
+    /** The box in one line, printed with every check on it. */
+    facts: string;
+  }
+
+  /**
+   * A row's title box, and whether any of its words are cut (past the clamp, or ellipsed). `facts`
+   * carries what a red needs to say why (G101, the reviewer's ruling in
+   * `responses/questions-eebafb5e.md`): the client and scroll width and height, the line count, the
+   * row's, the title column's and the actions column's widths, the viewport (and the page's layout
+   * width, which a scrollbar narrows) and the text size; and, to name a font cause outright, the
+   * words' width set on one line in the title's font and the face the browser drew them in (CDP, as
+   * U90's probe read it). So a runner's red tells a wider font (the same column, wider words, more
+   * lines) from a scrollbar or a wider actions column (the same words, a narrower title column).
+   */
+  async function titleBox(page: Page, rowSelector: string): Promise<TitleBox> {
+    let face: string;
+    try {
+      const cdp = await page.context().newCDPSession(page);
+      await cdp.send('DOM.enable');
+      await cdp.send('CSS.enable');
+      const { root } = await cdp.send('DOM.getDocument', { depth: -1 });
+      const { nodeId } = await cdp.send('DOM.querySelector', { nodeId: root.nodeId, selector: `${rowSelector} .list-row__title` });
+      const { fonts } = await cdp.send('CSS.getPlatformFontsForNode', { nodeId });
+      await cdp.detach();
+      face = fonts.map((one) => one.familyName).join(', ');
+    } catch (error) {
+      face = `not read (${String(error)})`;
+    }
+    const box = await locatorBox(page.locator(rowSelector));
+    return { ...box, facts: `${box.facts}; drawn in ${face}` };
+  }
+
+  /** The box itself, measured in the page. */
+  function locatorBox(row: Locator): Promise<TitleBox> {
+    return row.evaluate((node) => {
+      const title = node.querySelector<HTMLElement>('.list-row__title');
+      if (title === null) throw new Error('the row has no title');
+      const width = (one: Element | null): string => (one === null ? 'none' : one.getBoundingClientRect().width.toFixed(1));
+      const style = getComputedStyle(title);
+      const line = Number.parseFloat(style.lineHeight);
+      // The words on one line, in the title's font, beside it and out of the flow: under a clamp the
+      // title's own line boxes overstated them (G101's runs on a three-line clamp).
+      const probe = document.createElement('span');
+      probe.textContent = title.textContent;
+      probe.style.cssText = 'position: absolute; visibility: hidden; white-space: nowrap;';
+      probe.style.font = style.font;
+      probe.style.letterSpacing = style.letterSpacing;
+      title.parentElement?.append(probe);
+      const words = probe.getBoundingClientRect().width;
+      probe.remove();
+      const root = document.documentElement;
+      const facts = [
+        `title client ${String(title.clientWidth)}×${String(title.clientHeight)}, scroll ${String(title.scrollWidth)}×${String(title.scrollHeight)}`,
+        `${String(Math.round(title.scrollHeight / line))} lines of ${style.lineHeight}`,
+        `words ${words.toFixed(1)} px on one line`,
+        `row ${width(node)}, title column ${width(node.querySelector('.list-row__text'))}, actions ${width(node.querySelector('.list-row__actions'))}`,
+        `viewport ${String(innerWidth)}×${String(innerHeight)} (layout width ${String(root.clientWidth)})`,
+        `text ${getComputedStyle(root).fontSize} (${root.style.fontSize || '100%'})`,
+      ].join('; ');
+      return {
+        text: title.textContent ?? '',
+        width: title.clientWidth,
+        clipped: title.scrollWidth > title.clientWidth || title.scrollHeight > title.clientHeight,
+        facts,
+      };
+    });
+  }
 
   /** The local day, as the app names days (`progressStore.dayKey`). */
   function today(): string {
@@ -359,7 +434,6 @@ test.describe('the learner’s project in the Library (G85)', () => {
    * (Entry 147's probe).
    */
   test('Details opens the one project sheet: the title stays whole, a pause there reaches the row and the filter on closing, and the store holds the one project (G85a)', async ({ page }) => {
-    const PIECE = 'song.folk.twinkle.ht';
     await page.goto('/#/library');
     await expect(page.locator('#library-count')).toContainText(/of \d+ items/);
     const { title, key } = await page.evaluate(async (id) => {
@@ -370,22 +444,14 @@ test.describe('the learner’s project in the Library (G85)', () => {
       return { title: item.title, key: `file:${identity.sha256}` };
     }, PIECE);
 
-    const row = page.locator(`#library-list .list-row[data-item="${PIECE}"]`);
-    const rowTitle = row.locator('.list-row__title');
-    /** The title's box, and whether any of its words are cut (clamped at two lines, or ellipsed). */
-    const titleBox = (): Promise<{ text: string; width: number; clipped: boolean }> =>
-      rowTitle.evaluate((node) => ({
-        text: node.textContent ?? '',
-        width: node.clientWidth,
-        clipped: node.scrollWidth > node.clientWidth || node.scrollHeight > node.clientHeight,
-      }));
+    const row = page.locator(PIECE_ROW);
 
     // Before any project: the whole catalogue title, nothing cut.
     await page.locator('#library-search').fill('twinkle');
     await expect(row).toBeVisible();
-    const before = await titleBox();
+    const before = await titleBox(page, PIECE_ROW);
     expect(before.text).toBe(title);
-    expect(before.clipped, `“${before.text}” is cut before any project`).toBe(false);
+    expect(before.clipped, `“${before.text}” is cut before any project: ${before.facts}`).toBe(false);
 
     // Learning, straight into the store as the sheet writes it, keyed by the catalogue's identity.
     await page.evaluate(
@@ -413,10 +479,10 @@ test.describe('the learner’s project in the Library (G85)', () => {
     await page.locator('#library-search').fill('twinkle');
     await expect(row.locator('.badge[data-project]')).toHaveText('Learning');
     // The row as it was: the title whole at the same width, and the same two actions.
-    const learning = await titleBox();
+    const learning = await titleBox(page, PIECE_ROW);
     expect(learning.text).toBe(title);
-    expect(learning.clipped, `“${learning.text}” is cut with its project badge`).toBe(false);
-    expect(learning.width).toBe(before.width);
+    expect(learning.clipped, `“${learning.text}” is cut with its project badge: ${learning.facts}`).toBe(false);
+    expect(learning.width, `the title's width moved with the badge: before ${before.facts}; with it ${learning.facts}`).toBe(before.width);
     await expect(row.locator('.list-row__actions button')).toHaveText(['Details', '⋯']);
 
     // Details holds the door, in the finish sheet's words over the sheet's own state line.
@@ -451,10 +517,10 @@ test.describe('the learner’s project in the Library (G85)', () => {
     await page.locator('#library-project').selectOption('paused');
     await expect(page.locator('#library-list .list-row')).toHaveCount(1);
     await expect(row.locator('.badge[data-project]')).toHaveText('Paused');
-    const paused = await titleBox();
+    const paused = await titleBox(page, PIECE_ROW);
     expect(paused.text).toBe(title);
-    expect(paused.clipped, `“${paused.text}” is cut after the pause`).toBe(false);
-    expect(paused.width).toBe(before.width);
+    expect(paused.clipped, `“${paused.text}” is cut after the pause: ${paused.facts}`).toBe(false);
+    expect(paused.width, `the title's width moved after the pause: before ${before.facts}; after ${paused.facts}`).toBe(before.width);
 
     // The sheet acted on the Library's project: one row, the seeded one, paused.
     const stored = await page.evaluate(async () => {
@@ -472,6 +538,50 @@ test.describe('the learner’s project in the Library (G85)', () => {
       return rows.map((one) => ({ id: one.id, state: one.state }));
     });
     expect(stored).toEqual([{ id: key, state: 'paused' }]);
+  });
+
+  /**
+   * The same adversary at 115 % text (G101; `00` §1: every change is checked at 100 % and 115 %), the
+   * root font scaled as an Android Display size does (`doors.spec.ts`, *the phone at 115 % text*): the
+   * identifying title whole before any project. Beside *Details* and ⋯ the words need a third line at
+   * this size, and a clamp at two cut *(hands together)*, the part that tells this row from the other
+   * *Twinkle* rows (the reviewer's ruling, `responses/questions-eebafb5e.md` §G101). Then titles that
+   * differ from a sibling only in an ending measured longest at this width (`docs/prompts/runs/G101/`):
+   * at 115 % *Oh When the Saints Go Marching In (hands alternating)* and *Study in C major in 2/4 — the
+   * hands changing together, held bass* need a fourth line on this machine's face and five and six on
+   * a wider one, so a clamp at three, as first ruled, cut them. Both are written or generated here, so
+   * every content build has them (*… K. 545, I. Allegro (alternative edition)* needs as many lines but
+   * is a fetched edition). Each is checked, and each cut one printed.
+   */
+  test('at 115 % text the title stays whole before any project, and so do the longest endings that tell sibling titles apart (G85a, G101)', async ({ page }) => {
+    /** Measured at 342 px (G101): each differs from a sibling title only in its ending. */
+    const LONGEST_ENDINGS = ['song.folk.twinkle.f', 'song.folk.when-the-saints.alternating', 'exercise.study.texture-hands-together.c-major.2-4.8bar.sustained.02'];
+    await page.addInitScript(() => {
+      document.addEventListener('DOMContentLoaded', () => {
+        document.documentElement.style.fontSize = '115%';
+      });
+    });
+    await page.goto('/#/library');
+    await expect(page.locator('#library-count')).toContainText(/of \d+ items/);
+    expect(await page.evaluate(() => document.documentElement.style.fontSize)).toBe('115%');
+    const pieces = await page.evaluate(async (ids) => {
+      const catalog = (await (await fetch('content/catalog.json')).json()) as { id: string; title: string }[];
+      return ids.map((id) => {
+        const item = catalog.find((one) => one.id === id);
+        if (item === undefined) throw new Error(`${id} is not in the catalogue`);
+        return { id, title: item.title };
+      });
+    }, [PIECE, ...LONGEST_ENDINGS]);
+
+    for (const { id, title } of pieces) {
+      const selector = `#library-list .list-row[data-item="${id}"]`;
+      // The adversary's search as the case above searches; each other title by its own words.
+      await page.locator('#library-search').fill(id === PIECE ? 'twinkle' : title);
+      await expect(page.locator(selector)).toBeVisible();
+      const before = await titleBox(page, selector);
+      expect.soft(before.text).toBe(title);
+      expect.soft(before.clipped, `“${before.text}” is cut at 115 % text before any project: ${before.facts}`).toBe(false);
+    }
   });
 
   /**

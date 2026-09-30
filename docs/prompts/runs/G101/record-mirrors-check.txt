@@ -1,0 +1,2 @@
+record mirrors: fresh (docs/prompts/tasks/README.md, docs/prompts/in-flight.md)
+exit=0

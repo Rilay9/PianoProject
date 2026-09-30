@@ -548,8 +548,9 @@ body {
 
    So upright the words take the full width and the buttons drop to a line of
    their own, at full size: the owner asked for exactly that trade — taller
-   rows, in portrait, so the buttons *and* the names can both be read. A title
-   gets two lines before it gives up, which covers all but the longest.
+   rows, in portrait, so the buttons *and* the names can both be read. In the
+   folder a title gets two lines before it gives up, which covers all but the
+   longest; in the library it gets every line it needs (below).
 
    Deliberately scoped to these two lists. `04` §0 R2 caps a row at 96 px and
    Today is measured against it at 360 px wide; this costs about 35 px, which
@@ -618,13 +619,36 @@ body {
 
   /* Two lines, then an ellipsis. `-webkit-line-clamp` is the only way to
      ellipsise a wrapped block, and it is unprefixed nowhere that matters. */
-  #folder-list .list-row__title,
-  #library-list .list-row__title {
+  #folder-list .list-row__title {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     line-clamp: 2;
     white-space: normal;
+  }
+
+  /* In the library a title is never cut (G101): it wraps to the lines it
+     needs, and a word longer than the room breaks rather than being cut, as on
+     Skills (U90) and for the same reason. A title here is the piece's
+     identity, and titles that differ only in their endings are common: the
+     four *Twinkle* rows, or *Piano Sonata No. 16 in C, K. 545, I. Allegro* and
+     the same with *(alternative edition)*. A catalogue row keeps its words
+     beside `Details` and `⋯`, so at 342 px the title has about half the row.
+     Two lines cut *(hands together)* at 115 % text here, and on CI's runner at
+     100 %. Three, as first ruled (`docs/review/responses/questions-eebafb5e.md`),
+     were sized to *Twinkle*: at 115 % the longest of those endings need four
+     lines on this machine's face and six on a wider one (Verdana, which
+     reproduces the runner's failure), so any count is a count for one face at
+     one text size (`docs/prompts/runs/G101/`). The links keep their size
+     (narrowing them was not the first fix), and a row grows only where its
+     title needs the room: the longest catalogue title, 122 characters, takes
+     eight lines at 115 % here. The folder stays at two: its rows give the
+     words the whole width, with the buttons on a line of their own, and
+     `folder.readable.spec.ts` measures its titles against two lines. */
+  #library-list .list-row__title {
+    white-space: normal;
+    text-overflow: clip;
+    overflow-wrap: break-word;
   }
 
   /* And the detail line gets the width too, so a composer stops being cut

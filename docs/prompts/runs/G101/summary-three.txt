@@ -1,0 +1,107 @@
+phase three: docs/prompts/pictures/g101/three-facts-<size>-<face>.json, 342 x 740
+== three 100% stack: 2092 of 2092 items; rows 2092; lines needed {'1': 397, '2': 1401, '3': 287, '4': 6, '7': 1}; title widths {'164': 2022, '208': 70}; titles cut 8; needing more than three lines 7
+  cut sideways (a word wider than the column): ['198 px of words in 164: Go_Tell_It_On_the_Mountain']
+  sibling titles 1288 (drawn 1288), lines needed {'1': 166, '2': 944, '3': 177, '4': 1}; the most: ['4: Sonatina in C major, Op. 36 No. 1 (first movement, short edition)']
+  longest: 7 lines, row 113 px: This Country of Mine (Extended Mix of Negaraku Malaysia's National Anthem) ((featuring Britain Japan Singapore and Brunei)
+  longest: 4 lines, row 113 px: Across The Violet Sky (Violet Evergarden) Emotional Anime on Piano - Vol. 2
+  longest: 4 lines, row 113 px: Beethoven Symphony 7 2nd Movement (Allegretto) Simple Piano arrangement
+  longest: 4 lines, row 113 px: O sacred head - Johann Sebastian Bach on a tune by Hans Leo Hassler
+  longest: 4 lines, row 113 px: Summer, from The Four Seasons (third movement, piano transcription)
+  longest: 3 lines, row 113 px: Piano Sonata No. 16 in C, K. 545, I. Allegro (alternative edition)
+  tallest: row 116 px, 2 lines: Étude in C-sharp minor, Op. 25 No. 7
+  tallest: row 113 px, 3 lines: Oh When the Saints Go Marching In (hands alternating)
+  tallest: row 113 px, 3 lines: O Worship the King all Glorious Above - LYONS
+  song.folk.twinkle.rh: needs 2, shows 2, clamp 3, clipped False, client 164x42, scroll 164x42, row 310.0x92.3, column 164.0, actions 108.0, root 16px
+      | Twinkle, Twinkle, Little
+      | Star
+  song.folk.twinkle.ht: needs 2, shows 2, clamp 3, clipped False, client 164x42, scroll 164x42, row 310.0x92.3, column 164.0, actions 108.0, root 16px
+      | Twinkle, Twinkle, Little
+      | Star (hands together)
+  song.folk.twinkle.f: needs 2, shows 2, clamp 3, clipped False, client 164x42, scroll 164x42, row 310.0x92.3, column 164.0, actions 108.0, root 16px
+      | Twinkle, Twinkle, Little
+      | Star (in F major)
+  song.pop.c-c-greenwood-twinkle-twinkle-little-star-easy.pdmx: needs 2, shows 2, clamp 3, clipped False, client 164x42, scroll 164x42, row 310.0x92.3, column 164.0, actions 108.0, root 16px
+      | Twinkle Twinkle Little
+      | Star (Easy)
+== three 115% stack: 2092 of 2092 items; rows 2092; lines needed {'1': 257, '2': 1114, '3': 655, '4': 63, '5': 2, '8': 1}; title widths {'157': 2022, '201': 70}; titles cut 67; needing more than three lines 66
+  cut sideways (a word wider than the column): ['228 px of words in 157: Go_Tell_It_On_the_Mountain']
+  sibling titles 1288 (drawn 1288), lines needed {'1': 73, '2': 740, '3': 436, '4': 39}; the most: ['4: Album for the Young, Op. 68 No. 18 "The Reaper\'s Song"', '4: Album for the Young, Op. 68 No. 6 "The Poor Orphan"', '4: Hark! The Herald Angels Sing (jazz lead sheet), bars 25–28']
+  longest: 8 lines, row 128 px: This Country of Mine (Extended Mix of Negaraku Malaysia's National Anthem) ((featuring Britain Japan Singapore and Brunei)
+  longest: 5 lines, row 128 px: Across The Violet Sky (Violet Evergarden) Emotional Anime on Piano - Vol. 2
+  longest: 5 lines, row 128 px: Beethoven Symphony 7 2nd Movement (Allegretto) Simple Piano arrangement
+  longest: 4 lines, row 128 px: O sacred head - Johann Sebastian Bach on a tune by Hans Leo Hassler
+  longest: 4 lines, row 128 px: Summer, from The Four Seasons (third movement, piano transcription)
+  longest: 4 lines, row 128 px: Piano Sonata No. 16 in C, K. 545, I. Allegro (alternative edition)
+  tallest: row 130 px, 2 lines: Étude in C-sharp minor, Op. 25 No. 7
+  tallest: row 128 px, 4 lines: Oh When the Saints Go Marching In (hands alternating)
+  tallest: row 128 px, 3 lines: Mary Had a Little Lamb (hands together)
+  song.folk.twinkle.rh: needs 2, shows 2, clamp 3, clipped False, client 157x48, scroll 157x48, row 310.0x104.1, column 157.3, actions 114.8, root 18.4px
+      | Twinkle, Twinkle,
+      | Little Star
+  song.folk.twinkle.ht: needs 3, shows 3, clamp 3, clipped False, client 157x72, scroll 157x72, row 310.0x128.0, column 157.3, actions 114.8, root 18.4px
+      | Twinkle, Twinkle,
+      | Little Star (hands
+      | together)
+  song.folk.twinkle.f: needs 3, shows 3, clamp 3, clipped False, client 157x72, scroll 157x72, row 310.0x128.0, column 157.3, actions 114.8, root 18.4px
+      | Twinkle, Twinkle,
+      | Little Star (in F
+      | major)
+  song.pop.c-c-greenwood-twinkle-twinkle-little-star-easy.pdmx: needs 2, shows 2, clamp 3, clipped False, client 157x48, scroll 157x48, row 310.0x104.1, column 157.3, actions 114.8, root 18.4px
+      | Twinkle Twinkle
+      | Little Star (Easy)
+== three 100% wide: 2092 of 2092 items; rows 2092; lines needed {'1': 261, '2': 1148, '3': 627, '4': 53, '5': 2, '8': 1}; title widths {'159': 2022, '203': 70}; titles cut 57; needing more than three lines 56
+  cut sideways (a word wider than the column): ['235 px of words in 159: Go_Tell_It_On_the_Mountain']
+  sibling titles 1288 (drawn 1288), lines needed {'1': 74, '2': 770, '3': 414, '4': 30}; the most: ['4: Album for the Young, Op. 68 No. 18 "The Reaper\'s Song"', '4: Album for the Young, Op. 68 No. 6 "The Poor Orphan"', '4: Clair de Lune (Suite bergamasque, L. 75 No. 3)']
+  longest: 8 lines, row 113 px: This Country of Mine (Extended Mix of Negaraku Malaysia's National Anthem) ((featuring Britain Japan Singapore and Brunei)
+  longest: 5 lines, row 113 px: Across The Violet Sky (Violet Evergarden) Emotional Anime on Piano - Vol. 2
+  longest: 5 lines, row 113 px: Beethoven Symphony 7 2nd Movement (Allegretto) Simple Piano arrangement
+  longest: 4 lines, row 113 px: O sacred head - Johann Sebastian Bach on a tune by Hans Leo Hassler
+  longest: 4 lines, row 113 px: Summer, from The Four Seasons (third movement, piano transcription)
+  longest: 4 lines, row 113 px: Piano Sonata No. 16 in C, K. 545, I. Allegro (alternative edition)
+  tallest: row 116 px, 2 lines: Étude in C-sharp minor, Op. 25 No. 7
+  tallest: row 113 px, 4 lines: Oh When the Saints Go Marching In (hands alternating)
+  tallest: row 113 px, 3 lines: Jingle Bells (chorus, hands together)
+  song.folk.twinkle.rh: needs 2, shows 2, clamp 3, clipped False, client 159x42, scroll 159x42, row 310.0x92.3, column 158.6, actions 113.4, root 16px
+      | Twinkle, Twinkle,
+      | Little Star
+  song.folk.twinkle.ht: needs 3, shows 3, clamp 3, clipped False, client 159x62, scroll 159x62, row 310.0x113.1, column 158.6, actions 113.4, root 16px
+      | Twinkle, Twinkle,
+      | Little Star (hands
+      | together)
+  song.folk.twinkle.f: needs 3, shows 3, clamp 3, clipped False, client 159x62, scroll 159x62, row 310.0x113.1, column 158.6, actions 113.4, root 16px
+      | Twinkle, Twinkle,
+      | Little Star (in F
+      | major)
+  song.pop.c-c-greenwood-twinkle-twinkle-little-star-easy.pdmx: needs 2, shows 2, clamp 3, clipped False, client 159x42, scroll 159x42, row 310.0x92.3, column 158.6, actions 113.4, root 16px
+      | Twinkle Twinkle
+      | Little Star (Easy)
+== three 115% wide: 2092 of 2092 items; rows 2092; lines needed {'1': 163, '2': 613, '3': 1014, '4': 258, '5': 37, '6': 5, '7': 1, '10': 1}; title widths {'151': 2022, '195': 70}; titles cut 306; needing more than three lines 302
+  cut sideways (a word wider than the column): ['270 px of words in 151: Go_Tell_It_On_the_Mountain', '161 px of words in 151: Morgenstimmung', '164 px of words in 151: Passacaglia - Handel/Halvorsen (Piano Solo)', '153 px of words in 151: The Chrysanthemum']
+  sibling titles 1288 (drawn 1288), lines needed {'1': 26, '2': 375, '3': 678, '4': 184, '5': 24, '6': 1}; the most: ['6: Study in C major in 2/4 — the hands changing together, held bass', '5: Hark! The Herald Angels Sing (jazz lead sheet), bars 25–28', '5: Mariage d’Amour (“Spring Waltz”) — second edition']
+  longest: 10 lines, row 128 px: This Country of Mine (Extended Mix of Negaraku Malaysia's National Anthem) ((featuring Britain Japan Singapore and Brunei)
+  longest: 7 lines, row 128 px: Across The Violet Sky (Violet Evergarden) Emotional Anime on Piano - Vol. 2
+  longest: 6 lines, row 128 px: Beethoven Symphony 7 2nd Movement (Allegretto) Simple Piano arrangement
+  longest: 6 lines, row 128 px: O sacred head - Johann Sebastian Bach on a tune by Hans Leo Hassler
+  longest: 6 lines, row 128 px: Summer, from The Four Seasons (third movement, piano transcription)
+  longest: 5 lines, row 128 px: Piano Sonata No. 16 in C, K. 545, I. Allegro (alternative edition)
+  tallest: row 130 px, 2 lines: Étude in C-sharp minor, Op. 25 No. 7
+  tallest: row 128 px, 3 lines: Twinkle, Twinkle, Little Star
+  tallest: row 128 px, 3 lines: Mary Had a Little Lamb (left hand)
+  song.folk.twinkle.rh: needs 3, shows 3, clamp 3, clipped False, client 151x72, scroll 151x72, row 310.0x128.0, column 151.1, actions 120.9, root 18.4px
+      | Twinkle,
+      | Twinkle, Little
+      | Star
+  song.folk.twinkle.ht: needs 4, shows 3, clamp 3, clipped True, client 151x72, scroll 151x96, row 310.0x128.0, column 151.1, actions 120.9, root 18.4px
+      | Twinkle,
+      | Twinkle, Little
+      | Star (hands
+      | together) [hidden]
+  song.folk.twinkle.f: needs 4, shows 3, clamp 3, clipped True, client 151x72, scroll 151x96, row 310.0x128.0, column 151.1, actions 120.9, root 18.4px
+      | Twinkle,
+      | Twinkle, Little
+      | Star (in F
+      | major) [hidden]
+  song.pop.c-c-greenwood-twinkle-twinkle-little-star-easy.pdmx: needs 3, shows 3, clamp 3, clipped False, client 151x72, scroll 151x72, row 310.0x128.0, column 151.1, actions 120.9, root 18.4px
+      | Twinkle Twinkle
+      | Little Star
+      | (Easy)

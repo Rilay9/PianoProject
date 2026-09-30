@@ -1,0 +1,7 @@
+Deleted at the end of the lane (2026-09-30), in the worktree only:
+  app/node_modules, app/dist;
+  the copied content: app/public/content/{catalog.json, catalog.schema.json, curriculum.json, curriculum.schema.json,
+    lessons/, level-model.json, review/, scores/, tips/} (app/public/content/audio/, tracked, left as checked out);
+  build/g101/{dist-before, dist-after, dist-final, test-results} (the kept builds and Playwright's output).
+Removed from app/ after the runs, kept here as scripts-*: app/playwright.g101-4617.config.ts, app/tests/e2e/zz-g101-pictures.spec.ts.
+Left: build/g101/ (1.3 MB of small temp state, gitignored; no file over 300 KB).

@@ -1,0 +1,8 @@
+648a649,652
+>     display: -webkit-box;
+>     -webkit-box-orient: vertical;
+>     -webkit-line-clamp: 2;
+>     line-clamp: 2;
+650,651d653
+<     text-overflow: clip;
+<     overflow-wrap: break-word;
