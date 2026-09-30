@@ -445,3 +445,5 @@ Do not broaden into a ZIP-library rewrite. Normalize only metadata proven to var
 Then regenerate/re-prove the former-identity table once under the final E50a bytes. The compatibility table preserves genuinely historical identities; future outputs become cross-platform deterministic.
 
 This is a required change inside E50a, not a new brief: same boundary, same invariant, same builder fast path.
+
+**Landed 2026-09-29** (Entry 166; a95ebcdd, merged 76b64d74); handoff `handoffs/a95ebcdd.md`.
