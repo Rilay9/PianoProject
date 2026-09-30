@@ -46,7 +46,8 @@ one. The exercise is the line alone, left hand only; none of this rung's pieces
 has one yet, and the next rung puts a right hand over it. This is the bridge
 into the jazz track.
 
-**Common mistake.** Filling every bar. The blues is mostly space.
+**Common mistake.** Filling every bar. Leave the space the call and response
+above asks for.
 
 **Tools for this rung.** Four bars of nothing are the hard ones. The
 accompaniment lab's *Jam it* takes the twelve bars in F, plays the changes

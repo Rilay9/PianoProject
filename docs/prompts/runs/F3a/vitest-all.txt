@@ -1,0 +1,21 @@
+$ (cd app) npx vitest run
+# summarised from the full log (889746 bytes) by build/f3a/summarise.py:
+# the summary lines, every failing test's name, and the assertion lines under each failure
+
+ Test Files  2 failed | 313 passed (315)
+      Tests  3 failed | 7215 passed | 5 skipped | 1 todo (7224)
+   Start at  20:29:01
+   Duration  227.69s (tests 70%, environment 21%, import 7%, transform 2%)
+
+## failing tests (3)
+FAIL  tests/unit/expectedNote.test.ts > the spelling comes from the notation (T41) > every black key in every fixture carries its written spelling
+FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+
+## assertion lines
+FAIL  tests/unit/expectedNote.test.ts > the spelling comes from the notation (T41) > every black key in every fixture carries its written spelling
+FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+    AssertionError: expected false to be true // Object.is equality
+
+exit=1

@@ -45,7 +45,7 @@ small ways — beaming, a few accidentals, some dynamics. When they disagree, th
 guess about what Joplin wrote.
 
 **What to play.** Six options. Beyond the five above there is *Sugar Cane*, a
-rag in the Maple Leaf mould at a gentler pace. *Original Rags*, *Fig Leaf*,
+rag in the Maple Leaf mould. *Original Rags*, *Fig Leaf*,
 *Paragon*, *Antoinette*, *Pleasant Moments* and the rest of the middle rags
 are under Ragtime in the Library.
 

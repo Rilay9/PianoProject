@@ -4,9 +4,9 @@ kind: ear-tune
 
 ## What it's for
 
-Working a melody out by ear, phrase by phrase. It is the oldest way to learn
-music and it is the one that most reliably produces players who can actually
-hear what they are doing.
+Working a melody out by ear, phrase by phrase. It puts your ear first: you have
+to hear a note before you can find it, and that is practice at hearing what you
+play.
 
 ## How to practise it
 

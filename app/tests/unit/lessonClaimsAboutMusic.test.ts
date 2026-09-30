@@ -3462,10 +3462,15 @@ const F1_VOICE: [string, string, string[], string][] = [
     "Attwood's Sonatina in G, the one to start on;",
   ],
   [
+    // Revised (F3a, T55): the reviewer's constraint on this paragraph
+    // (`docs/review/responses/a94baee.md` finding 2) asked for spelling to be
+    // told from pitch, and "runs out" read as though the flat names did not
+    // exist; the sentence now says the app's spelling and why, and the next
+    // one (F3A_SENTENCES) says the raised fourth can be written in every key.
     'blues.4',
-    'the flat spellings are awkward to read, with no claim about every edition',
+    'the flat spellings get awkward, with no claim about every edition',
     ['no edition prints'],
-    'The app writes it as a sharp, because the flat spelling runs out: the flattened fifth of F is C flat, of B flat is F flat, of E flat is B double flat — names that are awkward to read.',
+    'The app spells it as a raised fourth, because the flat spelling gets awkward: the flattened fifth of F is C flat, of B flat is F flat, of E flat is B double flat.',
   ],
   [
     'rock.4',
@@ -3515,6 +3520,250 @@ describe('F1: the voice rewrite — each sentence keeps its advice and drops the
   for (const [lesson, says, gone, now] of F1_VOICE) {
     it(`${lesson}: ${says}`, () => {
       const text = f0mText(lesson);
+      for (const phrase of gone) expect.soft(text.toLowerCase()).not.toContain(phrase.toLowerCase());
+      expect.soft(text).toContain(now);
+    });
+  }
+});
+
+// --- F3a: lesson sentences at their truth (Entry 157, 2026-09-29) ------------
+//
+// The backlog rows T34, T36, T37, T42, T44, T45 and T55 named sentences that
+// stated more certainty than their evidence carried: an unsourced causal
+// ranking (flat fingers "the main reason"), practice strategies given as laws
+// (five in a row, three clean then 5 %, "the only way"), an efficacy
+// superlative for interleaving, genre universals and an unsourced history for
+// the blues, Classical performance conventions as rules, an uncounted "most
+// pop piano", and "the oldest way … the one that most reliably" on the
+// ear-tune tip. Each row holds one sentence (or one run of sentences replaced
+// together): the words that stated the certainty are gone and the replacement
+// is there as written. The replacements say what the app does, what the page
+// shows, or a teacher's heuristic said as one ("a common starting point",
+// "one way", "often"); the advice, the activity and the check under each are
+// kept. The record (`docs/prompts/runs/F3a/sentences.md`) gives each one's
+// layer and evidence. The three sentences that contradicted the app (T52) are
+// in `lessonClaimsAboutApp.test.ts`, joined to the app's fact. Nothing here
+// has been heard; the musical ones are unverified as music.
+
+const F3A_TIPS = join(process.cwd(), '..', 'content', 'tips');
+
+/** A tip's body, read the way `f0mText` reads a lesson: front matter and emphasis marks dropped, whitespace flattened. */
+function f3aTip(kind: string): string {
+  return readFileSync(join(F3A_TIPS, `${kind}.md`), 'utf8')
+    .replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '')
+    .replace(/\*/g, '')
+    .replace(/\s+/g, ' ');
+}
+
+/**
+ * `[lesson, what the sentence now says, the words that must be gone, the words that replace them]`
+ * — F1_VOICE's shape. A lesson written `tips/<kind>` is a tip, read through `f3aTip`.
+ */
+const F3A_SENTENCES: [string, string, string[], string][] = [
+  [
+    '0.1',
+    'T34: flat fingers are a habit to reset, and the curve is said to help control as a heuristic, not ranked as the main reason',
+    ['the main reason'],
+    'They look relaxed, but the curved shape above often makes it easier to play two notes at different volumes.',
+  ],
+  [
+    '1.1',
+    "T34: one finger for each key is C position's own rule, kept by these tunes, not a fact about piano fingering",
+    ['exactly one finger', 'no other finger is allowed'],
+    'C position has a rule of its own, and these tunes keep it: one finger for each key, and no other finger on it.',
+  ],
+  [
+    '1.1',
+    "T34: printed fingering is the edition's advice, and here it is what keeps the hand still",
+    ['it is not a suggestion', 'it is the reason the hand stays still'],
+    "Where fingering is printed above the notes, it is the edition's advice; here, following it is what keeps the hand still.",
+  ],
+  [
+    'practice.1',
+    'T36: several right in a row, with five as one target and a mistake restarting the count, not a recipe of five',
+    ['five times correct in a row', 'wrong at four'],
+    'Then play it again, until it comes out right several times in a row — five is one target to set yourself, with a mistake starting the count again. Not as a punishment: "usually right" is what tends to fall apart at tempo.',
+  ],
+  [
+    'practice.1',
+    'T36: the check is the target the learner set, not five times running',
+    ['five times running'],
+    'You can play the chunk right as many times running as you set out to, starting cold, and join it to the bar on either side.',
+  ],
+  [
+    'practice.2',
+    'T36: about half the speed is a common starting point, not what slow usually is',
+    ['usually about half'],
+    'and notice what you are doing — about half the speed that feels sensible is a common starting point.',
+  ],
+  [
+    'practice.2',
+    'T36: slow practice gives time to be accurate on purpose, not the only tempo that does',
+    ['cannot correct anything', 'the only tempo at which'],
+    'At speed a wrong note is often gone before you know it was wrong. Slowly, there is time to be accurate on purpose rather than by luck, and accuracy is what you want to repeat.',
+  ],
+  [
+    'practice.2',
+    'T36: slow practice makes tension easier to notice, not the only way to',
+    ['the only way to notice tension'],
+    'Slow practice also makes tension easier to notice.',
+  ],
+  [
+    'practice.2',
+    'T36: three clean then a small notch, back after a mistake, is one way to climb, not the rule',
+    ['three clean repetitions, then up one notch', 'one mistake and you go back'],
+    'One way to climb from there: after a few clean repetitions, say three, go up one small notch, around 5 % rather than 20; after a mistake, go back a notch and stay there until it is clean again.',
+  ],
+  [
+    'practice.2',
+    'T36: the ladder avoids grinding at a tempo you cannot hold, with no claim that it is faster than the alternative',
+    ['much faster than the alternative'],
+    'It can feel slow; the point is not to spend a week grinding at a tempo you cannot hold.',
+  ],
+  [
+    'practice.2',
+    'T36: the Tools paragraph points back at the ladder, no longer called a rule, and still says every three',
+    ['the rule above made quicker'],
+    'That is the ladder above made quicker: it moves after every pass rather than every three',
+  ],
+  [
+    'practice.3',
+    'T37: forty minutes on one thing may not be the best use of the time, and some of the climb can be gone by tomorrow',
+    ['least efficient', 'most of that climb is gone'],
+    'Practising one thing for forty minutes feels productive, but it may not be the best use of the time. Within a session, performance on the thing you are drilling can climb steadily — and some of that climb can be gone by tomorrow.',
+  ],
+  [
+    'practice.3',
+    'T37: interleaving can help what is kept and what carries over, with no efficacy superlative and no only timescale',
+    ['markedly better retention', 'the only timescale that matters'],
+    'It can still help what you keep a week later, and what carries over to other music.',
+  ],
+  [
+    'practice.3',
+    'T36: the session is one way to shape one, with a few minutes of warm-up rather than five',
+    ['what a session looks like.', 'warm up — five minutes'],
+    'One way to shape a session. Warm up for a few minutes, slowly, on something you know.',
+  ],
+  [
+    'practice.5',
+    'T36: three causes worth checking, not a plateau almost always one of three',
+    ['almost always one of three'],
+    'A plateau can have more than one cause; three worth checking are below, and the useful response is to work out which one you are in.',
+  ],
+  [
+    'practice.5',
+    'T36: rebuilding can take a while, with no week and no only thing that works',
+    ['it takes a week', 'the only thing that works'],
+    'Rebuilding can take a while, so give it more than one session.',
+  ],
+  [
+    'practice.5',
+    'T36: the diagnosis is a rough guide, not a rule',
+    ['if the mistakes move around, it is one', 'it is usually three'],
+    'Which one is it. A rough guide rather than a test: mistakes that move around suggest one; the same mistake in the same place each time suggests two; no mistakes, and still no faster, suggests three.',
+  ],
+  [
+    'blues.4',
+    'T42: the seventh on the I is colour here, heard as home, with no claim about every other style or a tension that never resolves',
+    ['in every other style', 'the tension never resolves', 'which is the point'],
+    'Here the seventh on the I is part of its colour rather than a pull towards another chord: listen to it as home.',
+  ],
+  [
+    'blues.4',
+    'T55: the raised fourth can be written in every key, a few with a double sharp, and no key is said to lack it',
+    ['runs out', 'a raised fourth works in every key'],
+    'A raised fourth can be written in every key, a few with a double sharp.',
+  ],
+  [
+    'blues.5',
+    'T42: leave the space the call and response asks for, with no claim that the blues is mostly space',
+    ['the blues is mostly space'],
+    'Filling every bar. Leave the space the call and response above asks for.',
+  ],
+  [
+    'blues.6',
+    'T42: the pattern carries Smith’s name, with no recording date and no claim about every boogie bass since',
+    ['every boogie bass since', 'recorded it in 1928'],
+    'the shape is easy and the shift is not. The pattern is named after Clarence "Pinetop" Smith.',
+  ],
+  [
+    'blues.8',
+    'T42: the piece is named with the date its catalogue row carries, not as the record every boogie bass copies',
+    ['every boogie bass since', 'the 1928 original'],
+    "Pinetop's Boogie Woogie (1928) is the same file you met at Stage 6.",
+  ],
+  [
+    'classical.3',
+    'T44: stepwise legato and detached leaps are a common starting point for an articulation the lesson already calls your decision, not the convention that works',
+    ['the convention that works'],
+    'One common starting point: stepwise notes legato, leaps detached, and long notes slightly separated from what follows.',
+  ],
+  [
+    'classical.4.shelf',
+    'T44: the three skills are the ones this lesson picks for these pieces, not what Romantic writing asks for',
+    ['what romantic piano writing asks for'],
+    'The three skills below are the ones this lesson picks out for these pieces, and this stage of the classical ladder is here to start them.',
+  ],
+  [
+    'classical.4.shelf',
+    'T44: pedal where the page marks it or you add it, and a late change blurs, with no constant pedal and no beautiful-or-muddy',
+    ['applied constantly', 'the difference between beautiful and muddy'],
+    "Stage 3's legato pedalling, changed with the harmony, used where the page marks it or where you choose to add it. A change that comes late lets one harmony blur into the next, so listen for it.",
+  ],
+  [
+    'classical.5',
+    'T44: the upper-note start is what a Classical-period trill often does, with its exception, not a rule of the style',
+    ['a trill in classical style starts'],
+    'A trill in Classical-period music often starts on the upper note and finishes on the main one, unless the melody has just come from above.',
+  ],
+  [
+    'classical.5',
+    "T44: a trill in a piece is a sign to work out, with no rule to memorise and no claim that this rung's pieces carry one",
+    ['memorise the rule', 'here the ornaments arrive inside the pieces'],
+    'The written-out drills are on the technique track; in a piece it is a sign, the harder way round — and the reason to settle a starting point now.',
+  ],
+  [
+    'classical.5',
+    'T44: neither score marks pedal, so pedalling them is a choice, not what they want',
+    ['both want the pedal', 'for warmth'],
+    "Neither Schumann's First Loss nor Tchaikovsky's Old French Song marks pedal here, so it is your choice; legato pedalling is the technique.",
+  ],
+  [
+    'classical.6',
+    'T44: the melody often sits on top of the right hand, and singing over a quieter accompaniment is a starting point, not a fixed dynamic',
+    ['usually holds', 'turns to mush'],
+    'In a Romantic miniature the right hand often holds a melody in the top note and an accompaniment underneath it, in the same hand. Played at one volume, the tune can get lost; a common starting point is a melody that sings over a quieter accompaniment.',
+  ],
+  [
+    'classical.6',
+    'T44: the metronome tests the kind of rubato the lesson describes, not every rubato',
+    ['rubato survives a metronome'],
+    'The test for this kind of rubato: play with the metronome on. The accompaniment still lands with the click; with hesitation, it does not.',
+  ],
+  [
+    'technique.6',
+    'T44: the written-out trill is one common Classical way, not the Classical convention',
+    ['the classical convention rather than a house rule'],
+    'That is one common way to play a trill in Classical-period music, not the only one, and having it in the fingers saves working it out over a sonatina later.',
+  ],
+  [
+    'chords-pop.7',
+    'T45: add9 is a sound you will hear in pop piano, not the sound of most of it',
+    ['the sound of most pop piano'],
+    'It is a sound you will hear in pop piano, and it is not a ninth chord',
+  ],
+  [
+    'tips/ear-tune',
+    'T55: working by ear puts the ear first, with no oldest way and no most reliably',
+    ['oldest way to learn music', 'most reliably'],
+    'It puts your ear first: you have to hear a note before you can find it, and that is practice at hearing what you play.',
+  ],
+];
+
+describe('F3a: each audited sentence says what the app does, what the page shows, or a heuristic said as one', () => {
+  for (const [lesson, says, gone, now] of F3A_SENTENCES) {
+    it(`${lesson}: ${says}`, () => {
+      const text = lesson.startsWith('tips/') ? f3aTip(lesson.slice('tips/'.length)) : f0mText(lesson);
       for (const phrase of gone) expect.soft(text.toLowerCase()).not.toContain(phrase.toLowerCase());
       expect.soft(text).toContain(now);
     });
