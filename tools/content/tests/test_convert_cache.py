@@ -195,6 +195,46 @@ class TestReproducible(CacheCase):
             stamps = {info.date_time for info in archive.infolist()}
         self.assertEqual(stamps, {convert.ZIP_EPOCH})
 
+    def test_the_archive_is_the_same_on_every_platform(self) -> None:
+        # E50a, the reviewer's required correction (questions-bd7d303e.md §5): `zipfile` writes the
+        # creating system into every central-directory entry (`ZipInfo.create_system`: 0 on Windows,
+        # 3 elsewhere), so the same score normalised on the laptop and on CI's Linux runner was two
+        # files. `normalise_archive` pins it, beside the zip times and the permissions it already pins.
+        import zipfile
+
+        entries = [("META-INF/container.xml", b"<container/>"), ("score.musicxml", UNDATED_HEADER.encode("utf-8"))]
+
+        def written(name: str, system: int, external_attr: int) -> Path:
+            """An archive as another machine's zip tool wrote it: its own creating system and attributes."""
+            path = self.tmp / name
+            with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as archive:
+                for entry, data in entries:
+                    info = zipfile.ZipInfo(entry, date_time=convert.ZIP_EPOCH)
+                    info.compress_type = zipfile.ZIP_DEFLATED
+                    info.create_system = system
+                    info.external_attr = external_attr
+                    archive.writestr(info, data)
+            return path
+
+        # Normalised on Linux and on Windows: one file.
+        on = {}
+        for platform in ("linux", "win32"):
+            path = written(f"{platform}.mxl", 0, 0)
+            with mock.patch.object(sys, "platform", platform):
+                convert.normalise_archive(path)
+            on[platform] = path.read_bytes()
+        self.assertEqual(on["linux"], on["win32"])
+        # Entries that differ only in platform metadata (a Unix mode under system 3, a DOS attribute under 0)
+        # come out as the same bytes, with the one canonical system and the pinned permissions.
+        unix = written("unix.mxl", 3, (0o100644 << 16))
+        dos = written("dos.mxl", 0, 0x20)
+        for path in (unix, dos):
+            convert.normalise_archive(path)
+        self.assertEqual(unix.read_bytes(), dos.read_bytes())
+        self.assertEqual(unix.read_bytes(), on["linux"])
+        with zipfile.ZipFile(unix) as archive:
+            self.assertEqual({(i.create_system, i.external_attr) for i in archive.infolist()}, {(convert.ZIP_SYSTEM, 0o600 << 16)})
+
     def test_minted_ids_are_renamed_but_real_ones_are_kept(self) -> None:
         xml = (
             '<score-part id="P64fa5e9c10000199a0c6ce0460494465">'
@@ -257,12 +297,17 @@ class TestFormerIdentities(CacheCase):
     ever derived: no day is tried that no recorded file carries (the reviewer's rule, questions-71bd6cee.md).
     """
 
-    def dated_conversion(self, day: date, folder: str) -> Path:
-        """The committed converter's output on `day`: a conversion with the removal bypassed."""
+    def dated_conversion(self, day: date, folder: str, system: int = 0) -> Path:
+        """
+        The committed converter's output on `day`, on a machine whose `zipfile` records `system` (0, the
+        laptop's Windows, by default): a conversion with the removal bypassed and that creating system.
+        """
         dest = self.tmp / folder / "score.mxl"
-        with converting_on(day), mock.patch.object(convert, "without_encoding_date", lambda text: text):
+        with converting_on(day), mock.patch.object(convert, "without_encoding_date", lambda text: text), \
+                mock.patch.object(convert, "ZIP_SYSTEM", system):
             cached_convert(SOURCE, dest, use_cache=False)
         self.assertIn(f"<encoding-date>{day.isoformat()}</encoding-date>", score_text(dest))
+        self.assertEqual(convert.archive_system(dest.read_bytes()), system)
         return dest
 
     def recorded(self, path: Path) -> dict:
@@ -282,7 +327,8 @@ class TestFormerIdentities(CacheCase):
         hexes = re.compile(r"^[0-9a-f]{64}$")
         for entry in entries:
             with self.subTest(file=entry["file"], date=entry["date"]):
-                self.assertEqual(set(entry), {"file", "date", "sha256", "undated"})
+                self.assertEqual(set(entry), {"file", "date", "system", "sha256", "undated"})
+                self.assertIn(entry["system"], (0, 3), "a creating system zipfile writes: Windows 0, elsewhere 3")
                 self.assertRegex(entry["sha256"], hexes)
                 self.assertRegex(entry["undated"], hexes)
                 day = date.fromisoformat(entry["date"])
@@ -307,11 +353,15 @@ class TestFormerIdentities(CacheCase):
         self.assertIsNone(convert.with_encoding_date("<score-partwise/>\n", date(2026, 10, 1)))
 
     def test_a_recorded_dated_file_of_the_same_music_is_re_proved_and_named(self) -> None:
-        history = [self.dated_conversion(date(2026, 9, 16), "a"), self.dated_conversion(date(2026, 9, 29), "b")]
+        # One historical file written on the laptop (creating system 0), one on a Linux runner (3).
+        history = [self.dated_conversion(date(2026, 9, 16), "a", 0), self.dated_conversion(date(2026, 9, 29), "b", 3)]
         table = [self.recorded(path) for path in history]
+        self.assertEqual([entry["system"] for entry in table], [0, 3])
         now = self.tmp / "now" / "score.mxl"
         cached_convert(SOURCE, now, use_cache=False)
-        # Removing a recorded file's date gives exactly the file the converter writes today.
+        self.assertEqual(convert.archive_system(now.read_bytes()), convert.ZIP_SYSTEM)
+        # Removing a recorded file's date gives exactly the file the converter writes today, whichever
+        # machine wrote the record: today's file is one file on every machine.
         self.assertEqual({entry["undated"] for entry in table}, {sha256(now)})
         self.assertEqual(convert.former_identities(now, table), [sha256(path) for path in history])
         self.assertNotIn(sha256(now), convert.former_identities(now, table))
@@ -332,6 +382,8 @@ class TestFormerIdentities(CacheCase):
         self.assertEqual(convert.former_identities(now, [never_written]), [], "an entry whose date does not rebuild its bytes")
         other_music = {**table[0], "undated": "0" * 64}
         self.assertEqual(convert.former_identities(now, [other_music]), [])
+        other_machine = {**table[0], "system": 3}
+        self.assertEqual(convert.former_identities(now, [other_machine]), [], "an entry whose creating system does not rebuild its bytes")
 
     def test_dated_form_records_a_dated_music21_file_and_nothing_else(self) -> None:
         dated = self.dated_conversion(date(2026, 9, 22), "dated")
@@ -346,7 +398,7 @@ class TestFormerIdentities(CacheCase):
     def test_a_dated_file_a_musescore_file_and_a_file_with_no_encoding_give_none(self) -> None:
         def entry_for(path: Path) -> dict:
             """An entry that names this very file as its undated form: only an undated music21 file may use it."""
-            return {"file": "x", "date": "2026-09-22", "sha256": "f" * 64, "undated": sha256(path)}
+            return {"file": "x", "date": "2026-09-22", "system": convert.ZIP_SYSTEM, "sha256": "f" * 64, "undated": sha256(path)}
 
         dated = self.dated_conversion(date(2026, 9, 22), "dated")
         self.assertEqual(convert.former_identities(dated, [entry_for(dated)]), [])

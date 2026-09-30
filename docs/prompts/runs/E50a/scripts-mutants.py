@@ -88,6 +88,15 @@ MUTANTS = [
      "candidates: tuple[dict, ...] | list[dict] = historical_identities().get(current, ())",
      "candidates: tuple[dict, ...] | list[dict] = ()",
      py("TestFormerIdentities.test_a_recorded_dated_file_of_the_same_music_is_re_proved_and_named")),
+    # The second implementation HEAD (the reviewer's required correction, questions-bd7d303e.md §5).
+    ("the creating system left to the platform (zipfile's own)", CONVERT,
+     "info.create_system = ZIP_SYSTEM if create_system is None else create_system",
+     "pass  # the mutant: zipfile's own creating system",
+     py("TestReproducible.test_the_archive_is_the_same_on_every_platform")),
+    ("the re-proof zipped under the canonical system, not the entry's machine's", CONVERT,
+     'rebuilt = _redated(entries, at, entry["date"], entry["system"])',
+     'rebuilt = _redated(entries, at, entry["date"], ZIP_SYSTEM)',
+     py("TestFormerIdentities.test_a_recorded_dated_file_of_the_same_music_is_re_proved_and_named")),
 ]
 
 

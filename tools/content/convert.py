@@ -1544,6 +1544,14 @@ MUSIC21_MINTED_ID = re.compile(r"^[A-Za-z][0-9a-f]{16,}$")
 #: field can express, and is what reproducible-build tooling conventionally uses.
 ZIP_EPOCH = (1980, 1, 1, 0, 0, 0)
 
+#: The creating system written into every zip entry: 3, Unix (APPNOTE 4.4.2), the host whose
+#: meaning the pinned permissions have (`external_attr` holds a Unix mode in its high 16 bits).
+#: `zipfile` writes 0 on Windows and 3 elsewhere (`ZipInfo.create_system`), so until E50a the same
+#: score normalised on the laptop and on CI's runner was two files (the reviewer's required
+#: correction, `docs/review/responses/questions-bd7d303e.md` §5). The only field that varies by
+#: platform in what `pinned_archive` writes.
+ZIP_SYSTEM = 3
+
 
 def deterministic_ids(xml_text: str) -> str:
     """
@@ -1657,16 +1665,19 @@ def is_text_entry(name: str) -> bool:
     return name.lower().endswith((".xml", ".musicxml"))
 
 
-def pinned_archive(entries: list[tuple[str, bytes]]) -> bytes:
+def pinned_archive(entries: list[tuple[str, bytes]], create_system: int | None = None) -> bytes:
     """
-    The bytes of a `.mxl` holding these entries, every wall-clock field pinned: the one zip layout
-    `normalise_archive` writes and `former_identities` rebuilds. Entry order is kept as given.
+    The bytes of a `.mxl` holding these entries, every wall-clock and platform field pinned: the one
+    zip layout `normalise_archive` writes and `former_identities` rebuilds. Entry order is kept as
+    given. `create_system` is `ZIP_SYSTEM` unless a historical file is being rebuilt: one the
+    converter wrote before E50a carries its own machine's (`dated_form` records which).
     """
     buffer = io.BytesIO()
     with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
         for name, data in entries:
             info = zipfile.ZipInfo(name, date_time=ZIP_EPOCH)
             info.compress_type = zipfile.ZIP_DEFLATED
+            info.create_system = ZIP_SYSTEM if create_system is None else create_system
             info.external_attr = 0o600 << 16
             archive.writestr(info, data)
     return buffer.getvalue()
@@ -1679,9 +1690,10 @@ def normalise_archive(path: Path) -> None:
     Three things in a music21 zip are wall-clock: the per-entry modification
     time; the ids music21 minted while it was running (`deterministic_ids`
     above); and the day it ran, which it writes as `<encoding-date>`
-    (`without_encoding_date`, removed since E50a). All three are pinned here.
-    Entry order is preserved rather than sorted, because the MXL container wants
-    `META-INF/container.xml` to stay where the writer put it.
+    (`without_encoding_date`, removed since E50a). One is the machine's: the
+    creating system `zipfile` records (`ZIP_SYSTEM`, since E50a). All four are
+    pinned here. Entry order is preserved rather than sorted, because the MXL
+    container wants `META-INF/container.xml` to stay where the writer put it.
     """
     with zipfile.ZipFile(path) as archive:
         entries = [(info.filename, archive.read(info.filename)) for info in archive.infolist()]
@@ -1758,16 +1770,28 @@ def _score_at(entries: list[tuple[str, bytes]], undated: bool) -> int | None:
     return found[0] if len(found) == 1 else None
 
 
+def archive_system(raw: bytes) -> int | None:
+    """The one creating system every entry of a zip records, or None (not a zip, or mixed)."""
+    try:
+        with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+            systems = {info.create_system for info in archive.infolist()}
+    except zipfile.BadZipFile:
+        return None
+    return systems.pop() if len(systems) == 1 else None
+
+
 def dated_form(raw: bytes) -> dict | None:
     """
-    A historical file's entry for the table: `{"date", "sha256", "undated"}` — the day music21 wrote into
-    it, its own sha256, and the sha256 of the same file with that line removed and zipped as the converter
-    zips now, which is exactly what the converter writes for the same music today. None for anything but a
-    dated music21 `.mxl` in the converter's layout, and where putting the date back does not give the file
-    back byte for byte (so every entry is a reconstruction proved at the moment it is recorded).
+    A historical file's entry for the table: `{"date", "system", "sha256", "undated"}` — the day music21
+    wrote into it, the creating system its machine's `zipfile` recorded (0 on Windows, 3 elsewhere), its
+    own sha256, and the sha256 of the same file with that line removed and zipped as the converter zips now
+    (`ZIP_SYSTEM`), which is exactly what the converter writes for the same music today. None for anything
+    but a dated music21 `.mxl` in the converter's layout on some machine, and where putting the date back
+    does not give the file back byte for byte (so every entry is a reconstruction proved when recorded).
     """
     entries = _entries(raw)
-    if entries is None or pinned_archive(entries) != raw:
+    system = archive_system(raw)
+    if entries is None or system is None or pinned_archive(entries, system) != raw:
         return None
     at = _score_at(entries, undated=False)
     if at is None:
@@ -1777,12 +1801,14 @@ def dated_form(raw: bytes) -> dict | None:
     undated = list(entries)
     undated[at] = (entries[at][0], without_encoding_date(text).encode("utf-8"))
     undated_bytes = pinned_archive(undated)
-    entry = {"date": day, "sha256": hashlib.sha256(raw).hexdigest(), "undated": hashlib.sha256(undated_bytes).hexdigest()}
-    return entry if _redated(undated, at, day) == raw else None
+    entry = {"date": day, "system": system, "sha256": hashlib.sha256(raw).hexdigest(),
+             "undated": hashlib.sha256(undated_bytes).hexdigest()}
+    return entry if _redated(undated, at, day, system) == raw else None
 
 
-def _redated(entries: list[tuple[str, bytes]], at: int, day: str) -> bytes | None:
-    """The undated entries with music21's line for `day` put back, zipped as the converter zips."""
+def _redated(entries: list[tuple[str, bytes]], at: int, day: str, system: int) -> bytes | None:
+    """The undated entries with music21's line for `day` put back, zipped as the converter zipped on a
+    machine whose `zipfile` recorded `system`."""
     try:
         when = date.fromisoformat(day)
     except ValueError:
@@ -1792,7 +1818,7 @@ def _redated(entries: list[tuple[str, bytes]], at: int, day: str) -> bytes | Non
         return None
     dated = list(entries)
     dated[at] = (entries[at][0], dated_text.encode("utf-8"))
-    return pinned_archive(dated)
+    return pinned_archive(dated, system)
 
 
 @functools.lru_cache(maxsize=1)
@@ -1812,7 +1838,8 @@ def former_identities(path: Path, table: list[dict] | None = None) -> list[str]:
     The historical identities of this file's music (E50a; the reviewer's bounded compatibility source):
     each recorded dated file (`former_identities.json`, or `table` in a test) whose undated form is this
     file, re-proved here — this file with that entry's date put back where music21 wrote it
-    (`with_encoding_date`) and zipped as `normalise_archive` zips (`pinned_archive`) is that entry's bytes.
+    (`with_encoding_date`) and zipped as `normalise_archive` zipped on the machine that wrote the entry
+    (`pinned_archive` with the entry's creating system) is that entry's bytes.
     The build records them beside the row's identity (`provenance.formerIdentities`), so a run, an
     encounter or a project stored against a dated file still names the row's material; the app resolves
     them at read and never recomputes them. Nothing is derived beyond the table: no date is tried that no
@@ -1839,7 +1866,7 @@ def former_identities(path: Path, table: list[dict] | None = None) -> list[str]:
         candidates = [entry for entry in table if entry["undated"] == current]
     out: list[str] = []
     for entry in candidates:
-        rebuilt = _redated(entries, at, entry["date"])
+        rebuilt = _redated(entries, at, entry["date"], entry["system"])
         if rebuilt is not None and hashlib.sha256(rebuilt).hexdigest() == entry["sha256"] and entry["sha256"] not in out:
             out.append(entry["sha256"])
     return out

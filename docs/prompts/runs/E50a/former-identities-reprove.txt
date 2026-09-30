@@ -1,0 +1,2 @@
+the main checkout's app/public/content as rebuilt 2026-09-30 00:30, read in place: each entry's music re-proved under the canonical creating system: 753 entries re-proved; creating systems {0: 753}
+exit 0

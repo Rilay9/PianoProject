@@ -26,7 +26,9 @@ sys.path.insert(0, str(W / "tools" / "content"))
 import convert  # noqa: E402
 import review  # noqa: E402
 
-BEFORE = W / "build" / "e50a" / "before" / "content"
+# The second implementation HEAD passes the laptop's catalogue as the before side and a suffix for its outputs.
+BEFORE = Path(sys.argv[1]) if len(sys.argv) > 1 else W / "build" / "e50a" / "before" / "content"
+SUFFIX = sys.argv[2] if len(sys.argv) > 2 else ""
 AFTER = W / "app" / "public" / "content"
 LAPTOP = Path(r"C:\Users\yalir\repos\Piano Stuff\PianoProject\app\public\content")
 RUNS = W / "docs" / "prompts" / "runs" / "E50a"
@@ -113,7 +115,7 @@ def main() -> int:
             entry = convert.dated_form(raw_b)
             entries = convert._entries(raw_a)
             at = convert._score_at(entries, undated=True) if entries else None
-            rebuilt = convert._redated(entries, at, entry["date"]) if entry and at is not None else None
+            rebuilt = convert._redated(entries, at, entry["date"], entry["system"]) if entry and at is not None else None
             ok = entry is not None and entry["undated"] == hashlib.sha256(raw_a).hexdigest() and rebuilt == raw_b
             file_check["the before file is the after file re-dated, byte for byte" if ok else "MISMATCH"] += 1
             if not ok:
@@ -190,8 +192,24 @@ def main() -> int:
         a_id = (after.get(event["item"], {}).get("provenance") or {}).get("identity")
         say(f"   D2 decision {event['event'][:11]} on {event['item']} ({event['identity']['kind']}): "
             f"{'bound to the after identity (review.same_identity)' if review.same_identity(event['identity'], a_id) else 'NOT the after identity'}")
-    (RUNS / "item6-rows.tsv").write_text("\n".join(tsv) + "\n", encoding="utf-8")
-    (RUNS / "item6-compare.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    table = json.loads(convert.FORMER_IDENTITIES_FILE.read_text(encoding="utf-8"))["identities"]
+    named = {one["sha256"] for row in after.values() for one in row["provenance"].get("formerIdentities") or []}
+    built = [e for e in table if not e["file"].startswith("scores/pdmx/")]
+    say()
+    say("## the committed table re-proved against this build's files")
+    say(f"   build-converted entries named by a row's formerIdentities: {sum(1 for e in built if e['sha256'] in named)} of {len(built)}")
+    say(f"   committed PDMX entries named (none expected while the copies keep their dates): {sum(1 for e in table if e['file'].startswith('scores/pdmx/') and e['sha256'] in named)}")
+    systems: Counter = Counter()
+    for row in after.values():
+        path = AFTER / row["file"] if row.get("file") else None
+        if path is None or not path.is_file():
+            continue
+        software, _day = encoding(path.read_bytes())
+        if row["provenance"]["source"] != "pdmx" and software and software.startswith("music21 v."):
+            systems[convert.archive_system(path.read_bytes())] += 1
+    say(f"   creating systems of this build's converter-written files (generated included): {dict(systems)}")
+    (RUNS / f"item6-rows{SUFFIX}.tsv").write_text("\n".join(tsv) + "\n", encoding="utf-8")
+    (RUNS / f"item6-compare{SUFFIX}.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
     return 1 if unresolved or mismatches or collisions else 0
 
 

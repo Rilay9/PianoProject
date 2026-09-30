@@ -11,6 +11,13 @@ music21 wrote that a catalogue able to store a learner's material could have ser
     python scripts-former-identities.py --check <content dir> [<content dir> ...]
         lists the dated music21 identities a catalogue holds that the table does not: the reviewer's stop
         condition. Exit 1 when there is any.
+    python scripts-former-identities.py --reprove <content dir> <label>
+        re-proves every entry already in the table under the converter's current bytes (the reviewer's
+        required correction, questions-bd7d303e.md §5: one canonical creating system): for each entry, the
+        catalogue's file at the entry's path gives the music's undated text; that text with the entry's date
+        put back, zipped under creating system 0 or 3, must give the entry's own sha256, which fixes the
+        entry's `system`, and `undated` becomes the sha256 of the undated form as the converter zips it now.
+        An entry that does not re-prove stops the run and nothing is written; none is added or dropped.
 
 The output is deterministic: entries sorted by file, date and sha256, one per line.
 """
@@ -80,7 +87,7 @@ def write_table(table: dict) -> None:
         "sources": table.get("sources", []),
     }
     text = json.dumps(head, indent=2, ensure_ascii=False)[:-2] + ',\n  "identities": [\n'
-    text += ",\n".join("    " + json.dumps({k: e[k] for k in ("file", "date", "sha256", "undated")}, ensure_ascii=False) for e in entries)
+    text += ",\n".join("    " + json.dumps({k: e[k] for k in ("file", "date", "system", "sha256", "undated")}, ensure_ascii=False) for e in entries)
     text += "\n  ]\n}\n"
     TABLE.write_text(text, encoding="utf-8", newline="\n")
 
@@ -98,6 +105,44 @@ def main(argv: list[str]) -> int:
             print(f"{label}: {rows} rows, {len(found)} dated music21 identities, {len(added)} added")
         write_table(table)
         print(f"{TABLE.relative_to(W).as_posix()}: {len(known)} identities")
+        return 0
+    if argv[:1] == ["--reprove"] and len(argv) == 3:
+        import hashlib
+
+        folder, label = Path(argv[1]), argv[2]
+        table = read_table()
+        failed: list[str] = []
+        systems: dict[int, int] = {}
+        for entry in table["identities"]:
+            path = folder / entry["file"]
+            entries = convert._entries(path.read_bytes()) if path.is_file() else None
+            at = None
+            if entries is not None:
+                at = convert._score_at(entries, undated=False)
+                if at is not None:
+                    text = entries[at][1].decode("utf-8")
+                    entries = list(entries)
+                    entries[at] = (entries[at][0], convert.without_encoding_date(text).encode("utf-8"))
+                else:
+                    at = convert._score_at(entries, undated=True)
+            proved = [system for system in (0, 3) if at is not None and entries is not None
+                      and (rebuilt := convert._redated(entries, at, entry["date"], system)) is not None
+                      and hashlib.sha256(rebuilt).hexdigest() == entry["sha256"]]
+            if len(proved) != 1 or entries is None:
+                failed.append(f"{entry['file']} {entry['date']} {entry['sha256'][:12]}")
+                continue
+            entry["system"] = proved[0]
+            entry["undated"] = hashlib.sha256(convert.pinned_archive(entries)).hexdigest()
+            systems[proved[0]] = systems.get(proved[0], 0) + 1
+        if failed:
+            print(f"STOP: {len(failed)} entries do not re-prove against {folder}; nothing written")
+            for line in failed[:50]:
+                print(f"   {line}")
+            return 1
+        table.setdefault("sources", []).append({"reproved": label, "entries": len(table["identities"]),
+                                                 "systems": {str(k): v for k, v in sorted(systems.items())}})
+        write_table(table)
+        print(f"{label}: {len(table['identities'])} entries re-proved; creating systems {systems}")
         return 0
     if argv[:1] == ["--check"] and len(argv) >= 2:
         known = {e["sha256"] for e in read_table()["identities"]}

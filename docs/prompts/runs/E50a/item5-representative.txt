@@ -1,8 +1,8 @@
 row song.blues.wabash-blues: cid QmWwJDFTEwoHzX3qXiVR8koWxt8Vc2oP9BHJSd68BfEVMt, rawSha256 b4b47922a473afcde8b196d3dcb43c4900f779aa50c5b13d92344796b439906a, convertedSha256 60f8d018899c70b1dd3c09e0d48e7e24d61efedb68e6ac67d5451c8572338208
 streamed member mxl/14/50/QmWwJDFTEwoHzX3qXiVR8koWxt8Vc2oP9BHJSd68BfEVMt.mxl read-only out of mxl.tar.gz (the archive was not extracted)
 raw sha256 b4b47922a473afcde8b196d3dcb43c4900f779aa50c5b13d92344796b439906a: equals the row's rawSha256
-converted under the patched date 2026-09-16: sha256 f74de57c245221f8e4405e850cc0f5d542325c2882acd82615b5e0a272666c12
-converted under the patched date 2026-10-01: sha256 f74de57c245221f8e4405e850cc0f5d542325c2882acd82615b5e0a272666c12
+converted under the patched date 2026-09-16: sha256 3142e0f05e86e23e0c88d1b83464d3df21fab4dbac6ab16a89b9071df3803f66
+converted under the patched date 2026-10-01: sha256 3142e0f05e86e23e0c88d1b83464d3df21fab4dbac6ab16a89b9071df3803f66
 two conversions on two dates byte-identical: True
 new file carries <encoding-date>: False
 committed file (a copy under build/e50a/item5/committed) sha256 60f8d018899c70b1dd3c09e0d48e7e24d61efedb68e6ac67d5451c8572338208: equals the row's convertedSha256

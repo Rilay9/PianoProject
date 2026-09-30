@@ -87,13 +87,31 @@ Nothing a learner sees changes, and nothing is heard. What a learner meets throu
 - **The Mutopia intermediates.** The staged write (`import_mutopia.py`:471) and `midi_to_musicxml.py`:1072 still date their intermediates, which moves the cache key on a miss.
 - **`<software>` on a music21 upgrade.** An upgrade whose only change is that line would move identities.
 - **E50's items 5(ii), 5(iv) and 8** name the date and its churn, and need revising. A committed PDMX copy's current identity is recorded in the table, so a date-only reconversion of it keeps that identity as a former one.
-- **P2, cross-platform.** `zipfile` writes the creating system into every archive (0 on Windows, 3 elsewhere), so a CI build's files differ from the laptop's. Their identities, and so the table's reach, are per platform; the table holds the laptop's, which is what the phone installs (D25).
+- ~~**P2, cross-platform.**~~ Built in the second implementation HEAD, on the reviewer's required correction (below).
+- **The excerpt cutter's own zip writer** (`excerpts.py`:449–470) writes `zipfile`'s platform creating system too; it is outside E50a's boundary (brief item 8) and cuts carry no identification, so their bytes still differ by platform. Recorded, not built.
 
 ## Questions for the reviewer
 
 1. The upper bound moves with every pre-E50a laptop build, because the six Python-authored files are never cached. Is regenerating the table from the main checkout's last pre-E50a catalogues, as the landing's first step, the deliberate addition the rule intends?
 2. The lower bound is D4's catalogue. The table holds every dated identity the laptop's deployable catalogues held since then, including the committed PDMX copies' quarry dates from 2026-09-06. Is that the proven set the rule wants?
 
+
+**Answered** (`responses/questions-bd7d303e.md` §5): (1) yes, added at the landing after the last pre-E50a build, each proved against the file that existed, then `--check`; (2) yes, with the reading that an old-dated hash counts only when that exact identity appeared in a D4-or-later catalogue.
+
+## The second implementation HEAD: the creating system pinned (the reviewer's required correction)
+
+- **The mechanism.** `zipfile.ZipInfo` sets `create_system` from the platform (`zipfile.py`:398–402: 0 on `win32`, 3 elsewhere) and writes it into every central-directory entry; `pinned_archive` pinned the times and the permissions (`external_attr`, already an explicit Unix mode) but not that byte. So the same conversion was two files on the laptop and on CI's runner. The only platform-dependent field in what `pinned_archive` writes: the committed layout written as on Windows and as on Linux differs in exactly one byte per entry, the creating system in each central-directory header's "version made by" (0 against 3), and nowhere else (`zip-platform-diff.txt`); the red run shows the same bytes, `\x14\x00` against `\x14\x03` (`red-zip-platform-committed.txt`).
+- **The change.** `convert.ZIP_SYSTEM = 3` (Unix, the host whose meaning the pinned `external_attr` has), set on every entry by `pinned_archive`; a historical file is rebuilt under its own machine's system (`pinned_archive(entries, create_system)`). `dated_form` records it (`archive_system`), each table entry carries `system`, and `former_identities` re-proves under the entry's system. Not a zip rewrite: one field.
+- **Red first.** `test_the_archive_is_the_same_on_every_platform`: normalised as on Linux and as on Windows (a patched `sys.platform`), one file; entries differing only in platform metadata (create system 3 with a Unix mode, 0 with a DOS attribute) come out as the same bytes, with `ZIP_SYSTEM` and the pinned permissions. Red on 338cc916 at `on["linux"] == on["win32"]`, green after. `test_a_recorded_dated_file_of_the_same_music_is_re_proved_and_named` now records one historical file per system (0 and 3), both named, and refuses an entry whose system does not rebuild its bytes.
+- **(b), confirmed.** Every one of the 753 entries was read as a row's current identity from the laptop's 2026-09-29 22:28 catalogue, a D4-or-later catalogue that served the app (`former-identities-generate.txt`); the 2026-09-06 PDMX dates are those rows' own. None was synthesised from a date; none dropped.
+- **The table, re-proved once under the final bytes** (`--reprove`, `former-identities-reprove.txt`, `table-diff.txt`): the same 753 historical identities (file, date, sha256), each `undated` recomputed under `ZIP_SYSTEM`, each `system` fixed by proof: 0 for all 753 (the laptop's). The six 2026-09-29 authored entries re-proved from the laptop's 2026-09-30 files with their own date put back.
+- **The landing's addition (the orchestrator's step, not taken here).** After the last pre-E50a build, from the checkout holding E50a's `convert.py`: `python docs/prompts/runs/E50a/scripts-former-identities.py --add "<main>/app/public/content" "<label>" "<main>/app/dist/content" "<label>"`, then `... --check "<main>/app/public/content" "<main>/app/dist/content"` must exit 0; then the landing build.
+- **Evidence under the final bytes** (`second-head-checks.txt`, `item6-compare-second.txt`):
+  - one build with the final bytes: exit 0, every conversion re-converted; validate 0; the review check 0 (4 current, 0 stale);
+  - against the laptop's catalogue as rebuilt 2026-09-30 01:08: the file-by-file check holds for 211 of 211 — each laptop file, the six 2026-09-30 authored ones included, is the final file re-dated under creating system 0, so `--add` will record and re-prove those six; the table's 211 build-converted entries are all named; 205 laptop identities resolve, and the six 2026-09-30 ones wait for the landing's addition;
+  - every converter-written file of the build carries system 3 (1,411: 211 converted, 1,200 generated); item 5's outcome unchanged;
+  - `tsc -b --noEmit` 0, lint 0, the 17 content test files that import `convert` 472 OK (3 skipped), the six identity unit files 117 of 117, mutants 16 of 16 killed;
+  - the whole suites, the app build and the browser specs are the landing chain's.
 
 ## Doc rows
 
