@@ -1,0 +1,67 @@
+
+Running 12 tests using 4 workers
+
+seed 3: 45 actions, 0 long tasks, worst 0 ms, 14 s
+  ok  3 tests\e2e\score.fuzz.spec.ts:191:3 › seed 3 on song.folk.mary-had-a-little-lamb at 390×844: forty-five things a restless learner does (17.7s)
+seed 2: 45 actions, 1 long tasks, worst 59 ms, 16 s — 59 ms during "rotate" (#3)
+  ok  4 tests\e2e\score.fuzz.spec.ts:191:3 › seed 2 on song.folk.mary-had-a-little-lamb at 390×844: forty-five things a restless learner does (19.2s)
+seed 4: 45 actions, 1 long tasks, worst 57 ms, 16 s — 57 ms during "clearLoop" (#39)
+  ok  2 tests\e2e\score.fuzz.spec.ts:191:3 › seed 4 on song.folk.twinkle.ht at 390×844: forty-five things a restless learner does (19.9s)
+seed 1: 45 actions, 0 long tasks, worst 0 ms, 17 s
+  ok  1 tests\e2e\score.fuzz.spec.ts:191:3 › seed 1 on song.folk.mary-had-a-little-lamb at 390×844: forty-five things a restless learner does (20.4s)
+  x   6 tests\e2e\score.head-height.spec.ts:150:3 › the score header is the same height all through a run at 342 px (3.7s)
+  ok  7 tests\e2e\score.head-height.spec.ts:215:3 › a run restarted mid-piece keeps its engraving at 342 px (6.5s)
+  ok  8 tests\e2e\score.head-height.spec.ts:270:3 › a run keeps its engraving when the stage's height changes at 342 px (6.9s)
+  x   9 tests\e2e\score.head-height.spec.ts:150:3 › the score header is the same height all through a run at 390 px (5.2s)
+  ok 12 tests\e2e\score.head-height.spec.ts:317:1 › the hands control is reachable during a run when the bar has sent it to the sheet (3.1s)
+  ok 10 tests\e2e\score.head-height.spec.ts:215:3 › a run restarted mid-piece keeps its engraving at 390 px (6.2s)
+  ok 11 tests\e2e\score.head-height.spec.ts:270:3 › a run keeps its engraving when the stage's height changes at 390 px (6.9s)
+seed 5: 45 actions, 1 long tasks, worst 64 ms, 18 s — 64 ms during "rotate" (#13)
+  ok  5 tests\e2e\score.fuzz.spec.ts:191:3 › seed 5 on song.folk.twinkle.ht at 900×1200: forty-five things a restless learner does (20.6s)
+
+
+  1) tests\e2e\score.head-height.spec.ts:150:3 › the score header is the same height all through a run at 342 px 
+
+    Error: starting a run must not change the header’s height
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 84.890625
+    Received: 102.5625
+
+      157 |     await page.waitForTimeout(800);
+      158 |     const started = await headHeight(page);
+    > 159 |     expect(started, 'starting a run must not change the header’s height').toBe(atRest);
+          |                                                                           ^
+      160 |
+      161 |     // The first correct notes: the state line changes as the run moves, and
+      162 |     // this is the moment CI's seed-4 walk was in when the size moved.
+        at <worktree>\app\tests\e2e\score.head-height.spec.ts:159:75
+
+    Error Context: build\u105b\test-results\score.head-height-the-scor-bdd37-all-through-a-run-at-342-px\error-context.md
+
+  2) tests\e2e\score.head-height.spec.ts:150:3 › the score header is the same height all through a run at 390 px 
+
+    Error: a message longer than the row must be cut, not wrapped
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 84.890625
+    Received: 102.5625
+
+      187 |     );
+      188 |     await page.waitForTimeout(400);
+    > 189 |     expect(await headHeight(page), 'a message longer than the row must be cut, not wrapped').toBe(atRest);
+          |                                                                                              ^
+      190 |
+      191 |     // And the machine difference itself: the same words, wider metrics.
+      192 |     await page.addStyleTag({ content: '#score-head { letter-spacing: 0.3em; }' });
+        at <worktree>\app\tests\e2e\score.head-height.spec.ts:189:94
+
+    Error Context: build\u105b\test-results\score.head-height-the-scor-3b84e-all-through-a-run-at-390-px\error-context.md
+
+  2 failed
+    tests\e2e\score.head-height.spec.ts:150:3 › the score header is the same height all through a run at 342 px 
+    tests\e2e\score.head-height.spec.ts:150:3 › the score header is the same height all through a run at 390 px 
+  10 passed (41.2s)
+exit 1

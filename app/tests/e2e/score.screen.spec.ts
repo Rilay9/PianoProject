@@ -1371,12 +1371,26 @@ test.describe('▶ after the sound was suspended (U69)', () => {
    * summary as they were. *Slower* first, because its sentence is as long as
    * any a summary tap says and its tap moves the tempo; then *Again*, whose
    * sentence replaces it.
+   *
+   * On every face (U105b). CI's run 36779781211 on `122a5224` read the
+   * header's copy of *Slower*'s sentence wider than its line on the runner
+   * (302 px in 283 at 342 × 740, that run's own measurement) and cut, while it
+   * fit here: the header's line was held to one line with an ellipsis. The
+   * refusal's sentence is state text, whole rather than one line tall (the
+   * reviewer's ruling on U105a, `responses/d0e1b01f.md`, choice 3, extended to
+   * the header), so in the refusal state the line wraps. Upright runs twice: on
+   * the app's stack, and with every element forced to a wider face (Verdana,
+   * or DejaVu Sans where Verdana is absent: `plan.spec.ts`, U90), which cut the
+   * sentence here on the one-line clamp exactly as the runner did. And the line
+   * read does not cut with an ellipsis on either, which no face can hide.
    */
-  for (const [held, width, height] of [
-    ['upright', 342, 740],
-    ['sideways', 740, 342],
+  const WIDER_FACE = "body, body * { font-family: Verdana, 'DejaVu Sans', sans-serif !important; }";
+  for (const [held, width, height, face] of [
+    ['upright', 342, 740, null],
+    ['upright', 342, 740, 'a wider face'],
+    ['sideways', 740, 342, null],
   ] as const) {
-    test(`a refused tap on the summary, ${held} (${String(width)} × ${String(height)}): the sentence read once, whole, the sheet’s copy a status, and nothing changed`, async ({
+    test(`a refused tap on the summary, ${held} (${String(width)} × ${String(height)})${face === null ? '' : ` on ${face}`}: the sentence read once, whole, the sheet’s copy a status, and nothing changed`, async ({
       page,
     }) => {
       await page.setViewportSize({ width, height });
@@ -1392,6 +1406,7 @@ test.describe('▶ after the sound was suspended (U69)', () => {
         };
       });
       await openScore(page);
+      if (face !== null) await page.addStyleTag({ content: WIDER_FACE });
       const state = (): Promise<string> =>
         page.evaluate(() => (window as Captured).__contexts?.[0]?.state ?? 'none');
       await expect.poll(state, { message: 'the app made its context as the piece loaded' }).not.toBe('none');
@@ -1509,6 +1524,7 @@ test.describe('▶ after the sound was suspended (U69)', () => {
         expect.soft(seen!.scrollWidth, 'the sentence overflows its line').toBeLessThanOrEqual(seen!.clientWidth);
         expect.soft(seen!.textInside, 'the sentence runs outside its line').toBe(true);
         if (held === 'sideways') expect.soft(seen!.ellipsis, 'the summary’s line cuts with an ellipsis').toBe(false);
+        if (held === 'upright') expect.soft(seen!.ellipsis, 'the header’s line cuts with an ellipsis').toBe(false);
         // Upright the sheet's copy is there for a screen reader and not painted: the sentence once.
         if (held === 'upright') expect.soft(copies.sheet?.shown, 'the sheet’s copy is painted upright too').toBe(false);
         expect(test.info().errors.length, 'the sentence is not seen whole, once').toBe(0);
