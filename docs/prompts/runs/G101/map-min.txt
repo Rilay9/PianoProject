@@ -1,0 +1,107 @@
+# checks for 99 path(s): 99 matched, 0 unmatched
+# app/src/style.css: app/src/**, app/src/style.css
+# app/tests/e2e/library.spec.ts: app/tests/e2e/*.spec.ts
+# docs/prompts/pictures/g101/after-facts-100-stack.json: docs/**
+# docs/prompts/pictures/g101/after-facts-100-wide.json: docs/**
+# docs/prompts/pictures/g101/after-facts-115-stack.json: docs/**
+# docs/prompts/pictures/g101/after-facts-115-wide.json: docs/**
+# docs/prompts/pictures/g101/after-k545-100-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/after-k545-100-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/after-k545-115-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/after-k545-115-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/after-longest-100-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/after-longest-100-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/after-longest-115-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/after-longest-115-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/after-study-2-4-100-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/after-study-2-4-100-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/after-study-2-4-115-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/after-study-2-4-115-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/after-twinkle-100-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/after-twinkle-100-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/after-twinkle-115-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/after-twinkle-115-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/before-facts-100-stack.json: docs/**
+# docs/prompts/pictures/g101/before-facts-100-wide.json: docs/**
+# docs/prompts/pictures/g101/before-facts-115-stack.json: docs/**
+# docs/prompts/pictures/g101/before-facts-115-wide.json: docs/**
+# docs/prompts/pictures/g101/before-k545-100-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/before-k545-100-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/before-k545-115-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/before-k545-115-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/before-longest-100-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/before-longest-100-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/before-longest-115-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/before-longest-115-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/before-study-2-4-100-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/before-study-2-4-100-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/before-study-2-4-115-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/before-study-2-4-115-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/before-twinkle-100-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/before-twinkle-100-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/before-twinkle-115-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/before-twinkle-115-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/three-facts-100-stack.json: docs/**
+# docs/prompts/pictures/g101/three-facts-100-wide.json: docs/**
+# docs/prompts/pictures/g101/three-facts-115-stack.json: docs/**
+# docs/prompts/pictures/g101/three-facts-115-wide.json: docs/**
+# docs/prompts/pictures/g101/three-k545-100-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/three-k545-100-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/three-k545-115-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/three-k545-115-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/three-longest-100-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/three-longest-100-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/three-longest-115-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/three-longest-115-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/three-study-2-4-100-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/three-study-2-4-100-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/three-study-2-4-115-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/three-study-2-4-115-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/three-twinkle-100-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/three-twinkle-100-wide-342x740.png: docs/**
+# docs/prompts/pictures/g101/three-twinkle-115-stack-342x740.png: docs/**
+# docs/prompts/pictures/g101/three-twinkle-115-wide-342x740.png: docs/**
+# docs/prompts/runs/G101/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+# docs/prompts/runs/G101/checks-for-paths.txt: docs/**
+# docs/prompts/runs/G101/ci-eebafb5e-g85a.txt: docs/**
+# docs/prompts/runs/G101/cleanup.txt: docs/**
+# docs/prompts/runs/G101/content-copy.txt: docs/**
+# docs/prompts/runs/G101/content-tests.txt: docs/**
+# docs/prompts/runs/G101/lint.txt: docs/**
+# docs/prompts/runs/G101/mutant-three.diff: docs/**
+# docs/prompts/runs/G101/mutant-three.txt: docs/**
+# docs/prompts/runs/G101/mutant-two.diff: docs/**
+# docs/prompts/runs/G101/mutant-two.txt: docs/**
+# docs/prompts/runs/G101/npm-ci.log: docs/**
+# docs/prompts/runs/G101/pictures-after.txt: docs/**
+# docs/prompts/runs/G101/pictures-before.txt: docs/**
+# docs/prompts/runs/G101/pictures-three.txt: docs/**
+# docs/prompts/runs/G101/record-mirrors-check.txt: docs/**
+# docs/prompts/runs/G101/red-before.txt: docs/**
+# docs/prompts/runs/G101/scripts-mutant-two.py: docs/**
+# docs/prompts/runs/G101/scripts-playwright.g101-4617.config.ts: docs/**
+# docs/prompts/runs/G101/scripts-sanitise.py: docs/**
+# docs/prompts/runs/G101/scripts-siblings.py: docs/**
+# docs/prompts/runs/G101/scripts-summarise.py: docs/**
+# docs/prompts/runs/G101/scripts-zz-g101-pictures.spec.ts: docs/**
+# docs/prompts/runs/G101/siblings-groups.json: docs/**
+# docs/prompts/runs/G101/specs-final.txt: docs/**
+# docs/prompts/runs/G101/summary-after.txt: docs/**
+# docs/prompts/runs/G101/summary-before.txt: docs/**
+# docs/prompts/runs/G101/summary-three.txt: docs/**
+# docs/prompts/runs/G101/tsc.txt: docs/**
+# docs/prompts/runs/G101/unit-css-readers-final.txt: docs/**
+# docs/prompts/runs/G101/unit-failed-files-head-css.txt: docs/**
+# docs/prompts/runs/G101/unit-failed-files-three-line-css.txt: docs/**
+# docs/prompts/runs/G101/unit-final-failed-alone.txt: docs/**
+# docs/prompts/runs/G101/unit-full-final.txt: docs/**
+# docs/prompts/runs/G101/unit-full-three-line.txt: docs/**
+# docs/prompts/runs/G101/unit-lessonclaims-final-lf.txt: docs/**
+# docs/prompts/runs/G101/unit-lessonclaims-three-line-lf.txt: docs/**
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_record_mirrors.py
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test --workers=4

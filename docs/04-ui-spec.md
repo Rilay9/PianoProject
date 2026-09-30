@@ -65,6 +65,8 @@ upright left the words about a third of the row, `No. 12 — Stud…` over
 And **Skills** (U90, 2026-09-29): a skill's name and an exercise's title wrap rather
 than being cut, whatever the font (§3a).
 
+And the **Library's titles are never cut, upright** (G101, 2026-09-30; the ruling's three lines were measured against the catalogue and set aside, `docs/prompts/entry-177.md`). A catalogue row keeps its words beside *Details* and `⋯`, about half of a 342 px row, and a title there is the piece's identity. Many titles differ from a sibling only in their endings: *Twinkle, Twinkle, Little Star* with *(hands together)* or *(in F major)*, and *K. 545, I. Allegro* with *(alternative edition)*. Two lines cut those endings at 115 % text. Any fixed count is sized to one face at one text size: four lines at 115 % on the development machine's face, six on a wider one. So the title wraps to the lines it needs, and a word longer than the room breaks, as on Skills (U90). A row grows only where its title needs the room; the longest catalogue title takes eight lines at 115 % on that face. The score folder keeps two.
+
 The 100 is measured on a 360 px screen and it is a floor, not a preference: the control sets the
 height of the first line (40 px for a tick box, 48 for a button — both of them a thumb) and two
 lines of sentence under it are 40 more. What breaks it is a third line, so a hint is written to
