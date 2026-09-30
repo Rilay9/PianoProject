@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **E51a** — `handoffs/70043128.md` (respond in `responses/70043128.md`). The map names the merge's browser consumer, and the committed file says what its format holds (Entry 164).
 - **L120b** — `handoffs/c8680b70.md` (respond in `responses/c8680b70.md`). The reading and the gate (Entry 155).
 - **G86** — `handoffs/970fd770.md`, answered: approve with one required change, built as G86a (no silent run when the bound expires: Play restored, one sentence at the control, a later tap retries; Entry 165, its brief with you before dispatch; its own handoff when it lands). The Score screen's sheets close with the screen, and play asks the audio to start (Entry 158).
 - **U96a** — `handoffs/0685c9e2.md`, answered: APPROVE, closed. The drill end sheet's Answered row counts answered cards (Entry 161).

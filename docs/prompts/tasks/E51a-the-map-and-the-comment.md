@@ -131,3 +131,5 @@ Playwright resolves `@playwright/test`, `testDir`, the fixture import and `stora
 **Entry 164.** Every run file goes under `docs/prompts/runs/E51a/`, and the entry is `docs/prompts/runs/E51a/ENTRY.md`, starting `### Entry 164 — E51a`.
 
 **Brief approved for dispatch 2026-09-30, the second map gap folded in** (`responses/questions-bbd7f99a.md`). Both checks-map rows name `app/tests/e2e/excerpts.spec.ts` — `tools/content/excerpts.py`'s, and `content/sources/excerpts.json`'s, which the spec copies and reads — e2e-specific, never the whole browser suite; the `superseded` lines spliced into the committed comment now, no approval renewed. Dispatched.
+
+**Landed 2026-09-29** (Entry 164; 70043128, merged 7d7d1e9c); handoff `handoffs/70043128.md`.
