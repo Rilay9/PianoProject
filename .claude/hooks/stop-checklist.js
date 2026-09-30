@@ -51,7 +51,7 @@ process.stdin.on('end', () => {
   process.stdout.write(JSON.stringify({
     decision: 'block',
     reason:
-      'Before this turn ends, run the four questions below against what you just reported. ' +
+      'Before this turn ends, run the five questions below against what you just reported. ' +
       'Fix a fault only if it would change what the owner or the next agent does, and say in ' +
       'one line what it caught. Wording alone earns nothing. If nothing would change, reply ' +
       'with the single line "Checklist: nothing found." Do not restate the report.\n\n' + checklist,
