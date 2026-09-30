@@ -230,9 +230,10 @@ fine — one file lists every item of the seam — and nothing content-side is e
 skipped: a correction the orchestrator makes at a landing is itemised the same way. The reviewer
 checks each item as a fact or a claim in text — a lesson sentence as taught, a table entry, a
 tempo as a reading of what the edition prints — and its verdict names the items it did not
-check. What needs an ear is marked *unverified as music* and stays so until the owner's own H2
-walks (the owner withdrew the early listening packet on 2026-09-30: no separate listening chore;
-the musical acceptance is H2's); the reviewer is never asked to hear anything.
+check. No one in this process hears the music: not the reviewer, not an agent, and the owner
+supplies no musical review (the early listening packet was withdrawn on 2026-09-30). A musical
+question is settled from the notation, the edition's text and the record's rules where those
+suffice; otherwise it stays open, marked *unverified as music*, and nothing is taught on it.
 
 ## 13. What a brief carries
 
