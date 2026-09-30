@@ -12,9 +12,12 @@ The original brief's owned files and boundaries hold; nothing outside the requir
 
 **Base.** 827289d0, origin's head at dispatch. **Entry.** 179; the run files under `docs/prompts/runs/G96a/`, the entry at `docs/prompts/runs/G96a/ENTRY.md`.
 
+**Landed 2026-09-30** (Entry 179; 67fc2523, merged 2330337c); handoff `handoffs/67fc2523.md`.
+
 ## Record
 
 lane: G96a · closes: G99 · entry: 179
 index: G96's required change: a PDF's Details never claims a guessed level or *Type: song*; wording from the row's provenance, both false statements pinned red first (backlog G99, under G96's fast path; `responses/48bfc167.md`) | app | dispatched 2026-09-30 at 827289d0 (`G96a-a-pdfs-details-says-what-its-provenance-holds.md`); Entry 179 |
 in-flight: dispatched 2026-09-30 (`G96a-a-pdfs-details-says-what-its-provenance-holds.md`): G96's required change under the fast path: the PDF Details sheet's level and type sentences drawn from the row's provenance, the two false statements pinned red first; closes G99 (`responses/48bfc167.md`); building (Entry 179)
 state: dispatched 2026-09-30: dispatched at 827289d0, building (Entry 179)
+- landed 2026-09-30: merged 2330337c; handoff `handoffs/67fc2523.md`

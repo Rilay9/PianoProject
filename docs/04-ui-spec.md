@@ -1527,6 +1527,10 @@ out.
   A placeholder's detail sheet (a piece the catalogue wants and does not bundle) has no *Tracks*
   and no *What it trains*: the piece's `importHint`, what the app reads, and *Import a score*;
   any detail sheet names a track by its title and leaves out an id with none (U75; X3).
+  A PDF's detail sheet reads *Type: PDF*, and under its estimated level *Estimated level —
+  change it if it feels wrong.*: the app reads no notes from a PDF, so it never says the level
+  was guessed from the music. Any other estimated level keeps *The app guessed this level from
+  the music itself — change it if it feels wrong.* (G96a).
 - **The assign sheet** (P15, replan §4.3). After an import that arrived with a rung in mind —
   an Android share, or **Import for this rung** on a lesson page — the **import sheet** opens by
   itself (below), which ends in the assign sheet's body asking where the piece goes: the rung (pre-selected from `?for=`), the level (the runtime

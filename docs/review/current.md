@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **G96a** — `handoffs/67fc2523.md` (respond in `responses/67fc2523.md`). A PDF's Details says what its provenance holds (Entry 179).
 - **X40** — `handoffs/81d9e4af.md`, answered: APPROVE THE EVIDENCE LANE AND THE RULINGS BELOW — PUSH (the *agree* reader rule its own seam under X3d; E57+E59 one converter seam; priorities stand; closes once the pushed head is recorded). Which tempo is authoritative (Entry 173). **Closed 2026-09-30** on the push at 827289d0.
 - **T58** — `handoffs/0ba0d2d1.md`, answered: APPROVE — PUSH (history lanes stay; migration state rules once; the hidden comment; no bare verdict inference; the docs-integrity run on the push the runner proof). The record generates its mirrors (Entry 171). **Closed 2026-09-30** on the push at 827289d0: docs-integrity run 36726082772 green, the record-mirrors step among its steps.
 - **E50** — `handoffs/68e0479b.md`, answered: approve with one required change (the repaired Wabash cut's old→new relation and a tempo-dependent standard never reading an old defaulted-96 run's percentage against the repaired tempo; the separate repair table kept; its own handoff when it lands). Seven rows print their tempo (Entry 163).
