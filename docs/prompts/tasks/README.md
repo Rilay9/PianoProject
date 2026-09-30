@@ -380,13 +380,13 @@ G96a · closed · 179
 U32a · closed · 180
 E50b · verdict · 181
 U105a · closed · 182
-E57 · approved · 183
+E57 · dispatched · 183
 E59 · approved · 184
 X42 · landed · 185
 U113 · landed · 186
-CL05 · approved · 187
+CL05 · dispatched · 187
 CL15 · approved · 188
-CL01 · approved · 189
+CL01 · dispatched · 189
 E50c · landed · 190
 CL23 · with-reviewer · 191
 F0a · closed · —
