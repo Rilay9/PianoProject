@@ -411,6 +411,15 @@ class TheMerge(unittest.TestCase):
         raw = X.DEFINITIONS.read_bytes().decode("utf-8").replace(chr(13) + chr(10), chr(10))
         self.assertEqual(X.serialise_definitions(X.read_definitions()), raw)
 
+    def test_the_committed_file_says_what_its_format_holds(self) -> None:
+        """
+        E51a (the E51 review's required change 2, `responses/dffa9c34.md`): the committed `_comment` is `COMMENT`.
+        The merge keeps a stored comment, so a change to `COMMENT` is red here until the file follows in the same change.
+        """
+        if not X.DEFINITIONS.is_file():
+            self.skipTest("no excerpts.json yet")
+        self.assertEqual(X.read_definitions()["_comment"], X.COMMENT)
+
 
 class TheRenewal(unittest.TestCase):
     """
