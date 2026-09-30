@@ -4,7 +4,7 @@
 import { defineConfig } from '@playwright/test';
 import base from '../../playwright.config';
 
-const W = 'C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ac01cdc63c9797105';
+const W = '<worktree>';
 const PORT = 4531;
 const ORIGIN = `http://localhost:${String(PORT)}`;
 const DIST = process.env.U32A_DIST ?? `${W}/build/u32a/dist-final`;

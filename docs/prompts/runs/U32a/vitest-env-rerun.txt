@@ -1,5 +1,5 @@
 
- RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ac01cdc63c9797105/app
+ RUN  v5.0.0 <worktree>/app
 
 
  Test Files  2 passed (2)

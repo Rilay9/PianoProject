@@ -1,5 +1,5 @@
 
- RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ac01cdc63c9797105/app
+ RUN  v5.0.0 <worktree>/app
 
  ❯ tests/unit/windowRendererStage.test.ts (27 tests | 8 failed) 2454ms
    ❯ a piece past the probe’s reach keeps its look-ahead row: sheets by need (U32) (7)

@@ -25,7 +25,7 @@ Running 1 test using 1 worker
           |     ^
       222 | });
       223 |
-        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ac01cdc63c9797105\app\tests\e2e\score.arrange-race.spec.ts:221:5
+        at <worktree>\app\tests\e2e\score.arrange-race.spec.ts:221:5
 
     Error Context: test-results\score.arrange-race-a-run-s-8fdf9-arted-after-the-measurement\error-context.md
 
