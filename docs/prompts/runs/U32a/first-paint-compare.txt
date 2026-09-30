@@ -1,0 +1,18 @@
+nocturne__342x740__bars-4__first.png: pixel-identical
+   before: rows [0-3,4-7~] staff 14.2 px, 4/4 bars, sheets {"made": 2, "loaded": 2, "pending": 2}
+   after:  rows [0-3,4-7~] staff 14.2 px, 4/4 bars, sheets {"made": 2, "loaded": 2, "pending": 0}
+nocturne__342x740__bars-8__first.png: pixel-identical
+   before: rows [0-7,8-15~] staff 7.1 px, 8/8 bars, sheets {"made": 2, "loaded": 2, "pending": 2}
+   after:  rows [0-7,8-15~] staff 7.1 px, 8/8 bars, sheets {"made": 2, "loaded": 2, "pending": 0}
+scherzo__342x740__bars-4__first.png: pixel-identical
+   before: rows [0-3,4-7~] staff 23.4 px, 4/4 bars, sheets {"made": 2, "loaded": 2, "pending": 2}
+   after:  rows [0-3,4-7~] staff 23.4 px, 4/4 bars, sheets {"made": 2, "loaded": 2, "pending": 0}
+scherzo__342x740__bars-8__first.png: pixel-identical
+   before: rows [0-7,8-15~] staff 13.2 px, 8/8 bars, sheets {"made": 2, "loaded": 2, "pending": 2}
+   after:  rows [0-7,8-15~] staff 13.2 px, 8/8 bars, sheets {"made": 2, "loaded": 2, "pending": 0}
+twinkle__342x740__bars-4__first.png: pixel-identical
+   before: rows [0-1,2-3] staff 42.1 px, 4/4 bars, sheets {"made": 4, "loaded": 4, "pending": 0}
+   after:  rows [0-1,2-3] staff 42.1 px, 4/4 bars, sheets {"made": 4, "loaded": 4, "pending": 0}
+twinkle__342x740__bars-8__first.png: pixel-identical
+   before: rows [0-2,3-5,6-7] staff 30.8 px, 8/8 bars, sheets {"made": 4, "loaded": 4, "pending": 0}
+   after:  rows [0-2,3-5,6-7] staff 30.8 px, 8/8 bars, sheets {"made": 4, "loaded": 4, "pending": 0}

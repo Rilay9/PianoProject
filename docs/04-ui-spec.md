@@ -1871,7 +1871,7 @@ engraver draws the whole score once per zoom and the tallest system in it sets t
 a bar with a ledger line is not engraved smaller than a bar without one, and the staves of both
 slots sit at the same height in every window — anchored on the stave *lines* from the
 engraver's model, not on the drawn group, whose top is wherever the highest fingering landed.
-Until that measurement has run (before the first draw, for a piece within the probe's reach of 48 bars; on idle after it for a longer one, once the sheets past its first two have loaded; U74, U32) the tallest window seen so far
+Until that measurement has run (before the first draw, for a piece within the probe's reach of 48 bars; on idle after it for a longer one, before any sheet past its first two is made; U74, U32a) the tallest window seen so far
 stands in, held and never released. A run keeps the scale it started at: ink up to a tenth
 taller than the fit runs into the margin rather than shrinking the sheet; only ink taller than
 that still shrinks it, once.
@@ -2301,9 +2301,12 @@ without distortion and being able to look ahead are paramount."* So:
    distortion, then the frozen run, then the look-ahead, then the count): before a run the
    look-ahead is added as soon as the renderer can draw it; once the run starts, what it
    started with stays until the run ends and the next one begins. A piece past the probe's
-   48 bars draws its first window from two sheets and gets the rest after it (`08` §4.1): at
-   rest the next row appears when they land, and a run started before then plays without
-   it, rather than wait for them or reshape under the learner's hands.
+   48 bars draws its first window from two sheets and, once it is measured, gets the sheets
+   its settled shape needs (U32a, `08` §4.1): at rest the next row appears when its sheet
+   lands; a change made while stopped — the count, Size, a turn, a new start bar — that
+   needs another sheet loads it then, before the next run, and so does a row the taller
+   stage of a run has room for, once one run has been played; and a run started before
+   then plays without it, rather than wait for a load or reshape under the learner's hands.
 3. **Then the count.** *Bars in window* is honoured exactly when 1 and 2 allow it. When they
    do not, the window holds as many of the asked bars as fit at the readable size and **the
    row says so in words** — *Bars in window — 4 asked, 2 shown: 4 would be too small here* —
