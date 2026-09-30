@@ -170,6 +170,19 @@ what the owner or the next agent does; wording alone never earns a turn.
    "both", what scope was actually examined and what is unchecked; what has not been heard.
 4. **Consumers and record.** Who else reads what changed and what each does with it; the
    spec, test map and record updated in the same change, with the reason.
+5. **Addressee.** For every request, question or claim in a paste, a brief or a report: who
+   acts on it, and can they? The actors and what each can do are fixed: the owner decides
+   product, pedagogy and architecture questions put in one line, relays pastes, and supplies
+   no musical review and no listening; the reviewer reads text on origin and rules, checks a
+   fact or a claim as written, and cannot hear, run or look; a builder builds, runs and
+   measures in its worktree and cannot hear; the orchestrator briefs, judges and records and
+   cannot hear; the second reader reads code against a required change. A capability no actor
+   has is stated as *no one in this process can decide this* and the item stays open — never
+   moved to a later actor, phase or session. A paragraph its addressee does nothing with is
+   cut. An internal rule is recorded here, never announced to another actor. After the owner
+   corrects something, the correction is applied and confirmed by the change itself, in one
+   line, with no explanation and no apology unless asked; the owner's tokens are not spent on
+   agreement.
 
 A green suite is not evidence when its assertions encode the model being replaced: a wave
 that changes behaviour deletes or replaces the tests that asserted the old behaviour, in

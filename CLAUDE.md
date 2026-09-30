@@ -52,6 +52,12 @@ earns a turn.
    "both", the scope actually examined and what is unchecked; what has not been heard.
 4. **Consumers and record.** Who else reads what changed; the spec, test map and record
    updated in the same change, with the reason.
+5. **Addressee.** For every request, question or claim: who acts on it, and can they? The
+   owner decides and relays and never listens; the reviewer reads text and cannot hear, run
+   or look; builders and the orchestrator cannot hear. A capability no actor has is stated
+   as *no one in this process can decide this* and the item stays open, never moved to a
+   later actor or phase. A paragraph its addressee does nothing with is cut. An owner
+   correction is applied and confirmed by the change, in one line, without apology.
 
 ## Two mechanical hazards
 
