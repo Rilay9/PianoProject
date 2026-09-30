@@ -1,0 +1,110 @@
+EEFE..FFFFFFF
+======================================================================
+ERROR: test_a_learner_continuity_only_the_approval_stays_stale_and_names_the_old_parent (tools.content.tests.test_excerpts.TheRepairedCut.test_a_learner_continuity_only_the_approval_stays_stale_and_names_the_old_parent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_excerpts.py", line 1040, in test_a_learner_continuity_only_the_approval_stays_stale_and_names_the_old_parent
+    one = self.relations[0]
+          ~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+======================================================================
+ERROR: test_a_nothing_is_named_that_is_not_that_excerpt_or_does_not_rebuild (tools.content.tests.test_excerpts.TheRepairedCut.test_a_nothing_is_named_that_is_not_that_excerpt_or_does_not_rebuild)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_excerpts.py", line 1015, in test_a_nothing_is_named_that_is_not_that_excerpt_or_does_not_rebuild
+    one = self.relations[0]
+          ~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+======================================================================
+ERROR: test_a_the_old_cut_is_rebuilt_from_the_relation_and_is_the_cutter_on_the_old_parent (tools.content.tests.test_excerpts.TheRepairedCut.test_a_the_old_cut_is_rebuilt_from_the_relation_and_is_the_cutter_on_the_old_parent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_excerpts.py", line 998, in test_a_the_old_cut_is_rebuilt_from_the_relation_and_is_the_cutter_on_the_old_parent
+    one = self.relations[0]
+          ~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+======================================================================
+FAIL: test_a_one_relation_for_the_one_cut_the_build_produced (tools.content.tests.test_excerpts.TheRepairedCut.test_a_one_relation_for_the_one_cut_the_build_produced)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_excerpts.py", line 984, in test_a_one_relation_for_the_one_cut_the_build_produced
+    self.assertEqual([one["id"] for one in self.cuts], [self.EID], "one relation, the one derived repair; no rule for descendants")
+AssertionError: Lists differ: [] != ['excerpt.blues.wabash-blues.b1-4']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'excerpt.blues.wabash-blues.b1-4'
+
+- []
++ ['excerpt.blues.wabash-blues.b1-4'] : one relation, the one derived repair; no rule for descendants
+
+======================================================================
+FAIL: test_the_committed_relations_re_prove_on_the_committed_scores (tools.content.tests.test_convert_cache.TestRepairedIdentities.test_the_committed_relations_re_prove_on_the_committed_scores) [song.pop.margie.pdmx]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_convert_cache.py", line 561, in test_the_committed_relations_re_prove_on_the_committed_scores
+    self.assertEqual(set(one), {"id", "file", "change", "from", "date", "system", "to", "restore", "tempoChanged"})
+AssertionError: Items in the second set but not the first:
+'tempoChanged'
+
+======================================================================
+FAIL: test_the_committed_relations_re_prove_on_the_committed_scores (tools.content.tests.test_convert_cache.TestRepairedIdentities.test_the_committed_relations_re_prove_on_the_committed_scores) [song.jazz.django-reinhardt-limehouse-blues.pdmx]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_convert_cache.py", line 561, in test_the_committed_relations_re_prove_on_the_committed_scores
+    self.assertEqual(set(one), {"id", "file", "change", "from", "date", "system", "to", "restore", "tempoChanged"})
+AssertionError: Items in the second set but not the first:
+'tempoChanged'
+
+======================================================================
+FAIL: test_the_committed_relations_re_prove_on_the_committed_scores (tools.content.tests.test_convert_cache.TestRepairedIdentities.test_the_committed_relations_re_prove_on_the_committed_scores) [song.blues.singin-the-blues]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_convert_cache.py", line 561, in test_the_committed_relations_re_prove_on_the_committed_scores
+    self.assertEqual(set(one), {"id", "file", "change", "from", "date", "system", "to", "restore", "tempoChanged"})
+AssertionError: Items in the second set but not the first:
+'tempoChanged'
+
+======================================================================
+FAIL: test_the_committed_relations_re_prove_on_the_committed_scores (tools.content.tests.test_convert_cache.TestRepairedIdentities.test_the_committed_relations_re_prove_on_the_committed_scores) [song.blues.weary-blues]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_convert_cache.py", line 561, in test_the_committed_relations_re_prove_on_the_committed_scores
+    self.assertEqual(set(one), {"id", "file", "change", "from", "date", "system", "to", "restore", "tempoChanged"})
+AssertionError: Items in the second set but not the first:
+'tempoChanged'
+
+======================================================================
+FAIL: test_the_committed_relations_re_prove_on_the_committed_scores (tools.content.tests.test_convert_cache.TestRepairedIdentities.test_the_committed_relations_re_prove_on_the_committed_scores) [song.blues.storyville-blues]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_convert_cache.py", line 561, in test_the_committed_relations_re_prove_on_the_committed_scores
+    self.assertEqual(set(one), {"id", "file", "change", "from", "date", "system", "to", "restore", "tempoChanged"})
+AssertionError: Items in the second set but not the first:
+'tempoChanged'
+
+======================================================================
+FAIL: test_the_committed_relations_re_prove_on_the_committed_scores (tools.content.tests.test_convert_cache.TestRepairedIdentities.test_the_committed_relations_re_prove_on_the_committed_scores) [song.blues.wabash-blues]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_convert_cache.py", line 561, in test_the_committed_relations_re_prove_on_the_committed_scores
+    self.assertEqual(set(one), {"id", "file", "change", "from", "date", "system", "to", "restore", "tempoChanged"})
+AssertionError: Items in the second set but not the first:
+'tempoChanged'
+
+======================================================================
+FAIL: test_the_committed_relations_re_prove_on_the_committed_scores (tools.content.tests.test_convert_cache.TestRepairedIdentities.test_the_committed_relations_re_prove_on_the_committed_scores) [song.blues.tishomingo-blues]
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_convert_cache.py", line 561, in test_the_committed_relations_re_prove_on_the_committed_scores
+    self.assertEqual(set(one), {"id", "file", "change", "from", "date", "system", "to", "restore", "tempoChanged"})
+AssertionError: Items in the second set but not the first:
+'tempoChanged'
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.710s
+
+FAILED (failures=8, errors=3)

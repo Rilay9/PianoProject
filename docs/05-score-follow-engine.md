@@ -985,6 +985,13 @@ no rung uses the defaults.*
 - The run is stored with the rung that judged it (`SessionRow.lessonId`). Older rows keep the
   `passed`/`bestAccuracy`/`bestTempoPct` they were written with; **changing a rung's numbers
   does not re-judge history**, and the numbers needed to re-judge it are in the row.
+- A run's `tempoPct` is a percentage of its `baseTempo`. Where a reviewed repair has since
+  corrected that base (E50b: E50's seven PDMX scores and the Wabash cut, whose old files played
+  at the converter's defaulted 96), the rung state's re-reading of the run (`rungState.meetsStandard`)
+  refuses its tempo channel as not comparable — it meets a rung that asks no tempo and none that
+  asks one — rather than reading 100 % of 96 as 100 % of the printed tempo. The progress row's
+  derivations (`status`, `passedOn`, `masteredOn`, `bestTempoPct`) were judged when the run was
+  recorded and stay as they are: history, neither rewritten nor recomputed.
 
 **What a run records (2026-09-26, C1).** `Scoring.measuresOf` is the one place a run's
 measures are defined for the record, beside `buildScore` for the sheet: pitch with its

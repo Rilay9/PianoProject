@@ -37,7 +37,9 @@
  * again that G1's app stored carries it too, and meets its rung as it always
  * did; since G1a a piece's run carries the relation as `firstContact`, which
  * no requirement reads), not the learner's own answer (`selfReport`). A
- * Keep tempo run reaches the rung's tempo on what it measured; a Wait run has
+ * Keep tempo run reaches the rung's tempo on what it measured, unless a
+ * reviewed repair has since corrected the tempo its percentage is of (E50b,
+ * `meetsStandard`), when it reaches none; a Wait run has
  * no tempo, so it meets only a rung that asks for none (T37). A drill has no
  * tempo and is judged on its accuracy, and Simon on its chain, as its screen
  * judges them.
@@ -51,6 +53,7 @@ import { isPhraseRun, type PlanRow, type SessionRow } from '../data/db';
 import { accuracyReading } from '../data/accuracyReading';
 import type { Curriculum, Lesson, Requirement, RunsRequirement } from '../curriculum/types';
 import { masteryCriteriaFor } from '../curriculum/selectors';
+import { tempoNotComparable } from '../curriculum/material';
 import { DEFAULT_MASTERY, type MasteryCriteria } from '../engine/Scoring';
 import { SIMON_ROUNDS, simonBestChain, simonOutcome } from '../engine/drills/simon';
 import type { Evidence, MeasuredEvidence } from './evidence';
@@ -198,13 +201,29 @@ function measured(row: SessionRow): row is SessionRow & { accuracy: number } {
   );
 }
 
-/** Whether one run judged by `rung` meets its standard, re-read from what it measured. */
+/**
+ * Whether one run judged by `rung` meets its standard, re-read from what it measured.
+ *
+ * **A tempo a reviewed repair corrected** (E50b; the reviewer's required change on E50,
+ * `docs/review/responses/68e0479b.md` §3). A Keep tempo run's `tempoPct` is a percentage of the base
+ * tempo the run was played against (`SessionRow.baseTempo`). Where a reviewed repair has since changed
+ * that tempo — a run of an old file E50 re-converted, whose 100 % was 100 % of the converter's defaulted
+ * 96 and not of the tempo the repaired score prints (`material.tempoNotComparable`) — the percentage is
+ * not comparable to the item's standard: such a run meets a standard that asks no tempo, as a Wait run
+ * does, and no standard that asks one, however high its stored percentage. Never rescaled, never
+ * rewritten; its accuracy, its contact and its stored evidence are read as before. Every other run is
+ * judged exactly as it was.
+ */
 export function meetsStandard(row: SessionRow, criteria: MasteryCriteria, accuracy?: number): boolean {
   if (!measured(row)) return false;
   if (row.mode === 'drill:simon') return simonOutcome(simonBestChain(row.accuracy, SIMON_ROUNDS)).passed;
   if (row.accuracy < (accuracy ?? criteria.passAccuracy)) return false;
   if (row.mode.startsWith('drill:')) return true;
-  if (row.mode === 'tempo') return row.tempoMeasured !== false && row.tempoPct >= criteria.passTempoPct;
+  if (row.mode === 'tempo') {
+    if (row.tempoMeasured === false) return false;
+    if (tempoNotComparable(row)) return criteria.passTempoPct <= 0;
+    return row.tempoPct >= criteria.passTempoPct;
+  }
   if (row.mode === 'wait') return criteria.passTempoPct <= 0;
   return false;
 }

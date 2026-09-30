@@ -1071,16 +1071,32 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
     # `convert.former_identities`, so a learner's row stored against a dated file still names this
     # row's material. Learner continuity only: D2's record and every other exact-byte check keep
     # reading `identity` alone.
-    from convert import former_identities
+    # E50b: an excerpt cut of a repaired parent carries its old cut where the one derived repair relation
+    # the build produced names it and re-proves (`excerpts.former_cut_identities`), and every former
+    # identity a repair marks `tempoChanged` is also listed as `tempoRepairedFrom`: a run of that file
+    # measured its percentage of another tempo, so no tempo-dependent standard reads it against this
+    # row's (`material.tempoNotComparable`, `rungState.meetsStandard`). Still learner continuity only:
+    # the approval stays stale and its `parentSha256` untouched.
+    from convert import former_identities, repaired_identities
 
     for entry_id, identity in review.identities(entries, out_dir).items():
         provenance = by_id[entry_id]["provenance"]
         provenance["identity"] = identity
         if identity.get("kind") == "file" and out_dir is not None:
-            former = [{"kind": "file", "sha256": sha} for sha in former_identities(out_dir / by_id[entry_id]["file"])
-                      if sha != identity["sha256"]]
+            path = out_dir / by_id[entry_id]["file"]
+            shas = former_identities(path)
+            tempo = {one["from"] for one in repaired_identities().get(identity["sha256"], ()) if one.get("tempoChanged") is True}
+            block = provenance.get("excerpt")
+            parent = by_id.get(block["of"]) if block else None
+            if block and parent and parent.get("file"):
+                shas += [sha for sha in excerpt_step.former_cut_identities(path, entry_id, block, out_dir / parent["file"]) if sha not in shas]
+                tempo |= {one["from"] for one in excerpt_step.repaired_cuts() if one.get("id") == entry_id and one.get("tempoChanged") is True}
+            former = [{"kind": "file", "sha256": sha} for sha in shas if sha != identity["sha256"]]
             if former:
                 provenance["formerIdentities"] = former
+                changed = [one for one in former if one["sha256"] in tempo]
+                if changed:
+                    provenance["tempoRepairedFrom"] = changed
 
 
 def transfer_of(row: dict, recipe: dict) -> dict | None:

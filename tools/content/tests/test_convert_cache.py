@@ -556,7 +556,10 @@ class TestRepairedIdentities(CacheCase):
         for one in relations:
             with self.subTest(one["id"]):
                 row = items[one["id"]]
-                self.assertEqual(set(one), {"id", "file", "change", "from", "date", "system", "to", "restore"})
+                # E50b: each repair also says it changed the tempo a run of the old file was measured against
+                # (`tempoChanged`), which the build carries to the app as `provenance.tempoRepairedFrom`.
+                self.assertEqual(set(one), {"id", "file", "change", "from", "date", "system", "to", "restore", "tempoChanged"})
+                self.assertIs(one["tempoChanged"], True)
                 self.assertEqual(one["file"], f"scores/pdmx/{row['cid']}.mxl")
                 score = repo / "content" / one["file"]
                 self.assertEqual(sha256(score), row["convertedSha256"])

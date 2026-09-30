@@ -668,6 +668,85 @@ def provenance_block(entry: dict, parent_record: dict) -> dict:
 
 
 # --------------------------------------------------------------------------------------
+# the repaired cut (E50b)
+# --------------------------------------------------------------------------------------
+
+
+def repaired_cuts() -> list[dict]:
+    """
+    E50b: the derived repair relationships the build produced for cuts (`tools/content/repaired_identities.json`'s
+    `cuts`; the reviewer's required change on E50, `docs/review/responses/68e0479b.md` §2). One today: the approved
+    Wabash cut, re-cut from the parent E50's tempo repair changed. Each names the cut's definition, the parent repair
+    it derives from (`parentFrom`, `parentTo`), the old cut the laptop served (`from`, with the creating system its
+    `zipfile` recorded) and the new cut (`to`, zipped the same way). Recorded one by one, never a rule for descendants.
+    """
+    from convert import REPAIRED_IDENTITIES_FILE
+
+    if not REPAIRED_IDENTITIES_FILE.is_file():
+        return []
+    return list(json.loads(REPAIRED_IDENTITIES_FILE.read_text(encoding="utf-8")).get("cuts", []))
+
+
+def former_cut_identities(path: Path, entry_id: str, block: dict, parent_path: Path, cuts: list[dict] | None = None,
+                          repairs: list[dict] | None = None, table: list[dict] | None = None) -> list[str]:
+    """
+    The old identity of this cut, where a derived repair relation names it and re-proves on these bytes (E50b; the
+    reviewer's words: "if the old and new cuts are re-proved as the same bar/staff excerpt differing only because the
+    repaired parent now carries its printed tempo"). The build records it in `provenance.formerIdentities`, so a run, an
+    encounter or a project stored against the old cut still names this cut's material (`material.learnerMaterial`).
+
+    A relation (`repaired_cuts()`, or `cuts` in a test) is re-proved, every build, only where all of these hold:
+    - it names this cut (`entry_id`) with this cut's definition — the parent, the printed bars, the selection — and
+      the cutter in force (`CUT_VERSION`), which is the cut's own block (`provenance_block`): the same bar/staff excerpt;
+    - the parent is the repaired file (`parentTo`), and the parent's reviewed repair from `parentFrom` to it still
+      re-proves on the parent's bytes (`convert.former_identities`, with `repairs` and `table` in a test);
+    - this cut, zipped under the relation's creating system, is the new cut the relation recorded (`to`): the cut's
+      own bytes pinned, on any machine (`zipfile` writes the platform's system into a cut, E55);
+    - this cut with the parent repair's own restore lines put back, zipped under that system, is the old cut's bytes
+      (`from`): the two cuts differ by exactly what the repair changed in the parent, and by nothing else.
+    Learner continuity only: the approval stays stale (its `parentSha256` is untouched and still names the old
+    parent), D2's record and every exact-byte check read `identity` alone, and the old cut is never these bytes.
+    """
+    from convert import _entries, _restored, archive_system, former_identities, is_text_entry, pinned_archive, repaired_identities
+
+    if path.suffix.lower() != ".mxl" or not path.is_file() or not parent_path.is_file():
+        return []
+    relations = [one for one in (repaired_cuts() if cuts is None else cuts) if one.get("id") == entry_id]
+    if not relations:
+        return []
+    raw = path.read_bytes()
+    entries = _entries(raw)
+    system = archive_system(raw)
+    if entries is None or system is None or pinned_archive(entries, system) != raw:
+        return []
+    scores = [index for index, (name, _data) in enumerate(entries) if is_text_entry(name) and not name.startswith("META-INF/")]
+    if len(scores) != 1:
+        return []
+    parent_sha = sha256_of(parent_path)
+    definition = (block.get("of"), block.get("fromBar"), block.get("toBar"), block.get("selection"), block.get("cutVersion"))
+    out: list[str] = []
+    for relation in relations:
+        if (relation.get("of"), relation.get("fromBar"), relation.get("toBar"), relation.get("selection"), relation.get("cutVersion")) != definition \
+                or relation.get("cutVersion") != CUT_VERSION:
+            continue
+        if block.get("parentSha256") != relation.get("parentTo") or parent_sha != relation.get("parentTo"):
+            continue
+        candidates = repaired_identities().get(parent_sha, ()) if repairs is None else [one for one in repairs if one.get("to") == parent_sha]
+        parent_repairs = [one for one in candidates if one.get("id") == relation["of"] and one.get("from") == relation.get("parentFrom")]
+        if len(parent_repairs) != 1 or relation["parentFrom"] not in former_identities(parent_path, table, repairs):
+            continue
+        if hashlib.sha256(pinned_archive(entries, relation["system"])).hexdigest() != relation.get("to"):
+            continue
+        restored = _restored(entries, scores[0], parent_repairs[0].get("restore") or [])
+        if restored is None:
+            continue
+        old = hashlib.sha256(pinned_archive(restored, relation["system"])).hexdigest()
+        if old == relation.get("from") and old != hashlib.sha256(raw).hexdigest() and old not in out:
+            out.append(old)
+    return out
+
+
+# --------------------------------------------------------------------------------------
 # the merge
 # --------------------------------------------------------------------------------------
 
