@@ -8,7 +8,7 @@
  * the worst bug this app could have.
  */
 import { dailySeed } from '../engine/sightReading';
-import { compactSteps } from '../engine/Scoring';
+import { compactSteps, DEFAULT_MASTERY } from '../engine/Scoring';
 import type { NotMeasured } from '../engine/types';
 import {
   isPhraseRun,
@@ -22,7 +22,15 @@ import {
   type SessionRow,
   type StreakRow,
 } from './db';
-import { knownMaterial, learnerMaterialKeys, materialKey, materialOfItem, sameMaterial } from '../curriculum/material';
+import {
+  knownMaterial,
+  learnerMaterialKeys,
+  materialKey,
+  materialOfItem,
+  sameMaterial,
+  tempoNotComparable,
+  tempoRepairedRow,
+} from '../curriculum/material';
 import type { Identity } from '../review/record';
 import type { CatalogItem, Hands } from '../curriculum/types';
 import type { Relationship } from '../curriculum/transfer';
@@ -40,7 +48,9 @@ import type { EvidenceResult, MeasuredEvidence } from '../evidence/evidence';
  * Since D4 the header also carries what was played and why (`db.RunHeader`):
  * `material`, the exact versioned identity; `role`, the item's; `intent` and
  * `relationship`, where the run came from a transfer offer. Facts for later
- * readers (`contactIn` reads `material`); the store acts on none of them.
+ * readers (`contactIn` reads `material`); the store acts on none of them, but
+ * for one question: a fresh *mastered* of an item a reviewed repair changed the
+ * tempo of reads `material` and `baseTempo` (E50c, `recordRun`).
  */
 export interface RunResult extends RunObservation {
   itemId: string;
@@ -166,6 +176,53 @@ export async function allProgress(): Promise<ProgressRow[]> {
 }
 
 /**
+ * How many of `masteredOn`'s days a fresh *mastered* may count (E50c; the reviewer's required change on E50b,
+ * `docs/review/responses/65ae9d5f.md`). For an item no reviewed repair touched, every date, as always. For one
+ * whose tempo a repair changed (`material.tempoRepairedRow`), only a day supported by a run whose tempo channel
+ * is comparable under E50b's rule (`material.tempoNotComparable`) and whose own stored fields meet the master
+ * terms (`meetsMasterTerms`): an old file's run at
+ * 100 % of the converter's defaulted 96 was not at the tempo the repaired score prints, and a legacy run with no
+ * material or base proves nothing. Refused, never rescaled; no date is rewritten or dropped.
+ *
+ * Today's run is not stored yet: it supports today where the engine judged it master-eligible and it is
+ * comparable. Every other support is a stored run of the item on that calendar day (`dayKey` of its `at`, the
+ * learner's day, as the dates are), read uncapped because the earliest date can sit any number of runs back and
+ * this read happens only while a repaired item's mastery is pending. No stored row says why an engine refused a
+ * run it did not store the reason for (a technique measure, `ScoreScreen`): such a run is read on its numbers.
+ * Without IndexedDB no session row is written, so a repaired item's earlier days are never supported: refusal.
+ */
+async function daysTowardMastery(
+  result: RunResult,
+  masterEligible: boolean,
+  masteredOn: readonly string[],
+  date: string,
+): Promise<number> {
+  if (masteredOn.length < MASTER_DAYS || !tempoRepairedRow(result.itemId)) return masteredOn.length;
+  const counted = new Set<string>();
+  if (masterEligible && !tempoNotComparable(result)) counted.add(date);
+  for (const run of await sessionsForItem(result.itemId, Number.POSITIVE_INFINITY)) {
+    const day = dayKey(new Date(run.at));
+    if (masteredOn.includes(day) && !tempoNotComparable(run) && meetsMasterTerms(run)) counted.add(day);
+  }
+  return counted.size;
+}
+
+/**
+ * A stored run's own numbers against the master terms (`Scoring.evaluateOutcome`'s `masterEligible`: a measured
+ * tempo, the master accuracy, the master tempo), and not a rhythm-only run, which the Score screen never lets
+ * master and whose row says so.
+ */
+function meetsMasterTerms(run: SessionRow): boolean {
+  return (
+    run.tempoMeasured === true &&
+    run.rhythmOnly !== true &&
+    typeof run.accuracy === 'number' &&
+    run.accuracy >= DEFAULT_MASTERY.masterAccuracy &&
+    run.tempoPct >= DEFAULT_MASTERY.masterTempoPct
+  );
+}
+
+/**
  * Records one run: updates the item's progress, appends a session row, and
  * adds the minutes to today's total.
  *
@@ -235,12 +292,14 @@ export async function recordRun(result: RunResult, now = new Date()): Promise<Pr
   if (passed && !row.passedOn.includes(date)) row.passedOn.push(date);
   // The master standard, and only the master standard, counts towards
   // mastery; a mastered row stays mastered (rows mastered under the old rule
-  // are not taken back).
+  // are not taken back). `masteredOn` is history, every date kept; a fresh
+  // award counts only the days that still stand (E50c, `daysTowardMastery`).
   const masteredOn = [...(row.masteredOn ?? [])];
   if (masterEligible && !masteredOn.includes(date)) masteredOn.push(date);
   if (masteredOn.length > 0) row.masteredOn = masteredOn;
-  if (row.status === 'mastered' || masteredOn.length >= MASTER_DAYS) row.status = 'mastered';
-  else if (passed) row.status = 'passed';
+  if (row.status === 'mastered' || (await daysTowardMastery(result, masterEligible, masteredOn, date)) >= MASTER_DAYS) {
+    row.status = 'mastered';
+  } else if (passed) row.status = 'passed';
   else if (row.status === 'new') row.status = 'started';
 
   memory.set(row.itemId, row);

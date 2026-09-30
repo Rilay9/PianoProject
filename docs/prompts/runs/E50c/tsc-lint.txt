@@ -1,0 +1,7 @@
+tsc exit 0
+
+
+> pianopath@0.1.0 lint
+> eslint . --max-warnings=0
+
+lint exit 0

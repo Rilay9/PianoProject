@@ -129,6 +129,17 @@ export function tempoNotComparable(run: Pick<SessionRow, 'itemId' | 'material' |
 }
 
 /**
+ * Whether the loaded catalogue marks this item id as one a reviewed repair changed the tempo of (E50c): a row
+ * whose `provenance.tempoRepairedFrom` names a former file, under `learnFormerIdentities`' rule. The row-level
+ * fact `tempoNotComparable` reads per run; `progressStore.recordRun` asks it before it reads stored runs for a
+ * fresh mastery, so an item no repair touched is judged exactly as before. False for every id the loaded
+ * catalogue never marks, and for every id before a catalogue is loaded.
+ */
+export function tempoRepairedRow(itemId: string): boolean {
+  return tempoRepairedRows.has(itemId);
+}
+
+/**
  * The learner material a stored identity names now: a file identity the loaded catalogue lists among a
  * row's former identities is that row's current identity; every other identity — a current file, a
  * file no row lists, a generator, `none`, none at all — is returned as it is. For learner continuity
