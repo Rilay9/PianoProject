@@ -56,3 +56,5 @@ You own the lesson files item 2 changes — `content/lessons/0.1.md`, `1.1.md`, 
 ## Report
 
 Judgement first: which sentences changed, which were found true and kept, and the product read — would a competent teacher accept each new sentence as honest — with *unverified as music* on every pair where a musical judgement is involved. Then every before/after pair in full, in `f0-corrected-sentences.md`'s table shape (lesson and row, before, after, layer — code, notation, source with its section, or teacher's heuristic — and the evidence), as `docs/prompts/runs/F3a/sentences.md`; the T43, T45 and T47 confirmations with their commits; Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes; unverified beside what passes. Entry 157; every run file under `docs/prompts/runs/F3a/`; the entry as `docs/prompts/runs/F3a/ENTRY.md`, starting `### Entry 157 — F3a`; `## Doc rows` for the `docs/08` lines the change touches.
+
+**Landed 2026-09-29** (Entry 157; 02a52fdb, merged 4bac59ea); handoff `handoffs/02a52fdb.md`.
