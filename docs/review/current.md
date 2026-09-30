@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **U102** — `handoffs/35efb10e.md` (respond in `responses/35efb10e.md`). An unanswered set is not measured (Entry 162).
 - **G86a** — `handoffs/d5508d7b.md` (respond in `responses/d5508d7b.md`). A tap that could not start the sound says so and starts nothing (Entry 165).
 - **E51a** — `handoffs/70043128.md`, answered: APPROVE, closed, and E51 with it. The map names the merge's browser consumer, and the committed file says what its format holds (Entry 164).
 - **L120b** — `handoffs/c8680b70.md`, answered: APPROVE, closed. The reading and the gate (Entry 155).
