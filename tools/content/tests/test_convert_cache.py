@@ -324,6 +324,7 @@ class TestFormerIdentities(CacheCase):
         self.assertGreater(len(entries), 0)
         self.assertIn("9193261b", table["bounds"]["lower"], "the lower bound names D4, the first catalogue storing a material")
         self.assertIn("2026-09-29", table["bounds"]["upper"], "the upper bound names the last deployable catalogue")
+        self.assertIn("2026-09-30", table["bounds"]["upper"], "and the landing's deliberate addition: the six authored files the last pre-E50a laptop build re-dated (the reviewer's ruling, responses/questions-bd7d303e.md section 5)")
         hexes = re.compile(r"^[0-9a-f]{64}$")
         for entry in entries:
             with self.subTest(file=entry["file"], date=entry["date"]):
@@ -332,8 +333,12 @@ class TestFormerIdentities(CacheCase):
                 self.assertRegex(entry["sha256"], hexes)
                 self.assertRegex(entry["undated"], hexes)
                 day = date.fromisoformat(entry["date"])
-                # Never a future date: the last one is the last deployable catalogue's.
-                self.assertLessEqual(day, date(2026, 9, 29))
+                # Never a future date: the last one is the landing day, 2026-09-30, when the six authored files the
+                # last pre-E50a laptop build re-dated were added deliberately (the reviewer's ruling); every other
+                # entry is on or before the last deployable catalogue, 2026-09-29.
+                self.assertLessEqual(day, date(2026, 9, 30))
+                if day == date(2026, 9, 30):
+                    self.assertTrue(entry["file"].startswith("scores/authored/exercise.blues.twelve-bar-shuffle."), "only the six added at the landing carry the landing day")
                 # A build-converted file is on or after the converter epoch; a committed copy keeps its quarry date.
                 self.assertGreaterEqual(day, date(2026, 9, 16) if not entry["file"].startswith("scores/pdmx/") else date(2026, 9, 6))
         self.assertEqual(len({e["sha256"] for e in entries}), len(entries), "one entry per identity")
