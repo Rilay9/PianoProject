@@ -302,3 +302,10 @@ Use the existing product order:
 4. honour the requested bars count after those constraints.
 
 U32 may dispatch.
+
+## Record
+
+lane: U32 · closes: U32 · entry: 169
+index: A piece over 48 bars keeps its look-ahead row: sheets by need after the first paint (backlog U32, P1) | app | brief drafted 2026-09-30 (`U32-long-pieces-keep-a-look-ahead-row.md`); with the reviewer before dispatch; Entry 169; **brief approved for dispatch 2026-09-30, with three conditions** (`responses/questions-71bd6cee.md`); **dispatched 2026-09-30** at a7c232c7, building (Entry 169) |
+in-flight: brief drafted 2026-09-30 (`U32-long-pieces-keep-a-look-ahead-row.md`): a piece over 48 bars is no longer held to two sheets: sheets by need after the first paint, so upright the look-ahead row returns (backlog U32, P1); the whole grid judged before and after, the perf budgets kept as relationships; with the reviewer before dispatch (Entry 169). **Brief approved for dispatch, with three conditions** 2026-09-30 (`responses/questions-71bd6cee.md`): a run that starts before the idle-created look-ahead sheet exists keeps the arrangement it started with, `04` updated to distinguish before the run (look-ahead added when it becomes available) from once it starts (the frozen arrangement kept until the next run/window lifecycle); `FREEZE_WAIT_FOR_MEASURE_MS` not widened for long-score idle work, a routine miss reported as the measured product trade, Play never a load barrier; `perf.spec.ts` added to the score-path checks map, the smallest specific mapping, never the whole browser suite; the immediate-vs-patient race test a guard, not an oracle — an idle sheet that would alter a frozen run is suppressed, never slot equality loosened, a deferred look-ahead recorded as that run's trade; the acceptance order no distortion, stable play once begun, look-ahead whenever the stage and lifecycle permit, then the bar count. The conditions, verbatim, are in the brief. **Dispatched** 2026-09-30 at a7c232c7, building (Entry 169).
+state: dispatched 2026-09-30: dispatched at a7c232c7, building (Entry 169)

@@ -27,3 +27,8 @@ Judgement first: what a learner now sees on the G♯ natural minor two-octave sc
 
 **Accepted by the reviewer 2026-09-27** (`responses/df71a0b.md`): the T53 chain is closed; the broken sevenths stay unfingered until a source exists.
 
+## Record
+
+lane: T53c · closes: — · entry: 86
+index: Fingering truth, third: the G♯ minor left hand per form and direction from Kelley (G48), the broken sevenths' fingering sourced or not printed (G49) | build | **done 2026-09-27**, Entry 86; **accepted by the reviewer** (responses/df71a0b.md) — the T53 chain closed |
+state: closed: accepted (responses/df71a0b.md), the T53 chain closed

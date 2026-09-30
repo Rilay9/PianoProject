@@ -46,3 +46,8 @@ If a field the design names cannot be measured from what the engine has (continu
 ## Report
 
 Judgement first: what one run now leaves behind, and what a teacher could learn from it that the old record hid. Then Done / Not done / Follow-ups / Questions / Files; per item the mechanism, the red line, before and after; the tests table; exit codes from unpiped runs (`tsc -b`, lint, vitest, the specs you touched one at a time); unverified beside what passes, including the storage numbers as relationships.
+
+## Record
+
+lane: C1 · closes: — · entry: 70 · role: history
+index: Observations stored: every run writes what it measured and marks what it did not; T40's drops recorded flagged; the guide off for sight-reading drills and recorded | build, browser | done 2026-09-26 (Entry 70) |

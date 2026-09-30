@@ -39,3 +39,10 @@ Judgement first: what a tablet learner sees in the first frame before and after,
 **Landed 2026-09-29** (Entry 125; ba86d75c, merged ebad0720); handoff `handoffs/ba86d75c.md`. U86, U87 recorded.
 
 **Closed 2026-09-29** (`responses/ba86d75c.md`, APPROVE): the ordering contract established; the bounded wait and the per-screen ownership are the constraints; U86 and U87 later waves.
+
+## Record
+
+lane: U80 · closes: U80 · entry: 125
+index: The lesson text beside the score on a tablet: when it is decided, marked; filled before the fit where its column moves the stage; the sweep spec waits on the mark (`U80-side-panel-arrival.md`) | CI red at `side-panel-prose.spec.ts` since 05c9e01; the local rerun | `ScoreScreen.ts` at `fillSidePanel` and the call order, the spec, one unit file | **closed 2026-09-29** (`responses/ba86d75c.md`, APPROVE; Entry 125): the wait bounded, the per-screen ownership kept; U86, U87 later waves |
+in-flight: dispatched 2026-09-29 (Entry 125, port 4313): the side panel's arrival — `side-panel-prose.spec.ts`'s sweep red on the runner (05c9e01) and locally; the decision marked, the panel before the fit where its column moves the stage; a regression repair under the Score screen's contracts. **Landed** 2026-09-29 (merged ebad0720, chain green); handoff `handoffs/ba86d75c.md`, with the reviewer; the hypothesis held on every opening; U86, U87 recorded. **Closed** 2026-09-29 (`responses/ba86d75c.md`, APPROVE).
+state: closed 2026-09-29: APPROVE (`responses/ba86d75c.md`)

@@ -96,3 +96,7 @@ no more; a reader must be able to disagree with each answer.
 Judgement first: the one sentence each concept is, and the two places the design is
 least sure. Then the document's outline, the choices left to the owner, and the files
 read.
+
+## Record
+
+lane: C0a · closes: — · entry: — · role: history

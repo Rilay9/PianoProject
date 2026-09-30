@@ -37,3 +37,10 @@ Judgement first: the guard's two logs (unfetched, full) as a runner would print 
 **Architecture approved 2026-09-29** (`responses/questions-ea14b1fe.md`); the step's read-back on the handoff.
 
 **Landed 2026-09-29** (Entry 151; d249d64f, merged 918cbb24); handoff `handoffs/d249d64f.md`.
+
+## Record
+
+lane: Q88 · closes: Q88 · entry: 151
+index: The Pages deploy is guarded: a step between the build and the artifact upload fails when the built catalogue holds fetch placeholders, so the last successful build stays live (the reviewer's Q86 ruling) | content, workflow | **done 2026-09-29**, Entry 151; merged 918cbb24; handoff `handoffs/d249d64f.md` |
+in-flight: brief drafted 2026-09-29 (`Q88-deploy-guard.md`): the reviewer's Q86 ruling — a deploy guard reading the built catalogue's fetch placeholders through `validate.unfetched_placeholders`, one step in `pages.yml` before the artifact upload; red first; observed on an unfetched build here. Building, for the reviewer's post-build gate (Entry 151). **Landed** 2026-09-29 (merged 918cbb24, chain green); handoff `handoffs/d249d64f.md`, with the reviewer.
+state: landed 2026-09-29: merged 918cbb24; handoff `handoffs/d249d64f.md`, with the reviewer

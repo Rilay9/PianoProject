@@ -56,3 +56,10 @@ Judgement first: what a learner with a proficient skill is offered and what the 
 **Approved with one required change 2026-09-29** (`responses/9193261.md`): the offer's relationship must be persisted before a transfer-intended run can start — D4a; `cutIdentity` pruned with it; the declared-versus-measured separation is G2's; encounter durability is G1's contract.
 
 **Closed 2026-09-29** on D4a's approval (`responses/5193338.md`).
+
+## Record
+
+lane: D4 · closes: — · entry: 106
+index: Transfer-aware selection: a durable material identity (D2's `Identity`, written by the build) on every run and in the evidence context; contact novelty read from it; the session's transfer-intended offer for a proficient skill through the one gate, with role and relationship facts; the ladder's policy untouched; runtime studies deferred (`D4-transfer-aware-selection.md`; scoping answers `responses/c7995b0.md`) | D3 accepted; D3a; the reviewer's answers | the session's offers, the evidence context, the store's history reading (to be decided in the brief) | **done 2026-09-29**, Entry 106 (built 2026-09-28 to 29); merged da9d0e7; handoff `handoffs/9193261.md`; **approved with one required change** (`responses/9193261.md`); closes on D4a; **closed** on D4a's approval (`responses/5193338.md`) |
+in-flight: **closed** 2026-09-29 (approved with one required change `responses/9193261.md`; D4a approved `5193338.md`). Earlier: D4a's brief **approved with one required change, applied** (`responses/1cbc38a.md`: the snapshot bound to the exact offer instance, pending means no play and no row); **D4a landed** 2026-09-29 (Entry 109, merged 1476d8d, chain green); **approved** (`responses/5193338.md`); D4 **closed**. G1 **dispatched 2026-09-29** (Entry 112, port 4183) on the lanes answer. Nothing heard; unverified as music.
+state: closed 2026-09-29: closed on D4a's approval (`responses/5193338.md`)

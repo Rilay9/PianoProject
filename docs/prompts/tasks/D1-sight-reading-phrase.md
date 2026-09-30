@@ -56,3 +56,9 @@ Judgement first: three phrases per level as a first reader meets them, before an
 
 **Closed 2026-09-27** on D1a's acceptance (`responses/8a13eb1.md`); D3's brief may be drafted.
 
+## Record
+
+lane: D1 · closes: — · entry: 94
+index: The sight-reading phrase: hard constraints kept, valid candidates scored for beginning, arrival, contour, motif, rests and harmony; S26's tie leap as a hard constraint; a generator version on the drill's identity; a distribution suite over seeds that CI bounds (`D1-sight-reading-phrase.md`) | none (D0 closed) | `sightReading.ts` and a sibling, `fromCatalog.ts` at the identity, two new test files, docs/05, 08 | **done 2026-09-27**, Entry 94; closed on D1a's acceptance |
+in-flight [D1 / D1a]: **closed**: D1a accepted (`responses/8a13eb1.md`); version 2 live; D3's brief released. **D2** (Entry 95) — **closed**, approved (`responses/7e148e0.md`). **U67** (Hear it after a reload) — **closed**, approved (`responses/deb0b4f.md`).
+state: closed: closed on D1a's acceptance; the in-flight line D1 / D1a reads closed

@@ -40,3 +40,9 @@ Judgement first: what a learner who played one cut and reads another now sees on
 **Landed 2026-09-29** (Entry 132; 337a0324, merged f9aa295f); handoff `handoffs/337a0324.md`.
 
 **Accepted 2026-09-29** (`responses/337a0324.md`, APPROVE). The protection question ruled: keep as built — a failed reading of another cut counts unless a separately known new demand spares it; no measured dimension is borrowed across the missing arrangement/section fact. G80 (the facts, relationship-owned) and G81 (the offer's wording) recorded. G2 closed; X1 released.
+
+## Record
+
+lane: G2a · closes: — · entry: 132
+index: The G2 review's required change: a run whose composition relationship lists played items reads `unknown`, never `demonstrated`, until the relationship carries the arrangement or section fact; cases 5 and 6 rewritten red first; a ladder case; the screens' words if any show it | evidence | **done 2026-09-29**, Entry 132; merged f9aa295f; handoff `handoffs/337a0324.md`; X1 released on its review; **accepted 2026-09-29** (`responses/337a0324.md`, APPROVE): the protection rule as built kept; G80 and G81 recorded; X1 released |
+state: closed 2026-09-29: accepted (`responses/337a0324.md`, APPROVE); G2 closed on its acceptance (G2's in-flight line)

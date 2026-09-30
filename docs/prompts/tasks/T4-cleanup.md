@@ -65,3 +65,7 @@ the family. Left here so the correction is not lost.
 `build.py --offline`, `ladder_report.py`, `validate.py`, `rung_audit.py`, `npx vitest run`,
 `npx tsc -b`, `npm run lint`. One entry in `docs/pending-review.md` saying which of the two
 homes you chose for `rock.4`'s exercises and why, since that is the judgement, not the edit.
+
+## Record
+
+lane: T4 · closes: — · entry: — · role: history

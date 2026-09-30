@@ -83,3 +83,7 @@ one at a time on 4173, `build.py --offline`, `validate.py`, `rung_audit.py`. Upd
 `docs/04` §3d's list of routable kinds and `docs/05` §6. One entry in
 `docs/pending-review.md` — and if the answer to question 1 is no, that entry is the whole
 deliverable.
+
+## Record
+
+lane: T6 · closes: — · entry: — · role: history

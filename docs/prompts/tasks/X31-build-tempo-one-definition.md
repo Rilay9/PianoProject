@@ -43,3 +43,10 @@ Judgement first: the corpus table's three counts and the largest level moves, re
 **Landed 2026-09-29** (Entry 144; aa16c702, merged 91790446); handoff `handoffs/aa16c702.md`.
 
 **Approved with one required change 2026-09-29** (`responses/aa16c702.md`): the late-tempo opening keeps the default where a note has sounded (X31a); the rest as built; the Satie gap stays named.
+
+## Record
+
+lane: X31 · closes: X31 · entry: 144
+index: The content build reads a file's opening tempo as the app does — quarter notes a minute through music21's normalisation, the opening event — one definition of the duration feature; the model not refit; the corpus compared against X3d's record (X3d follow-up 1, P2) | content | **done 2026-09-29**, Entry 144; merged 91790446; handoff `handoffs/aa16c702.md`; **approved with one required change 2026-09-29** (`responses/aa16c702.md`): the late-tempo opening (X31a) |
+in-flight: brief drafted 2026-09-29 (`X31-build-tempo-one-definition.md`): `difficulty.py` reads the opening mark's quarter-note tempo through music21 (`getQuarterBPM`, the earliest offset), no Python copy of the app's reader; the model not refit; the 2,011 bundled scores compared against X3d's `corpus-models.txt`; levels before and after; the parity fixture regenerated. Building, for information (Entry 144). **Landed** 2026-09-29 (merged 91790446, chain green); handoff `handoffs/aa16c702.md`, with the reviewer. **X31 approved with one required change** 2026-09-29 (`responses/aa16c702.md`): the late-tempo opening keeps the default (X31a); the Satie gap stays named; bands never widened mechanically (X37).
+state: closed 2026-09-30: X31a closed X31's required change (X31a's in-flight line)

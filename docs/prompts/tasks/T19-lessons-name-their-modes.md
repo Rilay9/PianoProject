@@ -52,3 +52,7 @@ for this rung* paragraph (or note there is none):
 
 Lessons edited; tool entries added per rung with reasons; rows added; the verification
 counts; what is unverified.
+
+## Record
+
+lane: T19 · closes: — · entry: — · role: history

@@ -110,3 +110,7 @@ tests.
 Judgement first: in five lines, what a sight-reading run teaches the app about the
 learner today and what it would need to. Then the trace, the six questions, the findings,
 what is unverified, files read.
+
+## Record
+
+lane: T36c · closes: — · entry: — · role: history

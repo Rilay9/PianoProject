@@ -190,6 +190,9 @@ class TheWorkflowOrder(unittest.TestCase):
         self.assertIsNone(re.search(r"^\s+pull_request:", block, re.MULTILINE), "the pull_request event never fired for the standing PR and was removed")
         docs = WORKFLOW.with_name("docs-integrity.yml").read_text(encoding="utf-8")
         self.assertIn("test_prompt_views", docs, "the views' freshness moved to docs-integrity.yml")
+        # T58: the record's mirrors (the task index, in-flight) are generated and held to the record
+        # blocks here: a record push starts no ci.yml run, so docs-integrity is its only check.
+        self.assertIn("tools.content.tests.test_record_mirrors", docs, "the record's mirrors are checked on every push (T58)")
         self.assertIsNone(re.search(r"run:.*(playwright|vitest|build:app|render_check)", docs, re.IGNORECASE), "the docs workflow never runs the app's suites")
 
     def test_the_steps_the_failure_messages_name_exist(self) -> None:

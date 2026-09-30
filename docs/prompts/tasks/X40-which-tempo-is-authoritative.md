@@ -113,3 +113,10 @@ If the evidence remains exactly as described for Maple Leaf — an explicit **pr
 Reason: the learner sees an explicit numerical instruction; an invisible conflicting playback hint should not silently override it. That is a product/notation truth, not a preference for one parser field.
 
 X40 should still test the corpus before turning that into a general reader change. If the corpus reveals legitimate cases where the first sound intentionally differs from a co-located printed mark, bring those cases back. No reader change belongs in X40 itself.
+
+## Record
+
+lane: X40 · closes: X40 · entry: 173
+index: Which tempo is authoritative: Maple Leaf's two sound tempos, the table over every import, a check; identity-moving fixes after E50a (backlog X40, P2) | content + app | brief drafted 2026-09-30 (`X40-which-tempo-is-authoritative.md`); with the reviewer before dispatch; Entry 173 |
+in-flight: brief drafted 2026-09-30 (`X40-which-tempo-is-authoritative.md`): an evidence lane: every tempo fact for Maple Leaf Rag (the MusicXML holds two sound tempos in bar 1, 120 for the words and 100 for the printed mark, and the reader keeps the first) and a table for every MuseTrainer and kern row that builds a file; a check over the built scores; data fixes that move an identity deferred to after E50a, the reader untouched (the reviewer's ruling, `responses/questions-7fb976cb.md`; backlog X40, P2); with the reviewer before dispatch (Entry 173).
+state: with-reviewer 2026-09-30: with the reviewer before dispatch (Entry 173)

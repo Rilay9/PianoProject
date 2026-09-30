@@ -120,3 +120,10 @@ If an old lane cannot be migrated without interpretation, mark that record block
 All five reviewer conditions still stand, especially preservation of prior reviewer/status words and reconstructability of implementation HEAD -> handoff -> response.
 
 T58 may dispatch.
+
+## Record
+
+lane: T58 · closes: T58 · entry: 171
+index: The record generates its mirrors: the task index and in-flight from the briefs, entries, backlog and responses, checked (the reviewer's proposal 2; backlog T58, P2) | tooling | brief drafted 2026-09-30 (`T58-the-record-generates-its-mirrors.md`); with the reviewer before dispatch; Entry 171 |
+in-flight: brief drafted 2026-09-30 (`T58-the-record-generates-its-mirrors.md`): the task index and in-flight generated from the briefs' record blocks, the entries, the backlog and the response files by `tools/docs/record_mirrors.py`, deterministic, checked by a test and a docs-integrity step, failing loudly on contradictions, every migrated word kept (the reviewer's proposal 2, `responses/questions-70656183.md`; backlog T58, P2); with the reviewer before dispatch (Entry 171).
+state: with-reviewer 2026-09-30: with the reviewer before dispatch (Entry 171)

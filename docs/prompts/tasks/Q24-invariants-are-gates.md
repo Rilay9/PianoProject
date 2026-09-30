@@ -26,3 +26,9 @@ Judgement first: which gates were open and are now closed; then Done / Not done 
 
 **Approved by the reviewer 2026-09-27** (`responses/e32d0ef.md`, unprompted through PR #1): all four gates accepted, the fail-closed worktree prerequisite endorsed as a contract for later briefs; MAESTRO and split-hands kept as Q46/Q47; nothing to fix forward.
 
+## Record
+
+lane: Q24 · closes: Q24 · entry: 89
+index: Invariants that are gates: CI builds content before it tests content; the 21 skip sites classified, the gates failing loudly; the converter harness in CI or the reason why not; an order test | build (infrastructure) | **done 2026-09-27**, Entry 89 (build before tests; 14 gates loud, 9 environmental kept; the harness and the parity reference in CI; the MAESTRO step is the owner's question, Q47) |
+in-flight: **closed**, approved by the reviewer (`responses/e32d0ef.md`, unprompted); the MAESTRO download decided yes for testing by the owner on 2026-09-28 (Q47; licence re-read and quoted in the row; one small H seam with Q46).
+state: closed: approved by the reviewer (`responses/e32d0ef.md`, unprompted)

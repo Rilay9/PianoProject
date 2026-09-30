@@ -110,3 +110,7 @@ applied.
 
 Rows added per test file; findings with no row and why; Part B tallies (RIGHT / WRONG /
 UNSURE / REWRITE / KEEP); every WRONG restated; what is unverified.
+
+## Record
+
+lane: T12 · closes: — · entry: — · role: history

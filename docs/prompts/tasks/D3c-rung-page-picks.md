@@ -40,3 +40,8 @@ Judgement first: the rung page at `holiday.5` and `latin.3` before and after, in
 
 **Accepted by the reviewer 2026-09-28** (`responses/e85c162.md`): D3's admission chain closed across the gate, the card and the rung page; Start's shorter line accepted; Quick check's measurement rule to G62; the duet race to Q60; replacement quality is not approval. D3 closed.
 
+## Record
+
+lane: D3c · closes: — · entry: 104
+index: The rung page's automatic picks — Start, Climb the ladder, Quick check and the duet path, explicit and implicit — pass the one exported teaching-use admission, each selecting the next admitted option or hidden truthfully when none exists; regressions per pick for `null`, `false` and `true`, drills and notated items unchanged, a whole-catalogue rung-page sweep, a mutant per path (`D3c-rung-page-picks.md`) | D3b | `LessonScreen.ts` at the picks, its tests, docs/04, docs/08 | **done 2026-09-28**, Entry 104; **accepted** (`responses/e85c162.md`); D3 closed |
+state: closed 2026-09-28: accepted (`responses/e85c162.md`); D3 closed

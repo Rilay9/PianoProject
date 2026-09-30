@@ -148,9 +148,17 @@ class TheCommittedMap(unittest.TestCase):
         for needed in ("content-build", "content-validate", "unit", "e2e"):
             self.assertIn(needed, ids)
 
-    def test_a_docs_only_change_runs_nothing(self) -> None:
-        result = cfp.checks_for(["docs/pending-review.md", "docs/prompts/in-flight.md"], self.map, ROOT)
+    def test_a_prose_only_change_runs_nothing(self) -> None:
+        # Revised by T58: pending-review and in-flight, the example here until then, are read by
+        # tools/docs/record_mirrors.py since it landed; the plan and the handoff pointer are read by nothing.
+        result = cfp.checks_for(["docs/prompts/plan-2026-09-25.md", "docs/review/current.md"], self.map, ROOT)
         self.assertEqual((result.commands, result.unmatched), ([], []))
+
+    def test_a_record_change_runs_the_mirrors_check_and_nothing_else(self) -> None:
+        result = cfp.checks_for(["docs/pending-review.md", "docs/prompts/in-flight.md"], self.map, ROOT)
+        self.assertEqual(result.unmatched, [])
+        self.assertEqual([c[0] for c in result.commands], ["record-mirrors", "content-tests"])
+        self.assertTrue(result.commands[-1][2].endswith("-p test_record_mirrors.py"), result.commands[-1])
 
 
 #: The whole default Playwright configuration and the whole unit suite, as the reader prints them.

@@ -51,3 +51,8 @@ The stop after C4 is a learner-facing review: the thirty-day reading strand of o
 ## Report
 
 Judgement first: what a learner who misreads skips now gets tomorrow, and what one who reads eighths cleanly gets, in the app's own reason lines. Then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes from unpiped runs; unverified beside what passes.
+
+## Record
+
+lane: C4 · closes: — · entry: 73 · role: history
+index: The first reader: sight-reading constraints from the reading skill state; unseen guaranteed; the true reason line; then the learner-facing checkpoint | build, browser | done 2026-09-26 (Entry 73); checkpoint written |

@@ -30,3 +30,7 @@ Judgement first: three of the eleven as a learner now reads them, the ones whose
 
 **Accepted by the reviewer 2026-09-27** (`responses/a94baee.md`): the style pointers for G; the T55 "every key" diagnosis superseded — the sentence is literally correct.
 
+## Record
+
+lane: F1 · closes: — · entry: 88 · role: history
+index: The eleven F0 deferrals classed "F's voice rewrite": absolutes, superlatives and fake precision removed, the advice kept; lesson text only | content | **done 2026-09-27**, Entry 88; **accepted by the reviewer** (responses/a94baee.md) |

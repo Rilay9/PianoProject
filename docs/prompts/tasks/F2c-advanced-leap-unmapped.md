@@ -33,3 +33,9 @@ Judgement first: the two rungs' rows in the rung-claims report before and after,
 **Landed 2026-09-29** (Entry 130; 267cac32, merged fb89e790); handoff `handoffs/267cac32.md`. L119 recorded.
 
 **Accepted 2026-09-29** (`responses/267cac32.md`, APPROVE). F2 closed; the two concepts' claim boundaries independent; L119 a later wave; historical candidate reports stay historical.
+
+## Record
+
+lane: F2c · closes: — · entry: 130
+index: F2b finished: the advanced `leaps` unmapped from the fourth-or-wider detector, the two advanced rungs' leap claim explicitly unmeasured, the false `sharedBy` gone, the census and reports regenerated, a regression that a primer fourth satisfies no advanced claim (`F2c-advanced-leap-unmapped.md`) | F2b (Entry 123); `responses/ddba53e9.md` | `claims.py` at one mapping, the tests, the reports, docs/02 Part C at two rungs | **done 2026-09-29**, Entry 130; merged fb89e790; handoff `handoffs/267cac32.md`; L119 recorded; closes F2 on its review; **accepted 2026-09-29** (`responses/267cac32.md`, APPROVE); F2 closed |
+state: closed 2026-09-29: accepted (`responses/267cac32.md`, APPROVE); F2 closed

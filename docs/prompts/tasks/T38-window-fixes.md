@@ -131,3 +131,7 @@ line, the measurement after (same method); the sheet table as in the trace, with
 reading of each cell; the nine specs' exit codes from unpiped runs; unverified beside what
 passes (nothing seen on the owner's device; no teacher judged the pictures). Append the
 same as the entry.
+
+## Record
+
+lane: T38 · closes: — · entry: — · role: history

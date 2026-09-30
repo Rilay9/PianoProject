@@ -42,3 +42,8 @@ Judgement first: the card at the affected rungs before and after, in its own wor
 
 **Approved by the reviewer 2026-09-28 with one required change** (`responses/4478793.md`): the rung page's automatic picks are offers too — D3c; the Latin asks stay unmet; G61 a later wave. D3 closes on D3c's review.
 
+## Record
+
+lane: D3b · closes: — · entry: 103
+index: The session card's direct rung-list paths (the `runs`, `done` and `measure` pools, the fallback's rung and prerequisite steps, the jam slot, the exposure rule) pass the same teaching-use admission as the gate, single-sourced; a row whose only candidate is refused is omitted or filled by an already-valid alternative, never a bypass; regressions per path (`D3b-session-card-admission.md`) | D3a | `session.ts` at the named paths, `eligibility.ts` at the shared admission export, the session and consumer tests, docs/04, docs/08 | **done 2026-09-28**, Entry 103; **approved with one required change** (`responses/4478793.md`) — D3c |
+state: closed 2026-09-28: D3 closed on D3c's acceptance, D3a–D3c (D3's row); its required change built as D3c (`responses/4478793.md`)

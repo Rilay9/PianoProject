@@ -39,3 +39,9 @@ Judgement first: the walking bass at jazz.8 for a learner through jazz.6, and at
 
 **Accepted by the reviewer 2026-09-28** (`responses/c95ac32.md`): E0b and E0 closed; latin's concept to F (L110); E22 unchanged; any E1 decision using the rung-claims report must use a build of the combined branch.
 
+## Record
+
+lane: E0b · closes: — · entry: 96
+index: A demand can be taught at more than one rung: `taughtAt` as a list derived from the lessons' concepts under the ancestry, the walking bass credited to jazz.6 as well as blues.5, every reader taught when any listed rung is on the path; theory.9 stays named (`E0b-taught-at-many-rungs.md`) | E0a | `demands.json` and its schema, `validate.py`, `claims.py`, the type, `session.ts` and `eligibility.ts` at the readers, the tests and fixtures, docs/02 E2, docs/08 | **done 2026-09-27**, Entry 96; **accepted** (`responses/c95ac32.md`); E0 closed |
+pointer: E0
+state: closed: accepted (`responses/c95ac32.md`); E0 closed; the in-flight line E0 / E0a / E0b reads closed

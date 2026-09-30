@@ -28,3 +28,7 @@ ROUND 2 (coordinator): Size back to multiplier (scaleFor/chooseWindowShape, SIZE
 ROUND 2b: look-ahead row priced at drawn rows (drawnRowPx), fitSlots height shared by window rows only. Re-shot 5 cells OK (tablet sideways nocturne 4: 2 systems, next visible). Phone upright nocturne PNG opened: current row top, look-ahead greyed below. Next: chain2 (chain2-exit.txt).
 CHAIN2: window-rule0 layout1(1 vs 2 bars sideways same) fill0 fuzz0 head-height1(frozen shrink on header change) stepper-limits0 screen1(zoom+ ink narrower: bars dropped) wide1(laptop ink share<0.8 now fills uniformly) tsc0 lint0. FIX4: sideways prediction adds readAheadScale; FROZEN_HEIGHT_HOLD 0.8 in scaleFor; score.screen asserts staff grows; wide drops <0.8 share with owner quote. Next: build, rerun the 4 red.
 CHAIN2 rerun: score.window-rule 0 score.layout 1 score.fill 0 score.fuzz 0 score.head-height 0 score.stepper-limits 0 score.screen 1 wide 0 tsc 0 lint 0 . OPEN: score.layout 1 vs 2 bars sideways 880x412 both ink 3 bars; score.screen Size+ staff 270->250 px (Size + shrank the staff at that viewport) - NOT DEBUGGED, budget.
+
+## Record
+
+lane: T34 · closes: — · entry: — · role: handoff

@@ -37,3 +37,9 @@ Judgement first: what the map now says for a change to `screenFrame.ts` and to `
 **Landed 2026-09-29** (Entry 124; b690be15, merged 9505e1f2); handoff `handoffs/b690be15.md`.
 
 **Closed 2026-09-29** (`responses/b690be15.md`, APPROVE): Q65 closed; the map stops being advisory.
+
+## Record
+
+lane: Q65b · closes: — · entry: 124
+index: Q65a finished: `screenFrame.ts` and `subScreen.ts` bounded by the union of their importing screens' browser sets, a drift test discovering the importers (`Q65b-frame-helpers-bounded.md`) | Q65a (Entry 120); `responses/3c661d4.md` | `checks.json` at two rows, `test_checks_for_paths.py` | **closed 2026-09-29** (`responses/b690be15.md`, APPROVE; Entry 124): Q65 closed, the map the minimum; Q74 recorded |
+state: closed 2026-09-29: APPROVE (`responses/b690be15.md`)

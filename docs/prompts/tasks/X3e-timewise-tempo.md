@@ -39,3 +39,10 @@ Judgement first: what a learner importing a timewise file saw and sees (the shee
 **Landed 2026-09-29** (Entry 137; 3caf2711, merged 3134a38a); handoff `handoffs/3caf2711.md`.
 
 **Accepted 2026-09-29** (`responses/3caf2711.md`, APPROVE). X24 and X29 closed: the import door's tempo truth is complete.
+
+## Record
+
+lane: X3e · closes: — · entry: 137
+index: The X3d review's required change: the one tempo reader covers `score-timewise` with the same event, precedence, opening and position rules (or the import boundary converts timewise to partwise before any tempo consumer), with a real-path regression that a timewise file's opening mark, sound tempo and later change give the same sheet text, label, count-in and map as its partwise twin | score | **done 2026-09-29**, Entry 137; merged 3134a38a; handoff `handoffs/3caf2711.md`; X24 and X29 close on its review; **accepted 2026-09-29** (`responses/3caf2711.md`, APPROVE): X24 and X29 closed |
+in-flight: brief drafted 2026-09-29 (`X3e-timewise-tempo.md`): the X3d review's required change — the one reader handles `score-timewise` with the same rules, and a real-path regression proves a timewise file and its partwise twin give the same sheet text, label, count-in and map. Building, for information. **Landed** 2026-09-29 (merged 3134a38a, chain green); handoff `handoffs/3caf2711.md`, with the reviewer. **X3e accepted** 2026-09-29 (`responses/3caf2711.md`, APPROVE): the X3d required change closed; X24 and X29 closed.
+state: closed 2026-09-29: accepted (`responses/3caf2711.md`, APPROVE), the X3d required change closed

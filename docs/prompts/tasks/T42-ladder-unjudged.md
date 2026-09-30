@@ -23,3 +23,8 @@ You own the ladder's code in `ScoreScreen.ts` and `ScoreSession.ts` (the hold an
 ## Report
 
 Judgement first: what a learner sees on the status line after a loop pass nothing listened to, seen once on the glass. Then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes from unpiped runs (`tsc -b`, lint, vitest, `build:app`, `score.rhythm-ladder`, and `score.states` since it holds T40's and C3's no-input cases); unverified beside what passes.
+
+## Record
+
+lane: T42 · closes: — · entry: 74 · role: history
+index: The tempo ladder holds on a pass nothing judged and says so; the rhythm-ladder test that relied on L42's fault is revised (CI on a30dc96) | build, browser | done 2026-09-27 (Entry 74) |

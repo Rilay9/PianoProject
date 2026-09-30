@@ -42,3 +42,8 @@ If a demand's opportunities cannot be told apart at the step level for a channel
 ## Report
 
 Judgement first: the skip learner's evidence after five reads, as the function stores it and as `demandReadings` reads it, and the one-wrong-note learner's; then what a teacher could now see that Entry 73's `n, right` hid. Then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes from unpiped runs (`tsc -b`, lint, vitest); unverified beside what passes, including the construct-validity list carried forward.
+
+## Record
+
+lane: C4a · closes: — · entry: 75 · role: history
+index: Evidence per demand with the overlap between demands preserved; the evidence's own definitions version; the adversarial construct-validity cases | build | done 2026-09-27 (Entry 75) |

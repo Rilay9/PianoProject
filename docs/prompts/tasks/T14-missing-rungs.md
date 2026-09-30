@@ -57,3 +57,7 @@ that fell short. The owner said (2026-09-17) never to force a song onto a rung.
 
 Rungs built with their option counts; rungs not built and why; claim rows added; the
 verification counts; what is unverified.
+
+## Record
+
+lane: T14 · closes: — · entry: — · role: history

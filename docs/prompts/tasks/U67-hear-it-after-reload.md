@@ -37,3 +37,8 @@ Judgement first: a learner who reloads on a piece and presses Hear it, before an
 
 **Approved by the reviewer 2026-09-27** (`responses/deb0b4f.md`): closed. The evidence claim constrained: scheduling at the piano and metronome boundaries in the tested Chromium, not audible output on a device; U69 and U70 stay separate seams.
 
+## Record
+
+lane: U67 · closes: U67 · entry: 98
+index: Hear it plays after a reload: the score screen's session gets its audio context at the tap, never the null it was built with; a browser case that opens by address and counts scheduled sample starts, red first (`U67-hear-it-after-reload.md`) | none | `ScoreSession.ts` at the context, `ScoreScreen.ts` at the session and the Hear it handler, a test hook, one spec, one unit file, docs/04, docs/08 | **done 2026-09-27**, Entry 98; **approved** (`responses/deb0b4f.md`), closed |
+state: closed: approved (`responses/deb0b4f.md`), closed

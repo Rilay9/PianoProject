@@ -38,3 +38,9 @@ Judgement first: the F♯ major ii-V-I as a learner now reads it, degree by degr
 
 **Accepted by the reviewer 2026-09-27** (`responses/3b9c37d.md`): the repair at the mechanism, the regression and mutation, the versions and pins, the renders; B7 kept in the E♭ minor blues until G53 repairs the octave placement; G52 decides the six arpeggios' notation. **D0 closed; E0 released.**
 
+## Record
+
+lane: D0a · closes: — · entry: 91
+index: The shared spelling policy keeps a key's own notes: E♯ in F♯ major, C♭ in G♭ major; the borrowed-chord simplification kept narrow; a generated-score regression with a mutation; versions and pins moved with the music (`D0a-key-spelling.md`) | D0 | `generate_exercises.py` at the policy, one test file, the contract versions and pins | **done 2026-09-27**, Entry 91; **accepted** (`responses/3b9c37d.md`); D0 closed |
+pointer: D0
+state: closed: accepted (`responses/3b9c37d.md`); the in-flight line D0 / D0a reads closed

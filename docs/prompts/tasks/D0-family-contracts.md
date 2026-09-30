@@ -71,3 +71,9 @@ D1 the sight-reading phrase: grammar, candidate scoring under S7 and G9, the dis
 
 **Closed 2026-09-27** on D0a's acceptance (`responses/3b9c37d.md`).
 
+## Record
+
+lane: D0 · closes: — · entry: 90
+index: Every family says what it is for: one contract table across the 56 families, demands measured by the detectors, the four gates with the open voicings as the first physical adversary, canonical, variable and transfer as data, objects named by what they are | build | **done 2026-09-27**, Entry 90; architecture approved, closed on D0a's acceptance |
+in-flight [D0 / D0a]: **closed**: D0a accepted (`responses/3b9c37d.md`); B7 kept (G53), the arpeggios' notation to G52.
+state: closed: closed on D0a's acceptance; the in-flight line D0 / D0a reads closed

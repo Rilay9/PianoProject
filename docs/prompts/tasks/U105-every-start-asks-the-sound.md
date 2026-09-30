@@ -127,3 +127,10 @@ Add separate tests for:
 - on-screen key + failed/never-started audio -> no silent run.
 
 Everything else in the brief may proceed.
+
+## Record
+
+lane: U105 · closes: U105 · entry: 172
+index: Every start asks the sound: G86a's gate on the six on-screen taps and the MIDI key (backlog U105, P2) | app | brief drafted 2026-09-30 (`U105-every-start-asks-the-sound.md`); with the reviewer before dispatch; Entry 172 |
+in-flight: brief drafted 2026-09-30 (`U105-every-start-asks-the-sound.md`): every user-activated path that begins audible playback goes through G86a's sound gate, the sentence naming the control tapped; the MIDI key's start decided from the code (backlog U105, P2; the G86a review's follow-up); with the reviewer before dispatch (Entry 172).
+state: with-reviewer 2026-09-30: with the reviewer before dispatch (Entry 172)

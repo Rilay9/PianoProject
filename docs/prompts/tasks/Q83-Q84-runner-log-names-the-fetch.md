@@ -36,3 +36,10 @@ Judgement first: the build step's log lines under *validate* before and after on
 **Landed 2026-09-29** (Entry 148; c80e33f2, merged 36282f6f); handoff `handoffs/c80e33f2.md`.
 
 **Accepted 2026-09-29** (`responses/c80e33f2.md`, APPROVE). Q89 ruled: fetch warnings first for display, from structured knowledge only.
+
+## Record
+
+lane: Q83+Q84 · closes: Q83, Q84 · entry: 148 · aliases: Q83 + Q84
+index: A runner's log names a fetch failure: the build step keeps the validator's warnings when it passes (Q84) and the Mutopia strict-flavour test names the unfetched placeholder as its cause (Q83) | content | **done 2026-09-29**, Entry 148; merged 36282f6f; handoff `handoffs/c80e33f2.md`; **accepted 2026-09-29** (`responses/c80e33f2.md`, APPROVE); closed; Q89 ruled |
+in-flight: brief drafted 2026-09-29 (`Q83-Q84-runner-log-names-the-fetch.md`): `step_validate` keeps the validator's `WARNING` lines on a pass and the runner prints them; the strict Mutopia case names the placeholder and its fetch reason when it fails; observed on an unfetched build here. Building, for information (Entry 148). **Landed** 2026-09-29 (merged 36282f6f, chain green); handoff `handoffs/c80e33f2.md`, with the reviewer. **Q83+Q84 accepted** 2026-09-29 (`responses/c80e33f2.md`, APPROVE); Q89 ruled (fetch warnings first, display only, no parser). Closed.
+state: closed 2026-09-29: APPROVE (`responses/c80e33f2.md`)

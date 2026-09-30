@@ -42,3 +42,10 @@ Judgement first: what an import shows on the assign sheet before and after its c
 **Approved with one required change 2026-09-29** (`responses/2532022.md`): the material gate must be the one public admission path, novelty bound to D4's identity and contact, the seed concepts passed by the build — E2a; the sibling accepted as a step; E0's untrusted-tempo verdict kept; the assign sheet's conversion message X3's (U72).
 
 **Closed 2026-09-29** on E2a's approval (`responses/9571a7b.md`).
+
+## Record
+
+lane: E2 · closes: — · entry: 107
+index: The chooser's material layer over every source: one candidate contract (bundled, generated, excerpt, import, external recommendation), a material-requirements object the gate reads as it reads a want, source-specific validity saying what each candidate can prove, the import store measured once and versioned by its converter, the seed list as a proposal source, the twelve adversaries held at the material layer (`E2-chooser-material-layer.md`) | E0 and E1 closed; D4 building (file-disjoint) | `candidates.ts` (new), `eligibility.ts` at an overload, `importStore.ts` at the migration, the two converters' version constants, `teaching-repertoire.json` (new), the finder and proposer at the seed reader, docs/03, 04, 08 | **done 2026-09-29**, Entry 107; merged 6cf08b2; handoff `handoffs/2532022.md` (two deviations to the reviewer: the sibling gate, the untrusted-tempo rule); **approved with one required change** (`responses/2532022.md`); closes on E2a; **closed** on E2a's approval (`responses/9571a7b.md`) |
+in-flight: **closed** 2026-09-29: E2a approved (`responses/9571a7b.md`). X3 may consume the material layer; L113 (the rung's own list through the gate) is X1's and blocks X1's completion; the lesson seed site is E46's. Nothing heard.
+state: closed 2026-09-29: closed on E2a's approval (`responses/9571a7b.md`)

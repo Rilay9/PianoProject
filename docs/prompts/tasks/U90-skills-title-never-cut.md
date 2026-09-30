@@ -41,3 +41,10 @@ Judgement first: the Skills row at 342 × 740 before and after, on the app's sta
 **Landed 2026-09-29** (Entry 135; 994586f9, merged 994586f9); handoff `handoffs/994586f9.md`.
 
 **Accepted 2026-09-29** (`responses/994586f9.md`, APPROVE). The grouped Skills rule stands (concept and exercise titles); U92 (the clipped count) a real learner-facing follow-up; U93 and U94 later waves with complete titles and complete actions as independent requirements.
+
+## Record
+
+lane: U90 · closes: U90 · entry: 135
+index: A concept's name on Skills is never cut: the row's title wraps on every font (CI's runner cuts *Leaps: a fourth or fifth* at 342 px); the F2b case asserts it on the app's stack and under a wide face, red first; pictures at 342 × 740 | ui | **done 2026-09-29**, Entry 135; merged 994586f9; handoff `handoffs/994586f9.md`; CI on the record commit is the proof; **accepted 2026-09-29** (`responses/994586f9.md`, APPROVE); closed |
+in-flight: brief drafted 2026-09-29 (`U90-skills-title-never-cut.md`): CI's full run on 248c6138 (805 passed, 2 flakes) fails F2b's Skills case on the runner's font, the beginner leap's name cut at 342 px; the row's title wraps on every font, the case red first under a wide face. Building, for information. U91 records the two flakes. **Landed** 2026-09-29 (merged 994586f9, chain green); handoff `handoffs/994586f9.md`, with the reviewer; CI on the record commit is the proof. **U90 accepted** 2026-09-29 (`responses/994586f9.md`, APPROVE): one grouped Skills rule; U92 a real learner-facing follow-up; U93 keeps complete titles and complete actions; closed.
+state: closed 2026-09-29: APPROVE (`responses/994586f9.md`)

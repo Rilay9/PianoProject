@@ -38,3 +38,10 @@ Judgement first: the two-bar scale from Today at 342 × 740 before and after, as
 **Landed 2026-09-29** (Entry 114; 9c9cf86, merged b2b5dd5); handoff `handoffs/9c9cf86.md`. The premise corrected by the builder: the first draw, not a path difference.
 
 **Closed 2026-09-29** (`responses/9c9cf86.md`, APPROVE): the first-draw repair accepted; E30 unchanged, U77 and U78 its inputs when reopened.
+
+## Record
+
+lane: U74 · closes: U74 · entry: 114
+index: The score fills the stage on every path in: the window renderer owns its stage's size and refits when it settles or changes, so a two-bar item from Today draws as large as by a link; E30's wide-stage choice judged on the whole gallery (`U74-window-fit.md`) | D4a landed (the pictures) | `WindowRenderer.ts`, `autoFit.ts`, their tests, the window-rule spec and one new spec, docs/04; the Score screen untouched | **closed 2026-09-29** (`responses/9c9cf86.md`, APPROVE; Entry 114); E30 unchanged, U77/U78 its inputs when reopened |
+in-flight: **closed** 2026-09-29 (`responses/9c9cf86.md`, APPROVE; Entry 114). E30 unchanged; U77 and U78 are its inputs when it is deliberately reopened; docs/04 §5 states the code's rule.
+state: closed 2026-09-29: APPROVE (`responses/9c9cf86.md`)

@@ -140,3 +140,7 @@ you cannot run the test here.
 Judgement first: in five lines, what the app learns from an exercise today and what it
 would need to learn. Then the trace, the six questions, the findings, and what is
 unverified. Files read, listed.
+
+## Record
+
+lane: T36a · closes: — · entry: — · role: history

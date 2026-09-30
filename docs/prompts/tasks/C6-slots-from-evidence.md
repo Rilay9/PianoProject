@@ -54,3 +54,8 @@ Sent later the same day, after the reviewer's verification of the record: the di
 **Delivered 2026-09-26** as commit `8f86d53`, Entry 80; the reviewer's packet is `docs/prompts/checkpoint-2026-09-26-slots.md`.
 
 **Reviewed 2026-09-26**: approved with one policy correction before C7 — the seven-day exposure pre-pass in the review and repertoire slots runs ahead of the ladder's semantic tiers; corrected as a fix-forward in the same tree with adversarial tests (the C6 review in the audit file).
+
+## Record
+
+lane: C6 · closes: — · entry: 80 · role: history
+index: The other slots read the evidence (technique, review, new, repertoire), the fallback ladder as stated claims, alternatives that share a skill, reasons from evidence; the reader-policy and evidence-hygiene rows C5 left follow as C6b | build, browser | **done 2026-09-26**, Entry 80; packet `checkpoint-2026-09-26-slots.md` |

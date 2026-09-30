@@ -38,3 +38,10 @@ Judgement first: what the map now says for a change to `ScoreScreen.ts`, to `db.
 **Landed 2026-09-29** (Entry 120; 3c661d4, merged 08af908); handoff `handoffs/3c661d4.md`. Q68–Q70 recorded.
 
 **Approved with one required change 2026-09-29** (`responses/3c661d4.md`): Q65b (`Q65b-frame-helpers-bounded.md`) bounds the two frame helpers; the universal paths keep the whole suite.
+
+## Record
+
+lane: Q65a · closes: — · entry: 120
+index: The Q-tooling review's required change: the path map the discriminating minimum — the full suite only where fan-out bounds nothing, the blanket-rule patterns replaced by the specs docs/08 and the chains name, the machine-read `docs/` paths named over the catch-all, the reader and the fallback unchanged, the nine seams compared (`Q65a-map-minimum.md`) | Q-tooling (Entry 116); `responses/198c148.md` | `docs/prompts/checks.json`, `test_checks_for_paths.py`; the reader only if it must change | **approved with one required change 2026-09-29** (`responses/3c661d4.md`; Entry 120): Q65b bounds the two frame helpers; the universal paths keep the whole suite; Q71 recorded |
+in-flight: **approved with one required change** 2026-09-29 (`responses/3c661d4.md`; Entry 120): the universal paths keep the whole suite, the unit suite stays whole; **Q65b** — **closed** 2026-09-29 (`responses/b690be15.md`, APPROVE; Q65 and Q-tooling closed; the map is the landing chain's minimum from here; Q74 recorded); landed (Entry 124, merged 9505e1f2, chain green; handoff `handoffs/b690be15.md`, with the reviewer; the fixtures row completed, Q72 and Q73 recorded); dispatched: the two frame helpers bounded by the union of their importers' sets with a drift test; Q69–Q71 later waves. The map advisory until Q65b lands.
+state: closed 2026-09-29: Q65b closed (`responses/b690be15.md`, APPROVE), Q65 and Q-tooling closed (Q65a's in-flight line)

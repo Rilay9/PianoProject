@@ -37,3 +37,9 @@ Judgement first: the walking bass at jazz.5 before and after, and any morning of
 
 **Accepted by the reviewer 2026-09-27** (`responses/5bfe6d2.md`): the ancestry mechanism closes the E0 defect; the walking-bass metadata it exposed is E0b, and E0 closes on E0b's acceptance.
 
+## Record
+
+lane: E0a · closes: — · entry: 93
+index: "Taught by this rung" from the rung's ancestry through `prerequisites`, never the curriculum file's order; a two-track regression; the consumers and the three diaries rerun; `claims.py` made path-correct the same way (`E0a-taught-by-ancestry.md`) | E0 | `session.ts` at the predicate and its callers, `claims.py`, tests, docs/02 E2, docs/08 | **done 2026-09-27**, Entry 93; **accepted** (`responses/5bfe6d2.md`); E0 closes on E0b |
+pointer: E0
+state: closed: accepted (`responses/5bfe6d2.md`); the in-flight line E0 / E0a / E0b reads closed

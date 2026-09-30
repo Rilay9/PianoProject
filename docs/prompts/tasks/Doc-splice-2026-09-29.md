@@ -32,3 +32,8 @@ If a row cannot be verified because the code it names is not at HEAD (renamed, m
 Judgement first: which rows the code contradicted and how the spec now reads there, as observations; then Done / Not done / Follow-ups / Questions / Files; the table of item 5; exit codes; unverified beside anything not checked at the code.
 
 **Landed 2026-09-29** (Entry 121; bdc988d, merged a1b6f44c). Docs work under 788427c, no handoff of its own; the reviewer sees it through `docs/08` and the entry.
+
+## Record
+
+lane: Doc-splice · closes: — · entry: 121 · role: history
+index: Six landed entries' doc rows (D4a, G1, Q47, U74, E-tail, Q-tooling) spliced into `docs/01`, `docs/03`, `docs/04` and `docs/08`, each row checked against the code at HEAD first, tight insertions only, what the code contradicts recorded (`Doc-splice-2026-09-29.md`) | the six landings; the specs serve the code | the four spec files at the named sections | **done 2026-09-29**, Entry 121; merged a1b6f44c; 40 rows in, 10 present; two record faults corrected (Entries 112, 113; U74's timing); G1's docs/02 rows for the next docs seam |

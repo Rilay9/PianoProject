@@ -30,3 +30,8 @@ Judgement first: which of the six mechanisms were proven and how; then Done / No
 
 **Approved by the reviewer 2026-09-27** (`responses/a008ba5.md`, unprompted through PR #1): the clock change keeps the timing contract; the waits use states the product already publishes; the three budgets are scoped, not broad (question 1 answered); the two non-reproduced cases stay diagnosed, not fixed; U66 for X, with a device observation useful but not a prerequisite (question 2 answered). Nothing to fix forward.
 
+## Record
+
+lane: H0 · closes: — · entry: 87
+index: Suite reliability: the diagnosed load-only failures (Q34, Q37, Q39, Q44) made deterministic with settled-state waits and a fake clock, no weaker assertion, no broad timeout; test and harness only | build (tests) | **done 2026-09-27**, Entry 87 (four of six mechanisms proven red then green; two not reproduced and made self-naming; a product finding, U66) |
+state: closed: in-flight.md's Running-now table reads closed, approved by the reviewer (responses/a008ba5.md)

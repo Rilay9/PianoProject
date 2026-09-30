@@ -33,3 +33,10 @@ Judgement first, per row, as observations; then Done / Not done per row; Follow-
 **Landed 2026-09-29** (Entry 115; f972756, merged ad46714); handoff `handoffs/f972756.md`. E50–E53 recorded; the doc rows in the entry.
 
 **Closed 2026-09-29** (`responses/f972756.md`, APPROVE): E51 the next excerpt-approval repair, E50 a converter seam, the three byte-identical cuts not carried over.
+
+## Record
+
+lane: E-tail · closes: — · entry: 115
+index: The sweep of E's small rows: the validator's excerpt-target warning, the cutter dropping edition texts, the printed tempo with a private-use glyph read, the chord glyphs drawn as accidentals, E1's `only` case, the app's measuring fingerprint and the E0-era rows re-measured, other converters' stamps, the excerpt view's desktop line (E29, E31, E32, E33, E35, E37, E40, E41, E42; `E-tail-sweep.md`) | E1, E2 landed; F2 released `validate.py` | `excerpts.py`, `validate.py` at the excerpt checks, `importStore.ts`, the converter's tempo reading, `OsmdView.ts`, `DevExcerptView.ts`, the tests named | **closed 2026-09-29** (`responses/f972756.md`, APPROVE; Entry 115): E51 the next excerpt-approval repair, E50 a converter seam, no carry-over for the three byte-identical cuts |
+in-flight: **closed** 2026-09-29 (`responses/f972756.md`, APPROVE; Entry 115). E51 is the next excerpt-approval repair (before any renewed approval); E50 a converter seam that need not block X3; no automatic carry-over for the three byte-identical cuts. **Doc-splice** — **landed** 2026-09-29 (Entry 121, merged a1b6f44c): 40 rows spliced, 10 already present, none refuted; Q-tooling's CI paragraph rewritten to the workflows as they are; two record faults corrected (Entries 112 and 113 had claimed their docs/08 rows spliced; a machine timing in U74's rows). G1's two docs/02 rows and the rows of the seams landing tonight (X3, G1a, Q65a, F2a, E-tail's later ones) go to the next docs seam. 
+state: closed 2026-09-29: APPROVE (`responses/f972756.md`)

@@ -55,3 +55,7 @@ and it is not the live bed.
 
 Per item built / not built and why; tests and red lines; the lessons touched; counts; the
 specs the coordinator should run in the wave chain; what is unverified.
+
+## Record
+
+lane: T18 · closes: — · entry: — · role: history

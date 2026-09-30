@@ -38,3 +38,9 @@ Judgement first: what a learner meets after the flip — three phrases per level
 
 **Accepted by the reviewer 2026-09-27** (`responses/8a13eb1.md`): the fallback, the stored identity, the seed-avoidance deviation and the 3.1 reader order all accepted; D1 closed; D3 constrained to consume the versioned identity, never the seed alone.
 
+## Record
+
+lane: D1a · closes: — · entry: 97
+index: Version 2 never emits a phrase that failed its own hard layer (continue within the promise budget, then refuse with a reason); the run record carries the generator's identity; version 2 goes live with the seven tests revised and three phrases per level rendered on the score screen (`D1a-fail-closed-and-flip.md`) | D1 | `sightReading.ts` and the scorer at the fallback and the version, `db.ts`'s optional field, `ScoreScreen.ts`, `evidenceJob.ts`, `session.ts` at the seed checks, the seven tests, docs/05 §8, docs/08 | **done 2026-09-27**, Entry 97; **accepted** (`responses/8a13eb1.md`); D1 closed |
+pointer: D1
+state: closed: accepted (`responses/8a13eb1.md`); D1 closed; the in-flight line D1 / D1a reads closed

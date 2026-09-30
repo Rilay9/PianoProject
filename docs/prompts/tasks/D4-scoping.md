@@ -20,3 +20,6 @@ An APPROVE with answers lets the D4 brief be written on a settled premise after 
 
 **Answered by the reviewer 2026-09-28** (`responses/c7995b0.md`): approved with one required change — a durable material identity defined and persisted before any identity-based novelty is claimed, reusing D1/D2/E1/D3's identities, legacy rows read conservatively; D4 selects and records facts, the ladder's policy stays with the post-E task and no run is claimed to demonstrate transfer; per-item admission, runtime studies deferred, the sight-reading rows a different contract; the brief written now, implementation after E1. The brief: `D4-transfer-aware-selection.md`.
 
+## Record
+
+lane: D4 · closes: — · entry: — · role: scoping

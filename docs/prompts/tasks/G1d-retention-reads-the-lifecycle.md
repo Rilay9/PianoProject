@@ -42,3 +42,10 @@ Judgement first: Today's review row before and after with a paused project, at 3
 **Landed 2026-09-29** (Entry 142; d59f2ef8, merged 85dee758); handoff `handoffs/d59f2ef8.md`.
 
 **Approved with one required change 2026-09-29** (`responses/d59f2ef8.md`). Retention's suppression, the identity, Today's rows, the guard and the silence as built; the repertoire fallback must honour `paused` and `retired` too, through one session-owned predicate (G1e); a pause after *Start session* is a live veto at the activity boundary for the session-run seam.
+
+## Record
+
+lane: G1d · closes: — · entry: 142
+index: Repertoire retention reads the learner's project: a `paused` or `retired` piece is not offered as *Keeping this piece playable*; the first consumer of the lifecycle, the one-reader guard revised to pin it (G82, ruled in `responses/536d9bc2.md`) | session | **done 2026-09-29**, Entry 142; merged 85dee758; handoff `handoffs/d59f2ef8.md`; **approved with one required change 2026-09-29** (`responses/d59f2ef8.md`): one session-owned rule for automatic eligibility (G1e); silent kept; the running-session veto constrains the session-run seam |
+in-flight: brief drafted 2026-09-29 (`G1d-retention-reads-the-lifecycle.md`): G82 as the reviewer ruled it — Today passes the projects into the session, and the review's learned-piece loop skips a `paused` or `retired` project before it is due; every other state and *a piece you know* untouched; the one-reader guard revised to name the session's one read. Building, for information (Entry 142). **Landed** 2026-09-29 (merged 85dee758, chain green); handoff `handoffs/d59f2ef8.md`, with the reviewer. **G1d approved with one required change** 2026-09-29 (`responses/d59f2ef8.md`): the repertoire fallback must honour the lifecycle too, through one session-owned predicate (G1e); silent kept; the running-session veto constrains the session-run seam.
+state: verdict 2026-09-29: APPROVE WITH ONE REQUIRED CHANGE (`responses/d59f2ef8.md`): G1e; no text records G1d closed

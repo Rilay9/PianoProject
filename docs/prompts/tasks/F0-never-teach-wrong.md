@@ -41,3 +41,8 @@ Judgement first: the four factual errors as a learner now reads them, and the ha
 
 **Closed by the reviewer 2026-09-26**: approved with one required fix-forward (practice.4's threshold, F0a), then F0a accepted; the clinician's read of the safety sentence stays on T54's expert list.
 
+## Record
+
+lane: F0 · closes: — · entry: 82
+index: Never teach wrong: the P0/P1 content corrections from the reviewer's audit (the half-pedal model, the backwards rhythm sentence, dotted notes, the anacrusis rule, the injury certainty, the swing definition, tonicisation versus modulation, chord-scale as fact, the rigid technique rules, the old audit's open theory and app claims), each with its verification layer named | content | **done 2026-09-26**, Entry 82; **closed by the reviewer** the same night after F0a (responses e5cb2fe, 5f79b97) |
+state: closed: closed by the reviewer the same night after F0a (responses e5cb2fe, 5f79b97)

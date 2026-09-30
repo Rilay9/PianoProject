@@ -109,3 +109,7 @@ Judgement first: the three verdicts in three lines, and whether the branch's bas
 sound enough to build on. Then per item the observation, the inference, the refuting
 test, and for bugs the smallest fix. Then the sheet table. Then what is unverified. Files
 read.
+
+## Record
+
+lane: T35 · closes: — · entry: — · role: history

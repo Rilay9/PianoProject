@@ -37,3 +37,9 @@ Judgement first: what a learner at 2.1 reads when they open the leap entry, and 
 **Landed 2026-09-29** (Entry 123; ddba53e9, merged 51fd9e6c); handoff `handoffs/ddba53e9.md`. L116, L117 recorded.
 
 **Approved with one required change 2026-09-29** (`responses/ddba53e9.md`): F2c (`F2c-advanced-leap-unmapped.md`) unmaps the advanced leap; the practice floor accepted.
+
+## Record
+
+lane: F2b · closes: — · entry: 123
+index: F2a finished: `practice.1` on 1.1 with D8a saying "from the second rung of Stage 1"; the beginner's reading leap split from the advanced technique jump, one concept each, no duplicate learner entry (`F2b-practice-floor-and-the-two-leaps.md`) | F2a (Entry 117); `responses/fc91e5a.md` | `stage-1.json` at practice.1 and 1.5, `stage-2.json` at 2.1, `concepts.json` at two entries, docs/02 D8a and Part C, the tests, the reports | **approved with one required change 2026-09-29** (`responses/ddba53e9.md`; Entry 123): F2c unmaps the advanced leap; X1 keeps the 1.2 practice-row ordering as an explicit policy |
+state: closed 2026-09-29: F2c accepted, F2's required-change chain closed (F2a's in-flight line)

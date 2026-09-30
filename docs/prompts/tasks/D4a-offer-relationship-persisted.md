@@ -38,3 +38,9 @@ Judgement first: what the stored row says after a quick run and after a run with
 **Landed 2026-09-29** (Entry 109; 5193338, merged 1476d8d); handoff `handoffs/5193338.md`. The builder's call: every recomposition supersedes the kept offer, not only a different one.
 
 **Approved 2026-09-29** (`responses/5193338.md`); D4 closed. Pre-D4a rows with the intent and no relationship stay as transfer-intended with the relationship unknown (G68).
+
+## Record
+
+lane: D4a · closes: — · entry: 109
+index: The D4 review's required change: the transfer offer's relationship carried from the session's choice through a durable snapshot and written as that exact value before a transfer-intended run can start; a missing snapshot an explicit practice fallback, never a partial record; four regressions and mutants; `cutIdentity` removed with its case (`D4a-offer-relationship-persisted.md`) | D4 (Entry 106); `responses/9193261.md` | `ScoreScreen.ts`, `TodayScreen.ts`, `material.ts` at `runFacts`, a snapshot function, `help.ts`, `excerpt.ts`; doc text in the entry | **done 2026-09-29**, Entry 109; merged 1476d8d; handoff `handoffs/5193338.md`; D4 closes on its review; **approved** (`responses/5193338.md`); D4 closed |
+state: closed 2026-09-29: approved (`responses/5193338.md`); D4 closed

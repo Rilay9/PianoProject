@@ -40,3 +40,8 @@ If a taught demand cannot be realised at its rung within the promises by any opt
 ## Report
 
 Judgement first: the contract table (rung × demand: realisable, or the declared reason), and what the 2.5 learner is now offered on day 14 instead of "waits for a later lesson". Then Done / Not done / Follow-ups / Questions / Files; the red lines; the tests table; exit codes from unpiped runs (content build and validator, content tests, `tsc -b`, lint, vitest); unverified beside what passes (nothing here is seen or heard; say so).
+
+## Record
+
+lane: C4b · closes: — · entry: 76 · role: history
+index: The curriculum–generator contract: the reading rows' dimensions as independent generator options; every progression the taught-at table allows is realisable, proven; impossible combinations declared | build, content | done 2026-09-27 (Entry 76) |
