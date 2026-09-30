@@ -1,0 +1,70 @@
+# checks for 63 path(s): 63 matched, 0 unmatched
+# .github/workflows/pages.yml: .github/workflows/pages.yml
+# docs/prompts/runs/Q88/ENTRY.md: docs/**
+# docs/prompts/runs/Q88/build-app.exit: docs/**
+# docs/prompts/runs/Q88/build-app.stderr.txt: docs/**
+# docs/prompts/runs/Q88/build-app.txt: docs/**
+# docs/prompts/runs/Q88/build-personal-memoryerror.exit: docs/**
+# docs/prompts/runs/Q88/build-personal-memoryerror.stderr.txt: docs/**
+# docs/prompts/runs/Q88/build-personal-memoryerror.txt: docs/**
+# docs/prompts/runs/Q88/build-personal.exit: docs/**
+# docs/prompts/runs/Q88/build-personal.stderr.txt: docs/**
+# docs/prompts/runs/Q88/build-personal.txt: docs/**
+# docs/prompts/runs/Q88/build-strict-full.exit: docs/**
+# docs/prompts/runs/Q88/build-strict-full.stderr.txt: docs/**
+# docs/prompts/runs/Q88/build-strict-full.txt: docs/**
+# docs/prompts/runs/Q88/build-strict-unfetched.exit: docs/**
+# docs/prompts/runs/Q88/build-strict-unfetched.stderr.txt: docs/**
+# docs/prompts/runs/Q88/build-strict-unfetched.txt: docs/**
+# docs/prompts/runs/Q88/chain.exit: docs/**
+# docs/prompts/runs/Q88/chain.txt: docs/**
+# docs/prompts/runs/Q88/chain2.exit: docs/**
+# docs/prompts/runs/Q88/chain2.txt: docs/**
+# docs/prompts/runs/Q88/checks-for-paths.txt: docs/**
+# docs/prompts/runs/Q88/content-tests-all.exit: docs/**
+# docs/prompts/runs/Q88/content-tests-all.stderr.txt: docs/**
+# docs/prompts/runs/Q88/content-tests-all.txt: docs/**
+# docs/prompts/runs/Q88/copy.txt: docs/**
+# docs/prompts/runs/Q88/discover-test_deploy_guard.txt: docs/**
+# docs/prompts/runs/Q88/green-targeted.txt: docs/**
+# docs/prompts/runs/Q88/guard-dist-personal.exit: docs/**
+# docs/prompts/runs/Q88/guard-dist-personal.stderr.txt: docs/**
+# docs/prompts/runs/Q88/guard-dist-personal.txt: docs/**
+# docs/prompts/runs/Q88/guard-strict-full.txt: docs/**
+# docs/prompts/runs/Q88/guard-strict-unfetched.txt: docs/**
+# docs/prompts/runs/Q88/mutants.txt: docs/**
+# docs/prompts/runs/Q88/npm-ci.exit: docs/**
+# docs/prompts/runs/Q88/npm-ci.stderr.txt: docs/**
+# docs/prompts/runs/Q88/npm-ci.txt: docs/**
+# docs/prompts/runs/Q88/parity.exit: docs/**
+# docs/prompts/runs/Q88/parity.stderr.txt: docs/**
+# docs/prompts/runs/Q88/parity.txt: docs/**
+# docs/prompts/runs/Q88/placeholders-strict-full.txt: docs/**
+# docs/prompts/runs/Q88/placeholders-strict-unfetched.txt: docs/**
+# docs/prompts/runs/Q88/red-test_deploy_guard.txt: docs/**
+# docs/prompts/runs/Q88/restore.txt: docs/**
+# docs/prompts/runs/Q88/restore2.txt: docs/**
+# docs/prompts/runs/Q88/review-check.exit: docs/**
+# docs/prompts/runs/Q88/review-check.stderr.txt: docs/**
+# docs/prompts/runs/Q88/review-check.txt: docs/**
+# docs/prompts/runs/Q88/scripts-chain.ps1: docs/**
+# docs/prompts/runs/Q88/scripts-chain2.ps1: docs/**
+# docs/prompts/runs/Q88/scripts-guard.sh: docs/**
+# docs/prompts/runs/Q88/scripts-mutants.py: docs/**
+# docs/prompts/runs/Q88/scripts-placeholders.py: docs/**
+# docs/prompts/runs/Q88/scripts-run-build.ps1: docs/**
+# docs/prompts/runs/Q88/status-final.txt: docs/**
+# docs/prompts/runs/Q88/validate-personal.exit: docs/**
+# docs/prompts/runs/Q88/validate-personal.stderr.txt: docs/**
+# docs/prompts/runs/Q88/validate-personal.txt: docs/**
+# docs/prompts/runs/Q88/vitest-all.exit: docs/**
+# docs/prompts/runs/Q88/vitest-all.txt: docs/**
+# docs/prompts/runs/Q88/vitest-expectedNote-alone.txt: docs/**
+# tools/content/deploy_guard.py: tools/content/*.py
+# tools/content/tests/test_deploy_guard.py: tools/content/tests/test_*.py
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+unit	app	npx vitest run
+build-app	app	npm run build:app
