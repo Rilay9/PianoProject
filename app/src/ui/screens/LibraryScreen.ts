@@ -737,7 +737,10 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       ...(excerptLine(item, byIdForExcerpts()) === undefined ? [] : [['From', (excerptLine(item, byIdForExcerpts()) ?? '').replace(/^From /, '')] as [string, string]]),
       ['Level', levelLabel(item.level, item.levelSource)],
       ['Hands', handsLabel(item.hands)],
-      ['Type', item.type],
+      // A PDF's type is PDF (G96a; the reviewer's required change on G96, `responses/48bfc167.md`): every
+      // import's catalogue row carries `type: 'song'` (`importToCatalogItem`), and a PDF has pages, not
+      // notes, to be a song of. The row's badge says *PDF · pages, not notes*; *Source* says who imported it.
+      ['Type', item.kind === 'pdf' ? 'PDF' : item.type],
       ...(placeholder || tracks.length === 0 ? [] : [['Tracks', tracks.join(', ')] as [string, string]]),
       // The assign sheet and the lesson page both call this *What it trains*;
       // *Concepts* is the catalog's field name (`04` §3a).
@@ -768,7 +771,14 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
           // "the opus or its features" was the code describing its own inputs
           // — an opus number is not a word a first-week learner has met, and
           // "features" is what the estimator calls the things it counted.
-          text: 'The app guessed this level from the music itself — change it if it feels wrong.',
+          // A PDF's estimate is none of the music's (G96a; `responses/48bfc167.md`): the app reads no
+          // notes from a PDF and never estimates its level (`estimateLevelFor` reads MusicXML only), so
+          // its `estimated` is the default every import with no level gets (`importToCatalogItem`), or the
+          // number a score folder's manifest supplied — estimated, and not guessed from the music.
+          text:
+            item.kind === 'pdf'
+              ? 'Estimated level — change it if it feels wrong.'
+              : 'The app guessed this level from the music itself — change it if it feels wrong.',
         }),
       );
     }

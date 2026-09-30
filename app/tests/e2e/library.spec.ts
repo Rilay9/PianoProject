@@ -98,6 +98,23 @@ test.describe('Library', () => {
     await expect(page.locator('#pdf-stage')).toBeVisible();
   });
 
+  test('a PDF’s Details says an estimated level and PDF, never a guessed level or a song (G96a)', async ({ page }) => {
+    // The reviewer's required change on G96 (`docs/review/responses/48bfc167.md`): the sheet said *The app
+    // guessed this level from the music itself* of the level every import with none gets, and *Type: song*.
+    // The app reads no notes from a PDF. Checked softly, so a red run names each false statement.
+    await page.goto('/#/library');
+    await page.locator('#library-file').setInputFiles(PDF);
+    const row = page.locator('.list-row[data-item="import.two-systems"]');
+    await row.getByRole('button', { name: 'Details' }).click();
+    const sheet = page.locator('#library-detail');
+    await expect(sheet).toBeVisible();
+    const fact = (term: string) => sheet.locator('dt', { hasText: new RegExp(`^${term}$`) }).locator('xpath=following-sibling::dd[1]');
+    await expect.soft(fact('Type')).toHaveText('PDF');
+    await expect.soft(sheet).not.toContainText('The app guessed this level');
+    await expect(sheet).toContainText('Estimated level — change it if it feels wrong.');
+    await expect(fact('Level')).toHaveText(/^≈ L\d+\.\d$/);
+  });
+
   test('a file it cannot read fails with one sentence, not a stack trace', async ({ page }) => {
     // This used a `.mid` until 2026-09-23, when the app learned to convert one
     // (T29): a MIDI file is a score it can read now, so the case that proves

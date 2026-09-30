@@ -1,0 +1,34 @@
+{
+  "phase": "before",
+  "facts": [
+    [
+      "Level",
+      "≈ L5.0"
+    ],
+    [
+      "Hands",
+      "Hands together"
+    ],
+    [
+      "Type",
+      "song"
+    ],
+    [
+      "What it trains",
+      "—"
+    ],
+    [
+      "Source",
+      "Imported by you"
+    ],
+    [
+      "Licence",
+      "user-imported"
+    ]
+  ],
+  "paragraphs": [
+    "The app guessed this level from the music itself — change it if it feels wrong."
+  ],
+  "panelFitsViewport": true,
+  "panelScrolls": false
+}
