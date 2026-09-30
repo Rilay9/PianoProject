@@ -14,10 +14,17 @@ and one real parent (Anh. 113 as the PDMX quarry bundles it, in `content/scores/
   id, key and measurement (adversary 6, measured through the bridge);
 - a range across a repeat sign, a first-or-second ending or a jump refused with the bars named,
   and a repeat at the range's edge neutralised; a two-hand cut of bars one hand is silent in
-  refused with the hand to select.
+  refused with the hand to select;
+- the merge (`TheMerge`, `TheCutVersion`) and, since E51, the renewal of a stale approval
+  (`TheRenewal`): a new decision on the parent's current bytes supersedes a row stale by provenance
+  or by cut version, the old row kept whole in `superseded`; a current approval still refused.
 """
 from __future__ import annotations
 
+import contextlib
+import copy
+import io
+import json
 import re
 import sys
 import tempfile
@@ -403,6 +410,236 @@ class TheMerge(unittest.TestCase):
             self.skipTest("no excerpts.json yet")
         raw = X.DEFINITIONS.read_bytes().decode("utf-8").replace(chr(13) + chr(10), chr(10))
         self.assertEqual(X.serialise_definitions(X.read_definitions()), raw)
+
+
+class TheRenewal(unittest.TestCase):
+    """
+    E51 (the reviewer's ruling on the E-tail, `responses/f972756.md`): an approval stale by provenance (its
+    `parentSha256` other than the parent's current built bytes) or by cut version (merged under an older cutter;
+    a row with no `cutVersion` under version 1) can be re-decided. A new explicit decision on the same parent,
+    bars and selection supersedes it: an approval or adjustment naming the parent's current bytes becomes the one
+    active row, a rejection withdraws it, and the old row is kept byte for byte in `superseded` with the event that
+    replaced it. An approval of a range whose approval is current is refused as before, and nothing becomes
+    current by implication: no stored row is rewritten, and nothing is renewed without an event of its own.
+    """
+
+    PARENT = "song.test.parent"
+    OLD = "a" * 64
+    NEW = "b" * 64
+
+    def line(self, **over) -> str:
+        event = {"v": 1, "event": "ex-renew-0002", "decision": "approve", "of": self.PARENT, "fromBar": 5, "toBar": 8,
+                 "selection": "both", "targets": ["interval.leap"], "note": "compared with the old cut",
+                 "parentSha256": self.OLD, "by": "a person", "at": "2026-09-29T12:00:00.000Z"}
+        event.update(over)
+        return json.dumps(event)
+
+    def stored(self, **over) -> dict:
+        """An approved row as the committed file holds one merged before E33: no `cutVersion`, so version 1."""
+        row = {"of": self.PARENT, "fromBar": 5, "toBar": 8, "selection": "both", "targets": ["interval.leap"],
+               "label": "", "note": "by rule", "parentSha256": self.OLD, "event": "ex-renew-0001", "by": "a builder",
+               "at": "2026-09-28T00:00:00.000Z"}
+        row.update(over)
+        return row
+
+    def data(self, *rows: dict) -> dict:
+        return {"_comment": X.COMMENT, "excerpts": [copy.deepcopy(row) for row in rows], "rejected": []}
+
+    def merge(self, data: dict, *lines: str, shas: dict | None = None) -> dict:
+        text = "\n".join(lines) + "\n"
+        if shas is None:
+            return X.merge_text(data, text, {self.PARENT})
+        return X.merge_text(data, text, {self.PARENT}, current_shas=shas)
+
+    def assertKeptWhole(self, entry: dict, old: dict, by: str) -> None:
+        """The superseded entry is the old row, every field and its order as it was, plus the event that replaced it."""
+        self.assertEqual(entry.get("supersededBy"), by)
+        self.assertEqual(json.dumps({k: v for k, v in entry.items() if k != "supersededBy"}), json.dumps(old))
+
+    def test_a_a_row_with_no_cut_version_is_renewed_by_a_decision_on_the_current_parent(self) -> None:
+        old = self.stored()
+        renewed = self.merge(self.data(old), self.line())
+        self.assertEqual(renewed["refused"], [], "a renewal of an approval stale by cut version is a decision the merge takes")
+        self.assertEqual(renewed["appended"], ["ex-renew-0002"])
+        rows = renewed["data"]["excerpts"]
+        self.assertEqual([r["event"] for r in rows], ["ex-renew-0002"], "the renewal is the one active row")
+        self.assertEqual((rows[0]["cutVersion"], rows[0]["parentSha256"], rows[0]["by"]), (X.CUT_VERSION, self.OLD, "a person"))
+        self.assertEqual(len(renewed["data"]["superseded"]), 1)
+        self.assertKeptWhole(renewed["data"]["superseded"][0], old, "ex-renew-0002")
+        self.assertNotIn("cutVersion", renewed["data"]["superseded"][0], "the old row's absent cut version stays absent")
+        # The same with the parent's current bytes read: the row is stale by cut version alone, and renewed.
+        read = self.merge(self.data(old), self.line(), shas={self.PARENT: self.OLD})
+        self.assertEqual((read["appended"], read["refused"]), (["ex-renew-0002"], []))
+        self.assertEqual(read["superseding"], [("ex-renew-0002", "ex-renew-0001", read["superseding"][0][2])])
+        self.assertTrue(all("cut version" in why for why in read["superseding"][0][2]), read["superseding"])
+
+    def test_b_a_row_approved_on_other_parent_bytes_is_renewed_on_the_current_bytes(self) -> None:
+        old = self.stored(cutVersion=X.CUT_VERSION)
+        renewed = self.merge(self.data(old), self.line(parentSha256=self.NEW), shas={self.PARENT: self.NEW})
+        self.assertEqual((renewed["appended"], renewed["refused"]), (["ex-renew-0002"], []))
+        self.assertEqual([(r["event"], r["parentSha256"]) for r in renewed["data"]["excerpts"]], [("ex-renew-0002", self.NEW)])
+        self.assertKeptWhole(renewed["data"]["superseded"][0], old, "ex-renew-0002")
+        self.assertEqual(renewed["data"]["superseded"][0]["parentSha256"], self.OLD, "the old row keeps the bytes it was approved on")
+        self.assertTrue(any("provenance" in why for why in renewed["superseding"][0][2]), renewed["superseding"])
+
+    def test_c_a_renewal_naming_the_old_bytes_or_none_is_refused_with_the_reason(self) -> None:
+        old = self.stored()
+        # Without the current bytes (stale by cut version): a renewal still names the parent it was made on.
+        bare = self.merge(self.data(old), self.line(parentSha256=None))
+        self.assertEqual(bare["appended"], [])
+        self.assertIn("a renewal is a decision on the current parent", bare["refused"][0][1])
+        self.assertIn("names no parent bytes", bare["refused"][0][1])
+        self.assertEqual(bare["data"]["excerpts"], [old], "the stale row stays as it was")
+        # With them: a line naming the old bytes, or none, is refused; the stored row untouched.
+        stale = self.merge(self.data(old), self.line(), shas={self.PARENT: self.NEW})
+        self.assertEqual(stale["appended"], [])
+        why = stale["refused"][0][1]
+        self.assertIn("excerpt.test.parent.b5-8", why)
+        self.assertIn("a renewal is a decision on the current parent", why)
+        self.assertIn(f"names the parent's bytes {self.OLD[:12]}", why)
+        self.assertIn(f"the parent is now {self.NEW[:12]}", why)
+        self.assertEqual(stale["data"]["excerpts"], [old])
+        self.assertEqual(stale["data"].get("superseded") or [], [])
+        none = self.merge(self.data(old), self.line(parentSha256=None), shas={self.PARENT: self.NEW})
+        self.assertIn("names no parent bytes", none["refused"][0][1])
+
+    def test_d_an_approval_of_a_range_whose_approval_is_current_is_refused_as_before(self) -> None:
+        current = self.stored(cutVersion=X.CUT_VERSION)
+        twice = self.merge(self.data(current), self.line())
+        self.assertEqual(twice["appended"], [])
+        self.assertEqual(twice["refused"], [(1, "excerpt.test.parent.b5-8 is already approved (event ex-renew-0001)")])
+        self.assertEqual(twice["data"]["excerpts"], [current])
+
+    def test_d_current_by_both_with_the_parents_bytes_read_is_refused_as_before(self) -> None:
+        current = self.stored(cutVersion=X.CUT_VERSION)
+        for naming in (self.OLD, self.NEW, None):
+            with self.subTest(naming=naming):
+                twice = self.merge(self.data(current), self.line(parentSha256=naming), shas={self.PARENT: self.OLD})
+                self.assertEqual(twice["appended"], [])
+                self.assertEqual(twice["refused"], [(1, "excerpt.test.parent.b5-8 is already approved (event ex-renew-0001)")])
+                self.assertEqual(twice["data"]["excerpts"], [current])
+
+    def test_e_without_the_current_bytes_provenance_fails_closed_and_cut_version_is_judged(self) -> None:
+        only_provenance = self.stored(cutVersion=X.CUT_VERSION)
+        closed = self.merge(self.data(only_provenance), self.line(parentSha256=self.NEW))
+        self.assertEqual(closed["appended"], [])
+        self.assertIn("is already approved (event ex-renew-0001)", closed["refused"][0][1])
+        self.assertEqual(closed["data"]["excerpts"], [only_provenance])
+        by_cut_version = self.merge(self.data(self.stored()), self.line())
+        self.assertEqual((by_cut_version["appended"], by_cut_version["refused"]), (["ex-renew-0002"], []))
+
+    def test_f_the_old_export_and_the_renewal_merged_again_are_skipped_and_the_file_idempotent(self) -> None:
+        old = self.stored()
+        export = json.dumps({"v": 1, "event": old["event"], "decision": "approve", "of": old["of"], "fromBar": 5, "toBar": 8,
+                             "selection": "both", "targets": old["targets"], "label": "", "note": old["note"],
+                             "parentSha256": old["parentSha256"], "by": old["by"], "at": old["at"]})
+        # The export reproduces the stored row: before any renewal it is the same decision, skipped.
+        self.assertEqual(self.merge(self.data(old), export)["skipped"], [old["event"]])
+        renewed = self.merge(self.data(old), self.line())
+        self.assertEqual(renewed["appended"], ["ex-renew-0002"])
+        text = X.serialise_definitions(renewed["data"])
+        again = self.merge(json.loads(text), export, self.line())
+        self.assertEqual((again["appended"], again["skipped"], again["refused"]), ([], [old["event"], "ex-renew-0002"], []))
+        self.assertEqual(X.serialise_definitions(again["data"]), text, "a rerun changes no byte")
+        # Written and read back through the file's own reader and serialiser: byte-identical, `superseded` carried.
+        directory = Path(tempfile.mkdtemp(prefix="excerpt-renewal-file-"))
+        self.addCleanup(lambda: __import__("shutil").rmtree(directory, ignore_errors=True))
+        X.write_definitions(renewed["data"], directory / "excerpts.json")
+        self.assertEqual(X.serialise_definitions(X.read_definitions(directory / "excerpts.json")), text)
+        order = list(json.loads(text))
+        self.assertEqual(order, ["_comment", "excerpts", "rejected", "superseded"])
+        # A merge with no renewal writes no `superseded` key: the committed file still round-trips byte for byte.
+        plain = self.merge(X.read_definitions(Path("none.json")), self.line(event="ex-renew-0009"))
+        self.assertNotIn('"superseded"', X.serialise_definitions(plain["data"]))
+
+    def test_g_a_rejection_of_a_stale_approval_withdraws_it(self) -> None:
+        old = self.stored()
+        withdrawn = self.merge(self.data(old), self.line(event="ex-renew-0003", decision="reject", parentSha256=None,
+                                                         reason="compared with the new cut: the phrase ends a bar later"))
+        self.assertEqual((withdrawn["appended"], withdrawn["refused"]), (["ex-renew-0003"], []))
+        self.assertEqual(withdrawn["data"]["excerpts"], [], "the build stops cutting it")
+        self.assertEqual([r["event"] for r in withdrawn["data"]["rejected"]], ["ex-renew-0003"])
+        self.assertEqual(withdrawn["data"]["rejected"][0]["reason"], "compared with the new cut: the phrase ends a bar later")
+        self.assertKeptWhole(withdrawn["data"]["superseded"][0], old, "ex-renew-0003")
+        # The same export again: skipped, nothing moves.
+        again = self.merge(withdrawn["data"], self.line(event="ex-renew-0003", decision="reject", parentSha256=None,
+                                                        reason="compared with the new cut: the phrase ends a bar later"))
+        self.assertEqual((again["appended"], again["skipped"]), ([], ["ex-renew-0003"]))
+        self.assertEqual(X.serialise_definitions(again["data"]), X.serialise_definitions(withdrawn["data"]))
+
+    def test_h_a_renewal_of_a_renewal_keeps_both_earlier_rows_in_order(self) -> None:
+        first = self.stored()
+        once = self.merge(self.data(first), self.line(), shas={self.PARENT: self.OLD})
+        second = copy.deepcopy(once["data"]["excerpts"][0])
+        # The parent's file changes (a re-conversion): the renewal is now stale by provenance, and re-decided.
+        twice = self.merge(once["data"], self.line(event="ex-renew-0004", parentSha256=self.NEW), shas={self.PARENT: self.NEW})
+        self.assertEqual((twice["appended"], twice["refused"]), (["ex-renew-0004"], []))
+        self.assertEqual([r["event"] for r in twice["data"]["excerpts"]], ["ex-renew-0004"])
+        kept = twice["data"]["superseded"]
+        self.assertEqual([e["event"] for e in kept], ["ex-renew-0001", "ex-renew-0002"])
+        self.assertKeptWhole(kept[0], first, "ex-renew-0002")
+        self.assertKeptWhole(kept[1], second, "ex-renew-0004")
+
+    def test_i_the_validator_reads_a_renewed_file_as_one_current_row(self) -> None:
+        from validate import excerpt_findings
+
+        directory = Path(tempfile.mkdtemp(prefix="excerpt-renewal-"))
+        self.addCleanup(lambda: __import__("shutil").rmtree(directory, ignore_errors=True))
+        (directory / "scores").mkdir()
+        parent_file = directory / "scores" / "parent.musicxml"
+        parent_file.write_bytes((FIXTURES / "pickup-and-repeat.musicxml").read_bytes())
+        sha = X.sha256_of(parent_file)
+        parent = {"id": self.PARENT, "type": "song", "title": "Pickup and repeat", "file": "scores/parent.musicxml",
+                  "notation": {"bars": 5, "staves": 2}, "tags": []}
+        eid = X.excerpt_id(self.PARENT, 4, 5, "both")
+        demands = sorted(__import__("claims").load_vocabulary()[1])
+        cut = {"id": eid, "type": "excerpt", "excerptOf": self.PARENT, "title": eid, "demands": demands,
+               "measurement": {"status": "measured", "definitions": 3, "located": {d: 8 for d in demands}, "bars": 2,
+                               "steps": 8, "notes": 8, "established": demands}}
+        path = directory / "excerpts.json"
+        old = self.stored(fromBar=4, toBar=5, parentSha256=sha)
+        X.write_definitions(self.data(old), path)
+        _errors, before = excerpt_findings([parent, cut], directory, path)
+        self.assertTrue(any("stale by cut version" in w and eid in w for w in before), before)
+        renewed = self.merge(X.read_definitions(path), self.line(fromBar=4, toBar=5, parentSha256=sha))
+        self.assertEqual(renewed["refused"], [])
+        X.write_definitions(renewed["data"], path)
+        errors, warnings = excerpt_findings([parent, cut], directory, path)
+        self.assertEqual(errors, [], "no duplicate signature: the superseded row is not an active one")
+        self.assertEqual([w for w in warnings if "stale" in w], [], "the renewed row is current by both")
+
+    def test_j_the_command_reads_the_parents_current_bytes_from_the_built_content(self) -> None:
+        directory = Path(tempfile.mkdtemp(prefix="excerpt-renewal-main-"))
+        self.addCleanup(lambda: __import__("shutil").rmtree(directory, ignore_errors=True))
+        content = directory / "content"
+        (content / "scores").mkdir(parents=True)
+        (content / "scores" / "parent.mxl").write_bytes(b"the parent's built bytes, changed since the approval")
+        sha = X.sha256_of(content / "scores" / "parent.mxl")
+        (content / "catalog.json").write_text(json.dumps([{"id": self.PARENT, "type": "song", "file": "scores/parent.mxl"}]),
+                                              encoding="utf-8")
+        (content / "curriculum.json").write_text("{}", encoding="utf-8")
+        definitions = directory / "excerpts.json"
+        X.write_definitions(self.data(self.stored(cutVersion=X.CUT_VERSION)), definitions)
+        decisions = directory / "decisions.jsonl"
+
+        def run(*lines: str) -> tuple[int, str]:
+            decisions.write_text("\n".join(lines) + "\n", encoding="utf-8")
+            out = io.StringIO()
+            with contextlib.redirect_stdout(out):
+                code = X.main(["--merge", str(decisions), "--definitions", str(definitions), "--content", str(content)])
+            return code, out.getvalue()
+
+        code, printed = run(self.line())
+        self.assertEqual(code, 1, printed)
+        self.assertIn(f"names the parent's bytes {self.OLD[:12]}", printed)
+        code, printed = run(self.line(parentSha256=sha))
+        self.assertEqual(code, 0, printed)
+        self.assertIn("appended 1, already in the file 0, refused 0", printed)
+        self.assertIn("+ ex-renew-0002, superseding ex-renew-0001", printed)
+        self.assertIn("stale by provenance", printed)
+        written = json.loads(definitions.read_text(encoding="utf-8"))
+        self.assertEqual([(r["event"], r["parentSha256"]) for r in written["excerpts"]], [("ex-renew-0002", sha)])
+        self.assertEqual([e["event"] for e in written["superseded"]], ["ex-renew-0001"])
 
 
 PDMX = REPO / "content" / "scores" / "pdmx"
