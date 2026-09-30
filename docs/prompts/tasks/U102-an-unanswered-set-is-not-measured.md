@@ -296,3 +296,5 @@ Tests:
 `operating-procedure.md` §11 and §12 apply.
 
 **Entry 162.** Every run file goes under `docs/prompts/runs/U102/`. The entry is `docs/prompts/runs/U102/ENTRY.md`, starting `### Entry 162 — U102`.
+
+**Revise before dispatch 2026-09-30** (`responses/questions-bbd7f99a.md`). The durable contract is right: zero answered stores `accuracy: 'not measured'` with an explicit `answered: 0`; one or more answered is measured; Progress and evidence readers consume the distinction; no database-version bump for an optional field. The first draft's legacy inference (accuracy 0 with wrong notes 0 means nothing was answered) is withdrawn: absence of wrong notes is not proof of absence of answers. Compatibility order: an explicit `answered` first; then an existing field that directly records attempts; then a kind whose invariant provably distinguishes zero attempts; otherwise the old 0 % kept as legacy ambiguity. U104's rhythm miss count only at the same write boundary, with its own adversary. Revised at f663eae6; with the reviewer again before dispatch.
