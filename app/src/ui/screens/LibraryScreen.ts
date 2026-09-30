@@ -23,7 +23,8 @@
  *    and the learner's project on it where there is one (G85).
  * 4. **The doors: import, Shelf, score folder, the seven filters.** Text in the
  *    header and one chip, never boxes (`04` §0 R3). This screen reads the
- *    learner's projects and moves none: the project sheet is the one actor.
+ *    learner's projects and moves none: the project sheet is the one actor,
+ *    and a piece's Details is the Library's door to it (G85a), not the row.
  *
  * The pass that produced this ranking found two things worth naming. The
  * detail line said `Hands together` on nearly every row of 1,533 — see
@@ -48,7 +49,7 @@ import {
   takeSharedFiles,
   updateImport,
 } from '../../data/importStore';
-import { allProgress } from '../../data/progressStore';
+import { allProgress, dayKey } from '../../data/progressStore';
 import { clearLevelOverride, levelOverrideFor, setLevelOverride } from '../../data/levelOverrides';
 import type { ImportRow, ProgressRow } from '../../data/db';
 import { onScreenDispose } from '../screenLifecycle';
@@ -67,6 +68,7 @@ import { isPlayable, openItem, targetFor } from '../openItem';
 import { getSettings, updateSettings } from '../../data/settingsStore';
 import { screenFrame, statusLine } from './screenFrame';
 import { openImportSheetFor } from '../importSheet';
+import { openProjectSheet } from '../projectSheet';
 import { loadCurriculum } from '../../curriculum/load';
 import { materialOfItem } from '../../curriculum/material';
 import {
@@ -78,7 +80,7 @@ import {
   type ProjectRow,
   type ProjectState,
 } from '../../data/projectStore';
-import { IMPORT_TEXT, PROJECT_TEXT, importSourceWords, importStateWords } from '../help';
+import { IMPORT_TEXT, PROJECT_TEXT, importSourceWords, importStateWords, projectSince } from '../help';
 
 type SortKey = 'level' | 'title' | 'recent';
 
@@ -778,6 +780,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
       sheet.body.append(el('p', {}, link, el('span.muted', { text: ' — needs internet' })));
     }
 
+    const door = projectDoor(item, sheet);
     if (placeholder) {
       // What a learner can do (U75): the piece's own words where the catalogue has them
       // (`importHint`, the source of the words), what the app reads, and the control that imports
@@ -809,7 +812,11 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
           }),
         );
       }
+      // A placeholder's door is there only where its project already exists (`projectDoor`): at the end.
+      if (door) sheet.body.append(door);
     } else {
+      // With the sheet's actions, directly above *Open*, which stays last and the only filled box.
+      if (door) sheet.body.append(door);
       sheet.body.append(
         button(
           'Open',
@@ -821,6 +828,42 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
         ),
       );
     }
+  }
+
+  /**
+   * The Library's door to the one project sheet (G85a; the reviewer's required change on G85,
+   * `docs/review/responses/ba4c6fea.md`): one row inside a piece's Details, never on the list row,
+   * whose title column is the room the piece's name needs at 342 px (Entry 147). The finish sheet's
+   * words for the same door, over the sheet's own state line — the project's state and since where
+   * one exists, *Not a project yet* where none does — so the door never implies a project that is not
+   * there. The words come from the index built at the last read (`projectOf`): opening Details reads
+   * nothing. Tapped, Details closes and the sheet opens on the target the index resolved the row with,
+   * so its own read finds the same project; the sheet is the one actor, and its writes reach the
+   * Library through `onProjectsChange` (`projectsChanged`), which redraws the badge, the filter's
+   * result and the count once — so no `onChange` here, which would draw a second time.
+   *
+   * Where it appears (the honest-door rule): wherever a project exists, whatever the item; with none,
+   * on a song that opens on the Score screen, where the sheet's four offers from no project are the
+   * learner's intentions, allowed before any run (`projectStore.OFFERS`), and its line of what the
+   * learner has played reads the history that screen writes. Not, without a project, on a PDF (its
+   * viewer writes no history, so the sheet would say *never opened* of a PDF read every day), on a
+   * placeholder (a project made here would stay on its id when the file arrives under its own), or on
+   * anything not a song (none is ever in the index).
+   */
+  function projectDoor(item: CatalogItem, sheet: { close: () => void }): HTMLElement | null {
+    const project = projectOf.get(item.id);
+    if (project === undefined && !(isProjectable(item) && targetFor(item) === 'score')) return null;
+    return listRow({
+      title: PROJECT_TEXT.door,
+      subtitle: project ? projectSince(project.state, project.since, dayKey) : PROJECT_TEXT.none,
+      dataset: { id: 'library-detail-project' },
+      onClick: () => {
+        sheet.close();
+        // The piece's length in printed bars, as Progress passes it: it bounds the sheet's sections.
+        const bars = item.measurement?.status === 'measured' ? item.measurement.bars : undefined;
+        openProjectSheet({ item, material: materialOfItem(item), ...(bars === undefined ? {} : { bars }), owner: section });
+      },
+    });
   }
 
   /**
@@ -1011,7 +1054,7 @@ export function LibraryScreen(router: Router, options: LibraryOptions = {}): HTM
     // No project door on the row (G85, the brief's "When to deviate"): a word beside *Details* and `⋯`,
     // tried at 342 px, took about two fifths of a song title's width — one-line titles wrapped, the
     // rows grew, two-line titles were cut — the room the title needs (R2; the reason `⋯` is a glyph).
-    // The row wears the project's state; where the door goes is Entry 147's question 1.
+    // The row wears the project's state, and *Details* is the door to the sheet (G85a, `projectDoor`).
     // Last, where the Score screen's own `⋯` is, and only where the modes mean
     // something: a PDF has pages and not notes, a drill is a prompt loop, and
     // an import placeholder has nothing to open at all (`04` §0 R4). A glyph
