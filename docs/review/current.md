@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **U96a** — `handoffs/0685c9e2.md` (respond in `responses/0685c9e2.md`). The drill end sheet's Answered row counts answered cards (Entry 161).
 - **F3a** — `handoffs/02a52fdb.md` (respond in `responses/02a52fdb.md`). Lesson sentences at their truth (Entry 157).
 - **E51** — `handoffs/dffa9c34.md` (respond in `responses/dffa9c34.md`). A stale excerpt approval can be renewed (Entry 159).
 - **G85a** — `handoffs/9c64a9c1.md` (respond in `responses/9c64a9c1.md`). The Library's Details sheet is the door to the one project sheet (Entry 160).

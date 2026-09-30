@@ -103,3 +103,5 @@ The rules:
 ## Report
 
 Judgement first. Show the sheet before and after at 342 × 740 (four answered with three right; the skip case; a rhythm or Simon sheet); item 3's choice in one line with its reason; U103's red line; unverified beside what passes, including whether *Answered N of N* after every card was skipped reads right to a learner, unverified as copy. Then Done / Not done / Follow-ups / Questions / Files, with every decided item done or an explicit not-done line. Then the red lines; the tests table with each test's class (add, revise, preserve) and the old assumption; exit codes; and `## Doc rows`. `operating-procedure.md` §11 and §12 apply. Entry 161. Every run file goes under `docs/prompts/runs/U96a/`, and the entry is `docs/prompts/runs/U96a/ENTRY.md`, starting `### Entry 161 — U96a`.
+
+**Landed 2026-09-29** (Entry 161; 0685c9e2, merged dec467c1); handoff `handoffs/0685c9e2.md`.
