@@ -61,12 +61,22 @@ const UPRIGHT = { width: 342, height: 740 };
  * that the stage could hold three or four systems, so losing the race costs
  * them the most room. The Scherzo is here as the control — it is dense enough
  * that two systems is the right answer either way, so it should be unaffected.
+ *
+ * The Nocturne op. 48 no. 1 (81 bars) joins them for U32 (class: add): a piece
+ * past the probe's reach gets two sheets from `create` and the rest after the
+ * first window, and a run started before they land keeps the two it has
+ * (`08` §4.1). At the default two bars on this phone its settled window has no
+ * row's room for the next bar with or without them, so the question here is
+ * whether the later sheets change the race: a run started as the music appears
+ * must still be arranged as one started after everything landed, and the
+ * comparison stays exact.
  */
 const PIECES = [
   'song.folk.twinkle.ht',
   'song.folk.happy-birthday.simple',
   'song.holiday.jingle-bells.g',
   'song.classical.ode-to-joy.full',
+  'song.classical.chopin-nocturne-op48-1.nifc',
   'song.classical.chopin-scherzo-2.nifc',
 ];
 

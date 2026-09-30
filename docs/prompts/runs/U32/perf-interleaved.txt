@@ -1,0 +1,56 @@
+== perf-pair-base-1 exit 0
+2-bar window render, CPU ×4: median 39.4 ms (53.7, 37.1, 39.4, 27.9, 52.7)
+  ok 1 tests\e2e\perf.spec.ts:58:3 › performance budgets (docs/01 §6) › a cold 2-bar window renders inside the first-render budget (6.7s)
+pre-rendered swap, CPU ×4: median 0.80 ms over 19 swaps (1.80, 1.00, 1.10, 1.30, 0.60, 1.00, 0.60, 1.10, 0.60, 0.40, 0.60, 0.80, 0.00, 1.30, 0.50, 0.40, 0.60, 0.80, 1.30
+  ok 2 tests\e2e\perf.spec.ts:83:3 › performance budgets (docs/01 §6) › a pre-rendered window swap still fits in a frame when throttled (36.4s)
+longest score (780 bars), CPU ×4: first window in 29750 ms
+  ok 3 tests\e2e\perf.spec.ts:151:3 › performance budgets (docs/01 §6) › the longest score in the library opens on the Score screen (P19) (30.4s)
+render timings, CPU ×4: input.toColourn=9 mean 11.6 ms · max 24.8 msosmd.proben=2 mean 101.6 ms · max 164.5 msosmd.render.backn=1 mean 24.5 ms · max 24.5 msosmd.rende
+  ok 4 tests\e2e\perf.spec.ts:183:3 › performance budgets (docs/01 §6) › a played note is coloured within the input-to-colour budget (5.1s)
+Library · slowest: genre chords-pop at 120.1 ms (gate 600 = the 2-bar first-render budget under ×4)
+  ok 5 tests\e2e\perf.spec.ts:334:3 › the two screens the catalog grew (T26) › the Library answers every genre filter, and the search box, inside the first-paint budg
+lesson · 0.4 (1 options) first option in 34.2 ms; classical.4.shelf (52 options, 52 rows drawn) in 113.7 ms, CPU ×4
+  ok 6 tests\e2e\perf.spec.ts:433:3 › the two screens the catalog grew (T26) › a lesson page with the most options is no slower to its first option than one with the 
+  6 passed (1.5m)
+== perf-pair-final-1 exit 0
+2-bar window render, CPU ×4: median 31.4 ms (31.4, 37.3, 29.5, 34.8, 29.0)
+  ok 1 tests\e2e\perf.spec.ts:58:3 › performance budgets (docs/01 §6) › a cold 2-bar window renders inside the first-render budget (4.8s)
+pre-rendered swap, CPU ×4: median 0.40 ms over 19 swaps (1.60, 0.80, 0.50, 0.40, 0.40, 0.90, 0.40, 0.40, 0.40, 0.40, 0.30, 0.20, 0.20, 0.30, 0.20, 0.40, 0.40, 0.30, 0.40
+  ok 2 tests\e2e\perf.spec.ts:83:3 › performance budgets (docs/01 §6) › a pre-rendered window swap still fits in a frame when throttled (21.1s)
+longest score (780 bars), CPU ×4: first window in 22478 ms
+  ok 3 tests\e2e\perf.spec.ts:151:3 › performance budgets (docs/01 §6) › the longest score in the library opens on the Score screen (P19) (27.5s)
+render timings, CPU ×4: input.toColourn=8 mean 12.9 ms · max 18.6 msosmd.proben=2 mean 94.1 ms · max 155.8 msosmd.render.backn=1 mean 20.0 ms · max 20.0 msosmd.render
+  ok 4 tests\e2e\perf.spec.ts:183:3 › performance budgets (docs/01 §6) › a played note is coloured within the input-to-colour budget (4.6s)
+Library · slowest: search "major" at 53.6 ms (gate 600 = the 2-bar first-render budget under ×4)
+  ok 5 tests\e2e\perf.spec.ts:334:3 › the two screens the catalog grew (T26) › the Library answers every genre filter, and the search box, inside the first-paint budg
+lesson · 0.4 (1 options) first option in 23.6 ms; classical.4.shelf (52 options, 52 rows drawn) in 66.6 ms, CPU ×4
+  ok 6 tests\e2e\perf.spec.ts:433:3 › the two screens the catalog grew (T26) › a lesson page with the most options is no slower to its first option than one with the 
+  6 passed (1.1m)
+== perf-pair-base-2 exit 0
+2-bar window render, CPU ×4: median 44.2 ms (48.1, 48.7, 44.2, 38.9, 30.9)
+  ok 1 tests\e2e\perf.spec.ts:58:3 › performance budgets (docs/01 §6) › a cold 2-bar window renders inside the first-render budget (3.6s)
+pre-rendered swap, CPU ×4: median 0.40 ms over 19 swaps (1.30, 0.90, 0.60, 0.70, 0.60, 0.80, 0.30, 0.20, 0.40, 0.40, 0.40, 0.60, 0.80, 0.10, 0.40, 0.40, 1.20, 0.40, 0.10
+  ok 2 tests\e2e\perf.spec.ts:83:3 › performance budgets (docs/01 §6) › a pre-rendered window swap still fits in a frame when throttled (22.2s)
+longest score (780 bars), CPU ×4: first window in 21301 ms
+  ok 3 tests\e2e\perf.spec.ts:151:3 › performance budgets (docs/01 §6) › the longest score in the library opens on the Score screen (P19) (21.9s)
+render timings, CPU ×4: input.toColourn=7 mean 12.6 ms · max 15.1 msosmd.proben=2 mean 88.6 ms · max 144.0 msosmd.render.backn=1 mean 16.7 ms · max 16.7 msosmd.render
+  ok 4 tests\e2e\perf.spec.ts:183:3 › performance budgets (docs/01 §6) › a played note is coloured within the input-to-colour budget (4.6s)
+Library · slowest: search "major" at 63.6 ms (gate 600 = the 2-bar first-render budget under ×4)
+  ok 5 tests\e2e\perf.spec.ts:334:3 › the two screens the catalog grew (T26) › the Library answers every genre filter, and the search box, inside the first-paint budg
+lesson · 0.4 (1 options) first option in 26.5 ms; classical.4.shelf (52 options, 52 rows drawn) in 65.3 ms, CPU ×4
+  ok 6 tests\e2e\perf.spec.ts:433:3 › the two screens the catalog grew (T26) › a lesson page with the most options is no slower to its first option than one with the 
+  6 passed (1.0m)
+== perf-pair-final-2 exit 0
+2-bar window render, CPU ×4: median 36.5 ms (45.9, 40.0, 35.3, 36.5, 25.6)
+  ok 1 tests\e2e\perf.spec.ts:58:3 › performance budgets (docs/01 §6) › a cold 2-bar window renders inside the first-render budget (3.5s)
+pre-rendered swap, CPU ×4: median 0.50 ms over 19 swaps (1.40, 0.90, 0.70, 0.50, 0.70, 0.40, 0.70, 0.20, 0.40, 0.30, 0.20, 0.40, 0.40, 0.70, 0.40, 0.40, 0.60, 0.50, 0.50
+  ok 2 tests\e2e\perf.spec.ts:83:3 › performance budgets (docs/01 §6) › a pre-rendered window swap still fits in a frame when throttled (23.4s)
+longest score (780 bars), CPU ×4: first window in 26703 ms
+  ok 3 tests\e2e\perf.spec.ts:151:3 › performance budgets (docs/01 §6) › the longest score in the library opens on the Score screen (P19) (32.7s)
+render timings, CPU ×4: input.toColourn=10 mean 12.1 ms · max 17.5 msosmd.proben=2 mean 96.5 ms · max 159.1 msosmd.render.backn=1 mean 19.6 ms · max 19.6 msosmd.rende
+  ok 4 tests\e2e\perf.spec.ts:183:3 › performance budgets (docs/01 §6) › a played note is coloured within the input-to-colour budget (4.9s)
+Library · slowest: search "e" at 75.8 ms (gate 600 = the 2-bar first-render budget under ×4)
+  ok 5 tests\e2e\perf.spec.ts:334:3 › the two screens the catalog grew (T26) › the Library answers every genre filter, and the search box, inside the first-paint budg
+lesson · 0.4 (1 options) first option in 30.2 ms; classical.4.shelf (52 options, 52 rows drawn) in 69.3 ms, CPU ×4
+  ok 6 tests\e2e\perf.spec.ts:433:3 › the two screens the catalog grew (T26) › a lesson page with the most options is no slower to its first option than one with the 
+  6 passed (1.2m)

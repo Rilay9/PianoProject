@@ -1865,7 +1865,7 @@ engraver draws the whole score once per zoom and the tallest system in it sets t
 a bar with a ledger line is not engraved smaller than a bar without one, and the staves of both
 slots sit at the same height in every window — anchored on the stave *lines* from the
 engraver's model, not on the drawn group, whose top is wherever the highest fingering landed.
-Until that measurement has run (before the first draw, for a piece within the probe's reach of 48 bars; on idle after it for a longer one; U74) the tallest window seen so far
+Until that measurement has run (before the first draw, for a piece within the probe's reach of 48 bars; on idle after it for a longer one, once the sheets past its first two have loaded; U74, U32) the tallest window seen so far
 stands in, held and never released. A run keeps the scale it started at: ink up to a tenth
 taller than the fit runs into the margin rather than shrinking the sheet; only ink taller than
 that still shrinks it, once.
@@ -2272,7 +2272,14 @@ without distortion and being able to look ahead are paramount."* So:
    in `pending-review` has the table).
 2. **Always look ahead.** In every state before and during a run, the next bar after the
    window's last is on the stage, drawn as the following system — unless keeping it would
-   break 1, which is the one-system case `08` §4.1 and invariant 7 already allow.
+   break 1, which is the one-system case `08` §4.1 and invariant 7 already allow. **Once a
+   run has begun, its arrangement is kept** (U32, the reviewer's order of 2026-09-30: no
+   distortion, then the frozen run, then the look-ahead, then the count): before a run the
+   look-ahead is added as soon as the renderer can draw it; once the run starts, what it
+   started with stays until the run ends and the next one begins. A piece past the probe's
+   48 bars draws its first window from two sheets and gets the rest after it (`08` §4.1): at
+   rest the next row appears when they land, and a run started before then plays without
+   it, rather than wait for them or reshape under the learner's hands.
 3. **Then the count.** *Bars in window* is honoured exactly when 1 and 2 allow it. When they
    do not, the window holds as many of the asked bars as fit at the readable size and **the
    row says so in words** — *Bars in window — 4 asked, 2 shown: 4 would be too small here* —

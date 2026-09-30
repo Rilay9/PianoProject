@@ -1,0 +1,14 @@
+U32: the Play press in the pictures probe's flow, one click, unthrottled, two workers, this machine.
+clickMs: how long the click took to be taken; tasks: [ms after the click, duration ms] of each long task.
+nosheets: the final code with no sheet made after create (mutant 1's build), the base's two sheets.
+
+base__nocturne_342x740_4__1: click 410 ms, running true, paused false, slots 2, sheets 2, long tasks [[147,235]]
+base__nocturne_342x740_4__2: click 379 ms, running true, paused false, slots 2, sheets 2, long tasks [[131,216]]
+base__scherzo_390x844_2__1: click 1266 ms, running true, paused false, slots 2, sheets 2, long tasks [[94,608],[705,432]]
+base__scherzo_390x844_2__2: click 1276 ms, running true, paused false, slots 2, sheets 2, long tasks [[104,621],[727,431]]
+final__nocturne_342x740_4__1: click 1149 ms, running true, paused false, slots 3, sheets {"made":4,"loaded":4,"pending":0}, long tasks [[165,301],[473,424]]
+final__nocturne_342x740_4__2: click 1107 ms, running true, paused false, slots 3, sheets {"made":4,"loaded":4,"pending":0}, long tasks [[165,274],[443,443]]
+final__scherzo_390x844_2__1: click 1703 ms, running true, paused false, slots 2, sheets {"made":4,"loaded":4,"pending":0}, long tasks [[102,577],[683,867]]
+final__scherzo_390x844_2__2: click 1755 ms, running true, paused false, slots 2, sheets {"made":4,"loaded":4,"pending":0}, long tasks [[101,592],[695,912],[1716,330],[2658,124]]
+nosheets__scherzo_390x844_2__1: click 1186 ms, running true, paused false, slots 2, sheets {"made":2,"loaded":2,"pending":0}, long tasks [[97,570],[670,381]]
+nosheets__scherzo_390x844_2__2: click 1146 ms, running true, paused false, slots 2, sheets {"made":2,"loaded":2,"pending":0}, long tasks [[86,541],[630,399],[1122,293],[2025,87]]

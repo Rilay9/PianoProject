@@ -1,0 +1,41 @@
+U32 item 4e: the Nocturne at 342 x 740, Bars 4, x4 throttle, this machine; ms after the first ink.
+Each line is a change on the glass or in what could move it; "picture" marks a change of the rows or the scale.
+
+== base__1.json: first ink 11272, settled +4756
+  [5] picture rows 0-3,4-7~ | transform translate(10.966px, 5.82264px) scale(0.354712) | zoom 1 | stage 342x586 | fit width | measured - | sheets 2
+  [142] picture rows 0-3,4-7~ | transform translate(10.966px, 12.9021px) scale(0.354712) | zoom 1 | stage 342x586 | fit width | measured - | sheets 2
+  [1304] picture rows 0-3,4-7~ | transform translate(10.966px, 12.9021px) scale(0.260818) | zoom 1.36 | stage 342x583 | fit width | measured - | sheets 2
+  [4663] picture rows 0-1,2-3 | transform translate(14.7912px, 21.3846px) scale(0.461722) | zoom 1.36 | stage 342x531 | fit width | measured 1.36 | sheets 2
+  pictures from the first ink to settled: 4
+== base__2.json: first ink 13104, settled +7083
+  [7] picture rows 0-3,4-7~ | transform translate(10.966px, 5.82264px) scale(0.354712) | zoom 1 | stage 342x586 | fit width | measured - | sheets 2
+  [164] picture rows 0-3,4-7~ | transform translate(10.966px, 12.9021px) scale(0.354712) | zoom 1 | stage 342x586 | fit width | measured - | sheets 2
+  [1845] picture rows 0-3,4-7~ | transform translate(10.966px, 12.9021px) scale(0.260818) | zoom 1.36 | stage 342x583 | fit width | measured - | sheets 2
+  [6953] picture rows 0-1,2-3 | transform translate(14.7912px, 21.3846px) scale(0.461722) | zoom 1.36 | stage 342x531 | fit width | measured 1.36 | sheets 2
+  pictures from the first ink to settled: 4
+== final__1.json: first ink 22298, settled +20304
+  [8] picture rows 0-3,4-7~ | transform translate(10.966px, 5.82264px) scale(0.354712) | zoom 1 | stage 342x586 | fit width | measured - | sheets 2
+  [178] picture rows 0-3,4-7~ | transform translate(10.966px, 12.9021px) scale(0.354712) | zoom 1 | stage 342x586 | fit width | measured - | sheets 2
+  [2387] picture rows 0-3,4-7~ | transform translate(10.966px, 12.9021px) scale(0.260818) | zoom 1.36 | stage 342x586 | fit width | measured - | sheets 2
+  [6145] rows 0-3,4-7~ | transform translate(10.966px, 12.9021px) scale(0.260818) | zoom 1.36 | stage 342x586 | fit width | measured - | sheets 3
+  [6234] rows 0-3,4-7~ | transform translate(10.966px, 12.9021px) scale(0.260818) | zoom 1.36 | stage 342x583 | fit width | measured - | sheets 3
+  [6357] rows 0-3,4-7~ | transform translate(10.966px, 12.9021px) scale(0.260818) | zoom 1.36 | stage 342x531 | fit width | measured - | sheets 3
+  [8762] picture rows 0-3,4-7~ | transform translate(10.966px, 12.9021px) scale(0.288384) | zoom 1.23 | stage 342x531 | fit width | measured - | sheets 3
+  [13309] rows 0-3,4-7~ | transform translate(10.966px, 12.9021px) scale(0.288384) | zoom 1.23 | stage 342x531 | fit width | measured - | sheets 4
+  [20254] picture rows 0-1,2-3,4-5~ | transform translate(14.7912px, 21.3846px) scale(0.510522) | zoom 1.23 | stage 342x531 | fit width | measured 1.23 | sheets 4
+  pictures from the first ink to settled: 5
+== final__2.json: first ink 10547, settled +8282
+  [6] picture rows 0-3,4-7~ | transform translate(10.966px, 5.82264px) scale(0.354712) | zoom 1 | stage 342x586 | fit width | measured - | sheets 2
+  [153] picture rows 0-3,4-7~ | transform translate(10.966px, 12.9021px) scale(0.354712) | zoom 1 | stage 342x586 | fit width | measured - | sheets 2
+  [1436] picture rows 0-3,4-7~ | transform translate(10.966px, 12.9021px) scale(0.260818) | zoom 1.36 | stage 342x586 | fit width | measured - | sheets 2
+  [2670] rows 0-3,4-7~ | transform translate(10.966px, 12.9021px) scale(0.260818) | zoom 1.36 | stage 342x586 | fit width | measured - | sheets 3
+  [2741] rows 0-3,4-7~ | transform translate(10.966px, 12.9021px) scale(0.260818) | zoom 1.36 | stage 342x583 | fit width | measured - | sheets 3
+  [2785] rows 0-3,4-7~ | transform translate(10.966px, 12.9021px) scale(0.260818) | zoom 1.36 | stage 342x531 | fit width | measured - | sheets 3
+  [3287] picture rows 0-3,4-7~ | transform translate(10.966px, 12.9021px) scale(0.288384) | zoom 1.23 | stage 342x531 | fit width | measured - | sheets 3
+  [4787] rows 0-3,4-7~ | transform translate(10.966px, 12.9021px) scale(0.288384) | zoom 1.23 | stage 342x531 | fit width | measured - | sheets 4
+  [8244] picture rows 0-1,2-3,4-5~ | transform translate(14.7912px, 21.3846px) scale(0.510522) | zoom 1.23 | stage 342x531 | fit width | measured 1.23 | sheets 4
+  pictures from the first ink to settled: 5
+heap__base__nocturne.json: heap used 123 MB, sheets 2
+heap__base__scherzo.json: heap used 286 MB, sheets 2
+heap__final__nocturne.json: heap used 167 MB, sheets {"made":4,"loaded":4,"pending":0}
+heap__final__scherzo.json: heap used 410 MB, sheets {"made":4,"loaded":4,"pending":0}

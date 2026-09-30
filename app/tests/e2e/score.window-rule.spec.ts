@@ -22,7 +22,12 @@
  *     down it, or (over 100 % Size) the sheets are at the scale Size asked for.
  * (c) **The next bar is in view**, or there is measurably no room for it at
  *     the window's scale — no row's height free below the ink and no bar's
- *     width free right of it — and the cell says so in its annotation.
+ *     width free right of it — and the cell says so in its annotation. A
+ *     window that has every sheet the renderer made in use, with a row's room
+ *     below, is a fault while fewer than `MAX_SLOTS` were made: a sheet it
+ *     could have made was never made (U32; T38 wrote it as a note, on the
+ *     reading that a piece past the probe's reach gets two sheets by design).
+ *     With all `MAX_SLOTS` in use it stays a note, naming that cap.
  * (d) **The count**: the asked bars are inked at the window's first bar, or
  *     the `⋯` sheet's row says in words that fewer are shown.
  * (e) **The floor**: the shortest staff on the glass clears `MIN_STAFF_PX`,
@@ -76,6 +81,13 @@ const BARS = [1, 2, 4, 8];
  * test runner.
  */
 const MIN_STAFF_PX = 22;
+
+/**
+ * `WindowRenderer.MAX_SLOTS` — the most sheets the renderer makes for any
+ * piece, a long one included since U32 (the two `create` makes, and the rest
+ * after the first window). Mirrored for the same reason as `MIN_STAFF_PX`.
+ */
+const MAX_SLOTS = 4;
 
 /**
  * How near an edge counts as touching it: the fit keeps a margin, and a row's
@@ -150,7 +162,7 @@ interface Glass {
     ceilingScale: number | null;
     /** The height the renderer reserves for one row (the piece's tallest system, drawn). */
     rowPx: number | null;
-    /** How many sheets the renderer has to draw rows into (a long piece gets two). */
+    /** How many sheets the renderer has to draw rows into (a long piece: two from `create`, the rest after the first window, U32). */
     sheetsAvailable: number | null;
     /** Per slot index, the bars the engraver laid out, with their natural widths. */
     laid: (LaidBar[] | null)[];
@@ -345,6 +357,13 @@ async function readGlass(page: Page): Promise<Glass> {
 /** Waits for the fit to stop moving, the way `score.fill.spec.ts` does. */
 async function settle(page: Page): Promise<void> {
   await page.waitForTimeout(200);
+  // **And for the renderer's own word (U32; Q30's part for this file).** A long
+  // piece's later sheets load on idle after the first window, and the shape
+  // holds still while they load, so the poll below can see three equal
+  // readings before the re-plan that brings the next row. `data-settled` is
+  // withheld until they have landed and the re-plan has run. Bounded and never
+  // a failure on its own: the poll still decides.
+  await page.waitForSelector('.score-view[data-settled]', { timeout: 30_000 }).catch(() => undefined);
   await page
     .waitForFunction(
       () => {
@@ -584,15 +603,29 @@ function faultsOf(glass: Glass, asked: number, words: string, notes: string[]): 
     const sheetsSpent =
       glass.shape.sheetsAvailable !== null && (glass.shape.slots ?? 0) >= glass.shape.sheetsAvailable;
     if (roomBelow && sheetsSpent && glass.shape.readAhead === 'slots') {
-      // A piece longer than the probe's reach is given two sheets, not four
-      // (`WindowRenderer.create`), and a window that fills both has none left
-      // for the next row, whatever room there is to its right as well (T38:
-      // this branch used to be taken only when there was none). Not changed.
-      notes.push(
-        `NOT BUILT, no sheet left for the next row: ${String(glass.shape.slots)} of ${String(
-          glass.shape.sheetsAvailable,
-        )} in use, ${String(Math.round(freeBelow))} px free below`,
-      );
+      if ((glass.shape.sheetsAvailable ?? 0) < MAX_SLOTS) {
+        // **Revised for U32 (class: revise).** T38 read this as "a piece
+        // longer than the probe's reach is given two sheets, not four, by
+        // design" and wrote a note. The two were a first-paint guard, not a
+        // rule about the look-ahead: `create` still makes two for such a
+        // piece, and the rest are made after the first window. A window that
+        // fills fewer sheets than the renderer makes, with a row's room below,
+        // is a sheet it could have made and never did.
+        out.push(
+          `(c) no sheet made for the next row: ${String(glass.shape.slots)} of ${String(
+            glass.shape.sheetsAvailable,
+          )} in use, fewer than the ${String(MAX_SLOTS)} the renderer makes, ${String(Math.round(freeBelow))} px free below`,
+        );
+      } else {
+        // Every sheet the renderer ever makes is in use (`MAX_SLOTS`), and
+        // whatever room is left below, or to the right, has no sheet to draw
+        // the next row into. The cap is the renderer's, not this piece's.
+        notes.push(
+          `NOT BUILT, MAX_SLOTS: all ${String(glass.shape.sheetsAvailable)} sheets in use, ${String(
+            Math.round(freeBelow),
+          )} px free below`,
+        );
+      }
     } else if (!roomBelow && roomRight && glass.shape.readAhead === 'slots') {
       // Rule 2's first branch — the next bar on the same row — exists only in
       // the sideways chunk. Upright rows are not extended past the window
@@ -789,7 +822,9 @@ for (const vp of [
  * no. 1, four bars. A row's page was `bars × stage width`, and when the run's
  * taller stage raised the engraving zoom two dense bars no longer fitted it, so
  * the engraver broke the row onto two systems and justified the first bar
- * across the whole page. (a)'s outcome check reads it bar by bar.
+ * across the whole page. (a)'s outcome check reads it bar by bar. And (c)
+ * (U32): the same cell drew its two window rows on the only two sheets a long
+ * piece had, and the next music had no row below them.
  */
 test('mid-run, every bar on a phone upright Nocturne window is drawn at its natural spacing', async ({ page }) => {
   test.setTimeout(240_000);
@@ -831,6 +866,25 @@ test('mid-run, every bar on a phone upright Nocturne window is drawn at its natu
   const glass = await readGlass(page);
   const stretched = faultsOf(glass, 4, '', []).filter((f) => f.startsWith('(a)'));
   expect(stretched, `at printed bar ${String(reached + 1)}:\n${stretched.join('\n')}`).toEqual([]);
+  // **(c) mid-run too (U32, class: revise).** The run froze the arrangement it
+  // started with, and a long piece used to start it on two sheets: upright the
+  // window filled both and the next music had no row, with half the stage
+  // empty below. `faultsOf` reads the window from its first bar, so it is
+  // handed the first bar of the window the cursor is in (`slots.windowAt`, a
+  // pickup read from the engraver's own numbering) and the count the renderer
+  // says it shows, which is what the row would put in words.
+  const shown = glass.shape.shown ?? 4;
+  const pickup = glass.shape.laid.some((bars) => (bars ?? []).some((b) => b.bar === 0 && b.number === 0));
+  const bar = glass.cursorBar ?? 0;
+  const windowStart = pickup ? (bar <= shown ? 0 : Math.floor((bar - 1) / shown) * shown + 1) : Math.floor(bar / shown) * shown;
+  const words = shown < 4 ? `4 asked, ${String(shown)} shown` : '';
+  const aheadFaults = faultsOf({ ...glass, cursorBar: windowStart }, 4, words, []).filter((f) => f.startsWith('(c)'));
+  expect(
+    aheadFaults,
+    `at printed bar ${String(reached + 1)}, the window from bar ${String(windowStart + 1)}, ${String(glass.shape.slots)} of ${String(
+      glass.shape.sheetsAvailable,
+    )} sheets in use:\n${aheadFaults.join('\n')}`,
+  ).toEqual([]);
 });
 
 /**

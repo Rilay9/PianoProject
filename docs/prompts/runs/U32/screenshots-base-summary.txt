@@ -1,0 +1,4 @@
+    Error: A snapshot doesn't exist at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ae90e835312da8da3\app\tests\e2e\score.layout.spec.ts-snapshots\score-landscape-1bar-win32.png, writing actual.
+    Error: A snapshot doesn't exist at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ae90e835312da8da3\app\tests\e2e\score.layout.spec.ts-snapshots\score-landscape-2bar-win32.png, writing actual.
+    Error: A snapshot doesn't exist at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ae90e835312da8da3\app\tests\e2e\score.layout.spec.ts-snapshots\score-landscape-4bar-win32.png, writing actual.
+    Error: A snapshot doesn't exist at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ae90e835312da8da3\app\tests\e2e\score.spec.ts-snapshots\chords-ties-1bar-landscape-win32.png, writing actual.

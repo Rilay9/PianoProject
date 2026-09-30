@@ -663,3 +663,227 @@ describe('the measurement taken before the first window is priced (U74)', () => 
     expect(FakeOsmdView.all.reduce((sum, v) => sum + v.renders, 0)).toBe(renders);
   });
 });
+
+/**
+ * A piece longer than the probe's reach keeps its look-ahead row (U32).
+ *
+ * `create` made two sheets for a piece over `PROBE_MAX_BARS` and four for any other, because every
+ * sheet it makes is a whole-document load the first window waits for; so upright a window laid over
+ * two systems had no third sheet for the greyed next row, whatever room was left below it (T38, the
+ * phone-upright Nocturne). The first window is still drawn from the two sheets `create` makes; the
+ * rest are made on idle after it, one load a callback, before the piece is measured, so the
+ * measurement and the new sheets land as the one re-plan a long piece already had (U74). No sheet
+ * load starts while a run is on: a run started before they land keeps the sheets it has, and they
+ * arrive once it stops (the brief's item 4h, taken on item 3's measurement).
+ *
+ * The stage and the bars are chosen so that two bars asked take two systems and leave a row's room
+ * below at the window's scale: a short piece with these bars draws the next bar greyed there.
+ */
+describe('a piece past the probe’s reach keeps its look-ahead row: sheets by need (U32)', () => {
+  type View = InstanceType<typeof FakeOsmdView>;
+  // A case that fails between holding the loads and letting them go must not leave the next one held.
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+  /** Four quarter notes to a bar, every bar the same natural width. */
+  function piece(bars: number): ScoreModel {
+    return makeModel(
+      Array.from({ length: bars * 4 }, (_, index) => ({ onset: index, notes: [note({ midi: 60 + (index % 12) })] })),
+      { handsPresent: { R: true, L: true } },
+    );
+  }
+  const STAGE = { width: 342, height: 600 };
+  const BAR_UNITS = 30;
+  interface Fit {
+    slotCount: number;
+    systemsPerWindow: number;
+    barsShown: number;
+    slots: unknown[];
+    frozen: { scale: number } | null;
+    sheets?: { made: number; loaded: number; pending: number };
+  }
+  const fitOf = (renderer: WindowRenderer): Fit => renderer.debugFit() as Fit;
+  /** The sheets the renderer draws rows into: every engraver it made but the probe. */
+  const sheetsOf = (): View[] => FakeOsmdView.all.filter((view) => view.label !== 'osmd.render.probe');
+  const renders = (): number => FakeOsmdView.all.reduce((sum, view) => sum + view.renders, 0);
+  function fresh(): void {
+    FakeOsmdView.all = [];
+    document.body.replaceChildren();
+    observers.length = 0;
+    frames.clear();
+    idle.length = 0;
+  }
+  async function opened(bars: number): Promise<{ stage: Stage; renderer: WindowRenderer }> {
+    FakeOsmdView.bars = Array.from({ length: bars }, () => BAR_UNITS);
+    const stage = stageOf(STAGE.width, STAGE.height);
+    const renderer = await open(stage, piece(bars));
+    return { stage, renderer };
+  }
+  /** The drawn sheet lowest on the stage. */
+  function lowestDrawn(stage: Stage): HTMLElement | undefined {
+    return [...stage.el.querySelectorAll<HTMLElement>('.score-buffer.is-front:not(.score-probe)')]
+      .filter((el) => !el.hidden && el.dataset.bars)
+      .sort((a, b) => Number.parseFloat(a.style.top || '0') - Number.parseFloat(b.style.top || '0'))
+      .pop();
+  }
+  /**
+   * Holds every sheet load asked for after `create`, until `release`: the engraver's load answers
+   * when the test says so. An engraver `create` made (the probe, loaded later for a long piece) is
+   * answered as the stand-in answers it, a microtask later.
+   */
+  function holdLateLoads(): { asked: () => number; release: () => void; restore: () => void } {
+    const madeByCreate = FakeOsmdView.all.length;
+    let release: () => void = () => undefined;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    let asked = 0;
+    const spy = vi.spyOn(FakeOsmdView.prototype, 'load').mockImplementation(async function (this: View): Promise<void> {
+      if (FakeOsmdView.all.indexOf(this) < madeByCreate) {
+        this.loads += 1;
+        await Promise.resolve();
+        this.loaded = true;
+        return;
+      }
+      asked += 1;
+      this.loads += 1;
+      await gate;
+      this.loaded = true;
+    });
+    return { asked: () => asked, release: () => release(), restore: () => spy.mockRestore() };
+  }
+
+  it('(a) create makes and loads two sheets for a piece over 48 bars and four for one of 48 or fewer, before the first window', async () => {
+    for (const [bars, want] of [
+      [60, 2],
+      [49, 2],
+      [48, 4],
+      [12, 4],
+    ] as const) {
+      fresh();
+      FakeOsmdView.bars = Array.from({ length: bars }, () => BAR_UNITS);
+      const stage = stageOf(STAGE.width, STAGE.height);
+      const renderer = await WindowRenderer.create({ container: stage.el, model: piece(bars), musicXml: '<score-partwise/>', barsPerWindow: 2 });
+      expect(sheetsOf().length, `${String(bars)} bars: the sheets create made`).toBe(want);
+      expect(sheetsOf().map((view) => view.loads), `${String(bars)} bars: each loaded once, before create resolved`).toEqual(
+        Array.from({ length: want }, () => 1),
+      );
+      expect(fitOf(renderer).slots.length, `${String(bars)} bars: debugFit's slots, one per sheet made`).toBe(want);
+      renderer.dispose();
+    }
+  });
+
+  it('(b) after the first window, on idle, the long piece gets its sheets, and the next bar is greyed below a two-system window', async () => {
+    const { stage, renderer } = await opened(60);
+    expect(sheetsOf().length, 'the first window is drawn from the two sheets create made').toBe(2);
+    await settle();
+    const fit = fitOf(renderer);
+    const said = JSON.stringify({ slotCount: fit.slotCount, systems: fit.systemsPerWindow, shown: fit.barsShown, sheets: fit.sheets, made: sheetsOf().length });
+    expect(sheetsOf().length, `the sheets made after the first window: ${said}`).toBe(4);
+    expect(sheetsOf().map((view) => view.loads), 'each sheet loaded once').toEqual([1, 1, 1, 1]);
+    expect(fit.sheets, 'debugFit says what was made, loaded and pending').toEqual({ made: 4, loaded: 4, pending: 0 });
+    expect(fit.systemsPerWindow, said).toBe(2);
+    expect(fit.slotCount, `one sheet more than the window's systems: ${said}`).toBe(fit.systemsPerWindow + 1);
+    expect(drawn(stage, renderer).rows, said).toEqual(['0-0', '1-1', '2-2']);
+    expect(lowestDrawn(stage)?.classList.contains('is-ahead'), `the lowest drawn sheet is the greyed next bar: ${said}`).toBe(true);
+    renderer.dispose();
+  });
+
+  it('(c) once its sheets are in, the long piece’s first window is priced as a short piece’s with the same bars on the same stage', async () => {
+    const short = await opened(12);
+    await settle();
+    const want = { fit: fitOf(short.renderer), picture: drawn(short.stage, short.renderer) };
+    short.renderer.dispose();
+    fresh();
+    const long = await opened(60);
+    await settle();
+    const got = { fit: fitOf(long.renderer), picture: drawn(long.stage, long.renderer) };
+    const shape = (fit: Fit): unknown => ({ slotCount: fit.slotCount, systems: fit.systemsPerWindow, shown: fit.barsShown });
+    expect(shape(got.fit), `the short piece: ${JSON.stringify(want.picture)}; the long: ${JSON.stringify(got.picture)}`).toEqual(shape(want.fit));
+    expectSamePicture(got.picture, want.picture, 'the long piece against the short one');
+    long.renderer.dispose();
+  });
+
+  it('(d) data-settled is withheld while a sheet load is pending, and said once it has landed and the re-plan has run', async () => {
+    const { stage, renderer } = await opened(60);
+    const held = holdLateLoads();
+    await settle();
+    expect(held.asked(), 'a sheet load was asked for after the first window').toBeGreaterThan(0);
+    expect(fitOf(renderer).sheets?.pending, 'debugFit says a sheet is pending').toBeGreaterThan(0);
+    expect(stage.el.dataset.settled, 'said settled with a sheet load in flight').toBeUndefined();
+    held.release();
+    await settle();
+    expect(stage.el.dataset.settled, 'the loads landed and the re-plan ran').toBe('true');
+    expect(fitOf(renderer).slotCount, 'the re-plan drew the next row').toBe(3);
+    held.restore();
+    renderer.dispose();
+  });
+
+  it('(e) a run started before the idle queue runs keeps the sheets it started with: none is made during the run, and the rest arrive once it stops', async () => {
+    const eager = await opened(60);
+    const before = FakeOsmdView.all.length;
+    eager.renderer.setRunning(true);
+    // The freeze's settle and its attempts, and every idle moment the run leaves, until it freezes.
+    for (let i = 0; i < 40 && fitOf(eager.renderer).frozen === null; i += 1) {
+      await tick(100);
+      flushFrames();
+      flushIdle();
+    }
+    expect(fitOf(eager.renderer).frozen, 'the eager run froze').not.toBeNull();
+    await settle();
+    const fit = fitOf(eager.renderer);
+    expect(FakeOsmdView.all.length, 'engravers made while the run was on').toBe(before);
+    expect(fit.sheets, 'the run keeps the two sheets it started with, the rest still owed').toEqual({ made: 2, loaded: 2, pending: 2 });
+    expect(fit.slotCount, 'the arrangement a renderer with two sheets draws').toBe(2);
+    expect(eager.stage.el.dataset.settled, 'a frozen run with sheets owed is settled: nothing can change its shape').toBe('true');
+    eager.renderer.setRunning(false);
+    await settle();
+    expect(fitOf(eager.renderer).sheets, 'the loads resumed when the run stopped').toEqual({ made: 4, loaded: 4, pending: 0 });
+    eager.renderer.showStep(0);
+    await settle();
+    expect(fitOf(eager.renderer).slotCount, 'back at the start, the next bar has its row').toBe(3);
+    eager.renderer.dispose();
+  });
+
+  it('(f) disposed with a sheet load queued, or with one in flight: nothing drawn after, every sheet made disposed, nothing thrown', async () => {
+    const disposed = new Set<View>();
+    const disposing = vi.spyOn(FakeOsmdView.prototype, 'dispose').mockImplementation(function (this: View): void {
+      disposed.add(this);
+    });
+    // Queued: the first window drawn, nothing idle run yet.
+    const queued = await opened(60);
+    const before = renders();
+    queued.renderer.dispose();
+    await settle();
+    expect(renders(), 'queued: drawn after dispose').toBe(before);
+    expect(FakeOsmdView.all.filter((view) => !disposed.has(view)).map((view) => view.label), 'queued: engravers left undisposed').toEqual([]);
+    expect(queued.stage.el.querySelectorAll('.score-buffer').length, 'queued: sheets left on the stage').toBe(0);
+    fresh();
+    disposed.clear();
+
+    // In flight: a sheet's load asked for and not yet answered when the renderer goes.
+    const flying = await opened(60);
+    const held = holdLateLoads();
+    await settle();
+    expect(held.asked(), 'in flight: a sheet load was asked for after the first window').toBeGreaterThan(0);
+    const drawnBefore = renders();
+    flying.renderer.dispose();
+    held.release();
+    await settle();
+    expect(renders(), 'in flight: drawn after dispose').toBe(drawnBefore);
+    expect(FakeOsmdView.all.filter((view) => !disposed.has(view)).map((view) => view.label), 'in flight: engravers left undisposed').toEqual([]);
+    expect(flying.stage.el.querySelectorAll('.score-buffer').length, 'in flight: sheets left on the stage').toBe(0);
+    held.restore();
+    disposing.mockRestore();
+  });
+
+  it('(g) a piece of 48 bars or fewer makes no sheet after create, and loads each engraver once', async () => {
+    const { renderer } = await opened(12);
+    const made = FakeOsmdView.all.length;
+    await settle();
+    expect(FakeOsmdView.all.length, 'engravers made after create').toBe(made);
+    expect(sheetsOf().map((view) => view.loads)).toEqual([1, 1, 1, 1]);
+    expect(FakeOsmdView.all.find((view) => view.label === 'osmd.render.probe')?.loads, 'the probe, loaded in create').toBe(1);
+    renderer.dispose();
+  });
+});
