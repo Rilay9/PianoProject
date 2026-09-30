@@ -1,0 +1,7 @@
+countIn.test.ts 5 5
+engineEarlyNote.test.ts 5 5
+engineRhythmOnly.test.ts 8 8
+engineScoring.test.ts 37 37
+engineTempo.test.ts 84 84
+engineWait.test.ts 26 26
+total 165 165 0

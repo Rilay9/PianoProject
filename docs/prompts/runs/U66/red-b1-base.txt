@@ -1,0 +1,152 @@
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/planStore.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/data/backup.ts, src/data/rungStates.ts, src/ui/screens/DrillScreen.ts, src/ui/screens/LessonScreen.ts, src/ui/screens/PlanScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [plugin builtin:vite-reporter] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/evidenceJob.ts is dynamically imported by src/main.ts but also statically imported by src/ui/screens/SettingsScreen.ts, dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [PLUGIN_TIMINGS] Plugin hooks ran for 26.0s. The build took 4.1s. Hooks such as `closeBundle` run after the build ends, so hook time can be more than build time.
+[WebServer] The slowest hooks, timed inside each callback (the wait before a callback starts is excluded, the time it awaits is included):
+[WebServer]   - vite-plugin-pwa:build closeBundle (100%, 22.4s, 1 call)
+[WebServer]   - vite:prepare-out-dir renderStart (77%, 3.1s, 1 call)
+[WebServer] Additional hook time came from the hooks below and from hooks under 1s.
+[WebServer] 2 hooks are listed without a time. Their calls overlapped, so the time inside one call includes work from other calls. To find their cost, profile the build with `node --cpu-prof`:
+[WebServer]   - vite:asset load (48 calls)
+[WebServer]   - vite:worker load (2 calls)
+[WebServer] See https://rolldown.rs/reference/InputOptions.checks#plugintimings for more details.
+[WebServer] 
+
+Running 3 tests using 2 workers
+
+  x  1 tests\e2e\engine.spec.ts:156:3 › Tempo mode end to end › a long task across the first note’s window: the note, stamped inside it, is judged in it (U66) (4.2s)
+  x  2 tests\e2e\engine.spec.ts:156:3 › Tempo mode end to end › a long task across the first note’s window: the note, stamped inside it, is judged in it (U66) (4.4s)
+  x  3 tests\e2e\engine.spec.ts:156:3 › Tempo mode end to end › a long task across the first note’s window: the note, stamped inside it, is judged in it (U66) (3.2s)
+
+
+  1) tests\e2e\engine.spec.ts:156:3 › Tempo mode end to end › a long task across the first note’s window: the note, stamped inside it, is judged in it (U66) 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+    @@ -1,10 +1,10 @@
+      Array [
+        Array [
+          60,
+    -     0,
+    -     true,
+    +     null,
+    +     false,
+        ],
+        Array [
+          62,
+          1,
+          true,
+
+      213 |     expect(run.marks.busyFrom - run.marks.before).toBeLessThan(150);
+      214 |     expect(run.marks.busyTo - run.marks.after).toBeGreaterThan(150);
+    > 215 |     expect(run.notes).toEqual([
+          |                       ^
+      216 |       [60, 0, true],
+      217 |       [62, 1, true],
+      218 |     ]);
+        at <worktree>\app\tests\e2e\engine.spec.ts:215:23
+
+    Error Context: build\u66\test-results\engine-Tempo-mode-end-to-e-ab84a-ide-it-is-judged-in-it-U66-\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    build\u66\test-results\engine-Tempo-mode-end-to-e-ab84a-ide-it-is-judged-in-it-U66-\trace.zip
+    Usage:
+
+        npx playwright show-trace build\u66\test-results\engine-Tempo-mode-end-to-e-ab84a-ide-it-is-judged-in-it-U66-\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\e2e\engine.spec.ts:156:3 › Tempo mode end to end › a long task across the first note’s window: the note, stamped inside it, is judged in it (U66) 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+    @@ -1,10 +1,10 @@
+      Array [
+        Array [
+          60,
+    -     0,
+    -     true,
+    +     null,
+    +     false,
+        ],
+        Array [
+          62,
+          1,
+          true,
+
+      213 |     expect(run.marks.busyFrom - run.marks.before).toBeLessThan(150);
+      214 |     expect(run.marks.busyTo - run.marks.after).toBeGreaterThan(150);
+    > 215 |     expect(run.notes).toEqual([
+          |                       ^
+      216 |       [60, 0, true],
+      217 |       [62, 1, true],
+      218 |     ]);
+        at <worktree>\app\tests\e2e\engine.spec.ts:215:23
+
+    Error Context: build\u66\test-results\engine-Tempo-mode-end-to-e-ab84a-ide-it-is-judged-in-it-U66--repeat1\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    build\u66\test-results\engine-Tempo-mode-end-to-e-ab84a-ide-it-is-judged-in-it-U66--repeat1\trace.zip
+    Usage:
+
+        npx playwright show-trace build\u66\test-results\engine-Tempo-mode-end-to-e-ab84a-ide-it-is-judged-in-it-U66--repeat1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests\e2e\engine.spec.ts:156:3 › Tempo mode end to end › a long task across the first note’s window: the note, stamped inside it, is judged in it (U66) 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+    @@ -1,10 +1,10 @@
+      Array [
+        Array [
+          60,
+    -     0,
+    -     true,
+    +     null,
+    +     false,
+        ],
+        Array [
+          62,
+          1,
+          true,
+
+      213 |     expect(run.marks.busyFrom - run.marks.before).toBeLessThan(150);
+      214 |     expect(run.marks.busyTo - run.marks.after).toBeGreaterThan(150);
+    > 215 |     expect(run.notes).toEqual([
+          |                       ^
+      216 |       [60, 0, true],
+      217 |       [62, 1, true],
+      218 |     ]);
+        at <worktree>\app\tests\e2e\engine.spec.ts:215:23
+
+    Error Context: build\u66\test-results\engine-Tempo-mode-end-to-e-ab84a-ide-it-is-judged-in-it-U66--repeat2\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    build\u66\test-results\engine-Tempo-mode-end-to-e-ab84a-ide-it-is-judged-in-it-U66--repeat2\trace.zip
+    Usage:
+
+        npx playwright show-trace build\u66\test-results\engine-Tempo-mode-end-to-e-ab84a-ide-it-is-judged-in-it-U66--repeat2\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    tests\e2e\engine.spec.ts:156:3 › Tempo mode end to end › a long task across the first note’s window: the note, stamped inside it, is judged in it (U66) 
+    tests\e2e\engine.spec.ts:156:3 › Tempo mode end to end › a long task across the first note’s window: the note, stamped inside it, is judged in it (U66) 
+    tests\e2e\engine.spec.ts:156:3 › Tempo mode end to end › a long task across the first note’s window: the note, stamped inside it, is judged in it (U66) 
+exit=1

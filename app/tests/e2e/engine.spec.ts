@@ -153,6 +153,77 @@ test.describe('Tempo mode end to end', () => {
     await dev.stopRun();
   });
 
+  test('a long task across the first note’s window: the note, stamped inside it, is judged in it (U66)', async ({
+    page,
+  }) => {
+    // U66 (B1), on the page's real timers, as H0's `wall-stalled` probe ran
+    // (`runs/H0/red-q39-browser-probe.txt`): the main thread kept busy for
+    // 400 ms from about 90 ms after the replay connects. The first note is due
+    // at 100 and its window closes at 150, so the note waits behind the long
+    // task past its window's close and the harness's own tick, due first,
+    // comes off the queue before it. 400 ms is longer than the note's
+    // remaining tolerance and well short of the stamp-trust bound (a second):
+    // the case the hold is for. The engine without it counted 1 hit, 1 miss and
+    // 1 wrong note here.
+    const dev = await openDevScore(page);
+    await dev.load('tempo-change');
+    await dev.startRun('tempo', { countInBars: 0, tempoPct: 130, toleranceMs: 150 });
+    const run = await page.evaluate(
+      async (script) => {
+        const h = window.__pianopathDevScore;
+        if (!h) throw new Error('dev score harness is not attached');
+        const marks = { before: 0, after: 0, busyFrom: 0, busyTo: 0 };
+        setTimeout(() => {
+          marks.busyFrom = performance.now();
+          while (performance.now() - marks.busyFrom < 400) {
+            // the long task
+          }
+          marks.busyTo = performance.now();
+        }, 90);
+        // `replay` restarts the run and connects its source before it returns
+        // its promise: the connect lies between these two readings.
+        marks.before = performance.now();
+        const replayed = h.replay(script);
+        marks.after = performance.now();
+        await replayed;
+        // Read at once: the third note's window (bar 2) opens long after the
+        // replay's tail, so this reading holds the first bar's judgement only.
+        const score = h.engineScore() as
+          | (ReturnType<typeof h.engineScore> & {
+              notes: { midi: number; stepIndex: number | null; ok: boolean }[];
+            })
+          | null;
+        return {
+          marks,
+          hits: score?.hits,
+          wrong: score?.wrongNotesTotal,
+          n: score?.timing.n,
+          latePct: score?.timing.latePct,
+          notes: score?.notes.map((n) => [n.midi, n.stepIndex, n.ok]),
+          barOneMisses: (score?.hotSpots ?? []).filter((s) => s.measureIndex === 0).map((s) => s.misses),
+        };
+      },
+      [
+        { atMs: 100, midi: 60 },
+        { atMs: 869, midi: 62 },
+      ],
+    );
+    // The long task began before the first window closed (150 ms after the
+    // connect) and ended after it.
+    expect(run.marks.busyFrom - run.marks.before).toBeLessThan(150);
+    expect(run.marks.busyTo - run.marks.after).toBeGreaterThan(150);
+    expect(run.notes).toEqual([
+      [60, 0, true],
+      [62, 1, true],
+    ]);
+    expect(run.hits).toBe(2);
+    expect(run.wrong).toBe(0);
+    expect(run.barOneMisses.filter((m) => m > 0)).toEqual([]);
+    expect(run.n).toBe(2);
+    expect(run.latePct).toBe(100);
+    await dev.stopRun();
+  });
+
   test('a note far outside the tolerance is wrong and its slot is missed', async ({ page }) => {
     const dev = await openDevScore(page);
     await dev.load('tempo-change');

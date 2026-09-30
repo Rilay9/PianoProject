@@ -3,8 +3,10 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { TICK_BUDGET_MS } from '../../src/engine/PracticeEngine';
 import { noteOnBytes } from '../../src/midi/parseMidiMessage';
 import { ReplaySource } from '../../src/midi/ReplaySource';
+import { TICK_INTERVAL_MS } from '../../src/score/ScoreSession';
 import { withBeatToMs, type ScoreModelData } from '../../src/score/types';
 import { BEAT_MS, harness, makeModel, note, type Harness } from './helpers/engineHarness';
 
@@ -1040,8 +1042,18 @@ describe('Tempo mode — the harness’s late replay, on the engine’s clock (Q
    * `DevScoreScreen`'s `replay`, with the page's timers replaced by the clock:
    * the run restarted and the source connected in the same instant, every
    * message delivered at its due time, a tick every 16 ms in between.
+   *
+   * With `stall` (U66), a long task from `fromMs` to `toMs` after the connect:
+   * nothing runs during it, neither a tick nor a delivery. When it ends, the
+   * tick that fell due first comes off the queue first — the order H0 saw in
+   * the browser (`runs/H0/red-q39-browser-probe.txt`) — and the overdue
+   * messages follow, each still stamped for its own time.
    */
-  function replayOnTheEngineClock(h: Harness, script: { atMs: number; midi: number }[]): void {
+  function replayOnTheEngineClock(
+    h: Harness,
+    script: { atMs: number; midi: number }[],
+    stall?: { fromMs: number; toMs: number },
+  ): void {
     const timers: { due: number; fn: () => void }[] = [];
     const source = new ReplaySource(
       {
@@ -1063,15 +1075,26 @@ describe('Tempo mode — the harness’s late replay, on the engine’s clock (Q
     );
     source.onNote((n) => h.engine.feed({ kind: n.kind, midi: n.midi, velocity: n.velocity, tMs: n.tMs }));
     h.engine.start();
+    const zero = h.clock.now();
     void source.connect();
     const end = h.clock.now() + Math.max(...script.map((e) => e.atMs)) + REPLAY_TAIL_MS;
     let frame = h.clock.now() + HARNESS_TICK_MS;
+    let stallTaken = stall === undefined;
     while (h.clock.now() < end) {
       timers.sort((a, b) => a.due - b.due);
       const next = timers[0];
+      if (stall && !stallTaken && Math.min(frame, next?.due ?? Infinity) >= zero + stall.fromMs) {
+        stallTaken = true;
+        h.clock.set(zero + stall.toMs);
+        h.engine.tick();
+        frame = h.clock.now() + HARNESS_TICK_MS;
+        continue;
+      }
       if (next && next.due <= frame) {
         timers.shift();
-        h.clock.set(next.due);
+        // Never backwards: after a stall a message is delivered late, at the
+        // clock's time, still carrying the stamp its schedule gave it.
+        h.clock.set(Math.max(h.clock.now(), next.due));
         next.fn();
         continue;
       }
@@ -1112,5 +1135,366 @@ describe('Tempo mode — the harness’s late replay, on the engine’s clock (Q
     ]);
     expect(score.notes[0]?.deltaMs).toBeCloseTo(100, 6);
     expect(score.notes[1]?.deltaMs).toBeCloseTo(869 - second, 6);
+  });
+
+  /**
+   * U66 (U2): the same replay with the first message held past its window's
+   * end by a long task, in the order H0's `wall-stalled` probe saw in the
+   * browser. It used to give 1 hit, 1 missed and 1 wrong: the tick closed C's
+   * window, and C, stamped inside it, arrived to find nothing.
+   */
+  it('a long task that holds the first note past its window’s end: still two hits, each judged by its stamp (U66)', () => {
+    const h = harness(tempoChange, { mode: 'tempo', countInBars: 0, tempoPct: 130, toleranceMs: 150 });
+    h.engine.start();
+    h.advance(250, HARNESS_TICK_MS);
+    // Busy from 90 ms to 400 ms after the connect: C is due at 100 and its
+    // window closes at 150, so it is delivered after the close.
+    replayOnTheEngineClock(
+      h,
+      [
+        { atMs: 100, midi: 60 },
+        { atMs: 869, midi: 62 },
+      ],
+      { fromMs: 90, toMs: 400 },
+    );
+    const second = h.engine.prepared.steps[1]?.tMs ?? Number.NaN;
+    const score = h.engine.state.score;
+    expect(score.hits).toBe(2);
+    expect(score.missedTotal).toBe(0);
+    expect(score.wrongNotesTotal).toBe(0);
+    // Nothing painted red in the replayed run (the first start, left to run
+    // for a quarter of a second before the replay restarted it, missed C).
+    const restarted = h.events.lastIndexOf(h.of('started')[1]!);
+    expect(h.events.slice(restarted).filter((e) => e.kind === 'missed')).toEqual([]);
+    expect(score.notes.map((n) => [n.midi, n.stepIndex, n.ok])).toEqual([
+      [60, 0, true],
+      [62, 1, true],
+    ]);
+    expect(score.notes[0]?.deltaMs).toBeCloseTo(100, 6);
+    expect(score.notes[1]?.deltaMs).toBeCloseTo(869 - second, 6);
+  });
+});
+
+// --- U66: a stall is not a miss -----------------------------------------------
+
+/**
+ * A note stamped inside its window is judged by its stamp, whatever the main
+ * thread was doing (U66, SG02; `05` §3).
+ *
+ * The session ticks the engine from every frame and from a 25 ms interval
+ * (`TICK_INTERVAL_MS`, which the engine reads as `TICK_BUDGET_MS`). A long
+ * task — a window swap on a phone — stops both. The first tick after it used
+ * to close, as missed, every window that had ended during it, before the MIDI
+ * message waiting behind the same task was delivered; that message, stamped
+ * inside the window, then matched nothing and was an extra. One note played in
+ * time, two faults. A window a stalled tick finds ended is now held until a
+ * tick at least one tick interval later, and never past the stamp-trust bound.
+ */
+describe('Tempo mode — a stall is not a miss (U66)', () => {
+  it('the tick budget is the session’s tick interval: the longest a free main thread lets pass between ticks', () => {
+    expect(TICK_BUDGET_MS).toBe(TICK_INTERVAL_MS);
+  });
+
+  it('U1: a note in time, delivered after a stall that outlasted its window, is a hit: no miss, no extra', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.advance(90);
+    // The long task: no tick from 90 ms to 400 ms. C's window closed at 150.
+    h.clock.set(400);
+    h.engine.tick();
+    // The message that waited behind it, stamped when the key went down.
+    h.play(60, { atMs: 100 });
+    const score = h.engine.state.score;
+    expect(score.hits).toBe(1);
+    expect(score.missedTotal).toBe(0);
+    expect(score.wrongNotesTotal).toBe(0);
+    expect(h.of('noteJudged').map((e) => [e.ok, e.stepIndex, e.deltaMs])).toEqual([[true, 0, 100]]);
+    // And C is never painted red, then or later; the notes not played are.
+    h.advance(4 * BEAT_MS);
+    expect(h.of('missed').map((e) => e.stepIndex)).toEqual([1, 2, 3]);
+  });
+
+  it('U3: a note stamped past its window and delivered at once, with no stall, is still an extra and the window a miss', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.advance(144);
+    // One millisecond past C's window, delivered that instant and before the
+    // next tick: the window is still in the map, and the stamp alone puts the
+    // note outside it.
+    h.clock.set(151);
+    h.play(60);
+    h.advance(0.5 * BEAT_MS);
+    const score = h.engine.state.score;
+    expect(score.hits).toBe(0);
+    expect(score.wrongNotesTotal).toBe(1);
+    expect(score.missedTotal).toBe(1);
+    expect(h.of('missed')[0]).toMatchObject({ stepIndex: 0, midi: 60 });
+  });
+
+  it('U4: a stall that carries the note past the stamp-trust bound still loses it, as before (the stated limit)', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.advance(90);
+    // Busy until 1300 ms: the note stamped at 100 arrives 1200 ms after its
+    // stamp, and a stamp more than a second from now is not trusted
+    // (`toMusicTime`), so nothing stamped inside C's window can be judged in it.
+    h.clock.set(1300);
+    h.engine.tick();
+    h.play(60, { atMs: 100 });
+    h.advance(3 * BEAT_MS);
+    const score = h.engine.state.score;
+    expect(score.hits).toBe(0);
+    expect(score.wrongNotesTotal).toBe(1);
+    expect(score.notes[0]).toMatchObject({ midi: 60, stepIndex: null, ok: false });
+    expect(h.of('missed').map((e) => e.stepIndex)).toEqual([0, 1, 2, 3]);
+  });
+
+  it('U4: and so does a note that arrives more than a tick interval after the stalled tick', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.advance(90);
+    h.clock.set(400);
+    h.engine.tick();
+    // The queue has had its turn: ticks at 416, 432 and 448 ran first.
+    h.advance(48);
+    h.play(60, { atMs: 100 });
+    const score = h.engine.state.score;
+    expect(score.hits).toBe(0);
+    expect(score.missedTotal).toBe(1);
+    expect(score.wrongNotesTotal).toBe(1);
+    expect(h.of('missed')[0]).toMatchObject({ stepIndex: 0, midi: 60 });
+  });
+
+  it('after a stall, a window nothing arrived for is marked missed on the first tick a tick interval after the stalled one', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.advance(90);
+    h.clock.set(400);
+    h.engine.tick();
+    expect(h.of('missed')).toEqual([]);
+    // Frames every 16 ms from the stall's end: 416 is inside the hold, 432 past it.
+    h.advance(2 * 16);
+    expect(h.of('missed').map((e) => [e.stepIndex, e.tMs])).toEqual([[0, 432]]);
+  });
+
+  it('U5: stamped exactly at the window’s edge and delivered after a stall: a hit, the tolerance inclusive (`05` §3)', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.advance(90);
+    h.clock.set(400);
+    h.engine.tick();
+    h.play(60, { atMs: 150 });
+    const score = h.engine.state.score;
+    expect(score.hits).toBe(1);
+    expect(score.missedTotal).toBe(0);
+    expect(score.wrongNotesTotal).toBe(0);
+    expect(h.of('noteJudged').map((e) => [e.ok, e.stepIndex, e.deltaMs])).toEqual([[true, 0, 150]]);
+  });
+
+  it('U6: paused inside the hold, the run resumes where it always did, and the held window is the miss', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.play(60);
+    h.advance(1090);
+    // A stall across D's window's close (1150), then a pause before the hold
+    // ends. D is held for a note stamped inside it, but its window is over:
+    // the learner picks up at E, as the engine without the hold does.
+    h.clock.set(1400);
+    h.engine.tick();
+    h.engine.pause();
+    expect(h.engine.resumesAt).toBe(2);
+    h.clock.set(h.clock.now() + 5 * BEAT_MS);
+    h.engine.resume({ recountMs: 4 * BEAT_MS });
+    expect(h.of('missed').map((e) => e.stepIndex)).toEqual([1]);
+    h.advance(4 * BEAT_MS);
+    h.play(64);
+    expect(h.of('noteJudged').pop()).toMatchObject({ ok: true, stepIndex: 2, deltaMs: 0 });
+    expect(h.engine.state.score.missedTotal).toBe(1);
+  });
+
+  it('U8: an unstalled run marks the miss on the tick it always did, on frames and on the 25 ms interval alone', () => {
+    for (const stepMs of [16, TICK_INTERVAL_MS]) {
+      const h = harness(melody, noCountIn);
+      h.engine.start();
+      h.advance(BEAT_MS, stepMs);
+      // The first tick strictly past C's window's end at 150 ms.
+      const firstPast = (Math.floor(150 / stepMs) + 1) * stepMs;
+      expect(h.of('missed')[0], `ticking every ${stepMs} ms`).toMatchObject({ stepIndex: 0, tMs: firstPast });
+    }
+  });
+
+  it('an on-screen tap is stamped when its handler runs, after the stall, and is judged as it always was', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.advance(90);
+    h.clock.set(400);
+    h.engine.tick();
+    // `ScreenKeyboardSource.noteOn` stamps `this.now()`: the stall is over.
+    h.play(60);
+    h.advance(100);
+    const score = h.engine.state.score;
+    expect(score.hits).toBe(0);
+    expect(score.wrongNotesTotal).toBe(1);
+    expect(score.missedTotal).toBe(1);
+  });
+
+  it('a stop inside the hold counts the held window as the miss it was', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.advance(90);
+    h.clock.set(400);
+    h.engine.tick();
+    h.engine.stop();
+    const final = h.of('finished')[0];
+    expect(final?.score.missedTotal).toBe(1);
+    expect(h.of('missed').map((e) => e.stepIndex)).toEqual([0]);
+  });
+
+  /** C, D and E played on time; the clock left at 3090, before F's window closes at 3150. */
+  function playedToF(): Harness {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.play(60);
+    h.advance(BEAT_MS);
+    h.play(62);
+    h.advance(BEAT_MS);
+    h.play(64);
+    h.advance(BEAT_MS + 90);
+    return h;
+  }
+
+  it('the last note: a stall across the run’s end holds the end for it, and the run’s score counts it', () => {
+    const h = playedToF();
+    // A long task from 3090 across F's window's close (3150) and the run's
+    // end (4000, when F has sounded its beat).
+    h.clock.set(4100);
+    h.engine.tick();
+    expect(h.of('finished')).toEqual([]);
+    expect(h.engine.state.finished).toBe(false);
+    h.play(65, { atMs: 3100 });
+    h.advance(TICK_INTERVAL_MS + 16);
+    const finished = h.of('finished');
+    expect(finished).toHaveLength(1);
+    expect(finished[0]).toMatchObject({ loop: false });
+    expect(finished[0]!.score.hits).toBe(4);
+    expect(finished[0]!.score.missedTotal).toBe(0);
+    expect(finished[0]!.score.wrongNotesTotal).toBe(0);
+    expect(h.of('missed')).toEqual([]);
+    // Held no longer than one tick interval past the stalled tick, and a tick.
+    expect(finished[0]!.tMs).toBeGreaterThan(4100);
+    expect(finished[0]!.tMs).toBeLessThanOrEqual(4100 + TICK_INTERVAL_MS + 16);
+  });
+
+  it('while the end is held, a note after the last window or after the run’s end is dropped as a finished run drops it, never counted wrong', () => {
+    const h = playedToF();
+    h.clock.set(4100);
+    h.engine.tick();
+    const judgedBefore = h.of('noteJudged').length;
+    h.play(65, { atMs: 3160 }); // F, a beat late: after its window
+    h.play(67, { atMs: 4050 }); // after the run's end
+    h.play(99, { atMs: 3500 }); // a wrong key, delivered after the run's end
+    expect(h.of('noteJudged')).toHaveLength(judgedBefore);
+    h.advance(TICK_INTERVAL_MS + 16);
+    const finished = h.of('finished')[0];
+    expect(finished?.score.hits).toBe(3);
+    expect(finished?.score.missedTotal).toBe(1);
+    expect(finished?.score.wrongNotesTotal).toBe(0);
+    expect(finished?.score.notes.map((n) => n.midi)).toEqual([60, 62, 64]);
+    expect(h.of('missed').map((e) => e.stepIndex)).toEqual([3]);
+  });
+
+  /**
+   * A last note shorter than the tolerance ends the run before its window
+   * closes, stall or not (U111, recorded, not this seam's). The hold keeps
+   * that: a note stamped before the run's end is judged, one stamped after it
+   * is dropped, exactly as a run with no stall drops it.
+   */
+  describe('a last note shorter than the tolerance (U111 left as it is)', () => {
+    const shortEnd = makeModel([
+      { onset: 0, notes: [note({ midi: 60 })] },
+      { onset: 1, notes: [note({ midi: 62, duration: 0.1 })] },
+    ]);
+
+    function stalledAcrossTheEnd(): Harness {
+      const h = harness(shortEnd, noCountIn);
+      h.engine.start();
+      h.play(60);
+      // D sounds at 1000 for 100 ms: the run ends at 1100, D's window at 1150.
+      h.advance(BEAT_MS + 90);
+      h.clock.set(1400);
+      h.engine.tick();
+      return h;
+    }
+
+    it('stamped before the run’s end, inside the window: judged, a hit', () => {
+      const h = stalledAcrossTheEnd();
+      h.play(62, { atMs: 1095 });
+      h.advance(TICK_INTERVAL_MS + 16);
+      const finished = h.of('finished')[0];
+      expect(finished?.score.hits).toBe(2);
+      expect(finished?.score.missedTotal).toBe(0);
+    });
+
+    it('stamped after the run’s end, inside the window: dropped and D missed, as the run with no stall does', () => {
+      const stalled = stalledAcrossTheEnd();
+      stalled.play(62, { atMs: 1120 });
+      stalled.advance(TICK_INTERVAL_MS + 16);
+      const free = harness(shortEnd, noCountIn);
+      free.engine.start();
+      free.play(60);
+      free.advance(1120);
+      free.play(62);
+      for (const h of [stalled, free]) {
+        const finished = h.of('finished')[0];
+        expect(finished?.score.hits).toBe(1);
+        expect(finished?.score.missedTotal).toBe(1);
+        expect(finished?.score.wrongNotesTotal).toBe(0);
+      }
+    });
+  });
+
+  it('a lap: a stall across the lap’s end holds the wrap for the last note, and the next lap’s downbeat moves by the wait', () => {
+    const h = harness(melody, { ...noCountIn, loop: { fromStep: 0, toStep: 1 } });
+    h.engine.start();
+    h.play(60);
+    h.release(60, { atMs: 500 });
+    h.advance(1090);
+    // A long task from 1090 across D's window's close (1150) and the lap's
+    // end (2000).
+    h.clock.set(2100);
+    h.engine.tick();
+    expect(h.of('finished')).toEqual([]);
+    h.play(62, { atMs: 1100 });
+    h.advance(TICK_INTERVAL_MS + 16);
+    const lap = h.of('finished');
+    expect(lap).toHaveLength(1);
+    expect(lap[0]).toMatchObject({ loop: true });
+    expect(lap[0]!.score.hits).toBe(2);
+    expect(lap[0]!.score.missedTotal).toBe(0);
+    expect(lap[0]!.score.wrongNotesTotal).toBe(0);
+    // The wrap rebases the next lap from the clock at the wrap, a beat on
+    // (`completeLap`). Without the hold the wrap was the stalled tick itself,
+    // so the next downbeat was at 2100 + 1000; it is later by the wait.
+    const wrapAt = lap[0]!.tMs;
+    expect(wrapAt).toBeGreaterThan(2100);
+    expect(wrapAt).toBeLessThanOrEqual(2100 + TICK_INTERVAL_MS + 16);
+    h.advance(2100 + BEAT_MS - h.clock.now());
+    h.play(60);
+    expect(h.of('noteJudged').pop()).toMatchObject({ ok: true, stepIndex: 0, deltaMs: -(wrapAt - 2100) });
+  });
+
+  it('Listen and a Keep tempo run nothing judges hold nothing: the end comes on the stalled tick, as before', () => {
+    for (const options of [
+      { mode: 'listen', countInBars: 0 },
+      { mode: 'tempo', countInBars: 0, judging: false },
+    ] as const) {
+      const h = harness(melody, options);
+      h.engine.start();
+      h.advance(3 * BEAT_MS + 90);
+      h.clock.set(4100);
+      h.engine.tick();
+      expect(h.of('finished').map((e) => e.tMs), options.mode).toEqual([4100]);
+      expect(h.of('missed')).toEqual([]);
+    }
   });
 });
