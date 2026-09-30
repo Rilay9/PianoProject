@@ -1,0 +1,42 @@
+build: before; 3429 sentences, 3241 not whole in the row at 342 x 740 (text column 192.9 px, as measured in this run)
+by natural lines: 1: 3429, 2: 0, 3: 0, 4: 0, 5: 0
+
+row heights per shape (as measured in this run, this machine and face):
+  plain, 1-line title:
+    natural 1 line(s) -> drawn 1, title 1, row 71.5 px
+  plain, 2-line title:
+    natural 1 line(s) -> drawn 1, title 2, row 92.3 px
+  badged, 1-line title:
+    natural 1 line(s) -> drawn 1, title 1, row 95.1 px
+  badged, 2-line title:
+    natural 1 line(s) -> drawn 1, title 1, row 95.1 px
+
+per claim kind: sentences composed, whole in the row, not whole; the longest whole and the shortest not whole (characters):
+  reader:back         792    0  792  longest whole: -  shortest cut: 48 “This one in 6/8 — steps went wrong in 12 phrases” (1 lines)
+  exposure            656    0  656  longest whole: -  shortest cut: 41 “Simon, from your lessons — not played yet” (1 lines)
+  asked               720  108  612  longest whole: 35 “Trains accidentals, for this lesson”  shortest cut: 32 “Blues & boogie: 11 of 12 counted” (1 lines)
+  reader:forward      308    0  308  longest whole: -  shortest cut: 49 “Now in 6/8 — 64 of 64 right and in time yesterday” (1 lines)
+  prerequisite        218    0  218  longest whole: -  shortest cut: 48 “From Placement test, which this lesson builds on” (1 lines)
+  jam                 218   12  206  longest whole: 31 “From Flat keys and minor scales”  shortest cut: 30 “From Clave, tumbao and montuno” (1 lines)
+  reader:hold          67    0   67  longest whole: -  shortest cut: 48 “Another like it — steps went wrong in 12 phrases” (1 lines)
+  skill-retention      80   14   66  longest whole: 33 “Bass clef: not shown since 12 Jul”  shortest cut: 33 “Bass clef: not shown since 22 Jun” (1 lines)
+  reader:unsure        45    0   45  longest whole: -  shortest cut: 46 “Another like it — not sure yet what went wrong” (1 lines)
+  reader:easy          44    2   42  longest whole: 32 “An easy one, for fluency: in 6/8”  shortest cut: 36 “An easy one, for fluency: with steps” (1 lines)
+  rung                 80   41   39  longest whole: 28 “More music from Chords & pop”  shortest cut: 30 “More music from Blues & boogie” (1 lines)
+  demand               36    0   36  longest whole: -  shortest cut: 37 “Has steps, which this lesson asks for” (1 lines)
+  rung:held            32    0   32  longest whole: -  shortest cut: 60 “Jazz waits on pieces you paused or put away — more from Jazz” (1 lines)
+  skill                32    0   32  longest whole: -  shortest cut: 39 “Trains ties, which this lesson asks for” (1 lines)
+  ready                18    0   18  longest whole: -  shortest cut: 44 “A piece with steps — your reads support them” (1 lines)
+  reader:kept          18    0   18  longest whole: -  shortest cut: 81 “Another like it — steps went wrong in 12 phrases, and they can’t be left out here” (1 lines)
+  reader:lesson        18    0   18  longest whole: -  shortest cut: 36 “This lesson’s phrases can have steps” (1 lines)
+  piece-retention      14    0   14  longest whole: -  shortest cut: 51 “Keeping this piece playable — last played yesterday” (1 lines)
+  reader:stay           7    0    7  longest whole: -  shortest cut: 77 “The next step waits for a later lesson — 64 of 64 right and in time yesterday” (1 lines)
+  transfer             16   11    5  longest whole: 29 “Six-eight time: something new”  shortest cut: 32 “Shifting position: something new” (1 lines)
+  reader:met            2    0    2  longest whole: -  shortest cut: 37 “Read today — tomorrow’s phrase is new” (1 lines)
+  candidate:held        2    0    2  longest whole: -  shortest cut: 40 “This lesson is waiting on a paused piece” (1 lines)
+  reader:rung           1    0    1  longest whole: -  shortest cut: 48 “Read something you have never seen, once, slowly” (1 lines)
+  swap:lesson           1    0    1  longest whole: -  shortest cut: 41 “You chose this one — from the same lesson” (1 lines)
+  swap:alternative      1    0    1  longest whole: -  shortest cut: 51 “You chose this one — a stand-in for the one offered” (1 lines)
+  swap:skill            1    0    1  longest whole: -  shortest cut: 50 “You chose this one — it also trains the same skill” (1 lines)
+  swap:demand           1    0    1  longest whole: -  shortest cut: 54 “You chose this one — it also practises the same demand” (1 lines)
+  swap:kind             1    0    1  longest whole: -  shortest cut: 60 “You chose this one — the same kind, from your lessons so far” (1 lines)

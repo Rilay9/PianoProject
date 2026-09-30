@@ -4725,8 +4725,9 @@ input[type='checkbox'] {
 
 /* Today's sight-read says why this phrase in one sentence (C4), and it is
    read whole: the card's title is one line and it has no Swap, so a second
-   line of reason keeps the row inside R2's 96 px. Every other row's reason is
-   still one line, cut. */
+   line of reason keeps the row inside R2's 96 px. The session card's rows take
+   their own two lines since U63 (`.today-row__reason`, below); every other
+   list's reason is still one line, cut. */
 .list-row__sub.today-reason {
   white-space: normal;
 }
@@ -4760,29 +4761,77 @@ input[type='checkbox'] {
   overflow: hidden;
 }
 
-/* Except where the row also carries a badge, and then the budget decides.
-   (2026-09-12, reviewing the rule above.)
+/* Except where the row also carries a badge line, and then the budget decides.
+   (2026-09-12, reviewing the rule above.) Progress's history still works this
+   way; Today's session rows no longer have a badge line (U63, the rules below),
+   so on Today this rule is overridden and the title keeps its two lines.
 
-   A row on these two cards is four lines deep already — title, reason, detail,
-   badges — and `04` §0 R2 gives a Today row 96 px. At 16 px text that is 14 of
-   padding and border, 18.4 for the reason, 18.4 for the detail and 24 for the
-   badge line, which leaves 21 for the title: one line, and the sum comes to
-   95.6. Taking a second title line without giving up the badge line makes it
-   116, and the *reason the badge line was removed* from Today's rows was that
-   it was the line the title needed. So the trade is honest only while there is
-   no badge, and where there is one it is the badge that is the news — "you
-   passed this", "this needs importing", "that felt rough" — while the title is
-   a name the reader has seen before on the same card.
+   A row on these cards was four lines deep — title, reason, detail, badges —
+   and `04` §0 R2 gives a Today row 96 px. At 16 px text that is 14 of padding
+   and border, 18.4 for the reason, 18.4 for the detail and 24 for the badge
+   line, which leaves 21 for the title: one line, and the sum comes to 95.6.
+   Taking a second title line without giving up the badge line makes it 116.
+   So the trade is honest only while there is no badge line.
 
    Written as `:has()` rather than as a class on the row, because the condition
    is literally "is there a badge line", and `listRow` decides that from
    whether the caller passed any. The alternative was to badge nothing at all
-   on these two cards, which is R2's own instruction read backwards: badges
-   *only* when they say something the detail line does not, not never. */
+   on these cards, which is R2's own instruction read backwards: badges *only*
+   when they say something the detail line does not, not never. */
 #today-card .list-row:has(.list-row__badges) .list-row__title,
 #progress-history .list-row:has(.list-row__badges) .list-row__title {
   -webkit-line-clamp: 1;
   line-clamp: 1;
+}
+
+/* A session row's reason keeps the clause that decides it (U63; the C6
+   review's finding 6; the reviewer's ruling on the row budget,
+   `responses/questions-71bd6cee.md`).
+
+   At 342 px the reason was one line, cut, beside *Swap* and ▶: about thirty
+   characters of it. The claim comes first and the detail after the dash, so
+   the cut fell on the part that says why — *Keeping this piece playable —…*,
+   *Next lesson — this one waits f…*. It takes up to two lines now, a little
+   tighter than one line's leading so the pair reads as one sentence, and a
+   sentence longer than two lines still ends in an ellipsis rather than a third
+   line: that is a sentence for its words' owner, not for this rule.
+
+   The ruling's order, where the row cannot hold everything: the title's two
+   lines, then the reason's two, then controls a thumb can use, then the badge,
+   then 96 px. So the line comes from the badge, which sits above *Swap* and ▶
+   (`.today-row__side`, `TodayScreen.onTheCard`) rather than on a line of its
+   own; and a row whose title and reason both take two lines is taller than
+   96 px, measured and reported in U63's record for R2's owner, rather than cut
+   to meet the number. */
+#today-card .list-row.today-row .list-row__sub.today-row__reason {
+  white-space: normal;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* The badge beside the controls, not under the words: *✓ passed*, *Next*,
+   *done today*, compact and right-aligned above *Swap* and ▶. */
+#today-card .today-row__side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex: none;
+}
+
+#today-card .today-row__side .list-row__badges {
+  margin-top: 0;
+  justify-content: flex-end;
+}
+
+/* With its badge beside the controls, a session row's title keeps its two
+   lines: half a title is not a name (`TodayScreen.ts`, the screen's ranking). */
+#today-card .list-row.today-row:has(.today-row__side .list-row__badges) .list-row__title {
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 /* Free play is a prompt, not a row.

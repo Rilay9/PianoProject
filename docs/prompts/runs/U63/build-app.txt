@@ -1,0 +1,26 @@
+(the last 25 lines; the full log was not kept)
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[INEFFECTIVE_DYNAMIC_IMPORT] src/data/evidenceJob.ts is dynamically imported by src/main.ts but also statically imported by src/ui/screens/SettingsScreen.ts, dynamic import will not move module into another chunk.
+
+✓ built in 3.48s
+
+PWA v1.3.0
+mode      generateSW
+precache  2242 entries (28958.53 KiB)
+files generated
+  dist/sw.js
+  dist/workbox-9c191d2f.js
+[PLUGIN_TIMINGS] Plugin hooks ran for 10.7s. The build took 3.5s. Hooks such as `closeBundle` run after the build ends, so hook time can be more than build time.
+The slowest hooks, timed inside each callback (the wait before a callback starts is excluded, the time it awaits is included):
+  - vite-plugin-pwa:build closeBundle (100%, 8.0s, 1 call)
+  - vite:prepare-out-dir renderStart (70%, 2.4s, 1 call)
+Additional hook time came from the hooks below and from hooks under 1s.
+2 hooks are listed without a time. Their calls overlapped, so the time inside one call includes work from other calls. To find their cost, profile the build with `node --cpu-prof`:
+  - vite:asset load (48 calls)
+  - vite:worker load (2 calls)
+See https://rolldown.rs/reference/InputOptions.checks#plugintimings for more details.
+

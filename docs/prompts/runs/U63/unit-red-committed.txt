@@ -1,0 +1,89 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/todaySwapWearsTheLifecycle.test.ts (5 tests | 3 failed) 721ms
+   ❯ the swap sheet wears Paused / Put away beside a piece the learner paused or put away (G94) (5)
+     × paused: Paused beside the option, the state in data-project 92ms
+     × put away: Put away beside the option 65ms
+     × the running card’s sheet: the same mark, and the choice honoured without resuming the project 186ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/todaySwapWearsTheLifecycle.test.ts > the swap sheet wears Paused / Put away beside a piece the learner paused or put away (G94) > paused: Paused beside the option, the state in data-project
+AssertionError: expected [] to deeply equal [ { text: 'Paused', state: 'paused' } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "state": "paused",
+-     "text": "Paused",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/todaySwapWearsTheLifecycle.test.ts:126:27
+    124|     await seedProject('paused');
+    125|     const option = await otherOption(await openToday(), `#today-card […
+    126|     expect(marks(option)).toEqual([{ text: PROJECT_TEXT.states.paused,…
+       |                           ^
+    127|     expect(PROJECT_TEXT.states.paused).toBe('Paused');
+    128|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/todaySwapWearsTheLifecycle.test.ts > the swap sheet wears Paused / Put away beside a piece the learner paused or put away (G94) > put away: Put away beside the option
+AssertionError: expected [] to deeply equal [ { text: 'Put away', …(1) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "state": "retired",
+-     "text": "Put away",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/todaySwapWearsTheLifecycle.test.ts:133:27
+    131|     await seedProject('retired');
+    132|     const option = await otherOption(await openToday(), `#today-card […
+    133|     expect(marks(option)).toEqual([{ text: PROJECT_TEXT.states.retired…
+       |                           ^
+    134|     expect(PROJECT_TEXT.states.retired).toBe('Put away');
+    135|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/todaySwapWearsTheLifecycle.test.ts > the swap sheet wears Paused / Put away beside a piece the learner paused or put away (G94) > the running card’s sheet: the same mark, and the choice honoured without resuming the project
+AssertionError: expected [] to deeply equal [ { text: 'Paused', state: 'paused' } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "state": "paused",
+-     "text": "Paused",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/todaySwapWearsTheLifecycle.test.ts:171:27
+    169|     const section = await openToday();
+    170|     const option = await otherOption(section, '#today-card [data-activ…
+    171|     expect(marks(option)).toEqual([{ text: 'Paused', state: 'paused' }…
+       |                           ^
+    172|     option.click();
+    173|     await vi.waitFor(async () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 2 passed (5)
+   Start at  00:02:50
+   Duration  3.60s (import 31%, transform 24%, environment 24%, tests 21%)
+

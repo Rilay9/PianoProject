@@ -72,7 +72,7 @@ import {
   type ContactHistory,
 } from '../../data/progressStore';
 import { allEncounters } from '../../data/encounterStore';
-import { allProjects } from '../../data/projectStore';
+import { allProjects, projectIn, type ProjectRow } from '../../data/projectStore';
 import { isSightReading } from '../../engine/drills/fromCatalog';
 import { simonForStage } from '../../engine/drills/simon';
 import { getPlan } from '../../data/planStore';
@@ -96,7 +96,7 @@ import {
   type SessionRun,
 } from '../../data/sessionRun';
 import { minutesOf, newActivityToken, openActivity, openOutside } from '../sessionRunner';
-import { cardLine, readingReason, readingTitle, SESSION_TEXT, swapChoiceWords, swapTierWords } from '../help';
+import { cardLine, PROJECT_TEXT, readingReason, readingTitle, SESSION_TEXT, swapChoiceWords, swapTierWords } from '../help';
 import { webMidiSource, micSource } from '../../app/services';
 import { onScreenDispose } from '../screenLifecycle';
 import { badge, button, chip, el, handsLabel, levelLabel, listRow, openSheet, shortHandsLabel } from '../widgets';
@@ -117,6 +117,44 @@ const SLOT_LABELS: Record<SessionSlot['kind'], string> = {
 function isWeekend(now = new Date()): boolean {
   const day = now.getDay();
   return day === 0 || day === 6;
+}
+
+/**
+ * A swap option's project state (G94), in the project sheet's words — *Paused*, *Put away* — with the state in
+ * `data-project`. The Library's badge (G85, `LibraryScreen.projectBadge`) in shape: plain, not `passed`, since a
+ * ✓ beside a stated intention would say the learner achieved something.
+ */
+function lifecycleBadge(project: ProjectRow): HTMLElement {
+  const node = badge(PROJECT_TEXT.states[project.state], 'project');
+  node.dataset.project = project.state;
+  return node;
+}
+
+/**
+ * A row of the session card as Today draws it (U63; the reviewer's ruling on the row budget,
+ * `responses/questions-71bd6cee.md`).
+ *
+ * At 342 px the reason was one line cut after about thirty characters, and the cut fell on the clause that
+ * decides it (*Keeping this piece playable —…*, *Next lesson — this one waits f…*), because the claim comes
+ * first and the detail after the dash. Now it takes up to two compact lines (`.today-row__reason`). The line it
+ * needs comes from the badge, which leaves its own line under the detail and sits above *Swap* and ▶ instead
+ * (`.today-row__side`): *✓ passed* or *Next* is context, and the ruling ranks it below the row's name and its
+ * reason. The title keeps its two lines.
+ *
+ * Today's own arrangement of `listRow`'s parts, nothing else's: the Library and Progress rows keep their badge
+ * line. The badge stays out of `.list-row__actions`, so a tap on it is a tap on the row, as before.
+ */
+function onTheCard(row: HTMLElement): HTMLElement {
+  row.classList.add('today-row');
+  row.querySelector('.list-row__sub')?.classList.add('today-row__reason');
+  const badges = row.querySelector('.list-row__badges');
+  const actions = row.querySelector('.list-row__actions');
+  if (badges && actions) {
+    const side = el('div.today-row__side');
+    actions.replaceWith(side);
+    side.append(badges, actions);
+  }
+  return row;
 }
 
 /**
@@ -190,6 +228,8 @@ export function TodayScreen(router: Router): HTMLElement {
   let learnerReached: string[] = [];
   /** The contact history the card was built from (G2 item 6): what a swapped-in item's contact assumption reads (X1). */
   let learnerContact: ContactHistory = {};
+  /** The learner's projects the card was built from (G1d): what the swap sheet marks a paused or put-away option by (G94). */
+  let learnerProjects: readonly ProjectRow[] = [];
   /**
    * The composed card's offer instance (D4a): minted each time the card is composed and again when its
    * transfer offer's row is swapped away, kept with the offer Today opens (`data/offerSnapshot.ts`) and
@@ -384,6 +424,17 @@ export function TodayScreen(router: Router): HTMLElement {
   };
 
   /**
+   * The project of an option the learner paused or put away, if it has one (G94; the reviewer's ruling,
+   * `responses/9fce3792.md`): looked up as the session, the lesson page and the Library look a piece up, by its
+   * material and then its id. Any other state is not marked: the sheet is the learner's own menu, and only a
+   * piece no automatic chooser would offer must not look like one.
+   */
+  function heldProject(choice: CatalogItem): ProjectRow | undefined {
+    const project = projectIn(learnerProjects, { itemId: choice.id, material: materialOfItem(choice) });
+    return project?.state === 'paused' || project?.state === 'retired' ? project : undefined;
+  }
+
+  /**
    * The swap sheet for one row: the live card's (`onCard` its slots) or a running session's activity (X1:
    * the card is the run's, and the choice replaces that activity with a new token). `chosen` does the rest.
    */
@@ -418,10 +469,13 @@ export function TodayScreen(router: Router): HTMLElement {
           list.append(el('p.muted.today-swap-tier', { text: words, 'data-tier': option.tier }));
         }
         const choice = option.item;
+        const held = heldProject(choice);
         list.append(
           listRow({
             title: choice.title,
             meta: `${levelLabel(choice.level, choice.levelSource)} · ${handsLabel(choice.hands)} · ${choice.type}`,
+            badges: held ? [lifecycleBadge(held)] : [],
+            // The learner's choice, honoured as any swap is: nothing here writes the project (G94).
             dataset: { 'data-swap': choice.id, 'data-tier': option.tier },
             onClick: () => {
               sheet.close();
@@ -514,9 +568,10 @@ export function TodayScreen(router: Router): HTMLElement {
     // The reading row plays its recipe's hands, and says so (C4).
     const reading = slot.reading?.item.id === item.id ? slot.reading : undefined;
     const hands = reading?.recipe.moved?.hands ?? item.hands;
-    return listRow({
+    return onTheCard(listRow({
       title: reading ? readingTitle(item.title, item.hands, reading.recipe) : item.title,
-      // The composition's words, whole — but the transfer offer's cut at its clause (U71).
+      // The composition's words, whole — but the transfer offer's cut at its clause (U71). Up to two lines on
+      // the glass (U63, `onTheCard`).
       subtitle: cardLine(slot.reason, slot.claim),
       // `04` §0 R2: one line that fits. "Hands together" on every row is three
       // words that never distinguish anything, so it leaves and the line stops
@@ -541,7 +596,7 @@ export function TodayScreen(router: Router): HTMLElement {
         // What chose it (C6), in data where a test can read it and a learner cannot.
         ...(slot.claim ? { 'data-claim': slot.claim.kind } : slot.reading ? { 'data-claim': 'reader' } : {}),
       },
-    });
+    }));
   }
 
   // --- today's session, run (X1) ------------------------------------------
@@ -769,7 +824,7 @@ export function TodayScreen(router: Router): HTMLElement {
       );
     }
     actionButtons.push(button('▶', play, { ariaLabel: `Open ${activity.slot.title}` }));
-    const row = listRow({
+    const row = onTheCard(listRow({
       title: activity.slot.title,
       subtitle: cardLine(activity.reason, activity.slot.claim),
       meta: [
@@ -791,7 +846,7 @@ export function TodayScreen(router: Router): HTMLElement {
         'data-current': String(current),
         ...(activity.slot.claim ? { 'data-claim': activity.slot.claim.kind } : {}),
       },
-    });
+    }));
     if (current) row.classList.add('today-row--current');
     return row;
   }
@@ -813,14 +868,14 @@ export function TodayScreen(router: Router): HTMLElement {
     const open = (): void => {
       void openItem(router, item);
     };
-    return listRow({
+    return onTheCard(listRow({
       title: item.title,
       subtitle: one.words,
       meta: [SLOT_LABELS[one.kind], `${String(one.minutes)} min`, levelLabel(item.level, item.levelSource)].filter(Boolean).join(' · '),
       actions: [button('▶', open, { ariaLabel: `Open ${item.title}` })],
       onClick: open,
       dataset: { 'data-slot': one.kind, 'data-item': item.id, 'data-outside': 'true' },
-    });
+    }));
   }
 
   /** The running card: the run's activities and prompts in the card's order. */
@@ -995,7 +1050,9 @@ export function TodayScreen(router: Router): HTMLElement {
       });
     // The reason takes a second line here rather than an ellipsis (C4): the
     // card's title is one line and it has no Swap, so the row stays inside
-    // `04` §0 R2 with the whole sentence on it.
+    // `04` §0 R2 with the whole sentence on it. The session rows' reasons take
+    // two lines too since U63 (`onTheCard`); this card is not one of them and
+    // keeps its own rule and its badge line.
     row.querySelector('.list-row__sub')?.classList.add('today-reason');
     dailyCard.append(row);
   }
@@ -1101,9 +1158,11 @@ export function TodayScreen(router: Router): HTMLElement {
     // piece heard once or practised and pruned is never offered as new. A store that cannot be read
     // gives none, which reads as the runs alone, as before.
     const contactHistory = Promise.all([allEncounters().catch(() => []), contactSummaries().catch(() => [])]);
-    // The learner's projects (G1d; the reviewer's G82 ruling), for one thing: the review's repertoire
-    // retention steps past a piece they paused or put away. A store that cannot be read gives none,
-    // which suppresses nothing, as before.
+    // The learner's projects (G1d; the reviewer's G82 ruling), for two things: the session's automatic
+    // eligibility — no automatic chooser offers a piece they paused or put away (G1e, `buildSession`'s one
+    // lookup) — and the swap sheet, the learner's own menu, which lists such a piece with its state beside it
+    // (G94). Nothing here writes one. A store that cannot be read gives none, which suppresses and marks
+    // nothing, as before.
     const projectRows = allProjects().catch(() => []);
     void Promise.all([getPlan(), loadRungStates(curriculum, now), rungRows(), contactHistory, projectRows]).then(([plan, states, rows, [encounters, summaries], projects]) => {
       // The same active set Plan and Settings show, so the three screens
@@ -1111,6 +1170,7 @@ export function TodayScreen(router: Router): HTMLElement {
       const active = activeTracksFor(plan, curriculum as Curriculum);
       learnerRows = rows;
       learnerContact = { encounters, summaries };
+      learnerProjects = projects;
       const built = buildSession({
         curriculum: curriculum as Curriculum,
         catalog: catalog as CatalogIndex,

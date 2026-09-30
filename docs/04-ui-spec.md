@@ -158,7 +158,7 @@ Score screen is a full-screen route pushed on top (back gesture returns).
 
 - **Start session moves above the card.** It was under five rows of it: 679 px down a 740 px phone upright and off the bottom entirely sideways, which is a strange place for the one filled box on the screen the app opens on. The card still starts inside the first screenful — the button is one row of 40 px and the card was starting at 198.
 - **The slot kind leaves its badge and leads the detail line** (`Warm-up · 8 min · L0.1`). A badge is left for what that line does *not* say: that you have started or passed this, or that it needs importing.
-- **A row's title takes a second line** rather than an ellipsis, paid for by the badge line — **except where the row carries a badge**, and then it is one. A Today row is four lines deep (title, reason, detail, badges) and 96 px is one title line plus the other three; both at once is 116. Where there is a badge it is the news and the title is a name already on the card.
+- **A row's title takes a second line** rather than an ellipsis, paid for by the badge line — **except where the row carries a badge**, and then it is one. A Today row is four lines deep (title, reason, detail, badges) and 96 px is one title line plus the other three; both at once is 116. Where there is a badge it is the news and the title is a name already on the card. Since U63 (Entry 170) the badge sits above *Swap* and ▶ on the session card rather than on a line under the words, so the title keeps its two lines with it, and the reason takes up to two. A row whose title and reason both take two lines is taller than 96 px (107.9 at 342 × 740 in U63's run), an exception brought back to R2's owner (Entry 170, Question 1).
 - **Free play is a prompt, not a row.** It was a `listRow` — same border, surface and height as the four tappable cards above it — with no click handler, no actions and nothing to press. Every word it carried is still there; the costume is gone.
 - *Shuffle options* was the last of the three day-changing actions still drawn as a box; all three are text now, under the card.
 - The "Working on…" line names the rung rather than printing `lesson 0.1` beside a unit title that is the same words.
@@ -313,8 +313,7 @@ fallback until C6 and are deleted.
   *Quick check*, the duet and blind tools' piece — are offers too and read the same predicate
   (§3e, D3c).
 
-The line is the session row's second line and is cut at the owner's width, so the claim comes
-in its first words and the detail after the dash:
+The line is the session row's second line and takes up to two compact lines at the owner's width, then an ellipsis (U63, Entry 170); the claim still comes in its first words and the detail after the dash, so a sentence longer than two lines keeps its claim:
 
 | claim | the line |
 |---|---|
@@ -381,7 +380,7 @@ U71, X1).
   card's rows pass the same admission, above), though nothing is removed from a rung. A shared concept tag or a step every tune has
   matches nothing: the `repertoire` tag on every quarried piece made the old third tier a level
   window over the quarry. The words state the strongest fact known, never "similar difficulty".
-  Each tier's words are printed once over its options, and a row keeps `data-tier`; a chosen
+  Each tier's words are printed once over its options, and a row keeps `data-tier`. A piece the learner paused or put away can be listed — the sheet is their own menu — and wears its state beside it in the project sheet's words, *Paused* or *Put away*; choosing it is a swap like any other and changes no project (G94; the reviewer's ruling, `responses/9fce3792.md`). A chosen
   option's line is *You chose this one — from the same lesson* (or its tier: *it also trains the
   same skill*, *it also practises the same demand*). A **"not a song"** filter is on the sheet, because half the point of the
   exercise breadth is that a skill can be practised without a tune attached.
