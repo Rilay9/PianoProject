@@ -386,3 +386,26 @@ State the technical and pedagogical verdicts separately. The pedagogical one is 
 - **The window's last day, ruled by the orchestrator (the reviewer's read-back asked with the plan at the next paste):** a committed constant, the lane's final build day plus 14 days, the bounded landing lag and no more, never a sweep; the report states both ends and what bounds each (the first commit that produced dated conversions, and this constant); nothing past it is derived, on the device or in the build, and a dated hash outside it stops the run and is reported.
 - **Naming.** The resolution's name and API say learner material (the reviewer's *same learner material/current row resolves former identity*); no generic identity comparator is widened. The report names each exact-byte system the reviewer lists (D2/review records, excerpt `parentSha256` staleness, committed-file integrity checks, render/cache/checksum identities) and shows it untouched.
 - **The acceptance evidence.** The report names, for each of the six items, the case that shows it; where no case in item 4 does, one is added.
+
+## The window bound, changed by the reviewer (`responses/questions-71bd6cee.md`)
+
+This replaces the orchestrator's ruling above (the lane's build day plus 14): the bounds are historical, proven from the repository's catalogues and converter epochs, never a future date; the builder was told on 2026-09-30 while building.
+
+## E50a window-bound read-back
+
+**Change the bound. Do not use build-day + 14 as the compatibility definition.**
+
+The former-identity set should be bounded by **actual historical catalogues / converter epochs in which learner rows could have been written**, not by fourteen hypothetical future dates after the lane builds.
+
+A fixed `build day + 14` creates aliases for dated files that never existed and reintroduces the synthetic-date problem I wanted bounded.
+
+Use this rule instead:
+
+- lower bound: the earliest deployment/catalogue version capable of writing stored material identity;
+- upper bound: the latest **actual dated converted catalogue/file identity known to have been deployable before the undated conversion change lands**;
+- include only identities reproduced from those proven historical dates/catalogues;
+- if an installed/local catalogue exposes a dated identity outside that proven set, stop and report it, then add that concrete historical identity deliberately.
+
+Once E50a lands, no future date aliases are ever generated. The set is historical compatibility data, not a rolling window.
+
+D2/review and other exact-byte provenance systems remain outside this alias mechanism, as already ruled.

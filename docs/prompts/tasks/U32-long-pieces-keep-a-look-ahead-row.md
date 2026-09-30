@@ -256,3 +256,49 @@ State the technical and pedagogical verdicts separately.
 `operating-procedure.md` §11 and §12 apply.
 
 **Entry 169** (the next free number at drafting; the orchestrator confirms it at dispatch). Every run file goes under `docs/prompts/runs/U32/`. The entry is `docs/prompts/runs/U32/ENTRY.md`, starting `### Entry 169 — U32`.
+
+## Reviewer's approval and conditions (`responses/questions-71bd6cee.md`)
+
+Approved for dispatch 2026-09-30 with three conditions. The reviewer's words below govern wherever the brief's earlier text differs: the run freeze is preserved and `04` is updated to say so; `perf.spec.ts` joins the `app/src/score/**` row as the smallest mapping; the race test stays a guard; the acceptance order is no distortion, then the frozen run, then look-ahead, then the bar count.
+
+## U32 — long pieces keep a look-ahead row
+
+**APPROVE FOR DISPATCH, with three conditions.**
+
+The architectural direction is correct: the fixed two-sheet cap on long scores was a first-paint performance guard, not a pedagogical reason to suppress look-ahead. Create only the sheets required for first paint, then make additional sheets on idle so a long piece can gain the same next-music row as a short piece without delaying initial display.
+
+### 1. Preserve the run freeze
+
+A run that starts before the idle-created look-ahead sheet exists should **keep the arrangement it started with**. Do not reshape the notation under the learner mid-run merely because another sheet finishes loading.
+
+This is the better product boundary even though the old wording in `04` says look-ahead is present in every state. Update that documentation to distinguish:
+
+- before the run: add look-ahead when it becomes available;
+- once the run starts: preserve the frozen arrangement until the next run/window lifecycle.
+
+Do not widen `FREEZE_WAIT_FOR_MEASURE_MS` merely to wait for long-score idle work. If a long score routinely cannot acquire the look-ahead sheet before normal run start, report the measured product trade rather than turning Play into a load barrier.
+
+### 2. Add `perf.spec.ts` to the score-path checks map
+
+**Approved.**
+
+A renderer change that can add whole-document score loads directly affects the first-window performance contract. The existing `perf.spec.ts` is therefore a real consumer of `app/src/score/**`, not optional extra coverage.
+
+Add the smallest specific mapping needed. Do not map the entire browser suite merely because this seam is performance-sensitive.
+
+### 3. Race test remains a guard, not an oracle
+
+Keep the immediate-vs-patient run comparison. If the new idle sheet would alter a frozen run, the correct answer is to suppress that in-run load/layout change, not force the race test green by loosening slot equality.
+
+If avoiding an in-run sheet load is necessary to preserve the input-to-colour or rendering-latency relationship, that is correct. Record the deferred look-ahead as the trade for that run.
+
+### Acceptance priority
+
+Use the existing product order:
+
+1. no distortion;
+2. preserve stable/frozen play once begun;
+3. show look-ahead whenever the stage and lifecycle permit it;
+4. honour the requested bars count after those constraints.
+
+U32 may dispatch.

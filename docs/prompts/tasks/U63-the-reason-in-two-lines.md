@@ -373,3 +373,50 @@ After those:
 State the technical and pedagogical verdicts separately. The pedagogical verdict is an observation against C6's lines, never a teacher's verdict: does the reason, read whole, say what the slot is for? The wording is the copy owner's. `operating-procedure.md` §11 and §12 apply.
 
 **Entry 170.** The orchestrator assigns it at dispatch. At drafting, 167 is the highest in the record and G96's draft holds 168. Every run file goes under `docs/prompts/runs/U63/`. The entry is `docs/prompts/runs/U63/ENTRY.md`, starting `### Entry 170 — U63`.
+
+## Reviewer's approval and conditions (`responses/questions-71bd6cee.md`)
+
+Approved for dispatch 2026-09-30 with a product ruling. The reviewer's words below govern wherever the brief's earlier text differs: the full title, then the reason's deciding clause in up to two compact lines, then usable controls, then the lifecycle badge moved into the action-side area on Today only, then 96 px where it honestly fits; a real row that still cannot fit at 342 px comes back measured in the handoff, never truncated, the title never shortened, R2 never widened by the lane; G94's swap-sheet label folds in as ruled.
+
+## U63 — Today's reason in two lines
+
+**APPROVE FOR DISPATCH, with a product ruling on the row-budget trade.**
+
+The decisive reason is more important than preserving the old one-line truncation. U63 exists because the current card can literally hide the clause that tells the learner why the activity is there.
+
+### Product ruling
+
+Use this priority:
+
+1. keep the **full identifying title**, up to its existing two-line allowance;
+2. keep the **reason's deciding clause readable**, using up to two compact lines;
+3. keep the action controls usable;
+4. preserve lifecycle state, but it does **not** require its own dedicated full-width line on Today;
+5. preserve the 96 px R2 budget where the above can honestly fit.
+
+Therefore the preferred layout is the orchestrator's recommendation:
+
+**move the lifecycle badge into the action-side area on Today when that recovers the line needed for the reason.**
+
+Do this as a Today-only layout. Do not change the shared `listRow` structure or the Library/Progress badge layout.
+
+A passed/mastered badge is useful context, but on a Today activity it is less important than the full activity title and the reason the app chose it now. It may sit compactly beside/above the controls rather than consuming a dedicated text-row line.
+
+### If 96 px still cannot hold the honest content
+
+Do **not** silently fall back to the old truncated reason merely to satisfy the number.
+
+If, after the Today-only badge relocation and compact two-line reason, a real row with a two-line title still cannot fit inside 96 px at the primary 342 px target, bring that measured case back in the handoff. Do not:
+
+- steal the title's second line;
+- rewrite pedagogical sentences merely to fit CSS;
+- drop the badge/state entirely;
+- unilaterally widen R2 before review.
+
+The expected outcome is that most/all important rows can be solved by the Today-only badge placement. Any genuine remaining exception becomes an explicit R2 product decision rather than hidden truncation.
+
+### G94 swap-sheet state
+
+Approved to fold in. Paused/retired choices remain selectable because Swap is an explicit learner-choice surface, but they must visibly carry `Paused` / `Put away`, and selecting one must not alter project lifecycle state.
+
+U63 may dispatch.

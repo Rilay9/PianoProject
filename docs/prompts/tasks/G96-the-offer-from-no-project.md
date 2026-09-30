@@ -397,3 +397,51 @@ After those:
 State the technical and pedagogical verdicts separately. The pedagogical one is narrow, because nothing taught or judged changes. Whether a learner misses *Keep it playable* on a piece they know from elsewhere is a product judgement; the two-tap path is in item 5. `operating-procedure.md` §11 and §12 apply.
 
 **Entry 168** (the next free number at drafting; the orchestrator confirms it at dispatch). Every run file goes under `docs/prompts/runs/G96/`. The entry is `docs/prompts/runs/G96/ENTRY.md`, starting `### Entry 168 — G96`.
+
+## Reviewer's approval and conditions (`responses/questions-71bd6cee.md`)
+
+Approved for dispatch 2026-09-30. The reviewer's words below govern wherever the brief's earlier text differs: the default evidence (the progress row `passed` or `mastered`, a self-pass included, keyed by the item's identity, enforced in the store with no caller flag); the shared sheet listens for the store update and redraws its no-project offers while open; the focus fallback is an explicit resolver option supplied by the Library and Progress, never a DOM search by text or item in `openSheet`; the PDF line and the two-line title as ruled.
+
+## G96 — offer from no project
+
+**APPROVE FOR DISPATCH, with the default evidence choice and one focus-mechanism constraint.**
+
+### Keep-it-playable eligibility
+
+Use the brief's default:
+
+**from no project, `Keep it playable` is offered only when the item's progress row is `passed` or `mastered`.**
+
+That is the honest product meaning. Merely opening/hearing/attempting a piece does not mean the learner can keep it playable. A failed attempt is also not enough.
+
+A self-pass (`I already know this`) counts because it deliberately establishes the same learner truth the Progress list already treats as known material. The slightly odd combination “You have never opened it” + “Keep it playable” is still coherent: the app has no encounter, but the learner explicitly said they know the piece.
+
+Keep the rule keyed by the item's existing progress identity as Progress does today. Do not widen to material-equivalent ids in this seam.
+
+The store must enforce the same rule the sheet displays. No caller-supplied `passed` flag.
+
+### Score finish-sheet race
+
+Do not allow a just-passed run to permanently miss `Keep it playable` merely because `recordRun` is still in flight when the sheet first opens.
+
+Prefer the shared project sheet to listen for the progress/store update and redraw its no-project offers while open. That keeps the policy in the sheet/store boundary and avoids making Score await persistence solely for this button.
+
+### Focus after redraw
+
+Fix this at the reusable sheet boundary, but **do not make `openSheet` guess globally by searching arbitrary same-text/same-item DOM nodes.**
+
+Use an explicit reusable fallback/resolver option supplied by callers whose opener may be replaced. The Library and Progress know the stable container and item identity of the replacement they want. That is safer than teaching the generic sheet primitive to infer semantic identity from DOM text.
+
+The default behavior remains exactly today's: if the original opener still exists, return focus to it. The optional fallback runs only if it has been detached.
+
+This still satisfies the prior ruling: no Library timeout, no screen-specific delayed focus hack, and the reusable sheet mechanism owns the fallback timing.
+
+### PDF detail line
+
+Approved. A PDF already has its PDF badge; dropping the false fallback word `song` from the metadata line is correct.
+
+### Two-line Library title
+
+Measure and record it as planned. Do not drop the project badge, shorten the title, or touch U63's stylesheet from this seam. It does not block G96's offer/focus fix.
+
+G96 may dispatch.
