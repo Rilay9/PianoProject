@@ -1,0 +1,15 @@
+# checks for 8 path(s): 8 matched, 0 unmatched
+# app/src/ui/screens/LibraryScreen.ts: app/src/**, app/src/ui/screens/LibraryScreen.ts
+# app/tests/unit/libraryProjects.test.ts: app/tests/unit/*.test.ts
+# app/tests/e2e/library.spec.ts: app/tests/e2e/*.spec.ts
+# docs/prompts/tasks/G85a-the-details-sheet-is-the-door.md: docs/**
+# docs/prompts/runs/G85a/ENTRY.md: docs/**
+# docs/prompts/runs/G85a/scripts-zz-g85a-pictures.spec.ts: docs/**
+# docs/prompts/runs/G85a/scripts-red-on-committed.py: docs/**
+# docs/prompts/pictures/g85a/after-facts.json: docs/**
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/doors.spec.ts tests/e2e/finder.spec.ts tests/e2e/library.spec.ts tests/e2e/modes-rhythm-only.spec.ts --workers=4
+exit=0

@@ -1,0 +1,10 @@
+$ (cd app) G85A_DIST=<app/dist> npx playwright test -c playwright.g85a-4533.config.ts --workers=2 -g G85 tests/e2e/library.spec.ts
+exists: tests/e2e/library.spec.ts
+
+Running 2 tests using 2 workers
+
+  ok 2 tests\e2e\library.spec.ts:339:3 › the learner’s project in the Library (G85) › Details opens the one project sheet: the title stays whole, a pause there reaches the row and the filter on closing, and the store holds the one project (G85a) (3.1s)
+  ok 1 tests\e2e\library.spec.ts:263:3 › the learner’s project in the Library (G85) › a piece Learning wears the badge, the Project filter finds it alone, and paused on its sheet it wears Paused and is found under Paused (3.9s)
+
+  2 passed (6.9s)
+exit=0

@@ -244,8 +244,10 @@ test.describe('Library obeys 04 §0', () => {
  * may expose the same project state and open the same sheet, consuming the one `projectStore` truth).
  * At the owner's phone width. The project is put straight into the store as the sheet writes it,
  * keyed by the catalogue's own identity (`projects.spec.ts`'s Stage 9 path); the change after that is
- * a tap on the sheet, opened from Progress's row — the row here wears the state and keeps the actions
- * it had, because a door beside them did not fit at this width (Entry 147, question 1).
+ * a tap on the sheet. The row wears the state and keeps the actions it had, because a door beside
+ * them did not fit at this width (Entry 147): the first case opens the sheet from Progress's row, the
+ * second from the piece's Details, the Library's door (G85a; the reviewer's required change on G85,
+ * `docs/review/responses/ba4c6fea.md`).
  */
 test.describe('the learner’s project in the Library (G85)', () => {
   test.use({ viewport: { width: 342, height: 740 } });
@@ -325,6 +327,129 @@ test.describe('the learner’s project in the Library (G85)', () => {
     await page.locator('#library-project').selectOption('paused');
     await expect(page.locator('#library-list .list-row')).toHaveCount(1);
     await expect(row.locator('.badge[data-project]')).toHaveText('Paused');
+  });
+
+  /**
+   * The reviewer's adversary for the door (G85a, `responses/ba4c6fea.md`): at 342 px a project row
+   * keeps its identifying title, Details opens the project sheet, an action there changes the state,
+   * and closing back to the Library redraws the badge and the filter from the one store truth. The
+   * piece is one of the four *Twinkle* rows whose distinguishing ending a word on the row cut
+   * (Entry 147's probe).
+   */
+  test('Details opens the one project sheet: the title stays whole, a pause there reaches the row and the filter on closing, and the store holds the one project (G85a)', async ({ page }) => {
+    const PIECE = 'song.folk.twinkle.ht';
+    await page.goto('/#/library');
+    await expect(page.locator('#library-count')).toContainText(/of \d+ items/);
+    const { title, key } = await page.evaluate(async (id) => {
+      const catalog = (await (await fetch('content/catalog.json')).json()) as { id: string; title: string; provenance?: { identity?: { kind: string; sha256?: string } } }[];
+      const item = catalog.find((one) => one.id === id);
+      const identity = item?.provenance?.identity;
+      if (item === undefined || identity?.kind !== 'file' || identity.sha256 === undefined) throw new Error(`${id} has no file identity`);
+      return { title: item.title, key: `file:${identity.sha256}` };
+    }, PIECE);
+
+    const row = page.locator(`#library-list .list-row[data-item="${PIECE}"]`);
+    const rowTitle = row.locator('.list-row__title');
+    /** The title's box, and whether any of its words are cut (clamped at two lines, or ellipsed). */
+    const titleBox = (): Promise<{ text: string; width: number; clipped: boolean }> =>
+      rowTitle.evaluate((node) => ({
+        text: node.textContent ?? '',
+        width: node.clientWidth,
+        clipped: node.scrollWidth > node.clientWidth || node.scrollHeight > node.clientHeight,
+      }));
+
+    // Before any project: the whole catalogue title, nothing cut.
+    await page.locator('#library-search').fill('twinkle');
+    await expect(row).toBeVisible();
+    const before = await titleBox();
+    expect(before.text).toBe(title);
+    expect(before.clipped, `“${before.text}” is cut before any project`).toBe(false);
+
+    // Learning, straight into the store as the sheet writes it, keyed by the catalogue's identity.
+    await page.evaluate(
+      async ({ id, key }) => {
+        const catalog = (await (await fetch('content/catalog.json')).json()) as { id: string; provenance?: { identity?: unknown } }[];
+        const identity = catalog.find((one) => one.id === id)?.provenance?.identity;
+        const db = await new Promise<IDBDatabase>((resolve, reject) => {
+          const request = indexedDB.open('pianopath');
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(new Error(String(request.error)));
+        });
+        const at = new Date().toISOString();
+        await new Promise<void>((resolve, reject) => {
+          const tx = db.transaction('projects', 'readwrite');
+          tx.objectStore('projects').put({ id: key, material: identity, itemId: id, state: 'learning', since: at, history: [{ state: 'learning', at, why: 'learn' }] });
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(new Error(String(tx.error)));
+        });
+        db.close();
+      },
+      { id: PIECE, key },
+    );
+    await page.reload();
+    await expect(page.locator('#library-count')).toContainText(/of \d+ items/);
+    await page.locator('#library-search').fill('twinkle');
+    await expect(row.locator('.badge[data-project]')).toHaveText('Learning');
+    // The row as it was: the title whole at the same width, and the same two actions.
+    const learning = await titleBox();
+    expect(learning.text).toBe(title);
+    expect(learning.clipped, `“${learning.text}” is cut with its project badge`).toBe(false);
+    expect(learning.width).toBe(before.width);
+    await expect(row.locator('.list-row__actions button')).toHaveText(['Details', '⋯']);
+
+    // Details holds the door, in the finish sheet's words over the sheet's own state line.
+    await page.evaluate(() => {
+      (window as unknown as { g85aStayed?: boolean }).g85aStayed = true;
+    });
+    const url = page.url();
+    await row.getByRole('button', { name: 'Details' }).click();
+    const door = page.locator('#library-detail #library-detail-project');
+    await expect(door).toHaveCount(1);
+    await expect(door.locator('.list-row__title')).toHaveText('What next with this piece?');
+    await expect(door.locator('.list-row__sub')).toHaveText(`Learning since ${today()}`);
+    await door.click();
+    await expect(page.locator('#library-detail')).toHaveCount(0);
+    await expect(page.locator('#project-sheet h2')).toHaveText(title);
+    await expect(page.locator('#project-state')).toHaveText(`Learning since ${today()}`);
+
+    // An action on the one sheet.
+    await page.locator('#project-action-pause').click();
+    await expect(page.locator('#project-state')).toHaveText(`Paused since ${today()}`);
+
+    // Closed: the Library, never left, redrawn from the store — the badge, then the filter.
+    await page.locator('#project-sheet-close').click();
+    await expect(page.locator('#project-sheet')).toHaveCount(0);
+    expect(page.url()).toBe(url);
+    expect(await page.evaluate(() => (window as unknown as { g85aStayed?: boolean }).g85aStayed)).toBe(true);
+    await expect(row.locator('.badge[data-project]')).toHaveText('Paused');
+    expect(await page.locator('#library-list .badge[data-project]').count()).toBe(1);
+    await page.locator('#library-filter-toggle').click();
+    await page.locator('#library-project').selectOption('learning');
+    await expect(page.locator('#library-empty')).toContainText('Learning');
+    await page.locator('#library-project').selectOption('paused');
+    await expect(page.locator('#library-list .list-row')).toHaveCount(1);
+    await expect(row.locator('.badge[data-project]')).toHaveText('Paused');
+    const paused = await titleBox();
+    expect(paused.text).toBe(title);
+    expect(paused.clipped, `“${paused.text}” is cut after the pause`).toBe(false);
+    expect(paused.width).toBe(before.width);
+
+    // The sheet acted on the Library's project: one row, the seeded one, paused.
+    const stored = await page.evaluate(async () => {
+      const db = await new Promise<IDBDatabase>((resolve, reject) => {
+        const request = indexedDB.open('pianopath');
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(new Error(String(request.error)));
+      });
+      const rows = await new Promise<{ id: string; state: string }[]>((resolve, reject) => {
+        const request = db.transaction('projects', 'readonly').objectStore('projects').getAll();
+        request.onsuccess = () => resolve(request.result as { id: string; state: string }[]);
+        request.onerror = () => reject(new Error(String(request.error)));
+      });
+      db.close();
+      return rows.map((one) => ({ id: one.id, state: one.state }));
+    });
+    expect(stored).toEqual([{ id: key, state: 'paused' }]);
   });
 });
 

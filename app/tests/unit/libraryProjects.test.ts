@@ -11,9 +11,14 @@
  *   own (`projectIn` over `materialOfItem`): the same file under another id finds the project, an
  *   import's project made on its loaded bytes is found by its id, another id's id-only row is not.
  * - A write to the store while the list is up redraws the row's badge and the filter's result, from one
- *   read. The row's actions are the ones it had: the brief's door did not fit at 342 px (Entry 147,
- *   question 1), so the row wears the state and the sheet stays behind its two existing doors. The
- *   Library moves no project itself (`projectLifecycle.test.ts` holds the one actor).
+ *   read. The row's actions are the ones it had: a door beside them did not fit at 342 px (Entry 147),
+ *   so the row wears the state and spends no width on a door. The Library moves no project itself
+ *   (`projectLifecycle.test.ts` holds the one actor).
+ * - The door is inside the piece's Details (G85a; the reviewer's required change on G85,
+ *   `docs/review/responses/ba4c6fea.md`): one row, *What next with this piece?* over the sheet's own
+ *   state line, opening the one project sheet on the target the index resolved; shown wherever a
+ *   project exists, and with none only where the sheet's offers from no project are honest for the
+ *   piece (a song that opens on the Score screen) — never on a PDF or a placeholder without one.
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -50,6 +55,21 @@ const { items, file } = vi.hoisted(() => {
       // An import: the catalogue row names no material (`materialOfItem` is `none`), so its project is
       // found by its id — here one made on the Score screen, keyed by the bytes it loaded.
       { id: 'import.mine', type: 'song', title: 'My own waltz', level: 3, hands: 'both', tracks: [], concepts: [], tags: [], imported: true, kind: 'musicxml' },
+      // A piece the catalogue wants and does not bundle (a placeholder, G85a): no file, not imported,
+      // so it opens nowhere (`targetFor` is `none`) and its build identity is `none`.
+      {
+        id: 'song.wanted',
+        type: 'song',
+        title: 'A wanted piece',
+        level: 3,
+        hands: 'both',
+        tracks: [],
+        concepts: ['import-only'],
+        tags: [],
+        provenance: { source: 'pdmx', facts: {}, review: { score: null, teaching: null }, identity: { kind: 'none', why: 'a placeholder' } },
+      },
+      // A PDF import (G85a): a song in the catalogue (`isProjectable`), opened in the PDF viewer.
+      { id: 'import.pdf', type: 'song', title: 'A page of mine', level: 3, hands: 'both', tracks: [], concepts: [], tags: [], imported: true, kind: 'pdf' },
     ],
   };
 });
@@ -57,13 +77,16 @@ const { items, file } = vi.hoisted(() => {
 vi.mock('../../src/curriculum/load', () => ({
   allItems: () => Promise.resolve(items),
   loadCurriculum: () => Promise.resolve({ version: 1, tracks: [], stages: [] }),
+  // The encounter history's catalogue (G85a): the project sheet opened from Details reads what the
+  // learner has played through it (`encounterStore.familiarity`), as `projectSheet.test.ts` stubs it.
+  catalogIndex: () => Promise.resolve({ items, byId: new Map(items.map((one) => [one.id as string, one])) }),
 }));
 
 const { LibraryScreen, matches } = await import('../../src/ui/screens/LibraryScreen');
-const { PROJECT_STATES, allProjects, applyProjectAction, resetProjectsForTest } = await import('../../src/data/projectStore');
-const { resetProgressForTest } = await import('../../src/data/progressStore');
+const { OFFERS, PROJECT_STATES, allProjects, applyProjectAction, resetProjectsForTest } = await import('../../src/data/projectStore');
+const { dayKey, resetProgressForTest } = await import('../../src/data/progressStore');
 const { resetEncountersForTest } = await import('../../src/data/encounterStore');
-const { PROJECT_TEXT } = await import('../../src/ui/help');
+const { PROJECT_TEXT, projectSince } = await import('../../src/ui/help');
 
 const navigateScore = vi.fn();
 const router = { navigate: vi.fn(), navigateScore } as unknown as Router;
@@ -154,7 +177,8 @@ function choose(section: HTMLElement, value: string): void {
   select.dispatchEvent(new Event('change'));
 }
 
-describe('the Library row wears the learner’s project (G85 item 1; item 2 a question)', () => {
+// Revised title (G85a): item 2, the door, was a question; it is inside Details now (the describe below).
+describe('the Library row wears the learner’s project (G85 item 1; the door in Details, G85a)', () => {
   beforeEach(() => {
     useFakeIndexedDb();
     resetProgressForTest();
@@ -212,12 +236,17 @@ describe('the Library row wears the learner’s project (G85 item 1; item 2 a qu
     expect(navigateScore).toHaveBeenCalledWith('song.none');
   });
 
-  it('the row’s actions are the ones it had, a project or not: the brief’s door did not fit at 342 px (Entry 147, question 1)', async () => {
+  // Revised (G85a): the title called the door a question; the door is inside Details now, and the
+  // row's actions are what this pins, unchanged.
+  it('the row’s actions are the ones it had, a project or not: the door to the sheet is inside Details, never on the row (G85a; Entry 147)', async () => {
     await seed();
     const section = await mount();
     const actions = (id: string): string[] => [...(rowOf(section, id)?.querySelectorAll('.list-row__actions button') ?? [])].map((one) => one.textContent ?? '');
     for (const id of ['song.learning', 'song.paused', 'song.none', 'song.twin', 'exercise.five']) expect(actions(id), id).toEqual(['Details', '⋯']);
     expect(actions('import.mine')).toEqual(['Edit', 'Assign', 'Details', '⋯']);
+    // The two rows G85a's fixtures add: no `⋯` where the modes mean nothing (a placeholder, a PDF).
+    expect(actions('song.wanted')).toEqual(['Details']);
+    expect(actions('import.pdf')).toEqual(['Edit', 'Assign', 'Details']);
     // Nothing the Library drew wrote a project: the seeded rows are the store's whole content.
     expect((await allProjects()).map((one) => one.itemId).sort()).toEqual(['exercise.five', 'import.mine', 'song.gone', 'song.learning', 'song.paused', 'song.twin.before']);
   });
@@ -288,11 +317,168 @@ describe('the Project filter (G85 item 3)', () => {
   });
 });
 
+// --- the door (G85a) ------------------------------------------------------------------------------
+
+/** Opens a row's Details, as a tap on its *Details* does; the sheet hangs from the body. */
+function openDetails(section: HTMLElement, id: string): HTMLElement {
+  const details = [...(rowOf(section, id)?.querySelectorAll<HTMLButtonElement>('.list-row__actions button') ?? [])].find((one) => one.textContent === 'Details');
+  if (!details) throw new Error(`no Details on ${id}`);
+  details.click();
+  const sheet = document.getElementById('library-detail');
+  if (!sheet) throw new Error(`no Details sheet for ${id}`);
+  return sheet;
+}
+const doorIn = (sheet: HTMLElement): HTMLElement | null => sheet.querySelector<HTMLElement>('#library-detail-project');
+const doorWords = (door: HTMLElement | null): [string, string] => [
+  door?.querySelector('.list-row__title')?.textContent ?? '',
+  door?.querySelector('.list-row__sub')?.textContent ?? '',
+];
+/** The sheet's state line, once its own read has answered with this. */
+async function sheetSays(words: string): Promise<HTMLElement> {
+  return vi.waitFor(() => {
+    const sheet = document.getElementById('project-sheet');
+    expect(sheet?.querySelector('#project-state')?.textContent).toBe(words);
+    return sheet as HTMLElement;
+  });
+}
+/** A project's state line in the sheet's words, from the store's own row for it. */
+async function stateLineOf(itemId: string): Promise<string> {
+  const stored = (await allProjects()).find((one) => one.itemId === itemId);
+  if (!stored) throw new Error(`no project under ${itemId}`);
+  return projectSince(stored.state, stored.since, dayKey);
+}
+const storeAsSeeded = async (): Promise<string> =>
+  JSON.stringify((await allProjects()).map((one) => [one.id, one.itemId, one.state, one.history.length]).sort());
+
+describe('the Details sheet is the door to the one project sheet (G85a)', () => {
+  beforeEach(() => {
+    useFakeIndexedDb();
+    resetProgressForTest();
+    resetEncountersForTest();
+    resetProjectsForTest();
+    navigateScore.mockClear();
+  });
+  afterEach(() => {
+    clearFakeIndexedDb();
+    document.body.replaceChildren();
+  });
+
+  it('(a) a project: one door, the finish sheet’s words over the row’s state and since; tapped, Details closes and the one sheet opens on it', async () => {
+    await seed();
+    const section = await mount();
+    const sheet = openDetails(section, 'song.learning');
+    expect(sheet.querySelectorAll('#library-detail-project')).toHaveLength(1);
+    const door = doorIn(sheet);
+    const said = await stateLineOf('song.learning');
+    expect(said.startsWith(`${PROJECT_TEXT.states.learning} since `)).toBe(true);
+    expect(doorWords(door)).toEqual([PROJECT_TEXT.door, said]);
+    // The same state the row's badge wears.
+    expect(said.startsWith(`${projectBadgeOf(section, 'song.learning')?.textContent ?? '?'} since `)).toBe(true);
+    // With the sheet's actions, directly above *Open*, which stays last and the only filled box.
+    expect(door?.nextElementSibling?.id).toBe('library-detail-open');
+    expect(sheet.querySelector('.sheet__body')?.lastElementChild?.id).toBe('library-detail-open');
+    expect(sheet.querySelectorAll('.button--primary')).toHaveLength(1);
+    door?.click();
+    expect(document.getElementById('library-detail')).toBeNull();
+    const opened = await sheetSays(said);
+    expect(opened.dataset.item).toBe('song.learning');
+    expect(document.querySelectorAll('#project-sheet')).toHaveLength(1);
+    // The door opens a sheet; it does not open the piece.
+    expect(navigateScore).not.toHaveBeenCalled();
+  });
+
+  it('(b) the same file under another id: the sheet finds that project, and an action there moves that one row; the Library’s badge follows', async () => {
+    await seed();
+    const section = await mount();
+    const saved = await stateLineOf('song.twin.before');
+    expect(saved.startsWith(`${PROJECT_TEXT.states.saved} since `)).toBe(true);
+    expect(doorWords(doorIn(openDetails(section, 'song.twin')))).toEqual([PROJECT_TEXT.door, saved]);
+    doorIn(document.getElementById('library-detail') as HTMLElement)?.click();
+    const sheet = await sheetSays(saved);
+    sheet.querySelector<HTMLButtonElement>('#project-action-learn')?.click();
+    const learning = await vi.waitFor(async () => {
+      const line = await stateLineOf('song.twin.before');
+      expect(line.startsWith(`${PROJECT_TEXT.states.learning} since `)).toBe(true);
+      return line;
+    });
+    await sheetSays(learning);
+    // One row for file `d`, the one made under the old id, now Learning: no second project.
+    const forD = (await allProjects()).filter((one) => one.material.kind === 'file' && one.material.sha256 === 'd'.repeat(64));
+    expect(forD.map((one) => [one.itemId, one.state])).toEqual([['song.twin.before', 'learning']]);
+    expect(await allProjects()).toHaveLength(6);
+    // The listener's redraw, behind the sheet.
+    await vi.waitFor(() => {
+      expect(projectBadgeOf(section, 'song.twin')?.textContent).toBe(PROJECT_TEXT.states.learning);
+    });
+  });
+
+  it('(c) the import’s project on its loaded bytes: the door and the sheet find it by its id', async () => {
+    await seed();
+    const section = await mount();
+    const polishing = await stateLineOf('import.mine');
+    expect(polishing.startsWith(`${PROJECT_TEXT.states.polishing} since `)).toBe(true);
+    const door = doorIn(openDetails(section, 'import.mine'));
+    expect(doorWords(door)).toEqual([PROJECT_TEXT.door, polishing]);
+    door?.click();
+    expect((await sheetSays(polishing)).dataset.item).toBe('import.mine');
+  });
+
+  it('(d) no project on a song that opens on the Score screen: the door says so, and the sheet opens on its four offers; opening wrote nothing', async () => {
+    await seed();
+    const section = await mount();
+    const before = await storeAsSeeded();
+    const door = doorIn(openDetails(section, 'song.none'));
+    expect(doorWords(door)).toEqual([PROJECT_TEXT.door, PROJECT_TEXT.none]);
+    door?.click();
+    expect(document.getElementById('library-detail')).toBeNull();
+    const sheet = await sheetSays(PROJECT_TEXT.none);
+    expect(sheet.dataset.item).toBe('song.none');
+    // Its own read and the history's line have answered: nothing played, nothing made.
+    await vi.waitFor(() => {
+      expect(sheet.querySelector('#project-met')?.textContent).toBe(PROJECT_TEXT.never);
+    });
+    expect([...sheet.querySelectorAll('#project-actions button')].map((one) => one.textContent)).toEqual(OFFERS.none.map((action) => PROJECT_TEXT.actions[action]));
+    expect(await storeAsSeeded()).toBe(before);
+    expect(projectBadgeOf(section, 'song.none')).toBeNull();
+  });
+
+  it('(e) no project and no honest offer: no door on a placeholder, a PDF, or an exercise with a row under its id', async () => {
+    await seed();
+    const section = await mount();
+    for (const id of ['song.wanted', 'import.pdf', 'exercise.five']) {
+      const sheet = openDetails(section, id);
+      expect(doorIn(sheet), id).toBeNull();
+      expect(sheet.textContent, id).not.toContain(PROJECT_TEXT.door);
+      document.getElementById('library-detail-close')?.click();
+      expect(document.getElementById('library-detail'), id).toBeNull();
+    }
+  });
+
+  it('(e) a project that exists is shown whatever the item: a PDF’s door over its state, a placeholder’s at the end of its sheet', async () => {
+    await applyProjectAction({ itemId: 'import.pdf', material: undefined }, 'save');
+    await applyProjectAction({ itemId: 'song.wanted', material: undefined }, 'learn');
+    const section = await mount();
+    const pdf = doorIn(openDetails(section, 'import.pdf'));
+    expect(doorWords(pdf)).toEqual([PROJECT_TEXT.door, await stateLineOf('import.pdf')]);
+    expect(doorWords(pdf)[1].startsWith(`${PROJECT_TEXT.states.saved} since `)).toBe(true);
+    document.getElementById('library-detail-close')?.click();
+    const wanted = openDetails(section, 'song.wanted');
+    const door = doorIn(wanted);
+    expect(doorWords(door)).toEqual([PROJECT_TEXT.door, await stateLineOf('song.wanted')]);
+    // A placeholder has no *Open*: the door goes after its import control, at the end of the sheet.
+    expect(wanted.querySelector('#library-detail-open')).toBeNull();
+    expect(wanted.querySelector('.sheet__body')?.lastElementChild).toBe(door);
+  });
+});
+
 describe('the Library reads the store once and looks each row up in a map (G85 items 1, 4)', () => {
+  // Extended (G85a item 4): one place opens the sheet, Details' door; the sheet's own read on open is
+  // the sheet's, and the Library still reads the store once and moves no project.
   it('one read of the store, one identity rule, no per-row read, and no project moved here', () => {
     const source = readFileSync(join(process.cwd(), 'src', 'ui', 'screens', 'LibraryScreen.ts'), 'utf8');
     expect(source.match(/allProjects\(/g), 'one place reads the store').toHaveLength(1);
     expect(source.match(/projectIn\(/g), 'one place applies the identity rule').toHaveLength(1);
+    expect(source.match(/openProjectSheet\(/g), 'one place opens the one sheet').toHaveLength(1);
     expect(source).not.toMatch(/projectFor\(|applyProjectAction|setProjectNotes|addProjectSection|removeProjectSection/);
     expect(source).toMatch(/onProjectsChange\(/);
   });
