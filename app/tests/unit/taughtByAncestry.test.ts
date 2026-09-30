@@ -466,7 +466,7 @@ describe('a demand a rung only introduces is not taught (F2)', () => {
   };
 
   it('a later option carrying the demand on the same path is untaught when the earlier rung only introduces it', () => {
-    // `introduces` is the build's field; the app's `Lesson` type does not name it because nothing in the app reads it.
+    // `introduces` is the build's field; the app's `Lesson` names it since CL04 (G70) for the carried exposures alone, and nothing that decides teaching reads it.
     const introducing = { introduces: ['walking-bass'] } as Partial<Lesson & { introduces: readonly string[] }>;
     const curriculum = withA(introducing, { songOptions: ['song.a6', 'song.walks'] });
     const nothingTeachesIt = walkTaughtAt();

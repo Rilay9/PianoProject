@@ -26,7 +26,10 @@
  *   opened the screen, or the one a Today card chose, C1/C3), and each such run
  *   is judged again here under that rung's standard from what it measured
  *   (`masteryCriteriaFor`, the function the Score screen judges by). A run of
- *   an item three rungs list meets at most the one that judged it. A `done`
+ *   an item three rungs list meets at most the one that judged it. A run of a
+ *   book piece's twin (`Lesson.paperTwins`, the shelf overlay's) counts toward
+ *   `runs` as the book piece the judging rung lists, once (CL04, L79); `reads`,
+ *   `done` and `measure` read the run under its own id, as before. A `done`
  *   item (a checklist, the tour, the placement test) is finished when nothing
  *   was left undone and, where the run measured an accuracy, at the rung's
  *   standard; it read every row of the item until the reviewer's C5 review.
@@ -141,6 +144,11 @@ export function skillLadders(
  * which is exactly what the ladder's exposure is ("the lesson page read, a
  * demonstration heard"): a concept is *introduced* by it, and no further. It is
  * not evidence, so it moves no skill to practised, and no requirement reads it.
+ *
+ * A rung's concepts are its `concepts` and what its lesson `introduces` (CL04,
+ * G70): an introduction is met on the page like any concept, so it is an
+ * exposure too — never an encounter, familiarity or requirement. One date per
+ * concept, whichever list names it.
  */
 export function carriedExposures(
   curriculum: Curriculum,
@@ -153,7 +161,7 @@ export function carriedExposures(
     for (const unit of stage.units) {
       for (const lesson of unit.lessons) {
         if (!rungs.has(lesson.id)) continue;
-        for (const concept of lesson.concepts) {
+        for (const concept of [...lesson.concepts, ...(lesson.introduces ?? [])]) {
           const list = out.get(concept) ?? [];
           if (!list.includes(carried.at)) list.push(carried.at);
           out.set(concept, list);
@@ -219,6 +227,23 @@ function poolOf(rung: Lesson, requirement: RunsRequirement): Set<string> {
         : [...rung.exerciseOptions, ...songs];
   const named = requirement.items === undefined ? null : new Set(requirement.items);
   return new Set(base.filter((id) => named === null || named.has(id)));
+}
+
+/**
+ * The pooled book pieces' twins, by the twin's id (CL04, L79): a measured run of a
+ * twin judged by the rung counts as the book piece the rung lists, since the twin is
+ * that piece's score, not another context (G80). A twin that is itself in the pool
+ * counts under its own id alone, so one run is one item; where two listed pieces
+ * share a twin, the first in the rung's order takes it.
+ */
+function twinsOf(rung: Lesson, pool: ReadonlySet<string>): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const paper of rung.paperOptions ?? []) {
+    const twin = rung.paperTwins?.[paper];
+    if (twin === undefined || !pool.has(paper) || pool.has(twin) || out.has(twin)) continue;
+    out.set(twin, paper);
+  }
+  return out;
 }
 
 /** The full standard satisfies a requirement for the practice one; not the other way round. */
@@ -321,11 +346,14 @@ function read(
   switch (requirement.kind) {
     case 'runs': {
       const pool = poolOf(rung, requirement);
+      const twins = twinsOf(rung, pool);
       const counted = new Set<string>();
       for (const row of judged) {
-        if (!pool.has(row.itemId)) continue;
+        // The item the run counts as: its own where the rung lists it, else the book piece it is the twin of (L79).
+        const item = pool.has(row.itemId) ? row.itemId : twins.get(row.itemId);
+        if (item === undefined) continue;
         if (requirement.performance === true && row.performance !== true) continue;
-        if (meetsStandard(row, criteria, requirement.accuracy)) counted.add(row.itemId);
+        if (meetsStandard(row, criteria, requirement.accuracy)) counted.add(item);
       }
       const twoSongs =
         learner.requireTwoSongs === true &&

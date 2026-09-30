@@ -207,13 +207,18 @@ const CASES: Case[] = [
     expect: { why: 'unsure', recipe: OWN },
     because: 'every demand fell together, the steps where no skip was as much as the skips: nothing singled out, nothing blamed',
   },
+  // Revised (CL04, L73): the case said the two misread eighths were outside
+  // sight-reading's count, since it judged pitch and time as one outcome where
+  // the window could not time the eighths; so six notes all right read as
+  // proficient on two days, and the bass staff came on over two misread notes
+  // a day. The refusal is per channel now: the misread eighths count by pitch.
   {
     name: '6. a demand present with no measurable opportunity (eighths at the phrase’s full tempo, two reads)',
     rung: '2.2',
     rows: () => [1, 2].map((n) => read(RHYTHMIC, n, OWN, '2.2', { tempoPct: 100, wrongInstead: [2, 3] })),
-    expect: { why: 'forward', recipe: BOTH, moved: { demand: 'clef.bass', direction: 'on' } },
+    expect: { why: 'unsure', recipe: OWN },
     because:
-      'at full tempo the eighths have no measured opportunity, and sight-reading judges pitch and time as one outcome, so the two misread eighths are outside its count: it measured the six notes it could time, all right, on two days — proficient, and the next taught demand (the bass staff: both hands) comes on; no reading of the eighths exists, so the rhythm control does not move and the line does not name them (a limit of the measurement, reported)',
+      'at full tempo the window cannot time the eighths, so their timing is not judged and their pitch is: the two misread eighths count against sight-reading, 6 of 8 on each of two days, two reads against the recipe; the step and the skip they carry each went wrong only beside an eighth, which the overlap keeps, so nothing is singled out and nothing moves forward; no reading of the eighths exists, so the rhythm control does not move and the line does not name them (a limit of the measurement, reported); nothing sits below 2.2’s own recipe for an easy read',
   },
   {
     name: '6b. one note wrong under four demands, on two days (a skip, an eighth, the bass staff, the key signature, under the other hand)',

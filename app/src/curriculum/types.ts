@@ -535,6 +535,14 @@ export interface Lesson {
   id: string;
   title: string;
   concepts: string[];
+  /**
+   * Measurable concepts the lesson introduces while no piece on the rung
+   * practises them yet (`docs/02`, F2): the build's field, beside `concepts`.
+   * No teaching claim, requirement or evidence reads it. A rung carried over
+   * from before C5 makes each an exposure, as it does each of its concepts
+   * (`carriedExposures`; CL04, G70). Absent on most rungs.
+   */
+  introduces?: string[];
   textFile: string;
   exerciseOptions: string[];
   songOptions: string[];
@@ -583,6 +591,14 @@ export interface Lesson {
    * phone, and nothing about which books he owns belongs in the repository.
    */
   paperOptions?: string[];
+  /**
+   * Each listed book piece's twin (`BookPiece.itemId`, a catalog id), by the
+   * piece's `book.<book>/<piece>` id: written by the shelf overlay beside
+   * `paperOptions` and, like them, never in the built curriculum. A measured
+   * run of the twin judged by this rung counts toward the rung's `runs`
+   * requirements as the book piece (`rungState`; CL04, L79).
+   */
+  paperTwins?: Record<string, string>;
   /** What it is short of, written by validate.py. */
   needs?: Needs;
   /** `[min, max]` level across this rung's options (replan §1.7). */

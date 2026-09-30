@@ -1,0 +1,116 @@
+# vitest-all-1.txt: the whole unit suite, trimmed to its failures and its totals (the full log was not kept: over 300 KB)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/everyOptionOpens.test.ts > every option a lesson offers > offers nothing a learner cannot open
+AssertionError: options that open nothing: song.ragtime.joplin-pine-apple-rag.mutopia: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "song.ragtime.joplin-pine-apple-rag.mutopia",
++ ]
+
+ ❯ tests/unit/everyOptionOpens.test.ts:101:67
+     99|     expect(items.length, 'no options were read — the catalog join is w…
+    100|     const dead = items.filter((item) => targetFor(item) === 'none').ma…
+    101|     expect(dead, `options that open nothing: ${dead.join(', ')}`).toEq…
+       |                                                                   ^
+    102|   });
+    103| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  tests/unit/expectedNote.test.ts > the spelling comes from the notation (T41) > every black key in every fixture carries its written spelling
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/expectedNote.test.ts:113:3
+    111|   });
+    112|
+    113|   it('every black key in every fixture carries its written spelling', …
+       |   ^
+    114|     // So no score the app can open falls back to naming a black key f…
+    115|     // MIDI number, which is the sharps table this replaced.
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:2119:23
+    2117|   for (const [lesson, says, holds] of T12_APP) {
+    2118|     it(`${lesson}: ${says}`, () => {
+    2119|       expect(holds()).toBe(true);
+       |                       ^
+    2120|     });
+    2121|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  tests/unit/readerAdversarial.test.ts > the next offer changes only where the evidence justifies it > 6. a demand present with no measurable opportunity (eighths at the phrase’s full tempo, two reads): at full tempo the eighths have no measured opportunity, and sight-reading judges pitch and time as one outcome, so the two misread eighths are outside its count: it measured the six notes it could time, all right, on two days — proficient, and the next taught demand (the bass staff: both hands) comes on; no reading of the eighths exists, so the rhythm control does not move and the line does not name them (a limit of the measurement, reported)
+AssertionError: Another like it — not sure yet what went wrong: expected 'unsure' to be 'forward' // Object.is equality
+
+Expected: "forward"
+Received: "unsure"
+
+ ❯ tests/unit/readerAdversarial.test.ts:252:35
+    250|       const next = offer(rows, one.rung, today);
+    251|       const line = readingReason(next.why, 'daily', today);
+    252|       expect(next.why.kind, line).toBe(one.expect.why);
+       |                                   ^
+    253|       expect(next.recipe, line).toEqual(one.expect.recipe);
+    254|       const move = 'move' in next.why ? next.why.move : undefined;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  tests/unit/readerMovesTheDemand.test.ts > the e2e learners are the real path’s rows (C4c item 0) > tests/e2e/fixtures/reader-learners.json holds exactly what this path makes
+AssertionError: the e2e learners are not the real path’s rows: rewrite them with C4C_WRITE_E2E_ROWS=1: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/readerMovesTheDemand.test.ts:384:121
+    382|     if (process.env.C4C_WRITE_E2E_ROWS) writeFileSync(FIXTURE, text);
+    383|     const committed = readFileSync(FIXTURE, 'utf8').replace(/\r\n/g, '…
+    384|     expect(committed === text, 'the e2e learners are not the real path…
+       |                                                                                                                         ^
+    385|   });
+    386| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  tests/unit/tempoSoundAgainstMark.test.ts > the built MuseTrainer and kern scores > reads every MuseTrainer and kern row that has a built file, Maple Leaf’s among them
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/tempoSoundAgainstMark.test.ts:180:3
+    178|
+    179| describe('the built MuseTrainer and kern scores', () => {
+    180|   it('reads every MuseTrainer and kern row that has a built file, Mapl…
+       |   ^
+    181|     const { rows, read, missing, catalogue } = corpus();
+    182|     expect(catalogue.get(MAPLE_LEAF)?.file, `${MAPLE_LEAF} has no buil…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+
+ Test Files  6 failed | 316 passed (322)
+      Tests  7 failed | 7464 passed | 5 skipped | 1 todo (7477)
+   Start at  12:29:27
+   Duration  347.33s (tests 67%, environment 21%, import 9%, transform 3%)
+
+    Isolate  322 workers spawned · ~1.90s startup each (spawn + environment, per file)
+             at least ~30.22s faster with isolate: false — reuses workers across files instead of one per file
+
+exit 1
