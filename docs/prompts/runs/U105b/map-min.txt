@@ -1,0 +1,57 @@
+# checks for 49 path(s): 49 matched, 0 unmatched
+# app/src/style.css: app/src/**, app/src/style.css
+# app/tests/e2e/score.screen.spec.ts: app/tests/e2e/*.spec.ts
+# docs/prompts/pictures/u105b/upright-342x740-wider-face-after.png: docs/**
+# docs/prompts/pictures/u105b/upright-342x740-wider-face-before.png: docs/**
+# docs/prompts/runs/U105b/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+# docs/prompts/runs/U105b/browser-green.txt: docs/**
+# docs/prompts/runs/U105b/browser-red-base.txt: docs/**
+# docs/prompts/runs/U105b/build-app-after-mutants.txt: docs/**
+# docs/prompts/runs/U105b/build-app-base.txt: docs/**
+# docs/prompts/runs/U105b/build-app.txt: docs/**
+# docs/prompts/runs/U105b/fuzz-and-head-height.txt: docs/**
+# docs/prompts/runs/U105b/lint.txt: docs/**
+# docs/prompts/runs/U105b/m1-refusal-clamped-build.txt: docs/**
+# docs/prompts/runs/U105b/m1-refusal-clamped.txt: docs/**
+# docs/prompts/runs/U105b/m2-run-unclamped-build.txt: docs/**
+# docs/prompts/runs/U105b/m2-run-unclamped.txt: docs/**
+# docs/prompts/runs/U105b/m3-refusal-wraps-mid-run-build.txt: docs/**
+# docs/prompts/runs/U105b/m3-refusal-wraps-mid-run.txt: docs/**
+# docs/prompts/runs/U105b/mutants.txt: docs/**
+# docs/prompts/runs/U105b/npm-ci.txt: docs/**
+# docs/prompts/runs/U105b/probe-after-summary.txt: docs/**
+# docs/prompts/runs/U105b/probe-after.txt: docs/**
+# docs/prompts/runs/U105b/probe-before-summary.txt: docs/**
+# docs/prompts/runs/U105b/probe-before.txt: docs/**
+# docs/prompts/runs/U105b/probe-play-stack-after.json: docs/**
+# docs/prompts/runs/U105b/probe-play-stack-before.json: docs/**
+# docs/prompts/runs/U105b/probe-play-synthetic-after.json: docs/**
+# docs/prompts/runs/U105b/probe-play-synthetic-before.json: docs/**
+# docs/prompts/runs/U105b/probe-play-text-115-after.json: docs/**
+# docs/prompts/runs/U105b/probe-play-text-115-before.json: docs/**
+# docs/prompts/runs/U105b/probe-play-wider-face-after.json: docs/**
+# docs/prompts/runs/U105b/probe-play-wider-face-before.json: docs/**
+# docs/prompts/runs/U105b/probe-summary-slower-stack-after.json: docs/**
+# docs/prompts/runs/U105b/probe-summary-slower-stack-before.json: docs/**
+# docs/prompts/runs/U105b/probe-summary-slower-synthetic-after.json: docs/**
+# docs/prompts/runs/U105b/probe-summary-slower-synthetic-before.json: docs/**
+# docs/prompts/runs/U105b/probe-summary-slower-text-115-after.json: docs/**
+# docs/prompts/runs/U105b/probe-summary-slower-text-115-before.json: docs/**
+# docs/prompts/runs/U105b/probe-summary-slower-wider-face-after.json: docs/**
+# docs/prompts/runs/U105b/probe-summary-slower-wider-face-before.json: docs/**
+# docs/prompts/runs/U105b/score-screen-whole.txt: docs/**
+# docs/prompts/runs/U105b/scripts-keep_logs.py: docs/**
+# docs/prompts/runs/U105b/scripts-mutants.py: docs/**
+# docs/prompts/runs/U105b/scripts-playwright.u105b-5283.config.ts: docs/**
+# docs/prompts/runs/U105b/scripts-probe.spec.ts: docs/**
+# docs/prompts/runs/U105b/scripts-summarise_probe.py: docs/**
+# docs/prompts/runs/U105b/tsc.txt: docs/**
+# docs/prompts/runs/U105b/unit-crlf-check.txt: docs/**
+# docs/prompts/runs/U105b/unit-targeted.txt: docs/**
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_record_mirrors.py
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test --workers=4

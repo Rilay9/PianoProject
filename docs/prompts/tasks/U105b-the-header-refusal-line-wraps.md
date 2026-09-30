@@ -78,9 +78,12 @@ Adjacent problems recorded, never fixed on the spot.
 
 As `operating-procedure.md` §14: the builder's own worktree, cut from origin's head at dispatch (the dispatch message states the sha then, not this brief — a worktree is cut from origin's head, not any sha read while drafting); `npm ci` in `app/`; `app/public/content` copied read-only from the main checkout when the lane needs it; no commits, pushes, stashes, resets or checkouts, and nothing written in the main checkout or another lane's worktree. Browser tests run on this lane's own port, **5283**, from a config copy under the worktree's `app/build/u105b/` — never port 4173. Temp files under the worktree's own `build/`; no kept log over 300 KB; machine paths in kept files replaced by `<worktree>` and `<home>`. At the end: delete `app/dist`, `app/test-results`, the copied content and the config copy; `app/node_modules` stays until the orchestrator removes the worktree. Never name an AI model; never assert a number measured on this machine as general. Every item done, or an explicit not-done line; a premise found wrong here is said, and the better path taken.
 
+**Landed 2026-09-30** (Entry 192; 6a374f8a, merged 712bed8b); handoff `handoffs/6a374f8a.md`.
+
 ## Record
 
 lane: U105b · closes: — · entry: 192
 index: U105a's ruling on the sheet's refusal line extended to the header's copy of the same sentence (`#score-waiting`): it wraps to every line it needs instead of a one-line clamp, scoped to the state the sentence actually occupies so the mid-run guard `score.fuzz.spec.ts` protects stays intact (CI run 36779781211 on `122a5224`, the runner's font metrics; `responses/d0e1b01f.md` ruling 3; the G101 precedent, `responses/cbdfe6f0.md`) | app | drafted 2026-09-30 (`U105b-the-header-refusal-line-wraps.md`); Entry 192 |
 in-flight: drafted 2026-09-30 (`U105b-the-header-refusal-line-wraps.md`): the header's refusal line (`#score-waiting`) wraps instead of clamping to one line, the same invariant as U105a's sheet copy and G101's Library title, scoped so the existing mid-run stage-fit guard is not weakened (`responses/d0e1b01f.md`; `tasks/G101-the-library-title-takes-a-third-line.md`; `responses/cbdfe6f0.md`); drafted, awaiting the orchestrator's dispatch (Entry 192)
 state: drafted 2026-09-30: U105's runner red fixed forward under the reviewer's U105a ruling (Entry 192)
+- landed 2026-09-30: merged 712bed8b; handoff `handoffs/6a374f8a.md`
