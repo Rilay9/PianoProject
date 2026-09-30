@@ -915,25 +915,49 @@ that decision exists a study reaches the learner only through the Library (Part 
 > so the walking bass is also `jazz.6`'s and `jam.6`'s and is taught at `jazz.8`, never at
 > `theory.9`, whose path reaches none of them.
 >
-> **A skip or a leap inside a taught fixed position (L120b, 2026-09-29; L120d, 2026-09-30).** *Can
-> the learner cope* has a third route beside *supported* and *taught*: a skip or a leap wholly
-> inside a fixed five-finger position whose note reading is taught on the rung's path (or on a rung
-> the learner has reached) is coped with by that note reading — right-hand C position, C4–G4, which
-> 1.1 teaches by note name, and the left hand's, C3–G3, which 1.3 teaches
-> (`eligibilityCore.inTaughtPosition`; `claims.untaught_on` with the curriculum, the build's twin).
-> The positions are `demands.json`'s `fixedPositions`, on `interval.skip` since L120b and, the same
-> two, on `interval.leap` since L120d (the reviewer's Question 1 on L120b, `responses/c8680b70.md`),
-> pinned equal by a test in each language. Every sounding hand of the row must lie inside its own
-> hand's taught position over the whole piece (`measurement.span`); material outside the position
+> **The reading and the gate corrected (L120b, 2026-09-29; L120d and L120e, 2026-09-30).** Two
+> faults that were not the curriculum's are corrected where they live, under the reviewer's order
+> *material reading → teaching ownership → placement* (`responses/0bcd3be0.md`), with the table of
+> rung-own options the gate refuses `untaught` (`tools/content/untaught_options.py`) re-run after each.
+>
+> The material reading:
+> - 3/8 is simple triple at the detector (`detect.ts`'s `isCompound`: more than one beat of three
+>   eighths), so compound time, syncopation and the dotted quarter read a 3/8 bar as three
+>   eighth-note beats. The evidence version moved to 4.
+> - A key signature that alters no sounding note is not asked on the coping question
+>   (`eligibilityCore.demandsAsked`, `claims.asked_of`). The notation fact stays on the row.
+> - A written sixteenth in 3/8 is a sixteenth.
+>
+> The gate's support model, a skip or a leap inside a taught fixed position: *can the learner cope*
+> has a third route beside *supported* and *taught*. A skip or a leap the rung's path has not taught
+> that lies wholly inside a fixed five-finger position whose note reading is taught on the path (or
+> on a rung the learner has reached) is coped with by that note reading — right-hand C position,
+> C4–G4, which 1.1 teaches by note name (`C-position`), and the left hand's, C3–G3, which 1.3 teaches
+> (`LH-C-position`) (`eligibilityCore.inTaughtPosition`; `claims.untaught_on` with the curriculum,
+> the build's twin). The two positions are `demands.json`'s `fixedPositions`, the same two on
+> `interval.skip` and on `interval.leap` (the leap's since L120d, on the reviewer's Question 1 on
+> L120b, `responses/c8680b70.md`), pinned equal by a test in each language. Every sounding hand of
+> the row must lie inside its own hand's taught position over the whole piece (the row's range,
+> `measurement.span`), and where each position is taught comes from the lessons' `concepts` under
+> the ancestry (`session.positionTaughtAtRung`, `taughtForLearner`); material outside the position
 > still refuses. The route changes the gate only: the row keeps the demand as measured, `taughtAt`
-> stays 1.5 for the skip and 2.1 for the leap, `copedWithBy` stays interval reading, and no
-> evidence reader sees the route, so a correct run of such an item is never interval-reading
-> evidence. Clef never supplies hand identity: a one-staff bass-clef part the model reads as the
-> right hand (1.3's left-hand *Hot Cross Buns* and *Mary*) gets no position route until the source
-> carries an independent hand assignment. L120d's learner-facing difference is the three *Jingle Bells* options,
-> no longer refused at 1.2 and on `holiday` for a leap that stays inside C position (G down to C,
-> D up to G, and the left hand's held C, F and G); both *When the Saints* options keep their
-> syncopation. The table went from 218 rung-own options (453 pairs) to 215 (448).
+> stays 1.5 for the skip and 2.1 for the leap, `copedWithBy` stays interval reading, and the
+> predicate names no skill, so no evidence reader sees the route and a correct run of such an item
+> is never interval-reading evidence. The candidate-rungs reports, the studies' and the excerpts',
+> keep a rung the route alone opens and flag it on its line — *eligible by taught-position coping;
+> does not establish interval-reading evidence* — naming the item's target where it is read by
+> interval (L120e, the reviewer's required change on L120d, `responses/4e76c768.md`). Clef never supplies hand
+> identity: a one-staff bass-clef part the model reads as the right hand (1.3's left-hand *Hot
+> Cross Buns* and *Mary*) gets no position route until the source carries an independent hand
+> assignment. Among the options the route admits are the three *Jingle Bells* options, not refused
+> at 1.2 and on `holiday` for a leap that stays inside C position (G down to C, D up to G, and the
+> left hand's held C, F and G); both *When the Saints* options, whose leap it copes with, keep their
+> syncopation refused.
+>
+> The table stood at 388 rung-own options (641 pairs, A 14) before these corrections, 386 (632, A 3)
+> after the reading and 378 (618, A 3) after the skip's route; after L120c's sixteenths it read 218
+> (453), and the leap's route took it to 215 (448). The validator warns with its count and never
+> fails.
 
 > **What the notes establish of each rung's claims (E0, 2026-09-27).** Every bundled score now
 > carries the demands the app's detectors measured on it (`docs/03` §4), and the build writes the

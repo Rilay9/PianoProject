@@ -874,10 +874,12 @@ def merge_text(data: dict, incoming: str, known_ids: set[str] | None = None,
 
 def candidate_rungs(catalog: list[dict], curriculum: dict) -> list[dict]:
     """
-    For each excerpt in the built catalogue: the rungs whose taught set contains every demand it
-    carries (`claims.untaught_on` empty) and at least one of whose claims its measured demands
-    establish (`claims.status_of`), with the claims as evidence. Placement is F's; nothing here
-    places anything.
+    For each excerpt in the built catalogue: the rungs whose coping question leaves no demand it
+    carries untaught (`claims.untaught_on` empty) and at least one of whose claims its measured
+    demands establish (`claims.status_of`), with the claims as evidence. Placement is F's; nothing
+    here places anything. Each candidate rung also says how the coping question admits it (L120e, as
+    the studies' report does): `claims.coping_admission`'s three fields, read against the cut's
+    approved `targets`. The flag never adds or removes a candidate.
     """
     import claims
 
@@ -900,6 +902,7 @@ def candidate_rungs(catalog: list[dict], curriculum: dict) -> list[dict]:
     for item in catalog:
         if item.get("type") != "excerpt":
             continue
+        targets = list(((item.get("provenance") or {}).get("excerpt") or {}).get("targets") or [])
         rows = []
         for _stage, _unit, lesson in claims.lessons_in_order(curriculum):
             rung = lesson["id"]
@@ -909,6 +912,7 @@ def candidate_rungs(catalog: list[dict], curriculum: dict) -> list[dict]:
             established = [c for c in rung_claims if claims.status_of(c, item, skills) == "established"]
             if established:
                 rows.append({"rung": rung, "title": lesson.get("title"),
+                             **claims.coping_admission(item, rung, ancestry, demands, curriculum, targets),
                              "established": [claim_row(c) for c in established],
                              "notEstablished": [{"kind": c["kind"], "id": c["id"], "status": claims.status_of(c, item, skills)}
                                                 for c in rung_claims if c not in established]})
@@ -923,14 +927,17 @@ def candidate_rungs(catalog: list[dict], curriculum: dict) -> list[dict]:
 
 
 def candidate_rungs_markdown(report: list[dict]) -> str:
+    import claims
+
     lines = ["# Candidate rungs for the approved excerpts (E1)", "",
              "Read from the built catalogue and curriculum by `excerpts.candidate_rungs`, from the combined build: for",
-             "each excerpt, the rungs whose taught set contains every demand the cut carries (`claims.untaught_on`",
-             "empty, the rung's ancestry) and whose claims the cut's measured demands establish at a useful density",
-             "(`claims.status_of`; an excerpt establishes by the window rule, `minInWindow`). **Nothing is placed**:",
-             "no rung lists an excerpt. Placement is F's, on a stated gate: a line here established on the combined",
-             "build **and** a current `goodTeachingUse: yes` on the cut's identity in D2's record by a named reviewer",
-             "stating their basis. Boundaries by rule, unheard; unverified as music.", ""]
+             "each excerpt, the rungs whose coping question leaves no demand the cut carries untaught (`claims.untaught_on`",
+             "empty: the rung's ancestry, and since L120b its taught fixed positions) and whose claims the cut's measured",
+             "demands establish at a useful density (`claims.status_of`; an excerpt establishes by the window rule,",
+             "`minInWindow`). **Nothing is placed**: no rung lists an excerpt. Placement is F's, on a stated gate: a",
+             "line here established on the combined build **and** a current `goodTeachingUse: yes` on the cut's",
+             "identity in D2's record by a named reviewer stating their basis. Boundaries by rule, unheard; unverified",
+             "as music.", "", *claims.ADMITTED_BY_NOTE, ""]
     for row in report:
         lines.append(f"## {row['title']}")
         lines.append("")
@@ -942,16 +949,16 @@ def candidate_rungs_markdown(report: list[dict]) -> str:
                      + (f" (by the window rule alone: {', '.join(row['window'])})" if row.get("window") else "") + ".")
         lines.append("")
         if not row["candidates"]:
-            lines.append("No rung: none both teaches every demand it carries and has a claim it establishes.")
+            lines.append("No rung: none both admits every demand it carries and has a claim it establishes.")
             lines.append("")
             continue
-        lines.append("| Rung | Claims it establishes | Claims it does not |")
-        lines.append("| --- | --- | --- |")
+        lines.append("| Rung | Admitted by | Claims it establishes | Claims it does not |")
+        lines.append("| --- | --- | --- | --- |")
         shared: dict[str, list[str]] = {}
         for c in row["candidates"]:
             est = "; ".join(f"{e['kind']} {e['id']} ({e['from']})" + (" †" if e.get("sharedBy") else "") for e in c["established"])
             rest = "; ".join(f"{e['kind']} {e['id']}: {e['status']}" for e in c["notEstablished"]) or "—"
-            lines.append(f"| {c['rung']} ({c['title']}) | {est} | {rest} |")
+            lines.append(f"| {c['rung']} ({c['title']}) | {claims.admitted_by(c, 'excerpt')} | {est} | {rest} |")
             shared.update({e["id"]: e["sharedBy"] for e in c["established"] if e.get("sharedBy")})
         lines.append("")
         for demand, concepts in sorted(shared.items()):

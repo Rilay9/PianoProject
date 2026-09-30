@@ -19,7 +19,9 @@ and one real parent (Anh. 113 as the PDMX quarry bundles it, in `content/scores/
   (`TheRenewal`): a new decision on the parent's current bytes supersedes a row stale by provenance
   or by cut version, the old row kept whole in `superseded`; a current approval still refused; and,
   since E54, the withdrawal (`TheWithdrawal`): a rejection of the current approval withdraws it
-  the same way, the rejection kept in `rejected`, and a later approval is a new decision.
+  the same way, the rejection kept in `rejected`, and a later approval is a new decision;
+- since L120e, the candidate-rungs report (`TheCandidateRungsNameACopingOnlyAdmission`): a rung a
+  constructed cut inside C position reaches only by the fixed-position route is flagged, never dropped.
 """
 from __future__ import annotations
 
@@ -902,6 +904,85 @@ class TheCutVersion(unittest.TestCase):
         old = {**merged["data"], "excerpts": [{k: v for k, v in merged["data"]["excerpts"][0].items() if k != "cutVersion"}]}
         again = X.merge_text(old, json.dumps(event), {"song.test.parent"})
         self.assertEqual((again["appended"], again["skipped"], again["refused"]), ([], ["ex-test-0101"], []))
+
+
+class TheCandidateRungsNameACopingOnlyAdmission(unittest.TestCase):
+    """
+    L120e (the reviewer's required change on L120d, `docs/review/responses/4e76c768.md`, carried to the
+    excerpts' report, which feeds the same placement decision): a rung the cut is a candidate for only
+    because a taught fixed position's note reading copes with a skip or leap the rung has not taught is
+    flagged on its line, with the study report's words — *eligible by taught-position coping; does not
+    establish interval-reading evidence* — and names the excerpt's target where it is read by interval; a
+    rung that teaches every demand reads *taught*; the flag never adds or removes a candidate. No approved
+    excerpt lies inside C position on today's build, so the cut is constructed: a right-hand passage of
+    steps, skips and leaps wholly inside C4-G4, approved for its leaps. 1.1 names C position and teaches
+    the step, 1.5 teaches the skip and claims interval reading, 2.1 teaches the leap.
+    """
+
+    STEPS_SKIPS_LEAPS = ["interval.step", "interval.skip", "interval.leap"]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        stages: list[dict] = []
+        for path in sorted((REPO / "content" / "curriculum").glob("stage-*.json")):
+            stages.extend(json.loads(path.read_text(encoding="utf-8")).get("stages", []))
+        cls.curriculum = {"stages": stages}
+
+    def cut_row(self, span: dict, targets: list[str]) -> dict:
+        demands = list(self.STEPS_SKIPS_LEAPS)
+        return {"id": "excerpt.test.parent.b1-8", "title": "A passage in C position", "type": "excerpt",
+                "excerptOf": "song.test.parent", "demands": demands,
+                "measurement": {"status": "measured", "located": {d: 4 for d in demands}, "established": demands,
+                                "span": span},
+                "provenance": {"excerpt": {"fromBar": 1, "toBar": 8, "selection": "rule", "targets": targets}}}
+
+    def candidates(self, row: dict) -> dict[str, dict]:
+        return {c["rung"]: c for c in X.candidate_rungs([row], self.curriculum)[0]["candidates"]}
+
+    def line(self, row: dict, rung: str) -> str:
+        text = X.candidate_rungs_markdown(X.candidate_rungs([row], self.curriculum))
+        return next(line for line in text.split("\n") if line.startswith(f"| {rung} ("))
+
+    def test_a_rung_opened_by_coping_alone_is_flagged_and_names_the_leap_target(self) -> None:
+        row = self.cut_row({"R": [60, 67]}, ["interval.leap"])
+        at = self.candidates(row)
+        self.assertIn("1.5", at, "the candidate is kept: the flag never removes it")
+        self.assertEqual((at["1.5"].get("positionCoped"), at["1.5"].get("notEvidenceFor"), at["1.5"].get("targetsNotEvidenced")),
+                         (["interval.leap"], ["interval-reading"], ["interval.leap"]))
+        self.assertEqual(at["1.1"].get("positionCoped"), ["interval.skip", "interval.leap"])
+        line = self.line(row, "1.5")
+        self.assertIn("eligible by taught-position coping (interval.leap)", line)
+        self.assertIn("does not establish interval-reading evidence", line)
+        self.assertIn("the excerpt targets interval.leap", line)
+
+    def test_a_rung_that_teaches_the_leap_reads_taught(self) -> None:
+        row = self.cut_row({"R": [60, 67]}, ["interval.leap"])
+        at = self.candidates(row)["2.1"]
+        self.assertEqual((at.get("positionCoped"), at.get("notEvidenceFor"), at.get("targetsNotEvidenced")), ([], [], []))
+        line = self.line(row, "2.1")
+        self.assertIn("| taught |", line)
+        self.assertNotIn("coping", line)
+
+    def test_a_target_not_read_by_interval_is_not_named(self) -> None:
+        row = self.cut_row({"R": [60, 67]}, ["texture.left-hand-pattern"])
+        line = self.line(row, "1.5")
+        self.assertIn("does not establish interval-reading evidence", line)
+        self.assertNotIn("the excerpt targets", line)
+
+    def test_the_flag_never_changes_eligibility(self) -> None:
+        import claims
+
+        _skills, vocabulary = claims.load_vocabulary()
+        ancestry = claims.rung_ancestry(self.curriculum)
+        row = self.cut_row({"R": [60, 67]}, ["interval.leap"])
+        at = self.candidates(row)
+        self.assertEqual(sorted(at), ["1.1", "1.5", "2.1"])
+        for rung, c in at.items():
+            with self.subTest(rung=rung):
+                self.assertEqual(claims.untaught_on(row, rung, ancestry, vocabulary, self.curriculum), [])
+                self.assertEqual(c.get("positionCoped"), claims.untaught_on(row, rung, ancestry, vocabulary))
+        # The same passage reaching A4 is outside C position: no rung the position opened is a candidate.
+        self.assertEqual(sorted(self.candidates(self.cut_row({"R": [60, 69]}, ["interval.leap"]))), ["2.1"])
 
 
 class TheRealParent(unittest.TestCase):

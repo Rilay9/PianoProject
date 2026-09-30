@@ -438,6 +438,54 @@ def untaught_on(item: dict, rung: str, ancestry: dict[str, set[str]], demands: d
             and not in_taught_position(item, demands.get(demand), behind)]
 
 
+def coping_admission(item: dict, rung: str, ancestry: dict[str, set[str]], demands: dict[str, dict],
+                     curriculum: dict, targets: list[str]) -> dict:
+    """
+    How the coping question admits `item` at `rung` (L120e, the reviewer's required change on L120d,
+    `docs/review/responses/4e76c768.md`), for the candidate-rungs reports (`study.candidate_rungs`,
+    `excerpts.candidate_rungs`), which feed one placement decision. `positionCoped`: the demands
+    `untaught_on` returns without the curriculum but not with it — those the rung's taught set leaves and
+    only a taught fixed position's note reading copes with. `notEvidenceFor`: the skills they are
+    `copedWithBy` (interval reading, for a skip or a leap): the rule that admits them says the learner
+    copes by naming the notes of the position, so a run there is never evidence of that skill.
+    `targetsNotEvidenced`: the item's `targets` (skills, or demands) that are such a skill or a demand coped
+    with by one. Reads eligibility, never decides it.
+    """
+    kept = set(untaught_on(item, rung, ancestry, demands, curriculum))
+    coped = [d for d in untaught_on(item, rung, ancestry, demands) if d not in kept]
+    not_evidence = sorted({demands[d]["copedWithBy"] for d in coped})
+    named = [t for t in targets if t in not_evidence or (demands.get(t) or {}).get("copedWithBy") in not_evidence]
+    return {"positionCoped": coped, "notEvidenceFor": not_evidence, "targetsNotEvidenced": named}
+
+
+def admitted_by(candidate: dict, noun: str) -> str:
+    """
+    A candidate-rungs report's *Admitted by* cell (L120e): "taught", or the coping-only flag in the
+    reviewer's words — *eligible by taught-position coping (the demands); does not establish <skill>
+    evidence* — with the item's own target named where it is one of those (`noun`: "study", "excerpt").
+    """
+    coped = candidate.get("positionCoped") or []
+    if not coped:
+        return "taught"
+    words = (f"eligible by taught-position coping ({', '.join(coped)}); does not establish "
+             + " or ".join(f"{s} evidence" for s in candidate.get("notEvidenceFor") or []))
+    targeted = candidate.get("targetsNotEvidenced") or []
+    if targeted:
+        words += f"; the {noun} targets {', '.join(targeted)}"
+    return words
+
+
+ADMITTED_BY_NOTE = [
+    "**Admitted by** says how the coping question lets the item onto the rung (L120e): *taught* where the",
+    "rung's path teaches every demand it carries; *eligible by taught-position coping* where a skip or leap",
+    "the path does not teach lies wholly inside a fixed position whose note reading it does teach (L120b,",
+    "L120d). Such a rung stays a candidate, but it does not establish interval-reading evidence: the rule",
+    "that admits it says the learner copes there by naming the notes of the position, so a run there is",
+    "never evidence of reading by interval. The line says so again where the item targets that skill or a",
+    "demand read by it.",
+]
+
+
 def rung_claims(catalog: list[dict], curriculum: dict) -> dict:
     """The report's rows and its summary, as data."""
     skills, demands = load_vocabulary()
