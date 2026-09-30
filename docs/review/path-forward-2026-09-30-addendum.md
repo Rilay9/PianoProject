@@ -1,6 +1,6 @@
 # Addendum to `path-forward-2026-09-30.md`
 
-This addendum changes and clarifies the main path-forward document. It is the authoritative execution correction where the main roadmap or later reviewer responses conflict with it.
+This addendum changes and clarifies the main path-forward document. It is the authoritative execution correction where the main roadmap or older reviewer responses conflict with an explicit correction here.
 
 The strategic shape of the roadmap stands: use the convergence map rather than the raw backlog, keep useful implementation moving while reconciliation happens, schedule by learner consequence and dependencies, finish with H1 and H2, and stop when the product is good rather than when every historical row is closed.
 
@@ -155,14 +155,18 @@ Never skip a cross-boundary test that could materially change confidence just be
 
 ## 11. Current precedence and stopping rule
 
-For execution, read the plan in this order:
+Do **not** use document type alone as precedence. Use the latest explicit ruling that actually owns the boundary, and honor explicit supersession statements.
 
-1. current owner decisions and explicit corrections;
-2. current reviewer responses for the affected boundary;
-3. this addendum;
-4. the latest convergence map and its current dispositions;
+For execution:
+
+1. current owner decisions and explicit owner corrections;
+2. the latest explicit correction or supersession for the affected boundary, including corrections in this addendum;
+3. the latest reviewer response that owns the affected boundary and has not been superseded;
+4. the latest convergence map and current dispositions;
 5. the main path-forward document for strategic rationale;
 6. older wave plans and audit rows for provenance only.
+
+If two current-looking instructions still conflict after that, stop the specific decision and resolve the contradiction rather than choosing whichever file happens to be newer or more convenient.
 
 The main path-forward's success criteria remain, interpreted against **current re-checked truth**, not historical labels. A surviving P1 matters because the current product problem is real, not because an old row still says P1.
 
