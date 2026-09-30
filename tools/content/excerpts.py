@@ -146,6 +146,9 @@ COMMENT = [
     "1); an approval under an older cutter is stale by cut version, and nothing carries it to the new cut.",
     "",
     "`rejected` keeps the refusals with their reasons, so a re-merge of the same export appends nothing.",
+    "`superseded` (written once there is one) keeps each approval a person re-decided after it went stale, by",
+    "parent bytes or by cut version: the old row as it was, with `supersededBy`, the event that replaced it. A",
+    "renewal names the parent's current bytes and is merged under the cutter in force; nothing renews by itself.",
     "",
     "An excerpt is on no rung: placement is F's, on a candidate-rungs line established on the combined",
     "build and a current `goodTeachingUse: yes` on the cut's identity in D2's record by a named reviewer.",
@@ -154,17 +157,23 @@ COMMENT = [
 
 def read_definitions(path: Path = DEFINITIONS) -> dict:
     if not path.is_file():
-        return {"_comment": COMMENT, "excerpts": [], "rejected": []}
+        return {"_comment": COMMENT, "excerpts": [], "rejected": [], "superseded": []}
     data = json.loads(path.read_text(encoding="utf-8"))
     data.setdefault("excerpts", [])
     data.setdefault("rejected", [])
+    data.setdefault("superseded", [])
     return data
 
 
 def serialise_definitions(data: dict) -> str:
-    """The file's one serialisation: the merge always writes it this way, so a round-trip is byte-identical."""
+    """
+    The file's one serialisation: the merge always writes it this way, so a round-trip is byte-identical.
+    `superseded` (E51) is written only when it holds a row, so a file no renewal touched keeps its bytes.
+    """
     ordered = {"_comment": data.get("_comment") or COMMENT, "excerpts": data.get("excerpts") or [],
                "rejected": data.get("rejected") or []}
+    if data.get("superseded"):
+        ordered["superseded"] = data["superseded"]
     return json.dumps(ordered, indent=2, ensure_ascii=False) + "\n"
 
 
@@ -726,19 +735,66 @@ def _same_decision(stored: dict, incoming: dict) -> bool:
     return strip(stored) == strip(incoming)
 
 
-def merge_text(data: dict, incoming: str, known_ids: set[str] | None = None) -> dict:
+def approval_staleness(row: dict, current_parent_sha: str | None) -> list[str]:
+    """
+    Why a stored approved row is stale, in the validator's terms (`validate.excerpt_findings`), or [] when it is
+    current: stale by provenance where its `parentSha256` is present and is not the parent's current built bytes
+    (judged only when those bytes are given), stale by cut version where it was merged under another cutter than
+    `CUT_VERSION` (a row with no `cutVersion` under version 1, `approved_cut_version`).
+    """
+    why: list[str] = []
+    approved = row.get("parentSha256")
+    if current_parent_sha and approved and approved != current_parent_sha:
+        why.append(f"stale by provenance: approved on the parent's bytes {approved[:12]}…, the parent is now "
+                   f"{current_parent_sha[:12]}…")
+    under = approved_cut_version(row)
+    if under != CUT_VERSION:
+        why.append(f"stale by cut version: approved under cutter version {under}, the cutter is now version {CUT_VERSION}")
+    return why
+
+
+def _renewal_fault(event: dict, current_parent_sha: str | None) -> str | None:
+    """Why an approval renewing a stale one is not a decision on the parent's current bytes, or None."""
+    named = event.get("parentSha256")
+    if not named:
+        return "this line names no parent bytes"
+    if current_parent_sha and named != current_parent_sha:
+        return f"this line names the parent's bytes {named[:12]}…, the parent is now {current_parent_sha[:12]}…"
+    return None
+
+
+def merge_text(data: dict, incoming: str, known_ids: set[str] | None = None,
+               current_shas: dict[str, str] | None = None) -> dict:
     """
     The exported lines merged into the definitions, idempotently by event id: an event already
     there with the same content is skipped, with different content refused; an approval of a
     range already approved (same parent, bars and selection) is refused with the row named; a
     line naming a parent the catalogue lacks is refused. Returns the new data and what happened.
+
+    E51 (the reviewer's ruling, `responses/f972756.md`): a stored approval that is stale
+    (`approval_staleness`: by provenance against `current_shas`, the parents' current built bytes by
+    parent id; by cut version) can be re-decided. An approval or adjustment of its range that names
+    the parent's current bytes becomes the active row in its place, merged under the cutter in force;
+    one naming other bytes or none is refused with the reason. A rejection of its range withdraws it.
+    Either way the old row moves to `superseded` exactly as it was, with `supersededBy`, the event
+    that replaced it. Without `current_shas`, or for a parent absent from them, provenance is not
+    judged: a row stale by provenance alone is refused as current (fails closed). No stored row is
+    rewritten and nothing is renewed without an event of its own. `superseding` lists (new event, old
+    event, why the old one was stale).
     """
     rows = list(data.get("excerpts") or [])
     rejected = list(data.get("rejected") or [])
+    superseded = list(data.get("superseded") or [])
     by_event = {row["event"]: row for row in rows + rejected if row.get("event")}
+    # A superseded entry is the old row plus the event that replaced it: compared as the row it was, so the
+    # old export merged again is the decision already in the file (skipped), never a new one.
+    for entry in superseded:
+        if entry.get("event"):
+            by_event.setdefault(entry["event"], {k: v for k, v in entry.items() if k != "supersededBy"})
     appended: list[str] = []
     skipped: list[str] = []
     refused: list[tuple[int, str]] = []
+    superseding: list[tuple[str, str | None, list[str]]] = []
     for number, line in enumerate(incoming.splitlines(), start=1):
         if not line.strip():
             continue
@@ -761,20 +817,39 @@ def merge_text(data: dict, incoming: str, known_ids: set[str] | None = None) -> 
             else:
                 refused.append((number, f"event {event['event']} is already in the file with other content"))
             continue
+        at = next((i for i, r in enumerate(rows) if (r["of"], r["fromBar"], r["toBar"], r["selection"])
+                   == (row["of"], row["fromBar"], row["toBar"], row["selection"])), None)
+        current = (current_shas or {}).get(row["of"])
+        stale = approval_staleness(rows[at], current) if at is not None else []
         if event["decision"] != "reject":
-            same = next((r for r in rows if (r["of"], r["fromBar"], r["toBar"], r["selection"])
-                         == (row["of"], row["fromBar"], row["toBar"], row["selection"])), None)
-            if same is not None:
+            if at is not None:
+                same = rows[at]
                 eid = excerpt_id(row["of"], row["fromBar"], row["toBar"], row["selection"])
-                refused.append((number, f"{eid} is already approved (event {same.get('event')})"))
-                continue
-            rows.append(row)
+                if not stale:
+                    refused.append((number, f"{eid} is already approved (event {same.get('event')})"))
+                    continue
+                fault = _renewal_fault(event, current)
+                if fault:
+                    refused.append((number, f"{eid}: its approval (event {same.get('event')}) is {'; '.join(stale)}; "
+                                            f"a renewal is a decision on the current parent, and {fault}"))
+                    continue
+                # E51: the renewal takes the stale row's place; the old row is kept whole beside the file's rows.
+                superseded.append({**same, "supersededBy": row["event"]})
+                rows[at] = row
+                superseding.append((row["event"], same.get("event"), stale))
+            else:
+                rows.append(row)
         else:
+            if at is not None and stale:
+                # E51: a rejection of a stale approval withdraws it (a rejection of a current one is kept beside it).
+                same = rows.pop(at)
+                superseded.append({**same, "supersededBy": row["event"]})
+                superseding.append((row["event"], same.get("event"), stale))
             rejected.append(row)
         by_event[row["event"]] = row
         appended.append(row["event"])
-    out = {"_comment": data.get("_comment") or COMMENT, "excerpts": rows, "rejected": rejected}
-    return {"data": out, "appended": appended, "skipped": skipped, "refused": refused}
+    out = {"_comment": data.get("_comment") or COMMENT, "excerpts": rows, "rejected": rejected, "superseded": superseded}
+    return {"data": out, "appended": appended, "skipped": skipped, "refused": refused, "superseding": superseding}
 
 
 # --------------------------------------------------------------------------------------
@@ -901,13 +976,26 @@ def main(argv: list[str] | None = None) -> int:
     if args.merge:
         catalog, _curriculum = _load_built(args.content)
         data = read_definitions(args.definitions)
-        result = merge_text(data, args.merge.read_text(encoding="utf-8"), {item["id"] for item in catalog})
+        # E51: each approved row's parent's current built bytes, read as the validator and the build read them,
+        # so a row stale by provenance can be re-decided; a parent with no built file here is not judged by them.
+        files = {item["id"]: item.get("file") for item in catalog}
+        current_shas: dict[str, str] = {}
+        for row in data.get("excerpts") or []:
+            rel = files.get(row.get("of"))
+            if rel and (args.content / rel).is_file():
+                current_shas[row["of"]] = sha256_of(args.content / rel)
+        result = merge_text(data, args.merge.read_text(encoding="utf-8"), {item["id"] for item in catalog}, current_shas)
         if result["appended"]:
             write_definitions(result["data"], args.definitions)
         print(f"Merged {args.merge}: appended {len(result['appended'])}, already in the file "
               f"{len(result['skipped'])}, refused {len(result['refused'])}.")
+        supersedes = {new: (old, why) for new, old, why in result["superseding"]}
         for event in result["appended"]:
-            print(f"  + {event}")
+            if event in supersedes:
+                old, why = supersedes[event]
+                print(f"  + {event}, superseding {old} ({'; '.join(why)})")
+            else:
+                print(f"  + {event}")
         for number, why in result["refused"]:
             print(f"  line {number}: refused: {why}")
         return 1 if result["refused"] else 0

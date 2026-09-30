@@ -1,0 +1,21 @@
+Build side effects, and the setup and cleanup of this worktree (base f6d36ee9).
+
+Before the first build, three files were snapshotted to build/e51/snapshot/:
+content/scores/imported/SOURCES.md, docs/prompts/inventory.md and docs/prompts/rung-claims.md.
+
+After the builds:
+- docs/prompts/inventory.md and docs/prompts/rung-claims.md differed from the snapshot (cmp, line 1); git diff --stat showed no content lines, so line endings only. Both were copied back from the snapshot.
+- content/scores/imported/SOURCES.md was identical to the snapshot (cmp), so nothing was restored.
+- validate.py regenerated docs/prompts/views, and reported "0 had been stale".
+- git status after the restore shows only tools/content/excerpts.py and tools/content/tests/test_excerpts.py modified, plus docs/prompts/runs/E51/ and the task file added.
+
+Setup:
+- Copied read-only from the main checkout (cp -r): content/scores/imported/{kern,musetrainer,mutopia} and build/cache.
+- python tools/midi-cleanup/tests/parity_reference.py: exit 0 (the MAESTRO files skipped, missing).
+- npm ci in app/: exit 0.
+- The first offline build, started before npm ci, was stopped. It left the worktree's own build/.content-lock (pid 81016, no longer running), which was deleted before the next build.
+
+Cleanup at the end:
+- Deleted from this worktree: app/dist, content/scores/imported/{kern,musetrainer,mutopia} (the copies), build/cache (the copy), and build/e51/logs/vitest.log (891 KB; summarised in vitest.txt).
+- app/test-results did not exist.
+- Kept: app/node_modules, app/public/content (the built content), build/e51/ (scripts, snapshot, logs, the dry run's scratch copy build/e51/excerpts.json and build/e51/dry-decisions.jsonl).
