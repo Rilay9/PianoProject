@@ -26,7 +26,16 @@ Given session options `{ hands: 'R'|'L'|'both', loop?: {fromStep, toStep}, tempo
    1.5, two × 1.75; a metric modulation, the metronome-note form and a mark with no number are not
    tempos) and each `<sound tempo>` — a direction's or one standing in the bar — as written,
    fractions kept; at one position a `<sound tempo>` wins over a mark, being what the file says it
-   plays. **The reader walks the partwise nesting only, and every score the app holds is partwise:
+   plays. Where more than one sound stands at one position with a mark beside it, the sound that is
+   serialization-equivalent to the position's first mark, once both are read in quarter notes a
+   minute — the same statement differing only by the writer's own numeric noise
+   (`SERIALIZATION_TOLERANCE`, 0.01, derived from the corpus in the constant's comment), not a
+   different tempo — wins over a sibling that does not agree; failing an agreeing sound, or where
+   there is no mark, the first in score order (the top part, then the page) wins, as with several
+   marks (X42, Entry 185: of 2,013 built scores this moves three positions, *Maple Leaf Rag*'s bars
+   1 and 51 from a words-only 120 to the 100 beside its printed quarter = 100, and Satie's first
+   *Gymnopédie*'s opening from 60 to the 76.0002 beside its printed quarter = ca. 76; a printed mark
+   still never outranks a lone sound). **The reader walks the partwise nesting only, and every score the app holds is partwise:
    the import door keeps a `<score-timewise>` file as its partwise twin (`score/toPartwise.ts`, X3e)
    before anything reads it, because OSMD 2.1.2 loads nothing else, and no bundled score is timewise
    (Entry 137's search); so a timewise file's opening mark, `<sound tempo>` and later changes give

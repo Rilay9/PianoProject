@@ -1,0 +1,16 @@
+X42 state gallery (playwright.states.config.ts copied to port 4643), both builds. Full logs not kept.
+
+--- amended reader:
+    Error: theme--light: contrast: #score-waiting at 4.3:1; contrast: #score-help-more at 4.3:1
+    rotation--bars1-real-phone: §9.35 music is 39% of the stage
+  1 failed
+exit 1
+    +     "cell": "theme--light",
+    +     "cell": "rotation--bars1-real-phone",
+
+--- committed reader:
+    Error: theme--light: contrast: #score-waiting at 4.3:1; contrast: #score-help-more at 4.3:1
+    rotation--bars1-real-phone: §9.35 music is 39% of the stage
+  1 failed
+    +     "cell": "theme--light",
+    +     "cell": "rotation--bars1-real-phone",

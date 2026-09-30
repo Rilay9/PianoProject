@@ -30,8 +30,12 @@
  * **Precedence at one position.** A `<sound tempo>` is what the file says it plays, so where one stands at
  * the same measure and offset as a mark — in the same direction (MuseScore writes both, and they agree when
  * the mark is normalised) or beside it — the sound wins; a disagreement is the file's, and the sound is the
- * sounding fact. A mark alone gives its normalised number; a sound alone its own. Where several sounds (or
- * several marks) stand at one position, the first in score order (the top part, then the page) wins.
+ * sounding fact. A mark alone gives its normalised number; a sound alone its own. Where more than one sound
+ * stands at one position with a mark beside it, the sound that is serialization-equivalent to the position's
+ * first mark, once both are read in quarter notes a minute — the same statement differing only by the writer's
+ * own numeric noise (`SERIALIZATION_TOLERANCE`), not a different tempo — wins over a sibling that does not agree
+ * (X42); failing an agreeing sound, or where there is no mark, the first in score order (the top part, then the
+ * page) wins, as with several marks.
  *
  * **The opening.** The event at the first measure's start opens the piece; so does the file's first tempo
  * where **nothing sounds before it** — it stands after rests only, because the engraver hung it on the
@@ -221,7 +225,23 @@ function rawEvents(xml: string): { raw: Raw[]; firstSound: Place | undefined } {
   return { raw, firstSound };
 }
 
-/** One event per position: the sound over the mark, the first of each in score order. */
+/**
+ * How far a `<sound tempo>` may stand from a mark's number, in quarter notes a minute, and still be the same statement
+ * written twice (X42): an XML-number equivalence, not a musical tolerance. The corpus shows its writers' noise and,
+ * well clear of it, the smallest difference that is not noise (`docs/prompts/runs/X42/`). MuseScore keeps a tempo as
+ * quarter notes a second to six significant digits and writes that × 60 (76 as 1.26667, so 76.0002): at most 0.0003
+ * from 60 to 600 a minute, and 0.0002 in each of the 33 such pairs of a sound and a mark at one position in the built
+ * scores; a converter's float can miss by its last bit (dotted quarter = 67 written 100.49999999999999). Nothing else
+ * in the built scores comes within 3; the nearest any file here writes is 0.1 (68.1 beside a printed 68, in the
+ * unbuilt PDMX pool). This is the one power of ten at least an order of magnitude clear of both ends: ten times the
+ * noise bound or more, a tenth of 0.1.
+ */
+export const SERIALIZATION_TOLERANCE = 0.01;
+
+/**
+ * One event per position: the sound over the mark; among several sounds, the first that agrees with the position's
+ * first mark (within `SERIALIZATION_TOLERANCE`), else the first; of several marks, the first. Score order throughout.
+ */
 function resolve(raw: readonly Raw[]): TempoEvent[] {
   const byPosition = new Map<string, Raw[]>();
   for (const one of [...raw].sort((a, b) => a.measure - b.measure || a.offset - b.offset || a.order - b.order)) {
@@ -234,8 +254,11 @@ function resolve(raw: readonly Raw[]): TempoEvent[] {
   for (const here of byPosition.values()) {
     const first = here[0];
     if (!first) continue;
-    const sound = here.find((one) => one.sound !== undefined)?.sound;
     const mark = here.find((one) => one.mark !== undefined)?.mark;
+    const sounds = here.flatMap((one) => (one.sound === undefined ? [] : [one.sound]));
+    // A sound that states the first mark's own tempo wins over a sibling that does not (the module note).
+    const agreeing = mark === undefined ? undefined : sounds.find((bpm) => Math.abs(bpm - mark.quarters) <= SERIALIZATION_TOLERANCE);
+    const sound = agreeing ?? sounds[0];
     if (sound !== undefined) events.push({ measure: first.measure, offset: first.offset, bpm: sound, from: 'sound', ...(mark ? { mark } : {}) });
     else if (mark) events.push({ measure: first.measure, offset: first.offset, bpm: mark.quarters, from: 'mark', mark });
   }

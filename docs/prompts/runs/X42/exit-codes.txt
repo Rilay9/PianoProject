@@ -1,0 +1,37 @@
+X42 exit codes, in run order (base 36be5a50; the amended reader unless it says committed).
+
+npm ci (app/)                                                   0
+vitest, the four named files, committed reader (baseline)       1   2 failed: blues.3, 4.7 (CRLF checkout, crlf-check.txt)
+census, committed reader (census.table.ts)                      0   2,013 rows
+noise scan, built corpus (noise_scan.py catalog)                0
+vitest, new and changed tests, committed reader (red)           1   8 failed, the intended reds (red-committed.txt)
+vitest ragtime.7 with the old '100,120,120', amended reader     1   the intended red
+vitest, the four named files (green)                            1   2 failed: the same CRLF pair as the baseline
+census, amended reader                                          0   2,013 rows
+diff.py                                                         0   3 positions on 2 rows
+mutants.py (six mutants)                                        0   every mutant exit 1 (red); restored: True
+npx tsc -b --noEmit                                             0
+npm run lint                                                    0
+test_measured_demands.py                                        0   8 OK
+test_measured_truth.py (first run)                              1   1 error: build/score-checks.json absent
+test_measured_truth.py (score-checks.json copied)               0   62 OK
+tools/content/validate.py                                       0   (rewrote six stale views; restored to committed bytes)
+vitest, full suite                                              1   4 failed: 2 CRLF, midiParity and taughtByAncestry (missing build/ artifacts)
+vitest midiParity + taughtByAncestry (artifacts copied)         0   110 passed, 4 skipped
+noise scan, PDMX pool (noise_scan.py folders)                   0   38,362 files
+pool_stakes.py                                                  0
+generate-icons + tsc -b + vite build -> app/build/x42/dist      0
+vite build, committed reader -> app/build/x42/dist-before       0
+probe, committed reader's build                                 0   2 passed
+probe, amended reader's build                                   0   2 passed
+e2e union (29 specs), port 4642                                 1   238 passed, 21 failed (15 missing win32 references, 6 missing dev data), 1 skipped
+e2e screenshots (15), committed reader's build                  0   15 passed against the amended build's references
+e2e excerpts + microscope + score.layout + score (dev data)     0   65 passed
+states, amended reader's build, port 4643                       1   2 cells broke (theme--light, rotation--bars1-real-phone)
+states, committed reader's build, port 4643                     1   the same 2 cells, the same readings
+bella_hunt.py (PDMX pool titles)                                0   8 files titled Bella Ciao, none writing 68.1 or 74.1
+content-build (tools/content/build.py --offline)                not run (Not done in ENTRY.md)
+final tree, after comment-only edits and cleanup:
+vitest, the four named files                                     1   331 passed, 2 failed: the same CRLF pair
+npx tsc -b --noEmit                                             0
+npm run lint                                                    0
