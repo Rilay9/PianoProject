@@ -127,3 +127,5 @@ Add separate tests for:
 - on-screen key + failed/never-started audio -> no silent run.
 
 Everything else in the brief may proceed.
+
+**Landed 2026-09-29** (Entry 172; f51e8010, merged 265e319c); handoff `handoffs/f51e8010.md`.

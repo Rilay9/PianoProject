@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **U105** — `handoffs/f51e8010.md` (respond in `responses/f51e8010.md`). Every start asks the sound (Entry 172).
 - **U63** — `handoffs/7a4e5605.md` (respond in `responses/7a4e5605.md`). Today's reason in two lines, and the swap sheet wears the lifecycle (Entry 170).
 - **G96** — `handoffs/48bfc167.md` (respond in `responses/48bfc167.md`). The offer from no project follows the record, focus comes back after a redraw, a PDF's line stops saying song (Entry 168).
 - **E50a** — `handoffs/a95ebcdd.md` (respond in `responses/a95ebcdd.md`). The conversion date is pinned, and a learner's history follows the material (Entry 166).
