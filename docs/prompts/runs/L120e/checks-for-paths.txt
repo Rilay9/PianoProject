@@ -1,0 +1,19 @@
+﻿python tools/docs/checks_for_paths.py tools/content/claims.py tools/content/study.py tools/content/excerpts.py tools/content/tests/test_study.py tools/content/tests/test_excerpts.py docs/prompts/runs/D3/candidate-rungs.md docs/02-curriculum.md docs/prompts/runs/L120e/ENTRY.md
+# checks for 8 path(s): 8 matched, 0 unmatched
+# tools/content/claims.py: tools/content/*.py
+# tools/content/study.py: tools/content/*.py
+# tools/content/excerpts.py: tools/content/*.py, tools/content/excerpts.py
+# tools/content/tests/test_study.py: tools/content/tests/test_*.py
+# tools/content/tests/test_excerpts.py: tools/content/tests/test_*.py
+# docs/prompts/runs/D3/candidate-rungs.md: docs/prompts/runs/D3/candidate-rungs.md, docs/**
+# docs/02-curriculum.md: docs/02-curriculum.md, docs/**
+# docs/prompts/runs/L120e/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/excerpts.spec.ts --workers=4
+exit=0

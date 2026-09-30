@@ -1305,11 +1305,17 @@ def recipe_from_params(params: dict, bpm: int) -> Recipe:
 
 def candidate_rungs(catalog: list[dict], curriculum: dict, family: str = "study") -> list[dict]:
     """
-    For each item of `family` in the built catalogue: the rungs whose taught set contains every
-    demand it carries (`claims.untaught_on` empty) and at least one of whose claims its measured
-    demands establish (`claims.status_of` "established"), with the claims and the demands as
-    evidence. The material a later placement decision reads beside a resolved teaching-use
+    For each item of `family` in the built catalogue: the rungs whose coping question leaves no
+    demand it carries untaught (`claims.untaught_on` empty) and at least one of whose claims its
+    measured demands establish (`claims.status_of` "established"), with the claims and the demands
+    as evidence. The material a later placement decision reads beside a resolved teaching-use
     review; nothing here places anything.
+
+    Each candidate rung also says how the coping question admits it (L120e, the reviewer's required
+    change on L120d, `docs/review/responses/4e76c768.md`): `claims.coping_admission`'s three fields —
+    the demands only a taught fixed position's note reading copes with there (L120b, L120d), the skills
+    a run there is therefore never evidence of, and those of them among the study's `targetSkills`. The
+    flag never adds or removes a candidate.
     """
     import claims
 
@@ -1319,6 +1325,7 @@ def candidate_rungs(catalog: list[dict], curriculum: dict, family: str = "study"
     for item in catalog:
         if (((item.get("drill") or {}).get("generator")) or {}).get("family") != family:
             continue
+        targets = list(item.get("targetSkills") or [])
         rows = []
         for _stage, _unit, lesson in claims.lessons_in_order(curriculum):
             rung = lesson["id"]
@@ -1328,6 +1335,7 @@ def candidate_rungs(catalog: list[dict], curriculum: dict, family: str = "study"
             established = [c for c in rung_claims if claims.status_of(c, item, skills) == "established"]
             if established:
                 rows.append({"rung": rung, "title": lesson.get("title"),
+                             **claims.coping_admission(item, rung, ancestry, demands, curriculum, targets),
                              "established": [{"kind": c["kind"], "id": c["id"], "from": c["from"]} for c in established],
                              "notEstablished": [{"kind": c["kind"], "id": c["id"], "status": claims.status_of(c, item, skills)}
                                                 for c in rung_claims if c not in established]})
@@ -1339,14 +1347,18 @@ def candidate_rungs(catalog: list[dict], curriculum: dict, family: str = "study"
 
 
 def candidate_rungs_markdown(report: list[dict]) -> str:
+    import claims
+
     lines = ["# Candidate rungs for the generated studies (D3, Entry 100)", "",
              "Read from the built catalogue and curriculum by `study.candidate_rungs`: for each study, the rungs",
-             "whose taught set contains every demand it carries (`claims.untaught_on` empty, the rung's ancestry)",
+             "whose coping question leaves no demand it carries untaught (`claims.untaught_on` empty: the rung's",
+             "ancestry, and since L120b its taught fixed positions)",
              "and whose claims its measured demands establish at a useful density (`claims.status_of`). **Nothing",
              "is placed**: no rung lists a study. Placement is F's, on a stated gate that needs no owner: a line",
              "below established on the combined build, and a current `goodTeachingUse: yes` in D2's record by a",
              "named reviewer. No owner review or placement is required. Until that decision exists a study stays in",
-             "the Library and out of every automatic offer (D3a). Unheard; unverified as music.", ""]
+             "the Library and out of every automatic offer (D3a). Unheard; unverified as music.", "",
+             *claims.ADMITTED_BY_NOTE, ""]
     for row in report:
         lines.append(f"## {row['title']}")
         lines.append("")
@@ -1355,15 +1367,15 @@ def candidate_rungs_markdown(report: list[dict]) -> str:
                      + f". Established: {', '.join(row['established'] or []) or 'none'}.")
         lines.append("")
         if not row["candidates"]:
-            lines.append("No rung: none both teaches every demand it carries and has a claim it establishes.")
+            lines.append("No rung: none both admits every demand it carries and has a claim it establishes.")
             lines.append("")
             continue
-        lines.append("| Rung | Claims it establishes | Claims it does not |")
-        lines.append("| --- | --- | --- |")
+        lines.append("| Rung | Admitted by | Claims it establishes | Claims it does not |")
+        lines.append("| --- | --- | --- | --- |")
         for c in row["candidates"]:
             est = "; ".join(f"{e['kind']} {e['id']} ({e['from']})" for e in c["established"])
             rest = "; ".join(f"{e['kind']} {e['id']}: {e['status']}" for e in c["notEstablished"]) or "—"
-            lines.append(f"| {c['rung']} ({c['title']}) | {est} | {rest} |")
+            lines.append(f"| {c['rung']} ({c['title']}) | {claims.admitted_by(c, 'study')} | {est} | {rest} |")
         lines.append("")
     return "\n".join(lines) + "\n"
 

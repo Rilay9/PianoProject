@@ -329,8 +329,11 @@ class TestTheGatesOnTheirAdversaries(unittest.TestCase):
 def _study_catalogue() -> list[dict]:
     """
     Every plan study's catalogue row as the build's attach step writes it (`build.attach_demands`): the
-    detectors' ids and located counts, and what they establish by the density table or by the family
-    contract's own density.
+    detectors' ids and located counts, what they establish by the density table or by the family
+    contract's own density, and each sounding hand's range over the piece (`measurement.span`,
+    `build.span_of` the bridge's per-bar `hands`), which the coping question's fixed positions read.
+    The range joined in L120e: without it no row here could take the position route the build's rows
+    take since L120b.
     """
     measured = planned.measured()
     table = build.read_json(build.DENSITY_FILE)
@@ -341,10 +344,12 @@ def _study_catalogue() -> list[dict]:
         located = {d: int(n) for d, n in row["opportunities"].items() if int(n) > 0}
         by_density = build.established_by_density(located, int(row["measures"]), table, order)
         by_contract = build.established_by_contract(entry, row)
+        span = build.span_of(row.get("hands"))
         item = copy.deepcopy(entry)
         item["demands"] = list(row["demands"])
         item["measurement"] = {"status": "measured", "located": located,
-                               "established": [d for d in order if d in by_density or d in by_contract]}
+                               "established": [d for d in order if d in by_density or d in by_contract],
+                               **({"span": span} if span else {})}
         catalog.append(item)
     return catalog
 
@@ -354,6 +359,9 @@ class TestTheCandidateRungsReport(unittest.TestCase):
 
     def test_the_report_is_exactly_the_rung_claims_reading(self) -> None:
         # The rows are built by `_study_catalogue` (F2c moved them there unchanged, for the case below).
+        # The coping question is read with the curriculum, as the report reads it (L120b): a skip or leap
+        # inside a taught fixed position is coped with (L120e: the rows now carry their range, so the
+        # curriculum-free reading this used to compare against would part from the report's).
         catalog = _study_catalogue()
         curriculum = S.curriculum_sources()
         report = S.candidate_rungs(catalog, curriculum)
@@ -368,7 +376,7 @@ class TestTheCandidateRungsReport(unittest.TestCase):
             listed = {c["rung"] for c in row["candidates"]}
             some += bool(listed)
             for rung, lesson in lessons.items():
-                untaught = claims.untaught_on(item, rung, ancestry, vocabulary)
+                untaught = claims.untaught_on(item, rung, ancestry, vocabulary, curriculum)
                 rung_claims, _unmeasurable = claims.rung_claims_of(lesson, skills, vocabulary)
                 established = [c for c in rung_claims if claims.status_of(c, item, skills) == "established"]
                 with self.subTest(item=row["item"], rung=rung):
@@ -413,6 +421,105 @@ class TestTheCandidateRungsReport(unittest.TestCase):
         committed = (Path(__file__).resolve().parents[3] / "docs" / "prompts" / "runs" / "D3" / "candidate-rungs.md")
         header = committed.read_text(encoding="utf-8").replace("\r\n", "\n").split("\n## ")[0].rstrip("\n")
         self.assertEqual(header, text.split("\n## ")[0].rstrip("\n"), "the committed report's opening is not its source's")
+
+
+class TestACopingOnlyAdmissionIsNamed(unittest.TestCase):
+    """
+    L120e (the reviewer's required change on L120d, `docs/review/responses/4e76c768.md`): a rung a study
+    is a candidate for only because a taught fixed position's note reading copes with a skip or leap the
+    rung's taught set leaves is flagged in the report — *eligible by taught-position coping; does not
+    establish interval-reading evidence* — and the flag says so again where the study targets interval
+    reading; a rung whose taught set teaches the interval carries no flag; the flag never adds or removes a
+    candidate. The case is the C-major study written for 2.1 whose hands stay in C position: `holiday`'s
+    path leaves the core before 2.1, so its leap is coped with there only by the positions 1.1 and 1.3
+    teach, while at 2.1 the leap is taught.
+    """
+
+    INTERVAL_READING = "exercise.study.interval-reading.c-major.4-4.8bar.sustained.01"
+    HANDS_TOGETHER = "exercise.study.texture-hands-together.c-major.4-4.8bar.sustained.01"
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.catalog = _study_catalogue()
+        cls.curriculum = S.curriculum_sources()
+        cls.report = {row["item"]: row for row in S.candidate_rungs(cls.catalog, cls.curriculum)}
+        cls.items = {item["id"]: item for item in cls.catalog}
+        cls.ancestry = claims.rung_ancestry(cls.curriculum)
+        cls.vocabulary = claims.load_vocabulary()[1]
+
+    def _at(self, item_id: str, rung: str) -> dict | None:
+        return next((c for c in self.report[item_id]["candidates"] if c["rung"] == rung), None)
+
+    def _line(self, item_id: str, rung: str) -> str:
+        text = S.candidate_rungs_markdown([self.report[item_id]])
+        return next(line for line in text.split("\n") if line.startswith(f"| {rung} ("))
+
+    def test_the_case_leaps_inside_c_position_and_holiday_teaches_no_leap(self) -> None:
+        # What the cases below stand on, so a red there means what it says.
+        for item_id in (self.INTERVAL_READING, self.HANDS_TOGETHER):
+            item = self.items[item_id]
+            with self.subTest(item=item_id):
+                span = item["measurement"]["span"]
+                self.assertTrue(60 <= span["R"][0] and span["R"][1] <= 67, span)
+                self.assertTrue(48 <= span["L"][0] and span["L"][1] <= 55, span)
+                self.assertEqual(claims.untaught_on(item, "holiday", self.ancestry, self.vocabulary), ["interval.leap"],
+                                 "holiday's taught set leaves the leap alone")
+                self.assertEqual(claims.untaught_on(item, "2.1", self.ancestry, self.vocabulary), [], "2.1 teaches it")
+        self.assertIn("interval-reading", self.items[self.INTERVAL_READING]["targetSkills"])
+        self.assertNotIn("interval-reading", self.items[self.HANDS_TOGETHER]["targetSkills"])
+
+    def test_a_study_targeting_interval_reading_admitted_by_coping_alone_is_flagged(self) -> None:
+        at = self._at(self.INTERVAL_READING, "holiday")
+        self.assertIsNotNone(at, "the candidate is kept: the flag never removes it")
+        self.assertEqual(at.get("positionCoped"), ["interval.leap"])
+        self.assertEqual(at.get("notEvidenceFor"), ["interval-reading"])
+        self.assertEqual(at.get("targetsNotEvidenced"), ["interval-reading"])
+        line = self._line(self.INTERVAL_READING, "holiday")
+        self.assertIn("eligible by taught-position coping (interval.leap)", line)
+        self.assertIn("does not establish interval-reading evidence", line)
+        self.assertIn("the study targets interval-reading", line)
+
+    def test_a_rung_whose_taught_set_teaches_the_interval_carries_no_flag(self) -> None:
+        at = self._at(self.INTERVAL_READING, "2.1")
+        self.assertIsNotNone(at)
+        self.assertEqual((at.get("positionCoped"), at.get("notEvidenceFor"), at.get("targetsNotEvidenced")), ([], [], []))
+        line = self._line(self.INTERVAL_READING, "2.1")
+        self.assertIn("| taught |", line)
+        self.assertNotIn("coping", line)
+        self.assertNotIn("does not establish", line)
+
+    def test_a_study_not_targeting_interval_reading_is_flagged_without_the_target_clause(self) -> None:
+        at = self._at(self.HANDS_TOGETHER, "holiday")
+        self.assertIsNotNone(at, "the candidate is kept")
+        self.assertEqual(at.get("positionCoped"), ["interval.leap"])
+        self.assertEqual(at.get("notEvidenceFor"), ["interval-reading"])
+        self.assertEqual(at.get("targetsNotEvidenced"), [])
+        line = self._line(self.HANDS_TOGETHER, "holiday")
+        self.assertIn("eligible by taught-position coping (interval.leap)", line)
+        self.assertIn("does not establish interval-reading evidence", line)
+        self.assertNotIn("the study targets", line)
+
+    def test_the_flag_never_changes_eligibility(self) -> None:
+        flagged = 0
+        for item_id, row in self.report.items():
+            item = self.items[item_id]
+            for c in row["candidates"]:
+                with self.subTest(item=item_id, rung=c["rung"]):
+                    # listed on eligibility alone: the coping question with the curriculum finds nothing
+                    self.assertEqual(claims.untaught_on(item, c["rung"], self.ancestry, self.vocabulary, self.curriculum), [])
+                    # the flag is exactly what the taught set leaves, each a demand that names fixed positions
+                    self.assertEqual(c.get("positionCoped"), claims.untaught_on(item, c["rung"], self.ancestry, self.vocabulary))
+                    for demand in c.get("positionCoped") or []:
+                        self.assertTrue(self.vocabulary[demand].get("fixedPositions"), demand)
+                    flagged += bool(c.get("positionCoped"))
+        self.assertGreater(flagged, 0, "no rung flagged: the case saw nothing")
+        # The flag admits nothing either: the same study with its right hand reaching A4 (outside C position)
+        # is no candidate on holiday, and 2.1, which teaches the leap, keeps it.
+        moved = copy.deepcopy(self.items[self.INTERVAL_READING])
+        moved["measurement"]["span"]["R"] = [60, 69]
+        rungs = [c["rung"] for c in S.candidate_rungs([moved], self.curriculum)[0]["candidates"]]
+        self.assertNotIn("holiday", rungs)
+        self.assertIn("2.1", rungs)
 
 
 if __name__ == "__main__":

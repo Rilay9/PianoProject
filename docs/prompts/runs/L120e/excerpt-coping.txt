@@ -1,0 +1,3 @@
+python docs/prompts/runs/L120e/scripts-excerpt-coping.py build/l120e/out docs/prompts/runs/L120e/excerpt-coping.txt
+
+candidate (excerpt, rung) pairs: 24; resting on the fixed-position route alone: 0; the report's positionCoped disagreeing: 0

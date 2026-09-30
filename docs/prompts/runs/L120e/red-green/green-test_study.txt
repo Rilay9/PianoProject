@@ -1,0 +1,42 @@
+﻿python -m unittest discover -s tools/content/tests -t tools/content -p test_study.py -v   (the final tree: claims.coping_admission shared, the report regenerated)
+test_a_rung_whose_taught_set_teaches_the_interval_carries_no_flag (tests.test_study.TestACopingOnlyAdmissionIsNamed.test_a_rung_whose_taught_set_teaches_the_interval_carries_no_flag) ... ok
+test_a_study_not_targeting_interval_reading_is_flagged_without_the_target_clause (tests.test_study.TestACopingOnlyAdmissionIsNamed.test_a_study_not_targeting_interval_reading_is_flagged_without_the_target_clause) ... ok
+test_a_study_targeting_interval_reading_admitted_by_coping_alone_is_flagged (tests.test_study.TestACopingOnlyAdmissionIsNamed.test_a_study_targeting_interval_reading_admitted_by_coping_alone_is_flagged) ... ok
+test_the_case_leaps_inside_c_position_and_holiday_teaches_no_leap (tests.test_study.TestACopingOnlyAdmissionIsNamed.test_the_case_leaps_inside_c_position_and_holiday_teaches_no_leap) ... ok
+test_the_flag_never_changes_eligibility (tests.test_study.TestACopingOnlyAdmissionIsNamed.test_the_flag_never_changes_eligibility) ... ok
+test_every_measured_demand_is_taught_at_the_recipe_s_rung (tests.test_study.TestEveryStudyInThePlan.test_every_measured_demand_is_taught_at_the_recipe_s_rung)
+The hard layer, measured: the detectors' demands on every study against its rung's ancestry. ... ok
+test_every_study_is_spelled_in_its_key (tests.test_study.TestEveryStudyInThePlan.test_every_study_is_spelled_in_its_key)
+No note outside the key except the minor's leading tone; no double accidental; the left hand spells its chords. ... ok
+test_no_bar_is_repeated_beyond_the_grammar (tests.test_study.TestEveryStudyInThePlan.test_no_bar_is_repeated_beyond_the_grammar) ... ok
+test_no_study_is_placed_on_any_rung (tests.test_study.TestEveryStudyInThePlan.test_no_study_is_placed_on_any_rung)
+The reviewer's required change: in the Library and the contract, on no rung. ... ok
+test_the_left_hand_plays_the_declared_progression (tests.test_study.TestEveryStudyInThePlan.test_the_left_hand_plays_the_declared_progression) ... ok
+test_the_musical_gate_passes_every_study_on_its_written_page (tests.test_study.TestEveryStudyInThePlan.test_the_musical_gate_passes_every_study_on_its_written_page) ... ok
+test_the_plan_writes_every_first_target_canonical_variable_and_transfer (tests.test_study.TestEveryStudyInThePlan.test_the_plan_writes_every_first_target_canonical_variable_and_transfer) ... ok
+test_a_primer_fourth_satisfies_no_claim_of_the_advanced_rungs (tests.test_study.TestTheCandidateRungsReport.test_a_primer_fourth_satisfies_no_claim_of_the_advanced_rungs)
+F2c (the reviewer's required change on F2b, `responses/ddba53e9.md`): the studies written for 2.1 ... ok
+test_the_report_is_exactly_the_rung_claims_reading (tests.test_study.TestTheCandidateRungsReport.test_the_report_is_exactly_the_rung_claims_reading) ... ok
+test_the_report_makes_placement_no_owners (tests.test_study.TestTheCandidateRungsReport.test_the_report_makes_placement_no_owners)
+D3a (`responses/ee70b43.md`): placement is F's on a stated gate that needs no owner — a ... ok
+test_a_cadence_on_a_note_outside_its_chord_fails_the_musical_gate (tests.test_study.TestTheGatesOnTheirAdversaries.test_a_cadence_on_a_note_outside_its_chord_fails_the_musical_gate) ... ok
+test_a_left_hand_stretched_past_an_octave_fails_the_physical_gate (tests.test_study.TestTheGatesOnTheirAdversaries.test_a_left_hand_stretched_past_an_octave_fails_the_physical_gate) ... ok
+test_a_middle_repeating_its_opening_bar_four_times_fails_the_pedagogical_gate (tests.test_study.TestTheGatesOnTheirAdversaries.test_a_middle_repeating_its_opening_bar_four_times_fails_the_pedagogical_gate) ... ok
+test_a_random_walk_with_the_right_demands_fails_the_musical_gate (tests.test_study.TestTheGatesOnTheirAdversaries.test_a_random_walk_with_the_right_demands_fails_the_musical_gate) ... ok
+test_the_gate_evaluates_only_where_the_row_names_an_evaluator (tests.test_study.TestTheGatesOnTheirAdversaries.test_the_gate_evaluates_only_where_the_row_names_an_evaluator) ... ok
+test_a_chord_the_rung_cannot_reach_is_not_drawn (tests.test_study.TestTheGrammar.test_a_chord_the_rung_cannot_reach_is_not_drawn)
+At 2.1 the left hand keeps a five-note position under a held root: vi's root is outside it, ii's, ... ok
+test_each_form_declares_its_phrases_cadences_and_restatements (tests.test_study.TestTheGrammar.test_each_form_declares_its_phrases_cadences_and_restatements) ... ok
+test_every_progression_closes_as_its_phrase_claims (tests.test_study.TestTheGrammar.test_every_progression_closes_as_its_phrase_claims) ... ok
+test_the_minor_dominant_has_its_leading_tone (tests.test_study.TestTheGrammar.test_the_minor_dominant_has_its_leading_tone) ... ok
+test_a_recipe_the_rung_cannot_carry_is_refused_with_the_reason (tests.test_study.TestTheRealiserFailsClosed.test_a_recipe_the_rung_cannot_carry_is_refused_with_the_reason) ... ok
+test_an_invalid_draw_is_never_scored (tests.test_study.TestTheRealiserFailsClosed.test_an_invalid_draw_is_never_scored) ... ok
+test_no_candidate_within_the_budget_is_a_refusal_never_a_draw (tests.test_study.TestTheRealiserFailsClosed.test_no_candidate_within_the_budget_is_a_refusal_never_a_draw) ... ok
+test_nothing_below_the_musical_floor_is_kept (tests.test_study.TestTheRealiserFailsClosed.test_nothing_below_the_musical_floor_is_kept) ... ok
+test_the_same_recipe_writes_the_same_notes_and_another_seed_others (tests.test_study.TestTheRealiserFailsClosed.test_the_same_recipe_writes_the_same_notes_and_another_seed_others) ... ok
+
+----------------------------------------------------------------------
+Ran 29 tests in 156.373s
+
+OK
+exit=0
