@@ -1,0 +1,215 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/tempoFromXml.test.ts (23 tests | 5 failed | 13 skipped) 17ms
+   ❯ several sounds at one position with a mark: the sound that agrees with the first mark wins (X42) (9)
+     × Maple Leaf’s shape: a words-only 120 beside the printed quarter = 100 and its own 100 plays 100, either way round 7ms
+     × Satie’s shape: “Lent et douloureux” with quarter = ca. 76 sounding 60, then an empty text sounding 76.0002, plays the file’s 76.0002 2ms
+     × the writers’ noise elsewhere in the corpus agrees too, after the mark is read in quarters: 79.9998 beside 80, 64.0002 beside half = 32, 100.49999999999999 beside dotted quarter = 67 2ms
+     × the tolerance is a writer’s noise, not a tempo: an order of magnitude over the noise bound and under the smallest different tempo 0ms
+     × Brahms HD5’s shape: two marks each with its own agreeing sound — the first mark decides, whatever order the sounds stand in 1ms
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts (288 tests | 1 failed | 285 skipped) 29ms
+   ❯ F0: the corrected lessons say only what the app does (13)
+     × ragtime.7: Sugar Cane is likened to Maple Leaf at no pace, while the catalogue and the app's tempo map both give the two one tempo 25ms
+ ❯ tests/unit/tempoSoundAgainstMark.test.ts (6 tests | 2 failed) 977ms
+   ❯ the rule: a sound the reader plays against the printed mark at its position (4)
+     × two sounds at one position: the one the reader keeps is judged against the mark (Maple Leaf’s shape) 5ms
+   ❯ the built MuseTrainer and kern scores (2)
+     × finds exactly the pinned contradictions, no new one and none gone 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > F0: the corrected lessons say only what the app does > ragtime.7: Sugar Cane is likened to Maple Leaf at no pace, while the catalogue and the app's tempo map both give the two one tempo
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:3890:23
+    3888|   for (const [lesson, says, holds] of F0_APP) {
+    3889|     it(`${lesson}: ${says}`, () => {
+    3890|       expect(holds()).toBe(true);
+       |                       ^
+    3891|     });
+    3892|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  tests/unit/tempoFromXml.test.ts > several sounds at one position with a mark: the sound that agrees with the first mark wins (X42) > Maple Leaf’s shape: a words-only 120 beside the printed quarter = 100 and its own 100 plays 100, either way round
+AssertionError: expected [ [ +0, +0, 100, 'sound' ], …(1) ] to deeply equal [ [ +0, +0, 100, 'sound' ], …(1) ]
+
+- Expected
++ Received
+
+@@ -6,9 +6,9 @@
+      "sound",
+    ],
+    [
+      1,
+      0,
+-     100,
++     120,
+      "sound",
+    ],
+  ]
+
+ ❯ tests/unit/tempoFromXml.test.ts:178:34
+    176|     // (`runs/X40/disagreements.txt`:67–68). Before X42 the first soun…
+    177|     const tempoDiMarcia = score([marked('100', 100), words('Tempo Di M…
+    178|     expect(brief(tempoDiMarcia)).toEqual([
+       |                                  ^
+    179|       [0, 0, 100, 'sound'],
+    180|       [1, 0, 100, 'sound'],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  tests/unit/tempoFromXml.test.ts > several sounds at one position with a mark: the sound that agrees with the first mark wins (X42) > Satie’s shape: “Lent et douloureux” with quarter = ca. 76 sounding 60, then an empty text sounding 76.0002, plays the file’s 76.0002
+AssertionError: expected { measure: +0, offset: +0, …(3) } to deeply equal { measure: +0, offset: +0, …(3) }
+
+- Expected
++ Received
+
+@@ -1,7 +1,7 @@
+  {
+-   "bpm": 76.0002,
++   "bpm": 60,
+    "from": "sound",
+    "mark": {
+      "beatUnit": "quarter",
+      "dots": 0,
+      "perMinute": 76,
+
+ ❯ tests/unit/tempoFromXml.test.ts:199:21
+    197|     const empty = '<direction placement="above"><direction-type><words…
+    198|     const opening = tempoEvents(score([lent + empty]))[0];
+    199|     expect(opening).toEqual({ measure: 0, offset: 0, bpm: 76.0002, fro…
+       |                     ^
+    200|     expect(openingTempo(score([lent + empty]))).toBe(76.0002);
+    201|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  tests/unit/tempoFromXml.test.ts > several sounds at one position with a mark: the sound that agrees with the first mark wins (X42) > the writers’ noise elsewhere in the corpus agrees too, after the mark is read in quarters: 79.9998 beside 80, 64.0002 beside half = 32, 100.49999999999999 beside dotted quarter = 67
+AssertionError: expected { measure: +0, offset: +0, …(3) } to match object { bpm: 79.9998, from: 'sound', …(1) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -1,7 +1,7 @@
+  {
+-   "bpm": 79.9998,
++   "bpm": 90,
+    "from": "sound",
+    "mark": {
+      "beatUnit": "quarter",
+      "dots": 0,
+      "perMinute": 80,
+
+ ❯ tests/unit/tempoFromXml.test.ts:206:85
+    204|     // g-minor-bach.alt's opening pair (MuseScore's rounding, `tempoSo…
+    205|     // disagreeing sibling so the pair decides: the file's 79.9998 pla…
+    206|     expect(tempoEvents(score([words('a tempo', 90) + marked('80', '79.…
+       |                                                                                     ^
+    207|     // Mozart's Lacrimosa opens half = 32 sounding 64.0002: agreement …
+    208|     expect(tempoEvents(score([words('Larghetto', 70) + marked('32', '6…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  tests/unit/tempoFromXml.test.ts > several sounds at one position with a mark: the sound that agrees with the first mark wins (X42) > the tolerance is a writer’s noise, not a tempo: an order of magnitude over the noise bound and under the smallest different tempo
+TypeError: actual value must be number or bigint, received "undefined"
+ ❯ tests/unit/tempoFromXml.test.ts:224:37
+    222|     const noiseBound = 0.0003; // six significant digits of quarters a…
+    223|     const smallestDifferentTempo = 0.1; // Bella Ciao's 68.1 against a…
+    224|     expect(SERIALIZATION_TOLERANCE).toBeGreaterThanOrEqual(10 * noiseB…
+       |                                     ^
+    225|     expect(smallestDifferentTempo / SERIALIZATION_TOLERANCE).toBeGreat…
+    226|     // The corpus's own largest noise, 76.0002 against 76, sits inside…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  tests/unit/tempoFromXml.test.ts > several sounds at one position with a mark: the sound that agrees with the first mark wins (X42) > Brahms HD5’s shape: two marks each with its own agreeing sound — the first mark decides, whatever order the sounds stand in
+AssertionError: expected { measure: +0, offset: +0, …(3) } to deeply equal { measure: +0, offset: +0, …(3) }
+
+- Expected
++ Received
+
+@@ -1,7 +1,7 @@
+  {
+-   "bpm": 40,
++   "bpm": 50,
+    "from": "sound",
+    "mark": {
+      "beatUnit": "quarter",
+      "dots": 0,
+      "perMinute": 40,
+
+ ❯ tests/unit/tempoFromXml.test.ts:238:23
+    236|     // and it is the mark the event shows.
+    237|     const reordered = tempoEvents(score([marked('40') + marked('50', 5…
+    238|     expect(reordered).toEqual({ measure: 0, offset: 0, bpm: 40, from: …
+       |                       ^
+    239|     // No sound agrees with the first mark: the first sound, though a …
+    240|     expect(brief(score([marked('40', 45) + marked('50', 50)]))).toEqua…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  tests/unit/tempoSoundAgainstMark.test.ts > the rule: a sound the reader plays against the printed mark at its position > two sounds at one position: the one the reader keeps is judged against the mark (Maple Leaf’s shape)
+AssertionError: expected [ [ 120, 100 ] ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   [
++     120,
++     100,
++   ],
++ ]
+
+ ❯ tests/unit/tempoSoundAgainstMark.test.ts:131:92
+    129|     // Words with MuseScore's 120, then the printed quarter = 100 with…
+    130|     // the sound that agrees with the mark (X42), and nothing contradi…
+    131|     expect(found(score(wordsDirection('Tempo Di Marcia', 120) + markDi…
+       |                                                                                            ^
+    132|     // The same two the other way round: the reader keeps the mark's o…
+    133|     expect(found(score(markDirection(100, 100) + wordsDirection('Tempo…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  tests/unit/tempoSoundAgainstMark.test.ts > the built MuseTrainer and kern scores > finds exactly the pinned contradictions, no new one and none gone
+AssertionError: expected { new: [ …(3) ], stale: [] } to deeply equal { new: [], stale: [] }
+
+- Expected
++ Received
+
+  {
+-   "new": [],
++   "new": [
++     "song.classical.satie-gymnopedie-1 @0:0 sound 60 against mark 76",
++     "song.ragtime.joplin-maple-leaf-rag @1:0.25 sound 120 against mark 100",
++     "song.ragtime.joplin-maple-leaf-rag @51:0 sound 120 against mark 100",
++   ],
+    "stale": [],
+  }
+
+ ❯ tests/unit/tempoSoundAgainstMark.test.ts:205:35
+    203|     const fresh = observed.filter((one) => !expected.includes(one));
+    204|     const stale = expected.filter((one) => !observed.includes(one));
+    205|     expect({ new: fresh, stale }).toEqual({ new: [], stale: [] });
+       |                                   ^
+    206|   });
+    207| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  8 failed | 11 passed | 298 skipped (317)
+   Start at  16:10:24
+   Duration  1.39s (tests 52%, transform 37%, import 11%, worker 1%)
+

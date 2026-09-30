@@ -6,10 +6,14 @@
  * (`mark`) and disagrees with that mark by more than R: the larger of `bpm` and `mark.quarters` over the smaller.
  *
  * The findings are pinned below in both directions: a new finding fails, and a pinned finding that no longer holds
- * fails, so a repaired file or a changed reader has to say so here. Nothing in this file changes what plays: the
- * reader keeps the first sound at a position (`tempoFromXml.ts`, `resolve`), and whether a printed numeric mark
- * should outrank it is the reviewer's provisional product rule, tested on the corpus in `docs/prompts/runs/X40/`
- * and not applied (no reader change belongs in X40).
+ * fails, so a repaired file or a changed reader has to say so here. What plays is the reader's (`tempoFromXml.ts`,
+ * `resolve`), and this file only checks it. Since X42 (Entry 185; the reviewer's rule, `docs/review/responses/81d9e4af.md`
+ * §1–§2) a sound that agrees with the first printed mark at its position — the same statement, differing by no more
+ * than the writer's serialization noise (`SERIALIZATION_TOLERANCE`) — wins over a sibling sound there that does not:
+ * Maple Leaf Rag's two words-only 120s give way to the 100 beside their printed quarter = 100, and Satie's opening 60
+ * to the 76.0002 beside its printed quarter = ca. 76, so those three of X40's fifteen findings are gone. The twelve
+ * left, on two rows, are each a lone sound against the mark beside it: no sibling agrees, and a printed mark does not
+ * outrank a sound (the same ruling declines that).
  *
  * **Never vacuous.** The corpus half fails, and never skips, when the built folder is missing, when *Maple Leaf
  * Rag*'s MuseTrainer file is absent, or when the number of files read differs from the catalogue's MuseTrainer and
@@ -63,20 +67,18 @@ interface Pinned extends Finding {
   why: string;
 }
 
-const MAPLE =
-  'X40: a words-only tempo text sounding 120 (MuseScore 2.1.0’s starting tempo for a tempo text whose words state no figure) before the printed quarter = 100 and its own sound 100 at the same place; the reader keeps the first sound';
-const SATIE =
-  'X40 (Satie’s pair, X38’s named gap): “Lent et douloureux” with a printed quarter = ca. 76 sounds 60; an empty tempo text at the same place sounds 76.0002; the reader keeps the first';
 const TOCCATA =
   'X40: a printed quarter = 10 where the file sounds 20 or 36 (the opening’s pauses written, it appears, as tempo changes; the printed number does not follow its sound)';
 const G_MINOR =
   'X40: a printed quarter = 80 where the file sounds 90 or 95 (a rubato written, it appears, as tempo changes, its printed text left at 80); a personal-build row';
 
-/** Every finding on the built corpus, from X40's table (`docs/prompts/runs/X40/`): 15 on 4 MuseTrainer rows, none on a kern row. */
+/**
+ * Every finding on the built corpus: 12 on 2 MuseTrainer rows (`bach-toccata-fugue-bwv565` and `g-minor-bach.alt`), none
+ * on a kern row. X40's table (`docs/prompts/runs/X40/`) had 15 on 4; X42's reader (`docs/prompts/runs/X42/`) resolved
+ * Maple Leaf Rag's two (bar 1's "Tempo Di Marcia" and bar 51's "TRIO", 120 against quarter = 100, now 100) and
+ * Satie's opening (60 against quarter = ca. 76, now 76.0002).
+ */
 const PINNED: readonly Pinned[] = [
-  { id: 'song.ragtime.joplin-maple-leaf-rag', measure: 1, offset: 0.25, sound: 120, mark: 100, why: `${MAPLE} (“Tempo Di Marcia”, bar 1)` },
-  { id: 'song.ragtime.joplin-maple-leaf-rag', measure: 51, offset: 0, sound: 120, mark: 100, why: `${MAPLE} (“TRIO”, bar 51)` },
-  { id: 'song.classical.satie-gymnopedie-1', measure: 0, offset: 0, sound: 60, mark: 76, why: SATIE },
   { id: 'song.classical.bach-toccata-fugue-bwv565', measure: 0, offset: 0.25, sound: 20, mark: 10, why: TOCCATA },
   { id: 'song.classical.bach-toccata-fugue-bwv565', measure: 0, offset: 1.125, sound: 36, mark: 10, why: TOCCATA },
   { id: 'song.classical.bach-toccata-fugue-bwv565', measure: 0, offset: 2.375, sound: 20, mark: 10, why: TOCCATA },
@@ -123,9 +125,10 @@ describe('the rule: a sound the reader plays against the printed mark at its pos
     expect(found(score(markDirection(100)))).toEqual([]);
   });
 
-  it('two sounds at one position: the first the reader keeps is judged against the mark (Maple Leaf’s shape)', () => {
-    // Words with MuseScore's 120, then the printed quarter = 100 with its own 100, at one place: the reader plays 120.
-    expect(found(score(wordsDirection('Tempo Di Marcia', 120) + markDirection(100, 100)))).toEqual([[120, 100]]);
+  it('two sounds at one position: the one the reader keeps is judged against the mark (Maple Leaf’s shape)', () => {
+    // Words with MuseScore's 120, then the printed quarter = 100 with its own 100, at one place: the reader plays 100,
+    // the sound that agrees with the mark (X42), and nothing contradicts the page.
+    expect(found(score(wordsDirection('Tempo Di Marcia', 120) + markDirection(100, 100)))).toEqual([]);
     // The same two the other way round: the reader keeps the mark's own sound, and nothing contradicts the page.
     expect(found(score(markDirection(100, 100) + wordsDirection('Tempo Di Marcia', 120)))).toEqual([]);
   });

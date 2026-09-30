@@ -1,0 +1,132 @@
+X42 noise scan over the unbuilt PDMX pool (build/pdmx, build/pdmx-folk, build/pdmx-p22 in the main checkout, read
+only; sources are the pool's shard folders). Trimmed: the full listing was 1.2 MB and is not kept.
+
+files read: 38362; scan errors: 0
+sound/first-mark pairs at a position with both: 60190; exactly equal: 46063; nonzero: 14127
+every distinct nonzero delta |sound - first mark, in quarters a minute| under 5, ascending: count (sources)
+  0.1: 303 (ab 1, af 1, b9 1, bb 2, bt 2, cd 2, cf 3, cj 2, cl 1, cq 1, cy 13, d5 8, d8 8, dc 4, dj 1, dz 2, fr 11, fy 25, nf 1, nw 4, pf 3, po 4, pp 1, pt 1, pw 5, qb 2, r4 1, raw 3, rm 29, s3 2, sc 4, sx 1, th 6, ti 7, tj 1, tu 2, ty 2, ue 15, uj 1, vc 8, ve 2, vj 33, vm 2, wg 15, wj 5, ws 1, ww 1, x1 1, xg 8, xq 8, xw 3, yd 10, yf 5, yg 1, yh 1, yn 4, yv 1, z2 2, zl 1, zu 8)
+  0.11: 1 (rx 1)
+  0.14: 1 (wz 1)
+  0.16: 1 (ax 1)
+  0.2: 273 (ab 2, af 1, b9 1, bb 1, bt 4, cd 3, cf 2, cj 2, cy 5, d5 11, d8 7, dc 7, dn 1, eq 1, fp 1, fr 5, fy 25, nw 2, pf 1, pm 1, po 3, pp 1, qb 3, qo 1, r4 1, raw 2, rm 23, sc 6, sp 1, sx 1, th 5, ti 7, tj 1, ty 1, ud 6, ue 18, vc 6, vj 42, vm 4, wg 7, wj 4, x1 2, xg 8, xq 6, xw 3, yd 13, yf 6, yg 1, yh 1, yv 1, z2 2, zu 4)
+  0.21: 2 (c6 1, uq 1)
+  0.22: 1 (cq 1)
+  0.24: 4 (c6 2, uq 2)
+  0.25: 1 (s1 1)
+  0.28: 2 (c6 1, uq 1)
+  0.3: 416 (ab 2, ad 2, af 1, b9 1, bb 4, bq 1, bs 13, bt 1, cd 3, cf 6, cj 6, cl 2, cu 3, cy 6, d5 9, d8 8, dc 6, dj 10, dv 1, dz 1, eq 1, fp 1, fr 9, fy 25, nw 3, pm 2, po 7, pw 3, qb 14, qv 4, r4 2, ra 1, raw 5, rm 24, s3 4, sc 18, sp 9, sy 1, th 5, ti 2, tj 2, tm 2, tu 3, ty 6, ud 24, ue 20, uj 2, va 1, vc 13, ve 2, vg 1, vj 34, vr 3, wg 14, wj 6, ws 3, x1 2, xc 3, xg 12, xq 3, xw 1, yd 10, yf 8, yg 1, yh 8, yv 2, zg 1, zu 3)
+  0.38: 1 (cq 1)
+  0.4: 305 (ab 1, af 2, bb 2, bj 3, bt 2, cd 2, cf 3, cj 2, cy 12, d5 5, d8 12, db 2, dc 3, dj 2, dv 1, dz 2, fr 9, fy 24, nw 4, pf 7, pm 2, po 4, pp 2, pt 1, pw 4, qb 2, raw 2, rm 32, s3 2, sc 5, sp 1, sq 2, sx 1, te 1, th 6, ti 3, tj 1, tp 1, tu 1, ty 2, ud 1, ue 18, uj 1, vc 8, ve 2, vj 32, vm 3, wg 14, wj 6, ws 1, x1 2, xg 8, xk 1, xq 3, xw 3, yd 11, yf 7, yg 1, yh 1, yv 1, z2 1, zg 2, zu 3)
+  0.41: 1 (ry 1)
+  0.43: 2 (c6 1, uq 1)
+  0.44: 2 (c6 1, uq 1)
+  0.45: 1 (uq 1)
+  0.46: 1 (cq 1)
+  0.47: 2 (c6 1, uq 1)
+  0.5: 510 (a4 1, ab 3, ad 2, af 1, ao 1, bb 8, bj 4, bq 1, bs 1, bt 2, cd 6, cf 5, cg 1, cj 3, cl 1, co 4, cu 4, cy 9, d5 7, d8 14, dc 6, dh 1, dj 8, dv 1, dy 1, dz 1, ec 2, ef 3, eq 5, ew 4, f4 3, fn 1, fr 10, fy 25, na 1, nh 1, nw 15, pf 2, po 6, pp 1, pt 1, pw 6, q9 2, qb 4, qe 1, qo 1, ra 2, raw 18, rd 2, rm 25, s3 2, s8 2, sc 20, sp 35, sx 1, sy 3, th 11, ti 6, tj 6, tp 1, tu 2, ty 5, u7 4, ud 5, ue 14, uv 1, v2 3, va 1, vc 11, ve 2, vj 42, vm 5, vr 3, wg 12, wj 6, ws 1, ww 2, xg 6, xk 2, xl 2, xq 6, xt 3, xw 2, yb 7, yd 15, yf 4, yg 2, yh 2, yj 1, yv 1, zd 7, zu 7)
+  0.58: 1 (cq 1)
+  0.59: 1 (cq 1)
+  0.6: 297 (ab 1, af 1, b9 1, bb 1, bt 3, cd 2, cf 2, cj 2, cl 2, cy 9, d5 6, d8 8, dc 4, dj 3, dn 1, fr 10, fy 26, pf 6, pm 1, po 3, pp 1, pw 6, qb 2, r4 1, ra 1, raw 2, rm 27, s3 2, sc 4, sp 1, sx 1, te 1, th 6, ti 3, tj 1, tp 1, tu 1, ty 3, ub 2, ud 2, ue 28, uj 1, vc 7, ve 2, vj 35, vm 2, wg 14, wj 7, wq 1, ww 2, xg 8, xq 4, xw 2, yd 8, yf 10, yg 1, yh 1, yv 1, zg 1, zu 2)
+  0.65: 1 (p8 1)
+  0.7: 360 (ab 2, af 1, bb 1, bs 11, bt 1, cd 3, cf 3, cj 3, cl 1, cy 7, cz 1, d5 6, d8 11, db 1, dc 5, dj 6, ec 1, ee 2, eq 1, fr 4, fy 25, nf 2, pf 4, pm 3, po 3, pp 2, pt 1, pw 2, qb 13, qo 2, qv 4, raw 2, rm 35, sc 6, sq 1, te 2, th 8, ti 3, tm 2, tp 1, tu 3, ty 3, u7 1, ud 22, ue 25, vc 6, vg 1, vj 34, vm 4, wg 10, wj 5, ws 4, xc 3, xg 12, xq 4, yd 11, yf 4, yg 1, yh 7, yv 2, zg 1, zl 1, zu 4)
+  0.74: 1 (xb 1)
+  0.76: 1 (cq 1)
+  0.79: 1 (cq 1)
+  0.8: 352 (ab 4, ad 2, b9 1, bb 4, bq 1, bs 3, cd 2, cf 5, cj 1, cu 1, cy 9, cz 1, d5 4, d8 13, db 1, dc 10, de 2, dj 4, dn 1, dv 1, dz 2, ec 1, ed 1, ef 2, eq 1, f4 1, fr 8, fy 24, pf 7, pm 2, po 3, pp 2, pw 4, qb 4, r4 1, raw 5, rm 28, s3 1, sc 18, sp 12, sq 1, sy 1, te 4, th 8, ti 2, tj 3, tp 1, ty 1, ud 6, ue 22, va 1, vc 10, ve 2, vj 26, vm 1, vr 3, wg 10, wj 6, ws 1, xb 2, xg 8, xq 4, xw 2, yd 8, yf 10, yg 1, yh 2, yv 1, z2 3, zl 2, zu 3)
+  0.9: 316 (ab 2, af 1, bj 3, bt 1, cd 3, cf 3, cl 1, cy 6, d5 10, d8 13, dc 6, dj 2, f4 1, fr 11, fy 25, nf 2, nw 1, pf 5, po 2, pp 3, pt 2, pw 6, qb 1, r4 1, ra 1, raw 1, rm 28, s3 2, sc 5, th 7, ti 2, tp 1, tu 2, ty 4, ud 3, ue 24, uj 1, vc 8, ve 2, vj 44, vm 4, wg 14, wj 5, xg 8, xq 11, xw 2, yd 14, yf 3, yg 1, yh 1, yv 1, zg 3, zu 3)
+  1.0: 484 (a5 6, ac 2, af 1, ag 1, ai 1, al 1, an 1, ao 1, ar 4, au 1, ay 1, bc 1, bd 1, bg 1, bh 1, bm 1, bn 19, bu 1, by 1, bz 7, c2 2, c4 1, c5 1, c6 1, c8 1, ca 1, cb 1, ce 1, cg 1, ch 1, ci 1, cm 1, cq 1, cr 2, cs 2, cv 1, d2 1, d5 1, d7 1, d8 2, da 1, dd 3, df 1, dj 1, dm 1, dn 1, dq 1, ds 1, dv 2, dy 2, dz 1, e3 2, e4 20, e5 1, ec 1, ei 2, ej 2, eo 1, eq 3, eu 2, ew 2, f1 1, f2 5, f4 1, fe 1, fm 1, fx 1, fy 1, fz 1, nm 1, no 1, np 2, ns 2, nt 2, nv 1, nw 5, p5 1, p8 3, pd 2, pe 1, pf 1, pg 1, pk 16, pl 1, po 2, pp 1, pq 1, ps 1, pt 1, pv 2, px 1, pz 2, q8 1, q9 3, qa 2, qb 53, qe 1, qg 1, qk 1, qo 1, qq 1, qr 2, qs 6, qu 1, qv 1, qw 1, qx 3, r5 2, r7 2, ra 1, raw 6, rl 1, rm 2, rn 1, ro 3, rr 5, rv 1, rw 3, rx 1, s3 2, s5 1, s7 1, s9 1, sb 1, sc 2, sd 2, sg 2, sh 2, so 1, sp 2, sr 1, st 1, sx 1, sy 1, sz 1, t2 1, t3 1, t4 2, tb 1, td 1, te 2, tf 1, tk 1, to 1, tq 1, tu 3, tv 1, tw 1, u1 1, u3 1, ua 1, ub 1, uc 1, ud 1, ug 1, uh 1, ui 1, uo 1, up 2, v1 1, v2 3, v3 1, ve 1, vg 1, vj 2, vk 3, vm 1, vn 1, vo 1, vr 1, vu 3, vv 1, vx 1, w8 1, wb 1, wg 1, wj 1, wm 1, wn 2, wo 1, wx 1, wz 1, x3 1, x8 1, xa 1, xb 1, xc 2, xe 3, xm 1, xq 1, xr 1, xs 1, xt 3, xw 1, xx 34, y9 1, yb 2, yc 1, yd 2, ye 1, yh 1, yj 2, ym 3, yn 16, yp 1, yr 2, ys 1, yt 1, yu 1, yv 1, yx 1, yz 1, z3 1, z6 3, zb 1, zc 2, ze 2, zg 1, zh 2, zk 1, zn 1, zr 1, zy 1)
+  1.1: 20 (d5 1, d8 4, fy 1, nw 1, rm 3, sx 1, th 1, tu 2, uj 1, vj 4, vm 1)
+  1.2: 16 (cj 1, d8 4, fr 1, fy 1, rm 4, th 1, tu 2, vj 1, yd 1)
+  1.3: 21 (bb 1, cj 1, d5 1, d8 2, fr 1, nw 1, pw 1, raw 1, rm 4, sx 1, tu 1, uj 1, vj 3, yd 2)
+  1.4: 11 (fr 1, fy 1, r4 1, ty 4, vj 2, yd 1, zu 1)
+  1.5: 26 (bb 5, cl 1, fy 1, raw 7, sp 1, sx 2, tu 2, uj 1, vj 2, x1 1, yb 2, yd 1)
+  1.6: 13 (fr 1, fy 1, tu 1, ty 1, vj 5, ww 2, yd 1, zu 1)
+  1.65: 2 (c6 1, uq 1)
+  1.7: 19 (d5 1, ef 2, fp 1, qb 6, sp 1, tu 2, uj 1, vc 1, vj 2, xc 1, yd 1)
+  1.8: 15 (bb 1, eq 2, fr 1, fy 1, pp 1, raw 1, sx 1, tu 2, ty 1, vj 3, vm 1)
+  1.9: 9 (d5 1, dj 1, f4 1, fr 1, fy 1, tu 1, ty 1, vj 1, yd 1)
+  2.0: 604 (a5 6, aa 1, ab 2, ac 2, ae 4, af 2, ag 1, an 2, ar 4, av 1, b4 1, b5 2, b9 1, bb 1, bh 1, bj 1, bm 2, bn 23, bo 1, bp 2, bs 1, bt 1, by 1, bz 1, c2 1, c4 1, c8 4, ca 3, cb 4, cc 2, cf 3, cg 2, ck 1, cq 2, cr 3, cs 2, ct 3, cu 2, cw 1, d1 1, d2 1, d4 1, d5 1, d7 3, d8 1, db 2, dd 2, df 2, di 1, dm 1, do 1, dq 1, dv 1, dx 2, dy 2, e4 6, e8 2, ea 1, ec 2, ef 2, ei 3, em 1, en 1, er 1, eu 1, ev 1, ew 1, ex 2, ez 5, f2 5, f6 1, f8 2, fd 1, ff 1, fn 1, fp 2, fr 1, fx 1, fy 1, ne 2, nm 2, nn 1, np 1, ns 3, nu 2, nv 1, nw 14, nx 1, nz 1, p2 1, p3 1, p4 1, p5 1, p6 3, p8 2, pa 1, pb 1, pd 1, pf 3, pg 2, pk 17, pl 1, pp 2, pq 1, pr 2, pu 2, pv 3, px 2, py 1, pz 3, q5 1, q8 1, qa 1, qb 51, qe 2, qg 1, qj 2, qm 3, qo 1, qp 1, qq 1, qr 3, qs 1, qt 1, qu 3, qx 4, qy 3, r5 1, r7 2, r9 1, ra 2, raw 13, rb 1, rf 2, rg 2, rh 1, ri 1, rm 1, rn 1, ro 5, rp 1, rr 3, rw 1, rx 1, s3 2, s5 1, s7 1, s8 2, s9 1, sa 1, sh 2, sj 1, sm 2, sp 1, st 3, sv 1, sw 2, sz 2, t3 1, t4 4, tb 1, td 1, te 4, tg 1, th 2, ti 1, tj 1, tk 2, tp 1, tq 2, tr 4, ts 3, tt 5, tu 1, tv 5, tx 1, ty 1, u1 2, u5 2, u9 1, ua 1, ug 1, uj 1, uk 2, ul 2, uo 1, up 1, ur 1, uy 1, v1 2, v3 3, v6 1, va 1, ve 2, vf 3, vh 4, vj 4, vk 2, vm 3, vo 2, vr 1, vs 2, vw 1, vx 1, vy 1, vz 1, w5 3, w7 1, w8 2, wc 1, wf 1, wh 1, wi 1, wk 1, wo 1, ws 2, wu 2, wv 2, ww 2, wx 1, wz 1, x3 2, x4 3, x6 1, x7 1, x8 1, x9 1, xg 1, xh 2, xm 3, xp 1, xs 1, xt 2, xx 33, xy 1, y5 1, y7 2, y8 1, y9 2, ya 1, yb 2, yc 2, ye 1, yf 1, yl 1, ym 1, yn 12, yr 2, yt 1, yu 1, yw 2, z1 1, z4 2, z6 3, z7 1, zc 1, ze 2, zh 2, zj 1, zk 2, zm 1, zp 1, zv 1, zz 1)
+  2.1: 10 (ax 1, d5 1, fr 2, fy 1, rm 1, ti 1, vj 1, ww 1, yd 1)
+  2.2: 5 (eq 1, ti 1, uj 1, vj 2)
+  2.3: 9 (d5 1, eq 1, fy 1, po 2, th 1, ti 1, vj 1, vm 1)
+  2.4: 6 (dj 1, fr 1, fy 1, uj 1, vj 2)
+  2.5: 11 (fr 1, fy 1, pf 1, po 2, raw 1, th 1, vj 2, yb 1, zu 1)
+  2.55: 2 (c6 1, uq 1)
+  2.6: 5 (uj 1, vc 1, vj 2, yd 1)
+  2.7: 12 (cf 1, cy 1, ee 1, fr 2, fy 1, ti 1, vc 1, vj 2, wg 2)
+  2.8: 6 (d5 1, fy 1, uj 1, vj 2, zu 1)
+  2.9: 2 (fy 1, vj 1)
+  3.0: 743 (a5 2, aa 1, ab 3, ac 4, ae 3, af 2, ag 1, ai 2, al 1, an 2, ar 6, au 2, av 3, ay 1, az 1, b4 1, b5 2, b6 1, ba 1, bb 2, bc 1, bd 1, be 1, bg 1, bh 2, bi 1, bj 1, bm 4, bn 22, bp 1, bq 1, br 1, bs 2, bu 1, by 1, bz 5, c2 3, c4 2, c5 1, c6 3, c8 4, ca 1, cb 4, cd 1, ce 1, cf 4, cg 4, ci 1, cj 1, ck 1, cm 1, cq 2, cs 2, ct 3, cu 2, cv 1, d2 2, d4 1, d5 1, d6 1, d7 4, da 1, db 1, dd 4, df 3, dh 1, dj 3, dm 2, dn 2, do 1, dq 2, ds 1, dv 3, dx 1, dy 5, e1 1, e3 2, e4 2, e5 1, e7 1, e8 2, ea 1, ec 1, ee 1, ef 1, ej 2, em 1, en 1, eo 1, eq 2, er 1, et 1, eu 1, ev 1, ew 1, ez 2, f1 1, f2 5, f4 1, f6 1, f8 1, fd 2, fe 1, ff 1, fj 1, fl 1, fm 1, fn 1, fp 1, fr 1, fv 2, fx 2, fy 2, fz 2, nc 1, ne 2, nm 3, nn 1, no 1, np 1, nr 1, ns 1, nt 2, nu 1, nv 2, nw 6, nx 1, p2 1, p3 1, p4 1, p6 3, p8 4, pa 1, pd 3, pe 1, pf 7, pg 3, ph 1, pj 1, pk 17, pl 2, pp 1, pq 2, pr 1, ps 1, pt 1, pu 2, pv 2, px 2, py 1, pz 3, q5 1, q8 2, q9 3, qa 5, qb 40, qe 1, qg 4, qj 2, qk 1, qm 1, qn 1, qo 2, qp 3, qq 2, qr 5, qs 1, qt 1, qu 2, qv 2, qx 5, qy 1, r1 1, r5 5, r7 1, ra 3, raw 4, re 1, rf 1, rg 1, rh 1, rl 1, rm 2, rn 2, ro 4, rp 1, rq 1, rr 6, rv 1, rw 1, rx 3, rz 1, s3 4, s5 1, s8 2, s9 2, sb 1, sc 1, sd 3, sg 2, sh 1, sj 1, sm 1, sn 2, sp 1, sr 1, st 4, sv 1, sw 2, sy 1, sz 2, t2 1, t3 2, t4 6, t6 1, t7 1, tb 1, td 2, te 4, tf 1, th 2, ti 2, tj 2, tk 3, tn 1, to 1, tq 2, tr 1, ts 1, tt 1, tu 2, tv 2, tw 1, tx 1, ty 2, u1 1, u3 2, u5 1, u7 1, ub 1, uc 1, ud 1, ue 1, ug 2, uh 1, ui 1, uj 4, ul 2, un 2, uo 2, up 3, uq 3, uv 1, v1 1, v2 2, v3 3, vd 1, ve 1, vf 2, vg 1, vh 1, vj 3, vk 3, vm 3, vn 1, vo 2, vr 1, vs 2, vu 4, vv 2, vx 2, vy 1, w3 1, w4 1, w5 3, w7 1, w8 3, wb 2, wc 1, wf 1, wg 1, wi 1, wj 1, wm 1, wn 2, wo 2, ws 2, wu 2, wv 2, ww 1, wx 2, wz 1, x3 2, x4 1, x6 1, x7 1, x8 2, xa 1, xb 1, xc 4, xe 4, xf 2, xg 1, xm 2, xp 1, xq 2, xr 1, xs 1, xt 2, xv 2, xw 1, xx 16, xy 2, xz 1, y3 1, y7 2, y8 1, y9 3, ya 3, yb 4, yc 3, ye 1, yh 1, yj 2, ym 2, yn 13, yp 1, yr 4, ys 1, yt 1, yu 1, yv 1, yw 2, yx 2, yz 1, z1 1, z3 1, z4 1, z5 1, z6 1, z7 1, za 2, zb 1, zc 3, ze 4, zg 2, zh 3, zj 1, zk 4, zm 1, zn 1, zp 1, zr 5, zu 1, zy 1)
+  3.1: 5 (d5 1, r4 1, rm 2, vj 1)
+  3.2: 8 (cy 1, d8 1, ec 1, fr 1, fy 1, raw 1, vj 1, yd 1)
+  3.3: 15 (bt 1, ec 1, fr 1, fy 1, raw 1, sx 1, te 1, ti 1, uj 1, vj 3, vm 1, xc 1, yd 1)
+  3.4: 6 (cz 1, d5 1, dz 1, fy 1, vj 2)
+  3.5: 12 (an 1, eq 1, fp 2, fr 1, raw 1, uj 1, vd 2, yb 1, zg 2)
+  3.6: 4 (d8 1, fr 1, fy 1, vj 1)
+  3.7: 6 (bs 1, d5 1, fy 1, uj 1, vj 1, yh 1)
+  3.8: 6 (fr 1, fy 1, th 1, ti 1, vj 1, yd 1)
+  3.9: 5 (d5 1, fy 1, po 1, uj 1, yn 1)
+  4.0: 551 (a5 3, ab 1, ac 2, af 2, ag 2, ai 1, al 1, am 1, an 2, ar 5, au 1, b1 1, b4 1, b9 1, bc 1, bd 1, bg 1, bh 2, bj 1, bm 1, bn 23, br 1, bs 1, bu 1, bv 1, by 1, bz 2, c2 1, c4 1, c5 1, c6 1, c8 3, ca 1, cb 1, cc 1, ce 2, ci 1, cm 1, cq 2, cr 2, cs 2, ct 1, cu 2, cv 1, cw 1, d2 2, d4 1, d5 2, d7 4, da 1, dd 2, df 1, di 1, dj 1, dm 1, dn 3, dq 1, ds 1, dv 2, dw 1, dy 1, e1 1, e3 1, e4 2, e5 1, e8 9, ec 1, ef 1, ej 1, en 1, eo 2, eq 2, eu 1, ev 1, ez 1, f2 3, f6 1, f8 1, fe 1, ff 2, fm 1, fp 3, fu 1, fx 1, ne 1, nm 1, nn 1, no 1, np 2, ns 2, nt 2, nu 2, nv 2, nw 8, nx 1, nz 1, p3 1, p5 1, p8 6, p9 1, pd 2, pe 1, pf 3, pg 2, ph 1, pk 16, pl 1, pp 1, pq 1, pr 1, pt 1, pu 1, pv 3, px 2, pz 1, q7 1, q8 1, q9 2, qa 3, qb 40, qe 2, qg 1, qj 2, qk 1, qm 2, qn 1, qo 1, qq 1, qr 2, qs 3, qu 1, qx 5, qy 1, r5 2, r7 2, ra 2, raw 20, rb 1, rg 2, rh 1, ri 1, rl 1, rm 3, rn 1, ro 4, rr 3, rv 1, rw 2, rx 1, s3 2, s5 1, s9 1, sa 1, sb 1, sc 1, sd 2, sg 1, sh 2, sm 1, sr 1, st 1, sw 1, sy 1, sz 1, t2 1, t3 1, t4 1, ta 1, td 1, te 2, tf 1, ti 1, tk 1, to 1, tp 1, tq 1, tr 2, ts 1, tu 1, tw 1, tx 1, u1 3, u3 1, u5 2, u8 1, u9 1, uc 1, ud 1, ug 1, uh 1, ui 1, uk 9, uo 2, up 2, v1 2, v3 1, v5 1, v6 1, v9 1, va 1, vd 1, ve 1, vf 3, vj 2, vk 2, vm 3, vn 2, vo 1, vr 2, vu 3, vv 1, vw 1, vx 2, vy 1, vz 3, w5 2, w8 1, wb 2, wh 1, wj 1, wn 3, wo 1, ws 2, wx 1, wz 2, x3 2, x4 2, x6 1, x8 1, x9 1, xa 1, xb 1, xc 2, xe 3, xh 1, xi 1, xm 3, xp 1, xq 1, xr 1, xs 1, xt 2, xw 1, xx 13, y5 1, y9 3, ya 1, yb 2, yc 1, yd 1, ye 1, yh 1, yj 1, yl 2, ym 3, yn 12, yp 1, yr 2, ys 1, yt 4, yv 1, yx 1, yz 1, z3 1, z7 2, zb 1, zc 1, ze 3, zh 2, zk 3, zn 1, zv 3, zy 1, zz 3)
+  4.1: 5 (f4 1, fy 1, ti 1, uj 1, vj 1)
+  4.2: 6 (fr 1, fy 1, rm 1, sp 1, th 1, vj 1)
+  4.3: 4 (dj 1, fy 1, ti 1, vj 1)
+  4.37: 1 (ax 1)
+  4.4: 2 (fr 1, uj 1)
+  4.48: 2 (c6 1, uq 1)
+  4.5: 38 (ac 1, c8 1, c9 1, ce 1, cy 1, d5 2, d8 1, dh 2, ec 2, ew 2, fr 2, fy 1, qm 1, r2 1, ra 1, raw 3, s3 1, tw 1, uf 1, vj 1, vl 1, vm 2, vp 1, xk 1, xt 2, yb 1, yk 1, yp 1, zs 1)
+  4.6: 4 (fy 1, uj 1, vj 1, yd 1)
+  4.7: 3 (cl 1, fy 1, vj 1)
+  4.8: 6 (c6 1, fr 1, fy 1, ti 1, uj 1, uq 1)
+  4.9: 3 (ef 1, vj 2)
+nonzero deltas under 0.01: none
+deltas at or over 0.01: 14127, min 0.09999999999999432
+of the deltas under 0.01 and over 1e-9, sounds that are a six-significant-digit quarters-a-second figure x 60: 0 of 0
+deltas under 1e-9 (float serialization):
+every pair at a delta of 0.01 or more and under 5:
+  QmabJgF3vVw2SDpzrCfaJRSpWEe12wks4obzqDn8n59eE5.mxl (ab) @41:0.75: sound 64.1 against quarter=64 (64.0); delta 0.09999999999999432
+  QmaFaCxbQeaLdnmZurEQLokLcnMKPe42n5VgY6QmbMTQ78.mxl (af) @22:1: sound 117.1 against quarter=117 (117.0); delta 0.09999999999999432
+  QmbbcLC4vffHsAno2UgaJhwPduTRdgZUyhTRHuumakUe9j.mxl (bb) @16:1.5: sound 149.1 against quarter=149 (149.0); delta 0.09999999999999432
+  QmbbcLC4vffHsAno2UgaJhwPduTRdgZUyhTRHuumakUe9j.mxl (bb) @18:3: sound 143.1 against quarter=143 (143.0); delta 0.09999999999999432
+  QmbT8yuVpizRVix7W3CLgcgQVjbCrsUSe1n8Resm6zPydc.mxl (bt) @18:2: sound 107.1 against quarter=107 (107.0); delta 0.09999999999999432
+  QmbtqGpbZ6U9DECtd1YBPf2fXQP2kPyRnEU2A8odVEfzb1.mxl (bt) @62:1.5: sound 156.1 against quarter=156 (156.0); delta 0.09999999999999432
+  QmcfegmDM7fC1XtNp5TMcZdDpwzaMK6CmXFfzGb82goXZN.mxl (cf) @116:3: sound 169.1 against quarter=169 (169.0); delta 0.09999999999999432
+  QmcfegmDM7fC1XtNp5TMcZdDpwzaMK6CmXFfzGb82goXZN.mxl (cf) @118:0: sound 156.1 against quarter=156 (156.0); delta 0.09999999999999432
+  QmcfqAHd6ZAgZEVkZK63jPAAC5hHTE65twsbXAZmEzYisL.mxl (cf) @183:0: sound 123.1 against quarter=123 (123.0); delta 0.09999999999999432
+  QmcLMr4ZKsbLFEj9fp3ZSUSQhtAVqXSZ7n56FHNgj7zZ9Q.mxl (cl) @90:2: sound 116.1 against quarter=116 (116.0); delta 0.09999999999999432
+  QmcQ5tVJMRDFwK8J9SGTctpJh3My2cBThxTBt6LGobBJUF.mxl (cq) @52:1.5: sound 77.1 against quarter=77 (77.0); delta 0.09999999999999432
+  QmcYuo5p9ZmXpqmBJmPnuGoi6EWBWLs8FXbMbv5Z4wemaY.mxl (cy) @63:0.5: sound 100.1 against quarter=100 (100.0); delta 0.09999999999999432
+  QmcYuo5p9ZmXpqmBJmPnuGoi6EWBWLs8FXbMbv5Z4wemaY.mxl (cy) @65:3: sound 78.1 against quarter=78 (78.0); delta 0.09999999999999432
+  QmcYuo5p9ZmXpqmBJmPnuGoi6EWBWLs8FXbMbv5Z4wemaY.mxl (cy) @76:0.5: sound 132.1 against quarter=132 (132.0); delta 0.09999999999999432
+  QmcYuo5p9ZmXpqmBJmPnuGoi6EWBWLs8FXbMbv5Z4wemaY.mxl (cy) @76:0.75: sound 135.1 against quarter=135 (135.0); delta 0.09999999999999432
+  QmcYuo5p9ZmXpqmBJmPnuGoi6EWBWLs8FXbMbv5Z4wemaY.mxl (cy) @76:1.75: sound 142.1 against quarter=142 (142.0); delta 0.09999999999999432
+  QmcYuo5p9ZmXpqmBJmPnuGoi6EWBWLs8FXbMbv5Z4wemaY.mxl (cy) @76:3: sound 147.1 against quarter=147 (147.0); delta 0.09999999999999432
+  QmcYuo5p9ZmXpqmBJmPnuGoi6EWBWLs8FXbMbv5Z4wemaY.mxl (cy) @115:0.5: sound 215.1 against quarter=215 (215.0); delta 0.09999999999999432
+  QmcYuo5p9ZmXpqmBJmPnuGoi6EWBWLs8FXbMbv5Z4wemaY.mxl (cy) @115:2: sound 237.1 against quarter=237 (237.0); delta 0.09999999999999432
+  QmcYuo5p9ZmXpqmBJmPnuGoi6EWBWLs8FXbMbv5Z4wemaY.mxl (cy) @115:2.5: sound 241.1 against quarter=241 (241.0); delta 0.09999999999999432
+  QmcYuo5p9ZmXpqmBJmPnuGoi6EWBWLs8FXbMbv5Z4wemaY.mxl (cy) @117:2.5: sound 244.1 against quarter=244 (244.0); delta 0.09999999999999432
+  QmcYuo5p9ZmXpqmBJmPnuGoi6EWBWLs8FXbMbv5Z4wemaY.mxl (cy) @214:4: sound 79.1 against quarter=79 (79.0); delta 0.09999999999999432
+  QmcYuo5p9ZmXpqmBJmPnuGoi6EWBWLs8FXbMbv5Z4wemaY.mxl (cy) @216:4: sound 91.1 against quarter=91 (91.0); delta 0.09999999999999432
+  Qmd5BrbMwisSCAxxyoHZgQnPDG56ukmyEbcDdxXY2gLvTe.mxl (d5) @29:0.875: sound 66.1 against quarter=66 (66.0); delta 0.09999999999999432
+  Qmd5BrbMwisSCAxxyoHZgQnPDG56ukmyEbcDdxXY2gLvTe.mxl (d5) @51:1.75: sound 67.1 against quarter=67 (67.0); delta 0.09999999999999432
+  Qmd5BrbMwisSCAxxyoHZgQnPDG56ukmyEbcDdxXY2gLvTe.mxl (d5) @52:0: sound 65.1 against quarter=65 (65.0); delta 0.09999999999999432
+  Qmd8Smn6WavdXN5pbrnQJ9EC8MPCgBKLhxCsNntv3bcBhE.mxl (d8) @10:1.625: sound 81.1 against quarter=81 (81.0); delta 0.09999999999999432
+  Qmd8Smn6WavdXN5pbrnQJ9EC8MPCgBKLhxCsNntv3bcBhE.mxl (d8) @10:1.75: sound 80.1 against quarter=80 (80.0); delta 0.09999999999999432
+  Qmd8Smn6WavdXN5pbrnQJ9EC8MPCgBKLhxCsNntv3bcBhE.mxl (d8) @10:1.875: sound 79.1 against quarter=79 (79.0); delta 0.09999999999999432
+  Qmd8Smn6WavdXN5pbrnQJ9EC8MPCgBKLhxCsNntv3bcBhE.mxl (d8) @10:2.5: sound 72.1 against quarter=72 (72.0); delta 0.09999999999999432
+  Qmd8Smn6WavdXN5pbrnQJ9EC8MPCgBKLhxCsNntv3bcBhE.mxl (d8) @54:2.625: sound 207.1 against quarter.=138 (207.0); delta 0.09999999999999432
+  Qmd8Smn6WavdXN5pbrnQJ9EC8MPCgBKLhxCsNntv3bcBhE.mxl (d8) @78:0.666667: sound 78.1 against quarter=78 (78.0); delta 0.09999999999999432
+  Qmdc75HV6tGZcYsrPFw87yngDPvCWSFwF3CXXnj9yySiXJ.mxl (dc) @10:3.75: sound 83.1 against quarter=83 (83.0); delta 0.09999999999999432
+  Qmdc75HV6tGZcYsrPFw87yngDPvCWSFwF3CXXnj9yySiXJ.mxl (dc) @23:1.83333: sound 107.1 against quarter=107 (107.0); delta 0.09999999999999432
+  Qmdc75HV6tGZcYsrPFw87yngDPvCWSFwF3CXXnj9yySiXJ.mxl (dc) @23:3.83333: sound 82.1 against quarter=82 (82.0); delta 0.09999999999999432
+  Qmdc75HV6tGZcYsrPFw87yngDPvCWSFwF3CXXnj9yySiXJ.mxl (dc) @75:3: sound 153.1 against quarter=153 (153.0); delta 0.09999999999999432
+  QmfR7QMMY7q2VKyoQiXjK3dQbH3Lh6549EGmR3Drheuy8P.mxl (fr) @72:2.5: sound 123.1 against quarter=123 (123.0); delta 0.09999999999999432
+  QmfR7QMMY7q2VKyoQiXjK3dQbH3Lh6549EGmR3Drheuy8P.mxl (fr) @73:2.5: sound 128.1 against quarter=128 (128.0); delta 0.09999999999999432
+  QmfR7QMMY7q2VKyoQiXjK3dQbH3Lh6549EGmR3Drheuy8P.mxl (fr) @74:2.5: sound 133.1 against quarter=133 (133.0); delta 0.09999999999999432
+  QmfR7QMMY7q2VKyoQiXjK3dQbH3Lh6549EGmR3Drheuy8P.mxl (fr) @75:2.5: sound 138.1 against quarter=138 (138.0); delta 0.09999999999999432
+  ... 5864 more pairs under 5 not kept; among them, every 68.1-against-68 and 74.1-against-74 pair:
+  QmfYJnvsnyY2rW6D7eecjcKo3UYfdBFFjurkKzr37CPmif.mxl (fy) @15:3.75: sound 68.1 against quarter=68 (68.0); delta 0.09999999999999432
+  QmVchQmpEos2aXaygNwLcAyGHFmp2xDyoYHuu76FU4VnNH.mxl (vc) @16:1.125: sound 68.1 against quarter=68 (68.0); delta 0.09999999999999432
+  QmVja3vMcSL5cBbLAAUQ6SSHBxmedTufnQKA257PugbUsL.mxl (vj) @24:2: sound 74.1 against quarter=74 (74.0); delta 0.09999999999999432
+  QmXGnsc1wBSmh4nC2AWPKRCJ5DQsH7tgbz6HoWbBRu4Mxt.mxl (xg) @45:0: sound 74.1 against quarter=74 (74.0); delta 0.09999999999999432
+positions with more than one sound and a mark (the population the amended rule reaches): 2021 positions (listing not kept; pool-stakes.txt reads it)
+every non-integer <sound tempo> value written, by source: value x count (distance to the nearest half) (not kept)

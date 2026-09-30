@@ -3825,16 +3825,19 @@ const F0_APP: [string, string, () => boolean][] = [
     },
   ],
   [
-    // The brief's premise was that the app plays the two at one tempo. It
-    // does at the catalogue's figure and at the opening; but Maple Leaf's file
-    // writes <sound tempo="120"> beside its quarter = 100 mark at two places,
-    // and the one tempo reader (`tempoFromXml`, which the engine's map is
-    // placed from) takes the sound, so after its first beat the app plays it
-    // faster than Sugar Cane. A pace word would be true of one surface and
-    // false of the other; the sentence makes none, and the row holds both
-    // facts so that either moving sends a reader back to the sentence.
+    // The brief's premise was that the app plays the two at one tempo. Until
+    // X42 it did only at the catalogue's figure and at the opening: Maple
+    // Leaf's file writes a words-only <sound tempo="120"> beside its printed
+    // quarter = 100 (with its own 100) at two places, and the one tempo reader
+    // (`tempoFromXml`, which the engine's map is placed from) took the first
+    // sound. Since X42 (Entry 185) the sound that agrees with the printed mark
+    // wins there, so the reader plays Maple Leaf at 100 at every position it
+    // states a tempo, as the catalogue says and as it plays Sugar Cane: the two
+    // surfaces now agree. The sentence still makes no pace comparison (whether
+    // it should now make one is put to the reviewer, X42's report); the row
+    // holds both facts so that either moving sends a reader back to it.
     'ragtime.7',
-    "Sugar Cane is likened to Maple Leaf at no pace, while the catalogue gives the two one tempo and the app's tempo map does not",
+    "Sugar Cane is likened to Maple Leaf at no pace, while the catalogue and the app's tempo map both give the two one tempo",
     () => {
       const sugar = item('song.ragtime.joplin-sugar-cane');
       const maple = item('song.ragtime.joplin-maple-leaf-rag');
@@ -3848,7 +3851,7 @@ const F0_APP: [string, string, () => boolean][] = [
         typeof sugar.tempoBpm === 'number' &&
         sugar.tempoBpm === maple.tempoBpm &&
         bpms(sugar).join(',') === '100' &&
-        bpms(maple).join(',') === '100,120,120' &&
+        bpms(maple).join(',') === '100,100,100' &&
         sentence !== '' &&
         !/\b(?:pace|tempo|slow|slower|fast|faster|gentle|gentler|quick|quicker|brisk)\b/i.test(sentence) &&
         text.includes('Beyond the five above there is Sugar Cane, a rag in the Maple Leaf mould.')
