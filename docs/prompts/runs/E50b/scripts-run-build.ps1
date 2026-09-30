@@ -4,8 +4,8 @@
 # The three build/*-cache.json files are copied again from the main checkout (read only) first, as E50's did.
 # Usage: powershell -File scripts-run-build.ps1 -Name build-before -Out <absolute dir>
 param([string]$Name, [string]$Out = "")
-$W = "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a42e749facbb7ae46"
-$M = "C:\Users\yalir\repos\Piano Stuff\PianoProject"
+$W = "<worktree>"
+$M = "<home>\repos\Piano Stuff\PianoProject"
 $Logs = "$W\build\e50b"
 Set-Location $W
 foreach ($f in "demands-cache.json", "positions-cache.json", "notation-cache.json") { Copy-Item "$M\build\$f" "$W\build\$f" -Force }

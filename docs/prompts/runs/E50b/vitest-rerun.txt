@@ -1,5 +1,5 @@
 
- RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a42e749facbb7ae46/app
+ RUN  v5.0.0 <worktree>/app
 
  ❯ tests/unit/lessonClaimsAboutApp.test.ts (288 tests | 2 failed) 266ms
    ❯ the 2026-09-19 lesson corrections, second-read and under test: the app (80)

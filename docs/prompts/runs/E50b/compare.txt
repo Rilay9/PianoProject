@@ -1,4 +1,4 @@
-before C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a42e749facbb7ae46\build\e50b\before (2092 rows); after C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a42e749facbb7ae46\app\public\content (2092 rows); the same ids: True
+before <worktree>\build\e50b\before (2092 rows); after <worktree>\app\public\content (2092 rows); the same ids: True
 
 ## 1. every built score file
    files: before 2013, after 2013; only before []; only after []

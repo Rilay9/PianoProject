@@ -8,6 +8,6 @@ The whole unit suite (npx vitest run in app/, on the after build's content): its
  FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
    AssertionError: expected false to be true // Object.is equality
  FAIL  tests/unit/midiParity.test.ts > the port agrees with the Python converter > has a reference to compare against
-   AssertionError: no reference in C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a42e749facbb7ae46\build\midi-parity: run `python tools/midi-cleanup/tests/parity_reference.py` from the repository root (CI: the step "Write the MIDI parity reference", before "Unit tests"). It writes the references for the committed fixtures, and for each of the three MAESTRO performances that build/midi-real/ holds (see its SOURCE.md).: expected 0 to be greater than 0
+   AssertionError: no reference in <worktree>\build\midi-parity: run `python tools/midi-cleanup/tests/parity_reference.py` from the repository root (CI: the step "Write the MIDI parity reference", before "Unit tests"). It writes the references for the committed fixtures, and for each of the three MAESTRO performances that build/midi-real/ holds (see its SOURCE.md).: expected 0 to be greater than 0
 Test Files  4 failed | 318 passed (322)
 Tests  5 failed | 7406 passed | 1 skipped | 1 todo (7413)

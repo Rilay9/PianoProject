@@ -8,8 +8,8 @@ song.blues.wabash-blues: re-proved on the committed score, named [60f8d018899c];
 song.blues.tishomingo-blues: re-proved on the committed score, named [afa635593b27]; tempoChanged True
 old parent rebuilt through its repair: 60f8d018899c = the repair's from, = git show df275e8f:content/scores/pdmx/QmWwJDFTEwoHzX3qXiVR8koWxt8Vc2oP9BHJSd68BfEVMt.mxl
 old cut: the cutter over the old parent, zipped under system 0: ab221f8913be0384427418c639fd326119fb2f047f96eae4fa5a9a78aa9f6be8 = the laptop's served cut (E-tail's record; E50a's after build and laptop read; E50's before build)
-served C:\Users\yalir\repos\Piano Stuff\PianoProject\app\public\content: its cut ed2aaa19188a is the new cut
-served C:\Users\yalir\repos\Piano Stuff\PianoProject\app\dist\content: its cut ed2aaa19188a is the new cut
+served <home>\repos\Piano Stuff\PianoProject\app\public\content: its cut ed2aaa19188a is the new cut
+served <home>\repos\Piano Stuff\PianoProject\app\dist\content: its cut ed2aaa19188a is the new cut
 new cut: the cutter over the repaired parent, zipped under system 0: ed2aaa19188ac3c90ba0a1dc34c1e6e64d73ddaab3f67cdd3a5c62a82d4d8f89
 re-proved as the build does (excerpts.former_cut_identities): named [ab221f8913be]; the same bars, staves, notes and time (4, 1, 20, '4/4'); tempo 96.0 -> 120.0; levels 1.62 -> 1.69
 the score text, new cut -> old cut (the whole difference):

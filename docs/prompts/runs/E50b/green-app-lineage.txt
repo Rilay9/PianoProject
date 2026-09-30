@@ -1,5 +1,5 @@
 
- RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a42e749facbb7ae46/app
+ RUN  v5.0.0 <worktree>/app
 
 Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
 Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package

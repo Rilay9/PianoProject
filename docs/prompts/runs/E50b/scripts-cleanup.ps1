@@ -1,7 +1,7 @@
 # E50b's cleanup: app/node_modules, app/dist, the built content under app/public/content (its two tracked audio files
 # kept), the copied libraries under content/scores/imported and the whole gitignored build/ (the copied caches, the
 # before build, the run's temp state). Output to runs/E50b/cleanup.txt.
-$W = "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a42e749facbb7ae46"
+$W = "<worktree>"
 $Log = "$W\docs\prompts\runs\E50b\cleanup.txt"
 Set-Location $W
 "" | Out-File -Encoding utf8 $Log

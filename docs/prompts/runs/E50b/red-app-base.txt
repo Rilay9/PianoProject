@@ -1,5 +1,5 @@
 
- RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a42e749facbb7ae46/app
+ RUN  v5.0.0 <worktree>/app
 
  ❯ tests/unit/repairedTempoLineage.test.ts (15 tests | 5 failed) 321ms
    ❯ the relation: each of the seven repaired files names its old identity, one the historical table proved (2)

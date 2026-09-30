@@ -1,5 +1,5 @@
   wrote needs into 105 rung(s)
-content validation of C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a42e749facbb7ae46\app\public\content:
+content validation of <worktree>\app\public\content:
   109 lesson(s): 43 song-optional, 4 exempt from the 3-alternative rule
   exempt: 0.1, 0.2, 0.3, 0.4
   642 item(s) with an estimated level — L0: 0/6, L1: 6/63, L2: 65/155, L3: 63/208, L4: 66/392, L5: 140/432, L6: 128/429, L7: 122/296, L8: 26/77, L9: 26/34
@@ -29,4 +29,4 @@ NOTE: 2 imported score(s) ask for keys an 88-note piano does not have; the gener
   WARNING (rung claims, F2): jam.6 claims walking-bass (texture.walking-bass) and none of its 5 checked options establishes it; deferred: its two-hand walking-bass exercise in A walks in 11 of its 12 bars by the detector's own reading of each bar (E22); its three intro exercises are the line alone, which is not the demand
   WARNING (rung claims, F2): blues.8 claims walking-bass (texture.walking-bass) and none of its 6 checked options establishes it; deferred: its walking-bass exercise in E flat walks in 11 of its 12 bars by the detector's own reading of each bar; the whole-piece rule refuses it for one bar that returns to a pitch (E22)
   views (docs/prompts/views): regenerated 47 file(s) from the audit file and the matrix; 0 had been stale
-content validation OK: C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a42e749facbb7ae46\app\public\content (2092 catalog items)
+content validation OK: <worktree>\app\public\content (2092 catalog items)

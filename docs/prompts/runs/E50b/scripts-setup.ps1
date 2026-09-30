@@ -2,8 +2,8 @@
 # read-only from the main checkout (robocopy /E, never /MIR, .git left out), the four files the builds rewrite
 # snapshotted first, then npm ci. Output to runs/E50b/setup.txt; robocopy's exit 1 means files were copied,
 # 0 nothing to copy, 8 or more a failure.
-$W = "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a42e749facbb7ae46"
-$M = "C:\Users\yalir\repos\Piano Stuff\PianoProject"
+$W = "<worktree>"
+$M = "<home>\repos\Piano Stuff\PianoProject"
 $Runs = "$W\docs\prompts\runs\E50b"
 $Log = "$Runs\setup.txt"
 $Snap = "$W\build\e50b\snapshot"
