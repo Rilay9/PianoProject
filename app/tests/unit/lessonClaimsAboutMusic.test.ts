@@ -1405,19 +1405,19 @@ const T12_MUSIC: [string, string, () => boolean][] = [
     },
   ],
 
+  // Replaced (L120c item 8). Old row: "the easy Canon in D breaks its chords in eighths for twelve bars and then
+  // stops", 4.3's sentence about the Canon. The Canon left 4.3 (its sixteenths, bars 37-44, need 4.4, which teaches
+  // them; 4.6 and 4.7 list it), and the sentence now names Schumann's Melody, which this row holds instead.
   [
     '4.3',
-    'the easy Canon in D breaks its chords in eighths for twelve bars and then stops',
+    'Schumann’s Melody has its left hand running in eighths under the tune in nearly every bar',
     () => {
-      const left = t12Line('song.classical.pachelbel-canon-d.easy', 2);
-      const eighthBars = new Set(
-        left.filter((note) => note.type === 'eighth').map((note) => Number(note.bar)),
-      );
-      return (
-        [...eighthBars].every((bar) => bar <= 12) &&
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].every((bar) => eighthBars.has(bar)) &&
-        left.filter((note) => Number(note.bar) === 13).every((note) => note.type === 'half')
-      );
+      const left = t12Line('song.classical.schumann-melody-op-68-no-1.pdmx', 2);
+      const bars = new Set(left.map((note) => Number(note.bar)));
+      const eighths = (bar: number): number =>
+        left.filter((note) => Number(note.bar) === bar && note.type === 'eighth').length;
+      const full = [...bars].filter((bar) => eighths(bar) === 8);
+      return bars.size === 20 && [...bars].every((bar) => eighths(bar) >= 4) && full.length >= 16;
     },
   ],
 

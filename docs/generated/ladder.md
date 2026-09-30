@@ -34,12 +34,12 @@ is honest about that (replan §1.7). A ⚠ marks a rung under the floor.
 | 3 | `3.1` | 7 | 6 | 1.1–3.2 | Korobeiniki (2.1), Loch Lomond (2.2), Scarborough Fair (2.3), Ode to Joy (in G major) (3.1), Twinkle, Twinkle, Little Star (in F major) (3.1), Oh When the Saints Go Marching In (in F major) (3.2) |
 | 3 | `3.2` | 6 | 5 | 2.3–4.3 | Happy Birthday to You (2.3), Jingle Bells (chorus, in G major with block chords) (3.2), Oh When the Saints Go Marching In (in F major) (3.2), Yankee Doodle (4.0), Oh My Darling Clementine (4.3) |
 | 3 | `3.3` | 6 | 3 | 2.4–5.1 | Greensleeves (simple) (2.4), Greensleeves (with chords) (3.3), Greensleeves (5.1) |
-| 3 | `3.4` | 4 | 3 | 1.5–5.1 | Für Elise (beginner) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Minuet in G major, BWV Anh. 114 (alternative edition) (5.1) |
-| 3 | `3.5` | 5 | 3 | 2.5–5.1 | Ode to Joy (full theme) (2.5), Greensleeves (waltz bass) (3.6), Canon in D (easy) (5.1) |
-| 3 | `3.6` *(song-optional)* | 8 | 2 | 3.6–5.1 | Greensleeves (waltz bass) (3.6), Canon in D (easy) (5.1) |
+| 3 | `3.4` | 4 | 3 | 1.5–5.1 | Für Elise (easy) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Minuet in G major, BWV Anh. 114 (alternative edition) (5.1) |
+| 3 | `3.5` | 5 | 3 | 2.5–5.0 | Ode to Joy (full theme) (2.5), Greensleeves (waltz bass) (3.6), Album for the Young, Op. 68 No. 4 "Chorale" (5.0) |
+| 3 | `3.6` *(song-optional)* | 8 | 1 | 3.6–5.1 | Greensleeves (waltz bass) (3.6) |
 | 4 | `4.1` | 6 | 3 | 3.1–4.1 | Ode to Joy (in G major) (3.1), Für Elise (easy) (4.1), Ode to Joy (easy variation) (4.1) |
-| 4 | `4.2` | 10 | 3 | 3.1–4.2 | Twinkle, Twinkle, Little Star (in F major) (3.1), Für Elise (beginner) (4.1), Bella Ciao (4.2) |
-| 4 | `4.3` | 17 | 3 | 3.3–5.1 | Greensleeves (with chords) (3.3), Canon in D (easy) (5.1), Greensleeves (5.1) |
+| 4 | `4.2` | 10 | 3 | 3.1–4.2 | Twinkle, Twinkle, Little Star (in F major) (3.1), Für Elise (easy) (4.1), Bella Ciao (4.2) |
+| 4 | `4.3` | 17 | 3 | 3.3–5.1 | Greensleeves (with chords) (3.3), Melody, Op. 68 No. 1 (5.0), Greensleeves (5.1) |
 | 4 | `4.4` | 5 | 3 | 4.1–5.1 | Ode to Joy (easy variation) (4.1), Minuet in G major, BWV Anh. 114 (5.1), Minuet in G major, BWV Anh. 114 (alternative edition) (5.1) |
 | 4 | `4.5` | 9 | 4 | 2.2–4.5 | London Bridge Is Falling Down (2.2), When Johnny Comes Marching Home (2.4), Row, Row, Row Your Boat (4.5), Greensleeves (in 6/8) (4.5) |
 | 4 | `4.6` | 4 | 6 | 3.4–5.1 | Für Elise (easy) (4.1), Uti vår hage (4.7), Canon in D (easy) (5.1), Minuet in G major, BWV Anh. 114 (5.1), Carol of the Bells (easy) (5.1), Auld Lang Syne (5.1) |

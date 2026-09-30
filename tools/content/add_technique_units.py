@@ -82,7 +82,7 @@ UNITS: dict[int, dict] = {
             "seventh-chord", "broken-chord", "rotation", "alberti", "wrist",
             "trill", "voicing", "melody-projection", "balance", "tone",
             "sustain-pedal", "held-melody", "CC64", "legato-pedalling",
-            "polyrhythm-3:1", "meter-7-8",
+            "polyrhythm-3:1", "meter-7-8", "sixteenth-notes",
         ],
         "levels": (6.0, 7.0),
     },

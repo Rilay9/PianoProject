@@ -9,7 +9,7 @@
     "rather than fixed: the report E's needs-versus-taught gate acts on. The test fails when a combination",
     "appears or goes. Grouped family by rung by demand, with the number of items. Written by D0 from the",
     "plan after its changes; rewritten by E0a when the file's order stopped being read as the path, and by",
-    "E0b when taughtAt became a list (the same functions as the build's rung-claims report), and by F2 when options left rungs whose paths had not taught what they carry, and by F2a when 1.5 and 3.1 came to introduce the leap and the note outside the key (2.1 and 3.3 teach them) and each practice rung came to stand on the one before, and by F2b when practice.1 came to stand on 1.1 (the steps on the practice rungs, which 1.1 teaches, off the record). And by L120b, when the coping question stopped asking a key signature located at no sounding note (the G five-finger patterns and the coordination exercise in G) and a skip wholly inside a taught fixed position came to be coped with by that position's note reading (the falling riff in C at 1.1)."
+    "E0b when taughtAt became a list (the same functions as the build's rung-claims report), and by F2 when options left rungs whose paths had not taught what they carry, and by F2a when 1.5 and 3.1 came to introduce the leap and the note outside the key (2.1 and 3.3 teach them) and each practice rung came to stand on the one before, and by F2b when practice.1 came to stand on 1.1 (the steps on the practice rungs, which 1.1 teaches, off the record). And by L120b, when the coping question stopped asking a key signature located at no sounding note (the G five-finger patterns and the coordination exercise in G) and a skip wholly inside a taught fixed position came to be coped with by that position's note reading (the falling riff in C at 1.1). And by L120c, when 4.4 came to teach sixteenths (every sixteenth row whose rung stands on 4.4 off the record; classical.4 and technique.4, whose paths do not reach it, stay) and jazz.4 its comping's syncopation (the off-beats exercise on jazz.4 off the record)."
   ],
   "found": [
     {
@@ -38,13 +38,6 @@
         "3.3"
       ],
       "items": 3
-    },
-    {
-      "family": "broken_seventh",
-      "rung": "technique.7",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 2
     },
     {
       "family": "cadence",
@@ -187,16 +180,6 @@
       "items": 1
     },
     {
-      "family": "comping",
-      "rung": "jazz.4",
-      "demand": "rhythm.syncopation",
-      "taughtAt": [
-        "4.5",
-        "latin.3"
-      ],
-      "items": 1
-    },
-    {
       "family": "five_finger",
       "rung": "1.3",
       "demand": "pitch.ledger",
@@ -263,87 +246,21 @@
     },
     {
       "family": "hanon",
-      "rung": "4.4",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 5
-    },
-    {
-      "family": "hanon",
       "rung": "classical.4",
       "demand": "rhythm.sixteenths",
-      "taughtAt": [],
+      "taughtAt": [
+        "4.4"
+      ],
       "items": 2
-    },
-    {
-      "family": "hanon",
-      "rung": "classical.5",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 2
-    },
-    {
-      "family": "hanon",
-      "rung": "classical.6",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 3
-    },
-    {
-      "family": "hanon",
-      "rung": "classical.7",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 2
-    },
-    {
-      "family": "hanon",
-      "rung": "classical.8",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 2
-    },
-    {
-      "family": "hanon",
-      "rung": "ragtime.6",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 1
-    },
-    {
-      "family": "hanon",
-      "rung": "ragtime.7",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 1
-    },
-    {
-      "family": "hanon",
-      "rung": "ragtime.8",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 1
     },
     {
       "family": "hanon",
       "rung": "technique.4",
       "demand": "rhythm.sixteenths",
-      "taughtAt": [],
+      "taughtAt": [
+        "4.4"
+      ],
       "items": 3
-    },
-    {
-      "family": "hanon",
-      "rung": "technique.5",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 2
-    },
-    {
-      "family": "octave_scale",
-      "rung": "technique.7",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 2
     },
     {
       "family": "ostinato",
@@ -446,27 +363,6 @@
       "items": 1
     },
     {
-      "family": "repeated_notes",
-      "rung": "holiday.7",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 1
-    },
-    {
-      "family": "repeated_notes",
-      "rung": "latin.7",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 1
-    },
-    {
-      "family": "repeated_notes",
-      "rung": "technique.6",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 1
-    },
-    {
       "family": "rhythm",
       "rung": "2.4",
       "demand": "metre.compound",
@@ -481,36 +377,9 @@
       "demand": "rhythm.syncopation",
       "taughtAt": [
         "4.5",
-        "latin.3"
+        "latin.3",
+        "jazz.4"
       ],
-      "items": 1
-    },
-    {
-      "family": "rhythm",
-      "rung": "ragtime.5",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 1
-    },
-    {
-      "family": "rotation",
-      "rung": "holiday.7",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 1
-    },
-    {
-      "family": "rotation",
-      "rung": "latin.7",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 1
-    },
-    {
-      "family": "rotation",
-      "rung": "technique.6",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
       "items": 1
     },
     {
@@ -596,20 +465,6 @@
       "items": 1
     },
     {
-      "family": "scale",
-      "rung": "technique.8",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 12
-    },
-    {
-      "family": "secondary_rag",
-      "rung": "ragtime.9",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 1
-    },
-    {
       "family": "slash_bass",
       "rung": "hymns",
       "demand": "pitch.ledger",
@@ -659,33 +514,13 @@
       "items": 1
     },
     {
-      "family": "syncopation",
-      "rung": "technique.6",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 1
-    },
-    {
-      "family": "tremolo_octaves",
-      "rung": "blues.5",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 1
-    },
-    {
-      "family": "tremolo_octaves",
-      "rung": "technique.7",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
-      "items": 1
-    },
-    {
       "family": "tresillo",
       "rung": "3.6",
       "demand": "rhythm.syncopation",
       "taughtAt": [
         "4.5",
-        "latin.3"
+        "latin.3",
+        "jazz.4"
       ],
       "items": 1
     },
@@ -696,13 +531,6 @@
       "taughtAt": [
         "3.6"
       ],
-      "items": 1
-    },
-    {
-      "family": "trill",
-      "rung": "technique.6",
-      "demand": "rhythm.sixteenths",
-      "taughtAt": [],
       "items": 1
     },
     {

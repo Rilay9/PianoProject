@@ -9,18 +9,19 @@ item). Two groups of cases:
 
 - **The shipped curriculum** (reads the built content: run `python tools/content/build.py` first;
   CI: the step 'Build content', before 'Content pipeline tests'). The tool's lines equal the app's
-  probe, `docs/prompts/runs/L120b/after-gate/probe-refusals.txt` — L120b's final snapshot: 379
-  `untaught` at L120b's head, written by `eligibility.eligibleFor` over every rung's own options with
+  probe, `docs/prompts/runs/L120c/after-placement/probe-refusals.txt` — L120c's final snapshot: 219
+  `untaught` at L120c's head, written by `eligibility.eligibleFor` over every rung's own options with
   the learner the session builds at the rung (`session.taughtForLearner`: the taught set and the fixed
   positions) — line for line and demand for demand, apart from the differences recorded in
-  `RECORDED_DIFFERENCES`, each with its reason. It replaced X1's snapshot
-  (`docs/prompts/runs/X1/probe-head-refusals.txt`, 387) when L120b changed the gate's reading
+  `RECORDED_DIFFERENCES`, each with its reason. It replaced L120b's snapshot
+  (`docs/prompts/runs/L120b/after-gate/probe-refusals.txt`, 379) when L120c gave sixteenths a teaching
+  rung (4.4) and moved the pre-4.4 core options that asked them, as L120b's had replaced X1's (387)
   (L124: the pin is a snapshot, re-run and recorded, never forced). The probe is a snapshot: a change
   to a rung's lists, a row's demands, `taughtAt`, a lesson's concepts or the gate changes the app's
   reading too, so this goes red until the probe is re-run at the new head — copy
-  `docs/prompts/runs/L120b/scripts-zzL120bProbe.test.ts` and `scripts-vitest.l120b.config.ts` into
-  the gitignored `app/.probe/` (as `zzL120bProbe.test.ts` and `vitest.l120b.config.ts`), run
-  `L120B_PROBE_OUT=<path> npx vitest run --config .probe/vitest.l120b.config.ts` from `app/`, point
+  `docs/prompts/runs/L120c/scripts-zzL120cProbe.test.ts` and `scripts-vitest.l120c.config.ts` into
+  the gitignored `app/.probe/` (as `zzL120cProbe.test.ts` and `vitest.l120c.config.ts`), run
+  `L120C_PROBE_OUT=<path> npx vitest run --config .probe/vitest.l120c.config.ts` from `app/`, point
   `PROBE` at the new `-refusals.txt` — and the record here says why the two differ. Nothing is forced
   equal.
 - **A constructed curriculum** with one case of each class, under the reviewer's order of truths
@@ -37,6 +38,7 @@ import json
 import re
 import sys
 import unittest
+from unittest import mock
 from collections import Counter
 from pathlib import Path
 
@@ -47,7 +49,7 @@ import untaught_options as U  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[3]
 BUILT = REPO / "app" / "public" / "content"
-PROBE = REPO / "docs" / "prompts" / "runs" / "L120b" / "after-gate" / "probe-refusals.txt"
+PROBE = REPO / "docs" / "prompts" / "runs" / "L120c" / "after-placement" / "probe-refusals.txt"
 
 #: Where the tool's lines on the shipped curriculum differ from the probe, and why. Keyed by
 #: (rung, item); `side` says which reading has the line. Nothing else may differ. Since L120b's snapshot
@@ -100,7 +102,7 @@ class TheShippedCurriculum(unittest.TestCase):
         cls.probe = probe_untaught(PROBE)
 
     def test_the_probe_is_the_one_the_brief_names(self) -> None:
-        self.assertEqual(len(self.probe), 379, "L120b's final probe recorded 379 `untaught` rung-own options")
+        self.assertEqual(len(self.probe), 219, "L120c's final probe recorded 219 `untaught` rung-own options")
 
     def test_the_lines_equal_the_probe_but_for_the_recorded_differences(self) -> None:
         only_probe = {key for key in self.probe if key not in self.mine}
@@ -235,7 +237,13 @@ class OneCaseOfEachClass(unittest.TestCase):
 class TheSubclasses(unittest.TestCase):
     """Within B, an existing concept's claim before a mapping; within C, a later rung before none."""
 
+    # Revised (L120c). Old assumption: no concept maps to rhythm.sixteenths, so a lesson naming sixteenths is a
+    # mapping gap. L120c added `sixteenth-notes` to `claims.CONCEPT_DEMANDS`, so the case takes that one row out
+    # for its length (the classifier on a demand no concept maps is what it tests), and
+    # `test_since_l120c_a_concept_maps_sixteenths_so_the_same_mention_is_a_claim` holds the shipped reading.
+    @mock.patch.dict(claims.CONCEPT_DEMANDS)
     def test_a_mention_with_no_concept_mapping_it_is_a_mapping_gap_and_nowhere_is_said(self) -> None:
+        del claims.CONCEPT_DEMANDS["sixteenth-notes"]
         demands = {"rhythm.sixteenths": demand("rhythm.sixteenths", [])}
         catalog = [measured("song.d", ["rhythm.sixteenths"]), measured("song.e", ["rhythm.sixteenths"])]
         curriculum = curriculum_of((0, [lesson("0.1", ["song.d"])]), (1, [lesson("1.1", ["song.e"])]),
@@ -250,6 +258,19 @@ class TheSubclasses(unittest.TestCase):
         report = U.table(catalog, curriculum, SKILLS, demands, text_of=lambda one: "")
         self.assertEqual({line["demands"][0]["class"] for line in report["lines"]}, {"C-nowhere"})
         self.assertTrue(all(line["demands"][0]["earliest"] is None for line in report["lines"]))
+
+    def test_since_l120c_a_concept_maps_sixteenths_so_the_same_mention_is_a_claim(self) -> None:
+        # Added (L120c): with `sixteenth-notes` mapped, a lesson below that names sixteenths without claiming the
+        # concept is a claim to repair (B-claim), never a mapping gap; and with no lesson naming them, C-nowhere.
+        self.assertEqual(claims.CONCEPT_DEMANDS.get("sixteenth-notes"), "rhythm.sixteenths")
+        demands = {"rhythm.sixteenths": demand("rhythm.sixteenths", [])}
+        catalog = [measured("song.d", ["rhythm.sixteenths"])]
+        curriculum = curriculum_of((0, [lesson("0.1", [])]), (1, [lesson("1.1", ["song.d"])]))
+        texts = {"0.1": "Four sixteenth notes to the beat, counted 1-e-and-a."}
+        named = U.table(catalog, curriculum, SKILLS, demands, text_of=lambda one: texts.get(one["id"], ""))
+        self.assertEqual(named["lines"][0]["demands"][0]["class"], "B-claim")
+        unnamed = U.table(catalog, curriculum, SKILLS, demands, text_of=lambda one: "")
+        self.assertEqual(unnamed["lines"][0]["demands"][0]["class"], "C-nowhere")
 
     def test_a_demand_taught_off_this_path_is_elsewhere_not_nowhere(self) -> None:
         # The practice floor's shape: a track standing on 1.1 that nothing stands on, the demand taught at 1.2.
@@ -283,7 +304,11 @@ class TheSubclasses(unittest.TestCase):
     # untaught_on), 3/8 is no longer compound at the detector, and a written sixteenth in 3/8 is a sixteenth:
     # the last two doubts are gone, and a demand other than the key signature located nowhere keeps the first.
 
+    # Revised (L120c): as the mapping-gap case above, the unmapped state is taken for the case's length; what S1
+    # holds is that a written sixteenth in 3/8 is never a doubt, whatever owns it.
+    @mock.patch.dict(claims.CONCEPT_DEMANDS)
     def test_s1_written_sixteenths_in_three_eight_are_classified_by_ownership_and_placement(self) -> None:
+        del claims.CONCEPT_DEMANDS["sixteenth-notes"]
         demands = {"rhythm.sixteenths": demand("rhythm.sixteenths", [])}
         catalog = [measured("song.f", ["rhythm.sixteenths"], timeSig="3/8")]
         curriculum = curriculum_of((0, [lesson("0.1", [])]), (1, [lesson("1.1", ["song.f"])]))

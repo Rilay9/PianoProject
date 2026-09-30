@@ -1,0 +1,162 @@
+# The table after this re-run: build/l120c-base/untaught-options.json -> build/l120c-after-ownership/untaught-options.json
+
+## Summaries
+
+- before: 378 options, 618 pairs; by class A 3, B-claim 42, B-mapping 67, C-later 238, C-elsewhere 128, C-nowhere 140; by resolution reading 1, ownership 76, placement 301; unread 15
+- after: 221 options, 461 pairs; by class A 3, B-claim 40, B-mapping 0, C-later 259, C-elsewhere 159, C-nowhere 0; by resolution reading 1, ownership 7, placement 213; unread 15
+
+| demand | pairs before | pairs after |
+| --- | --- | --- |
+| rhythm.sixteenths | 207 | 52 |
+| rhythm.syncopation | 125 | 123 |
+| pitch.ledger | 64 | 64 |
+| range.beyond-position | 42 | 42 |
+| key.signature | 28 | 28 |
+| pitch.chromatic | 26 | 26 |
+| rhythm.triplets | 26 | 26 |
+| interval.leap | 20 | 20 |
+| rhythm.eighths | 16 | 16 |
+| rhythm.shorter-than-quarter | 16 | 16 |
+| metre.compound | 11 | 11 |
+| rhythm.dotted-quarter | 10 | 10 |
+| texture.left-hand-pattern | 8 | 8 |
+| interval.skip | 5 | 5 |
+| rhythm.ties | 5 | 5 |
+| clef.bass | 4 | 4 |
+| texture.hands-together | 4 | 4 |
+| interval.step | 1 | 1 |
+
+- pairs that left: 157 (rhythm.sixteenths 155, rhythm.syncopation 2)
+- pairs that appeared: 0 (none)
+- pairs that stayed and changed class: 52 (C-nowhere->C-elsewhere rhythm.sixteenths 31, C-nowhere->C-later rhythm.sixteenths 21)
+
+## Pairs that left the table, by demand and rung
+
+### rhythm.sixteenths (155)
+- 4.4 [4.4 on its path] (5): exercise.hanon.01.both (was C-nowhere); exercise.hanon.02.both (was C-nowhere); exercise.hanon.03.both (was C-nowhere); exercise.hanon.04.both (was C-nowhere); exercise.hanon.05.both (was C-nowhere)
+- 4.6 [4.4 on its path] (3): exercise.hanon.05.both (was C-nowhere); song.classical.pachelbel-canon-d.easy (was C-nowhere); song.folk.uti-var-hage-swedish-traditional-song.pdmx (was C-nowhere)
+- 4.7 [4.4 on its path] (1): song.classical.pachelbel-canon-d.easy (was C-nowhere)
+- blues.5 [4.4 on its path] (1): exercise.tremolo-third.c.right (was C-nowhere)
+- blues.6 [4.4 on its path] (1): song.folk.boogie-woogie.pdmx (was C-nowhere)
+- blues.8 [4.4 on its path] (3): song.blues.black-bottom-stomp (was C-nowhere); song.folk.boogie-woogie.pdmx (was C-nowhere); song.jazz.chevy-chase (was C-nowhere)
+- blues.9 [4.4 on its path] (3): song.blues.black-bottom-stomp (was C-nowhere); song.blues.handful-of-keys (was C-nowhere); song.jazz.stumbling (was C-nowhere)
+- chords-pop.5 [4.4 on its path] (1): song.folk.your-song-elton-john-easy-piano.pdmx (was C-nowhere)
+- chords-pop.6 [4.4 on its path] (2): song.pop.abba-dancing-queen.pdmx (was C-nowhere); song.pop.toby-fox-fallen-down-reprise-undertale-easy.pdmx (was C-nowhere)
+- chords-pop.7 [4.4 on its path] (5): song.folk.scarborough-fair-piano-solo.pdmx (was C-nowhere); song.folk.wake-me-up-avicii.pdmx (was C-nowhere); song.pop.anson-seabra-welcome-to-wonderland-by-anson-seabra.pdmx (was C-nowhere); song.pop.blonde-redhead-for-the-damaged-coda-blonde-redhead.pdmx (was C-nowhere); song.pop.coldplay-fix-you-coldplay.pdmx (was C-nowhere)
+- chords-pop.8 [4.4 on its path] (3): song.pop.hiroyuki-sawano-levi-s-choice-thanksat-t-kt-attack-on-titan.pdmx (was C-nowhere); song.pop.kevin-macleod-if-i-had-a-chicken.pdmx (was C-nowhere); song.pop.toby-fox-undertale-undertale-piano.pdmx (was C-nowhere)
+- chords-pop.9 [4.4 on its path] (5): song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx (was C-nowhere); song.pop.camille-le-festin-piano-arr-kno.pdmx (was C-nowhere); song.pop.harry-styles-falling-by-harry-styles.pdmx (was C-nowhere); song.pop.takeru-kanazaki-fire-emblem-three-houses-apex-of-the-world.pdmx (was C-nowhere); song.pop.wowaka-vocaloid-rolling-girl-aa1-4aaa3aa1-4a.pdmx (was C-nowhere)
+- classical.5 [4.4 on its path] (4): exercise.hanon.06.both (was C-nowhere); exercise.hanon.07.both (was C-nowhere); song.classical.burgmuller-burgmuller-arabesque-op-100-no-2.pdmx (was C-nowhere); song.classical.clementi-sonatina-no1-2-muzio-clementi.pdmx (was C-nowhere)
+- classical.6 [4.4 on its path] (8): exercise.hanon.12.both (was C-nowhere); exercise.hanon.14.both (was C-nowhere); exercise.hanon.16.both (was C-nowhere); song.classical.bach-wtc1-prelude-1 (was C-nowhere); song.classical.beethoven-fur-elise (was C-nowhere); song.classical.chopin-prelude-op28-4 (was C-nowhere); song.classical.chopin-prelude-op28-7.nifc (was C-nowhere); song.classical.chopin-waltz-a-minor (was C-nowhere)
+- classical.7 [4.4 on its path] (8): exercise.hanon.18.both (was C-nowhere); exercise.hanon.20.both (was C-nowhere); song.classical.bach-invention-no-1-in-c-major-bwv-772.pdmx (was C-nowhere); song.classical.bach-invention-no-4-in-d-minor-bwv-775.pdmx (was C-nowhere); song.classical.beethoven-moonlight-i (was C-nowhere); song.classical.beethoven-pathetique-ii (was C-nowhere); song.classical.chopin-mazurka-op7-1.nifc (was C-nowhere); song.classical.mozart-k545-i (was C-nowhere)
+- classical.8 [4.4 on its path] (7): exercise.hanon.17.both (was C-nowhere); exercise.hanon.19.both (was C-nowhere); song.classical.beethoven-moonlight-iii (was C-nowhere); song.classical.chopin-nocturne-op9-1 (was C-nowhere); song.classical.chopin-waltz-op64-2.nifc (was C-nowhere); song.classical.debussy-clair-de-lune (was C-nowhere); song.classical.mozart-rondo-alla-turca (was C-nowhere)
+- classical.9 [4.4 on its path] (7): exercise.hanon.20.both (was C-nowhere); song.classical.chopin-ballade-1 (was C-nowhere); song.classical.chopin-etude-op10-4.nifc (was C-nowhere); song.classical.chopin-fantaisie-impromptu.nifc (was C-nowhere); song.classical.chopin-polonaise-op53.nifc (was C-nowhere); song.classical.chopin-sonata-2-3.nifc (was C-nowhere); song.classical.liszt-la-campanella (was C-nowhere)
+- holiday.6 [4.4 on its path] (3): song.folk.o-holy-night-piano-solo.pdmx (was C-nowhere); song.holiday.carol-of-the-bells (was C-nowhere); song.pop.misc-christmas-joy-to-the-world-piano-solo.pdmx (was C-nowhere)
+- holiday.7 [4.4 on its path] (5): exercise.repeated-notes.c.4x.left (was B-mapping); exercise.rotation.c.left (was B-mapping); song.classical.tchaikovsky-sugar-plum (was B-mapping); song.classical.tchaikovsky-waltz-flowers (was B-mapping); song.jazz.vince-guaraldi-skating.pdmx (was B-mapping)
+- hymns.6 [4.4 on its path] (1): song.folk.amazing-grace-in-g-major-for-piano-breezepiano.pdmx (was C-nowhere)
+- jazz.7 [4.4 on its path] (2): song.jazz.james-pierpont-jingle-bells-jazz-piano.pdmx (was C-nowhere); song.jazz.vince-guaraldi-skating.pdmx (was C-nowhere)
+- jazz.8 [4.4 on its path] (2): song.jazz.hoagy-carmichael-stardust-hoagy-carmichael.pdmx (was C-nowhere); song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx (was C-nowhere)
+- jazz.9 [4.4 on its path] (5): song.jazz.fats-waller-ain-t-misbehavin.pdmx (was C-nowhere); song.jazz.hoagy-carmichael-stardust-hoagy-carmichael.pdmx (was C-nowhere); song.jazz.louis-armstrong-o-when-the-saints-go-marching-in.pdmx (was C-nowhere); song.jazz.the-dave-brubeck-quartet-take-five.pdmx (was C-nowhere); song.jazz.vince-guaraldi-linus-and-lucy-fixed-piano-only.pdmx (was C-nowhere)
+- latin.6 [4.4 on its path] (2): song.folk.por-una-cabeza-carlos-gardel.pdmx (was C-nowhere); song.jazz.the-crave (was C-nowhere)
+- latin.7 [4.4 on its path] (5): exercise.repeated-notes.g.4x.right (was B-mapping); exercise.rotation.g.left (was B-mapping); song.classical.albeniz-asturias.pdmx (was B-mapping); song.classical.el-choclo-piano.pdmx (was B-mapping); song.classical.lecuona-malaguena-by-ernesto-lecuona.pdmx (was B-mapping)
+- ragtime.5 [4.4 on its path] (4): exercise.rhythm.sixteenths.4bar (was B-mapping); song.ragtime.joplin-augustan-club-waltz (was B-mapping); song.ragtime.joplin-entertainer (was B-mapping); song.ragtime.joplin-rose-bud-march (was B-mapping)
+- ragtime.6 [4.4 on its path] (8): exercise.hanon.11.both (was B-mapping); exercise.rhythm.sixteenths.4bar (was B-mapping); song.ragtime.joplin-easy-winners (was B-mapping); song.ragtime.joplin-entertainer (was B-mapping); song.ragtime.joplin-peacherine-rag (was B-mapping); song.ragtime.joplin-school-of-ragtime (was B-mapping); song.ragtime.joplin-sunflower-slow-drag (was B-mapping); song.ragtime.joplin-swipesy-cakewalk (was B-mapping)
+- ragtime.7 [4.4 on its path] (6): exercise.hanon.15.both (was B-mapping); song.ragtime.joplin-elite-syncopations (was B-mapping); song.ragtime.joplin-heliotrope-bouquet (was B-mapping); song.ragtime.joplin-maple-leaf-rag (was B-mapping); song.ragtime.joplin-solace (was B-mapping); song.ragtime.joplin-sugar-cane (was B-mapping)
+- ragtime.8 [4.4 on its path] (8): exercise.hanon.20.both (was B-mapping); exercise.rhythm.sixteenths.4bar (was B-mapping); song.classical.scott-frog-legs-rag.pdmx (was B-mapping); song.ragtime.joplin-cascades (was B-mapping); song.ragtime.joplin-gladiolus-rag (was B-mapping); song.ragtime.joplin-new-rag (was B-mapping); song.ragtime.joplin-pine-apple-rag (was B-mapping); song.ragtime.joplin-pine-apple-rag.mutopia (was B-mapping)
+- ragtime.9 [4.4 on its path] (4): song.classical.joplin-search-light-rag.pdmx (was B-mapping); song.ragtime.joplin-breeze-from-alabama (was B-mapping); song.ragtime.joplin-chrysanthemum (was B-mapping); song.ragtime.joplin-original-rags (was B-mapping)
+- rock.6 [4.4 on its path] (2): song.classical.beethoven-moonlight-i (was C-nowhere); song.classical.chopin-prelude-op28-20.nifc (was C-nowhere)
+- rock.7 [4.4 on its path] (2): song.classical.beethoven-moonlight-iii (was C-nowhere); song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx (was C-nowhere)
+- technique.5 [4.4 on its path] (2): exercise.hanon.11.both (was C-nowhere); exercise.hanon.11.left (was C-nowhere)
+- technique.6 [4.4 on its path] (7): exercise.repeated-notes.c.4x.left (was B-mapping); exercise.rotation.c.left (was B-mapping); exercise.syncopation.sixteenth (was B-mapping); exercise.trill.c.4pb.left (was B-mapping); song.classical.czerny-the-school-of-velocity-op-299-no-1.pdmx (was B-mapping); song.classical.czerny-the-school-of-velocity-op-299-no-3.pdmx (was B-mapping); song.classical.czerny-the-school-of-velocity-op-299-no-4.pdmx (was B-mapping)
+- technique.7 [4.4 on its path] (8): exercise.broken-octaves.a.1oct.left (was B-mapping); exercise.broken-octaves.a.1oct.right (was B-mapping); exercise.broken7.a-dominant7.both (was B-mapping); exercise.broken7.a-flat-dominant7.both (was B-mapping); exercise.tremolo.c.left (was B-mapping); song.classical.czerny-the-school-of-velocity-op-299-no-10.pdmx (was B-mapping); song.classical.czerny-the-school-of-velocity-op-299-no-5.pdmx (was B-mapping); song.classical.czerny-the-school-of-velocity-op-299-no-8.pdmx (was B-mapping)
+- technique.8 [4.4 on its path] (12): exercise.scale.a-flat-major.4oct.similar.both.1 (was B-mapping); exercise.scale.a-major.4oct.similar.both.1 (was B-mapping); exercise.scale.b-flat-major.4oct.similar.both.1 (was B-mapping); exercise.scale.b-major.4oct.similar.both.1 (was B-mapping); exercise.scale.c-major.4oct.similar.both.1 (was B-mapping); exercise.scale.d-flat-major.4oct.similar.both.1 (was B-mapping); exercise.scale.d-major.4oct.similar.both.1 (was B-mapping); exercise.scale.e-flat-major.4oct.similar.both.1 (was B-mapping); exercise.scale.e-major.4oct.similar.both.1 (was B-mapping); exercise.scale.f-major.4oct.similar.both.1 (was B-mapping); exercise.scale.g-flat-major.4oct.similar.both.1 (was B-mapping); exercise.scale.g-major.4oct.similar.both.1 (was B-mapping)
+
+### rhythm.syncopation (2)
+- jazz.4 [4.4 not on its path] (2): song.pop.avalon.pdmx (was B-claim); song.pop.margie.pdmx (was B-claim)
+
+## Pairs that appeared, by demand and rung
+
+none
+
+## Pairs that stayed and changed class
+
+- 3.4 [4.4 not on its path] song.classical.beethoven-fur-elise.beginner rhythm.sixteenths: C-nowhere -> C-later
+- 3.5 [4.4 not on its path] song.classical.pachelbel-canon-d.easy rhythm.sixteenths: C-nowhere -> C-later
+- 3.6 [4.4 not on its path] song.classical.pachelbel-canon-d.easy rhythm.sixteenths: C-nowhere -> C-later
+- 4.2 [4.4 not on its path] song.classical.beethoven-fur-elise.beginner rhythm.sixteenths: C-nowhere -> C-later
+- 4.3 [4.4 not on its path] song.classical.pachelbel-canon-d.easy rhythm.sixteenths: C-nowhere -> C-later
+- blues.3 [4.4 not on its path] song.blues.st-james-infirmary rhythm.sixteenths: C-nowhere -> C-elsewhere
+- chords-pop.4 [4.4 not on its path] song.classical.alexander-s-ragtime-band.pdmx rhythm.sixteenths: C-nowhere -> C-later
+- classical.3 [4.4 not on its path] song.classical.bach-menuet-bwv-anh-113.pdmx rhythm.sixteenths: C-nowhere -> C-later
+- classical.3 [4.4 not on its path] song.classical.bach-menuet-in-d-minor-bwv-anh-132.pdmx rhythm.sixteenths: C-nowhere -> C-later
+- classical.4 [4.4 not on its path] exercise.hanon.01.both rhythm.sixteenths: C-nowhere -> C-later
+- classical.4 [4.4 not on its path] exercise.hanon.02.both rhythm.sixteenths: C-nowhere -> C-later
+- classical.4 [4.4 not on its path] song.classical.bach-march-in-d-major.pdmx rhythm.sixteenths: C-nowhere -> C-later
+- classical.4 [4.4 not on its path] song.classical.gurlitt-cornelius-gurlitt-op-82.pdmx rhythm.sixteenths: C-nowhere -> C-later
+- classical.4 [4.4 not on its path] song.classical.mozart-w-a-mozart-minuet-in-g-major-k1e.pdmx rhythm.sixteenths: C-nowhere -> C-later
+- classical.4.shelf [4.4 not on its path] song.beautiful.g-minor-bach rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.beautiful.hungarian-sonata rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.beautiful.mariage-damour rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.across-the-violet-sky-violet-evergarden-emotional-anime-on-piano-vol-2.pdmx rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.bach-air-on-g-string rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.beethoven-beethoven-symphony-7-2nd-movement-allegretto-simple-piano-arrangement.pdmx rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.bizet-overture-to-carmen-for-piano-solo-by-georges-bizet.pdmx rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.chopin-nocturne-20.alt rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.chopin-nocturne-op9-2.easy rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.chopin-prelude-op28-20.nifc rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.chopin-prelude-op28-4.nifc rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.chopin-prelude-op28-6.nifc rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.chopin-prelude-op28-7.nifc rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.chopin-waltz-op64-2 rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.djawadi-light-of-the-seven.pdmx rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.einaudi-questa-notte.pdmx rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.elgar-salut-d-amour-edward-elgar-love-s-greeting.pdmx rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.grieg-morgenstimmung.pdmx rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.holst-jupiter-theme-arranged-for-piano-gustav-holst.pdmx rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.mahler-symphony-no-5-4th-movement-excerpt-piano-solo.pdmx rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.mascagni-cavalleria-rusticana-intermezzo.pdmx rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.pachelbel-canon-d.easy rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.sakamoto-shining-boy-and-little-randy-ryuichi-sakamoto.pdmx rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.schubert-liszt-standchen rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.spiteri-travelling.pdmx rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.vivaldi-spring-vivaldi.pdmx rhythm.sixteenths: C-nowhere -> C-elsewhere
+- classical.4.shelf [4.4 not on its path] song.classical.zimmer-time-hans-zimmer-inception.pdmx rhythm.sixteenths: C-nowhere -> C-elsewhere
+- holiday [4.4 not on its path] song.classical.1818-franz-xaver-gruber-silent-night.pdmx rhythm.sixteenths: C-nowhere -> C-later
+- hymns [4.4 not on its path] song.classical.jesus-loves-me.pdmx rhythm.sixteenths: C-nowhere -> C-later
+- hymns [4.4 not on its path] song.pop.misc-tunes-come-thou-fount-of-every-blessing.pdmx rhythm.sixteenths: C-nowhere -> C-later
+- hymns.4 [4.4 not on its path] song.classical.bach-o-sacred-head-johann-sebastian-bach-on-a-tune-by-hans-leo-hassler.pdmx rhythm.sixteenths: C-nowhere -> C-later
+- jazz.3 [4.4 not on its path] song.classical.alexander-s-ragtime-band.pdmx rhythm.sixteenths: C-nowhere -> C-elsewhere
+- rock.overview [4.4 not on its path] song.classical.pachelbel-canon-d.easy rhythm.sixteenths: C-nowhere -> C-later
+- technique.4 [4.4 not on its path] exercise.hanon.01.both rhythm.sixteenths: C-nowhere -> C-later
+- technique.4 [4.4 not on its path] exercise.hanon.01.left rhythm.sixteenths: C-nowhere -> C-later
+- technique.4 [4.4 not on its path] exercise.hanon.01.right rhythm.sixteenths: C-nowhere -> C-later
+
+## The sixteenth pairs that remain, by rung
+
+- 3.4 [4.4 not on its path] (1): song.classical.beethoven-fur-elise.beginner (C-later)
+- 3.5 [4.4 not on its path] (1): song.classical.pachelbel-canon-d.easy (C-later)
+- 3.6 [4.4 not on its path] (1): song.classical.pachelbel-canon-d.easy (C-later)
+- 4.2 [4.4 not on its path] (1): song.classical.beethoven-fur-elise.beginner (C-later)
+- 4.3 [4.4 not on its path] (1): song.classical.pachelbel-canon-d.easy (C-later)
+- blues.3 [4.4 not on its path] (1): song.blues.st-james-infirmary (C-elsewhere)
+- chords-pop.4 [4.4 not on its path] (1): song.classical.alexander-s-ragtime-band.pdmx (C-later)
+- classical.3 [4.4 not on its path] (2): song.classical.bach-menuet-bwv-anh-113.pdmx (C-later); song.classical.bach-menuet-in-d-minor-bwv-anh-132.pdmx (C-later)
+- classical.4 [4.4 not on its path] (5): exercise.hanon.01.both (C-later); exercise.hanon.02.both (C-later); song.classical.bach-march-in-d-major.pdmx (C-later); song.classical.gurlitt-cornelius-gurlitt-op-82.pdmx (C-later); song.classical.mozart-w-a-mozart-minuet-in-g-major-k1e.pdmx (C-later)
+- classical.4.shelf [4.4 not on its path] (29): song.beautiful.g-minor-bach (C-elsewhere); song.beautiful.hungarian-sonata (C-elsewhere); song.beautiful.mariage-damour (C-elsewhere); song.classical.across-the-violet-sky-violet-evergarden-emotional-anime-on-piano-vol-2.pdmx (C-elsewhere); song.classical.bach-air-on-g-string (C-elsewhere); song.classical.beethoven-beethoven-symphony-7-2nd-movement-allegretto-simple-piano-arrangement.pdmx (C-elsewhere); song.classical.bizet-overture-to-carmen-for-piano-solo-by-georges-bizet.pdmx (C-elsewhere); song.classical.chopin-nocturne-20.alt (C-elsewhere); song.classical.chopin-nocturne-op9-2.easy (C-elsewhere); song.classical.chopin-prelude-op28-20.nifc (C-elsewhere); song.classical.chopin-prelude-op28-4.nifc (C-elsewhere); song.classical.chopin-prelude-op28-6.nifc (C-elsewhere); song.classical.chopin-prelude-op28-7.nifc (C-elsewhere); song.classical.chopin-waltz-op64-2 (C-elsewhere); song.classical.djawadi-light-of-the-seven.pdmx (C-elsewhere); song.classical.einaudi-questa-notte.pdmx (C-elsewhere); song.classical.elgar-salut-d-amour-edward-elgar-love-s-greeting.pdmx (C-elsewhere); song.classical.grieg-morgenstimmung.pdmx (C-elsewhere); song.classical.holst-jupiter-theme-arranged-for-piano-gustav-holst.pdmx (C-elsewhere); song.classical.mahler-symphony-no-5-4th-movement-excerpt-piano-solo.pdmx (C-elsewhere); song.classical.mascagni-cavalleria-rusticana-intermezzo.pdmx (C-elsewhere); song.classical.pachelbel-canon-d.easy (C-elsewhere); song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx (C-elsewhere); song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx (C-elsewhere); song.classical.sakamoto-shining-boy-and-little-randy-ryuichi-sakamoto.pdmx (C-elsewhere); song.classical.schubert-liszt-standchen (C-elsewhere); song.classical.spiteri-travelling.pdmx (C-elsewhere); song.classical.vivaldi-spring-vivaldi.pdmx (C-elsewhere); song.classical.zimmer-time-hans-zimmer-inception.pdmx (C-elsewhere)
+- holiday [4.4 not on its path] (1): song.classical.1818-franz-xaver-gruber-silent-night.pdmx (C-later)
+- hymns [4.4 not on its path] (2): song.classical.jesus-loves-me.pdmx (C-later); song.pop.misc-tunes-come-thou-fount-of-every-blessing.pdmx (C-later)
+- hymns.4 [4.4 not on its path] (1): song.classical.bach-o-sacred-head-johann-sebastian-bach-on-a-tune-by-hans-leo-hassler.pdmx (C-later)
+- jazz.3 [4.4 not on its path] (1): song.classical.alexander-s-ragtime-band.pdmx (C-elsewhere)
+- rock.overview [4.4 not on its path] (1): song.classical.pachelbel-canon-d.easy (C-later)
+- technique.4 [4.4 not on its path] (3): exercise.hanon.01.both (C-later); exercise.hanon.01.left (C-later); exercise.hanon.01.right (C-later)
+
+- sixteenth pairs on a rung with 4.4 on its path: 0 (the hypothesis says 0)
+
+## The tool against the app's probe at this head
+
+- probe `untaught` lines: 222; tool lines: 221
+- only the probe has: 1
+  - 2.2 drill.reading.sight-reading-2-right ['range.beyond-position']
+- only the tool has: 0
+- the same option read with different demands: 0

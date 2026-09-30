@@ -68,8 +68,8 @@
       "dimension": "rhythm",
       "detector": "sixteenths",
       "copedWithBy": "subdivision",
-      "taughtAt": [],
-      "taughtAtNote": "No rung's concepts name sixteenths and no core lesson teaches reading them; the level-7 row writes them on jazz.8 and theory.9. A gap for D and F to settle, not a rung to guess."
+      "taughtAt": ["4.4"],
+      "taughtAtNote": "4.4 teaches written sixteenths as four even subdivisions of the quarter-note beat, over Hanon Nos. 1-5 in 2/4 at the metronome (L120c; the reviewer's Question 3 on L120a, docs/review/responses/0bcd3be0.md). ragtime.5 and technique.6 name sixteenth-notes too and stand on 4.4, so they record the ownership their lessons teach and are not second teaching rungs; latin.7 and holiday.7 inherit it through 4.4. A track whose path does not reach 4.4 (a Stage 1-4 track: classical.4, technique.4 and classical.4.shelf among them) is not taught it."
     },
     { "id": "rhythm.dotted-quarter", "display": "Dotted quarter notes", "dimension": "rhythm", "detector": "dottedQuarters", "copedWithBy": "dotted-quarter", "taughtAt": ["2.4"] },
     { "id": "rhythm.ties", "display": "Tied notes", "dimension": "rhythm", "detector": "ties", "copedWithBy": "tie", "taughtAt": ["2.4"] },
@@ -79,8 +79,8 @@
       "dimension": "rhythm",
       "detector": "syncopation",
       "copedWithBy": "syncopation",
-      "taughtAt": ["4.5", "latin.3"],
-      "taughtAtNote": "4.5 on the core path. latin.3, whose path leaves the core at 2.5, teaches the clave, a syncopated two-bar rhythm clapped and then played over a quarter-note pulse, one hand syncopated against one that is not. The later rungs naming syncopation (ragtime, latin, technique.5) stand on 4.5."
+      "taughtAt": ["4.5", "latin.3", "jazz.4"],
+      "taughtAtNote": "4.5 on the core path. latin.3, whose path leaves the core at 2.5, teaches the clave, a syncopated two-bar rhythm clapped and then played over a quarter-note pulse, one hand syncopated against one that is not. jazz.4, whose path leaves the core at 3.6 through chords-pop.3 and chords-pop.4, teaches comping in the gaps over a bass that keeps the time: the Charleston (beat one and the and of two) and chords only on the ands, which its off-beats exercise establishes (L120c). The later rungs naming syncopation (ragtime, latin) stand on 4.5."
     },
     { "id": "rhythm.triplets", "display": "Triplets", "dimension": "rhythm", "detector": "triplets", "copedWithBy": "triplets", "taughtAt": ["4.5"] },
     { "id": "metre.compound", "display": "Compound time", "dimension": "metre", "detector": "compoundMetre", "copedWithBy": "6/8", "taughtAt": ["4.5"] },

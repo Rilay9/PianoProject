@@ -69,6 +69,10 @@ CONCEPT_DEMANDS = {
     # detector measures on those two rungs, until a detector proves octave-or-more material.
     "leap": "interval.leap",
     "eighth-notes": "rhythm.eighths",
+    # L120c (the reviewer's Question 3 on L120a, `docs/review/responses/0bcd3be0.md`): written sixteenths, four
+    # even subdivisions of the quarter-note beat. 4.4 teaches them over Hanon; ragtime.5 and technique.6 name them
+    # on 4.4's path. `subdivision` is a skill over three demands and so names none of them.
+    "sixteenth-notes": "rhythm.sixteenths",
     "tied-across-bar": "rhythm.ties",
     "key-signatures": "key.signature",
     "chromatic": "pitch.chromatic",

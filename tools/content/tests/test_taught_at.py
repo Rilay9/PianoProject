@@ -188,7 +188,9 @@ class TestTheDerivation(Vocabulary):
         demands = {d["id"]: d for d in self.demands["demands"]}
         derived = claims.teaching_rungs(self.curriculum, skills, demands)
         self.assertEqual(derived[WALK], ["jazz.6", "blues.6", "jam.6"])
-        self.assertEqual(derived["rhythm.syncopation"], ["latin.3", "4.5"])
+        # Revised (L120c item 9). Old assumption: syncopation's teaching rungs are latin.3 and 4.5 alone. jazz.4 now
+        # names the syncopation its comping teaches (the Charleston, the off-beats) on a path that reaches neither.
+        self.assertEqual(derived["rhythm.syncopation"], ["latin.3", "4.5", "jazz.4"])
         self.assertEqual(derived["key.signature"], ["3.1", "theory.3"])
         self.assertEqual(derived["texture.hands-together"], ["2.1", "holiday"])
         # Added (F2a): the leap is 2.1's and the note outside the key 3.3's, read from their concepts;
@@ -653,6 +655,47 @@ class TestASkipInsideATaughtFixedPosition(unittest.TestCase):
     def test_3_after_1_5_a_skip_outside_every_position_is_taught_as_now(self) -> None:
         for rung in ("1.5", "2.1"):
             self.assertEqual(self.untaught(self.row(["interval.step", SKIP], {"R": [72, 79]}), rung), [], rung)
+
+
+class TestJazz4TeachesSyncopationOnItsOwnPath(unittest.TestCase):
+    """
+    L120c item 9, the one repair its classification found (the reviewer's guard on the brief,
+    `docs/review/responses/questions-bbd7f99a.md`: repair only a claim whose lesson text already clearly teaches
+    the demand; stop before any change that moves a demand's first core teaching rung earlier). jazz.4's lesson
+    teaches comping "in the gaps" over a bass that "keeps the time": the Charleston, "beat one and the 'and' of
+    two", and off-beats, "only on the 'ands'" — the vocabulary's syncopation, a note off the beat or after a rest
+    on the beat against a pulse that keeps going — and its off-beats exercise establishes the demand. Its path
+    leaves the core at 3.6 through chords-pop.3 and chords-pop.4, so neither 4.5 nor latin.3 is on it: jazz.4
+    claims `syncopation` and is its path's teaching rung. 4.5 stays the core's first. Red on L120b's head.
+    """
+
+    SYNC = "rhythm.syncopation"
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.curriculum = source_curriculum()
+        cls.ancestry = claims.rung_ancestry(cls.curriculum)
+        cls.skills, cls.demands = claims.load_vocabulary()
+        cls.lessons = {lesson["id"]: lesson for _s, _u, lesson in claims.lessons_in_order(cls.curriculum)}
+
+    def untaught(self, rung: str) -> list[str]:
+        item = {"id": "song.l120c.syncopation-probe", "demands": [self.SYNC],
+                "measurement": {"status": "measured", "established": [self.SYNC], "located": {self.SYNC: 8}}}
+        return claims.untaught_on(item, rung, self.ancestry, self.demands, self.curriculum)
+
+    def test_jazz_4_claims_it_and_is_its_path_s_teaching_rung(self) -> None:
+        self.assertIn("syncopation", self.lessons["jazz.4"]["concepts"])
+        for rung in ("4.5", "latin.3"):
+            self.assertNotIn(rung, self.ancestry["jazz.4"], f"{rung} is not on jazz.4's path")
+        self.assertIn("jazz.4", claims.teaching_rungs(self.curriculum, self.skills, self.demands, self.ancestry)[self.SYNC])
+        self.assertIn("jazz.4", self.demands[self.SYNC]["taughtAt"])
+
+    def test_taught_at_jazz_4_and_the_core_s_first_rung_unmoved(self) -> None:
+        self.assertEqual(self.untaught("jazz.4"), [], "jazz.4 teaches it")
+        self.assertEqual(self.untaught("chords-pop.4"), [self.SYNC], "jazz.4's prerequisite does not")
+        for rung in ("4.4", "3.6"):
+            self.assertEqual(self.untaught(rung), [self.SYNC], f"the core teaches it from 4.5, not before: {rung}")
+        self.assertEqual(self.untaught("4.5"), [])
 
 
 if __name__ == "__main__":

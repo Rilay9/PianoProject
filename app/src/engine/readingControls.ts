@@ -502,6 +502,9 @@ export const UNREALISABLE_AT: readonly Unrealisable[] = [
   },
   { rungs: LEVEL_3_RUNGS, demand: 'rhythm.eighths', direction: 'off', kind: 'generator', reason: COMPOUND_FIGURES },
   { rungs: LEVEL_3_RUNGS, demand: 'rhythm.shorter-than-quarter', direction: 'off', kind: 'generator', reason: COMPOUND_FIGURES },
+  // L120c: 4.4 teaches sixteenths, so from 4.5 the reader may ask for them; the level-3 row's compound phrases
+  // cannot hold them. At 4.4 the level-2 row writes them when asked.
+  { rungs: LEVEL_3_RUNGS, demand: 'rhythm.sixteenths', direction: 'on', kind: 'generator', reason: COMPOUND_FIGURES },
   {
     rungs: LEVEL_3_RUNGS,
     demand: 'metre.compound',

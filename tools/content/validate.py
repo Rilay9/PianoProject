@@ -558,8 +558,6 @@ CORE_REACH_PLAN: frozenset[tuple[str, str]] = frozenset({
     ("2.5", "song.classical.beethoven-ode-to-joy.easy"),
     ("3.4", "song.classical.petzold-minuet-g-bwv-anh114"),
     ("3.4", "song.classical.petzold-minuet-g-bwv-anh114.alt"),
-    ("3.5", "song.classical.pachelbel-canon-d.easy"),
-    ("3.6", "song.classical.pachelbel-canon-d.easy"),
 })
 
 
