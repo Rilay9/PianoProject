@@ -1,0 +1,9 @@
+
+Running 4 tests using 2 workers
+
+  ok 1 tests\e2e\today.spec.ts:654:3 › the reason keeps its deciding clause at 342 × 740 (U63) › the held line: the rung’s wait said in two lines, its claim whole (1.7s)
+  ok 2 tests\e2e\today.spec.ts:611:3 › the reason keeps its deciding clause at 342 × 740 (U63) › C6’s learner: the warm-up’s and the review’s reasons whole, the passed badge beside the controls; the running card the same, Next beside them (2.5s)
+  ok 3 tests\e2e\today.spec.ts:677:3 › the reason keeps its deciding clause at 342 × 740 (U63) › waiting for its reads on 3.4: “Next lesson — this one waits for your reads”, whole (1.0s)
+  ok 4 tests\e2e\today.spec.ts:696:3 › the reason keeps its deciding clause at 342 × 740 (U63) › the swap sheet wears Paused beside a song the learner paused (G94) (915ms)
+
+  4 passed (6.6s)
