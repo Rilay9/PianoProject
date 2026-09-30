@@ -318,3 +318,5 @@ If E50a’s learner-material relation already has exactly that effect — same m
 If a test shows the alias causes old performance evidence to be reinterpreted as satisfying a new tempo-dependent standard, stop and narrow the relation before E50 lands. Do not solve continuity by falsifying historical performance truth.
 
 This is an explicitly reviewed semantic relation under the earlier condition; it does not require a separate architecture lane unless the existing relation cannot express it safely.
+
+**Landed 2026-09-29** (Entry 163; 68e0479b, merged 16df185b); handoff `handoffs/68e0479b.md`.
