@@ -1,0 +1,41 @@
+
+Running 5 tests using 2 workers
+
+  ok 2 tests\e2e\score.screen.spec.ts:1224:3 › ▶ after the sound was suspended (U69) › a start that never answers: no run, ▶ at rest, the state line says so; the next ▶ runs with the sound (5.1s)
+  x  1 tests\e2e\score.screen.spec.ts:1190:3 › ▶ after the sound was suspended (U69) › ▶ brings a suspended context back to running, and the run starts (10.3s)
+  ok 3 tests\e2e\score.screen.spec.ts:1288:3 › ▶ after the sound was suspended (U69) › the summary’s Again with a start that never answers: no run, the summary stays, the line above it names Again (17.0s)
+  ok 4 tests\e2e\score.screen.spec.ts:1373:5 › ▶ after the sound was suspended (U69) › a refused tap on the summary, upright (342 × 740): the summary’s own line names it, whole, and nothing changed (19.3s)
+  ok 5 tests\e2e\score.screen.spec.ts:1373:5 › ▶ after the sound was suspended (U69) › a refused tap on the summary, sideways (740 × 342): the summary’s own line names it, whole, and nothing changed (18.9s)
+
+
+  1) tests\e2e\score.screen.spec.ts:1190:3 › ▶ after the sound was suspended (U69) › ▶ brings a suspended context back to running, and the run starts 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('section[data-screen="score"]')
+    Expected: "true"
+    Received: "false"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('section[data-screen="score"]') with timeout 5000ms
+      - waiting for locator('section[data-screen="score"]')
+        14 × locator resolved to <section data-loop="" data-side="empty" data-ladder="off" data-mode="tempo" data-input="none" data-chrome="open" data-screen="score" data-rhythm="false" data-running="false" data-hearing="false" data-keys-guide="next" class="screen screen--score">…</section>
+           - unexpected value "false"
+
+
+      1211 |     await page.locator('#score-play').click({ timeout: 5_000 });
+      1212 |     await expect.poll(state, { message: 'the context after ▶', timeout: 10_000 }).toBe('running');
+    > 1213 |     await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-running', 'true');
+           |                                                                ^
+      1214 |   });
+      1215 |
+      1216 |   /**
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:1213:64
+
+    Error Context: build\u105a\test-results\score.screen-▶-after-the-s-2b560--running-and-the-run-starts\error-context.md
+
+  1 failed
+    tests\e2e\score.screen.spec.ts:1190:3 › ▶ after the sound was suspended (U69) › ▶ brings a suspended context back to running, and the run starts 
+  4 passed (51.2s)
+exit 1

@@ -1339,6 +1339,8 @@ test.describe('▶ after the sound was suspended (U69)', () => {
     expect(lineBox, 'the state line has no box').not.toBeNull();
     expect(sheetBox, 'the summary has no box').not.toBeNull();
     expect(lineBox!.y + lineBox!.height, 'the state line is under the summary').toBeLessThanOrEqual(sheetBox!.y);
+    // …and the sheet holds it too, for a screen reader: painted only where the header is not (U105a).
+    await expect(page.locator('#score-summary #summary-refusal')).toHaveText(sentence);
     expect(await state()).toBe('suspended');
 
     await page.evaluate(() => {
@@ -1351,4 +1353,188 @@ test.describe('▶ after the sound was suspended (U69)', () => {
     await expect(summary).toBeHidden();
     await expect(line).not.toHaveText(sentence);
   });
+
+  /**
+   * A refused tap on the summary is said where the learner can read it, once,
+   * upright and sideways (U105a, the reviewer's required change on U105,
+   * `responses/f51e8010.md`; *once* is the orchestrator's word at the landing).
+   * Sideways the header is not drawn and the bar that mirrors its line is under
+   * the sheet, so a refused *Again* there showed nothing: the control looked
+   * dead. The sheet now carries the sentence first on it, painted where the
+   * header is not drawn; where it is (upright) the header's line is the one
+   * seen and the sheet's copy stays for a screen reader. Here: exactly one
+   * painted copy in view — sideways the sheet's (in the window, inside the
+   * sheet, nothing drawn over it, whole: no ellipsis, no overflow), upright the
+   * header's (above the sheet, uncut) with the sheet's copy not painted; the
+   * sheet's copy a status in the accessibility tree either way; and the refused
+   * tap changing nothing — no run, the tempo, the loop, the hand and the
+   * summary as they were. *Slower* first, because its sentence is as long as
+   * any a summary tap says and its tap moves the tempo; then *Again*, whose
+   * sentence replaces it.
+   */
+  for (const [held, width, height] of [
+    ['upright', 342, 740],
+    ['sideways', 740, 342],
+  ] as const) {
+    test(`a refused tap on the summary, ${held} (${String(width)} × ${String(height)}): the sentence read once, whole, the sheet’s copy a status, and nothing changed`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height });
+      await page.addInitScript(() => {
+        const Native = window.AudioContext;
+        const made: AudioContext[] = [];
+        (window as Captured).__contexts = made;
+        window.AudioContext = class extends Native {
+          constructor(options?: AudioContextOptions) {
+            super(options);
+            made.push(this);
+          }
+        };
+      });
+      await openScore(page);
+      const state = (): Promise<string> =>
+        page.evaluate(() => (window as Captured).__contexts?.[0]?.state ?? 'none');
+      await expect.poll(state, { message: 'the app made its context as the piece loaded' }).not.toBe('none');
+      // An ordinary tap on the title, which is no control; sideways it is the bar's copy.
+      await page.locator(held === 'sideways' ? '#score-title-side' : '#score-title').click({ timeout: 5_000 });
+      await expect.poll(state).toBe('running');
+      await page.locator('#score-mode').selectOption('tempo');
+      await setTempoPercent(page, 130);
+      await page.locator('#score-play').click();
+      const summary = page.locator('#score-summary');
+      await expect(summary).toBeVisible({ timeout: 60_000 });
+      await page.evaluate(async () => {
+        const ctx = (window as Captured).__contexts?.[0];
+        await ctx?.suspend();
+        // An own property over the prototype's: removed below, the real `resume` answers again.
+        if (ctx) ctx.resume = () => new Promise<void>(() => undefined);
+      });
+      await expect.poll(state).toBe('suspended');
+      const section = page.locator('section[data-screen="score"]');
+      /** What a refused summary tap must leave as it was. */
+      const facts = (): Promise<Record<string, string | null>> =>
+        page.evaluate(() => {
+          const screen = document.querySelector<HTMLElement>('section[data-screen="score"]');
+          return {
+            running: screen?.dataset.running ?? null,
+            tempo: document.querySelector<HTMLInputElement>('#score-tempo')?.value ?? null,
+            loop: screen?.dataset.loop ?? null,
+            hand: document.querySelector('[id^="score-hands-"].is-selected')?.id ?? null,
+            summary: String(document.querySelector<HTMLElement>('#score-summary')?.hidden === false),
+          };
+        });
+      const before = await facts();
+      // Each fact read as something, so "unchanged" is not two nulls agreeing.
+      expect(before.running).not.toBe('true');
+      expect(before.summary).toBe('true');
+      expect(before.tempo).toBe('130');
+      expect(before.loop, 'no loop, read as the empty attribute').toBe('');
+      expect(before.hand, 'no hand reads as chosen').not.toBeNull();
+      const refusal = page.locator('#score-summary #summary-refusal');
+
+      /** Taps a summary control with the sound's start never answering, and reads its refusal where the learner is. */
+      const refusedTap = async (id: string, sentence: string): Promise<void> => {
+        await page.locator(id).click({ timeout: 5_000 });
+        // Past the bound: the sentence is what says the wait is over (polled, no fixed sleep).
+        await expect(refusal, `the summary’s line after ${id}’s bound`).toHaveText(sentence, { timeout: 10_000 });
+        await expect(page.locator(id)).toHaveAttribute('data-sound-refused', 'true');
+        expect(await facts(), `${id}’s refused tap changed something`).toEqual(before);
+        // The sheet's copy is a status in the accessibility tree, painted or not: a screen reader reaches it.
+        // (The header's line is a status too, but inert under the summary, which Playwright's role query
+        // does not count as hidden; so the query is the sheet's.)
+        await expect(
+          summary.getByRole('status').filter({ hasText: sentence }),
+          'no status on the summary says it',
+        ).toHaveCount(1);
+        const copies = await page.evaluate((said) => {
+          const sheetNode = document.querySelector<HTMLElement>('#score-summary')!;
+          const sheet = sheetNode.getBoundingClientRect();
+          const displayed = (node: Element): boolean => {
+            for (let at: Element | null = node; at !== null; at = at.parentElement) {
+              if (getComputedStyle(at).display === 'none') return false;
+            }
+            return true;
+          };
+          /** A copy of the sentence, and whether it is painted where the learner can read it. */
+          const read = (selector: string) => {
+            const node = document.querySelector<HTMLElement>(selector);
+            if (node === null || !(node.textContent ?? '').includes(said)) return null;
+            const r = node.getBoundingClientRect();
+            const range = document.createRange();
+            range.selectNodeContents(node);
+            const text = range.getBoundingClientRect();
+            // Drawn over? A copy on the sheet: what is drawn at its text's two ends and middle. A copy
+            // behind the sheet (the head, the bar: inert while it is up, so hit-testing passes through
+            // them): whether the sheet's box overlaps its own.
+            const at = (x: number): boolean => {
+              const top = document.elementFromPoint(x, r.top + r.height / 2);
+              return top !== null && (top === node || node.contains(top));
+            };
+            const clear = sheetNode.contains(node)
+              ? at(text.left + 2) && at((text.left + text.right) / 2) && at(text.right - 2)
+              : r.bottom <= sheet.top || r.top >= sheet.bottom || r.right <= sheet.left || r.left >= sheet.right;
+            // Out of the paint: not displayed, or `.visually-hidden`'s one pixel.
+            const shown = displayed(node) && r.width > 1 && r.height > 1;
+            const inWindow = r.top >= 0 && r.left >= 0 && r.bottom <= window.innerHeight && r.right <= window.innerWidth;
+            return {
+              painted: shown && inWindow && clear,
+              shown,
+              inWindow,
+              clear,
+              inSheet: r.top >= sheet.top && r.bottom <= sheet.bottom && r.left >= sheet.left && r.right <= sheet.right,
+              scrollWidth: node.scrollWidth,
+              clientWidth: node.clientWidth,
+              textInside: text.left >= r.left - 0.5 && text.right <= r.right + 0.5,
+              ellipsis: getComputedStyle(node).textOverflow === 'ellipsis',
+            };
+          };
+          return {
+            header: read('#score-waiting'),
+            mirror: read('#score-status-side'),
+            corner: read('#score-corner'),
+            sheet: read('#summary-refusal'),
+          };
+        }, sentence);
+        // Once: exactly one copy painted where it can be read — sideways the sheet's, upright the header's.
+        const painted = Object.entries(copies)
+          .filter(([, copy]) => copy?.painted === true)
+          .map(([name]) => name);
+        // Soft, so a red run names every fact that failed, not only the first.
+        expect.soft(painted, `the sentence is not read once ${held}`).toEqual([held === 'sideways' ? 'sheet' : 'header']);
+        const seen = held === 'sideways' ? copies.sheet : copies.header;
+        expect(seen, 'no copy to read').not.toBeNull();
+        if (held === 'sideways') expect.soft(seen!.inSheet, 'the summary’s line is outside the summary’s box').toBe(true);
+        expect.soft(seen!.inWindow, 'the line read is off the screen').toBe(true);
+        expect.soft(seen!.clear, 'something is drawn over the sentence').toBe(true);
+        expect.soft(seen!.scrollWidth, 'the sentence overflows its line').toBeLessThanOrEqual(seen!.clientWidth);
+        expect.soft(seen!.textInside, 'the sentence runs outside its line').toBe(true);
+        if (held === 'sideways') expect.soft(seen!.ellipsis, 'the summary’s line cuts with an ellipsis').toBe(false);
+        // Upright the sheet's copy is there for a screen reader and not painted: the sentence once.
+        if (held === 'upright') expect.soft(copies.sheet?.shown, 'the sheet’s copy is painted upright too').toBe(false);
+        expect(test.info().errors.length, 'the sentence is not seen whole, once').toBe(0);
+        expect(await state()).toBe('suspended');
+      };
+
+      // `STATE_TEXT.soundOff` in `help.ts`, as `help.test.ts` joins them to `04` §5f.
+      await refusedTap('#summary-slower', 'Sound did not start — tap Slower again');
+      // The second from the sheet scrolled to its foot, where sideways the self-report row is (the
+      // sheet is at its 72 % and scrolls): the line is held at the sheet's top, still in view.
+      const scrolled = await summary.evaluate((node) => {
+        node.scrollTop = node.scrollHeight;
+        return node.scrollTop;
+      });
+      if (held === 'sideways') expect(scrolled, 'the sheet did not scroll, so its foot is not exercised').toBeGreaterThan(0);
+      await refusedTap('#summary-again', 'Sound did not start — tap Again');
+
+      await page.evaluate(() => {
+        const ctx = (window as Captured).__contexts?.[0];
+        if (ctx) Reflect.deleteProperty(ctx, 'resume');
+      });
+      await page.locator('#summary-again').click({ timeout: 5_000 });
+      await expect.poll(state, { message: 'the context after the last Again', timeout: 10_000 }).toBe('running');
+      await expect(section).toHaveAttribute('data-running', 'true');
+      await expect(summary).toBeHidden();
+      await expect(page.locator('#score-tempo'), 'Again ran at the tempo the refusals left').toHaveValue(before.tempo ?? '');
+    });
+  }
 });

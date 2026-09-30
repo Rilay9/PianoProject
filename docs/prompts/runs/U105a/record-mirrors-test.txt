@@ -1,0 +1,36 @@
+............................EE......
+======================================================================
+ERROR: test_committed_mirrors_equal_generated (tests.test_record_mirrors.TheCommittedMirrors.test_committed_mirrors_equal_generated)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_record_mirrors.py", line 101, in test_committed_mirrors_equal_generated
+    expected, actual = rm.render(), rm.on_disk()
+                       ^^^^^^^^^^^
+  File "<worktree>\tools\docs\record_mirrors.py", line 626, in render
+    return render_tree(Tree(root))
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "<worktree>\tools\docs\record_mirrors.py", line 620, in render_tree
+    raise RecordError(failures)
+record_mirrors.RecordError: entry-without-brief: docs/prompts/runs/U105a/ENTRY.md:1: Entry 182 names 'U105a', which no record block declares
+
+======================================================================
+ERROR: test_the_tree_round_trips (tests.test_record_mirrors.TheCommittedMirrors.test_the_tree_round_trips)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_record_mirrors.py", line 107, in test_the_tree_round_trips
+    self.assertRoundTrip(ROOT)
+  File "<worktree>\tools\content\tests\test_record_mirrors.py", line 81, in assertRoundTrip
+    files = rm.render(root)
+            ^^^^^^^^^^^^^^^
+  File "<worktree>\tools\docs\record_mirrors.py", line 626, in render
+    return render_tree(Tree(root))
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "<worktree>\tools\docs\record_mirrors.py", line 620, in render_tree
+    raise RecordError(failures)
+record_mirrors.RecordError: entry-without-brief: docs/prompts/runs/U105a/ENTRY.md:1: Entry 182 names 'U105a', which no record block declares
+
+----------------------------------------------------------------------
+Ran 36 tests in 1.888s
+
+FAILED (errors=2)
+test_record_mirrors exit 1

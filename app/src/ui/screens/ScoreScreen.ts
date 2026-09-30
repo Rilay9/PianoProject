@@ -940,6 +940,28 @@ export function ScoreScreen(router: Router): HTMLElement {
   sheet.hidden = true;
   section.appendChild(sheet);
 
+  /**
+   * The summary's own line for a tap on it whose sound did not start (U105a,
+   * the reviewer's required change on U105, `responses/f51e8010.md`).
+   *
+   * The state line that says so lives in the header, and sideways the header
+   * is not drawn: the line is mirrored into the bar, and the summary sheet is
+   * over the bar. So a refused *Again* sideways showed nothing, and the
+   * control looked dead. The bar is not lifted over the sheet — it would bring
+   * back six controls meant to be out of reach while the summary is up — and
+   * the header is not either: the sheet says it itself, first on the sheet, in
+   * the sentence the state line says (`soundOffLine`, drawn in
+   * `drawWaitingFor`). Painted only where the header is not drawn (sideways;
+   * `style.css` decides, by the query that hides the header), so the learner
+   * reads it once; where the header's line shows it above the sheet, this copy
+   * is not painted and stays a status a screen reader is told of, which the
+   * inert head behind the sheet never allows. Empty otherwise.
+   */
+  const summaryRefusal = document.createElement('p');
+  summaryRefusal.className = 'summary-refusal';
+  summaryRefusal.id = 'summary-refusal';
+  summaryRefusal.setAttribute('role', 'status');
+
   // --- header --------------------------------------------------------------
 
   /**
@@ -3594,7 +3616,8 @@ export function ScoreScreen(router: Router): HTMLElement {
     // "Playing the left hand for you" must not stand over a finished run
     // (`08` §6.3).
     status.textContent = '';
-    sheet.replaceChildren();
+    // First on the sheet: why a tap on it did not start, when one did not (U105a).
+    sheet.replaceChildren(summaryRefusal);
     /** Where the session's transition is drawn (X1, `drawNext`); on the sheet only where the run is a session's activity. */
     const nextHost = document.createElement('div');
     nextHost.className = 'session-next';
@@ -4257,6 +4280,7 @@ export function ScoreScreen(router: Router): HTMLElement {
       }
       sheet.appendChild(ask);
     }
+    drawSummaryRefusal();
     summaryUp(true);
   }
 
@@ -4388,6 +4412,21 @@ export function ScoreScreen(router: Router): HTMLElement {
     // is never left with a screen that says only the piece's name.
     helpStrip.setNow(wanted);
     waitingLine.hidden = false;
+    drawSummaryRefusal();
+  }
+
+  /**
+   * The summary's own line (U105a): the refusal's sentence where the refused
+   * control is on the summary, and nothing otherwise — a refusal standing for
+   * a control behind the sheet (inert while it is up) is the state line's
+   * alone, so the sheet never names a control it does not hold. Drawn with the
+   * state line, so the two never disagree: a tap asking again clears both, a
+   * refusal sets both, the sound starting by any path clears both.
+   */
+  function drawSummaryRefusal(): void {
+    const refused = refusedNow();
+    const control = refused === null ? null : document.getElementById(refused.id);
+    summaryRefusal.textContent = control !== null && sheet.contains(control) ? soundOffLine() : '';
   }
 
   /**
