@@ -1,0 +1,64 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/windowRendererStage.test.ts (29 tests | 2 failed | 27 skipped) 76ms
+   ❯ each priced count carries its own look-ahead, from its own geometry (U113) (2)
+     × two asked on a stage they fill: the drawn count says no row below, one bar says one, as the chooser draws one bar asked 63ms
+     × four asked on two rows with the next bar below: two bars draw larger and leave no room, as the chooser draws two asked 12ms
+node.exe : 
+ 
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > each priced count carries its own look-ahead, from its own geometry 
+(U113) > two asked on a stage they fill: the drawn count says no row below, one bar says one, as the chooser draws one 
+bar asked
+AssertionError: the drawn count's read-out is the reservation the chooser made: {"slotCount":2,"systems":2,"shown":2,"c
+andidates":[{"shown":2,"systems":2,"staffPx":36.2},{"shown":1,"systems":1,"staffPx":36.2}]}: expected undefined to be 
+false // Object.is equality
+
+- Expected:
+false
+
++ Received:
+undefined
+
+ ❯ tests/unit/windowRendererStage.test.ts:1210:113
+    1208|     expect(fit.userZoom, 'Size 100 %').toBe(1);
+    1209|     expect([fit.barsAsked, fit.barsShown, fit.systemsPerWindow, fit.sl…
+    1210|     expect(candidate(fit, 2)?.ahead, `the drawn count's read-out is th…
+       |                                                                                                               
+  ^
+    1211|     const oneBar = candidate(fit, 1);
+    1212|     expect(oneBar?.systems, said).toBe(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > each priced count carries its own look-ahead, from its own geometry 
+(U113) > four asked on two rows with the next bar below: two bars draw larger and leave no room, as the chooser draws 
+two asked
+AssertionError: the drawn count's read-out is the reservation the chooser made: {"slotCount":3,"systems":2,"shown":4,"c
+andidates":[{"shown":4,"systems":2,"staffPx":28.1},{"shown":3,"systems":3,"staffPx":29.2},{"shown":2,"systems":2,"staff
+Px":47.6},{"shown":1,"systems":1,"staffPx":49.8}]}: expected undefined to be true // Object.is equality
+
+- Expected:
+true
+
++ Received:
+undefined
+
+ ❯ tests/unit/windowRendererStage.test.ts:1225:101
+    1223|     expect([fit.barsAsked, fit.barsShown, fit.systemsPerWindow, fit.sl…
+    1224|     const asked = candidate(fit, 4);
+    1225|     expect(asked?.ahead, `the drawn count's read-out is the reservatio…
+       |                                                                                                     ^
+    1226|     const twoBars = candidate(fit, 2);
+    1227|     expect(twoBars?.systems, `two bars on as many rows as the four: ${…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 27 skipped (29)
+   Start at  16:02:07
+   Duration  1.21s (environment 65%, transform 23%, tests 7%, import 5%)
+

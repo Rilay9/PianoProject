@@ -1126,3 +1126,108 @@ describe('a long piece gets the sheets its settled shape needs (U32a)', () => {
     renderer.dispose();
   });
 });
+
+/**
+ * U113: every count the chooser prices carries its own look-ahead read-out
+ * (`debugFit().priced.candidates[].ahead`), so the table the look-ahead question asks for can
+ * compare one bar fewer with the count drawn, from the same pricing pass, the requested count held
+ * fixed. Diagnostic only: the chooser's pick is unchanged.
+ *
+ * The read-out is a prediction about each candidate's own window, rows and scale — the reservation
+ * `priceWindowShape` makes for the drawn shape, run against the candidate — never the drawn
+ * shape's answer copied onto the rest, and never the drawn shape's scale lent to a candidate's
+ * rows. Two stages, one each way round, where the drawn count and a smaller one disagree:
+ *
+ * - 342 x 500, bars of 30: two asked fill the stage on two rows with nothing below; one bar on one
+ *   row is held by the width and leaves a row's height below it;
+ * - 342 x 500, bars of 20: four asked are two rows at a smaller size with the next bar greyed
+ *   below; two bars draw on two rows much larger and leave no room for it — though at the four's
+ *   size two rows would have had it.
+ *
+ * Each smaller count's answer is then checked against the chooser's own reservation when that count
+ * is asked on the same stage at 100 % Size, where nothing reads the asked window's baseline and the
+ * same geometry is drawn.
+ */
+describe('each priced count carries its own look-ahead, from its own geometry (U113)', () => {
+  function piece(bars: number): ScoreModel {
+    return makeModel(
+      Array.from({ length: bars * 4 }, (_, index) => ({ onset: index, notes: [note({ midi: 60 + (index % 12) })] })),
+      { handsPresent: { R: true, L: true } },
+    );
+  }
+  interface Candidate {
+    shown: number;
+    systems: number;
+    staffPx: number;
+    ahead?: boolean;
+  }
+  interface Fit {
+    slotCount: number;
+    systemsPerWindow: number;
+    barsShown: number;
+    barsAsked: number;
+    userZoom: number;
+    priced: { candidates?: Candidate[] } | null;
+  }
+  const fitOf = (renderer: WindowRenderer): Fit => renderer.debugFit() as Fit;
+  function fresh(): void {
+    FakeOsmdView.all = [];
+    document.body.replaceChildren();
+    observers.length = 0;
+    frames.clear();
+    idle.length = 0;
+  }
+  async function opened(barUnits: number, asked: number): Promise<WindowRenderer> {
+    FakeOsmdView.bars = Array.from({ length: 12 }, () => barUnits);
+    const stage = stageOf(342, 500);
+    const renderer = await WindowRenderer.create({ container: stage.el, model: piece(12), musicXml: '<score-partwise/>', barsPerWindow: asked });
+    renderer.showStep(0);
+    renderer.fitToStage();
+    await settle();
+    return renderer;
+  }
+  const candidate = (fit: Fit, shown: number): Candidate | undefined => fit.priced?.candidates?.find((c) => c.shown === shown);
+  const account = (fit: Fit): string =>
+    JSON.stringify({ slotCount: fit.slotCount, systems: fit.systemsPerWindow, shown: fit.barsShown, candidates: fit.priced?.candidates });
+  /** The smaller count asked on its own, at 100 %: the shape, size and reservation the chooser draws for it. */
+  async function drawnAsAsked(barUnits: number, predicted: Candidate | undefined): Promise<void> {
+    fresh();
+    const renderer = await opened(barUnits, predicted?.shown ?? 0);
+    const fit = fitOf(renderer);
+    const said = account(fit);
+    expect([fit.barsShown, fit.systemsPerWindow], `asked on its own, the candidate's shape: ${said}`).toEqual([predicted?.shown, predicted?.systems]);
+    expect(candidate(fit, predicted?.shown ?? 0)?.staffPx, `the same geometry: ${said}`).toBe(predicted?.staffPx);
+    expect(fit.slotCount > fit.systemsPerWindow, `drawn, it keeps the row below as the read-out predicted: ${said}`).toBe(predicted?.ahead);
+    renderer.dispose();
+  }
+
+  it('two asked on a stage they fill: the drawn count says no row below, one bar says one, as the chooser draws one bar asked', async () => {
+    const two = await opened(30, 2);
+    const fit = fitOf(two);
+    const said = account(fit);
+    expect(fit.userZoom, 'Size 100 %').toBe(1);
+    expect([fit.barsAsked, fit.barsShown, fit.systemsPerWindow, fit.slotCount], `two of two on two rows, nothing below: ${said}`).toEqual([2, 2, 2, 2]);
+    expect(candidate(fit, 2)?.ahead, `the drawn count's read-out is the reservation the chooser made: ${said}`).toBe(false);
+    const oneBar = candidate(fit, 1);
+    expect(oneBar?.systems, said).toBe(1);
+    expect(oneBar?.ahead, `one bar on one row leaves a row's height below it: ${said}`).toBe(true);
+    two.dispose();
+    await drawnAsAsked(30, oneBar);
+  });
+
+  it('four asked on two rows with the next bar below: two bars draw larger and leave no room, as the chooser draws two asked', async () => {
+    const four = await opened(20, 4);
+    const fit = fitOf(four);
+    const said = account(fit);
+    expect(fit.userZoom, 'Size 100 %').toBe(1);
+    expect([fit.barsAsked, fit.barsShown, fit.systemsPerWindow, fit.slotCount], `four of four on two rows, the next greyed below: ${said}`).toEqual([4, 4, 2, 3]);
+    const asked = candidate(fit, 4);
+    expect(asked?.ahead, `the drawn count's read-out is the reservation the chooser made: ${said}`).toBe(true);
+    const twoBars = candidate(fit, 2);
+    expect(twoBars?.systems, `two bars on as many rows as the four: ${said}`).toBe(fit.systemsPerWindow);
+    expect(twoBars?.staffPx, `drawn larger than the four: ${said}`).toBeGreaterThan(asked?.staffPx ?? Infinity);
+    expect(twoBars?.ahead, `at its own size two rows leave no room below: ${said}`).toBe(false);
+    four.dispose();
+    await drawnAsAsked(20, twoBars);
+  });
+});

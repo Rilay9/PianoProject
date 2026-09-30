@@ -2014,28 +2014,47 @@ export class WindowRenderer {
     // glass: the prediction prices a row at the piece's tallest system, and
     // the Nocturne's eight bars on a tablet upright were drawn smaller than
     // predicted, which left a row's height empty below and no next bar.
-    const { window: chosen, rows } = rowsFor(choice.shown, choice.systems);
-    const drawnNow =
-      this.systemsPerWindow === choice.systems && this.shownBars === choice.shown ? this.currentScale() : 0;
-    const rowHeight = height * (drawnNow > 0 ? Math.min(choice.drawn, drawnNow) : choice.drawn) + FIT_MARGIN_PX;
-    // The window's rows keep the reserve of the piece's tallest system (one
-    // size for the whole run); the look-ahead row is priced at the rows
-    // actually drawn, since it is a greyed preview and costs the window
-    // nothing. Priced at the reserve, the Nocturne's one row on a tablet
-    // sideways left two thirds of the stage empty and no next bar.
-    const aheadHeight = drawnNow > 0 && this.drawnRowPx > 0 ? Math.min(rowHeight, this.drawnRowPx) : rowHeight;
-    const ahead =
-      chosen.toMeasure < pieceBars - 1 &&
-      choice.systems + 1 <= choice.maxSlots &&
-      choice.systems * rowHeight + aheadHeight + SLOT_GAP_PX * choice.systems <= stage.height;
-    // Every count's best shape and the five-line staff it would draw, so the
-    // floor's number can be judged from one pass (`debugFit`, T38 item 5).
-    const candidates: { shown: number; systems: number; staffPx: number }[] = [];
+    const { rows } = rowsFor(choice.shown, choice.systems);
+    /**
+     * Whether `shown` bars over `systems` rows drawn at `drawn` leave the
+     * stage a row's height for the next bar below them. The shape chosen is
+     * reserved its look-ahead row by this; every other count priced in the
+     * same pass is read out by it (`candidates`, U113), each from its own
+     * window, rows and scale, so one bar fewer can be compared with the count
+     * drawn without asking for a different count.
+     */
+    const aheadFor = (shown: number, systems: number, drawn: number, maxSlots: number): boolean => {
+      const drawnNow = this.systemsPerWindow === systems && this.shownBars === shown ? this.currentScale() : 0;
+      const rowHeight = height * (drawnNow > 0 ? Math.min(drawn, drawnNow) : drawn) + FIT_MARGIN_PX;
+      // The window's rows keep the reserve of the piece's tallest system (one
+      // size for the whole run); the look-ahead row is priced at the rows
+      // actually drawn, since it is a greyed preview and costs the window
+      // nothing. Priced at the reserve, the Nocturne's one row on a tablet
+      // sideways left two thirds of the stage empty and no next bar.
+      const aheadHeight = drawnNow > 0 && this.drawnRowPx > 0 ? Math.min(rowHeight, this.drawnRowPx) : rowHeight;
+      return (
+        windowAt(cursorBar, shown, pieceBars, pickup).toMeasure < pieceBars - 1 &&
+        systems + 1 <= maxSlots &&
+        systems * rowHeight + aheadHeight + SLOT_GAP_PX * systems <= stage.height
+      );
+    };
+    const ahead = aheadFor(choice.shown, choice.systems, choice.drawn, choice.maxSlots);
+    // Every count's best shape, the five-line staff it would draw and whether
+    // it would keep a look-ahead row below, so the floor's number and what one
+    // bar fewer buys can be judged from one pass (`debugFit`, T38 item 5,
+    // U113). A read-out only: nothing here changes the choice above.
+    const candidates: { shown: number; systems: number; staffPx: number; ahead: boolean }[] = [];
     for (let shown = wanted; shown >= 1; shown -= 1) {
-      const best = bestFor(shown, Math.max(1, Math.min(mostSlots, this.slotCeilingNow(stage.width, shown))));
+      const maxSlots = Math.max(1, Math.min(mostSlots, this.slotCeilingNow(stage.width, shown)));
+      const best = bestFor(shown, maxSlots);
       if (!best) continue;
       const drawn = u <= 1 ? u * best.fit : Math.min(best.fit, u * base);
-      candidates.push({ shown, systems: best.systems, staffPx: Math.round(staff * drawn * 10) / 10 });
+      candidates.push({
+        shown,
+        systems: best.systems,
+        staffPx: Math.round(staff * drawn * 10) / 10,
+        ahead: aheadFor(shown, best.systems, drawn, maxSlots),
+      });
     }
     return {
       slots: ahead ? choice.systems + 1 : choice.systems,
