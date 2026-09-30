@@ -48,6 +48,7 @@
  * holds back the rungs behind a placement.
  */
 import { isPhraseRun, type PlanRow, type SessionRow } from '../data/db';
+import { accuracyReading } from '../data/accuracyReading';
 import type { Curriculum, Lesson, Requirement, RunsRequirement } from '../curriculum/types';
 import { masteryCriteriaFor } from '../curriculum/selectors';
 import { DEFAULT_MASTERY, type MasteryCriteria } from '../engine/Scoring';
@@ -180,10 +181,17 @@ export function learnerRecordFrom(
   };
 }
 
-/** Whether a stored run measured anything a requirement can read (see the module note). */
+/**
+ * Whether a stored run measured anything a requirement can read (see the module note). Its accuracy is the one
+ * reading's (`accuracyReading`, U102): a drill set nobody answered — a new row by its answered count, an older
+ * note-flash row by that kind's proven invariant — is not measured, so no zero that measured nothing is read as
+ * a share a standard could meet, and a backing track's constant 0 is not judged. An older unanswered row of any
+ * other kind keeps its legacy 0, which meets no standard above 0.
+ */
 function measured(row: SessionRow): row is SessionRow & { accuracy: number } {
   return (
     typeof row.accuracy === 'number' &&
+    accuracyReading(row).kind === 'measured' &&
     row.rhythmOnly !== true &&
     !(row.unseen === false && isPhraseRun(row)) &&
     row.selfReport === undefined

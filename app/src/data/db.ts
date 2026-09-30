@@ -397,6 +397,18 @@ export interface SessionRow extends RunObservation {
   accuracyEstimated: boolean;
   wrongNotes: number | NotMeasured;
   missed: number | NotMeasured;
+  /**
+   * A judged drill set's answered count, as its model counts it (U102): cards closed as answers, a skipped
+   * card among them; taps on a rhythm set, the onsets hit and every extra tap; attempts on a Simon set (U96a).
+   * `0` is a set in which nothing was answered, stored beside `accuracy: 'not measured'` — its accuracy was
+   * written as 0, and the history printed "0%" under a sheet that said *Not measured*. Readers ask only
+   * whether it is `0`, through the one reading (`data/accuracyReading.ts`). Absent on a drill that judges
+   * nothing (it has `notesHeard`), on every run that is not a drill's, and on every drill row stored before
+   * it, which that reading reads by the reviewer's compatibility order.
+   *
+   * Optional, so no `DB_VERSION` and no upgrade (C1's rule, above), and no row is rewritten.
+   */
+  answered?: number;
   durationMs: number;
   /** ISO date-time. */
   at: string;

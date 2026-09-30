@@ -59,6 +59,8 @@ export interface RunResult extends RunObservation {
   accuracyEstimated: boolean;
   wrongNotes: number | NotMeasured;
   missed: number | NotMeasured;
+  /** A judged drill set's answered count (U102). See `SessionRow`. */
+  answered?: number;
   durationMs: number;
   passed: boolean;
   masterEligible: boolean;

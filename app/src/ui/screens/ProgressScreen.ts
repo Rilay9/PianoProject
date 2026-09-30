@@ -41,7 +41,7 @@ import { allShelfPieces } from '../../data/booksStore';
 import type { CatalogItem } from '../../curriculum/types';
 import { importAll, isBackupFile, writeBackup } from '../../data/backup';
 import { isPhraseRun, type ProgressRow, type SessionRow } from '../../data/db';
-import { NOT_MEASURED } from '../../engine/types';
+import { accuracyReading } from '../../data/accuracyReading';
 import { HISTORY_TEXT, PROJECT_TEXT, SKILL_TEXT, goalWords, lastPlayedLine, projectSince, skillMoveWords } from '../help';
 import { getPlan } from '../../data/planStore';
 import { learnerExposures, skillMoves, type SkillMove } from '../../data/skillsStore';
@@ -151,7 +151,10 @@ export function modeLabel(mode: string): string {
  * Rows written before C1 are read by what they can say: a Wait row's mode is
  * enough to know its tempo was the slider, a row carrying a self-report was
  * always a run nothing heard, and a backing track judges nothing whatever its
- * accuracy says. A drill's `tempoPct` is a placeholder, so no drill says
+ * accuracy says. A drill set nobody answered is *Not measured*, as its sheet
+ * says (U102): its row says so by its answered count, and an older row only
+ * where its kind proves it (`accuracyReading`, the one reading every reader
+ * shares). A drill's `tempoPct` is a placeholder, so no drill says
  * "at 100%". The flags come before the minutes because the line is cut from
  * the end to fit a phone (`fitDetail`).
  */
@@ -177,15 +180,20 @@ export function historyDetail(session: SessionRow): string {
   if (session.demonstrated === true) flags.push(HISTORY_TEXT.heardPartWay);
   if (session.rhythmOnly === true) flags.push(HISTORY_TEXT.rhythmOnly);
   let lead: string[];
+  // What the accuracy says is the one reading's (U102): a drill set nobody answered is *Not measured*, as its
+  // sheet says — new rows by their own answered count, older ones only where a kind's invariant proves it.
+  const reading = accuracyReading(session);
   if (session.selfReport !== undefined) {
     lead = [HISTORY_TEXT.notMeasured, HISTORY_TEXT.youSaid(session.selfReport)];
-  } else if (session.accuracy === NOT_MEASURED || session.mode === 'drill:backing-track') {
+  } else if (reading.kind === 'nothing answered') {
+    lead = [HISTORY_TEXT.notMeasured];
+  } else if (reading.kind === 'not judged') {
     lead = [
       HISTORY_TEXT.notJudged,
       ...(session.notesHeard === undefined ? [] : [`${plural(session.notesHeard, 'note')} played`]),
     ];
   } else {
-    const share = `${String(Math.round(session.accuracy * 100))}%${session.accuracyEstimated ? ' (estimated)' : ''}`;
+    const share = `${String(Math.round(reading.accuracy * 100))}%${session.accuracyEstimated ? ' (estimated)' : ''}`;
     const drill = session.mode.startsWith('drill:');
     const tempoKept = !drill && session.mode !== 'wait' && session.tempoMeasured !== false;
     lead = tempoKept

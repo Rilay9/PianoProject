@@ -1,0 +1,244 @@
+$ (cd app) npx vitest run tests/unit/docsConsistency.test.ts tests/unit/help.test.ts tests/unit/labHelp.test.ts tests/unit/progressHistoryLines.test.ts tests/unit/sightReadingFromReadingState.test.ts tests/unit/lessonClaimsAboutApp.test.ts tests/unit/unansweredSetOnTheRecord.test.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a46fbdac26027e48f/app
+
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts (287 tests | 20 failed) 246ms
+   ❯ the 2026-09-19 lesson corrections, second-read and under test: the app (80)
+     × blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them 10ms
+     × 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot 3ms
+     × classical.4.shelf: every composer the lesson names among the personal-build pieces is on the shelf 0ms
+     × classical.4.shelf: beyond the named composers, exactly seven non-public-domain rows are left 0ms
+   ❯ the batch-4 and batch-5 corrections, second-read and under test: the app (44)
+     × rock.6: three of the four exercises are levelled below every song on the rung and the half-pedal one is above all of them 1ms
+     × classical.7: no nocturne is on the rung and several are in the Library under Classical 2ms
+     × ragtime.8: Euphonic Sounds is in no catalog row, and the rung's five Joplin rags come from one non-public-domain edition, with Pine Apple Rag also in a public-domain one 3ms
+   ❯ T19: every lesson names the modes its rung has (64)
+     × 3.5: the duet opens the easy Canon in D 1ms
+     × rock.overview: the duet opens the easy Canon in D 0ms
+     × 4.7: the blind button opens the easy Für Elise, first of the rung’s three 0ms
+     × classical.6: the duet opens the Bach prelude, and the rung draws no blind button — which is why the lesson sends Blind to the ⋯ menu 0ms
+     × classical.7: the duet names Invention No. 1, which is one of the rung’s own songs and opens as notation 0ms
+     × classical.8: both buttons take the Rondo alla turca, first of the six 0ms
+     × classical.9: the one button is blind, and it opens the first Ballade 0ms
+     × ragtime.6: the one button is a duet, and it opens School of Ragtime 0ms
+     × ragtime.7: both buttons take Maple Leaf Rag, and Solace is on the rung but not what they open 0ms
+     × ragtime.8: the one button is blind, and it opens Pine Apple Rag — first of the rung’s seven 0ms
+     × holiday.6: the blind button takes Carol of the Bells and not Silent Night, which the list above names first 1ms
+   ❯ F0: the corrected lessons say only what the app does (12)
+     × ragtime.6: The Easy Winners is ranked by no effort the three levels do not carry, and is named for the flats its file has most of 1ms
+     × ragtime.7: Sugar Cane is likened to Maple Leaf at no pace, while the catalogue gives the two one tempo and the app's tempo map does not 1ms
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 20 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:2119:23
+    2117|   for (const [lesson, says, holds] of T12_APP) {
+    2118|     it(`${lesson}: ${says}`, () => {
+    2119|       expect(holds()).toBe(true);
+       |                       ^
+    2120|     });
+    2121|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/20]⎯
+
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > classical.4.shelf: every composer the lesson names among the personal-build pieces is on the shelf
+Error: no catalog row song.classical.chopin-prelude-op28-7.nifc
+ ❯ item tests/unit/lessonClaimsAboutApp.test.ts:98:19
+     96| function item(id: string): CatalogItem {
+     97|   const row = byId.get(id);
+     98|   if (!row) throw new Error(`no catalog row ${id}`);
+       |                   ^
+     99|   return row;
+    100| }
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:1829:35
+ ❯ named tests/unit/lessonClaimsAboutApp.test.ts:1829:22
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:2119:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/20]⎯
+
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > classical.4.shelf: beyond the named composers, exactly seven non-public-domain rows are left
+Error: no catalog row song.classical.chopin-prelude-op28-7.nifc
+ ❯ item tests/unit/lessonClaimsAboutApp.test.ts:98:19
+     96| function item(id: string): CatalogItem {
+     97|   const row = byId.get(id);
+     98|   if (!row) throw new Error(`no catalog row ${id}`);
+       |                   ^
+     99|   return row;
+    100| }
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:1857:34
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:1857:22
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:2119:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/20]⎯
+
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > rock.6: three of the four exercises are levelled below every song on the rung and the half-pedal one is above all of them
+Error: no catalog row song.classical.chopin-prelude-op28-20.nifc
+ ❯ item tests/unit/lessonClaimsAboutApp.test.ts:98:19
+     96| function item(id: string): CatalogItem {
+     97|   const row = byId.get(id);
+     98|   if (!row) throw new Error(`no catalog row ${id}`);
+       |                   ^
+     99|   return row;
+    100| }
+ ❯ t12bFields tests/unit/lessonClaimsAboutApp.test.ts:2203:15
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:2489:68
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:2489:56
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:2887:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/20]⎯
+
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > classical.7: no nocturne is on the rung and several are in the Library under Classical
+Error: no catalog row song.classical.chopin-mazurka-op7-1.nifc
+ ❯ item tests/unit/lessonClaimsAboutApp.test.ts:98:19
+     96| function item(id: string): CatalogItem {
+     97|   const row = byId.get(id);
+     98|   if (!row) throw new Error(`no catalog row ${id}`);
+       |                   ^
+     99|   return row;
+    100| }
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:2539:80
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:2539:50
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:2887:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/20]⎯
+
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the app > ragtime.8: Euphonic Sounds is in no catalog row, and the rung's five Joplin rags come from one non-public-domain edition, with Pine Apple Rag also in a public-domain one
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:2887:23
+    2885|   for (const [lesson, says, holds] of T12B_APP) {
+    2886|     it(`${lesson}: ${says}`, () => {
+    2887|       expect(holds()).toBe(true);
+       |                       ^
+    2888|     });
+    2889|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/20]⎯
+
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > 3.5: the duet opens the easy Canon in D
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > rock.overview: the duet opens the easy Canon in D
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > 4.7: the blind button opens the easy Für Elise, first of the rung’s three
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > classical.6: the duet opens the Bach prelude, and the rung draws no blind button — which is why the lesson sends Blind to the ⋯ menu
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > classical.7: the duet names Invention No. 1, which is one of the rung’s own songs and opens as notation
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > classical.8: both buttons take the Rondo alla turca, first of the six
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > classical.9: the one button is blind, and it opens the first Ballade
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > ragtime.6: the one button is a duet, and it opens School of Ragtime
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > ragtime.7: both buttons take Maple Leaf Rag, and Solace is on the rung but not what they open
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > ragtime.8: the one button is blind, and it opens Pine Apple Rag — first of the rung’s seven
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > T19: every lesson names the modes its rung has > holiday.6: the blind button takes Carol of the Bells and not Silent Night, which the list above names first
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:3569:23
+    3567|   for (const [lesson, says, holds] of T19_APP) {
+    3568|     it(`${lesson}: ${says}`, () => {
+    3569|       expect(holds()).toBe(true);
+       |                       ^
+    3570|     });
+    3571|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/20]⎯
+
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > F0: the corrected lessons say only what the app does > ragtime.6: The Easy Winners is ranked by no effort the three levels do not carry, and is named for the flats its file has most of
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > F0: the corrected lessons say only what the app does > ragtime.7: Sugar Cane is likened to Maple Leaf at no pace, while the catalogue gives the two one tempo and the app's tempo map does not
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts:3860:23
+    3858|   for (const [lesson, says, holds] of F0_APP) {
+    3859|     it(`${lesson}: ${says}`, () => {
+    3860|       expect(holds()).toBe(true);
+       |                       ^
+    3861|     });
+    3862|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/20]⎯
+
+
+ Test Files  1 failed | 6 passed (7)
+      Tests  20 failed | 335 passed (355)
+   Start at  23:34:14
+   Duration  6.12s (tests 37%, transform 24%, environment 22%, import 17%)
+
+exit=1

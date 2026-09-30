@@ -3605,7 +3605,9 @@ the drills themselves, so a measurement added and not named fails.
   me run: *88% · tempo not judged · 3 min* — it printed "at 70%", the slider as if kept. A run
   the app heard nothing of: *Not measured · you said Clean · 3 min* — it printed "0%". A run
   nothing judged, a jam over a backing track: *Not judged · 42 notes played · 3 min* — it
-  printed "0%" too. Before the minutes, a sight-read met before says *not first sight*, a run the
+  printed "0%" too. A drill set in which nothing was answered: *Not measured · 3 min*, as its
+  sheet heads it — it printed "0%" (U102); an older such row reads so only where its kind proves it
+  (note-flash), and any other kind's old 0 % stays *0%*. Before the minutes, a sight-read met before says *not first sight*, a run the
   piece was played to part way through *heard part way*, and a rhythm-only run *rhythm only*.
   *Not first sight* is a phrase's alone (G1, G1a): the line reads sight-reading's `unseen`,
   which only a phrase's run carries; a piece's run carries the relation as `firstContact`, which

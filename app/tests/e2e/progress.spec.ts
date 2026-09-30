@@ -82,6 +82,22 @@ test.describe('Progress', () => {
     await expect(page.locator(`.heat-cell[data-day="${today}"]`)).toHaveAttribute('data-level', /[1-4]/);
   });
 
+  test('a drill set ended with nothing answered and counted reads Not measured in the history, not 0% (U102)', async ({ page }) => {
+    // The sheet heads such a set *Not measured* (U96); the record stored its accuracy as 0 and this line printed
+    // "0%". The record now stores it as not measured beside `answered: 0`, and the line reads the one reading.
+    const flash = 'drill.reading.note-flash-treble-c4-g4';
+    await page.goto(`/#/drill/${flash}`);
+    await expect(page.locator('section[data-screen="drill"]')).toHaveAttribute('data-drill', 'running', { timeout: 60_000 });
+    await page.locator('#drill-end').click();
+    await expect(page.locator('#drill-outcome')).toHaveText('Not measured');
+    await page.locator('#drill-keep').click();
+    await expect(page.locator('#drill-keep')).toBeDisabled();
+    await page.goto('/#/progress');
+    const line = page.locator(`#progress-history .list-row[data-item="${flash}"] .list-row__metatext`);
+    await expect(line).toHaveText(/^Not measured · /, { timeout: 30_000 });
+    await expect(line).not.toContainText('%');
+  });
+
   // Replaced (C6): "an item passed yesterday is due for review today" held the item calendar (1, 3,
   // 7 and 21 days after a pass), which is retired (the reviewer's correction, 2026-09-26). A piece
   // passed and not played for the repertoire window (two weeks) comes back, in the piece's words.
