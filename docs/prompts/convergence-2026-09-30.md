@@ -996,3 +996,15 @@ Re-checked outside the four files (also in `apply-dispositions.py`):
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | U16 | Rule row; its breach U3 closed by T38. At ba0126ad the window paths draw natural (WindowRenderer.ts:2590); stretch/fill apply only outside them (:2646, :2672-2676); spec (a) flags any non-natural sheet or bar >1.03x engraved… | CLOSE | CL07 | U32 (the whole grid re-verified) | - | WindowRenderer.ts, score.window-rule.spec.ts | re-check |
 | R11 | Summary says "of the suggested tempo" (ScoreScreen.ts:3887); source recorded defaulted (:3323); 180 catalogue items tagged tempo-defaulted; residue: E50 seven text-tempo rows and help.ts:936 "of the written tempo" in rung requirement lines. | MERGE → E50 | CL03 | E50a; E50 | - | convert.py, pdmx.json, help.ts | re-check |
+
+## Reviewer's amendments (responses/questions-53670d2a.md)
+
+Approved 2026-09-30 as the planning and scheduling view (the backlog stays the historical/control record), with five corrections (§1) and the large-cluster scope confirmed (§2):
+
+1. **CL06 (outcome tests) moves to early H1/tooling work**, run opportunistically in a cheap tooling slot, never a primary product slot: a proxy test is revised when its owning product seam is touched; Q21/Q23 may run in a tooling slot; the U32-dependent window half follows U32; a mutant that exposes a real current product defect makes that defect a product seam at the owning boundary.
+2. **CL01, CL02 and CL03 are correctness groups, not a forced serial prefix**: CL01's buildable lesson corrections proceed while the T54 pianist packet is pending; CL02's unsourced-fingering policy is decided now (G30) while the Q57/I9 musical reads happen separately; E50 and X40 proceed under their approved lane contracts without waiting for R27's AT-5 corpus audit. A cluster is an ownership/planning unit, not a stop-the-world wave.
+3. **CL21 is *Performance + ear experience***, never *X2* in new briefs or records; X2 stays the backlog row in CL14 (the plan / you-are-here map). Historical documents keep their old label.
+4. **CL18 does not own `.github/workflows/pages.yml`**: Q78 and repertoire supply use the existing public-content/deploy pipeline, and `pages.yml` leaves the expected implementation surface; an actual workflow defect found there stops for review as a workflow change.
+5. **E50a is no longer a wait**: it landed with the cross-platform ZIP normalisation and the deliberate historical identities, so every row waiting only on E50a is re-checked before another lane is drafted — CL23's L53 and L69, CL17's E50a-dependent `types.ts` decisions, G71 in CL11, and any identity RE-CHECK whose only blocker was E50a.
+
+Scope confirmed (§2): G3 = CL14 (learner direction, goals, return and post-ladder composition); G4 = CL20 (breadth and musicianship strands); F3's remainder = CL01 + CL19 (truth/source cleanup plus the deeper lesson contract); F4 = CL02 (rock/Latin/fingering policy and its musical reads); H1 = CL24 and H2 = CL25; CL21 = *Performance + ear experience*. The old waves are not recreated beside these clusters as a second queue.
