@@ -406,7 +406,13 @@ describe('an excerpt: a current teaching-use yes on its cut, placed on a reached
  */
 describe('a transfer candidate the learner paused or put away is not offered (G1e)', () => {
   const AS_A_SONG: CatalogItem = { ...PENT_A, id: 'song.pentatonic-a', type: 'song' };
-  const items = [...ITEMS.filter((item) => item.id !== PENT_A.id), AS_A_SONG];
+  // Revised (L120b, Entry 155, meeting G1e, Entry 150; class: revise). G1e wrote this case when the pentatonic in D
+  // was refused at B for its key signature, so the song was the one transfer candidate the gate passed. Since L120b
+  // that signature, which alters no note the pentatonic in D sounds, is not asked, and the pentatonic in D sorts
+  // before the song and is offered in its place. It leaves the catalogue here with the pentatonic in A, so the song
+  // is again the candidate offered with no project, and the paused and put-away cases are read against that card.
+  const without = ITEMS.filter((item) => item.id !== PENT_A.id && item.id !== PENT_D.id);
+  const items = [...without, AS_A_SONG];
   const ACTION: Record<ProjectState, ProjectAction> = {
     saved: 'save',
     learning: 'learn',
@@ -429,7 +435,7 @@ describe('a transfer candidate the learner paused or put away is not offered (G1
   it('offered with no project; paused or put away, on no row, and the card is the card without it; every other state leaves the card as it was', () => {
     const before = card({}, items);
     expect(offerOf(before)?.item?.id).toBe(AS_A_SONG.id);
-    const absent = card({}, ITEMS.filter((item) => item.id !== PENT_A.id));
+    const absent = card({}, without);
     for (const state of ['paused', 'retired'] as const) {
       const slots = card({ projects: [row(state)] }, items);
       expect(slots.map((slot) => slot.item?.id), `${state}: still offered`).not.toContain(AS_A_SONG.id);
