@@ -1065,8 +1065,22 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
     review.fill_reviewed(entries, out_dir)
 
     # D4 item 1: the material identity, D2's, on every row, from the same function the record binds to.
+    # E50a: beside it, on a row whose file the converter wrote without music21's date, the historical
+    # dated identities of that file's music (`tools/content/former_identities.json`, the identities the
+    # catalogues able to store a learner's material held), each re-proved against the built bytes by
+    # `convert.former_identities`, so a learner's row stored against a dated file still names this
+    # row's material. Learner continuity only: D2's record and every other exact-byte check keep
+    # reading `identity` alone.
+    from convert import former_identities
+
     for entry_id, identity in review.identities(entries, out_dir).items():
-        by_id[entry_id]["provenance"]["identity"] = identity
+        provenance = by_id[entry_id]["provenance"]
+        provenance["identity"] = identity
+        if identity.get("kind") == "file" and out_dir is not None:
+            former = [{"kind": "file", "sha256": sha} for sha in former_identities(out_dir / by_id[entry_id]["file"])
+                      if sha != identity["sha256"]]
+            if former:
+                provenance["formerIdentities"] = former
 
 
 def transfer_of(row: dict, recipe: dict) -> dict | None:

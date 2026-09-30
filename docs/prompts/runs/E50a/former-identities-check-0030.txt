@@ -1,0 +1,9 @@
+C:/Users/yalir/repos/Piano Stuff/PianoProject/app/public/content: 2092 rows, 753 dated music21 identities, 6 outside the table
+   STOP: scores/authored/exercise.blues.twelve-bar-shuffle.a.mxl dated 2026-09-30, sha256 9291a45d3d1c1c4bb7e003b1a600885fe4967838dea49cbdeef5c404082656b5
+   STOP: scores/authored/exercise.blues.twelve-bar-shuffle.c.mxl dated 2026-09-30, sha256 0b502dd441a286fc6c52d6782016997abbb8b1dcd1353d79803301d7754b83b5
+   STOP: scores/authored/exercise.blues.twelve-bar-shuffle.d.mxl dated 2026-09-30, sha256 b3ddf5b6e73587e4a937e9eef44173da0564970dc1706cb79edd0128ebc30e5e
+   STOP: scores/authored/exercise.blues.twelve-bar-shuffle.e.mxl dated 2026-09-30, sha256 80d3078ac783430b910de4974990353f928d560acb30aeb406ed50fb799daf3f
+   STOP: scores/authored/exercise.blues.twelve-bar-shuffle.f.mxl dated 2026-09-30, sha256 41fdd98e6a9b9fe1cf5d158c8c8533f641093636af6530578fa625ee28dec057
+   STOP: scores/authored/exercise.blues.twelve-bar-shuffle.g.mxl dated 2026-09-30, sha256 3522ee98b7e3aec51f03103187a99c4264b1d9c54817769d90523aefc813681a
+C:/Users/yalir/repos/Piano Stuff/PianoProject/app/dist/content: 2092 rows, 753 dated music21 identities, 0 outside the table
+exit 1

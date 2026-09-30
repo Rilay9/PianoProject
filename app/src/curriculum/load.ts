@@ -9,6 +9,7 @@
  */
 import type { CatalogItem, Curriculum } from './types';
 import { indexCatalog, type CatalogIndex } from './selectors';
+import { learnFormerIdentities } from './material';
 import { importedCatalogItems, onImportsChange } from '../data/importStore';
 import { allShelfPieces, type ShelfPiece } from '../data/booksStore';
 import { getSettings, onSettingsChange } from '../data/settingsStore';
@@ -126,12 +127,19 @@ export async function fetchMarkdown(path: string): Promise<string> {
 }
 
 export function loadCatalog(): Promise<CatalogItem[]> {
-  catalogPromise ??= fetchJson<CatalogItem[]>('catalog.json').catch((cause: unknown) => {
-    // Allow a retry: a failure here is almost always a first launch that lost
-    // the network mid-precache, and it is fixed by trying again.
-    catalogPromise = null;
-    throw cause;
-  });
+  catalogPromise ??= fetchJson<CatalogItem[]>('catalog.json')
+    .then((items) => {
+      // E50a: the one place the catalogue arrives, so every learner-material comparison after it
+      // resolves a stored dated file through the rows' former identities (`material.ts`).
+      learnFormerIdentities(items);
+      return items;
+    })
+    .catch((cause: unknown) => {
+      // Allow a retry: a failure here is almost always a first launch that lost
+      // the network mid-precache, and it is fixed by trying again.
+      catalogPromise = null;
+      throw cause;
+    });
   return catalogPromise;
 }
 

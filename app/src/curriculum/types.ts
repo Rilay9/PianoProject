@@ -278,6 +278,15 @@ export interface Provenance {
    */
   identity?: Identity;
   /**
+   * The file identities this row's music had while the converter wrote music21's `<encoding-date>`
+   * (E50a): the recorded historical dated files (`tools/content/former_identities.json`, from the
+   * catalogues able to store a learner's material) whose undated form is this row's file, each re-proved
+   * by the build (`convert.former_identities`: the date put back gives its bytes). Only on a row whose
+   * file the converter wrote without a date; never the row's own identity. A stored learner row that
+   * names one names this row's material (`material.learnerMaterial`); D2's record never reads it.
+   */
+  formerIdentities?: Extract<Identity, { kind: 'file' }>[];
+  /**
    * A transfer role's relationship as its family contract declares it for the recipe (D4 item 4):
    * the skill it is transfer material for, the families it was written against, the surface
    * dimensions declared to differ, and what stays unmeasured. Intent and relationship, never

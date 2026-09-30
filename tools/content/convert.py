@@ -20,6 +20,7 @@ import argparse
 import copy
 import functools
 import hashlib
+import io
 import json
 import os
 import re
@@ -29,6 +30,7 @@ import time
 import warnings
 import zipfile
 from dataclasses import dataclass, field
+from datetime import date
 from fractions import Fraction
 from pathlib import Path
 from xml.etree import ElementTree
@@ -1572,6 +1574,57 @@ def deterministic_ids(xml_text: str) -> str:
     return xml_text
 
 
+#: music21's `<encoding-date>` with its whole line. `ScoreExporter.setEncoding` writes
+#: `str(datetime.date.today())` there, unconditionally, as the first child of `<encoding>`
+#: (music21 10.5.0, `musicxml/m21ToXml.py`); no parameter, metadata field or `defaults` entry
+#: controls it.
+ENCODING_DATE_LINE = re.compile(r"^[ \t]*<encoding-date>[^<\n]*</encoding-date>[ \t]*\r?\n", re.MULTILINE)
+
+#: A music21 `<encoding>` block, and its opening line with the indentation of its first child.
+ENCODING_BLOCK = re.compile(r"<encoding>(.*?)</encoding>", re.DOTALL)
+ENCODING_OPENING = re.compile(r"<encoding>(\r?\n)([ \t]*)<software>")
+
+
+def without_encoding_date(xml_text: str) -> str:
+    """
+    Removes the day music21 ran from a file it wrote: `<encoding-date>`, with its line.
+
+    The third run-dependent thing music21 writes, beside the minted ids and the zip times: without
+    this a score converted today and the same score converted next month are different files, so
+    the build's material identity (the file's sha256) moved with the calendar and a cache miss on
+    another day wrote other bytes than a hit. Removed rather than pinned, because a constant would
+    write a false encoding date into every file, and nothing reads the element (MusicXML's
+    `<encoding>` requires none of its children). `<software>` stays: it is stable per music21
+    version, which the tool fingerprint keys on. Text with no such element comes back unchanged.
+    """
+    return ENCODING_DATE_LINE.sub("", xml_text)
+
+
+def with_encoding_date(xml_text: str, day: date) -> str | None:
+    """
+    The inverse of `without_encoding_date` on a file the converter wrote: the text with music21's
+    line for `day` put back where music21 writes it — the first child of `<encoding>`, at the
+    indentation of the `<software>` line after it — so a recorded historical file can be re-proved
+    from the undated one (`former_identities`, `dated_form`). None where the text is not an undated music21
+    encoding (it has a date already, or its `<encoding>` names no music21 `<software>`): no identity
+    is made up for a file the converter did not write. Its result is hashed, never written to a file.
+    """
+    block = ENCODING_BLOCK.search(xml_text)
+    if block is None or "<encoding-date>" in block.group(1) or "<software>music21 v." not in block.group(1):
+        return None
+    opening = ENCODING_OPENING.match(xml_text, block.start())
+    if opening is None:
+        return None
+    newline, indent = opening.group(1), opening.group(2)
+    at = block.start() + len("<encoding>") + len(newline)
+    return f"{xml_text[:at]}{indent}<encoding-date>{day.isoformat()}</encoding-date>{newline}{xml_text[at:]}"
+
+
+def normalised_text(xml_text: str) -> str:
+    """The one text pass both of `write_mxl`'s branches make: the minted ids renamed, the date removed."""
+    return without_encoding_date(deterministic_ids(xml_text))
+
+
 def replace_atomically(staged: Path, path: Path, attempts: int = 6) -> None:
     """
     `staged.replace(path)`, retried, because Windows lets other processes veto it.
@@ -1600,28 +1653,44 @@ def replace_atomically(staged: Path, path: Path, attempts: int = 6) -> None:
             time.sleep(0.05 * (2**attempt))
 
 
+def is_text_entry(name: str) -> bool:
+    return name.lower().endswith((".xml", ".musicxml"))
+
+
+def pinned_archive(entries: list[tuple[str, bytes]]) -> bytes:
+    """
+    The bytes of a `.mxl` holding these entries, every wall-clock field pinned: the one zip layout
+    `normalise_archive` writes and `former_identities` rebuilds. Entry order is kept as given.
+    """
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
+        for name, data in entries:
+            info = zipfile.ZipInfo(name, date_time=ZIP_EPOCH)
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 0o600 << 16
+            archive.writestr(info, data)
+    return buffer.getvalue()
+
+
 def normalise_archive(path: Path) -> None:
     """
     Rewrites a `.mxl` so its bytes depend only on its music.
 
-    Two things in a zip are wall-clock: the per-entry modification time, and —
-    through `deterministic_ids` above — the ids music21 minted while it was
-    running. Both are pinned here. Entry order is preserved rather than sorted,
-    because the MXL container wants `META-INF/container.xml` to stay where the
-    writer put it.
+    Three things in a music21 zip are wall-clock: the per-entry modification
+    time; the ids music21 minted while it was running (`deterministic_ids`
+    above); and the day it ran, which it writes as `<encoding-date>`
+    (`without_encoding_date`, removed since E50a). All three are pinned here.
+    Entry order is preserved rather than sorted, because the MXL container wants
+    `META-INF/container.xml` to stay where the writer put it.
     """
     with zipfile.ZipFile(path) as archive:
         entries = [(info.filename, archive.read(info.filename)) for info in archive.infolist()]
 
     staged = path.with_suffix(path.suffix + ".tmp")
-    with zipfile.ZipFile(staged, "w", zipfile.ZIP_DEFLATED) as archive:
-        for name, data in entries:
-            if name.lower().endswith((".xml", ".musicxml")):
-                data = deterministic_ids(data.decode("utf-8")).encode("utf-8")
-            info = zipfile.ZipInfo(name, date_time=ZIP_EPOCH)
-            info.compress_type = zipfile.ZIP_DEFLATED
-            info.external_attr = 0o600 << 16
-            archive.writestr(info, data)
+    staged.write_bytes(pinned_archive(
+        [(name, normalised_text(data.decode("utf-8")).encode("utf-8") if is_text_entry(name) else data)
+         for name, data in entries]
+    ))
     replace_atomically(staged, path)
 
 
@@ -1630,7 +1699,8 @@ def write_mxl(score: stream.Score, out_path: Path) -> Path:
     Writes MusicXML. music21 picks the format from the suffix.
 
     The output is then normalised so that the same music always produces the
-    same bytes — see `normalise_archive`.
+    same bytes, on any day — see `normalise_archive`; the plain-XML branch makes
+    the same text pass (`normalised_text`).
     """
     out_path.parent.mkdir(parents=True, exist_ok=True)
     written = score.write("musicxml", fp=str(out_path))
@@ -1641,9 +1711,138 @@ def write_mxl(score: stream.Score, out_path: Path) -> Path:
         normalise_archive(out_path)
     else:
         out_path.write_text(
-            deterministic_ids(out_path.read_text(encoding="utf-8")), encoding="utf-8"
+            normalised_text(out_path.read_text(encoding="utf-8")), encoding="utf-8"
         )
     return out_path
+
+
+# ---------------------------------------------------------------------------
+# former identities (E50a)
+# ---------------------------------------------------------------------------
+
+#: The historical dated identities (E50a; the reviewer's rule, `docs/review/responses/questions-71bd6cee.md`):
+#: every dated file music21 wrote that a catalogue able to store a learner's material could have served,
+#: from the first such catalogue (D4, 9193261b, 2026-09-28: the first to carry `provenance.identity`, and
+#: the first app to store a material) to the last one deployable before E50a (the laptop's, written
+#: 2026-09-29 22:28). Historical compatibility data, never a rolling window: no date is derived, and a
+#: dated identity found outside it is added deliberately, by the generator named in the file, never by
+#: hand. Outside the tool fingerprint on purpose: it changes no converted file, only provenance.
+FORMER_IDENTITIES_FILE = Path(__file__).resolve().with_name("former_identities.json")
+
+
+def _entries(raw: bytes) -> list[tuple[str, bytes]] | None:
+    """A `.mxl`'s entries in order, or None where the bytes are not a zip."""
+    try:
+        with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+            return [(info.filename, archive.read(info.filename)) for info in archive.infolist()]
+    except zipfile.BadZipFile:
+        return None
+
+
+#: Any day at all: `with_encoding_date` takes one, and `_score_at` asks it only whether a text is an
+#: undated music21 encoding. No identity is ever made for this day.
+_ANY_DAY = date(2000, 1, 1)
+
+
+def _score_at(entries: list[tuple[str, bytes]], undated: bool) -> int | None:
+    """The index of the one text entry whose `<encoding>` is music21's, undated or dated as asked; else None."""
+    found = []
+    for index, (name, data) in enumerate(entries):
+        if not is_text_entry(name):
+            continue
+        text = data.decode("utf-8")
+        if undated and with_encoding_date(text, _ANY_DAY) is not None:
+            found.append(index)
+        if not undated and ENCODING_DATE_LINE.search(text) and with_encoding_date(without_encoding_date(text), _ANY_DAY) is not None:
+            found.append(index)
+    return found[0] if len(found) == 1 else None
+
+
+def dated_form(raw: bytes) -> dict | None:
+    """
+    A historical file's entry for the table: `{"date", "sha256", "undated"}` — the day music21 wrote into
+    it, its own sha256, and the sha256 of the same file with that line removed and zipped as the converter
+    zips now, which is exactly what the converter writes for the same music today. None for anything but a
+    dated music21 `.mxl` in the converter's layout, and where putting the date back does not give the file
+    back byte for byte (so every entry is a reconstruction proved at the moment it is recorded).
+    """
+    entries = _entries(raw)
+    if entries is None or pinned_archive(entries) != raw:
+        return None
+    at = _score_at(entries, undated=False)
+    if at is None:
+        return None
+    text = entries[at][1].decode("utf-8")
+    day = re.search(r"<encoding-date>([^<]*)</encoding-date>", text).group(1)  # type: ignore[union-attr]
+    undated = list(entries)
+    undated[at] = (entries[at][0], without_encoding_date(text).encode("utf-8"))
+    undated_bytes = pinned_archive(undated)
+    entry = {"date": day, "sha256": hashlib.sha256(raw).hexdigest(), "undated": hashlib.sha256(undated_bytes).hexdigest()}
+    return entry if _redated(undated, at, day) == raw else None
+
+
+def _redated(entries: list[tuple[str, bytes]], at: int, day: str) -> bytes | None:
+    """The undated entries with music21's line for `day` put back, zipped as the converter zips."""
+    try:
+        when = date.fromisoformat(day)
+    except ValueError:
+        return None
+    dated_text = with_encoding_date(entries[at][1].decode("utf-8"), when)
+    if dated_text is None:
+        return None
+    dated = list(entries)
+    dated[at] = (entries[at][0], dated_text.encode("utf-8"))
+    return pinned_archive(dated)
+
+
+@functools.lru_cache(maxsize=1)
+def historical_identities() -> dict[str, tuple[dict, ...]]:
+    """The committed table, indexed by the undated form each entry is a dated form of."""
+    if not FORMER_IDENTITIES_FILE.is_file():
+        return {}
+    table = json.loads(FORMER_IDENTITIES_FILE.read_text(encoding="utf-8"))
+    index: dict[str, list[dict]] = {}
+    for entry in table.get("identities", []):
+        index.setdefault(entry["undated"], []).append(entry)
+    return {undated: tuple(entries) for undated, entries in index.items()}
+
+
+def former_identities(path: Path, table: list[dict] | None = None) -> list[str]:
+    """
+    The historical identities of this file's music (E50a; the reviewer's bounded compatibility source):
+    each recorded dated file (`former_identities.json`, or `table` in a test) whose undated form is this
+    file, re-proved here — this file with that entry's date put back where music21 wrote it
+    (`with_encoding_date`) and zipped as `normalise_archive` zips (`pinned_archive`) is that entry's bytes.
+    The build records them beside the row's identity (`provenance.formerIdentities`), so a run, an
+    encounter or a project stored against a dated file still names the row's material; the app resolves
+    them at read and never recomputes them. Nothing is derived beyond the table: no date is tried that no
+    deployable catalogue held.
+
+    Empty for anything the converter did not write without a date — a plain XML file (no built row is
+    one), a dated file (a committed PDMX copy while it keeps its date), a MuseScore-written copy, an
+    excerpt cut (no `<encoding>`), a `.mxl` not in the converter's layout — and for music no table entry
+    names: a musical change moves the undated bytes, so the old identities no longer re-prove.
+    """
+    if path.suffix.lower() != ".mxl":
+        return []
+    raw = path.read_bytes()
+    entries = _entries(raw)
+    if entries is None or pinned_archive(entries) != raw:
+        return []
+    at = _score_at(entries, undated=True)
+    if at is None:
+        return []
+    current = hashlib.sha256(raw).hexdigest()
+    if table is None:
+        candidates: tuple[dict, ...] | list[dict] = historical_identities().get(current, ())
+    else:
+        candidates = [entry for entry in table if entry["undated"] == current]
+    out: list[str] = []
+    for entry in candidates:
+        rebuilt = _redated(entries, at, entry["date"])
+        if rebuilt is not None and hashlib.sha256(rebuilt).hexdigest() == entry["sha256"] and entry["sha256"] not in out:
+            out.append(entry["sha256"])
+    return out
 
 
 # ---------------------------------------------------------------------------

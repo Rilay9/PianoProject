@@ -1,0 +1,34 @@
+﻿
+deleted C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-aa53a621e81c2cb8c\app\node_modules
+absent C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-aa53a621e81c2cb8c\app\dist
+absent C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-aa53a621e81c2cb8c\app\test-results
+absent C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-aa53a621e81c2cb8c\test-results
+deleted C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-aa53a621e81c2cb8c\build\cache
+deleted C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-aa53a621e81c2cb8c\content\scores\imported\kern
+deleted C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-aa53a621e81c2cb8c\content\scores\imported\musetrainer
+deleted C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-aa53a621e81c2cb8c\content\scores\imported\mutopia
+absent C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-aa53a621e81c2cb8c\content\scores\generated
+deleted C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-aa53a621e81c2cb8c\build\e50a
+deleted build\catalog.authored.json
+deleted build\catalog.generated.json
+deleted build\catalog.kern.json
+deleted build\catalog.mt.json
+deleted build\catalog.mutopia.json
+deleted build\catalog.pdmx.json
+deleted build\demands-cache.json
+deleted build\inventory.json
+deleted build\notation-cache.json
+deleted build\positions-cache.json
+deleted build\rung-claims.json
+deleted build\score-checks.cache.json
+deleted build\score-checks.json
+deleted app\public\content\lessons
+deleted app\public\content\scores
+deleted app\public\content\tips
+deleted app\public\content\catalog.json
+deleted app\public\content\catalog.schema.json
+deleted app\public\content\curriculum.json
+deleted app\public\content\curriculum.schema.json
+deleted app\public\content\level-model.json
+deleted app\public\dev\review
+left under build: midi-parity, score-checks.md
