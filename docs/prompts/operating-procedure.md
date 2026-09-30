@@ -167,7 +167,9 @@ what the owner or the next agent does; wording alone never earns a turn.
 2. **Mechanism.** What caused the fault, which test distinguished that cause from the
    alternatives, and did the change act on the mechanism rather than the symptom?
 3. **Evidence.** Which claims are observed and which inferred; for every "all", "none" or
-   "both", what scope was actually examined and what is unchecked; what has not been heard.
+   "both", what scope was actually examined and what is unchecked; for an absence ("not on
+   this machine", "no such file"), the place the record says it lives, looked at; what has
+   not been heard.
 4. **Consumers and record.** Who else reads what changed and what each does with it; the
    spec, test map and record updated in the same change, with the reason.
 5. **Addressee.** For every request, question or claim in a paste, a brief or a report: who
