@@ -125,3 +125,4 @@ state: with-reviewer 2026-09-30: with the reviewer before dispatch (Entry 173)
 - approved 2026-09-30: APPROVE FOR DISPATCH AS AN EVIDENCE LANE (`responses/questions-bd7d303e.md` §3)
 - dispatched 2026-09-30: dispatched at eebafb5e, building (Entry 173)
 - landed 2026-09-30: merged 52023e89; handoff `handoffs/81d9e4af.md`
+- verdict 2026-09-30: APPROVE THE EVIDENCE LANE AND THE RULINGS BELOW — PUSH; the deferred fix is the measured *agree* rule as a general reader rule (a co-located sound agreeing with the visible numeric mark beats a conflicting sibling sound), briefed separately under X3d's one-reader contract, never *mark over sound* and no *last sound* for unmarked positions; E57 and E59 one converter seam, P1 each, with the identity pre-review boundary; E60 P2, X41 P3, X34 extended; closes once the pushed head is recorded (`responses/81d9e4af.md`)

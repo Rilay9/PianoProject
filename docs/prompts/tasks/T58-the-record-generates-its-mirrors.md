@@ -132,3 +132,4 @@ state: with-reviewer 2026-09-30: with the reviewer before dispatch (Entry 171)
 - approved 2026-09-30: APPROVE with a scope guard (`responses/questions-bd7d303e.md`)
 - dispatched 2026-09-30: dispatched at b93162ae, building (Entry 171)
 - landed 2026-09-30: merged dd16f8ba; handoff `handoffs/0ba0d2d1.md`
+- verdict 2026-09-30: APPROVE — PUSH; the 14 history lanes stay `role: history`; the state rules accepted for the one-time migration only, the generator never a prose reader; the hidden `record:lanes` comment accepted, generated never hand-edited; no bare verdict inference until the event names the review kind; the docs-integrity run on the push is the runner proof (`responses/0ba0d2d1.md`)

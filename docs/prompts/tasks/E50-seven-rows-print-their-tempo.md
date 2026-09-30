@@ -328,3 +328,4 @@ in-flight: brief drafted 2026-09-30 (`E50-seven-rows-print-their-tempo.md`): the
 state: approved 2026-09-30: tempo repair approved; do not dispatch until the conversion date is pinned (`responses/questions-bbd7f99a.md`): E50a first
 - dispatched 2026-09-30: dispatched at df275e8f on E50a's landing, building (Entry 163)
 - landed 2026-09-30: merged 16df185b; handoff `handoffs/68e0479b.md`
+- verdict 2026-09-30: APPROVE WITH ONE REQUIRED CHANGE — the repaired Wabash cut gets its own re-proved old→new learner-material relation (no approval renewal, `parentSha256` unchanged), and a tempo-dependent standard never reads an old defaulted-96 run's percentage against the repaired tempo (the old run untouched, contact and history kept); `repaired_identities.json` stays separate; E56 P3, E58 tooling, E57 treated with X40's evidence (`responses/68e0479b.md`)

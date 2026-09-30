@@ -37,7 +37,7 @@
 3. **The bound's readers agree.**
    - `resumeStep` and `recountFrom` treat a window past `tStep + toleranceMs` as over. A slot held for the bound is not where the learner picks up.
    - `findRhythmSlot` gets the same rule.
-   - The last step (:1255) and a lap wrap (:1382) either wait for the bound, or the report states that a stall across the run's end still loses the note.
+   - The last step (:1255) and a lap wrap (:1382) use the same bounded stall-safe rule as ordinary windows (the reviewer's required brief change, `responses/questions-eebafb5e.md`): a Web MIDI event stamped inside the final step's valid window never becomes a miss because the main thread stalled across the run's end; the final-step close and the lap-wrap cleanup wait for the bound as the other windows do. Never reopen an already-painted miss, never widen the musical tolerance, never help on-screen keys by treating their handler-time stamp as captured during the stall. If the stall-aware rule needs a new arbitrary duration rather than a bound derived from the input-stamp trust and the tick contract, stop and report that product trade.
 4. **The tolerance's meaning is unchanged.** `findSlot` and `findRhythmSlot` keep `<= toleranceMs` from the stamp. `05` :118-120 is unchanged; :130-131 gains one sentence on when a miss is decided.
 5. **Wait, Listen and Keep tempo are unaffected** (premise 7).
 
@@ -122,3 +122,4 @@ lane: U66 · closes: U66 · entry: 176
 index: A stall is not a miss: the engine's window close follows the note's stamp, not the tick (backlog U66; SG02) | app | brief drafted 2026-09-30 (`U66-a-stall-is-not-a-miss.md`); with the reviewer before dispatch; Entry 176
 in-flight: brief drafted 2026-09-30 (`U66-a-stall-is-not-a-miss.md`): a render stall must not create a miss: the engine closes a timing window by its own tick, so a note stamped inside the window but delivered after it is judged against a closed slot; reproduction first, the close rule fixed (SG02, tier 1; the reviewer's queue item 3); with the reviewer before dispatch (Entry 176).
 state: with-reviewer 2026-09-30: with the reviewer before dispatch (the morning bundle)
+- approved 2026-09-30: APPROVE FOR DISPATCH WITH ONE REQUIRED BRIEF CHANGE — the last step and the lap wrap use the same bounded stall-safe rule as ordinary windows (item 3's report-only option removed in this commit); no reopened miss, no wider tolerance, no help for on-screen keys; a new arbitrary duration stops and reports (`responses/questions-eebafb5e.md`)
