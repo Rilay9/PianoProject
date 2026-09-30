@@ -72,7 +72,7 @@
 **Harness.**
 - Work in your own worktree. Copy `content/scores/pdmx/` and `content/sources/pdmx.json` from the main checkout (both are ordinarily committed and available in a normal `git clone`/worktree — no read-only external copy needed the way kern/MuseTrainer clones are, since PDMX's converted bytes are themselves tracked). No PDMX archive, no `PIANOPATH_PDMX_DIR`, no quarry re-run — this lane does not touch them (premise 6, item 2). Run `python tools/content/build.py --offline` to rebuild the catalogue from the transformed files and confirm the build succeeds and checksums verify (`import_pdmx.py`'s own checksum gate, premise 3).
 - Never commit, push, stash or reset. Never write in the main checkout. No Playwright.
-- Keep temp state under the worktree's `build/`. Keep no log over 300 KB (keep the summary and the failing names, and say the full log was not kept). When done, delete `app/dist` and any copied caches; `app/node_modules` stays until the orchestrator removes the worktree, so a rework or a question needs no reinstall. Every item is done or has an explicit not-done line. Never name an AI model.
+- Keep temp state under the worktree's `build/`. Keep no log over 300 KB (keep the summary and the failing names, and say the full log was not kept). When done, delete `app/dist` and any copied caches; `app/node_modules` stays until the orchestrator removes the worktree, so a rework or a question needs no reinstall (operating-procedure §14). Every item is done or has an explicit not-done line. Never name an AI model.
 
 ## Report
 

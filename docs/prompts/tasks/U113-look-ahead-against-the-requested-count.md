@@ -71,7 +71,7 @@
 **Harness.**
 - Work in your own worktree, off `main` directly (premise 4 — no dependency on U32a's unlanded worktree). Run `npm ci` in `app/`. Copy `app/public/content` read-only from the main checkout.
 - A private Playwright port through a kept config copy, following U32a's own pattern (`scripts-playwright.u32a.config.ts`, port 4531) — pick a free port (for example 4532) and say which; **never the shared 4173**. One Playwright suite at a time. Never rebuild the app mid-run.
-- Never commit, push, stash or reset. Never write in the main checkout or in U32a's worktree. Keep no log over 300 KB. When done, delete `app/dist` and any copied content; `app/node_modules` stays until the orchestrator removes the worktree, so a rework or a question needs no reinstall. Every item is done or has an explicit not-done line. Never name an AI model.
+- Never commit, push, stash or reset. Never write in the main checkout or in U32a's worktree. Keep no log over 300 KB. When done, delete `app/dist` and any copied content; `app/node_modules` stays until the orchestrator removes the worktree, so a rework or a question needs no reinstall (operating-procedure §14). Every item is done or has an explicit not-done line. Never name an AI model.
 
 ## Report
 
