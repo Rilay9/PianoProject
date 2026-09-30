@@ -103,9 +103,17 @@ relating each repaired file to its old identity for learner continuity
 only. Done item 1: "The ruling — built as quoted: the converter changed,
 identities re-measured, the stale approval handled explicitly."
 
-(c) **Closed by the landing** — not by E50a directly, but by E50's own
-landing (Entry 163), which E50a's landing made dispatchable. Fully built and
-merged; nothing open here.
+Entry 163 left three reviewer questions open. Entry 181 (E50b),
+`docs/pending-review.md:34587`, is the required correction answering two:
+it adds the Wabash cut's own relation and a tempo guard so a run naming one
+of the eight repaired ids "meets no standard that asks one, however high
+its stored percentage" — refusal, not rescale. The third (mastery-day
+residue) stays a live, separately-named follow-up question in E50b, not a
+re-check of E50.
+
+(c) **Closed by the landing** — by E50 (Entry 163) and E50b (Entry 181)
+together, both dispatched once E50a landed. Built and merged; the
+mastery-day residue is E50b's own open question, not part of this row.
 
 ## X37 (CL03) — dependency column is `E50a` alone
 
