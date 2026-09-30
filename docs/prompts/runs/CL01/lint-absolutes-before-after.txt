@@ -1,0 +1,46 @@
+$ python tools/content/lint_absolutes.py --lesson improv.3 --out build/CL01/lint/before-improv.3.md   (before the edit)
+exit=0; occurrences 6
+| 16 | only | Your right hand uses only the five notes of C position. |
+| 17 | all | Nothing you play can be wrong, because all five notes belong to all three chords or are a step away from one. |
+| 17 | all | Nothing you play can be wrong, because all five notes belong to all three chords or are a step away from one. |
+| 23 | most | You will discover that most of what makes an improvisation sound good is rhythm and space, which is a much more useful thing to learn first than a scale. |
+| 35 | every | Almost every memorable melody in Western music is a motif repeated with small changes. |
+| 38 | only | The only measure is whether you kept time and whether you would play any of it again. |
+
+$ python tools/content/lint_absolutes.py --lesson improv.3 --out build/CL01/lint/after-improv.3.md   (after the edit)
+exit=0; occurrences 4
+| 16 | only | Your right hand uses only the five notes of C position. |
+| 23 | most | You will discover that most of what makes an improvisation sound good is rhythm and space, which is a much more useful thing to learn first than a scale. |
+| 35 | every | Almost every memorable melody in Western music is a motif repeated with small changes. |
+| 38 | only | The only measure is whether you kept time and whether you would play any of it again. |
+
+$ python tools/content/lint_absolutes.py --lesson ragtime.9 --out build/CL01/lint/before-ragtime.9.md   (before the edit)
+exit=0; occurrences 13
+| 12 | every | Every rung so far handed you a method for taking a rag apart: strain by strain at Stage 6, the left hand alone at Stage 7, figure by figure at Stage 8. |
+| 16 | all | All four of these are built from sixteen-bar strains, and the strains change key under you — three different key signatures in three of them. |
+| 24 | all | Any one will fail on its own under pressure; all three will not. |
+| 25 | only | Test a strain by starting in the middle of it — if you can only begin at the first bar, you have memorised a sequence and not a piece. |
+| 39 | all | Four options, all Joplin, all in two-four, none of them printing a single chord symbol. |
+| 39 | all | Four options, all Joplin, all in two-four, none of them printing a single chord symbol. |
+| 39 | none | Four options, all Joplin, all in two-four, none of them printing a single chord symbol. |
+| 43 | none | A Breeze from Alabama has three as well, and its middle strain sits in four flats after an opening with none, which is the furthest any of these travels in one step. |
+| 46 | only | Search-Light Rag is the short one at ninety bars and the only one in two keys rather than three, but it has much the heaviest left hand: a bass doubled at the octave in eighty-four of those ninety bars, against thirty-three at most in the others. |
+| 48 | most | Search-Light Rag is the short one at ninety bars and the only one in two keys rather than three, but it has much the heaviest left hand: a bass doubled at the octave in eighty-four of those ninety bars, against thirty-three at most in the others. |
+| 49 | only | It is also the only one of the four with a tempo written on it in words, and those words are Slow March Tempo. |
+| 61 | never | Memory laid down fast has the errors in it, and those never come out. |
+| 63 | every | One whole rag, every strain, no page, and you can start from the top of any strain somebody names. |
+
+$ python tools/content/lint_absolutes.py --lesson ragtime.9 --out build/CL01/lint/after-ragtime.9.md   (after the edit)
+exit=0; occurrences 12
+| 12 | every | Every rung so far handed you a method for taking a rag apart: strain by strain at Stage 6, the left hand alone at Stage 7, figure by figure at Stage 8. |
+| 16 | all | All four of these are built from sixteen-bar strains, and the strains change key under you — three different key signatures in three of them. |
+| 24 | all | Any one will fail on its own under pressure; all three will not. |
+| 25 | only | Test a strain by starting in the middle of it — if you can only begin at the first bar, you have memorised a sequence and not a piece. |
+| 39 | all | Four options, all Joplin, all in two-four, none of them printing a single chord symbol. |
+| 39 | all | Four options, all Joplin, all in two-four, none of them printing a single chord symbol. |
+| 39 | none | Four options, all Joplin, all in two-four, none of them printing a single chord symbol. |
+| 43 | none | A Breeze from Alabama has three as well, and its middle strain sits in four flats after an opening with none, which is the furthest any of these travels in one step. |
+| 46 | only | Search-Light Rag is the short one at ninety bars and the only one in two keys rather than three, but it has much the heaviest left hand: a bass doubled at the octave in eighty-four of those ninety bars, against thirty-three at most in the others. |
+| 48 | most | Search-Light Rag is the short one at ninety bars and the only one in two keys rather than three, but it has much the heaviest left hand: a bass doubled at the octave in eighty-four of those ninety bars, against thirty-three at most in the others. |
+| 49 | only | It is also the only one of the four with a tempo written on it in words, and those words are Slow March Tempo. |
+| 63 | every | One whole rag, every strain, no page, and you can start from the top of any strain somebody names. |

@@ -57,8 +57,8 @@ at a time, then two, then the lot. When a strain survives that, set *Perform* on
 the score screen: one pass start to finish, no restarts and no loop, kept as a
 performance rather than as practice.
 
-**Common mistake.** Memorising at full tempo. Memory laid down fast has the
-errors in it, and those never come out.
+**Common mistake.** Memorising at full tempo. If you memorise mistakes at full
+tempo, they can be hard to unlearn.
 
 **How you'll know you've got it.** One whole rag, every strain, no page, and you
 can start from the top of any strain somebody names.
