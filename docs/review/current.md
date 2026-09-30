@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **G86a** — `handoffs/d5508d7b.md` (respond in `responses/d5508d7b.md`). A tap that could not start the sound says so and starts nothing (Entry 165).
 - **E51a** — `handoffs/70043128.md`, answered: APPROVE, closed, and E51 with it. The map names the merge's browser consumer, and the committed file says what its format holds (Entry 164).
 - **L120b** — `handoffs/c8680b70.md`, answered: APPROVE, closed. The reading and the gate (Entry 155).
 - **G86** — `handoffs/970fd770.md`, answered: approve with one required change, built as G86a (no silent run when the bound expires: Play restored, one sentence at the control, a later tap retries; Entry 165, its brief with you before dispatch; its own handoff when it lands). The Score screen's sheets close with the screen, and play asks the audio to start (Entry 158).
