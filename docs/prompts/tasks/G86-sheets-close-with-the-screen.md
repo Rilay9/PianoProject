@@ -23,3 +23,5 @@ You own `app/src/ui/screens/ScoreScreen.ts` at `openStashedSheet`, the screen's 
 ## Report
 
 Judgement first: the Library after Back with a sheet open, before and after at 342 × 740; what ▶ now does on a suspended engine, and the layers that observed it, with *unverified on a device* in the first lines of that half. Then Done / Not done / Follow-ups (the other screens' sheets, the MIDI start, the device observation) / Questions / Files; per fix the mechanism, the discriminating test and its red line; the tests table; exit codes; unverified beside what passes. Entry 158; every run file under `docs/prompts/runs/G86/`; the entry as `docs/prompts/runs/G86/ENTRY.md`, starting `### Entry 158 — G86`; `## Doc rows` for the `docs/01`, `docs/04` and `docs/08` lines the change touches.
+
+**Landed 2026-09-29** (Entry 158; 970fd770, merged 212891b5); handoff `handoffs/970fd770.md`.

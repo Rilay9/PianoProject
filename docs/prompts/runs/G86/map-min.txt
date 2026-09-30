@@ -1,0 +1,164 @@
+# checks for 153 path(s): 153 matched, 0 unmatched
+# app/src/ui/screens/DrillScreen.ts: app/src/**, app/src/ui/screens/DrillScreen.*
+# app/src/ui/screens/ScoreScreen.ts: app/src/**, app/src/ui/screens/ScoreScreen.*
+# app/tests/e2e/drills-review.spec.ts: app/tests/e2e/*.spec.ts
+# app/tests/e2e/modes-placement.spec.ts: app/tests/e2e/*.spec.ts
+# app/tests/e2e/score.screen.spec.ts: app/tests/e2e/*.spec.ts
+# app/tests/unit/drillSheetsSayWhatWasMeasured.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/lessonClaimsAboutApp.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/lessonClaimsAboutMusic.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/scoreSheetsCloseAndPlayStartsSound.test.ts: app/tests/unit/*.test.ts
+# content/lessons/0.1.md: content/**, content/lessons/**
+# content/lessons/1.1.md: content/**, content/lessons/**
+# content/lessons/1.5.md: content/**, content/lessons/**
+# content/lessons/blues.4.md: content/**, content/lessons/**
+# content/lessons/blues.5.md: content/**, content/lessons/**
+# content/lessons/blues.6.md: content/**, content/lessons/**
+# content/lessons/blues.8.md: content/**, content/lessons/**
+# content/lessons/chords-pop.7.md: content/**, content/lessons/**
+# content/lessons/classical.3.md: content/**, content/lessons/**
+# content/lessons/classical.4.shelf.md: content/**, content/lessons/**
+# content/lessons/classical.5.md: content/**, content/lessons/**
+# content/lessons/classical.6.md: content/**, content/lessons/**
+# content/lessons/practice.1.md: content/**, content/lessons/**
+# content/lessons/practice.2.md: content/**, content/lessons/**
+# content/lessons/practice.3.md: content/**, content/lessons/**
+# content/lessons/practice.5.md: content/**, content/lessons/**
+# content/lessons/ragtime.6.md: content/**, content/lessons/**
+# content/lessons/ragtime.7.md: content/**, content/lessons/**
+# content/lessons/technique.6.md: content/**, content/lessons/**
+# content/tips/ear-tune.md: content/**, content/tips/**
+# docs/01-architecture.md: docs/**
+# docs/04-ui-spec.md: docs/04-ui-spec.md, docs/**
+# docs/08-test-map.md: docs/**
+# docs/prompts/pictures/g86/library-after-back-committed.png: docs/**
+# docs/prompts/pictures/g86/library-after-back-fixed.png: docs/**
+# docs/prompts/pictures/g86/play-busy-fixed.png: docs/**
+# docs/prompts/pictures/u96a/after-flash-every-card-skipped-342x740.png: docs/**
+# docs/prompts/pictures/u96a/after-flash-four-answered-three-right-342x740.png: docs/**
+# docs/prompts/pictures/u96a/after-flash-skip-right-wrong-342x740.png: docs/**
+# docs/prompts/pictures/u96a/after-placement-question-342x740.png: docs/**
+# docs/prompts/pictures/u96a/after-rhythm-tapped-342x740.png: docs/**
+# docs/prompts/pictures/u96a/after-simon-one-right-then-wrong-342x740.png: docs/**
+# docs/prompts/pictures/u96a/before-flash-every-card-skipped-342x740.png: docs/**
+# docs/prompts/pictures/u96a/before-flash-four-answered-three-right-342x740.png: docs/**
+# docs/prompts/pictures/u96a/before-flash-skip-right-wrong-342x740.png: docs/**
+# docs/prompts/pictures/u96a/before-placement-question-342x740.png: docs/**
+# docs/prompts/pictures/u96a/before-rhythm-tapped-342x740.png: docs/**
+# docs/prompts/pictures/u96a/before-simon-one-right-then-wrong-342x740.png: docs/**
+# docs/prompts/runs/F3a/ENTRY.md: docs/**
+# docs/prompts/runs/F3a/baseline-committed-tests.txt: docs/**
+# docs/prompts/runs/F3a/build-app.txt: docs/**
+# docs/prompts/runs/F3a/checks-for-paths.txt: docs/**
+# docs/prompts/runs/F3a/content-build-offline-after-edits.txt: docs/**
+# docs/prompts/runs/F3a/content-build-offline-initial.txt: docs/**
+# docs/prompts/runs/F3a/content-tests.txt: docs/**
+# docs/prompts/runs/F3a/e2e-map-specs-4493.txt: docs/**
+# docs/prompts/runs/F3a/green-unit-named-files.txt: docs/**
+# docs/prompts/runs/F3a/lint-absolutes-before-after.txt: docs/**
+# docs/prompts/runs/F3a/lint.txt: docs/**
+# docs/prompts/runs/F3a/npm-ci.txt: docs/**
+# docs/prompts/runs/F3a/parity-reference.txt: docs/**
+# docs/prompts/runs/F3a/probe-tempo-events.txt: docs/**
+# docs/prompts/runs/F3a/read-built-catalogue.txt: docs/**
+# docs/prompts/runs/F3a/read-built-scores.txt: docs/**
+# docs/prompts/runs/F3a/red-unit-committed-lessons.txt: docs/**
+# docs/prompts/runs/F3a/review-check.txt: docs/**
+# docs/prompts/runs/F3a/scripts-chain.sh: docs/**
+# docs/prompts/runs/F3a/scripts-facts.py: docs/**
+# docs/prompts/runs/F3a/scripts-lint.py: docs/**
+# docs/prompts/runs/F3a/scripts-rebuild.sh: docs/**
+# docs/prompts/runs/F3a/scripts-scan.py: docs/**
+# docs/prompts/runs/F3a/scripts-setup.sh: docs/**
+# docs/prompts/runs/F3a/scripts-summarise.py: docs/**
+# docs/prompts/runs/F3a/scripts-tempi.py: docs/**
+# docs/prompts/runs/F3a/scripts-words.py: docs/**
+# docs/prompts/runs/F3a/scripts-zzF3aTempoProbe.test.ts: docs/**
+# docs/prompts/runs/F3a/sentences.md: docs/**
+# docs/prompts/runs/F3a/tsc.txt: docs/**
+# docs/prompts/runs/F3a/validate.txt: docs/**
+# docs/prompts/runs/F3a/vitest-all.txt: docs/**
+# docs/prompts/runs/F3a/vitest-expectedNote-alone.txt: docs/**
+# docs/prompts/runs/F3a/words-before-after.txt: docs/**
+# docs/prompts/runs/G86/ENTRY.md: docs/**
+# docs/prompts/runs/G86/browser-green-and-pictures.txt: docs/**
+# docs/prompts/runs/G86/browser-red-committed.txt: docs/**
+# docs/prompts/runs/G86/build-app.txt: docs/**
+# docs/prompts/runs/G86/checks-for-paths.txt: docs/**
+# docs/prompts/runs/G86/e2e-targeted.txt: docs/**
+# docs/prompts/runs/G86/library-after-back-committed.json: docs/**
+# docs/prompts/runs/G86/library-after-back-fixed.json: docs/**
+# docs/prompts/runs/G86/lint.txt: docs/**
+# docs/prompts/runs/G86/mutants.txt: docs/**
+# docs/prompts/runs/G86/pictures-committed.txt: docs/**
+# docs/prompts/runs/G86/play-busy-fixed.json: docs/**
+# docs/prompts/runs/G86/scripts-mutants.py: docs/**
+# docs/prompts/runs/G86/scripts-pictures.spec.ts: docs/**
+# docs/prompts/runs/G86/scripts-playwright.g86-4483.config.ts: docs/**
+# docs/prompts/runs/G86/scripts-run.ps1: docs/**
+# docs/prompts/runs/G86/states-committed.txt: docs/**
+# docs/prompts/runs/G86/states.txt: docs/**
+# docs/prompts/runs/G86/tsc.txt: docs/**
+# docs/prompts/runs/G86/unit-all-summary.txt: docs/**
+# docs/prompts/runs/G86/unit-docs-readers.txt: docs/**
+# docs/prompts/runs/G86/unit-expectedNote-alone.txt: docs/**
+# docs/prompts/runs/G86/unit-group-green.txt: docs/**
+# docs/prompts/runs/G86/unit-red-committed.txt: docs/**
+# docs/prompts/runs/G86/unittest-checks-for-paths.txt: docs/**
+# docs/prompts/runs/G86/vite-build-committed.txt: docs/**
+# docs/prompts/runs/U96a/ENTRY.md: docs/**
+# docs/prompts/runs/U96a/build-app-changed.txt: docs/**
+# docs/prompts/runs/U96a/build-app-committed.txt: docs/**
+# docs/prompts/runs/U96a/build-app-final.txt: docs/**
+# docs/prompts/runs/U96a/build-mutant.txt: docs/**
+# docs/prompts/runs/U96a/checks-for-paths.txt: docs/**
+# docs/prompts/runs/U96a/content-build-offline.txt: docs/**
+# docs/prompts/runs/U96a/e2e-map-reds-rerun.txt: docs/**
+# docs/prompts/runs/U96a/e2e-map.txt: docs/**
+# docs/prompts/runs/U96a/git-diff-drillscreen-after-restore.txt: docs/**
+# docs/prompts/runs/U96a/lint-final-without-config-copy.txt: docs/**
+# docs/prompts/runs/U96a/lint-without-config-copy.txt: docs/**
+# docs/prompts/runs/U96a/mutant-apply.txt: docs/**
+# docs/prompts/runs/U96a/mutant-restore.txt: docs/**
+# docs/prompts/runs/U96a/npm-ci.txt: docs/**
+# docs/prompts/runs/U96a/parity-reference.txt: docs/**
+# docs/prompts/runs/U96a/pictures-after.txt: docs/**
+# docs/prompts/runs/U96a/pictures-before.txt: docs/**
+# docs/prompts/runs/U96a/placebo-committed-check-on-mutant.txt: docs/**
+# docs/prompts/runs/U96a/probe-compare.txt: docs/**
+# docs/prompts/runs/U96a/probe-record-changed.json: docs/**
+# docs/prompts/runs/U96a/probe-record-changed.txt: docs/**
+# docs/prompts/runs/U96a/probe-record-committed.json: docs/**
+# docs/prompts/runs/U96a/probe-record-committed.txt: docs/**
+# docs/prompts/runs/U96a/red-u103-mutant.txt: docs/**
+# docs/prompts/runs/U96a/red-unit-committed-draft1.txt: docs/**
+# docs/prompts/runs/U96a/red-unit-committed.txt: docs/**
+# docs/prompts/runs/U96a/scripts-compare-fails.py: docs/**
+# docs/prompts/runs/U96a/scripts-compare-probe.py: docs/**
+# docs/prompts/runs/U96a/scripts-mutant-u103.py: docs/**
+# docs/prompts/runs/U96a/scripts-run-e2e.sh: docs/**
+# docs/prompts/runs/U96a/scripts-run.sh: docs/**
+# docs/prompts/runs/U96a/scripts-sanitise.py: docs/**
+# docs/prompts/runs/U96a/scripts-summarise-vitest.py: docs/**
+# docs/prompts/runs/U96a/scripts-zz-u96a-pictures.spec.ts: docs/**
+# docs/prompts/runs/U96a/scripts-zzU96aRecordProbe.test.ts: docs/**
+# docs/prompts/runs/U96a/tsc-committed-src-new-tests.txt: docs/**
+# docs/prompts/runs/U96a/tsc-final.txt: docs/**
+# docs/prompts/runs/U96a/tsc.txt: docs/**
+# docs/prompts/runs/U96a/unit-final.txt: docs/**
+# docs/prompts/runs/U96a/unit-fixed.txt: docs/**
+# docs/prompts/runs/U96a/vitest-all-summary.txt: docs/**
+# docs/prompts/runs/U96a/vitest-compare.txt: docs/**
+# docs/prompts/runs/U96a/vitest-failing-files-committed-src.txt: docs/**
+# docs/prompts/runs/U96a/vitest-failing-files-rerun-changed.txt: docs/**
+# docs/prompts/runs/U96a/vitest-not-started-rerun.txt: docs/**
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/converted-import.spec.ts tests/e2e/drills-harmony.spec.ts tests/e2e/drills-review.spec.ts tests/e2e/drills.spec.ts tests/e2e/feedback-placement.spec.ts tests/e2e/first-day.spec.ts tests/e2e/lab.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/lesson-tools.spec.ts tests/e2e/midi-import.spec.ts tests/e2e/modes-chart-from-the-score.spec.ts tests/e2e/modes-duet.spec.ts tests/e2e/modes-engraving.spec.ts tests/e2e/modes-ladder.spec.ts tests/e2e/modes-placement.spec.ts tests/e2e/modes-rhythm-only.spec.ts tests/e2e/modes-technique-measure.spec.ts tests/e2e/plan.spec.ts tests/e2e/projects.spec.ts tests/e2e/score.arrange-race.spec.ts tests/e2e/score.bar-targets.spec.ts tests/e2e/score.blind.spec.ts tests/e2e/score.countin.spec.ts tests/e2e/score.fill.spec.ts tests/e2e/score.fuzz.spec.ts tests/e2e/score.head-height.spec.ts tests/e2e/score.hearIt.spec.ts tests/e2e/score.hearbar.spec.ts tests/e2e/score.ladder-route.spec.ts tests/e2e/score.latch.spec.ts tests/e2e/score.layout.spec.ts tests/e2e/score.pickup-numbers.spec.ts tests/e2e/score.readahead.spec.ts tests/e2e/score.rhythm-ladder.spec.ts tests/e2e/score.rotate.spec.ts tests/e2e/score.run.spec.ts tests/e2e/score.screen.spec.ts tests/e2e/score.sheet-rows.spec.ts tests/e2e/score.states.spec.ts tests/e2e/score.stepper-limits.spec.ts tests/e2e/score.strip-span.spec.ts tests/e2e/score.window-rule.spec.ts tests/e2e/session-run.spec.ts tests/e2e/side-panel-prose.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/tips.spec.ts tests/e2e/today.spec.ts tests/e2e/tour-practice-modes.spec.ts tests/e2e/transfer-offer.spec.ts --workers=4
+states	app	npm run states
