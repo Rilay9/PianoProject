@@ -1,0 +1,107 @@
+files: tests/unit/stage9ProjectsPage.test.ts
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/stage9ProjectsPage.test.ts (8 tests | 2 failed) 1077ms
+   ❯ a Stage 9 unit’s page (6)
+     × a paused project’s badge says Paused with no tick: the neutral style, never the pass style 66ms
+     × no project state wears the tick: each is its words in the neutral style, as not started is 496ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/stage9ProjectsPage.test.ts > a Stage 9 unit’s page > a paused project’s badge says Paused with no tick: the neutral style, never the pass style
+AssertionError: expected { word: 'Paused', kind: 'passed' } to deeply equal { word: 'Paused', kind: 'neutral' }
+
+- Expected
++ Received
+
+  {
+-   "kind": "neutral",
++   "kind": "passed",
+    "word": "Paused",
+  }
+
+ ❯ tests/unit/stage9ProjectsPage.test.ts:241:67
+    239|     await applyProjectAction({ itemId: 'song.ballade', material: file(…
+    240|     const mark = songRow(await mount('classical.9'), 'song.ballade').q…
+    241|     expect({ word: mark?.textContent, kind: mark?.dataset.kind }).toEq…
+       |                                                                   ^
+    242|   });
+    243|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/stage9ProjectsPage.test.ts > a Stage 9 unit’s page > no project state wears the tick: each is its words in the neutral style, as not started is
+AssertionError: expected [ { state: 'saved', …(2) }, …(7) ] to deeply equal [ { state: 'saved', …(2) }, …(7) ]
+
+- Expected
++ Received
+
+  [
+    {
+-     "kind": "neutral",
++     "kind": "passed",
+      "state": "saved",
+      "word": "Saved for later",
+    },
+    {
+-     "kind": "neutral",
++     "kind": "passed",
+      "state": "learning",
+      "word": "Learning",
+    },
+    {
+-     "kind": "neutral",
++     "kind": "passed",
+      "state": "polishing",
+      "word": "Preparing for performance",
+    },
+    {
+-     "kind": "neutral",
++     "kind": "passed",
+      "state": "performance-ready",
+      "word": "Ready to perform",
+    },
+    {
+-     "kind": "neutral",
++     "kind": "passed",
+      "state": "maintaining",
+      "word": "Keeping it playable",
+    },
+    {
+-     "kind": "neutral",
++     "kind": "passed",
+      "state": "refreshing",
+      "word": "Bringing it back",
+    },
+    {
+-     "kind": "neutral",
++     "kind": "passed",
+      "state": "paused",
+      "word": "Paused",
+    },
+    {
+-     "kind": "neutral",
++     "kind": "passed",
+      "state": "retired",
+      "word": "Put away",
+    },
+  ]
+
+ ❯ tests/unit/stage9ProjectsPage.test.ts:255:18
+    253|       said.push({ state, word: mark?.textContent, kind: mark?.dataset.…
+    254|     }
+    255|     expect(said).toEqual(Object.entries(PROJECT_TEXT.states).map(([sta…
+       |                  ^
+    256|     const untouched = songRow(await mount('classical.9'), 'song.campan…
+    257|     expect({ word: untouched?.textContent, kind: untouched?.dataset.ki…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 6 passed (8)
+   Start at  18:07:04
+   Duration  18.19s (environment 82%, transform 8%, tests 6%, import 4%)
+
+exit=1
