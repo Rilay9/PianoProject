@@ -1097,7 +1097,7 @@ rung or tags. One result per declared skill, decided in this order:
 1. **Target** — only `targetSkills`; a skill nobody declared gets nothing.
 2. **Channel** — every channel of the skill's `observable` measured (`measurement.ts`): nothing on
    a row with no measures block (a row before C1, and the placeholders `accuracy: 1` and
-   `tempoPct: 100` some writers store, L52); pitch where the row's `pitch` is not *not measured*
+   `tempoPct: 100` some writers store, L52); nothing on a row written under observation definitions this build does not know (`KNOWN_OBSERVATION_DEFINITIONS`, today `{1}`: refused on both channels, `unknown-definitions`, never read as version 1; CL04, L70); pitch where the row's `pitch` is not *not measured*
    and its per-step codes are kept (a row compacted to bars measures nothing here); timing on a
    Keep tempo run that timed a note. `observable: none` is refused outright.
 3. **Conditions** — the skill's full standard, else its practice standard, else refused with the
@@ -1108,17 +1108,13 @@ rung or tags. One result per declared skill, decided in this order:
    read before is no evidence of reading at any standard.
 4. **Opportunity** — the skill's demands (or every step with a note for the learner) inside the
    steps the run covered, in the hands it played.
-5. **Precision** (reviewer decision 6, S21) — a timing skill counts only the steps where the run's
-   window is narrower than the error the skill is about, at the tempo the run kept there
-   (`TIMING_PRECISION_QUARTERS`: triplets 1/12 of a quarter, subdivision 1/6, 6/8 1/4, the dotted
-   quarter, syncopation and ties 1/2; a skill whose rhythm is the phrase's takes the finest demand
-   located at each step, and an eighth where none is). None left, and it is refused. At Anh. 113's
+5. **Precision** (reviewer decision 6, S21) — the timing channel measures only the steps where the run's window is narrower than the error the skill is about, at the tempo the run kept there (`TIMING_PRECISION_QUARTERS`: triplets 1/12 of a quarter, subdivision 1/6, 6/8 1/4, the dotted quarter, syncopation and ties 1/2; a skill whose rhythm is the phrase's takes the finest demand located at each step, and an eighth where none is); at the other steps it measures nothing and the pitch channel still counts, so a misread note there counts against a skill timed as well as pitched and a right one counts right, while the rhythm demands located there are counted by none (CL04, L73). No step resolvable, and the skill is refused. At Anh. 113's
    ♩ = 96 and the rung's 80 % a quarter is 781 ms and the rushed triplet's second note 65 ms early,
    inside ±150: no triplet evidence; a window narrower than that gives it (`tripletPrecision.test.ts`).
    The global window is not changed.
 
 Then attribution: `n` counts the opportunity steps the channels measured, `right` those right on
-every channel. C1 keeps a step's code, not which pitch of a chord was missed, so a chord step
+every channel that measured the step. C1 keeps a step's code, not which pitch of a chord was missed, so a chord step
 partly missed counts in `n` and never in `right` (`context.unattributed` says how many): `right`
 is a floor. A refusal is `{skill, reason, cites}` — `not-measured:<channel>`,
 `not-measured:observable`, `condition:<id>`, `no-opportunity`, `precision`, `unknown-skill` — and
@@ -1140,15 +1136,13 @@ the record cannot say which note — C1 keeps the step's code, not which pitch w
 so the step is out of that demand's `n` and listed in `unattributed`; a demand on every note of
 the step, or a step where every pitch was missed (`m`), is told (`StepMeasure.uniform`). For a
 skill with a demand list, `otherDemands` names the demands it does not count, located on its
-counted steps; with the entries' own steps that says where every demand of those steps is, and
+counted steps — and for a skill read over every step, the rhythm demands at a step its window could not time (L73); with the entries' own steps that says where every demand of those steps is, and
 `overlapOf(evidence, demand)` derives which other demands shared a demand's steps. Each
 (demand, step) is stored once: stored beside every entry, the overlap made the evidence several
 times the observation it came from. **No field says which demand caused a miss**: one wrong note
 at a skip, in the left hand, during eighths is wrong under all three. A demand with no measured
 opportunity is absent, `no-opportunity` stays a skill-level refusal only when none of the skill's
-demands had one, and a timing step the window cannot resolve is out of the skill's steps and so
-out of every demand's (at 100 % of a phrase written at 72 bpm the eighths drop out of
-sight-reading's counts, as the precision rule above already said). One pass over the detectors per run serves every skill.
+demands had one, and at a step the window cannot resolve the rhythm demands are counted by none and listed in `otherDemands`, while the step's pitch demands are told by pitch (at 100 % of a phrase written at 72 bpm a misread eighth counts against sight-reading and its interval, and the eighth sits beside it in the overlap; CL04, L73). One pass over the detectors per run serves every skill.
 
 **Demand readings** (`demandReadings.ts`, C4a). `demandReadings(rows, vocabulary, today)`: per
 reading-strand skill and per demand its evidence counted, over the skill's last
@@ -1186,12 +1180,12 @@ is named. The evidence and the readings speak in the vocabulary's demand ids and
 what a reader can change; the reader maps a supported demand to a control (C4c) and acts only on
 `isolated` or `pattern`.
 
-**The evidence's own version** (L66, C4a). `EVIDENCE_DEFINITIONS` (3) in `evidence.ts`, stamped on
+**The evidence's own version** (L66, C4a). `EVIDENCE_DEFINITIONS` (5) in `evidence.ts`, stamped on
 the row beside the evidence as `evidenceDefinitions` by the record call (`stampedEvidence`);
 `storedEvidence` takes only the current stamp and ignores the observation's `definitions`, which
 stays the observation's. Version 1 is C3's per-skill evidence as C4 stored it under the
 observation's stamp; version 2 is C4a–C4c's, whose hands-together counts sat on every note over
-the other hand's held note: rows under either contribute nothing until the job below brings
+the other hand's held note; version 3 counts playing together only where the hands are coordinated (C4d), version 4 reads 3/8 as simple triple (L120b), version 5 refuses timing per channel at a step the window cannot resolve (CL04, L73): rows under any earlier version contribute nothing until the job below brings
 them up to date. `recomputeEvidence(row, played, vocabulary)` is what the record call would
 store today.
 

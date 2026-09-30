@@ -988,7 +988,7 @@ that decision exists a study reaches the learner only through the Library (Part 
 >   (the report lists it as *introduced*), never a teaching rung (`claims.teaching_rungs` reads
 >   `concepts` alone, so `taughtAt` never names it; `validate.py` refuses a listed rung that only
 >   introduces the demand, whatever its note), and never a requirement met (the evidence gate reads
->   `targetSkills`). `blues.5` introduces the walking bass: its exercise is the line alone, left
+>   `targetSkills`); for a learner carried over from before C5 it is an exposure, as the rung's concepts are — *introduced* on the ladder, never an encounter, familiarity or requirement (CL04, G70) — and it is never written into an imported piece's *What it trains* (the reviewer's ruling, `responses/questions-eebafb5e.md`). `blues.5` introduces the walking bass: its exercise is the line alone, left
 >   hand only, and the demand is a walk under a right hand, so `blues.6`, whose exercise puts a
 >   right hand over the same line, is the blues path's teaching rung.
 > - **The rule the validator holds:** a rung's `concepts` naming a measurable skill or demand that

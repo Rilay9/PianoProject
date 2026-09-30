@@ -2727,6 +2727,7 @@ accuracy.**
 - **The three-button self-report** (Rough / OK / Clean) from §5. "Clean" writes a pass, marked
   `selfPassed` and badged the way "I already know this" is. It is never master-eligible:
   mastery needs two measured passes and nothing here was measured.
+- *Practise with the score* opens the twin judged by the rung whose page opened the paper screen (`#/paper/<book>/<piece>?from=<rung>`), so its run counts for the book piece that rung lists; from the Shelf it opens with no rung (CL04, L79).
 - The `sessions` row is `mode: 'paper'` with `notesHeard`, `steadinessMs` and `bpm`, and an
   accuracy of 0 that the Progress screen deliberately never prints as a percentage — a zero
   there would read as a verdict instead of an absence.

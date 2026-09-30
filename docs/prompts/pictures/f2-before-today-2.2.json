@@ -1,0 +1,32 @@
+[
+ {
+  "slot": "technique",
+  "item": "drill.rhythm.eighths",
+  "claim": "asked",
+  "text": "Rhythm reading with eighth notesThis lesson asks for it — not counted yetWarm-up · 5 min · L2.2Swap▶"
+ },
+ {
+  "slot": "review",
+  "item": "exercise.rhythm.eighths.4bar",
+  "claim": "rung",
+  "text": "Rhythm: eighths — 4 barsNothing due for review — more from this lessonReview · 5 min · L1.3 · RHSwap▶"
+ },
+ {
+  "slot": "new",
+  "item": "song.folk.london-bridge",
+  "claim": "asked",
+  "text": "London Bridge Is Falling DownThis lesson asks for it — not counted yetNew · 10 min · L2.2Swap▶"
+ },
+ {
+  "slot": "repertoire",
+  "item": "song.folk.merrily-we-roll-along",
+  "claim": "rung",
+  "text": "Merrily We Roll AlongMore music from this lessonRepertoire · 7 min · L1.1 · RHSwap▶"
+ },
+ {
+  "slot": "sightreading",
+  "item": "drill.reading.sight-reading-2-right",
+  "claim": "reader",
+  "text": "Sight-reading generator, level 2, right handRead something you have never seen, once, slowlySight-reading · 3 min · L2.2 · RHSwap▶"
+ }
+]

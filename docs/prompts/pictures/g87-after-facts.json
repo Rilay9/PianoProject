@@ -1,0 +1,86 @@
+{
+  "tag": "after",
+  "date": {
+    "fontFamily": "Arial",
+    "fontSize": "16px",
+    "border": "1px solid rgb(226, 227, 232)",
+    "radius": "10px",
+    "padding": "0px 10px 0px 10px",
+    "background": "rgb(247, 247, 249)",
+    "color": "rgb(20, 22, 26)",
+    "box": {
+      "x": 167,
+      "y": 326,
+      "width": 137,
+      "height": 44
+    }
+  },
+  "goal": {
+    "fontFamily": "Arial",
+    "fontSize": "16px",
+    "border": "1px solid rgb(226, 227, 232)",
+    "radius": "10px",
+    "padding": "0px 10px 0px 10px",
+    "background": "rgb(247, 247, 249)",
+    "color": "rgb(20, 22, 26)",
+    "box": {
+      "x": 17,
+      "y": 500,
+      "width": 217,
+      "height": 44
+    }
+  },
+  "actionsHeight": 132,
+  "dateDark": {
+    "fontFamily": "Arial",
+    "fontSize": "16px",
+    "border": "1px solid rgb(42, 46, 53)",
+    "radius": "10px",
+    "padding": "0px 10px 0px 10px",
+    "background": "rgb(15, 17, 21)",
+    "color": "rgb(238, 240, 243)",
+    "box": {
+      "x": 167,
+      "y": 326,
+      "width": 137,
+      "height": 44
+    }
+  },
+  "goalDark": {
+    "fontFamily": "Arial",
+    "fontSize": "16px",
+    "border": "1px solid rgb(42, 46, 53)",
+    "radius": "10px",
+    "padding": "0px 10px 0px 10px",
+    "background": "rgb(15, 17, 21)",
+    "color": "rgb(238, 240, 243)",
+    "box": {
+      "x": 17,
+      "y": 500,
+      "width": 217,
+      "height": 44
+    }
+  },
+  "stage9": {
+    "startLine": "Opens “Hanon No. 20 (C major) — both”.",
+    "startBlockHtml": "<div class=\"lesson-start\" id=\"lesson-start-block\"><button type=\"button\" class=\"button button--primary\" id=\"lesson-start\">Start</button><p class=\"lesson-start__what muted\" id=\"lesson-start-what\">Opens “Hanon No. 20 (C major) — both”.</p></div>",
+    "projectLine": "A project: there is no rung to pass here."
+  },
+  "stage1": {
+    "startLine": "Opens “Right-hand five-finger walk”, the first thing on this rung.",
+    "startBlockHtml": "<div class=\"lesson-start\" id=\"lesson-start-block\"><button type=\"button\" class=\"button button--primary\" id=\"lesson-start\">Start</button><p class=\"lesson-start__what muted\" id=\"lesson-start-what\">Opens “Right-hand five-finger walk”, the first thing on this rung.</p></div>",
+    "projectLine": null
+  },
+  "paused": {
+    "text": "Paused",
+    "kind": "neutral",
+    "mark": "none",
+    "color": "rgb(91, 96, 104)"
+  },
+  "notStarted": {
+    "text": "not started",
+    "kind": "neutral",
+    "mark": "none",
+    "color": "rgb(91, 96, 104)"
+  }
+}

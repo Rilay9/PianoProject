@@ -1,0 +1,100 @@
+{
+  "rung": "2.1",
+  "status": "Working on Stage 2 · Hands together: the left hand holds",
+  "rows": [
+    {
+      "item": "drill.technique.ht-holds",
+      "text": "Hands-together pattern drill This lesson asks for it — not counted yet Warm-up · 5 min · L2.1 Swap ▶",
+      "sheet": {
+        "tiers": [
+          "From the same lesson"
+        ],
+        "options": [
+          "lesson Hands together in C — left hand holds L2.1 · Hands together · exercise",
+          "lesson Hands together in C — left hand changes L2.1 · Hands together · exercise"
+        ],
+        "empty": false
+      }
+    },
+    {
+      "item": "exercise.five-finger.c-major.both",
+      "text": "C major five-finger pattern — both Nothing due for review — more from this lesson Review · 5 min · L2.1 Swap ▶",
+      "sheet": {
+        "tiers": [
+          "From the same lesson",
+          "Also practises both hands together, with the other demands you have met"
+        ],
+        "options": [
+          "lesson Hands together in C — left hand holds L2.1 · Hands together · exercise",
+          "lesson Hands together in C — left hand changes L2.1 · Hands together · exercise",
+          "lesson Jingle Bells (chorus, hands together) L2.1 · Hands together · song",
+          "lesson Mary Had a Little Lamb (hands together) L2.1 · Hands together · song",
+          "demand Thème du 1er mouvement de la sonate K.331 ≈ L2.5 · Hands together · song"
+        ],
+        "empty": false
+      }
+    },
+    {
+      "item": "song.classical.ode-to-joy.ht",
+      "text": "Ode to Joy (hands together) This lesson asks for it — not counted yet New · 10 min · L2.1 Swap ▶",
+      "sheet": {
+        "tiers": [
+          "From the same lesson",
+          "Also practises leaps, with the other demands you have met"
+        ],
+        "options": [
+          "lesson Hands together in C — left hand holds L2.1 · Hands together · exercise",
+          "lesson Hands together in C — left hand changes L2.1 · Hands together · exercise",
+          "lesson Jingle Bells (chorus, hands together) L2.1 · Hands together · song",
+          "lesson Mary Had a Little Lamb (hands together) L2.1 · Hands together · song",
+          "demand Thème du 1er mouvement de la sonate K.331 ≈ L2.5 · Hands together · song"
+        ],
+        "empty": false
+      }
+    },
+    {
+      "item": "song.folk.twinkle.ht",
+      "text": "Twinkle, Twinkle, Little Star (hands together) More music from this lesson Repertoire · 7 min · L2.1 Swap ▶",
+      "sheet": {
+        "tiers": [
+          "From the same lesson",
+          "Also practises leaps, with the other demands you have met"
+        ],
+        "options": [
+          "lesson Hands together in C — left hand holds L2.1 · Hands together · exercise",
+          "lesson Hands together in C — left hand changes L2.1 · Hands together · exercise",
+          "lesson Jingle Bells (chorus, hands together) L2.1 · Hands together · song",
+          "lesson Mary Had a Little Lamb (hands together) L2.1 · Hands together · song",
+          "demand Thème du 1er mouvement de la sonate K.331 ≈ L2.5 · Hands together · song"
+        ],
+        "empty": false
+      }
+    },
+    {
+      "item": "drill.reading.sight-reading-1",
+      "text": "Sight-reading generator, level 1 Read something you have never seen, once, slowly Sight-reading · 3 min · L1.5 · RH Swap ▶",
+      "sheet": {
+        "tiers": [
+          "From the same lesson",
+          "Also trains sight-reading, with the other demands you have met",
+          "Also trains reading by interval, with the other demands you have met"
+        ],
+        "options": [
+          "lesson Ear drill — 2nd or 3rd L1.5 · Hands together · drill",
+          "lesson Steps and Skips in C (study) L1.5 · Right hand · exercise",
+          "lesson Steps and skips in C position — no. 1 L1.5 · Right hand · exercise",
+          "lesson Steps and skips in C position — no. 2 L1.5 · Right hand · exercise",
+          "lesson Steps and skips in C position — no. 3 L1.5 · Right hand · exercise",
+          "lesson Simon — the white keys around middle C L2.0 · Hands together · drill",
+          "lesson Lightly Row L1.2 · Right hand · song",
+          "lesson Ode to Joy (theme) L1.1 · Right hand · song",
+          "skill Sight-reading generator, level 1, left hand L1.6 · Left hand · drill",
+          "skill Steps and skips in C position — no. 1 L1.5 · Left hand · exercise",
+          "skill Steps and skips in C position — no. 2 L1.5 · Left hand · exercise",
+          "skill Steps and skips in C position — no. 3 L1.5 · Left hand · exercise"
+        ],
+        "empty": false
+      }
+    }
+  ]
+}
