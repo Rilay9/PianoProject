@@ -12,9 +12,12 @@ The original brief's owned files and boundaries hold; nothing outside the requir
 
 **Base.** 827289d0, origin's head at dispatch. **Entry.** 180; the run files under `docs/prompts/runs/U32a/`, the entry at `docs/prompts/runs/U32a/ENTRY.md`.
 
+**Landed 2026-09-30** (Entry 180; 88df748b, merged e9b87288); handoff `handoffs/88df748b.md`.
+
 ## Record
 
 lane: U32a · closes: T60 · entry: 180
 index: U32's required change: provision the sheets the settled shape needs after the first paint, never `MAX_SLOTS` by default and never a whole-document load inside a run; Bars 8 by the chooser; the race pinned to Bars 4 (T60) (`responses/2f67b047.md`) | app | dispatched 2026-09-30 at 827289d0 (`U32a-the-sheets-the-settled-shape-needs.md`); Entry 180 |
 in-flight: dispatched 2026-09-30 (`U32a-the-sheets-the-settled-shape-needs.md`): U32's required change under the fast path: the sheets the settled shape needs, loaded after the first paint, one more on a stopped-state bar change before the next run, never inside a run; Bars 8 by the chooser's priority; the arrange-race case pinned to Bars 4, T60's header with it (`responses/2f67b047.md`); building (Entry 180)
 state: dispatched 2026-09-30: dispatched at 827289d0, building (Entry 180)
+- landed 2026-09-30: merged e9b87288; handoff `handoffs/88df748b.md`

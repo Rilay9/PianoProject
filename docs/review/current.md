@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **U32a** — `handoffs/88df748b.md` (respond in `responses/88df748b.md`). A long piece loads the sheets its settled shape needs, never the whole document inside a run (Entry 180).
 - **E50b** — `handoffs/65ae9d5f.md` (respond in `responses/65ae9d5f.md`). The repaired Wabash cut keeps its learner's history, and an old defaulted-tempo run never meets a standard against the repaired tempo (Entry 181).
 - **L120e** — `handoffs/0ef15f3f.md` (respond in `responses/0ef15f3f.md`). A coping-only admission is named in the candidate rungs report, and docs/02 tells one rule (Entry 178).
 - **G101** — `handoffs/cbdfe6f0.md` (respond in `responses/cbdfe6f0.md`). The Library title wraps to every line it needs, the Folder stays at two (Entry 177).
