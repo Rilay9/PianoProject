@@ -1,0 +1,3 @@
+Running 11 tests using 2 workers
+  11 passed (4.5m)
+exit 0

@@ -80,6 +80,7 @@ import {
   PROJECT_TEXT,
   RESTARTED_WITH,
   ROW_TEXT,
+  SESSION_TEXT,
   STATE_TEXT,
   SUMMARY_TEXT,
   notJudgedLines,
@@ -202,8 +203,8 @@ export const CONTROL_BAR_START_HIDE_MS = 700;
 export const SIDE_PANEL_WAIT_MS = 1_500;
 
 /**
- * The longest ▶ (or Space, or `Hear it`) waits for the sound to start (U69,
- * G86a). Chosen, not measured. A resume is the device's audio output
+ * The longest ▶ (or Space, or `Hear it`, or any tap U105 gated) waits for the
+ * sound to start (U69, G86a). Chosen, not measured. A resume is the device's audio output
  * starting, not a download, so a context the platform is willing to start
  * should answer well inside it; one that has not answered by then is being
  * refused — a phone in a call keeps the audio for the call — and the button a
@@ -215,6 +216,39 @@ export const SIDE_PANEL_WAIT_MS = 1_500;
  * as proof that there is none.
  */
 export const PLAY_SOUND_WAIT_MS = 1_000;
+
+/**
+ * A control whose tap can start the sound, as it asks `withSound` (U105): the
+ * element that carries `data-sound-refused` while its refusal stands, and how
+ * `STATE_TEXT.soundOff` names it — the label, or its first word where the
+ * label would pass the forty-odd characters the state line shows at 342 px
+ * (`04` §5f).
+ */
+interface SoundTap {
+  /** The control's id. */
+  id: string;
+  control: string;
+  verb?: 'tap' | 'hold';
+  again?: boolean;
+}
+
+/** ▶, and Space, its keyboard twin (G86a): the one tap whose wait shows on its button (U69). */
+const PLAY_TAP: SoundTap = { id: 'score-play', control: '▶' };
+const HEAR_TAP: SoundTap = { id: 'score-hear', control: 'Hear it' };
+/**
+ * A key that would start a run, on a connected piano or on the screen (U105).
+ * The sentence names ▶, whose tap can start the sound, without *again*,
+ * because ▶ was not what was used; ▶ carries the mark.
+ */
+const KEY_TAP: SoundTap = { id: 'score-play', control: '▶', again: false };
+const CARRY_ON_TAP: SoundTap = { id: 'score-resume-go', control: 'Carry on' };
+const RESTART_TAP: SoundTap = { id: 'score-restart', control: 'Start again' };
+const TRY_AGAIN_TAP: SoundTap = { id: 'session-try-again', control: SESSION_TEXT.tryAgain };
+const AGAIN_TAP: SoundTap = { id: 'summary-again', control: 'Again' };
+const SLOWER_TAP: SoundTap = { id: 'summary-slower', control: 'Slower' };
+const FASTER_TAP: SoundTap = { id: 'summary-faster', control: 'Faster' };
+/** *Loop the weak bars*: 50 characters in full, so its first word. */
+const LOOP_WEAK_TAP: SoundTap = { id: 'summary-loop', control: 'Loop' };
 
 /**
  * Sight-reading is the one drill kind that is notation (docs/05 §7–§8), so it
@@ -425,8 +459,9 @@ export function ScoreScreen(router: Router): HTMLElement {
   let hearing = false;
   /**
    * A tap is waiting for the sound to start — ▶'s or Space's (U69), or
-   * `Hear it`'s (U67) — so a second tap in that moment starts nothing, and
-   * neither button starts anything while the other's tap is waiting. Always
+   * `Hear it`'s (U67), or any other U105 put through the gate — so a second
+   * tap in that moment starts nothing, and no control starts anything while
+   * another's tap is waiting. Always
    * cleared when the wait ends, however it ends (G86a): a `Hear it` start that
    * never answered used to leave it set, and every later ▶ returned before
    * asking.
@@ -435,13 +470,15 @@ export function ScoreScreen(router: Router): HTMLElement {
   /** ▶'s own tap is the one waiting (U69): what `drawPlayHold` shows on the button. */
   let playWaiting = false;
   /**
-   * The tap whose wait ended with the sound still not running (G86a): nothing
-   * started, and the state line says so and names that tap's control. Cleared
-   * by the next tap that asks, and by the sound starting by any path —
-   * `soundOffLine` reads the engine too, so a line that has stopped being true
-   * is never drawn. Nothing records the engine as unavailable: every tap asks.
+   * The tap whose wait ended with the sound still not running (G86a), or the
+   * key refused at once (U105): nothing started, and the state line says so
+   * and names that tap's control. Cleared by the next tap that asks, by a
+   * start that makes ▶ read ⏸ (`startRun`, U105), and by the sound starting by
+   * any path — `soundOffLine` reads the engine too, so a line that has stopped
+   * being true is never drawn. Nothing records the engine as unavailable:
+   * every tap asks.
    */
-  let soundRefusedBy: 'play' | 'hear' | null = null;
+  let soundRefusedBy: SoundTap | null = null;
   /**
    * Whether this run has already said the app is playing a hand (P21c B3).
    *
@@ -1030,16 +1067,22 @@ export function ScoreScreen(router: Router): HTMLElement {
     const carryOn = button(
       `Carry on from bar ${String(from)}`,
       () => {
-        // A loop from there to the end: the engine starts a run at the loop's
-        // first bar, which is the only way this screen can begin anywhere but
-        // bar 1. It comes round again at the end rather than stopping, which
-        // is what the line beside it says out loud.
-        loopBars = { from, to: lastBar };
-        loopSection = null;
-        if (itemId !== undefined) forgetUnfinished(itemId);
-        resumeRow.hidden = true;
-        startRun();
-        render();
+        // Through the sound's gate, the whole of it (U105): refused, the offer
+        // and the record stay and no loop is set, so the tap can be made again.
+        withSound(() => {
+          // The offer may have gone while the sound was asked for.
+          if (session?.running === true || resumeRow.hidden) return;
+          // A loop from there to the end: the engine starts a run at the loop's
+          // first bar, which is the only way this screen can begin anywhere but
+          // bar 1. It comes round again at the end rather than stopping, which
+          // is what the line beside it says out loud.
+          loopBars = { from, to: lastBar };
+          loopSection = null;
+          if (itemId !== undefined) forgetUnfinished(itemId);
+          resumeRow.hidden = true;
+          startRun();
+          render();
+        }, CARRY_ON_TAP);
       },
       'score-resume-go',
     );
@@ -1062,6 +1105,9 @@ export function ScoreScreen(router: Router): HTMLElement {
       said('score-resume__note', 'Carrying on plays from there to the end, then round again.'),
     );
     resumeRow.hidden = false;
+    // The row is drawn again on every render, after ▶'s hold: a refused
+    // *Carry on* keeps its mark on the button drawn now (U105).
+    markRefused();
   }
 
   /**
@@ -1171,18 +1217,21 @@ export function ScoreScreen(router: Router): HTMLElement {
   // 390 px bar and wrapped it onto a second row, taking 40 px off the music.
   const restart = button(
     'Start again',
-    () => {
-      // During a demonstration it is the learner's run that is asked for
-      // again, from the top — not the demonstration, which is what it used to
-      // restart (the decision document's §3, R15 + *Start again*), and not a
-      // run set aside under it, which *again* means starting over (T33).
-      if (hearing) {
-        hearing = false;
-        restartAfterDemo = null;
-        clearBeat();
-      }
-      startRun();
-    },
+    () =>
+      // Through the sound's gate, the whole of it (U105): refused, a
+      // demonstration playing goes on and nothing restarts.
+      withSound(() => {
+        // During a demonstration it is the learner's run that is asked for
+        // again, from the top — not the demonstration, which is what it used to
+        // restart (the decision document's §3, R15 + *Start again*), and not a
+        // run set aside under it, which *again* means starting over (T33).
+        if (hearing) {
+          hearing = false;
+          restartAfterDemo = null;
+          clearBeat();
+        }
+        startRun();
+      }, RESTART_TAP),
     'score-restart',
   );
 
@@ -1325,25 +1374,25 @@ export function ScoreScreen(router: Router): HTMLElement {
       button(
         hand.label,
         () => {
-          const was = hands;
           // The hand already chosen, pressed again: nothing changes, so nothing
           // is restarted (T33). It used to start the run again from bar 1 —
           // the pass under the learner thrown away by a tap that asked for
           // nothing, the fault `setBars` closed for its own `−` at one bar.
-          if (was === hand.id && !handRefused) {
+          if (hands === hand.id && !handRefused) {
             render();
             return;
           }
-          hands = hand.id;
-          forgetPlayingHand();
-          renderer?.setHandsFocus(hand.id);
-          // The sentence named the hand that was refused, and the hand has
-          // just changed, so it is about nothing now.
-          if (handRefused) status.textContent = '';
-          noteChange('hands', was === 'both' ? 'Both' : was, hand.label);
-          if (handRefused && session?.running !== true) startRun();
-          else restartForOption(RESTARTED_WITH.hands(hand.id));
-          render();
+          // After *Nothing for the … hand* no run is going and this tap starts
+          // one: through the sound's gate, the whole of it (U105), so a refusal
+          // leaves the hand as it was. Any other change of hand restarts a run
+          // already going, or none, and asks for nothing.
+          if (handRefused && session?.running !== true) {
+            withSound(() => {
+              if (handRefused && session?.running !== true) chooseHand(hand);
+            }, { id: `score-hands-${hand.id}`, control: hand.label });
+            return;
+          }
+          chooseHand(hand);
         },
         `score-hands-${hand.id}`,
       ),
@@ -1351,6 +1400,21 @@ export function ScoreScreen(router: Router): HTMLElement {
     handsGroup.lastElementChild?.setAttribute('aria-label', hand.spoken);
   }
   bar.appendChild(handsGroup);
+
+  /** A different hand chosen: the run restarts with it, or after a refusal a run starts (T33). */
+  function chooseHand(hand: (typeof HANDS)[number]): void {
+    const was = hands;
+    hands = hand.id;
+    forgetPlayingHand();
+    renderer?.setHandsFocus(hand.id);
+    // The sentence named the hand that was refused, and the hand has
+    // just changed, so it is about nothing now.
+    if (handRefused) status.textContent = '';
+    noteChange('hands', was === 'both' ? 'Both' : was, hand.label);
+    if (handRefused && session?.running !== true) startRun();
+    else restartForOption(RESTARTED_WITH.hands(hand.id));
+    render();
+  }
 
   const tempoLabel = document.createElement('span');
   tempoLabel.className = 'score-tempo-label';
@@ -2068,26 +2132,63 @@ export function ScoreScreen(router: Router): HTMLElement {
    * carry on playing after the last bar, and that would restart the run under
    * them — with or without a summary on screen. Not from the microphone, which
    * hears the room. Not while `Hear it` is playing, nor under an open sheet.
+   *
+   * **Where the sound is not running (U105; the reviewer's correction in
+   * `responses/questions-bd7d303e.md`).** With it running, or with no Web
+   * Audio, the key starts the run at once, exactly as before. Otherwise the two
+   * keys are different events:
+   *
+   * - A key on a **connected piano** is a Web MIDI message, not a user
+   *   activation, so it cannot be what lets the sound start. It asks nothing,
+   *   starts nothing, is not kept to be played later, and the state line says
+   *   to tap ▶, whose tap can.
+   * - A key on the **screen** is a tap, so it asks through `withSound` like any
+   *   other. Where the answer comes after the key's own moment — the wait is up
+   *   to `PLAY_SOUND_WAIT_MS` — the run starts and the key is not played into
+   *   it: its time is from before the run began, and a first note timed then
+   *   would set the run's clock back (a Keep tempo run holding for it takes
+   *   its clock from it). The run then waits for the first note, as after ▶.
    */
   /** A sheet (the ⋯ controls, the tempo) is open over the score. */
   function sheetOpen(): boolean {
     return document.querySelector('.sheet__panel[role="dialog"]') !== null;
   }
 
+  /** Whether a key may start a run now (T8): checked at the key, and again when the sound has started. */
+  function keyMayStart(): boolean {
+    if (!session || session.running || !sheet.hidden || hearing || sheetOpen()) return false;
+    if (endedSinceLastStart) return false;
+    return input === 'midi' || input === 'keys';
+  }
+
   function startFromKey(event: InputNoteEvent): void {
-    if (!session || session.running || !sheet.hidden || hearing || sheetOpen()) return;
-    if (endedSinceLastStart) return;
-    if (input !== 'midi' && input !== 'keys') return;
-    startRun();
-    if (!session.running) return;
-    // The key is the first note only where the learner plays first: Wait and
-    // Free, or a Keep tempo run holding for them. When the app leads, the key
-    // only starts it — played in, it was marked a wrong note before anything
-    // had been played (T8 review 2).
-    const learnerFirst = mode === 'wait' || mode === 'free' || session.armed;
-    if ((session.prepared?.countInMs ?? 0) === 0 && learnerFirst) {
-      session.feed(event.midi, event.velocity, event.tMs, event.confidence ?? 1);
+    if (!keyMayStart()) return;
+    // Another tap is already waiting for the sound: this key adds nothing.
+    if (startingSound) return;
+    if (event.source !== 'screen' && audioEngine.supported && audioEngine.state !== 'running') {
+      soundRefusedBy = KEY_TAP;
+      render();
+      return;
     }
+    // True for as long as this key's own event is being handled: `withSound`
+    // runs its act inside it where the sound is already running.
+    let inTheKeysMoment = true;
+    withSound(() => {
+      if (!keyMayStart() || !session) return;
+      startRun();
+      if (!session.running) return;
+      // Started after the key's moment: not played in, never back-dated.
+      if (!inTheKeysMoment) return;
+      // The key is the first note only where the learner plays first: Wait and
+      // Free, or a Keep tempo run holding for them. When the app leads, the key
+      // only starts it — played in, it was marked a wrong note before anything
+      // had been played (T8 review 2).
+      const learnerFirst = mode === 'wait' || mode === 'free' || session.armed;
+      if ((session.prepared?.countInMs ?? 0) === 0 && learnerFirst) {
+        session.feed(event.midi, event.velocity, event.tMs, event.confidence ?? 1);
+      }
+    }, KEY_TAP);
+    inTheKeysMoment = false;
   }
 
   function attachInput(): void {
@@ -2266,6 +2367,11 @@ export function ScoreScreen(router: Router): HTMLElement {
       render();
       return;
     }
+    // The standing refusal (U105): its sentence never stands while ▶ reads ⏸.
+    // A start that makes ▶ read ⏸ lets it go, here, where every start passes;
+    // one held paused, or a demonstration, where ▶ still reads ▶, keeps it,
+    // still true. A tap through the gate has already cleared it as it asked.
+    if (playReadsPause()) soundRefusedBy = null;
     // The app is about to play the music to the learner (T40): a sight-read
     // of it is no longer a first reading, whatever run comes next.
     if (runMode === 'listen') {
@@ -2293,6 +2399,16 @@ export function ScoreScreen(router: Router): HTMLElement {
     // Starting a run is what arms the auto-hide.
     showBar(CONTROL_BAR_START_HIDE_MS);
     render();
+  }
+
+  /**
+   * ▶ reads ⏸: a run going and not paused. Not during a demonstration (T33):
+   * ▶ then ends it and starts or carries on the learner's own run, which is
+   * not playing, so the button says ▶. It said ⏸, and pressing it did not
+   * pause anything. Also what lets a standing refusal go (`startRun`, U105).
+   */
+  function playReadsPause(): boolean {
+    return session?.running === true && !session.paused && !hearing;
   }
 
   /**
@@ -2513,7 +2629,7 @@ export function ScoreScreen(router: Router): HTMLElement {
       toggleHearNow();
       return;
     }
-    withSound(toggleHearNow, 'hear');
+    withSound(toggleHearNow, HEAR_TAP);
   }
 
   /** `Hear it`: start a Listen run, or stop the one this button started. */
@@ -2855,8 +2971,16 @@ export function ScoreScreen(router: Router): HTMLElement {
    * cancels. Where the sound is running, or there is no Web Audio to start —
    * no tap could ever start that sound, so a sentence asking for one would be
    * false — `act` runs at once, exactly as before.
+   *
+   * **Every tap that can start the sound comes here (U105)**, each with its
+   * whole handler as `act`, so a refusal leaves everything the tap would have
+   * changed as it was: *Carry on*, *Start again*, a hand after *Nothing for
+   * the … hand*, a bar held down, *Try again*, the summary's *Again*, *Slower*,
+   * *Faster* and *Loop the weak bars*, and a key on the screen. Each act checks
+   * again, when it runs, that its tap still applies. `tap` names the control
+   * for the sentence and its mark; only ▶'s own tap shows that it waits.
    */
-  function withSound(act: () => void, tap: 'play' | 'hear' = 'play'): void {
+  function withSound(act: () => void, tap: SoundTap = PLAY_TAP): void {
     if (!audioEngine.supported || audioEngine.state === 'running') {
       soundRefusedBy = null;
       act();
@@ -2864,7 +2988,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     }
     if (startingSound) return;
     startingSound = true;
-    playWaiting = tap === 'play';
+    playWaiting = tap === PLAY_TAP;
     // This tap asks again: the last refusal's sentence goes while it waits.
     const wasRefused = soundRefusedBy !== null;
     soundRefusedBy = null;
@@ -2899,7 +3023,7 @@ export function ScoreScreen(router: Router): HTMLElement {
    * ▶ held: while a transfer offer's snapshot is unread (D4a), and while its
    * tap waits for the sound (U69), when it also says it is busy. And the tap
    * whose sound did not start, marked on its own control while the state line
-   * says so (G86a), for a spec that meets a refusal to say so.
+   * says so (G86a, U105), for a spec that meets a refusal to say so.
    */
   function drawPlayHold(): void {
     playPause.disabled = offerPending() || playWaiting;
@@ -2910,15 +3034,26 @@ export function ScoreScreen(router: Router): HTMLElement {
       playPause.removeAttribute('aria-busy');
       delete playPause.dataset.startingSound;
     }
+    markRefused();
+  }
+
+  /**
+   * `data-sound-refused` on the control whose tap did not start the sound, and
+   * on nothing else, while that is still true (G86a, U105). By id, because
+   * some of those controls are drawn again while the refusal stands (the
+   * offer to carry on, on every render) and some live in a sheet on `body`.
+   */
+  function markRefused(): void {
     const refused = refusedNow();
-    if (refused === 'play') playPause.dataset.soundRefused = 'true';
-    else delete playPause.dataset.soundRefused;
-    if (refused === 'hear') hearButton.dataset.soundRefused = 'true';
-    else delete hearButton.dataset.soundRefused;
+    for (const marked of document.querySelectorAll<HTMLElement>('[data-sound-refused]')) {
+      if (marked.id !== refused?.id) delete marked.dataset.soundRefused;
+    }
+    const control = refused === null ? null : document.getElementById(refused.id);
+    if (control) control.dataset.soundRefused = 'true';
   }
 
   /** The tap whose sound did not start (G86a), while that is still true. */
-  function refusedNow(): 'play' | 'hear' | null {
+  function refusedNow(): SoundTap | null {
     return soundRefusedBy !== null && audioEngine.state !== 'running' ? soundRefusedBy : null;
   }
 
@@ -3018,8 +3153,28 @@ export function ScoreScreen(router: Router): HTMLElement {
     pressFrom = null;
   }
 
-  /** Plays one bar, both hands, once, and puts the run back afterwards. */
+  /**
+   * A bar held down asks for the sound through the gate, the whole preview its
+   * act (U105), so a refusal sets no loop and says to hold the bar again. The
+   * ask comes from the press's timer, 400 ms after `pointerdown` and before a
+   * touch lifts: whether a platform takes that as the tap is inferred, and the
+   * gate reads the engine at the end, so what it says is true either way.
+   * Nothing is asked where the preview would not play.
+   */
   function hearBar(measure: number): void {
+    if (!session || !model || hearingBar) return;
+    if (!session.loopForPrintedBars(measure, measure)) return;
+    withSound(
+      () => {
+        if (session?.running === true) return;
+        hearBarNow(measure);
+      },
+      { id: 'score-stage', control: `bar ${String(shownBar(measure))}`, verb: 'hold' },
+    );
+  }
+
+  /** Plays one bar, both hands, once, and puts the run back afterwards. */
+  function hearBarNow(measure: number): void {
     if (!session || !model || hearingBar) return;
     const loop = session.loopForPrintedBars(measure, measure);
     if (!loop) return;
@@ -3727,7 +3882,7 @@ export function ScoreScreen(router: Router): HTMLElement {
           if (primary) made.classList.add('score-button--primary');
           return made;
         },
-        tryAgain: () => startRun(),
+        tryAgain: () => fromTheSummary(() => startRun(), TRY_AGAIN_TAP),
         beforeLeaving: () => {
           flushPendingRecord();
           summaryUp(false);
@@ -4000,17 +4155,20 @@ export function ScoreScreen(router: Router): HTMLElement {
     const actions = document.createElement('div');
     actions.className = 'summary-actions';
     actions.append(
-      button('Again', () => startRun(), 'summary-again'),
-      button('Slower (−10%)', () => {
+      // Each through the sound's gate, the whole of it (U105): a refused
+      // *Slower* or *Faster* leaves the tempo, so the tap made again moves it
+      // once, and the summary stays up for it.
+      button('Again', () => fromTheSummary(() => startRun(), AGAIN_TAP), 'summary-again'),
+      button('Slower (−10%)', () => fromTheSummary(() => {
         tempoPct = Math.max(30, tempoPct - 10);
         tempo.value = String(tempoPct);
         startRun();
-      }, 'summary-slower'),
-      button('Faster (+10%)', () => {
+      }, SLOWER_TAP), 'summary-slower'),
+      button('Faster (+10%)', () => fromTheSummary(() => {
         tempoPct = Math.min(130, tempoPct + 10);
         tempo.value = String(tempoPct);
         startRun();
-      }, 'summary-faster'),
+      }, FASTER_TAP), 'summary-faster'),
       // A phrase nobody has heard (T40), on the sheet that says why this one
       // no longer counts: after a first reading, a repeat or a phrase played
       // to the learner, a new one is the only way to a first reading again.
@@ -4168,8 +4326,23 @@ export function ScoreScreen(router: Router): HTMLElement {
     }
     // The hot spot is an unrolled measure; the loop is printed bars.
     const printed = (model?.steps.find((s) => s.measureIndex === worst.measureIndex)?.sourceMeasureIndex ?? worst.measureIndex) + 1;
-    loopBars = { from: printed, to: Math.min(printed + 1, model?.sourceMeasureCount ?? printed + 1) };
-    startRun();
+    // Through the sound's gate (U105): refused, no loop is set.
+    fromTheSummary(() => {
+      loopBars = { from: printed, to: Math.min(printed + 1, model?.sourceMeasureCount ?? printed + 1) };
+      startRun();
+    }, LOOP_WEAK_TAP);
+  }
+
+  /**
+   * A tap on the summary that starts a run (U105): through the sound's gate,
+   * and only while the summary is still up with no sheet over it when the
+   * sound has started, as it was when the tap was made.
+   */
+  function fromTheSummary(act: () => void, tap: SoundTap): void {
+    withSound(() => {
+      if (sheet.hidden || sheetOpen()) return;
+      act();
+    }, tap);
   }
 
   // --- render --------------------------------------------------------------
@@ -4221,14 +4394,15 @@ export function ScoreScreen(router: Router): HTMLElement {
    * A tap asked for the sound and the sound did not start (G86a): nothing
    * started, and the line says so and which control asks again — ▶ (Space's
    * refusal too, ▶'s keyboard twin), or `Hear it`, whose tap wanted the
-   * demonstration and not a run. Only while the engine still reads not
-   * running (`refusedNow`), so a line that has stopped being true is dropped at
-   * the next redraw however the sound came on.
+   * demonstration and not a run. Since U105 every control whose tap can start
+   * the sound is named the same way, and a key names ▶ (`KEY_TAP`). Only while
+   * the engine still reads not running (`refusedNow`), so a line that has
+   * stopped being true is dropped at the next redraw however the sound came on.
    */
   function soundOffLine(): string {
     const refused = refusedNow();
     if (refused === null) return '';
-    return STATE_TEXT.soundOff(refused === 'hear' ? 'Hear it' : '▶');
+    return STATE_TEXT.soundOff(refused.control, refused);
   }
 
   /**
@@ -4628,10 +4802,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     for (const hand of HANDS) {
       document.getElementById(`score-hands-${hand.id}`)?.classList.toggle('is-selected', hands === hand.id);
     }
-    // Not during a demonstration (T33): ▶ then ends it and starts or carries
-    // on the learner's own run, which is not playing, so the button says ▶.
-    // It said ⏸, and pressing it did not pause anything.
-    const playing = session?.running === true && !session.paused && !hearing;
+    const playing = playReadsPause();
     playPause.textContent = playing ? '⏸' : '▶';
     playPause.setAttribute('aria-label', playing ? 'Pause' : 'Play');
     // Nothing starts while a transfer offer's snapshot is unread (D4a), or while

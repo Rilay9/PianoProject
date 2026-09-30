@@ -1,0 +1,8 @@
+
+Running 3 tests using 2 workers
+
+  ok 2 tests\e2e\score.screen.spec.ts:1190:3 › ▶ after the sound was suspended (U69) › ▶ brings a suspended context back to running, and the run starts (1.5s)
+  ok 1 tests\e2e\score.screen.spec.ts:1224:3 › ▶ after the sound was suspended (U69) › a start that never answers: no run, ▶ at rest, the state line says so; the next ▶ runs with the sound (2.7s)
+  ok 3 tests\e2e\score.screen.spec.ts:1288:3 › ▶ after the sound was suspended (U69) › the summary’s Again with a start that never answers: no run, the summary stays, the line above it names Again (15.6s)
+
+  3 passed (19.9s)

@@ -164,6 +164,17 @@ describe('the Score screen’s run sentences are the ones `04` §5f prints', () 
       // G86a: a tap whose sound did not start, named by the control that asks again.
       STATE_TEXT.soundOff('▶'),
       STATE_TEXT.soundOff('Hear it'),
+      // U105: every other control whose tap can start the sound, and a key, which names ▶.
+      STATE_TEXT.soundOff('Carry on'),
+      STATE_TEXT.soundOff('Start again'),
+      STATE_TEXT.soundOff('L'),
+      STATE_TEXT.soundOff('bar N', { verb: 'hold' }),
+      STATE_TEXT.soundOff('Try again'),
+      STATE_TEXT.soundOff('Again'),
+      STATE_TEXT.soundOff('Slower'),
+      STATE_TEXT.soundOff('Faster'),
+      STATE_TEXT.soundOff('Loop'),
+      STATE_TEXT.soundOff('▶', { again: false }),
       RESTARTED_WITH.mode('Keep tempo'),
       RESTARTED_WITH.hands('both'),
       RESTARTED_WITH.tempo(80),

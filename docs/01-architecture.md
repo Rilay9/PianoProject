@@ -233,8 +233,15 @@ export interface MidiSource extends InputSource {
   the gesture, where the engine is not running, through one gate (`withSound`): the tap waits
   at most `PLAY_SOUND_WAIT_MS` and acts only if `audioEngine.state` is then `running`;
   otherwise it starts nothing and the state line says the sound did not start (G86a). The next
-  tap asks again; a late answer only clears the sentence (`onStateChange`). Nothing resumes on
-  `visibilitychange`, which is not a gesture. Unverified on a device.
+  tap asks again; a late answer only clears the sentence (`onStateChange`). Since U105 every
+  other tap there that can start the sound (*Carry on*, *Start again*, a hand after a refusal,
+  a bar held down, *Try again*, the summary's four) passes the same gate with its whole action
+  as the act, and the sentence names that control. A key on a connected piano is not a gesture:
+  it starts a run only where the engine is already running, and otherwise refuses at once
+  without calling `ensureStarted()`. A key on the screen is a gesture and asks; one answered
+  after its own moment starts the run without being fed to it, so no first note is timed before
+  the run began. Nothing resumes on `visibilitychange`, which is not a gesture. Unverified on a
+  device.
 
 ### 4.7 `audio/pitch/` — microphone note detection (`MicSource`)
 
