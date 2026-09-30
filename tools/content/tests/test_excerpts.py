@@ -17,7 +17,9 @@ and one real parent (Anh. 113 as the PDMX quarry bundles it, in `content/scores/
   refused with the hand to select;
 - the merge (`TheMerge`, `TheCutVersion`) and, since E51, the renewal of a stale approval
   (`TheRenewal`): a new decision on the parent's current bytes supersedes a row stale by provenance
-  or by cut version, the old row kept whole in `superseded`; a current approval still refused.
+  or by cut version, the old row kept whole in `superseded`; a current approval still refused; and,
+  since E54, the withdrawal (`TheWithdrawal`): a rejection of the current approval withdraws it
+  the same way, the rejection kept in `rejected`, and a later approval is a new decision.
 """
 from __future__ import annotations
 
@@ -649,6 +651,129 @@ class TheRenewal(unittest.TestCase):
         written = json.loads(definitions.read_text(encoding="utf-8"))
         self.assertEqual([(r["event"], r["parentSha256"]) for r in written["excerpts"]], [("ex-renew-0002", sha)])
         self.assertEqual([e["event"] for e in written["superseded"]], ["ex-renew-0001"])
+
+
+class TheWithdrawal(unittest.TestCase):
+    """
+    E54 (the reviewer's ruling, `responses/questions-71bd6cee.md`:199): an explicit rejection of the currently active
+    approval withdraws it and stops the cut; keeping the approval active beside a current rejection is contradictory.
+    Both events are kept: the approval whole in `superseded` with the rejection as the event that replaced it, the
+    rejection in `rejected` with its reason. The active state follows the latest explicit decision in merge order (line
+    order within an export, then later merges): a later approval with its own event is a new decision, and the
+    withdrawn approval's export merged again is the decision already in the file, never revived. A rejection of a stale
+    approval behaves as E51 made it (`TheRenewal` g). Over `TheRenewal`'s helpers, borrowed unchanged.
+    """
+
+    PARENT, OLD, NEW = TheRenewal.PARENT, TheRenewal.OLD, TheRenewal.NEW
+    line = TheRenewal.line
+    stored = TheRenewal.stored
+    data = TheRenewal.data
+    merge = TheRenewal.merge
+    assertKeptWhole = TheRenewal.assertKeptWhole
+
+    REASON = "heard against the parent: the phrase runs on into bar 9"
+
+    def rejection(self, **over) -> str:
+        fields = {"event": "ex-withdraw-0002", "decision": "reject", "parentSha256": None, "reason": self.REASON}
+        fields.update(over)
+        return self.line(**fields)
+
+    def export_of(self, row: dict) -> str:
+        """A stored approval's own exported line, as the workbench wrote it (`TheRenewal` f's shape)."""
+        return json.dumps({"v": 1, "event": row["event"], "decision": "approve", "of": row["of"], "fromBar": row["fromBar"],
+                           "toBar": row["toBar"], "selection": row["selection"], "targets": row["targets"],
+                           "label": row["label"], "note": row["note"], "parentSha256": row["parentSha256"], "by": row["by"],
+                           "at": row["at"]})
+
+    def test_a_a_rejection_of_the_current_approval_withdraws_it_and_the_build_stops_cutting_it(self) -> None:
+        old = self.stored(cutVersion=X.CUT_VERSION)
+        self.assertEqual(X.approval_staleness(old, self.OLD), [], "the premise: current by cut version and by the parent's bytes")
+        withdrawn = self.merge(self.data(old), self.rejection(), shas={self.PARENT: self.OLD})
+        self.assertEqual((withdrawn["appended"], withdrawn["refused"]), (["ex-withdraw-0002"], []))
+        self.assertEqual(withdrawn["data"]["excerpts"], [], "the build stops cutting it: attach_excerpts cuts every row of excerpts")
+        self.assertEqual(len(withdrawn["data"]["superseded"]), 1, "the approval is kept, not deleted")
+        self.assertKeptWhole(withdrawn["data"]["superseded"][0], old, "ex-withdraw-0002")
+        self.assertEqual([(r["event"], r["reason"]) for r in withdrawn["data"]["rejected"]], [("ex-withdraw-0002", self.REASON)])
+        self.assertEqual(len(withdrawn["superseding"]), 1, withdrawn["superseding"])
+        new, was, why = withdrawn["superseding"][0]
+        self.assertEqual((new, was), ("ex-withdraw-0002", "ex-renew-0001"))
+        self.assertTrue(why and all(why), "the command prints why the old row went, never an empty ()")
+        self.assertTrue(any("current" in w for w in why), why)
+        self.assertFalse(any("stale" in w for w in why), why)
+        # Without the parent's bytes read: no bytes check on a rejection (as in E51), the same file.
+        unread = self.merge(self.data(old), self.rejection())
+        self.assertEqual(X.serialise_definitions(unread["data"]), X.serialise_definitions(withdrawn["data"]))
+        # The whole export merged again (the approval's own line, then the rejection): nothing appended, no byte moved.
+        text = X.serialise_definitions(withdrawn["data"])
+        again = self.merge(json.loads(text), self.export_of(old), self.rejection(), shas={self.PARENT: self.OLD})
+        self.assertEqual((again["appended"], again["skipped"], again["refused"]), ([], ["ex-renew-0001", "ex-withdraw-0002"], []))
+        self.assertEqual(again["data"]["excerpts"], [], "the withdrawn approval is not revived")
+        self.assertEqual(X.serialise_definitions(again["data"]), text, "a rerun changes no byte")
+
+    def test_c_a_renewal_after_the_rejection_is_a_new_decision_and_the_old_approval_stays_withdrawn(self) -> None:
+        old = self.stored(cutVersion=X.CUT_VERSION)
+        withdrawn = self.merge(self.data(old), self.rejection(), shas={self.PARENT: self.OLD})
+        renewal = self.line(event="ex-withdraw-0003", note="heard again: the phrase does end at bar 8",
+                            at="2026-09-30T09:00:00.000Z")
+        renewed = self.merge(withdrawn["data"], renewal, shas={self.PARENT: self.OLD})
+        self.assertEqual((renewed["appended"], renewed["refused"]), (["ex-withdraw-0003"], []))
+        self.assertEqual(renewed["superseding"], [], "a plain append: no active row to supersede")
+        self.assertEqual([(r["event"], r["cutVersion"]) for r in renewed["data"]["excerpts"]], [("ex-withdraw-0003", X.CUT_VERSION)],
+                         "the new approval is the one active row, merged under the cutter in force")
+        self.assertEqual([r["event"] for r in renewed["data"]["rejected"]], ["ex-withdraw-0002"], "the rejection stays")
+        self.assertEqual(len(renewed["data"]["superseded"]), 1)
+        self.assertKeptWhole(renewed["data"]["superseded"][0], old, "ex-withdraw-0002")
+        # The old approval's export, the rejection and the renewal merged again: each already in the file, skipped;
+        # the old row is not revived and the renewal is not withdrawn by the rejection's second arrival.
+        text = X.serialise_definitions(renewed["data"])
+        again = self.merge(json.loads(text), self.export_of(old), self.rejection(), renewal, shas={self.PARENT: self.OLD})
+        self.assertEqual((again["appended"], again["skipped"], again["refused"]),
+                         ([], ["ex-renew-0001", "ex-withdraw-0002", "ex-withdraw-0003"], []))
+        self.assertEqual(X.serialise_definitions(again["data"]), text, "a rerun changes no byte")
+
+    def test_c_within_one_export_line_order_is_the_order_of_decision(self) -> None:
+        approve = self.line(event="ex-withdraw-0004")
+        reject = self.rejection(event="ex-withdraw-0005")
+        # An approval, then its rejection: the rejection is the latest decision, so no row is active.
+        then_rejected = self.merge(self.data(), approve, reject, shas={self.PARENT: self.OLD})
+        self.assertEqual((then_rejected["appended"], then_rejected["refused"]), (["ex-withdraw-0004", "ex-withdraw-0005"], []))
+        self.assertEqual(then_rejected["data"]["excerpts"], [])
+        self.assertEqual([(e["event"], e["supersededBy"]) for e in then_rejected["data"]["superseded"]],
+                         [("ex-withdraw-0004", "ex-withdraw-0005")])
+        self.assertEqual([r["event"] for r in then_rejected["data"]["rejected"]], ["ex-withdraw-0005"])
+        # A rejection, then an approval: the approval is the latest decision, the one active row; nothing superseded.
+        then_approved = self.merge(self.data(), reject, approve, shas={self.PARENT: self.OLD})
+        self.assertEqual((then_approved["appended"], then_approved["refused"]), (["ex-withdraw-0005", "ex-withdraw-0004"], []))
+        self.assertEqual([r["event"] for r in then_approved["data"]["excerpts"]], ["ex-withdraw-0004"])
+        self.assertEqual([r["event"] for r in then_approved["data"]["rejected"]], ["ex-withdraw-0005"])
+        self.assertEqual(then_approved["data"]["superseded"], [])
+
+    def test_e_the_command_says_the_current_approval_was_withdrawn(self) -> None:
+        directory = Path(tempfile.mkdtemp(prefix="excerpt-withdrawal-main-"))
+        self.addCleanup(lambda: __import__("shutil").rmtree(directory, ignore_errors=True))
+        content = directory / "content"
+        (content / "scores").mkdir(parents=True)
+        (content / "scores" / "parent.mxl").write_bytes(b"the parent's built bytes, the ones the approval was made on")
+        sha = X.sha256_of(content / "scores" / "parent.mxl")
+        (content / "catalog.json").write_text(json.dumps([{"id": self.PARENT, "type": "song", "file": "scores/parent.mxl"}]),
+                                              encoding="utf-8")
+        (content / "curriculum.json").write_text("{}", encoding="utf-8")
+        definitions = directory / "excerpts.json"
+        X.write_definitions(self.data(self.stored(cutVersion=X.CUT_VERSION, parentSha256=sha)), definitions)
+        decisions = directory / "decisions.jsonl"
+        decisions.write_text(self.rejection() + "\n", encoding="utf-8")
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            code = X.main(["--merge", str(decisions), "--definitions", str(definitions), "--content", str(content)])
+        printed = out.getvalue()
+        self.assertEqual(code, 0, printed)
+        self.assertIn("appended 1, already in the file 0, refused 0", printed)
+        self.assertIn("+ ex-withdraw-0002, superseding ex-renew-0001 (current", printed)
+        self.assertNotIn("()", printed)
+        written = json.loads(definitions.read_text(encoding="utf-8"))
+        self.assertEqual(written["excerpts"], [])
+        self.assertEqual([e["event"] for e in written["superseded"]], ["ex-renew-0001"])
+        self.assertEqual([r["event"] for r in written["rejected"]], ["ex-withdraw-0002"])
 
 
 PDMX = REPO / "content" / "scores" / "pdmx"

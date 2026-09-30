@@ -147,7 +147,8 @@ COMMENT = [
     "",
     "`rejected` keeps the refusals with their reasons, so a re-merge of the same export appends nothing.",
     "`superseded` (written once there is one) keeps each approval a person re-decided after it went stale, by",
-    "parent bytes or by cut version: the old row as it was, with `supersededBy`, the event that replaced it. A",
+    "parent bytes or by cut version, and each one a person's rejection withdrew while it was current: the old",
+    "row as it was, with `supersededBy`, the event that replaced it (a rejection is kept in `rejected` too). A",
     "renewal names the parent's current bytes and is merged under the cutter in force; nothing renews by itself.",
     "",
     "An excerpt is on no rung: placement is F's, on a candidate-rungs line established on the combined",
@@ -763,6 +764,10 @@ def _renewal_fault(event: dict, current_parent_sha: str | None) -> str | None:
     return None
 
 
+#: E54: why an approval that was current left the active rows, as `superseding` and the command's line say it.
+WITHDRAWN_WHILE_CURRENT = "current; withdrawn by a rejection"
+
+
 def merge_text(data: dict, incoming: str, known_ids: set[str] | None = None,
                current_shas: dict[str, str] | None = None) -> dict:
     """
@@ -775,12 +780,21 @@ def merge_text(data: dict, incoming: str, known_ids: set[str] | None = None,
     (`approval_staleness`: by provenance against `current_shas`, the parents' current built bytes by
     parent id; by cut version) can be re-decided. An approval or adjustment of its range that names
     the parent's current bytes becomes the active row in its place, merged under the cutter in force;
-    one naming other bytes or none is refused with the reason. A rejection of its range withdraws it.
-    Either way the old row moves to `superseded` exactly as it was, with `supersededBy`, the event
-    that replaced it. Without `current_shas`, or for a parent absent from them, provenance is not
-    judged: a row stale by provenance alone is refused as current (fails closed). No stored row is
-    rewritten and nothing is renewed without an event of its own. `superseding` lists (new event, old
-    event, why the old one was stale).
+    one naming other bytes or none is refused with the reason. Without `current_shas`, or for a parent
+    absent from them, provenance is not judged: a row stale by provenance alone is refused as current
+    (fails closed).
+
+    E54 (the reviewer's ruling, `responses/questions-71bd6cee.md`): a rejection of an approved range
+    withdraws the approval, stale or current, with no bytes check; keeping a current approval active
+    beside a rejection of it would be contradictory. The active state follows the latest explicit
+    decision in merge order (line order within an export, then later merges): after a withdrawal, an
+    approval with its own event is a new decision, appended; the withdrawn approval's export merged
+    again is the decision already in the file, skipped, never revived.
+
+    A renewal or a withdrawal moves the old row to `superseded` exactly as it was, with `supersededBy`,
+    the event that replaced it; a rejection is kept in `rejected` as well. No stored row is rewritten
+    and nothing is renewed without an event of its own. `superseding` lists (new event, old event, why
+    the old one went: its staleness, or `WITHDRAWN_WHILE_CURRENT`).
     """
     rows = list(data.get("excerpts") or [])
     rejected = list(data.get("rejected") or [])
@@ -840,11 +854,12 @@ def merge_text(data: dict, incoming: str, known_ids: set[str] | None = None,
             else:
                 rows.append(row)
         else:
-            if at is not None and stale:
-                # E51: a rejection of a stale approval withdraws it (a rejection of a current one is kept beside it).
+            if at is not None:
+                # E51, E54: a rejection of an approved range withdraws the approval, stale or current; the active state
+                # follows the latest explicit decision (`responses/questions-71bd6cee.md`). No bytes check, as in E51.
                 same = rows.pop(at)
                 superseded.append({**same, "supersededBy": row["event"]})
-                superseding.append((row["event"], same.get("event"), stale))
+                superseding.append((row["event"], same.get("event"), stale or [WITHDRAWN_WHILE_CURRENT]))
             rejected.append(row)
         by_event[row["event"]] = row
         appended.append(row["event"])
