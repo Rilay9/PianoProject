@@ -1,0 +1,26 @@
+## no-drain (the disposer does not close the sheets)
+exit 1
+     × leaving with ⋯ open takes the sheet, gives the page back, and parks its rows 125ms
+     × and the same with the tempo sheet open 66ms
+     × a sheet closed by Close leaves no closer behind; the one open at the time is the one closed 66ms
+     × Close and then leaving in the same moment throws nothing and closes nothing twice 59ms
+      Tests  4 failed | 9 passed (13)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: a sheet left over the next screen: expected <div class="sheet" …(1)>…(1)</div> to be null
+AssertionError: expected <div class="sheet" …(1)>…(1)</div> to be null
+AssertionError: the open sheet closed with the screen: expected "vi.fn()" to be called 1 times, but got 0 times
+AssertionError: score-restart: expected null not to be null
+
+## no-bound (the wait has no timer)
+exit 1
+     × a start that never answers: ▶ is held and busy until the bound, then the run carries on 66ms
+      Tests  1 failed | 12 passed (13)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected "vi.fn()" to be called 1 times, but got 0 times
+
+## no-guard (a second tap in the wait asks again)
+exit 1
+     × a fresh start the same: asked in the tap, started once it has answered 66ms
+      Tests  1 failed | 12 passed (13)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected "vi.fn()" to be called 1 times, but got 2 times

@@ -202,6 +202,19 @@ export const CONTROL_BAR_START_HIDE_MS = 700;
 export const SIDE_PANEL_WAIT_MS = 1_500;
 
 /**
+ * The longest ▶ (or Space) waits for the sound to start before the run goes
+ * ahead anyway (U69). Chosen, not measured. A resume is the device's audio
+ * output starting, not a download, so a context the platform is willing to
+ * start should answer well inside it; one that has not answered by then is
+ * being refused — a phone in a call keeps the audio for the call — and the
+ * button a beginner presses most must not sit doing nothing for longer than
+ * about a second, where a tap that has not answered starts to read as broken.
+ * Past it the run starts or carries on as it did before this wait existed,
+ * silent until something starts the sound.
+ */
+export const PLAY_SOUND_WAIT_MS = 1_000;
+
+/**
  * Sight-reading is the one drill kind that is notation (docs/05 §7–§8), so it
  * opens here rather than on the drill screen. Its parameters come from the
  * catalog item, exactly as the runtime drills' do — all of them, through
@@ -410,9 +423,12 @@ export function ScoreScreen(router: Router): HTMLElement {
   let hearing = false;
   /**
    * A `Hear it` tap is waiting for the sound to start (U67), so a second tap in
-   * that moment does not start a second demonstration.
+   * that moment does not start a second demonstration. ▶'s wait (U69) holds it
+   * too, so neither button starts anything while the other's tap is waiting.
    */
   let startingSound = false;
+  /** ▶'s own tap is the one waiting (U69): what `drawPlayHold` shows on the button. */
+  let playWaiting = false;
   /**
    * Whether this run has already said the app is playing a hand (P21c B3).
    *
@@ -1915,23 +1931,36 @@ export function ScoreScreen(router: Router): HTMLElement {
    * `openSheet` closes on the Close button, on the backdrop and on Escape and
    * does not say which, so the restore watches for the sheet leaving the
    * document instead of hooking each of the three.
+   *
+   * None of the three is leaving the screen (G86). The sheet sits on `body`,
+   * outside the `main` the app shell empties on a route change, and it puts
+   * everything else on `body` out of reach until it closes, so Back with it
+   * open left it over the next screen and that screen inert beneath it. Its
+   * closer goes on `openSheets`, which the screen's disposer drains, and comes
+   * off again when the sheet goes by any of its own three paths, so the list
+   * holds the open sheets and nothing else.
    */
   function openStashedSheet(heading: string, id: string, stash: HTMLElement): void {
     if (document.getElementById(id)) return;
     const sheet = openSheet(heading, { id });
     sheet.body.append(...Array.from(stash.children));
     render();
+    const restore = (): void => {
+      observer.disconnect();
+      stash.append(...Array.from(sheet.body.children));
+      const at = openSheets.indexOf(closer);
+      if (at >= 0) openSheets.splice(at, 1);
+    };
     const observer = new MutationObserver(() => {
       if (sheet.el.isConnected) return;
-      observer.disconnect();
-      stash.append(...Array.from(sheet.body.children));
+      restore();
     });
     observer.observe(document.body, { childList: true });
-    openSheets.push(() => {
-      observer.disconnect();
-      stash.append(...Array.from(sheet.body.children));
-      sheet.close();
-    });
+    const closer = (): void => {
+      restore();
+      if (sheet.el.isConnected) sheet.close();
+    };
+    openSheets.push(closer);
   }
 
   function setBpm(wanted: number): void {
@@ -2729,7 +2758,29 @@ export function ScoreScreen(router: Router): HTMLElement {
     beatDot.classList.remove('is-beat', 'is-downbeat');
   }
 
+  /**
+   * ▶: a pause at once, and anything that makes a sound through `withSound`
+   * (U69) — a new run, a paused run carried on, the run asked for over a
+   * demonstration.
+   */
   function togglePlay(): void {
+    if (!session) return;
+    // A pause needs no sound and never waits.
+    if (!hearing && session.running && !session.paused) {
+      session.pause();
+      render();
+      return;
+    }
+    withSound(playNow);
+  }
+
+  /**
+   * ▶'s branches that make a sound, against the screen as it is when they run
+   * — at once, or when `withSound`'s wait is over, by which time a key may
+   * have started a run or the demonstration have played to its end. Never a
+   * pause: the tap asked for the music.
+   */
+  function playNow(): void {
     if (!session) return;
     // Pressing Play during a `Hear it` run is asking for the run you chose,
     // not for the demonstration to carry on — and where a run was set aside
@@ -2743,8 +2794,68 @@ export function ScoreScreen(router: Router): HTMLElement {
       awaySeconds = null;
       pauseNote = null;
       session.resume();
-    } else session.pause();
+    }
     render();
+  }
+
+  /**
+   * Runs `act` with the sound asked to start inside the tap (U69).
+   *
+   * The engine's first-gesture start (`startOnFirstGesture`) is one-shot: it
+   * went with the visit's first tap. When the platform suspends the context
+   * later — the screen locked, a call — nothing on ▶'s path started it again,
+   * and the run went on against a suspended context, silent. `ensureStarted()`
+   * is only honoured inside a user activation (`AudioEngine.ts`, Android), so
+   * it is called here, in the tap, rather than on the page coming back into
+   * view, which is not one. The tap then waits for it, at most
+   * `PLAY_SOUND_WAIT_MS`, with ▶ held and saying it is busy, and acts whether
+   * or not the start settled: a start that never answers leaves the run as
+   * silent as it was before, never a button that did nothing. A second tap in
+   * the wait does nothing; leaving the screen or a new session cancels. Where
+   * the sound is running, or there is no Web Audio to start, `act` runs at
+   * once, exactly as before.
+   */
+  function withSound(act: () => void): void {
+    if (!audioEngine.supported || audioEngine.state === 'running') {
+      act();
+      return;
+    }
+    if (startingSound) return;
+    startingSound = true;
+    playWaiting = true;
+    drawPlayHold();
+    const tapped = session;
+    let settled = false;
+    const go = (): void => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(bound);
+      startingSound = false;
+      playWaiting = false;
+      drawPlayHold();
+      if (leaving || session !== tapped) return;
+      act();
+    };
+    const bound = window.setTimeout(go, PLAY_SOUND_WAIT_MS);
+    void audioEngine
+      .ensureStarted()
+      .catch(() => undefined)
+      .then(go);
+  }
+
+  /**
+   * ▶ held: while a transfer offer's snapshot is unread (D4a), and while its
+   * tap waits for the sound (U69), when it also says it is busy.
+   */
+  function drawPlayHold(): void {
+    playPause.disabled = offerPending() || playWaiting;
+    if (playWaiting) {
+      playPause.setAttribute('aria-busy', 'true');
+      playPause.dataset.startingSound = 'true';
+    } else {
+      playPause.removeAttribute('aria-busy');
+      delete playPause.dataset.startingSound;
+    }
   }
 
   /** Choosing a different hand makes the sentence worth saying again. */
@@ -4441,8 +4552,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     const playing = session?.running === true && !session.paused && !hearing;
     playPause.textContent = playing ? '⏸' : '▶';
     playPause.setAttribute('aria-label', playing ? 'Pause' : 'Play');
-    // Nothing starts while a transfer offer's snapshot is unread (D4a).
-    playPause.disabled = offerPending();
+    // Nothing starts while a transfer offer's snapshot is unread (D4a), or while
+    // ▶'s tap is waiting for the sound (U69).
+    drawPlayHold();
     stripHost.hidden = settings.keys === 'off';
     stripHost.dataset.keys = settings.keys;
     section.dataset.running = String(session?.running === true);
@@ -5046,15 +5158,24 @@ export function ScoreScreen(router: Router): HTMLElement {
    * Only when nothing has focus that Space already means something to: the
    * browser presses a focused button on Space, so a handler here as well
    * would start a run twice from a focused *Start again*.
+   *
+   * ▶'s keyboard twin, and a user activation like it, so it asks the sound to
+   * start the same way (U69), and starts only if the screen still may when
+   * the wait is over.
    */
+  const spaceMayStart = (): boolean =>
+    session !== null && !session.running && sheet.hidden && !hearing && !sheetOpen();
   const onKeyDown = (event: KeyboardEvent): void => {
     if (event.key !== ' ' || event.repeat || event.ctrlKey || event.metaKey || event.altKey) return;
     const target = event.target instanceof Element ? event.target : null;
     if (target?.closest('button, input, select, textarea, a, summary, details, [contenteditable], [role="button"]')) return;
-    if (!session || session.running || !sheet.hidden || hearing || sheetOpen()) return;
+    if (!spaceMayStart()) return;
     event.preventDefault();
-    startRun();
-    render();
+    withSound(() => {
+      if (!spaceMayStart()) return;
+      startRun();
+      render();
+    });
   };
   document.addEventListener('keydown', onKeyDown);
 
@@ -5063,6 +5184,11 @@ export function ScoreScreen(router: Router): HTMLElement {
     // `onFinished`, so tearing the screen down draws a summary — which would
     // otherwise forget the very run this is about to remember.
     leaving = true;
+    // The ⋯ and tempo sheets go with the screen (G86), first, so nothing below
+    // can leave them behind: each sits on `body`, outside what the app shell
+    // clears, with the rest of the page inert until it closes. Their rows go
+    // back to the stash as they close.
+    for (const close of openSheets.splice(0)) close();
     // A run still waiting for *How did it go?* is let go: it is a run the app
     // heard nothing of, and unanswered it has no evidence to write (T40; T37
     // wrote it as it stood).
