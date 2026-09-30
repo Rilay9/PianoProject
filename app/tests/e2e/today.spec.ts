@@ -693,7 +693,22 @@ test.describe('the reason keeps its deciding clause at 342 × 740 (U63)', () => 
   test('waiting for its reads on 3.4: “Next lesson — this one waits for your reads”, whole', async ({ page }) => {
     const yesterday = new Date(Date.now() - DAY).toISOString();
     const run = (itemId: string) => ({ itemId, lessonId: '3.4', mode: 'tempo', tempoPct: 100, tempoMeasured: true, accuracy: 0.97, accuracyEstimated: false, wrongNotes: 0, missed: 0, durationMs: 120_000, at: yesterday });
-    const counted = ['exercise.interval-reading.c-position.right.05', 'song.classical.beethoven-fur-elise.beginner'];
+    // Revised (U63's fix-forward after L120c, Entry 156): the learner counted `…fur-elise.beginner` for 3.4's song, and
+    // L120c moved 3.4's song option to `…fur-elise.easy`, so the run counted for nothing, 3.4's song ask was unmet and
+    // the new row read *This lesson asks for it — not counted yet*. The counted exercise and song are now 3.4's own
+    // options as the built curriculum lists them today (its first score exercise and first song), so only the reads are
+    // left on the rung, whatever the options become.
+    await page.goto('/');
+    const counted = await page.evaluate(async () => {
+      const curriculum = (await (await fetch('content/curriculum.json')).json()) as {
+        stages: { units: { lessons: { id: string; exerciseOptions?: string[]; songOptions?: string[] }[] }[] }[];
+      };
+      const rung = curriculum.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons)).find((lesson) => lesson.id === '3.4');
+      const exercise = rung?.exerciseOptions?.find((id) => id.startsWith('exercise.'));
+      const song = rung?.songOptions?.find((id) => id.startsWith('song.'));
+      if (!exercise || !song) throw new Error('3.4 lists no score exercise or no song');
+      return [exercise, song];
+    });
     await restore(page, '3.4', {
       // The core path (and ragtime, not reached at 3.4), as `transfer-offer.spec.ts` places its learner: the tracks
       // on by default would give the new row to a track's rung.

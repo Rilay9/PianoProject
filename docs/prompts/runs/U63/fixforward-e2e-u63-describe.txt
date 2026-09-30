@@ -1,0 +1,10 @@
+
+Running 5 tests using 2 workers
+
+  ok 1 tests\e2e\today.spec.ts:365:3 › Today obeys 04 §0 › a row is one line of detail and no taller than 96 px, or than its two title lines and two reason lines (R2, U63) (471ms)
+  ok 3 tests\e2e\today.spec.ts:670:3 › the reason keeps its deciding clause at 342 × 740 (U63) › the held line: the rung’s wait said in two lines, its claim whole (771ms)
+  ok 2 tests\e2e\today.spec.ts:627:3 › the reason keeps its deciding clause at 342 × 740 (U63) › C6’s learner: the warm-up’s and the review’s reasons whole, the passed badge beside the controls; the running card the same, Next beside them (1.6s)
+  ok 4 tests\e2e\today.spec.ts:693:3 › the reason keeps its deciding clause at 342 × 740 (U63) › waiting for its reads on 3.4: “Next lesson — this one waits for your reads”, whole (752ms)
+  ok 5 tests\e2e\today.spec.ts:727:3 › the reason keeps its deciding clause at 342 × 740 (U63) › the swap sheet wears Paused beside a song the learner paused (G94) (754ms)
+
+  5 passed (5.3s)
