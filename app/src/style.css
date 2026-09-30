@@ -3462,6 +3462,59 @@ input[type='checkbox'] {
   display: none;
 }
 
+/* Why a tap on the sheet did not start (U105a): the state line's sentence, on
+   the sheet. Read once, in every orientation. Where the header is drawn
+   (upright, a tablet) its own line says it just above the sheet, so this copy
+   is not painted — `.visually-hidden`'s declarations — and stays in the
+   accessibility tree, a status a screen reader reaches where the inert header
+   is never read (a sentence twice on one screen reads as a glitch: the
+   orchestrator's word at the landing, 2026-09-30). Where the header is not
+   drawn, the rule below paints it. Kept in the tree while empty too, so the
+   status is there before its text is. */
+.summary-refusal {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--accent, #6ea8ff);
+}
+
+/* Sideways the header is not drawn and the bar that mirrors its line is under
+   this sheet — the same query A6 hides the header with — so here the sheet's
+   line is the one the learner reads. First on the sheet and held at its top
+   when the sheet scrolls (it can reach its 72 % and scroll), so it is in view
+   whichever control was tapped. Whole: it wraps rather than cutting, where the
+   header's line and the bar's mirror each cut with an ellipsis. The state
+   line's weight and colour, which by the tokens' arithmetic is 4.5:1 or better
+   against the sheet's surface in both themes. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .screen--score .summary-refusal {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    margin: 0 0 0.5rem;
+    padding: 0.25rem 0;
+    background: inherit;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  /* Nothing to say: no height, still in the tree. */
+  .screen--score .summary-refusal:empty {
+    margin: 0;
+    padding: 0;
+  }
+}
+
 .summary-stats {
   display: grid;
   grid-template-columns: auto 1fr;

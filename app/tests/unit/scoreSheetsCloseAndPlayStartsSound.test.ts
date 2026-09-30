@@ -41,6 +41,12 @@
  * asks, and where the answer comes after the key's own moment the run starts
  * without that key, which is never fed back-dated.
  *
+ * **…and a refused tap on the summary says so on the summary (U105a).**
+ * Sideways the header is not drawn and the bar that mirrors its line is under
+ * the sheet, so the sheet carries the sentence itself, first on it, as a
+ * status (the reviewer's required change, `responses/f51e8010.md`), painted
+ * only where the header is not drawn.
+ *
  * The engine module is replaced by an object whose `state` the tests set and
  * whose `ensureStarted` is a spy that by default does what the real one does
  * when it succeeds: it returns once the context is running, and publishes the
@@ -1146,6 +1152,108 @@ describe('every tap that starts the sound asks for it, and a refusal names the c
     row.done(section);
     expect(stateLine()).not.toBe(row.sentence);
     expect(document.querySelectorAll('[data-sound-refused]')).toHaveLength(0);
+  });
+});
+
+/** The summary's taps among U105's: the ones whose control is on the summary sheet. */
+const SUMMARY_TAPS = SOUND_TAPS.filter((row) =>
+  ['session-try-again', 'summary-again', 'summary-slower', 'summary-faster', 'summary-loop'].includes(row.id),
+);
+
+/** What the summary's own line says now; empty where there is none. */
+function summaryLine(): string {
+  return document.getElementById('summary-refusal')?.textContent ?? '';
+}
+
+/** Whether a node sits under an ancestor the screen has put out of reach. */
+function underInert(node: HTMLElement): boolean {
+  for (let at: HTMLElement | null = node; at !== null; at = at.parentElement) {
+    if (at.inert) return true;
+  }
+  return false;
+}
+
+/**
+ * U105a: a refused tap on the summary says so on the summary (the reviewer's required change,
+ * `responses/f51e8010.md`). Sideways the header is not drawn and the bar's mirror of the state line
+ * is under the sheet, so a refused *Again* there looked dead. The sheet now carries its own line,
+ * `#summary-refusal`, first in the sheet, in the sentence the state line says, as a status a screen
+ * reader is told of (the head behind the sheet is inert). Where it is painted is `style.css`'s:
+ * sideways only, where the header is not drawn; upright and on a tablet the header's line is the one
+ * seen and this copy is for a screen reader (the orchestrator's word at the landing: the sentence
+ * once). jsdom loads no CSS and has no layout, so here the line is present, named and reachable, and
+ * the header's line is not hidden; what is painted where is `score.screen.spec.ts`'s.
+ */
+describe('a refused tap on the summary says so on the summary (U105a)', () => {
+  it.each(SUMMARY_TAPS)('$name: the summary’s own line names it, first on the sheet, as a status; the tap left unapplied', async (row) => {
+    const section = await row.reach();
+    const startsBefore = session().starts.mock.calls.length;
+    expect(summaryLine(), 'the summary said something before any refusal').toBe('');
+    engine.state = 'suspended';
+    engine.ensureStarted.mockImplementation(neverAnswers);
+    vi.useFakeTimers();
+    row.tap();
+    vi.advanceTimersByTime(PLAY_SOUND_WAIT_MS);
+    await settle();
+    expect(session().starts, 'a run started against a sound that had not started').toHaveBeenCalledTimes(startsBefore);
+    row.unchanged(section);
+    const sheet = byId('score-summary');
+    const line = byId('summary-refusal');
+    expect(sheet.contains(line), 'the line is not on the summary').toBe(true);
+    expect(line.textContent, 'the summary’s line does not name the control tapped').toBe(row.sentence);
+    expect(line.textContent, 'the summary and the state line disagree').toBe(stateLine());
+    expect(byId('score-waiting').hidden, 'the header’s line, the one seen upright, is hidden').toBe(false);
+    expect(sheet.firstElementChild, 'the line is not the first thing the sheet says').toBe(line);
+    expect(line.getAttribute('role'), 'a screen reader is not told').toBe('status');
+    expect(underInert(line), 'the line is out of reach with the screen behind the sheet').toBe(false);
+    expect(byId(row.id).dataset.soundRefused).toBe('true');
+  });
+
+  it('the summary’s line goes when the sound starts some other way, and while the next tap asks; a refusal again brings it back', async () => {
+    await withTheSummaryUp();
+    engine.state = 'suspended';
+    engine.ensureStarted.mockImplementation(neverAnswers);
+    vi.useFakeTimers();
+    click('summary-again');
+    vi.advanceTimersByTime(PLAY_SOUND_WAIT_MS);
+    await settle();
+    expect(summaryLine()).toBe(STATE_TEXT.soundOff('Again'));
+    engineBecomes('running');
+    expect(summaryLine(), 'the line stood over a sound that runs').toBe('');
+    expect(summaryShows(), 'the sound starting by itself took the summary').toBe(true);
+
+    engine.state = 'suspended';
+    click('summary-slower');
+    vi.advanceTimersByTime(PLAY_SOUND_WAIT_MS);
+    await settle();
+    expect(summaryLine()).toBe(STATE_TEXT.soundOff('Slower'));
+    click('summary-again');
+    expect(summaryLine(), 'the last refusal stood while the next tap asked').toBe('');
+    vi.advanceTimersByTime(PLAY_SOUND_WAIT_MS);
+    await settle();
+    expect(summaryLine(), 'the line does not follow the tap made last').toBe(STATE_TEXT.soundOff('Again'));
+    expect((byId('score-tempo') as HTMLInputElement).value, 'the refused Slower moved the tempo').toBe(String(OPENING_TEMPO));
+  });
+
+  it('a refusal standing for a control not on the summary is not said on it', async () => {
+    await open();
+    click('score-play');
+    expect(session().running).toBe(true);
+    // Hear it over a run the platform has silenced (U105's Follow-up 2): refused, and still standing
+    // when the run's end brings the summary up.
+    engine.state = 'suspended';
+    engine.ensureStarted.mockImplementation(neverAnswers);
+    vi.useFakeTimers();
+    click('score-hear');
+    vi.advanceTimersByTime(PLAY_SOUND_WAIT_MS);
+    await settle();
+    vi.useRealTimers();
+    expect(stateLine()).toBe(HEAR_REFUSED);
+    (sessionRef.current as unknown as { stop: () => void }).stop();
+    onFinishedRef.current?.(finishedRun(), false);
+    await vi.waitFor(() => expect(summaryShows()).toBe(true));
+    expect(stateLine(), 'the refusal went with the run').toBe(HEAR_REFUSED);
+    expect(summaryLine(), 'the summary named a control that is not on it').toBe('');
   });
 });
 

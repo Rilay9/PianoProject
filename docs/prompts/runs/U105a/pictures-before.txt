@@ -1,0 +1,8 @@
+
+Running 2 tests using 2 workers
+
+  ok 2 build\u105a\probe\pictures.spec.ts:142:1 › the refused summary, upright (15.4s)
+  ok 1 build\u105a\probe\pictures.spec.ts:146:1 › the refused summary, sideways (15.4s)
+
+  2 passed (18.2s)
+exit 0

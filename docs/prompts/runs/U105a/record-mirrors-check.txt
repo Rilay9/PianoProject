@@ -1,0 +1,3 @@
+record-mirrors: entry-without-brief: docs/prompts/runs/U105a/ENTRY.md:1: Entry 182 names 'U105a', which no record block declares
+record-mirrors: 1 failure(s); nothing written
+record_mirrors --check exit 2
