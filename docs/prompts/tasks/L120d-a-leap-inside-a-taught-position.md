@@ -336,3 +336,4 @@ state: approved 2026-09-30: brief approved for dispatch (`responses/questions-f7
 - dispatched 2026-09-30: dispatched at b93162ae on L120c's landing, building (Entry 167)
 - landed 2026-09-30: merged 712d6321; handoff `handoffs/4e76c768.md`
 - verdict 2026-09-30: APPROVE WITH ONE REQUIRED CHANGE — `study.candidate_rungs` flags a rung admitted only by the fixed-position coping route (*eligible by taught-position coping; does not establish interval-reading evidence*), the candidate kept; docs/02: L120b's paragraph applied first, then L120d integrated into one rule (`responses/4e76c768.md`)
+- verdict 2026-09-30: the content items checked as facts and claims, no correction required (`responses/questions-827289d0.md`)
