@@ -161,6 +161,9 @@ describe('the Score screen’s run sentences are the ones `04` §5f prints', () 
       STATE_TEXT.hearingOverRun('N'),
       STATE_TEXT.pausedAt('N'),
       STATE_TEXT.restarted('N', RESTARTED_WITH.hands('L')),
+      // G86a: a tap whose sound did not start, named by the control that asks again.
+      STATE_TEXT.soundOff('▶'),
+      STATE_TEXT.soundOff('Hear it'),
       RESTARTED_WITH.mode('Keep tempo'),
       RESTARTED_WITH.hands('both'),
       RESTARTED_WITH.tempo(80),

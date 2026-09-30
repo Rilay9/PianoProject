@@ -1,0 +1,12 @@
+
+Running 7 tests using 2 workers
+
+  ok 1 tests\e2e\projects.spec.ts:88:1 › finish a run, What next with this piece?, Learn this — Progress lists the project (18.9s)
+  ok 2 tests\e2e\projects.spec.ts:110:1 › Put it away, then Bring it back: the history line and the encounter line (19.3s)
+  ok 3 tests\e2e\projects.spec.ts:135:1 › a Stage 9 unit’s page shows its songs as projects and no count; one project’s state shows on its row alone (1.0s)
+  ok 4 tests\e2e\projects.spec.ts:202:1 › a piece passed and unplayed past the window, paused on its sheet: Today stops keeping it playable; Progress and the Library show it as before (G1d) (3.5s)
+  ok 5 tests\e2e\projects.spec.ts:304:1 › a piece paused on its sheet is on no row of the thin card, nor asked for by its rung; with every song of the rung paused the lesson says it waits (G1e) (3.0s)
+  ok 6 tests\e2e\projects.spec.ts:394:1 › the project sheet’s date box beside I performed it wears the sheet’s text box’s font, border, corners and box at 342 × 740 (G87) (925ms)
+  ok 7 tests\e2e\projects.spec.ts:429:1 › a Stage 9 page’s Start line names what Start opens and no more; a Stage 1 page’s still calls it the first thing on this rung (G87) (839ms)
+
+  7 passed (28.2s)

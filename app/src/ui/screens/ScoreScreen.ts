@@ -202,15 +202,17 @@ export const CONTROL_BAR_START_HIDE_MS = 700;
 export const SIDE_PANEL_WAIT_MS = 1_500;
 
 /**
- * The longest ▶ (or Space) waits for the sound to start before the run goes
- * ahead anyway (U69). Chosen, not measured. A resume is the device's audio
- * output starting, not a download, so a context the platform is willing to
- * start should answer well inside it; one that has not answered by then is
- * being refused — a phone in a call keeps the audio for the call — and the
- * button a beginner presses most must not sit doing nothing for longer than
- * about a second, where a tap that has not answered starts to read as broken.
- * Past it the run starts or carries on as it did before this wait existed,
- * silent until something starts the sound.
+ * The longest ▶ (or Space, or `Hear it`) waits for the sound to start (U69,
+ * G86a). Chosen, not measured. A resume is the device's audio output
+ * starting, not a download, so a context the platform is willing to start
+ * should answer well inside it; one that has not answered by then is being
+ * refused — a phone in a call keeps the audio for the call — and the button a
+ * beginner presses most must not sit doing nothing for longer than about a
+ * second, where a tap that has not answered starts to read as broken. Past it,
+ * with the sound still not running, the tap starts nothing and the state line
+ * says the sound did not start and to tap again (G86a); the next tap asks
+ * again. The bound ends the wait, not the chance of sound: it is never taken
+ * as proof that there is none.
  */
 export const PLAY_SOUND_WAIT_MS = 1_000;
 
@@ -422,13 +424,24 @@ export function ScoreScreen(router: Router): HTMLElement {
    */
   let hearing = false;
   /**
-   * A `Hear it` tap is waiting for the sound to start (U67), so a second tap in
-   * that moment does not start a second demonstration. ▶'s wait (U69) holds it
-   * too, so neither button starts anything while the other's tap is waiting.
+   * A tap is waiting for the sound to start — ▶'s or Space's (U69), or
+   * `Hear it`'s (U67) — so a second tap in that moment starts nothing, and
+   * neither button starts anything while the other's tap is waiting. Always
+   * cleared when the wait ends, however it ends (G86a): a `Hear it` start that
+   * never answered used to leave it set, and every later ▶ returned before
+   * asking.
    */
   let startingSound = false;
   /** ▶'s own tap is the one waiting (U69): what `drawPlayHold` shows on the button. */
   let playWaiting = false;
+  /**
+   * The tap whose wait ended with the sound still not running (G86a): nothing
+   * started, and the state line says so and names that tap's control. Cleared
+   * by the next tap that asks, and by the sound starting by any path —
+   * `soundOffLine` reads the engine too, so a line that has stopped being true
+   * is never drawn. Nothing records the engine as unavailable: every tap asks.
+   */
+  let soundRefusedBy: 'play' | 'hear' | null = null;
   /**
    * Whether this run has already said the app is playing a hand (P21c B3).
    *
@@ -468,6 +481,20 @@ export function ScoreScreen(router: Router): HTMLElement {
   let endedSinceLastStart = false;
   /** True once the screen is being torn down; see `showSummary`. */
   let leaving = false;
+  /**
+   * The late answer (G86a): a start that answers after its tap was refused
+   * starts nothing — a run beginning by itself after the learner was told it
+   * had not would be a surprise of its own — but the sentence goes, because it
+   * is no longer true. The same where the sound starts some other way while
+   * the sentence stands. The engine publishes here both a start's answer and
+   * the context's own state changes. Unsubscribed by the disposer, not through
+   * `unsubscribers`, which `attachInput` empties.
+   */
+  const stopWatchingSound = audioEngine.onStateChange((state) => {
+    if (state !== 'running' || soundRefusedBy === null || leaving) return;
+    soundRefusedBy = null;
+    render();
+  });
   /** The pending long-press, if a finger is down on the stage. */
   let pressHold: number | null = null;
   /** Where that finger went down, so a wobble can be told from a drag. */
@@ -2470,26 +2497,23 @@ export function ScoreScreen(router: Router): HTMLElement {
    * start before anything is scheduled, as the microscope does, so the piece is
    * not timed on a clock that has not begun. Where it is running, or there is
    * no Web Audio to start, the toggle runs at once as it always did. A stop
-   * needs no sound and never waits. With no sound to be had the demonstration
-   * still moves, silent, as it did before.
+   * needs no sound and never waits.
+   *
+   * Through ▶'s gate (G86a, the reviewer's word in
+   * `responses/questions-ecccffb7.md`): its own wait was unbounded and shared
+   * `startingSound`, so a start that never answered left every later ▶
+   * returning before it asked. Bounded now, and a wait that ends with the
+   * sound still off starts no demonstration and says so. With no Web Audio at
+   * all, where no tap could ever start a sound, the demonstration still
+   * moves, silent, as it did before.
    */
   function toggleHear(): void {
     if (!session) return;
-    if (hearing || !audioEngine.supported || audioEngine.state === 'running') {
+    if (hearing) {
       toggleHearNow();
       return;
     }
-    if (startingSound) return;
-    startingSound = true;
-    const tapped = session;
-    void audioEngine
-      .ensureStarted()
-      .catch(() => undefined)
-      .then(() => {
-        startingSound = false;
-        if (leaving || session !== tapped) return;
-        toggleHearNow();
-      });
+    withSound(toggleHearNow, 'hear');
   }
 
   /** `Hear it`: start a Listen run, or stop the one this button started. */
@@ -2799,7 +2823,8 @@ export function ScoreScreen(router: Router): HTMLElement {
   }
 
   /**
-   * Runs `act` with the sound asked to start inside the tap (U69).
+   * Runs `act` with the sound asked to start inside the tap (U69), and only
+   * once it has started (G86a).
    *
    * The engine's first-gesture start (`startOnFirstGesture`) is one-shot: it
    * went with the visit's first tap. When the platform suspends the context
@@ -2808,44 +2833,73 @@ export function ScoreScreen(router: Router): HTMLElement {
    * is only honoured inside a user activation (`AudioEngine.ts`, Android), so
    * it is called here, in the tap, rather than on the page coming back into
    * view, which is not one. The tap then waits for it, at most
-   * `PLAY_SOUND_WAIT_MS`, with ▶ held and saying it is busy, and acts whether
-   * or not the start settled: a start that never answers leaves the run as
-   * silent as it was before, never a button that did nothing. A second tap in
-   * the wait does nothing; leaving the screen or a new session cancels. Where
-   * the sound is running, or there is no Web Audio to start, `act` runs at
-   * once, exactly as before.
+   * `PLAY_SOUND_WAIT_MS`, with ▶ held and saying it is busy when the tap was
+   * ▶'s.
+   *
+   * **One check where the wait ends** (G86a, the reviewer's ruling in
+   * `responses/970fd770.md`). Whichever comes first — the bound, the start
+   * answering, the start failing — `act` runs only where the engine then reads
+   * `running`. U69 ran it however the wait ended, so a start that never
+   * answered, failed, or answered with the context still suspended started or
+   * carried on a run nobody could hear, with ▶ reading ⏸: the failure this
+   * wait exists to prevent, made quieter. The engine's state is the one fact
+   * those three share (`AudioEngine.state` reads anything but a running
+   * context as `suspended`). Otherwise nothing starts, carries on or ends — no
+   * run, no resume, no demonstration ended or begun, no stop, no navigation —
+   * the flags clear so the next tap asks again inside itself, and the state
+   * line says the sound did not start and names the control to tap
+   * (`soundOffLine`). A start answering later starts nothing either; its
+   * answer only takes the sentence away (`stopWatchingSound`).
+   *
+   * A second tap in the wait does nothing; leaving the screen or a new session
+   * cancels. Where the sound is running, or there is no Web Audio to start —
+   * no tap could ever start that sound, so a sentence asking for one would be
+   * false — `act` runs at once, exactly as before.
    */
-  function withSound(act: () => void): void {
+  function withSound(act: () => void, tap: 'play' | 'hear' = 'play'): void {
     if (!audioEngine.supported || audioEngine.state === 'running') {
+      soundRefusedBy = null;
       act();
       return;
     }
     if (startingSound) return;
     startingSound = true;
-    playWaiting = true;
+    playWaiting = tap === 'play';
+    // This tap asks again: the last refusal's sentence goes while it waits.
+    const wasRefused = soundRefusedBy !== null;
+    soundRefusedBy = null;
+    if (wasRefused) drawWaitingFor();
     drawPlayHold();
     const tapped = session;
     let settled = false;
-    const go = (): void => {
+    const settle = (): void => {
       if (settled) return;
       settled = true;
       window.clearTimeout(bound);
       startingSound = false;
       playWaiting = false;
+      if (leaving || session !== tapped) {
+        drawPlayHold();
+        return;
+      }
+      if (audioEngine.state !== 'running') {
+        soundRefusedBy = tap;
+        render();
+        return;
+      }
       drawPlayHold();
-      if (leaving || session !== tapped) return;
       act();
     };
-    const bound = window.setTimeout(go, PLAY_SOUND_WAIT_MS);
-    void audioEngine
-      .ensureStarted()
-      .catch(() => undefined)
-      .then(go);
+    const bound = window.setTimeout(settle, PLAY_SOUND_WAIT_MS);
+    // A failure is an answer like any other: the check above decides.
+    void audioEngine.ensureStarted().then(settle, settle);
   }
 
   /**
    * ▶ held: while a transfer offer's snapshot is unread (D4a), and while its
-   * tap waits for the sound (U69), when it also says it is busy.
+   * tap waits for the sound (U69), when it also says it is busy. And the tap
+   * whose sound did not start, marked on its own control while the state line
+   * says so (G86a), for a spec that meets a refusal to say so.
    */
   function drawPlayHold(): void {
     playPause.disabled = offerPending() || playWaiting;
@@ -2856,6 +2910,16 @@ export function ScoreScreen(router: Router): HTMLElement {
       playPause.removeAttribute('aria-busy');
       delete playPause.dataset.startingSound;
     }
+    const refused = refusedNow();
+    if (refused === 'play') playPause.dataset.soundRefused = 'true';
+    else delete playPause.dataset.soundRefused;
+    if (refused === 'hear') hearButton.dataset.soundRefused = 'true';
+    else delete hearButton.dataset.soundRefused;
+  }
+
+  /** The tap whose sound did not start (G86a), while that is still true. */
+  function refusedNow(): 'play' | 'hear' | null {
+    return soundRefusedBy !== null && audioEngine.state !== 'running' ? soundRefusedBy : null;
   }
 
   /** Choosing a different hand makes the sentence worth saying again. */
@@ -4139,7 +4203,11 @@ export function ScoreScreen(router: Router): HTMLElement {
       getSettings().showNoteNames && mode === 'wait' && session?.running === true
         ? waitingForLine(writtenNow())
         : '';
+    // A tap whose sound did not start comes first (G86a): over *Paused — ▶ to
+    // carry on*, over *Playing it to you*, over everything, because it is why
+    // what the learner just asked for is not happening.
     const wanted =
+      soundOffLine() ||
       pausedLine() ||
       (session?.armed === true ? firstNoteLine() : hearingLine() || named || readyLine());
     // Through the strip, which falls back to the mode's own standing line when
@@ -4147,6 +4215,20 @@ export function ScoreScreen(router: Router): HTMLElement {
     // is never left with a screen that says only the piece's name.
     helpStrip.setNow(wanted);
     waitingLine.hidden = false;
+  }
+
+  /**
+   * A tap asked for the sound and the sound did not start (G86a): nothing
+   * started, and the line says so and which control asks again — ▶ (Space's
+   * refusal too, ▶'s keyboard twin), or `Hear it`, whose tap wanted the
+   * demonstration and not a run. Only while the engine still reads not
+   * running (`refusedNow`), so a line that has stopped being true is dropped at
+   * the next redraw however the sound came on.
+   */
+  function soundOffLine(): string {
+    const refused = refusedNow();
+    if (refused === null) return '';
+    return STATE_TEXT.soundOff(refused === 'hear' ? 'Hear it' : '▶');
   }
 
   /**
@@ -4553,7 +4635,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     playPause.textContent = playing ? '⏸' : '▶';
     playPause.setAttribute('aria-label', playing ? 'Pause' : 'Play');
     // Nothing starts while a transfer offer's snapshot is unread (D4a), or while
-    // ▶'s tap is waiting for the sound (U69).
+    // ▶'s tap is waiting for the sound (U69); a refused tap is marked (G86a).
     drawPlayHold();
     stripHost.hidden = settings.keys === 'off';
     stripHost.dataset.keys = settings.keys;
@@ -5161,7 +5243,8 @@ export function ScoreScreen(router: Router): HTMLElement {
    *
    * ▶'s keyboard twin, and a user activation like it, so it asks the sound to
    * start the same way (U69), and starts only if the screen still may when
-   * the wait is over.
+   * the wait is over and the sound is running (G86a). Its refusal is ▶'s,
+   * and says to tap ▶.
    */
   const spaceMayStart = (): boolean =>
     session !== null && !session.running && sheet.hidden && !hearing && !sheetOpen();
@@ -5189,6 +5272,8 @@ export function ScoreScreen(router: Router): HTMLElement {
     // clears, with the rest of the page inert until it closes. Their rows go
     // back to the stash as they close.
     for (const close of openSheets.splice(0)) close();
+    // A late answer to a refused tap redraws nothing on a screen that has gone (G86a).
+    stopWatchingSound();
     // A run still waiting for *How did it go?* is let go: it is a run the app
     // heard nothing of, and unanswered it has no evidence to write (T40; T37
     // wrote it as it stood).

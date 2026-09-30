@@ -481,6 +481,18 @@ export const STATE_TEXT = {
    */
   restarted: (bar: number | string, what: string): string =>
     `Restarted at bar ${String(bar)} ${what} — ▶ when ready`,
+  /**
+   * The tap asked the sound to start and it had not started when the wait
+   * ended — no answer inside `PLAY_SOUND_WAIT_MS`, a refusal, or an answer
+   * with the audio still off — so nothing started (G86a, the reviewer's ruling
+   * in `responses/970fd770.md`). What happened first, then what to do; both
+   * inside the forty-odd characters the line shows at 342 px. It names the
+   * control that was tapped, because that tap is the one that asks again: ▶
+   * (or Space, its keyboard twin), or `Hear it`, which after its own refusal
+   * wants the demonstration, not a run. *Did not start*, not *is off*: it is
+   * about this tap, not a verdict that the phone has no sound.
+   */
+  soundOff: (control: '▶' | 'Hear it'): string => `Sound did not start — tap ${control} again`,
 } as const;
 
 /**

@@ -1920,7 +1920,9 @@ facts rather than one. **It sounds from the first tap**, a reload or a link stra
 included (U67, 2026-09-27): the tap starts the app's audio, and the session plays through the
 context and master gain the app has then, not the ones it had when the piece loaded, which
 before any tap were none. The session asks for the pair at every start, frame and resume, so
-`▶` and a held bar play through it too.
+`▶` and a held bar play through it too. The tap waits for the audio through `▶`'s gate (G86a):
+where it has not started within `PLAY_SOUND_WAIT_MS`, no demonstration starts and the state line
+says so (*`▶` starts the sound as well as the run*, below).
 
 **`Hear it` during a run keeps the run** (decided 2026-09-23, built by T33 — the state-machine
 document's C1). It used to end the run: the middle of a good pass thrown away, silently, by
@@ -2016,12 +2018,21 @@ the visit's first tap, so `▶` after a lock carried the run on silent. Now `▶
 paused run carried on, the run asked for over *Hear it* — and `Space`'s start ask the audio to
 start inside the tap where it is not running, wait for it at most a second
 (`PLAY_SOUND_WAIT_MS`, chosen: long for a device starting its output, short for the button
-pressed most), with `▶` dimmed and `aria-busy` meanwhile, then start or carry on whether or
-not it answered: a start that never answers leaves the run as silent as it was, never a button
-that did nothing. A second tap in the wait does nothing, and `⏸` never waits. Not on the page
-coming back into view, which is not a tap: Android ignores a start made outside one. A key on
-a connected piano that starts a run is not a tap to the platform either, and does not ask.
-Scheduling and the context's state are tested in Chromium; *unverified on a device*.
+pressed most), with `▶` dimmed and `aria-busy` meanwhile, then start or carry on only if the
+sound is running (G86a, the reviewer's ruling on U69, which went on whether or not
+it answered and so showed ⏸ over a run nobody could hear). Where the wait ends with the sound
+still off — no answer by the bound, a refusal, or an answer with the audio still suspended —
+nothing starts, carries on or ends: a paused run stays paused, *Hear it* under `▶` goes on,
+`▶` reads `▶` again, and the state line says *Sound did not start — tap ▶ again* (§5f). The
+next tap asks again; nothing records the sound as unavailable, and nothing navigates or
+resets. A start that answers after that starts nothing by itself; the sentence goes, because
+it is no longer true. `Hear it`'s own wait (U67) is the same gate, bounded: refused, it starts
+no demonstration and says *Sound did not start — tap Hear it again*. With no Web Audio at all
+both act at once, silent, as before, because no tap could ever start that sound. A second tap
+in the wait does nothing, and `⏸` never waits. Not on the page coming back into view, which is
+not a tap: Android ignores a start made outside one. A key on a connected piano that starts a
+run is not a tap to the platform either, and does not ask. Scheduling and the context's state
+are tested in Chromium; *unverified on a device*.
 
 **The note waited for is named as the score writes it** (added 2026-09-25, T41). With *Name the
 note I am waiting for* on, a Wait for me run says *Waiting for E♭5*, or the chord low to high
@@ -3130,9 +3141,9 @@ for §3c's ten.
 not for *something is happening that the fallback contradicts*: a paused run, a `Hear it`
 demonstration and a run holding for its first note each have something to say and say it, and
 the mode's sentence is what is left when none of them applies. The whole order —
-paused, holding, demonstrating, the note names, the ready line, the standing line — is
-`drawWaitingFor` in `ScoreScreen.ts`, and the machine it serves is written out in
-`docs/decisions/2026-09-23-score-state-machine.md`.
+a tap whose sound did not start (G86a), paused, holding, demonstrating, the note names, the
+ready line, the standing line — is `drawWaitingFor` in `ScoreScreen.ts`, and the machine it
+serves is written out in `docs/decisions/2026-09-23-score-state-machine.md`.
 
 **The run's own sentences** (T31, and T33 for the five choices that document's §7 left open,
 decided 2026-09-23). They are `STATE_TEXT`, `RESTARTED_WITH`, `ROW_TEXT` and the *Changed*
@@ -3154,6 +3165,13 @@ about forty characters and cuts the rest with an ellipsis:
   microphone*, *with nothing listening*, *judging the rhythm only* / *judging the notes as
   well*, *with the app playing the left hand* / *with nothing played under you*, *with 3 bars
   in the window*, *in the Scroll layout* / *in the Window layout*.
+- **A tap whose sound did not start** (G86a): *Sound did not start — tap ▶ again* after `▶`
+  or `Space`, and *Sound did not start — tap Hear it again* after `Hear it`, whose tap wanted
+  the demonstration and not a run. First in the order while it stands, over the paused line
+  and over *Playing it to you*; gone once the sound runs, however it came on. What happened
+  first and the control that asks again second, inside the forty-odd characters; *did not
+  start*, because it is about this tap, not a verdict that there is no sound (§5, *`▶`
+  starts the sound as well as the run*). *Unverified as copy.*
 
 A refused `⋯` row says why **on its label**, not in its hint, because sideways the sheet hides
 every hint (§5):

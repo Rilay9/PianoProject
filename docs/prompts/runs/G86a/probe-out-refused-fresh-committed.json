@@ -1,0 +1,42 @@
+{
+  "stateLine": "The count-in clicks, then play along.",
+  "stateLineCut": false,
+  "stateLineBox": {
+    "x": 10,
+    "y": 62,
+    "w": 283,
+    "h": 18,
+    "visible": true
+  },
+  "play": "⏸",
+  "playLabel": "Pause",
+  "playDisabled": false,
+  "playBusy": null,
+  "playRefused": null,
+  "playBox": {
+    "x": 0,
+    "y": 622,
+    "w": 40,
+    "h": 40,
+    "visible": true
+  },
+  "running": "true",
+  "barVisible": "true",
+  "statusSide": "",
+  "statusSideBox": {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0,
+    "visible": false
+  },
+  "corner": "bar 1 / 4",
+  "cornerBox": {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0,
+    "visible": false
+  },
+  "context": "suspended"
+}
