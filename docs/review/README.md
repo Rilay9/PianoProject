@@ -107,3 +107,4 @@ usual statuses (APPROVE means dispatch when the brief's other gates are met; BLO
 changes before dispatch). A brief handoff and an implementation handoff are different seams and never
 share a file; a brief that changes after its review gets a new handoff at its new commit.
 
+One exception, the reviewer's fast path (`responses/questions-70656183.md`, 2026-09-30, operating procedure §11): a verdict of APPROVE WITH ONE REQUIRED CHANGE on an otherwise accepted seam is itself the pre-reviewed brief for that change, returned to the same builder under the five conditions §11 states; the fix still gets its own implementation HEAD, entry, handoff and post-build review.
