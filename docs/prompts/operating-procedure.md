@@ -158,7 +158,7 @@ write down what it does well.
 
 ## 11. Before reporting
 
-Four questions, in tier order. A correction is owed only where the answer would change
+Five questions, in tier order. A correction is owed only where the answer would change
 what the owner or the next agent does; wording alone never earns a turn.
 
 1. **Product.** Did I look at the result the way a learner meets it (the screen, the

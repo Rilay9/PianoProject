@@ -40,7 +40,7 @@ cannot be inferred from what is written down. Otherwise choose, say why in a lin
 
 ## Before reporting any piece of work
 
-Four questions, in tier order (`operating-procedure.md` §11). A correction is owed only
+Five questions, in tier order (`operating-procedure.md` §11). A correction is owed only
 where the answer would change what the owner or the next agent does; wording alone never
 earns a turn.
 
