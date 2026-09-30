@@ -12,9 +12,12 @@ U105's owned files and boundaries hold; a `style.css` change is this seam's even
 
 **Base.** 26a913fe, origin's head at dispatch. **Entry.** 182; the run files under `docs/prompts/runs/U105a/`, the entry at `docs/prompts/runs/U105a/ENTRY.md`.
 
+**Landed 2026-09-30** (Entry 182; d0e1b01f, merged ddae64a8); handoff `handoffs/d0e1b01f.md`.
+
 ## Record
 
 lane: U105a · closes: — · entry: 182
 index: U105's required change: a refused summary control's sentence visible within or above the summary, sideways too, uncut (`responses/f51e8010.md`; the second read's item B) | app | dispatched 2026-09-30 at 26a913fe (`U105a-a-refused-summary-control-says-so-on-the-summary.md`); Entry 182 |
 in-flight: dispatched 2026-09-30 (`U105a-a-refused-summary-control-says-so-on-the-summary.md`): U105's required change under the fast path — the refusal drawn on the summary sheet, sideways readable and uncut, never a lifted inert bar (`responses/f51e8010.md`; `second-reads/827289d0.md` B); building (Entry 182)
 state: dispatched 2026-09-30: dispatched at 26a913fe, building (Entry 182)
+- landed 2026-09-30: merged ddae64a8; handoff `handoffs/d0e1b01f.md`

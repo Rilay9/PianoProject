@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **U105a** — `handoffs/d0e1b01f.md` (respond in `responses/d0e1b01f.md`). A refused summary control says so on the summary, sideways too (Entry 182).
 - **CL04** — `handoffs/9429b3c3.md` (respond in `responses/9429b3c3.md`). Evidence truth: introduced is not encountered, an unknown version is refused, a timing gap keeps the pitch, a twin run counts once (Entry 175).
 - **U32a** — `handoffs/88df748b.md` (respond in `responses/88df748b.md`). A long piece loads the sheets its settled shape needs, never the whole document inside a run (Entry 180).
 - **E50b** — `handoffs/65ae9d5f.md` (respond in `responses/65ae9d5f.md`). The repaired Wabash cut keeps its learner's history, and an old defaulted-tempo run never meets a standard against the repaired tempo (Entry 181).

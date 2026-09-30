@@ -2054,9 +2054,10 @@ is not kept to be played later, and the line says *Sound did not start — tap �
 screen is a tap and asks like one; where the answer comes after the key's own moment, the run
 starts without that key as its first note, because the key's time is from before the run began,
 and waits for the first note as after `▶`. A start that makes `▶` read `⏸` lets a standing
-refusal go; a restart held paused keeps it, still true, with `▶` reading `▶`. Sideways, with the
-summary up, the sheet covers the bar that carries the state line, so a refused summary tap
-says nothing there (U105's Question to the reviewer).
+refusal go; a restart held paused keeps it, still true, with `▶` reading `▶`. Sideways, with the summary up, the sheet covers the bar that carries the state line, so the
+summary says it itself: a refused tap on the sheet puts the same sentence first on the sheet,
+painted where the header is not drawn, so the learner reads it once in every orientation (U105a,
+the reviewer's required change, `responses/f51e8010.md`).
 
 **The note waited for is named as the score writes it** (added 2026-09-25, T41). With *Name the
 note I am waiting for* on, a Wait for me run says *Waiting for E♭5*, or the chord low to high
@@ -2436,6 +2437,13 @@ Notation area:
 - End-of-run summary sheet: accuracy, timing (early/late histogram), tempo achieved, wrong-note
   hot spots (bars), pass/master badge, buttons "Again", "Slower (−10 %)", "Faster (+10 %)",
   "Loop the weak bars", "Done". Without MIDI: "How did it go?" (Rough / OK / Clean) self-report.
+  A tap on the sheet whose sound did not start is said once where the learner can read it
+  (U105a). Where the header is drawn (upright, a tablet), its state line says it just above
+  the sheet. Sideways, where the header is not drawn and the bar that mirrors its line is
+  under the sheet, the sheet's first line says it: whole, wrapping rather than cut, held at
+  the sheet's top when the sheet scrolls. The sheet holds the sentence in every orientation
+  as a status a screen reader is told of, painted only sideways. Only for a control on the
+  sheet.
   A rhythm run is headed **Rhythm run** and carries a `Judged` line saying what was and was
   not measured; a run with the ladder on carries a `Ladder` line saying where it ended. The
   ±10 % buttons are one rung of that same ladder, which is where its notch came from.
@@ -3226,6 +3234,10 @@ about forty characters and cuts the rest with an ellipsis:
   connected piano or on the screen: *Sound did not start — tap ▶*, without *again*, because
   `▶` was not what was used and its tap can start the sound. The tapped control carries
   `data-sound-refused` while the sentence stands (`▶` after a key). *Unverified as copy.*
+  On the summary the sentence is also the sheet's first line (`#summary-refusal`, U105a):
+  painted sideways, where the header is not drawn and the bar's mirror is under the sheet,
+  and there it wraps rather than cutting; elsewhere kept for a screen reader only, because
+  the header's line says it just above.
 
 A refused `⋯` row says why **on its label**, not in its hint, because sideways the sheet hides
 every hint (§5):
