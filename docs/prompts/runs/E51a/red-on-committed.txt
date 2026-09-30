@@ -1,0 +1,74 @@
+# E51a red first (Entry 164): the two new cases on the committed map and file, before either data edit
+# base c5988012; python -m unittest -v <the two cases>
+# The red lines:
+#   test_checks_for_paths.py:229 (e2e_names, called from :318):
+#     AssertionError: 0 != 1 : ('tools/content/excerpts.py',): one e2e command naming its specs
+#   test_excerpts.py:421: Lists differ; First differing element 16 ('' against '`superseded` ...');
+#     Second list contains 3 additional elements
+
+test_the_merge_and_its_definitions_name_the_merge_s_browser_spec (tools.content.tests.test_checks_for_paths.TheMinimumSemantics.test_the_merge_and_its_definitions_name_the_merge_s_browser_spec) ... FAIL
+test_the_committed_file_says_what_its_format_holds (tools.content.tests.test_excerpts.TheMerge.test_the_committed_file_says_what_its_format_holds)
+E51a (the E51 review's required change 2, `responses/dffa9c34.md`): the committed `_comment` is `COMMENT`. ... FAIL
+
+======================================================================
+FAIL: test_the_merge_and_its_definitions_name_the_merge_s_browser_spec (tools.content.tests.test_checks_for_paths.TheMinimumSemantics.test_the_merge_and_its_definitions_name_the_merge_s_browser_spec)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_checks_for_paths.py", line 318, in test_the_merge_and_its_definitions_name_the_merge_s_browser_spec
+    self.assertEqual(self.e2e_names("tools/content/excerpts.py"), ["excerpts.spec.ts"])
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<worktree>\tools\content\tests\test_checks_for_paths.py", line 229, in e2e_names
+    self.assertEqual(len(e2e), 1, f"{paths}: one e2e command naming its specs")
+AssertionError: 0 != 1 : ('tools/content/excerpts.py',): one e2e command naming its specs
+
+======================================================================
+FAIL: test_the_committed_file_says_what_its_format_holds (tools.content.tests.test_excerpts.TheMerge.test_the_committed_file_says_what_its_format_holds)
+E51a (the E51 review's required change 2, `responses/dffa9c34.md`): the committed `_comment` is `COMMENT`.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_excerpts.py", line 421, in test_the_committed_file_says_what_its_format_holds
+    self.assertEqual(X.read_definitions()["_comment"], X.COMMENT)
+AssertionError: Lists differ: ['App[1332 chars].', '', "An excerpt is on no rung: placement i[161 chars]er."] != ['App[1332 chars].', '`superseded` (written once there is one) [489 chars]er."]
+
+First differing element 16:
+''
+'`superseded` (written once there is one) [59 chars], by'
+
+Second list contains 3 additional elements.
+First extra element 19:
+''
+
+Diff is 2051 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.008s
+
+FAILED (failures=2)
+exit 1
+
+# The difference, measured on the committed file (python): _comment 19 strings, COMMENT 22;
+# committed _comment == COMMENT[:16] + COMMENT[19:]: True, so exactly the three `superseded` strings,
+# the first after the `rejected` line.
+
+# python tools/docs/checks_for_paths.py tools/content/excerpts.py, before:
+﻿# checks for 1 path(s): 1 matched, 0 unmatched
+# tools/content/excerpts.py: tools/content/*.py
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+unit	app	npx vitest run
+build-app	app	npm run build:app
+exit 0
+
+# python tools/docs/checks_for_paths.py content/sources/excerpts.json, before:
+﻿# checks for 1 path(s): 1 matched, 0 unmatched
+# content/sources/excerpts.json: content/**, content/sources/**
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/library.spec.ts --workers=4
+exit 0

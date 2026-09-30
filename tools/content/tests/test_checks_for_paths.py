@@ -309,6 +309,20 @@ class TheMinimumSemantics(unittest.TestCase):
         for check in ("content-build", "content-validate", "review-check"):
             self.assertIn(check, ids)
 
+    def test_the_merge_and_its_definitions_name_the_merge_s_browser_spec(self) -> None:
+        # E51a, the E51 review's required change 1 (docs/review/responses/dffa9c34.md) and the second
+        # row on the reviewer's word (responses/questions-bbd7f99a.md): excerpts.spec.ts runs
+        # `excerpts.py --merge` into a copy of content/sources/excerpts.json and asserts its summary
+        # line (docs/08's excerpt row and the spec's file line). The smallest spec, never the whole
+        # suite; the file's own row, not its folder's.
+        self.assertEqual(self.e2e_names("tools/content/excerpts.py"), ["excerpts.spec.ts"])
+        ids = [c[0] for c in self.result("tools/content/excerpts.py").commands]
+        for check in ("content-build", "content-validate", "review-check", "content-tests", "unit", "build-app"):
+            self.assertIn(check, ids, "the folder row's checks stay with the file")
+        self.assertNotIn("e2e", [c[0] for c in self.result("tools/content/build.py").commands],
+                         "the spec is the merge's, not every pipeline module's")
+        self.assertEqual(self.e2e_names("content/sources/excerpts.json"), ["excerpts.spec.ts", "library.spec.ts"])
+
     def test_a_test_side_helper_names_every_file_that_reads_it(self) -> None:
         # A helper or fixture reaches exactly the files that read it. Its pattern names them, and
         # this keeps the names true: a spec, unit file or content test that starts reading one is

@@ -16,6 +16,9 @@
     "1); an approval under an older cutter is stale by cut version, and nothing carries it to the new cut.",
     "",
     "`rejected` keeps the refusals with their reasons, so a re-merge of the same export appends nothing.",
+    "`superseded` (written once there is one) keeps each approval a person re-decided after it went stale, by",
+    "parent bytes or by cut version: the old row as it was, with `supersededBy`, the event that replaced it. A",
+    "renewal names the parent's current bytes and is merged under the cutter in force; nothing renews by itself.",
     "",
     "An excerpt is on no rung: placement is F's, on a candidate-rungs line established on the combined",
     "build and a current `goodTeachingUse: yes` on the cut's identity in D2's record by a named reviewer."

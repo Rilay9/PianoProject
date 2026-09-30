@@ -1,0 +1,34 @@
+# E51a's three map mutants (Entry 164): python docs/prompts/runs/E51a/mutants.py
+
+checks.json sha256 before the mutants: 7680e174ad02bee94fe34139a02c3957aab93dc34ed3ff54c2a018e4e1efb326
+
+0. the spliced map: exit 0 (green)
+
+1. the spec added to the tools/content/*.py row instead of its own row
+   expected red at: the build.py line (assertNotIn e2e)
+   exit 1 (RED)
+   at line 322, in test_the_merge_and_its_definitions_name_the_merge_s_browser_spec
+   self.assertNotIn("e2e", [c[0] for c in self.result("tools/content/build.py").commands],
+   AssertionError: 'e2e' unexpectedly found in ['content-build', 'content-validate', 'review-check', 'content-tests', 'unit', 'build-app', 'e2e'] : the spec is the merge's, not every pipeline module's
+   restored, sha256 7680e174ad02bee94fe34139a02c3957aab93dc34ed3ff54c2a018e4e1efb326 (equal to before: True)
+
+2. "e2e": "*" on the new tools/content/excerpts.py row
+   expected red at: e2e_names' whole-suite assertion
+   exit 1 (RED)
+   at line 318, in test_the_merge_and_its_definitions_name_the_merge_s_browser_spec
+   at line 227, in e2e_names
+   self.assertEqual(self.e2e_names("tools/content/excerpts.py"), ["excerpts.spec.ts"])
+   self.assertNotIn(WHOLE_E2E, commands, f"{paths}: the whole browser suite, where docs/08 and the chains name specs")
+   AssertionError: ('e2e', 'app', 'npx playwright test --workers=4') unexpectedly found in [('content-build', '.', 'python tools/content/build.py --offline'), ('content-validate', '.', 'python tools/content/validate.py'), ('review-check', '.', 'python tools/content/review.py --check'), ('content-tests', '.', 'python -m unittest discover -s tools/content/tests -t tools/content'), ('unit', 'app', 'npx vitest run'), ('build-app', 'app', 'npm run build:app'), ('e2e', 'app', 'npx playwright test --workers=4')] : ('tools/content/excerpts.py',): the whole browser suite, where docs/08 and the chains name specs
+   restored, sha256 7680e174ad02bee94fe34139a02c3957aab93dc34ed3ff54c2a018e4e1efb326 (equal to before: True)
+
+3. the content/sources/excerpts.json row omitted
+   expected red at: the content/sources/excerpts.json assertEqual
+   exit 1 (RED)
+   at line 324, in test_the_merge_and_its_definitions_name_the_merge_s_browser_spec
+   self.assertEqual(self.e2e_names("content/sources/excerpts.json"), ["excerpts.spec.ts", "library.spec.ts"])
+   AssertionError: Lists differ: ['library.spec.ts'] != ['excerpts.spec.ts', 'library.spec.ts']
+   restored, sha256 7680e174ad02bee94fe34139a02c3957aab93dc34ed3ff54c2a018e4e1efb326 (equal to before: True)
+
+all three mutants caught and the file restored: True
+exit 0
