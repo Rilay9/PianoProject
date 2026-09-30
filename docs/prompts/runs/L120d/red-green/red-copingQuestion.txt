@@ -1,0 +1,164 @@
+﻿npx vitest run tests/unit/copingQuestion.test.ts (base b93162ae: the vocabulary and the gate unchanged, the tests L120d's)
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-acfba7b3b4721e1cd/app
+
+ ❯ tests/unit/copingQuestion.test.ts (41 tests | 7 failed) 54ms
+   ❯ before 1.5, a skip inside a taught fixed position is coped with by the note reading it taught (L120b, class 2) (16)
+     × the positions are recorded on the skip and the leap, and each is a concept the lessons name 5ms
+   ❯ a leap wholly inside a taught fixed position is coped with by that position’s note reading (L120d, class 3) (18)
+     × (1) at 1.2 a leap with the right hand inside 60–67 is not uncoped, nor the skips beside it 1ms
+     × (1) at 1.4 a two-hand row leaping inside both positions (C4 to G4, C3 to G3) is not uncoped 1ms
+     × (1) the practice floor, standing on 1.1, reads the right hand’s position for a leap 0ms
+     × (2) at practice.1 the same row for a learner who has reached 1.3 is coped with (taughtAtRung’s second reading) 1ms
+     × (3, guard) no interval-reading evidence is inferred or awarded from the exemption 3ms
+     × (6, guard) one fact in two places: the leap’s positions equal the skip’s 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/copingQuestion.test.ts > before 1.5, a skip inside a taught fixed position is coped with by the note reading it taught (L120b, class 2) > the positions are recorded on the skip and the leap, and each is a concept the lessons name
+AssertionError: expected [ 'interval.skip' ] to deeply equal [ 'interval.skip', 'interval.leap' ]
+
+- Expected
++ Received
+
+  [
+    "interval.skip",
+-   "interval.leap",
+  ]
+
+ ❯ tests/unit/copingQuestion.test.ts:208:27
+    206|   it('the positions are recorded on the skip and the leap, and each is…
+    207|     const withPositions = VOCABULARY_V0.demands.filter((demand) => (de…
+    208|     expect(withPositions).toEqual(['interval.skip', 'interval.leap']);
+       |                           ^
+    209|     const skip = VOCABULARY_V0.demands.find((demand) => demand.id === …
+    210|     expect(skip?.fixedPositions).toEqual([
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  tests/unit/copingQuestion.test.ts > a leap wholly inside a taught fixed position is coped with by that position’s note reading (L120d, class 3) > (1) at 1.2 a leap with the right hand inside 60–67 is not uncoped, nor the skips beside it
+AssertionError: expected [ 'interval.leap' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "interval.leap",
++ ]
+
+ ❯ tests/unit/copingQuestion.test.ts:354:43
+    352|   it('(1) at 1.2 a leap with the right hand inside 60–67 is not uncope…
+    353|     const row = rowOf('exercise.l120d.leap-in-c', LEAP_IN_C);
+    354|     expect(uncoped(row, taughtAt('1.2'))).toEqual([]);
+       |                                           ^
+    355|     expect(eligibleFor(row, taughtAt('1.2'), { for: 'equivalent' })).t…
+    356|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  tests/unit/copingQuestion.test.ts > a leap wholly inside a taught fixed position is coped with by that position’s note reading (L120d, class 3) > (1) at 1.4 a two-hand row leaping inside both positions (C4 to G4, C3 to G3) is not uncoped
+AssertionError: expected [ 'interval.leap' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "interval.leap",
++ ]
+
+ ❯ tests/unit/copingQuestion.test.ts:360:43
+    358|   it('(1) at 1.4 a two-hand row leaping inside both positions (C4 to G…
+    359|     const row = rowOf('exercise.l120d.both-leap-in-c', BOTH_LEAP_IN_C);
+    360|     expect(uncoped(row, taughtAt('1.4'))).toEqual([]);
+       |                                           ^
+    361|     expect(eligibleFor(row, taughtAt('1.4'), { for: 'equivalent' })).t…
+    362|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  tests/unit/copingQuestion.test.ts > a leap wholly inside a taught fixed position is coped with by that position’s note reading (L120d, class 3) > (1) the practice floor, standing on 1.1, reads the right hand’s position for a leap
+AssertionError: expected [ 'interval.leap' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "interval.leap",
++ ]
+
+ ❯ tests/unit/copingQuestion.test.ts:365:91
+    363|
+    364|   it('(1) the practice floor, standing on 1.1, reads the right hand’s …
+    365|     expect(uncoped(rowOf('exercise.l120d.leap-in-c', LEAP_IN_C), taugh…
+       |                                                                                           ^
+    366|   });
+    367|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  tests/unit/copingQuestion.test.ts > a leap wholly inside a taught fixed position is coped with by that position’s note reading (L120d, class 3) > (2) at practice.1 the same row for a learner who has reached 1.3 is coped with (taughtAtRung’s second reading)
+AssertionError: expected [ 'interval.leap' ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "interval.leap",
++ ]
+
+ ❯ tests/unit/copingQuestion.test.ts:381:110
+    379|
+    380|   it('(2) at practice.1 the same row for a learner who has reached 1.3…
+    381|     expect(uncoped(rowOf('exercise.l120d.both-leap-in-c', BOTH_LEAP_IN…
+       |                                                                                                              ^
+    382|   });
+    383|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  tests/unit/copingQuestion.test.ts > a leap wholly inside a taught fixed position is coped with by that position’s note reading (L120d, class 3) > (3, guard) no interval-reading evidence is inferred or awarded from the exemption
+AssertionError: the three Jingle Bells options are among them: expected [] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   "1.2 song.holiday.jingle-bells.rh",
+-   "holiday song.holiday.jingle-bells.rh",
+-   "holiday song.holiday.jingle-bells.ht",
+- ]
++ []
+
+ ❯ tests/unit/copingQuestion.test.ts:402:68
+    400|       }
+    401|     }
+    402|     expect(coped, 'the three Jingle Bells options are among them').toE…
+       |                                                                    ^
+    403|       expect.arrayContaining(['1.2 song.holiday.jingle-bells.rh', 'hol…
+    404|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  tests/unit/copingQuestion.test.ts > a leap wholly inside a taught fixed position is coped with by that position’s note reading (L120d, class 3) > (6, guard) one fact in two places: the leap’s positions equal the skip’s
+AssertionError: expected undefined to be defined
+ ❯ tests/unit/copingQuestion.test.ts:474:38
+    472|
+    473|   it('(6, guard) one fact in two places: the leap’s positions equal th…
+    474|     expect(leapOf()?.fixedPositions).toBeDefined();
+       |                                      ^
+    475|     expect(leapOf()?.fixedPositions).toEqual(skipOf()?.fixedPositions);
+    476|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed | 34 passed (41)
+   Start at  01:47:47
+   Duration  1.12s (transform 75%, import 19%, tests 6%, worker 1%)
+
+exit=1

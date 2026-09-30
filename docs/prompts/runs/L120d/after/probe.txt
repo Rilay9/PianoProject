@@ -1,0 +1,15 @@
+﻿L120D_PROBE_OUT=..\docs\prompts\runs\L120d\after\probe npx vitest run --config .probe/vitest.l120d.config.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-acfba7b3b4721e1cd/app
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  02:16:50
+   Duration  4.30s (transform 79%, import 19%, tests 1%)
+
+  Transform  transforming modules took 2.98s · 79% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+
+exit=0

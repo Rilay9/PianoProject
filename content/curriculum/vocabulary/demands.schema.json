@@ -31,7 +31,7 @@
           },
           "taughtAtNote": { "type": "string", "minLength": 10 },
           "fixedPositions": {
-            "description": "L120b: the fixed five-finger positions whose note reading copes with the demand where a lesson on the rung's path, or on a rung the learner has reached, names the position's concept in its own concepts (interval.skip alone: a skip inside C position is read by note name before 1.5 teaches reading by interval). Each is the concept, the hand (R or L, the bridge's hands) and the position's lowest and highest MIDI. Read by the coping question only (eligibilityCore.uncoped, claims.untaught_on).",
+            "description": "L120b: the fixed five-finger positions whose note reading copes with the demand where a lesson on the rung's path, or on a rung the learner has reached, names the position's concept in its own concepts (interval.skip and, since L120d, interval.leap, the same two positions on both: a skip inside C position is read by note name before 1.5 teaches reading by interval, a leap inside it before 2.1 does). Each is the concept, the hand (R or L, the bridge's hands) and the position's lowest and highest MIDI. Read by the coping question only (eligibilityCore.uncoped, claims.untaught_on).",
             "type": "array",
             "items": {
               "type": "object",

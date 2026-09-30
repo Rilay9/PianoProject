@@ -14,8 +14,8 @@
  *    supports — the ladder's `familiar` or above on the demand's `copedWithBy` skill, the rule the
  *    repertoire slot already used — or is taught at or below the rung judging it
  *    (`session.taughtAtRung`). A key signature located at no sounding note is not asked
- *    (L120b, `demandsAsked`), and a skip wholly inside a taught fixed position is coped with by
- *    that position's note reading (L120b, `inTaughtPosition`).
+ *    (L120b, `demandsAsked`), and a skip (L120b) or a leap (L120d) wholly inside a taught fixed
+ *    position is coped with by that position's note reading (`inTaughtPosition`).
  * 2. **Does it provide the opportunity claimed?** The wanted demand, or the wanted skill's opportunity,
  *    is present at a useful density (`measurement.established`), told apart from incidental presence.
  *
@@ -45,7 +45,7 @@ export interface Learner {
    * candidate: a lesson on the rung's path, or on a rung the learner has reached, names the
    * position's concept in its own `concepts` (`session.positionTaughtAtRung`, L120b). Built
    * beside `taught`, from the same rung and reached set (`session.taughtForLearner`). Absent: no
-   * position is taught, and no skip is coped with by one — the refusal stays.
+   * position is taught, and no skip or leap is coped with by one — the refusal stays.
    */
   positionTaught?: (concept: string) => boolean;
   /**
@@ -150,15 +150,17 @@ function demandsAsked(item: CatalogItem, measurement: Measurement, vocabulary: V
 /**
  * Whether a demand is coped with by the note reading of a taught fixed position (L120b; the reviewer's
  * Question 1 on L120a, `docs/review/responses/0bcd3be0.md`): before 1.5 teaches reading by interval, a
- * skip wholly inside C position is read by note name, as 1.1 and 1.3 taught. True when the demand's
- * vocabulary entry names the positions (`fixedPositions`: `interval.skip`'s alone), the measured row
- * carries each sounding hand's range over the whole piece (`measurement.span`), every hand that sounds
- * lies inside that hand's own position, and each such position's note reading is taught for the learner
- * (`learner.positionTaught`). Nothing for a hand outside its position, a hand whose position is not
- * taught at this rung, a row with no range (unmeasured, runtime, measured before the build wrote one)
- * or any other demand. It names no skill and reads no skill state: no evidence reader sees it, so a
- * correct run of such an item is never interval-reading evidence (`evidence.ts`'s principle), and
- * `copedWithBy` keeps its one skill.
+ * skip wholly inside C position is read by note name, as 1.1 and 1.3 taught; and before 2.1, a leap
+ * wholly inside it (L120d; the reviewer's Question 1 on L120b, `docs/review/responses/c8680b70.md`).
+ * True when the demand's vocabulary entry names the positions (`fixedPositions`: `interval.skip`'s and
+ * `interval.leap`'s, the same two), the measured row carries each sounding hand's range over the whole
+ * piece (`measurement.span`), every hand that sounds lies inside that hand's own position, and each such
+ * position's note reading is taught for the learner (`learner.positionTaught`). Nothing for a hand
+ * outside its position, a hand whose position is not taught at this rung, a row with no range
+ * (unmeasured, runtime, measured before the build wrote one) or a demand whose entry names no positions.
+ * It names no skill and reads no skill state: no evidence reader sees it, so a correct run of such an
+ * item is never interval-reading evidence (`evidence.ts`'s principle), and `copedWithBy` keeps its one
+ * skill. The demand stays on the row as measured: only this question reads the positions.
  */
 function inTaughtPosition(demand: string, measurement: Measurement, learner: Learner, vocabulary: Vocabulary): boolean {
   const positions = vocabulary.demands.find((d) => d.id === demand)?.fixedPositions;
@@ -174,8 +176,8 @@ function inTaughtPosition(demand: string, measurement: Measurement, learner: Lea
 
 /**
  * The candidate's measured demands the learner cannot yet cope with (question 1): those the learner's
- * evidence does not support, the rung has not taught, and — for a skip — no taught fixed position copes
- * with (`inTaughtPosition`, L120b).
+ * evidence does not support, the rung has not taught, and — for a skip or a leap — no taught fixed
+ * position copes with (`inTaughtPosition`, L120b, L120d).
  */
 export function uncoped(item: CatalogItem, learner: Learner, vocabulary: Vocabulary = VOCABULARY_V0): string[] {
   const floor = LADDER_STATES.indexOf(learner.floor ?? 'familiar');

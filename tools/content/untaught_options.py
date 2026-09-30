@@ -12,9 +12,9 @@ unmeasured item (`exploration-only`); then the coping question, `uncoped` — th
 (`demandsAsked`: the catalogue row's `demands` list for a measured item, whatever its density, less a
 key signature located at no sounding note, L120b), less those the learner's evidence supports, less
 those taught at or below the rung (`session.taughtAtRung`: a demand whose `taughtAt` names a rung of
-the rung's ancestry), less a skip wholly inside a fixed position a lesson on that path teaches (L120b,
-`inTaughtPosition`; `claims.untaught_on` with the curriculum). A rung's own option, judged at its
-own rung with no evidence read, is refused `untaught` when that difference is not empty. X1's probe
+the rung's ancestry), less a skip (L120b) or a leap (L120d) wholly inside a fixed position a lesson on
+that path teaches (`inTaughtPosition`; `claims.untaught_on` with the curriculum). A rung's own option,
+judged at its own rung with no evidence read, is refused `untaught` when that difference is not empty. X1's probe
 asked exactly that of every rung's `exerciseOptions` and `songOptions`
 (`docs/prompts/runs/X1/scripts-zzX1CardProbe.test.ts`); this module reads the same `demands.json`,
 the same ancestry (`claims.rung_ancestry`, which `taughtByAncestry.test.ts` holds equal to the app's)

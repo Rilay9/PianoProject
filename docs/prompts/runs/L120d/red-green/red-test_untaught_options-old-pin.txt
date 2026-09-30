@@ -1,0 +1,40 @@
+﻿the after build read against the old pin (PROBE = runs/L120c/after-placement/probe-refusals.txt, 219): test_untaught_options.TheShippedCurriculum with PROBE and the count patched back, the test file otherwise L120d's
+test_every_line_is_classified_and_the_counts_add_up (tests.test_untaught_options.TheShippedCurriculum.test_every_line_is_classified_and_the_counts_add_up) ... ok
+test_hot_cross_buns_at_0_3_is_read_as_the_probe_reads_it (tests.test_untaught_options.TheShippedCurriculum.test_hot_cross_buns_at_0_3_is_read_as_the_probe_reads_it) ... ok
+test_the_lines_equal_the_probe_but_for_the_recorded_differences (tests.test_untaught_options.TheShippedCurriculum.test_the_lines_equal_the_probe_but_for_the_recorded_differences) ... FAIL
+test_the_per_demand_counts_equal_the_probe_but_for_the_recorded_lines (tests.test_untaught_options.TheShippedCurriculum.test_the_per_demand_counts_equal_the_probe_but_for_the_recorded_lines) ... FAIL
+test_the_probe_is_the_one_the_brief_names (tests.test_untaught_options.TheShippedCurriculum.test_the_probe_is_the_one_the_brief_names) ... FAIL
+test_the_probe_only_line_is_listed_apart_as_not_read (tests.test_untaught_options.TheShippedCurriculum.test_the_probe_only_line_is_listed_apart_as_not_read) ... ok
+
+======================================================================
+FAIL: test_the_lines_equal_the_probe_but_for_the_recorded_differences (tests.test_untaught_options.TheShippedCurriculum.test_the_lines_equal_the_probe_but_for_the_recorded_differences)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-acfba7b3b4721e1cd\tools\content\tests\test_untaught_options.py", line 113, in test_the_lines_equal_the_probe_but_for_the_recorded_differences
+    self.assertEqual(only_probe, recorded_probe, "lines the app's probe has and the tool does not, unrecorded")
+AssertionError: Items in the first set but not the second:
+('holiday', 'song.holiday.jingle-bells.rh')
+('1.2', 'song.holiday.jingle-bells.rh')
+('holiday', 'song.holiday.jingle-bells.ht') : lines the app's probe has and the tool does not, unrecorded
+
+======================================================================
+FAIL: test_the_per_demand_counts_equal_the_probe_but_for_the_recorded_lines (tests.test_untaught_options.TheShippedCurriculum.test_the_per_demand_counts_equal_the_probe_but_for_the_recorded_lines)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-acfba7b3b4721e1cd\tools\content\tests\test_untaught_options.py", line 132, in test_the_per_demand_counts_equal_the_probe_but_for_the_recorded_lines
+    self.assertEqual(mine_counts, probe_counts)
+AssertionError: Count[168 chars]26, 'rhythm.eighths': 16, 'rhythm.shorter-than[217 chars]: 1}) != Count[168 chars]26, 'interval.leap': 20, 'rhythm.eighths': 16,[217 chars]: 1})
+
+======================================================================
+FAIL: test_the_probe_is_the_one_the_brief_names (tests.test_untaught_options.TheShippedCurriculum.test_the_probe_is_the_one_the_brief_names)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-acfba7b3b4721e1cd\tools\content\tests\test_untaught_options.py", line 106, in test_the_probe_is_the_one_the_brief_names
+    self.assertEqual(len(self.probe), 216, "L120d's probe recorded 216 `untaught` rung-own options")
+AssertionError: 219 != 216 : L120d's probe recorded 216 `untaught` rung-own options
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.614s
+
+FAILED (failures=3)
+exit=1

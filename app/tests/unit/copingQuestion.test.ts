@@ -20,9 +20,19 @@
  * rung's path or a rung the learner has reached (`Learner.positionTaught`, from the lessons' own
  * `concepts`). The reviewer's four adversaries, each a case below: (1) a skip wholly inside an already
  * taught fixed position is coped with before 1.5; (2) a skip that leaves it, or a hand whose position is
- * not taught, or a row with no range, or any other demand, gets nothing; (3) after 1.5, and for a learner
- * whose interval reading is `familiar`, support works as before; (4) no interval-reading evidence is
- * inferred from a correct fixed-position run — the predicate names no skill and reads no skill state.
+ * not taught, or a row with no range, or a demand whose vocabulary entry names no positions, gets
+ * nothing; (3) after 1.5, and for a learner whose interval reading is `familiar`, support works as
+ * before; (4) no interval-reading evidence is inferred from a correct fixed-position run — the predicate
+ * names no skill and reads no skill state.
+ *
+ * **Class 3: a leap wholly inside a taught fixed position is coped with the same way** (L120d; the
+ * reviewer's Question 1 on L120b, `docs/review/responses/c8680b70.md`). `interval.leap` carries the
+ * positions `interval.skip` carries, so the same predicate reads them; the leap stays a measured leap,
+ * `taughtAt` stays at 2.1 and `copedWithBy` at interval reading. The reviewer's five constraints are the
+ * adversaries: (1) the whole sounding hand inside the taught position; (2) the position taught on that
+ * learner's rung path; (3) no interval-reading evidence inferred or awarded; (4) material outside the
+ * position still refuses; (5) the demand still measured as a leap; and (6) the two position lists pinned
+ * equal. The clef stays out of it: a one-staff bass-clef part is not read as the left hand.
  *
  * Rows here are made the way the build makes them: the detectors run over a hand-made phrase
  * (`helpers/phrase`), the ids are `measuredDemands`, the located counts the detectors' own `at`, zero
@@ -191,9 +201,11 @@ describe('before 1.5, a skip inside a taught fixed position is coped with by the
     expect(rowOf('leap', LEAP_IN_C).demands).toEqual(expect.arrayContaining(['interval.skip', 'interval.leap']));
   });
 
-  it('the positions are recorded once, on the skip, and each is a concept the lessons name', () => {
+  // Revised (L120d). Old assumption: the positions are the skip's alone (L120b recorded them once, on the skip).
+  // The reviewer ruled a leap inside a taught position is coped with the same way, so the leap carries them too.
+  it('the positions are recorded on the skip and the leap, and each is a concept the lessons name', () => {
     const withPositions = VOCABULARY_V0.demands.filter((demand) => (demand.fixedPositions ?? []).length > 0).map((demand) => demand.id);
-    expect(withPositions).toEqual(['interval.skip']);
+    expect(withPositions).toEqual(['interval.skip', 'interval.leap']);
     const skip = VOCABULARY_V0.demands.find((demand) => demand.id === 'interval.skip');
     expect(skip?.fixedPositions).toEqual([
       { concept: 'C-position', hand: 'R', low: 60, high: 67 },
@@ -257,12 +269,6 @@ describe('before 1.5, a skip inside a taught fixed position is coped with by the
     expect(uncoped({ ...row, measurement }, taughtAt('1.2'))).toEqual(['interval.skip']);
   });
 
-  it('(2, guard) an interval.leap inside 60–67 at 1.2 stays uncoped; the skips beside it do not', () => {
-    const asked = uncoped(rowOf('exercise.l120b.leap-in-c', LEAP_IN_C), taughtAt('1.2'));
-    expect(asked).toContain('interval.leap');
-    expect(asked).not.toContain('interval.skip');
-  });
-
   it('(3, guard) at 1.5 and 2.1 a skip outside every position is taught as now', () => {
     const above = rowOf('exercise.l120b.right-above-c', RIGHT_ABOVE_C);
     expect(uncoped(above, taughtAt('1.5'))).toEqual([]);
@@ -306,5 +312,166 @@ describe('before 1.5, a skip inside a taught fixed position is coped with by the
   it('a learner built without the positions gives no exemption: the refusal stays, never the reverse', () => {
     const { positionTaught: _p, ...without } = taughtAt('1.2');
     expect(uncoped(rowOf('exercise.l120b.right-in-c', RIGHT_IN_C), without)).toEqual(['interval.skip']);
+  });
+});
+
+// --- class 3: a leap inside a taught fixed position (L120d) ----------------------------------
+
+/** The left hand alone leaping inside its C position: C3 up to G3, a fifth, with skips back down (L 48–55). */
+const LEFT_LEAP_IN_C = phrase({ bars: [line(['C3', 'G3', 'E3', 'C3'], 1, 2), [{ at: 0, dur: 4, pitch: 'C3', staff: 2 }]] });
+/** The hands in turn, never together, each leaping inside its own C position: C4 up to G4, then C3 up to G3. */
+const BOTH_LEAP_IN_C = phrase({ bars: [line(['C4', 'G4', 'E4', 'C4']), line(['C3', 'G3', 'E3', 'C3'], 1, 2), [{ at: 0, dur: 4, pitch: 'C4' }]] });
+/** C4 up to A4, a sixth: *Kum Ba Yah*'s reach, one note past right-hand C position (R 60–69). */
+const LEAP_TO_A = phrase({ bars: [line(['C4', 'A4', 'G4', 'E4']), [{ at: 0, dur: 4, pitch: 'C4' }]] });
+/** C4 up to C5, an octave, and down a fourth to G4 (R 60–72). */
+const LEAP_TO_C5 = phrase({ bars: [line(['C4', 'C5', 'G4', 'E4']), [{ at: 0, dur: 4, pitch: 'C4' }]] });
+/** The left hand leaping inside 60–67, the right hand's position (L 60–67). */
+const LEFT_LEAP_HIGH = phrase({ bars: [line(['C4', 'G4', 'E4', 'C4'], 1, 2), [{ at: 0, dur: 4, pitch: 'C4', staff: 2 }]] });
+/** The hands in turn: the right leaping inside its C position, the left from C3 up to A3, a sixth (L 48–57). */
+const BOTH_LEFT_TO_A = phrase({ bars: [line(['C4', 'G4', 'E4', 'C4']), line(['C3', 'A3', 'G3', 'E3'], 1, 2), [{ at: 0, dur: 4, pitch: 'C4' }]] });
+/** A runtime reading row whose reading controls may write a leap (level 2, both hands: the left part may leap). */
+const READING_ROW_WITH_LEAPS = 'drill.reading.sight-reading-2';
+
+describe('a leap wholly inside a taught fixed position is coped with by that position’s note reading (L120d, class 3)', () => {
+  const leapOf = (): (typeof VOCABULARY_V0.demands)[number] | undefined => VOCABULARY_V0.demands.find((demand) => demand.id === 'interval.leap');
+  const skipOf = (): (typeof VOCABULARY_V0.demands)[number] | undefined => VOCABULARY_V0.demands.find((demand) => demand.id === 'interval.skip');
+
+  it('the rows are the detectors’ own readings, with each hand’s span', () => {
+    expect(rowOf('leap', LEAP_IN_C)).toMatchObject({ demands: ['interval.skip', 'interval.leap'], measurement: { span: { R: [60, 67] } } });
+    expect(rowOf('left-leap', LEFT_LEAP_IN_C)).toMatchObject({ demands: ['clef.bass', 'interval.skip', 'interval.leap'], measurement: { span: { L: [48, 55] } } });
+    expect(rowOf('both-leap', BOTH_LEAP_IN_C)).toMatchObject({ demands: ['clef.bass', 'interval.skip', 'interval.leap'], measurement: { span: { R: [60, 67], L: [48, 55] } } });
+    expect(rowOf('to-a', LEAP_TO_A)).toMatchObject({ measurement: { span: { R: [60, 69] } } });
+    expect(rowOf('to-c5', LEAP_TO_C5)).toMatchObject({ measurement: { span: { R: [60, 72] } } });
+    expect(rowOf('left-high', LEFT_LEAP_HIGH)).toMatchObject({ measurement: { span: { L: [60, 67] } } });
+    expect(rowOf('both-left-to-a', BOTH_LEFT_TO_A)).toMatchObject({ measurement: { span: { R: [60, 67], L: [48, 57] } } });
+    for (const model of [LEAP_TO_A, LEAP_TO_C5, LEFT_LEAP_HIGH, BOTH_LEFT_TO_A]) expect(rowOf('out', model).demands).toContain('interval.leap');
+  });
+
+  // Revised (L120d; was L120b's "(2, guard) an interval.leap inside 60–67 at 1.2 stays uncoped; the skips beside it do not").
+  // Old assumption: a leap inside the position refuses. The reviewer ruled it is coped with as the skip is.
+  it('(1) at 1.2 a leap with the right hand inside 60–67 is not uncoped, nor the skips beside it', () => {
+    const row = rowOf('exercise.l120d.leap-in-c', LEAP_IN_C);
+    expect(uncoped(row, taughtAt('1.2'))).toEqual([]);
+    expect(eligibleFor(row, taughtAt('1.2'), { for: 'equivalent' })).toMatchObject({ verdict: 'eligible' });
+  });
+
+  it('(1) at 1.4 a two-hand row leaping inside both positions (C4 to G4, C3 to G3) is not uncoped', () => {
+    const row = rowOf('exercise.l120d.both-leap-in-c', BOTH_LEAP_IN_C);
+    expect(uncoped(row, taughtAt('1.4'))).toEqual([]);
+    expect(eligibleFor(row, taughtAt('1.4'), { for: 'equivalent' })).toMatchObject({ verdict: 'eligible' });
+  });
+
+  it('(1) the practice floor, standing on 1.1, reads the right hand’s position for a leap', () => {
+    expect(uncoped(rowOf('exercise.l120d.leap-in-c', LEAP_IN_C), taughtAt('practice.1'))).toEqual([]);
+  });
+
+  it('(2, guard) at 1.2 a left-hand leap inside 48–55 stays uncoped: the left position is 1.3’s', () => {
+    expect(uncoped(rowOf('exercise.l120d.left-leap-in-c', LEFT_LEAP_IN_C), taughtAt('1.2'))).toContain('interval.leap');
+  });
+
+  it('(2, guard) at 0.3, where no position is taught, a right-hand leap inside 60–67 stays uncoped', () => {
+    expect(uncoped(rowOf('exercise.l120d.leap-in-c', LEAP_IN_C), taughtAt('0.3'))).toContain('interval.leap');
+  });
+
+  it('(2, guard) at practice.1 a two-hand leap row stays uncoped: the floor stands on 1.1 alone', () => {
+    expect(uncoped(rowOf('exercise.l120d.both-leap-in-c', BOTH_LEAP_IN_C), taughtAt('practice.1'))).toContain('interval.leap');
+  });
+
+  it('(2) at practice.1 the same row for a learner who has reached 1.3 is coped with (taughtAtRung’s second reading)', () => {
+    expect(uncoped(rowOf('exercise.l120d.both-leap-in-c', BOTH_LEAP_IN_C), taughtAt('practice.1', ['1.3']))).toEqual([]);
+  });
+
+  it('(2, guard) a learner built without the positions gets nothing for a leap: the refusal stays, never the reverse', () => {
+    const { positionTaught: _p, ...without } = taughtAt('1.2');
+    expect(uncoped(rowOf('exercise.l120d.leap-in-c', LEAP_IN_C), without)).toEqual(['interval.skip', 'interval.leap']);
+  });
+
+  it('(3) no interval-reading evidence is inferred or awarded from the exemption, and the options it admits declare none', () => {
+    // The shipped options whose leap a taught position now copes with at their own rung declare no interval-reading
+    // target, so no run of one is ever read as interval-reading evidence (`evidence.ts` reads declared targets).
+    const coped: string[] = [];
+    for (const lesson of SHIPPED.stages.flatMap((stage) => stage.units.flatMap((unit) => unit.lessons))) {
+      const learner = taughtAt(lesson.id);
+      if (learner.taught?.('interval.leap') === true) continue;
+      for (const id of [...lesson.exerciseOptions, ...lesson.songOptions]) {
+        const item = CATALOG.find((row) => row.id === id);
+        if (item === undefined || !Array.isArray(item.demands) || !item.demands.includes('interval.leap')) continue;
+        if (!uncoped(item, learner).includes('interval.leap')) coped.push(`${lesson.id} ${id}`);
+      }
+    }
+    expect(coped, 'the three Jingle Bells options are among them').toEqual(
+      expect.arrayContaining(['1.2 song.holiday.jingle-bells.rh', 'holiday song.holiday.jingle-bells.rh', 'holiday song.holiday.jingle-bells.ht']),
+    );
+    for (const entry of coped) {
+      const item = CATALOG.find((row) => row.id === entry.split(' ')[1]);
+      expect(item?.targetSkills ?? [], entry).not.toContain('interval-reading');
+    }
+
+    // L120b's adversary (4), repeated for the leap: five correct runs of the in-position leap item, declaring no target.
+    const runs = [1, 2, 3, 4, 5].map((day) => observe(LEAP_IN_C, { mode: 'tempo', at: `2026-09-2${String(day)}T10:00:00.000Z`, id: day, itemId: 'exercise.l120d.leap-in-c' }));
+    const evidence = runs.flatMap((run) => evidenceFor({ observation: run, played: LEAP_IN_C, targetSkills: [], vocabulary: VOCABULARY_V0 }));
+    expect(evidence, 'no evidence for a skill nobody declared').toEqual([]);
+    const state = ladderState({ evidence: [], today: new Date('2026-09-30T12:00:00Z') }).state;
+    expect(LADDER_STATES.indexOf(state), 'interval reading stays below familiar').toBeLessThan(LADDER_STATES.indexOf('familiar'));
+
+    const learner: Learner = { ...taughtAt('1.2'), skillState: (skill) => (skill === 'interval-reading' ? state : undefined) };
+    expect(uncoped(rowOf('song.l120d.leap-to-a', LEAP_TO_A), learner), 'an out-of-position leap stays uncoped').toContain('interval.leap');
+    // The in-position leap is coped with by the position alone, whatever the skill state: the predicate reads none.
+    for (const held of [undefined, ...LADDER_STATES]) {
+      expect(uncoped(rowOf('exercise.l120d.leap-in-c', LEAP_IN_C), { ...taughtAt('1.2'), skillState: () => held }), String(held)).toEqual([]);
+    }
+  });
+
+  it('(4, guard) at 1.2 a leap from C4 up to A4 (R 60–69, Kum Ba Yah’s reach) stays uncoped and refused', () => {
+    const row = rowOf('song.l120d.leap-to-a', LEAP_TO_A);
+    expect(uncoped(row, taughtAt('1.2'))).toContain('interval.leap');
+    const verdict = eligibleFor(row, taughtAt('1.2'), { for: 'equivalent' });
+    expect(verdict).toMatchObject({ verdict: 'ineligible', why: 'untaught' });
+    expect(verdict.verdict === 'ineligible' && verdict.why === 'untaught' ? verdict.demands : []).toContain('interval.leap');
+  });
+
+  it('(4, guard) at 1.2 a leap from C4 up to C5 (R 60–72) stays uncoped', () => {
+    expect(uncoped(rowOf('song.l120d.leap-to-c5', LEAP_TO_C5), taughtAt('1.2'))).toContain('interval.leap');
+  });
+
+  it('(4, guard) at 1.2 a left hand leaping inside 60–67, the right hand’s position, stays uncoped: a position is its own hand’s', () => {
+    expect(uncoped(rowOf('exercise.l120d.left-leap-high', LEFT_LEAP_HIGH), taughtAt('1.2'))).toContain('interval.leap');
+  });
+
+  it('(4, guard) at 1.4 a two-hand row whose left hand reaches A3 (57) stays uncoped', () => {
+    expect(uncoped(rowOf('song.l120d.both-left-to-a', BOTH_LEFT_TO_A), taughtAt('1.4'))).toContain('interval.leap');
+  });
+
+  it('(4, guard) an unmeasured row, a runtime reading row and a measured row with no span get nothing for a leap', () => {
+    const refused = eligibleFor({ ...rowOf('song.l120d.unread', LEAP_IN_C), ...unmeasured('constructed: not measured') }, taughtAt('1.2'), { for: 'equivalent' });
+    expect(refused).toMatchObject({ verdict: 'ineligible', why: 'unknown-forbidden' });
+    expect(refused.verdict === 'ineligible' && refused.why === 'unknown-forbidden' ? refused.demands : []).toContain('interval.leap');
+    const reading = CATALOG.find((item) => item.id === READING_ROW_WITH_LEAPS);
+    expect(reading?.measurement).toMatchObject({ status: 'runtime' });
+    expect(uncoped(reading as CatalogItem, taughtAt('1.2'))).toContain('interval.leap');
+    const row = rowOf('exercise.l120d.no-span', LEAP_IN_C);
+    const { span: _span, ...measurement } = row.measurement as Extract<CatalogItem['measurement'], { status: 'measured' }>;
+    expect(uncoped({ ...row, measurement }, taughtAt('1.2'))).toEqual(['interval.skip', 'interval.leap']);
+  });
+
+  it('(5, guard) the demand stays a measured leap: the detector finds it, taughtAt stays 2.1, copedWithBy stays interval reading', () => {
+    const row = rowOf('exercise.l120d.leap-in-c', LEAP_IN_C);
+    expect(row.demands).toContain('interval.leap');
+    expect(locatedOf(row)['interval.leap']).toBeGreaterThan(0);
+    expect(leapOf()?.taughtAt).toEqual(['2.1']);
+    expect(leapOf()?.copedWithBy).toBe('interval-reading');
+    expect(leapOf()?.detector).toBe('leaps');
+  });
+
+  it('(5, guard) at 1.5, between the leap’s introduction and 2.1, an out-of-position leap stays uncoped', () => {
+    // The two reach past a five-finger position too (`range.beyond-position`), a demand of its own, taught later.
+    expect(uncoped(rowOf('song.l120d.leap-to-c5', LEAP_TO_C5), taughtAt('1.5'))).toContain('interval.leap');
+    expect(uncoped(rowOf('song.l120d.leap-to-a', LEAP_TO_A), taughtAt('1.5'))).toContain('interval.leap');
+    expect(uncoped(rowOf('song.l120d.leap-to-c5', LEAP_TO_C5), taughtAt('2.1')), 'taught from 2.1 as before').not.toContain('interval.leap');
+  });
+
+  it('(6, guard) one fact in two places: the leap’s positions equal the skip’s', () => {
+    expect(leapOf()?.fixedPositions).toBeDefined();
+    expect(leapOf()?.fixedPositions).toEqual(skipOf()?.fixedPositions);
   });
 });
