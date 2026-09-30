@@ -281,3 +281,40 @@ What is unverified sits beside what passes. `operating-procedure.md` §11 and §
 **Entry 163.** Every run file goes under `docs/prompts/runs/E50/`. The entry is `docs/prompts/runs/E50/ENTRY.md`, starting `### Entry 163 — E50`, and it ends with `## Doc rows`.
 
 **Tempo repair approved 2026-09-30; do not dispatch until the conversion date is pinned** (`responses/questions-bbd7f99a.md`). Reconstructing a real metronome mark from the plain *"= N"* text belongs in conversion and normalisation, never in app tempo heuristics. But reconverting every converted score for a fresh `<encoding-date>` would move identities and make runs appear unmet where nothing changed; that is not acceptable collateral for seven tempo rows. Before E50's reconversion: make conversion output deterministic with respect to the encoding date at the converter boundary; prove a no-change reconversion of a representative corpus file byte-stable; then reconvert the seven and verify only their genuine changes move identity; reapply and test Weary Blues' Entry 34 repair. The Wabash excerpt's staleness by provenance goes through E51's renewal path, never auto-renewed. The prerequisite is E50a (`tasks/E50a-the-conversion-date-is-pinned.md`, Entry 166; its brief with the reviewer before dispatch).
+
+## Reviewer's conditional approval (`responses/questions-bd7d303e.md`) and the amendments
+
+Conditionally approved for dispatch 2026-09-30, after E50a lands and this brief receives the amendments below. The reviewer's words govern wherever the brief's earlier text differs. **Amendments (the orchestrator's read of this brief against E50a's landed mechanism, on the reviewer's word):** every date-churn sentence goes (the converter writes no `<encoding-date>`; nothing moves for the date alone; only `converter.version` moves; the *encoding-date pin* follow-up and *the pin's sequencing* question are E50a's and are dropped); the acceptance classes become *music changed* (the seven parents and the Wabash cut) and *byte-identical* (everything else, `identity` and `formerIdentities` unchanged), counted in E50a's three outcomes (expect 8 unresolved by design, 0 resolved, the rest unchanged); the baseline check reads: equals the committed XML with the date removed by E50a's own function, differing only in the tempo direction(s), and Weary Blues re-zipped through the path that applies E50a's text normalisers; the seven repaired files' rows report what `formerIdentities` carries and that no alias names a dated file that never existed; `formerIdentities` never renews or un-stales a `parentSha256` and never enters `pdmx.json`; the base is origin's head with E50a merged, its sha stated, every pointer re-read there (`convert.py` has changed since 2026-09-16); the map re-run at that base. **The old identities relate to the repaired files** for contact, familiarity, project continuity and encounter/history lookup through E50a's learner-material relation, the seven old identities added explicitly to the repaired files' compatibility relation; the old run stays a run at its recorded tempo and context — never rewritten, re-scored, claimed at the corrected tempo, never renewing an approval, un-staling a `parentSha256`, entering `pdmx.json` or altering D2's exact-byte identity; a test shows the alias does not let old evidence satisfy a tempo-dependent standard, and if it does, stop and narrow the relation before landing.
+
+# 4. E50 — seven rows print their tempo
+
+**CONDITIONALLY APPROVE FOR DISPATCH after E50a lands and the brief receives the stated amendments.**
+
+The date-churn language must be removed as proposed. E50 then owns only genuine musical/file changes caused by reading the seven printed tempo marks plus the Wabash cut consequence and Weary Blues repair.
+
+## Old identity -> repaired identity
+
+**Yes: preserve learner-material continuity, with a strict semantic boundary.**
+
+These are the same pieces/editions corrected so the app follows the tempo already printed in their notation. A learner who previously opened or played one has still encountered that piece. Therefore the old identity may be related to the repaired identity for:
+
+- contact/familiarity;
+- project continuity;
+- encounter/history lookup;
+- “have I seen/played this material before?” semantics.
+
+But the old run remains a run at its **old recorded tempo/context**. The relation must not:
+
+- rewrite the historical run;
+- re-score it;
+- claim it was performed at the corrected tempo;
+- renew an excerpt approval;
+- un-stale `parentSha256`;
+- enter `pdmx.json` as provenance equivalence;
+- alter exact-byte D2/review identity.
+
+If E50a’s learner-material relation already has exactly that effect — same material lineage while historical evidence/context remain as stored — use it and explicitly add the seven old identities to the repaired files’ compatibility relation.
+
+If a test shows the alias causes old performance evidence to be reinterpreted as satisfying a new tempo-dependent standard, stop and narrow the relation before E50 lands. Do not solve continuity by falsifying historical performance truth.
+
+This is an explicitly reviewed semantic relation under the earlier condition; it does not require a separate architecture lane unless the existing relation cannot express it safely.

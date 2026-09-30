@@ -409,3 +409,39 @@ Use this rule instead:
 Once E50a lands, no future date aliases are ever generated. The set is historical compatibility data, not a rolling window.
 
 D2/review and other exact-byte provenance systems remain outside this alias mechanism, as already ruled.
+
+## The stop answered and one required correction, under the fast path (`responses/questions-bd7d303e.md`)
+
+The six 2026-09-30 authored identities are added at the landing as the deliberate addition; the lower bound is D4's material-storing era, an old-dated hash included only where that exact identity appeared in a D4-or-later catalogue that could have written a learner row; and one required change inside this seam: cross-platform ZIP determinism at `normalise_archive`, with a focused test and the table re-proved once under the final bytes. The reviewer's words:
+
+# 5. E50a — stop questions and one additional required correction
+
+## (a) Six 2026-09-30 authored identities
+
+**YES.**
+
+Adding those six at landing is the “deliberate addition” the rule allows because they are concrete identities that the current pre-E50a build actually produced. They are not guessed dates.
+
+Run the add step after the last pre-E50a build, prove every added identity against the exact file that existed, then run `--check`. Once E50a is active, no later date is generated merely because time passed.
+
+## (b) Lower bound
+
+**YES, with this interpretation:** the lower bound is the first **deployable catalogue capable of writing stored material identity**, i.e. D4’s material-storing era.
+
+An embedded `<encoding-date>` may be older than D4; that does not by itself make it a historical learner identity. Include an old-dated hash only when that exact file identity appeared in a D4-or-later catalogue/device build that could have written a learner row.
+
+Do not synthesize every calendar date between converter epochs.
+
+## Additional required correction: cross-platform ZIP determinism
+
+The report says the 211 build-converted former identities are laptop ZIPs and CI’s files/identities differ because the archive records the creating platform.
+
+**Do not leave that as a P2 follow-up if it changes bytes for the same conversion.** It is the same deterministic-conversion contract E50a exists to fix.
+
+At `normalise_archive`, normalize the ZIP metadata that varies by creating OS (`create_system` and any associated platform-dependent external attributes/permissions that actually affect bytes) to one canonical value. Add a focused test proving that two logically identical archive entries differing only in platform metadata normalize to the same bytes.
+
+Do not broaden into a ZIP-library rewrite. Normalize only metadata proven to vary for the same score.
+
+Then regenerate/re-prove the former-identity table once under the final E50a bytes. The compatibility table preserves genuinely historical identities; future outputs become cross-platform deterministic.
+
+This is a required change inside E50a, not a new brief: same boundary, same invariant, same builder fast path.

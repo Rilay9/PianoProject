@@ -87,3 +87,29 @@ At drafting the refuting condition holds for Maple Leaf (premises 1–3): the im
 After those: the table (item 2) in full; the fact list (item 1); the check's red and green lines; the mutants; exit codes; what is unverified beside what passes; `## Doc rows`. Technical and pedagogical verdicts apart; the pedagogical one: nothing taught changes.
 
 **Entry.** The number is Entry 173. Every run file goes under `docs/prompts/runs/X40/`, with the entry at `docs/prompts/runs/X40/ENTRY.md`.
+
+## Reviewer's approval and conditions (`responses/questions-bd7d303e.md`)
+
+Approved for dispatch 2026-09-30 as an evidence lane. The reviewer's words below govern wherever the brief's earlier text differs: no change to `tempoFromXml` or to file bytes in X40; the full table as a run artifact, the handoff showing every disagreement in full and summarising clean rows by counts; the test over the complete corpus, failing non-vacuously; the provisional product rule (a printed numeric metronome mark outranks a conflicting auxiliary sound tempo at the same position) tested against the corpus before any reader change, which is not X40's.
+
+# 3. X40 — which tempo is authoritative
+
+**APPROVE FOR DISPATCH AS AN EVIDENCE LANE.**
+
+The evidence question is real and correctly separated from E50/E50a. Do not change `tempoFromXml` or file bytes in X40.
+
+## Reporting efficiency
+
+Scan every MuseTrainer/kern file that the brief requires, but do not turn the handoff into hundreds of repeated prose rows.
+
+- Keep the machine-readable/full table as a run artifact.
+- In the reviewer handoff, show every disagreement/nontrivial case in full and summarize clean agreement/no-tempo rows by counts/categories.
+- The test still covers the complete corpus and must fail non-vacuously if expected files are absent.
+
+## Provisional product rule
+
+If the evidence remains exactly as described for Maple Leaf — an explicit **printed numeric metronome mark of quarter = 100** and a conflicting auxiliary `<sound tempo="120">` attached to the words *Tempo di Marcia* at the same score position — the learner-visible numeric metronome mark is the stronger authority for playback.
+
+Reason: the learner sees an explicit numerical instruction; an invisible conflicting playback hint should not silently override it. That is a product/notation truth, not a preference for one parser field.
+
+X40 should still test the corpus before turning that into a general reader change. If the corpus reveals legitimate cases where the first sound intentionally differs from a co-located printed mark, bring those cases back. No reader change belongs in X40 itself.

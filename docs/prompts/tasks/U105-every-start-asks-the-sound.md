@@ -85,3 +85,45 @@ No new spec is planned: the case lives in `score.screen.spec.ts`, which `docs/pr
 ## Report
 
 **Judgement first:** the refused summary at 342 × 740, what the learner reads and where, with *unverified on a device* and *unverified as copy* in the first lines; per control, what a refused tap does and which layer observed it; the `startFromKey` choice and why; the standing-refusal rule. **Then** Done / Not done / Follow-ups / Questions / Files; per fix the mechanism, the discriminating test and its red line; the tests table with each class (add, preserve, replace) and the old assumption; exit codes; the unverified beside what passes; `## Doc rows`. Technical and pedagogical verdicts separately (pedagogical: not applicable). Every run file goes under `docs/prompts/runs/U105/`. The entry is `docs/prompts/runs/U105/ENTRY.md`, starting `### Entry 172 — U105`, with the number the dispatch gives.
+
+## Reviewer's approval and conditions (`responses/questions-bd7d303e.md`)
+
+Approved for dispatch 2026-09-30 with one required design correction. The reviewer's words below govern wherever the brief's earlier text differs: a refused action leaves the control's whole action unapplied (tempo, hand, loop, summary dismissal); physical MIDI and the on-screen keyboard are different activation paths — a MIDI note with audio suspended refuses at once with no `resume()`, no silent run, no held note, and the sentence names ▶; an on-screen key is a UI activation and goes through the gate, with the first-note timing proved sane; the four separate tests the reviewer lists.
+
+# 2. U105 — every start asks the sound
+
+**APPROVE FOR DISPATCH WITH ONE REQUIRED DESIGN CORRECTION.**
+
+The core rule is right: a genuine user control that can begin audible playback must pass the same sound-start gate, and a refused action must leave the control’s whole action unapplied. That includes tempo changes, hand selection, loop changes, summary dismissal and other state that would otherwise be double-applied on retry.
+
+The control-specific refusal sentence remains the right copy shape. Avoid `Again again`; short visible control names are correct. One browser case on the common summary `Again` path plus exhaustive unit cases is sufficient.
+
+## Required correction: split physical MIDI from on-screen keys
+
+The brief currently lets one `startFromKey` decision cover both, but they are different browser events.
+
+### Physical MIDI note
+
+A Web MIDI note is **not** a browser user activation. If Web Audio is already running, preserve today’s immediate key-start behavior. If audio is suspended:
+
+- do **not** call `resume()` and pretend the MIDI note can authorize it;
+- do not start a silent run;
+- refuse immediately;
+- tell the learner to use a genuine UI activation, preferably the existing Play control (`Sound did not start — tap ▶`).
+
+Do not hold/replay that MIDI note later as though it were still current input.
+
+### On-screen piano key
+
+A touch/pointer activation on the on-screen keyboard **is** a UI activation and should use the audio-start gate rather than inherit the physical-MIDI refusal rule.
+
+Preserve the T8 product behavior that the keyboard can start the run. But prove that an asynchronous audio start does not feed a stale/back-dated first-note timestamp into the judging session. If routing it through `withSound` causes the original note event to become temporally stale, fix that at the screen-key/start boundary; do not silently queue an old note for up to the sound-start bound.
+
+Add separate tests for:
+
+- physical MIDI + audio running -> starts exactly as today;
+- physical MIDI + audio suspended -> refuses immediately, no run, actionable UI instruction;
+- on-screen key + audio suspended then successfully started -> run starts with sane first-note timing;
+- on-screen key + failed/never-started audio -> no silent run.
+
+Everything else in the brief may proceed.
