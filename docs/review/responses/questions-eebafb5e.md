@@ -2,7 +2,7 @@
 
 ## Overall
 
-The overnight work is coherent, but four landed seams need narrow fix-forwards before closure: G96, U105, L120d, U32 and E50 each have their own response with the exact boundary. T58 is approved to push. X40's evidence lane is approved to push with the product rulings recorded separately.
+The overnight work is coherent, but five landed seams need narrow fix-forwards before closure: G96, U105, L120d, U32 and E50 each have their own response with the exact boundary. T58 is approved to push. X40's evidence lane is approved to push with the product rulings recorded separately.
 
 The individual responses are authoritative for their seams:
 
