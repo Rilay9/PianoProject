@@ -272,11 +272,27 @@ const FROZEN_HEIGHT_HOLD = 0.8;
  * phone — and the height that is left over buys more systems rather than
  * bigger ones: four on the owner's phone, where two used 42 % of the stage
  * and left the rest black. Each slot is an engraver of its own, loaded with
- * the piece, so the count is bounded; and a piece longer than the probe's
- * cap keeps two, because loading a 780-bar score four times is seconds a
- * throttled phone does not have.
+ * the piece, so the count is bounded.
+ *
+ * **Every piece gets all of them; a long one gets them later (U32).** Each
+ * sheet is a whole-document load, and loading a 780-bar score four times
+ * before the first window is seconds a throttled phone does not have, so a
+ * piece longer than the probe's reach is drawn first from the two sheets
+ * `create` makes (`FIRST_PAINT_SHEETS`), and the rest are made after that
+ * first window, on idle, one load at a time (`scheduleSheet`). They used to be
+ * never made at all: a cost guard on the first paint had become a cap on the
+ * look-ahead, and upright a window laid over two systems had no third sheet
+ * for the greyed next row, with half the phone empty below it (T38).
  */
 const MAX_SLOTS = 4;
+
+/**
+ * The sheets a piece longer than the probe's reach is first drawn from, all
+ * `create` loads before the first window (U32). Two, because that window is
+ * priced before the piece is measured, and unmeasured the chooser asks for two
+ * slots at most (`chooseWindowShape`); sideways draws one and keeps a spare.
+ */
+const FIRST_PAINT_SHEETS = 2;
 
 /**
  * Between the two systems when they are packed (`08` §4.1).
@@ -748,6 +764,19 @@ export class WindowRenderer {
   private probeLoading = false;
   /** The probe's load in flight, so two callers share one rather than racing two. */
   private probeLoad: Promise<boolean> | null = null;
+  /** What `create` was given, so the sheets a long piece is owed are made as the first ones were (U32). */
+  private readonly sheetOptions: WindowRendererOptions;
+  /** The idle callback (or its timer) that makes and loads the next sheet a long piece is owed (U32). */
+  private sheetHandle: { kind: 'idle' | 'timer'; id: number } | null = null;
+  /**
+   * The sheet being loaded and its load, so a second caller shares it, and
+   * `dispose` can reach a sheet that is not in `buffers` yet: a sheet joins
+   * them only once it has loaded, so nothing is priced or drawn on a sheet
+   * that cannot draw (U32).
+   */
+  private sheetLoad: { buffer: Buffer; done: Promise<void> } | null = null;
+  /** A sheet that could not load: the renderer keeps the sheets it has and makes no more (U32). */
+  private sheetsRefused = false;
   /**
    * The most systems the *drawn* stave has proved readable, for one zoom and
    * one stage width; `chooseWindowShape` predicts the stave from the probe and
@@ -900,6 +929,7 @@ export class WindowRenderer {
       for (const note of step.notes) this.notesById.set(note.id, note);
     }
     this.buffers = buffers;
+    this.sheetOptions = options;
     this.layout = options.layout ?? 'window';
     this.barsPerWindow = clampBars(options.barsPerWindow ?? 2);
     this.shownBars = this.barsPerWindow;
@@ -968,28 +998,40 @@ export class WindowRenderer {
     }
   }
 
+  /**
+   * One sheet: its wrapper on the stage (before the probe's, so the stage's
+   * children stay in slot order) and an engraver with the options `create` was
+   * given. Not loaded: the caller loads it.
+   */
+  private static makeSheet(options: WindowRendererOptions, index: number, before: Element | null): Buffer {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'score-buffer';
+    wrapper.dataset.buffer = String(index);
+    options.container.insertBefore(wrapper, before);
+    const view = new OsmdView(wrapper, {
+      timingLabel: index === 0 ? 'osmd.render.front' : 'osmd.render.back',
+      ...(options.drawFingerings === undefined
+        ? {}
+        : { drawFingerings: options.drawFingerings }),
+      ...(options.drawMetronomeMarks === undefined
+        ? {}
+        : { drawMetronomeMarks: options.drawMetronomeMarks, drawFirstTempoExpression: options.drawMetronomeMarks }),
+      ...(options.drawLyrics === undefined ? {} : { drawLyrics: options.drawLyrics }),
+      ...(options.drawChordSymbols === undefined ? {} : { drawChordSymbols: options.drawChordSymbols }),
+    });
+    return { view, wrapper, range: null, elements: new Map() };
+  }
+
   static async create(options: WindowRendererOptions): Promise<WindowRenderer> {
     const buffers: Buffer[] = [];
-    const views = options.model.sourceMeasureCount > PROBE_MAX_BARS ? 2 : MAX_SLOTS;
+    // A long piece's first window waits for two whole-document loads, not four;
+    // the sheets past those are made after it (`scheduleSheet`, U32).
+    const views = options.model.sourceMeasureCount > PROBE_MAX_BARS ? FIRST_PAINT_SHEETS : MAX_SLOTS;
     for (let index = 0; index < views; index += 1) {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'score-buffer';
-      wrapper.dataset.buffer = String(index);
-      options.container.appendChild(wrapper);
-      const view = new OsmdView(wrapper, {
-        timingLabel: index === 0 ? 'osmd.render.front' : 'osmd.render.back',
-        ...(options.drawFingerings === undefined
-          ? {}
-          : { drawFingerings: options.drawFingerings }),
-        ...(options.drawMetronomeMarks === undefined
-          ? {}
-          : { drawMetronomeMarks: options.drawMetronomeMarks, drawFirstTempoExpression: options.drawMetronomeMarks }),
-        ...(options.drawLyrics === undefined ? {} : { drawLyrics: options.drawLyrics }),
-        ...(options.drawChordSymbols === undefined ? {} : { drawChordSymbols: options.drawChordSymbols }),
-      });
-      await view.load(options.musicXml);
-      view.zoom = options.zoom ?? 1;
-      buffers.push({ view, wrapper, range: null, elements: new Map() });
+      const buffer = WindowRenderer.makeSheet(options, index, null);
+      await buffer.view.load(options.musicXml);
+      buffer.view.zoom = options.zoom ?? 1;
+      buffers.push(buffer);
     }
     // The probe. Loaded like the slots, drawn only when the zoom changes, and
     // never visible: `.score-buffer` without `is-front` is `visibility:
@@ -1016,6 +1058,13 @@ export class WindowRenderer {
     // budget. Without a probe at all the Scherzo's run shrank 13 % and its
     // stave jumped 45 px at bar 16 — the corpus measured both — so the
     // measurement stays; the document is cut.
+    //
+    // **After the sheets the piece is owed (U32).** A long piece's first
+    // window is drawn from two sheets, and the ones past those load on idle
+    // before the probe does (`scheduleMeasure`): the measurement is what
+    // re-plans the window, so the sheets are there when it lands, and the
+    // learner sees one re-plan after the first paint rather than one for the
+    // measurement and another for the sheets.
     //
     // **A piece within the probe's reach is loaded here (U74).** Its four slots
     // have each just loaded the whole document, so this is one load more of
@@ -1693,6 +1742,8 @@ export class WindowRenderer {
     // Priced from the piece's measurement, taken now if it can be (U74).
     this.measureBeforePricing();
     const stage = this.measure(this.el);
+    // The sheets that exist and have loaded: a long piece's later ones count
+    // from the moment they join `buffers`, never before (U32).
     const mostSlots = Math.max(1, Math.min(this.buffers.length, arrangement === 'slots' ? MAX_SLOTS : 1));
     // **The piece's own measurement, never the held one**, and this is the
     // second time that distinction has decided a fault (`expectedSlotScale`
@@ -2356,6 +2407,15 @@ export class WindowRenderer {
       piece: this.pieceInkZoom === this.zoomLevel ? this.pieceInk : null,
       pieceInkZoom: this.pieceInkZoom,
       probeLoaded: this.probe?.isLoaded ?? false,
+      // The sheets rows are drawn into (U32): `made` counts one whose load is
+      // in flight, `loaded` the ones that can draw (`slots` below has one
+      // entry each), `pending` the ones still owed — in flight, queued, or
+      // waiting for a run to end.
+      sheets: {
+        made: this.buffers.length + (this.sheetLoad ? 1 : 0),
+        loaded: this.buffers.length,
+        pending: this.sheetsOwed(),
+      },
       frozen: this.frozen,
       readAhead: this.readAhead,
       slotCount: this.slotCount,
@@ -2526,6 +2586,13 @@ export class WindowRenderer {
     }
     this.cancelSettle();
     this.cancelSettledCheck();
+    // A sheet queued is never made; one being loaded is let go now, and its load
+    // lands on a renderer that is gone and touches nothing (`loadNextSheet`).
+    this.cancelSheet();
+    if (this.sheetLoad) {
+      this.sheetLoad.buffer.view.dispose();
+      this.sheetLoad.buffer.wrapper.remove();
+    }
     if (this.measureHandle !== null) {
       const w = window as Window & { cancelIdleCallback?: (id: number) => void };
       if (typeof w.cancelIdleCallback === 'function') w.cancelIdleCallback(this.measureHandle);
@@ -3027,6 +3094,9 @@ export class WindowRenderer {
       !this.fitting &&
       this.measureHandle === null &&
       !this.probeLoading &&
+      // A sheet queued or loading is a re-plan still to come (U32), as the probe is.
+      this.sheetHandle === null &&
+      this.sheetLoad === null &&
       (this.probe === null || this.pieceInkZoom === this.zoomLevel) &&
       this.freezeHandle === null
     );
@@ -3636,6 +3706,7 @@ export class WindowRenderer {
     }
     if (!this.frozen) {
       // Stopped before the freeze was taken: nothing is waiting on it now.
+      this.scheduleSheet();
       this.publishSettled();
       return;
     }
@@ -3655,6 +3726,8 @@ export class WindowRenderer {
     // for. `fitSlots` already gives the room back as a CSS scale, and the next
     // real change of the stage searches with no run to hold it.
     this.fitSlots();
+    // The sheets a long piece is owed, held back while the run was on (U32).
+    if (this.scheduleSheet()) this.publishSettled();
   }
 
   /**
@@ -3685,6 +3758,12 @@ export class WindowRenderer {
       // The measurement is asked for directly rather than left to idle —
       // a run is not idle — and applied by `fitSlots` when it lands, which
       // may re-plan the systems once, before the first note.
+      //
+      // **Not for the sheets a long piece is still owed (U32).** A run that
+      // starts before they land keeps the ones it has: waiting for them here
+      // would put whole-document loads under the learner's first notes, and
+      // this bound is for the measurement, not a load barrier on Play. They
+      // load once the run stops, and the next run has them.
       const unmeasured = this.probe !== null && this.pieceInkZoom !== this.zoomLevel;
       if (unmeasured && performance.now() - startedAt < FREEZE_WAIT_FOR_MEASURE_MS) {
         void this.measurePiece().then(() => {
@@ -3937,6 +4016,133 @@ export class WindowRenderer {
   }
 
   /**
+   * How many sheets the renderer still owes the piece (U32): `MAX_SLOTS` less
+   * the ones it has, a sheet being loaded counted as owed until it has loaded.
+   * Nothing once a sheet has refused to load, or once the renderer is gone.
+   */
+  private sheetsOwed(): number {
+    if (this.disposed || this.sheetsRefused) return 0;
+    return Math.max(0, MAX_SLOTS - this.buffers.length);
+  }
+
+  /**
+   * Queues the next sheet a long piece is owed for an idle moment, one
+   * whole-document load a callback (U32). True while a sheet is queued or
+   * loading, which is what holds the piece's measurement back
+   * (`scheduleMeasure`): the measurement re-plans the window, and the sheets
+   * are there when it does.
+   *
+   * **Every sheet up to `MAX_SLOTS`, not only as many as the shape on the glass
+   * uses.** The count a stepper press or a turn asks for can be any of them,
+   * and a sheet made only when asked puts a whole-document load, and a second
+   * re-plan, on that press. So a long piece ends with what a short one starts
+   * with, a little later.
+   */
+  private scheduleSheet(): boolean {
+    if (this.sheetsOwed() <= 0) return false;
+    if (this.sheetLoad !== null || this.sheetHandle !== null) return true;
+    // After the first window, never before it: the screen tells the renderer
+    // whether a run is on at every render (`setRunning`), and the first of
+    // those can come before the first `showStep`.
+    if (this.currentStep < 0) return false;
+    // **No sheet load starts once a run is on (U32, item 4h).** Each is a
+    // whole-document load, one long task of seconds on a throttled phone, and a
+    // key played while it runs is coloured only when it ends; a run keeps the
+    // arrangement it started with (`08` §9.6), so a sheet made during it could
+    // not be drawn before it ends anyway. The loads resume when the run stops
+    // (`setRunning`), and the measurement does not wait for them.
+    if (this.running) return false;
+    const w = window as Window & {
+      requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number;
+    };
+    let handle: { kind: 'idle' | 'timer'; id: number } | null = null;
+    const run = (): void => {
+      // Cancelled (`dispose`), or superseded by a later queueing.
+      if (this.sheetHandle !== handle) return;
+      this.sheetHandle = null;
+      if (this.disposed) return;
+      if (this.running) {
+        // A run started since it was queued: the loads resume when it stops.
+        this.publishSettled();
+        return;
+      }
+      void this.loadNextSheet().then(() => this.sheetLanded());
+    };
+    handle =
+      typeof w.requestIdleCallback === 'function'
+        ? { kind: 'idle', id: w.requestIdleCallback(run, { timeout: MEASURE_IDLE_TIMEOUT_MS }) }
+        : { kind: 'timer', id: window.setTimeout(run, MEASURE_IDLE_TIMEOUT_MS) };
+    this.sheetHandle = handle;
+    // A re-plan is still to come, so the fit is not settled (`fitSettled`).
+    delete this.el.dataset.settled;
+    return true;
+  }
+
+  private cancelSheet(): void {
+    const handle = this.sheetHandle;
+    if (handle === null) return;
+    this.sheetHandle = null;
+    if (handle.kind === 'timer') {
+      window.clearTimeout(handle.id);
+      return;
+    }
+    const w = window as Window & { cancelIdleCallback?: (id: number) => void };
+    w.cancelIdleCallback?.(handle.id);
+  }
+
+  /**
+   * Makes and loads one more sheet, and wires it in as `create` wires the first
+   * ones: its wrapper before the probe's, hidden until a plan draws it, its
+   * slot empty, engraved at the current zoom. It joins `buffers` only once it
+   * has loaded, so the chooser never prices a sheet that cannot draw. One load
+   * at a time: a second caller while one is in flight is handed that one.
+   */
+  private loadNextSheet(): Promise<void> {
+    if (this.sheetLoad) return this.sheetLoad.done;
+    if (this.sheetsOwed() <= 0) return Promise.resolve();
+    const index = this.buffers.length;
+    const buffer = WindowRenderer.makeSheet(this.sheetOptions, index, this.probe?.container ?? null);
+    const started = performance.now();
+    const done = (async (): Promise<void> => {
+      try {
+        await buffer.view.load(this.sheetOptions.musicXml);
+      } catch {
+        // A sheet that cannot load is not made; the renderer draws from the
+        // sheets it has, as it did before U32.
+        this.sheetLoad = null;
+        this.sheetsRefused = true;
+        buffer.view.dispose();
+        buffer.wrapper.remove();
+        return;
+      }
+      this.sheetLoad = null;
+      // Let go by `dispose` while it loaded: nothing of it is left to touch.
+      if (this.disposed) return;
+      recordRenderTiming('osmd.sheet.load', performance.now() - started);
+      buffer.view.zoom = this.zoomLevel;
+      this.buffers.push(buffer);
+      this.slotRanges.push(null);
+      this.updateSlotClasses();
+    })();
+    this.sheetLoad = { buffer, done };
+    return done;
+  }
+
+  /**
+   * A sheet has landed (or refused): queue the next, or, with none owed, go on
+   * to what the sheets were waiting for — the piece's measurement, and the one
+   * re-plan it brings. A piece already measured (a run's freeze asked for it)
+   * or with no probe to measure it is re-planned here.
+   */
+  private sheetLanded(): void {
+    if (this.disposed) return;
+    if (this.scheduleSheet()) return;
+    if (this.probe && this.pieceInkZoom !== this.zoomLevel) this.scheduleMeasure();
+    else this.fitSlots();
+    this.publishSettled();
+  }
+
+  /**
    * Measures the piece, a frame after it is first asked for.
    *
    * A frame after, because a full render of a long piece is hundreds of
@@ -3945,6 +4151,9 @@ export class WindowRenderer {
    * size change, downward, one frame after the first draw.
    */
   private scheduleMeasure(): void {
+    // The sheets a long piece is owed first (U32): the measurement is the
+    // re-plan, and a re-plan made before they land would be followed by another.
+    if (this.scheduleSheet()) return;
     if (!this.probe || this.pieceInkZoom === this.zoomLevel || this.measureHandle !== null) return;
     if (this.fitting || this.probeLoading) return;
     // Idle time, not the next frame: the pre-render of the next window is

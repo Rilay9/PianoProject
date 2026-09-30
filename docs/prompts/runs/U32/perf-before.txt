@@ -1,0 +1,44 @@
+U32_DIST=build/u32/dist-base config=playwright.u32-4473.config.ts args=perf.spec.ts --workers=1
+[WebServer] (node:85300) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:81428) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:84364) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+2-bar window render, CPU ×4: median 49.4 ms (57.0, 57.7, 46.0, 48.5, 49.4)
+  ok 1 tests\e2e\perf.spec.ts:58:3 › performance budgets (docs/01 §6) › a cold 2-bar window renders inside the first-render budget (6.0s)
+pre-rendered swap, CPU ×4: median 0.60 ms over 19 swaps (1.30, 0.70, 0.90, 0.60, 0.80, 1.20, 0.50, 0.40, 0.50, 0.20, 1.50, 0.20, 0.40, 0.60, 0.10, 0.50, 0.60, 1.00, 0.20)
+  ok 2 tests\e2e\perf.spec.ts:83:3 › performance budgets (docs/01 §6) › a pre-rendered window swap still fits in a frame when throttled (30.2s)
+longest score (780 bars), CPU ×4: first window in 26571 ms
+  ok 3 tests\e2e\perf.spec.ts:151:3 › performance budgets (docs/01 §6) › the longest score in the library opens on the Score screen (P19) (27.3s)
+render timings, CPU ×4: input.toColourn=8 mean 11.9 ms · max 16.2 msosmd.proben=2 mean 87.6 ms · max 141.7 msosmd.render.backn=1 mean 16.6 ms · max 16.6 msosmd.render.frontn=4 mean 17.6 ms · max 23.6 msosmd.render.proben=2 mean 87.3 ms · max 141.2 mssession.framen=44 mean 1.1 ms · max 27.5 mswindow.swapColdn=4 mean 34.9 ms · max 63.3 ms
+  ok 4 tests\e2e\perf.spec.ts:183:3 › performance budgets (docs/01 §6) › a played note is coloured within the input-to-colour budget (4.8s)
+Library · genre blues-boogie, CPU ×4: first row in 47.4 ms over 60 rows
+Library · genre chords-pop, CPU ×4: first row in 36.1 ms over 60 rows
+Library · genre classical, CPU ×4: first row in 34.7 ms over 60 rows
+Library · genre core, CPU ×4: first row in 26.5 ms over 60 rows
+Library · genre film-game, CPU ×4: first row in 14.0 ms over 7 rows
+Library · genre holiday, CPU ×4: first row in 21.5 ms over 41 rows
+Library · genre hymns-gospel, CPU ×4: first row in 17.3 ms over 32 rows
+Library · genre improv-compose, CPU ×4: first row in 25.5 ms over 60 rows
+Library · genre jam, CPU ×4: first row in 8.9 ms over 10 rows
+Library · genre jazz, CPU ×4: first row in 29.9 ms over 60 rows
+Library · genre latin, CPU ×4: first row in 27.2 ms over 60 rows
+Library · genre ragtime, CPU ×4: first row in 27.2 ms over 60 rows
+Library · genre rock-metal, CPU ×4: first row in 16.5 ms over 34 rows
+Library · genre technique, CPU ×4: first row in 24.5 ms over 60 rows
+Library · genre theory-ear, CPU ×4: first row in 22.3 ms over 60 rows
+Library · search "e", CPU ×4: first row in 34.8 ms over 60 rows
+Library · search "ma", CPU ×4: first row in 31.8 ms over 60 rows
+Library · search "maj", CPU ×4: first row in 26.5 ms over 60 rows
+Library · search "major", CPU ×4: first row in 78.7 ms over 60 rows
+Library · slowest: search "major" at 78.7 ms (gate 600 = the 2-bar first-render budget under ×4)
+  ok 5 tests\e2e\perf.spec.ts:334:3 › the two screens the catalog grew (T26) › the Library answers every genre filter, and the search box, inside the first-paint budget (3.3s)
+lesson · 0.4 (1 options) first option in 23.5 ms; classical.4.shelf (52 options, 52 rows drawn) in 61.6 ms, CPU ×4
+  ok 6 tests\e2e\perf.spec.ts:433:3 › the two screens the catalog grew (T26) › a lesson page with the most options is no slower to its first option than one with the fewest (1.9s)
+
+  6 passed (1.3m)
+exit=0

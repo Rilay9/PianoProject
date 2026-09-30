@@ -1,0 +1,108 @@
+U32_DIST=build/u32/dist-mutant-3 config=playwright.u32-4473.config.ts args=score.window-rule.spec.ts --grep phone-upright-342|phone-upright-390
+[WebServer] (node:72136) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:66512) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:87732) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:89488) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  2 tests\e2e\score.window-rule.spec.ts:655:3 › the window rule holds on phone-upright-390 (1.0m)
+  x  1 tests\e2e\score.window-rule.spec.ts:655:3 › the window rule holds on phone-upright-342 (1.0m)
+
+
+  1) tests\e2e\score.window-rule.spec.ts:655:3 › the window rule holds on phone-upright-342 ────────
+
+    Error: 1 faults ((a) 0, (b) 0, (c) 1, (d) 0, (e) 0, (f) 0):
+    phone-upright-342 nocturne-48 4 bars — (c) nothing ahead with room for it: 223 px free below (a row is 161), 24 px free right (a bar is 161) [2 systems on the stage, 2 of them the window, 4 bars shown, fit by width, staff 25.1, ink in 0/1/2/3]
+
+    no room ahead:
+    phone-upright-342 five-finger 2 bars — no room ahead: 51 px below < a 234 px row, 69 px right < a 308 px bar
+    phone-upright-342 twinkle 1 bars — no room ahead: 246 px below < a 289 px row, 5 px right < a 309 px bar
+    phone-upright-342 twinkle 2 bars — no room ahead: 11 px below < a 254 px row, 132 px right < a 269 px bar
+    phone-upright-342 twinkle 4 bars — no room ahead: 110 px below < a 204 px row, 53 px right < a 158 px bar
+    phone-upright-342 twinkle 8 bars — NOT BUILT, same-row look-ahead upright: 129 px free right, a bar is 106
+    phone-upright-342 nocturne-48 1 bars — no room ahead: 264 px below < a 328 px row, 5 px right < a 311 px bar
+    phone-upright-342 nocturne-48 2 bars — no room ahead: 150 px below < a 224 px row, 5 px right < a 318 px bar
+    phone-upright-342 nocturne-48 8 bars — no room ahead: 84 px below < a 152 px row, 5 px right < a 161 px bar
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "phone-upright-342 nocturne-48 4 bars — (c) nothing ahead with room for it: 223 px free below (a row is 161), 24 px free right (a bar is 161) [2 systems on the stage, 2 of them the window, 4 bars shown, fit by width, staff 25.1, ink in 0/1/2/3]",
+    + ]
+
+      739 |       faults,
+      740 |       `${String(faults.length)} faults (${groups.join(', ')}):\n${faults.join('\n')}\n\nno room ahead:\n${notes.join('\n')}`,
+    > 741 |     ).toEqual([]);
+          |       ^
+      742 |   });
+      743 | }
+      744 |
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ae90e835312da8da3\app\tests\e2e\score.window-rule.spec.ts:741:7
+
+    Error Context: test-results\score.window-rule-the-window-rule-holds-on-phone-upright-342\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\score.window-rule-the-window-rule-holds-on-phone-upright-342\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\score.window-rule-the-window-rule-holds-on-phone-upright-342\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\e2e\score.window-rule.spec.ts:655:3 › the window rule holds on phone-upright-390 ────────
+
+    Error: 1 faults ((a) 0, (b) 0, (c) 1, (d) 0, (e) 0, (f) 0):
+    phone-upright-390 nocturne-48 4 bars — (c) nothing ahead with room for it: 288 px free below (a row is 182), 26 px free right (a bar is 184) [2 systems on the stage, 2 of them the window, 4 bars shown, fit by width, staff 28.8, ink in 0/1/2/3]
+
+    no room ahead:
+    phone-upright-390 five-finger 2 bars — no room ahead: 100 px below < a 258 px row, 78 px right < a 353 px bar
+    phone-upright-390 twinkle 1 bars — no room ahead: 317 px below < a 322 px row, 5 px right < a 354 px bar
+    phone-upright-390 twinkle 2 bars — no room ahead: 17 px below < a 306 px row, 131 px right < a 334 px bar
+    phone-upright-390 twinkle 4 bars — no room ahead: 163 px below < a 226 px row, 60 px right < a 181 px bar
+    phone-upright-390 twinkle 8 bars — NOT BUILT, same-row look-ahead upright: 147 px free right, a bar is 122
+    phone-upright-390 nocturne-48 1 bars — no room ahead: 330 px below < a 373 px row, 5 px right < a 357 px bar
+    phone-upright-390 nocturne-48 2 bars — no room ahead: 205 px below < a 254 px row, 5 px right < a 364 px bar
+    phone-upright-390 nocturne-48 8 bars — no room ahead: 135 px below < a 173 px row, 5 px right < a 184 px bar
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "phone-upright-390 nocturne-48 4 bars — (c) nothing ahead with room for it: 288 px free below (a row is 182), 26 px free right (a bar is 184) [2 systems on the stage, 2 of them the window, 4 bars shown, fit by width, staff 28.8, ink in 0/1/2/3]",
+    + ]
+
+      739 |       faults,
+      740 |       `${String(faults.length)} faults (${groups.join(', ')}):\n${faults.join('\n')}\n\nno room ahead:\n${notes.join('\n')}`,
+    > 741 |     ).toEqual([]);
+          |       ^
+      742 |   });
+      743 | }
+      744 |
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ae90e835312da8da3\app\tests\e2e\score.window-rule.spec.ts:741:7
+
+    Error Context: test-results\score.window-rule-the-window-rule-holds-on-phone-upright-390\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\score.window-rule-the-window-rule-holds-on-phone-upright-390\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\score.window-rule-the-window-rule-holds-on-phone-upright-390\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests\e2e\score.window-rule.spec.ts:655:3 › the window rule holds on phone-upright-342 ─────────
+    tests\e2e\score.window-rule.spec.ts:655:3 › the window rule holds on phone-upright-390 ─────────
+exit=1

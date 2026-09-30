@@ -1,0 +1,16 @@
+U32_DIST=build/u32/dist-base config=playwright.states.u32-4473.config.ts args=
+
+Running 1 test using 1 worker
+
+
+states: 60 cells
+
+  new breakage: 2
+    1-can-i-read-it/theme--light
+        contrast: #score-waiting at 4.3:1
+        contrast: #score-help-more at 4.3:1
+    6-what-if-it-goes-wrong/rotation--bars1-real-phone
+        §9.35 music is 39% of the stage
+
+(the full log, 4000+ lines of the failing records, is not kept; the breakage list above is its head)
+exit=1

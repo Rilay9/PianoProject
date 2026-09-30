@@ -1,0 +1,16 @@
+U32_DIST=build/u32/dist-final config=playwright.states.u32-4473.config.ts args=
+
+Running 1 test using 1 worker
+
+
+states: 60 cells
+
+  new breakage: 2
+    1-can-i-read-it/theme--light
+        contrast: #score-waiting at 4.3:1
+        contrast: #score-help-more at 4.3:1
+    6-what-if-it-goes-wrong/rotation--bars1-real-phone
+        §9.35 music is 39% of the stage
+
+  build/states/index.html
+  x  1 tests\states\score.states.spec.ts:105:1 › every state, photographed and measured (4.0m)
