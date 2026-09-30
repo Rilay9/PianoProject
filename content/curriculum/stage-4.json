@@ -126,7 +126,7 @@
               ],
               "songOptions": [
                 "song.folk.bella-ciao",
-                "song.classical.beethoven-fur-elise.beginner",
+                "song.classical.beethoven-fur-elise.easy",
                 "song.folk.twinkle.f"
               ],
               "mastery": {
@@ -212,7 +212,7 @@
                 "exercise.arpeggio.e-minor.2oct.left"
               ],
               "songOptions": [
-                "song.classical.pachelbel-canon-d.easy",
+                "song.classical.schumann-melody-op-68-no-1.pdmx",
                 "song.folk.greensleeves",
                 "song.folk.greensleeves.chords"
               ],
@@ -290,7 +290,8 @@
               "concepts": [
                 "hanon",
                 "evenness",
-                "transposition"
+                "transposition",
+                "sixteenth-notes"
               ],
               "textFile": "lessons/4.4.md",
               "exerciseOptions": [
@@ -1006,7 +1007,8 @@
                 "charleston",
                 "four-to-the-bar",
                 "chord-symbols",
-                "triads"
+                "triads",
+                "syncopation"
               ],
               "textFile": "lessons/jazz.4.md",
               "exerciseOptions": [

@@ -17,8 +17,9 @@
     "skills, and holds their kind, opportunity, observable and standards: sight-reading,",
     "reading-ahead, bass-clef, ledger-lines, interval-reading, position-shift, subdivision,",
     "dotted-quarter, tie, syncopation, triplets, 6/8, key-signature, hands-together and",
-    "hand-independence. Their entries here keep the display name and the finder. `steps`, `skips`",
-    "and `eighth-notes` are demands in v0 (interval.step, interval.skip, rhythm.eighths), and",
+    "hand-independence. Their entries here keep the display name and the finder. `steps`, `skips`,",
+    "`eighth-notes` and `sixteenth-notes` (L120c) are demands in v0 (interval.step, interval.skip,",
+    "rhythm.eighths, rhythm.sixteenths), and",
     "`C-position` and `LH-C-position` are a range it measures (range.beyond-position absent): none",
     "is a v0 skill, and they stay here because lessons name them. Nothing else here is touched by v0."
   ],
@@ -3356,6 +3357,23 @@
         ],
         "avoid": [
           "contrary motion only"
+        ],
+        "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
+      }
+    },
+    {
+      "id": "sixteenth-notes",
+      "display": "Sixteenth notes",
+      "finder": {
+        "skill": "playing four even notes to the beat",
+        "levelWords": "moderate, Grade 2 to 3, up to advancing, Grade 4 to 5",
+        "constraints": [
+          "sixteenth notes in groups of four",
+          "a steady pulse"
+        ],
+        "avoid": [
+          "triplets",
+          "syncopation"
         ],
         "formats": "MusicXML or .mxl preferred; a PDF works but cannot be scored."
       }

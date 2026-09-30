@@ -1,0 +1,11 @@
+﻿L120C_PROBE_OUT=..\docs\prompts\runs\L120c\after-placement\probe npx vitest run --config .probe/vitest.l120c.config.ts
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-a29620447b01a1901/app
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  23:05:36
+   Duration  971ms (transform 74%, import 23%, tests 3%, worker 1%)
+
+exit=0

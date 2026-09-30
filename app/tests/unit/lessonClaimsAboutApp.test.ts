@@ -3125,10 +3125,13 @@ const T19_APP: [string, string, () => boolean][] = [
     'the duet opens a hands-together tune',
     () => t19FirstSong('2.1') === 'song.classical.ode-to-joy.ht',
   ],
+  // Revised (L120c item 8). Old assumption: the duet opens the easy Canon in D, 3.5's first song. The Canon's
+  // sixteenths (bars 37-44) need 4.4, which teaches them, so it left 3.5 (4.6 and 4.7 list it) and Schumann's
+  // Chorale took its place: four voices in half notes, the chord changes legato pedalling is about.
   [
     '3.5',
-    'the duet opens the easy Canon in D',
-    () => t19FirstSong('3.5') === 'song.classical.pachelbel-canon-d.easy',
+    'the duet opens Schumann’s Chorale from the Album for the Young',
+    () => t19FirstSong('3.5') === 'song.classical.schumann-schumann-album-for-the-young-op-68-no-4-a-hymn-tune-choral.pdmx',
   ],
   [
     '3.6',
@@ -3849,6 +3852,30 @@ const F0_APP: [string, string, () => boolean][] = [
         sentence !== '' &&
         !/\b(?:pace|tempo|slow|slower|fast|faster|gentle|gentler|quick|quicker|brisk)\b/i.test(sentence) &&
         text.includes('Beyond the five above there is Sugar Cane, a rag in the Maple Leaf mould.')
+      );
+    },
+  ],
+  [
+    // L120c (the reviewer's Question 3 on L120a): 4.4 teaches the Hanon page's sixteenths as four even notes to the
+    // quarter-note beat, "four even notes per metronome click". That holds only while Hanon 1-5 are written in 2/4
+    // and the Score screen's metronome clicks once per quarter-note beat: `prepareSession` counts beats in quarter
+    // notes (2/4 is two), and the session's metronome takes its tempo from that beat and its bar from that count.
+    // The page's own values (every note a sixteenth but the last, beamed in fours on the beat) are held by
+    // `tools/content/tests/test_sixteenths_owner.py` against the built files.
+    '4.4',
+    'Hanon 1 to 5 are in 2/4, and the metronome clicks once per quarter-note beat, so four sixteenths go to each click',
+    () => {
+      const hanon = [1, 2, 3, 4, 5].map((n) => item(`exercise.hanon.0${String(n)}.both`));
+      const session = source('score/ScoreSession.ts');
+      const prepare = source('engine/prepareSession.ts');
+      return (
+        hanon.every((row) => rung('4.4').exerciseOptions.includes(row.id)) &&
+        hanon.every((row) => ((row.notation as { times?: string[] } | undefined)?.times ?? []).join(',') === '2/4') &&
+        prepare.includes('const beatsPerBar = timeSig ? (timeSig.beats * 4) / timeSig.beatType : 4;') &&
+        prepare.includes('model.beatToMs(startBeat + 1, tempoScale) - model.beatToMs(startBeat, tempoScale)') &&
+        session.includes('bpm: prepared ? 60_000 / prepared.msPerBeat : 80,') &&
+        session.includes('beatsPerBar: prepared?.options.beatsPerBar ?? 4,') &&
+        f0Text('4.4').includes('four even notes per metronome click')
       );
     },
   ],

@@ -969,9 +969,9 @@ class TestPlacementReconciled(Built):
                 self.assertNotIn(item_id, lesson["exerciseOptions"] + lesson["songOptions"])
                 there = self.lessons[stays]
                 self.assertIn(item_id, there["exerciseOptions"] + there["songOptions"])
+        # Revised (L120c). Old assumption: sixteenths are taught at no rung (L101), so Hanon No. 1 was skipped here as
+        # untaught wherever it stood. 4.4 teaches them now, so Hanon at 4.4 is held to being taught like the rest.
         for (source, item_id), stays in self.MOVED.items():
-            if item_id == "exercise.hanon.01.both":
-                continue  # sixteenths are taught at no rung (L101): Hanon stays untaught wherever it is
             with self.subTest(taught=item_id, at=stays):
                 self.assertEqual(self.claims.untaught_on(self.by_id[item_id], stays, ancestry, demands), [])
 

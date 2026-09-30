@@ -300,7 +300,7 @@
               "songOptions": [
                 "song.classical.petzold-minuet-g-bwv-anh114",
                 "song.classical.petzold-minuet-g-bwv-anh114.alt",
-                "song.classical.beethoven-fur-elise.beginner"
+                "song.classical.beethoven-fur-elise.easy"
               ],
               "mastery": {
                 "minAccuracy": 0.85,
@@ -381,7 +381,7 @@
                 "exercise.pedal.f"
               ],
               "songOptions": [
-                "song.classical.pachelbel-canon-d.easy",
+                "song.classical.schumann-schumann-album-for-the-young-op-68-no-4-a-hymn-tune-choral.pdmx",
                 "song.folk.greensleeves.waltz",
                 "song.classical.ode-to-joy.full"
               ],
@@ -473,8 +473,7 @@
                 "exercise.tresillo.c"
               ],
               "songOptions": [
-                "song.folk.greensleeves.waltz",
-                "song.classical.pachelbel-canon-d.easy"
+                "song.folk.greensleeves.waltz"
               ],
               "mastery": {
                 "minAccuracy": 0.9,

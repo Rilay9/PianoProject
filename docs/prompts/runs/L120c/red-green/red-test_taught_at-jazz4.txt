@@ -1,0 +1,50 @@
+files at cd1429b3: content/curriculum/stage-4.json, content/curriculum/vocabulary/demands.json
+python -m unittest tests.test_taught_at.TestJazz4TeachesSyncopationOnItsOwnPath tests.test_taught_at.TestTheDerivation.test_the_rungs_whose_concepts_name_a_demand_one_per_path
+
+FFF
+======================================================================
+FAIL: test_jazz_4_claims_it_and_is_its_path_s_teaching_rung (tests.test_taught_at.TestJazz4TeachesSyncopationOnItsOwnPath.test_jazz_4_claims_it_and_is_its_path_s_teaching_rung)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a29620447b01a1901\tools\content\tests\test_taught_at.py", line 687, in test_jazz_4_claims_it_and_is_its_path_s_teaching_rung
+    self.assertIn("syncopation", self.lessons["jazz.4"]["concepts"])
+AssertionError: 'syncopation' not found in ['swing-eighths', 'comping', 'charleston', 'four-to-the-bar', 'chord-symbols', 'triads']
+
+======================================================================
+FAIL: test_taught_at_jazz_4_and_the_core_s_first_rung_unmoved (tests.test_taught_at.TestJazz4TeachesSyncopationOnItsOwnPath.test_taught_at_jazz_4_and_the_core_s_first_rung_unmoved)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a29620447b01a1901\tools\content\tests\test_taught_at.py", line 694, in test_taught_at_jazz_4_and_the_core_s_first_rung_unmoved
+    self.assertEqual(self.untaught("jazz.4"), [], "jazz.4 teaches it")
+AssertionError: Lists differ: ['rhythm.syncopation'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'rhythm.syncopation'
+
+- ['rhythm.syncopation']
++ [] : jazz.4 teaches it
+
+======================================================================
+FAIL: test_the_rungs_whose_concepts_name_a_demand_one_per_path (tests.test_taught_at.TestTheDerivation.test_the_rungs_whose_concepts_name_a_demand_one_per_path)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-a29620447b01a1901\tools\content\tests\test_taught_at.py", line 193, in test_the_rungs_whose_concepts_name_a_demand_one_per_path
+    self.assertEqual(derived["rhythm.syncopation"], ["latin.3", "4.5", "jazz.4"])
+AssertionError: Lists differ: ['latin.3', '4.5'] != ['latin.3', '4.5', 'jazz.4']
+
+Second list contains 1 additional elements.
+First extra element 2:
+'jazz.4'
+
+- ['latin.3', '4.5']
++ ['latin.3', '4.5', 'jazz.4']
+?                  ++++++++++
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.037s
+
+FAILED (failures=3)
+
+exit=1
