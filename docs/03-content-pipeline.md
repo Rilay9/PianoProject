@@ -920,7 +920,11 @@ and nothing here touches one.
   the cut marked, played from two bars before the cut to two after, the boundaries moved a bar at a
   time and re-scored from the proposer's own table, and a decision — approve, adjust and approve,
   reject with a reason — exported and merged by `python tools/content/excerpts.py --merge <file>`,
-  idempotently by event id (a range approved twice is refused with the row named). For the PDMX
+  idempotently by event id (a range approved twice is refused with the row named). A rejection of
+  an approved range withdraws the approval, current or stale, so the build stops cutting it; both
+  decisions are kept, the approval whole in the file's `superseded` list with the rejection as the
+  event that replaced it, the rejection in `rejected` with its reason, and a later approval of the
+  range, with its own event, is a new decision (E54, Entry 174). For the PDMX
   workflow this is the step after `commit.py` and before the build (`tools/content/pdmx/README.md`).
 - **Unplaced.** An approved excerpt is in the Library and on no rung. `python
   tools/content/excerpts.py --candidate-rungs` writes, from a built catalogue, the rungs whose taught
