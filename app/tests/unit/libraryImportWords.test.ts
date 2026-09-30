@@ -12,6 +12,8 @@
  *   through the real screen — and the row's `Assign` opens the same sheet; a plain score whose staves
  *   and signature are the file's files quietly, as the assign sheet's rule has always had it.
  * - **E45**: the rock-module frame leaves the two sentences it survived in.
+ * - **A PDF's Details says what its provenance holds** (G96a): an estimated level, never one the app
+ *   guessed from the music (it reads no notes from a PDF), and the type *PDF*, never *song*.
  */
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -73,7 +75,7 @@ vi.mock('../../src/score/estimateImport', () => ({
 }));
 
 const { LibraryScreen } = await import('../../src/ui/screens/LibraryScreen');
-const { addImport, importToCatalogItem, forgetConversionsForTest } = await import('../../src/data/importStore');
+const { addImport, importToCatalogItem, forgetConversionsForTest, updateImport } = await import('../../src/data/importStore');
 const { importSourceWords, importStateWords, IMPORT_TEXT } = await import('../../src/ui/help');
 
 const FIXTURES = join(process.cwd(), 'tests', 'fixtures', 'imports');
@@ -242,5 +244,69 @@ describe('the catalogue row carries what the state line reads', () => {
     const item = importToCatalogItem(stored);
     expect(importSourceWords(item)).toBe('converted from MIDI');
     expect(importStateWords(item)).toBe('measured · tempo guessed');
+  });
+});
+
+// G96a, the reviewer's required change on G96 (`docs/review/responses/48bfc167.md`): a PDF's Details said
+// *The app guessed this level from the music itself — change it if it feels wrong.* and *Type: song*. The
+// app reads no notes from a PDF and never estimates its level (`estimateLevelFor` runs on MusicXML only):
+// its `≈ L5.0` is the import's default, marked estimated (`importToCatalogItem`), and `song` is the type
+// every import's catalogue row carries. The rows here come through the real store and catalogue path.
+describe('a PDF’s Details says what its provenance holds: an estimated level and a PDF (G96a)', () => {
+  const GUESSED = 'The app guessed this level from the music itself — change it if it feels wrong.';
+  const ESTIMATED = 'Estimated level — change it if it feels wrong.';
+  const pdfFile = (): File => fakeFile('two-systems.pdf', new Uint8Array(readFileSync(join(FIXTURES, 'two-systems.pdf'))));
+
+  /** The Details sheet of the row with this id, opened by the row's own button, as a learner opens it. */
+  async function detailsOf(section: HTMLElement, id: string): Promise<HTMLElement> {
+    const row = await vi.waitFor(() => {
+      const found = section.querySelector(`[data-item="${id}"]`);
+      expect(found).not.toBeNull();
+      return found as HTMLElement;
+    });
+    ([...row.querySelectorAll('button')].find((button) => button.textContent === 'Details') as HTMLButtonElement).click();
+    return document.getElementById('library-detail') as HTMLElement;
+  }
+  /** The value beside one term of the sheet's facts. */
+  const fact = (sheet: HTMLElement, term: string): string | null | undefined =>
+    [...sheet.querySelectorAll('dt')].find((one) => one.textContent === term)?.nextElementSibling?.textContent;
+
+  /** A PDF imported through the Library's picker, and its Details. */
+  async function pdfDetails(): Promise<HTMLElement> {
+    const section = await mount();
+    pick(section, [pdfFile()]);
+    return detailsOf(section, 'import.two-systems');
+  }
+
+  it('a PDF with no level: the level is estimated, never guessed from the music', async () => {
+    const sheet = await pdfDetails();
+    expect(fact(sheet, 'Level')).toBe('≈ L5.0');
+    expect(sheet.textContent).not.toContain('The app guessed this level');
+    expect(sheet.textContent).toContain(ESTIMATED);
+  });
+
+  it('a PDF: its type reads PDF, never song', async () => {
+    const sheet = await pdfDetails();
+    expect(fact(sheet, 'Type')).toBe('PDF');
+  });
+
+  it('where the app did estimate from the notes the sentence stays; a PDF level the learner judged says neither', async () => {
+    const scored = await addImport(fakeFile('test-tune.musicxml', readFileSync(join(FIXTURES, 'test-tune.musicxml'), 'utf8')));
+    // What the import sheet saves when the learner keeps the estimate (`assignSheet`): the estimator's
+    // number, read from the notes, marked estimated.
+    await updateImport(scored.id, { level: 2.4, levelSource: 'estimated' });
+    const pdf = await addImport(pdfFile());
+    await updateImport(pdf.id, { level: 4, levelSource: 'judged' });
+    const section = await mount();
+
+    const estimated = await detailsOf(section, scored.id);
+    expect(estimated.textContent).toContain(GUESSED);
+    expect(estimated.textContent).not.toContain(ESTIMATED);
+    (document.getElementById('library-detail-close') as HTMLButtonElement).click();
+    expect(document.getElementById('library-detail')).toBeNull();
+
+    const judged = await detailsOf(section, pdf.id);
+    expect(fact(judged, 'Level')).toBe('L4.0');
+    expect(judged.textContent).not.toContain('change it if it feels wrong');
   });
 });
