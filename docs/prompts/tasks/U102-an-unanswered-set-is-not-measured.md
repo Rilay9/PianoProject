@@ -168,7 +168,7 @@ Tests:
      - (i) *End drill* at once, then *Count this set*. The payload (`lastRecord`) has accuracy `not measured`, `answered` 0, and `missed` equal to N, read off the screen. Red on the committed code: accuracy 0.
      - (j) A loud-and-soft set that runs out with nothing played records itself with the same shape (U96's second probe case).
    - **The stored reading:**
-     - (k) A new unanswered row → not measured.
+     - (k) A new unanswered row → not measured. **Proof-dependent, on the reviewer's word (`responses/questions-ecccffb7.md`):** this row reads *not measured* only if the builder proves, for every historical note-flash writer, that `missed === total` can occur only when zero cards were answered; if the proof fails or is incomplete, the expected result is the legacy measured/ambiguous 0 %, not *Not measured* — the same compatibility rule, not a new requirement.
      - A legacy row (accuracy 0, `wrongNotes` 0, `missed` 10, mode `drill:note-flash`, no `answered`) → not measured.
      - A legacy measured failure (accuracy 0, `wrongNotes` 3) → measured, 0.
      - A backing-track, checklist, placement or walkthrough row → not judged.
