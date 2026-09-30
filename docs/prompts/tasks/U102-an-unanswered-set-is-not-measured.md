@@ -131,7 +131,7 @@ Tests:
      - `drillOutcomeOf`, which shares the live predicate with its behaviour unchanged.
      - `recordRun`'s best is left as it is: it already skips `not measured`.
 
-4. **U104's rhythm undercount, at the same write.** The row, as the orchestrator drafted it: *"After U96a: a rhythm record undercounts misses (`missed = max(0, total − answered)` with extra taps inside `answered`: one missed onset stored as missed 0, wrongNotes 3) — U102's lane; the coaching line* Fast, but N% right … speed built on guessing *appears on a set of skips (mean reaction 0) and on rhythm, whose `meanReactionMs` is the offset from the beat; Simon's* Accuracy 8% *beside its Answered row though `04` §5c says Simon is not scored on accuracy; the keys under the Simon sheet read C1/C2 … — U102 takes the rhythm record"*.
+4. **U104's rhythm undercount, at the same write — only if it is truly the same write boundary, with its own adversary showing extra taps do not erase missed onsets; never a general rhythm-scoring rewrite** (the reviewer's guard, `responses/questions-bbd7f99a.md`). The row, as the orchestrator drafted it: *"After U96a: a rhythm record undercounts misses (`missed = max(0, total − answered)` with extra taps inside `answered`: one missed onset stored as missed 0, wrongNotes 3) — U102's lane; the coaching line* Fast, but N% right … speed built on guessing *appears on a set of skips (mean reaction 0) and on rhythm, whose `meanReactionMs` is the offset from the beat; Simon's* Accuracy 8% *beside its Answered row though `04` §5c says Simon is not scored on accuracy; the keys under the Simon sheet read C1/C2 … — U102 takes the rhythm record"*.
    - **The mechanism.** The rhythm model's `answered` is hits plus extra taps (special.ts:177), and its `answers` are its onsets (:166–171). So `missed = max(0, total − answered)` stores 0 for eight onsets with six hit and four extra taps.
    - **Decided for a rhythm row:**
      - `missed` is the onsets not hit, `total − correct`;
@@ -142,16 +142,11 @@ Tests:
      - Simon's `missed` once retried attempts pass the cap; record it if you find it wrong.
      - U104's other items: the coaching line on skips and on rhythm, Simon's accuracy line, and the C1/C2 keys.
 
-5. **Rows already stored with 0: tolerance, not migration.**
-   - **Why not a migration.** It would rewrite the one store that cannot be regenerated (`keep()`'s own comment, :2596–2601). It would also need an upgrade: db.ts:900–912 gives the precedent against rewriting rows inside one.
-   - **Why the tolerance is exact.** For every judged kind `keep()` writes:
-     - the model's accuracy is 0 only when `correct` is 0, or when nothing was answered (PromptDrill :141, harmony :531, rhythm :179, pedal :323, dynamics :464–466, Simon :611–615);
-     - `wrongNotes` is `max(0, answered − correct)` (:2627).
-
-     So on a drill row of a judging kind, `accuracy === 0` and `wrongNotes === 0` hold together only when `answered === 0`.
-   - **The legacy reading.** The stored reading takes a row without `answered`, a mode `drill:<kind>` whose kind is not in `UNJUDGED_DRILL_KINDS`, `accuracy === 0` and `wrongNotes === 0` as *nothing answered*. Anything else reads as it does today.
-   - **Check its history.** Run `git log -S` on `keep()`'s `wrongNotes` expression and on its accuracy line, confirm that every earlier writer of drill rows used the same arithmetic, and state the scope. Where one did not, narrow the tolerance to the rows it can read exactly, and say which.
-   - **Backups.** A backup restores rows whole (backup.ts:298–303), so a restored old row is read by the same rule.
+5. **Rows already stored with 0: the reviewer's compatibility order, never a two-field inference** (`responses/questions-bbd7f99a.md`: *absence of wrong notes is not proof of absence of answers*; the first draft's rule — accuracy 0 with wrong notes 0 means nothing was answered — is withdrawn).
+   - **Why not a migration.** It would rewrite the one store that cannot be regenerated (`keep()`'s own comment, :2596–2601) and would need an upgrade (db.ts:900–912 is the precedent against rewriting rows inside one).
+   - **The order, in the one reader every consumer imports:** (1) a row with `answered` is authoritative: `answered === 0` reads *not measured*, otherwise measured; (2) an old row with a field that directly records attempts or the answered count (say which field, verified at the writer's history with `git log -S`) reads from that field; (3) an old row of a drill kind with an invariant that *provably* distinguishes zero attempts — proved at the kind's writer for every version of it that ever wrote rows, the proof in the entry — may read from that narrow kind-specific invariant; (4) otherwise the old `0%` stays as it is, legacy ambiguity, never rewritten and never reinterpreted as *not measured*. Where no safe discriminator exists for a kind, the old row is tolerated as-is and truth is fixed going forward.
+   - **Adversaries for the reader:** a new row `answered: 0` → not measured; a new row `answered: 3, accuracy: 0` → measured 0 %; an old row with no `answered`, accuracy 0 and `wrongNotes` 0 of a kind with no proven invariant → still 0 % (the withdrawn rule must not fire); an old row of a kind with a proven invariant → the invariant's reading, with the proof cited in the test's comment.
+   - **Backups.** A backup restores rows whole (backup.ts:298–303), so a restored old row is read by the same order.
 
 6. **Progress's words.** A drill row with nothing answered gets `HISTORY_TEXT.notMeasured`: *Not measured* (help.ts:415). That is T40's word, and the sheet's heading since U96.
    - *Not judged* stays for a kind that judges nothing.
