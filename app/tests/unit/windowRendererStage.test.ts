@@ -670,11 +670,12 @@ describe('the measurement taken before the first window is priced (U74)', () => 
  * `create` made two sheets for a piece over `PROBE_MAX_BARS` and four for any other, because every
  * sheet it makes is a whole-document load the first window waits for; so upright a window laid over
  * two systems had no third sheet for the greyed next row, whatever room was left below it (T38, the
- * phone-upright Nocturne). The first window is still drawn from the two sheets `create` makes; the
- * rest are made on idle after it, one load a callback, before the piece is measured, so the
- * measurement and the new sheets land as the one re-plan a long piece already had (U74). No sheet
- * load starts while a run is on: a run started before they land keeps the sheets it has, and they
- * arrive once it stops (the brief's item 4h, taken on item 3's measurement).
+ * phone-upright Nocturne). The first window is still drawn from the two sheets `create` makes; once
+ * the piece is measured, the sheets its settled shape needs past those are made on idle, one load a
+ * callback (U32a: U32 made every sheet up to `MAX_SLOTS`, before the measurement; the reviewer's
+ * required change in `responses/2f67b047.md` prices the need first). No sheet load starts while a
+ * run is on: a run started before they land keeps the sheets it has, and they arrive once it stops
+ * (the brief's item 4h, taken on item 3's measurement).
  *
  * The stage and the bars are chosen so that two bars asked take two systems and leave a row's room
  * below at the window's scale: a short piece with these bars draws the next bar greyed there.
@@ -773,15 +774,17 @@ describe('a piece past the probe’s reach keeps its look-ahead row: sheets by n
     }
   });
 
-  it('(b) after the first window, on idle, the long piece gets its sheets, and the next bar is greyed below a two-system window', async () => {
+  it('(b) after the first window, on idle, the long piece gets the sheet its shape needs, and the next bar is greyed below a two-system window', async () => {
     const { stage, renderer } = await opened(60);
     expect(sheetsOf().length, 'the first window is drawn from the two sheets create made').toBe(2);
     await settle();
     const fit = fitOf(renderer);
     const said = JSON.stringify({ slotCount: fit.slotCount, systems: fit.systemsPerWindow, shown: fit.barsShown, sheets: fit.sheets, made: sheetsOf().length });
-    expect(sheetsOf().length, `the sheets made after the first window: ${said}`).toBe(4);
-    expect(sheetsOf().map((view) => view.loads), 'each sheet loaded once').toEqual([1, 1, 1, 1]);
-    expect(fit.sheets, 'debugFit says what was made, loaded and pending').toEqual({ made: 4, loaded: 4, pending: 0 });
+    // Revised for U32a (class: revise). U32 asserted four: every sheet up to `MAX_SLOTS`, whether
+    // or not the shape drew from it. Two systems and the greyed row below them are three sheets.
+    expect(sheetsOf().length, `the sheets made after the first window: ${said}`).toBe(3);
+    expect(sheetsOf().map((view) => view.loads), 'each sheet loaded once').toEqual([1, 1, 1]);
+    expect(fit.sheets, 'debugFit says what was made, loaded and pending').toEqual({ made: 3, loaded: 3, pending: 0 });
     expect(fit.systemsPerWindow, said).toBe(2);
     expect(fit.slotCount, `one sheet more than the window's systems: ${said}`).toBe(fit.systemsPerWindow + 1);
     expect(drawn(stage, renderer).rows, said).toEqual(['0-0', '1-1', '2-2']);
@@ -833,12 +836,15 @@ describe('a piece past the probe’s reach keeps its look-ahead row: sheets by n
     await settle();
     const fit = fitOf(eager.renderer);
     expect(FakeOsmdView.all.length, 'engravers made while the run was on').toBe(before);
-    expect(fit.sheets, 'the run keeps the two sheets it started with, the rest still owed').toEqual({ made: 2, loaded: 2, pending: 2 });
+    // Revised for U32a (class: revise). U32 said two more were owed (every sheet up to
+    // `MAX_SLOTS`); the need is priced from the measurement while no run is on, and this run took
+    // the measurement itself, so nothing has been priced as owed until it stops.
+    expect(fit.sheets, 'the run keeps the two sheets it started with').toEqual({ made: 2, loaded: 2, pending: 0 });
     expect(fit.slotCount, 'the arrangement a renderer with two sheets draws').toBe(2);
     expect(eager.stage.el.dataset.settled, 'a frozen run with sheets owed is settled: nothing can change its shape').toBe('true');
     eager.renderer.setRunning(false);
     await settle();
-    expect(fitOf(eager.renderer).sheets, 'the loads resumed when the run stopped').toEqual({ made: 4, loaded: 4, pending: 0 });
+    expect(fitOf(eager.renderer).sheets, 'the load the shape needs came when the run stopped').toEqual({ made: 3, loaded: 3, pending: 0 });
     eager.renderer.showStep(0);
     await settle();
     expect(fitOf(eager.renderer).slotCount, 'back at the start, the next bar has its row').toBe(3);
@@ -884,6 +890,239 @@ describe('a piece past the probe’s reach keeps its look-ahead row: sheets by n
     expect(FakeOsmdView.all.length, 'engravers made after create').toBe(made);
     expect(sheetsOf().map((view) => view.loads)).toEqual([1, 1, 1, 1]);
     expect(FakeOsmdView.all.find((view) => view.label === 'osmd.render.probe')?.loads, 'the probe, loaded in create').toBe(1);
+    expect(fitOf(renderer).sheets, 'nothing owed: a short piece has every sheet from create').toEqual({ made: 4, loaded: 4, pending: 0 });
+    renderer.dispose();
+  });
+});
+
+/**
+ * The sheets a long piece is given are the ones its settled shape needs (U32a, Entry 180; the
+ * reviewer's required change, `responses/2f67b047.md`).
+ *
+ * U32 made every sheet up to `MAX_SLOTS` for a piece past the probe's reach, whatever the window
+ * drew from; each is a whole-document engraver, held for as long as the page lives, and the Play
+ * press took longer for them. Now the piece is measured first, the shape is priced with more
+ * sheets than exist (`priceWindowShape`, which has no effect on the renderer), and only the sheets
+ * that shape needs are made — later, after any stopped-state re-price that needs one, never while
+ * a run is on. The chooser itself is unchanged: a long piece is priced as a short one is.
+ *
+ * The bars: every bar the same natural width but the fifth and sixth, which are wider, as the
+ * Nocturne's are, so a window reaching them on a phone upright is drawn smaller than one that
+ * stops before them. On this stage four bars asked are two rows with the next two greyed below;
+ * eight asked are six on three rows, smaller, with nothing below — U32's Bars-8 pictures, and the
+ * chooser's answer for a short piece too.
+ */
+describe('a long piece gets the sheets its settled shape needs (U32a)', () => {
+  type View = InstanceType<typeof FakeOsmdView>;
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+  function piece(bars: number): ScoreModel {
+    return makeModel(
+      Array.from({ length: bars * 4 }, (_, index) => ({ onset: index, notes: [note({ midi: 60 + (index % 12) })] })),
+      { handsPresent: { R: true, L: true } },
+    );
+  }
+  interface Fit {
+    slotCount: number;
+    systemsPerWindow: number;
+    barsShown: number;
+    frozen: { scale: number } | null;
+    sheets?: { made: number; loaded: number; pending: number };
+  }
+  const fitOf = (renderer: WindowRenderer): Fit => renderer.debugFit() as Fit;
+  const sheetsOf = (): View[] => FakeOsmdView.all.filter((view) => view.label !== 'osmd.render.probe');
+  function fresh(): void {
+    FakeOsmdView.all = [];
+    document.body.replaceChildren();
+    observers.length = 0;
+    frames.clear();
+    idle.length = 0;
+  }
+  /** Bars 4 and 5 (the fifth and sixth) wider than the rest. */
+  const WIDE = { width: 342, height: 500, bars: (n: number): number[] => Array.from({ length: n }, (_, i) => (i === 4 || i === 5 ? 26 : 20)) };
+  /** Every bar alike; two bars asked take two systems with a row's room below. */
+  const EVEN = { width: 342, height: 600, bars: (n: number): number[] => Array.from({ length: n }, () => 30) };
+  /** The same bars on a shorter stage: two bars asked fill it, four take three rows. */
+  const SHORT_STAGE = { ...EVEN, height: 500 };
+  async function opened(
+    kind: { width: number; height: number; bars: (n: number) => number[] },
+    bars: number,
+    asked: number,
+  ): Promise<{ stage: Stage; renderer: WindowRenderer }> {
+    FakeOsmdView.bars = kind.bars(bars);
+    const stage = stageOf(kind.width, kind.height);
+    const renderer = await WindowRenderer.create({ container: stage.el, model: piece(bars), musicXml: '<score-partwise/>', barsPerWindow: asked });
+    renderer.showStep(0);
+    renderer.fitToStage();
+    return { stage, renderer };
+  }
+  const shapeOf = (stage: Stage, renderer: WindowRenderer): unknown => {
+    const fit = fitOf(renderer);
+    return {
+      slotCount: fit.slotCount,
+      systems: fit.systemsPerWindow,
+      shown: fit.barsShown,
+      why: stage.el.dataset.windowWhy ?? null,
+      rows: drawn(stage, renderer).rows,
+    };
+  };
+  /** The same bars as a piece of 48 or fewer, settled: what the long piece should draw. */
+  async function shortPieceShape(kind: typeof WIDE, asked: number): Promise<unknown> {
+    const { stage, renderer } = await opened(kind, 12, asked);
+    await settle();
+    const shape = shapeOf(stage, renderer);
+    renderer.dispose();
+    fresh();
+    return shape;
+  }
+
+  it('(h) Bars 4: the long piece makes the one sheet its two rows and greyed next row need, not every sheet a stage can hold', async () => {
+    const want = await shortPieceShape(WIDE, 4);
+    const { stage, renderer } = await opened(WIDE, 60, 4);
+    await settle();
+    const said = JSON.stringify({ shape: shapeOf(stage, renderer), sheets: fitOf(renderer).sheets });
+    expect(shapeOf(stage, renderer), `the short piece with the same bars draws ${JSON.stringify(want)}: ${said}`).toEqual(want);
+    expect(fitOf(renderer).slotCount, said).toBe(3);
+    expect(sheetsOf().length, `sheets made: ${said}`).toBe(3);
+    expect(fitOf(renderer).sheets, said).toEqual({ made: 3, loaded: 3, pending: 0 });
+    expect(stage.el.dataset.settled, said).toBe('true');
+    renderer.dispose();
+  });
+
+  it('(i) Bars 8: the long piece is priced as the short one is, and makes the sheets that shape draws from and no more', async () => {
+    const want = await shortPieceShape(WIDE, 8);
+    expect(want, 'the short piece: six of eight on three rows, nothing below, the floor said').toEqual({
+      slotCount: 3,
+      systems: 3,
+      shown: 6,
+      why: 'floor',
+      rows: ['0-1', '2-3', '4-5'],
+    });
+    const { stage, renderer } = await opened(WIDE, 60, 8);
+    await settle();
+    const said = JSON.stringify({ shape: shapeOf(stage, renderer), sheets: fitOf(renderer).sheets });
+    expect(shapeOf(stage, renderer), `the same chooser for the long piece: ${said}`).toEqual(want);
+    expect(fitOf(renderer).sheets, `the sheets that shape needs: ${said}`).toEqual({ made: 3, loaded: 3, pending: 0 });
+    renderer.dispose();
+  });
+
+  it('(j) a stopped-state change of the count that needs one more sheet loads it then, and re-plans before the next run', async () => {
+    const { stage, renderer } = await opened(EVEN, 60, 2);
+    await settle();
+    expect(fitOf(renderer).sheets, 'two bars: two rows and the greyed next row').toEqual({ made: 3, loaded: 3, pending: 0 });
+    const before = sheetsOf().length;
+    renderer.setBarsPerWindow(4);
+    // Drawn at once from the sheets there are; the sheet the new shape needs is still to come.
+    expect(sheetsOf().length, 'no load in the task of the press').toBe(before);
+    expect(fitOf(renderer).sheets?.pending, 'the new shape owes a sheet').toBe(1);
+    expect(stage.el.dataset.settled, 'not settled with a sheet owed').toBeUndefined();
+    await settle();
+    const said = JSON.stringify({ shape: shapeOf(stage, renderer), sheets: fitOf(renderer).sheets });
+    expect(fitOf(renderer).sheets, said).toEqual({ made: 4, loaded: 4, pending: 0 });
+    expect(fitOf(renderer).slotCount, `four rows once it landed: ${said}`).toBe(4);
+    expect(stage.el.dataset.settled, said).toBe('true');
+    renderer.dispose();
+  });
+
+  it('(k) no sheet load starts while a run is on, not even for a count changed during it; the need is met once it stops', async () => {
+    const { stage, renderer } = await opened(EVEN, 60, 2);
+    // The measurement lands on idle and its re-plan queues the sheet the shape needs.
+    for (let i = 0; i < 20 && (fitOf(renderer).sheets?.pending ?? 0) === 0; i += 1) {
+      flushFrames();
+      if (idle.length > 0) idle.shift()?.();
+      await tick();
+    }
+    expect(fitOf(renderer).sheets, 'measured, and the sheet the shape needs queued, not made').toEqual({ made: 2, loaded: 2, pending: 1 });
+    const made = FakeOsmdView.all.length;
+    const loads = (): number => FakeOsmdView.all.reduce((sum, view) => sum + view.loads, 0);
+    const loadsBefore = loads();
+    renderer.setRunning(true);
+    for (let i = 0; i < 40 && fitOf(renderer).frozen === null; i += 1) {
+      await tick(100);
+      flushFrames();
+      flushIdle();
+    }
+    expect(fitOf(renderer).frozen, 'the run froze').not.toBeNull();
+    renderer.setBarsPerWindow(4);
+    await settle();
+    expect(FakeOsmdView.all.length, 'engravers made while the run was on').toBe(made);
+    expect(loads(), 'loads while the run was on').toBe(loadsBefore);
+    expect(fitOf(renderer).slotCount, 'the run keeps the arrangement it froze with the sheets it had').toBe(2);
+    renderer.setRunning(false);
+    await settle();
+    const said = JSON.stringify({ shape: shapeOf(stage, renderer), sheets: fitOf(renderer).sheets });
+    expect(fitOf(renderer).sheets, `four bars asked, stopped: ${said}`).toEqual({ made: 4, loaded: 4, pending: 0 });
+    renderer.dispose();
+  });
+
+  it('(l) every stopped-state re-price that needs another sheet loads it, not only a change of count: a Size step, and a taller stage', async () => {
+    // A Size step down: two bars fill this stage at 100 %, and at 70 % leave a row's room below.
+    {
+      const { stage, renderer } = await opened(SHORT_STAGE, 60, 2);
+      await settle();
+      expect(fitOf(renderer).sheets, 'at 100 % the two sheets create made are all the shape uses').toEqual({ made: 2, loaded: 2, pending: 0 });
+      expect(fitOf(renderer).slotCount).toBe(2);
+      renderer.setZoom(0.7);
+      await settle();
+      const said = JSON.stringify({ shape: shapeOf(stage, renderer), sheets: fitOf(renderer).sheets });
+      expect(fitOf(renderer).sheets, `after the Size step: ${said}`).toEqual({ made: 3, loaded: 3, pending: 0 });
+      expect(fitOf(renderer).slotCount, `two rows and the greyed next row: ${said}`).toBe(3);
+      expect(stage.el.dataset.settled, said).toBe('true');
+      renderer.dispose();
+      fresh();
+    }
+    // A taller stage (a turn, a bar folding away): four bars go from three rows to four.
+    {
+      const { stage, renderer } = await opened(SHORT_STAGE, 60, 4);
+      await settle();
+      expect(fitOf(renderer).sheets, 'three rows on the shorter stage').toEqual({ made: 3, loaded: 3, pending: 0 });
+      stage.box = { width: stage.box.width, height: stage.box.height + 60 };
+      observe();
+      await settle();
+      const said = JSON.stringify({ shape: shapeOf(stage, renderer), sheets: fitOf(renderer).sheets });
+      expect(fitOf(renderer).sheets, `on the taller stage: ${said}`).toEqual({ made: 4, loaded: 4, pending: 0 });
+      expect(fitOf(renderer).slotCount, `four rows: ${said}`).toBe(4);
+      renderer.dispose();
+    }
+  });
+
+  it('(m) a run on a taller stage than the one at rest: the first keeps what it has, and the sheet its shape needs is made once it stops, for the next', async () => {
+    const { stage, renderer } = await opened(SHORT_STAGE, 60, 2);
+    await settle();
+    expect(fitOf(renderer).sheets, 'at rest two bars fill the stage: two sheets').toEqual({ made: 2, loaded: 2, pending: 0 });
+    const made = (): number => FakeOsmdView.all.length;
+    /** A run starts, and the stage takes the room the chrome gives up while it plays. */
+    async function play(): Promise<void> {
+      renderer.setRunning(true);
+      stage.box = { width: stage.box.width, height: 600 };
+      observe();
+      for (let i = 0; i < 40 && fitOf(renderer).frozen === null; i += 1) {
+        await tick(100);
+        flushFrames();
+        flushIdle();
+      }
+      expect(fitOf(renderer).frozen, 'the run froze').not.toBeNull();
+      await settle();
+    }
+    async function stop(): Promise<void> {
+      renderer.setRunning(false);
+      stage.box = { width: stage.box.width, height: 500 };
+      observe();
+      await settle();
+    }
+    const before = made();
+    await play();
+    expect(made(), 'engravers made during the first run').toBe(before);
+    expect(fitOf(renderer).slotCount, 'the first run plays with the two sheets it had').toBe(2);
+    await stop();
+    const said = JSON.stringify({ shape: shapeOf(stage, renderer), sheets: fitOf(renderer).sheets });
+    expect(fitOf(renderer).sheets, `the sheet the run's shape needs, made once it stopped: ${said}`).toEqual({ made: 3, loaded: 3, pending: 0 });
+    expect(fitOf(renderer).slotCount, `at rest the shape is unchanged: ${said}`).toBe(2);
+    const between = made();
+    await play();
+    expect(made(), 'engravers made during the second run').toBe(between);
+    expect(fitOf(renderer).slotCount, 'the second run has the greyed next row').toBe(3);
     renderer.dispose();
   });
 });

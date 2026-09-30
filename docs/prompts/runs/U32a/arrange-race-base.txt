@@ -1,0 +1,42 @@
+
+Running 1 test using 1 worker
+
+  x  1 tests\e2e\score.arrange-race.spec.ts:172:1 › a run started at once is arranged the same as one started after the measurement (44.8s)
+
+
+  1) tests\e2e\score.arrange-race.spec.ts:172:1 › a run started at once is arranged the same as one started after the measurement 
+
+    Error: the same piece was arranged two different ways depending on how fast Play was tapped:
+    song.classical.chopin-scherzo-2.nifc: 2 slots (2 systems, 4 bars) on 4 sheets at scale 0.799 when started at once, 3 slots (2 systems, 4 bars, a greyed next row) on 4 sheets at scale 0.799 when started after everything landed
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "song.classical.chopin-scherzo-2.nifc: 2 slots (2 systems, 4 bars) on 4 sheets at scale 0.799 when started at once, 3 slots (2 systems, 4 bars, a greyed next row) on 4 sheets at scale 0.799 when started after everything landed",
+    + ]
+
+      219 |     differ,
+      220 |     `the same piece was arranged two different ways depending on how fast Play was tapped:\n${differ.join('\n')}`,
+    > 221 |   ).toEqual([]);
+          |     ^
+      222 | });
+      223 |
+        at C:\Users\yalir\repos\Piano Stuff\PianoProject\.claude\worktrees\agent-ac01cdc63c9797105\app\tests\e2e\score.arrange-race.spec.ts:221:5
+
+    Error Context: test-results\score.arrange-race-a-run-s-8fdf9-arted-after-the-measurement\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\score.arrange-race-a-run-s-8fdf9-arted-after-the-measurement\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\score.arrange-race-a-run-s-8fdf9-arted-after-the-measurement\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\e2e\score.arrange-race.spec.ts:172:1 › a run started at once is arranged the same as one started after the measurement 
+exit=1

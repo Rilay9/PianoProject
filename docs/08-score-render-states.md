@@ -193,8 +193,10 @@ a different engraving.)
 1. A **probe** engraves the whole score into a third `OsmdView` that is never shown, on idle a
    frame after the first paint, capped at the first 48 bars. *(Eagerly, it doubled the longest
    score's open time — 108 s against a 60 s budget under a fourfold throttle.)* For a piece past
-   those 48 bars the idle load waits for the sheets past its first two (U32, §4.1), so the
-   measurement's re-plan is the only one after the first paint.
+   those 48 bars the idle load comes before any sheet past its first two: the measurement is
+   what prices how many the settled shape needs (U32a, §4.1), so its re-plan brings the window
+   to its settled size, and a sheet that shape is short of follows in a second re-plan that adds
+   the greyed row below it.
 2. Elements are bucketed to their nearest **system** by y; a system's extent is how far its ink
    reaches above the top stave line, the staves' own span, and how far below.
 3. The fit targets the **upper quartile** of those extents, not the maximum. One freak bar — two
@@ -404,12 +406,20 @@ first, looking ahead second, the bar count third*, and the arrangement follows t
   window-rule spec parses is kept in both.
 - Exactly one slot holds the cursor and **is never re-drawn while it does**. Each slot is an
   engraver loaded with the piece, so a piece longer than the probe's cap is first drawn from
-  two, and the other two are made after its first window, on idle, one whole-document load at
-  a time, before the probe loads (U32): the sheets and the measurement land as the one re-plan
-  after the first paint. No sheet load starts while a run is on — a key played during one is
-  coloured only when it ends — so a run started before they land keeps the two it has, and
-  the next run has all four. It used to keep two for good: a first-paint cost guard that had
-  become a cap on the look-ahead row (T38's phone-upright Nocturne). The
+  two; once the probe has measured it, the shape is priced as if every sheet a stage can hold
+  existed (`priceWindowShape`, which touches nothing) and only the sheets that shape needs are
+  made, on idle, one whole-document load at a time (U32a; U32 made all four, before the probe,
+  and a two-system window held two engravers it never drew from). The measurement's re-plan
+  draws what the sheets there are can draw; a sheet it is short of — the greyed next row —
+  lands in a second re-plan that adds the row below a window already at its size. Any fit
+  or step taken while stopped prices the need again, so a change of count, Size, stage or
+  start bar that needs another sheet queues it before the next run — priced on the stage at
+  rest and on the taller stage the last run was played on, where a run's shape is
+  re-planned before its first note. No sheet load starts while a run is on — a key played
+  during one is coloured only when it ends — so a run started before they land keeps the
+  sheets it has, the first run on a stage taller than the one at rest among them. It used to keep two for good: a
+  first-paint cost guard that had become a cap on the look-ahead row (T38's phone-upright
+  Nocturne). The
   shape is chosen at the first fit and held for a run, like the scale, and it may only
   change a bounded number of times for one zoom, stage and asked count — two answers that
   disagree are an engraving loop, and an engraving loop is a browser that stops.
@@ -872,8 +882,8 @@ Numbered for citation. Each is falsifiable; most are already testable.
    There the next bar arrives when the window turns, and the size is what was bought with it.
    Since T34 the look-ahead row is lost only when one more row does not fit at the window's
    own scale (priced at the piece's tallest system), or when every sheet is in use
-   (`MAX_SLOTS`). A piece past the probe's 48 bars has two sheets until the other two load
-   after its first window (U32, §4.1), and a run started before they land keeps its two for
+   (`MAX_SLOTS`). A piece past the probe's 48 bars has two sheets until the ones its settled
+   shape needs load after it is measured (U32a, §4.1), and a run started before they land keeps its two for
    the run: the frozen arrangement outranks the look-ahead once play has begun (the
    reviewer's order for U32: no distortion, the frozen run, the look-ahead, the count). The window's
    size is never reduced to make room for it. Readability first, looking ahead second — the

@@ -1,0 +1,204 @@
+
+ RUN  v5.0.0 C:/Users/yalir/repos/Piano Stuff/PianoProject/.claude/worktrees/agent-ac01cdc63c9797105/app
+
+ ❯ tests/unit/windowRendererStage.test.ts (27 tests | 8 failed) 2454ms
+   ❯ a piece past the probe’s reach keeps its look-ahead row: sheets by need (U32) (7)
+     × (b) after the first window, on idle, the long piece gets the sheet its shape needs, and the next bar is greyed below a two-system window 50ms
+     × (e) a run started before the idle queue runs keeps the sheets it started with: none is made during the run, and the rest arrive once it stops 304ms
+   ❯ a long piece gets the sheets its settled shape needs (U32a) (6)
+     × (h) Bars 4: the long piece makes the one sheet its two rows and greyed next row need, not every sheet a stage can hold 79ms
+     × (i) Bars 8: the long piece is priced as the short one is, and makes the sheets that shape draws from and no more 95ms
+     × (j) a stopped-state change of the count that needs one more sheet loads it then, and re-plans before the next run 32ms
+     × (k) no sheet load starts while a run is on, not even for a count changed during it; the need is met once it stops 9ms
+     × (l) every stopped-state re-price that needs another sheet loads it, not only a change of count: a Size step, and a taller stage 37ms
+     × (m) a run on a taller stage than the one at rest: the first keeps what it has, and the sheet its shape needs is made once it stops, for the next 46ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > a piece past the probe’s reach keeps its look-ahead row: sheets by need (U32) > (b) after the first window, on idle, the long piece gets the sheet its shape needs, and the next bar is greyed below a two-system window
+AssertionError: the sheets made after the first window: {"slotCount":3,"systems":2,"shown":2,"sheets":{"made":4,"loaded":4,"pending":0},"made":4}: expected 4 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 4
+
+ ❯ tests/unit/windowRendererStage.test.ts:785:82
+    783|     // Revised for U32a (class: revise). U32 asserted four: every shee…
+    784|     // or not the shape drew from it. Two systems and the greyed row b…
+    785|     expect(sheetsOf().length, `the sheets made after the first window:…
+       |                                                                                  ^
+    786|     expect(sheetsOf().map((view) => view.loads), 'each sheet loaded on…
+    787|     expect(fit.sheets, 'debugFit says what was made, loaded and pendin…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > a piece past the probe’s reach keeps its look-ahead row: sheets by need (U32) > (e) a run started before the idle queue runs keeps the sheets it started with: none is made during the run, and the rest arrive once it stops
+AssertionError: the load the shape needs came when the run stopped: expected { made: 4, loaded: 4, pending: +0 } to deeply equal { made: 3, loaded: 3, pending: +0 }
+
+- Expected
++ Received
+
+  {
+-   "loaded": 3,
+-   "made": 3,
++   "loaded": 4,
++   "made": 4,
+    "pending": 0,
+  }
+
+ ❯ tests/unit/windowRendererStage.test.ts:847:96
+    845|     eager.renderer.setRunning(false);
+    846|     await settle();
+    847|     expect(fitOf(eager.renderer).sheets, 'the load the shape needs cam…
+       |                                                                                                ^
+    848|     eager.renderer.showStep(0);
+    849|     await settle();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > a long piece gets the sheets its settled shape needs (U32a) > (h) Bars 4: the long piece makes the one sheet its two rows and greyed next row need, not every sheet a stage can hold
+AssertionError: sheets made: {"shape":{"slotCount":3,"systems":2,"shown":4,"why":null,"rows":["0-1","2-3","4-5"]},"sheets":{"made":4,"loaded":4,"pending":0}}: expected 4 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 4
+
+ ❯ tests/unit/windowRendererStage.test.ts:987:55
+    985|     expect(shapeOf(stage, renderer), `the short piece with the same ba…
+    986|     expect(fitOf(renderer).slotCount, said).toBe(3);
+    987|     expect(sheetsOf().length, `sheets made: ${said}`).toBe(3);
+       |                                                       ^
+    988|     expect(fitOf(renderer).sheets, said).toEqual({ made: 3, loaded: 3,…
+    989|     expect(stage.el.dataset.settled, said).toBe('true');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > a long piece gets the sheets its settled shape needs (U32a) > (i) Bars 8: the long piece is priced as the short one is, and makes the sheets that shape draws from and no more
+AssertionError: the sheets that shape needs: {"shape":{"slotCount":3,"systems":3,"shown":6,"why":"floor","rows":["0-1","2-3","4-5"]},"sheets":{"made":4,"loaded":4,"pending":0}}: expected { made: 4, loaded: 4, pending: +0 } to deeply equal { made: 3, loaded: 3, pending: +0 }
+
+- Expected
++ Received
+
+  {
+-   "loaded": 3,
+-   "made": 3,
++   "loaded": 4,
++   "made": 4,
+    "pending": 0,
+  }
+
+ ❯ tests/unit/windowRendererStage.test.ts:1006:76
+    1004|     const said = JSON.stringify({ shape: shapeOf(stage, renderer), she…
+    1005|     expect(shapeOf(stage, renderer), `the same chooser for the long pi…
+    1006|     expect(fitOf(renderer).sheets, `the sheets that shape needs: ${sai…
+       |                                                                            ^
+    1007|     renderer.dispose();
+    1008|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > a long piece gets the sheets its settled shape needs (U32a) > (j) a stopped-state change of the count that needs one more sheet loads it then, and re-plans before the next run
+AssertionError: two bars: two rows and the greyed next row: expected { made: 4, loaded: 4, pending: +0 } to deeply equal { made: 3, loaded: 3, pending: +0 }
+
+- Expected
++ Received
+
+  {
+-   "loaded": 3,
+-   "made": 3,
++   "loaded": 4,
++   "made": 4,
+    "pending": 0,
+  }
+
+ ❯ tests/unit/windowRendererStage.test.ts:1013:82
+    1011|     const { stage, renderer } = await opened(EVEN, 60, 2);
+    1012|     await settle();
+    1013|     expect(fitOf(renderer).sheets, 'two bars: two rows and the greyed …
+       |                                                                                  ^
+    1014|     const before = sheetsOf().length;
+    1015|     renderer.setBarsPerWindow(4);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > a long piece gets the sheets its settled shape needs (U32a) > (k) no sheet load starts while a run is on, not even for a count changed during it; the need is met once it stops
+AssertionError: measured, and the sheet the shape needs queued, not made: expected { made: 2, loaded: 2, pending: 2 } to deeply equal { made: 2, loaded: 2, pending: 1 }
+
+- Expected
++ Received
+
+  {
+    "loaded": 2,
+    "made": 2,
+-   "pending": 1,
++   "pending": 2,
+  }
+
+ ❯ tests/unit/windowRendererStage.test.ts:1036:96
+    1034|       await tick();
+    1035|     }
+    1036|     expect(fitOf(renderer).sheets, 'measured, and the sheet the shape …
+       |                                                                                                ^
+    1037|     const made = FakeOsmdView.all.length;
+    1038|     const loads = (): number => FakeOsmdView.all.reduce((sum, view) =>…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > a long piece gets the sheets its settled shape needs (U32a) > (l) every stopped-state re-price that needs another sheet loads it, not only a change of count: a Size step, and a taller stage
+AssertionError: at 100 % the two sheets create made are all the shape uses: expected { made: 4, loaded: 4, pending: +0 } to deeply equal { made: 2, loaded: 2, pending: +0 }
+
+- Expected
++ Received
+
+  {
+-   "loaded": 2,
+-   "made": 2,
++   "loaded": 4,
++   "made": 4,
+    "pending": 0,
+  }
+
+ ❯ tests/unit/windowRendererStage.test.ts:1064:100
+    1062|       const { stage, renderer } = await opened(SHORT_STAGE, 60, 2);
+    1063|       await settle();
+    1064|       expect(fitOf(renderer).sheets, 'at 100 % the two sheets create m…
+       |                                                                                                    ^
+    1065|       expect(fitOf(renderer).slotCount).toBe(2);
+    1066|       renderer.setZoom(0.7);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > a long piece gets the sheets its settled shape needs (U32a) > (m) a run on a taller stage than the one at rest: the first keeps what it has, and the sheet its shape needs is made once it stops, for the next
+AssertionError: at rest two bars fill the stage: two sheets: expected { made: 4, loaded: 4, pending: +0 } to deeply equal { made: 2, loaded: 2, pending: +0 }
+
+- Expected
++ Received
+
+  {
+-   "loaded": 2,
+-   "made": 2,
++   "loaded": 4,
++   "made": 4,
+    "pending": 0,
+  }
+
+ ❯ tests/unit/windowRendererStage.test.ts:1093:83
+    1091|     const { stage, renderer } = await opened(SHORT_STAGE, 60, 2);
+    1092|     await settle();
+    1093|     expect(fitOf(renderer).sheets, 'at rest two bars fill the stage: t…
+       |                                                                                   ^
+    1094|     const made = (): number => FakeOsmdView.all.length;
+    1095|     /** A run starts, and the stage takes the room the chrome gives up…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  8 failed | 19 passed (27)
+   Start at  11:13:59
+   Duration  3.63s (tests 70%, environment 21%, transform 7%, import 1%)
+

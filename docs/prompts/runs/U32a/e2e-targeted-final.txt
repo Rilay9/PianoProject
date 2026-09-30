@@ -1,0 +1,52 @@
+
+Running 21 tests using 2 workers
+
+2-bar window render, CPU ×4: median 19.9 ms (18.7, 17.6, 30.6, 19.9, 46.8)
+  ok  2 tests\e2e\perf.spec.ts:58:3 › performance budgets (docs/01 §6) › a cold 2-bar window renders inside the first-render budget (4.8s)
+pre-rendered swap, CPU ×4: median 0.30 ms over 19 swaps (1.70, 0.20, 0.10, 0.50, 0.70, 0.30, 0.30, 0.70, 0.90, 0.30, 0.10, 0.50, 0.10, 0.10, 0.20, 0.10, 0.60, 0.20, 0.10)
+  ok  1 tests\e2e\perf.spec.ts:83:3 › performance budgets (docs/01 §6) › a pre-rendered window swap still fits in a frame when throttled (29.3s)
+longest score (780 bars), CPU ×4: first window in 26013 ms
+render timings, CPU ×4: input.toColourn=10 mean 13.8 ms · max 29.3 msosmd.proben=2 mean 148.0 ms · max 223.4 msosmd.render.backn=1 mean 8.8 ms · max 8.8 msosmd.render.frontn=4 mean 30.3 ms · max 54.7 msosmd.render.proben=2 mean 147.5 ms · max 222.7 mssession.framen=52 mean 1.1 ms · max 13.4 mswindow.swapColdn=4 mean 48.1 ms · max 84.2 ms
+  ok  4 tests\e2e\perf.spec.ts:183:3 › performance budgets (docs/01 §6) › a played note is coloured within the input-to-colour budget (6.1s)
+  ok  3 tests\e2e\perf.spec.ts:151:3 › performance budgets (docs/01 §6) › the longest score in the library opens on the Score screen (P19) (31.8s)
+Library · genre blues-boogie, CPU ×4: first row in 38.8 ms over 60 rows
+Library · genre chords-pop, CPU ×4: first row in 65.4 ms over 60 rows
+Library · genre classical, CPU ×4: first row in 27.3 ms over 60 rows
+Library · genre core, CPU ×4: first row in 110.5 ms over 60 rows
+Library · genre film-game, CPU ×4: first row in 5.0 ms over 7 rows
+Library · genre holiday, CPU ×4: first row in 12.9 ms over 41 rows
+Library · genre hymns-gospel, CPU ×4: first row in 6.2 ms over 32 rows
+Library · genre improv-compose, CPU ×4: first row in 55.5 ms over 60 rows
+Library · genre jam, CPU ×4: first row in 3.7 ms over 10 rows
+Library · genre jazz, CPU ×4: first row in 24.5 ms over 60 rows
+Library · genre latin, CPU ×4: first row in 17.0 ms over 60 rows
+Library · genre ragtime, CPU ×4: first row in 10.7 ms over 60 rows
+Library · genre rock-metal, CPU ×4: first row in 17.0 ms over 34 rows
+Library · genre technique, CPU ×4: first row in 25.1 ms over 60 rows
+lesson · 0.4 (1 options) first option in 17.3 ms; classical.4.shelf (52 options, 52 rows drawn) in 125.8 ms, CPU ×4
+  ok  6 tests\e2e\perf.spec.ts:433:3 › the two screens the catalog grew (T26) › a lesson page with the most options is no slower to its first option than one with the fewest (4.0s)
+Library · genre theory-ear, CPU ×4: first row in 45.8 ms over 60 rows
+Library · search "e", CPU ×4: first row in 36.5 ms over 60 rows
+Library · search "ma", CPU ×4: first row in 73.9 ms over 60 rows
+Library · search "maj", CPU ×4: first row in 39.9 ms over 60 rows
+Library · search "major", CPU ×4: first row in 51.2 ms over 60 rows
+Library · slowest: genre core at 110.5 ms (gate 600 = the 2-bar first-render budget under ×4)
+  ok  5 tests\e2e\perf.spec.ts:334:3 › the two screens the catalog grew (T26) › the Library answers every genre filter, and the search box, inside the first-paint budget (6.1s)
+  ok  8 tests\e2e\score.fill.spec.ts:92:1 › and a piece being played uses the stage too (44.2s)
+  ok  7 tests\e2e\score.arrange-race.spec.ts:172:1 › a run started at once is arranged the same as one started after the measurement (56.7s)
+  ok  9 tests\e2e\score.fill.spec.ts:178:3 › every corpus piece uses the stage, upright (46.1s)
+  ok 10 tests\e2e\score.fill.spec.ts:178:3 › every corpus piece uses the stage, sideways (44.1s)
+  ok 11 tests\e2e\score.window-rule.spec.ts:661:3 › the window rule holds on phone-upright-342 (1.3m)
+  ok 12 tests\e2e\score.window-rule.spec.ts:661:3 › the window rule holds on phone-upright-390 (1.3m)
+  ok 13 tests\e2e\score.window-rule.spec.ts:661:3 › the window rule holds on phone-sideways (1.2m)
+  ok 14 tests\e2e\score.window-rule.spec.ts:661:3 › the window rule holds on tablet-upright (1.2m)
+  ok 16 tests\e2e\score.window-rule.spec.ts:763:1 › a pass through one bar leaves the tablet sideways window as a fresh page draws it (7.3s)
+  ok 17 tests\e2e\score.window-rule.spec.ts:802:3 › the greyed next row does not size the window at 390 x 844 (4.0s)
+  ok 18 tests\e2e\score.window-rule.spec.ts:802:3 › the greyed next row does not size the window at 360 x 780 (3.5s)
+  ok 19 tests\e2e\score.window-rule.spec.ts:835:1 › mid-run, every bar on a phone upright Nocturne window is drawn at its natural spacing (29.9s)
+  ok 15 tests\e2e\score.window-rule.spec.ts:661:3 › the window rule holds on tablet-sideways (1.0m)
+  ok 21 tests\e2e\score.window-rule.spec.ts:952:1 › mid-run on a phone sideways, the folded chrome leaves the music on the stage (9.0s)
+  ok 20 tests\e2e\score.window-rule.spec.ts:907:1 › the window never shrinks as the stage widens across the look-ahead breakpoint (22.4s)
+
+  21 passed (6.0m)
+exit=0

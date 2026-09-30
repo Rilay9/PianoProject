@@ -1,0 +1,14 @@
+
+Running 8 tests using 1 worker
+
+  ok 1 tests\e2e\zz-u32a-heap.spec.ts:27:5 › u32a heap base nocturne:342x740:4 1 (6.9s)
+  ok 2 tests\e2e\zz-u32a-heap.spec.ts:27:5 › u32a heap base nocturne:342x740:4 2 (7.0s)
+  ok 3 tests\e2e\zz-u32a-heap.spec.ts:27:5 › u32a heap base nocturne:342x740:8 1 (7.3s)
+  ok 4 tests\e2e\zz-u32a-heap.spec.ts:27:5 › u32a heap base nocturne:342x740:8 2 (7.1s)
+  ok 5 tests\e2e\zz-u32a-heap.spec.ts:27:5 › u32a heap base scherzo:342x740:4 1 (10.1s)
+  ok 6 tests\e2e\zz-u32a-heap.spec.ts:27:5 › u32a heap base scherzo:342x740:4 2 (9.6s)
+  ok 7 tests\e2e\zz-u32a-heap.spec.ts:27:5 › u32a heap base scherzo:390x844:2 1 (10.5s)
+  ok 8 tests\e2e\zz-u32a-heap.spec.ts:27:5 › u32a heap base scherzo:390x844:2 2 (12.5s)
+
+  8 passed (1.3m)
+exit=0

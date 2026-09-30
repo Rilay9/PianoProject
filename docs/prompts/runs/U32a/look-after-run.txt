@@ -1,0 +1,12 @@
+
+Running 6 tests using 1 worker
+
+  ok 1 tests\e2e\zz-u32a-look.spec.ts:103:3 › u32a look after nocturne:4 (32.1s)
+  ok 2 tests\e2e\zz-u32a-look.spec.ts:103:3 › u32a look after nocturne:8 (31.2s)
+  ok 3 tests\e2e\zz-u32a-look.spec.ts:103:3 › u32a look after scherzo:4 (49.6s)
+  ok 4 tests\e2e\zz-u32a-look.spec.ts:103:3 › u32a look after scherzo:8 (51.4s)
+  ok 5 tests\e2e\zz-u32a-look.spec.ts:103:3 › u32a look after twinkle:4 (8.2s)
+  ok 6 tests\e2e\zz-u32a-look.spec.ts:103:3 › u32a look after twinkle:8 (8.5s)
+
+  6 passed (3.1m)
+exit=0

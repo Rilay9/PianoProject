@@ -1,0 +1,6 @@
+nocturne__342x740__bars-4: differs in (15, 92, 342, 660): 0.3% of pixels at all, 0.0% strongly (before zoom 1.23, drawn 0.628; after zoom 1.36, drawn 0.628)
+nocturne__342x740__bars-8: differs in (8, 44, 342, 624): 0.3% of pixels at all, 0.0% strongly (before zoom 1.12, drawn 0.593; after zoom 1.23, drawn 0.593)
+scherzo__342x740__bars-4: differs in (340, 92, 342, 95): 0.0% of pixels at all, 0.0% strongly (before zoom 1.0, drawn 0.799; after zoom 1.0, drawn 0.799)
+scherzo__342x740__bars-8: differs in (16, 111, 338, 560): 2.1% of pixels at all, 0.0% strongly (before zoom 1.16, drawn 0.655; after zoom 1.0, drawn 0.655)
+twinkle__342x740__bars-4: pixel-identical (before zoom 1.53, drawn 1.052; after zoom 1.53, drawn 1.052)
+twinkle__342x740__bars-8: pixel-identical (before zoom 1.02, drawn 0.769; after zoom 1.02, drawn 0.769)
