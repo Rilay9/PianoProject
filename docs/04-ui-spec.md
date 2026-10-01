@@ -687,10 +687,13 @@ promise — the app is not marking you — and the name is the owner's word for 
   nothing in it or those rungs get the free teacher their track already names in `02` Part D.
   Not decided here.
 - **What this rung still needs** (P15, replan §4.2). One line above the options: "This rung
-  wants one more song to reach the floor of 3. Find one, or play what is here." The numbers
-  are `needs`, written into the built curriculum by `validate.py` — the lesson page reads
-  them rather than recounting, so the counting rules (the floor; a song-optional rung
-  counting both lists together) live in one place.
+  wants one more song to reach the floor of 3. Find one, or play what is here." The floor
+  is `needs.floor`, written into the built curriculum by `validate.py` (`write_needs`); the
+  lesson page recounts the options it holds, imports overlaid (`needs.lessonShortfall`,
+  review C3), by the same counting rules, which `needs.test.ts` holds in step with
+  `write_needs`: the floor; a song-optional rung counting both lists together; a rung whose
+  requirements ask for no song run short of no song (R23, the gate the build's own
+  three-alternatives check already reads).
 - **Find more** opens the finder sheet (`02` terminology): the search line and the chat
   prompt, each with Copy; what the piece must have and what makes one wrong; the examples,
   badged *already yours* or *not found yet*; and the formats line. Both prompts are generated

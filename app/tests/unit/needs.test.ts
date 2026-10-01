@@ -49,6 +49,18 @@ describe('lessonShortfall', () => {
     expect(lessonShortfall(optional)).toEqual({ songs: 0, exercises: 1, floor: 3 });
   });
 
+  it('asks for no song on a rung whose requirements ask for no song run', () => {
+    // R23 (Premise 2): `write_needs`, `thin_lesson_errors` and `thinLessons` read the
+    // same `asksForSongs`; the sentence on the lesson page must not ask for two songs
+    // the rung never requires.
+    const noSongRun = lesson({
+      songOptions: ['song.a'],
+      requirements: [{ kind: 'runs', from: 'exercises', count: 1 }],
+      needs: { songs: 0, exercises: 0, paper: 0, inBand: 0, floor: 3 },
+    });
+    expect(lessonShortfall(noSongRun)).toEqual({ songs: 0, exercises: 0, floor: 3 });
+  });
+
   it('is never short on an exempt rung — the placement test is one thing by nature', () => {
     const exempt = lesson({ optionsExempt: true, songOptions: [], exerciseOptions: [] });
     expect(lessonShortfall(exempt)).toEqual({ songs: 0, exercises: 0, floor: 3 });
