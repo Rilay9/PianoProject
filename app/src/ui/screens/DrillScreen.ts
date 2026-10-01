@@ -1425,6 +1425,35 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   }
 
   /**
+   * A rhythm card's first open — the set's first card or *Again*'s — held as
+   * a return is, one edge earlier (X45; the reviewer's ruling,
+   * `responses/1a89de52.md`: no judged rhythm timing against an inaudible or
+   * unestablished pulse). Until `ensureStarted()` answered, the drill's latch
+   * was never armed and a tap was judged against the moment the card opened;
+   * a start answering with the context still suspended began the count on a
+   * standing clock, refusing every tap with nothing said. So no tap is judged
+   * until the sound is actually running (`whenSoundRuns`, paused meanwhile
+   * with the card as the one way back); then the ordinary count-in plays.
+   *
+   * - Held as `top`, nothing played yet to lead back to, so a hide during the
+   *   wait comes back through `resumeRhythmClick` counting in from the top,
+   *   not from `countInDownbeatKnown`, which after *Again* still says the
+   *   last card's count named its downbeat.
+   * - With no Web Audio no sound will ever run to wait for: the card carries
+   *   on at once, silent, as it always has (the reviewer's confirmation,
+   *   `responses/1a89de52.md`, question 1).
+   */
+  function openRhythmCard(target: RhythmDrill): void {
+    if (!audioEngine.supported) {
+      startCountIn(target);
+      return;
+    }
+    rhythmHold = { from: 'top', pointMs: 0, wasSounding: false };
+    rhythmJudgedFromMs = Number.POSITIVE_INFINITY;
+    whenSoundRuns(target, () => startCountIn(target));
+  }
+
+  /**
    * The rhythm card after a hidden span (X15; CL05a, narrowed by CL05b, the
    * reviewer's required change, `responses/8764c643.md`). The drill's grid has
    * already moved past the span (`RhythmDrill.excludeHidden`), but a visible
@@ -1661,7 +1690,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // what makes it a going-over rather than a second test, and the drill
     // itself has already forfeited the mark (`review.ts`).
     if (drill instanceof PromptDrill && drill.revealed) showAnswer(current);
-    if (drill instanceof RhythmDrill) startCountIn(drill);
+    if (drill instanceof RhythmDrill) openRhythmCard(drill);
     if (drill instanceof ChordDictationDrill) startDictationTicker(drill);
     playPromptWithHelp(current);
   }
