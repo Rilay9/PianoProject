@@ -1,0 +1,27 @@
+﻿
+restored docs\prompts\inventory.md
+restored docs\prompts\rung-claims.md
+restored content\scores\imported\SOURCES.md
+restored docs\generated\ladder.md
+removed app\dist
+removed app\test-results
+removed app\build
+removed app\public\dev
+removed app\public\icons
+removed build
+removed content\scores\imported\kern
+removed content\scores\imported\musetrainer
+removed content\scores\imported\mutopia
+removed app\tsconfig.app.tsbuildinfo
+removed app\tsconfig.node.tsbuildinfo
+app\public\content left: app\public\content\audio\acoustic_grand_piano-mp3.js, app\public\content\audio\LICENSE.md
+removed tools\content\__pycache__
+removed tools\content\pdmx\__pycache__
+removed tools\content\tests\__pycache__
+removed tools\docs\__pycache__
+removed tools\midi-cleanup\__pycache__
+removed content\scores\authored\__pycache__
+removed packaging\__pycache__
+removed docs\prompts\runs\E57\__pycache__
+app\node_modules kept: True
+done

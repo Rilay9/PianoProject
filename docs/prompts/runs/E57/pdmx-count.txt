@@ -1,0 +1,293 @@
+542 committed PDMX rows; each raw upload converted by the committed converter and by E57's (convert_file(raw, destination), as pdmx/quarry.py does); outputs compared byte for byte
+
+CHANGED song.pop.misc-christmas-we-wish-you-a-merry-christmas.pdmx (Qmavwniavih7ELK7Z2pDwpCXoiKPhieynVrY8muxBtuf64): committed-converter output 38d3fc57980e, E57's 2622724588a7
+   <sound tempo> by bar, committed converter: [('0', '160')]
+   <sound tempo> by bar, E57's converter:     [('0', '160'), ('55', '150'), ('55', '140'), ('55', '130'), ('56', '110'), ('56', '160')]
+CHANGED song.pop.misc-christmas-joy-to-the-world-piano-solo.pdmx (QmVHUd6BTGULkMtqLqby7oXHsTfn7zfvnfL6x8sv6mQ4FS): committed-converter output 8d1e0fcf1f6e, E57's 7561777b8b7f
+   <sound tempo> by bar, committed converter: [('1', '72')]
+   <sound tempo> by bar, E57's converter:     [('1', '72'), ('12', '88'), ('42', '92')]
+CHANGED song.folk.uti-var-hage-swedish-traditional-song.pdmx (QmY9aSk9GvJuZjFABRn1XkVJwbceabpRab92bz1amNJUUb): committed-converter output d57a40f3f92e, E57's 0cd7d8732d32
+   <sound tempo> by bar, committed converter: [('1', '112')]
+   <sound tempo> by bar, E57's converter:     [('1', '112'), ('10', '120')]
+CHANGED song.classical.holst-jupiter-theme-arranged-for-piano-gustav-holst.pdmx (Qme2zmL2nofwN5b7xQCS9UjiVLMuaoGt3Mx4tFqdMNQBqJ): committed-converter output 46c019ec6644, E57's 9c21ad59d863
+   <sound tempo> by bar, committed converter: [('0', '70')]
+   <sound tempo> by bar, E57's converter:     [('0', '70'), ('22', '65')]
+CHANGED song.folk.john-denver-annie-s-song.pdmx (QmapX33TknezCSodheCC3At55Bm3AaWTWfznzJZWVycnLr): committed-converter output 0ffa8d8737fb, E57's eb807bf17815
+   <sound tempo> by bar, committed converter: [('1', '140')]
+   <sound tempo> by bar, E57's converter:     [('1', '140'), ('56', '114')]
+CHANGED song.folk.octobre-francis-cabrel.pdmx (QmU6tYrnAfBPWuNTFUYtLMMjH9UxTkPyndCCQaADoMAnEJ): committed-converter output 11fb47cb399c, E57's 249202809890
+   <sound tempo> by bar, committed converter: [('1', '160')]
+   <sound tempo> by bar, E57's converter:     [('1', '160'), ('91', '140')]
+CHANGED song.pop.misc-computer-games-minecraft-calm.pdmx (QmX2oS2oiuBfSsHWCmcY7C1FxY9jaaBPEmUtLvNUvg7Ckb): committed-converter output 44c29c6ca822, E57's 47749a45e1f7
+   <sound tempo> by bar, committed converter: [('1', '141')]
+   <sound tempo> by bar, E57's converter:     [('1', '141'), ('19', '80')]
+CHANGED song.pop.kodaline-all-i-want-kodaline.pdmx (QmdnRcixps1paokonTwMsz4q6LtWUGseXqyvjzpk1rQcPp): committed-converter output 64588aa946ff, E57's 7438204ee58e
+   <sound tempo> by bar, committed converter: [('1', '180')]
+   <sound tempo> by bar, E57's converter:     [('1', '180'), ('292', '120')]
+CHANGED song.pop.alexandre-desplat-the-danish-girl-theme.pdmx (Qmet47wpiJwXxeQhW7igaAhxkVooHKD5SF6sS91pfuS8Ys): committed-converter output 452a5c64b9ac, E57's 676f93c0b77f
+   <sound tempo> by bar, committed converter: [('1', '100')]
+   <sound tempo> by bar, E57's converter:     [('1', '100'), ('13', '140'), ('21', '150'), ('59', '110')]
+CHANGED song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx (QmTzXeKeXdJd3g248v7u5KZ7VQjCvDGUNVZPCPy8rKMfxP): committed-converter output 0d677a43f473, E57's e0be3871c091
+   <sound tempo> by bar, committed converter: [('25', '152')]
+   <sound tempo> by bar, E57's converter:     [('25', '152'), ('49', '172')]
+CHANGED song.classical.grieg-grieg-anitra-s-dance-piano-solo.pdmx (QmfQUCzMimagAnE27ef1xcaVy8NykmgZhc4GzcEkgvvoUr): committed-converter output 044c59e7b4f3, E57's c98517c6f292
+   <sound tempo> by bar, committed converter: [('1', '72')]
+   <sound tempo> by bar, E57's converter:     [('1', '72'), ('3', '156'), ('83', '144'), ('85', '156'), ('107', '48')]
+CHANGED song.classical.rachmaninoff-rachmaninoff-piano-concerto-no-2.pdmx (QmUmyJufsW25moTgmLwAfcWikX64ckfHQE4bLFmFTevK8R): committed-converter output 0b66880119ff, E57's 3456351271d0
+   <sound tempo> by bar, committed converter: [('1', '72')]
+   <sound tempo> by bar, E57's converter:     [('1', '72'), ('9', '122')]
+CHANGED song.classical.radetzky-march-for-easy-piano.pdmx (QmXoyqoicW7nxZHoHhpKVWKEL7zJvDov5mk1P8ceJYibGR): committed-converter output b56f5b511dff, E57's 095ef9f1c805
+   <sound tempo> by bar, committed converter: [('1', '176')]
+   <sound tempo> by bar, E57's converter:     [('1', '176'), ('52', '176')]
+CHANGED song.classical.uematsu-to-zanarkand-final-fantasy-x.pdmx (QmVM8sy9fma66nHKmyjHLAxQqF8mguPVoqTvUsXYxyfcKQ): committed-converter output ffc18105832f, E57's 0ee4b8b42bd4
+   <sound tempo> by bar, committed converter: [('1', '90')]
+   <sound tempo> by bar, E57's converter:     [('1', '90'), ('1', '86'), ('1', '78'), ('2', '68'), ('3', '90'), ('3', '86'), ('3', '78'), ('4', '68'), ('5', '74'), ('5', '80'), ('5', '88'), ('5', '90'), ('12', '95'), ('13', '100'), ('24', '95'), ('25', '80'), ('25', '78'), ('27', '85'), ('28', '90'), ('29', '95'), ('29', '100'), ('32', '98'), ('33', '95'), ('33', '75'), ('36', '88'), ('38', '95'), ('41', '85'), ('42', '80'), ('45', '70'), ('45', '75'), ('45', '80'), ('45X1', '85'), ('45X1', '75'), ('53', '80'), ('53', '85'), ('53', '95'), ('54', '100'), ('57', '95'), ('58', '80'), ('59', '78'), ('60', '85'), ('61', '90'), ('62', '95'), ('62', '100'), ('63', '105'), ('63', '100'), ('63', '95'), ('63', '100'), ('64', '105'), ('64', '100'), ('64', '95'), ('64', '100'), ('65', '105'), ('65', '60'), ('65', '100'), ('65', '80'), ('66', '60'), ('66', '70'), ('66', '65'), ('66', '60'), ('66', '20'), ('67', '70'), ('67', '75'), ('69', '85'), ('70', '90'), ('71', '95'), ('74', '90'), ('74', '88'), ('74', '85'), ('75', '80'), ('76', '70'), ('79', '60'), ('79', '75'), ('80', '70'), ('80', '65'), ('80', '60')]
+CHANGED song.classical.offenbach-cancan-offenbach.pdmx (QmXimg3N725CEV233qDrFP8FDeri6NSd73rG94WN7T9jBG): committed-converter output b5f5dcd51964, E57's 1bf8d52cc919
+   <sound tempo> by bar, committed converter: [('1', '160')]
+   <sound tempo> by bar, E57's converter:     [('1', '160'), ('15', '120'), ('16', '70'), ('17', '160')]
+CHANGED song.classical.anonymous-romance-anonimo-romanza.pdmx (QmZ4ACuGVhoKNwbrqv7KYbA8Yfn3W34H3snaD3UeCUGSz4): committed-converter output 8d2c1e8f0158, E57's cb6cc069c46c
+   <sound tempo> by bar, committed converter: [('1', '110')]
+   <sound tempo> by bar, E57's converter:     [('1', '110'), ('15', '100'), ('17', '110'), ('31', '100')]
+CHANGED song.classical.debussy-debussy-claude-la-plus-que-lente.pdmx (QmbYCixEYiqqLRZmHY18yk2pitQ4oMjzLmuLGN8EMFPRAx): committed-converter output 501b463aea8e, E57's c38ae10bff8f
+   <sound tempo> by bar, committed converter: [('1', '85.5')]
+   <sound tempo> by bar, E57's converter:     [('1', '85.5'), ('16', '80.5'), ('18', '85.5'), ('23', '80'), ('24', '85.5'), ('25', '87.5'), ('26', '100'), ('27', '105.5'), ('28', '107'), ('29', '110'), ('30', '90'), ('33', '100.50000000000001'), ('38', '105.5'), ('39', '107'), ('40', '110'), ('41', '100'), ('46', '120'), ('59', '85'), ('60', '100'), ('69', '100'), ('69', '102'), ('69', '104'), ('70', '106'), ('70', '108'), ('72', '95'), ('76', '100'), ('82', '90'), ('84', '85'), ('86', '100'), ('90', '90'), ('94', '100'), ('98', '90'), ('102', '85'), ('104', '85'), ('106', '87'), ('108', '94'), ('109', '100'), ('116', '85'), ('120', '100'), ('127', '85'), ('129', '90'), ('130', '92'), ('130', '94'), ('130', '96'), ('131', '98'), ('131', '100'), ('132', '87'), ('136', '82'), ('139', '80'), ('141', '75'), ('142', '70'), ('144', '65'), ('145', '60')]
+CHANGED song.classical.bennet-rosemary-s-waltz.pdmx (QmZK7Euxxh4mTrHAdwJ2oqMnjdCBomu5tHpX2WPvzp24yL): committed-converter output b255b592cc40, E57's 6e41885af210
+   <sound tempo> by bar, committed converter: [('1', '110')]
+   <sound tempo> by bar, E57's converter:     [('1', '110'), ('17', '108'), ('18', '106'), ('19', '104'), ('20', '110'), ('45', '107'), ('45', '104'), ('45', '101'), ('46', '98'), ('46', '95'), ('46', '92'), ('47', '89'), ('47', '86'), ('47', '83'), ('48', '110'), ('50', '108'), ('50', '106'), ('50', '104'), ('51', '60')]
+CHANGED song.classical.duvernoy-etude-op-176-no-1.pdmx (QmSKsFjf24tonfSwbfx62wkQDrbHzAnR6Tt15DAEM2RRKH): committed-converter output 3f02615b873c, E57's 1989dda2fb74
+   <sound tempo> by bar, committed converter: [('1', '132')]
+   <sound tempo> by bar, E57's converter:     [('1', '132'), ('1', '100')]
+CHANGED song.classical.debussy-children-s-corner-jimbo-s-lullaby.pdmx (QmXyiyQ9XGzMjmE4XWK5qJXdQeDsrsGi9gfLNAcbcFaoyK): committed-converter output 40623e315972, E57's 4ebf5b9c3572
+   <sound tempo> by bar, committed converter: [('1', '90')]
+   <sound tempo> by bar, E57's converter:     [('1', '90'), ('39', '112'), ('61', '60'), ('63', '90')]
+CHANGED song.folk.amazing-grace-in-g-major-for-piano-breezepiano.pdmx (QmbxzES4fnA6B1ruzrEEcpA2vYuSytvuC3zYzMciswGyRs): committed-converter output b5988bc9c99a, E57's cccabb16efeb
+   <sound tempo> by bar, committed converter: [('1', '100')]
+   <sound tempo> by bar, E57's converter:     [('1', '100'), ('1', '80'), ('1', '70'), ('2', '80'), ('2', '80'), ('4', '90'), ('5', '80'), ('6', '70'), ('7', '67'), ('8', '70'), ('8', '110'), ('8', '74'), ('9', '75'), ('11', '72'), ('12', '65'), ('12', '62'), ('13', '70'), ('14', '70'), ('15', '60'), ('15', '50'), ('15', '70'), ('16', '110'), ('17', '90'), ('17', '100'), ('19', '105'), ('20', '90'), ('20', '70'), ('21', '100'), ('22', '105'), ('23', '90'), ('24', '100'), ('26', '105'), ('26', '90'), ('27', '150'), ('27', '110'), ('28', '70'), ('29', '100'), ('29', '110'), ('30', '100'), ('31', '85'), ('31', '80'), ('32', '100'), ('32', '110'), ('32', '100'), ('33', '82'), ('34', '68'), ('35', '90'), ('35', '110'), ('37', '105'), ('38', '95'), ('38', '75'), ('39', '95'), ('39', '110'), ('41', '105'), ('41', '88'), ('42', '95'), ('42', '100'), ('43', '110'), ('44', '115'), ('46', '80'), ('47', '100'), ('48', '110'), ('49', '82'), ('50', '90'), ('50', '100'), ('51', '110'), ('52', '77'), ('52', '65'), ('53', '70'), ('53', '90'), ('54', '110'), ('54', '80'), ('55', '95'), ('55', '100'), ('56', '110'), ('57', '80'), ('57', '100'), ('58', '110'), ('58', '90'), ('59', '80'), ('59', '100'), ('60', '110'), ('60', '80'), ('61', '110'), ('62', '100'), ('63', '90'), ('64', '93'), ('64', '95'), ('65', '110'), ('65', '105'), ('65', '90'), ('66', '115'), ('66', '80'), ('67', '100'), ('67', '95'), ('68', '105'), ('68', '110'), ('68', '100'), ('69', '90'), ('69', '100'), ('69', '110'), ('70', '95'), ('71', '100'), ('71', '80'), ('72', '90'), ('72', '100'), ('73', '90'), ('73', '110'), ('74', '90'), ('74', '65'), ('75', '70'), ('75', '100'), ('76', '110'), ('76', '90'), ('76', '85'), ('77', '80'), ('77', '105'), ('78', '120'), ('78', '90'), ('78', '83'), ('79', '120'), ('79', '110'), ('80', '90'), ('81', '95'), ('81', '85'), ('82', '80'), ('82', '70'), ('82', '38'), ('83', '85'), ('83', '80'), ('83', '68'), ('84', '50'), ('84', '35'), ('84', '80'), ('87', '72'), ('87', '90')]
+CHANGED song.folk.this-country-of-mine-extended-mix-of-negaraku-malaysia-s-national-anthem-featuring-britain-japan-singapore-and-brunei.pdmx (QmY5pWGJjV8ZQ1uLSGvdeY43FZJvQsAP4VXiicW4Q2EcUx): committed-converter output be1abadeae71, E57's c1aa15ae4d74
+   <sound tempo> by bar, committed converter: [('1', '100')]
+   <sound tempo> by bar, E57's converter:     [('1', '100'), ('107', '80'), ('108', '90')]
+CHANGED song.pop.coldplay-clocks-coldplay.pdmx (QmdE9gDzNjsgAvwtF4vd6ddcceBHSspZCM79gqwGQuiBYC): committed-converter output 579373ce1323, E57's f5197f373306
+   <sound tempo> by bar, committed converter: [('1', '120')]
+   <sound tempo> by bar, E57's converter:     [('1', '120'), ('22', '80')]
+CHANGED song.pop.die-wilden-huehner-die-wilden-huhner-ouverture-finished.pdmx (QmRdQaNKc2ZH2d678JC91FGKuAupXKcBsbXVBUBAasRihQ): committed-converter output ea2bddae60bf, E57's 1de505be41ac
+   <sound tempo> by bar, committed converter: [('1', '120')]
+   <sound tempo> by bar, E57's converter:     [('1', '120'), ('52', '120'), ('60', '120'), ('84', '120'), ('96', '120'), ('104', '110'), ('104', '102'), ('105', '95'), ('105', '87'), ('106', '80'), ('106', '70'), ('107', '30')]
+CHANGED song.pop.league-of-legends-phoenix-league-of-legends.pdmx (QmZUWUMc8KQCu4MLx6Dnpxo3YoudAvFguwesx8emipWm7W): committed-converter output d8c013d62642, E57's 535986bbe17e
+   <sound tempo> by bar, committed converter: [('1', '172')]
+   <sound tempo> by bar, E57's converter:     [('1', '172'), ('40', '174'), ('41', '178'), ('50', '174'), ('95', '174'), ('101', '176'), ('108', '172')]
+CHANGED song.pop.misc-cartoons-mabinogi-saga-login-theme-an-old-story-from-grandma.pdmx (QmYTv8PgK28ApeTjxQjvznsckcvXCVW2w8VkfiShnwm8xc): committed-converter output bbc0fc3c77a8, E57's 71e10f3a1c1f
+   <sound tempo> by bar, committed converter: [('1', '114')]
+   <sound tempo> by bar, E57's converter:     [('1', '114'), ('69', '114'), ('81', '112'), ('88', '95')]
+CHANGED song.pop.laura-shigihara-loonboon.pdmx (QmRiPR5xWaprP19qHyMKr9a7MCwDaVj5GZR6pEv3Hip9zq): committed-converter output 0cc772fc67d3, E57's f81bbd12f050
+   <sound tempo> by bar, committed converter: [('1', '184')]
+   <sound tempo> by bar, E57's converter:     [('1', '184'), ('2', '184'), ('26', '200'), ('27', '176'), ('29', '184'), ('32', '184'), ('34', '184'), ('36', '184'), ('42', '184'), ('44', '184'), ('48', '184')]
+CHANGED song.pop.eiffel-65-i-m-blue.pdmx (QmeZDYmky1f9ivPQndtLc6waH3WsFa8Ne3Ctv35U6UvzNk): committed-converter output f1906bee77ef, E57's ea69e58d7941
+   <sound tempo> by bar, committed converter: [('0', '127')]
+   <sound tempo> by bar, E57's converter:     [('0', '127'), ('60', '50')]
+CHANGED song.pop.misc-cartoons-giant-woman.pdmx (QmQSQ45hqFXMp9oSEnv1spR7RR3RdQf6ghTG88HKJM7yig): committed-converter output 38561d612129, E57's d63c2bf8bc83
+   <sound tempo> by bar, committed converter: [('1', '150')]
+   <sound tempo> by bar, E57's converter:     [('1', '150'), ('33', '131'), ('33', '121'), ('34', '121'), ('34', '111'), ('35', '111'), ('35', '101')]
+CHANGED song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx (QmWpzkuQx23WPUoU1Lvta6hJtK7ccBjeSwL1ATyJ47UUMU): committed-converter output 2877d2a29503, E57's e72561d66d7e
+   <sound tempo> by bar, committed converter: [('1', '70')]
+   <sound tempo> by bar, E57's converter:     [('1', '70'), ('2', '50'), ('3', '160'), ('272', '140'), ('272', '120'), ('272', '90')]
+CHANGED song.pop.misc-computer-games-fallout-4-trailer-soundtrack.pdmx (QmSA7uSefMpiTtFE9t32a9X7sp6qFr8FZ3ynMSxgNcVayw): committed-converter output 15b66a070763, E57's 40a3ff7a8009
+   <sound tempo> by bar, committed converter: [('45', '144')]
+   <sound tempo> by bar, E57's converter:     [('45', '144'), ('63', '60')]
+CHANGED song.jazz.vince-guaraldi-skating.pdmx (QmZzNFCJmbobsanTdw5ecsYpYxJuweUXEFbst9GaVUaFdQ): committed-converter output 90b0b82ce5f1, E57's 614aa3c9a596
+   <sound tempo> by bar, committed converter: [('1', '192')]
+   <sound tempo> by bar, E57's converter:     [('1', '192'), ('134', '144'), ('136', '192')]
+CHANGED song.classical.debussy-children-s-corner-doctor-gradus-ad-parnassum.pdmx (Qmbs6AsQ1EcraYkW8kJK6RxdrYGU2R1qA4iCV87Lg32MDD): committed-converter output 011424f75328, E57's a9471b49a739
+   <sound tempo> by bar, committed converter: [('1', '112')]
+   <sound tempo> by bar, E57's converter:     [('1', '112'), ('21', '96'), ('22', '112'), ('32', '80'), ('33', '112'), ('37', '130'), ('43', '80'), ('45', '112'), ('57', '130'), ('67', '130')]
+CHANGED song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx (QmSiufNxXsLotuQDJMEjTj3AbLr5H4K3mfB4LbjeB6UwTm): committed-converter output c4a2143b5c6f, E57's ef9c9dea04c3
+   <sound tempo> by bar, committed converter: [('1', '104')]
+   <sound tempo> by bar, E57's converter:     [('1', '104'), ('1', '130'), ('2', '104'), ('3', '130'), ('5', '104'), ('5', '92'), ('5', '36'), ('6', '130'), ('13', '140'), ('14', '150'), ('15', '160'), ('15', '150'), ('16', '130'), ('16', '80'), ('17', '130'), ('22', '100'), ('23', '80'), ('23', '130'), ('24', '100'), ('25', '80'), ('26', '130'), ('27', '100'), ('28', '130'), ('29', '150'), ('32', '130'), ('33', '140'), ('36', '130'), ('36', '120'), ('36', '110'), ('36', '100'), ('37', '92'), ('37', '80'), ('38', '60'), ('39', '80'), ('39', '120'), ('40', '80'), ('42', '120'), ('43', '80'), ('43', '120'), ('44', '80'), ('44', '120'), ('45', '80'), ('46', '72'), ('47', '138'), ('50', '100'), ('51', '138'), ('54', '100'), ('55', '80'), ('55', '120'), ('56', '80'), ('59', '120'), ('60', '80'), ('60', '120'), ('61', '80'), ('62', '72'), ('63', '120'), ('66', '100'), ('67', '100'), ('69', '90'), ('70', '80'), ('71', '130'), ('75', '104'), ('75', '92'), ('75', '36'), ('76', '130'), ('83', '140'), ('84', '150'), ('85', '160'), ('85', '150'), ('86', '130'), ('86', '80'), ('87', '130'), ('95', '150'), ('97', '140'), ('98', '130'), ('98', '100'), ('99', '130'), ('105', '100'), ('105', '70'), ('106', '60'), ('106', '48')]
+CHANGED song.classical.tchaikovsky-october-autumn-song-from-tchaikovsky-s-the-seasons.pdmx (QmecvQCAXGvX7dNDBLKdEMYhxaehk3gdBMQ5ccBY5wGDS8): committed-converter output 18b3d885ee29, E57's 62715ece4ccc
+   <sound tempo> by bar, committed converter: [('1', '80')]
+   <sound tempo> by bar, E57's converter:     [('1', '80'), ('32', '80'), ('32', '77'), ('32', '76'), ('32', '73'), ('32', '72'), ('32', '71'), ('32', '70'), ('32', '68'), ('32', '67'), ('32', '66'), ('33', '65'), ('33', '62'), ('33', '61'), ('33', '58'), ('33', '57'), ('33', '55'), ('33', '53'), ('33', '51'), ('34', '80')]
+CHANGED song.classical.elgar-elgar-enigma-variations-xi-nimrod.pdmx (QmR7hknmXF7kVWhWN1oFmom5w7AnrgCimtuXfXWwajnXpk): committed-converter output 972277afe50a, E57's 9e56750e0e02
+   <sound tempo> by bar, committed converter: [('1', '52')]
+   <sound tempo> by bar, E57's converter:     [('1', '52'), ('38', '50'), ('38', '48'), ('41', '46'), ('41', '40')]
+CHANGED song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx (QmeojS1gXmjbde5ZiNC3TJgfuLThubRg8YiE8YTxzQ3Zr4): committed-converter output 0d4eecb80659, E57's bbb5f099c21e
+   <sound tempo> by bar, committed converter: [('0', '63')]
+   <sound tempo> by bar, E57's converter:     [('0', '63'), ('9', '76'), ('57', '69'), ('59', '51')]
+CHANGED song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx (QmdLEHrB6pfzVdDBfgwt5pNBETHRi5ZmyJSWrY9HcVBmC6): committed-converter output ea4854bb0efa, E57's 1bf403ed52e7
+   <sound tempo> by bar, committed converter: [('1', '125')]
+   <sound tempo> by bar, E57's converter:     [('1', '125'), ('3', '120'), ('3', '110'), ('3', '95'), ('4', '200'), ('4', '110'), ('7', '100'), ('7', '50'), ('8', '90'), ('21', '80'), ('21', '70'), ('21', '60'), ('22', '90'), ('27', '100'), ('36', '130'), ('136', '125'), ('136', '115'), ('137', '110'), ('137', '100'), ('138', '85'), ('138', '80'), ('139', '70'), ('139', '65'), ('140', '140'), ('156', '134'), ('156', '130'), ('156', '126'), ('157', '124'), ('158', '140'), ('163', '134'), ('164', '130'), ('165', '124'), ('166', '120'), ('173', '200'), ('173', '120'), ('174', '120'), ('190', '124'), ('191', '130'), ('192', '140'), ('193', '134'), ('193', '130'), ('193', '124'), ('194', '120'), ('198', '180'), ('199', '200'), ('202', '120'), ('203', '100'), ('212', '100'), ('213', '94'), ('214', '90'), ('219', '110'), ('273', '100'), ('274', '90'), ('275', '70'), ('276', '60'), ('277', '50'), ('278', '130'), ('306', '100'), ('308', '94'), ('308', '90'), ('309', '200'), ('309', '100'), ('310', '110'), ('311', '104'), ('312', '100'), ('312', '94'), ('313', '84'), ('315', '100'), ('317', '130'), ('318', '104'), ('318', '100'), ('320', '90'), ('320', '86'), ('321', '80'), ('324', '110'), ('324', '104'), ('324', '100'), ('325', '94'), ('325', '90'), ('325', '84'), ('325', '80'), ('326', '110'), ('330', '110'), ('337', '104'), ('337', '94'), ('337', '80'), ('337', '70')]
+CHANGED song.classical.elgar-salut-d-amour-edward-elgar-love-s-greeting.pdmx (QmNNEw95ndQ6v6hcAffQnp1pNB4WwjCn3u9qtsxXREG8DZ): committed-converter output f70608753885, E57's cbc721bc6be8
+   <sound tempo> by bar, committed converter: [('1', '72')]
+   <sound tempo> by bar, E57's converter:     [('1', '72'), ('9', '70'), ('11', '72'), ('13', '74'), ('14', '72'), ('14', '70'), ('16', '68'), ('17', '66'), ('18', '63'), ('18', '58'), ('19', '63'), ('19', '66'), ('19', '72'), ('21', '74'), ('22', '70'), ('23', '72'), ('26', '68'), ('26', '70'), ('27', '72'), ('29', '74'), ('30', '72'), ('31', '70'), ('32', '68'), ('33', '66'), ('34', '63'), ('35', '66'), ('35', '72'), ('41', '68'), ('41', '63'), ('42', '70'), ('43', '72'), ('45', '74'), ('46', '72'), ('46', '68'), ('47', '63'), ('48', '60'), ('48', '54'), ('48', '48'), ('49', '58'), ('49', '68'), ('49', '72'), ('53', '74'), ('54', '72'), ('55', '70'), ('56', '63'), ('56', '58'), ('56', '54'), ('57', '58'), ('57', '63'), ('57', '72'), ('59', '68'), ('60', '63'), ('61', '72'), ('62', '74'), ('63', '72'), ('64', '68'), ('64', '63'), ('65', '72'), ('67', '74'), ('68', '72'), ('70', '70'), ('70', '72'), ('72', '70'), ('72', '72'), ('78', '74'), ('80', '70'), ('83', '68'), ('84', '63'), ('85', '72'), ('91', '70'), ('92', '68'), ('93', '72')]
+CHANGED song.classical.mahler-symphony-no-5-4th-movement-excerpt-piano-solo.pdmx (QmY6MZ4KuRgZXArxMHa8eZieksVUh9X1eSmDYsBYZSNKc2): committed-converter output f6c2f1aefa07, E57's 062a0495eefc
+   <sound tempo> by bar, committed converter: [('1', '48')]
+   <sound tempo> by bar, E57's converter:     [('1', '48'), ('2', '36'), ('3', '48'), ('10', '60'), ('11', '72'), ('20', '66'), ('28', '60'), ('32', '66'), ('49', '60'), ('51', '66'), ('58', '60'), ('63', '66'), ('66', '48')]
+CHANGED song.classical.debussy-children-s-corner-the-little-shepherd.pdmx (QmTobBbb6pruvSbYGAGkq5mA735jihqP5kBsGZ95zMs1D3): committed-converter output 3b38c9148d8d, E57's 8df427b41a2c
+   <sound tempo> by bar, committed converter: [('1', '40')]
+   <sound tempo> by bar, E57's converter:     [('1', '40'), ('5', '50'), ('8', '40'), ('9', '30'), ('12', '40'), ('16', '30'), ('19', '40'), ('21', '50'), ('22', '60'), ('27', '50'), ('29', '30')]
+CHANGED song.folk.3-variations-on-happy-birthday.pdmx (QmVQHxcYKMJ9j3UVmsJxGbnMJBW2FcQkxbvtVj1rMjQ9cm): committed-converter output 00f181a78976, E57's 137c881ef8bd
+   <sound tempo> by bar, committed converter: [('0', '80')]
+   <sound tempo> by bar, E57's converter:     [('0', '80'), ('8X1', '150'), ('1', '132'), ('37', '66'), ('119', '152')]
+CHANGED song.folk.wake-me-up-avicii.pdmx (QmRW3zkE9H9RuE3gacKvDTzgU3eNTC9zwvzSorY83Yxzb2): committed-converter output 7cb833493130, E57's 0db88d5807d9
+   <sound tempo> by bar, committed converter: [('1', '110')]
+   <sound tempo> by bar, E57's converter:     [('1', '110'), ('30', '128'), ('62', '110'), ('89', '128')]
+CHANGED song.pop.toby-fox-undertale-undertale-piano.pdmx (QmXSJTMUMUQ3ze75V1yrYGqockwRP7BJG3jLTHWfZakEKW): committed-converter output 311ac9f9bd71, E57's df929fd9aea2
+   <sound tempo> by bar, committed converter: [('1', '100')]
+   <sound tempo> by bar, E57's converter:     [('1', '100'), ('114', '95'), ('114', '90'), ('114', '85'), ('114', '80'), ('114', '75'), ('114', '70')]
+CHANGED song.pop.hiroyuki-sawano-levi-s-choice-thanksat-t-kt-attack-on-titan.pdmx (QmUF3s59KhGSJZYEijsEfEhcHE1qzPKNzy1smaxWAMgCWG): committed-converter output 2494e590a89f, E57's a2733a96a628
+   <sound tempo> by bar, committed converter: [('1', '75')]
+   <sound tempo> by bar, E57's converter:     [('1', '75'), ('64', '55')]
+CHANGED song.pop.honne-location-unknown-brooklyn-session-honne.pdmx (QmY1BZyZuzNP2Z9ZsnmR3z1Gv6J4oGrfAGfysDjAHVvGqr): committed-converter output 5f71081d2356, E57's c58cac327dae
+   <sound tempo> by bar, committed converter: [('1', '92')]
+   <sound tempo> by bar, E57's converter:     [('1', '92'), ('29', '93'), ('45', '92'), ('61', '93'), ('77', '92'), ('97', '93'), ('113', '92')]
+CHANGED song.pop.takeru-kanazaki-fire-emblem-three-houses-apex-of-the-world.pdmx (QmRx7Xqghks9vBikJpNFbaq6QKzkKghiePNRLvkGsUkZy7): committed-converter output 852412ef0b8e, E57's d069d41ce874
+   <sound tempo> by bar, committed converter: [('1', '86')]
+   <sound tempo> by bar, E57's converter:     [('1', '86'), ('9', '178'), ('189', '86'), ('197', '178')]
+CHANGED song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx (QmPSN2TnRH1hx3fAje4fabZYgPvAEb3sfdieKyACCoerwE): committed-converter output 6e3c6399fe24, E57's 68a8d4585195
+   <sound tempo> by bar, committed converter: [('1', '110')]
+   <sound tempo> by bar, E57's converter:     [('1', '110'), ('92', '100'), ('92', '90'), ('92', '80'), ('93', '70'), ('93', '50'), ('96', '110')]
+CHANGED song.classical.debussy-claude-debussy-la-cathedrale-engloutie-the-submerged-cathedral.pdmx (Qmaug5pXs59BJq1VTdXhrKAU3DHxRqusrDgXraMS6xDtYk): committed-converter output 5327b6b6eaf2, E57's 9825400a4be2
+   <sound tempo> by bar, committed converter: [('1', '66')]
+   <sound tempo> by bar, E57's converter:     [('1', '66'), ('20', '64'), ('20', '68'), ('20', '72'), ('21', '76'), ('21', '80'), ('21', '68'), ('21', '56'), ('22', '112'), ('27', '108'), ('27', '104'), ('27', '100'), ('27', '88'), ('28', '112'), ('47', '104'), ('72', '112'), ('83', '106'), ('83', '100'), ('83', '92'), ('83', '86'), ('83', '80'), ('83', '68'), ('84', '66'), ('86', '62'), ('86', '58'), ('87', '54'), ('87', '50'), ('88', '108')]
+CHANGED song.classical.scarlatti-d-scarlatti-sonata-a-major-k-323.pdmx (QmbtqGpbZ6U9DECtd1YBPf2fXQP2kPyRnEU2A8odVEfzb1): committed-converter output bafc1a7b502a, E57's 757ce1a73078
+   <sound tempo> by bar, committed converter: [('1', '158')]
+   <sound tempo> by bar, E57's converter:     [('1', '158'), ('62', '158'), ('62', '157'), ('62', '157'), ('62', '156'), ('62', '154'), ('62', '151'), ('63', '148')]
+CHANGED song.pop.boogie-easy-for-beginners.pdmx (QmWrbmgnpKPFWfmckKRQxwDMFyGoUHKsPTXJqyjqoVNRDJ): committed-converter output 2a1bcf3d5a15, E57's 983cf0409607
+   <sound tempo> by bar, committed converter: [('1', '120')]
+   <sound tempo> by bar, E57's converter:     [('1', '120'), ('9', '200')]
+CHANGED song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx (QmXXdTmXQW5jKbHEHgHuZFuW57wNrtApiba8WidW76APCp): committed-converter output aa3e722dd6ec, E57's f5d8fed0bb86
+   <sound tempo> by bar, committed converter: [('1', '138')]
+   <sound tempo> by bar, E57's converter:     [('1', '138'), ('6', '80'), ('10', '85'), ('14', '90'), ('16', '95'), ('18', '110'), ('20', '115'), ('22', '120'), ('26', '130'), ('30', '135'), ('34', '140'), ('38', '145'), ('42', '155'), ('46', '160'), ('48', '165'), ('50', '170'), ('54', '175'), ('58', '180'), ('62', '185'), ('66', '190'), ('70', '195'), ('74', '200')]
+CHANGED song.classical.chopin-prelude-no-1-in-c-major-op-28.pdmx (QmecdkkSeqYbyHJYP8m1s2sNV2Un2c5P1kX7D6NR5ykG8z): committed-converter output 4b57257fbcd5, E57's e27e48b17048
+   <sound tempo> by bar, committed converter: [('1', '76')]
+   <sound tempo> by bar, E57's converter:     [('1', '76'), ('31', '70'), ('32', '64'), ('33', '58'), ('34', '20')]
+CHANGED song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx (QmTpVDFtEMe5LzKqgSVFCDMDwbqfwBi8EsrqqgdXeZVMjh): committed-converter output a11064781da1, E57's 0aee5d3d5899
+   <sound tempo> by bar, committed converter: [('0', '40')]
+   <sound tempo> by bar, E57's converter:     [('0', '40'), ('8', '60'), ('8', '40'), ('9', '70'), ('9', '40'), ('20', '36'), ('24', '32'), ('24', '28'), ('24', '24'), ('24', '20'), ('24', '16'), ('24', '10'), ('25', '80'), ('47', '74'), ('47', '68'), ('47', '62'), ('47', '56'), ('48', '50'), ('48', '44'), ('48', '20'), ('48', '40'), ('61', '36'), ('61', '32'), ('61', '28'), ('61', '24'), ('62', '20')]
+CHANGED song.classical.joplin-search-light-rag.pdmx (QmXZxhyKnFu65o1AjEXkggLk293eFggnC3fdLnPp2JTvF9): committed-converter output fa356dbbf5df, E57's 056ca12b6823
+   <sound tempo> by bar, committed converter: [('1', '86')]
+   <sound tempo> by bar, E57's converter:     [('1', '86'), ('69', '75'), ('69', '65'), ('70', '86'), ('72', '86')]
+CHANGED song.classical.chopin-prelude-no-13-in-f-sharp-major-op-28.pdmx (QmWmMyfKw9NUYiYJwTqCDkj9S7UtSGsjtKTHWs4dmPBkZ7): committed-converter output bd6eb7704c91, E57's ba91e1d94aad
+   <sound tempo> by bar, committed converter: [('1', '63')]
+   <sound tempo> by bar, E57's converter:     [('1', '63'), ('21', '60'), ('29', '63'), ('37', '60'), ('37', '57'), ('37', '54'), ('37', '51'), ('37', '48'), ('37', '42'), ('37', '36'), ('37', '30'), ('38', '60')]
+CHANGED song.classical.brahms-intermezzo-in-a-major-op-118-no-2.pdmx (QmQ7dQTkFbV7E6hpqVgqDa6SuK6nR7NpXEHQMv61cbcwoc): committed-converter output 64fcd298a9f1, E57's e9302bcaaf65
+   <sound tempo> by bar, committed converter: [('0', '75')]
+   <sound tempo> by bar, E57's converter:     [('0', '75'), ('45', '75'), ('45', '72'), ('45', '69'), ('45', '66'), ('46', '63'), ('46', '61'), ('46', '58'), ('46', '55'), ('46', '52'), ('46', '50'), ('49', '75'), ('56', '75'), ('56', '72'), ('56', '70'), ('56', '67'), ('56', '63'), ('57', '60'), ('63', '60'), ('63', '56'), ('63', '53'), ('64', '50'), ('64', '46'), ('64', '41'), ('65', '75'), ('74', '75'), ('74', '72'), ('74', '70'), ('74', '68'), ('74', '65'), ('74', '63'), ('75', '61'), ('75', '54'), ('75', '51'), ('75', '49'), ('75', '47'), ('75', '44'), ('75', '42'), ('76', '75'), ('113', '75'), ('113', '72'), ('113', '70'), ('113', '67'), ('114', '65'), ('114', '62'), ('114', '60'), ('114', '57'), ('114', '55')]
+CHANGED song.classical.debussy-reverie.pdmx (Qme9Mjr7ESP67pjnBHjfiXJhnvXeZUYucorTLQnwsNmNCP): committed-converter output 5889e665d7f1, E57's 38e49ba519ad
+   <sound tempo> by bar, committed converter: [('1', '76')]
+   <sound tempo> by bar, E57's converter:     [('1', '76'), ('1', '80'), ('2', '86'), ('2', '92'), ('3', '96'), ('6', '88'), ('7', '102'), ('8', '88'), ('9', '102'), ('10', '84'), ('10', '80'), ('11', '102'), ('12', '84'), ('12', '80'), ('13', '102'), ('14', '84'), ('14', '80'), ('15', '102'), ('18', '80'), ('18', '76'), ('19', '102'), ('20', '88'), ('21', '102'), ('22', '88'), ('23', '102'), ('24', '88'), ('25', '102'), ('26', '88'), ('27', '102'), ('28', '88'), ('29', '102'), ('32', '88'), ('32', '68'), ('33', '88'), ('33', '102'), ('34', '88'), ('34', '80'), ('35', '102'), ('36', '88'), ('37', '102'), ('38', '88'), ('38', '80'), ('39', '102'), ('40', '88'), ('41', '102'), ('42', '88'), ('43', '102'), ('48', '88'), ('48', '76'), ('50', '60'), ('51', '92'), ('52', '82'), ('53', '92'), ('53', '82'), ('54', '76'), ('54', '66'), ('55', '92'), ('56', '76'), ('57', '92'), ('58', '82'), ('58', '76'), ('58', '66'), ('59', '92'), ('61', '82'), ('62', '76'), ('63', '92'), ('65', '86'), ('66', '92'), ('67', '96'), ('68', '86'), ('68', '80'), ('69', '92'), ('72', '80'), ('72', '72'), ('73', '80'), ('73', '72'), ('74', '64'), ('75', '60'), ('75', '56'), ('76', '98'), ('77', '80'), ('78', '98'), ('78', '74'), ('78', '96'), ('79', '86'), ('80', '98'), ('81', '86'), ('82', '98'), ('84', '102'), ('85', '92'), ('85', '80'), ('86', '102'), ('87', '92'), ('87', '80'), ('88', '102'), ('89', '92'), ('89', '80'), ('90', '102'), ('91', '92'), ('91', '80'), ('93', '72'), ('94', '92'), ('95', '80'), ('96', '92'), ('97', '80'), ('98', '92'), ('98', '80'), ('99', '70'), ('100', '50'), ('100', '43'), ('100', '30')]
+CHANGED song.classical.schumann-carnaval-op-9-no-12-chopin.pdmx (QmfL5ffiKPto33RkaHmypncAM1cEqtdTVFJv8d9yN6PJMC): committed-converter output 9628a3a90374, E57's 636a9a3d1b20
+   <sound tempo> by bar, committed converter: [('1', '152')]
+   <sound tempo> by bar, E57's converter:     [('1', '152'), ('8', '142'), ('9', '132'), ('10', '80'), ('10', '132'), ('11', '152'), ('11', '132'), ('12', '112'), ('14', '132'), ('15', '104')]
+CHANGED song.classical.beethoven-symphony-no-7-second-movement-piano-transcription.pdmx (QmW3YQV2KfPNYR1ZSEPx5qj1B3iNbsX2kqfmXPUDkyh4se): committed-converter output f3f33fdd61fc, E57's 0f83abfcf196
+   <sound tempo> by bar, committed converter: [('1', '72')]
+   <sound tempo> by bar, E57's converter:     [('1', '72'), ('50', '60'), ('51', '72'), ('99', '60'), ('99', '72'), ('224', '60'), ('225', '72'), ('243', '60'), ('243', '72'), ('247', '60'), ('247', '72'), ('251', '60'), ('251', '72'), ('254', '60'), ('254', '72'), ('255', '60'), ('255', '72'), ('271', '60'), ('271', '72'), ('274', '60')]
+CHANGED song.classical.vivaldi-summer-from-the-four-seasons-third-movement-piano-transcription.pdmx (QmVCyFhS2bCYTxPnCMLX3D5hMXBxKHT1Gt3J9GchhbcyiQ): committed-converter output 1662866609ff, E57's 4eb5439c7b18
+   <sound tempo> by bar, committed converter: [('1', '150')]
+   <sound tempo> by bar, E57's converter:     [('1', '150'), ('40', '30'), ('40', '140'), ('44', '30'), ('44', '140'), ('48', '30'), ('48', '140'), ('73', '30'), ('74', '150'), ('119', '20'), ('120', '150')]
+CHANGED song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx (QmUkCd5kX3tLNtrCNzmMgNSLJ7GGFsjfGbMBsNgq7612ox): committed-converter output 29b758595de4, E57's c281886a939e
+   <sound tempo> by bar, committed converter: [('1', '40')]
+   <sound tempo> by bar, E57's converter:     [('1', '40'), ('1', '46'), ('3', '40'), ('3', '46'), ('4', '40'), ('4', '46'), ('6', '44'), ('6', '42'), ('7', '36'), ('7', '24'), ('7', '48'), ('9', '56'), ('11', '48'), ('11', '56'), ('12', '48'), ('13', '56'), ('15', '48'), ('16', '56'), ('16', '48'), ('17', '56'), ('17', '48'), ('18', '56'), ('21', '48'), ('21', '56'), ('25', '48'), ('26', '56'), ('27', '48'), ('27', '56'), ('30', '48'), ('30', '56'), ('31', '48'), ('31', '56'), ('32', '48'), ('32', '56'), ('35', '48'), ('36', '56'), ('37', '48'), ('37', '42'), ('38', '56'), ('39', '60'), ('40', '56'), ('41', '48'), ('42', '56'), ('43', '60'), ('44', '56'), ('44', '48'), ('45', '56'), ('46', '60'), ('47', '56'), ('48', '60'), ('49', '56'), ('50', '60'), ('55', '54'), ('55', '48'), ('55', '36'), ('56', '24'), ('56', '56'), ('57', '56'), ('61', '66'), ('62', '70'), ('62', '66'), ('65', '56'), ('65', '66'), ('66', '72'), ('66', '66'), ('67', '54'), ('67', '48'), ('67', '66'), ('68', '72'), ('71', '66'), ('71', '60'), ('72', '66'), ('74', '78'), ('74', '88'), ('74', '96'), ('75', '132'), ('76', '164'), ('80', '78'), ('80', '66'), ('83', '66'), ('86', '54'), ('88', '60'), ('94', '54'), ('99', '40'), ('99', '82'), ('100', '90'), ('101', '48'), ('101', '90'), ('103', '48'), ('103', '78'), ('104', '90'), ('105', '48'), ('105', '90'), ('107', '76'), ('108', '90'), ('109', '76'), ('110', '90'), ('112', '48'), ('112', '90'), ('113', '76'), ('114', '90'), ('116', '76'), ('117', '90'), ('119', '76'), ('121', '84'), ('124', '72'), ('125', '60'), ('125', '84'), ('125', '76'), ('126', '60'), ('126', '84'), ('127', '60'), ('127', '84'), ('127', '76'), ('128', '70'), ('128', '60'), ('129', '54'), ('129', '60'), ('131', '54'), ('131', '60'), ('133', '60'), ('133', '54'), ('134', '42'), ('134', '36'), ('134', '30'), ('135', '96'), ('135', '40'), ('135', '96'), ('136', '76'), ('137', '60'), ('137', '48'), ('137', '24'), ('138', '60'), ('138', '66'), ('140', '60'), ('141', '54'), ('142', '60'), ('142', '66'), ('143', '60'), ('144', '54'), ('145', '60'), ('146', '66'), ('147', '60'), ('148', '54'), ('149', '60'), ('150', '54'), ('150', '60'), ('152', '60'), ('153', '54'), ('154', '60'), ('155', '66'), ('155', '72'), ('158', '60'), ('159', '48'), ('159', '72'), ('165', '78'), ('166', '86'), ('166', '96'), ('171', '96'), ('171', '80'), ('171', '72'), ('172', '24'), ('172', '86'), ('172', '72'), ('173', '86'), ('173', '72'), ('174', '86'), ('174', '72'), ('175', '86'), ('177', '72'), ('177', '80'), ('182', '72'), ('182', '72'), ('183', '80'), ('188', '72'), ('189', '80'), ('194', '88'), ('202', '96'), ('204', '72'), ('205', '60'), ('205', '24'), ('206', '52'), ('210', '72'), ('214', '30'), ('214', '68'), ('226', '60'), ('227', '68'), ('228', '60'), ('229', '68'), ('230', '78'), ('231', '84'), ('232', '92'), ('233', '98'), ('234', '104'), ('236', '110'), ('238', '116'), ('240', '72'), ('241', '60'), ('242', '36')]
+CHANGED song.classical.bach-fugue-in-g-minor-bwv-578-piano-transcription.pdmx (QmUx9b8AB8eFp7hoX99ss9GHk5pSCkKL33zXrenFvhvJbW): committed-converter output ad925811634f, E57's a2fc3e1b817e
+   <sound tempo> by bar, committed converter: [('1', '92')]
+   <sound tempo> by bar, E57's converter:     [('1', '92'), ('67', '82'), ('67', '72'), ('67', '60'), ('68', '48')]
+CHANGED song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx (QmX4y9HqzeCv1rTcbd5dCjkJKEC5yyjNagY3VRm6MPqyHp): committed-converter output 5209d5ec8de4, E57's 6bcd78937c65
+   <sound tempo> by bar, committed converter: [('1', '168')]
+   <sound tempo> by bar, E57's converter:     [('1', '168'), ('3', '100'), ('3', '120'), ('3', '144'), ('3', '160'), ('4', '168'), ('5', '168'), ('12', '164'), ('12', '160'), ('12', '156'), ('12', '152'), ('13', '144'), ('13', '152'), ('13', '156'), ('13', '160'), ('16', '156'), ('16', '152'), ('16', '140'), ('16', '128'), ('17', '160'), ('19', '156'), ('19', '152'), ('19', '140'), ('19', '128'), ('20', '160'), ('24', '152'), ('24', '144'), ('24', '136'), ('24', '128'), ('24', '120'), ('25', '168'), ('35', '140'), ('35', '160'), ('37', '120'), ('37', '132'), ('37', '144'), ('38', '148'), ('38', '152'), ('38', '156'), ('39', '160'), ('39', '152'), ('39', '148'), ('39', '144'), ('40', '140'), ('40', '136'), ('40', '120'), ('40', '100'), ('40', '80'), ('40', '60'), ('40', '40'), ('41', '60'), ('41', '70'), ('41', '74'), ('41', '76'), ('42', '80'), ('42', '82'), ('42', '84'), ('42', '86'), ('43', '88'), ('45', '84'), ('45', '80'), ('46', '88'), ('49', '72'), ('49', '88'), ('49', '80'), ('50', '88'), ('50', '86'), ('50', '84'), ('51', '88'), ('53', '84'), ('53', '82'), ('53', '80'), ('54', '88'), ('57', '72'), ('57', '88'), ('57', '80'), ('58', '86'), ('58', '84'), ('58', '88'), ('60', '84'), ('60', '80'), ('60', '60'), ('60', '80'), ('61', '88'), ('62', '78'), ('62', '74'), ('63', '88'), ('65', '86'), ('65', '85'), ('65', '84'), ('65', '80'), ('66', '88'), ('69', '72'), ('69', '88'), ('69', '80'), ('70', '84'), ('70', '80'), ('70', '88'), ('72', '84'), ('72', '80'), ('72', '45'), ('73', '88'), ('74', '76'), ('74', '70'), ('75', '88'), ('77', '87'), ('77', '86'), ('77', '85'), ('77', '84'), ('77', '80'), ('78', '88'), ('81', '68'), ('81', '80'), ('81', '76'), ('82', '80'), ('82', '74'), ('82', '66'), ('82', '58'), ('82', '40'), ('83', '176'), ('90', '168'), ('90', '160'), ('90', '152'), ('90', '144'), ('91', '136'), ('91', '160'), ('94', '156'), ('94', '152'), ('94', '136'), ('95', '120'), ('95', '160'), ('97', '144'), ('97', '132'), ('98', '120'), ('98', '160'), ('102', '152'), ('102', '144'), ('102', '136'), ('103', '120'), ('103', '176'), ('113', '148'), ('113', '176'), ('115', '120'), ('115', '128'), ('115', '136'), ('115', '148'), ('116', '156'), ('116', '160'), ('116', '164'), ('116', '168'), ('118', '160'), ('118', '152'), ('119', '176'), ('126', '168'), ('126', '160'), ('135', '160'), ('135', '152'), ('135', '144'), ('135', '136'), ('136', '128'), ('136', '116'), ('136', '100'), ('136', '80'), ('136', '60'), ('136', '40'), ('137', '80'), ('137', '100'), ('137', '95'), ('137', '90'), ('137', '26'), ('138', '76'), ('138', '64'), ('138', '58'), ('138', '16')]
+CHANGED song.classical.bach-fugue-in-g-minor-bwv-542-piano-transcription.pdmx (QmemwP73tZHAVDyP81DutePDjdXsPWVJr1iFD86THdinmA): committed-converter output 05ce865c7d16, E57's a296fdf524f4
+   <sound tempo> by bar, committed converter: [('1', '92')]
+   <sound tempo> by bar, E57's converter:     [('1', '92'), ('110', '72'), ('110', '92'), ('114', '82'), ('114', '72')]
+CHANGED song.classical.bach-invention-no-7-in-e-minor-bwv-778.pdmx (QmPd5AzwrvBgj6EwTiu1uvG5Hoc8X2GSxqyrDycqrCY6w4): committed-converter output 1d2e5a690bf9, E57's a412a57e9869
+   <sound tempo> by bar, committed converter: [('1', '72')]
+   <sound tempo> by bar, E57's converter:     [('1', '72'), ('22', '71'), ('22', '70'), ('22', '69'), ('22', '68'), ('22', '67'), ('23', '66'), ('23', '65'), ('23', '64'), ('23', '63'), ('23', '62'), ('23', '61'), ('23', '60'), ('23', '59'), ('23', '58'), ('23', '57'), ('23', '56'), ('23', '55'), ('23', '54'), ('23', '53'), ('23', '52'), ('23', '51'), ('23', '50')]
+CHANGED song.classical.bach-invention-no-8-in-f-major-bwv-779.pdmx (QmZwC4zWei5ivTZDoe3z9V5YTBZWGKYhtNiZQVkyLRpuch): committed-converter output 2a162e1adec3, E57's fb0feafafebb
+   <sound tempo> by bar, committed converter: [('1', '120')]
+   <sound tempo> by bar, E57's converter:     [('1', '120'), ('33', '114'), ('33', '108'), ('33', '102'), ('33', '96'), ('33', '90'), ('33', '84')]
+CHANGED song.classical.bach-invention-no-9-in-f-minor-bwv-780.pdmx (QmPXBnwYth7knzNKpr3uWgZqxfnQ7DLkhjj9Zo8tHQN8t3): committed-converter output 0a5f3aa432fd, E57's 35b0f4ce23ae
+   <sound tempo> by bar, committed converter: [('1', '112')]
+   <sound tempo> by bar, E57's converter:     [('1', '112'), ('34', '48')]
+CHANGED song.classical.bach-invention-no-13-in-a-minor-bwv-784.pdmx (QmUbCP81miGkFzFSk3cTqCXyNV4psQm4UM33sjmc4Twpae): committed-converter output ca417ae8517f, E57's 9960d6823697
+   <sound tempo> by bar, committed converter: [('1', '90')]
+   <sound tempo> by bar, E57's converter:     [('1', '90'), ('1', '100'), ('2', '105'), ('3', '110'), ('3', '100'), ('4', '110'), ('4', '100'), ('5', '110'), ('7', '105'), ('7', '110'), ('8', '105'), ('9', '112'), ('9', '115'), ('9', '110'), ('10', '115'), ('10', '110'), ('11', '115'), ('13', '105'), ('13', '110'), ('13', '110'), ('14', '105'), ('14', '115'), ('15', '110'), ('15', '105'), ('15', '115'), ('16', '105'), ('16', '115'), ('17', '110'), ('17', '105'), ('18', '115'), ('19', '110'), ('20', '115'), ('21', '105'), ('21', '110'), ('22', '115'), ('24', '110'), ('24', '115'), ('25', '105'), ('25', '100')]
+CHANGED song.classical.bach-invention-no-14-in-b-flat-major-bwv-785.pdmx (QmStRTzGoURJhRGhb2xSc6R3X7MNcnoFQapwKWBUhvZap4): committed-converter output 7bf880ac5ab5, E57's 25c93b04b700
+   <sound tempo> by bar, committed converter: [('1', '69')]
+   <sound tempo> by bar, E57's converter:     [('1', '69'), ('19', '68'), ('19', '67'), ('19', '66'), ('19', '65'), ('19', '64'), ('19', '63'), ('19', '62'), ('19', '61'), ('19', '60'), ('19', '59'), ('19', '58'), ('19', '57'), ('19', '56'), ('19', '55'), ('19', '54'), ('19', '53'), ('19', '52'), ('19', '51'), ('19', '50'), ('19', '49'), ('19', '48'), ('19', '47'), ('20', '69')]
+CHANGED song.classical.bach-little-prelude-in-f-major-bwv-928.pdmx (QmYuu8RmRq8UNA1Tmd9wLHhhG8aNvTQ55dKMNUKTg51CcA): committed-converter output c9d9f0b37c6a, E57's dbd075d848f5
+   <sound tempo> by bar, committed converter: [('1', '78')]
+   <sound tempo> by bar, E57's converter:     [('1', '78'), ('23', '75'), ('24', '70'), ('24', '60')]
+CHANGED song.classical.bertini-etude-in-g-minor-op-29-no-3.pdmx (Qmb1Jz9hLTxaJDUfjRUiDXR7DduU98LBn14fyHmAQK6f6F): committed-converter output 285f56158a68, E57's c9090901ddee
+   <sound tempo> by bar, committed converter: [('1', '172')]
+   <sound tempo> by bar, E57's converter:     [('1', '172'), ('29', '150'), ('29', '140')]
+CHANGED song.classical.beyer-exercise-no-38.pdmx (QmcUSHF7CPTohQHXBiUxabMZDdAVZyiXWCYFW8YBbZgCpr): committed-converter output d208fdacb6ab, E57's 73ce82e63107
+   <sound tempo> by bar, committed converter: [('1', '100')]
+   <sound tempo> by bar, E57's converter:     [('1', '100'), ('1', '114')]
+CHANGED song.classical.burgmuller-pastorale-op-100-no-3.pdmx (QmRNxuXgvgqbqF4W4QvuZdnhTPJYbVhApSxHdehFHcqGzc): committed-converter output 42bd32b57d72, E57's 69718aeef317
+   <sound tempo> by bar, committed converter: [('1', '66')]
+   <sound tempo> by bar, E57's converter:     [('1', '66'), ('1', '92')]
+CHANGED song.classical.duvernoy-etude-op-176-no-2.pdmx (QmQTS9efHxwxbt8RMrJeiZPia9r4kSKRP696C2o7Xa4NKX): committed-converter output 19519cbeffd9, E57's a2febbf1a494
+   <sound tempo> by bar, committed converter: [('0', '120')]
+   <sound tempo> by bar, E57's converter:     [('0', '120'), ('0', '100')]
+CHANGED song.classical.duvernoy-etude-op-176-no-3.pdmx (QmTsCiXWCh3ggFRndi6DfFvogb94S3Gj2HL46cf5Bfgzx7): committed-converter output f65e714dc5e8, E57's 0e97c1b8ea21
+   <sound tempo> by bar, committed converter: [('1', '112')]
+   <sound tempo> by bar, E57's converter:     [('1', '112'), ('1', '100')]
+CHANGED song.classical.duvernoy-etude-op-176-no-4.pdmx (QmZSkkMsNLuU9vFB1MXJAJpCncYyCvehigxXEutumcSkGV): committed-converter output 4ee9d3bc31e8, E57's 4ea3dfb48609
+   <sound tempo> by bar, committed converter: [('1', '112')]
+   <sound tempo> by bar, E57's converter:     [('1', '112'), ('1', '100')]
+CHANGED song.classical.duvernoy-etude-op-176-no-5.pdmx (Qmc9Km8ufiLXnpMepS5vBYXxfBuSRU5ZMEkTwzLb3EdzS5): committed-converter output 3e2dd4725bbd, E57's 8011b7783b74
+   <sound tempo> by bar, committed converter: [('1', '120')]
+   <sound tempo> by bar, E57's converter:     [('1', '120'), ('1', '100')]
+CHANGED song.classical.duvernoy-etude-op-176-no-6.pdmx (QmX8Adb4sJp5KsY7PS6ECNa4hxci1voWafLU5p99PSygXg): committed-converter output f88cc2f3bcc8, E57's 6b5edf3323d4
+   <sound tempo> by bar, committed converter: [('0', '120')]
+   <sound tempo> by bar, E57's converter:     [('0', '120'), ('0', '88')]
+CHANGED song.classical.duvernoy-etude-op-176-no-7.pdmx (QmUoPiKBCbG6U7A1HQpgpKfgYMaN862Y7cEvX72TMvVu19): committed-converter output d32fc5b8c937, E57's 42c367f06a51
+   <sound tempo> by bar, committed converter: [('1', '120')]
+   <sound tempo> by bar, E57's converter:     [('1', '120'), ('1', '100')]
+CHANGED song.classical.duvernoy-etude-op-176-no-8.pdmx (Qmb9FznCmCeajMPZ8Pqt7Mjid57MAAJ9NSR2pS6ac79ZCz): committed-converter output c70f1d9bf947, E57's 199085cfb4b4
+   <sound tempo> by bar, committed converter: [('1', '120')]
+   <sound tempo> by bar, E57's converter:     [('1', '120'), ('1', '88')]
+CHANGED song.classical.grieg-album-leaf-op-47-no-2.pdmx (QmUEcz2AnA4Ls7pGd9gYu8fPYfk9QRgB5hvFj1zBhLWQL3): committed-converter output d2643be066c3, E57's 700089d5c475
+   <sound tempo> by bar, committed converter: [('1', '153')]
+   <sound tempo> by bar, E57's converter:     [('1', '153'), ('49', '153'), ('49', '150'), ('49', '148.5'), ('49', '145.5'), ('50', '153')]
+CHANGED song.classical.lemoine-etude-op-37-no-12.pdmx (QmcQsnnzorLzs1YRpa5YCzEWxHvxNEKLiF9Rih3C67Yo75): committed-converter output 8a709013c54a, E57's 8018b1065023
+   <sound tempo> by bar, committed converter: [('1', '130')]
+   <sound tempo> by bar, E57's converter:     [('1', '130'), ('1', '118')]
+CHANGED song.classical.mendelssohn-song-without-words-op-19-no-1.pdmx (QmepdEgDRkBfNLzy9QE7zjnA8ooBKWKZWHQFgErQ2XaDPb): committed-converter output 14e20cf6f910, E57's 4961e19d24db
+   <sound tempo> by bar, committed converter: [('1', '72')]
+   <sound tempo> by bar, E57's converter:     [('1', '72'), ('1', '82'), ('1', '92'), ('2', '80'), ('3', '92'), ('3', '80'), ('4', '92'), ('5', '80'), ('6', '92'), ('7', '80'), ('8', '92'), ('8', '80'), ('8', '92'), ('9', '80'), ('9', '92'), ('10', '80'), ('10', '92'), ('12', '80'), ('13', '92'), ('19', '80'), ('19', '92'), ('20', '76'), ('20', '80'), ('20', '92'), ('21', '72'), ('21', '92'), ('21', '72'), ('22', '80'), ('22', '92'), ('24', '80'), ('25', '92'), ('26', '80'), ('27', '92'), ('28', '80'), ('29', '92'), ('33', '80'), ('34', '92'), ('34', '80'), ('35', '92'), ('35', '80'), ('36', '92'), ('40', '84'), ('41', '92'), ('44', '80'), ('45', '92'), ('45', '84'), ('47', '80'), ('49', '74'), ('49', '20'), ('50', '46')]
+CHANGED song.classical.mendelssohn-hunting-song-op-19-no-3.pdmx (QmWhYLo8JPz5PYpH3fsTGqwMyurmx3PyASN8p7UqaViVqo): committed-converter output 7355a42c1ce8, E57's 59022c53c436
+   <sound tempo> by bar, committed converter: [('1', '176')]
+   <sound tempo> by bar, E57's converter:     [('1', '176'), ('4', '146'), ('6', '176'), ('31', '176')]
+CHANGED song.classical.mozart-minuet-and-trio-k-1.pdmx (QmfCULDvejZyShSRANTgFLGt4TudSaWNcuAfbV89RhdFPP): committed-converter output c748efa90e43, E57's fc32a4ff3420
+   <sound tempo> by bar, committed converter: [('0', '180')]
+   <sound tempo> by bar, E57's converter:     [('0', '180'), ('0', '132')]
+CHANGED song.classical.mozart-allegro-in-c-major-k-1b.pdmx (QmQCiAkXJAdetmkVPsNTgr8EdKKtJYJagMNGiYqwcUCs7E): committed-converter output 09bfffc42d0b, E57's 8385bfbea624
+   <sound tempo> by bar, committed converter: [('1', '117')]
+   <sound tempo> by bar, E57's converter:     [('1', '117'), ('10', '110'), ('10', '100'), ('11', '95'), ('11', '90')]
+CHANGED song.classical.mozart-andante-in-g-minor-k-15r.pdmx (QmUUrLumV8VBY9xwiB3RErhvdH1htpZMcW7mX11g75ckpA): committed-converter output 213155983979, E57's b3626e62c392
+   <sound tempo> by bar, committed converter: [('1', '92')]
+   <sound tempo> by bar, E57's converter:     [('1', '92'), ('1', '70.5'), ('73', '70.5'), ('73', '67.5'), ('73', '66'), ('74', '64.5'), ('74', '61.5'), ('74', '60'), ('75', '58.49999999999999'), ('75', '55.5'), ('75', '54')]
+CHANGED song.classical.mozart-movement-for-a-piano-sonata-in-b-flat-major-k-15aa.pdmx (QmdVqUuHxLdEudWTNDqCV5WCyLCkaXML1Z9iNDRhdFwxsx): committed-converter output b53357b1d950, E57's 4ab3591a8e7e
+   <sound tempo> by bar, committed converter: [('1', '115')]
+   <sound tempo> by bar, E57's converter:     [('1', '115'), ('46', '115'), ('46', '109'), ('46', '103'), ('46', '98'), ('47', '92'), ('47', '81')]
+CHANGED song.classical.schumann-spring-song-op-68-no-15.pdmx (QmWQGeMMH6h27WrVL62zjr5zRmRx1DA89Bkv5oNNEDLstW): committed-converter output 0f47e39b879d, E57's ad003e5094d3
+   <sound tempo> by bar, committed converter: [('1', '84')]
+   <sound tempo> by bar, E57's converter:     [('1', '84'), ('45', '84')]
+CHANGED song.blues.boogie-and-blues-bass-lines (QmVA3u1y5X7efnruukvX1m3ZhP66gnPWbRXwvSWo5jXf1B): committed-converter output 7c6348d84617, E57's ced5d27eeb2f
+   <sound tempo> by bar, committed converter: [('1', '300')]
+   <sound tempo> by bar, E57's converter:     [('1', '300'), ('27', '130')]
+CHANGED song.classical.albeniz-asturias.pdmx (Qmb5NuVgSQPhVrei5UwHRAY8DQPHTuWETkqoN9WDyooPyi): committed-converter output e8b9712e4dcb, E57's 5782936e5171
+   <sound tempo> by bar, committed converter: [('1', '144')]
+   <sound tempo> by bar, E57's converter:     [('1', '144'), ('63', '92'), ('123', '144'), ('185', '52.5'), ('194', '92')]
+CHANGED song.classical.holy-holy-holy-lord-god-of-hosts-hugg-geo-c-hugg.pdmx (QmTErR15NKs5XS4LngRFQaHHPSVBCrJ4xqHdca3YdJJtgn): committed-converter output 295f3aa1a2f5, E57's bb38d1dc8627
+   <sound tempo> by bar, committed converter: [('1', '100')]
+   <sound tempo> by bar, E57's converter:     [('1', '100'), ('15', '99'), ('15', '97'), ('15', '94'), ('15', '96'), ('15', '93'), ('15', '91'), ('15', '88'), ('15', '90'), ('15', '87'), ('15', '85'), ('16', '84'), ('16', '82'), ('16', '81'), ('16', '79'), ('16', '78'), ('16', '76')]
+CHANGED song.classical.bach-o-sacred-head-johann-sebastian-bach-on-a-tune-by-hans-leo-hassler.pdmx (QmZ2SsdwgaxdvigPXwbAUwjXvoHU7nigJiH7t9yQqbFHis): committed-converter output 8443a3400065, E57's 820771591fdf
+   <sound tempo> by bar, committed converter: [('1', '80')]
+   <sound tempo> by bar, E57's converter:     [('1', '80'), ('21', '80')]
+CHANGED song.pop.mederic-niot-summer-road-s-cakewalk.pdmx (QmVmQG3JbLJp2mapSZpY8i2dm9gSciiPz17cgVbhpsd23X): committed-converter output d1a21beff271, E57's fe9bd275bffe
+   <sound tempo> by bar, committed converter: [('1', '120')]
+   <sound tempo> by bar, E57's converter:     [('1', '120'), ('19', '120'), ('19', '118'), ('19', '116'), ('19', '114'), ('19', '112'), ('19', '110'), ('19', '108'), ('19', '106'), ('20', '104'), ('20', '102'), ('20', '100'), ('20', '98'), ('20', '96'), ('20', '94'), ('20', '92'), ('20', '90'), ('39', '90'), ('39', '90'), ('39', '91'), ('39', '91'), ('39', '92'), ('39', '93'), ('40', '97'), ('40', '98'), ('40', '99'), ('40', '99'), ('40', '100'), ('40', '101'), ('41', '105'), ('41', '106'), ('41', '106'), ('41', '107'), ('41', '108'), ('41', '109'), ('41', '109'), ('41', '110'), ('41', '111'), ('41', '112'), ('42', '113'), ('42', '113'), ('42', '114'), ('42', '115'), ('42', '116'), ('42', '117'), ('42', '118'), ('42', '119'), ('42', '120'), ('59', '120'), ('59', '117'), ('59', '115'), ('59', '112'), ('59', '110'), ('59', '107'), ('59', '105'), ('59', '102'), ('60', '100'), ('60', '97'), ('60', '95'), ('60', '92'), ('60', '90'), ('61', '120')]
+CHANGED song.folk.el-gordo-triste-piazzolla-ferrer.pdmx (QmXuMn7vq7C5PEYMc3J6yU5sfCrN13jRmcHy2PG3xVRhsG): committed-converter output 446e740161b8, E57's d7ef0819375a
+   <sound tempo> by bar, committed converter: [('1', '58')]
+   <sound tempo> by bar, E57's converter:     [('1', '58'), ('17', '98'), ('36', '60')]
+
+changed 96, byte-identical 446, failing under both converters alike 0, faults 0
+changed rows: song.pop.misc-christmas-we-wish-you-a-merry-christmas.pdmx, song.pop.misc-christmas-joy-to-the-world-piano-solo.pdmx, song.folk.uti-var-hage-swedish-traditional-song.pdmx, song.classical.holst-jupiter-theme-arranged-for-piano-gustav-holst.pdmx, song.folk.john-denver-annie-s-song.pdmx, song.folk.octobre-francis-cabrel.pdmx, song.pop.misc-computer-games-minecraft-calm.pdmx, song.pop.kodaline-all-i-want-kodaline.pdmx, song.pop.alexandre-desplat-the-danish-girl-theme.pdmx, song.classical.leontovych-carol-of-the-bells-christmas-medley.pdmx, song.classical.grieg-grieg-anitra-s-dance-piano-solo.pdmx, song.classical.rachmaninoff-rachmaninoff-piano-concerto-no-2.pdmx, song.classical.radetzky-march-for-easy-piano.pdmx, song.classical.uematsu-to-zanarkand-final-fantasy-x.pdmx, song.classical.offenbach-cancan-offenbach.pdmx, song.classical.anonymous-romance-anonimo-romanza.pdmx, song.classical.debussy-debussy-claude-la-plus-que-lente.pdmx, song.classical.bennet-rosemary-s-waltz.pdmx, song.classical.duvernoy-etude-op-176-no-1.pdmx, song.classical.debussy-children-s-corner-jimbo-s-lullaby.pdmx, song.folk.amazing-grace-in-g-major-for-piano-breezepiano.pdmx, song.folk.this-country-of-mine-extended-mix-of-negaraku-malaysia-s-national-anthem-featuring-britain-japan-singapore-and-brunei.pdmx, song.pop.coldplay-clocks-coldplay.pdmx, song.pop.die-wilden-huehner-die-wilden-huhner-ouverture-finished.pdmx, song.pop.league-of-legends-phoenix-league-of-legends.pdmx, song.pop.misc-cartoons-mabinogi-saga-login-theme-an-old-story-from-grandma.pdmx, song.pop.laura-shigihara-loonboon.pdmx, song.pop.eiffel-65-i-m-blue.pdmx, song.pop.misc-cartoons-giant-woman.pdmx, song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx, song.pop.misc-computer-games-fallout-4-trailer-soundtrack.pdmx, song.jazz.vince-guaraldi-skating.pdmx, song.classical.debussy-children-s-corner-doctor-gradus-ad-parnassum.pdmx, song.classical.debussy-debussy-premiere-arabesque-l-66-no-1.pdmx, song.classical.tchaikovsky-october-autumn-song-from-tchaikovsky-s-the-seasons.pdmx, song.classical.elgar-elgar-enigma-variations-xi-nimrod.pdmx, song.classical.puccini-o-mio-babbino-caro-for-solo-piano.pdmx, song.classical.s-awecki-super-mario-land-2-ending-theme-as-played-by-tom-brier.pdmx, song.classical.elgar-salut-d-amour-edward-elgar-love-s-greeting.pdmx, song.classical.mahler-symphony-no-5-4th-movement-excerpt-piano-solo.pdmx, song.classical.debussy-children-s-corner-the-little-shepherd.pdmx, song.folk.3-variations-on-happy-birthday.pdmx, song.folk.wake-me-up-avicii.pdmx, song.pop.toby-fox-undertale-undertale-piano.pdmx, song.pop.hiroyuki-sawano-levi-s-choice-thanksat-t-kt-attack-on-titan.pdmx, song.pop.honne-location-unknown-brooklyn-session-honne.pdmx, song.pop.takeru-kanazaki-fire-emblem-three-houses-apex-of-the-world.pdmx, song.jazz.tom-brier-uncle-ben-s-cakewalk-tom-brier.pdmx, song.classical.debussy-claude-debussy-la-cathedrale-engloutie-the-submerged-cathedral.pdmx, song.classical.scarlatti-d-scarlatti-sonata-a-major-k-323.pdmx, song.pop.boogie-easy-for-beginners.pdmx, song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx, song.classical.chopin-prelude-no-1-in-c-major-op-28.pdmx, song.classical.chopin-nocturne-in-f-sharp-major-op-15-no-2.pdmx, song.classical.joplin-search-light-rag.pdmx, song.classical.chopin-prelude-no-13-in-f-sharp-major-op-28.pdmx, song.classical.brahms-intermezzo-in-a-major-op-118-no-2.pdmx, song.classical.debussy-reverie.pdmx, song.classical.schumann-carnaval-op-9-no-12-chopin.pdmx, song.classical.beethoven-symphony-no-7-second-movement-piano-transcription.pdmx, song.classical.vivaldi-summer-from-the-four-seasons-third-movement-piano-transcription.pdmx, song.classical.chopin-ballade-no-4-in-f-minor-op-52.pdmx, song.classical.bach-fugue-in-g-minor-bwv-578-piano-transcription.pdmx, song.classical.chopin-fantaisie-impromptu-in-c-sharp-minor-op-66.pdmx, song.classical.bach-fugue-in-g-minor-bwv-542-piano-transcription.pdmx, song.classical.bach-invention-no-7-in-e-minor-bwv-778.pdmx, song.classical.bach-invention-no-8-in-f-major-bwv-779.pdmx, song.classical.bach-invention-no-9-in-f-minor-bwv-780.pdmx, song.classical.bach-invention-no-13-in-a-minor-bwv-784.pdmx, song.classical.bach-invention-no-14-in-b-flat-major-bwv-785.pdmx, song.classical.bach-little-prelude-in-f-major-bwv-928.pdmx, song.classical.bertini-etude-in-g-minor-op-29-no-3.pdmx, song.classical.beyer-exercise-no-38.pdmx, song.classical.burgmuller-pastorale-op-100-no-3.pdmx, song.classical.duvernoy-etude-op-176-no-2.pdmx, song.classical.duvernoy-etude-op-176-no-3.pdmx, song.classical.duvernoy-etude-op-176-no-4.pdmx, song.classical.duvernoy-etude-op-176-no-5.pdmx, song.classical.duvernoy-etude-op-176-no-6.pdmx, song.classical.duvernoy-etude-op-176-no-7.pdmx, song.classical.duvernoy-etude-op-176-no-8.pdmx, song.classical.grieg-album-leaf-op-47-no-2.pdmx, song.classical.lemoine-etude-op-37-no-12.pdmx, song.classical.mendelssohn-song-without-words-op-19-no-1.pdmx, song.classical.mendelssohn-hunting-song-op-19-no-3.pdmx, song.classical.mozart-minuet-and-trio-k-1.pdmx, song.classical.mozart-allegro-in-c-major-k-1b.pdmx, song.classical.mozart-andante-in-g-minor-k-15r.pdmx, song.classical.mozart-movement-for-a-piano-sonata-in-b-flat-major-k-15aa.pdmx, song.classical.schumann-spring-song-op-68-no-15.pdmx, song.blues.boogie-and-blues-bass-lines, song.classical.albeniz-asturias.pdmx, song.classical.holy-holy-holy-lord-god-of-hosts-hugg-geo-c-hugg.pdmx, song.classical.bach-o-sacred-head-johann-sebastian-bach-on-a-tune-by-hans-leo-hassler.pdmx, song.pop.mederic-niot-summer-road-s-cakewalk.pdmx, song.folk.el-gordo-triste-piazzolla-ferrer.pdmx

@@ -539,6 +539,31 @@ class TestRepairedIdentities(CacheCase):
         self.assertEqual(convert.former_identities(new, [], [repair]), [])
         self.assertEqual(convert.former_identities(new, [{**entry, "file": "scores/pdmx/y.mxl"}], [repair]), [])
 
+    def test_e57_an_undated_old_file_is_named_by_its_restore_lines_alone(self) -> None:
+        # E57: a repair of a file the build converts relates the undated old file (the identity every catalogue
+        # since E50a served for it) beside the dated one: its `from` is the undated form the table recorded for an
+        # entry of that file, and the repaired file with the restore lines put back, zipped as the converter zips
+        # now, is those bytes. Nothing is named that the table did not record as an undated form of that file, and
+        # nothing that does not rebuild.
+        new, entry, repair = self.fixture()
+        closing = "  </identification>\n"
+        old_undated = self.pinned("old-undated.mxl", UNDATED_HEADER.replace(closing, closing + self.OLD_TEMPO))
+        self.assertEqual(sha256(old_undated), entry["undated"])
+        undated = {**{k: v for k, v in repair.items() if k not in ("date", "system")}, "from": entry["undated"], "undated": True}
+        self.assertEqual(convert.former_identities(new, [entry], [undated]), [entry["undated"]])
+        self.assertEqual(sorted(convert.former_identities(new, [entry], [repair, undated])), sorted([entry["sha256"], entry["undated"]]))
+        hunk = undated["restore"][0]
+        refused = {
+            "an undated form the table did not record": ([], undated),
+            "another file's undated form": ([{**entry, "file": "scores/imported/y.mxl"}], undated),
+            "the dated file's identity under the undated proof": ([entry], {**undated, "from": entry["sha256"]}),
+            "a restore line that is not what the old file held": ([entry], {**undated, "restore": [{**hunk, "was": hunk["was"].replace("96", "97")}]}),
+            "no restore at all": ([entry], {**undated, "restore": []}),
+        }
+        for why, (table, bad) in refused.items():
+            with self.subTest(why):
+                self.assertEqual(convert.former_identities(new, table, [bad]), [])
+
     def test_the_committed_relations_re_prove_on_the_committed_scores(self) -> None:
         # The seven, on the committed bytes: each relation names the row's committed file (`convertedSha256`)
         # and an old identity E50a's table recorded for that file, and re-proves against the committed score.
@@ -548,18 +573,37 @@ class TestRepairedIdentities(CacheCase):
         relations = json.loads(convert.REPAIRED_IDENTITIES_FILE.read_text(encoding="utf-8"))["repairs"]
         items = {row["id"]: row for row in json.loads((repo / "content/sources/pdmx.json").read_text(encoding="utf-8"))["items"]}
         table = json.loads(convert.FORMER_IDENTITIES_FILE.read_text(encoding="utf-8"))["identities"]
-        self.assertEqual(sorted(one["id"] for one in relations), sorted([
-            "song.pop.margie.pdmx", "song.jazz.django-reinhardt-limehouse-blues.pdmx", "song.blues.singin-the-blues",
-            "song.blues.weary-blues", "song.blues.storyville-blues", "song.blues.wabash-blues", "song.blues.tishomingo-blues"]))
+        seven = sorted(["song.pop.margie.pdmx", "song.jazz.django-reinhardt-limehouse-blues.pdmx", "song.blues.singin-the-blues",
+                        "song.blues.weary-blues", "song.blues.storyville-blues", "song.blues.wabash-blues", "song.blues.tishomingo-blues"])
+        self.assertEqual(sorted(one["id"] for one in relations if one["change"].startswith("E50 ")), seven)
+        # E57 (Entry 183): beside E50's seven, every identity E57's converter change moved, and nothing else. A
+        # committed PDMX file re-proves here on its committed bytes; a file the build converts is not committed, so its
+        # two relations (the dated file E50a recorded and its undated form) re-prove on the build
+        # (`test_measured_truth`) and are held here to their shape and to the table.
+        self.assertEqual({one["change"].split(" ", 1)[0] for one in relations}, {"E50", "E57"})
         convert.historical_identities.cache_clear()
         convert.repaired_identities.cache_clear()
         for one in relations:
-            with self.subTest(one["id"]):
-                row = items[one["id"]]
+            with self.subTest(one["id"], undated=one.get("undated", False)):
                 # E50b: each repair also says it changed the tempo a run of the old file was measured against
                 # (`tempoChanged`), which the build carries to the app as `provenance.tempoRepairedFrom`.
-                self.assertEqual(set(one), {"id", "file", "change", "from", "date", "system", "to", "restore", "tempoChanged"})
                 self.assertIs(one["tempoChanged"], True)
+                if not one["file"].startswith("scores/pdmx/"):
+                    self.assertTrue(one["change"].startswith("E57 "))
+                    pair = [other for other in relations if other["id"] == one["id"]]
+                    self.assertEqual(len({other["to"] for other in pair}), 1)
+                    self.assertEqual(len({json.dumps(other["restore"]) for other in pair}), 1)
+                    if one.get("undated"):
+                        self.assertEqual(set(one), {"id", "file", "change", "from", "undated", "to", "restore", "tempoChanged"})
+                        self.assertTrue([e for e in table if e["file"] == one["file"] and e["undated"] == one["from"]])
+                    else:
+                        self.assertEqual(set(one), {"id", "file", "change", "from", "date", "system", "to", "restore", "tempoChanged"})
+                        recorded = [e for e in table if e["file"] == one["file"] and e["sha256"] == one["from"]]
+                        self.assertEqual([(e["date"], e["system"]) for e in recorded], [(one["date"], one["system"])])
+                        self.assertTrue(any(other.get("undated") and other["from"] == recorded[0]["undated"] for other in pair))
+                    continue
+                row = items[one["id"]]
+                self.assertEqual(set(one), {"id", "file", "change", "from", "date", "system", "to", "restore", "tempoChanged"})
                 self.assertEqual(one["file"], f"scores/pdmx/{row['cid']}.mxl")
                 score = repo / "content" / one["file"]
                 self.assertEqual(sha256(score), row["convertedSha256"])
@@ -567,7 +611,8 @@ class TestRepairedIdentities(CacheCase):
                 recorded = [e for e in table if e["file"] == one["file"] and e["sha256"] == one["from"]]
                 self.assertEqual([(e["date"], e["system"]) for e in recorded], [(one["date"], one["system"])])
                 self.assertEqual(convert.former_identities(score), [one["from"]])
-                self.assertFalse(row["tempoDefaulted"])
+                if one["id"] in seven:
+                    self.assertFalse(row["tempoDefaulted"])
                 # The relation never enters the table of rows: pdmx.json names no former identity.
                 self.assertFalse({"formerIdentities", "repairs", "restore"} & set(row), row["id"])
 

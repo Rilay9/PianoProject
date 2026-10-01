@@ -1,0 +1,146 @@
+convert.py is the committed file (git diff empty)
+test_a_kern_source_keeps_its_single_mark (tests.test_convert.TestTempoMarks.test_a_kern_source_keeps_its_single_mark) ... ok
+test_only_one_tempo_mark_survives (tests.test_convert.TestTempoMarks.test_only_one_tempo_mark_survives) ... ok
+test_b_the_march_shape_reaches_its_tempo_di_marcia (tests.test_convert.TestALaterTempoMarkSurvives.test_b_the_march_shape_reaches_its_tempo_di_marcia) ... FAIL
+test_b_the_rondo_shape_keeps_its_two_later_changes (tests.test_convert.TestALaterTempoMarkSurvives.test_b_the_rondo_shape_keeps_its_two_later_changes) ... FAIL
+test_b_the_waltz_shape_keeps_a_return_to_the_first_tempo (tests.test_convert.TestALaterTempoMarkSurvives.test_b_the_waltz_shape_keeps_a_return_to_the_first_tempo) ... FAIL
+test_c_a_different_tempo_in_the_other_spine_at_one_place_survives (tests.test_convert.TestALaterTempoMarkSurvives.test_c_a_different_tempo_in_the_other_spine_at_one_place_survives) ... FAIL
+test_c_a_different_tempo_on_one_staff_at_one_place_survives (tests.test_convert.TestALaterTempoMarkSurvives.test_c_a_different_tempo_on_one_staff_at_one_place_survives) ... FAIL
+test_d_a_mark_with_no_tempo_is_never_a_duplicate (tests.test_convert.TestALaterTempoMarkSurvives.test_d_a_mark_with_no_tempo_is_never_a_duplicate) ... ERROR
+test_d_a_sound_only_copy_gives_way_to_the_printed_mark (tests.test_convert.TestALaterTempoMarkSurvives.test_d_a_sound_only_copy_gives_way_to_the_printed_mark) ... FAIL
+test_d_a_tempo_beyond_the_tolerance_is_another_statement (tests.test_convert.TestALaterTempoMarkSurvives.test_d_a_tempo_beyond_the_tolerance_is_another_statement) ... FAIL
+test_d_the_printed_mark_first_is_kept_as_before (tests.test_convert.TestALaterTempoMarkSurvives.test_d_the_printed_mark_first_is_kept_as_before) ... ok
+test_the_tolerance_is_x42s (tests.test_convert.TestALaterTempoMarkSurvives.test_the_tolerance_is_x42s) ... ERROR
+
+======================================================================
+ERROR: test_d_a_mark_with_no_tempo_is_never_a_duplicate (tests.test_convert.TestALaterTempoMarkSurvives.test_d_a_mark_with_no_tempo_is_never_a_duplicate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_convert.py", line 328, in test_d_a_mark_with_no_tempo_is_never_a_duplicate
+    self.assertEqual(convert.duplicate_tempo_marks(score, marks), [], directions)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'convert' has no attribute 'duplicate_tempo_marks'
+
+======================================================================
+ERROR: test_the_tolerance_is_x42s (tests.test_convert.TestALaterTempoMarkSurvives.test_the_tolerance_is_x42s)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_convert.py", line 339, in test_the_tolerance_is_x42s
+    self.assertEqual(convert.SERIALIZATION_TOLERANCE, float(stated.group(1)))  # type: ignore[union-attr]
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'convert' has no attribute 'SERIALIZATION_TOLERANCE'
+
+======================================================================
+FAIL: test_b_the_march_shape_reaches_its_tempo_di_marcia (tests.test_convert.TestALaterTempoMarkSurvives.test_b_the_march_shape_reaches_its_tempo_di_marcia)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_convert.py", line 283, in test_b_the_march_shape_reaches_its_tempo_di_marcia
+    self.assertEqual(self.tempo_by_bar(written), [("1", 100.0), ("2", 120.0)])
+AssertionError: Lists differ: [('1', 100.0)] != [('1', 100.0), ('2', 120.0)]
+
+Second list contains 1 additional elements.
+First extra element 1:
+('2', 120.0)
+
+- [('1', 100.0)]
++ [('1', 100.0), ('2', 120.0)]
+
+======================================================================
+FAIL: test_b_the_rondo_shape_keeps_its_two_later_changes (tests.test_convert.TestALaterTempoMarkSurvives.test_b_the_rondo_shape_keeps_its_two_later_changes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_convert.py", line 271, in test_b_the_rondo_shape_keeps_its_two_later_changes
+    self.assertEqual(self.tempo_by_bar(written), [("1", 48.0), ("2", 152.0), ("3", 96.0)])
+AssertionError: Lists differ: [('1', 48.0)] != [('1', 48.0), ('2', 152.0), ('3', 96.0)]
+
+Second list contains 2 additional elements.
+First extra element 1:
+('2', 152.0)
+
+- [('1', 48.0)]
++ [('1', 48.0), ('2', 152.0), ('3', 96.0)]
+
+======================================================================
+FAIL: test_b_the_waltz_shape_keeps_a_return_to_the_first_tempo (tests.test_convert.TestALaterTempoMarkSurvives.test_b_the_waltz_shape_keeps_a_return_to_the_first_tempo)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_convert.py", line 278, in test_b_the_waltz_shape_keeps_a_return_to_the_first_tempo
+    self.assertEqual(self.tempo_by_bar(written), [("1", 264.0), ("2", 96.0), ("3", 264.0)])
+AssertionError: Lists differ: [('1', 264.0)] != [('1', 264.0), ('2', 96.0), ('3', 264.0)]
+
+Second list contains 2 additional elements.
+First extra element 1:
+('2', 96.0)
+
+- [('1', 264.0)]
++ [('1', 264.0), ('2', 96.0), ('3', 264.0)]
+
+======================================================================
+FAIL: test_c_a_different_tempo_in_the_other_spine_at_one_place_survives (tests.test_convert.TestALaterTempoMarkSurvives.test_c_a_different_tempo_in_the_other_spine_at_one_place_survives)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_convert.py", line 289, in test_c_a_different_tempo_in_the_other_spine_at_one_place_survives
+    self.assertEqual(sorted(self.tempo_by_bar(written)), [("1", 100.0), ("1", 120.0)])
+AssertionError: Lists differ: [('1', 120.0)] != [('1', 100.0), ('1', 120.0)]
+
+First differing element 0:
+('1', 120.0)
+('1', 100.0)
+
+Second list contains 1 additional elements.
+First extra element 1:
+('1', 120.0)
+
+- [('1', 120.0)]
++ [('1', 100.0), ('1', 120.0)]
+
+======================================================================
+FAIL: test_c_a_different_tempo_on_one_staff_at_one_place_survives (tests.test_convert.TestALaterTempoMarkSurvives.test_c_a_different_tempo_on_one_staff_at_one_place_survives)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_convert.py", line 294, in test_c_a_different_tempo_on_one_staff_at_one_place_survives
+    self.assertEqual(sorted(self.tempo_by_bar(written)), [("1", 100.0), ("1", 120.0)])
+AssertionError: Lists differ: [('1', 100.0)] != [('1', 100.0), ('1', 120.0)]
+
+Second list contains 1 additional elements.
+First extra element 1:
+('1', 120.0)
+
+- [('1', 100.0)]
++ [('1', 100.0), ('1', 120.0)]
+
+======================================================================
+FAIL: test_d_a_sound_only_copy_gives_way_to_the_printed_mark (tests.test_convert.TestALaterTempoMarkSurvives.test_d_a_sound_only_copy_gives_way_to_the_printed_mark)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_convert.py", line 302, in test_d_a_sound_only_copy_gives_way_to_the_printed_mark
+    self.assertEqual(self.per_minute(written), ["76"])
+AssertionError: Lists differ: [] != ['76']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'76'
+
+- []
++ ['76']
+
+======================================================================
+FAIL: test_d_a_tempo_beyond_the_tolerance_is_another_statement (tests.test_convert.TestALaterTempoMarkSurvives.test_d_a_tempo_beyond_the_tolerance_is_another_statement)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_convert.py", line 313, in test_d_a_tempo_beyond_the_tolerance_is_another_statement
+    self.assertEqual(sorted(self.tempo_by_bar(written)), [("1", 68.0), ("1", 68.1)])
+AssertionError: Lists differ: [('1', 68.0)] != [('1', 68.0), ('1', 68.1)]
+
+Second list contains 1 additional elements.
+First extra element 1:
+('1', 68.1)
+
+- [('1', 68.0)]
++ [('1', 68.0), ('1', 68.1)]
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.661s
+
+FAILED (failures=7, errors=2)
+exit 1

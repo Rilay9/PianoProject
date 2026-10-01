@@ -1,0 +1,19 @@
+catalogue rows before 2092, after 2092; in one only: none
+built score files by family (changed / all): authored 0/39, excerpt 0/5, generated 0/1200, kern 3/162, musetrainer 0/64, mutopia 0/1, pdmx 0/542
+
+CHANGED [kern] song.classical.chopin-rondo-op16.nifc
+   before: [('0:0', 48, 'sound')]
+   after:  [('0:0', 48, 'sound'), ('23:0', 152, 'sound'), ('52:0', 96, 'sound')]
+CHANGED [kern] song.classical.chopin-waltz-op70-1.nifc
+   before: [('0:0', 264, 'sound')]
+   after:  [('0:0', 264, 'sound'), ('33:0', 96, 'sound'), ('80:1.5', 264, 'sound'), ('80:2', 264, 'sound')]
+CHANGED [kern] song.ragtime.joplin-combination-march
+   before: [('0:0', 100, 'sound')]
+   after:  [('0:0', 100, 'sound'), ('5:0', 120, 'sound')]
+
+rows whose tempo events (the app's reader) differ: 3; of them not a changed file: none
+
+catalogue fields that differ (outside those that move with the bytes), with the rows:
+   provenance.formerIdentities: 3 row(s) ['song.classical.chopin-rondo-op16.nifc', 'song.classical.chopin-waltz-op70-1.nifc', 'song.ragtime.joplin-combination-march']
+   source.checksum: 3 row(s) ['song.classical.chopin-rondo-op16.nifc', 'song.classical.chopin-waltz-op70-1.nifc', 'song.ragtime.joplin-combination-march']
+   provenance.converter.normaliser.version: 1 row(s) ['song.ragtime.joplin-pine-apple-rag.mutopia']
