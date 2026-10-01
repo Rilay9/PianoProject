@@ -679,7 +679,7 @@ truth.
 **One row, in every form factor.** A hard constraint: at 360 px the row's `scrollHeight` equals
 one row. It has broken twice.
 
-`▶`/`⏸` · `Hear it` · mode · hands · tempo label · `⋯`. Below 400 px the modes shorten to one
+`▶`/`⏸` · `Hear it` · mode · hands · tempo label · `⋯`. Below 440 px the modes shorten to one
 word and the tempo label drops the percentage. `Start again` is in `⋯` — the test for the bar is
 *do you need this while your hands are on the keys?*
 

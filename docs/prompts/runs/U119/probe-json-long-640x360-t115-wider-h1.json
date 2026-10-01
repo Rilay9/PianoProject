@@ -1,0 +1,497 @@
+{
+  "vw": 640,
+  "vh": 360,
+  "text": "115",
+  "face": "wider",
+  "variant": "h1",
+  "paused": {
+    "innerWidth": 640,
+    "rootFont": "18.4px",
+    "bar": {
+      "height": 59.88,
+      "scrollHeight": 59,
+      "rows": 1,
+      "visible": "true",
+      "opacity": "1"
+    },
+    "group": {
+      "left": 0,
+      "right": 187.19,
+      "top": 251.56,
+      "bottom": 297.56,
+      "width": 187.19,
+      "scrollWidth": 357,
+      "clips": true
+    },
+    "back": {
+      "box": {
+        "left": 0,
+        "right": 71.7,
+        "top": 251.56,
+        "bottom": 297.56,
+        "width": 71.7
+      },
+      "text": "← Back",
+      "textBox": {
+        "left": 6.52,
+        "right": 65.19,
+        "top": 264.56,
+        "bottom": 283.56,
+        "width": 58.67
+      },
+      "scrollWidth": 70,
+      "clientWidth": 70,
+      "shown": 71.7,
+      "textWhole": true,
+      "ellipsis": false
+    },
+    "title": {
+      "box": {
+        "left": 79.06,
+        "right": 79.06,
+        "top": 264.56,
+        "bottom": 284.56,
+        "width": 0
+      },
+      "text": "Piano Sonata No. 14 “Moonlight”, III. Presto agitato",
+      "textBox": {
+        "left": 79.06,
+        "right": 567.17,
+        "top": 264.56,
+        "bottom": 284.56,
+        "width": 488.11
+      },
+      "scrollWidth": 488,
+      "clientWidth": 0,
+      "shown": 0,
+      "textWhole": false,
+      "ellipsis": true
+    },
+    "where": {
+      "box": {
+        "left": 86.42,
+        "right": 170.31,
+        "top": 265.56,
+        "bottom": 283.56,
+        "width": 83.89
+      },
+      "text": "bar 1 / 201",
+      "textBox": {
+        "left": 86.42,
+        "right": 170.31,
+        "top": 265.56,
+        "bottom": 283.56,
+        "width": 83.89
+      },
+      "scrollWidth": 84,
+      "clientWidth": 84,
+      "shown": 83.89,
+      "textWhole": true,
+      "ellipsis": false
+    },
+    "status": {
+      "box": {
+        "left": 177.67,
+        "right": 356.86,
+        "top": 264.56,
+        "bottom": 284.56,
+        "width": 179.19
+      },
+      "text": "Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning.",
+      "textBox": {
+        "left": 177.67,
+        "right": 718.94,
+        "top": 265.56,
+        "bottom": 283.56,
+        "width": 541.27
+      },
+      "scrollWidth": 541,
+      "clientWidth": 179,
+      "shown": 9.52,
+      "textWhole": false,
+      "ellipsis": true
+    },
+    "controls": [
+      {
+        "sel": "#score-back-side",
+        "present": true,
+        "drawn": true,
+        "box": {
+          "left": 0,
+          "right": 71.7,
+          "top": 251.56,
+          "bottom": 297.56,
+          "width": 71.7
+        },
+        "hit": "self",
+        "text": "← Back"
+      },
+      {
+        "sel": "#score-play",
+        "present": true,
+        "drawn": true,
+        "box": {
+          "left": 189.94,
+          "right": 235.94,
+          "top": 251.56,
+          "bottom": 297.56,
+          "width": 46
+        },
+        "hit": "self",
+        "text": "▶"
+      },
+      {
+        "sel": "#score-hear",
+        "present": true,
+        "drawn": true,
+        "box": {
+          "left": 238.69,
+          "right": 304.81,
+          "top": 251.56,
+          "bottom": 297.56,
+          "width": 66.13
+        },
+        "hit": "self",
+        "text": "Hear it"
+      },
+      {
+        "sel": "#score-mode",
+        "present": true,
+        "drawn": true,
+        "box": {
+          "left": 307.56,
+          "right": 358.16,
+          "top": 251.56,
+          "bottom": 297.56,
+          "width": 50.59
+        },
+        "hit": "self",
+        "text": "Wait for me"
+      },
+      {
+        "sel": "#score-hands-R",
+        "present": true,
+        "drawn": true,
+        "box": {
+          "left": 360.91,
+          "right": 384.81,
+          "top": 251.56,
+          "bottom": 297.56,
+          "width": 23.91
+        },
+        "hit": "self",
+        "text": "R"
+      },
+      {
+        "sel": "#score-hands-L",
+        "present": true,
+        "drawn": true,
+        "box": {
+          "left": 387.56,
+          "right": 409.31,
+          "top": 251.56,
+          "bottom": 297.56,
+          "width": 21.75
+        },
+        "hit": "self",
+        "text": "L"
+      },
+      {
+        "sel": "#score-hands-both",
+        "present": true,
+        "drawn": true,
+        "box": {
+          "left": 412.06,
+          "right": 461.38,
+          "top": 251.56,
+          "bottom": 297.56,
+          "width": 49.31
+        },
+        "hit": "self",
+        "text": "Both"
+      },
+      {
+        "sel": "#score-tempo-label",
+        "present": true,
+        "drawn": true,
+        "box": {
+          "left": 464.13,
+          "right": 591.25,
+          "top": 251.56,
+          "bottom": 297.56,
+          "width": 127.13
+        },
+        "hit": "self",
+        "text": "70% · 115 bpm"
+      },
+      {
+        "sel": "#score-more",
+        "present": true,
+        "drawn": true,
+        "box": {
+          "left": 594,
+          "right": 640,
+          "top": 251.56,
+          "bottom": 297.56,
+          "width": 46
+        },
+        "hit": "self",
+        "text": "⋯"
+      }
+    ],
+    "over": [],
+    "firstControlLeft": 189.94,
+    "play": "▶"
+  },
+  "wideWhere": {
+    "innerWidth": 640,
+    "rootFont": "18.4px",
+    "bar": {
+      "height": 59.88,
+      "scrollHeight": 59,
+      "rows": 1,
+      "visible": "true",
+      "opacity": "1"
+    },
+    "group": {
+      "left": 0,
+      "right": 187.19,
+      "top": 251.56,
+      "bottom": 297.56,
+      "width": 187.19,
+      "scrollWidth": 376,
+      "clips": true
+    },
+    "back": {
+      "box": {
+        "left": 0,
+        "right": 71.7,
+        "top": 251.56,
+        "bottom": 297.56,
+        "width": 71.7
+      },
+      "text": "← Back",
+      "textBox": {
+        "left": 6.52,
+        "right": 65.19,
+        "top": 264.56,
+        "bottom": 283.56,
+        "width": 58.67
+      },
+      "scrollWidth": 70,
+      "clientWidth": 70,
+      "shown": 71.7,
+      "textWhole": true,
+      "ellipsis": false
+    },
+    "title": {
+      "box": {
+        "left": 79.06,
+        "right": 79.06,
+        "top": 264.56,
+        "bottom": 284.56,
+        "width": 0
+      },
+      "text": "Piano Sonata No. 14 “Moonlight”, III. Presto agitato",
+      "textBox": {
+        "left": 79.06,
+        "right": 567.17,
+        "top": 264.56,
+        "bottom": 284.56,
+        "width": 488.11
+      },
+      "scrollWidth": 488,
+      "clientWidth": 0,
+      "shown": 0,
+      "textWhole": false,
+      "ellipsis": true
+    },
+    "where": {
+      "box": {
+        "left": 86.42,
+        "right": 189.02,
+        "top": 265.56,
+        "bottom": 283.56,
+        "width": 102.59
+      },
+      "text": "bar 188 / 201",
+      "textBox": {
+        "left": 86.42,
+        "right": 189.02,
+        "top": 265.56,
+        "bottom": 283.56,
+        "width": 102.59
+      },
+      "scrollWidth": 103,
+      "clientWidth": 103,
+      "shown": 100.77,
+      "textWhole": false,
+      "ellipsis": false
+    },
+    "status": {
+      "box": {
+        "left": 196.38,
+        "right": 375.56,
+        "top": 264.56,
+        "bottom": 284.56,
+        "width": 179.19
+      },
+      "text": "Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning.",
+      "textBox": {
+        "left": 196.38,
+        "right": 737.64,
+        "top": 265.56,
+        "bottom": 283.56,
+        "width": 541.27
+      },
+      "scrollWidth": 541,
+      "clientWidth": 179,
+      "shown": 0,
+      "textWhole": false,
+      "ellipsis": true
+    },
+    "controls": [
+      {
+        "sel": "#score-back-side",
+        "present": true,
+        "drawn": true,
+        "box": {
+          "left": 0,
+          "right": 71.7,
+          "top": 251.56,
+          "bottom": 297.56,
+          "width": 71.7
+        },
+        "hit": "self",
+        "text": "← Back"
+      },
+      {
+        "sel": "#score-play",
+        "present": true,
+        "drawn": true,
+        "box": {
+          "left": 189.94,
+          "right": 235.94,
+          "top": 251.56,
+          "bottom": 297.56,
+          "width": 46
+        },
+        "hit": "self",
+        "text": "▶"
+      },
+      {
+        "sel": "#score-hear",
+        "present": true,
+        "drawn": true,
+        "box": {
+          "left": 238.69,
+          "right": 304.81,
+          "top": 251.56,
+          "bottom": 297.56,
+          "width": 66.13
+        },
+        "hit": "self",
+        "text": "Hear it"
+      },
+      {
+        "sel": "#score-mode",
+        "present": true,
+        "drawn": true,
+        "box": {
+          "left": 307.56,
+          "right": 358.16,
+          "top": 251.56,
+          "bottom": 297.56,
+          "width": 50.59
+        },
+        "hit": "self",
+        "text": "Wait for me"
+      },
+      {
+        "sel": "#score-hands-R",
+        "present": true,
+        "drawn": true,
+        "box": {
+          "left": 360.91,
+          "right": 384.81,
+          "top": 251.56,
+          "bottom": 297.56,
+          "width": 23.91
+        },
+        "hit": "self",
+        "text": "R"
+      },
+      {
+        "sel": "#score-hands-L",
+        "present": true,
+        "drawn": true,
+        "box": {
+          "left": 387.56,
+          "right": 409.31,
+          "top": 251.56,
+          "bottom": 297.56,
+          "width": 21.75
+        },
+        "hit": "self",
+        "text": "L"
+      },
+      {
+        "sel": "#score-hands-both",
+        "present": true,
+        "drawn": true,
+        "box": {
+          "left": 412.06,
+          "right": 461.38,
+          "top": 251.56,
+          "bottom": 297.56,
+          "width": 49.31
+        },
+        "hit": "self",
+        "text": "Both"
+      },
+      {
+        "sel": "#score-tempo-label",
+        "present": true,
+        "drawn": true,
+        "box": {
+          "left": 464.13,
+          "right": 591.25,
+          "top": 251.56,
+          "bottom": 297.56,
+          "width": 127.13
+        },
+        "hit": "self",
+        "text": "70% · 115 bpm"
+      },
+      {
+        "sel": "#score-more",
+        "present": true,
+        "drawn": true,
+        "box": {
+          "left": 594,
+          "right": 640,
+          "top": 251.56,
+          "bottom": 297.56,
+          "width": 46
+        },
+        "hit": "self",
+        "text": "⋯"
+      }
+    ],
+    "over": [],
+    "firstControlLeft": 189.94,
+    "play": "▶"
+  },
+  "trial": {
+    "#score-back-side": "ok",
+    "#score-play": "ok",
+    "#score-hear": "ok",
+    "#score-mode": "ok",
+    "#score-hands-R": "ok",
+    "#score-hands-L": "ok",
+    "#score-hands-both": "ok",
+    "#score-tempo-label": "ok",
+    "#score-more": "ok"
+  },
+  "realPlay": "ok"
+}
