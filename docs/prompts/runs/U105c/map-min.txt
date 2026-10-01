@@ -1,0 +1,70 @@
+# checks for 62 path(s): 62 matched, 0 unmatched
+# app/src/style.css: app/src/**, app/src/style.css
+# app/tests/e2e/score.screen.spec.ts: app/tests/e2e/*.spec.ts
+# docs/prompts/pictures/u105c/paused-342x740-wider-face-folded-no-refusal-after.png: docs/**
+# docs/prompts/pictures/u105c/paused-342x740-wider-face-folded-no-refusal-before.png: docs/**
+# docs/prompts/pictures/u105c/paused-hear-342x740-wider-face-after.png: docs/**
+# docs/prompts/pictures/u105c/paused-hear-342x740-wider-face-before.png: docs/**
+# docs/prompts/pictures/u105c/paused-hear-342x740-wider-face-folded-after.png: docs/**
+# docs/prompts/pictures/u105c/paused-hear-342x740-wider-face-folded-before.png: docs/**
+# docs/prompts/runs/U105c/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+# docs/prompts/runs/U105c/browser-green-repeat.txt: docs/**
+# docs/prompts/runs/U105c/browser-green.txt: docs/**
+# docs/prompts/runs/U105c/browser-red-base.txt: docs/**
+# docs/prompts/runs/U105c/build-app-after-mutants.txt: docs/**
+# docs/prompts/runs/U105c/build-app-base.txt: docs/**
+# docs/prompts/runs/U105c/build-app.txt: docs/**
+# docs/prompts/runs/U105c/fuzz-and-head-height.txt: docs/**
+# docs/prompts/runs/U105c/lint.txt: docs/**
+# docs/prompts/runs/U105c/m1-no-run-restriction-back-build.txt: docs/**
+# docs/prompts/runs/U105c/m1-no-run-restriction-back-guard.txt: docs/**
+# docs/prompts/runs/U105c/m1-no-run-restriction-back-u69.txt: docs/**
+# docs/prompts/runs/U105c/mutants.txt: docs/**
+# docs/prompts/runs/U105c/npm-ci.txt: docs/**
+# docs/prompts/runs/U105c/probe-after-summary.txt: docs/**
+# docs/prompts/runs/U105c/probe-after.txt: docs/**
+# docs/prompts/runs/U105c/probe-bar-held-paused-wider-face-after.json: docs/**
+# docs/prompts/runs/U105c/probe-bar-held-paused-wider-face-before.json: docs/**
+# docs/prompts/runs/U105c/probe-before-summary.txt: docs/**
+# docs/prompts/runs/U105c/probe-before.txt: docs/**
+# docs/prompts/runs/U105c/probe-chip-reserve.json: docs/**
+# docs/prompts/runs/U105c/probe-chip.txt: docs/**
+# docs/prompts/runs/U105c/probe-hear-paused-stack-after.json: docs/**
+# docs/prompts/runs/U105c/probe-hear-paused-stack-before.json: docs/**
+# docs/prompts/runs/U105c/probe-hear-paused-text-115-after.json: docs/**
+# docs/prompts/runs/U105c/probe-hear-paused-text-115-before.json: docs/**
+# docs/prompts/runs/U105c/probe-hear-paused-wider-face-after.json: docs/**
+# docs/prompts/runs/U105c/probe-hear-paused-wider-face-before.json: docs/**
+# docs/prompts/runs/U105c/probe-play-over-demo-stack-after.json: docs/**
+# docs/prompts/runs/U105c/probe-play-over-demo-stack-before.json: docs/**
+# docs/prompts/runs/U105c/probe-play-over-demo-text-115-after.json: docs/**
+# docs/prompts/runs/U105c/probe-play-over-demo-text-115-before.json: docs/**
+# docs/prompts/runs/U105c/probe-play-over-demo-wider-face-after.json: docs/**
+# docs/prompts/runs/U105c/probe-play-over-demo-wider-face-before.json: docs/**
+# docs/prompts/runs/U105c/probe-play-paused-stack-after.json: docs/**
+# docs/prompts/runs/U105c/probe-play-paused-stack-before.json: docs/**
+# docs/prompts/runs/U105c/probe-play-paused-text-115-after.json: docs/**
+# docs/prompts/runs/U105c/probe-play-paused-text-115-before.json: docs/**
+# docs/prompts/runs/U105c/probe-play-paused-wider-face-after.json: docs/**
+# docs/prompts/runs/U105c/probe-play-paused-wider-face-before.json: docs/**
+# docs/prompts/runs/U105c/probe-sheet-after.txt: docs/**
+# docs/prompts/runs/U105c/probe-sheet-hear-in-more-after.json: docs/**
+# docs/prompts/runs/U105c/score-screen-whole.txt: docs/**
+# docs/prompts/runs/U105c/scripts-crlf_check.py: docs/**
+# docs/prompts/runs/U105c/scripts-keep_logs.py: docs/**
+# docs/prompts/runs/U105c/scripts-mutants.py: docs/**
+# docs/prompts/runs/U105c/scripts-playwright.u105c-5293.config.ts: docs/**
+# docs/prompts/runs/U105c/scripts-probe-chip.spec.ts: docs/**
+# docs/prompts/runs/U105c/scripts-probe-sheet.spec.ts: docs/**
+# docs/prompts/runs/U105c/scripts-probe.spec.ts: docs/**
+# docs/prompts/runs/U105c/scripts-summarise_probe.py: docs/**
+# docs/prompts/runs/U105c/tsc.txt: docs/**
+# docs/prompts/runs/U105c/unit-crlf-check.txt: docs/**
+# docs/prompts/runs/U105c/unit-targeted.txt: docs/**
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_record_mirrors.py
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test --workers=4

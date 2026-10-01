@@ -127,9 +127,12 @@ Adjacent problems recorded, never fixed on the spot.
 
 As `operating-procedure.md` §14: the builder's own worktree, cut from origin's head at dispatch (the dispatch message states the sha then, not this brief — a worktree is cut from origin's head, not any sha read while drafting); `npm ci` in `app/`; `app/public/content` copied read-only from the main checkout when the lane needs it; no commits, pushes, stashes, resets or checkouts, and nothing written in the main checkout or another lane's worktree. Browser tests run on this lane's own port, **5293**, from a config copy under the worktree's `app/build/u105c/` — never port 4173, and never another lane's port (U105b used 5283). Temp files under the worktree's own `build/`; no kept log over 300 KB; machine paths in kept files replaced by `<worktree>` and `<home>`. At the end: delete `app/dist`, `app/test-results`, the copied content and the config copy; `app/node_modules` stays until the orchestrator removes the worktree. Never name an AI model; never assert a number measured on this machine as general. Every item done, or an explicit not-done line; a premise found wrong here is said, and the better path taken.
 
+**Landed 2026-09-30** (Entry 193; 842ea210, merged f42973ee); handoff `handoffs/842ea210.md`.
+
 ## Record
 
 lane: U105c · closes: — · entry: 193
 index: U105b's required change (`responses/6a374f8a.md`): the header's refusal sentence wraps whole even while `data-running='true'` (paused, a bar held, over a demonstration), closing mutant m3's gap with a paused-run discriminating case, scoped so the mid-run guard for ordinary running text (`score.fuzz.spec.ts` seed 4, `score.head-height.spec.ts`) stays untouched | app | drafted 2026-09-30 (`U105c-a-refusal-stays-whole-while-the-run-object-runs.md`); Entry 193 |
 in-flight: drafted 2026-09-30 (`U105c-a-refusal-stays-whole-while-the-run-object-runs.md`): the header's refusal line stays whole while the run object still reads running (paused, a bar held, over a demonstration), the same invariant U105b already gave the no-run state, under the fast path with the reviewer's own required change copied in as the fix-forward instruction (`responses/6a374f8a.md`); drafted, awaiting the orchestrator's dispatch (Entry 193)
 state: dispatched 2026-09-30: dispatched at fadafbfa, building (Entry 193)
+- landed 2026-09-30: merged f42973ee; handoff `handoffs/842ea210.md`
