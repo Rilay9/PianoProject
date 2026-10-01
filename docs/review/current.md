@@ -4,6 +4,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- `handoffs/43045ffb.md` — **open**, respond in `responses/43045ffb.md`: X46, the session-item contract's trace-first brief (Entry 213), shown before dispatch; three questions.
 - `handoffs/911f8c82.md` — **open**, respond in `responses/911f8c82.md`: U122a, the landscape Score chrome measured; accept the recommended model (name and bar on a thin top line, controls in one bottom row, a refusal line only while it stands) or another, and three questions.
 - `handoffs/9e14839e.md` — **answered** in `responses/9e14839e.md`: T62's read-back accepted; U125 justified as a narrow U66 follow-up; the walk's pass loop reshaped into one session-item purpose/outcome contract (X46), shown before dispatch; U110 reopened as a live defect; findings 5 and 8 are U122 + CL07 acceptance cases.
 - `handoffs/71730e65.md` — **answered** in `responses/71730e65.md`: CL16 rejected as one metric-driven version-3 lane; R23 approved with one required change to keep “strong application” from collapsing into the `established` detector proxy.
