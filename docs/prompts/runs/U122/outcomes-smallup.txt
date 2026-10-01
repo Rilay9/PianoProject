@@ -1,0 +1,21 @@
+360×780 90% stack hcb          atRest                TODAY ⋯ Hands, Hear it; mode 'Tempo' whole; tempo '50 bpm'
+                                                     MODEL ⋯ —; mode long 'Keep tempo'; tempo '50 bpm'
+360×780 90% wider hcb          atRest                TODAY ⋯ Hands, Hear it; mode 'Tempo' whole; tempo '50 bpm'
+                                                     MODEL ⋯ —; mode short 'Tempo'; tempo '50 bpm'
+390×844 90% stack hcb          atRest                TODAY ⋯ Hands, Hear it; mode 'Tempo' whole; tempo '50 bpm'
+                                                     MODEL ⋯ —; mode long 'Keep tempo'; tempo '50 bpm'
+390×844 90% wider hcb          atRest                TODAY ⋯ Hands, Hear it; mode 'Tempo' whole; tempo '50 bpm'
+                                                     MODEL ⋯ —; mode long 'Keep tempo'; tempo '50 bpm'
+
+4 states, 4 cells.
+Configuration differs between states of one cell: 0
+
+Today, invariant failures (measured):
+
+Model, invariant failures (applied, measured):
+  none
+
+Where the model changes an outcome:
+  Hands back on the bar: 4 — 360×780 90% stack hcb atRest; 360×780 90% wider hcb atRest; 390×844 90% stack hcb atRest; 390×844 90% wider hcb atRest
+  Hear it back on the bar: 4 — 360×780 90% stack hcb atRest; 360×780 90% wider hcb atRest; 390×844 90% stack hcb atRest; 390×844 90% wider hcb atRest
+  mode label whole today (short) → long, whole: 3 — 360×780 90% stack hcb atRest; 390×844 90% stack hcb atRest; 390×844 90% wider hcb atRest
