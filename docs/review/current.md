@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **CL16 and R23** — `handoffs/71730e65.md` (respond in `responses/71730e65.md`). A brief handoff: the sight-reading walk's version 3, and one strong application replacing the three-song floor.
 - **U122** — `handoffs/00f549d9.md`: no answer needed; superseded by `responses/b47ce498-correction-1.md` (redesign the whole landscape Score chrome) and `b47ce498-correction-2.md` with `docs/review/holistic-reassessment.md` (the posture, now in `operating-procedure.md` §11). U122a (Entry 209) is measuring; its handoff follows.
 - **T62** — `handoffs/f96d996d.md` answered 2026-10-01: APPROVE, closed (`responses/f96d996d.md`).
 - **U122** — `handoffs/00f549d9.md` (respond in `responses/00f549d9.md`). The sideways score bar gets one layout model, with U120 and U121 folded in as its own acceptance cases (Entry 206).
