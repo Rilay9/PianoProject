@@ -21,6 +21,7 @@ import {
   type RunObservation,
   type SessionRow,
   type StreakRow,
+  withPerformanceMark,
 } from './db';
 import {
   knownMaterial,
@@ -313,8 +314,10 @@ export async function recordRun(result: RunResult, now = new Date()): Promise<Pr
     rungRowsMemory?.push(forRungState({ ...session, id: key }));
     // Not awaited: the run is finished and the learner is looking at a
     // summary. Tidying up is the app's business, not theirs; a test waits for
-    // it with `sessionsTidied()`.
-    tidySessions(now);
+    // it with `sessionsTidied()`. A run with a measured record can push an
+    // older read of its item out of the demand readings' window, so its item
+    // is walked for the fold too (CL23, L69).
+    tidySessions(now, measuredIndexes(session).length > 0 ? session.itemId : undefined);
   }
   await addMinutes(result.durationMs / 60_000, now);
   notify();
@@ -417,7 +420,8 @@ async function withAttemptFacts(result: RunResult): Promise<RunResult> {
  * sheet and thrown away (L15). Now every field comes across — `not measured`
  * included — and only `undefined` is left out, so an absent field still means
  * "this writer does not have that channel", and `performance` and
- * `rhythmOnly` are kept only where true, as they always were.
+ * `rhythmOnly` are kept only where true, as they always were. A performance
+ * carries the marker its index keys (CL23, L53; `withPerformanceMark`).
  */
 function sessionRowFor(result: RunResult, now: Date): SessionRow {
   const { passed: _passed, masterEligible: _master, selfPassed: _self, performance, rhythmOnly, ...rest } = result;
@@ -425,12 +429,12 @@ function sessionRowFor(result: RunResult, now: Date): SessionRow {
   for (const [key, value] of Object.entries(rest)) {
     if (value !== undefined) session[key] = value;
   }
-  return {
+  return withPerformanceMark({
     ...(session as unknown as Omit<SessionRow, 'at'>),
     at: now.toISOString(),
     ...(performance ? { performance: true } : {}),
     ...(rhythmOnly ? { rhythmOnly: true } : {}),
-  };
+  });
 }
 
 /**
@@ -565,8 +569,7 @@ export async function recentSessions(limit = 50): Promise<SessionRow[]> {
 }
 
 /**
- * The last `limit` performances, however far back they are — up to
- * `PERFORMANCE_REACH` runs back.
+ * The last `limit` performances, however far back they are.
  *
  * The Progress screen used to filter performances out of `recentSessions(100)`,
  * which is the last hundred runs *of anything*. A performance is rare by
@@ -575,19 +578,21 @@ export async function recentSessions(limit = 50): Promise<SessionRow[]> {
  * performances yet" over a history that has them. It said the opposite of the
  * one thing it exists to say.
  *
- * Walked down the same index, which is where the answer actually is; capped by
- * the store's own retention so it can never be an unbounded scan.
+ * The next fix walked every run newest first and stopped at the old cap and its
+ * slack (2,200 rows), so a learner who had never performed did not walk the
+ * whole store on every Progress load — and a performance further back than that
+ * was kept since C1 and not listed (L53). Since version 10 the performances
+ * have their own index (`byPerformance`: the marker, then the date), so the
+ * walk reads performances and nothing else, newest first, and stops at `limit`.
  */
 export async function recentPerformances(limit = 20): Promise<SessionRow[]> {
   const db = await openDatabase();
   if (!db) return [];
   try {
     const out: SessionRow[] = [];
-    let scanned = 0;
-    let cursor = await db.transaction('sessions').store.index('byDate').openCursor(null, 'prev');
-    while (cursor && out.length < limit && scanned < PERFORMANCE_REACH) {
+    let cursor = await db.transaction('sessions').store.index('byPerformance').openCursor(null, 'prev');
+    while (cursor && out.length < limit) {
       if (cursor.value.performance === true) out.push(cursor.value);
-      scanned += 1;
       cursor = await cursor.continue();
     }
     return out;
@@ -897,56 +902,196 @@ export const OBSERVATION_WINDOW_DAYS = 90;
  */
 export const SESSIONS_BUDGET_BYTES = 64 * 1024 * 1024;
 
-/**
- * How far back the performances list looks: the old cap and its slack.
- *
- * `recentPerformances` walks the store newest first until it has its twenty,
- * so a learner who has never performed walks all of it, on every Progress
- * load. At the old cap that walk was the store; at the new one it would be
- * twenty times as long for the rarest thing on the screen. So it looks as far
- * as it always could, which loses nothing it used to find — a performance
- * further back was deleted, and is now kept and not listed.
- */
-export const PERFORMANCE_REACH = 2_200;
-
 /** Consecutive rows already compact after which a compaction walk stops. */
 const COMPACT_STOP = 50;
 
 const DAY_MS = 86_400_000;
 
 /**
- * A row with its per-step detail folded into per-bar tallies (C1).
- *
- * Everything else — the totals, the pitch and its definition, the timing
- * summary, the header — stays as it was. A row with no per-step detail (one
- * already compact, or written before observations) comes back unchanged.
+ * How many of a skill's newest reads the demand readings read
+ * (`evidence/demandReadings.ts`'s `DEMAND_WINDOW_READS`, CL23, L69). Copied, not imported: the
+ * evidence modules reach the score model's code, which this store keeps out (`holdsEvidence`);
+ * `sessionRetention.test.ts` holds the two equal.
  */
-export function compactObservation(row: SessionRow): SessionRow {
-  if (!row.steps) return row;
-  const { steps, ...rest } = row;
-  return { ...rest, bars: compactSteps(steps) };
+export const PROTECTED_READS = 5;
+
+const NOTHING_OUTSIDE: ReadonlySet<number> = new Set();
+
+/** The indexes in `row.evidence` of its measured records: the only records the demand readings read. */
+function measuredIndexes(row: Pick<SessionRow, 'evidence'>): number[] {
+  if (!Array.isArray(row.evidence)) return [];
+  return row.evidence.flatMap((one, index) => (one.kind === 'measured' ? [index] : []));
+}
+
+const someIn = (list: readonly number[] | undefined): boolean => Array.isArray(list) && list.length > 0;
+
+/** Whether a measured record still holds a step index: a `byDemand` entry's `steps`, `wrong` or `unattributed`, an `otherDemands` entry's `steps`. */
+function holdsPositions(record: MeasuredEvidence): boolean {
+  return (
+    (record.byDemand ?? []).some((entry) => someIn(entry.steps) || someIn(entry.wrong) || someIn(entry.unattributed)) ||
+    (record.otherDemands ?? []).some((other) => someIn(other.steps))
+  );
+}
+
+/** Whether any measured record of the row still holds a step index (CL23): such a row is not yet as compact as it may become. */
+function rowHoldsPositions(row: SessionRow): boolean {
+  return measuredIndexes(row).some((index) => holdsPositions((row.evidence as EvidenceResult[])[index] as MeasuredEvidence));
 }
 
 /**
- * Compacts the rows older than the observation window (C1).
+ * A measured record with its per-demand step indexes folded away (CL23, L69): each `byDemand`
+ * entry keeps its demand, `n` and `right`, each `otherDemands` entry its demand, and the arrays are
+ * emptied — the shape `evidence.ts` declares, so a reader that iterates them reads no step rather
+ * than failing on a missing one. What is lost is which steps; the counts stay. `compactSteps`'s
+ * own trade, made on the evidence.
+ */
+function foldRecord(record: MeasuredEvidence): MeasuredEvidence {
+  return {
+    ...record,
+    ...(Array.isArray(record.byDemand) ? { byDemand: record.byDemand.map(({ demand, n, right }) => ({ demand, n, right, steps: [], wrong: [] })) } : {}),
+    ...(Array.isArray(record.otherDemands) ? { otherDemands: record.otherDemands.map(({ demand }) => ({ demand, steps: [] })) } : {}),
+  };
+}
+
+/** `evidence` with the measured records at `outside` folded, or `evidence` itself where none of them holds a step index. */
+function foldEvidence(evidence: EvidenceResult[] | undefined, outside: ReadonlySet<number>): EvidenceResult[] | undefined {
+  if (!Array.isArray(evidence) || outside.size === 0) return evidence;
+  let changed = false;
+  const out = evidence.map((one, index) => {
+    if (one.kind !== 'measured' || !outside.has(index) || !holdsPositions(one)) return one;
+    changed = true;
+    return foldRecord(one);
+  });
+  return changed ? out : evidence;
+}
+
+/**
+ * A row with its per-step detail folded into per-bar tallies (C1), and its measured records
+ * proven outside the demand readings' reach folded to counts (CL23, L69).
+ *
+ * Everything else — the totals, the pitch and its definition, the timing
+ * summary, the header, every evidence record and its counts — stays as it was.
+ * `outside` names the indexes of `row.evidence` whose records no reader of their
+ * step indexes can still reach (`outsideReach`); none, unless a caller proves
+ * it, so a caller that does not ask keeps every position. A row with no
+ * per-step detail and nothing to fold (one already compact, or written before
+ * observations) comes back unchanged — the same object.
+ */
+export function compactObservation(row: SessionRow, outside: ReadonlySet<number> = NOTHING_OUTSIDE): SessionRow {
+  const evidence = foldEvidence(row.evidence, outside);
+  if (!row.steps && evidence === row.evidence) return row;
+  const { steps, ...rest } = row;
+  return {
+    ...rest,
+    ...(steps ? { bars: compactSteps(steps) } : {}),
+    ...(evidence === row.evidence ? {} : { evidence }),
+  };
+}
+
+/** A measured record already walked past, as the protecting count reads it: its skill, its row's evidence stamp, its row's date. */
+interface Newer {
+  skill: string;
+  stamp: number | undefined;
+  at: string;
+}
+
+/**
+ * The measured records of a row the protecting count may hold against an older one. None when the
+ * row is dated after `now`: the demand readings skip a record dated after their day
+ * (`demandReadings.ts`:223), and the compaction's own day is the earliest a reader can come.
+ */
+function newerOf(row: SessionRow, now: number): Newer[] {
+  if (!(Date.parse(row.at) <= now)) return [];
+  const evidence = row.evidence as EvidenceResult[];
+  return measuredIndexes(row).map((index) => ({ skill: (evidence[index] as MeasuredEvidence).skill, stamp: row.evidenceDefinitions, at: row.at }));
+}
+
+/**
+ * The indexes of `row.evidence` whose measured record is proven outside the demand readings'
+ * reach (CL23, L69; the reviewer's required change, `responses/questions-122a5224.md` §CL23).
+ *
+ * The readings read a skill's newest `PROTECTED_READS` measured records pooled across the
+ * sight-reading items (`demandReadings`), which needs catalogue facts this store does not have. A
+ * record outside its own item's newest five is outside the pooled five as well — every newer
+ * record of its item is in the pool — so its own item's five is the set protected: a safe superset
+ * of what the readings reach, never an age. `newer` are the measured records of the **same item's
+ * rows under higher keys** (the caller walks the item's index from its newest key), and a record is
+ * outside when at least five of them are:
+ *
+ * - of the same skill (the readings are per skill);
+ * - from a row under the same evidence stamp (`storedEvidence` reads one stamp; a newer record under
+ *   another is not read beside this one, and a compacted row is never recomputed);
+ * - strictly later (`localeCompare`, the readings' own order), so a record tied with the fifth,
+ *   whose place the readings' stable sort gives by catalogue order, stays protected;
+ * - dated no later than the compaction's day (`newerOf`).
+ *
+ * Under a higher key because the readings take an item's newest rows **by key** before sorting
+ * them by date (`sessionsForItem`, and Today's 500-row read): a newer run a restored backup wrote
+ * under a lower key may be past that read while this one is inside it, and a record outside that
+ * read altogether is one the readings never reach. The set only grows as runs are added; a device
+ * clock set back is the one way a folded record can come back into it, and an emptied array then
+ * reads as no step, not as a fault.
+ */
+function outsideReach(row: SessionRow, newer: readonly Newer[]): Set<number> {
+  const out = new Set<number>();
+  const evidence = row.evidence as EvidenceResult[];
+  for (const index of measuredIndexes(row)) {
+    const skill = (evidence[index] as MeasuredEvidence).skill;
+    let ahead = 0;
+    for (const one of newer) {
+      if (one.skill === skill && one.stamp === row.evidenceDefinitions && one.at.localeCompare(row.at) > 0) ahead += 1;
+    }
+    if (ahead >= PROTECTED_READS) out.add(index);
+  }
+  return out;
+}
+
+/**
+ * Compacts the rows older than the observation window (C1), folding the evidence of each that is
+ * proven outside the demand readings' reach as it goes (CL23, L69).
  *
  * Walked newest first from the window's edge, by the `byDate` index, and
  * stopped once `COMPACT_STOP` rows in a row are already compact: each tidy
  * then touches the few rows that have just crossed the edge, not the whole
- * store. Failure is silent for the reason pruning's is.
+ * store. A row crossing it is held against its own item's later rows, read
+ * down the item's index from the newest key until all its measured records are
+ * proven outside or its own key is reached (`outsideReach`). A row the walk
+ * finds already compact is left as it is, positions kept or not: a read the
+ * readings may still reach when it crosses is pushed out only by a later run of
+ * its item, which walks that item itself (`foldEvidenceOfItem`). Failure is
+ * silent for the reason pruning's is.
  */
 export async function compactSessions(now = new Date(), windowDays = OBSERVATION_WINDOW_DAYS): Promise<number> {
   const db = await openDatabase();
   if (!db) return 0;
   try {
     const edge = new Date(now.getTime() - windowDays * DAY_MS).toISOString();
+    const day = now.getTime();
     const tx = db.transaction('sessions', 'readwrite');
+    const byItem = tx.store.index('byItem');
+    const reachOf = async (row: SessionRow, key: number): Promise<ReadonlySet<number>> => {
+      const wanted = measuredIndexes(row).length;
+      // A row naming no item has no item's rows to be held against: nothing proven, nothing folded.
+      if (wanted === 0 || typeof row.itemId !== 'string') return NOTHING_OUTSIDE;
+      const newer: Newer[] = [];
+      let outside: ReadonlySet<number> = NOTHING_OUTSIDE;
+      let above = await byItem.openCursor(IDBKeyRange.only(row.itemId), 'prev');
+      while (above && above.primaryKey > key) {
+        newer.push(...newerOf(above.value, day));
+        outside = outsideReach(row, newer);
+        if (outside.size === wanted) break;
+        above = await above.continue();
+      }
+      return outside;
+    };
     let cursor = await tx.store.index('byDate').openCursor(IDBKeyRange.upperBound(edge, true), 'prev');
     let compacted = 0;
     let settled = 0;
     while (cursor && settled < COMPACT_STOP) {
-      if (cursor.value.steps) {
-        await cursor.update(compactObservation(cursor.value));
+      const row = cursor.value;
+      if (row.steps) {
+        const outside = await reachOf(row, cursor.primaryKey);
+        await cursor.update(compactObservation(row, outside));
         compacted += 1;
         settled = 0;
       } else {
@@ -961,18 +1106,72 @@ export async function compactSessions(now = new Date(), windowDays = OBSERVATION
   }
 }
 
+/**
+ * Folds the evidence of one item's old rows that a new run of it has pushed out of the demand
+ * readings' reach (CL23, L69; the brief's premise 24).
+ *
+ * A read protected when it crossed the observation window is pushed out of its item's newest
+ * five only by a later measured run of that item, and by then it is far behind the window's edge,
+ * where `compactSessions` stops before reaching it. So the run's own tidy walks the item's rows
+ * down its index from the newest key — every row walked is under a higher key than the next —
+ * and folds what each old, already compacted row now has five later records against
+ * (`outsideReach`). A row past the edge that still holds a position is not compact here, protected
+ * or not, so the walk's stop (`COMPACT_STOP` compact rows in a row) is never reached on the
+ * protected rows above an older one it should fold. Never running is safe for the readings — the
+ * row stays protected, only redundantly. Failure is silent, as the other tidies'.
+ */
+export async function foldEvidenceOfItem(itemId: string, now = new Date(), windowDays = OBSERVATION_WINDOW_DAYS): Promise<number> {
+  const db = await openDatabase();
+  if (!db) return 0;
+  try {
+    const edge = new Date(now.getTime() - windowDays * DAY_MS).toISOString();
+    const day = now.getTime();
+    const tx = db.transaction('sessions', 'readwrite');
+    let cursor = await tx.store.index('byItem').openCursor(IDBKeyRange.only(itemId), 'prev');
+    const newer: Newer[] = [];
+    let folded = 0;
+    let settled = 0;
+    while (cursor && settled < COMPACT_STOP) {
+      const row = cursor.value;
+      if (row.at < edge) {
+        if (row.steps || rowHoldsPositions(row)) {
+          settled = 0;
+          // A row past the edge with its steps is `compactSessions`'s; this walk folds only evidence.
+          if (!row.steps) {
+            const next = compactObservation(row, outsideReach(row, newer));
+            if (next !== row) {
+              await cursor.update(next);
+              folded += 1;
+            }
+          }
+        } else {
+          settled += 1;
+        }
+      }
+      newer.push(...newerOf(row, day));
+      cursor = await cursor.continue();
+    }
+    await tx.done;
+    return folded;
+  } catch {
+    return 0;
+  }
+}
+
 /** The tidy the last recorded run started, so a caller can wait for it. */
 let tidying: Promise<void> = Promise.resolve();
 
 /**
  * Compacts, then prunes, after a run is written — in the background and one
  * at a time, so two runs finished close together never walk the store twice
- * at once.
+ * at once. Where the run had a measured record, its item is walked between the
+ * two for the evidence its run pushed out of the readings' reach (CL23).
  */
-function tidySessions(now: Date): void {
+function tidySessions(now: Date, itemId?: string): void {
   tidying = tidying
     .then(async () => {
       await compactSessions(now);
+      if (itemId !== undefined) await foldEvidenceOfItem(itemId, now);
       await pruneSessions(MAX_SESSIONS, PRUNE_SLACK, now);
     })
     .catch(() => undefined);
@@ -1029,7 +1228,9 @@ let pruneStalledAt: number | null = null;
  * already reads these rows and nothing has to be kept in step beside them. So
  * the walk deletes only rows no derivation reads (`holdsEvidence`), keeps the
  * rest as they are — already compacted past the observation window, their
- * evidence never folded or dropped, no verdict written on them — and never
+ * evidence never dropped and its counts never folded (since CL23 a record the
+ * demand readings can no longer reach keeps its counts and loses its step
+ * indexes, `compactObservation`), no verdict written on them — and never
  * reaches into the observation window: recent runs are what the history and
  * the reader use, and when the kept rows alone are past the cap, deleting
  * yesterday's run would not bring the store back to it. A later evidence

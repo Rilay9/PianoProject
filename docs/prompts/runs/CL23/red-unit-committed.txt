@@ -1,0 +1,324 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/performanceReach.test.ts (4 tests | 4 failed) 157ms
+   ❯ the version 10 upgrade (2)
+     × a version-9 database opens at version 10: its performance marked, every other row as it was, and the performance listed past the old reach 68ms
+     × a fresh database has the index and nothing to backfill 5ms
+   ❯ the reach (2)
+     × finds a performance with more runs after it than the old walk looked at, newest first, the limit kept 80ms
+     × marks a performance when it is recorded, and only a performance 3ms
+ ❯ tests/unit/backup.test.ts (14 tests | 2 failed) 409ms
+   ❯ a performance in a backup written before version 10 (CL23, L53) (2)
+     × is listed after a replace restore onto a version-10 store, behind more runs than the old walk reached 183ms
+     × is listed after a merge restore onto a version-10 store, behind more runs than the old walk reached 157ms
+node.exe : Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Not implemented...vas npm package:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+ ❯ tests/unit/sessionRetention.test.ts (21 tests | 8 failed) 532ms
+   ❯ the fold itself (3)
+     × copies the reader’s window, which this store cannot import 4ms
+     × folds a measured record proven outside to its counts, and leaves every other record, and a row without evidence, as they were 11ms
+     × leaves what heldBack and playedDemands read bit for bit as it was 2ms
+   ❯ the budget, with a run that carried evidence (L69) (1)
+     × folds a compacted sight-read’s positions away, keeps its counts, and is smaller for it 407ms
+   ❯ the fold reaches only what the reader cannot (L69, path (b)) (8)
+     × six reads: the five the reader reads keep their positions past the window, the sixth is folded, and the readings are the same 25ms
+     × two items: B’s one old read, outside the pooled five and inside its own, keeps its positions; A’s sixth is folded 7ms
+     × a newer read under another evidence stamp does not count toward the five 8ms
+     × a new run of the item folds the read it pushed out of the five, past rows still protected 19ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 14 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/backup.test.ts > a performance in a backup written before version 10 (CL23, L53) > is listed after a 
+replace restore onto a version-10 store, behind more runs than the old walk reached
+ FAIL  tests/unit/backup.test.ts > a performance in a backup written before version 10 (CL23, L53) > is listed after a 
+merge restore onto a version-10 store, behind more runs than the old walk reached
+AssertionError: the restored performance was not listed: expected [] to deeply equal [ 'song.recital' ]
+
+- Expected
++ Received
+
+- [
+-   "song.recital",
+- ]
++ []
+
+ ❯ tests/unit/backup.test.ts:461:93
+    459|
+    460|       const performed = await recentPerformances(20);
+    461|       expect(performed.map((row) => row.itemId), 'the restored perform…
+       |                                                                                             ^
+    462|       expect(performed[0]).toMatchObject({ performance: true, performa…
+    463|       // Only the performance gains the marker on the way in.
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  tests/unit/performanceReach.test.ts > the version 10 upgrade > a version-9 database opens at version 10: its 
+performance marked, every other row as it was, and the performance listed past the old reach
+AssertionError: expected 9 to be greater than or equal to 10
+ ❯ tests/unit/performanceReach.test.ts:118:24
+    116|
+    117|     const db = await openDatabase();
+    118|     expect(DB_VERSION).toBeGreaterThanOrEqual(10);
+       |                        ^
+    119|     expect(db?.version).toBe(DB_VERSION);
+    120|     expect([...(db?.transaction('sessions').store.indexNames ?? [])].s…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  tests/unit/performanceReach.test.ts > the version 10 upgrade > a fresh database has the index and nothing to 
+backfill
+AssertionError: expected [ 'byDate', 'byItem' ] to deeply equal [ 'byDate', 'byItem', 'byPerformance' ]
+
+- Expected
++ Received
+
+  [
+    "byDate",
+    "byItem",
+-   "byPerformance",
+  ]
+
+ ❯ tests/unit/performanceReach.test.ts:136:78
+    134|     const db = await openDatabase();
+    135|     expect(db?.version).toBe(DB_VERSION);
+    136|     expect([...(db?.transaction('sessions').store.indexNames ?? [])].s…
+       |                                                                              ^
+    137|     expect(await recentPerformances(20)).toEqual([]);
+    138|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+ FAIL  tests/unit/performanceReach.test.ts > the reach > finds a performance with more runs after it than the old walk 
+looked at, newest first, the limit kept
+AssertionError: the performance behind the old reach was not listed: expected [ 'song.finale', 'song.encore' ] to 
+deeply equal [ 'song.finale', 'song.encore', …(1) ]
+
+- Expected
++ Received
+
+  [
+    "song.finale",
+    "song.encore",
+-   "song.recital",
+  ]
+
+ ❯ tests/unit/performanceReach.test.ts:155:103
+    153|
+    154|     const performed = await recentPerformances(20);
+    155|     expect(performed.map((row) => row.itemId), 'the performance behind…
+       |                                                                                                       ^
+    156|     expect(performed.every((row) => row.performance === true)).toBe(tr…
+    157|     expect((await recentPerformances(2)).map((row) => row.itemId)).toE…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+ FAIL  tests/unit/performanceReach.test.ts > the reach > marks a performance when it is recorded, and only a 
+performance
+AssertionError: expected { itemId: 'song.recital', …(10) } to match object { performance: true, …(1) }
+(10 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "performance": true,
+-   "performanceMark": 1,
+  }
+
+ ❯ tests/unit/performanceReach.test.ts:166:63
+    164|     const db = await openDatabase();
+    165|     const rows = (await db?.getAll('sessions')) ?? [];
+    166|     expect(rows.find((row) => row.itemId === 'song.recital')).toMatchO…
+       |                                                               ^
+    167|     const practised = rows.find((row) => row.itemId === 'song.practise…
+    168|     expect(practised?.performance).toBeUndefined();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
+
+ FAIL  tests/unit/sessionRetention.test.ts > the fold itself > copies the reader’s window, which this store cannot 
+import
+AssertionError: expected undefined to be 5 // Object.is equality
+
+- Expected:
+5
+
++ Received:
+undefined
+
+ ❯ tests/unit/sessionRetention.test.ts:385:29
+    383| describe('the fold itself', () => {
+    384|   it('copies the reader’s window, which this store cannot import', () …
+    385|     expect(PROTECTED_READS).toBe(DEMAND_WINDOW_READS);
+       |                             ^
+    386|   });
+    387|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
+
+ FAIL  tests/unit/sessionRetention.test.ts > the fold itself > folds a measured record proven outside to its counts, 
+and leaves every other record, and a row without evidence, as they were
+AssertionError: the fixture locates no other demand: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/sessionRetention.test.ts:392:112
+    390|     const measured = measuredOf(row);
+    391|     expect(measured.length, 'the fixture has no measured record').toBe…
+    392|     expect(measured.some((one) => (one.otherDemands ?? []).length > 0)…
+       |                                                                                                               
+ ^
+    393|     const refusal: EvidenceResult = { kind: 'refusal', skill: 'hands-t…
+    394|     const own = { kind: 'self-assessed', skill: 'sight-reading', obser…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯
+
+ FAIL  tests/unit/sessionRetention.test.ts > the fold itself > leaves what heldBack and playedDemands read bit for bit 
+as it was
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/sessionRetention.test.ts:433:36
+    431|     const row = read(200);
+    432|     const folded = compactObservation(row, everyMeasured(row));
+    433|     expect(holdsPositions(folded)).toBe(false);
+       |                                    ^
+    434|     expect(countsOf(folded)).toEqual(countsOf(row));
+    435|     expect(attemptDemands(folded.evidence)).toEqual(attemptDemands(row…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯
+
+ FAIL  tests/unit/sessionRetention.test.ts > the budget, with a run that carried evidence (L69) > folds a compacted 
+sight-read’s positions away, keeps its counts, and is smaller for it
+AssertionError: a step index survived the fold: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/sessionRetention.test.ts:467:70
+    465|     const folded = compactObservation(largest, everyMeasured(largest));
+    466|     expect(holdsPositions(kept), 'the fixture carried no positions to …
+    467|     expect(holdsPositions(folded), 'a step index survived the fold').t…
+       |                                                                      ^
+    468|     expect(countsOf(folded)).toEqual(countsOf(largest));
+    469|     expect(bytes(folded), 'the fold saved nothing on a compacted sight…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/14]⎯
+
+ FAIL  tests/unit/sessionRetention.test.ts > the fold reaches only what the reader cannot (L69, path (b)) > six reads: 
+the five the reader reads keep their positions past the window, the sixth is folded, and the readings are the same
+AssertionError: the sixth read is outside the reader’s five and kept its positions: expected true to be false // 
+Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/sessionRetention.test.ts:499:131
+    497|       expect(holdsPositions(byKey(after, key)), `read ${String(key)} i…
+    498|     }
+    499|     expect(holdsPositions(byKey(after, keys[0] as number)), 'the sixth…
+       |                                                                                                               
+                    ^
+    500|     expect(countsOf(byKey(after, keys[0] as number) as SessionRow)).to…
+    501|     for (const key of keys.slice(4)) expect(byKey(after, key)?.steps, …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/14]⎯
+
+ FAIL  tests/unit/sessionRetention.test.ts > the fold reaches only what the reader cannot (L69, path (b)) > two items: 
+B’s one old read, outside the pooled five and inside its own, keeps its positions; A’s sixth is folded
+AssertionError: A’s sixth read kept its positions: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/sessionRetention.test.ts:520:87
+    518|     expect(byKey(after, bOnly)?.steps).toBeUndefined();
+    519|     expect(holdsPositions(byKey(after, bOnly)), 'B’s only read was fol…
+    520|     expect(holdsPositions(byKey(after, aSixth)), 'A’s sixth read kept …
+       |                                                                                       ^
+    521|   });
+    522|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/14]⎯
+
+ FAIL  tests/unit/sessionRetention.test.ts > the fold reaches only what the reader cannot (L69, path (b)) > a newer 
+read under another evidence stamp does not count toward the five
+AssertionError: the read with five same-stamp reads after it kept its positions: expected true to be false // 
+Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/sessionRetention.test.ts:538:116
+    536|     expect(demandReadings(after, VOCABULARY_V0, NOW)).toEqual(readings…
+    537|     expect(holdsPositions(byKey(after, candidate)), 'the candidate was…
+    538|     expect(holdsPositions(byKey(after, older)), 'the read with five sa…
+       |                                                                                                               
+     ^
+    539|   });
+    540|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/14]⎯
+
+ FAIL  tests/unit/sessionRetention.test.ts > the fold reaches only what the reader cannot (L69, path (b)) > a new run 
+of the item folds the read it pushed out of the five, past rows still protected
+AssertionError: the read the new run pushed out of the five kept its positions: expected true to be false // Object.is 
+equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/sessionRetention.test.ts:612:116
+    610|     await sessionsTidied();
+    611|     const after = await storedRows();
+    612|     expect(holdsPositions(byKey(after, oldest)), 'the read the new run…
+       |                                                                                                               
+     ^
+    613|     expect(after.filter((row) => measuredOf(row).some((one) => one.ski…
+    614|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/14]⎯
+
+
+ Test Files  3 failed | 1 passed (4)
+      Tests  14 failed | 65 passed (79)
+   Start at  21:12:43
+   Duration  21.67s (environment 80%, transform 8%, import 7%, tests 6%)
+

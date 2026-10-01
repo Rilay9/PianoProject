@@ -28,7 +28,7 @@
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
-import { openDatabase } from '../../src/data/db';
+import { openDatabase, withPerformanceMark } from '../../src/data/db';
 import type { ProgressRow, SessionRow } from '../../src/data/db';
 import { resetProgressForTest } from '../../src/data/progressStore';
 import type { Router } from '../../src/router';
@@ -78,8 +78,11 @@ function masteredRow(): ProgressRow {
   };
 }
 
+// Revised (CL23, L53): a performance is written as every writer of the store writes it since
+// version 10, with the marker the performances' index keys (`withPerformanceMark`). Old assumption:
+// a stored performance is `performance: true` alone, which the list found by walking every run.
 function session(extra: Partial<SessionRow> & { itemId: string; at: string }): SessionRow {
-  return {
+  return withPerformanceMark({
     mode: 'tempo',
     tempoPct: 100,
     accuracy: 0.95,
@@ -88,7 +91,7 @@ function session(extra: Partial<SessionRow> & { itemId: string; at: string }): S
     missed: 0,
     durationMs: 240_000,
     ...extra,
-  };
+  });
 }
 
 async function seed(): Promise<void> {

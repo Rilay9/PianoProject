@@ -203,8 +203,11 @@ describe('the store, and the upgrade that makes it', () => {
     resetDatabaseForTest();
 
     const db = await openDatabase();
-    expect(DB_VERSION).toBe(9);
-    expect(db?.version).toBe(9);
+    // Revised (CL23): this was `toBe(9)` twice, true until the next version. The case is the version 9
+    // upgrade on its path to the current one, as `encounterModel.test.ts` reads version 8's; version 10
+    // (L53) touches no row this fixture holds, a performance being the only row it marks.
+    expect(DB_VERSION).toBeGreaterThanOrEqual(9);
+    expect(db?.version).toBe(DB_VERSION);
     for (const name of names) {
       expect({ rows: await db?.getAll(name as never), keys: await db?.getAllKeys(name as never) }, `${name} changed in the upgrade`).toEqual(before[name]);
     }
