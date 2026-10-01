@@ -1,0 +1,12 @@
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/expectedNote.test.ts > the spelling comes from the notation (T41) > every black key in every fixture carries its written spelling
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+ FAIL  tests/unit/lessonClaimsAboutMusic.test.ts > the batch-4 and batch-5 corrections, second-read and under test: the music > rock.7: In the Hall of the Mountain King states one tempo, marks a crescendo in six different bars, and asks nowhere to speed up
+ FAIL  tests/unit/materialOnTheRecord.test.ts > every built row carries the build’s material identity (D4 item 1) > a generated row’s is the app’s own reading of its generator; a notated row’s is its built file’s sha256; a runtime drill’s is none
+ FAIL  tests/unit/midiParity.test.ts > the port agrees with the Python converter > has a reference to compare against
+ FAIL  tests/unit/taughtByAncestry.test.ts > the shipped curriculum > the build reads the same ancestry: the rung-claims report’s "untaught here" and the gate read one thing
+ FAIL  tests/unit/tempoSoundAgainstMark.test.ts > the built MuseTrainer and kern scores > reads every MuseTrainer and kern row that has a built file, Maple Leaf’s among them
+ Test Files  7 failed | 323 passed (330)
+      Tests  7 failed | 7574 passed | 1 skipped | 1 todo (7583)
+
+The full log (about 900 KB) was not kept.

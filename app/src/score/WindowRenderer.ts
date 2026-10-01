@@ -486,6 +486,19 @@ export interface WindowRendererOptions {
    * screen's fit. Default 1.
    */
   miniature?: number;
+  /**
+   * The band at the stage's top the folded chrome's `bar n / m` chip owns, in
+   * layout pixels, or 0 while the chip is not drawn (U118). The Score screen
+   * owns the chip, its sentences and when it is drawn, so it answers; the
+   * renderer asks whenever it places the stacked slots or takes a size, and
+   * places the first of them below the band.
+   *
+   * The answer is the chip's tallest legitimate state at the stage's width and
+   * the chip's type, held for that geometry: a change of sentence never moves
+   * it, and so never moves or re-prices the slots (rule 4 of the reviewer's
+   * ruling, `responses/questions-e9aa51ae.md`).
+   */
+  foldedReserve?: () => number;
 }
 
 interface Buffer {
@@ -715,6 +728,10 @@ export class WindowRenderer {
   private systemsPerWindow = 1;
   private shownBars: number;
   private readonly onWindow: ((shown: number, asked: number) => void) | undefined;
+  /** The folded chip's band, asked of the Score screen (U118; `WindowRendererOptions.foldedReserve`). */
+  private readonly foldedReserveOf: (() => number) | undefined;
+  /** The stacked slots' heights at the last pack, so the fold can place them again without a fit (U118). */
+  private lastPack: { slot: Buffer; height: number }[] = [];
   private handsFocus: HandsFocus;
   private zoomLevel: number;
   /** What the owner asked for; the drawn zoom is this times the fit. */
@@ -953,6 +970,7 @@ export class WindowRenderer {
     this.barsPerWindow = clampBars(options.barsPerWindow ?? 2);
     this.shownBars = this.barsPerWindow;
     this.onWindow = options.onWindow;
+    this.foldedReserveOf = options.foldedReserve;
     this.orientation = options.orientation ?? null;
     this.miniature = options.miniature !== undefined && options.miniature > 0 ? options.miniature : 1;
     this.handsFocus = options.handsFocus ?? 'both';
@@ -1698,6 +1716,7 @@ export class WindowRenderer {
   private dropDrawnSheets(): void {
     this.slotRanges = this.buffers.map(() => null);
     this.cursorSlot = 0;
+    this.lastPack = [];
     for (const slot of this.buffers) {
       // The classes too: a buffer hidden by the new arrangement kept its old
       // `is-current`, and the next time it came forward showed a stale one
@@ -1904,6 +1923,13 @@ export class WindowRenderer {
       };
     }
 
+    // **The height the slots are stacked in (U118).** Below the folded chip's
+    // band when the chip is drawn as this size is taken — a size taken while
+    // already folded, after a turn — and the whole stage otherwise. A run that
+    // starts unfolded is priced on the whole stage, and the fold that comes
+    // later gives back the header's row, more than the band takes; the shape a
+    // frozen run holds is never priced again here (`chooseWindowShape`).
+    const slotsHeight = stage.height - this.foldedReserve();
     /** The window of `shown` bars the cursor is in, split over `systems` rows as `slots.rangeAt` splits it. */
     const rowsFor = (shown: number, systems: number): { window: MeasureRange; rows: MeasureRange[] } => {
       const w = windowAt(cursorBar, shown, pieceBars, pickup);
@@ -1922,7 +1948,7 @@ export class WindowRenderer {
      * stage's width.
      */
     const fitFor = (shown: number, systems: number): number => {
-      const perRow = (stage.height - SLOT_GAP_PX * (systems - 1)) / systems;
+      const perRow = (slotsHeight - SLOT_GAP_PX * (systems - 1)) / systems;
       const byHeight = (perRow - FIT_MARGIN_PX) / height;
       const widest = Math.max(...rowsFor(shown, systems).rows.map(row), 1);
       const byWidth = (stage.width - FIT_MARGIN_PX) / widest;
@@ -1951,7 +1977,7 @@ export class WindowRenderer {
       if (windowAt(cursorBar, shown, pieceBars, pickup).toMeasure >= pieceBars - 1) return true;
       if (systems + 1 > maxSlots) return false;
       const rowHeight = height * (u <= 1 ? u * fit : fit) + FIT_MARGIN_PX;
-      return systems * rowHeight + rowHeight + SLOT_GAP_PX * systems <= stage.height;
+      return systems * rowHeight + rowHeight + SLOT_GAP_PX * systems <= slotsHeight;
     };
     const bestFor = (shown: number, maxSlots: number): { systems: number; fit: number } | null => {
       const splits: { systems: number; fit: number }[] = [];
@@ -2035,7 +2061,7 @@ export class WindowRenderer {
       return (
         windowAt(cursorBar, shown, pieceBars, pickup).toMeasure < pieceBars - 1 &&
         systems + 1 <= maxSlots &&
-        systems * rowHeight + aheadHeight + SLOT_GAP_PX * systems <= stage.height
+        systems * rowHeight + aheadHeight + SLOT_GAP_PX * systems <= slotsHeight
       );
     };
     const ahead = aheadFor(choice.shown, choice.systems, choice.drawn, choice.maxSlots);
@@ -2085,7 +2111,8 @@ export class WindowRenderer {
    * twice (`staffLineBoxes`) — was all that kept the bottom of a phone held
    * sideways on the glass; measured once the reserve was exact, the bass
    * staff's fingerings on Twinkle ran 18 px past the stage's bottom mid-run.
-   * The slots set their own `top`, so this is the sliding sheet's alone.
+   * The slots set their own `top`, so the stylesheet's shift is the sliding
+   * sheet's alone; the stacked slots' is the chip's band (U118, below).
    *
    * **A run is fitted for the folded box from its start.** The stage takes
    * the bar's row when a run starts (`data-running`), the size is frozen a
@@ -2093,12 +2120,35 @@ export class WindowRenderer {
    * sheet down without changing the stage's box, so nothing refits. So while
    * a run is on, on a phone, the chip's height is kept from the start: one
    * size for the whole run, with the room the fold will take already given.
+   *
+   * **The stacked slots are not kept the room from the start (U118, the
+   * reviewer's ruling `responses/questions-e9aa51ae.md`).** Upright the fold
+   * also takes the header away, and the stage grows by more than the chip's
+   * band: priced from a run's start the band cost six of 112 measured shapes
+   * and shrank 27 more for room the fold gives back anyway. So the slots fit
+   * below the band only while the chip is drawn — the band the slots are
+   * placed under (`packSlots`) — and a run frozen before the fold keeps its
+   * size through it (`scaleFor`'s hold), the header's row paying for the band.
    */
   private sheetShift(): number {
+    if (this.readAhead === 'slots') return this.foldedReserve();
     if (this.readAhead !== 'single' || this.layout !== 'window' || typeof getComputedStyle !== 'function') return 0;
     const top = Number.parseFloat(getComputedStyle(this.buffers[this.cursorSlot]!.wrapper).top);
     if (Number.isFinite(top) && top > 0) return top;
     return this.running && this.el.closest('[data-tablet="true"]') === null ? FOLDED_SHEET_SHIFT_PX : 0;
+  }
+
+  /**
+   * The band the folded chip owns at the stage's top, in layout pixels, while
+   * it is drawn; 0 otherwise, and always outside the window layout (U118).
+   * The Score screen answers (`WindowRendererOptions.foldedReserve`): the
+   * chip's tallest legitimate state at this width and type, not the sentence
+   * it shows now, so the answer holds until the geometry changes.
+   */
+  private foldedReserve(): number {
+    if (this.layout !== 'window' || !this.foldedReserveOf) return 0;
+    const px = this.foldedReserveOf();
+    return Number.isFinite(px) && px > 0 ? px : 0;
   }
 
   /** The piece's widest bar at natural spacing, px at the engraving zoom, or the widest drawn; 0 if neither. */
@@ -2517,6 +2567,9 @@ export class WindowRenderer {
         pending: this.sheetsOwed(),
       },
       frozen: this.frozen,
+      // The folded chip's band the stacked slots are placed under, 0 while it
+      // is not drawn (U118).
+      foldedReserve: this.foldedReserve(),
       readAhead: this.readAhead,
       slotCount: this.slotCount,
       systemsPerWindow: this.systemsPerWindow,
@@ -3374,6 +3427,19 @@ export class WindowRenderer {
   }
 
   /**
+   * The stacked slots placed again where they were last fitted, for the folded
+   * chip's band coming or going (U118). Placement only: no fit, no price, no
+   * engraving. The Score screen calls it when its chrome folds or unfolds, so
+   * the first slot is below the chip from the frame the chip is drawn in,
+   * whether or not the fold also changes the stage's box (upright it does, and
+   * the stage observer's fit places them again a moment later to the same tops).
+   */
+  placeSlots(): void {
+    if (this.disposed || this.layout !== 'window' || this.readAhead !== 'slots' || this.lastPack.length === 0) return;
+    this.packSlots(this.lastPack);
+  }
+
+  /**
    * Stacks the two slots from the top when their music is shorter than half
    * the stage each; otherwise the stylesheet's halves stand. The scale was
    * fitted against the halves, so a packed pair never overflows.
@@ -3390,13 +3456,20 @@ export class WindowRenderer {
       }
       return;
     }
-    const stageHeight = this.measure(this.el).height;
+    this.lastPack = entries;
+    // **Below the folded chip's band while the chip is drawn (U118).** The
+    // first slot in reading order starts under the band, never inside it, and
+    // the rest stack from there within what is left of the stage. Upright the
+    // fold that draws the chip also takes the header away, so a run frozen
+    // before it has more than the band to spare below its last system.
+    const origin = Math.ceil(this.foldedReserve());
+    const stageHeight = this.measure(this.el).height - origin;
     const perSlot = stageHeight / this.slotCount;
     const total = entries.reduce((sum, entry) => sum + entry.height, 0) + SLOT_GAP_PX * (entries.length - 1);
     const packed = entries.length >= 2 && total < stageHeight;
     // Every slot in use gets its box: packed from the top when the music is
     // shorter than its share, otherwise an even share each.
-    let top = 0;
+    let top = origin;
     const order = this.buffers
       .slice(0, this.slotCount)
       .map((slot, index) => ({ slot, index }))
@@ -3408,7 +3481,7 @@ export class WindowRenderer {
     for (const [position, { slot }] of order.entries()) {
       const entry = entries.find((candidate) => candidate.slot === slot);
       const height = packed && entry ? entry.height : perSlot;
-      slot.wrapper.style.top = `${String(Math.round(packed ? top : position * perSlot))}px`;
+      slot.wrapper.style.top = `${String(Math.round(packed ? top : origin + position * perSlot))}px`;
       slot.wrapper.style.height = `${String(Math.round(height))}px`;
       if (entry) top += height + SLOT_GAP_PX;
     }

@@ -249,6 +249,29 @@ const SLOWER_TAP: SoundTap = { id: 'summary-slower', control: 'Slower' };
 const FASTER_TAP: SoundTap = { id: 'summary-faster', control: 'Faster' };
 /** *Loop the weak bars*: 50 characters in full, so its first word. */
 const LOOP_WEAK_TAP: SoundTap = { id: 'summary-loop', control: 'Loop' };
+/**
+ * Every tap above, for the folded chip's reserve (U118, `cornerTexts`): a
+ * refusal names its control, so each is a sentence the chip can carry. The
+ * hands' taps and a held bar are made where they are used and added there.
+ */
+const SOUND_TAPS: readonly SoundTap[] = [
+  PLAY_TAP,
+  HEAR_TAP,
+  KEY_TAP,
+  CARRY_ON_TAP,
+  RESTART_TAP,
+  TRY_AGAIN_TAP,
+  AGAIN_TAP,
+  SLOWER_TAP,
+  FASTER_TAP,
+  LOOP_WEAK_TAP,
+];
+/**
+ * The seconds away the chip's reserve prices *Paused — you were away N s.* at
+ * (U118): a day's worth. The count has no ceiling of its own, and a phone left
+ * longer than a day comes back to a run nobody is still in the middle of.
+ */
+const AWAY_PRICED_S = 86_400;
 
 /**
  * Sight-reading is the one drill kind that is notation (docs/05 §7–§8), so it
@@ -1196,6 +1219,106 @@ export function ScoreScreen(router: Router): HTMLElement {
     mirror.observe(node, { childList: true, characterData: true, subtree: true, attributes: true });
   }
   unsubscribers.push(() => mirror.disconnect());
+
+  /**
+   * Every sentence the folded chip can carry for this piece, each at its longest
+   * (U118): `bar n / m` alone, and joined to every line the run can write while
+   * the chrome is folded, as `syncBarLeft` joins them. Built from the same
+   * sentences the screen writes (`STATE_TEXT`, `RESTARTED_WITH`, the taps whose
+   * refusal names them, the piece's own chords), not copied, so a new or longer
+   * sentence moves the reserve with it. The standing line of a mode is not here:
+   * the chip shows only what the run said (`saidByTheRun`).
+   *
+   * The longest of each kind: the piece's last bar for every bar number, the
+   * longest section or bar range for a loop, the tempo row's own maximum, the
+   * most bars a window holds. One number has no ceiling of its own, the seconds
+   * away; it is priced at a day's (`AWAY_PRICED_S`).
+   */
+  function cornerTexts(): string[] {
+    if (!model) return [];
+    const last = String(printedBar(model.sourceMeasureCount - 1));
+    const at = `bar ${last} / ${last}`;
+    const longest = (words: readonly string[]): string => words.reduce((a, b) => (b.length > a.length ? b : a), '');
+    const reasons = [
+      RESTARTED_WITH.mode(longest(MODES.map((m) => m.label))),
+      ...HANDS.map((h) => RESTARTED_WITH.hands(h.id)),
+      RESTARTED_WITH.tempo(Number(tempo.max)),
+      RESTARTED_WITH.loop(longest([`bars ${last}–${last}`, ...sections.map((s) => s.label)])),
+      RESTARTED_WITH.noLoop,
+      ...(['midi', 'mic', 'keys'] as const).map((id) => RESTARTED_WITH.input(inputSaid(id))),
+      RESTARTED_WITH.noInput,
+      RESTARTED_WITH.rhythm(true),
+      RESTARTED_WITH.rhythm(false),
+      RESTARTED_WITH.duet(null),
+      RESTARTED_WITH.duet('both hands'),
+      RESTARTED_WITH.duet('the right hand'),
+      RESTARTED_WITH.duet('the left hand'),
+      RESTARTED_WITH.bars(MAX_BARS_PER_WINDOW),
+      RESTARTED_WITH.layout(true),
+      RESTARTED_WITH.layout(false),
+    ];
+    const taps: SoundTap[] = [
+      ...SOUND_TAPS,
+      ...HANDS.map((h) => ({ id: `score-hands-${h.id}`, control: h.label })),
+      { id: 'score-stage', control: `bar ${last}`, verb: 'hold' },
+    ];
+    let named = '';
+    for (const step of model.steps) {
+      const line = waitingForLine(step.notes);
+      if (line.length > named.length) named = line;
+    }
+    const said = [
+      ...taps.map((tap) => STATE_TEXT.soundOff(tap.control, tap)),
+      STATE_TEXT.paused,
+      STATE_TEXT.pausedPerforming,
+      STATE_TEXT.away(AWAY_PRICED_S, false),
+      STATE_TEXT.away(AWAY_PRICED_S, true),
+      STATE_TEXT.pausedAt(last),
+      ...reasons.map((what) => STATE_TEXT.restarted(last, what)),
+      STATE_TEXT.hearing,
+      STATE_TEXT.hearingOverRun(last),
+      ...HANDS.map((h) => firstNoteLine(h.id)),
+      named,
+    ];
+    return [at, ...said.filter((line) => line !== '').map((line) => `${at} · ${line}`)];
+  }
+
+  /**
+   * The band the folded chip owns at the stage's top, for the renderer to
+   * place the stacked slots under (U118; the reviewer's ruling,
+   * `responses/questions-e9aa51ae.md`). 0 while the chip is not drawn —
+   * unfolded, or on a tablet, where the stylesheet never draws it.
+   *
+   * **The chip's tallest legitimate state, not the sentence it shows now.** A
+   * copy of the chip, unseen, is laid out with every sentence `cornerTexts`
+   * gives, under the chip's own rule (its `top`, padding, type and line
+   * height, and the width the stage leaves it), and the lowest bottom edge
+   * is the band: one line where every sentence fits one at this width, two
+   * where any needs two. Held for the geometry it was measured at — the
+   * stage's width and the chip's type — so a change of sentence never moves
+   * it and never re-prices a run; a turn or a text size measures again.
+   */
+  let cornerBand: { key: string; px: number } | null = null;
+  function foldedCornerReserve(): number {
+    if (section.dataset.chrome !== 'folded' || section.dataset.tablet === 'true') return 0;
+    const style = getComputedStyle(corner);
+    if (style.display === 'none') return 0;
+    const key = `${String(stage.clientWidth)}|${style.fontSize}|${style.lineHeight}|${style.fontFamily}|${String(model?.sourceMeasureCount ?? 0)}`;
+    if (cornerBand?.key === key) return cornerBand.px;
+    const copy = corner.cloneNode(false) as HTMLElement;
+    copy.removeAttribute('id');
+    copy.style.visibility = 'hidden';
+    stage.appendChild(copy);
+    const top = stage.getBoundingClientRect().top + stage.clientTop;
+    let px = 0;
+    for (const text of cornerTexts()) {
+      copy.textContent = text;
+      px = Math.max(px, copy.getBoundingClientRect().bottom - top);
+    }
+    copy.remove();
+    cornerBand = { key, px };
+    return px;
+  }
 
   /**
    * Where the controls that are not on the bar live between openings.
@@ -3417,6 +3540,10 @@ export function ScoreScreen(router: Router): HTMLElement {
     // subtree out of the tab order and out of the accessibility tree, which is
     // what "hidden" is supposed to mean here.
     bar.inert = folded;
+    // The stacked slots go below the corner chip the moment it is drawn, and
+    // back to the top when it goes (U118): placed, never priced or fitted
+    // again, so a run's size and systems are the ones it froze.
+    renderer?.placeSlots();
     requestAnimationFrame(measureBar);
   }
   function showBar(hideAfterMs = CONTROL_BAR_HIDE_MS): void {
@@ -4492,9 +4619,9 @@ export function ScoreScreen(router: Router): HTMLElement {
    * waiting run looks exactly like a frozen one — the state a control must
    * never be in unseen (`05` §6).
    */
-  function firstNoteLine(): string {
-    if (hands === 'R') return 'Your right hand starts — play its first note';
-    if (hands === 'L') return 'Your left hand starts — play its first note';
+  function firstNoteLine(hand: HandsFocus = hands): string {
+    if (hand === 'R') return 'Your right hand starts — play its first note';
+    if (hand === 'L') return 'Your left hand starts — play its first note';
     return 'Play your first note to start';
   }
 
@@ -5140,6 +5267,8 @@ export function ScoreScreen(router: Router): HTMLElement {
         // The words are for singing; this screen is for the hands (`08` §3.4.1).
         drawLyrics: false,
         drawChordSymbols: settings.showChordSymbols,
+        // The folded chip's band, for the stacked slots to start below (U118).
+        foldedReserve: foldedCornerReserve,
       });
 
       if (window.__pianopath) {

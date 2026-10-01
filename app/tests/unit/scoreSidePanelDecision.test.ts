@@ -117,6 +117,7 @@ vi.mock('../../src/score/WindowRenderer', async (importOriginal) => {
       setBarsPerWindow(): void {}
       setLoopRange(): void {}
       setRunning(): void {}
+      placeSlots(): void {}
       fitToStage(): void {}
       refit(): void {}
       dispose(): void {}
