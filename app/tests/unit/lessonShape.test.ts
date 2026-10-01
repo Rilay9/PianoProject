@@ -259,9 +259,7 @@ describe('every lesson keeps its shape', () => {
     // twenty-one pieces on it. The list is named so it cannot grow quietly.
     const MINUTES = 3;
     const WPM = 200;
-    // rock.7.md since E57a (Entry 195): the reviewer's approved tempo sentences put it three words past the
-    // line (603); held here rather than cutting taught words outside them, the reviewer's call (Question 1).
-    const KNOWN_LONG = new Set(['ragtime.6.md', 'classical.6.md', 'rock.7.md']);
+    const KNOWN_LONG = new Set(['ragtime.6.md', 'classical.6.md']);
     const over = bodies()
       .map(({ name, text }) => ({
         name,
