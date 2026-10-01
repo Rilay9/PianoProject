@@ -1,0 +1,350 @@
+{
+  "vw": 568,
+  "vh": 320,
+  "text": "115",
+  "face": "wider",
+  "piece": "hcb",
+  "mode": "paused",
+  "atRest": {
+    "innerWidth": 568,
+    "rootFont": "18.4px",
+    "refused": null,
+    "bar": {
+      "height": 59.88,
+      "rows": 1,
+      "controlRows": 1,
+      "tops": [
+        "score-bar-left:212",
+        "score-play:212",
+        "score-hear:212",
+        "score-mode:212",
+        "score-group:212",
+        "score-tempo-label:212",
+        "score-more:212"
+      ]
+    },
+    "group": {
+      "left": 0,
+      "right": 124.53,
+      "width": 124.53,
+      "height": 46,
+      "top": 211.56,
+      "scrollWidth": 152,
+      "clips": true
+    },
+    "back": {
+      "left": 0,
+      "right": 71.7,
+      "width": 71.7,
+      "height": 46,
+      "top": 211.56,
+      "whole": true,
+      "text": "← Back",
+      "shown": "← Back",
+      "cut": "whole"
+    },
+    "title": {
+      "left": 79.06,
+      "right": 79.06,
+      "width": 0,
+      "height": 20,
+      "top": 224.56,
+      "whole": false,
+      "text": "Hot Cross Buns",
+      "shown": "",
+      "cut": "nothing drawn"
+    },
+    "where": {
+      "left": 86.42,
+      "right": 151.61,
+      "width": 65.19,
+      "height": 18,
+      "top": 225.56,
+      "whole": false,
+      "text": "bar 1 / 4",
+      "shown": "bar [1]",
+      "cut": "flush"
+    },
+    "widest": {
+      "text": "bar 4 / 4",
+      "whole": false,
+      "right": 151.61,
+      "groupRight": 124.53
+    },
+    "status": {
+      "left": 158.97,
+      "right": 158.97,
+      "width": 0,
+      "height": 0,
+      "top": 234.56,
+      "whole": false,
+      "text": "",
+      "shown": "",
+      "cut": "empty"
+    },
+    "controls": [
+      {
+        "sel": "#score-back-side",
+        "onBar": true,
+        "left": 0,
+        "right": 71.7,
+        "top": 211.56,
+        "height": 46,
+        "hit": "self"
+      },
+      {
+        "sel": "#score-play",
+        "onBar": true,
+        "left": 127.28,
+        "right": 173.28,
+        "top": 211.56,
+        "height": 46,
+        "hit": "self"
+      },
+      {
+        "sel": "#score-hear",
+        "onBar": true,
+        "left": 176.03,
+        "right": 242.16,
+        "top": 211.56,
+        "height": 46,
+        "hit": "self"
+      },
+      {
+        "sel": "#score-mode",
+        "onBar": true,
+        "left": 244.91,
+        "right": 295.5,
+        "top": 211.56,
+        "height": 46,
+        "hit": "self"
+      },
+      {
+        "sel": "#score-hands-R",
+        "onBar": true,
+        "left": 298.25,
+        "right": 322.16,
+        "top": 211.56,
+        "height": 46,
+        "hit": "self"
+      },
+      {
+        "sel": "#score-hands-L",
+        "onBar": true,
+        "left": 324.91,
+        "right": 346.66,
+        "top": 211.56,
+        "height": 46,
+        "hit": "self"
+      },
+      {
+        "sel": "#score-hands-both",
+        "onBar": true,
+        "left": 349.41,
+        "right": 398.72,
+        "top": 211.56,
+        "height": 46,
+        "hit": "self"
+      },
+      {
+        "sel": "#score-tempo-label",
+        "onBar": true,
+        "left": 401.47,
+        "right": 519.25,
+        "top": 211.56,
+        "height": 46,
+        "hit": "self"
+      },
+      {
+        "sel": "#score-more",
+        "onBar": true,
+        "left": 522,
+        "right": 568,
+        "top": 211.56,
+        "height": 46,
+        "hit": "self"
+      }
+    ],
+    "handsOnBar": true,
+    "hearOnBar": true,
+    "tempo": "70% · 50 bpm",
+    "mode": "Keep tempo"
+  },
+  "paused": {
+    "innerWidth": 568,
+    "rootFont": "18.4px",
+    "refused": null,
+    "bar": {
+      "height": 59.88,
+      "rows": 1,
+      "controlRows": 1,
+      "tops": [
+        "score-bar-left:212",
+        "score-play:212",
+        "score-hear:212",
+        "score-mode:212",
+        "score-group:212",
+        "score-tempo-label:212",
+        "score-more:212"
+      ]
+    },
+    "group": {
+      "left": 0,
+      "right": 124.53,
+      "width": 124.53,
+      "height": 46,
+      "top": 211.56,
+      "scrollWidth": 318,
+      "clips": true
+    },
+    "back": {
+      "left": 0,
+      "right": 71.7,
+      "width": 71.7,
+      "height": 46,
+      "top": 211.56,
+      "whole": true,
+      "text": "← Back",
+      "shown": "← Back",
+      "cut": "whole"
+    },
+    "title": {
+      "left": 79.06,
+      "right": 79.06,
+      "width": 0,
+      "height": 20,
+      "top": 224.56,
+      "whole": false,
+      "text": "Hot Cross Buns",
+      "shown": "",
+      "cut": "nothing drawn"
+    },
+    "where": {
+      "left": 86.42,
+      "right": 151.61,
+      "width": 65.19,
+      "height": 18,
+      "top": 225.56,
+      "whole": false,
+      "text": "bar 1 / 4",
+      "shown": "bar [1]",
+      "cut": "flush"
+    },
+    "widest": {
+      "text": "bar 4 / 4",
+      "whole": false,
+      "right": 151.61,
+      "groupRight": 124.53
+    },
+    "status": {
+      "left": 158.97,
+      "right": 318,
+      "width": 159.03,
+      "height": 20,
+      "top": 224.56,
+      "whole": false,
+      "text": "Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning.",
+      "shown": "",
+      "cut": "nothing drawn"
+    },
+    "controls": [
+      {
+        "sel": "#score-back-side",
+        "onBar": true,
+        "left": 0,
+        "right": 71.7,
+        "top": 211.56,
+        "height": 46,
+        "hit": "self"
+      },
+      {
+        "sel": "#score-play",
+        "onBar": true,
+        "left": 127.28,
+        "right": 173.28,
+        "top": 211.56,
+        "height": 46,
+        "hit": "self"
+      },
+      {
+        "sel": "#score-hear",
+        "onBar": true,
+        "left": 176.03,
+        "right": 242.16,
+        "top": 211.56,
+        "height": 46,
+        "hit": "self"
+      },
+      {
+        "sel": "#score-mode",
+        "onBar": true,
+        "left": 244.91,
+        "right": 295.5,
+        "top": 211.56,
+        "height": 46,
+        "hit": "self"
+      },
+      {
+        "sel": "#score-hands-R",
+        "onBar": true,
+        "left": 298.25,
+        "right": 322.16,
+        "top": 211.56,
+        "height": 46,
+        "hit": "self"
+      },
+      {
+        "sel": "#score-hands-L",
+        "onBar": true,
+        "left": 324.91,
+        "right": 346.66,
+        "top": 211.56,
+        "height": 46,
+        "hit": "self"
+      },
+      {
+        "sel": "#score-hands-both",
+        "onBar": true,
+        "left": 349.41,
+        "right": 398.72,
+        "top": 211.56,
+        "height": 46,
+        "hit": "self"
+      },
+      {
+        "sel": "#score-tempo-label",
+        "onBar": true,
+        "left": 401.47,
+        "right": 519.25,
+        "top": 211.56,
+        "height": 46,
+        "hit": "self"
+      },
+      {
+        "sel": "#score-more",
+        "onBar": true,
+        "left": 522,
+        "right": 568,
+        "top": 211.56,
+        "height": 46,
+        "hit": "self"
+      }
+    ],
+    "handsOnBar": true,
+    "hearOnBar": true,
+    "tempo": "70% · 50 bpm",
+    "mode": "Wait for me"
+  },
+  "trial": {
+    "#score-back-side": "ok",
+    "#score-play": "ok",
+    "#score-hear": "ok",
+    "#score-mode": "ok",
+    "#score-hands-R": "ok",
+    "#score-hands-L": "ok",
+    "#score-hands-both": "ok",
+    "#score-tempo-label": "ok",
+    "#score-more": "ok"
+  },
+  "realPlay": "ok"
+}

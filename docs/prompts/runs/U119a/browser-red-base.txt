@@ -1,0 +1,743 @@
+
+Running 29 tests using 4 workers
+
+  ok  1 tests\e2e\score.screen.spec.ts:166:3 › score screen › the ⋯ sheet fits sideways without scrolling (08 §7.2) (2.6s)
+  ok  4 tests\e2e\score.screen.spec.ts:1836:5 › ▶ after the sound was suspended (U69) › a refusal sideways (740 × 342) on a wider face, at rest: the bar’s mirror says it whole, the bar one row, the ordinary line still cut (5.3s)
+  ok  2 tests\e2e\score.screen.spec.ts:1836:5 › ▶ after the sound was suspended (U69) › a refusal sideways (740 × 342) on a wider face, paused: the bar’s mirror says it whole, the bar one row, the ordinary line still cut (6.0s)
+  x   5 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 568 × 320, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.4s)
+  x   6 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 568 × 320 at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (2.8s)
+  x   7 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 568 × 320 on a wider face, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (2.9s)
+  x   8 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 568 × 320 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.2s)
+  x   9 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 640 × 360, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.5s)
+  x  10 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 640 × 360 at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.1s)
+  x  11 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 640 × 360 on a wider face, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.1s)
+  ok  3 tests\e2e\score.screen.spec.ts:1397:5 › ▶ after the sound was suspended (U69) › a refused tap on the summary, sideways (740 × 342): the sentence read once, whole, the sheet’s copy a status, and nothing changed (19.1s)
+  x  12 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 640 × 360 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.4s)
+  x  13 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 667 × 375, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.5s)
+  x  15 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 667 × 375 on a wider face, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (2.9s)
+  x  14 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 667 × 375 at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.2s)
+  ok 17 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 740 × 342, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.0s)
+  x  16 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 667 × 375 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.1s)
+  ok 19 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 740 × 342 on a wider face, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.1s)
+  x  18 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 740 × 342 at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.1s)
+  x  20 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 740 × 342 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (2.8s)
+  ok 22 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 780 × 360 at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (2.8s)
+  ok 21 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 780 × 360, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.5s)
+  ok 23 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 780 × 360 on a wider face, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.5s)
+  x  24 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 780 × 360 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.6s)
+  x  26 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 568 × 320 on a wider face at 115 % text, a three-digit bar (Moonlight III), paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (10.9s)
+  x  25 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 568 × 320 at 115 % text, a three-digit bar (Moonlight III), paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (11.2s)
+  ok 28 tests\e2e\score.screen.spec.ts:2342:3 › ▶ after the sound was suspended (U69) › a refusal sideways (667 × 375) on a wider face, at rest: no control under the sentence, and a real tap on ▶ still starts the run (5.9s)
+  x  27 tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 640 × 360 on a wider face at 115 % text, a three-digit bar (Moonlight III), paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (10.2s)
+  x  29 tests\e2e\score.screen.spec.ts:2401:3 › ▶ after the sound was suspended (U69) › a refusal sideways (568 × 320) on a wider face at 115 % text: the sentence’s height sends no control behind ⋯ (4.6s)
+
+
+  1) tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 568 × 320, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+
+    Error: the status line is cut flush by the group, not by its own ellipsis (its box ends at 280.8125, the group at 208.78125)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+    > 2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+           |                                                                                                                                                                                                 ^
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+      2215 |   };
+      2216 |
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2213:193)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error Context: build\u119a\test-results\score.screen-▶-after-the-s-79e63-l-tap-reaches-every-control\error-context.md
+
+  2) tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 568 × 320 at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+
+    Error: the status line is cut flush by the group, not by its own ellipsis (its box ends at 298.78125, the group at 156.171875)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+    > 2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+           |                                                                                                                                                                                                 ^
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+      2215 |   };
+      2216 |
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2213:193)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error Context: build\u119a\test-results\score.screen-▶-after-the-s-023d5-l-tap-reaches-every-control\error-context.md
+
+  3) tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 568 × 320 on a wider face, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+
+    Error: the status line is cut flush by the group, not by its own ellipsis (its box ends at 297.53125, the group at 181.25)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+    > 2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+           |                                                                                                                                                                                                 ^
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+      2215 |   };
+      2216 |
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2213:193)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error Context: build\u119a\test-results\score.screen-▶-after-the-s-e1ff1-l-tap-reaches-every-control\error-context.md
+
+  4) tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 568 × 320 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+
+    Error: the bar number is cut (“bar 1 / 4”)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2207 |   const expectLeftGroupKeepsItsMeaning = (seen: Awaited<ReturnType<typeof barLeftAgainstControls>>): void => {
+      2208 |     expect.soft(seen.backWhole, 'Back is cut').toBe(true);
+    > 2209 |     expect.soft(seen.whereWhole, `the bar number is cut (“${seen.whereText}”)`).toBe(true);
+           |                                                                                 ^
+      2210 |     expect.soft(seen.widestWhole, `the piece’s widest bar number would be cut (“${seen.widestText}”)`).toBe(true);
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2209:81)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error: the piece’s widest bar number would be cut (“bar 4 / 4”)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2208 |     expect.soft(seen.backWhole, 'Back is cut').toBe(true);
+      2209 |     expect.soft(seen.whereWhole, `the bar number is cut (“${seen.whereText}”)`).toBe(true);
+    > 2210 |     expect.soft(seen.widestWhole, `the piece’s widest bar number would be cut (“${seen.widestText}”)`).toBe(true);
+           |                                                                                                        ^
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+      2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2210:104)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error: Hands stayed on the bar although Back and the bar number do not fit beside it
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      2209 |     expect.soft(seen.whereWhole, `the bar number is cut (“${seen.whereText}”)`).toBe(true);
+      2210 |     expect.soft(seen.widestWhole, `the piece’s widest bar number would be cut (“${seen.widestText}”)`).toBe(true);
+    > 2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+           |                                                                                                                                                                                                           ^
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+      2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2211:203)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error: the status line is cut flush by the group, not by its own ellipsis (its box ends at 318, the group at 124.53125)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+    > 2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+           |                                                                                                                                                                                                 ^
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+      2215 |   };
+      2216 |
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2213:193)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error Context: build\u119a\test-results\score.screen-▶-after-the-s-3a8c5-l-tap-reaches-every-control\error-context.md
+
+  5) tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 640 × 360, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+
+    Error: the status line is cut flush by the group, not by its own ellipsis (its box ends at 300.96875, the group at 280.78125)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+    > 2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+           |                                                                                                                                                                                                 ^
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+      2215 |   };
+      2216 |
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2213:193)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error Context: build\u119a\test-results\score.screen-▶-after-the-s-8dc81-l-tap-reaches-every-control\error-context.md
+
+  6) tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 640 × 360 at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+
+    Error: the status line is cut flush by the group, not by its own ellipsis (its box ends at 318.9375, the group at 228.171875)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+    > 2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+           |                                                                                                                                                                                                 ^
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+      2215 |   };
+      2216 |
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2213:193)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error Context: build\u119a\test-results\score.screen-▶-after-the-s-9bd68-l-tap-reaches-every-control\error-context.md
+
+  7) tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 640 × 360 on a wider face, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+
+    Error: the status line is cut flush by the group, not by its own ellipsis (its box ends at 317.6875, the group at 253.25)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+    > 2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+           |                                                                                                                                                                                                 ^
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+      2215 |   };
+      2216 |
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2213:193)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error Context: build\u119a\test-results\score.screen-▶-after-the-s-14152-l-tap-reaches-every-control\error-context.md
+
+  8) tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 640 × 360 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+
+    Error: the status line is cut flush by the group, not by its own ellipsis (its box ends at 338.15625, the group at 196.53125)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+    > 2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+           |                                                                                                                                                                                                 ^
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+      2215 |   };
+      2216 |
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2213:193)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error Context: build\u119a\test-results\score.screen-▶-after-the-s-cf782-l-tap-reaches-every-control\error-context.md
+
+  9) tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 667 × 375, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+
+    Error: the status line is cut flush by the group, not by its own ellipsis (its box ends at 308.53125, the group at 307.78125)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+    > 2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+           |                                                                                                                                                                                                 ^
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+      2215 |   };
+      2216 |
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2213:193)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error Context: build\u119a\test-results\score.screen-▶-after-the-s-43d5e-l-tap-reaches-every-control\error-context.md
+
+  10) tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 667 × 375 at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+
+    Error: the status line is cut flush by the group, not by its own ellipsis (its box ends at 326.5, the group at 255.171875)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+    > 2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+           |                                                                                                                                                                                                 ^
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+      2215 |   };
+      2216 |
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2213:193)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error Context: build\u119a\test-results\score.screen-▶-after-the-s-31b89-l-tap-reaches-every-control\error-context.md
+
+  11) tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 667 × 375 on a wider face, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+
+    Error: the status line is cut flush by the group, not by its own ellipsis (its box ends at 325.25, the group at 280.25)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+    > 2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+           |                                                                                                                                                                                                 ^
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+      2215 |   };
+      2216 |
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2213:193)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error Context: build\u119a\test-results\score.screen-▶-after-the-s-347fc-l-tap-reaches-every-control\error-context.md
+
+  12) tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 667 × 375 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+
+    Error: the status line is cut flush by the group, not by its own ellipsis (its box ends at 345.71875, the group at 223.53125)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+    > 2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+           |                                                                                                                                                                                                 ^
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+      2215 |   };
+      2216 |
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2213:193)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error Context: build\u119a\test-results\score.screen-▶-after-the-s-03ed3-l-tap-reaches-every-control\error-context.md
+
+  13) tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 740 × 342 at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+
+    Error: the status line is cut flush by the group, not by its own ellipsis (its box ends at 346.9375, the group at 328.171875)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+    > 2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+           |                                                                                                                                                                                                 ^
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+      2215 |   };
+      2216 |
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2213:193)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error Context: build\u119a\test-results\score.screen-▶-after-the-s-bbebd-l-tap-reaches-every-control\error-context.md
+
+  14) tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 740 × 342 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+
+    Error: the status line is cut flush by the group, not by its own ellipsis (its box ends at 366.15625, the group at 296.53125)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+    > 2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+           |                                                                                                                                                                                                 ^
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+      2215 |   };
+      2216 |
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2213:193)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error Context: build\u119a\test-results\score.screen-▶-after-the-s-2d6c8-l-tap-reaches-every-control\error-context.md
+
+  15) tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 780 × 360 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+
+    Error: the status line is cut flush by the group, not by its own ellipsis (its box ends at 377.359375, the group at 336.53125)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+    > 2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+           |                                                                                                                                                                                                 ^
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+      2215 |   };
+      2216 |
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2213:193)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error Context: build\u119a\test-results\score.screen-▶-after-the-s-202bc-l-tap-reaches-every-control\error-context.md
+
+  16) tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 568 × 320 at 115 % text, a three-digit bar (Moonlight III), paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+
+    Error: the piece’s widest bar number would be cut (“bar 201 / 201”)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2208 |     expect.soft(seen.backWhole, 'Back is cut').toBe(true);
+      2209 |     expect.soft(seen.whereWhole, `the bar number is cut (“${seen.whereText}”)`).toBe(true);
+    > 2210 |     expect.soft(seen.widestWhole, `the piece’s widest bar number would be cut (“${seen.widestText}”)`).toBe(true);
+           |                                                                                                        ^
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+      2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2210:104)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error: Hands stayed on the bar although Back and the bar number do not fit beside it
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      2209 |     expect.soft(seen.whereWhole, `the bar number is cut (“${seen.whereText}”)`).toBe(true);
+      2210 |     expect.soft(seen.widestWhole, `the piece’s widest bar number would be cut (“${seen.widestText}”)`).toBe(true);
+    > 2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+           |                                                                                                                                                                                                           ^
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+      2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2211:203)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error: the status line is cut flush by the group, not by its own ellipsis (its box ends at 314.640625, the group at 148.234375)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+    > 2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+           |                                                                                                                                                                                                 ^
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+      2215 |   };
+      2216 |
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2213:193)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error Context: build\u119a\test-results\score.screen-▶-after-the-s-1b386-l-tap-reaches-every-control\error-context.md
+
+  17) tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 568 × 320 on a wider face at 115 % text, a three-digit bar (Moonlight III), paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+
+    Error: the bar number is cut (“bar 1 / 201”)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2207 |   const expectLeftGroupKeepsItsMeaning = (seen: Awaited<ReturnType<typeof barLeftAgainstControls>>): void => {
+      2208 |     expect.soft(seen.backWhole, 'Back is cut').toBe(true);
+    > 2209 |     expect.soft(seen.whereWhole, `the bar number is cut (“${seen.whereText}”)`).toBe(true);
+           |                                                                                 ^
+      2210 |     expect.soft(seen.widestWhole, `the piece’s widest bar number would be cut (“${seen.widestText}”)`).toBe(true);
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2209:81)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error: the piece’s widest bar number would be cut (“bar 201 / 201”)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2208 |     expect.soft(seen.backWhole, 'Back is cut').toBe(true);
+      2209 |     expect.soft(seen.whereWhole, `the bar number is cut (“${seen.whereText}”)`).toBe(true);
+    > 2210 |     expect.soft(seen.widestWhole, `the piece’s widest bar number would be cut (“${seen.widestText}”)`).toBe(true);
+           |                                                                                                        ^
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+      2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2210:104)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error: Hands stayed on the bar although Back and the bar number do not fit beside it
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      2209 |     expect.soft(seen.whereWhole, `the bar number is cut (“${seen.whereText}”)`).toBe(true);
+      2210 |     expect.soft(seen.widestWhole, `the piece’s widest bar number would be cut (“${seen.widestText}”)`).toBe(true);
+    > 2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+           |                                                                                                                                                                                                           ^
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+      2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2211:203)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error: the status line is cut flush by the group, not by its own ellipsis (its box ends at 336.703125, the group at 115.1875)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+    > 2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+           |                                                                                                                                                                                                 ^
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+      2215 |   };
+      2216 |
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2213:193)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error Context: build\u119a\test-results\score.screen-▶-after-the-s-9b8d7-l-tap-reaches-every-control\error-context.md
+
+  18) tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 640 × 360 on a wider face at 115 % text, a three-digit bar (Moonlight III), paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+
+    Error: the piece’s widest bar number would be cut (“bar 201 / 201”)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2208 |     expect.soft(seen.backWhole, 'Back is cut').toBe(true);
+      2209 |     expect.soft(seen.whereWhole, `the bar number is cut (“${seen.whereText}”)`).toBe(true);
+    > 2210 |     expect.soft(seen.widestWhole, `the piece’s widest bar number would be cut (“${seen.widestText}”)`).toBe(true);
+           |                                                                                                        ^
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+      2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2210:104)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error: Hands stayed on the bar although Back and the bar number do not fit beside it
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      2209 |     expect.soft(seen.whereWhole, `the bar number is cut (“${seen.whereText}”)`).toBe(true);
+      2210 |     expect.soft(seen.widestWhole, `the piece’s widest bar number would be cut (“${seen.widestText}”)`).toBe(true);
+    > 2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+           |                                                                                                                                                                                                           ^
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+      2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2211:203)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error: the status line is cut flush by the group, not by its own ellipsis (its box ends at 356.859375, the group at 187.1875)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2211 |     expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
+      2212 |     expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
+    > 2213 |     expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
+           |                                                                                                                                                                                                 ^
+      2214 |     expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+      2215 |   };
+      2216 |
+        at expectLeftGroupKeepsItsMeaning (<worktree>\app\tests\e2e\score.screen.spec.ts:2213:193)
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2286:7
+
+    Error Context: build\u119a\test-results\score.screen-▶-after-the-s-682e1-l-tap-reaches-every-control\error-context.md
+
+  19) tests\e2e\score.screen.spec.ts:2401:3 › ▶ after the sound was suspended (U69) › a refusal sideways (568 × 320) on a wider face at 115 % text: the sentence’s height sends no control behind ⋯ 
+
+    Error: before the render: a point inside a control hits something else
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 42
+
+    - Array []
+    + Array [
+    +   "score-play at (0.5, 0.5) hits nothing",
+    +   "score-play at (0.25, 0.5) hits nothing",
+    +   "score-play at (0.75, 0.5) hits nothing",
+    +   "score-play at (0.5, 0.25) hits nothing",
+    +   "score-play at (0.5, 0.75) hits nothing",
+    +   "score-hear at (0.5, 0.5) hits nothing",
+    +   "score-hear at (0.25, 0.5) hits nothing",
+    +   "score-hear at (0.75, 0.5) hits nothing",
+    +   "score-hear at (0.5, 0.25) hits nothing",
+    +   "score-hear at (0.5, 0.75) hits nothing",
+    +   "score-mode at (0.5, 0.5) hits nothing",
+    +   "score-mode at (0.25, 0.5) hits nothing",
+    +   "score-mode at (0.75, 0.5) hits nothing",
+    +   "score-mode at (0.5, 0.25) hits nothing",
+    +   "score-mode at (0.5, 0.75) hits nothing",
+    +   "score-hands-R at (0.5, 0.5) hits nothing",
+    +   "score-hands-R at (0.25, 0.5) hits nothing",
+    +   "score-hands-R at (0.75, 0.5) hits nothing",
+    +   "score-hands-R at (0.5, 0.25) hits nothing",
+    +   "score-hands-R at (0.5, 0.75) hits nothing",
+    +   "score-hands-L at (0.5, 0.5) hits nothing",
+    +   "score-hands-L at (0.25, 0.5) hits nothing",
+    +   "score-hands-L at (0.75, 0.5) hits nothing",
+    +   "score-hands-L at (0.5, 0.25) hits nothing",
+    +   "score-hands-L at (0.5, 0.75) hits nothing",
+    +   "score-hands-both at (0.5, 0.5) hits nothing",
+    +   "score-hands-both at (0.25, 0.5) hits nothing",
+    +   "score-hands-both at (0.75, 0.5) hits nothing",
+    +   "score-hands-both at (0.5, 0.25) hits nothing",
+    +   "score-hands-both at (0.5, 0.75) hits nothing",
+    +   "score-tempo-label at (0.5, 0.5) hits nothing",
+    +   "score-tempo-label at (0.25, 0.5) hits nothing",
+    +   "score-tempo-label at (0.75, 0.5) hits nothing",
+    +   "score-tempo-label at (0.5, 0.25) hits nothing",
+    +   "score-tempo-label at (0.5, 0.75) hits nothing",
+    +   "score-more at (0.5, 0.5) hits nothing",
+    +   "score-more at (0.25, 0.5) hits nothing",
+    +   "score-more at (0.75, 0.5) hits nothing",
+    +   "score-more at (0.5, 0.25) hits nothing",
+    +   "score-more at (0.5, 0.75) hits nothing",
+    + ]
+
+      2460 |     ] as const) {
+      2461 |       expect.soft(at.overControls, `${when}: the sentence is over a control`).toEqual([]);
+    > 2462 |       expect.soft(at.missed, `${when}: a point inside a control hits something else`).toEqual([]);
+           |                                                                                       ^
+      2463 |       expect.soft(at.backWhole, `${when}: Back is cut`).toBe(true);
+      2464 |       expect.soft(at.widestWhole, `${when}: the piece’s widest bar number would be cut (“${at.widestText}”)`).toBe(true);
+      2465 |       expect.soft(at.handsOnBar, `${when}: Hands is ${at.handsOnBar ? 'on' : 'off'} the bar, and Back and the bar number ${at.fitsWithHands ? 'fit' : 'do not fit'} beside it`).toBe(at.fitsWithHands);
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2462:87
+
+    Error: before the render: the piece’s widest bar number would be cut (“bar 4 / 4”)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2462 |       expect.soft(at.missed, `${when}: a point inside a control hits something else`).toEqual([]);
+      2463 |       expect.soft(at.backWhole, `${when}: Back is cut`).toBe(true);
+    > 2464 |       expect.soft(at.widestWhole, `${when}: the piece’s widest bar number would be cut (“${at.widestText}”)`).toBe(true);
+           |                                                                                                               ^
+      2465 |       expect.soft(at.handsOnBar, `${when}: Hands is ${at.handsOnBar ? 'on' : 'off'} the bar, and Back and the bar number ${at.fitsWithHands ? 'fit' : 'do not fit'} beside it`).toBe(at.fitsWithHands);
+      2466 |       expect.soft(at.hearOnBar, `${when}: Hear it is ${at.hearOnBar ? 'on' : 'off'} the bar, and Back and the bar number ${at.fitsWithHear ? 'fit' : 'do not fit'} beside it`).toBe(at.handsOnBar || at.fitsWithHear);
+      2467 |       for (const id of ['score-play', 'score-mode', 'score-tempo-label', 'score-more']) {
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2464:111
+
+    Error: before the render: Hands is on the bar, and Back and the bar number do not fit beside it
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      2463 |       expect.soft(at.backWhole, `${when}: Back is cut`).toBe(true);
+      2464 |       expect.soft(at.widestWhole, `${when}: the piece’s widest bar number would be cut (“${at.widestText}”)`).toBe(true);
+    > 2465 |       expect.soft(at.handsOnBar, `${when}: Hands is ${at.handsOnBar ? 'on' : 'off'} the bar, and Back and the bar number ${at.fitsWithHands ? 'fit' : 'do not fit'} beside it`).toBe(at.fitsWithHands);
+           |                                                                                                                                                                                 ^
+      2466 |       expect.soft(at.hearOnBar, `${when}: Hear it is ${at.hearOnBar ? 'on' : 'off'} the bar, and Back and the bar number ${at.fitsWithHear ? 'fit' : 'do not fit'} beside it`).toBe(at.handsOnBar || at.fitsWithHear);
+      2467 |       for (const id of ['score-play', 'score-mode', 'score-tempo-label', 'score-more']) {
+      2468 |         expect.soft(at.onBar, `${when}: ${id} is not on the bar`).toContain(id);
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2465:177
+
+    Error: after the render: Hear it is off the bar, and Back and the bar number fit beside it
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      2464 |       expect.soft(at.widestWhole, `${when}: the piece’s widest bar number would be cut (“${at.widestText}”)`).toBe(true);
+      2465 |       expect.soft(at.handsOnBar, `${when}: Hands is ${at.handsOnBar ? 'on' : 'off'} the bar, and Back and the bar number ${at.fitsWithHands ? 'fit' : 'do not fit'} beside it`).toBe(at.fitsWithHands);
+    > 2466 |       expect.soft(at.hearOnBar, `${when}: Hear it is ${at.hearOnBar ? 'on' : 'off'} the bar, and Back and the bar number ${at.fitsWithHear ? 'fit' : 'do not fit'} beside it`).toBe(at.handsOnBar || at.fitsWithHear);
+           |                                                                                                                                                                                ^
+      2467 |       for (const id of ['score-play', 'score-mode', 'score-tempo-label', 'score-more']) {
+      2468 |         expect.soft(at.onBar, `${when}: ${id} is not on the bar`).toContain(id);
+      2469 |       }
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2466:176
+
+    Error: the render while the refusal stood changed which controls are on the bar
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 4
+    + Received  + 0
+
+      Array [
+        "score-play",
+    -   "score-hear",
+        "score-mode",
+    -   "score-hands-R",
+    -   "score-hands-L",
+    -   "score-hands-both",
+        "score-tempo-label",
+        "score-more",
+      ]
+
+      2469 |       }
+      2470 |     }
+    > 2471 |     expect.soft(seen.onBar, 'the render while the refusal stood changed which controls are on the bar').toEqual(before.onBar);
+           |                                                                                                         ^
+      2472 |     test.info().annotations.push({
+      2473 |       type: 'bar',
+      2474 |       description: `on the bar while the refusal stands: ${seen.onBar.join(', ')}`,
+        at <worktree>\app\tests\e2e\score.screen.spec.ts:2471:105
+
+    Error Context: build\u119a\test-results\score.screen-▶-after-the-s-9a997-t-sends-no-control-behind-⋯\error-context.md
+
+  19 failed
+    tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 568 × 320, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 568 × 320 at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 568 × 320 on a wider face, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 568 × 320 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 640 × 360, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 640 × 360 at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 640 × 360 on a wider face, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 640 × 360 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 667 × 375, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 667 × 375 at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 667 × 375 on a wider face, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 667 × 375 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 740 × 342 at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 740 × 342 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 780 × 360 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 568 × 320 at 115 % text, a three-digit bar (Moonlight III), paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 568 × 320 on a wider face at 115 % text, a three-digit bar (Moonlight III), paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    tests\e2e\score.screen.spec.ts:2244:5 › ▶ after the sound was suspended (U69) › sideways 640 × 360 on a wider face at 115 % text, a three-digit bar (Moonlight III), paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control 
+    tests\e2e\score.screen.spec.ts:2401:3 › ▶ after the sound was suspended (U69) › a refusal sideways (568 × 320) on a wider face at 115 % text: the sentence’s height sends no control behind ⋯ 
+  10 passed (51.9s)
+exit 1

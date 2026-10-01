@@ -1454,11 +1454,23 @@ export function ScoreScreen(router: Router): HTMLElement {
     overflowed.delete(el);
   }
 
-  /** The bar is on more than one line, or a control that stays is too small. */
+  /**
+   * The bar is on more than one line, or a control that stays is too small.
+   *
+   * The lines are the controls' (U119a). Sideways the left group is on the
+   * bar too, and while U105d's refusal stands its sentence wraps there and
+   * the group grows taller than the controls, so under `align-items: center`
+   * its top is not theirs. Counted, that read as a second line, and at the
+   * next render (the tempo sheet opened and closed, a resize) Hands and then
+   * `Hear it` went behind `⋯` while the sentence said *tap Hear it again*.
+   * The bar grows while a refusal stands by the reviewer's ruling on U105d;
+   * nothing moves for it. Upright the group is not drawn, so this changes
+   * nothing there.
+   */
   function barIsOverfull(): boolean {
     const rows = new Set(
       [...bar.children]
-        .filter((k) => k.getBoundingClientRect().height > 0)
+        .filter((k) => k !== barLeft && k.getBoundingClientRect().height > 0)
         .map((k) => Math.round(k.getBoundingClientRect().top)),
     );
     if (rows.size > 1) return true;
@@ -1470,19 +1482,56 @@ export function ScoreScreen(router: Router): HTMLElement {
   }
 
   /**
+   * Sideways, Back and the piece's widest `bar m / m` do not fit in the room
+   * the controls leave the left group (U119a, the reviewer's ruling on U119,
+   * `responses/fa4563d1.md`: Hands goes behind `⋯` "before Back or the
+   * complete `bar n / m` location is clipped").
+   *
+   * The group clips what it cannot hold (`style.css`, the landscape
+   * `.score-bar__left`), and a clip cuts from the right: the status line, then
+   * `bar n / m`, then Back. The name and the status line give their room up
+   * first and keep nothing back, while Back and `bar n / m` keep their own
+   * widths, so the group's minimum holds exactly when `bar n / m` still ends
+   * inside the group. A row that cannot wrap never looked overfull to
+   * `barIsOverfull`, so before this nothing left the bar for the group's
+   * sake, and *bar 1 / 4* read *bar 1* at 568 × 320 with 115 % text on a
+   * wider face.
+   *
+   * Priced at the piece's last bar, with as many digits as the location will
+   * ever have (`cornerTexts` does the same), not at the bar under the
+   * cursor: this runs on every render, and the number grows during a piece,
+   * so the current one would send Hands away partway through and bring it
+   * back on restart. Measured on the real element, written and put back in
+   * the same task, so nothing is drawn with it. Upright the group is not
+   * drawn (`display: none`), and nothing is cut.
+   */
+  function leftGroupIsCut(): boolean {
+    if (barLeft.getClientRects().length === 0) return false;
+    const shown = whereSide.textContent;
+    if (model) {
+      const last = String(printedBar(model.sourceMeasureCount - 1));
+      whereSide.textContent = `bar ${last} / ${last}`;
+    }
+    const cut = whereSide.getBoundingClientRect().right > barLeft.getBoundingClientRect().right;
+    whereSide.textContent = shown;
+    return cut;
+  }
+
+  /**
    * Puts as much on the bar as it can hold, and the rest in the sheet.
    *
    * Everything comes back first and then leaves one at a time, so a phone
    * turned sideways gets its controls back rather than keeping whatever the
    * narrower way up decided. Skipped while the sheet is open, because the
    * stash's children are inside it then and moving them would empty it under
-   * the owner's finger.
+   * the owner's finger. Sideways, a control also leaves while the left group
+   * cannot hold Back and `bar n / m` whole (`leftGroupIsCut`).
    */
   function fitBarControls(): void {
     if (document.getElementById('score-more-sheet')) return;
     for (const entry of OVERFLOW_ORDER) bringBackToBar(entry.el);
     for (const entry of OVERFLOW_ORDER) {
-      if (!barIsOverfull()) return;
+      if (!barIsOverfull() && !leftGroupIsCut()) return;
       sendToSheet(entry);
     }
   }

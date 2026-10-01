@@ -1,0 +1,30 @@
+cells compared: 40
+
+Title moved (width or visible text): 4
+  568x320-t115-stack-moon: title '' (0) -> 'Piano…' (56.08)
+  568x320-t115-wider-hcb: title '' (0) -> '…' (24.53)
+  568x320-t115-wider-moon: title '' (0) -> '…' (26.75)
+  640x360-t115-wider-moon: title '…' (6.25) -> 'Piano…' (74.05)
+
+Controls sent behind the more button by the change: 4
+  568x320-t115-stack-moon: behind ⋯ after: Hands
+  568x320-t115-wider-hcb: behind ⋯ after: Hands
+  568x320-t115-wider-moon: behind ⋯ after: Hands
+  640x360-t115-wider-moon: behind ⋯ after: Hands
+
+Controls moved with the same set on the bar: 0
+
+Back, bar n / m or the widest bar m / m cut after: 0
+
+Status cut flush after: 5
+  568x320-t100-wider-moon: '[S]'
+  568x320-t115-stack-hcb: 'Sound did not start [—]'
+  568x320-t115-wider-moon: 'Sound did not start [—]'
+  667x375-t115-wider-moon: 'Sound did not start [—]'
+  740x342-t115-wider-moon: 'Sou[n]'
+
+Status visible text changed: 4
+  568x320-t115-stack-moon: [nothing drawn] '' -> [whole] 'Sound did not start — tap ▶ again'
+  568x320-t115-wider-hcb: [nothing drawn] '' -> [whole] 'Sound did not start — tap ▶ again'
+  568x320-t115-wider-moon: [nothing drawn] '' -> [flush] 'Sound did not start [—]'
+  640x360-t115-wider-moon: [flush] '[S]' -> [whole] 'Sound did not start — tap ▶ again'
