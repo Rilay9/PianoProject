@@ -1,0 +1,135 @@
+# CL05a mutants: each applied to the fixed source, the final tests/unit/drillLifecycle.test.ts (29 cases) run, the source restored and byte-compared (build/mutants.mjs, in three runs of six). 18 of 18 killed.
+## click-not-stopped (residue 1: sound) — app/src/ui/screens/DrillScreen.ts — exit 1
+     × stops its click and its grid while hidden, takes no tap, counts no hidden time, and comes back on the same point of the same grid
+     × hidden in the middle of the count-in: the count stops, and comes back from the top, still refusing a stray
+     × a tap sent to a hidden page once the count has named the downbeat is not the first onset, and the downbeat comes back as far ahead as it was
+      Tests  3 failed | 26 passed (29)
+AssertionError: the click kept sounding into a hidden page: expected [ Array(600) ] to deeply equal []
+AssertionError: the count went on into a hidden page: expected [ 0.6, 1.1, 1.6 ] to deeply equal []
+AssertionError: the click went on into a hidden page: expected [ 1.6 ] to deeply equal []
+
+## grid-not-moved (residue 1: judged grid) — app/src/engine/drills/special.ts — exit 1
+     × stops its click and its grid while hidden, takes no tap, counts no hidden time, and comes back on the same point of the same grid
+     × comes back on its grid when the audio clock stood still while hidden, reading both clocks again
+     × a tap sent to a hidden page once the count has named the downbeat is not the first onset, and the downbeat comes back as far ahead as it was
+     × a rhythm card: the grid moves on by the whole span, and before the count has named a downbeat nothing moves
+      Tests  4 failed | 25 passed (29)
+AssertionError: the grid stayed where it was while the time passed: expected 2100 to be 302100 // Object.is equality
+AssertionError: the taps after the return missed the grid: expected 2 to be 8 // Object.is equality
+AssertionError: taps were counted extra: expected 6 to be +0 // Object.is equality
+AssertionError: the tap on the next onset was not judged on time: expected 2 to be 3 // Object.is equality
+
+## reaction-not-excluded (residue 2: the screen never asks) — app/src/ui/screens/DrillScreen.ts — exit 1
+     × stops its click and its grid while hidden, takes no tap, counts no hidden time, and comes back on the same point of the same grid
+     × comes back on its grid when the audio clock stood still while hidden, reading both clocks again
+     × a tap sent to a hidden page once the count has named the downbeat is not the first onset, and the downbeat comes back as far ahead as it was
+     × a card hidden for 5 min and answered 400 ms after the return took 1.4 s
+      Tests  4 failed | 25 passed (29)
+AssertionError: the grid stayed where it was while the time passed: expected 2100 to be 302100 // Object.is equality
+AssertionError: the taps after the return missed the grid: expected 2 to be 8 // Object.is equality
+AssertionError: taps were counted extra: expected 6 to be +0 // Object.is equality
+AssertionError: the tap on the next onset was not judged on time: expected 2 to be 3 // Object.is equality
+
+## prompt-unmoved (residue 2: PromptDrill) — app/src/engine/drills/PromptDrill.ts — exit 1
+     × a card hidden for 5 min and answered 400 ms after the return took 1.4 s
+     × a prompt card: hidden time leaves its answer’s time; a card opened while hidden is timed from the return
+      Tests  2 failed | 27 passed (29)
+AssertionError: expected '301400 ms' to be '1400 ms' // Object.is equality
+AssertionError: expected [ 302400, 300400 ] to deeply equal [ 2400, 400 ]
+
+## simon-unmoved (residue 2: SimonDrill) — app/src/engine/drills/simon.ts — exit 1
+     × a Simon card: the same
+      Tests  1 failed | 28 passed (29)
+AssertionError: expected 302400 to be 2400 // Object.is equality
+
+## dictation-heard-unmoved (residue 2: chords heard) — app/src/engine/drills/harmony.ts — exit 1
+     × a dictation card: a chord heard before the hide keeps its distance from the prompt
+      Tests  1 failed | 28 passed (29)
+AssertionError: expected +0 to be 2000 // Object.is equality
+
+# 6 of 6 killed.
+
+## pedal-chord-unmoved (residue 2: PedalDrill) — app/src/engine/drills/special.ts — exit 1
+     × a pedal card: a lift after the return is timed in visible time
+      Tests  1 failed | 28 passed (29)
+AssertionError: expected 300100 to be 100 // Object.is equality
+
+## clamp-removed (residue 2: a card opened while hidden) — app/src/engine/drills/types.ts — exit 1
+     × a prompt card: hidden time leaves its answer’s time; a card opened while hidden is timed from the return
+      Tests  1 failed | 28 passed (29)
+AssertionError: expected [ 2400, +0 ] to deeply equal [ 2400, 400 ]
+
+## key-input-not-refused (residue 3: onNote) — app/src/ui/screens/DrillScreen.ts — exit 1
+     × stops its click and its grid while hidden, takes no tap, counts no hidden time, and comes back on the same point of the same grid
+     × hidden after the downbeat, before any tap: quiet while hidden and after, and the first tap after the return starts the pattern and its click
+     × a tap sent to a hidden page once the count has named the downbeat is not the first onset, and the downbeat comes back as far ahead as it was
+     × a card still open when the page hides is not answered from the screen keyboard while hidden
+     × a card still open when the page hides is not answered from a MIDI piano while hidden
+     × a pagehide that leaves the page reading visible refuses a key all the same, until pageshow
+      Tests  6 failed | 23 passed (29)
+AssertionError: a tap to a hidden page was judged: expected 10 to be 2 // Object.is equality
+AssertionError: taps were counted extra: expected 8 to be +0 // Object.is equality
+AssertionError: a tap to a hidden page started the rhythm: expected 3400 to be null
+AssertionError: a tap to a hidden page started the rhythm: expected 2525 to be null
+
+## pedal-input-not-refused (residue 3: onControl) — app/src/ui/screens/DrillScreen.ts — exit 1
+     × the pedal sent to a hidden page reaches no pedal card
+      Tests  1 failed | 28 passed (29)
+AssertionError: the pedal fed a card on a hidden page: expected "feed" to not be called at all, but actually been called 2 times
+
+## flag-read-as-pageHidden (residue 3: pagehide) — app/src/ui/screens/DrillScreen.ts — exit 1
+     × a pagehide that leaves the page reading visible refuses a key all the same, until pageshow
+      Tests  1 failed | 28 passed (29)
+AssertionError: a key after pagehide answered the card: expected 'correct' to be '' // Object.is equality
+
+## count-in-starts-hidden (trap: card opened hidden) — app/src/ui/screens/DrillScreen.ts — exit 1
+     × a rhythm card opened while the page is hidden starts no click until the page is back, then counts in from the top
+      Tests  1 failed | 28 passed (29)
+AssertionError: the click started into a hidden page: expected "start" to not be called at all, but actually been called 1 times
+
+# 6 of 6 killed.
+
+## recount-on-every-return (trap: the stray tap) — app/src/ui/screens/DrillScreen.ts — exit 1
+     × hidden after the downbeat, before any tap: quiet while hidden and after, and the first tap after the return starts the pattern and its click
+     × a tap sent to a hidden page once the count has named the downbeat is not the first onset, and the downbeat comes back as far ahead as it was
+      Tests  2 failed | 27 passed (29)
+AssertionError: a click sounded before the first tap: expected [ 302.5, 303 ] to deeply equal []
+AssertionError: a second count moved the downbeat: expected 303625 to be 302100 // Object.is equality
+
+## rhythm-provisional-moved (trap: the stray tap, in the drill) — app/src/engine/drills/special.ts — exit 1
+     × a rhythm card opened while the page is hidden starts no click until the page is back, then counts in from the top
+     × hidden in the middle of the count-in: the count stops, and comes back from the top, still refusing a stray
+     × a rhythm card: the grid moves on by the whole span, and before the count has named a downbeat nothing moves
+      Tests  3 failed | 26 passed (29)
+AssertionError: expected 300025 to be null
+AssertionError: a stray during the new count started the rhythm: expected 300550 to be null
+AssertionError: expected 310000 to be 10000 // Object.is equality
+
+## stale-anchor (trap: clickAnchor recaptured) — app/src/ui/screens/DrillScreen.ts — exit 1
+     × comes back on its grid when the audio clock stood still while hidden, reading both clocks again
+      Tests  1 failed | 28 passed (29)
+AssertionError: the click did not come back on the grid: expected undefined to be close to 303100, received difference is NaN, but expected 0.5
+
+## click-never-returns (residue 1: resume) — app/src/ui/screens/DrillScreen.ts — exit 1
+     × stops its click and its grid while hidden, takes no tap, counts no hidden time, and comes back on the same point of the same grid
+     × comes back on its grid when the audio clock stood still while hidden, reading both clocks again
+     × a tap sent to a hidden page once the count has named the downbeat is not the first onset, and the downbeat comes back as far ahead as it was
+      Tests  3 failed | 26 passed (29)
+AssertionError: the click did not come back: expected 0 to be greater than 3
+AssertionError: the click came back off the grid: expected +0 to be close to 303100, received difference is 303100, but expected 0.5
+AssertionError: expected +0 to be close to 500, received difference is 500, but expected 0.5
+AssertionError: the click did not come back on the grid: expected undefined to be close to 303100, received difference is NaN, but expected 0.5
+
+## opened-after-pagehide (the flag in playPromptWithHelp) — app/src/ui/screens/DrillScreen.ts — exit 1
+     × a card that opens after a pagehide, the page still reading visible, sounds nothing
+      Tests  1 failed | 28 passed (29)
+AssertionError: the first chain sounded after the page was hidden: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+## no-count-on-return (residue 1: a count cut off) — app/src/ui/screens/DrillScreen.ts — exit 1
+     × a rhythm card opened while the page is hidden starts no click until the page is back, then counts in from the top
+     × hidden in the middle of the count-in: the count stops, and comes back from the top, still refusing a stray
+      Tests  2 failed | 27 passed (29)
+AssertionError: the card did not count in on return: expected "start" to be called 1 times, but got 0 times
+AssertionError: the count did not start again on return: expected "start" to be called 2 times, but got 1 times
+
+# 6 of 6 killed.

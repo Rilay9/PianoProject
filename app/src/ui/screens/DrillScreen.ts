@@ -499,6 +499,25 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    */
   let suspensions = 0;
   /**
+   * True from the moment the page hides until it is back (X15; CL05a). The one
+   * flag the input path reads, so a key, a MIDI note or the pedal sent to a
+   * hidden page feeds no card. `suspendDrill` sets it and `resumeDrill` clears
+   * it — not `pageHidden()`, which reads `document.visibilityState` and so
+   * misses a `pagehide` that leaves it `visible`.
+   */
+  let suspended = false;
+  /** When the page hid, on the input timeline: one reading, held until it is back. */
+  let hiddenAtMs = 0;
+  /** Whether the rhythm card's click was sounding when the page hid; it comes back only if it was. */
+  let clickWasSounding = false;
+  /**
+   * Whether the count-in has named the rhythm card's downbeat (T8). Read on
+   * return: a card still counting in counts in again, and one past it does
+   * not — a second count over a downbeat already named would let a stray tap
+   * during it start the pattern.
+   */
+  let countInDownbeatKnown = false;
+  /**
    * The backing loop, while it runs: the prompt it is playing and when, on the
    * `performance.now()` clock, it would have started to be where it is now.
    * The chart reads its place from the same moment.
@@ -676,7 +695,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   }
 
   function onNote(event: InputNoteEvent): void {
-    if (!drill || finished || disposed) return;
+    // A hidden page is not practice (X15; CL05a): nothing sent to it — a key,
+    // a MIDI note, the microphone — feeds, scores or moves on any card, of any
+    // kind. The suspension owns the refusal, not each drill.
+    if (!drill || finished || disposed || suspended) return;
     // A card the learner has said *Done* on is showing its answer and is
     // waiting to go. Playing along with the staff there — which is exactly
     // what a staff invites — must not feed more chords into the progression
@@ -705,7 +727,8 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   }
 
   function onControl(cc: number, value: number, tMs: number): void {
-    if (!drill || finished || disposed || cc !== 64) return;
+    // The pedal too, for the same reason as a key (`onNote`).
+    if (!drill || finished || disposed || suspended || cc !== 64) return;
     drill.feed({ kind: 'cc', cc, value, tMs });
     pedalDown = value >= 64;
     if (drill.kind === 'pedal') draw();
@@ -1136,8 +1159,9 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     if (target && simonLightsNow()) showChainOnKeys(target);
     // A card that opens while the page is already hidden — the phone locked
     // while the drill was loading — is suspended from its first moment, the
-    // same as one the page hid in the middle of.
-    if (pageHidden()) suspendDrill();
+    // same as one the page hid in the middle of. `suspended` as well: a
+    // `pagehide` suspends without making the page read hidden.
+    if (pageHidden() || suspended) suspendDrill();
   }
 
   function stopDictationTicker(): void {
@@ -1233,10 +1257,16 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    */
   function startCountIn(target: RhythmDrill): void {
     stopMetronome();
+    countInDownbeatKnown = false;
+    const asked = suspensions;
     void audioEngine
       .ensureStarted()
       .then((context) => {
-        if (disposed || finished) return;
+        // A card that opened behind a locked phone, or one whose audio was
+        // still starting when the page hid, starts no click into the hidden
+        // page: `suspendDrill` has already run, before this resolved. The
+        // return counts it in (X15; CL05a).
+        if (disposed || finished || suspended || asked !== suspensions) return;
         const settings = getSettings();
         metronome = new Metronome(context, {
           bpm: target.bpm,
@@ -1257,7 +1287,6 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         // sets the start. Taps before the downbeat is known are strays.
         target.latchOnFirstTap({ awaitCountIn: true });
         const beatsPerBar = Math.max(1, target.countInBeats);
-        let downbeatKnown = false;
         stopMetronomeTicks = metronome.onTick((beat) => {
           if (beat.isCountIn) {
             status.textContent = `Count-in — ${String(beat.beatInBar)}`;
@@ -1265,15 +1294,15 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
             // count. Waiting for the downbeat's own tick — scheduled only a
             // tenth of a second ahead — refused an early tap that was inside
             // the tolerance as a stray (T8 review, L1).
-            if (beat.index === beatsPerBar - 1 && !downbeatKnown) {
-              downbeatKnown = true;
+            if (beat.index === beatsPerBar - 1 && !countInDownbeatKnown) {
+              countInDownbeatKnown = true;
               target.startAt(audioTimeToPerformanceMs(anchor, beat.timeSec + 60 / target.bpm));
             }
             return;
           }
           if (beat.bar === 1 && beat.beatInBar === 1) {
-            if (!downbeatKnown) {
-              downbeatKnown = true;
+            if (!countInDownbeatKnown) {
+              countInDownbeatKnown = true;
               target.startAt(audioTimeToPerformanceMs(anchor, beat.timeSec));
             }
             status.textContent = 'Tap the rhythm on any key — your first tap starts it.';
@@ -1310,13 +1339,65 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // A first tap inside the last beat of the count came before the downbeat
     // tick that would have changed this line.
     status.textContent = 'Tap the rhythm on any key.';
+    clickFromBeat(target, context, Math.floor((tap - start) / target.beatMs + 1e-6) + 1);
+  }
+
+  /**
+   * Starts the click on beat `beat` of the card's grid — 0 its downbeat —
+   * accented where that beat falls in the bar, through the latest reading of
+   * both clocks (`clickAnchor`: the count-in's, or the return's).
+   */
+  function clickFromBeat(target: RhythmDrill, context: AudioContext, beat: number): void {
+    const start = target.startedAt;
+    if (!metronome || !clickAnchor || start === null) return;
     const beatsPerBar = Math.max(1, target.countInBeats);
-    const beat = Math.floor((tap - start) / target.beatMs + 1e-6) + 1;
     const heardAtPerfMs = start + beat * target.beatMs;
     const startSec =
       clickAnchor.contextTimeSec + (heardAtPerfMs - clickAnchor.performanceMs) / 1000 - clickAnchor.outputLatencySec;
     metronome.setCountInBars(0);
     metronome.start(Math.max(context.currentTime, startSec), (beat % beatsPerBar) + 1);
+  }
+
+  /**
+   * The rhythm card's click after a hidden span (X15; CL05a). The drill's
+   * grid has already moved past the span (`RhythmDrill.excludeHidden`), so
+   * the click goes back on that grid, not on the clock it was hidden from.
+   *
+   * - The count-in had not named the downbeat — or never began, because the
+   *   card opened hidden or its audio was still starting: it counts in again
+   *   from the top. No tap can have landed, and the drill still refuses taps
+   *   until the new count names bar 1.
+   * - Otherwise both clocks are read again — the audio clock may have stood
+   *   still, or drifted, while hidden, and the count-in's reading would put
+   *   the click that far off the grid — and a click that was sounding comes
+   *   back on the next beat of the moved grid. Before the first tap that is
+   *   the downbeat, and the count-in's listener quiets it there, as it does
+   *   with no hidden span. A click that was quiet, waiting for the first tap,
+   *   stays quiet: that tap starts it, on the new reading.
+   */
+  function resumeRhythmClick(target: RhythmDrill, wasSounding: boolean): void {
+    if (!countInDownbeatKnown && target.firstTapAt === null) {
+      startCountIn(target);
+      return;
+    }
+    if (!metronome) return;
+    const asked = suspensions;
+    void audioEngine
+      .ensureStarted()
+      .then((context) => {
+        if (disposed || finished || suspended || asked !== suspensions || drill !== target || !metronome) return;
+        clickAnchor = captureAudioClockAnchor(context);
+        if (!wasSounding) return;
+        const start = target.startedAt;
+        if (start === null) return;
+        const now = performance.now();
+        if (target.firstTapAt !== null) {
+          clickFromBeat(target, context, Math.floor((now - start) / target.beatMs + 1e-6) + 1);
+        } else if (now < start) {
+          clickFromBeat(target, context, 0);
+        }
+      })
+      .catch(() => undefined);
   }
 
   // --- the loop ------------------------------------------------------------
@@ -1589,9 +1670,19 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    *   line says what happened instead of the stale *Listen* (the reviewer's
    *   ruling, `responses/questions-e71ef3ad.md` §CL05). *▶ Play again* replays
    *   from its first note through `playPrompt`, which reopens the window.
+   * - The rhythm card's click stops, with any click scheduled and not yet
+   *   heard (CL05a, the reviewer's required change, `responses/4923be59.md`).
+   * - Input is refused until the page is back (`suspended`, read by `onNote`
+   *   and `onControl`), and the moment it hid is held, once, for the return.
    */
   function suspendDrill(): void {
     if (disposed) return;
+    if (!suspended) {
+      suspended = true;
+      hiddenAtMs = performance.now();
+      clickWasSounding = metronome?.running ?? false;
+    }
+    metronome?.stop();
     suspensions += 1;
     if (loopPrompt && loopStartedAtMs !== null && drill instanceof BackingTrackDrill && !finished) {
       const into = Math.max(0, performance.now() - loopStartedAtMs);
@@ -1638,17 +1729,27 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   }
 
   /**
-   * The page is back. The loop resumes on its bar and the dictation ticker
-   * starts again; a cut-off Simon chain and a held card wait for the learner.
+   * The page is back. The card in flight moves past the hidden span, so its
+   * time to answer, a pedal lift or a rhythm's grid counts none of it
+   * (CL05a). The loop resumes on its bar, the dictation ticker starts again
+   * and the rhythm card's click goes back on its moved grid; a cut-off Simon
+   * chain and a held card wait for the learner.
    */
   function resumeDrill(): void {
     if (disposed) return;
+    const wasSuspended = suspended;
+    suspended = false;
+    const visibleAtMs = performance.now();
+    if (wasSuspended && !finished) drill?.excludeHidden?.(hiddenAtMs, visibleAtMs);
     const loop = loopHeld;
     loopHeld = null;
     if (loop && !finished && current === loop.prompt) playPrompt(loop.prompt, loop.fromMs);
     const dictation = dictationHeld;
     dictationHeld = null;
     if (dictation && !finished && drill === dictation) startDictationTicker(dictation);
+    const wasSounding = clickWasSounding;
+    clickWasSounding = false;
+    if (wasSuspended && !finished && drill instanceof RhythmDrill) resumeRhythmClick(drill, wasSounding);
   }
 
   // --- per-kind faces ------------------------------------------------------
