@@ -34,3 +34,4 @@ index: The bar's one-row premise measured against two tiers and a corner overlay
 in-flight: drafted 2026-10-01 (`U122a-the-bar-premise-measured.md`): a design addendum, no app code; the one-row premise measured against two alternatives before U122's build (Entry 209)
 state: dispatched 2026-10-01: dispatched at 842157ef, measuring, at the owner's question (Entry 209)
 - landed 2026-10-01: merged 02d28d99; handoff `handoffs/911f8c82.md`
+- verdict 2026-10-02: APPROVE WITH ONE REQUIRED CHANGE (`responses/911f8c82.md`, `911f8c82-correction-1.md`): c6's top-context and bottom-controls decomposition is the base whole-Score model; neither offered transient-text placement is built; before the build brief dispatches, one state-transition probe (rest, count-in, playing, paused, refusal, clear or finished) on U120's 568 × 320, U121's narrow paused case, 780 × 360 and the face pair, and a per-state table in the brief; nothing overlays notation

@@ -90,6 +90,11 @@ reports the measured gap instead of a reconciliation plan.
 
 ## Constraints taken as given, and what each protects
 
+- **Each surface shows what its moment needs.** The criterion and purpose before the item,
+  the guidance during it, the result and next action after it. Consumer consistency (point 6)
+  means the surfaces agree about the underlying truth, not that each repeats every status at
+  once (`responses/911f8c82-correction-1.md`, "Session-item consequence"). A fix that adds
+  a status to a surface whose moment does not need it is the wrong fix.
 - **Findings 4 and 10 stay outside this contract.** Finding 4 (no intentional stop; the
   back gesture reopens the previous activity) is a session-lifecycle/navigation acceptance
   case, not an evidence-model question (`responses/9e14839e.md` §2, verbatim above). It
