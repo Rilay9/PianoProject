@@ -328,6 +328,8 @@ Browser tests run on this lane's own port, **5323**, from a config copy under th
 5303, U118 5313). Everything else in §14 applies as written; nothing in this lane needs a rule
 beyond it.
 
+**Landed 2026-10-01** (Entry 199; fa4563d1, merged cc404dc4); handoff `handoffs/fa4563d1.md`.
+
 ## Record
 
 lane: U119 · closes: U119 · entry: 199
@@ -336,3 +338,4 @@ in-flight: drafted 2026-10-01 (`U119-the-sideways-bar-never-covers-its-controls.
 state: with-reviewer 2026-10-01: with the reviewer before dispatch, the remedy (Entry 199)
 - approved 2026-10-01: APPROVE FOR DISPATCH — the builder chooses H1 or H2 by measurement, H1 preferred only if it preserves the bar's other required information; the invariant is fixed: no left-group text may cover or intercept ▶ or any other control, and the bar remains one row; H1 is acceptable only if the measured grid still leaves Back usable and identifiable and `bar n / m` legible enough to retain its location meaning, the title/status free to yield under their existing density rules but navigation/location never disappearing merely to protect the controls; if H1 cannot satisfy those simultaneously, use H2 and widen the narrow-bar threshold, derived from the measured width at which the fixed controls plus the required left-group minimum cease to coexist, never another arbitrary magic breakpoint; test the wider face that produces the real 667×375 failed click, the app face, the neighboring sideways widths, and 115% text — a real unforced click on every visible control is the acceptance condition, not geometry alone; no additional reviewer round needed if one of the two mechanisms satisfies the invariant without introducing a different product trade (`responses/questions-e9aa51ae.md`)
 - dispatched 2026-10-01: dispatched at dd3fffec, building (Entry 199)
+- landed 2026-10-01: merged cc404dc4; handoff `handoffs/fa4563d1.md`
