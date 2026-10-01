@@ -233,6 +233,40 @@ const DICTATION_TICK_MS = 60;
  */
 const FORM_TICK_MS = 100;
 
+/**
+ * How long a rhythm card back from a hidden page waits on `ensureStarted()`
+ * before it reads the engine's state anyway (CL05b): the Score screen's bound,
+ * `PLAY_SOUND_WAIT_MS`, for the same reason — outside a gesture a platform may
+ * never answer a start (`AudioEngine.ts`). Past it the card goes on waiting,
+ * held, for the engine's own `statechange`.
+ */
+const SOUND_WAIT_MS = 1_000;
+
+/**
+ * What a held rhythm card says while its sound is not running, and what its
+ * card then does (CL05b, point 3; the reviewer's ruling,
+ * `responses/questions-91f683ff.md`). It replaces the card's own line only
+ * for as long as that lasts.
+ */
+const SOUND_PAUSED = 'Sound is paused — tap to continue.';
+
+/**
+ * A rhythm card held on its return from a hidden page (CL05b): what its one
+ * count-in leads back to, and whether its click was going when the page hid.
+ *
+ * - `top`: the count had not named the downbeat and no tap had landed. It
+ *   counts in from the top, as it always has (`startCountIn`).
+ * - `downbeat`: the count had named the downbeat and no tap had landed. One
+ *   count leads to the downbeat again.
+ * - `grid`: the pattern was running. One count leads back to `pointMs`, the
+ *   pattern's time when the page hid.
+ */
+interface RhythmHold {
+  from: 'top' | 'downbeat' | 'grid';
+  pointMs: number;
+  wasSounding: boolean;
+}
+
 /** Whether a run of the item is measured: notation on the Score screen, or a drill of a kind that judges. */
 export function measuresARun(item: CatalogItem): boolean {
   if (item.file) return true;
@@ -518,6 +552,27 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
    */
   let countInDownbeatKnown = false;
   /**
+   * A rhythm card back from a hidden span, held until it can be heard and has
+   * been counted in again (CL05b, the reviewer's required change,
+   * `responses/8764c643.md`); null when no card is held. Kept across a second
+   * hide while it still holds, so the point and the click are the first
+   * hide's, not the hold's.
+   */
+  let rhythmHold: RhythmHold | null = null;
+  /**
+   * The input-timeline moment from which the held rhythm card's taps are
+   * judged again: `+Infinity` while it waits for the sound, the point the page
+   * hid at once its count-in is scheduled, `-Infinity` when nothing is held.
+   * Read by `onNote` for the rhythm card alone.
+   */
+  let rhythmJudgedFromMs = Number.NEGATIVE_INFINITY;
+  /** Stops the held rhythm card's wait for the sound; null when nothing waits. */
+  let stopSoundWatch: (() => void) | null = null;
+  /** Reads the engine's state again for the waiting card; null when nothing waits. */
+  let soundCheck: (() => void) | null = null;
+  /** The line `SOUND_PAUSED` replaced, put back when the pause ends; null when the card is not paused. */
+  let pausedStatusWas: string | null = null;
+  /**
    * The backing loop, while it runs: the prompt it is playing and when, on the
    * `performance.now()` clock, it would have started to be where it is now.
    * The chart reads its place from the same moment.
@@ -699,6 +754,11 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     // a MIDI note, the microphone — feeds, scores or moves on any card, of any
     // kind. The suspension owns the refusal, not each drill.
     if (!drill || finished || disposed || suspended) return;
+    // A rhythm card back from a hidden page is not judged until it can be
+    // heard and has been counted in again (CL05b): a tap while the sound is
+    // still suspended, or during that count, is neither an onset nor an extra.
+    // The rhythm card's alone — no other kind has a click to find its place by.
+    if (drill.kind === 'rhythm' && event.tMs < rhythmJudgedFromMs) return;
     // A card the learner has said *Done* on is showing its answer and is
     // waiting to go. Playing along with the staff there — which is exactly
     // what a staff invites — must not feed more chords into the progression
@@ -1267,18 +1327,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         // page: `suspendDrill` has already run, before this resolved. The
         // return counts it in (X15; CL05a).
         if (disposed || finished || suspended || asked !== suspensions) return;
-        const settings = getSettings();
-        metronome = new Metronome(context, {
-          bpm: target.bpm,
-          beatsPerBar: Math.max(1, target.countInBeats),
-          countInBars: 1,
-          sound: metronomeSoundFor(
-            { micActive, destination: settings.playbackDestination },
-            settings.metronomeSound,
-          ),
-          volume: getMidiSettings().metronomeVolume,
-          ...(audioEngine.masterGain ? { destination: audioEngine.masterGain } : {}),
-        });
+        metronome = newMetronome(context, target);
         // Taken once, before the first click: both clocks drift, and the whole
         // point is that the drill and the metronome share one reading.
         const anchor = captureAudioClockAnchor(context);
@@ -1286,6 +1335,9 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         // T8: the count-in teaches the tempo, and the learner's first tap then
         // sets the start. Taps before the downbeat is known are strays.
         target.latchOnFirstTap({ awaitCountIn: true });
+        // The drill refuses a stray itself from here, so a card held on its
+        // return from a hidden page is held no longer (CL05b).
+        releaseRhythmHold();
         const beatsPerBar = Math.max(1, target.countInBeats);
         stopMetronomeTicks = metronome.onTick((beat) => {
           if (beat.isCountIn) {
@@ -1318,8 +1370,22 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
         // No audio is a reason to lose the click, not the drill. There is no
         // downbeat to wait for, so the first tap starts it (T8).
         target.latchOnFirstTap();
+        if (drill === target) releaseRhythmHold();
         status.textContent = 'No metronome — the count-in is silent on this device. Your first tap starts it.';
       });
+  }
+
+  /** The rhythm card's click: one bar of count-in at the card's tempo, on the master gain. */
+  function newMetronome(context: AudioContext, target: RhythmDrill): Metronome {
+    const settings = getSettings();
+    return new Metronome(context, {
+      bpm: target.bpm,
+      beatsPerBar: Math.max(1, target.countInBeats),
+      countInBars: 1,
+      sound: metronomeSoundFor({ micActive, destination: settings.playbackDestination }, settings.metronomeSound),
+      volume: getMidiSettings().metronomeVolume,
+      ...(audioEngine.masterGain ? { destination: audioEngine.masterGain } : {}),
+    });
   }
 
   /**
@@ -1359,45 +1425,207 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   }
 
   /**
-   * The rhythm card's click after a hidden span (X15; CL05a). The drill's
-   * grid has already moved past the span (`RhythmDrill.excludeHidden`), so
-   * the click goes back on that grid, not on the clock it was hidden from.
+   * The rhythm card after a hidden span (X15; CL05a, narrowed by CL05b, the
+   * reviewer's required change, `responses/8764c643.md`). The drill's grid has
+   * already moved past the span (`RhythmDrill.excludeHidden`), but a visible
+   * page is not yet a click the learner can hear, nor a pulse to find their
+   * place by after an interruption. So the card is held, no tap judged, until
+   * the sound is actually running (`whenSoundRuns`); then it is counted in
+   * once — from the top by `startCountIn` when the count had never named the
+   * downbeat, by `countInAgain` otherwise — and judged again only from the
+   * point the page hid at.
    *
-   * - The count-in had not named the downbeat — or never began, because the
-   *   card opened hidden or its audio was still starting: it counts in again
-   *   from the top. No tap can have landed, and the drill still refuses taps
-   *   until the new count names bar 1.
-   * - Otherwise both clocks are read again — the audio clock may have stood
-   *   still, or drifted, while hidden, and the count-in's reading would put
-   *   the click that far off the grid — and a click that was sounding comes
-   *   back on the next beat of the moved grid. Before the first tap that is
-   *   the downbeat, and the count-in's listener quiets it there, as it does
-   *   with no hidden span. A click that was quiet, waiting for the first tap,
-   *   stays quiet: that tap starts it, on the new reading.
+   * With no Web Audio at all no sound will ever come back to wait for, and the
+   * card has run without a click from its first moment ("No metronome — …"):
+   * it carries on as it did, the way the Score screen's `withSound` acts at
+   * once there.
    */
-  function resumeRhythmClick(target: RhythmDrill, wasSounding: boolean): void {
-    if (!countInDownbeatKnown && target.firstTapAt === null) {
-      startCountIn(target);
+  function resumeRhythmClick(target: RhythmDrill, wasSounding: boolean, visibleAtMs: number): void {
+    if (!audioEngine.supported) {
+      if (!countInDownbeatKnown && target.firstTapAt === null) startCountIn(target);
       return;
     }
-    if (!metronome) return;
+    if (!rhythmHold) {
+      const start = target.startedAt;
+      rhythmHold =
+        target.firstTapAt !== null && start !== null
+          ? { from: 'grid', pointMs: visibleAtMs - start, wasSounding }
+          : { from: countInDownbeatKnown ? 'downbeat' : 'top', pointMs: 0, wasSounding };
+    }
+    rhythmJudgedFromMs = Number.POSITIVE_INFINITY;
+    const hold = rhythmHold;
+    whenSoundRuns(target, (context) => {
+      if (hold.from === 'top') startCountIn(target);
+      else countInAgain(target, context, hold);
+    });
+  }
+
+  /** Nothing held: a new card, or a held one whose own count-in has taken over. */
+  function releaseRhythmHold(): void {
+    stopSoundWatch?.();
+    stopSoundWatch = null;
+    rhythmHold = null;
+    rhythmJudgedFromMs = Number.NEGATIVE_INFINITY;
+  }
+
+  /**
+   * Calls `go` with the context once the sound is actually running (CL05b,
+   * point 2), while `target` is still the card and the page still visible.
+   * `ensureStarted()` answers with a context, not a running one, and outside a
+   * gesture a platform may never answer at all (`AudioEngine.ts`), so the
+   * engine's `state` decides — as the Score screen's `withSound` reads it —
+   * at once, when the start answers or fails, at `SOUND_WAIT_MS`, and on every
+   * `statechange` after that, for however long the sound stays away. While it
+   * waits the card is paused (`showSoundPaused`): a tap on it asks again,
+   * inside the tap.
+   */
+  function whenSoundRuns(target: RhythmDrill, go: (context: AudioContext) => void): void {
+    stopSoundWatch?.();
     const asked = suspensions;
-    void audioEngine
-      .ensureStarted()
-      .then((context) => {
-        if (disposed || finished || suspended || asked !== suspensions || drill !== target || !metronome) return;
-        clickAnchor = captureAudioClockAnchor(context);
-        if (!wasSounding) return;
-        const start = target.startedAt;
-        if (start === null) return;
-        const now = performance.now();
-        if (target.firstTapAt !== null) {
-          clickFromBeat(target, context, Math.floor((now - start) / target.beatMs + 1e-6) + 1);
-        } else if (now < start) {
-          clickFromBeat(target, context, 0);
-        }
-      })
-      .catch(() => undefined);
+    let stopped = false;
+    let stopWatching: () => void = () => undefined;
+    let bound: ReturnType<typeof setTimeout> | null = null;
+    const stop = (): void => {
+      stopped = true;
+      stopWatching();
+      if (bound !== null) clearTimeout(bound);
+      if (stopSoundWatch === stop) {
+        stopSoundWatch = null;
+        soundCheck = null;
+        hideSoundPaused();
+      }
+    };
+    const check = (): void => {
+      if (stopped) return;
+      if (disposed || finished || suspended || asked !== suspensions || drill !== target) {
+        stop();
+        return;
+      }
+      const context = audioEngine.contextOrNull;
+      if (audioEngine.state !== 'running' || !context) return;
+      stop();
+      go(context);
+    };
+    stopSoundWatch = stop;
+    check();
+    if (stopped) return;
+    soundCheck = check;
+    showSoundPaused();
+    stopWatching = audioEngine.onStateChange(check);
+    bound = setTimeout(check, SOUND_WAIT_MS);
+    void audioEngine.ensureStarted().then(check, check);
+  }
+
+  /**
+   * The held rhythm card's one way back while its sound is not running
+   * (CL05b, point 3; the reviewer's ruling, `responses/questions-91f683ff.md`).
+   *
+   * - The line says the sound is paused, in place of the card's own line, and
+   *   the card itself becomes a button for as long as that lasts: a tap, a
+   *   click, or Enter or Space once it has the focus. No control is added and
+   *   none stays behind; it is the card, and only while it is paused.
+   * - Its one job is to ask for the sound inside that gesture, the only place
+   *   a platform that suspends audio on a lock honours the ask
+   *   (`AudioEngine.ts`). If the sound still will not run, the card stays
+   *   paused and held. Once it runs, the hold's own watch ends the pause and
+   *   counts in, and the keys are judged again only after the count.
+   * - A key on the strip or the piano is never this: it is the answer the
+   *   learner means next, refused while held (`onNote`), and asks for nothing.
+   */
+  function showSoundPaused(): void {
+    if (pausedStatusWas === null) pausedStatusWas = status.textContent ?? '';
+    status.textContent = SOUND_PAUSED;
+    stage.setAttribute('role', 'button');
+    stage.setAttribute('tabindex', '0');
+    stage.setAttribute('aria-label', SOUND_PAUSED);
+    stage.addEventListener('click', wakeSound);
+    stage.addEventListener('keydown', wakeSoundByKey);
+  }
+
+  /** The pause is over: the card's own line back, and the card no longer a button. */
+  function hideSoundPaused(): void {
+    if (pausedStatusWas === null) return;
+    if (status.textContent === SOUND_PAUSED) status.textContent = pausedStatusWas;
+    pausedStatusWas = null;
+    stage.removeAttribute('role');
+    stage.removeAttribute('tabindex');
+    stage.removeAttribute('aria-label');
+    stage.removeEventListener('click', wakeSound);
+    stage.removeEventListener('keydown', wakeSoundByKey);
+  }
+
+  /** Asks for the sound, inside the gesture that called it, and reads the state again on the answer. */
+  function wakeSound(): void {
+    void audioEngine.ensureStarted().then(
+      () => soundCheck?.(),
+      () => soundCheck?.(),
+    );
+  }
+
+  function wakeSoundByKey(event: KeyboardEvent): void {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    wakeSound();
+  }
+
+  /**
+   * One count-in, then the held grid and its click together (CL05b, point 4).
+   *
+   * - The card's own count-in — one bar of `countInBeats` at its tempo, as
+   *   `startCountIn` plays it — on the grid's own beats, so the click after it
+   *   is the same pulse, accented where the grid's bars fall.
+   * - It leads, a beat after its last click, to the beat the page hid in
+   *   (`floor(pointMs / beatMs)`), or to the downbeat when no tap had landed,
+   *   which it names again (`startAt`) as the card's first count does.
+   * - A running grid moves on by exactly what the hold and the count took,
+   *   through the drill's own `excludeHidden`, so nothing due in them is
+   *   missed and the first tap moves with the grid. The clock reading is
+   *   taken again either way.
+   * - Taps are judged again only from the point the page hid at: nothing
+   *   before it twice, nothing after it skipped, and the count — at least a
+   *   beat earlier — never. Before the first tap the drill refuses a stray
+   *   itself, from the count's last click, as on the card's first count.
+   * - After the count the click goes on if it was going when the page hid;
+   *   before the first tap it goes quiet on the downbeat, as on the first count.
+   */
+  function countInAgain(target: RhythmDrill, context: AudioContext, hold: RhythmHold): void {
+    if (!metronome) metronome = newMetronome(context, target);
+    const metro = metronome;
+    stopMetronomeTicks?.();
+    stopMetronomeTicks = null;
+    const anchor = captureAudioClockAnchor(context);
+    clickAnchor = anchor;
+    const beatsPerBar = Math.max(1, target.countInBeats);
+    const grid = hold.from === 'grid';
+    const beat = grid ? Math.floor(hold.pointMs / target.beatMs + 1e-6) : 0;
+    // `Metronome.start`'s own lead: the first click is never in the past.
+    const firstClickSec = context.currentTime + 0.1;
+    const resumesAtMs = audioTimeToPerformanceMs(anchor, firstClickSec + (beatsPerBar * 60) / target.bpm);
+    const startMs = resumesAtMs - beat * target.beatMs;
+    if (grid) {
+      const held = startMs - (target.startedAt ?? startMs);
+      target.excludeHidden(resumesAtMs - held, resumesAtMs);
+    } else {
+      target.startAt(startMs);
+    }
+    rhythmJudgedFromMs = grid ? startMs + hold.pointMs : resumesAtMs - target.beatMs;
+    stopMetronomeTicks = metro.onTick((tick) => {
+      if (tick.isCountIn) {
+        status.textContent = `Count-in — ${String(tick.beatInBar)}`;
+        return;
+      }
+      stopMetronomeTicks?.();
+      stopMetronomeTicks = null;
+      if (target.firstTapAt === null) {
+        status.textContent = 'Tap the rhythm on any key — your first tap starts it.';
+        metro.stop();
+      } else {
+        status.textContent = 'Tap the rhythm on any key.';
+        if (!hold.wasSounding) metro.stop();
+      }
+    });
+    metro.setCountInBars(1);
+    metro.start(firstClickSec, (((beat % beatsPerBar) + beatsPerBar) % beatsPerBar) + 1);
   }
 
   // --- the loop ------------------------------------------------------------
@@ -1417,6 +1645,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     simonStep = 0;
     disposeChainStaff();
     stopMetronome();
+    releaseRhythmHold();
     stopDictationTicker();
     disposeAnswer();
     disposeReading();
@@ -1683,6 +1912,11 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
       clickWasSounding = metronome?.running ?? false;
     }
     metronome?.stop();
+    // A rhythm card still held from its last return keeps the point it was
+    // held at, and its click, for the next one; a hold whose count has run
+    // out is over (CL05b).
+    stopSoundWatch?.();
+    if (rhythmHold && !(performance.now() < rhythmJudgedFromMs)) releaseRhythmHold();
     suspensions += 1;
     if (loopPrompt && loopStartedAtMs !== null && drill instanceof BackingTrackDrill && !finished) {
       const into = Math.max(0, performance.now() - loopStartedAtMs);
@@ -1731,9 +1965,10 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
   /**
    * The page is back. The card in flight moves past the hidden span, so its
    * time to answer, a pedal lift or a rhythm's grid counts none of it
-   * (CL05a). The loop resumes on its bar, the dictation ticker starts again
-   * and the rhythm card's click goes back on its moved grid; a cut-off Simon
-   * chain and a held card wait for the learner.
+   * (CL05a). The loop resumes on its bar and the dictation ticker starts
+   * again; a rhythm card is held until it can be heard and has been counted
+   * in again (CL05b); a cut-off Simon chain and a held card wait for the
+   * learner.
    */
   function resumeDrill(): void {
     if (disposed) return;
@@ -1749,7 +1984,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     if (dictation && !finished && drill === dictation) startDictationTicker(dictation);
     const wasSounding = clickWasSounding;
     clickWasSounding = false;
-    if (wasSuspended && !finished && drill instanceof RhythmDrill) resumeRhythmClick(drill, wasSounding);
+    if (wasSuspended && !finished && drill instanceof RhythmDrill) resumeRhythmClick(drill, wasSounding, visibleAtMs);
   }
 
   // --- per-kind faces ------------------------------------------------------
@@ -2698,6 +2933,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     clearPlayback();
     cancelFeedback();
     stopMetronome();
+    releaseRhythmHold();
     stopDictationTicker();
     // The going-over has its own, much smaller ending: it counts nothing, so
     // there is no outcome to judge and nothing to record.
@@ -3909,6 +4145,7 @@ export function DrillScreen(router: Router, itemId: string): HTMLElement {
     clearPlayback();
     cancelFeedback();
     stopMetronome();
+    stopSoundWatch?.();
     stopDictationTicker();
     stopMidiNotes();
     stopKeyNotes();
