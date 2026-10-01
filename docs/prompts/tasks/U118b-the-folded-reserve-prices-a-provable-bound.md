@@ -97,6 +97,8 @@ Adjacent problems recorded, never fixed on the spot.
 
 As `operating-procedure.md` §14. This lane's port is **5343**, from a config copy under the worktree's `app/build/u118b/`.
 
+**Landed 2026-10-01** (Entry 205; fd23e0c2, merged b5492930); handoff `handoffs/fd23e0c2.md`.
+
 ## Record
 
 lane: U118b · closes: U118 · entry: 205
@@ -105,3 +107,4 @@ in-flight: drafted 2026-10-01 (`U118b-the-folded-reserve-prices-a-provable-bound
 state: dispatched 2026-10-01: dispatched at 0d2c3472, building (Entry 205)
 - held 2026-10-01: stopped at its stop condition — the sixteen-digit bound moves three turned-while-folded cells at 100 % text (342 × 740 five-finger at 4 and 8 bars drawn about 3 % smaller, still above an ordinary start; 360 × 844 Twinkle at 8 bars from four systems to three plus a greyed next row, identical to an ordinary start); an ordinary start unchanged in all 112 cells, the large shapes unchanged, no new mark under the chip; the product choice is with the reviewer
 - dispatched 2026-10-01: resumed at fourteen widest digits under `responses/questions-1cadc4dc.md`, the builder rerunning the grid against the reviewer's five conditions (Entry 205)
+- landed 2026-10-01: merged b5492930; handoff `handoffs/fd23e0c2.md`

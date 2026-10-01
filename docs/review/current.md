@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **U118b** — `handoffs/fd23e0c2.md` (respond in `responses/fd23e0c2.md`). The folded chip's reserve prices the widest away count the product can print, and the width-change case tests what it says (Entry 205).
 - **U122 and three proposals** — `handoffs/b47ce498.md` (respond in `responses/b47ce498.md`). A brief handoff: the sideways score bar gets one layout model (a design lane, U120 and U121 folded in), the hotspot and latent-or-regression rules, and a derived `current.md`.
 - **T62** — `handoffs/d4bdd282.md` (respond in `responses/d4bdd282.md`). CI's browser tests run as parallel shards, built and proven green/red on a disposable branch, not yet merged into the working branch (Entry 201).
 
