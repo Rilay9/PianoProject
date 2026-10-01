@@ -44,6 +44,8 @@ Specifically, the old fixed I3 familiarity/exploration ratio and I5 personal-vs-
 
 ### 4. Prefer core truth that reduces models
 
+After the Score product decision, the session-item purpose/outcome contract comes first (X46, from the walk's findings 1, 3, 6 and 7): it is the concrete consumer that tells CL11 which distinctions the product needs (`responses/9e14839e.md` §5). Narrow seams with independent files (G30, U125, U110) do not wait for this order.
+
 After the Score product decision and current-tree reconciliation, the strongest surviving architectural candidates are:
 
 - **CL11 evidence truth**, if its current rows still reproduce: one contract for observation, measured channel, application/pass standard, competence, transfer and self-report; no local exceptions merely to close rows.
@@ -106,7 +108,7 @@ This is judgement, not a cadence. Do it when it can change the direction; do not
 
 ## Final waves
 
-- **H1** remains the broad suite-trust and load/flakiness hardening pass after product behaviour is materially stable. Fix harness failures earlier only when they block trustworthy development.
+- **H1** remains the broad suite-trust and load/flakiness hardening pass after product behaviour is materially stable. Fix harness failures earlier only when they block trustworthy development. Held for it, not rows unless they recur: `mic.spec.ts:74` (6 correct steps where 7 are required, passed on retry) and `sweeps.spec.ts:103` (`#lesson-find-more` missed within 5 s, passed on retry), both in run 36930562106 (`responses/9e14839e.md` §1, §6).
 - **H2** remains final release acceptance on the personal build plus the focused strict/public delta. It is no longer the first time whole experiences are examined.
 
 ## Dispatch rule
