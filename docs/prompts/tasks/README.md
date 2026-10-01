@@ -391,10 +391,10 @@ CL05 · verdict · 187
 CL15 · approved · 188
 CL01 · closed · 189
 E50c · closed · 190
-CL23 · approved · 191
+CL23 · dispatched · 191
 U105b · verdict · 192
-U105c · drafted · 193
-CL05a · drafted · 194
+U105c · dispatched · 193
+CL05a · dispatched · 194
 F0a · closed · —
 L120 · approved · —
 -->

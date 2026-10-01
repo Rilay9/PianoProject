@@ -130,4 +130,4 @@ As `operating-procedure.md` §14: the builder's own worktree, cut from origin's 
 lane: CL05a · closes: — · entry: 194
 index: CL05's required change (`docs/review/responses/4923be59.md`) closed as one semantic fix: a rhythm card's click and judged grid stop and re-anchor across a hidden span instead of drifting or catching up, `meanReactionMs` excludes hidden time on the card interrupted by it, and key/MIDI input received while the Drill screen is hidden is refused at the suspension boundary rather than reaching a card | app | drafted 2026-09-30 (`CL05a-hidden-is-not-practice-for-drill.md`); Entry 194
 in-flight: drafted 2026-09-30 (`CL05a-hidden-is-not-practice-for-drill.md`): the three Drill residues CL05's review required as one change — the rhythm card's click/judged grid, `meanReactionMs`'s hidden span, and hidden key/MIDI input — fixed together under the fast path (`responses/4923be59.md`; `runs/CL05/ENTRY.md` follow-ups 1, 2, 4); drafted, awaiting the orchestrator's dispatch (Entry 194)
-state: drafted 2026-09-30: CL05's required change under the fast path (Entry 194)
+state: dispatched 2026-09-30: dispatched at fadafbfa, building (Entry 194)
