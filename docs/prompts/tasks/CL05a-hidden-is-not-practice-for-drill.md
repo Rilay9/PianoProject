@@ -125,9 +125,12 @@ Adjacent problems recorded, never fixed on the spot.
 
 As `operating-procedure.md` §14: the builder's own worktree, cut from origin's head at dispatch (the dispatch message states the sha then, not this brief); `npm ci` in `app/`; `app/public/content` copied read-only from the main checkout if the lane needs it. No commits, pushes, stashes, resets or checkouts, and nothing written in the main checkout or another lane's worktree. Browser tests, if any mutant survives jsdom (Verification layer 7), run on this lane's own port under the worktree's `app/build/cl05a/` — never port 4173. Temp files under the worktree's own `build/`; no kept log over 300 KB; machine paths in kept files replaced by `<worktree>` and `<home>`. At the end: delete `app/dist`, `app/test-results`, the copied content and any config copy; `app/node_modules` stays until the orchestrator removes the worktree. Never name an AI model; never assert a number measured on this machine as general. Every item done, or an explicit not-done line; a premise found wrong here is said, and the better path taken.
 
+**Landed 2026-09-30** (Entry 194; 8764c643, merged 83c8655b); handoff `handoffs/8764c643.md`.
+
 ## Record
 
 lane: CL05a · closes: — · entry: 194
 index: CL05's required change (`docs/review/responses/4923be59.md`) closed as one semantic fix: a rhythm card's click and judged grid stop and re-anchor across a hidden span instead of drifting or catching up, `meanReactionMs` excludes hidden time on the card interrupted by it, and key/MIDI input received while the Drill screen is hidden is refused at the suspension boundary rather than reaching a card | app | drafted 2026-09-30 (`CL05a-hidden-is-not-practice-for-drill.md`); Entry 194
 in-flight: drafted 2026-09-30 (`CL05a-hidden-is-not-practice-for-drill.md`): the three Drill residues CL05's review required as one change — the rhythm card's click/judged grid, `meanReactionMs`'s hidden span, and hidden key/MIDI input — fixed together under the fast path (`responses/4923be59.md`; `runs/CL05/ENTRY.md` follow-ups 1, 2, 4); drafted, awaiting the orchestrator's dispatch (Entry 194)
 state: dispatched 2026-09-30: dispatched at fadafbfa, building (Entry 194)
+- landed 2026-09-30: merged 83c8655b; handoff `handoffs/8764c643.md`

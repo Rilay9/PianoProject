@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **CL05a** — `handoffs/8764c643.md` (respond in `responses/8764c643.md`). Hidden is not practice, finished for Drill (Entry 194).
 - **U105c** — `handoffs/842ea210.md` (respond in `responses/842ea210.md`). A refusal stays whole while the run object runs (Entry 193).
 - **E57** — `handoffs/ca8508ed.md` (respond in `responses/ca8508ed.md`). A later tempo mark survives conversion: `normalise` now removes only a copy of one tempo statement at one position (same place in the score, same quarter-note tempo within X42's `SERIALIZATION_TOLERANCE` 0.01, a printed mark kept over a sound-only copy, a mark with no readable tempo never removed), so the three kern rows play every tempo their source states; PDMX counted from the archive (96 of 542 change), 93 re-committed and 3 held as committed because their new files would make two lesson sentences false; 96 identities moved, each related under the reviewed-repair relation (2026-09-30) (Entry 183).
 - **U105b** — `handoffs/6a374f8a.md` answered 2026-09-30: APPROVE WITH ONE REQUIRED CHANGE, the paused-run case built as U105c (whenever `data-sound-refused` is the reason the header shows the refusal sentence, it stays whole even while `PracticeEngine.running` is true during a paused/held/demonstrating run; the existing mid-run one-line guard otherwise unchanged). The header's refusal line wraps to the lines it needs (Entry 192).
