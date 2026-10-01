@@ -6,10 +6,10 @@ videos:
   - label: "Create Drama & Intensity In Your Piano Chord Progressions"
     url: "https://www.youtube.com/watch?v=Me4maGaS0gs"
     teacher: "Pianote"
-readingTime: 4
+readingTime: 3
 ---
 
-Every texture on this track so far has been something to hold steady. This rung
+Every texture so far has been something to hold steady. This rung
 is about the opposite: making a passage grow. It is the last of the four things
 the overview named, and it is the one people get wrong most reliably, because
 the obvious way to build is to play louder and the obvious way is the weakest
