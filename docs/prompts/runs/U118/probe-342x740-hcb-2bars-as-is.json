@@ -1,0 +1,200 @@
+{
+ "cell": "342x740-hcb-2bars-text100-as-is",
+ "arm": "as-is",
+ "viewport": "342x740",
+ "piece": "hcb",
+ "bars": 2,
+ "text": 100,
+ "reserved": false,
+ "reserve": 36.72,
+ "rest": {
+  "readAhead": "slots",
+  "slots": 3,
+  "systems": 2,
+  "shown": 2,
+  "asked": 2,
+  "zoom": 2,
+  "frozenScale": null,
+  "drawn": null,
+  "fitBy": "width",
+  "priced": {
+   "arrangement": "slots",
+   "candidates": [
+    {
+     "shown": 2,
+     "systems": 2,
+     "staffPx": 73.4,
+     "ahead": true
+    },
+    {
+     "shown": 1,
+     "systems": 1,
+     "staffPx": 73.4,
+     "ahead": true
+    }
+   ],
+   "shown": 2,
+   "systems": 2,
+   "fit": 0.917,
+   "drawn": 0.917,
+   "base": 0.917,
+   "rows": [
+    {
+     "from": 0,
+     "to": 0,
+     "px": 360
+    },
+    {
+     "from": 1,
+     "to": 1,
+     "px": 278
+    }
+   ]
+  },
+  "stageH": 531.11,
+  "stageTop": 84.89,
+  "headH": 84.89,
+  "chrome": "open"
+ },
+ "run": {
+  "readAhead": "slots",
+  "slots": 3,
+  "systems": 2,
+  "shown": 2,
+  "asked": 2,
+  "zoom": 2,
+  "frozenScale": 0.917049,
+  "drawn": 1.8341,
+  "fitBy": "width",
+  "priced": {
+   "arrangement": "slots",
+   "candidates": [
+    {
+     "shown": 2,
+     "systems": 2,
+     "staffPx": 73.4,
+     "ahead": true
+    },
+    {
+     "shown": 1,
+     "systems": 1,
+     "staffPx": 73.4,
+     "ahead": true
+    }
+   ],
+   "shown": 2,
+   "systems": 2,
+   "fit": 0.917,
+   "drawn": 0.917,
+   "base": 0.917,
+   "rows": [
+    {
+     "from": 0,
+     "to": 0,
+     "px": 360
+    },
+    {
+     "from": 1,
+     "to": 1,
+     "px": 278
+    }
+   ]
+  },
+  "stageH": 583.11,
+  "stageTop": 84.89,
+  "headH": 84.89,
+  "chrome": "open"
+ },
+ "fold": {
+  "stageH": 668,
+  "stageTop": 0,
+  "chipBottom": 37.69,
+  "chipLines": 2,
+  "chipText": "bar 1 / 4 · Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning.",
+  "slotTops": [
+   8.83,
+   177.83,
+   347.83
+  ],
+  "placed": [
+   {
+    "buffer": 0,
+    "top": 0,
+    "from": 0,
+    "ahead": false,
+    "cursor": true
+   },
+   {
+    "buffer": 1,
+    "top": 169,
+    "from": 1,
+    "ahead": false,
+    "cursor": false
+   },
+   {
+    "buffer": 2,
+    "top": 339,
+    "from": 2,
+    "ahead": true,
+    "cursor": false
+   }
+  ],
+  "inkTop": 6.76,
+  "inkBottom": 479.43,
+  "under": [
+   "path.vf-clef",
+   "text.vf-text\"3\"",
+   "text.vf-text\"2\"",
+   "text.vf-text\"1\""
+  ]
+ },
+ "after": {
+  "readAhead": "slots",
+  "slots": 3,
+  "systems": 2,
+  "shown": 2,
+  "asked": 2,
+  "zoom": 2,
+  "frozenScale": 0.917049,
+  "drawn": 1.8341,
+  "fitBy": "width",
+  "priced": {
+   "arrangement": "slots",
+   "candidates": [
+    {
+     "shown": 2,
+     "systems": 2,
+     "staffPx": 73.4,
+     "ahead": true
+    },
+    {
+     "shown": 1,
+     "systems": 1,
+     "staffPx": 73.4,
+     "ahead": true
+    }
+   ],
+   "shown": 2,
+   "systems": 2,
+   "fit": 0.917,
+   "drawn": 0.917,
+   "base": 0.917,
+   "rows": [
+    {
+     "from": 0,
+     "to": 0,
+     "px": 360
+    },
+    {
+     "from": 1,
+     "to": 1,
+     "px": 278
+    }
+   ]
+  },
+  "stageH": 668,
+  "stageTop": 0,
+  "headH": 0,
+  "chrome": "folded"
+ }
+}

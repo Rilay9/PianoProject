@@ -340,6 +340,18 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
   beside (a), from the first bar of the window the cursor is in. Its `settle` also waits,
   bounded, for `data-settled` before the stability poll (Q30's part for this file; Q30 stays
   open), because the shape holds still while a long piece's later sheets load.
+  U118 adds the stacked slots under the folded chip, beside CHUNK's folded case (the response's
+  five checks, `responses/questions-e9aa51ae.md`): upright at 342 x 740 on Hot Cross Buns (U105c's
+  layout) and on the five-finger exercise at four bars (sized by the height), a Wait run frozen,
+  paused and left to fold — no chip and the first slot at the top unfolded, then the first slot
+  below the band, the first system's ink below the chip, no mark of the score under it, the
+  slots in first-bar order with the greyed row below, every mark on the stage, and the shape,
+  engraving zoom, held size and scale unchanged through the fold; after a crossing into the
+  third bar (checks 1, 2 and 4; the held size gives way across at the first fit after that
+  crossing, T38, which there is the fold's); a size taken while folded (turned and turned back)
+  keeps the bottom system on the stage; what the chip says (waiting for the first note, nothing,
+  paused) moves neither the band, the slots nor the size; at 1024 x 768, where every sentence
+  fits one line, the band is one line; a tablet folds with no chip and no band.
 - `score-fit-paths.spec.ts` — the score fills the stage on every path in (U74): the two-bar blues scale at 342 × 740 with D4's seeded learner settles to the same stage box, systems, bars and staff from Today and by a link after a fresh load of the same route, and from the first frame that draws it the stage shows the settled layout on both paths — every frame recorded by the page from before the tap.
 - `score.fuzz.spec.ts` — the seeded random walk over the whole Score screen, invariants after every action.
 - `score.head-height.spec.ts` — the Score screen's header is the same height all through a run (the first correct notes, a message longer than the row, a wider font); a stage whose *height* changes mid-run leaves the drawn sheet's transform alone; a run restarted mid-piece (hand change, `Hear it`) keeps its **engraving zoom** through a header that grows, which the transform alone cannot show; and the hands control is reachable during a run when the bar has sent it behind `⋯`, which is the branch a wider set of glyphs takes and this machine does not.
@@ -695,7 +707,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `vocabulary.test.ts` — vocabulary v0 holds together: every skill says how a run shows it or that none can, every demand has a detector the app runs, every `targetSkills` id and waiver resolves (C2).
 - `trimMusicXml.test.ts` — the probe loads the first bars of a piece, not the piece.
 - `wavEncode.test.ts` — the WAV writer behind the Diagnostics capture round-trips.
-- `windowRendererStage.test.ts` — the real `WindowRenderer` against a stage the test controls, the engraver stood in (U74): a change delivered inside a fit, an off-run height change, a width change off and during a run, and a taller stage met first all come out as a renderer made on the final stage; the first window drawn is the settled one; the probe is measured once per settled zoom and never at a search's trial zoom; the search re-engraves the window it sizes; a piece past the probe's reach keeps the idle load; `data-settled` is said a frame after the fit and taken back by a stage change; sideways, the count follows what reaches across at the height's size — fewer said as `across` — from the first draw, and over bars that reach across the count asked (U82); every count the chooser prices carries its own look-ahead read-out (`debugFit().priced.candidates[].ahead`), priced from that count's own window, rows and scale in the same pass — never the drawn shape's answer or scale lent to it — checked both ways round and against the chooser's own reservation when that count is asked on its own at 100 % (U113).
+- `windowRendererStage.test.ts` — the real `WindowRenderer` against a stage the test controls, the engraver stood in (U74): a change delivered inside a fit, an off-run height change, a width change off and during a run, and a taller stage met first all come out as a renderer made on the final stage; the first window drawn is the settled one; the probe is measured once per settled zoom and never at a search's trial zoom; the search re-engraves the window it sizes; a piece past the probe's reach keeps the idle load; `data-settled` is said a frame after the fit and taken back by a stage change; sideways, the count follows what reaches across at the height's size — fewer said as `across` — from the first draw, and over bars that reach across the count asked (U82); every count the chooser prices carries its own look-ahead read-out (`debugFit().priced.candidates[].ahead`), priced from that count's own window, rows and scale in the same pass — never the drawn shape's answer or scale lent to it — checked both ways round and against the chooser's own reservation when that count is asked on its own at 100 % (U113). The stacked slots and the folded chip's band (U118), with the band set by the test where the Score screen would answer it: placed below the band and back at the top with nothing fitted or engraved, a fractional band starting the first slot on the pixel below it, an ordinary fold during a frozen run holding the shape, the held scale and the engraving while the stage gains the header's row, a size taken while the band is drawn (turned back while folded) drawing what a stage short by the band draws, placed under it, and the sliding sheet sideways left to the stylesheet.
 - `docsConsistency.test.ts` — the documents against the code: `03`'s sections and module names, `04`'s sub-screen headings.
 - `helpers/` — shared fixtures and fakes, not tests.
 - `helpers/timewise.ts` — a partwise fixture's timewise twin (X3e).
@@ -704,7 +716,7 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 
 - `score.states.spec.ts` — one picture per state of `08-score-render-states.md` §2, each measured against §9 and its own claims.
 - `audit.ts` — the geometric sweep: chrome over chrome, clipping, off-viewport controls, targets under 40 px.
-- `gallery.ts` — shooting a cell, checking it against the record, building the sheet.
+- `gallery.ts` — shooting a cell, checking it against the record, building the sheet. Since U118 the folded corner chip is judged, not left out of the sweep: on every cell where it is drawn (a folded phone; never unfolded or on a tablet) `chipOverInk` reports any mark of the front sheets its box meets — clef, stave, notes, fingerings — as `§4.1 the folded chip over the score's ink`, and the chip's own box inside the stage is not judged (`responses/questions-e9aa51ae.md`).
 - `probe.ts` — what the screen is, measured in one `page.evaluate` per cell.
 
 ### `app/tests/tour/` — the UX tour (`npm run tour`, `corpus`, `choices`; `playwright.tour.config.ts`, `playwright.corpus.config.ts`)

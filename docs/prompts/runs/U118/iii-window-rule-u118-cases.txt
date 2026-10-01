@@ -1,0 +1,13 @@
+
+Running 8 tests using 4 workers
+
+  ok 3 tests\e2e\score.window-rule.spec.ts:952:1 › mid-run on a phone sideways, the folded chrome leaves the music on the stage (8.3s)
+  ok 2 tests\e2e\score.window-rule.spec.ts:1152:3 › folded upright, the stacked slots start below the chip and keep the size the run froze (U105c’s layout) (9.9s)
+  ok 1 tests\e2e\score.window-rule.spec.ts:1178:1 › folded upright after a crossing into the third bar: still below the chip, in reading order (10.0s)
+  ok 4 tests\e2e\score.window-rule.spec.ts:1152:3 › folded upright, the stacked slots start below the chip and keep the size the run froze (sized by the height) (10.4s)
+  ok 8 tests\e2e\score.window-rule.spec.ts:1289:1 › a tablet folds without a chip: no band, the slots at the top (8.0s)
+  ok 7 tests\e2e\score.window-rule.spec.ts:1272:1 › where every sentence fits one line, the band is one line (9.3s)
+  ok 6 tests\e2e\score.window-rule.spec.ts:1228:1 › what the chip says changes nothing: the band, the slots and the size stay where they were (10.4s)
+  ok 5 tests\e2e\score.window-rule.spec.ts:1208:1 › a size taken while folded: turned and turned back with the chrome folded, the bottom system stays on the stage (12.8s)
+
+  8 passed (25.5s)

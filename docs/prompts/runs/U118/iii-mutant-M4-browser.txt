@@ -1,0 +1,36 @@
+
+Running 8 tests using 4 workers
+
+  ok 1 tests\e2e\score.window-rule.spec.ts:952:1 › mid-run on a phone sideways, the folded chrome leaves the music on the stage (6.9s)
+  ok 2 tests\e2e\score.window-rule.spec.ts:1152:3 › folded upright, the stacked slots start below the chip and keep the size the run froze (U105c’s layout) (8.9s)
+  ok 3 tests\e2e\score.window-rule.spec.ts:1152:3 › folded upright, the stacked slots start below the chip and keep the size the run froze (sized by the height) (9.0s)
+  ok 4 tests\e2e\score.window-rule.spec.ts:1178:1 › folded upright after a crossing into the third bar: still below the chip, in reading order (9.3s)
+  ok 8 tests\e2e\score.window-rule.spec.ts:1289:1 › a tablet folds without a chip: no band, the slots at the top (7.2s)
+  x  7 tests\e2e\score.window-rule.spec.ts:1272:1 › where every sentence fits one line, the band is one line (8.5s)
+  ok 5 tests\e2e\score.window-rule.spec.ts:1208:1 › a size taken while folded: turned and turned back with the chrome folded, the bottom system stays on the stage (11.5s)
+  ok 6 tests\e2e\score.window-rule.spec.ts:1228:1 › what the chip says changes nothing: the band, the slots and the size stay where they were (9.7s)
+
+
+  1) tests\e2e\score.window-rule.spec.ts:1272:1 › where every sentence fits one line, the band is one line 
+
+    Error: the band is the chip's one-line height {"chrome":"folded","chipShown":true,"chipBottom":21.34375,"chipLines":1,"band":36.6875,"stageH":694,"zoom":2,"scale":1.54518,"frozen":1.54518,"shape":"2/2/4","placed":[{"top":37,"from":0,"ahead":false},{"top":298,"from":2,"ahead":false}],"firstInkTop":43.71985626220703,"inkBottom":528.82666015625,"under":[]}
+
+    expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 22.34375
+    Received:    36.6875
+
+      1283 |   expect(folded.chipLines, `the paused line on one line ${said}`).toBe(1);
+      1284 |   // The chip's one line is the band: no second line held for nothing.
+    > 1285 |   expect(folded.band, `the band is the chip's one-line height ${said}`).toBeLessThanOrEqual(folded.chipBottom + 1);
+           |                                                                         ^
+      1286 |   belowTheChip('one line, folded', folded);
+      1287 | });
+      1288 |
+        at <worktree>\app\tests\e2e\score.window-rule.spec.ts:1285:73
+
+    Error Context: build\u118\test-results\score.window-rule-where-ev-1db88-e-line-the-band-is-one-line\error-context.md
+
+  1 failed
+    tests\e2e\score.window-rule.spec.ts:1272:1 › where every sentence fits one line, the band is one line 
+  7 passed (21.6s)

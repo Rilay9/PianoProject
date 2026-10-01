@@ -1,0 +1,47 @@
+
+Running 6 tests using 4 workers
+
+  ok 1 build\u118\disc\folded-chip.spec.ts:184:1 › folded on a phone, the paused run: the five checks (5.8s)
+  ok 3 build\u118\disc\folded-chip.spec.ts:226:1 › a tablet: no chip, no reserve, the scale held through the fold timer (check 5) (6.8s)
+  ok 2 build\u118\disc\folded-chip.spec.ts:204:1 › folded on a phone after a crossing into the third bar: checks 1 to 4 (7.4s)
+  ok 4 build\u118\disc\folded-chip.spec.ts:245:1 › turned and turned back while folded: the music on the stage, the chip clear (11.0s)
+U118PICTURE folded-paused-342x740-hcb-text115 {"chip":"bar 1 / 4 · Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning.","lines":2,"band":58.96875,"firstTop":59}
+U118PICTURE folded-paused-1024x768-hcb-4bars {"chip":"bar 1 / 4 · Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning.","lines":1,"band":21.34375,"firstTop":22}
+  x  5 build\u118\disc\pictures.spec.ts:16:3 › folded-paused-342x740-hcb-text115 (8.4s)
+  x  6 build\u118\disc\pictures.spec.ts:16:3 › folded-paused-1024x768-hcb-4bars (7.8s)
+
+
+  1) build\u118\disc\pictures.spec.ts:16:3 › folded-paused-342x740-hcb-text115 ─────────────────────
+
+    TypeError: Module "file:///<worktree>/content/curriculum/vocabulary/skills.json" needs an import attribute of "type: json"
+
+      60 |     // Diagnosis only: which of the chip's longest sentences take how many lines here, laid out in a copy
+      61 |     // of the chip as the screen's band does. The words are `help.ts`'s, at this piece's longest.
+    > 62 |     const { STATE_TEXT, RESTARTED_WITH } = await import('../../../src/ui/help');
+         |                                            ^
+      63 |     const at = 'bar 4 / 4';
+      64 |     const lines = [
+      65 |       STATE_TEXT.paused,
+        at <worktree>\app\build\u118\disc\pictures.spec.ts:62:44
+
+    Error Context: build\u118\test-results\pictures-folded-paused-342x740-hcb-text115\error-context.md
+
+  2) build\u118\disc\pictures.spec.ts:16:3 › folded-paused-1024x768-hcb-4bars ──────────────────────
+
+    TypeError: Module "file:///<worktree>/content/curriculum/vocabulary/skills.json" needs an import attribute of "type: json"
+
+      60 |     // Diagnosis only: which of the chip's longest sentences take how many lines here, laid out in a copy
+      61 |     // of the chip as the screen's band does. The words are `help.ts`'s, at this piece's longest.
+    > 62 |     const { STATE_TEXT, RESTARTED_WITH } = await import('../../../src/ui/help');
+         |                                            ^
+      63 |     const at = 'bar 4 / 4';
+      64 |     const lines = [
+      65 |       STATE_TEXT.paused,
+        at <worktree>\app\build\u118\disc\pictures.spec.ts:62:44
+
+    Error Context: build\u118\test-results\pictures-folded-paused-1024x768-hcb-4bars\error-context.md
+
+  2 failed
+    build\u118\disc\pictures.spec.ts:16:3 › folded-paused-342x740-hcb-text115 ──────────────────────
+    build\u118\disc\pictures.spec.ts:16:3 › folded-paused-1024x768-hcb-4bars ───────────────────────
+  4 passed (19.2s)

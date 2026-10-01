@@ -470,6 +470,24 @@ read-ahead on the screen at every moment.
   repeat, the repeat's first bar; at a first/second-time ending, the ending played on this pass.
 - **The slots pack from the top** when the fit leaves room, with 24 px between them, like a
   page; the spare space is at the bottom. When the music fills its share, the shares stand.
+- **Below the folded chip (U118).** On a phone, while the folded chrome draws the `bar n / m`
+  chip at the stage's top, the stacked slots start below the band the chip owns, never inside
+  it, and stack within what is left of the stage. The band is the chip's tallest legitimate
+  state at this geometry: `bar n / m` joined to every line the run can write while folded, each
+  at its longest for the piece, laid out under the chip's own rule (its `top`, padding, type and
+  line height, at the width the stage leaves it) — one line where every sentence fits one, more
+  where any needs more. It is held for the stage's width and the chip's type, so a change of
+  what the chip says never moves the slots or re-prices a run (`ScoreScreen` `cornerTexts` and
+  `foldedCornerReserve`, handed to the renderer as `foldedReserve`). **A run that starts
+  unfolded is not priced for the band**, unlike CHUNK's room below: upright the fold also takes
+  the header away, which gives the stage more height than the band takes, so the fold places
+  the slots (`placeSlots`) and leaves the shape, the engraving and the size the run froze.
+  Priced from the run's start, the band changed six of 112 measured shapes and the drawn size
+  of 28, 27 of them smaller, for room the fold gives back (`runs/U118`; the reviewer's ruling,
+  `responses/questions-e9aa51ae.md`).
+  **A size taken while the chip is already drawn** — a turn while folded — is priced and fitted
+  below the band (`priceWindowShape`, `sheetShift`), so the bottom system stays on the stage.
+  Not on a tablet, where the chip is not drawn.
 - **At the end of a piece the other slots show the bars just played**, not blank — a blank slot
   is half the screen gone black for the last bars of every song. Chosen in playing order too, so
   at a second-time ending it is the bar *before* the ending, not the first ending printed above.

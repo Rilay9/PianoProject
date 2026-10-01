@@ -1231,3 +1231,174 @@ describe('each priced count carries its own look-ahead, from its own geometry (U
     await drawnAsAsked(20, twoBars);
   });
 });
+
+describe('the stacked slots and the folded chip’s band (U118)', () => {
+  /**
+   * The reviewer's ruling (`responses/questions-e9aa51ae.md`, option (iii)): while the folded chip is
+   * drawn the stacked slots start below its band; the fold during a frozen run is placement only; a
+   * size taken while the chip is drawn is priced below the band. The Score screen answers the band
+   * (`foldedReserve`); here a value the test sets stands in for it, so these cases are the renderer's
+   * bookkeeping. The band's own value — the chip's tallest legitimate sentence, held for a geometry —
+   * is the screen's, and `score.window-rule.spec.ts` reads it on the glass.
+   */
+  async function openWithBand(stage: Stage, band: { px: number }, model = twoBars()): Promise<WindowRenderer> {
+    const renderer = await WindowRenderer.create({
+      container: stage.el,
+      model,
+      musicXml: '<score-partwise/>',
+      barsPerWindow: 2,
+      foldedReserve: () => band.px,
+    });
+    renderer.showStep(0);
+    renderer.fitToStage();
+    return renderer;
+  }
+
+  /** The drawn slots' `top`, in reading order. */
+  function tops(stage: Stage): number[] {
+    return [...stage.el.querySelectorAll<HTMLElement>('.score-buffer.is-front:not(.score-probe)')]
+      .filter((buffer) => buffer.dataset.bars)
+      .map((buffer) => Number.parseFloat(buffer.style.top || '0'))
+      .sort((a, b) => a - b);
+  }
+
+  /** The lowest edge any drawn slot's box reaches, from its `top` and `height`. */
+  function lowest(stage: Stage): number {
+    return Math.max(
+      ...[...stage.el.querySelectorAll<HTMLElement>('.score-buffer.is-front:not(.score-probe)')]
+        .filter((buffer) => buffer.dataset.bars)
+        .map((buffer) => Number.parseFloat(buffer.style.top || '0') + Number.parseFloat(buffer.style.height || '0')),
+    );
+  }
+
+  const renders = (): number =>
+    FakeOsmdView.all.filter((v) => v.label !== 'osmd.render.probe').reduce((sum, v) => sum + v.renders, 0);
+
+  /**
+   * Until a run that has let its size go takes a new one. After a turn the freeze waits for the piece
+   * to be measured at the new zoom, up to `FREEZE_WAIT_FOR_MEASURE_MS`; bounded here past that.
+   */
+  async function untilFrozen(renderer: WindowRenderer): Promise<void> {
+    for (let round = 0; round < 25; round += 1) {
+      await tick(200);
+      await settle();
+      if ((renderer.debugFit() as { frozen: unknown }).frozen !== null) return;
+    }
+  }
+
+  it('placed below the band while it is drawn and back at the top when it goes, with nothing fitted or engraved', async () => {
+    const band = { px: 0 };
+    const stage = stageOf(342, 616);
+    const renderer = await openWithBand(stage, band);
+    await settle();
+    const before = drawn(stage, renderer);
+    const engraved = renders();
+    expect(tops(stage)[0], 'unfolded: the first slot at the top').toBe(0);
+    band.px = 37;
+    renderer.placeSlots();
+    expect(tops(stage)[0], 'folded: the first slot starts below the band, never inside it').toBe(37);
+    // A share's box may round a pixel past the stage; the ink is what has to be inside it.
+    expect(lowest(stage), 'and every slot inside the stage').toBeLessThanOrEqual(617);
+    expectSamePicture(drawn(stage, renderer), before, 'placement only');
+    expect(renders(), 're-engravings').toBe(engraved);
+    band.px = 0;
+    renderer.placeSlots();
+    expect(tops(stage)[0], 'unfolded again: back at the top').toBe(0);
+    renderer.dispose();
+  });
+
+  it('a band that is not a whole pixel starts the first slot on the pixel below it', async () => {
+    const band = { px: 36.69 };
+    const stage = stageOf(342, 616);
+    const renderer = await openWithBand(stage, band);
+    await settle();
+    expect(tops(stage)[0]).toBe(37);
+    renderer.dispose();
+  });
+
+  it('an ordinary fold during a frozen run: the stage gains the header’s row, the band is placed, and the shape and size hold', async () => {
+    const band = { px: 0 };
+    const stage = stageOf(342, 531);
+    const renderer = await openWithBand(stage, band);
+    await settle();
+    renderer.setRunning(true);
+    await tick(200);
+    await settle();
+    const frozen = (renderer.debugFit() as { frozen: { scale: number } | null }).frozen;
+    expect(frozen, 'the run took a size').not.toBeNull();
+    const before = drawn(stage, renderer);
+    const engraved = renders();
+    // The fold, as the Score screen makes it: the chip drawn (its band), the slots placed, and the
+    // stage taller by the header's row, which the stage observer reports a moment later.
+    band.px = 37;
+    renderer.placeSlots();
+    stage.box = { width: 342, height: 616 };
+    observe();
+    await settle();
+    const after = drawn(stage, renderer);
+    expect(after.rows, 'the window’s shape').toEqual(before.rows);
+    expect(Math.abs(after.size - before.size) / before.size, 'the drawn size').toBeLessThan(0.001);
+    expect((renderer.debugFit() as { frozen: { scale: number } | null }).frozen?.scale, 'the held scale').toBe(frozen?.scale);
+    expect(renders(), 're-engravings').toBe(engraved);
+    expect(tops(stage)[0], 'the first slot below the band').toBeGreaterThanOrEqual(37);
+    expect(lowest(stage), 'every slot inside the stage, a share rounding a pixel at most').toBeLessThanOrEqual(617);
+    renderer.setRunning(false);
+    renderer.dispose();
+  });
+
+  it('a size taken while the band is drawn is priced below it: turned back while folded, it draws what a stage short by the band draws, placed under the band', async () => {
+    // What the band leaves: the same turn on a stage 37 px shorter, with no band. The same path,
+    // because a turn during a run re-measures from what is drawn (`stageChanged`), not from the
+    // piece's measurement at rest, and a run that never turned is sized from the other.
+    const reference = stageOf(390, 579);
+    const a = await openWithBand(reference, { px: 0 });
+    observe(); // the browser's first observation, which records the width a turn is told from
+    await settle();
+    a.setRunning(true);
+    await tick(200);
+    await settle();
+    reference.box = { width: 342, height: 579 };
+    observe();
+    await untilFrozen(a);
+    const want = drawn(reference, a);
+    const wantTops = tops(reference);
+    a.setRunning(false);
+    a.dispose();
+    document.body.replaceChildren();
+    observers.length = 0;
+
+    // A run started on another width, folded (the band drawn), then turned to 342 while folded.
+    const band = { px: 0 };
+    const stage = stageOf(390, 616);
+    const b = await openWithBand(stage, band);
+    observe();
+    await settle();
+    b.setRunning(true);
+    await tick(200);
+    await settle();
+    band.px = 37;
+    b.placeSlots();
+    stage.box = { width: 342, height: 616 };
+    observe();
+    await untilFrozen(b);
+    expect((b.debugFit() as { frozen: unknown }).frozen, 'the run holds a size on the new stage').not.toBeNull();
+    expectSamePicture(drawn(stage, b), want, 'priced below the band');
+    expect(tops(stage), 'the same rows, each 37 px lower').toEqual(wantTops.map((top) => top + 37));
+    expect(lowest(stage), 'every slot inside the stage, a share rounding a pixel at most').toBeLessThanOrEqual(617);
+    b.setRunning(false);
+    b.dispose();
+  });
+
+  it('the sliding sheet sideways is not the slots’ business: its top is left to the stylesheet', async () => {
+    Object.defineProperty(window, 'innerWidth', { value: 740, configurable: true });
+    Object.defineProperty(window, 'innerHeight', { value: 342, configurable: true });
+    const stage = stageOf(740, 260);
+    const renderer = await openWithBand(stage, { px: 37 });
+    await settle();
+    expect(stage.el.dataset.readAhead).toBe('single');
+    for (const buffer of stage.el.querySelectorAll<HTMLElement>('.score-buffer:not(.score-probe)')) {
+      expect(buffer.style.top, 'no inline top over the folded rule').toBe('');
+    }
+    renderer.dispose();
+  });
+});
