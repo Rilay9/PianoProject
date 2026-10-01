@@ -158,9 +158,12 @@ Handoff at `docs/prompts/runs/CL23/ENTRY.md`, starting `### Entry 191 — CL23`.
 
 As `operating-procedure.md` §14: own worktree from origin's head at dispatch (the sha in the dispatch message), `npm ci` in `app/`. No commit, push, stash, reset or checkout; nothing written in the main checkout; temp under the worktree's `build/`; kept logs under 300 KB with machine paths replaced; `app/node_modules` kept until the orchestrator removes the worktree. This lane expects no Playwright and needs no port: every case is a unit test against a fake IndexedDB, the same harness `dbUpgrades.test.ts`, `sessionRetention.test.ts` and `backup.test.ts` already use. If a mutant proves jsdom insufficient, a config copy under `app/build/cl23/` on a port other than 4173, never 4173 itself.
 
+**Landed 2026-09-30** (Entry 191; 1f2ef2fd, merged 6e8b0d70); handoff `handoffs/1f2ef2fd.md`.
+
 ## Record
 
 lane: CL23 · closes: L53, L69 · entry: 191
 index: Store and schema: an index lets Progress find a performance run however far back it is (L53), and compaction folds a run's per-demand evidence to counts the same way it already folds per-step detail to bars (L69, for the two readers proven to need only counts); the budget test now measures a compacted row that actually carries evidence; the migration/backup compatibility itemised; one open question carried to the reviewer (whether the same fold is safe for `demandReadings.ts`'s selectivity window, a file outside this lane) | app | brief drafted 2026-09-30 (`CL23-store-and-schema-performance-reach-and-evidence-fold.md`); with the reviewer before dispatch; Entry 191
 in-flight: brief drafted 2026-09-30 (`CL23-store-and-schema-performance-reach-and-evidence-fold.md`): a `DB_VERSION` bump and index for L53's performance reach, with its migration/backup compatibility itemised; L69's compaction fold for `byDemand`/`otherDemands`, safe for `session.ts` and `transfer.ts`, built here, with one question, answered by the reviewer as path (b) carried to the reviewer on `demandReadings.ts`'s window, not built here; with the reviewer before dispatch (Entry 191).
 state: dispatched 2026-09-30: dispatched at fadafbfa, building (Entry 191)
+- landed 2026-09-30: merged 6e8b0d70; handoff `handoffs/1f2ef2fd.md`

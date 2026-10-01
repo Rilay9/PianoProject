@@ -1,0 +1,36 @@
+# checks for 28 path(s): 28 matched, 0 unmatched
+# app/src/data/backup.ts: app/src/**, app/src/data/**
+# app/src/data/db.ts: app/src/**, app/src/data/db.ts, app/src/data/**
+# app/src/data/progressStore.ts: app/src/**, app/src/data/**
+# app/tests/unit/backup.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/performanceReach.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/progressHistoryLines.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/progressRanking.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/projectLifecycle.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/sessionRetention.test.ts: app/tests/unit/*.test.ts
+# docs/prompts/runs/CL23/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+# docs/prompts/runs/CL23/budget-relations.txt: docs/**
+# docs/prompts/runs/CL23/build-app.txt: docs/**
+# docs/prompts/runs/CL23/checks-for-paths.txt: docs/**
+# docs/prompts/runs/CL23/e2e-map-minimum.txt: docs/**
+# docs/prompts/runs/CL23/env-failures-committed.txt: docs/**
+# docs/prompts/runs/CL23/green-unit-targeted-1.txt: docs/**
+# docs/prompts/runs/CL23/green-unit-targeted-2.txt: docs/**
+# docs/prompts/runs/CL23/lint.txt: docs/**
+# docs/prompts/runs/CL23/mutants.txt: docs/**
+# docs/prompts/runs/CL23/red-retention-committed.txt: docs/**
+# docs/prompts/runs/CL23/red-unit-committed.txt: docs/**
+# docs/prompts/runs/CL23/scripts-budget-relations.test.ts: docs/**
+# docs/prompts/runs/CL23/scripts-mutants.py: docs/**
+# docs/prompts/runs/CL23/scripts-playwright.cl23-5183.config.ts: docs/**
+# docs/prompts/runs/CL23/tsc.txt: docs/**
+# docs/prompts/runs/CL23/vitest-all-1-summary.txt: docs/**
+# docs/prompts/runs/CL23/vitest-all-2-summary.txt: docs/**
+# docs/prompts/runs/CL23/vitest-rerun-suite-only.txt: docs/**
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_record_mirrors.py
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/converted-import.spec.ts tests/e2e/first-day.spec.ts tests/e2e/lab.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/library.spec.ts tests/e2e/midi-import.spec.ts tests/e2e/progress.spec.ts tests/e2e/projects.spec.ts tests/e2e/score.screen.spec.ts tests/e2e/score.states.spec.ts tests/e2e/today.spec.ts tests/e2e/transfer-offer.spec.ts --workers=4
