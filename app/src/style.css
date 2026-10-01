@@ -994,12 +994,16 @@ body {
        group's box, so a group that draws only inside it cannot cover one.
        What is cut is what comes last: the status line first, then
        `bar n / m`; Back, first in the group, last of all. Where Back and
-       `bar n / m` themselves do not fit beside the controls (at 115 % text,
-       a row much narrower than 640, or a long piece's three-digit bar on a
-       wider face), `bar n / m` is cut too, which is open with the reviewer
-       (U119, Question 1). `clip` across only, not `hidden`: Back's focus
-       ring above and below is still drawn, and the group is no scroll
-       container a focus could scroll. */
+       `bar n / m` themselves would not fit beside the controls (115 % text
+       on a row much narrower than 640, or a long piece's three-digit bar),
+       Hands and then `Hear it` go behind `⋯` first (`leftGroupIsCut` in
+       `ScoreScreen.ts`, U119a), and the status line ends at its own
+       ellipsis (below), so the clip is the last fence rather than what
+       decides what a learner reads. Only a row too narrow even with both
+       of those gone would see it cut `bar n / m` again: Play, the mode,
+       the tempo and `⋯` never leave. `clip` across only, not `hidden`:
+       Back's focus ring above and below is still drawn, and the group is
+       no scroll container a focus could scroll. */
     overflow-x: clip;
   }
 
@@ -1023,6 +1027,34 @@ body {
   .screen--score .score-bar__left > :not(.score-bar__title) {
     flex: none;
     white-space: nowrap;
+  }
+
+  /* But the status line gives its room up too, after the name, and ends with
+     its own ellipsis where it stops (U119a, the reviewer's ruling on U119,
+     `responses/fa4563d1.md`: "a truncated ordinary status must visibly read
+     as truncated"). Held at its own width, it was cut by the group's clip,
+     flush and part-way through a letter: *Paused — ▶ to carry c* at
+     667 × 375 on a wider face, *Pause* at 640 × 360 with 115 % text, which
+     reads as a word of its own. Shrinking, its box ends where the group's
+     room does, and `.score-bar__status`'s `text-overflow: ellipsis` draws
+     the cut. */
+  .screen--score .score-bar__left > .score-bar__status {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  /* The name still yields first, all of it, before the status line gives
+     anything, as it did when the line held its width: by default two items
+     shrink in proportion to their widths, which at 740 × 342 on a wider face
+     widened the name to *Hot C…* and shortened the paused line, where
+     nothing had been wrong (U119's probe). A weight this large leaves the
+     status line less than a layout unit while the name has room to give.
+
+     Not while a refusal stands: U105d's rule (`data-sound-refused`, below)
+     shares the shrink between the name and the sentence in proportion on
+     purpose, and is left as it was. */
+  body:not(:has([data-sound-refused])) .screen--score .score-bar__left > .score-bar__title {
+    flex-shrink: 1000000;
   }
 
   /* On the *host*, not on the strip. The bar floats `bottom: var(--strip-height)`

@@ -1,0 +1,11 @@
+
+Running 5 tests using 4 workers
+
+  ok 1 tests\e2e\score.spec.ts:579:5 › the score control bar › upright: one row, seven controls at most (1.6s)
+  ok 2 tests\e2e\score.spec.ts:579:5 › the score control bar › upright, 360: one row, seven controls at most (1.6s)
+  ok 4 tests\e2e\score.spec.ts:579:5 › the score control bar › sideways: one row, seven controls at most (1.6s)
+  ok 3 tests\e2e\score.spec.ts:579:5 › the score control bar › sideways, 780: one row, seven controls at most (1.5s)
+  ok 5 tests\e2e\score.spec.ts:579:5 › the score control bar › tablet: one row, seven controls at most (744ms)
+
+  5 passed (5.3s)
+exit 0
