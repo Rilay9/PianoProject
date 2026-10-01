@@ -1,0 +1,14 @@
+# `npm run build:app` on the final tree: the last lines.
+
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+[33m[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/data/evidenceJob.ts is dynamically imported by src/main.ts but also statically imported by src/ui/screens/SettingsScreen.ts, dynamic import will not move module into another chunk.
+[39m
+[32m✓ built in 1.56s[39m
+
+PWA v1.3.0
+mode      generateSW
+precache  2242 entries (29097.43 KiB)
+files generated
+  dist/sw.js
+  dist/workbox-9c191d2f.js
