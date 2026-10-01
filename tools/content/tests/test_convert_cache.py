@@ -580,16 +580,29 @@ class TestRepairedIdentities(CacheCase):
         # committed PDMX file re-proves here on its committed bytes; a file the build converts is not committed, so its
         # two relations (the dated file E50a recorded and its undated form) re-prove on the build
         # (`test_measured_truth`) and are held here to their shape and to the table.
-        self.assertEqual({one["change"].split(" ", 1)[0] for one in relations}, {"E50", "E57"})
+        # E59 (Entry 184): and every identity E59's converter change moved, a defaulted tempo written as its sound
+        # alone (the PDMX rows tagged `tempoDefaulted`, the kern and MuseTrainer files the build converts), and nothing
+        # else. Revised from {"E50", "E57"}: a third repair class, the same two relation shapes.
+        self.assertEqual({one["change"].split(" ", 1)[0] for one in relations}, {"E50", "E57", "E59"})
         convert.historical_identities.cache_clear()
         convert.repaired_identities.cache_clear()
         for one in relations:
             with self.subTest(one["id"], undated=one.get("undated", False)):
-                # E50b: each repair also says it changed the tempo a run of the old file was measured against
-                # (`tempoChanged`), which the build carries to the app as `provenance.tempoRepairedFrom`.
-                self.assertIs(one["tempoChanged"], True)
+                # E50b: each repair also says whether it changed the tempo a run of the old file was measured against
+                # (`tempoChanged`), which the build carries to the app as `provenance.tempoRepairedFrom`. E50's and E57's
+                # did; E59's did not (revised from "every one True"): it removed a printed quarter = 96 and kept the
+                # sound, so the old file played the tempo the new one plays.
+                self.assertIs(one["tempoChanged"], not one["change"].startswith("E59 "))
+                if one["change"].startswith("E59 "):
+                    # The one change E59 makes, and nothing else: the restore lines put the printed mark back where the
+                    # sound-only default's empty words stand.
+                    self.assertEqual(len(one["restore"]), 1)
+                    hunk = one["restore"][0]
+                    self.assertEqual((hunk["now"].count("<words />"), hunk["now"].count("<metronome")), (1, 0))
+                    self.assertEqual((hunk["was"].count("<words />"), hunk["was"].count('<metronome parentheses="no">')), (0, 1))
+                    self.assertIn("<per-minute>96</per-minute>", hunk["was"])
                 if not one["file"].startswith("scores/pdmx/"):
-                    self.assertTrue(one["change"].startswith("E57 "))
+                    self.assertTrue(one["change"].startswith(("E57 ", "E59 ")))
                     pair = [other for other in relations if other["id"] == one["id"]]
                     self.assertEqual(len({other["to"] for other in pair}), 1)
                     self.assertEqual(len({json.dumps(other["restore"]) for other in pair}), 1)
@@ -613,6 +626,8 @@ class TestRepairedIdentities(CacheCase):
                 self.assertEqual(convert.former_identities(score), [one["from"]])
                 if one["id"] in seven:
                     self.assertFalse(row["tempoDefaulted"])
+                # E59: its PDMX rows are exactly the defaulted ones, and the tag stays (the tempo is still the converter's).
+                self.assertEqual(row["tempoDefaulted"], one["change"].startswith("E59 "))
                 # The relation never enters the table of rows: pdmx.json names no former identity.
                 self.assertFalse({"formerIdentities", "repairs", "restore"} & set(row), row["id"])
 

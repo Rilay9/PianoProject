@@ -1620,7 +1620,11 @@ def normalise(score: stream.Score, *, keep_lyrics: bool, tempo_bpm: float | None
         insert_tempo(staves[0], printed[0])
         effective = printed[1]
     else:
-        insert_tempo(staves[0], float(DEFAULT_TEMPO_BPM))
+        # E59: the source states no tempo, so the converter supplies one for the player, as playback truth only.
+        # `numberSounding` is music21's field for a tempo that sounds and is not printed: the file gains the
+        # `<sound tempo>` and no `<metronome>`, which would print a quarter = 96 the edition never states.
+        # `added_tempo` (PDMX's `tempoDefaulted`) still says the tempo is the converter's.
+        insert_tempo(staves[0], tempo.MetronomeMark(numberSounding=DEFAULT_TEMPO_BPM))
         effective = float(DEFAULT_TEMPO_BPM)
         added_tempo = True
         notes.append(f"no tempo in source; added {DEFAULT_TEMPO_BPM} bpm")

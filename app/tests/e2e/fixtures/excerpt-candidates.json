@@ -179,7 +179,7 @@
      },
      "parent": {
       "file": "scores/pdmx/QmZzbCrrGH19zjfe766mDvw9C1cXYXSa5ApF7MRnRhpqjL.mxl",
-      "sha256": "c64c189e8d78cfae168e6b978fbbbec28582229f6d13377aa540f09eb5c7c514",
+      "sha256": "9b24851973be44d51b23296f41010bf755eb007b26b3b2e5f47c7588dd4b03c2",
       "bars": 32,
       "staves": 2,
       "level": 5.23,
@@ -227,7 +227,7 @@
        "license": "cc-zero",
        "pd_region": "worldwide",
        "fetchedAt": null,
-       "checksum": "c64c189e8d78cfae168e6b978fbbbec28582229f6d13377aa540f09eb5c7c514",
+       "checksum": "9b24851973be44d51b23296f41010bf755eb007b26b3b2e5f47c7588dd4b03c2",
        "editionNotes": "Quarried from PDMX and normalised by tools/content/convert.py. Composition status: pd — Menuet BWV Anh.113"
       }
      },
