@@ -1,0 +1,9 @@
+relations, rebuilt: 3 relation line(s) dropped from repaired_identities.json (saved 40bb328346f1)
+   mutated file: 106 repairs; none of the three rows': True
+   rebuild into build/e57a/content-mutant: powershell exit 0, build exit 0
+   repaired_identities.json put back byte for byte: True
+   song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx: final build formerIdentities ['06d3ed364775'], tempoRepairedFrom ['06d3ed364775']; mutant build formerIdentities [], tempoRepairedFrom []; identity f5d8fed0bb86 both: caught
+   song.pop.takeru-kanazaki-fire-emblem-three-houses-apex-of-the-world.pdmx: final build formerIdentities ['356737a36694'], tempoRepairedFrom ['356737a36694']; mutant build formerIdentities [], tempoRepairedFrom []; identity d069d41ce874 both: caught
+   song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx: final build formerIdentities ['673e6134bb2c'], tempoRepairedFrom ['673e6134bb2c']; mutant build formerIdentities [], tempoRepairedFrom []; identity e72561d66d7e both: caught
+   every other row's provenance equal between the two builds: True (0 differ)
+3 of 3 caught; file restored True; every other row unmoved True
