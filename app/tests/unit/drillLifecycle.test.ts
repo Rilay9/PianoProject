@@ -1248,6 +1248,203 @@ describe('the held rhythm card’s one way back while its sound is paused: the c
   });
 });
 
+// --- X45: a rhythm card's first open ----------------------------------------------------
+
+const { audioEngine } = await import('../../src/app/services');
+
+/**
+ * X45 (the reviewer's ruling, `responses/1a89de52.md`): CL05b's rule one edge
+ * earlier. No judged rhythm timing against an inaudible or unestablished
+ * pulse, on a card's first open as on its return: from the moment it opens
+ * until its sound is actually running the card judges nothing, and says so
+ * with CL05b's paused card where the sound is not running; then its ordinary
+ * count-in plays. Nothing was played before, so there is nothing to re-anchor.
+ * With no Web Audio it carries on at once, as it always has — the CL05b case
+ * above, which already opens its card with none.
+ */
+describe('a rhythm card’s first open judges nothing until its sound is running, then counts in as it always has (X45)', () => {
+  const SOUND_PAUSED = 'Sound is paused — tap to continue.';
+
+  /**
+   * Taps where the card's first four onsets fall on the grid the drill holds
+   * from the moment it opened, before any count has named a downbeat — the
+   * taps a card that judged before its pulse would score.
+   */
+  async function tapTheOpenGrid(live: LiveRhythm): Promise<void> {
+    const opened = live.startedAt as number;
+    for (let onset = 0; onset < 4; onset += 1) {
+      await play(Math.max(0, Math.round(opened + onset * 500 - performance.now())));
+      press(60);
+    }
+  }
+
+  /** The paused card, as CL05b's return shows it: the sentence, and the card a keyboard-reachable button. */
+  function expectPaused(): void {
+    expect.soft(text('drill-status'), 'the held card does not say the sound is paused').toBe(SOUND_PAUSED);
+    expect.soft(stageEl().getAttribute('role'), 'the card is not an activation target').toBe('button');
+    expect.soft(stageEl().getAttribute('tabindex'), 'the card cannot be reached from the keyboard').toBe('0');
+    expect.soft(stageEl().getAttribute('aria-label'), 'the card does not say what it does').toBe(SOUND_PAUSED);
+  }
+
+  /** The pause is over: the sentence gone, the card no longer a button. */
+  function expectNotPaused(): void {
+    expect.soft(text('drill-status'), 'the sentence stayed after the sound ran').not.toBe(SOUND_PAUSED);
+    expect.soft(stageEl().hasAttribute('role'), 'the card is still a target after the sound ran').toBe(false);
+    expect.soft(stageEl().hasAttribute('tabindex'), 'the card is still in the keyboard order after the sound ran').toBe(false);
+  }
+
+  /**
+   * The card's ordinary first count, as it plays with the sound running: one
+   * bar of clicks a beat apart with the downbeat a beat after the last, a hand
+   * finding its place during it a stray, and the first tap on the downbeat
+   * the pattern's start and its first judged onset.
+   */
+  async function countsInFromTheTop(live: LiveRhythm): Promise<void> {
+    await until(() => text('drill-status') === 'Count-in — 1', 'the count-in began from its first click');
+    press(60);
+    expect(live.firstTapAt, 'a stray during the count started the rhythm').toBeNull();
+    expect(live.result().answered, 'a stray during the count was judged').toBe(0);
+    await until(() => text('drill-status').startsWith('Tap the rhythm'), 'the count-in reached bar 1');
+    const downbeat = live.startedAt as number;
+    const count = heardSince(downbeat - 2_100).filter((at) => at < downbeat - 1);
+    expect.soft(gaps(count), 'the count-in is not a bar of clicks a beat apart').toEqual([500, 500, 500]);
+    expect.soft(count[3] ?? 0, 'the downbeat is not a beat after the count’s last click').toBeCloseTo(downbeat - 500, 0);
+    await play(Math.max(0, Math.round((live.startedAt as number) - performance.now())));
+    const tapAt = performance.now();
+    press(60);
+    expect(live.firstTapAt, 'the first tap after the count did not start the pattern').toBe(tapAt);
+    expect(live.result().answers[0]?.correct, 'the first tap after the count is not the first judged onset').toBe(true);
+    expect(live.result().answered).toBe(1);
+  }
+
+  it('Part A, the start never answers: no tap is judged against the moment the card opened, and once the start answers the ordinary count-in leads to the first judged onset', async () => {
+    const start = vi.spyOn(Metronome.prototype, 'start');
+    // The start the card asks for as it opens never answers.
+    audio.holdStarts = true;
+    const live = await openRhythm();
+    await tapTheOpenGrid(live);
+    // Past the start's one-second bound, and still nothing.
+    await play(1_500);
+    press(60);
+    midiKey(62);
+    expect.soft(live.result().answered, 'a tap was judged against the moment the card opened').toBe(0);
+    expect.soft(live.firstTapAt, 'a tap was the first onset with the start unanswered').toBeNull();
+    expect.soft(start, 'the count began with the start unanswered').not.toHaveBeenCalled();
+    releaseStarts();
+    await flush();
+    expect(start, 'the count did not begin once the start answered').toHaveBeenCalledTimes(1);
+    await countsInFromTheTop(live);
+  });
+
+  it('Part A with the sound suspended: the card says the sound is paused and is the way back, judges nothing against the moment it opened, and counts in from the top once the sound runs', async () => {
+    const start = vi.spyOn(Metronome.prototype, 'start');
+    // An unanswered start as the real engine meets one: the context not running.
+    suspendAudio();
+    audio.holdStarts = true;
+    const live = await openRhythm();
+    expectPaused();
+    await tapTheOpenGrid(live);
+    await play(1_500);
+    press(60);
+    midiKey(62);
+    expect.soft(live.result().answered, 'a tap was judged against the moment the card opened').toBe(0);
+    expect.soft(live.firstTapAt, 'a tap was the first onset with the start unanswered').toBeNull();
+    expect.soft(start, 'the count began with the sound suspended').not.toHaveBeenCalled();
+    expectPaused();
+    resumeAudio();
+    releaseStarts();
+    await flush();
+    expectNotPaused();
+    expect(start, 'the count did not begin once the sound ran').toHaveBeenCalledTimes(1);
+    await countsInFromTheTop(live);
+  });
+
+  it('Part B, the start answers with the sound still suspended: no count-in on a standing clock and no tap taken, the card says so; the sound coming back by itself counts in, with no tap needed', async () => {
+    const start = vi.spyOn(Metronome.prototype, 'start');
+    suspendAudio();
+    const live = await openRhythm();
+    expectPaused();
+    // Well past where a four-click count-in would have ended, had it played.
+    for (let i = 0; i < 8; i += 1) {
+      await play(500);
+      press(60);
+    }
+    expect.soft(text('drill-status'), 'a count-in began on a standing clock').not.toMatch(/^Count-in/);
+    expect.soft(start, 'a count-in was begun with the sound suspended').not.toHaveBeenCalled();
+    expect.soft(live.result().answered, 'a tap was judged with the sound suspended').toBe(0);
+    expect.soft(live.firstTapAt, 'a tap was the first onset with the sound suspended').toBeNull();
+    expectPaused();
+    // The platform's sound comes back on its own: no gesture, no tap.
+    resumeAudio();
+    await flush();
+    expectNotPaused();
+    expect(start, 'the count did not begin once the sound ran').toHaveBeenCalledTimes(1);
+    await countsInFromTheTop(live);
+  });
+
+  it('Part C, where only a tap can start the sound: a key asks for nothing, a tap on the paused card asks once, inside the tap; the ordinary count-in follows and the first tap after it is the first judged onset', async () => {
+    suspendAudio();
+    audio.wakesOnGesture = true;
+    const live = await openRhythm();
+    await play(2_000);
+    expectPaused();
+    // A key on the strip, even as a tap, is the answer the learner means next: never the way back.
+    gesture(() => press(60));
+    expect.soft(audio.engineState, 'a key woke the sound').toBe('suspended');
+    expect.soft(live.result().answered, 'a key was judged with the sound paused').toBe(0);
+    // Every start asked for from here: inside a gesture or not, and with the sound running or not.
+    const asks: { inGesture: boolean; running: boolean }[] = [];
+    const ask = audioEngine.ensureStarted.bind(audioEngine);
+    vi.spyOn(audioEngine, 'ensureStarted').mockImplementation(() => {
+      asks.push({ inGesture: audio.inGesture, running: audio.engineState === 'running' });
+      return ask();
+    });
+    gesture(() => stageEl().click());
+    expect
+      .soft(
+        asks.filter((asked) => !asked.running),
+        'the tap did not ask for the sound, once, inside itself',
+      )
+      .toEqual([{ inGesture: true, running: false }]);
+    await flush();
+    expect.soft(audio.engineState, 'the tap did not wake the sound').toBe('running');
+    expectNotPaused();
+    // The card is no longer the way back: a second tap on it asks for nothing.
+    const asked = asks.length;
+    gesture(() => stageEl().click());
+    expect.soft(asks.length, 'a tap after the sound ran asked for it again').toBe(asked);
+    await countsInFromTheTop(live);
+  });
+
+  it('“Again” opens its card the same way: held while the sound is suspended, hidden during the wait and back, it counts in from the top and its first tap starts the pattern', async () => {
+    const first = await openRhythm();
+    // The first card's count names its downbeat, and the set is ended there.
+    await until(() => text('drill-status').startsWith('Tap the rhythm'), 'the first card’s count reached bar 1');
+    click('drill-next');
+    suspendAudio();
+    const next = vi.spyOn(RhythmDrill.prototype, 'next');
+    click('drill-again');
+    await flush();
+    const live = next.mock.contexts.at(-1) as LiveRhythm | undefined;
+    expect(live, '“Again” opened no new card').toBeInstanceOf(RhythmDrill);
+    expect(live).not.toBe(first);
+    const again = live as LiveRhythm;
+    expectPaused();
+    await tapTheOpenGrid(again);
+    expect.soft(again.result().answered, 'a tap was judged against the moment the card opened').toBe(0);
+    setVisibility('hidden');
+    await play(60_000);
+    setVisibility('visible');
+    await flush();
+    expectPaused();
+    await play(1_000);
+    resumeAudio();
+    await flush();
+    expectNotPaused();
+    await countsInFromTheTop(again);
+  });
+});
+
 describe('a card’s time to answer counts no hidden time (CL05a)', () => {
   it('a card hidden for 5 min and answered 400 ms after the return took 1.4 s', async () => {
     const section = await mount(noteFlashItem());
