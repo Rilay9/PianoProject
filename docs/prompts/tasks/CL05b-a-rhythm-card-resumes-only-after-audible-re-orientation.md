@@ -105,9 +105,12 @@ Adjacent problems recorded, never fixed on the spot.
 
 As `operating-procedure.md` §14: the builder's own worktree, cut from origin's head at dispatch (the dispatch message states the sha then, not this brief); `npm ci` in `app/`; `app/public/content` copied read-only from the main checkout if the lane needs it. No commits, pushes, stashes, resets or checkouts, and nothing written in the main checkout or another lane's worktree. Browser tests, only if a mutant survives jsdom, run on this lane's own port under the worktree's `app/build/cl05b/` — never port 4173. Temp files under the worktree's own `build/`; no kept log over 300 KB; machine paths in kept files replaced by `<worktree>` and `<home>`. At the end: delete `app/dist`, `app/test-results`, the copied content and any config copy; `app/node_modules` stays until the orchestrator removes the worktree. Never name an AI model; never assert a number measured on this machine as general. Every item done, or an explicit not-done line; a premise found wrong here is said, and the better path taken.
 
+**Landed 2026-10-01** (Entry 196; 1a89de52, merged ed196281); handoff `handoffs/1a89de52.md`.
+
 ## Record
 
 lane: CL05b · closes: — · entry: 196
 index: CL05a's required change (`responses/8764c643.md`) closed: a rhythm card returning from a hidden span stays held until sound is actually available, then gives the learner one non-judged count-in, then the held judged grid and its click resume together from the same musical point — answering the two playability questions CL05a's own entry carried open | app | drafted 2026-10-01 (`CL05b-a-rhythm-card-resumes-only-after-audible-re-orientation.md`); Entry 196
 in-flight: drafted 2026-10-01 (`CL05b-a-rhythm-card-resumes-only-after-audible-re-orientation.md`): CL05a's required change — a rhythm card holds past visibility return until sound is confirmed, counts in once without judging it, then resumes the held grid and click together, hidden time still excluded from every timing channel (`responses/8764c643.md`); drafted, dispatched at cc45b3a8 (Entry 196)
 state: dispatched 2026-10-01: dispatched at cc45b3a8, building (Entry 196)
+- landed 2026-10-01: merged ed196281; handoff `handoffs/1a89de52.md`
