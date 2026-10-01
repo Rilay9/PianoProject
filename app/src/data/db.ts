@@ -66,8 +66,19 @@ export const DB_NAME = 'pianopath';
  * sheet. Intention, never a fact about what was met (the encounters and runs)
  * or measured (the evidence); nothing is carried into it from a store already
  * there, so a database from before G1b opens with no project.
+ *
+ * 10 (CL23, L53) adds one index and touches no store: `sessions.byPerformance`,
+ * over a performance run's marker and its date (`performanceMark`, `at`), so
+ * the Progress screen's performances are found however far back they are —
+ * `recentPerformances` walked the dates and gave up after the old cap's 2,200
+ * runs, and the cap had been 25,000 since C1. The marker, not `performance`
+ * itself, because a boolean is not an IndexedDB key: an index on it holds no
+ * row at all. The upgrade marks every performance already stored, in its own
+ * transaction (version 4's pattern), and writes nothing else; `recordRun`
+ * marks every new one (`withPerformanceMark`) and a restored backup is marked
+ * on the way in (`backup.importAll`), which never runs this upgrade.
  */
-export const DB_VERSION = 9;
+export const DB_VERSION = 10;
 
 /**
  * Set in the `settings` store by the version 7 upgrade of a database made
@@ -351,8 +362,14 @@ export interface RunObservation extends RunHeader, Partial<RunMeasures> {
    * when that is the version in force (`evidence/readingState.ts`); a row
    * with another stamp, or none, is refreshed only by `recomputeEvidence`
    * given the played model, which nothing runs yet. Refusals are kept beside
-   * the evidence, citing what they read. No observation field changes for it;
-   * compaction keeps it.
+   * the evidence, citing what they read. No observation field changes for it.
+   * Compaction keeps it, every record and every count, and folds one thing
+   * (CL23, L69): a measured record's per-demand step indexes (`byDemand`'s
+   * `steps`, `wrong` and `unattributed`, `otherDemands`' `steps`), emptied
+   * once the record is proven outside the demand readings' window — its
+   * item's newest five measured records of its skill under its stamp
+   * (`progressStore.compactObservation`). The demand, `n` and `right` stay,
+   * which is all the other readers take.
    */
   evidence?: EvidenceResult[];
   /**
@@ -436,6 +453,13 @@ export interface SessionRow extends RunObservation {
    */
   performance?: boolean;
   /**
+   * `1` on a performance and absent on every other run (CL23, L53): what the
+   * `byPerformance` index keys, beside `at`, because `performance` itself is a
+   * boolean and IndexedDB keys no boolean. Derived from `performance`, never
+   * written on its own (`withPerformanceMark`).
+   */
+  performanceMark?: 1;
+  /**
    * A rhythm-only run (`05` §3a): timing judged, pitches not, so the row is
    * practice but never a pass, and the history can say so.
    */
@@ -458,6 +482,21 @@ export interface SessionRow extends RunObservation {
    * the same version since D1a (`generator`, absent meaning version 1).
    */
   seed?: number;
+}
+
+/**
+ * A session row as the `byPerformance` index needs it (CL23, L53): `performanceMark` present
+ * exactly when `performance` is `true`. The one definition every writer of a row uses — the
+ * version 10 upgrade for the rows already stored, `recordRun` for a new run, `importAll` for a
+ * restored one — so the index finds what the boolean says, whoever wrote the row. A row already
+ * right comes back as it was.
+ */
+export function withPerformanceMark<T extends Pick<SessionRow, 'performance' | 'performanceMark'>>(row: T): T {
+  const performed = row.performance === true;
+  if (performed === (row.performanceMark === 1)) return row;
+  if (performed) return { ...row, performanceMark: 1 };
+  const { performanceMark: _mark, ...rest } = row;
+  return rest as T;
 }
 
 export type ImportKind = 'musicxml' | 'pdf';
@@ -977,7 +1016,7 @@ export interface BookRow {
 interface PianoPathDb extends DBSchema {
   settings: { key: string; value: unknown };
   progress: { key: string; value: ProgressRow };
-  sessions: { key: number; value: SessionRow; indexes: { byItem: string; byDate: string } };
+  sessions: { key: number; value: SessionRow; indexes: { byItem: string; byDate: string; byPerformance: [number, string] } };
   imports: { key: string; value: ImportRow };
   plan: { key: string; value: PlanRow };
   streak: { key: string; value: StreakRow };
@@ -1231,6 +1270,28 @@ function upgrade(
         // carried into it — a passed piece is no project until the learner says so.
         const projects = db.createObjectStore('projects', { keyPath: 'id' });
         projects.createIndex('byItem', 'itemId');
+      }
+      // Guarded on the store, as version 7 is: a test's stand-in for another
+      // tab may have opened a version without making it.
+      if (oldVersion < 10 && db.objectStoreNames.contains('sessions')) {
+        // CL23 (L53): the performances' index, over the marker and the date, so
+        // the newest performance is the index's last entry however many runs
+        // came after it. Every row already stored is read once, here, and only a
+        // performance is written (`withPerformanceMark`): no other row, no key and
+        // no other field changes. A fresh database has nothing to mark.
+        const sessions = tx.objectStore('sessions');
+        if (!sessions.indexNames.contains('byPerformance')) sessions.createIndex('byPerformance', ['performanceMark', 'at']);
+        if (oldVersion >= 1) {
+          void (async () => {
+            let cursor = await sessions.openCursor();
+            while (cursor) {
+              const row = cursor.value;
+              const marked = withPerformanceMark(row);
+              if (marked !== row) await cursor.update(marked);
+              cursor = await cursor.continue();
+            }
+          })();
+        }
       }
 }
 

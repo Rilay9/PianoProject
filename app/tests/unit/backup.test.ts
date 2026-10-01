@@ -17,7 +17,7 @@ import {
   type BackupFile,
 } from '../../src/data/backup';
 import { STORE_NAMES, openDatabase, type LegacySkillRow, type ProgressRow } from '../../src/data/db';
-import { recordRun, resetProgressForTest, type RunResult } from '../../src/data/progressStore';
+import { recentPerformances, recordRun, resetProgressForTest, type RunResult } from '../../src/data/progressStore';
 import { useFakeIndexedDb } from './helpers/idb';
 
 beforeEach(() => {
@@ -418,4 +418,51 @@ describe('an observed run (C1)', () => {
     expect(row).toMatchObject(kept);
     expect(row?.steps?.timing).toBe('not measured');
   });
+});
+
+// Added (CL23, L53): `DB_VERSION` 10 finds a performance by an indexed marker, which the version 10
+// upgrade backfills — and `importAll` never runs the upgrade. A backup exported before version 10
+// carries the boolean alone, so restoring it onto a device already at version 10 would put back
+// performances the index cannot find: L53's symptom, reintroduced by every restore of an old file.
+// The file below is that old shape, with more ordinary runs after the performance than the old
+// 2,200-row walk reached, so the case reads the index and nothing else can stand in for it.
+describe('a performance in a backup written before version 10 (CL23, L53)', () => {
+  const OLD_REACH = 2_200;
+  const performedAt = '2025-02-01T18:00:00.000Z';
+  function oldShapeFile(): BackupFile {
+    const run = (at: string, index: number): Record<string, unknown> => ({
+      id: index + 1,
+      itemId: `drill.scales.${String(index % 5)}`,
+      mode: 'tempo',
+      tempoPct: 100,
+      accuracy: 0.9,
+      accuracyEstimated: false,
+      wrongNotes: 1,
+      missed: 0,
+      durationMs: 60_000,
+      at,
+    });
+    const sessions: Record<string, unknown>[] = [{ ...run(performedAt, 0), itemId: 'song.recital', performance: true }];
+    for (let i = 1; i <= OLD_REACH + 100; i += 1) sessions.push(run(new Date(Date.parse(performedAt) + i * 3_600_000).toISOString(), i));
+    return { app: 'pianopath', version: 1, exportedAt: '2026-09-01T00:00:00.000Z', keys: {}, stores: { sessions } };
+  }
+
+  for (const replace of [true, false]) {
+    it(`is listed after a ${replace ? 'replace' : 'merge'} restore onto a version-10 store, behind more runs than the old walk reached`, async () => {
+      const db = await openDatabase();
+      // The device is already upgraded; a merge restores beside a run of its own.
+      await db?.add('sessions', { itemId: 'song.mine', mode: 'wait', tempoPct: 100, accuracy: 1, accuracyEstimated: false, wrongNotes: 0, missed: 0, durationMs: 60_000, at: '2026-09-04T00:00:00.000Z' });
+      const file = oldShapeFile();
+      expect((file.stores.sessions as Record<string, unknown>[]).some((row) => 'performanceMark' in row), 'the old file already carried the marker').toBe(false);
+
+      await importAll(JSON.parse(JSON.stringify(file)) as unknown, { replace });
+
+      const performed = await recentPerformances(20);
+      expect(performed.map((row) => row.itemId), 'the restored performance was not listed').toEqual(['song.recital']);
+      expect(performed[0]).toMatchObject({ performance: true, performanceMark: 1, at: performedAt });
+      // Only the performance gains the marker on the way in.
+      const marked = ((await db?.getAll('sessions')) ?? []).filter((row) => 'performanceMark' in row);
+      expect(marked.map((row) => row.itemId)).toEqual(['song.recital']);
+    });
+  }
 });

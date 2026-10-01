@@ -20,7 +20,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
-import { openDatabase, type SessionRow } from '../../src/data/db';
+import { openDatabase, withPerformanceMark, type SessionRow } from '../../src/data/db';
 import type { Router } from '../../src/router';
 
 vi.mock('../../src/curriculum/load', () => ({
@@ -50,9 +50,13 @@ function row(itemId: string, partial: Record<string, unknown>): SessionRow {
   };
 }
 
+// Revised (CL23, L53): each row is written as every writer of the store writes it since version 10,
+// a performance with the marker the performances' index keys (`withPerformanceMark`). Old
+// assumption: a stored performance is `performance: true` alone, which the list found by walking
+// every run.
 async function seed(rows: SessionRow[]): Promise<void> {
   const db = await openDatabase();
-  for (const each of rows) await db?.add('sessions', each);
+  for (const each of rows) await db?.add('sessions', withPerformanceMark(each));
 }
 
 async function mount(): Promise<HTMLElement> {

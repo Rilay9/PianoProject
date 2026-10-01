@@ -18,7 +18,17 @@
  * nothing else reads. One dependency-free file that a text editor can open is
  * worth the third.
  */
-import { openDatabase, STORE_NAMES, type ContactSummaryRow, type ImportRow, type ProgressRow, type ProjectRow, type StoreName } from './db';
+import {
+  openDatabase,
+  STORE_NAMES,
+  withPerformanceMark,
+  type ContactSummaryRow,
+  type ImportRow,
+  type ProgressRow,
+  type ProjectRow,
+  type SessionRow,
+  type StoreName,
+} from './db';
 import { importsChanged } from './importStore';
 import { forgetCachedProgress, mergeSummaries } from './progressStore';
 import { forgetCachedPlan } from './planStore';
@@ -298,7 +308,10 @@ export async function importAll(
       } else if (store === 'sessions') {
         // Autoincrement keys collide across devices, so a merged session gets
         // a fresh one rather than overwriting a run that already happened.
-        const session = { ...(row as Record<string, unknown>) };
+        // A performance written before version 10 has no marker, and nothing
+        // here runs that version's upgrade: marked on the way in, or the
+        // performances' index would never find it (CL23, L53).
+        const session = withPerformanceMark({ ...(row as SessionRow) }) as unknown as Record<string, unknown>;
         if (!options.replace) delete session.id;
         await db.put('sessions', session as never);
       } else if (store === 'contacts' && !options.replace) {
