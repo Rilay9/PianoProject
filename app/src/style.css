@@ -6173,6 +6173,46 @@ body:has([data-sound-refused]) .screen--score .score-head .help-strip__now {
   overflow-wrap: anywhere;
 }
 
+/* And the same sentence in the bar's mirror, sideways (U105d, the reviewer's
+   direction on U105c, `responses/842ea210.md`: an actionable refusal may not
+   hide the control's name behind an ellipsis, on this surface as on the
+   header). Sideways the header is not drawn at all, in any state, so
+   `.score-bar__status` is the only copy a learner can read, and it was one
+   line at `28vw` with an ellipsis whatever it said: on a wider face *tap Hear
+   it again* lost *again* there, paused or at rest.
+
+   It wraps, rather than only losing the cap. Lifting `28vw` and keeping the
+   line one line was tried first: at 740 x 342 on the wider face the sentence
+   is longer than everything the row has left beside the six controls and `⋯`,
+   even with the piece's name at nothing, so it ran over ▶. `flex: 0 1 auto`
+   because the landscape rule's `flex: none` holds an item at its one-line
+   width, and an item that never shrinks never wraps; it now gives room with
+   the name, in proportion, instead of the name giving it all. Two lines of the
+   status's size are shorter than the controls beside them, so the bar stays
+   one row (`08` §7.1, a hard constraint) and `--score-bar-h` does not move.
+   Three are not: a row much narrower than 740 on the wider face squeezes the
+   sentence to three lines and the bar grows while it stands, which U105d put
+   to the reviewer rather than solve by cutting the sentence again.
+
+   Balanced, because a row only a little short wrapped the last word alone:
+   *tap ▶* on one line and *again* on the next, where balanced the instruction
+   reads *— tap ▶ again* together.
+
+   Only the refusal: every other line here keeps `.score-bar__status`'s own
+   clamp, the bar's density contract for ordinary status text, and the
+   sentence goes with the mark at the next tap (`withSound`) or once the sound
+   runs (`refusedNow`). */
+body:has([data-sound-refused]) .screen--score .score-bar__status {
+  max-width: none;
+  flex: 0 1 auto;
+  min-width: 0;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
 /* The strip inside the Score screen's header row.
 
    The header is one flex row -- back, the title, the status, the mic meter --

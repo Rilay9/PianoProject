@@ -1811,4 +1811,207 @@ test.describe('▶ after the sound was suspended (U69)', () => {
     expect(after.zoom, 'the sheet was re-engraved as the run carried on').toBeCloseTo(ordinary.zoom, 5);
     expect(after.scale, 'the drawn size moved as the run carried on').toBeCloseTo(ordinary.scale, 5);
   });
+
+  /**
+   * Sideways the bar's mirror says a refusal whole too (U105d, the reviewer's direction on U105c,
+   * `responses/842ea210.md`: "an actionable refusal explanation may not hide the action/control name
+   * behind an ellipsis", on this surface as on the header). Sideways the header is not drawn in any
+   * state, so `#score-status-side`, which mirrors its line, is the one place the learner reads why a
+   * tap did nothing; it was one line at `28vw` with an ellipsis whatever it said, and on the wider face
+   * *Sound did not start — tap Hear it again* and *tap ▶ again* both lost *again* there.
+   *
+   * At 740 × 342 (a phone held sideways at a larger Display size) on the wider face, in a paused Wait
+   * run (frozen, then paused) and at rest with no run: the context suspended with `resume` never
+   * answering, ▶ then `Hear it` refused, each sentence read from the mirror with the bar revealed first
+   * (the mirror fades with the bar three seconds after a tap, and `scrollWidth` cannot see opacity).
+   * Each is whole: no overflow, no ellipsis, the text inside its box, nothing drawn over any of its
+   * lines, in the window. The bar stays one row at its height before the refusal, every control on the
+   * screen and none under the sentence, and the piece's name still drawn. The density contract for
+   * every other line, at the same element: in the paused run the ordinary line, read before the
+   * refusal, is still one line cut with its ellipsis, and once ▶ carries the run on the mirror is back
+   * under the clamp.
+   */
+  for (const where of ['paused', 'at rest'] as const) {
+    test(`a refusal sideways (740 × 342) on a wider face, ${where}: the bar’s mirror says it whole, the bar one row, the ordinary line still cut`, async ({
+      page,
+    }) => {
+      test.setTimeout(120_000);
+      await page.setViewportSize({ width: 740, height: 342 });
+      await page.addInitScript(() => {
+        const Native = window.AudioContext;
+        const made: AudioContext[] = [];
+        (window as Captured).__contexts = made;
+        window.AudioContext = class extends Native {
+          constructor(options?: AudioContextOptions) {
+            super(options);
+            made.push(this);
+          }
+        };
+      });
+      await openScore(page);
+      await page.addStyleTag({ content: WIDER_FACE });
+      const state = (): Promise<string> =>
+        page.evaluate(() => (window as Captured).__contexts?.[0]?.state ?? 'none');
+      await expect.poll(state, { message: 'the app made its context as the piece loaded' }).not.toBe('none');
+      // An ordinary tap on the bar's copy of the title, which is no control.
+      await page.locator('#score-title-side').click({ timeout: 5_000 });
+      await expect.poll(state).toBe('running');
+      const section = page.locator('section[data-screen="score"]');
+      const play = page.locator('#score-play');
+      const mirror = page.locator('#score-status-side');
+      if (where === 'paused') {
+        await page.locator('#score-mode').selectOption('wait');
+        await play.click({ timeout: 5_000 });
+        await expect(section).toHaveAttribute('data-running', 'true');
+        await page.waitForFunction(
+          () => {
+            const w = window as unknown as { __pianopath?: { scoreFit?: () => { frozen: unknown } } };
+            return (w.__pianopath?.scoreFit?.()?.frozen ?? null) !== null;
+          },
+          undefined,
+          { timeout: 30_000 },
+        );
+        await pressControl(page, '#score-play');
+        await expect(play, 'the run did not pause').toHaveText('▶');
+        await expect(mirror).toHaveText(/^Paused/);
+      }
+
+      /** The bar's mirror and the bar around it, read with the bar shown. */
+      const side = async () => {
+        for (let attempt = 0; ; attempt += 1) {
+          await revealBar(page);
+          await expect
+            .poll(() => page.locator('#score-bar').evaluate((bar) => getComputedStyle(bar).opacity), {
+              message: 'the bar did not come back to be read',
+            })
+            .toBe('1');
+          const seen = await page.evaluate(() => {
+            type Box = { left: number; top: number; right: number; bottom: number };
+            const boxOf = (el: Element): Box | null => {
+              const r = el.getBoundingClientRect();
+              return r.width === 0 && r.height === 0 ? null : { left: r.left, top: r.top, right: r.right, bottom: r.bottom };
+            };
+            const meet = (a: Box, b: Box): boolean =>
+              a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5;
+            const bar = document.querySelector<HTMLElement>('#score-bar')!;
+            const node = document.querySelector<HTMLElement>('#score-status-side')!;
+            const r = node.getBoundingClientRect();
+            const range = document.createRange();
+            range.selectNodeContents(node);
+            const text = range.getBoundingClientRect();
+            const lines = [...range.getClientRects()].filter((piece) => piece.width > 0);
+            // Hit-testing across every line of the sentence: what is drawn at its two ends and its middle.
+            const clear =
+              lines.length > 0 &&
+              lines.every((piece) => {
+                const y = piece.top + piece.height / 2;
+                return [piece.left + 2, (piece.left + piece.right) / 2, piece.right - 2].every((x) => {
+                  const top = document.elementFromPoint(x, y);
+                  return top !== null && (top === node || node.contains(top));
+                });
+              });
+            const own = { left: r.left, top: r.top, right: r.right, bottom: r.bottom };
+            // Every control drawn on the bar, Back at its left end included.
+            const controls = [...bar.querySelectorAll('button, select, .score-tempo-label')]
+              .map((el) => ({ id: el.id, box: boxOf(el) }))
+              .filter((c): c is { id: string; box: Box } => c.box !== null);
+            const rows = new Set(
+              [...bar.children]
+                .filter((child) => child.getBoundingClientRect().height > 0)
+                .map((child) => Math.round(child.getBoundingClientRect().top)),
+            );
+            return {
+              shown: bar.dataset.visible === 'true' && getComputedStyle(bar).opacity === '1',
+              text: node.textContent ?? '',
+              scrollWidth: node.scrollWidth,
+              clientWidth: node.clientWidth,
+              textInside: text.left >= r.left - 0.5 && text.right <= r.right + 0.5,
+              ellipsis: getComputedStyle(node).textOverflow === 'ellipsis',
+              clear,
+              inWindow:
+                r.width > 1 && r.height > 1 && r.top >= 0 && r.left >= 0 && r.bottom <= window.innerHeight && r.right <= window.innerWidth,
+              overControls: controls.filter((c) => meet(own, c.box)).map((c) => c.id),
+              offScreen: controls.filter((c) => c.box.left < -0.5 || c.box.right > window.innerWidth + 0.5).map((c) => c.id),
+              rows: rows.size,
+              bar: bar.getBoundingClientRect().height,
+              barScroll: bar.scrollHeight,
+              title: document.querySelector('#score-title-side')!.getBoundingClientRect().width,
+            };
+          });
+          if (seen.shown || attempt >= 1) return seen;
+        }
+      };
+
+      const ordinary = await side();
+      expect(ordinary.shown, 'the bar is not shown to measure').toBe(true);
+      expect(ordinary.bar, 'the bar has a height to compare against').toBeGreaterThan(0);
+      expect(ordinary.rows, 'the bar is not one row before the refusal').toBe(1);
+      if (where === 'paused') {
+        // The density contract (the reviewer's words: "preserve the bar's density contract for ordinary
+        // status text"): the paused line, at the same element in the same run, is still one line cut.
+        expect.soft(ordinary.scrollWidth, 'the paused line fits here, so its cut is not tested').toBeGreaterThan(ordinary.clientWidth);
+        expect.soft(ordinary.ellipsis, 'the paused line is no longer cut with an ellipsis').toBe(true);
+      }
+
+      await page.evaluate(async () => {
+        const ctx = (window as Captured).__contexts?.[0];
+        await ctx?.suspend();
+        // An own property over the prototype's: removed below, the real `resume` answers again.
+        if (ctx) ctx.resume = () => new Promise<void>(() => undefined);
+      });
+      await expect.poll(state).toBe('suspended');
+
+      /** Taps a control with the sound's start never answering, and reads its refusal in the bar's mirror. */
+      const refusedTap = async (id: string, sentence: string): Promise<void> => {
+        await pressAnywhere(page, id);
+        // Past the bound: the sentence is what says the wait is over (polled, no fixed sleep).
+        await expect(mirror, `the bar’s mirror after ${id}’s bound`).toHaveText(sentence, { timeout: 10_000 });
+        await expect(page.locator(id)).toHaveAttribute('data-sound-refused', 'true');
+        await expect(section, `${id}’s refused tap began a demonstration`).toHaveAttribute('data-hearing', 'false');
+        if (where === 'paused') {
+          await expect(section, `${id}’s refused tap ended the run`).toHaveAttribute('data-running', 'true');
+          await expect(play, `${id}’s refused tap carried the run on`).toHaveText('▶');
+        } else {
+          await expect(section, `${id}’s refused tap started a run`).not.toHaveAttribute('data-running', 'true');
+        }
+        const seen = await side();
+        expect(seen.shown, 'the bar is not shown to measure').toBe(true);
+        expect(seen.text).toBe(sentence);
+        // Soft, so a red run names every fact that failed, not only the first.
+        expect.soft(seen.scrollWidth, `${id}: the sentence overflows the mirror`).toBeLessThanOrEqual(seen.clientWidth);
+        expect.soft(seen.textInside, `${id}: the sentence runs outside the mirror`).toBe(true);
+        expect.soft(seen.ellipsis, `${id}: the mirror cuts with an ellipsis`).toBe(false);
+        expect.soft(seen.clear, `${id}: something is drawn over the sentence`).toBe(true);
+        expect.soft(seen.inWindow, `${id}: the sentence is off the screen`).toBe(true);
+        expect.soft(seen.overControls, `${id}: the sentence is over a control`).toEqual([]);
+        expect.soft(seen.offScreen, `${id}: a control was pushed off the screen`).toEqual([]);
+        // One row (`08` §7.1, a hard constraint): the bar's height and content as they were before the refusal.
+        expect.soft(seen.rows, `${id}: the bar went to a second row`).toBe(1);
+        expect.soft(seen.bar, `${id}: the bar grew under the refusal`).toBeCloseTo(ordinary.bar, 0);
+        expect.soft(seen.barScroll, `${id}: the bar’s content grew under the refusal`).toBe(ordinary.barScroll);
+        expect.soft(seen.title, `${id}: the piece’s name is gone from the bar`).toBeGreaterThan(0);
+      };
+
+      // `STATE_TEXT.soundOff` in `help.ts`, as `help.test.ts` joins them to `04` §5f.
+      await refusedTap('#score-play', 'Sound did not start — tap ▶ again');
+      await refusedTap('#score-hear', 'Sound did not start — tap Hear it again');
+      expect(test.info().errors.length, 'the refusal is not whole in the bar, or the bar is not one row').toBe(0);
+
+      if (where === 'paused') {
+        // The exception is keyed on the refusal, not on the run: the sound answers, ▶ carries the run on,
+        // and the mirror's line is back under the clamp.
+        await page.evaluate(() => {
+          const ctx = (window as Captured).__contexts?.[0];
+          if (ctx) Reflect.deleteProperty(ctx, 'resume');
+        });
+        await pressControl(page, '#score-play');
+        await expect.poll(state, { message: 'the context after the last ▶', timeout: 10_000 }).toBe('running');
+        await expect(play, 'the run did not carry on').toHaveText('⏸');
+        await expect(mirror).not.toHaveText(/Sound did not start/);
+        const after = await side();
+        expect(after.ellipsis, 'the mirror kept the refusal’s exception once the refusal went').toBe(true);
+        expect(after.bar, 'the bar carried the run on at another height').toBeCloseTo(ordinary.bar, 0);
+      }
+    });
+  }
 });

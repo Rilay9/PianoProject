@@ -1,0 +1,7 @@
+== paused / wider-face / h2-noflex
+  ordinary     bar h=52.19 scrollH=51 rows=1 | status 471/207 inside=False ellipsis=True lines=1 h=17 w=207.19 | title w=7.56 (of 123) | left 0..353.25 | rightmost=740 of 740 | over=[] hitsNotSelf=['button#score-play.score-button', 'span#score-tempo-label.score-tempo-label'] stash=[] hands=True | vis=true op=1 running=true marks=[]
+               text='Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning.'
+  #score-play  bar h=52.19 scrollH=51 rows=1 | status 222/222 inside=True ellipsis=False lines=1 h=17 w=221.97 | title w=0 (of 123) | left 0..353.25 | rightmost=740 of 740 | over=['score-play'] hitsNotSelf=[] stash=[] hands=True | vis=true op=1 running=true marks=['score-play']
+               text='Sound did not start — tap ▶ again'
+  #score-hear  bar h=52.19 scrollH=51 rows=1 | status 254/254 inside=True ellipsis=False lines=1 h=16 w=254.41 | title w=0 (of 123) | left 0..353.25 | rightmost=740 of 740 | over=['score-play'] hitsNotSelf=[] stash=[] hands=True | vis=true op=1 running=true marks=['score-hear']
+               text='Sound did not start — tap Hear it again'

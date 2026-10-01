@@ -1,0 +1,14 @@
+== rest / wider-face / base
+  ordinary     bar h=52.19 scrollH=51 rows=1 | status 0/0 inside=False ellipsis=True lines=0 h=0 w=0 | title w=122.94 (of 123) | left 0..261.44 | rightmost=667 of 667 | over=[] hitsNotSelf=[] stash=[] hands=True | vis=true op=1 running=false marks=[]
+               text=''
+  #score-play  bar h=52.19 scrollH=51 rows=1 | status 222/187 inside=False ellipsis=True lines=1 h=17 w=186.75 | title w=0 (of 123) | left 0..280.25 | rightmost=667 of 667 | over=['score-play'] hitsNotSelf=['button#score-hear.score-button'] stash=[] hands=True | vis=true op=1 running=false marks=['score-play']
+               text='Sound did not start — tap ▶ again'
+  #score-hear  bar h=52.19 scrollH=51 rows=1 | status 254/187 inside=False ellipsis=True lines=1 h=16 w=186.75 | title w=0 (of 123) | left 0..280.25 | rightmost=667 of 667 | over=['score-play'] hitsNotSelf=['select#score-mode.score-select'] stash=[] hands=True | vis=true op=1 running=false marks=['score-hear']
+               text='Sound did not start — tap Hear it again'
+== rest / wider-face / h2
+  ordinary     bar h=52.19 scrollH=51 rows=1 | status 0/0 inside=False ellipsis=True lines=0 h=0 w=0 | title w=122.94 (of 123) | left 0..261.44 | rightmost=667 of 667 | over=[] hitsNotSelf=[] stash=[] hands=True | vis=true op=1 running=false marks=[]
+               text=''
+  #score-play  bar h=61.19 scrollH=60 rows=2 | status 91/91 inside=True ellipsis=False lines=3 h=49 w=91.22 | title w=50.53 (of 123) | left 0..280.25 | rightmost=667 of 667 | over=[] hitsNotSelf=[] stash=[] hands=True | vis=true op=1 running=false marks=['score-play']
+               text='Sound did not start — tap ▶ again'
+  #score-hear  bar h=60.19 scrollH=59 rows=2 | status 96/96 inside=True ellipsis=False lines=3 h=48 w=95.56 | title w=46.19 (of 123) | left 0..280.25 | rightmost=667 of 667 | over=[] hitsNotSelf=[] stash=[] hands=True | vis=true op=1 running=false marks=['score-hear']
+               text='Sound did not start — tap Hear it again'
