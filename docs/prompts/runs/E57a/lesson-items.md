@@ -1,0 +1,20 @@
+- **`content/lessons/chords-pop.9.md`:31 → :31** (docs/review/responses/ca8508ed.md §1).
+  - Before: *Piano Man* and *Falling* are ballads where the left hand decides everything; *Mr. Blue Sky* and *Le Festin* are full textures to thin out, and the fastest by their printed tempos, where an arrangement has to leave something out to stay playable; *Rolling Girl* and *Apex of the World* complete the six.
+  - After: *Piano Man* and *Falling* are ballads where the left hand decides everything; *Mr. Blue Sky* and *Le Festin* are full textures to thin out, where an arrangement has to leave something out to stay playable; *Rolling Girl* and *Apex of the World* complete the six.
+  - Why: the ranking was false once the three files land: Apex prints quarter = 178 from bar 9 and Piano Man 160 from bar 3, above Le Festin's 150 and level with Mr. Blue Sky's 160; the response removes the ranking rather than replacing it.
+- **`content/lessons/rock.7.md`:18 → :18** (docs/review/responses/questions-13e1b1a8.md).
+  - Before: **There are three ways to grow and volume is the least of them.**
+  - After: **There are three ways to make the sound grow without changing tempo, and volume is the least of them.**
+  - Why: the absolute "three ways to grow" became too broad beside the corrected Grieg copy, which also grows by a written tempo change; the three are scoped to growth without changing tempo (the reviewer's ruling on the second read's question).
+- **`content/lessons/rock.7.md`:46 → :46** (docs/review/responses/questions-13e1b1a8.md (replacing docs/review/responses/ca8508ed.md §1's first wording)).
+  - Before: Grieg's *In the Hall of the Mountain King* is the most literal — one sixteen-bar idea repeated while the register widens under a crescendo marked again and again (this copy asks for no speeding up, and the app keeps one tempo),
+  - After: Grieg's *In the Hall of the Mountain King* is the most literal — one sixteen-bar idea repeated while the register widens under a crescendo marked again and again; this copy also changes tempo: it opens at quarter = 138, drops to 80, then rises toward 200, and the app follows those written changes.
+  - Why: the parenthetical was true only because the converter dropped the upload's later marks; the re-converted file opens at quarter = 138, drops to 80 at bar 6 and rises to 200 at bar 74, and the app's reader plays those marks. The approved sentence ends with a full stop where the old sentence went on ", and it teaches restraint …" (the next item).
+- **`content/lessons/rock.7.md`:49 → :49** (docs/review/second-reads/cc45b3a8.md item 4 (relayed by the orchestrator)).
+  - Before: and it teaches restraint better than anything else here because the first half must stay small.
+  - After: The piece teaches restraint better than anything else here because the first half must stay small.
+  - Why: the clause becomes its own sentence once the approved Grieg sentence ends before it, and "It" would then refer back to "the app", the last noun before it; the pronoun is replaced by its referent, the piece, and the clause's other words are unchanged.
+- **`content/lessons/rock.7.md`:61 → :61** (docs/review/responses/ca8508ed.md §1).
+  - Before: **Common mistake.** Speeding up to build. Tempo and volume are separate controls and tying them together means you cannot use either one on its own, which is a problem the moment the music asks you to get louder and hold the pulse.
+  - After: **Common mistake.** Speeding up just because the passage gets louder. Tempo and volume are separate controls: follow an accelerando when the score writes one, and otherwise keep the pulse.
+  - Why: "Speeding up to build" read as calling any accelerando a mistake, beside a featured copy that writes one; narrowed to the teaching point.

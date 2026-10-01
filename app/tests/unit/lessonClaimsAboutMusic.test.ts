@@ -1807,6 +1807,8 @@ describe('the 2026-09-19 lesson corrections, second-read and under test: the mus
 // can append its own without touching anything here. ES modules hoist their
 // imports, so this reads exactly as one at the top of the file would.
 import { mxlToMusicXml } from '../../src/score/mxl';
+// E57a (Entry 195): rock.7's Grieg row reads the tempo the way the app does.
+import { tempoEvents } from '../../src/score/tempoFromXml';
 
 /**
  * T12, second run: the batch-4 and batch-5 corrections second-read on
@@ -2553,18 +2555,30 @@ const T12B_MUSIC: [string, string, () => boolean][] = [
       }),
   ],
   [
+    // E57a (Entry 195): E57's converter keeps the upload's later tempo marks, so this copy no longer states one tempo;
+    // the sentence was corrected to say what it writes (docs/review/responses/ca8508ed.md §1, amended by
+    // questions-13e1b1a8.md), and the row reads it through the app's own tempo reader, the one the engine's map is
+    // placed from: the opening, the drop, then a rise that never falls and ends at 200.
     'rock.7',
-    'In the Hall of the Mountain King states one tempo, marks a crescendo in six different bars, and asks nowhere to speed up',
+    'In the Hall of the Mountain King marks a crescendo in six different bars, and this copy opens at quarter = 138, drops to 80, then rises toward 200, which the app follows',
     () => {
       const id = 'song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx';
       const words = t12bWords(id);
       const crescBars = new Set(
         words.filter((word) => /cresc/i.test(word.text)).map((word) => word.bar),
       );
+      const events = tempoEvents(t12Xml(id));
+      const bpms = events.map((event) => event.bpm);
+      const rise = bpms.slice(1);
       return (
-        t12Count(id, /<sound[^>]*tempo="/g) === 1 &&
         crescBars.size === 6 &&
-        !/accel|stretto|piu mosso|più mosso|rit\./i.test(t12Xml(id))
+        events[0]?.measure === 0 &&
+        events[0]?.offset === 0 &&
+        bpms[0] === 138 &&
+        bpms[1] === 80 &&
+        rise.length > 2 &&
+        rise.every((bpm, at) => at === 0 || bpm >= (rise[at - 1] ?? Infinity)) &&
+        rise[rise.length - 1] === 200
       );
     },
   ],
@@ -2684,21 +2698,6 @@ const T12B_MUSIC: [string, string, () => boolean][] = [
     () => {
       const songs = t12Songs('chords-pop.9');
       return songs.length === 6 && songs.every((id) => t12Notation(id).chordCount === 0);
-    },
-  ],
-  [
-    'chords-pop.9',
-    "Mr. Blue Sky and Le Festin carry the rung's two highest printed tempos, and Rolling Girl's is a default rather than a printed one",
-    () => {
-      const rows = t12Songs('chords-pop.9').map((id) => ({ id, ...t12bRow(id) }));
-      const ranked = [...rows].sort((a, b) => (b.tempoBpm ?? 0) - (a.tempoBpm ?? 0));
-      const rolling = rows.find((row) => row.id.includes('rolling-girl'));
-      return (
-        rows.length === 6 &&
-        (ranked[0]?.id ?? '').includes('mr-blue-sky') &&
-        (ranked[1]?.id ?? '').includes('le-festin') &&
-        (rolling?.tags ?? []).includes('tempo-defaulted')
-      );
     },
   ],
 ];

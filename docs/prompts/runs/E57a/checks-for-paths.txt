@@ -1,0 +1,22 @@
+# checks for 11 path(s): 11 matched, 0 unmatched
+# content/lessons/rock.7.md: content/**, content/lessons/**
+# content/lessons/chords-pop.9.md: content/**, content/lessons/**
+# content/sources/pdmx.json: content/**, content/sources/**
+# content/scores/pdmx/QmXXdTmXQW5jKbHEHgHuZFuW57wNrtApiba8WidW76APCp.mxl: content/**, content/scores/**
+# content/scores/pdmx/QmRx7Xqghks9vBikJpNFbaq6QKzkKghiePNRLvkGsUkZy7.mxl: content/**, content/scores/**
+# content/scores/pdmx/QmWpzkuQx23WPUoU1Lvta6hJtK7ccBjeSwL1ATyJ47UUMU.mxl: content/**, content/scores/**
+# tools/content/repaired_identities.json: tools/content/*.json
+# app/tests/unit/lessonClaimsAboutMusic.test.ts: app/tests/unit/*.test.ts
+# docs/prompts/runs/E57a/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+# docs/prompts/runs/E57a/scripts-mutants.py: docs/**
+# docs/prompts/runs/E57a/scripts-reader.table.ts: docs/**
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/lesson-flow.spec.ts tests/e2e/lesson-tools.spec.ts tests/e2e/library.spec.ts tests/e2e/plan.spec.ts tests/e2e/side-panel-prose.spec.ts tests/e2e/start-and-return.spec.ts --workers=4

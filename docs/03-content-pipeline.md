@@ -1041,6 +1041,11 @@ before the rungs were cut to a few chosen pieces each — `02` Part A item 5, 20
 offers six songs and nine exercises in the built curriculum.)* `ragtime.6` is the one real
 outlier in the corpus: at six minutes it reads about two and a half times the length of the
 median lesson and more than half again the length of `classical.6`, the next longest.
+*(E57a, Entry 195: a third lesson is named there, `rock.7`, at 603 words, three past the
+line. The reviewer's approved tempo sentences, written once its featured Grieg copy's tempo
+marks were kept, put it there. It is held as a named exception with `readingTime: 4` rather
+than cutting taught words outside those sentences; whether to cut three words instead is
+with the reviewer.)*
 
 ### 6a. Drill tips (`content/tips/<kind>.md`, P17)
 

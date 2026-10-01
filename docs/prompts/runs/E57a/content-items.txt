@@ -1,0 +1,30 @@
+E57a content items: 3 moved file(s), read from the two builds and the app's reader
+3 files; tempo directions added: 29 printed metronome marks (drawn by no learner surface), 0 sound-only (heard), 0 with no readable tempo
+
+== song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx (In the Hall of the Mountain King (Peer Gynt)) [pdmx]
+   where: `content/scores/pdmx/QmXXdTmXQW5jKbHEHgHuZFuW57wNrtApiba8WidW76APCp.mxl` and `content/sources/pdmx.json` row `song.classical.grieg-in-the-hall-of-the-mountain-king.pdmx` (`convertedSha256`); re-converted from the raw upload
+   what: 21 tempo direction(s) the source states after its first now kept: 21 printed metronome mark(s) (in the file, read by the tempo reader; drawn by no learner surface), 0 sound-only (heard), 0 with no readable tempo (empty words).
+   tempo directions before (1): ['1:quarter=138/sound 138']
+   tempo directions after (22): ['1:quarter=138/sound 138', '6:quarter=80/sound 80', '10:quarter=85/sound 85', '14:quarter=90/sound 90', '16:quarter=95/sound 95', '18:quarter=110/sound 110', '20:quarter=115/sound 115', '22:quarter=120/sound 120', '26:quarter=130/sound 130', '30:quarter=135/sound 135', '34:quarter=140/sound 140', '38:quarter=145/sound 145', '42:quarter=155/sound 155', '46:quarter=160/sound 160', '48:quarter=165/sound 165', '50:quarter=170/sound 170', '54:quarter=175/sound 175', '58:quarter=180/sound 180', '62:quarter=185/sound 185', '66:quarter=190/sound 190', '70:quarter=195/sound 195', '74:quarter=200/sound 200']
+   the app's reader before (1): 0:0 138
+   the app's reader after (22): 0:0 138, 5:0 80, 9:0 85, 13:0 90, 15:0 95, 17:0 110, 19:0 115, 21:0 120, 25:0 130, 29:0 135, 33:0 140, 37:0 145, 41:0 155, 45:0 160, 47:0 165, 49:0 170, 53:0 175, 57:0 180, 61:0 185, 65:0 190, 69:0 195, 73:0 200
+   why: normalise removed every metronome mark after the first it found, wherever it stood; now only a copy of one statement at one position goes. Identity 06d3ed364775… (2026-09-06, system 0) → f5d8fed0bb86…, reviewed repair, tempoChanged
+
+== song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx (Piano Man) [pdmx]
+   where: `content/scores/pdmx/QmWpzkuQx23WPUoU1Lvta6hJtK7ccBjeSwL1ATyJ47UUMU.mxl` and `content/sources/pdmx.json` row `song.pop.billy-joel-rousseau-billy-joel-piano-man.pdmx` (`convertedSha256`); re-converted from the raw upload
+   what: 5 tempo direction(s) the source states after its first now kept: 5 printed metronome mark(s) (in the file, read by the tempo reader; drawn by no learner surface), 0 sound-only (heard), 0 with no readable tempo (empty words).
+   tempo directions before (1): ['1:quarter=70/sound 70']
+   tempo directions after (6): ['1:quarter=70/sound 70', '2:quarter=50/sound 50', '3:quarter=160/sound 160', '272:quarter=140/sound 140', '272:quarter=120/sound 120', '272:quarter=90/sound 90']
+   the app's reader before (1): 0:0 70
+   the app's reader after (6): 0:0 70, 1:2.5 50, 2:0 160, 271:0 140, 271:1 120, 271:2 90
+   why: normalise removed every metronome mark after the first it found, wherever it stood; now only a copy of one statement at one position goes. Identity 673e6134bb2c… (2026-09-06, system 0) → e72561d66d7e…, reviewed repair, tempoChanged
+
+== song.pop.takeru-kanazaki-fire-emblem-three-houses-apex-of-the-world.pdmx (Apex of the World, from Fire Emblem: Three Houses) [pdmx]
+   where: `content/scores/pdmx/QmRx7Xqghks9vBikJpNFbaq6QKzkKghiePNRLvkGsUkZy7.mxl` and `content/sources/pdmx.json` row `song.pop.takeru-kanazaki-fire-emblem-three-houses-apex-of-the-world.pdmx` (`convertedSha256`); re-converted from the raw upload
+   what: 3 tempo direction(s) the source states after its first now kept: 3 printed metronome mark(s) (in the file, read by the tempo reader; drawn by no learner surface), 0 sound-only (heard), 0 with no readable tempo (empty words).
+   tempo directions before (1): ['1:quarter=86/sound 86']
+   tempo directions after (4): ['1:quarter=86/sound 86', '9:quarter=178/sound 178', '189:quarter=86/sound 86', '197:quarter=178/sound 178']
+   the app's reader before (1): 0:0 86
+   the app's reader after (4): 0:0 86, 8:0 178, 188:0 86, 196:0 178
+   why: normalise removed every metronome mark after the first it found, wherever it stood; now only a copy of one statement at one position goes. Identity 356737a36694… (2026-09-06, system 0) → d069d41ce874…, reviewed repair, tempoChanged
+

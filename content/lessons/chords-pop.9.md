@@ -30,7 +30,7 @@ back to back and keep the half of each that worked.
 — which is the point: play it as written once, then work its chords out from
 the notes (none of the six prints chord symbols) and build your own. *Piano Man* and *Falling* are ballads where the
 left hand decides everything; *Mr. Blue Sky* and *Le Festin* are full textures
-to thin out, and the fastest by their printed tempos, where an arrangement has
+to thin out, where an arrangement has
 to leave something out to stay playable; *Rolling Girl* and *Apex of the World*
 complete the six. What you hand in
 is your own version, written down as a chart with your notes on it. All six
