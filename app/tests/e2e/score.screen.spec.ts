@@ -10,6 +10,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { installMidiMock } from './fixtures/midiMock';
 import {
   closeScoreMenu,
+  closeTempoSheet,
   inkBox,
   openScoreMenu,
   pressAnywhere,
@@ -2014,4 +2015,242 @@ test.describe('▶ after the sound was suspended (U69)', () => {
       }
     });
   }
+
+  /**
+   * Sideways the bar's left end never covers its own controls (U119, the reviewer's ruling
+   * `responses/questions-e9aa51ae.md`: "no left-group text may cover or intercept ▶ or any other
+   * control, and the bar remains one row"; "a real unforced click on every visible control is the
+   * acceptance condition, not geometry alone").
+   *
+   * Sideways the left group (Back, the piece's name, `bar n / m`, the status mirror) is the one item of
+   * the row allowed to shrink, and inside it only the name shrinks: Back, `bar n / m` and the mirror keep
+   * their own widths. Where those are wider than the room the fixed controls leave, the group's box is
+   * narrower than what is in it, and with nothing clipping it the mirror ran on over ▶: at 667 × 375 on
+   * the wider face, in a Wait run a learner had paused, *Paused — ▶ to carry on, …* took the tap meant
+   * for ▶ (U105d's probe, `runs/U105d/probe-narrow-run.txt`). U119's grid found it at the neighbouring
+   * widths too, and at 115 % text (the root font scaled, as an Android Display size does) on both faces.
+   *
+   * Each row: a Wait run frozen and paused, the ordinary paused line in the mirror. The pause is
+   * dispatched to ▶ itself: it is set up here, not measured, and ⏸ is tapped for real below. Then, with
+   * the bar shown: nothing the left group draws meets a control, and five points inside every control hit
+   * that control; Back is whole at the bar's left end; `bar n / m` is whole; the bar is one row. Then a
+   * real, unforced tap (`pressControl`: reveal, then `click()`, no `force`) on every control drawn on the
+   * bar, each checked by what it does: ▶ carries the run on, ⏸ pauses it, `Hear it` plays and stops, the
+   * mode select opens, `R`, `L` and `Both` choose, the tempo label and `⋯` open their sheets, and Back
+   * leaves the screen.
+   */
+  const barLeftAgainstControls = async (page: Page) => {
+    await revealBar(page);
+    await expect
+      .poll(() => page.locator('#score-bar').evaluate((bar) => getComputedStyle(bar).opacity), {
+        message: 'the bar did not come back to be read',
+      })
+      .toBe('1');
+    return page.evaluate(() => {
+      type Box = { left: number; top: number; right: number; bottom: number };
+      const meet = (a: Box, b: Box): boolean =>
+        a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5;
+      const bar = document.querySelector<HTMLElement>('#score-bar')!;
+      const group = document.querySelector<HTMLElement>('#score-bar-left')!;
+      const g = group.getBoundingClientRect();
+      // What a child of the group can draw: its own box, cut to the group's box where the group clips.
+      const clips = getComputedStyle(group).overflowX !== 'visible';
+      const drawn = (el: Element): Box => {
+        const r = el.getBoundingClientRect();
+        return clips
+          ? { left: Math.max(r.left, g.left), top: r.top, right: Math.min(r.right, g.right), bottom: r.bottom }
+          : { left: r.left, top: r.top, right: r.right, bottom: r.bottom };
+      };
+      // Whole: every glyph of its text inside what it draws, and nothing cut inside its own box.
+      const whole = (el: HTMLElement): boolean => {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const t = range.getBoundingClientRect();
+        const d = drawn(el);
+        return t.width > 0 && t.left >= d.left - 0.5 && t.right <= d.right + 0.5 && el.scrollWidth <= el.clientWidth + 0.5;
+      };
+      const controls = [...bar.querySelectorAll<HTMLElement>('button, select, .score-tempo-label')]
+        .filter((el) => !group.contains(el))
+        .map((el) => ({ el, r: el.getBoundingClientRect() }))
+        .filter(({ r }) => r.width > 0 && r.height > 0);
+      const overControls: string[] = [];
+      for (const child of group.children) {
+        const d = drawn(child);
+        if (d.right - d.left <= 0.5) continue;
+        for (const { el, r } of controls) if (meet(d, r)) overControls.push(`${child.id} over ${el.id}`);
+      }
+      // Five points inside every control: its middle and halfway to each edge.
+      const missed: string[] = [];
+      for (const { el, r } of controls) {
+        for (const [fx, fy] of [[0.5, 0.5], [0.25, 0.5], [0.75, 0.5], [0.5, 0.25], [0.5, 0.75]]) {
+          const top = document.elementFromPoint(r.left + r.width * fx, r.top + r.height * fy);
+          if (top === null || !(top === el || el.contains(top))) {
+            missed.push(`${el.id} at (${String(fx)}, ${String(fy)}) hits ${top === null ? 'nothing' : top.id || top.tagName.toLowerCase()}`);
+          }
+        }
+      }
+      const back = document.querySelector<HTMLElement>('#score-back-side')!;
+      const where = document.querySelector<HTMLElement>('#score-where-side')!;
+      const rows = new Set(
+        [...bar.children]
+          .filter((child) => child.getBoundingClientRect().height > 0)
+          .map((child) => Math.round(child.getBoundingClientRect().top)),
+      );
+      return {
+        shown: bar.dataset.visible === 'true' && getComputedStyle(bar).opacity === '1',
+        status: document.querySelector('#score-status-side')?.textContent ?? '',
+        overControls,
+        missed,
+        onBar: controls.map(({ el }) => el.id),
+        backLeft: back.getBoundingClientRect().left,
+        backWhole: whole(back),
+        whereText: where.textContent ?? '',
+        whereWhole: whole(where),
+        rows: rows.size,
+      };
+    });
+  };
+
+  for (const [width, height] of [
+    [640, 360],
+    [667, 375],
+    [740, 342],
+    [780, 360],
+  ] as const) {
+    for (const face of [null, 'a wider face'] as const) {
+      for (const text of [100, 115] as const) {
+        test(`sideways ${String(width)} × ${String(height)}${face === null ? '' : ` on ${face}`}${text === 100 ? '' : ` at ${String(text)} % text`}, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control`, async ({
+          page,
+        }) => {
+          test.setTimeout(150_000);
+          await page.setViewportSize({ width, height });
+          if (text !== 100) {
+            // The root font, as an Android Display size scales it (`doors.spec.ts`, *the phone at 115 % text*).
+            await page.addInitScript((size) => {
+              document.addEventListener('DOMContentLoaded', () => {
+                document.documentElement.style.fontSize = `${String(size)}%`;
+              });
+            }, text);
+          }
+          await openScore(page);
+          if (face !== null) await page.addStyleTag({ content: WIDER_FACE });
+          const section = page.locator('section[data-screen="score"]');
+          const play = page.locator('#score-play');
+          await page.locator('#score-mode').selectOption('wait');
+          await pressControl(page, '#score-play');
+          await expect(section).toHaveAttribute('data-running', 'true');
+          await page.waitForFunction(
+            () => {
+              const w = window as unknown as { __pianopath?: { scoreFit?: () => { frozen: unknown } } };
+              return (w.__pianopath?.scoreFit?.()?.frozen ?? null) !== null;
+            },
+            undefined,
+            { timeout: 30_000 },
+          );
+          await play.dispatchEvent('click');
+          await expect(play, 'the run did not pause').toHaveText('▶');
+          await expect(page.locator('#score-status-side')).toHaveText(/^Paused/);
+
+          const seen = await barLeftAgainstControls(page);
+          expect(seen.shown, 'the bar is not shown to measure').toBe(true);
+          expect(seen.status, 'the ordinary paused line is not in the mirror').toMatch(/^Paused/);
+          // Soft, so a red run names every fact that failed, not only the first.
+          expect.soft(seen.overControls, 'the bar’s left end draws over a control').toEqual([]);
+          expect.soft(seen.missed, 'a point inside a control hits something else').toEqual([]);
+          expect.soft(seen.backWhole, 'Back is cut').toBe(true);
+          expect.soft(seen.backLeft, 'Back is not at the left end of the bar').toBeLessThan(40);
+          expect.soft(seen.whereWhole, `the bar number is cut (“${seen.whereText}”)`).toBe(true);
+          expect.soft(seen.rows, 'the bar is not one row').toBe(1);
+          // Play, the mode, the tempo readout and `⋯` never leave the bar (`OVERFLOW_ORDER`), nor Back sideways.
+          for (const id of ['score-play', 'score-mode', 'score-tempo-label', 'score-more']) {
+            expect.soft(seen.onBar, `${id} is not on the bar`).toContain(id);
+          }
+
+          // A real tap on every control drawn on the bar, each checked by what it does.
+          await pressControl(page, '#score-play');
+          await expect(play, '▶ did not carry the run on').toHaveText('⏸');
+          await pressControl(page, '#score-play');
+          await expect(play, '⏸ did not pause the run').toHaveText('▶');
+          if (seen.onBar.includes('score-hear')) {
+            await pressControl(page, '#score-hear');
+            await expect(section, 'Hear it did not play the piece').toHaveAttribute('data-hearing', 'true');
+            await pressControl(page, '#score-hear');
+            await expect(section, 'Hear it did not stop').toHaveAttribute('data-hearing', 'false');
+          }
+          await pressControl(page, '#score-mode');
+          await expect(page.locator('#score-mode'), 'the mode select did not take the tap').toBeFocused();
+          await page.keyboard.press('Escape');
+          await expect(page.locator('#score-mode')).toHaveValue('wait');
+          for (const hand of ['R', 'L', 'both']) {
+            if (!seen.onBar.includes(`score-hands-${hand}`)) continue;
+            await pressControl(page, `#score-hands-${hand}`);
+            await expect(page.locator(`#score-hands-${hand}`), `${hand} was not chosen`).toHaveClass(/is-selected/);
+          }
+          await pressControl(page, '#score-tempo-label');
+          await expect(page.locator('#score-tempo-sheet'), 'the tempo label did not open its sheet').toBeVisible();
+          await closeTempoSheet(page);
+          await pressControl(page, '#score-more');
+          await expect(page.locator('#score-more-sheet'), '⋯ did not open its sheet').toBeVisible();
+          await closeScoreMenu(page);
+          await pressControl(page, '#score-back-side');
+          await expect(page, 'Back did not leave the screen').not.toHaveURL(/#\/score\//);
+        });
+      }
+    }
+  }
+
+  /**
+   * And a refusal at the narrowest of those, at rest, on the wider face (U119's verification layer 4):
+   * U105d's rule wraps the sentence in the mirror rather than cutting it, and whatever height that takes
+   * here (U105d's Question 1, ruled in `responses/bb271f4a.md`), ▶ is still reachable — asserted as
+   * reachable only, not by line count or bar height.
+   */
+  test('a refusal sideways (667 × 375) on a wider face, at rest: no control under the sentence, and a real tap on ▶ still starts the run', async ({
+    page,
+  }) => {
+    test.setTimeout(120_000);
+    await page.setViewportSize({ width: 667, height: 375 });
+    await page.addInitScript(() => {
+      const Native = window.AudioContext;
+      const made: AudioContext[] = [];
+      (window as Captured).__contexts = made;
+      window.AudioContext = class extends Native {
+        constructor(options?: AudioContextOptions) {
+          super(options);
+          made.push(this);
+        }
+      };
+    });
+    await openScore(page);
+    await page.addStyleTag({ content: WIDER_FACE });
+    const state = (): Promise<string> => page.evaluate(() => (window as Captured).__contexts?.[0]?.state ?? 'none');
+    await expect.poll(state, { message: 'the app made its context as the piece loaded' }).not.toBe('none');
+    await page.locator('#score-title-side').click({ timeout: 5_000 });
+    await expect.poll(state).toBe('running');
+    await page.evaluate(async () => {
+      const ctx = (window as Captured).__contexts?.[0];
+      await ctx?.suspend();
+      if (ctx) ctx.resume = () => new Promise<void>(() => undefined);
+    });
+    await expect.poll(state).toBe('suspended');
+    const section = page.locator('section[data-screen="score"]');
+    const mirror = page.locator('#score-status-side');
+    for (const [id, sentence] of [
+      ['#score-play', 'Sound did not start — tap ▶ again'],
+      ['#score-hear', 'Sound did not start — tap Hear it again'],
+    ] as const) {
+      await pressAnywhere(page, id);
+      await expect(mirror, `the bar’s mirror after ${id}’s bound`).toHaveText(sentence, { timeout: 10_000 });
+      const seen = await barLeftAgainstControls(page);
+      expect.soft(seen.overControls, `${id}: the sentence is over a control`).toEqual([]);
+      expect.soft(seen.missed, `${id}: a point inside a control hits something else`).toEqual([]);
+    }
+    await page.evaluate(() => {
+      const ctx = (window as Captured).__contexts?.[0];
+      if (ctx) Reflect.deleteProperty(ctx, 'resume');
+    });
+    await pressControl(page, '#score-play');
+    await expect.poll(state, { message: 'the context after the last ▶', timeout: 10_000 }).toBe('running');
+    await expect(section, 'a real tap on ▶ did not start the run').toHaveAttribute('data-running', 'true');
+  });
 });

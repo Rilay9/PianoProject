@@ -1,0 +1,25 @@
+
+Running 19 tests using 4 workers
+
+  ok  2 tests\e2e\score.screen.spec.ts:2122:9 › ▶ after the sound was suspended (U69) › sideways 640 × 360, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (2.8s)
+  ok  4 tests\e2e\score.screen.spec.ts:2122:9 › ▶ after the sound was suspended (U69) › sideways 640 × 360 at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (2.8s)
+  ok  3 tests\e2e\score.screen.spec.ts:1836:5 › ▶ after the sound was suspended (U69) › a refusal sideways (740 × 342) on a wider face, at rest: the bar’s mirror says it whole, the bar one row, the ordinary line still cut (4.8s)
+  ok  5 tests\e2e\score.screen.spec.ts:2122:9 › ▶ after the sound was suspended (U69) › sideways 640 × 360 on a wider face, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (2.0s)
+  ok  6 tests\e2e\score.screen.spec.ts:2122:9 › ▶ after the sound was suspended (U69) › sideways 640 × 360 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (2.1s)
+  ok  1 tests\e2e\score.screen.spec.ts:1836:5 › ▶ after the sound was suspended (U69) › a refusal sideways (740 × 342) on a wider face, paused: the bar’s mirror says it whole, the bar one row, the ordinary line still cut (5.3s)
+  ok  7 tests\e2e\score.screen.spec.ts:2122:9 › ▶ after the sound was suspended (U69) › sideways 667 × 375, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.4s)
+  ok  8 tests\e2e\score.screen.spec.ts:2122:9 › ▶ after the sound was suspended (U69) › sideways 667 × 375 at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.6s)
+  ok  9 tests\e2e\score.screen.spec.ts:2122:9 › ▶ after the sound was suspended (U69) › sideways 667 × 375 on a wider face, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.5s)
+  ok 10 tests\e2e\score.screen.spec.ts:2122:9 › ▶ after the sound was suspended (U69) › sideways 667 × 375 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.9s)
+  ok 12 tests\e2e\score.screen.spec.ts:2122:9 › ▶ after the sound was suspended (U69) › sideways 740 × 342 at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.7s)
+  ok 11 tests\e2e\score.screen.spec.ts:2122:9 › ▶ after the sound was suspended (U69) › sideways 740 × 342, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.9s)
+  ok 13 tests\e2e\score.screen.spec.ts:2122:9 › ▶ after the sound was suspended (U69) › sideways 740 × 342 on a wider face, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.8s)
+  ok 14 tests\e2e\score.screen.spec.ts:2122:9 › ▶ after the sound was suspended (U69) › sideways 740 × 342 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.3s)
+  ok 15 tests\e2e\score.screen.spec.ts:2122:9 › ▶ after the sound was suspended (U69) › sideways 780 × 360, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.1s)
+  ok 16 tests\e2e\score.screen.spec.ts:2122:9 › ▶ after the sound was suspended (U69) › sideways 780 × 360 at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.2s)
+  ok 18 tests\e2e\score.screen.spec.ts:2122:9 › ▶ after the sound was suspended (U69) › sideways 780 × 360 on a wider face at 115 % text, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.1s)
+  ok 17 tests\e2e\score.screen.spec.ts:2122:9 › ▶ after the sound was suspended (U69) › sideways 780 × 360 on a wider face, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control (3.3s)
+  ok 19 tests\e2e\score.screen.spec.ts:2208:3 › ▶ after the sound was suspended (U69) › a refusal sideways (667 × 375) on a wider face, at rest: no control under the sentence, and a real tap on ▶ still starts the run (4.4s)
+
+  19 passed (23.3s)
+exit 0

@@ -984,6 +984,23 @@ body {
     /* Takes the room that is left and gives it back first. */
     flex: 0 1 auto;
     min-width: 0;
+    /* And draws nothing past the room it was given (U119). Only the name
+       shrinks in here; Back, `bar n / m` and the status line keep their own
+       widths, so where those are wider than what the controls leave, the
+       group's box is narrower than what is in it, and nothing clipped it. At
+       667 × 375 on a wider face a paused run's *Paused — ▶ to carry on, …*
+       ran on over ▶ and took the tap meant for it; at 115 % text on that
+       face it did so at 780 too. The controls are laid out after the
+       group's box, so a group that draws only inside it cannot cover one.
+       What is cut is what comes last: the status line first, then
+       `bar n / m`; Back, first in the group, last of all. Where Back and
+       `bar n / m` themselves do not fit beside the controls (at 115 % text,
+       a row much narrower than 640, or a long piece's three-digit bar on a
+       wider face), `bar n / m` is cut too, which is open with the reviewer
+       (U119, Question 1). `clip` across only, not `hidden`: Back's focus
+       ring above and below is still drawn, and the group is no scroll
+       container a focus could scroll. */
+    overflow-x: clip;
   }
 
   .screen--score .score-bar__title {
