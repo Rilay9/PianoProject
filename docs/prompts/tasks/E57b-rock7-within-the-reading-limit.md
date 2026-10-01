@@ -34,9 +34,12 @@ Every other sentence of rock.7, every other lesson, the 600-word rule itself.
 
 Per `operating-procedure.md` §11–§12, briefly: what a learner reads before and after (one sentence shorter by three words, reading time shown as three minutes if any surface shows it), the exit codes, the mutant, `git status --short`. The entry is `docs/prompts/runs/E57b/ENTRY.md`, starting `### Entry 200 — E57b`. Harness as §14: the builder's own worktree; `npm ci` in `app/`; no commits, pushes, stashes, resets or checkouts; nothing written in the main checkout; no Playwright (no browser spec maps to these paths unless `tools/docs/checks_for_paths.py` says otherwise — run it and report the line); never name an AI model; no machine paths in kept files.
 
+**Landed 2026-10-01** (Entry 200; eaf95dea, merged 0aa847ed); handoff `handoffs/eaf95dea.md`.
+
 ## Record
 
 lane: E57b · closes: E57 · entry: 200
 index: E57a's required change (`responses/1befd3e1.md`): rock.7 back within the 600-word reading limit by the reviewer's three-word cut, the long-lesson exception rolled back | content | drafted 2026-10-01 (`E57b-rock7-within-the-reading-limit.md`); Entry 200
 in-flight: drafted 2026-10-01 (`E57b-rock7-within-the-reading-limit.md`): rock.7 loses "on this track", its reading time back to three minutes, the long-lesson exception and its docs note removed (Entry 200)
 state: dispatched 2026-10-01: dispatched at d3fe19d4, building (Entry 200)
+- landed 2026-10-01: merged 0aa847ed; handoff `handoffs/eaf95dea.md`
