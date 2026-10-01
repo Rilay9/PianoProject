@@ -452,9 +452,13 @@ class TestTheMaterialIdentity(Built):
         self.assertEqual(len([repair for repair in repairs if repair["change"].startswith("E50 ")]), 7)
         # E57 (Entry 183): a file the build converts carries two relations, the dated file E50a recorded and its
         # undated form (the identity every catalogue since E50a served); a committed PDMX file one. Read per row.
+        # E59 (Entry 184, revised from "every relation's old identity is tempo-changed"): only a repair marked
+        # `tempoChanged` lists its old identity in `tempoRepairedFrom`. E59's are not: they removed a printed
+        # quarter = 96 and kept the sound, so a run of the old file was measured against the tempo the row plays now.
         froms: dict[str, list[str]] = {}
         for repair in repairs:
-            froms.setdefault(repair["id"], []).append(repair["from"])
+            if repair["tempoChanged"] is True:
+                froms.setdefault(repair["id"], []).append(repair["from"])
         for repair in repairs:
             with self.subTest(repair["id"], undated=repair.get("undated", False)):
                 item = self.by_id[repair["id"]]
@@ -462,24 +466,33 @@ class TestTheMaterialIdentity(Built):
                 self.assertIn({"kind": "file", "sha256": repair["from"]}, item["provenance"].get("formerIdentities") or [])
                 if repair["change"].startswith("E50 "):
                     self.assertNotIn("tempo-defaulted", item.get("tags") or [])
+                if repair["change"].startswith("E59 ") and repair["id"] in items:
+                    # The tag truth does not move with the bytes: the tempo is still the converter's.
+                    self.assertIn("tempo-defaulted", item.get("tags") or [])
                 if repair["id"] in items:
                     self.assertFalse({"formerIdentities", "repairs", "restore"} & set(items[repair["id"]]))
                 # E50b: the old identity is marked as a file whose tempo the repair changed, so no tempo-dependent
                 # standard reads a run of it against this row's tempo (`material.tempoNotComparable`).
-                self.assertEqual(sorted(one["sha256"] for one in item["provenance"].get("tempoRepairedFrom") or []), sorted(froms[repair["id"]]))
-        # E50b: the Wabash cut, re-cut from the repaired parent, carries its old cut the same way, and nothing else.
+                self.assertEqual(sorted(one["sha256"] for one in item["provenance"].get("tempoRepairedFrom") or []), sorted(froms.get(repair["id"], [])))
+        # E50b: the Wabash cut, re-cut from the repaired parent, carries its old cut the same way, and since E59 the three
+        # approved cuts of E59's moved PDMX parents (revised from the Wabash cut alone), and nothing else.
         cuts = json.loads((REPO / "tools" / "content" / "repaired_identities.json").read_text(encoding="utf-8")).get("cuts", [])
-        self.assertEqual([cut["id"] for cut in cuts], ["excerpt.blues.wabash-blues.b1-4"])
+        self.assertEqual(sorted(cut["id"] for cut in cuts), sorted([
+            "excerpt.blues.wabash-blues.b1-4", "excerpt.classical.bach-menuet-bwv-anh-113.pdmx.b25-32",
+            "excerpt.classical.i-got-rythm.pdmx.b15-18",
+            "excerpt.classical.mendelssohn-hark-the-herald-angels-sing-piano-bass-jazz-lead-sheet.pdmx.b25-28"]))
         for cut in cuts:
             with self.subTest(cut["id"]):
                 row = self.by_id[cut["id"]]
                 self.assertEqual(row["provenance"].get("formerIdentities"), [{"kind": "file", "sha256": cut["from"]}])
-                self.assertEqual(row["provenance"].get("tempoRepairedFrom"), [{"kind": "file", "sha256": cut["from"]}])
+                self.assertEqual(row["provenance"].get("tempoRepairedFrom"),
+                                 [{"kind": "file", "sha256": cut["from"]}] if cut["tempoChanged"] is True else None)
                 self.assertNotEqual(row["provenance"]["identity"]["sha256"], cut["from"])
                 self.assertEqual(row["provenance"]["excerpt"]["parentSha256"], cut["parentTo"])
                 self.assertEqual(row["provenance"]["excerpt"]["stale"]["approvedParentSha256"], cut["parentFrom"])
         marked = sorted(item["id"] for item in self.catalog if "tempoRepairedFrom" in item["provenance"])
-        self.assertEqual(marked, sorted({repair["id"] for repair in repairs} | {cut["id"] for cut in cuts}))
+        self.assertEqual(marked, sorted({repair["id"] for repair in repairs if repair["tempoChanged"] is True}
+                                        | {cut["id"] for cut in cuts if cut["tempoChanged"] is True}))
         for item in self.catalog:
             for one in item["provenance"].get("tempoRepairedFrom") or []:
                 self.assertIn(one, item["provenance"].get("formerIdentities") or [], item["id"])

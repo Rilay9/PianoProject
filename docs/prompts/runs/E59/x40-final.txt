@@ -1,0 +1,7 @@
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Duration  2.28s (tests 95%, transform 3%, import 1%)
+
+
+final exit 0

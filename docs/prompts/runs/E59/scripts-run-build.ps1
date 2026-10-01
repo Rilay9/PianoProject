@@ -1,0 +1,18 @@
+# Runs one offline content build (E57's script, its logs moved to build/e59): output to build/e59/<Name>.txt, stderr to
+# <Name>.stderr.txt and its exit code to <Name>.exit (trimmed into the run folder afterwards: no log over 300 KB is kept
+# there). With -Out, an absolute --out; without it, the build's default (app/public/content). The three build/*-cache.json
+# files are copied again from the main checkout (read only) first, as E57's did.
+# Usage: powershell -File scripts-run-build.ps1 -Name build-before -Out <absolute dir>
+param([string]$Name, [string]$Out = "")
+$W = (Resolve-Path "$PSScriptRoot\..\..\..\..").Path
+$M = (Resolve-Path "$W\..\..\..").Path
+$Logs = "$W\build\e59"
+Set-Location $W
+foreach ($f in "demands-cache.json", "positions-cache.json", "notation-cache.json") { Copy-Item "$M\build\$f" "$W\build\$f" -Force }
+Remove-Item Env:PIANOPATH_STRICT_LICENSE -ErrorAction SilentlyContinue
+$env:PYTHONIOENCODING = "utf-8"
+$argList = @("tools/content/build.py", "--offline")
+if ($Out -ne "") { $argList += @("--out", "`"$Out`"") }
+$p = Start-Process -FilePath "python" -ArgumentList $argList -NoNewWindow -Wait -PassThru `
+  -RedirectStandardOutput "$Logs\$Name.txt" -RedirectStandardError "$Logs\$Name.stderr.txt"
+"$($p.ExitCode)" | Out-File -Encoding ascii "$Logs\$Name.exit"

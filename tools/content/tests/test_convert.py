@@ -7,6 +7,7 @@ staves, treble on top, fingering and chord symbols intact.
 """
 from __future__ import annotations
 
+import re
 import sys
 import tempfile
 import unittest
@@ -136,6 +137,9 @@ class TestLilyPond(ConvertCase):
         self.assertTrue(result.added_tempo)
         self.assertEqual(result.tempo_bpm, 96)
         self.assertIn(96.0, written.tempos)
+        # E59: the default is playback truth only, a `<sound tempo>`, never a printed metronome mark the edition
+        # does not state.
+        self.assertEqual(written.xml.count("<metronome"), 0)
 
 
 class TestMusicXml(ConvertCase):
@@ -392,7 +396,8 @@ class TestTheTempoPrintedAsText(ConvertCase):
     hands the converter a `TextExpression` and no `MetronomeMark`, so the converter inserted 96. The mark now
     becomes the score's `<metronome>`, its note the glyph's or, where the glyph is missing, the metre's beat in
     x/4 or x/2, and the words go. (a), (b) and (c) are red on the committed converter; (d) and (e) hold
-    today's path and are green before and after, by design.
+    today's path and are green before and after, by design. Since E59 (d)'s default is a `<sound tempo>` alone,
+    no printed mark (`assert_today`).
     """
 
     def convert_text(self, xml: str, name: str = "text-mark", **kwargs):
@@ -475,7 +480,10 @@ class TestTheTempoPrintedAsText(ConvertCase):
         result, written = self.convert_text(xml)
         self.assertEqual((result.tempo_bpm, result.added_tempo), (96.0, True))
         self.assertEqual(written.tempos, [96.0])
-        self.assertEqual(self.metronome(written), ("quarter", False, "96"))
+        # Revised by E59 (Entry 184): this asserted a printed quarter = 96, the converter's default written as
+        # though the edition stated it. The default is now playback truth only, its `<sound tempo>`, and nothing
+        # is printed (`TestADefaultedTempoIsPlaybackOnly`).
+        self.assertIsNone(self.metronome(written))
         self.assertIn(words, self.printed_words(written))
 
     def test_d_a_missing_glyph_in_a_compound_metre_is_not_read(self) -> None:
@@ -511,6 +519,90 @@ class TestTheTempoPrintedAsText(ConvertCase):
         result, written = self.convert_text(text_mark_score(" = 120"), tempo_bpm=60)
         self.assertEqual((result.tempo_bpm, result.added_tempo), (60.0, True))
         self.assertEqual(set(written.tempos), {60.0})
+
+
+def pdmx_shaped_score(staves: int) -> str:
+    """
+    A MuseScore-style upload with no tempo of its own (E59): one part, two bars of 4/4, on one staff or on a grand staff
+    (`<staves>2</staves>`, a clef and a note per staff), no `<metronome>`, no `<sound tempo>`, no tempo words: the shape
+    of PDMX's 169 rows tagged `tempoDefaulted`, single-staff and grand-staff.
+    """
+    clefs = ('<clef number="1"><sign>G</sign><line>2</line></clef><clef number="2"><sign>F</sign><line>4</line></clef>'
+             if staves == 2 else "<clef><sign>G</sign><line>2</line></clef>")
+    measures = []
+    for number in (1, 2):
+        attributes = (f"<attributes><divisions>1</divisions><key><fifths>0</fifths></key><time><beats>4</beats>"
+                      f"<beat-type>4</beat-type></time>{'<staves>2</staves>' if staves == 2 else ''}{clefs}</attributes>"
+                      if number == 1 else "")
+        upper = ('<note><pitch><step>C</step><octave>5</octave></pitch><duration>4</duration><voice>1</voice>'
+                 f"<type>whole</type>{'<staff>1</staff>' if staves == 2 else ''}</note>")
+        lower = ('<backup><duration>4</duration></backup><note><pitch><step>C</step><octave>3</octave></pitch>'
+                 '<duration>4</duration><voice>5</voice><type>whole</type><staff>2</staff></note>') if staves == 2 else ""
+        measures.append(f'<measure number="{number}">{attributes}{upper}{lower}</measure>')
+    return ('<?xml version="1.0" encoding="UTF-8"?>\n<score-partwise version="3.1"><part-list>'
+            '<score-part id="P1"><part-name>Piano</part-name></score-part></part-list>'
+            f'<part id="P1">{"".join(measures)}</part></score-partwise>\n')
+
+
+#: The default as the converter now writes it (E59): a sound-only direction, music21's own form for a
+#: `MetronomeMark` with only `numberSounding` (an empty `<words />`, then the sound), with the `<staff>` music21 adds
+#: on a grand staff. PDMX's committed defaulted files carry exactly this block with the four metronome lines where
+#: `<words />` stands.
+SOUND_ONLY_DEFAULT = re.compile(
+    r'(?P<i>[ ]*)<direction>\n(?P=i)  <direction-type>\n(?P=i)    <words />\n(?P=i)  </direction-type>\n'
+    r'(?:(?P=i)  <staff>(?P<staff>\d+)</staff>\n)?(?P=i)  <sound tempo="96" />\n(?P=i)</direction>\n'
+)
+
+
+class TestADefaultedTempoIsPlaybackOnly(ConvertCase):
+    """
+    E59: where a source states no tempo (no metronome mark, no override, none printed as text), the converter
+    supplies 96 so the player has a tempo, and wrote it as `MetronomeMark(number=96)`, which music21 exports as a
+    printed `<metronome>` quarter = 96 beside the `<sound tempo="96">`: a number the edition never states, written as
+    though it did. The default is now `numberSounding=96` (music21's own field for a tempo that sounds and is not
+    printed): the same `<sound tempo>`, the same `tempo_bpm` and `added_tempo`, and no `<metronome>`. Red on the
+    committed converter, green after; a real mark (`test_d_a_file_with_a_metronome_of_its_own_keeps_it_and_the_words`)
+    and a forced tempo (`test_e_…`) are other branches and print as before.
+    """
+
+    def convert_xml(self, xml: str, name: str, **kwargs):
+        src = self.out / f"{name}.musicxml"
+        src.write_text(xml, encoding="utf-8")
+        dest = self.out / f"{name}.mxl"
+        return convert_file(src, dest, **kwargs), read_mxl(dest), dest
+
+    def assert_sound_only_default(self, result, written, staff: str | None) -> None:
+        self.assertEqual((result.tempo_bpm, result.added_tempo), (96.0, True))
+        self.assertTrue(any("no tempo in source" in w for w in result.warnings), result.warnings)
+        self.assertEqual(written.tempos, [96.0])
+        self.assertEqual(written.xml.count("<metronome"), 0)
+        found = list(SOUND_ONLY_DEFAULT.finditer(written.xml))
+        self.assertEqual(len(found), 1, written.xml[:2000])
+        self.assertEqual(found[0].group("staff"), staff)
+
+    def test_a_single_staff_upload_gets_a_sound_and_no_printed_mark(self) -> None:
+        # PDMX's first shape (74 of the 169 rows): one staff, no `<staff>` in the direction.
+        result, written, _ = self.convert_xml(pdmx_shaped_score(1), "one-staff")
+        self.assertEqual(written.staves, 1)
+        self.assert_sound_only_default(result, written, None)
+
+    def test_a_grand_staff_upload_gets_a_sound_and_no_printed_mark(self) -> None:
+        # PDMX's second shape (95 of the 169 rows): a grand staff, the direction on staff 1.
+        result, written, _ = self.convert_xml(pdmx_shaped_score(2), "grand-staff")
+        self.assertEqual(written.staves, 2)
+        self.assert_sound_only_default(result, written, "1")
+
+    def test_a_converted_default_converted_again_stays_sound_only(self) -> None:
+        # A cut's second pass through `normalise` (`excerpts.py`), and any re-conversion of a built file: the
+        # sound-only mark is read back as the file's tempo and written as it was, never printed and never doubled.
+        _, _, first = self.convert_xml(pdmx_shaped_score(2), "first")
+        again = self.out / "again.mxl"
+        result = convert_file(first, again)
+        written = read_mxl(again)
+        self.assertEqual(result.tempo_bpm, 96.0)
+        self.assertEqual(written.tempos, [96.0])
+        self.assertEqual(written.xml.count("<metronome"), 0)
+        self.assertEqual(len(SOUND_ONLY_DEFAULT.findall(written.xml)), 1)
 
 
 class TestSilentStaff(ConvertCase):

@@ -1062,7 +1062,11 @@ class TheRepairedCut(unittest.TestCase):
                 "parentSha256": X.sha256_of(WABASH_FILE), **over}
 
     def test_a_one_relation_for_the_one_cut_the_build_produced(self) -> None:
-        self.assertEqual([one["id"] for one in self.cuts], [self.EID], "one relation, the one derived repair; no rule for descendants")
+        # Revised by E59 (Entry 184): the table's `cuts` held this one relation alone; E59 adds one for each approved cut of
+        # a PDMX parent its converter change moved (`TheE59Cuts`), each recorded one by one, never a rule for descendants.
+        self.assertEqual(self.relations, [one for one in self.cuts if not one["change"].startswith("E59 ")],
+                         "one relation for this cut, the one derived repair E50b recorded; no rule for descendants")
+        self.assertEqual(len(self.relations), 1)
         one = self.relations[0]
         self.assertEqual(one["file"], f"scores/excerpts/{self.EID}.mxl")
         self.assertEqual((one["of"], one["fromBar"], one["toBar"], one["selection"]),
@@ -1133,6 +1137,79 @@ class TheRepairedCut(unittest.TestCase):
         # Never exact-byte equal: D2's identity and the cut's own bytes keep the old cut and the new apart.
         self.assertFalse(review.same_identity({"kind": "file", "sha256": one["from"]}, {"kind": "file", "sha256": one["to"]}))
         self.assertNotEqual(self.old_cut.read_bytes(), self.new_cut.read_bytes())
+
+
+class TheE59Cuts(unittest.TestCase):
+    """
+    E59 (Entry 184): the converter's default tempo is now its sound alone, and the 169 committed PDMX files that printed a
+    quarter = 96 for it moved, three of them parents of an approved cut. Each cut gets its own relation (E50b's shape,
+    `excerpts.former_cut_identities`), proved here from the committed files alone: the old parent rebuilt from the moved
+    one through its E59 repair, both cut with the approved definition, the old cut the laptop's cutter zip of the old
+    parent's cut, the new the build's, the new cut with the parent repair's restore lines put back the old cut byte for
+    byte; the same bars, staves, notes, time and tempo (96 both: the tempo did not change, so `tempoChanged` is false).
+    """
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        import convert
+
+        cls.dir = Path(tempfile.mkdtemp(prefix="e59-"))
+        data = json.loads(convert.REPAIRED_IDENTITIES_FILE.read_text(encoding="utf-8"))
+        cls.repairs = list(data["repairs"])
+        cls.relations = [one for one in data.get("cuts", []) if one["change"].startswith("E59 ")]
+        cls.made = {}
+        for index, one in enumerate(cls.relations):
+            repair = next(r for r in cls.repairs if r["id"] == one["of"] and r["change"].startswith("E59 "))
+            parent = REPO / "content" / repair["file"]
+            entries = convert._entries(parent.read_bytes())
+            at = convert._score_at(entries, undated=True)
+            old_parent = cls.dir / f"p{index}.mxl"
+            old_parent.write_bytes(convert._redated(convert._restored(entries, at, repair["restore"]), at, repair["date"], repair["system"]))
+            (cls.dir / f"o{index}").mkdir()
+            (cls.dir / f"n{index}").mkdir()
+            old = X.cut(old_parent, one["fromBar"], one["toBar"], one["selection"], one["id"], cls.dir / f"o{index}" / f"{one['id']}.mxl")
+            new = X.cut(parent, one["fromBar"], one["toBar"], one["selection"], one["id"], cls.dir / f"n{index}" / f"{one['id']}.mxl")
+            cls.made[one["id"]] = (repair, parent, old_parent, old, new)
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        __import__("shutil").rmtree(cls.dir, ignore_errors=True)
+
+    def test_each_approved_cut_of_a_moved_parent_has_one_relation_and_no_other_cut_has_one(self) -> None:
+        moved = {r["id"] for r in self.repairs if r["change"].startswith("E59 ")}
+        approved = sorted(X.excerpt_id(r["of"], int(r["fromBar"]), int(r["toBar"]), r.get("selection") or "both")
+                          for r in X.read_definitions()["excerpts"] if r["of"] in moved)
+        self.assertEqual(sorted(one["id"] for one in self.relations), approved)
+        self.assertEqual(len(approved), 3)
+
+    def test_each_old_cut_rebuilds_from_its_relation_and_is_the_cutter_on_the_old_parent(self) -> None:
+        import convert
+        import hashlib
+
+        def pinned(made, system: int) -> str:
+            with zipfile.ZipFile(made.path) as archive:
+                entries = [(info.filename, archive.read(info.filename)) for info in archive.infolist()]
+            return hashlib.sha256(convert.pinned_archive(entries, system)).hexdigest()
+
+        for one in self.relations:
+            with self.subTest(one["id"]):
+                repair, parent, old_parent, old, new = self.made[one["id"]]
+                self.assertEqual(hashlib.sha256(old_parent.read_bytes()).hexdigest(), repair["from"])
+                self.assertEqual((one["parentFrom"], one["parentTo"], one["cutVersion"]), (repair["from"], repair["to"], X.CUT_VERSION))
+                self.assertEqual(pinned(old, one["system"]), one["from"])
+                self.assertEqual(pinned(new, one["system"]), one["to"])
+                self.assertEqual((old.bars, old.staves, old.notes, old.time, old.tempo_bpm), (new.bars, new.staves, new.notes, new.time, new.tempo_bpm))
+                self.assertEqual(new.tempo_bpm, 96.0)
+                self.assertIs(one["tempoChanged"], False)
+                self.assertIs(repair["tempoChanged"], False)
+                block = {"of": one["of"], "fromBar": one["fromBar"], "toBar": one["toBar"], "selection": one["selection"],
+                         "cutVersion": X.CUT_VERSION, "parentSha256": X.sha256_of(parent)}
+                self.assertEqual(X.former_cut_identities(new.path, one["id"], block, parent), [one["from"]])
+                # The one change: the old cut printed the converter's quarter = 96; the new holds only its sound.
+                with zipfile.ZipFile(new.path) as archive:
+                    text = next(archive.read(n).decode("utf-8") for n in archive.namelist() if not n.startswith("META-INF"))
+                self.assertNotIn("<metronome", text)
+                self.assertIn('<sound tempo="96" />', text)
 
 
 if __name__ == "__main__":

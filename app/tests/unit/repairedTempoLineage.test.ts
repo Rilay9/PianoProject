@@ -31,7 +31,7 @@ import type { EncounterRow, ProjectRow, SessionRow } from '../../src/data/db';
 import { contactIn } from '../../src/data/progressStore';
 import { familiarityIn, type EncounterHistory } from '../../src/data/encounterStore';
 import { projectIn } from '../../src/data/projectStore';
-import { learnerMaterialKeys, sameMaterial } from '../../src/curriculum/material';
+import { learnerMaterialKeys, sameMaterial, tempoNotComparable } from '../../src/curriculum/material';
 import { loadCatalog, resetContentCacheForTest } from '../../src/curriculum/load';
 import { meetsStandard, rungState, type LearnerRecord } from '../../src/evidence/rungState';
 import { EVIDENCE_DEFINITIONS, type MeasuredEvidence } from '../../src/evidence/evidence';
@@ -256,8 +256,9 @@ describe('the relation: each of the seven repaired files names its old identity,
     // E57 (Entry 183) keeps a later tempo mark the converter used to remove, moving the identities of committed PDMX
     // files (one relation each, as E50's) and of files the build converts (two each: the dated file E50a recorded and
     // its undated form, the identity every catalogue since E50a served). None of them is one of E50's seven.
+    // Revised by E59 (Entry 184): E59's relations are a third class, read in their own case below.
     const { historical } = committed();
-    const e57 =repairs.filter((one) => !one.change.startsWith('E50 '));
+    const e57 = repairs.filter((one) => !one.change.startsWith('E50 ') && !one.change.startsWith('E59 '));
     expect(e57.length).toBeGreaterThan(0);
     for (const one of e57) {
       expect(one.change.startsWith('E57 '), one.id).toBe(true);
@@ -275,15 +276,80 @@ describe('the relation: each of the seven repaired files names its old identity,
     }
   });
 
-  it('E50b: the Wabash cut carries one relation too, the one derived repair the build produced, and every relation says the tempo changed', () => {
-    expect(cuts.map((one) => one.id)).toEqual([CUT]);
-    const [cut] = cuts;
+  it('E50b: the Wabash cut carries one relation too, the one derived repair the build produced, and every E50 and E57 relation says the tempo changed', () => {
+    // Revised by E59 (Entry 184): scoped to E50's, E50b's and E57's relations; E59's say the tempo did not change.
+    const wabash = cuts.filter((one) => one.id === CUT);
+    expect(wabash).toHaveLength(1);
+    const [cut] = wabash;
     const parent = repairs.find((one) => one.id === 'song.blues.wabash-blues')!;
     expect([cut!.of, cut!.parentFrom, cut!.parentTo]).toEqual([parent.id, parent.from, parent.to]);
     expect(cut!.from).not.toBe(cut!.to);
     expect(sameIdentity(file(cut!.from), file(cut!.to))).toBe(false);
-    expect([...repairs, ...cuts].map((one) => one.tempoChanged)).toEqual([...repairs, ...cuts].map(() => true));
+    const tempoRepairs = [...repairs.filter((one) => !one.change.startsWith('E59 ')), ...wabash];
+    expect(tempoRepairs.map((one) => one.tempoChanged)).toEqual(tempoRepairs.map(() => true));
     expect(repaired).toHaveLength(8);
+  });
+
+  it('E59: every other relation is E59’s, a defaulted tempo written as its sound alone, from an old file the table recorded, and none says the tempo changed', () => {
+    // E59 (Entry 184): the converter's default 96 was written as a printed quarter = 96 beside its sound; it is now the
+    // sound alone. The moved identities: every committed PDMX row tagged `tempoDefaulted` (one relation each), the kern
+    // and MuseTrainer files the build converts (two each: the dated file E50a recorded and its undated form) and the
+    // approved cuts of the moved PDMX parents. The old file played the tempo the new one plays, so no relation is
+    // tempo-changed and no run of an old file is refused a tempo standard for it.
+    const { historical } = committed();
+    const e59 = repairs.filter((one) => one.change.startsWith('E59 '));
+    expect(e59.length).toBeGreaterThan(0);
+    for (const one of e59) {
+      expect(one.tempoChanged, one.id).toBe(false);
+      expect(SEVEN).not.toContain(one.id);
+      expect(sameIdentity(file(one.from), file(one.to))).toBe(false);
+      if (one.undated === true) {
+        expect(historical.filter((entry) => entry.file === one.file && entry.undated === one.from).length, one.id).toBeGreaterThan(0);
+      } else {
+        expect(historical.filter((entry) => entry.file === one.file && entry.sha256 === one.from && entry.date === one.date && entry.system === one.system), one.id).toHaveLength(1);
+      }
+      const row = rows.get(one.id);
+      if (row) {
+        expect(one.to).toBe(row.convertedSha256);
+        expect(row.tempoDefaulted, one.id).toBe(true);
+      } else {
+        expect(e59.filter((other) => other.id === one.id).map((other) => other.undated === true).sort()).toEqual([false, true]);
+      }
+    }
+    expect(e59.filter((one) => rows.has(one.id)).map((one) => one.id).sort())
+      .toEqual([...rows.values()].filter((row) => row.tempoDefaulted).map((row) => row.id).sort());
+    const e59Cuts = cuts.filter((one) => one.id !== CUT);
+    expect(e59Cuts.length).toBeGreaterThan(0);
+    for (const cut of e59Cuts) {
+      const parent = e59.find((one) => one.id === cut.of)!;
+      expect([cut.parentFrom, cut.parentTo, cut.tempoChanged]).toEqual([parent.from, parent.to, false]);
+      expect(sameIdentity(file(cut.from), file(cut.to))).toBe(false);
+    }
+  });
+
+  it('E59: a run of a moved defaulted file is the same piece and keeps its tempo: its 100 % of the defaulted 96 still meets the full-tempo standard', async () => {
+    // The learner-facing consequence of `tempoChanged: false`, read through the app as the build writes the rows from the
+    // committed relations (`build.attach_provenance`: every old identity among the former identities, and among
+    // `tempoRepairedFrom` only a relation marked `tempoChanged`): contact and the tempo standard both read the old run
+    // exactly as they read a run of the new file. Marked tempo-changed, every such run would be refused (the E50b
+    // guard), though the tempo it was played against is the one the piece plays now.
+    const e59 = [...repairs.filter((one) => one.change.startsWith('E59 ')), ...cuts.filter((one) => one.id !== CUT)];
+    const ids = [...new Set(e59.map((one) => one.id))];
+    const catalog = ids.map((id) => {
+      const mine = e59.filter((one) => one.id === id);
+      return built(id, id.startsWith('excerpt.') ? 'excerpt' : 'song', mine[0]!.to, 96, {
+        formerIdentities: mine.map((one) => one.from),
+        tempoRepairedFrom: mine.filter((one) => one.tempoChanged === true).map((one) => one.from),
+      });
+    });
+    await loadThe(catalog);
+    for (const one of e59) {
+      const run = oldRun(one.id, one.from);
+      expect(sameMaterial(file(one.from), file(one.to)), one.id).toBe(true);
+      expect(tempoNotComparable(run), one.id).toBe(false);
+      expect(meetsStandard(run, FULL), one.id).toBe(true);
+      expect(contactIn([oldRun(RENAMED, one.from)], one.id, file(one.to)).contact, one.id).toBe('met');
+    }
   });
 });
 

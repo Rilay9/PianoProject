@@ -1,0 +1,11 @@
+authored: moved 0, the inventory 0
+excerpt: moved 3, the inventory 3
+generated: moved 0, the inventory 0
+kern: moved 60, the inventory 60
+musetrainer: moved 6, the inventory 6
+mutopia: moved 0, the inventory 0
+pdmx: moved 169, the inventory 169
+re-proved, every moved file the sound alone and its old identities named: authored 0, excerpt 3, generated 0, kern 59, musetrainer 5, mutopia 0, pdmx 169
+2 fault(s)
+   FAULT song.classical.chopin-ballade-2.nifc: the old identities do not re-prove ([] against ['974dd6df500a', 'b88fcb7f84bb'])
+   FAULT song.classical.beethoven-fur-elise.easy: the old identities do not re-prove ([] against ['436b77e73869', '6e363b1bbba1'])

@@ -1,0 +1,19 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/lessonClaimsAboutApp.test.ts (288 tests | 2 failed) 367ms
+   ❯ the 2026-09-19 lesson corrections, second-read and under test: the app (80)
+     × blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them 13ms
+     × 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot 2ms
+ ❯ tests/unit/midiParity.test.ts (2 tests | 1 failed) 12ms
+   ❯ the port agrees with the Python converter (1)
+     × has a reference to compare against 8ms
+
+ Test Files  2 failed | 326 passed (328)
+      Tests  3 failed | 7562 passed | 1 skipped | 1 todo (7567)
+   Start at  00:22:06
+   Duration  274.07s (tests 74%, environment 18%, import 6%, transform 2%)
+
+    Isolate  328 workers spawned · ~1.30s startup each (spawn + environment, per file)
+             at least ~21.16s faster with isolate: false — reuses workers across files instead of one per file
+
