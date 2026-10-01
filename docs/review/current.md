@@ -2,6 +2,9 @@
 
 Open handoffs, each with its own file:
 
+- **U122** — `handoffs/00f549d9.md`: no answer needed; superseded by `responses/b47ce498-correction-1.md` (redesign the whole landscape Score chrome) and `b47ce498-correction-2.md` with `docs/review/holistic-reassessment.md` (the posture, now in `operating-procedure.md` §11). U122a (Entry 209) is measuring; its handoff follows.
+- **T62** — `handoffs/f96d996d.md` answered 2026-10-01: APPROVE, closed (`responses/f96d996d.md`).
+- **U122** — `handoffs/00f549d9.md` (respond in `responses/00f549d9.md`). The sideways score bar gets one layout model, with U120 and U121 folded in as its own acceptance cases (Entry 206).
 - **T62** — `handoffs/f96d996d.md` (respond in `responses/f96d996d.md`). CI's browser tests run as eight parallel shards, proven on a disposable branch, and land with one required comment correction (Entry 201).
 - **U118b** — `handoffs/fd23e0c2.md` answered 2026-10-01: APPROVE (`responses/fd23e0c2.md`): U118b satisfies U118's required change, U118 closes with it; the Nocturne 342 × 740 one-bar 115% variance filed as an observation on U32/T41's row, U123 kept P2 as latent; the end-of-piece grand-staff zoom difference left unfiled, one unmatched pair. The folded chip's reserve prices the widest away count the product can print, and the width-change case tests what it says (Entry 205).
 - **U122 and three proposals** — `handoffs/b47ce498.md` answered 2026-10-01 (`responses/b47ce498.md`): U122 APPROVE, dispatched at 842157ef; the hotspot and provenance rules approved with their rewrite, now in `operating-procedure.md` §11; the derived open list approved with one required change, opened as T63.

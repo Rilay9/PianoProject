@@ -46,6 +46,8 @@ Judgement first: the model in a paragraph a reviewer can hold in their head, and
 
 As `operating-procedure.md` §14. This lane's port is **5353**, from a config copy under the worktree's `app/build/u122/`.
 
+**Landed 2026-10-01** (Entry 206; 00f549d9, merged d0c79a77); handoff `handoffs/00f549d9.md`.
+
 ## Record
 
 lane: U122 · closes: — · entry: 206
@@ -54,3 +56,5 @@ in-flight: drafted 2026-10-01 (`U122-the-sideways-score-bar-gets-one-layout-mode
 state: with-reviewer 2026-10-01: with the reviewer before dispatch (Entry 206)
 - approved 2026-10-01: APPROVE, dispatch as written (`responses/b47ce498.md` §1): the bar already has separate symptom predicates and state-specific CSS allocation, enough to justify a design read before U120 or U121 gets another local rule; U118's folded chip is adjacent geometry, absorbed only on a direct shared allocation dependency
 - dispatched 2026-10-01: dispatched at 842157ef, designing (Entry 206)
+- landed 2026-10-01: merged d0c79a77; handoff `handoffs/00f549d9.md`
+- verdict 2026-10-01: APPROVE WITH ONE REQUIRED CHANGE (`responses/b47ce498-correction-1.md`): the approval to build a bottom-bar model withdrawn; redesign the whole landscape Score chrome, comparing materially different surface decompositions before any width allocator, carried by U122a (Entry 209); the design stays as evidence about the current implementation
