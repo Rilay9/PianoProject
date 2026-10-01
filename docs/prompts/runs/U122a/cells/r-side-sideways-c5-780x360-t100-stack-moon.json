@@ -1,0 +1,1478 @@
+{
+ "vw": 780,
+ "vh": 360,
+ "text": "100",
+ "face": "stack",
+ "piece": "moon",
+ "cand": "c5",
+ "mode": "sideways",
+ "install": "installed",
+ "rest": {
+  "cand": "c5",
+  "sideways": true,
+  "chrome": "open",
+  "running": "false",
+  "geometry": {
+   "window": {
+    "w": 780,
+    "h": 360
+   },
+   "rootFont": "16px",
+   "head": null,
+   "top": {
+    "left": 0,
+    "top": 0,
+    "right": 780,
+    "bottom": 19.34,
+    "width": 780,
+    "height": 19.34
+   },
+   "line": null,
+   "corner": null,
+   "strip": null,
+   "bar": {
+    "left": 0,
+    "top": 251.81,
+    "right": 780,
+    "bottom": 304,
+    "width": 780,
+    "height": 52.19
+   },
+   "barVisible": "true",
+   "keys": {
+    "left": 0,
+    "top": 304,
+    "right": 780,
+    "bottom": 360,
+    "width": 780,
+    "height": 56
+   },
+   "band": "22px",
+   "barH": "52px"
+  },
+  "glass": {
+   "stage": {
+    "left": 0,
+    "top": 19.34,
+    "right": 780,
+    "bottom": 252,
+    "width": 780,
+    "height": 232.66
+   },
+   "stavePx": 31.6,
+   "staveTop": 60.9,
+   "ink": {
+    "top": 45.1,
+    "bottom": 253.54
+   },
+   "bars": [
+    0,
+    1,
+    2
+   ],
+   "notesOnStage": 62,
+   "rows": [
+    62
+   ],
+   "ahead": 0,
+   "runBar": null,
+   "ranges": [
+    {
+     "fromMeasure": 0,
+     "toMeasure": 3
+    },
+    {
+     "fromMeasure": 0,
+     "toMeasure": 5
+    }
+   ],
+   "cursorSlot": 0,
+   "fitBy": "height",
+   "settled": "true",
+   "scale": 0.92,
+   "zoom": 0.86,
+   "frozen": null,
+   "readAhead": "single",
+   "slotCount": 1,
+   "systemsPerWindow": 1,
+   "barsShown": 2,
+   "barsAsked": 2,
+   "foldedReserve": 0,
+   "chrome": {
+    "bar": {
+     "rect": {
+      "left": 0,
+      "top": 251.81,
+      "right": 780,
+      "bottom": 304,
+      "width": 780,
+      "height": 52.19
+     },
+     "overStage": false,
+     "notes": 0,
+     "coveredBars": [],
+     "texts": 0,
+     "textWords": [],
+     "paths": 2
+    },
+    "top": {
+     "rect": {
+      "left": 0,
+      "top": 0,
+      "right": 780,
+      "bottom": 19.34,
+      "width": 780,
+      "height": 19.34
+     },
+     "overStage": false,
+     "notes": 0,
+     "coveredBars": [],
+     "texts": 0,
+     "textWords": [],
+     "paths": 0
+    }
+   }
+  },
+  "texts": {
+   "title": {
+    "text": "Piano Sonata No. 14 “Moonlight”, III. Presto agitato",
+    "shown": "Piano Sonata No. 14 “Moonlight”, III. Presto agitato",
+    "cut": "whole"
+   },
+   "titleW": 297.09,
+   "where": {
+    "text": "bar 1 / 201",
+    "shown": "bar 1 / 201",
+    "cut": "whole"
+   },
+   "widest": {
+    "text": "bar 201 / 201",
+    "shown": "bar 201 / 201",
+    "cut": "whole"
+   },
+   "back": {
+    "text": "← Back",
+    "shown": true,
+    "cut": "whole (wraps)",
+    "rect": {
+     "left": 0,
+     "top": 258.41,
+     "right": 54.81,
+     "bottom": 298.41,
+     "width": 54.81,
+     "height": 40
+    }
+   },
+   "status": {
+    "text": "",
+    "shown": "",
+    "cut": "not drawn"
+   },
+   "mode": {
+    "onScreen": false,
+    "label": "Keep tempo",
+    "width": 0,
+    "needs": 105.59,
+    "whole": null
+   },
+   "tempo": {
+    "onScreen": false,
+    "text": "70% · 115 bpm",
+    "whole": null
+   },
+   "hearOnBar": true,
+   "handsOnBar": false
+  },
+  "controls": [
+   {
+    "id": "score-back-side",
+    "shown": true,
+    "rect": {
+     "left": 0,
+     "top": 258.41,
+     "right": 54.81,
+     "bottom": 298.41,
+     "width": 54.81,
+     "height": 40
+    },
+    "inWindow": true,
+    "missed": []
+   },
+   {
+    "id": "score-play",
+    "shown": true,
+    "rect": {
+     "left": 57.2,
+     "top": 258.41,
+     "right": 97.2,
+     "bottom": 298.41,
+     "width": 40,
+     "height": 40
+    },
+    "inWindow": true,
+    "missed": []
+   },
+   {
+    "id": "score-hear",
+    "shown": true,
+    "rect": {
+     "left": 99.59,
+     "top": 258.41,
+     "right": 151.23,
+     "bottom": 298.41,
+     "width": 51.64,
+     "height": 40
+    },
+    "inWindow": true,
+    "missed": []
+   },
+   {
+    "id": "score-mode",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-hands-R",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-hands-L",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-hands-both",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-tempo-label",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-more",
+    "shown": true,
+    "rect": {
+     "left": 740,
+     "top": 258.41,
+     "right": 780,
+     "bottom": 298.41,
+     "width": 40,
+     "height": 40
+    },
+    "inWindow": true,
+    "missed": []
+   }
+  ],
+  "controlRows": 1,
+  "refusal": null,
+  "sent": {
+   "chosen": null,
+   "priced": {
+    "play": 40,
+    "more": 40,
+    "hear": 51.64,
+    "hands": 82.19,
+    "back": 54.81,
+    "modeLong": 106.59,
+    "modeShort": 72.59,
+    "tempoLong": 100.84,
+    "tempoShort": 59.88,
+    "whereWidest": 0,
+    "barGap": 2.4,
+    "groupGap": 6.4,
+    "rowWidth": 780,
+    "titleFloor": 16.06
+   }
+  }
+ },
+ "run-frozen": {
+  "cand": "c5",
+  "sideways": true,
+  "chrome": "open",
+  "running": "true",
+  "geometry": {
+   "window": {
+    "w": 780,
+    "h": 360
+   },
+   "rootFont": "16px",
+   "head": null,
+   "top": {
+    "left": 0,
+    "top": 0,
+    "right": 780,
+    "bottom": 19.34,
+    "width": 780,
+    "height": 19.34
+   },
+   "line": null,
+   "corner": null,
+   "strip": null,
+   "bar": {
+    "left": 0,
+    "top": 251.81,
+    "right": 780,
+    "bottom": 304,
+    "width": 780,
+    "height": 52.19
+   },
+   "barVisible": "true",
+   "keys": {
+    "left": 0,
+    "top": 304,
+    "right": 780,
+    "bottom": 360,
+    "width": 780,
+    "height": 56
+   },
+   "band": "22px",
+   "barH": "52px"
+  },
+  "glass": {
+   "stage": {
+    "left": 0,
+    "top": 0,
+    "right": 780,
+    "bottom": 304,
+    "width": 780,
+    "height": 304
+   },
+   "stavePx": 31.6,
+   "staveTop": 63.56,
+   "ink": {
+    "top": 47.76,
+    "bottom": 252.25
+   },
+   "bars": [
+    0,
+    1,
+    2
+   ],
+   "notesOnStage": 62,
+   "rows": [
+    62
+   ],
+   "ahead": 0,
+   "runBar": 0,
+   "ranges": [
+    {
+     "fromMeasure": 0,
+     "toMeasure": 2
+    },
+    {
+     "fromMeasure": 0,
+     "toMeasure": 3
+    }
+   ],
+   "cursorSlot": 0,
+   "fitBy": "read-ahead",
+   "settled": "true",
+   "scale": 0.92,
+   "zoom": 0.86,
+   "frozen": 0.92,
+   "readAhead": "single",
+   "slotCount": 1,
+   "systemsPerWindow": 1,
+   "barsShown": 1,
+   "barsAsked": 2,
+   "foldedReserve": 0,
+   "chrome": {
+    "bar": {
+     "rect": {
+      "left": 0,
+      "top": 251.81,
+      "right": 780,
+      "bottom": 304,
+      "width": 780,
+      "height": 52.19
+     },
+     "overStage": true,
+     "notes": 0,
+     "coveredBars": [],
+     "texts": 0,
+     "textWords": [],
+     "paths": 0
+    },
+    "top": {
+     "rect": {
+      "left": 0,
+      "top": 0,
+      "right": 780,
+      "bottom": 19.34,
+      "width": 780,
+      "height": 19.34
+     },
+     "overStage": true,
+     "notes": 0,
+     "coveredBars": [],
+     "texts": 0,
+     "textWords": [],
+     "paths": 0
+    }
+   }
+  },
+  "texts": {
+   "title": {
+    "text": "Piano Sonata No. 14 “Moonlight”, III. Presto agitato",
+    "shown": "Piano Sonata No. 14 “Moonlight”, III. Presto agitato",
+    "cut": "whole"
+   },
+   "titleW": 297.09,
+   "where": {
+    "text": "bar 1 / 201",
+    "shown": "bar 1 / 201",
+    "cut": "whole"
+   },
+   "widest": {
+    "text": "bar 201 / 201",
+    "shown": "bar 201 / 201",
+    "cut": "whole"
+   },
+   "back": {
+    "text": "← Back",
+    "shown": true,
+    "cut": "whole (wraps)",
+    "rect": {
+     "left": 0,
+     "top": 258.41,
+     "right": 54.81,
+     "bottom": 298.41,
+     "width": 54.81,
+     "height": 40
+    }
+   },
+   "status": {
+    "text": "",
+    "shown": "",
+    "cut": "not drawn"
+   },
+   "mode": {
+    "onScreen": false,
+    "label": "Wait for me",
+    "width": 0,
+    "needs": 102.59,
+    "whole": null
+   },
+   "tempo": {
+    "onScreen": false,
+    "text": "70% · 115 bpm",
+    "whole": null
+   },
+   "hearOnBar": true,
+   "handsOnBar": false
+  },
+  "controls": [
+   {
+    "id": "score-back-side",
+    "shown": true,
+    "rect": {
+     "left": 0,
+     "top": 258.41,
+     "right": 54.81,
+     "bottom": 298.41,
+     "width": 54.81,
+     "height": 40
+    },
+    "inWindow": true,
+    "missed": []
+   },
+   {
+    "id": "score-play",
+    "shown": true,
+    "rect": {
+     "left": 57.2,
+     "top": 258.41,
+     "right": 97.2,
+     "bottom": 298.41,
+     "width": 40,
+     "height": 40
+    },
+    "inWindow": true,
+    "missed": []
+   },
+   {
+    "id": "score-hear",
+    "shown": true,
+    "rect": {
+     "left": 99.59,
+     "top": 258.41,
+     "right": 151.23,
+     "bottom": 298.41,
+     "width": 51.64,
+     "height": 40
+    },
+    "inWindow": true,
+    "missed": []
+   },
+   {
+    "id": "score-mode",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-hands-R",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-hands-L",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-hands-both",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-tempo-label",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-more",
+    "shown": true,
+    "rect": {
+     "left": 740,
+     "top": 258.41,
+     "right": 780,
+     "bottom": 298.41,
+     "width": 40,
+     "height": 40
+    },
+    "inWindow": true,
+    "missed": []
+   }
+  ],
+  "controlRows": 1,
+  "refusal": null,
+  "sent": {
+   "chosen": null,
+   "priced": {
+    "play": 40,
+    "more": 40,
+    "hear": 51.64,
+    "hands": 82.19,
+    "back": 54.81,
+    "modeLong": 106.59,
+    "modeShort": 72.59,
+    "tempoLong": 100.84,
+    "tempoShort": 59.88,
+    "whereWidest": 0,
+    "barGap": 2.4,
+    "groupGap": 6.4,
+    "rowWidth": 780,
+    "titleFloor": 16.06
+   }
+  }
+ },
+ "run-folded": {
+  "cand": "c5",
+  "sideways": true,
+  "chrome": "folded",
+  "running": "true",
+  "geometry": {
+   "window": {
+    "w": 780,
+    "h": 360
+   },
+   "rootFont": "16px",
+   "head": null,
+   "top": null,
+   "line": null,
+   "corner": null,
+   "strip": null,
+   "bar": {
+    "left": 0,
+    "top": 251.81,
+    "right": 780,
+    "bottom": 304,
+    "width": 780,
+    "height": 52.19
+   },
+   "barVisible": "false",
+   "keys": {
+    "left": 0,
+    "top": 304,
+    "right": 780,
+    "bottom": 360,
+    "width": 780,
+    "height": 56
+   },
+   "band": "22px",
+   "barH": "0px"
+  },
+  "glass": {
+   "stage": {
+    "left": 0,
+    "top": 0,
+    "right": 780,
+    "bottom": 304,
+    "width": 780,
+    "height": 304
+   },
+   "stavePx": 31.6,
+   "staveTop": 63.56,
+   "ink": {
+    "top": 47.76,
+    "bottom": 252.25
+   },
+   "bars": [
+    0,
+    1,
+    2
+   ],
+   "notesOnStage": 62,
+   "rows": [
+    62
+   ],
+   "ahead": 0,
+   "runBar": 0,
+   "ranges": [
+    {
+     "fromMeasure": 0,
+     "toMeasure": 2
+    },
+    {
+     "fromMeasure": 0,
+     "toMeasure": 3
+    }
+   ],
+   "cursorSlot": 0,
+   "fitBy": "read-ahead",
+   "settled": "true",
+   "scale": 0.92,
+   "zoom": 0.86,
+   "frozen": 0.92,
+   "readAhead": "single",
+   "slotCount": 1,
+   "systemsPerWindow": 1,
+   "barsShown": 1,
+   "barsAsked": 2,
+   "foldedReserve": 21.34375,
+   "chrome": {
+    "chip": {
+     "rect": {
+      "left": 701.41,
+      "top": 5,
+      "right": 771,
+      "bottom": 22.34,
+      "width": 69.59,
+      "height": 17.34
+     },
+     "overStage": true,
+     "notes": 0,
+     "coveredBars": [],
+     "texts": 0,
+     "textWords": [],
+     "paths": 0
+    }
+   }
+  },
+  "texts": {
+   "title": {
+    "text": "Piano Sonata No. 14 “Moonlight”, III. Presto agitato",
+    "shown": "",
+    "cut": "not drawn"
+   },
+   "titleW": 0,
+   "where": {
+    "text": "bar 1 / 201",
+    "shown": "",
+    "cut": "not drawn"
+   },
+   "widest": {
+    "text": "bar 201 / 201",
+    "shown": "",
+    "cut": "not drawn"
+   },
+   "back": {
+    "text": "← Back",
+    "shown": false,
+    "cut": "not drawn",
+    "rect": {
+     "left": 0,
+     "top": 258.41,
+     "right": 54.81,
+     "bottom": 298.41,
+     "width": 54.81,
+     "height": 40
+    }
+   },
+   "status": {
+    "text": "",
+    "shown": "",
+    "cut": "not drawn"
+   },
+   "mode": {
+    "onScreen": false,
+    "label": "Wait for me",
+    "width": 0,
+    "needs": 102.59,
+    "whole": null
+   },
+   "tempo": {
+    "onScreen": false,
+    "text": "70% · 115 bpm",
+    "whole": null
+   },
+   "hearOnBar": false,
+   "handsOnBar": false
+  },
+  "controls": [
+   {
+    "id": "score-back-side",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-play",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-hear",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-mode",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-hands-R",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-hands-L",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-hands-both",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-tempo-label",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-more",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   }
+  ],
+  "controlRows": 0,
+  "refusal": null,
+  "sent": {
+   "chosen": null,
+   "priced": {
+    "play": 40,
+    "more": 40,
+    "hear": 51.64,
+    "hands": 82.19,
+    "back": 54.81,
+    "modeLong": 106.59,
+    "modeShort": 72.59,
+    "tempoLong": 100.84,
+    "tempoShort": 59.88,
+    "whereWidest": 0,
+    "barGap": 2.4,
+    "groupGap": 6.4,
+    "rowWidth": 780,
+    "titleFloor": 0
+   }
+  }
+ },
+ "paused": {
+  "cand": "c5",
+  "sideways": true,
+  "chrome": "open",
+  "running": "true",
+  "geometry": {
+   "window": {
+    "w": 780,
+    "h": 360
+   },
+   "rootFont": "16px",
+   "head": null,
+   "top": {
+    "left": 0,
+    "top": 0,
+    "right": 780,
+    "bottom": 19.34,
+    "width": 780,
+    "height": 19.34
+   },
+   "line": null,
+   "corner": null,
+   "strip": {
+    "left": 0,
+    "top": 239.02,
+    "right": 780,
+    "bottom": 256.02,
+    "width": 780,
+    "height": 17
+   },
+   "bar": {
+    "left": 0,
+    "top": 232.42,
+    "right": 780,
+    "bottom": 304,
+    "width": 780,
+    "height": 71.58
+   },
+   "barVisible": "true",
+   "keys": {
+    "left": 0,
+    "top": 304,
+    "right": 780,
+    "bottom": 360,
+    "width": 780,
+    "height": 56
+   },
+   "band": "22px",
+   "barH": "72px"
+  },
+  "glass": {
+   "stage": {
+    "left": 0,
+    "top": 0,
+    "right": 780,
+    "bottom": 304,
+    "width": 780,
+    "height": 304
+   },
+   "stavePx": 31.6,
+   "staveTop": 63.56,
+   "ink": {
+    "top": 47.76,
+    "bottom": 252.25
+   },
+   "bars": [
+    0,
+    1,
+    2
+   ],
+   "notesOnStage": 62,
+   "rows": [
+    62
+   ],
+   "ahead": 0,
+   "runBar": 0,
+   "ranges": [
+    {
+     "fromMeasure": 0,
+     "toMeasure": 2
+    },
+    {
+     "fromMeasure": 0,
+     "toMeasure": 3
+    }
+   ],
+   "cursorSlot": 0,
+   "fitBy": "read-ahead",
+   "settled": "true",
+   "scale": 0.92,
+   "zoom": 0.86,
+   "frozen": 0.92,
+   "readAhead": "single",
+   "slotCount": 1,
+   "systemsPerWindow": 1,
+   "barsShown": 1,
+   "barsAsked": 2,
+   "foldedReserve": 0,
+   "chrome": {
+    "bar": {
+     "rect": {
+      "left": 0,
+      "top": 232.42,
+      "right": 780,
+      "bottom": 304,
+      "width": 780,
+      "height": 71.58
+     },
+     "overStage": true,
+     "notes": 0,
+     "coveredBars": [],
+     "texts": 1,
+     "textWords": [
+      "sf"
+     ],
+     "paths": 17
+    },
+    "top": {
+     "rect": {
+      "left": 0,
+      "top": 0,
+      "right": 780,
+      "bottom": 19.34,
+      "width": 780,
+      "height": 19.34
+     },
+     "overStage": true,
+     "notes": 0,
+     "coveredBars": [],
+     "texts": 0,
+     "textWords": [],
+     "paths": 0
+    }
+   }
+  },
+  "texts": {
+   "title": {
+    "text": "Piano Sonata No. 14 “Moonlight”, III. Presto agitato",
+    "shown": "Piano Sonata No. 14 “Moonlight”, III. Presto agitato",
+    "cut": "whole"
+   },
+   "titleW": 297.09,
+   "where": {
+    "text": "bar 1 / 201",
+    "shown": "bar 1 / 201",
+    "cut": "whole"
+   },
+   "widest": {
+    "text": "bar 201 / 201",
+    "shown": "bar 201 / 201",
+    "cut": "whole"
+   },
+   "back": {
+    "text": "← Back",
+    "shown": true,
+    "cut": "whole (wraps)",
+    "rect": {
+     "left": 0,
+     "top": 258.41,
+     "right": 54.81,
+     "bottom": 298.41,
+     "width": 54.81,
+     "height": 40
+    }
+   },
+   "status": {
+    "text": "Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning.",
+    "shown": "Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning.",
+    "cut": "whole"
+   },
+   "mode": {
+    "onScreen": false,
+    "label": "Wait for me",
+    "width": 0,
+    "needs": 102.59,
+    "whole": null
+   },
+   "tempo": {
+    "onScreen": false,
+    "text": "70% · 115 bpm",
+    "whole": null
+   },
+   "hearOnBar": true,
+   "handsOnBar": false
+  },
+  "controls": [
+   {
+    "id": "score-back-side",
+    "shown": true,
+    "rect": {
+     "left": 0,
+     "top": 258.41,
+     "right": 54.81,
+     "bottom": 298.41,
+     "width": 54.81,
+     "height": 40
+    },
+    "inWindow": true,
+    "missed": []
+   },
+   {
+    "id": "score-play",
+    "shown": true,
+    "rect": {
+     "left": 57.2,
+     "top": 258.41,
+     "right": 97.2,
+     "bottom": 298.41,
+     "width": 40,
+     "height": 40
+    },
+    "inWindow": true,
+    "missed": []
+   },
+   {
+    "id": "score-hear",
+    "shown": true,
+    "rect": {
+     "left": 99.59,
+     "top": 258.41,
+     "right": 151.23,
+     "bottom": 298.41,
+     "width": 51.64,
+     "height": 40
+    },
+    "inWindow": true,
+    "missed": []
+   },
+   {
+    "id": "score-mode",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-hands-R",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-hands-L",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-hands-both",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-tempo-label",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-more",
+    "shown": true,
+    "rect": {
+     "left": 740,
+     "top": 258.41,
+     "right": 780,
+     "bottom": 298.41,
+     "width": 40,
+     "height": 40
+    },
+    "inWindow": true,
+    "missed": []
+   }
+  ],
+  "controlRows": 1,
+  "refusal": null,
+  "sent": {
+   "chosen": null,
+   "priced": {
+    "play": 40,
+    "more": 40,
+    "hear": 51.64,
+    "hands": 82.19,
+    "back": 54.81,
+    "modeLong": 106.59,
+    "modeShort": 72.59,
+    "tempoLong": 100.84,
+    "tempoShort": 59.88,
+    "whereWidest": 0,
+    "barGap": 2.4,
+    "groupGap": 6.4,
+    "rowWidth": 780,
+    "titleFloor": 16.06
+   }
+  }
+ },
+ "paused-refused-play": {
+  "cand": "c5",
+  "sideways": true,
+  "chrome": "open",
+  "running": "true",
+  "geometry": {
+   "window": {
+    "w": 780,
+    "h": 360
+   },
+   "rootFont": "16px",
+   "head": null,
+   "top": {
+    "left": 0,
+    "top": 0,
+    "right": 780,
+    "bottom": 19.34,
+    "width": 780,
+    "height": 19.34
+   },
+   "line": null,
+   "corner": null,
+   "strip": {
+    "left": 0,
+    "top": 239.02,
+    "right": 780,
+    "bottom": 256.02,
+    "width": 780,
+    "height": 17
+   },
+   "bar": {
+    "left": 0,
+    "top": 232.42,
+    "right": 780,
+    "bottom": 304,
+    "width": 780,
+    "height": 71.58
+   },
+   "barVisible": "true",
+   "keys": {
+    "left": 0,
+    "top": 304,
+    "right": 780,
+    "bottom": 360,
+    "width": 780,
+    "height": 56
+   },
+   "band": "22px",
+   "barH": "72px"
+  },
+  "glass": {
+   "stage": {
+    "left": 0,
+    "top": 0,
+    "right": 780,
+    "bottom": 304,
+    "width": 780,
+    "height": 304
+   },
+   "stavePx": 31.6,
+   "staveTop": 63.56,
+   "ink": {
+    "top": 47.76,
+    "bottom": 252.25
+   },
+   "bars": [
+    0,
+    1,
+    2
+   ],
+   "notesOnStage": 62,
+   "rows": [
+    62
+   ],
+   "ahead": 0,
+   "runBar": 0,
+   "ranges": [
+    {
+     "fromMeasure": 0,
+     "toMeasure": 2
+    },
+    {
+     "fromMeasure": 0,
+     "toMeasure": 3
+    }
+   ],
+   "cursorSlot": 0,
+   "fitBy": "read-ahead",
+   "settled": "true",
+   "scale": 0.92,
+   "zoom": 0.86,
+   "frozen": 0.92,
+   "readAhead": "single",
+   "slotCount": 1,
+   "systemsPerWindow": 1,
+   "barsShown": 1,
+   "barsAsked": 2,
+   "foldedReserve": 0,
+   "chrome": {
+    "bar": {
+     "rect": {
+      "left": 0,
+      "top": 232.42,
+      "right": 780,
+      "bottom": 304,
+      "width": 780,
+      "height": 71.58
+     },
+     "overStage": true,
+     "notes": 0,
+     "coveredBars": [],
+     "texts": 1,
+     "textWords": [
+      "sf"
+     ],
+     "paths": 17
+    },
+    "top": {
+     "rect": {
+      "left": 0,
+      "top": 0,
+      "right": 780,
+      "bottom": 19.34,
+      "width": 780,
+      "height": 19.34
+     },
+     "overStage": true,
+     "notes": 0,
+     "coveredBars": [],
+     "texts": 0,
+     "textWords": [],
+     "paths": 0
+    }
+   }
+  },
+  "texts": {
+   "title": {
+    "text": "Piano Sonata No. 14 “Moonlight”, III. Presto agitato",
+    "shown": "Piano Sonata No. 14 “Moonlight”, III. Presto agitato",
+    "cut": "whole"
+   },
+   "titleW": 297.09,
+   "where": {
+    "text": "bar 1 / 201",
+    "shown": "bar 1 / 201",
+    "cut": "whole"
+   },
+   "widest": {
+    "text": "bar 201 / 201",
+    "shown": "bar 201 / 201",
+    "cut": "whole"
+   },
+   "back": {
+    "text": "← Back",
+    "shown": true,
+    "cut": "whole (wraps)",
+    "rect": {
+     "left": 0,
+     "top": 258.41,
+     "right": 54.81,
+     "bottom": 298.41,
+     "width": 54.81,
+     "height": 40
+    }
+   },
+   "status": {
+    "text": "Sound did not start — tap ▶ again",
+    "shown": "Sound did not start — tap ▶ again",
+    "cut": "whole (wraps)"
+   },
+   "mode": {
+    "onScreen": false,
+    "label": "Wait for me",
+    "width": 0,
+    "needs": 102.59,
+    "whole": null
+   },
+   "tempo": {
+    "onScreen": false,
+    "text": "70% · 115 bpm",
+    "whole": null
+   },
+   "hearOnBar": true,
+   "handsOnBar": false
+  },
+  "controls": [
+   {
+    "id": "score-back-side",
+    "shown": true,
+    "rect": {
+     "left": 0,
+     "top": 258.41,
+     "right": 54.81,
+     "bottom": 298.41,
+     "width": 54.81,
+     "height": 40
+    },
+    "inWindow": true,
+    "missed": []
+   },
+   {
+    "id": "score-play",
+    "shown": true,
+    "rect": {
+     "left": 57.2,
+     "top": 258.41,
+     "right": 97.2,
+     "bottom": 298.41,
+     "width": 40,
+     "height": 40
+    },
+    "inWindow": true,
+    "missed": []
+   },
+   {
+    "id": "score-hear",
+    "shown": true,
+    "rect": {
+     "left": 99.59,
+     "top": 258.41,
+     "right": 151.23,
+     "bottom": 298.41,
+     "width": 51.64,
+     "height": 40
+    },
+    "inWindow": true,
+    "missed": []
+   },
+   {
+    "id": "score-mode",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-hands-R",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-hands-L",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-hands-both",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-tempo-label",
+    "shown": false,
+    "rect": null,
+    "inWindow": null,
+    "missed": null
+   },
+   {
+    "id": "score-more",
+    "shown": true,
+    "rect": {
+     "left": 740,
+     "top": 258.41,
+     "right": 780,
+     "bottom": 298.41,
+     "width": 40,
+     "height": 40
+    },
+    "inWindow": true,
+    "missed": []
+   }
+  ],
+  "controlRows": 1,
+  "refusal": {
+   "id": "score-play",
+   "sentence": "Sound did not start — tap ▶ again",
+   "where": "score-status-side",
+   "rect": {
+    "left": 6.39,
+    "top": 239.02,
+    "right": 202.7,
+    "bottom": 256.02,
+    "width": 196.31,
+    "height": 17
+   },
+   "whole": true,
+   "diag": {
+    "t": [
+     6.39,
+     202.7
+    ],
+    "b": [
+     6.39,
+     202.7
+    ],
+    "c": [
+     -1000000000,
+     1000000000
+    ],
+    "sw": 196,
+    "cw": 196,
+    "disp": "block",
+    "ws": "normal"
+   },
+   "lines": 1,
+   "inWindow": true,
+   "named": {
+    "shown": true,
+    "inWindow": true,
+    "rect": {
+     "left": 57.2,
+     "top": 258.41,
+     "right": 97.2,
+     "bottom": 298.41,
+     "width": 40,
+     "height": 40
+    },
+    "missed": []
+   }
+  },
+  "sent": {
+   "chosen": null,
+   "priced": {
+    "play": 40,
+    "more": 40,
+    "hear": 51.64,
+    "hands": 82.19,
+    "back": 54.81,
+    "modeLong": 106.59,
+    "modeShort": 72.59,
+    "tempoLong": 100.84,
+    "tempoShort": 59.88,
+    "whereWidest": 0,
+    "barGap": 2.4,
+    "groupGap": 6.4,
+    "rowWidth": 780,
+    "titleFloor": 16.06
+   }
+  }
+ }
+}

@@ -349,3 +349,178 @@ Not chosen. At the cells where the row cannot hold Hands, or `Hear it`, with eve
 - **Read in the code, not measured: a refusal's growth is not given back to the stage** (J11): `measureBar` runs on a fold and a resize only, so at rest today's grown bar overlays the stage's foot rather than the stage refitting around it as `bb271f4a` described. The build measures when the line comes and goes; its oracle can read `--score-bar-h` against the bar's height.
 - ***Nothing for the left hand in this piece — choose R or Both*** is an ordinary status line that names Hands' controls; where Hands is behind ⋯ it names hidden controls, and as ordinary status it is cut. Not a refusal by any ruling; recorded, not changed.
 - **The probe's model pictures upright show the tempo label at 100 %** where the page's label carried no percentage to read; the priced width (at *130% · 88 bpm*) and the layout are unaffected.
+
+## 8. The one-row premise, measured: the landscape Score chrome (U122a)
+
+The brief (`docs/prompts/tasks/U122a-the-bar-premise-measured.md`) names this section §7; U122's own §7 holds its findings outside the model, so it is §8 here. A design addendum, no app code changed. Worktree base `f9322175`, which contains `842157ef`; nothing under `app/src` differs between the two. It answers the owner's question of 2026-10-01, *why put everything on one line, and why not put the piece's name and the bar location at the top of the screen*, under the reviewer's correction (`docs/review/responses/b47ce498-correction-1.md` §1: test the surface decomposition before the width allocator; `docs/review/holistic-reassessment.md`) and with CL07's reading objective judged in the same comparison (`docs/review/remaining-work-holistic-review-2026-10-01.md`, *U122 + CL07*; `docs/review/responses/questions-90b19bee-correction-1.md`). Evidence: `docs/prompts/runs/U122a/` (Entry 209). **Every pixel count and count of cells below was measured in this machine's Chromium** on U122's two faces; the claims are the relationships (more, less, the same, which term decides). Unverified on a device; nothing was heard; no pedagogical verdict applies except where a control's or a sentence's place changes what a learner can do.
+
+### 8.0 Judgement
+
+**The screen, in product terms (candidate c6, recommended as a product trade, not chosen).**
+
+- **At the top:** one thin line of orientation: the piece's name on the left and `bar n / m` on the right, in the folded chip's type. During a run it lies in the band the run already keeps at the top of the stage for `bar n / m` (§8.2), and when the chrome folds the chip that replaces it says `bar n / m` in the same corner.
+- **At the bottom:** one row of what the hands reach for: Back, ▶, `Hear it`, the mode, Hands, the tempo and ⋯, each priced and chosen by U122's order (§3), with the ordinary status line (the paused line, the ladder's pass line) in the row's spare width.
+- **Only while it stands:** a sound refusal's sentence on a line of its own directly above that row, whose control it names (U122 §3.4 B, unchanged).
+- **Why:** the bar's height costs the music only at rest, because a run gives the bar's whole row to the music at its start (`style.css`:2972–2974); and a run already prices a band at the top for `bar n / m` (`sheetShift`, `WindowRenderer.ts`:2133–2139). So orientation is cheapest at the top, inside that band: it costs a run nothing and costs the at-rest stage one line. The controls stay where the hands are. The refusal, exceptional, takes height only while it stands.
+
+**Why not the others, in one line each.** c1 (U122's one row) costs the music nothing, but the piece's name is drawn whole in 39 of 86 sideways cells at rest and not at all in 60 of 86 while paused. c2 (the same thin line, at the bottom above the controls) costs the same at rest, and the paused line is whole there; but `bar n / m` jumps from the bottom-left to the top-right chip at every fold. c3 (the name and location as an overlay in the corner) covers fingerings, and in Moonlight other ink at the stave's top-right, in 54 of 86 cells at rest; the correction rules out chrome over the score unless the region is measured clear, and it is not. c4 (Back, the name and the location at the top, as the coordinator specified) restores the old header row: Back's tap target sets the zone's height (36–46 px across the three text sizes). At rest it costs the stave in 46 of 86 cells, by up to a fifth. In a run it costs 12 cells, by up to 17 %. c4 and c5 also move the mode, Hands and the tempo behind ⋯ because the code shows they restart a run (§8.3). The selected mode is then readable nowhere on the screen in any cell, which inverts U121's acceptance. Hands' sentences name a control behind ⋯ in every cell. And the bpm that the ladder moves is gone from the screen.
+
+**The one comparison** (sideways: U119a's 64 cells plus U122's 880 × 412, 1200 × 360 and 90 % text cells, 86 cells; "at rest" and "in a run" are against c1 on the same cell; this machine's Chromium):
+
+| | c1 one row (U122) | c2 two tiers, bottom | c3 corner overlay | c4 by role, Back on top | c5 by role, compact top | **c6 context top, controls bottom** |
+| --- | --- | --- | --- | --- | --- | --- |
+| Top / bottom / transient | — / everything / refusal line | — / thin context line + controls / refusal on the thin line | chip over the score / Back, status, controls / refusal line | Back, name, location (folds) / ▶ Hear it ⋯ / status and refusal strip | name, location (in the band) / Back ▶ Hear it ⋯ / status and refusal strip | name, location (in the band) / Back, status, every control / refusal line |
+| Stage at rest | — | 18–25 px less | same | 36–46 px less | 18–22 px less | 18–22 px less |
+| Five-line stave at rest | — | smaller in 16 cells, ≤ 11 % | same | smaller in 46 cells, ≤ 20 % | smaller in 16 cells, < 10 % | smaller in 16 cells, < 10 % |
+| Stave in a run | — | same | same¹ | smaller in 12 cells, up to 17 % | same | same |
+| Next music in view; bars vs the Bars option | in view in every cell | in view everywhere; at rest 2 of 2 bars where c1 shows 1 in 11 cells | as c1 | in view; 2 of 2 in 23 cells at rest, 18 in a run | as c6 | in view everywhere; at rest 2 of 2 where c1 shows 1 in 10 cells |
+| Stave under the 22-px floor | none | none | none | none at rest; 6–7 cells under an at-rest refusal (down to about 18.7 px) | none | none |
+| Chrome over notation | the bar over the foot while shown mid-run: 8 cells (13 under a paused refusal) | 13 cells | the chip over fingerings in 54 cells at rest, 64 paused | the bar and strip over notes in 69 cells paused, 39 at the freeze | 36 cells paused | 10 cells paused, 36 under a paused refusal |
+| Name whole (rest / paused) | 39 / 4, not drawn paused in 60 | 85 / 38 | 46 / 46 | 82 / 82 | 86 / 86 | 86 / 86 |
+| `bar n / m` and its widest whole; Back ≥ 40 px and hit | 86; 80² | 86; 80² | 86; 80² | 86; 80² | 86; 80² | 86; 80² |
+| Selected mode readable | whole, 86 | whole, 86 | whole, 86 | not on the screen | not on the screen | whole, 86 |
+| ▶ and ⋯ ≥ 40 px and hit; one control row | 80²; 86 | 80²; 86 | 80²; 86 | 80²; 86 | 80²; 86 | 80²; 86 |
+| Hands / `Hear it` on the row | 83 / 86 | 86 / 86 | 86 / 86 | behind ⋯ / 86 | behind ⋯ / 86 | 86 / 86 |
+| Paused line whole | 0 (about 26 characters) | 81 | 0 | 86 | 86 | 0 (about 30 characters) |
+| Refusal (▶, Hear it, after a render, over a paused run): whole, one line, in the window, named control drawn and hit | 430 of 430 | 430 of 430 | 430 of 430 | 430 of 430 | 430 of 430 | 430 of 430 |
+| U120 (568 × 320 at 115 %, both faces) | bar 83 px, sentence whole, ▶ and the sentence in the window | 83–85 px, same | 83 px, same | 83 px, same | 83 px, same | 83 px, same |
+| U121 (568 × 320, 115 %, wider face, paused) | *Wait* whole | *Wait for me* whole | *Wait* whole | not on the screen | not on the screen | *Wait* whole |
+| What moves during a run | the music, 22 px down at the fold and back at every reveal (86 of 86 at the reveal); no control | the same | the same | the music, by the zone less the band (up to 24 px) at fold and reveal; no control | nothing | nothing |
+
+¹ One cell's run froze smaller under c3, and the reruns show that is the freeze's own two outcomes, which c1 shows too (§8.6). ² The 6 cells at 90 % text: ▶, ⋯ and Back are 36 px tall in every candidate (the floor is priced in width, the height is `2.5rem`; §8.6).
+
+**The trade c6 puts to the owner (not chosen):**
+
+- *Gains*:
+  - the name and `bar n / m` whole in every sideways cell, at the top;
+  - the music no longer moves at the fold or the reveal, because the sheet sits below the band from the run's start;
+  - Hands stays on the row in 3 cells where c1 sends it behind ⋯.
+- *Losses*:
+  - at rest the stave is smaller in 16 of 86 sideways cells (740 × 342 at 115 % by ≤ 3 %; 880 × 412 and 1200 × 360 by 7–10 %). Every one of those is a cell where the stage's height decides the size at rest; the smallest stave among them is about 29 px (Moonlight, 740 × 342, 115 %), the rest are above 50 px. A run's size is the same as c1's in every cell, and the next music stays in view in every cell;
+  - while a refusal stands over a paused run, its line covers the foot of the music in 36 cells (c1: 13), because the music sits lower by the band whenever the bar is shown.
+
+If the owner declines the trade, c1 is the candidate that costs the music nothing and keeps every control and status invariant; its learner loses the name while paused and keeps the 22-px jump.
+
+**Two more product trades, put and not chosen (§8.8):** where the ordinary status line lives in c6 (the row's spare width, cut at narrow cells, or a strip above the row, whole, over the paused music's foot in 36 cells); and whether the stage refits around a refusal's line at rest (U122's planned `measureBar`, which shrinks the music while the sentence stands) or the line overlays the music's foot.
+
+**CL07, in one line:** the chrome's height costs size only where the height decides. On the phone grid that is the wide, short screens at rest, where the stave is already far above the floor. The read-ahead cap decides the floor-bound cells, so no chrome changes them. A layout that saves height (c1 over c6) pays off only under a maximum-size objective, not under CL07's ruled order (no distortion, comfortably readable, useful next music, then the bar count). **No candidate changes the upright or the tablet screen's music** (c1 against c4: the same stage, stave and systems at rest in all 52 upright and 4 tablet cells, and the same frozen run in 55 of 56; the one exception is a freeze timed after the header's fold under c1 and before it under c4, §8.6). So U33/U78's floor and U5's tablet look-ahead stay with the window rule. U5 is reproduced at 1024 × 768 and 1366 × 1024: Bars 2, two systems of one bar, no next bar, the stave many times the floor.
+
+### 8.1 The question and the candidates
+
+The premise under test is *everything belongs in the bottom bar*. It descends from a valid local decision, hiding the landscape header to give its row to the music (`style.css`:946–963, P21d A6). Six arrangements were built in the real page (the real elements moved and restyled, U122's way) and measured. They cover the reviewer's three families:
+
+| Family (correction §1) | Candidates |
+| --- | --- |
+| 1. Bottom-heavy, a coherent allocator | c1 (U122's model as designed); c2 (the context on a thin line above the control row, both at the bottom) |
+| 2. Split context / control | c4 (the coordinator's: Back, a truncated name and `bar n / m` in a top zone in the flow; the bottom row only ▶, `Hear it`, ⋯; the zone folds with the chrome during a run, as the upright header does); c6 (the name and `bar n / m` on a line at the top in the chip's band; every control in the bottom row) |
+| 3. Split with a transient state surface | c4 and c5 (a strip above the bottom row for the status line and the refusal, drawn only while it says something); c1, c3 and c6 carry the refusal on a transient line of its own, U122 §3.4 B |
+| Float (the folded chip's precedent) | c3 (the name and `bar n / m` in a chip at the stage's top-right, the row holding Back, the status slot and the controls) |
+
+c5 is c4 made compact: the top line is text only, in the chip's type and band, and Back moves to the bottom row. c6 came out of measuring c1–c5. It keeps c5's top line and puts back what c4 and c5 lose by sending setup controls to ⋯. The probe's code is `runs/U122a/scripts-probe.spec.ts`; each candidate's rules are written out there.
+
+### 8.2 What a piece of chrome costs the music, read at the lines
+
+The window rule sizes the music by the smallest of three terms (`scaleFor`, `WindowRenderer.ts`:3975–4120): the height the stage gives the piece's tallest system; the read-ahead cap sideways (the widest bar and the next bar's first note must fit right of the slide's leftmost target); and the width upright. Chrome changes only the first term, and only through the stage's box. Three moments decide what a piece of chrome costs:
+
+- **At rest.** The stage stops above the bar: `.score-stage { margin-bottom: var(--score-bar-h) }` (`style.css`:2901). `measureBar` writes the bar's height (`ScoreScreen.ts`:3567–3570) on a fold and a resize (:3611, :5582). Sideways the header is not drawn (`style.css`:961–963), so the stage is the window less the keys (`--strip-height: 56px` sideways, :1067) and the bar. Upright, the header's row and its help strip sit above the stage. Anything in the flow above the stage, or in the bar, costs the at-rest stage its height.
+- **A run's start.** `section.dataset.running` (`ScoreScreen.ts`:5046) turns `[data-running='true'] .score-stage { margin-bottom: 0 }` on (`style.css`:2972–2974). The stage takes the bar's whole row, and the bar overlays the foot of the music whenever it is shown. The renderer freezes the scale once the stage settles (`FREEZE_SETTLE_MS`, :404) and the piece has been measured, within a bound (`FREEZE_WAIT_FOR_MEASURE_MS`, :391–402; `setRunning` :3874–3880; `freezeAfterSettle` :3927). Sideways, the sliding sheet is priced for the chip's band from the start (`sheetShift`, :2133–2139; `FOLDED_SHEET_SHIFT_PX = 22`, :5025). So **the bar's height costs a run nothing, however tall the bar is**. Anything still in the flow above the stage at the freeze is priced into the run's size: the upright header, or c4's top zone.
+- **The fold** (`CONTROL_BAR_START_HIDE_MS = 700` after the start, `ScoreScreen.ts`:192, :2609; `foldChrome` :3594–3612). The bar goes to `opacity: 0` and `inert`. Sideways the buffers move down by the chip's band (`style.css`:2421–2423), which the price already left. The size holds, and **the music moves down by the band at the fold and back up when the bar is asked back**. Upright the header goes (`style.css`:3022–3024) and the stage grows. The frozen scale is held and never grown: `scaleFor`'s hold (:4091–4100) keeps it while the fit would shrink it by less than a tenth (`FROZEN_OVERFLOW`, :257), nothing grows it, and `fitToStage` does not re-engrave on a height change while frozen (:3611–3627). **The fold gives back room, never size.**
+
+Measured, it holds: across all 86 sideways cells, c1, c2, c3, c5 and c6 freeze at the same stave (`music.txt`), apart from two cells where one run took the freeze's second outcome (§8.6). c4's zone costs a run where the run's height decides (12 cells). Under c1–c4 the music moves 22 px (c4: up to 24) at the fold and back at every reveal, in every cell where it was observable. Under c5 and c6 it does not move, because their rule places the sheet below the band from the run's start. That mechanism is separable: c1 could adopt it, leaving the band empty until the fold.
+
+Consequences for any layout:
+
+- chrome in the bar is paid at rest only;
+- chrome in the flow above the stage is paid at rest and in the run's size, and if it folds, it moves the music when it goes and when it comes back;
+- a float over the stage is paid in notation covered, or, with a reserved band, in the band's height;
+- where the read-ahead cap or the width decides the size, height costs nothing in size, only in what the window's shape does with the stage.
+
+### 8.3 Which bar controls act during play, read at the lines
+
+| Control | What a change does to a run | Lines | Kind |
+| --- | --- | --- | --- |
+| ▶ / ⏸ | starts, pauses, carries on | `togglePlay`, `ScoreScreen.ts`:3115 | during play |
+| `Hear it` | during a run: sets the run aside paused, plays, and brings the run back where it was (T33 C1) | `toggleHear` / `toggleHearNow`, :2835–2870 | during play |
+| ⋯ | opens the sheet | :1645–1649 | the gateway |
+| the mode | `restartForOption`: a running run starts again from its beginning; a paused one starts again held paused (*Restarted at bar 1 in …*) | :1412–1420 → :2932–2947, :2950–2960 | setup |
+| Hands | the same restart (*… with the left hand*); the hand already chosen restarts nothing | `chooseHand`, :1612–1623 | setup |
+| the tempo | the slider's `change` and the bpm field restart the run (*… at 70 %*); the label opens the tempo sheet; the ladder moves the tempo between passes on its own and says so on the status line (*Clean — up to 70 %*), and the label is "the number you read while playing" (:4920) | :1700–1708, :2266–2273, :2742–2762, :1631–1640 | setup, and a readout during a ladder |
+
+`setRunning`'s own comment names the restarts: "a mode change, a hand change, `Hear it` — each of those is a `setRunning(false)` immediately followed by a `setRunning(true)`" (`WindowRenderer.ts`:3895–3899). `Hear it` is the one of the three that brings the learner's run back where it was.
+
+The coordinator's role rule follows the code. The mode, Hands and the tempo are setup choices, and only ▶, `Hear it` and ⋯ act during play. Moving the setup choices behind ⋯ (c4, c5) costs what is *read* rather than *pressed*. The selected mode (U121's whole subject) is no longer on the screen. The bpm a ladder changes is no longer on the screen; its pass sentence still says the new tempo on the status line. *Choose R or Both* and *tap R again* then name a control behind ⋯ in every cell, not only U122 §5.5's 39. That is the reason c6 keeps them on the row. Whether the selected mode should be shown read-only on the top line, so that c5's row could stay short, was not measured; it would be a new element.
+
+### 8.4 Where a candidate costs the music, cell by cell
+
+At rest (stave against c1; `music.txt` has every cell):
+
+- **c2, c5, c6**: 740 × 342 at 115 % (all four face/piece cells: c5/c6 by 0.5–3 %, c2 by 2–5 %); 880 × 412 with When the Saints (c5/c6 7–8 %, c2 7–9 %); 1200 × 360 (all eight: c5/c6 8–10 %, c2 8–11 %). Nowhere else, out of 86.
+- **c4**: 46 cells: 568, 700, 720 and 844 px wide at 115 % text; 740 × 342 and 780 × 360 at 100 % and 115 % (740 × 342 at 90 % too); all 16 cells at 880 × 412 and 1200 × 360. Up to a fifth (1200 × 360 at 115 %).
+- **c3**: none.
+
+In a run: c4 alone, at the 12 wide cells where the run's height decides (880 × 412 and 1200 × 360), by 12–17 %.
+
+Systems in view sideways are one in every candidate and cell (the sliding sheet). The next music is in view in every cell under every candidate, at rest and in a run (`next lost 0` in `summary.txt`). Where a shorter stage turns the at-rest fit from the read-ahead cap to the height, the window holds both bars asked at the same or a slightly smaller stave (c2 11 cells, c5/c6 10, c4 23).
+
+Under a refusal at rest, the stage refits around the refusal's line (U122's planned `measureBar`, emulated by the probe's resize). c6's stave then stays at or above the floor in every cell; the closest is Moonlight at 568 × 320, 115 %, at about 22.3 px (c1's closest about 22.9). c4's falls under the floor in 6–7 cells, down to about 18.7 px.
+
+### 8.5 CL07's reading objective beside the chrome
+
+The measured cells the reviewer named:
+
+- **Floor (U33/U78), upright phone.** Moonlight at 280 × 740 is the upright cell nearest the floor (about 22.2 px, three systems). Upright, c1 and c4 give the same stage, stave and systems in all 52 upright cells: the upright chrome is the header and a one-row bar in both; c4 changes only which controls sit on the row. c2, c3, c5 and c6 are landscape-phone arrangements and do not apply upright. So no candidate changes what any floor value would give upright. Inferred from the identical stage boxes, since the window rule is a function of the stage and the piece; floor values themselves were not varied (no app change).
+- **Tablet look-ahead (U5).** At 1024 × 768 (the gallery's tablet-sideways cell, not a tablet to the app, `isTablet` wants 900 px on the shorter side, `ui/tablet.ts`:24–29) and 1366 × 1024 (a tablet to the app), Bars 2: two systems of one bar each, no third bar inked, the stave 146–225 px for Hot Cross Buns and 48–63 px for Moonlight. Identical under c1 and c4. The landscape-phone rule (`max-height: 500px`) never reaches these screens, so no candidate here changes U5.
+- **Sideways phone.** Under c1, the read-ahead cap decides the size in 68 of 86 cells at rest and 74 in a run; the height decides in the other 18 at rest (the 12 at 880 × 412 and 1200 × 360 with Hot Cross Buns or When the Saints, and Moonlight at 740 × 342 at both text sizes and at 780 × 360 at 115 %) and in those 12 wide cells in a run. Every cell where c6 costs the stave at rest is height-decided, and its stave stays at least 29 px (most above 50). The floor-bound sideways cells (Moonlight at 568 × 320, about 23 px) are decided by the width. There a chrome's height changes nothing, and a higher floor would bind on the width, not the chrome.
+
+**Where a layout would only pay off if the objective changed.** c1's height advantage over c6 buys stave size only on cells already far above any floor under discussion (five-line staves of 25 to 36 px were called readable in the T35 sheet, `WindowRenderer.ts`:106–108). Under the ruled order, size beyond comfortable readability ranks below useful next music, and no candidate changes the next music. So c1's advantage pays off only under a maximum-size objective. Conversely, if CL07 made look-ahead rows take height on the sideways phone (one system today), the at-rest stage would become height-bound in more cells, and every line of chrome would cost more. That interaction is the reason to keep the at-rest chrome to one line.
+
+### 8.6 Findings outside the decision (recorded, not fixed)
+
+- **The freeze has two outcomes for Moonlight on this machine, whatever the chrome** (provenance: pre-existing at `f9322175`; c1, which has today's heights, shows it). The second outcome is about a sixth smaller. At the three cells where one candidate's clean run showed it, the chain's run and three reruns per candidate gave it in 5 of 72 runs, under c1, c3 and c4. At the five runs where the first pass's single page (refusals at rest, then the run) showed it, three reruns of that flow gave it in 3 of 15. On that flow at 568 × 320 it is 19.1 px, under the 22-px floor (`spread.txt`). Both samples were chosen because the outcome had appeared, so neither rate is general. The mechanism is not established; the freeze's race with the piece's measurement (`08` §13a) is the first hypothesis. It attaches to CL07 (U35: a run priced from the cursor's window) as an observation.
+- **The tap minimum's height is in rem.** At 90 % text, ▶, ⋯ and Back are 36 px tall in every candidate: U122's model prices the 40-px floor in width (S13 → `max(2.5rem, 40px)`), while the height stays S12's `min-height: 2.5rem`. This attaches to U122's cluster; the build's S12 wants the same `max(…, 40px)`.
+- **When the freeze comes relative to the fold can change a run's arrangement.** At 1024 × 768 with Moonlight (not a tablet to the app, so the header folds), c1's run froze after the header had folded, at two systems, and c4's before it, at one system and a slightly larger stave. Same class as the first finding: the freeze waits for the piece's measurement, and the stage it prices depends on whether the chrome has folded by then.
+- **A shorter at-rest stage changes the window's shape before a run** (two bars at a height-bound size where the read-ahead cap showed one and the next bar's start). Not a fault; it is why the bars-shown counts move with the chrome at rest.
+
+### 8.7 The allocation within each surface (c6), and what becomes of U122's rules
+
+| Surface | Holds | Allocation |
+| --- | --- | --- |
+| Top line (sideways only) | the name (left, yielding to an ellipsis), `bar n / m` (right, never yields) | one line in the chip's type; at rest in the flow above the stage; from a run's start absolutely over the stage's top band, the sheet below the band (`[data-running]` rather than `[data-chrome='folded']`), the band `max(22px, the line's height)`; hidden while folded, the chip in its place. Measured 18–22 px tall at 90–115 % text, inside the 22-px band; at larger text the band grows to the line and a run pays the difference |
+| Bottom row | Back, the status slot (Back and the status line in the left group), ▶, `Hear it`, the mode, Hands, the tempo, ⋯ | U122's chooser (§3.3) with Back the only fixed text item: the status line's band, then the mode's sentence and the tempo's percentage, then Hands, then `Hear it` |
+| Refusal line | the refusal's sentence, the same element | U122 §3.4 B: the bar's first line while `data-sound-refused` stands |
+
+What becomes of U122's inventory (§1, §4) under c6:
+
+- **Disappear, because the information moved:**
+  - L4 (the name's yield inside the group);
+  - L8 (the name's shrink weight against the status line, and its refusal exception);
+  - J5 (`leftGroupIsCut`, the widest location in the group);
+  - U122's priced *widest location* fixed item;
+  - S6's dead `34vw`.
+- **Remain, because they express a real invariant:**
+  - S1 (the wrap as the fence) and the one control row it guards;
+  - L3's clip (the last fence);
+  - L6 (Back never wraps);
+  - L7 and S7 (the status line's ellipsis and band);
+  - J3's order;
+  - J8;
+  - the own-line refusal (R2 → §3.4 B);
+  - the chip (J13), now the top line's folded form.
+- **Still needed: U122's width allocator**, smaller (one fixed text item instead of two), and S13's tap floor extended to S12's height.
+- **New:** the top line's rule, and the sideways sheet placed below the band from the run's start instead of at the fold.
+- **Upright and tablet:** unchanged.
+
+### 8.8 Product trades and stops, put and not chosen
+
+1. **The decomposition (c6 against c1).** As in §8.0. If declined, c1.
+2. **Where c6's ordinary status line lives.** In the row's spare width (as measured for c6): cut in every cell, about 30 characters on average, *Pause…* at U121's cell. Or on a strip above the row while it says something (measured as c5, whose strip is the same geometry over the same sheet position): whole in every cell, but while paused it covers the foot of the music in 36 of 86 cells, where the row-slot placement covers it in 10. What a learner gains is the whole *Paused — ▶ to carry on, or Start again in ⋯ …*; what they lose is the bottom of the bass staff while paused.
+3. **The refusal at rest: refit or overlay.** U122's build plan re-measures the bar when the refusal's line comes and goes (its J11 addition). Measured here, that refit shrinks the music at rest while the sentence stands: c6 keeps the floor in every cell; c4 does not in 6–7. The alternative is that the line overlays the foot of the music, as it does during a run. Gain from the refit: no note under the sentence at rest. Loss: the music changes size when a refusal comes and goes.
+4. **U122 §5.5 (I7) is unchanged by c6.** Hands is on the row in every sideways cell measured, so sideways *tap R again* names a drawn control. Upright, `Hear it` is behind ⋯ at 280 and 320 px in 8 cells under c1 (`refusal.txt`), as U122 found.
+
+### 8.9 Method and limits
+
+`runs/U122a/scripts-probe.spec.ts` installs each candidate in the real page: the real elements are moved and restyled, and a hidden element with the ⋯ sheet's id stops the app's own allocation loop so that the candidate's alone decides the row. The probe allocates the row by U122's chooser where the candidate has one. It measures the stage, the five lines on the glass (`stavePx`), the inked bars, the fit's term, the frozen scale, every text, every control (hit at five points) and the chrome's boxes against the notes, the SVG text and the ink on the stage. Two flows per cell, each on a fresh page: *run* (at rest, the freeze, after the fold, paused, ▶ refused over the paused run) and *refusal* (▶ then `Hear it` refused at rest, then a render while it stands: the tempo sheet, a resize).
+
+The flows were separated after the first pass suggested that a run's size can depend on what the page drew before it (§8.6); that pass is kept as `history/`. The grids are U122's (U119a's 64 sideways cells, 48 upright, 880 × 412 and 1200 × 360, 90 % text) plus the two tablet cells. The final data is 628 cell-and-candidate pairs, each through both flows: 1,256 tests and 5,652 measured states. In all, 1,575 tests ran, the reruns and the history checks included, and none failed (`run-*.txt`, `rerun-*.txt`). Every at-rest state's stage reserve matches the bar's drawn height (`stale.txt`: 0 of 3,768 disagree). The first pass had 64 that did not, because the row was measured before it was allocated; the probe was fixed and those cells rerun. A first version of c4 let Back wrap in its zone; it was fixed and c4 rerun.
+
+Not measured: a device; any face but these two; text above 115 %; the pieces beyond Hot Cross Buns, Moonlight III and When the Saints; a Hands refusal; floor values other than the code's 22 px.
