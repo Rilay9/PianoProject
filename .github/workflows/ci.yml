@@ -40,9 +40,30 @@ concurrency:
 # If the default branch is later renamed to `main`, update the branch names
 # above and in pages.yml to match.
 
+# The run is a graph of jobs, each on a fresh runner (T62, 2026-10-01). Until then it was one
+# job, `build-and-test`, whose "E2E tests" step was more than half of the run (41m41s of 76m6s on
+# 13e1b1a8, run 36807990772). Now:
+#   content-and-unit     every step the one job ran before the browser tests, in the same order,
+#                        then the app build, then the artifacts the later jobs restore;
+#   e2e                  a matrix: `npm run e2e -- --shard=i/N`, each shard on its own runner,
+#                        serving the app content-and-unit built instead of rebuilding it;
+#   e2e-coverage         every test id in the unsharded collection ran in exactly one shard, read
+#                        from the shards' blob reports (tools/ci/shard_coverage.py);
+#   render-and-validate  the render check and the second validation, after every shard passed,
+#                        on the content content-and-unit built.
+# Nothing crosses a job boundary except an artifact of this run: never a workspace, and never the
+# cross-run content cache, whose restore can hit, miss or match a different key in two jobs
+# (responses/questions-53147902.md §A). tools/content/tests/test_ci_order.py holds the graph.
+
 jobs:
-  build-and-test:
+  content-and-unit:
+    name: Content and unit tests
     runs-on: ubuntu-latest
+    outputs:
+      # Read by render-and-validate, which saves the content cache once the render check has
+      # added its entries to the manifest ("Save the content build cache" there).
+      content-cache-hit: ${{ steps.content-cache.outputs.cache-hit }}
+      content-cache-key: ${{ steps.content-cache.outputs.cache-primary-key }}
     steps:
       - uses: actions/checkout@v4
 
@@ -62,9 +83,14 @@ jobs:
       # list, and the lockfile that pins OpenSheetMusicDisplay. `restore-keys`
       # lets a changed key start from the closest previous cache rather than
       # cold — a partial cache is still correct, because every individual entry
-      # carries its own key inside.
+      # carries its own key inside. Restored here and saved by
+      # render-and-validate after the render check (T62): saved at the end of
+      # this job, as the one job's post step did, it would hold the manifest from
+      # before this run's renders, and the next run would render those files
+      # again. The key and the two paths are the ones pages.yml restores.
       - name: Restore content build cache
-        uses: actions/cache@v4
+        id: content-cache
+        uses: actions/cache/restore@v4
         with:
           path: |
             build/cache
@@ -173,33 +199,296 @@ jobs:
         working-directory: app
         run: npm run test
 
+      - name: Build
+        # The one app build of the run (T62): every browser test, the render
+        # check included, serves this `app/dist`. `prebuild` rebuilds the content
+        # first, so this is the last step that writes app/public/content, and
+        # both artifacts below are taken after it: the copy the app serves and
+        # the copy the render check hashes and rewrites are the same bytes.
+        working-directory: app
+        run: npm run build
+
+      - name: Pack the content and render state
+        # One tar, so the paths come back where they were: an upload of two
+        # paths roots the artifact at their common parent, and that parent moves
+        # when the manifest is absent (a cold cache). The manifest is exactly
+        # what "Restore content build cache" gave this job: nothing here runs
+        # the render check.
+        run: |
+          set -euo pipefail
+          paths=(app/public/content)
+          if [ -f build/render-manifest.json ]; then paths+=(build/render-manifest.json); fi
+          tar -cf build/content-and-render-state.tar "${paths[@]}"
+          echo "packed ${paths[*]}: $(tar -tf build/content-and-render-state.tar | wc -l) entries"
+
+      - name: Upload the built app
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-dist
+          path: app/dist
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 3
+
+      - name: Upload the content and render state
+        uses: actions/upload-artifact@v4
+        with:
+          name: content-and-render-state
+          path: build/content-and-render-state.tar
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: Upload the conversion cache for the cache save
+        # Only when the cache will be saved: an exact hit is never saved again.
+        if: steps.content-cache.outputs.cache-hit != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: content-build-cache
+          path: build/cache
+          if-no-files-found: warn
+          include-hidden-files: true
+          retention-days: 3
+
+  e2e:
+    name: E2E shard ${{ matrix.shard }}/${{ matrix.total }}
+    needs: content-and-unit
+    runs-on: ubuntu-latest
+    strategy:
+      # Every shard runs to its end when another fails, as the one E2E step ran
+      # every test after a failure: a red shard cancelling the rest would hide
+      # their results and their reports.
+      fail-fast: false
+      matrix:
+        # Playwright gives each shard an equal count of tests in collection
+        # order, not an equal share of time, and the slow files sit at the end
+        # of the alphabet; N was set from the baseline run's own per-test times
+        # (T62's report). e2e-coverage reads N from the reports themselves.
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
+        total: [8]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python content-pipeline dependencies
+        # excerpts.spec.ts and microscope.spec.ts run tools/content/excerpts.py
+        # and review.py, in the environment the one job gave them.
+        run: pip install -r tools/content/requirements.txt
+
+      - name: Install app dependencies
+        working-directory: app
+        run: npm ci
+
+      - name: Restore the built app
+        uses: actions/download-artifact@v4
+        with:
+          name: app-dist
+          path: app/dist
+
+      - name: Restore the content and render state
+        uses: actions/download-artifact@v4
+        with:
+          name: content-and-render-state
+          path: build
+
+      - name: Unpack the content and render state
+        # The specs read app/public/content from disk, and the collection is
+        # made from it (placement-branches.spec.ts and side-panel-prose.spec.ts
+        # build tests from the catalogue), so every shard must hold the same
+        # bytes, or `--shard` would split different lists.
+        run: tar -xf build/content-and-render-state.tar
+
       - name: Install Playwright Chromium
         working-directory: app
         run: npx playwright install --with-deps chromium
 
       - name: E2E tests
+        # Keep `npm run e2e` in this line: docs/prompts/checks.json's e2e check
+        # is "npm run e2e", and test_ci_order.py asserts one step runs it.
+        # PIANOPATH_PREBUILT_DIST makes playwright.config.ts's web server serve
+        # the restored app/dist instead of rebuilding it.
         working-directory: app
-        run: npm run e2e
+        env:
+          PIANOPATH_PREBUILT_DIST: '1'
+        run: npm run e2e -- --shard=${{ matrix.shard }}/${{ matrix.total }}
 
-      - name: Build
+      - name: Upload this shard's blob report
+        # Each test's id and result, and its attachments (a retry's trace among
+        # them): what e2e-coverage reads, kept on a red shard too.
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-blob-report-${{ matrix.shard }}-of-${{ matrix.total }}
+          path: app/blob-report
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Upload this shard's test results
+        # The traces of retried tests (`trace: 'on-first-retry'` on CI) and the
+        # failure files, which the runner's disk took with it until T62.
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-test-results-${{ matrix.shard }}-of-${{ matrix.total }}
+          path: app/test-results
+          if-no-files-found: ignore
+          retention-days: 7
+
+  e2e-coverage:
+    name: E2E test-id coverage
+    needs: [content-and-unit, e2e]
+    # After every shard, red ones included, so a failed run still says whether
+    # every test was given to exactly one shard.
+    if: ${{ !cancelled() && needs.content-and-unit.result == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install app dependencies
         working-directory: app
-        run: npm run build
+        run: npm ci
+
+      - name: Restore the content and render state
+        uses: actions/download-artifact@v4
+        with:
+          name: content-and-render-state
+          path: build
+
+      - name: Unpack the content and render state
+        # The collection is made from the catalogue: the same bytes the shards
+        # listed, or the comparison would be against a different list.
+        run: tar -xf build/content-and-render-state.tar
+
+      - name: Restore the shards' blob reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: e2e-blob-report-*
+          path: build/e2e-blob-reports
+
+      - name: List the unsharded collection
+        working-directory: app
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_FILE: ${{ github.workspace }}/build/e2e-collection.json
+        run: npx playwright test --list --reporter=json
+
+      - name: Every test id ran in exactly one shard
+        run: python3 tools/ci/shard_coverage.py --list build/e2e-collection.json --reports build/e2e-blob-reports
+
+  render-and-validate:
+    name: Render check and validate
+    # An ordinary `needs`: this job runs only when content-and-unit and every
+    # shard passed, as the one job skipped these steps after a browser failure.
+    needs: [content-and-unit, e2e]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python content-pipeline dependencies
+        # validate.py reads every score with music21; without it two of its
+        # checks skip without failing.
+        run: pip install -r tools/content/requirements.txt
+
+      - name: Install app dependencies
+        # Playwright, and the OpenSheetMusicDisplay version the render manifest
+        # is keyed on.
+        working-directory: app
+        run: npm ci
+
+      - name: Restore the built app
+        uses: actions/download-artifact@v4
+        with:
+          name: app-dist
+          path: app/dist
+
+      - name: Restore the content and render state
+        uses: actions/download-artifact@v4
+        with:
+          name: content-and-render-state
+          path: build
+
+      - name: Unpack the content and render state
+        run: tar -xf build/content-and-render-state.tar
+
+      - name: Check the served content is the content the render check reads
+        # content-render.spec.ts hashes each score under app/public/content and
+        # renders it from the served app/dist. Serving the restored app instead
+        # of rebuilding it is the same check only while the two copies are the
+        # same bytes (the second read at 0d2c3472, item 3).
+        run: diff -r app/dist/content app/public/content
+
+      - name: Install Playwright Chromium
+        working-directory: app
+        run: npx playwright install --with-deps chromium
 
       - name: Render every catalog item
         # The check that decides whether a score can be used at all: it loads
         # each file through the app's own loader and asserts the ScoreModel has
         # at least one step (docs/03 §3 steps 5-6).
+        env:
+          PIANOPATH_PREBUILT_DIST: '1'
         run: python3 tools/content/render_check.py --apply
 
       - name: Validate again, now that durations have been written
-        # --apply *edits the catalog*, and this job validated it two steps ago,
-        # so nothing had ever checked what the render check wrote. That is how
+        # --apply *edits the catalog*, and the build validated it before the
+        # render check ran (in content-and-unit since T62), so nothing had ever
+        # checked what the render check wrote. That is how
         # six Chopin durations of 22-40 minutes reached the catalog unnoticed:
         # `build.py --render` re-validates and would have caught them, but CI
         # runs the steps separately and did not. The render check now refuses to
         # write a duration the validator would reject; this step is what makes
         # that a guarantee rather than an intention.
         run: python3 tools/content/validate.py
+
+      # The content cache's save, after the render check has added this run's
+      # entries to the manifest, and only when every step before it passed, as
+      # the one job's post step saved only a green job. A save is an
+      # optimisation: the post step warned and never failed the run, so these two
+      # steps may not fail it either.
+      - name: Restore the conversion cache for the cache save
+        if: needs.content-and-unit.outputs.content-cache-hit != 'true'
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: content-build-cache
+          path: build/cache
+
+      - name: Save the content build cache
+        if: needs.content-and-unit.outputs.content-cache-hit != 'true'
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            build/cache
+            build/render-manifest.json
+          key: ${{ needs.content-and-unit.outputs.content-cache-key }}
 
       - name: Upload content previews
         if: always()

@@ -1,0 +1,24 @@
+$ python tools/docs/checks_for_paths.py <the diff's paths>
+UNMATCHED: .gitignore: no pattern in checks.json names it; the full required suites run. Add a pattern for it.
+UNMATCHED: tools/ci/shard_coverage.py: no pattern in checks.json names it; the full required suites run. Add a pattern for it.
+# checks for 8 path(s): 6 matched, 2 unmatched
+# UNMATCHED .gitignore: no pattern names it; the full required suites run
+# UNMATCHED tools/ci/shard_coverage.py: no pattern names it; the full required suites run
+# .github/workflows/ci.yml: .github/workflows/ci.yml
+# app/playwright.config.ts: app/playwright.config.ts
+# tools/content/tests/test_ci_order.py: tools/content/tests/test_*.py
+# tools/content/tests/test_shard_coverage.py: tools/content/tests/test_*.py
+# docs/08-test-map.md: docs/**
+# docs/prompts/runs/T62/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+converter-harness	.	python -m unittest discover -s tools/midi-cleanup/tests -v
+parity-reference	.	python tools/midi-cleanup/tests/parity_reference.py
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test --workers=4

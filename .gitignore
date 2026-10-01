@@ -23,6 +23,8 @@ app/dev-dist/
 app/dist/
 app/playwright-report/
 app/test-results/
+# The blob reporter's output under CI=1 (T62: CI's shards upload it; a local CI=1 run writes it too).
+app/blob-report/
 # Playwright writes these relative to its cwd, which is not always app/.
 playwright-report/
 test-results/
