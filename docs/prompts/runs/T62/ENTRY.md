@@ -33,7 +33,7 @@
   - The only knob for a duration-weighted split is the internal `PWTEST_SHARD_WEIGHTS` environment variable (`lib/runner/index.js` `filterForShard`). It is not in the CLI or the types, and it is not used.
 - **`playwright.config.ts`, the three lines** (`captures-config-proof.txt`, read through Playwright's own loader under five environments, with HEAD's file read the same way):
   - `reporter: process.env.CI ? [['github'], ['list'], ['blob']] : 'list'`
-  - `trace: process.env.CI ? 'on-first-retry' : 'retain-on-failure'`
+  - `trace` is unchanged from HEAD, `'retain-on-failure'`: built as `process.env.CI ? 'on-first-retry' : 'retain-on-failure'`, then reverted by the orchestrator on the reviewer's ruling (`responses/questions-6b46cee5.md`, T62(a)), since `on-first-retry` keeps a flake's passing attempt and `retain-on-failure` keeps the failing one; the per-shard `test-results/` upload, `if: always()`, is the change that makes CI keep it.
   - `command: process.env.CI && process.env.PIANOPATH_PREBUILT_DIST === '1' ? 'npm run preview' : 'npm run build:app && npm run preview'`
   - With the flag unset, the resolved command equals HEAD's literal byte for byte, with CI set or not. It also equals it with the flag set but CI unset, and with `PIANOPATH_PREBUILT_DIST=true`.
   - `baseURL`, `forbidOnly`, `fullyParallel`, `retries`, `storageState`, `workers` and the test count equal HEAD's in every environment.
@@ -122,4 +122,4 @@
 - **checks.json** (a question for the orchestrator; the map is not this lane's): `tools/ci/shard_coverage.py` matches no pattern, so the landing prints it as unmatched and takes the full suites. A row would read `tools/ci/**` → `content-tests: [test_shard_coverage.py, test_ci_order.py]`. `.gitignore` is unmatched too.
 - **`tools/docs/evidence_manifest.py`** lists `ci.yml` runs without `--branch`. While the proof branch exists, a seam's CI line can name a proof run, since that branch's head descends from the working branch.
 - **Observation:** `docs/08-test-map.md`:730 cites `ci.yml:86` for `npm run e2e`, which was already stale at 0d2c3472, where the line is 182.
-- **For the reviewer, carried from the brief:** under `on-first-retry`, a test that fails and then passes keeps the passing attempt's trace. Playwright 1.63 also offers `retain-on-first-failure` and `retain-on-failure-and-retries`. Changing it is one line.
+- **Answered:** the reviewer kept `retain-on-failure` (`responses/questions-6b46cee5.md`, T62(a)); the trace line is back to HEAD's.

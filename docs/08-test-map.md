@@ -172,7 +172,7 @@ the content cache missed, `content-build-cache`. `e2e` is a matrix of N shards (
 content tools' Python dependencies, restoring `app-dist` and the content (the specs read
 `app/public/content`, and the collection is partly made from the catalogue), and serving the
 restored app instead of rebuilding it (`PIANOPATH_PREBUILT_DIST=1`); each uploads its blob report
-and its `test-results/` (`trace: 'on-first-retry'` on CI), whatever its result. `e2e-coverage`,
+and its `test-results/` (the failing attempt's trace, `retain-on-failure`), whatever its result. `e2e-coverage`,
 after every shard, red ones included, lists the unsharded collection and runs
 `tools/ci/shard_coverage.py`: every test id was given to exactly one shard and reported a result
 there (Playwright splits by test under `fullyParallel`, so files are not the unit).

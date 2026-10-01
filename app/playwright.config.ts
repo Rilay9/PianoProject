@@ -62,12 +62,7 @@ export default defineConfig({
     // Matches vite.config.ts's `base` (the app is served under the repo name
     // path, same as it will be on GitHub Pages).
     baseURL: 'http://localhost:4173/PianoProject/',
-    // CI retries once (`retries` above), so CI records a trace only on that
-    // retry and keeps it (T62, the reviewer's setting for U118a's race reds).
-    // A test that fails and then passes keeps the passing attempt's trace, not
-    // the failure's. Locally there is no retry, so a local failure keeps its own
-    // trace, as before.
-    trace: process.env.CI ? 'on-first-retry' : 'retain-on-failure',
+    trace: 'retain-on-failure',
     // Every test starts with the setup tour already skipped, because a fresh
     // origin is a first launch and a first launch is the tour (docs/04 §7d).
     // `setup.spec.ts` starts from nothing on purpose. A spec that clears
