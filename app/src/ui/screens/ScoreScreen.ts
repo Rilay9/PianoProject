@@ -267,11 +267,25 @@ const SOUND_TAPS: readonly SoundTap[] = [
   LOOP_WEAK_TAP,
 ];
 /**
- * The seconds away the chip's reserve prices *Paused — you were away N s.* at
- * (U118): a day's worth. The count has no ceiling of its own, and a phone left
- * longer than a day comes back to a run nobody is still in the middle of.
+ * The counts the chip's reserve prices *Paused — you were away N s.* at (U118;
+ * the reviewer's required change, `responses/bea2d4e2.md`, tightened by
+ * `responses/questions-1cadc4dc.md`): fourteen of each digit, one string per
+ * digit. Layout data only: the sentence on the chip carries the real seconds
+ * (`pausedLine`).
+ *
+ * **The widest count the product can print, not a guess at how long a phone
+ * is left.** The count has no ceiling of its own: nothing ends or rewrites a
+ * run after any span. Its one source is the page's return
+ * (`onVisibilityChange`): `Math.max(1, Math.round((Date.now() - awayFromMs) /
+ * 1000))`, the whole seconds between two `Date.now()` readings, which `String`
+ * prints as plain digits. Two times within `Date`'s range (±8.64e15 ms) are at
+ * most 1.728e13 s apart, fourteen digits. The chip sets no tabular figures and
+ * no letter spacing, so fourteen of the face's widest digit are at least as
+ * wide as any such count, and which digit is widest is the face's to say: all
+ * ten are laid out and the reserve keeps the tallest. Nothing breaks a line
+ * between digits, so the widest run is the tallest sentence of the ten.
  */
-const AWAY_PRICED_S = 86_400;
+const AWAY_PRICED_COUNTS: readonly string[] = Array.from({ length: 10 }, (_, digit) => String(digit).repeat(14));
 
 /**
  * Sight-reading is the one drill kind that is notation (docs/05 §7–§8), so it
@@ -1232,7 +1246,8 @@ export function ScoreScreen(router: Router): HTMLElement {
    * The longest of each kind: the piece's last bar for every bar number, the
    * longest section or bar range for a loop, the tempo row's own maximum, the
    * most bars a window holds. One number has no ceiling of its own, the seconds
-   * away; it is priced at a day's (`AWAY_PRICED_S`).
+   * away; it is priced at the widest fourteen digits the chip's face draws,
+   * the most a span between two `Date` readings prints (`AWAY_PRICED_COUNTS`).
    */
   function cornerTexts(): string[] {
     if (!model) return [];
@@ -1271,8 +1286,8 @@ export function ScoreScreen(router: Router): HTMLElement {
       ...taps.map((tap) => STATE_TEXT.soundOff(tap.control, tap)),
       STATE_TEXT.paused,
       STATE_TEXT.pausedPerforming,
-      STATE_TEXT.away(AWAY_PRICED_S, false),
-      STATE_TEXT.away(AWAY_PRICED_S, true),
+      ...AWAY_PRICED_COUNTS.map((count) => STATE_TEXT.away(count, false)),
+      ...AWAY_PRICED_COUNTS.map((count) => STATE_TEXT.away(count, true)),
       STATE_TEXT.pausedAt(last),
       ...reasons.map((what) => STATE_TEXT.restarted(last, what)),
       STATE_TEXT.hearing,

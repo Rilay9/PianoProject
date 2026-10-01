@@ -466,22 +466,57 @@ describe('the renderer against a stage that changes after it is made (U74)', () 
   });
 
   it('(c) a width change during a run releases the held size, takes a new one and keeps the step', async () => {
+    const held = (renderer: WindowRenderer): { scale: number } | null =>
+      (renderer.debugFit() as { frozen: { scale: number } | null }).frozen;
+    /** Turns a running renderer's stage to 390 x 600 and waits for the size it takes there. */
+    async function turnTo390(stage: Stage, renderer: WindowRenderer): Promise<{ releasedAtTheChange: boolean }> {
+      stage.box = { width: 390, height: 600 };
+      observe();
+      const releasedAtTheChange = held(renderer) === null;
+      // Taken again once the new stage settles: after `FREEZE_SETTLE_MS`, and the piece measured at
+      // the new zoom, up to `FREEZE_WAIT_FOR_MEASURE_MS`; bounded here past that.
+      for (let round = 0; round < 25 && held(renderer) === null; round += 1) {
+        await tick(200);
+        await settle();
+      }
+      return { releasedAtTheChange };
+    }
+    // What the new stage holds: a run started on another width (300 x 480) and turned to the same one.
+    // The size a turn takes is the new stage's, so it does not depend on where the run started.
+    const elsewhere = stageOf(300, 480);
+    const a = await open(elsewhere);
+    observe();
+    await settle();
+    a.setRunning(true);
+    await tick(200);
+    await settle();
+    a.showStep(2);
+    await turnTo390(elsewhere, a);
+    const want = drawn(elsewhere, a);
+    a.setRunning(false);
+    a.dispose();
+    document.body.replaceChildren();
+    observers.length = 0;
+
     const stage = stageOf(342, 531);
     const renderer = await open(stage);
+    // The browser's first observation, which records the width a turn is told from. Without it the
+    // observation in `turnTo390` is the renderer's first, and a first observation is no change of
+    // width: nothing is released, and the size taken at 342 x 531 passes for a new one (U118's
+    // Follow-up 3).
+    observe();
     await settle();
     renderer.setRunning(true);
     await tick(200);
     await settle();
     renderer.showStep(2);
-    const heldBefore = (renderer.debugFit() as { frozen: { scale: number } | null }).frozen;
-    expect(heldBefore, 'the run took a size').not.toBeNull();
-    stage.box = { width: 390, height: 600 };
-    observe();
-    await tick(200);
-    await settle();
-    const heldAfter = (renderer.debugFit() as { frozen: { scale: number } | null }).frozen;
+    expect(held(renderer), 'the run took a size').not.toBeNull();
+    const { releasedAtTheChange } = await turnTo390(stage, renderer);
+    // Let go at the change itself: that size was taken on a stage this is not (`08` §3.3).
+    expect(releasedAtTheChange, 'the held size let go at the width change').toBe(true);
+    expect(held(renderer), 'the run holds a size on the new stage').not.toBeNull();
+    expectSamePicture(drawn(stage, renderer), want, 'held on the new stage, against a run turned there from 300 x 480');
     expect(renderer.stepIndex, 'the step the run was on').toBe(2);
-    expect(heldAfter, 'the run holds a size on the new stage').not.toBeNull();
     expect(drawn(stage, renderer).rows.some((r) => r.startsWith('0-')), 'the bar being played is on the glass').toBe(true);
     renderer.setRunning(false);
     renderer.dispose();
