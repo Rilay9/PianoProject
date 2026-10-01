@@ -499,6 +499,51 @@
                 }
               }
             },
+            "formerGeneratorIdentities": {
+              "description": "CL15: the generator identities a generated row's music had before its family's version moved, where that item's music did not change: the generated-identity continuity relation (`tools/content/generator_continuity.json` records each bumped family's items as the catalogue held them at the version the family left, with each item's music digest there), written by the generator only where the item's music digest now equals the recorded one (`family_contracts.former_generator_identities`), so an item whose notes changed gets none. Only on a generated row; never the row's own identity. Learner continuity only, the boundary `formerIdentities` draws for a file: a learner's run, encounter, pruned run's summary or project stored against the old identity names this row's material (`material.learnerMaterial`); D2's review record, `sameIdentity`, the review's current identity and every family-scoped read keep reading `identity` alone.",
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "kind",
+                  "family",
+                  "version",
+                  "seed",
+                  "recipe",
+                  "tempoBpm"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "generator"
+                  },
+                  "family": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "version": {
+                    "type": "integer"
+                  },
+                  "seed": {
+                    "type": [
+                      "integer",
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "recipe": {
+                    "type": "object"
+                  },
+                  "tempoBpm": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  }
+                }
+              }
+            },
             "transferOf": {
               "type": "object",
               "description": "A transfer role's relationship as its family contract declares it for the recipe (D4 item 4): the skill it is transfer material for, the families it was written against, the surface dimensions declared to differ and what stays unmeasured. Selection intent and relationship facts, never evidence.",

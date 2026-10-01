@@ -42,6 +42,16 @@
  *   stored its `tempoPct` of the converter's defaulted 96, so the build lists those old files apart
  *   (`provenance.tempoRepairedFrom`) and `tempoNotComparable` says which stored runs they are, for the
  *   one reader that judges a stored run's tempo against the item's standard (`rungState.meetsStandard`).
+ * - **A former generator identity: learner continuity only** (CL15; the reviewer's required change,
+ *   `docs/review/responses/questions-122a5224.md` §CL15). A generator family's version belongs to the
+ *   whole family, so moving it moves the identity of every item in it, the items whose notes did not
+ *   change among them. Each such unchanged item carries the identity it had at the version the family
+ *   left (`provenance.formerGeneratorIdentities`, written by the generator only where the item's music
+ *   digest there equals its digest now; an item whose notes changed carries none), and a learner row
+ *   stored against that old identity names this row's material, resolved at read exactly as a former
+ *   file is (a second map, below). The same rule: an identity that is some row's current identity is
+ *   never read back as a former one. D2's `sameIdentity`, the review's current identity and the family a
+ *   row belongs to (`transfer.ts` reads `identity.family`) keep reading `identity` alone.
  */
 import { sameIdentity, type Identity } from '../review/record';
 import type { PhraseGenerator, SessionRow } from '../data/db';
@@ -57,11 +67,16 @@ export function knownMaterial(material: Identity | undefined): material is Known
 }
 
 type FileIdentity = Extract<Identity, { kind: 'file' }>;
+type GeneratorIdentity = Extract<Identity, { kind: 'generator' }>;
 
 /** The loaded catalogue's former identities: a former sha256 to its row's current file identity. */
 let currentOfFormer = new Map<string, FileIdentity>();
 /** And back: a current sha256 to the former sha256s that resolve to it, for the lookups. */
 let formersOfCurrent = new Map<string, string[]>();
+/** CL15: a former generator identity's stored key (`materialKey`) to its row's current generator identity. */
+let currentOfFormerGenerator = new Map<string, GeneratorIdentity>();
+/** And back: a current generator identity's key to the former keys that resolve to it, for the lookups. */
+let formerGeneratorsOfCurrent = new Map<string, string[]>();
 /** E50b: the former sha256s whose file a reviewed repair changed the tempo of (`provenance.tempoRepairedFrom`). */
 let tempoRepairedFiles = new Set<string>();
 /** E50b: the rows whose tempo such a repair changed: a run of one that stored no material predates the repair. */
@@ -73,20 +88,37 @@ let tempoRepairedRows = new Set<string>();
  * replaced, never added to. A row's former identity resolves to the row's current identity, with one
  * rule: a sha256 that is some row's current identity is never a former one, whichever row lists it —
  * a current file is always its own material. The same rows feed E50b's tempo lineage
- * (`tempoNotComparable`), under the same rule.
+ * (`tempoNotComparable`), under the same rule. CL15: a generated row's former generator identities
+ * (`provenance.formerGeneratorIdentities`) resolve to the row's current generator identity in a second
+ * map, by the same rule — a generator identity that is some row's current identity is never a former one.
  */
 export function learnFormerIdentities(items: readonly CatalogItem[]): void {
   const current = new Set<string>();
+  const currentGenerators = new Set<string>();
   for (const item of items) {
     const identity = item.provenance?.identity;
     if (identity?.kind === 'file') current.add(identity.sha256);
+    if (identity?.kind === 'generator') currentGenerators.add(generatorKey(identity));
   }
   const toCurrent = new Map<string, FileIdentity>();
   const back = new Map<string, string[]>();
+  const generatorToCurrent = new Map<string, GeneratorIdentity>();
+  const generatorBack = new Map<string, string[]>();
   const tempoFiles = new Set<string>();
   const tempoRows = new Set<string>();
   for (const item of items) {
     const identity = item.provenance?.identity;
+    const formerGenerators = item.provenance?.formerGeneratorIdentities;
+    if (identity?.kind === 'generator' && formerGenerators !== undefined) {
+      const own = generatorKey(identity);
+      for (const one of formerGenerators) {
+        if (one.kind !== 'generator') continue;
+        const key = generatorKey(one);
+        if (currentGenerators.has(key)) continue;
+        generatorToCurrent.set(key, identity);
+        generatorBack.set(own, [...(generatorBack.get(own) ?? []), key]);
+      }
+    }
     const former = item.provenance?.formerIdentities;
     if (identity?.kind !== 'file' || former === undefined) continue;
     for (const one of former) {
@@ -103,6 +135,8 @@ export function learnFormerIdentities(items: readonly CatalogItem[]): void {
   }
   currentOfFormer = toCurrent;
   formersOfCurrent = back;
+  currentOfFormerGenerator = generatorToCurrent;
+  formerGeneratorsOfCurrent = generatorBack;
   tempoRepairedFiles = tempoFiles;
   tempoRepairedRows = tempoRows;
 }
@@ -141,13 +175,21 @@ export function tempoRepairedRow(itemId: string): boolean {
 
 /**
  * The learner material a stored identity names now: a file identity the loaded catalogue lists among a
- * row's former identities is that row's current identity; every other identity — a current file, a
- * file no row lists, a generator, `none`, none at all — is returned as it is. For learner continuity
- * and catalogue lookup only (the module note): never for a question about exact bytes.
+ * row's former identities is that row's current identity, and so is a generator identity a generated row
+ * lists among its former generator identities (CL15); every other identity — a current file or
+ * generator, one no row lists, `none`, none at all — is returned as it is. For learner continuity and
+ * catalogue lookup only (the module note): never for a question about exact bytes or the exact review
+ * identity.
  */
-export function learnerMaterial<T extends Identity | undefined>(material: T): T | FileIdentity {
+export function learnerMaterial<T extends Identity | undefined>(material: T): T | FileIdentity | GeneratorIdentity {
+  if (material?.kind === 'generator') return currentOfFormerGenerator.get(generatorKey(material)) ?? material;
   if (material?.kind !== 'file') return material;
   return currentOfFormer.get(material.sha256) ?? material;
+}
+
+/** A generator identity's stored key (`materialKey`'s spelling; a generator's key never reads the item id). */
+function generatorKey(material: GeneratorIdentity): string {
+  return materialKey(material, '');
 }
 
 /**
@@ -232,12 +274,13 @@ export function learnerMaterialKey(material: Identity | undefined, itemId: strin
 
 /**
  * Every key a material's stored rows may sit under (E50a): its current key and the key of each former
- * identity of its row, for a lookup by key (the `encounters` index, the `contacts` store). One key for
- * anything else.
+ * identity of its row, for a lookup by key (the `encounters` index, the `contacts` store) — a former file
+ * for a file, a former generator identity for a generated row (CL15). One key for anything else.
  */
 export function learnerMaterialKeys(material: Identity | undefined, itemId: string): string[] {
   const resolved = learnerMaterial(material);
   const own = materialKey(resolved, itemId);
+  if (resolved?.kind === 'generator') return [own, ...(formerGeneratorsOfCurrent.get(own) ?? [])];
   if (resolved?.kind !== 'file') return [own];
   return [own, ...(formersOfCurrent.get(resolved.sha256) ?? []).map((sha256) => `file:${sha256}`)];
 }

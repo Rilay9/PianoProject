@@ -589,7 +589,8 @@ def established_by_contract(entry: dict, row: dict) -> list[str]:
     each `requires` rule that states a density — a count per bar, or a count of two or
     more — and that the item meets, by the contract's own gate (`pedagogical_faults`
     on that one rule). A rule asking only for presence states no density and
-    establishes nothing here (the tie drill's one tie in four bars, D0 finding 6).
+    establishes nothing here (the tie drill's one tie in four bars was D0 finding 6's
+    example; since CL15 its rule asks for two, and the drill's two establish it).
     """
     import family_contracts as FC
 
@@ -833,6 +834,9 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
       a notated item's built file by its sha256 (an excerpt's cut included); `none`, with the reason,
       for a drill made when it opens or a placeholder — so every run can store the exact versioned
       material it played and the app never recomputes it.
+    - `formerGeneratorIdentities` (CL15): on a generated row of a family whose version moved, the
+      identity the item had at the version left, where the generator proved its music unchanged
+      (`family_contracts.former_generator_identities`); learner continuity only.
     - `transferOf` (D4 item 4): a transfer role's relationship as its family contract declares it for
       the recipe (`transfer_of`: the skill, the families it was written against, the dimensions
       declared to differ, what stays unmeasured), an authored fact; intent, never evidence.
@@ -862,10 +866,16 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
             here = by_id[here["variantOf"]]
         return here
 
+    # CL15: the generator's proven former identities (`family_contracts.former_generator_identities`),
+    # carried on a generated row only as far as this step and written beside its identity below.
+    former_generators: dict[str, list[dict]] = {}
     for entry in entries:
         kind = source_kind(entry)
         # Q76: what the [MUTO] import did, carried on the row only as far as this step.
         mutopia = entry.pop("_mutopia", None)
+        carried_generators = entry.pop("_formerGeneratorIdentities", None)
+        if carried_generators:
+            former_generators[entry["id"]] = carried_generators
         if kind == "excerpt":
             continue  # after every parent's record, below: it carries the parent's chain down
         source = entry.get("source") or {}
@@ -1077,11 +1087,22 @@ def attach_provenance(entries: list[dict], out_dir: Path | None = None) -> None:
     # measured its percentage of another tempo, so no tempo-dependent standard reads it against this
     # row's (`material.tempoNotComparable`, `rungState.meetsStandard`). Still learner continuity only:
     # the approval stays stale and its `parentSha256` untouched.
+    # CL15: on a generated row of a family whose version moved, the identity the item had at the
+    # version left, where the generator proved its music unchanged (the generated-identity continuity
+    # relation, `generator_continuity.json`). Learner continuity only, as for a file: never the row's
+    # own identity, never an identity some row holds now, and D2's record reads `identity` alone.
     from convert import former_identities, repaired_identities
 
-    for entry_id, identity in review.identities(entries, out_dir).items():
+    identities = review.identities(entries, out_dir)
+    current_generators = [identity for identity in identities.values() if identity.get("kind") == "generator"]
+    for entry_id, identity in identities.items():
         provenance = by_id[entry_id]["provenance"]
         provenance["identity"] = identity
+        if identity.get("kind") == "generator" and entry_id in former_generators:
+            kept = [one for one in former_generators[entry_id]
+                    if one.get("kind") == "generator" and not any(review.same_identity(one, now) for now in current_generators)]
+            if kept:
+                provenance["formerGeneratorIdentities"] = kept
         if identity.get("kind") == "file" and out_dir is not None:
             path = out_dir / by_id[entry_id]["file"]
             shas = former_identities(path)

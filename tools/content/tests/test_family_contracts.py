@@ -17,7 +17,12 @@ table to that shape, table-driven over the makers rather than one file per famil
 - **the census, extended**: a mutation of every promise a row makes — each required
   opportunity, each forbidden demand, the target skill's opportunity, the physical limits, the
   fingering claim, the musical hook — makes its gate fail on that family's own item. The
-  census of `test_generator_invariants.py` stays as it is; this is its contract half.
+  census of `test_generator_invariants.py` stays as it is; this is its contract half;
+- **CL15**: a canonical role names an item the plan ships, for every family (G54); a title,
+  concept or tag never names a skill whose opportunity the app's detectors do not find in the
+  item (G51's syncopation naming); the tie drill's density is a count of independent across-bar
+  ties (G51); and a family-wide version bump carries each unchanged item's old identity, proven
+  per item by its music digest, and no changed item's (the generated-identity continuity relation).
 """
 from __future__ import annotations
 
@@ -26,6 +31,7 @@ import copy
 import hashlib
 import inspect
 import json
+import re
 import sys
 import unittest
 from collections import defaultdict
@@ -48,21 +54,10 @@ def makers() -> dict[str, object]:
             if name.startswith("make_") and obj.__module__ == G.__name__}
 
 
-def music_digest(sc, entry: dict) -> str:
-    """The music an item is: every strike's onset, length, written pitches and tie, per staff, and the tempo and metre."""
-    parts = []
-    for part in sc.parts:
-        events = []
-        for n in part.recurse().notes:
-            if isinstance(n, harmony.ChordSymbol):
-                continue
-            tie = n.tie.type if n.tie is not None else ""
-            events.append((float(n.getOffsetInHierarchy(part)), float(n.duration.quarterLength),
-                           tuple(p.nameWithOctave for p in n.pitches), tie))
-        parts.append((part.id, sorted(events)))
-    signature = next(iter(sc.recurse().getElementsByClass(meter.TimeSignature)), None)
-    blob = json.dumps([parts, entry.get("tempoBpm"), signature.ratioString if signature else None])
-    return hashlib.sha256(blob.encode("utf-8")).hexdigest()
+#: The music an item is (every strike's onset, length, written pitches and tie, per staff, and the
+#: tempo and metre). One definition, `family_contracts.music_digest` since CL15: the continuity
+#: relation proves an unchanged item by the same digest this file's identity tests read.
+music_digest = FC.music_digest
 
 
 def identity_key(entry: dict) -> str:
@@ -358,6 +353,224 @@ class TestTheMutationCensus(unittest.TestCase):
             reddened[family] = count
         self.assertEqual(unreddened, [], "promises whose mutation did not fail the gate")
         self.assertEqual(sorted(f for f, n in reddened.items() if n == 0), [], "families no mutation reaches")
+
+
+# --------------------------------------------------------------------------------------
+# CL15
+# --------------------------------------------------------------------------------------
+
+
+def planned_item(item_id: str) -> tuple:
+    return next((sc, entry) for sc, entry in planned.plan() if entry["id"] == item_id)
+
+
+class TestACanonicalRoleNamesAShippedItem(unittest.TestCase):
+    """
+    G54 (CL15): a family's canonical role names an item the plan ships, for every family.
+
+    `power_chord`'s row named `{"key": "C"}` while the plan writes A, E and D (`make_power_chord`'s
+    own reasoning: the keys the track is played in), so the family had no canonical item at all and
+    D2's queue stood in for one. The rule is read over every family's canonical clause, so a row
+    written the same way elsewhere fails here too.
+    """
+
+    @staticmethod
+    def unmatched(contracts: dict) -> tuple[list[str], int]:
+        families = planned.by_family()
+        missing: list[str] = []
+        checked = 0
+        for family, row in contracts.items():
+            for rule in row["roles"]["assign"]:
+                if rule["role"] != "canonical" or not rule.get("when"):
+                    continue
+                checked += 1
+                if not any(FC.matches(rule["when"], FC.recipe_of(entry)) for _sc, entry in families.get(family, [])):
+                    missing.append(f"{family}: canonical when {rule['when']} matches no planned item")
+        return missing, checked
+
+    def test_every_canonical_when_matches_a_planned_item(self) -> None:
+        missing, checked = self.unmatched(FC.contracts())
+        self.assertEqual(missing, [])
+        self.assertGreater(checked, 50, "every family's canonical clause is read, not one family's")
+
+    def test_a_canonical_key_the_plan_never_writes_is_refused(self) -> None:
+        contracts = copy.deepcopy(FC.contracts())
+        contracts["power_chord"]["roles"]["assign"][0]["when"] = {"key": "C"}
+        missing, _checked = self.unmatched(contracts)
+        self.assertEqual(missing, ["power_chord: canonical when {'key': 'C'} matches no planned item"])
+
+    def test_the_power_chord_canonical_item_is_the_a_root(self) -> None:
+        roles = {entry["id"]: entry["role"] for _sc, entry in planned.by_family()["power_chord"]}
+        self.assertEqual(roles, {"exercise.power-chord.a": "canonical", "exercise.power-chord.e": "variable",
+                                 "exercise.power-chord.d": "variable"})
+
+
+def names_skill(skill_id: str, text: str) -> bool:
+    """`text` names the skill: its id as a word, a plural allowed ("syncopation", "ties")."""
+    return re.search(r"(?<![\w-])" + re.escape(skill_id.lower()) + r"s?(?![\w-])", text.lower()) is not None
+
+
+class TestANameClaimsOnlyWhatTheDetectorsFind(unittest.TestCase):
+    """
+    G51 (CL15): an item's title, concepts and tags never name a skill whose opportunity the app's
+    own detectors do not find in it.
+
+    The sixteenth-note drill was titled "Sixteenth-note syncopation" and both syncopation items
+    listed the `syncopation` concept, which the Library prints under what the item trains, while the
+    family's contract said the detectors find no syncopation in either (T37's definition counts a
+    note a quarter or longer off the beat; the drill's off-beat notes are eighths, and the tie starts
+    on the beat). The rule is the vocabulary's: a skill named is a skill whose opportunity demands
+    the measured file holds. It is not "never name a not-judged candidate" — a tremolo drill is a
+    tremolo, and naming its material is honest where judging the ability is out of reach.
+    """
+
+    @staticmethod
+    def faults(entries: list[dict]) -> list[str]:
+        skills, _demands = FC.vocabulary()
+        measured = planned.measured()
+        out = []
+        for entry in entries:
+            present = set(measured[entry["id"]]["demands"])
+            words = [entry["title"], *entry.get("concepts", []), *entry.get("tags", [])]
+            for skill_id, skill in skills.items():
+                opportunity = skill["opportunity"]
+                if opportunity == "every-step":
+                    continue
+                if any(names_skill(skill_id, word) for word in words) and not present & set(opportunity):
+                    out.append(f"{entry['id']}: names {skill_id}, and the detectors find none of {opportunity}")
+        return out
+
+    def test_no_item_names_a_skill_its_music_holds_no_opportunity_for(self) -> None:
+        self.assertEqual(self.faults([entry for _sc, entry in planned.plan()]), [])
+
+    def test_the_check_reads_the_title_and_the_concepts(self) -> None:
+        _sc, entry = planned_item("exercise.syncopation.sixteenth")
+        titled = dict(entry, title="Sixteenth-note syncopation")
+        conceptual = dict(entry, concepts=[*entry["concepts"], "syncopation"])
+        why = "exercise.syncopation.sixteenth: names syncopation, and the detectors find none of ['rhythm.syncopation']"
+        self.assertEqual(self.faults([titled]), [why])
+        self.assertEqual(self.faults([conceptual]), [why])
+        self.assertTrue(names_skill("tie", "Ties across the bar line"))
+        self.assertFalse(names_skill("tie", "tied-across-bar"))
+
+
+def across_bar_ties(sc, part_id: str = "RH") -> list[tuple[float, float]]:
+    """(onset, written length) of each note on the staff that starts in one bar and ends in a later one, a tie chain as one note."""
+    part = next(p for p in sc.parts if p.id == part_id)
+    bar = float(next(iter(sc.recurse().getElementsByClass(meter.TimeSignature))).barDuration.quarterLength)
+    chains: list[list[float]] = []
+    for n in part.recurse().notes:
+        if isinstance(n, harmony.ChordSymbol):
+            continue
+        length = float(n.duration.quarterLength)
+        if n.tie is not None and n.tie.type in ("stop", "continue") and chains:
+            chains[-1][1] += length
+            continue
+        chains.append([float(n.getOffsetInHierarchy(part)), length])
+    return [(onset, length) for onset, length in chains if int(onset // bar) != int((onset + length - 1e-9) // bar)]
+
+
+class TestTheTieDrillHasDensity(unittest.TestCase):
+    """
+    G51 (CL15; the reviewer's ruling, `responses/questions-e71ef3ad.md` §CL15): one tie across the bar
+    in four bars is an example, not practice. At least two independent across-bar ties in the
+    four-bar drill, as a minimum count of opportunities, never a pattern that repeats one bar's shape.
+    """
+
+    def test_two_independent_across_bar_ties_in_four_bars(self) -> None:
+        sc, _entry = planned_item("exercise.syncopation.tied-across-bar")
+        ties = across_bar_ties(sc)
+        self.assertGreaterEqual(len(ties), 2, ties)
+        bar = 4.0
+        self.assertEqual(len({(onset % bar, length) for onset, length in ties}), len(ties),
+                         f"a crossing repeats another's rhythm cell: {ties}")
+        self.assertEqual(len({int((onset + length) // bar) for onset, length in ties}), len(ties),
+                         f"two crossings share a barline: {ties}")
+
+    def test_the_contract_states_the_floor_as_a_count_and_the_file_meets_it(self) -> None:
+        _sc, entry = planned_item("exercise.syncopation.tied-across-bar")
+        row = FC.contract("syncopation")
+        recipe = FC.recipe_of(entry)
+        rules = [rule for rule in FC.selected(row["requires"], recipe) if rule["demand"] == "rhythm.ties"]
+        self.assertEqual([rule.get("min") for rule in rules], [2])
+        self.assertNotIn("minPer", rules[0])
+        measured = planned.measured()[entry["id"]]
+        self.assertGreaterEqual(measured["opportunities"]["rhythm.ties"], 2)
+        self.assertEqual(FC.pedagogical_faults(row, recipe, measured), [])
+
+    def test_the_counter_finds_no_crossing_in_a_figure_inside_the_bar(self) -> None:
+        sc, _entry = G.make_rhythm("dotted-quarter-eighth")
+        self.assertEqual(across_bar_ties(sc, sc.parts[0].id), [])
+
+
+class TestGeneratedIdentityContinuity(unittest.TestCase):
+    """
+    CL15 item 9 (the reviewer's required change, `responses/questions-122a5224.md` §CL15): a version
+    belongs to a whole family, so a bump moves every item's identity, the unchanged ones among them.
+    `generator_continuity.json` records each bumped family's items as the catalogue held them at the
+    version left, with each item's music digest there; `family_contracts.former_generator_identities`
+    carries the old identity onto an item only where its music digest now is the recorded one. So an
+    unchanged sibling keeps learner continuity, proven per item rather than by shape or form name, and
+    a changed item takes the new identity with no link to its old music.
+    """
+
+    def test_the_table_records_every_item_of_each_family_at_the_version_left(self) -> None:
+        table = FC.continuity_table()["families"]
+        self.assertTrue(table)
+        families = planned.by_family()
+        for family, record in table.items():
+            with self.subTest(family=family):
+                self.assertEqual(sorted(record["items"]), sorted(entry["id"] for _sc, entry in families[family]))
+                self.assertEqual(record["to"], FC.contract(family)["version"],
+                                 "the family moved again: record the version it left now")
+                self.assertLess(record["from"], record["to"])
+                for item_id, one in record["items"].items():
+                    self.assertEqual((one["identity"]["kind"], one["identity"]["family"], one["identity"]["version"]),
+                                     ("generator", family, record["from"]), item_id)
+                    self.assertRegex(one["digest"], r"^[0-9a-f]{64}$")
+
+    def test_an_unchanged_item_carries_its_old_identity_and_a_changed_one_none(self) -> None:
+        table = FC.continuity_table()["families"]
+        carried, changed = [], []
+        for sc, entry in planned.plan():
+            formers = FC.former_generator_identities(sc, entry)
+            record = table.get(entry["drill"]["generator"]["family"])
+            with self.subTest(item=entry["id"]):
+                if record is None:
+                    self.assertEqual(formers, [])
+                    continue
+                one = record["items"][entry["id"]]
+                if one["digest"] == FC.music_digest(sc, entry):
+                    self.assertEqual(formers, [one["identity"]])
+                    current = review.generator_identity(entry)
+                    self.assertEqual({**one["identity"], "version": current["version"]}, current,
+                                     "the old identity is the item's own at the version left")
+                    self.assertFalse(review.same_identity(one["identity"], current))
+                    carried.append(entry["id"])
+                else:
+                    self.assertEqual(formers, [])
+                    changed.append(entry["id"])
+        self.assertTrue(carried and changed)
+
+    def test_the_siblings_the_ruling_names(self) -> None:
+        carried = {entry["id"] for sc, entry in planned.plan() if FC.former_generator_identities(sc, entry)}
+        octaves = {entry["id"] for _sc, entry in planned.by_family()["tremolo_octaves"] if entry["drill"]["params"]["shape"] == "octave"}
+        thirds = {entry["id"] for _sc, entry in planned.by_family()["tremolo_octaves"] if entry["drill"]["params"]["shape"] == "third"}
+        blues = {entry["id"] for _sc, entry in planned.by_family()["pentatonic"] if entry["drill"]["params"]["form"] == "blues"}
+        pentatonic = {entry["id"] for _sc, entry in planned.by_family()["pentatonic"] if entry["drill"]["params"]["form"] == "pentatonic"}
+        self.assertEqual([len(octaves), len(thirds), len(blues), len(pentatonic)], [6, 6, 3, 3])
+        self.assertLessEqual(octaves | blues | {"exercise.syncopation.sixteenth"}, carried)
+        self.assertEqual((thirds | pentatonic | {"exercise.syncopation.tied-across-bar"}) & carried, set())
+
+    def test_a_digest_that_does_not_match_carries_nothing(self) -> None:
+        sc, entry = planned_item("exercise.tremolo.c.right")
+        table = copy.deepcopy(FC.continuity_table())
+        self.assertEqual(len(FC.former_generator_identities(sc, entry, table)), 1)
+        table["families"]["tremolo_octaves"]["items"][entry["id"]]["digest"] = "0" * 64
+        self.assertEqual(FC.former_generator_identities(sc, entry, table), [])
+        table = copy.deepcopy(FC.continuity_table())
+        table["families"]["tremolo_octaves"]["to"] += 1
+        self.assertEqual(FC.former_generator_identities(sc, entry, table), [], "a table for another version is not read")
 
 
 if __name__ == "__main__":

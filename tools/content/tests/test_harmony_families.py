@@ -273,10 +273,14 @@ class TestSlashBass(HarmonyFamilyCase):
 
 
 class TestWalkingBass(HarmonyFamilyCase):
-    def test_the_blues_is_twelve_bars(self) -> None:
+    def test_the_blues_is_twelve_bars_and_the_closing_bar(self) -> None:
+        # Revised (CL15; the old assumption: twelve bars, the line stopping on bar twelve's approach
+        # note). The form is still `TWELVE_BAR`'s twelve, charted as it was, and a closing bar on the
+        # tonic chord follows it: a finite line resolves to the tonic (the reviewer's ruling).
         sc, entry = make_walking_bass("F", "blues")
-        self.assertEqual(len(sc.parts[0].getElementsByClass("Measure")), 12)
-        self.assertCharted(sc, entry["id"], 12)
+        self.assertEqual(len(sc.parts[0].getElementsByClass("Measure")), 13)
+        self.assertCharted(sc, entry["id"], 13)
+        self.assertEqual(symbols(sc)[-1], symbols(sc)[0], "the closing bar is the tonic chord bar one charts")
 
     def test_four_notes_to_the_bar(self) -> None:
         sc, _ = make_walking_bass("C", "ii-V-I")
@@ -285,12 +289,14 @@ class TestWalkingBass(HarmonyFamilyCase):
         self.assertTrue(all(n.quarterLength == 1.0 for n in bass))
 
     def test_each_bar_approaches_the_next_root_from_a_semitone_below(self) -> None:
-        # The reason a walking line sounds inevitable rather than random.
+        # The reason a walking line sounds inevitable rather than random. Revised (CL15; the old
+        # assumption: bar twelve approaches bar one, the form read as a loop): every approach leads
+        # to the root written after it, bar twelve's to the closing bar's tonic.
         sc, _ = make_walking_bass("C", "blues")
         bass = [n.pitches[0].ps for n in sc.parts[1].recurse().notes]
         for bar in range(12):
             approach = bass[bar * 4 + 3]
-            next_root = bass[((bar + 1) % 12) * 4]
+            next_root = bass[(bar + 1) * 4]
             self.assertEqual(next_root - approach, 1.0, f"bar {bar + 1}")
 
     def test_both_forms_in_every_key(self) -> None:
@@ -801,13 +807,16 @@ class TestTheMinorBlues(HarmonyFamilyCase):
         self.assertEqual(majors[10], minors[10])
 
     def test_the_walking_line_still_approaches_from_a_semitone_below(self) -> None:
+        # Revised (CL15; the old assumption: the form's twelve bars and nothing after, bar twelve
+        # approaching bar one): the twelve, then the closing bar on the tonic, each approach leading
+        # to the root written after it.
         sc, entry = make_walking_bass("C", "minor-blues")
         bass = [n.pitches[0].ps for n in sc.parts[1].recurse().notes]
         self.assertEqual(len(sc.parts[0].getElementsByClass("Measure")),
-                         len(TWELVE_BAR_MINOR))
+                         len(TWELVE_BAR_MINOR) + 1)
         for bar in range(len(TWELVE_BAR_MINOR)):
             approach = bass[bar * 4 + 3]
-            next_root = bass[((bar + 1) % len(TWELVE_BAR_MINOR)) * 4]
+            next_root = bass[(bar + 1) * 4]
             self.assertEqual(next_root - approach, 1.0, f"bar {bar + 1}")
         self.assertReadable(sc, entry["id"])
 

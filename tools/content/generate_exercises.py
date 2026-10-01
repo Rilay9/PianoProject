@@ -1981,10 +1981,17 @@ def make_interval_reading(seed: int, hands: str = "right", bpm: int = 66, level:
     title = f"Steps and skips in C position — no. {seed}"
     sc, rh, lh = grand_staff(title, bpm, ks=k)
 
-    degree = 1                                    # index into the five-finger position 1..5
+    # The first note is any degree of the position, the tonic included (CL15, G7).
+    # It was a move from a degree 1 that is never written, so every melody began on
+    # D or E — "multiple starting notes", the progression's second step, with two.
+    degree: int | None = None                     # index into the five-finger position 1..5
     events: list[tuple[int, float]] = []
     for _ in range(4):
         for length in rng.choice(INTERVAL_BAR_RHYTHMS):
+            if degree is None:
+                degree = rng.choice([1, 2, 3, 4, 5])
+                events.append((degree, float(length)))
+                continue
             move = rng.choice([-2, -1, 1, 2])      # a 3rd or a 2nd, either direction
             candidate = degree + move
             if not 1 <= candidate <= 5:
@@ -2554,7 +2561,7 @@ def make_trill(
     return sc, entry
 
 
-#: The two tremolos, as (semitones apart, lower finger, upper finger, level).
+#: The two tremolos, as (scale steps apart, lower finger, upper finger, level).
 #:
 #: A third and an octave are the same wrist motion at two sizes, and the size is
 #: the whole difficulty: the hand that plays a third tremolo is closed and can
@@ -2565,10 +2572,16 @@ def make_trill(
 #: three things it teaches and nothing in the app played one — the only tremolo
 #: was the octave, which is level 7.2 and sits two stages above that rung. The
 #: shimmering right hand over a blues is a third, not an octave.
+#:
+#: Steps of the key's major scale, not semitones (CL15, G51). The third was four
+#: semitones, so walking up C major it sounded C-E, then D-F sharp and E-G sharp:
+#: a major third moved by step, two notes outside the key on every item. Two
+#: steps up the scale is the key's own third on each degree, major or minor as
+#: the key gives it (C-E, D-F, E-G, F-A); seven steps is the octave it always was.
 TREMOLOS: dict[str, tuple[int, int, int, float]] = {
-    #          semitones  lower  upper  level
-    "third":  (4, 1, 3, 5.0),
-    "octave": (12, 1, 5, 7.2),
+    #          steps  lower  upper  level
+    "third":  (2, 1, 3, 5.0),
+    "octave": (7, 1, 5, 7.2),
 }
 
 
@@ -2576,7 +2589,9 @@ def make_tremolo_octaves(
     tonic: str = "C", hands: str = "right", bpm: int = 60, shape: str = "octave",
 ) -> tuple[stream.Score, dict]:
     """
-    A tremolo: two notes alternating in sixteenths, an octave or a third apart.
+    A tremolo: two notes alternating in sixteenths, an octave or a third apart,
+    on each of the key's first four degrees — the third the key's own on each
+    degree, major or minor as the scale gives it.
 
     Hanon 51-60 territory. The exercise is the forearm, not the fingers, so the
     fingering is the interval's own — 1 and 5 for an octave, 1 and 4 when the
@@ -2584,22 +2599,25 @@ def make_tremolo_octaves(
     """
     one_of("hands", hands, HANDS)
     one_of("shape", shape, tuple(TREMOLOS))
-    semitones, lower_finger, upper_finger, level = TREMOLOS[shape]
+    steps, lower_finger, upper_finger, level = TREMOLOS[shape]
     label = "Octave tremolo" if shape == "octave" else "Tremolo in 3rds"
     title = f"{label} in {note_name(tonic)} — {hands}"
     sc, rh, lh = grand_staff(title, bpm, ks=key.Key(tonic))
     scale_obj = scale.MajorScale(tonic)
-    roots = scale_obj.getPitches(pitch.Pitch(tonic + "4"), pitch.Pitch(tonic + "5"))[:4]
+    # Two octaves of the scale: the fourth degree's octave is eleven steps up.
+    degrees = scale_obj.getPitches(pitch.Pitch(tonic + "4"), pitch.Pitch(tonic + "6"))
 
     def build(part_: stream.PartStaff, transpose: int, is_right: bool) -> float:
         total = 0.0
-        for root in roots:
+        for index in range(4):
             # Octaves, not a semitone count: the left hand's -24 respelled a
             # D flat tremolo as C sharp, under a five-flat key signature.
-            low = by_octaves(root, transpose // 12)
-            # A named interval, not a semitone count: the second spelling of a
-            # D flat octave came back as C sharp.
-            high = up(low, semitones)
+            low = by_octaves(degrees[index], transpose // 12)
+            # The scale's own note `steps` above, spelled by the key: the key's
+            # third on this degree, or its octave. A semitone count wrote a major
+            # third on every degree (D-F sharp in C), and respelled the second
+            # D flat of an octave as C sharp.
+            high = by_octaves(degrees[index + steps], transpose // 12)
             # The stretch finger drops to 4 on a black key, which only applies
             # to the octave — a third is taken 1-3 whatever colour it lands on.
             outer = (4 if (shape == "octave" and high.pitchClass in BLACK_PITCH_CLASSES)
@@ -2890,7 +2908,7 @@ def make_voicing(tonic: str = "C", bpm: int = 54) -> tuple[stream.Score, dict]:
 
 
 # --------------------------------------------------------------------------------------
-# rhythm: ties across the bar, 16th syncopation, and the odd meters
+# rhythm: ties across the bar, a 16th-note figure, and the odd meters
 # --------------------------------------------------------------------------------------
 
 
@@ -2898,7 +2916,12 @@ def make_syncopation(
     variant: str = "tied-across-bar", bpm: int = 76,
 ) -> tuple[stream.Score, dict]:
     """
-    Ties over the barline, and syncopation at the sixteenth.
+    Ties over the barline, and a sixteenth-note figure over held chords.
+
+    The family is named for syncopation and neither item holds one by the app's
+    definition (T37: a note a quarter or longer off the beat): the ties start on
+    the beat and the sixteenth figure's off-beat notes are eighths. So the items
+    are named and tagged for what they hold, and the contract says the rest.
 
     `make_rhythm` writes patterns inside a bar. What neither it nor anything
     else wrote is a note that *starts* in one bar and belongs to the next,
@@ -2907,20 +2930,31 @@ def make_syncopation(
 
     one_of("variant", variant, ("tied-across-bar", "sixteenth"))
     level = 5.4 if variant == "tied-across-bar" else 6.4
+    # Named by what the page holds (CL15, G51). The second was "Sixteenth-note
+    # syncopation", and the family's contract says the app's syncopation (T37's
+    # definition: a note a quarter or longer off the beat) is nowhere in it: its
+    # off-beat notes are eighths. It is a sixteenth-note rhythm over held chords.
     title = ("Ties across the bar line" if variant == "tied-across-bar"
-             else "Sixteenth-note syncopation")
+             else "Sixteenth-note rhythm over held chords")
     sc, rh, lh = grand_staff(title, bpm)
     rh.insert(0, direction_text("Count out loud; the pulse does not move"))
 
     if variant == "tied-across-bar":
-        pattern = [1.0, 1.0, 1.0, 1.5, 0.5, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        # Two ties across the bar line in four bars, each its own shape (CL15; the
+        # reviewer's density rule, at least two independent ties in a four-bar
+        # drill and never one bar's shape copied). Beat four held into the next
+        # bar's "and" of one, then beat three held through the barline to beat
+        # two. Both start on the beat, so neither is a syncopation by the app's
+        # definition: the item is the tie, and its contract says so.
+        pattern = [1.0, 1.0, 1.0, 1.5, 0.5, 1.0, 2.0, 1.0, 1.0, 3.0, 1.0, 2.0]
     else:
         pattern = [0.25, 0.5, 0.25, 0.5, 0.5, 0.5, 0.5, 0.25, 0.5, 0.25,
                    0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1.0, 1.0]
     # Both of these stopped part-way through a bar — fourteen quarters and ten,
     # so the last bar of each was half empty and the left hand's whole-note
     # chords ran out before the right hand did. Hold the final note to the
-    # barline, which is how a phrase ends anyway.
+    # barline, which is how a phrase ends anyway. (The tie pattern is four
+    # whole bars since CL15; the sixteenth figure still needs the hold.)
     short = (-sum(pattern)) % 4.0
     if short:
         pattern = pattern[:-1] + [pattern[-1] + short]
@@ -2936,8 +2970,12 @@ def make_syncopation(
     finalize(sc)
 
     item_id = f"exercise.syncopation.{variant}"
+    # No `syncopation` concept on either variant (CL15, G51): the Library prints an
+    # item's concepts as what it trains, and the detectors find no syncopation in
+    # either (the ties start on the beat; the sixteenth figure's off-beat notes are
+    # eighths). The family keeps its name: `make_syncopation` is the maker's id.
     entry = catalog_entry(
-        item_id, title, level, ["rhythm", "syncopation", variant], "both", bpm,
+        item_id, title, level, ["rhythm", variant], "both", bpm,
         "syncopation", {"variant": variant, "timeSig": "4/4"},
         f"scores/generated/{item_id}.mxl",
         family="syncopation",
@@ -3939,7 +3977,9 @@ def make_walking_bass(
 
     Four notes to the bar, root-third-fifth-approach: the approach note is a
     semitone below the next bar's root, so each bar's last note leads into the
-    next bar's first.
+    next bar's first. The last approach leads to the tonic, and the closing bar
+    walks the tonic chord up to its octave, ending on the tonic: a bar after the
+    twelve of a blues, or the ii-V-I's own last bar.
 
     **intro** is the left hand alone and slower. `blues.5` introduces the
     walking line at band 3.4-5.2 and the only studies were at 6.2 and 6.4, so
@@ -3963,6 +4003,24 @@ def make_walking_bass(
     sc, rh, lh = grand_staff(
         title, bpm, ks=minor_key(tonic) if form == "minor-blues" else key.Key(tonic))
 
+    # The line ends on the tonic (CL15; the reviewer's ruling: a finite exercise
+    # not marked as a loop resolves to the tonic, and an approach note that only
+    # makes sense when the item repeats belongs to a looped variant, which nothing
+    # here writes). Every approach note led to the next bar's root *modulo the
+    # form*, so the last one led back to bar one and the line stopped on it: an
+    # approach into a chorus that was not written. Now the last approach leads to
+    # the tonic, and the closing bar, on the tonic chord, walks root, third, fifth
+    # and the octave, so the line lands on the tonic on its downbeat and ends on
+    # it. A blues form's bar twelve is a V7 and stays one — `TWELVE_BAR` is the
+    # form's one statement, which the boogie and the lessons read too — so the
+    # closing bar comes after the twelve; the ii-V-I's last bar is already a I, so
+    # it is that bar. Still four quarters: the detectors read the left-hand
+    # pattern and the walk in every bar (`detect.ts`'s whole-piece rule), and a
+    # held tonic would have taken both demands off every two-hand item.
+    if bars[-1][0] != 0:
+        bars = bars + [(0, bars[0][1])]
+    closing = len(bars) - 1
+
     offset = 0.0
     for index, (degree, quality) in enumerate(bars):
         root_name = _transpose_name(tonic, degree)
@@ -3973,13 +4031,17 @@ def make_walking_bass(
         # families landed, and found by the confirmation in `finalize`.
         third = triad(quality)[1]
         root = pitch.Pitch(root_name + "2")
-        next_degree = bars[(index + 1) % len(bars)][0]
-        next_root = pitch.Pitch(_transpose_name(tonic, next_degree) + "2")
-        # A semitone under the next root: the note that makes the line sound
-        # like it was going there all along.
-        approach = _readable(next_root.transpose(interval.Interval("-m2")))
-        line = [root, up(root, third), up(root, 7), approach]
-        add_notes(lh, line, walking_bass_fingers(line), 1.0)
+        if index == closing:
+            # Root, third, fifth, octave: 5-3-2-1, the hand over the chord and
+            # the thumb on the octave it ends on.
+            add_notes(lh, [root, up(root, third), up(root, 7), by_octaves(root, 1)], [5, 3, 2, 1], 1.0)
+        else:
+            next_root = pitch.Pitch(_transpose_name(tonic, bars[index + 1][0]) + "2")
+            # A semitone under the next root: the note that makes the line sound
+            # like it was going there all along.
+            approach = _readable(next_root.transpose(interval.Interval("-m2")))
+            line = [root, up(root, third), up(root, 7), approach]
+            add_notes(lh, line, walking_bass_fingers(line), 1.0)
         # The right hand comps the shell so the line has something to walk under —
         # except at the intro tier, where the line is the whole exercise.
         if tier == "intro":
@@ -5647,6 +5709,15 @@ def make_pentatonic(
     n = len(up_)
     up_fingers = [1, 2, 3, 1, 2, 3, 4][:n] if n <= 7 else [1, 2, 3, 1, 2, 3, 4, 5][:n]
     fingers = up_fingers + list(reversed(up_fingers))[1:]
+    if form == "pentatonic":
+        # Up and down twice (CL15, G51). Once was eleven eighths at 72, about 4.6
+        # seconds, under docs/03 §3's five-second floor, so the render check wrote
+        # no duration and the validator's floor check, which reads only a written
+        # duration, never saw it. The figure repeats rather than slowing down, as
+        # the broken seventh's does, and turns at the bottom without striking the
+        # tonic twice. The blues form's thirteen eighths already clear the floor.
+        seq = seq + seq[1:]
+        fingers = fingers + fingers[1:]
     add_notes(rh, seq, fingers, 0.5)
     lh.append(note.Rest(quarterLength=len(seq) * 0.5))
     rh.insert(0, direction_text("Thumb under, no bump"))
@@ -6381,6 +6452,13 @@ def main() -> None:
         # cannot do this: it never sees the score, which is the only thing that
         # knows what key signature was actually engraved.
         entry["keySig"] = engraved_key(sc, (entry.get("drill") or {}).get("params", {}).get("key"))
+        # CL15: the same place, for the continuity relation. An item of a family whose
+        # version moved carries the identity it had at the version left only where its
+        # music digest is the one recorded there (`generator_continuity.json`), which
+        # only the score can say; `build.attach_provenance` writes it on the row.
+        former = family_contracts.former_generator_identities(sc, entry)
+        if former:
+            entry["_formerGeneratorIdentities"] = former
         entries.append(entry)
     os.makedirs(os.path.dirname(os.path.abspath(args.catalog)), exist_ok=True)
     with open(args.catalog, "w", encoding="utf-8") as f:

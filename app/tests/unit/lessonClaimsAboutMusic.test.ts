@@ -1720,16 +1720,23 @@ const T12_MUSIC: [string, string, () => boolean][] = [
     'blues.5',
     'the walking bass is four quarters a bar, root–third–fifth then an approach note',
     () => {
+      // Revised (CL15; the old assumption: twelve bars, the twelfth ending on an approach note into a
+      // chorus the exercise never writes). The twelve bars of the form are as they were, and the line
+      // now closes on the tonic in a thirteenth bar, the tonic chord walked to its octave, so every
+      // approach note arrives "on the root of the next chord on beat one", the last one included.
       const bars = t12FullBars('exercise.walking-bass.c.blues.intro', 2);
+      const midi = (notes: T12Note[] | undefined, at: number): number => notes?.[at]?.midi ?? 0;
       return (
-        bars.length === 12 &&
+        bars.length === 13 &&
         bars.every(
           (notes) => notes.length === 4 && notes.every((note) => note.type === 'quarter'),
         ) &&
         bars.every((notes) => {
           const root = notes[0]?.midi ?? 0;
           return (notes[1]?.midi ?? 0) - root === 4 && (notes[2]?.midi ?? 0) - root === 7;
-        })
+        }) &&
+        bars.slice(0, 12).every((notes, bar) => midi(notes, 3) + 1 === midi(bars[bar + 1], 0)) &&
+        midi(bars[12], 3) - midi(bars[12], 0) === 12
       );
     },
   ],

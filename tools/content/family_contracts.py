@@ -32,6 +32,10 @@ This module owns the table's reading and the gates:
 
 Nothing here decides a demand. A demand has one definition and it is the app's
 (`app/src/demands/detect.ts`, `docs/03` "A demand has one definition").
+
+It also owns the generated-identity continuity relation (CL15, `former_generator_identities`):
+when a family's version moves, an item whose music did not change carries the identity it had,
+proven by its music digest against `generator_continuity.json`.
 """
 from __future__ import annotations
 
@@ -146,6 +150,71 @@ def role_of(row: dict, recipe: dict) -> str:
 def identity(family: str, recipe: dict) -> dict:
     """G21: family + recipe (the drill params) + seed + generator version."""
     return {"family": family, "version": contract(family)["version"], "seed": recipe.get("seed")}
+
+
+# --------------------------------------------------------------------------------------
+# the generated-identity continuity relation (CL15)
+# --------------------------------------------------------------------------------------
+
+#: Each bumped family's items as the catalogue held them at the version the family left, with
+#: each item's music digest there (CL15; `former_generator_identities`).
+CONTINUITY = HERE / "generator_continuity.json"
+
+
+def music_digest(sc, entry: dict) -> str:
+    """
+    The music an item is: every strike's onset, length, written pitches and tie, per staff, and the
+    tempo and metre. The identity pins (`tests/fixtures/identity_pins.json`) and the clash test read
+    it per family; the continuity relation reads it per item. Moved here from
+    `test_family_contracts.py` by CL15 so both read one definition.
+    """
+    import hashlib
+
+    from music21 import harmony, meter
+
+    parts = []
+    for part in sc.parts:
+        events = []
+        for n in part.recurse().notes:
+            if isinstance(n, harmony.ChordSymbol):
+                continue
+            tie = n.tie.type if n.tie is not None else ""
+            events.append((float(n.getOffsetInHierarchy(part)), float(n.duration.quarterLength),
+                           tuple(p.nameWithOctave for p in n.pitches), tie))
+        parts.append((part.id, sorted(events)))
+    signature = next(iter(sc.recurse().getElementsByClass(meter.TimeSignature)), None)
+    blob = json.dumps([parts, entry.get("tempoBpm"), signature.ratioString if signature else None])
+    return hashlib.sha256(blob.encode("utf-8")).hexdigest()
+
+
+@lru_cache(maxsize=1)
+def continuity_table() -> dict:
+    return json.loads(CONTINUITY.read_text(encoding="utf-8"))
+
+
+def former_generator_identities(sc, entry: dict, table: dict | None = None) -> list[dict]:
+    """
+    The generator identities an item had before its family's version moved, where its music did not
+    change (CL15, the reviewer's required change, `docs/review/responses/questions-122a5224.md` §CL15).
+
+    A version belongs to the whole family (`identity`), so a bump moves every item's identity, the
+    items whose notes did not change among them. The table records each bumped family's items at the
+    version left — the identity the catalogue held (`review.generator_identity`) and the item's
+    `music_digest` there — and an item carries its recorded identity only where its digest now is the
+    recorded one: proven per item, never by shape or form name. A changed item carries none, so it
+    takes the new identity with no link to its old music; a table written for another version than
+    the family's now is not read. Learner continuity only (`provenance.formerGeneratorIdentities`,
+    `material.learnerMaterial`): D2's exact identity and every family-scoped read keep reading the
+    row's own identity.
+    """
+    generator = (entry.get("drill") or {}).get("generator") or {}
+    record = (table if table is not None else continuity_table())["families"].get(generator.get("family"))
+    if record is None or record["to"] != generator.get("version"):
+        return []
+    one = record["items"].get(entry["id"])
+    if one is None or one["digest"] != music_digest(sc, entry):
+        return []
+    return [json.loads(json.dumps(one["identity"]))]
 
 
 def stamp(entry: dict, family: str) -> dict:

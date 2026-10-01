@@ -1506,7 +1506,7 @@
     },
     "interval_reading": {
       "maker": "make_interval_reading",
-      "version": 1,
+      "version": 2,
       "name": "a four-bar melody of seconds and thirds in C position",
       "promise": [
         {
@@ -1731,7 +1731,7 @@
     },
     "syncopation": {
       "maker": "make_syncopation",
-      "version": 1,
+      "version": 2,
       "name": "a tie across the bar line, and a sixteenth-note figure, over held chords",
       "promise": [
         {
@@ -1769,11 +1769,11 @@
       "requires": [
         {
           "demand": "rhythm.ties",
-          "min": 1,
+          "min": 2,
           "when": {
             "variant": "tied-across-bar"
           },
-          "why": "the family's promise, a note that starts in one bar and belongs to the next; one in four bars is an example rather than practice at density (Follow-ups)"
+          "why": "the family's promise, a note that starts in one bar and belongs to the next, at a density that is practice: at least two independent ties across the bar in the four bars, a count of opportunities and never one bar's shape repeated (the reviewer's rule, CL15; one in four bars was an example)"
         },
         {
           "demand": "rhythm.sixteenths",
@@ -1831,7 +1831,7 @@
           "syncopation at the sixteenth: outside the detectors' definition, and finer than the window"
         ]
       },
-      "admission": "Measured, the tied-across-bar item's tie starts on beat four, which T37's definition does not call syncopation, and the sixteenth item has none either: the title claims what the app's definition does not see. The tie is the honest target of the first; the second is not judged.",
+      "admission": "Measured, the tied-across-bar item's two ties start on the beat (beat four, then beat three), which T37's definition does not call syncopation, and the sixteenth item has none either. Since CL15 neither item's title or concepts name syncopation (the second was titled \"Sixteenth-note syncopation\"): the tie is the honest target of the first; the second, a sixteenth-note rhythm, is not judged.",
       "heard": false
     },
     "meter": {
@@ -2678,8 +2678,8 @@
     },
     "tremolo_octaves": {
       "maker": "make_tremolo_octaves",
-      "version": 1,
-      "name": "an octave tremolo, or a major-third tremolo moved by step",
+      "version": 2,
+      "name": "an octave tremolo, or a tremolo in the key's own thirds moved by step",
       "promise": [
         {
           "promise": "drill",
@@ -2698,7 +2698,6 @@
         "interval.leap",
         "interval.step",
         "interval.skip",
-        "pitch.chromatic",
         "range.beyond-position",
         "rhythm.shorter-than-quarter",
         "key.signature",
@@ -2773,7 +2772,7 @@
           "the forearm's rotation, which is the exercise: no input reports it"
         ]
       },
-      "admission": "Right notes in time. The third shape keeps one major third and moves it by step, so D-F-sharp and E-G-sharp sound in C major (measured as chromatic notes): not a spelling fault, and not the diatonic thirds the double-third scale writes — a content question recorded for the family's owner.",
+      "admission": "Right notes in time. The third shape plays the key's own third on each of its first four degrees (C-E, D-F, E-G, F-A in C: major or minor as the scale gives it, since CL15; it was one major third moved by step, D-F-sharp and E-G-sharp in C). Unheard.",
       "heard": false
     },
     "rotation": {
@@ -4178,7 +4177,7 @@
           {
             "role": "canonical",
             "when": {
-              "key": "C"
+              "key": "A"
             }
           },
           {
@@ -4210,7 +4209,7 @@
     },
     "walking_bass": {
       "maker": "make_walking_bass",
-      "version": 2,
+      "version": 3,
       "name": "a root-third-fifth-approach bass line in quarters over a blues or a ii-V-I",
       "promise": [
         {
@@ -4286,7 +4285,7 @@
         "leaps": {
           "max": 18,
           "minSeconds": 0.6,
-          "why": "the line returns to its register at the form's turn (the last bar's approach note drops back to the second octave), a quarter note at ♩=92"
+          "why": "the line returns to its register at the end of the form (the last approach note drops back to the second octave, into the closing tonic), a quarter note at ♩=92"
         }
       },
       "roles": {
@@ -4326,7 +4325,7 @@
           "nothing about this family has been heard by a person; the musical gate is not evaluated (D1, D2)"
         ]
       },
-      "admission": "Measured, 12 of the 16 two-hand items are not a walk by the app's own definition: the approach note often returns to the third (C E G, then E into F), which walkingBass reads as a pattern; the family's name and the detector disagree (recorded for E). The line also ends on the approach to a chorus that is not written. Unheard.",
+      "admission": "Measured, 12 of the 16 two-hand items are not a walk by the app's own definition: the approach note often returns to the third (C E G, then E into F), which walkingBass reads as a pattern; the family's name and the detector disagree (recorded for E). The line ends on the tonic: its closing bar, on the tonic chord, walks root, third, fifth and octave, a bar after the twelve of a blues (whose bar twelve stays a V7) and the ii-V-I's own last bar (since CL15; it ended on the approach to a chorus that was not written). Unheard.",
       "heard": false
     },
     "comping": {
@@ -5465,7 +5464,7 @@
     },
     "pentatonic": {
       "maker": "make_pentatonic",
-      "version": 1,
+      "version": 2,
       "name": "the minor pentatonic (or with the raised fourth) over one octave, thumb under",
       "promise": [
         {
@@ -5563,7 +5562,7 @@
           "which finger played: nothing tracks fingers, so a printed number is advice and is never judged"
         ]
       },
-      "admission": "Right notes after the passage show the hand arrived. At ♩=72 an item lasts under the five-second floor (4.6 s in A), so the render check writes it no duration (Follow-ups).",
+      "admission": "Right notes after the passage show the hand arrived. The pentatonic form goes up and down twice (since CL15: once was eleven eighths at ♩=72, under the five-second floor, so the render check wrote it no duration); the blues form's once already clears it.",
       "heard": false
     },
     "tresillo": {
