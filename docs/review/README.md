@@ -38,6 +38,7 @@ carries one status:
 - Accepted requirements leave this channel for the matrix or a brief with a row id; nothing lives
   here that should live there.
 - `current.md` is overwritten per handoff and a response is a new file per handoff; git holds the history.
+- Answered items leave `current.md` for `answered-archive.md` once a newer batch is answered, so `current.md` stays under the fetch limit (it had grown to 77 KB by 2026-10-01, when the first move was made).
 - **The owner triggers only the reviewer** (the reviewer's refinement, 2026-09-26). After posting a
   handoff the orchestrator stops work that depends on the verdict, polls the branch for a new file under
   `docs/review/responses/` at a slow cadence, and when one lands processes it under the owner's standing
