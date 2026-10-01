@@ -110,9 +110,12 @@ Adjacent problems recorded, never fixed on the spot.
 
 As `operating-procedure.md` §14. This lane's port is **5333**, from a config copy under the worktree's `app/build/u119a/`.
 
+**Landed 2026-10-01** (Entry 204; 759596b4, merged ce7f878b); handoff `handoffs/759596b4.md`.
+
 ## Record
 
 lane: U119a · closes: U119 · entry: 204
 index: U119's required change (`responses/fa4563d1.md`): the sideways bar's left group honours a semantic minimum (Back whole, `bar n/m` whole) before Hands is sent to the sheet, and an ordinary status that cannot fit ends unambiguously rather than flush mid-letter, the group-level clip kept as the last fence | app | drafted 2026-10-01 (`U119a-the-sideways-bar-keeps-its-meaning-when-it-yields.md`); Entry 204
 in-flight: drafted 2026-10-01 (`U119a-the-sideways-bar-keeps-its-meaning-when-it-yields.md`): U119's required change — `fitBarControls` learns the left group's own minimum so Hands yields before Back or `bar n/m` is cut, and the ordinary status gets a real truncation boundary instead of a flush cut (`responses/fa4563d1.md`) (Entry 204)
 state: dispatched 2026-10-01: dispatched at 0d2c3472, building (Entry 204)
+- landed 2026-10-01: merged ce7f878b; handoff `handoffs/759596b4.md`

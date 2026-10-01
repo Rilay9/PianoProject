@@ -695,7 +695,7 @@ truth.
 ### 7.1 While my hands are on the keys — the control bar
 
 **One row, in every form factor.** A hard constraint: at 360 px the row's `scrollHeight` equals
-one row. It has broken twice.
+one row. It has broken twice. Sideways the bar's left group (Back, the name, `bar n / m`, the status line) has a minimum: Back and the piece's widest `bar m / m` whole. Where that would not fit beside the controls, Hands and then `Hear it` go behind `⋯`. The name yields first, then the status line, which ends with its own ellipsis. The group's clip is the last fence (U119, U119a).
 
 `▶`/`⏸` · `Hear it` · mode · hands · tempo label · `⋯`. Below 440 px the modes shorten to one
 word and the tempo label drops the percentage. `Start again` is in `⋯` — the test for the bar is
