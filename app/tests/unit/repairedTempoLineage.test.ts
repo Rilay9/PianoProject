@@ -44,7 +44,7 @@ import type { CatalogItem, Curriculum, Lesson, Requirement } from '../../src/cur
 const REPO = join(process.cwd(), '..');
 const readJson = <T>(...parts: string[]): T => JSON.parse(readFileSync(join(REPO, ...parts), 'utf8')) as T;
 
-interface Repair { id: string; file: string; from: string; date: string; system: number; to: string; tempoChanged?: boolean }
+interface Repair { id: string; file: string; change: string; from: string; date?: string; system?: number; undated?: boolean; to: string; restore: unknown[]; tempoChanged?: boolean }
 interface CutRelation { id: string; file: string; of: string; parentFrom: string; parentTo: string; from: string; system: number; to: string; tempoChanged?: boolean }
 interface PdmxRow { id: string; cid: string; convertedSha256: string; tempoBpm: number; tempoDefaulted: boolean; level: number }
 
@@ -59,10 +59,10 @@ const SEVEN = [
 ];
 const CUT = 'excerpt.blues.wabash-blues.b1-4';
 
-function committed(): { repairs: Repair[]; cuts: CutRelation[]; rows: Map<string, PdmxRow>; historical: { file: string; date: string; system: number; sha256: string }[] } {
+function committed(): { repairs: Repair[]; cuts: CutRelation[]; rows: Map<string, PdmxRow>; historical: { file: string; date: string; system: number; sha256: string; undated: string }[] } {
   const table = readJson<{ repairs: Repair[]; cuts?: CutRelation[] }>('tools', 'content', 'repaired_identities.json');
   const rows = new Map(readJson<{ items: PdmxRow[] }>('content', 'sources', 'pdmx.json').items.map((row) => [row.id, row]));
-  const historical = readJson<{ identities: { file: string; date: string; system: number; sha256: string }[] }>('tools', 'content', 'former_identities.json').identities;
+  const historical = readJson<{ identities: { file: string; date: string; system: number; sha256: string; undated: string }[] }>('tools', 'content', 'former_identities.json').identities;
   return { repairs: table.repairs, cuts: table.cuts ?? [], rows, historical };
 }
 
@@ -237,8 +237,9 @@ afterEach(() => {
 describe('the relation: each of the seven repaired files names its old identity, one the historical table proved', () => {
   it('one relation per row, from the old file the table recorded to the file pdmx.json now names', () => {
     const { historical } = committed();
-    expect(repairs.map((one) => one.id).sort()).toEqual([...SEVEN].sort());
-    for (const one of repairs) {
+    const e50 = repairs.filter((one) => one.change.startsWith('E50 '));
+    expect(e50.map((one) => one.id).sort()).toEqual([...SEVEN].sort());
+    for (const one of e50) {
       const row = rows.get(one.id)!;
       expect(one.file).toBe(`scores/pdmx/${row.cid}.mxl`);
       expect(one.to).toBe(row.convertedSha256);
@@ -248,6 +249,29 @@ describe('the relation: each of the seven repaired files names its old identity,
       expect(one.from).not.toBe(one.to);
       // D2's identity stays exact bytes: the old file is not the repaired one.
       expect(sameIdentity(file(one.from), file(one.to))).toBe(false);
+    }
+  });
+
+  it('E57: every other relation is E57’s, from an old file the table recorded (or its undated form) to the file the row now names', () => {
+    // E57 (Entry 183) keeps a later tempo mark the converter used to remove, moving the identities of committed PDMX
+    // files (one relation each, as E50's) and of files the build converts (two each: the dated file E50a recorded and
+    // its undated form, the identity every catalogue since E50a served). None of them is one of E50's seven.
+    const { historical } = committed();
+    const e57 =repairs.filter((one) => !one.change.startsWith('E50 '));
+    expect(e57.length).toBeGreaterThan(0);
+    for (const one of e57) {
+      expect(one.change.startsWith('E57 '), one.id).toBe(true);
+      expect(SEVEN).not.toContain(one.id);
+      expect(one.from).not.toBe(one.to);
+      expect(sameIdentity(file(one.from), file(one.to))).toBe(false);
+      if (one.undated === true) {
+        expect(historical.filter((entry) => entry.file === one.file && entry.undated === one.from).length, one.id).toBeGreaterThan(0);
+      } else {
+        expect(historical.filter((entry) => entry.file === one.file && entry.sha256 === one.from && entry.date === one.date && entry.system === one.system), one.id).toHaveLength(1);
+      }
+      const row = rows.get(one.id);
+      if (row) expect(one.to).toBe(row.convertedSha256);
+      else expect(e57.filter((other) => other.id === one.id).map((other) => other.undated === true).sort()).toEqual([false, true]);
     }
   });
 

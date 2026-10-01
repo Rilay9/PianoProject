@@ -1,0 +1,75 @@
+﻿
+snapshotted docs\prompts\inventory.md
+snapshotted docs\prompts\rung-claims.md
+snapshotted content\scores\imported\SOURCES.md
+snapshotted docs\generated\ladder.md
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         3         3         0         0         0         0
+   Files :      8016      8016         0         0         0         0
+   Bytes :   52.37 m   52.37 m         0         0         0         0
+   Times :   0:00:04   0:00:04                       0:00:00   0:00:00
+
+
+   Speed :           13,565,889 Bytes/sec.
+   Speed :              776.246 MegaBytes/min.
+   Ended : Wednesday, September 30, 2026 5:36:56 PM
+
+robocopy build\cache exit 1
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :        35        26         9         0         0         0
+   Files :      2231      2231         0         0         0         0
+   Bytes :  356.05 m  356.05 m         0         0         0         0
+   Times :   0:00:01   0:00:01                       0:00:00   0:00:00
+
+
+   Speed :           316,668,084 Bytes/sec.
+   Speed :            18,119.893 MegaBytes/min.
+   Ended : Wednesday, September 30, 2026 5:36:58 PM
+
+robocopy content\scores\imported\kern exit 1
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         5         4         1         0         0         0
+   Files :        76        76         0         0         0         0
+   Bytes :    1.46 m    1.46 m         0         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :           43,766,399 Bytes/sec.
+   Speed :            2,504.333 MegaBytes/min.
+   Ended : Wednesday, September 30, 2026 5:36:58 PM
+
+robocopy content\scores\imported\musetrainer exit 1
+
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :        27        27         0         0         0         0
+   Files :        24        24         0         0         0         0
+   Bytes :   287.9 k   287.9 k         0         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+
+
+   Speed :           22,681,538 Bytes/sec.
+   Speed :            1,297.848 MegaBytes/min.
+   Ended : Wednesday, September 30, 2026 5:36:58 PM
+
+robocopy content\scores\imported\mutopia exit 1
+copied build\demands-cache.json
+copied build\positions-cache.json
+copied build\notation-cache.json
+copied build\score-checks.cache.json
+npm ci exit 0
+setup finished

@@ -1478,6 +1478,56 @@ def tempo_printed_as_text(score: stream.Score, notes: list[str]) -> tuple[tempo.
     return read
 
 
+#: How far two tempos may stand apart, in quarter notes a minute, and still be one statement written twice: X42's
+#: `SERIALIZATION_TOLERANCE` (`app/src/score/tempoFromXml.ts`, Entry 185, `docs/prompts/runs/X42/ENTRY.md`), an
+#: XML-number equivalence derived there from the corpus (its writers' largest noise 0.0002, the nearest difference any
+#: file here writes that is not noise 0.1), never a musical tolerance. The same value, stated for the converter;
+#: `test_convert.TestALaterTempoMarkSurvives.test_the_tolerance_is_x42s` holds the two equal.
+SERIALIZATION_TOLERANCE = 0.01
+
+
+def duplicate_tempo_marks(score: stream.Score, marks: list[tempo.MetronomeMark]) -> list[tempo.MetronomeMark]:
+    """
+    The metronome marks that only repeat a statement already standing at their place (E57), for `normalise` to remove.
+
+    A duplicate is a copy the parser made of one statement: music21's ABC reader gives each voice the header's tempo,
+    and kern repeats a `*MM` in every spine, so one statement arrives once per staff or voice at one position. Two marks
+    are one statement when both stand at the same position in the score — the same offset from the start, on any staff
+    or voice — and both give the same quarter-note tempo (`getQuarterBPM`) within `SERIALIZATION_TOLERANCE`. The
+    position is the offset in the whole score, not the bar number: the ABC reader hangs one voice's copy on the part
+    itself, outside any bar, at the same offset as the other voice's copy in bar 1.
+
+    Everything else is kept where it stands: a later tempo change (the fault this replaces removed every mark after the
+    first, wherever it stood), a return to an earlier tempo at a later place, a different tempo at the same place (a
+    conflict the app's reader resolves, not the converter), and a mark whose tempo reads as None (it duplicates
+    nothing). Of one statement's copies the first printed one (a `number`) is kept over a sound-only one, whatever the
+    order, or the printed marking would be lost; otherwise the first in walk order.
+    """
+    from music21.sites import SitesException
+
+    statements: dict[float, list[list[tempo.MetronomeMark]]] = {}
+    for mark in marks:
+        bpm = mark.getQuarterBPM()
+        if bpm is None:
+            continue
+        try:
+            at = round(float(mark.getOffsetInHierarchy(score)), 6)
+        except SitesException:
+            continue
+        here = statements.setdefault(at, [])
+        same = next((copies for copies in here if abs(float(copies[0].getQuarterBPM()) - float(bpm)) <= SERIALIZATION_TOLERANCE), None)
+        if same is None:
+            here.append([mark])
+        else:
+            same.append(mark)
+    duplicates: list[tempo.MetronomeMark] = []
+    for here in statements.values():
+        for copies in here:
+            kept = next((mark for mark in copies if mark.number is not None), copies[0])
+            duplicates += [mark for mark in copies if mark is not kept]
+    return duplicates
+
+
 def normalise(score: stream.Score, *, keep_lyrics: bool, tempo_bpm: float | None) -> tuple[stream.Score, ConversionResult]:
     """Turns a parsed score into the app's canonical grand staff."""
     notes: list[str] = []
@@ -1556,11 +1606,12 @@ def normalise(score: stream.Score, *, keep_lyrics: bool, tempo_bpm: float | None
         added_tempo = True
     elif existing_tempo:
         effective = float(existing_tempo[0].getQuarterBPM() or DEFAULT_TEMPO_BPM)
-        # One mark, on the top staff. music21's ABC reader puts a tempo in
-        # every voice, and OSMD dutifully draws all of them: an authored tune
-        # came out with "♩=84" twice, once over the staff and once beside the
-        # first note.
-        for mark in existing_tempo[1:]:
+        # One mark per statement. music21's ABC reader puts a tempo in every
+        # voice, and OSMD dutifully draws all of them: an authored tune came
+        # out with "♩=84" twice, once over the staff and once beside the first
+        # note. Only such a copy goes (E57): a later tempo change, and a
+        # different tempo at the same place, stay where they stand.
+        for mark in duplicate_tempo_marks(out, existing_tempo):
             if mark.activeSite is not None:
                 mark.activeSite.remove(mark)
     elif (printed := tempo_printed_as_text(out, notes)) is not None:
@@ -2028,6 +2079,12 @@ def former_identities(path: Path, table: list[dict] | None = None, repairs: list
     existed), and this file with the repair's `restore` lines put back, then that date, zipped under that
     system, is `from`'s bytes. Learner continuity only, as above: the old file stays other bytes to every
     exact-byte check.
+
+    **E57: a repair of a file the build converts** names two old identities, each by its own relation: the dated
+    file the table recorded (as above), and the undated file every catalogue since E50a served — a relation marked
+    `undated`, whose `from` is the `undated` form the table recorded for an entry of the same file and which carries
+    no date or system; this file with the repair's `restore` lines put back, zipped as the converter zips now, is
+    `from`'s bytes.
     """
     if path.suffix.lower() != ".mxl":
         return []
@@ -2050,11 +2107,18 @@ def former_identities(path: Path, table: list[dict] | None = None, repairs: list
             out.append(entry["sha256"])
     recorded = ([entry for found in historical_identities().values() for entry in found] if table is None else table)
     for repair in (repaired_identities().get(current, ()) if repairs is None else [r for r in repairs if r["to"] == current]):
-        if not any(entry["file"] == repair["file"] and entry["sha256"] == repair["from"] and entry["date"] == repair["date"]
-                   and entry["system"] == repair["system"] for entry in recorded):
-            continue
         restored = _restored(entries, at, repair.get("restore") or [])
-        rebuilt = None if restored is None else _redated(restored, at, repair["date"], repair["system"])
+        if repair.get("undated") is True:
+            # E57: the old file as the converter wrote it without a date — the undated form the table recorded for an
+            # entry of the same file, the identity every catalogue since E50a served for a file the build converts.
+            if not any(entry["file"] == repair["file"] and entry["undated"] == repair["from"] for entry in recorded):
+                continue
+            rebuilt = None if restored is None else pinned_archive(restored)
+        else:
+            if not any(entry["file"] == repair["file"] and entry["sha256"] == repair["from"] and entry["date"] == repair["date"]
+                       and entry["system"] == repair["system"] for entry in recorded):
+                continue
+            rebuilt = None if restored is None else _redated(restored, at, repair["date"], repair["system"])
         if rebuilt is not None and hashlib.sha256(rebuilt).hexdigest() == repair["from"] and repair["from"] not in out:
             out.append(repair["from"])
     return out

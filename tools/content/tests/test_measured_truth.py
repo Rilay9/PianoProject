@@ -449,17 +449,24 @@ class TestTheMaterialIdentity(Built):
         # `parentSha256` is the parent's current file), and never enters `pdmx.json`.
         repairs = json.loads((REPO / "tools" / "content" / "repaired_identities.json").read_text(encoding="utf-8"))["repairs"]
         items = {row["id"]: row for row in json.loads((REPO / "content" / "sources" / "pdmx.json").read_text(encoding="utf-8"))["items"]}
-        self.assertEqual(len(repairs), 7)
+        self.assertEqual(len([repair for repair in repairs if repair["change"].startswith("E50 ")]), 7)
+        # E57 (Entry 183): a file the build converts carries two relations, the dated file E50a recorded and its
+        # undated form (the identity every catalogue since E50a served); a committed PDMX file one. Read per row.
+        froms: dict[str, list[str]] = {}
         for repair in repairs:
-            with self.subTest(repair["id"]):
+            froms.setdefault(repair["id"], []).append(repair["from"])
+        for repair in repairs:
+            with self.subTest(repair["id"], undated=repair.get("undated", False)):
                 item = self.by_id[repair["id"]]
                 self.assertEqual(item["provenance"]["identity"], {"kind": "file", "sha256": repair["to"]})
                 self.assertIn({"kind": "file", "sha256": repair["from"]}, item["provenance"].get("formerIdentities") or [])
-                self.assertNotIn("tempo-defaulted", item.get("tags") or [])
-                self.assertFalse({"formerIdentities", "repairs", "restore"} & set(items[repair["id"]]))
+                if repair["change"].startswith("E50 "):
+                    self.assertNotIn("tempo-defaulted", item.get("tags") or [])
+                if repair["id"] in items:
+                    self.assertFalse({"formerIdentities", "repairs", "restore"} & set(items[repair["id"]]))
                 # E50b: the old identity is marked as a file whose tempo the repair changed, so no tempo-dependent
                 # standard reads a run of it against this row's tempo (`material.tempoNotComparable`).
-                self.assertEqual(item["provenance"].get("tempoRepairedFrom"), [{"kind": "file", "sha256": repair["from"]}])
+                self.assertEqual(sorted(one["sha256"] for one in item["provenance"].get("tempoRepairedFrom") or []), sorted(froms[repair["id"]]))
         # E50b: the Wabash cut, re-cut from the repaired parent, carries its old cut the same way, and nothing else.
         cuts = json.loads((REPO / "tools" / "content" / "repaired_identities.json").read_text(encoding="utf-8")).get("cuts", [])
         self.assertEqual([cut["id"] for cut in cuts], ["excerpt.blues.wabash-blues.b1-4"])
@@ -472,7 +479,7 @@ class TestTheMaterialIdentity(Built):
                 self.assertEqual(row["provenance"]["excerpt"]["parentSha256"], cut["parentTo"])
                 self.assertEqual(row["provenance"]["excerpt"]["stale"]["approvedParentSha256"], cut["parentFrom"])
         marked = sorted(item["id"] for item in self.catalog if "tempoRepairedFrom" in item["provenance"])
-        self.assertEqual(marked, sorted([repair["id"] for repair in repairs] + [cut["id"] for cut in cuts]))
+        self.assertEqual(marked, sorted({repair["id"] for repair in repairs} | {cut["id"] for cut in cuts}))
         for item in self.catalog:
             for one in item["provenance"].get("tempoRepairedFrom") or []:
                 self.assertIn(one, item["provenance"].get("formerIdentities") or [], item["id"])
