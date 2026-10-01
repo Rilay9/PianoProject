@@ -92,9 +92,12 @@ After those: the full content itemisation across every family (PDMX, kern, MuseT
 
 **Entry.** Entry 184. Every run file goes under `docs/prompts/runs/E59/`, with the entry at `docs/prompts/runs/E59/ENTRY.md`.
 
+**Landed 2026-10-01** (Entry 184; e9aa34fd, merged ba5aebb8); handoff `handoffs/e9aa34fd.md`.
+
 ## Record
 
 lane: E59 · closes: E59 · entry: 184
 index: A defaulted tempo is playback only: `convert.py`'s `insert_tempo` stops printing a `<metronome>` quarter = 96 for a score whose edition states no tempo, keeping only the `<sound>`; all 169 PDMX `tempoDefaulted` rows moved from their already-committed bytes under the reviewed-repair relation, no archive needed; nothing a learner hears or sees changes (backlog E59, P2) | content | brief drafted 2026-09-30 (`E59-a-defaulted-tempo-is-playback-only.md`); with the reviewer before dispatch; Entry 184 |
 in-flight: brief drafted 2026-09-30 (`E59-a-defaulted-tempo-is-playback-only.md`): `convert.py`'s `normalise` (the `else:` no-tempo branch at :1571–1575) changed to insert a `MetronomeMark` built with music21's own `numberSounding` field instead of `number`, so the file gains a `<sound tempo="96">` and no printed `<metronome>` when the edition states no tempo; all 169 PDMX rows tagged `tempoDefaulted` (confirmed independently from `content/sources/pdmx.json`, not merely cited) read directly and found to share one of exactly two uniform inserted-direction shapes, so the fix transforms their already-committed bytes by one script, with no PDMX archive needed and no learner-visible change today (every on-screen renderer of catalogue material already sets `drawMetronomeMarks: false`, re-verified at each call site) — the tag `tempoDefaulted`/`tempo-defaulted` and its five known readers (the catalogue's provenance fact, the run header, and the learner-visible "of the suggested tempo" summary line) are unchanged and continue to mean exactly what they mean today; identities moved under the reviewed-repair relation (`repaired_identities.json`, E50's precedent); the parallel 66 kern/MuseTrainer defaulted rows X40 found are recorded, not built, pending the reviewer's word (backlog E59, P2; `responses/81d9e4af.md` §3, `responses/questions-26a913fe.md` §3); with the reviewer before dispatch (Entry 184).
 state: dispatched 2026-10-01: dispatched at 13e1b1a8, building (Entry 184)
+- landed 2026-10-01: merged ba5aebb8; handoff `handoffs/e9aa34fd.md`
