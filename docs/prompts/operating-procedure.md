@@ -261,6 +261,8 @@ supplies no musical review (the early listening packet was withdrawn on 2026-09-
 question is settled from the notation, the edition's text and the record's rules where those
 suffice; otherwise it stays open, marked *unverified as music*, and nothing is taught on it.
 
+**Real music before generated music, where it fits.** (the owner's rule, approved by the reviewer 2026-10-01, `responses/questions-e9aa51ae.md`). Any brief that adds or keeps generated material for a musical skill states whether a **score-verified, legally usable real excerpt** teaches the same thing at that level, and why generation wins if it is kept. General knowledge may discover candidates; the score/content evidence verifies the teaching claim. Prefer repertoire first for groove, syncopation, walking bass, accompaniment, phrasing, progressions and other style/application work; prefer generation where exact constraints, graduated variation, transfer testing, availability/licensing or the learner's measured need make control more valuable. The public build ships only public-domain or appropriately licensed score material. A verified real excerpt means the actual score or cut has been checked for the teaching feature and level, not a song reputed to contain it. This is a selection rule, not a ban on generators: a mechanical drill whose value is exact control may keep generation after a short documented comparison. Existing generated material is not reopened wholesale; the rule applies when a lane adds, materially changes, or affirmatively keeps generated material for a musical skill.
+
 ## 13. What a brief carries
 
 Every brief written here states: the goal in the writer's own words and the owner's, and
