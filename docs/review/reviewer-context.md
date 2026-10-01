@@ -179,6 +179,20 @@ New special cases, duplicate truth sources, local state machines, pedagogical he
 
 When a handoff raises a new defect outside its scope, verify it and classify it. Do not silently absorb unrelated implementation into the reviewed seam unless required for truth.
 
+## Review quality rules
+
+Added 2026-10-01 at the owner's request, from the review rounds of 2026-10-01 that each cost a relay or a builder rerun. Check every response against these before pushing it.
+
+1. **Premises at the line.** Every claim about code, config or a workflow cites the file and line read at the handoff's HEAD; otherwise it is written "claim to verify", not a fact. Never restate a brief's or handoff's wording as a ruling without checking it against the code it describes (a brief said "every spec runs once"; the Playwright config has `fullyParallel: true`, so the unit is the test).
+2. **Invariant first, then mechanism, then consequence.** A required change states the invariant it protects, then the mechanism if one is prescribed, then its effect on the cases that matter and the alternative rejected (missed on 2026-10-01: trace `on-first-retry` keeps a flaky test's passing attempt; a bound taken from a type's range, `Number.MAX_SAFE_INTEGER`, instead of the values the product can produce changed layouts for an unreachable state). Bound by the reachable product domain. Where the right choice depends on runtime behaviour the reviewer cannot see, ask for the measurement.
+3. **Rules worded by their purpose** ("a cut status must visibly read as cut"), not by a proxy that can be read literally ("not a partial word").
+4. **Scope words are claims.** For "all", "none", "complete" or "no further changes", name what was examined and what was not. A truncated fetch or unreadable file is said, never filled in.
+5. **Consumers and consistency.** Name what else reads the thing ruled on (other lanes, tests, the test map, the record). A ruling that changes an earlier one names the earlier file and section as superseded. When the orchestrator's second read disputes a premise, re-check it at the line and say plainly which ruling changes.
+6. **Product first.** Say what the learner sees or does differently; if that cannot be judged from the text, say so first. Nobody in this process hears music: a claim about sound stays "unverified as music". Correctness of anything taught outranks everything else.
+7. **Proportion.** One required change per verdict where possible, with an acceptance condition and a stop condition; no implementation detail the invariant does not need. Questions to the owner only where the owner can answer without listening or running code.
+
+**Response format** (the record tooling parses it): a new file under `docs/review/responses/`, named exactly as the request asks (`<HEAD>.md` for a handoff, `questions-<HEAD>.md` for questions). A single-item file opens with `## Verdict` and the verdict in bold (APPROVE, APPROVE WITH ONE REQUIRED CHANGE, or REJECT); a multi-item file has one heading per item. Required changes are numbered. A correction is a new file, `<name>-correction-N.md`, stating exactly which section it replaces.
+
 ## Scheduled-run behavior
 
 If there is no unreviewed immutable handoff, do nothing and do not notify the user.
