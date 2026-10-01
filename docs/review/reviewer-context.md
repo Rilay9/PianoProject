@@ -1,222 +1,177 @@
 # PianoProject autonomous reviewer context
 
-This file is the durable context bootstrap for scheduled ChatGPT reviewer runs. Read it before reviewing any handoff. It is not an implementation handoff and does not authorize application changes.
+This is the durable bootstrap for reviewer runs. Read it before reviewing a handoff. It does not authorize application implementation, merging, deployment, deletion or history rewriting.
 
-## Repository and protocol
+## Repository and immutable review protocol
 
 - Repository: `Rilay9/PianoProject`
 - Working branch: `claude/piano-teaching-app-bo19td`
-- Immutable review requests: `docs/review/handoffs/<IMPLEMENTATION-HEAD>.md`
-- Immutable responses: `docs/review/responses/<IMPLEMENTATION-HEAD>.md`
-- `docs/review/current.md` is only a pointer to the latest handoff.
-- Never infer approval from silence.
-- Review one seam at a time. Never combine independent seams because they completed close together.
-- Before reviewing, confirm the matching response file does not already exist.
-- Read the exact handoff first, then every file/test/artifact/status line it explicitly names, then whatever implementation/tests are needed to verify its claims at the exact implementation HEAD.
-- Verify current code. Do not report stale audit findings as current defects.
-- After writing a response file, commit it to the Claude branch and fetch it back before considering the review complete.
-- Never delete files/branches/repositories, rewrite history, merge, deploy, or modify application implementation.
+- Immutable request: `docs/review/handoffs/<IMPLEMENTATION-HEAD>.md`
+- Immutable response: `docs/review/responses/<IMPLEMENTATION-HEAD>.md`
+- `docs/review/current.md` is a small pointer only.
+- Before review, confirm whether the handoff says a response is required and whether the matching response already exists.
+- Read the exact handoff first, then every artifact/file/test/status line it explicitly names, then the implementation/tests needed to verify its claims at that exact HEAD.
+- Verify findings against current code. Never report a stale audit finding as a current defect.
+- Keep independent seams independent even when they arrive together. A multi-item pre-review handoff may receive one section per brief, but do not let one item's acceptance carry another.
+- After writing a response, fetch/read it back before considering the review complete.
 
-## Verdict and sequencing rules
+## Current execution authority
 
-Use one of:
-- APPROVE
-- APPROVE WITH ONE REQUIRED CHANGE
-- REJECT, naming the concrete mechanism that must change
+**Live product scheduler:** `docs/review/product-convergence-current.md`.
 
-Classify findings as:
-- BLOCKS NEXT BRIEF
-- CONSTRAINS NEXT BRIEF
-- LATER WAVE
-- PRUNE/MERGE
+`docs/prompts/convergence-2026-09-30.md` is **history/provenance, not a dispatch queue**. Its BUILD NOW / DECISION / READ / RE-CHECK labels do not authorize work by themselves.
 
-A post-build review gate is real. Do not allow a dependent brief to advance merely because its predecessor built green.
+`docs/review/remaining-work-holistic-review-2026-10-01.md` records the re-review that led to the live scheduler. `docs/review/holistic-reassessment.md` is the standing posture. If later current evidence contradicts either, change the plan rather than defending the document.
 
-Current major sequence is:
-`F0 -> C7 -> D0 -> E`, with later G/X consuming D/E truths. F0 and C7 are closed. The frontier moves; this sentence is refreshed with the snapshot below: D0 is built and approved with one required change, D0a, whose ACCEPT releases E0 (brief approved). Verify the current frontier in `docs/review/current.md` and `docs/prompts/tasks/README.md` before every pass.
+Current frontier:
 
-Do not let X/G implementation leap ahead of D/E when those later waves depend on truths D/E own.
+1. finish evidence already in flight, including the first real working-branch T62 eight-shard CI read-back;
+2. U122 + CL07 are one **whole landscape Score** product-design boundary: chrome placement, stage/score height, notation readability/look-ahead, control reachability and stability are decided together before more surface-specific compression/placement work;
+3. refresh surviving work from the current tree/task record, removing closed work and superseded decisions before large new dispatches;
+4. use representative whole-flow checks during development when they can change direction; final H2 remains release acceptance, not the first holistic product check;
+5. prefer current core truths that reduce models (evidence semantics, measured-claim truth, concrete reading-choice failures) over broad speculative frameworks.
 
-## Architectural doctrine
+The September-30 forms of CL12, CL14, CL19, CL20 and CL21 are not authorized for dispatch without being re-derived/narrowed from the current learner experience.
 
-Judge the whole teaching loop, not just green tests:
+Current pre-review ruling `responses/71730e65.md`:
+- CL16: **REJECT** as one metric-driven “version 3” lane. Objective G37 alignment/correctness may become a narrow seam after measurement; S34/S35 phrase-quality changes first need learner-facing/source-backed evidence independent of the generator's own scorer/distribution metrics.
+- R23: **APPROVE WITH ONE REQUIRED CHANGE**. Retiring the three-song quota is sound, but `measurement.established` is opportunity evidence, not a synonym for “strong application”; application target + opportunity + teaching-use/admission truth must compose honestly before the validator makes that claim.
+
+U122 is governed by `responses/b47ce498-correction-1.md` and `responses/b47ce498-correction-2.md`, not the older approval to optimize one bottom strip.
+
+## Product north star
+
+The app is complete when the learner experience is strong, trustworthy and tested, not when every historical row is closed.
+
+Keep the whole teaching loop in view:
 
 `learner state -> teaching decision -> content choice -> activity -> measurement -> evidence -> next decision`
 
-Keep these concepts distinct unless a reviewed design explicitly proves they can be combined:
-- observations: what happened
-- evidence: what the app may conclude from measured observations
-- skill state: demonstrated ability
-- rung state: teaching-unit requirements satisfied
-- material demands: what the music requires
-- target skills: what material is designed to teach
-- content identity/provenance: exact object and origin
-- encounter history: factual contact (seen/heard/played/etc.)
-- repertoire/project lifecycle: learner's intentional relationship to music
-- session: today's plan
-- practice episode/intervention: a specific teaching problem and response
-- activity/run: what the learner is doing now
+At meaningful decision points, ask whether the current approach is still the simplest/best way to improve that learner loop. Prior approval is evidence from an earlier moment, not permission to stop thinking.
+
+Do not turn holistic reassessment into another ritual. There is no fixed number of alternatives, no numeric trigger, and no requirement to redesign small correct fixes. Reassess when new evidence, repeated fixes, growing exceptions, or an awkward whole experience could materially change the direction.
+
+A useful test: if the current implementation vanished, would we naturally choose the same product shape again from the learner goal and current evidence?
+
+## Architectural truths to keep distinct
+
+Do not merge these merely for convenience:
+
+- observation: what happened;
+- evidence: what may be concluded from measured observation;
+- skill state: demonstrated ability;
+- rung state: requirements satisfied;
+- material demands: what the music requires;
+- target skills: what material is meant to train;
+- content identity/provenance: what exact material it is and where it came from;
+- encounter history: factual contact;
+- project/repertoire lifecycle: learner intention toward music;
+- session: today's composed plan;
+- practice intervention/episode: a response to a teaching problem, only if the product genuinely needs such a persistent concept;
+- activity/run: what the learner is doing now.
 
 Core invariants:
+
 - Assignment is not evidence.
-- Activity completion is not automatically competence.
-- A slot label is a pedagogical claim; the selected activity must satisfy that claim.
+- Completion is not competence.
+- Unmeasured never silently becomes failed or passed.
+- Self-report stays distinct from measured competence.
+- A slot/reason label is a pedagogical claim; the activity must satisfy it.
 - `canonical|variable|transfer` is material role/intent, never proof of transfer.
-- A learner's word/self-assessment stays separate from measured competence.
-- “Unmeasured” must never silently become “failed” or “passed.”
-- A printed fingering/notation/instruction is an authoritative learner-facing claim even if metadata calls it unverified.
-- Do not add a new learner skill merely because a generator needs a label. A skill needs a distinct learner ability, observable evidence, and curriculum/teaching use.
-- Cross-cutting contract does not mean cross-cutting ownership. One module/wave owns a truth; neighbors consume it.
-- Prefer the smallest domain-complete abstraction. Avoid premature universal frameworks.
-- Complexity is acceptable when it corresponds to real domain distinctions. Do not simplify by merging different truths.
+- Printed notation, fingering and instruction are authoritative learner-facing claims even when metadata calls them unverified.
+- Do not invent a learner skill because an implementation wants a label.
+- Cross-cutting contract does not mean cross-cutting ownership.
+- Prefer the smallest domain-complete abstraction; do not create a universal framework merely because several rows can be put under one noun.
+- Complexity is justified only by real domain distinctions, not by preserving an inherited container.
 
-## Content/source chooser doctrine
+## Content/source doctrine
 
-Long-term content pipeline:
+Use:
+
 `learner need -> musical requirements -> choose best source -> validate -> present -> measure -> learn`
 
-Candidate source forms may include:
-- controlled generated exercise
-- generated musical mini-piece/study
-- PDMX excerpt
-- full repertoire
-- import
-- external recommendation
+Possible sources include controlled generated exercise, generated study/mini-piece, PDMX/repertoire/excerpt, import and external recommendation.
 
-PDMX metadata such as genre/rating/views is discovery/acquisition signal only, not teaching truth. “Genre” is not a reliable pedagogical field for PDMX.
+PDMX ratings/views/genre are discovery signals, not teaching truth. Generated structural validity, pedagogical validity, physical/playability validity and musical quality are different claims. Mechanical detectors do not prove musical quality or idiom.
 
-Future source selection should keep orthogonal:
-1. teaching purpose
-2. experience contract
-3. material requirements
-4. candidate source/form
-5. source-specific validity
-6. common eligibility
-7. ranking
-8. session composition
-9. experience-specific evidence
+Prefer no printed fingering/technique certainty to invented certainty. Where a claim needs a source, use one.
 
-## Generator/content truth
+Real music is not automatically superior to generation and generation is not automatically safer: choose the source form from the learning requirement. Exact constraints/variation/transfer testing may favor generation; phrasing/style/application may favor repertoire or source-backed material. If no candidate honestly fits, expose the gap rather than fabricating fit.
 
-For generated material distinguish:
-- structural validity
-- pedagogical validity
-- physical/playability validity
-- musical quality, only to the degree the family promises music
-
-Mechanical guards do not establish musical/technical truth. Where a fingering or technique claim needs a source, use a source-backed contract; if it cannot be honestly sourced, prefer no printed fingering/claim to invented certainty.
-
-Generated dimensions such as rhythm, interval/range, hands, ties, articulation and rhythmic complexity should remain independently controllable where the curriculum treats them independently.
-
-## Evidence, transfer and novelty
+## Evidence / novelty / transfer
 
 Keep separate:
-1. contact novelty
-2. context relationship/difference
-3. transfer intent
-4. transfer evidence
 
-Content identity answers what was encountered. Encounter history says whether it was encountered. Context relationship says how different it is. Evidence says what happened. Transfer policy decides whether generalization was demonstrated.
+1. content identity;
+2. encounter/contact history;
+3. context relationship/difference;
+4. transfer intent;
+5. transfer evidence.
 
-## Lifecycle and timing
+A different seed or context is not by itself proof of transfer. Evidence says what happened; policy decides what that demonstrates.
 
-Shared lifecycle shape:
+## Lifecycle and time
+
+Shared lifecycle shape where applicable:
+
 `ready -> start/evidence -> playing -> interruption/suspend -> resume/restart -> safe stop -> complete -> next`
 
-Hidden/suspended time must not accumulate as active duration. No stale timers, playback, or automatic advance while hidden.
-
-Session snapshots should eventually preserve exact ordered activity instances, content identity/seed/excerpt identity, purpose/reason, substitutions, cursor, activity state and resumable state. Do not recompute a running session merely because underlying evidence changes, except for an explicit adaptive intervention with a recorded reason.
-
-## Autonomy, concurrency, and review-gate policy
-
-The reviewer governs correctness, architectural dependencies, and truth boundaries. It does **not** manage Claude's compute budget, context-window percentage, token meter, lane count, wall-clock utilization, or internal orchestration strategy.
-
-Do not impose arbitrary utilization thresholds such as 75%, 85%, or 90%, and do not cap parallel builders merely because of reviewer preference. Claude may run as many independent lanes as its own environment safely supports.
-
-Concurrency is restricted only by concrete repository risks:
-- two seams would edit the same owned truth or overlapping implementation files in ways that make reconciliation unsafe;
-- one seam semantically depends on another's result;
-- a later seam would consume an architectural contract that has not yet been accepted;
-- merging them would destroy the ability to review each immutable implementation HEAD independently.
-
-Otherwise, independent seams should proceed in parallel.
-
-### Pre-build versus post-build review
-
-A post-build review is required for seams whose acceptance gates a dependent architectural step.
-
-A separate pre-build reviewer gate is **not automatically required for every seam**. Require pre-build review only when the proposed brief itself makes or changes a consequential architectural contract, resolves an owner-level product decision, or could create an expensive wrong-direction implementation.
-
-Narrow fix-forwards, test-harness repairs, documentation/voice cleanup, source-backed truth corrections with an already-approved mechanism, and other bounded independent work may proceed from an already accepted brief/doctrine without waiting for another pre-build reviewer round.
-
-The reviewer should prefer:
-- approve the governing contract once;
-- let Claude execute multiple bounded independent seams under that contract;
-- review the resulting immutable handoffs;
-- block only the dependent frontier whose prerequisite has not yet been accepted.
-
-Do not serialize unrelated work merely because one seam is waiting for review.
-
-### Throughput principle
-
-When a gated frontier is waiting on review, Claude should continue with genuinely independent, already-authorized work rather than leaving lanes idle. The reviewer should help identify safe parallel work, not become a global scheduler.
-
-A review finding should block only:
-1. the seam it applies to; and
-2. downstream work that actually depends on that seam's unresolved truth.
-
-It should not freeze unrelated lanes.
-
+Hidden/suspended time is not active practice. No stale timers, playback or automatic advancement while hidden. Resume identity, activity outcome, competence evidence and active-time accounting remain distinct truths.
 
 ## Review posture
 
-Do not review only Claude's narrative. Inspect exact artifacts.
-Do not infer missing material from a truncated fetch.
-Do not accept a feature merely because tests are green.
-Do not reject complexity merely because it is complex.
-Ask whether the architecture becomes more coherent as capability increases.
-New special cases, duplicate truth sources, local state machines, pedagogical heuristics, or near-duplicate abstractions are warning signs.
+The reviewer must challenge the **shape of the question**, not merely validate the proposed answer.
 
-When a handoff raises a new defect outside its scope, verify it and classify it. Do not silently absorb unrelated implementation into the reviewed seam unless required for truth.
+Before approving consequential design/architecture work, answer in product terms:
 
-## Review quality rules
+- What does the learner actually need to see/do/learn?
+- What current evidence establishes the problem?
+- Which premise/boundary does the proposed solution preserve, and is it actually necessary?
+- Does the proposal simplify the product/model, or add machinery to keep an old choice alive?
+- Is a test/scorer/validator metric being promoted from proxy to product truth without independent justification?
+- Are we using the current tree or merely executing an old row?
 
-Added 2026-10-01 at the owner's request, from the review rounds of 2026-10-01 that each cost a relay or a builder rerun. Check every response against these before pushing it.
+Green tests are necessary evidence, never the result by themselves.
 
-1. **Premises at the line.** Every claim about code, config or a workflow cites the file and line read at the handoff's HEAD; otherwise it is written "claim to verify", not a fact. Never restate a brief's or handoff's wording as a ruling without checking it against the code it describes (a brief said "every spec runs once"; the Playwright config has `fullyParallel: true`, so the unit is the test).
-2. **Invariant first, then mechanism, then consequence.** A required change states the invariant it protects, then the mechanism if one is prescribed, then its effect on the cases that matter and the alternative rejected (missed on 2026-10-01: trace `on-first-retry` keeps a flaky test's passing attempt; a bound taken from a type's range, `Number.MAX_SAFE_INTEGER`, instead of the values the product can produce changed layouts for an unreachable state). Bound by the reachable product domain. Where the right choice depends on runtime behaviour the reviewer cannot see, ask for the measurement.
-3. **Rules worded by their purpose** ("a cut status must visibly read as cut"), not by a proxy that can be read literally ("not a partial word").
-4. **Scope words are claims.** For "all", "none", "complete" or "no further changes", name what was examined and what was not. A truncated fetch or unreadable file is said, never filled in.
-5. **Consumers and consistency.** Name what else reads the thing ruled on (other lanes, tests, the test map, the record). A ruling that changes an earlier one names the earlier file and section as superseded. When the orchestrator's second read disputes a premise, re-check it at the line and say plainly which ruling changes.
-6. **Product first.** Say what the learner sees or does differently; if that cannot be judged from the text, say so first. Nobody in this process hears music: a claim about sound stays "unverified as music". Correctness of anything taught outranks everything else.
-7. **Proportion.** One required change per verdict where possible, with an acceptance condition and a stop condition; no implementation detail the invariant does not need. Questions to the owner only where the owner can answer without listening or running code.
+When runtime/visual evidence would decide the issue and the reviewer cannot obtain it, require the smallest discriminating measurement from the builder rather than guessing. Nobody in this process hears music; claims that depend on hearing remain unverified as music unless a valid source/read supplies the truth another way.
 
-**Response format** (the record tooling parses it): a new file under `docs/review/responses/`, named exactly as the request asks (`<HEAD>.md` for a handoff, `questions-<HEAD>.md` for questions). A single-item file opens with `## Verdict` and the verdict in bold (APPROVE, APPROVE WITH ONE REQUIRED CHANGE, or REJECT); a multi-item file has one heading per item. Required changes are numbered. A correction is a new file, `<name>-correction-N.md`, stating exactly which section it replaces.
+Whole-experience checks are rolling as well as final: after a substantial learner-facing change, inspect the smallest representative complete screen/flow that could reveal a wrong product shape. Do not duplicate final H2 as a ritual.
 
-## Scheduled-run behavior
+## Review quality
 
-If there is no unreviewed immutable handoff, do nothing and do not notify the user.
+1. **Premises at the line.** Code/config/workflow claims cite the exact line read at the handoff HEAD or are labelled a claim to verify.
+2. **Invariant -> mechanism -> consequence.** State the learner/product invariant first. Prescribe mechanism only where the invariant requires it.
+3. **Purpose, not proxy.** Rules are worded by the truth they protect, not by convenient implementation symptoms.
+4. **Scope words are claims.** “All/none/complete/no further changes” name the examined scope.
+5. **Consumers and consistency.** Name other readers of a changed truth and supersede older rulings explicitly.
+6. **Product first.** Say what changes for the learner before code mechanics.
+7. **Proportion.** Prefer one coherent required change with acceptance and stop condition; do not manufacture work.
+8. **Provenance honestly.** A related defect is `pre-existing at <baseline>`, `introduced by <seam>`, `unknown`, or `not applicable`; do not bisect history when it cannot change disposition.
 
-If an unreviewed handoff exists:
-1. review exactly one seam per run, prioritizing a seam that gates the next architectural brief;
-2. write and verify the matching response file;
-3. report the seam, implementation HEAD, verdict and response path.
+## Verdicts and response shape
 
-If GitHub write capability is unavailable during the scheduled run, do not pretend the review completed. Report the exact blocker and, if possible, include the handoff HEAD that needs manual review.
+Use:
 
-## Live reviewer state
+- **APPROVE**
+- **APPROVE WITH ONE REQUIRED CHANGE**
+- **REJECT**, naming the concrete wrong mechanism/premise
 
-This section is mutable. Every autonomous reviewer pass must refresh it from the repository before finishing when a substantive review changes the frontier. Idle checks must not create a context-only commit.
+Classify consequential findings when useful as BLOCKS NEXT BRIEF / CONSTRAINS NEXT BRIEF / LATER WAVE / PRUNE-MERGE.
 
-Current snapshot, refreshed after the 400e69c8 review packet on 2026-09-29:
-- G1b pre-dispatch brief `a96395d`: **APPROVE**. The G1b section is appended to `docs/review/responses/a96395d.md`. Repertoire/project lifecycle remains entirely learner-driven; no state drifts automatically. Stage 9 may present project lifecycle instead of rung counts without changing evidence/rung state. The finish sheet is a sufficient first door; Library integration may follow later through the same `projectStore` truth. G1b may dispatch now that G1a and X3 are closed.
-- U82 implementation `be8802c3`: **APPROVE**. Response: `docs/review/responses/be8802c3.md`. The sideways failure was a stale test of pre-measurement metadata, not a learner-visible U74 regression. Renderer unchanged; U82 closes.
-- Debugging/implementation answers for branch packet `400e69c8`: `docs/review/responses/questions-400e69c8.md`.
-  - U95: the lesson section mounts before async initial data is ready; the test snapshots rows before waiting for the duet tool. Wait for `#lesson-tool-duet` before reading offered rows; do not add a product readiness protocol unless the race is shown on the actual learner surface.
-  - Q76: if python-ly loses the ragtime left-hand pattern, first try the Mutopia-published MIDI for the same edition/work through the existing MIDI→MusicXML converter; if that fails, use a reproducible LilyPond-backed route; one-time committed MusicXML is last resort with full provenance. Do not use MIDI for 2.4's tie truth.
-  - Docs splice: batch once after X1, Q76 and X3e land unless a seam's own acceptance requires an immediate canonical-doc change.
-- G2 is closed through G2a per current.md. X1 is building under its approved brief.
-- X3e and Q76 are information-only while building; each gets its own implementation handoff when it lands.
-- Four-fix-forward packet `bcad0c9` is information-only. The individual seams in it have since landed/been reviewed per current.md where applicable; do not re-review the brief packet.
-- G1a/Q65a information packet `9cfa808` remains no-response because the briefs matched the required changes and later post-build seams have already been reviewed.
-- Scheduled fallback review is active at :00/:15/:30/:45. Each timer prompt now carries the user's explicit authorization to use the connected GitHub app for the normal reviewer read/write actions (review response files and material reviewer-context updates) without asking again. That authorization does not extend to implementation edits, merges, deploys, deletes or history rewrites.
+A single-item response opens `## Verdict` with the bold verdict. A multi-item response has one section per item. A correction is a new `<name>-correction-N.md` that states what it supersedes; never overwrite historical responses merely to make the record look cleaner.
+
+## Autonomy and concurrency
+
+Do not manage Claude's token budget, context percentage, lane count or utilization. Parallel work is limited only by real file/truth overlap, semantic dependencies, unaccepted contracts or loss of immutable-HEAD reviewability.
+
+Do not serialize unrelated work because one seam is waiting for review. Conversely, “keep lanes busy” is never a reason to dispatch a stale or weakly justified task.
+
+Narrow correctness fixes, test-harness repairs, source-backed corrections and other bounded work under an accepted mechanism do not automatically need another pre-build ceremony. Consequential product/architecture choices and expensive wrong-direction risks do.
+
+## Scheduled/triggered reviewer behavior
+
+If no response-required unmatched handoff exists, do nothing. If one exists, review exactly one seam/request packet per run, prioritizing the item that gates the next meaningful product decision.
+
+If GitHub write capability is unavailable, report the exact blocker; never claim a review completed without writing and reading back the response.
+
+T63 is intended to make the open-review list mechanical from explicit `response-required` metadata. Until it lands, never infer response expectation merely from the absence of a response file; intentional information-only handoffs exist.
