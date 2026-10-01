@@ -1,0 +1,34 @@
+[WebServer] (node:110480) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:100888) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 16 tests using 4 workers
+
+(node:97804) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:110784) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:106700) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:105608) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 build\u122\probe\probe.spec.ts:558:9 › f-extra paused 880x412 t100 stack hcb (2.9s)
+  ok  4 build\u122\probe\probe.spec.ts:558:9 › f-extra paused 880x412 t100 wider hcb (3.0s)
+  ok  2 build\u122\probe\probe.spec.ts:558:9 › f-extra paused 880x412 t100 wider saints (3.1s)
+  ok  3 build\u122\probe\probe.spec.ts:558:9 › f-extra paused 880x412 t100 stack saints (3.2s)
+  ok  5 build\u122\probe\probe.spec.ts:558:9 › f-extra paused 880x412 t115 stack hcb (2.5s)
+  ok  6 build\u122\probe\probe.spec.ts:558:9 › f-extra paused 880x412 t115 stack saints (2.6s)
+  ok  7 build\u122\probe\probe.spec.ts:558:9 › f-extra paused 880x412 t115 wider hcb (2.6s)
+  ok  8 build\u122\probe\probe.spec.ts:558:9 › f-extra paused 880x412 t115 wider saints (2.6s)
+  ok  9 build\u122\probe\probe.spec.ts:558:9 › f-extra paused 1200x360 t100 stack hcb (2.5s)
+  ok 10 build\u122\probe\probe.spec.ts:558:9 › f-extra paused 1200x360 t100 stack saints (2.8s)
+  ok 11 build\u122\probe\probe.spec.ts:558:9 › f-extra paused 1200x360 t100 wider hcb (2.8s)
+  ok 12 build\u122\probe\probe.spec.ts:558:9 › f-extra paused 1200x360 t100 wider saints (2.8s)
+  ok 13 build\u122\probe\probe.spec.ts:558:9 › f-extra paused 1200x360 t115 stack hcb (2.6s)
+  ok 14 build\u122\probe\probe.spec.ts:558:9 › f-extra paused 1200x360 t115 stack saints (2.7s)
+  ok 15 build\u122\probe\probe.spec.ts:558:9 › f-extra paused 1200x360 t115 wider hcb (2.6s)
+  ok 16 build\u122\probe\probe.spec.ts:558:9 › f-extra paused 1200x360 t115 wider saints (2.7s)
+
+  16 passed (14.7s)
+exit 0

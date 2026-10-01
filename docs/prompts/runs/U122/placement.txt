@@ -1,0 +1,134 @@
+cell                       state         | room | today: bar  in-window whole lines | A: bar  in-window lines (or the room against the longest word) | B: bar in-window whole lines
+568x320 t100 stack hcb     refused-play  |  264 |   97 yes yes   5 |   63 yes  3                    |   72 yes yes 1
+568x320 t100 stack hcb     refused-hear  |  264 |   97 yes yes   5 |   63 yes  3                    |   72 yes yes 1
+568x320 t100 stack moon    refused-play  |  264 |  182 yes yes  10 |   97 yes  5                    |   72 yes yes 1
+568x320 t100 stack moon    refused-hear  |  264 |  199 yes yes  11 |   97 yes  5                    |   72 yes yes 1
+568x320 t100 wider hcb     refused-play  |  264 |  173 yes yes  10 |   93 yes  5                    |   72 yes yes 1
+568x320 t100 wider hcb     refused-hear  |  264 |  188 yes yes  11 |  108 yes  6                    |   71 yes yes 1
+568x320 t100 wider moon    refused-play  |  264 |  429 NO  NO   26 | room 13 < word 41              |   72 yes yes 1
+568x320 t100 wider moon    refused-hear  |  264 |  508 NO  NO   31 | room 13 < word 41              |   71 yes yes 1
+568x320 t115 stack hcb     refused-play  |  264 |  514 NO  NO   25 | room 26 < word 42              |   83 yes yes 1
+568x320 t115 stack hcb     refused-hear  |  264 |  554 NO  NO   27 | room 26 < word 42              |   83 yes yes 1
+568x320 t115 stack moon    refused-play  |  264 |  214 yes yes  10 |   74 yes  3                    |   83 yes yes 1
+568x320 t115 stack moon    refused-hear  |  264 |  194 yes yes   9 |   94 yes  4                    |   83 yes yes 1
+568x320 t115 wider hcb     refused-play  |  264 |  142 yes yes   7 |   88 yes  4                    |   83 yes yes 1
+568x320 t115 wider hcb     refused-hear  |  264 |  158 yes yes   8 |   86 yes  4                    |   81 yes yes 1
+568x320 t115 wider moon    refused-play  |  264 |  412 NO  NO   22 | room 38 < word 47              |   83 yes yes 1
+568x320 t115 wider moon    refused-hear  |  264 |  428 NO  yes  23 | room 38 < word 47              |   81 yes yes 1
+640x360 t100 stack hcb     refused-play  |  304 |   63 yes yes   3 |   52 yes  2                    |   72 yes yes 1
+640x360 t100 stack hcb     refused-hear  |  304 |   63 yes yes   3 |   52 yes  2                    |   72 yes yes 1
+640x360 t100 stack moon    refused-play  |  304 |   97 yes yes   5 |   52 yes  2                    |   72 yes yes 1
+640x360 t100 stack moon    refused-hear  |  304 |   97 yes yes   5 |   52 yes  2                    |   72 yes yes 1
+640x360 t100 wider hcb     refused-play  |  304 |   77 yes yes   4 |   52 yes  2                    |   72 yes yes 1
+640x360 t100 wider hcb     refused-hear  |  304 |   76 yes yes   4 |   52 yes  2                    |   71 yes yes 1
+640x360 t100 wider moon    refused-play  |  304 |  173 yes yes  10 |   61 yes  3                    |   72 yes yes 1
+640x360 t100 wider moon    refused-hear  |  304 |  172 yes yes  10 |   76 yes  4                    |   71 yes yes 1
+640x360 t115 stack hcb     refused-play  |  304 |  114 yes yes   5 |   74 yes  3                    |   83 yes yes 1
+640x360 t115 stack hcb     refused-hear  |  304 |  114 yes yes   5 |   74 yes  3                    |   83 yes yes 1
+640x360 t115 stack moon    refused-play  |  304 |  234 yes yes  11 |  114 yes  5                    |   83 yes yes 1
+640x360 t115 stack moon    refused-hear  |  304 |  234 yes yes  11 |  114 yes  5                    |   83 yes yes 1
+640x360 t115 wider hcb     refused-play  |  304 |  232 yes yes  12 |  124 yes  6                    |   83 yes yes 1
+640x360 t115 wider hcb     refused-hear  |  304 |  266 yes yes  14 |  122 yes  6                    |   81 yes yes 1
+640x360 t115 wider moon    refused-play  |  304 |  178 yes yes   9 | room 7 < word 47               |   83 yes yes 1
+640x360 t115 wider moon    refused-hear  |  304 |  176 yes yes   9 | room 7 < word 47               |   81 yes yes 1
+667x375 t100 stack hcb     refused-play  |  319 |   52 yes yes   2 |   52 yes  2                    |   72 yes yes 1
+667x375 t100 stack hcb     refused-hear  |  319 |   52 yes yes   2 |   52 yes  2                    |   72 yes yes 1
+667x375 t100 stack moon    refused-play  |  319 |   80 yes yes   4 |   52 yes  2                    |   72 yes yes 1
+667x375 t100 stack moon    refused-hear  |  319 |   80 yes yes   4 |   52 yes  2                    |   72 yes yes 1
+667x375 t100 wider hcb     refused-play  |  319 |   61 yes yes   3 |   52 yes  2                    |   72 yes yes 1
+667x375 t100 wider hcb     refused-hear  |  319 |   60 yes yes   3 |   52 yes  2                    |   71 yes yes 1
+667x375 t100 wider moon    refused-play  |  319 |  125 yes yes   7 |   61 yes  3                    |   72 yes yes 1
+667x375 t100 wider moon    refused-hear  |  319 |  124 yes yes   7 |   60 yes  3                    |   71 yes yes 1
+667x375 t115 stack hcb     refused-play  |  319 |   94 yes yes   4 |   74 yes  3                    |   83 yes yes 1
+667x375 t115 stack hcb     refused-hear  |  319 |   94 yes yes   4 |   74 yes  3                    |   83 yes yes 1
+667x375 t115 stack moon    refused-play  |  319 |  194 yes yes   9 |   74 yes  3                    |   83 yes yes 1
+667x375 t115 stack moon    refused-hear  |  319 |  194 yes yes   9 |   94 yes  4                    |   83 yes yes 1
+667x375 t115 wider hcb     refused-play  |  319 |  160 yes yes   8 |   88 yes  4                    |   83 yes yes 1
+667x375 t115 wider hcb     refused-hear  |  319 |  176 yes yes   9 |  104 yes  5                    |   81 yes yes 1
+667x375 t115 wider moon    refused-play  |  319 |  466 NO  NO   25 | room 34 < word 47              |   83 yes yes 1
+667x375 t115 wider moon    refused-hear  |  319 |  482 NO  NO   26 | room 34 < word 47              |   81 yes yes 1
+700x350 t100 stack hcb     refused-play  |  294 |   52 yes yes   2 |   52 yes  1                    |   72 yes yes 1
+700x350 t100 stack hcb     refused-hear  |  294 |   52 yes yes   2 |   52 yes  1                    |   72 yes yes 1
+700x350 t100 stack moon    refused-play  |  294 |   63 yes yes   3 |   52 yes  2                    |   72 yes yes 1
+700x350 t100 stack moon    refused-hear  |  294 |   80 yes yes   4 |   52 yes  2                    |   72 yes yes 1
+700x350 t100 wider hcb     refused-play  |  294 |   61 yes yes   3 |   52 yes  2                    |   72 yes yes 1
+700x350 t100 wider hcb     refused-hear  |  294 |   60 yes yes   3 |   52 yes  2                    |   71 yes yes 1
+700x350 t100 wider moon    refused-play  |  294 |   93 yes yes   5 |   52 yes  2                    |   72 yes yes 1
+700x350 t100 wider moon    refused-hear  |  294 |   92 yes yes   5 |   52 yes  2                    |   71 yes yes 1
+700x350 t115 stack hcb     refused-play  |  294 |   74 yes yes   3 |   60 yes  2                    |   83 yes yes 1
+700x350 t115 stack hcb     refused-hear  |  294 |   74 yes yes   3 |   60 yes  2                    |   83 yes yes 1
+700x350 t115 stack moon    refused-play  |  294 |  154 yes yes   7 |   74 yes  3                    |   83 yes yes 1
+700x350 t115 stack moon    refused-hear  |  294 |  134 yes yes   6 |   74 yes  3                    |   83 yes yes 1
+700x350 t115 wider hcb     refused-play  |  294 |  106 yes yes   5 |   70 yes  3                    |   83 yes yes 1
+700x350 t115 wider hcb     refused-hear  |  294 |  104 yes yes   5 |   68 yes  3                    |   81 yes yes 1
+700x350 t115 wider moon    refused-play  |  294 |  250 yes yes  13 |  106 yes  5                    |   83 yes yes 1
+700x350 t115 wider moon    refused-hear  |  294 |  266 yes yes  14 |  104 yes  5                    |   81 yes yes 1
+720x360 t100 stack hcb     refused-play  |  304 |   52 yes yes   2 |   52 yes  1                    |   72 yes yes 1
+720x360 t100 stack hcb     refused-hear  |  304 |   52 yes yes   2 |   52 yes  2                    |   72 yes yes 1
+720x360 t100 stack moon    refused-play  |  304 |   63 yes yes   3 |   52 yes  1                    |   72 yes yes 1
+720x360 t100 stack moon    refused-hear  |  304 |   63 yes yes   3 |   52 yes  2                    |   72 yes yes 1
+720x360 t100 wider hcb     refused-play  |  304 |   52 yes yes   2 |   52 yes  2                    |   72 yes yes 1
+720x360 t100 wider hcb     refused-hear  |  304 |   52 yes yes   2 |   52 yes  2                    |   71 yes yes 1
+720x360 t100 wider moon    refused-play  |  304 |   93 yes yes   5 |   52 yes  2                    |   72 yes yes 1
+720x360 t100 wider moon    refused-hear  |  304 |   92 yes yes   5 |   52 yes  2                    |   71 yes yes 1
+720x360 t115 stack hcb     refused-play  |  304 |   74 yes yes   3 |   60 yes  2                    |   83 yes yes 1
+720x360 t115 stack hcb     refused-hear  |  304 |   74 yes yes   3 |   60 yes  2                    |   83 yes yes 1
+720x360 t115 stack moon    refused-play  |  304 |  114 yes yes   5 |   60 yes  2                    |   83 yes yes 1
+720x360 t115 stack moon    refused-hear  |  304 |  114 yes yes   5 |   60 yes  2                    |   83 yes yes 1
+720x360 t115 wider hcb     refused-play  |  304 |   88 yes yes   4 |   70 yes  3                    |   83 yes yes 1
+720x360 t115 wider hcb     refused-hear  |  304 |  104 yes yes   5 |   68 yes  3                    |   81 yes yes 1
+720x360 t115 wider moon    refused-play  |  304 |  196 yes yes  10 |   88 yes  4                    |   83 yes yes 1
+720x360 t115 wider moon    refused-hear  |  304 |  212 yes yes  11 |   86 yes  4                    |   81 yes yes 1
+740x342 t100 stack hcb     refused-play  |  286 |   52 yes yes   2 |   52 yes  1                    |   72 yes yes 1
+740x342 t100 stack hcb     refused-hear  |  286 |   52 yes yes   2 |   52 yes  1                    |   72 yes yes 1
+740x342 t100 stack moon    refused-play  |  286 |   63 yes yes   3 |   52 yes  1                    |   72 yes yes 1
+740x342 t100 stack moon    refused-hear  |  286 |   63 yes yes   3 |   52 yes  1                    |   72 yes yes 1
+740x342 t100 wider hcb     refused-play  |  286 |   52 yes yes   2 |   52 yes  1                    |   72 yes yes 1
+740x342 t100 wider hcb     refused-hear  |  286 |   52 yes yes   2 |   52 yes  2                    |   71 yes yes 1
+740x342 t100 wider moon    refused-play  |  286 |   77 yes yes   4 |   52 yes  2                    |   72 yes yes 1
+740x342 t100 wider moon    refused-hear  |  286 |   92 yes yes   5 |   52 yes  2                    |   71 yes yes 1
+740x342 t115 stack hcb     refused-play  |  286 |   74 yes yes   3 |   60 yes  2                    |   83 yes yes 1
+740x342 t115 stack hcb     refused-hear  |  286 |   60 yes yes   2 |   60 yes  2                    |   83 yes yes 1
+740x342 t115 stack moon    refused-play  |  286 |  114 yes yes   5 |   60 yes  2                    |   83 yes yes 1
+740x342 t115 stack moon    refused-hear  |  286 |  114 yes yes   5 |   60 yes  2                    |   83 yes yes 1
+740x342 t115 wider hcb     refused-play  |  286 |   70 yes yes   3 |   60 yes  2                    |   83 yes yes 1
+740x342 t115 wider hcb     refused-hear  |  286 |   86 yes yes   4 |   60 yes  2                    |   81 yes yes 1
+740x342 t115 wider moon    refused-play  |  286 |  178 yes yes   9 |   70 yes  3                    |   83 yes yes 1
+740x342 t115 wider moon    refused-hear  |  286 |  176 yes yes   9 |   68 yes  3                    |   81 yes yes 1
+780x360 t100 stack hcb     refused-play  |  304 |   52 yes yes   2 |   52 yes  1                    |   72 yes yes 1
+780x360 t100 stack hcb     refused-hear  |  304 |   52 yes yes   2 |   52 yes  1                    |   72 yes yes 1
+780x360 t100 stack moon    refused-play  |  304 |   63 yes yes   3 |   52 yes  1                    |   72 yes yes 1
+780x360 t100 stack moon    refused-hear  |  304 |   52 yes yes   2 |   52 yes  1                    |   72 yes yes 1
+780x360 t100 wider hcb     refused-play  |  304 |   52 yes yes   2 |   52 yes  1                    |   72 yes yes 1
+780x360 t100 wider hcb     refused-hear  |  304 |   52 yes yes   2 |   52 yes  2                    |   71 yes yes 1
+780x360 t100 wider moon    refused-play  |  304 |   61 yes yes   3 |   52 yes  1                    |   72 yes yes 1
+780x360 t100 wider moon    refused-hear  |  304 |   76 yes yes   4 |   52 yes  2                    |   71 yes yes 1
+780x360 t115 stack hcb     refused-play  |  304 |   60 yes yes   2 |   60 yes  1                    |   83 yes yes 1
+780x360 t115 stack hcb     refused-hear  |  304 |   60 yes yes   2 |   60 yes  2                    |   83 yes yes 1
+780x360 t115 stack moon    refused-play  |  304 |   94 yes yes   4 |   60 yes  2                    |   83 yes yes 1
+780x360 t115 stack moon    refused-hear  |  304 |   94 yes yes   4 |   60 yes  2                    |   83 yes yes 1
+780x360 t115 wider hcb     refused-play  |  304 |   70 yes yes   3 |   60 yes  2                    |   83 yes yes 1
+780x360 t115 wider hcb     refused-hear  |  304 |   68 yes yes   3 |   60 yes  2                    |   81 yes yes 1
+780x360 t115 wider moon    refused-play  |  304 |  142 yes yes   7 |   60 yes  2                    |   83 yes yes 1
+780x360 t115 wider moon    refused-hear  |  304 |  122 yes yes   6 |   60 yes  2                    |   81 yes yes 1
+844x390 t100 stack hcb     refused-play  |  334 |   52 yes yes   1 |   52 yes  1                    |   72 yes yes 1
+844x390 t100 stack hcb     refused-hear  |  334 |   52 yes yes   1 |   52 yes  1                    |   72 yes yes 1
+844x390 t100 stack moon    refused-play  |  334 |   52 yes yes   2 |   52 yes  1                    |   72 yes yes 1
+844x390 t100 stack moon    refused-hear  |  334 |   52 yes yes   2 |   52 yes  1                    |   72 yes yes 1
+844x390 t100 wider hcb     refused-play  |  334 |   52 yes yes   2 |   52 yes  1                    |   72 yes yes 1
+844x390 t100 wider hcb     refused-hear  |  334 |   52 yes yes   2 |   52 yes  1                    |   71 yes yes 1
+844x390 t100 wider moon    refused-play  |  334 |   61 yes yes   3 |   52 yes  1                    |   72 yes yes 1
+844x390 t100 wider moon    refused-hear  |  334 |   60 yes yes   3 |   52 yes  2                    |   71 yes yes 1
+844x390 t115 stack hcb     refused-play  |  334 |   60 yes yes   2 |   60 yes  1                    |   83 yes yes 1
+844x390 t115 stack hcb     refused-hear  |  334 |   60 yes yes   2 |   60 yes  1                    |   83 yes yes 1
+844x390 t115 stack moon    refused-play  |  334 |   74 yes yes   3 |   60 yes  1                    |   83 yes yes 1
+844x390 t115 stack moon    refused-hear  |  334 |   74 yes yes   3 |   60 yes  1                    |   83 yes yes 1
+844x390 t115 wider hcb     refused-play  |  334 |   60 yes yes   2 |   60 yes  1                    |   83 yes yes 1
+844x390 t115 wider hcb     refused-hear  |  334 |   60 yes yes   2 |   60 yes  2                    |   81 yes yes 1
+844x390 t115 wider moon    refused-play  |  334 |  106 yes yes   5 |   60 yes  2                    |   83 yes yes 1
+844x390 t115 wider moon    refused-hear  |  334 |  104 yes yes   5 |   60 yes  2                    |   81 yes yes 1
+
+128 refusal states (two per cell, 64 cells).
+today: bar outside the window in 8; sentence not whole in 7; tallest bar 554 px; most lines 31
+A: the room is narrower than the sentence's longest word in 10 (the sentence would break inside a word or overflow); where it fits, tallest bar 124 px, most lines 6, outside the window in 0
+B: outside the window in 0; not whole in 0; bar 71–83 px; lines [1]
