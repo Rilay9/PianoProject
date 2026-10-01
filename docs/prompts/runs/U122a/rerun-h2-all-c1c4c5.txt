@@ -1,0 +1,23 @@
+[WebServer] (node:83288) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:110788) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 5 tests using 4 workers
+
+(node:107056) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:94468) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:87520) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:106524) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 build\u122a\probe\premise.spec.ts:689:11 › h2 sideways c4 568x320 t100 wider moon (14.6s)
+  ok 3 build\u122a\probe\premise.spec.ts:689:11 › h2 sideways c5 568x320 t115 wider moon (15.2s)
+  ok 2 build\u122a\probe\premise.spec.ts:689:11 › h2 sideways c1 568x320 t115 stack moon (15.2s)
+  ok 4 build\u122a\probe\premise.spec.ts:689:11 › h2 sideways c5 568x320 t100 wider moon (15.7s)
+  ok 5 build\u122a\probe\premise.spec.ts:689:11 › h2 sideways c5 640x360 t115 stack moon (12.6s)
+
+  5 passed (31.2s)
+exit 0

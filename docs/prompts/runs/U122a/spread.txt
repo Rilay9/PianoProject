@@ -1,0 +1,26 @@
+# The freeze's own spread: run-frozen five-line stave (px), the chain's run then three reruns
+  667x375-t100-stack-moon c1: [26.97, 26.97, 26.97, 26.97]
+  667x375-t100-stack-moon c2: [26.97, 26.97, 26.97, 26.97]
+  667x375-t100-stack-moon c3: [22.5, 22.5, 26.97, 26.97]
+  667x375-t100-stack-moon c4: [26.97, 26.97, 26.97, 26.97]
+  667x375-t100-stack-moon c5: [26.97, 26.97, 26.97, 26.97]
+  667x375-t100-stack-moon c6: [26.97, 26.97, 26.97, 26.97]
+  700x350-t100-wider-moon c1: [28.33, 28.33, 28.33, 28.33]
+  700x350-t100-wider-moon c2: [28.33, 28.33, 28.33, 28.33]
+  700x350-t100-wider-moon c3: [28.33, 28.33, 28.33, 28.33]
+  700x350-t100-wider-moon c4: [28.33, 28.33, 23.63, 28.33]
+  700x350-t100-wider-moon c5: [28.33, 28.33, 28.33, 28.33]
+  700x350-t100-wider-moon c6: [28.33, 28.33, 28.33, 28.33]
+  780x360-t100-stack-moon c1: [26.36, 31.6, 31.6, 31.6]
+  780x360-t100-stack-moon c2: [31.6, 31.6, 31.6, 31.6]
+  780x360-t100-stack-moon c3: [31.6, 31.6, 26.36, 31.6]
+  780x360-t100-stack-moon c4: [31.6, 31.6, 31.6, 31.6]
+  780x360-t100-stack-moon c5: [31.6, 31.6, 31.6, 31.6]
+  780x360-t100-stack-moon c6: [31.6, 31.6, 31.6, 31.6]
+
+# History: after the at-rest refusals on the same page (first pass, then three reruns) against the clean run
+  568x320-t100-wider-moon c4: after refusals [19.12, 19.12, 19.12, 22.92] | clean 22.92
+  568x320-t100-wider-moon c5: after refusals [19.12, 22.92, 22.92, 22.92] | clean 22.92
+  568x320-t115-stack-moon c1: after refusals [19.12, 22.92, 22.92, 22.92] | clean 22.92
+  568x320-t115-wider-moon c5: after refusals [19.12, 22.92, 19.12, 22.92] | clean 22.92
+  640x360-t115-stack-moon c5: after refusals [21.58, 25.87, 25.87, 25.87] | clean 25.87
