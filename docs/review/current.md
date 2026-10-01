@@ -2,6 +2,8 @@
 
 Open handoffs, each with its own file:
 
+- **U118** — `handoffs/bea2d4e2.md` (respond in `responses/bea2d4e2.md`). The stacked slots honour the folded chip's reserve (Entry 198).
+- **X45** — `handoffs/02094a2e.md` (respond in `responses/02094a2e.md`). A rhythm card's first open judges nothing until its sound is running, says so where it is not, and then counts in as it always has (Entry 202).
 - **U119** — `handoffs/fa4563d1.md` (respond in `responses/fa4563d1.md`). The sideways bar's left group never covers its controls (Entry 199).
 - **E57b** — `handoffs/eaf95dea.md` (respond in `responses/eaf95dea.md`). Rock.7 back within the reading limit by the reviewer's three-word cut: “on this track” removed from its first sentence, its reading time back to three minutes, and E57a's long-lesson exception and its docs note rolled back (2026-10-01) (Entry 200).
 - **E59** — `handoffs/e9aa34fd.md` (respond in `responses/e9aa34fd.md`). A defaulted tempo is playback only: where a source states no tempo, `normalise` writes the converter's 96 as music21's `numberSounding` (a sound-only direction beside an empty `<words />`) and no longer as a printed `<metronome>`, so every shipped row the no-tempo branch produces moved — 169 PDMX files from their own committed bytes by one text transform, 60 kern and 6 MuseTrainer files at the build, 3 approved cuts of moved PDMX parents — 238 identities, each related under the reviewed-repair relation with `tempoChanged: false`; Mutopia, the authored scores and the generator take the branch zero times; nothing a learner hears or sees changes (2026-10-01) (Entry 184).

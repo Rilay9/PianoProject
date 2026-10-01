@@ -334,6 +334,8 @@ port, **5313**, from a config copy under the worktree's `app/build/u118/` — ne
 never another lane's port. Everything else in §14 applies as written; nothing in this lane needs
 a rule beyond it.
 
+**Landed 2026-10-01** (Entry 198; bea2d4e2, merged dc2a878f); handoff `handoffs/bea2d4e2.md`.
+
 ## Record
 
 lane: U118 · closes: — · entry: 198
@@ -345,3 +347,4 @@ state: with-reviewer 2026-10-01: with the reviewer before dispatch, the reserve 
 - held 2026-10-01: stopped at its stop condition — the two-line reserve priced before the freeze changes the window shape in 6 of 112 phone cells (three one-bar windows lose their greyed next system; at 115 % text the five-finger exercise drops a system) and the drawn size in 28; nothing in the app changed; the brief's premise that the fold frees no height is wrong upright (folding hides the header row, taller than the reserve on every measured shape), so placement alone clears the chip with no trade except a size re-taken while folded; the option is with the reviewer (Entry 198)
 - approved 2026-10-01: APPROVE FOR DISPATCH with option (iii) — placement always: when folded chrome is drawn, stacked slots are placed below the chip's reserved band, and the first visible slot may never start inside that band; do not re-price or re-fit merely because the chrome folds during an already-frozen run, the room the disappearing header releases making placement-only safe on the ordinary path; only when the renderer genuinely takes a new size while the chip is already drawn (a width/orientation re-size that reconstructs/re-prices the frozen presentation) does that sizing pass include the chip reserve in its available height; a status-text change by itself never re-prices the run; the reserve is the maximum allowed chip height at that geometry over every legitimate chip state, not a universal two-line constant, stable across status changes for that fitted geometry until a genuine size/geometry pass occurs; discriminating cases cover both paths (ordinary start → fold with shape/scale unchanged; size taken while already folded → bottom system still inside the usable stage/keyboard boundary); the gallery's blanket chip exclusion still narrows to chip-vs-score-ink/fingering/clef overlap on folded phone states once the chip owns space (`responses/questions-e9aa51ae.md`)
 - dispatched 2026-10-01: resumed to build option (iii) (`responses/questions-e9aa51ae.md`) (Entry 198)
+- landed 2026-10-01: merged dc2a878f; handoff `handoffs/bea2d4e2.md`

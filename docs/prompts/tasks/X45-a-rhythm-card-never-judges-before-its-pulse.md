@@ -98,9 +98,12 @@ Then Done / Not done / Follow-ups / Questions / Files, per `operating-procedure.
 
 As `operating-procedure.md` §14, cited rather than restated. Browser tests, only if a mutant survives jsdom, on this lane's own port under the worktree's `app/build/x45/` — never port 4173. Nothing else is lane-specific: no clone and no extra cache path beyond what §14 already names, since this lane touches no content.
 
+**Landed 2026-10-01** (Entry 202; 02094a2e, merged 037e2bfb); handoff `handoffs/02094a2e.md`.
+
 ## Record
 
 lane: X45 · closes: X45 · entry: 202
 index: the first-open latch/start gap CL05b's own entry left open and the reviewer kept as its own row (`responses/1a89de52.md`, "X45 — first-open start never answers"): a rhythm card's very first open holds — no judged grid, no tap accepted — until the sound is actually running, the same principle CL05b already proved for the return path, one edge earlier; no second re-anchor needed, since nothing has been played yet to re-anchor | app | drafted 2026-10-01 (`X45-a-rhythm-card-never-judges-before-its-pulse.md`); Entry 202
 in-flight: drafted 2026-10-01 (`X45-a-rhythm-card-never-judges-before-its-pulse.md`): a first-open rhythm card holds until `audioEngine.state` reads `running`, reusing CL05b's own wait/affordance machinery unmodified (`whenSoundRuns`, `showSoundPaused`/`wakeSound`, the resume affordance); not dispatched
 state: dispatched 2026-10-01: dispatched at e0802d75 under the reviewer's direction for X45 (`responses/1a89de52.md`), building (Entry 202)
+- landed 2026-10-01: merged 037e2bfb; handoff `handoffs/02094a2e.md`
