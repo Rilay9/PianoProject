@@ -273,6 +273,7 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **E57b** | E57a's required change (`responses/1befd3e1.md`): rock.7 back within the 600-word reading limit by the reviewer's three-word cut, the long-lesson exception rolled back | content | drafted 2026-10-01 (`E57b-rock7-within-the-reading-limit.md`); Entry 200; landed 2026-10-01: merged 0aa847ed; handoff `handoffs/eaf95dea.md`
 | **T62** | CI's browser tests run as parallel shards: a content-and-unit job, an N-shard Playwright matrix restoring the first job's `app/dist` artifact, and a render-check-and-validate job after every shard, so the run's wall time drops with every check still run exactly once (backlog T62, P2; the 76m6s/13e1b1a8 baseline, E2E 41m41s of it) (`T62-ci-browser-tests-in-parallel-shards.md`) | tooling/CI | drafted 2026-10-01 (`T62-ci-browser-tests-in-parallel-shards.md`); with the reviewer before dispatch; Entry N |; Entry 201
 | **X45** | the first-open latch/start gap CL05b's own entry left open and the reviewer kept as its own row (`responses/1a89de52.md`, "X45 — first-open start never answers"): a rhythm card's very first open holds — no judged grid, no tap accepted — until the sound is actually running, the same principle CL05b already proved for the return path, one edge earlier; no second re-anchor needed, since nothing has been played yet to re-anchor | app | drafted 2026-10-01 (`X45-a-rhythm-card-never-judges-before-its-pulse.md`); Entry 202; landed 2026-10-01: merged 037e2bfb; handoff `handoffs/02094a2e.md`
+| **U118a** | CI's red on 43e450a8 (run 36834528688): the hands-change restart test raced the run's 0.7 s start fold; the test now waits for the fold and taps through the sheet, the app unchanged | test | dispatched 2026-10-01 (`U118a-the-hands-change-test-waits-for-the-fold.md`); Entry 203; landed 2026-10-01: merged 2ffa1b92; handoff `handoffs/fa0307a9.md`
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
 
@@ -411,6 +412,7 @@ U119 · landed · 199
 E57b · landed · 200
 T62 · with-reviewer · 201
 X45 · landed · 202
+U118a · landed · 203
 F0a · closed · —
 L120 · approved · —
 -->

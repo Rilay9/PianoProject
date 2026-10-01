@@ -1,0 +1,18 @@
+== map-tests  07:36:09
+map-tests exit=0
+== map-min  07:36:10
+map-min exit=0
+== tsc  07:36:11
+tsc exit=0
+== lint  07:36:22
+lint exit=0
+== vitest-all  07:37:05
+vitest-all exit=1
+== build-app  07:41:00
+build-app exit=0
+SPECS: tests/e2e/score.run.spec.ts
+== specs-exist  07:41:35
+specs-exist exit=0
+== e2e-targeted  07:41:35
+e2e-targeted exit=0
+CHAIN DONE 07:42:19

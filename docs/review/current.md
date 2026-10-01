@@ -2,6 +2,7 @@
 
 Open handoffs, each with its own file:
 
+- **U118a** — `handoffs/fa0307a9.md` (respond in `responses/fa0307a9.md`). A hand changed mid-run: the test raced the run's own start fold, and no lane's code broke the screen (Entry 203).
 - **U118** — `handoffs/bea2d4e2.md` (respond in `responses/bea2d4e2.md`). The stacked slots honour the folded chip's reserve (Entry 198).
 - **X45** — `handoffs/02094a2e.md` (respond in `responses/02094a2e.md`). A rhythm card's first open judges nothing until its sound is running, says so where it is not, and then counts in as it always has (Entry 202).
 - **U119** — `handoffs/fa4563d1.md` (respond in `responses/fa4563d1.md`). The sideways bar's left group never covers its controls (Entry 199).
