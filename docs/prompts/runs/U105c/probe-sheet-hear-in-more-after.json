@@ -1,0 +1,32 @@
+{
+  "label": "after",
+  "inSheet": true,
+  "ordinary": {
+    "text": "Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning.",
+    "head": 84.890625,
+    "scrollWidth": 549,
+    "clientWidth": 283,
+    "textInside": false,
+    "ellipsis": true,
+    "clear": false,
+    "zoom": 2,
+    "scale": 0.917049,
+    "sheetOpen": false,
+    "marked": null,
+    "markedInBar": false
+  },
+  "refused": {
+    "text": "Sound did not start — tap Hear it again",
+    "head": 102.5625,
+    "scrollWidth": 283,
+    "clientWidth": 283,
+    "textInside": true,
+    "ellipsis": false,
+    "clear": true,
+    "zoom": 2,
+    "scale": 0.917049,
+    "sheetOpen": false,
+    "marked": "true",
+    "markedInBar": false
+  }
+}
