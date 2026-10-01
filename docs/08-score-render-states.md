@@ -474,7 +474,9 @@ read-ahead on the screen at every moment.
   chip at the stage's top, the stacked slots start below the band the chip owns, never inside
   it, and stack within what is left of the stage. The band is the chip's tallest legitimate
   state at this geometry: `bar n / m` joined to every line the run can write while folded, each
-  at its longest for the piece, laid out under the chip's own rule (its `top`, padding, type and
+  at its longest for the piece — the seconds away, which have no ceiling, at fourteen of the
+  face's widest digit, the most a span between two `Date` readings has in whole seconds (U118b,
+  `responses/bea2d4e2.md`, `responses/questions-1cadc4dc.md`) — laid out under the chip's own rule (its `top`, padding, type and
   line height, at the width the stage leaves it) — one line where every sentence fits one, more
   where any needs more. It is held for the stage's width and the chip's type, so a change of
   what the chip says never moves the slots or re-prices a run (`ScoreScreen` `cornerTexts` and

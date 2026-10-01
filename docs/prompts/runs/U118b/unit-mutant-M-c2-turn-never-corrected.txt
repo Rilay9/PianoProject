@@ -1,0 +1,34 @@
+
+ RUN  v5.0.0 <worktree>/app
+
+ ❯ tests/unit/windowRendererStage.test.ts (34 tests | 1 failed | 33 skipped) 552ms
+   ❯ the renderer against a stage that changes after it is made (U74) (7)
+     × (c) a width change during a run releases the held size, takes a new one and keeps the step 551ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 33 skipped (34)
+   Start at  14:51:22
+   Duration  1.70s (environment 44%, tests 35%, transform 17%, import 3%)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/windowRendererStage.test.ts > the renderer against a stage that changes after it is made (U74) > (c) a width change during a run releases the held size, takes a new one and keeps the step
+AssertionError: the held size let go at the width change: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/windowRendererStage.test.ts:516:77
+    514|     const { releasedAtTheChange } = await turnTo390(stage, renderer);
+    515|     // Let go at the change itself: that size was taken on a stage thi…
+    516|     expect(releasedAtTheChange, 'the held size let go at the width cha…
+       |                                                                             ^
+    517|     expect(held(renderer), 'the run holds a size on the new stage').no…
+    518|     expectSamePicture(drawn(stage, renderer), want, 'held on the new s…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

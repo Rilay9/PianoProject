@@ -1286,6 +1286,92 @@ test('where every sentence fits one line, the band is one line', async ({ page }
   belowTheChip('one line, folded', folded);
 });
 
+test('the band holds the seconds away at the widest count they can print, and the chip says the real ones (U118b)', async ({ page }) => {
+  test.setTimeout(150_000);
+  // U118's required change (`responses/bea2d4e2.md`, `responses/questions-1cadc4dc.md`): the away count
+  // has no ceiling of its own, so the band prices it at the widest count the product can print, fourteen
+  // of the chip's widest digit (`AWAY_PRICED_COUNTS`: the seconds between two `Date` readings), not at a
+  // day's 86 400. The claim holds on any face. It tells the bound from a day only where the fourteen
+  // digits take the sentence a line past 86 400 and past every other sentence the chip carries; 342 x 740
+  // was chosen because it does on the face this was written on (`runs/U118b`), and the annotation says
+  // whether it does here.
+  await page.setViewportSize({ width: 342, height: 740 });
+  await openPiece(page, 'song.folk.hot-cross-buns');
+  await setBars(page, 2);
+  // The away sentence is a clock-driven run's (`onVisibilityChange`): Tempo, hidden, then shown again.
+  await page.locator('#score-mode').selectOption('tempo');
+  await settle(page);
+  await pressControl(page, '#score-play');
+  await page.waitForFunction(() => ((window as ChipHooked).__pianopath?.scoreFit?.()?.frozen ?? null) !== null, undefined, { timeout: 30_000 });
+  const hide = async (hidden: boolean): Promise<void> => {
+    await page.evaluate((value) => {
+      Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => (value ? 'hidden' : 'visible') });
+      document.dispatchEvent(new Event('visibilitychange'));
+    }, hidden);
+  };
+  await hide(true);
+  await expect(page.locator('#score-play')).toHaveText('▶');
+  await page.waitForTimeout(1_200);
+  await hide(false);
+  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-chrome', 'folded', { timeout: 10_000 });
+  await frames(page);
+  await page.waitForTimeout(400);
+  const folded = await readFold(page);
+  // The chip's sentence laid out the way `foldedCornerReserve` lays every candidate (an unseen copy of
+  // the chip, `bar m / m`), with the count as fourteen of the widest digit this face draws, measured in
+  // the chip's own type, and as a day's.
+  const priced = await page.evaluate(() => {
+    const stage = document.querySelector<HTMLElement>('#score-stage')!;
+    const corner = document.querySelector<HTMLElement>('#score-corner')!;
+    const said = corner.textContent ?? '';
+    const parts = /^bar \S+ \/ (\S+) · (.*you were away )(\d+)( s\..*)$/.exec(said);
+    if (!parts) return { said, count: null, widest: null, wide: null, day: null };
+    const [, last, before, count, after] = parts;
+    const copy = corner.cloneNode(false) as HTMLElement;
+    copy.removeAttribute('id');
+    copy.style.visibility = 'hidden';
+    stage.appendChild(copy);
+    const run = document.createElement('span');
+    run.style.whiteSpace = 'nowrap';
+    copy.appendChild(run);
+    let widest = '0';
+    let widestPx = -1;
+    for (let digit = 0; digit <= 9; digit += 1) {
+      run.textContent = String(digit).repeat(14);
+      const px = run.getBoundingClientRect().width;
+      if (px > widestPx) {
+        widest = String(digit);
+        widestPx = px;
+      }
+    }
+    const top = stage.getBoundingClientRect().top + stage.clientTop;
+    const lay = (n: string): { bottom: number; lines: number } => {
+      copy.textContent = `bar ${last} / ${last} · ${before}${n}${after}`;
+      const range = document.createRange();
+      range.selectNodeContents(copy);
+      const lines = new Set([...range.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top))).size;
+      return { bottom: copy.getBoundingClientRect().bottom - top, lines };
+    };
+    const wide = lay(widest.repeat(14));
+    const day = lay('86400');
+    copy.remove();
+    return { said, count: Number(count), widest, wide, day };
+  });
+  const said = JSON.stringify({ folded, priced });
+  // What the learner reads is the real seconds, never the priced count.
+  expect(priced.count, `the chip says the away sentence ${said}`).not.toBeNull();
+  expect(priced.count ?? Infinity, `with the seconds actually away, not the priced count ${said}`).toBeLessThan(60);
+  // The band holds the sentence at the widest count the line can print (fourteen digits, the most a
+  // span between two `Date` readings has in whole seconds).
+  expect(folded.band, `the band holds the away sentence at fourteen of the widest digit ${said}`).toBeGreaterThanOrEqual((priced.wide?.bottom ?? Infinity) - 0.5);
+  // Whether this face tells the fourteen digits from a day here: the case's power, not its claim.
+  test.info().annotations.push({
+    type: 'away lines',
+    description: `fourteen of "${String(priced.widest)}": ${String(priced.wide?.lines)} lines; 86 400: ${String(priced.day?.lines)}`,
+  });
+  belowTheChip('away, folded', folded);
+});
+
 test('a tablet folds without a chip: no band, the slots at the top', async ({ page }) => {
   test.setTimeout(150_000);
   await page.setViewportSize({ width: 900, height: 1200 });
