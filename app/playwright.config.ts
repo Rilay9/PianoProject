@@ -31,7 +31,10 @@ export default defineConfig({
    * differently and has been green throughout.
    */
   workers: process.env.CI ? undefined : 4,
-  reporter: process.env.CI ? [['github'], ['list']] : 'list',
+  // CI adds the blob reporter (T62): one report per shard with every test's id,
+  // result and attachments, which CI's e2e-coverage job reads to prove that each
+  // test of the collection ran in exactly one shard (tools/ci/shard_coverage.py).
+  reporter: process.env.CI ? [['github'], ['list'], ['blob']] : 'list',
   use: {
     ...devices['Desktop Chrome'],
     launchOptions: {
@@ -59,7 +62,12 @@ export default defineConfig({
     // Matches vite.config.ts's `base` (the app is served under the repo name
     // path, same as it will be on GitHub Pages).
     baseURL: 'http://localhost:4173/PianoProject/',
-    trace: 'retain-on-failure',
+    // CI retries once (`retries` above), so CI records a trace only on that
+    // retry and keeps it (T62, the reviewer's setting for U118a's race reds).
+    // A test that fails and then passes keeps the passing attempt's trace, not
+    // the failure's. Locally there is no retry, so a local failure keeps its own
+    // trace, as before.
+    trace: process.env.CI ? 'on-first-retry' : 'retain-on-failure',
     // Every test starts with the setup tour already skipped, because a fresh
     // origin is a first launch and a first launch is the tour (docs/04 §7d).
     // `setup.spec.ts` starts from nothing on purpose. A spec that clears
@@ -81,7 +89,16 @@ export default defineConfig({
     // rebuilt the very catalog it had been handed to measure. Build content
     // first with `python3 tools/content/build.py`; CI and render_check.py both
     // already do.
-    command: 'npm run build:app && npm run preview',
+    //
+    // CI's browser jobs restore the app its first job built (T62), so with CI
+    // set and PIANOPATH_PREBUILT_DIST=1 the command is the preview alone: the
+    // restored `dist` is served as it is, and a missing one fails `vite preview`
+    // loudly instead of being rebuilt from whatever the runner holds. Without
+    // both, the command is the one it always was.
+    command:
+      process.env.CI && process.env.PIANOPATH_PREBUILT_DIST === '1'
+        ? 'npm run preview'
+        : 'npm run build:app && npm run preview',
     url: 'http://localhost:4173/PianoProject/',
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
