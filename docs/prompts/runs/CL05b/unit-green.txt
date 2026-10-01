@@ -1,0 +1,64 @@
+CL05b green: tests/unit/drillLifecycle.test.ts (38 cases, point 3 included), verbose, against the final source. Exit 0: 38 passed.
+
+
+ RUN  v5.0.0 <worktree>/app
+
+ ✓ tests/unit/drillLifecycle.test.ts > a card’s recorded time is visible time only (Part 20 §4) > a drill set: 20 s, hidden 5 min, 10 s is counted 30 s 219ms
+ ✓ tests/unit/drillLifecycle.test.ts > a card’s recorded time is visible time only (Part 20 §4) > a checklist: the same 30 s 12ms
+ ✓ tests/unit/drillLifecycle.test.ts > a card’s recorded time is visible time only (Part 20 §4) > a placement test: the same 30 s 8ms
+ ✓ tests/unit/drillLifecycle.test.ts > a card’s recorded time is visible time only (Part 20 §4) > the guided tour: the same 30 s 14ms
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+stderr | tests/unit/drillLifecycle.test.ts > the backing track’s chart and loop while hidden > 20 s, hidden 5 min, 10 s: the chart reads 30 s into the form
+SkyBottomLineCalculator: width not > 0 in measure 1
+SkyBottomLineCalculator: width not > 0 in measure 1
+
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+stderr | tests/unit/drillLifecycle.test.ts > the backing track’s chart and loop while hidden > holds the bar while hidden and comes back on it, neither ahead nor at bar 1
+SkyBottomLineCalculator: width not > 0 in measure 1
+SkyBottomLineCalculator: width not > 0 in measure 1
+
+ ✓ tests/unit/drillLifecycle.test.ts > the backing track’s chart and loop while hidden > 20 s, hidden 5 min, 10 s: the chart reads 30 s into the form 404ms
+ ✓ tests/unit/drillLifecycle.test.ts > the backing track’s chart and loop while hidden > holds the bar while hidden and comes back on it, neither ahead nor at bar 1 80ms
+ ✓ tests/unit/drillLifecycle.test.ts > the dictation ticker while hidden > does not tick while hidden, and ticks again once visible 28ms
+ ✓ tests/unit/drillLifecycle.test.ts > a Simon chain cut off by hiding (the reviewer’s ruling, §CL05) > asks the piano for nothing while hidden 33ms
+ ✓ tests/unit/drillLifecycle.test.ts > a Simon chain cut off by hiding (the reviewer’s ruling, §CL05) > comes back silent, scores nothing, says it was interrupted, and replays from the first note when asked 35ms
+ ✓ tests/unit/drillLifecycle.test.ts > a Simon chain cut off by hiding (the reviewer’s ruling, §CL05) > a drill opened while the page is already hidden sounds nothing, and waits on return like a cut-off chain 33ms
+ ✓ tests/unit/drillLifecycle.test.ts > a Simon chain cut off by hiding (the reviewer’s ruling, §CL05) > a feedback pause that ends while hidden moves nothing on and plays nothing 42ms
+ ✓ tests/unit/drillLifecycle.test.ts > a rhythm card while hidden (CL05a, the reviewer’s required change) > stops its click and its grid while hidden, takes no tap, counts no hidden time, and after one count-in comes back on the same point of the same grid 69ms
+ ✓ tests/unit/drillLifecycle.test.ts > a rhythm card while hidden (CL05a, the reviewer’s required change) > comes back on its grid when the audio clock stood still while hidden, its count-in and click read through both clocks again 31ms
+ ✓ tests/unit/drillLifecycle.test.ts > a rhythm card while hidden (CL05a, the reviewer’s required change) > a rhythm card opened while the page is hidden starts no click until the page is back, then counts in from the top 32ms
+ ✓ tests/unit/drillLifecycle.test.ts > a rhythm card while hidden (CL05a, the reviewer’s required change) > hidden in the middle of the count-in: the count stops, and comes back from the top, still refusing a stray 24ms
+ ✓ tests/unit/drillLifecycle.test.ts > a rhythm card while hidden (CL05a, the reviewer’s required change) > hidden after the downbeat, before any tap: quiet while hidden; on return one count-in names the downbeat again, a tap during it is a stray, and the first tap after starts the pattern and its click 30ms
+ ✓ tests/unit/drillLifecycle.test.ts > a rhythm card while hidden (CL05a, the reviewer’s required change) > a tap sent to a hidden page once the count has named the downbeat is not the first onset; on return one count-in leads to the downbeat again, past the hidden span and the count 27ms
+ ✓ tests/unit/drillLifecycle.test.ts > a rhythm card comes back only once it can be heard, and after one count-in (CL05b, the reviewer’s required change) > held while the sound is suspended — no click, no judged tap, the grid unmoved — then one count-in, not judged, then the grid from the point the page hid at 45ms
+ ✓ tests/unit/drillLifecycle.test.ts > a rhythm card comes back only once it can be heard, and after one count-in (CL05b, the reviewer’s required change) > a long hold is not counted either: a minute with the start answered and the context still suspended, and the onset next at the hide is still the next one judged 31ms
+ ✓ tests/unit/drillLifecycle.test.ts > a rhythm card comes back only once it can be heard, and after one count-in (CL05b, the reviewer’s required change) > hidden again while held: the held point and the click are the first hide’s, and the second span and the hold are not counted 25ms
+ ✓ tests/unit/drillLifecycle.test.ts > a rhythm card comes back only once it can be heard, and after one count-in (CL05b, the reviewer’s required change) > a card opened while hidden judges nothing against the moment it opened while the return’s start goes unanswered, and counts in from the top once the sound runs 34ms
+ ✓ tests/unit/drillLifecycle.test.ts > a rhythm card comes back only once it can be heard, and after one count-in (CL05b, the reviewer’s required change) > the hold is the rhythm card’s alone: a note-flash card back with the sound suspended takes its answer at once 17ms
+ ✓ tests/unit/drillLifecycle.test.ts > a rhythm card comes back only once it can be heard, and after one count-in (CL05b, the reviewer’s required change) > with no Web Audio there is no sound to wait for: the card carries on as before, its taps judged on its moved grid 25ms
+ ✓ tests/unit/drillLifecycle.test.ts > the held rhythm card’s one way back while its sound is paused: the card itself (CL05b point 3, the reviewer’s ruling, `responses/questions-91f683ff.md`) > says the sound is paused and is a keyboard-reachable target; a key on the strip, even as a tap, and a MIDI key ask for no sound and are not judged 20ms
+ ✓ tests/unit/drillLifecycle.test.ts > the held rhythm card’s one way back while its sound is paused: the card itself (CL05b point 3, the reviewer’s ruling, `responses/questions-91f683ff.md`) > a tap on the card asks for the sound inside the tap; once it runs the sentence goes, the card is no target, and after one count-in the grid goes on where it hid 41ms
+ ✓ tests/unit/drillLifecycle.test.ts > the held rhythm card’s one way back while its sound is paused: the card itself (CL05b point 3, the reviewer’s ruling, `responses/questions-91f683ff.md`) > Enter or Space on the card asks the same; where the sound still cannot run it stays paused and held, and judges nothing 27ms
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+stderr | tests/unit/drillLifecycle.test.ts > a key, a MIDI note or the pedal sent to a hidden page feeds no card (CL05a) > the pedal sent to a hidden page reaches no pedal card
+SkyBottomLineCalculator: width not > 0 in measure 1
+
+ ✓ tests/unit/drillLifecycle.test.ts > a card’s time to answer counts no hidden time (CL05a) > a card hidden for 5 min and answered 400 ms after the return took 1.4 s 28ms
+ ✓ tests/unit/drillLifecycle.test.ts > a key, a MIDI note or the pedal sent to a hidden page feeds no card (CL05a) > a card still open when the page hides is not answered from the screen keyboard while hidden 17ms
+ ✓ tests/unit/drillLifecycle.test.ts > a key, a MIDI note or the pedal sent to a hidden page feeds no card (CL05a) > a card still open when the page hides is not answered from a MIDI piano while hidden 17ms
+ ✓ tests/unit/drillLifecycle.test.ts > a key, a MIDI note or the pedal sent to a hidden page feeds no card (CL05a) > a pagehide that leaves the page reading visible refuses a key all the same, until pageshow 16ms
+ ✓ tests/unit/drillLifecycle.test.ts > a key, a MIDI note or the pedal sent to a hidden page feeds no card (CL05a) > a card that opens after a pagehide, the page still reading visible, sounds nothing 17ms
+ ✓ tests/unit/drillLifecycle.test.ts > a key, a MIDI note or the pedal sent to a hidden page feeds no card (CL05a) > the pedal sent to a hidden page reaches no pedal card 54ms
+ ✓ tests/unit/drillLifecycle.test.ts > each kind moves the moments it holds past a hidden span (CL05a, `Drill.excludeHidden`) > a prompt card: hidden time leaves its answer’s time; a card opened while hidden is timed from the return 1ms
+ ✓ tests/unit/drillLifecycle.test.ts > each kind moves the moments it holds past a hidden span (CL05a, `Drill.excludeHidden`) > a Simon card: the same 1ms
+ ✓ tests/unit/drillLifecycle.test.ts > each kind moves the moments it holds past a hidden span (CL05a, `Drill.excludeHidden`) > a dictation card: hidden time between two chords leaves the answer’s time 1ms
+ ✓ tests/unit/drillLifecycle.test.ts > each kind moves the moments it holds past a hidden span (CL05a, `Drill.excludeHidden`) > a dictation card: a chord heard before the hide keeps its distance from the prompt 1ms
+ ✓ tests/unit/drillLifecycle.test.ts > each kind moves the moments it holds past a hidden span (CL05a, `Drill.excludeHidden`) > a pedal card: a lift after the return is timed in visible time 1ms
+ ✓ tests/unit/drillLifecycle.test.ts > each kind moves the moments it holds past a hidden span (CL05a, `Drill.excludeHidden`) > a rhythm card: the grid moves on by the whole span, and before the count has named a downbeat nothing moves 1ms
+
+ Test Files  1 passed (1)
+      Tests  38 passed (38)
+   Start at  00:39:05
+   Duration  5.96s (environment 34%, transform 33%, tests 27%, import 6%)
+
