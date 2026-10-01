@@ -25,9 +25,12 @@ Allowed: probe the real app in the page (move and restyle the real elements, as 
 
 An addendum section in `docs/design/score-bar-layout.md` ("§7 The one-row premise, measured") with the comparison table and a recommendation, and the run files under `docs/prompts/runs/U122a/` (ENTRY.md starting "### Entry 209 — U122a"). If a layout wins on readability but costs the music size, that is a product trade: present it with what a learner gains and loses, and do not choose it.
 
+**Landed 2026-10-01** (Entry 209; 911f8c82, merged 02d28d99); handoff `handoffs/911f8c82.md`.
+
 ## Record
 
 lane: U122a · closes: — · entry: 209
 index: The bar's one-row premise measured against two tiers and a corner overlay, the music's height and size per layout per cell (the owner's question, 2026-10-01) (`U122a-the-bar-premise-measured.md`) | design | drafted 2026-10-01 (`U122a-the-bar-premise-measured.md`); Entry 209
 in-flight: drafted 2026-10-01 (`U122a-the-bar-premise-measured.md`): a design addendum, no app code; the one-row premise measured against two alternatives before U122's build (Entry 209)
 state: dispatched 2026-10-01: dispatched at 842157ef, measuring, at the owner's question (Entry 209)
+- landed 2026-10-01: merged 02d28d99; handoff `handoffs/911f8c82.md`

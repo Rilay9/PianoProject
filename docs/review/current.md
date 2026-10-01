@@ -4,6 +4,8 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- `handoffs/911f8c82.md` — **open**, respond in `responses/911f8c82.md`: U122a, the landscape Score chrome measured; accept the recommended model (name and bar on a thin top line, controls in one bottom row, a refusal line only while it stands) or another, and three questions.
+- `handoffs/9e14839e.md` — **open**, respond in `responses/9e14839e.md`: T62's first eight-shard read-back, U125's cause hunt, and the whole-product walk's ten findings with four questions.
 - `handoffs/71730e65.md` — **answered** in `responses/71730e65.md`: CL16 rejected as one metric-driven version-3 lane; R23 approved with one required change to keep “strong application” from collapsing into the `established` detector proxy.
 - `handoffs/f96d996d.md` — **answered / T62 closed** in `responses/f96d996d.md`.
 - `handoffs/fd23e0c2.md` — **answered / U118b and U118 closed** in `responses/fd23e0c2.md`.
