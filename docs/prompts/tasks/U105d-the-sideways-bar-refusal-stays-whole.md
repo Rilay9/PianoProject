@@ -317,9 +317,12 @@ port, **5303**, from a config copy under the worktree's `app/build/u105d/` — n
 and never another lane's port. Everything else in §14 applies as written; nothing in this lane
 needs a rule beyond it.
 
+**Landed 2026-10-01** (Entry 197; bb271f4a, merged 0eb82fe5); handoff `handoffs/bb271f4a.md`.
+
 ## Record
 
 lane: U105d · closes: — · entry: 197
 index: the reviewer's direction on U105c's sideways-cut section (`responses/842ea210.md`): the bar's status mirror (`.score-bar__status`, `#score-status-side`) shows a refusal sentence whole and actionable in every state it can stand in, the same invariant U105b/c gave the header, the bar's one-line density contract kept for ordinary status text | app | drafted 2026-10-01 (`U105d-the-sideways-bar-refusal-stays-whole.md`); Entry 197
 in-flight: drafted 2026-10-01 (`U105d-the-sideways-bar-refusal-stays-whole.md`): the sideways bar mirror carries a refusal sentence whole instead of cutting it at `28vw`, the same refusal invariant U105b/c gave the header, on a different status surface; dispatched at cc45b3a8 (Entry 197)
 state: dispatched 2026-10-01: dispatched at cc45b3a8, building (Entry 197)
+- landed 2026-10-01: merged 0eb82fe5; handoff `handoffs/bb271f4a.md`

@@ -1,0 +1,80 @@
+# checks for 72 path(s): 72 matched, 0 unmatched
+# app/src/style.css: app/src/**, app/src/style.css
+# app/tests/e2e/score.screen.spec.ts: app/tests/e2e/*.spec.ts
+# docs/prompts/pictures/u105d/paused-hear-740x342-wider-face-after.png: docs/**
+# docs/prompts/pictures/u105d/paused-hear-740x342-wider-face-before.png: docs/**
+# docs/prompts/runs/U105d/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+# docs/prompts/runs/U105d/browser-green-repeat.txt: docs/**
+# docs/prompts/runs/U105d/browser-green.txt: docs/**
+# docs/prompts/runs/U105d/browser-h1-trial.txt: docs/**
+# docs/prompts/runs/U105d/browser-red-base.txt: docs/**
+# docs/prompts/runs/U105d/build-app-after-mutants.txt: docs/**
+# docs/prompts/runs/U105d/build-app-base.txt: docs/**
+# docs/prompts/runs/U105d/build-app-final-comment.txt: docs/**
+# docs/prompts/runs/U105d/build-app.txt: docs/**
+# docs/prompts/runs/U105d/build-h1-trial.txt: docs/**
+# docs/prompts/runs/U105d/built-css-after-comment.txt: docs/**
+# docs/prompts/runs/U105d/built-css-before-comment.txt: docs/**
+# docs/prompts/runs/U105d/lint.txt: docs/**
+# docs/prompts/runs/U105d/m1-cut-restored-build.txt: docs/**
+# docs/prompts/runs/U105d/m1-cut-restored-score-screen.txt: docs/**
+# docs/prompts/runs/U105d/mutants.txt: docs/**
+# docs/prompts/runs/U105d/npm-ci.txt: docs/**
+# docs/prompts/runs/U105d/probe-after-run.txt: docs/**
+# docs/prompts/runs/U105d/probe-after-summary.txt: docs/**
+# docs/prompts/runs/U105d/probe-bal780-run.txt: docs/**
+# docs/prompts/runs/U105d/probe-bal780-summary.txt: docs/**
+# docs/prompts/runs/U105d/probe-final-run.txt: docs/**
+# docs/prompts/runs/U105d/probe-final-summary.txt: docs/**
+# docs/prompts/runs/U105d/probe-final667-run.txt: docs/**
+# docs/prompts/runs/U105d/probe-final667-summary.txt: docs/**
+# docs/prompts/runs/U105d/probe-fix780-run.txt: docs/**
+# docs/prompts/runs/U105d/probe-fix780-summary.txt: docs/**
+# docs/prompts/runs/U105d/probe-json-final-paused-stack-base.json: docs/**
+# docs/prompts/runs/U105d/probe-json-final-paused-wider-face-base.json: docs/**
+# docs/prompts/runs/U105d/probe-json-final-rest-stack-base.json: docs/**
+# docs/prompts/runs/U105d/probe-json-final-rest-wider-face-base.json: docs/**
+# docs/prompts/runs/U105d/probe-json-final667-rest-stack-base.json: docs/**
+# docs/prompts/runs/U105d/probe-json-final667-rest-wider-face-base.json: docs/**
+# docs/prompts/runs/U105d/probe-json-probe-paused-stack-base.json: docs/**
+# docs/prompts/runs/U105d/probe-json-probe-paused-stack-h1.json: docs/**
+# docs/prompts/runs/U105d/probe-json-probe-paused-stack-h2.json: docs/**
+# docs/prompts/runs/U105d/probe-json-probe-paused-wider-face-base.json: docs/**
+# docs/prompts/runs/U105d/probe-json-probe-paused-wider-face-h1.json: docs/**
+# docs/prompts/runs/U105d/probe-json-probe-paused-wider-face-h2.json: docs/**
+# docs/prompts/runs/U105d/probe-json-probe-rest-stack-base.json: docs/**
+# docs/prompts/runs/U105d/probe-json-probe-rest-stack-h1.json: docs/**
+# docs/prompts/runs/U105d/probe-json-probe-rest-stack-h2.json: docs/**
+# docs/prompts/runs/U105d/probe-json-probe-rest-wider-face-base.json: docs/**
+# docs/prompts/runs/U105d/probe-json-probe-rest-wider-face-h1.json: docs/**
+# docs/prompts/runs/U105d/probe-json-probe-rest-wider-face-h2.json: docs/**
+# docs/prompts/runs/U105d/probe-narrow-rest-run.txt: docs/**
+# docs/prompts/runs/U105d/probe-narrow-run.txt: docs/**
+# docs/prompts/runs/U105d/probe-narrow667-summary.txt: docs/**
+# docs/prompts/runs/U105d/probe-narrow667rest-summary.txt: docs/**
+# docs/prompts/runs/U105d/probe-noflex-run.txt: docs/**
+# docs/prompts/runs/U105d/probe-noflex-summary.txt: docs/**
+# docs/prompts/runs/U105d/probe-probe-summary.txt: docs/**
+# docs/prompts/runs/U105d/probe-run.txt: docs/**
+# docs/prompts/runs/U105d/probe-titlefirst667-run.txt: docs/**
+# docs/prompts/runs/U105d/probe-titlefirst667-summary.txt: docs/**
+# docs/prompts/runs/U105d/probe-titlefirst740-run.txt: docs/**
+# docs/prompts/runs/U105d/probe-titlefirst740-summary.txt: docs/**
+# docs/prompts/runs/U105d/score-one-row.txt: docs/**
+# docs/prompts/runs/U105d/score-screen-whole.txt: docs/**
+# docs/prompts/runs/U105d/scripts-crlf_check.py: docs/**
+# docs/prompts/runs/U105d/scripts-keep_logs.py: docs/**
+# docs/prompts/runs/U105d/scripts-mutants.py: docs/**
+# docs/prompts/runs/U105d/scripts-playwright.u105d-5303.config.ts: docs/**
+# docs/prompts/runs/U105d/scripts-probe.spec.ts: docs/**
+# docs/prompts/runs/U105d/scripts-summarise_probe.py: docs/**
+# docs/prompts/runs/U105d/tsc.txt: docs/**
+# docs/prompts/runs/U105d/unit-crlf-check.txt: docs/**
+# docs/prompts/runs/U105d/unit-targeted.txt: docs/**
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_record_mirrors.py
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test --workers=4
