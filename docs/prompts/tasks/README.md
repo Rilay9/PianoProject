@@ -385,7 +385,7 @@ U32a · closed · 180
 E50b · closed · 181
 U105a · closed · 182
 E57 · verdict · 183
-E59 · approved · 184
+E59 · dispatched · 184
 X42 · closed · 185
 U113 · verdict · 186
 CL05 · verdict · 187
@@ -396,7 +396,7 @@ CL23 · landed · 191
 U105b · verdict · 192
 U105c · landed · 193
 CL05a · landed · 194
-E57a · drafted · 195
+E57a · dispatched · 195
 F0a · closed · —
 L120 · approved · —
 -->
