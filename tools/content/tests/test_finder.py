@@ -228,14 +228,24 @@ class TestValidatorRules(unittest.TestCase):
 
 
 class TestNeeds(unittest.TestCase):
-    """replan §4.2: the lesson page reads this rather than recounting."""
+    """
+    replan §4.2: the shortfall the lesson page prints. Since review C3 the page recounts it
+    (`needs.lessonShortfall`, overlays included) by these rules; `needs.test.ts` is the pair.
+    """
 
     def lesson(self, **over) -> dict:
+        # The requirements every built lesson carries (C5): a rung that asks for a run of
+        # one of its songs, as the fixture's song count assumes (R23: the song shortfall
+        # is written only where the rung asks for a song).
         base = {
             "id": "x",
             "exerciseOptions": ["e1", "e2", "e3"],
             "songOptions": ["s1", "s2"],
             "levelBand": [1.0, 3.0],
+            "requirements": [
+                {"kind": "runs", "from": "exercises", "count": 1},
+                {"kind": "runs", "from": "songs", "count": 1},
+            ],
         }
         base.update(over)
         return base
@@ -267,6 +277,22 @@ class TestNeeds(unittest.TestCase):
         # matter which list they arrive in.
         self.assertEqual(needs["songs"], 0)
         self.assertEqual(needs["exercises"], 2)
+
+    def test_a_rung_that_asks_for_no_song_is_short_of_no_song(self) -> None:
+        # R23 (Premise 2): `thin_lesson_errors` and the app's `thinLessons` exempt a rung
+        # whose requirements ask for no song run from the song count; the shortfall the
+        # lesson page prints must agree, not ask for two songs nothing requires.
+        import tempfile
+
+        lesson = self.lesson(
+            songOptions=["s1"],
+            requirements=[{"kind": "runs", "from": "exercises", "count": 1}],
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            needs = self.run_needs(lesson, [], Path(tmp))
+        self.assertEqual(needs["songs"], 0)
+        self.assertEqual(needs["exercises"], 0)
+        self.assertEqual(validate.thin_lesson_errors(lesson, lesson["exerciseOptions"], lesson["songOptions"], 3), [])
 
     def test_it_counts_the_options_inside_the_level_band(self) -> None:
         import tempfile

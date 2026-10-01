@@ -1,0 +1,12 @@
+npx vitest run (app/, the full unit suite, with the fix): exit 1. 330 files; 4 failed tests in 3 files, 7639 passed, 5 skipped, 1 todo.
+
+- tests/unit/expectedNote.test.ts "every black key in every fixture carries its written spelling": Test timed out in 5000ms.
+- tests/unit/tempoSoundAgainstMark.test.ts "reads every MuseTrainer and kern row that has a built file": Test timed out in 5000ms.
+  Both pass when the three files run alone (2 of the 3 files pass alone): load in the full parallel run, not this change.
+- tests/unit/lessonClaimsAboutApp.test.ts "blues.3: the rung carries two tool buttons..." and "4.7: blind hides the score...":
+  AssertionError: expected false to be true. They still fail alone. Cause: they match source text with "\n"
+  (`menuRow(\n    'Rhythm only'` in ScoreScreen.ts, `.score-stage--blind {\n  visibility: hidden;\n}` in style.css),
+  and this worktree checks those files out with CRLF (core.autocrlf=true). Discriminator: unit-crlf-discriminator.txt
+  (the LF form absent, the CRLF form present; present after CRLF->LF). Neither file is touched by this lane.
+
+needs.test.ts alone: 8 passed. The full log was not kept (over 300 KB); this summary keeps the failing names.

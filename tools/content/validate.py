@@ -628,6 +628,16 @@ def core_reach_errors(curriculum: dict, catalog: list) -> list[str]:
     return out
 
 
+def asks_for_songs(lesson: dict) -> bool:
+    """
+    Whether the rung asks for a run of one of its songs (C5's requirement that replaced
+    `songsRequired`): the app's `selectors.asksForSongs`. Read by `thin_lesson_errors`
+    and `write_needs`, so the build gate and the shortfall the lesson page prints agree
+    on which rungs a song count applies to (R23).
+    """
+    return any(r.get("kind") == "runs" and r.get("from") == "songs" for r in lesson.get("requirements") or [])
+
+
 def thin_lesson_errors(lesson: dict, exercises: list, songs: list, min_options: int) -> list[str]:
     """
     docs/00 D21: three alternatives per rung, checked rather than trusted.
@@ -641,11 +651,7 @@ def thin_lesson_errors(lesson: dict, exercises: list, songs: list, min_options: 
         # Orientation lessons: there is one placement test and one guided tour, and
         # inventing two more to satisfy a counter would be worse than the counter.
         return []
-    # Whether the rung asks for a run of one of its songs (C5's requirement that
-    # replaced `songsRequired`).
-    required_songs = any(
-        r.get("kind") == "runs" and r.get("from") == "songs" for r in lesson.get("requirements") or []
-    )
+    required_songs = asks_for_songs(lesson)
     out: list[str] = []
     if len(exercises) < min_options:
         out.append(
@@ -1985,7 +1991,10 @@ def write_needs(curriculum: dict, catalog: list, out_dir: Path, min_options: int
                     together = max(0, min_options - (len(exercises) + len(songs)))
                     need_songs, need_exercises = 0, together
                 else:
-                    need_songs = max(0, min_options - len(songs))
+                    # A rung that asks for no song run is short of no song (R23):
+                    # `thin_lesson_errors` exempts it from the song count, so the
+                    # page must not ask for songs the build does not require.
+                    need_songs = max(0, min_options - len(songs)) if asks_for_songs(lesson) else 0
                     need_exercises = max(0, min_options - len(exercises))
                 lesson["needs"] = {
                     "songs": need_songs,

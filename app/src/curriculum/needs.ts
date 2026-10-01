@@ -14,6 +14,7 @@
  * and it is the same three lines `write_needs` uses — deliberately, and the
  * test below names the Python function so the pair can be found together.
  */
+import { asksForSongs } from './selectors';
 import type { Lesson } from './types';
 
 /** The floor `validate.py` defaults to (`00` D21: three alternatives a rung). */
@@ -36,6 +37,11 @@ export interface Shortfall {
  * An `optionsExempt` rung — the placement test, the tour — is never short: it
  * is a single thing by nature. The build skips those entirely, so they arrive
  * with no `needs` block at all.
+ *
+ * A rung whose requirements ask for no song run (`asksForSongs`) is short of no
+ * song (R23): the build's gate and `thinLessons` exempt it from the song count,
+ * and `write_needs` writes `songs: 0` there, so the page does not ask for songs
+ * nothing requires.
  */
 export function lessonShortfall(lesson: Lesson): Shortfall {
   const floor = lesson.needs?.floor ?? DEFAULT_OPTION_FLOOR;
@@ -46,7 +52,7 @@ export function lessonShortfall(lesson: Lesson): Shortfall {
     return { songs: 0, exercises: Math.max(0, floor - (songs + exercises)), floor };
   }
   return {
-    songs: Math.max(0, floor - songs),
+    songs: asksForSongs(lesson) ? Math.max(0, floor - songs) : 0,
     exercises: Math.max(0, floor - exercises),
     floor,
   };
