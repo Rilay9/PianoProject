@@ -289,6 +289,16 @@ export interface Provenance {
    */
   formerIdentities?: Extract<Identity, { kind: 'file' }>[];
   /**
+   * CL15: the generator identities this generated row's music had before its family's version moved,
+   * where the item's music did not change (the generated-identity continuity relation:
+   * `tools/content/generator_continuity.json`, written by the generator only where the item's music
+   * digest equals the one recorded at the version the family left, so an item whose notes changed gets
+   * none). Only on a generated row; never the row's own identity. Learner continuity only, the boundary
+   * `formerIdentities` draws for a file: a stored learner row that names one names this row's material
+   * (`material.learnerMaterial`); D2's record, `sameIdentity` and every family-scoped read never read it.
+   */
+  formerGeneratorIdentities?: Extract<Identity, { kind: 'generator' }>[];
+  /**
    * E50b: the former identities whose file a reviewed repair changed the tempo of (a relation marked
    * `tempoChanged`): a run stored against one measured its percentage of the old tempo, and a run of
    * this row's id that stored no material or no written base tempo does not show what its percentage

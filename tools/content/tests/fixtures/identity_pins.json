@@ -5,7 +5,8 @@
     "written pitches and tie, per staff, with the tempo and the metre), in id order. When a family's music",
     "changes on purpose, its row's version goes up in family_contracts.json and the pin is rewritten with it;",
     "a change with no version change fails. Written by D0 from the plan as it builds after D0's changes.",
-    "Re-pinned by D0a, each with its version moved, where the spelling policy changed the notes: seventh_arpeggio, broken_seventh, seventh_voicing, ii_v_i, four_chord_loop, tritone_sub, walking_bass, open_voicing, passing_chord."
+    "Re-pinned by D0a, each with its version moved, where the spelling policy changed the notes: seventh_arpeggio, broken_seventh, seventh_voicing, ii_v_i, four_chord_loop, tritone_sub, walking_bass, open_voicing, passing_chord.",
+    "Re-pinned by CL15, each with its version moved, where its notes changed: tremolo_octaves (the key's own thirds), pentatonic (the five-note form up and down twice), syncopation (two ties in the tie drill), interval_reading (the first note any degree of the position), walking_bass (the line ends on the tonic). Each family's unchanged items keep learner continuity through tools/content/generator_continuity.json, not through the pin."
   ],
   "families": {
     "accompaniment": {
@@ -94,9 +95,9 @@
       "digest": "45eeeb6ce89b4065c56e6d945637658f5195d7a4624acd2f50355f54eb2ead4a"
     },
     "interval_reading": {
-      "version": 1,
+      "version": 2,
       "items": 16,
-      "digest": "4d4246d2117518e991d8c17a8b478c1a45beb70d821351c6255dd6f3791b3fe2"
+      "digest": "d33a2d5d8fd11701630f0d31ad2bbd716e5803b942ccdea32233cc093f592c1b"
     },
     "intro": {
       "version": 1,
@@ -159,9 +160,9 @@
       "digest": "7e2b474e1fdb9dd7aea35c7c0a3dda149be58648485e4b3b0bb7fcb9d2d29340"
     },
     "pentatonic": {
-      "version": 1,
+      "version": 2,
       "items": 6,
-      "digest": "050e5a8015a60a2f7257f2858b7b80ff758c9910edff7b9b2470f46d3b0369d8"
+      "digest": "b476122d1de8728c087788d14479c09d4de7831b34d436f0f4d0ef3b7ab3f96f"
     },
     "position_shift": {
       "version": 1,
@@ -239,14 +240,14 @@
       "digest": "be610c14bceb540770f268e20a7ef5a5ff1b365c9921bc1f8434e972f1a804ad"
     },
     "syncopation": {
-      "version": 1,
+      "version": 2,
       "items": 2,
-      "digest": "03646a86e1f2aeb3bb9f9e7e0f1aeae4eb539c60c759c4948348502365c981f5"
+      "digest": "c9222a9c87670da3433c59e4ed4dd1f5d07e8ec44a766fe2305c05d5a39987ac"
     },
     "tremolo_octaves": {
-      "version": 1,
+      "version": 2,
       "items": 12,
-      "digest": "4a5ad5913a0e28131078c2d2685ecc3ed57f968e30691a6b6e963277796cbebd"
+      "digest": "8339f89ccafb77e48dc3851bcc919f82fe492d3cefe96bc4a842c38cde22572d"
     },
     "tresillo": {
       "version": 1,
@@ -284,9 +285,9 @@
       "digest": "711d37463a1b1b90af2de4588b1551f46a1aa7529d5eefcc9f6b88bb7a2ce0e9"
     },
     "walking_bass": {
-      "version": 2,
+      "version": 3,
       "items": 28,
-      "digest": "930982f2f49487111868f497d6e376f3003a9f31644ae4aa580e2b48728d715b"
+      "digest": "d3f31ee488f835472faaf2ab5d985b7d5dee8e8328b01992b8f94fd4614aece6"
     },
     "walkup": {
       "version": 1,

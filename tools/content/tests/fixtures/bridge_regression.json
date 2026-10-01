@@ -15,7 +15,7 @@
     {
       "id": "exercise.interval-reading.c-position.right.01",
       "demands": ["interval.step", "interval.skip"],
-      "read": "RH E4 F4 D4 F4 D4 C4 E4 E4 C4 in halves and quarters: two steps (E-F, D-C), five skips, one unison; C4 to F4, inside a position; no key signature, no ledger line beyond middle C; the left hand rests."
+      "read": "RH G4 E4 F4 D4 F4 D4 F4 D4 F4 D4 D4 C4 in halves and quarters (since CL15 the first note is any degree of the position, here G): two steps (E-F, D-C), eight skips, one unison; C4 to G4, inside a position; no key signature, no ledger line beyond middle C; the left hand rests."
     },
     {
       "id": "exercise.coordination.c.hold",
@@ -29,8 +29,8 @@
     },
     {
       "id": "exercise.syncopation.tied-across-bar",
-      "demands": ["clef.bass", "pitch.ledger", "interval.step", "rhythm.eighths", "rhythm.shorter-than-quarter", "rhythm.ties", "range.beyond-position", "texture.hands-together"],
-      "read": "RH C4 up to A5 by step, F4 on beat four tied into the next bar (a quarter and an eighth), G4 an eighth off the beat, A5 on a ledger line; whole-note C-E-G chords under it; no key signature. The tie starts on the beat, so no syncopation."
+      "demands": ["clef.bass", "interval.step", "rhythm.eighths", "rhythm.shorter-than-quarter", "rhythm.ties", "range.beyond-position", "texture.hands-together"],
+      "read": "RH C4 up to G5 by step, two ties across the bar (since CL15): F4 on beat four tied into the next bar (a quarter and an eighth), G4 an eighth off the beat, and E5 on beat three held through the barline to beat two (a half and a quarter); G5 the highest note, on the space above the staff, so no ledger line; whole-note C-E-G chords under it; no key signature. Both ties start on the beat, so no syncopation."
     },
     {
       "id": "exercise.tumbao.c",

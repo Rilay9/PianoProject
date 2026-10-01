@@ -1,0 +1,1090 @@
+{
+  "_comment": [
+    "The generated-identity continuity relation (CL15; the reviewer's required change, docs/review/responses/questions-122a5224.md §CL15).",
+    "A generator version belongs to a whole family (family_contracts.identity), so a bump moves every item's identity, the",
+    "items whose notes did not change among them. For each family CL15 bumped, every item as the catalogue held it at the",
+    "version the family left: its identity (review.generator_identity) and its music digest there (family_contracts.music_digest).",
+    "family_contracts.former_generator_identities carries an item's recorded identity onto its row only where the item's digest",
+    "now is the recorded one, so an unchanged item keeps learner continuity (provenance.formerGeneratorIdentities,",
+    "material.learnerMaterial) and a changed item takes the new identity with no link to its old music. Learner continuity",
+    "only: D2's exact identity, the review record and every family-scoped read keep reading the row's own identity.",
+    "Written from the plan at fadafbfa by docs/prompts/runs/CL15/scripts-continuity_table.py; a later bump of one of these",
+    "families records the version it leaves then (test_family_contracts.TestGeneratedIdentityContinuity holds 'to' to the row's version)."
+  ],
+  "families": {
+    "interval_reading": {
+      "from": 1,
+      "to": 2,
+      "items": {
+        "exercise.interval-reading.c-position.left.01": {
+          "identity": {
+            "kind": "generator",
+            "family": "interval_reading",
+            "version": 1,
+            "seed": 1,
+            "recipe": {
+              "key": "C",
+              "seed": 1,
+              "maxInterval": 3,
+              "hands": "left"
+            },
+            "tempoBpm": 66
+          },
+          "digest": "4be8bafac81812c50a5d70828ed77c25e5388ac7cebc63e0a2f59dcde65a3ffd"
+        },
+        "exercise.interval-reading.c-position.left.02": {
+          "identity": {
+            "kind": "generator",
+            "family": "interval_reading",
+            "version": 1,
+            "seed": 2,
+            "recipe": {
+              "key": "C",
+              "seed": 2,
+              "maxInterval": 3,
+              "hands": "left"
+            },
+            "tempoBpm": 66
+          },
+          "digest": "cd7483ae2601d36063ba6ea11e2c07b35540be2cf91c947f7d9eabf995c774fb"
+        },
+        "exercise.interval-reading.c-position.left.03": {
+          "identity": {
+            "kind": "generator",
+            "family": "interval_reading",
+            "version": 1,
+            "seed": 3,
+            "recipe": {
+              "key": "C",
+              "seed": 3,
+              "maxInterval": 3,
+              "hands": "left"
+            },
+            "tempoBpm": 66
+          },
+          "digest": "7e8dd98c91d8aad50baaf8b0db1681d922f17ebca3c41ecbc4a5acb124864426"
+        },
+        "exercise.interval-reading.c-position.left.04": {
+          "identity": {
+            "kind": "generator",
+            "family": "interval_reading",
+            "version": 1,
+            "seed": 4,
+            "recipe": {
+              "key": "C",
+              "seed": 4,
+              "maxInterval": 3,
+              "hands": "left"
+            },
+            "tempoBpm": 66
+          },
+          "digest": "552d93d99b91408e345f537ee1bdcfc9191a6b2cec135a61b4dffe927e2db22a"
+        },
+        "exercise.interval-reading.c-position.left.05": {
+          "identity": {
+            "kind": "generator",
+            "family": "interval_reading",
+            "version": 1,
+            "seed": 5,
+            "recipe": {
+              "key": "C",
+              "seed": 5,
+              "maxInterval": 3,
+              "hands": "left"
+            },
+            "tempoBpm": 66
+          },
+          "digest": "fb0b2dd5dc3c157ee8380e7399e078fe689157ccdb5bdcdde59b10ba9b5dd733"
+        },
+        "exercise.interval-reading.c-position.left.06": {
+          "identity": {
+            "kind": "generator",
+            "family": "interval_reading",
+            "version": 1,
+            "seed": 6,
+            "recipe": {
+              "key": "C",
+              "seed": 6,
+              "maxInterval": 3,
+              "hands": "left"
+            },
+            "tempoBpm": 66
+          },
+          "digest": "592f01a90960209ab8e7286586cf28a1db2861726ab88482de0cd0e7d8a332d0"
+        },
+        "exercise.interval-reading.c-position.left.07": {
+          "identity": {
+            "kind": "generator",
+            "family": "interval_reading",
+            "version": 1,
+            "seed": 7,
+            "recipe": {
+              "key": "C",
+              "seed": 7,
+              "maxInterval": 3,
+              "hands": "left"
+            },
+            "tempoBpm": 66
+          },
+          "digest": "c09f983dfc632f476529313e6d64af22cb198d1635e2fc32e5ee24610b02e433"
+        },
+        "exercise.interval-reading.c-position.left.08": {
+          "identity": {
+            "kind": "generator",
+            "family": "interval_reading",
+            "version": 1,
+            "seed": 8,
+            "recipe": {
+              "key": "C",
+              "seed": 8,
+              "maxInterval": 3,
+              "hands": "left"
+            },
+            "tempoBpm": 66
+          },
+          "digest": "d9d71e4a7b229f78696354507188b65de227f47798efa9fae883c6b298b625db"
+        },
+        "exercise.interval-reading.c-position.right.01": {
+          "identity": {
+            "kind": "generator",
+            "family": "interval_reading",
+            "version": 1,
+            "seed": 1,
+            "recipe": {
+              "key": "C",
+              "seed": 1,
+              "maxInterval": 3,
+              "hands": "right"
+            },
+            "tempoBpm": 66
+          },
+          "digest": "18ef1106fc0b73fbadfa1ac61c06b6bae0f4574e603a01b2192dac82cccb9d08"
+        },
+        "exercise.interval-reading.c-position.right.02": {
+          "identity": {
+            "kind": "generator",
+            "family": "interval_reading",
+            "version": 1,
+            "seed": 2,
+            "recipe": {
+              "key": "C",
+              "seed": 2,
+              "maxInterval": 3,
+              "hands": "right"
+            },
+            "tempoBpm": 66
+          },
+          "digest": "54b6cafc9f00965ad0348e3fee200adf874d45e588b28a306926c7449d9d8713"
+        },
+        "exercise.interval-reading.c-position.right.03": {
+          "identity": {
+            "kind": "generator",
+            "family": "interval_reading",
+            "version": 1,
+            "seed": 3,
+            "recipe": {
+              "key": "C",
+              "seed": 3,
+              "maxInterval": 3,
+              "hands": "right"
+            },
+            "tempoBpm": 66
+          },
+          "digest": "90ec0b4ac587e014930a67eb1293777cd198abcfc5e62d4b52cb5b0e151774a9"
+        },
+        "exercise.interval-reading.c-position.right.04": {
+          "identity": {
+            "kind": "generator",
+            "family": "interval_reading",
+            "version": 1,
+            "seed": 4,
+            "recipe": {
+              "key": "C",
+              "seed": 4,
+              "maxInterval": 3,
+              "hands": "right"
+            },
+            "tempoBpm": 66
+          },
+          "digest": "6d764aa27b6fcb9e8a691d93b4257e53da4671634c31cebf99a8c98fc5805333"
+        },
+        "exercise.interval-reading.c-position.right.05": {
+          "identity": {
+            "kind": "generator",
+            "family": "interval_reading",
+            "version": 1,
+            "seed": 5,
+            "recipe": {
+              "key": "C",
+              "seed": 5,
+              "maxInterval": 3,
+              "hands": "right"
+            },
+            "tempoBpm": 66
+          },
+          "digest": "153aa443a8f4b45703d2fd4ec3b1d54264242301e8cb55b7f877534d62d4de90"
+        },
+        "exercise.interval-reading.c-position.right.06": {
+          "identity": {
+            "kind": "generator",
+            "family": "interval_reading",
+            "version": 1,
+            "seed": 6,
+            "recipe": {
+              "key": "C",
+              "seed": 6,
+              "maxInterval": 3,
+              "hands": "right"
+            },
+            "tempoBpm": 66
+          },
+          "digest": "4b70028b73c1c18c9cf9b250143733e71c004eb6ee3004c1969a63a8b8222207"
+        },
+        "exercise.interval-reading.c-position.right.07": {
+          "identity": {
+            "kind": "generator",
+            "family": "interval_reading",
+            "version": 1,
+            "seed": 7,
+            "recipe": {
+              "key": "C",
+              "seed": 7,
+              "maxInterval": 3,
+              "hands": "right"
+            },
+            "tempoBpm": 66
+          },
+          "digest": "b927a5fb31cd3b9e23ada3670b8dbbc0c24abdda931ba246690f6043bd21f7f1"
+        },
+        "exercise.interval-reading.c-position.right.08": {
+          "identity": {
+            "kind": "generator",
+            "family": "interval_reading",
+            "version": 1,
+            "seed": 8,
+            "recipe": {
+              "key": "C",
+              "seed": 8,
+              "maxInterval": 3,
+              "hands": "right"
+            },
+            "tempoBpm": 66
+          },
+          "digest": "fde536069e34de7cc7ce5cb22d33ac1a4f52876af86b0e3c96f79fd485810e6d"
+        }
+      }
+    },
+    "pentatonic": {
+      "from": 1,
+      "to": 2,
+      "items": {
+        "exercise.pentatonic.a.blues": {
+          "identity": {
+            "kind": "generator",
+            "family": "pentatonic",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "form": "blues",
+              "hands": "right"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "cd927848201d3633ecbdc992a88257ffe907423d15e30cc2b7fbb1cc530457d5"
+        },
+        "exercise.pentatonic.a.pentatonic": {
+          "identity": {
+            "kind": "generator",
+            "family": "pentatonic",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "form": "pentatonic",
+              "hands": "right"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "40d4511f551a9a1f323fbd68c172654e9d6c263aeb41b7d9cbe118dfd8dad394"
+        },
+        "exercise.pentatonic.d.blues": {
+          "identity": {
+            "kind": "generator",
+            "family": "pentatonic",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "form": "blues",
+              "hands": "right"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "6beb7bcf7d24a569e466ca9a08718ac5e49dcbcced6d528871d69af335969bd0"
+        },
+        "exercise.pentatonic.d.pentatonic": {
+          "identity": {
+            "kind": "generator",
+            "family": "pentatonic",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "form": "pentatonic",
+              "hands": "right"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "b56ea23da159dc72d783ae2272effde53babbde9f78e5d3f905e8bc5cc2ff743"
+        },
+        "exercise.pentatonic.e.blues": {
+          "identity": {
+            "kind": "generator",
+            "family": "pentatonic",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "form": "blues",
+              "hands": "right"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "8d2c834c7c7c94da87a437c1c4047d695e5abfad70bd94ca2ecf8b7442a71ad6"
+        },
+        "exercise.pentatonic.e.pentatonic": {
+          "identity": {
+            "kind": "generator",
+            "family": "pentatonic",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "form": "pentatonic",
+              "hands": "right"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "fefb30417ec99f37a6a58c01da90eab56584788ad3b21afa8d05ff287f318bc5"
+        }
+      }
+    },
+    "syncopation": {
+      "from": 1,
+      "to": 2,
+      "items": {
+        "exercise.syncopation.sixteenth": {
+          "identity": {
+            "kind": "generator",
+            "family": "syncopation",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "variant": "sixteenth",
+              "timeSig": "4/4",
+              "hands": "both"
+            },
+            "tempoBpm": 76
+          },
+          "digest": "4c1f7cb605592ba4805cd928565cd62a381858d8c5860e86b0138f067ed1b9a6"
+        },
+        "exercise.syncopation.tied-across-bar": {
+          "identity": {
+            "kind": "generator",
+            "family": "syncopation",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "variant": "tied-across-bar",
+              "timeSig": "4/4",
+              "hands": "both"
+            },
+            "tempoBpm": 76
+          },
+          "digest": "8f710e5a89bc470503e48dee29a58b0c09d317231c32b363e1226eb1d2335235"
+        }
+      }
+    },
+    "tremolo_octaves": {
+      "from": 1,
+      "to": 2,
+      "items": {
+        "exercise.tremolo-third.c.left": {
+          "identity": {
+            "kind": "generator",
+            "family": "tremolo_octaves",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "shape": "third",
+              "fingeringVerified": false,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "ac948b5044cb06dd6bbc0ad9c399e3f5bd52812fc1b5a32058bf87f25fd7702c"
+        },
+        "exercise.tremolo-third.c.right": {
+          "identity": {
+            "kind": "generator",
+            "family": "tremolo_octaves",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "shape": "third",
+              "fingeringVerified": false,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "3574a1ceb106a9b55aabfc6396ba77a57171bf5212bc1330d6034d22d8a40be8"
+        },
+        "exercise.tremolo-third.f.left": {
+          "identity": {
+            "kind": "generator",
+            "family": "tremolo_octaves",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "shape": "third",
+              "fingeringVerified": false,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "9a0363653b8892a130b6feb6120ee9ff2a6c57cf93e6359c1d9a499cfafd5004"
+        },
+        "exercise.tremolo-third.f.right": {
+          "identity": {
+            "kind": "generator",
+            "family": "tremolo_octaves",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "shape": "third",
+              "fingeringVerified": false,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "c56def8f4f75f291c64460e7611ac492bfaa0ec58ec106f7045142d31807b98e"
+        },
+        "exercise.tremolo-third.g.left": {
+          "identity": {
+            "kind": "generator",
+            "family": "tremolo_octaves",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "shape": "third",
+              "fingeringVerified": false,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "e03a5b77e4f81e067a8f47d0dcd9c4ff6311aeecfd2b0a6e35c232d167bb3731"
+        },
+        "exercise.tremolo-third.g.right": {
+          "identity": {
+            "kind": "generator",
+            "family": "tremolo_octaves",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "shape": "third",
+              "fingeringVerified": false,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "787f8ce7fe878134e4c5a524bebbbd5583cec350d5c9888c225c66fb2d4baea3"
+        },
+        "exercise.tremolo.c.left": {
+          "identity": {
+            "kind": "generator",
+            "family": "tremolo_octaves",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "shape": "octave",
+              "fingeringVerified": false,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "84262503f0a182af5479c114f6080d2d07fe21f3b13f0914cc5b7f3d2462f96c"
+        },
+        "exercise.tremolo.c.right": {
+          "identity": {
+            "kind": "generator",
+            "family": "tremolo_octaves",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "shape": "octave",
+              "fingeringVerified": false,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "357b2256e3622793ca2d7237aff164cf1653fb25355329068622561cd8ff8a98"
+        },
+        "exercise.tremolo.f.left": {
+          "identity": {
+            "kind": "generator",
+            "family": "tremolo_octaves",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "shape": "octave",
+              "fingeringVerified": false,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "0a0e42bb9f15bca16784d062f21972a950b885dc2cc7f271bfa6c856fb85114f"
+        },
+        "exercise.tremolo.f.right": {
+          "identity": {
+            "kind": "generator",
+            "family": "tremolo_octaves",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "shape": "octave",
+              "fingeringVerified": false,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "e5dc29c7d39f9eff684e1cfc7861bce2ea8eecb346f54d2bf6f1c3c5fa120512"
+        },
+        "exercise.tremolo.g.left": {
+          "identity": {
+            "kind": "generator",
+            "family": "tremolo_octaves",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "shape": "octave",
+              "fingeringVerified": false,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "c6fb9b868149c607a6c0860176582425992b72c752ba5863fbbda9c2f357f5ac"
+        },
+        "exercise.tremolo.g.right": {
+          "identity": {
+            "kind": "generator",
+            "family": "tremolo_octaves",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "shape": "octave",
+              "fingeringVerified": false,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "58fc3a6f56c616899f1fc3a19ce56ae2a0669939a1aef77d93a5e8f6cce9869d"
+        }
+      }
+    },
+    "walking_bass": {
+      "from": 2,
+      "to": 3,
+      "items": {
+        "exercise.walking-bass.a.blues": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "form": "blues",
+              "notesPerBar": 4,
+              "tier": "standard",
+              "hands": "both"
+            },
+            "tempoBpm": 92
+          },
+          "digest": "874b5f15375c9784cdd71886823aca2f343cd55e39f030cd251c80e61c806649"
+        },
+        "exercise.walking-bass.a.blues.intro": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "A",
+              "form": "blues",
+              "notesPerBar": 4,
+              "tier": "intro",
+              "hands": "left"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "73f86ccf8abd5236462fa3e3759e605473f868945fff137c5a013fc8c0cea1ee"
+        },
+        "exercise.walking-bass.b-flat.blues": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "form": "blues",
+              "notesPerBar": 4,
+              "tier": "standard",
+              "hands": "both"
+            },
+            "tempoBpm": 92
+          },
+          "digest": "ed2ab28db572622922306d58e6cf165d10ba2a9a5d0ec6026a1caeeb37d24d55"
+        },
+        "exercise.walking-bass.b-flat.blues.intro": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "form": "blues",
+              "notesPerBar": 4,
+              "tier": "intro",
+              "hands": "left"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "90a0d461fcd63fb7f67f91b75c524d1c1d06a4a49821a306c0990053df67f597"
+        },
+        "exercise.walking-bass.b-flat.ii-v-i": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "form": "ii-V-I",
+              "notesPerBar": 4,
+              "tier": "standard",
+              "hands": "both"
+            },
+            "tempoBpm": 92
+          },
+          "digest": "6c08b5eba5408d8d97ffdcd5a067a116e55e09a07acd07f868624bf57dfd71cb"
+        },
+        "exercise.walking-bass.b-flat.ii-v-i.intro": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "form": "ii-V-I",
+              "notesPerBar": 4,
+              "tier": "intro",
+              "hands": "left"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "772c19b9922fd4b155bacb01857040fd425085da2b1ceaf7ff528c5dfc60ab30"
+        },
+        "exercise.walking-bass.b-flat.minor-blues": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "B-",
+              "form": "minor-blues",
+              "notesPerBar": 4,
+              "tier": "standard",
+              "hands": "both"
+            },
+            "tempoBpm": 92
+          },
+          "digest": "7465773e7443c78e4bfd84d2a041aaae2a23aa87091c18c0dff2b168233a8a71"
+        },
+        "exercise.walking-bass.c.blues": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "form": "blues",
+              "notesPerBar": 4,
+              "tier": "standard",
+              "hands": "both"
+            },
+            "tempoBpm": 92
+          },
+          "digest": "25a175050ab7b6fe850d190293c476b6ea9a278449e33f874330226fefe455f3"
+        },
+        "exercise.walking-bass.c.blues.intro": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "form": "blues",
+              "notesPerBar": 4,
+              "tier": "intro",
+              "hands": "left"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "237dc529ce573969f7c227f48a6c900410fff90fa5a4dc7f70fdb6f4bafed5f3"
+        },
+        "exercise.walking-bass.c.ii-v-i": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "form": "ii-V-I",
+              "notesPerBar": 4,
+              "tier": "standard",
+              "hands": "both"
+            },
+            "tempoBpm": 92
+          },
+          "digest": "ce438a03928fb1d4d1419eba946581ad292b8c0971497649cd61de642cd73ee2"
+        },
+        "exercise.walking-bass.c.ii-v-i.intro": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "form": "ii-V-I",
+              "notesPerBar": 4,
+              "tier": "intro",
+              "hands": "left"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "2a2c20246db20f25423003d8632623c8975690ce29a1da59be708761b1272fb3"
+        },
+        "exercise.walking-bass.c.minor-blues": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "form": "minor-blues",
+              "notesPerBar": 4,
+              "tier": "standard",
+              "hands": "both"
+            },
+            "tempoBpm": 92
+          },
+          "digest": "1bc4b4e4bc72ecc2ecf4f6276ed963d8247d09069319d70d813f991d7c80a12d"
+        },
+        "exercise.walking-bass.d.blues": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "form": "blues",
+              "notesPerBar": 4,
+              "tier": "standard",
+              "hands": "both"
+            },
+            "tempoBpm": 92
+          },
+          "digest": "44099f7f2748cb372fde4c700fe300b4f1b51abf73f07e7e63db13d93b9135e2"
+        },
+        "exercise.walking-bass.d.blues.intro": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "D",
+              "form": "blues",
+              "notesPerBar": 4,
+              "tier": "intro",
+              "hands": "left"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "0c50b136d82419ecb7f95efa1375e6f10a5162ad69446ef9e9e534801e073df9"
+        },
+        "exercise.walking-bass.e-flat.blues": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "form": "blues",
+              "notesPerBar": 4,
+              "tier": "standard",
+              "hands": "both"
+            },
+            "tempoBpm": 92
+          },
+          "digest": "14e6b155220dbbc360bb1250ba02a05cffc984da7d2c93f92fb4f07d2cd5919e"
+        },
+        "exercise.walking-bass.e-flat.blues.intro": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "form": "blues",
+              "notesPerBar": 4,
+              "tier": "intro",
+              "hands": "left"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "5ecbc152acfd9a9001b124cbb4dab6a4a96a7204488a5bb4fcc5942d35ccbf4a"
+        },
+        "exercise.walking-bass.e-flat.ii-v-i": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "form": "ii-V-I",
+              "notesPerBar": 4,
+              "tier": "standard",
+              "hands": "both"
+            },
+            "tempoBpm": 92
+          },
+          "digest": "f2d9ac7b439e25bc20d0a28e45b99ebcf78c67d8262fbd421ccfa49e4b29f136"
+        },
+        "exercise.walking-bass.e-flat.ii-v-i.intro": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "form": "ii-V-I",
+              "notesPerBar": 4,
+              "tier": "intro",
+              "hands": "left"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "c54c6dadf339bbb5613657ecd9f010a2c89c2fd252eeb5aa2ef3a4a17b31f557"
+        },
+        "exercise.walking-bass.e-flat.minor-blues": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "E-",
+              "form": "minor-blues",
+              "notesPerBar": 4,
+              "tier": "standard",
+              "hands": "both"
+            },
+            "tempoBpm": 92
+          },
+          "digest": "ea38bc4166e11edab549dc7b55af1384a8b4fb54a2a6d41a30f8c2a6bf58a9df"
+        },
+        "exercise.walking-bass.e.blues": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "form": "blues",
+              "notesPerBar": 4,
+              "tier": "standard",
+              "hands": "both"
+            },
+            "tempoBpm": 92
+          },
+          "digest": "5f40f120409a897aa40bdbc19cfe099ded12b2834a75020e3946720b467b049a"
+        },
+        "exercise.walking-bass.e.blues.intro": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "E",
+              "form": "blues",
+              "notesPerBar": 4,
+              "tier": "intro",
+              "hands": "left"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "a351307ef4995a8ece6b2280785af8e1d2b334466187ee9490d6e637e1366f90"
+        },
+        "exercise.walking-bass.f.blues": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "form": "blues",
+              "notesPerBar": 4,
+              "tier": "standard",
+              "hands": "both"
+            },
+            "tempoBpm": 92
+          },
+          "digest": "ee5afce8a47fa00ff26c64c36ac69b8bbc8d58681e9ade0ae6de78d3e8b2fff2"
+        },
+        "exercise.walking-bass.f.blues.intro": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "form": "blues",
+              "notesPerBar": 4,
+              "tier": "intro",
+              "hands": "left"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "4d6d870c81f779d50db39d26cc21d328672cf90fbb2e088f174f77e3dba71c27"
+        },
+        "exercise.walking-bass.f.ii-v-i": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "form": "ii-V-I",
+              "notesPerBar": 4,
+              "tier": "standard",
+              "hands": "both"
+            },
+            "tempoBpm": 92
+          },
+          "digest": "a689958ab54dc31d1e2be16ee26c66bbc491753bc82ac8f8657bd26c66d7633d"
+        },
+        "exercise.walking-bass.f.ii-v-i.intro": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "form": "ii-V-I",
+              "notesPerBar": 4,
+              "tier": "intro",
+              "hands": "left"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "74e853ea1aa3ebd7bd1562a7cbc47c23320d44277c1ab6af350c528ed7250ecd"
+        },
+        "exercise.walking-bass.f.minor-blues": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "form": "minor-blues",
+              "notesPerBar": 4,
+              "tier": "standard",
+              "hands": "both"
+            },
+            "tempoBpm": 92
+          },
+          "digest": "2abec77f484392a4773bb14ba0344cab48718eb1d25d4f78ebd9bbda277a89d2"
+        },
+        "exercise.walking-bass.g.blues": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "form": "blues",
+              "notesPerBar": 4,
+              "tier": "standard",
+              "hands": "both"
+            },
+            "tempoBpm": 92
+          },
+          "digest": "fd0522039f8fbee29097694ed50928cfc3b4cb9a0301c93831f98bbd7ca9e417"
+        },
+        "exercise.walking-bass.g.blues.intro": {
+          "identity": {
+            "kind": "generator",
+            "family": "walking_bass",
+            "version": 2,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "form": "blues",
+              "notesPerBar": 4,
+              "tier": "intro",
+              "hands": "left"
+            },
+            "tempoBpm": 72
+          },
+          "digest": "12c6563a1ef08d01a536b6526415634484b3ebab53f32ba4f0d2d50f8f2605a3"
+        }
+      }
+    }
+  }
+}

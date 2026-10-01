@@ -1,0 +1,39 @@
+CL15 exit codes, in run order (machine paths replaced; full logs not kept, summaries and failing names here).
+
+base fadafbfa
+  npm ci (app)                                                     0
+  python build/cl15/census.py (U68 census over the plan)           0   214 left-hand-only items, 19 families
+  vitest oneStaffHand.test.ts (the probe, its first form)          0   every note staff 1, hand R
+  python tools/content/build.py --offline (base)                   0   2092 items; 1200 generated
+  unittest discover (base code, base build)                        0   Ran 1659, OK (skipped=4)
+  vitest generatedIdentityContinuity.test.ts on the base build     1   5 failed, 5 passed (guards 1-4 and the catalogue rule red)
+  build/cl15/red_first.py (new Python cases on the base code)      0*  19 run: 48 failures (sub-cases) + 4 errors (continuity unprovable);
+                                                                       *the script reports, it does not assert
+
+edited
+  new cases (19), edited code                                      0   Ran 19, OK
+  pin test by name (TestIdentity) after the re-pin                 0   Ran 2, OK
+  generator modules (contracts, invariants, measured demands,      1   4 failures, 4 errors: the pentatonic row's bar count (2 -> 3) and three
+    naming, physical, roles, generator, fingering, harmony)            walking-bass harmony cases (12 -> 13 bars); tresillo errors were the
+                                                                       subTest generator closing after pentatonic failed. Revised; rerun 0.
+  measure_changed.py (held tonic)                                  0   demand ids moved on 23: texture.left-hand-pattern off 16 two-hand walking-bass
+                                                                       items, texture.walking-bass off 4 -> the closing bar walks instead
+  measure_changed.py (closing bar root-third-fifth-octave)         0   demand ids moved on 7: pitch.chromatic off the 6 third tremolos,
+                                                                       pitch.ledger off the tie drill; walking bass unchanged on 28
+  npx tsc -b                                                       0
+  npm run lint                                                     0
+  python tools/content/build.py --offline (edited)                 0   2092 items; 338 claims not established (339 at base)
+  python tools/content/validate.py --allow-nc --personal           0
+  unittest discover (edited build)                                 1   Ran 1678: 2 failures, test_measured_truth.TestTheReports
+                                                                       test_the_committed_markdown_is_this_catalogues (rung-claims.md, inventory.md)
+                                                                       -> the regenerated reports installed; TestTheReports rerun 0 (Ran 9, OK)
+  npx vitest run                                                   1   7542: 3 failed, environment, none in a touched file:
+                                                                       lessonClaimsAboutApp blues.3 and 4.7 (CRLF checkout of ScoreScreen.ts),
+                                                                       midiParity "has a reference" (build/midi-parity not written)
+  python tools/midi-cleanup/tests/parity_reference.py              0
+  vitest midiParity + lessonClaimsAboutApp                         1   midiParity passes; the two CRLF cases remain
+  build/cl15/mutants.py (Python)                                   0   control green; 10 of 10 caught
+  build/cl15/app_mutants.py (app)                                  0   control green; 6 of 6 caught; every file restored (sha256)
+  unittest discover (final, after the entry was written)           1   Ran 1678: 2 errors, test_record_mirrors (committed mirrors, round trip):
+                                                                       "CL15's record ends at approved, and Entry 188 shows it landed" -
+                                                                       the record script's landing line, the orchestrator's; nothing else failed

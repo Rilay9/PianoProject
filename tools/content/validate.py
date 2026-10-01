@@ -1503,17 +1503,18 @@ def taught_at_findings(skills_file: dict, demands_file: dict, curriculum: dict) 
 #: the whole-piece every-bar rule the density file keeps for these two demands.
 DEFERRED_CONCEPT_CLAIMS: dict[tuple[str, str], str] = {
     ("blues.6", "walking-bass"): (
-        "its walking-bass exercise walks in 11 of its 12 bars under a right hand by the detector's own reading of "
+        "its walking-bass exercise walks in 12 of its 13 bars (the form's twelve and the closing bar, CL15) "
+        "under a right hand by the detector's own reading of "
         "each bar; the whole-piece every-bar rule refuses it for the bar that returns to its third (C E G E), "
         "E22's recorded misreading"),
     ("blues.8", "walking-bass"): (
-        "its walking-bass exercise in E flat walks in 11 of its 12 bars by the detector's own reading of each bar; "
+        "its walking-bass exercise in E flat walks in 12 of its 13 bars by the detector's own reading of each bar; "
         "the whole-piece rule refuses it for one bar that returns to a pitch (E22)"),
     ("jazz.6", "walking-bass"): (
-        "its walking-bass exercises walk in 11 of 12 bars (C blues) and 3 of 4 (ii-V-I in F) by the detector's "
+        "its walking-bass exercises walk in 12 of 13 bars (C blues) and 3 of 4 (ii-V-I in F) by the detector's "
         "own reading of each bar; the whole-piece rule refuses each for a bar that returns to a pitch (E22)"),
     ("jam.6", "walking-bass"): (
-        "its two-hand walking-bass exercise in A walks in 11 of its 12 bars by the detector's own reading of each "
+        "its two-hand walking-bass exercise in A walks in 12 of its 13 bars by the detector's own reading of each "
         "bar (E22); its three intro exercises are the line alone, which is not the demand"),
     ("ragtime.5", "oom-pah-bass"): (
         "the Joplin pieces carry a left-hand pattern in 87 of 92, 80 of 85, 87 of 94 and 109 of 148 bars and the "
