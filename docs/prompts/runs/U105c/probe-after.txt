@@ -1,0 +1,16 @@
+
+Running 10 tests using 4 workers
+
+  ok  1 build\u105c\probe\probe.spec.ts:216:5 › play-over-demo on stack (after) (6.8s)
+  ok  4 build\u105c\probe\probe.spec.ts:216:5 › hear-paused on stack (after) (9.2s)
+  ok  3 build\u105c\probe\probe.spec.ts:216:5 › play-paused on wider-face (after) (9.2s)
+  ok  2 build\u105c\probe\probe.spec.ts:216:5 › play-paused on stack (after) (9.2s)
+  ok  6 build\u105c\probe\probe.spec.ts:216:5 › play-over-demo on wider-face (after) (6.3s)
+  ok  5 build\u105c\probe\probe.spec.ts:216:5 › hear-paused on wider-face (after) (8.9s)
+  ok  7 build\u105c\probe\probe.spec.ts:216:5 › play-paused on text-115 (after) (8.9s)
+  ok  8 build\u105c\probe\probe.spec.ts:216:5 › hear-paused on text-115 (after) (8.8s)
+  ok 10 build\u105c\probe\probe.spec.ts:282:1 › bar held during a paused run on wider-face (after) (4.4s)
+  ok  9 build\u105c\probe\probe.spec.ts:216:5 › play-over-demo on text-115 (after) (6.3s)
+
+  10 passed (24.7s)
+exit 0

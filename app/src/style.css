@@ -6120,7 +6120,7 @@ input[type='checkbox'] {
    whole of it is one tap away — the strip's `?` sheet prints `textContent`,
    which is the full string whatever the box shows. `04` section 5f's two lines
    stay two lines; each is exactly one line tall, but for the one sentence the
-   rule after this one lets wrap, and only while no run is on.
+   rule after this one lets wrap: a refused tap's, whatever the run is doing.
 
    Scoped to this header on purpose. The lab and the chord chart carry the
    mode's whole sentence on their strips and have the room for it to wrap;
@@ -6142,17 +6142,31 @@ input[type='checkbox'] {
    on the runner's face and cut it, where it fit here: the same difference of
    face as above.
 
-   Only while no run is on, which is where the fit reason above does not
-   reach: the stage the extra line moves is one no run holds, and the line
-   goes back to one the moment a tap asks again, before that tap's run can
-   start (`withSound` clears the sentence and the mark together; the size a
-   run keeps is taken once the stage has settled, `WindowRenderer.setRunning`).
-   A refusal can also stand during a run — ▶ tapped to carry on from a pause,
-   or a bar held, with the sound suspended — and there it stays cut, like
-   every other line of a run. The mark is `data-sound-refused`, on the refused
-   control while `soundOffLine` draws the sentence; `body`, not the screen,
-   because a control refused inside the `⋯` sheet sits on `body`. */
-body:has([data-sound-refused]) .screen--score:not([data-running='true']) .score-head .help-strip__now {
+   In every state the sentence can stand in, a run's included (U105c, the
+   reviewer's required change on U105b, `responses/6a374f8a.md`: whenever
+   `data-sound-refused` is why the header says it, it stays whole). A paused
+   run still reads running (`PracticeEngine.pause` leaves `running` true), and
+   a refusal stands there when ▶ is tapped to carry on, or `Hear it` or *Start
+   again* is tapped, with the sound suspended; over a demonstration ▶'s does.
+   That is where the learner has just asked for something and is being told
+   why it did not happen, and on a wider face *tap Hear it again* was cut
+   there. A bar held is not among them: a long press during a run is ignored
+   before it asks for the sound.
+
+   The fit reason above does not forbid it. That reason is a line growing
+   under a run and moving the stage it is engraved against; the size a run
+   keeps holds when the stage's height changes mid-run (`WindowRenderer`'s
+   frozen fit; `score.head-height.spec.ts` grows this header by up to 96 px
+   mid-run and the drawn size does not move). And the extra line is
+   temporary: it goes the moment a tap asks again, before that tap's act runs
+   (`withSound` clears the sentence and the mark together), or at the next
+   redraw once the sound is running (`refusedNow`). Every other line a run
+   shows stays one line with an ellipsis: the exception is keyed on the
+   refusal, not on the run. The mark is `data-sound-refused`, on the refused
+   control while `soundOffLine` draws the sentence (which `drawWaitingFor`
+   puts first, whatever the run is doing); `body`, not the screen, because a
+   control refused inside the `⋯` sheet sits on `body`. */
+body:has([data-sound-refused]) .screen--score .score-head .help-strip__now {
   white-space: normal;
   overflow: visible;
   text-overflow: clip;

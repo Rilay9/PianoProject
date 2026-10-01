@@ -1,0 +1,382 @@
+{
+  "label": "after",
+  "condition": "wider-face",
+  "path": "play-over-demo",
+  "sentence": "Sound did not start — tap ▶ again",
+  "onBar": true,
+  "tapToFoldMs": 3498,
+  "foldedBefore": {
+    "text": "Playing it to you — nothing is judged. Hear it again to stop.",
+    "running": "true",
+    "hearing": "true",
+    "chrome": "folded",
+    "play": "▶",
+    "refused": [],
+    "scrollWidth": 0,
+    "clientWidth": 0,
+    "textInside": true,
+    "ellipsis": true,
+    "whiteSpace": "nowrap",
+    "lines": 0,
+    "clear": true,
+    "inWindow": true,
+    "head": {
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "line": {
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "stage": {
+      "left": 0,
+      "top": 0,
+      "right": 342,
+      "bottom": 668,
+      "width": 342,
+      "height": 668
+    },
+    "bar": {
+      "left": 0,
+      "top": 615.8125,
+      "right": 342,
+      "bottom": 668,
+      "width": 342,
+      "height": 52.1875
+    },
+    "ink": {
+      "left": 7,
+      "top": 3.7603235244750977,
+      "right": 429.80364990234375,
+      "bottom": 484.4324035644531,
+      "width": 422.80364990234375,
+      "height": 480.672080039978
+    },
+    "front": {
+      "left": 7,
+      "top": 8.834097862243652,
+      "right": 427.92547607421875,
+      "bottom": 144.5573492050171,
+      "width": 420.92547607421875,
+      "height": 135.72325134277344
+    },
+    "lineOverStage": false,
+    "lineOverBar": false,
+    "lineOverInk": false,
+    "fit": {
+      "zoom": 2,
+      "frozen": true
+    },
+    "scale": 0.917049,
+    "corner": {
+      "text": "bar 1 / 4 · Playing it to you — nothing is judged. Hear it again to stop.",
+      "display": "block",
+      "box": {
+        "left": 1,
+        "top": 5,
+        "right": 333,
+        "bottom": 37.6875,
+        "width": 332,
+        "height": 32.6875
+      },
+      "lines": 2,
+      "reserveBottom": 0,
+      "overReserve": true,
+      "overInk": true,
+      "underCount": 4,
+      "under": [
+        "path.vf-clef@15-140",
+        "text.vf-text\"3\"@4-38",
+        "text.vf-text\"2\"@4-38",
+        "text.vf-text\"1\"@4-38"
+      ]
+    }
+  },
+  "before": {
+    "text": "Playing it to you — nothing is judged. Hear it again to stop.",
+    "running": "true",
+    "hearing": "true",
+    "chrome": "open",
+    "play": "▶",
+    "refused": [],
+    "scrollWidth": 452,
+    "clientWidth": 283,
+    "textInside": false,
+    "ellipsis": true,
+    "whiteSpace": "nowrap",
+    "lines": 1,
+    "clear": false,
+    "inWindow": true,
+    "head": {
+      "left": 0,
+      "top": 0,
+      "right": 342,
+      "bottom": 84.890625,
+      "width": 342,
+      "height": 84.890625
+    },
+    "line": {
+      "left": 9.59375,
+      "top": 62.421875,
+      "right": 292.40625,
+      "bottom": 80.09375,
+      "width": 282.8125,
+      "height": 17.671875
+    },
+    "stage": {
+      "left": 0,
+      "top": 84.890625,
+      "right": 342,
+      "bottom": 668,
+      "width": 342,
+      "height": 583.109375
+    },
+    "bar": {
+      "left": 0,
+      "top": 615.8125,
+      "right": 342,
+      "bottom": 668,
+      "width": 342,
+      "height": 52.1875
+    },
+    "ink": {
+      "left": 7,
+      "top": 88.65094757080078,
+      "right": 429.80364990234375,
+      "bottom": 569.322998046875,
+      "width": 422.80364990234375,
+      "height": 480.6720504760742
+    },
+    "front": {
+      "left": 7,
+      "top": 93.72472381591797,
+      "right": 427.92547607421875,
+      "bottom": 229.44795989990234,
+      "width": 420.92547607421875,
+      "height": 135.72323608398438
+    },
+    "lineOverStage": false,
+    "lineOverBar": false,
+    "lineOverInk": false,
+    "fit": {
+      "zoom": 2,
+      "frozen": true
+    },
+    "scale": 0.917049,
+    "corner": {
+      "text": "bar 1 / 4 · Playing it to you — nothing is judged. Hear it again to stop.",
+      "display": "none",
+      "box": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "width": 0,
+        "height": 0
+      },
+      "lines": 0,
+      "reserveBottom": 84.890625,
+      "overReserve": false,
+      "overInk": false,
+      "underCount": 0,
+      "under": []
+    }
+  },
+  "during": {
+    "text": "Sound did not start — tap ▶ again",
+    "running": "true",
+    "hearing": "true",
+    "chrome": "open",
+    "play": "▶",
+    "refused": [
+      "score-play"
+    ],
+    "scrollWidth": 283,
+    "clientWidth": 283,
+    "textInside": true,
+    "ellipsis": false,
+    "whiteSpace": "normal",
+    "lines": 1,
+    "clear": true,
+    "inWindow": true,
+    "head": {
+      "left": 0,
+      "top": 0,
+      "right": 342,
+      "bottom": 84.890625,
+      "width": 342,
+      "height": 84.890625
+    },
+    "line": {
+      "left": 9.59375,
+      "top": 62.421875,
+      "right": 292.40625,
+      "bottom": 80.09375,
+      "width": 282.8125,
+      "height": 17.671875
+    },
+    "stage": {
+      "left": 0,
+      "top": 84.890625,
+      "right": 342,
+      "bottom": 668,
+      "width": 342,
+      "height": 583.109375
+    },
+    "bar": {
+      "left": 0,
+      "top": 615.8125,
+      "right": 342,
+      "bottom": 668,
+      "width": 342,
+      "height": 52.1875
+    },
+    "ink": {
+      "left": 7,
+      "top": 88.65094757080078,
+      "right": 429.80364990234375,
+      "bottom": 569.322998046875,
+      "width": 422.80364990234375,
+      "height": 480.6720504760742
+    },
+    "front": {
+      "left": 7,
+      "top": 93.72472381591797,
+      "right": 427.92547607421875,
+      "bottom": 229.44795989990234,
+      "width": 420.92547607421875,
+      "height": 135.72323608398438
+    },
+    "lineOverStage": false,
+    "lineOverBar": false,
+    "lineOverInk": false,
+    "fit": {
+      "zoom": 2,
+      "frozen": true
+    },
+    "scale": 0.917049,
+    "corner": {
+      "text": "bar 1 / 4 · Sound did not start — tap ▶ again",
+      "display": "none",
+      "box": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "width": 0,
+        "height": 0
+      },
+      "lines": 0,
+      "reserveBottom": 84.890625,
+      "overReserve": false,
+      "overInk": false,
+      "underCount": 0,
+      "under": []
+    }
+  },
+  "folded": {
+    "text": "Sound did not start — tap ▶ again",
+    "running": "true",
+    "hearing": "true",
+    "chrome": "folded",
+    "play": "▶",
+    "refused": [
+      "score-play"
+    ],
+    "scrollWidth": 0,
+    "clientWidth": 0,
+    "textInside": true,
+    "ellipsis": false,
+    "whiteSpace": "normal",
+    "lines": 0,
+    "clear": true,
+    "inWindow": true,
+    "head": {
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "line": {
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0,
+      "width": 0,
+      "height": 0
+    },
+    "stage": {
+      "left": 0,
+      "top": 0,
+      "right": 342,
+      "bottom": 668,
+      "width": 342,
+      "height": 668
+    },
+    "bar": {
+      "left": 0,
+      "top": 615.8125,
+      "right": 342,
+      "bottom": 668,
+      "width": 342,
+      "height": 52.1875
+    },
+    "ink": {
+      "left": 7,
+      "top": 3.7603235244750977,
+      "right": 429.80364990234375,
+      "bottom": 484.4324035644531,
+      "width": 422.80364990234375,
+      "height": 480.672080039978
+    },
+    "front": {
+      "left": 7,
+      "top": 8.834097862243652,
+      "right": 427.92547607421875,
+      "bottom": 144.5573492050171,
+      "width": 420.92547607421875,
+      "height": 135.72325134277344
+    },
+    "lineOverStage": false,
+    "lineOverBar": false,
+    "lineOverInk": false,
+    "fit": {
+      "zoom": 2,
+      "frozen": true
+    },
+    "scale": 0.917049,
+    "corner": {
+      "text": "bar 1 / 4 · Sound did not start — tap ▶ again",
+      "display": "block",
+      "box": {
+        "left": 32.65625,
+        "top": 5,
+        "right": 333,
+        "bottom": 22.34375,
+        "width": 300.34375,
+        "height": 17.34375
+      },
+      "lines": 1,
+      "reserveBottom": 0,
+      "overReserve": true,
+      "overInk": true,
+      "underCount": 4,
+      "under": [
+        "path.vf-clef@15-140",
+        "text.vf-text\"3\"@4-38",
+        "text.vf-text\"2\"@4-38",
+        "text.vf-text\"1\"@4-38"
+      ]
+    }
+  }
+}

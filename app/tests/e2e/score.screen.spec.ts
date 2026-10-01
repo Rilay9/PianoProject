@@ -12,6 +12,9 @@ import {
   closeScoreMenu,
   inkBox,
   openScoreMenu,
+  pressAnywhere,
+  pressControl,
+  revealBar,
   setTempoPercent,
   withScoreMenu,
 } from './scoreControls';
@@ -1553,4 +1556,259 @@ test.describe('▶ after the sound was suspended (U69)', () => {
       await expect(page.locator('#score-tempo'), 'Again ran at the tempo the refusals left').toHaveValue(before.tempo ?? '');
     });
   }
+
+  /**
+   * A refusal standing while the run object still reads running stays whole too (U105c, the
+   * reviewer's required change on U105b, `responses/6a374f8a.md`: whenever `data-sound-refused` is
+   * why the header says the sentence, the sentence stays whole). A paused run keeps
+   * `data-running='true'` (`PracticeEngine.pause` leaves `running` true), and U105b's wrap stopped
+   * at that attribute, so the line stayed one line with an ellipsis there: on the wider face *Sound
+   * did not start — tap Hear it again* was cut, the control's name behind the ellipsis, in the state
+   * where nothing moves.
+   *
+   * Upright at 342 × 740 on the wider face, as above. A Wait run (nothing moves until a note is
+   * played, so the run is where it was however long this takes) is started with the sound running,
+   * its size taken (`scoreFit().frozen`: before it, one re-plan is still allowed, `08` §9.6, and
+   * that is not what is measured here), and paused; then the sound is suspended with its `resume`
+   * never answering. ▶ to carry on, then `Hear it`, whose sentence is the longer: each refusal's
+   * sentence read whole (no overflow, no ellipsis, nothing drawn over any of its lines, in the
+   * window), the header clear of the stage, the drawn notes, the bar and every control; and the
+   * drawn size (the engraving zoom and the cursor slot's transform) what it was before the refusal
+   * while the header carries the extra line. Then, `resume` answering again, ▶: within ▶'s own tap,
+   * while it still waits for the sound and the run is still paused, the sentence is gone and the
+   * header is back to its height before the refusal; then the run carries on at that height and at
+   * the size it kept. That every other line of a run stays one line is `score.head-height.spec.ts`'s
+   * to show, and `score.fuzz.spec.ts`'s seed 4; this case is the refusal's exception only.
+   */
+  test('a refusal during a paused run, upright (342 × 740) on a wider face: the sentence whole, the drawn size kept, nothing overlapped, the header back to its height before the run carries on', async ({
+    page,
+  }) => {
+    test.setTimeout(120_000);
+    type AtTap = Window & { __atTap?: Record<string, string | number | null> };
+    await page.setViewportSize({ width: 342, height: 740 });
+    await page.addInitScript(() => {
+      const Native = window.AudioContext;
+      const made: AudioContext[] = [];
+      (window as Captured).__contexts = made;
+      window.AudioContext = class extends Native {
+        constructor(options?: AudioContextOptions) {
+          super(options);
+          made.push(this);
+        }
+      };
+    });
+    await openScore(page);
+    await page.addStyleTag({ content: WIDER_FACE });
+    const state = (): Promise<string> =>
+      page.evaluate(() => (window as Captured).__contexts?.[0]?.state ?? 'none');
+    await expect.poll(state, { message: 'the app made its context as the piece loaded' }).not.toBe('none');
+    await page.locator('#score-title').click({ timeout: 5_000 });
+    await expect.poll(state).toBe('running');
+    const section = page.locator('section[data-screen="score"]');
+    const play = page.locator('#score-play');
+    const line = page.locator('#score-waiting');
+    await page.locator('#score-mode').selectOption('wait');
+    await play.click({ timeout: 5_000 });
+    await expect(section).toHaveAttribute('data-running', 'true');
+    await page.waitForFunction(
+      () => {
+        const w = window as unknown as { __pianopath?: { scoreFit?: () => { frozen: unknown } } };
+        return (w.__pianopath?.scoreFit?.()?.frozen ?? null) !== null;
+      },
+      undefined,
+      { timeout: 30_000 },
+    );
+    await pressControl(page, '#score-play');
+    await expect(play, 'the run did not pause').toHaveText('▶');
+    await expect(section, 'a paused run reads running: the state this case is about').toHaveAttribute('data-running', 'true');
+    await expect(line).toHaveText(/^Paused/);
+
+    /**
+     * The header, its line and what is around them, once the fit has held still (watched, not
+     * waited out: the stage's height changing is what starts a refit), with the chrome open: the
+     * header folds away three seconds after a tap, and a header that is not drawn measures nothing.
+     */
+    const look = async () => {
+      for (let attempt = 0; ; attempt += 1) {
+        await revealBar(page);
+        const seen = await page.evaluate(async () => {
+          const fit = (): { zoom: number; scale: number } => {
+            const cursor = document.querySelector<HTMLElement>('#score-stage .score-buffer.is-cursor');
+            const w = window as unknown as { __pianopath?: { scoreFit?: () => { zoom: number } } };
+            return {
+              zoom: w.__pianopath?.scoreFit?.()?.zoom ?? 0,
+              scale: cursor ? new DOMMatrixReadOnly(getComputedStyle(cursor).transform).a : 0,
+            };
+          };
+          const frame = async (): Promise<void> => {
+            await new Promise<void>((resolve) => requestAnimationFrame(() => {
+              resolve();
+            }));
+          };
+          const started = performance.now();
+          let held = fit();
+          let quietSince = performance.now();
+          while (performance.now() - started < 3_000) {
+            await frame();
+            const now = fit();
+            if (now.zoom !== held.zoom || now.scale !== held.scale) {
+              held = now;
+              quietSince = performance.now();
+            } else if (performance.now() - quietSince >= 250) {
+              break;
+            }
+          }
+          type Box = { left: number; top: number; right: number; bottom: number };
+          const boxOf = (el: Element | null): Box | null => {
+            if (el === null) return null;
+            const r = el.getBoundingClientRect();
+            return r.width === 0 && r.height === 0 ? null : { left: r.left, top: r.top, right: r.right, bottom: r.bottom };
+          };
+          const meet = (a: Box, b: Box): boolean =>
+            a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5;
+          const node = document.querySelector<HTMLElement>('#score-waiting')!;
+          const head = document.querySelector<HTMLElement>('#score-head')!;
+          const r = node.getBoundingClientRect();
+          const range = document.createRange();
+          range.selectNodeContents(node);
+          const text = range.getBoundingClientRect();
+          const lines = [...range.getClientRects()].filter((piece) => piece.width > 0);
+          // Hit-testing across every line of the sentence: what is drawn at its two ends and its middle.
+          const clear = lines.every((piece) => {
+            const y = piece.top + piece.height / 2;
+            return [piece.left + 2, (piece.left + piece.right) / 2, piece.right - 2].every((x) => {
+              const top = document.elementFromPoint(x, y);
+              return top !== null && (top === node || node.contains(top));
+            });
+          });
+          let ink: Box | null = null;
+          for (const el of document.querySelectorAll('#score-stage .is-front svg *')) {
+            const b = boxOf(el);
+            if (b === null) continue;
+            ink = ink === null ? b : {
+              left: Math.min(ink.left, b.left),
+              top: Math.min(ink.top, b.top),
+              right: Math.max(ink.right, b.right),
+              bottom: Math.max(ink.bottom, b.bottom),
+            };
+          }
+          const own = { left: r.left, top: r.top, right: r.right, bottom: r.bottom };
+          const stage = boxOf(document.querySelector('#score-stage'));
+          // Every control drawn on the screen: the header's (Back, the `?`) and the bar's.
+          const controls = [...document.querySelectorAll('#score-head button, #score-bar button, #score-bar select')]
+            .map((el) => ({ id: el.id, box: boxOf(el) }))
+            .filter((c): c is { id: string; box: Box } => c.box !== null);
+          return {
+            drawn: getComputedStyle(head).display !== 'none',
+            head: head.getBoundingClientRect().height,
+            ...held,
+            text: node.textContent ?? '',
+            scrollWidth: node.scrollWidth,
+            clientWidth: node.clientWidth,
+            textInside: text.left >= r.left - 0.5 && text.right <= r.right + 0.5,
+            ellipsis: getComputedStyle(node).textOverflow === 'ellipsis',
+            clear,
+            inWindow: r.top >= 0 && r.left >= 0 && r.bottom <= window.innerHeight && r.right <= window.innerWidth,
+            aboveStage: stage === null ? null : head.getBoundingClientRect().bottom <= stage.top + 0.5,
+            overInk: ink === null ? null : meet(own, ink),
+            overControls: controls.filter((c) => meet(own, c.box)).map((c) => c.id),
+          };
+        });
+        if (seen.drawn || attempt >= 1) return seen;
+      }
+    };
+
+    const ordinary = await look();
+    expect(ordinary.drawn, 'the header is not drawn to measure').toBe(true);
+    expect(ordinary.head, 'the header has a height to compare against').toBeGreaterThan(0);
+    expect(ordinary.scale, 'the cursor slot is drawn at some scale').toBeGreaterThan(0);
+
+    await page.evaluate(async () => {
+      const ctx = (window as Captured).__contexts?.[0];
+      await ctx?.suspend();
+      // An own property over the prototype's: removed below, the real `resume` answers again.
+      if (ctx) ctx.resume = () => new Promise<void>(() => undefined);
+    });
+    await expect.poll(state).toBe('suspended');
+
+    /** Taps a control with the sound's start never answering, and reads its refusal in the header. */
+    const refusedTap = async (id: string, sentence: string) => {
+      // Where the bar has put it: `Hear it` is the second control to leave a narrow bar for `⋯`.
+      await pressAnywhere(page, id);
+      // Past the bound: the sentence is what says the wait is over (polled, no fixed sleep).
+      await expect(line, `the state line after ${id}’s bound`).toHaveText(sentence, { timeout: 10_000 });
+      await expect(page.locator(id)).toHaveAttribute('data-sound-refused', 'true');
+      await expect(section, `${id}’s refused tap ended the run`).toHaveAttribute('data-running', 'true');
+      await expect(section, `${id}’s refused tap began a demonstration`).toHaveAttribute('data-hearing', 'false');
+      await expect(play, `${id}’s refused tap carried the run on`).toHaveText('▶');
+      const seen = await look();
+      expect(seen.drawn, 'the header is not drawn to measure').toBe(true);
+      expect(seen.text).toBe(sentence);
+      // Soft, so a red run names every fact that failed, not only the first.
+      expect.soft(seen.scrollWidth, `${id}: the sentence overflows its line`).toBeLessThanOrEqual(seen.clientWidth);
+      expect.soft(seen.textInside, `${id}: the sentence runs outside its line`).toBe(true);
+      expect.soft(seen.ellipsis, `${id}: the header’s line cuts with an ellipsis`).toBe(false);
+      expect.soft(seen.clear, `${id}: something is drawn over the sentence`).toBe(true);
+      expect.soft(seen.inWindow, `${id}: the line is off the screen`).toBe(true);
+      expect.soft(seen.aboveStage, `${id}: the header runs into the stage`).toBe(true);
+      expect.soft(seen.overInk, `${id}: the line is over the drawn notes`).toBe(false);
+      expect.soft(seen.overControls, `${id}: the line is over a control`).toEqual([]);
+      expect.soft(seen.zoom, `${id}: the sheet was re-engraved under the refusal`).toBeCloseTo(ordinary.zoom, 5);
+      expect.soft(seen.scale, `${id}: the drawn size moved under the refusal`).toBeCloseTo(ordinary.scale, 5);
+      return seen;
+    };
+
+    // `STATE_TEXT.soundOff` in `help.ts`, as `help.test.ts` joins them to `04` §5f.
+    await refusedTap('#score-play', 'Sound did not start — tap ▶ again');
+    const hear = await refusedTap('#score-hear', 'Sound did not start — tap Hear it again');
+    // The extra line is what the drawn size is held against: without it the size check proves nothing.
+    expect.soft(hear.head, 'the sentence took no second line, so the drawn size was not tested against one').toBeGreaterThan(
+      ordinary.head,
+    );
+    expect(test.info().errors.length, 'the refusal is not whole, or moved the sheet, or covers something').toBe(0);
+
+    // The sound answers again, and ▶ asks once more. What the screen is within ▶'s own tap, before the
+    // sound has answered, read at the first change the tap makes to the state line: a mutation
+    // observer's callback runs as the tap's handler returns, ahead of the start's own answer.
+    await page.evaluate(() => {
+      const ctx = (window as Captured).__contexts?.[0];
+      if (ctx) Reflect.deleteProperty(ctx, 'resume');
+      const node = document.querySelector('#score-waiting')!;
+      const said = node.textContent;
+      const observer = new MutationObserver(() => {
+        if (node.textContent === said) return;
+        observer.disconnect();
+        const head = document.querySelector<HTMLElement>('#score-head')!;
+        const button = document.querySelector('#score-play')!;
+        (window as AtTap).__atTap = {
+          text: node.textContent,
+          drawn: getComputedStyle(head).display,
+          head: head.getBoundingClientRect().height,
+          play: button.textContent,
+          busy: button.getAttribute('aria-busy'),
+          running: document.querySelector<HTMLElement>('section[data-screen="score"]')?.dataset.running ?? null,
+        };
+      });
+      observer.observe(node, { childList: true, characterData: true, subtree: true });
+    });
+    await pressControl(page, '#score-play');
+    const atTap = await page.evaluate(() => (window as AtTap).__atTap ?? null);
+    expect(atTap, 'the tap changed nothing on the state line').not.toBeNull();
+    expect.soft(atTap!.busy, 'read after ▶ stopped waiting: not within its tap').toBe('true');
+    expect.soft(atTap!.play, 'read after the run carried on: not before it').toBe('▶');
+    expect.soft(atTap!.running).toBe('true');
+    expect.soft(atTap!.text, 'the tap left the sentence').toMatch(/^Paused/);
+    expect.soft(atTap!.drawn, 'the header was not drawn when the tap was read').not.toBe('none');
+    expect.soft(atTap!.head, 'the header kept the refusal’s line into ▶’s wait').toBe(ordinary.head);
+    expect(test.info().errors.length, 'the header was not back to its height before the run carried on').toBe(0);
+
+    await expect.poll(state, { message: 'the context after the last ▶', timeout: 10_000 }).toBe('running');
+    await expect(play, 'the run did not carry on').toHaveText('⏸');
+    await expect(section).toHaveAttribute('data-running', 'true');
+    await expect(line).not.toHaveText(/Sound did not start/);
+    const after = await look();
+    expect(after.head, 'the run carried on with the header at another height').toBe(ordinary.head);
+    expect(after.zoom, 'the sheet was re-engraved as the run carried on').toBeCloseTo(ordinary.zoom, 5);
+    expect(after.scale, 'the drawn size moved as the run carried on').toBeCloseTo(ordinary.scale, 5);
+  });
 });
