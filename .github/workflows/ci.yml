@@ -332,7 +332,7 @@ jobs:
           retention-days: 7
 
       - name: Upload this shard's test results
-        # The traces of retried tests (`trace: 'on-first-retry'` on CI) and the
+        # The failing attempt's retained trace (`trace: 'retain-on-failure'`) and the
         # failure files, which the runner's disk took with it until T62.
         if: always()
         uses: actions/upload-artifact@v4
