@@ -119,7 +119,7 @@ reports the measured gap instead of a reconciliation plan.
   overwriting each other's premise.
 - **CL11 evidence truth is not re-derived here.** `responses/9e14839e.md` §5: this lane's
   trace is meant to become CL11's concrete consumer, not a second evidence-truth project.
-  If the trace surfaces a genuine evidence-contract gap beyond consumer wording/routing,
+  If the trace surfaces a genuine evidence gap (see the boundary under "The deliverable"),
   name it for CL11 and stop rather than designing CL11's contract inline.
 - **No content or curriculum rewording without itemization.** Any sentence this lane
   changes that a learner reads (a help-text constant, a lesson's "what the app counts"
@@ -196,6 +196,16 @@ line 45; `Outcome`, line 91: `'passed-full' | 'failed' | 'unknown'`; `RunActivit
 consumer above actually reads, and whether two consumers reading the "same" fact read it
 through different fields that can disagree.
 
+**A song-run item's purpose (R23, `responses/f860c76e.md`; one narrow read, not all 61 rungs).**
+When a composed item is a rung's song run, what fact tells the learner and the session's
+chooser why this application is here and what it can count toward? R23 found the repository
+names no claim a rung's song run applies, and the offer takes the first passing song in
+authored order. Answer whether the six points need that purpose explicit for an honest story
+or chooser decision. If the existing rung or session reason already supplies it, say how (R23's
+conversion stays parked). If the contract needs it, report the missing semantic truth and its
+consumer; add no field unless a small, natural existing owner holds it within the small-build
+rule. Authored order is order, not a ranking contract; no ranking work here.
+
 **Finding 10, held — traced, not absorbed.** Compare the Stage-0 posture checklist's
 past-tense phrasing (`askedWords`, the `done` kind, `app/src/ui/help.ts` ~957, ~1398) and
 the first-session placement/sight-read-level selection in `app/src/curriculum/session.ts`,
@@ -217,15 +227,24 @@ deliverable is a coherent consumer and default-routing reconciliation: one short
 the required change explicitly allows it — the build itself, if it is small: the specific
 text/branch changes in the files traced above (never the Score screen's layout/chrome), each
 with its discriminating test. Judge "small" against what the trace actually finds; if the
-honest fix touches the evidence contract itself (not just its consumers), that is no longer
-small and becomes a named CL11 handoff instead (see "Constraints," above).
+honest fix changes evidence meaning or counting, that is no longer small and becomes a named
+CL11 handoff instead; if it needs substantial new session architecture, report it and stop.
 
-The line, concretely: a **consumer** change alters what a screen or help text reads and says, or
-which mode, tempo or continuation a session opens or offers (the settings defaults, the
-session's opening configuration, the sheet's actions). An **evidence-contract** change alters
-what is written to storage or what counts toward a requirement or a skill
-(`evidence/evidence.ts`, `evidence/rungState.ts`, `evidence/measurement.ts`, the run record in
-`data/sessionRun.ts`). The first may be built here; the second is named for CL11 and stops.
+**The boundary is semantic, not where a field is stored** (`responses/43045ffb.md` §1, §3):
+
+- **Consumer, presentation and routing truth (X46's):** what a surface reads and says, which
+  mode, tempo or continuation opens or is offered, and the session-local purpose, intent or
+  outcome a composed item needs to cohere. It may be built here even when it lives in
+  persisted session state; storing that an item was composed as preparation rather than as a
+  criterion attempt, if the trace proves the session needs it, is session-item truth.
+- **The evidence contract (CL11's):** what is written as learning evidence, how evidence is
+  interpreted, and what advances a requirement, skill or rung (whether a Wait-mode run counts,
+  how an unmeasured activity becomes evidence, how `rungState` reads observations).
+- **Missing domain truth:** a fact that is neither (a stable authored application purpose, say)
+  is returned as a gap with the natural owner the trace shows, never routed to CL11 because
+  it would need persistence.
+
+A change to a `sessionRun` field does not decide ownership by itself; what the field means does.
 
 **Outcome B.** The trace finds a fact one of the six points needs that no stored field holds
 under any read (the refuting test, above). The lane returns the measured gap: which point,
@@ -255,6 +274,11 @@ explicitly report as unreachable — never conditions to be privately judged met
   configuration: either the opening mode/tempo could have satisfied it, or the sheet's own
   framing already says so before the run, not only after a failed one. The sheet's primary
   continuation control is checked against its own recommendation text.
+  The fix follows the item's traced role (`responses/43045ffb.md` §4): composed as a **criterion
+  attempt**, its opening state can satisfy the criterion; composed as **preparation**, the
+  learner knows so before playing, it wears no pass language it cannot earn, and a direct
+  route leads to the criterion attempt. The design note states the role and why the flow
+  follows from it.
 - **The lesson page** (point 6; finding 3). "What the app counts" is checked for whether it
   and Today's card already read the same fact for the same item on the same day; if they
   provably do and still disagree, that is reported as the mechanism, not papered over.
@@ -340,4 +364,4 @@ decision CL11 owns — say so and take the better path, recording why, per
 lane: X46 · closes: — · entry: 213
 index: One story for a session item: tracing what Today's card, the completion sheet, the lesson page, Progress and the next day's composer each read for one composed item against the reviewer's six-point purpose/outcome contract (findings 1, 3, 6, 7), findings 4 and 10 kept at the boundary, before any consumer reconciliation or new model (`X46-one-story-for-a-session-item.md`) | design | drafted 2026-10-02 (`X46-one-story-for-a-session-item.md`); Entry 213
 in-flight: drafted 2026-10-02 (`X46-one-story-for-a-session-item.md`): a design-and-trace lane, no new persistent model presumed; the six-point contract traced against stored truth and its five consumers; a small consumer/routing reconciliation (build) if the trace supports it, the measured gap if it does not (Entry 213)
-state: with-reviewer 2026-10-02: with the reviewer before dispatch (Entry 213)
+state: approved 2026-10-01: approved with one required change (semantic ownership, R23's purpose case, role-led opening), incorporated (Entry 213)

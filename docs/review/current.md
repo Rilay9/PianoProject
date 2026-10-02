@@ -5,8 +5,8 @@ This file is a pointer, not the durable record and not a hand-written archive.
 ## Response-required handoffs
 
 - `handoffs/6d01204b.md` — **open**, respond in `responses/6d01204b.md`: U125, a note played in a busy moment is judged in its window again: the cause is U66's own stall hold, not U119a or U118b, and the hold is now one span (Entry 210).
-- `handoffs/f860c76e.md` — **open**, respond in `responses/f860c76e.md`: R23, the three-song floor's replacement has no composition to adopt — the repository names no rung's application target for any of 61 song-run rungs — so the lane reports the model gap and stops there; the found `write_needs`/`lessonShortfall` song-run gate lands regardless, latent on this build (Entry 208).
-- `handoffs/43045ffb.md` — **open**, respond in `responses/43045ffb.md`: X46, the session-item contract's trace-first brief (Entry 213), shown before dispatch; three questions.
+- `handoffs/f860c76e.md` — **answered** in `responses/f860c76e.md`: R23 approved and closed on branch 3b; the floor stays; the purpose question goes to X46, unmeasurable evidence to CL11.
+- `handoffs/43045ffb.md` — **answered** in `responses/43045ffb.md`: X46 approved with one required change (ownership by meaning, R23's purpose case, role-led opening), incorporated; dispatched.
 - `handoffs/911f8c82.md` — **answered** in `responses/911f8c82.md` and `911f8c82-correction-1.md`: c6 accepted as the base whole-Score model; one state-transition probe on the narrow cells and a per-state table before the build brief dispatches.
 - `handoffs/9e14839e.md` — **answered** in `responses/9e14839e.md`: T62's read-back accepted; U125 justified as a narrow U66 follow-up; the walk's pass loop reshaped into one session-item purpose/outcome contract (X46), shown before dispatch; U110 reopened as a live defect; findings 5 and 8 are U122 + CL07 acceptance cases.
 - `handoffs/71730e65.md` — **answered** in `responses/71730e65.md`: CL16 rejected as one metric-driven version-3 lane; R23 approved with one required change to keep “strong application” from collapsing into the `established` detector proxy.
