@@ -917,6 +917,10 @@ test.describe('naming the note it is waiting for', () => {
     // Tempo mode drives from the clock, so no note is ever named as waited
     // for. Since T8 a Tempo run can hold for the learner's *first* note, and
     // this line then says so — but it never names a note.
+    // Mid-run the controls are folded to ⏸ (U122c), so the mode is reached
+    // the way a learner reaches it: a tap on the music shows them first. The
+    // select was chosen here while folded and unseen before.
+    await revealBar(page);
     await page.locator('#score-mode').selectOption('tempo');
     await expect(page.locator('#score-waiting')).not.toContainText('Waiting for');
   });
@@ -1510,7 +1514,8 @@ test.describe('▶ after the sound was suspended (U69)', () => {
           return {
             header: read('#score-waiting'),
             mirror: read('#score-status-side'),
-            corner: read('#score-corner'),
+            // Sideways the top line (U122c), which keeps the name while the summary is up.
+            top: read('#score-top-say'),
             sheet: read('#summary-refusal'),
           };
         }, sentence);
@@ -1537,13 +1542,24 @@ test.describe('▶ after the sound was suspended (U69)', () => {
 
       // `STATE_TEXT.soundOff` in `help.ts`, as `help.test.ts` joins them to `04` §5f.
       await refusedTap('#summary-slower', 'Sound did not start — tap Slower again');
-      // The second from the sheet scrolled to its foot, where sideways the self-report row is (the
-      // sheet is at its 72 % and scrolls): the line is held at the sheet's top, still in view.
-      const scrolled = await summary.evaluate((node) => {
+      // The second from the sheet scrolled to its foot (where it scrolls): the line is held at the
+      // sheet's top, still in view. Revised by U122c: sideways the sheet is two columns and at this size
+      // may hold everything without scrolling, so its foot is then in view unscrolled and asserted so.
+      const foot = await summary.evaluate((node) => {
         node.scrollTop = node.scrollHeight;
-        return node.scrollTop;
+        const sheet = node.getBoundingClientRect();
+        const last = [...node.querySelectorAll<HTMLElement>('button')].filter((b) => b.getClientRects().length > 0).at(-1);
+        const b = last?.getBoundingClientRect();
+        return {
+          scrolls: node.scrollHeight > node.clientHeight + 1,
+          scrolled: node.scrollTop,
+          footInView: b !== undefined && b.bottom <= sheet.bottom + 0.5 && b.top >= sheet.top - 0.5,
+        };
       });
-      if (held === 'sideways') expect(scrolled, 'the sheet did not scroll, so its foot is not exercised').toBeGreaterThan(0);
+      if (held === 'sideways') {
+        if (foot.scrolls) expect(foot.scrolled, 'the sheet did not scroll, so its foot is not exercised').toBeGreaterThan(0);
+        else expect(foot.footInView, 'the sheet neither scrolls nor shows its foot').toBe(true);
+      }
       await refusedTap('#summary-again', 'Sound did not start — tap Again');
 
       await page.evaluate(() => {
@@ -1814,26 +1830,23 @@ test.describe('▶ after the sound was suspended (U69)', () => {
   });
 
   /**
-   * Sideways the bar's mirror says a refusal whole too (U105d, the reviewer's direction on U105c,
-   * `responses/842ea210.md`: "an actionable refusal explanation may not hide the action/control name
-   * behind an ellipsis", on this surface as on the header). Sideways the header is not drawn in any
-   * state, so `#score-status-side`, which mirrors its line, is the one place the learner reads why a
-   * tap did nothing; it was one line at `28vw` with an ellipsis whatever it said, and on the wider face
-   * *Sound did not start — tap Hear it again* and *tap ▶ again* both lost *again* there.
+   * Sideways a refusal is said whole, in the top line, in the name's place (U122c, c6; replacing U105d's
+   * case, class: replace). U105d held that the bar's mirror `#score-status-side` said it whole by
+   * wrapping beside Back and the controls, and the row grew past the window at 568 × 320 (U120). The
+   * reviewer's direction it served stands (`responses/842ea210.md`: "an actionable refusal explanation
+   * may not hide the action/control name behind an ellipsis"); the surface changed
+   * (`responses/e070d238.md`: the refusal takes the title's place while it stands).
    *
-   * At 740 × 342 (a phone held sideways at a larger Display size) on the wider face, in a paused Wait
-   * run (frozen, then paused) and at rest with no run: the context suspended with `resume` never
-   * answering, ▶ then `Hear it` refused, each sentence read from the mirror with the bar revealed first
-   * (the mirror fades with the bar three seconds after a tap, and `scrollWidth` cannot see opacity).
-   * Each is whole: no overflow, no ellipsis, the text inside its box, nothing drawn over any of its
-   * lines, in the window. The bar stays one row at its height before the refusal, every control on the
-   * screen and none under the sentence, and the piece's name still drawn. The density contract for
-   * every other line, at the same element: in the paused run the ordinary line, read before the
-   * refusal, is still one line cut with its ellipsis, and once ▶ carries the run on the mirror is back
-   * under the clamp.
+   * At 740 × 342 on the wider face, in a paused Wait run (frozen, then paused) and at rest: the context
+   * suspended with `resume` never answering, ▶ then `Hear it` refused. Each sentence is read from the top
+   * line: whole (no overflow, no ellipsis, the text inside its box, on one line, nothing drawn over it, in
+   * the window), marked a refusal, the name not drawn, `bar n / m` beside it or yielded whole. The row is
+   * one row at its height before the refusal, carries no sentence, and every control on it is hit. Paused,
+   * the generic paused line is on neither surface (the row's ▶ says it). Once ▶ carries the run on, the
+   * sentence is gone.
    */
   for (const where of ['paused', 'at rest'] as const) {
-    test(`a refusal sideways (740 × 342) on a wider face, ${where}: the bar’s mirror says it whole, the bar one row, the ordinary line still cut`, async ({
+    test(`a refusal sideways (740 × 342) on a wider face, ${where}: the top line says it whole in the name’s place, the row one row and unchanged`, async ({
       page,
     }) => {
       test.setTimeout(120_000);
@@ -1854,12 +1867,12 @@ test.describe('▶ after the sound was suspended (U69)', () => {
       const state = (): Promise<string> =>
         page.evaluate(() => (window as Captured).__contexts?.[0]?.state ?? 'none');
       await expect.poll(state, { message: 'the app made its context as the piece loaded' }).not.toBe('none');
-      // An ordinary tap on the bar's copy of the title, which is no control.
+      // An ordinary tap on the top line's name, which is no control.
       await page.locator('#score-title-side').click({ timeout: 5_000 });
       await expect.poll(state).toBe('running');
       const section = page.locator('section[data-screen="score"]');
       const play = page.locator('#score-play');
-      const mirror = page.locator('#score-status-side');
+      const said = page.locator('#score-top-say');
       if (where === 'paused') {
         await page.locator('#score-mode').selectOption('wait');
         await play.click({ timeout: 5_000 });
@@ -1872,87 +1885,83 @@ test.describe('▶ after the sound was suspended (U69)', () => {
           undefined,
           { timeout: 30_000 },
         );
-        await pressControl(page, '#score-play');
+        // ⏸, directly: the run's controls fold to it.
+        await play.click({ timeout: 3_000 });
         await expect(play, 'the run did not pause').toHaveText('▶');
-        await expect(mirror).toHaveText(/^Paused/);
+        await expect(section, 'a pause folded the controls').toHaveAttribute('data-chrome', 'open');
       }
 
-      /** The bar's mirror and the bar around it, read with the bar shown. */
-      const side = async () => {
-        for (let attempt = 0; ; attempt += 1) {
-          await revealBar(page);
-          await expect
-            .poll(() => page.locator('#score-bar').evaluate((bar) => getComputedStyle(bar).opacity), {
-              message: 'the bar did not come back to be read',
-            })
-            .toBe('1');
-          const seen = await page.evaluate(() => {
-            type Box = { left: number; top: number; right: number; bottom: number };
-            const boxOf = (el: Element): Box | null => {
-              const r = el.getBoundingClientRect();
-              return r.width === 0 && r.height === 0 ? null : { left: r.left, top: r.top, right: r.right, bottom: r.bottom };
-            };
-            const meet = (a: Box, b: Box): boolean =>
-              a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5;
-            const bar = document.querySelector<HTMLElement>('#score-bar')!;
-            const node = document.querySelector<HTMLElement>('#score-status-side')!;
-            const r = node.getBoundingClientRect();
-            const range = document.createRange();
-            range.selectNodeContents(node);
-            const text = range.getBoundingClientRect();
-            const lines = [...range.getClientRects()].filter((piece) => piece.width > 0);
-            // Hit-testing across every line of the sentence: what is drawn at its two ends and its middle.
-            const clear =
-              lines.length > 0 &&
-              lines.every((piece) => {
-                const y = piece.top + piece.height / 2;
-                return [piece.left + 2, (piece.left + piece.right) / 2, piece.right - 2].every((x) => {
-                  const top = document.elementFromPoint(x, y);
-                  return top !== null && (top === node || node.contains(top));
-                });
+      /** The top line and the row under it. */
+      const look = () =>
+        page.evaluate(() => {
+          type Box = { left: number; top: number; right: number; bottom: number };
+          const meet = (a: Box, b: Box): boolean =>
+            a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5;
+          const bar = document.querySelector<HTMLElement>('#score-bar')!;
+          const top = document.querySelector<HTMLElement>('#score-top')!;
+          const node = document.querySelector<HTMLElement>('#score-top-say')!;
+          const r = node.getBoundingClientRect();
+          const range = document.createRange();
+          range.selectNodeContents(node);
+          const text = range.getBoundingClientRect();
+          const lines = [...range.getClientRects()].filter((piece) => piece.width > 0);
+          // During a run the top line lets taps through to the music (`pointer-events: none`), which
+          // hit-testing skips; for this read only, it takes them, so what is painted over it is found.
+          const passes = top.style.pointerEvents;
+          top.style.pointerEvents = 'auto';
+          const clear =
+            lines.length > 0 &&
+            lines.every((piece) => {
+              const y = piece.top + piece.height / 2;
+              return [piece.left + 2, (piece.left + piece.right) / 2, piece.right - 2].every((x) => {
+                const at = document.elementFromPoint(x, y);
+                return at !== null && (at === node || node.contains(at));
               });
-            const own = { left: r.left, top: r.top, right: r.right, bottom: r.bottom };
-            // Every control drawn on the bar, Back at its left end included.
-            const controls = [...bar.querySelectorAll('button, select, .score-tempo-label')]
-              .map((el) => ({ id: el.id, box: boxOf(el) }))
-              .filter((c): c is { id: string; box: Box } => c.box !== null);
-            const rows = new Set(
+            });
+          top.style.pointerEvents = passes;
+          const controls = [...bar.querySelectorAll<HTMLElement>('button, select, .score-tempo-label')]
+            .map((el) => ({ el, b: el.getBoundingClientRect() }))
+            .filter(({ b }) => b.width > 0 && b.height > 0);
+          const missed = controls
+            .filter(({ el, b }) => {
+              const at = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2);
+              return at === null || !(at === el || el.contains(at));
+            })
+            .map(({ el }) => el.id);
+          const where = document.querySelector<HTMLElement>('#score-where-side')!;
+          const title = document.querySelector<HTMLElement>('#score-title-side')!;
+          return {
+            says: top.dataset.says ?? '',
+            text: node.textContent ?? '',
+            drawn: r.width > 1 && r.height > 1,
+            scrollWidth: node.scrollWidth,
+            clientWidth: node.clientWidth,
+            textInside: text.left >= r.left - 0.5 && text.right <= r.right + 0.5,
+            lines: new Set(lines.map((piece) => Math.round(piece.top))).size,
+            clear,
+            inWindow: r.top >= 0 && r.left >= 0 && r.bottom <= window.innerHeight && r.right <= window.innerWidth,
+            weight: Number(getComputedStyle(node).fontWeight),
+            titleDrawn: title.getClientRects().length > 0,
+            whereDrawn: where.getClientRects().length > 0 ? where.textContent : null,
+            overControls: controls.filter(({ b }) => meet(r, b)).map(({ el }) => el.id),
+            missed,
+            rows: new Set(
               [...bar.children]
-                .filter((child) => child.getBoundingClientRect().height > 0)
+                .filter((child) => !child.classList.contains('score-countin') && child.getBoundingClientRect().height > 0)
                 .map((child) => Math.round(child.getBoundingClientRect().top)),
-            );
-            return {
-              shown: bar.dataset.visible === 'true' && getComputedStyle(bar).opacity === '1',
-              text: node.textContent ?? '',
-              scrollWidth: node.scrollWidth,
-              clientWidth: node.clientWidth,
-              textInside: text.left >= r.left - 0.5 && text.right <= r.right + 0.5,
-              ellipsis: getComputedStyle(node).textOverflow === 'ellipsis',
-              clear,
-              inWindow:
-                r.width > 1 && r.height > 1 && r.top >= 0 && r.left >= 0 && r.bottom <= window.innerHeight && r.right <= window.innerWidth,
-              overControls: controls.filter((c) => meet(own, c.box)).map((c) => c.id),
-              offScreen: controls.filter((c) => c.box.left < -0.5 || c.box.right > window.innerWidth + 0.5).map((c) => c.id),
-              rows: rows.size,
-              bar: bar.getBoundingClientRect().height,
-              barScroll: bar.scrollHeight,
-              title: document.querySelector('#score-title-side')!.getBoundingClientRect().width,
-            };
-          });
-          if (seen.shown || attempt >= 1) return seen;
-        }
-      };
+            ).size,
+            bar: bar.getBoundingClientRect().height,
+            barScroll: bar.scrollHeight,
+            row: document.querySelector('#score-status-side')?.textContent ?? '',
+          };
+        });
 
-      const ordinary = await side();
-      expect(ordinary.shown, 'the bar is not shown to measure').toBe(true);
-      expect(ordinary.bar, 'the bar has a height to compare against').toBeGreaterThan(0);
-      expect(ordinary.rows, 'the bar is not one row before the refusal').toBe(1);
-      if (where === 'paused') {
-        // The density contract (the reviewer's words: "preserve the bar's density contract for ordinary
-        // status text"): the paused line, at the same element in the same run, is still one line cut.
-        expect.soft(ordinary.scrollWidth, 'the paused line fits here, so its cut is not tested').toBeGreaterThan(ordinary.clientWidth);
-        expect.soft(ordinary.ellipsis, 'the paused line is no longer cut with an ellipsis').toBe(true);
-      }
+      const ordinary = await look();
+      expect(ordinary.rows, 'the row is not one row before the refusal').toBe(1);
+      expect(ordinary.titleDrawn, 'the name is not on the top line before the refusal').toBe(true);
+      // The generic paused line is not drawn: the row's ▶ says it (U122b, the reviewer's correction).
+      expect(ordinary.row, 'the row carries the paused line').not.toMatch(/^Paused/);
+      expect(ordinary.text, 'the top line carries the paused line').not.toMatch(/^Paused/);
 
       await page.evaluate(async () => {
         const ctx = (window as Captured).__contexts?.[0];
@@ -1962,11 +1971,11 @@ test.describe('▶ after the sound was suspended (U69)', () => {
       });
       await expect.poll(state).toBe('suspended');
 
-      /** Taps a control with the sound's start never answering, and reads its refusal in the bar's mirror. */
+      /** Taps a control with the sound's start never answering, and reads its refusal on the top line. */
       const refusedTap = async (id: string, sentence: string): Promise<void> => {
-        await pressAnywhere(page, id);
+        await page.locator(id).click({ timeout: 3_000 });
         // Past the bound: the sentence is what says the wait is over (polled, no fixed sleep).
-        await expect(mirror, `the bar’s mirror after ${id}’s bound`).toHaveText(sentence, { timeout: 10_000 });
+        await expect(said, `the top line after ${id}’s bound`).toHaveText(sentence, { timeout: 10_000 });
         await expect(page.locator(id)).toHaveAttribute('data-sound-refused', 'true');
         await expect(section, `${id}’s refused tap began a demonstration`).toHaveAttribute('data-hearing', 'false');
         if (where === 'paused') {
@@ -1975,43 +1984,43 @@ test.describe('▶ after the sound was suspended (U69)', () => {
         } else {
           await expect(section, `${id}’s refused tap started a run`).not.toHaveAttribute('data-running', 'true');
         }
-        const seen = await side();
-        expect(seen.shown, 'the bar is not shown to measure').toBe(true);
+        const seen = await look();
         expect(seen.text).toBe(sentence);
         // Soft, so a red run names every fact that failed, not only the first.
-        expect.soft(seen.scrollWidth, `${id}: the sentence overflows the mirror`).toBeLessThanOrEqual(seen.clientWidth);
-        expect.soft(seen.textInside, `${id}: the sentence runs outside the mirror`).toBe(true);
-        expect.soft(seen.ellipsis, `${id}: the mirror cuts with an ellipsis`).toBe(false);
+        expect.soft(seen.says, `${id}: not marked a refusal`).toBe('refusal');
+        expect.soft(seen.drawn && seen.scrollWidth <= seen.clientWidth, `${id}: the sentence overflows the top line`).toBe(true);
+        expect.soft(seen.textInside, `${id}: the sentence runs outside its box`).toBe(true);
+        expect.soft(seen.lines, `${id}: the sentence is not on one line`).toBe(1);
         expect.soft(seen.clear, `${id}: something is drawn over the sentence`).toBe(true);
         expect.soft(seen.inWindow, `${id}: the sentence is off the screen`).toBe(true);
+        expect.soft(seen.weight, `${id}: the refusal does not stand apart from the name`).toBeGreaterThanOrEqual(600);
+        expect.soft(seen.titleDrawn, `${id}: the name is drawn beside the refusal`).toBe(false);
+        expect.soft(seen.whereDrawn === null || /^bar \d+ \/ \d+$/.test(seen.whereDrawn), `${id}: \`bar n / m\` cut (“${String(seen.whereDrawn)}”)`).toBe(true);
         expect.soft(seen.overControls, `${id}: the sentence is over a control`).toEqual([]);
-        expect.soft(seen.offScreen, `${id}: a control was pushed off the screen`).toEqual([]);
-        // One row (`08` §7.1, a hard constraint): the bar's height and content as they were before the refusal.
-        expect.soft(seen.rows, `${id}: the bar went to a second row`).toBe(1);
-        expect.soft(seen.bar, `${id}: the bar grew under the refusal`).toBeCloseTo(ordinary.bar, 0);
-        expect.soft(seen.barScroll, `${id}: the bar’s content grew under the refusal`).toBe(ordinary.barScroll);
-        expect.soft(seen.title, `${id}: the piece’s name is gone from the bar`).toBeGreaterThan(0);
+        expect.soft(seen.missed, `${id}: a control does not take its tap`).toEqual([]);
+        expect.soft(seen.row, `${id}: the row carries the sentence`).not.toMatch(/Sound did not start/);
+        // One row (`08` §7.1, a hard constraint): its height and content as they were before the refusal.
+        expect.soft(seen.rows, `${id}: the row went to a second row`).toBe(1);
+        expect.soft(seen.bar, `${id}: the row grew under the refusal`).toBeCloseTo(ordinary.bar, 0);
+        expect.soft(seen.barScroll, `${id}: the row’s content grew under the refusal`).toBe(ordinary.barScroll);
       };
 
       // `STATE_TEXT.soundOff` in `help.ts`, as `help.test.ts` joins them to `04` §5f.
       await refusedTap('#score-play', 'Sound did not start — tap ▶ again');
       await refusedTap('#score-hear', 'Sound did not start — tap Hear it again');
-      expect(test.info().errors.length, 'the refusal is not whole in the bar, or the bar is not one row').toBe(0);
+      expect(test.info().errors.length, 'the refusal is not whole on the top line, or the row moved').toBe(0);
 
       if (where === 'paused') {
-        // The exception is keyed on the refusal, not on the run: the sound answers, ▶ carries the run on,
-        // and the mirror's line is back under the clamp.
         await page.evaluate(() => {
           const ctx = (window as Captured).__contexts?.[0];
           if (ctx) Reflect.deleteProperty(ctx, 'resume');
         });
-        await pressControl(page, '#score-play');
+        await play.click({ timeout: 3_000 });
         await expect.poll(state, { message: 'the context after the last ▶', timeout: 10_000 }).toBe('running');
         await expect(play, 'the run did not carry on').toHaveText('⏸');
-        await expect(mirror).not.toHaveText(/Sound did not start/);
-        const after = await side();
-        expect(after.ellipsis, 'the mirror kept the refusal’s exception once the refusal went').toBe(true);
-        expect(after.bar, 'the bar carried the run on at another height').toBeCloseTo(ordinary.bar, 0);
+        await expect(said).not.toHaveText(/Sound did not start/);
+        const after = await look();
+        expect(after.bar, 'the row carried the run on at another height').toBeCloseTo(ordinary.bar, 0);
       }
     });
   }
@@ -2020,43 +2029,22 @@ test.describe('▶ after the sound was suspended (U69)', () => {
    * Sideways the bar's left end never covers its own controls (U119, the reviewer's ruling
    * `responses/questions-e9aa51ae.md`: "no left-group text may cover or intercept ▶ or any other
    * control, and the bar remains one row"; "a real unforced click on every visible control is the
-   * acceptance condition, not geometry alone").
+   * acceptance condition, not geometry alone"), and the row keeps its meaning when it yields (U119a,
+   * `responses/fa4563d1.md`).
    *
-   * Sideways the left group (Back, the piece's name, `bar n / m`, the status mirror) is the one item of
-   * the row allowed to shrink, and inside it only the name shrinks: Back, `bar n / m` and the mirror keep
-   * their own widths. Where those are wider than the room the fixed controls leave, the group's box is
-   * narrower than what is in it, and with nothing clipping it the mirror ran on over ▶: at 667 × 375 on
-   * the wider face, in a Wait run a learner had paused, *Paused — ▶ to carry on, …* took the tap meant
-   * for ▶ (U105d's probe, `runs/U105d/probe-narrow-run.txt`). U119's grid found it at the neighbouring
-   * widths too, and at 115 % text (the root font scaled, as an Android Display size does) on both faces.
-   *
-   * Each row: a Wait run frozen and paused, the ordinary paused line in the mirror. The pause is
-   * dispatched to ▶ itself: it is set up here, not measured, and ⏸ is tapped for real below. Then, with
-   * the bar shown: nothing the left group draws meets a control, and five points inside every control hit
-   * that control; Back is whole at the bar's left end; `bar n / m` is whole; the bar is one row. Then a
-   * real, unforced tap (`pressControl`: reveal, then `click()`, no `force`) on every control drawn on the
-   * bar, each checked by what it does: ▶ carries the run on, ⏸ pauses it, `Hear it` plays and stops, the
-   * mode select opens, `R`, `L` and `Both` choose, the tempo label and `⋯` open their sheets, and Back
-   * leaves the screen.
-   *
-   * And the group keeps its meaning when it yields (U119a, the reviewer's required change on U119,
-   * `responses/fa4563d1.md`). Back and `bar n / m` are the group's minimum: the piece's widest location,
-   * `bar m / m`, is read by hand at once and put back (`widestWhole`), because the bar prices that and
-   * not the bar under the cursor. Hands, then `Hear it`, go behind `⋯` exactly when that minimum would
-   * not fit with them on the bar: each one off the bar is put back for a moment, the minimum read, and
-   * the bar put back as it was (`fitsWithHands`, `fitsWithHear`), so the row proves the bar decided it,
-   * not that the cell happened to have room. The status line, where it is not whole, is cut by its own
-   * box inside the group, with its own ellipsis (`statusOwnCut`), never flush by the group's clip; and it
-   * gives nothing while the name still has room to give (`titleFirst`), outside a refusal, which shares
-   * the room in proportion by U105d's rule.
+   * Revised by U122c (class: revise). Since c6 the left group holds Back and the ordinary status line
+   * only; the piece's name and `bar n / m` are on the top line, where `bar n / m` never yields to a
+   * control, and the generic paused line is not drawn on the row (▶ says it). So: nothing the group draws
+   * meets a control, five points inside every control hit it, Back is whole at the row's left end, the
+   * row is one row; `bar n / m` and the piece's widest `bar m / m` are whole on the top line; the selected
+   * mode is whole (U121); a control is behind `⋯` only where the row could not hold it — Hands is behind
+   * `⋯` only where it would not fit even at its own width with the shortest words, and `Hear it` only once
+   * Hands is (U119a's order); the status line, where it is cut, is cut by its own ellipsis. Then a real,
+   * unforced tap (`pressControl`, no `force`) on every control drawn on the row, each checked by what it
+   * does.
    */
   const barLeftAgainstControls = async (page: Page) => {
     await revealBar(page);
-    await expect
-      .poll(() => page.locator('#score-bar').evaluate((bar) => getComputedStyle(bar).opacity), {
-        message: 'the bar did not come back to be read',
-      })
-      .toBe('1');
     return page.evaluate(() => {
       type Box = { left: number; top: number; right: number; bottom: number };
       const meet = (a: Box, b: Box): boolean =>
@@ -2064,7 +2052,6 @@ test.describe('▶ after the sound was suspended (U69)', () => {
       const bar = document.querySelector<HTMLElement>('#score-bar')!;
       const group = document.querySelector<HTMLElement>('#score-bar-left')!;
       const g = group.getBoundingClientRect();
-      // What a child of the group can draw: its own box, cut to the group's box where the group clips.
       const clips = getComputedStyle(group).overflowX !== 'visible';
       const drawn = (el: Element): Box => {
         const r = el.getBoundingClientRect();
@@ -2072,12 +2059,11 @@ test.describe('▶ after the sound was suspended (U69)', () => {
           ? { left: Math.max(r.left, g.left), top: r.top, right: Math.min(r.right, g.right), bottom: r.bottom }
           : { left: r.left, top: r.top, right: r.right, bottom: r.bottom };
       };
-      // Whole: every glyph of its text inside what it draws, and nothing cut inside its own box.
-      const whole = (el: HTMLElement): boolean => {
+      const whole = (el: HTMLElement, inGroup: boolean): boolean => {
         const range = document.createRange();
         range.selectNodeContents(el);
         const t = range.getBoundingClientRect();
-        const d = drawn(el);
+        const d = inGroup ? drawn(el) : el.getBoundingClientRect();
         return t.width > 0 && t.left >= d.left - 0.5 && t.right <= d.right + 0.5 && el.scrollWidth <= el.clientWidth + 0.5;
       };
       const controls = [...bar.querySelectorAll<HTMLElement>('button, select, .score-tempo-label')]
@@ -2090,7 +2076,6 @@ test.describe('▶ after the sound was suspended (U69)', () => {
         if (d.right - d.left <= 0.5) continue;
         for (const { el, r } of controls) if (meet(d, r)) overControls.push(`${child.id} over ${el.id}`);
       }
-      // Five points inside every control: its middle and halfway to each edge.
       const missed: string[] = [];
       for (const { el, r } of controls) {
         for (const [fx, fy] of [[0.5, 0.5], [0.25, 0.5], [0.75, 0.5], [0.5, 0.25], [0.5, 0.75]]) {
@@ -2104,71 +2089,70 @@ test.describe('▶ after the sound was suspended (U69)', () => {
       const where = document.querySelector<HTMLElement>('#score-where-side')!;
       const rows = new Set(
         [...bar.children]
-          .filter((child) => child.getBoundingClientRect().height > 0)
+          .filter((child) => !child.classList.contains('score-countin') && child.getBoundingClientRect().height > 0)
           .map((child) => Math.round(child.getBoundingClientRect().top)),
       );
-      // Read before anything below moves an element and puts it back.
-      const shown = bar.dataset.visible === 'true' && getComputedStyle(bar).opacity === '1';
-      const backWhole = whole(back);
-      const whereWhole = whole(where);
-
-      // The piece's widest location, `bar m / m`, and whether the group's minimum holds with it: Back
-      // and `bar m / m` inside the group's box (the name and the status line give theirs up first).
-      // Written by hand and put back in the same task, so nothing is drawn with it.
+      const shown = bar.dataset.visible === 'true';
+      const backWhole = whole(back, true);
+      const whereWhole = whole(where, false);
+      // The piece's widest location on the top line, written by hand and put back in the same task.
       const whereNow = where.textContent ?? '';
       const last = /\/ (\d+)$/.exec(whereNow)?.[1] ?? null;
       const widestText = last === null ? whereNow : `bar ${last} / ${last}`;
-      const minimumHolds = (): boolean => {
-        where.textContent = widestText;
-        const holds = where.getBoundingClientRect().right <= group.getBoundingClientRect().right;
-        where.textContent = whereNow;
-        return holds;
-      };
       where.textContent = widestText;
-      const widestWhole = whole(where);
+      const widestWhole = whole(where, false);
       where.textContent = whereNow;
-      // Controls off the bar, put back in their places for a moment (Hands before the tempo label,
-      // `Hear it` before the mode select, as `fitBarControls` brings them back), the minimum read, and the
-      // controls returned to where they were. Hands leaves first, so it is off exactly when the minimum
-      // fails with both on the bar; `Hear it` is off exactly when it fails with Hands off and it on.
-      const handsGroup = document.querySelector('#score-hands-R')!.parentElement!;
+      // The selected mode whole: the select against a copy holding only the chosen option.
+      const mode = document.querySelector<HTMLSelectElement>('#score-mode')!;
+      const copy = mode.cloneNode(false) as HTMLSelectElement;
+      copy.removeAttribute('id');
+      const option = document.createElement('option');
+      option.textContent = mode.selectedOptions[0]?.textContent ?? '';
+      copy.append(option);
+      Object.assign(copy.style, { position: 'absolute', visibility: 'hidden', width: 'auto', minWidth: '0', maxWidth: 'none', flex: 'none' });
+      bar.append(copy);
+      const modeWhole = mode.getBoundingClientRect().width >= copy.getBoundingClientRect().width - 0.5;
+      copy.remove();
+      // Hands off the row only where it would not fit even at its own width with the shortest words:
+      // put back for a moment at its own width, the words at their shortest, the row read, all put back.
+      const handsGroup = document.querySelector<HTMLElement>('#score-hands-R')!.parentElement!;
       const hear = document.querySelector<HTMLElement>('#score-hear')!;
       const handsOnBar = handsGroup.parentElement === bar;
       const hearOnBar = hear.parentElement === bar;
-      const withOnBar = (put: [HTMLElement, string][]): boolean => {
-        const away = put
-          .filter(([el]) => el.parentElement !== bar)
-          .map(([el, before]) => ({ el, before, home: el.parentElement, next: el.nextSibling }));
-        for (const { el, before } of away) bar.insertBefore(el, bar.querySelector(before));
-        const holds = minimumHolds();
-        for (const { el, home, next } of away.reverse()) home?.insertBefore(el, next);
-        return holds;
-      };
-      const fitsWithHands = withOnBar([
-        [hear, '#score-mode'],
-        [handsGroup, '#score-tempo-label'],
-      ]);
-      const fitsWithHear = withOnBar([[hear, '#score-mode']]);
-
-      // The status line, where it is not whole: its own box ends inside the group (so the group's clip
-      // is not what cuts it) and it cuts with its own ellipsis. A box with nothing left to draw has
-      // yielded all of it.
+      let handsNeeded = true;
+      if (!handsOnBar) {
+        const home = handsGroup.parentElement;
+        const next = handsGroup.nextSibling;
+        const floor = handsGroup.dataset.floor;
+        const tempoLabel = document.querySelector<HTMLElement>('#score-tempo-label')!;
+        const words = { tempo: tempoLabel.textContent, tempoWidth: tempoLabel.style.width, mode: [...mode.options].map((o) => o.textContent), modeWidth: mode.style.width };
+        bar.insertBefore(handsGroup, tempoLabel);
+        handsGroup.dataset.floor = 'false';
+        tempoLabel.textContent = (tempoLabel.textContent ?? '').replace(/^\d+% · /, '');
+        tempoLabel.style.width = '';
+        const short: Record<string, string> = { wait: 'Wait', tempo: 'Tempo', listen: 'Play', free: 'Free' };
+        for (const o of [...mode.options]) o.textContent = short[o.value] ?? o.textContent;
+        mode.style.width = 'auto';
+        const fits =
+          new Set(
+            [...bar.children]
+              .filter((child) => child !== group && !child.classList.contains('score-countin') && child.getBoundingClientRect().height > 0)
+              .map((child) => Math.round(child.getBoundingClientRect().top)),
+          ).size === 1 && back.getBoundingClientRect().right <= group.getBoundingClientRect().right + 0.5;
+        handsNeeded = !fits;
+        home?.insertBefore(handsGroup, next);
+        if (floor !== undefined) handsGroup.dataset.floor = floor;
+        tempoLabel.textContent = words.tempo;
+        tempoLabel.style.width = words.tempoWidth;
+        [...mode.options].forEach((o, i) => (o.textContent = words.mode[i] ?? o.textContent));
+        mode.style.width = words.modeWidth;
+      }
       const status = document.querySelector<HTMLElement>('#score-status-side')!;
       const s = status.getBoundingClientRect();
       const sStyle = getComputedStyle(status);
       const statusCut = status.scrollWidth > status.clientWidth + 0.5;
-      const statusYielded = s.width <= 0.5;
       const statusOwnCut =
-        statusYielded ||
-        (s.right <= g.right + 0.5 && (!statusCut || (sStyle.textOverflow === 'ellipsis' && sStyle.whiteSpace === 'nowrap')));
-      // The name yields first: while the status line is narrower than its own width (its text, or its
-      // cap where the text is longer), the name has nothing left. Not while a refusal stands.
-      const cap = Number.parseFloat(sStyle.maxWidth);
-      const statusOwnWidth = Math.min(status.scrollWidth, Number.isFinite(cap) ? cap : Infinity);
-      const title = document.querySelector<HTMLElement>('#score-title-side')!;
-      const titleWidth = title.getBoundingClientRect().width;
-      const refused = document.querySelector('[data-sound-refused]') !== null;
-      const titleFirst = refused || statusYielded || s.width >= statusOwnWidth - 1 || titleWidth <= 0.5;
+        s.width <= 0.5 || (s.right <= g.right + 0.5 && (!statusCut || (sStyle.textOverflow === 'ellipsis' && sStyle.whiteSpace === 'nowrap')));
       return {
         shown,
         status: status.textContent ?? '',
@@ -2181,45 +2165,35 @@ test.describe('▶ after the sound was suspended (U69)', () => {
         whereWhole,
         widestText,
         widestWhole,
+        modeLabel: option.textContent,
+        modeWhole,
         handsOnBar,
         hearOnBar,
-        fitsWithHands,
-        fitsWithHear,
+        handsNeeded,
+        handsFloor: handsGroup.dataset.floor ?? null,
         statusWidth: s.width,
-        statusRight: s.right,
-        groupRight: g.right,
         statusCut,
         statusOwnCut,
-        titleWidth,
-        titleFirst,
         rows: rows.size,
       };
     });
   };
 
-  /**
-   * The bar's own decision, asserted from `barLeftAgainstControls` (U119a): Back and the piece's widest
-   * `bar m / m` whole; Hands off the bar exactly when the minimum would not fit with it, and `Hear it`
-   * off only after Hands, exactly when the minimum would not fit with it either; the status line cut by
-   * its own box with its ellipsis, and only once the name has nothing left. Soft, so a red row names
-   * every fact that failed.
-   */
+  /** The row's own decision, asserted from `barLeftAgainstControls`. Soft, so a red row names every fact that failed. */
   const expectLeftGroupKeepsItsMeaning = (seen: Awaited<ReturnType<typeof barLeftAgainstControls>>): void => {
     expect.soft(seen.backWhole, 'Back is cut').toBe(true);
     expect.soft(seen.whereWhole, `the bar number is cut (“${seen.whereText}”)`).toBe(true);
     expect.soft(seen.widestWhole, `the piece’s widest bar number would be cut (“${seen.widestText}”)`).toBe(true);
-    expect.soft(seen.handsOnBar, seen.handsOnBar ? 'Hands stayed on the bar although Back and the bar number do not fit beside it' : 'Hands left the bar although Back and the bar number fit beside it').toBe(seen.fitsWithHands);
-    expect.soft(seen.hearOnBar, seen.hearOnBar ? 'Hear it stayed on the bar although Back and the bar number do not fit beside it' : 'Hear it left the bar before Hands, or although Back and the bar number fit beside it').toBe(seen.handsOnBar || seen.fitsWithHear);
-    expect.soft(seen.statusOwnCut, `the status line is cut flush by the group, not by its own ellipsis (its box ends at ${String(seen.statusRight)}, the group at ${String(seen.groupRight)})`).toBe(true);
-    expect.soft(seen.titleFirst, `the status line gave room while the piece’s name still had ${String(seen.titleWidth)} px`).toBe(true);
+    expect.soft(seen.modeWhole, `the selected mode is cut (“${String(seen.modeLabel)}”)`).toBe(true);
+    expect.soft(seen.handsOnBar || seen.handsNeeded, 'Hands left the row although it fits there at its own width with the shortest words').toBe(true);
+    expect.soft(seen.hearOnBar || !seen.handsOnBar, 'Hear it left the row before Hands').toBe(true);
+    expect.soft(seen.statusOwnCut, 'the status line is cut flush by the group, not by its own ellipsis').toBe(true);
   };
 
   /**
    * The cells. U119's sixteen, and U119a's residual adversaries (`responses/fa4563d1.md`): 568 × 320 on
-   * both faces at both text sizes, where at 115 % text on the wider face Back and *bar 1 / 4* together
-   * did not fit beside every control, and a three-digit bar (Moonlight III, 201 bars, a real catalogued
-   * piece rather than a count written by hand) at 568 × 320 on both faces and 640 × 360 on the wider
-   * face, at 115 % text, where U119 measured `bar n / m` cut.
+   * both faces at both text sizes, and a three-digit bar (Moonlight III, 201 bars) at 568 × 320 on both
+   * faces and 640 × 360 on the wider face, at 115 % text.
    */
   const LONG_ITEM = 'song.classical.beethoven-moonlight-iii';
   const SIDEWAYS_PAUSED: { width: number; height: number; face: null | 'a wider face'; text: 100 | 115; long?: true }[] = [];
@@ -2241,7 +2215,7 @@ test.describe('▶ after the sound was suspended (U69)', () => {
   );
 
   for (const { width, height, face, text, long } of SIDEWAYS_PAUSED) {
-    test(`sideways ${String(width)} × ${String(height)}${face === null ? '' : ` on ${face}`}${text === 100 ? '' : ` at ${String(text)} % text`}${long === true ? ', a three-digit bar (Moonlight III)' : ''}, paused: the bar’s left end covers no control, Back and the bar number are whole, and a real tap reaches every control`, async ({
+    test(`sideways ${String(width)} × ${String(height)}${face === null ? '' : ` on ${face}`}${text === 100 ? '' : ` at ${String(text)} % text`}${long === true ? ', a three-digit bar (Moonlight III)' : ''}, paused: the row’s left end covers no control, Back, the bar number and the mode are whole, and a real tap reaches every control`, async ({
       page,
     }) => {
       test.setTimeout(150_000);
@@ -2269,33 +2243,31 @@ test.describe('▶ after the sound was suspended (U69)', () => {
         undefined,
         { timeout: 30_000 },
       );
-      await play.dispatchEvent('click');
+      // ⏸, directly: the folded row's one control (U122c).
+      await play.click({ timeout: 3_000 });
       await expect(play, 'the run did not pause').toHaveText('▶');
-      await expect(page.locator('#score-status-side')).toHaveText(/^Paused/);
+      // Past the old three-second fold: a pause keeps its controls (walk finding 5).
+      await page.waitForTimeout(3_500);
+      await expect(section, 'a pause folded the controls').toHaveAttribute('data-chrome', 'open');
 
       const seen = await barLeftAgainstControls(page);
-      expect(seen.shown, 'the bar is not shown to measure').toBe(true);
-      expect(seen.status, 'the ordinary paused line is not in the mirror').toMatch(/^Paused/);
-      // Soft, so a red run names every fact that failed, not only the first.
-      expect.soft(seen.overControls, 'the bar’s left end draws over a control').toEqual([]);
+      expect(seen.shown, 'the row is not shown').toBe(true);
+      expect(seen.status, 'the generic paused line is drawn on the row').not.toMatch(/^Paused/);
+      expect.soft(seen.overControls, 'the row’s left end draws over a control').toEqual([]);
       expect.soft(seen.missed, 'a point inside a control hits something else').toEqual([]);
-      expect.soft(seen.backLeft, 'Back is not at the left end of the bar').toBeLessThan(40);
-      expect.soft(seen.rows, 'the bar is not one row').toBe(1);
-      // Back and the widest `bar m / m` whole, Hands and `Hear it` behind `⋯` exactly when they must
-      // be, the status line cut by its own ellipsis once the name has nothing left (U119a).
+      expect.soft(seen.backLeft, 'Back is not at the left end of the row').toBeLessThan(40);
+      expect.soft(seen.rows, 'the row is not one row').toBe(1);
       expectLeftGroupKeepsItsMeaning(seen);
       if (long === true) expect(seen.widestText, 'the piece’s bar count is not three digits').toMatch(/^bar \d{3} \/ \d{3}$/);
-      // Which controls the bar sent behind `⋯`, and what the status line reads, for the run's record.
       test.info().annotations.push({
         type: 'bar',
-        description: `behind ⋯: ${[seen.handsOnBar ? '' : 'Hands', seen.hearOnBar ? '' : 'Hear it'].filter(Boolean).join(', ') || 'nothing'}; status ${seen.statusCut ? 'cut by its own ellipsis' : 'whole'} at ${seen.statusWidth.toFixed(1)} px`,
+        description: `behind ⋯: ${[seen.handsOnBar ? '' : 'Hands', seen.hearOnBar ? '' : 'Hear it'].filter(Boolean).join(', ') || 'nothing'}; Hands at the floor: ${String(seen.handsFloor)}; mode “${String(seen.modeLabel)}”`,
       });
-      // Play, the mode, the tempo readout and `⋯` never leave the bar (`OVERFLOW_ORDER`), nor Back sideways.
       for (const id of ['score-play', 'score-mode', 'score-tempo-label', 'score-more']) {
-        expect.soft(seen.onBar, `${id} is not on the bar`).toContain(id);
+        expect.soft(seen.onBar, `${id} is not on the row`).toContain(id);
       }
 
-      // A real tap on every control drawn on the bar, each checked by what it does.
+      // A real tap on every control drawn on the row, each checked by what it does.
       await pressControl(page, '#score-play');
       await expect(play, '▶ did not carry the run on').toHaveText('⏸');
       await pressControl(page, '#score-play');
@@ -2321,9 +2293,8 @@ test.describe('▶ after the sound was suspended (U69)', () => {
       await pressControl(page, '#score-more');
       await expect(page.locator('#score-more-sheet'), '⋯ did not open its sheet').toBeVisible();
       if (!seen.handsOnBar) {
-        // Where the bar sent Hands, it is a row of `⋯`'s sheet, and it works there.
         const inSheet = page.locator('#score-more-sheet #score-hands-L');
-        await expect(inSheet, 'Hands left the bar but is not in ⋯’s sheet').toBeVisible();
+        await expect(inSheet, 'Hands left the row but is not in ⋯’s sheet').toBeVisible();
         await inSheet.click({ timeout: 3_000 });
         await expect(inSheet, 'L in ⋯’s sheet was not chosen').toHaveClass(/is-selected/);
       }
@@ -2334,10 +2305,8 @@ test.describe('▶ after the sound was suspended (U69)', () => {
   }
 
   /**
-   * And a refusal at the narrowest of those, at rest, on the wider face (U119's verification layer 4):
-   * U105d's rule wraps the sentence in the mirror rather than cutting it, and whatever height that takes
-   * here (U105d's Question 1, ruled in `responses/bb271f4a.md`), ▶ is still reachable — asserted as
-   * reachable only, not by line count or bar height.
+   * And a refusal at rest at 667 × 375 on the wider face (U119's layer 4, revised by U122c): the sentence
+   * is on the top line, so no control is under it, and a real tap on ▶ still starts the run.
    */
   test('a refusal sideways (667 × 375) on a wider face, at rest: no control under the sentence, and a real tap on ▶ still starts the run', async ({
     page,
@@ -2368,16 +2337,17 @@ test.describe('▶ after the sound was suspended (U69)', () => {
     });
     await expect.poll(state).toBe('suspended');
     const section = page.locator('section[data-screen="score"]');
-    const mirror = page.locator('#score-status-side');
+    const said = page.locator('#score-top-say');
     for (const [id, sentence] of [
       ['#score-play', 'Sound did not start — tap ▶ again'],
       ['#score-hear', 'Sound did not start — tap Hear it again'],
     ] as const) {
       await pressAnywhere(page, id);
-      await expect(mirror, `the bar’s mirror after ${id}’s bound`).toHaveText(sentence, { timeout: 10_000 });
+      await expect(said, `the top line after ${id}’s bound`).toHaveText(sentence, { timeout: 10_000 });
       const seen = await barLeftAgainstControls(page);
-      expect.soft(seen.overControls, `${id}: the sentence is over a control`).toEqual([]);
+      expect.soft(seen.overControls, `${id}: the row’s left end is over a control`).toEqual([]);
       expect.soft(seen.missed, `${id}: a point inside a control hits something else`).toEqual([]);
+      expect.soft(seen.status, `${id}: the row carries the sentence`).not.toMatch(/Sound did not start/);
     }
     await page.evaluate(() => {
       const ctx = (window as Captured).__contexts?.[0];
@@ -2389,16 +2359,14 @@ test.describe('▶ after the sound was suspended (U69)', () => {
   });
 
   /**
-   * One narrow refusal row (U119a, acceptance 5b, from the second read of the ruling on U119). At 568 ×
-   * 320 with 115 % text on the wider face, U105d's sentence wraps to several lines in the mirror and the
-   * group grows taller than the controls, as U105d's ruling lets it. The bar counted that as a second
-   * row, so at the next render while the refusal stood (the tempo sheet opened and closed, a resize)
-   * Hands and then `Hear it` went behind `⋯`, while the sentence said *tap Hear it again*. Now the
-   * controls the bar keeps are decided by the left group's minimum alone, before and after such a
-   * render, and no control is under the sentence. The face and the text size are there from the first
-   * paint, as a phone's are, so the bar's first fit is made with them.
+   * One narrow refusal row (U119a, acceptance 5b; revised by U122c). At 568 × 320 with 115 % text on the
+   * wider face, a refusal used to wrap in the row's group, grow it, and at the next render send Hands and
+   * then `Hear it` behind `⋯` while the sentence said *tap Hear it again*. The sentence is on the top line
+   * now and the row never carries it; a render while it stands (the tempo sheet opened and closed, a
+   * resize) changes nothing on the row, and a control the sentence names stays on it (`Hear it` is the
+   * last to leave while its refusal stands, `responses/759596b4.md` 3(b)).
    */
-  test('a refusal sideways (568 × 320) on a wider face at 115 % text: the sentence’s height sends no control behind ⋯', async ({
+  test('a refusal sideways (568 × 320) on a wider face at 115 % text: a render while it stands moves no control, and the control it names stays on the row', async ({
     page,
   }) => {
     test.setTimeout(120_000);
@@ -2425,8 +2393,7 @@ test.describe('▶ after the sound was suspended (U69)', () => {
     await openScore(page);
     const state = (): Promise<string> => page.evaluate(() => (window as Captured).__contexts?.[0]?.state ?? 'none');
     await expect.poll(state, { message: 'the app made its context as the piece loaded' }).not.toBe('none');
-    // An ordinary tap on the bar's copy of the bar number, which is no control (here the name may have
-    // given up all its room).
+    // An ordinary tap on the top line's bar number, which is no control.
     await page.locator('#score-where-side').click({ position: { x: 2, y: 4 }, timeout: 5_000 });
     await expect.poll(state).toBe('running');
     await page.evaluate(async () => {
@@ -2435,43 +2402,40 @@ test.describe('▶ after the sound was suspended (U69)', () => {
       if (ctx) ctx.resume = () => new Promise<void>(() => undefined);
     });
     await expect.poll(state).toBe('suspended');
-    const mirror = page.locator('#score-status-side');
+    const said = page.locator('#score-top-say');
     for (const [id, sentence] of [
       ['#score-play', 'Sound did not start — tap ▶ again'],
       ['#score-hear', 'Sound did not start — tap Hear it again'],
     ] as const) {
       await pressAnywhere(page, id);
-      await expect(mirror, `the bar’s mirror after ${id}’s bound`).toHaveText(sentence, { timeout: 10_000 });
+      await expect(said, `the top line after ${id}’s bound`).toHaveText(sentence, { timeout: 10_000 });
     }
     const before = await barLeftAgainstControls(page);
 
-    // A render while the refusal stands: the tempo label's sheet opened and closed by real taps, then a
-    // resize, as a rotation or the browser's own bars send one.
     await pressControl(page, '#score-tempo-label');
     await expect(page.locator('#score-tempo-sheet'), 'the tempo label did not open its sheet').toBeVisible();
     await closeTempoSheet(page);
     await page.evaluate(() => window.dispatchEvent(new Event('resize')));
-    await expect(mirror, 'the refusal went with the render').toHaveText('Sound did not start — tap Hear it again');
+    await expect(said, 'the refusal went with the render').toHaveText('Sound did not start — tap Hear it again');
     const seen = await barLeftAgainstControls(page);
-    expect(seen.shown, 'the bar is not shown to measure').toBe(true);
+    expect(seen.shown, 'the row is not shown').toBe(true);
     for (const [when, at] of [
       ['before the render', before],
       ['after the render', seen],
     ] as const) {
-      expect.soft(at.overControls, `${when}: the sentence is over a control`).toEqual([]);
+      expect.soft(at.overControls, `${when}: the row’s left end is over a control`).toEqual([]);
       expect.soft(at.missed, `${when}: a point inside a control hits something else`).toEqual([]);
       expect.soft(at.backWhole, `${when}: Back is cut`).toBe(true);
       expect.soft(at.widestWhole, `${when}: the piece’s widest bar number would be cut (“${at.widestText}”)`).toBe(true);
-      expect.soft(at.handsOnBar, `${when}: Hands is ${at.handsOnBar ? 'on' : 'off'} the bar, and Back and the bar number ${at.fitsWithHands ? 'fit' : 'do not fit'} beside it`).toBe(at.fitsWithHands);
-      expect.soft(at.hearOnBar, `${when}: Hear it is ${at.hearOnBar ? 'on' : 'off'} the bar, and Back and the bar number ${at.fitsWithHear ? 'fit' : 'do not fit'} beside it`).toBe(at.handsOnBar || at.fitsWithHear);
+      expect.soft(at.onBar, `${when}: Hear it, which the sentence names, is not on the row`).toContain('score-hear');
       for (const id of ['score-play', 'score-mode', 'score-tempo-label', 'score-more']) {
-        expect.soft(at.onBar, `${when}: ${id} is not on the bar`).toContain(id);
+        expect.soft(at.onBar, `${when}: ${id} is not on the row`).toContain(id);
       }
     }
-    expect.soft(seen.onBar, 'the render while the refusal stood changed which controls are on the bar').toEqual(before.onBar);
+    expect.soft(seen.onBar, 'the render while the refusal stood changed which controls are on the row').toEqual(before.onBar);
     test.info().annotations.push({
       type: 'bar',
-      description: `on the bar while the refusal stands: ${seen.onBar.join(', ')}`,
+      description: `on the row while the refusal stands: ${seen.onBar.join(', ')}`,
     });
   });
 });

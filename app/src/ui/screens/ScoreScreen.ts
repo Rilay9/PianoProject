@@ -112,6 +112,7 @@ import type { Relationship } from '../../curriculum/transfer';
 import { loadOffer, type OfferRead, type OfferRefusal } from '../../data/offerSnapshot';
 import { scoreOutcome } from '../../data/sessionRun';
 import { drawTransition, sessionHandle } from '../sessionRunner';
+import { chromeFor, type ChromePlan } from './scoreChrome';
 
 /**
  * What the four modes are called on the screen (P21c B2).
@@ -160,12 +161,6 @@ const ZOOM_MIN = 0.5;
 const ZOOM_MAX = 2.5;
 const ZOOM_STEP = 0.1;
 
-/** Below this the bar cannot hold the sentences. Measured, not chosen. */
-// 440, not 400: at 412 px — the other common phone width — the long mode
-// labels fitted the row but not the select, which clipped "Wait for me" to
-// "Wait for m" (the state gallery, size 412).
-const NARROW_BAR_PX = 440;
-
 /** The smallest a finger can reliably hit (`04` §0 R4: "about forty"). */
 const TAP_MIN_PX = 40;
 
@@ -184,15 +179,15 @@ const HANDS: { id: HandsFocus; label: string; spoken: string }[] = [
   { id: 'both', label: 'Both', spoken: 'Both hands' },
 ];
 
-/** The control bar hides after this long without a tap (docs/04 §5). */
-export const CONTROL_BAR_HIDE_MS = 3_000;
 /**
- * …and sooner at the start of a run. Sideways the bar overlays the bottom of
- * the music once the stage has taken its row, and three seconds of it over
- * the lower staff is the first bar of every piece hidden (the Twinkle
- * pictures). Long enough to see ▶ become ⏸; not long enough to matter.
+ * A peek at the controls while the hands are on the keys lasts this long
+ * without a tap (docs/04 §5). The fold itself has no timer since U122c: the
+ * controls fold the moment a run starts or carries on, ⏸ staying in ▶'s place,
+ * and come back the moment it pauses (`scoreChrome.ts`). It used to wait 0.7 s
+ * after ▶ and 3 s after any tap, whatever the run was doing, and so folded a
+ * paused run's ▶ away three seconds after ⏸.
  */
-export const CONTROL_BAR_START_HIDE_MS = 700;
+export const CONTROL_BAR_HIDE_MS = 3_000;
 
 /**
  * The longest the first draw waits for the tablet side panel's decision once
@@ -254,44 +249,6 @@ const FASTER_TAP: SoundTap = { id: 'summary-faster', control: 'Faster' };
 const LOOP_WEAK_TAP: SoundTap = { id: 'summary-loop', control: 'Loop' };
 /** *Keep tempo at 80 %* (X46): the run *To pass* names, by its first words. */
 const STANDARD_TAP: SoundTap = { id: 'summary-standard', control: 'Keep tempo' };
-/**
- * Every tap above, for the folded chip's reserve (U118, `cornerTexts`): a
- * refusal names its control, so each is a sentence the chip can carry. The
- * hands' taps and a held bar are made where they are used and added there.
- */
-const SOUND_TAPS: readonly SoundTap[] = [
-  PLAY_TAP,
-  HEAR_TAP,
-  KEY_TAP,
-  CARRY_ON_TAP,
-  RESTART_TAP,
-  TRY_AGAIN_TAP,
-  AGAIN_TAP,
-  SLOWER_TAP,
-  FASTER_TAP,
-  LOOP_WEAK_TAP,
-  STANDARD_TAP,
-];
-/**
- * The counts the chip's reserve prices *Paused — you were away N s.* at (U118;
- * the reviewer's required change, `responses/bea2d4e2.md`, tightened by
- * `responses/questions-1cadc4dc.md`): fourteen of each digit, one string per
- * digit. Layout data only: the sentence on the chip carries the real seconds
- * (`pausedLine`).
- *
- * **The widest count the product can print, not a guess at how long a phone
- * is left.** The count has no ceiling of its own: nothing ends or rewrites a
- * run after any span. Its one source is the page's return
- * (`onVisibilityChange`): `Math.max(1, Math.round((Date.now() - awayFromMs) /
- * 1000))`, the whole seconds between two `Date.now()` readings, which `String`
- * prints as plain digits. Two times within `Date`'s range (±8.64e15 ms) are at
- * most 1.728e13 s apart, fourteen digits. The chip sets no tabular figures and
- * no letter spacing, so fourteen of the face's widest digit are at least as
- * wide as any such count, and which digit is widest is the face's to say: all
- * ten are laid out and the reserve keeps the tallest. Nothing breaks a line
- * between digits, so the widest run is the tallest sentence of the ten.
- */
-const AWAY_PRICED_COUNTS: readonly string[] = Array.from({ length: 10 }, (_, digit) => String(digit).repeat(14));
 
 /**
  * Sight-reading is the one drill kind that is notation (docs/05 §7–§8), so it
@@ -865,13 +822,20 @@ export function ScoreScreen(router: Router): HTMLElement {
    * It was clicks only. On a phone on a stand with the sound low the first
    * note therefore arrives unannounced, which is the one moment a beginner
    * most needs to know when to start. The drill screen already counts down in
-   * words; this is the same idea over the notation.
+   * words; this is the same idea.
+   *
+   * **Beside ⏸, in the row, never over the notes (U122c).** It was drawn over
+   * the stage under a wash, and the numerals sat on the very notes the learner
+   * reads to come in (walk finding 8; in Moonlight on a dozen note heads). The
+   * controls fold to ⏸ the moment a run starts, which leaves the row's room
+   * empty, so the count is drawn there, right of ⏸, at the row's own height.
+   * Put into the bar once the bar exists (below).
    */
   const countIn = document.createElement('div');
   countIn.className = 'score-countin';
   countIn.id = 'score-countin';
   countIn.hidden = true;
-  stage.appendChild(countIn);
+  countIn.setAttribute('aria-hidden', 'true');
   if (blind) {
     // Hidden, not unmounted: the renderer still needs a box to lay out into,
     // and the cursor still tracks — it is simply not drawn where he can see
@@ -939,6 +903,11 @@ export function ScoreScreen(router: Router): HTMLElement {
    * on a stand next to a piano is most of the time. Brighter on beat 1 so the
    * bar is readable and not just the pulse. Off in Wait and Free, which have
    * no clock to show.
+   *
+   * **Beside `bar n / m`, not on the music (U122c).** It sat in the stage's
+   * top-left corner, on the first system's clef upright. It is drawn in the
+   * surface that names the bar: the header row upright and on a tablet, the
+   * top line sideways (`placeBeatDot`). Neither folds away during a run.
    */
   const beatDot = document.createElement('span');
   beatDot.className = 'score-beat';
@@ -959,13 +928,10 @@ export function ScoreScreen(router: Router): HTMLElement {
   waitingLine.id = 'score-waiting';
   waitingLine.hidden = true;
 
-  // Where you are, in the stage's top-right corner, for when the chrome has
-  // folded away — the header upright, the bar's left end sideways — and
-  // nothing else on the screen says it.
-  const corner = document.createElement('span');
-  corner.className = 'score-stage__corner';
-  corner.id = 'score-corner';
-  corner.setAttribute('aria-hidden', 'true');
+  // The stage's corner chip (`bar n / m` over the music while the chrome was
+  // folded) is gone (U122c): upright and on a tablet the header keeps its box
+  // through a run and says `bar n / m` where it said it at rest; sideways the
+  // top line does (`topLine`, below). Nothing else said where you were, then.
 
   const bar = document.createElement('div');
   bar.className = 'score-bar';
@@ -1189,157 +1155,143 @@ export function ScoreScreen(router: Router): HTMLElement {
     if (rhythmOnly && mode === 'tempo') return 'rhythm';
     return mode;
   }
-  // On the stage, not in the header: the header is not drawn sideways and
-  // the bar hides itself during a run, and the dot is the one thing that must
-  // be visible while the clock runs (`08` §5.3).
-  stage.appendChild(beatDot);
-  stage.appendChild(corner);
+  /**
+   * The phone held sideways (`04` §0 R5), the same query the stylesheet keys
+   * the sideways Score on. Read where the script has to place a node the
+   * stylesheet cannot: the beat dot, which belongs to whichever surface names
+   * the bar.
+   */
+  // Absent where there is no layout to ask (the unit tests' document): the header then holds the dot.
+  const sidewaysQuery =
+    typeof window.matchMedia === 'function' ? window.matchMedia('(orientation: landscape) and (max-height: 500px)') : null;
 
   /**
-   * The same three things at the bar's left end, for a phone held sideways
-   * (P21d A6).
+   * The top line, for a phone held sideways (U122c; c6, `docs/design/score-bar-layout.md` §8.7,
+   * §9.1, §10.3): the piece's name on the left and `bar n / m` on the right, in one thin line above
+   * the music.
    *
-   * Sideways the header row is 40 of 360 px and carries nothing you need
-   * while playing, while the bar's left third is empty. So the header goes
-   * and Back, the title and the status line move into that third. Mirrored
-   * rather than moved: the header is still the right place upright, where the
-   * bar is full, and a node can only be in one place. Two elements, kept in
-   * step by watching the originals.
+   * Sideways the header is not drawn (R5), and the name and `bar n / m` used to share the bottom row
+   * with Back, the status line and every control, where neither had room: the name was cut to its
+   * first letters at rest and not drawn at all while paused, and a refusal's sentence, squeezed in
+   * beside them, grew the row past the top of the window (U120). At the top they cost the music
+   * nothing during a run: the line lies over the band at the stage's top that a run keeps for it,
+   * and the sliding sheet sits below that band from the run's start (`style.css`), so starting,
+   * pausing and the fold move nothing. At rest the line is as tall as that band, so ▶ moves nothing
+   * either.
+   *
+   * **The moment's sentence takes the name's place while it stands** (`topLineSays`): a sound
+   * refusal, the refused start, the first-note cue, the paused notes that carry a cause, and while
+   * the hands are on the keys the run's own line. `bar n / m` stays beside it, and yields, whole,
+   * only when a refusal cannot fit beside it (`responses/e070d238.md`: "`bar n / m` may yield before
+   * the message"). The chip that used to say `bar n / m` over the music while the chrome was folded
+   * is this line's folded form: the same box, with the name not drawn.
+   *
+   * Upright and on a tablet the header says all of this, and this line is not drawn.
+   */
+  const topLine = document.createElement('div');
+  topLine.className = 'score-top';
+  topLine.id = 'score-top';
+  const titleSide = document.createElement('span');
+  titleSide.className = 'score-top__title';
+  titleSide.id = 'score-title-side';
+  const topSay = document.createElement('span');
+  topSay.className = 'score-top__say';
+  topSay.id = 'score-top-say';
+  const whereSide = document.createElement('span');
+  whereSide.className = 'score-top__where';
+  whereSide.id = 'score-where-side';
+  topLine.append(titleSide, topSay, whereSide);
+  section.insertBefore(topLine, stage);
+
+  /** The beat dot where the bar is named: the top line sideways, the header row otherwise. */
+  function placeBeatDot(): void {
+    if (sidewaysQuery?.matches === true) {
+      if (beatDot.parentElement !== topLine) topLine.prepend(beatDot);
+    } else if (beatDot.parentElement !== headRow) {
+      headRow.insertBefore(beatDot, where);
+    }
+  }
+  placeBeatDot();
+  sidewaysQuery?.addEventListener('change', placeBeatDot);
+  unsubscribers.push(() => sidewaysQuery?.removeEventListener('change', placeBeatDot));
+
+  /**
+   * Back and the ordinary status line at the bottom row's left end, for a phone held sideways
+   * (P21d A6; since U122c the name and `bar n / m` are in the top line).
+   *
+   * Mirrored rather than moved: the header is still the right place upright, where the bar is
+   * full, and a node can only be in one place. Kept in step by watching the originals.
    */
   const barLeft = document.createElement('div');
   barLeft.className = 'score-bar__left';
   barLeft.id = 'score-bar-left';
   const backSide = button('← Back', () => leaveScore(), 'score-back-side');
-  const titleSide = document.createElement('span');
-  titleSide.className = 'score-bar__title';
-  titleSide.id = 'score-title-side';
   const statusSide = document.createElement('span');
   statusSide.className = 'score-bar__status';
   statusSide.id = 'score-status-side';
-  const whereSide = document.createElement('span');
-  whereSide.className = 'score-bar__where';
-  whereSide.id = 'score-where-side';
-  barLeft.append(backSide, titleSide, whereSide, statusSide);
+  barLeft.append(backSide, statusSide);
   bar.prepend(barLeft);
-  const syncBarLeft = (): void => {
+
+  /**
+   * What the top line says in the name's place, and what kind of sentence it is; empty for the name.
+   *
+   * From the signals that make each sentence, never from its words (`responses/e070d238.md`: "Keep
+   * this boundary semantic, not string-based"):
+   * - a tap whose sound did not start (`soundOffLine`, G86a, U105), whatever the run is doing;
+   * - the refused start, a hand with nothing to play (`handRefused`, R19), which the status line says;
+   * - paused, only a pause that carries a cause: an option restarted the run or a demonstration
+   *   handed it back (`pauseNote`, T33 C1/C2), or the page went away (`awaySeconds`, said without
+   *   the pointer to *Start again*, which is one tap away in `⋯`). A pause the learner made with ⏸
+   *   says nothing here: the stopped music, the open row and ▶ already say it;
+   * - while the hands are on the keys, the run's own line, as the folded chip said it: the
+   *   first-note cue, a demonstration's line, the note Wait for me waits for.
+   */
+  function topLineSays(): { text: string; kind: 'refusal' | 'note' | 'run' | '' } {
+    // The summary up: its own first line says a refusal of a tap on it (U105a), and the sentence twice
+    // on one screen reads as a glitch. The top line keeps the name.
+    if (!sheet.hidden) return { text: '', kind: '' };
+    const refused = soundOffLine();
+    if (refused !== '') return { text: refused, kind: 'refusal' };
+    if (handRefused && (status.textContent ?? '') !== '') return { text: status.textContent ?? '', kind: 'refusal' };
+    if (session?.running === true && session.paused) {
+      if (pauseNote !== null) return { text: pauseNote, kind: 'note' };
+      if (awaySeconds !== null) return { text: STATE_TEXT.away(awaySeconds, true), kind: 'note' };
+      return { text: '', kind: '' };
+    }
+    if (session?.running === true && !helpStrip.isDefaultNow()) return { text: waitingLine.textContent ?? '', kind: 'run' };
+    return { text: '', kind: '' };
+  }
+
+  const syncSideways = (): void => {
     titleSide.textContent = title.textContent;
     whereSide.textContent = where.textContent;
-    // The waiting line is the more useful of the two when the *run* wrote it.
-    // Since the help strip gave it a standing default (`04` §5f) "it has
-    // something in it" stopped being the same question as "the run said
-    // something", so the strip is asked which it is holding.
-    const saidByTheRun = !helpStrip.isDefaultNow();
-    statusSide.textContent = saidByTheRun ? waitingLine.textContent : status.textContent;
-    corner.textContent = [where.textContent, saidByTheRun ? waitingLine.textContent : '']
-      .filter((text) => text !== null && text !== '')
-      .join(' · ');
+    const says = topLineSays();
+    topSay.textContent = says.text;
+    if (says.kind === '') delete topLine.dataset.says;
+    else topLine.dataset.says = says.kind;
+    // The row's status slot: what the app says (a loop being marked, the ladder's verdict, *Played
+    // to the end*), and at rest what the run is waiting for. Never the refusal or the refused start,
+    // which the top line says, and never a pause's line, which the row's own ▶ says.
+    const atRest = session?.running !== true;
+    statusSide.textContent = handRefused
+      ? ''
+      : (status.textContent ?? '') !== ''
+        ? status.textContent
+        : atRest && says.kind === '' && !helpStrip.isDefaultNow()
+          ? waitingLine.textContent
+          : '';
+    // `bar n / m` yields to a refusal that cannot fit beside it, whole: never a cut number that reads
+    // as another bar (U119a).
+    delete topLine.dataset.whereYields;
+    if (says.kind === 'refusal' && topLine.getClientRects().length > 0 && topSay.scrollWidth > topSay.clientWidth + 0.5) {
+      topLine.dataset.whereYields = 'true';
+    }
   };
-  const mirror = new MutationObserver(syncBarLeft);
+  const mirror = new MutationObserver(syncSideways);
   for (const node of [title, where, status, waitingLine]) {
     mirror.observe(node, { childList: true, characterData: true, subtree: true, attributes: true });
   }
   unsubscribers.push(() => mirror.disconnect());
-
-  /**
-   * Every sentence the folded chip can carry for this piece, each at its longest
-   * (U118): `bar n / m` alone, and joined to every line the run can write while
-   * the chrome is folded, as `syncBarLeft` joins them. Built from the same
-   * sentences the screen writes (`STATE_TEXT`, `RESTARTED_WITH`, the taps whose
-   * refusal names them, the piece's own chords), not copied, so a new or longer
-   * sentence moves the reserve with it. The standing line of a mode is not here:
-   * the chip shows only what the run said (`saidByTheRun`).
-   *
-   * The longest of each kind: the piece's last bar for every bar number, the
-   * longest section or bar range for a loop, the tempo row's own maximum, the
-   * most bars a window holds. One number has no ceiling of its own, the seconds
-   * away; it is priced at the widest fourteen digits the chip's face draws,
-   * the most a span between two `Date` readings prints (`AWAY_PRICED_COUNTS`).
-   */
-  function cornerTexts(): string[] {
-    if (!model) return [];
-    const last = String(printedBar(model.sourceMeasureCount - 1));
-    const at = `bar ${last} / ${last}`;
-    const longest = (words: readonly string[]): string => words.reduce((a, b) => (b.length > a.length ? b : a), '');
-    const reasons = [
-      RESTARTED_WITH.mode(longest(MODES.map((m) => m.label))),
-      ...HANDS.map((h) => RESTARTED_WITH.hands(h.id)),
-      RESTARTED_WITH.tempo(Number(tempo.max)),
-      RESTARTED_WITH.loop(longest([`bars ${last}–${last}`, ...sections.map((s) => s.label)])),
-      RESTARTED_WITH.noLoop,
-      ...(['midi', 'mic', 'keys'] as const).map((id) => RESTARTED_WITH.input(inputSaid(id))),
-      RESTARTED_WITH.noInput,
-      RESTARTED_WITH.rhythm(true),
-      RESTARTED_WITH.rhythm(false),
-      RESTARTED_WITH.duet(null),
-      RESTARTED_WITH.duet('both hands'),
-      RESTARTED_WITH.duet('the right hand'),
-      RESTARTED_WITH.duet('the left hand'),
-      RESTARTED_WITH.bars(MAX_BARS_PER_WINDOW),
-      RESTARTED_WITH.layout(true),
-      RESTARTED_WITH.layout(false),
-    ];
-    const taps: SoundTap[] = [
-      ...SOUND_TAPS,
-      ...HANDS.map((h) => ({ id: `score-hands-${h.id}`, control: h.label })),
-      { id: 'score-stage', control: `bar ${last}`, verb: 'hold' },
-    ];
-    let named = '';
-    for (const step of model.steps) {
-      const line = waitingForLine(step.notes);
-      if (line.length > named.length) named = line;
-    }
-    const said = [
-      ...taps.map((tap) => STATE_TEXT.soundOff(tap.control, tap)),
-      STATE_TEXT.paused,
-      STATE_TEXT.pausedPerforming,
-      ...AWAY_PRICED_COUNTS.map((count) => STATE_TEXT.away(count, false)),
-      ...AWAY_PRICED_COUNTS.map((count) => STATE_TEXT.away(count, true)),
-      STATE_TEXT.pausedAt(last),
-      ...reasons.map((what) => STATE_TEXT.restarted(last, what)),
-      STATE_TEXT.hearing,
-      STATE_TEXT.hearingOverRun(last),
-      ...HANDS.map((h) => firstNoteLine(h.id)),
-      named,
-    ];
-    return [at, ...said.filter((line) => line !== '').map((line) => `${at} · ${line}`)];
-  }
-
-  /**
-   * The band the folded chip owns at the stage's top, for the renderer to
-   * place the stacked slots under (U118; the reviewer's ruling,
-   * `responses/questions-e9aa51ae.md`). 0 while the chip is not drawn —
-   * unfolded, or on a tablet, where the stylesheet never draws it.
-   *
-   * **The chip's tallest legitimate state, not the sentence it shows now.** A
-   * copy of the chip, unseen, is laid out with every sentence `cornerTexts`
-   * gives, under the chip's own rule (its `top`, padding, type and line
-   * height, and the width the stage leaves it), and the lowest bottom edge
-   * is the band: one line where every sentence fits one at this width, two
-   * where any needs two. Held for the geometry it was measured at — the
-   * stage's width and the chip's type — so a change of sentence never moves
-   * it and never re-prices a run; a turn or a text size measures again.
-   */
-  let cornerBand: { key: string; px: number } | null = null;
-  function foldedCornerReserve(): number {
-    if (section.dataset.chrome !== 'folded' || section.dataset.tablet === 'true') return 0;
-    const style = getComputedStyle(corner);
-    if (style.display === 'none') return 0;
-    const key = `${String(stage.clientWidth)}|${style.fontSize}|${style.lineHeight}|${style.fontFamily}|${String(model?.sourceMeasureCount ?? 0)}`;
-    if (cornerBand?.key === key) return cornerBand.px;
-    const copy = corner.cloneNode(false) as HTMLElement;
-    copy.removeAttribute('id');
-    copy.style.visibility = 'hidden';
-    stage.appendChild(copy);
-    const top = stage.getBoundingClientRect().top + stage.clientTop;
-    let px = 0;
-    for (const text of cornerTexts()) {
-      copy.textContent = text;
-      px = Math.max(px, copy.getBoundingClientRect().bottom - top);
-    }
-    copy.remove();
-    cornerBand = { key, px };
-    return px;
-  }
 
   /**
    * Where the controls that are not on the bar live between openings.
@@ -1478,111 +1430,243 @@ export function ScoreScreen(router: Router): HTMLElement {
   /**
    * The bar is on more than one line, or a control that stays is too small.
    *
-   * The lines are the controls' (U119a). Sideways the left group is on the
-   * bar too, and while U105d's refusal stands its sentence wraps there and
-   * the group grows taller than the controls, so under `align-items: center`
-   * its top is not theirs. Counted, that read as a second line, and at the
-   * next render (the tempo sheet opened and closed, a resize) Hands and then
-   * `Hear it` went behind `⋯` while the sentence said *tap Hear it again*.
-   * The bar grows while a refusal stands by the reviewer's ruling on U105d;
-   * nothing moves for it. Upright the group is not drawn, so this changes
-   * nothing there.
+   * The lines are the controls' (U119a): the left group, sideways, is not
+   * counted. A second line is a control that starts below another's foot, not
+   * one whose top differs: under `align-items: center` a shorter control's top
+   * is lower on the same line, and at 90 % text the tempo label (36 px) read as
+   * a line of its own beside 40-px buttons, sending Hands and `Hear it` behind
+   * `⋯` on every screen, a tablet's included (U122c's matrix). The tap minimum
+   * is read in the pixels it is drawn in (U124): `TAP_MIN_PX` against a floor
+   * written `max(2.5rem, 40px)` in both dimensions.
    */
   function barIsOverfull(): boolean {
-    const rows = new Set(
-      [...bar.children]
-        .filter((k) => k !== barLeft && k.getBoundingClientRect().height > 0)
-        .map((k) => Math.round(k.getBoundingClientRect().top)),
-    );
-    if (rows.size > 1) return true;
+    const boxes = [...bar.children]
+      .filter((k) => k !== barLeft && k !== countIn && k.getBoundingClientRect().height > 0)
+      .map((k) => k.getBoundingClientRect());
+    const firstFoot = Math.min(...boxes.map((b) => b.bottom));
+    if (boxes.some((b) => b.top >= firstFoot - 1)) return true;
     for (const el of [playPause, moreButton]) {
       const r = el.getBoundingClientRect();
-      if (r.width > 0 && (r.width < TAP_MIN_PX || r.height < TAP_MIN_PX)) return true;
+      if (r.width > 0 && (r.width < TAP_MIN_PX - 0.5 || r.height < TAP_MIN_PX - 0.5)) return true;
     }
     return false;
   }
 
   /**
-   * Sideways, Back and the piece's widest `bar m / m` do not fit in the room
-   * the controls leave the left group (U119a, the reviewer's ruling on U119,
-   * `responses/fa4563d1.md`: Hands goes behind `⋯` "before Back or the
-   * complete `bar n / m` location is clipped").
-   *
-   * The group clips what it cannot hold (`style.css`, the landscape
-   * `.score-bar__left`), and a clip cuts from the right: the status line, then
-   * `bar n / m`, then Back. The name and the status line give their room up
-   * first and keep nothing back, while Back and `bar n / m` keep their own
-   * widths, so the group's minimum holds exactly when `bar n / m` still ends
-   * inside the group. A row that cannot wrap never looked overfull to
-   * `barIsOverfull`, so before this nothing left the bar for the group's
-   * sake, and *bar 1 / 4* read *bar 1* at 568 × 320 with 115 % text on a
-   * wider face.
-   *
-   * Priced at the piece's last bar, with as many digits as the location will
-   * ever have (`cornerTexts` does the same), not at the bar under the
-   * cursor: this runs on every render, and the number grows during a piece,
-   * so the current one would send Hands away partway through and bring it
-   * back on restart. Measured on the real element, written and put back in
-   * the same task, so nothing is drawn with it. Upright the group is not
-   * drawn (`display: none`), and nothing is cut.
+   * Sideways, Back does not fit in the room the controls leave the left group
+   * (U119a, `responses/fa4563d1.md`: a control goes behind `⋯` "before Back
+   * ... is clipped"). Since U122c `bar n / m` is on the top line, where it
+   * never yields to a control, so Back is the group's one fixed text; the
+   * status line gives its room first and ends at its own ellipsis. Upright the
+   * group is not drawn, and nothing is cut.
    */
   function leftGroupIsCut(): boolean {
     if (barLeft.getClientRects().length === 0) return false;
-    const shown = whereSide.textContent;
-    if (model) {
-      const last = String(printedBar(model.sourceMeasureCount - 1));
-      whereSide.textContent = `bar ${last} / ${last}`;
-    }
-    const cut = whereSide.getBoundingClientRect().right > barLeft.getBoundingClientRect().right;
-    whereSide.textContent = shown;
-    return cut;
+    return backSide.getBoundingClientRect().right > barLeft.getBoundingClientRect().right + 0.5;
   }
 
   /**
-   * Puts as much on the bar as it can hold, and the rest in the sheet.
+   * The words the row draws: the mode's sentence or its word, the tempo with
+   * or without its percentage (U122 §3.1–3.3, the chooser U122c builds).
+   */
+  let labels: { mode: 'long' | 'short'; tempo: 'long' | 'short' } = { mode: 'long', tempo: 'long' };
+
+  /**
+   * The width an item takes at its widest content, laid out unseen in the
+   * bar under the bar's own rules, so its price never depends on what it says
+   * now: a mode chosen or a tempo changed never moves the row.
+   */
+  function widestIn(el: HTMLElement, texts: readonly string[]): number {
+    const copy = el.cloneNode(false) as HTMLElement;
+    copy.removeAttribute('id');
+    Object.assign(copy.style, { position: 'absolute', visibility: 'hidden', width: 'auto', minWidth: '0', maxWidth: 'none', flex: 'none' });
+    bar.appendChild(copy);
+    let widest = 0;
+    for (const text of texts) {
+      if (copy instanceof HTMLSelectElement) {
+        const option = document.createElement('option');
+        option.textContent = text;
+        copy.replaceChildren(option);
+      } else {
+        copy.textContent = text;
+      }
+      widest = Math.max(widest, copy.getBoundingClientRect().width);
+    }
+    copy.remove();
+    return Math.ceil(widest);
+  }
+
+  /**
+   * The mode select in the form chosen, at the widest of its four labels in
+   * that form (U121: the selected mode is whole; U122 S14). It had a floor
+   * under every label and an id that outranked the sideways `flex: none`, so
+   * it was the item that gave silently: *Wa* for *Wait*, *Ke* for *Keep
+   * tempo*, upright *Tempo* cut too.
+   */
+  function applyModeLabels(): void {
+    const words = MODES.map((m) => (labels.mode === 'short' ? SHORT_MODES[m.id] : m.label));
+    for (const option of [...modeSelect.options]) {
+      const id = option.value as Mode;
+      option.textContent = labels.mode === 'short' ? SHORT_MODES[id] : (MODES.find((m) => m.id === id)?.label ?? id);
+    }
+    Object.assign(modeSelect.style, { flex: '0 0 auto', minWidth: '0', maxWidth: 'none', width: `${String(widestIn(modeSelect, words))}px` });
+  }
+
+  /** The tempo label's words in the form chosen: the bpm is what is read while playing (`04` §5). */
+  function tempoText(): string {
+    const bpm = String(Math.round(bpmNow()));
+    return labels.tempo === 'short' ? `${bpm} bpm` : `${String(tempoPct)}% · ${bpm} bpm`;
+  }
+
+  /** The tempo label at the widest it can read in this form: the slider's top, as many digits as the piece's bpm there. */
+  function applyTempoLabel(): void {
+    const top = Number(tempo.max);
+    const eights = '8'.repeat(String(Math.round((bpmNow() / Math.max(1, tempoPct)) * top)).length);
+    const widest = labels.tempo === 'short' ? `${eights} bpm` : `${String(top)}% · ${eights} bpm`;
+    tempoLabel.textContent = tempoText();
+    Object.assign(tempoLabel.style, { flex: '0 0 auto', width: `${String(widestIn(tempoLabel, [widest, tempoLabel.textContent]))}px` });
+    // `Hear it` at the wider of its two words: during a demonstration it reads *Stop* and is the one
+    // control drawn, at the floor, and the row does not move when it changes (U122 §3.1).
+    hearButton.style.minWidth = `max(2.5rem, 40px, ${String(widestIn(hearButton, ['Hear it', 'Stop']))}px)`;
+  }
+
+  /**
+   * The control a standing sentence names, which must not be the one sent
+   * behind `⋯` while the sentence stands (`responses/759596b4.md` 3(b): "a
+   * visible recovery/refusal instruction must never direct the learner to a
+   * control that the same layout has just hidden"): `Hear it` refused, or a
+   * hand, refused or named by the refused start (*choose L or Both*).
+   */
+  function namedByASentence(): HTMLElement | null {
+    const refused = refusedNow();
+    if (refused?.id === 'score-hear') return hearButton;
+    if (refused?.id.startsWith('score-hands-') === true || handRefused) return handsGroup;
+    return null;
+  }
+
+  /**
+   * **Hands at the tap floor, where it keeps its place (U122c).** Each of `R`, `L` and `Both` meets the
+   * floor a sentence's control must meet (U124, widened by U122b), which makes the three about half as
+   * wide again. On a narrow upright row (342 × 740, 360 × 780) that width sends Hands behind `⋯` where
+   * it sat on the row: a control leaving the screen, which is a product trade, not this lane's to choose
+   * (`responses/adb0873a.md` §1). So the floor is given wherever Hands keeps its place with it, and where
+   * only the floor would send it away it keeps today's width (`data-floor='false'`) and the trade goes to
+   * the reviewer. Sideways and on a tablet, in every cell measured, it keeps its place at the floor.
+   */
+  /** What the last fit was for, so a render that changes none of it measures nothing. */
+  let fittedFor = '';
+
+  /**
+   * Today's row (before U122c), as a fallback upright: the mode's sentence or word by the window's width
+   * (440 px), the select and the tempo label free to give their room, Hands and `Hear it` at their own
+   * widths, a control leaving only when the row wraps. Returns what it keeps on the row.
    *
-   * Everything comes back first and then leaves one at a time, so a phone
-   * turned sideways gets its controls back rather than keeping whatever the
-   * narrower way up decided. Skipped while the sheet is open, because the
-   * stash's children are inside it then and moving them would empty it under
-   * the owner's finger. Sideways, a control also leaves while the left group
-   * cannot hold Back and `bar n / m` whole (`leftGroupIsCut`).
+   * **Upright the chooser's whole words cost a control** (U122c's matrix): the mode priced at its widest
+   * label and the bpm never cut leave a 342 or 360 px row no room for Hands where today's row, its mode
+   * cut, kept it. U122 put *a whole mode label before Hands* to the reviewer as a choice (§5.4) and it was
+   * never ruled; a control leaving the screen is a product trade (`responses/adb0873a.md` §1), so upright
+   * today's row stands wherever the chooser would keep less of it (`data-row='today'`), and the trade is
+   * reported. Sideways the chooser governs (U121 is settled there, and Hands keeps its place in every
+   * cell measured); on a tablet there is room for both.
+   */
+  function fitToday(): Set<HTMLElement> {
+    for (const entry of OVERFLOW_ORDER) bringBackToBar(entry.el);
+    handsGroup.dataset.floor = 'false';
+    const narrow = window.innerWidth < 440;
+    labels = { mode: narrow ? 'short' : 'long', tempo: narrow ? 'short' : 'long' };
+    for (const option of [...modeSelect.options]) {
+      const id = option.value as Mode;
+      option.textContent = labels.mode === 'short' ? SHORT_MODES[id] : (MODES.find((m) => m.id === id)?.label ?? id);
+    }
+    Object.assign(modeSelect.style, { flex: '', minWidth: '', maxWidth: '', width: '' });
+    tempoLabel.textContent = tempoText();
+    Object.assign(tempoLabel.style, { flex: '0 1 auto', width: '' });
+    hearButton.style.minWidth = '';
+    for (const entry of OVERFLOW_ORDER) {
+      if (!barIsOverfull() && !leftGroupIsCut()) break;
+      sendToSheet(entry);
+    }
+    return new Set(OVERFLOW_ORDER.map((entry) => entry.el).filter((el) => el.parentElement === bar));
+  }
+
+  /**
+   * Puts as much on the bar as it can hold, and the rest in the sheet: U122's
+   * chooser (`docs/design/score-bar-layout.md` §3.3), smaller since U122c
+   * (§8.7): the first configuration that fits, in the order things give —
+   * the tempo's percentage, then the mode's sentence, then Hands behind `⋯`,
+   * then `Hear it`. ▶, `⋯`, the mode's word, the bpm and Back never give.
+   * A control a standing sentence names is the last to leave.
+   *
+   * Everything comes back first, so a phone turned sideways gets its controls
+   * back rather than keeping whatever the narrower way up decided. Skipped
+   * while the sheet is open, because the stash's children are inside it then
+   * and moving them would empty it under the owner's finger.
    */
   function fitBarControls(): void {
     if (document.getElementById('score-more-sheet')) return;
-    for (const entry of OVERFLOW_ORDER) bringBackToBar(entry.el);
-    for (const entry of OVERFLOW_ORDER) {
-      if (!barIsOverfull() && !leftGroupIsCut()) return;
-      sendToSheet(entry);
+    const named = namedByASentence();
+    const key = [
+      window.innerWidth,
+      window.innerHeight,
+      getComputedStyle(document.documentElement).fontSize,
+      getComputedStyle(bar).fontFamily,
+      String(Math.round(bpmNow())).length,
+      named?.className ?? '',
+      bar.clientWidth,
+    ].join('|');
+    if (key === fittedFor) {
+      tempoLabel.textContent = tempoText();
+      return;
     }
+    const today = sidewaysQuery?.matches === true ? null : fitToday();
+    for (const entry of OVERFLOW_ORDER) bringBackToBar(entry.el);
+    const order = [...OVERFLOW_ORDER].sort((a, b) => Number(a.el === named) - Number(b.el === named));
+    const forms: ['long' | 'short', 'long' | 'short'][] = [
+      ['long', 'long'],
+      ['long', 'short'],
+      ['short', 'long'],
+      ['short', 'short'],
+    ];
+    fit: for (let leave = 0; leave <= order.length; leave += 1) {
+      if (leave > 0) sendToSheet(order[leave - 1]!);
+      // Hands at the tap floor first; at its own width only where the floor alone would send it
+      // behind `⋯` (the trade described above `fittedFor`, left as it was until it is decided).
+      for (const floor of handsGroup.parentElement === bar ? [true, false] : [true]) {
+        handsGroup.dataset.floor = String(floor);
+        for (const [mode, tempoForm] of forms) {
+          labels = { mode, tempo: tempoForm };
+          applyModeLabels();
+          applyTempoLabel();
+          if (!barIsOverfull() && !leftGroupIsCut()) break fit;
+        }
+      }
+    }
+    if (handsGroup.parentElement !== bar) handsGroup.dataset.floor = 'true';
+    delete bar.dataset.row;
+    if (today !== null && [...today].some((el) => el.parentElement !== bar)) {
+      fitToday();
+      bar.dataset.row = 'today';
+    }
+    fittedFor = key;
+    // The row's height is the stage's reserve; it changes only with what is on it.
+    measureBar();
   }
 
-  function applyModeLabels(): void {
-    const narrow = window.innerWidth < NARROW_BAR_PX;
-    for (const option of [...modeSelect.options]) {
-      const id = option.value as Mode;
-      const long = MODES.find((m) => m.id === id)?.label ?? option.textContent ?? id;
-      option.textContent = narrow ? SHORT_MODES[id] : long;
-    }
-  }
-  applyModeLabels();
-  // Re-rendered on resize too: the tempo label's width depends on it.
   window.addEventListener('resize', () => render());
-  window.addEventListener('resize', applyModeLabels);
   window.addEventListener('resize', fitBarControls);
   unsubscribers.push(() => window.removeEventListener('resize', fitBarControls));
-  unsubscribers.push(() => window.removeEventListener('resize', applyModeLabels));
 
   const handsGroup = document.createElement('div');
   handsGroup.className = 'score-group';
   // One control made of three segments, and it says so.
   //
-  // `R`, `L` and `Both` are about 23 px wide each, and judged one at a time
-  // they read as three tap targets far under `04` §0 R4's forty — 118 gallery
-  // cells said so. They are not three targets: they are one 92 x 40 segmented
-  // control, adjacent, and a slip between neighbouring segments costs a tap to
-  // undo rather than doing something unexpected. Marking the group lets the
-  // sweep judge what is really there, so what it still reports is real.
+  // `R`, `L` and `Both` were about 20 px wide each, defended as one 92 x 40
+  // segmented control where a slip costs a tap to undo. A sentence names each
+  // of them on its own — *choose L or Both*, *tap R again* — so each is a
+  // target the learner is told to hit, and since U122c each meets the floor
+  // (U124, widened by U122b, `responses/e070d238.md`: every control a
+  // learner-facing sentence names), `style.css`. The group mark stays for the
+  // sweep, which reads the three as one control.
   handsGroup.dataset.tapGroup = '';
   for (const hand of HANDS) {
     handsGroup.appendChild(
@@ -1657,6 +1741,8 @@ export function ScoreScreen(router: Router): HTMLElement {
   moreButton.title = 'More controls';
   moreButton.setAttribute('aria-label', 'More controls');
   bar.appendChild(moreButton);
+  // The count-in, in the row beside ⏸ (U122c): placed by `drawChrome` once ⏸ is where it stays.
+  bar.appendChild(countIn);
 
   OVERFLOW_ORDER.push(
     {
@@ -2611,8 +2697,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     // budget with the page unable to answer a `page.evaluate` (T31).
     attachInput();
     void requestWakeLock();
-    // Starting a run is what arms the auto-hide.
-    showBar(CONTROL_BAR_START_HIDE_MS);
+    // A run's start is a moment of its own: whatever peek was open closes, and
+    // `render` folds the controls to ⏸ in ▶'s place (U122c).
+    endPeek();
     render();
   }
 
@@ -3091,6 +3178,7 @@ export function ScoreScreen(router: Router): HTMLElement {
           return dot;
         }),
       );
+      placeCount();
     } else {
       countIn.hidden = true;
       countIn.replaceChildren();
@@ -3568,82 +3656,118 @@ export function ScoreScreen(router: Router): HTMLElement {
     return from === undefined ? null : from + 1;
   }
 
-  let hideTimer: number | null = null;
+  /** The timer that ends a peek (`peek`). */
+  let peekTimer: number | null = null;
+  /** A tap asked to see the controls while the hands are on the keys, and its few seconds are not over. */
+  let peeking = false;
+  /** What the chrome showed at the last draw (`chromeFor`). */
+  let chrome: ChromePlan = { handsOnKeys: false, folded: false, direct: null };
 
-  /**
-   * Shows the control bar, and hides it again three seconds later — but only
-   * while a run is going.
-   *
-   * `04` §5 says the bar auto-hides after 3 s. It means *while you are
-   * playing*, which is when the notation needs the room. Hiding it while the
-   * learner is still choosing a mode and a tempo makes every control a
-   * two-tap affair, and hidden controls are `pointer-events: none`, so the
-   * taps land on the score instead.
-   */
   /**
    * Tells the stage how much room the bar is taking.
    *
    * Measured, not assumed: the bar wraps to two rows on a narrow screen, and
    * a constant would be wrong on exactly the screen where the notation cannot
-   * spare the pixels.
+   * spare the pixels. **The row's own height, folded or not (U122c):** folded,
+   * its controls are hidden in their places and the row keeps its box, so the
+   * stage's reserve does not change with the moment, and upright and on a
+   * tablet, where the stage keeps that reserve through a run, the music never
+   * moves (`docs/design/score-bar-layout.md` §10.4–10.5).
    */
   function measureBar(): void {
-    const height = bar.dataset.visible === 'true' ? bar.getBoundingClientRect().height : 0;
+    const height = bar.hidden ? 0 : bar.getBoundingClientRect().height;
     section.style.setProperty('--score-bar-h', `${String(Math.round(height))}px`);
   }
 
   /**
-   * The fade has no condition on it any more.
+   * The chrome as the moment asks (U122c, `scoreChrome.ts`): while the hands
+   * are on the keys the controls fold to the one direct control in its own
+   * place — ⏸, or *Stop* under a demonstration — and paused, refused, at rest
+   * or finished nothing folds. A pause used to fold three seconds after ⏸,
+   * because the fold asked whether a run existed and a paused run does: the
+   * screen said *▶ to carry on* with no ▶ on it (walk finding 5). While the
+   * hands are on the keys the fold is still unconditional, as the owner asked
+   * after looking at it on the phone ("just always fade it"): nothing judges
+   * whether the controls cover anything (`08` §13 keeps the measurement that
+   * used to).
    *
-   * It used to ask `barCostsMusicRoom()` first — is the music actually reaching
-   * the bar's row — and stay put when the answer was no, on the reasoning that
-   * hiding controls buys nothing over an empty third of the stage and costs a
-   * hunt for them. The owner's instruction, after looking at it on the phone:
-   * just always fade it. Judging "is it covering anything" from inside the app
-   * kept getting the answer wrong, and a rule whose exception nobody can
-   * predict is worse than a rule. One tap on the sheet brings it back, always
-   * (`08` §9.34), which is what makes it safe to be unconditional.
-   *
-   * The measurement that used to gate it is not lost: `08` §13 records it —
-   * sideways, Hot Cross Buns' music stops 67 px above the stage's bottom, which
-   * is why the bar used to stay there and nowhere else.
+   * Folded, the hidden controls are gone, not merely invisible (`08` §9.20):
+   * `inert` takes each out of the tab order and the accessibility tree, all
+   * but the direct one. Where each device draws the rest — the header's Back
+   * and name upright, the top line's name sideways — is the stylesheet's,
+   * keyed on `data-chrome`.
    */
+  function drawChrome(): void {
+    chrome = chromeFor({
+      running: session?.running === true,
+      paused: session?.paused === true,
+      hearing,
+      hearOnRow: hearButton.parentElement === bar,
+      finished: !sheet.hidden,
+      peeking,
+    });
+    bar.dataset.visible = String(!chrome.folded);
+    section.dataset.chrome = chrome.folded ? 'folded' : 'open';
+    if (chrome.direct === null) delete bar.dataset.direct;
+    else bar.dataset.direct = chrome.direct;
+    for (const child of bar.children) {
+      if (child instanceof HTMLElement) child.inert = chrome.folded && child.id !== chrome.direct;
+    }
+    // Upright, at rest, the status line wins the header over `bar n / m`: with both, the name was
+    // squeezed to "Hot Cr…" (the gallery's blind cell), and before a run the bar is bar 1. During a run
+    // the bar is what the learner needs to find their place, and since the corner chip went (U122c) the
+    // header is the one place that says it: a standing status (a blind run's, the duet's) would hide it
+    // for the whole run. So during a run `bar n / m` stays, and the name gives its room (folded it is
+    // not drawn at all).
+    where.hidden = (status.textContent ?? '') !== '' && window.innerHeight > window.innerWidth && session?.running !== true;
+    placeCount();
+  }
 
   /**
-   * The chrome folds away as one: the bar, and upright the header row with
-   * it — the stage takes both rows, and `bar 4 / 8` moves to the stage's
-   * corner. Back is a tap on the sheet, or the tab at the foot of it.
+   * The count-in right of the direct control, in the room the folded row
+   * leaves (U122c): placed from where ⏸ is, which the fold never moves.
    */
-  function foldChrome(folded: boolean): void {
-    bar.dataset.visible = String(!folded);
-    section.dataset.chrome = folded ? 'folded' : 'open';
-    // Gone, not merely invisible (`08` §9.20).
-    //
-    // The rule was `opacity: 0; pointer-events: none`, which stops a finger
-    // and stops nothing else: every control kept its tab stop and its
-    // accessible name, and because the shared button wrapper calls `showBar()`
-    // before running a handler, Tab and then Enter into a bar nobody can see
-    // unfolded the chrome *and* fired the button. `inert` takes the whole
-    // subtree out of the tab order and out of the accessibility tree, which is
-    // what "hidden" is supposed to mean here.
-    bar.inert = folded;
-    // The stacked slots go below the corner chip the moment it is drawn, and
-    // back to the top when it goes (U118): placed, never priced or fitted
-    // again, so a run's size and systems are the ones it froze.
-    renderer?.placeSlots();
-    requestAnimationFrame(measureBar);
+  function placeCount(): void {
+    if (countIn.hidden) return;
+    const direct = chrome.direct === 'score-hear' ? hearButton : playPause;
+    countIn.style.left = `${String(Math.round(direct.offsetLeft + direct.offsetWidth))}px`;
   }
-  function showBar(hideAfterMs = CONTROL_BAR_HIDE_MS): void {
-    foldChrome(false);
-    if (hideTimer !== null) window.clearTimeout(hideTimer);
-    if (session?.running !== true) return;
-    hideTimer = window.setTimeout(() => {
-      if (session?.running === true) foldChrome(true);
-    }, hideAfterMs);
+
+  /** A peek: every control for a few seconds, while the hands are on the keys (`08` §9.34). */
+  function peek(): void {
+    peeking = true;
+    if (peekTimer !== null) window.clearTimeout(peekTimer);
+    peekTimer = window.setTimeout(() => {
+      peekTimer = null;
+      peeking = false;
+      drawChrome();
+    }, CONTROL_BAR_HIDE_MS);
   }
+
+  /** The peek is over: a run started, or the moment changed under it. */
+  function endPeek(): void {
+    if (peekTimer !== null) window.clearTimeout(peekTimer);
+    peekTimer = null;
+    peeking = false;
+  }
+
+  /**
+   * The learner is using the controls: while the hands are on the keys that
+   * keeps them shown for a few seconds more (a peek), and otherwise they are
+   * shown anyway. Called by every control on the bar before it acts, and by
+   * the moments that hand the run back to the learner.
+   */
+  function showBar(): void {
+    if (chromeFor({ running: session?.running === true, paused: session?.paused === true, hearing, hearOnRow: true, finished: !sheet.hidden, peeking: false }).handsOnKeys) peek();
+    drawChrome();
+  }
+
+  /** A tap on the music: folded, a peek; peeking, the fold again. Nothing folds in any other moment. */
   function toggleBar(): void {
-    if (bar.dataset.visible === 'true') foldChrome(true);
-    else showBar();
+    if (!chrome.handsOnKeys) return;
+    if (chrome.folded) peek();
+    else endPeek();
+    drawChrome();
   }
 
   // --- wake lock and orientation (docs/01 §8) ------------------------------
@@ -3832,6 +3956,18 @@ export function ScoreScreen(router: Router): HTMLElement {
     status.textContent = '';
     // First on the sheet: why a tap on it did not start, when one did not (U105a).
     sheet.replaceChildren(summaryRefusal);
+    /**
+     * The sheet in two parts, in its own order: the outcome and the figures, then what to do next
+     * (U122c). Drawn as one column everywhere (`display: contents`) but on a phone held sideways, where
+     * the sheet's 72 % ends above the actions and the learner met the figures and not the next step
+     * (U122b, `responses/e070d238.md`): there the two parts stand side by side, so the outcome and the
+     * recommended action are both in the first view. Nothing is reordered or reworded (X46).
+     */
+    const sheetMain = document.createElement('div');
+    sheetMain.className = 'summary-main';
+    const sheetNext = document.createElement('div');
+    sheetNext.className = 'summary-side';
+    sheet.append(sheetMain, sheetNext);
     /** Where the session's transition is drawn (X1, `drawNext`); on the sheet only where the run is a session's activity. */
     const nextHost = document.createElement('div');
     nextHost.className = 'session-next';
@@ -4229,7 +4365,7 @@ export function ScoreScreen(router: Router): HTMLElement {
               ? SUMMARY_TEXT.waitNotesReady
               : 'Run finished',
     );
-    sheet.appendChild(title);
+    sheetMain.appendChild(title);
 
     // What the run is, in sentences, under the heading (T40): why a run has no
     // numbers, and why one is not on the record. The second used to go to
@@ -4249,11 +4385,11 @@ export function ScoreScreen(router: Router): HTMLElement {
       note.className = 'summary-note';
       note.id = 'summary-note';
       note.textContent = said.join(' ');
-      sheet.appendChild(note);
+      sheetMain.appendChild(note);
     }
     // The session's next step, under the result and above the numbers (X1): at the piano the heading and
     // "Next: …" are what is read; the numbers are there to scroll to. Hidden until the record answers.
-    if (sessionRun) sheet.appendChild(nextHost);
+    if (sessionRun) sheetMain.appendChild(nextHost);
 
     const lines = document.createElement('dl');
     lines.className = 'summary-stats';
@@ -4407,7 +4543,7 @@ export function ScoreScreen(router: Router): HTMLElement {
         addStat(lines, NOT_JUDGED_TEXT.label, said.text).dd.dataset.cites = said.cites.join(' ');
       }
     }
-    sheet.appendChild(lines);
+    sheetMain.appendChild(lines);
 
     // A piece the project sheet can be opened for (G1b): a song, never a phrase or a drill.
     const projectPiece = item !== undefined && isProjectable(item) ? item : undefined;
@@ -4508,7 +4644,7 @@ export function ScoreScreen(router: Router): HTMLElement {
       // The Done button is X1's (the session's transition takes its place when a session runs).
       doneButton,
     );
-    sheet.appendChild(actions);
+    sheetNext.appendChild(actions);
     // A stored run completes the activity first and draws the transition when it has (`save`); with nothing
     // to store — a run waiting for *How did it go?*, a Listen or Free run — it is drawn from the record now.
     if (sessionRun && !(run && !askSelfReport)) drawNext();
@@ -4542,7 +4678,7 @@ export function ScoreScreen(router: Router): HTMLElement {
         choices.push(choice);
         ask.appendChild(choice);
       }
-      sheet.appendChild(ask);
+      sheetNext.appendChild(ask);
     }
     drawSummaryRefusal();
     summaryUp(true);
@@ -4675,6 +4811,9 @@ export function ScoreScreen(router: Router): HTMLElement {
     // the run has nothing to say — so this line is never blank and the learner
     // is never left with a screen that says only the piece's name.
     helpStrip.setNow(wanted);
+    // The mode's standing line, not something the run said: not drawn while
+    // the hands are on the keys (U122c, `style.css`), as the chip never said it.
+    waitingLine.dataset.standing = String(wanted === '');
     waitingLine.hidden = false;
     drawSummaryRefusal();
   }
@@ -4856,9 +4995,7 @@ export function ScoreScreen(router: Router): HTMLElement {
       bar === undefined
         ? ''
         : `bar ${String(printedBar(bar))} / ${String(printedBar(model.sourceMeasureCount - 1))}`;
-    // The status line wins the header: with both, the title was squeezed to
-    // "Hot Cr…" (the gallery's blind cell). Sideways the mirror has room.
-    where.hidden = status.textContent !== '' && window.innerHeight > window.innerWidth;
+    // Whether it is drawn beside a status line is the moment's (`drawChrome`).
   }
 
   /** The words on one `⋯` row, when the row has something to say that changes. */
@@ -4978,25 +5115,18 @@ export function ScoreScreen(router: Router): HTMLElement {
     }
     drawWhere();
     syncLoopDim();
-    // Belt and braces with the observer: every render is a moment the copy
-    // in the bar must agree with the header.
-    syncBarLeft();
+    // Belt and braces with the observer: every render is a moment the copies
+    // sideways must agree with the header.
+    syncSideways();
     modeSelect.value = mode;
     inputSelect.value = input;
     tempo.value = String(tempoPct);
     // Not while it is being typed into: writing the rounded value back on
     // every render would fight the digits going in.
     if (document.activeElement !== bpmField) bpmField.value = String(Math.round(bpmNow()));
-    // Below 400 px the percentage goes and the bpm stays: the bar has to be
-    // one row (`04` §5), and the percentage is set in the sheet this label
-    // opens, where it is written on the slider. The bpm is the number you
-    // read while playing.
-    tempoLabel.textContent =
-      window.innerWidth < NARROW_BAR_PX
-        ? `${String(Math.round(bpmNow()))} bpm`
-        : `${String(tempoPct)}% · ${String(Math.round(bpmNow()))} bpm`;
-    // After the label is written, because its width is part of what decides
-    // whether the row still fits.
+    // The row's words and what is on it (the tempo label's among them: the
+    // bpm is the number read while playing, its percentage the first word to
+    // give), `fitBarControls`.
     fitBarControls();
     barsLabel.textContent = `${settings.barsPerWindow} bar${settings.barsPerWindow === 1 ? '' : 's'}`;
     // Scroll draws the whole piece and scrolls it, so there is no window for
@@ -5134,6 +5264,8 @@ export function ScoreScreen(router: Router): HTMLElement {
       ? 'Stop playing it to you'
       : 'Play the piece to you, nothing judged';
     section.dataset.input = input;
+    // Last, from the moment as this render leaves it (U122c).
+    drawChrome();
   }
 
   /**
@@ -5402,8 +5534,9 @@ export function ScoreScreen(router: Router): HTMLElement {
         // The words are for singing; this screen is for the hands (`08` §3.4.1).
         drawLyrics: false,
         drawChordSymbols: settings.showChordSymbols,
-        // The folded chip's band, for the stacked slots to start below (U118).
-        foldedReserve: foldedCornerReserve,
+        // No folded band (U118's `foldedReserve`): the chip it priced is not
+        // drawn since U122c, so the stacked slots start at the stage's top in
+        // every moment and the music never moves under a fold.
       });
 
       if (window.__pianopath) {
@@ -5803,7 +5936,7 @@ export function ScoreScreen(router: Router): HTMLElement {
     window.removeEventListener('resize', onResize);
     document.removeEventListener('visibilitychange', onVisibilityChange);
     document.removeEventListener('keydown', onKeyDown);
-    if (hideTimer !== null) window.clearTimeout(hideTimer);
+    endPeek();
     // The session's clock writes what it holds; a screen left before its summary leaves the activity as it
     // was — active, for *Continue* — and never completes it (X1: interrupted).
     stopSessionClock?.();

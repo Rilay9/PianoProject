@@ -21,7 +21,7 @@ async function openScore(page: Page): Promise<void> {
 }
 
 test.describe('the count-in you can see', () => {
-  test('counts the bar over the notation, then gets out of the way', async ({ page }) => {
+  test('counts the bar beside ⏸, then gets out of the way', async ({ page }) => {
     await openScore(page);
     await page.locator('#score-mode').selectOption('tempo');
     await page.locator('#score-play').click();
@@ -37,13 +37,12 @@ test.describe('the count-in you can see', () => {
     await expect(countIn).toBeHidden({ timeout: 30_000 });
   });
 
-  test('it covers the notation but never the controls', async ({ page }) => {
-    // Covering the notation is the whole of what it does. The bar is the
-    // exception: during a count-in it stays usable, because stopping a run
-    // that has begun counting is exactly what someone reaches for — and a
-    // control that is usable but has a numeral drawn across it is not usable
-    // in any way that matters. The stage is extended under the bar during a
-    // run to win the height, so the count-in has to keep off it deliberately.
+  // Replaced by U122c (class: replace). It held that the count covers the notation, "the whole of what
+  // it does", and keeps off the bar. Its numerals sat on the very notes the learner reads to come in
+  // (walk finding 8). Now it is beside ⏸ in the row the folded controls leave: off the notation, off
+  // ⏸, whole in the window, the current beat distinct. Every cell and moment is in
+  // `score.task-chrome.spec.ts`; this keeps the count's own three shapes.
+  test('it stays off the notation and off ⏸', async ({ page }) => {
     for (const size of [
       { width: 342, height: 740 },
       { width: 740, height: 342 },
@@ -56,16 +55,21 @@ test.describe('the count-in you can see', () => {
       await expect(page.locator('#score-countin')).toBeVisible({ timeout: 30_000 });
 
       const clash = await page.evaluate(() => {
-        const bar = document.querySelector('#score-bar');
-        if (!bar || (bar as HTMLElement).hidden) return null;
-        const barBox = bar.getBoundingClientRect();
-        for (const beat of document.querySelectorAll('#score-countin .score-countin__beat')) {
-          const b = beat.getBoundingClientRect();
-          if (b.height <= 0) continue;
-          if (b.bottom > barBox.top + 1 && b.top < barBox.bottom - 1) {
-            return `a beat reaches ${String(Math.round(b.bottom))} and the bar starts at ${String(Math.round(barBox.top))}`;
-          }
+        const overlaps = (a: DOMRect, b: DOMRect): boolean =>
+          a.right > b.left + 1 && a.left < b.right - 1 && a.bottom > b.top + 1 && a.top < b.bottom - 1;
+        const play = document.querySelector('#score-play')!.getBoundingClientRect();
+        const stage = document.querySelector('#score-stage')!.getBoundingClientRect();
+        const ink = [...document.querySelectorAll('#score-stage .score-buffer.is-front svg path, #score-stage .score-buffer.is-front svg text')]
+          .map((el) => el.getBoundingClientRect())
+          .filter((b) => b.width + b.height > 0 && overlaps(b, stage));
+        const beats = [...document.querySelectorAll('#score-countin .score-countin__beat')].map((el) => el.getBoundingClientRect());
+        if (beats.length < 2) return `${String(beats.length)} numerals`;
+        for (const b of beats) {
+          if (b.left < 0 || b.right > window.innerWidth || b.top < 0 || b.bottom > window.innerHeight) return 'a numeral outside the window';
+          if (overlaps(b, play)) return 'a numeral over ⏸';
+          if (ink.some((i) => overlaps(b, i))) return 'a numeral over the notation';
         }
+        if (ink.length === 0) return 'no notation measured';
         return null;
       });
       expect(clash, `${String(size.width)}x${String(size.height)}: ${clash ?? ''}`).toBeNull();

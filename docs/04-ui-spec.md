@@ -1858,7 +1858,7 @@ and never will; what it holds is a register.
 
 ## 5. Score screen (the core)
 
-**§0:** a stand screen (R2) — it stays large. The control bar reserves its own height rather than floating over the notation, so the space below the last stave belongs to the layout, and it hides itself only where the fit had used every pixel of the stage anyway (decision 5). It holds six controls and a `⋯`; the settings you change once live in the sheet behind it. **Blind mode hides the notation** — `visibility: hidden` on the stage is defeated by `visibility: visible` on the front buffer, so the buffer rule must not be unconditional. **And hides nothing else (2026-09-12):** the visible count-in, the beat dot and the corner readout are children of that stage, and `visibility` inherits, so they went with it. Every one of them exists *because* the notation might not be there — the dot is the one thing that must be visible while the clock runs, the corner says which bar when the chrome has folded, and the count-in was built because the sound is usually turned down on a music stand. A blind run in Tempo mode counted itself in invisibly, on a screen with nothing else on it at all. The notation is the buffers; hiding those is all blind mode ever meant to do.
+**§0:** a stand screen (R2) — it stays large. The control bar reserves its own height rather than floating over the notation, so the space below the last stave belongs to the layout, and it hides itself only where the fit had used every pixel of the stage anyway (decision 5). It holds six controls and a `⋯`; the settings you change once live in the sheet behind it. **Blind mode hides the notation** — `visibility: hidden` on the stage is defeated by `visibility: visible` on the front buffer, so the buffer rule must not be unconditional. **And hides nothing else (2026-09-12):** the visible count-in, the beat dot and the corner readout were children of that stage, and `visibility` inherits, so they went with it. Every one of them exists *because* the notation might not be there — the dot is the one thing that must be visible while the clock runs, the location says which bar, and the count-in was built because the sound is usually turned down on a music stand. A blind run in Tempo mode counted itself in invisibly, on a screen with nothing else on it at all. The notation is the buffers; hiding those is all blind mode ever meant to do. Since U122c none of the three is on the stage (the count beside `⏸` in the bar, the dot beside `bar n / m`, the corner chip gone), so the stage's rule cannot reach them.
 
 **How a run starts, and what happens if you leave one (2026-09-23).** Three changes, all
 from the owner's *"it should be intuitive"*:
@@ -1867,9 +1867,10 @@ from the owner's *"it should be intuitive"*:
   `#score-waiting`, which is the same element `drawWaitingFor` has always written from the
   engine's signals. What is new is that it is never blank — where the run has nothing
   specific to say it holds the mode's own standing line, so a piece that has just opened says
-  *The count-in clicks, then play along* instead of nothing. The bar's sideways mirror and
-  the stage's corner ask the strip whether the line is the run's or the standing one, so a
-  status message still wins sideways exactly as before.
+  *The count-in clicks, then play along* instead of nothing. Sideways, the top line asks the
+  strip whether the line is the run's or the standing one (U122c; the bar's mirror and the
+  stage's corner asked it before), and the standing line is not drawn while the hands are on
+  the keys.
 - **The first note is marked before anything is judged.** The keys guide marks what the run
   is waiting for, and there was no run until play was pressed — so a piece sat open under a
   blank keyboard. `ScoreSession.previewFirst` prepares the first step for the mode and hand
@@ -1884,7 +1885,7 @@ from the owner's *"it should be intuitive"*:
   letting the learner find out. Where it was left is kept in `localStorage`
   (`data/unfinishedRun.ts`), written when the screen is torn down with a run going and
   dropped when a run reaches its summary; bar 1 is never remembered, because "carry on from
-  bar 1" is what opening the piece already does. The offer lives in the header, which folds
+  bar 1" is what opening the piece already does. The offer lives in the header and is taken
   away when a run starts, so it is never furniture during practice (§0 R4).
 
 Layout: a **header row** across the top — `← Back`, the piece's name, then the app's own
@@ -1893,21 +1894,66 @@ and the keyboard strip under that. The header is a row in the column, not a line
 the notation: three absolutely-positioned lines cost the stage a constant 3 rem upright and
 printed the title across bar 1 sideways.
 
-The control bar **auto-hides after 3 s during a run, and only when it is taking room from the
-notation** (decision 5, 2026-09-07) — and after 0.7 s at the run's start, because sideways the
-three seconds were the lower staff of the first bar hidden behind it, every run. Outside a run the stage reserves the bar's height rather
-than being covered by it. **During a run the stage takes the bar's row** (P21d A6, built in
-P21e): the sheet is fitted once, at the run's start, to the height without the bar, and when a
-tap brings the bar back it overlays the foot of the sheet for three seconds rather than pushing
-the music up and down on every tap. What "in the way" means is that the fit used the whole
-stage: held sideways it does and the bar goes; held upright the sheet is fitted to the width
-and leaves the bottom third of the stage empty, so hiding the controls would buy nothing and
-cost a hunt for them. One measurement, when the timer fires — never per frame.
+**Each moment shows what it needs (U122c, Entry 216, 2026-10-02;
+`docs/design/score-bar-layout.md` §10).** Information earns screen space from the learner's
+current task (the owner's direction, `responses/911f8c82-correction-1.md`). One rule on every
+device (`scoreChrome.ts`, `chromeFor`), read from the run as it is:
 
-**Sideways on a phone the header row is not drawn** (`04` §0 R5, P21d A6): `← Back`, the
-title and the status line sit at the bar's left end instead, mirrored from the header, and the
-keyboard strip is 56 px rather than 72. With the bar's row going to the stage during a run, the
-music has about 300 of 360 px where it had 194.
+- **While the hands are on the keys** — the count-in, holding for the first note, playing, a
+  demonstration — the controls fold to one direct control in its own place: `⏸` (▶'s button),
+  or *Stop* (`Hear it`'s) during a demonstration. The fold happens the moment a run starts or
+  carries on, not on a timer. Nothing judges whether the controls cover anything (the owner's
+  *just always fade it*). A tap on the music shows every control for 3 s (one tap always brings
+  them back, `08` §9.34); a tap while they show folds them again.
+- **Paused, refused, at rest, finished**: nothing folds. A pause used to fold three seconds
+  after `⏸`, because the fold asked whether a run existed and a paused run does: the line said
+  *▶ to carry on* with no `▶` on the glass (walk finding 5).
+- **The count-in is beside `⏸`, in the row the folded controls leave**, at the row's height,
+  never over the notation: no wash, no numerals on the notes the learner reads to come in (walk
+  finding 8).
+- **The finished view** keeps X46's sheet and its order; the outcome and the primary next action
+  are in its first view on every device (the end-of-run summary sheet, below, for the phone
+  held sideways).
+
+Each device keeps its own surfaces (R7):
+
+- **Phone held sideways (c6)**: the header row is not drawn (§0 R5). A thin **top line** holds
+  the piece's name and `bar n / m`, as tall at rest as the band a run keeps for it; from a run's
+  start it lies over that band and the sliding sheet sits below it, so ▶, a pause and the fold
+  move nothing. A sound refusal, the refused start, the first-note cue and the paused notes that
+  carry a cause (an option's restart, the return from a demonstration, the time away, said as
+  *Paused — you were away N s. ▶ to carry on.*) take the name's place while they stand; a
+  refusal is bold in the accent colour, and `bar n / m` yields, whole, only to a refusal that
+  cannot fit beside it. A pause the learner made with `⏸` says nothing there or on the row: the
+  stopped music, the open row and `▶` say it. While the hands are on the keys the name is not
+  drawn and the run's own line is. The bottom **row** holds `← Back` and the ordinary status
+  line, then `▶`, `Hear it`, the mode, Hands, the tempo and `⋯`, painted no further than its
+  controls; a refusal never grows it (U120). The row's chooser gives the tempo's percentage, then
+  the mode's sentence, then Hands, then `Hear it`; the mode is priced at its widest label in the
+  form chosen, so the selected mode is always whole (U121). The keyboard strip is 56 px rather
+  than 72. **During a run the stage takes the bar's row** (P21d A6): the sheet is fitted once, at
+  the run's start, and the row, flush to its controls, overlays the foot of the sheet. The beat
+  dot is in the top line's left corner.
+- **Phone upright**: the header (`← Back`, the name, `bar n / m`, the status, the help strip),
+  the bar at the bottom, as before. **The header keeps its box through a run**: while the hands
+  are on the keys its Back, its name, the mode's name and `?` are not drawn and `bar n / m`, the
+  app's status line and the run's own line stay; it used to leave the flow, and the music jumped
+  up by its height at every fold and down at every reveal. While a refusal stands it takes the
+  mode's name's line, so the header's height holds. The beat dot is beside `bar n / m`. The row
+  is the sideways chooser's (the mode whole, Hands at the tap floor) wherever that keeps the
+  controls today's row kept, and today's row where it would not: on the narrowest rows
+  (342 × 740, 360 × 780) whole words and the floor would send Hands behind `⋯`, an open product
+  trade (`docs/design/score-bar-layout.md` §10.7), so there the mode is cut and Hands is narrow,
+  as before.
+- **Tablet** (and 1024 × 768, 768 × 1024, which the app lays out as upright): the header, the
+  side panel and the bar, as before; the header as upright. **Upright and on a tablet the stage
+  keeps the bar's row through a run**: where the height decides the size the music grew at ▶
+  and the bar, reopened on a pause, covered its foot; upright the row bought nothing.
+
+Every control a sentence names meets the tap floor, `max(2.5rem, 40px)` in both dimensions:
+`▶`, `⋯`, `← Back`, `Hear it` (at the wider of *Hear it* and *Stop*), and each of `R`, `L` and
+`Both` wherever Hands keeps its place on the row with it (U124, widened by U122b; where only
+the floor would send Hands behind `⋯` it keeps today's width, the open trade above).
 
 **One size for the run** (P21e A2). The fit measures the *piece* — a third, never-shown
 engraver draws the whole score once per zoom and the tallest system in it sets the scale — so
@@ -2057,9 +2103,10 @@ sideways there is one slot for the two, so only one of them was ever drawn. It u
 because a performance has no *Start again* row (§5e). A pause the learner did not make with
 `⏸` says what made it instead (T33): *Paused at bar 12 — ▶ to carry on* when a demonstration
 has given the run back, *Restarted at bar 1 with the left hand — ▶ when ready* when an option
-changed while paused restarted it. The chrome folds three seconds into a pause as it does
-into any run (the owner's *just always fade it*); one tap on the sheet brings back the `▶` the
-line names, and the line itself is in the stage's corner while the chrome is folded.
+changed while paused restarted it. Since U122c a pause folds nothing: the `▶` the line names
+and the setup controls are on the glass. Sideways the generic paused line is not drawn (the
+row's `▶` says it), and the notes that carry a cause take the top line's name's place, the
+time away without its pointer to *Start again*, which is one tap away in `⋯`.
 
 **`▶` starts the sound as well as the run** (U69, 2026-09-29). A phone suspends the app's
 audio when the screen locks or a call comes in, and the app's own first-tap start is spent on
@@ -2198,8 +2245,8 @@ MIDI piano connected, `#score-waiting` says so on the ready screen, in the words
 setting calls for (*Play the first note to start* / *Press any key to count in*); it says
 nothing for the other inputs, deliberately — that line's weight was a question put to the
 owner. A Keep tempo run the learner leads **holds on its first note** after the count-in
-(`05` §3b), and the same line says so; the count-in's wash is cleared as it starts to hold, so
-it never sits over the notes the first one is read from. *Pedal-to-start is not built*: it
+(`05` §3b), and the same line says so; the count-in is cleared as it starts to hold, and since
+U122c it is never over the notes at all (it is beside `⏸`). *Pedal-to-start is not built*: it
 wants a setting, off by default, because a pedal put down in preparation would start the run.
 
 With `R` or `L` chosen and `playbackHands: non-focused`, the status line says `Playing the
@@ -2490,6 +2537,11 @@ Notation area:
   the sheet's top when the sheet scrolls. The sheet holds the sentence in every orientation
   as a status a screen reader is told of, painted only sideways. Only for a control on the
   sheet.
+  **Sideways the sheet is two columns (U122c):** its 72 % ended above the actions, so the
+  learner met the outcome and the figures and not the step they point to. X46's sheet in its
+  own order: the outcome and the figures on the left, the actions on the right from the top, the
+  recommended one first as X46 puts it, held at the top of the sheet's view while the figures
+  scroll. Nothing reordered or reworded. Upright and on a tablet it is one column, as before.
   A rhythm run is headed **Rhythm run** and carries a `Judged` line saying what was and was
   not measured; a run with the ladder on carries a `Ladder` line saying where it ended. The
   ±10 % buttons are one rung of that same ladder, which is where its notch came from.
@@ -2701,9 +2753,10 @@ neither — a mark on a note nobody is going to reach yet tells a beginner to hu
 band refuses the nearest-note fallback the cursor uses: a coming step that is not drawn hides
 rather than marking a note that is not next.
 
-**You can see the beat.** During the count-in the bar's beats are drawn large over the
-notation with the current one lit, counted from the piece's own time signature; during a run a
-dot in the header pulses on every beat and brighter on beat 1. Both are off in Wait and Free.
+**You can see the beat.** During the count-in the bar's beats are drawn large beside `⏸`, in
+the row, with the current one lit, counted from the piece's own time signature (over the
+notation, under a wash, until U122c); during a run a dot beside `bar n / m` pulses on every beat
+and brighter on beat 1. Both are off in Wait and Free.
 Clicks alone leave the first note unannounced on a phone with the sound low, which is the one
 moment a beginner most needs to know when to start.
 
@@ -3371,10 +3424,12 @@ mode's **name** and takes `#score-waiting` — the line `drawWaitingFor` already
 the engine's signals, and which the bar mirrors sideways — as its state line, with the
 sentence in the card and behind the ?. A drill shows the sentence but not a state line,
 because `#drill-how` says what to do with *this card* under the prompt it belongs to (R6).
-The lab and the chord chart, which had neither, carry both lines. The strip folds away with
-the Score screen's header during a run (`data-chrome='folded'`), which is the decision §5
-already made about that header: while the run is going the state line continues in the
-stage's own corner.
+The lab and the chord chart, which had neither, carry both lines. On the Score screen the
+strip stays in the header's box during a run (U122c, §5 *Each moment shows what it needs*):
+while the hands are on the keys the mode's name and `?` are not drawn, nor the standing line;
+what the run says stays where it is. It used to fold away with the header and continue in the
+stage's corner. While a refusal stands it takes the mode's name's line, so the strip's two
+lines keep their height.
 
 **The Score screen's two lines are two lines, and each of them is one line tall.** That
 header is above the notation in the same column, so its height is taken off the stage the

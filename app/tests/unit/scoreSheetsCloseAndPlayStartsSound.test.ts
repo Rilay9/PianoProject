@@ -753,13 +753,17 @@ describe('a tap that could not start the sound says so and starts nothing (G86a)
     expect(session().resumes).not.toHaveBeenCalled();
   });
 
-  it('(g) the sentence reaches the bar’s left end and the stage’s corner, where the header is not drawn', async () => {
+  // Revised by U122c (class: replace). It held that the sentence reached the bar's left end and the
+  // stage's corner chip, sideways; c6 puts it on the top line in the name's place, marked as a
+  // refusal, and the row's status slot never carries it (so the row cannot grow past the window, U120).
+  it('(g) the sentence reaches the top line, where the header is not drawn, and the row does not carry it', async () => {
     await pausedRunOnASuspendedEngine();
     engine.ensureStarted.mockImplementation(() => Promise.reject(new Error('refused')));
     click('score-play');
     await settle();
-    expect(byId('score-status-side').textContent).toBe(PLAY_REFUSED);
-    expect(byId('score-corner').textContent).toContain(PLAY_REFUSED);
+    expect(byId('score-top-say').textContent).toBe(PLAY_REFUSED);
+    expect(byId('score-top').dataset.says).toBe('refusal');
+    expect(byId('score-status-side').textContent).toBe('');
   });
 
   it('Hear it with a start that never answers: no demonstration, the line says so, and ▶ is not left dead', async () => {

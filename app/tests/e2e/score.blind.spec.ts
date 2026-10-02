@@ -133,14 +133,12 @@ test.describe('a blind run', () => {
     await pressControl(page, '#score-play');
     // Which bar, from wherever the screen is saying it.
     //
-    // There are two places and they take turns: the header's readout, and the
-    // corner chip that appears once the chrome has folded three seconds into a
-    // run. In blind mode the status line permanently reads "Blind — ⋯ shows the
-    // score", and a status line hides the header readout upright — so for the
-    // first few seconds the corner is the only one, and it is not drawn yet.
-    // Asserting on the corner alone meant asserting on the fold's timer, which
-    // is why this passed alone and timed out under load. What matters to a
-    // player is that *something* says which bar, so that is what is asked.
+    // The header's readout, or sideways the top line's (U122c). There used to
+    // be a corner chip too, drawn once the chrome had folded, and in blind mode
+    // the standing status line ("Blind — ⋯ shows the score") hides the header's
+    // readout upright at rest; since U122c a run keeps the readout beside it.
+    // What matters to a player is that *something* says which bar, so that is
+    // what is asked.
     await page.waitForFunction(
       () => {
         const shows = (id: string): boolean => {
@@ -149,7 +147,8 @@ test.describe('a blind run', () => {
           if (getComputedStyle(el).visibility === 'hidden') return false;
           return /bar\s+\d/.test(el.textContent ?? '');
         };
-        return shows('score-corner') || shows('score-where');
+        // The header's `bar n / m`, or sideways the top line's (U122c: the corner chip is gone).
+        return shows('score-where') || shows('score-where-side');
       },
       undefined,
       { timeout: 30_000 },

@@ -264,7 +264,7 @@ test.describe('stopping, restarting and looping', () => {
       });
     await expect.poll(step).toBe(2);
     // **Revised 2026-10-01 (U118a, Entry 203; test class: revise).** Mid-run the
-    // chrome is folded: a run folds it 0.7 s after ▶ (`CONTROL_BAR_START_HIDE_MS`),
+    // chrome is folded: a run folds it to ⏸ the moment it starts (since U122c; 0.7 s after ▶ before),
     // the stage takes the bar's row and the tap, and a learner's first tap on the
     // sheet brings the bar back. The test clicked Both straight after two notes,
     // so it passed only while the click beat that timer. On the runner it lost

@@ -1767,15 +1767,20 @@ const T12_APP: [string, string, () => boolean][] = [
   [
     '4.7',
     'blind hides the score and the cursor and leaves the count-in and the beat dot',
+    // Revised by U122c (class: replace): the count-in and the beat dot left the stage — the count
+    // into the bar beside ⏸, the dot beside `bar n / m` — so the stage the blind rule hides no longer
+    // holds them, and the rule that showed them on it again went. The claim is the same; the check
+    // reads where they are. Line endings normalised, so a Windows checkout reads what CI reads.
     () => {
-      const css = t12Repo('app/src/style.css');
-      const shown = /\.score-stage--blind \.score-countin,[\s\S]*?\{/.exec(css)?.[0] ?? '';
+      const css = t12Repo('app/src/style.css').replace(/\r\n/g, '\n');
+      const screen = source('ui/screens/ScoreScreen.ts').replace(/\r\n/g, '\n');
       return (
         css.includes('.score-stage--blind {\n  visibility: hidden;\n}') &&
         css.includes('.score-stage--blind .score-buffer') &&
-        shown.includes('.score-countin') &&
-        shown.includes('.score-beat') &&
-        !shown.includes('.score-cursor')
+        screen.includes('bar.appendChild(countIn)') &&
+        screen.includes('headRow.insertBefore(beatDot, where)') &&
+        screen.includes('topLine.prepend(beatDot)') &&
+        !/stage\.appendChild\((countIn|beatDot)\)/.test(screen)
       );
     },
   ],
