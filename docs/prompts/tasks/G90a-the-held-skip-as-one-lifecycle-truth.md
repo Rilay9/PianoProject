@@ -33,3 +33,5 @@ index: The held skip as one lifecycle truth: its own kind, its reason on Today's
 in-flight: drafted 2026-10-02 (`G90a-the-held-skip-as-one-lifecycle-truth.md`): a fix-forward on G90, the reviewer's required change; its own adaptation kind, the reason on Today's row, swap and lifecycle intent ordered (Entry 221)
 state: dispatched 2026-10-02: dispatched at ee62c06c, building here (Entry 221)
 - landed 2026-10-02: merged 3c2d9593; handoff `handoffs/30849a42.md`
+- verdict 2026-10-02: APPROVE (`responses/30849a42.md`): the three choices accepted; the procedure line warranted
+- closed 2026-10-02: G90's required change done; three P3 leftovers in its entry

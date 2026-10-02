@@ -100,3 +100,4 @@ in-flight: drafted 2026-10-02 (`G90-a-paused-piece-leaves-the-running-session.md
 state: dispatched 2026-10-02: dispatched at aac5bb8d, building here (Entry 217)
 - landed 2026-10-02: merged 8ab91f13; handoff `handoffs/1c75de8d.md`
 - verdict 2026-10-02: APPROVE WITH ONE REQUIRED CHANGE (`responses/1c75de8d.md`): T20 approved; the veto's placement approved; the held skip becomes one lifecycle truth (its own adaptation kind, the reason on Today's row, swap and pause ordered by time); carried by G90a (Entry 221)
+- closed 2026-10-02: its required change carried by G90a, approved (`responses/30849a42.md`)

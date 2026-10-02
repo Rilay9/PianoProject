@@ -6,7 +6,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
-- `handoffs/30849a42.md` — **open**, respond in `responses/30849a42.md`: G90a, the held skip as one lifecycle truth: its own kind, its reason on Today's row, swap and pause ordered by time (Entry 221).
+- `handoffs/30849a42.md` — **answered** in `responses/30849a42.md`: G90a approved; G90 closed.
 - `handoffs/3bb9d281.md` — **answered** in `responses/3bb9d281.md`: U122c approved with one required change (option (b) on narrow upright rows; an explicit finished verdict), carried by U122d, held for the owner.
 - `handoffs/4a17f576.md` — **answered** in `responses/4a17f576.md`: CL11b approved and closed.
 - `handoffs/eddd5c95.md` — **answered** in `responses/eddd5c95.md`: U110a approved with one required change (the earning state reproduced in a browser, or the exception removed), carried by U110b.
