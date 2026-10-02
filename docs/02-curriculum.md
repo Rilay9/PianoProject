@@ -1533,12 +1533,24 @@ grown only when a reader needs it and its observable exists).
   clef*. `content/curriculum/vocabulary/skills.json` gives each its kind, its **opportunity**
   (the demands whose steps exercise it), its **observable** (pitch, timing, or `none`, with
   the parts no run measures listed) and the run conditions for its **practice** and **full**
-  standards: Keep tempo for anything timed; unseen and the key guide off for reading at the
-  full standard. Sixteen skills: what the nine sight-reading rows and the rungs 1.3, 1.4,
+  standards: Keep tempo for anything timed; unseen, the key guide off and no note's name on
+  the screen for reading at the full standard (`names-off` beside every `guide-off` since
+  CL11b, L58: a read with a name shown, Wait's *Name the note I am waiting for*, is supported
+  practice, never unaided reading; met only where the run records the names off). Sixteen skills: what the nine sight-reading rows and the rungs 1.3, 1.4,
   1.5, 2.2, 2.5, 3.4, 4.5 and 4.6 practise, plus `tie` and `dotted-quarter`, which the
   taught-at table below needs a coper for. Ids are today's concept ids wherever they read as
   abilities; `accidentals` is the one new id. `reading-ahead` (4.6) is `observable: none`:
   continuity is not measured, and neither is the "straight through" part of sight-reading.
+- **The numbers that decide what counts live with the skills** (CL11b, L57; the ruling
+  `questions-53670d2a.md` §3). `skills.json` holds the **support share** (0.9: a record supports
+  a skill where that share of its counted steps or more was right), which a skill may override
+  with its own and none does, and the **timing precision** of each rhythm skill (the error its
+  timing must see, in quarter-note beats: triplets 1/12, subdivision 1/6, six-eight 1/4, the
+  dotted quarter, syncopation and ties 1/2), with a default (an eighth) for a skill whose rhythm
+  is the phrase's; each with its reason beside it. They were Part G's default pass share and a
+  code table, so a change to the rungs' pass would have re-read every skill's history; the
+  values did not change when they moved. `validate.py` refuses a rhythm skill without its
+  precision and an untimed skill with one.
 - **A demand** is something the notation contains, found by a detector and located in steps:
   an eighth, a skip, a note on a ledger line beyond middle C. `demands.json` gives each its
   detector (a function in `app/src/demands/detect.ts`, reading the score model the engine

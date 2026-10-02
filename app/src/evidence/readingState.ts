@@ -78,6 +78,6 @@ export function readingState(rows: readonly SessionRow[], vocabulary: Vocabulary
     .filter((skill) => READING_STRAND_KINDS.includes(skill.kind))
     .map((skill) => {
       const evidence = (bySkill.get(skill.id) ?? []).sort((a, b) => a.at.localeCompare(b.at));
-      return { skill, reading: ladderState({ evidence, today }), evidence };
+      return { skill, reading: ladderState({ evidence, today, vocabulary }), evidence };
     });
 }

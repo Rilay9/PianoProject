@@ -31,14 +31,19 @@
  *    practice standard, else it is refused with the first practice condition
  *    it missed. The conditions and their meaning are the vocabulary's
  *    (`skills.json`); `CONDITION_MET` reads the field each one's `recordedBy`
- *    names, and a test holds the two together.
+ *    names, and a test holds the two together. A note's name on the screen
+ *    is supported reading (CL11b, L58): `names-off`, met only where the row
+ *    records `keys.names === false`, stands beside every `guide-off` of a
+ *    full standard.
  * 4. **Opportunity.** The skill's demands (or every step) inside the steps the
  *    run covered, in the hands it played.
  * 5. **Precision** (timing skills, reviewer decision 6): the window must be
  *    narrower than the error the skill is about, at the run's tempo. It is a
  *    refusal of the timing channel, step by step (CL04, L73): where the window
  *    cannot resolve a step, timing measures nothing there and pitch still
- *    counts; a skill whose window resolves no step is refused.
+ *    counts; a skill whose window resolves no step is refused. The errors are
+ *    the vocabulary's (`precision`, CL11b, L57), read from the vocabulary the
+ *    function is handed.
  *
  * Then **attribution**: `n` counts the opportunity steps the channels
  * measured, and `right` those right on every channel that measured the step.
@@ -75,7 +80,7 @@ import type { ConditionId, Skill } from '../demands/vocabulary';
 import { detect, type DemandAt } from '../demands/detect';
 import type { ScoreModelData, ScoreNote } from '../score/types';
 import { isMeasurement, codeAt, takeMeasurements, type Measurement, type Observed, type StepMeasure } from './measurement';
-import type { Vocabulary } from './vocabulary';
+import { quartersOf, type Vocabulary } from './vocabulary';
 import type { Identity } from '../review/record';
 import type { Relationship } from '../curriculum/transfer';
 
@@ -181,13 +186,23 @@ export interface EvidenceContext {
  *   still counts, so a misread note there counts against a skill that is
  *   pitched as well as timed (sight-reading, hand-independence) and against
  *   the step's pitch demands, and a right one counts right; the rhythm demands
- *   there (those `TIMING_PRECISION_QUARTERS` names a precision for) are counted
+ *   there (those whose coping skill has a precision of its own) are counted
  *   by none and kept in `otherDemands` at that step. A skill whose window
  *   resolves no step is still refused `precision`, and a timing-only skill
  *   reads as under 4. Evidence stored under 4 left those steps out on both
  *   channels, so rows under 4 wait for a recompute like any other.
+ * - **6** — the same shape; a read with a note's name on the screen is never
+ *   the full standard of a skill whose full standard has the guide off
+ *   (CL11b, L58): `names-off`, met only by a recorded `keys.names === false`,
+ *   joins those standards. Evidence stored under 5 counted a Wait first
+ *   reading with *Name the note I am waiting for* on and the guide off as the
+ *   full standard of the bass clef, ledger lines, reading by interval, key
+ *   signatures and accidentals, so rows under 5 wait for a recompute like any
+ *   other; it reads them at the practice standard. The support share and the
+ *   timing precisions moved into the vocabulary at the same time (L57) with
+ *   their values unchanged, which alone would have moved nothing.
  */
-export const EVIDENCE_DEFINITIONS = 5;
+export const EVIDENCE_DEFINITIONS = 6;
 
 /** A demand at some steps: another demand on a demand's counted steps (`overlapOf`), or one a skill does not count (`otherDemands`). */
 export interface DemandOverlap {
@@ -284,6 +299,10 @@ export const CONDITION_MET: Readonly<Record<ConditionId, { field: string; met: (
   unseen: { field: 'SessionRow.unseen', met: (o) => o.unseen === true },
   'guide-off': { field: 'SessionRow.keys.guide', met: (o) => o.keys?.guide === 'off' },
   'both-hands': { field: 'SessionRow.hands.played', met: (o) => o.hands?.played === 'both' },
+  // Recorded false, not merely unrecorded: a row that does not say the names
+  // were off is not shown to have had them off (CL11b, L58; the approval's
+  // lane-2 point, `responses/1afa30d3.md` §2).
+  'names-off': { field: 'SessionRow.keys.names', met: (o) => o.keys?.names === false },
 };
 
 /** The observation field a condition's refusal cites, in the row's own spelling. */
@@ -292,51 +311,36 @@ const CONDITION_CITES: Readonly<Record<ConditionId, string[]>> = {
   unseen: ['unseen'],
   'guide-off': ['keys.guide'],
   'both-hands': ['hands.played'],
+  'names-off': ['keys.names'],
 };
 
-// --- timing precision (reviewer decision 6, S21) ----------------------------------
+// --- timing precision (reviewer decision 6, S21; CL11b, L57) ----------------------
 
-/**
- * The error each v0 timing skill is about, in quarter-note beats: the
- * smallest distance between where the written rhythm puts a note and where the
- * likely wrong rhythm puts it. A window as wide as this or wider records the
- * wrong rhythm as hits, so the measurement cannot tell them apart and the
- * skill gets no evidence (`precision`). The global window is not changed.
+/*
+ * The error each timing skill is about, in quarter-note beats, is the
+ * vocabulary's (`skills.json`'s `precision`, with its reason beside it; until
+ * CL11b a table here): the smallest distance between where the written rhythm
+ * puts a note and where the likely wrong rhythm puts it. A window as wide as
+ * this or wider records the wrong rhythm as hits, so the measurement cannot
+ * tell them apart. The global window is not changed.
  *
- * - **triplets** `1/12`: triplet eighths at 0, 1/3, 2/3 of a beat against the
- *   rushed sixteenth-sixteenth-eighth at 0, 1/4, 1/2 (design §4's case):
- *   the second note is 1/12 of a beat early, the third 1/6.
- * - **subdivision** `1/6`: two even eighths against the same pair played
- *   long-short as a swing, the second at 2/3 of the beat.
- * - **6/8** `1/4`: the compound lilt, a quarter then an eighth (0 and 1 in
- *   quarters), evened into two dotted eighths (0 and 3/4).
- * - **dotted-quarter**, **syncopation**, **tie** `1/2`: the note after the dot
- *   placed on the beat, an off-beat note moved onto the beat, the tie cut short
- *   by its written part: each a displacement of an eighth.
- *
- * Skills whose rhythm is the whole phrase's (`every-step` opportunity, or a
- * texture: sight-reading, hand-independence) take, step by step, the finest
- * of these among the rhythm demands located at that step, and an eighth where
- * none is. At a step the window cannot resolve, the timing channel measures
- * nothing and the pitch channel still counts (CL04, L73): a misread note there
- * counts against them and a right one counts right, while the rhythm demands
- * located there are counted by none. Where the window resolves no step at all,
- * the skill is refused.
+ * A rhythm skill has its own; its demands are the rhythm demands. Skills whose
+ * rhythm is the whole phrase's (`every-step` opportunity, or a texture:
+ * sight-reading, hand-independence) take, step by step, the finest precision
+ * among the rhythm demands located at that step, and the vocabulary's default
+ * (an eighth) where none is. At a step the window cannot resolve, the timing
+ * channel measures nothing and the pitch channel still counts (CL04, L73): a
+ * misread note there counts against them and a right one counts right, while
+ * the rhythm demands located there are counted by none. Where the window
+ * resolves no step at all, the skill is refused.
  */
-export const TIMING_PRECISION_QUARTERS = {
-  triplets: 1 / 12,
-  subdivision: 1 / 6,
-  '6/8': 1 / 4,
-  'dotted-quarter': 1 / 2,
-  syncopation: 1 / 2,
-  tie: 1 / 2,
-} as const;
 
-/** The same table, read by any skill id: `undefined` for a skill with no rhythm of its own. */
-const PRECISION_BY_SKILL: Readonly<Record<string, number | undefined>> = TIMING_PRECISION_QUARTERS;
-
-/** The coarsest error any rhythm has: a note moved by an eighth. */
-export const DEFAULT_PRECISION_QUARTERS = 1 / 2;
+/** Each skill's own precision in the vocabulary, in quarter-note beats: a rhythm skill's; absent for the others. */
+function ownPrecisions(vocabulary: Vocabulary): ReadonlyMap<string, number> {
+  const out = new Map<string, number>();
+  for (const skill of vocabulary.skills) if (skill.precision !== undefined) out.set(skill.id, quartersOf(skill.precision));
+  return out;
+}
 
 /** Milliseconds per quarter at a beat of the played notation, at the run's tempo. */
 export function msPerQuarterAt(model: ScoreModelData, beat: number, tempoPct: number): number {
@@ -462,18 +466,24 @@ function coveredRun(observation: Observed, model: ScoreModelData): (step: number
 }
 
 /**
- * The error, in quarters, a timing skill must see at one step: its own
- * (`TIMING_PRECISION_QUARTERS`), or for a skill whose rhythm is the phrase's
- * the finest of the rhythm demands located at that step, and an eighth where
- * none is.
+ * The error, in quarters, a timing skill must see at one step: its own (the
+ * vocabulary's `precision` on the skill), or for a skill whose rhythm is the
+ * phrase's the finest of the rhythm demands located at that step, and the
+ * vocabulary's default where none is.
  */
-function precisionQuartersAt(skill: Skill, rhythmAt: ReadonlyMap<number, number>, step: number): number {
-  return PRECISION_BY_SKILL[skill.id] ?? Math.min(DEFAULT_PRECISION_QUARTERS, rhythmAt.get(step) ?? DEFAULT_PRECISION_QUARTERS);
+function precisionQuartersAt(
+  skill: Skill,
+  own: ReadonlyMap<string, number>,
+  fallback: number,
+  rhythmAt: ReadonlyMap<number, number>,
+  step: number,
+): number {
+  return own.get(skill.id) ?? Math.min(fallback, rhythmAt.get(step) ?? fallback);
 }
 
-/** The rhythm demands: those whose coping skill has a precision in the table (`rhythmPrecisionByStep`'s). */
-function rhythmDemands(vocabulary: Vocabulary): Set<string> {
-  return new Set(vocabulary.demands.filter((demand) => PRECISION_BY_SKILL[demand.copedWithBy] !== undefined).map((demand) => demand.id));
+/** The rhythm demands: those whose coping skill has a precision of its own (`rhythmPrecisionByStep`'s). */
+function rhythmDemands(vocabulary: Vocabulary, own: ReadonlyMap<string, number>): Set<string> {
+  return new Set(vocabulary.demands.filter((demand) => own.has(demand.copedWithBy)).map((demand) => demand.id));
 }
 
 /**
@@ -487,10 +497,10 @@ interface TimedSteps {
 }
 
 /** Step -> the finest precision any rhythm demand located there asks for. */
-function rhythmPrecisionByStep(located: Located, vocabulary: Vocabulary): Map<number, number> {
+function rhythmPrecisionByStep(located: Located, vocabulary: Vocabulary, own: ReadonlyMap<string, number>): Map<number, number> {
   const out = new Map<number, number>();
   for (const demand of vocabulary.demands) {
-    const quarters = PRECISION_BY_SKILL[demand.copedWithBy];
+    const quarters = own.get(demand.copedWithBy);
     if (quarters === undefined) continue;
     for (const at of located.get(demand.id) ?? []) {
       out.set(at.step, Math.min(out.get(at.step) ?? Infinity, quarters));
@@ -809,12 +819,14 @@ function evidenceForSkill(
   if (timing) {
     const window = timing.toleranceMs;
     if (window === null) return refuse(skill.id, 'precision', ['input.toleranceMs'], 'window not recorded');
-    const rhythmAt = rhythmPrecisionByStep(located, vocabulary);
+    const own = ownPrecisions(vocabulary);
+    const fallback = quartersOf(vocabulary.precision);
+    const rhythmAt = rhythmPrecisionByStep(located, vocabulary, own);
     const resolved = steps.filter((step) =>
-      windowDiscriminates(window, precisionQuartersAt(skill, rhythmAt, step), model, step, observation.tempoPct),
+      windowDiscriminates(window, precisionQuartersAt(skill, own, fallback, rhythmAt, step), model, step, observation.tempoPct),
     );
     if (resolved.length === 0) return refuse(skill.id, 'precision', ['input.toleranceMs', 'tempoPct'], `${String(window)} ms`);
-    timed = { steps: new Set(resolved), rhythm: rhythmDemands(vocabulary) };
+    timed = { steps: new Set(resolved), rhythm: rhythmDemands(vocabulary, own) };
   }
 
   // Attribution: only the opportunity steps count, per skill and per demand.

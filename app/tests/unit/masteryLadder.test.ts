@@ -24,12 +24,11 @@ import { describe, expect, it } from 'vitest';
 import { phrase, line } from './helpers/phrase';
 import { observe, type RunPlan } from './helpers/observed';
 import { evidenceFor, type Evidence, type EvidenceResult } from '../../src/evidence/evidence';
-import { ladderState, RETENTION_DAYS, RECENT_ATTEMPTS, SUPPORT_SHARE } from '../../src/evidence/ladder';
+import { ladderState, RETENTION_DAYS, RECENT_ATTEMPTS } from '../../src/evidence/ladder';
 import type { MeasuredEvidence } from '../../src/evidence/evidence';
 import { DIMENSIONS, type Dimension, type Relationship } from '../../src/curriculum/transfer';
 import type { Identity } from '../../src/review/record';
-import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
-import { DEFAULT_MASTERY } from '../../src/engine/Scoring';
+import { supportShareOf, VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import { REPERTOIRE_WINDOW_DAYS } from '../../src/curriculum/session';
 
 /** Two bars a reader reads: ten notes, every one an opportunity for sight-reading. */
@@ -108,11 +107,15 @@ describe('the numbers are named and are what the design says they are', () => {
   // Revised (C6): 21 days was named as the review calendar's last step; the
   // calendar is retired (the reviewer's correction of 2026-09-26) and the span
   // stays the ladder's own hypothesis, with a piece's repertoire window apart.
-  it('21 days is the ladder’s retention span, apart from a piece’s repertoire window; two recent attempts; supporting is Part G’s pass share', () => {
+  // Revised (CL11b, L57): supporting was Part G's pass share, read from the
+  // engine's constant (`SUPPORT_SHARE === DEFAULT_MASTERY.passAccuracy`); the
+  // share is the vocabulary's now, with its value unchanged
+  // (`evidenceNumbersInTheVocabulary.test.ts` holds each reader to it).
+  it('21 days is the ladder’s retention span, apart from a piece’s repertoire window; two recent attempts; supporting is the vocabulary’s share, 0.9', () => {
     expect(RETENTION_DAYS).toBe(21);
     expect(REPERTOIRE_WINDOW_DAYS).not.toBe(RETENTION_DAYS);
     expect(RECENT_ATTEMPTS).toBe(2);
-    expect(SUPPORT_SHARE).toBe(DEFAULT_MASTERY.passAccuracy);
+    expect(supportShareOf('interval-reading')).toBe(0.9);
   });
 });
 

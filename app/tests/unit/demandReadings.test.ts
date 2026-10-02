@@ -16,8 +16,9 @@
  * - **ambiguous** — neither: the observations do not single it out (it held,
  *   or it fell together with something they cannot tell it from).
  *
- * "Below" and "held" are relationships to the skill's support share
- * (`SUPPORT_SHARE`, Part G's pass share): right / n under it, or at or over it.
+ * "Below" and "held" are relationships to the skill's support share (the
+ * vocabulary's, `supportShareOf`, since CL11b; Part G's pass share before):
+ * right / n under it, or at or over it.
  * The thresholds are named constants and hypotheses.
  *
  * The cases are the three worked examples of the reviewer's Part 8 — the skip
@@ -34,8 +35,7 @@ import { observe, type RunPlan } from './helpers/observed';
 import { phraseModel, readPhrase, skipSteps } from './helpers/reader';
 import { evidenceFor, stampedEvidence } from '../../src/evidence/evidence';
 import { demandReadings, type DemandReading } from '../../src/evidence/demandReadings';
-import { SUPPORT_SHARE } from '../../src/evidence/ladder';
-import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
+import { supportShareOf, VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import { sightReadingOptionsFor } from '../../src/engine/sightReading';
 import type { SessionRow } from '../../src/data/db';
 import type { CatalogItem } from '../../src/curriculum/types';
@@ -188,7 +188,7 @@ describe('the mixed-demand ambiguity adversary', () => {
     // wrong where no eighth was, so the evidence does not single them out.
     expect(skip).toMatchObject({ n: 20, right: 4, phrasesBelow: 2, below: true, selectivity: 'ambiguous' });
     expect(count(skip.basis.withoutRival, 'rhythm.eighths')).toEqual({ demand: 'rhythm.eighths', n: 4, right: 4 });
-    expect(4 / 4).toBeGreaterThanOrEqual(SUPPORT_SHARE);
+    expect(4 / 4).toBeGreaterThanOrEqual(supportShareOf('sight-reading'));
 
     // Steps: 15 of 21 (E4's six eighth steps wrong), below in one phrase only.
     expect(readingOf(readings, 'sight-reading', 'interval.step')).toMatchObject({ n: 21, right: 15, phrasesBelow: 1, selectivity: 'ambiguous' });
@@ -312,7 +312,7 @@ describe('the skip learner: the rung’s own phrase, five first readings, every 
       expect(skip.phrasesBelow).toBe(5);
       expect(skip.selectivity, `${skill}: ${JSON.stringify(skip.basis)}`).toBe('pattern');
       // Wherever another skill's demand sat on a wrong skip, the skips went wrong without it too.
-      for (const without of skip.basis.withoutRival) expect(without.right / without.n, without.demand).toBeLessThan(SUPPORT_SHARE);
+      for (const without of skip.basis.withoutRival) expect(without.right / without.n, without.demand).toBeLessThan(supportShareOf(skill));
       const step = readingOf(readings, skill, 'interval.step');
       expect(step.below, `${skill}: the steps held`).toBe(false);
       expect(step.selectivity).not.toBe('pattern');

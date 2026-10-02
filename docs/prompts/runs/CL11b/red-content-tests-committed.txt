@@ -1,0 +1,87 @@
+test_every_claiming_key_is_a_concept_id (tools.content.tests.test_evidence_gate.TestClaimingConcepts.test_every_claiming_key_is_a_concept_id) ... ok
+test_a_concept_no_run_can_measure_is_refused_unless_the_rung_says_the_app_does_not_judge_it (tools.content.tests.test_evidence_gate.TestTheGate.test_a_concept_no_run_can_measure_is_refused_unless_the_rung_says_the_app_does_not_judge_it) ... ok
+test_a_count_of_runs_the_rung_cannot_offer_is_refused (tools.content.tests.test_evidence_gate.TestTheGate.test_a_count_of_runs_the_rung_cannot_offer_is_refused) ... ok
+test_a_finished_item_is_a_requirement_only_for_the_one_rung_listing_it (tools.content.tests.test_evidence_gate.TestTheGate.test_a_finished_item_is_a_requirement_only_for_the_one_rung_listing_it) ... ok
+test_a_measurable_skill_its_page_can_show_passes (tools.content.tests.test_evidence_gate.TestTheGate.test_a_measurable_skill_its_page_can_show_passes) ... ok
+test_a_requirement_whose_standard_no_run_records_is_refused (tools.content.tests.test_evidence_gate.TestTheGate.test_a_requirement_whose_standard_no_run_records_is_refused) ... ok
+test_a_rung_requiring_a_skill_no_run_can_measure_is_refused (tools.content.tests.test_evidence_gate.TestTheGate.test_a_rung_requiring_a_skill_no_run_can_measure_is_refused) ... ok
+test_a_rung_with_no_requirement_is_refused (tools.content.tests.test_evidence_gate.TestTheGate.test_a_rung_with_no_requirement_is_refused) ... ok
+test_a_skill_the_rung_offers_no_way_to_show_is_refused (tools.content.tests.test_evidence_gate.TestTheGate.test_a_skill_the_rung_offers_no_way_to_show_is_refused) ... ok
+test_an_unjudged_rule_is_listed_not_refused (tools.content.tests.test_evidence_gate.TestTheGate.test_an_unjudged_rule_is_listed_not_refused) ... ok
+test_no_rung_keeps_the_old_counting_fields (tools.content.tests.test_evidence_gate.TestTheGate.test_no_rung_keeps_the_old_counting_fields) ... ok
+test_the_tree_is_refused_nothing_and_says_what_it_does_not_judge (tools.content.tests.test_evidence_gate.TestTheGate.test_the_tree_is_refused_nothing_and_says_what_it_does_not_judge) ... ok
+test_a_demand_coped_with_by_no_skill_is_named (tools.content.tests.test_evidence_gate.TestTheVocabulary.test_a_demand_coped_with_by_no_skill_is_named) ... ok
+test_a_full_standard_with_the_guide_off_and_the_names_allowed_is_refused (tools.content.tests.test_evidence_gate.TestTheVocabulary.test_a_full_standard_with_the_guide_off_and_the_names_allowed_is_refused) ... FAIL
+test_a_precision_on_a_skill_no_run_times_is_refused (tools.content.tests.test_evidence_gate.TestTheVocabulary.test_a_precision_on_a_skill_no_run_times_is_refused) ... FAIL
+test_a_rhythm_skill_without_its_precision_is_refused (tools.content.tests.test_evidence_gate.TestTheVocabulary.test_a_rhythm_skill_without_its_precision_is_refused) ... ERROR
+test_a_share_outside_nought_to_one_is_refused (tools.content.tests.test_evidence_gate.TestTheVocabulary.test_a_share_outside_nought_to_one_is_refused) ... ERROR
+test_a_standard_naming_a_condition_nobody_declared_is_still_refused (tools.content.tests.test_evidence_gate.TestTheVocabulary.test_a_standard_naming_a_condition_nobody_declared_is_still_refused) ... FAIL
+test_an_item_naming_a_skill_the_vocabulary_lacks_is_named (tools.content.tests.test_evidence_gate.TestTheVocabulary.test_an_item_naming_a_skill_the_vocabulary_lacks_is_named) ... ok
+test_names_off_is_declared_and_joins_every_full_standard_that_lists_the_guide_off (tools.content.tests.test_evidence_gate.TestTheVocabulary.test_names_off_is_declared_and_joins_every_full_standard_that_lists_the_guide_off) ... FAIL
+test_the_committed_vocabulary_holds_together (tools.content.tests.test_evidence_gate.TestTheVocabulary.test_the_committed_vocabulary_holds_together) ... ok
+test_the_share_and_the_precisions_are_the_vocabulary_s_with_their_values (tools.content.tests.test_evidence_gate.TestTheVocabulary.test_the_share_and_the_precisions_are_the_vocabulary_s_with_their_values) ... ERROR
+
+======================================================================
+ERROR: test_a_rhythm_skill_without_its_precision_is_refused (tools.content.tests.test_evidence_gate.TestTheVocabulary.test_a_rhythm_skill_without_its_precision_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_evidence_gate.py", line 270, in test_a_rhythm_skill_without_its_precision_is_refused
+    del self._skill(skills, "triplets")["precision"]
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'precision'
+
+======================================================================
+ERROR: test_a_share_outside_nought_to_one_is_refused (tools.content.tests.test_evidence_gate.TestTheVocabulary.test_a_share_outside_nought_to_one_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_evidence_gate.py", line 282, in test_a_share_outside_nought_to_one_is_refused
+    skills["support"]["share"] = 1.5
+    ~~~~~~^^^^^^^^^^^
+KeyError: 'support'
+
+======================================================================
+ERROR: test_the_share_and_the_precisions_are_the_vocabulary_s_with_their_values (tools.content.tests.test_evidence_gate.TestTheVocabulary.test_the_share_and_the_precisions_are_the_vocabulary_s_with_their_values)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_evidence_gate.py", line 259, in test_the_share_and_the_precisions_are_the_vocabulary_s_with_their_values
+    self.assertEqual(self.skills["support"]["share"], 0.9)
+                     ~~~~~~~~~~~^^^^^^^^^^^
+KeyError: 'support'
+
+======================================================================
+FAIL: test_a_full_standard_with_the_guide_off_and_the_names_allowed_is_refused (tools.content.tests.test_evidence_gate.TestTheVocabulary.test_a_full_standard_with_the_guide_off_and_the_names_allowed_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_evidence_gate.py", line 247, in test_a_full_standard_with_the_guide_off_and_the_names_allowed_is_refused
+    self.assertTrue(any("interval-reading" in e and "names-off" in e for e in errors), errors)
+AssertionError: False is not true : []
+
+======================================================================
+FAIL: test_a_precision_on_a_skill_no_run_times_is_refused (tools.content.tests.test_evidence_gate.TestTheVocabulary.test_a_precision_on_a_skill_no_run_times_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_evidence_gate.py", line 278, in test_a_precision_on_a_skill_no_run_times_is_refused
+    self.assertTrue(any("interval-reading" in e and "precision" in e for e in errors), errors)
+AssertionError: False is not true : ["vocabulary skills.json: skills/4: Additional properties are not allowed ('precision' was unexpected)"]
+
+======================================================================
+FAIL: test_a_standard_naming_a_condition_nobody_declared_is_still_refused (tools.content.tests.test_evidence_gate.TestTheVocabulary.test_a_standard_naming_a_condition_nobody_declared_is_still_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_evidence_gate.py", line 254, in test_a_standard_naming_a_condition_nobody_declared_is_still_refused
+    self.assertTrue(any("'names-off'" in e and "not declared" in e for e in errors), errors)
+AssertionError: False is not true : []
+
+======================================================================
+FAIL: test_names_off_is_declared_and_joins_every_full_standard_that_lists_the_guide_off (tools.content.tests.test_evidence_gate.TestTheVocabulary.test_names_off_is_declared_and_joins_every_full_standard_that_lists_the_guide_off)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<worktree>\tools\content\tests\test_evidence_gate.py", line 235, in test_names_off_is_declared_and_joins_every_full_standard_that_lists_the_guide_off
+    self.assertIn("names-off", conditions)
+AssertionError: 'names-off' not found in {'keep-tempo': {'id': 'keep-tempo', 'meaning': 'The run kept a tempo (Keep tempo), so onsets were timed. Wait has no clock.', 'recordedBy': 'SessionRow.mode and SessionRow.tempoMeasured (T37); a pass with a tempo floor requires it (Scoring.evaluateOutcome)'}, 'unseen': {'id': 'unseen', 'meaning': 'The first reading of this music: not played or heard before this run.', 'recordedBy': "SessionRow.unseen (C1): true on the first reading of a generated phrase, false when it was heard or read before; absent on anything else, whose first contact no run records. v0's material is the generated phrases."}, 'guide-off': {'id': 'guide-off', 'meaning': 'The keys under the score did not mark the next key, so the notes were read and not followed.', 'recordedBy': "SessionRow.keys.guide (C1): 'off', which the Score screen also writes when the keys are hidden"}, 'both-hands': {'id': 'both-hands', 'meaning': 'The run played both hands, not one with the other left out or played by the app.', 'recordedBy': "SessionRow.hands.played (C1): 'both'"}}
+
+----------------------------------------------------------------------
+Ran 22 tests in 0.102s
+
+FAILED (failures=4, errors=3)
+EXIT 1

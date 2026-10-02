@@ -1124,12 +1124,21 @@ rung or tags. One result per declared skill, decided in this order:
 3. **Conditions** — the skill's full standard, else its practice standard, else refused with the
    first practice condition missed. The conditions are `skills.json`'s, and each is read from the
    field its `recordedBy` names: `keep-tempo` from `mode` and `tempoMeasured`, `unseen` from
-   `unseen`, `guide-off` from `keys.guide`, `both-hands` from `hands.played`. Sight-reading's
+   `unseen`, `guide-off` from `keys.guide`, `both-hands` from `hands.played`, `names-off` from
+   `keys.names` — met only where the row records `false`; a row that does not record it is not
+   shown to have had the names off. Sight-reading's
    practice standard includes `unseen` (C3 second pass, reviewer decision 3): a phrase heard or
-   read before is no evidence of reading at any standard.
+   read before is no evidence of reading at any standard. **A note's name on the screen is
+   supported reading** (CL11b, L58; the ruling `questions-53670d2a.md` §3): `names-off` stands
+   beside every `guide-off` of a full standard (`validate.py` refuses one without it). With the
+   guide off a name reaches the screen only in Wait with *Name the note I am waiting for* on, so
+   such a first reading is the practice standard of the bass clef, ledger lines, reading by
+   interval, key signatures and accidentals — the five whose full standard asks for no Keep
+   tempo — and no longer their full one; in Keep tempo with the guide off the Score screen
+   records no name, so nothing there changes.
 4. **Opportunity** — the skill's demands (or every step with a note for the learner) inside the
    steps the run covered, in the hands it played.
-5. **Precision** (reviewer decision 6, S21) — the timing channel measures only the steps where the run's window is narrower than the error the skill is about, at the tempo the run kept there (`TIMING_PRECISION_QUARTERS`: triplets 1/12 of a quarter, subdivision 1/6, 6/8 1/4, the dotted quarter, syncopation and ties 1/2; a skill whose rhythm is the phrase's takes the finest demand located at each step, and an eighth where none is); at the other steps it measures nothing and the pitch channel still counts, so a misread note there counts against a skill timed as well as pitched and a right one counts right, while the rhythm demands located there are counted by none (CL04, L73). No step resolvable, and the skill is refused. At Anh. 113's
+5. **Precision** (reviewer decision 6, S21) — the timing channel measures only the steps where the run's window is narrower than the error the skill is about, at the tempo the run kept there (the vocabulary's `precision`, each with its reason beside it, since CL11b, L57; a code table until then, with the same values: triplets 1/12 of a quarter, subdivision 1/6, 6/8 1/4, the dotted quarter, syncopation and ties 1/2; a skill whose rhythm is the phrase's takes the finest demand located at each step, and the vocabulary's default, an eighth, where none is; a rhythm skill's demands are the rhythm demands); at the other steps it measures nothing and the pitch channel still counts, so a misread note there counts against a skill timed as well as pitched and a right one counts right, while the rhythm demands located there are counted by none (CL04, L73). No step resolvable, and the skill is refused. At Anh. 113's
    ♩ = 96 and the rung's 80 % a quarter is 781 ms and the rushed triplet's second note 65 ms early,
    inside ±150: no triplet evidence; a window narrower than that gives it (`tripletPrecision.test.ts`).
    The global window is not changed.
@@ -1185,7 +1194,8 @@ was absent, judged wherever it had at least `MIN_CONTRAST` such opportunities, a
 such comparison exists. Demands the same skill copes with (`copedWithBy`: the step, skip and
 leap; the eighth and "shorter than a quarter") are never rivals of one another — one ability
 graded, and "shorter than a quarter" is every eighth over again — but are held to selectivity.
-The support share is the ladder's (`SUPPORT_SHARE`, Part G's pass share). **The four constants
+The support share is the skill's, the one the ladder reads: the vocabulary's (`supportShareOf`, 0.9;
+CL11b, L57), read from the vocabulary handed in. **The four constants
 and the arithmetic are hypotheses**, not measurements; `basis` on each reading carries the
 numbers it was decided on. The worked examples (`demandReadings.test.ts`): five first readings
 of 2.2's row with every skip misread give `pattern` for skips under sight-reading and reading by
@@ -1201,13 +1211,13 @@ is named. The evidence and the readings speak in the vocabulary's demand ids and
 what a reader can change; the reader maps a supported demand to a control (C4c) and acts only on
 `isolated` or `pattern`.
 
-**The evidence's own version** (L66, C4a). `EVIDENCE_DEFINITIONS` (5) in `evidence.ts`, stamped on
+**The evidence's own version** (L66, C4a). `EVIDENCE_DEFINITIONS` (6) in `evidence.ts`, stamped on
 the row beside the evidence as `evidenceDefinitions` by the record call (`stampedEvidence`);
 `storedEvidence` takes only the current stamp and ignores the observation's `definitions`, which
 stays the observation's. Version 1 is C3's per-skill evidence as C4 stored it under the
 observation's stamp; version 2 is C4a–C4c's, whose hands-together counts sat on every note over
-the other hand's held note; version 3 counts playing together only where the hands are coordinated (C4d), version 4 reads 3/8 as simple triple (L120b), version 5 refuses timing per channel at a step the window cannot resolve (CL04, L73): rows under any earlier version contribute nothing until the job below brings
-them up to date. `recomputeEvidence(row, played, vocabulary)` is what the record call would
+the other hand's held note; version 3 counts playing together only where the hands are coordinated (C4d), version 4 reads 3/8 as simple triple (L120b), version 5 refuses timing per channel at a step the window cannot resolve (CL04, L73), version 6 reads a first reading with a note's name on the screen at the practice standard (CL11b, L58): rows under any earlier version contribute nothing until the job below brings
+them up to date. Under 6 the job reads a learner's stored Wait readings with *Name the note I am waiting for* on, the guide off, as the practice standard, so a reading skill those readings alone had made proficient reads familiar after it; unaided and Keep tempo readings keep their standard (`namesOnIsPractice.test.ts`). `recomputeEvidence(row, played, vocabulary)` is what the record call would
 store today.
 
 **The recompute job** (C5; L78, L66; `app/src/data/evidenceJob.ts`). On every open, after the
@@ -1262,7 +1272,11 @@ played (`relationship.composition.playedAs` non-empty), which reads `unknown` be
 until the relationship carries the arrangement or section fact that would tell an independent
 context from familiarity with the tune, G2a), retained (then a first attempt of a day supporting at least
 21 days after the previous support), mastered (then no full attempt against it among the last two).
-Supporting is `right / n` at or above Part G's pass share: v0 skills declare no threshold. Two full
+Supporting is `right / n` at or above the skill's support share, the vocabulary's (`skills.json`'s
+`support`, 0.9, which a skill may override and none does; CL11b, L57): it was Part G's pass share
+read from the engine's constant, so a change to the rungs' pass re-read every skill's history, and
+its value did not change when it moved. The transfer policy's full-standard support is handed the
+same share. Two full
 attempts against it in a row put anything from proficient back to familiar; time alone lowers
 nothing, and 21 days without support is shown as *not shown recently*. The history is replayed in
 order, so the state is derived every time and never stored. Three rules are named and are

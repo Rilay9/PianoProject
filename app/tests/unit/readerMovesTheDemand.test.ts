@@ -35,8 +35,7 @@ import { nextRecommended, readingOffer, readingOptions, taughtAtRung, type Readi
 import { generateSightReading } from '../../src/engine/sightReading';
 import { demandReadings, type DemandReading } from '../../src/evidence/demandReadings';
 import type { MeasuredEvidence } from '../../src/evidence/evidence';
-import { SUPPORT_SHARE } from '../../src/evidence/ladder';
-import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
+import { supportShareOf, VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import { readingReason } from '../../src/ui/help';
 import type { CatalogItem, Curriculum } from '../../src/curriculum/types';
 import type { ReadingRecipe, SessionRow } from '../../src/data/db';
@@ -130,7 +129,7 @@ const named = (readings: readonly DemandReading[]): string[] =>
 /** The last read's sight-reading share went against it (the precondition of every step down here). */
 function against(row: SessionRow): boolean {
   const result = (row.evidence ?? []).find((one) => one.skill === 'sight-reading') as { n: number; right: number } | undefined;
-  return result !== undefined && result.n > 0 && result.right / result.n < SUPPORT_SHARE;
+  return result !== undefined && result.n > 0 && result.right / result.n < supportShareOf('sight-reading');
 }
 
 const OWN: ReadingRecipe = { row: TWO_RIGHT.id };
@@ -202,7 +201,7 @@ describe('two reads against the recipe, one demand singled out: that demand’s 
     expect(skip.selectivity, 'the skips were not singled out by the second bad two-hand read').toBe('pattern');
     const withoutTogether = skip.basis.withoutRival.find((one) => one.demand === 'texture.hands-together');
     expect(withoutTogether?.n, 'no skip went wrong away from a coordination step').toBeGreaterThanOrEqual(2);
-    expect((withoutTogether?.right ?? 0) / (withoutTogether?.n ?? 1)).toBeLessThan(SUPPORT_SHARE);
+    expect((withoutTogether?.right ?? 0) / (withoutTogether?.n ?? 1)).toBeLessThan(supportShareOf('sight-reading'));
     // Nothing the hands control governs is singled out: the left hand stays.
     expect(named(readings)).toEqual(['interval.skip pattern']);
     const next = offer(twoHandSkipLearner, '2.2', six);

@@ -36,7 +36,8 @@
  * 3. **The claim** (the skill's `transfer.dimensions`, the vocabulary's data): a skill without the
  *    block reads `unknown` and credits nothing until the data names what matters for it.
  *    `demonstrated` where at least one of the skill's dimensions measurably differs **and** the run
- *    supported the skill at the full standard; `on` is that intersection. No skill dimension known to
+ *    supported the skill at the full standard, at the skill's support share (the vocabulary's, CL11b,
+ *    L57, handed in by the ladder); `on` is that intersection. No skill dimension known to
  *    differ and one not known is `unknown`; all known and none differing is `not-transfer`.
  *
  * **Two consumers, one reading** (`ladder.ts`). Promotion takes `demonstrated`. Challenge protection
@@ -53,8 +54,8 @@
  * the ladder (no `ladderState`, nothing in `curriculum/transfer.ts`): the ladder calls it while it
  * replays, and a helper that asked the ladder back would recurse (the reviewer's required change).
  */
-import { DEFAULT_MASTERY } from '../engine/Scoring';
 import { knownMaterial } from '../curriculum/material';
+import { supportShareOf } from './vocabulary';
 import type { Identity } from '../review/record';
 import type { Dimension, Relationship } from '../curriculum/transfer';
 import type { SkillTransfer } from '../demands/vocabulary';
@@ -104,9 +105,13 @@ export interface TransferReading {
 /** What the policy reads of an attempt: its context (the facts), its standard and its counts. */
 export type TransferAttempt = Pick<MeasuredEvidence, 'context' | 'standard' | 'n' | 'right'>;
 
-/** Supported at the full standard: the ladder's `supports` share (`SUPPORT_SHARE`, Part G's pass share; a test holds the two equal). */
-export function supportedAtFull(run: Pick<TransferAttempt, 'standard' | 'n' | 'right'>): boolean {
-  return run.standard === 'full' && run.n > 0 && run.right / run.n >= DEFAULT_MASTERY.passAccuracy;
+/**
+ * Supported at the full standard, at the share it is handed: the skill's support share in the
+ * vocabulary (`supportShareOf`, CL11b, L57), the one the ladder reads. It kept a copy of Part G's
+ * pass share until then.
+ */
+export function supportedAtFull(run: Pick<TransferAttempt, 'standard' | 'n' | 'right'>, share: number): boolean {
+  return run.standard === 'full' && run.n > 0 && run.right / run.n >= share;
 }
 
 /** The same generator family, version and recipe: a new seed of that material (or the material itself). */
@@ -150,12 +155,14 @@ function alreadyPlayed(relationship: Relationship): string | undefined {
 
 /**
  * Whether `run` demonstrated transfer of `skill`, and on which dimensions (see the module note). Pure:
- * the same attempt, list and skill give the same reading.
+ * the same attempt, list, skill and share give the same reading. `share` is the skill's support share
+ * (the ladder hands its own; the shipped vocabulary's for the skill unless given).
  */
 export function transferReading(
   skill: SkillTransferSource,
   established: readonly EstablishedContext[],
   run: TransferAttempt,
+  share: number = supportShareOf(skill.id),
 ): TransferReading {
   const context = run.context;
   const none = (verdict: TransferVerdict, why: string, newDemands?: string[]): TransferReading => ({
@@ -214,7 +221,7 @@ export function transferReading(
       ? none('unknown', `no dimension of ${skill.id} known to differ, and one not known${tail}`, newDemands)
       : none('not-transfer', `nothing ${skill.id} names differs (${dimensions.join(', ')} the same)${tail}`, newDemands);
   }
-  if (!supportedAtFull(run)) {
+  if (!supportedAtFull(run, share)) {
     return { verdict: 'not-transfer', on: [], why: `differs on ${differs.join(', ')}, but not supported at the full standard${tail}`, differs, ...(newDemands === undefined ? {} : { newDemands }) };
   }
   return { verdict: 'demonstrated', on: differs, why: `first contact, supported at the full standard, differing on ${differs.join(', ')}${tail}`, differs, ...(newDemands === undefined ? {} : { newDemands }) };

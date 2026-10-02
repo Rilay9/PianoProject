@@ -133,7 +133,8 @@
       "met": [
        "keep-tempo",
        "unseen",
-       "guide-off"
+       "guide-off",
+       "names-off"
       ],
       "unattributed": 0,
       "estimated": false
@@ -204,7 +205,8 @@
       "firstContact": true,
       "met": [
        "unseen",
-       "guide-off"
+       "guide-off",
+       "names-off"
       ],
       "unattributed": 0,
       "estimated": false
@@ -323,7 +325,7 @@
      ]
     }
    ],
-   "evidenceDefinitions": 5,
+   "evidenceDefinitions": 6,
    "id": 1
   },
   {
@@ -461,7 +463,8 @@
       "met": [
        "keep-tempo",
        "unseen",
-       "guide-off"
+       "guide-off",
+       "names-off"
       ],
       "unattributed": 0,
       "estimated": false
@@ -534,7 +537,8 @@
       "firstContact": true,
       "met": [
        "unseen",
-       "guide-off"
+       "guide-off",
+       "names-off"
       ],
       "unattributed": 0,
       "estimated": false
@@ -653,7 +657,7 @@
      ]
     }
    ],
-   "evidenceDefinitions": 5,
+   "evidenceDefinitions": 6,
    "id": 2
   },
   {
@@ -795,7 +799,8 @@
       "met": [
        "keep-tempo",
        "unseen",
-       "guide-off"
+       "guide-off",
+       "names-off"
       ],
       "unattributed": 0,
       "estimated": false
@@ -882,7 +887,8 @@
       "firstContact": true,
       "met": [
        "unseen",
-       "guide-off"
+       "guide-off",
+       "names-off"
       ],
       "unattributed": 0,
       "estimated": false
@@ -1032,7 +1038,7 @@
      ]
     }
    ],
-   "evidenceDefinitions": 5,
+   "evidenceDefinitions": 6,
    "id": 3
   },
   {
@@ -1169,7 +1175,8 @@
       "met": [
        "keep-tempo",
        "unseen",
-       "guide-off"
+       "guide-off",
+       "names-off"
       ],
       "unattributed": 0,
       "estimated": false
@@ -1258,7 +1265,8 @@
       "firstContact": true,
       "met": [
        "unseen",
-       "guide-off"
+       "guide-off",
+       "names-off"
       ],
       "unattributed": 0,
       "estimated": false
@@ -1384,7 +1392,7 @@
      ]
     }
    ],
-   "evidenceDefinitions": 5,
+   "evidenceDefinitions": 6,
    "id": 4
   },
   {
@@ -1535,7 +1543,8 @@
       "met": [
        "keep-tempo",
        "unseen",
-       "guide-off"
+       "guide-off",
+       "names-off"
       ],
       "unattributed": 0,
       "estimated": false
@@ -1644,7 +1653,8 @@
       "firstContact": true,
       "met": [
        "unseen",
-       "guide-off"
+       "guide-off",
+       "names-off"
       ],
       "unattributed": 0,
       "estimated": false
@@ -1805,7 +1815,7 @@
      ]
     }
    ],
-   "evidenceDefinitions": 5,
+   "evidenceDefinitions": 6,
    "id": 5
   }
  ],
@@ -1946,7 +1956,8 @@
       "met": [
        "keep-tempo",
        "unseen",
-       "guide-off"
+       "guide-off",
+       "names-off"
       ],
       "unattributed": 0,
       "estimated": false
@@ -2052,7 +2063,8 @@
       "firstContact": true,
       "met": [
        "unseen",
-       "guide-off"
+       "guide-off",
+       "names-off"
       ],
       "unattributed": 0,
       "estimated": false
@@ -2210,7 +2222,8 @@
       "firstContact": true,
       "met": [
        "keep-tempo",
-       "guide-off"
+       "guide-off",
+       "names-off"
       ],
       "unattributed": 0,
       "estimated": false
@@ -2252,7 +2265,7 @@
      ]
     }
    ],
-   "evidenceDefinitions": 5,
+   "evidenceDefinitions": 6,
    "id": 1
   },
   {
@@ -2395,7 +2408,8 @@
       "met": [
        "keep-tempo",
        "unseen",
-       "guide-off"
+       "guide-off",
+       "names-off"
       ],
       "unattributed": 0,
       "estimated": false
@@ -2513,7 +2527,8 @@
       "firstContact": true,
       "met": [
        "unseen",
-       "guide-off"
+       "guide-off",
+       "names-off"
       ],
       "unattributed": 0,
       "estimated": false
@@ -2673,7 +2688,8 @@
       "firstContact": true,
       "met": [
        "keep-tempo",
-       "guide-off"
+       "guide-off",
+       "names-off"
       ],
       "unattributed": 0,
       "estimated": false
@@ -2722,7 +2738,7 @@
      ]
     }
    ],
-   "evidenceDefinitions": 5,
+   "evidenceDefinitions": 6,
    "id": 2
   }
  ]

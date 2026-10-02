@@ -1337,7 +1337,9 @@ def vocabulary_errors(
 
     The schemas answer the shape; this answers the references: a skill's
     opportunity names demands that exist and its standards name declared
-    conditions, a demand is coped with by a skill whose opportunity names it and
+    conditions, a full standard with the guide off has the names off too (L58),
+    a rhythm skill states its precision and no untimed skill has one (L57),
+    a demand is coped with by a skill whose opportunity names it and
     is taught at rungs the curriculum has, one per path, whose concepts name it
     (E0b, `taught_at_findings`, whose warnings `main` prints), and every `targetSkills` and
     `demands` id on a catalog row is in the vocabulary. Whether each demand's
@@ -1377,6 +1379,26 @@ def vocabulary_errors(
                         f"vocabulary: skill {skill['id']} {standard} names condition {condition!r}, "
                         f"which is not declared"
                     )
+        # CL11b, L58: a note's name on the screen is supported reading, so a full standard that asks
+        # for the guide off asks for the names off too (the evidence contract's fourth line).
+        full = skill["standards"]["full"]
+        if "guide-off" in full and "names-off" not in full:
+            errors.append(
+                f"vocabulary: skill {skill['id']} full standard lists guide-off without names-off: "
+                f"a read with a note's name on the screen would count as unaided reading (L58)"
+            )
+        # CL11b, L57: a rhythm skill states the error its timing must see; a skill no run times states none.
+        timed = skill["observable"] != "none" and "timing" in skill["observable"]
+        if skill.get("precision") is not None and not timed:
+            errors.append(
+                f"vocabulary: skill {skill['id']} has a precision, but no run times it "
+                f"(observable {skill['observable']!r})"
+            )
+        if skill["kind"] == "rhythm" and timed and skill.get("precision") is None:
+            errors.append(
+                f"vocabulary: rhythm skill {skill['id']} names no precision: the error its timing "
+                f"must see is not stated, and its demands would not be read as rhythm demands"
+            )
     # G2: a skill's transfer dimensions are the relationship's, read out of transfer.ts.
     if any(skill.get("transfer") for skill in skills.values()):
         known_dimensions = transfer_dimensions()

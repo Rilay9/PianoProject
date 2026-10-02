@@ -135,7 +135,9 @@ describe('the rungs name skills in their own requirements (C5)', () => {
     }
     expect(rungs.size).toBe(lessons.length);
   });
+  // Revised (CL11b, L57): the file gained the support share and the default
+  // precision beside the conditions; it still keeps no bridge and no waiver.
   it('the skills file keeps no interim bridge and no waiver', () => {
-    expect(Object.keys(skillsFile).sort()).toEqual(['_comment', 'conditions', 'skills']);
+    expect(Object.keys(skillsFile).sort()).toEqual(['_comment', 'conditions', 'precision', 'skills', 'support']);
   });
 });

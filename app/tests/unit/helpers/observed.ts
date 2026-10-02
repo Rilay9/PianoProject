@@ -50,6 +50,12 @@ export interface RunPlan {
    */
   firstContact?: boolean;
   guide?: 'next' | 'next-two' | 'off';
+  /**
+   * Whether a note's name was on the screen (`keys.names`, C1): with the guide off, Wait with *Name
+   * the note I am waiting for* on (CL11b, L58). Unless said, `false`, as the Score screen records a
+   * run with no name shown.
+   */
+  names?: boolean;
   id?: number;
   at?: string;
   itemId?: string;
@@ -144,7 +150,7 @@ export function observe(data: ScoreModelData, plan: RunPlan = {}): Observed {
     opened: { tab: 'library', slot: NOT_MEASURED },
     baseTempo: { bpm: data.tempoMap[0]?.bpm ?? 72, source: 'written' },
     hands: { played: plan.hands ?? 'both', appPlayed: 'none' },
-    keys: { view: 'strip', guide, fingers: guide !== 'off', names: false },
+    keys: { view: 'strip', guide, fingers: guide !== 'off', names: plan.names ?? false },
     graceNotes: under?.graceNotes ?? NOT_MEASURED,
     input: {
       source: 'keys',
