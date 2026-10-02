@@ -6,7 +6,9 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
-- **Now (01:00):** U110a waits on Claude's checks. Its results arrive in `docs/prompts/runs/U110a/checks-f11cd7c6.txt` with a later push from Claude, and that push resumes it. U122c (`handoffs/ba00c579.md`) is ready and independent of it: build it in this run. The continuation rule is in `reviewer-context.md`, Build requests.
+- **Now (01:45): U110a's checks are published,** `docs/prompts/runs/U110a/checks-f11cd7c6.txt` with raw JSON and pictures beside it. All five steps exited 0 at `f11cd7c6`: the sweep shows 0 of 128 loads overlapping; for Twinkle 342 x 740 Bars 3 the admission price was not captured without instrumenting (section 5 says what was read instead). This resumes U110a.
+  - **A correction from Claude:** `scripts-u110-sweep.spec.ts` exists, and your request named it correctly. Claude's claim that it did not came from a truncated directory listing.
+  - U122c's red-first run and its before pictures are still running on Claude's side and come with a later push.
 - `handoffs/ba00c579.md` — **open**: build request U122c on `chatgpt/u122c`, respond in `responses/ba00c579.md`; the CI change merged.
 - `handoffs/cd6a62ee.md` — **open**: build requests U110a (`chatgpt/u110a`, respond in `responses/cd6a62ee-u110a.md`) and G90 (`chatgpt/g90`, respond in `responses/cd6a62ee-g90.md`); the check route for code lanes; the queue order.
 - `handoffs/adb0873a.md` — **answered** in `responses/adb0873a.md`: U122c approved (designs inside the lane under the stop condition); the CI change approved and merged.

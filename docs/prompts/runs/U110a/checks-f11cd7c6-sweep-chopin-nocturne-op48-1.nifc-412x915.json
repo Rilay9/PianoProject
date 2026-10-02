@@ -1,0 +1,114 @@
+[
+ {
+  "bars": 2,
+  "load": "open",
+  "slots": 2,
+  "systems": 2,
+  "shown": 2,
+  "ladder": 1,
+  "overlapPx": -36,
+  "rows": [
+   "W0-0@0:34..218",
+   "W1-1@221:254..454"
+  ]
+ },
+ {
+  "bars": 2,
+  "load": "reload",
+  "slots": 2,
+  "systems": 2,
+  "shown": 2,
+  "ladder": 1,
+  "overlapPx": -36,
+  "rows": [
+   "W0-0@0:34..218",
+   "W1-1@221:254..454"
+  ]
+ },
+ {
+  "bars": 3,
+  "load": "open",
+  "slots": 3,
+  "systems": 3,
+  "shown": 3,
+  "ladder": 2,
+  "overlapPx": -34,
+  "rows": [
+   "W0-0@0:29..178",
+   "W1-1@185:212..375",
+   "W2-2@383:410..586"
+  ]
+ },
+ {
+  "bars": 3,
+  "load": "reload",
+  "slots": 3,
+  "systems": 3,
+  "shown": 3,
+  "ladder": 2,
+  "overlapPx": -34,
+  "rows": [
+   "W0-0@0:29..178",
+   "W1-1@185:212..375",
+   "W2-2@383:410..586"
+  ]
+ },
+ {
+  "bars": 4,
+  "load": "open",
+  "slots": 3,
+  "systems": 2,
+  "shown": 4,
+  "ladder": 2,
+  "overlapPx": -21,
+  "rows": [
+   "W0-1@0:26..166",
+   "W2-3@176:201..365",
+   "G4-5@376:386..551"
+  ]
+ },
+ {
+  "bars": 4,
+  "load": "reload",
+  "slots": 3,
+  "systems": 2,
+  "shown": 4,
+  "ladder": 2,
+  "overlapPx": -21,
+  "rows": [
+   "W0-1@0:26..166",
+   "W2-3@176:201..365",
+   "G4-5@376:386..551"
+  ]
+ },
+ {
+  "bars": 8,
+  "load": "open",
+  "slots": 4,
+  "systems": 4,
+  "shown": 8,
+  "ladder": 4,
+  "overlapPx": -24,
+  "rows": [
+   "W0-1@0:22..136",
+   "W2-3@150:172..305",
+   "W4-5@319:329..462",
+   "W6-7@489:504..643"
+  ]
+ },
+ {
+  "bars": 8,
+  "load": "reload",
+  "slots": 4,
+  "systems": 4,
+  "shown": 8,
+  "ladder": 4,
+  "overlapPx": -24,
+  "rows": [
+   "W0-1@0:22..136",
+   "W2-3@150:172..305",
+   "W4-5@319:329..462",
+   "W6-7@489:504..643"
+  ]
+ }
+]
