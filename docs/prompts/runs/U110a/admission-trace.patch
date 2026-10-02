@@ -1,0 +1,28 @@
+--- a/app/src/score/WindowRenderer.ts
++++ b/app/src/score/WindowRenderer.ts
+@@ -2077,11 +2077,22 @@
+       // nothing. Priced at the reserve, the Nocturne's one row on a tablet
+       // sideways left two thirds of the stage empty and no next bar.
+       const aheadHeight = drawnNow > 0 && this.drawnRowPx > 0 ? Math.min(rowHeight, this.drawnRowPx) : rowHeight;
+-      return (
++      const admissionPx = systems * rowHeight + aheadHeight + SLOT_GAP_PX * systems;
++      const ahead =
+         windowAt(cursorBar, shown, pieceBars, pickup).toMeasure < pieceBars - 1 &&
+         systems + 1 <= maxSlots &&
+-        systems * rowHeight + aheadHeight + SLOT_GAP_PX * systems <= slotsHeight
+-      );
++        admissionPx <= slotsHeight;
++      // Temporary U110a evidence instrumentation, never part of the shipped patch.
++      const trace = (window as Window & { __u110log?: unknown[] }).__u110log;
++      if (trace) {
++        trace.push({
++          kind: 'admission', shown, systems, maxSlots, ahead, rowHeight, aheadHeight,
++          admissionPx, slotsHeight, drawnNow, drawnHere, drawnRowPx: this.drawnRowPx,
++          currentSlots: this.slotCount, zoom: this.zoomLevel,
++        });
++        if (trace.length > 400) trace.splice(0, trace.length - 400);
++      }
++      return ahead;
+     };
+     const ahead = aheadFor(choice.shown, choice.systems, choice.drawn, choice.maxSlots);
+     // Every count's best shape, the five-line staff it would draw and whether
