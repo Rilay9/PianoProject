@@ -399,9 +399,10 @@ describe('the exemption is bounded: it never forgives an unrelated key', () => {
     strike(62, zero + 1250);
     until(zero + 2100);
     expect(h.engine.state.loops).toBe(2);
+    // Lap two's own population (CL11c): its C on time is the one hit, its late D the one miss.
     const score = h.of('finished').filter((event) => event.loop)[1]!.score;
-    expect(score.hits).toBe(2);
-    expect(score.missedTotal).toBe(2);
+    expect(score.hits).toBe(1);
+    expect(score.missedTotal).toBe(1);
     expect(score.wrongNotesTotal, 'the second lap’s late D was charged as a wrong key').toBe(0);
   });
 });
