@@ -142,7 +142,9 @@ Judging input (only if any input source is active):
   interval) — in which case the window stays open for a note stamped inside it until a tick one
   tick interval later, and never once a stamp inside it could no longer be trusted (1 s), so a
   note played in time and delivered late by the stall is still judged by its stamp, and the
-  run's end and a loop's wrap wait the same way (2026-09-30, U66).
+  run's end and a loop's wrap wait the same way (2026-09-30, U66). A tick inside that wait that
+  itself follows a stall starts it again from itself: the stall that ends is not always the
+  last, and the queue the first one built has not had its turn (2026-10-02, U125).
 - Accuracy = hits / expected slots; timing stats = mean/σ of deltaMs, % early, % late.
   **Pass** needs accuracy ≥ 90 % (setting) at tempoPct ≥ 80 % (setting) — or at the rung's
   own pair where the item is on a rung (`02` Part G, `selectors.masteryCriteriaFor`).

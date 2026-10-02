@@ -1265,6 +1265,106 @@ describe('Tempo mode — a stall is not a miss (U66)', () => {
     expect(h.of('missed')[0]).toMatchObject({ stepIndex: 0, midi: 60 });
   });
 
+  /**
+   * U125: the stall that ends is not always the last one. The first tick after
+   * a long task can itself run long (the step it advances to is drawn inside
+   * it) or be followed by a long frame, and the next tick — a timer that fell
+   * due before the note's message, so it runs ahead of it — then came after a
+   * stall too. It used to find the first hold over and close the window, and
+   * the note, still queued behind both, matched nothing. Seen in Chromium on
+   * `engine.spec.ts`'s long-task case, the second note or the first,
+   * intermittently under load (`runs/U125/`).
+   */
+  it('a second stall inside the hold holds the window again: the note queued behind both is a hit (U125)', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.advance(90);
+    h.clock.set(400);
+    h.engine.tick();
+    // The stalled tick's own work, or the frame after it, outlasts the hold:
+    // the next tick comes 60 ms later, after a stall of its own.
+    h.clock.set(460);
+    h.engine.tick();
+    expect(h.of('missed')).toEqual([]);
+    h.play(60, { atMs: 100 });
+    const score = h.engine.state.score;
+    expect(score.hits).toBe(1);
+    expect(score.missedTotal).toBe(0);
+    expect(score.wrongNotesTotal).toBe(0);
+    expect(h.of('noteJudged').map((e) => [e.ok, e.stepIndex, e.deltaMs])).toEqual([[true, 0, 100]]);
+  });
+
+  it('after two stalls, a window nothing arrived for is marked missed on the first tick a tick interval after the second (U125)', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.advance(90);
+    h.clock.set(400);
+    h.engine.tick();
+    h.clock.set(460);
+    h.engine.tick();
+    // Frames every 16 ms from 460: 476 is inside the renewed hold, 492 past it.
+    h.advance(2 * 16);
+    expect(h.of('missed').map((e) => [e.stepIndex, e.tMs])).toEqual([[0, 492]]);
+  });
+
+  it('a window that ends just after the stalled tick, inside its hold, waits for the note the stall queued (U125)', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.advance(90);
+    // A stall that ends at 140, before C's window closes at 150; the note
+    // played at 100 is queued behind it. The next tick, 16 ms on and no stall,
+    // is past the window's end but inside the stall's hold (until 165), and
+    // runs ahead of the queued message.
+    h.clock.set(140);
+    h.engine.tick();
+    h.clock.set(156);
+    h.engine.tick();
+    expect(h.of('missed')).toEqual([]);
+    h.play(60, { atMs: 100 });
+    expect(h.of('noteJudged').map((e) => [e.ok, e.stepIndex, e.deltaMs])).toEqual([[true, 0, 100]]);
+    expect(h.engine.state.score.missedTotal).toBe(0);
+    expect(h.engine.state.score.wrongNotesTotal).toBe(0);
+  });
+
+  it('and with nothing queued for it, that window is missed on the first tick past the hold (U125)', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.advance(90);
+    h.clock.set(140);
+    h.engine.tick();
+    // 156 is inside the hold (until 165), 172 past it.
+    h.advance(2 * 16);
+    expect(h.of('missed').map((e) => [e.stepIndex, e.tMs])).toEqual([[0, 172]]);
+  });
+
+  it('the tick exactly one tick interval after the stalled one is no stall and still inside the hold: the queued note is a hit (U125)', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.advance(90);
+    h.clock.set(400);
+    h.engine.tick();
+    // The stalled tick's frame took the whole interval: the overdue interval
+    // tick runs 25 ms on, ahead of the message, a gap the contract allows.
+    h.clock.set(400 + TICK_BUDGET_MS);
+    h.engine.tick();
+    expect(h.of('missed')).toEqual([]);
+    h.play(60, { atMs: 100 });
+    expect(h.of('noteJudged').map((e) => [e.ok, e.stepIndex, e.deltaMs])).toEqual([[true, 0, 100]]);
+  });
+
+  it('stalls never hold a window past the stamp-trust bound: the miss comes on the first tick more than a second past its end (U125)', () => {
+    const h = harness(melody, noCountIn);
+    h.engine.start();
+    h.advance(90);
+    // A thread that never frees up: every tick 40 ms after the last, each a
+    // stall. C's window closes at 150; a second past it is 1150.
+    for (let t = 400; t <= 1200; t += 40) {
+      h.clock.set(t);
+      h.engine.tick();
+    }
+    expect(h.of('missed').find((e) => e.stepIndex === 0)?.tMs).toBe(1160);
+  });
+
   it('after a stall, a window nothing arrived for is marked missed on the first tick a tick interval after the stalled one', () => {
     const h = harness(melody, noCountIn);
     h.engine.start();
@@ -1433,6 +1533,27 @@ describe('Tempo mode — a stall is not a miss (U66)', () => {
       const finished = h.of('finished')[0];
       expect(finished?.score.hits).toBe(2);
       expect(finished?.score.missedTotal).toBe(0);
+    });
+
+    it('a second stall before the window closes holds the end again: stamped before the end, still a hit (U125)', () => {
+      const h = harness(shortEnd, noCountIn);
+      h.engine.start();
+      h.play(60);
+      h.advance(BEAT_MS + 90);
+      // A stall across the run's end (1100), then a second one that ends past
+      // the first hold but before D's window closes (1150): only the end's own
+      // hold is keeping D's window for the note queued behind both.
+      h.clock.set(1120);
+      h.engine.tick();
+      h.clock.set(1148);
+      h.engine.tick();
+      expect(h.of('finished')).toEqual([]);
+      h.play(62, { atMs: 1095 });
+      h.advance(TICK_INTERVAL_MS + 16);
+      const finished = h.of('finished')[0];
+      expect(finished?.score.hits).toBe(2);
+      expect(finished?.score.missedTotal).toBe(0);
+      expect(finished?.score.wrongNotesTotal).toBe(0);
     });
 
     it('stamped after the run’s end, inside the window: dropped and D missed, as the run with no stall does', () => {

@@ -1,0 +1,14 @@
+fix	r16@run	w8	round1	x24	{"fail:marks":8,"pass":16}
+head	r16@run	w8	round1	x24	{"fail:note60-null":10,"pass":9,"fail:marks":4,"fail:note62-null":1}
+fix	r16@run	w8	round2	x24	{"fail:marks":2,"pass":22}
+head	r16@run	w8	round2	x24	{"fail:marks":4,"pass":16,"fail:note60-null":3,"fail:note62-null":1}
+fix	r8@run	w8	round1	x24	{"pass":22,"fail:marks":2}
+head	r8@run	w8	round1	x24	{"pass":22,"fail:marks":2}
+fix	r8@run	w8	round2	x24	{"fail:note62-null":1,"pass":22,"fail:marks":1}
+head	r8@run	w8	round2	x24	{"pass":20,"fail:marks":3,"fail:note62-null":1}
+fix	r8@run	w8	round3	x24	{"pass":22,"fail:marks":2}
+head	r8@run	w8	round3	x24	{"pass":18,"fail:note60-null":5,"fail:marks":1}
+fix	r16@start	w8	round1	x24	{"pass":23,"fail:marks":1}
+head	r16@start	w8	round1	x24	{"pass":19,"fail:marks":1,"fail:note60-null":4}
+fix	r16@start	w8	round2	x24	{"pass":20,"fail:marks":4}
+head	r16@start	w8	round2	x24	{"fail:note60-null":3,"pass":21}
