@@ -113,7 +113,9 @@ export const MODE_HELP: Readonly<Record<ScoreMode, HelpEntry>> = {
     title: 'Keep tempo',
     what: 'A click and a moving cursor that carry on whether you keep up or not, and mark what you miss.',
     now: 'The count-in clicks, then play along.',
-    counts: 'A pass needs both the accuracy and the share of the written tempo set in Settings, in one run.',
+    // The lesson's own numbers judge a run opened for a lesson (`masteryCriteriaFor`); Settings only where it
+    // states none or no lesson opened the run (X46: "set in Settings" was false on every rung with its own).
+    counts: 'A pass needs both the accuracy and the share of the written tempo, in one run: the lesson’s numbers where it states them, otherwise the ones set in Settings.',
     controls: [
       { name: 'Tempo', does: 'A share of the written speed. Slower is how a hard bar becomes an easy one.' },
       { name: '▶', does: 'Starts the run. With a piano connected your own first note starts it instead, and the clock waits for it.' },
@@ -187,15 +189,29 @@ export const MODE_HELP: Readonly<Record<ScoreMode, HelpEntry>> = {
  *
  * Here beside `MODE_HELP` because they are the same facts told at the other
  * end of the run: *Wait for me* says before a run that a pass is measured in
- * Keep tempo, and the sheet says it again after one, in the same words, so
- * the two cannot drift apart.
+ * Keep tempo, and the sheet says after one what a pass needs, in the lesson
+ * page's words (`keepTempoAt`), so the two cannot drift apart.
  */
 export const SUMMARY_TEXT = {
   /**
    * The Tempo line of a Wait for me run. The slider's value is a setting
-   * nobody played to, so it is not printed as a share of anything.
+   * nobody played to, so it is not printed as a share of anything. Where a
+   * pass is played is the *To pass* line's (X46): it names the numbers, which
+   * this line did not.
    */
-  waitTempo: 'Not judged in Wait for me — to pass, play it in Keep tempo',
+  waitTempo: 'Not judged in Wait for me',
+  /**
+   * What a pass of this run needed, on a judged run that did not meet it (X46,
+   * `responses/9e14839e.md` §2 points 2 and 5): the run's own standard — the
+   * lesson's numbers, or the Settings pair where none judged it — in the words
+   * the lesson page's *What the app counts* uses. A Keep tempo run at 70 % read
+   * *Run finished* with no sentence naming the 80 % it needed.
+   */
+  toPassLabel: 'To pass',
+  toPass: (accuracy: number, tempoPct: number, suggested = false): string =>
+    tempoPct > 0 ? `${percent(accuracy)} of the notes, ${keepTempoAt(tempoPct, suggested)}` : `${percent(accuracy)} of the notes`,
+  /** The sheet's control that does what *To pass* says, where the run's own mode or tempo could not count (X46). */
+  toTheStandard: (tempoPct: number): string => `Keep tempo at ${String(Math.round(tempoPct))} %`,
   /**
    * The heading of a Wait for me run whose notes met the pass. "Run finished"
    * read as a failure over a run that had every note it needed, and "Passed"
@@ -897,6 +913,15 @@ function percent(share: number): string {
   return `${String(Math.round(share * 100))} %`;
 }
 
+/**
+ * "in Keep tempo at 80 % of the written tempo or faster": the tempo half of a pass, in one set of words for
+ * the lesson page's *What the app counts* and the summary sheet's *To pass* (X46), so the two say one thing.
+ * `suggested`: a piece whose tempo the converter made up (`tempo-defaulted`), whose 100 % is a suggestion.
+ */
+export function keepTempoAt(tempoPct: number, suggested = false): string {
+  return `in Keep tempo at ${String(Math.round(tempoPct))} % of the ${suggested ? 'suggested' : 'written'} tempo or faster`;
+}
+
 /** A ladder state as a person says it (C3's ladder, `evidence/ladder.ts`). */
 export function ladderWords(state: LadderState): string {
   if (state === 'not introduced' || state === 'introduced') return 'not shown yet';
@@ -941,10 +966,7 @@ export function requirementWords(
         what = `${countWord(r.count)} ${noun}${r.count === 1 ? '' : 's'} from this page`;
       }
       const share = `at ${percent(r.accuracy ?? context.accuracy)} of the notes`;
-      const tempo =
-        context.tempoPct > 0 && !context.drillsOnly(pool)
-          ? `, in Keep tempo at ${String(Math.round(context.tempoPct))} % of the written tempo or faster`
-          : '';
+      const tempo = context.tempoPct > 0 && !context.drillsOnly(pool) ? `, ${keepTempoAt(context.tempoPct)}` : '';
       const perform = r.performance === true ? ', played with Perform on' : '';
       return `${what} ${share}${tempo}${perform}.`;
     }

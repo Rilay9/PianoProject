@@ -38,8 +38,11 @@ import {
   demandsTechniqueMeasure,
   evaluateOutcome,
   measuresOf,
+  openingThatCounts,
   techniqueMeasureFor,
+  tempoCanCount,
   velocityIsFlat,
+  type MasteryCriteria,
 } from '../../engine/Scoring';
 import { evidenceFor, isRefusal, stampedEvidence, type EvidenceResult } from '../../evidence/evidence';
 import { VOCABULARY_V0 } from '../../evidence/vocabulary';
@@ -249,6 +252,8 @@ const SLOWER_TAP: SoundTap = { id: 'summary-slower', control: 'Slower' };
 const FASTER_TAP: SoundTap = { id: 'summary-faster', control: 'Faster' };
 /** *Loop the weak bars*: 50 characters in full, so its first word. */
 const LOOP_WEAK_TAP: SoundTap = { id: 'summary-loop', control: 'Loop' };
+/** *Keep tempo at 80 %* (X46): the run *To pass* names, by its first words. */
+const STANDARD_TAP: SoundTap = { id: 'summary-standard', control: 'Keep tempo' };
 /**
  * Every tap above, for the folded chip's reserve (U118, `cornerTexts`): a
  * refusal names its control, so each is a sentence the chip can carry. The
@@ -265,6 +270,7 @@ const SOUND_TAPS: readonly SoundTap[] = [
   SLOWER_TAP,
   FASTER_TAP,
   LOOP_WEAK_TAP,
+  STANDARD_TAP,
 ];
 /**
  * The counts the chip's reserve prices *Paused — you were away N s.* at (U118;
@@ -3478,6 +3484,23 @@ export function ScoreScreen(router: Router): HTMLElement {
   }
 
   /**
+   * What this run is held to: the rung's own pass, where this piece is on one
+   * (`02` Part G, built 2026-09-21). `masteryCriteriaFor` falls back to exactly
+   * the Settings pair for a piece on no rung and for a rung that states no
+   * number of its own, so the Settings pair still decides every run the
+   * curriculum is silent about. One reading for the summary that judges a run
+   * and the opening that decides whether one can count (X46).
+   */
+  function judgingCriteria(): MasteryCriteria {
+    return masteryCriteriaFor(rung, {
+      passAccuracy: settings.passAccuracyPct / 100,
+      passTempoPct: settings.passTempoPct,
+      masterAccuracy: 0.97,
+      masterTempoPct: 100,
+    });
+  }
+
+  /**
    * Fills the side panel with the lesson text of the rung the run is judged
    * by, so the prose beside the piece and the numbers it is held to are one
    * rung's. Opened from nowhere there is no such rung (C1), and the panel
@@ -3832,17 +3855,8 @@ export function ScoreScreen(router: Router): HTMLElement {
      * out of the history, because the practice is real and the minutes count.
      */
     const rhythmRun = score.rhythmOnly === true;
-    // The rung's own pass, where this piece is on one (`02` Part G, built
-    // 2026-09-21). `masteryCriteriaFor` falls back to exactly this pair for a
-    // piece on no rung and for a rung that states no number of its own, so
-    // the Settings pair still decides every run the curriculum is silent
-    // about.
-    const criteria = masteryCriteriaFor(rung, {
-      passAccuracy: settings.passAccuracyPct / 100,
-      passTempoPct: settings.passTempoPct,
-      masterAccuracy: 0.97,
-      masterTempoPct: 100,
-    });
+    // The rung's own pass, where this piece is on one (`judgingCriteria`).
+    const criteria = judgingCriteria();
     const measured = evaluateOutcome(score, criteria);
     /**
      * The number this exercise is actually about (P12a, wired 2026-09-21).
@@ -4073,7 +4087,24 @@ export function ScoreScreen(router: Router): HTMLElement {
           // Stored: the session's activity completes with what the stored run measured (X1: the protocol's
           // `completed`, never self-report as a measured pass), and the closing action is drawn from the record
           // the completion wrote.
-          if (sessionRun) void sessionRun.completed(scoreOutcome(stored)).then(drawNext, drawNext);
+          if (sessionRun) {
+            const sessionOutcome = scoreOutcome(stored);
+            // Except a run its own settings could not count, on an activity whose rung asks for one that can
+            // (X46, `responses/9e14839e.md` §2 points 4 and 5): a Wait for me or a rhythm run the learner chose
+            // is practice on the way to the attempt. It completed the activity, the card marked it done and
+            // the session moved on before the learner chose anything, and a pass played next on this screen
+            // was refused as another activity's. The activity stays where it is: *Start* moves on from it,
+            // said as played, and a run that can count completes it.
+            const practice =
+              sessionOutcome === 'unknown' &&
+              todayRung !== undefined &&
+              rung !== undefined &&
+              !sightReading &&
+              heard &&
+              (rhythmRun || !tempoCanCount(score.mode, score.tempoPct, criteria));
+            if (practice) drawNext();
+            else void sessionRun.completed(sessionOutcome).then(drawNext, drawNext);
+          }
         })
         .catch((cause: unknown) => {
           status.textContent = `Could not save this run: ${String(cause)}`;
@@ -4276,6 +4307,17 @@ export function ScoreScreen(router: Router): HTMLElement {
     // in the first place, so this cannot say "ended at" about a ladder that
     // never ran.
     if (ladderOn && heard) addStat(lines, 'Ladder', `ended at ${String(tempoPct)} % ${ofWhat}`);
+    // What a pass needed, where this run did not meet it (X46, `responses/9e14839e.md` §2 points 2 and 5):
+    // the standard that judged it, in the lesson page's words. A clean Keep tempo run at 70 % was headed
+    // *Run finished* with no sentence naming the 80 % it was short of. Not over a rhythm run (its own line
+    // says it never counts as playing the piece) or a sight-read (the reader's evidence decides those), and
+    // not where the notes and the tempo met it and something else stopped the pass (the technique line says
+    // so, or the reading refusal does).
+    const judgedMode = score.mode === 'wait' || score.mode === 'tempo';
+    const missedStandard = heard && judgedMode && !rhythmRun && !sightReading && !measured.passed;
+    if (missedStandard) {
+      addStat(lines, SUMMARY_TEXT.toPassLabel, SUMMARY_TEXT.toPass(criteria.passAccuracy, criteria.passTempoPct, ofWhat !== 'of written'));
+    }
     if (heard) {
       addStat(lines, 'Wrong notes', String(score.wrongNotesTotal));
       addStat(lines, 'Missed', String(score.missedTotal));
@@ -4371,7 +4413,35 @@ export function ScoreScreen(router: Router): HTMLElement {
     const projectPiece = item !== undefined && isProjectable(item) ? item : undefined;
     const actions = document.createElement('div');
     actions.className = 'summary-actions';
+    // The run *To pass* names, one tap away, where this run's own mode or tempo could not count (X46,
+    // `responses/9e14839e.md` §2 point 5): the sheet said "to pass, play it in Keep tempo" and offered no
+    // control that did it — *Again* restarted the same Wait run, and Keep tempo had to be found on the bar
+    // mid-run, which stamped the run "Changed" before a note. First, because it is what the sheet recommends;
+    // a fresh run, so nothing is stamped. Not where accuracy alone was short: *Again* is that retry.
+    const standardTempo = Math.ceil(criteria.passTempoPct);
+    const toTheStandard =
+      missedStandard && !tempoCanCount(score.mode, score.tempoPct, criteria)
+        ? [
+            button(
+              SUMMARY_TEXT.toTheStandard(standardTempo),
+              () =>
+                fromTheSummary(() => {
+                  if (mode !== 'tempo') {
+                    mode = 'tempo';
+                    // A mode chosen here is met for the first time as much as one chosen on the bar.
+                    maybeFirstSight({ key: `mode:${modeKey()}`, entry: MODE_HELP[modeKey()], id: 'score' });
+                  }
+                  tempoPct = standardTempo;
+                  tempo.value = String(tempoPct);
+                  render();
+                  startRun();
+                }, STANDARD_TAP),
+              'summary-standard',
+            ),
+          ]
+        : [];
     actions.append(
+      ...toTheStandard,
       // Each through the sound's gate, the whole of it (U105): a refused
       // *Slower* or *Faster* leaves the tempo, so the tap made again moves it
       // once, and the summary stays up for it.
@@ -5140,8 +5210,9 @@ export function ScoreScreen(router: Router): HTMLElement {
       title.textContent = isSightReading(item) ? readingTitle(item.title, item.hands, routeRecipe) : item.title;
       // Unconditional, unlike the side panel below, which is a tablet's
       // second column: the rung decides what this run has to reach, and that
-      // cannot depend on how wide the screen is.
-      void findRung();
+      // cannot depend on how wide the screen is. Kept, so the opening of a run
+      // Today chose for its rung can wait for it (X46, below); it never rejects.
+      const rungFound = findRung();
       // Shown only where the file has chord symbols in it (`openItem.ts`).
       chartRow.hidden = !hasChordSymbols(item);
       // Started now, beside the score's own reads; the first draw waits for
@@ -5494,6 +5565,23 @@ export function ScoreScreen(router: Router): HTMLElement {
       // in whatever the learner's default happens to be is a step teaching the
       // wrong thing, and the select is still theirs to change afterwards.
       if (routeMode) mode = routeMode;
+      // A run Today chose for its rung (`?rung=`, a session's activity or a card row) is what the lesson
+      // asks for, so it opens where it can count (X46, `responses/9e14839e.md` §2 point 3,
+      // `responses/43045ffb.md` §4: the item's role is a criterion attempt). It opened in the learner's
+      // defaults, Wait for me at 70 %, on a rung that counts only Keep tempo at 80 %, and the learner met
+      // the rule by failing it twice. Not a sight-read (the reader's own tempo and evidence), not a route
+      // that names its mode, and not with nothing to listen (nothing measured can count): there the defaults
+      // stand. The select and the tempo stay the learner's to change.
+      else if (!sightReading && todayRung !== undefined && input !== 'none') {
+        await rungFound;
+        const opening = openingThatCounts({ mode, tempoPct }, judgingCriteria());
+        mode = opening.mode;
+        tempoPct = opening.tempoPct;
+        tempoApplied = tempoPct;
+        // Rhythm only, a preference remembered from another screen, would make this Keep tempo run one that
+        // never counts as playing the piece; off here, and kept as the learner set it everywhere else.
+        rhythmOnly = false;
+      }
       // The first time this learner opens a piece in this mode, a card saying
       // what the mode does before the first note is judged (`04` §5f). After
       // the three lines above, so it is the mode actually about to run.

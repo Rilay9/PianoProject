@@ -95,7 +95,7 @@ import {
   type RunActivity,
   type SessionRun,
 } from '../../data/sessionRun';
-import { minutesOf, newActivityToken, openActivity, openOutside } from '../sessionRunner';
+import { cameTo, minutesOf, newActivityToken, openActivity, openOutside, showsReason } from '../sessionRunner';
 import { cardLine, PROJECT_TEXT, readingReason, readingTitle, SESSION_TEXT, swapChoiceWords, swapTierWords } from '../help';
 import { webMidiSource, micSource } from '../../app/services';
 import { onScreenDispose } from '../screenLifecycle';
@@ -529,8 +529,9 @@ export function TodayScreen(router: Router): HTMLElement {
     const badges: HTMLElement[] = [];
     const row = progress.find((candidate) => candidate.itemId === item.id);
     // Done in today's session (X1): a completed activity is never offered as untouched, on a card composed
-    // after the session ended or finished.
-    const doneToday = run !== null && run.day === dayKey(now) && run.activities.some((activity) => activity.state === 'completed' && activity.slot.itemId === item.id);
+    // after the session ended or finished. *Done today* only where its run counted (X46, `cameTo`); one a run
+    // completed without counting has its item's own state beside it (*started*), which is not untouched either.
+    const doneToday = run !== null && run.day === dayKey(now) && run.activities.some((activity) => cameTo(activity) === 'done' && activity.slot.itemId === item.id);
     if (doneToday) badges.push(badge(SESSION_TEXT.doneToday, 'passed'));
     else if (row && row.status !== 'new') badges.push(badge(row.status, row.status));
     if (substitute) badges.push(badge('import needed', 'warn'));
@@ -801,10 +802,13 @@ export function TodayScreen(router: Router): HTMLElement {
     const item = catalog?.byId.get(activity.slot.itemId);
     const current = from.current === activity.index;
     const badges: HTMLElement[] = [];
-    if (activity.state === 'completed') badges.push(badge(SESSION_TEXT.stateDone, 'passed'));
-    else if (activity.state === 'skipped') badges.push(badge(SESSION_TEXT.stateSkipped));
+    // The ✓ only on a run that counted (X46, `cameTo`): a warm-up left and an exercise played in Wait for me
+    // wore the same mark as the pass beside them.
+    const came = cameTo(activity);
+    if (came === 'done') badges.push(badge(SESSION_TEXT.stateDone, 'passed'));
+    else if (came === 'skipped') badges.push(badge(SESSION_TEXT.stateSkipped));
     else if (current) badges.push(badge(SESSION_TEXT.stateNext));
-    else if (activity.state === 'attempted') badges.push(badge(SESSION_TEXT.statePlayed));
+    else if (came === 'played') badges.push(badge(SESSION_TEXT.statePlayed));
     const play = (): void => {
       void playActivity(activity);
     };
@@ -826,7 +830,9 @@ export function TodayScreen(router: Router): HTMLElement {
     actionButtons.push(button('▶', play, { ariaLabel: `Open ${activity.slot.title}` }));
     const row = onTheCard(listRow({
       title: activity.slot.title,
-      subtitle: cardLine(activity.reason, activity.slot.claim),
+      // The composition's words while the activity is ahead; none once it is behind (X46, `showsReason`): the
+      // frozen "not counted yet" sat beside the run that had just counted.
+      ...(showsReason(activity) ? { subtitle: cardLine(activity.reason, activity.slot.claim) } : {}),
       meta: [
         SLOT_LABELS[activity.slot.kind],
         `${String(activity.slot.minutes)} min`,
@@ -896,9 +902,12 @@ export function TodayScreen(router: Router): HTMLElement {
   function finishLine(from: SessionRun): HTMLElement {
     const minutesSpent = minutesOf(from.elapsedMs);
     const ended = from.closed?.why === 'ended';
-    const word = (state: RunActivity['state']): string =>
-      state === 'completed' ? SESSION_TEXT.stateDone : state === 'skipped' ? SESSION_TEXT.stateSkipped : SESSION_TEXT.statePlayed;
-    const came = from.activities.filter((activity) => activity.state !== 'pending' && activity.state !== 'active').map((activity) => `${SLOT_LABELS[activity.slot.kind]} ${word(activity.state)}`);
+    // The card's words for what each came to (X46, `cameTo`): *done* only where its run counted.
+    const word = (activity: RunActivity): string => {
+      const came = cameTo(activity);
+      return came === 'done' ? SESSION_TEXT.stateDone : came === 'skipped' ? SESSION_TEXT.stateSkipped : SESSION_TEXT.statePlayed;
+    };
+    const came = from.activities.filter((activity) => activity.state !== 'pending' && activity.state !== 'active').map((activity) => `${SLOT_LABELS[activity.slot.kind]} ${word(activity)}`);
     const waiting = from.activities.filter((activity) => activity.state === 'pending' || activity.state === 'active').map((activity) => SLOT_LABELS[activity.slot.kind]);
     const detail = [came.join(' · '), waiting.length > 0 ? `${SESSION_TEXT.deferred}: ${waiting.join(', ')}` : ''].filter(Boolean).join(' — ');
     return el(
