@@ -2,7 +2,10 @@ name: CI
 
 on:
   push:
-    branches: [claude/piano-teaching-app-bo19td]
+    branches: [claude/piano-teaching-app-bo19td, 'chatgpt/**']
+    # The outside builder pushes only to its own `chatgpt/<lane>` branches (2026-10-01); they are
+    # checked here so its builds carry the runner's evidence. `concurrency` keys on the ref, so its
+    # runs never take this branch's slot; pages.yml names only this branch, so it never deploys.
     # A push that touches only the record and the review stream does not start a run, and
     # so cannot take the group's one pending slot from a code tree (Q63, 2026-09-29). Only the
     # high-volume documentary paths are ignored: the reviewer's handoffs and responses, the
