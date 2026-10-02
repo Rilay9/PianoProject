@@ -61,4 +61,4 @@ Nothing heard: whether net-of-wrong-keys at the rung's bar teaches well is unver
 lane: CL11a · closes: L10, U126, U127 · entry: 219
 index: Keep tempo charges a wrong key, a microphone pass counts on Today, Progress keeps the learner's word as theirs: CL11's app-code lane (`CL11a-keep-tempo-charges-a-wrong-key.md`) | build | drafted 2026-10-02 (`CL11a-keep-tempo-charges-a-wrong-key.md`); Entry 219
 in-flight: drafted 2026-10-02 (`CL11a-keep-tempo-charges-a-wrong-key.md`): CL11's lane 1, the wrong-key rule with a bounded late-note exemption, observation definitions 2, the microphone outcome, Progress, the Keep tempo help line (Entry 219)
-state: drafted 2026-10-02: approved design, dispatch after G90 lands (it shares sessionRun.ts) (Entry 219)
+state: dispatched 2026-10-02: dispatched at ee62c06c, building here (Entry 219)

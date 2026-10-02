@@ -445,7 +445,7 @@ CL11 · closed · 215
 U122c · dispatched · 216
 G90 · landed · 217
 U110a · landed · 218
-CL11a · drafted · 219
+CL11a · dispatched · 219
 CL11b · dispatched · 220
 F0a · closed · —
 L120 · approved · —
