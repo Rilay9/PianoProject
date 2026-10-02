@@ -81,7 +81,14 @@ describe('a loop scores one population end to end', () => {
     expect(secondLap.expectedNotes).toBe(4);
     expect(secondLap.totalSteps).toBe(4);
     expect(secondLap.accuracy).toBeCloseTo(3 / 4, 9);
-    expect(evaluateOutcome(secondLap, { passAccuracy: 0.9, passTempoPct: 0 }).passed).toBe(false);
+    expect(
+      evaluateOutcome(secondLap, {
+        passAccuracy: 0.9,
+        passTempoPct: 0,
+        masterAccuracy: 0.97,
+        masterTempoPct: 100,
+      }).passed,
+    ).toBe(false);
 
     // The stored observation must use that same population. `right` remains the observed
     // in-window notes; the wrong key is a separate observation and the verdict above charges it.
