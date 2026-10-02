@@ -54,11 +54,11 @@ Expected ownership, a starting boundary: `app/src/engine/Scoring.ts`, `app/src/e
 
 ## Handoff
 
-Judgement first: what changes for a learner, which rows close, which stay open and why, the build's shape. Every row and input answered with its evidence line, or a plain reason it cannot be. Where the brief was wrong: brief said X, evidence showed Y, so Z. Count mechanically; state the scope of every "all" or "none". Never name an AI model in any file.
+Judgement first: what changes for a learner, which rows close, which stay open and why, the build's shape. Every row and input answered with its evidence line, or a plain reason it cannot be. Where the brief was wrong: brief said X, evidence showed Y, so Z. Count mechanically; state the scope of every "all" or "none". Never name an AI model in any file. `operating-procedure.md` §14; a design lane, so no browser runs unless a row's reproduction needs one (then port **5503**, `--workers=2`).
 
 ## Record
 
 lane: CL11 · closes: — · entry: 215
 index: What counts as evidence, traced against the current tree and decided per row, with the contract and the build that follows (`CL11-what-counts-as-evidence-traced-and-decided.md`) | design | drafted 2026-10-01 (`CL11-what-counts-as-evidence-traced-and-decided.md`); Entry 215
 in-flight: drafted 2026-10-01 (`CL11-what-counts-as-evidence-traced-and-decided.md`): a design lane, no code, built by the outside builder on its own branch; the eight CL11 rows, X46's three inputs and R23's question traced and decided (Entry 215)
-state: dispatched 2026-10-01: dispatched at 06af14cd to the outside builder, on its branch (Entry 215)
+state: drafted 2026-10-02: withdrawn from the outside builder unbuilt; re-dispatch here (Entry 215)

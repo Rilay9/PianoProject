@@ -88,11 +88,11 @@ Lead with the judgement: what a learner now meets. Then:
 - where the brief was wrong: the brief said X, the evidence showed Y, so Z;
 - the scope of every "all" or "none".
 
-Built by the outside builder on `chatgpt/g90`. The checks it cannot run are run by the orchestrator on its branch head, on request (`docs/review/reviewer-context.md`, Build requests). Never name an AI model in any file.
+`operating-procedure.md` §14. Port **5463**, from a config copy under `app/build/g90/`; `--workers=2`. Never name an AI model in any file.
 
 ## Record
 
 lane: G90 · closes: G90, T20 · entry: 217
 index: A piece paused after Start session leaves the running session at its turn, skipped with its reason; no lesson id in the heading while it loads (`G90-a-paused-piece-leaves-the-running-session.md`) | build | drafted 2026-10-02 (`G90-a-paused-piece-leaves-the-running-session.md`); Entry 217
 in-flight: drafted 2026-10-02 (`G90-a-paused-piece-leaves-the-running-session.md`): a narrow sweep of two settled rows; the live veto at the activity boundary as ruled, and the lesson heading without its id (Entry 217)
-state: dispatched 2026-10-02: dispatched at cd6a62ee to the outside builder, on its branch (Entry 217)
+state: drafted 2026-10-02: withdrawn from the outside builder unbuilt; re-dispatch here (Entry 217)

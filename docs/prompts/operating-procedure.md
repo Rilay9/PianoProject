@@ -168,8 +168,10 @@ what the owner or the next agent does; wording alone never earns a turn.
    alternatives, and did the change act on the mechanism rather than the symptom?
 3. **Evidence.** Which claims are observed and which inferred; for every "all", "none" or
    "both", what scope was actually examined and what is unchecked; for an absence ("not on
-   this machine", "no such file"), the place the record says it lives, looked at; what has
-   not been heard.
+   this machine", "no such file"), the place the record says it lives, looked at, and the
+   item tested directly (`test -e`, the exact path), never read off a listing; output cut by
+   `head` or a limit is a sample, never grounds for "none" or "all" (a truncated listing,
+   2026-10-02); what has not been heard.
 4. **Consumers and record.** Who else reads what changed and what each does with it; the
    spec, test map and record updated in the same change, with the reason.
 5. **Addressee.** For every request, question or claim in a paste, a brief or a report: who

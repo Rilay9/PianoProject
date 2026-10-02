@@ -114,7 +114,7 @@ Lead with the judgement: what a learner now meets in each moment on each device,
 - learner-facing text itemised (where, before, after, why);
 - unverified on a device, and nothing heard.
 
-Built by the outside builder on `chatgpt/u122c`. CI runs on that branch; the browser measurements and pictures it cannot run are run by the orchestrator on its branch head, on request (`docs/review/reviewer-context.md`, Build requests). Never name an AI model in any file.
+`operating-procedure.md` §14. Port **5453**, from a config copy under `app/build/u122c/`; `--workers=2`. Start from the outside builder's red test, `app/tests/e2e/score.task-chrome.spec.ts` on `origin/chatgpt/u122c` (read it with `git show`; it is not on the working branch), and its before-run results and pictures (`docs/prompts/runs/U122c/checks-44fd5fd2.txt`, `docs/prompts/pictures/u122c/before-*`) once published. Judge that test as you would your own. Never name an AI model in any file.
 
 ## Record
 
@@ -123,3 +123,4 @@ index: The Score screen shows each moment what it needs, designed for phone side
 in-flight: drafted 2026-10-02 (`U122c-the-score-screen-per-moment-on-three-devices.md`): a build; the per-state table on every device, c6 sideways with U122b's rules, upright and tablet traced and designed on their own terms; walk findings 5 and 8, U120, U121, U124 as acceptance (Entry 216)
 state: approved 2026-10-02: APPROVE (the reviewer, at adb0873a §1): the upright and tablet designs inside the lane under the stop condition (a loss of action, notation, stability, tap size or look-ahead comes back before it is built); music held applies while notation is the task; pictures of every changed state per device, the cells as the measured domain (Entry 216)
 - dispatched 2026-10-02: dispatched at ba00c579 to the outside builder, on its branch
+- held 2026-10-02: withdrawn from the outside builder after its red test (the owner: its limits run out too fast); re-dispatched to a builder here
