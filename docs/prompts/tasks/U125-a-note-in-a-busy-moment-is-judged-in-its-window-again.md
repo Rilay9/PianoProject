@@ -16,9 +16,12 @@ Only after the cause is shown: fix the mechanism, not the test. If U119a's per-r
 
 `operating-procedure.md` §14; this lane's port is **5403** from a config copy under `app/build/u125/`. U122a is designing a new landscape Score chrome that may replace this code; keep the fix small and local so it does not pre-empt that design. Report every item done or a not-done line, judgement first, with the counts per variant.
 
+**Landed 2026-10-01** (Entry 210; 6d01204b, merged b58c25bb); handoff `handoffs/6d01204b.md`.
+
 ## Record
 
 lane: U125 · closes: — · entry: 210
 index: A note played in a busy moment is judged in its window again: the cause of engine.spec.ts:156's new intermittent red found by variant counts under throttling, then fixed at the mechanism (`U125-a-note-in-a-busy-moment-is-judged-in-its-window-again.md`) | app | drafted 2026-10-02 (`U125-a-note-in-a-busy-moment-is-judged-in-its-window-again.md`); Entry 210
 in-flight: drafted 2026-10-02 (`U125-a-note-in-a-busy-moment-is-judged-in-its-window-again.md`): the U66 engine test's new intermittent red, cause first (U119a's per-render measurement suspected), then the mechanism (Entry 210)
 state: dispatched 2026-10-02: dispatched at 90b19bee, debugging (Entry 210)
+- landed 2026-10-01: merged b58c25bb; handoff `handoffs/6d01204b.md`
