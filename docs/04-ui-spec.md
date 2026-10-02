@@ -3771,6 +3771,27 @@ the drills themselves, so a measurement added and not named fails.
 
 ## 6. Progress
 
+**Backup export time (SG05 Part 1).** In *Your data*, immediately above the action row,
+one quiet wrapping line says *No backup exported on this device yet.* or
+*Last backup exported: <local date and time>. Check where you put it.* The time is
+this device's export completion/handoff, not proof that a download reached disk.
+File writes count after close; share counts after resolution; a download counts
+after the link click. Cancelled or failed delivery leaves the previous time.
+Restoring a backup cannot adopt its date or another device's export time.
+
+- **Phone upright:** the line occupies its own full-width paragraph, above the wrapping
+  action row; the date can wrap without squeezing the buttons.
+- **Phone sideways:** the same quiet paragraph stays in the data block; the actions
+  can share a row, and the line creates no floating notice or fixed height.
+- **Tablet:** the line belongs to the data block within the existing content column,
+  rather than filling unused screen width or becoming a dashboard statistic.
+
+No reminder or repeated Settings line: the time answers the question where the backup
+is made. Export status distinguishes *Backup saved*, *Backup shared*, *Backup download
+requested*, and *Backup cancelled*. Successful statuses retain *check where you put it*.
+Screenshots are requested on the three representative layouts; appearance is unverified
+until those browser captures are inspected.
+
 **§0:** a hand screen (R2) — rows ≤ 96 px. The heat map is *Minutes a day, last 13 weeks* and carries a one-line key for its five levels (`0 · <10 · <25 · <45 · 45+ min`). **No filled box** (R3): nothing on this screen is done on most visits. The week's figure is the subject and is the first thing on the screen (R1).
 
 **Ranked, 2026-09-12** (the pass the four tab screens had; see `ProgressScreen.ts`). Four of the Plan screen's six faults were here:

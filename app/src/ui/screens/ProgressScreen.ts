@@ -39,6 +39,7 @@ import type { Router } from '../../router';
 import { allItems, loadCurriculum } from '../../curriculum/load';
 import { allShelfPieces } from '../../data/booksStore';
 import type { CatalogItem } from '../../curriculum/types';
+import { getSettings } from '../../data/settingsStore';
 import { importAll, isBackupFile, writeBackup } from '../../data/backup';
 import { isPhraseRun, type ProgressRow, type SessionRow } from '../../data/db';
 import { accuracyReading } from '../../data/accuracyReading';
@@ -620,6 +621,13 @@ export function ProgressScreen(router: Router): HTMLElement {
     );
   }
 
+  function backupTimeText(): string {
+    const at = getSettings().lastBackupAt;
+    return at === undefined
+      ? 'No backup exported on this device yet.'
+      : `Last backup exported: ${new Date(at).toLocaleString()}. Check where you put it.`;
+  }
+
   function drawData(): void {
     const filePicker = el('input', {
       type: 'file',
@@ -659,6 +667,7 @@ export function ProgressScreen(router: Router): HTMLElement {
       el('p.muted', {
         text: 'Everything is on this phone and nowhere else. The backup file is the only copy — imports included.',
       }),
+      el('p.muted', { id: 'progress-backup-time', text: backupTimeText() }),
       // `04` §0 R3, weight by frequency. Three boxes of equal weight is no
       // weighting, and the filled one was on the rarest of the three at the
       // bottom of a screen that can be fifty rows long — the same fault
@@ -710,7 +719,12 @@ export function ProgressScreen(router: Router): HTMLElement {
       })
         .then((how) => {
           status.textContent =
-            how === 'download' ? 'Backup downloaded.' : 'Backup saved — check where you put it.';
+            how === 'cancelled' ? 'Backup cancelled.'
+              : how === 'download' ? 'Backup download requested — check where you put it.'
+                : how === 'share' ? 'Backup shared — check where you put it.'
+                  : 'Backup saved — check where you put it.';
+          const line = dataBlock.querySelector('#progress-backup-time');
+          if (line) line.textContent = backupTimeText();
         })
         .catch((cause: unknown) => {
           status.textContent = `The export failed: ${String(cause)}`;
