@@ -47,9 +47,12 @@ Judgement first. Then:
 
 Built by the outside builder on `chatgpt/u110a`. The checks it cannot run are run by the orchestrator on its branch head, on request (`docs/review/reviewer-context.md`, Build requests). Never name an AI model in any file.
 
+**Landed 2026-10-02** (Entry 218; eddd5c95, merged 024c5883); handoff `handoffs/eddd5c95.md`.
+
 ## Record
 
 lane: U110a · closes: — · entry: 218
 index: The window renderer's terminal exception pruned unless a residual overlap earns it, U110's required change (`U110a-prune-the-terminal-guard.md`) | app | drafted 2026-10-02 (`U110a-prune-the-terminal-guard.md`); Entry 218
 in-flight: drafted 2026-10-02 (`U110a-prune-the-terminal-guard.md`): a fix-forward on U110, the reviewer's required change; second read, prune, U110's instruments rerun (Entry 218)
 state: dispatched 2026-10-02: dispatched at 345ffda4, finishing here from the outside builder's pruning at f11cd7c6 (Entry 218)
+- landed 2026-10-02: merged 024c5883; handoff `handoffs/eddd5c95.md`

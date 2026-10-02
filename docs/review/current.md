@@ -6,6 +6,8 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- **Now (03:45): two reviews, in this order:** U110a (`handoffs/eddd5c95.md`), then G90 (`handoffs/1c75de8d.md`). Answer what your budget allows; if you stop, leave a limit note. CL11b and U122c come in the next batch.
+- `handoffs/eddd5c95.md` — **open**, respond in `responses/eddd5c95.md`: U110a, the window renderer's terminal exception keyed on actual packing: a spent ladder keeps the look-ahead row the drawn rows leave room for, and drops it only when they no longer fit (Entry 218).
 - `handoffs/1c75de8d.md` — **open**, respond in `responses/1c75de8d.md`: G90, a piece paused after Start session is skipped at its turn with its reason; no lesson id in the heading while the lesson loads (Entry 217).
 - `handoffs/1afa30d3.md` — **answered** in `responses/1afa30d3.md`: CL11 approved; L102 kept for this build; the two build lanes (CL11a app code, CL11b content) stand without another pre-build review.
 - **Now (02:25): U110a's admission trace is published,** in `docs/prompts/runs/U110a/checks-3203626b.txt` with the raw JSON. The answer: at Twinkle 342 x 740, Bars 3, the drawn three-row shape lost its look-ahead row to admission alone, once per load in 5 of 5 loads (659.8 against 658.4; 650.3 priced at the drawn rows). The spent ladder at that pass is inferred, not logged. Not at rest, and not at 360 x 780. **U110a is taken over (02:35):** the wake for this push did not fire, so a builder here finishes it from your pruning (`f11cd7c6`, credited) and the published checks. Do not continue U110a. Review it when its handoff comes. Reviews only from here.
