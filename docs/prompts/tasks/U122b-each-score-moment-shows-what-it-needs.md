@@ -74,3 +74,4 @@ in-flight: drafted 2026-10-02 (`U122b-each-score-moment-shows-what-it-needs.md`)
 state: dispatched 2026-10-01: dispatched at d159f407, probing, the U122a verdict's fast path (Entry 214)
 - landed 2026-10-01: merged 61743e34; handoff `handoffs/e070d238.md`
 - verdict 2026-10-01: APPROVE WITH ONE REQUIRED CHANGE (`responses/e070d238.md`): the three rules, the fixed top band, the refusal replacing the title and no stale chip over the finished sheet carry into the c6 build; the finished view shows the run's outcome and next action on the post-X46 sheet, not the probe's ordering; the count-in's big numerals beside the pause control (fitted at 568 x 320, 115 %, wider face; the top line the fallback); cause-bearing paused notes may take the title, generic pause may not; closes when the c6 build brief carries the finished-state correction
+- closed 2026-10-02: the finished-state correction is carried by U122c's brief (Entry 216, `handoffs/adb0873a.md`)
