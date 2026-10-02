@@ -479,6 +479,21 @@ class TheWorkflowOrder(unittest.TestCase):
         self.assertIn("tools.content.tests.test_record_mirrors", docs, "the record's mirrors are checked on every push (T58)")
         self.assertIsNone(re.search(r"run:.*(playwright|vitest|build:app|render_check)", docs, re.IGNORECASE), "the docs workflow never runs the app's suites")
 
+    def test_the_outside_builders_branches_are_checked_and_never_deployed(self) -> None:
+        # 2026-10-01: the outside builder builds on its own `chatgpt/<lane>` branches. CI and the
+        # docs check run there, so a build arrives with the runner's evidence; the run's group keys
+        # on the ref (asserted above), so it never holds this branch's pending slot; and only this
+        # branch deploys, since every push to it reaches the owner's phone.
+        on = re.search(r"^on:\n((?:[ \t]+.*\n)+)", self.text, re.MULTILINE)
+        self.assertIsNotNone(on, f"{WORKFLOW.name} lost its `on` block")
+        self.assertRegex(on.group(1), r"branches:\s*\[claude/piano-teaching-app-bo19td, 'chatgpt/\*\*'\]")
+        docs = WORKFLOW.with_name("docs-integrity.yml").read_text(encoding="utf-8")
+        self.assertRegex(docs, r"branches:\s*\[claude/piano-teaching-app-bo19td, 'chatgpt/\*\*'\]")
+        self.assertRegex(docs, r"group:\s*docs-\$\{\{\s*github\.ref\s*\}\}")
+        pages = WORKFLOW.with_name("pages.yml").read_text(encoding="utf-8")
+        self.assertNotIn("chatgpt", pages, "the outside builder's branches never deploy")
+        self.assertRegex(pages, r"(?m)^\s+branches:\s*\[claude/piano-teaching-app-bo19td\]\s*$", "pages.yml deploys this branch alone")
+
     def test_the_steps_the_failure_messages_name_exist(self) -> None:
         # In every job, and each in exactly one: a red run's message names one step to open.
         for name in CITED:
