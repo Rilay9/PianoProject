@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { evaluateOutcome, measuresOf } from '../../src/engine/Scoring';
+import { scoreOutcome } from '../../src/data/sessionRun';
 import type { PracticeEngineOptions } from '../../src/engine/PracticeEngine';
 import type { SessionScore } from '../../src/engine/types';
 import { BEAT_MS, harness, makeModel, note, type Harness } from './helpers/engineHarness';
@@ -98,6 +99,37 @@ describe('a loop scores one population end to end', () => {
     });
     expect(measures.pitch).toMatchObject({ definition: 'tempo-notes', right: 2, of: 2 });
     expect(secondLap.stepOutcomes?.wrong.length).toBeGreaterThan(0);
+  });
+
+  it('Stop after completed looping reports and saves the last completed lap, not the new partial lap', () => {
+    const { h, secondLap } = playLoop(cd, cleanLap, (zero) => [
+      { at: zero, midi: 60 },
+      { at: zero + BEAT_MS, midi: 62 },
+      { at: zero + BEAT_MS + 20, midi: 68 },
+    ]);
+
+    // A third lap has just begun. Stop is the real finish the Score screen sends
+    // to its summary/save path; it must not replace the completed pass with an
+    // almost-empty next lap.
+    h.engine.stop();
+    const stopped = h.of('finished').filter((event) => !event.loop).at(-1)?.score;
+    expect(stopped).toBeDefined();
+    expect(stopped?.hits).toBe(secondLap.hits);
+    expect(stopped?.wrongNotesTotal).toBe(secondLap.wrongNotesTotal);
+    expect(stopped?.expectedNotes).toBe(secondLap.expectedNotes);
+    expect(stopped?.accuracy).toBeCloseTo(secondLap.accuracy, 9);
+
+    const measured = evaluateOutcome(stopped as SessionScore, criteria);
+    expect(measured.passed).toBe(false);
+    // ScoreScreen writes this measured verdict as RunResult.passed; the session
+    // completion then reads that stored decision through scoreOutcome.
+    expect(
+      scoreOutcome({
+        passed: measured.passed,
+        accuracy: (stopped as SessionScore).accuracy,
+        accuracyEstimated: (stopped as SessionScore).accuracyEstimated,
+      }),
+    ).toBe('failed');
   });
 
   it('a non-looped Keep tempo run keeps the existing one-pass population', () => {
