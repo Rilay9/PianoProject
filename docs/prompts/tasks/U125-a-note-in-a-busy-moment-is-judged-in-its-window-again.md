@@ -25,3 +25,5 @@ index: A note played in a busy moment is judged in its window again: the cause o
 in-flight: drafted 2026-10-02 (`U125-a-note-in-a-busy-moment-is-judged-in-its-window-again.md`): the U66 engine test's new intermittent red, cause first (U119a's per-render measurement suspected), then the mechanism (Entry 210)
 state: dispatched 2026-10-02: dispatched at 90b19bee, debugging (Entry 210)
 - landed 2026-10-01: merged b58c25bb; handoff `handoffs/6d01204b.md`
+- verdict 2026-10-01: APPROVE (`responses/6d01204b.md`): the mechanism and fix accepted; the delayed miss under repeated stalls accepted with no tighter bound, since an earlier mark could paint a note wrong that a still-trusted stamp proves was in time
+- closed 2026-10-01: the U66 one-second stamp-trust limit, the timing window and the browser assertion preserved; no UI lane from the throttled case
