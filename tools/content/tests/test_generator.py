@@ -14,6 +14,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from tests.convention import convention_printed  # noqa: E402
 from generate_exercises import (  # noqa: E402
     ACCOMPANIMENT_PATTERNS,
     CADENCE_VOICINGS,
@@ -208,7 +209,9 @@ class TestCoordination(unittest.TestCase):
         self.assertEqual([n.name for n in notes_of(lh)], ["C", "G", "C"])
 
     def test_the_left_hand_fingering_is_five_on_the_tonic_and_one_on_the_dominant(self) -> None:
-        score, _ = make_coordination("C", "change")
+        # G30: the convention is no longer printed (the row says none); read as if it were (tests/convention.py).
+        with convention_printed():
+            score, _ = make_coordination("C", "change")
         self.assertEqual(fingerings_of(list(score.parts)[1]), [5, 1, 5])
 
     def test_it_is_spelled_for_the_key(self) -> None:
@@ -257,7 +260,9 @@ class TestIntervalReading(unittest.TestCase):
 
 class TestPositionShift(unittest.TestCase):
     def test_only_the_two_notes_that_start_a_position_are_fingered(self) -> None:
-        score, _ = make_position_shift("C", "right")
+        # G30: the convention is no longer printed (the row says none); read as if it were (tests/convention.py).
+        with convention_printed():
+            score, _ = make_position_shift("C", "right")
         self.assertEqual(fingerings_of(score.parts[0]), [1, 1])
 
     def test_the_second_half_starts_a_fifth_higher(self) -> None:
@@ -267,7 +272,9 @@ class TestPositionShift(unittest.TestCase):
         self.assertEqual(notes[8].name, "G")
 
     def test_the_left_hand_version_uses_the_little_finger(self) -> None:
-        score, _ = make_position_shift("C", "left")
+        # G30: the convention is no longer printed (the row says none); read as if it were (tests/convention.py).
+        with convention_printed():
+            score, _ = make_position_shift("C", "left")
         self.assertEqual(fingerings_of(score.parts[1]), [5, 5])
 
 
@@ -468,7 +475,9 @@ class TestAccompaniment(unittest.TestCase):
         self.assertGreater(len(notes_of(together.parts[0])), 0)
 
     def test_only_the_bass_note_of_each_group_is_fingered(self) -> None:
-        score, _ = make_accompaniment("C", "major", "broken", "left")
+        # G30: the convention is no longer printed (the row says none); read as if it were (tests/convention.py).
+        with convention_printed():
+            score, _ = make_accompaniment("C", "major", "broken", "left")
         self.assertEqual(fingerings_of(score.parts[1]), [5, 5, 5, 5])
 
     def test_a_minor_key_uses_its_own_third(self) -> None:
@@ -547,8 +556,10 @@ class TestFiveFingerHandsSeparately(unittest.TestCase):
         self.assertGreater(len(notes_of(score.parts[1])), 0)
 
     def test_the_hands_have_mirrored_fingering(self) -> None:
-        right, _ = make_five_finger("C", "major", "right")
-        left, _ = make_five_finger("C", "major", "left")
+        # G30: the convention is no longer printed (the row says none); read as if it were (tests/convention.py).
+        with convention_printed():
+            right, _ = make_five_finger("C", "major", "right")
+            left, _ = make_five_finger("C", "major", "left")
         self.assertEqual(fingerings_of(right.parts[0])[:5], [1, 2, 3, 4, 5])
         self.assertEqual(fingerings_of(left.parts[1])[:5], [5, 4, 3, 2, 1])
 
@@ -561,6 +572,9 @@ class TestChordFingeringSurvivesExport(unittest.TestCase):
     looks right in Python and exports with no `<fingering>` element at all. Every
     chord-shaped exercise shipped that way until this test existed, so the assertion is on
     the written MusicXML and nothing else.
+
+    Revised by G30: the families used here (cadence, pedal, triad_inversions) no longer print their
+    convention, so each is read as if it did (`tests/convention.py`); the export is what is tested.
     """
 
     def written_fingerings(self, score) -> list[str]:
@@ -572,26 +586,31 @@ class TestChordFingeringSurvivesExport(unittest.TestCase):
         return re.findall(r"<fingering[^>]*>(\d)</fingering>", Path(path).read_text())
 
     def test_a_cadence_chord_keeps_its_fingering(self) -> None:
-        score, _ = make_cadence("C", "root")
+        with convention_printed():
+            score, _ = make_cadence("C", "root")
         self.assertEqual(self.written_fingerings(score)[:3], ["5", "3", "1"])
 
     def test_the_seventh_chord_is_fingered_on_all_four_notes(self) -> None:
-        score, _ = make_cadence("C", "root")
+        with convention_printed():
+            score, _ = make_cadence("C", "root")
         self.assertEqual(len(self.written_fingerings(score)), 3 + 3 + 4 + 3)
 
     def test_the_pedal_exercise_keeps_its_fingering(self) -> None:
-        score, _ = make_pedal("C")
+        with convention_printed():
+            score, _ = make_pedal("C")
         self.assertEqual(self.written_fingerings(score)[:3], ["5", "3", "1"])
 
     def test_inversions_are_fingered_at_all(self) -> None:
         # They never were: the family shipped with none, against docs/02 Part E.
-        score, _ = make_triad_inversions("C", "major", "right")
+        with convention_printed():
+            score, _ = make_triad_inversions("C", "major", "right")
         written = self.written_fingerings(score)
         self.assertTrue(written)
         self.assertEqual(written[:6], ["1", "3", "5", "1", "2", "5"])
 
     def test_the_left_hand_fingers_inversions_from_the_bottom(self) -> None:
-        score, _ = make_triad_inversions("C", "major", "left")
+        with convention_printed():
+            score, _ = make_triad_inversions("C", "major", "left")
         self.assertEqual(self.written_fingerings(score)[:3], ["5", "3", "1"])
 
 class TestTrillAndMordent(unittest.TestCase):
@@ -651,9 +670,10 @@ class TestTrillAndMordent(unittest.TestCase):
         # The right hand climbs away from the thumb and the left climbs towards
         # it, so the upper of two adjacent keys is 3 in one hand and 2 in the
         # other. One number for both was only right while the first note was
-        # the lower of the pair.
-        right, _ = make_trill(tonic="C", notes_per_beat=4, hands="right")
-        left, _ = make_trill(tonic="C", notes_per_beat=4, hands="left")
+        # the lower of the pair. G30: the convention is no longer printed (the row says none); read as if it were (tests/convention.py).
+        with convention_printed():
+            right, _ = make_trill(tonic="C", notes_per_beat=4, hands="right")
+            left, _ = make_trill(tonic="C", notes_per_beat=4, hands="left")
         self.assertEqual(self._fingers(self._sounding(right)[0])[0], 3)
         self.assertEqual(self._fingers(self._sounding(left)[0])[0], 2)
 

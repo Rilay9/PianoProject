@@ -15,14 +15,14 @@ note at a time in each hand.
 
 **Scales in thirds and sixths.** Both notes come out of the scale, so the
 interval keeps changing between major and minor — that is what makes it a scale
-in thirds rather than a scale doubled. Both fingers are printed: in thirds the
-standard three-group cycle, 1-3, 2-4, 3-5 and round again, retraced on the way
-down; in sixths mostly 1-5, with 2-5 and 1-4 among them. Take that as a starting point rather than a rule. The inner finger in particular
+in thirds rather than a scale doubled. A common fingering: in thirds the three-group cycle,
+1-3, 2-4, 3-5 and round again, retraced on the way
+down; in sixths mostly 1-5, with 2-5 and 1-4 among them. None is printed: a starting point, not a rule. The inner finger in particular
 depends on your hand and on the key, and if it does not suit yours, change it,
 write it in, and then keep the one you chose — an inner fingering you decide
 again every time is the thing that stops this getting faster.
 
-**Octaves.** The printed fingering, thumb and fifth on white keys and thumb and
+**Octaves.** The fingering, thumb and fifth on white keys and thumb and
 **fourth** on black ones in both hands, is common, not a rule: the longer fourth
 reaches a black key easily, but a large hand may use it on white keys too and a
 small one the fifth throughout. Keep what your hand plays easily. The broken

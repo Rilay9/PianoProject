@@ -1566,14 +1566,19 @@ const T12_MUSIC: [string, string, () => boolean][] = [
 
   [
     'technique.4',
-    'the scale, arpeggio, chromatic and inversion exercises finger every note, and the articulation ones finger none',
+    // Revised by G30 (the old assumption: the inversions print their fingering). Their row's convention is the
+    // generator's own, with no source, so since G30 none is printed; the sourced shapes still print every finger.
+    'the scale, arpeggio and chromatic exercises finger every note, the inversions and the articulation ones finger none',
     () => {
       const options = t12Exercises('technique.4');
-      const named = options.filter((id) => /\.(scale|arpeggio|chromatic|inversions)\./.test(id));
+      const sourced = options.filter((id) => /\.(scale|arpeggio|chromatic)\./.test(id));
+      const inversions = options.filter((id) => id.includes('.inversions.'));
       const articulation = options.filter((id) => id.includes('articulation'));
       return (
-        named.length === 6 &&
-        named.every((id) => t12Sounded(id).every((note) => note.finger !== null)) &&
+        sourced.length === 4 &&
+        sourced.every((id) => t12Sounded(id).every((note) => note.finger !== null)) &&
+        inversions.length === 2 &&
+        inversions.every((id) => t12Sounded(id).length > 0 && t12Sounded(id).every((note) => note.finger === null)) &&
         articulation.length === 4 &&
         articulation.every((id) => t12Sounded(id).every((note) => note.finger === null))
       );
@@ -2391,16 +2396,22 @@ const T12B_MUSIC: [string, string, () => boolean][] = [
   ],
   [
     'technique.7',
-    'the thirds are fingered in the three-group cycle and the sixths are not',
+    // Revised by G30 (the old assumption: the thirds and sixths print the three-group cycle and 1-5/2-5/1-4).
+    // Their row's convention is the generator's own, so none is printed; the lesson gives it in words.
+    'the thirds and sixths print no finger, and the lesson gives their fingering as a common one, a starting point, not a rule',
     () => {
-      const pairs = (id: string): string[] =>
-        t12bGroups(id, id.endsWith('.left') ? 2 : 1)
-          .filter((group) => group.fingers.length === 2)
-          .map((group) => group.fingers.join('-'));
-      const thirds = pairs('exercise.double-third.c.1oct.right').slice(0, 6);
-      const sixths = pairs('exercise.double-sixth.c.1oct.right').slice(0, 4);
+      const ids = ['third', 'sixth'].flatMap((shape) =>
+        ['right', 'left'].map((hand) => `exercise.double-${shape}.c.1oct.${hand}`),
+      );
+      const groups = (id: string): T12bGroup[] => t12bGroups(id, id.endsWith('.left') ? 2 : 1);
+      const text = f0mText('technique.7');
       return (
-        thirds.join(' ') === '1-3 2-4 3-5 1-3 2-4 3-5' && sixths.join(' ') === '1-5 1-5 2-5 1-4'
+        ids.every((id) => t12Exercises('technique.7').includes(id)) &&
+        ids.every((id) => groups(id).some((group) => group.midis.length === 2)) &&
+        ids.every((id) => groups(id).every((group) => group.fingers.every((finger) => finger === null))) &&
+        text.includes('A common fingering: in thirds the three-group cycle, 1-3, 2-4, 3-5') &&
+        text.includes('None is printed: a starting point, not a rule.') &&
+        !text.includes('Both fingers are printed')
       );
     },
   ],
@@ -3209,20 +3220,18 @@ const F0_MUSIC: [string, string, () => boolean][] = [
   ],
   [
     'technique.7',
-    'the octave scale prints thumb and fifth on white keys and thumb and fourth on black keys in both hands, and the lesson calls it a common fingering, not a rule',
+    // Revised by G30 (the old assumption: the octave scale prints thumb and fifth, thumb and fourth). Its row's
+    // convention is the generator's own, so none is printed; the lesson names the fingering without "printed".
+    'the octave scale prints no finger, and the lesson gives thumb and fifth on white keys and thumb and fourth on black as a common fingering, not a rule',
     () => {
       const notes = t12Sounded('exercise.octave-scale.a.1oct.both');
-      const black = (midi: number | null): boolean => [1, 3, 6, 8, 10].includes((midi ?? 0) % 12);
-      const outer = notes.filter((note) => (note.staff === 1 ? note.chord : !note.chord));
-      const thumbs = notes.filter((note) => (note.staff === 1 ? !note.chord : note.chord));
       const text = f0mText('technique.7');
       return (
         t12Exercises('technique.7').includes('exercise.octave-scale.a.1oct.both') &&
-        outer.length > 0 &&
-        outer.some((note) => black(note.midi)) &&
-        outer.every((note) => note.finger === (black(note.midi) ? '4' : '5')) &&
-        thumbs.every((note) => note.finger === '1') &&
-        text.includes('is common, not a rule') &&
+        notes.some((note) => note.chord) &&
+        notes.every((note) => note.finger === null) &&
+        text.includes('The fingering, thumb and fifth on white keys and thumb and fourth on black ones in both hands, is common, not a rule') &&
+        !text.includes('The printed fingering') &&
         !text.includes('will not survive D flat')
       );
     },

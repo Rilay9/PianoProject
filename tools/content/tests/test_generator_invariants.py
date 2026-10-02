@@ -1580,12 +1580,16 @@ class TestTheRecipesWriteWhatTheySay(unittest.TestCase):
         """
         G7: the first note was a move from a degree that is never written, so it could only be D or E.
         Over fifty seeds in each hand every degree of the position starts at least one melody, the
-        printed finger is the degree's, and the vocabulary is still seconds and thirds ending on C.
+        finger the maker gives the first note is the degree's, and the vocabulary is still seconds and
+        thirds ending on C. G30: the convention is no longer printed (the row says none); read as if it were (tests/convention.py).
         """
+        from tests.convention import convention_printed
+
         firsts: dict[str, set[int]] = {"right": set(), "left": set()}
         for hands in ("right", "left"):
             for seed in range(1, 51):
-                sc, entry = G.make_interval_reading(seed, hands)
+                with convention_printed():
+                    sc, entry = G.make_interval_reading(seed, hands)
                 notes = staves(sc)["RH" if hands == "right" else "LH"]
                 degrees = [("CDEFG".index(n.pitches[0].step) + 1) for n in notes]
                 firsts[hands].add(degrees[0])

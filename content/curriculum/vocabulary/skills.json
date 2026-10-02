@@ -98,7 +98,7 @@
       "opportunity": ["interval.step", "interval.skip", "interval.leap"],
       "observable": ["pitch"],
       "standards": { "practice": [], "full": ["unseen", "guide-off"] },
-      "note": "Right notes are what a note-namer plays too, in a fixed position with the first finger printed (design §2, the generated-exercise trace Q5). Pitch is the observable; that it shows reading by interval rather than by name rests on the material and the conditions, not on the measurement.",
+      "note": "Right notes are what a note-namer plays too, in a fixed position (design §2, the generated-exercise trace Q5, when the first finger was printed; since G30 it is not, and the point holds without it). Pitch is the observable; that it shows reading by interval rather than by name rests on the material and the conditions, not on the measurement.",
       "transfer": { "dimensions": ["key", "hands", "texture"], "why": "The distance read from its shape: in a fixed C position a note-namer plays the same right notes (the skill's note), so another key or position, the other hand's staff, and both staves at once are what show the shape is read; pitch only, so rhythm is not." }
     },
     {

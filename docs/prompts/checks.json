@@ -155,6 +155,7 @@
     {"pattern": "tools/content/tests/fixtures/**", "checks": {"content-tests": "*"}, "reason": "fixtures shared across the content suites"},
     {"pattern": "tools/content/tests/mxlutil.py", "checks": {"content-tests": "*"}, "reason": "a helper several suites import"},
     {"pattern": "tools/content/tests/planned.py", "checks": {"content-tests": "*"}, "reason": "builds and measures the plan once for the D0 files"},
+    {"pattern": "tools/content/tests/convention.py", "checks": {"content-tests": ["test_generator.py", "test_generator_fingering.py", "test_generator_invariants.py", "test_harmony_families.py"]}, "reason": "reads a family's unprinted fingering convention for the four suites that pin it (G30)"},
     {"pattern": "tools/content/tests/__init__.py", "checks": {"content-tests": "*"}, "reason": "the package every suite is discovered in"},
     {"pattern": "tools/midi-cleanup/**", "checks": {"converter-harness": true, "parity-reference": true, "unit": ["tests/unit/midiParity.test.ts"]}, "reason": "the converter and its harness; the parity reference the app's port is held to (docs/08; E2's chain)"},
     {"pattern": "tools/midi-cleanup/midi_to_musicxml.py", "checks": {"content-build": true, "content-validate": true, "content-tests": ["test_import_mutopia.py"]}, "reason": "since Q76 the [MUTO] import converts Mutopia's published MIDI with it: a changed converter reconverts the public Pine Apple Rag ragtime.8 keeps its stride bass with, and the import's spelling and left-hand tests read what it writes"},

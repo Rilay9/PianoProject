@@ -795,7 +795,8 @@ Every scale/arpeggio drill is generated per key, hands (R/L/both), octaves (1–
 MusicXML `<fingering>` elements where a published table covers the shape — Clementi and Kelley
 for the scales, Kelley for the triad arpeggios, McLain for the white-root sevenths and the
 chromatic scale — and each family's contract says whether it prints fingering and on what
-source (D0; entries 84–86). Hanon 1–20 are generated from the Mutopia edition's own data, its
+source (D0; entries 84–86). A family whose convention no source gives prints none (G30,
+`docs/review/responses/questions-53670d2a.md` §3). Hanon 1–20 are generated from the Mutopia edition's own data, its
 printed fingers included.
 
 **Amendments 2026-09-06 (replan, §3):**
@@ -1176,14 +1177,15 @@ that decision exists a study reaches the learner only through the Library (Part 
 The table above is a technique syllabus in the conservatoire sense. It is not the whole of
 what a learner practises, and a skill with no generated exercise ends up either untested or
 propped up by a song that only half tests it. Every family below is generated notation, per
-key and per hand where that means anything, with fingering:
+key and per hand where that means anything. Fingering is printed only where the family's contract
+names a source, which in this table is the `contrary` scales alone; the others print none (G30):
 
 | Family | Trains | Stage | Notes |
 |--------|--------|------:|-------|
 | `five-finger` **hands separately** | 1.1 RH position, 1.3 LH position | 1 | The generator already takes a `hands` argument; the build plan only ever asked for `both`. |
 | `coordination` | 2.1 "LH holds, RH moves" | 2 | LH whole/half note under an RH five-finger walk; a variant where the LH changes C→G each bar. |
 | `interval-reading` | 1.5 steps and skips | 1 | Four bars, fixed hand position, intervals restricted to 2nds and 3rds. Deterministic per seed so a lesson can name one. |
-| `position-shift` | 2.5 leaving C position | 2 | A melody with one marked shift per line, fingering printed at the move. |
+| `position-shift` | 2.5 leaving C position | 2 | A melody with one shift per line. The finger at the move is no longer printed (G30: no source), so the shift is read from the notes leaving the position. |
 | `cadence` | 3.2 I–IV–V7, voice leading | 3 | Per key, twice: root position, then the smooth voicing keeping common tones. The most useful chord exercise there is. |
 | `accompaniment` | **3.6, which currently has no generated exercise at all** | 3 | Broken chord, Alberti, waltz bass over a chord sequence; LH alone and hands-together with an RH scale over the top. |
 | `pedal` | 3.5 legato pedalling | 3 | A chord sequence with pedal marks, for the CC64 change-timing score. |
