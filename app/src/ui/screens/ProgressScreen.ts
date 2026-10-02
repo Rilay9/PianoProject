@@ -625,7 +625,7 @@ export function ProgressScreen(router: Router): HTMLElement {
     const at = getSettings().lastBackupAt;
     return at === undefined
       ? 'No backup exported on this device yet.'
-      : `Last backup exported: ${new Date(at).toLocaleString()}. Check where you put it.`;
+      : `Last backup exported: ${new Date(at).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}.`;
   }
 
   function drawData(): void {

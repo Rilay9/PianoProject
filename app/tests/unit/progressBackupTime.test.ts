@@ -27,5 +27,5 @@ it('places a dated export boundary beside the backup action, without claiming di
   resetSettingsForTest();
   const screen = await mount();
   const line = screen.querySelector('#progress-data #progress-backup-time');
-  expect(line?.textContent).toBe(`Last backup exported: ${new Date(at).toLocaleString()}. Check where you put it.`);
+  expect(line?.textContent).toBe(`Last backup exported: ${new Date(at).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}.`);
 });

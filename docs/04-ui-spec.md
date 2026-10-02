@@ -3773,7 +3773,7 @@ the drills themselves, so a measurement added and not named fails.
 
 **Backup export time (SG05 Part 1).** In *Your data*, immediately above the action row,
 one quiet wrapping line says *No backup exported on this device yet.* or
-*Last backup exported: <local date and time>. Check where you put it.* The time is
+*Last backup exported: <local date and time, to the minute>.* (The action's own status line keeps *check where you put it*; the standing line does not repeat it. The orchestrator's change at landing, 2026-10-02.) The time is
 this device's export completion/handoff, not proof that a download reached disk.
 File writes count after close; share counts after resolution; a download counts
 after the link click. Cancelled or failed delivery leaves the previous time.

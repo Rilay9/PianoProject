@@ -209,7 +209,7 @@ export async function writeBackup(
 export type BackupDelivery = 'file' | 'share' | 'download' | 'cancelled';
 
 /** File close and share resolution prove delivery; a download proves only handoff. */
-async function deliverBackup(chunks: () => AsyncIterable<string>, now: Date): Promise<BackupDelivery> {
+async function deliverBackup(chunks: () => AsyncIterable<string> | Iterable<string>, now: Date): Promise<BackupDelivery> {
   const name = backupFilename(now);
   const picker = (window as { showSaveFilePicker?: (o: unknown) => Promise<FileSystemFileHandle> })
     .showSaveFilePicker;
@@ -417,8 +417,6 @@ export function backupFilename(now = new Date()): string {
  * a file you can find again.
  */
 export async function saveBackupFile(file: BackupFile, now = new Date()): Promise<BackupDelivery> {
-  async function* chunks(): AsyncGenerator<string> {
-    yield JSON.stringify(file);
-  }
-  return deliverBackup(chunks, now);
+  // One chunk: the file is already in memory, so a plain iterable serves.
+  return deliverBackup(() => [JSON.stringify(file)], now);
 }

@@ -70,7 +70,7 @@ for (const api of ['streaming', 'in-memory'] as const) {
       vi.stubGlobal('showSaveFilePicker', vi.fn().mockRejectedValue(new DOMException('cancel', 'AbortError')));
       await expect(save()).resolves.toBe('cancelled');
       expect(stamp()).toBe(priorAt);
-      expect(URL.createObjectURL).not.toHaveBeenCalled();
+      expect(vi.mocked(URL).createObjectURL).not.toHaveBeenCalled();
     });
     it.each(['write', 'close'])('a failed %s followed by a failed fallback does not stamp', async (phase) => {
       await seedTime();
@@ -125,7 +125,7 @@ describe('the backup time belongs to this device', () => {
     reloadSettings();
     expect(stamp()).toBe(completedAt);
     const db = await openDatabase();
-    await vi.waitFor(async () => expect(JSON.parse(String(await db?.get('settings', 'pianopath.settings'))).lastBackupAt).toBe(completedAt));
+    await vi.waitFor(async () => expect((JSON.parse(String(await db?.get('settings', 'pianopath.settings'))) as { lastBackupAt?: number }).lastBackupAt).toBe(completedAt));
     localStorage.clear();
     await hydratePersisted();
     reloadSettings();

@@ -24,7 +24,7 @@ for (const [name, viewport] of [
       ]);
       expect(download.suggestedFilename()).toMatch(/^pianopath-backup-.*\.json$/);
       await expect(page.locator('#progress-status')).toHaveText('Backup download requested — check where you put it.');
-      await expect(line).toHaveText(/^Last backup exported: .+\. Check where you put it\.$/);
+      await expect(line).toHaveText(/^Last backup exported: [^:]+\d:\d\d[^:]*\.$/);
       // Text stays inside its content block at this representative viewport.
       const bounds = await line.evaluate((node) => ({
         textWidth: node.scrollWidth, availableWidth: node.clientWidth,
@@ -40,7 +40,7 @@ test('cancelling the picker leaves the previous time and says cancelled', async 
   await page.addInitScript(() => {
     localStorage.setItem('pianopath.settings', JSON.stringify({ lastBackupAt: 1790964000000 }));
     Object.defineProperty(window, 'showSaveFilePicker', {
-      configurable: true, value: async () => { throw new DOMException('cancel', 'AbortError'); },
+      configurable: true, value: () => Promise.reject(new DOMException('cancel', 'AbortError')),
     });
   });
   await page.goto('/#/progress');
