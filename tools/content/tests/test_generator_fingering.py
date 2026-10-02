@@ -58,6 +58,7 @@ from music21 import articulations, converter, interval, key, note, pitch  # noqa
 
 import generate_exercises as G  # noqa: E402
 from abc_tools import apply_fingerings, extract_fingerings, prepare_abc  # noqa: E402
+from tests.convention import convention_printed  # noqa: E402
 from generate_exercises import (  # noqa: E402
     BLACK_PITCH_CLASSES,
     HARMONIC_MINOR_FINGERING,
@@ -1144,14 +1145,18 @@ class TestBrokenSeventhFingering(unittest.TestCase):
 
 
 class TestWalkingBassFingering(unittest.TestCase):
+    """G30: the convention is no longer printed (the row says none); read as if it were (tests/convention.py)."""
+
     def test_root_third_fifth_sit_under_five_three_one(self) -> None:
-        sc, _ = make_walking_bass("C", "blues", "intro")
+        with convention_printed():
+            sc, _ = make_walking_bass("C", "blues", "intro")
         lh = fingered_notes(sc, "LH")
         for bar in range(12):
             self.assertEqual([f for _, f in lh[bar * 4 : bar * 4 + 3]], [5, 3, 1], f"bar {bar + 1}")
 
     def test_the_approach_note_is_fingered_by_where_it_lands(self) -> None:
-        sc, _ = make_walking_bass("C", "blues", "intro")
+        with convention_printed():
+            sc, _ = make_walking_bass("C", "blues", "intro")
         lh = fingered_notes(sc, "LH")
         # Bar 1: C E G then B below the C — the hand drops, the little finger takes it.
         self.assertEqual(lh[3][0].nameWithOctave, "B1")
@@ -1163,7 +1168,8 @@ class TestWalkingBassFingering(unittest.TestCase):
     def test_the_thumb_is_never_below_the_second_finger_within_a_bar(self) -> None:
         for tonic in ("C", "F", "B-", "E-"):
             for form in ("blues", "ii-V-I"):
-                sc, entry = make_walking_bass(tonic, form)
+                with convention_printed():
+                    sc, entry = make_walking_bass(tonic, form)
                 lh = fingered_notes(sc, "LH")
                 for start in range(0, len(lh), 4):
                     bar = lh[start : start + 4]
@@ -1171,6 +1177,8 @@ class TestWalkingBassFingering(unittest.TestCase):
                         continue
                     by_finger = {f: p.ps for p, f in bar[:3]}
                     _, approach_finger = bar[3]
+                    # G30: on a fingerless score every check here passed with nothing read.
+                    self.assertIsNotNone(approach_finger, entry["id"])
                     approach_ps = bar[3][0].ps
                     # A finger's note is never above a lower-numbered finger's in the left hand.
                     if approach_finger == 1:

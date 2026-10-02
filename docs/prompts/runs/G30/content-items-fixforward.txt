@@ -1,0 +1,29 @@
+# G30 fix-forward content items (docs/review/responses/09ec1337.md §3, option (b))
+
+## Family row (`tools/content/family_contracts.json`, `repeated_notes`)
+
+- `version`: 1 -> 2. Why: the generated artifact changed (its fingering withdrawn), so its exact identity moves; its music did not.
+- `physical.fingering.printed`: 'printed' -> 'none'. Why: the row's own note calls the order the generator's convention, not a published source (the ruling, questions-53670d2a.md §3).
+- `physical.fingering.note`: "3-2-1 and 4-3-2-1; Part 10 names 'always descending' as over-rigid, and no source was read: fingeringVerified is false (D0; it was true with no source). the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups) Held at printed by G30 (Entry 211): without the printed change of finger the four-to-a-note items' 0.25 s repeats fail the physical gate's repeated-note check, and no repeatedNotes solution is declared; which way it goes is an open question, not decided here." -> "3-2-1 and 4-3-2-1; Part 10 names 'always descending' as over-rigid, and no source was read: fingeringVerified is false (D0; it was true with no source). the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it". Why: the hold is resolved; the clause matches the other 42 rows.
+- `physical.repeatedNotes`: absent -> {"solution": "change finger on each strike, which is what this drill practises; the order of the fingers is the learner's: the app prints no fingering for it and prescribes none (G30, the reviewer's option (b), docs/review/responses/09ec1337.md §3)", "why": "the four-to-a-note items re-strike every 0.25 s at ♩=60, under the gate's 0.3 s; this is this drill's solution, not a rule that every fast repeated note in piano playing takes a new finger on every strike"}. Why: the reviewer's option (b): this drill's solution, declared in the field the gate already reads, scoped to this drill.
+
+## Lesson (`content/lessons/technique.5.md`)
+
+- `content/lessons/technique.5.md`:18: "**Repeated notes** are the first exercise here that feels pointless and is not. Changing finger on each strike is one way to keep a fast repeated note even; the printed 3-2-1 for three strikes here, 4-3-2-1 for four on the next technique rung, is a common choice, not the only one." -> "**Repeated notes** are the first exercise here that feels pointless and is not. Changing finger on each strike is one way to keep a fast repeated note even, and it is what these drills practise. No fingers are printed, and the order is yours to choose.". Why: the files no longer print 3-2-1 / 4-3-2-1, so the lesson no longer claims them; it keeps its framing (changing finger is one way to keep a fast repeat even) and says what these drills ask, with the order left to the learner, the same rule the row declares. Within the lesson's stated three minutes.
+
+## Generated items (`scores/generated/<id>.mxl` and the catalogue row)
+
+- `exercise.repeated-notes.c.3x.left`: fingered strikes 24 -> 0; notes unchanged (music digest equal); identity repeated_notes v1 -> v2; former identities carried: v1; physical faults now: 0
+- `exercise.repeated-notes.c.3x.right`: fingered strikes 24 -> 0; notes unchanged (music digest equal); identity repeated_notes v1 -> v2; former identities carried: v1; physical faults now: 0
+- `exercise.repeated-notes.c.4x.left`: fingered strikes 32 -> 0; notes unchanged (music digest equal); identity repeated_notes v1 -> v2; former identities carried: v1; physical faults now: 0
+- `exercise.repeated-notes.c.4x.right`: fingered strikes 32 -> 0; notes unchanged (music digest equal); identity repeated_notes v1 -> v2; former identities carried: v1; physical faults now: 0
+- `exercise.repeated-notes.f.3x.left`: fingered strikes 24 -> 0; notes unchanged (music digest equal); identity repeated_notes v1 -> v2; former identities carried: v1; physical faults now: 0
+- `exercise.repeated-notes.f.3x.right`: fingered strikes 24 -> 0; notes unchanged (music digest equal); identity repeated_notes v1 -> v2; former identities carried: v1; physical faults now: 0
+- `exercise.repeated-notes.f.4x.left`: fingered strikes 32 -> 0; notes unchanged (music digest equal); identity repeated_notes v1 -> v2; former identities carried: v1; physical faults now: 0
+- `exercise.repeated-notes.f.4x.right`: fingered strikes 32 -> 0; notes unchanged (music digest equal); identity repeated_notes v1 -> v2; former identities carried: v1; physical faults now: 0
+- `exercise.repeated-notes.g.3x.left`: fingered strikes 24 -> 0; notes unchanged (music digest equal); identity repeated_notes v1 -> v2; former identities carried: v1; physical faults now: 0
+- `exercise.repeated-notes.g.3x.right`: fingered strikes 24 -> 0; notes unchanged (music digest equal); identity repeated_notes v1 -> v2; former identities carried: v1; physical faults now: 0
+- `exercise.repeated-notes.g.4x.left`: fingered strikes 32 -> 0; notes unchanged (music digest equal); identity repeated_notes v1 -> v2; former identities carried: v1; physical faults now: 0
+- `exercise.repeated-notes.g.4x.right`: fingered strikes 32 -> 0; notes unchanged (music digest equal); identity repeated_notes v1 -> v2; former identities carried: v1; physical faults now: 0
+
+items: 12; music digest moved: 0

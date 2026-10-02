@@ -35,7 +35,8 @@ Nothing here decides a demand. A demand has one definition and it is the app's
 
 It also owns the generated-identity continuity relation (CL15, `former_generator_identities`):
 when a family's version moves, an item whose music did not change carries the identity it had,
-proven by its music digest against `generator_continuity.json`.
+proven by its music digest against `generator_continuity.json`, and, after a second bump (G30), the
+identities it carried before that too.
 """
 from __future__ import annotations
 
@@ -206,6 +207,13 @@ def former_generator_identities(sc, entry: dict, table: dict | None = None) -> l
     the family's now is not read. Learner continuity only (`provenance.formerGeneratorIdentities`,
     `material.learnerMaterial`): D2's exact identity and every family-scoped read keep reading the
     row's own identity.
+
+    A second bump (G30) records with each item the former identities the catalogue already listed for
+    it at the version left (`formerGeneratorIdentities` in the table), and an item whose digest still
+    matches carries them after the identity it leaves, nearest first: each was proven against that same
+    digest by the bump before, so the chain is unbroken music. The app's map is built from the loaded
+    catalogue alone (`material.learnFormerIdentities`), so an identity the table dropped here would stop
+    resolving for a learner whose run names it.
     """
     generator = (entry.get("drill") or {}).get("generator") or {}
     record = (table if table is not None else continuity_table())["families"].get(generator.get("family"))
@@ -214,7 +222,7 @@ def former_generator_identities(sc, entry: dict, table: dict | None = None) -> l
     one = record["items"].get(entry["id"])
     if one is None or one["digest"] != music_digest(sc, entry):
         return []
-    return [json.loads(json.dumps(one["identity"]))]
+    return json.loads(json.dumps([one["identity"], *one.get("formerGeneratorIdentities", [])]))
 
 
 def stamp(entry: dict, family: str) -> dict:

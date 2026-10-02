@@ -117,11 +117,12 @@ test.describe('the microscope (D2)', () => {
     await expect(page.locator('#microscope-stage.score-view[data-settled]')).toBeVisible({ timeout: 60_000 });
     for (const fact of FACTS) await expect(page.locator(`[data-fact="${fact}"]`), fact).toBeVisible();
     await expect(page.locator('[data-fact="family"]')).toContainText('latin_groove');
-    await expect(page.locator('[data-fact="version"]')).toContainText('v1');
+    // v2 since G30 (the family's unsourced printed fingering withdrawn; its notes unchanged).
+    await expect(page.locator('[data-fact="version"]')).toContainText('v2');
     await expect(page.locator('[data-fact="role"]')).toContainText('canonical');
     await expect(page.locator('[data-fact="promise"]')).toContainText('music');
     await expect(page.locator('[data-fact="heard"]')).toContainText('unheard');
-    await expect(page.locator('[data-fact="identity"]')).toContainText('generator latin_groove v1');
+    await expect(page.locator('[data-fact="identity"]')).toContainText('generator latin_groove v2');
     // The contract's verdict beside each measured demand, with its located count.
     await expect(page.locator('[data-fact="demands"] tr[data-verdict="required"]')).not.toHaveCount(0);
     await expect(page.locator('[data-fact="rungs"] [data-rung]')).not.toHaveCount(0);

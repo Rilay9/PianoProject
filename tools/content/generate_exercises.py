@@ -895,6 +895,34 @@ def finalize(sc: stream.Score) -> stream.Score:
     return confirm_playable(confirm_not_silent(confirm_fingering(confirm(pad_final_bar(sc)))))
 
 
+def print_as_contracted(sc: stream.Score, entry: dict) -> tuple[stream.Score, dict]:
+    """
+    A family's fingering on the page only where its contract row prints it (G30).
+
+    A finger number over a note is read as the fingering — "play this with 3" — whatever
+    `fingeringVerified` says, and no screen reads the flag (G49, `make_broken_seventh`). Forty-two
+    rows said their family's convention was the generator's own, "not a published source", and
+    printed it all the same; the ruling is to print none until a source gives one
+    (`docs/review/responses/questions-53670d2a.md` §3, held again in `questions-90b19bee.md` §1), and
+    those rows now say `"printed": "none"`. Their makers still work the convention out — it is what a
+    source would be checked against, and `confirm_fingering` still refuses an impossible chord of it —
+    and return through here, which takes every printed finger off the score when the row says none.
+    The physical gate then holds the written score to the row (`family_contracts.physical_faults`:
+    "prints fingers and the row says none"), so a maker that skips this step stops the build. Notes,
+    lengths and ties are untouched, so the item's music digest is the one it had
+    (`family_contracts.music_digest` reads no articulation).
+    """
+    family = entry["drill"]["generator"]["family"]
+    if family_contracts.contract(family)["physical"]["fingering"]["printed"] == "none":
+        for n in sc.recurse().notes:
+            n.articulations = [a for a in n.articulations if not isinstance(a, articulations.Fingering)]
+            if isinstance(n, chord.Chord):
+                # music21 exports nothing from a note inside a chord (`fingered_chord`); cleared all the same.
+                for inner in n.notes:
+                    inner.articulations = [a for a in inner.articulations if not isinstance(a, articulations.Fingering)]
+    return sc, entry
+
+
 def write(sc: stream.Score, out_dir: str, item_id: str) -> str:
     """
     Writes one generated exercise, through the same writer every other score uses.
@@ -1192,7 +1220,7 @@ def make_triad_inversions(root: str, quality: str = "major", hands: str = "both"
     item_id = f"exercise.inversions.{key_slug(root)}-{quality}.{hands}"
     entry = catalog_entry(item_id, title, level, ["triad", "inversions", f"{note_name(root)}-{quality}"], hands, bpm, "inversion",
                           {"key": root, "quality": quality}, f"scores/generated/{item_id}.mxl", family="triad_inversions")
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_five_finger(root: str, quality: str = "major", hands: str = "both", bpm: int = 60) -> tuple[stream.Score, dict]:
@@ -1234,7 +1262,7 @@ def make_five_finger(root: str, quality: str = "major", hands: str = "both", bpm
     item_id = f"exercise.five-finger.{key_slug(root)}-{quality}.{hands}"
     entry = catalog_entry(item_id, title, level, ["five-finger", f"{note_name(root)}-{quality}", f"hands:{hands}"], hands, bpm,
                           "five-finger", {"key": root, "quality": quality}, f"scores/generated/{item_id}.mxl", family="five_finger")
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_hanon(
@@ -1645,7 +1673,7 @@ def make_double_scale(
         f"scores/generated/{item_id}.mxl",
         family="double_scale",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_octave_scale(
@@ -1654,8 +1682,10 @@ def make_octave_scale(
     """
     A scale in octaves, solid or broken — `02` Part E stage 7.
 
-    Fingering is the one rule that matters and it is safe to print: thumb and
-    fifth on the white keys, thumb and fourth on the black ones, in both hands.
+    Fingering is the one rule that matters: thumb and fifth on the white keys,
+    thumb and fourth on the black ones, in both hands. It was printed as safe; no
+    source was read for it, so since G30 it is worked out here and not printed
+    (`print_as_contracted`).
     A hand that plays every octave 1–5 will not survive D flat.
 
     "In both hands" is the part this got wrong for as long as it existed. The
@@ -1722,7 +1752,7 @@ def make_octave_scale(
         f"scores/generated/{item_id}.mxl",
         family="octave_scale",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_broken_seventh(
@@ -1956,7 +1986,7 @@ def make_coordination(root: str, variant: str = "hold", bpm: int = 60, level: fl
         f"scores/generated/{item_id}.mxl",
         family="coordination",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 #: Bar rhythms for the interval-reading melodies. Quarters and halves only: unit 1.5 is
@@ -2026,16 +2056,17 @@ def make_interval_reading(seed: int, hands: str = "right", bpm: int = 66, level:
         f"scores/generated/{item_id}.mxl", tracks=["core", "technique", "theory-ear"],
         family="interval_reading",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_position_shift(root: str, hands: str = "right", bpm: int = 66, level: float = 2.5):
     """
-    Four bars with one hand shift in the middle, marked by the fingering.
+    Four bars with one hand shift in the middle.
 
     Bars 1-2 sit with the thumb on the tonic; bars 3-4 move the hand up a fifth. The only
-    fingering printed is on the two notes that start a position, because that is what a
-    fingering number is *for* and printing them all hides the one that matters.
+    fingering worked out is on the two notes that start a position, because that is what a
+    fingering number is *for* and printing them all hides the one that matters. It is the
+    generator's own convention, so since G30 it is not printed (`print_as_contracted`).
     """
     one_of("hands", hands, HANDS)
     k = key.Key(root)
@@ -2061,7 +2092,7 @@ def make_position_shift(root: str, hands: str = "right", bpm: int = 66, level: f
         "position-shift", {"key": root, "shift": "fifth"}, f"scores/generated/{item_id}.mxl",
         family="position_shift",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 #: The two ways a beginner is taught I-IV-V7-I. Root position names the chords; the
@@ -2149,7 +2180,7 @@ def make_cadence(root: str, voicing: str = "root", bpm: int = 60, level: float =
         f"scores/generated/{item_id}.mxl", tracks=["technique", "core", "chords-pop"],
         family="cadence",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 #: Unit 3.6's three accompaniment patterns, as offsets into the chord being played:
@@ -2218,7 +2249,7 @@ def make_accompaniment(root: str, mode: str, pattern: str, hands: str = "left",
         f"scores/generated/{item_id}.mxl", tracks=["technique", "core", "chords-pop"],
         family="accompaniment",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 #: The oom-pah's two reaches, and the level each earns.
@@ -2332,7 +2363,7 @@ def make_oompah(tonic: str = "C", span: str = "octave", bpm: int = 88):
         f"scores/generated/{item_id}.mxl", tracks=["ragtime", "technique", "chords-pop"],
         family="oompah",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_pedal(root: str, bpm: int = 54, level: float = 3.5):
@@ -2372,7 +2403,7 @@ def make_pedal(root: str, bpm: int = 54, level: float = 3.5):
         f"scores/generated/{item_id}.mxl",
         family="pedal",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 # --------------------------------------------------------------------------------------
@@ -2420,7 +2451,10 @@ def make_repeated_notes(
 
     Hanon 21-30 territory and the reason a repeated note sounds even at speed:
     the hand does not lift, the fingers take turns. 3-2-1 for three notes and
-    4-3-2-1 for four, which is the standard descending order.
+    4-3-2-1 for four is the order worked out here. It is the generator's own, so
+    since G30 it is not printed (`print_as_contracted`); the row declares the
+    drill's solution instead (`physical.repeatedNotes`: change finger on each
+    strike, the order the learner's).
     """
     one_of("hands", hands, HANDS)
     fingers = [3, 2, 1] if per_note == 3 else [4, 3, 2, 1]
@@ -2459,7 +2493,7 @@ def make_repeated_notes(
         f"scores/generated/{item_id}.mxl",
         family="repeated_notes",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_trill(
@@ -2558,7 +2592,7 @@ def make_trill(
         f"scores/generated/{item_id}.mxl",
         family="trill",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 #: The two tremolos, as (scale steps apart, lower finger, upper finger, level).
@@ -2660,7 +2694,7 @@ def make_tremolo_octaves(
         f"scores/generated/{item_id}.mxl",
         family="tremolo_octaves",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_rotation(
@@ -2712,7 +2746,7 @@ def make_rotation(
         f"scores/generated/{item_id}.mxl",
         family="rotation",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 # --------------------------------------------------------------------------------------
@@ -2904,7 +2938,7 @@ def make_voicing(tonic: str = "C", bpm: int = 54) -> tuple[stream.Score, dict]:
         f"scores/generated/{item_id}.mxl",
         family="voicing",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 # --------------------------------------------------------------------------------------
@@ -3074,7 +3108,7 @@ def make_secondary_rag(bars: int = 4, tonic: str = "C", bpm: int = 72):
         tracks=["ragtime", "jazz", "technique"],
         family="secondary_rag",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 class MeterSpec(NamedTuple):
@@ -3219,7 +3253,7 @@ def make_meter(signature: str = "5/4", bpm: int | None = None) -> tuple[stream.S
         f"scores/generated/{item_id}.mxl", tracks=list(spec.tracks),
         family="meter",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_pedal_variant(
@@ -3269,7 +3303,7 @@ def make_pedal_variant(
         f"scores/generated/{item_id}.mxl",
         family="pedal_variant",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 # --------------------------------------------------------------------------------------
@@ -3771,7 +3805,7 @@ def make_seventh_voicing(
         tracks=["jazz", "chords-pop", "technique"],
         family="seventh_voicing",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 #: The I-V-vi-IV loop, as scale degrees.
@@ -3827,7 +3861,7 @@ def make_four_chord_loop(
         tracks=["chords-pop", "core"],
         family="four_chord_loop",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_slash_bass(tonic: str = "C", bpm: int = 69) -> tuple[stream.Score, dict]:
@@ -3880,7 +3914,7 @@ def make_slash_bass(tonic: str = "C", bpm: int = 69) -> tuple[stream.Score, dict
         tracks=["chords-pop", "jazz"],
         family="slash_bass",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 #: The twelve-bar blues, as (scale degree, quality) per bar.
@@ -4067,7 +4101,7 @@ def make_walking_bass(
         tracks=["jazz", "blues-boogie"],
         family="walking_bass",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 #: Comping rhythms as offsets in quarters within a 4/4 bar (`02` Part D4).
@@ -4228,7 +4262,7 @@ def make_comping(
         tracks=["latin", "jazz", "chords-pop"] if latin else ["jazz", "chords-pop"],
         family="comping",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_stride(tonic: str = "C", bpm: int = 96) -> tuple[stream.Score, dict]:
@@ -4282,7 +4316,7 @@ def make_stride(tonic: str = "C", bpm: int = 96) -> tuple[stream.Score, dict]:
         tracks=["ragtime", "jazz", "blues-boogie"],
         family="stride",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 #: Turnaround shapes, as (scale degree, quality) per half-bar.
@@ -4339,7 +4373,7 @@ def make_turnaround(
         tracks=["jazz", "blues-boogie"],
         family="turnaround",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 #: The three difficulties a ii-V-I is worth practising at, and the level each
@@ -4451,7 +4485,7 @@ def make_ii_v_i(
         tracks=["jazz", "chords-pop", "theory-ear"],
         family="ii_v_i",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_tritone_sub(tonic: str = "C", bpm: int = 76) -> tuple[stream.Score, dict]:
@@ -4490,7 +4524,7 @@ def make_tritone_sub(tonic: str = "C", bpm: int = 76) -> tuple[stream.Score, dic
         tracks=["jazz"],
         family="tritone_sub",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_open_voicing(
@@ -4560,7 +4594,7 @@ def make_open_voicing(
         tracks=["jazz", "chords-pop", "improv-compose"],
         family="open_voicing",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 #: Boogie left-hand figures: eight eighths a bar as semitones from the chord
@@ -4705,7 +4739,7 @@ def make_boogie(
         tracks=["blues-boogie", "jazz"],
         family="boogie",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 #: The blues scale, in semitones from the tonic.
@@ -5109,7 +5143,7 @@ def make_tumbao(tonic: str = "C", bars: int = 8, bpm: int = 88) -> tuple[stream.
         tracks=["latin", "chords-pop"],
         family="tumbao",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_montuno(
@@ -5157,7 +5191,7 @@ def make_montuno(
         tracks=["latin", "chords-pop"],
         family="montuno",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_latin_groove(
@@ -5208,7 +5242,7 @@ def make_latin_groove(
         tracks=["latin", "chords-pop"],
         family="latin_groove",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 # --------------------------------------------------------------------------------------
@@ -5289,7 +5323,7 @@ def make_intro(tonic: str = "C", bars: int = 4, bpm: int = 76) -> tuple[stream.S
         tracks=["chords-pop", "holiday", "core"],
         family="intro",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 #: The chromatic walk-up's passing note, in semitones above the tonic.
@@ -5315,9 +5349,11 @@ def make_walkup(tonic: str = "C", bpm: int = 69) -> tuple[stream.Score, dict]:
     IV, once inside the key and once through the note between. Playing either
     one is easy; hearing which one a record is doing is the skill.
 
-    The fingering is printed on every note, because it is the whole difficulty:
+    The fingering is worked out on every note, because it is the whole difficulty:
     the hand starts on the little finger and arrives on the thumb, and a hand
-    that starts anywhere else runs out of fingers before it runs out of walk.
+    that starts anywhere else runs out of fingers before it runs out of walk. It
+    is the generator's own convention, so since G30 it is not printed
+    (`print_as_contracted`).
 
     **Reachable through `passing-chords`**, which `hymns` teaches, until a rung
     names this item in its `exerciseOptions`. That is the only route to it:
@@ -5379,7 +5415,7 @@ def make_walkup(tonic: str = "C", bpm: int = 69) -> tuple[stream.Score, dict]:
         tracks=["hymns-gospel", "chords-pop", "core"],
         family="walkup",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 #: The half-step approach, as (target degree, its quality). The approach chord
@@ -5453,7 +5489,7 @@ def make_passing_chord(tonic: str = "C", bpm: int = 72) -> tuple[stream.Score, d
         tracks=["hymns-gospel", "chords-pop", "jazz"],
         family="passing_chord",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 #: The four bars a power chord is practised over, as semitones from the tonic.
@@ -5526,7 +5562,7 @@ def make_power_chord(tonic: str = "A", bpm: int = 92) -> tuple[stream.Score, dic
         tracks=["rock-metal", "technique", "chords-pop"],
         family="power_chord",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 #: The ostinato figures, as (eight eighths in semitones above the tonic, the
@@ -5643,7 +5679,7 @@ def make_riff(
         tracks=["rock-metal", "core", "improv-compose"],
         family="riff",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 #: The two scales blues and rock improvise on, as degrees from the tonic.
@@ -5732,7 +5768,7 @@ def make_pentatonic(
         tracks=["blues-boogie", "rock-metal", "improv-compose", "core"],
         family="pentatonic",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_tresillo(tonic: str = "C", bars: int = 8, bpm: int = 84) -> tuple[stream.Score, dict]:
@@ -5781,7 +5817,7 @@ def make_tresillo(tonic: str = "C", bars: int = 8, bpm: int = 84) -> tuple[strea
         tracks=["latin", "chords-pop", "core"],
         family="tresillo",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_swing_pair(tonic: str = "C", bpm: int = 96) -> tuple[stream.Score, dict]:
@@ -5845,7 +5881,7 @@ def make_swing_pair(tonic: str = "C", bpm: int = 96) -> tuple[stream.Score, dict
         tracks=["jazz", "blues-boogie", "core"],
         family="swing_pair",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_modal_vamp(tonic: str = "A", bars: int = 8, bpm: int = 80) -> tuple[stream.Score, dict]:
@@ -5927,7 +5963,7 @@ def make_modal_vamp(tonic: str = "A", bars: int = 8, bpm: int = 80) -> tuple[str
         tracks=["rock-metal", "chords-pop", "core"],
         family="modal_vamp",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_ostinato(
@@ -5977,7 +6013,7 @@ def make_ostinato(
         tracks=["rock-metal", "technique", "improv-compose"],
         family="ostinato",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_study(recipe) -> tuple[stream.Score, dict]:

@@ -277,7 +277,7 @@
     },
     "triad_inversions": {
       "maker": "make_triad_inversions",
-      "version": 2,
+      "version": 3,
       "name": "a triad in root position and its two inversions, blocked",
       "promise": [
         {
@@ -328,9 +328,9 @@
         "maxSpan": 12,
         "maxRate": 1.0,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the conventional inversion fingerings (1-3-5, 1-2-5): the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the conventional inversion fingerings (1-3-5, 1-2-5): the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -374,7 +374,7 @@
     },
     "five_finger": {
       "maker": "make_five_finger",
-      "version": 2,
+      "version": 3,
       "name": "a five-finger pattern, up and back in quarters",
       "promise": [
         {
@@ -431,9 +431,9 @@
         "maxSpan": 12,
         "maxRate": 1.0,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "1-2-3-4-5 in the right hand and 5-4-3-2-1 in the left, one finger per key: the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "1-2-3-4-5 in the right hand and 5-4-3-2-1 in the left, one finger per key: the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -795,7 +795,7 @@
     },
     "double_scale": {
       "maker": "make_double_scale",
-      "version": 1,
+      "version": 2,
       "name": "a major scale in parallel diatonic thirds or sixths",
       "promise": [
         {
@@ -846,9 +846,9 @@
         "maxSpan": 12,
         "maxRate": 1.8,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the outer finger is standard and the inner varies by hand and key; fingeringVerified is false: the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the outer finger is standard and the inner varies by hand and key; fingeringVerified is false: the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -894,7 +894,7 @@
     },
     "octave_scale": {
       "maker": "make_octave_scale",
-      "version": 1,
+      "version": 2,
       "name": "a scale in octaves, solid or broken",
       "promise": [
         {
@@ -947,9 +947,9 @@
         "maxSpan": 12,
         "maxRate": 4.0,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "1-5 on white keys and 1-4 on black, the generator's rule; Part 10 calls it too prescriptive, and no source was read: fingeringVerified is false (D0; it was true with no source). the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "1-5 on white keys and 1-4 on black, the generator's rule; Part 10 calls it too prescriptive, and no source was read: fingeringVerified is false (D0; it was true with no source). the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -989,7 +989,7 @@
           "the wrist's rotation in the broken form"
         ]
       },
-      "admission": "Right octaves in time. The fingering is printed and unsourced; D0 set fingeringVerified to false, as the reviewer's T53 rule requires.",
+      "admission": "Right octaves in time. The fingering is unsourced, so none is printed (G30); D0 set fingeringVerified to false, as the reviewer's T53 rule requires.",
       "heard": false
     },
     "broken_seventh": {
@@ -1408,7 +1408,7 @@
     },
     "coordination": {
       "maker": "make_coordination",
-      "version": 1,
+      "version": 2,
       "name": "a right-hand five-finger walk over a left hand that holds or changes",
       "promise": [
         {
@@ -1460,9 +1460,9 @@
         "maxSpan": 12,
         "maxRate": 1.0,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -1506,7 +1506,7 @@
     },
     "interval_reading": {
       "maker": "make_interval_reading",
-      "version": 2,
+      "version": 3,
       "name": "a four-bar melody of seconds and thirds in C position",
       "promise": [
         {
@@ -1583,9 +1583,9 @@
         "maxSpan": 12,
         "maxRate": 1.2,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "a finger on the first note, to fix the position: the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "a finger on the first note, to fix the position: the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -1604,7 +1604,7 @@
             "role": "variable"
           }
         ],
-        "transfer": "not provided: every item is C position with the first finger printed, so a new seed is another realisation of the same constraints and never transfer; transfer is an unseen phrase in another position or an excerpt (G7, G10)"
+        "transfer": "not provided: every item is C position, so a new seed is another realisation of the same constraints and never transfer; transfer is an unseen phrase in another position or an excerpt (G7, G10)"
       },
       "assessment": {
         "judged": [
@@ -1624,12 +1624,12 @@
           "which finger played: nothing tracks fingers, so a printed number is advice and is never judged"
         ]
       },
-      "admission": "Right notes in a fixed C position with the first finger printed are what a note-namer plays too: the family provides the opportunity to read by interval and cannot show that it happened, nor establish transfer to other positions. Rung 3.4 lists the .05 items, which hold no work away from middle C (measured: no ledger line, no leap; G10).",
+      "admission": "Right notes in a fixed C position are what a note-namer plays too: the family provides the opportunity to read by interval and cannot show that it happened, nor establish transfer to other positions. Rung 3.4 lists the .05 items, which hold no work away from middle C (measured: no ledger line, no leap; G10).",
       "heard": false
     },
     "position_shift": {
       "maker": "make_position_shift",
-      "version": 1,
+      "version": 2,
       "name": "four bars with one marked hand shift up a fifth",
       "promise": [
         {
@@ -1685,9 +1685,9 @@
         "maxSpan": 12,
         "maxRate": 1.2,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "only the notes that start a position: the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "only the notes that start a position: the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -1836,7 +1836,7 @@
     },
     "meter": {
       "maker": "make_meter",
-      "version": 1,
+      "version": 2,
       "name": "a counting drill in 5/4 or 7/8, and a twelve-bar blues in 12/8",
       "promise": [
         {
@@ -1920,9 +1920,9 @@
         "maxSpan": 12,
         "maxRate": 2.6,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -2071,7 +2071,7 @@
     },
     "cadence": {
       "maker": "make_cadence",
-      "version": 1,
+      "version": 2,
       "name": "I-IV-V7-I in root position or voice-led, and the plagal I-IV-I, as left-hand chords",
       "promise": [
         {
@@ -2116,9 +2116,9 @@
         "maxSpan": 12,
         "maxRate": 0.5,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -2162,7 +2162,7 @@
     },
     "accompaniment": {
       "maker": "make_accompaniment",
-      "version": 1,
+      "version": 2,
       "name": "a broken-chord, Alberti or waltz bass over I-IV-V-I, alone or under a scale",
       "promise": [
         {
@@ -2235,9 +2235,9 @@
         "maxSpan": 12,
         "maxRate": 2.5,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         },
         "leaps": {
           "max": 13,
@@ -2286,7 +2286,7 @@
     },
     "oompah": {
       "maker": "make_oompah",
-      "version": 1,
+      "version": 2,
       "name": "an oom-pah bass (bass on the beat, chord off it) over I-IV-V-I in 2/4, left hand alone",
       "promise": [
         {
@@ -2336,9 +2336,9 @@
         "maxSpan": 12,
         "maxRate": 1.5,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         },
         "leaps": {
           "max": 30,
@@ -2387,7 +2387,7 @@
     },
     "pedal": {
       "maker": "make_pedal",
-      "version": 1,
+      "version": 2,
       "name": "I-IV-V7-I with a pedal change on each chord",
       "promise": [
         {
@@ -2433,9 +2433,9 @@
         "maxSpan": 12,
         "maxRate": 0.5,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -2479,7 +2479,7 @@
     },
     "repeated_notes": {
       "maker": "make_repeated_notes",
-      "version": 1,
+      "version": 2,
       "name": "one note struck three or four times, the fingers changing",
       "promise": [
         {
@@ -2529,9 +2529,13 @@
         "maxSpan": 12,
         "maxRate": 4.0,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "3-2-1 and 4-3-2-1; Part 10 names 'always descending' as over-rigid, and no source was read: fingeringVerified is false (D0; it was true with no source). the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "3-2-1 and 4-3-2-1; Part 10 names 'always descending' as over-rigid, and no source was read: fingeringVerified is false (D0; it was true with no source). the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
+        },
+        "repeatedNotes": {
+          "solution": "change finger on each strike, which is what this drill practises; the order of the fingers is the learner's: the app prints no fingering for it and prescribes none (G30, the reviewer's option (b), docs/review/responses/09ec1337.md §3)",
+          "why": "the four-to-a-note items re-strike every 0.25 s at ♩=60, under the gate's 0.3 s; this is this drill's solution, not a rule that every fast repeated note in piano playing takes a new finger on every strike"
         }
       },
       "roles": {
@@ -2576,7 +2580,7 @@
     },
     "trill": {
       "maker": "make_trill",
-      "version": 1,
+      "version": 2,
       "name": "a measured trill (4 to the beat) or mordent (2 to the beat), the count written",
       "promise": [
         {
@@ -2632,9 +2636,9 @@
         "maxSpan": 12,
         "maxRate": 4.0,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -2678,7 +2682,7 @@
     },
     "tremolo_octaves": {
       "maker": "make_tremolo_octaves",
-      "version": 2,
+      "version": 3,
       "name": "an octave tremolo, or a tremolo in the key's own thirds moved by step",
       "promise": [
         {
@@ -2729,9 +2733,9 @@
         "maxSpan": 12,
         "maxRate": 4.0,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "1-5, 1-4 on a black upper note, 1-3 for the third; no source was read: fingeringVerified is false (D0; it was true with no source). the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "1-5, 1-4 on a black upper note, 1-3 for the third; no source was read: fingeringVerified is false (D0; it was true with no source). the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -2777,7 +2781,7 @@
     },
     "rotation": {
       "maker": "make_rotation",
-      "version": 1,
+      "version": 2,
       "name": "Alberti figuration in sixteenths",
       "promise": [
         {
@@ -2831,9 +2835,9 @@
         "maxSpan": 12,
         "maxRate": 4.8,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -3081,7 +3085,7 @@
     },
     "voicing": {
       "maker": "make_voicing",
-      "version": 1,
+      "version": 2,
       "name": "four-note chords whose top note must sing",
       "promise": [
         {
@@ -3126,9 +3130,9 @@
         "maxSpan": 12,
         "maxRate": 0.5,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -3176,7 +3180,7 @@
     },
     "pedal_variant": {
       "maker": "make_pedal_variant",
-      "version": 1,
+      "version": 2,
       "name": "a melody held over changing harmony, and the half pedal",
       "promise": [
         {
@@ -3222,9 +3226,9 @@
         "maxSpan": 12,
         "maxRate": 0.5,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -3273,7 +3277,7 @@
     },
     "seventh_voicing": {
       "maker": "make_seventh_voicing",
-      "version": 2,
+      "version": 3,
       "name": "a ii-V-I in one seventh voicing (close, shell, rootless A or B)",
       "promise": [
         {
@@ -3319,9 +3323,9 @@
         "maxSpan": 12,
         "maxRate": 0.5,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -3365,7 +3369,7 @@
     },
     "four_chord_loop": {
       "maker": "make_four_chord_loop",
-      "version": 2,
+      "version": 3,
       "name": "a I-V-vi-IV loop, root position or inverted",
       "promise": [
         {
@@ -3412,9 +3416,9 @@
         "maxSpan": 12,
         "maxRate": 0.5,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -3458,7 +3462,7 @@
     },
     "slash_bass": {
       "maker": "make_slash_bass",
-      "version": 1,
+      "version": 2,
       "name": "a stepwise bass descending under held chords, written as slash chords",
       "promise": [
         {
@@ -3505,9 +3509,9 @@
         "maxSpan": 12,
         "maxRate": 0.6,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -3551,7 +3555,7 @@
     },
     "turnaround": {
       "maker": "make_turnaround",
-      "version": 1,
+      "version": 2,
       "name": "a I-vi-ii-V or iii-VI-ii-V turnaround, two bars",
       "promise": [
         {
@@ -3598,9 +3602,9 @@
         "maxSpan": 12,
         "maxRate": 0.8,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -3644,7 +3648,7 @@
     },
     "ii_v_i": {
       "maker": "make_ii_v_i",
-      "version": 2,
+      "version": 3,
       "name": "a ii-V-I in shells, guide tones or rootless voicings",
       "promise": [
         {
@@ -3690,9 +3694,9 @@
         "maxSpan": 12,
         "maxRate": 0.5,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -3736,7 +3740,7 @@
     },
     "tritone_sub": {
       "maker": "make_tritone_sub",
-      "version": 2,
+      "version": 3,
       "name": "a ii-subV-I with the tonic held",
       "promise": [
         {
@@ -3783,9 +3787,9 @@
         "maxSpan": 12,
         "maxRate": 0.5,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -3829,7 +3833,7 @@
     },
     "open_voicing": {
       "maker": "make_open_voicing",
-      "version": 3,
+      "version": 4,
       "name": "stacked fourths (a minor eleventh) and sus2, sus4 and add9 voicings over the root in the bass",
       "promise": [
         {
@@ -3876,9 +3880,9 @@
         "maxSpan": 12,
         "maxRate": 0.5,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         },
         "largeHand": {
           "span": 14,
@@ -3930,7 +3934,7 @@
     },
     "walkup": {
       "maker": "make_walkup",
-      "version": 1,
+      "version": 2,
       "name": "a bass walking up into the IV, diatonic and then chromatic",
       "promise": [
         {
@@ -3976,9 +3980,9 @@
         "maxSpan": 12,
         "maxRate": 1.2,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -4022,7 +4026,7 @@
     },
     "passing_chord": {
       "maker": "make_passing_chord",
-      "version": 2,
+      "version": 3,
       "name": "the chord a semitone above the target, played first",
       "promise": [
         {
@@ -4069,9 +4073,9 @@
         "maxSpan": 12,
         "maxRate": 0.6,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -4115,7 +4119,7 @@
     },
     "power_chord": {
       "maker": "make_power_chord",
-      "version": 1,
+      "version": 2,
       "name": "root-fifth-octave over i-bVII-bVI-bVII, the left hand in eighths",
       "promise": [
         {
@@ -4163,9 +4167,9 @@
         "maxSpan": 12,
         "maxRate": 3.1,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -4209,7 +4213,7 @@
     },
     "walking_bass": {
       "maker": "make_walking_bass",
-      "version": 3,
+      "version": 4,
       "name": "a root-third-fifth-approach bass line in quarters over a blues or a ii-V-I",
       "promise": [
         {
@@ -4278,9 +4282,9 @@
         "maxSpan": 12,
         "maxRate": 1.6,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         },
         "leaps": {
           "max": 18,
@@ -4330,7 +4334,7 @@
     },
     "comping": {
       "maker": "make_comping",
-      "version": 1,
+      "version": 2,
       "name": "a ii-V-I (or a two-bar minor vamp for the bossa) comped in one rhythm",
       "promise": [
         {
@@ -4401,9 +4405,9 @@
         "maxSpan": 12,
         "maxRate": 2.3,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -4448,7 +4452,7 @@
     },
     "stride": {
       "maker": "make_stride",
-      "version": 1,
+      "version": 2,
       "name": "a stride left hand (bass, chord, tenth, chord) under a right-hand chord",
       "promise": [
         {
@@ -4507,9 +4511,9 @@
         "maxSpan": 12,
         "maxRate": 1.6,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         },
         "leaps": {
           "max": 26,
@@ -4558,7 +4562,7 @@
     },
     "boogie": {
       "maker": "make_boogie",
-      "version": 1,
+      "version": 2,
       "name": "an eight-to-the-bar left-hand figure over four bars of the tonic seventh, a shell above",
       "promise": [
         {
@@ -4613,9 +4617,9 @@
         "maxSpan": 12,
         "maxRate": 3.5,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "each figure's fingering sits in its table (BOOGIE_PATTERNS): the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "each figure's fingering sits in its table (BOOGIE_PATTERNS): the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -4856,7 +4860,7 @@
     },
     "tumbao": {
       "maker": "make_tumbao",
-      "version": 1,
+      "version": 2,
       "name": "a tumbao bass pattern over a two-bar minor vamp, left hand alone",
       "promise": [
         {
@@ -4915,9 +4919,9 @@
         "maxSpan": 12,
         "maxRate": 1.0,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         },
         "leaps": {
           "max": 14,
@@ -4966,7 +4970,7 @@
     },
     "montuno": {
       "maker": "make_montuno",
-      "version": 1,
+      "version": 2,
       "name": "a right-hand montuno of chord tones on the clave's strokes",
       "promise": [
         {
@@ -5016,9 +5020,9 @@
         "maxSpan": 12,
         "maxRate": 1.5,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -5062,7 +5066,7 @@
     },
     "latin_groove": {
       "maker": "make_latin_groove",
-      "version": 1,
+      "version": 2,
       "name": "the tumbao and a two-note montuno together, eight bars",
       "promise": [
         {
@@ -5124,9 +5128,9 @@
         "maxSpan": 12,
         "maxRate": 1.5,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         },
         "leaps": {
           "max": 14,
@@ -5175,7 +5179,7 @@
     },
     "secondary_rag": {
       "maker": "make_secondary_rag",
-      "version": 1,
+      "version": 2,
       "name": "a short-long sixteenth cell that crosses the beat, over an oom-pah bass",
       "promise": [
         {
@@ -5229,9 +5233,9 @@
         "maxSpan": 12,
         "maxRate": 4.8,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         },
         "leaps": {
           "max": 21,
@@ -5273,7 +5277,7 @@
     },
     "intro": {
       "maker": "make_intro",
-      "version": 1,
+      "version": 2,
       "name": "a four-bar vamp over I-V-vi-IV, the last bar blocked",
       "promise": [
         {
@@ -5319,9 +5323,9 @@
         "maxSpan": 12,
         "maxRate": 1.3,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -5365,7 +5369,7 @@
     },
     "riff": {
       "maker": "make_riff",
-      "version": 1,
+      "version": 2,
       "name": "a two-bar figure in one five-finger position, repeated for eight bars",
       "promise": [
         {
@@ -5418,9 +5422,9 @@
         "maxSpan": 12,
         "maxRate": 2.6,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -5464,7 +5468,7 @@
     },
     "pentatonic": {
       "maker": "make_pentatonic",
-      "version": 2,
+      "version": 3,
       "name": "the minor pentatonic (or with the raised fourth) over one octave, thumb under",
       "promise": [
         {
@@ -5515,9 +5519,9 @@
         "maxSpan": 12,
         "maxRate": 2.5,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "1-2-3, thumb under, 1-2-3: the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "1-2-3, thumb under, 1-2-3: the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -5567,7 +5571,7 @@
     },
     "tresillo": {
       "maker": "make_tresillo",
-      "version": 1,
+      "version": 2,
       "name": "the tresillo (3+3+2) in dotted quarters in the left hand, chords above",
       "promise": [
         {
@@ -5628,9 +5632,9 @@
         "maxSpan": 12,
         "maxRate": 1.4,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -5673,7 +5677,7 @@
     },
     "swing_pair": {
       "maker": "make_swing_pair",
-      "version": 1,
+      "version": 2,
       "name": "four bars of straight eighths, a silent bar, the same four bars marked swing",
       "promise": [
         {
@@ -5727,9 +5731,9 @@
         "maxSpan": 12,
         "maxRate": 3.2,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -5772,7 +5776,7 @@
     },
     "modal_vamp": {
       "maker": "make_modal_vamp",
-      "version": 1,
+      "version": 2,
       "name": "an i-bVII-bVI-bVII vamp, open fifths under the chords",
       "promise": [
         {
@@ -5816,9 +5820,9 @@
         "maxSpan": 12,
         "maxRate": 0.7,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {
@@ -5861,7 +5865,7 @@
     },
     "ostinato": {
       "maker": "make_ostinato",
-      "version": 1,
+      "version": 2,
       "name": "one eighth-note figure repeated over a held bass",
       "promise": [
         {
@@ -5916,9 +5920,9 @@
         "maxSpan": 12,
         "maxRate": 2.8,
         "fingering": {
-          "printed": "printed",
+          "printed": "none",
           "source": null,
-          "note": "the generator's own convention, not a published source: printed as advice, and fingeringVerified is never set true for it (G47's rule: source it or print nothing — Follow-ups)"
+          "note": "the generator's own convention, not a published source: so nothing is printed until a source gives one (G30; the ruling, docs/review/responses/questions-53670d2a.md §3), and fingeringVerified is never set true for it"
         }
       },
       "roles": {

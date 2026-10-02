@@ -1,13 +1,27 @@
-/**
- * A family-wide generator version bump keeps an unchanged sibling's learner history, and only that (CL15,
- * What to build item 9; the reviewer's required change, `docs/review/responses/questions-122a5224.md` §CL15).
+"""G30's edit of app/tests/unit/generatedIdentityContinuity.test.ts: the guards read the catalogue G30 builds.
+
+usage: python docs/prompts/runs/G30/scripts-edit_ts_test.py
+Replaces the header's guard list and the built-catalogue describe block; the hand-built reader's rules
+are kept as they are. Idempotent: a file already carrying the G30 block is left.
+"""
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[4]
+p = ROOT / "app" / "tests" / "unit" / "generatedIdentityContinuity.test.ts"
+raw = p.read_bytes()
+crlf = b"\r\n" in raw
+s = raw.decode("utf-8").replace("\r\n", "\n")
+
+OLD_HEAD = """ * and `material.ts` resolves a learner row stored against it to the row's current material. The reviewer's
+ * five guards, on the built catalogue (`app/public/content/catalog.json`, as the other catalogue cases here):
  *
- * A generator family's version belongs to the whole family (`family_contracts.identity`), so CL15's note
- * changes moved every item of five families to a new identity, the items whose notes did not change among
- * them. The build writes each unchanged item's old identity on its row (`provenance.formerGeneratorIdentities`,
- * only where the item's music digest at the version the family left equals its digest now:
- * `family_contracts.former_generator_identities`, re-proved by `tools/content/tests/test_family_contracts.py`),
- * and `material.ts` resolves a learner row stored against it to the row's current material. The reviewer's
+ * 1. an unchanged octave tremolo's `tremolo_octaves` v1 identity resolves to its v2 row for learner continuity;
+ * 2. an unchanged blues-form pentatonic's `pentatonic` v1 identity does the same;
+ * 3. a changed third-shape tremolo's or pentatonic-form item's v1 identity does not resolve as its v2 material;
+ * 4. the current review identity is the new exact identity, and the relation is never read by `sameIdentity`;
+ * 5. the family a bumped row belongs to is unchanged for transfer's family-scoped reads.
+ *"""
+NEW_HEAD = """ * and `material.ts` resolves a learner row stored against it to the row's current material. The reviewer's
  * five guards, on the built catalogue (`app/public/content/catalog.json`, as the other catalogue cases here):
  *
  * 1. an unchanged octave tremolo's `tremolo_octaves` v1 identity resolves to its current row for learner continuity;
@@ -21,60 +35,12 @@
  * its v2 identity, and a second bump carries what the first carried: the siblings CL15 left unchanged list v2 and
  * v1, so a run stored before CL15 still resolves to the row G30 wrote in one lookup. Revised from the CL15 guards
  * (the old assumption: v2 was the current version, and a CL15-changed sibling carried nothing at all).
- *
- * Then the reader's own rules on a hand-built catalogue: a generator identity that is some row's current
- * identity is never read back as a former one, and the learner's key agrees with `sameMaterial`.
- */
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
-import type { SessionRow } from '../../src/data/db';
-import { contact, contactIn, recordRun, resetProgressForTest, type RunResult } from '../../src/data/progressStore';
-import { learnFormerIdentities, learnerMaterialKey, learnerMaterialKeys, materialKey, sameMaterial } from '../../src/curriculum/material';
-import { relationshipOf, type Established } from '../../src/curriculum/transfer';
-import { generatorIdentity, sameIdentity, type Identity } from '../../src/review/record';
-import type { CatalogItem } from '../../src/curriculum/types';
+ *"""
 
-type Generator = Extract<Identity, { kind: 'generator' }>;
+START = "describe('the built catalogue carries the relation for the unchanged siblings and only them', () => {"
+END = "describe('the reader’s rules, on a hand-built catalogue', () => {"
 
-const catalog = JSON.parse(readFileSync(resolve('public/content/catalog.json'), 'utf8')) as CatalogItem[];
-const byId = new Map(catalog.map((item) => [item.id, item]));
-const generated = (prefix: string, suffix = ''): CatalogItem[] =>
-  catalog.filter((item) => item.id.startsWith(prefix) && item.id.endsWith(suffix));
-
-const OCTAVES = generated('exercise.tremolo.');
-const THIRDS = generated('exercise.tremolo-third.');
-const BLUES = generated('exercise.pentatonic.', '.blues');
-const PENTATONIC = generated('exercise.pentatonic.', '.pentatonic');
-
-function identityOf(item: CatalogItem): Generator {
-  const identity = item.provenance?.identity;
-  if (identity?.kind !== 'generator') throw new Error(`${item.id} has no generator identity`);
-  return identity;
-}
-/** The identity the catalogue held for this row at an earlier version of its family (CL15, then G30, moved each one version). */
-const atVersion = (item: CatalogItem, version: number): Generator => ({ ...identityOf(item), version });
-
-const AT = '2026-09-29T12:00:00.000Z';
-/** A run stored against `material`, as `recordRun` wrote it on a device that had the old catalogue. */
-const run = (itemId: string, material: Identity): SessionRow => ({
-  itemId,
-  mode: 'tempo',
-  tempoPct: 100,
-  accuracy: 0.9,
-  accuracyEstimated: false,
-  wrongNotes: 1,
-  missed: 0,
-  durationMs: 60_000,
-  at: AT,
-  material,
-});
-
-beforeEach(() => learnFormerIdentities(catalog));
-afterEach(() => learnFormerIdentities([]));
-
-describe('the built catalogue carries the relation for the unchanged siblings and only them', () => {
+NEW_BLOCK = """describe('the built catalogue carries the relation for the unchanged siblings and only them', () => {
   it('reads the families the guards name: six octave and six third tremolos, three blues and three pentatonic forms', () => {
     expect([OCTAVES.length, THIRDS.length, BLUES.length, PENTATONIC.length]).toEqual([6, 6, 3, 3]);
   });
@@ -175,8 +141,6 @@ describe('G30: withdrawing an unsourced printed fingering keeps the learner’s 
     ['exercise.cadence.', 'cadence', 2],
     // CL15 changed every walking-bass item, so its v2 identities were never carried; G30's v3 is.
     ['exercise.walking-bass.', 'walking_bass', 4],
-    // Moved by G30's fix-forward (`responses/09ec1337.md` §3): never bumped before, so its v1 is carried.
-    ['exercise.repeated-notes.', 'repeated_notes', 2],
   ];
 
   it('an item of a moved family carries the identity it had, and a run stored against it is contact', () => {
@@ -226,74 +190,19 @@ describe('G30: withdrawing an unsourced printed fingering keeps the learner’s 
   });
 });
 
-describe('the reader’s rules, on a hand-built catalogue', () => {
-  const generator = (version: number, seed: number | null = null, recipe: Record<string, unknown> = { key: 'C', shape: 'octave', hands: 'right' }): Generator => ({
-    kind: 'generator',
-    family: 'tremolo_octaves',
-    version,
-    seed,
-    recipe,
-    tempoBpm: 60,
-  });
-  const row = (id: string, identity: Generator, formers?: Generator[]): CatalogItem =>
-    ({
-      id,
-      type: 'exercise',
-      title: id,
-      level: 5,
-      hands: 'right',
-      tracks: ['technique'],
-      concepts: [],
-      tags: [],
-      file: `scores/generated/${id}.mxl`,
-      provenance: { source: 'generated', facts: {}, review: { score: null, teaching: null }, identity, ...(formers === undefined ? {} : { formerGeneratorIdentities: formers }) },
-    }) as unknown as CatalogItem;
+"""
 
-  const V1 = generator(1);
-  const V2 = generator(2);
-  const OTHER_ROW_CURRENT = generator(2, null, { key: 'G', shape: 'octave', hands: 'right' });
-
-  it('a generator identity that is another row’s current identity is never read back as a former one', () => {
-    learnFormerIdentities([row('a', V2, [V1, OTHER_ROW_CURRENT]), row('b', OTHER_ROW_CURRENT)]);
-    expect(sameMaterial(V1, V2)).toBe(true);
-    expect(sameMaterial(OTHER_ROW_CURRENT, V2)).toBe(false);
-    expect(learnerMaterialKeys(V2, 'a')).toEqual([materialKey(V2, 'a'), materialKey(V1, 'a')]);
-  });
-
-  it('the learner’s key agrees with sameMaterial, and the table is the loaded catalogue’s alone', () => {
-    learnFormerIdentities([row('a', V2, [V1])]);
-    const all: Generator[] = [V1, V2, OTHER_ROW_CURRENT, generator(3)];
-    for (const a of all) {
-      for (const b of all) expect(learnerMaterialKey(a, 'x') === learnerMaterialKey(b, 'y'), `${a.version}/${b.version}`).toBe(sameMaterial(a, b));
-    }
-    learnFormerIdentities([row('a', V2)]);
-    expect(sameMaterial(V1, V2)).toBe(false);
-  });
-
-  describe('over the store', () => {
-    beforeEach(() => {
-      useFakeIndexedDb();
-      resetProgressForTest();
-    });
-    afterEach(() => clearFakeIndexedDb());
-
-    it('a run recorded against the v1 identity is contact with the v2 row, looked up by its former key', async () => {
-      learnFormerIdentities([row('exercise.tremolo.c.right', V2, [V1])]);
-      const result: RunResult = {
-        itemId: 'exercise.tremolo.c.right',
-        mode: 'tempo',
-        tempoPct: 100,
-        accuracy: 1,
-        accuracyEstimated: false,
-        wrongNotes: 0,
-        missed: 0,
-        durationMs: 1000,
-        passed: true,
-        masterEligible: false,
-        material: V1,
-      };
-      await recordRun(result, new Date(2026, 8, 29, 12));
-      expect(await contact('exercise.tremolo.c.right', V2)).toEqual({ contact: 'met', metById: true, metAs: ['exercise.tremolo.c.right'], how: ['played'] });
-    });
-  });
-});
+if "describe('G30: withdrawing an unsourced printed fingering" not in s:
+    assert s.count(OLD_HEAD) == 1
+    s = s.replace(OLD_HEAD, NEW_HEAD)
+    a, b = s.index(START), s.index(END)
+    s = s[:a] + NEW_BLOCK + s[b:]
+OLD_AT = "/** The identity the catalogue held for this row at the version its family left (CL15 moved each family one version). */"
+NEW_AT = "/** The identity the catalogue held for this row at an earlier version of its family (CL15, then G30, moved each one version). */"
+if NEW_AT not in s:
+    assert s.count(OLD_AT) == 1
+    s = s.replace(OLD_AT, NEW_AT)
+out = (s.replace("\n", "\r\n") if crlf else s).encode("utf-8")
+if out != raw:
+    p.write_bytes(out)
+print("ok")

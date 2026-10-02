@@ -1258,7 +1258,11 @@ class TestWalkupAndPassingChord(HarmonyFamilyCase):
     def test_the_walk_is_fingered_from_the_little_finger_to_the_thumb(self) -> None:
         from music21 import articulations
 
-        sc, _ = make_walkup("C")
+        from tests.convention import convention_printed
+
+        # G30: the convention is no longer printed (the row says none); read as if it were (tests/convention.py).
+        with convention_printed():
+            sc, _ = make_walkup("C")
         fingers = [a.fingerNumber
                    for n in sc.parts[1].recurse().notes
                    for a in n.articulations
