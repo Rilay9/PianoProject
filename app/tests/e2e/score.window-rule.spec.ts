@@ -40,6 +40,9 @@
  *     why: the piece is shorter than both, the row says fewer are shown, or
  *     the music is already bound by the stage (a bigger Size) or the floor (a
  *     smaller one).
+ * (g) **Rows never overlap** (U110, `responses/9e14839e.md` §3): no drawn
+ *     row's ink, chord symbols and fingering included, reaches into the ink
+ *     of the row below it at the size it is drawn.
  *
  * The only literals are the code's own (`MIN_STAFF_PX`) and fractions of a
  * measurement of the same screen (`00-invariants` §2).
@@ -128,7 +131,8 @@ interface Sheet {
   stretch: string;
   classes: string;
   slot: number;
-  ink: { left: number; right: number } | null;
+  /** Every painted mark of the sheet on the glass, text included (chord symbols, fingering). */
+  ink: { left: number; right: number; top: number; bottom: number } | null;
   measures: { id: string; left: number; right: number; span: number }[];
 }
 
@@ -208,7 +212,7 @@ async function readGlass(page: Page): Promise<Glass> {
       stretch: string;
       classes: string;
       slot: number;
-      ink: { left: number; right: number } | null;
+      ink: { left: number; right: number; top: number; bottom: number } | null;
       measures: { id: string; left: number; right: number; span: number }[];
     }[] = [];
     for (const buffer of buffers) {
@@ -242,14 +246,23 @@ async function readGlass(page: Page): Promise<Glass> {
       const host = buffer.style.transform ? buffer : (buffer.querySelector<HTMLElement>('[style*="scale"]') ?? buffer);
       const match = /scale\(([\d.]+)\)/.exec(host.style.transform);
       const holder = buffer.dataset.stretch ? buffer : (buffer.querySelector<HTMLElement>('[data-stretch]') ?? buffer);
-      // The sheet's whole ink across, on the glass, clipped by nothing.
+      // The sheet's whole ink across, on the glass, clipped by nothing; and
+      // down, text included (U110: a row's chord symbols and fingering are
+      // what reached into the row above). Down skips a mark taller than the
+      // stage, which belongs to no row: the engraver's path for a tie across a
+      // system break, drawn from where the note was on the line before.
       let inkLeft = Number.POSITIVE_INFINITY;
       let inkRight = Number.NEGATIVE_INFINITY;
+      let inkTop = Number.POSITIVE_INFINITY;
+      let inkBottom = Number.NEGATIVE_INFINITY;
       for (const node of buffer.querySelectorAll('svg path, svg rect, svg text')) {
         const box = node.getBoundingClientRect();
         if (box.width <= 0 && box.height <= 0) continue;
         inkLeft = Math.min(inkLeft, box.left);
         inkRight = Math.max(inkRight, box.right);
+        if (stage !== null && box.height > stage.height) continue;
+        inkTop = Math.min(inkTop, box.top);
+        inkBottom = Math.max(inkBottom, box.bottom);
       }
       // Each bar's stave: its five lines, the unit of "staff" (`08` §9).
       const measures: { id: string; left: number; right: number; span: number }[] = [];
@@ -273,7 +286,10 @@ async function readGlass(page: Page): Promise<Glass> {
         stretch: holder.dataset.stretch ?? '',
         classes: [...buffer.classList].filter((c) => c.startsWith('is-')).sort().join(' '),
         slot: Number(buffer.dataset.slot),
-        ink: Number.isFinite(inkLeft) ? { left: inkLeft, right: inkRight } : null,
+        ink:
+          Number.isFinite(inkLeft) && Number.isFinite(inkTop)
+            ? { left: inkLeft, right: inkRight, top: inkTop, bottom: inkBottom }
+            : null,
         measures,
       });
     }
@@ -480,11 +496,39 @@ function sentence(words: string, asked: number): { promised: number; held: numbe
     : { promised: asked, held: asked, said: false };
 }
 
+/**
+ * (g) — rows drawn into each other (U110): in reading order, each drawn row's
+ * ink against the ink of the row below it, text included. Half a pixel is
+ * rounding. The 360 x 780 reload that found it ran each row's chord symbols
+ * and fingering most of a staff into the row above.
+ */
+function rowsDrawnIntoEachOther(glass: Glass): string[] {
+  const inked = glass.sheets
+    .filter((s): s is Sheet & { ink: NonNullable<Sheet['ink']> } => s.ink !== null)
+    .sort((a, b) => a.ink.top - b.ink.top);
+  const out: string[] = [];
+  for (let k = 0; k + 1 < inked.length; k += 1) {
+    const upper = inked[k];
+    const lower = inked[k + 1];
+    const into = upper.ink.bottom - lower.ink.top;
+    if (into > 0.5) {
+      out.push(
+        `(g) rows drawn into each other: slot ${String(upper.slot)} (${upper.classes || 'window'}) inks to ${upper.ink.bottom.toFixed(1)}, ` +
+          `${into.toFixed(1)} px into slot ${String(lower.slot)} (${lower.classes || 'window'}) inked from ${lower.ink.top.toFixed(1)}`,
+      );
+    }
+  }
+  return out;
+}
+
 /** One cell's verdict: the fault groups it falls into, named by letter. */
 function faultsOf(glass: Glass, asked: number, words: string, notes: string[]): string[] {
   const out: string[] = [];
   const { stage, stavePx, rows, sheets, barsInk, cursorBar, lastBar } = glass;
   if (stavePx === null || stage === null || rows.length === 0) return ['nothing drawn'];
+
+  // (g) — no row drawn into another.
+  out.push(...rowsDrawnIntoEachOther(glass));
 
   // (a) — no stretch: one scale, and every sheet engraved at natural widths.
   const scales = sheets.map((s) => s.scale).filter((s) => s > 0);
@@ -738,7 +782,7 @@ for (const shape of SHAPES) {
       }
     }
     test.info().annotations.push({ type: 'no room ahead', description: notes.join('\n') || 'none' });
-    const groups = ['(a)', '(b)', '(c)', '(d)', '(e)', '(f)'].map(
+    const groups = ['(a)', '(b)', '(c)', '(d)', '(e)', '(f)', '(g)'].map(
       (g) => `${g} ${String(faults.filter((f) => f.includes(`— ${g}`)).length)}`,
     );
     expect(
@@ -822,6 +866,114 @@ for (const vp of [
     ).toBe(true);
   });
 }
+
+/**
+ * Rows the window grants never overlap at the size they are drawn, and a
+ * fresh load and a reload draw the same window (U110, `responses/9e14839e.md`
+ * §3; `docs/review/walks/walk-2026-10-02.md` finding 2).
+ *
+ * The owner's phone upright, the piano connected, Ode to Joy with both hands:
+ * reloads drew three rows at the two-row size, each row's ink running into the
+ * next, so its chord symbols and fingering sat inside the row above. The
+ * mechanism: each engraving search the settling stage set off fitted the
+ * slots at a zoom it tried and then went back to the zoom it kept, and the
+ * chooser read that fit's scale against the piece's measurement at the zoom
+ * kept; the window's rows came out a little over half their drawn height,
+ * and a greyed row was granted on a stage the two rows fill. The next fit
+ * took it back, and each grant and each correction spent a rung of the
+ * reshape ladder. When the ladder ran out on a grant the three rows stayed,
+ * given even shares of that stage. How many searches the stage set off
+ * decided it, which is why one load could be clean and the next not. A
+ * fresh load and three reloads, each read settled and for every row count
+ * the stage held on the way (a row granted and taken back is the mispricing
+ * itself, even when the ladder ends on the correction), then a Wait run into
+ * its sixth bar, the chrome folded, reading the rows at every bar.
+ */
+test('rows the window grants never overlap: Ode to Joy at 360 x 780 with the piano, fresh, on reloads and through a run (U110)', async ({
+  page,
+}) => {
+  test.setTimeout(240_000);
+  const midi = await installMidiMock(page, { permission: 'granted' });
+  // Every row count the stage held while it settled, on every load: a greyed row granted and
+  // taken back again is the mechanism in motion, a row drawn for a few frames and gone. The
+  // observer's records are delivered in batches, so each one's value is read from the record (the
+  // value it replaced), and the current value at the end; the document itself is observed, since
+  // the init script runs before there is a root element.
+  await page.addInitScript(() => {
+    const seen: number[] = [];
+    (window as unknown as { __u110slots: number[] }).__u110slots = seen;
+    new MutationObserver((records) => {
+      for (const r of records) if (r.oldValue !== null) seen.push(Number(r.oldValue));
+    }).observe(document, { attributes: true, attributeOldValue: true, subtree: true, attributeFilter: ['data-slots'] });
+  });
+  await page.setViewportSize({ width: 360, height: 780 });
+  const faults: string[] = [];
+  const shapes: string[] = [];
+  const scales: number[] = [];
+  const told = (g: Glass): string =>
+    `[${String(g.shape.slots)} systems on the stage, ${String(g.shape.systems)} the window, ${String(g.shape.shown)} bars; ` +
+    `rows ${g.sheets.map((s) => `${s.classes || 'window'} ${s.ink ? `${s.ink.top.toFixed(0)}..${s.ink.bottom.toFixed(0)}` : '?'}`).join(', ')}; ` +
+    `stage ${String(g.stage?.top)}+${String(g.stage?.height)}]`;
+  for (let load = 0; load < 4; load += 1) {
+    if (load === 0) await openPiece(page, 'song.classical.ode-to-joy.ht');
+    else {
+      await page.reload();
+      await expect(page.locator('section[data-screen="score"]')).toBeVisible({ timeout: 90_000 });
+      await page.waitForFunction(() => document.querySelector('#score-stage .is-front svg') !== null, undefined, { timeout: 90_000 });
+      await settle(page);
+    }
+    const glass = await readGlass(page);
+    const where = load === 0 ? 'fresh' : `reload ${String(load)}`;
+    for (const fault of rowsDrawnIntoEachOther(glass)) faults.push(`${where} — ${fault} ${told(glass)}`);
+    const counts = await page.evaluate(() => (window as unknown as { __u110slots?: number[] }).__u110slots ?? []);
+    if (glass.shape.slots !== null && counts.some((n) => n > (glass.shape.slots ?? 0))) {
+      faults.push(
+        `${where} — a row granted and taken back while the stage settled: rows ${counts.join(' → ')}, settled at ${String(glass.shape.slots)}`,
+      );
+    }
+    shapes.push(`${String(glass.shape.slots)}/${String(glass.shape.systems)}/${String(glass.shape.shown)}`);
+    scales.push(Math.min(...glass.sheets.map((s) => s.scale).filter((s) => s > 0)));
+  }
+  expect(faults, faults.join('\n')).toEqual([]);
+  // A fresh load and a reload are the same window: the same shape at one size.
+  expect(new Set(shapes).size, `the shape on each load: ${shapes.join(', ')}`).toBe(1);
+  expect((Math.max(...scales) - Math.min(...scales)) / Math.min(...scales), `the size on each load: ${scales.join(', ')}`).toBeLessThan(
+    SAME_SCALE,
+  );
+  // Then the size a run freezes, through the fold, at every bar it enters.
+  type Run = { step: number; bar: number; expected: number[]; pitches: number[] };
+  type Hooked = Window & { __pianopath?: { scoreRun?: () => Run | null } };
+  await page.locator('#score-mode').selectOption('wait');
+  await settle(page);
+  await pressControl(page, '#score-play');
+  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-running', 'true');
+  let lastBar = -1;
+  for (let i = 0; i < 40; i += 1) {
+    const run = await page.evaluate(() => (window as Hooked).__pianopath?.scoreRun?.() ?? null);
+    if (!run) break;
+    if (run.bar !== lastBar) {
+      lastBar = run.bar;
+      await frames(page);
+      const glass = await readGlass(page);
+      for (const fault of rowsDrawnIntoEachOther(glass)) faults.push(`run, bar ${String(run.bar + 1)} — ${fault} ${told(glass)}`);
+    }
+    // The walk's picture was taken in the sixth bar.
+    if (run.bar >= 5) break;
+    const notes = run.expected.length > 0 ? run.expected : run.pitches;
+    for (const m of notes) await midi.noteOn(m, 78);
+    await page.waitForTimeout(60);
+    for (const m of notes) await midi.noteOff(m);
+    await page
+      .waitForFunction((was) => (window as Hooked).__pianopath?.scoreRun?.()?.step !== was, run.step, { timeout: 4_000 })
+      .catch(() => undefined);
+  }
+  expect(lastBar, 'the run reached its sixth bar').toBeGreaterThanOrEqual(5);
+  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-chrome', 'folded', { timeout: 10_000 });
+  await frames(page);
+  const folded = await readGlass(page);
+  for (const fault of rowsDrawnIntoEachOther(folded)) faults.push(`run, folded — ${fault} ${told(folded)}`);
+  expect(faults, faults.join('\n')).toEqual([]);
+});
 
 /**
  * The cell that found fault C, mid-run: phone upright, Chopin's Nocturne op. 48

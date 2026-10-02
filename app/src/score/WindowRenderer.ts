@@ -892,6 +892,14 @@ export class WindowRenderer {
   private priced: unknown = null;
   /** The tallest row the last fit drew, in stage pixels with its margin: what a look-ahead row is priced at. */
   private drawnRowPx = 0;
+  /**
+   * The engraving zoom the slots were last fitted at (U110): the units the
+   * drawn scale (`currentScale`) is in. A slot's transform is a scale of the
+   * engraving it holds, and the engraving search moves the zoom and re-engraves
+   * before the fit that follows it, so in between the transform on the glass
+   * is a scale of an engraving at another zoom.
+   */
+  private drawnAtZoom = -1;
   /** What the probe measured, at `pieceInkZoom`; null until it has run. */
   private pieceInk: PieceInk | null = null;
   private pieceInkZoom = -1;
@@ -1789,7 +1797,7 @@ export class WindowRenderer {
     if (priced.sizeTargetAbs !== undefined) this.sizeTargetAbs = priced.sizeTargetAbs;
     if (priced.priced !== undefined) this.priced = priced.priced;
     return priced.settle
-      ? this.settleShape(stage.width, priced.slots, priced.systems, priced.shown)
+      ? this.settleShape(stage.width, priced.slots, priced.systems, priced.shown, priced.aheadMeasured === true)
       : { slots: priced.slots, systems: priced.systems, shown: priced.shown };
   }
 
@@ -1816,6 +1824,8 @@ export class WindowRenderer {
     why?: WindowWhy | null;
     sizeTargetAbs?: number;
     priced?: unknown;
+    /** Whether the look-ahead row was priced from the rows drawn at this zoom, not predicted (U110, `settleShape`). */
+    aheadMeasured?: boolean;
   } {
     const asked = Math.max(1, this.barsPerWindow);
     const pieceBars = Math.max(1, this.model.sourceMeasureCount);
@@ -2041,6 +2051,17 @@ export class WindowRenderer {
     // the Nocturne's eight bars on a tablet upright were drawn smaller than
     // predicted, which left a row's height empty below and no next bar.
     const { rows } = rowsFor(choice.shown, choice.systems);
+    // **The drawn scale is read only at the zoom it was drawn at (U110).**
+    // `height` is the piece's measurement at this zoom; a slot's transform is
+    // a scale of the engraving it was last fitted with, and after the
+    // engraving search's last re-engraving that is still the zoom the search
+    // tried before it. Priced with one in the other's units on Ode to Joy at
+    // 360 x 780, the window's rows came out at a little over half the height
+    // they draw, a look-ahead row was granted on a stage the two rows already
+    // fill, and the reshape ladder then ran out holding it. Until the fit at
+    // this zoom the rows are priced as predicted; that fit prices them again
+    // from what it drew.
+    const drawnHere = this.drawnAtZoom === this.zoomLevel;
     /**
      * Whether `shown` bars over `systems` rows drawn at `drawn` leave the
      * stage a row's height for the next bar below them. The shape chosen is
@@ -2050,7 +2071,7 @@ export class WindowRenderer {
      * drawn without asking for a different count.
      */
     const aheadFor = (shown: number, systems: number, drawn: number, maxSlots: number): boolean => {
-      const drawnNow = this.systemsPerWindow === systems && this.shownBars === shown ? this.currentScale() : 0;
+      const drawnNow = drawnHere && this.systemsPerWindow === systems && this.shownBars === shown ? this.currentScale() : 0;
       const rowHeight = height * (drawnNow > 0 ? Math.min(drawn, drawnNow) : drawn) + FIT_MARGIN_PX;
       // The window's rows keep the reserve of the piece's tallest system (one
       // size for the whole run); the look-ahead row is priced at the rows
@@ -2065,6 +2086,14 @@ export class WindowRenderer {
       );
     };
     const ahead = aheadFor(choice.shown, choice.systems, choice.drawn, choice.maxSlots);
+    // The same condition under which `aheadFor` priced the chosen shape from
+    // what is drawn: this shape on the glass, fitted at this zoom.
+    const aheadMeasured =
+      drawnHere &&
+      this.systemsPerWindow === choice.systems &&
+      this.shownBars === choice.shown &&
+      this.currentScale() > 0 &&
+      this.drawnRowPx > 0;
     // Every count's best shape, the five-line staff it would draw and whether
     // it would keep a look-ahead row below, so the floor's number and what one
     // bar fewer buys can be judged from one pass (`debugFit`, T38 item 5,
@@ -2087,6 +2116,7 @@ export class WindowRenderer {
       systems: choice.systems,
       shown: choice.shown,
       settle: true,
+      aheadMeasured,
       why,
       sizeTargetAbs,
       priced: {
@@ -2188,15 +2218,36 @@ export class WindowRenderer {
     else this.el.dataset.windowWhy = why;
   }
 
-  /** The chosen shape, or the one already drawn when the ladder is spent. */
+  /**
+   * The chosen shape, or the one already drawn when the ladder is spent —
+   * except a look-ahead row the drawn rows measure as not fitting, which goes
+   * (U110). `aheadMeasured`: the chosen shape's look-ahead row was priced
+   * from the rows drawn at this zoom (`priceWindowShape`).
+   */
   private settleShape(
     stageWidth: number,
     slots: number,
     systems: number,
     shown: number,
+    aheadMeasured = false,
   ): { slots: number; systems: number; shown: number } {
     const same = slots === this.slotCount && systems === this.systemsPerWindow && shown === this.shownBars;
     if (same || this.mayReshape(stageWidth)) return { slots, systems, shown };
+    // **A spent ladder never keeps a look-ahead row the drawn rows have no
+    // room for (U110).** Kept, the slots are given even shares of a stage the
+    // window's rows already fill and every row's ink runs into the next one:
+    // Ode to Joy at 360 x 780, where the ladder ran out on a row granted from a
+    // mispriced pass, and Twinkle at 342 x 740 Bars 3 while its chrome lays
+    // out, where the look-ahead row priced from the rows drawn is granted
+    // without it and refused with it (its own ink is the taller), until the
+    // ladder runs out. Only when that answer was measured from the glass: a
+    // pass predicting from the piece's tallest system can say *no room* where
+    // the drawn rows have it (T38), and taking a row away on that would lose
+    // look-ahead the stage holds. It only ever removes a row, so the ladder
+    // still ends.
+    if (aheadMeasured && systems === this.systemsPerWindow && shown === this.shownBars && slots < this.slotCount) {
+      return { slots, systems, shown };
+    }
     return { slots: this.slotCount, systems: this.systemsPerWindow, shown: this.shownBars };
   }
 
@@ -3026,6 +3077,7 @@ export class WindowRenderer {
     // applied once and never multiplies a fit that already fills the stage.
     const drawn = scale;
     this.drawnRowPx = Math.max(...boxes.map((entry) => entry.box.height * drawn), 0) + FIT_MARGIN_PX;
+    this.drawnAtZoom = this.zoomLevel;
     // One offset for every slot, for the same reason there is one scale: the
     // slots are engraved separately, so their ink boxes differ — a bar of
     // semiquavers is wider than a bar of minims — and centring each in its own

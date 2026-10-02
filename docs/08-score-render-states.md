@@ -353,7 +353,8 @@ first, looking ahead second, the bar count third*, and the arrangement follows t
   asked, M shown: at 150 % only 2 of 4 fit here*. Splits whose scales tie go to fewer rows.
   **Rows are placed in reading order** by their first bar (`packSlots`), whatever slot the
   round-robin put them in: the window's rows top to bottom, then the look-ahead. **The look-ahead row costs the window nothing:** it is added below only
-  when one more row fits at the window's own scale, and drawn greyed (`is-ahead`). On the
+  when one more row fits at the window's own scale, and drawn greyed (`is-ahead`); a row
+  that does not fit is never drawn into the others (invariant 40, U110). On the
   same row is the sideways chunk's job; upright rows are not extended past the window.
 - **Priced as drawn (T38, 2026-09-25).** Every candidate is priced on its own window — the
   bars the cursor's window holds at that count — each row as its opening once (clef, key, and
@@ -991,6 +992,29 @@ Numbered for citation. Each is falsifiable; most are already testable.
     at 0.97). The next bars arriving in a slot (`scheduleSettle`) and the spare sheet sideways
     are not the fit and are not part of it. `score.screen` "the fit says when it has settled"
     checks it frame by frame.
+
+**Rows** (U110, `docs/review/responses/9e14839e.md` §3)
+40. **Rows never overlap.** No drawn row's ink, chord symbols and fingering included, reaches
+    into the row below it at the size the window is drawn, at rest or in a run, and a fresh
+    load and a reload draw the same window. Two things broke it together on Ode to Joy at
+    360 × 780 with the piano connected (`docs/review/walks/walk-2026-10-02.md` finding 2): the
+    plan priced the window's rows, and so the room left below them, with the drawn scale of an
+    engraving at the zoom the engraving search had tried before settling, against the piece's
+    measurement at the zoom it settled on, so the rows came out at a little over half their
+    drawn height and a third row was granted on a stage two rows fill; and when the reshape
+    ladder (`mayReshape`, a few changes per zoom, width and count) ran out on such a grant,
+    `settleShape` kept it, and
+    `packSlots` gave three rows even shares of that stage. Whether it ran out on a grant
+    depended on how many engraving searches the settling chrome set off, so one load could be
+    clean and the next not. Now the drawn scale prices a row only at the zoom it was drawn at
+    (`drawnAtZoom`), and a spent ladder never keeps a look-ahead row that the rows drawn at this
+    zoom measure as having no room (`settleShape`; a predicted *no room* does not take a row
+    away, since the prediction prices the piece's tallest system and can be wrong the other
+    way). The second covers another flip measured while Twinkle's chrome lays out at 342 × 740
+    (Bars 3): the look-ahead row, priced from the rows drawn, is granted while it is not drawn
+    and refused once it is, its own ink being the taller. `score.window-rule` asserts it in
+    every cell ((g)) and on that case, fresh, on three reloads and through a Wait run into its
+    sixth bar.
 
 ---
 

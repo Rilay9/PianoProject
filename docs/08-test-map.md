@@ -376,6 +376,17 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
   face's widest digit, the widest count the product can print; where that sentence is the tallest (on the
   face it was written on, there), a band priced at a day or without the away sentence is a line
   short, and an annotation says whether the face running it tells the two apart.
+  U110 (`responses/9e14839e.md` §3, invariant 40 of `08-score-render-states.md`): (g) in every
+  cell, no drawn row's ink, read from every painted mark including text (chord symbols,
+  fingering), reaches into the ink of the row below it; and a named case, Ode to Joy (hands
+  together) at 360 × 780 with the piano connected, on a fresh load and three reloads — no row
+  drawn into another, no row granted and taken back while the stage settles (every row count
+  the stage held, from a mutation observer installed before the page's scripts), the same
+  shape and size on every load — then a Wait run into its sixth bar with the chrome folded,
+  read at every bar it enters. Red on the committed renderer: the fresh load granted the row
+  twice and took it back, and every reload ended on three rows at the two-row size, each
+  row's ink running about a quarter of its height into the next. Red too with only the
+  spent-ladder guard (the rows end clean, but the row is granted and taken back on every load).
 - `score-fit-paths.spec.ts` — the score fills the stage on every path in (U74): the two-bar blues scale at 342 × 740 with D4's seeded learner settles to the same stage box, systems, bars and staff from Today and by a link after a fresh load of the same route, and from the first frame that draws it the stage shows the settled layout on both paths — every frame recorded by the page from before the tap.
 - `score.fuzz.spec.ts` — the seeded random walk over the whole Score screen, invariants after every action.
 - `score.head-height.spec.ts` — the Score screen's header is the same height all through a run (the first correct notes, a message longer than the row, a wider font); a stage whose *height* changes mid-run leaves the drawn sheet's transform alone; a run restarted mid-piece (hand change, `Hear it`) keeps its **engraving zoom** through a header that grows, which the transform alone cannot show; and the hands control is reachable during a run when the bar has sent it behind `⋯`, which is the branch a wider set of glyphs takes and this machine does not.
