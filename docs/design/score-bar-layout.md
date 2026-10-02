@@ -524,3 +524,161 @@ What becomes of U122's inventory (§1, §4) under c6:
 The flows were separated after the first pass suggested that a run's size can depend on what the page drew before it (§8.6); that pass is kept as `history/`. The grids are U122's (U119a's 64 sideways cells, 48 upright, 880 × 412 and 1200 × 360, 90 % text) plus the two tablet cells. The final data is 628 cell-and-candidate pairs, each through both flows: 1,256 tests and 5,652 measured states. In all, 1,575 tests ran, the reruns and the history checks included, and none failed (`run-*.txt`, `rerun-*.txt`). Every at-rest state's stage reserve matches the bar's drawn height (`stale.txt`: 0 of 3,768 disagree). The first pass had 64 that did not, because the row was measured before it was allocated; the probe was fixed and those cells rerun. A first version of c4 let Back wrap in its zone; it was fixed and c4 rerun.
 
 Not measured: a device; any face but these two; text above 115 %; the pieces beyond Hot Cross Buns, Moonlight III and When the Saints; a Hands refusal; floor values other than the code's 22 px.
+
+## 9. Each Score moment shows what it needs: c6 applied state by state (U122b)
+
+A probe, no app code changed (brief `docs/prompts/tasks/U122b-each-score-moment-shows-what-it-needs.md`; the reviewer's `responses/911f8c82.md` and `911f8c82-correction-1.md` govern). Worktree base `d159f407`; nothing under `app/src` differs from U122a's base `f9322175`. Evidence: `docs/prompts/runs/U122b/` (Entry 214). **Every pixel count below was measured in this machine's Chromium**; the claims are the relationships (covers or clears, fits or overflows, moved or held). Unverified on a device. Nothing was heard, and no musical judgement is made; where a place on the glass changes what a learner can do, that is said.
+
+### 9.0 Judgement
+
+**c6 applied per state passes the brief's four checks in every listed cell and state measured** (24 cells, below; the finished state on the 12 whose piece can finish), once the per-state rules include three things c6 as U122a built it does not have:
+
+1. **The fold keys on playing, not on a run existing, and leaves ⏸ behind.** During the count-in, while the run holds for the first note, and while playing, the row folds to ⏸ alone, in ▶'s own place. Paused and refused, the row stays open.
+2. **The count-in leaves the stage.** No wash and no numerals over the notes. It is drawn where the name was, in the top line.
+3. **The row's background ends at its controls** (no vertical padding).
+
+Two smaller rules come with them. The top line is as tall at rest as the band a run keeps for it, so ▶ moves nothing. The finished sheet shows its actions under its heading, and the folded chip is not drawn over it.
+
+**The hypothesis, part by part:**
+
+- **The refusal fits the top band with the title yielding; no refit.** *Holds.* Three refusals were produced: ▶ and `Hear it` at rest, and ▶ over a paused run. In 24 of 24 cells each was drawn whole on one line, in the top line's 22-px height, with `bar n / m` kept beside it; the music did not move. Every other refusal sentence the Score glass can carry, priced at the same weight, fits beside `bar n / m` with room to spare at the tightest cell (568 × 320, 115 %, wider face). The exception is the refused start (*Nothing for the right hand in this piece — choose L or Both*, R19 below), which is not a sound refusal. At 568 × 320, 115 %, wider face (2 cells) it is wider than the room beside `bar n / m`. It fits the line once `bar n / m` yields too, which the table allows (*position if it still fits*). **No refit is needed, so no fallback is reported.** The 22-px floor never comes into play. For the record, U122a's c6 refit at the closest cell was about 22.3 px (§8.4).
+- **A playing state has a direct pause under c6's fold.** *Refuted for c6 as the app folds it, in 24 of 24 cells.* The row folds 0.7 s after ▶ (`CONTROL_BAR_START_HIDE_MS`, `ScoreScreen.ts`:192, :2609), and nothing on the glass pauses. The same holds during the count-in and while the run holds for the first note. With ⏸ kept alone in its own place: 24 of 24 pass, and ⏸ covers no ink in any cell, in any of those three states.
+- **No chrome over the notation the state needs.** *Refuted in two places, both fixed by the rules above:*
+  - **The app's count-in, in 24 of 24 cells.** Its wash dims the stage. In Moonlight its numerals sit on 11–14 note heads. In Hot Cross Buns they sit on fingering digits and stave lines. That is walk finding 8, reproduced. With the count in the top line: 24 of 24 clear.
+  - **c6's own row, at 780 × 360 with Moonlight.** Its padding lies over the bass staff's lowest beams: at rest in all 6 of those cells (3–5 px deep), and while paused at 115 % in 2 (about 8 px deep). The controls themselves do not reach the ink (one touches by under a pixel). Drawn with no vertical padding, the row clears the ink in every cell. The stave is the same in every cell, and the same bars are inked. The music sits identically on the glass and the row sits lower on the keys (the pictures `row-padded-*` against `row-flush-*`).
+
+**Walk finding 5 is reproduced, and it has a twin.** Three seconds after ⏸ the row folds (24 of 24 cells), because the fold timer asks `session.running`, which a paused run keeps (`showBar`, `ScoreScreen.ts`:3613–3619). The name, ▶, the mode, Hands, the tempo and ⋯ are gone, and the chip says *Paused — ▶ to carry on, …* with no ▶ on the glass. The twin: ▶ refused over a paused run leaves *Sound did not start — tap ▶ again* in the chip three seconds later, naming a ▶ that is not drawn (24 of 24). This was observed under the probe's c6. The fold that causes it is the app's own code, so today's layout is inferred to do the same.
+
+### 9.1 The table mapped to the Score's states
+
+The rows are the T31 state machine's (`docs/decisions/2026-09-23-score-state-machine.md` §1) plus the sound refusal (G86a, U105).
+
+| App state | How the code knows | Table row that governs | Probed |
+| --- | --- | --- | --- |
+| R1 idle at bar 1 | no run (`!session.running`) | At rest | yes |
+| R2 idle with a run left half way (the offer to carry on) | `#score-resume` | At rest; the offer's *Carry on* is that moment's next action | no |
+| R3 counting in | `#score-countin` drawn (`onBeat`, `tick.isCountIn`) | Count-in | yes |
+| R4 armed: holding for the first note | `state.armed` | **No row names it.** Count-in governs: the learner's task is still the entrance, and the cue (*Play your first note to start*) is its action | yes |
+| R5–R11 running: Wait, Keep tempo, rhythm only, Listen, Free, Perform, Blind | `data-running='true'`, not paused | Playing | Keep tempo (R6) only |
+| R12 paused by ⏸ | `state.paused` | Paused | yes |
+| R12 with a note: restarted by an option (C2), back from under a demonstration (C1) | `pauseNote` | Paused; the note says why the run moved, more than *Paused* (Questions) | priced only |
+| R13 loop, R14 ladder step | the loop range; the ladder's verdict on the status line | Playing; the verdict is a run line, carried in the chip as today | no |
+| R15 hearing (`Hear it`) | `hearing` | Playing, with **Stop** (`Hear it`'s label while it plays) as the one direct control, not ⏸: T31 principle 5, *the button that stops a thing is the one that started it* | no |
+| R16 one-bar preview | `hearingBar` | Playing | no |
+| R17 page hidden, then R12 with the time away | `awaySeconds` | Paused; the away note carries more than *Paused* (Questions) | priced only |
+| R18 summary | `#score-summary` shown | Finished | yes (Hot Cross Buns) |
+| R19 refused start: a hand the piece has nothing for | the sentence on `#score-status`, no run (`ScoreScreen.ts`:2575) | Refusal; it names R, L or Both | priced only |
+| Sound refusal (G86a, U105) | `data-sound-refused`, `refusedNow()` | Refusal | yes: ▶ and `Hear it` at rest, ▶ over a paused run |
+| ▶ waiting for the sound (U69); a transfer offer unread (D4a) | `data-starting-sound`; `offerPending()` | At rest (▶ busy or held; no sentence) | no |
+| R20 the sideways twin | `data-chrome` | not a state: the orientation every row here is about | — |
+
+What each moment draws under c6 applied per state (the probe's emulation, `installStates` in `scripts-states.spec.ts`; the build's acceptance description, not a new state model):
+
+| Moment | Top line | Bottom row | Stage |
+| --- | --- | --- | --- |
+| At rest | the name, `bar n / m` | Back, ▶, `Hear it`, the mode, Hands, the tempo, ⋯ (U122's chooser); flush to its controls | the music |
+| Count-in | the count (1 2 3 4, the beat marked) in the name's place; `bar n / m` | ⏸ alone, in ▶'s place | the music, nothing over it |
+| Holding for the first note | the cue in the name's place; `bar n / m` | ⏸ alone | the music |
+| Playing | folded: the chip's `bar n / m` (and a run line, as today) | ⏸ alone | the music |
+| Paused | the name, `bar n / m` | the whole row, not folded; the generic paused sentence not drawn | the music |
+| Refusal | the sentence in the name's place (bold, the accent colour); `bar n / m` if it fits | the whole row; the named control on it | unchanged, no refit |
+| Finished | not drawn; the chip not drawn | under the summary | the summary: heading, actions, then the figures |
+
+### 9.2 The cells, and per state the result
+
+Cells: 568 × 320 and 780 × 360, each at 90 %, 100 % and 115 % text, on both faces (the app's stack and Verdana forced), with Hot Cross Buns and Moonlight III: 24 cells. They cover the brief's list:
+
+- U120's 568 × 320 refusal at 115 %, on both faces;
+- U121's paused case (568 × 320, 115 %, wider face);
+- the owner's 780 × 360;
+- the narrow and wide faces throughout;
+- U124's 90 % text, at both sizes.
+
+The walk on one page per cell: rest, ▶ refused at rest, `Hear it` refused at rest, the refusal cleared (the sound starts by itself), Keep tempo, ▶, the count-in, holding for the first note, playing (the probe strikes the expected keys on the strip, in time), ⏸, three seconds, ▶ refused over the paused run, three seconds, the refusal cleared, ▶, played to the end, the summary. Moonlight runs to the second refusal cleared: its 201 bars do not finish in a probe's time. The summary sheet covers the stage, so the piece's notation does not enter the finished checks.
+
+Each state is measured twice. **A** is the app's own state machine with c6's elements moved, as U122a installed them. **B** is c6 applied per state. Final run `ff` (rules 1–3, the band rule, U124's floor); the base run `f` is the same without rule 3. Counts are cells passing; check 3 counts cells where the music's top edge and stave did not change since the previous state; check 4 counts cells with no drawn box over the stage's ink deeper than a 2-px touch.
+
+| State | B: 1 shown and reachable | B: 2 hidden | B: 3 music held | B: 4 no cover | A (the app's machine under c6) |
+| --- | --- | --- | --- | --- | --- |
+| At rest | 24 | 24 | 24 | 24 (18 with the padded row) | — |
+| ▶ refused at rest | 24 | 24 | 24 | 24 (18) | — |
+| `Hear it` refused at rest | **16**: at 90 % text `Hear it` is 36 px tall, under the floor, in 8 cells | 24 | 24 | 24 (18) | — |
+| Refusal cleared at rest | 24 | 24 | 24 | 24 (18) | — |
+| Count-in | 24 | 24 | 24 | 24 | 0 / 0 / 24 / 0: no direct pause (the row folds 0.7 s in), the wash and numerals over the stage |
+| Holding for the first note | 24 | 24 | 24 | 24 | 0 on check 1: no direct pause (the cue is whole, in the chip) |
+| Playing | 24 | 24 | 24 | 24 | 0 on check 1: no direct pause |
+| Paused (three seconds after ⏸) | 24 | 24 | 24 | 24 (22 with the padded row) | 0 / 0: the row folded; the name, ▶ and setup gone; the paused sentence in the chip, over 8 fingering digits in 1 cell |
+| ▶ refused over the paused run | 24 | 24 | 24 | 24 (22) | 0 on check 1: the sentence in the chip names a ▶ not drawn |
+| Refusal cleared, paused | 24 | 24 | 24 | 24 (22) | as paused |
+| Finished | 12 of 12 | 12 | 12 | 12 | 3 of 12 with an action whole in view (4 below the sheet's visible part, 5 partly in it); the chip `bar 4 / 4` drawn over the summary in 12 |
+
+Every cell and state is in `states-ff.txt` (and `states-f.txt` for the padded row); the counts are in `summary.txt` and `summary-f.txt`.
+
+**The music through the walk (check 3).** Under B, nothing moved and nothing shrank from rest to finished in any of the 24 cells. The stave on the glass is the same in every state of a cell. Hot Cross Buns measures about 81 px at 568 × 320 and about 112 px at 780 × 360. Moonlight measures about 22.9 px and about 31.6 px, every one above the 22-px floor (`music.txt`). Two things would have moved it:
+
+- **Without the band rule** (run `g`), the music's top edge moved down 2.7 px (100 and 115 %) or 4.2 px (90 %) when ▶ started a run, in 20 of 24 cells, at the same size. At rest c6's top line is 18–22 px, while a run keeps a band of at least 22 px. A top line as tall as the band at rest stops it, and it cost no stave in any cell (`compare-g2-f.txt` against run `g`).
+- **Moonlight's freeze** took its smaller outcome once at 780 × 360, 115 %, stack face (run `g`: about 26.4 px against about 31.6 px in runs `g2`, `f` and `ff`). U122a's unchanged probe, rerun on that cell, showed the same under c6. The cause is the freeze's own two outcomes (§8.6, U35), not the chrome. It is the same run under A and B.
+
+**Repeatability.** Runs `g2` and `f` (the same probe and settings, apart from the count's second form) gave identical results in every state measured in both, except one A-side fold caught mid-fade (`compare-g2-f.txt`). Runs `f` and `ff` differ in 42 states: 38 on check 4, which is what rule 3 changes, and 4 A-side folds caught mid-fade (`compare-f-ff.txt`).
+
+**Rule 3's side effect, and what U122a's table did not show.** Without padding the row is shorter, so the at-rest stage is taller by the padding. In 22 of 24 cells the window is unchanged. In the other 2 (568 × 320, 115 %, Moonlight, both faces) the fit's term changes from the height to the read-ahead. The stave is the same, the same three bars are inked, and the picture is the same music (`window-f-ff.txt`). U122a's `chrome.txt` has no at-rest entry for 780 × 360 Moonlight under c6 because its analysis kept only chrome whose box overlaps the stage's box (`overStage`): at rest the row sits below the stage, and the ink that runs past the stage's foot was filtered out. Its unchanged probe, rerun here, measures the row over 3 ink paths at rest under c6 and none under c1 (`check-u122a.txt`). The row overlapping the paused music's foot is not c6's: under c1 the shown bar covers the same beams mid-run (§8.0, *the bar over the foot mid-run*).
+
+**Where a lone ⏸ can stand** (`pause.txt`, boxes priced against the ink in the count-in, while holding, and while playing):
+
+- **No ink in any cell:** at ▶'s own place, at the row's left end, at its right end, or the whole row flush on the keys.
+- **Straddling the top band:** 40 px tall in a 22-px band, it covers ink in 2–12 of 24 cells, up to about 19 px deep. So the top line cannot hold ⏸ at the tap floor, and the row is where it goes.
+
+### 9.3 The count-in: two forms, a trade
+
+Both forms keep the stage clear.
+
+- **In the top line, the chip's type** (B): passes in 24 of 24 cells.
+- **The app's own numerals at their own size, moved off the stage into the row's room left of ⏸, without the wash** (`count2`):
+  - all 12 cells at 780 × 360 pass: big and clear of the music (`780x360-t100-stack-moon-B-count2.png`);
+  - at 568 × 320 at 100 and 115 % text, the numerals at the app's spacing (`gap: clamp(12px, 6vw, 48px)`) run past the window's left edge in 6 of 12 cells.
+
+The app drew the count so that the first note is not unannounced on a phone on a stand with the sound low (P21c A6, `ScoreScreen.ts`:857–862). The large numerals serve that reason better than the top line's small type; fitting them at 568 × 320 needs tighter spacing, which was not measured. Questions, 1.
+
+### 9.4 The tap floor
+
+U124's floor (`max(2.5rem, 40px)` in both dimensions) was installed for Back, ▶ and ⋯, and they are at least 40 × 40 and hit at five points in every cell and state where they are drawn (`sizes.txt`).
+
+Two controls a sentence can name fall outside it:
+
+- **`Hear it`**, named by its refusal, is 36 px tall at 90 % text (8 cells): the only failure of check 1 under B.
+- **Hands' R and L** are 16–24 px wide at every text size. R19 and a Hands refusal name them (*tap R again*).
+
+The floor wants to cover every control a sentence can name, not only the three U124 lists (Follow-ups).
+
+### 9.5 The finished state
+
+The app's summary sheet (`max-height: 72 %`) puts the figures between *Run finished* and its actions.
+
+- At 568 × 320 no action is whole in view in any of the 6 cells: below the sheet's visible part in 3, partly in it in 3.
+- At 780 × 360 the actions are whole in view in 3 of 6 cells.
+- The folded chip (`bar 4 / 4`) stays drawn over the summary in every cell: stale in-run chrome.
+
+Under B, with the actions directly under the heading and the chip not drawn, *Run finished* and *Again*, *Slower*, *Faster*, *What next with this piece?* and *Done* are whole in view and hit in 12 of 12 (`finished.txt`). Walk finding 9 (a second sheet opened scrolled past its verdict) is the same sheet's other face. It was not reproduced here: the probe's sheet opened at its top every time.
+
+### 9.6 Proposed learner-facing wording (for the build; not changed here)
+
+| Where | Before | After | Why |
+| --- | --- | --- | --- |
+| Score, sideways, paused by ⏸ (`STATE_TEXT.paused`, `help.ts`:450; `pausedPerforming`, :452) | drawn in the row's spare width, cut to a prefix at narrow cells (`texts.txt`, U122a), or whole in the chip once folded | **not drawn on the sideways glass while ▶ is on the row**; kept as the screen reader's status. The words themselves are unchanged | the correction: the state and a direct ▶ already say it. *Start again* is one tap away in ⋯ (secondary setup), and the cut prefix said less than ▶ does |
+| Score, sideways, paused because the page went away (`STATE_TEXT.away`, `help.ts`:454–457), if the reviewer rules it takes the name's place (Questions, 2) | *Paused — you were away 5 s. ▶ to carry on, or Start again in ⋯ to go back to the beginning.* | *Paused — you were away 5 s. ▶ to carry on* | the whole sentence fits beside `bar n / m` at 568 × 320 only at 90 % on the app's face; the shorter one fits in every 568 × 320 cell for any count of seconds a phone will show (the 14-digit ceiling the chip prices runs a few px over in one cell). It keeps what the learner did not cause (why the run paused) and drops the pointer to secondary setup |
+
+No other wording changes. The refusal sentences, the first-note cue and the count's numerals keep their words. The refusal is restyled bold in the accent colour where the name was, so that a warning in the name's place does not read as the name. The cue moves from the chip into the top line.
+
+### 9.7 Method and limits
+
+`runs/U122b/scripts-states.spec.ts` is U122a's probe extended, not rebuilt. U122a's `install('c6')` is unchanged. Its `glass()` gained the count-in, ⏸, the top line's message, the summary and each row control as pieces of chrome, depth per overlap, stave lines told from other ink, and priced boxes. `installStates` adds one stylesheet keyed on `data-u122b` and a message element in the top line. The two runs that are the result, `f` and `ff`, ran on 2 workers. Earlier runs (`g`, `g2`) were the probe's own development; `g3` was interrupted by a machine crash before its log ended and is not used.
+
+Not measured:
+
+- a device;
+- upright and tablet (c6 is a landscape-phone arrangement);
+- text above 115 %;
+- R2, R5 (Wait), R13–R17 and R19 as walked states: R17's, C1/C2's and R19's sentences are priced only;
+- Moonlight's finished state;
+- the numeral count at a tighter spacing;
+- a background-only alternative to rule 3 (paint no background in the row's padding, keep its height).
