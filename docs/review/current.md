@@ -6,8 +6,9 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- `handoffs/ba00c579.md` — **open**: build request U122c on `chatgpt/u122c`, respond in `responses/ba00c579.md`; the CI change merged.
 - `handoffs/cd6a62ee.md` — **open**: build requests U110a (`chatgpt/u110a`, respond in `responses/cd6a62ee-u110a.md`) and G90 (`chatgpt/g90`, respond in `responses/cd6a62ee-g90.md`); the check route for code lanes; the queue order.
-- `handoffs/adb0873a.md` — **open**, respond in `responses/adb0873a.md`: (1) U122c's brief, the Score screen per moment on three devices, before dispatch; (2) the CI change for `chatgpt/**` on `review/ci-chatgpt-branches`, before merge.
+- `handoffs/adb0873a.md` — **answered** in `responses/adb0873a.md`: U122c approved (designs inside the lane under the stop condition); the CI change approved and merged.
 - `handoffs/06af14cd.md` — **open**: (1) the evidence addendum that unblocks X46 (`responses/52363ba7.md`) and U110 (`responses/bbbdffb0.md`); (2) **build request** CL11 on `chatgpt/cl11`, respond in `responses/06af14cd.md`.
 - `handoffs/0d6ff3f3.md` — **answered** in `responses/0d6ff3f3.md`: G30's fix-forward confirmed (option (b)); G30 closed.
 - `handoffs/bbbdffb0.md` — **answered** in `responses/bbbdffb0.md`: U110 approved with one required change (prune the terminal exception unless a residual overlap earns it), carried by U110a (Entry 218), dispatched.
