@@ -63,3 +63,13 @@ No pictures required for this reading lane; final layout needs the R7 state pict
 3. **Ranking anchor:** approve estimate-derived anchors from eligible rung-listed material (stable ordering when absent), replacing numeric stage/band anchors? This keeps sorting internal but can change tie-break offers and needs a discriminating selection test.
 
 These questions stop implementation of the affected slices. They do not reopen the settled sorting-only scalar or permit numeric gates to survive as curriculum truth.
+
+## Decisions on the three questions (the orchestrator, 2026-10-02)
+
+Decided under the owner's rule that a review is evidence and the orchestrator chooses on design (`operating-procedure.md`, the second-read paragraph). Each follows from a settled ruling; none is a pedagogy choice.
+
+1. **Legacy provenance: yes.** The migration carries honest variants: unknown or legacy, and manifest, beside `{ from: 'model', version }`. It never invents a model version or a human identity, and a compatibility reader serves older backups. Why: the rulings forbid fabricated provenance, and the learner's stored choices must survive. A row stays honestly unknown until it is measured.
+2. **R8: diagnosis first.** Demand refusals are an itemised placement diagnosis until each placement is decided. A build failure policy comes only after that, with unknown measurements and intended challenges named. Why: a piece leaving a rung is a curriculum decision (CL17's stop condition). An immediate failure would halt the content build on today's options, and silent removal would teach nothing.
+3. **Ordering anchors: yes.** The anchors are estimate-derived, from eligible rung-listed material; when no estimate exists, the order is a stable id order, never the stage number as disguised difficulty. Slice 4 carries a discriminating selection test that pins which equally eligible piece is offered first. Why: the scalar is a sort key by ruling, so it may order but never admit.
+
+Not checked by the orchestrator: the trace's alias, serialisation and stored-record coverage classes. Only its broad literal search was rerun at `dfda4d71` (5,416 hits; 29 outside its ledger, all prose or READMEs plus `content/review/decisions.jsonl:2`). Phase 2's first slice reruns every listed search before it edits.
