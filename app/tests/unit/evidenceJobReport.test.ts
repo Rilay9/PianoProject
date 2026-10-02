@@ -75,7 +75,7 @@ describe('the storage report', () => {
         writeEvidence: () => Promise.resolve(),
         modelOf: () => Promise.reject(new Error('no phrase to write')),
         write: () => ({ musicXml: '' }),
-        vocabulary: { skills: [], demands: [], conditions: [] },
+        vocabulary: { skills: [], demands: [], conditions: [], support: { share: 0.9, why: 'constructed: no skill' }, precision: { quarters: [1, 2], why: 'constructed: no skill' } },
         idle: () => Promise.resolve(),
         carryOver: () => Promise.resolve(0),
         normalise: () => Promise.resolve([]),

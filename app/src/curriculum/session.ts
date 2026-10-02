@@ -47,9 +47,9 @@ import {
 } from '../engine/sightReading';
 import { demandReadings, type DemandReading } from '../evidence/demandReadings';
 import type { MeasuredEvidence } from '../evidence/evidence';
-import { ladderState, RECENT_ATTEMPTS, RETENTION_DAYS, SUPPORT_SHARE, supports, type LadderReading, type LadderState } from '../evidence/ladder';
+import { ladderState, RECENT_ATTEMPTS, RETENTION_DAYS, supports, type LadderReading, type LadderState } from '../evidence/ladder';
 import { readingState, storedEvidence, type SkillState } from '../evidence/readingState';
-import { VOCABULARY_V0, type Vocabulary } from '../evidence/vocabulary';
+import { supportShareOf, VOCABULARY_V0, type Vocabulary } from '../evidence/vocabulary';
 import { readingReason, slotReason } from '../ui/help';
 import { isExcerpt, isExerciseKind, isPieceMaterial } from './excerpt';
 
@@ -710,12 +710,12 @@ function skillEvidenceOf(rows: readonly SessionRow[], vocabulary: Vocabulary, to
   for (const skill of vocabulary.skills) {
     if (skill.observable === 'none') continue;
     const measured = (bySkill.get(skill.id) ?? []).slice().sort((a, b) => a.at.localeCompare(b.at));
-    const supporting = measured.filter((e) => supports(e));
+    const supporting = measured.filter((e) => supports(e, vocabulary));
     const supportedOn = new Map<string, string>();
     for (const e of supporting) supportedOn.set(e.context.itemId, e.at);
     const last = supporting[supporting.length - 1];
     out.set(skill.id, {
-      reading: ladderState({ evidence: all.get(skill.id) ?? [], today }),
+      reading: ladderState({ evidence: all.get(skill.id) ?? [], today, vocabulary }),
       ...(last ? { lastSupport: last.at } : {}),
       recentSupported: supporting.filter((e) => (daysBetween(dayKey(new Date(e.at)), todayKey) ?? Infinity) < RETENTION_DAYS).length,
       supportedOn,
@@ -2351,13 +2351,13 @@ function anchorFor(input: ReadingInput, readers: readonly CatalogItem[]): { item
 }
 
 /** A skill whose latest measured records, as many as the policy's step-down count, all went against it. */
-function failing(states: readonly SkillState[], skill: string | undefined, policy: ReaderPolicy): boolean {
+function failing(states: readonly SkillState[], skill: string | undefined, policy: ReaderPolicy, vocabulary: Vocabulary): boolean {
   if (skill === undefined) return false;
   const measured = states
     .find((state) => state.skill.id === skill)
     ?.evidence.filter((e): e is MeasuredEvidence => e.kind === 'measured');
   const latest = (measured ?? []).slice(-policy.stepDownAfter);
-  return latest.length === policy.stepDownAfter && latest.every((e) => !supports(e));
+  return latest.length === policy.stepDownAfter && latest.every((e) => !supports(e, vocabulary));
 }
 
 /**
@@ -2366,14 +2366,14 @@ function failing(states: readonly SkillState[], skill: string | undefined, polic
  * last run of `stepDownAfter` reads against, the latest full-standard read
  * supporting.
  */
-function proficientAt(evidence: readonly MeasuredEvidence[], policy: ReaderPolicy): boolean {
+function proficientAt(evidence: readonly MeasuredEvidence[], policy: ReaderPolicy, vocabulary: Vocabulary): boolean {
   let days = new Set<string>();
   let against = 0;
   let lastFull: MeasuredEvidence | undefined;
   for (const e of evidence) {
     if (e.standard !== 'full') continue;
     lastFull = e;
-    if (supports(e)) {
+    if (supports(e, vocabulary)) {
       against = 0;
       days.add(dayKey(new Date(e.at)));
     } else {
@@ -2381,7 +2381,7 @@ function proficientAt(evidence: readonly MeasuredEvidence[], policy: ReaderPolic
       if (against >= policy.stepDownAfter) days = new Set();
     }
   }
-  return lastFull !== undefined && supports(lastFull) && days.size >= policy.stepUpAfter;
+  return lastFull !== undefined && supports(lastFull, vocabulary) && days.size >= policy.stepUpAfter;
 }
 
 /**
@@ -2390,13 +2390,14 @@ function proficientAt(evidence: readonly MeasuredEvidence[], policy: ReaderPolic
  * phrase read right as a whole is not yet shown at a demand that went wrong in
  * it, and the reader does not add to it until those reads hold at every demand
  * the phrase still asks. A demand the recipe now keeps out does not hold it
- * back.
+ * back. `share` is the reader's skill's support share in the vocabulary (CL11b,
+ * L57), the share its whole reads are supported at.
  */
-function heldBack(reads: readonly MeasuredEvidence[], current: SightReadingOptions): string[] {
+function heldBack(reads: readonly MeasuredEvidence[], current: SightReadingOptions, share: number): string[] {
   const out = new Set<string>();
   for (const read of reads) {
     for (const entry of read.byDemand ?? []) {
-      if (entry.n === 0 || entry.right / entry.n >= SUPPORT_SHARE) continue;
+      if (entry.n === 0 || entry.right / entry.n >= share) continue;
       const demand = SAME_NOTES[entry.demand] ?? entry.demand;
       if (READING_CONTROLS[demand]?.mayWrite(current) ?? true) out.add(demand);
     }
@@ -2727,7 +2728,7 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
 
   // 4a. Two reads against the recipe.
   const lastFew = evidence.slice(-policy.stepDownAfter);
-  if (lastFew.length === policy.stepDownAfter && lastFew.every((e) => !supports(e))) {
+  if (lastFew.length === policy.stepDownAfter && lastFew.every((e) => !supports(e, vocabulary))) {
     const because = singledOut(readings, current, taughtIndex)[0];
     if (because) {
       const down = moveFor(ctx, because.demand, 'off');
@@ -2738,8 +2739,8 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
   }
 
   // 4b. Proficient at the recipe, at every demand the phrase holds: the next taught demand.
-  const proficient = !previousEasy && proficientAt(evidence, policy);
-  const stillWrong = proficient ? heldBack(evidence.slice(-policy.stepUpAfter), current) : [];
+  const proficient = !previousEasy && proficientAt(evidence, policy, vocabulary);
+  const stillWrong = proficient ? heldBack(evidence.slice(-policy.stepUpAfter), current, supportShareOf(READER_SKILL, vocabulary)) : [];
   const ready = proficient && stillWrong.length === 0;
   if (ready) {
     const shown = (demand: string): boolean =>
@@ -2751,7 +2752,7 @@ export function readingOffer(input: ReadingInput): ReadingOffer | null {
       .filter(taught)
       .sort((a, b) => taughtIndex(a) - taughtIndex(b) || vocabularyIndex(a) - vocabularyIndex(b));
     for (const demand of candidates) {
-      if (shown(demand) || failing(states, vocabulary.demands.find((d) => d.id === demand)?.copedWithBy, policy)) continue;
+      if (shown(demand) || failing(states, vocabulary.demands.find((d) => d.id === demand)?.copedWithBy, policy, vocabulary)) continue;
       const up = moveFor(ctx, demand, 'on');
       if (!up || !up.brings.every(taught)) continue;
       const key = demand === 'key.signature' ? keyOfPhrase(readingOptions(anchor.item, up.recipe, seed, hold)) : undefined;

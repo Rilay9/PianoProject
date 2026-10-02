@@ -22,7 +22,7 @@ import { recordRun, resetProgressForTest, rungRows, walkSessions, type RunResult
 import { evidenceFor, recomputeEvidence, stampedEvidence, type Evidence, type MeasuredEvidence } from '../../src/evidence/evidence';
 import * as ladder from '../../src/evidence/ladder';
 import { storedEvidence } from '../../src/evidence/readingState';
-import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
+import { supportShareOf, VOCABULARY_V0 } from '../../src/evidence/vocabulary';
 import { DIMENSIONS, establishedOn, relationshipOf, shownOnRecords, type DimensionFact, type Relationship } from '../../src/curriculum/transfer';
 import { supportedAtFull } from '../../src/evidence/transferPolicy';
 import type { Identity } from '../../src/review/record';
@@ -322,11 +322,14 @@ describe('2. the establishing contexts come from the replay, and `transfer.ts` r
     expect(reading.establishing).toEqual(again);
   });
 
-  it('the policy’s full-standard support is the ladder’s: the same share', () => {
+  // Revised (CL11b, L57): the policy kept its own copy of the share (Part G's pass constant) and this
+  // held the copy equal to the ladder's; now it applies the share it is handed, the skill's in the
+  // vocabulary, which is what the ladder reads.
+  it('the policy’s full-standard support is the ladder’s: the same share, the vocabulary’s', () => {
     for (const [right, n] of [[0, 10], [7, 10], [8, 10], [9, 10], [10, 10], [0, 0]] as const) {
       const one = record(1, { right });
       const counted = { ...one, n, right } as MeasuredEvidence;
-      expect(supportedAtFull(counted), `${String(right)}/${String(n)}`).toBe(ladder.supports(counted));
+      expect(supportedAtFull(counted, supportShareOf(counted.skill)), `${String(right)}/${String(n)}`).toBe(ladder.supports(counted));
     }
   });
 

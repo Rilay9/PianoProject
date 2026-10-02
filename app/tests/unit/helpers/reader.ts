@@ -93,6 +93,8 @@ export interface Read {
   tempoPct?: number;
   guide?: 'next' | 'off';
   mode?: 'tempo' | 'wait';
+  /** A note's name on the screen (`keys.names`): Wait with *Name the note I am waiting for* on (CL11b, L58). */
+  names?: boolean;
 }
 
 export interface ReadOut {
@@ -127,6 +129,7 @@ export async function readPhrase(read: Read): Promise<ReadOut> {
     at: read.at,
     wrongInstead: read.wrong?.(model) ?? [],
     ...(read.wrongKey ? { wrongKey: read.wrongKey } : {}),
+    ...(read.names === undefined ? {} : { names: read.names }),
     offsetMs: jitter(seed),
   });
   const evidence = evidenceFor({

@@ -32,9 +32,13 @@
  * **Apart.** Self-assessed evidence (a run nothing measured, answered by the
  * learner) is returned beside the state and moves nothing.
  *
- * **Supporting** is `right / n` at or above `SUPPORT_SHARE`. The skills in v0
- * declare no threshold of their own (a report item for the vocabulary), so
- * this is Part G's pass share, the number every rung's pass already uses.
+ * **Supporting** is `right / n` at or above the skill's support share, the
+ * vocabulary's (`supportShareOf`: the skill's own `support`, else the
+ * vocabulary's; CL11b, L57). It was Part G's pass share read from the engine's
+ * constant, so a change to the rungs' pass re-read every skill's history; the
+ * value (0.9) did not change when it moved. `input.vocabulary` is the
+ * vocabulary the share and the skill's transfer block are read from, the
+ * shipped one unless given.
  *
  * **Transfer** is the transfer policy's reading (G2, `transferPolicy.ts`; audit
  * Part 26), and v0's "a different item at first contact" (`firstContact &&
@@ -59,13 +63,12 @@
  * (the teacher model's); cleared with `transfer` when proficiency is lost, since
  * the scope is of the proficiency the summary still claims.
  */
-import { DEFAULT_MASTERY } from '../engine/Scoring';
 import { dayKey } from '../data/progressStore';
 import type { Evidence, MeasuredEvidence, SelfAssessedEvidence } from './evidence';
 import type { Dimension, MaterialReference } from '../curriculum/transfer';
 import { knownMaterial } from '../curriculum/material';
 import { sparesFailure, transferReading, type EstablishedContext, type SkillTransferSource } from './transferPolicy';
-import { VOCABULARY_V0 } from './vocabulary';
+import { supportShareOf, VOCABULARY_V0, type Vocabulary } from './vocabulary';
 
 /**
  * Days between supporting evidence before a first attempt counts as retention.
@@ -102,12 +105,10 @@ export function countsTowardsMovingDown(
   attempt: MeasuredEvidence,
   established: readonly EstablishedContext[],
   skill: SkillTransferSource,
+  share: number = supportShareOf(skill.id),
 ): boolean {
-  return !sparesFailure(transferReading(skill, established, attempt), attempt);
+  return !sparesFailure(transferReading(skill, established, attempt, share), attempt);
 }
-
-/** `right / n` at or above this supports the skill: Part G's pass share (see the module note). */
-export const SUPPORT_SHARE = DEFAULT_MASTERY.passAccuracy;
 
 export const LADDER_STATES = [
   'not introduced',
@@ -153,14 +154,22 @@ export interface LadderInput {
   exposures?: readonly string[];
   today: Date;
   /**
-   * The skill, for its transfer dimensions (G2): the shipped vocabulary's entry for the evidence's
-   * skill unless given. A constructed skill in a test; no caller needs another.
+   * The skill, for its transfer dimensions (G2): the vocabulary's entry for the evidence's skill
+   * unless given. A constructed skill in a test; no caller needs another.
    */
   skill?: SkillTransferSource;
+  /** The vocabulary the support share (L57) and the skill's entry are read from: the shipped one unless given. */
+  vocabulary?: Vocabulary;
 }
 
-export function supports(evidence: MeasuredEvidence): boolean {
-  return evidence.n > 0 && evidence.right / evidence.n >= SUPPORT_SHARE;
+/** `right / n` at or above the share: supporting. */
+function supportsAt(evidence: MeasuredEvidence, share: number): boolean {
+  return evidence.n > 0 && evidence.right / evidence.n >= share;
+}
+
+/** Whether a record supports its skill: `right / n` at or above the skill's support share in the vocabulary (L57). */
+export function supports(evidence: MeasuredEvidence, vocabulary: Vocabulary = VOCABULARY_V0): boolean {
+  return supportsAt(evidence, supportShareOf(evidence.skill, vocabulary));
 }
 
 const DAY_MS = 86_400_000;
@@ -192,7 +201,9 @@ export function ladderState(input: LadderInput): LadderReading {
   const selfAssessed = input.evidence.filter((e): e is SelfAssessedEvidence => e.kind === 'self-assessed');
 
   const skillId = measured[0]?.skill ?? selfAssessed[0]?.skill ?? '';
-  const skill: SkillTransferSource = input.skill ?? VOCABULARY_V0.skills.find((one) => one.id === skillId) ?? { id: skillId };
+  const vocabulary = input.vocabulary ?? VOCABULARY_V0;
+  const skill: SkillTransferSource = input.skill ?? vocabulary.skills.find((one) => one.id === skillId) ?? { id: skillId };
+  const share = supportShareOf(skillId, vocabulary);
 
   let familiar = false;
   let proficient = false;
@@ -213,13 +224,13 @@ export function ladderState(input: LadderInput): LadderReading {
     const day = dayOf(e.at);
     const firstOfDay = !seenDays.has(day);
     seenDays.add(day);
-    const ok = supports(e);
+    const ok = supportsAt(e, share);
     if (ok) familiar = true;
     if (e.standard === 'full') {
       if (ok) {
         againstInARow = 0;
         if (proficient) {
-          const reading = transferReading(skill, establishingContexts(establishing), e);
+          const reading = transferReading(skill, establishingContexts(establishing), e, share);
           if (reading.verdict === 'demonstrated') {
             transfer = true;
             const key = reading.on.join(',');
@@ -233,7 +244,7 @@ export function ladderState(input: LadderInput): LadderReading {
           establishing = [...establishing, e];
           if (fullDays.size >= 2) proficient = true;
         }
-      } else if (countsTowardsMovingDown(e, establishingContexts(establishing), skill)) {
+      } else if (countsTowardsMovingDown(e, establishingContexts(establishing), skill, share)) {
         againstInARow += 1;
         if (againstInARow >= RECENT_ATTEMPTS) {
           // Down to familiar, and proficiency is shown again from here.
@@ -252,7 +263,7 @@ export function ladderState(input: LadderInput): LadderReading {
   }
 
   const recentFull = measured.filter((e) => e.standard === 'full').slice(-RECENT_ATTEMPTS);
-  const recentAgainst = recentFull.some((e) => !supports(e) && !spared.has(e));
+  const recentAgainst = recentFull.some((e) => !supportsAt(e, share) && !spared.has(e));
 
   let state: LadderState = 'not introduced';
   if ((input.exposures?.length ?? 0) > 0 || input.evidence.length > 0) state = 'introduced';

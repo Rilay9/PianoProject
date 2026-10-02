@@ -41,9 +41,10 @@
  * another skill on the same notes is a different account of the same miss,
  * and that is the ambiguity the reviewer asked to keep.
  *
- * "Below" and "held" are relationships to the skill's support share
- * (`SUPPORT_SHARE`, the ladder's; v0 skills declare none of their own). The
- * four constants are hypotheses, not measurements; `05` §9b prints them.
+ * "Below" and "held" are relationships to the skill's support share, the one
+ * the ladder reads: the vocabulary's (`supportShareOf`, CL11b, L57; v0 skills
+ * name none of their own), read from the vocabulary handed in. The four
+ * constants are hypotheses, not measurements; `05` §9b prints them.
  *
  * **Keyed by demand, per skill.** A reading is (skill, demand): the same
  * demand under sight-reading (right notes in time, every step) and under
@@ -54,9 +55,8 @@
  */
 import type { SessionRow } from '../data/db';
 import type { MeasuredEvidence } from './evidence';
-import { SUPPORT_SHARE } from './ladder';
 import { READING_STRAND_KINDS, storedEvidence } from './readingState';
-import type { Vocabulary } from './vocabulary';
+import { supportShareOf, type Vocabulary } from './vocabulary';
 
 /** How many of a skill's latest reads a reading looks back over. **A hypothesis**: the brief's five reads. */
 export const DEMAND_WINDOW_READS = 5;
@@ -140,9 +140,7 @@ function stepsOf(evidence: MeasuredEvidence): Map<number, StepFacts> {
   return out;
 }
 
-const share = (tally: { n: number; right: number }): number => (tally.n > 0 ? tally.right / tally.n : NaN);
-const isBelow = (tally: { n: number; right: number }): boolean => tally.n > 0 && share(tally) < SUPPORT_SHARE;
-const holds = (tally: { n: number; right: number }): boolean => tally.n > 0 && share(tally) >= SUPPORT_SHARE;
+const shareOf = (tally: { n: number; right: number }): number => (tally.n > 0 ? tally.right / tally.n : NaN);
 
 /** Opportunities and rights over the told steps that pass a test. */
 function tallyOf(demand: string, cells: readonly StepFacts[]): DemandTally {
@@ -151,6 +149,10 @@ function tallyOf(demand: string, cells: readonly StepFacts[]): DemandTally {
 
 /** One skill's window of reads, read into one reading per demand its evidence counted. */
 function readSkill(skill: string, window: readonly MeasuredEvidence[], vocabulary: Vocabulary): DemandReading[] {
+  // "Below" and "held", at the skill's support share (L57).
+  const support = supportShareOf(skill, vocabulary);
+  const isBelow = (tally: { n: number; right: number }): boolean => tally.n > 0 && shareOf(tally) < support;
+  const holds = (tally: { n: number; right: number }): boolean => tally.n > 0 && shareOf(tally) >= support;
   const reads = window.map((evidence) => stepsOf(evidence));
   const counted = new Set(window.flatMap((evidence) => (evidence.byDemand ?? []).map((entry) => entry.demand)));
   const demands = vocabulary.demands.filter((demand) => counted.has(demand.id));

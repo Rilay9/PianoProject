@@ -4,7 +4,8 @@
  *
  * Types only. The detectors are code (`detect.ts`); the files themselves are
  * bundled for the evidence function by `evidence/vocabulary.ts` (C3), which
- * reads the skills' observables and conditions from them. The files' own schemas
+ * reads the skills' observables and conditions from them, and since CL11b
+ * (L57) the support share and the timing precisions. The files' own schemas
  * (`skills.schema.json`, `demands.schema.json` beside them) are the authority;
  * `validate.py` checks them and their references on every build.
  */
@@ -17,8 +18,27 @@ export type SkillKind = 'reading' | 'rhythm' | 'coordination' | 'technique' | 'c
 /** A channel a run measures. `velocity`, `pedal` and `continuity` come when they are built. */
 export type Channel = 'pitch' | 'timing';
 
-/** A run condition a skill's standard can require (Keep tempo, unseen, the guide off, both hands). */
-export type ConditionId = 'keep-tempo' | 'unseen' | 'guide-off' | 'both-hands';
+/** A run condition a skill's standard can require (Keep tempo, unseen, the guide off, both hands, no note's name on the screen). */
+export type ConditionId = 'keep-tempo' | 'unseen' | 'guide-off' | 'both-hands' | 'names-off';
+
+/**
+ * The support share (CL11b, L57): a record supports a skill where at least this share of its
+ * counted steps was right. The vocabulary's, or a skill's own where its ability needs another.
+ */
+export interface SupportShare {
+  share: number;
+  why: string;
+}
+
+/**
+ * A timing precision (CL11b, L57; reviewer decision 6): the error a timing skill is about, as
+ * `[numerator, denominator]` of a quarter-note beat. A rhythm skill's own, or the vocabulary's
+ * default for a skill whose rhythm is the phrase's.
+ */
+export interface Precision {
+  quarters: readonly [number, number];
+  why: string;
+}
 
 export interface Condition {
   id: ConditionId;
@@ -49,6 +69,10 @@ export interface Skill {
   /** The run conditions for the practice standard and for the full one (design §4(c)). */
   standards: { practice: ConditionId[]; full: ConditionId[] };
   note?: string;
+  /** The skill's own support share, where it needs another than the vocabulary's (none does in v0). */
+  support?: SupportShare;
+  /** A rhythm skill's own precision: its demands are the rhythm demands, which only timing tells. */
+  precision?: Precision;
   /**
    * The dimensions on which a change of material is transfer for this skill, with the reason (G2:
    * `evidence/transferPolicy.ts` reads it). Absent: the data has not said which changes matter, and
@@ -70,6 +94,10 @@ export interface SkillTransfer {
  */
 export interface SkillsFile {
   conditions: Condition[];
+  /** The support share every skill reads unless it names its own (L57). */
+  support: SupportShare;
+  /** The precision a skill whose rhythm is the phrase's falls back to where no rhythm demand is located (L57). */
+  precision: Precision;
   skills: Skill[];
 }
 

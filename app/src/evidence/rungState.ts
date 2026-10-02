@@ -135,7 +135,7 @@ export function skillLadders(
   for (const skill of vocabulary.skills) {
     if (skill.observable === 'none') continue;
     const exposed = exposures.get(skill.id);
-    out.set(skill.id, ladderState({ evidence: bySkill.get(skill.id) ?? [], today, ...(exposed ? { exposures: exposed } : {}) }));
+    out.set(skill.id, ladderState({ evidence: bySkill.get(skill.id) ?? [], today, vocabulary, ...(exposed ? { exposures: exposed } : {}) }));
   }
   return out;
 }
@@ -319,7 +319,7 @@ export function rungState(
     const cached = ladders.get(skill);
     if (cached) return cached;
     const state = knownSkills.has(skill)
-      ? ladderState({ evidence: evidenceBySkill.get(skill) ?? [], today }).state
+      ? ladderState({ evidence: evidenceBySkill.get(skill) ?? [], today, vocabulary }).state
       : 'not introduced';
     ladders.set(skill, state);
     return state;
