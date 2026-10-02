@@ -368,3 +368,5 @@ index: One story for a session item: tracing what Today's card, the completion s
 in-flight: drafted 2026-10-02 (`X46-one-story-for-a-session-item.md`): a design-and-trace lane, no new persistent model presumed; the six-point contract traced against stored truth and its five consumers; a small consumer/routing reconciliation (build) if the trace supports it, the measured gap if it does not (Entry 213)
 state: dispatched 2026-10-01: dispatched at 23f5c53d, tracing (Entry 213)
 - landed 2026-10-01: merged f3484255; handoff `handoffs/52363ba7.md`
+- verdict 2026-10-02: APPROVE (`responses/52363ba7.md`): Outcome A accepted, the bounded consumer and routing reconciliation; no universal pass/outcome model or purpose field; the merged-tree reds kept with their provenance, not declared solved
+- closed 2026-10-02: the direct Keep-tempo continuation stays (the c6 brief shows one truthful outcome and the meaningful next action on the post-X46 sheet, the standard retry reachable when recommended); the role-led opening stays, no first-contact preparation rule; the piece, self-report and Wait-counting evidence cases stay in CL11
