@@ -124,3 +124,4 @@ in-flight: drafted 2026-10-02 (`U122c-the-score-screen-per-moment-on-three-devic
 state: approved 2026-10-02: APPROVE (the reviewer, at adb0873a §1): the upright and tablet designs inside the lane under the stop condition (a loss of action, notation, stability, tap size or look-ahead comes back before it is built); music held applies while notation is the task; pictures of every changed state per device, the cells as the measured domain (Entry 216)
 - dispatched 2026-10-02: dispatched at ba00c579 to the outside builder, on its branch
 - held 2026-10-02: withdrawn from the outside builder after its red test (the owner: its limits run out too fast); re-dispatched to a builder here
+- dispatched 2026-10-02: dispatched at af18a3ae, building here

@@ -61,4 +61,4 @@ Judgement first: what changes for a learner, which rows close, which stay open a
 lane: CL11 · closes: — · entry: 215
 index: What counts as evidence, traced against the current tree and decided per row, with the contract and the build that follows (`CL11-what-counts-as-evidence-traced-and-decided.md`) | design | drafted 2026-10-01 (`CL11-what-counts-as-evidence-traced-and-decided.md`); Entry 215
 in-flight: drafted 2026-10-01 (`CL11-what-counts-as-evidence-traced-and-decided.md`): a design lane, no code, built by the outside builder on its own branch; the eight CL11 rows, X46's three inputs and R23's question traced and decided (Entry 215)
-state: drafted 2026-10-02: withdrawn from the outside builder unbuilt; re-dispatch here (Entry 215)
+state: dispatched 2026-10-02: dispatched at af18a3ae, building here (Entry 215)

@@ -174,6 +174,8 @@ Narrow correctness fixes, test-harness repairs, source-backed corrections and ot
 
 **Ended 2026-10-02, the owner:** agentic building uses your limits too fast. After U110a, no more build requests: you review only, under the review protocol above. U122c, CL11 and G90 go back to Claude's builders. The rules below stay as the record, and the continuation rule applies to reviews: in one wake, answer every open review you have room for.
 
+**What comes next (the owner):** Claude's builders take the lanes until Claude's weekly budget nears its line, about 95 %. After that the owner may paste build prompts into a ChatGPT chat, with no repository access, and Claude applies, verifies and reviews that work. You review what lands either way, at the same standard.
+
 The owner has asked you to build some lanes as well as review. The protocol is the review protocol's twin:
 
 - **The request** is an immutable handoff, `handoffs/<HEAD>.md`, whose first line says **Build request**. It names the brief (`docs/prompts/tasks/<lane>-*.md`), the base commit and your branch, `chatgpt/<lane>`, and says `Response required: yes`. `current.md` lists it with the response-required handoffs.
