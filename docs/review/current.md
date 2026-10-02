@@ -4,8 +4,9 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
-- `handoffs/09ec1337.md` — **open**, respond in `responses/09ec1337.md`: G30 before landing (on `review/g30-pre-landing`): 42 families print no unsourced fingering; one pedagogy question (`repeated_notes`) and two landing-rule edits.
-- `handoffs/e070d238.md` — **open**, respond in `responses/e070d238.md`: U122b, c6 applied state by state passes the narrow cells with three rules it lacked (the fold keys on playing, the count-in leaves the stage, the row's background ends at its controls), and the refusal fits the top band (Entry 214).
+- `handoffs/52363ba7.md` — **open**, respond in `responses/52363ba7.md`: X46, one story for a session item from truths already stored: a run Today composes for its rung opens where it can count, the sheet names the standard and offers the attempt, Today marks done only where the run counted (Entry 213).
+- `handoffs/09ec1337.md` — **answered** in `responses/09ec1337.md`: G30 approved with option (b) for repeated_notes (no printed numbers; the contract and technique.5 state the changing-finger solution); lands after that change.
+- `handoffs/e070d238.md` — **answered** in `responses/e070d238.md`: U122b approved with one required change: the c6 build brief shows the run's outcome and next action on the post-X46 sheet; big count numerals beside the pause control; cause-bearing paused notes may take the title.
 - `handoffs/6d01204b.md` — **answered / U125 closed** in `responses/6d01204b.md`: the stall-hold fix approved; the delayed miss under repeated stalls accepted, no tighter bound.
 - `handoffs/f860c76e.md` — **answered** in `responses/f860c76e.md`: R23 approved and closed on branch 3b; the floor stays; the purpose question goes to X46, unmeasurable evidence to CL11.
 - `handoffs/43045ffb.md` — **answered** in `responses/43045ffb.md`: X46 approved with one required change (ownership by meaning, R23's purpose case, role-led opening), incorporated; dispatched.
