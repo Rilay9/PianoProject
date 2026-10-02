@@ -69,4 +69,4 @@ A refuted refusal fit is not a failure of the lane. Report the smallest non-over
 lane: U122b · closes: — · entry: 214
 index: Each Score moment shows what it needs: c6 applied state by state (rest, count-in, playing, paused, refusal, finished) and probed on the narrow cells before the build brief (`U122b-each-score-moment-shows-what-it-needs.md`) | design | drafted 2026-10-02 (`U122b-each-score-moment-shows-what-it-needs.md`); Entry 214
 in-flight: drafted 2026-10-02 (`U122b-each-score-moment-shows-what-it-needs.md`): a probe, no app code; c6's per-state table checked on U120's, U121's, the owner's and U124's cells, the refusal tried in the top band first (Entry 214)
-state: drafted 2026-10-02: the probe the U122a verdict specifies, before the c6 build brief (Entry 214)
+state: dispatched 2026-10-01: dispatched at d159f407, probing, the U122a verdict's fast path (Entry 214)

@@ -129,6 +129,8 @@ As `operating-procedure.md` §14: own worktree cut from origin's head at dispatc
 
 **Not yours:** `tools/content/generate_exercises.py`, `family_contracts.json` and the rest of CL15's files (landed; free, but this lane has no row needing them); `app/src/curriculum/eligibilityCore.ts`, `candidates.ts`, `eligibility.ts` (read for Hypothesis 1 and the read-only report's admission check, not edited — CL11's cluster); `content/curriculum/vocabulary/demands.json`, `detect.ts` (read via `claims.py`'s existing use of them, not edited — the detector rows of CL10 wait on L120d and are not this lane's).
 
+**Landed 2026-10-01** (Entry 208; f860c76e, merged a344c23c); handoff `handoffs/f860c76e.md`.
+
 ## Record
 
 lane: R23 · closes: R23 · entry: 208
@@ -138,3 +140,4 @@ state: drafted 2026-10-01: with the reviewer before dispatch (Entry 208)
 - approved 2026-10-02: APPROVE WITH ONE REQUIRED CHANGE (`responses/71730e65.md`): the application criterion made honest (target claim, measured opportunity, teaching-use admission, runtime tasks) before the validator changes, or a stop with the model gap; the `required_songs` gating fix may land regardless; not yet dispatched
 - approved 2026-10-02: rewritten into one model per `responses/questions-90b19bee.md` §5 (not yet dispatched): the prior amended draft was refused as internally contradictory — it kept the superseded "strong = established" premise, Hypothesis 1, build steps, tests and mutants beside the reviewer's required change. This version deletes or rewrites every such passage (listed in full in the drafting report); the read-only report (item 1) now gates a single branch point (3a/3b) instead of being followed by a pre-decided validator rewrite; the `required_songs` fix stays unconditioned.
 - dispatched 2026-10-02: dispatched at 7d9de990, the read-only report first (Entry 208)
+- landed 2026-10-01: merged a344c23c; handoff `handoffs/f860c76e.md`
