@@ -1,21 +1,23 @@
-# U122c — test-only baseline and discriminating red
+# U122c — initial red and device trace
 
-Base: `ba00c579`. This checkpoint changes no application implementation.
-
-Run at this branch head, from `app/`, using the normal isolated-port harness:
+Run on the exact head carrying this request, from `app/`:
 
 ```sh
-npx playwright test tests/e2e/score.moment-chrome.spec.ts --workers=4
+npx playwright test tests/e2e/score.task-chrome.spec.ts --workers=4
 ```
 
-Expected **red**: the count-in crosses real entrance ink, and the direct pause/resume is hidden/inert after the start/paused fold timers. Three representative devices, 115 % text, wider face, Hot Cross Buns. The JSON and PNG attachments capture rest, count-in, holding and paused even when assertions are red (soft assertions).
+Expected red: paused direct resume disappears after the current idle-fold timer;
+the count-in box crosses drawn notation. Six tests cover one representative cell
+for each device. These are real app transitions; no layout or state injection.
+Preserve the exact failures, including setup failures that would invalidate red.
+The notation count must be positive before the overlap assertion is meaningful.
 
-Then obtain the minimum device-design trace, using the same spec at the same head:
+Capture rest, count-in and paused pictures for these three cells if possible,
+using the ordinary screenshot facility without changing app DOM/CSS. These trace
+the current upright/tablet surfaces before their designs are chosen. Publish raw
+results as `docs/prompts/runs/U122c/checks-<head8>.txt` on the working branch and
+pictures under `docs/prompts/pictures/u122c/`. That results push resumes the lane.
 
-```sh
-U122C_SIZES=568x320,780x360,342x740,360x780,1024x768,768x1024,1366x1024,1024x1366 U122C_TEXTS=115 U122C_FACES=wider U122C_PIECES=hcb,moon npx playwright test tests/e2e/score.moment-chrome.spec.ts --workers=4
-```
-
-Expected **red**; 16 cells (8 sizes × 1 text × 1 face × 2 pieces). Publish exit codes, assertion failures and counts in `checks-<head8>.txt`, and retain the JSON attachments and representative pictures beside it. These are the real screen, with no c6 injection, and are needed before deciding upright/tablet surfaces. Please distinguish a test/harness failure from an observed product failure. No green or completion claim is made yet.
-
-The full 96-cell acceptance and playing/refusal/finished coverage follow the baseline design trace; this checkpoint does not claim that coverage. U110a remains independent, waiting on its existing request.
+This initial discriminating slice is not the final eight-cell acceptance matrix.
+No implementation change is present. Please identify any fixture/mechanism error
+before interpreting the expected failures as product evidence.
