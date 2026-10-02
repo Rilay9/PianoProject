@@ -95,7 +95,7 @@ import {
   type RunActivity,
   type SessionRun,
 } from '../../data/sessionRun';
-import { cameTo, minutesOf, newActivityToken, openActivity, openOutside, showsReason } from '../sessionRunner';
+import { cameTo, minutesOf, newActivityToken, openActivity, openOutside, settleHeld, showsReason } from '../sessionRunner';
 import { cardLine, PROJECT_TEXT, readingReason, readingTitle, SESSION_TEXT, swapChoiceWords, swapTierWords } from '../help';
 import { webMidiSource, micSource } from '../../app/services';
 import { onScreenDispose } from '../screenLifecycle';
@@ -964,6 +964,10 @@ export function TodayScreen(router: Router): HTMLElement {
       stored = (await closeSessionRun('not-finished', now).catch(() => null)) ?? stored;
     }
     run = stored !== null && stored.day === dayKey(now) ? stored : null;
+    // Read for the card and for *Continue*: the learner's last word on the piece that is next holds (G90).
+    // The composition is not touched; a paused piece's turn has come, and it is stepped past, said on the
+    // transition and marked on the row.
+    if (isOpen(run, now)) run = (await settleHeld(run, now)).run;
   }
 
   /** The card recomposed on purpose (a length, Shuffle): a running session is closed, never rebuilt in place. */

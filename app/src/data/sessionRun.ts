@@ -23,6 +23,10 @@
  *   competence: nothing in `evidence/`, `rungState.ts` or `progressStore.ts` reads this module or its key
  *   (`sessionRunNeverEvidence.test.ts` holds it, with a mutant that feeds a finished session to the ladder).
  * - `detour` is X19's (the practice episode) and stays `null`.
+ * - **The learner's word on a piece reaches the run as an event, never as a read** (G90): this module reads no
+ *   project. The runner (`sessionRunner.settleHeld`) reads the project when the session is about to offer an
+ *   activity, and says `withhold` where the piece was paused or put away after *Start session*; `apply` steps
+ *   past a pending activity the composition chose and refuses every other.
  *
  * The words the runner records on an adaptation are `help.ts`'s (`SESSION_TEXT`), so the record and the
  * screens say one thing.
@@ -75,13 +79,25 @@ export interface ActivitySlot {
   itemId: string;
   title: string;
   minutes: number;
-  /** What chose the item, as far as the adaptation reads it: the claim's kind and the demand or skill it names. */
+  /**
+   * What chose the item, as far as the adaptation reads it: the claim's kind and the demand or skill it names.
+   * Present on every item the composition chose (each slot of a composed card carries the claim that chose it,
+   * the reading slot's as `reader`); absent on one the learner chose — a swap's slot has none. That is how the
+   * runner tells what the session offers on its own (`isAutomatic`) from what the learner picked (G90).
+   */
   claim?: { kind: string; demand?: string; skill?: string };
   /** The rung the slot was offered from. */
   lessonId?: string;
 }
 
 export interface Adaptation {
+  /**
+   * `skipped-redundant`: the runner skipped the activity before it began, and `why` says why — an easy success
+   * made the controlled practice after it redundant (`SESSION_TEXT.easier`), or the learner's word on its piece
+   * withdrew it after *Start session* (G90: paused or put away on the piece's sheet, `SESSION_TEXT.withheld`).
+   * The transition says each, in the learner's words, from the same place. `kept-here`: a measured failure held
+   * the learner on the activity. `repurposed`: a first contact was met before it began.
+   */
   kind: 'skipped-redundant' | 'kept-here' | 'repurposed';
   /** In the learner's words, as the transition says it (`SESSION_TEXT`). */
   why: string;
@@ -174,6 +190,15 @@ export type RunEvent =
   | { kind: 'completed'; outcome: Outcome }
   /** The learner moves on from the current activity without completing it (*Move on anyway*, *Skip or change*). */
   | { kind: 'advance' }
+  /**
+   * The runner steps past the activity the token names before it begins, because the learner's word on its
+   * piece withdrew it after *Start session* (G90: paused or put away on the piece's sheet). `why` is the reason
+   * in the learner's words. Addressed by token like `choose` and `swap`: the offer withdrawn is the current
+   * activity, or the one after a stopped activity that a transition offers. Refused for an activity underway
+   * and for one the learner chose themselves: it is the session's own offer that is withdrawn, never a start
+   * the learner made or a piece they picked.
+   */
+  | { kind: 'withhold'; why: string }
   /** The activity the token names becomes current (a row tapped on Today). */
   | { kind: 'choose' }
   /** The learner swapped the activity the token names for another item (Today's swap sheet). */
@@ -327,6 +352,16 @@ export function nextPending(run: SessionRun, from: number): number | null {
   return null;
 }
 
+/**
+ * Whether the composition chose this activity, so the session's own offer of it can be withdrawn (G90): it
+ * carries the claim that chose it. A swap's activity does not — the learner picked it, with the sheet marking
+ * a piece they had paused or put away (G94) — and a row the learner taps is their own start. The runner
+ * withdraws only what it offered itself.
+ */
+export function isAutomatic(activity: Pick<RunActivity, 'slot'>): boolean {
+  return activity.slot.claim !== undefined;
+}
+
 /** The measured demand a slot's claim names: a demand step's, or a demand-ready piece's. */
 function namedDemand(claim: ActivitySlot['claim']): string | undefined {
   return claim !== undefined && (claim.kind === 'demand' || claim.kind === 'ready') ? claim.demand : undefined;
@@ -355,7 +390,7 @@ function close(run: SessionRun, why: ClosedWhy, now: Date): void {
 /**
  * One event applied to a run, or why it is refused (pure). The refusals, in order: no run; a closed run; a
  * run of another day; another session; another composition; a token that is not the current activity's
- * (not any activity's, for `choose` and `swap`); an event the activity's state does not allow.
+ * (not any activity's, for `choose`, `swap` and `withhold`); an event the activity's state does not allow.
  */
 export function apply(stored: SessionRun | null, expected: Expected, event: RunEvent, now: Date): ApplyResult {
   if (stored === null) return { ok: false, why: 'none', run: null };
@@ -392,6 +427,24 @@ export function apply(stored: SessionRun | null, expected: Expected, event: RunE
     if (was && was !== target && was.state === 'active') was.state = 'pending';
     if (target.state === 'skipped') target.state = 'pending';
     run.current = target.index;
+    return { ok: true, run };
+  }
+  if (event.kind === 'withhold') {
+    // Addressed by token, not by the cursor: the transition after a stopped activity offers the one *after*
+    // it, which the cursor has not reached, and that offer is withdrawn where it is made.
+    const target = run.activities.find((activity) => activity.token === expected.token);
+    if (!target) return { ok: false, why: 'stale-token', run: stored };
+    // The session's own offer, before it began: an opened or tried activity is underway and the learner is in
+    // it (never interrupted), and one without a claim is the learner's own pick (never overruled).
+    if (target.state !== 'pending' || !isAutomatic(target)) return { ok: false, why: 'illegal', run: stored };
+    target.state = 'skipped';
+    target.adaptations.push({ kind: 'skipped-redundant', why: event.why });
+    // Only the activity the cursor is on moves it; one ahead of it is passed over when the cursor reaches it.
+    if (run.current === target.index) {
+      const next = nextPending(run, target.index);
+      run.current = next;
+      if (next === null) close(run, 'finished', now);
+    }
     return { ok: true, run };
   }
   const current = run.current === null ? undefined : run.activities[run.current];

@@ -91,6 +91,10 @@ test.describe('every lesson page', () => {
       // the words a person came for.
       await expect(page.locator('[data-screen="lesson"]')).toHaveAttribute('data-lesson', lesson.id);
       await expect(page.locator('[data-screen="lesson"] h1')).not.toBeEmpty();
+      // Nor the rung's id in it, for any of them (T20, G90): the interim heading before the curriculum loads
+      // is one word and `lessonHeadingBeforeTheCurriculum.test.ts` reads that state; this reads the final
+      // one on every rung the build has.
+      await expect(page.locator('[data-screen="lesson"] h1')).not.toContainText(lesson.id);
       await expect(page.locator('#lesson-needs')).toContainText(/options?|wants/);
       const options = await page.locator('#lesson-exercises .list-row, #lesson-songs .list-row').count();
       if (options === 0 && lesson.optionsExempt !== true) empty.push(lesson.id);

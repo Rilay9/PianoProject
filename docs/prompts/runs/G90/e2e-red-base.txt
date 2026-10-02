@@ -1,0 +1,77 @@
+# G90: tests/e2e/session-held-piece.spec.ts against the dist built from the BASE source (port 5463, one worker).
+
+Running 2 tests using 1 worker
+
+  x  1 tests\e2e\session-held-piece.spec.ts:128:1 › a piece paused on its sheet after Start session: the running card keeps it until its turn, then the transition steps past it, said; Today and the record agree (G90) (3.8s)
+  x  2 tests\e2e\session-held-piece.spec.ts:202:3 › the lesson page before its curriculum arrives (T20) › the heading says a word while the lesson is unknown, never the lesson’s id, and names the lesson once it is known (5.4s)
+
+
+  1) tests\e2e\session-held-piece.spec.ts:128:1 › a piece paused on its sheet after Start session: the running card keeps it until its turn, then the transition steps past it, said; Today and the record agree (G90) 
+
+    Error: the paused piece was offered at its turn
+
+    expect(received).not.toBe(expected) // Object.is equality
+
+    Expected: not "song.classical.ode-to-joy.ht"
+
+      169 |     const nextItem = await next.getAttribute('data-session-next-item');
+      170 |     if (nextItem === null || nextItem === after?.slot.itemId) break;
+    > 171 |     expect(nextItem, 'the paused piece was offered at its turn').not.toBe(ODE);
+          |                                                                      ^
+      172 |     await page.locator('#session-start-next').click();
+      173 |     await expect(page).toHaveURL(/session=[0-9a-z]+/, { timeout: 30_000 });
+      174 |     await finishCurrentActivity(page);
+        at <worktree>\app\tests\e2e\session-held-piece.spec.ts:171:70
+
+    Error Context: build\g90\test-results\session-held-piece-a-piece-c0dfb-y-and-the-record-agree-G90-\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    build\g90\test-results\session-held-piece-a-piece-c0dfb-y-and-the-record-agree-G90-\trace.zip
+    Usage:
+
+        npx playwright show-trace build\g90\test-results\session-held-piece-a-piece-c0dfb-y-and-the-record-agree-G90-\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\e2e\session-held-piece.spec.ts:202:3 › the lesson page before its curriculum arrives (T20) › the heading says a word while the lesson is unknown, never the lesson’s id, and names the lesson once it is known 
+
+    Error: expect(locator).not.toContainText(expected) failed
+
+    Locator: locator('section[data-screen="lesson"]').locator('h1')
+    Expected substring: not "classical.3"
+    Received string: "Lesson classical.3"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "not toContainText" locator('section[data-screen="lesson"]').locator('h1') with timeout 5000ms
+      - waiting for locator('section[data-screen="lesson"]').locator('h1')
+        13 × locator resolved to <h1>Lesson classical.3</h1>
+           - unexpected value "Lesson classical.3"
+
+
+      215 |     const heading = screen.locator('h1');
+      216 |     await expect(heading).toHaveText(/\S/);
+    > 217 |     await expect(heading).not.toContainText(lesson);
+          |                               ^
+      218 |     await expect(screen).not.toContainText(lesson);
+      219 |     await page.screenshot({ path: `${PICTURES}/lesson-heading-while-loading-342x740.png` });
+      220 |     // The curriculum arrives: the heading is the lesson's title.
+        at <worktree>\app\tests\e2e\session-held-piece.spec.ts:217:31
+
+    Error Context: build\g90\test-results\session-held-piece-the-les-722b9-the-lesson-once-it-is-known\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    build\g90\test-results\session-held-piece-the-les-722b9-the-lesson-once-it-is-known\trace.zip
+    Usage:
+
+        npx playwright show-trace build\g90\test-results\session-held-piece-the-les-722b9-the-lesson-once-it-is-known\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests\e2e\session-held-piece.spec.ts:128:1 › a piece paused on its sheet after Start session: the running card keeps it until its turn, then the transition steps past it, said; Today and the record agree (G90) 
+    tests\e2e\session-held-piece.spec.ts:202:3 › the lesson page before its curriculum arrives (T20) › the heading says a word while the lesson is unknown, never the lesson’s id, and names the lesson once it is known 
+
+real	0m16.343s
+user	0m0.045s
+sys	0m0.122s

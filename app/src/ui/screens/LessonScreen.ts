@@ -74,7 +74,11 @@ export function noSongsSentence(lesson: Pick<Lesson, 'songOptional' | 'optionsEx
 }
 
 export function LessonScreen(router: Router, lessonId: string): HTMLElement {
-  const { section, header, body } = screenFrame('lesson', `Lesson ${lessonId}`);
+  // The heading is the lesson's title once the curriculum has loaded and says whose page this is; until then
+  // it says the one thing known without it. Never the id, which is the route's and the learner has no use for
+  // (`00` §1: no internal identifier on screen; T20 — it read *Lesson classical.3* for as long as the
+  // curriculum took). A word, not an empty heading: the frame keeps its one line and a screen reader its `h1`.
+  const { section, header, body } = screenFrame('lesson', 'Lesson');
   const status = statusLine('lesson-status');
   const back = button('← Plan', () => router.navigate('plan'), { variant: 'quiet', id: 'lesson-back' });
   header.prepend(back);
