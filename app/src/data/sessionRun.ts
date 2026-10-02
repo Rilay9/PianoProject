@@ -25,8 +25,10 @@
  * - `detour` is X19's (the practice episode) and stays `null`.
  * - **The learner's word on a piece reaches the run as an event, never as a read** (G90): this module reads no
  *   project. The runner (`sessionRunner.settleHeld`) reads the project when the session is about to offer an
- *   activity, and says `withhold` where the piece was paused or put away after *Start session*; `apply` steps
- *   past a pending activity the composition chose and refuses every other.
+ *   activity, and says `withhold` — with the state the piece was left in and when — where the piece was paused
+ *   or put away after *Start session*; `apply` steps past a pending activity the learner's latest word withdraws
+ *   (`isWithdrawnBy`) and refuses every other, and records it as `withdrawn`, its own kind (G90a). A swap
+ *   records when it was made (`swappedAt`), so a pause from before it and one from after it are told apart.
  *
  * The words the runner records on an adaptation are `help.ts`'s (`SESSION_TEXT`), so the record and the
  * screens say one thing.
@@ -35,7 +37,7 @@ import { openDatabase } from './db';
 import { setMeasured } from './accuracyReading';
 import type { ReadingMoves } from './db';
 import { dayKey, type Contact } from './progressStore';
-import type { SlotKind } from '../curriculum/session';
+import type { HeldState, SlotKind } from '../curriculum/session';
 import type { Relationship } from '../curriculum/transfer';
 import type { Identity } from '../review/record';
 import { SESSION_TEXT } from '../ui/help';
@@ -83,25 +85,29 @@ export interface ActivitySlot {
    * What chose the item, as far as the adaptation reads it: the claim's kind and the demand or skill it names.
    * Present on every item the composition chose (each slot of a composed card carries the claim that chose it,
    * the reading slot's as `reader`); absent on one the learner chose — a swap's slot has none. That is how the
-   * runner tells what the session offers on its own (`isAutomatic`) from what the learner picked (G90).
+   * runner tells what the session offers on its own (`isWithdrawnBy`) from what the learner picked (G90).
    */
   claim?: { kind: string; demand?: string; skill?: string };
   /** The rung the slot was offered from. */
   lessonId?: string;
 }
 
-export interface Adaptation {
-  /**
-   * `skipped-redundant`: the runner skipped the activity before it began, and `why` says why — an easy success
-   * made the controlled practice after it redundant (`SESSION_TEXT.easier`), or the learner's word on its piece
-   * withdrew it after *Start session* (G90: paused or put away on the piece's sheet, `SESSION_TEXT.withheld`).
-   * The transition says each, in the learner's words, from the same place. `kept-here`: a measured failure held
-   * the learner on the activity. `repurposed`: a first contact was met before it began.
-   */
-  kind: 'skipped-redundant' | 'kept-here' | 'repurposed';
-  /** In the learner's words, as the transition says it (`SESSION_TEXT`). */
-  why: string;
-}
+/**
+ * What the runner changed about an activity and why, in the learner's words (`why`, as the transition says it,
+ * `SESSION_TEXT`).
+ *
+ * - `skipped-redundant`: the runner skipped the activity before it began because an easy success made the
+ *   controlled practice after it redundant (`SESSION_TEXT.easier`). Practice became redundant; nothing was withdrawn.
+ * - `withdrawn` (G90a): the runner skipped the activity before it began because the learner withdrew its piece
+ *   after *Start session* — paused it or put it away on the piece's sheet (`SESSION_TEXT.withheld`). Its own kind,
+ *   so the record and every reader tell "practice became redundant" from "the learner withdrew this piece"; `held`
+ *   is which of the two the learner did, and Today's row says it from here (`SESSION_TEXT.withheldRow`).
+ * - `kept-here`: a measured failure held the learner on the activity.
+ * - `repurposed`: a first contact was met before it began.
+ */
+export type Adaptation =
+  | { kind: 'skipped-redundant' | 'kept-here' | 'repurposed'; why: string }
+  | { kind: 'withdrawn'; why: string; held: HeldState };
 
 /** What the stored run of an activity measured, as far as the two adaptations may read it. */
 export type Outcome = 'passed-full' | 'failed' | 'unknown';
@@ -117,6 +123,13 @@ export interface RunActivity {
   route: ActivityRoute;
   /** The composition's own words for the slot: the transition's reason, and nothing else (the reviewer's ruling). */
   reason: string;
+  /**
+   * When the learner swapped this activity's item in (ISO date-time; G90a): their deliberate choice, made at that
+   * moment. A pause or put-away of the piece from before it is overridden by the choice, and one from after it
+   * is the learner's latest word (`isWithdrawnBy`). Absent on an activity the composition chose, and on a swap
+   * kept by a record from before the moment was stored.
+   */
+  swappedAt?: string;
   contact?: { assumed: ContactAssumed; rechecked?: 'held' | 'invalidated' };
   state: ActivityState;
   /** What the runner changed about it and why, in order. */
@@ -192,13 +205,14 @@ export type RunEvent =
   | { kind: 'advance' }
   /**
    * The runner steps past the activity the token names before it begins, because the learner's word on its
-   * piece withdrew it after *Start session* (G90: paused or put away on the piece's sheet). `why` is the reason
-   * in the learner's words. Addressed by token like `choose` and `swap`: the offer withdrawn is the current
-   * activity, or the one after a stopped activity that a transition offers. Refused for an activity underway
-   * and for one the learner chose themselves: it is the session's own offer that is withdrawn, never a start
-   * the learner made or a piece they picked.
+   * piece withdrew it after *Start session* (G90: paused or put away on the piece's sheet, G90a: `held` says
+   * which, and `since` is when the learner left the piece so — the project's own moment). Addressed by token
+   * like `choose` and `swap`: the offer withdrawn is the current activity, or the one after a stopped activity
+   * that a transition offers. Refused for an activity underway, and for one the learner's word does not
+   * withdraw (`isWithdrawnBy`): the session's own offer is withdrawn by a word from any time, a piece the
+   * learner swapped in only by a word from after the swap, and never a start the learner made.
    */
-  | { kind: 'withhold'; why: string }
+  | { kind: 'withhold'; held: HeldState; since: string }
   /** The activity the token names becomes current (a row tapped on Today). */
   | { kind: 'choose' }
   /** The learner swapped the activity the token names for another item (Today's swap sheet). */
@@ -219,7 +233,8 @@ const SLOT_KINDS: ReadonlySet<unknown> = new Set(['technique', 'review', 'new', 
 const STATES: ReadonlySet<unknown> = new Set(['pending', 'active', 'attempted', 'completed', 'skipped']);
 const TARGETS: ReadonlySet<unknown> = new Set(['score', 'drill']);
 const ASSUMED: ReadonlySet<unknown> = new Set(['first-contact', 'met', 'none']);
-const ADAPTATIONS: ReadonlySet<unknown> = new Set(['skipped-redundant', 'kept-here', 'repurposed']);
+const ADAPTATIONS: ReadonlySet<unknown> = new Set(['skipped-redundant', 'kept-here', 'repurposed', 'withdrawn']);
+const HELD: ReadonlySet<unknown> = new Set(['paused', 'retired']);
 const OUTCOMES: ReadonlySet<unknown> = new Set(['passed-full', 'failed', 'unknown']);
 const CLOSED: ReadonlySet<unknown> = new Set(['finished', 'ended', 'not-finished', 'recomposed']);
 
@@ -238,7 +253,10 @@ function activityFault(raw: unknown, at: number): string | null {
   const route = raw.route;
   if (!isObject(route) || !TARGETS.has(route.target) || !isText(route.itemId)) return `activity ${String(at)} has no route`;
   if (!STATES.has(raw.state)) return `activity ${String(at)} has state ${String(raw.state)}`;
-  if (!Array.isArray(raw.adaptations) || !raw.adaptations.every((one) => isObject(one) && ADAPTATIONS.has(one.kind) && isText(one.why))) return `activity ${String(at)} has malformed adaptations`;
+  // A withdrawn piece says which state the learner left it in (G90a): the row on Today reads it from here.
+  const adapted = (one: unknown): boolean => isObject(one) && ADAPTATIONS.has(one.kind) && isText(one.why) && (one.kind !== 'withdrawn' || HELD.has(one.held));
+  if (!Array.isArray(raw.adaptations) || !raw.adaptations.every(adapted)) return `activity ${String(at)} has malformed adaptations`;
+  if (raw.swappedAt !== undefined && !isText(raw.swappedAt)) return `activity ${String(at)} has a malformed swap moment`;
   if (raw.contact !== undefined && (!isObject(raw.contact) || !ASSUMED.has(raw.contact.assumed))) return `activity ${String(at)} has a malformed contact`;
   if (raw.result !== undefined && (!isObject(raw.result) || !OUTCOMES.has(raw.result.outcome) || !isCount(raw.result.attempts))) return `activity ${String(at)} has a malformed result`;
   if (!isTime(raw.elapsedMs)) return `activity ${String(at)} has no time`;
@@ -353,13 +371,37 @@ export function nextPending(run: SessionRun, from: number): number | null {
 }
 
 /**
- * Whether the composition chose this activity, so the session's own offer of it can be withdrawn (G90): it
- * carries the claim that chose it. A swap's activity does not — the learner picked it, with the sheet marking
- * a piece they had paused or put away (G94) — and a row the learner taps is their own start. The runner
- * withdraws only what it offered itself.
+ * Whether the learner's word on this activity's piece — a pause or put-away, left at `since` (the project's own
+ * moment) — withdraws the activity from what the session offers: the learner's latest word holds when the
+ * session next acts on the piece (G90, G90a).
+ *
+ * - **The composition chose it** (it carries the claim that chose it): the session's own offer, withdrawn by the
+ *   word whenever it was said — the composer would not choose a piece held now.
+ * - **The learner swapped it in** (`swappedAt`): their own deliberate choice, made at that moment, so a word
+ *   from before it is overridden — the swap sheet marks a paused piece (G94) and the learner chose it anyway — and
+ *   a word from after it is the later one. At the very same moment the swap stands: the learner chose it.
+ * - **Neither** (a swap kept by a record from before its moment was stored): nothing is known of when the
+ *   learner chose it, so it is never withdrawn, as it never was.
+ *
+ * A row the learner taps is their own start and never reaches here (`choose` and the opening do not settle).
  */
-export function isAutomatic(activity: Pick<RunActivity, 'slot'>): boolean {
+export function isWithdrawnBy(activity: Pick<RunActivity, 'slot' | 'swappedAt'>, since: string): boolean {
+  if (activity.swappedAt !== undefined) return Date.parse(since) > Date.parse(activity.swappedAt);
   return activity.slot.claim !== undefined;
+}
+
+/**
+ * Which word withdrew a skipped activity's piece (G90a): the state the learner left it in, where the activity is
+ * skipped and its record says it was withdrawn; nothing for any other skip, and nothing once the learner has
+ * tapped the row back to life (`choose` takes the record of the withdrawal away). Today's row reads this.
+ */
+export function withdrawnOf(activity: Pick<RunActivity, 'state' | 'adaptations'>): HeldState | undefined {
+  if (activity.state !== 'skipped') return undefined;
+  for (let at = activity.adaptations.length - 1; at >= 0; at -= 1) {
+    const one = activity.adaptations[at];
+    if (one?.kind === 'withdrawn') return one.held;
+  }
+  return undefined;
 }
 
 /** The measured demand a slot's claim names: a demand step's, or a demand-ready piece's. */
@@ -420,12 +462,20 @@ export function apply(stored: SessionRun | null, expected: Expected, event: RunE
       target.state = 'pending';
       target.adaptations = [];
       delete target.result;
+      // When the learner chose it (G90a): what they said about the piece before this moment is overridden by the
+      // choice, what they say after it is not (`isWithdrawnBy`).
+      target.swappedAt = now.toISOString();
       return { ok: true, run };
     }
     const was = run.current === null ? undefined : run.activities[run.current];
     // Leaving an opened activity for another is a reordering, not a skip.
     if (was && was !== target && was.state === 'active') was.state = 'pending';
-    if (target.state === 'skipped') target.state = 'pending';
+    if (target.state === 'skipped') {
+      target.state = 'pending';
+      // The learner's tap overrides the withdrawal, and the record of it goes: were they to skip the row by hand
+      // afterwards, nothing on it would still say the piece was paused or put away (G90a). Any other skip's record stays.
+      target.adaptations = target.adaptations.filter((one) => one.kind !== 'withdrawn');
+    }
     run.current = target.index;
     return { ok: true, run };
   }
@@ -434,11 +484,13 @@ export function apply(stored: SessionRun | null, expected: Expected, event: RunE
     // it, which the cursor has not reached, and that offer is withdrawn where it is made.
     const target = run.activities.find((activity) => activity.token === expected.token);
     if (!target) return { ok: false, why: 'stale-token', run: stored };
-    // The session's own offer, before it began: an opened or tried activity is underway and the learner is in
-    // it (never interrupted), and one without a claim is the learner's own pick (never overruled).
-    if (target.state !== 'pending' || !isAutomatic(target)) return { ok: false, why: 'illegal', run: stored };
+    // An offer, before it began: an opened or tried activity is underway and the learner is in it (never
+    // interrupted), and the learner's own pick stands against any word they said before they made it (never
+    // overruled by an older word; `isWithdrawnBy`).
+    if (target.state !== 'pending' || !isWithdrawnBy(target, event.since)) return { ok: false, why: 'illegal', run: stored };
     target.state = 'skipped';
-    target.adaptations.push({ kind: 'skipped-redundant', why: event.why });
+    // Its own kind, never `skipped-redundant`: the learner withdrew the piece, no practice became redundant.
+    target.adaptations.push({ kind: 'withdrawn', held: event.held, why: SESSION_TEXT.withheld(target.slot.title, event.held) });
     // Only the activity the cursor is on moves it; one ahead of it is passed over when the cursor reaches it.
     if (run.current === target.index) {
       const next = nextPending(run, target.index);

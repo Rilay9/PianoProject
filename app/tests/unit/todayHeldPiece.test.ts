@@ -145,7 +145,7 @@ describe('the piece that is next was paused after Start session', () => {
     expect(navigateScore.mock.calls[0]?.[0], 'Continue opened the paused piece').toBe(OTHER.id);
     // What is written is what is drawn, and the composition is the one Start session kept.
     const after = await stored();
-    expect(after.activities[1]).toMatchObject({ state: 'skipped', adaptations: [{ kind: 'skipped-redundant', why: 'Title of song.test.piece is skipped — you paused it' }] });
+    expect(after.activities[1]).toMatchObject({ state: 'skipped', adaptations: [{ kind: 'withdrawn', held: 'paused', why: 'Title of song.test.piece is skipped — you paused it' }] });
     expect(after.current).toBe(2);
     expect(after.activities.map((one) => one.slot.itemId)).toEqual(run.activities.map((one) => one.slot.itemId));
     expect(after.version).toBe(run.version);

@@ -33,7 +33,7 @@
 import type { DrillKind } from '../engine/drills/types';
 import type { Refusal } from '../evidence/evidence';
 import type { Skill } from '../demands/vocabulary';
-import type { ExposureFamily, ReadingMove, ReadingWhy, SlotClaim, SlotKind } from '../curriculum/session';
+import type { ExposureFamily, HeldState, ReadingMove, ReadingWhy, SlotClaim, SlotKind } from '../curriculum/session';
 import type { AlternativeTier } from '../curriculum/selectors';
 import { VOCABULARY_V0 } from '../evidence/vocabulary';
 import type { ProjectAction, ProjectState, ReadingRecipe } from '../data/db';
@@ -1263,7 +1263,12 @@ export const SESSION_TEXT = {
    * past it (G90): "Ode to Joy is skipped — you paused it". The learner's own word, in the learner's own
    * verb as the project sheet says it (*Pause*, *Put it away*).
    */
-  withheld: (title: string, state: 'paused' | 'retired'): string => `${title} is skipped — you ${state === 'paused' ? 'paused it' : 'put it away'}`,
+  withheld: (title: string, state: HeldState): string => `${title} is skipped — ${youHeld(state)}`,
+  /**
+   * The same, on Today's skipped row (G90a): "Skipped — you paused it". The row's title is the piece, so the
+   * sentence leaves it out; the verb is the transition's, from the one place (`youHeld`).
+   */
+  withheldRow: (state: HeldState): string => `Skipped — ${youHeld(state)}`,
   /** A first-contact activity whose material was met after the card was composed (G2's adapter at its start). */
   repurposed: (how: string): string =>
     `You ${how === 'played' ? 'played' : how === 'viewed' ? 'saw' : 'heard'} this one earlier today, so it is practice now, not a first read`,
@@ -1288,6 +1293,11 @@ export const SESSION_TEXT = {
   /** The transfer offer could not be kept before opening (U73): nothing opened, said on Today. */
   offerNotKept: 'This offer could not be kept on this phone, so it was not opened. Try again.',
 } as const;
+
+/** What the learner did with a piece, in the project sheet's own verbs (*Pause*, *Put it away*): the clause both skipped-piece sentences end on. */
+function youHeld(state: HeldState): string {
+  return state === 'paused' ? 'you paused it' : 'you put it away';
+}
 
 function lowerFirst(text: string): string {
   return text.charAt(0).toLowerCase() + text.slice(1);

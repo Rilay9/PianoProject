@@ -181,7 +181,7 @@ describe('the withhold event, in the pure state machine', () => {
     if (!result.ok) throw new Error(`refused: ${result.why}`);
     return result.run;
   };
-  const withhold: RunEvent = { kind: 'withhold', why: 'Warm-up is skipped — you paused it' };
+  const withhold: RunEvent = { kind: 'withhold', held: 'paused', since: NOW_AT.toISOString() };
 
   it('a pending activity the composition chose is skipped with the reason, and the cursor goes to the next still to do', () => {
     const before = fresh();
@@ -221,7 +221,7 @@ describe('the withhold event, in the pure state machine', () => {
     run = ok(apply(run, as(run, 0), { kind: 'opened' }, NOW_AT));
     run = ok(apply(run, as(run, 0), { kind: 'attempted' }, NOW_AT));
     const after = ok(apply(run, as(run, 1), withhold, NOW_AT));
-    expect(after.activities[1]).toMatchObject({ state: 'skipped', adaptations: [{ why: 'Warm-up is skipped — you paused it' }] });
+    expect(after.activities[1]).toMatchObject({ state: 'skipped', adaptations: [{ why: 'New piece is skipped — you paused it' }] });
     expect(after.current, 'the learner is still in the first activity').toBe(0);
     expect(after.activities[0]?.state).toBe('attempted');
     // And the cursor, when it moves on from the first, passes the skipped one over.
@@ -267,7 +267,7 @@ describe('the session’s one reading of a project (the composer’s and the run
     expect([...session.matchAll(/projectIn\(/g)], 'a second project lookup in the session').toHaveLength(1);
     const runner = readFileSync(join(src, 'ui', 'sessionRunner.ts'), 'utf8');
     expect(runner, 'the runner reads a project its own way').not.toMatch(/projectIn\(/);
-    expect(runner).toMatch(/heldStateOf\(/);
+    expect(runner).toMatch(/heldWordOf\(/);
     expect(session.slice(session.indexOf('\nexport function buildSession('))).toMatch(/heldStateOf\(/);
   });
 });
@@ -287,7 +287,8 @@ describe('at its turn, a pending piece the learner has paused or put away is ste
     expect(notes(into)).toEqual(['Ode to Joy is skipped — you paused it']);
     expect(lines(into)[1]).toBe('Next: Another piece, 7 min — More music from this lesson');
     const after = await stored();
-    expect(after.activities[2]).toMatchObject({ state: 'skipped', adaptations: [{ kind: 'skipped-redundant', why: 'Ode to Joy is skipped — you paused it' }] });
+    // Its own kind (G90a): the learner withdrew the piece; no practice became redundant.
+    expect(after.activities[2]).toMatchObject({ state: 'skipped', adaptations: [{ kind: 'withdrawn', held: 'paused', why: 'Ode to Joy is skipped — you paused it' }] });
     expect(after.current).toBe(3);
     // The snapshot stays: slots, routes, words, tokens, the free prompt, the version and the session are as composed.
     expect(composed(after)).toEqual(composed(before));
@@ -422,17 +423,25 @@ describe('at its turn, a pending piece the learner has paused or put away is ste
     expect(notes(second.into)).toEqual(['Another piece is skipped — you paused it']);
   });
 
-  it('a piece the learner chose themselves, by a swap, stays however its project stands; the composer’s next piece does not', async () => {
+  // G90 said a swapped-in piece stays however its project stands, whenever it was paused (the swap stored no
+  // moment to compare with). G90a replaced that: a swap records when it was made, and a pause from before it stays
+  // overridden by the choice while one from after it vetoes the piece (`sessionHeldSkip.test.ts` holds the
+  // later-word half, both orders, paused and put away). This case keeps the half that did not change.
+  it('a piece the learner chose themselves, by a swap, after they paused it stays: the choice came after the word; the composer’s next piece, paused since, does not', async () => {
     await begin(entries());
     await finishCurrent();
-    // The learner swapped the review for another piece (a swap carries no claim: nothing chose it but them).
+    // The learner had paused the piece it is swapped for, and swapped the review for it afterwards (a swap carries
+    // no claim: nothing chose it but them).
+    const when = new Date();
+    await applyProjectAction({ itemId: 'song.chosen', material: undefined }, 'learn', { at: new Date(when.getTime() - 3000) });
+    await applyProjectAction({ itemId: 'song.chosen', material: undefined }, 'pause', { at: new Date(when.getTime() - 2000) });
     const run = await stored();
     const swapped = await applySessionEvent(
       { sessionId: run.sessionId, version: run.version, token: TOKENS[2] as string },
       { kind: 'swap', slot: { kind: 'review', itemId: 'song.chosen', title: 'Chosen piece', minutes: 5 }, route: { target: 'score', itemId: 'song.chosen' }, reason: 'You chose this one — from the same lesson', token: 'tokenx009' },
+      new Date(when.getTime() - 1000),
     );
     expect(swapped.ok).toBe(true);
-    await sayOnSheet('song.chosen', 'pause');
     await sayOnSheet('song.keep', 'pause');
     await finishCurrent();
     const first = host(TOKENS[1] as string);
@@ -523,7 +532,7 @@ describe('the transition says a skip only while it is a skip', () => {
     };
     let run = newRun({ day: dayKey(NOW_AT), sessionId: 'tick0001', version: 'v', startedAt: NOW_AT.toISOString(), activities: entries().slice(0, 4), outside: [] });
     run = step(run, TOKENS[0] as string, { kind: 'completed', outcome: 'unknown' });
-    run = step(run, TOKENS[2] as string, { kind: 'withhold', why: 'Ode to Joy is skipped — you paused it' });
+    run = step(run, TOKENS[2] as string, { kind: 'withhold', held: 'paused', since: NOW_AT.toISOString() });
     run = step(run, TOKENS[1] as string, { kind: 'completed', outcome: 'unknown' });
     const said = transitionView(run, TOKENS[1] as string, NOW_AT);
     expect(said).toMatchObject({ kind: 'next', from: 'completed', notes: ['Ode to Joy is skipped — you paused it'] });

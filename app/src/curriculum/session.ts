@@ -57,22 +57,39 @@ import { isExcerpt, isExerciseKind, isPieceMaterial } from './excerpt';
 
 export type SlotKind = 'technique' | 'review' | 'new' | 'repertoire' | 'jam' | 'free' | 'sightreading';
 
+/** The two states of a project that withdraw a piece from what the session offers on its own. */
+export type HeldState = 'paused' | 'retired';
+
+/** The learner's word on a piece: the state it was left in, and when (`ProjectRow.since`, ISO date-time). */
+export interface HeldWord {
+  state: HeldState;
+  since: string;
+}
+
 /**
- * The session's one reading of a learner's project for a piece (G1e; G90): `paused` or `retired` where the
- * piece's project, found as the lesson page and Progress find it — by its material, whatever id it was made
- * under, else by the id it was made under — says so, and nothing otherwise. Every other state, and no project,
- * is no word about whether to offer the piece. Pure over the rows it is given: it never opens the store.
+ * The session's one reading of a learner's project for a piece (G1e; G90; G90a): `paused` or `retired`, and
+ * when, where the piece's project, found as the lesson page and Progress find it — by its material, whatever id
+ * it was made under, else by the id it was made under — says so, and nothing otherwise. Every other state, and
+ * no project, is no word about whether to offer the piece. Pure over the rows it is given: it never opens the
+ * store.
  *
  * It is asked by the two places that decide what the session offers automatically: the card's `usable()`
- * through `buildSession`'s per-card answer (what the composer may choose), and the session runner's
- * `settleHeld` (what the running session may offer at a turn the composition has already fixed). The G1d
- * review ruled that automatic eligibility has one interpretation (`responses/d59f2ef8.md`); this is it. (The
- * swap sheet's *Paused* marker, G94, reads the row itself to badge it; that is a label on the learner's own
- * menu, not an offer.)
+ * through `buildSession`'s per-card answer (what the composer may choose; `heldStateOf`, which needs only the
+ * state), and the session runner's `settleHeld` (what the running session may offer at a turn the composition
+ * has already fixed), which needs the moment too: a pause or put-away is the learner's *latest* word only against
+ * what they did after it, and a piece they swapped in after pausing it was chosen knowing
+ * (`sessionRun.isWithdrawnBy` orders the two). The G1d review ruled that automatic eligibility has one
+ * interpretation (`responses/d59f2ef8.md`); this is it. (The swap sheet's *Paused* marker, G94, reads the row
+ * itself to badge it; that is a label on the learner's own menu, not an offer.)
  */
-export function heldStateOf(projects: readonly ProjectRow[], target: ProjectTarget): 'paused' | 'retired' | undefined {
-  const state = projectIn(projects, target)?.state;
-  return state === 'paused' || state === 'retired' ? state : undefined;
+export function heldWordOf(projects: readonly ProjectRow[], target: ProjectTarget): HeldWord | undefined {
+  const row = projectIn(projects, target);
+  return row?.state === 'paused' || row?.state === 'retired' ? { state: row.state, since: row.since } : undefined;
+}
+
+/** `heldWordOf`, as the card's composer asks it: whether the piece is held, and in which state. */
+export function heldStateOf(projects: readonly ProjectRow[], target: ProjectTarget): HeldState | undefined {
+  return heldWordOf(projects, target)?.state;
 }
 
 export interface SessionSlot {

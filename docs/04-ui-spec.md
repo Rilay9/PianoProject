@@ -427,14 +427,27 @@ U71, X1).
   `responses/d59f2ef8.md` question 2): the snapshot stays — the card is still the session's and the
   piece still waits on it, pending, until its turn, and nothing is recomposed — but where the
   session is about to offer an activity (the transition after the one before, *Start* on it,
-  Today read for *Continue*), a pending activity **the composition chose** whose piece is paused or
-  put away *now* is skipped, said as *{title} is skipped — you paused it* (*… you put it away*) in
-  the transition's own note, and the one after is offered; its row reads *skipped*. The piece is
-  read as the card's composer reads it (`session.heldStateOf`: its material's project, else the id's,
-  `paused` or `retired` and no other state). An activity already underway is not interrupted; a
-  piece the learner chose themselves (a swap: its activity carries no claim) or taps open is theirs,
-  whatever its project says; a row tapped back to life no longer announces a skip. The row's own
-  line stays the composition's words, as on every skipped row. A Score-screen run Today chose for its rung
+  Today read for *Continue*), a pending activity whose piece is paused or put away *now* — **one
+  the composition chose**, or (G90a, below) one the learner swapped in before they said it — is
+  skipped, said as *{title} is skipped — you paused it* (*… you put it away*) in
+  the transition's own note, and the one after is offered. **Its row says why too** (G90a, the
+  reviewer's required change on G90, `responses/1c75de8d.md`): the transition is transient and Today
+  is the durable view of what happened, so the row reads *skipped* with, in place of the
+  composition's words (the reason it was ahead, which the learner has withdrawn the piece for),
+  **Skipped — you paused it** or **Skipped — you put it away** — one short line, shorter than the
+  words it replaces; every other skipped row (an easy success's) keeps the composition's words.
+  The record holds it as its own adaptation kind, `withdrawn`, with the state the learner left the
+  piece in; `skipped-redundant` stays what it was — practice that became redundant — so no reader
+  takes "the learner withdrew this piece" for it. The piece is read as the card's composer reads it
+  (`session.heldWordOf`, with `heldStateOf` its state: its material's project, else the id's,
+  `paused` or `retired` and no other state, and the moment the learner said it, the project's
+  `since`). An activity already underway is not interrupted. **A swap and a pause or put-away are
+  ordered by when each happened** (G90a): the swap records when it was made (`swappedAt`), and
+  the learner's latest word holds — a pause from before the swap is overridden by that deliberate
+  choice (the swap sheet marks a paused piece, G94, and the learner chose it anyway), one from after
+  it steps past the piece at its turn, and at the very same moment the swap stands. A row the learner
+  taps open is theirs whatever its project says; a row tapped back to life no longer announces a
+  skip, and no record of its withdrawal is left on it. A Score-screen run Today chose for its rung
   (`?rung=`, a session activity or a card row) opens where it can count: Keep tempo at the rung's
   tempo or faster, where the learner's defaults (Wait for me at 70 %) could not meet the rung's
   standard, with a Rhythm only preference off for that run; the select stays theirs (X46, `responses/43045ffb.md` §4: the item is composed as what
@@ -2668,7 +2681,8 @@ Notation area:
   easy first-attempt success it says *Easier than expected — {the skipped practice} is skipped*.
   Where the learner paused or put away the piece that would have come next, it says *{title} is
   skipped — you paused it* (*— you put it away*) above *Next*, which is then the one after (G90;
-  §2). A first contact met since the card was composed says *You heard this one earlier today, so it
+  §2); for a piece the learner swapped in, only where the pause or put-away came after the swap
+  (G90a: the learner's latest word holds). A first contact met since the card was composed says *You heard this one earlier today, so it
   is practice now, not a first read* (*played* or *saw* where that is how it was met). After the
   last activity it says *That was the last one — today's session is done* and **Done**. *Done*
   gives way to the block. The Score screen reports opened, attempted and completed (the stored
