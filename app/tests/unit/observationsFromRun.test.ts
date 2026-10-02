@@ -397,7 +397,9 @@ describe('the conditions it was played under', () => {
     expect(row.graceNotes).toBe(false);
     expect(row.input).toEqual({ source: 'keys', toleranceMs: 150, latencyMs: 0 });
     expect(row.range).toEqual({ fromMeasure: 0, toMeasure: 1 });
-    expect(row.definitions).toBe(1);
+    // 2 since CL11a (Entry 219; class: replace): the stamp names the accuracy definitions, and Keep tempo's now
+    // charges a wrong key. The literal is the point: a row says which rules judged it.
+    expect(row.definitions).toBe(2);
   });
 });
 

@@ -1,0 +1,31 @@
+lock taken 2026-10-02T04:21:19-04:00
+
+Running 2 tests using 1 worker
+
+  x  1 tests\e2e\engine.spec.ts:230:3 › Tempo mode end to end › a right note far outside the tolerance is not a hit: its slot is missed, and it is charged once (1.2s)
+  ok 2 tests\e2e\engine.spec.ts:242:3 › Tempo mode end to end › a key the piece does not ask for, far outside the tolerance, is wrong and its slot is missed (1.2s)
+
+
+  1) tests\e2e\engine.spec.ts:230:3 › Tempo mode end to end › a right note far outside the tolerance is not a hit: its slot is missed, and it is charged once 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 0
+    Received: 1
+
+      235 |     const score = await dev.engineScore();
+      236 |     expect(score?.hits).toBe(0);
+    > 237 |     expect(score?.wrongNotesTotal).toBe(0);
+          |                                    ^
+      238 |     expect(score?.missedTotal).toBeGreaterThanOrEqual(1);
+      239 |     await dev.stopRun();
+      240 |   });
+        at <worktree>\app\tests\e2e\engine.spec.ts:237:36
+
+    Error Context: build\cl11a\test-results\engine-Tempo-mode-end-to-e-de76e-ssed-and-it-is-charged-once\error-context.md
+
+  1 failed
+    tests\e2e\engine.spec.ts:230:3 › Tempo mode end to end › a right note far outside the tolerance is not a hit: its slot is missed, and it is charged once 
+  1 passed (6.6s)
+playwright exit 1
+

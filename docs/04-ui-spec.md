@@ -841,7 +841,7 @@ own finished, or the lesson's rule the app cannot measure.
 phrase counts for 1.5's requirement that names it. The decision that a run meets **this
 rung's** requirement is this rung's: only runs whose record names the rung as the one that
 opened them count, each judged again under the rung's standard from what it measured (Keep
-tempo at the rung's tempo; a Wait run meets only a rung that asks for no tempo; nothing heard,
+tempo at the rung's tempo; a Wait run meets no rung, every rung asking a tempo (CL11a); nothing heard,
 rhythm only, a phrase met before and the learner's own answer are not runs). An item three
 rungs list meets at most the one that opened it.
 
@@ -3437,7 +3437,7 @@ back. A browser that refuses storage shows it every time, which is the safe way 
 - *What do I do now?* The count-in clicks, then play along.
 - *What can I do here?* **Tempo** — A share of the written speed. Slower is how a hard bar becomes an easy one. **▶** — Starts the run. With a piano connected your own first note starts it instead, and the clock waits for it. **Loop** — Repeats a few bars until they are yours. Double-tap two bars on the sheet to mark them. **Metronome** — The click, on or off. Turn it off to play against silence. **⋯** — Rhythm only, Ladder, Duet, Blind and Perform, and the settings you change once.
 - *What else is there?* This is the mode a pass is measured in. Wait for me is where a piece is learned first; Play it to me is where you hear what you are aiming at.
-- *What counts?* A pass needs both the accuracy and the share of the written tempo, in one run: the lesson’s numbers where it states them, otherwise the ones set in Settings.
+- *What counts?* A pass needs both the accuracy and the share of the written tempo, in one run: the lesson’s numbers where it states them, otherwise the ones set in Settings. Accuracy is the written notes you play right in time; each wrong note costs as much as a note you miss.
 
 **Play it to me** (`listen`)
 
@@ -3727,7 +3727,9 @@ the drills themselves, so a measurement added and not named fails.
 - **Projects (G1b).** What the learner says they are doing with each piece, newest change first:
   the title, *State since day* on the second line, *Goal: …* on the third where one is typed; a
   row opens the project sheet (§5). Under them, *Pieces you have passed, not yet projects* —
-  songs passed or mastered with no project, *Last played day*, and a quiet *Make it a project*
+  songs the app measured passed, or mastered, with no project (the learner's own word, *I already
+  know this* or a Clean self-report, is shown as theirs on the lesson page and in the Library, and is
+  neither counted in the totals line's *N passed* nor offered here, CL11a), *Last played day*, and a quiet *Make it a project*
   that opens the same sheet and makes nothing until a choice there; capped at 20 with *Show N
   more*. With no project, *No projects yet. At the end of a run, "What next with this piece?"
   makes one.*, and with no passed song either, *Pick a piece*. A pass is never made a project by

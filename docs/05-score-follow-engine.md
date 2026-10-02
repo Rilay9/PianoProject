@@ -106,13 +106,22 @@ is what learners expect, and the HP-130 like all pianos may send Note-Off late w
 Sustain pedal (CC64) is recorded for the pedal drill scorer but never blocks advancement.
 
 Accuracy for the run: `correctSteps / totalSteps` where a step is "correct" if it was completed
-with zero wrong notes *and* ≤ 1 retry. Also report `wrongNotesTotal`.
+with zero wrong notes *and* ≤ 1 retry. Also report `wrongNotesTotal`. Accuracy means one thing
+in both modes — the written notes played right, with nothing extra — and in Wait the unit is the
+step, so a wrong key costs its step (Keep tempo's unit is the note, §3).
 
 **Wait mode measures no tempo (2026-09-25, T37).** The page holds until the note arrives, so
 no lateness is recorded (`deltas` is written only in the Tempo path) and the run's `tempoPct`
-is the slider's setting. `evaluateOutcome` reports `tempoMeasured: false` for it: a Wait run
-meets a criterion only where the criterion asks for no tempo, and is never master-eligible.
-It is honest evidence of the notes and none of the pulse; the record and the sheet say which.
+is the slider's setting. `evaluateOutcome` reports `tempoMeasured: false` for it, and it is
+never master-eligible. It meets no rung's standard, because every rung asks for a tempo: the
+rungs whose `minTempoPct` is 0 (11 of the 109, among them the Stage 0 checklist, the tour and
+the improvisation rungs) state no number of their own and take the Settings pair, which
+`coerceSettings` keeps between 30 and 130, so no criterion `masteryCriteriaFor` hands the engine
+has a tempo floor of nought (CL11a, 2026-10-02, re-derived over the built curriculum; the
+`passTempoPct <= 0` branches stay in the code, for a constructed criterion). This sentence used
+to say a Wait run met a criterion "where the criterion asks for no tempo", which no authored
+criterion does. It is honest evidence of the notes and none of the pulse; the record and the
+sheet say which.
 
 ## 3. Tempo mode (default without MIDI; also the "performance" mode) — "the clock drives"
 
@@ -136,6 +145,21 @@ Judging input (only if any input source is active):
   wrong note and then a miss: one early note, two faults, neither of them "early". A beat or
   more ahead it is that pitch struck somewhere else, and still an extra note; a rhythm-only
   run keeps the rule below unchanged.
+- **Nor is it a wrong key if it is the right pitch, late** (2026-10-02, CL11a). The mirror of
+  the early rule, bounded the same way: a pitch a step the strike is *past* asks for — past its
+  window by more than `toleranceMs` and by less than a beat — whose note for it is still
+  unplayed (the window closed on it, or no tick has closed the window yet) and that no earlier
+  late strike has stood for. That strike is the note, played late: the miss stands (counted
+  when the window closes, or already counted), and the strike is not also a wrong key. It
+  used to be both. **At most one late strike per missed note** — once per expected pitch
+  occurrence — so a second strike of that pitch is a wrong key, and so are a pitch already
+  played at its step, a pitch a beat or more behind its step, a pitch that no step asks for,
+  and a microphone guess the engine is not sure of. Where one pitch could be early for a step
+  ahead and late for one behind (the same note a beat or less apart), it belongs to the
+  nearer in time; a tie keeps the early reading. What a late strike has stood for, and what
+  was missed, are kept per lap (the step indexes repeat in a loop) and forgotten at a
+  recount after a pause (the clock is rewound and the count must not match a note from before
+  it). The played note is kept as played, with no step, as a wrong key is.
 - When the clock passes `tStep[j] + toleranceMs` and a slot in `expected[j]` is unsatisfied →
   `missed`. The miss is decided on the first tick past that time, unless that tick follows a
   stall — a gap longer than the tick contract allows a free main thread (25 ms, the session's
@@ -145,7 +169,20 @@ Judging input (only if any input source is active):
   run's end and a loop's wrap wait the same way (2026-09-30, U66). A tick inside that wait that
   itself follows a stall starts it again from itself: the stall that ends is not always the
   last, and the queue the first one built has not had its turn (2026-10-02, U125).
-- Accuracy = hits / expected slots; timing stats = mean/σ of deltaMs, % early, % late.
+- Accuracy = the written notes played right, with nothing extra (observation definitions 2,
+  2026-10-02, CL11a): `max(0, hits − wrongNotesTotal) / expected slots`. A wrong key costs one
+  note, as it makes its step unclean in Wait (§2), so on a single-line piece the two modes give
+  the same figure for the same playing. A right note at the wrong time costs once — a miss, or
+  `early` — and never also a wrong key. A chord with one pitch missed keeps two thirds of its
+  credit. A rhythm-only run keeps `hits / expected slots`, the rhythm's own figure (§3a).
+  `hits` stays the observed count of notes struck in their window (`SessionScore.hits`,
+  `pitch.right` on the record); accuracy is the verdict, and a reader that divides `right` by
+  `of` and calls it accuracy reads a run full of extra keys as clean. A row stamped
+  `definitions: 1` keeps the accuracy it was judged with, since it cannot tell a wrong key from
+  a late right note and holds no expected pitches to tell them by; under 2, a Keep tempo step
+  with a wrong key against it is not right on the pitch channel of the evidence
+  (`measurement.ts`), the right note's onset still timed. Timing stats = mean/σ of deltaMs,
+  % early, % late.
   **Pass** needs accuracy ≥ 90 % (setting) at tempoPct ≥ 80 % (setting) — or at the rung's
   own pair where the item is on a rung (`02` Part G, `selectors.masteryCriteriaFor`).
 - `correctSteps` counts the steps every pitch of which arrived inside its window, which is
@@ -1004,8 +1041,9 @@ no rung uses the defaults.*
 - A run's `tempoPct` is a percentage of its `baseTempo`. Where a reviewed repair has since
   corrected that base (E50b: E50's seven PDMX scores and the Wabash cut, whose old files played
   at the converter's defaulted 96), the rung state's re-reading of the run (`rungState.meetsStandard`)
-  refuses its tempo channel as not comparable — it meets a rung that asks no tempo and none that
-  asks one — rather than reading 100 % of 96 as 100 % of the printed tempo. The progress row's
+  refuses its tempo channel as not comparable — it meets a standard that asks no tempo (none of the
+  authored rungs does, CL11a: §2) and none that asks one — rather than reading 100 % of 96 as 100 % of
+  the printed tempo. The progress row's
   derivations (`status`, `passedOn`, `masteredOn`, `bestTempoPct`) were judged when the run was
   recorded and stay as they are: history, neither rewritten nor recomputed. One decision is taken
   now, not read back: a *fresh* award of *mastered* for one of those items counts only the
@@ -1365,7 +1403,14 @@ and, on a strong onset with no expected pitch rising, report the most salient pi
 - Tempo mode: onsets are time-stamped in the worklet (sample-accurate) and reported as observed;
   `PracticeEngine` shifts them by `inputLatencyMs` when it judges them, which is the only place
   that subtraction happens. Tolerance defaults to ±200 ms for mic (vs ±150 for MIDI).
-- Accuracy from mic is labelled "estimated"; the summary sheet says so.
+- Accuracy from mic is labelled "estimated"; the summary sheet says so. A sure wrong note from the
+  microphone costs a note in Tempo mode as one from MIDI does (§3); a guess below
+  `wrongNoteConfidence` is shown amber and never charged. **An estimated pass counts as a MIDI pass
+  does** (2026-10-02, CL11a): the sheet's heading, the rung's state, the progress row and Today's row
+  all read it, with the estimate labelled. An estimated *failure* keeps the session's caution — the
+  activity completes as `unknown`, so it neither insists on *Try again* nor fails the card. Whether
+  the detector is accurate enough on a real piano to count at all is a fact about the detector; this
+  aligns the readers and does not certify it.
 - The app playing back the *other* hand through the phone speaker while listening through the
   same phone's mic will contaminate detection. Rules: when mic input is active, playback of
   expected pitches is muted; metronome uses a short high click (≥ 4 kHz) that the detector

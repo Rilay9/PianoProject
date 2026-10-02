@@ -156,7 +156,11 @@ describe('Tempo mode — judging', () => {
     expect(score.timing.earlyPct).toBe(0);
   });
 
-  it('200 ms late with a 150 ms tolerance: all missed, and the notes are wrong', () => {
+  // Replaced (CL11a, Entry 219; class: replace): this asserted `wrongNotesTotal` 4 for four right notes
+  // played late. A right note at the wrong time costs once, as the miss, and never as a wrong key as well
+  // (`docs/design/evidence-truth.md` L10); the accuracy of 0 stands. `keepTempoChargesAWrongKey.test.ts`
+  // holds the exemption's bound.
+  it('200 ms late with a 150 ms tolerance: all missed, none of them wrong keys', () => {
     const h = harness(melody, noCountIn);
     h.engine.start();
     for (const [i, midi] of [60, 62, 64, 65].entries()) {
@@ -168,8 +172,8 @@ describe('Tempo mode — judging', () => {
     const score = h.engine.state.score;
     expect(score.hits).toBe(0);
     expect(score.missedTotal).toBe(4);
-    // The window had already closed, so each note matched nothing.
-    expect(score.wrongNotesTotal).toBe(4);
+    // The window had already closed, so each note missed it; each was the right key, late, and is charged once.
+    expect(score.wrongNotesTotal).toBe(0);
     expect(score.accuracy).toBe(0);
   });
 
@@ -1214,7 +1218,10 @@ describe('Tempo mode — a stall is not a miss (U66)', () => {
     expect(h.of('missed').map((e) => e.stepIndex)).toEqual([1, 2, 3]);
   });
 
-  it('U3: a note stamped past its window and delivered at once, with no stall, is still an extra and the window a miss', () => {
+  // Replaced (CL11a, Entry 219; class: replace): the fence is unchanged — a note stamped past its window is
+  // not rescued as a hit without a stall — and what it costs is now once: the miss. It was charged as a wrong
+  // key as well; the late right note is not an extra (`keepTempoChargesAWrongKey.test.ts`).
+  it('U3: a note stamped past its window and delivered at once, with no stall, is still not a hit and the window a miss, charged once', () => {
     const h = harness(melody, noCountIn);
     h.engine.start();
     h.advance(144);
@@ -1226,7 +1233,7 @@ describe('Tempo mode — a stall is not a miss (U66)', () => {
     h.advance(0.5 * BEAT_MS);
     const score = h.engine.state.score;
     expect(score.hits).toBe(0);
-    expect(score.wrongNotesTotal).toBe(1);
+    expect(score.wrongNotesTotal).toBe(0);
     expect(score.missedTotal).toBe(1);
     expect(h.of('missed')[0]).toMatchObject({ stepIndex: 0, midi: 60 });
   });
@@ -1423,7 +1430,9 @@ describe('Tempo mode — a stall is not a miss (U66)', () => {
     }
   });
 
-  it('an on-screen tap is stamped when its handler runs, after the stall, and is judged as it always was', () => {
+  // Replaced (CL11a, Entry 219; class: replace): judged as it always was — a miss, not a hit — and no longer
+  // also a wrong key: the tap is C, late, and C's miss is the whole of its cost.
+  it('an on-screen tap is stamped when its handler runs, after the stall, and is judged as it always was: a miss, charged once', () => {
     const h = harness(melody, noCountIn);
     h.engine.start();
     h.advance(90);
@@ -1434,7 +1443,7 @@ describe('Tempo mode — a stall is not a miss (U66)', () => {
     h.advance(100);
     const score = h.engine.state.score;
     expect(score.hits).toBe(0);
-    expect(score.wrongNotesTotal).toBe(1);
+    expect(score.wrongNotesTotal).toBe(0);
     expect(score.missedTotal).toBe(1);
   });
 

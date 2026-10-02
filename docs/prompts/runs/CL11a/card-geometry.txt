@@ -1,0 +1,23 @@
+# CL11a: the first-meeting Keep tempo card's geometry on the base build and the lane build (Playwright, port 5513, one worker).
+# viewportH, the card's height, and the top and bottom of the Start button, in px from the top of the viewport; goInViewport is Start wholly on the screen.
+
+BASE
+GEOMETRY phone-upright {"viewportH":780,"cardH":780,"goTop":715,"goBottom":763,"goInViewport":true,"scroller":"none","countsChars":157}
+GEOMETRY phone-sideways {"viewportH":360,"cardH":360,"goTop":336,"goBottom":384,"goInViewport":false,"scroller":"none","countsChars":157}
+GEOMETRY phone-342 {"viewportH":740,"cardH":740,"goTop":675,"goBottom":723,"goInViewport":true,"scroller":"none","countsChars":157}
+GEOMETRY tablet {"viewportH":768,"cardH":768,"goTop":703,"goBottom":751,"goInViewport":true,"scroller":"none","countsChars":157}
+LANE
+GEOMETRY phone-upright {"viewportH":780,"cardH":780,"goTop":715,"goBottom":763,"goInViewport":true,"scroller":"none","countsChars":261}
+GEOMETRY phone-sideways {"viewportH":360,"cardH":360,"goTop":378,"goBottom":426,"goInViewport":false,"scroller":"none","countsChars":261}
+GEOMETRY phone-342 {"viewportH":740,"cardH":740,"goTop":675,"goBottom":723,"goInViewport":true,"scroller":"none","countsChars":261}
+GEOMETRY tablet {"viewportH":768,"cardH":768,"goTop":703,"goBottom":751,"goInViewport":true,"scroller":"none","countsChars":261}
+
+# Does the sideways (780 x 360) sheet scroll, and can Start be reached? one wheel scroll, then a click:
+BASE
+CHAIN ["div#score-first-sight.sheet overflowY=visible pos=fixed sh=360 ch=360 maxH=none","body#. overflowY=hidden pos=relative sh=360 ch=360 maxH=none","html#. overflowY=hidden pos=static sh=360 ch=360 maxH=none"]
+WHEEL before={"x":87,"y":336,"width":606,"height":48} after={"x":87,"y":295,"width":606,"height":48} visible=true
+CLICK yes
+LANE
+CHAIN ["div#score-first-sight.sheet overflowY=visible pos=fixed sh=360 ch=360 maxH=none","body#. overflowY=hidden pos=relative sh=360 ch=360 maxH=none","html#. overflowY=hidden pos=static sh=360 ch=360 maxH=none"]
+WHEEL before={"x":87,"y":378,"width":606,"height":48} after={"x":87,"y":295,"width":606,"height":48} visible=true
+CLICK yes

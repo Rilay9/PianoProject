@@ -42,8 +42,11 @@
  * no requirement reads), not the learner's own answer (`selfReport`). A
  * Keep tempo run reaches the rung's tempo on what it measured, unless a
  * reviewed repair has since corrected the tempo its percentage is of (E50b,
- * `meetsStandard`), when it reaches none; a Wait run has
- * no tempo, so it meets only a rung that asks for none (T37). A drill has no
+ * `meetsStandard`), when it reaches none; a Wait run has no tempo and meets no
+ * rung's standard, since every rung asks for one (T37; CL11a: the rungs that
+ * state `minTempoPct: 0` take the Settings pair, which is never below 30 %, so
+ * no criterion a rung produces has a tempo floor of nought — `meetsStandard`'s
+ * `passTempoPct <= 0` branches stay for a constructed one). A drill has no
  * tempo and is judged on its accuracy, and Simon on its chain, as its screen
  * judges them.
  *

@@ -1,0 +1,99 @@
+# CL11a red run on the base (ee62c06c sources, this lane's tests): 42 failed, 485 passed, over the 15 files below
+# command, from app/: npx vitest run <files>; files: keepTempoChargesAWrongKey, definitionsTwoReadsAWrongKey, todayCountsAMicrophonePass, progressKeepsTheLearnersWord, help, engineTempo, engineEarlyNote, sessionAdaptation, observationsFromRun, evidenceOnlyMeasured, readerMovesTheDemand (against the regenerated fixture), evidenceByDemand, recommendRespondsToEvidence, lessonClaimsAboutApp, expectedNote
+# the nine sources this lane changes were put back to HEAD for the run (git show HEAD:<path>) and restored after; the tests were the lane's
+# lessonClaimsAboutApp: 2 failures that are RED ON THE BASE TOO (blues.3 two tool buttons; 4.7 blind): not this lane's. evidenceByDemand, recommendRespondsToEvidence, expectedNote: green on the base (they went red in the middle of this lane, see the entry)
+
+ FAIL  tests/unit/definitionsTwoReadsAWrongKey.test.ts > observation definitions 2: a Keep tempo step with a wrong key against it is not right on pitch > the writer stamps 2, and this build reads both 1 and 2
+AssertionError: expected 1 to be 2 // Object.is equality
+ FAIL  tests/unit/definitionsTwoReadsAWrongKey.test.ts > observation definitions 2: a Keep tempo step with a wrong key against it is not right on pitch > every written note in time and one key extra at a step: that step is not right on pitch, its neighbours are
+AssertionError: expected { right: true, mixed: false, …(1) } to deeply equal { right: false, mixed: false, …(1) }
+ FAIL  tests/unit/definitionsTwoReadsAWrongKey.test.ts > observation definitions 2: a Keep tempo step with a wrong key against it is not right on pitch > the accuracy on the row is the verdict, net of the wrong key, while `pitch.right` is still the notes struck in time
+AssertionError: expected 1 to be close to 0.875, received difference is 0.125, but expected 5e-10
+ FAIL  tests/unit/definitionsTwoReadsAWrongKey.test.ts > observation definitions 2: a Keep tempo step with a wrong key against it is not right on pitch > a clean run reads as it always did, under either stamp
+TypeError: Cannot read properties of undefined (reading 'entries')
+ FAIL  tests/unit/definitionsTwoReadsAWrongKey.test.ts > observation definitions 2: a Keep tempo step with a wrong key against it is not right on pitch > a Wait row reads the same under either stamp: the rule is Keep tempo’s
+TypeError: Cannot read properties of undefined (reading 'entries')
+ FAIL  tests/unit/definitionsTwoReadsAWrongKey.test.ts > a row judged under definitions 1 keeps the reading it was judged with > and its evidence counts the step right, where a definitions-2 row counts it wrong
+AssertionError: a step with a wrong key against it was counted right: expected 7 to be 6 // Object.is equality
+ FAIL  tests/unit/engineEarlyNote.test.ts > a right note played more than the window early > played early and again on time is a hit and one extra note
+AssertionError: expected 1 to be close to 0.75, received difference is 0.25, but expected 5e-7
+ FAIL  tests/unit/engineTempo.test.ts > Tempo mode — judging > 200 ms late with a 150 ms tolerance: all missed, none of them wrong keys
+AssertionError: expected 4 to be +0 // Object.is equality
+ FAIL  tests/unit/engineTempo.test.ts > Tempo mode — a stall is not a miss (U66) > U3: a note stamped past its window and delivered at once, with no stall, is still not a hit and the window a miss, charged once
+AssertionError: expected 1 to be +0 // Object.is equality
+ FAIL  tests/unit/engineTempo.test.ts > Tempo mode — a stall is not a miss (U66) > an on-screen tap is stamped when its handler runs, after the stall, and is judged as it always was: a miss, charged once
+AssertionError: expected 1 to be +0 // Object.is equality
+ FAIL  tests/unit/evidenceOnlyMeasured.test.ts > a channel the run did not measure yields no evidence, whatever the notation demands > a row written under observation definitions this build does not know is refused on both channels, never read as version 1 (L70)
+AssertionError: expected { kind: 'refusal', …(4) } to match object { kind: 'measured' }
+ FAIL  tests/unit/help.test.ts > every mode, drill and tool says what it is > Keep tempo says before the run what its accuracy counts: the notes played right in time, and a wrong note costing what a missed one costs
+AssertionError: expected 'A pass needs both the accuracy and th…' to match /notes you play right in time/
+ FAIL  tests/unit/keepTempoChargesAWrongKey.test.ts > a wrong key costs a note in Keep tempo > a stray key beside every right note: accuracy 0 and no pass (was 100 % and a pass)
+AssertionError: expected 1 to be +0 // Object.is equality
+ FAIL  tests/unit/keepTempoChargesAWrongKey.test.ts > a wrong key costs a note in Keep tempo > the same playing in Wait for me scores 0 as well: the two modes now agree on a stray key
+AssertionError: expected 1 to be +0 // Object.is equality
+ FAIL  tests/unit/keepTempoChargesAWrongKey.test.ts > a wrong key costs a note in Keep tempo > one stray key among ten notes in time: 90 % in Keep tempo, the figure Wait gives the same playing
+AssertionError: expected 1 to be close to 0.9, received difference is 0.09999999999999998, but expected 5e-10
+ FAIL  tests/unit/keepTempoChargesAWrongKey.test.ts > a wrong key costs a note in Keep tempo > never below nought: more wrong keys than right notes is 0, not a negative accuracy
+AssertionError: expected 1 to be +0 // Object.is equality
+ FAIL  tests/unit/keepTempoChargesAWrongKey.test.ts > a wrong key costs a note in Keep tempo > the observed hit count stays the observed count: the record keeps it apart from the verdict
+AssertionError: expected 1 to be close to 0.5, received difference is 0.5, but expected 5e-10
+ FAIL  tests/unit/keepTempoChargesAWrongKey.test.ts > a wrong key costs a note in Keep tempo > a sure wrong key from the microphone costs a note, and the figure stays labelled an estimate
+AssertionError: expected 1 to be close to 0.75, received difference is 0.25, but expected 5e-10
+ FAIL  tests/unit/keepTempoChargesAWrongKey.test.ts > a right note played late costs once > a D a quarter beat past its window: one miss, and no wrong key (was a miss and a wrong key)
+AssertionError: the late D was charged as a wrong key as well: expected 1 to be +0 // Object.is equality
+ FAIL  tests/unit/keepTempoChargesAWrongKey.test.ts > a right note played late costs once > every right note 200 ms late with a 150 ms window: all missed, none wrong, accuracy 0 (the old case, restated)
+AssertionError: expected 4 to be +0 // Object.is equality
+ FAIL  tests/unit/keepTempoChargesAWrongKey.test.ts > a right note played late costs once > a second late strike of the same D is a wrong key: the exemption is once per missed note
+AssertionError: expected 2 to be 1 // Object.is equality
+ FAIL  tests/unit/keepTempoChargesAWrongKey.test.ts > a right note played late costs once > a late strike while the window is still open on a tick not yet run is the same late note, once
+AssertionError: expected 1 to be +0 // Object.is equality
+ FAIL  tests/unit/keepTempoChargesAWrongKey.test.ts > a right note played late costs once > played early and again on time is a hit and one extra key, and the extra now costs a note (was free)
+AssertionError: expected 1 to be close to 0.75, received difference is 0.25, but expected 5e-10
+ FAIL  tests/unit/keepTempoChargesAWrongKey.test.ts > the exemption is bounded: it never forgives an unrelated key > repeated same-pitch steps: a late C is the late note of the step it is nearest, not an early note of the next
+AssertionError: the late C was held as an early C for the next step and then called an extra: expected 1 to be +0 // Object.is equality
+ FAIL  tests/unit/keepTempoChargesAWrongKey.test.ts > the exemption is bounded: it never forgives an unrelated key > repeated same-pitch steps: two late Cs stand for the two missed Cs, one each, and a third is a wrong key
+AssertionError: expected 1 to be 2 // Object.is equality
+ FAIL  tests/unit/keepTempoChargesAWrongKey.test.ts > the exemption is bounded: it never forgives an unrelated key > a key whose pitch was missed, but a beat or more earlier, is a wrong key
+AssertionError: expected 0.75 to be close to 0.5, received difference is 0.25, but expected 5e-10
+ FAIL  tests/unit/keepTempoChargesAWrongKey.test.ts > the exemption is bounded: it never forgives an unrelated key > a key whose pitch was already played right at its step is a wrong key, not a late note
+AssertionError: expected 1 to be close to 0.75, received difference is 0.25, but expected 5e-10
+ FAIL  tests/unit/keepTempoChargesAWrongKey.test.ts > the exemption is bounded: it never forgives an unrelated key > a key whose pitch appears in a later step beyond the early reach is a wrong key
+AssertionError: expected 1 to be close to 0.75, received difference is 0.25, but expected 5e-10
+ FAIL  tests/unit/keepTempoChargesAWrongKey.test.ts > the exemption is bounded: it never forgives an unrelated key > partial chord: the note that came late is the late note of the chord, once
+AssertionError: expected 1 to be +0 // Object.is equality
+ FAIL  tests/unit/keepTempoChargesAWrongKey.test.ts > the exemption is bounded: it never forgives an unrelated key > partial chord: a second late G is a wrong key, and so is a late G once the G was played in time
+AssertionError: expected 2 to be 1 // Object.is equality
+ FAIL  tests/unit/keepTempoChargesAWrongKey.test.ts > the exemption is bounded: it never forgives an unrelated key > each lap of a loop is its own: a late D that stood for lap one’s D does not use up lap two’s
+AssertionError: the second lap’s late D was charged as a wrong key: expected 2 to be +0 // Object.is equality
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+AssertionError: expected false to be true // Object.is equality
+ FAIL  tests/unit/observationsFromRun.test.ts > the conditions it was played under > grace notes off is stored, with the input and its window
+AssertionError: expected 1 to be 2 // Object.is equality
+ FAIL  tests/unit/progressKeepsTheLearnersWord.test.ts > Progress’s totals and its pieces-passed list read the flag > the learner’s word is not counted as passed: a measured pass is, "I already know this" and a Clean self-report are not
+AssertionError: the learner’s word was counted as a pass: expected '1 day practised · 3 min in total · 1 …' to contain '1 passed'
+ FAIL  tests/unit/progressKeepsTheLearnersWord.test.ts > Progress’s totals and its pieces-passed list read the flag > only a measured pass is offered under "Pieces you have passed, not yet projects"
+AssertionError: the learner’s word was offered as a piece passed: expected [ 'song.clean', 'song.known', …(1) ] to deeply equal [ 'song.measured' ]
+ FAIL  tests/unit/progressKeepsTheLearnersWord.test.ts > Progress’s totals and its pieces-passed list read the flag > with only the learner’s word, nothing is passed and nothing is offered
+AssertionError: expected '1 day practised · 1 min in total · 0 …' to contain '0 passed'
+ FAIL  tests/unit/readerMovesTheDemand.test.ts > the e2e learners are the real path’s rows (C4c item 0) > tests/e2e/fixtures/reader-learners.json holds exactly what this path makes
+AssertionError: the e2e learners are not the real path’s rows: rewrite them with C4C_WRITE_E2E_ROWS=1: expected false to be true // Object.is equality
+ FAIL  tests/unit/sessionAdaptation.test.ts > what the stored run may drive (the protocol table’s summary facts) > a Score-screen run: measured full-standard pass, measured failure, and everything else unknown
+AssertionError: expected 'unknown' to be 'passed-full' // Object.is equality
+ FAIL  tests/unit/todayCountsAMicrophonePass.test.ts > the stored run an estimated pass writes > an estimated measured pass is passed-full, as a MIDI pass is
+AssertionError: expected 'unknown' to be 'passed-full' // Object.is equality
+ FAIL  tests/unit/todayCountsAMicrophonePass.test.ts > what Today shows for it > a microphone pass is done, where it used to be played
+AssertionError: expected 'played' to be 'done' // Object.is equality
+ FAIL  tests/unit/todayCountsAMicrophonePass.test.ts > what Today shows for it > through the state machine: the activity completes with the outcome the stored run gave, and the card reads done
+AssertionError: expected 'unknown' to be 'passed-full' // Object.is equality
+ Test Files  12 failed | 3 passed (15)
+      Tests  42 failed | 485 passed (527)
+
+# Added after the first red run (cases written once the run had shown what else the change touched), run with the base PracticeEngine.ts and Scoring.ts put back and the lane's tests:
+#   keepTempoChargesAWrongKey > where a wrong key is put > an early strike that turns out to be an extra is put against the step it was struck at...  RED on the base: expected [ 2, 64 ] to deeply equal [ 1, 64 ]
+#   keepTempoChargesAWrongKey > a low-confidence guess at a missed note's pitch is shown amber and stands for nothing...                                  RED on the base: expected 1 to be 0 (the sure strike after it was charged)
+#   keepTempoChargesAWrongKey > rhythm only forgives the note and never the moment...                                                                       GREEN on the base (a guard: red under neither; red under mutant M9)
+#   keepTempoChargesAWrongKey > a stray key is put against the step nearest it in time, as it always was                                                   GREEN on the base (a guard)
+# The browser (the base build served from app/build/cl11a/dist-base, port 5513, one worker): see browser-red-engine-on-base.txt
+#   engine.spec.ts > a right note far outside the tolerance is not a hit: its slot is missed, and it is charged once                  RED on the base (wrongNotesTotal 1)
+#   engine.spec.ts > a key the piece does not ask for, far outside the tolerance, is wrong and its slot is missed                      GREEN on the base (the old case's half that still holds)

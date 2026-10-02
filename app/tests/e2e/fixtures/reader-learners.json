@@ -12,7 +12,7 @@
    "missed": 0,
    "durationMs": 19051.14285714286,
    "at": "2026-10-01T12:00:00.000Z",
-   "definitions": 1,
+   "definitions": 2,
    "range": {
     "fromMeasure": 0,
     "toMeasure": 3
@@ -338,7 +338,7 @@
    "missed": 0,
    "durationMs": 19049.14285714286,
    "at": "2026-10-02T12:00:00.000Z",
-   "definitions": 1,
+   "definitions": 2,
    "range": {
     "fromMeasure": 0,
     "toMeasure": 3
@@ -668,7 +668,7 @@
    "missed": 0,
    "durationMs": 19054.666666666668,
    "at": "2026-10-03T12:00:00.000Z",
-   "definitions": 1,
+   "definitions": 2,
    "range": {
     "fromMeasure": 0,
     "toMeasure": 3
@@ -1041,13 +1041,13 @@
    "mode": "tempo",
    "tempoPct": 70,
    "tempoMeasured": true,
-   "accuracy": 0.7142857142857143,
+   "accuracy": 0.5,
    "accuracyEstimated": false,
-   "wrongNotes": 4,
+   "wrongNotes": 3,
    "missed": 4,
    "durationMs": 19061.14285714286,
    "at": "2026-10-04T12:00:00.000Z",
-   "definitions": 1,
+   "definitions": 2,
    "range": {
     "fromMeasure": 0,
     "toMeasure": 3
@@ -1106,10 +1106,8 @@
      3
     ],
     "wrong": [
-     4,
+     3,
      64,
-     5,
-     65,
      12,
      62,
      13,
@@ -1393,13 +1391,13 @@
    "mode": "tempo",
    "tempoPct": 70,
    "tempoMeasured": true,
-   "accuracy": 0.8095238095238095,
+   "accuracy": 0.6190476190476191,
    "accuracyEstimated": false,
    "wrongNotes": 4,
    "missed": 4,
    "durationMs": 19058.666666666668,
    "at": "2026-10-05T12:00:00.000Z",
-   "definitions": 1,
+   "definitions": 2,
    "range": {
     "fromMeasure": 0,
     "toMeasure": 3
@@ -1464,7 +1462,7 @@
      62,
      13,
      62,
-     18,
+     17,
      60
     ],
     "early": [],
@@ -1816,13 +1814,13 @@
    "mode": "tempo",
    "tempoPct": 70,
    "tempoMeasured": true,
-   "accuracy": 0.8,
+   "accuracy": 0.6,
    "accuracyEstimated": false,
    "wrongNotes": 3,
    "missed": 3,
    "durationMs": 19052.14285714286,
    "at": "2026-10-01T12:00:00.000Z",
-   "definitions": 1,
+   "definitions": 2,
    "range": {
     "fromMeasure": 0,
     "toMeasure": 3
@@ -2261,13 +2259,13 @@
    "mode": "tempo",
    "tempoPct": 70,
    "tempoMeasured": true,
-   "accuracy": 0.7058823529411765,
+   "accuracy": 0.4117647058823529,
    "accuracyEstimated": false,
    "wrongNotes": 5,
    "missed": 5,
    "durationMs": 19059.666666666668,
    "at": "2026-10-02T12:00:00.000Z",
-   "definitions": 1,
+   "definitions": 2,
    "range": {
     "fromMeasure": 0,
     "toMeasure": 3

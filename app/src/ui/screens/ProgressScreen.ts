@@ -334,7 +334,10 @@ export function ProgressScreen(router: Router): HTMLElement {
     const counts = { started: 0, passed: 0, mastered: 0 };
     for (const row of rows) {
       if (row.status === 'started') counts.started += 1;
-      if (row.status === 'passed') counts.passed += 1;
+      // A pass the learner asserted (*I already know this*, a Clean self-report, a paper Clean) is their
+      // word, kept as theirs: shown on the lesson page and in the Library as that, and never counted among
+      // the passes the app measured (CL11a; `02` Part G). A measured pass clears the flag, so it counts then.
+      if (row.status === 'passed' && row.selfPassed !== true) counts.passed += 1;
       if (row.status === 'mastered') counts.mastered += 1;
     }
     // R6 (`04` §0): a message belongs beside the control that caused it. This
@@ -402,9 +405,10 @@ export function ProgressScreen(router: Router): HTMLElement {
 
   /**
    * The learner's projects (G1b item 6), newest change first: the piece, its state and since, and
-   * the goal where one is typed; a row opens the piece's sheet. Under them, the pieces passed or
-   * mastered that are no project yet, each offering *Make it a project* — which opens the sheet and
-   * makes nothing until the learner chooses there. Never automatic: a pass is not a project.
+   * the goal where one is typed; a row opens the piece's sheet. Under them, the pieces the app
+   * measured passed or mastered that are no project yet (the learner's word is not among them,
+   * CL11a), each offering *Make it a project* — which opens the sheet and makes nothing until
+   * the learner chooses there. Never automatic: a pass is not a project.
    */
   function drawProjects(rows: ProgressRow[], items: Map<string, CatalogItem>, list: readonly ProjectRow[]): void {
     projectsProgress = rows;
@@ -444,7 +448,8 @@ export function ProgressScreen(router: Router): HTMLElement {
         });
       });
     const learned = rows
-      .filter((row) => row.status === 'passed' || row.status === 'mastered')
+      // The pieces the app measured passed: the learner's own word is not offered here as a pass (CL11a).
+      .filter((row) => (row.status === 'passed' && row.selfPassed !== true) || row.status === 'mastered')
       .map((row) => ({ row, item: items.get(row.itemId) }))
       .filter((entry): entry is { row: ProgressRow; item: CatalogItem } => entry.item !== undefined && isProjectable(entry.item))
       .filter(({ row, item }) => projectIn(list, { itemId: row.itemId, material: materialOfItem(item) }) === undefined)

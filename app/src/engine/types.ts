@@ -452,6 +452,10 @@ export interface PitchObservation {
    * `wait-steps`: steps completed cleanly, of the steps with something to
    * play. `tempo-notes`: expected pitches struck inside their window, of the
    * expected pitches. Two definitions, never one number (L10).
+   *
+   * `right` is an observed count, and under `tempo-notes` it is not the
+   * run's accuracy: that is net of the wrong keys (`SessionScore.accuracy`),
+   * which `right / of` does not know about (CL11a).
    */
   definition: 'wait-steps' | 'tempo-notes';
   right: number;
@@ -517,8 +521,14 @@ export interface SessionScore {
   correctSteps: number;
   /** Expected pitches across all steps — the denominator in Tempo mode. */
   expectedNotes: number;
+  /** Keep tempo: expected pitches struck inside their window, as counted. What was observed — never the verdict (`accuracy`). */
   hits: number;
   missedTotal: number;
+  /**
+   * Keys struck that no step in reach asks for. Wait: against the step the run was on. Keep tempo: a pitch no
+   * open window wants, and none that a step a beat or less ahead or behind asks for and has not yet had
+   * played: a right note at the wrong time is one miss or one early note, never also one of these (CL11a).
+   */
   wrongNotesTotal: number;
   /**
    * Keep tempo: right notes played before their step's window, each counted
@@ -527,7 +537,11 @@ export interface SessionScore {
    * as notes not played in time. Optional for the reason `rhythmOnly` is.
    */
   early?: number;
-  /** 0..1. Wait: correctSteps/totalSteps. Tempo: hits/expectedNotes. */
+  /**
+   * 0..1: the written notes played right, with nothing extra (CL11a; observation definitions 2).
+   * Wait: correctSteps/totalSteps. Keep tempo: (hits − wrongNotesTotal)/expectedNotes, floored at 0, so a wrong
+   * key costs a note. A rhythm-only run: hits/expectedNotes, the rhythm's own figure.
+   */
   accuracy: number;
   /**
    * True when the input could not be trusted note-for-note (microphone), so
