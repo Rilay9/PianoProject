@@ -122,8 +122,20 @@ export interface ProgressRow {
  * measured" mark all belong to this number, so a later reader can tell which
  * rules produced a row and derive again from it. Absent: a row written before
  * observations were stored, which has only the seven numbers it always had.
+ *
+ * **2** (CL11a): in Keep tempo a wrong key costs a note. The row's `accuracy` is
+ * the written notes played right in time, less one note per wrong key, and a
+ * right note played late is charged once, as the miss, never also as a wrong
+ * key. What was observed is kept beside the verdict and apart from it:
+ * `pitch.right` is still the notes struck in their window, `wrongNotes` the
+ * wrong keys, and a step whose notes all came in time still codes `h`, so a
+ * reader that wants the step's verdict reads its wrong keys too
+ * (`evidence/measurement.ts`). Rows written under **1** keep the reading they
+ * were judged with: they cannot tell a wrong key from a late right note (both
+ * are in `steps.wrong`) and hold no expected pitches to tell them by, so they
+ * are never re-judged.
  */
-export const OBSERVATION_DEFINITIONS = 1;
+export const OBSERVATION_DEFINITIONS = 2;
 
 /**
  * What a run was, as the screen that ran it knew it: the header half of an

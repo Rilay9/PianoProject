@@ -581,10 +581,18 @@ export function isOpen(run: SessionRun | null, now: Date): run is OpenSessionRun
 
 /**
  * A Score-screen run's outcome as stored (the protocol table): `passed-full` only for a run the app
- * measured at the full standard — heard, not estimated, tempo measured, passed, never a self-report or a
- * rhythm run; `failed` for such a measured run that did not pass; `unknown` for anything else (nothing
- * heard, a self-report, a Wait run that measures no tempo, a sight-read of a phrase met before), which
- * drives neither adaptation.
+ * measured at the full standard — heard, tempo measured, passed, never a self-report or a rhythm run;
+ * `failed` for such a measured run that did not pass; `unknown` for anything else (nothing heard, a
+ * self-report, a Wait run that measures no tempo, a sight-read of a phrase met before), which drives
+ * neither adaptation.
+ *
+ * **A microphone run counts as a MIDI run does** (CL11a, `docs/design/evidence-truth.md` "Found here: a
+ * microphone pass"): the rung's state, the ladder, `recordRun` and the sheet's heading all count an
+ * estimated pass, so Today does too — an estimated pass is `passed-full`, its estimate labelled where the
+ * accuracy is shown (`05` §11.4). An estimated *failure* keeps the session's caution: `unknown`, so it
+ * neither insists on *Try again* nor passes a verdict on a figure the detector only estimated. That is
+ * the session's choice about how to adapt, not a question of what counts. Whether the estimate is
+ * accurate enough on a real piano to count at all is a fact about the detector, which this does not decide.
  */
 export function scoreOutcome(run: {
   passed: boolean;
@@ -599,9 +607,11 @@ export function scoreOutcome(run: {
   recipe?: unknown;
 }): Outcome {
   if (run.selfReport !== undefined || run.selfPassed === true || run.rhythmOnly === true) return 'unknown';
-  if (typeof run.accuracy !== 'number' || run.accuracyEstimated === true || run.tempoMeasured !== true) return 'unknown';
+  if (typeof run.accuracy !== 'number' || run.tempoMeasured !== true) return 'unknown';
   // A phrase met before is practice, kept as such: its reading is refused, not failed.
   if (run.recipe !== undefined && (run.unseen === false || run.firstContact === false)) return 'unknown';
+  // A microphone run's pass counts; its failure is an estimate, and keeps the session's caution.
+  if (run.accuracyEstimated === true) return run.passed ? 'passed-full' : 'unknown';
   return run.passed ? 'passed-full' : 'failed';
 }
 

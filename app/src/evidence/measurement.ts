@@ -30,8 +30,8 @@
  *
  * | code | pitch | timing |
  * |---|---|---|
- * | `h` | right | right (inside the window) |
- * | `e` | right (the right key, early) | not right (outside the window) |
+ * | `h` | right (not right, under definitions 2 in Keep tempo, if a wrong key is against the step) | right (inside the window) |
+ * | `e` | right (the right key, early; likewise) | not right (outside the window) |
  * | `m` | not right | not measured: nothing was played to time |
  * | `p` | not right, mixed | not right, mixed |
  * | `w` | not right (Wait: a wrong key or a reset first) | — |
@@ -133,7 +133,7 @@ function unmeasured(channel: Channel, why: string, cites: string[]): Unmeasured 
  * reader here is written; it never replaces an earlier one, whose rows are
  * still stored (CL04, L70).
  */
-export const KNOWN_OBSERVATION_DEFINITIONS: ReadonlySet<number> = new Set([1]);
+export const KNOWN_OBSERVATION_DEFINITIONS: ReadonlySet<number> = new Set([1, 2]);
 
 /**
  * No measures block — a row before C1, or a writer storing placeholders (L52) —
@@ -161,14 +161,23 @@ function pitchReading(observation: Observed): ChannelReading {
   const steps = stepsOrWhy(observation, 'pitch');
   if (!('codes' in steps)) return steps;
   const at = new Map<number, StepMeasure>();
+  // Observation definitions 2, Keep tempo (CL11a): a step with a wrong key against it is not right on this
+  // channel, the way a Wait step with one is (`w`). The code says the step's own notes came in time; the wrong
+  // key is on the row beside it (`steps.wrong`, the step it was nearest). Rows under definitions 1 keep the
+  // reading they were judged with: they cannot tell a wrong key from a late right note, which both put there.
+  const charged = new Set<number>();
+  if (observation.mode === 'tempo' && (observation.definitions ?? 0) >= 2) {
+    for (let pair = 0; pair + 1 < steps.wrong.length; pair += 2) charged.add(steps.wrong[pair] as number);
+  }
   for (let offset = 0; offset < steps.codes.length; offset += 1) {
     const code = steps.codes[offset];
     const step = steps.from + offset;
     switch (code) {
       case 'h':
       case 'e':
-        // Every expected pitch struck: `e` is early, not wrong, on this channel.
-        at.set(step, { right: true, mixed: false, uniform: true });
+        // Every expected pitch struck: `e` is early, not wrong, on this channel — unless a wrong key was
+        // struck against the step (definitions 2, Keep tempo): then not which key, as for `w`.
+        at.set(step, charged.has(step) ? { right: false, mixed: false, uniform: false } : { right: true, mixed: false, uniform: true });
         break;
       case 'm':
         at.set(step, { right: false, mixed: false, uniform: true });

@@ -1,0 +1,8 @@
+# the whole unit suite (npx vitest run, from app/) on the final sources, with one throwaway probe file (tests/unit/zzCl11aProbe.test.ts, one console.log test, deleted after) in it: without it 338 files and 7,763 tests, 7,755 passed; built content from this worktree's own offline build; the 2 failures are red on the base too (lessonClaimsAboutApp), see red-on-base.txt
+
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+ Test Files  1 failed | 338 passed (339)
+      Tests  2 failed | 7756 passed | 5 skipped | 1 todo (7764)
+vitest exit 1
+

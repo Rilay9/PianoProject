@@ -1,0 +1,258 @@
+lock taken 2026-10-02T04:23:38-04:00
+
+Running 155 tests using 1 worker
+
+  ok   1 tests\e2e\competence.spec.ts:122:3 › one skill state on Skills and Progress › Skills opens on what the evidence has not shown lately, and says what the app cannot judge (1.9s)
+  ok   2 tests\e2e\competence.spec.ts:154:3 › one skill state on Skills and Progress › Progress says which skills moved in the last four weeks, and how (762ms)
+  ok   3 tests\e2e\engine.spec.ts:9:3 › Wait mode end to end › a perfect scripted run finishes and scores 100 % (536ms)
+  ok   4 tests\e2e\engine.spec.ts:23:3 › Wait mode end to end › the cursor follows the engine, not a clock (1.5s)
+  ok   5 tests\e2e\engine.spec.ts:40:3 › Wait mode end to end › a scripted MIDI performance drives the run through a real ReplaySource (1.0s)
+  ok   6 tests\e2e\engine.spec.ts:69:3 › Wait mode end to end › a wrong note is counted and painted red without advancing (513ms)
+  ok   7 tests\e2e\engine.spec.ts:82:3 › Wait mode end to end › a run over a repeat visits the printed bar twice (518ms)
+  ok   8 tests\e2e\engine.spec.ts:96:3 › Tempo mode end to end › the clock advances the cursor with nothing played, and reports misses (1.7s)
+  ok   9 tests\e2e\engine.spec.ts:112:3 › Tempo mode end to end › a late run yields the expected timing statistics (1.3s)
+  ok  10 tests\e2e\engine.spec.ts:156:3 › Tempo mode end to end › a long task across the first note’s window: the note, stamped inside it, is judged in it (U66) (1.7s)
+  ok  11 tests\e2e\engine.spec.ts:230:3 › Tempo mode end to end › a right note far outside the tolerance is not a hit: its slot is missed, and it is charged once (1.2s)
+  ok  12 tests\e2e\engine.spec.ts:242:3 › Tempo mode end to end › a key the piece does not ask for, far outside the tolerance, is wrong and its slot is missed (1.2s)
+  ok  13 tests\e2e\engine.spec.ts:253:3 › Tempo mode end to end › the count-in delays the first step (813ms)
+  ok  14 tests\e2e\engine.spec.ts:270:5 › generated sight-reading renders and can be practised › level 1 renders and drives a perfect Wait run (577ms)
+  ok  15 tests\e2e\engine.spec.ts:270:5 › generated sight-reading renders and can be practised › level 2 renders and drives a perfect Wait run (697ms)
+  ok  16 tests\e2e\engine.spec.ts:270:5 › generated sight-reading renders and can be practised › level 3 renders and drives a perfect Wait run (556ms)
+  ok  17 tests\e2e\engine.spec.ts:270:5 › generated sight-reading renders and can be practised › level 4 renders and drives a perfect Wait run (638ms)
+  ok  18 tests\e2e\engine.spec.ts:291:3 › generated sight-reading renders and can be practised › the same seed gives the same exercise, a different seed does not (654ms)
+first day: the rung offers 20 options, 19 of them with a file; opening exercise.inversions.c-major.both (2 printed bars)
+first day: Plan and Today say stage 4; Skills opened on 3, 4
+  ok  19 tests\e2e\first-day.spec.ts:593:5 › a first day › from nothing to a recorded pass, phone upright (16.3s)
+first day: the rung offers 20 options, 19 of them with a file; opening exercise.inversions.c-major.both (2 printed bars)
+first day: Plan and Today say stage 4; Skills opened on 3, 4
+  ok  20 tests\e2e\first-day.spec.ts:593:5 › a first day › from nothing to a recorded pass, phone sideways (16.4s)
+  ok  21 tests\e2e\help-strip.spec.ts:65:3 › the Score screen says which mode this is › names the mode and what to do, above the notation, without scrolling (912ms)
+  ok  22 tests\e2e\help-strip.spec.ts:85:3 › the Score screen says which mode this is › the line follows the mode, and the ? says what the controls do (1.0s)
+  ok  23 tests\e2e\help-strip.spec.ts:107:3 › the Score screen says which mode this is › the card that explains the mode comes up once, on the first meeting (1.3s)
+  ok  24 tests\e2e\help-strip.spec.ts:128:3 › a drill says what kind of thing it is › names the kind above the card, and the card says how to answer (500ms)
+  ok  25 tests\e2e\help-strip.spec.ts:143:3 › a drill says what kind of thing it is › the ? names the controls and where the drill sits (540ms)
+  ok  26 tests\e2e\help-strip.spec.ts:157:3 › a drill says what kind of thing it is › the first card of a kind explains it before it asks anything (456ms)
+  ok  27 tests\e2e\help-strip.spec.ts:167:3 › the tools say what they are › the lab, the chord chart and free play each carry the strip (453ms)
+  ok  28 tests\e2e\help-strip.spec.ts:202:3 › the guide holds the whole list › lists every mode, drill kind and tool on one page (264ms)
+  ok  29 tests\e2e\help-strip.spec.ts:215:3 › the guide holds the whole list › Skills review and a lesson both offer the way in (630ms)
+  ok  30 tests\e2e\lesson-flow.spec.ts:46:1 › a run played from Today is recorded, and comes back for review (18.6s)
+  ok  31 tests\e2e\modes-ladder.spec.ts:91:1 › the rung’s button opens its exercise, looping, with the ladder armed (1.1s)
+  ok  32 tests\e2e\modes-ladder.spec.ts:132:1 › the keys play into it — the run moves, so the ladder has something to judge (7.0s)
+  ok  33 tests\e2e\modes-ladder.spec.ts:158:1 › sideways the ladder is still on and the controls are still reachable (1.2s)
+  ok  34 tests\e2e\modes-ladder.spec.ts:176:1 › Back leaves it off — the same exercise opened plainly is not still armed (1.8s)
+  ok  35 tests\e2e\modes-rhythm-only.spec.ts:66:1 › the sheet says what every choice does before one tap opens the piece (500ms)
+  ok  36 tests\e2e\modes-rhythm-only.spec.ts:77:1 › it opens judged on timing, answers any key, and says what the run was (14.0s)
+  ok  37 tests\e2e\modes-rhythm-only.spec.ts:134:1 › the remembered setting does not leak into the next Keep tempo (1.3s)
+  ok  38 tests\e2e\modes-rhythm-only.spec.ts:155:1 › the row is gone in a mode with no clock, which is where it would be dead (843ms)
+  ok  39 tests\e2e\progress.hierarchy.spec.ts:74:3 › Progress, on the phone upright › the answer is the first thing on the screen, with the map under it (R1) (449ms)
+  ok  40 tests\e2e\progress.hierarchy.spec.ts:101:3 › Progress, on the phone upright › the figure is the loudest thing on the screen (431ms)
+  ok  41 tests\e2e\progress.hierarchy.spec.ts:125:3 › Progress, on the phone upright › every row in the three lists stays inside the budget (R2) (471ms)
+  ok  42 tests\e2e\progress.hierarchy.spec.ts:149:3 › Progress, on the phone upright › nothing on the screen is drawn pressable and left dead (R4) (601ms)
+  ok  43 tests\e2e\progress.hierarchy.spec.ts:181:3 › Progress, on the phone upright › no filled box, because nothing here is done on most visits (R3) (333ms)
+  ok  44 tests\e2e\progress.hierarchy.spec.ts:191:3 › Today's card, on the phone upright › the button that starts the session is above the card (R1, R3) (461ms)
+  ok  45 tests\e2e\progress.hierarchy.spec.ts:209:3 › Today's card, on the phone upright › a long name takes a second line, but not beside a badge (R2) (417ms)
+  ok  46 tests\e2e\progress.hierarchy.spec.ts:265:3 › Today's card, on the phone upright › free play is not drawn as one of the rows, because it is not one (346ms)
+  ok  47 tests\e2e\progress.spec.ts:61:3 › Progress › shows the week, the heat-map and an empty repertoire on a fresh phone (311ms)
+  ok  48 tests\e2e\progress.spec.ts:69:3 › Progress › records a run and shows it in the history and the heat-map (371ms)
+  x   49 tests\e2e\progress.spec.ts:85:3 › Progress › a drill set ended with nothing answered and counted reads Not measured in the history, not 0% (U102) (30.0s)
+  ok  50 tests\e2e\progress.spec.ts:104:3 › Progress › a piece passed and not played for two weeks comes back for review, in its own words (587ms)
+  ok  51 tests\e2e\progress.spec.ts:115:3 › Progress › exports everything and restores it onto a wiped phone (668ms)
+  ok  52 tests\e2e\progress.spec.ts:145:3 › Progress › refuses a file that is not a backup, with a sentence (361ms)
+  ok  53 tests\e2e\progress.spec.ts:157:3 › Settings › groups every setting and persists a change across a reload (397ms)
+  ok  54 tests\e2e\progress.spec.ts:170:3 › Settings › the offline-only switch persists (514ms)
+  ok  55 tests\e2e\progress.spec.ts:178:3 › Settings › reports the storage in use (300ms)
+  ok  56 tests\e2e\progress.spec.ts:186:3 › Diagnostics › reports the precache, the content counts and the errors (509ms)
+  ok  57 tests\e2e\progress.spec.ts:200:3 › Diagnostics › the debug report carries the new blocks (398ms)
+  ok  58 tests\e2e\progress.spec.ts:214:3 › the settings mirror (docs/01 §4.5) › a setting survives localStorage being cleared, because IndexedDB has it (838ms)
+  ok  59 tests\e2e\projects.spec.ts:88:1 › finish a run, What next with this piece?, Learn this — Progress lists the project (18.2s)
+  ok  60 tests\e2e\projects.spec.ts:110:1 › Put it away, then Bring it back: the history line and the encounter line (18.3s)
+  ok  61 tests\e2e\projects.spec.ts:135:1 › a Stage 9 unit’s page shows its songs as projects and no count; one project’s state shows on its row alone (807ms)
+  ok  62 tests\e2e\projects.spec.ts:202:1 › a piece passed and unplayed past the window, paused on its sheet: Today stops keeping it playable; Progress and the Library show it as before (G1d) (2.7s)
+  ok  63 tests\e2e\projects.spec.ts:304:1 › a piece paused on its sheet is on no row of the thin card, nor asked for by its rung; with every song of the rung paused the lesson says it waits (G1e) (2.1s)
+  ok  64 tests\e2e\projects.spec.ts:373:1 › Make it a project on a passed piece offers Keep it playable; after it and Close, focus is on the piece’s new project row (G96) (872ms)
+  ok  65 tests\e2e\projects.spec.ts:428:1 › the project sheet’s date box beside I performed it wears the sheet’s text box’s font, border, corners and box at 342 × 740 (G87) (731ms)
+  ok  66 tests\e2e\projects.spec.ts:463:1 › a Stage 9 page’s Start line names what Start opens and no more; a Stage 1 page’s still calls it the first thing on this rung (G87) (664ms)
+  ok  67 tests\e2e\score.ladder-route.spec.ts:45:1 › opens looping the whole exercise with the ladder on (888ms)
+  ok  68 tests\e2e\score.ladder-route.spec.ts:62:1 › clearing the loop switches the ladder off, exactly as it does by hand (916ms)
+  ok  69 tests\e2e\score.ladder-route.spec.ts:73:1 › does nothing at all in a mode with no tempo to move (823ms)
+  ok  70 tests\e2e\score.ladder-route.spec.ts:83:1 › does nothing in a performance, which is one pass and never repeats (821ms)
+  ok  71 tests\e2e\score.ladder-route.spec.ts:90:1 › and the screen opens with neither when nothing asks (801ms)
+  ok  72 tests\e2e\score.latch.spec.ts:82:3 › the first note starts the clock (T8) › a Tempo run on the screen keys holds on the first note until it is played (3.3s)
+  ok  73 tests\e2e\score.latch.spec.ts:106:3 › the first note starts the clock (T8) › after a count-in, the count gets out of the way while it holds (4.8s)
+  ok  74 tests\e2e\score.latch.spec.ts:119:3 › the first note starts the clock (T8) › a key on the ready screen starts the run, and with no count-in is its first note (962ms)
+  ok  75 tests\e2e\score.latch.spec.ts:130:3 › the first note starts the clock (T8) › Space starts a run from the ready screen (831ms)
+  ok  76 tests\e2e\score.latch.spec.ts:142:3 › the first note starts the clock (T8) › with no input, a Tempo run keeps time by the clock (1.8s)
+  ok  77 tests\e2e\score.latch.spec.ts:157:3 › what the keys must not start (T8 review) › with a count-in, the key that starts the run is not its first note (4.8s)
+  ok  78 tests\e2e\score.latch.spec.ts:168:3 › what the keys must not start (T8 review) › after a run finishes by itself, a key does not start another; ▶ does (3.0s)
+  ok  79 tests\e2e\score.latch.spec.ts:192:3 › what the keys must not start (T8 review) › neither a key nor Space starts a run under the open ⋯ sheet (2.1s)
+  ok  80 tests\e2e\score.rhythm-ladder.spec.ts:253:3 › rhythm first › accepts a wrong pitch on time and refuses a late one (4.7s)
+  ok  81 tests\e2e\score.rhythm-ladder.spec.ts:288:3 › rhythm first › and with the toggle off the same press is simply wrong (1.2s)
+  ok  82 tests\e2e\score.rhythm-ladder.spec.ts:309:3 › rhythm first › a rhythm run played perfectly is still not a pass of the piece (11.5s)
+  ok  83 tests\e2e\score.rhythm-ladder.spec.ts:338:3 › the tempo ladder on a loop › a pass with misses in it slows down, and stops at the floor (21.0s)
+  ok  84 tests\e2e\score.rhythm-ladder.spec.ts:369:3 › the tempo ladder on a loop › a pass nothing listened to holds the tempo, and says why (19.8s)
+  ok  85 tests\e2e\score.rhythm-ladder.spec.ts:398:3 › the tempo ladder on a loop › a clean pass speeds up, and stops at the written tempo (8.4s)
+  ok  86 tests\e2e\score.rhythm-ladder.spec.ts:422:3 › the tempo ladder on a loop › the Ladder row is not offered without a loop to climb (1.9s)
+  ok  87 tests\e2e\score.rhythm-ladder.spec.ts:441:3 › the duet, where the hand is chosen › appears with R selected, names the hand, and is the Settings toggle (1.9s)
+  ok  88 tests\e2e\score.rhythm-ladder.spec.ts:474:3 › the duet, where the hand is chosen › names the other hand when L is chosen (1.7s)
+  ok  89 tests\e2e\score.run.spec.ts:59:3 › a whole run › Wait mode: playing it correctly says the notes are ready, and where a pass is played (3.2s)
+  ok  90 tests\e2e\score.run.spec.ts:112:3 › a whole run › Keep tempo: played in time it passes, and says its tempo and its timing (18.9s)
+  ok  91 tests\e2e\score.run.spec.ts:136:3 › a whole run › a run with a fumble is offered the loop, and it names the bar (3.8s)
+  ok  92 tests\e2e\score.run.spec.ts:160:3 › a whole run › Wait mode: the score does not move on a wrong note (4.2s)
+  ok  93 tests\e2e\score.run.spec.ts:216:3 › a whole run › Wait mode: playing it wrongly still finishes, with a lower score (4.3s)
+  ok  94 tests\e2e\score.run.spec.ts:254:3 › stopping, restarting and looping › changing hands mid-run restarts it without a summary or a recorded run (4.1s)
+  ok  95 tests\e2e\score.run.spec.ts:288:3 › stopping, restarting and looping › Hear it reaching the end is not a run (15.3s)
+  ok  96 tests\e2e\score.run.spec.ts:300:3 › stopping, restarting and looping › a loop lap puts the cursor back on the first bar (2.4s)
+  ok  97 tests\e2e\score.states.spec.ts:187:3 › the score screen, one state and one event at a time › a paused run says it is paused, in Wait (3.1s)
+  ok  98 tests\e2e\score.states.spec.ts:213:3 › the score screen, one state and one event at a time › a paused run says it is paused, in Keep tempo (3.0s)
+  ok  99 tests\e2e\score.states.spec.ts:236:3 › the score screen, one state and one event at a time › a bar preview cannot strand the screen in Listen (5.0s)
+  ok 100 tests\e2e\score.states.spec.ts:279:3 › the score screen, one state and one event at a time › taking the input away does not leave a run holding for ever (8.5s)
+  ok 101 tests\e2e\score.states.spec.ts:312:3 › the score screen, one state and one event at a time › hiding the page pauses a Hear it run (3.0s)
+  ok 102 tests\e2e\score.states.spec.ts:337:3 › the score screen, one state and one event at a time › a hand chosen after a refusal starts the run the refusal asked for (3.4s)
+  ok 103 tests\e2e\score.states.spec.ts:365:3 › the score screen, one state and one event at a time › the loop prompt goes when the loop it asks for is set (2.4s)
+  ok 104 tests\e2e\score.states.spec.ts:393:3 › the score screen, one state and one event at a time › leaving during a demonstration leaves nothing to carry on from (6.2s)
+
+T31 probe, 37 cells:
+idle | mode->wait | running=false | select=wait | engine=- | paused=false | armed=false | play=▶ | hear=Hear it | loop=Off | input=- | summary=false | line="Play the first note to start" | status=""
+idle | mode->tempo | running=false | select=tempo | engine=- | paused=false | armed=false | play=▶ | hear=Hear it | loop=Off | input=- | summary=false | line="Press any key to count in" | status=""
+idle | mode->free | running=false | select=free | engine=- | paused=false | armed=false | play=▶ | hear=Hear it | loop=Off | input=- | summary=false | line="Play the first note to start" | status=""
+idle | mode->listen | running=false | select=listen | engine=- | paused=false | armed=false | play=▶ | hear=Hear it | loop=Off | input=- | summary=false | line="Press Hear it and follow the cursor." | status=""
+idle/wait | MIDI note | running=true | select=wait | engine=wait | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play the first note. Nothing moves until you do." | status=""
+running/wait | right note | running=true | select=wait | engine=wait | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play the first note. Nothing moves until you do." | status=""
+running/wait | wrong note | running=true | select=wait | engine=wait | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play the first note. Nothing moves until you do." | status=""
+running/wait | pause | running=true | select=wait | engine=wait | paused=true | armed=false | play=▶ | hear=Hear it | loop=Off | input=midi | summary=false | line="Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning." | status=""
+paused/wait | right note | running=true | select=wait | engine=wait | paused=true | armed=false | play=▶ | hear=Hear it | loop=Off | input=midi | summary=false | line="Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning." | status=""
+paused/wait | metronome on | running=true | select=wait | engine=wait | paused=true | armed=false | play=▶ | hear=Hear it | loop=Off | input=midi | summary=false | line="Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning." | status=""
+paused/wait | hands->both (already chosen) | running=true | select=wait | engine=wait | paused=true | armed=false | play=▶ | hear=Hear it | loop=Off | input=midi | summary=false | line="Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning." | status=""
+paused/wait | hands->R (C2) | running=true | select=wait | engine=wait | paused=true | armed=false | play=▶ | hear=Hear it | loop=Off | input=midi | summary=false | line="Restarted at bar 1 with the right hand — ▶ when ready" | status=""
+restarted+paused/wait | resume | running=true | select=wait | engine=wait | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play the first note. Nothing moves until you do." | status=""
+running/wait | pause (2) | running=true | select=wait | engine=wait | paused=true | armed=false | play=▶ | hear=Hear it | loop=Off | input=midi | summary=false | line="Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning." | status=""
+paused/wait | resume | running=true | select=wait | engine=wait | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play the first note. Nothing moves until you do." | status=""
+running/wait | hands->L (refused) | running=false | select=wait | engine=- | paused=false | armed=false | play=▶ | hear=Hear it | loop=Off | input=- | summary=false | line="Play the first note to start" | status="Nothing for the left hand in this piece — choose R or Both"
+refused | hands->both | running=true | select=wait | engine=wait | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play the first note. Nothing moves until you do." | status=""
+running/wait | input->screen keys | running=true | select=wait | engine=wait | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=keys | summary=false | line="Play the first note. Nothing moves until you do." | status=""
+running/wait | Hear it (C1: run set aside) | running=true | select=wait | engine=listen | paused=false | armed=false | play=▶ | hear=Stop | loop=Off | input=midi | summary=false | line="Playing it to you — your run waits at bar 1. Stop to go back to it." | status=""
+hearing over a run | Hear it again (C1: run back) | running=true | select=wait | engine=wait | paused=true | armed=false | play=▶ | hear=Hear it | loop=Off | input=midi | summary=false | line="Paused at bar 1 — ▶ to carry on" | status=""
+paused/wait | Hear it (C1: set aside again) | running=true | select=wait | engine=listen | paused=false | armed=false | play=▶ | hear=Stop | loop=Off | input=midi | summary=false | line="Playing it to you — your run waits at bar 1. Stop to go back to it." | status=""
+hearing over a run | page hidden | running=true | select=wait | engine=listen | paused=true | armed=false | play=▶ | hear=Stop | loop=Off | input=midi | summary=false | line="Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning." | status=""
+hearing over a run+hidden | page shown | running=true | select=wait | engine=listen | paused=true | armed=false | play=▶ | hear=Stop | loop=Off | input=midi | summary=false | line="Paused — you were away 1 s. ▶ to carry on, or Start again in ⋯ to go back to the beginning." | status=""
+hearing over a run | play (C1: the run carries on) | running=true | select=wait | engine=wait | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play the first note. Nothing moves until you do." | status=""
+running/wait | page hidden | running=true | select=wait | engine=wait | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play the first note. Nothing moves until you do." | status=""
+hidden/wait | page shown | running=true | select=wait | engine=wait | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play the first note. Nothing moves until you do." | status=""
+running/tempo | mode->tempo (restart) | running=true | select=tempo | engine=tempo | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="The count-in clicks, then play along." | status=""
+armed/tempo | count-in ended | running=true | select=tempo | engine=tempo | paused=false | armed=true | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play your first note to start" | status=""
+armed/tempo | page hidden | running=true | select=tempo | engine=tempo | paused=true | armed=true | play=▶ | hear=Hear it | loop=Off | input=midi | summary=false | line="Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning." | status=""
+armed+hidden/tempo | page shown | running=true | select=tempo | engine=tempo | paused=true | armed=true | play=▶ | hear=Hear it | loop=Off | input=midi | summary=false | line="Paused — you were away 1 s. ▶ to carry on, or Start again in ⋯ to go back to the beginning." | status=""
+armed+paused/tempo | resume | running=true | select=tempo | engine=tempo | paused=false | armed=true | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play your first note to start" | status=""
+armed/tempo | first note | running=true | select=tempo | engine=tempo | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="The count-in clicks, then play along." | status=""
+running/tempo | loop set | running=true | select=tempo | engine=tempo | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Bars 1–1 ✕ | input=midi | summary=false | line="The count-in clicks, then play along." | status=""
+running/tempo+loop | clear loop | running=true | select=tempo | engine=tempo | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="The count-in clicks, then play along." | status=""
+running/free | mode->free (restart) | running=true | select=free | engine=free | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play. The page follows you; nothing is marked." | status=""
+running/free | pause | running=true | select=free | engine=free | paused=true | armed=false | play=▶ | hear=Hear it | loop=Off | input=midi | summary=false | line="Paused — ▶ to carry on, or Start again in ⋯ to go back to the beginning." | status=""
+paused/free | resume | running=true | select=free | engine=free | paused=false | armed=false | play=⏸ | hear=Hear it | loop=Off | input=midi | summary=false | line="Play. The page follows you; nothing is marked." | status=""
+
+  ok 105 tests\e2e\score.states.spec.ts:422:3 › the score screen, one state and one event at a time › probe: what each event does in each state (22.0s)
+  ok 106 tests\e2e\score.states.spec.ts:612:3 › the five choices, decided (T33) › C1: Hear it during a run puts the run back where it was, paused (9.4s)
+  ok 107 tests\e2e\score.states.spec.ts:650:3 › the five choices, decided (T33) › C1: a demonstration that plays to its end puts the run back too (25.8s)
+  ok 108 tests\e2e\score.states.spec.ts:680:3 › the five choices, decided (T33) › T40: a performance with Hear it inside it is kept as practice (8.9s)
+  ok 109 tests\e2e\score.states.spec.ts:729:3 › the five choices, decided (T33) › C1: ▶ during the demonstration carries the run on from where it was (3.7s)
+  ok 110 tests\e2e\score.states.spec.ts:755:3 › the five choices, decided (T33) › C2: a hand changed while paused restarts at bar 1 and stays paused (5.0s)
+  ok 111 tests\e2e\score.states.spec.ts:793:3 › the five choices, decided (T33) › C2: the tempo changed while paused restarts and names the new tempo (2.7s)
+  ok 112 tests\e2e\score.states.spec.ts:816:3 › the five choices, decided (T33) › C3: the metronome reads refused in Free play, and says when its click comes elsewhere (3.0s)
+  ok 113 tests\e2e\score.states.spec.ts:861:3 › the five choices, decided (T33) › C4: Blind and Perform are refused while a run is going, and live once it is paused (3.1s)
+  ok 114 tests\e2e\score.states.spec.ts:898:3 › the five choices, decided (T33) › C5: the summary names what changed during the run (9.6s)
+  ok 115 tests\e2e\score.states.spec.ts:917:3 › the five choices, decided (T33) › C5: and what was changed after it, while the summary was up (8.3s)
+  ok 116 tests\e2e\session-run.spec.ts:88:1 › a session run through its activities: the transition after each, Continue after a reload, and the finish line (48.7s)
+  ok 117 tests\e2e\session-run.spec.ts:162:1 › the tablet: the transition and Continue at 768 × 1024 (1.2s)
+  ok 118 tests\e2e\session-run.spec.ts:175:1 › heard at noon from the card, the session’s reading in the evening: rechecked, repurposed, and said on the transition (20.5s)
+  ok 119 tests\e2e\session-run.spec.ts:212:1 › a drill ended before any answer: Not measured with the reason, no Accuracy, and the transition under it (U96) (773ms)
+  ok 120 tests\e2e\session-run.spec.ts:236:1 › the placement test ended in a session: the transition’s Start is the one filled box, Start here outlined (U96) (709ms)
+  ok 121 tests\e2e\today.spec.ts:64:3 › Today › shows a weekly goal, an input chip, and a session card (390ms)
+  ok 122 tests\e2e\today.spec.ts:80:3 › Today › the four session lengths build different cards (629ms)
+  ok 123 tests\e2e\today.spec.ts:95:3 › Today › remembers the session length across a reload (271ms)
+  ok 124 tests\e2e\today.spec.ts:104:3 › Today › "Swap this" offers alternatives and can exclude songs (671ms)
+  ok 125 tests\e2e\today.spec.ts:123:3 › Today › the "not a song" filter removes songs from the swap sheet (613ms)
+  ok 126 tests\e2e\today.spec.ts:141:3 › Today › shuffle rebuilds the card (688ms)
+  ok 127 tests\e2e\today.spec.ts:151:3 › Today › the tracks the data switches on are on before he touches a chip (C2) (330ms)
+  ok 128 tests\e2e\today.spec.ts:180:3 › Today › Today keeps recommending after the core path, from a track he never turned on (558ms)
+  ok 129 tests\e2e\today.spec.ts:232:3 › Today › the warm-up and the review say why, for a learner whose lesson exercise is counted and a piece has gone unplayed (626ms)
+  ok 130 tests\e2e\today.spec.ts:272:3 › Today › starting the session opens the first row (445ms)
+  ok 131 tests\e2e\today.spec.ts:296:3 › the swap sheet’s demand tier (E0) › placed at 1.5, the steps-and-skips row’s sheet names the demand tier: also practises skips, with the other demands met (673ms)
+  ok 132 tests\e2e\today.spec.ts:331:3 › the practice track’s floor (F2) › placed at 1.5, the practice row is practice.1’s own Stage 1 material, never Hanon, and after the rung’s new piece (476ms)
+  ok 133 tests\e2e\today.spec.ts:354:3 › Today obeys 04 §0 › the session card starts inside the first screenful (R1) (344ms)
+  ok 134 tests\e2e\today.spec.ts:365:3 › Today obeys 04 §0 › a row is one line of detail and no taller than 96 px, or than its two title lines and two reason lines (R2, U63) (367ms)
+  ok 135 tests\e2e\today.spec.ts:402:3 › Today obeys 04 §0 › one filled button on the screen, and it is Start session (R3) (333ms)
+  ok 136 tests\e2e\today.spec.ts:501:3 › the daily read says why this phrase (C4, C4c) › two days of misread skips on 2.2: the phrase moves by step, and the card says the skips went wrong (906ms)
+  ok 137 tests\e2e\today.spec.ts:513:3 › the daily read says why this phrase (C4, C4c) › two reads wrong only where skips and eighths coincide, on 2.5: nothing blamed, the easy read, and the card says it is not sure yet (849ms)
+  ok 138 tests\e2e\today.spec.ts:627:3 › the reason keeps its deciding clause at 342 × 740 (U63) › C6’s learner: the warm-up’s and the review’s reasons whole, the passed badge beside the controls; the running card the same, Next beside them (936ms)
+  x  139 tests\e2e\today.spec.ts:670:3 › the reason keeps its deciding clause at 342 × 740 (U63) › the held line: the rung’s wait said in two lines, its claim whole (522ms)
+  ok 140 tests\e2e\today.spec.ts:693:3 › the reason keeps its deciding clause at 342 × 740 (U63) › waiting for its reads on 3.4: “Next lesson — this one waits for your reads”, whole (635ms)
+  ok 141 tests\e2e\today.spec.ts:727:3 › the reason keeps its deciding clause at 342 × 740 (U63) › the swap sheet wears Paused beside a song the learner paused (G94) (616ms)
+  ok 142 tests\e2e\transfer-offer.spec.ts:177:3 › the transfer offer (D4) › a learner proficient at shifting position is offered transfer material on Today, and its run keeps what was played and why (2.4s)
+  ok 143 tests\e2e\transfer-offer.spec.ts:248:3 › the transfer offer (D4) › a piece heard yesterday is not offered as new (G2) (865ms)
+  ok 144 tests\e2e\transfer-offer.spec.ts:318:3 › the transfer offer (D4) › a read played on the phone stores its transfer facts on its evidence (G2) (2.2s)
+  ok 145 tests\e2e\transfer-offer.spec.ts:351:3 › the transfer offer (D4) › the run stores the relationship the card offered, beside the intent, through the offer Today kept (D4a) (1.8s)
+  ok 146 tests\e2e\mic.spec.ts:258:3 › the latency measurement is only ever offered to a microphone user › a piano on the end of a cable does not get it, and is told why (655ms)
+  ok 147 tests\e2e\mic.spec.ts:275:3 › the latency measurement is only ever offered to a microphone user › plugging the piano in takes it away again (333ms)
+  ok 148 tests\e2e\mic.spec.ts:291:3 › the latency measurement is only ever offered to a microphone user › a run that hears nothing says so and leaves the number to be set by hand (7.2s)
+  ok 149 tests\e2e\mic.spec.ts:339:3 › drills listen to the microphone › a chord card is aimed at the detector and answered by what it hears (1.7s)
+  ok 150 tests\e2e\mic.spec.ts:367:3 › drills listen to the microphone › an ear drill does not play its prompt out loud while listening (458ms)
+  ok 151 tests\e2e\mic.spec.ts:74:3 › microphone input › a recorded scale drives a Wait-mode run to finished (3.0s)
+  ok 152 tests\e2e\mic.spec.ts:117:3 › microphone input › reports level and noise floor while listening (892ms)
+analysis cost x4-throttled @48000 Hz over 280 hops: mean 0.80 ms, median 0.80, p95 1.10, max 1.60
+  ok 153 tests\e2e\mic.spec.ts:139:3 › microphone input › stays inside the 3 ms analysis budget with the CPU throttled x4 (865ms)
+  ok 154 tests\e2e\mic.spec.ts:172:3 › microphone input › the calibration screen runs against the fake stream and stores a table (17.4s)
+  ok 155 tests\e2e\mic.spec.ts:214:3 › microphone input › Diagnostics measures the analysis cost and captures a clip (20.5s)
+
+
+  1) tests\e2e\progress.spec.ts:85:3 › Progress › a drill set ended with nothing answered and counted reads Not measured in the history, not 0% (U102) 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: locator('#progress-history .list-row[data-item="drill.reading.note-flash-treble-c4-g4"] .list-row__metatext')
+    Expected pattern: /^Not measured · /
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveText" locator('#progress-history .list-row[data-item="drill.reading.note-flash-treble-c4-g4"] .list-row__metatext') with timeout 30000ms
+      - waiting for locator('#progress-history .list-row[data-item="drill.reading.note-flash-treble-c4-g4"] .list-row__metatext')
+      - Test timeout of 30000ms exceeded.
+
+
+       95 |     await page.goto('/#/progress');
+       96 |     const line = page.locator(`#progress-history .list-row[data-item="${flash}"] .list-row__metatext`);
+    >  97 |     await expect(line).toHaveText(/^Not measured · /, { timeout: 30_000 });
+          |                        ^
+       98 |     await expect(line).not.toContainText('%');
+       99 |   });
+      100 |
+        at <worktree>\app\tests\e2e\progress.spec.ts:97:24
+
+    Error Context: build\cl11a\test-results\progress-Progress-a-drill--56504--in-the-history-not-0-U102-\error-context.md
+
+  2) tests\e2e\today.spec.ts:670:3 › the reason keeps its deciding clause at 342 × 740 (U63) › the held line: the rung’s wait said in two lines, its claim whole 
+
+    Error: the held line takes more than two lines
+
+    expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 2.05
+    Received:    NaN
+
+      685 |     await expect(waits.locator('.list-row__sub')).toHaveText(sentence);
+      686 |     const m = await measure(waits);
+    > 687 |     expect(m.lineRatio, 'the held line takes more than two lines').toBeLessThanOrEqual(2.05);
+          |                                                                    ^
+      688 |     expect(m.shown.startsWith('This lesson waits on pieces you paused or put away'), `the claim is cut: "${m.shown}"`).toBe(true);
+      689 |     if (!m.whole) test.info().annotations.push({ type: 'U63 refuting test', description: `the held line shows "${m.shown}…" in two lines` });
+      690 |     await everyRow(page, 'the held card');
+        at <worktree>\app\tests\e2e\today.spec.ts:687:68
+
+    Error Context: build\cl11a\test-results\today-the-reason-keeps-its-f80c6-n-two-lines-its-claim-whole\error-context.md
+
+  2 failed
+    tests\e2e\progress.spec.ts:85:3 › Progress › a drill set ended with nothing answered and counted reads Not measured in the history, not 0% (U102) 
+    tests\e2e\today.spec.ts:670:3 › the reason keeps its deciding clause at 342 × 740 (U63) › the held line: the rung’s wait said in two lines, its claim whole 
+  153 passed (10.5m)
+playwright exit 1

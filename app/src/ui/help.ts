@@ -115,7 +115,8 @@ export const MODE_HELP: Readonly<Record<ScoreMode, HelpEntry>> = {
     now: 'The count-in clicks, then play along.',
     // The lesson's own numbers judge a run opened for a lesson (`masteryCriteriaFor`); Settings only where it
     // states none or no lesson opened the run (X46: "set in Settings" was false on every rung with its own).
-    counts: 'A pass needs both the accuracy and the share of the written tempo, in one run: the lesson’s numbers where it states them, otherwise the ones set in Settings.',
+    // CL11a: before the run, the learner knows what the accuracy counts, and that a key not in the music costs credit.
+    counts: 'A pass needs both the accuracy and the share of the written tempo, in one run: the lesson’s numbers where it states them, otherwise the ones set in Settings. Accuracy is the written notes you play right in time; each wrong note costs as much as a note you miss.',
     controls: [
       { name: 'Tempo', does: 'A share of the written speed. Slower is how a hard bar becomes an easy one.' },
       { name: '▶', does: 'Starts the run. With a piano connected your own first note starts it instead, and the clock waits for it.' },

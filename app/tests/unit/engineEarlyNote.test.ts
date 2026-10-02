@@ -83,6 +83,9 @@ describe('a right note played more than the window early', () => {
     expect(score.early ?? 0).toBe(0);
     expect(score.wrongNotesTotal).toBe(1);
     expect(score.missedTotal).toBe(0);
+    // CL11a (Entry 219): the extra costs a note, as every wrong key does in Keep tempo. Four right notes
+    // less one wrong key: three quarters, where it was a full score for a run with a key too many.
+    expect(score.accuracy).toBeCloseTo(3 / 4, 6);
   });
 
   it('is still a wrong note when it is far too early to be that step', () => {

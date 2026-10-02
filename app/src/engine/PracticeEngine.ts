@@ -380,6 +380,23 @@ export class PracticeEngine {
    * played early, and it is counted once as that.
    */
   private readonly earlyStrikes = new Map<number, Map<number, { deltaMs: number }>>();
+  /**
+   * The pitches each step's window closed on unplayed, by step (CL11a; `05` §3).
+   *
+   * What a late strike is read against. A right pitch struck after its window
+   * used to match nothing and count as a wrong note, and its step had already
+   * counted it as a miss: one late note, two faults. A strike of a pitch in
+   * here, less than a beat after its step, is that note, played late — the miss
+   * stands and the strike is not also a wrong key (`findLateStep`). Per lap:
+   * the step indexes repeat in a loop.
+   */
+  private readonly missedPitches = new Map<number, Set<number>>();
+  /**
+   * The missed notes a late strike has already stood for, by step and pitch
+   * (CL11a). Once per expected pitch occurrence: a second strike of that pitch
+   * has no note left to be late for, so it is an extra key, and costs one.
+   */
+  private readonly lateStruck = new Map<number, Set<number>>();
   private earlyTotal = 0;
   private readonly earlyByMeasure = new Map<number, number>();
   /**
@@ -641,6 +658,10 @@ export class PracticeEngine {
       // rewound clock must not make it a window to play again.
       if (index < target || this.heldUntil.has(index)) this.closeSlotAsMissed(index);
     }
+    // The clock is rewound and the count runs back over these notes' times: a strike during it is not
+    // late for a note from before the pause, which was not played (CL11a; the rule above).
+    this.missedPitches.clear();
+    this.lateStruck.clear();
     const startMusicMs = targetMs - recountMs;
     this.clockOriginMs = now - startMusicMs - this.session.countInMs;
     this.recountUntilMusicMs = targetMs;
@@ -1097,12 +1118,44 @@ export class PracticeEngine {
     this.openUpcomingSlots(Math.max(music, at));
 
     const match = this.rhythmOnly ? this.findRhythmSlot(at) : this.findSlot(midi, at);
-    const earlyFor =
-      match === null &&
-      !this.rhythmOnly &&
-      confidence >= this.session.options.wrongNoteConfidence
-        ? this.findEarlyStep(midi, at)
-        : null;
+    // A strike that matched no window may still be a right pitch at the wrong
+    // time: early for a step still to come, or late for one that has passed. It
+    // is read as such only where the source is sure of the key, as ever, and
+    // never in a rhythm-only run, which does not judge the pitch.
+    const identifiable =
+      match === null && !this.rhythmOnly && confidence >= this.session.options.wrongNoteConfidence;
+    const earlyHome = identifiable ? this.findEarlyStep(midi, at) : null;
+    const lateHome = identifiable ? this.findLateStep(midi, at) : null;
+    // A pitch that two steps could claim — the same note a beat or less apart —
+    // belongs to the nearer in time (CL11a). The early rule alone read a C
+    // played 250 ms after its own step as 750 ms early for the next C, and the
+    // next C's on-time strike then made it an extra. A tie keeps the early
+    // reading, as before.
+    const lateIsNearer =
+      lateHome !== null &&
+      (earlyHome === null || lateHome.agoMs < (this.session.steps[earlyHome]?.tMs ?? 0) - at);
+    const earlyFor = lateIsNearer ? null : earlyHome;
+    const lateFor = lateIsNearer ? lateHome : null;
+    if (lateFor !== null) {
+      // The right key, after its window: the miss that step already counted (or
+      // will, when its window closes) is the whole of what it cost. Not a wrong
+      // key as well (CL11a; `05` §3). Spent here, so a second strike of the
+      // pitch finds no note left to be late for. Shown as not right now, which
+      // it is not, and kept as played with no step, as a wrong key is kept.
+      const spent = this.lateStruck.get(lateFor.index) ?? new Set<number>();
+      spent.add(midi);
+      this.lateStruck.set(lateFor.index, spent);
+      this.record(midi, velocity, rawTMs, null, false);
+      this.emit({
+        kind: 'noteJudged',
+        ok: false,
+        midi,
+        noteIds: [],
+        stepIndex: this.step,
+        tMs: rawTMs,
+      });
+      return;
+    }
     if (earlyFor !== null) {
       // A right pitch, before its window: held until the window decides (see
       // `earlyStrikes`). Shown as not right *now*, which it is not, and
@@ -1186,12 +1239,20 @@ export class PracticeEngine {
     // The same pitch was struck early for this step and has now come on time:
     // the on-time one is the note, and the early one was an extra (T37).
     const early = this.earlyStrikes.get(match);
-    if (early?.has(midi)) {
+    const earlyStruck = early?.get(midi);
+    if (early && earlyStruck) {
       early.delete(midi);
       if (early.size === 0) this.earlyStrikes.delete(match);
       this.wrongNotesTotal += 1;
-      this.bump(this.wrongsByMeasure, target?.measureIndex ?? this.stepNear(at)?.measureIndex ?? 0);
-      this.markStep(match).wrong.push(midi);
+      // The extra was struck when the early one was, and is put against the step nearest *that* moment,
+      // as every wrong key is (`stepNear`) — not against the step the on-time note later matched (CL11a).
+      // Where it lands is what a reader of the record takes it for: a key struck at one step's time while
+      // reading the step before is a misread there, and a step charged for it would read as one the learner
+      // got wrong when they read it right.
+      const struckAt = (target?.tMs ?? at) + earlyStruck.deltaMs;
+      const near = this.stepNear(struckAt);
+      this.bump(this.wrongsByMeasure, near?.measureIndex ?? target?.measureIndex ?? 0);
+      this.markStep(near?.index ?? match).wrong.push(midi);
     }
     if (slot && slot.size === 0) {
       this.openSlots.delete(match);
@@ -1265,6 +1326,46 @@ export class PracticeEngine {
       if (ahead <= tolerance) continue;
       if (!step.expected.includes(midi)) continue;
       return this.earlyStrikes.get(index)?.has(midi) === true ? null : index;
+    }
+    return null;
+  }
+
+  /**
+   * The step a right pitch struck after its window was late for, if any (CL11a).
+   *
+   * The mirror of `findEarlyStep`, and bounded the same way: a step the strike
+   * is *past* by more than the tolerance and by less than a beat, that asks for
+   * this pitch, and whose note for it is still unplayed — its window closed on
+   * it (`missedPitches`) or has not yet been closed by a tick (`openSlots`) —
+   * and that no late strike has stood for already (`lateStruck`). The nearest
+   * such step in time. A beat or more behind it is that pitch struck somewhere
+   * else; a pitch already played at its step, or asked for nowhere near, has no
+   * missed note to be late for. All of those stay wrong keys, and cost one.
+   *
+   * A beat, because it is the reach the early rule already uses (`05` §3) and
+   * the music's own unit — it grows as the tempo slows, as the early reach does.
+   * Not a window of its own: that would be a second number to defend.
+   */
+  private findLateStep(midi: number, atMs: number): { index: number; agoMs: number } | null {
+    const tolerance = this.session.options.toleranceMs;
+    const reach = this.session.msPerBeat;
+    if (!(reach > 0)) return null;
+    const opened = Math.min(this.nextSlotToOpen, this.session.lastStep + 1);
+    for (let index = opened - 1; index >= this.session.firstStep; index -= 1) {
+      const step = this.session.steps[index];
+      if (!step || step.isEmpty) continue;
+      const agoMs = atMs - step.tMs;
+      // Steps are in time order, so every step before this one is further back.
+      if (agoMs >= reach) return null;
+      // Inside the window, or before it: an on-time strike is `findSlot`'s.
+      if (agoMs <= tolerance) continue;
+      if (!step.expected.includes(midi)) continue;
+      if (this.lateStruck.get(index)?.has(midi) === true) continue;
+      // Struck early for this step and held: the early note is the one played.
+      if (this.earlyStrikes.get(index)?.has(midi) === true) continue;
+      const unplayed =
+        this.openSlots.get(index)?.has(midi) === true || this.missedPitches.get(index)?.has(midi) === true;
+      if (unplayed) return { index, agoMs };
     }
     return null;
   }
@@ -1485,6 +1586,10 @@ export class PracticeEngine {
       this.missedTotal += 1;
       mark.missed += 1;
       this.bump(this.missesByMeasure, step.measureIndex);
+      // Kept for a late strike to be read against (`findLateStep`).
+      const gone = this.missedPitches.get(index) ?? new Set<number>();
+      gone.add(midi);
+      this.missedPitches.set(index, gone);
       this.emit({
         kind: 'missed',
         stepIndex: index,
@@ -1556,6 +1661,9 @@ export class PracticeEngine {
     this.openSlots.clear();
     this.heldUntil.clear();
     this.earlyStrikes.clear();
+    // The step indexes repeat in the next lap: what was missed, and what a late strike stood for, is this lap's.
+    this.missedPitches.clear();
+    this.lateStruck.clear();
     if (this.mode === 'wait' || this.mode === 'free') {
       const start = nextPlayableStep(this.session.steps, this.session.firstStep, this.session.lastStep);
       this.step = start ?? this.session.firstStep;
@@ -1600,6 +1708,8 @@ export class PracticeEngine {
     this.missesByMeasure.clear();
     this.wrongsByMeasure.clear();
     this.earlyStrikes.clear();
+    this.missedPitches.clear();
+    this.lateStruck.clear();
     this.earlyTotal = 0;
     this.earlyByMeasure.clear();
     this.stepMarks.clear();
@@ -1681,6 +1791,7 @@ export class PracticeEngine {
       loops: this.loopsCompleted,
       rolledChordSteps: this.rolledChordSteps,
       accuracyEstimated: this.session.options.accuracyEstimated,
+      rhythmOnly: this.rhythmOnly,
       lenientChordSteps: this.lenientChordSteps,
       pedal: this.pedalValues,
       notes: this.recorded,

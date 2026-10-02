@@ -66,7 +66,7 @@ describe('easy success skips the redundant controlled practice', () => {
     expect(r.current).toBe(1);
   });
 
-  it('not on an unknown result (self-report, nothing heard, estimated)', () => {
+  it('not on an unknown result (self-report, nothing heard, an estimated failure)', () => {
     const r = complete(runOf(EASY), 0, 'unknown');
     expect(r.activities[1]?.state).toBe('pending');
     expect(r.current).toBe(1);
@@ -138,10 +138,14 @@ describe('what the stored run may drive (the protocol table’s summary facts)',
   it('a Score-screen run: measured full-standard pass, measured failure, and everything else unknown', () => {
     expect(scoreOutcome(measured)).toBe('passed-full');
     expect(scoreOutcome({ ...measured, passed: false, accuracy: 0.6 })).toBe('failed');
-    // Self-report alone, nothing heard, an estimate, a Wait run with no tempo, a rhythm run.
+    // Self-report alone, nothing heard, an estimated failure, a Wait run with no tempo, a rhythm run.
     expect(scoreOutcome({ ...measured, selfReport: 'clean', selfPassed: true })).toBe('unknown');
     expect(scoreOutcome({ ...measured, accuracy: 'not measured' })).toBe('unknown');
-    expect(scoreOutcome({ ...measured, accuracyEstimated: true })).toBe('unknown');
+    // Replaced (CL11a, Entry 219; class: replace): this asserted `unknown` for an estimated *pass*. A microphone
+    // pass counts as every other reader of a run counts it (`todayCountsAMicrophonePass.test.ts`); an
+    // estimated failure keeps the session's caution.
+    expect(scoreOutcome({ ...measured, accuracyEstimated: true })).toBe('passed-full');
+    expect(scoreOutcome({ ...measured, passed: false, accuracy: 0.6, accuracyEstimated: true })).toBe('unknown');
     expect(scoreOutcome({ ...measured, passed: false, tempoMeasured: false })).toBe('unknown');
     expect(scoreOutcome({ ...measured, rhythmOnly: true })).toBe('unknown');
     // A phrase met before is practice, never a failed reading.

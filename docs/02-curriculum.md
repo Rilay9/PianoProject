@@ -1348,11 +1348,31 @@ suggestions** with a note on where to buy/obtain MusicXML.
   the learner self-reports after a Tempo-mode run — the app shows a "How did it go?" 3-button
   prompt and records it as self-assessed).
 - `master` = accuracy ≥ 97 % at 100 % tempo, twice on different days.
+- **What accuracy is (2026-10-02, CL11a).** The written notes played right, with nothing
+  extra. In Keep tempo the unit is the note: the notes struck in their window, less one for
+  each wrong key, of the notes written, never below nought. A right note played at the wrong
+  time costs once — a miss, or an early note — and never also as a wrong key; at most one late
+  strike stands for each missed note (`05` §3). A chord with one pitch missed keeps two thirds of
+  its credit. In *Wait for me* the unit is the step, and a wrong key makes its step unclean, so
+  a single-line piece gives the same figure in both modes for the same playing. A rhythm-only
+  run keeps its rhythm figure (`05` §3a). Each rung keeps its own authored number, and the
+  master standard is unchanged; only what the number counts moved. A stored row says which
+  rules judged it (`definitions`, `OBSERVATION_DEFINITIONS`, 2 from this change): rows written
+  before it keep the accuracy they were judged with and are never re-judged, because they
+  cannot tell a wrong key from a late right note. Unverified as teaching: whether 90 % net of
+  wrong keys is the right bar is a teaching standard, and the authored number is the rung's.
+- **Who counts as having passed (2026-10-02, CL11a).** A pass the learner asserted — *I already
+  know this*, a Clean self-report, a paper Clean — is their word: stored `selfPassed`, shown as
+  theirs (*you said you know it*, *known*), never counted toward a rung, a skill or Progress's
+  *N passed* or its pieces passed, not yet projects. A measured pass later clears the flag and
+  counts. A microphone run counts as a MIDI run does, its accuracy labelled estimated: Today's
+  row reads it done. An estimated failure keeps the session's caution (`05` §11.4).
 - **What a run is evidence of (2026-09-25, T37).** The pass above is played in Tempo mode
   because only Tempo mode measures a tempo. A *Wait for me* run is evidence of the notes
   and none of the pulse: it is stored as not having measured tempo (`tempoMeasured: false`
-  on the session row), meets a criterion only where the criterion asks for no tempo, is
-  never master-eligible, and its sheet is headed *Notes ready* with *to pass, play it in
+  on the session row), meets no rung's criterion (every rung asks for a tempo: the rungs that
+  state `minTempoPct: 0` — 11 of the 109 — take the Settings pair, which is never below 30 %),
+  is never master-eligible, and its sheet is headed *Notes ready* with *to pass, play it in
   Keep tempo* where the tempo used to be. `master` counts the days the master standard
   itself was met (`ProgressRow.masteredOn`), not pass days, so a pass on Monday and one
   97 %-at-full-tempo run on Tuesday is *Mastery run 1 of 2*. Without MIDI the *How did it
@@ -1417,9 +1437,10 @@ suggestions** with a note on where to buy/obtain MusicXML.
   not started from the stored runs, and Plan, Today, the lesson page and Skills read it
   (`04` §3f). The kinds: **`runs`** — distinct items of the rung's exercises, songs (paper
   pieces included) or either, or items it names, each with a run *judged by this rung* at its
-  standard (`mastery.minAccuracy`, and `minTempoPct` in Keep tempo; a Wait run meets only a
-  rung that asks no tempo, and so, since E50b, does a Keep tempo run whose percentage is of a
-  tempo a reviewed repair has since corrected — a run of an old file `provenance.tempoRepairedFrom`
+  standard (`mastery.minAccuracy`, and `minTempoPct` in Keep tempo; a Wait run meets no rung,
+  every rung asking a tempo, and since E50b neither does a Keep tempo run whose percentage is of a
+  tempo a reviewed repair has since corrected — the code keeps its `passTempoPct <= 0` branches for a constructed
+  criterion that asks none — a run of an old file `provenance.tempoRepairedFrom`
   lists, or a run of such a row that stored no material or no base tempo: never rescaled, never
   rewritten, its contact and its evidence read as before); **`reads`** — phrases of its reading row read at sight, judged by
   it, whose evidence for a skill is at the practice or full standard with a share right;

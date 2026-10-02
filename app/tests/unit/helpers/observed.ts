@@ -40,6 +40,12 @@ export interface RunPlan {
    * for a step whose notes are not all misread — one hand of a chord (C4a).
    */
   wrongPitch?: (step: number, midi: number) => boolean;
+  /**
+   * Keep tempo: steps where a key a tritone above the step's first note is struck beside the written
+   * notes, in time (CL11a): every written note is right and one key is extra. A hand-made phrase must
+   * not ask for that pitch within a beat of the step, or the engine reads it as an early or late note.
+   */
+  strayKeys?: readonly number[];
   /** Nothing reaches the engine: the run nothing heard. */
   silent?: boolean;
   loop?: { fromStep: number; toStep: number };
@@ -115,8 +121,10 @@ export function play(data: ScoreModelData, plan: RunPlan = {}): { score: Session
     const misread = (midi: number): boolean => plan.wrongInstead?.includes(index) === true || plan.wrongPitch?.(index, midi) === true;
     const keys = step.expected.map((midi) => (misread(midi) ? (plan.wrongKey ?? whiteKeyBelow)(midi) : midi));
     for (const midi of keys) h.play(midi);
+    const strays = plan.strayKeys?.includes(index) === true ? [(step.expected[0] ?? 60) + 6] : [];
+    for (const midi of strays) h.play(midi);
     until(h, at + 60);
-    for (const midi of keys) h.release(midi);
+    for (const midi of [...keys, ...strays]) h.release(midi);
   }
   const last = steps[lastStep];
   until(h, (last ? last.tMs - origin + last.durMs : 0) + 4 * BEAT_MS);

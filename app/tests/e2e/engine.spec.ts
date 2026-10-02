@@ -224,11 +224,26 @@ test.describe('Tempo mode end to end', () => {
     await dev.stopRun();
   });
 
-  test('a note far outside the tolerance is wrong and its slot is missed', async ({ page }) => {
+  // Replaced (CL11a, Entry 219; class: replace): this read "a note far outside the tolerance is wrong"
+  // for the first step's own pitch, played 400 ms after it. A right note at the wrong time costs once,
+  // as the miss, and is not also a wrong key; a key the piece does not ask for is wrong, as it was.
+  test('a right note far outside the tolerance is not a hit: its slot is missed, and it is charged once', async ({ page }) => {
     const dev = await openDevScore(page);
     await dev.load('tempo-change');
     await dev.startRun('tempo', { countInBars: 0, tempoPct: 130, toleranceMs: 100 });
     await dev.replay([{ atMs: 400, midi: 60 }]);
+    const score = await dev.engineScore();
+    expect(score?.hits).toBe(0);
+    expect(score?.wrongNotesTotal).toBe(0);
+    expect(score?.missedTotal).toBeGreaterThanOrEqual(1);
+    await dev.stopRun();
+  });
+
+  test('a key the piece does not ask for, far outside the tolerance, is wrong and its slot is missed', async ({ page }) => {
+    const dev = await openDevScore(page);
+    await dev.load('tempo-change');
+    await dev.startRun('tempo', { countInBars: 0, tempoPct: 130, toleranceMs: 100 });
+    await dev.replay([{ atMs: 400, midi: 61 }]);
     const score = await dev.engineScore();
     expect(score?.wrongNotesTotal).toBeGreaterThanOrEqual(1);
     expect(score?.missedTotal).toBeGreaterThanOrEqual(1);

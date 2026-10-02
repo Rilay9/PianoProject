@@ -95,7 +95,9 @@ describe('a channel the run did not measure yields no evidence, whatever the not
   // as version 1 — its codes taken as today's codes.
   it('a row written under observation definitions this build does not know is refused on both channels, never read as version 1 (L70)', () => {
     const timed = observe(RHYTHMIC, { mode: 'tempo', unseen: true, guide: 'off' });
-    for (const definitions of [2, 0, 1.5]) {
+    // 2 was the example of an unknown version until CL11a made it the Keep tempo wrong-key definitions
+    // (class: replace); 3 is the next one no build reads.
+    for (const definitions of [3, 0, 1.5]) {
       const row = { ...timed, definitions } as Observed;
       const readings = takeMeasurements(row);
       expect(readings.pitch, `definitions ${String(definitions)}`).toEqual({ channel: 'pitch', why: 'unknown-definitions', cites: ['definitions'] });
@@ -105,8 +107,9 @@ describe('a channel the run did not measure yields no evidence, whatever the not
       expect(refusalOf(results, 'subdivision')).toMatchObject({ reason: 'not-measured:timing', cites: ['definitions'], detail: 'unknown-definitions' });
       expect(refusalOf(results, 'sight-reading')).toMatchObject({ reason: 'not-measured:pitch', cites: ['definitions'] });
     }
-    // Version 1 is read as it was, and an absent block is still no measures.
+    // Versions 1 and 2 are read, and an absent block is still no measures.
     expect(only(run({ ...timed, definitions: 1 }, ['interval-reading']), 'interval-reading')).toMatchObject({ kind: 'measured' });
+    expect(only(run({ ...timed, definitions: 2 }, ['interval-reading']), 'interval-reading')).toMatchObject({ kind: 'measured' });
     const { definitions: _definitions, ...unstamped } = timed;
     expect(takeMeasurements(unstamped as Observed).pitch).toEqual({ channel: 'pitch', why: 'no-measures', cites: ['definitions'] });
   });

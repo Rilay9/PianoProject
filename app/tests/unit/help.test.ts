@@ -128,6 +128,19 @@ describe('every mode, drill and tool says what it is', () => {
     expect(help('mode:nope' as Parameters<typeof help>[0])).toBeUndefined();
   });
 
+  // CL11a (Entry 219; `responses/1afa30d3.md` §2): before the run, the learner knows what the accuracy is and that
+  // a key that is not in the music costs credit. The card is where what counts is told ahead of playing (X46).
+  it('Keep tempo says before the run what its accuracy counts: the notes played right in time, and a wrong note costing what a missed one costs', () => {
+    const counts = MODE_HELP.tempo.counts;
+    expect(counts).toMatch(/notes you play right in time/);
+    expect(counts).toMatch(/each wrong note costs as much as a note you miss/);
+    // The pass still names both halves and whose numbers judge a lesson's run.
+    expect(counts).toMatch(/share of the written tempo/);
+    expect(counts).toMatch(/the lesson’s numbers where it states them/);
+    // Wait for me, which passes nothing, does not claim a count it does not make.
+    expect(MODE_HELP.wait.counts).not.toMatch(/wrong note/);
+  });
+
   it('says on the screen exactly what `04` §5f says it says', () => {
     const section = sectionFiveF();
     const drifted: string[] = [];
