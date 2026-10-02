@@ -65,3 +65,5 @@ index: What counts as evidence, traced against the current tree and decided per 
 in-flight: drafted 2026-10-01 (`CL11-what-counts-as-evidence-traced-and-decided.md`): a design lane, no code, built by the outside builder on its own branch; the eight CL11 rows, X46's three inputs and R23's question traced and decided (Entry 215)
 state: dispatched 2026-10-02: dispatched at af18a3ae, building here (Entry 215)
 - landed 2026-10-02: merged 24235f5b; handoff `handoffs/1afa30d3.md`
+- verdict 2026-10-02: APPROVE (`responses/1afa30d3.md`): the design trace and its two bounded builds; L102 kept as shipped for this build (practised drills are not skill evidence here, a scope decision); the two lanes stand without another pre-build review, their composed result tested when both land; X46's agreement statement superseded for the microphone case
+- closed 2026-10-02: the builds are CL11a (app code) and CL11b (content), briefed from the design note and the response's acceptance points
