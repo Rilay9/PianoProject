@@ -294,7 +294,7 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **G90a** | The held skip as one lifecycle truth: its own kind, its reason on Today's row, swap and pause ordered by time (`G90a-the-held-skip-as-one-lifecycle-truth.md`) | app | drafted 2026-10-02 (`G90a-the-held-skip-as-one-lifecycle-truth.md`); Entry 221; landed 2026-10-02: merged 3c2d9593; handoff `handoffs/30849a42.md`; verdict 2026-10-02: APPROVE (`responses/30849a42.md`): the three choices accepted; the procedure line warranted; closed 2026-10-02: G90's required change done; three P3 leftovers in its entry
 | **U110b** | The state that earns U110a's packing exception, reproduced in a real browser, or the exception removed (`U110b-the-earning-state-in-a-browser.md`) | app | drafted 2026-10-02 (`U110b-the-earning-state-in-a-browser.md`); Entry 222; landed 2026-10-02: merged 063e0a88; handoff `handoffs/8d391dfa.md`; verdict 2026-10-02: APPROVE (`responses/8d391dfa.md`): keep the packing exception; stability during a browser-bar resize is the invariant, not only the absence of overlap; closed 2026-10-02: U110a's required change done
 | **U122d** | U122c's two stopped cells closed: no control under the floor on narrow upright rows, and the finished view says its verdict (`U122d-the-two-stopped-cells.md`) | app | drafted 2026-10-02 (`U122d-the-two-stopped-cells.md`); Entry 223
-| **CL11c** | A looped Keep tempo run scores one population end to end, so a wrong key always costs a note (`CL11c-a-loop-scores-one-population.md`) | app | drafted 2026-10-02 (`CL11c-a-loop-scores-one-population.md`); Entry 224
+| **CL11c** | A looped Keep tempo run scores one population end to end, so a wrong key always costs a note (`CL11c-a-loop-scores-one-population.md`) | app | drafted 2026-10-02 (`CL11c-a-loop-scores-one-population.md`); Entry 224; landed 2026-10-02: merged 2089cf55; handoff `handoffs/146a51f7.md`
 | **CL10a** | The detectors read the clef, the key in force, the metre and a held tune, and judge a pattern by its share of bars (`CL10a-the-detectors-read-what-the-music-holds.md`) | build | drafted 2026-10-02 (`CL10a-the-detectors-read-what-the-music-holds.md`); Entry 225
 | **CL12** | The composed day: every Today row says what it is for, the return to bypassed rungs ends, a detour comes back to its piece (`CL12-the-composed-day-says-what-each-row-is-for.md`) | design | drafted 2026-10-02 (`CL12-the-composed-day-says-what-each-row-is-for.md`); Entry 226
 | **CL17** | One level: the scalar a sort key with its provenance, generated items stop claiming judgement, learners see demands; traced, then built (`CL17-one-level-traced-then-built.md`) | design | drafted 2026-10-02 (`CL17-one-level-traced-then-built.md`); Entry 227
@@ -459,12 +459,12 @@ CL11b · closed · 220
 G90a · closed · 221
 U110b · closed · 222
 U122d · held · 223
-CL11c · dispatched · 224
-CL10a · with-reviewer · 225
-CL12 · with-reviewer · 226
-CL17 · with-reviewer · 227
-SG08 · with-reviewer · 228
-SG05 · with-reviewer · 229
+CL11c · landed · 224
+CL10a · approved · 225
+CL12 · approved · 226
+CL17 · approved · 227
+SG08 · approved · 228
+SG05 · approved · 229
 F0a · closed · —
 L120 · approved · —
 -->

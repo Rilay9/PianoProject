@@ -36,6 +36,8 @@ One model of why each row is on Today. The composer, the row's words, the outcom
 
 **Measure before proposing.** Run the existing diary tests (`firstThirtyDays.test.ts`, `firstThirtyDaysOnTheLadder.test.ts`, `composedContract.test.ts`), and count what each learner's Today shows, by purpose, today. The design is judged against those counts.
 
+**From the review** (`responses/385c0131.md` §2): one design lane; L93 does not build first alone, because what replaces the fallback and what Today and Plan call it depend on the purpose model. Purpose data is the spine; L93, L96 and X19 are the cases that prove it.
+
 ## Done when
 
 - **`docs/design/composed-day.md` exists.** It names its given constraints and measures the costliest of them against its alternative. Then it gives the model and the slices in order, each slice with:
@@ -71,4 +73,4 @@ Never name an AI model in any file.
 lane: CL12 · closes: — · entry: 226
 index: The composed day: every Today row says what it is for, the return to bypassed rungs ends, a detour comes back to its piece (`CL12-the-composed-day-says-what-each-row-is-for.md`) | design | drafted 2026-10-02 (`CL12-the-composed-day-says-what-each-row-is-for.md`); Entry 226
 in-flight: drafted 2026-10-02 (`CL12-the-composed-day-says-what-each-row-is-for.md`): one purpose model for Today's rows, the episode that returns a detour to its piece, the review row when nothing is due, and L93's retirement of the return as the first slice (Entry 226)
-state: with-reviewer 2026-10-02: in the batch review of five briefs before dispatch (Entry 226)
+state: approved 2026-10-02: approved before dispatch as one design lane, L93 inside it (Entry 226)

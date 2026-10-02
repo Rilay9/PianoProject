@@ -22,9 +22,12 @@ Also keep the Progress and *Keep it playable* distinction explicit in a test or 
 
 `operating-procedure.md` §14. Built by the outside builder on `chatgpt/cl11c`: CI runs on that branch; red first is a test-only push read back from CI before the fix (the owner pastes the build prompt; 2026-10-02). Never name an AI model in any file.
 
+**Landed 2026-10-02** (Entry 224; 146a51f7, merged 2089cf55); handoff `handoffs/146a51f7.md`.
+
 ## Record
 
 lane: CL11c · closes: L137 · entry: 224
 index: A looped Keep tempo run scores one population end to end, so a wrong key always costs a note (`CL11c-a-loop-scores-one-population.md`) | app | drafted 2026-10-02 (`CL11c-a-loop-scores-one-population.md`); Entry 224
 in-flight: drafted 2026-10-02 (`CL11c-a-loop-scores-one-population.md`): a fix-forward on CL11a, the reviewer's required change; one lap or the whole loop, the same unit for the score, the stored outcome and the evidence (Entry 224)
 state: dispatched 2026-10-02: dispatched to the outside builder on its branch, the owner's pasted build prompt (Entry 224)
+- landed 2026-10-02: merged 2089cf55; handoff `handoffs/146a51f7.md`

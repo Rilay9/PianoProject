@@ -26,6 +26,8 @@ Labels: **VERIFIED**, **SETTLED**, **HYPOTHESIS**, **OPEN**, **OUT OF SCOPE**, a
   - collapsed behind a line that says how many there are and why the app does not judge them,
   - or another shape that keeps every skill reachable.
 
+**From the review** (`responses/385c0131.md` §4): the first measurement decides whether U64 is still clipping or only row height and weight remain; no old picture stands as current proof.
+
 ## Done when
 
 - **Before and after pictures** on the three designs, and at 115 % text upright. In each:
@@ -60,4 +62,4 @@ The harness is `operating-procedure.md` §14. Never name an AI model in any file
 lane: SG08 · closes: U64, U93 · entry: 228
 index: The Skills screen in three designs: every skill's whole name reads at a glance, and the measured skills lead (`SG08-the-skills-screen-in-three-designs.md`) | app | drafted 2026-10-02 (`SG08-the-skills-screen-in-three-designs.md`); Entry 228
 in-flight: drafted 2026-10-02 (`SG08-the-skills-screen-in-three-designs.md`): measured first on three designs and at 115 per cent text; the row's structure per design, the unjudged skills under the measured ones and still reachable (Entry 228)
-state: with-reviewer 2026-10-02: in the batch review of five briefs before dispatch (Entry 228)
+state: approved 2026-10-02: approved before dispatch, measured first (Entry 228)

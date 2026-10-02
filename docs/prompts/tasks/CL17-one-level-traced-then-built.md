@@ -29,6 +29,8 @@ From R1's ruling (`responses/questions-e71ef3ad.md`) and from R28 and G6 (`respo
 4. **R8:** the band gate's replacement by needs-versus-taught, traced against `validate.level_band_errors`.
 5. **The slices, in order,** each with red-first cases and its files.
 
+**From the review** (`responses/385c0131.md` §3): Phase 1 only; the trace returns for review before any build. The inventory's completeness covers indirect readers and writers, not only literal names: destructuring and spread copies, JSON and content keys, generated artifacts, database migrations, backup and import serialisation, Python dictionary access, and UI helpers such as `levelLabel`. The trace states those coverage classes and any path it excludes.
+
 ## OPEN: yours to decide
 
 - **What each screen shows in place of `L7.1`** (the Library row, Details, the project sheet), in three designs (`04` §0 R7).
@@ -64,4 +66,4 @@ Never name an AI model in any file.
 lane: CL17 · closes: R1, R16, G6, R28, R8 · entry: 227
 index: One level: the scalar a sort key with its provenance, generated items stop claiming judgement, learners see demands; traced, then built (`CL17-one-level-traced-then-built.md`) | design | drafted 2026-10-02 (`CL17-one-level-traced-then-built.md`); Entry 227
 in-flight: drafted 2026-10-02 (`CL17-one-level-traced-then-built.md`): every level reader and writer traced and classed, the stored data and X37's two definitions, then slices; the rulings on R1, R16, G6 and R28 settled, R8's gate with it (Entry 227)
-state: with-reviewer 2026-10-02: in the batch review of five briefs before dispatch (Entry 227)
+state: approved 2026-10-02: approved before dispatch, Phase 1 only, the trace with its coverage classes returns for review (Entry 227)

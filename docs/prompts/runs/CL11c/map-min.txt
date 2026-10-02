@@ -1,0 +1,17 @@
+# checks for 9 path(s): 9 matched, 0 unmatched
+# app/src/engine/PracticeEngine.ts: app/src/**, app/src/engine/**
+# app/tests/unit/helpers/observed.ts: app/tests/unit/helpers/**
+# app/tests/unit/keepTempoChargesAWrongKey.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/loopScoresOnePopulation.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/scoreTourRoute.test.ts: app/tests/unit/*.test.ts
+# docs/05-score-follow-engine.md: docs/**
+# docs/08-test-map.md: docs/**
+# docs/prompts/runs/CL11c/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+# docs/prompts/runs/CL11c/check-request.md: docs/**
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content -p test_record_mirrors.py
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/engine.spec.ts tests/e2e/first-day.spec.ts tests/e2e/lab.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/mic.spec.ts tests/e2e/modes-ladder.spec.ts tests/e2e/modes-rhythm-only.spec.ts tests/e2e/modes-technique-measure.spec.ts tests/e2e/score.countin.spec.ts tests/e2e/score.latch.spec.ts tests/e2e/score.readahead.spec.ts tests/e2e/score.rhythm-ladder.spec.ts tests/e2e/score.run.spec.ts tests/e2e/score.screen.spec.ts --workers=4

@@ -32,6 +32,8 @@ A rung says its music teaches the bass clef, a key signature, a walking bass or 
 - **How the clef enters the model:** per staff, per measure or per note. Show what a one-staff bass part and a mid-piece clef change look like in the model.
 - **How a key change reaches the key-signature and chromatic detectors,** and whether `keySig` stays as the opening key for its current readers.
 
+**From the review** (`responses/385c0131.md` §1): before any share, state for each detector which bars are eligible (silence, a pickup or introduction, an ending or coda, a melody held across the barline), then test the deferred examples and the two-bar refusal. Never choose a threshold because it empties the deferral table. The clef takes the smallest shape that keeps a one-staff bass part and a change in force over time; `keySig` stays for its opening-key readers while time-local detectors get the key in force.
+
 ## Done when
 
 - **Red-first unit cases, one per reading:**
@@ -81,4 +83,4 @@ The harness is `operating-procedure.md` §14. Never name an AI model in any file
 lane: CL10a · closes: R32, R36, R37, E22 · entry: 225
 index: The detectors read the clef, the key in force, the metre and a held tune, and judge a pattern by its share of bars (`CL10a-the-detectors-read-what-the-music-holds.md`) | build | drafted 2026-10-02 (`CL10a-the-detectors-read-what-the-music-holds.md`); Entry 225
 in-flight: drafted 2026-10-02 (`CL10a-the-detectors-read-what-the-music-holds.md`): CL10's detector rows; the clef and the key per bar in the model, the walk read in simple time, the held tune, share in place of every bar, the deferrals emptied where readings establish them (Entry 225)
-state: with-reviewer 2026-10-02: in the batch review of five briefs before dispatch (Entry 225)
+state: approved 2026-10-02: approved before dispatch, the share rule left open under its stop condition, eligible bars first (Entry 225)
