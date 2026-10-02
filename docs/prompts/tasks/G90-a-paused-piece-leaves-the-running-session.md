@@ -95,4 +95,4 @@ Built by the outside builder on `chatgpt/g90`. The checks it cannot run are run 
 lane: G90 · closes: G90, T20 · entry: 217
 index: A piece paused after Start session leaves the running session at its turn, skipped with its reason; no lesson id in the heading while it loads (`G90-a-paused-piece-leaves-the-running-session.md`) | build | drafted 2026-10-02 (`G90-a-paused-piece-leaves-the-running-session.md`); Entry 217
 in-flight: drafted 2026-10-02 (`G90-a-paused-piece-leaves-the-running-session.md`): a narrow sweep of two settled rows; the live veto at the activity boundary as ruled, and the lesson heading without its id (Entry 217)
-state: drafted 2026-10-02: re-dispatched to the outside builder; the first dispatch to another builder was stopped unbuilt (Entry 217)
+state: dispatched 2026-10-02: dispatched at cd6a62ee to the outside builder, on its branch (Entry 217)
