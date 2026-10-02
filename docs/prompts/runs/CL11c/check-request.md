@@ -6,7 +6,7 @@
   - `Stop after completed looping reports and saves the last completed lap…` must fail because the completed lap/Stop score still carries the cumulative population.
   - `a non-looped Keep tempo run keeps the existing one-pass population` must pass.
 
-## Round two — check this request’s commit HEAD
+## Round two — implementation head `feca88db498c9561327a58027f75cb9a3a175b11`
 
 No pass is claimed. From `app/`, run:
 
@@ -17,4 +17,4 @@ npx tsc -b
 
 Expected green: completed lap counts remain lap-local; Stop preserves the whole active duration; the late-D case reads the completed lap; ScoreScreen builds and records a failed measured RunResult from the stopped engine score. The evidence files exercise the shared observation helper’s use of the final stopped score.
 
-The exact head is the commit containing this request (resolve with `git rev-parse HEAD` on `chatgpt/cl11c`); no self-referential SHA is invented. Publish results against that head. No CI wait or mutants requested.
+Run these checks at `feca88db498c9561327a58027f75cb9a3a175b11`, the implementation commit immediately before this request-only update. Publish results against that exact head. No CI wait or mutants requested.
