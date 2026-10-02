@@ -363,6 +363,8 @@ export class PracticeEngine {
   private wrongNotesTotal = 0;
   private missedTotal = 0;
   private hits = 0;
+  /** The completed lap Stop should report once looping has produced one. */
+  private lastCompletedLoopScore: SessionScore | null = null;
   private rolledChordSteps = 0;
   private lenientChordSteps = 0;
   private readonly deltas: number[] = [];
@@ -524,6 +526,7 @@ export class PracticeEngine {
     this.idleTotalMs = 0;
     this.finishedAtMs = null;
     this.loopsCompleted = 0;
+    this.lastCompletedLoopScore = null;
     // The count-in leads into the bar the run starts on. It used to lead into
     // bar 1 wherever the run started, so the first pass of a loop at bar 20
     // waited in silence for bars 1–19 and marked its own first note wrong
@@ -691,7 +694,11 @@ export class PracticeEngine {
     this.latchPending = false;
     this.running = false;
     this.finished = true;
-    this.emit({ kind: 'finished', loop: false, tMs: now, score: this.buildScore() });
+    const score =
+      this.session.options.loop && this.lastCompletedLoopScore !== null
+        ? { ...this.lastCompletedLoopScore, durationMs: this.elapsedMs }
+        : this.buildScore();
+    this.emit({ kind: 'finished', loop: false, tMs: now, score });
   }
 
   /**
@@ -1653,17 +1660,16 @@ export class PracticeEngine {
       return;
     }
     this.loopsCompleted += 1;
-    this.emit({ kind: 'finished', loop: true, tMs, score: this.buildScore() });
+    const lapScore = this.buildScore();
+    this.lastCompletedLoopScore = lapScore;
+    this.emit({ kind: 'finished', loop: true, tMs, score: lapScore });
     const from = this.step;
     this.step = this.session.firstStep;
-    this.progress = freshProgress();
-    this.earlyBuffer = new Set();
+    // A lap is the scoring/evidence population. Clear every component that
+    // buildScore reads before the repeated step indexes begin again.
+    this.resetRunTotals();
     this.openSlots.clear();
     this.heldUntil.clear();
-    this.earlyStrikes.clear();
-    // The step indexes repeat in the next lap: what was missed, and what a late strike stood for, is this lap's.
-    this.missedPitches.clear();
-    this.lateStruck.clear();
     if (this.mode === 'wait' || this.mode === 'free') {
       const start = nextPlayableStep(this.session.steps, this.session.firstStep, this.session.lastStep);
       this.step = start ?? this.session.firstStep;
@@ -1704,6 +1710,7 @@ export class PracticeEngine {
     this.missedTotal = 0;
     this.hits = 0;
     this.rolledChordSteps = 0;
+    this.lenientChordSteps = 0;
     this.deltas.length = 0;
     this.missesByMeasure.clear();
     this.wrongsByMeasure.clear();

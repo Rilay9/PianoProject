@@ -1452,3 +1452,8 @@ play three chords (C, F, G) (chord leniency check). Stores to `micCalibration`. 
   owner shares back; these become regression fixtures for the HP-130 + S25 combination.
 - **Optional tier 2 (later):** Spotify's Basic Pitch model via TensorFlow.js for Free-mode
   transcription and for turning a recorded improvisation into notation; not needed for follow.
+
+
+### CL11c — loop scoring population
+
+A loop is judged one completed lap at a time. At each lap boundary the engine emits that lap's score, then clears the score/evidence totals before the repeated step indexes begin again; the tempo ladder therefore judges each lap alone. If the learner presses Stop after at least one completed lap, the summary and stored run use the last completed lap rather than the partial lap that has just begun. If no lap has completed, Stop reports the current partial run as before. Loop count remains run context; it is not a scoring denominator.

@@ -110,7 +110,7 @@ export function play(data: ScoreModelData, plan: RunPlan = {}): { score: Session
       }
     }
     if (!h.engine.state.finished) h.engine.stop();
-    return { score: h.engine.state.score, h };
+    return { score: h.of('finished').filter((event) => !event.loop).at(-1)?.score ?? h.engine.state.score, h };
   }
   const origin = steps[firstStep]?.tMs ?? 0;
   for (let index = firstStep; index <= lastStep; index += 1) {
@@ -127,9 +127,15 @@ export function play(data: ScoreModelData, plan: RunPlan = {}): { score: Session
     for (const midi of [...keys, ...strays]) h.release(midi);
   }
   const last = steps[lastStep];
-  until(h, (last ? last.tMs - origin + last.durMs : 0) + 4 * BEAT_MS);
+  const end = (last ? last.tMs - origin + last.durMs : 0) + 4 * BEAT_MS;
+  if (plan.loop) {
+    // The plan plays one lap; stop at its finish rather than score later silent laps.
+    while (h.clock.now() < end && !h.of('finished').some((event) => event.loop)) {
+      until(h, Math.min(end, h.clock.now() + 16));
+    }
+  } else until(h, end);
   if (!h.engine.state.finished) h.engine.stop();
-  return { score: h.engine.state.score, h };
+  return { score: h.of('finished').filter((event) => !event.loop).at(-1)?.score ?? h.engine.state.score, h };
 }
 
 /** A C1 observation of the plan's run: the measures and the header the Score screen writes. */
