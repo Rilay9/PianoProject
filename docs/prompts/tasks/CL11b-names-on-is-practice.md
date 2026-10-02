@@ -56,9 +56,12 @@ Judgement first: what a learner's evidence now says. Then:
 
 `operating-procedure.md` §14. Port **5523**, from a config copy under `app/build/cl11b/`; `--workers=2`. Never name an AI model in any file.
 
+**Landed 2026-10-02** (Entry 220; 4a17f576, merged 1c89c359); handoff `handoffs/4a17f576.md`.
+
 ## Record
 
 lane: CL11b · closes: L58, L57 · entry: 220
 index: A Wait read with the names on is practice, not unaided reading, and the evidence numbers live with the skill: CL11's content lane (`CL11b-names-on-is-practice.md`) | build | drafted 2026-10-02 (`CL11b-names-on-is-practice.md`); Entry 220
 in-flight: drafted 2026-10-02 (`CL11b-names-on-is-practice.md`): CL11's lane 2, the names-off condition, the vocabulary's support share and precision, evidence definitions 6 with one recompute (Entry 220)
 state: dispatched 2026-10-02: dispatched at 111fcb93, building here (Entry 220)
+- landed 2026-10-02: merged 1c89c359; handoff `handoffs/4a17f576.md`

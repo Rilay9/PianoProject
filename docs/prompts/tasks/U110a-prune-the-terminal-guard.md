@@ -56,3 +56,4 @@ index: The window renderer's terminal exception pruned unless a residual overlap
 in-flight: drafted 2026-10-02 (`U110a-prune-the-terminal-guard.md`): a fix-forward on U110, the reviewer's required change; second read, prune, U110's instruments rerun (Entry 218)
 state: dispatched 2026-10-02: dispatched at 345ffda4, finishing here from the outside builder's pruning at f11cd7c6 (Entry 218)
 - landed 2026-10-02: merged 024c5883; handoff `handoffs/eddd5c95.md`
+- verdict 2026-10-02: APPROVE WITH ONE REQUIRED CHANGE (`responses/eddd5c95.md`): the packing predicate is the right mechanism; the state that earns the exception must be reproduced in a browser, or the exception removed; carried by U110b (Entry 222)
