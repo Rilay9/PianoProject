@@ -57,3 +57,4 @@ in-flight: drafted 2026-10-02 (`U110a-prune-the-terminal-guard.md`): a fix-forwa
 state: dispatched 2026-10-02: dispatched at 345ffda4, finishing here from the outside builder's pruning at f11cd7c6 (Entry 218)
 - landed 2026-10-02: merged 024c5883; handoff `handoffs/eddd5c95.md`
 - verdict 2026-10-02: APPROVE WITH ONE REQUIRED CHANGE (`responses/eddd5c95.md`): the packing predicate is the right mechanism; the state that earns the exception must be reproduced in a browser, or the exception removed; carried by U110b (Entry 222)
+- closed 2026-10-02: its required change carried by U110b, approved (`responses/8d391dfa.md`)

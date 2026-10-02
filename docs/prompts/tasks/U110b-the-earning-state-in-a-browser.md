@@ -30,3 +30,5 @@ index: The state that earns U110a's packing exception, reproduced in a real brow
 in-flight: drafted 2026-10-02 (`U110b-the-earning-state-in-a-browser.md`): a fix-forward on U110a, the reviewer's required change; a browser probe of a height-only shrink after a spent ladder, or the exception removed (Entry 222)
 state: dispatched 2026-10-02: dispatched at 06df5891, building here (Entry 222)
 - landed 2026-10-02: merged 063e0a88; handoff `handoffs/8d391dfa.md`
+- verdict 2026-10-02: APPROVE (`responses/8d391dfa.md`): keep the packing exception; stability during a browser-bar resize is the invariant, not only the absence of overlap
+- closed 2026-10-02: U110a's required change done
