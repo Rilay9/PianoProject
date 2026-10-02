@@ -6,6 +6,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- `handoffs/3bb9d281.md` — **open**, respond in `responses/3bb9d281.md`: U122c, the Score screen shows each moment what it needs, on phone sideways, phone upright and tablet (Entry 216).
 - `handoffs/4a17f576.md` — **open**, respond in `responses/4a17f576.md`: CL11b, a Wait read with the names on is practice, not unaided reading, and the evidence numbers live with the skill (Entry 220).
 - `handoffs/eddd5c95.md` — **answered** in `responses/eddd5c95.md`: U110a approved with one required change (the earning state reproduced in a browser, or the exception removed), carried by U110b.
 - `handoffs/1c75de8d.md` — **answered** in `responses/1c75de8d.md`: G90 approved with one required change (the held skip as one lifecycle truth), carried by G90a; T20 approved.

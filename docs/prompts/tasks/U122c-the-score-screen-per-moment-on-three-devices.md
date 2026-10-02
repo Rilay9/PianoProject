@@ -116,6 +116,8 @@ Lead with the judgement: what a learner now meets in each moment on each device,
 
 `operating-procedure.md` §14. Port **5453**, from a config copy under `app/build/u122c/`; `--workers=2`. Start from the outside builder's red test, `app/tests/e2e/score.task-chrome.spec.ts` on `origin/chatgpt/u122c` (read it with `git show`; it is not on the working branch), and its before-run results and pictures (`docs/prompts/runs/U122c/checks-44fd5fd2.txt`, `docs/prompts/pictures/u122c/before-*`) once published. Judge that test as you would your own. Never name an AI model in any file.
 
+**Landed 2026-10-02** (Entry 216; 3bb9d281, merged d594673b); handoff `handoffs/3bb9d281.md`.
+
 ## Record
 
 lane: U122c · closes: U122, U120, U121, U124 · entry: 216
@@ -125,3 +127,4 @@ state: approved 2026-10-02: APPROVE (the reviewer, at adb0873a §1): the upright
 - dispatched 2026-10-02: dispatched at ba00c579 to the outside builder, on its branch
 - held 2026-10-02: withdrawn from the outside builder after its red test (the owner: its limits run out too fast); re-dispatched to a builder here
 - dispatched 2026-10-02: dispatched at af18a3ae, building here
+- landed 2026-10-02: merged d594673b; handoff `handoffs/3bb9d281.md`
