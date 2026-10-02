@@ -2352,7 +2352,10 @@ whole with the stage's edge cutting it like the edge of a page, and the row says
 window — the next bar continues past the edge*; or **compact**, cut inside the stage between
 two notes with a short fade, and the row says *Bars in window — only the start of the next bar
 fits*. Run-off was chosen from the pictures: compact's cut fell inside beamed groups on the
-Nocturne and left a stub of beam that reads as a fault.
+Nocturne and left a stub of beam that reads as a fault. **And it is drawn only below the
+window's rows, never into them (U110):** where the stage has no row's height left under the
+window at its size, there is no greyed row, and no row's chord symbols or fingering reach the
+row above (`08-score-render-states.md` invariant 40).
 
 **Two things this settles.** In **`Scroll`** the row is *gone*, not greyed — the whole piece
 is one sheet there and a window has no meaning (`§0` R4) — and the Layout row says where the

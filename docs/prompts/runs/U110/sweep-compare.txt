@@ -1,0 +1,25 @@
+chopin-nocturne-op48-1.nifc-412x915 bars 3 open: shape 3/3/3 -> 3/3/3, ladder 1 -> 2, overlap -34 -> -34
+   before W0-0@0:29..178 W1-1@185:212..375 W2-2@384:411..587
+   after  W0-0@0:29..178 W1-1@185:212..375 W2-2@383:410..586
+chopin-nocturne-op48-1.nifc-412x915 bars 3 reload: shape 3/3/3 -> 3/3/3, ladder 1 -> 2, overlap -34 -> -34
+   before W0-0@0:29..178 W1-1@185:212..375 W2-2@384:411..587
+   after  W0-0@0:29..178 W1-1@185:212..375 W2-2@383:410..586
+ode-to-joy.ht-360x780 bars 2 open: shape 3/2/2 -> 2/2/2, ladder 6 -> 1, overlap 72 -> -24
+   before W0-0@0:7..269 W1-1@190:197..459 G2-2@381:388..650
+   after  W0-0@0:7..269 W1-1@286:293..555
+ode-to-joy.ht-360x780 bars 2 reload: shape 3/2/2 -> 2/2/2, ladder 6 -> 1, overlap 72 -> -24
+   before W0-0@0:7..269 W1-1@190:197..459 G2-2@381:388..650
+   after  W0-0@0:7..269 W1-1@286:293..555
+twinkle.ht-360x780 bars 3 open: shape 3/2/3 -> 2/2/3, ladder 6 -> 3, overlap 12 -> -35
+   before W0-1@0:7..205 W2-2@190:197..395 G3-4@381:383..585
+   after  W0-1@0:7..205 W2-2@233:240..438
+twinkle.ht-360x780 bars 3 reload: shape 3/2/3 -> 2/2/3, ladder 6 -> 3, overlap 12 -> -35
+   before W0-1@0:7..205 W2-2@190:197..395 G3-4@381:383..585
+   after  W0-1@0:7..205 W2-2@233:240..438
+twinkle.ht-360x780 bars 4 open: shape 3/2/4 -> 2/2/4, ladder 6 -> 3, overlap 12 -> -35
+   before W0-1@0:7..205 W2-3@190:197..395 G4-5@381:383..585
+   after  W0-1@0:7..205 W2-3@233:240..438
+twinkle.ht-360x780 bars 4 reload: shape 3/2/4 -> 2/2/4, ladder 6 -> 3, overlap 12 -> -35
+   before W0-1@0:7..205 W2-3@190:197..395 G4-5@381:383..585
+   after  W0-1@0:7..205 W2-3@233:240..438
+120 of 128 loads drew the same shape and the same rows before and after
