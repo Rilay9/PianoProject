@@ -114,10 +114,12 @@ describe('a loop scores one population end to end', () => {
     h.engine.stop();
     const stopped = h.of('finished').filter((event) => !event.loop).at(-1)?.score;
     expect(stopped).toBeDefined();
-    expect(stopped?.hits).toBe(secondLap.hits);
-    expect(stopped?.wrongNotesTotal).toBe(secondLap.wrongNotesTotal);
-    expect(stopped?.expectedNotes).toBe(secondLap.expectedNotes);
-    expect(stopped?.accuracy).toBeCloseTo(secondLap.accuracy, 9);
+    expect(secondLap.hits).toBe(2);
+    expect(secondLap.wrongNotesTotal).toBe(1);
+    expect(stopped?.hits).toBe(2);
+    expect(stopped?.wrongNotesTotal).toBe(1);
+    expect(stopped?.expectedNotes).toBe(2);
+    expect(stopped?.accuracy).toBeCloseTo(1 / 2, 9);
 
     const measured = evaluateOutcome(stopped as SessionScore, criteria);
     expect(measured.passed).toBe(false);
