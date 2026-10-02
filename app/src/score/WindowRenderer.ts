@@ -1797,7 +1797,7 @@ export class WindowRenderer {
     if (priced.sizeTargetAbs !== undefined) this.sizeTargetAbs = priced.sizeTargetAbs;
     if (priced.priced !== undefined) this.priced = priced.priced;
     return priced.settle
-      ? this.settleShape(stage.width, priced.slots, priced.systems, priced.shown, priced.aheadMeasured === true)
+      ? this.settleShape(stage.width, priced.slots, priced.systems, priced.shown)
       : { slots: priced.slots, systems: priced.systems, shown: priced.shown };
   }
 
@@ -1824,8 +1824,6 @@ export class WindowRenderer {
     why?: WindowWhy | null;
     sizeTargetAbs?: number;
     priced?: unknown;
-    /** Whether the look-ahead row was priced from the rows drawn at this zoom, not predicted (U110, `settleShape`). */
-    aheadMeasured?: boolean;
   } {
     const asked = Math.max(1, this.barsPerWindow);
     const pieceBars = Math.max(1, this.model.sourceMeasureCount);
@@ -2086,14 +2084,6 @@ export class WindowRenderer {
       );
     };
     const ahead = aheadFor(choice.shown, choice.systems, choice.drawn, choice.maxSlots);
-    // The same condition under which `aheadFor` priced the chosen shape from
-    // what is drawn: this shape on the glass, fitted at this zoom.
-    const aheadMeasured =
-      drawnHere &&
-      this.systemsPerWindow === choice.systems &&
-      this.shownBars === choice.shown &&
-      this.currentScale() > 0 &&
-      this.drawnRowPx > 0;
     // Every count's best shape, the five-line staff it would draw and whether
     // it would keep a look-ahead row below, so the floor's number and what one
     // bar fewer buys can be judged from one pass (`debugFit`, T38 item 5,
@@ -2116,7 +2106,6 @@ export class WindowRenderer {
       systems: choice.systems,
       shown: choice.shown,
       settle: true,
-      aheadMeasured,
       why,
       sizeTargetAbs,
       priced: {
@@ -2218,36 +2207,15 @@ export class WindowRenderer {
     else this.el.dataset.windowWhy = why;
   }
 
-  /**
-   * The chosen shape, or the one already drawn when the ladder is spent —
-   * except a look-ahead row the drawn rows measure as not fitting, which goes
-   * (U110). `aheadMeasured`: the chosen shape's look-ahead row was priced
-   * from the rows drawn at this zoom (`priceWindowShape`).
-   */
+  /** The chosen shape, or the one already drawn when the reshape ladder is spent. */
   private settleShape(
     stageWidth: number,
     slots: number,
     systems: number,
     shown: number,
-    aheadMeasured = false,
   ): { slots: number; systems: number; shown: number } {
     const same = slots === this.slotCount && systems === this.systemsPerWindow && shown === this.shownBars;
     if (same || this.mayReshape(stageWidth)) return { slots, systems, shown };
-    // **A spent ladder never keeps a look-ahead row the drawn rows have no
-    // room for (U110).** Kept, the slots are given even shares of a stage the
-    // window's rows already fill and every row's ink runs into the next one:
-    // Ode to Joy at 360 x 780, where the ladder ran out on a row granted from a
-    // mispriced pass, and Twinkle at 342 x 740 Bars 3 while its chrome lays
-    // out, where the look-ahead row priced from the rows drawn is granted
-    // without it and refused with it (its own ink is the taller), until the
-    // ladder runs out. Only when that answer was measured from the glass: a
-    // pass predicting from the piece's tallest system can say *no room* where
-    // the drawn rows have it (T38), and taking a row away on that would lose
-    // look-ahead the stage holds. It only ever removes a row, so the ladder
-    // still ends.
-    if (aheadMeasured && systems === this.systemsPerWindow && shown === this.shownBars && slots < this.slotCount) {
-      return { slots, systems, shown };
-    }
     return { slots: this.slotCount, systems: this.systemsPerWindow, shown: this.shownBars };
   }
 
