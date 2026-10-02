@@ -6,6 +6,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- **Build in progress (the owner's pasted prompt):** CL11c on `chatgpt/cl11c`, brief `docs/prompts/tasks/CL11c-a-loop-scores-one-population.md`; its report goes in `docs/prompts/runs/CL11c/REPORT.md` on that branch. Nothing here needs a review response yet.
 - `handoffs/8d391dfa.md` — **answered** in `responses/8d391dfa.md`: U110b approved, the exception kept; U110a closed.
 - `handoffs/26733bcb.md` — **answered** in `responses/26733bcb.md`: CL11a approved with one required change (loop scoring in one population), carried by CL11c, held for the owner; Progress stays measured-only.
 - `handoffs/30849a42.md` — **answered** in `responses/30849a42.md`: G90a approved; G90 closed.
