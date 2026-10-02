@@ -61,4 +61,4 @@ Judgement first: what a learner's evidence now says. Then:
 lane: CL11b · closes: L58, L57 · entry: 220
 index: A Wait read with the names on is practice, not unaided reading, and the evidence numbers live with the skill: CL11's content lane (`CL11b-names-on-is-practice.md`) | build | drafted 2026-10-02 (`CL11b-names-on-is-practice.md`); Entry 220
 in-flight: drafted 2026-10-02 (`CL11b-names-on-is-practice.md`): CL11's lane 2, the names-off condition, the vocabulary's support share and precision, evidence definitions 6 with one recompute (Entry 220)
-state: drafted 2026-10-02: approved design, dispatch now (Entry 220)
+state: dispatched 2026-10-02: dispatched at 111fcb93, building here (Entry 220)

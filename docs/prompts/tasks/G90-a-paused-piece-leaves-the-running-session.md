@@ -90,9 +90,12 @@ Lead with the judgement: what a learner now meets. Then:
 
 `operating-procedure.md` §14. Port **5463**, from a config copy under `app/build/g90/`; `--workers=2`. Never name an AI model in any file.
 
+**Landed 2026-10-02** (Entry 217; 1c75de8d, merged 8ab91f13); handoff `handoffs/1c75de8d.md`.
+
 ## Record
 
 lane: G90 · closes: G90, T20 · entry: 217
 index: A piece paused after Start session leaves the running session at its turn, skipped with its reason; no lesson id in the heading while it loads (`G90-a-paused-piece-leaves-the-running-session.md`) | build | drafted 2026-10-02 (`G90-a-paused-piece-leaves-the-running-session.md`); Entry 217
 in-flight: drafted 2026-10-02 (`G90-a-paused-piece-leaves-the-running-session.md`): a narrow sweep of two settled rows; the live veto at the activity boundary as ruled, and the lesson heading without its id (Entry 217)
 state: dispatched 2026-10-02: dispatched at aac5bb8d, building here (Entry 217)
+- landed 2026-10-02: merged 8ab91f13; handoff `handoffs/1c75de8d.md`
