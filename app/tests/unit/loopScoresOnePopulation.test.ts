@@ -64,8 +64,15 @@ const cleanLap: readonly Strike[] = [
   { at: BEAT_MS, midi: 62 },
 ];
 
+const criteria = {
+  passAccuracy: 0.9,
+  passTempoPct: 0,
+  masterAccuracy: 0.97,
+  masterTempoPct: 100,
+};
+
 describe('a loop scores one population end to end', () => {
-  it('two counted laps use two laps of expected notes, so a wrong key on lap two still costs one note', () => {
+  it('each completed lap is its own population, so a wrong key on lap two still costs one note', () => {
     const { secondLap } = playLoop(cd, cleanLap, (zero) => [
       { at: zero, midi: 60 },
       { at: zero + BEAT_MS, midi: 62 },
@@ -73,32 +80,23 @@ describe('a loop scores one population end to end', () => {
       { at: zero + BEAT_MS + 20, midi: 68 },
     ]);
 
+    // Two laps have happened, but the score the learner just earned describes lap two.
     expect(secondLap.loops).toBe(2);
-    expect(secondLap.hits).toBe(4);
+    expect(secondLap.hits).toBe(2);
     expect(secondLap.wrongNotesTotal).toBe(1);
+    expect(secondLap.expectedNotes).toBe(2);
+    expect(secondLap.totalSteps).toBe(2);
+    expect(secondLap.accuracy).toBeCloseTo(1 / 2, 9);
+    expect(evaluateOutcome(secondLap, criteria).passed).toBe(false);
 
-    // The numerator already spans both laps. The denominator must describe the same population.
-    expect(secondLap.expectedNotes).toBe(4);
-    expect(secondLap.totalSteps).toBe(4);
-    expect(secondLap.accuracy).toBeCloseTo(3 / 4, 9);
-    expect(
-      evaluateOutcome(secondLap, {
-        passAccuracy: 0.9,
-        passTempoPct: 0,
-        masterAccuracy: 0.97,
-        masterTempoPct: 100,
-      }).passed,
-    ).toBe(false);
-
-    // The stored observation must use that same population. `right` remains the observed
-    // in-window notes; the wrong key is a separate observation and the verdict above charges it.
+    // Observation/evidence uses that same lap: no one-lap denominator beside a multi-lap numerator.
     const measures = measuresOf(secondLap, {
       heard: true,
       technique: null,
       pedalMeasurable: false,
       steps: [],
     });
-    expect(measures.pitch).toMatchObject({ definition: 'tempo-notes', right: 4, of: 4 });
+    expect(measures.pitch).toMatchObject({ definition: 'tempo-notes', right: 2, of: 2 });
     expect(secondLap.stepOutcomes?.wrong.length).toBeGreaterThan(0);
   });
 
