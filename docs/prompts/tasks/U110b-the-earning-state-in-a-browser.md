@@ -21,9 +21,12 @@ Keep before and after pictures and the measured row boxes. Phone upright is enou
 
 `operating-procedure.md` §14. Port **5473**, from a config copy under `app/build/u110b/`; `--workers=1`. Never name an AI model in any file.
 
+**Landed 2026-10-02** (Entry 222; 8d391dfa, merged 063e0a88); handoff `handoffs/8d391dfa.md`.
+
 ## Record
 
 lane: U110b · closes: — · entry: 222
 index: The state that earns U110a's packing exception, reproduced in a real browser, or the exception removed (`U110b-the-earning-state-in-a-browser.md`) | app | drafted 2026-10-02 (`U110b-the-earning-state-in-a-browser.md`); Entry 222
 in-flight: drafted 2026-10-02 (`U110b-the-earning-state-in-a-browser.md`): a fix-forward on U110a, the reviewer's required change; a browser probe of a height-only shrink after a spent ladder, or the exception removed (Entry 222)
 state: dispatched 2026-10-02: dispatched at 06df5891, building here (Entry 222)
+- landed 2026-10-02: merged 063e0a88; handoff `handoffs/8d391dfa.md`

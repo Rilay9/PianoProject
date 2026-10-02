@@ -292,7 +292,7 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **CL11a** | Keep tempo charges a wrong key, a microphone pass counts on Today, Progress keeps the learner's word as theirs: CL11's app-code lane (`CL11a-keep-tempo-charges-a-wrong-key.md`) | build | drafted 2026-10-02 (`CL11a-keep-tempo-charges-a-wrong-key.md`); Entry 219; landed 2026-10-02: merged 0eca83a1; handoff `handoffs/26733bcb.md`
 | **CL11b** | A Wait read with the names on is practice, not unaided reading, and the evidence numbers live with the skill: CL11's content lane (`CL11b-names-on-is-practice.md`) | build | drafted 2026-10-02 (`CL11b-names-on-is-practice.md`); Entry 220; landed 2026-10-02: merged 1c89c359; handoff `handoffs/4a17f576.md`; verdict 2026-10-02: APPROVE (`responses/4a17f576.md`): the precision format accepted; `transfer.ts`'s `establishing` stays on the shipped vocabulary; closed 2026-10-02: L58 and L57 built
 | **G90a** | The held skip as one lifecycle truth: its own kind, its reason on Today's row, swap and pause ordered by time (`G90a-the-held-skip-as-one-lifecycle-truth.md`) | app | drafted 2026-10-02 (`G90a-the-held-skip-as-one-lifecycle-truth.md`); Entry 221; landed 2026-10-02: merged 3c2d9593; handoff `handoffs/30849a42.md`; verdict 2026-10-02: APPROVE (`responses/30849a42.md`): the three choices accepted; the procedure line warranted; closed 2026-10-02: G90's required change done; three P3 leftovers in its entry
-| **U110b** | The state that earns U110a's packing exception, reproduced in a real browser, or the exception removed (`U110b-the-earning-state-in-a-browser.md`) | app | drafted 2026-10-02 (`U110b-the-earning-state-in-a-browser.md`); Entry 222
+| **U110b** | The state that earns U110a's packing exception, reproduced in a real browser, or the exception removed (`U110b-the-earning-state-in-a-browser.md`) | app | drafted 2026-10-02 (`U110b-the-earning-state-in-a-browser.md`); Entry 222; landed 2026-10-02: merged 063e0a88; handoff `handoffs/8d391dfa.md`
 | **U122d** | U122c's two stopped cells closed: no control under the floor on narrow upright rows, and the finished view says its verdict (`U122d-the-two-stopped-cells.md`) | app | drafted 2026-10-02 (`U122d-the-two-stopped-cells.md`); Entry 223
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
@@ -451,7 +451,7 @@ U110a · verdict · 218
 CL11a · landed · 219
 CL11b · closed · 220
 G90a · closed · 221
-U110b · dispatched · 222
+U110b · landed · 222
 U122d · held · 223
 F0a · closed · —
 L120 · approved · —
