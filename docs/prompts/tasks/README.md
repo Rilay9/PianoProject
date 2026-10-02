@@ -436,7 +436,7 @@ G30 · landed · 211
 U110 · landed · 212
 X46 · landed · 213
 U122b · verdict · 214
-CL11 · drafted · 215
+CL11 · dispatched · 215
 F0a · closed · —
 L120 · approved · —
 -->

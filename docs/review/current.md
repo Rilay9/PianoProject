@@ -6,6 +6,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- `handoffs/06af14cd.md` — **open**: (1) the evidence addendum that unblocks X46 (`responses/52363ba7.md`) and U110 (`responses/bbbdffb0.md`); (2) **build request** CL11 on `chatgpt/cl11`, respond in `responses/06af14cd.md`.
 - `handoffs/0d6ff3f3.md` — **open**, respond in `responses/0d6ff3f3.md`: G30, printed fingering only where sourced: every family whose contract calls its fingering unsourced now prints none, repeated_notes by its declared changing-finger solution (Entry 211).
 - `handoffs/bbbdffb0.md` — **open**, respond in `responses/bbbdffb0.md`: U110, rows the window grants never overlap at the frozen size: a slot priced from a zoom the search only tried, and a reshape ladder that ran out on a grant, both fixed in the window plan (Entry 212).
 - `handoffs/52363ba7.md` — **open**, respond in `responses/52363ba7.md`: X46, one story for a session item from truths already stored: a run Today composes for its rung opens where it can count, the sheet names the standard and offers the attempt, Today marks done only where the run counted (Entry 213).
