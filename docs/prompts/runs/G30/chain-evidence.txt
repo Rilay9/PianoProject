@@ -1,0 +1,36 @@
+# G30: the landing chain on the merged main checkout, as run (orchestrator's chain; machine paths removed)
+
+## Exit codes
+
+map-tests exit=0
+map-min exit=0
+content-build exit=0
+content-validate exit=0
+review-check exit=0
+content-tests exit=1
+tsc exit=0
+lint exit=0
+vitest-all exit=1
+build-app exit=0
+SPECS: tests/e2e/competence.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/lesson-tools.spec.ts tests/e2e/microscope.spec.ts tests/e2e/placement-branches.spec.ts tests/e2e/plan.spec.ts tests/e2e/side-panel-prose.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/today.spec.ts
+specs-exist exit=0
+e2e-targeted exit=0
+CHAIN DONE 00:00:19
+
+## vitest-all (exit 1)
+
+     × blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them 13ms
+     × 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot 3ms
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+AssertionError: expected false to be true // Object.is equality
+ Test Files  1 failed | 330 passed (331)
+      Tests  2 failed | 7699 passed | 5 skipped | 1 todo (7707)
+
+## content-tests (exit 1)
+
+ERROR: test_committed_mirrors_equal_generated (tests.test_record_mirrors.TheCommittedMirrors.test_committed_mirrors_equal_generated)
+ERROR: test_the_tree_round_trips (tests.test_record_mirrors.TheCommittedMirrors.test_the_tree_round_trips)
+Ran 1713 tests in 440.039s
+FAILED (errors=2, skipped=2)
+

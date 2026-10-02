@@ -117,6 +117,8 @@ As `operating-procedure.md` §14. This lane's own port is **5413** — unused in
 
 **Not yours:** every family contract row not among the 43 named in Premise 1; `app/src/score/OsmdView.ts`, `WindowRenderer.ts`, `settingsStore.ts` (Premise 2 — read for the finding, not edited); CL15's other files (`generate_exercises.py`'s non-fingering changes, the tremolo/pentatonic/syncopation/walking-bass music content itself) — landed, not reopened; CL11's cluster (`eligibilityCore.ts`, `candidates.ts`, `eligibility.ts`) — unrelated to this lane.
 
+**Landed 2026-10-02** (Entry 211; 0d6ff3f3, merged f0926603); handoff `handoffs/0d6ff3f3.md`.
+
 ## Record
 
 lane: G30 · closes: G30 · entry: 211
@@ -124,3 +126,4 @@ index: Printed fingering removed from the 43 generator families whose own contra
 in-flight: brief drafted 2026-10-01 (`G30-printed-fingering-only-where-sourced.md`): unsourced printed fingering removed from 43 generator families, learner continuity bridged through CL15's existing relation, no new identity system (G30; tier 1, never-teach-wrong); with the reviewer before dispatch (Entry 211).
 state: drafted 2026-10-01: with the reviewer before dispatch (Entry 211)
 - dispatched 2026-10-02: dispatched at 7d9de990 as the narrow never-teach-wrong seam the reviewer named (`responses/questions-90b19bee.md` §1), no further pre-review (Entry 211)
+- landed 2026-10-02: merged f0926603; handoff `handoffs/0d6ff3f3.md`

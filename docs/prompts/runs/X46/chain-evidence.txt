@@ -1,0 +1,62 @@
+# X46: the landing chain on the merged main checkout, as run (orchestrator's chain; machine paths removed)
+
+## Exit codes
+
+map-tests exit=0
+map-min exit=0
+tsc exit=0
+lint exit=0
+vitest-all exit=1
+build-app exit=0
+SPECS: tests/e2e/app-shell.spec.ts tests/e2e/converted-import.spec.ts tests/e2e/doors.spec.ts tests/e2e/empty-states.spec.ts tests/e2e/engine.spec.ts tests/e2e/feedback-placement.spec.ts tests/e2e/first-day.spec.ts tests/e2e/help-strip.spec.ts tests/e2e/lab.spec.ts tests/e2e/landscape.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/mic.spec.ts tests/e2e/midi-import.spec.ts tests/e2e/modes-chart-from-the-score.spec.ts tests/e2e/modes-duet.spec.ts tests/e2e/modes-engraving.spec.ts tests/e2e/modes-free-play.spec.ts tests/e2e/modes-ladder.spec.ts tests/e2e/modes-placement.spec.ts tests/e2e/modes-rhythm-only.spec.ts tests/e2e/modes-technique-measure.spec.ts tests/e2e/progress.hierarchy.spec.ts tests/e2e/progress.spec.ts tests/e2e/projects.spec.ts tests/e2e/score.arrange-race.spec.ts tests/e2e/score.bar-targets.spec.ts tests/e2e/score.blind.spec.ts tests/e2e/score.countin.spec.ts tests/e2e/score.fill.spec.ts tests/e2e/score.fuzz.spec.ts tests/e2e/score.head-height.spec.ts tests/e2e/score.hearIt.spec.ts tests/e2e/score.hearbar.spec.ts tests/e2e/score.ladder-route.spec.ts tests/e2e/score.latch.spec.ts tests/e2e/score.layout.spec.ts tests/e2e/score.pickup-numbers.spec.ts tests/e2e/score.readahead.spec.ts tests/e2e/score.rhythm-ladder.spec.ts tests/e2e/score.rotate.spec.ts tests/e2e/score.run.spec.ts tests/e2e/score.screen.spec.ts tests/e2e/score.sheet-rows.spec.ts tests/e2e/score.states.spec.ts tests/e2e/score.stepper-limits.spec.ts tests/e2e/score.strip-span.spec.ts tests/e2e/score.window-rule.spec.ts tests/e2e/session-run.spec.ts tests/e2e/side-panel-prose.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/today.spec.ts tests/e2e/tour-practice-modes.spec.ts tests/e2e/transfer-offer.spec.ts tests/e2e/wide.spec.ts
+specs-exist exit=0
+e2e-targeted exit=1
+states exit=1
+CHAIN DONE 23:19:48
+vitest-timeouts-rerun exit=0
+e2e-rerun exit=0
+
+## vitest-all (exit 1)
+
+     × blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them 13ms
+     × 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot 3ms
+     × every black key in every fixture carries its written spelling 6711ms
+     × on the row itself, for the score just imported: the source on the detail line, the state under it 1510ms
+     × the picker’s import of a MIDI file opens it, the store having opened nothing 222ms
+     × a score whose staves and signature are the file’s files quietly; its row’s Assign opens the same sheet 302ms
+ FAIL  tests/unit/expectedNote.test.ts > the spelling comes from the notation (T41) > every black key in every fixture carries its written spelling
+Error: Test timed out in 5000ms.
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > blues.3: the rung carries two tool buttons, the lab and Simon, and Rhythm only is not one of them
+ FAIL  tests/unit/lessonClaimsAboutApp.test.ts > the 2026-09-19 lesson corrections, second-read and under test: the app > 4.7: blind hides the score and the cursor and leaves the count-in and the beat dot
+AssertionError: expected false to be true // Object.is equality
+ FAIL  tests/unit/libraryImportWords.test.ts > an import’s row says its state in words > on the row itself, for the score just imported: the source on the detail line, the state under it
+AssertionError: expected null not to be null
+ FAIL  tests/unit/libraryImportWords.test.ts > the UI opens the import sheet from the row addImport returned > the picker’s import of a MIDI file opens it, the store having opened nothing
+AssertionError: expected '' to contain 'Imported 1:'
+ FAIL  tests/unit/libraryImportWords.test.ts > the UI opens the import sheet from the row addImport returned > a score whose staves and signature are the file’s files quietly; its row’s Assign opens the same sheet
+AssertionError: expected <div class="sheet" …(2)>…(1)</div> to be null
+ Test Files  3 failed | 328 passed (331)
+      Tests  6 failed | 7693 passed | 5 skipped | 1 todo (7705)
+
+## vitest-timeouts-rerun (exit 0)
+
+ Test Files  2 passed (2)
+      Tests  23 passed (23)
+
+## e2e-targeted (exit 1)
+
+  1) tests\e2e\score.arrange-race.spec.ts:175:1 › a run started at once is arranged the same as one started after the measurement
+    Error: the same piece was arranged two different ways depending on how fast Play was tapped:
+  1 failed
+  453 passed (23.9m)
+
+## e2e-rerun (exit 0)
+
+  1 passed (40.9s)
+
+## states (exit 1)
+
+  1) tests\states\score.states.spec.ts:105:1 › every state, photographed and measured ──────────────
+    Error: theme--light: contrast: #score-waiting at 4.3:1; contrast: #score-help-more at 4.3:1
+  1 failed
+

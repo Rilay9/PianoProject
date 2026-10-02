@@ -1,0 +1,69 @@
+# checks for 58 path(s): 58 matched, 0 unmatched
+# app/tests/e2e/microscope.spec.ts: app/tests/e2e/*.spec.ts
+# app/tests/unit/generatedIdentityContinuity.test.ts: app/tests/unit/*.test.ts
+# app/tests/unit/lessonClaimsAboutMusic.test.ts: app/tests/unit/*.test.ts
+# content/curriculum/vocabulary/skills.json: content/**, content/curriculum/**, content/curriculum/vocabulary/**
+# content/lessons/technique.5.md: content/**, content/lessons/**
+# content/lessons/technique.7.md: content/**, content/lessons/**
+# docs/02-curriculum.md: docs/02-curriculum.md, docs/**
+# docs/08-test-map.md: docs/**
+# docs/prompts/checks.json: docs/prompts/checks.json, docs/**
+# docs/prompts/inventory.md: docs/prompts/inventory.md, docs/**
+# docs/prompts/runs/G30/ENTRY.md: docs/prompts/runs/*/ENTRY.md, docs/**
+# docs/prompts/runs/G30/FIXFORWARD.md: docs/**
+# docs/prompts/runs/G30/baseline.txt: docs/**
+# docs/prompts/runs/G30/content-items-fixforward.txt: docs/**
+# docs/prompts/runs/G30/content-items.txt: docs/**
+# docs/prompts/runs/G30/gate-green-fixforward.txt: docs/**
+# docs/prompts/runs/G30/gate-green.txt: docs/**
+# docs/prompts/runs/G30/gate-red-contract-only.txt: docs/**
+# docs/prompts/runs/G30/lesson-consumers.txt: docs/**
+# docs/prompts/runs/G30/mutants.txt: docs/**
+# docs/prompts/runs/G30/repeated-notes-probe.txt: docs/**
+# docs/prompts/runs/G30/scripts-baseline.py: docs/**
+# docs/prompts/runs/G30/scripts-content_items.py: docs/**
+# docs/prompts/runs/G30/scripts-continuity_table.py: docs/**
+# docs/prompts/runs/G30/scripts-edit_checks.py: docs/**
+# docs/prompts/runs/G30/scripts-edit_consumers.py: docs/**
+# docs/prompts/runs/G30/scripts-edit_contracts.py: docs/**
+# docs/prompts/runs/G30/scripts-edit_convention_tests.py: docs/**
+# docs/prompts/runs/G30/scripts-edit_generator.py: docs/**
+# docs/prompts/runs/G30/scripts-edit_lesson_claims.py: docs/**
+# docs/prompts/runs/G30/scripts-edit_maker_docs.py: docs/**
+# docs/prompts/runs/G30/scripts-edit_microscope_spec.py: docs/**
+# docs/prompts/runs/G30/scripts-edit_test_map.py: docs/**
+# docs/prompts/runs/G30/scripts-edit_tests.py: docs/**
+# docs/prompts/runs/G30/scripts-edit_ts_test.py: docs/**
+# docs/prompts/runs/G30/scripts-fixforward_content.py: docs/**
+# docs/prompts/runs/G30/scripts-fixforward_items.py: docs/**
+# docs/prompts/runs/G30/scripts-fixforward_tests.py: docs/**
+# docs/prompts/runs/G30/scripts-gate_check.py: docs/**
+# docs/prompts/runs/G30/scripts-lesson_consumers.py: docs/**
+# docs/prompts/runs/G30/scripts-mutants.py: docs/**
+# docs/prompts/runs/G30/scripts-naive_catalog.py: docs/**
+# docs/prompts/runs/G30/scripts-repeated_notes_probe.py: docs/**
+# docs/prompts/runs/G30/scripts-repin.py: docs/**
+# docs/prompts/runs/G30/scripts-written_fingering.py: docs/**
+# docs/prompts/runs/G30/written-fingering-after.txt: docs/**
+# docs/prompts/runs/G30/written-fingering-fixforward.txt: docs/**
+# tools/content/family_contracts.json: tools/content/*.json
+# tools/content/family_contracts.py: tools/content/*.py
+# tools/content/generate_exercises.py: tools/content/*.py
+# tools/content/generator_continuity.json: tools/content/*.json
+# tools/content/tests/convention.py: tools/content/tests/convention.py
+# tools/content/tests/fixtures/identity_pins.json: tools/content/tests/fixtures/**
+# tools/content/tests/test_family_contracts.py: tools/content/tests/test_*.py
+# tools/content/tests/test_generator.py: tools/content/tests/test_*.py
+# tools/content/tests/test_generator_fingering.py: tools/content/tests/test_*.py
+# tools/content/tests/test_generator_invariants.py: tools/content/tests/test_*.py
+# tools/content/tests/test_harmony_families.py: tools/content/tests/test_*.py
+content-build	.	python tools/content/build.py --offline
+content-validate	.	python tools/content/validate.py
+review-check	.	python tools/content/review.py --check
+record-mirrors	.	python tools/docs/record_mirrors.py
+content-tests	.	python -m unittest discover -s tools/content/tests -t tools/content
+tsc	app	npx tsc -b
+lint	app	npm run lint
+unit	app	npx vitest run
+build-app	app	npm run build:app
+e2e	app	npx playwright test tests/e2e/competence.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/lesson-tools.spec.ts tests/e2e/microscope.spec.ts tests/e2e/placement-branches.spec.ts tests/e2e/plan.spec.ts tests/e2e/side-panel-prose.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/today.spec.ts --workers=4

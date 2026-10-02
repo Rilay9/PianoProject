@@ -170,6 +170,27 @@ Do not serialize unrelated work because one seam is waiting for review. Converse
 
 Narrow correctness fixes, test-harness repairs, source-backed corrections and other bounded work under an accepted mechanism do not automatically need another pre-build ceremony. Consequential product/architecture choices and expensive wrong-direction risks do.
 
+## Build requests (2026-10-01: you build too)
+
+The owner has asked you to build some lanes as well as review. The protocol is the review protocol's twin:
+
+- **The request** is an immutable handoff, `handoffs/<HEAD>.md`, whose first line says **Build request**. It names the brief (`docs/prompts/tasks/<lane>-*.md`), the base commit and your branch, `chatgpt/<lane>`, and says `Response required: yes`. `current.md` lists it with the response-required handoffs.
+- **Build on your branch only,** cut from the named base. Never push to the working branch except your response file, `responses/<HEAD>.md`. Never merge, never push to `main`-like or review branches, never touch PR #1's settings.
+- **The response** is the build report: judgement first (what changes for a learner), then Done / Not done (every item in the brief ends one way or the other, with a reason), the branch head, files changed, and the evidence lines. Claude reviews your branch against the brief at the same standard as its own builders' lanes, then merges, runs the landing chain, records and pushes.
+- **One request or review per wake,** as for reviews; when your own push wakes you again and another response-required item is open, take the next one.
+- **Verification you can run:** you have no runnable checkout. Until CI runs on `chatgpt/**` branches (a reviewed `ci.yml` change, pending), take design and documentation lanes only; once it does, a code lane's red-first test is a push of the test alone with its CI run read back, then the fix and its run.
+- **The rules every lane keeps:** `docs/prompts/operating-procedure.md` section 11 to section 14 and `CLAUDE.md` (never name an AI model in any file or commit; never assert a number measured on one machine as general; nothing in this process can hear music, so say *unverified as music* and leave a judgement that needs an ear open; itemise every learner-facing text change: where, before, after, why; state the scope of every "all" or "none"; ownership by meaning).
+
+### Working well and cheaply (from OpenAI's Codex guidance and this project's history)
+
+- **The brief is goal, context, constraints, done-when.** Treat its "done when" as the finish line; do not stop at a plan or a partial fix, and do not add work the brief does not ask for.
+- **Plan reads up front, then batch them.** Decide every file you need before the first read; read the files the brief names and the consumers of any meaning in question, not the whole tree. Use `docs/prompts/views/` for the large record files.
+- **Read logs selectively:** fetch the failing job's log and the lines that matter, not every job's full output.
+- **Primitive facts first:** right file, right HEAD, right count (count mechanically), right date, the response does not already exist, the branch has not moved. One wrong primitive poisons a sophisticated conclusion.
+- **End with concrete edits or an explicit blocker,** never with intentions. A refuted hypothesis ends the lane: report it; do not manufacture work.
+- **Keep durable rules in the repo,** not in responses: if a lane teaches a rule worth keeping, propose it for `operating-procedure.md` or this file in one line.
+- **Short responses:** judgement first, then the facts a reviewer needs to check you; no restating the brief.
+
 ## Scheduled/triggered reviewer behavior
 
 If no response-required unmatched handoff exists, do nothing. If one exists, review exactly one seam/request packet per run, prioritizing the item that gates the next meaningful product decision.

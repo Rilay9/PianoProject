@@ -1,0 +1,26 @@
+== map-tests  23:43:04
+map-tests exit=0
+== map-min  23:43:05
+map-min exit=0
+== content-build  23:43:06
+content-build exit=0
+== content-validate  23:47:17
+content-validate exit=0
+== review-check  23:47:33
+review-check exit=0
+== content-tests  23:47:34
+content-tests exit=1
+== tsc  23:55:05
+tsc exit=0
+== lint  23:55:14
+lint exit=0
+== vitest-all  23:55:52
+vitest-all exit=1
+== build-app  23:58:58
+build-app exit=0
+SPECS: tests/e2e/competence.spec.ts tests/e2e/lesson-flow.spec.ts tests/e2e/lesson-tools.spec.ts tests/e2e/microscope.spec.ts tests/e2e/placement-branches.spec.ts tests/e2e/plan.spec.ts tests/e2e/side-panel-prose.spec.ts tests/e2e/start-and-return.spec.ts tests/e2e/today.spec.ts
+== specs-exist  23:59:13
+specs-exist exit=0
+== e2e-targeted  23:59:13
+e2e-targeted exit=0
+CHAIN DONE 00:00:19
