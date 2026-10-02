@@ -31,3 +31,5 @@ index: A looped Keep tempo run scores one population end to end, so a wrong key 
 in-flight: drafted 2026-10-02 (`CL11c-a-loop-scores-one-population.md`): a fix-forward on CL11a, the reviewer's required change; one lap or the whole loop, the same unit for the score, the stored outcome and the evidence (Entry 224)
 state: dispatched 2026-10-02: dispatched to the outside builder on its branch, the owner's pasted build prompt (Entry 224)
 - landed 2026-10-02: merged 2089cf55; handoff `handoffs/146a51f7.md`
+- verdict 2026-10-02: APPROVE (`responses/146a51f7.md`): one completed lap is the unit; Stop reports the latest whole pass with the whole practice time
+- closed 2026-10-02: L137 built; CL11a's required change met

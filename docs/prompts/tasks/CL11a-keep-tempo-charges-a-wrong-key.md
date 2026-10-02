@@ -66,3 +66,4 @@ in-flight: drafted 2026-10-02 (`CL11a-keep-tempo-charges-a-wrong-key.md`): CL11'
 state: dispatched 2026-10-02: dispatched at ee62c06c, building here (Entry 219)
 - landed 2026-10-02: merged 0eca83a1; handoff `handoffs/26733bcb.md`
 - verdict 2026-10-02: APPROVE WITH ONE REQUIRED CHANGE (`responses/26733bcb.md`): the non-looped rule, definitions 2, the microphone outcome, measured-only Progress and the card stand; a looped run must score one population end to end (L137), carried by CL11c (Entry 224), held for the owner while the weekly meter is past its line; Progress stays measured-only
+- closed 2026-10-02: the required change met by CL11c (`responses/146a51f7.md`)
