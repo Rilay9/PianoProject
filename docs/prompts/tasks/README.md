@@ -297,9 +297,9 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **CL11c** | A looped Keep tempo run scores one population end to end, so a wrong key always costs a note (`CL11c-a-loop-scores-one-population.md`) | app | drafted 2026-10-02 (`CL11c-a-loop-scores-one-population.md`); Entry 224; landed 2026-10-02: merged 2089cf55; handoff `handoffs/146a51f7.md`
 | **CL10a** | The detectors read the clef, the key in force, the metre and a held tune, and judge a pattern by its share of bars (`CL10a-the-detectors-read-what-the-music-holds.md`) | build | drafted 2026-10-02 (`CL10a-the-detectors-read-what-the-music-holds.md`); Entry 225
 | **CL12** | The composed day: every Today row says what it is for, the return to bypassed rungs ends, a detour comes back to its piece (`CL12-the-composed-day-says-what-each-row-is-for.md`) | design | drafted 2026-10-02 (`CL12-the-composed-day-says-what-each-row-is-for.md`); Entry 226
-| **CL17** | One level: the scalar a sort key with its provenance, generated items stop claiming judgement, learners see demands; traced, then built (`CL17-one-level-traced-then-built.md`) | design | drafted 2026-10-02 (`CL17-one-level-traced-then-built.md`); Entry 227
+| **CL17** | One level: the scalar a sort key with its provenance, generated items stop claiming judgement, learners see demands; traced, then built (`CL17-one-level-traced-then-built.md`) | design | drafted 2026-10-02 (`CL17-one-level-traced-then-built.md`); Entry 227; landed 2026-10-02: merged 476bcc4c; handoff `handoffs/03c7f341.md`
 | **SG08** | The Skills screen in three designs: every skill's whole name reads at a glance, and the measured skills lead (`SG08-the-skills-screen-in-three-designs.md`) | app | drafted 2026-10-02 (`SG08-the-skills-screen-in-three-designs.md`); Entry 228
-| **SG05** | The learner sees when they last backed up, and two light-theme texts reach 4.5:1 (`SG05-the-last-backup-and-two-contrasts.md`) | app | drafted 2026-10-02 (`SG05-the-last-backup-and-two-contrasts.md`); Entry 229
+| **SG05** | The learner sees when they last backed up, and two light-theme texts reach 4.5:1 (`SG05-the-last-backup-and-two-contrasts.md`) | app | drafted 2026-10-02 (`SG05-the-last-backup-and-two-contrasts.md`); Entry 229; landed 2026-10-02: merged b2a1ec88; handoff `handoffs/b6beeb96.md`
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
 
@@ -462,9 +462,9 @@ U122d · held · 223
 CL11c · landed · 224
 CL10a · approved · 225
 CL12 · approved · 226
-CL17 · approved · 227
+CL17 · landed · 227
 SG08 · approved · 228
-SG05 · approved · 229
+SG05 · landed · 229
 F0a · closed · —
 L120 · approved · —
 -->

@@ -73,9 +73,12 @@ U63 has changed `style.css` since.
 
 The harness is `operating-procedure.md` §14. Never name an AI model in any file.
 
+**Landed 2026-10-02** (Entry 229; b6beeb96, merged b2a1ec88); handoff `handoffs/b6beeb96.md`.
+
 ## Record
 
 lane: SG05 · closes: E8, U62 · entry: 229
 index: The learner sees when they last backed up, and two light-theme texts reach 4.5:1 (`SG05-the-last-backup-and-two-contrasts.md`) | app | drafted 2026-10-02 (`SG05-the-last-backup-and-two-contrasts.md`); Entry 229
 in-flight: drafted 2026-10-02 (`SG05-the-last-backup-and-two-contrasts.md`): two small parts on disjoint files; the time of a completed backup shown where the backup is made, and the Wait line and the help strip's link re-measured, then fixed through the tokens if still below 4.5:1 (Entry 229)
 state: approved 2026-10-02: approved before dispatch with one required change, incorporated: completion per delivery path, the picker's cancel never stamped (Entry 229)
+- landed 2026-10-02: merged b2a1ec88; handoff `handoffs/b6beeb96.md`

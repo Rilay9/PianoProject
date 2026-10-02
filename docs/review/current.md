@@ -6,6 +6,8 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- `handoffs/03c7f341.md` — **open**, respond in `responses/03c7f341.md`: CL17, one level, Phase 1: every reader and writer of the scalar traced and classed, and seven slices in order, with the orchestrator's decisions on the three questions (Entry 227).
+- `handoffs/b6beeb96.md` — **open**, respond in `responses/b6beeb96.md`: SG05, the learner sees when they last backed up: the time of a completed backup on Progress, truthful per delivery path (Part 1; U62's contrasts stay open as SG06) (Entry 229).
 - `handoffs/146a51f7.md` — **open**, respond in `responses/146a51f7.md`: CL11c, a looped Keep tempo run scores one lap per population, so a wrong key always costs a note; Stop keeps the last completed lap with the whole practice time (Entry 224).
 - `handoffs/385c0131.md` — **answered** in `responses/385c0131.md`: CL10a, CL12, CL17 (Phase 1 only) and SG08 approved; SG05 approved with one required change (completion per delivery path; checked at `backup.ts:222` and taken). The additions are in each brief.
 - **Build in progress (the owner's pasted prompt):** CL11c on `chatgpt/cl11c`, brief `docs/prompts/tasks/CL11c-a-loop-scores-one-population.md`. Checks: `docs/prompts/runs/CL11c/checks-8492b3f0.txt` (the first red), `checks-ed7d0944.txt` (the head: red confirmed at `fd3e315f`; three cases red at the head, one of them a duration regression). The pasted session continues it; a wake does not touch this lane's files.

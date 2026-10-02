@@ -61,9 +61,12 @@ Phase 2 builds the approved slices. Each slice moves a pin only with its reason,
 
 Never name an AI model in any file.
 
+**Landed 2026-10-02** (Entry 227; 03c7f341, merged 476bcc4c); handoff `handoffs/03c7f341.md`.
+
 ## Record
 
 lane: CL17 · closes: R1, R16, G6, R28, R8 · entry: 227
 index: One level: the scalar a sort key with its provenance, generated items stop claiming judgement, learners see demands; traced, then built (`CL17-one-level-traced-then-built.md`) | design | drafted 2026-10-02 (`CL17-one-level-traced-then-built.md`); Entry 227
 in-flight: drafted 2026-10-02 (`CL17-one-level-traced-then-built.md`): every level reader and writer traced and classed, the stored data and X37's two definitions, then slices; the rulings on R1, R16, G6 and R28 settled, R8's gate with it (Entry 227)
 state: approved 2026-10-02: approved before dispatch, Phase 1 only, the trace with its coverage classes returns for review (Entry 227)
+- landed 2026-10-02: merged 476bcc4c; handoff `handoffs/03c7f341.md`
