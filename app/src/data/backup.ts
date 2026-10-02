@@ -30,6 +30,7 @@ import {
   type StoreName,
 } from './db';
 import { importsChanged } from './importStore';
+import { coerceSettings, getSettings, updateSettings } from './settingsStore';
 import { forgetCachedProgress, mergeSummaries } from './progressStore';
 import { forgetCachedPlan } from './planStore';
 import { forgetCachedEncounters } from './encounterStore';
@@ -201,10 +202,21 @@ export async function* streamBackup(
 export async function writeBackup(
   now = new Date(),
   onProgress?: (progress: BackupProgress) => void,
-): Promise<'file' | 'share' | 'download'> {
+): Promise<BackupDelivery> {
+  return deliverBackup(() => streamBackup(now, onProgress), now);
+}
+
+export type BackupDelivery = 'file' | 'share' | 'download' | 'cancelled';
+
+/** File close and share resolution prove delivery; a download proves only handoff. */
+async function deliverBackup(chunks: () => AsyncIterable<string>, now: Date): Promise<BackupDelivery> {
   const name = backupFilename(now);
   const picker = (window as { showSaveFilePicker?: (o: unknown) => Promise<FileSystemFileHandle> })
     .showSaveFilePicker;
+  const completed = (how: Exclude<BackupDelivery, 'cancelled'>): BackupDelivery => {
+    updateSettings({ lastBackupAt: Date.now() });
+    return how;
+  };
   if (typeof picker === 'function') {
     try {
       const handle = await picker({
@@ -213,34 +225,39 @@ export async function writeBackup(
       });
       const writable = await handle.createWritable();
       try {
-        for await (const chunk of streamBackup(now, onProgress)) await writable.write(chunk);
+        for await (const chunk of chunks()) await writable.write(chunk);
       } finally {
         await writable.close();
       }
-      return 'file';
+      return completed('file');
     } catch (cause) {
-      if (cause instanceof DOMException && cause.name === 'AbortError') return 'file';
-      // Anything else falls through: the learner must still end up with a file.
+      if (cause instanceof DOMException && cause.name === 'AbortError') return 'cancelled';
     }
   }
-
-  const chunks: string[] = [];
-  for await (const chunk of streamBackup(now, onProgress)) chunks.push(chunk);
-  const blob = new Blob(chunks, { type: 'application/json' });
+  const parts: string[] = [];
+  for await (const chunk of chunks()) parts.push(chunk);
+  const blob = new Blob(parts, { type: 'application/json' });
   const shareFile = new File([blob], name, { type: 'application/json' });
   const nav = navigator as Navigator & { canShare?: (data: unknown) => boolean };
   if (typeof navigator.share === 'function' && nav.canShare?.({ files: [shareFile] })) {
-    await navigator.share({ files: [shareFile], title: name });
-    return 'share';
+    try {
+      await navigator.share({ files: [shareFile], title: name });
+    } catch (cause) {
+      if (cause instanceof DOMException && cause.name === 'AbortError') return 'cancelled';
+      throw cause;
+    }
+    return completed('share');
   }
-
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
   link.download = name;
-  link.click();
-  URL.revokeObjectURL(url);
-  return 'download';
+  try {
+    link.click();
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+  return completed('download');
 }
 
 export interface ImportReport {
@@ -285,6 +302,8 @@ export async function importAll(
   const report: ImportReport = { written: {}, keptLocal: 0 };
   if (!db) throw new Error('This browser is not storing data, so there is nothing to restore into.');
 
+  const storedSettings = await db.get('settings', 'pianopath.settings');
+  const deviceBackupAt = getSettings().lastBackupAt ?? backupTimeIn(storedSettings);
   for (const store of STORE_NAMES) {
     const rows = raw.stores[store];
     if (!Array.isArray(rows)) continue;
@@ -330,11 +349,20 @@ export async function importAll(
       } else if (OUT_OF_LINE.includes(store)) {
         const key = raw.keys?.[store]?.[index];
         if (key === undefined) continue;
-        await db.put(store as 'settings', row, key);
+        await db.put(store as 'settings',
+          store === 'settings' && key === 'pianopath.settings'
+            ? restoredSettings(row, deviceBackupAt)
+            : row,
+          key,
+        );
       } else {
         await db.put(store as 'plan', row as never);
       }
       written += 1;
+    }
+    if (store === 'settings' && options.replace && deviceBackupAt !== undefined
+      && !raw.keys?.settings?.includes('pianopath.settings')) {
+      await db.put('settings', JSON.stringify({ lastBackupAt: deviceBackupAt }), 'pianopath.settings');
     }
     report.written[store] = written;
   }
@@ -355,6 +383,27 @@ export async function importAll(
   return report;
 }
 
+function backupTimeIn(raw: unknown): number | undefined {
+  try {
+    return coerceSettings(typeof raw === 'string' ? JSON.parse(raw) as unknown : raw).lastBackupAt;
+  } catch {
+    return undefined;
+  }
+}
+
+function restoredSettings(raw: unknown, lastBackupAt: number | undefined): unknown {
+  try {
+    const value: unknown = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    if (typeof value !== 'object' || value === null || Array.isArray(value)) return raw;
+    const settings = { ...value } as Record<string, unknown>;
+    delete settings.lastBackupAt;
+    if (lastBackupAt !== undefined) settings.lastBackupAt = lastBackupAt;
+    return typeof raw === 'string' ? JSON.stringify(settings) : settings;
+  } catch {
+    return raw;
+  }
+}
+
 export function backupFilename(now = new Date()): string {
   return `pianopath-backup-${now.toISOString().slice(0, 10)}.json`;
 }
@@ -367,42 +416,9 @@ export function backupFilename(now = new Date()): string {
  * phone this is the APK's WebView, where the first two are the ones that give
  * a file you can find again.
  */
-export async function saveBackupFile(file: BackupFile, now = new Date()): Promise<'file' | 'share' | 'download'> {
-  const text = JSON.stringify(file);
-  const name = backupFilename(now);
-
-  const picker = (window as { showSaveFilePicker?: (o: unknown) => Promise<FileSystemFileHandle> })
-    .showSaveFilePicker;
-  if (typeof picker === 'function') {
-    try {
-      const handle = await picker({
-        suggestedName: name,
-        types: [{ description: 'PianoPath backup', accept: { 'application/json': ['.json'] } }],
-      });
-      const writable = await handle.createWritable();
-      await writable.write(text);
-      await writable.close();
-      return 'file';
-    } catch (cause) {
-      // A cancelled picker is not a failure worth falling through loudly for,
-      // but any other error should still leave the learner with a file.
-      if (cause instanceof DOMException && cause.name === 'AbortError') return 'file';
-    }
+export async function saveBackupFile(file: BackupFile, now = new Date()): Promise<BackupDelivery> {
+  async function* chunks(): AsyncGenerator<string> {
+    yield JSON.stringify(file);
   }
-
-  const blob = new Blob([text], { type: 'application/json' });
-  const shareFile = new File([blob], name, { type: 'application/json' });
-  const nav = navigator as Navigator & { canShare?: (data: unknown) => boolean };
-  if (typeof navigator.share === 'function' && nav.canShare?.({ files: [shareFile] })) {
-    await navigator.share({ files: [shareFile], title: name });
-    return 'share';
-  }
-
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = name;
-  link.click();
-  URL.revokeObjectURL(url);
-  return 'download';
+  return deliverBackup(chunks, now);
 }

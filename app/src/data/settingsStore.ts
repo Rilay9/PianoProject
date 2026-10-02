@@ -28,6 +28,8 @@ export type PlaybackHands = 'none' | 'non-focused' | 'both';
 export type FollowInput = 'midi' | 'mic' | 'keys' | 'none';
 
 export interface PracticeSettings {
+  /** Device-local export completion/handoff time; never adopted from a backup. */
+  lastBackupAt?: number;
   // --- Practice (docs/04 §7) ---
   /** Default mode when an input source is present, and when none is. */
   defaultModeWithInput: 'wait' | 'tempo';
@@ -203,6 +205,9 @@ export function coerceSettings(raw: unknown): PracticeSettings {
   const out: PracticeSettings = { ...DEFAULT_SETTINGS, inputPriority: [...DEFAULT_SETTINGS.inputPriority] };
   if (typeof raw !== 'object' || raw === null) return out;
   const v = raw as Record<string, unknown>;
+  if (typeof v.lastBackupAt === 'number' && Number.isFinite(v.lastBackupAt) && v.lastBackupAt > 0) {
+    out.lastBackupAt = v.lastBackupAt;
+  }
 
   out.defaultModeWithInput = oneOf(v.defaultModeWithInput, ['wait', 'tempo'] as const, out.defaultModeWithInput);
   out.defaultModeWithoutInput = oneOf(v.defaultModeWithoutInput, ['wait', 'tempo'] as const, out.defaultModeWithoutInput);

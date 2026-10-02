@@ -465,6 +465,17 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
 - `backingTrackSheet.test.ts` — the backing-track drill's sheet on the real drill screen in jsdom (T41): headed *Practice*, the sentence that nothing is judged, *Notes played*, and no accuracy, answered count, verdict, badge or coaching line.
 - `backup.test.ts` — export and restore: a PDF's bytes through base64, a merge that keeps later progress, a newer file refused; an observed session row round-trips whole, *not measured* included (C1); the encounters and the summaries of pruned runs (G1); the projects (G1b); a performance in a backup written before version 10, restored by replace and by merge onto a version 10 store, listed behind more runs than the old walk reached (CL23).
 - `backupStreaming.test.ts` — the backup never exists as one string.
+- `backupCompletion.test.ts` — SG05 Part 1: both delivery APIs stamp only after file close,
+  share resolution or download handoff; cancellations and failures preserve the previous
+  time; a successful fallback counts; reload/hydration and merge/replace restore keep the
+  device-local time, including an absent practice-settings row and a new device.
+- `progressBackupTime.test.ts` — the real Progress data block says no backup yet or prints
+  the device's local export time with a check-the-destination reminder.
+- `tests/e2e/progress.backup-time.spec.ts` — the real export action, truthful cancellation
+  and download status; no-time and exported-time screenshots on phone upright, phone
+  sideways and tablet; the quiet line fits the content width. These are cases to run,
+  not a recorded pass.
+
 - `boot.test.ts` — the shell's mount sequenced against `hydratePersisted()`, so the tab bar survives an update.
 - `chartDoor.test.ts` — the chord chart has a way in (`04` §3b): a *Chart* action on the rows whose file the build measured chord symbols in, and none on the rest — unknown is not yes.
 - `chordChart.test.ts` — the chart's beat handler: the first bar of every run drawn; and the chart's Back, which names where it goes.
