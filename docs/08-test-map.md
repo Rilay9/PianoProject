@@ -882,3 +882,6 @@ Outside the content pipeline, because the converter is (`03` §3's source table 
 - `test_fetch_maestro.py` — the fetch's rules on a fixture archive: the checksum before extraction, a member listed zero or several times, a row naming another performance, an empty, absent or altered member refused with nothing written, exactly three files and `SOURCE.md`, a restored cache validated; the real aliases equal the harness's (Q47).
 - `test_parity_reference.py` — the reference writer's gates: the one-track fixture written with a split, a must-split fixture refused without one and its earlier reference removed, a missing recording failing under CI after the rest is written and reported otherwise, a missing committed fixture failing (Q47).
 - `fixtures/` — `make-one-track-two-hands-midi.py` and the `one-track-two-hands.mid` it writes: both hands in one note track, deterministic, its notes stated in the script (Q46).
+
+
+| **Loop scoring is one population** (CL11c) | cumulative hits/wrongs against a one-lap denominator; Stop just after a lap saving the new partial lap instead of the completed pass | `tests/unit/loopScoresOnePopulation.test.ts` — lap two has its own hits/wrongs/steps and a wrong key still costs one note; Stop after completed looping reports that completed lap into the same measured/session decision; non-looped Keep tempo is unchanged | CL11c |
