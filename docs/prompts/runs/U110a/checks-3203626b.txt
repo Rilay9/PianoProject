@@ -1,0 +1,225 @@
+U110a check run: the admission trace at head 3203626b
+=====================================================
+
+Head carrying the request: 3203626b243ddf9f1a1ff6dc7f37c92622de1e4b (origin, outside builder's U110a branch). Its
+only changes since f11cd7c6 are the three files under docs/prompts/runs/U110a/ (git diff f11cd7c6 3203626b --stat
+-- app prints nothing), so app/src is the f11cd7c6 tree. The worktree stayed detached at f11cd7c6
+(git rev-parse HEAD: f11cd7c629b9c128370982d86867267ea3e6ae8a); no checkout.
+Every number below is this machine's: Chromium at device pixel ratio 1, a MIDI mock. Nothing was heard or seen on a
+device. The request asked for one probe and nothing else; no other browser run was made in this check.
+
+
+THE ANSWER TO THE EXPLICIT QUESTION
+-----------------------------------
+Question: is any captured fitting packed window refused only by the reserve after the ladder?
+
+Scope: the one probe the request gave: Twinkle (song.folk.twinkle.ht), Bars 3, 342x740 and 360x780, fresh + 4
+reloads each (10 loads), the trace's passes at the chosen shape (shown 3, systems 2). Nothing else was scanned.
+
+342x740: YES, once per load, for one pass, by 1.4 px, and not at rest.
+  - Pass 11 of 23 (zoom 1, room slotsHeight 658.4): the chosen shape's look-ahead was refused with admissionPx 659.8
+    over the room by 1.4 px (aheadFor ahead false; maxSlots 4 allows a third row; the window rows are priced at
+    the reserve rowHeight 204.0). The look-ahead row was drawn at the time (currentSlots 3, drawnRowPx 203.9). With
+    the two window rows priced at the 199.2 px they were drawn at (the smallest drawnRowPx logged with only the
+    window rows drawn, at this zoom), the same sum is 650.3, which is within 658.4.
+  - The ladder looks spent at that pass. This is INFERRED, not logged: the trace has no ladder count. At this zoom
+    and width the shape changed five times between pass 1 and pass 10 (currentSlots 2,3,2,3,2,3), which with the first shape
+    makes six rungs, the bound (MAX_SLOTS 4 + 2 = 6); pass 11's answer was 2 slots and passes 12 to 16 still
+    have currentSlots 3 while their answer is 2 slots. Nothing in this build (the terminal exception is removed)
+    keeps an answer from being applied except a spent ladder, if those passes were applying passes.
+  - It is the same in all 5 of 5 loads (the five admission traces are identical, entry for entry).
+  - Passes 3 and 7 are the same sum with the ladder not yet spent (the answer was applied on the next pass, 3 slots
+    to 2); they are not "after the ladder".
+  - NOT a reserve-only refusal: passes 12 to 16 (the stage 586.4 px, a stage change) have the three rows held, over
+    the room by 73.4 to 102.4 px, and priced at the drawn rows the sum 650.3 or more is still over 586.4. Pass 17
+    (zoom 1.12, room 531.1) is over by 129.9. The ladder then resets with the zoom (record zoom 1.12, n 1) and the
+    answer 2 slots is applied in pass 18. The end state (zoom 1.53, room 531.1) is two rows with no look-ahead, refused
+    by 123.8 px: no reserve-only refusal at rest.
+  - Not observed: the ink of the rows at pass 11 or at passes 12 to 16. The probe reads rows only after the settle
+    (overlapPx -36 on all 5 loads). Whether the held rows packed without ink overlap at 658.4 and 586.4 px is
+    unread; the earlier f11cd7c6 timeline had three rows drawn at the 586.4 px stage with no ink read.
+360x780: NO. One held pass per load (pass 4 of 12 in the fresh load, pass 4 of 18 in each reload), with the ladder not spent
+  (record n 3 of 6 at the end), over the room by 150.7 (fresh) and 64.9 (reloads); priced at the drawn rows the sum is
+  still over (691.5 and 681.3). The shape was changed on the next pass. The end state is two rows, refused by 115.2.
+
+
+WHAT WAS DONE, in order, with exact commands and exit codes
+-----------------------------------------------------------
+Run in the worktree <worktree>; the tsc, build and playwright commands from its app/ folder.
+ 1. git fetch origin chatgpt/u110a                        -> origin/chatgpt/u110a = 3203626b243ddf9f1a1ff6dc7f37c92622de1e4b
+ 2. for each of check-request.md, check-request-provisional.md, admission-trace.patch:
+      git show 3203626b:docs/prompts/runs/U110a/<file> > docs/prompts/runs/U110a/<file>
+    (check-request.md replaced the f11cd7c6 version; that version was kept at build/checks/check-request.f11cd7c6.md).
+    SHA-256 of each file equals the SHA-256 of 'git show 3203626b:<path>':
+      check-request.md              10552d3bc4ded3f5062f978db3cd8786caf0dfe4bdaf027f0ff6d50edc4757d3
+      check-request-provisional.md  dbf5beedd3dcd03d61c48ef9eddd719ecbff3d88f7728eb63f6bab485117577a
+      admission-trace.patch         c430245ef812fa6a9cf42d8b34fda57384ec3cd4e244f989e63384f2aa068a1c
+ 3. git apply --check docs/prompts/runs/U110a/admission-trace.patch   exit 0
+    git apply docs/prompts/runs/U110a/admission-trace.patch           exit 0   (only app/src/score/WindowRenderer.ts, +14 -3)
+    SHA-256 of app/src/score/WindowRenderer.ts: before 823eff125df1ae455cffea7b92d307b1a8c79169e7a820883a96d060a1e37be0
+                                                  patched b650527faaa0279cd5621aca7957ecf5d0a44c2fd26c8d099b49060c3bbc5af4
+ 4. npx tsc -b                                            exit 0
+ 5. one build: the existing app/dist (built from this tree before the patch) was renamed aside, then
+    npm run build:app                                     exit 0
+    (the built dist/assets/WindowRenderer-*.js contains the string "admission"; the aside copy does not)
+ 6. U110_PROBES=1 U110_PIECE=song.folk.twinkle.ht U110_BARS=3 U110_OUT=build/u110/admission \
+      npx playwright test --config build/u110/playwright.u110-5483.config.ts u110-probe --workers=2
+    exit 0, 2 passed (360x780 and 342x740), 1 worker as before (one spec file). start 2026-10-02T01:20:47.1585256-04:00 end 2026-10-02T01:21:14.8340652-04:00
+    Same harness as checks-f11cd7c6.txt: the rehydrated, byte-identical u110-probe.spec.ts and u110-read.ts, the
+    port-5483 config and storage state (adaptations A2 to A4 there), launched through the same detached wrapper
+    (checks-f11cd7c6-source-run-pw.txt) with -Extra "U110_PIECE=song.folk.twinkle.ht;U110_BARS=3". Before the run,
+    ports 5483 and 4173 were free; three other listeners on this machine (5141, 4449, 5040) belong to other work and
+    were not touched.
+ 7. git apply -R --check docs/prompts/runs/U110a/admission-trace.patch exit 0
+    git apply -R docs/prompts/runs/U110a/admission-trace.patch           exit 0
+    SHA-256 of app/src/score/WindowRenderer.ts after the revert: 823eff125df1ae455cffea7b92d307b1a8c79169e7a820883a96d060a1e37be0
+    (the same as before step 3). git diff -- app prints nothing.
+    The instrumented dist was moved to app/build/u110/dist-admission-3203626b (gitignored) and the dist built before
+    the patch was put back as app/dist, so no instrumented build sits where a later run would serve it.
+ 8. git status --short, after the revert:
+      M docs/prompts/runs/U110a/check-request.md          (the new request, from step 2)
+     ?? docs/prompts/runs/U110a/admission-trace.patch     (from step 2)
+     ?? docs/prompts/runs/U110a/check-request-provisional.md (from step 2)
+    Nothing under app/ and no other tracked file. The build files (app/build/, build/, app/dist, content,
+    node_modules junction) are gitignored and do not appear. Say if the three docs files should be removed.
+
+The patch, exactly as applied: checks-3203626b-admission-trace.patch. It records, for every call of aheadFor, one
+object in window.__u110log: kind 'admission', shown, systems, maxSlots, ahead, rowHeight, aheadHeight, admissionPx,
+slotsHeight, drawnNow, drawnHere, drawnRowPx, currentSlots, zoom (capped at the last 400 entries). It returns the
+same boolean as before.
+
+
+HOW TO READ THE TRACE
+---------------------
+aheadFor runs in every pricing pass (priceWindowShape): once for the chosen shape and once for each candidate count
+(shown 3, 2, 1), so every pass is four consecutive entries: [chosen, candidate 3, candidate 2, candidate 1]. That
+structure was verified for every load (the entry count is a multiple of four and entries 2 to 4 have shown 3, 2, 1).
+Only the chosen entry is tabulated below. Passes come from both chooseWindowShape (applied) and sheetsNeeded (not
+applied); the log does not say which, and does not carry a timestamp or the ladder count.
+Terms, as the patch names them:
+  rowHeight       the window row's price: the piece's tallest system at the scale in use, plus the margin (the reserve)
+  aheadHeight     the look-ahead row's price: min(rowHeight, drawnRowPx) once the fit at this zoom has drawn
+  admissionPx     systems x rowHeight + aheadHeight + SLOT_GAP_PX x systems
+  slotsHeight     the room the chooser measured
+  drawnHere       the fit at this zoom has drawn (drawnAtZoom equals the zoom)
+  drawnNow        the scale being drawn when this shape is the one on the glass, else 0
+  drawnRowPx      the tallest row the last fit drew, with its margin
+  currentSlots    the slot count on the glass when the pass ran
+Derived by this check, and labelled as such: "over-by" is admissionPx minus slotsHeight; "gap/system" is the margin of
+the sum that is not rowHeight or aheadHeight (24 in every entry, SLOT_GAP_PX); "window rows priced at the drawn height"
+replaces rowHeight by the smallest drawnRowPx logged at that zoom with currentSlots equal to systems (only window rows
+drawn), keeping aheadHeight and the gaps as logged.
+
+
+A. THE DRAWN CHOSEN SHAPE AT THE END STATE: the last pass of each load, with the ink packing, retained look-ahead
+   and the ladder record read after the settle
+----------------------------------------------------------------------------------------------------------------
+Admission terms (the chosen entry of each load's last pass):
+    342x740 fresh    pass 22 | zoom 1.53 | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 203.9 aheadHeight 199.1 admissionPx 654.9 slotsHeight 531.1 over-by  123.8 | drawnHere true  drawnNow 0.687  drawnRowPx 199.1 currentSlots 2 | gap/system 24
+    342x740 reload 1 pass 22 | zoom 1.53 | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 203.9 aheadHeight 199.1 admissionPx 654.9 slotsHeight 531.1 over-by  123.8 | drawnHere true  drawnNow 0.687  drawnRowPx 199.1 currentSlots 2 | gap/system 24
+    342x740 reload 2 pass 22 | zoom 1.53 | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 203.9 aheadHeight 199.1 admissionPx 654.9 slotsHeight 531.1 over-by  123.8 | drawnHere true  drawnNow 0.687  drawnRowPx 199.1 currentSlots 2 | gap/system 24
+    342x740 reload 3 pass 22 | zoom 1.53 | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 203.9 aheadHeight 199.1 admissionPx 654.9 slotsHeight 531.1 over-by  123.8 | drawnHere true  drawnNow 0.687  drawnRowPx 199.1 currentSlots 2 | gap/system 24
+    342x740 reload 4 pass 22 | zoom 1.53 | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 203.9 aheadHeight 199.1 admissionPx 654.9 slotsHeight 531.1 over-by  123.8 | drawnHere true  drawnNow 0.687  drawnRowPx 199.1 currentSlots 2 | gap/system 24
+    360x780 fresh    pass 11 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 571.1 over-by  115.2 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24
+    360x780 reload 1 pass 17 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 571.1 over-by  115.2 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24
+    360x780 reload 2 pass 17 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 571.1 over-by  115.2 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24
+    360x780 reload 3 pass 17 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 571.1 over-by  115.2 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24
+    360x780 reload 4 pass 17 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 571.1 over-by  115.2 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24
+
+Ink packing, retained read-ahead and ladder state (from the probe's own read after the settle):
+    342x740 fresh    slots 2 systems 2 shown 3 ahead(data-ahead) none overlapPx -36 intoNextSlotPx -25 ladder {"zoom":1.12,"width":342,"asked":3,"n":1} rows W0-1[slot top 0 height 199 ink 11..198] W2-2[slot top 223 height 199 ink 234..421]
+    342x740 reload 1 slots 2 systems 2 shown 3 ahead(data-ahead) none overlapPx -36 intoNextSlotPx -25 ladder {"zoom":1.12,"width":342,"asked":3,"n":1} rows W0-1[slot top 0 height 199 ink 11..198] W2-2[slot top 223 height 199 ink 234..421]
+    342x740 reload 2 slots 2 systems 2 shown 3 ahead(data-ahead) none overlapPx -36 intoNextSlotPx -25 ladder {"zoom":1.12,"width":342,"asked":3,"n":1} rows W0-1[slot top 0 height 199 ink 11..198] W2-2[slot top 223 height 199 ink 234..421]
+    342x740 reload 3 slots 2 systems 2 shown 3 ahead(data-ahead) none overlapPx -36 intoNextSlotPx -25 ladder {"zoom":1.12,"width":342,"asked":3,"n":1} rows W0-1[slot top 0 height 199 ink 11..198] W2-2[slot top 223 height 199 ink 234..421]
+    342x740 reload 4 slots 2 systems 2 shown 3 ahead(data-ahead) none overlapPx -36 intoNextSlotPx -25 ladder {"zoom":1.12,"width":342,"asked":3,"n":1} rows W0-1[slot top 0 height 199 ink 11..198] W2-2[slot top 223 height 199 ink 234..421]
+    360x780 fresh    slots 2 systems 2 shown 3 ahead(data-ahead) none overlapPx -35 intoNextSlotPx -28 ladder {"zoom":1,"width":360,"asked":3,"n":3} rows W0-1[slot top 0 height 209 ink 7..205] W2-2[slot top 233 height 209 ink 240..438]
+    360x780 reload 1 slots 2 systems 2 shown 3 ahead(data-ahead) none overlapPx -35 intoNextSlotPx -28 ladder {"zoom":1,"width":360,"asked":3,"n":3} rows W0-1[slot top 0 height 209 ink 7..205] W2-2[slot top 233 height 209 ink 240..438]
+    360x780 reload 2 slots 2 systems 2 shown 3 ahead(data-ahead) none overlapPx -35 intoNextSlotPx -28 ladder {"zoom":1,"width":360,"asked":3,"n":3} rows W0-1[slot top 0 height 209 ink 7..205] W2-2[slot top 233 height 209 ink 240..438]
+    360x780 reload 3 slots 2 systems 2 shown 3 ahead(data-ahead) none overlapPx -35 intoNextSlotPx -28 ladder {"zoom":1,"width":360,"asked":3,"n":3} rows W0-1[slot top 0 height 209 ink 7..205] W2-2[slot top 233 height 209 ink 240..438]
+    360x780 reload 4 slots 2 systems 2 shown 3 ahead(data-ahead) none overlapPx -35 intoNextSlotPx -28 ladder {"zoom":1,"width":360,"asked":3,"n":3} rows W0-1[slot top 0 height 209 ink 7..205] W2-2[slot top 233 height 209 ink 240..438]
+(retained ahead: no look-ahead row is drawn at the end in any of the 10 loads, data-ahead none, no G row.
+ The ladder record is the zoom-keyed record the renderer holds at the end: zoom 1.12 n 1 at 342x740, where the end
+ zoom is 1.53: the last shape-change attempt is recorded at zoom 1.12, none at 1.53, because an attempt at 1.53 would have rewritten the record; zoom 1 n 3 at 360x780.)
+342x740: the five loads' rows reads are identical; 360x780: reloads 1 to 4 rows reads identical.
+
+
+B. 342x740: ALL 23 PASSES (identical in the 5 loads: fresh and reloads 1 to 4)
+---------------------------------------------------------------------------
+Columns: pass | zoom | chosen shape and reach | the window rows' and look-ahead row's price, the sum, the room | what the fit had drawn | per-system gap (derived)
+    pass  0 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 213.6 aheadHeight 213.6 admissionPx 688.8 slotsHeight 658.4 over-by   30.4 | drawnHere false drawnNow 0      drawnRowPx 0     currentSlots 2 | gap/system 24
+    pass  1 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead true  | rowHeight 204   aheadHeight 199.2 admissionPx 655.1 slotsHeight 658.4 over-by   -3.3 | drawnHere true  drawnNow 1.052  drawnRowPx 199.2 currentSlots 2 | gap/system 24 | answer 3 slots, next pass has 3
+    pass  2 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead true  | rowHeight 204   aheadHeight 199.2 admissionPx 655.1 slotsHeight 658.4 over-by   -3.3 | drawnHere true  drawnNow 1.052  drawnRowPx 199.2 currentSlots 3 | gap/system 24
+    pass  3 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 204   aheadHeight 204   admissionPx 659.9 slotsHeight 658.4 over-by    1.5 | drawnHere true  drawnNow 1.052  drawnRowPx 204   currentSlots 3 | gap/system 24 | look-ahead row drawn, chosen shape has none; answer 2 slots, next pass has 2; window rows priced at 199.2 (drawn) instead of the reserve: 650.4 <= 658.4
+    pass  4 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 204   aheadHeight 204   admissionPx 659.9 slotsHeight 658.4 over-by    1.5 | drawnHere true  drawnNow 1.052  drawnRowPx 204   currentSlots 2 | gap/system 24
+    pass  5 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead true  | rowHeight 204   aheadHeight 199.2 admissionPx 655.1 slotsHeight 658.4 over-by   -3.3 | drawnHere true  drawnNow 1.052  drawnRowPx 199.2 currentSlots 2 | gap/system 24 | answer 3 slots, next pass has 3
+    pass  6 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead true  | rowHeight 204   aheadHeight 199.2 admissionPx 655.1 slotsHeight 658.4 over-by   -3.3 | drawnHere true  drawnNow 1.052  drawnRowPx 199.2 currentSlots 3 | gap/system 24
+    pass  7 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 204   aheadHeight 203.9 admissionPx 659.8 slotsHeight 658.4 over-by    1.4 | drawnHere true  drawnNow 1.052  drawnRowPx 203.9 currentSlots 3 | gap/system 24 | look-ahead row drawn, chosen shape has none; answer 2 slots, next pass has 2; window rows priced at 199.2 (drawn) instead of the reserve: 650.3 <= 658.4
+    pass  8 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 204   aheadHeight 203.9 admissionPx 659.8 slotsHeight 658.4 over-by    1.4 | drawnHere true  drawnNow 1.052  drawnRowPx 203.9 currentSlots 2 | gap/system 24
+    pass  9 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead true  | rowHeight 204   aheadHeight 199.2 admissionPx 655.1 slotsHeight 658.4 over-by   -3.3 | drawnHere true  drawnNow 1.052  drawnRowPx 199.2 currentSlots 2 | gap/system 24 | answer 3 slots, next pass has 3
+    pass 10 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead true  | rowHeight 204   aheadHeight 199.2 admissionPx 655.1 slotsHeight 658.4 over-by   -3.3 | drawnHere true  drawnNow 1.052  drawnRowPx 199.2 currentSlots 3 | gap/system 24
+    pass 11 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 204   aheadHeight 203.9 admissionPx 659.8 slotsHeight 658.4 over-by    1.4 | drawnHere true  drawnNow 1.052  drawnRowPx 203.9 currentSlots 3 | gap/system 24 | look-ahead row drawn, chosen shape has none; answer 2 slots, next pass still 3; window rows priced at 199.2 (drawn) instead of the reserve: 650.3 <= 658.4
+    pass 12 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 204   aheadHeight 203.9 admissionPx 659.8 slotsHeight 586.4 over-by   73.4 | drawnHere true  drawnNow 1.052  drawnRowPx 203.9 currentSlots 3 | gap/system 24 | look-ahead row drawn, chosen shape has none; answer 2 slots, next pass still 3; window rows priced at 199.2 (drawn) instead of the reserve: 650.3 > 586.4
+    pass 13 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 204   aheadHeight 203.9 admissionPx 659.8 slotsHeight 586.4 over-by   73.4 | drawnHere true  drawnNow 1.052  drawnRowPx 203.9 currentSlots 3 | gap/system 24 | look-ahead row drawn, chosen shape has none; answer 2 slots, next pass still 3; window rows priced at 199.2 (drawn) instead of the reserve: 650.3 > 586.4
+    pass 14 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 213.6 aheadHeight 213.6 admissionPx 688.8 slotsHeight 586.4 over-by  102.4 | drawnHere false drawnNow 0      drawnRowPx 204   currentSlots 3 | gap/system 24 | look-ahead row drawn, chosen shape has none; answer 2 slots, next pass still 3; window rows priced at 199.2 (drawn) instead of the reserve: 660 > 586.4
+    pass 15 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 204   aheadHeight 204   admissionPx 659.9 slotsHeight 586.4 over-by   73.5 | drawnHere true  drawnNow 1.052  drawnRowPx 204.5 currentSlots 3 | gap/system 24 | look-ahead row drawn, chosen shape has none; answer 2 slots, next pass still 3; window rows priced at 199.2 (drawn) instead of the reserve: 650.4 > 586.4
+    pass 16 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 204   aheadHeight 204   admissionPx 659.9 slotsHeight 586.4 over-by   73.5 | drawnHere true  drawnNow 1.052  drawnRowPx 204.5 currentSlots 3 | gap/system 24 | look-ahead row drawn, chosen shape has none; answer 2 slots, next pass still 3; window rows priced at 199.2 (drawn) instead of the reserve: 650.4 > 586.4
+    pass 17 | zoom 1.12 | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 204.4 aheadHeight 204.2 admissionPx 661   slotsHeight 531.1 over-by  129.9 | drawnHere true  drawnNow 0.939  drawnRowPx 204.2 currentSlots 3 | gap/system 24 | look-ahead row drawn, chosen shape has none; answer 2 slots, next pass has 2; window rows priced at 199.7 (drawn) instead of the reserve: 651.5 > 531.1
+    pass 18 | zoom 1.12 | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 204.4 aheadHeight 204.2 admissionPx 661   slotsHeight 531.1 over-by  129.9 | drawnHere true  drawnNow 0.939  drawnRowPx 204.2 currentSlots 2 | gap/system 24
+    pass 19 | zoom 1.12 | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 204.4 aheadHeight 199.7 admissionPx 656.5 slotsHeight 531.1 over-by  125.4 | drawnHere true  drawnNow 0.939  drawnRowPx 199.7 currentSlots 2 | gap/system 24
+    pass 20 | zoom 1.12 | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 204.4 aheadHeight 199.7 admissionPx 656.5 slotsHeight 531.1 over-by  125.4 | drawnHere true  drawnNow 0.939  drawnRowPx 199.7 currentSlots 2 | gap/system 24
+    pass 21 | zoom 1.12 | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 204.4 aheadHeight 199.7 admissionPx 656.5 slotsHeight 531.1 over-by  125.4 | drawnHere true  drawnNow 0.939  drawnRowPx 199.7 currentSlots 2 | gap/system 24
+    pass 22 | zoom 1.53 | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 203.9 aheadHeight 199.1 admissionPx 654.9 slotsHeight 531.1 over-by  123.8 | drawnHere true  drawnNow 0.687  drawnRowPx 199.1 currentSlots 2 | gap/system 24
+
+
+C. 360x780: the fresh load (12 passes) and reload 1 (18 passes; reloads 1 to 4 are identical to each other)
+--------------------------------------------------------------------------------------------------------
+Fresh:
+    pass  0 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 224.6 aheadHeight 224.6 admissionPx 721.8 slotsHeight 698.4 over-by   23.4 | drawnHere false drawnNow 0      drawnRowPx 0     currentSlots 2 | gap/system 24
+    pass  1 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead true  | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 698.4 over-by  -12.1 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24 | answer 3 slots, next pass has 3
+    pass  2 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead true  | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 698.4 over-by  -12.1 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 3 | gap/system 24
+    pass  3 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead true  | rowHeight 214.4 aheadHeight 214.4 admissionPx 691.3 slotsHeight 698.4 over-by   -7.1 | drawnHere true  drawnNow 1.109  drawnRowPx 214.4 currentSlots 3 | gap/system 24
+    pass  4 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 224.6 aheadHeight 224.6 admissionPx 721.8 slotsHeight 571.1 over-by  150.7 | drawnHere false drawnNow 0      drawnRowPx 214.5 currentSlots 3 | gap/system 24 | look-ahead row drawn, chosen shape has none; answer 2 slots, next pass has 2; window rows priced at 209.4 (drawn) instead of the reserve: 691.5 > 571.1
+    pass  5 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 571.1 over-by  115.2 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24
+    pass  6 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 571.1 over-by  115.2 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24
+    pass  7 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 571.1 over-by  115.2 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24
+    pass  8 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 571.1 over-by  115.2 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24
+    pass  9 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 224.6 aheadHeight 224.6 admissionPx 721.8 slotsHeight 571.1 over-by  150.7 | drawnHere false drawnNow 0      drawnRowPx 209   currentSlots 2 | gap/system 24
+    pass 10 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 571.1 over-by  115.2 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24
+    pass 11 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 571.1 over-by  115.2 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24
+Reload 1:
+    pass  0 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 224.6 aheadHeight 224.6 admissionPx 721.8 slotsHeight 698.4 over-by   23.4 | drawnHere false drawnNow 0      drawnRowPx 0     currentSlots 2 | gap/system 24
+    pass  1 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead true  | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 698.4 over-by  -12.1 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24 | answer 3 slots, next pass has 3
+    pass  2 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead true  | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 698.4 over-by  -12.1 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 3 | gap/system 24
+    pass  3 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead true  | rowHeight 214.4 aheadHeight 214.4 admissionPx 691.3 slotsHeight 698.4 over-by   -7.1 | drawnHere true  drawnNow 1.109  drawnRowPx 214.4 currentSlots 3 | gap/system 24
+    pass  4 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 214.4 admissionPx 691.3 slotsHeight 626.4 over-by   64.9 | drawnHere true  drawnNow 1.109  drawnRowPx 214.4 currentSlots 3 | gap/system 24 | look-ahead row drawn, chosen shape has none; answer 2 slots, next pass has 2; window rows priced at 209.4 (drawn) instead of the reserve: 681.3 > 626.4
+    pass  5 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 214.4 admissionPx 691.3 slotsHeight 626.4 over-by   64.9 | drawnHere true  drawnNow 1.109  drawnRowPx 214.4 currentSlots 2 | gap/system 24
+    pass  6 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 626.4 over-by   59.9 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24
+    pass  7 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 224.6 aheadHeight 224.6 admissionPx 721.8 slotsHeight 626.4 over-by   95.4 | drawnHere false drawnNow 0      drawnRowPx 209.4 currentSlots 2 | gap/system 24
+    pass  8 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 626.4 over-by   59.9 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24
+    pass  9 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 626.4 over-by   59.9 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24
+    pass 10 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 224.6 aheadHeight 224.6 admissionPx 721.8 slotsHeight 571.1 over-by  150.7 | drawnHere false drawnNow 0      drawnRowPx 209.6 currentSlots 2 | gap/system 24
+    pass 11 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 571.1 over-by  115.2 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24
+    pass 12 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 571.1 over-by  115.2 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24
+    pass 13 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 571.1 over-by  115.2 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24
+    pass 14 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 571.1 over-by  115.2 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24
+    pass 15 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 224.6 aheadHeight 224.6 admissionPx 721.8 slotsHeight 571.1 over-by  150.7 | drawnHere false drawnNow 0      drawnRowPx 209   currentSlots 2 | gap/system 24
+    pass 16 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 571.1 over-by  115.2 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24
+    pass 17 | zoom 1    | shown 3 systems 2 maxSlots 4 ahead false | rowHeight 214.4 aheadHeight 209.4 admissionPx 686.3 slotsHeight 571.1 over-by  115.2 | drawnHere true  drawnNow 1.109  drawnRowPx 209.4 currentSlots 2 | gap/system 24
+
+
+D. ASIDE (not run here)
+-----------------------
+The request says the archived heights trace may help explain an absence. It was not re-run. checks-f11cd7c6.txt
+section 5d has it: at Twinkle 342 wide, Bars 3, h 864 open, a settled three-slot shape at a spent ladder (n 6, zoom 1.36)
+with overlapPx -32 was recorded in that run, uninstrumented. This check has no admission terms for that load.
+
+
+E. FILES
+--------
+  checks-3203626b-admission-342x740.json
+  checks-3203626b-admission-360x780.json
+  checks-3203626b-admission-trace.patch
+  checks-3203626b-probe-console.txt
+  checks-3203626b-source-admission-classify.txt
+  checks-3203626b-source-admission-table.txt
+  checks-3203626b.txt
