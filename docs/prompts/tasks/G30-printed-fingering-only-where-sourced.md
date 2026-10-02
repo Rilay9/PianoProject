@@ -127,3 +127,4 @@ in-flight: brief drafted 2026-10-01 (`G30-printed-fingering-only-where-sourced.m
 state: drafted 2026-10-01: with the reviewer before dispatch (Entry 211)
 - dispatched 2026-10-02: dispatched at 7d9de990 as the narrow never-teach-wrong seam the reviewer named (`responses/questions-90b19bee.md` §1), no further pre-review (Entry 211)
 - landed 2026-10-02: merged f0926603; handoff `handoffs/0d6ff3f3.md`
+- closed 2026-10-02: APPROVE (`responses/0d6ff3f3.md`): the fix-forward implements option (b) for repeated_notes as required

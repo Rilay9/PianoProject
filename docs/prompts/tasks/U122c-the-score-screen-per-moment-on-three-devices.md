@@ -114,11 +114,11 @@ Lead with the judgement: what a learner now meets in each moment on each device,
 - learner-facing text itemised (where, before, after, why);
 - unverified on a device, and nothing heard.
 
-`operating-procedure.md` §14. Port **5453**, from a config copy under `app/build/u122c/`; `--workers=2`. Never name an AI model in any file.
+Built by the outside builder on `chatgpt/u122c`. CI runs on that branch; the browser measurements and pictures it cannot run are run by the orchestrator on its branch head, on request (`docs/review/reviewer-context.md`, Build requests). Never name an AI model in any file.
 
 ## Record
 
 lane: U122c · closes: U122, U120, U121, U124 · entry: 216
 index: The Score screen shows each moment what it needs, designed for phone sideways, phone upright and tablet: the fold keyed on the task with a direct pause, the count-in off the notes, the finished view's outcome and next action, c6 sideways, upright and tablet on their own terms (`U122c-the-score-screen-per-moment-on-three-devices.md`) | build | drafted 2026-10-02 (`U122c-the-score-screen-per-moment-on-three-devices.md`); Entry 216
 in-flight: drafted 2026-10-02 (`U122c-the-score-screen-per-moment-on-three-devices.md`): a build; the per-state table on every device, c6 sideways with U122b's rules, upright and tablet traced and designed on their own terms; walk findings 5 and 8, U120, U121, U124 as acceptance (Entry 216)
-state: with-reviewer 2026-10-02: for pre-dispatch review (Entry 216)
+state: approved 2026-10-02: APPROVE (the reviewer, at adb0873a §1): the upright and tablet designs inside the lane under the stop condition (a loss of action, notation, stability, tap size or look-ahead comes back before it is built); music held applies while notation is the task; pictures of every changed state per device, the cells as the measured domain (Entry 216)

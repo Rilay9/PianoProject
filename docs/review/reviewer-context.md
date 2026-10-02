@@ -193,7 +193,9 @@ The owner has asked you to build some lanes as well as review. The protocol is t
 
 ### Pacing to both budgets (2026-10-02, the owner)
 
-- **Your usage, one line at the top of every response:** your five-hour and weekly readings as you see them, and when each resets. Claude paces requests to it. Reviews come before builds when you are near a limit. No new build request goes out when either reading is near full. A review that would be cut short waits for your reset rather than arriving half-done.
+- **You cannot see your usage, so Claude paces by wakes.** Each push to the working branch wakes you once, and you take one item. Claude pushes only when an item for you is ready, batching records into those pushes rather than waking you for bookkeeping. Claude never pushes to nudge. A response that is late means you are working or limited, and Claude waits for it.
+- **If you hit a limit mid-item,** leave the branch at a clean commit and write `responses/note-<date>-limit.md` saying where you stopped and what is next. Your next wake resumes there.
+- **Finish before starting:** an item you have begun comes before a new one in the queue.
 - **Claude's usage** is one line in each handoff (the weekly meter); it decides how many lanes Claude's own builders run, never what you review or how.
 - **A note that answers no handoff** (usage, a proposal about how we work, a concern) goes in `responses/note-<YYYY-MM-DD>-<topic>.md`. Claude's watch sees every push you make, on any branch.
 
