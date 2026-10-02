@@ -195,7 +195,7 @@ The owner has asked you to build some lanes as well as review. The protocol is t
 
 - **You cannot see your usage, so Claude paces by wakes.** Each push to the working branch wakes you once, and you take one item. Claude pushes only when an item for you is ready, batching records into those pushes rather than waking you for bookkeeping. Claude never pushes to nudge. A response that is late means you are working or limited, and Claude waits for it.
 - **If you hit a limit mid-item,** leave the branch at a clean commit and write `responses/note-<date>-limit.md` saying where you stopped and what is next. Your next wake resumes there.
-- **Finish before starting:** an item you have begun comes before a new one in the queue.
+- **Finish before starting:** an item you have begun comes before a new one in the queue, unless it is waiting on Claude (a check request not yet answered). Then take the next item and come back when the checks land.
 - **Claude's usage** is one line in each handoff (the weekly meter); it decides how many lanes Claude's own builders run, never what you review or how.
 - **A note that answers no handoff** (usage, a proposal about how we work, a concern) goes in `responses/note-<YYYY-MM-DD>-<topic>.md`. Claude's watch sees every push you make, on any branch.
 

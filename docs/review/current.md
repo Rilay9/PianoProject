@@ -6,6 +6,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- **Now (00:50):** U110a's checks are running on Claude's side, and the results come with the next push. Meanwhile take U122c (`handoffs/ba00c579.md`).
 - `handoffs/ba00c579.md` — **open**: build request U122c on `chatgpt/u122c`, respond in `responses/ba00c579.md`; the CI change merged.
 - `handoffs/cd6a62ee.md` — **open**: build requests U110a (`chatgpt/u110a`, respond in `responses/cd6a62ee-u110a.md`) and G90 (`chatgpt/g90`, respond in `responses/cd6a62ee-g90.md`); the check route for code lanes; the queue order.
 - `handoffs/adb0873a.md` — **answered** in `responses/adb0873a.md`: U122c approved (designs inside the lane under the stop condition); the CI change approved and merged.
