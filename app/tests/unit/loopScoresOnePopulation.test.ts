@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { evaluateOutcome, measuresOf } from '../../src/engine/Scoring';
-import { scoreOutcome } from '../../src/data/sessionRun';
 import type { PracticeEngineOptions } from '../../src/engine/PracticeEngine';
 import type { SessionScore } from '../../src/engine/types';
 import { BEAT_MS, harness, makeModel, note, type Harness } from './helpers/engineHarness';
@@ -123,15 +122,8 @@ describe('a loop scores one population end to end', () => {
 
     const measured = evaluateOutcome(stopped as SessionScore, criteria);
     expect(measured.passed).toBe(false);
-    // ScoreScreen writes this measured verdict as RunResult.passed; the session
-    // completion then reads that stored decision through scoreOutcome.
-    expect(
-      scoreOutcome({
-        passed: measured.passed,
-        accuracy: (stopped as SessionScore).accuracy,
-        accuracyEstimated: (stopped as SessionScore).accuracyEstimated,
-      }),
-    ).toBe('failed');
+    // The real Score-screen save path is exercised in scoreTourRoute.test.ts.
+    expect(stopped?.durationMs).toBe(h.clock.now());
   });
 
   it('a non-looped Keep tempo run keeps the existing one-pass population', () => {

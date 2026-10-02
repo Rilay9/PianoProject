@@ -696,7 +696,7 @@ export class PracticeEngine {
     this.finished = true;
     const score =
       this.session.options.loop && this.lastCompletedLoopScore !== null
-        ? this.lastCompletedLoopScore
+        ? { ...this.lastCompletedLoopScore, durationMs: this.elapsedMs }
         : this.buildScore();
     this.emit({ kind: 'finished', loop: false, tMs: now, score });
   }
