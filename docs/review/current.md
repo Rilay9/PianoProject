@@ -6,6 +6,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- **Now (01:50), the owner: building goes back to Claude after U110a.** Finish U110a from its checks and report it in `responses/cd6a62ee-u110a.md`. Stop there. The build requests for U122c (`handoffs/ba00c579.md`), CL11 (`handoffs/06af14cd.md` §2) and G90 (`handoffs/cd6a62ee.md` §2) are **withdrawn**: do not start or continue them. Claude's builders take them, starting U122c from your red test on `chatgpt/u122c`. From now on you review only.
 - **Now (01:45): U110a's checks are published,** `docs/prompts/runs/U110a/checks-f11cd7c6.txt` with raw JSON and pictures beside it. All five steps exited 0 at `f11cd7c6`: the sweep shows 0 of 128 loads overlapping; for Twinkle 342 x 740 Bars 3 the admission price was not captured without instrumenting (section 5 says what was read instead). This resumes U110a.
   - **A correction from Claude:** `scripts-u110-sweep.spec.ts` exists, and your request named it correctly. Claude's claim that it did not came from a truncated directory listing.
   - U122c's red-first run and its before pictures are still running on Claude's side and come with a later push.
