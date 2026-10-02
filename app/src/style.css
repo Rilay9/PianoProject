@@ -953,30 +953,32 @@ body {
    width, and lists whose rows are all the same shape run in two columns.
    --------------------------------------------------------------------------- */
 @media (orientation: landscape) and (max-height: 500px) {
-  /* A6 — the score screen: the header row goes, and Back, the title and the
-     status line sit at the bar's left end instead. The keyboard strip is 56
-     px, not 72: the keys are as wide as before, and height is the scarce
-     thing. Together with the bar's row going to the stage during a run, the
-     music gets about 300 of 360 px where it had 194. */
+  /* A6 — the score screen: the header row goes. The keyboard strip is 56 px,
+     not 72: the keys are as wide as before, and height is the scarce thing.
+     Together with the bar's row going to the stage during a run, the music
+     gets about 300 of 360 px where it had 194.
+
+     Since U122c (c6, `docs/design/score-bar-layout.md` §8.7, §10.3) the
+     header's contents are split by what they are for: the piece's name and
+     `bar n / m` on a thin top line (`.score-top`, below), Back and the status
+     line at the bottom row's left end with every control. */
   .screen--score .score-head {
     display: none;
   }
 
   .screen--score .score-bar {
     justify-content: flex-start;
-    /* One row, and the title is what gives.
-
-       The bar wraps by design when it cannot fit — a safety valve so that
-       `Both` is never hidden off an edge nobody knows to drag. Sideways that
-       valve fired in ordinary use: the bar carries Back, the piece's name and
-       `bar n / m` as well as the six controls, which the valve's arithmetic
-       never counted. On a phone whose landscape is 740 px or less — a larger
-       Display size does that — Beethoven's `Piano Sonata No. 14 "Moonlight",
-       III.` pushed `⋯` onto a second row and cost the music 40 px.
-
-       So sideways it does not wrap, and the name shrinks instead: it is the
-       one thing here that is still useful at half its length. */
+    /* One row. The bar wraps by design when it cannot fit — a safety valve so
+       that `Both` is never hidden off an edge nobody knows to drag. Sideways
+       a second row costs the music 40 px, so it does not wrap: the chooser
+       (`fitBarControls`) takes words and then controls off the row until it
+       fits, and the status line yields its room first. */
     flex-wrap: nowrap;
+    /* Painted no further than its controls (U122b rule 3, `responses/e070d238.md`):
+       its padding lay over the bass staff's lowest beams at 780 × 360 with
+       Moonlight, where the controls themselves cleared them. */
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   .screen--score .score-bar__left {
@@ -984,77 +986,134 @@ body {
     /* Takes the room that is left and gives it back first. */
     flex: 0 1 auto;
     min-width: 0;
-    /* And draws nothing past the room it was given (U119). Only the name
-       shrinks in here; Back, `bar n / m` and the status line keep their own
-       widths, so where those are wider than what the controls leave, the
-       group's box is narrower than what is in it, and nothing clipped it. At
-       667 × 375 on a wider face a paused run's *Paused — ▶ to carry on, …*
-       ran on over ▶ and took the tap meant for it; at 115 % text on that
-       face it did so at 780 too. The controls are laid out after the
-       group's box, so a group that draws only inside it cannot cover one.
-       What is cut is what comes last: the status line first, then
-       `bar n / m`; Back, first in the group, last of all. Where Back and
-       `bar n / m` themselves would not fit beside the controls (115 % text
-       on a row much narrower than 640, or a long piece's three-digit bar),
-       Hands and then `Hear it` go behind `⋯` first (`leftGroupIsCut` in
-       `ScoreScreen.ts`, U119a), and the status line ends at its own
-       ellipsis (below), so the clip is the last fence rather than what
-       decides what a learner reads. Only a row too narrow even with both
-       of those gone would see it cut `bar n / m` again: Play, the mode,
-       the tempo and `⋯` never leave. `clip` across only, not `hidden`:
-       Back's focus ring above and below is still drawn, and the group is
-       no scroll container a focus could scroll. */
+    /* And draws nothing past the room it was given (U119): the controls are
+       laid out after the group's box, so a group that draws only inside it
+       cannot cover one. What is cut is what comes last: the status line,
+       which ends at its own ellipsis (below); Back, first in the group, is
+       never cut, because a control goes behind `⋯` first (`leftGroupIsCut`
+       in `ScoreScreen.ts`, U119a). `clip` across only, not `hidden`: Back's
+       focus ring above and below is still drawn, and the group is no scroll
+       container a focus could scroll. */
     overflow-x: clip;
   }
 
-  .screen--score .score-bar__title {
-    /* No fixed cap sideways: a share of the viewport cannot know what the
-       controls need, and 34vw of 740 is 251 px the controls then have to do
-       without. */
-    max-width: none;
-    flex: 0 1 auto;
-    min-width: 0;
-  }
-
-  /* Everything else keeps its size; the name is the only thing that yields. */
+  /* Everything else keeps its size. */
   .screen--score .score-bar > :not(.score-bar__left) {
     flex: none;
   }
 
-  /* Inside the left group too: squeezed, `← Back` and `bar 1 / 201` wrapped
-     their own text onto a second line and took the group from 36 px to 48,
-     which is the same 12 px back by another door. */
-  .screen--score .score-bar__left > :not(.score-bar__title) {
+  /* Squeezed, `← Back` wrapped its own text onto a second line and took the
+     group from 36 px to 48. */
+  .screen--score .score-bar__left > .score-button {
     flex: none;
     white-space: nowrap;
   }
 
-  /* But the status line gives its room up too, after the name, and ends with
-     its own ellipsis where it stops (U119a, the reviewer's ruling on U119,
-     `responses/fa4563d1.md`: "a truncated ordinary status must visibly read
-     as truncated"). Held at its own width, it was cut by the group's clip,
-     flush and part-way through a letter: *Paused — ▶ to carry c* at
-     667 × 375 on a wider face, *Pause* at 640 × 360 with 115 % text, which
-     reads as a word of its own. Shrinking, its box ends where the group's
-     room does, and `.score-bar__status`'s `text-overflow: ellipsis` draws
-     the cut. */
+  /* The status line gives its room up and ends with its own ellipsis where it
+     stops (U119a, `responses/fa4563d1.md`: "a truncated ordinary status must
+     visibly read as truncated"): shrinking, its box ends where the group's
+     room does, and `.score-bar__status`'s `text-overflow: ellipsis` draws the
+     cut. */
   .screen--score .score-bar__left > .score-bar__status {
     flex: 0 1 auto;
     min-width: 0;
+    max-width: none;
   }
 
-  /* The name still yields first, all of it, before the status line gives
-     anything, as it did when the line held its width: by default two items
-     shrink in proportion to their widths, which at 740 × 342 on a wider face
-     widened the name to *Hot C…* and shortened the paused line, where
-     nothing had been wrong (U119's probe). A weight this large leaves the
-     status line less than a layout unit while the name has room to give.
+  /* The top line (c6): the piece's name and `bar n / m` in the folded chip's
+     type, one line, as tall at rest as the band a run keeps for it, so ▶
+     moves nothing (U122b). At rest it is in the flow above the stage; from a
+     run's start it lies over the stage's top band, and the sliding sheet sits
+     below the band (`.score-buffer`, below) — so the fold, a pause and a
+     carry-on move nothing either. It has no background: the band it lies
+     over is the stage's own, and empty. */
+  .screen--score .score-top {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: baseline;
+    gap: 0.4rem;
+    box-sizing: border-box;
+    height: var(--score-top-band);
+    padding: 2px 12px 2px 8px;
+    font-size: 0.8rem;
+    line-height: 1.2;
+    color: var(--text-muted);
+    white-space: nowrap;
+    min-width: 0;
+    overflow: hidden;
+  }
 
-     Not while a refusal stands: U105d's rule (`data-sound-refused`, below)
-     shares the shrink between the name and the sentence in proportion on
-     purpose, and is left as it was. */
-  body:not(:has([data-sound-refused])) .screen--score .score-bar__left > .score-bar__title {
-    flex-shrink: 1000000;
+  .screen--score[data-running='true'] .score-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  /* The name and the moment's sentence yield, with an ellipsis; `bar n / m`
+     never does (below). */
+  .screen--score .score-top__title,
+  .screen--score .score-top__say {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .screen--score .score-top__title {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* The moment's sentence takes the name's place while it stands
+     (`topLineSays`), and the name is not drawn while the hands are on the
+     keys. */
+  .screen--score .score-top[data-says] .score-top__title,
+  .screen--score[data-chrome='folded'] .score-top__title,
+  .screen--score .score-top:not([data-says]) .score-top__say {
+    display: none;
+  }
+
+  /* A refusal is a warning in the name's place, so it does not read as the
+     name: bold, in the accent colour (U122b). */
+  .screen--score .score-top[data-says='refusal'] .score-top__say {
+    font-weight: 600;
+    color: var(--accent, #6ea8ff);
+  }
+
+  .screen--score .score-top__where {
+    flex: none;
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Whole or not at all: a refusal too long for the line takes its room
+     (`responses/e070d238.md`), never a cut number that reads as another bar. */
+  .screen--score .score-top[data-where-yields] .score-top__where {
+    display: none;
+  }
+
+  /* The beat dot in the line's left corner, where the band is. */
+  .screen--score .score-top > .score-beat {
+    align-self: center;
+  }
+
+  /* The sliding sheet below the top line's band from a run's start, not at
+     the fold: `WindowRenderer.sheetShift` reads this to fit the run. */
+  .screen--score[data-running='true'] .score-buffer {
+    top: var(--score-top-band);
+  }
+
+  /* During a run the stage takes the bar's row (decision 5, P21d A6): the
+     row overlays the foot of the sheet, painted no further than its controls,
+     rather than pushing the music up and down. One fit, at the run's start.
+     Sideways only since U122c: height is scarce here and the row clears the
+     music (U122b: in every cell measured, ⏸ alone and the whole flush row);
+     upright and on a tablet the stage keeps its reserve (below). */
+  .screen--score[data-running='true'] .score-stage {
+    margin-bottom: 0;
   }
 
   /* On the *host*, not on the strip. The bar floats `bottom: var(--strip-height)`
@@ -2334,48 +2393,41 @@ input[type='checkbox'] {
    and not so bright that it competes with the note being played — Tempo and
    Listen move whether or not you are ready, and Wait mode has no clock to be
    ahead of, so it draws none of this. */
-/* The count-in, drawn over the notation (P21c A6). Clicks alone leave the
-   first note of a piece unannounced on a phone with the sound low, which is
-   the one moment a beginner most needs to know when to start. */
+/* The count-in (P21c A6). Clicks alone leave the first note of a piece
+   unannounced on a phone with the sound low, which is the one moment a
+   beginner most needs to know when to start.
+
+   **In the row, right of ⏸, never over the notation (U122c).** It was drawn
+   over the stage under a wash that dimmed every note, its numerals on the
+   notes the learner reads to come in (walk finding 8: in Moonlight on a dozen
+   note heads, in Hot Cross Buns on the fingerings). A run folds the controls to
+   ⏸ the moment it starts, and the room they leave in the row is where the
+   count goes: large, at the row's own height, beside the control that stops
+   it (`responses/e070d238.md`: "the large count numerals beside the direct
+   pause control, without the wash"). Placed from ⏸'s edge by the script
+   (`placeCount`), which also narrows it if a long bar's count would run past
+   the row. Only while the controls are folded: a peek shows them instead. */
 .score-countin {
   position: absolute;
-  inset: 0;
-  /*
-   * Stops where the control bar starts.
-   *
-   * During a run the stage is extended under the bar to win the height, so a
-   * count-in filling the stage put its numerals across `R`, `L` and `Both` —
-   * two gallery cells said so. It cannot simply be made inert like the other
-   * overlays: stopping a run that has begun counting is exactly what someone
-   * reaches for, so the bar has to stay both usable *and* legible, which means
-   * the count-in has to keep off it rather than sit on top of it.
-   *
-   * 4.5rem, not the bar's own 3.25: the numerals are set in a clamped size and
-   * their line box runs below the glyphs, so a clearance equal to the bar left
-   * the two boxes touching on the cells with the least room. The slack is worth
-   * more than the twenty pixels it costs an overlay that is on the screen for
-   * four beats.
-   */
-  bottom: 4.5rem;
-  z-index: 3;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
   display: flex;
-  /* Low on the stage, not centred: upright the packed slots leave the
-     bottom free, and centred the count sat on the second system's notes
-     (the state gallery's count-in cell). */
-  align-items: flex-end;
-  padding-bottom: 6%;
-  justify-content: center;
-  gap: clamp(12px, 6vw, 48px);
+  align-items: center;
+  gap: 0.35em;
+  padding-left: 0.3em;
+  font-size: calc(var(--score-bar-h, 2.6rem) - 2px);
+  line-height: 1;
+  overflow: hidden;
   pointer-events: none;
-  background: color-mix(in srgb, var(--surface) 72%, transparent);
 }
 
-.score-countin[hidden] {
+.screen--score:not([data-chrome='folded']) .score-countin {
   display: none;
 }
 
 .score-countin__beat {
-  font-size: clamp(2rem, 12vmin, 5rem);
   font-variant-numeric: tabular-nums;
   color: var(--text-muted);
   opacity: 0.45;
@@ -2386,65 +2438,32 @@ input[type='checkbox'] {
   opacity: 1;
 }
 
-/* Where you are, for when the chrome has folded away and nothing else on the
-   screen says it (`08` §5.3).
+/* The stage's corner chip (`bar n / m` over the music while the chrome was
+   folded, `08` §5.3) is gone since U122c, and with it the 22 px it moved the
+   sheet down at the fold: upright and on a tablet the header keeps its box
+   through a run and says `bar n / m` where it said it at rest; sideways the
+   top line does, in the band the sheet sits below from the run's start. */
 
-   It had no rule at all, so it was an inline span in the stage's normal flow:
-   drawn whatever the chrome was doing — `bar 7 / 15` in the bar's left end and
-   `bar 7 / 15` again at the top of the sheet, on every leg of the corpus — and
-   sitting in the text flow, so it ran straight into whatever the engraver puts
-   above the first system. `bar 7 / 15E7` on both Greensleeves, and
-   `bar 6 / 11du bout de la pensée` on the Gnossienne.
-
-   Only while folded, then, and out of the flow. Top-right because the beat dot
-   has the top-left. */
-.score-stage__corner {
+/* The top line is the sideways phone's (`.score-top`, the landscape query);
+   everywhere else the header says what it says. Its band is the one a
+   sideways run keeps at the stage's top: one line of the chip's type, and no
+   less than 22 px, room for the beat dot's pulse. */
+.score-top {
   display: none;
 }
 
-/* Not on a tablet: there the header does not fold, so it is still saying
-   `bar n / m` and a chip over the sheet would say it twice. */
-/* Folded, the sheet starts below the chip rather than under it.
-
-   The chip is drawn *over* the notation on purpose — that is the trade for
-   getting `bar n / m` without a row of its own — but over is not the same as
-   on top of a note. On Greensleeves folded, it sat on a `G` chord symbol. The
-   answer is to shift the ink down by the chip's height, not to move the chip:
-   the top-right corner is where it belongs and moving it into the bar's row is
-   impossible while folded, because while folded there is no bar.
-
-   On the buffers rather than the stage: `.score-buffer` is `inset: 0` and the
-   renderer's placement is a transform inside it, so padding on the stage would
-   move nothing. It costs the music 22 px of a screen that has just been given
-   back the bar's whole row, which is 44. Not on a tablet, where the chip is
-   never drawn (the header does not fold there). */
-.screen--score[data-chrome='folded']:not([data-tablet='true']) .score-buffer {
-  top: var(--score-corner-h, 22px);
+.screen--score {
+  --score-top-band: max(22px, calc(0.8rem * 1.2 + 4px));
 }
 
-.screen--score[data-chrome='folded']:not([data-tablet='true']) .score-stage__corner {
-  display: block;
-  position: absolute;
-  top: 4px;
-  right: 8px;
-  z-index: 4;
-  font-size: 0.8rem;
-  line-height: 1.2;
-  text-align: right;
-  color: var(--text-muted);
-  background: var(--bg);
-  padding: 1px 4px;
-  border-radius: 6px;
-  pointer-events: none;
-}
-
-/* The beat dot: how a player checks the tempo without hearing the click. */
+/* The beat dot: how a player checks the tempo without hearing the click.
+   Beside `bar n / m` (U122c): in the header row upright and on a tablet, in
+   the top line sideways (`placeBeatDot`). It sat in the stage's top-left
+   corner, on the first system's clef upright. */
 .score-beat {
-  /* In the stage's top-left corner, every form factor (`08` §5.3). */
-  position: absolute;
-  top: 6px;
-  left: 6px;
-  z-index: 4;
+  display: inline-block;
+  flex: none;
+  align-self: center;
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -2558,7 +2577,7 @@ input[type='checkbox'] {
 /* Where you are in the piece: `bar 3 / 48`, beside the title, and mirrored
    into the bar's left end sideways. */
 .score-head__where,
-.score-bar__where {
+.score-top__where {
   font-size: 0.8rem;
   color: var(--text-muted);
   white-space: nowrap;
@@ -2936,24 +2955,16 @@ input[type='checkbox'] {
 }
 
 
-/* Back, the title and the status line, mirrored from the header for a phone
-   held sideways (P21d A6). Upright the bar is full and the header row is the
-   right place, so this is not drawn at all. */
+/* Back and the status line, mirrored from the header for a phone held
+   sideways (P21d A6; the name and `bar n / m` are on the top line since
+   U122c). Upright the bar is full and the header row is the right place, so
+   this is not drawn at all. */
 .score-bar__left {
   display: none;
   align-items: center;
   gap: 0.4rem;
   min-width: 0;
   margin-right: auto;
-}
-
-.score-bar__title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 34vw;
 }
 
 .score-bar__status {
@@ -2965,31 +2976,31 @@ input[type='checkbox'] {
   max-width: 28vw;
 }
 
-/* During a run the stage takes the bar's row (decision 5, P21d A6): the bar
-   hides itself three seconds in, and when it is asked back it overlays the
-   foot of the sheet rather than pushing the music up and down. One fit, at
-   the run's start, instead of one on every tap. */
-.screen--score[data-running='true'] .score-stage {
-  margin-bottom: 0;
-}
+/* The stage keeps the bar's row through a run, upright and on a tablet
+   (U122c, `docs/design/score-bar-layout.md` §10.4–10.5). It took the row at
+   every size (decision 5, P21d A6: the sideways phone's height), and where
+   the height decides the size the music grew at ▶ and the bar, reopened on a
+   pause, covered its foot (35 px deep at 1366 × 1024). Upright the row bought
+   nothing: the run's size and systems are the ones it had at rest. Sideways
+   it still takes the row (the landscape query). */
 
-/* The one thing on the bar allowed to give. At 360 px the six controls come to
-   358 of the 360, which is a fit that depends on a font: if anything ever
-   costs more than those two pixels, the tempo label goes short rather than the
-   whole bar going to two rows. */
+/* The tempo label: its words are chosen by the row's chooser, long or short,
+   and its width is priced at the widest it can read in that form
+   (`applyTempoLabel`), so the bpm is never cut. */
 .score-bar > .score-tempo-label {
-  flex: 0 1 auto;
+  flex: none;
   min-width: 0;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  justify-content: center;
   /* It opens the tempo sheet, so it is a control, and it was a 43 x 17 one —
      the smallest thing to hit on the screen by a wide margin. The height costs
      nothing horizontally, which is why this is the first of the bar's targets
      to fix rather than the last. */
   display: inline-flex;
   align-items: center;
-  min-height: 2.5rem;
+  min-height: max(2.5rem, 40px);
   padding-inline: 0.3rem;
 }
 
@@ -2998,29 +3009,62 @@ input[type='checkbox'] {
   bottom: var(--strip-height, 4.5rem);
 }
 
-/* And the count-in clears both. */
-.screen--score:has(.score-strip:not([hidden])) .score-countin {
-  bottom: calc(4.5rem + var(--strip-height, 4.5rem));
-}
-
-.score-bar[data-visible='false'] {
-  opacity: 0;
+/* Folded: the hands are on the keys, and the controls fold to the one that
+   acts now (U122c, `scoreChrome.ts`): ⏸ in ▶'s own place, or `Stop` under a
+   demonstration. The row keeps its box and paints nothing; every other control
+   keeps its place, unseen, so nothing moves when they come back. It was
+   `opacity: 0` on the whole bar, ▶ with it, and a paused run folded the same
+   way: *▶ to carry on* with no ▶ (walk finding 5). */
+.screen--score[data-chrome='folded'] .score-bar {
+  background: transparent;
+  border-top-color: transparent;
   pointer-events: none;
 }
 
-/* Folded, the header goes with the bar — upright, and not on a tablet.
+.screen--score[data-chrome='folded'] .score-bar > :not(.score-countin) {
+  visibility: hidden;
+}
 
-   `data-chrome='folded'` was written and only the corner chip ever read it, so
-   the header stayed where it was: `bar n / m` in the header *and* `bar n / m`
-   in the corner, which is the duplicate this round set out to end, in a new
-   place. It also meant the stage never got the row the fold is for.
+.screen--score[data-chrome='folded'] .score-bar[data-direct='score-play'] > #score-play,
+.screen--score[data-chrome='folded'] .score-bar[data-direct='score-hear'] > #score-hear {
+  visibility: visible;
+  pointer-events: auto;
+}
 
-   Not on a tablet: `04` §7a says the screens are the same there and the tablet
-   has the height to spare. Not sideways either — sideways the header is
-   already gone and its contents live in the bar's left end, which fades with
-   the bar. */
-.screen--score[data-chrome='folded']:not([data-tablet='true']) .score-head {
+/* Folded, the header keeps its box, upright and on a tablet: its Back, the
+   piece's name, the mode's name and `?` are not drawn, `bar n / m`, the app's
+   status line and what the run says stay where they were (U122c, §10.4). It
+   used to leave the flow upright, and the music jumped up by its height less
+   the chip's band at every fold (32–63 px measured) and down again at every
+   reveal, while buying the run nothing: the run's size is frozen before the
+   fold. The name goes from the flow so `bar n / m` and the status share its
+   width; Back keeps the row's height. Sideways the header is not drawn. */
+.screen--score[data-chrome='folded'] .score-head :is(#score-back, .help-strip__what, .help-strip__more) {
+  visibility: hidden;
+}
+
+.screen--score[data-chrome='folded'] .score-head .score-head__title {
   display: none;
+}
+
+.screen--score[data-chrome='folded'] .score-head__where {
+  margin-left: auto;
+}
+
+/* The beat dot beside `bar n / m` in the header row: the two go to the row's
+   right end together, whatever is drawn before them. */
+.score-head__row > .score-beat {
+  margin-left: auto;
+}
+
+.screen--score .score-head__row > .score-beat:not([hidden]) + .score-head__where {
+  margin-left: 0;
+}
+
+/* The mode's standing line is not what the run is saying: hidden folded, as
+   the chip never said it (`data-standing`, written with the line). */
+.screen--score[data-chrome='folded'] .score-head .help-strip__now[data-standing='true'] {
+  visibility: hidden;
 }
 
 /* Hidden means gone (`08` §9.20): `display: flex` above beat the user-agent
@@ -3056,7 +3100,9 @@ input[type='checkbox'] {
   background: transparent;
   color: inherit;
   cursor: pointer;
-  min-height: 2.5rem;
+  /* In the unit it is drawn in and the unit it is checked in (U124): at 90 %
+     text `2.5rem` alone was 36 px. */
+  min-height: max(2.5rem, 40px);
 }
 
 /*
@@ -3077,8 +3123,24 @@ input[type='checkbox'] {
  * So the floor below is affordable: whatever it costs, the bar stops carrying.
  */
 #score-play,
-#score-more {
-  min-width: 2.5rem;
+#score-more,
+#score-hear {
+  min-width: max(2.5rem, 40px);
+}
+
+/* Every control a sentence names meets the same floor (U124, widened by
+   U122b, `responses/e070d238.md`): Back, and each of R, L and Both, which
+   *choose L or Both* and *tap R again* name one at a time. Hands takes it
+   wherever it keeps its place on the row with it (`data-floor`, decided by
+   `fitBarControls`): where only the floor would send it behind `⋯` (a narrow
+   upright row) it keeps its own width, a product trade put to the reviewer,
+   not settled here. */
+#score-back,
+#score-back-side,
+.score-group[data-floor='true'] > #score-hands-R,
+.score-group[data-floor='true'] > #score-hands-L,
+.score-group[data-floor='true'] > #score-hands-both {
+  min-width: max(2.5rem, 40px);
 }
 
 /*
@@ -3590,6 +3652,55 @@ input[type='checkbox'] {
 .summary-selfreport {
   margin-top: 1.5rem;
   align-items: center;
+}
+
+/* The sheet's two parts (U122c): the outcome and the figures, then what to do
+   next. One column, as they always were, everywhere but on a phone held
+   sideways. */
+.summary-main,
+.summary-side {
+  display: contents;
+}
+
+/* Sideways the sheet is wide and short, and its 72 % ended above the actions:
+   the learner met the outcome and the figures and not the step it points to
+   (U122b; `responses/e070d238.md`: the outcome and the primary next action in
+   the first view). So the two parts stand side by side, X46's sheet in its own
+   order: the outcome and the figures on the left, the actions on the right from
+   the top, the recommended one first as X46 puts it. The actions stay at the
+   top of the sheet's view while the figures scroll. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .screen--score .summary-sheet {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    column-gap: 1.25rem;
+    align-items: start;
+  }
+
+  .screen--score .summary-sheet > .summary-refusal {
+    grid-column: 1 / -1;
+  }
+
+  .screen--score .summary-main,
+  .screen--score .summary-side {
+    display: block;
+    min-width: 0;
+  }
+
+  .screen--score .summary-side {
+    position: sticky;
+    top: 0;
+  }
+
+  /* And the outcome's own lines closer together, so X46's verdict (*To
+     pass*, *Judged*) is in the first view with the heading at 115 % text. */
+  .screen--score .summary-main > h2:first-child {
+    margin: 0 0 0.3rem;
+  }
+
+  .screen--score .summary-main > .summary-stats {
+    margin-top: 0.4rem;
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -5795,25 +5906,16 @@ input[type='checkbox'] {
   visibility: hidden;
 }
 
-/* And back on again: the three things that live on the stage *because* the
-   notation might not be there.
-
-   Hiding the stage as a whole took the visible count-in, the beat dot and the
-   corner readout with it, since `visibility` inherits. Every one of them was
-   added for exactly this situation — the dot is "the one thing that must be
-   visible while the clock runs" (`08` §5.3), the corner is for when the chrome
-   has folded away and nothing else says which bar you are in, and the count-in
-   exists because on a music stand the sound is often turned down. So a blind
-   run in tempo mode counted itself in invisibly, on a screen with nothing else
-   on it whatsoever, and the gallery photographed 1,400 px of black.
-
-   The notation is the buffers and the rule above hides those by name, which is
-   all blind mode ever meant to do. */
-.score-stage--blind .score-countin,
-.score-stage--blind .score-beat,
-.score-stage--blind .score-stage__corner {
-  visibility: visible;
-}
+/* The count-in, the beat dot and `bar n / m` are not on the stage (U122c:
+   the count in the row beside ⏸, the dot and the location in the header or
+   the top line), so hiding the stage cannot take them with it. They lived on
+   the stage once, and a blind run in tempo mode counted itself in invisibly,
+   on a screen with nothing else on it, until a rule here showed them again:
+   each was added for exactly this situation — the dot is "the one thing that
+   must be visible while the clock runs" (`08` §5.3), and the count-in exists
+   because on a music stand the sound is often turned down. The notation is the
+   buffers, and the rule above hides those by name, which is all blind mode
+   ever meant to do. */
 
 .paper-readout {
   display: flex;
@@ -6222,45 +6324,27 @@ body:has([data-sound-refused]) .screen--score .score-head .help-strip__now {
   overflow-wrap: anywhere;
 }
 
-/* And the same sentence in the bar's mirror, sideways (U105d, the reviewer's
-   direction on U105c, `responses/842ea210.md`: an actionable refusal may not
-   hide the control's name behind an ellipsis, on this surface as on the
-   header). Sideways the header is not drawn at all, in any state, so
-   `.score-bar__status` is the only copy a learner can read, and it was one
-   line at `28vw` with an ellipsis whatever it said: on a wider face *tap Hear
-   it again* lost *again* there, paused or at rest.
-
-   It wraps, rather than only losing the cap. Lifting `28vw` and keeping the
-   line one line was tried first: at 740 x 342 on the wider face the sentence
-   is longer than everything the row has left beside the six controls and `⋯`,
-   even with the piece's name at nothing, so it ran over ▶. `flex: 0 1 auto`
-   because the landscape rule's `flex: none` holds an item at its one-line
-   width, and an item that never shrinks never wraps; it now gives room with
-   the name, in proportion, instead of the name giving it all. Two lines of the
-   status's size are shorter than the controls beside them, so the bar stays
-   one row (`08` §7.1, a hard constraint) and `--score-bar-h` does not move.
-   Three are not: a row much narrower than 740 on the wider face squeezes the
-   sentence to three lines and the bar grows while it stands, which U105d put
-   to the reviewer rather than solve by cutting the sentence again.
-
-   Balanced, because a row only a little short wrapped the last word alone:
-   *tap ▶* on one line and *again* on the next, where balanced the instruction
-   reads *— tap ▶ again* together.
-
-   Only the refusal: every other line here keeps `.score-bar__status`'s own
-   clamp, the bar's density contract for ordinary status text, and the
-   sentence goes with the mark at the next tap (`withSound`) or once the sound
-   runs (`refusedNow`). */
-body:has([data-sound-refused]) .screen--score .score-bar__status {
-  max-width: none;
-  flex: 0 1 auto;
-  min-width: 0;
-  white-space: normal;
-  overflow: visible;
-  text-overflow: clip;
-  overflow-wrap: anywhere;
-  text-wrap: balance;
+/* …and it takes the mode's name's line while it stands, so the header keeps
+   its height and the music does not move (U122c, §10.4: the acceptance holds
+   the music's top edge from rest to a refusal). The strip's two lines are a
+   box of two lines' height on the Score, whatever they hold: the mode's name
+   and the state line, or a refusal on one or two. The selected mode stays
+   readable on the bar's select (U121). A sentence that needs a third line,
+   at a width or text size this was not measured at, still grows the header
+   rather than being cut (U105b). */
+.score-head .help-strip__lines {
+  /* The mode's name (the strip's 0.8rem), the gap, and the state line
+     (`.score-waiting`'s 0.85rem), each at the strip's line height. */
+  min-height: calc(0.8rem * 1.3 + 1px + 0.85rem * 1.3);
 }
+
+body:has([data-sound-refused]) .screen--score .score-head .help-strip__what {
+  display: none;
+}
+
+/* Sideways the refusal is on the top line, in the name's place (U122c, c6):
+   the row's status slot never carries it, so U105d's wrapping there, which
+   grew the row past the top of the window at 568 × 320 (U120), is gone. */
 
 /* The strip inside the Score screen's header row.
 

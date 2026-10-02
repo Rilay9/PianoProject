@@ -75,11 +75,10 @@ export interface ChipRead {
 /**
  * The folded chip against the score's own ink (U118; the reviewer's ruling, `responses/questions-e9aa51ae.md`).
  *
- * The chip is drawn only while a phone's chrome is folded, and the stacked slots now start below the band it
- * owns; this is the guard for that, on every folded cell the gallery shoots. Every drawn mark of the front
- * sheets is judged — the clef, the stave, the notes and the fingerings — not only text, because a clef is a
- * path. The chip's box lies inside the stage's by design, and that is not judged: only marks of the score.
- * Unfolded and on a tablet the chip is not drawn, and this reads nothing.
+ * Since U122c no chip is drawn anywhere (the header keeps `bar n / m` upright and on a tablet, the top line
+ * sideways), so this reads nothing; it stays as the guard should a chip over the stage come back. Every drawn
+ * mark of the front sheets is judged — the clef, the stave, the notes and the fingerings — not only text,
+ * because a clef is a path.
  */
 async function chipOverInk(page: Page): Promise<ChipRead | null> {
   return page.evaluate(() => {
@@ -236,12 +235,9 @@ export async function shoot(
       // sweep judges it like any other text, and `chipOverInk` judges it against
       // every mark of the score, which the sweep's text-on-text cannot.
       //
-      // The count-in is a modal overlay over the stage: it dims the notation
-      // and puts the beat over it, which is the whole of what it does. What it
-      // must *not* cover is the control bar, because the bar stays usable
-      // during a count-in — stopping a run that has begun counting is exactly
-      // what someone reaches for — and that is guaranteed by its own clearance
-      // in `style.css` and asserted in `score.countin.spec.ts`, not here.
+      // The count-in: large numerals beside ⏸ in the folded row (U122c), not a
+      // control and not prose; that they cover neither ⏸ nor the notation is
+      // asserted in `score.countin.spec.ts` and `score.task-chrome.spec.ts`.
       '.score-countin',
       // The beat dot has no text and is 10 px by design — it is a dot.
       '.score-beat',

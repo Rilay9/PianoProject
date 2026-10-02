@@ -1142,18 +1142,16 @@ test('mid-run on a phone sideways, the folded chrome leaves the music on the sta
 });
 
 /**
- * Upright, the stacked slots start below the folded chip (U118; the reviewer's ruling,
- * `responses/questions-e9aa51ae.md`, option (iii)). A few seconds into a run the chrome folds and the
- * stage's corner draws `bar n / m` and what the run is saying, over the top of the stage. The slots
- * wrote their own `top` from 0, so the chip covered the first system's clef and fingerings (U105c's
- * pictures, Hot Cross Buns at 342 x 740, paused). Now the first slot starts below the band the chip
- * owns, which is the chip's tallest legitimate state at this width (`debugFit().foldedReserve`).
- *
- * Two paths. A run that starts unfolded is sized on the whole stage and keeps that size, shape and
- * look-ahead through the fold: upright the fold also takes the header away, which gives more height
- * than the band takes, so the fold is placement only. A size taken while the chip is already drawn —
- * turned and turned back while folded — is priced below the band, so the bottom system stays on the
- * stage. And a change of what the chip says never moves anything.
+ * Upright, the stacked slots keep their place through a run (U122c; replacing U118's folded-chip cases,
+ * class: replace). U118 placed the slots below a `bar n / m` chip drawn over the stage's top while the
+ * chrome was folded, and the fold also took the header away, so the music jumped up at the fold and back
+ * at every reveal (32–63 px at R7's upright and tablet-sized cells, `runs/U122c`). Since U122c no chip is
+ * drawn anywhere and the header keeps its box while the hands are on the keys: at rest, folded (a run
+ * holding for its first note) and paused, the slots' tops, the shape, the engraving and the size are the
+ * same, and nothing of the chrome lies over the score. The per-moment walk on every R7 cell is
+ * `score.task-chrome.spec.ts`; these keep U118's own adversaries: a window sized by the height, a
+ * crossing into the third bar, a turn while folded, a tablet. U118's band cases (what the chip says, the
+ * one-line band, the seconds away priced in the band) went with the chip.
  */
 type ChipHooked = Window & {
   __pianopath?: {
@@ -1172,11 +1170,10 @@ type ChipHooked = Window & {
 
 interface FoldRead {
   chrome: string | null;
+  /** Any chip over the stage (none since U122c). */
   chipShown: boolean;
-  /** The chip's bottom edge and lines, in the stage's padding box, where the slots' `top` is. */
-  chipBottom: number;
-  chipLines: number;
   band: number;
+  stageTop: number;
   stageH: number;
   zoom: number;
   scale: number;
@@ -1186,8 +1183,6 @@ interface FoldRead {
   placed: { top: number; from: number | null; ahead: boolean }[];
   firstInkTop: number | null;
   inkBottom: number | null;
-  /** The score's marks the chip's box meets. */
-  under: string[];
 }
 
 async function readFold(page: Page): Promise<FoldRead> {
@@ -1195,15 +1190,8 @@ async function readFold(page: Page): Promise<FoldRead> {
     const stage = document.querySelector<HTMLElement>('#score-stage')!;
     const s = stage.getBoundingClientRect();
     const oy = s.top + stage.clientTop;
-    const corner = document.querySelector<HTMLElement>('#score-corner');
+    const corner = document.querySelector<HTMLElement>('#score-corner, .score-stage__corner');
     const chipShown = corner !== null && getComputedStyle(corner).display !== 'none';
-    const c = chipShown ? corner.getBoundingClientRect() : null;
-    let chipLines = 0;
-    if (chipShown) {
-      const range = document.createRange();
-      range.selectNodeContents(corner);
-      chipLines = new Set([...range.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top))).size;
-    }
     const fit = (window as ChipHooked).__pianopath?.scoreFit?.() ?? null;
     const front = [...stage.querySelectorAll<HTMLElement>('.score-buffer.is-front:not(.score-probe)')].filter((b) => !b.hidden);
     const placed = front
@@ -1222,29 +1210,23 @@ async function readFold(page: Page): Promise<FoldRead> {
     let firstInkTop: number | null = null;
     if (placed[0]) {
       for (const el of marks(placed[0].el)) {
-        const top = el.getBoundingClientRect().top - oy;
+        const top = el.getBoundingClientRect().top;
         firstInkTop = firstInkTop === null ? top : Math.min(firstInkTop, top);
       }
     }
     let inkBottom: number | null = null;
-    const under: string[] = [];
     for (const b of front) {
       for (const el of marks(b)) {
         const r = el.getBoundingClientRect();
         inkBottom = inkBottom === null ? r.bottom - oy : Math.max(inkBottom, r.bottom - oy);
-        if (c && r.left < c.right && c.left < r.right && r.top < c.bottom && c.top < r.bottom) {
-          const cls = (el.getAttribute('class') ?? '') || (el.parentElement?.getAttribute('class') ?? '');
-          under.push(`${el.tagName}${cls ? `.${cls.split(' ')[0]}` : ''}${el.tagName === 'text' ? ` "${el.textContent ?? ''}"` : ''}`);
-        }
       }
     }
     const cursor = stage.querySelector<HTMLElement>('.score-buffer.is-cursor');
     return {
       chrome: document.querySelector<HTMLElement>('section[data-screen="score"]')?.dataset.chrome ?? null,
       chipShown,
-      chipBottom: c ? c.bottom - oy : 0,
-      chipLines,
       band: fit?.foldedReserve ?? 0,
+      stageTop: s.top,
       stageH: stage.clientHeight,
       zoom: fit?.zoom ?? 0,
       scale: cursor ? new DOMMatrixReadOnly(getComputedStyle(cursor).transform).a : 0,
@@ -1253,7 +1235,6 @@ async function readFold(page: Page): Promise<FoldRead> {
       placed: placed.map(({ top, from, ahead }) => ({ top, from, ahead })),
       firstInkTop,
       inkBottom,
-      under,
     };
   });
 }
@@ -1262,46 +1243,43 @@ async function frames(page: Page): Promise<void> {
   await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve(null)))));
 }
 
-/** A Wait run started, frozen, paused (read with the chrome open), then left to fold (read again). */
-async function pauseAndFold(page: Page): Promise<{ open: FoldRead; folded: FoldRead }> {
+/** A Wait run started and frozen: the hands are on the keys, so the controls fold (read); then paused (read). */
+async function foldThenPause(page: Page): Promise<{ folded: FoldRead; paused: FoldRead }> {
   await pressControl(page, '#score-play');
   await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-running', 'true');
   await page.waitForFunction(() => ((window as ChipHooked).__pianopath?.scoreFit?.()?.frozen ?? null) !== null, undefined, { timeout: 30_000 });
-  await pressControl(page, '#score-play');
-  await expect(page.locator('#score-play')).toHaveText('▶');
-  await page.waitForSelector('.score-view[data-settled]', { timeout: 10_000 }).catch(() => undefined);
-  await frames(page);
-  const open = await readFold(page);
   await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-chrome', 'folded', { timeout: 10_000 });
   await frames(page);
   await page.waitForTimeout(400);
-  return { open, folded: await readFold(page) };
+  const folded = await readFold(page);
+  await page.locator('#score-play').click({ timeout: 3_000 });
+  await expect(page.locator('#score-play')).toHaveText('▶');
+  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-chrome', 'open');
+  await frames(page);
+  await page.waitForTimeout(400);
+  return { folded, paused: await readFold(page) };
 }
 
-/** Checks 1, 2 and 4 of the response: below the chip, nothing under it, reading order, all on the stage. */
-function belowTheChip(where: string, folded: FoldRead): void {
-  const said = JSON.stringify(folded);
-  expect(folded.chipShown, `${where}: the chip is drawn, folded on a phone ${said}`).toBe(true);
-  expect(folded.band, `${where}: the band holds the chip as it is now ${said}`).toBeGreaterThanOrEqual(folded.chipBottom - 0.5);
-  expect(folded.placed[0]?.top ?? -1, `${where} (1): the first slot starts below the band ${said}`).toBeGreaterThanOrEqual(folded.band);
-  expect(folded.firstInkTop ?? -1, `${where} (1): the first system's ink below the chip ${said}`).toBeGreaterThanOrEqual(folded.chipBottom);
-  expect(folded.under, `${where} (2): nothing of the score under the chip ${said}`).toEqual([]);
-  const froms = folded.placed.map((p) => p.from ?? Number.POSITIVE_INFINITY);
-  expect(froms, `${where} (4): the slots in first-bar order ${said}`).toEqual([...froms].sort((a, b) => a - b));
-  const firstAhead = folded.placed.findIndex((p) => p.ahead);
+/** No chip, nothing placed under a band, the slots in reading order, the greyed row below, every mark on the stage. */
+function onTheStage(where: string, read: FoldRead): void {
+  const said = JSON.stringify(read);
+  expect([read.chipShown, read.band], `${where}: no chip over the stage, no band ${said}`).toEqual([false, 0]);
+  const froms = read.placed.map((p) => p.from ?? Number.POSITIVE_INFINITY);
+  expect(froms, `${where}: the slots in first-bar order ${said}`).toEqual([...froms].sort((a, b) => a - b));
+  const firstAhead = read.placed.findIndex((p) => p.ahead);
   if (firstAhead >= 0) {
-    expect(folded.placed.slice(firstAhead).every((p) => p.ahead), `${where} (4): the greyed row below the window ${said}`).toBe(true);
+    expect(read.placed.slice(firstAhead).every((p) => p.ahead), `${where}: the greyed row below the window ${said}`).toBe(true);
   }
-  expect(folded.inkBottom ?? Infinity, `${where} (4): every mark on the stage ${said}`).toBeLessThanOrEqual(folded.stageH + 1);
+  expect(read.inkBottom ?? Infinity, `${where}: every mark on the stage ${said}`).toBeLessThanOrEqual(read.stageH + 1);
 }
 
 for (const cell of [
-  // U105c's layout: the paused run its pictures showed, the chip on two lines.
+  // U105c's layout: the paused run its pictures showed.
   { piece: 'song.folk.hot-cross-buns', bars: 2, why: 'U105c’s layout' },
   // A window whose size the height decides, so a fold that sized it again would show.
   { piece: 'exercise.five-finger.c-major.right', bars: 4, why: 'sized by the height' },
 ]) {
-  test(`folded upright, the stacked slots start below the chip and keep the size the run froze (${cell.why})`, async ({ page }) => {
+  test(`upright, the stacked slots keep their place and size from rest through the fold and the pause (${cell.why})`, async ({ page }) => {
     test.setTimeout(150_000);
     await page.setViewportSize({ width: 342, height: 740 });
     await openPiece(page, cell.piece);
@@ -1309,25 +1287,22 @@ for (const cell of [
     await page.locator('#score-mode').selectOption('wait');
     await settle(page);
     const rest = await readFold(page);
-    // (5) Unfolded: no chip, no band, the first slot at the stage's top.
-    expect(rest.chipShown, '(5) at rest: no chip').toBe(false);
-    expect([rest.band, rest.placed[0]?.top], `(5) at rest: no band, the first slot at the top ${JSON.stringify(rest)}`).toEqual([0, 0]);
-    const { open, folded } = await pauseAndFold(page);
-    expect(open.chrome, 'the first read is before the fold').toBe('open');
-    expect([open.chipShown, open.band, open.placed[0]?.top], `(5) running, chrome open: as at rest ${JSON.stringify(open)}`).toEqual([false, 0, 0]);
-    belowTheChip('paused, folded', folded);
-    // (3) The fold places the slots and prices nothing: the shape, the engraving and the size the run froze.
-    const said = JSON.stringify({ open, folded });
-    expect(folded.shape, `(3) the shape through the fold ${said}`).toBe(open.shape);
-    expect(folded.zoom, `(3) the engraving zoom through the fold ${said}`).toBe(open.zoom);
-    expect(folded.frozen, `(3) the held size through the fold ${said}`).toBe(open.frozen);
-    expect(folded.scale, `(3) the cursor slot's scale through the fold ${said}`).toBeCloseTo(open.scale, 5);
-    expect(folded.placed.length, `(4) as many systems after the fold ${said}`).toBe(open.placed.length);
-    expect(folded.placed.some((p) => p.ahead), `(4) the greyed next row kept ${said}`).toBe(open.placed.some((p) => p.ahead));
+    const { folded, paused } = await foldThenPause(page);
+    const said = JSON.stringify({ rest, folded, paused });
+    expect(folded.chrome, 'the first read is folded').toBe('folded');
+    for (const [name, read] of Object.entries({ rest, folded, paused })) onTheStage(name, read);
+    // The stage and its slots do not move: the header keeps its box, the stage its bottom reserve.
+    for (const [name, read] of Object.entries({ folded, paused })) {
+      expect(read.stageTop, `${name}: the stage's top moved ${said}`).toBeCloseTo(rest.stageTop, 0);
+      expect(read.placed.map((p) => p.top), `${name}: the slots moved ${said}`).toEqual(rest.placed.map((p) => p.top));
+      expect(read.scale, `${name}: the drawn size changed ${said}`).toBeCloseTo(rest.scale, 3);
+    }
+    // The fold and the pause price nothing: the shape, the engraving and the size the run froze.
+    expect([paused.shape, paused.zoom, paused.frozen], `the shape, engraving and held size through the pause ${said}`).toEqual([folded.shape, folded.zoom, folded.frozen]);
   });
 }
 
-test('folded upright after a crossing into the third bar: still below the chip, in reading order', async ({ page }) => {
+test('upright after a crossing into the third bar, folded: no chip, the slots in reading order, every mark on the stage', async ({ page }) => {
   test.setTimeout(150_000);
   const midi = await installMidiMock(page, { permission: 'granted' });
   await page.setViewportSize({ width: 342, height: 740 });
@@ -1347,26 +1322,23 @@ test('folded upright after a crossing into the third bar: still below the chip, 
     await page.waitForFunction((was) => (window as ChipHooked).__pianopath?.scoreRun?.()?.step !== was, run.step, { timeout: 4_000 }).catch(() => undefined);
   }
   expect(await page.evaluate(() => (window as ChipHooked).__pianopath?.scoreRun?.()?.bar ?? -1), 'the run reached the third bar').toBeGreaterThanOrEqual(2);
-  await pressControl(page, '#score-play');
-  await expect(page.locator('#score-play')).toHaveText('▶');
-  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-chrome', 'folded', { timeout: 10_000 });
+  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-chrome', 'folded');
   await frames(page);
   await page.waitForTimeout(400);
-  // Checks 1, 2 and 4. Not 3 here: at the third bar's quavers the held size gives way across at the
-  // first fit after the crossing (T38, `08` §4.1), which on this path is the fold's — not the band.
-  belowTheChip('after a crossing, folded', await readFold(page));
+  onTheStage('after a crossing, folded', await readFold(page));
 });
 
-test('a size taken while folded: turned and turned back with the chrome folded, the bottom system stays on the stage', async ({ page }) => {
+test('a size taken while folded: turned and turned back with the controls folded, the bottom system stays on the stage', async ({ page }) => {
   test.setTimeout(150_000);
   await page.setViewportSize({ width: 342, height: 740 });
   await openPiece(page, 'exercise.five-finger.c-major.right');
   await setBars(page, 4);
   await page.locator('#score-mode').selectOption('wait');
   await settle(page);
-  await pauseAndFold(page);
-  // A turn lets the run's size go and takes a new one on the stage as it is then — folded, with no
-  // header left to give — so that size is priced below the band (rule 3).
+  await pressControl(page, '#score-play');
+  await page.waitForFunction(() => ((window as ChipHooked).__pianopath?.scoreFit?.()?.frozen ?? null) !== null, undefined, { timeout: 30_000 });
+  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-chrome', 'folded', { timeout: 10_000 });
+  // A turn lets the run's size go and takes a new one on the stage as it is then, folded.
   await page.setViewportSize({ width: 740, height: 342 });
   await page.waitForTimeout(1_500);
   await page.setViewportSize({ width: 342, height: 740 });
@@ -1374,164 +1346,19 @@ test('a size taken while folded: turned and turned back with the chrome folded, 
   await settle(page);
   const turned = await readFold(page);
   expect(turned.chrome, 'still folded after the turns').toBe('folded');
-  belowTheChip('turned back, folded', turned);
+  onTheStage('turned back, folded', turned);
 });
 
-test('what the chip says changes nothing: the band, the slots and the size stay where they were', async ({ page }) => {
-  test.setTimeout(150_000);
-  const midi = await installMidiMock(page, { permission: 'granted' });
-  await page.setViewportSize({ width: 342, height: 740 });
-  await openPiece(page, 'song.folk.hot-cross-buns');
-  await setBars(page, 2);
-  await page.locator('#score-mode').selectOption('wait');
-  await settle(page);
-  // Three things the run says on one frozen run, each read once the chrome has folded: the run waiting
-  // for its first note, nothing at all once it is played (the chip says only `bar 1 / 4`), and paused.
-  await pressControl(page, '#score-play');
-  await page.waitForFunction(() => ((window as ChipHooked).__pianopath?.scoreFit?.()?.frozen ?? null) !== null, undefined, { timeout: 30_000 });
-  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-chrome', 'folded', { timeout: 10_000 });
-  await frames(page);
-  const armed = await readFold(page);
-  const run = await page.evaluate(() => (window as ChipHooked).__pianopath?.scoreRun?.() ?? null);
-  const first = run && run.expected.length > 0 ? run.expected : (run?.pitches ?? []);
-  for (const note of first) await midi.noteOn(note, 78);
-  await page.waitForTimeout(60);
-  for (const note of first) await midi.noteOff(note);
-  await page.waitForFunction((was) => (window as ChipHooked).__pianopath?.scoreRun?.()?.step !== was, run?.step ?? -1, { timeout: 4_000 });
-  await frames(page);
-  await page.waitForTimeout(300);
-  const playing = await readFold(page);
-  await pressControl(page, '#score-play');
-  await expect(page.locator('#score-play')).toHaveText('▶');
-  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-chrome', 'folded', { timeout: 10_000 });
-  await frames(page);
-  await page.waitForTimeout(300);
-  const paused = await readFold(page);
-  const seen = { armed, playing, paused };
-  const said = JSON.stringify(seen);
-  expect([armed.chrome, playing.chrome, paused.chrome], `each read folded ${said}`).toEqual(['folded', 'folded', 'folded']);
-  // What the chip says differs in height: the paused line takes a line more than the other two.
-  expect(paused.chipLines, `the paused line is the taller sentence ${said}`).toBeGreaterThan(playing.chipLines);
-  for (const [name, after] of Object.entries(seen)) {
-    expect(after.band, `${name}: the band is the same whatever the chip says ${said}`).toBe(armed.band);
-    expect(after.band, `${name}: the band holds the tallest of them ${said}`).toBeGreaterThanOrEqual(paused.chipBottom - 0.5);
-    expect([after.shape, after.zoom, after.frozen], `${name}: the shape, engraving and held size ${said}`).toEqual([armed.shape, armed.zoom, armed.frozen]);
-    expect(after.under, `${name}: nothing under the chip ${said}`).toEqual([]);
-  }
-  expect(paused.placed.map((p) => p.top), `the slots' tops, paused against waiting for the first note ${said}`).toEqual(armed.placed.map((p) => p.top));
-});
-
-test('where every sentence fits one line, the band is one line', async ({ page }) => {
-  test.setTimeout(150_000);
-  // 1024 x 768 is not a tablet to the app (the shorter side is under 900), so the chip is drawn; at this
-  // width the longest sentence it can carry fits one line.
-  await page.setViewportSize({ width: 1024, height: 768 });
-  await openPiece(page, 'song.folk.hot-cross-buns');
-  await setBars(page, 4);
-  await page.locator('#score-mode').selectOption('wait');
-  await settle(page);
-  const { folded } = await pauseAndFold(page);
-  const said = JSON.stringify(folded);
-  expect(folded.chipLines, `the paused line on one line ${said}`).toBe(1);
-  // The chip's one line is the band: no second line held for nothing.
-  expect(folded.band, `the band is the chip's one-line height ${said}`).toBeLessThanOrEqual(folded.chipBottom + 1);
-  belowTheChip('one line, folded', folded);
-});
-
-test('the band holds the seconds away at the widest count they can print, and the chip says the real ones (U118b)', async ({ page }) => {
-  test.setTimeout(150_000);
-  // U118's required change (`responses/bea2d4e2.md`, `responses/questions-1cadc4dc.md`): the away count
-  // has no ceiling of its own, so the band prices it at the widest count the product can print, fourteen
-  // of the chip's widest digit (`AWAY_PRICED_COUNTS`: the seconds between two `Date` readings), not at a
-  // day's 86 400. The claim holds on any face. It tells the bound from a day only where the fourteen
-  // digits take the sentence a line past 86 400 and past every other sentence the chip carries; 342 x 740
-  // was chosen because it does on the face this was written on (`runs/U118b`), and the annotation says
-  // whether it does here.
-  await page.setViewportSize({ width: 342, height: 740 });
-  await openPiece(page, 'song.folk.hot-cross-buns');
-  await setBars(page, 2);
-  // The away sentence is a clock-driven run's (`onVisibilityChange`): Tempo, hidden, then shown again.
-  await page.locator('#score-mode').selectOption('tempo');
-  await settle(page);
-  await pressControl(page, '#score-play');
-  await page.waitForFunction(() => ((window as ChipHooked).__pianopath?.scoreFit?.()?.frozen ?? null) !== null, undefined, { timeout: 30_000 });
-  const hide = async (hidden: boolean): Promise<void> => {
-    await page.evaluate((value) => {
-      Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => (value ? 'hidden' : 'visible') });
-      document.dispatchEvent(new Event('visibilitychange'));
-    }, hidden);
-  };
-  await hide(true);
-  await expect(page.locator('#score-play')).toHaveText('▶');
-  await page.waitForTimeout(1_200);
-  await hide(false);
-  await expect(page.locator('section[data-screen="score"]')).toHaveAttribute('data-chrome', 'folded', { timeout: 10_000 });
-  await frames(page);
-  await page.waitForTimeout(400);
-  const folded = await readFold(page);
-  // The chip's sentence laid out the way `foldedCornerReserve` lays every candidate (an unseen copy of
-  // the chip, `bar m / m`), with the count as fourteen of the widest digit this face draws, measured in
-  // the chip's own type, and as a day's.
-  const priced = await page.evaluate(() => {
-    const stage = document.querySelector<HTMLElement>('#score-stage')!;
-    const corner = document.querySelector<HTMLElement>('#score-corner')!;
-    const said = corner.textContent ?? '';
-    const parts = /^bar \S+ \/ (\S+) · (.*you were away )(\d+)( s\..*)$/.exec(said);
-    if (!parts) return { said, count: null, widest: null, wide: null, day: null };
-    const [, last, before, count, after] = parts;
-    const copy = corner.cloneNode(false) as HTMLElement;
-    copy.removeAttribute('id');
-    copy.style.visibility = 'hidden';
-    stage.appendChild(copy);
-    const run = document.createElement('span');
-    run.style.whiteSpace = 'nowrap';
-    copy.appendChild(run);
-    let widest = '0';
-    let widestPx = -1;
-    for (let digit = 0; digit <= 9; digit += 1) {
-      run.textContent = String(digit).repeat(14);
-      const px = run.getBoundingClientRect().width;
-      if (px > widestPx) {
-        widest = String(digit);
-        widestPx = px;
-      }
-    }
-    const top = stage.getBoundingClientRect().top + stage.clientTop;
-    const lay = (n: string): { bottom: number; lines: number } => {
-      copy.textContent = `bar ${last} / ${last} · ${before}${n}${after}`;
-      const range = document.createRange();
-      range.selectNodeContents(copy);
-      const lines = new Set([...range.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top))).size;
-      return { bottom: copy.getBoundingClientRect().bottom - top, lines };
-    };
-    const wide = lay(widest.repeat(14));
-    const day = lay('86400');
-    copy.remove();
-    return { said, count: Number(count), widest, wide, day };
-  });
-  const said = JSON.stringify({ folded, priced });
-  // What the learner reads is the real seconds, never the priced count.
-  expect(priced.count, `the chip says the away sentence ${said}`).not.toBeNull();
-  expect(priced.count ?? Infinity, `with the seconds actually away, not the priced count ${said}`).toBeLessThan(60);
-  // The band holds the sentence at the widest count the line can print (fourteen digits, the most a
-  // span between two `Date` readings has in whole seconds).
-  expect(folded.band, `the band holds the away sentence at fourteen of the widest digit ${said}`).toBeGreaterThanOrEqual((priced.wide?.bottom ?? Infinity) - 0.5);
-  // Whether this face tells the fourteen digits from a day here: the case's power, not its claim.
-  test.info().annotations.push({
-    type: 'away lines',
-    description: `fourteen of "${String(priced.widest)}": ${String(priced.wide?.lines)} lines; 86 400: ${String(priced.day?.lines)}`,
-  });
-  belowTheChip('away, folded', folded);
-});
-
-test('a tablet folds without a chip: no band, the slots at the top', async ({ page }) => {
+test('a tablet folds without a chip: no band, the slots at the top, the size kept', async ({ page }) => {
   test.setTimeout(150_000);
   await page.setViewportSize({ width: 900, height: 1200 });
   await openPiece(page, 'song.folk.hot-cross-buns');
   await page.locator('#score-mode').selectOption('wait');
   await settle(page);
-  const { open, folded } = await pauseAndFold(page);
-  const said = JSON.stringify({ open, folded });
-  expect([folded.chipShown, folded.band, folded.placed[0]?.top], `(5) a tablet: no chip, no band, the first slot at the top ${said}`).toEqual([false, 0, 0]);
-  expect(folded.scale, `(5) a tablet: the size through the fold timer ${said}`).toBeCloseTo(open.scale, 5);
+  const rest = await readFold(page);
+  const { folded, paused } = await foldThenPause(page);
+  const said = JSON.stringify({ rest, folded, paused });
+  expect([folded.chipShown, folded.band, folded.placed[0]?.top], `a tablet: no chip, no band, the first slot at the top ${said}`).toEqual([false, 0, 0]);
+  expect(folded.scale, `a tablet: the size from rest through the fold ${said}`).toBeCloseTo(rest.scale, 3);
+  expect(paused.scale, `a tablet: the size through the pause ${said}`).toBeCloseTo(rest.scale, 3);
 });

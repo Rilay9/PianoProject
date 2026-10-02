@@ -1,0 +1,48 @@
+cells 96, with no failure 96
+
+per device and moment: cells with no failure / cells measured
+  phone sideways: rest 24/24, count-in 24/24, armed 24/24, playing 24/24, paused 24/24, refused 24/24, finished 12/12
+  phone upright: rest 24/24, count-in 24/24, armed 24/24, playing 24/24, paused 24/24, refused 24/24, finished 12/12
+  tablet: rest 48/48, count-in 48/48, armed 48/48, playing 48/48, paused 48/48, refused 48/48, finished 24/24
+
+the largest move of the music's top edge from rest, any moment but finished (px):
+  tablet: 0.00
+  phone upright: 0.21
+  phone sideways: 0.00
+
+at rest: Hands
+  phone sideways: Hands on the row 24
+  phone upright: Hands behind ⋯ 10
+  phone upright: Hands on the row 14
+  tablet: Hands on the row 48
+
+at rest: Hands kept at its own width where the floor alone would send it behind ⋯ (the open trade)
+  phone upright: 342x740 100% stack (2)
+  phone upright: 342x740 90% stack (2)
+  phone upright: 342x740 90% wider (2)
+  phone upright: 360x780 100% stack (2)
+  phone upright: 360x780 100% wider (2)
+  phone upright: 360x780 90% stack (2)
+  phone upright: 360x780 90% wider (2)
+
+at rest: today's row kept upright, where the chooser would keep less (the open trade)
+  phone upright: 342x740 100% stack, mode cut (2)
+  phone upright: 342x740 90% wider, mode cut (2)
+  phone upright: 360x780 100% wider, mode cut (2)
+
+at rest: the selected mode as drawn (Keep tempo selected)
+  phone sideways: "Keep tempo" 22
+  phone sideways: "Tempo" 2
+  phone upright: "Keep tempo" 5
+  phone upright: "Tempo" 19
+  tablet: "Keep tempo" 48
+
+finished: the verdict and the primary action in the first view
+  phone sideways: verdict whole 12
+  phone upright: verdict whole 12
+  tablet: verdict whole 24
+  phone sideways: "Keep tempo at 80 %" whole 12
+  phone upright: "Keep tempo at 80 %" whole 12
+  tablet: "Keep tempo at 80 %" whole 24
+
+failures (0):

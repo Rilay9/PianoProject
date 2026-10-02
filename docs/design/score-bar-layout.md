@@ -682,3 +682,85 @@ Not measured:
 - Moonlight's finished state;
 - the numeral count at a tighter spacing;
 - a background-only alternative to rule 3 (paint no background in the row's padding, keep its height).
+
+## 10. The build: each moment on three devices (U122c)
+
+A build (brief `docs/prompts/tasks/U122c-the-score-screen-per-moment-on-three-devices.md`, approved at `responses/adb0873a.md` §1; Entry 216; evidence `docs/prompts/runs/U122c/`). §10.1–10.5 were written before the code, from the trace, except §10.4's row rule, added when the first matrix showed the chooser costing Hands its place upright; §10.6 adds the results. Every pixel count was measured in this machine's Chromium; the claims are the relationships. Unverified on a device. Nothing was heard.
+
+### 10.1 What each moment shows today, per device (the trace)
+
+The walk of `app/tests/e2e/score.task-chrome.spec.ts` on the base (`af18a3ae`), one page per cell, every step a real tap or a real note through the MIDI mock: at rest, the count-in, holding for the first note, playing, paused (3.5 s after ⏸), ▶ refused over the paused run (3.5 s later), finished. The subset (every R7 cell at 100 % on the app's face, and the narrow adversaries) is `runs/U122c/base-subset.txt`; pictures `pictures/u122c/before-*`.
+
+| | Phone sideways (568 × 320, 780 × 360) | Phone upright (342 × 740, 360 × 780), and 768 × 1024 | Tablet (1366 × 1024, 1024 × 1366), and 1024 × 768 |
+| --- | --- | --- | --- |
+| At rest | the bar holds Back, the name, `bar n / m`, the status and every control; the mode cut (*Ke…*) | the header (Back, the name, `bar n / m`, the help strip) and the bar; the mode cut at 342 (*Tempo*) | header and bar, whole |
+| Count-in | the wash over the stage, the numerals on the notes | the same | the same |
+| Holding, playing | the bar folded 0.7 s after ▶: nothing on the glass pauses; the music moves down 22 px under the chip | the header and the bar folded: nothing pauses; **the music jumps up** by the header's height less the chip's band (32–63 px measured) | the bar folded, the header stays (tablet) or folds (1024 × 768); nothing pauses; **the music grew at ▶** where the height decides it (by about a fifteenth at 1366 × 1024 and 1024 × 768) |
+| Paused | folded 3 s after ⏸: *Paused — ▶ to carry on* and no ▶ (walk finding 5) | the same, in the chip | the same, in the header |
+| Refused over the pause | *tap ▶ again*, no ▶ | the same | the same |
+| Finished | the outcome in view, the actions below the sheet's visible part; the chip over the music | outcome and actions in view | outcome and actions in view |
+
+Hands' R and L are about half the tap floor wide everywhere; at 90 % text ▶, ⋯ and Back are 36 px tall.
+
+**After the state rules alone** (the fold keyed on the task, a direct ⏸, the row reopened on a pause or a refusal), read at the lines and from the trace:
+- **Sideways**: c6's rules (§8.7, §9) apply as settled.
+- **Upright**: a pause would bring the header back, so the music would move down by the same 32–63 px at every pause and up at every carry-on, where today it moves once. The header's fold buys the music nothing: the run's size is frozen 150 ms after ▶ (`FREEZE_SETTLE_MS`), before the fold at 700 ms, and the fold gives back room, never size (§8.2); measured, no upright cell gains a system, a bar or stave size between rest and the run.
+- **Tablet**: a pause would reopen the bar over the music the run grew into the bar's row (35 px deep at 1366 × 1024 and at 1024 × 768 during the count-in, where the bar is still drawn). The growth is the sideways phone's rule (`[data-running='true'] .score-stage { margin-bottom: 0 }`, P21d A6: "the music gets about 300 of 360 px"), carried to screens it was not written for. At 1024 × 768 it also changes the window's shape at ▶ (two bars on one system at rest, one bar on each of two systems in the run).
+
+So the falsifier fires in a narrow form: upright and tablet need, besides the count's and the finished view's places, one placement change each, and neither needs a new decomposition. Both keep today's surfaces.
+
+### 10.2 Shared: the state rules (every device)
+
+The mapping is one pure function, `chromeFor` (`app/src/ui/screens/scoreChrome.ts`), from facts the screen already has: a run (`session.running`), paused (`session.paused`), a demonstration (`hearing`), the summary up, a tap asking to see the controls (the peek). The hands are on the keys while a run is going and not paused: the count-in, holding for the first note, playing, a demonstration. Then the controls fold to one direct control in its own place: ⏸ (▶'s button), or *Stop* (`Hear it`'s) during a demonstration, whose button stops what it started (T31 principle 5). Paused, refused, at rest and finished, nothing folds. A tap on the music while folded shows the controls for 3 s (the peek: one tap always brings them back, `08` §9.34). No new state: the moments are read from the run as it is.
+
+The count-in leaves the notation on every device: no wash, and the numerals beside the direct ⏸, in the row the folded controls leave. The finished view keeps X46's sheet and its order; what changes is how the sheet uses a short screen (§10.3). The beat dot leaves the music's corner for the surface that names the bar.
+
+### 10.3 Phone sideways: c6 per state
+
+As settled (§8.7, §9.0–9.1, `responses/e070d238.md`), built:
+- **The top line** (`#score-top`): the piece's name on the left, `bar n / m` on the right, in the chip's type, as tall at rest as the band a run keeps for it, so ▶ moves nothing. From a run's start it lies over the stage's top band and the sliding sheet sits below the band (`[data-running]`, not the fold). A sound refusal, the refused start (R19), the first-note cue, and the cause-bearing paused notes (an option's restart, the return from under a demonstration, the time away) take the name's place while they stand, read from the signals that make them (`soundOffLine`, `handRefused`, `armed`, `pauseNote`, `awaySeconds`), never parsed. A refusal is bold in the accent colour. `bar n / m` yields only when a refusal cannot fit beside it, and then whole, never cut. While the hands are on the keys the name is not drawn and the run's own line (what the folded chip used to say) is. The chip is not drawn: the top line is its folded form, the same box, so `bar n / m` never changes place.
+- **The row**: Back and the ordinary status slot, then ▶, `Hear it`, the mode, Hands, the tempo and ⋯, painted no further than its controls (no padding). The generic paused line is not drawn there; the refusal never is (it is in the top line), so the row never grows (U120). U122's chooser, smaller (§8.7): the tempo's percentage, then the mode's sentence, then Hands, then `Hear it` give, in that order; the mode is priced at the widest of its labels in the chosen form, so the selected mode is whole (U121) and the row does not move when the mode changes; Back is the group's one fixed text.
+- **The count**: large numerals to the right of ⏸, inside the row, sized to the row.
+- **The finished sheet**: two columns. X46's sheet in its own order on the left (the outcome, the figures); its actions, the recommended one first as X46 puts it, on the right from the top. Nothing in the sheet is reordered or reworded; the room the short screen gives it is used across rather than down.
+- **The beat dot**: in the top line's left corner.
+
+### 10.4 Phone upright: today's surfaces, with the header kept in place
+
+Retained: the header (Back, the name, `bar n / m`, the status, the help strip), the bar at the bottom with today's allocation, the summary sheet as it is. Changed, each for the reason in §10.1:
+- **The header keeps its box through a run.** While the hands are on the keys its Back, its name, the mode's name and `?` are not drawn; `bar n / m`, the app's status line and the run's own line stay where they are. The music never moves: the stage's top edge is the same in every moment.
+- **The chip is not drawn**: the header still says `bar n / m`, where it said it at rest.
+- **The count**: beside ⏸ at the foot, where the app's count already sat (low, because the packed slots leave the bottom free), now under the music instead of over it.
+- **The beat dot**: in the header row, beside `bar n / m`, rather than on the first system's clef.
+- **The stage keeps the bar's row through a run** (§10.5's rule; upright it changes nothing in the music, measured, and keeps the count and ⏸ off the stage).
+- **The row: the chooser where it keeps today's controls, today's row where it would not.** The chooser (§10.3) makes the selected mode whole and gives Hands the floor; on a 342 or 360 px row those widths leave no room for Hands where today's row, its mode cut, kept it. A control leaving the screen is a product trade (§10.7), and U122 put *a whole mode label before Hands* to the reviewer as a choice (§5.4) that was never ruled. So upright the build fits today's row too and keeps it wherever the chooser would put a control behind `⋯` that today's row keeps (`data-row='today'`); there the mode is cut and Hands is under the floor exactly as before, and the cells are counted apart.
+
+### 10.5 Tablet: today's surfaces, with the stage kept above the bar
+
+Retained: the header, which never folded here, the side panel, the bar, the summary. Changed:
+- **The stage keeps its margin above the bar through a run.** The run's music is the music the learner saw before ▶: it no longer grows at the start, and the bar, reopened on a pause, covers nothing. The run is about a fifteenth smaller than today's run where the height decides (1366 × 1024, 1024 × 768), and the same size as at rest; the stave stays many times the floor (146–225 px measured), and no bar is lost (the window rule's Bars 2 is unchanged). A loss of size, not of action, notation, stability, tap size or look-ahead: an implementation choice under `responses/adb0873a.md` §1, stated here for the reviewer to overturn.
+- **The header keeps its box and hides Back, the name and the mode's name while the hands are on the keys**, as upright: the moment's need, at no cost (nothing moves).
+- **The count** beside ⏸, in the bar's room; **the beat dot** in the header row.
+
+1024 × 768 and 768 × 1024 are R7's tablet cells and not a tablet to the app (`isTablet` wants 900 px on the shorter side, `ui/tablet.ts`): they take the upright stylesheet, so §10.4's rules reach them, and §10.5's stage rule reaches every screen but the sideways phone. That a classic tablet's 768 × 1024 is a phone to the app is outside this lane (§10.7).
+
+### 10.6 Results
+
+The walk (`app/tests/e2e/score.task-chrome.spec.ts`, `U122C_MATRIX=full`) over R7's eight cells at 90, 100 and 115 % text, on the app's face and a wider one, with Hot Cross Buns and Moonlight III: **96 of 96 cells pass every check in every moment** (rest, count-in, holding, playing, paused, refused; finished on the 48 Hot Cross Buns cells). Per device and moment, cells passing over cells measured: phone sideways 24/24 in each moment and 12/12 finished; phone upright the same; tablet 48/48 and 24/24 (`runs/U122c/matrix-counts.txt`, one line per cell and moment in `matrix-cells.txt`). Measured on this machine's Chromium:
+
+- **The music held:** the largest move of the music's top edge from rest, in any moment before finished, is 0 px sideways and on the tablet cells and about a fifth of a pixel upright (the base: 22, 48 and 63 px); the stave the same within 1 % in every cell.
+- **Nothing over the notation:** no chrome box past a 2-px touch on the stage's ink in any moment of any cell, the count's numerals and ⏸ included.
+- **The controls:** ⏸ (or ▶) drawn, hit and at the floor in every moment; while the hands are on the keys no setup control drawn and `bar n / m` drawn; paused and refused, Back, the mode and ⋯ drawn and hit; the refusal and the cue whole.
+- **Hands at rest:** on the row in 24 of 24 sideways cells and 48 of 48 tablet cells, at the floor; upright on the row in 14 of 24, behind `⋯` in 10 (where today's row also sends it, by construction: the build keeps today's row wherever the chooser would keep less). In 14 upright cells Hands keeps today's width (the floor alone would send it away), and in 6 of those today's row is kept with the mode cut (*Temp…*): the open trade, §10.7.
+- **The mode:** whole in every sideways and tablet cell (*Keep tempo* 22 and *Tempo* 2 sideways; *Keep tempo* 48 on the tablet); upright whole except today's row's 6.
+- **Finished:** X46's outcome and its *To pass* line whole in the sheet's first view, and the recommended action (*Keep tempo at 80 %*) whole and hit, in 48 of 48 cells (the base: the action outside the first view in every sideways cell measured).
+
+The base by the same walk (`runs/U122c/red-base-*`): 13 of 13 subset cells red. Seven mutants, each killed by the check meant for it (`runs/U122c/mutants.txt`).
+
+### 10.7 Put back, and found outside the lane (recorded, not fixed)
+
+- **A product trade, stopped (the brief's stop condition): on a narrow upright row, Hands on the row against Hands at the tap floor and the selected mode whole.** Each of `R`, `L` and `Both` meeting the floor makes Hands about half as wide again, and the mode priced at its widest label and the bpm never cut take more of the row than today's shrinking select and label did. On the upright cells (342 × 740, 360 × 780) those widths send Hands behind `⋯` where today's row kept it: a control leaving the screen. Sideways and on a tablet Hands keeps its place, at the floor and with the mode whole, in every cell measured (sideways the chooser shortens the tempo's and the mode's words first). So the build keeps Hands where today kept it: the floor wherever Hands keeps its place with it (`data-floor`), and upright today's row wherever the chooser would keep less (`data-row='today'`, the mode cut as today). The walk counts those cells apart (§10.6). What a learner meets upright under each option: **floor and whole words** — three full-size targets one tap away behind `⋯`, the chosen hand not visible on the screen at rest or paused, the mode's label whole, a refusal that names a hand bringing Hands back to the row and sending `Hear it` behind `⋯` while it stands; **today** — the three on the row about half the floor wide, the chosen hand visible, a slip between neighbours costing a tap to undo, the mode's label cut where the row is narrowest (*Temp…*). Not chosen here.
+- **`isTablet` misses R7's 1024 × 768 and 768 × 1024** (a classic tablet's size). They take the phone's upright stylesheet and no side panel. This lane's rules reach them anyway (§10.5); the classification is the app's, outside it. Provenance: pre-existing at `af18a3ae`.
+- **The offer to carry on (R2) still moves the music at ▶**, upright and on a tablet: the offer's row leaves the header when a run starts, and the header is shorter by it. Read at the lines (`drawResume`), not walked: the walk never meets R2. Provenance: pre-existing.
+- **The renderer's band for the stacked slots (`foldedReserve`, U118) is no longer asked for**: the Score screen passes none since the chip went. It is kept, optional and unit-tested (`windowRendererStage.test.ts`); the sliding sheet's 22-px fallback for a fold not yet happened is gone, the stylesheet's band read instead.
+- **A run nothing listened to, finished sideways**, puts *How did it go?* after the actions in the right column (X46's order kept). Not walked: the walk plays every run through the MIDI mock.
+- **Not walked:** a loop and the ladder's verdicts (R13, R14: the verdict is the row's status, hidden while the row is folded, as the chip never said it either), the one-bar preview (R16), the refused start (R19) anywhere but sideways at 568 × 320, 115 %, on the wider face (walked there in the ordinary suite), text above 115 %, a device.

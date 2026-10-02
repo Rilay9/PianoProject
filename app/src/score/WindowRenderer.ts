@@ -2134,22 +2134,21 @@ export class WindowRenderer {
 
   /**
    * How far down the stage the one sliding sheet starts, in layout pixels: the
-   * stylesheet moves it below the `bar n / m` chip when a phone's chrome folds
-   * (`.score-buffer { top: var(--score-corner-h) }`), and the fit has to fit
-   * the box the sheet is actually in (T38). It sized to the stage's whole
-   * height, and the reserve's old overshoot — the ink above the stave, counted
-   * twice (`staffLineBoxes`) — was all that kept the bottom of a phone held
-   * sideways on the glass; measured once the reserve was exact, the bass
+   * stylesheet moves it below the top line's band from a phone's run start
+   * (U122c; before it, below the `bar n / m` chip at the fold), and the fit has
+   * to fit the box the sheet is actually in (T38). It sized to the stage's
+   * whole height, and the reserve's old overshoot — the ink above the stave,
+   * counted twice (`staffLineBoxes`) — was all that kept the bottom of a phone
+   * held sideways on the glass; measured once the reserve was exact, the bass
    * staff's fingerings on Twinkle ran 18 px past the stage's bottom mid-run.
    * The slots set their own `top`, so the stylesheet's shift is the sliding
-   * sheet's alone; the stacked slots' is the chip's band (U118, below).
+   * sheet's alone; the stacked slots' is the band the Score screen asks for
+   * (U118, below; none since U122c).
    *
-   * **A run is fitted for the folded box from its start.** The stage takes
-   * the bar's row when a run starts (`data-running`), the size is frozen a
-   * moment later, and the chrome folds a few seconds after that — moving the
-   * sheet down without changing the stage's box, so nothing refits. So while
-   * a run is on, on a phone, the chip's height is kept from the start: one
-   * size for the whole run, with the room the fold will take already given.
+   * **A run is fitted for its box from its start.** The stage takes the bar's
+   * row when a run starts (`data-running`, sideways) and the band from the
+   * same moment, and the size is frozen a moment later; nothing moves the
+   * sheet after that, so nothing refits.
    *
    * **The stacked slots are not kept the room from the start (U118, the
    * reviewer's ruling `responses/questions-e9aa51ae.md`).** Upright the fold
@@ -2163,9 +2162,14 @@ export class WindowRenderer {
   private sheetShift(): number {
     if (this.readAhead === 'slots') return this.foldedReserve();
     if (this.readAhead !== 'single' || this.layout !== 'window' || typeof getComputedStyle !== 'function') return 0;
+    // Since U122c the stylesheet moves the sheet from a run's start, not at
+    // the fold, so what it says is what the fit prices: on a phone held
+    // sideways the top line's band (`.score-buffer { top: var(--score-top-band) }`
+    // under `[data-running='true']`), and nothing anywhere else. The 22 px this
+    // used to assume before the fold had happened was the chip's band, and the
+    // chip is not drawn any more.
     const top = Number.parseFloat(getComputedStyle(this.buffers[this.cursorSlot]!.wrapper).top);
-    if (Number.isFinite(top) && top > 0) return top;
-    return this.running && this.el.closest('[data-tablet="true"]') === null ? FOLDED_SHEET_SHIFT_PX : 0;
+    return Number.isFinite(top) && top > 0 ? top : 0;
   }
 
   /**
@@ -5067,14 +5071,6 @@ function widestBarOf(view: OsmdView): number {
  * never spread (`OsmdView.naturalLastSystem`).
  */
 const NATURAL_PAGE_SLACK = 1.25;
-
-/**
- * How far a phone's folded chrome moves the sliding sheet down, below the
- * `bar n / m` chip: the stylesheet's `var(--score-corner-h, 22px)` on
- * `.score-buffer` while `data-chrome='folded'` (`style.css`). Mirrored, not
- * read, because a run is fitted before the fold has happened (`sheetShift`).
- */
-const FOLDED_SHEET_SHIFT_PX = 22;
 
 /**
  * What a draw asked to be natural came out as (T38): `natural` when it is one
