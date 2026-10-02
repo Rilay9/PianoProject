@@ -170,6 +170,8 @@ Do not serialize unrelated work because one seam is waiting for review. Converse
 
 Narrow correctness fixes, test-harness repairs, source-backed corrections and other bounded work under an accepted mechanism do not automatically need another pre-build ceremony. Consequential product/architecture choices and expensive wrong-direction risks do.
 
+**How your verdicts are used (the owner, 2026-10-02).** They are evidence, not a gate: you catch what Claude's own reasoning misses. On design Claude weighs your points against the situation and chooses; where it goes another way, the next handoff says why. So make each point checkable: the fact, the line, the learner consequence, and what would change your mind.
+
 ## Build requests (2026-10-01: you build too)
 
 **Ended 2026-10-02, the owner:** agentic building uses your limits too fast. After U110a, no more build requests: you review only, under the review protocol above. U122c, CL11 and G90 go back to Claude's builders. The rules below stay as the record, and the continuation rule applies to reviews: in one wake, answer every open review you have room for.

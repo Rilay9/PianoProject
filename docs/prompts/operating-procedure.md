@@ -238,8 +238,11 @@ plainly approves needs nothing more. One that requires a change, or that makes o
 to content (a lesson sentence, a placement, a tempo, a taught claim), is read once more against the
 code by a second reader before it is trusted: does the requirement hold at the lines, is it the
 smallest correct change, does it contradict a prior ruling or an invariant, and is the content fact
-right. The second read is recorded with the verdict; a disagreement holds that landing and goes back
-to the reviewer through the owner as a question, never as a silent override. The read may run while
+right. The second read is recorded with the verdict. **The reviewer's verdict is evidence, not a gate**
+(the owner, 2026-10-02): it is there to catch the orchestrator's blind spots. On design the orchestrator
+weighs what it said against the situation, chooses the best way and goes on. A disagreement is decided,
+with its reason written in the next handoff; it is never a silent override, and never a landing held for
+a round trip. The read may run while
 a builder already works on the change; it is not a reason to delay the dispatch.
 
 **Keep judging whether the approach is still right** (the reviewer's doctrine, `docs/review/holistic-reassessment.md`, and `responses/b47ce498-correction-2.md`, 2026-10-01, after the landscape Score chrome failure). An accepted premise, boundary, brief, abstraction or prior ruling is never permission to stop thinking about whether the overall approach is still the right one for the learner. Step back whenever the evidence, the complexity, the learner's experience or a newly visible alternative could change the decision: state the goal without the current implementation's nouns, name the boundary being preserved and what makes it necessary, and compare a materially different shape where one plausibly exists. A solution that needs more machinery to keep an inherited boundary must earn that boundary again. This is a posture, not a gate: no count, no required number of alternatives, no pass state, and it may confirm the current approach. A builder or the orchestrator who finds the brief itself is the wrong shape says so instead of completing it; reviewer approval is the best judgement on the evidence at the time, not a shield. The two rules below are signals read under it, never rituals.
