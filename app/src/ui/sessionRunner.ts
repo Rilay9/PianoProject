@@ -278,6 +278,39 @@ export function minutesOf(ms: number): number {
   return Math.round(ms / 60_000);
 }
 
+/**
+ * What became of an activity, as the running card, the finish line and a card composed after the session say
+ * it (X46, `responses/9e14839e.md` §2 point 4): **done** only where its run counted — completed with a measured
+ * pass at the full standard (`passed-full`, the same run the rung's evidence reads) — **played** where a run
+ * completed it that measured nothing toward it (`unknown`: a drill set nobody answered, a backing track), or
+ * where it was tried and left; **skipped** where it was never tried; `null` while it is still to do. The record
+ * held the distinction (`result.outcome`) and the card read only the state, so an unmeasured exercise wore the
+ * same ✓ as a pass. Session words, never evidence: nothing here is read by `evidence/`.
+ */
+export function cameTo(activity: Pick<RunActivity, 'state' | 'result'>): 'done' | 'played' | 'skipped' | null {
+  switch (activity.state) {
+    case 'completed':
+      return activity.result?.outcome === 'passed-full' ? 'done' : 'played';
+    case 'skipped':
+      return 'skipped';
+    case 'attempted':
+      return 'played';
+    default:
+      return null;
+  }
+}
+
+/**
+ * Whether the card still shows the composition's words for an activity (X46, point 6): not once it is behind
+ * the learner — completed, or tried and moved on from. The words were the reason before the item ("This lesson
+ * asks for it — not counted yet", "last played on Tuesday") and are frozen with the card, so after it they could
+ * only be stale, and were false once the run counted; the mark says what became of it. An activity still to do
+ * keeps them: they are its purpose, and the card is the session's (`04` §2).
+ */
+export function showsReason(activity: Pick<RunActivity, 'state' | 'movedOn'>): boolean {
+  return !(activity.state === 'completed' || (activity.state === 'attempted' && activity.movedOn === true));
+}
+
 export interface TransitionHost {
   router: Router;
   handle: SessionHandle;

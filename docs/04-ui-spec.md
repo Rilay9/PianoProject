@@ -396,18 +396,30 @@ U71, X1).
   that opens it, the composition's own words, its contact assumption and what becomes of it. The
   free prompt and anything whose screen owns no honest finish (a PDF, a placeholder, the guided
   tour) stay outside the cursor. It then opens the first activity with its token (`?session=`).
-  While a session is open today the card is the session's, never a card composed since: done
-  rows say *done*, a row tried and moved on from *played*, a skipped one *skipped*, and the
-  current one *next*, with a blue edge. The one filled box is **Continue**, under *Continue
+  While a session is open today the card is the session's, never a card composed since: a row
+  whose run counted (completed with a measured pass, `passed-full`) says *✓ done*; a row completed
+  by a run that counted nothing, or tried and moved on from, *played*, with no ✓; a skipped one
+  *skipped*; and the current one *next*, with a blue edge (X46: an exercise played in Wait for me
+  wore the pass's ✓). A row behind the learner (completed, or moved on from) no longer shows the
+  composition's words: they were the reason before the item and are frozen with the card, so after
+  it they could only be stale — the passed piece read "not counted yet" — and the mark says what
+  became of it; a row ahead keeps them. The one filled box is **Continue**, under *Continue
   today's session · N of M min · next: …* (visible time on the activities' screens, never wall
   time), beside a quiet *End today's session*. A row tapped out of order becomes current; a
   running row's *Swap* replaces that activity with a new token. A length chip or *Shuffle*
   recomposes the card and closes the running session. An early end says what waits — *Today's
   session ended · N min*, *… — left for another day: Review, New* — and marks nothing failed.
   After the last activity the finish line says *Today's session done · N min* over what each
-  came to (*Warm-up done · Review played · …*), above *Start session*, and a card composed after
-  it marks rows *done today*. Another day's open session is closed as not finished, without a
-  word. Nothing about a session is evidence.
+  came to (*Warm-up done · Review played · …*, in the same words), above *Start session*, and a
+  card composed after it marks *done today* the rows whose run counted; one completed without
+  counting shows its item's own state (*started*). A Score-screen run Today chose for its rung
+  (`?rung=`, a session activity or a card row) opens where it can count: Keep tempo at the rung's
+  tempo or faster, where the learner's defaults (Wait for me at 70 %) could not meet the rung's
+  standard, with a Rhythm only preference off for that run; the select stays theirs (X46, `responses/43045ffb.md` §4: the item is composed as what
+  the rung asks for, so it is a criterion attempt). A run its own settings could not count (Wait,
+  rhythm only) does not complete the activity: the sheet's *Start* moves on from it, said as
+  *played*, and a run that counts completes it. Another day's open session is closed as not
+  finished, without a word. Nothing about a session is evidence.
 - **An automatic row from a rung's own list asks the one gate** (L113, X1;
   `eligibility.automaticFromList`): an unmeasured option, or a learner's assignment of an import
   the app has not measured, or a PDF, is on no row; a measured option keeps its placement. The
@@ -2513,12 +2525,20 @@ Notation area:
   **The sheet says only what the run measured (2026-09-25, T37).** The rule is the
   reviewer's: never display or record evidence the engine did not measure.
   - **A Wait for me run** carries no tempo: the page waited for every note, so the slider's
-    value is a setting nobody played to. Its Tempo line reads *Not judged in Wait for me —
-    to pass, play it in Keep tempo* (`help.ts` `SUMMARY_TEXT`, the same fact *Wait for me*'s
-    own help card states before the run), and it cannot pass a criterion with a tempo floor
-    or be master-eligible. A Wait run whose notes met the rung's accuracy is headed **Notes
+    value is a setting nobody played to. Its Tempo line reads *Not judged in Wait for me*
+    (`help.ts` `SUMMARY_TEXT`), and it cannot pass a criterion with a tempo floor or be
+    master-eligible. A Wait run whose notes met the rung's accuracy is headed **Notes
     ready**, not *Run finished*, which read as a failure over a run that had every note it
     needed, and not *Passed*, which would claim the half nobody measured.
+  - **To pass** (X46, `responses/9e14839e.md` §2 points 2 and 5): a judged run (Wait or Keep
+    tempo, not rhythm only, not a sight-read) that did not meet its standard says the standard
+    that judged it, in *What the app counts*' words (`keepTempoAt`): *90 % of the notes, in Keep
+    tempo at 80 % of the written tempo or faster* — the rung's numbers, or the Settings pair where
+    no rung judged it. Where the run's own mode or tempo could not count (Wait, or Keep tempo below
+    the floor), the first control on the sheet is **Keep tempo at 80 %**: a fresh Keep tempo run at
+    the standard, nothing stamped as changed. The Wait line used to say "— to pass, play it in Keep
+    tempo", naming no number, and no control did it; a clean Keep tempo run at 70 % on a rung that
+    counts 80 % was headed *Run finished* with no reason.
   - **The Timing line** appears only where timing was measured (`timing.n > 0`). Wait keeps
     none, and the line used to print *0 ms off the beat on average* over every clean Wait
     run.
@@ -3384,7 +3404,7 @@ back. A browser that refuses storage shows it every time, which is the safe way 
 - *What do I do now?* The count-in clicks, then play along.
 - *What can I do here?* **Tempo** — A share of the written speed. Slower is how a hard bar becomes an easy one. **▶** — Starts the run. With a piano connected your own first note starts it instead, and the clock waits for it. **Loop** — Repeats a few bars until they are yours. Double-tap two bars on the sheet to mark them. **Metronome** — The click, on or off. Turn it off to play against silence. **⋯** — Rhythm only, Ladder, Duet, Blind and Perform, and the settings you change once.
 - *What else is there?* This is the mode a pass is measured in. Wait for me is where a piece is learned first; Play it to me is where you hear what you are aiming at.
-- *What counts?* A pass needs both the accuracy and the share of the written tempo set in Settings, in one run.
+- *What counts?* A pass needs both the accuracy and the share of the written tempo, in one run: the lesson’s numbers where it states them, otherwise the ones set in Settings.
 
 **Play it to me** (`listen`)
 

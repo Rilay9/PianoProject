@@ -94,6 +94,7 @@ const { SESSION_TEXT } = await import('../../src/ui/help');
 const { updateSettings, DEFAULT_SETTINGS } = await import('../../src/data/settingsStore');
 
 const TRANSFER_WORDS = 'Shifting position: something new, for a skill you have shown — it should feel different';
+const SESSION_TEXT_NOT_COUNTED = 'not counted yet';
 
 /** The card: a drill warm-up, a piece, the transfer offer, a PDF the runner cannot finish, the free prompt. */
 function card(order: 'offer-last' | 'offer-first' = 'offer-last'): { template: (typeof SESSION_TEMPLATES)[number]; slots: SessionSlot[]; reached: string[] } {
@@ -197,9 +198,12 @@ describe('leaving and reopening resumes today’s session', () => {
     await vi.waitFor(() => expect(navigateDrill).toHaveBeenCalledWith(WARM.id, { rung: '1.2', session: run.activities[0]?.token }));
   });
 
-  it('the card is the run’s: a done row says done, the current one says next and is marked, the prompts stay outside', async () => {
+  // Revised (X46, `responses/9e14839e.md` §2 point 4; class: replace). This completed the warm-up with
+  // `unknown` — a set that measured nothing — and asserted *done*, the ✓ a pass wears: the walk's finding 6.
+  // A done row is now one whose run counted; the next case holds the unmeasured one.
+  it('the card is the run’s: a row whose run counted says done, the current one says next and is marked, the prompts stay outside', async () => {
     const run = await startSession();
-    await store.applySessionEvent(at(run, 0), { kind: 'completed', outcome: 'unknown' });
+    await store.applySessionEvent(at(run, 0), { kind: 'completed', outcome: 'passed-full' });
     const section = await openToday();
     const rows = [...section.querySelectorAll<HTMLElement>('#today-card [data-activity]')];
     expect(rows.map((row) => [row.dataset.item, row.dataset.state, row.dataset.current])).toEqual([
@@ -208,11 +212,44 @@ describe('leaving and reopening resumes today’s session', () => {
       [OFFERED.id, 'pending', 'false'],
     ]);
     expect(rows[0]?.querySelector('.list-row__badges')?.textContent).toContain(SESSION_TEXT.stateDone);
+    expect(rows[0]?.querySelector('.badge')?.getAttribute('data-kind')).toBe('passed');
     expect(rows[1]?.classList.contains('today-row--current')).toBe(true);
     expect(rows[1]?.querySelector('.list-row__badges')?.textContent).toContain(SESSION_TEXT.stateNext);
     expect(section.querySelector('#today-card [data-outside="true"][data-item="import.test.pdf"]')).not.toBeNull();
     expect(section.querySelector('#today-card .today-prompt[data-outside="true"]')?.textContent).toContain('Free play');
     expect(section.querySelector('#today-continue-line')?.textContent).toContain(`next: Title of ${PIECE.id}`);
+  });
+
+  // Added (X46, `responses/9e14839e.md` §2 points 4 and 6; findings 3 and 6). The walk's card, after its
+  // session: the warm-up left, the review exercise played in Wait for me (completed, nothing counted) marked
+  // ✓ done beside the pass, and the passed piece still reading "not counted yet" — the composition's words,
+  // frozen at Start session.
+  it('what each row came to: ✓ done only where the run counted, played where it counted nothing; no frozen reason once behind', async () => {
+    let run = await startSession();
+    // The warm-up tried and moved on from; the review completed by a run that measured nothing.
+    await store.applySessionEvent(at(run, 0), { kind: 'attempted' });
+    run = (await store.applySessionEvent(at(run, 0), { kind: 'advance' })).run ?? run;
+    await store.applySessionEvent(at(run, 1), { kind: 'completed', outcome: 'unknown' });
+    const section = await openToday();
+    const row = (index: number): HTMLElement => section.querySelector<HTMLElement>(`#today-card [data-activity="${String(index)}"]`) as HTMLElement;
+    const badges = (index: number): string => row(index).querySelector('.list-row__badges')?.textContent ?? '';
+    expect(badges(0)).toBe(SESSION_TEXT.statePlayed);
+    expect(badges(1)).toBe(SESSION_TEXT.statePlayed);
+    expect(row(1).querySelector('.badge')?.getAttribute('data-kind'), 'an unmeasured run wore the pass’s ✓').not.toBe('passed');
+    // Behind the learner, the composition's words are gone: they could only be stale ("not counted yet").
+    expect(row(0).textContent).not.toContain('This lesson asks for it — not counted yet');
+    expect(row(1).textContent).not.toContain('Nothing due for review — more from this lesson');
+    // Ahead of the learner, they stay: the item's purpose, and the card is the session's.
+    expect(row(2).textContent).toContain('something new');
+  });
+
+  it('a row whose run counted reads ✓ done and no longer “not counted yet”', async () => {
+    const run = await startSession();
+    await store.applySessionEvent(at(run, 0), { kind: 'completed', outcome: 'passed-full' });
+    const section = await openToday();
+    const warm = section.querySelector<HTMLElement>('#today-card [data-activity="0"]') as HTMLElement;
+    expect(warm.querySelector('.badge[data-kind="passed"]')?.textContent).toBe(SESSION_TEXT.stateDone);
+    expect(warm.textContent).not.toContain(SESSION_TEXT_NOT_COUNTED);
   });
 
   it('a row tapped out of order becomes current and opens with its own token; a done row opens outside the session', async () => {
@@ -274,10 +311,13 @@ describe('the running session is the run’s (Part 20)', () => {
 });
 
 describe('the finish line, and an early end', () => {
+  // Revised (X46, point 4; class: replace): the warm-up completed with `unknown` and the finish line said
+  // *Warm-up done* and the card after it *done today* — the ✓ of a run that counted nothing. It completes
+  // with a measured pass here; the case after holds the unmeasured one.
   it('after the last activity: done and the time from the clock, what each came to, nothing judged; the free prompt counted nowhere', async () => {
     let run = await startSession();
     await store.applySessionEvent(at(run, 0), { kind: 'accrue', ms: 50_000 });
-    await store.applySessionEvent(at(run, 0), { kind: 'completed', outcome: 'unknown' });
+    await store.applySessionEvent(at(run, 0), { kind: 'completed', outcome: 'passed-full' });
     run = await stored();
     await store.applySessionEvent(at(run, 1), { kind: 'attempted' });
     await store.applySessionEvent(at(run, 1), { kind: 'advance' });
@@ -291,6 +331,19 @@ describe('the finish line, and an early end', () => {
     // The card composed after it marks the warm-up done today: a completed activity is never offered as untouched.
     const warm = section.querySelector(`#today-card [data-item="${WARM.id}"]`);
     expect(warm?.querySelector('.list-row__badges')?.textContent).toContain(SESSION_TEXT.doneToday);
+  });
+
+  it('a run that counted nothing is played on the finish line, and the card after it does not say done today', async () => {
+    let run = await startSession();
+    await store.applySessionEvent(at(run, 0), { kind: 'completed', outcome: 'unknown' });
+    run = await stored();
+    await store.applySessionEvent(at(run, 1), { kind: 'advance' });
+    run = await stored();
+    await store.applySessionEvent(at(run, 2), { kind: 'advance' });
+    const section = await openToday();
+    expect(section.querySelector('.today-finish__detail')?.textContent).toBe('Warm-up played · Review skipped · New skipped');
+    const warm = section.querySelector(`#today-card [data-item="${WARM.id}"]`);
+    expect(warm?.querySelector('.list-row__badges')?.textContent ?? '').not.toContain(SESSION_TEXT.doneToday);
   });
 
   it('ended on purpose: says what waits for another day, marks nothing failed', async () => {

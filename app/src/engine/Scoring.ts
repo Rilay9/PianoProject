@@ -444,6 +444,30 @@ export function measuresTempo(mode: Mode): boolean {
 }
 
 /**
+ * Whether a run in this mode at this tempo can meet the criterion's tempo floor
+ * (T37's rule, the one `evaluateOutcome` passes by): a Keep tempo run at or above
+ * the floor, or any judged run where the floor is nought. The accuracy is the
+ * playing's; this is the half the settings decide before a note is played.
+ */
+export function tempoCanCount(mode: Mode, tempoPct: number, criteria: Pick<MasteryCriteria, 'passTempoPct'>): boolean {
+  return measuresTempo(mode) ? tempoPct >= criteria.passTempoPct : criteria.passTempoPct <= 0;
+}
+
+/**
+ * The opening a judged run needs so that it can count (X46, `responses/9e14839e.md` §2 point 3): the
+ * mode and tempo it would open in, unchanged where they can already meet the criterion's tempo floor,
+ * otherwise Keep tempo at the floor — never slower than the tempo asked for. A run Today composes as
+ * what its rung asks for opens here; Wait for me stays one tap away on the bar.
+ */
+export function openingThatCounts(
+  opening: { mode: Mode; tempoPct: number },
+  criteria: Pick<MasteryCriteria, 'passTempoPct'>,
+): { mode: Mode; tempoPct: number } {
+  if (tempoCanCount(opening.mode, opening.tempoPct, criteria)) return opening;
+  return { mode: 'tempo', tempoPct: Math.max(opening.tempoPct, Math.ceil(criteria.passTempoPct)) };
+}
+
+/**
  * Evaluates a run against the pass and master thresholds.
  *
  * Listen and Free never pass: nothing was judged, so there is nothing to
@@ -464,9 +488,7 @@ export function evaluateOutcome(
 ): Outcome {
   const judged = score.mode === 'wait' || score.mode === 'tempo';
   const tempoMeasured = measuresTempo(score.mode);
-  const tempoMet = tempoMeasured
-    ? score.tempoPct >= criteria.passTempoPct
-    : criteria.passTempoPct <= 0;
+  const tempoMet = tempoCanCount(score.mode, score.tempoPct, criteria);
   const passed = judged && score.accuracy >= criteria.passAccuracy && tempoMet;
   const masterEligible =
     tempoMeasured &&

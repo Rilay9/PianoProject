@@ -78,9 +78,15 @@ test.describe('a whole run', () => {
     // the tempo line saying it is not judged here and where a pass is played.
     await expect(sheet.locator('h2')).toHaveText('Notes ready');
     await expect(sheet).not.toContainText(/Passed|Mastered/);
-    await expect(sheet.locator('[data-stat="tempo"]')).toHaveText(
-      'Not judged in Wait for me — to pass, play it in Keep tempo',
+    // Revised (X46, `responses/9e14839e.md` §2 points 2 and 5; class: replace): the tempo line said
+    // "— to pass, play it in Keep tempo", naming no number and offering no control. The tempo line now says
+    // what was measured; *To pass* names the standard in the lesson page's words, and the control that does
+    // what it says is on the sheet.
+    await expect(sheet.locator('[data-stat="tempo"]')).toHaveText('Not judged in Wait for me');
+    await expect(sheet.locator('[data-stat="to-pass"]')).toHaveText(
+      /^\d+ % of the notes, in Keep tempo at \d+ % of the (written|suggested) tempo or faster$/,
     );
+    await expect(page.locator('#summary-standard')).toHaveText(/^Keep tempo at \d+ %$/);
     // And no timing: Wait keeps none, and "0 ms off the beat" is not a result.
     await expect(sheet.locator('[data-stat="timing"]')).toHaveCount(0);
     // Wait mode with every step completed cleanly is 100 %, and the run had a
