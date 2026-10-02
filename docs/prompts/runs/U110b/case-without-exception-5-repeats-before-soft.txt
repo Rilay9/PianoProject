@@ -1,0 +1,13 @@
+  x   1 tests\e2e\score.window-rule.spec.ts:1102:3 › a spent ladder drops its look-ahead row when the stage is 35 px shorter by height alone, and th
+  x   2 tests\e2e\score.window-rule.spec.ts:1102:3 › a spent ladder drops its look-ahead row when the stage is 95 px shorter by height alone, and th
+  x   3 tests\e2e\score.window-rule.spec.ts:1102:3 › a spent ladder drops its look-ahead row when the stage is 35 px shorter by height alone, and th
+  x   4 tests\e2e\score.window-rule.spec.ts:1102:3 › a spent ladder drops its look-ahead row when the stage is 95 px shorter by height alone, and th
+  x   5 tests\e2e\score.window-rule.spec.ts:1102:3 › a spent ladder drops its look-ahead row when the stage is 35 px shorter by height alone, and th
+  x   6 tests\e2e\score.window-rule.spec.ts:1102:3 › a spent ladder drops its look-ahead row when the stage is 95 px shorter by height alone, and th
+  x   7 tests\e2e\score.window-rule.spec.ts:1102:3 › a spent ladder drops its look-ahead row when the stage is 35 px shorter by height alone, and th
+  x   8 tests\e2e\score.window-rule.spec.ts:1102:3 › a spent ladder drops its look-ahead row when the stage is 95 px shorter by height alone, and th
+  x   9 tests\e2e\score.window-rule.spec.ts:1102:3 › a spent ladder drops its look-ahead row when the stage is 35 px shorter by height alone, and th
+  x  10 tests\e2e\score.window-rule.spec.ts:1102:3 › a spent ladder drops its look-ahead row when the stage is 95 px shorter by height alone, and th
+  10 failed
+exit 1
+     10     Error: the ladder's record, untouched. before {"stageHei
