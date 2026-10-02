@@ -29,8 +29,10 @@ import { contactIn, dayKey, daysBetween, type Contact, type ContactHistory, type
 // read of the learner's projects (G1d, the reviewer's G82 ruling; G1e, its review's required change and the
 // reviewer's ruling on G1e): `buildSession` looks each piece's project up with `projectIn` over the rows Today
 // hands in (`BuildInput.projects`), once, as the card's one rule for automatic selection
-// (`SlotContext.pausedOrPutAway`), which `usable()` asks for every slot. Nothing here opens the store.
-import { PROJECT_STAGES, projectIn, type ProjectRow } from '../data/projectStore';
+// (`SlotContext.pausedOrPutAway`), which `usable()` asks for every slot. Nothing here opens the store. The
+// lookup itself is `heldStateOf`, below: the one reading of a project the card and the session runner share
+// (G90), so a pause after *Start session* is read as the composer reads it.
+import { PROJECT_STAGES, projectIn, type ProjectRow, type ProjectTarget } from '../data/projectStore';
 import type { Identity } from '../review/record';
 import { knownMaterial, materialOfItem } from './material';
 import { relationshipOf, shownOnRecords, type Relationship, type ShownOn } from './transfer';
@@ -54,6 +56,24 @@ import { readingReason, slotReason } from '../ui/help';
 import { isExcerpt, isExerciseKind, isPieceMaterial } from './excerpt';
 
 export type SlotKind = 'technique' | 'review' | 'new' | 'repertoire' | 'jam' | 'free' | 'sightreading';
+
+/**
+ * The session's one reading of a learner's project for a piece (G1e; G90): `paused` or `retired` where the
+ * piece's project, found as the lesson page and Progress find it — by its material, whatever id it was made
+ * under, else by the id it was made under — says so, and nothing otherwise. Every other state, and no project,
+ * is no word about whether to offer the piece. Pure over the rows it is given: it never opens the store.
+ *
+ * It is asked by the two places that decide what the session offers automatically: the card's `usable()`
+ * through `buildSession`'s per-card answer (what the composer may choose), and the session runner's
+ * `settleHeld` (what the running session may offer at a turn the composition has already fixed). The G1d
+ * review ruled that automatic eligibility has one interpretation (`responses/d59f2ef8.md`); this is it. (The
+ * swap sheet's *Paused* marker, G94, reads the row itself to badge it; that is a label on the learner's own
+ * menu, not an offer.)
+ */
+export function heldStateOf(projects: readonly ProjectRow[], target: ProjectTarget): 'paused' | 'retired' | undefined {
+  const state = projectIn(projects, target)?.state;
+  return state === 'paused' || state === 'retired' ? state : undefined;
+}
 
 export interface SessionSlot {
   kind: SlotKind;
@@ -553,10 +573,10 @@ interface SlotContext {
   learned: ReadonlyMap<string, LearnedPiece>;
   /**
    * The session's one reading of the learner's projects (G1e; `BuildInput.projects`): whether the learner
-   * paused this piece or put it away on its project sheet — its project, found by `projectIn` as the
+   * paused this piece or put it away on its project sheet — its project, found by `heldStateOf` as the
    * lesson page and Progress find it (its material's, whatever id it was made under, else its id's), is
-   * `paused` or `retired`. Built once per card in `buildSession`, the only place the session looks a
-   * project up, and asked in `usable()`, the one door every slot's choice goes through: no slot chooses
+   * `paused` or `retired`. Built once per card in `buildSession` over `heldStateOf`, the one lookup the
+   * session has, and asked in `usable()`, the one door every slot's choice goes through: no slot chooses
    * such a piece (the reviewer's ruling on G1e: a rung's own ask included).
    */
   pausedOrPutAway: (item: CatalogItem) => boolean;
@@ -1593,15 +1613,14 @@ export function buildSession(input: BuildInput): {
   const { strands, reached } = strandsOf({ input, walk, lastPlayed });
   // The card's one reading of the learner's projects (G1e; the G1d review's required change): each piece's
   // project looked up once, by the identity the lesson page and Progress use, and the answer kept for the
-  // card. The only `projectIn` in the session; `usable()` reads the answer, never the rows.
+  // card. The lookup is `heldStateOf` (G90: the runner asks it too); `usable()` reads the answer, never the rows.
   const projects = input.projects ?? [];
   const withdrawn = new Map<string, boolean>();
   const pausedOrPutAway = (item: CatalogItem): boolean => {
     if (projects.length === 0) return false;
     let answer = withdrawn.get(item.id);
     if (answer === undefined) {
-      const state = projectIn(projects, { itemId: item.id, material: materialOfItem(item) })?.state;
-      answer = state === 'paused' || state === 'retired';
+      answer = heldStateOf(projects, { itemId: item.id, material: materialOfItem(item) }) !== undefined;
       withdrawn.set(item.id, answer);
     }
     return answer;

@@ -422,7 +422,19 @@ U71, X1).
   After the last activity the finish line says *Today's session done · N min* over what each
   came to (*Warm-up done · Review played · …*, in the same words), above *Start session*, and a
   card composed after it marks *done today* the rows whose run counted; one completed without
-  counting shows its item's own state (*started*). A Score-screen run Today chose for its rung
+  counting shows its item's own state (*started*). **A piece the learner pauses or puts away after
+  *Start session* leaves the running session at its turn** (G90, the reviewer's ruling
+  `responses/d59f2ef8.md` question 2): the snapshot stays — the card is still the session's and the
+  piece still waits on it, pending, until its turn, and nothing is recomposed — but where the
+  session is about to offer an activity (the transition after the one before, *Start* on it,
+  Today read for *Continue*), a pending activity **the composition chose** whose piece is paused or
+  put away *now* is skipped, said as *{title} is skipped — you paused it* (*… you put it away*) in
+  the transition's own note, and the one after is offered; its row reads *skipped*. The piece is
+  read as the card's composer reads it (`session.heldStateOf`: its material's project, else the id's,
+  `paused` or `retired` and no other state). An activity already underway is not interrupted; a
+  piece the learner chose themselves (a swap: its activity carries no claim) or taps open is theirs,
+  whatever its project says; a row tapped back to life no longer announces a skip. The row's own
+  line stays the composition's words, as on every skipped row. A Score-screen run Today chose for its rung
   (`?rung=`, a session activity or a card row) opens where it can count: Keep tempo at the rung's
   tempo or faster, where the learner's defaults (Wait for me at 70 %) could not meet the rung's
   standard, with a Rhythm only preference off for that run; the select stays theirs (X46, `responses/43045ffb.md` §4: the item is composed as what
@@ -765,6 +777,12 @@ The first screenful now answers all three, in this order:
   stage, and the unit. The unit is dropped when it is the rung's own title said again (a unit
   of one rung takes its name), because `00-invariants` §1 forbids saying the same thing
   twice more than it wants the third fact.
+  **The title itself is the rung's title** once the curriculum has loaded, and until then the one
+  word *Lesson* (T20, G90): the page used to head itself *Lesson classical.3* from the moment the
+  route resolved, an internal id on screen for as long as the curriculum took, and in the same
+  states where it has no rung to name (the fetch failing, an id the curriculum does not have) it
+  still says the word. A word, not an empty heading: the frame keeps its line and its `h1`. The
+  id stays on the screen's own `data-lesson`, set when the rung is found.
 - **What do I do first** — `#lesson-start`, the screen's one filled box (§0 R3), labelled
   **Start**. The option rows' own `▶` stay secondary, which is the decision that left the
   page with no primary action at all: nine exercises meant nine blue buttons and therefore
@@ -2648,7 +2666,9 @@ Notation area:
   change** (the next skipped by the learner, back to Today). After a measured failure the block
   says *Still unstable, so we're not moving on* with *Try again* and *Move on anyway*. After
   easy first-attempt success it says *Easier than expected — {the skipped practice} is skipped*.
-  A first contact met since the card was composed says *You heard this one earlier today, so it
+  Where the learner paused or put away the piece that would have come next, it says *{title} is
+  skipped — you paused it* (*— you put it away*) above *Next*, which is then the one after (G90;
+  §2). A first contact met since the card was composed says *You heard this one earlier today, so it
   is practice now, not a first read* (*played* or *saw* where that is how it was met). After the
   last activity it says *That was the last one — today's session is done* and **Done**. *Done*
   gives way to the block. The Score screen reports opened, attempted and completed (the stored

@@ -21,10 +21,18 @@
  *   shows where the session really is.
  * - **The clock** (`SessionHandle.startClock`): visible time only — a hidden page, a closed app and Today
  *   between activities accrue nothing.
+ * - **The learner's word on a piece** (`settleHeld`; G90, the reviewer's ruling `responses/d59f2ef8.md` question
+ *   2): the composition is frozen at *Start session* and stays, but a piece the learner paused or put away on
+ *   its sheet since is not offered when its turn comes. Where the session is about to offer its current
+ *   activity — the transition drawn after the one before, *Start* on it, Today read for *Continue* — a pending
+ *   activity the composition chose whose piece is withdrawn *now* is skipped with the reason said, and the one
+ *   after is offered; nothing is recomposed, an activity underway is not interrupted, and a row or a swap the
+ *   learner chose is their own word and is left alone.
  */
 import type { Router } from '../router';
 import {
   applySessionEvent,
+  isAutomatic,
   isOpen,
   nextPending,
   plannedMinutes,
@@ -39,7 +47,10 @@ import {
 import { newOfferToken, writeOfferSnapshot } from '../data/offerSnapshot';
 import { contactSummaries, rungRows } from '../data/progressStore';
 import { allEncounters } from '../data/encounterStore';
-import { contactOf } from '../curriculum/session';
+import { allProjects, type ProjectRow, type ProjectTarget } from '../data/projectStore';
+import { findItem } from '../curriculum/load';
+import { materialOfItem } from '../curriculum/material';
+import { contactOf, heldStateOf } from '../curriculum/session';
 import type { Identity } from '../review/record';
 import { SESSION_TEXT } from './help';
 import { el } from './widgets';
@@ -231,6 +242,90 @@ export function sessionHandle(token: string | undefined, clock: { now: () => Dat
   };
 }
 
+// --- the learner's word on a piece ------------------------------------------------------------------
+
+/** What `settleHeld` did: the run as it stands, and the activities it stepped past, in order. */
+export interface Settled {
+  run: SessionRun;
+  withheld: RunActivity[];
+}
+
+/**
+ * The project target of an activity's piece: its id and, where the catalogue can say, its material — so a
+ * project made under another id of the same file holds, as the card's composer finds it. A catalogue that
+ * cannot be read leaves the id alone: the project made under that id is still found, and no other is guessed.
+ */
+async function projectTargetOf(activity: RunActivity): Promise<ProjectTarget> {
+  const itemId = activity.route.itemId;
+  try {
+    const item = await findItem(itemId);
+    return { itemId, material: item === undefined ? undefined : materialOfItem(item) };
+  } catch {
+    return { itemId, material: undefined };
+  }
+}
+
+/** The activity the cursor is on: what Today's *Continue* and a transition after a finished activity offer. */
+const currentOf = (run: SessionRun): RunActivity | undefined => (run.current === null ? undefined : run.activities[run.current]);
+
+/**
+ * The learner's last word on a piece holds where the session next acts on it (G90; the ruling `responses/
+ * d59f2ef8.md` question 2). Called wherever the session is about to offer an activity — the transition drawn
+ * after the one before, *Start* on it, Today read for *Continue* — with what that place offers (`offering`;
+ * by default the cursor's activity): while the offered activity is pending, chosen by the composition
+ * (`isAutomatic`), and its piece is paused or put away *now* (`heldStateOf`, the composer's own reading, over
+ * the projects as they stand), the runner skips it with the reason said (`withhold`) and offers the one after
+ * — and the one after that. The transition after a stopped activity offers the one after it, which the cursor
+ * has not reached (`offeredAfter`); every other place offers the cursor's.
+ *
+ * It does not recompose: the activities, their order, words and tokens are as *Start session* kept them, and a
+ * piece that is held again later is stepped past at its own turn. It does not interrupt: an activity opened or
+ * tried is the learner's, and `apply` refuses the event for it. It does not overrule: a swapped-in piece
+ * carries no claim, and a row the learner taps becomes current by `choose` and opens without passing here. It
+ * writes nothing where nothing is withdrawn (no read of the catalogue either, where the learner has no project
+ * at all). A store of projects that cannot be read withdraws nothing, as Today's card reads none.
+ */
+export async function settleHeld(
+  run: SessionRun,
+  now: Date = new Date(),
+  offering: (run: SessionRun) => RunActivity | undefined = currentOf,
+): Promise<Settled> {
+  let at = run;
+  const withheld: RunActivity[] = [];
+  let projects: readonly ProjectRow[] | null = null;
+  for (let guard = 0; guard < run.activities.length; guard += 1) {
+    const offered = offering(at);
+    if (!isOpen(at, now) || !offered || offered.state !== 'pending' || !isAutomatic(offered)) break;
+    projects ??= await allProjects().catch((): ProjectRow[] => []);
+    if (projects.length === 0) break;
+    const held = heldStateOf(projects, await projectTargetOf(offered));
+    if (held === undefined) break;
+    const result = await applySessionEvent(expectedFor(at, offered.token), { kind: 'withhold', why: SESSION_TEXT.withheld(offered.slot.title, held) }, now).catch(
+      (): ApplyResult => ({ ok: false, why: 'none', run: null }),
+    );
+    if (!result.ok) {
+      // Moved on elsewhere (another tab) or no longer pending: what is stored is what stands.
+      if (result.run) at = result.run;
+      break;
+    }
+    withheld.push(offered);
+    at = result.run;
+  }
+  return { run: at, withheld };
+}
+
+/**
+ * What a transition offers for a screen's token: the one *Start* would open (`transitionView`'s `next`) —
+ * the cursor's activity after a finished one, the one after it where this activity was stopped and is still
+ * the cursor's. The `offering` of `settleHeld` for the transition's draw.
+ */
+export function offeredAfter(token: string, now: Date): (run: SessionRun) => RunActivity | undefined {
+  return (run) => {
+    const view = transitionView(run, token, now);
+    return view.kind === 'next' ? view.next : undefined;
+  };
+}
+
 // --- the transition ---------------------------------------------------------------------------------
 
 /**
@@ -251,6 +346,28 @@ export type TransitionView =
   | { kind: 'kept-here'; run: SessionRun; mine: RunActivity; notes: string[] }
   | { kind: 'next'; run: SessionRun; mine: RunActivity; from: 'completed' | 'moving-on'; next?: RunActivity; notes: string[] };
 
+/**
+ * The runner's own changes between this activity and the one offered after it, said: a controlled practice
+ * skipped for easy success, a piece the learner's word withdrew (G90). The activities the cursor passed over,
+ * in the order `nextPending` walks them — after this one, and round to the start where the one offered is
+ * behind it — and only while they are skipped: a row the learner tapped back to life says nothing of a skip.
+ * With nothing offered after it, only what follows this activity: the rest of the card is behind it.
+ */
+function skipsBetween(run: SessionRun, mine: RunActivity, next: RunActivity | undefined): string[] {
+  const n = run.activities.length;
+  const passed: RunActivity[] = [];
+  for (let step = 1; step < n; step += 1) {
+    const at = mine.index + step;
+    if (next === undefined && at >= n) break;
+    const activity = run.activities[at % n] as RunActivity;
+    if (next !== undefined && activity.index === next.index) break;
+    passed.push(activity);
+  }
+  return passed
+    .filter((activity) => activity.state === 'skipped')
+    .flatMap((activity) => activity.adaptations.filter((one) => one.kind === 'skipped-redundant').map((one) => one.why));
+}
+
 export function transitionView(run: SessionRun | null, token: string, now: Date): TransitionView {
   if (run === null) return { kind: 'none' };
   const mine = run.activities.find((activity) => activity.token === token);
@@ -263,14 +380,11 @@ export function transitionView(run: SessionRun | null, token: string, now: Date)
       return { kind: 'kept-here', run, mine, notes: [...repurposed, ...mine.adaptations.filter((one) => one.kind === 'kept-here').map((one) => one.why)] };
     }
     const at = nextPending(run, mine.index);
-    return { kind: 'next', run, mine, from: 'moving-on', ...(at === null ? {} : { next: run.activities[at] as RunActivity }), notes: repurposed };
+    const after = at === null ? undefined : (run.activities[at] as RunActivity);
+    return { kind: 'next', run, mine, from: 'moving-on', ...(after === undefined ? {} : { next: after }), notes: [...repurposed, ...skipsBetween(run, mine, after)] };
   }
   const next = run.current === null ? undefined : run.activities[run.current];
-  // The runner's own change after this activity, said: a controlled practice skipped for easy success.
-  const skipped = run.activities
-    .filter((activity) => activity.index > mine.index && (next === undefined || activity.index < next.index))
-    .flatMap((activity) => activity.adaptations.filter((one) => one.kind === 'skipped-redundant').map((one) => one.why));
-  return { kind: 'next', run, mine, from: 'completed', ...(next ? { next } : {}), notes: [...repurposed, ...skipped] };
+  return { kind: 'next', run, mine, from: 'completed', ...(next ? { next } : {}), notes: [...repurposed, ...skipsBetween(run, mine, next)] };
 }
 
 /** Minutes, rounded, from the visible-time clock. */
@@ -329,7 +443,9 @@ export interface TransitionHost {
  */
 export async function drawTransition(into: HTMLElement, host: TransitionHost): Promise<TransitionView['kind']> {
   const now = host.now ?? (() => new Date());
-  const run = await host.handle.record();
+  const read = await host.handle.record();
+  // The session is about to offer its current activity: the learner's last word on that piece holds (G90).
+  const run = read === null ? null : (await settleHeld(read, now(), offeredAfter(host.handle.token, now()))).run;
   const view = transitionView(run, host.handle.token, now());
   into.replaceChildren();
   into.dataset.sessionView = view.kind;
@@ -403,7 +519,15 @@ export async function drawTransition(into: HTMLElement, host: TransitionHost): P
   lines.push(el('p.session-next__line', { text: SESSION_TEXT.nextLine(next.slot.title, next.slot.minutes, next.reason) }));
   /** Opens the record's current activity once the moves before it are written. */
   const openCurrent = async (): Promise<void> => {
-    const fresh = await host.handle.record();
+    const read = await host.handle.record();
+    const settled = read === null ? null : await settleHeld(read, now());
+    // A piece the learner paused since this screen was drawn is not opened on a screen that offered it: the
+    // view is drawn again from the record, with the one after, said (G90).
+    if (settled !== null && settled.withheld.length > 0) {
+      redraw();
+      return;
+    }
+    const fresh = settled?.run ?? null;
     const current = fresh?.current === null || fresh?.current === undefined ? undefined : fresh.activities[fresh.current];
     if (!fresh || !current) {
       toToday();

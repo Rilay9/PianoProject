@@ -1258,6 +1258,12 @@ export const SESSION_TEXT = {
   keptHere: 'Still unstable, so we’re not moving on',
   /** Easy first-attempt success skipped the controlled practice after it (the reviewer's bounded rule). */
   easier: (skipped: string): string => `Easier than expected — ${skipped} is skipped`,
+  /**
+   * The learner paused a piece, or put it away, after *Start session*; its turn came and the runner stepped
+   * past it (G90): "Ode to Joy is skipped — you paused it". The learner's own word, in the learner's own
+   * verb as the project sheet says it (*Pause*, *Put it away*).
+   */
+  withheld: (title: string, state: 'paused' | 'retired'): string => `${title} is skipped — you ${state === 'paused' ? 'paused it' : 'put it away'}`,
   /** A first-contact activity whose material was met after the card was composed (G2's adapter at its start). */
   repurposed: (how: string): string =>
     `You ${how === 'played' ? 'played' : how === 'viewed' ? 'saw' : 'heard'} this one earlier today, so it is practice now, not a first read`,

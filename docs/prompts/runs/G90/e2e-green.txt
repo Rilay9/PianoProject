@@ -1,0 +1,117 @@
+# G90: the new spec, then the targeted specs, against the dist built from the final source (port 5463, one worker).
+
+
+Running 2 tests using 1 worker
+
+  ok 1 tests\e2e\session-held-piece.spec.ts:128:1 › a piece paused on its sheet after Start session: the running card keeps it until its turn, then the transition steps past it, said; Today and the record agree (G90) (4.2s)
+  ok 2 tests\e2e\session-held-piece.spec.ts:206:3 › the lesson page before its curriculum arrives (T20) › the heading says a word while the lesson is unknown, never the lesson’s id, and names the lesson once it is known (620ms)
+
+  2 passed (8.0s)
+
+real	0m9.270s
+user	0m0.091s
+sys	0m0.075s
+
+--- session-held-piece, session-run, projects ---
+
+Running 15 tests using 1 worker
+
+  ok  1 tests\e2e\projects.spec.ts:88:1 › finish a run, What next with this piece?, Learn this — Progress lists the project (19.5s)
+  ok  2 tests\e2e\projects.spec.ts:110:1 › Put it away, then Bring it back: the history line and the encounter line (18.9s)
+  ok  3 tests\e2e\projects.spec.ts:135:1 › a Stage 9 unit’s page shows its songs as projects and no count; one project’s state shows on its row alone (1.8s)
+  ok  4 tests\e2e\projects.spec.ts:202:1 › a piece passed and unplayed past the window, paused on its sheet: Today stops keeping it playable; Progress and the Library show it as before (G1d) (6.5s)
+  ok  5 tests\e2e\projects.spec.ts:304:1 › a piece paused on its sheet is on no row of the thin card, nor asked for by its rung; with every song of the rung paused the lesson says it waits (G1e) (4.7s)
+  ok  6 tests\e2e\projects.spec.ts:373:1 › Make it a project on a passed piece offers Keep it playable; after it and Close, focus is on the piece’s new project row (G96) (1.9s)
+  ok  7 tests\e2e\projects.spec.ts:428:1 › the project sheet’s date box beside I performed it wears the sheet’s text box’s font, border, corners and box at 342 × 740 (G87) (2.4s)
+  ok  8 tests\e2e\projects.spec.ts:463:1 › a Stage 9 page’s Start line names what Start opens and no more; a Stage 1 page’s still calls it the first thing on this rung (G87) (1.5s)
+  ok  9 tests\e2e\session-held-piece.spec.ts:128:1 › a piece paused on its sheet after Start session: the running card keeps it until its turn, then the transition steps past it, said; Today and the record agree (G90) (4.8s)
+  ok 10 tests\e2e\session-held-piece.spec.ts:206:3 › the lesson page before its curriculum arrives (T20) › the heading says a word while the lesson is unknown, never the lesson’s id, and names the lesson once it is known (938ms)
+  ok 11 tests\e2e\session-run.spec.ts:88:1 › a session run through its activities: the transition after each, Continue after a reload, and the finish line (50.3s)
+  ok 12 tests\e2e\session-run.spec.ts:162:1 › the tablet: the transition and Continue at 768 × 1024 (2.3s)
+  ok 13 tests\e2e\session-run.spec.ts:175:1 › heard at noon from the card, the session’s reading in the evening: rechecked, repurposed, and said on the transition (22.1s)
+  ok 14 tests\e2e\session-run.spec.ts:212:1 › a drill ended before any answer: Not measured with the reason, no Accuracy, and the transition under it (U96) (2.1s)
+  ok 15 tests\e2e\session-run.spec.ts:236:1 › the placement test ended in a session: the transition’s Start is the one filled box, Start here outlined (U96) (1.9s)
+
+  15 passed (2.4m)
+
+real	2m30.813s
+user	0m0.076s
+sys	0m0.076s
+
+--- sweeps, today, transfer-offer ---
+
+Running 32 tests using 1 worker
+
+  ok  1 tests\e2e\sweeps.spec.ts:54:3 › every lesson page › all of them open by URL, draw their options and say what they need (53.4s)
+  ok  2 tests\e2e\sweeps.spec.ts:107:3 › every lesson page › every rung that has a finder can open it (48.8s)
+  ok  3 tests\e2e\sweeps.spec.ts:132:3 › every kind of drill › one of each opens, draws a card and offers a way to answer (13.8s)
+  ok  4 tests\e2e\sweeps.spec.ts:214:3 › where an item opens › a bundled song, a generated exercise and a quarried score open on the Score screen (565ms)
+  ok  5 tests\e2e\sweeps.spec.ts:225:3 › where an item opens › a runtime drill opens on the drill screen (224ms)
+  ok  6 tests\e2e\sweeps.spec.ts:231:3 › where an item opens › a placeholder says what to do instead of opening nothing (684ms)
+  ok  7 tests\e2e\sweeps.spec.ts:244:3 › when the level model is missing › an import says "no estimate" rather than showing a made-up number (906ms)
+  ok  8 tests\e2e\today.spec.ts:64:3 › Today › shows a weekly goal, an input chip, and a session card (688ms)
+  ok  9 tests\e2e\today.spec.ts:80:3 › Today › the four session lengths build different cards (1.4s)
+  ok 10 tests\e2e\today.spec.ts:95:3 › Today › remembers the session length across a reload (1.0s)
+  ok 11 tests\e2e\today.spec.ts:104:3 › Today › "Swap this" offers alternatives and can exclude songs (1.1s)
+  ok 12 tests\e2e\today.spec.ts:123:3 › Today › the "not a song" filter removes songs from the swap sheet (1.3s)
+  ok 13 tests\e2e\today.spec.ts:141:3 › Today › shuffle rebuilds the card (1.1s)
+  ok 14 tests\e2e\today.spec.ts:151:3 › Today › the tracks the data switches on are on before he touches a chip (C2) (625ms)
+  ok 15 tests\e2e\today.spec.ts:180:3 › Today › Today keeps recommending after the core path, from a track he never turned on (1.3s)
+  ok 16 tests\e2e\today.spec.ts:232:3 › Today › the warm-up and the review say why, for a learner whose lesson exercise is counted and a piece has gone unplayed (1.4s)
+  ok 17 tests\e2e\today.spec.ts:272:3 › Today › starting the session opens the first row (781ms)
+  ok 18 tests\e2e\today.spec.ts:296:3 › the swap sheet’s demand tier (E0) › placed at 1.5, the steps-and-skips row’s sheet names the demand tier: also practises skips, with the other demands met (1.3s)
+  ok 19 tests\e2e\today.spec.ts:331:3 › the practice track’s floor (F2) › placed at 1.5, the practice row is practice.1’s own Stage 1 material, never Hanon, and after the rung’s new piece (1.1s)
+  ok 20 tests\e2e\today.spec.ts:354:3 › Today obeys 04 §0 › the session card starts inside the first screenful (R1) (638ms)
+  ok 21 tests\e2e\today.spec.ts:365:3 › Today obeys 04 §0 › a row is one line of detail and no taller than 96 px, or than its two title lines and two reason lines (R2, U63) (690ms)
+  ok 22 tests\e2e\today.spec.ts:402:3 › Today obeys 04 §0 › one filled button on the screen, and it is Start session (R3) (617ms)
+  ok 23 tests\e2e\today.spec.ts:501:3 › the daily read says why this phrase (C4, C4c) › two days of misread skips on 2.2: the phrase moves by step, and the card says the skips went wrong (1.5s)
+  ok 24 tests\e2e\today.spec.ts:513:3 › the daily read says why this phrase (C4, C4c) › two reads wrong only where skips and eighths coincide, on 2.5: nothing blamed, the easy read, and the card says it is not sure yet (1.5s)
+  ok 25 tests\e2e\today.spec.ts:627:3 › the reason keeps its deciding clause at 342 × 740 (U63) › C6’s learner: the warm-up’s and the review’s reasons whole, the passed badge beside the controls; the running card the same, Next beside them (2.0s)
+  ok 26 tests\e2e\today.spec.ts:670:3 › the reason keeps its deciding clause at 342 × 740 (U63) › the held line: the rung’s wait said in two lines, its claim whole (1.2s)
+  ok 27 tests\e2e\today.spec.ts:693:3 › the reason keeps its deciding clause at 342 × 740 (U63) › waiting for its reads on 3.4: “Next lesson — this one waits for your reads”, whole (1.3s)
+  ok 28 tests\e2e\today.spec.ts:727:3 › the reason keeps its deciding clause at 342 × 740 (U63) › the swap sheet wears Paused beside a song the learner paused (G94) (1.0s)
+  ok 29 tests\e2e\transfer-offer.spec.ts:177:3 › the transfer offer (D4) › a learner proficient at shifting position is offered transfer material on Today, and its run keeps what was played and why (4.6s)
+  ok 30 tests\e2e\transfer-offer.spec.ts:248:3 › the transfer offer (D4) › a piece heard yesterday is not offered as new (G2) (2.2s)
+  ok 31 tests\e2e\transfer-offer.spec.ts:318:3 › the transfer offer (D4) › a read played on the phone stores its transfer facts on its evidence (G2) (3.6s)
+  ok 32 tests\e2e\transfer-offer.spec.ts:351:3 › the transfer offer (D4) › the run stores the relationship the card offered, beside the intent, through the offer Today kept (D4a) (3.1s)
+
+  32 passed (2.7m)
+
+--- empty-states, lesson-tools, start-and-return, first-day, lesson-flow ---
+
+Running 28 tests using 1 worker
+
+  ok  1 tests\e2e\empty-states.spec.ts:58:1 › a chart with no chords draws the sentence and one button (2.2s)
+  ok  2 tests\e2e\empty-states.spec.ts:94:1 › the microphone screen never says "not connected (not connected)" (251ms)
+  ok  3 tests\e2e\empty-states.spec.ts:104:1 › the score folder draws no browse controls with no folder (235ms)
+  ok  4 tests\e2e\empty-states.spec.ts:113:1 › the heat map says what it measures and what the shades mean (243ms)
+  ok  5 tests\e2e\empty-states.spec.ts:126:1 › a chart for a piece that is not there draws no transport over nothing (748ms)
+  ok  6 tests\e2e\empty-states.spec.ts:150:1 › a lesson that does not exist draws one sentence, not six empty sections (805ms)
+  ok  7 tests\e2e\empty-states.spec.ts:175:1 › a search that matches nothing offers the way back to everything (693ms)
+  ok  8 tests\e2e\empty-states.spec.ts:192:1 › a filter left on behind a closed row can be undone from the empty list (810ms)
+  ok  9 tests\e2e\empty-states.spec.ts:214:1 › Progress on a fresh phone pairs each empty list with a way to fill it (735ms)
+  ok 10 tests\e2e\empty-states.spec.ts:238:1 › a refused microphone says what to do instead, and stops pretending to listen (351ms)
+  ok 11 tests\e2e\empty-states.spec.ts:295:1 › a microphone prompt that was only dismissed still offers Connect (293ms)
+  ok 12 tests\e2e\empty-states.spec.ts:339:1 › a stage with nothing on the tracks you have on says so and offers the tracks (1.0s)
+  ok 13 tests\e2e\empty-states.spec.ts:383:1 › the error banner stays on the visible bottom edge while a long list scrolls (732ms)
+first day: the rung offers 20 options, 19 of them with a file; opening exercise.inversions.c-major.both (2 printed bars)
+first day: Plan and Today say stage 4; Skills opened on 3, 4
+  ok 14 tests\e2e\first-day.spec.ts:593:5 › a first day › from nothing to a recorded pass, phone upright (18.9s)
+first day: the rung offers 20 options, 19 of them with a file; opening exercise.inversions.c-major.both (2 printed bars)
+first day: Plan and Today say stage 4; Skills opened on 3, 4
+  ok 15 tests\e2e\first-day.spec.ts:593:5 › a first day › from nothing to a recorded pass, phone sideways (18.7s)
+  ok 16 tests\e2e\lesson-flow.spec.ts:46:1 › a run played from Today is recorded, and comes back for review (19.6s)
+  ok 17 tests\e2e\lesson-tools.spec.ts:33:1 › the lab tool opens the lab already in the rung’s preset (649ms)
+  ok 18 tests\e2e\lesson-tools.spec.ts:55:1 › the duet tool opens a piece from the rung with one hand chosen (910ms)
+  ok 19 tests\e2e\lesson-tools.spec.ts:76:1 › a rung that names its Simon opens that one, not the stage’s (824ms)
+  ok 20 tests\e2e\lesson-tools.spec.ts:91:1 › a rung that names no tool draws no block (586ms)
+  ok 21 tests\e2e\start-and-return.spec.ts:49:3 › opening a lesson › says where you are, and gives one thing to press (621ms)
+  ok 22 tests\e2e\start-and-return.spec.ts:78:3 › opening a lesson › Start opens the first thing on the rung, and says which (758ms)
+  ok 23 tests\e2e\start-and-return.spec.ts:93:3 › opening a lesson › Start is an offer: it passes over a listed groove no one has approved for teaching, and says what it opens instead (1.2s)
+  ok 24 tests\e2e\start-and-return.spec.ts:120:3 › starting a mode › says what to do before a note has been judged, in every mode (922ms)
+  ok 25 tests\e2e\start-and-return.spec.ts:130:3 › starting a mode › marks the first note it is waiting for before the run starts (797ms)
+  ok 26 tests\e2e\start-and-return.spec.ts:140:3 › coming back to a run left half way › says where it was left and offers both ways on (11.3s)
+  ok 27 tests\e2e\start-and-return.spec.ts:166:3 › coming back to a run left half way › starting from the beginning takes the offer away and leaves bar 1 (12.0s)
+  ok 28 tests\e2e\start-and-return.spec.ts:188:3 › coming back to a run left half way › a piece never left half way is not asked about (796ms)
+
+  28 passed (1.7m)

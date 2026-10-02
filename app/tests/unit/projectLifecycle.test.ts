@@ -619,7 +619,15 @@ describe('never the bridge, never the source (the brief’s item 3; its refuting
   // in a chooser is the scattered policy the review ruled out. Old assumption: the lookup inside `review()`.
   // Revised (G85 item 5; the reviewer's ruling 3 on the G1b brief): the Library is a reader — its song
   // rows wear the project's state and its Project filter reads it — and moves no project.
-  it('only the project sheet acts; the session reads a project for one thing, automatic eligibility, once per card (G1d; G82; G1e); the Library shows one (G85); no evidence, skill, eligibility or Library code reads one', () => {
+  // Revised (G90; class: replace; the reviewer's ruling `responses/d59f2ef8.md` question 2): the session
+  // runner is a reader too, for the same one thing — at the turn of an activity the composition chose, is its
+  // piece paused or put away *now* — and through the same lookup. The lookup moved out of `buildSession`'s
+  // context assembly into `heldStateOf`, the function the card's per-piece answer and the runner both call: one
+  // interpretation of automatic eligibility, still asked once per piece per card and nowhere in a chooser.
+  // Old assumptions: Today and `session.ts` the only readers; the one lookup inside `buildSession`; and that a
+  // pause reaches the session only at composition (a running session's activity was offered whatever the
+  // learner had said since).
+  it('only the project sheet acts; the session reads a project for one thing, automatic eligibility, through one lookup the card and the running session share (G1d; G82; G1e; G90); the Library shows one (G85); no evidence, skill, eligibility or Library code reads one', () => {
     const src = join(process.cwd(), 'src');
     const readers: string[] = [];
     // Revised (G1c item 1; G84): the files that import the project stages' numbers and nothing else
@@ -662,6 +670,7 @@ describe('never the bridge, never the source (the brief’s item 3; its refuting
       'ui/screens/ScoreScreen.ts',
       'ui/screens/SettingsScreen.ts',
       'ui/screens/TodayScreen.ts',
+      'ui/sessionRunner.ts',
     ]);
     // Plan reads which stages are projects (`PROJECT_STAGES`, the one constant) and nothing else.
     expect(stageReaders.sort()).toEqual(['ui/screens/PlanScreen.ts']);
@@ -669,19 +678,31 @@ describe('never the bridge, never the source (the brief’s item 3; its refuting
     expect([...bindings.keys()].filter((name) => name.startsWith('evidence/') || /eligibility|skill/i.test(name))).toEqual([]);
     // The session: the stages, the one lookup and the row's type — nothing that opens the store (`allProjects`,
     // `projectFor`) or writes to it. It stays a function of its input; Today reads the store.
-    expect(bindings.get('curriculum/session.ts')).toEqual(['PROJECT_STAGES', 'projectIn', 'type ProjectRow']);
-    // And it looks a project up once, in `buildSession`: the context assembly's one predicate, which every
-    // automatic chooser reads (G1e), nowhere else — not in `review()`, `repertoire()` or any other chooser.
+    expect(bindings.get('curriculum/session.ts')).toEqual(['PROJECT_STAGES', 'projectIn', 'type ProjectRow', 'type ProjectTarget']);
+    // The runner reads the rows live, at the moment a turn comes, and nothing else of the store: it never
+    // acts (the actors list above), and it looks no project up itself — `heldStateOf` does (`sessionHeldPiece`).
+    expect(bindings.get('ui/sessionRunner.ts')).toEqual(['allProjects', 'type ProjectRow', 'type ProjectTarget']);
+    // And the session looks a project up once, in `heldStateOf`: the one predicate the card's per-piece answer
+    // in `buildSession` (which every automatic chooser reads, G1e) and the runner both ask, nowhere else — not
+    // in `review()`, `repertoire()` or any other chooser, and not a second time in `buildSession`.
     const session = readFileSync(join(src, 'curriculum', 'session.ts'), 'utf8');
     const lookups = [...session.matchAll(/projectIn\(/g)].map((found) => found.index);
     expect(lookups, 'the session looks a project up other than once').toHaveLength(1);
-    const start = session.indexOf('\nexport function buildSession(');
-    // Its own closing brace: the first `}` alone on its line after it (its return type's closes as `} {`).
-    const end = start + session.slice(start).search(/\n\}\r?\n/);
-    expect(start, 'buildSession() not found').toBeGreaterThan(0);
-    expect(end, 'buildSession()’s end not found').toBeGreaterThan(start);
-    expect(lookups[0], 'the lookup is outside buildSession()').toBeGreaterThan(start);
-    expect(lookups[0], 'the lookup is outside buildSession()').toBeLessThan(end);
+    const span = (head: string): [number, number] => {
+      const start = session.indexOf(head);
+      // Its own closing brace: the first `}` alone on its line after it (its return type's closes as `} {`).
+      const end = start + session.slice(start).search(/\n\}\r?\n/);
+      expect(start, `${head.trim()} not found`).toBeGreaterThan(0);
+      expect(end, `${head.trim()}’s end not found`).toBeGreaterThan(start);
+      return [start, end];
+    };
+    const [held, heldEnd] = span('\nexport function heldStateOf(');
+    expect(lookups[0], 'the lookup is outside heldStateOf()').toBeGreaterThan(held);
+    expect(lookups[0], 'the lookup is outside heldStateOf()').toBeLessThan(heldEnd);
+    const [build, buildEnd] = span('\nexport function buildSession(');
+    const inBuild = session.slice(build, buildEnd);
+    expect(inBuild, 'buildSession() does not ask the one lookup').toMatch(/heldStateOf\(/);
+    expect(inBuild, 'buildSession() looks a project up itself').not.toMatch(/projectIn\(/);
   });
 });
 
