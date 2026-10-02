@@ -25,7 +25,7 @@ A learner on the Score screen meets six moments: at rest, the count-in, playing,
   - `.score-bar[data-visible='false']` (`style.css`, near :3006) hides the bar in every orientation;
   - only the header's fold skips the tablet (`:not([data-tablet='true'])`, near :3022).
 
-  So findings 5 and 8 are state-machine faults on every device, not sideways layout faults.
+  So finding 5 (paused with no ▶) follows from the code on every device. Finding 8 (the count over the notes) was measured sideways only; on upright and tablet it is a **HYPOTHESIS** for your trace.
 - **SETTLED, U124:** Back, ▶ and ⋯ are at least 40 px in both dimensions whenever they are shown, at 90 % text too. Widened by U122b: every control a learner-facing sentence names meets the same floor. U122b measured `Hear it` at 36 px tall at 90 %, and Hands R and L at 16–24 px wide at every size.
 - **HYPOTHESIS, not yet looked at:** upright and tablet need the state rules but not c6's surfaces. U122a found no chrome candidate changes the upright or tablet music (`score-bar-layout.md` §8.0, the CL07 line). Upright, c6 and U122b were never measured (§9.7).
 

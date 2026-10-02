@@ -191,6 +191,12 @@ The owner has asked you to build some lanes as well as review. The protocol is t
 - **Keep durable rules in the repo,** not in responses: if a lane teaches a rule worth keeping, propose it for `operating-procedure.md` or this file in one line.
 - **Short responses:** judgement first, then the facts a reviewer needs to check you; no restating the brief.
 
+### Pacing to both budgets (2026-10-02, the owner)
+
+- **Your usage, one line at the top of every response:** your five-hour and weekly readings as you see them, and when each resets. Claude paces requests to it. Reviews come before builds when you are near a limit. No new build request goes out when either reading is near full. A review that would be cut short waits for your reset rather than arriving half-done.
+- **Claude's usage** is one line in each handoff (the weekly meter); it decides how many lanes Claude's own builders run, never what you review or how.
+- **A note that answers no handoff** (usage, a proposal about how we work, a concern) goes in `responses/note-<YYYY-MM-DD>-<topic>.md`. Claude's watch sees every push you make, on any branch.
+
 ## Scheduled/triggered reviewer behavior
 
 If no response-required unmatched handoff exists, do nothing. If one exists, review exactly one seam/request packet per run, prioritizing the item that gates the next meaningful product decision.

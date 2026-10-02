@@ -27,3 +27,4 @@ index: Rows the window grants never overlap at the frozen size: the 360 × 780 r
 in-flight: drafted 2026-10-02 (`U110-granted-rows-never-overlap.md`): the walk's 360 × 780 row overlap, mechanism first, then the window plan's granting fixed (Entry 212)
 state: dispatched 2026-10-02: dispatched at 3461cba9, debugging (Entry 212)
 - landed 2026-10-01: merged 407d58e1; handoff `handoffs/bbbdffb0.md`
+- verdict 2026-10-02: APPROVE WITH ONE REQUIRED CHANGE (`responses/bbbdffb0.md`): the zoom gate accepted as the mechanism; the terminal exception after the spent ladder is unearned (measured look-ahead is not overflowing packing) and is pruned unless a residual overlap earns it, carried by U110a (Entry 218); the unit lane is not relabelled green

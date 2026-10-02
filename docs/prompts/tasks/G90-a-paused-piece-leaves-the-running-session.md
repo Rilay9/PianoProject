@@ -95,4 +95,4 @@ Lead with the judgement: what a learner now meets. Then:
 lane: G90 · closes: G90, T20 · entry: 217
 index: A piece paused after Start session leaves the running session at its turn, skipped with its reason; no lesson id in the heading while it loads (`G90-a-paused-piece-leaves-the-running-session.md`) | build | drafted 2026-10-02 (`G90-a-paused-piece-leaves-the-running-session.md`); Entry 217
 in-flight: drafted 2026-10-02 (`G90-a-paused-piece-leaves-the-running-session.md`): a narrow sweep of two settled rows; the live veto at the activity boundary as ruled, and the lesson heading without its id (Entry 217)
-state: drafted 2026-10-02: ruled rows, dispatch under the accepted contract (Entry 217)
+state: dispatched 2026-10-02: dispatched at 74c3e810, building (Entry 217)
