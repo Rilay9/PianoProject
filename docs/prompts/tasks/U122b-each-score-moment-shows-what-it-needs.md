@@ -64,9 +64,12 @@ A refuted refusal fit is not a failure of the lane. Report the smallest non-over
 
 `operating-procedure.md` §14. This lane's port is **5443**, from a config copy under `app/build/u122b/`. Report every item done or not done, judgement first, with the per-state table as its centre.
 
+**Landed 2026-10-01** (Entry 214; e070d238, merged 61743e34); handoff `handoffs/e070d238.md`.
+
 ## Record
 
 lane: U122b · closes: — · entry: 214
 index: Each Score moment shows what it needs: c6 applied state by state (rest, count-in, playing, paused, refusal, finished) and probed on the narrow cells before the build brief (`U122b-each-score-moment-shows-what-it-needs.md`) | design | drafted 2026-10-02 (`U122b-each-score-moment-shows-what-it-needs.md`); Entry 214
 in-flight: drafted 2026-10-02 (`U122b-each-score-moment-shows-what-it-needs.md`): a probe, no app code; c6's per-state table checked on U120's, U121's, the owner's and U124's cells, the refusal tried in the top band first (Entry 214)
 state: dispatched 2026-10-01: dispatched at d159f407, probing, the U122a verdict's fast path (Entry 214)
+- landed 2026-10-01: merged 61743e34; handoff `handoffs/e070d238.md`

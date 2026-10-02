@@ -4,6 +4,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- `handoffs/e070d238.md` — **open**, respond in `responses/e070d238.md`: U122b, c6 applied state by state passes the narrow cells with three rules it lacked (the fold keys on playing, the count-in leaves the stage, the row's background ends at its controls), and the refusal fits the top band (Entry 214).
 - `handoffs/6d01204b.md` — **open**, respond in `responses/6d01204b.md`: U125, a note played in a busy moment is judged in its window again: the cause is U66's own stall hold, not U119a or U118b, and the hold is now one span (Entry 210).
 - `handoffs/f860c76e.md` — **answered** in `responses/f860c76e.md`: R23 approved and closed on branch 3b; the floor stays; the purpose question goes to X46, unmeasurable evidence to CL11.
 - `handoffs/43045ffb.md` — **answered** in `responses/43045ffb.md`: X46 approved with one required change (ownership by meaning, R23's purpose case, role-led opening), incorporated; dispatched.

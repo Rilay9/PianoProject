@@ -364,4 +364,4 @@ decision CL11 owns — say so and take the better path, recording why, per
 lane: X46 · closes: — · entry: 213
 index: One story for a session item: tracing what Today's card, the completion sheet, the lesson page, Progress and the next day's composer each read for one composed item against the reviewer's six-point purpose/outcome contract (findings 1, 3, 6, 7), findings 4 and 10 kept at the boundary, before any consumer reconciliation or new model (`X46-one-story-for-a-session-item.md`) | design | drafted 2026-10-02 (`X46-one-story-for-a-session-item.md`); Entry 213
 in-flight: drafted 2026-10-02 (`X46-one-story-for-a-session-item.md`): a design-and-trace lane, no new persistent model presumed; the six-point contract traced against stored truth and its five consumers; a small consumer/routing reconciliation (build) if the trace supports it, the measured gap if it does not (Entry 213)
-state: approved 2026-10-01: approved with one required change (semantic ownership, R23's purpose case, role-led opening), incorporated (Entry 213)
+state: dispatched 2026-10-01: dispatched at 23f5c53d, tracing (Entry 213)

@@ -284,7 +284,7 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **G30** | Printed fingering removed from the 43 generator families whose own contract admits the convention is unsourced (the generator stops writing the `Fingering` articulation; each family's version bumps and its items' pre-fix identity carries forward through CL15's existing generated-identity continuity relation, generalised to union a prior former-identity for the four families already bumped once by CL15); no new identity schema; no evidence/requirement consumer found depending on printed fingering; the two sourced families (`hanon`, `chromatic`) and every `where-sourced`/`none` row untouched (`backlog-2026-09-25.md`:222; `questions-53670d2a.md` §3; `questions-90b19bee.md` §1) | content/correctness | brief drafted 2026-10-01 (`G30-printed-fingering-only-where-sourced.md`); with the reviewer before dispatch; Entry 211; dispatched 2026-10-02: dispatched at 7d9de990 as the narrow never-teach-wrong seam the reviewer named (`responses/questions-90b19bee.md` §1), no further pre-review (Entry 211)
 | **U110** | Rows the window grants never overlap at the frozen size: the 360 × 780 reload overlap traced to its pricing mechanism and fixed in the window plan (`U110-granted-rows-never-overlap.md`) | app | drafted 2026-10-02 (`U110-granted-rows-never-overlap.md`); Entry 212
 | **X46** | One story for a session item: tracing what Today's card, the completion sheet, the lesson page, Progress and the next day's composer each read for one composed item against the reviewer's six-point purpose/outcome contract (findings 1, 3, 6, 7), findings 4 and 10 kept at the boundary, before any consumer reconciliation or new model (`X46-one-story-for-a-session-item.md`) | design | drafted 2026-10-02 (`X46-one-story-for-a-session-item.md`); Entry 213
-| **U122b** | Each Score moment shows what it needs: c6 applied state by state (rest, count-in, playing, paused, refusal, finished) and probed on the narrow cells before the build brief (`U122b-each-score-moment-shows-what-it-needs.md`) | design | drafted 2026-10-02 (`U122b-each-score-moment-shows-what-it-needs.md`); Entry 214
+| **U122b** | Each Score moment shows what it needs: c6 applied state by state (rest, count-in, playing, paused, refusal, finished) and probed on the narrow cells before the build brief (`U122b-each-score-moment-shows-what-it-needs.md`) | design | drafted 2026-10-02 (`U122b-each-score-moment-shows-what-it-needs.md`); Entry 214; landed 2026-10-01: merged 61743e34; handoff `handoffs/e070d238.md`
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
 
@@ -433,8 +433,8 @@ U122a · verdict · 209
 U125 · landed · 210
 G30 · dispatched · 211
 U110 · dispatched · 212
-X46 · approved · 213
-U122b · dispatched · 214
+X46 · dispatched · 213
+U122b · landed · 214
 F0a · closed · —
 L120 · approved · —
 -->
