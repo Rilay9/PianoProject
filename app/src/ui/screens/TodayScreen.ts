@@ -90,6 +90,7 @@ import {
   plannedMinutes,
   readSessionRun,
   startSessionRun,
+  withdrawnOf,
   type ActivityEntry,
   type OutsideEntry,
   type RunActivity,
@@ -828,11 +829,17 @@ export function TodayScreen(router: Router): HTMLElement {
       );
     }
     actionButtons.push(button('▶', play, { ariaLabel: `Open ${activity.slot.title}` }));
+    // A piece the learner withdrew after *Start session* says so (G90a): Today is the durable view of what the
+    // runner did, and the transition said it once. The composition's words ("Keeping this piece playable —
+    // last played on 12 Sep") give way to it: they are the reason the activity was ahead, and the learner has
+    // withdrawn the piece it was ahead for. Every other row is as it was.
+    const withdrawn = withdrawnOf(activity);
+    const line = withdrawn === undefined ? (showsReason(activity) ? cardLine(activity.reason, activity.slot.claim) : undefined) : SESSION_TEXT.withheldRow(withdrawn);
     const row = onTheCard(listRow({
       title: activity.slot.title,
       // The composition's words while the activity is ahead; none once it is behind (X46, `showsReason`): the
       // frozen "not counted yet" sat beside the run that had just counted.
-      ...(showsReason(activity) ? { subtitle: cardLine(activity.reason, activity.slot.claim) } : {}),
+      ...(line === undefined ? {} : { subtitle: line }),
       meta: [
         SLOT_LABELS[activity.slot.kind],
         `${String(activity.slot.minutes)} min`,

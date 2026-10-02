@@ -624,6 +624,8 @@ describe('never the bridge, never the source (the brief’s item 3; its refuting
   // piece paused or put away *now* — and through the same lookup. The lookup moved out of `buildSession`'s
   // context assembly into `heldStateOf`, the function the card's per-piece answer and the runner both call: one
   // interpretation of automatic eligibility, still asked once per piece per card and nowhere in a chooser.
+  // Revised again (G90a; class: replace): the lookup is `heldWordOf`, which answers the state and the moment the
+  // learner said it, and `heldStateOf` is its state, for the composer. Old assumption: the lookup is `heldStateOf`.
   // Old assumptions: Today and `session.ts` the only readers; the one lookup inside `buildSession`; and that a
   // pause reaches the session only at composition (a running session's activity was offered whatever the
   // learner had said since).
@@ -680,11 +682,12 @@ describe('never the bridge, never the source (the brief’s item 3; its refuting
     // `projectFor`) or writes to it. It stays a function of its input; Today reads the store.
     expect(bindings.get('curriculum/session.ts')).toEqual(['PROJECT_STAGES', 'projectIn', 'type ProjectRow', 'type ProjectTarget']);
     // The runner reads the rows live, at the moment a turn comes, and nothing else of the store: it never
-    // acts (the actors list above), and it looks no project up itself — `heldStateOf` does (`sessionHeldPiece`).
+    // acts (the actors list above), and it looks no project up itself — `heldWordOf` does (`sessionHeldPiece`).
     expect(bindings.get('ui/sessionRunner.ts')).toEqual(['allProjects', 'type ProjectRow', 'type ProjectTarget']);
-    // And the session looks a project up once, in `heldStateOf`: the one predicate the card's per-piece answer
-    // in `buildSession` (which every automatic chooser reads, G1e) and the runner both ask, nowhere else — not
-    // in `review()`, `repertoire()` or any other chooser, and not a second time in `buildSession`.
+    // And the session looks a project up once, in `heldWordOf` (G90a: the state and the moment): the one lookup the
+    // card's per-piece answer in `buildSession` (through `heldStateOf`, which every automatic chooser reads, G1e)
+    // and the runner (whole) both ask, nowhere else — not in `review()`, `repertoire()` or any other chooser, and
+    // not a second time in `buildSession`.
     const session = readFileSync(join(src, 'curriculum', 'session.ts'), 'utf8');
     const lookups = [...session.matchAll(/projectIn\(/g)].map((found) => found.index);
     expect(lookups, 'the session looks a project up other than once').toHaveLength(1);
@@ -696,9 +699,11 @@ describe('never the bridge, never the source (the brief’s item 3; its refuting
       expect(end, `${head.trim()}’s end not found`).toBeGreaterThan(start);
       return [start, end];
     };
-    const [held, heldEnd] = span('\nexport function heldStateOf(');
-    expect(lookups[0], 'the lookup is outside heldStateOf()').toBeGreaterThan(held);
-    expect(lookups[0], 'the lookup is outside heldStateOf()').toBeLessThan(heldEnd);
+    const [held, heldEnd] = span('\nexport function heldWordOf(');
+    expect(lookups[0], 'the lookup is outside heldWordOf()').toBeGreaterThan(held);
+    expect(lookups[0], 'the lookup is outside heldWordOf()').toBeLessThan(heldEnd);
+    const [state, stateEnd] = span('\nexport function heldStateOf(');
+    expect(session.slice(state, stateEnd), 'heldStateOf() is not heldWordOf()’s state').toMatch(/heldWordOf\(/);
     const [build, buildEnd] = span('\nexport function buildSession(');
     const inBuild = session.slice(build, buildEnd);
     expect(inBuild, 'buildSession() does not ask the one lookup').toMatch(/heldStateOf\(/);

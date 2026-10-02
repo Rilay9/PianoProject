@@ -32,8 +32,8 @@
 import type { Router } from '../router';
 import {
   applySessionEvent,
-  isAutomatic,
   isOpen,
+  isWithdrawnBy,
   nextPending,
   plannedMinutes,
   readSessionRun,
@@ -50,7 +50,7 @@ import { allEncounters } from '../data/encounterStore';
 import { allProjects, type ProjectRow, type ProjectTarget } from '../data/projectStore';
 import { findItem } from '../curriculum/load';
 import { materialOfItem } from '../curriculum/material';
-import { contactOf, heldStateOf } from '../curriculum/session';
+import { contactOf, heldWordOf } from '../curriculum/session';
 import type { Identity } from '../review/record';
 import { SESSION_TEXT } from './help';
 import { el } from './widgets';
@@ -272,18 +272,21 @@ const currentOf = (run: SessionRun): RunActivity | undefined => (run.current ===
  * The learner's last word on a piece holds where the session next acts on it (G90; the ruling `responses/
  * d59f2ef8.md` question 2). Called wherever the session is about to offer an activity — the transition drawn
  * after the one before, *Start* on it, Today read for *Continue* — with what that place offers (`offering`;
- * by default the cursor's activity): while the offered activity is pending, chosen by the composition
- * (`isAutomatic`), and its piece is paused or put away *now* (`heldStateOf`, the composer's own reading, over
- * the projects as they stand), the runner skips it with the reason said (`withhold`) and offers the one after
- * — and the one after that. The transition after a stopped activity offers the one after it, which the cursor
- * has not reached (`offeredAfter`); every other place offers the cursor's.
+ * by default the cursor's activity): while the offered activity is pending and its piece is paused or put away
+ * *now* (`heldWordOf`, the composer's own reading, over the projects as they stand) by a word that withdraws
+ * it (`isWithdrawnBy`: the composition's own offer, whenever the learner said it; a piece they swapped in, only
+ * if they said it after the swap), the runner skips it with the reason said (`withhold`, recorded as its own
+ * kind, `withdrawn`) and offers the one after — and the one after that. The transition after a stopped
+ * activity offers the one after it, which the cursor has not reached (`offeredAfter`); every other place
+ * offers the cursor's.
  *
  * It does not recompose: the activities, their order, words and tokens are as *Start session* kept them, and a
  * piece that is held again later is stepped past at its own turn. It does not interrupt: an activity opened or
- * tried is the learner's, and `apply` refuses the event for it. It does not overrule: a swapped-in piece
- * carries no claim, and a row the learner taps becomes current by `choose` and opens without passing here. It
- * writes nothing where nothing is withdrawn (no read of the catalogue either, where the learner has no project
- * at all). A store of projects that cannot be read withdraws nothing, as Today's card reads none.
+ * tried is the learner's, and `apply` refuses the event for it. It does not overrule: a piece the learner
+ * swapped in after pausing it was chosen knowing, and a row the learner taps becomes current by `choose` and
+ * opens without passing here. It writes nothing where nothing is withdrawn (no read of the catalogue either,
+ * where the learner has no project at all). A store of projects that cannot be read withdraws nothing, as
+ * Today's card reads none.
  */
 export async function settleHeld(
   run: SessionRun,
@@ -295,12 +298,12 @@ export async function settleHeld(
   let projects: readonly ProjectRow[] | null = null;
   for (let guard = 0; guard < run.activities.length; guard += 1) {
     const offered = offering(at);
-    if (!isOpen(at, now) || !offered || offered.state !== 'pending' || !isAutomatic(offered)) break;
+    if (!isOpen(at, now) || !offered || offered.state !== 'pending') break;
     projects ??= await allProjects().catch((): ProjectRow[] => []);
     if (projects.length === 0) break;
-    const held = heldStateOf(projects, await projectTargetOf(offered));
-    if (held === undefined) break;
-    const result = await applySessionEvent(expectedFor(at, offered.token), { kind: 'withhold', why: SESSION_TEXT.withheld(offered.slot.title, held) }, now).catch(
+    const word = heldWordOf(projects, await projectTargetOf(offered));
+    if (word === undefined || !isWithdrawnBy(offered, word.since)) break;
+    const result = await applySessionEvent(expectedFor(at, offered.token), { kind: 'withhold', held: word.state, since: word.since }, now).catch(
       (): ApplyResult => ({ ok: false, why: 'none', run: null }),
     );
     if (!result.ok) {
@@ -365,7 +368,7 @@ function skipsBetween(run: SessionRun, mine: RunActivity, next: RunActivity | un
   }
   return passed
     .filter((activity) => activity.state === 'skipped')
-    .flatMap((activity) => activity.adaptations.filter((one) => one.kind === 'skipped-redundant').map((one) => one.why));
+    .flatMap((activity) => activity.adaptations.filter((one) => one.kind === 'skipped-redundant' || one.kind === 'withdrawn').map((one) => one.why));
 }
 
 export function transitionView(run: SessionRun | null, token: string, now: Date): TransitionView {
