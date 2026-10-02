@@ -139,6 +139,16 @@ pictures:
   both invisible and unreachable to a screen reader for as long as the sheet stayed open. Added
   2026-09-11.
 
+**R7 — Three designs: phone upright, phone sideways, tablet** (the owner, 2026-10-01). Every
+screen is planned for each on its own terms, not one layout squeezed or stretched across them.
+The phone has far more restrictions and two modes, and each needs careful thought: what the
+moment needs, what can wait a tap, what the small height or width cannot afford. The tablet is
+good too and uses the room it has rather than inheriting the phone's compromises. A rule tuned
+for one device is carried to another only with its own reason. A brief for any screen names
+its design and acceptance cells for each (phone: 568 x 320 and 780 x 360 sideways, 342 x 740 and
+360 x 780 upright; tablet: 1024 x 768 and 1366 x 1024 both ways), with a picture of every state
+it changes on each.
+
 ## 1. Navigation
 
 Bottom tab bar (portrait) / left rail (landscape): **Today · Plan · Library · Progress · Settings**.

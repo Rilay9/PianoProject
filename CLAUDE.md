@@ -81,7 +81,7 @@ tracked file, which is the signature of an accidental reformat.
 | How work is decided, done and reported | `docs/prompts/operating-procedure.md` |
 | The product and technical rules, with their stories | `docs/00-invariants.md` |
 | What the app is and why | `docs/00-overview.md` |
-| Screen contracts, `§0` R1–R6 | `docs/04-ui-spec.md` |
+| Screen contracts, `§0` R1–R7 | `docs/04-ui-spec.md` |
 | The curriculum and its tracks | `docs/02-curriculum.md` |
 | Which test proves which state machine; every spec file | `docs/08-test-map.md` |
 | The current plan and its waves | `docs/prompts/plan-2026-09-25.md` |

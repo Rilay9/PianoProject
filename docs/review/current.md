@@ -2,8 +2,11 @@
 
 This file is a pointer, not the durable record and not a hand-written archive.
 
+**Owner direction, 2026-10-01: every screen gets three designs** (phone upright, phone sideways, tablet), each planned on its own terms: `04-ui-spec.md` section 0 R7, also in `reviewer-context.md`. Hold every brief and landing to it.
+
 ## Response-required handoffs
 
+- `handoffs/bbbdffb0.md` — **open**, respond in `responses/bbbdffb0.md`: U110, rows the window grants never overlap at the frozen size: a slot priced from a zoom the search only tried, and a reshape ladder that ran out on a grant, both fixed in the window plan (Entry 212).
 - `handoffs/52363ba7.md` — **open**, respond in `responses/52363ba7.md`: X46, one story for a session item from truths already stored: a run Today composes for its rung opens where it can count, the sheet names the standard and offers the attempt, Today marks done only where the run counted (Entry 213).
 - `handoffs/09ec1337.md` — **answered** in `responses/09ec1337.md`: G30 approved with option (b) for repeated_notes (no printed numbers; the contract and technique.5 state the changing-finger solution); lands after that change.
 - `handoffs/e070d238.md` — **answered** in `responses/e070d238.md`: U122b approved with one required change: the c6 build brief shows the run's outcome and next action on the post-X46 sheet; big count numerals beside the pause control; cause-bearing paused notes may take the title.

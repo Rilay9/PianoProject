@@ -53,6 +53,8 @@ Do not turn holistic reassessment into another ritual. There is no fixed number 
 
 A useful test: if the current implementation vanished, would we naturally choose the same product shape again from the learner goal and current evidence?
 
+**Three designs for every screen (the owner, 2026-10-01; `04-ui-spec.md` section 0 R7).** Phone upright, phone sideways and tablet are each planned on their own terms. The phone has far more restrictions and two modes, each needing careful thought; the tablet is good too and uses its room rather than inheriting the phone's compromises. Hold every screen's brief and landing to it: a design and acceptance cells per device with pictures of the states it changes, and no rule tuned for one device carried to another without its own reason. A principle the owner states while one topic is open applies as widely as its words do; flag any brief or record that files a general direction under one lane.
+
 ## Architectural truths to keep distinct
 
 Do not merge these merely for convenience:

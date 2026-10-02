@@ -47,7 +47,7 @@ readable at every size, undistorted, with the next music in view? Is the intende
 actually the one being trained? Is the learner given an appropriate next experience? Does
 the screen behave as a person expects? Is the music itself right? The standing product
 invariants live here: *eye over spec*, *fill with music not space*, *readability and
-look-ahead paramount*, *never teach wrong*, *no internal ids on screen*, `04` §0 R1–R6.
+look-ahead paramount*, *never teach wrong*, *no internal ids on screen*, `04` §0 R1–R7.
 
 **Tier 2, technical correctness.** Is the logic right, are the state transitions right,
 do the data contracts hold, are every field's consumers handled, do the tests pass.

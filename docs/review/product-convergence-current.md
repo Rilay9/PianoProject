@@ -15,6 +15,8 @@ The source of work is the current learner product and current tree. Historical r
 
 ### 2. One Score product decision before more Score surface patches
 
+**Three designs, each on its own terms (the owner, 2026-10-01; every screen, `04-ui-spec.md` section 0 R7, the Score first):** phone upright, phone sideways and tablet are planned separately. The phone has far more restrictions and two modes, each needing careful planning; the tablet is good too, using the room it has rather than inheriting the phone's compromises. A Score brief states the design and the acceptance cells for each (phone: 568 x 320 and 780 x 360 sideways, 342 x 740 and 360 x 780 upright; tablet: 1024 x 768 and 1366 x 1024 both ways), with a picture of every state on each; a rule tuned for one device is carried to another only with its own reason.
+
 Treat **U122 and CL07's responsive-reading objective as one product-design boundary**:
 
 - what chrome/navigation/context/status/control belongs at the top, bottom or transiently;

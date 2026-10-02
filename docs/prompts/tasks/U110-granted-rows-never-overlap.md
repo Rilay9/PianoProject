@@ -18,9 +18,12 @@ After the mechanism is shown: make the plan never grant a row whose drawn ink ca
 
 `operating-procedure.md` §14; this lane's port is **5423** from a config copy under `app/build/u110/`. Keep the change inside the window plan's granting and pricing; U122 + CL07's chrome model is being decided separately and this fix must hold under any chrome. Every acceptance case by layer, every item done or a not-done line, judgement first, with pictures before and after at 360 × 780 that a reader can compare.
 
+**Landed 2026-10-01** (Entry 212; bbbdffb0, merged 407d58e1); handoff `handoffs/bbbdffb0.md`.
+
 ## Record
 
 lane: U110 · closes: U110 · entry: 212
 index: Rows the window grants never overlap at the frozen size: the 360 × 780 reload overlap traced to its pricing mechanism and fixed in the window plan (`U110-granted-rows-never-overlap.md`) | app | drafted 2026-10-02 (`U110-granted-rows-never-overlap.md`); Entry 212
 in-flight: drafted 2026-10-02 (`U110-granted-rows-never-overlap.md`): the walk's 360 × 780 row overlap, mechanism first, then the window plan's granting fixed (Entry 212)
 state: dispatched 2026-10-02: dispatched at 3461cba9, debugging (Entry 212)
+- landed 2026-10-01: merged 407d58e1; handoff `handoffs/bbbdffb0.md`
