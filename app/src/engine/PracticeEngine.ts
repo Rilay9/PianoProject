@@ -323,10 +323,34 @@ export class PracticeEngine {
   // unstalled run closes every window on the tick it always did. Nothing is
   // ever reopened: a held window was never marked missed, so nothing painted
   // is taken back.
+  //
+  // The hold is a span, not a property of the windows one tick found (U125):
+  // from a stalled tick to one tick interval after it, no window closes, and
+  // a stalled tick inside the span starts it again from itself. The queue a
+  // stall builds is not drained by the next tick. The first tick after a
+  // stall can run long itself (the step it advances to is drawn inside it) or
+  // be followed by a long frame, and the tick after that is often a timer
+  // that fell due before the queued message — an interval that was overdue —
+  // so it runs ahead of the message. Holding only the windows already ended
+  // at the stalled tick, the engine used to close windows the queue still
+  // owed a note: a window the stalled tick held, at a second stalled tick
+  // after the first hold's end; a window that ended just after the stalled
+  // tick, at an unstalled tick inside the hold; and a held window at a tick
+  // exactly one tick interval after the stalled one, which is no stall by
+  // the contract's measure, so the hold now ends strictly after it. Each
+  // time the message, stamped inside the window, then matched nothing
+  // (Chromium, under load: `runs/U125/`). The stamp-trust bound still ends
+  // every hold, so a thread that never frees up has its misses marked up to
+  // a second late, never a note judged against the wrong window.
 
   /** When the last tick (or the run's start, a resume) read the clock; null before a run. */
   private lastTickAtMs: number | null = null;
-  /** Windows a stalled tick found ended and held: slot index → the clock time the hold ends. */
+  /**
+   * The clock time one tick interval after the last stalled tick: no window
+   * closes before it (U66, U125). Null until a stall, and at a run's start.
+   */
+  private stallHoldUntilMs: number | null = null;
+  /** Windows a stall's hold keeps open, past their end or the run's: slot index → the clock time the hold ends. */
   private readonly heldUntil = new Map<number, number>();
   /**
    * The music time the run ended at, while its end waits on a held window —
@@ -499,6 +523,7 @@ export class PracticeEngine {
     this.resetRunTotals();
     this.openSlots.clear();
     this.heldUntil.clear();
+    this.stallHoldUntilMs = null;
     this.endHeldAtMusicMs = null;
     this.lastTickAtMs = now;
     this.nextSlotToOpen = this.step;
@@ -700,6 +725,7 @@ export class PracticeEngine {
     const now = this.clock.now();
     const stalled = this.lastTickAtMs !== null && now - this.lastTickAtMs > TICK_BUDGET_MS;
     this.lastTickAtMs = now;
+    if (stalled) this.stallHoldUntilMs = now + TICK_BUDGET_MS;
     // Holding for the first note: the clock waits, so nothing else does.
     if (this.armed) return;
     const music = this.musicMs;
@@ -714,8 +740,8 @@ export class PracticeEngine {
     this.openUpcomingSlots(music);
     // No beat past a held end: the run is over, only its last judgement waits.
     if (this.endHeldAtMusicMs === null) this.emitTicksUpTo(music);
-    this.closeWindowsUpTo(music, now, stalled);
-    this.advanceClockTo(music, now, stalled);
+    this.closeWindowsUpTo(music, now);
+    this.advanceClockTo(music, now);
   }
 
   /** Feeds one input event. Safe to call before `start()`; it is ignored. */
@@ -1326,7 +1352,7 @@ export class PracticeEngine {
   }
 
   /** Moves the cursor to wherever the clock says it should be. */
-  private advanceClockTo(musicMs: number, now: number, stalled: boolean): void {
+  private advanceClockTo(musicMs: number, now: number): void {
     while (this.step < this.session.lastStep) {
       const next = this.session.steps[this.step + 1];
       if (!next || next.tMs > musicMs) break;
@@ -1339,8 +1365,9 @@ export class PracticeEngine {
       // The end closes whatever is still open, as a miss, and completes the
       // lap — whose score is emitted there, after which a finished run drops
       // every note. So the end is held while a stall is (U66), the lap with it.
-      if (this.holdsTheEnd(now, stalled)) {
-        this.endHeldAtMusicMs = last.tMs + last.durMs;
+      const endMs = last.tMs + last.durMs;
+      if (this.holdsTheEnd(musicMs, endMs, now)) {
+        this.endHeldAtMusicMs = endMs;
         return;
       }
       this.endHeldAtMusicMs = null;
@@ -1352,22 +1379,24 @@ export class PracticeEngine {
   /**
    * Whether the run's end waits for a note a stall kept queued (U66).
    *
-   * An end a stalled tick reaches holds every window still open, the one the
-   * end cuts short included (a last note shorter than the tolerance, U111):
-   * the notes played before the end may still be on their way. And an end
-   * waits while any window is held, however it came to be. The hold is the
-   * one ordinary windows get, so the end waits at most a tick interval and a
-   * tick; a note stamped after the end is dropped (`feedTempo`).
+   * An end reached inside a stall's hold (`stallHoldUntilMs`) holds every
+   * window still open, the one the end cuts short included (a last note
+   * shorter than the tolerance, U111): the notes played before the end may
+   * still be on their way. And an end waits while any window is held, however
+   * it came to be. The hold is the one ordinary windows get, so the end waits
+   * at most a tick interval past the last stalled tick, and a tick — never
+   * once the end is further behind than a stamp can be trusted
+   * (`STAMP_TRUST_MS`), since only a note stamped before it is judged; a note
+   * stamped after the end is dropped (`feedTempo`).
    */
-  private holdsTheEnd(now: number, stalled: boolean): boolean {
+  private holdsTheEnd(musicMs: number, endMs: number, now: number): boolean {
     if (!this.judging) return false;
-    if (stalled) {
-      for (const index of this.openSlots.keys()) {
-        if (!this.heldUntil.has(index)) this.heldUntil.set(index, now + TICK_BUDGET_MS);
-      }
+    const until = this.stallHoldUntilMs;
+    if (until !== null && now <= until && musicMs - endMs <= STAMP_TRUST_MS) {
+      for (const index of this.openSlots.keys()) this.heldUntil.set(index, until);
     }
     for (const until of this.heldUntil.values()) {
-      if (now < until) return true;
+      if (now <= until) return true;
     }
     return false;
   }
@@ -1379,7 +1408,7 @@ export class PracticeEngine {
    * limit still counts and one played later does not — and a window a stall
    * may still owe a note stays open for it a little longer (`holdsForStall`).
    */
-  private closeWindowsUpTo(musicMs: number, now: number, stalled: boolean): void {
+  private closeWindowsUpTo(musicMs: number, now: number): void {
     for (const index of [...this.openSlots.keys()]) {
       const step = this.session.steps[index];
       if (!step) {
@@ -1390,7 +1419,7 @@ export class PracticeEngine {
       // Strictly greater: docs/05 §3 makes the tolerance inclusive, so a note
       // landing exactly on the limit still counts.
       if (musicMs <= end) continue;
-      if (this.holdsForStall(index, musicMs - end, now, stalled)) continue;
+      if (this.holdsForStall(index, musicMs - end, now)) continue;
       this.closeSlotAsMissed(index);
     }
   }
@@ -1399,20 +1428,24 @@ export class PracticeEngine {
    * Whether a window the clock has passed stays open for a note stamped
    * inside it that a stall kept from arriving (U66).
    *
-   * Only a stalled tick starts a hold, and only in a run that judges. The
-   * hold ends at the first tick one tick interval (`TICK_BUDGET_MS`) after
-   * the stalled one — a tick that fell due after the messages the stall
-   * queued, which the page runs first — and at once when the window has been
-   * over for longer than a stamp can be trusted (`STAMP_TRUST_MS`), since no
-   * note stamped inside it could then be judged in it.
+   * Only a stall starts a hold, and only in a run that judges. A window
+   * whose end the clock passes inside a stall's hold — on the stalled tick or
+   * on any tick up to one tick interval (`TICK_BUDGET_MS`) after it — stays
+   * open until the first tick more than that past it: a tick that fell due
+   * after the messages the stall queued, which the page runs first. Inclusive
+   * (U125), so the tick straight after a stalled one never ends the hold: it
+   * is a stall itself or inside the interval, and it is often the overdue
+   * interval tick that runs ahead of the queued message. A stalled tick
+   * inside the hold starts it again from itself. And never once the window
+   * has been over for longer than a stamp can be trusted (`STAMP_TRUST_MS`),
+   * since no note stamped inside it could then be judged in it.
    */
-  private holdsForStall(index: number, pastEndMs: number, now: number, stalled: boolean): boolean {
+  private holdsForStall(index: number, pastEndMs: number, now: number): boolean {
     if (!this.judging) return false;
     if (pastEndMs > STAMP_TRUST_MS) return false;
-    const until = this.heldUntil.get(index);
-    if (until !== undefined) return now < until;
-    if (!stalled) return false;
-    this.heldUntil.set(index, now + TICK_BUDGET_MS);
+    const until = this.stallHoldUntilMs;
+    if (until === null || now > until) return false;
+    this.heldUntil.set(index, until);
     return true;
   }
 
