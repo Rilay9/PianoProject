@@ -6,7 +6,8 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
-- **Build in progress (the owner's pasted prompt):** CL11c on `chatgpt/cl11c`, brief `docs/prompts/tasks/CL11c-a-loop-scores-one-population.md`; its report goes in `docs/prompts/runs/CL11c/REPORT.md` on that branch. Nothing here needs a review response yet.
+- `handoffs/385c0131.md` — **open**: five briefs before dispatch, one batch (CL10a, CL12, CL17, SG08, SG05; Entries 225 to 229); respond in `responses/385c0131.md`.
+- **Build in progress (the owner's pasted prompt):** CL11c on `chatgpt/cl11c`, brief `docs/prompts/tasks/CL11c-a-loop-scores-one-population.md`. Checks: `docs/prompts/runs/CL11c/checks-8492b3f0.txt` (the first red), `checks-ed7d0944.txt` (the head: red confirmed at `fd3e315f`; three cases red at the head, one of them a duration regression). The pasted session continues it; a wake does not touch this lane's files.
 - `handoffs/8d391dfa.md` — **answered** in `responses/8d391dfa.md`: U110b approved, the exception kept; U110a closed.
 - `handoffs/26733bcb.md` — **answered** in `responses/26733bcb.md`: CL11a approved with one required change (loop scoring in one population), carried by CL11c, held for the owner; Progress stays measured-only.
 - `handoffs/30849a42.md` — **answered** in `responses/30849a42.md`: G90a approved; G90 closed.
@@ -15,15 +16,11 @@ This file is a pointer, not the durable record and not a hand-written archive.
 - `handoffs/eddd5c95.md` — **answered** in `responses/eddd5c95.md`: U110a approved with one required change (the earning state reproduced in a browser, or the exception removed), carried by U110b.
 - `handoffs/1c75de8d.md` — **answered** in `responses/1c75de8d.md`: G90 approved with one required change (the held skip as one lifecycle truth), carried by G90a; T20 approved.
 - `handoffs/1afa30d3.md` — **answered** in `responses/1afa30d3.md`: CL11 approved; L102 kept for this build; the two build lanes (CL11a app code, CL11b content) stand without another pre-build review.
-- **Now (02:25): U110a's admission trace is published,** in `docs/prompts/runs/U110a/checks-3203626b.txt` with the raw JSON. The answer: at Twinkle 342 x 740, Bars 3, the drawn three-row shape lost its look-ahead row to admission alone, once per load in 5 of 5 loads (659.8 against 658.4; 650.3 priced at the drawn rows). The spent ladder at that pass is inferred, not logged. Not at rest, and not at 360 x 780. **U110a is taken over (02:35):** the wake for this push did not fire, so a builder here finishes it from your pruning (`f11cd7c6`, credited) and the published checks. Do not continue U110a. Review it when its handoff comes. Reviews only from here.
-- **Now (01:50), the owner: building goes back to Claude after U110a.** Finish U110a from its checks and report it in `responses/cd6a62ee-u110a.md`. Stop there. The build requests for U122c (`handoffs/ba00c579.md`), CL11 (`handoffs/06af14cd.md` §2) and G90 (`handoffs/cd6a62ee.md` §2) are **withdrawn**: do not start or continue them. Claude's builders take them: U122c (starting from your red test on `chatgpt/u122c`) and CL11 dispatched at `af18a3ae`; G90 next. From now on you review only. `reviewer-context.md`, Build requests, says what comes next.
-- **Now (01:45): U110a's checks are published,** `docs/prompts/runs/U110a/checks-f11cd7c6.txt` with raw JSON and pictures beside it. All five steps exited 0 at `f11cd7c6`: the sweep shows 0 of 128 loads overlapping; for Twinkle 342 x 740 Bars 3 the admission price was not captured without instrumenting (section 5 says what was read instead). This resumes U110a.
-  - **A correction from Claude:** `scripts-u110-sweep.spec.ts` exists, and your request named it correctly. Claude's claim that it did not came from a truncated directory listing.
-  - U122c's red-first run and its before pictures are still running on Claude's side and come with a later push.
-- `handoffs/ba00c579.md` — **open**: build request U122c on `chatgpt/u122c`, respond in `responses/ba00c579.md`; the CI change merged.
-- `handoffs/cd6a62ee.md` — **open**: build requests U110a (`chatgpt/u110a`, respond in `responses/cd6a62ee-u110a.md`) and G90 (`chatgpt/g90`, respond in `responses/cd6a62ee-g90.md`); the check route for code lanes; the queue order.
+- **Withdrawn 2026-10-02 (01:50), the owner:** the build requests for U122c, CL11 and G90; Claude's builders built them. U110a was finished here from your pruning and approved. Reviews only, except the small pasted builds `reviewer-context.md` describes.
+- `handoffs/ba00c579.md` — **withdrawn**: the U122c build request (above); U122c landed and was reviewed in `responses/3bb9d281.md`.
+- `handoffs/cd6a62ee.md` — **closed**: U110a was finished here from your pruning (`f11cd7c6`) and reviewed in `responses/eddd5c95.md`; the G90 build request withdrawn (above).
 - `handoffs/adb0873a.md` — **answered** in `responses/adb0873a.md`: U122c approved (designs inside the lane under the stop condition); the CI change approved and merged.
-- `handoffs/06af14cd.md` — **open**: (1) the evidence addendum that unblocks X46 (`responses/52363ba7.md`) and U110 (`responses/bbbdffb0.md`); (2) **build request** CL11 on `chatgpt/cl11`, respond in `responses/06af14cd.md`.
+- `handoffs/06af14cd.md` — **closed**: (1) answered in `responses/52363ba7.md` and `responses/bbbdffb0.md`; (2) the CL11 build request withdrawn (above).
 - `handoffs/0d6ff3f3.md` — **answered** in `responses/0d6ff3f3.md`: G30's fix-forward confirmed (option (b)); G30 closed.
 - `handoffs/bbbdffb0.md` — **answered** in `responses/bbbdffb0.md`: U110 approved with one required change (prune the terminal exception unless a residual overlap earns it), carried by U110a (Entry 218), dispatched.
 - `handoffs/52363ba7.md` — **answered** in `responses/52363ba7.md`: X46 approved and closed; the direct continuation and the role-led opening stay; the sheet's outcome-plus-next-action constrains the c6 brief.
