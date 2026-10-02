@@ -128,3 +128,4 @@ state: approved 2026-10-02: APPROVE (the reviewer, at adb0873a §1): the upright
 - held 2026-10-02: withdrawn from the outside builder after its red test (the owner: its limits run out too fast); re-dispatched to a builder here
 - dispatched 2026-10-02: dispatched at af18a3ae, building here
 - landed 2026-10-02: merged d594673b; handoff `handoffs/3bb9d281.md`
+- verdict 2026-10-02: APPROVE WITH ONE REQUIRED CHANGE (`responses/3bb9d281.md`): the moment model and the tablet choice stand; narrow upright rows take option (b), Hands in the menu with the mode whole and no control under the floor; the finished view states its verdict in one plain sentence beside the next action; carried by U122d (Entry 223), held for the owner while the weekly meter is past its line

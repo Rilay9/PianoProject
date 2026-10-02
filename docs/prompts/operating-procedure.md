@@ -203,6 +203,10 @@ directory (`app/`), not the config's folder, so it names the storage state by an
 path (E51a, Entry 164, `responses/70043128.md`). The stored state is keyed to
 `localhost:4173`, so on a lane's own port the copy rewrites its origin to that port, or the
 first-sight and tour-skip flags go unread and Score specs fail behind the first-sight card (U125).
+A new browser spec that imports a shared test helper (`scoreControls.ts`, `fixtures/playInTime.ts`,
+`fixtures/midiMock.ts` and the like) joins that helper's reader list in `docs/prompts/checks.json`
+in the same change: `test_checks_for_paths` holds every importer, and three landings in a row
+missed it (G90, U122c, G90a; 2026-10-02).
 
 **Two finished seams may share one landing chain** (the reviewer's batching rule, approved with conditions 2026-09-29, `responses/questions-b11e4f89.md`) when each keeps its own implementation HEAD, entry and handoff. The chain records the exact union of changed paths (the map's minimum over the diff from the pre-merge head to the last merge); the seam-specific targeted tests still run where the map requires them; a failure is attributed to the seam or the shared interaction that caused it, never inferred green for one seam because the combined chain passed; a shared-file merge is inspected and both contracts kept. Never batched: a workflow or deploy-gate seam awaiting review, or two seams where one's fix changes the other's expected test oracle.
 

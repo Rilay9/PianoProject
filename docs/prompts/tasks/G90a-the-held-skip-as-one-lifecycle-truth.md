@@ -24,9 +24,12 @@ No recomposition. Evidence, progress, project history and completed activities a
 
 `operating-procedure.md` §14. Port **5463**, from a config copy under `app/build/g90a/`; `--workers=1`. Never name an AI model in any file.
 
+**Landed 2026-10-02** (Entry 221; 30849a42, merged 3c2d9593); handoff `handoffs/30849a42.md`.
+
 ## Record
 
 lane: G90a · closes: — · entry: 221
 index: The held skip as one lifecycle truth: its own kind, its reason on Today's row, swap and pause ordered by time (`G90a-the-held-skip-as-one-lifecycle-truth.md`) | app | drafted 2026-10-02 (`G90a-the-held-skip-as-one-lifecycle-truth.md`); Entry 221
 in-flight: drafted 2026-10-02 (`G90a-the-held-skip-as-one-lifecycle-truth.md`): a fix-forward on G90, the reviewer's required change; its own adaptation kind, the reason on Today's row, swap and lifecycle intent ordered (Entry 221)
 state: dispatched 2026-10-02: dispatched at ee62c06c, building here (Entry 221)
+- landed 2026-10-02: merged 3c2d9593; handoff `handoffs/30849a42.md`

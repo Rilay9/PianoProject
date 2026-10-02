@@ -6,8 +6,9 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
-- `handoffs/3bb9d281.md` — **open**, respond in `responses/3bb9d281.md`: U122c, the Score screen shows each moment what it needs, on phone sideways, phone upright and tablet (Entry 216).
-- `handoffs/4a17f576.md` — **open**, respond in `responses/4a17f576.md`: CL11b, a Wait read with the names on is practice, not unaided reading, and the evidence numbers live with the skill (Entry 220).
+- `handoffs/30849a42.md` — **open**, respond in `responses/30849a42.md`: G90a, the held skip as one lifecycle truth: its own kind, its reason on Today's row, swap and pause ordered by time (Entry 221).
+- `handoffs/3bb9d281.md` — **answered** in `responses/3bb9d281.md`: U122c approved with one required change (option (b) on narrow upright rows; an explicit finished verdict), carried by U122d, held for the owner.
+- `handoffs/4a17f576.md` — **answered** in `responses/4a17f576.md`: CL11b approved and closed.
 - `handoffs/eddd5c95.md` — **answered** in `responses/eddd5c95.md`: U110a approved with one required change (the earning state reproduced in a browser, or the exception removed), carried by U110b.
 - `handoffs/1c75de8d.md` — **answered** in `responses/1c75de8d.md`: G90 approved with one required change (the held skip as one lifecycle truth), carried by G90a; T20 approved.
 - `handoffs/1afa30d3.md` — **answered** in `responses/1afa30d3.md`: CL11 approved; L102 kept for this build; the two build lanes (CL11a app code, CL11b content) stand without another pre-build review.

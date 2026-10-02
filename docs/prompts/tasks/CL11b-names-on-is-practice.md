@@ -65,3 +65,5 @@ index: A Wait read with the names on is practice, not unaided reading, and the e
 in-flight: drafted 2026-10-02 (`CL11b-names-on-is-practice.md`): CL11's lane 2, the names-off condition, the vocabulary's support share and precision, evidence definitions 6 with one recompute (Entry 220)
 state: dispatched 2026-10-02: dispatched at 111fcb93, building here (Entry 220)
 - landed 2026-10-02: merged 1c89c359; handoff `handoffs/4a17f576.md`
+- verdict 2026-10-02: APPROVE (`responses/4a17f576.md`): the precision format accepted; `transfer.ts`'s `establishing` stays on the shipped vocabulary
+- closed 2026-10-02: L58 and L57 built
