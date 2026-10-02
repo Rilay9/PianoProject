@@ -26,4 +26,4 @@ Keep before and after pictures and the measured row boxes. Phone upright is enou
 lane: U110b · closes: — · entry: 222
 index: The state that earns U110a's packing exception, reproduced in a real browser, or the exception removed (`U110b-the-earning-state-in-a-browser.md`) | app | drafted 2026-10-02 (`U110b-the-earning-state-in-a-browser.md`); Entry 222
 in-flight: drafted 2026-10-02 (`U110b-the-earning-state-in-a-browser.md`): a fix-forward on U110a, the reviewer's required change; a browser probe of a height-only shrink after a spent ladder, or the exception removed (Entry 222)
-state: drafted 2026-10-02: the reviewer's required change, dispatch under the accepted contract (Entry 222)
+state: dispatched 2026-10-02: dispatched at 06df5891, building here (Entry 222)

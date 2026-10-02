@@ -450,7 +450,7 @@ U110a · verdict · 218
 CL11a · dispatched · 219
 CL11b · landed · 220
 G90a · dispatched · 221
-U110b · drafted · 222
+U110b · dispatched · 222
 F0a · closed · —
 L120 · approved · —
 -->
