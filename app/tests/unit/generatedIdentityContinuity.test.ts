@@ -175,6 +175,8 @@ describe('G30: withdrawing an unsourced printed fingering keeps the learner’s 
     ['exercise.cadence.', 'cadence', 2],
     // CL15 changed every walking-bass item, so its v2 identities were never carried; G30's v3 is.
     ['exercise.walking-bass.', 'walking_bass', 4],
+    // Moved by G30's fix-forward (`responses/09ec1337.md` §3): never bumped before, so its v1 is carried.
+    ['exercise.repeated-notes.', 'repeated_notes', 2],
   ];
 
   it('an item of a moved family carries the identity it had, and a run stored against it is contact', () => {

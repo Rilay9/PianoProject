@@ -12,8 +12,9 @@
     "every family-scoped read keep reading the row's own identity. One record per family, for the version the row has now; a later",
     "bump records the version it leaves then, with the former identities its items carried (test_family_contracts.TestGeneratedIdentityContinuity).",
     "syncopation: written from the plan at fadafbfa by docs/prompts/runs/CL15/scripts-continuity_table.py (CL15). The other",
-    "families: G30's bump, when the 42 families whose own contract called their printed fingering unsourced stopped printing it",
-    "(docs/review/responses/questions-90b19bee.md §1), written from the catalogue built at 7d9de990 by",
+    "families: G30's bump, when the 43 families whose own contract called their printed fingering unsourced stopped printing it",
+    "(docs/review/responses/questions-90b19bee.md §1; repeated_notes by the review's required change, 09ec1337.md §3, its record",
+    "written from the plan at 09ec1337 by docs/prompts/runs/G30/scripts-fixforward_content.py), the others from the catalogue built at 7d9de990 by",
     "docs/prompts/runs/G30/scripts-continuity_table.py; interval_reading, pentatonic, tremolo_octaves and walking_bass's CL15 records",
     "are replaced by these, their items' CL15 identities carried as formerGeneratorIdentities where the catalogue listed them."
   ],
@@ -8879,6 +8880,270 @@
             "tempoBpm": 92
           },
           "digest": "d5632311dfcef1a08b9558eb90e7abad89534e0b6c6017dffd9c77bfdac460f2"
+        }
+      }
+    },
+    "repeated_notes": {
+      "from": 1,
+      "to": 2,
+      "items": {
+        "exercise.repeated-notes.c.3x.left": {
+          "identity": {
+            "kind": "generator",
+            "family": "repeated_notes",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "perNote": 3,
+              "fingering": [
+                3,
+                2,
+                1
+              ],
+              "fingeringVerified": false,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "89a8a23f68b33f09a90119e2a76272c308695182a82b4210946db587f7848ee6"
+        },
+        "exercise.repeated-notes.c.3x.right": {
+          "identity": {
+            "kind": "generator",
+            "family": "repeated_notes",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "perNote": 3,
+              "fingering": [
+                3,
+                2,
+                1
+              ],
+              "fingeringVerified": false,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "0418fda2177b834c27bac0d39b04f311d8791dfffa2e3aeb346d2840ff2deb5e"
+        },
+        "exercise.repeated-notes.c.4x.left": {
+          "identity": {
+            "kind": "generator",
+            "family": "repeated_notes",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "perNote": 4,
+              "fingering": [
+                4,
+                3,
+                2,
+                1
+              ],
+              "fingeringVerified": false,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "8f056a5261de6927de11a7d8268600fc3d419d2c6edbe033a2de8b084010ad73"
+        },
+        "exercise.repeated-notes.c.4x.right": {
+          "identity": {
+            "kind": "generator",
+            "family": "repeated_notes",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "C",
+              "perNote": 4,
+              "fingering": [
+                4,
+                3,
+                2,
+                1
+              ],
+              "fingeringVerified": false,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "39dca994c364e032e137d7c23c52d86199a400aa56e29f2c23e1017f98615a67"
+        },
+        "exercise.repeated-notes.f.3x.left": {
+          "identity": {
+            "kind": "generator",
+            "family": "repeated_notes",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "perNote": 3,
+              "fingering": [
+                3,
+                2,
+                1
+              ],
+              "fingeringVerified": false,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "62139a315716d3396bed70e218b42ef15f621453698a25d595af860e38302c48"
+        },
+        "exercise.repeated-notes.f.3x.right": {
+          "identity": {
+            "kind": "generator",
+            "family": "repeated_notes",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "perNote": 3,
+              "fingering": [
+                3,
+                2,
+                1
+              ],
+              "fingeringVerified": false,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "de957994b2e88d1514f77c4345b3346777297ce524ded12f693a7892d491c13a"
+        },
+        "exercise.repeated-notes.f.4x.left": {
+          "identity": {
+            "kind": "generator",
+            "family": "repeated_notes",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "perNote": 4,
+              "fingering": [
+                4,
+                3,
+                2,
+                1
+              ],
+              "fingeringVerified": false,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "ed4a8c33608971945ce2bfc78fbab245aa1d5c01d856f0f6dba32f03d1a27f1c"
+        },
+        "exercise.repeated-notes.f.4x.right": {
+          "identity": {
+            "kind": "generator",
+            "family": "repeated_notes",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "F",
+              "perNote": 4,
+              "fingering": [
+                4,
+                3,
+                2,
+                1
+              ],
+              "fingeringVerified": false,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "91efb323f52f4f89c0794bdb3066bf328f79f678c8252c4f4dd75d150a5d0dda"
+        },
+        "exercise.repeated-notes.g.3x.left": {
+          "identity": {
+            "kind": "generator",
+            "family": "repeated_notes",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "perNote": 3,
+              "fingering": [
+                3,
+                2,
+                1
+              ],
+              "fingeringVerified": false,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "9477caae84dbc97ebc20f36b520e5865582f217c206c877377db5ae7ad85e099"
+        },
+        "exercise.repeated-notes.g.3x.right": {
+          "identity": {
+            "kind": "generator",
+            "family": "repeated_notes",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "perNote": 3,
+              "fingering": [
+                3,
+                2,
+                1
+              ],
+              "fingeringVerified": false,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "4795b87f598f9315a8ecec0565e5734b54f0e8e6c11eaf9bc776a14b5c616a7f"
+        },
+        "exercise.repeated-notes.g.4x.left": {
+          "identity": {
+            "kind": "generator",
+            "family": "repeated_notes",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "perNote": 4,
+              "fingering": [
+                4,
+                3,
+                2,
+                1
+              ],
+              "fingeringVerified": false,
+              "hands": "left"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "7e674def2f4e073e7b9bf13a272cef719b0157181d9f15edf16841405698ee21"
+        },
+        "exercise.repeated-notes.g.4x.right": {
+          "identity": {
+            "kind": "generator",
+            "family": "repeated_notes",
+            "version": 1,
+            "seed": null,
+            "recipe": {
+              "key": "G",
+              "perNote": 4,
+              "fingering": [
+                4,
+                3,
+                2,
+                1
+              ],
+              "fingeringVerified": false,
+              "hands": "right"
+            },
+            "tempoBpm": 60
+          },
+          "digest": "d5711b4e04a9b7de54cd65e53322675d5c7072e7e83bb8dea80f23698d44a747"
         }
       }
     },

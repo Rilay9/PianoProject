@@ -3238,19 +3238,23 @@ const F0_MUSIC: [string, string, () => boolean][] = [
   ],
   [
     'technique.5',
-    'the repeated-note exercises print 3-2-1 on this rung and 4-3-2-1 on the next, which is how the lesson now describes them',
+    // Revised by G30's fix-forward (`responses/09ec1337.md` §3; the old assumption: the files print 3-2-1 and
+    // 4-3-2-1 and the lesson says so). The order was the generator's own, so none is printed; the lesson asks for a
+    // change of finger on each strike and leaves the order to the learner.
+    'the repeated-note exercises print no finger, and the lesson asks for a change of finger on each strike in an order the learner chooses',
     () => {
-      const three = t12Line('exercise.repeated-notes.c.3x.left', 2).map((note) => note.finger);
-      const four = t12Line('exercise.repeated-notes.c.4x.left', 2).map((note) => note.finger);
+      const three = t12Line('exercise.repeated-notes.c.3x.left', 2);
+      const four = t12Line('exercise.repeated-notes.c.4x.left', 2);
       const text = f0mText('technique.5');
       return (
         t12Exercises('technique.5').includes('exercise.repeated-notes.c.3x.left') &&
         t12Exercises('technique.6').includes('exercise.repeated-notes.c.4x.left') &&
         three.length > 0 &&
-        three.join('') === '321'.repeat(three.length / 3) &&
         four.length > 0 &&
-        four.join('') === '4321'.repeat(four.length / 4) &&
-        text.includes('3-2-1 for three strikes here, 4-3-2-1 for four on the next technique rung') &&
+        [...three, ...four].every((note) => note.finger === null) &&
+        text.includes('Changing finger on each strike is one way to keep a fast repeated note even') &&
+        text.includes('No fingers are printed, and the order is yours to choose.') &&
+        !text.includes('3-2-1') &&
         !text.includes('always coming towards')
       );
     },

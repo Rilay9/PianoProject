@@ -23,9 +23,10 @@ table to that shape, table-driven over the makers rather than one file per famil
   item (G51's syncopation naming); the tie drill's density is a count of independent across-bar
   ties (G51); and a family-wide version bump carries each unchanged item's old identity, proven
   per item by its music digest, and no changed item's (the generated-identity continuity relation);
-- **G30**: a row prints fingering only with a named source (the one held row named, with why); the
-  print step, not the maker's tables, withholds an unsourced convention; and the bump that withdrew it
-  carries every item of the 42 families, a second bump of a CL15 family carrying CL15's identities too.
+- **G30**: a row prints fingering only with a named source; the print step, not the maker's tables,
+  withholds an unsourced convention; the repeated-note drill passes the physical gate by the solution its
+  row declares, with no printed finger and the threshold untouched; and the bump that withdrew it carries
+  every item of the 43 families, a second bump of a CL15 family carrying CL15's identities too.
 """
 from __future__ import annotations
 
@@ -600,9 +601,11 @@ class TestGeneratedIdentityContinuity(unittest.TestCase):
 
 #: The rows G30 moved to "none" say so in their fingering note (`docs/prompts/runs/G30/`, Entry 211).
 G30_MARK = "(G30; the ruling,"
-#: Rows that still print a convention no source gives, each with why. Held, not decided: removing the
-#: change of finger fails the physical gate on the four-to-a-note items (Entry 211's open question).
-HELD_UNSOURCED = {"repeated_notes": "the printed change of finger is what passes the repeated-note check at 0.25 s"}
+#: Rows that still print a convention no source gives, each with why. None since the review's required
+#: change (`responses/09ec1337.md` §3): repeated_notes, held by Entry 211, declares its drill's solution instead.
+HELD_UNSOURCED: dict[str, str] = {}
+#: The rows that declare a solution for a fast repeated note: each one's drill, never a rule for every family.
+DECLARES_REPEATED_NOTES = {"rhythm", "repeated_notes"}
 
 
 def g30_families() -> list[str]:
@@ -624,7 +627,7 @@ class TestFingeringOnlyWhereSourced(unittest.TestCase):
 
     def test_the_rows_g30_moved_print_none_and_name_none(self) -> None:
         families = g30_families()
-        self.assertEqual(len(families), 42)
+        self.assertEqual(len(families), 43)
         for family in families:
             fingering = FC.contract(family)["physical"]["fingering"]
             with self.subTest(family=family):
@@ -658,11 +661,37 @@ class TestFingeringOnlyWhereSourced(unittest.TestCase):
         with self.assertRaises(G.PhysicallyIndefensible):
             G.confirm_physical(fingered, entry)
 
-    def test_the_held_row_still_prints_and_says_why(self) -> None:
-        for family in HELD_UNSOURCED:
-            fingering = FC.contract(family)["physical"]["fingering"]
-            self.assertEqual(fingering["printed"], "printed", f"{family} moved: take it out of HELD_UNSOURCED")
-            self.assertIn("Held at printed by G30", fingering["note"])
+    def test_the_repeated_note_drill_passes_by_its_declared_solution(self) -> None:
+        """
+        The review's required change (`responses/09ec1337.md` §3, option (b)). The four-to-a-note items re-strike
+        every 0.25 s, under `FAST_REPEAT_SECONDS`; with the numbers gone they pass the physical gate because the
+        row declares this drill's solution, not because the gate moved or a finger is still on the page. Without
+        the declaration the same scores fail, for that reason.
+        """
+        self.assertEqual(FC.FAST_REPEAT_SECONDS, 0.3, "the threshold is not this lane's to move")
+        row = FC.contract("repeated_notes")
+        self.assertEqual(row["physical"]["fingering"]["printed"], "none")
+        self.assertIn("change finger on each strike", row["physical"]["repeatedNotes"]["solution"])
+        self.assertIn("prescribes none", row["physical"]["repeatedNotes"]["solution"])
+        self.assertIn("not a rule that every fast repeated note", row["physical"]["repeatedNotes"]["why"])
+        undeclared = copy.deepcopy(row)
+        undeclared["physical"].pop("repeatedNotes")
+        four = [(sc, entry) for sc, entry in planned.by_family()["repeated_notes"] if entry["drill"]["params"]["perNote"] == 4]
+        self.assertEqual(len(four), 6)
+        for sc, entry in four:
+            recipe = FC.recipe_of(entry)
+            facts = FC.physical_facts(sc)["hands"]
+            repeats = [r for fact in facts.values() for r in fact["repeats"]]
+            with self.subTest(item=entry["id"]):
+                self.assertEqual(sum(fact["fingered"] for fact in facts.values()), 0, "a finger is still printed")
+                self.assertTrue(repeats and not any(changes for _gap, changes, _where in repeats))
+                self.assertEqual(FC.physical_faults(row, recipe, sc, entry), [])
+                faults = FC.physical_faults(undeclared, recipe, sc, entry)
+                self.assertTrue(faults and all(f.startswith("repeated note:") for f in faults), faults)
+
+    def test_a_repeated_note_solution_is_declared_only_where_its_drill_is(self) -> None:
+        declared = {family for family, row in FC.contracts().items() if row["physical"].get("repeatedNotes")}
+        self.assertEqual(declared, DECLARES_REPEATED_NOTES)
 
 
 class TestTheWithdrawalKeepsLearnerContinuity(unittest.TestCase):
@@ -674,10 +703,10 @@ class TestTheWithdrawalKeepsLearnerContinuity(unittest.TestCase):
     before CL15, so a run stored against that oldest identity still names the row's material.
     """
 
-    def test_every_item_of_the_42_families_carries_its_identity_from_before(self) -> None:
+    def test_every_item_of_the_43_families_carries_its_identity_from_before(self) -> None:
         table = FC.continuity_table()["families"]
         families = g30_families()
-        self.assertEqual(len(families), 42, "the rows G30 moved")
+        self.assertEqual(len(families), 43, "the rows G30 moved")
         for family in families:
             version = FC.contract(family)["version"]
             self.assertEqual((table[family]["from"], table[family]["to"]), (version - 1, version), family)

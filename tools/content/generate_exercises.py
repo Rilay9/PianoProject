@@ -2451,7 +2451,10 @@ def make_repeated_notes(
 
     Hanon 21-30 territory and the reason a repeated note sounds even at speed:
     the hand does not lift, the fingers take turns. 3-2-1 for three notes and
-    4-3-2-1 for four, which is the standard descending order.
+    4-3-2-1 for four is the order worked out here. It is the generator's own, so
+    since G30 it is not printed (`print_as_contracted`); the row declares the
+    drill's solution instead (`physical.repeatedNotes`: change finger on each
+    strike, the order the learner's).
     """
     one_of("hands", hands, HANDS)
     fingers = [3, 2, 1] if per_note == 3 else [4, 3, 2, 1]
@@ -2490,7 +2493,7 @@ def make_repeated_notes(
         f"scores/generated/{item_id}.mxl",
         family="repeated_notes",
     )
-    return sc, entry
+    return print_as_contracted(sc, entry)
 
 
 def make_trill(
