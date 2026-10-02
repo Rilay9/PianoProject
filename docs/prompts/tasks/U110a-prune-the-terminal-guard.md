@@ -45,11 +45,11 @@ Judgement first. Then:
 - one mutant;
 - the scope of every "all" or "none".
 
-`operating-procedure.md` §14. Port **5473**, from a config copy under `app/build/u110a/`; `--workers=2`. Never name an AI model in any file.
+Built by the outside builder on `chatgpt/u110a`. The checks it cannot run are run by the orchestrator on its branch head, on request (`docs/review/reviewer-context.md`, Build requests). Never name an AI model in any file.
 
 ## Record
 
 lane: U110a · closes: — · entry: 218
 index: The window renderer's terminal exception pruned unless a residual overlap earns it, U110's required change (`U110a-prune-the-terminal-guard.md`) | app | drafted 2026-10-02 (`U110a-prune-the-terminal-guard.md`); Entry 218
 in-flight: drafted 2026-10-02 (`U110a-prune-the-terminal-guard.md`): a fix-forward on U110, the reviewer's required change; second read, prune, U110's instruments rerun (Entry 218)
-state: drafted 2026-10-02: the reviewer's required change, dispatch under the accepted contract (Entry 218)
+state: drafted 2026-10-02: re-dispatched to the outside builder; the first dispatch to another builder was stopped unbuilt (Entry 218)
