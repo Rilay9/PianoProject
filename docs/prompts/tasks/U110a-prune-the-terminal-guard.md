@@ -52,4 +52,4 @@ Built by the outside builder on `chatgpt/u110a`. The checks it cannot run are ru
 lane: U110a · closes: — · entry: 218
 index: The window renderer's terminal exception pruned unless a residual overlap earns it, U110's required change (`U110a-prune-the-terminal-guard.md`) | app | drafted 2026-10-02 (`U110a-prune-the-terminal-guard.md`); Entry 218
 in-flight: drafted 2026-10-02 (`U110a-prune-the-terminal-guard.md`): a fix-forward on U110, the reviewer's required change; second read, prune, U110's instruments rerun (Entry 218)
-state: dispatched 2026-10-02: dispatched at cd6a62ee to the outside builder, on its branch (Entry 218)
+state: dispatched 2026-10-02: dispatched at 345ffda4, finishing here from the outside builder's pruning at f11cd7c6 (Entry 218)
