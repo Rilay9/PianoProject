@@ -975,6 +975,216 @@ test('rows the window grants never overlap: Ode to Joy at 360 x 780 with the pia
   expect(faults, faults.join('\n')).toEqual([]);
 });
 
+/** One drawn row as the glass has it: the slot's box (the renderer's own packing) and the row's ink, both in stage pixels. */
+interface PackedRow {
+  bars: string;
+  ahead: boolean;
+  top: number;
+  height: number;
+  inkTop: number;
+  inkBottom: number;
+}
+
+interface Packing {
+  stageHeight: number;
+  rows: PackedRow[];
+  zoom: number | null;
+  slots: number | null;
+  systems: number | null;
+  asked: number | null;
+  /** The reshape ladder's record: how many shape changes this zoom, width and asked count have had. */
+  ladder: { zoom: number; width: number; asked: number; n: number } | null;
+}
+
+/** Every drawn row's box and ink, the stage's height, and the renderer's own account of the shape and the ladder. */
+async function readPacking(page: Page): Promise<Packing> {
+  return page.evaluate(() => {
+    const stage = document.getElementById('score-stage')!;
+    const s = stage.getBoundingClientRect();
+    const rows = [...stage.querySelectorAll<HTMLElement>('.score-buffer.is-front')]
+      .filter((el) => !el.hidden && el.querySelector('svg') && !el.classList.contains('score-probe'))
+      .map((el) => {
+        let top = Number.POSITIVE_INFINITY;
+        let bottom = Number.NEGATIVE_INFINITY;
+        for (const mark of el.querySelectorAll<SVGGraphicsElement>('svg path, svg text, svg rect, svg line, svg polygon, svg polyline, svg ellipse, svg circle')) {
+          const box = mark.getBoundingClientRect();
+          if (!(box.width > 0 || box.height > 0)) continue;
+          if (box.width > s.width * 3 || box.height > s.height * 2) continue;
+          top = Math.min(top, box.top);
+          bottom = Math.max(bottom, box.bottom);
+        }
+        return {
+          bars: el.dataset.bars ?? '?',
+          ahead: el.classList.contains('is-ahead'),
+          top: Number.parseFloat(el.style.top) || 0,
+          height: Number.parseFloat(el.style.height) || 0,
+          inkTop: top - s.top,
+          inkBottom: bottom - s.top,
+        };
+      })
+      .sort((a, b) => a.top - b.top);
+    const fit = (window as unknown as {
+      __pianopath?: {
+        scoreFit?: () => {
+          zoom?: number;
+          slotCount?: number;
+          systemsPerWindow?: number;
+          barsAsked?: number;
+          shapeChanges?: { zoom: number; width: number; asked: number; n: number } | null;
+        } | null;
+      };
+    }).__pianopath?.scoreFit?.();
+    return {
+      stageHeight: s.height,
+      rows,
+      zoom: fit?.zoom ?? null,
+      slots: fit?.slotCount ?? null,
+      systems: fit?.systemsPerWindow ?? null,
+      asked: fit?.barsAsked ?? null,
+      ladder: fit?.shapeChanges ? { ...fit.shapeChanges } : null,
+    };
+  });
+}
+
+/** The ink of each row against the ink of the row below it, and the last row's against the stage's foot. */
+function inkFaults(read: Packing): string[] {
+  const out: string[] = [];
+  for (let k = 0; k + 1 < read.rows.length; k += 1) {
+    const into = read.rows[k].inkBottom - read.rows[k + 1].inkTop;
+    if (into > 0.5) out.push(`row ${read.rows[k].bars} inks ${into.toFixed(1)} px into row ${read.rows[k + 1].bars}`);
+  }
+  const last = read.rows[read.rows.length - 1];
+  if (last && last.inkBottom - read.stageHeight > 0.5) {
+    out.push(`row ${last.bars} inks ${(last.inkBottom - read.stageHeight).toFixed(1)} px past the stage's foot`);
+  }
+  return out;
+}
+
+/**
+ * What a spent reshape ladder does to a look-ahead row when the stage is
+ * shortened by height alone (U110b, `responses/eddd5c95.md`'s required change;
+ * U110a's packing exception, `settleShape`).
+ *
+ * The state, in a real browser on a phone upright, by real events: Twinkle
+ * with three Bars at 342 wide, opened at the height where the stage is just
+ * tall enough for the greyed third row. There the plan's refusal of that row
+ * and the row's own ink flip the shape until the reshape ladder has run out
+ * with the three rows on the glass, packed from the top and fitting the stage
+ * (`rowsFitStage`). The viewport is then made shorter by a phone's browser bar
+ * or more, which is a height change alone: the width, the asked bars and the
+ * engraving zoom are the same, the window rows are drawn at the same size
+ * (they are bound by the width), and the three rows at their own heights with
+ * the gaps are now over the stage — the packing test fails.
+ *
+ * What must happen: the look-ahead row goes, as a drop made by the packing
+ * test alone — the ladder's record untouched, so nothing was counted against
+ * it and nothing re-engraved to reset it — and the two window rows the learner
+ * is reading are where they were, to within a pixel, with no row's ink in the
+ * next row's or past the stage's foot. (The engraving zoom is not asserted:
+ * after the drop the engraving search may try a larger zoom for the two rows
+ * that are left, and whether it keeps it depends on the engraver; it is the
+ * ladder's record and the rows' ink that say the drop was the packing test's.)
+ *
+ * Red without the exception (the pruning of U110 alone, `f11cd7c6`'s code):
+ * the three rows are held through the first fit, and it is the engraving
+ * search the same stage change sets off that re-engraves at a smaller zoom,
+ * which resets the ladder's record to the new zoom and lets the drop through;
+ * the window rows come out a few pixels from where they were. The end picture
+ * is clean there too, and no painted frame differs in either tree: what the
+ * exception buys in a browser is that the window does not move and is not
+ * re-engraved to get there (`runs/U110b/ENTRY.md`).
+ *
+ * The band of heights (862 to 870) and the two shortenings are this machine's
+ * and this font's; the open height is found by opening at each, never assumed,
+ * and a band with none in it fails the case as a premise.
+ */
+for (const shorter of [35, 95]) {
+  test(`a spent ladder drops its look-ahead row when the stage is ${String(shorter)} px shorter by height alone, and the window rows stay where they were: Twinkle, 3 bars, 342 wide (U110b)`, async ({
+    page,
+  }) => {
+    test.setTimeout(300_000);
+    await page.addInitScript(() => {
+      const raw = localStorage.getItem('pianopath.settings');
+      const settings = raw === null ? {} : (JSON.parse(raw) as Record<string, unknown>);
+      localStorage.setItem('pianopath.settings', JSON.stringify({ ...settings, barsPerWindow: 3 }));
+    });
+    // The height the stage is just tall enough at is this machine's and this font's; found by
+    // opening at each in a short band, never assumed. A band with none in it is a failure of
+    // the premise, said as such.
+    const SPENT = MAX_SLOTS + 2;
+    let pre: Packing | null = null;
+    let openedAt = 0;
+    const tried: string[] = [];
+    for (let height = 870; height >= 862 && pre === null; height -= 1) {
+      await page.setViewportSize({ width: 342, height });
+      await page.goto('/#/');
+      await openPiece(page, 'song.folk.twinkle.ht');
+      const read = await readPacking(page);
+      tried.push(`${String(height)}: ${String(read.slots)}/${String(read.systems)}, ladder ${String(read.ladder?.n ?? '-')}`);
+      if (
+        read.slots === 3 &&
+        read.systems === 2 &&
+        read.ladder !== null &&
+        read.ladder.n >= SPENT &&
+        read.ladder.zoom === read.zoom &&
+        read.rows.some((row) => row.ahead)
+      ) {
+        pre = read;
+        openedAt = height;
+      }
+    }
+    expect(pre, `no open in 862..870 px reached "look-ahead row drawn, ladder spent": ${tried.join('; ')}`).not.toBeNull();
+    if (pre === null) return;
+    await test.info().attach('before.png', { body: await page.screenshot(), contentType: 'image/png' });
+
+    // The premise, read off the glass: two window rows and the greyed one, packed from the top, fitting.
+    expect(pre.rows.map((row) => row.ahead), `the rows before: ${JSON.stringify(pre.rows)}`).toEqual([false, false, true]);
+    const gaps = pre.rows.slice(1).map((row, k) => row.top - (pre.rows[k].top + pre.rows[k].height));
+    expect(
+      gaps.every((gap) => gap > 0),
+      `the three rows are packed from the top, a gap between each (a gap of 0 is an even share): ${JSON.stringify(gaps)}`,
+    ).toBe(true);
+    const own = pre.rows.reduce((sum, row) => sum + row.height, 0) + gaps.reduce((sum, gap) => sum + gap, 0);
+    expect(own, `the rows fit the stage before: ${own.toFixed(1)} px of ${pre.stageHeight.toFixed(1)}`).toBeLessThan(pre.stageHeight);
+    expect(inkFaults(pre), `the rows before: ${JSON.stringify(pre.rows)}`).toEqual([]);
+
+    // The shortening: the viewport's height, nothing else.
+    await page.setViewportSize({ width: 342, height: openedAt - shorter });
+    await settle(page);
+    const post = await readPacking(page);
+    await test.info().attach('after.png', { body: await page.screenshot(), contentType: 'image/png' });
+    const said = `before ${JSON.stringify(pre)}; after ${JSON.stringify(post)}`;
+    test.info().annotations.push({ type: 'rows', description: said });
+
+    // The premise held through the shortening: height alone (the width was never touched), the same
+    // asked count, and the three rows that were drawn, at their own heights with the gaps, are over
+    // the stage now — the packing test fails — while the window rows are drawn at the size they were.
+    expect(Math.round(pre.stageHeight - post.stageHeight), `the stage is ${String(shorter)} px shorter. ${said}`).toBe(shorter);
+    expect(post.asked, `the asked bars. ${said}`).toBe(pre.asked);
+    expect(own, `the three rows at their own heights with the gaps are over the shortened stage (${post.stageHeight.toFixed(1)} px). ${said}`).toBeGreaterThan(
+      post.stageHeight,
+    );
+
+    // The outcome: the look-ahead row is gone, by the packing test alone (the ladder's record is as
+    // it was: nothing was counted against it, and no re-engraving reset it), the window's two rows
+    // are where they were, and nothing is in the next row's ink or past the stage's foot.
+    expect(post.slots, `the look-ahead row is dropped. ${said}`).toBe(2);
+    expect(post.rows.some((row) => row.ahead), `no greyed row on the glass. ${said}`).toBe(false);
+    expect(post.rows.length, `two rows drawn. ${said}`).toBe(2);
+    expect.soft(post.ladder, `the ladder's record, untouched. ${said}`).toEqual(pre.ladder);
+    for (const [k, row] of post.rows.entries()) {
+      const was = pre.rows[k];
+      for (const field of ['top', 'height', 'inkTop', 'inkBottom'] as const) {
+        expect.soft(
+          Math.abs(row[field] - was[field]),
+          `the window row ${row.bars} did not move: ${field} ${was[field].toFixed(1)} -> ${row[field].toFixed(1)}. ${said}`,
+        ).toBeLessThanOrEqual(1);
+      }
+    }
+    expect(inkFaults(post), `the rows after. ${said}`).toEqual([]);
+  });
+}
+
 /**
  * The cell that found fault C, mid-run: phone upright, Chopin's Nocturne op. 48
  * no. 1, four bars. A row's page was `bars × stage width`, and when the run's

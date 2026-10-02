@@ -391,6 +391,20 @@ wants it: `for f in $(ls app/tests/*/*.spec.ts app/tests/unit/*.test.ts tools/*/
   `settleShape` by the packing test (a spent ladder drops the look-ahead row only when the drawn rows
   no longer fit the stage); the named case and every (g) cell stand with it, and the two halves of
   the exception are unit cases in `windowRendererStage.test.ts` (below).
+  U110b (`responses/eddd5c95.md`, the browser case for that exception), two cases, the stage 35
+  and 95 px shorter: Twinkle with three Bars at 342 wide, opened at the height where the stage is
+  just tall enough for the greyed third row (found by opening from the top down in a band of
+  nine heights until one is there, never assumed). There the reshape ladder runs out with the two window rows and the greyed row on the
+  glass, packed from the top and fitting the stage; the viewport is then shortened by height
+  alone and the three rows at their own heights with the gaps are over the stage. Asserted: the
+  look-ahead row is dropped, the ladder's record is as it was (the drop was the packing test's),
+  the window rows' boxes and ink are where they were to within a pixel, and no row's ink is in
+  the next row's or past the stage's foot. Red without the exception (U110's pruning alone): the
+  ladder's record is reset to the zoom the engraving search re-engraved at, in both cases, and in
+  the 95 px case the window rows end 4 to 5 px from where they were; green with it. Not
+  asserted: the engraving zoom afterwards, which the search may change for the two rows left.
+  The picture is clean in both trees (`runs/U110b/ENTRY.md`); the case holds the packing test's
+  own drop, not a difference in the end picture.
 - `score-fit-paths.spec.ts` — the score fills the stage on every path in (U74): the two-bar blues scale at 342 × 740 with D4's seeded learner settles to the same stage box, systems, bars and staff from Today and by a link after a fresh load of the same route, and from the first frame that draws it the stage shows the settled layout on both paths — every frame recorded by the page from before the tap.
 - `score.fuzz.spec.ts` — the seeded random walk over the whole Score screen, invariants after every action.
 - `score.head-height.spec.ts` — the Score screen's header is the same height all through a run (the first correct notes, a message longer than the row, a wider font); a stage whose *height* changes mid-run leaves the drawn sheet's transform alone; a run restarted mid-piece (hand change, `Hear it`) keeps its **engraving zoom** through a header that grows, which the transform alone cannot show; and the hands control is reachable during a run when the bar has sent it behind `⋯`, which is the branch a wider set of glyphs takes and this machine does not.

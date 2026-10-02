@@ -1026,9 +1026,24 @@ Numbered for citation. Each is falsifiable; most are already testable.
     the look-ahead row, so the ladder still ends, and it keeps no state of its own.
     `score.window-rule` asserts the rule in every cell ((g)) and on the Ode case, fresh, on
     three reloads and through a Wait run into its sixth bar; `windowRendererStage.test.ts`
-    holds both halves of the exception on the stood-in engraver, which no browser case holds.
-    *Read only on the stand-in, not in a browser:* a stage shortened by height alone after the
-    ladder has run out, and the fitting case the ladder run out on (`docs/prompts/runs/U110a/ENTRY.md`).
+    holds both halves of the exception on the stood-in engraver, and two `score.window-rule`
+    cases (U110b) hold the shortening in a browser.
+    *Read in a browser (U110b, `docs/prompts/runs/U110b/ENTRY.md`):* the state is reachable on a
+    phone upright by real events: Twinkle, three Bars, 342 wide, opened at the height where the
+    stage is just tall enough for the greyed third row, runs the ladder out with the two window
+    rows and the greyed row packed and fitting; the viewport shortened by height alone then
+    makes the three rows over the stage, and the row is dropped by the packing test with the
+    ladder's record untouched and the window rows where they were. What a browser shows of the
+    exception is small: the same shortening without it also ends on two clean rows, because the
+    engraving search the same stage change sets off re-engraves at a smaller zoom, which resets
+    the ladder and lets the drop through; no painted frame in either tree has ink over the next
+    row or past the stage. What the exception buys there is that the window is not re-engraved
+    and does not move (a couple of frames five pixels off, or a window that ends 4 to 5 px from
+    where it was). Where the search stays silent (a shortening too small to move the zoom by
+    its tolerance, or a stage the rows overflow by less than that), the pruned tree would hold
+    the three rows; no such cell was found or measured in a browser.
+    `windowRendererStage.test.ts` holds both halves on the stand-in, whose search did not move
+    the zoom at the heights it shortens to (700, 600 and 560 px).
 
 ---
 
