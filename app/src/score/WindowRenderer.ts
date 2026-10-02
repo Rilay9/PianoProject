@@ -1766,7 +1766,10 @@ export class WindowRenderer {
    * more than it can. Where the prediction is wrong anyway the drawn stave
    * corrects it (`slotCeiling`, in `fitSlots`).
    */
-  private chooseWindowShape(arrangement: 'slots' | 'single' = this.readAhead): {
+  private chooseWindowShape(
+    arrangement: 'slots' | 'single' = this.readAhead,
+    rowsOverflow = false,
+  ): {
     slots: number;
     systems: number;
     shown: number;
@@ -1797,7 +1800,7 @@ export class WindowRenderer {
     if (priced.sizeTargetAbs !== undefined) this.sizeTargetAbs = priced.sizeTargetAbs;
     if (priced.priced !== undefined) this.priced = priced.priced;
     return priced.settle
-      ? this.settleShape(stage.width, priced.slots, priced.systems, priced.shown, priced.aheadMeasured === true)
+      ? this.settleShape(stage.width, priced.slots, priced.systems, priced.shown, rowsOverflow)
       : { slots: priced.slots, systems: priced.systems, shown: priced.shown };
   }
 
@@ -1824,8 +1827,6 @@ export class WindowRenderer {
     why?: WindowWhy | null;
     sizeTargetAbs?: number;
     priced?: unknown;
-    /** Whether the look-ahead row was priced from the rows drawn at this zoom, not predicted (U110, `settleShape`). */
-    aheadMeasured?: boolean;
   } {
     const asked = Math.max(1, this.barsPerWindow);
     const pieceBars = Math.max(1, this.model.sourceMeasureCount);
@@ -2086,14 +2087,6 @@ export class WindowRenderer {
       );
     };
     const ahead = aheadFor(choice.shown, choice.systems, choice.drawn, choice.maxSlots);
-    // The same condition under which `aheadFor` priced the chosen shape from
-    // what is drawn: this shape on the glass, fitted at this zoom.
-    const aheadMeasured =
-      drawnHere &&
-      this.systemsPerWindow === choice.systems &&
-      this.shownBars === choice.shown &&
-      this.currentScale() > 0 &&
-      this.drawnRowPx > 0;
     // Every count's best shape, the five-line staff it would draw and whether
     // it would keep a look-ahead row below, so the floor's number and what one
     // bar fewer buys can be judged from one pass (`debugFit`, T38 item 5,
@@ -2116,7 +2109,6 @@ export class WindowRenderer {
       systems: choice.systems,
       shown: choice.shown,
       settle: true,
-      aheadMeasured,
       why,
       sizeTargetAbs,
       priced: {
@@ -2219,33 +2211,34 @@ export class WindowRenderer {
   }
 
   /**
-   * The chosen shape, or the one already drawn when the ladder is spent —
-   * except a look-ahead row the drawn rows measure as not fitting, which goes
-   * (U110). `aheadMeasured`: the chosen shape's look-ahead row was priced
-   * from the rows drawn at this zoom (`priceWindowShape`).
+   * The chosen shape, or the one already drawn when the reshape ladder is spent.
+   *
+   * **A spent ladder holds what is drawn, a look-ahead row included, unless the
+   * rows drawn no longer fit the stage (U110a).** A refusal from `aheadFor` is
+   * not proof the rows on the glass overflow the stage: it prices the window's
+   * rows at the piece's tallest system and the look-ahead row at its own drawn
+   * ink, so a stage a few pixels short of that sum refuses a row that drawn rows
+   * fit in. An exception that took the row away on such a refusal stood here
+   * from U110 to U110a, keyed on the row having been measured; it took away
+   * read-ahead the stage held. What a spent ladder does take away is a
+   * look-ahead row whose rows, each at its own drawn height with the gaps
+   * between, are no longer under the stage's height (`rowsFitStage`,
+   * `packSlots`' own test, from the fit that has just drawn them: `rowsOverflow`).
+   * Past that test `packSlots` gives every row an even share and the ink runs
+   * into the next row, which a stage shortened by height alone does to rows
+   * drawn while it was taller. It only ever removes the look-ahead row, so the
+   * ladder still ends. U110's zoom gate in `aheadFor` stays.
    */
   private settleShape(
     stageWidth: number,
     slots: number,
     systems: number,
     shown: number,
-    aheadMeasured = false,
+    rowsOverflow = false,
   ): { slots: number; systems: number; shown: number } {
     const same = slots === this.slotCount && systems === this.systemsPerWindow && shown === this.shownBars;
     if (same || this.mayReshape(stageWidth)) return { slots, systems, shown };
-    // **A spent ladder never keeps a look-ahead row the drawn rows have no
-    // room for (U110).** Kept, the slots are given even shares of a stage the
-    // window's rows already fill and every row's ink runs into the next one:
-    // Ode to Joy at 360 x 780, where the ladder ran out on a row granted from a
-    // mispriced pass, and Twinkle at 342 x 740 Bars 3 while its chrome lays
-    // out, where the look-ahead row priced from the rows drawn is granted
-    // without it and refused with it (its own ink is the taller), until the
-    // ladder runs out. Only when that answer was measured from the glass: a
-    // pass predicting from the piece's tallest system can say *no room* where
-    // the drawn rows have it (T38), and taking a row away on that would lose
-    // look-ahead the stage holds. It only ever removes a row, so the ladder
-    // still ends.
-    if (aheadMeasured && systems === this.systemsPerWindow && shown === this.shownBars && slots < this.slotCount) {
+    if (rowsOverflow && systems === this.systemsPerWindow && shown === this.shownBars && slots < this.slotCount) {
       return { slots, systems, shown };
     }
     return { slots: this.slotCount, systems: this.systemsPerWindow, shown: this.shownBars };
@@ -3092,7 +3085,12 @@ export class WindowRenderer {
       slot.fittedFor = { height: Math.round(perSlot), scale };
       if (slot === this.buffers[this.cursorSlot]!) this.baseTransform = transform;
     }
-    this.packSlots(boxes.map((entry) => ({ slot: entry.slot, height: entry.box.height * drawn + FIT_MARGIN_PX })));
+    const packedRows = boxes.map((entry) => ({ slot: entry.slot, height: entry.box.height * drawn + FIT_MARGIN_PX }));
+    this.packSlots(packedRows);
+    // Whether the rows just drawn, each at its own height, are over the stage:
+    // what a spent reshape ladder reads to decide a look-ahead row goes
+    // (`settleShape`, U110a). Read here, from this fit's own rows and stage.
+    const rowsOverflow = !this.rowsFitStage(packedRows);
     this.treatLookAhead(boxes, drawn, available.width);
     // The first fit is what tells the count: the widest and tallest window
     // are known now. A different answer redraws once, from the current step.
@@ -3168,7 +3166,7 @@ export class WindowRenderer {
           };
         }
       }
-      const shape = this.chooseWindowShape('slots');
+      const shape = this.chooseWindowShape('slots', rowsOverflow);
       const count = shape.slots;
       const reshaped = shape.systems !== this.systemsPerWindow || shape.shown !== this.shownBars;
       // The page a slot was engraved on, against the page it should be on now.
@@ -3492,6 +3490,20 @@ export class WindowRenderer {
   }
 
   /**
+   * Whether rows at their own heights, with the gaps between them, are under
+   * the height the stacked slots share (the stage's, less the folded chip's
+   * band): `packSlots`' test for stacking them from the top. Where it says no,
+   * every row is given an even share of the stage instead, and a row taller
+   * than its share runs into the next one (U110a: a spent reshape ladder reads
+   * it to drop a look-ahead row, `settleShape`).
+   */
+  private rowsFitStage(entries: { height: number }[]): boolean {
+    const stageHeight = this.measure(this.el).height - Math.ceil(this.foldedReserve());
+    const total = entries.reduce((sum, entry) => sum + entry.height, 0) + SLOT_GAP_PX * (entries.length - 1);
+    return total < stageHeight;
+  }
+
+  /**
    * Stacks the two slots from the top when their music is shorter than half
    * the stage each; otherwise the stylesheet's halves stand. The scale was
    * fitted against the halves, so a packed pair never overflows.
@@ -3517,8 +3529,7 @@ export class WindowRenderer {
     const origin = Math.ceil(this.foldedReserve());
     const stageHeight = this.measure(this.el).height - origin;
     const perSlot = stageHeight / this.slotCount;
-    const total = entries.reduce((sum, entry) => sum + entry.height, 0) + SLOT_GAP_PX * (entries.length - 1);
-    const packed = entries.length >= 2 && total < stageHeight;
+    const packed = entries.length >= 2 && this.rowsFitStage(entries);
     // Every slot in use gets its box: packed from the top when the music is
     // shorter than its share, otherwise an even share each.
     let top = origin;

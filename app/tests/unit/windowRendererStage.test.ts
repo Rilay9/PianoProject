@@ -51,6 +51,12 @@ const engraver = vi.hoisted(() => {
     static all: FakeOsmdView[] = [];
     /** Each bar's natural width without an opening, in engraver units, by printed bar. */
     static bars: number[] = [14, 14];
+    /**
+     * Extra engraver units of ink above the stave for a printed bar (a high ledger-line note, a chord
+     * symbol), by bar. A system carries the tallest of its bars' rise, so a row holding such a bar is
+     * a taller row than one that does not (U110a). Empty for every other case in this file.
+     */
+    static rise: Record<number, number> = {};
     /** Called at the start of every render, so a test can act in the middle of a fit. */
     static onRender: ((view: FakeOsmdView) => void) | null = null;
     readonly container: HTMLElement;
@@ -135,8 +141,10 @@ const engraver = vi.hoisted(() => {
           m.drawn = m.begin + m.entries * factor + m.end;
         }
       });
-      const systemHeight = U.above + 2 * U.staff + U.gap + U.below;
-      const totalUnits = systems.length * systemHeight + Math.max(0, systems.length - 1) * U.systemGap;
+      const aboveOf = (system: Laid[]): number => U.above + Math.max(0, ...system.map((m) => FakeOsmdView.rise[m.bar] ?? 0));
+      const heights = systems.map((system) => aboveOf(system) + 2 * U.staff + U.gap + U.below);
+      const tops = heights.map((_, index) => heights.slice(0, index).reduce((sum, h) => sum + h + U.systemGap, 0));
+      const totalUnits = heights.reduce((sum, h) => sum + h, 0) + Math.max(0, systems.length - 1) * U.systemGap;
       const widths = systems.map((system) => system.reduce((sum, m) => sum + m.drawn, 0));
       const widest = Math.max(0, ...widths);
       const svg = document.createElementNS(SVG, 'svg');
@@ -146,7 +154,8 @@ const engraver = vi.hoisted(() => {
       Object.defineProperty(svg, 'getBBox', { value: () => ({ x: U.left * 10, y: 0, width: widest * 10, height: totalUnits * 10 }) });
       Object.defineProperty(svg, 'getBoundingClientRect', { value: () => rect(0, 0, pageWidthPx, totalUnits * px) });
       const musicSystems = systems.map((system, index) => {
-        const top = index * (systemHeight + U.systemGap);
+        const top = tops[index] ?? 0;
+        const systemHeight = heights[index] ?? 0;
         // The system's whole ink, for the measurement's buckets.
         const ink = document.createElementNS(SVG, 'rect');
         Object.defineProperty(ink, 'getBBox', {
@@ -156,7 +165,7 @@ const engraver = vi.hoisted(() => {
         return {
           StaffLines: [0, 1].map((staff) => ({
             PositionAndShape: {
-              AbsolutePosition: { x: U.left, y: top + U.above + staff * (U.staff + U.gap) },
+              AbsolutePosition: { x: U.left, y: top + aboveOf(system) + staff * (U.staff + U.gap) },
               Size: { width: widths[index] ?? 0, height: U.staff },
             },
             StaffHeight: U.staff,
@@ -253,6 +262,7 @@ async function settle(): Promise<void> {
 beforeEach(() => {
   FakeOsmdView.all = [];
   FakeOsmdView.bars = [14, 14];
+  FakeOsmdView.rise = {};
   FakeOsmdView.onRender = null;
   frames.clear();
   idle.length = 0;
@@ -1436,4 +1446,167 @@ describe('the stacked slots and the folded chip’s band (U118)', () => {
     }
     renderer.dispose();
   });
+});
+
+/**
+ * A spent reshape ladder keeps a look-ahead row the drawn rows leave room for, and drops one they do
+ * not (U110a).
+ *
+ * `aheadFor` prices the window's rows at the piece's tallest system and the look-ahead row at its own
+ * drawn ink. Where the tallest systems are the bars *after* the window (a raised note, a chord symbol),
+ * the window's rows draw shorter than the reserve they are priced at, and a stage inside a few pixels of
+ * that sum refuses a row the drawn rows fit in. The look-ahead row is then granted while it is not
+ * drawn and refused once it is — its own ink is the taller — and the ladder (`mayReshape`, MAX_SLOTS + 2
+ * changes per zoom, width and asked count) runs out on one answer or the other.
+ *
+ * U110 added an exception to `settleShape` for the second: a spent ladder dropped a look-ahead row on
+ * an answer measured from the glass. That answer is this refusal, so on this stage the exception took
+ * away read-ahead the stage held (`responses/bbbdffb0.md`); U110a keys it on the rows' packing instead
+ * (`rowsFitStage`, `packSlots`' own test). Two cases, one fixture:
+ *
+ * - the stage never changes: the three rows fit it, the reserve refuses the third, and the row stays;
+ * - the stage is then shortened by height alone, with the ladder still spent at the same zoom, width
+ *   and asked count: the three rows no longer fit, `packSlots` gives each an even share and their ink
+ *   runs into each other, and the look-ahead row goes.
+ *
+ * In the browser the refusal was traced on Twinkle at 342 x 740 with Bars 3 while its chrome laid out
+ * (`docs/prompts/runs/U110a/checks-3203626b.txt`); this is the same mechanism on the stood-in engraver,
+ * held still so the end state can be read. The shortened stage is the stand-in's, not a browser's.
+ */
+describe('a spent reshape ladder keeps the look-ahead row the drawn rows leave room for, and drops one they do not (U110a)', () => {
+  const BARS = 12;
+  /** `SLOT_GAP_PX`: the gap between stacked rows. */
+  const GAP = 24;
+  /** The stage's height: inside the band where the reserve refuses the third row and the drawn rows fit it. */
+  const STAGE_HEIGHT = 820;
+  function piece(): ScoreModel {
+    return makeModel(
+      Array.from({ length: BARS * 4 }, (_, index) => ({ onset: index, notes: [note({ midi: 60 + (index % 12) })] })),
+      { handsPresent: { R: true, L: true } },
+    );
+  }
+  interface Fit {
+    zoom: number;
+    slotCount: number;
+    systemsPerWindow: number;
+    barsShown: number;
+    rowPx: number | null;
+    shapeChanges: { n: number } | null;
+    priced: { candidates?: { shown: number; ahead?: boolean }[] } | null;
+  }
+  interface Row {
+    bars: string;
+    ahead: boolean;
+    /** The row's box on the stage, as `packSlots` placed it. */
+    top: number;
+    height: number;
+    /** Its ink on the stage: the box's top plus the transform's offset, and the stood-in svg's height at the transform's scale. */
+    inkTop: number;
+    inkBottom: number;
+  }
+  const rowsOf = (stage: Stage): Row[] =>
+    [...stage.el.querySelectorAll<HTMLElement>('.score-buffer.is-front:not(.score-probe)')]
+      .map((buffer) => {
+        const top = Number.parseFloat(buffer.style.top);
+        const placed = /translate\((-?[\d.]+)px, (-?[\d.]+)px\) scale\(([\d.]+)\)/.exec(buffer.style.transform);
+        const svgHeight = Number(buffer.querySelector('svg')?.getAttribute('height'));
+        if (!placed || !(svgHeight > 0)) throw new Error(`a drawn row has no placement to read its ink from: ${buffer.style.transform}`);
+        const inkTop = top + Number(placed[2]);
+        return {
+          bars: buffer.dataset.bars ?? '',
+          ahead: buffer.classList.contains('is-ahead'),
+          top,
+          height: Number.parseFloat(buffer.style.height),
+          inkTop,
+          inkBottom: inkTop + svgHeight * Number(placed[3]),
+        };
+      })
+      .sort((a, b) => a.top - b.top);
+  const shape = (rows: Row[]): string[] => rows.map((row) => (row.ahead ? `${row.bars} greyed` : row.bars));
+  const said = (fit: Fit, rows: Row[]): string =>
+    JSON.stringify({ slots: fit.slotCount, systems: fit.systemsPerWindow, shown: fit.barsShown, zoom: fit.zoom, ladder: fit.shapeChanges, rows });
+  /** No row's ink reaches into the ink of the row below it (U110's invariant, on the stand-in), and the last row's ink ends on the stage. */
+  function expectInkClear(rows: Row[], stageHeight: number, because: string): void {
+    for (const [index, row] of rows.entries()) {
+      const above = rows[index - 1];
+      if (above) expect(above.inkBottom, `row ${above.bars}'s ink ends above row ${row.bars}'s: ${because}`).toBeLessThanOrEqual(row.inkTop);
+    }
+    const last = rows[rows.length - 1];
+    expect(last?.inkBottom ?? Infinity, `the last row's ink ends on the stage: ${because}`).toBeLessThanOrEqual(stageHeight);
+  }
+  /**
+   * Two bars asked, 22 engraver units wide so each is a row of its own at 342 px; every bar from the
+   * third on carries three units of ink above the stave, so the tallest system is the look-ahead row's
+   * and the window's two rows (bars 0 and 1) are drawn shorter than the reserve. Opened on STAGE_HEIGHT
+   * and settled: the ladder runs out with the third row drawn.
+   */
+  async function openSpent(): Promise<{ stage: Stage; renderer: WindowRenderer; fit: Fit; rows: Row[] }> {
+    FakeOsmdView.bars = Array.from({ length: BARS }, () => 22);
+    FakeOsmdView.rise = Object.fromEntries(Array.from({ length: BARS - 2 }, (_, index) => [index + 2, 3]));
+    const stage = stageOf(342, STAGE_HEIGHT);
+    const renderer = await WindowRenderer.create({ container: stage.el, model: piece(), musicXml: '<score-partwise/>', barsPerWindow: 2 });
+    renderer.showStep(0);
+    renderer.fitToStage();
+    await settle();
+    return { stage, renderer, fit: renderer.debugFit() as Fit, rows: rowsOf(stage) };
+  }
+
+  it('two bars asked, the bars after them taller: the third row stays drawn on a stage its reserve refuses and its drawn rows fit', async () => {
+    const { stage, renderer, fit, rows } = await openSpent();
+    const because = said(fit, rows);
+
+    // The state read is the end of a fit that finished, on a stage that never changed, after the ladder ran out.
+    expect(stage.el.dataset.settled, `the fit finished: ${because}`).toBe('true');
+    expect(fit.shapeChanges?.n ?? 0, `the reshape ladder ran out (MAX_SLOTS + 2 changes): ${because}`).toBeGreaterThanOrEqual(6);
+
+    // The subject: the look-ahead row is on the glass, greyed, below the window's two rows.
+    const windowEnd = Math.max(...rows.filter((row) => !row.ahead).map((row) => row.top + row.height));
+    const reserve = fit.rowPx ?? 0;
+    expect(
+      shape(rows),
+      `the third row was taken away. The window's rows end at ${String(windowEnd)} px of a ${String(STAGE_HEIGHT)} px stage; a further row after the gap, even at the piece's tallest system (${String(Math.round(reserve))} px), would end at ${String(Math.round(windowEnd + GAP + reserve))}: ${because}`,
+    ).toEqual(['0-0', '1-1', '2-2 greyed']);
+
+    // It fits, by the ink.
+    expectInkClear(rows, STAGE_HEIGHT, because);
+
+    // And the refusal is the reserve's: priced the way `aheadFor` prices it, three rows at the piece's
+    // tallest system are over this stage, and the chooser's own read-out for the drawn count says no row below.
+    expect(3 * reserve + 2 * GAP, `three rows at the reserve are over the stage: ${because}`).toBeGreaterThan(STAGE_HEIGHT);
+    expect(fit.priced?.candidates?.find((candidate) => candidate.shown === 2)?.ahead, `the chooser says no room for the row: ${because}`).toBe(false);
+    renderer.dispose();
+  });
+
+  it.each([700, 600, 560])(
+    'then the stage shortened to %i px by height alone: the three rows no longer fit, the look-ahead row goes, and no row’s ink runs into another',
+    async (height) => {
+      const opened = await openSpent();
+      const { stage, renderer } = opened;
+      const before = said(opened.fit, opened.rows);
+      // The starting state is the first case's: three rows drawn, the ladder spent.
+      expect(shape(opened.rows), `three rows drawn on the first stage: ${before}`).toEqual(['0-0', '1-1', '2-2 greyed']);
+      expect(opened.fit.shapeChanges?.n ?? 0, `the ladder ran out on the first stage: ${before}`).toBeGreaterThanOrEqual(6);
+
+      // The stage is shortened by height alone, as the chrome laying out does to a phone's stage.
+      stage.box = { width: 342, height };
+      observe();
+      await settle();
+      const fit = renderer.debugFit() as Fit;
+      const rows = rowsOf(stage);
+      const because = `from ${before} to a ${String(height)} px stage: ${said(fit, rows)}`;
+
+      // Premise: the ladder's record is the one that ran out, and nothing was counted against it since,
+      // so the ladder allowed no reshape here; only the exception in `settleShape` can have changed the
+      // shape. (The engraving zoom may move after the drop, the search re-engraving for the shape that
+      // is drawn; that is the search's, not the ladder's.)
+      expect(fit.shapeChanges, `the ladder's record is the one that ran out: ${because}`).toEqual(opened.fit.shapeChanges);
+      expect(fit.shapeChanges?.n ?? 0, `the ladder is still spent: ${because}`).toBeGreaterThanOrEqual(6);
+
+      // The product claim: nothing is drawn into anything else, on the stage it has now.
+      expectInkClear(rows, height, because);
+      // And the row that goes is the look-ahead row; the window keeps both its rows.
+      expect(shape(rows), `the look-ahead row went and the window's rows stayed: ${because}`).toEqual(['0-0', '1-1']);
+      renderer.dispose();
+    },
+  );
 });

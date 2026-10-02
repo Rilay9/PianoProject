@@ -1007,14 +1007,28 @@ Numbered for citation. Each is falsifiable; most are already testable.
     `packSlots` gave three rows even shares of that stage. Whether it ran out on a grant
     depended on how many engraving searches the settling chrome set off, so one load could be
     clean and the next not. Now the drawn scale prices a row only at the zoom it was drawn at
-    (`drawnAtZoom`), and a spent ladder never keeps a look-ahead row that the rows drawn at this
-    zoom measure as having no room (`settleShape`; a predicted *no room* does not take a row
-    away, since the prediction prices the piece's tallest system and can be wrong the other
-    way). The second covers another flip measured while Twinkle's chrome lays out at 342 × 740
-    (Bars 3): the look-ahead row, priced from the rows drawn, is granted while it is not drawn
-    and refused once it is, its own ink being the taller. `score.window-rule` asserts it in
-    every cell ((g)) and on that case, fresh, on three reloads and through a Wait run into its
-    sixth bar.
+    (`drawnAtZoom`), so a row is granted only on a stage the rows drawn leave room for.
+    **A spent ladder holds the shape that is drawn, a look-ahead row included, unless the rows
+    drawn no longer fit the stage** (U110a, `docs/review/responses/bbbdffb0.md`;
+    `settleShape`). A refusal from the plan is not proof that the rows on the glass overflow
+    the stage, because the plan prices the window's rows at the piece's tallest system while
+    they draw shorter wherever the tallest system is not a window row, and the look-ahead row
+    at its own drawn ink. Twinkle's chrome laying out at 342 × 740 (Bars 3) flips on exactly
+    that: the look-ahead row is granted while it is not drawn and refused once it is, its own
+    ink being the taller, until the ladder runs out. U110 took the row away on that refusal
+    once the ladder had run out, keyed on the row having been measured; it took away read-ahead
+    a stage the drawn rows fit held, and is replaced by the packing test. Once the ladder has
+    run out, the look-ahead row is dropped only when the rows drawn, each at its own drawn
+    height with the gaps between (`rowsFitStage`, `packSlots`' own test, read from the fit that
+    has just drawn them), are no longer under the stage's height. Past that test `packSlots`
+    gives every row an even share and the ink runs into the next row, which a stage shortened
+    by height alone does to rows drawn while it was taller. The exception only ever removes
+    the look-ahead row, so the ladder still ends, and it keeps no state of its own.
+    `score.window-rule` asserts the rule in every cell ((g)) and on the Ode case, fresh, on
+    three reloads and through a Wait run into its sixth bar; `windowRendererStage.test.ts`
+    holds both halves of the exception on the stood-in engraver, which no browser case holds.
+    *Read only on the stand-in, not in a browser:* a stage shortened by height alone after the
+    ladder has run out, and the fitting case the ladder run out on (`docs/prompts/runs/U110a/ENTRY.md`).
 
 ---
 
