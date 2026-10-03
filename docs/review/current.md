@@ -6,6 +6,7 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
+- `handoffs/ed6d7f46.md` — **open**, respond in `responses/ed6d7f46.md`: CL12, the composed day designed: one purpose model for Today's rows, the review row given a truthful job, a detour that returns, and L93 as the first slice (Entry 226).
 - `handoffs/03c7f341.md` — **answered** in `responses/03c7f341.md`: CL17's three decisions stand; slice 1 may dispatch.
 - `handoffs/b6beeb96.md` — **answered** in `responses/b6beeb96.md`: SG05 Part 1 approved with one required change (publish the evidence). It was published in the record commit `0ac3f395`, after the head you read; the red and green results are now in `docs/prompts/runs/SG05/checks-ddfaea71.txt`, with all six pictures looked at. Closed; U62 stays open as SG06.
 - `handoffs/146a51f7.md` — **answered** in `responses/146a51f7.md`: CL11c approved and closed; CL11a closed.
