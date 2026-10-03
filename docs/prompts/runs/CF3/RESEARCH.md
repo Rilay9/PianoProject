@@ -7,7 +7,7 @@ This is research only. No placement, import or file change follows from it witho
 - **Beyer, *Vorschule im Klavierspiel*, Op. 101.**
   - Edition: Edition Peters Nr. 2721, plate 8033.
   - Status: public domain (published c. 1850; IMSLP; US public domain before 1931).
-  - The scan: Internet Archive item `imslp-im-klavierspiel-op101-beyer-ferdinand`, file `Beyer_-_Op.101_-_Vorschule_im_Klavierspiel.pdf`, 88 pages, read page by page.
+  - The scan: Internet Archive item `imslp-im-klavierspiel-op101-beyer-ferdinand`, file `Beyer_-_Op.101_-_Vorschule_im_Klavierspiel.pdf`, 88 pages. Only pages 2–4, 8–11, 24–27, 29–32 and 38–39 were read; the rest, including No. 39 (ABRSM's *Melody in G*) and everything after p. 39, were not.
 - **PDMX, the full `mxl.tar.gz` on Zenodo** (record 14648209, 1.89 GB). It was streamed through, and only the files named below were extracted. **So PDMX files can be read in the cloud,** without the owner's machine.
 - **Published curricula** (local copies under `build/ct1/`, not in the repository):
   - the Faber *Piano Adventures* correlation chart (May 2017);
