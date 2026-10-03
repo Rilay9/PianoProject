@@ -32,7 +32,7 @@ Plan: `docs/prompts/runs/content-finish-plan.md` (frozen at `9b96c64`). This ste
 
 ## Result
 
-- **`tools/content/independent_check.py`, 97 lines.** music21 supplies every fact. The file only states:
+- **`tools/content/independent_check.py`, 117 lines.** music21 supplies every fact. The file only states:
   - two page faults: a bar that is not full, and a note that is not its key's own;
   - each family's promise, in a few lines.
 
@@ -43,7 +43,8 @@ Plan: `docs/prompts/runs/content-finish-plan.md` (frozen at `9b96c64`). This ste
 - **On the 85 shipped items of these families,** read from the built content: 0 faults.
 - **`tests/test_independent_check.py`** has two parts:
   - **breadth:** every key and variant, more than ships;
-  - **ten breaks,** one per promise, each caught.
+  - **thirteen breaks,** one per promise, each caught.
+- **The review's correction:** N2's rhythm check now requires the note values the pattern's name promises. Four bars of quarters labelled "eighths" is caught. Five-finger is checked as quarters and the swing pair as having eighths, each with its own break.
 - **Defect found and fixed in the maker:** `make_swing_pair` spelled by semitone count.
   - In B, A♭, D♭ and G♭ it wrote G♯ for A♭ and the like. None of those keys ships.
   - It now spells by interval (`up`).

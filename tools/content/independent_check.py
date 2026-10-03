@@ -37,6 +37,19 @@ def _steps(ns) -> list[int]:
     return [interval.Interval(a, b).generic.directed for a, b in zip(ns, ns[1:])]
 
 
+#: The note values a pattern's name promises, as music21 quarter lengths ("quarter-eighths" names both).
+NAMED_VALUES = {"sixteenth": 0.25, "eighth": 0.5, "dotted-quarter": 1.5, "quarter": 1.0, "dotted-half": 3.0, "half": 2.0}
+
+
+def named_values(label: str) -> set[float]:
+    found = set()
+    for word, value in NAMED_VALUES.items():   # the dotted names first, so "dotted-quarter" is not also "quarter"
+        if word in label:
+            found.add(value)
+            label = label.replace(word, "")
+    return found
+
+
 def coordination(s, row):
     rh, lh = s.parts[0], s.parts[1]
     held = _held_bars(lh)
@@ -52,6 +65,8 @@ def coordination(s, row):
 def five_finger(s, row):
     lines = [_notes(p) for p in s.parts if _notes(p)]
     for line in lines:
+        if any(n.quarterLength != 1.0 for n in line):
+            yield "not in quarters"
         if line[0].name != _key(row).tonic.name or _steps(line) != [2, 2, 2, 2, -2, -2, -2, -2]:
             yield "not five steps up from the tonic and back"
     if len(lines) == 2 and [n.name for n in lines[0]] != [n.name for n in lines[1]]:
@@ -70,11 +85,16 @@ def rhythm(s, row):
     bars = [[d for _p, d in b] for b in _bars(s.parts[0])]
     if any(b != bars[0] for b in bars) or len({n.nameWithOctave for n in _notes(s.parts[0])}) != 1:
         yield "not one rhythm on one pitch"
+    missing = named_values(row["drill"]["params"]["pattern"]) - {n.quarterLength for n in _notes(s.parts[0])}
+    if missing:
+        yield f"the pattern's name promises {sorted(missing)} and the notes have none"
 
 
 def swing_pair(s, row):
     measures = list(s.parts[0].getElementsByClass(stream.Measure))
     bars = _bars(s.parts[0])
+    if not any(n.quarterLength == 0.5 for n in _notes(s.parts[0])):
+        yield "no eighth notes"
     if len(bars) != 9 or bars[:4] != bars[5:] or any(p for p, _d in bars[4]):
         yield "not four bars, a silent bar and the same four bars"
     elif not any("swing" in t.content.lower() for t in measures[5].getElementsByClass(expressions.TextExpression)):

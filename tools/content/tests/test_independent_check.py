@@ -96,6 +96,25 @@ class Breaks(unittest.TestCase):
             bar(s, 0, 5).notes[1].transpose("M2", inPlace=True)
         self.caught(make_ostinato("A", "fifths"), drift, "the eighth-note figure changes")
 
+    def test_quarters_where_the_pattern_says_eighths(self):
+        # Four identical bars of quarters: the same rhythm every bar on one pitch, and no eighth.
+        score, row = item(make_rhythm("quarters"))
+        _, eighths = item(make_rhythm("eighths"))
+        self.assertIn("the pattern's name promises [0.5] and the notes have none",
+                      check(score, {**row, "drill": eighths["drill"]}))
+
+    def test_a_five_finger_pattern_not_in_quarters(self):
+        def halve(s):
+            for n in s.parts[0].recurse().notes:
+                n.quarterLength = 0.5
+        self.caught(make_five_finger("C", "major", "right"), halve, "not in quarters")
+
+    def test_a_swing_pair_with_no_eighths(self):
+        def lengthen(s):
+            for n in s.parts[0].recurse().notes:
+                n.quarterLength = 1.0
+        self.caught(make_swing_pair("F"), lengthen, "no eighth notes")
+
     def test_a_rhythm_whose_bars_differ(self):
         def swap(s):
             first, second = bar(s, 0, 2).notes[0], bar(s, 0, 2).notes[1]
