@@ -271,6 +271,16 @@ class OpportunityAndOccurrences(unittest.TestCase):
         self.assertFalse(part(scored, "occurrences").fired, "all of them in one bar")
         self.assertTrue(part(window(context(PHRASES, LEAPS), 1, 8), "occurrences").fired)
 
+    def test_texture_windows_consume_the_detectors_eligible_share(self) -> None:
+        ctx = context(PHRASES, LEAPS, every_bar={"texture.walking-bass": [5, 6, 7]})
+        ctx.positions["textureShare"] = {"texture.walking-bass": {"eligible": [4, 5, 6, 7, 8], "minimumShare": 0.75}}
+        self.assertIn("texture.walking-bass", window(ctx, 5, 8, target="texture.walking-bass").demands)
+        self.assertNotIn("texture.walking-bass", window(ctx, 4, 8, target="texture.walking-bass").demands)
+        ctx.positions["textureShare"]["texture.walking-bass"]["eligible"] = [5, 6, 7]
+        self.assertIn("texture.walking-bass", window(ctx, 4, 8, target="texture.walking-bass").demands)
+        ctx.positions["textureShare"]["texture.walking-bass"]["eligible"] = []
+        self.assertNotIn("texture.walking-bass", window(ctx, 4, 8, target="texture.walking-bass").demands)
+
     def test_an_every_bar_demand_needs_every_bar_of_the_window(self) -> None:
         walk = {"texture.walking-bass": [5, 6, 7, 8]}
         ctx = context(PHRASES, LEAPS, every_bar=walk)
@@ -482,3 +492,4 @@ class TheViewsFixtureIsTheProposersOwnOutput(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+

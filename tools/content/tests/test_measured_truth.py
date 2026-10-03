@@ -822,10 +822,10 @@ class TestTheBridgeRegressionOnTheBuild(Built):
         found = set(self.by_id[ANH_113]["demands"])
         for demand in ("clef.bass", "pitch.ledger", "interval.step", "interval.skip", "interval.leap",
                        "rhythm.eighths", "rhythm.shorter-than-quarter", "rhythm.sixteenths", "rhythm.triplets",
-                       "key.signature", "pitch.chromatic", "range.beyond-position", "texture.hands-together"):
+                       "key.signature", "pitch.chromatic", "range.beyond-position", "texture.hands-together", "texture.left-hand-pattern"):
             self.assertIn(demand, found)
         for demand in ("rhythm.ties", "rhythm.dotted-quarter", "metre.compound", "rhythm.syncopation",
-                       "texture.left-hand-pattern", "texture.walking-bass"):
+                       "texture.walking-bass"):
             self.assertNotIn(demand, found)
 
 
@@ -911,18 +911,13 @@ class TestUsefulDensity(unittest.TestCase):
                 self.assertEqual(sorted((set(by_density) | set(measurement.get("contract", [])) | by_window) - spoilt), sorted(measurement["established"]))
                 self.assertEqual(sorted(measurement.get("window", [])), sorted(by_window - set(by_density) - spoilt))
 
-    def test_a_reading_the_clef_assumption_spoils_never_establishes(self) -> None:
-        """detect.ts reads staff 1 as treble: a one-staff bass-clef part's ledger lines are the misreading, marked."""
+    def test_one_staff_bass_is_remeasured_without_the_old_clef_mask(self) -> None:
         catalog = built("catalog.json")
-        spoilt = [item for item in catalog if (item.get("measurement") or {}).get("misread")]
-        self.assertGreater(len(spoilt), 0, "the LH songs in the bass clef on one staff are no longer found")
-        by_id = {item["id"]: item for item in catalog}
-        lh = by_id["song.folk.hot-cross-buns.lh"]["measurement"]
-        self.assertIn("pitch.ledger", lh["misread"]["demands"])
-        for item in spoilt:
-            with self.subTest(item=item["id"]):
-                self.assertFalse(set(item["measurement"]["established"]) & set(item["measurement"]["misread"]["demands"]))
-                self.assertEqual(item["provenance"]["facts"]["demands"]["misread"], item["measurement"]["misread"]["demands"])
+        self.assertFalse([item for item in catalog if (item.get("measurement") or {}).get("misread")])
+        item = next(item for item in catalog if item["id"] == "song.folk.hot-cross-buns.lh")
+        self.assertIn("clef.bass", item["demands"])
+        self.assertNotIn("pitch.ledger", item["demands"])
+        self.assertIn("clef.bass", item["measurement"]["established"])
 
 
 class TestTheReports(Built):
@@ -935,6 +930,15 @@ class TestTheReports(Built):
 
         cls.claims = claims
         cls.report = claims.rung_claims(cls.catalog, cls.curriculum)
+
+    def test_cl10a_deferred_textures_are_established_by_real_options(self) -> None:
+        for rung, demand in (("blues.6", "texture.walking-bass"), ("blues.8", "texture.walking-bass"),
+                             ("jazz.6", "texture.walking-bass"), ("jam.6", "texture.walking-bass"),
+                             ("ragtime.5", "texture.left-hand-pattern")):
+            with self.subTest(rung=rung):
+                row = next(row for row in self.report["rungs"] if row["rung"] == rung)
+                claim = next(claim for claim in row["claims"] if claim["id"] == demand)
+                self.assertGreater(claim["established"], 0)
 
     def test_the_committed_markdown_is_this_catalogues(self) -> None:
         for path, text in ((REPO / "docs" / "prompts" / "rung-claims.md", self.claims.render_rung_claims(self.report)),
@@ -1271,3 +1275,4 @@ class TestPlacementReconciled(Built):
 
 if __name__ == "__main__":
     unittest.main()
+
