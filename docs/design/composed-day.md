@@ -201,3 +201,12 @@ No stop condition is needed for the defined first slices: they preserve written 
 ## Not done
 
 No app code, durable data, curriculum claims, detector changes, record edits or test-map edits are made in this design lane. No new runtime, typecheck, lint or browser pass is claimed. No lesson is marked met, no skill is activated, and no arrangement/contact/evidence meaning is changed. Future slice builders must execute their discriminating checks and visually inspect the three layouts.
+
+## Decisions at landing (the orchestrator, 2026-10-02)
+
+Weighed under the owner's rule that the orchestrator chooses on design (`operating-procedure.md`, the second-read paragraph). The design is taken as written, with one change to the learner-facing words.
+
+- **Row labels: Review / Apply / Learn / Explore / Project** in place of *Remember / Apply / Develop / Explore / Project*: retrieval is *Review*, development is *Learn*. *Review* and *Learn* are the words a learner and a teacher use for those two jobs. *Remember* reads as an instruction rather than a kind of work, and *Develop* says nothing a learner can act on. The no-due row's wording stands: it already avoids calling consolidation a review.
+- **The additive stored shape is accepted:** an optional, validated `intent` on session activities, with legacy sessions resumable without it. No format bump and no destructive migration.
+- **The transient episode is accepted:** it does not survive a reload. A durable episode needs its own reviewed extension.
+- **Slice A dispatches next.** Its browser acceptance covers the three designs and 115 % text; the new words are itemised in its entry.
