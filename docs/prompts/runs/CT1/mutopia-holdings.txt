@@ -1,0 +1,331 @@
+C. Czerny: 29 pieces; licences {'Public Domain': 29}
+    Op. 821 160 Eight-Measure Exercises ×19
+    Op. 840 50 Melodische Übungsstücke ×10
+J. F. F. Burgmüller: 19 pieces; licences {'Public Domain': 19}
+    - EL PERDÓN DE PLOËRMEL ×1
+    Opus 100. Ballade ×1
+    Opus 100. Consolation ×1
+    Opus 100. Douce Plainte ×1
+    Opus 100. Innocence ×1
+    Opus 100. Inquiétude ×1
+    Opus 100. L'Adieu ×1
+    Opus 100. La Babillarde ×1
+    Opus 100. La Bergeronnette ×1
+    Opus 100. La Candeur ×1
+    Opus 100. La Chasse ×1
+    Opus 100. La Gracieuse ×1
+    Opus 100. La Pastorale ×1
+    Opus 100. La Petite Réunion ×1
+    Opus 100. La Styrienne ×1
+    Opus 100. Le Courant Limpide ×1
+    Opus 100. Progrès ×1
+    Opus 100. Tendre Fleur ×1
+    Opus 100. l'Arabesque ×1
+M. Clementi: 2 pieces; licences {'Public Domain': 1, 'CC Attribution-ShareAlike 4.0': 1}
+    O 36 Sonatina ×1
+    Op. 42 Clementi's Art of Playing on the Piano Forte ×1
+A. Diabelli: 36 pieces; licences {'CC Attribution-ShareAlike 3.0': 36}
+    Op. 149 28 melodische Übungsstücke ×28
+    Opus 163-1 Jugendfreuden - Sechs Sonatinen ×4
+    Opus 163-2 Jugendfreuden - Sechs Sonatinen ×4
+F. Kuhlau: 3 pieces; licences {'Public Domain': 3}
+    O 20 Sonatine I - Allegro ×1
+    O 20 Sonatine I - Andante ×1
+    O 20 Sonatine I - Rondo ×1
+R. Schumann: 32 pieces; licences {'Public Domain': 7, 'CC Attribution 3.0': 4, 'CC Attribution-ShareAlike 2.5': 19, 'CC Attribution-ShareAlike 3.0': 2}
+    O 124 n°16 Feuilles d'album - 16. ×1
+    O 15 N 1 Kinderscenen - Von fremden Ländern und Mensch ×1
+    O 15 N 7 Kinderscenen - Traümerei ×1
+    O 25 Widmung ×1
+    O 25 Widmung (low voice) ×1
+    O 68 n°1 Album pour la jeunesse - 1.Mélodie ×1
+    O 68 n°10 Album pour la jeunesse - 10.Le gai laboureur ×1
+    O 68 n°11 Album pour la jeunesse - 11.Sicilienne ×1
+    O 68 n°12 Album pour la jeunesse - 12.Le Père Fouettard ×1
+    O 68 n°13 Album pour la jeunesse - 13.Mai, cher Mai, .. ×1
+    O 68 n°14 Album pour la jeunesse - 14.Petite Etude ×1
+    O 68 n°16 Album pour la jeunesse - 16.Premier chagrin ×1
+    O 68 n°18 Album pour la jeunesse - 18.Chant des moisson ×1
+    O 68 n°2 Album pour la jeunesse - 2.Marche militaire ×1
+    O 68 n°25 Album pour la jeunesse - 25.Echos du Théâtre ×1
+    O 68 n°26 Album pour la jeunesse - 26. * * * * * ×1
+    O 68 n°3 Album pour la jeunesse - 3.Chanson fredonnée ×1
+    O 68 n°32 Album pour la jeunesse - 32.Sheherazade ×1
+    O 68 n°36 Album pour la jeunesse - 36.Chant de marins i ×1
+    O 68 n°4 Album pour la jeunesse - 4.Un choral ×1
+    O 68 n°5 Album pour la jeunesse - 5.Petite pièce ×1
+    O 68 n°6 Album pour la jeunesse - 6.Pauvre orpheline ×1
+    O 68 n°7 Album pour la jeunesse - 7.Chanson du chasseu ×1
+    O 68 n°8 Album pour la jeunesse - 8.Le cavalier sauvag ×1
+    O 68 n°9 Album pour la jeunesse - 9.Chanson populaire ×1
+    Op. 15 Kinderscenen - Bittendes Kind ×1
+    Op. 15 Kinderscenen - Curiose Geschichte ×1
+    Op. 15 Kinderscenen - Glückes genug ×1
+    Op. 15 Kinderscenen - Hasche-Mann ×1
+    Op. 15 Kinderscenen - Wichtige Begebenheit ×1
+    Op. 28 Romanzen ×1
+    Op. 48 Ich grolle nicht ×1
+P. I. Tchaikovsky: 8 pieces; licences {'Public Domain': 8}
+    - Napolitan Dance (Swan Lake) ×1
+    O 37 The Seasons: August ×1
+    O 37 The Seasons: February ×1
+    O 37 The Seasons: January ×1
+    Op. 39 March of the Wooden Soldiers ×1
+    Op. 39 Morning Prayer ×1
+    Op. 39 Old French Song ×1
+    Op. 59 Doumka ×1
+J. S. Bach: 135 pieces; licences {'Public Domain': 109, 'CC Attribution-ShareAlike 4.0': 9, 'CC Attribution-ShareAlike 3.0': 15, 'CC Attribution 3.0': 1, 'CC Attribution-ShareAlike 2.5': 1}
+    - Matthäus Passion, Choral 'O Haupt voll Blut u ×1
+    BWV 1006a BWV 1006a - Bourrée ×1
+    BWV 1006a BWV 1006a - Gavotte en Rondeau ×1
+    BWV 1006a BWV 1006a - Gigue ×1
+    BWV 1006a BWV 1006a - Loure ×1
+    BWV 1006a BWV 1006a - Menuet I ×1
+    BWV 1006a BWV 1006a - Menuet II ×1
+    BWV 1006a BWV 1006a - Prélude ×1
+    BWV 1030 Sonata in B minor for flute and harpsichord ×1
+    BWV 1055 Keyboard Concerto Nº 4 ×1
+    BWV 1056 Arioso ×1
+    BWV 1079 Musicalisches Opfer, Ricercare ×1
+    BWV 1079 Musikalisches Opfer, Ricercare a 6 ×1
+    BWV 1080 Die Kunst der Fuge, Contrapunctus I ×1
+    BWV 1080 Die Kunst der Fuge, Contrapunctus XII - Canon ×1
+    BWV 1080 Die Kunst der Fuge, Contrapunctus XIII - Cano ×1
+    BWV 1080 Die Kunst der Fuge, Contrapunctus XIV - Canon ×1
+    BWV 1080 Die Kunst der Fuge, Contrapunctus XV - Canon  ×1
+    BWV 1080 Die Kunst der Fuge, Contrapunctus XVII - Fuga ×1
+    BWV 259 Ach, was soll ich Sünder machen ×1
+    BWV 269 Aus meines Herzens Grunde (Chorale 1) ×1
+    BWV 347 Ich dank dir, lieber Herre ×1
+    BWV 510 Chorale setting "Gib dich zufrieden und sei s ×1
+    BWV 511 Chorale setting "Gib dich zufrieden und sei s ×1
+    BWV 512 Chorale setting "Gib dich zufrieden und sei s ×1
+    BWV 515 Aria ×1
+    BWV 516 Aria “Warum betrübst du dich” ×1
+    BWV 772 Invention 1 ×1
+    BWV 773 Invention 2 ×1
+    BWV 774 Invention 3 ×1
+    BWV 775 Invention 4 ×1
+    BWV 776 Invention 5 ×1
+    BWV 777 Invention 6 ×1
+    BWV 778 Invention 7 ×1
+    BWV 779 Invention 8 ×1
+    BWV 780 Invention 9 ×1
+    BWV 781 Invention 10 ×1
+    BWV 782 Invention 11 ×1
+    BWV 783 Invention 12 ×1
+    BWV 784 Invention 13 ×1
+    BWV 785 Invention 14 ×1
+    BWV 786 Invention 15 ×1
+    BWV 787 Sinfonia 1 ×1
+    BWV 788 Sinfonia 2 ×1
+    BWV 789 Sinfonia 3 ×1
+    BWV 790 Sinfonia 4 ×1
+    BWV 791 Sinfonia 5 ×1
+    BWV 792 Sinfonia 6 ×1
+    BWV 793 Sinfonia 7 ×1
+    BWV 794 Sinfonia 8 ×1
+    BWV 795 Sinfonia 9 ×1
+    BWV 796 Sinfonia 10 ×1
+    BWV 797 Sinfonia 11 ×1
+    BWV 798 Sinfonia 12 ×1
+    BWV 799 Sinfonia 13 ×1
+    BWV 800 Sinfonia 14 ×1
+    BWV 801 Sinfonia 15 ×1
+    BWV 803 Duetto II (from the Clavierübung Part III) ×1
+    BWV 806 English Suite I: Bourree I ×1
+    BWV 806 English Suite I: Bourree II ×1
+    BWV 807 English Suite II: Bourree I ×1
+    BWV 807 English Suite II: Bourree II ×1
+    BWV 807 English Suite II: Gigue ×1
+    BWV 814 French Suite no. 3 in B minor ×1
+    BWV 816 French Suite no. 5 in G major ×1
+    BWV 817 French Suite no. 6 in E major ×1
+    BWV 825 Six Partitas (Clavierubung part I): ×1
+    BWV 826 Six Partitas (Clavierubung part I): ×1
+    BWV 827 Keyboard partita in A minor ×1
+    BWV 829 Six Partitas (Clavierubung part I): ×1
+    BWV 830 Keyboard partita in E minor ×1
+    BWV 846 Das Wohltemperierte Clavier I, Fuga I ×1
+    BWV 846 Das Wohltemperierte Clavier I, Praeludium I ×1
+    BWV 847 Das Wohltemperierte Clavier I, Fuga II ×1
+    BWV 847 Das Wohltemperierte Clavier I, Praeludium II ×1
+    BWV 848 Das Wohltemperierte Clavier I, Fuga III ×1
+    BWV 848 Das Wohltemperierte Clavier I, Praeludium III ×1
+    BWV 849 Das Wohltemperierte Clavier I, Fuga IV ×1
+    BWV 849 Das Wohltemperierte Clavier I, Praeludium IV ×1
+    BWV 850 Das Wohltemperierte Clavier I, Fuga V ×1
+    BWV 850 Das Wohltemperierte Clavier I, Praeludium V ×1
+    BWV 851 Das Wohltemperierte Clavier I, Fuga VI ×1
+    BWV 851 Das Wohltemperierte Clavier I, Praeludium VI ×1
+    BWV 853 Das Wohltemperierte Clavier I, Fuga VIII ×1
+    BWV 853 Das Wohltemperierte Clavier I, Praeludium VII ×1
+    BWV 854 Praeludium IX ×1
+    BWV 855 Das Wohltemperierte Clavier I, Fuga X ×1
+    BWV 855 Das Wohltemperierte Clavier I, Praeludium X ×1
+    BWV 856 Das Wohltemperierte Clavier I, Fuga XI ×1
+    BWV 856 Das Wohltemperierte Clavier I, Praeludium XI ×1
+    BWV 857 Das Wohltemperierte Clavier I, Fuga XII ×1
+    BWV 857 Das Wohltemperierte Clavier I, Praeludium XII ×1
+    BWV 860 Das Wohltemperierte Clavier I, Fuga XV ×1
+    BWV 860 Das Wohltemperierte Clavier I, Praeludium XV ×1
+    BWV 861 Das Wohltemperierte Clavier I, Fuga XVI ×1
+    BWV 861 Das Wohltemperierte Clavier I, Praeludium XVI ×1
+    BWV 862 Das Wohltemperierte Clavier I, Fuga XVII ×1
+    BWV 862 Das Wohltemperierte Clavier I, Praeludium XVI ×1
+    BWV 865 Das Wohltemperierte Clavier I, Fuga XX ×1
+    BWV 865 Das Wohltemperierte Clavier I, Praeludium XX ×1
+    BWV 869 Das Wohltemperierte Clavier I, Fuga XXIV ×1
+    BWV 869 Das Wohltemperierte Clavier I, Praeludium 24 ×1
+    BWV 870 Das Wohltemperierte Clavier II, Fuga I ×1
+    BWV 870 Das Wohltemperierte Clavier II, Praeludium I ×1
+    BWV 871 Das Wohltemperierte Clavier II, Fuga II ×1
+    BWV 871 Das Wohltemperierte Clavier II, Praeludium II ×1
+    BWV 875 Das Wohltemperierte Clavier II, Praeludium VI ×1
+    BWV 878 Das Wohltemperierte Clavier II, Fuga IX ×1
+    BWV 895 Preludio con Fuga ×1
+    BWV 910 Toccata in f sharp minor ×1
+    BWV 924a Prelude ×1
+    BWV 926 Praeludium 2 ×1
+    BWV 928 Petite Prélude ×1
+    BWV 928 Praeludium 10 ×1
+    BWV 952 Fugue in C major ×1
+    BWV 971 Italian Concerto ×1
+    BWV 988 Goldberg Variations - 15 ×1
+    BWV 994 Applicatio ×1
+    BWV Anh. 113 Menuet ×1
+    BWV Anh. 114 Menuet ×1
+    BWV Anh. 115 Menuet ×1
+    BWV Anh. 116 Menuet ×1
+    BWV Anh. 117a Polonaise in F major ×1
+    BWV Anh. 117b Polonaise in F major ×1
+    BWV Anh. 118 Minuet in B-flat major ×1
+    BWV Anh. 119 Polonaise in G minor ×1
+    BWV Anh. 120 Minuet in A minor ×1
+    BWV Anh. 121 Minuet in C minor ×1
+    BWV Anh. 126 Musette ×1
+    BWV Anh. 127 March in E-flat major ×1
+    BWV Anh. 128 Polonaise in D minor ×1
+    BWV Anh. 131 Air ×1
+    BWV Anh. 691 Chorale prelude “Wer nur den lieben Gott läßt ×1
+    Schmellis Gesangbuch Ermuntre dich, mein schwacher Geist ×1
+    Schmellis Gesangbuch Gott, wie gross ist deine Güte ×1
+S. Joplin: 18 pieces; licences {'Public Domain': 18}
+    - A Breeze From Alabama ×1
+    - Bethena ×1
+    - Elite Syncopations ×1
+    - Magnetic Rag ×1
+    - Maple Leaf Rag ×1
+    - Original Rags ×1
+    - Peacherine Rag ×1
+    - Pineapple Rag ×1
+    - Search-Light Rag ×1
+    - Solace ×1
+    - Something Doing ×1
+    - Sugar Cane ×1
+    - Sun Flower Slow Drag ×1
+    - The Easy Winners ×1
+    - The Entertainer ×1
+    - The Strenuous Life ×1
+    - Wall Street Rag ×1
+    n/a Eugenia ×1
+W. A. Mozart: 36 pieces; licences {'Public Domain': 33, 'CC Attribution-ShareAlike 3.0': 3}
+    - Notte e giorno (Don Giovanni) ×1
+    Anh. 41 (375g) Fugue fragment Anh. 41 (375g) ×1
+    K 545 Sonata Facile - First movement ×1
+    K 545 Sonata Facile - Second movement ×1
+    K 545 Sonata Facile - Third movement ×1
+    K6 deest Sonata in C major (fragment) ×1
+    KV 153/375f Fugue in E-flat Major KV 153/375f ×1
+    KV 154/385k Fugue in G Minor KV 154/385k ×1
+    KV 309 Piano Sonata in C Major - KV 309 (1st Part) ×1
+    KV 331 Sonate Opus KV 331 - Menuetto ×1
+    KV 331 Sonate Opus KV 331 - Rondo Alla Turca ×1
+    KV 331 Sonate Opus KV 331 - Tema ×1
+    KV 331 Sonate Opus KV 331 - Variation 1 ×1
+    KV 331 Sonate Opus KV 331 - Variation 2 ×1
+    KV 331 Sonate Opus KV 331 - Variation 3 ×1
+    KV 331 Sonate Opus KV 331 - Variation 4 ×1
+    KV 331 Sonate Opus KV 331 - Variation 5 ×1
+    KV 331 Sonate Opus KV 331 - Variation 6 ×1
+    KV 349 Die Zufriedenheit ×1
+    KV 379 Sonate for Violin and Piano K 379 ×1
+    KV 397 Fantasy in D minor ×1
+    KV 401/375e Fugue in G Minor KV 401/375e ×1
+    KV 453a Marche funebre KV 453a ×1
+    KV 457 Piano Sonata in C Minor - KV. 457 (1st Moveme ×1
+    KV 457 Piano Sonata in C Minor - KV. 457 (2nd Moveme ×1
+    KV 457 Piano Sonata in C Minor - KV. 457 (3rd Moveme ×1
+    KV 478 Piano Quartet KV 478 ×1
+    KV 488 Piano Concerto № 23 ×1
+    KV 498 Trio in E-flat Major KV. 498 ×1
+    KV 517 Die Alte ×1
+    KV 518 Die Verschweigung ×1
+    KV 519 Das Lied der Trennung ×1
+    KV 520 Als Luise die Briefe ihres ungetreuen Liebhab ×1
+    KV 523 Abendempfindung ×1
+    KV 574 Gigue in G Major ×1
+    KV 594 Fantasia ×1
+L. V. Beethoven: 43 pieces; licences {'Public Domain': 41, 'CC Attribution-ShareAlike 4.0': 1, 'CC Attribution-ShareAlike 2.5': 1}
+    Op. 10 Sonata ×5
+    Op. 11 Piano Trio Opus 11 (1st Movement) ×1
+    Op. 11 Piano Trio Opus 11 (3rd Movement) ×1
+    Op. 111 Sonata ×1
+    Op. 129 Rondo A Capriccio ×1
+    Op. 13 Sonata ×3
+    Op. 17 Sonata for Piano with Horn, Op. 17 ×1
+    Op. 2 Sonata ×4
+    Op. 27 Sonata ×1
+    Op. 31 Sonata ×2
+    Op. 37 Piano Concerto ×1
+    Op. 47 Violin Sonata ×2
+    Op. 49 Sonata ×4
+    Op. 57 Sonata ×2
+    Op. 66 Variations - Opus 66 ×1
+    Op. 67 Symphony no. 5, Piano reduction ×1
+    Op. 76 Six Variations ×1
+    Op. 78 Sonata ×2
+    Op. 79 Sonata ×3
+    Op. 90 Sonata ×2
+    WoO 55 Prelude Op. WoO 55 ×1
+    WoO 59 Für Elise ×1
+    WoO 78 Seven Variations - Opus WoO 78 ×1
+    WoO 82 Menuett Op. WoO 82 ×1
+G. F. Handel: 25 pieces; licences {'Public Domain': 23, 'CC Attribution-ShareAlike 2.5': 2}
+    - Air ×2
+    - Allegro ×1
+    - Allemande ×1
+    - Concerto ×1
+    - Entrée ×1
+    - Fuga ×1
+    - Gavotte ×1
+    - Impertinence ×1
+    - Menuet ×1
+    - Menuet (Trio) ×1
+    - Menuet I ×2
+    - Menuet II (Trio) ×2
+    - Ouvertüre ×1
+    - Passepied (et Menuet) ×1
+    - Preludio ×1
+    - Signor, Signor, lasciate far a me (Serse) ×1
+    - Sonatina ×1
+    - Toccata ×1
+    HWV 351 La Réjouissance des Feux d'Artifice Royaux (R ×1
+    HWV 361 Sonata for Violin and Piano HWV 361 ×1
+    HWV 370 Sonata for Violin and Piano HWV 370 ×1
+    HWV 585 Sonatina in B-flat Major ×1
+E. Grieg: 8 pieces; licences {'Public Domain': 6, 'CC Attribution-ShareAlike 4.0': 1, 'CC Attribution-ShareAlike 3.0': 1}
+    O 46 Ases Tod ×1
+    O 5 Ich liebe dich ×1
+    O 65 Wedding-day at Troldhaugen ×1
+    Op 12 Albumblatt in E minor ×1
+    Op. 46 In the Hall of the Mountain King ×1
+    Op. 54 Troldtog (March of the Dwarfs) ×1
+    Op. 58 Hjemkomst ×1
+    Op. 73 Lualåt (The Mountaineer's Song) ×1
+L. Streabbog: 1 pieces; licences {'CC Attribution-ShareAlike 4.0': 1}
+    - Les étoiles d'or ×1
+C. L. Hanon: 1 pieces; licences {'CC Attribution-ShareAlike 4.0': 1}
+    - The Virtuoso Pianist (Part I) ×1
+B. Bartók: 1 pieces; licences {'Public Domain': 1}
+    - Romanian Folk Dance ×1
