@@ -1,0 +1,124 @@
+diff --git a/app/src/demands/detect.ts b/app/src/demands/detect.ts
+index c164e12..5cdb20b 100644
+--- a/app/src/demands/detect.ts
++++ b/app/src/demands/detect.ts
+@@ -283,6 +283,51 @@ function turnsBack(pitches: number[]): boolean {
+   return false;
+ }
+ 
++/**
++ * One staff's strikes in one bar, in time order: each the MIDI numbers struck at
++ * that onset (a chord is one strike).
++ */
++function strikesIn(model: ScoreModelData, staff: 1 | 2, bar: number): { onset: number; midis: number[] }[] {
++  const byOnset = new Map<number, number[]>();
++  for (const p of placed(model)) {
++    if (p.note.staff !== staff || p.note.measureIndex !== bar) continue;
++    const at = byOnset.get(p.note.onset);
++    if (at === undefined) byOnset.set(p.note.onset, [p.note.midi]);
++    else at.push(p.note.midi);
++  }
++  return [...byOnset.entries()].sort((a, b) => a[0] - b[0]).map(([onset, midis]) => ({ onset, midis }));
++}
++
++/**
++ * The two hands play one line doubled in the bar (CT1, `tools/content/figures.py`
++ * `mirrored`, which this mirrors): single notes struck at the same times all
++ * through it, and either the same pitch class at every strike (similar motion in
++ * octaves) or every move answered by the opposite move within a semitone of its
++ * size (contrary motion). A two-hand scale, Hanon or arpeggio, not a tune over a
++ * left-hand pattern. The same rhythm alone is not enough: a tune in quarters
++ * over a broken chord in quarters is a tune and a pattern.
++ */
++function mirrored(model: ScoreModelData, bar: number): boolean {
++  const upper = strikesIn(model, 1, bar);
++  const lower = strikesIn(model, 2, bar);
++  if (upper.length === 0 || upper.length !== lower.length) return false;
++  for (let i = 0; i < upper.length; i++) {
++    const u = upper[i];
++    const l = lower[i];
++    if (u === undefined || l === undefined || u.midis.length !== 1 || l.midis.length !== 1 || !same(u.onset, l.onset)) return false;
++  }
++  const hi = upper.map((s) => s.midis[0] ?? 0);
++  const lo = lower.map((s) => s.midis[0] ?? 0);
++  if (hi.every((h, i) => (((h - (lo[i] ?? 0)) % 12) + 12) % 12 === 0)) return true;
++  if (hi.length < 2) return false;
++  for (let i = 1; i < hi.length; i++) {
++    const up = (hi[i] ?? 0) - (hi[i - 1] ?? 0);
++    const down = (lo[i] ?? 0) - (lo[i - 1] ?? 0);
++    if (!(up * down < 0 && Math.abs(Math.abs(up) - Math.abs(down)) <= 1)) return false;
++  }
++  return true;
++}
++
+ // --- the detectors -----------------------------------------------------------------
+ 
+ /** A second on the staff: C to D, C♯ to D, E to F. */
+@@ -509,7 +554,9 @@ export const DETECTORS: Readonly<Record<DetectorId, Detector>> = {
+   /**
+    * The left hand (staff 2) plays more than one note in every bar, under a
+    * right hand that plays too: a pattern under a tune. A melody in the left
+-   * hand alone is reading the bass clef, not this.
++   * hand alone is reading the bass clef, not this; nor is a bar where the hands
++   * play one line doubled (`mirrored`): two-hand scales, Hanon and arpeggios
++   * read as this before CT1 (sixteen golden models, the CT1 brief's appendix).
+    */
+   leftHandPattern: (m) => {
+     const notes = placed(m);
+@@ -517,7 +564,7 @@ export const DETECTORS: Readonly<Record<DetectorId, Detector>> = {
+     const onsets = (bar: number): number => new Set(left.filter((p) => p.note.measureIndex === bar).map((p) => p.note.onset)).size;
+     const tune = (bar: number): boolean => notes.some((p) => p.note.staff === 1 && p.note.measureIndex === bar);
+     const everyBar =
+-      m.measureCount > 0 && Array.from({ length: m.measureCount }, (_, bar) => onsets(bar) > 1 && tune(bar)).every(Boolean);
++      m.measureCount > 0 && Array.from({ length: m.measureCount }, (_, bar) => onsets(bar) > 1 && tune(bar) && !mirrored(m, bar)).every(Boolean);
+     return found('leftHandPattern', everyBar ? left.map(locate) : []);
+   },
+ 
+@@ -528,7 +575,11 @@ export const DETECTORS: Readonly<Record<DetectorId, Detector>> = {
+    * A broken chord in quarters (root, fifth, third, fifth) circles back to its
+    * fifth and is a pattern, not a walk; a walk that stalls on a repeated note
+    * still walks; the same quarters with nothing over them are a bass line read
+-   * alone.
++   * alone. Each beat is one note and the bar has at least three pitches (CT1,
++   * after "a continuous sequence of quarter notes … outlining the chord
++   * progression", The Jazz Piano Site, *Walking Bass-lines*): a stride bar,
++   * bass and chord in turn, and a one-note pulse are not walks (E22). A bar of
++   * the hands doubled (`mirrored`) is a two-hand exercise, not a walk.
+    */
+   walkingBass: (m) => {
+     const notes = placed(m);
+@@ -536,10 +587,14 @@ export const DETECTORS: Readonly<Record<DetectorId, Detector>> = {
+     const walks = (bar: number): boolean => {
+       const inBar = left.filter((p) => p.note.measureIndex === bar);
+       const quarters = inBar.filter((p) => same(parts(p.note)[0] ?? 0, 1));
++      const struck = strikesIn(m, 2, bar);
+       return (
+         quarters.length === inBar.length &&
+         quarters.length === barLength(metreAt(m, bar)) &&
+-        !turnsBack(quarters.map((p) => p.note.midi))
++        !turnsBack(quarters.map((p) => p.note.midi)) &&
++        struck.every((s) => s.midis.length === 1) &&
++        new Set(quarters.map((p) => p.note.midi)).size >= 3 &&
++        !mirrored(m, bar)
+       );
+     };
+     const tune = (bar: number): boolean => notes.some((p) => p.note.staff === 1 && p.note.measureIndex === bar);
+diff --git a/app/src/evidence/evidence.ts b/app/src/evidence/evidence.ts
+index 7b1261d..9a4e36f 100644
+--- a/app/src/evidence/evidence.ts
++++ b/app/src/evidence/evidence.ts
+@@ -201,8 +201,13 @@ export interface EvidenceContext {
+  *   other; it reads them at the practice standard. The support share and the
+  *   timing precisions moved into the vocabulary at the same time (L57) with
+  *   their values unchanged, which alone would have moved nothing.
++ * - **7** — the same shape; two detectors read what the music holds (CT1):
++ *   `leftHandPattern` no longer finds a pattern in a bar where the hands play
++ *   one line doubled (two-hand scales, Hanon and arpeggios), and `walkingBass`
++ *   no longer walks a stride bar or a one-note pulse. Evidence stored under 6
++ *   may have located those demands there, so it waits for a recompute.
+  */
+-export const EVIDENCE_DEFINITIONS = 6;
++export const EVIDENCE_DEFINITIONS = 7;
+ 
+ /** A demand at some steps: another demand on a demand's counted steps (`overlapOf`), or one a skill does not count (`otherDemands`). */
+ export interface DemandOverlap {
