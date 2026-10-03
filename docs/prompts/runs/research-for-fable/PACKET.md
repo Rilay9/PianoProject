@@ -25,7 +25,7 @@ This is research only. Nothing here was built, placed or imported, and nothing w
 - `curricula-and-mutopia.md`: concept-by-level table from Faber, ABRSM 2025–26 and RCM 2022; public-domain grade-list pieces; a 548-entry Mutopia scrape.
 - `pdmx-index.md`: 245 PDMX scores read note by note, an index by characteristic, red flags per file.
 - `beyer-index.md`: all 109 pieces of Beyer Op. 101, read from the Peters scan.
-- `../INDEPENDENT-ADDENDUM.md`: independent follow-up research on stronger edition-linked corpora, additional verification/indexing libraries, and genre/accompaniment sources. It supplements rather than replaces the reports above.
+- `INDEPENDENT-ADDENDUM.md`: independent follow-up research on stronger edition-linked corpora, additional verification/indexing libraries, and genre/accompaniment sources. It supplements rather than replaces the reports above.
 
 **Queryable data lives in `data/`:**
 - `pdmx-index.json`: per file, its PDMX path, characteristics, red flags and edition check. The `local_file` paths point at a scratch folder that no longer exists. Re-extract by `pdmx_mxl` path, streaming `mxl.tar.gz` from Zenodo record 14648209.
