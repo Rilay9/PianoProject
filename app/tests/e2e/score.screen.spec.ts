@@ -2113,8 +2113,9 @@ test.describe('▶ after the sound was suspended (U69)', () => {
       bar.append(copy);
       const modeWhole = mode.getBoundingClientRect().width >= copy.getBoundingClientRect().width - 0.5;
       copy.remove();
-      // Hands off the row only where it would not fit even at its own width with the shortest words:
-      // put back for a moment at its own width, the words at their shortest, the row read, all put back.
+      // Hands off the row only where it would not fit even with the shortest words: put back for a
+      // moment at the floor it is always drawn at (U122d), the words at their shortest, the row read,
+      // all put back.
       const handsGroup = document.querySelector<HTMLElement>('#score-hands-R')!.parentElement!;
       const hear = document.querySelector<HTMLElement>('#score-hear')!;
       const handsOnBar = handsGroup.parentElement === bar;
@@ -2123,11 +2124,9 @@ test.describe('▶ after the sound was suspended (U69)', () => {
       if (!handsOnBar) {
         const home = handsGroup.parentElement;
         const next = handsGroup.nextSibling;
-        const floor = handsGroup.dataset.floor;
         const tempoLabel = document.querySelector<HTMLElement>('#score-tempo-label')!;
         const words = { tempo: tempoLabel.textContent, tempoWidth: tempoLabel.style.width, mode: [...mode.options].map((o) => o.textContent), modeWidth: mode.style.width };
         bar.insertBefore(handsGroup, tempoLabel);
-        handsGroup.dataset.floor = 'false';
         tempoLabel.textContent = (tempoLabel.textContent ?? '').replace(/^\d+% · /, '');
         tempoLabel.style.width = '';
         const short: Record<string, string> = { wait: 'Wait', tempo: 'Tempo', listen: 'Play', free: 'Free' };
@@ -2141,7 +2140,6 @@ test.describe('▶ after the sound was suspended (U69)', () => {
           ).size === 1 && back.getBoundingClientRect().right <= group.getBoundingClientRect().right + 0.5;
         handsNeeded = !fits;
         home?.insertBefore(handsGroup, next);
-        if (floor !== undefined) handsGroup.dataset.floor = floor;
         tempoLabel.textContent = words.tempo;
         tempoLabel.style.width = words.tempoWidth;
         [...mode.options].forEach((o, i) => (o.textContent = words.mode[i] ?? o.textContent));
@@ -2170,7 +2168,6 @@ test.describe('▶ after the sound was suspended (U69)', () => {
         handsOnBar,
         hearOnBar,
         handsNeeded,
-        handsFloor: handsGroup.dataset.floor ?? null,
         statusWidth: s.width,
         statusCut,
         statusOwnCut,
@@ -2185,7 +2182,7 @@ test.describe('▶ after the sound was suspended (U69)', () => {
     expect.soft(seen.whereWhole, `the bar number is cut (“${seen.whereText}”)`).toBe(true);
     expect.soft(seen.widestWhole, `the piece’s widest bar number would be cut (“${seen.widestText}”)`).toBe(true);
     expect.soft(seen.modeWhole, `the selected mode is cut (“${String(seen.modeLabel)}”)`).toBe(true);
-    expect.soft(seen.handsOnBar || seen.handsNeeded, 'Hands left the row although it fits there at its own width with the shortest words').toBe(true);
+    expect.soft(seen.handsOnBar || seen.handsNeeded, 'Hands left the row although it fits there with the shortest words').toBe(true);
     expect.soft(seen.hearOnBar || !seen.handsOnBar, 'Hear it left the row before Hands').toBe(true);
     expect.soft(seen.statusOwnCut, 'the status line is cut flush by the group, not by its own ellipsis').toBe(true);
   };
@@ -2261,7 +2258,7 @@ test.describe('▶ after the sound was suspended (U69)', () => {
       if (long === true) expect(seen.widestText, 'the piece’s bar count is not three digits').toMatch(/^bar \d{3} \/ \d{3}$/);
       test.info().annotations.push({
         type: 'bar',
-        description: `behind ⋯: ${[seen.handsOnBar ? '' : 'Hands', seen.hearOnBar ? '' : 'Hear it'].filter(Boolean).join(', ') || 'nothing'}; Hands at the floor: ${String(seen.handsFloor)}; mode “${String(seen.modeLabel)}”`,
+        description: `behind ⋯: ${[seen.handsOnBar ? '' : 'Hands', seen.hearOnBar ? '' : 'Hear it'].filter(Boolean).join(', ') || 'nothing'}; mode “${String(seen.modeLabel)}”`,
       });
       for (const id of ['score-play', 'score-mode', 'score-tempo-label', 'score-more']) {
         expect.soft(seen.onBar, `${id} is not on the row`).toContain(id);

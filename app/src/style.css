@@ -3130,16 +3130,14 @@ input[type='checkbox'] {
 
 /* Every control a sentence names meets the same floor (U124, widened by
    U122b, `responses/e070d238.md`): Back, and each of R, L and Both, which
-   *choose L or Both* and *tap R again* name one at a time. Hands takes it
-   wherever it keeps its place on the row with it (`data-floor`, decided by
-   `fitBarControls`): where only the floor would send it behind `⋯` (a narrow
-   upright row) it keeps its own width, a product trade put to the reviewer,
-   not settled here. */
+   *choose L or Both* and *tap R again* name one at a time. Always: where the
+   floor leaves Hands no room on a narrow upright row it goes behind `⋯`
+   rather than under the floor (U122d, option (b)). */
 #score-back,
 #score-back-side,
-.score-group[data-floor='true'] > #score-hands-R,
-.score-group[data-floor='true'] > #score-hands-L,
-.score-group[data-floor='true'] > #score-hands-both {
+#score-hands-R,
+#score-hands-L,
+#score-hands-both {
   min-width: max(2.5rem, 40px);
 }
 

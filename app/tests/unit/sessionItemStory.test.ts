@@ -271,6 +271,11 @@ function heading(): string {
   return document.querySelector('#score-summary h2')?.textContent ?? '';
 }
 
+/** The sheet's plain verdict sentence (U122d), where it draws one. */
+function verdict(): string | null {
+  return document.querySelector('#summary-verdict')?.textContent ?? null;
+}
+
 function tempoNow(): number {
   return Number(document.querySelector<HTMLInputElement>('#score-tempo')?.value);
 }
@@ -365,6 +370,8 @@ describe('the sheet says what a pass needs, and offers it (points 2 and 5)', () 
     await open(`#/score/${SONG_ID}?rung=2.1&slot=new&mode=wait`);
     finish(run({ mode: 'wait', tempoPct: 70, timing: timingStats([]) }));
     expect(heading()).toBe(SUMMARY_TEXT.waitNotesReady);
+    // U122d: the outcome in one plain sentence under the heading, beside the control.
+    expect(verdict()).toBe('Not a pass yet: Wait for me does not judge the tempo, and a pass needs one.');
     expect(stat('tempo')).toBe('Not judged in Wait for me');
     expect(stat('to-pass')).toBe('90 % of the notes, in Keep tempo at 80 % of the written tempo or faster');
     expect(stat('to-pass')).toBe(STANDARD);
@@ -377,6 +384,7 @@ describe('the sheet says what a pass needs, and offers it (points 2 and 5)', () 
     await open(`#/score/${SONG_ID}?rung=2.1&slot=new`);
     finish(run({ tempoPct: 70 }));
     expect(heading()).toBe('Run finished');
+    expect(verdict()).toBe('Not a pass: the notes were right, but the tempo was below the 80 % a pass needs.');
     expect(stat('tempo')).toBe('70% of written');
     expect(stat('to-pass')).toBe(STANDARD);
     expect(document.getElementById('summary-standard')?.textContent).toBe('Keep tempo at 80 %');
@@ -386,6 +394,7 @@ describe('the sheet says what a pass needs, and offers it (points 2 and 5)', () 
     await open(`#/score/${SONG_ID}?rung=2.1&slot=new`);
     finish(run({ tempoPct: 80, accuracy: 0.75, correctSteps: 6 }));
     expect(heading()).toBe('Run finished');
+    expect(verdict()).toBe('Not a pass: fewer than 90 % of the notes were right.');
     expect(stat('to-pass')).toBe(STANDARD);
     expect(document.getElementById('summary-standard')).toBeNull();
     expect(document.getElementById('summary-again')).not.toBeNull();
@@ -395,6 +404,8 @@ describe('the sheet says what a pass needs, and offers it (points 2 and 5)', () 
     await open(`#/score/${SONG_ID}?rung=2.1&slot=new`);
     finish(run({ tempoPct: 80 }));
     await vi.waitFor(() => expect(heading()).toBe('Passed'));
+    // The heading is the verdict; no second sentence.
+    expect(verdict()).toBeNull();
     expect(stat('to-pass')).toBeNull();
     expect(document.getElementById('summary-standard')).toBeNull();
   });
@@ -412,6 +423,15 @@ describe('the sheet says what a pass needs, and offers it (points 2 and 5)', () 
     finish(run({ tempoPct: 80 }));
     await vi.waitFor(() => expect(heading()).toBe('Passed'));
     expect(stat('changed')).toBe('');
+  });
+
+  it('the verdict sentence, both halves short: says both, in the standard\'s numbers (U122d)', () => {
+    expect(SUMMARY_TEXT.verdict({ notesMet: false, tempoMet: false, waitMode: false, accuracy: 0.9, tempoPct: 80 })).toBe(
+      'Not a pass: fewer than 90 % of the notes were right, and the tempo was below the 80 % a pass needs.',
+    );
+    expect(SUMMARY_TEXT.verdict({ notesMet: false, tempoMet: false, waitMode: true, accuracy: 0.9, tempoPct: 80 })).toBe(
+      'Not a pass: fewer than 90 % of the notes were right, and Wait for me does not judge the tempo.',
+    );
   });
 
   it('the lesson page and the sheet say the tempo half in one set of words', () => {

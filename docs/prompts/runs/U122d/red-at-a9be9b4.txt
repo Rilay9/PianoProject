@@ -1,0 +1,187 @@
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/planStore.ts is dynamically imported by src/data/evidenceJob.ts but also statically imported by src/data/backup.ts, src/data/rungStates.ts, src/ui/screens/DrillScreen.ts, src/ui/screens/LessonScreen.ts, src/ui/screens/PlanScreen.ts, ..., dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [plugin builtin:vite-reporter] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[WebServer] [INEFFECTIVE_DYNAMIC_IMPORT] src/data/evidenceJob.ts is dynamically imported by src/main.ts but also statically imported by src/ui/screens/SettingsScreen.ts, dynamic import will not move module into another chunk.
+[WebServer] 
+[WebServer] [PLUGIN_TIMINGS] Plugin hooks ran for 7.0s. The build took 3.5s. Hooks such as `closeBundle` run after the build ends, so hook time can be more than build time.
+[WebServer] The slowest hooks, timed inside each callback (the wait before a callback starts is excluded, the time it awaits is included):
+[WebServer]   - vite-plugin-pwa:build closeBundle (100%, 4.9s, 1 call)
+[WebServer] Additional hook time came from the hooks below and from hooks under 1s.
+[WebServer] 2 hooks are listed without a time. Their calls overlapped, so the time inside one call includes work from other calls. To find their cost, profile the build with `node --cpu-prof`:
+[WebServer]   - vite:asset load (48 calls)
+[WebServer]   - vite:worker load (2 calls)
+[WebServer] See https://rolldown.rs/reference/InputOptions.checks#plugintimings for more details.
+[WebServer] 
+
+Running 5 tests using 3 workers
+
+  ✘  3 tests/e2e/score.task-chrome.spec.ts:552:5 › each Score moment shows what its task needs (U122c) › 342x740 100% stack hcb (58.0s)
+  ✘  1 tests/e2e/score.task-chrome.spec.ts:552:5 › each Score moment shows what its task needs (U122c) › 1024x768 100% stack hcb (57.8s)
+  ✘  2 tests/e2e/score.task-chrome.spec.ts:552:5 › each Score moment shows what its task needs (U122c) › 360x780 100% stack hcb (59.5s)
+  ✘  5 tests/e2e/score.task-chrome.spec.ts:880:1 › U122d: upright, Hands behind ⋯ until a sentence asks for a hand (342 × 740, 115 %, wider face) (21.3s)
+  ✓  4 tests/e2e/score.task-chrome.spec.ts:552:5 › each Score moment shows what its task needs (U122c) › 342x740 115% wider moon (34.6s)
+
+
+  1) tests/e2e/score.task-chrome.spec.ts:552:5 › each Score moment shows what its task needs (U122c) › 342x740 100% stack hcb 
+
+    Error: finished: no plain verdict whole in the sheet's first view under Run finished (null)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "finished: no plain verdict whole in the sheet's first view under Run finished (null)",
+    + ]
+
+      636 |         fs.writeFileSync(path.join(OUT, `${name(cell).replace(/[ %]/g, '_')}.json`), JSON.stringify({ cell, failures, record }, null, 1));
+      637 |       }
+    > 638 |       expect(failures, failures.join('\n')).toEqual([]);
+          |                                             ^
+      639 |     });
+      640 |   }
+      641 | });
+        at /home/user/PianoProject/app/tests/e2e/score.task-chrome.spec.ts:638:45
+
+    Error Context: test-results/score.task-chrome-each-Sco-60952-U122c-342x740-100-stack-hcb/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/score.task-chrome-each-Sco-60952-U122c-342x740-100-stack-hcb/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/score.task-chrome-each-Sco-60952-U122c-342x740-100-stack-hcb/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/e2e/score.task-chrome.spec.ts:552:5 › each Score moment shows what its task needs (U122c) › 360x780 100% stack hcb 
+
+    Error: rest: the selected mode cut (Tempo)
+    rest: handsR drawn under the 40-px floor
+    rest: handsL drawn under the 40-px floor
+    paused: the selected mode cut (Tempo)
+    paused: handsR drawn under the 40-px floor
+    paused: handsL drawn under the 40-px floor
+    refused: the selected mode cut (Tempo)
+    refused: handsR drawn under the 40-px floor
+    refused: handsL drawn under the 40-px floor
+    finished: no plain verdict whole in the sheet's first view under Run finished (null)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 12
+
+    - Array []
+    + Array [
+    +   "rest: the selected mode cut (Tempo)",
+    +   "rest: handsR drawn under the 40-px floor",
+    +   "rest: handsL drawn under the 40-px floor",
+    +   "paused: the selected mode cut (Tempo)",
+    +   "paused: handsR drawn under the 40-px floor",
+    +   "paused: handsL drawn under the 40-px floor",
+    +   "refused: the selected mode cut (Tempo)",
+    +   "refused: handsR drawn under the 40-px floor",
+    +   "refused: handsL drawn under the 40-px floor",
+    +   "finished: no plain verdict whole in the sheet's first view under Run finished (null)",
+    + ]
+
+      636 |         fs.writeFileSync(path.join(OUT, `${name(cell).replace(/[ %]/g, '_')}.json`), JSON.stringify({ cell, failures, record }, null, 1));
+      637 |       }
+    > 638 |       expect(failures, failures.join('\n')).toEqual([]);
+          |                                             ^
+      639 |     });
+      640 |   }
+      641 | });
+        at /home/user/PianoProject/app/tests/e2e/score.task-chrome.spec.ts:638:45
+
+    Error Context: test-results/score.task-chrome-each-Sco-73871-U122c-360x780-100-stack-hcb/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/score.task-chrome-each-Sco-73871-U122c-360x780-100-stack-hcb/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/score.task-chrome-each-Sco-73871-U122c-360x780-100-stack-hcb/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests/e2e/score.task-chrome.spec.ts:552:5 › each Score moment shows what its task needs (U122c) › 1024x768 100% stack hcb 
+
+    Error: finished: no plain verdict whole in the sheet's first view under Run finished (null)
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "finished: no plain verdict whole in the sheet's first view under Run finished (null)",
+    + ]
+
+      636 |         fs.writeFileSync(path.join(OUT, `${name(cell).replace(/[ %]/g, '_')}.json`), JSON.stringify({ cell, failures, record }, null, 1));
+      637 |       }
+    > 638 |       expect(failures, failures.join('\n')).toEqual([]);
+          |                                             ^
+      639 |     });
+      640 |   }
+      641 | });
+        at /home/user/PianoProject/app/tests/e2e/score.task-chrome.spec.ts:638:45
+
+    Error Context: test-results/score.task-chrome-each-Sco-9b5c1-122c-1024x768-100-stack-hcb/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/score.task-chrome-each-Sco-9b5c1-122c-1024x768-100-stack-hcb/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/score.task-chrome-each-Sco-9b5c1-122c-1024x768-100-stack-hcb/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) tests/e2e/score.task-chrome.spec.ts:880:1 › U122d: upright, Hands behind ⋯ until a sentence asks for a hand (342 × 740, 115 %, wider face) 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('section[data-screen="score"]')
+    Expected substring: "Nothing for the left hand in this piece — choose R or Both"
+    Received string:    "← BackMary Had a Little Lambbar 1 / 8Wait for mePlay the first note to start?Mary Had a Little Lambbar 1 / 8321233322223321233322223355432125333362232718← BackPlay the first note to start▶Hear itWaitTempoPlayFree53 bpm⋯C4C5C6Start againBack to bar 1 without leaving this screen.Start againInputWhat the app listens to while you play: the piano over its cable, the microphone, or nothing.MIDIMicScreen keysNoneRhythm onlyTap the rhythm on any key. Early and late are marked as usual; the notes are not, and the run is not counted as playing the piece. One tap per written note or chord; extra keys are wrong.OffSectionJump to a named part of the piece.Whole pieceFirst phrase (1–4)Second phrase (5–8)Chord chartThe same piece as a lead sheet: one big chord symbol a bar, a form tracker and a count-off. For playing from the chords rather than reading the notes.Open the chartLoopRepeat a few bars over and over until they are yours. Double-tap the sheet to mark them.OffLadderEach clean pass of the loop speeds up a notch; a pass with a mistake in it slows down one.OffMetronomeThe click, on or off.OffBars in windowHow much music is on the screen at once. Fewer bars means bigger notes. If the number you ask for would make the notes too small to read, the app shows fewer and says so.−2 bars+SizeBigger or smaller notes, around whatever already fits.−100%+LayoutA screenful at a time, or one long sheet you scroll through. Bars in window applies to the Window layout.WindowScrollKeysThe keyboard under the score: the full strip, a thin ribbon that names the note, or nothing.KeysRibbonOffSoundWhether the phone or the piano plays the hand you are not practising.🔈 PhoneDuet: the app plays the right handTurn it off to practise against silence.OnBlindHides the notation so you play from memory. The app still follows you and still marks what you play.OffPerformOne pass, start to finish: no restarts, no loop, and it is kept as a performance rather than practice.OffHandsWhich hand the app waits for. Chosen once for a piece, so it is the first thing to leave the bar when the screen is narrow.RLBothSpeedA share of the written tempo. Slower is how a hard bar becomes an easy one.Beats per minuteThe written tempo itself."
+    Timeout: 10000ms
+
+    Call log:
+      - Expect "toContainText" locator('section[data-screen="score"]') with timeout 10000ms
+      - waiting for locator('section[data-screen="score"]')
+        23 × locator resolved to <section data-loop="" data-mode="wait" data-side="empty" data-ladder="off" data-input="midi" data-chrome="open" data-screen="score" data-rhythm="false" data-running="false" data-hearing="false" data-keys-guide="next" class="screen screen--score">…</section>
+           - unexpected value "← BackMary Had a Little Lambbar 1 / 8Wait for mePlay the first note to start?Mary Had a Little Lambbar 1 / 8321233322223321233322223355432125333362232718← BackPlay the first note to start▶Hear itWaitTempoPlayFree53 bpm⋯C4C5C6Start againBack to bar 1 without leaving this screen.Start againInputWhat the app listens to while you play: the piano over its cable, the microphone, or nothing.MIDIMicScreen keysNoneRhythm onlyTap the rhythm on any key. Early and late are marked as usual; the notes are not, and the run is not counted as playing the piece. One tap per written note or chord; extra keys are wrong.OffSectionJump to a named part of the piece.Whole pieceFirst phrase (1–4)Second phrase (5–8)Chord chartThe same piece as a lead sheet: one big chord symbol a bar, a form tracker and a count-off. For playing from the chords rather than reading the notes.Open the chartLoopRepeat a few bars over and over until they are yours. Double-tap the sheet to mark them.OffLadderEach clean pass of the loop speeds up a notch; a pass with a mistake in it slows down one.OffMetronomeThe click, on or off.OffBars in windowHow much music is on the screen at once. Fewer bars means bigger notes. If the number you ask for would make the notes too small to read, the app shows fewer and says so.−2 bars+SizeBigger or smaller notes, around whatever already fits.−100%+LayoutA screenful at a time, or one long sheet you scroll through. Bars in window applies to the Window layout.WindowScrollKeysThe keyboard under the score: the full strip, a thin ribbon that names the note, or nothing.KeysRibbonOffSoundWhether the phone or the piano plays the hand you are not practising.🔈 PhoneDuet: the app plays the right handTurn it off to practise against silence.OnBlindHides the notation so you play from memory. The app still follows you and still marks what you play.OffPerformOne pass, start to finish: no restarts, no loop, and it is kept as a performance rather than practice.OffHandsWhich hand the app waits for. Chosen once for a piece, so it is the first thing to leave the bar when the screen is narrow.RLBothSpeedA share of the written tempo. Slower is how a hard bar becomes an easy one.Beats per minuteThe written tempo itself."
+
+
+      899 |   await page.locator('#score-play').click({ timeout: 3_000 }).catch(() => undefined);
+      900 |   if (await page.locator('#score-more-sheet').isVisible()) await page.keyboard.press('Escape');
+    > 901 |   await expect(screen).toContainText('Nothing for the left hand in this piece — choose R or Both', { timeout: 10_000 });
+          |                        ^
+      902 |   await expect.poll(onRow, { timeout: 5_000 }).toBe(true);
+      903 |   m = await measure(page, 'refused');
+      904 |   expect(m.modeWhole, `the selected mode (${String(m.modeLabel)}) whole beside Hands`).toBe(true);
+        at /home/user/PianoProject/app/tests/e2e/score.task-chrome.spec.ts:901:24
+
+    Error Context: test-results/score.task-chrome-U122d-up-c8581-d-342-×-740-115-wider-face-/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/score.task-chrome-U122d-up-c8581-d-342-×-740-115-wider-face-/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/score.task-chrome-U122d-up-c8581-d-342-×-740-115-wider-face-/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    tests/e2e/score.task-chrome.spec.ts:552:5 › each Score moment shows what its task needs (U122c) › 342x740 100% stack hcb 
+    tests/e2e/score.task-chrome.spec.ts:552:5 › each Score moment shows what its task needs (U122c) › 360x780 100% stack hcb 
+    tests/e2e/score.task-chrome.spec.ts:552:5 › each Score moment shows what its task needs (U122c) › 1024x768 100% stack hcb 
+    tests/e2e/score.task-chrome.spec.ts:880:1 › U122d: upright, Hands behind ⋯ until a sentence asks for a hand (342 × 740, 115 %, wider face) 
+  1 passed (2.3m)
+exit 1

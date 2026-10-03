@@ -335,6 +335,8 @@ async function measure(page: Page, moment: string): Promise<Record<string, unkno
       // X46's verdict, where the sheet carries one: *To pass* (the standard a run missed) or *Judged*.
       const verdictTerm = [...sheet.querySelectorAll('dt')].find((dt) => /^(To pass|Judged)$/.test((dt.textContent ?? '').trim()));
       const verdict = verdictTerm?.nextElementSibling ?? null;
+      // The plain sentence that says the run's outcome where the heading alone does not (U122d).
+      const sentence = sheet.querySelector('#summary-verdict');
       finished = {
         heading: heading?.textContent ?? null,
         headingWhole: wholeIn(heading),
@@ -342,6 +344,8 @@ async function measure(page: Page, moment: string): Promise<Record<string, unkno
         noteWhole: sheet.querySelector('#summary-note') ? wholeIn(sheet.querySelector('#summary-note')) : null,
         verdict: verdict?.textContent ?? null,
         verdictWhole: verdict ? wholeIn(verdict) && wholeIn(verdictTerm ?? null) : null,
+        sentence: sentence?.textContent ?? null,
+        sentenceWhole: wholeIn(sentence),
         primary: primary?.textContent ?? null,
         primaryId: primary?.id ?? null,
         primaryWhole: wholeIn(primary),
@@ -375,10 +379,6 @@ async function measure(page: Page, moment: string): Promise<Record<string, unkno
       controls,
       modeLabel,
       modeWhole,
-      // Hands at the floor, or at its own width where the floor alone would send it behind ⋯ (the open trade).
-      handsFloor: (document.getElementById('score-hands-R')?.parentElement as HTMLElement | null)?.dataset.floor ?? null,
-      // Upright, today's row where the chooser's whole words would send a control behind ⋯ (the open trade).
-      row: document.getElementById('score-bar')?.dataset.row ?? null,
       handsOnRow: document.getElementById('score-hands-R')?.closest('#score-bar') !== null,
       hearOnRow: document.getElementById('score-hear')?.closest('#score-bar') !== null,
       chrome,
@@ -487,17 +487,15 @@ function judge(cell: Cell, m: Record<string, unknown>, rest: Record<string, unkn
     action('back');
     action('more');
     if (!(c.mode as { shown: boolean } | null)?.shown) fail('the mode not drawn');
-    else if (m.modeWhole === false && m.row !== 'today') fail(`the selected mode cut (${String(m.modeLabel)})`);
+    else if (m.modeWhole === false) fail(`the selected mode cut (${String(m.modeLabel)})`);
     // U119a's order: `Hear it` leaves the row only once Hands has.
     if (m.hearOnRow === false && m.handsOnRow === true) fail('Hear it behind ⋯ while Hands is on the row');
     if (!m.whereShown) fail('`bar n / m` not drawn');
-    // Every control a sentence can name meets the floor where it is drawn (U124, widened by U122b), but
-    // Hands where only the floor would send it behind ⋯: that is the product trade put to the reviewer,
-    // left at today's width (`data-floor='false'`), counted apart in the record, not passed silently.
+    // Every control a sentence can name meets the floor where it is drawn (U124, widened by U122b): on a
+    // narrow upright row Hands goes behind ⋯ rather than under the floor (U122d, option (b)).
     for (const key of ['hear', 'handsR', 'handsL', 'handsBoth']) {
       const k = c[key];
-      const deferred = key.startsWith('hands') && (m.handsFloor === 'false' || m.row === 'today');
-      if (k?.shown && !k.floor && !deferred) fail(`${key} drawn under the 40-px floor`);
+      if (k?.shown && !k.floor) fail(`${key} drawn under the 40-px floor`);
       if (k?.shown && !k.hit) fail(`${key} drawn and not hit`);
     }
   }
@@ -537,6 +535,9 @@ function judge(cell: Cell, m: Record<string, unknown>, rest: Record<string, unkn
     else {
       if (!f.headingWhole) fail(`the outcome (${String(f.heading)}) not whole in the sheet's first view`);
       if (f.verdictWhole === false) fail(`the verdict (${String(f.verdict)}) not whole in the sheet's first view`);
+      // A heading that is not itself a verdict (*Run finished*, *Notes ready*) has the sentence that is (U122d).
+      if (!/^(Passed|Mastered|Mastery run)/.test(String(f.heading)) && !f.sentenceWhole)
+        fail(`no plain verdict whole in the sheet's first view under ${String(f.heading)} (${String(f.sentence)})`);
       if (!f.primaryWhole) fail(`the primary action (${String(f.primary)}) not whole in the sheet's first view`);
       if (!f.primaryHit) fail(`the primary action (${String(f.primary)}) not hit`);
       if ((f.stale as string[]).length > 0) fail(`run chrome over the sheet: ${(f.stale as string[]).join(', ')}`);
@@ -869,4 +870,48 @@ test('the refused start, sideways: its sentence whole on the top line, the hands
   await page.locator('#score-hands-both').click({ timeout: 3_000 });
   await expect(screen).toHaveAttribute('data-running', 'true', { timeout: 10_000 });
   await expect(page.locator('#score-top-say')).not.toHaveText(/Nothing for/);
+});
+
+/**
+ * U122d, option (b) upright: on the narrowest upright row Hands sits behind `⋯` with the mode whole and no
+ * control under the floor, and comes back to the row, at the floor, while a sentence asks for a hand
+ * (*choose R or Both*, `responses/759596b4.md` 3(b)); the hand last chosen is the one that stands.
+ */
+test('U122d: upright, Hands behind ⋯ until a sentence asks for a hand (342 × 740, 115 %, wider face)', async ({ page }) => {
+  test.setTimeout(120_000);
+  await setUp(page, { w: 342, h: 740, text: 115, face: 'wider', piece: 'hcb' });
+  await page.goto('/#/score/song.folk.mary-had-a-little-lamb');
+  const screen = page.locator('section[data-screen="score"]');
+  await expect(screen).toHaveAttribute('data-input', 'midi', { timeout: 60_000 });
+  await page.locator('#score-mode').selectOption('wait');
+  await settled(page);
+  await page.waitForTimeout(400);
+  const onRow = (): Promise<boolean> => page.evaluate(() => document.getElementById('score-hands-R')?.closest('#score-bar') !== null);
+  let m = await measure(page, 'rest');
+  const c = (k: string): { shown: boolean; floor: boolean; hit: boolean } | null =>
+    (m.controls as Record<string, { shown: boolean; floor: boolean; hit: boolean } | null>)[k] ?? null;
+  expect(m.modeWhole, `the selected mode (${String(m.modeLabel)}) whole`).toBe(true);
+  for (const k of ['handsR', 'handsL', 'handsBoth', 'hear']) if (c(k)?.shown) expect(c(k)?.floor, `${k} at the floor`).toBe(true);
+  expect(await onRow(), 'Hands behind ⋯ at rest on this row').toBe(false);
+  // A Wait run, then L from the menu as a learner reaches it mid-run (a tap on the music shows the row):
+  // nothing for the left hand in this piece, so the start is refused and the sentence names R and Both.
+  await page.locator('#score-play').click({ timeout: 3_000 });
+  await expect(screen).toHaveAttribute('data-running', 'true');
+  await page.locator('#score-stage').click({ position: { x: 40, y: 60 } });
+  await page.locator('#score-more').click({ timeout: 3_000 });
+  await page.locator('#score-hands-L').click({ timeout: 3_000 });
+  if (await page.locator('#score-more-sheet').isVisible()) await page.keyboard.press('Escape');
+  await expect(page.locator('#score-more-sheet')).toBeHidden();
+  await expect(screen).toContainText('Nothing for the left hand in this piece — choose R or Both', { timeout: 10_000 });
+  await expect.poll(onRow, { timeout: 5_000 }).toBe(true);
+  m = await measure(page, 'refused');
+  expect(m.modeWhole, `the selected mode (${String(m.modeLabel)}) whole beside Hands`).toBe(true);
+  for (const k of ['handsR', 'handsBoth']) expect(c(k)?.shown && c(k)?.floor && c(k)?.hit, `${k} on the row at the floor, hit ${JSON.stringify(c(k))}`).toBe(true);
+  for (const k of ['handsR', 'handsL', 'handsBoth', 'hear', 'play', 'more', 'back']) if (c(k)?.shown) expect(c(k)?.floor, `${k} at the floor`).toBe(true);
+  // Both, as asked: the run starts with it, the sentence goes, and Both is the hand that stands.
+  await page.locator('#score-hands-both').click({ timeout: 3_000 });
+  await expect(screen).toHaveAttribute('data-running', 'true', { timeout: 10_000 });
+  await expect(screen).not.toContainText('Nothing for the left hand');
+  await expect(page.locator('#score-hands-both')).toHaveClass(/is-selected/);
+  await expect(page.locator('#score-hands-L')).not.toHaveClass(/is-selected/);
 });

@@ -211,6 +211,24 @@ export const SUMMARY_TEXT = {
   toPassLabel: 'To pass',
   toPass: (accuracy: number, tempoPct: number, suggested = false): string =>
     tempoPct > 0 ? `${percent(accuracy)} of the notes, ${keepTempoAt(tempoPct, suggested)}` : `${percent(accuracy)} of the notes`,
+  /**
+   * The run's outcome in one plain sentence, on a judged run that did not pass (U122d,
+   * `responses/3bb9d281.md`): the heading said *Run finished* or *Notes ready* and the figures and *To pass*
+   * said the rest, so nothing on the first view told the learner why the run was not a pass. Read off the
+   * same facts as *To pass* (X46: the accuracy against the standard, and whether the run's own mode and
+   * tempo could count); it adds no judgement. The numbers are the standard's, never the run's: the run's
+   * own are on the lines below, and a rounded 90 % beside "fewer than 90 %" would contradict itself.
+   */
+  verdict: (facts: { notesMet: boolean; tempoMet: boolean; waitMode: boolean; accuracy: number; tempoPct: number }): string => {
+    const notes = `fewer than ${percent(facts.accuracy)} of the notes were right`;
+    if (facts.tempoMet) return `Not a pass: ${notes}.`;
+    if (facts.waitMode)
+      return facts.notesMet
+        ? 'Not a pass yet: Wait for me does not judge the tempo, and a pass needs one.'
+        : `Not a pass: ${notes}, and Wait for me does not judge the tempo.`;
+    const below = `the tempo was below the ${String(Math.round(facts.tempoPct))} % a pass needs`;
+    return facts.notesMet ? `Not a pass: the notes were right, but ${below}.` : `Not a pass: ${notes}, and ${below}.`;
+  },
   /** The sheet's control that does what *To pass* says, where the run's own mode or tempo could not count (X46). */
   toTheStandard: (tempoPct: number): string => `Keep tempo at ${String(Math.round(tempoPct))} %`,
   /**

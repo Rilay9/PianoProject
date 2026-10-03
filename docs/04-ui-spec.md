@@ -1926,7 +1926,10 @@ device (`scoreChrome.ts`, `chromeFor`), read from the run as it is:
   finding 8).
 - **The finished view** keeps X46's sheet and its order; the outcome and the primary next action
   are in its first view on every device (the end-of-run summary sheet, below, for the phone
-  held sideways).
+  held sideways). Where the heading is not itself a verdict (*Run finished*, *Notes ready*: a
+  judged run that missed its standard) one plain sentence under it says why the run is not a
+  pass, from the facts *To pass* is drawn from (`#summary-verdict`, `SUMMARY_TEXT.verdict`;
+  U122d): *Not a pass: the notes were right, but the tempo was below the 80 % a pass needs.*
 
 Each device keeps its own surfaces (R7):
 
@@ -1953,11 +1956,12 @@ Each device keeps its own surfaces (R7):
   app's status line and the run's own line stay; it used to leave the flow, and the music jumped
   up by its height at every fold and down at every reveal. While a refusal stands it takes the
   mode's name's line, so the header's height holds. The beat dot is beside `bar n / m`. The row
-  is the sideways chooser's (the mode whole, Hands at the tap floor) wherever that keeps the
-  controls today's row kept, and today's row where it would not: on the narrowest rows
-  (342 × 740, 360 × 780) whole words and the floor would send Hands behind `⋯`, an open product
-  trade (`docs/design/score-bar-layout.md` §10.7), so there the mode is cut and Hands is narrow,
-  as before.
+  is the sideways chooser's: the mode whole, Hands at the tap floor or behind `⋯`. On the
+  narrowest rows (342 × 740, 360 × 780) whole words and the floor leave Hands no room, so it is
+  behind `⋯` at rest, and comes back to the row while a sentence asks for a hand (*choose R or
+  Both*), `Hear it` going first and, at 342 px where that is still not room enough, the bpm
+  readout while the sentence stands (no run is going; the tempo is in `⋯` under *Speed*) (U122d, the reviewer's option (b), `responses/3bb9d281.md`;
+  `docs/design/score-bar-layout.md` §10.7 had it open).
 - **Tablet** (and 1024 × 768, 768 × 1024, which the app lays out as upright): the header, the
   side panel and the bar, as before; the header as upright. **Upright and on a tablet the stage
   keeps the bar's row through a run**: where the height decides the size the music grew at ▶
@@ -1965,8 +1969,8 @@ Each device keeps its own surfaces (R7):
 
 Every control a sentence names meets the tap floor, `max(2.5rem, 40px)` in both dimensions:
 `▶`, `⋯`, `← Back`, `Hear it` (at the wider of *Hear it* and *Stop*), and each of `R`, `L` and
-`Both` wherever Hands keeps its place on the row with it (U124, widened by U122b; where only
-the floor would send Hands behind `⋯` it keeps today's width, the open trade above).
+`Both` (U124, widened by U122b; since U122d always, Hands going behind `⋯` where the floor
+leaves it no room on the row).
 
 **One size for the run** (P21e A2). The fit measures the *piece* — a third, never-shown
 engraver draws the whole score once per zoom and the tallest system in it sets the scale — so

@@ -1545,49 +1545,16 @@ export function ScoreScreen(router: Router): HTMLElement {
   }
 
   /**
-   * **Hands at the tap floor, where it keeps its place (U122c).** Each of `R`, `L` and `Both` meets the
-   * floor a sentence's control must meet (U124, widened by U122b), which makes the three about half as
-   * wide again. On a narrow upright row (342 × 740, 360 × 780) that width sends Hands behind `⋯` where
-   * it sat on the row: a control leaving the screen, which is a product trade, not this lane's to choose
-   * (`responses/adb0873a.md` §1). So the floor is given wherever Hands keeps its place with it, and where
-   * only the floor would send it away it keeps today's width (`data-floor='false'`) and the trade goes to
-   * the reviewer. Sideways and on a tablet, in every cell measured, it keeps its place at the floor.
+   * **Hands at the tap floor, or behind `⋯` (U122c, U122d).** Each of `R`, `L` and `Both` meets the floor
+   * a sentence's control must meet (U124, widened by U122b), which makes the three about half as wide
+   * again. On a narrow upright row (342 × 740, 360 × 780) that width and a whole mode label leave no room
+   * for Hands, and U122c kept today's row there (the mode cut, Hands under the floor) as a trade for the
+   * reviewer. Ruled (`responses/3bb9d281.md`, option (b)): Hands goes behind `⋯`, the mode stays whole,
+   * nothing is drawn under the floor, and Hands comes back to the row while a sentence asks for a hand
+   * (`namedByASentence`, the last to leave).
    */
   /** What the last fit was for, so a render that changes none of it measures nothing. */
   let fittedFor = '';
-
-  /**
-   * Today's row (before U122c), as a fallback upright: the mode's sentence or word by the window's width
-   * (440 px), the select and the tempo label free to give their room, Hands and `Hear it` at their own
-   * widths, a control leaving only when the row wraps. Returns what it keeps on the row.
-   *
-   * **Upright the chooser's whole words cost a control** (U122c's matrix): the mode priced at its widest
-   * label and the bpm never cut leave a 342 or 360 px row no room for Hands where today's row, its mode
-   * cut, kept it. U122 put *a whole mode label before Hands* to the reviewer as a choice (§5.4) and it was
-   * never ruled; a control leaving the screen is a product trade (`responses/adb0873a.md` §1), so upright
-   * today's row stands wherever the chooser would keep less of it (`data-row='today'`), and the trade is
-   * reported. Sideways the chooser governs (U121 is settled there, and Hands keeps its place in every
-   * cell measured); on a tablet there is room for both.
-   */
-  function fitToday(): Set<HTMLElement> {
-    for (const entry of OVERFLOW_ORDER) bringBackToBar(entry.el);
-    handsGroup.dataset.floor = 'false';
-    const narrow = window.innerWidth < 440;
-    labels = { mode: narrow ? 'short' : 'long', tempo: narrow ? 'short' : 'long' };
-    for (const option of [...modeSelect.options]) {
-      const id = option.value as Mode;
-      option.textContent = labels.mode === 'short' ? SHORT_MODES[id] : (MODES.find((m) => m.id === id)?.label ?? id);
-    }
-    Object.assign(modeSelect.style, { flex: '', minWidth: '', maxWidth: '', width: '' });
-    tempoLabel.textContent = tempoText();
-    Object.assign(tempoLabel.style, { flex: '0 1 auto', width: '' });
-    hearButton.style.minWidth = '';
-    for (const entry of OVERFLOW_ORDER) {
-      if (!barIsOverfull() && !leftGroupIsCut()) break;
-      sendToSheet(entry);
-    }
-    return new Set(OVERFLOW_ORDER.map((entry) => entry.el).filter((el) => el.parentElement === bar));
-  }
 
   /**
    * Puts as much on the bar as it can hold, and the rest in the sheet: U122's
@@ -1618,8 +1585,8 @@ export function ScoreScreen(router: Router): HTMLElement {
       tempoLabel.textContent = tempoText();
       return;
     }
-    const today = sidewaysQuery?.matches === true ? null : fitToday();
     for (const entry of OVERFLOW_ORDER) bringBackToBar(entry.el);
+    tempoLabel.hidden = false;
     const order = [...OVERFLOW_ORDER].sort((a, b) => Number(a.el === named) - Number(b.el === named));
     const forms: ['long' | 'short', 'long' | 'short'][] = [
       ['long', 'long'],
@@ -1629,23 +1596,38 @@ export function ScoreScreen(router: Router): HTMLElement {
     ];
     fit: for (let leave = 0; leave <= order.length; leave += 1) {
       if (leave > 0) sendToSheet(order[leave - 1]!);
-      // Hands at the tap floor first; at its own width only where the floor alone would send it
-      // behind `⋯` (the trade described above `fittedFor`, left as it was until it is decided).
-      for (const floor of handsGroup.parentElement === bar ? [true, false] : [true]) {
-        handsGroup.dataset.floor = String(floor);
+      for (const [mode, tempoForm] of forms) {
+        labels = { mode, tempo: tempoForm };
+        applyModeLabels();
+        applyTempoLabel();
+        if (!barIsOverfull() && !leftGroupIsCut()) break fit;
+      }
+    }
+    // A control a sentence names comes back to the row (U122d, option (b)). On the narrowest upright
+    // row (342 px) Hands at the floor beside the mode's word, ▶, ⋯ and the bpm is a few pixels too wide
+    // even with `Hear it` gone, so while the sentence stands the bpm readout gives its room: no run is
+    // going (the start was refused), and the tempo is in `⋯` under *Speed*.
+    if (named !== null && overflowed.has(named)) {
+      bringBackToBar(named);
+      tempoLabel.hidden = true;
+      let fits = false;
+      for (const [mode, tempoForm] of forms) {
+        labels = { mode, tempo: tempoForm };
+        applyModeLabels();
+        if ((fits = !barIsOverfull() && !leftGroupIsCut())) break;
+      }
+      if (!fits) {
+        const entry = OVERFLOW_ORDER.find((e) => e.el === named);
+        if (entry) sendToSheet(entry);
+        tempoLabel.hidden = false;
+        labels = { mode: 'long', tempo: 'long' };
         for (const [mode, tempoForm] of forms) {
           labels = { mode, tempo: tempoForm };
           applyModeLabels();
           applyTempoLabel();
-          if (!barIsOverfull() && !leftGroupIsCut()) break fit;
+          if (!barIsOverfull() && !leftGroupIsCut()) break;
         }
       }
-    }
-    if (handsGroup.parentElement !== bar) handsGroup.dataset.floor = 'true';
-    delete bar.dataset.row;
-    if (today !== null && [...today].some((el) => el.parentElement !== bar)) {
-      fitToday();
-      bar.dataset.row = 'today';
     }
     fittedFor = key;
     // The row's height is the stage's reserve; it changes only with what is on it.
@@ -2342,6 +2324,9 @@ export function ScoreScreen(router: Router): HTMLElement {
       stash.append(...Array.from(sheet.body.children));
       const at = openSheets.indexOf(closer);
       if (at >= 0) openSheets.splice(at, 1);
+      // The row was not fitted while the sheet held its controls (`fitBarControls`), and a choice made
+      // in it can change what the row must hold: a hand refused from the sheet names Hands (U122d).
+      fitBarControls();
     };
     const observer = new MutationObserver(() => {
       if (sheet.el.isConnected) return;
@@ -4453,6 +4438,19 @@ export function ScoreScreen(router: Router): HTMLElement {
     const missedStandard = heard && judgedMode && !rhythmRun && !sightReading && !measured.passed;
     if (missedStandard) {
       addStat(lines, SUMMARY_TEXT.toPassLabel, SUMMARY_TEXT.toPass(criteria.passAccuracy, criteria.passTempoPct, ofWhat !== 'of written'));
+      // And the outcome in one sentence under the heading, beside the next action (U122d): the heading
+      // alone, *Run finished*, was not a verdict. The facts *To pass* is drawn from; X46's judgement unchanged.
+      const verdict = document.createElement('p');
+      verdict.className = 'summary-note';
+      verdict.id = 'summary-verdict';
+      verdict.textContent = SUMMARY_TEXT.verdict({
+        notesMet: score.accuracy >= criteria.passAccuracy,
+        tempoMet: tempoCanCount(score.mode, score.tempoPct, criteria),
+        waitMode: score.mode === 'wait',
+        accuracy: criteria.passAccuracy,
+        tempoPct: criteria.passTempoPct,
+      });
+      title.after(verdict);
     }
     if (heard) {
       addStat(lines, 'Wrong notes', String(score.wrongNotesTotal));
