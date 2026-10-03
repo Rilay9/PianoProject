@@ -2,14 +2,17 @@
 
 The old project-wide CT1 session is stopped. This queue is the only content-recovery sequence.
 
+If local-agent quota is scarce, use `docs/prompts/cloud-primary-content-recovery.md`: one cloud foreman owns sequencing, bounded cloud subagents gather evidence/build/review, and the local agent is used only for exact local-only evidence requests.
+
 Read first, on this branch:
 
 1. `CLAUDE.md`, especially **Reuse before reinvention**;
 2. `docs/prompts/content-recovery-foundation.md`;
-3. `docs/prompts/content-mistakes.md`;
-4. the exact backlog/reviewer records named by the job.
+3. `docs/prompts/cloud-primary-content-recovery.md` when using cloud-primary execution;
+4. `docs/prompts/content-mistakes.md`;
+5. the exact backlog/reviewer records named by the job.
 
-A cloud job must not depend on a different branch or a chat transcript for facts it needs. If useful evidence exists only on another branch, the orchestrator first copies the vetted evidence onto the working branch or restates it in the job. **Do not tell the cloud agent to rediscover it.**
+A cloud job must not depend on a different branch or a chat transcript for facts it needs. If useful evidence exists only on another branch, the foreman first copies the vetted evidence onto the working branch or restates it in the job. **Do not tell a cloud subagent to rediscover it.**
 
 ## Rules for every job
 
@@ -25,7 +28,7 @@ A cloud job must not depend on a different branch or a chat transcript for facts
 - No grand framework, project-wide migration or unrelated cleanup.
 - **No mid-job widening.** If a new fact changes the objective, record it for a later slice or stop and hand it back; do not append a second project to the running job.
 - Leave CL12a's files alone (`chatgpt/cl12a`): `app/src/curriculum/session.ts`, `sessionPurpose.ts`, `app/src/data/sessionRun.ts`, `app/src/ui/screens/TodayScreen.ts`, `PlanScreen.ts`, `app/src/ui/help.ts`. Report a dependency instead of crossing the seam.
-- Each job lives on its own `claude/cq<N>` branch cut from the current working head, never merges itself, and stops for outside review before the next job begins.
+- Each implementation job lives on its own `claude/cq<N>` branch cut from the current working head, never merges itself, and gets independent cloud review before the foreman advances the queue.
 
 Each entry must report: proposition, old learner-facing risk, reused evidence, candidate alternatives searched, chosen outcome and reason, independent oracle/counterexamples, changed files, catalogue before/after claim ledger, content gained/lost, and remaining unknowns.
 
