@@ -78,3 +78,4 @@ in-flight: drafted 2026-10-02 (`CL12-the-composed-day-says-what-each-row-is-for.
 state: approved 2026-10-02: approved before dispatch as one design lane, L93 inside it (Entry 226)
 - dispatched 2026-10-02: to the outside builder by the owner's paste, on its branch; round one's probe run (`runs/CL12/checks-dff16046.txt`)
 - landed 2026-10-02: merged b87b5667; handoff `handoffs/ed6d7f46.md`
+- verdict 2026-10-03: APPROVE (`responses/ed6d7f46.md`): the design and the labels stand; slice A may dispatch, with the blocked-ahead state kept, one label mapping across consumers, and no Score chrome or detour UI
