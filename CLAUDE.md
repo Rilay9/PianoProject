@@ -2,6 +2,10 @@
 
 **The governing direction is `docs/prompts/charter.md`** (the convergence charter, 2026-10-03). Before any lane touches code, answer its gate: should PianoProject own this responsibility at all?
 
+## Preflight before every action (the owner, 2026-10-03)
+
+Before acting, name the current plan step, unit of work, learner problem, ownership/reuse disposition and finish condition. If you cannot state all five in five short lines, do not act. After finishing, stop rather than selecting another task. The standing checklist behind this is `docs/prompts/anti-drift-checklist.md`; the current plan is `docs/prompts/runs/content-finish-plan.md`.
+
 ## Reuse before reinvention: the first rule (the owner, 2026-10-03)
 
 For every new or changed musical, pedagogical, content, analysis, curriculum, assessment
