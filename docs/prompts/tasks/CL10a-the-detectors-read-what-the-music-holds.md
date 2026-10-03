@@ -85,3 +85,4 @@ index: The detectors read the clef, the key in force, the metre and a held tune,
 in-flight: drafted 2026-10-02 (`CL10a-the-detectors-read-what-the-music-holds.md`): CL10's detector rows; the clef and the key per bar in the model, the walk read in simple time, the held tune, share in place of every bar, the deferrals emptied where readings establish them (Entry 225)
 state: approved 2026-10-02: approved before dispatch, the share rule left open under its stop condition, eligible bars first (Entry 225)
 - dispatched 2026-10-02: to the outside builder by the owner's paste, on its branch; R37's red checkpoint checked (`runs/CL10a/checks-79c56589.txt`)
+- superseded 2026-10-03: by CT1 (Entry 231), the owner's content-truth lane; its notation work (the clef, the key in force, the pickup, the simple-time metre) may be reused there, its share and texture rules not
