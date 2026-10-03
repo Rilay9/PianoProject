@@ -83,3 +83,15 @@ dependencies, so they are not lost.
   `walkingBass` heuristic, with E22's stride and clave misreads.
 - **D3, CL12a's seam.** `session.ts:2754` keys `clef.bass` on the named concepts
   `accompaniment-patterns` and `walking-bass`. That is CL12a's file: reported, not touched.
+
+## Amendments from the owner (2026-10-03, before the review)
+
+1. **The independent reviewer searches for every remaining path** by which any of the eight
+   concept ids could gain measured or established positive authority after the rows are
+   removed. Confirming the edited dictionary and its own tests is not enough.
+2. **The escalation ladder for CQ2 onwards:**
+   - Sonnet researches;
+   - Sonnet implements where the sourced meaning is unambiguous;
+   - an oracle and counterexamples test the result;
+   - Opus comes in only for a genuinely unresolved musical or design judgement.
+3. **After CQ1's review:** stop, and report the cloud usage visible, before launching CQ2.
