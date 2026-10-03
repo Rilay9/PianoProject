@@ -3,8 +3,9 @@ CQ1 (`docs/prompts/runs/CQ1/decision.md`): a broad accompaniment result (`leftHa
 `walkingBass` heuristic cannot certify a named style.
 
 The eight named-style concepts were mapped onto the two broad demands, so a rung naming "alberti" was
-"established" by any option whose notes tripped the broad flag, among them two-hand scales, Hanon and
-arpeggios (content-mistakes 1, 2). They map to no demand now. Each case below fails on `claims.py` at
+"established" by any option whose notes tripped the broad flag (content-mistakes 1, 2). Two-hand scales,
+Hanon and arpeggios trip it too, but they never established a named concept, before or after this slice:
+the eight positive claims removed were on blues.4, ragtime.7, ragtime.8 and technique.6. They map to no demand now. Each case below fails on `claims.py` at
 738e23e (the run record shows it red there) and holds after.
 
 What does not move: the hand-set `taughtAt` in `demands.json` and so the prerequisite gate and the D0 rung
@@ -15,6 +16,7 @@ from __future__ import annotations
 import json
 import sys
 import unittest
+from unittest import mock
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -105,20 +107,31 @@ class TheGateInput(unittest.TestCase):
         self.assertEqual(demands["texture.walking-bass"]["taughtAt"], ["jazz.6", "blues.6", "jam.6"])
 
     def test_the_rung_check_answers_as_it_did_before_for_every_listed_item(self) -> None:
-        """`claims.untaught_on` against the record made from `claims.py` at 738e23e, for every (rung, item)."""
-        record = json.loads((FIXTURES / "cq1_untaught_before.json").read_text(encoding="utf-8"))["pairs"]
+        """
+        `claims.untaught_on` gives the same answer with the eight rows put back, for every (rung,
+        item) on whatever catalogue is built. The gate reads `taughtAt`, never `CONCEPT_DEMANDS`.
+        A fixture pinned to one machine's catalogue would fail on any other build, CI's included.
+        """
         catalog, curriculum = built("catalog.json"), built("curriculum.json")
         by_id = {item["id"]: item for item in catalog}
         _skills, demands = claims.load_vocabulary()
         ancestry = claims.rung_ancestry(curriculum)
-        now: dict[str, list[str]] = {}
-        for _s, _u, lesson in claims.lessons_in_order(curriculum):
-            for item_id in dict.fromkeys(lesson.get("exerciseOptions", []) + lesson.get("songOptions", [])):
-                if item_id in by_id:
-                    now[f"{lesson['id']}|{item_id}"] = claims.untaught_on(by_id[item_id], lesson["id"], ancestry, demands, curriculum)
-        self.assertGreater(len(record), 500)
-        self.assertEqual(now, record)
 
+        def answers() -> dict[str, list[str]]:
+            out: dict[str, list[str]] = {}
+            for _s, _u, lesson in claims.lessons_in_order(curriculum):
+                for item_id in dict.fromkeys(lesson.get("exerciseOptions", []) + lesson.get("songOptions", [])):
+                    if item_id in by_id:
+                        out[f"{lesson['id']}|{item_id}"] = claims.untaught_on(by_id[item_id], lesson["id"], ancestry, demands, curriculum)
+            return out
+
+        now = answers()
+        restored = {c: ("texture.walking-bass" if c == "walking-bass" else "texture.left-hand-pattern")
+                    for c in claims.NAMED_FIGURES_AWAITING_A_SOURCED_CHECK}
+        with mock.patch.dict(claims.CONCEPT_DEMANDS, restored):
+            before = answers()
+        self.assertGreater(len(now), 500)
+        self.assertEqual(now, before)
 
 if __name__ == "__main__":
     unittest.main()

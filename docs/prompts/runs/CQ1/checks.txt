@@ -16,3 +16,15 @@ exit 0   python3 tools/content/review.py --check
 exit 0   cd app && npx tsc -b
 exit 1   cd app && npx vitest run   (344 of 346 files pass; 2 fail, neither reads anything changed: everyOptionOpens "song.ragtime.joplin-pine-apple-rag.mutopia" opens nothing (unfetched edition); midiParity has no reference in build/midi-parity (the reference script was not run). No app file changed.)
 not run  python tools/content/build.py --offline  (the map names it; the catalogue is current for this head, and a rebuild is not needed to regenerate the two reports)
+
+After review 1 (Fix 1 withdrawn by the owner's ruling: no app, build.py, demands.json or schema change; Fix 2 reports and Fix 3 comments only).
+Catalogue note: an aborted rebuild with the withdrawn Fix-1 code wiped app/public/content/scores; a full `python3 tools/content/build.py --offline --skip-fetch` (exit 0, about 17 minutes, no Fix-1 code) restored them, and wrote its own docs/prompts reports, which were then overwritten as below. That rebuild's catalog.json differs from the earlier one (local build drift), so app/public/content/catalog.json was put back to the pre-rebuild copy (build/cq1/catalog-before-fix1.json) for the tests below; both old and new reports were generated from that same catalogue (the delta is identical on the rebuilt one).
+
+exit 0   python3 tools/content/validate.py --allow-nc --personal   (run on the rebuilt catalogue)
+exit 0   python3 -m unittest tests.test_named_figure_containment   (OK, 8 tests, on the pre-rebuild catalogue; on the rebuilt one the fixture comparison test_the_rung_check_answers_as_it_did_before fails, because the fixture was recorded on the pre-rebuild catalogue)
+exit 0   python3 -m unittest tests.test_taught_at
+exit 0   python3 -m unittest tests.test_validate_claims
+exit 0   python3 -m unittest tests.test_excerpts
+exit 0   python3 -m unittest tests.test_excerpt_proposer
+exit 1   python3 -m unittest tests.test_measured_truth   (62 tests, 5 failures: the pinned generated items x2 and the untaught combinations are on the earlier pre-existing list; test_the_committed_markdown_is_this_catalogues for rung-claims.md and inventory.md fail because the committed reports are the 34a8676 base plus CQ1's delta only, not regenerated from this catalogue, by design of Fix 2; not checked whether they also fail on the 34a8676 docs alone)
+not run  app tests (no app change); the full Python suite

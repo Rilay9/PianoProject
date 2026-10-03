@@ -196,3 +196,16 @@ Status is `claims.status_of`. "no claim" = the rung no longer carries the claim.
 ## Note on the regenerated reports
 
 `docs/prompts/inventory.md` is byte-identical before and after the CQ1 change (the inventory does not read `CONCEPT_DEMANDS`). Both reports regenerated here also carry drift unrelated to CQ1: the committed copies at 738e23e were older than the built catalogue in `app/public/content/` (for example 2012 against 2013 measured items, and 2 against 1 unmeasured options), so the git diff of the two docs is larger than the CQ1 ledger above. The ledger is the before/after diff on one catalogue, not the git diff.
+
+## After review 1: the reports
+
+Fix 1 (a restrict-only walking-bass) was withdrawn by the owner's ruling (the demand stays D2); nothing in `demands.json`, its schema, `build.py`, `eligibility.ts` or the app changed.
+
+- `docs/prompts/inventory.md` is written back to the base (`git show 34a8676:docs/prompts/inventory.md`): byte-identical to 34a8676. The inventory does not read `CONCEPT_DEMANDS`; old and new `claims.py` give identical inventory text on the same catalogue.
+- `docs/prompts/rung-claims.md` is the 34a8676 file plus the old-claims against new-claims delta, both rendered from the same catalogue (`build/cq1/gen_reports.py`; patch `build/cq1/cq1-report.patch`, 13 hunks). Hunks 3, 5, 7, 8, 11 and 12 applied by content match; hunk 2, hunk 9 (partly) and hunk 10 (partly) applied line by line where the removed line occurs exactly once. The base was generated from a different catalogue, so these were spliced by hand, keeping the base's own counts and applying only the structural change:
+  - hunk 1, summary: the base numbers moved by the CQ1 deltas (pairs 680 -> 584, checkable 589 -> 503, established 251 -> 243, not established 338 -> 260, absent 296 -> 218, runtime drills 84 -> 75, rungs no option establishes 5 -> 3, options establishing none 147 -> 126, concepts no detector measures 484 -> 499). The "untaught-on-rung combinations" line is catalogue drift, left as in the base.
+  - hunk 2: the `exercise.stride.e-flat` claim cell on jazz.9 set to "-".
+  - hunk 4: the ragtime.5 and blues.8 rows removed; the jazz.6, blues.6 and jam.6 rows' "From" changed to taughtAt (jazz.9 had no row in the base).
+  - hunk 6: 3.6 gains the three concept names, count left as the base's 4/8.
+  - hunk 9: ragtime.6 and ragtime.7 rows; hunk 10: ragtime.8 and jazz.9 rows (the base's counts differ from the delta's).
+  - hunk 13: the fourteen blues.8 and jazz.9 lines removed from the untaught list (`exercise.stride.e-flat` was not in the base list).
