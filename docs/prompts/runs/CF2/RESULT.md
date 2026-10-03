@@ -52,6 +52,7 @@
 ## For curation (no one here decides placement from this table)
 
 - **Two songs, both Happy Birthdays, and both cadences use the rung's own chords literally.**
+  - The reader goes by the printed symbols. The imported *Happy Birthday* prints only C and G7, but an earlier read of its notes, before CF2, found left-hand inversions and a chromatic chord under them. It is the harder version, and the symbols alone understate it.
 - **Skip to My Lou uses primary chords in D.** Jingle Bells in G prints G, C and D7, which would be I, IV and V7 in G major. The row's `keySig` says only "1 sharp", so the reader leaves its function unknown. Both are transfer candidates, if the rung teaches I–IV–V beyond C. The lesson already uses them that way.
 - **Three songs state chords outside I, IV and V:**
   - *Was wollen wir trinken*: minor, with III and VII;
