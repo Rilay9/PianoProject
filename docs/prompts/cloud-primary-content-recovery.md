@@ -1,5 +1,7 @@
 # Cloud-primary content recovery
 
+> **Governed by `docs/prompts/charter.md` from 2026-10-03.** The freeze is in force: no CQ2 and no queue advance. A lane runs only after the charter's gate (should PianoProject own this at all?).
+
 Use this when local-agent quota is scarce. The cloud session is allowed to orchestrate, but the repository — not chat memory — is the source of truth.
 
 ## Roles

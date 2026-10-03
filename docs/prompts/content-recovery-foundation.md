@@ -1,5 +1,7 @@
 # Content recovery foundation — the one path forward
 
+> **Governed by `docs/prompts/charter.md` from 2026-10-03.** The freeze is in force: no CQ2 and no queue advance. A lane runs only after the charter's gate (should PianoProject own this at all?).
+
 This file exists because the content-truth work split across branches and cloud sessions began rediscovering, contradicting and re-solving the same problems. A fresh content job must be able to start from the working branch alone. Do not require another branch or chat transcript to understand what is already known.
 
 ## Purpose
