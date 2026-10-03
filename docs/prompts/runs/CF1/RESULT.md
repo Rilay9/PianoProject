@@ -32,22 +32,24 @@ Plan: `docs/prompts/runs/content-finish-plan.md` (frozen at `9b96c64`). This ste
 
 ## Result
 
-- **`tools/content/independent_check.py`** checks two things.
-  - **The page:**
-    - every bar is full under its time signature;
-    - the written key and time are the row's;
-    - the staves that sound are the row's hands;
-    - every note is spelled as its key's own.
-  - **Each family's promise, read from the notes.**
-- **`python3 tools/content/independent_check.py`** reads the built catalogue. It found no faults in the 85 shipped items of these families.
-- **`tests/test_independent_check.py`** has two parts.
-  - **Breadth:** every major key for coordination, five-finger (three hand settings) and the swing pair; every minor key for five-finger and both ostinato shapes; every rhythm pattern. That is more than the plan ships. Each item is written to MusicXML and read back.
-  - **Sixteen adversaries,** one per property, each red with its own fault.
-- **Defect found and fixed as a class:** `make_swing_pair` spelled by semitone count.
-  - In B, A♭, D♭ and G♭ it wrote G♯ for A♭, C♯ for D♭, F♯ for G♭ and E♭ for D♯.
-  - It now spells by interval (`up`), as `make_five_finger` does.
+- **`tools/content/independent_check.py`, 97 lines.** music21 supplies every fact. The file only states:
+  - two page faults: a bar that is not full, and a note that is not its key's own;
+  - each family's promise, in a few lines.
+
+  The owner's correction applied: the first version was a 303-line verification layer, and it was cut to this. The cuts were:
+  - the catalogue command;
+  - the time-signature and staff-versus-hands checks, which duplicated metadata;
+  - the per-fault prose.
+- **On the 85 shipped items of these families,** read from the built content: 0 faults.
+- **`tests/test_independent_check.py`** has two parts:
+  - **breadth:** every key and variant, more than ships;
+  - **ten breaks,** one per promise, each caught.
+- **Defect found and fixed in the maker:** `make_swing_pair` spelled by semitone count.
+  - In B, A♭, D♭ and G♭ it wrote G♯ for A♭ and the like. None of those keys ships.
+  - It now spells by interval (`up`).
   - The breadth test is red on exactly those four keys at `784786a` and green after the fix.
-  - The shipped keys (C, F, G) produce identical music digests before and after. The catalogue and identity pins are unchanged, and no version bump is needed.
+  - The shipped C, F and G produce identical music digests.
+- **The existing generator tests pass** with the fix: `test_generator`, `test_family_contracts`, `test_key_spelling` and `test_generator_invariants`.
 
 ## Not done, by the plan
 
