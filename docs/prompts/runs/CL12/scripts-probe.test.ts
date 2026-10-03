@@ -3,20 +3,23 @@
 // Run after copying into app/tests/unit: relative imports intentionally target that location.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { buildSession, nextRecommended, readingOffer, readingOptions, recipeDistance, taughtAtRung, type ReadingOffer, type SessionSlot } from '../../src/curriculum/session';
+import { describe, expect, it } from 'vitest';
+import { buildSession, nextRecommended, readingOffer, readingOptions, taughtAtRung, type ReadingOffer, type SessionSlot } from '../../src/curriculum/session';
 import { indexCatalog } from '../../src/curriculum/selectors';
 import { rungState, type LearnerRecord, type RungStates } from '../../src/evidence/rungState';
-import { dailySeed, generateSightReading, type SightReadingOptions } from '../../src/engine/sightReading';
-import { allProgress, learnedPieces, recordRun, resetProgressForTest, rungRows, sessionsForItem, dailyReadDays, dayKey, type RunResult } from '../../src/data/progressStore';
-import { demandReadings, type DemandReading } from '../../src/evidence/demandReadings';
+import { generateSightReading, type SightReadingOptions } from '../../src/engine/sightReading';
+import { allProgress, learnedPieces, recordRun, resetProgressForTest, rungRows, sessionsForItem, dailyReadDays, type RunResult } from '../../src/data/progressStore';
+
 import { VOCABULARY_V0 } from '../../src/evidence/vocabulary';
-import { detect, type DetectorId } from '../../src/demands/detect';
+
 import { readingReason } from '../../src/ui/help';
 import { clearFakeIndexedDb, useFakeIndexedDb } from './helpers/idb';
-import { eighthSteps, phraseModel, readPhrase, skipEighthSteps, skipSteps } from './helpers/reader';
+import { eighthSteps, readPhrase, skipEighthSteps, skipSteps } from './helpers/reader';
 import { swapLines } from './helpers/diarySwaps';
 import { rungForSlot } from '../../src/ui/screens/TodayScreen';
+import type { CatalogItem, Curriculum, Lesson } from '../../src/curriculum/types';
+import type { ReadingRecipe, SessionRow } from '../../src/data/db';
+import type { ScoreModel } from '../../src/score/types';
 import './composedContract.test';
 
 interface ProbeDay { n: number; card: SessionSlot[]; }
@@ -219,59 +222,6 @@ async function live(learner: Learner): Promise<Day[]> {
 
 /** What each learner's store held at the end: the rows, and the days the daily read ticked. */
 const stored: Record<string, { rows: number; ticked: number }> = {};
-
-const KEY_NAMES: Readonly<Record<number, string>> = { 0: 'C major', 1: 'G major', [-1]: 'F major', 2: 'D major', [-2]: 'B♭ major' };
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-/** What the phrase was, as a teacher would say it after looking at the page. */
-function played(day: Day): string {
-  const has = (id: DetectorId): boolean => detect(day.model, id).present;
-  const hands = day.options.hands === 'both' ? 'both hands' : day.options.hands === 'L' ? 'left hand' : 'right hand';
-  const where = day.fifths === 0 ? 'C position' : 'one hand position';
-  return [
-    hands,
-    KEY_NAMES[day.fifths] ?? `${String(day.fifths)} fifths`,
-    has('beyondPosition') ? `beyond ${where}` : `inside ${where}`,
-    has('skips') ? '' : 'no skips',
-    has('eighths') ? '' : 'no eighths',
-    has('dottedQuarters') ? 'dotted quarters' : '',
-    has('ties') ? 'ties' : '',
-  ]
-    .filter(Boolean)
-    .join(', ')
-    .concat(day.offer.recipe.easy ? ' (the easy one)' : '');
-}
-
-function diaryLine(day: Day): string {
-  const date = day.morning;
-  return [
-    `Day ${String(day.n).padStart(2)}`,
-    `${WEEKDAYS[date.getDay()] ?? ''} ${String(date.getDate())} ${MONTHS[date.getMonth()] ?? ''}`,
-    `rung ${day.rung}`,
-    `Today: “${day.line}”`,
-    `played: ${played(day)}`,
-    `${day.sight ? `${String(day.sight.right)}/${String(day.sight.n)} right and in time` : 'no sight-reading evidence'}${day.misread ? ` — ${day.misread}` : ''}`,
-  ].join(' · ').concat(
-    // The morning's card (C6), one slot a line under the day.
-    ...day.card.map((slot) => `\n        ${slot.kind.padEnd(12)} ${slot.item?.title ?? '(prompt)'} — “${slot.reason}”`),
-    // What each row's swap sheet would offer that morning (E0), as Today draws it.
-    ...day.swaps.map((line) => `\n${line}`),
-  );
-}
-
-const learners: Record<string, Day[]> = {};
-
-/**
- * Promises a recipe these diaries read does not keep at a seed. Revised (C4d,
- * S29): C4c listed fourteen here — day 28's missing tie and the 3.1 working
- * recipes at five seeds, all in G major, where level 2's raised fourth lies at
- * the bottom of its range and the composed promises outlasted the generator's
- * redraw budget. The budget was the mechanism (`sightReading.ts`); the reachable
- * composed recipes are held by `composedContract.test.ts`, and none is broken.
- */
-const KNOWN_BROKEN: string[] = [];
-
 
 it('prints the reader diaries and their exhausted-forward recommendations', async () => {
   for (const learner of [SKIP_LEARNER, AMBIGUITY_B, AMBIGUITY_A]) {
