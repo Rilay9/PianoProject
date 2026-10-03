@@ -1,0 +1,54 @@
+CL10a checks, round one: the test-only commit d88201af, the implementation ce47aef2, the branch head bdbee136 (chatgpt/cl10a, base 9dedcc05). Run in one scratch worktree, node_modules linked to the main checkout's, the build's untracked inputs (imported scores, build/cache) copied from it. Raw results, then a short read.
+
+SHAS: all three verified with git log; ce47aef2 is an ancestor of bdbee136.
+
+RED, at d88201af
+  python tools/content/build.py --offline   exit 0
+  npx vitest run tests/unit/cl10aHeldTune.test.ts tests/unit/cl10aNotationReadings.test.ts   exit 1   12 failed, 5 passed (17). Every case red or green exactly as your table predicted.
+  python -m unittest tools.content.tests.test_excerpt_proposer tools.content.tests.test_measured_truth   exit 1   8 failures of 95, the ones you named (the texture window, Anh. 113, the five deferred textures, the one-staff bass).
+
+GREEN, at ce47aef2
+  build.py --offline 0; npx tsc -b 0; npm run lint 0; validate.py --allow-nc --personal 0 (2,092 items).
+  vitest, your ten files: exit 1   3 failed, 597 passed, 1 skipped (601):
+    FAIL  tests/unit/demandsOfFiles.test.ts > generated items, measured directly, give the ids the bridge regression pins > exercise.clave.son-3-2.pulse: the detectors find exactly the pinned demands
+    FAIL  tests/unit/importMeasuredTruth.test.ts [ tests/unit/importMeasuredTruth.test.ts ]
+    FAIL  tests/unit/scoreModel.test.ts > extractScoreModel — golden models > pickup-grace matches its golden
+    FAIL  tests/unit/scoreModel.test.ts > extractScoreModel — golden models > spelling matches its golden
+    - importMeasuredTruth: the file fails to load ("Denied ID ... node_modules/opensheetmusicdisplay/package.json?raw"); the same at the base 9dedcc05 in the same worktree: ENVIRONMENT (the linked node_modules), not your change.
+    - scoreModel goldens (pickup-grace, spelling): pass at the base; YOURS: the model's new fields change the goldens. Regenerate them deliberately and itemise the fields that changed.
+    - demandsOfFiles, exercise.clave.son-3-2.pulse: the stale bridge pin you predicted.
+  python -m unittest discover -s tools/content/tests -t tools/content: exit 1   18 failures, 4 errors of 1,723. At the base, in the same worktree: 1,721 run, OK. So every one is this lane's:
+    ERROR: test_a_primer_fourth_satisfies_no_claim_of_the_advanced_rungs (item='exercise.study.texture-hands-together.c-major.4-4.12bar.sustained.03')
+    ERROR: test_a_primer_fourth_satisfies_no_claim_of_the_advanced_rungs (item='exercise.study.texture-hands-together.c-major.4-4.8bar.sustained.01')
+    ERROR: test_committed_mirrors_equal_generated
+    ERROR: test_the_tree_round_trips
+    FAIL: test_a_bundled_rag_that_was_not_measured_is_not_called_a_placeholder
+    FAIL: test_a_fresh_run_gives_the_fixtures_candidate
+    FAIL: test_a_study_not_targeting_interval_reading_is_flagged_without_the_target_clause
+    FAIL: test_an_unfetched_edition_is_named_with_its_reason
+    FAIL: test_every_measured_demand_is_taught_at_the_recipe_s_rung (item='exercise.study.subdivision.f-major.3-4.8bar.waltz.01', rung='3.6')
+    FAIL: test_every_measured_demand_is_taught_at_the_recipe_s_rung (item='exercise.study.texture-hands-together.b-flat-major.4-4.8bar.broken.01', rung='3.6')
+    FAIL: test_every_measured_demand_is_taught_at_the_recipe_s_rung (item='exercise.study.texture-hands-together.c-major.4-4.12bar.sustained.03', rung='2.1')
+    FAIL: test_every_measured_demand_is_taught_at_the_recipe_s_rung (item='exercise.study.texture-hands-together.c-major.4-4.8bar.sustained.01', rung='2.1')
+    FAIL: test_presence_density_overconcentration_and_absence_hold_for_every_item
+    FAIL: test_q8_the_whole_anh_113_is_refused_at_classical_3_and_its_excerpt_is_not
+    FAIL: test_the_case_leaps_inside_c_position_and_holiday_teaches_no_leap (item='exercise.study.texture-hands-together.c-major.4-4.8bar.sustained.01')
+    FAIL: test_the_generated_untaught_combinations_are_d0s_record
+    FAIL: test_the_lines_equal_the_probe_but_for_the_recorded_differences
+    FAIL: test_the_per_demand_counts_equal_the_probe_but_for_the_recorded_lines
+    FAIL: test_the_pinned_generated_items (item='exercise.clave.son-3-2.pulse')
+    FAIL: test_the_pinned_generated_items_through_the_bridge (item='exercise.clave.son-3-2.pulse')
+    FAIL: test_the_report_is_exactly_the_rung_claims_reading
+    FAIL: test_untaught_demands_on_the_earliest_listing_rung_are_the_recorded_ones
+    Read: the bridge and untaught pins (clave; latin.3 ledger) and the untaught-options lines are the stale pins you predicted; test_record_mirrors' two errors are this lane's entry existing before its record (cleared at landing); test_runner_log's two failures are ragtime.8's stride bass now established, so the message it pins changed; Anh. 113 (classical.3) now also lists texture.left-hand-pattern as untaught; test_study's failures put measured demands on study items at rungs that do not teach them; the excerpt-proposer fixture moved.
+
+THE CORPUS DIFF (your scripts-diff.py, before = d88201af's build, after = ce47aef2's): measurements-diff-bdbee136.json beside this file.
+  813 item changes; 14 rung claim changes; 1 bridge pin; 1 untaught combination; 0 lost claims (STOP_lostClaims empty).
+  Item changes by demand: texture.left-hand-pattern gained (absent to established) 550; pitch.ledger established 70; clef.bass established 67 and 6 newly present, lost 11 present and 3 established; texture.walking-bass gained 45; key.signature gained 26 established and 12 present only; pitch.chromatic 9 and 1 lose establishment.
+  texture.left-hand-pattern gains by family: classical 339, pop 51, ragtime 40, folk 34, arpeggio 24, hanon 20, scale 12, jazz 11, chromatic 8, beautiful 6, blues 3, study 2.
+  Claims: the five deferrals now established (blues.6, blues.8, jam.6, jazz.6 walking; ragtime.5 pattern); 1.3 bass clef 2 to 5 options; ragtime.6/7/8 pattern to 9 options each; technique.6 pattern 2 to 5; jazz.9 walking 1 to 2; two you flagged "unexpected": 1.3 bass-clef (the concept beside clef.bass) and technique.5 hand-independence 5 to 8.
+
+THE FINDING THAT BLOCKS LANDING (a hypothesis from item families, not yet read on the scores)
+  Parallel-motion exercises (two-hand scales, Hanon, two-hand arpeggios, chromatic scales: 64 items) now read as a left-hand pattern under a tune. The share rule removed the one bar that used to refuse them; the left-hand-pattern definition itself (more than one left-hand onset under any right-hand note) cannot tell accompaniment from both hands playing the same line. The research note beside this file (research-texture.md) gives the field's discriminator and a first condition to add. Test it on real items from both sides before relying on it.
+
+NOT RUN: the mutants (they wait for a green head); the browser suite (no screen changed).
