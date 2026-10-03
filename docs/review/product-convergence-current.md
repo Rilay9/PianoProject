@@ -1,126 +1,94 @@
 # Current product-convergence scheduler
 
-Authoritative from 2026-10-01 until replaced by a later current-tree product reconciliation.
+Authoritative from 2026-10-03. This replaces the 2026-10-01 scheduler as the dispatch authority.
 
-This file exists to correct the incomplete 2026-09-30 convergence pass. `docs/prompts/convergence-2026-09-30.md` remains valuable provenance and row history, but it is **not a dispatch queue**. A row or cluster surviving that document does not earn implementation merely because it was labelled BUILD NOW, DECISION, READ or RE-CHECK there.
+The governing boundary is `docs/prompts/charter.md` plus `docs/prompts/runs/disposition.md`. The old content queue, CT1/CL10a direction, September-30 convergence statuses and historical audit rows are evidence only. They do not dispatch work.
 
-The source of work is the current learner product and current tree. Historical rows are evidence to map onto a current problem, not the problem definition.
+The project is now in **product finish**, not architecture discovery.
 
-## Current frontier
+## Active blocker cap
 
-### 1. Finish evidence already in flight
+There is no obligation to fill ten slots. Keep the active list as small as the current learner product permits. A new item enters only if it causes a demonstrated learner-facing failure, corrupts saved state, blocks trustworthy release verification, or lets a responsibility be removed/simplified. Otherwise it stays history.
 
-- Read back the first real working-branch T62 eight-shard CI result when its handoff arrives. Do not reopen the accepted CI graph unless that run reveals a current defect.
-- U122 is no longer a bottom-bar allocator. It is a **whole landscape Score-chrome** design under `responses/b47ce498-correction-1.md`, `responses/b47ce498-correction-2.md` and `holistic-reassessment.md`.
+### Blocker 1 — finish the whole Score experience at the piano
 
-### 2. One Score product decision before more Score surface patches
+This is the only broad product-design blocker currently established by the existing record.
 
-**Three designs, each on its own terms (the owner, 2026-10-01; every screen, `04-ui-spec.md` section 0 R7, the Score first):** phone upright, phone sideways and tablet are planned separately. The phone has far more restrictions and two modes, each needing careful planning; the tablet is good too, using the room it has rather than inheriting the phone's compromises. A Score brief states the design and the acceptance cells for each (phone: 568 x 320 and 780 x 360 sideways, 342 x 740 and 360 x 780 upright; tablet: 1024 x 768 and 1366 x 1024 both ways), with a picture of every state on each; a rule tuned for one device is carried to another only with its own reason.
+Close the Score as one product boundary, not a sequence of independent chrome/window patches:
 
-Treat **U122 and CL07's responsive-reading objective as one product-design boundary**:
+- phone upright: stable portrait reading with useful next music visible; the current system does not visibly jump as the two reading surfaces recycle;
+- phone sideways: readable notation, reachable controls, no chrome/notation competition, and the run remains stable while playing;
+- tablet: use the available space on its own terms rather than inheriting phone compromises;
+- all three: no distortion, no notation/chrome overlap, readable current music, useful look-ahead, honest status, and predictable pause/rotate/background behaviour.
 
-- what chrome/navigation/context/status/control belongs at the top, bottom or transiently;
-- what score/stage height remains;
-- readable staff size and look-ahead;
-- control reachability and stability;
-- no notation/chrome overlap;
-- U120/U121 acceptance states.
+Use the already-set acceptance cells from `docs/04-ui-spec.md` R7 and the existing U122/CL07/U30 evidence. The current Score work is allowed to finish only this whole boundary. Do not create a new viewport architecture, density classifier, control framework or Score subproject unless the accepted design demonstrably requires it.
 
-Do not independently tune the bottom bar and then independently tune the window for the space the bar happened to leave.
+**Finish condition:** the whole important Score state is inspected on phone upright, phone sideways and tablet; the real-phone pass covers safe areas/system UI, pause/resume/background, rotation and MIDI reconnect where available; the remaining known P1 Score issue is either fixed or shown not to reproduce. Screenshots/metrics support the judgement but do not replace reading the screen as a learner.
 
-Until this model is accepted:
-- do not dispatch CL09 work whose wording/placement depends on the current Score chrome;
-- do not build SG12/U23's viewport-plan abstraction merely to make the old layout mechanism neater;
-- bounded evidence/semantic fixes independent of placement may still proceed if they remain real on the current tree.
+### Blocker 2 — representative learner journey release acceptance
 
-### 3. Reconcile the surviving queue from the current tree
+After Blocker 1, run one deliberately small whole-product acceptance journey from the current tree:
 
-Before another large historical cluster dispatches, regenerate the surviving-work view from the task record/current code, not from September 30 statuses.
+1. Today explains what to do and why;
+2. the learner opens the lesson/activity and can start without hunting;
+3. Score/practice behaves as accepted above;
+4. the summary says only what was actually measured and gives a sensible next action;
+5. Today/Plan/Progress agree about what happened;
+6. one real-repertoire transfer path works from learner need to a curated passage/piece;
+7. Simon, Lab/Jam and Free Play each communicate their distinct purpose without granting evidence they did not observe.
 
-Remove:
-- work already closed by later entries;
-- decisions explicitly superseded by later owner/reviewer rulings;
-- tasks whose only remaining justification is an old audit row or a cleaner implementation abstraction.
+This is not a new audit matrix. Use representative cases only. If a concrete learner-visible failure appears, it may become an active blocker and must displace lower-value work rather than spawning a new wave. If the journey works, close it; do not broaden the test merely to discover more work.
 
-Specifically, the old fixed I3 familiarity/exploration ratio and I5 personal-vs-strict owner question are already superseded and are not blockers.
+### Blocker 3 — release hardening only after behaviour is stable
 
-### 4. Prefer core truth that reduces models
+Run the existing H1/H2 release checks after Blockers 1–2 are materially stable. Fix test/load/flakiness issues only where they prevent trustworthy verification of the product. Do not turn suite cleanup into a product program.
 
-After the Score product decision, the session-item purpose/outcome contract comes first (X46, from the walk's findings 1, 3, 6 and 7): it is the concrete consumer that tells CL11 which distinctions the product needs (`responses/9e14839e.md` §5). Narrow seams with independent files (G30, U125, U110) do not wait for this order.
+## Explicitly parked now
 
-After the Score product decision and current-tree reconciliation, the strongest surviving architectural candidates are:
+### CL12a
 
-- **CL11 evidence truth**, if its current rows still reproduce: one contract for observation, measured channel, application/pass standard, competence, transfer and self-report; no local exceptions merely to close rows.
-- **CL10 measured-claim/detector truth**, where a detector/validator fact is actually consumed by the learner product; do not build detectors to empty tables or make validators green.
-- **CL08 reading-choice failures** that still reproduce on the current C4/C5/L120 tree: oscillation, reintroducing already-shown demands, calling prior material unseen, or asking for untaught demands. The goal is an appropriate next reading experience, not preservation of the current one-control-at-a-time mechanism.
+`chatgpt/cl12a` is parked, not an active build. As of 2026-10-03 it is one commit ahead of its old base but 42 commits behind the working branch, and its unique commit adds only a boundary test plus run/check documents; it contains no product implementation. The charter says CL12 survives only if near completion and materially improves the learner experience. This branch does not meet that bar.
 
-### 5. Narrow concrete seams may proceed when current and self-justifying
+Do not port or continue CL12a merely to preserve its purpose taxonomy. During Blocker 2, if the current Today → activity → summary → next flow reveals a specific purpose/wording mismatch, fix that concrete learner-facing mismatch in the smallest current-tree seam. No episode framework or purpose ontology is authorized by default.
 
-Examples:
-- accessibility defects such as SG06/U62 contrast;
-- bounded learner-visible correctness defects such as SG10/T20 if still reproducible;
-- SG03/G90 if the paused-project/session inconsistency still reproduces;
-- process/tooling repairs that are actively blocking trustworthy development, but not speculative refactors.
+### Closed truth work
 
-These do not need a grand redesign simply because a holistic posture exists.
+Do not reopen these merely because older scheduler text named them:
 
-## Work that must be re-derived before implementation
+- CQ1 is closed and its authority boundary is merged;
+- CL11a's loop-scoring required change was carried by CL11c and CL11a is closed;
+- CL11b is closed;
+- G90/G90a, U110/U110a/U110b and U118/U118b are closed;
+- CL10a is stopped;
+- CL17's broad migration remains frozen;
+- detector perfection, corpus sweeps, lesson checkbox batches, mass library migration and generator rewrites remain deleted/frozen by the charter/disposition.
 
-The following September-30 cluster shapes are **not authorized for dispatch as written**:
+## What does not become a blocker by itself
 
-- **CL12 purposes/episodes** — start from Today learner flows; a persistent episode object and purpose ontology must earn their existence.
-- **CL14 learner direction/return** — separate explicit learner goals, inferred evidence, return calibration and Plan presentation before inventing a general trajectory framework.
-- **SG04/L93** — fold its Plan/Today mental-model question into the same session/Plan product design rather than polishing taxonomy independently.
-- **CL19 lesson contract** — preserve truthful, concise musical teaching; add schema only where runtime/validation actually consumes it, not to complete a 109-lesson bureaucracy.
-- **CL20 breadth/musicianship** — derive from coherent learner journeys and adaptive purpose/evidence, not exposure quotas or strand-completeness arithmetic.
-- **CL21 performance/ear-training** — design representative experiences first; do not start from a large formal test matrix.
-- **CL17 one level/one analysis** — converge on authoritative multidimensional analysis/provenance; scalar level is at most a derived projection, not the product truth.
-- **CL18 repertoire supply** — start from a real learner need and choose the best source among generated, repertoire/PDMX, excerpt, import and external recommendation; do not fill thin cells for their own sake.
-- **CL13 rung/item reads** — perform only the smallest read that can change a current teaching-use/placement decision; do not complete audit tables as a goal.
-- **SG08/U64** — resolve through a whole Skills-screen information design, not another isolated sort rule.
-- **SG11/T23** — no Free Play prompt machinery until the whole experience demonstrates that guidance is missing.
+The following are not dispatch reasons without a current learner failure:
 
-### CL16 / sight-reading
-
-`responses/71730e65.md` controls. Do not dispatch the proposed single “version 3” lane. Separate objective G37 alignment/correctness from S34/S35 phrase-quality hypotheses; the latter first need learner-facing/source-backed evidence independent of the generator's own scoring metrics.
-
-### R23 / strong application
-
-`responses/71730e65.md` controls. Replacing the three-song floor is good product convergence, but `measurement.established` is opportunity evidence, not a synonym for “strong application.” Establish an honest application-target/admission criterion first; do not make the validator's proxy into curriculum truth or automatically turn newly reported gaps into a content-acquisition project.
-
-## Park unless a current need appears
-
-- **SG07/E1** one resolved run config: no live defect, no build.
-- **SG09/E46** seed-finder lesson-site wiring: no learner/editor need, no build.
-- **SG12/U23** pure viewport-plan refactor: no build unless the accepted Score model needs it.
-- **L51/L99** extra retention/compaction policy: no build without measured storage pressure affecting the learner; CL23 already removed the concrete arbitrary-reach problem.
-- **E39** keeping original MIDI bytes forever: decide only from a concrete reconversion/migration need versus measured storage/backup cost.
-
-## Whole-experience feedback during development
-
-Final H2 remains release acceptance, but holistic judgement is not deferred until H2.
-
-When a substantial learner-facing change lands, use the smallest representative whole flow that could expose a wrong product shape. Examples:
-
-- UI: inspect the complete important phone/landscape screen, not just the touched element;
-- progression/session: follow Today -> activity -> evidence -> next recommendation/Plan;
-- content: follow learner need -> source chooser -> candidate -> validation -> presentation -> evidence.
-
-This is judgement, not a cadence. Do it when it can change the direction; do not duplicate H2 or create a ritual gallery for every seam.
-
-## Final waves
-
-- **H1** remains the broad suite-trust and load/flakiness hardening pass after product behaviour is materially stable. Fix harness failures earlier only when they block trustworthy development. Held for it, not rows unless they recur: `mic.spec.ts:74` (6 correct steps where 7 are required, passed on retry) and `sweeps.spec.ts:103` (`#lesson-find-more` missed within 5 s, passed on retry), both in run 36930562106 (`responses/9e14839e.md` §1, §6).
-- **H2** remains final release acceptance on the personal build plus the focused strict/public delta. It is no longer the first time whole experiences are examined.
+- an old backlog row still saying `pending`;
+- a drafted brief;
+- a validator/report table that is not learner-consumed;
+- a cleaner abstraction;
+- an unaudited hypothesis;
+- a corpus cell that is thin;
+- a detector that could be more accurate but has no authoritative learner-facing consumer;
+- a source/library that could replace code without a demonstrated parity/simplification win.
 
 ## Dispatch rule
 
-Before dispatching a substantial historical task, the orchestrator must be able to say in ordinary product language:
+Before any new substantial implementation, state in ordinary product language:
 
-1. what current learner problem exists now;
-2. what current evidence establishes it;
-3. why the proposed solution shape is still the best/simplest response given everything learned since the row was written.
+1. what the learner currently experiences that is wrong or unfinished;
+2. the current evidence that proves it;
+3. the smallest change that fixes the experience without creating new authority or architecture;
+4. the observable finish condition.
 
-If the answer is merely “the convergence map says BUILD NOW,” “the brief is already drafted,” or “the tests already describe the mechanism,” do not dispatch it.
+If those four sentences cannot be written from current evidence, do not dispatch.
 
-This file is intentionally replaceable. When current evidence changes the right plan, rewrite the plan rather than defending this one.
+## End state
+
+The project is finished when the representative learner journey is coherent and trustworthy, the Score is genuinely usable at the piano across its three designs, release verification is trustworthy, and no known active blocker changes what the learner is taught, offered, credited, told or able to do.
+
+Do not search for another program of work after that. Ship the product and let real use generate the next evidence.
