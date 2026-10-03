@@ -43,7 +43,7 @@ The concepts are listed in `content/curriculum/concepts.json` (286 entries: time
 - **(b) definable in the performance only:** dynamics, pedal, articulation timing;
 - **(c) not in the notes at all:** posture, listening, practice habits.
 
-Start with the concepts the rungs claim; count how many rungs rely on each, and do the most-relied-on first.
+Start with the concepts the rungs claim; count how many rungs rely on each, and do the most-relied-on first. Include the concept tags items carry: an item's `concepts` list in the catalogue is an authored claim about that piece, with 315 distinct tags unvalidated per G12, ruled to be curriculum concept ids, with descriptive tags moved to their own field. Every tag that names a definable concept is checked by that concept's matcher.
 
 **Use the established library first; write our own code last (the owner, 2026-10-03).** These concepts are defined in music theory and largely implemented in mature software, and the bugs came from hand-writing our own versions. `music21` 10.5.0 is already a dependency (`tools/content/requirements.txt`; the converter uses it). For every concept, first look for its implementation in music21. That covers keys, intervals, chords and inversions, Roman numerals, time signatures and beat strength, ties, tuplets and clefs, among others; confirm each in its documentation. Use that function at build time. The built catalogue carries its result, and the app reads it.
 - **Custom code only where no established library implements the concept.** Expected: the named accompaniment figures, such as Alberti, waltz bass, stride, oom-pah, boogie and walking bass, and few others. Keep each one short, sourced and tested, as below.
