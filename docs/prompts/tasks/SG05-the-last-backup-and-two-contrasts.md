@@ -82,3 +82,5 @@ index: The learner sees when they last backed up, and two light-theme texts reac
 in-flight: drafted 2026-10-02 (`SG05-the-last-backup-and-two-contrasts.md`): two small parts on disjoint files; the time of a completed backup shown where the backup is made, and the Wait line and the help strip's link re-measured, then fixed through the tokens if still below 4.5:1 (Entry 229)
 state: approved 2026-10-02: approved before dispatch with one required change, incorporated: completion per delivery path, the picker's cancel never stamped (Entry 229)
 - landed 2026-10-02: merged b2a1ec88; handoff `handoffs/b6beeb96.md`
+- verdict 2026-10-02: APPROVE WITH ONE REQUIRED CHANGE (`responses/b6beeb96.md`): the mechanism and the words accepted; publish the red and green results and inspect the six pictures. The review read `b6beeb96`, before the record commit `0ac3f395` added the pictures and the chain evidence; met by `runs/SG05/checks-ddfaea71.txt` (all six looked at)
+- closed 2026-10-02: Part 1 (E8) built; U62 stays open as SG06

@@ -70,3 +70,4 @@ index: One level: the scalar a sort key with its provenance, generated items sto
 in-flight: drafted 2026-10-02 (`CL17-one-level-traced-then-built.md`): every level reader and writer traced and classed, the stored data and X37's two definitions, then slices; the rulings on R1, R16, G6 and R28 settled, R8's gate with it (Entry 227)
 state: approved 2026-10-02: approved before dispatch, Phase 1 only, the trace with its coverage classes returns for review (Entry 227)
 - landed 2026-10-02: merged 476bcc4c; handoff `handoffs/03c7f341.md`
+- verdict 2026-10-02: APPROVE (`responses/03c7f341.md`): the three decisions stand; slice 1 may dispatch

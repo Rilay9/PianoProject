@@ -74,3 +74,4 @@ lane: CL12 · closes: — · entry: 226
 index: The composed day: every Today row says what it is for, the return to bypassed rungs ends, a detour comes back to its piece (`CL12-the-composed-day-says-what-each-row-is-for.md`) | design | drafted 2026-10-02 (`CL12-the-composed-day-says-what-each-row-is-for.md`); Entry 226
 in-flight: drafted 2026-10-02 (`CL12-the-composed-day-says-what-each-row-is-for.md`): one purpose model for Today's rows, the episode that returns a detour to its piece, the review row when nothing is due, and L93's retirement of the return as the first slice (Entry 226)
 state: approved 2026-10-02: approved before dispatch as one design lane, L93 inside it (Entry 226)
+- dispatched 2026-10-02: to the outside builder by the owner's paste, on its branch; round one's probe run (`runs/CL12/checks-dff16046.txt`)

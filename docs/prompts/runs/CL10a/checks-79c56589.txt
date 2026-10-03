@@ -1,0 +1,19 @@
+CL10a checks: the R37 test checkpoint 79c56589 (chatgpt/cl10a, head 07158a43, base 9dedcc05). Raw results.
+
+RUN (the main checkout, whose app equals the base's: git diff bd49b49d..9dedcc05 over app, tools and content is empty; the test file copied in from 79c56589, run, removed)
+  npx vitest run tests/unit/cl10aHeldTune.test.ts --reporter=verbose   (vitest 5.0.0)
+  exit 1   1 failed, 2 passed
+
+RESULT AS PREDICTED: the merged-tie case is red on its presence assertion (expected false to be true); the two controls (attacks at both barlines; no tune in either bar) are green. R37 reproduced: proceed with the overlap reading, then the lane's full red-first cases, as the request says.
+
+LINES
+  × tests/unit/cl10aHeldTune.test.ts > CL10a R37: a tune held across the 6/8 barline > recognises the pattern under a merged tie with no second-bar melody attack 5ms
+  ✓ tests/unit/cl10aHeldTune.test.ts > CL10a R37: a tune held across the 6/8 barline > recognises the same pattern when the melody attacks at both barlines 0ms
+  ✓ tests/unit/cl10aHeldTune.test.ts > CL10a R37: a tune held across the 6/8 barline > refuses the same pattern when no tune sounds in either bar 0ms
+  ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+  AssertionError: expected false to be true // Object.is equality
+  - Expected
+  + Received
+  ❯ tests/unit/cl10aHeldTune.test.ts:18:28
+  Test Files  1 failed (1)
+  Tests  1 failed | 2 passed (3)

@@ -6,11 +6,11 @@ This file is a pointer, not the durable record and not a hand-written archive.
 
 ## Response-required handoffs
 
-- `handoffs/03c7f341.md` — **open**, respond in `responses/03c7f341.md`: CL17, one level, Phase 1: every reader and writer of the scalar traced and classed, and seven slices in order, with the orchestrator's decisions on the three questions (Entry 227).
-- `handoffs/b6beeb96.md` — **open**, respond in `responses/b6beeb96.md`: SG05, the learner sees when they last backed up: the time of a completed backup on Progress, truthful per delivery path (Part 1; U62's contrasts stay open as SG06) (Entry 229).
+- `handoffs/03c7f341.md` — **answered** in `responses/03c7f341.md`: CL17's three decisions stand; slice 1 may dispatch.
+- `handoffs/b6beeb96.md` — **answered** in `responses/b6beeb96.md`: SG05 Part 1 approved with one required change (publish the evidence). It was published in the record commit `0ac3f395`, after the head you read; the red and green results are now in `docs/prompts/runs/SG05/checks-ddfaea71.txt`, with all six pictures looked at. Closed; U62 stays open as SG06.
 - `handoffs/146a51f7.md` — **answered** in `responses/146a51f7.md`: CL11c approved and closed; CL11a closed.
 - `handoffs/385c0131.md` — **answered** in `responses/385c0131.md`: CL10a, CL12, CL17 (Phase 1 only) and SG08 approved; SG05 approved with one required change (completion per delivery path; checked at `backup.ts:222` and taken). The additions are in each brief.
-- **Build in progress (the owner's pasted prompt):** CL11c on `chatgpt/cl11c`, brief `docs/prompts/tasks/CL11c-a-loop-scores-one-population.md`. Checks: `docs/prompts/runs/CL11c/checks-8492b3f0.txt` (the first red), `checks-ed7d0944.txt` (the head: red confirmed at `fd3e315f`; three cases red at the head, one of them a duration regression). The pasted session continues it; a wake does not touch this lane's files.
+- **Builds in progress (the owner's pasted prompts):** CL10a on `chatgpt/cl10a` (R37 reproduced: `docs/prompts/runs/CL10a/checks-79c56589.txt`) and CL12 on `chatgpt/cl12` (round one's probe output: `docs/prompts/runs/CL12/checks-dff16046.txt`, run after one adaptation, stated in the file). The pasted sessions continue them; a wake does not touch their files.
 - `handoffs/8d391dfa.md` — **answered** in `responses/8d391dfa.md`: U110b approved, the exception kept; U110a closed.
 - `handoffs/26733bcb.md` — **answered** in `responses/26733bcb.md`: CL11a approved with one required change (loop scoring in one population), carried by CL11c, held for the owner; Progress stays measured-only.
 - `handoffs/30849a42.md` — **answered** in `responses/30849a42.md`: G90a approved; G90 closed.
