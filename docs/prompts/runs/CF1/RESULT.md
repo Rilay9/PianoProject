@@ -61,3 +61,4 @@ Plan: `docs/prompts/runs/content-finish-plan.md` (frozen at `9b96c64`). This ste
 ## Evidence for later steps, not acted on
 
 - The swing pair's phrase climbs to the octave above the tonic, so the shipped C version reaches C5. The maker's comment calls this "the five-finger position", but the contract row already `assumes` `range.beyond-position`. The contract is honest and the comment is not. That is a wording point and was left alone.
+- Three rhythm patterns name no note value: `syncopated`, `six-eight-long-short` and `six-eight-mixed`. So the pattern-name check (`named_values`) cannot test their durations. None of them is N2 material. This is a CF4 question.
