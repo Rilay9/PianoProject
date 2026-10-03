@@ -16,6 +16,24 @@ The app tells a learner what each rung teaches and which music practises it. It 
 
 **What stays out of reach, stated plainly:** whether a piece is a *good* teaching example, whether a phrase is musical, whether an exercise teaches *effectively*. Nobody in this process can hear. The checks here establish that the concept is truly present where claimed and that the levels and generators agree. They do not establish that it is taught beautifully: say *unverified as music* where that applies.
 
+## Part zero, first: the whole project's reuse map (the owner, 2026-10-03)
+
+The owner: *every piece of this project is either predefined, easily found online, already built, or impossible.* Before any other part, classify every component of the app and its content, exhaustively, and make each class checkable with one search.
+
+For every component, give: what it does in the app; its class; the standard, published source or library that already provides it, with a link; what the app does today (reuses it, or hand-built its own); and the decision, either replace the hand-built version with the established one or keep it, with the reason.
+
+The four classes:
+- **predefined:** a standard or a definition, such as MusicXML, MIDI, music-theory concepts, graded syllabi;
+- **published:** findable data or content, such as public-domain scores, syllabus repertoire lists, theory texts' examples;
+- **already built:** a maintained library, such as music21, a score renderer, pitch detection, spaced-repetition algorithms;
+- **impossible here:** it needs a human ear or a teacher's judgement. Say so, and decide what the app does instead (claim less, or label it unverified).
+
+Cover at least: score import and conversion, rendering, MIDI and microphone input, pitch detection, score following and scoring, the metronome and audio, every concept detector, key, chord and Roman-numeral analysis, difficulty estimation, curriculum ordering, the sight-reading and exercise generators, ear training, theory content, the review and spaced-repetition scheduling, and the lesson content. Find the rest from the code.
+
+Write it to `docs/prompts/runs/CT1/reuse-map.md`. Every row cites a source a reader can open with one search; list the searches you ran. Where the app hand-built something an established library or standard already provides, the replacement joins this work's plan, unless replacing it would break a working, tested path; then say why.
+
+Parts one to three below apply the map to the concepts. Do part zero first and push it as its own checkpoint.
+
 ## Part one: each concept, defined and checked
 
 The concepts are listed in `content/curriculum/concepts.json` (286 entries: time signatures, keys, scales, chords, positions, rhythms, textures and more) and mapped to demands in `tools/content/claims.py` (`CONCEPT_DEMANDS`).
@@ -110,6 +128,7 @@ Push a checkpoint after each batch of concepts, with its rows and the catalogue 
 
 ## Done when
 
+- **The reuse map (part zero) is complete,** every row sourced.
 - **Every concept is classified,** and every kind (a) concept has its sourced definition, matcher, tests and catalogue row.
 - **The alignment reports are complete:** rungs, generators (build and runtime), levels against published syllabi, prerequisites.
 - **The modes' attempt tests pass** through the real record path.
