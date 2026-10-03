@@ -156,6 +156,22 @@ render pipeline are substantial and mostly right. Better metadata, validation, s
 and learner modelling on top of them beats replacing them. Before replacing a subsystem,
 write down what it does well.
 
+## 10a. The first decision for every piece of work (the owner, 2026-10-03)
+
+Every piece of this project is one of four things:
+- **predefined:** a standard or a definition (MusicXML, MIDI, music-theory concepts, graded syllabi);
+- **published:** findable data or content (public-domain scores, syllabus repertoire, theory texts' examples);
+- **already built:** a maintained library (music21, a renderer, pitch detection, spaced repetition);
+- **impossible here:** it needs a human ear or a teacher's judgement.
+
+Before designing or building anything, say which, with a source a reader can check by one search, and act on it:
+- use the standard;
+- use the published source;
+- use the library;
+- claim less.
+
+Hand-build only when the search shows nothing exists, and show the search. This decision comes before every other rule in this file, and a brief or a review without it is incomplete. The project-wide map is `docs/prompts/runs/CT1/reuse-map.md` (CT1 part zero).
+
 ## 11. Before reporting
 
 Five questions, in tier order. A correction is owed only where the answer would change
