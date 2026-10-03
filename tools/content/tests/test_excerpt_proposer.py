@@ -397,8 +397,12 @@ class TheSeedOrdersParentsAndAdmitsNothing(unittest.TestCase):
 
     def test_the_works_known_for_a_concept_that_names_the_target(self) -> None:
         works = lambda demand: [w["work"] for w in P.seed_works_for([demand], self.seed, self.skills, self.demands)]  # noqa: E731
-        self.assertEqual(works("texture.left-hand-pattern"),
-                         ["Piano Sonata in C major, K. 545, first movement", "Für Elise, WoO 59", "The Entertainer", "Maple Leaf Rag"])
+        # Revised (CQ1, `docs/prompts/runs/CQ1/decision.md`). Old assumption: the seed's works for alberti, waltz,
+        # oom-pah, boogie and stride shortlist parents for `texture.left-hand-pattern` (four works). Those named
+        # concepts map to no demand now, so a broad left-hand result shortlists no work by a style's reputation;
+        # the seed returns for a style through its own figure slice.
+        self.assertEqual(works("texture.left-hand-pattern"), [])
+        self.assertEqual(works("texture.walking-bass"), [])
         self.assertEqual(works("rhythm.syncopation"), ["The Entertainer", "Maple Leaf Rag"])
         self.assertEqual(works("key.signature"), ["Minuet in G major, BWV Anh. 114"])
         self.assertEqual(works("interval.leap"), [])
@@ -442,9 +446,11 @@ class TheSeedOrdersParentsAndAdmitsNothing(unittest.TestCase):
         if not built.is_file():
             self.skipTest("no built catalogue: run the content build")
         catalog = json.loads(built.read_text(encoding="utf-8"))
-        found = P.seeded_parents(catalog, P.seed_works_for(["texture.left-hand-pattern"], self.seed, self.skills, self.demands))
-        self.assertIn("song.classical.mozart-k545-i", found)
-        self.assertIn("song.classical.mozart-k545-i.alt", found)
+        # Revised (CQ1): the left-hand pattern shortlists no work now (see above), so the finding of editions is
+        # shown on syncopation, whose seed works are The Entertainer and Maple Leaf Rag.
+        self.assertEqual(P.seeded_parents(catalog, P.seed_works_for(["texture.left-hand-pattern"], self.seed, self.skills, self.demands)), {})
+        found = P.seeded_parents(catalog, P.seed_works_for(["rhythm.syncopation"], self.seed, self.skills, self.demands))
+        self.assertNotIn("song.classical.mozart-k545-i", found)
         self.assertIn("song.ragtime.joplin-entertainer.kern", found)
         self.assertNotIn("song.classical.bach-menuet-bwv-anh-113.pdmx", found)
 

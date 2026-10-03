@@ -35,7 +35,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import validate  # noqa: E402
 
-WALK = "texture.walking-bass"
+#: Revised (CQ1, `docs/prompts/runs/CQ1/decision.md`). Old assumption: the fixture rung's measurable concept is
+#: `walking-bass`, mapped by `claims.CONCEPT_DEMANDS` to `texture.walking-bass`. The eight named-style rows are
+#: gone (a named style is not certified by a broad result), so the fixture uses `chromatic`, which the table still
+#: maps to a notated fact (`pitch.chromatic`). The rules under test are unchanged; only the example concept moved.
+#: The names `WALK`, `A_WALK` and the like are kept for the diff's sake and now mean this concept and demand.
+WALK = "pitch.chromatic"
 
 
 def measured(item_id: str, demands: list[str], established: list[str] | None = None) -> dict:
@@ -74,54 +79,54 @@ PLACEHELD_WALK = [unmeasured("song.q75.walk")]
 class TestAConceptNoOptionEstablishes(unittest.TestCase):
     def test_named_in_concepts_it_fails(self) -> None:
         errors, _warnings = validate.concept_claim_findings(
-            STEPS_ONLY, curriculum(rung("F.1", concepts=["walking-bass"], options=["exercise.f2.steps"])), deferred={})
-        self.assertTrue(any("F.1" in e and "walking-bass" in e and WALK in e for e in errors),
-                        f"F.1 names walking-bass and its one option has no walking bass: a promise the notes do not keep; got {errors}")
+            STEPS_ONLY, curriculum(rung("F.1", concepts=["chromatic"], options=["exercise.f2.steps"])), deferred={})
+        self.assertTrue(any("F.1" in e and "chromatic" in e and WALK in e for e in errors),
+                        f"F.1 names chromatic and its one option has no walking bass: a promise the notes do not keep; got {errors}")
 
     def test_under_introduces_it_passes(self) -> None:
         errors, warnings = validate.concept_claim_findings(
-            STEPS_ONLY, curriculum(rung("F.1", concepts=[], introduces=["walking-bass"], options=["exercise.f2.steps"])), deferred={})
+            STEPS_ONLY, curriculum(rung("F.1", concepts=[], introduces=["chromatic"], options=["exercise.f2.steps"])), deferred={})
         self.assertEqual(errors, [], "F.1 introduces the walking bass and says no piece there practises it yet")
         self.assertEqual(warnings, [])
 
     def test_kept_by_an_option_it_passes(self) -> None:
         errors, _warnings = validate.concept_claim_findings(
-            A_WALK, curriculum(rung("F.1", concepts=["walking-bass"], options=["exercise.f2.walk"])), deferred={})
+            A_WALK, curriculum(rung("F.1", concepts=["chromatic"], options=["exercise.f2.walk"])), deferred={})
         self.assertEqual(errors, [], "an option establishes the walking bass: the claim is kept")
 
     def test_a_rung_whose_options_nobody_can_measure_is_not_judged(self) -> None:
         runtime = [{"id": "drill.f2.card", "type": "drill", "measurement": {"status": "runtime"}}]
         errors, _warnings = validate.concept_claim_findings(
-            runtime, curriculum(rung("F.1", concepts=["walking-bass"], options=["drill.f2.card"])), deferred={})
+            runtime, curriculum(rung("F.1", concepts=["chromatic"], options=["drill.f2.card"])), deferred={})
         self.assertEqual(errors, [], "no checkable option: the report counts the claim as unchecked, not unkept")
 
     def test_an_introduced_concept_an_option_establishes_is_warned_back_to_concepts(self) -> None:
         errors, warnings = validate.concept_claim_findings(
-            A_WALK, curriculum(rung("F.1", concepts=[], introduces=["walking-bass"], options=["exercise.f2.walk"])), deferred={})
+            A_WALK, curriculum(rung("F.1", concepts=[], introduces=["chromatic"], options=["exercise.f2.walk"])), deferred={})
         self.assertEqual(errors, [])
-        self.assertTrue(any("F.1" in w and "walking-bass" in w and "concepts" in w for w in warnings),
+        self.assertTrue(any("F.1" in w and "chromatic" in w and "concepts" in w for w in warnings),
                         f"an option establishes what F.1 only introduces: it belongs in concepts; got {warnings}")
 
     def test_a_concept_in_both_lists_fails(self) -> None:
         errors, _warnings = validate.concept_claim_findings(
-            A_WALK, curriculum(rung("F.1", concepts=["walking-bass"], introduces=["walking-bass"], options=["exercise.f2.walk"])), deferred={})
-        self.assertTrue(any("F.1" in e and "walking-bass" in e and "both" in e for e in errors),
+            A_WALK, curriculum(rung("F.1", concepts=["chromatic"], introduces=["chromatic"], options=["exercise.f2.walk"])), deferred={})
+        self.assertTrue(any("F.1" in e and "chromatic" in e and "both" in e for e in errors),
                         f"a rung teaches a concept or introduces it, never both; got {errors}")
 
 
 class TestTheDeferrals(unittest.TestCase):
     def test_a_deferred_claim_warns_with_its_reason(self) -> None:
-        deferred = {("F.1", "walking-bass"): "the fixture's detector misreads this walk"}
+        deferred = {("F.1", "chromatic"): "the fixture's detector misreads this walk"}
         errors, warnings = validate.concept_claim_findings(
-            STEPS_ONLY, curriculum(rung("F.1", concepts=["walking-bass"], options=["exercise.f2.steps"])), deferred=deferred)
+            STEPS_ONLY, curriculum(rung("F.1", concepts=["chromatic"], options=["exercise.f2.steps"])), deferred=deferred)
         self.assertEqual(errors, [])
         self.assertTrue(any("F.1" in w and "misreads this walk" in w for w in warnings), warnings)
 
     def test_a_deferral_the_build_no_longer_needs_fails(self) -> None:
-        deferred = {("F.1", "walking-bass"): "the fixture's detector misreads this walk"}
+        deferred = {("F.1", "chromatic"): "the fixture's detector misreads this walk"}
         errors, _warnings = validate.concept_claim_findings(
-            A_WALK, curriculum(rung("F.1", concepts=["walking-bass"], options=["exercise.f2.walk"])), deferred=deferred)
-        self.assertTrue(any("F.1" in e and "walking-bass" in e and "deferr" in e for e in errors),
+            A_WALK, curriculum(rung("F.1", concepts=["chromatic"], options=["exercise.f2.walk"])), deferred=deferred)
+        self.assertTrue(any("F.1" in e and "chromatic" in e and "deferr" in e for e in errors),
                         f"the claim is kept now: remove the deferral; got {errors}")
 
 
@@ -136,19 +141,19 @@ class TestOnlyWhatThisBuildMeasured(unittest.TestCase):
     def findings(self, catalog: list[dict], options: list[str], deferred: dict | None = None,
                  concepts: list[str] | None = None) -> tuple[list[str], list[str]]:
         return validate.concept_claim_findings(
-            catalog, curriculum(rung("F.1", concepts=concepts or ["walking-bass"], options=options)),
+            catalog, curriculum(rung("F.1", concepts=concepts or ["chromatic"], options=options)),
             deferred=deferred or {})
 
     def test_its_one_establishing_option_unmeasured_here_is_warned_not_failed(self) -> None:
         errors, warnings = self.findings(PLACEHELD_WALK, ["song.q75.walk"])
         self.assertEqual(errors, [], "the build measured no option of F.1: it cannot say the claim is unkept")
-        self.assertTrue(any("F.1" in w and "walking-bass" in w and WALK in w and "1 of its options unmeasured here" in w
+        self.assertTrue(any("F.1" in w and "chromatic" in w and WALK in w and "1 of its options unmeasured here" in w
                             and "not judged" in w for w in warnings),
                         f"the warning names the rung, the concept and how many options this build could not measure; got {warnings}")
 
     def test_the_same_option_measured_and_absent_still_fails(self) -> None:
         errors, _warnings = self.findings(STEPS_ONLY, ["exercise.f2.steps"])
-        self.assertTrue(any("F.1" in e and "walking-bass" in e for e in errors), errors)
+        self.assertTrue(any("F.1" in e and "chromatic" in e for e in errors), errors)
 
     def test_one_unmeasured_and_one_measured_establishing_is_no_finding(self) -> None:
         errors, warnings = self.findings(PLACEHELD_WALK + A_WALK, ["song.q75.walk", "exercise.f2.walk"])
@@ -169,7 +174,7 @@ class TestOnlyWhatThisBuildMeasured(unittest.TestCase):
         """F2's rule for the options no build checks is unchanged: a runtime drill neither keeps nor defers a claim."""
         runtime = [{"id": "drill.f2.card", "type": "drill", "measurement": {"status": "runtime"}}]
         errors, warnings = self.findings(runtime + STEPS_ONLY, ["drill.f2.card", "exercise.f2.steps"])
-        self.assertTrue(any("F.1" in e and "walking-bass" in e for e in errors), errors)
+        self.assertTrue(any("F.1" in e and "chromatic" in e for e in errors), errors)
         self.assertFalse(any("not judged" in w for w in warnings), warnings)
 
     def test_the_failing_message_says_how_many_were_checked_and_unmeasured(self) -> None:
@@ -181,13 +186,13 @@ class TestOnlyWhatThisBuildMeasured(unittest.TestCase):
 
     def test_a_deferral_whose_options_this_build_could_not_measure_is_not_stale(self) -> None:
         """A deferral is stale when the claim is kept or no longer made, never because a build could not look."""
-        deferred = {("F.1", "walking-bass"): "the fixture's detector misreads this walk"}
+        deferred = {("F.1", "chromatic"): "the fixture's detector misreads this walk"}
         errors, warnings = self.findings(PLACEHELD_WALK, ["song.q75.walk"], deferred=deferred)
         self.assertEqual(errors, [], "the claim is neither kept nor dropped on this build")
         self.assertTrue(any("misreads this walk" in w and "1 unmeasured on this build" in w for w in warnings), warnings)
 
     def test_a_deferral_with_a_placeholder_beside_its_checked_options_still_warns_with_its_reason(self) -> None:
-        deferred = {("F.1", "walking-bass"): "the fixture's detector misreads this walk"}
+        deferred = {("F.1", "chromatic"): "the fixture's detector misreads this walk"}
         errors, warnings = self.findings(PLACEHELD_WALK + STEPS_ONLY, ["song.q75.walk", "exercise.f2.steps"], deferred=deferred)
         self.assertEqual(errors, [])
         self.assertTrue(any("misreads this walk" in w and "none of its 1 checked options" in w for w in warnings), warnings)
@@ -205,8 +210,8 @@ class TestTheReportCountsTheUnmeasuredApart(unittest.TestCase):
         self.claims = claims
         self.catalog = PLACEHELD_WALK + STEPS_ONLY
         self.curriculum = curriculum(
-            rung("F.1", concepts=["walking-bass"], options=["song.q75.walk", "exercise.f2.steps"]),
-            rung("F.2", concepts=[], introduces=["walking-bass"], options=["song.q75.walk"]))
+            rung("F.1", concepts=["chromatic"], options=["song.q75.walk", "exercise.f2.steps"]),
+            rung("F.2", concepts=[], introduces=["chromatic"], options=["song.q75.walk"]))
         self.report = claims.rung_claims(self.catalog, self.curriculum)
 
     def test_a_claim_counts_its_checked_and_its_unmeasured_options_apart(self) -> None:
@@ -256,15 +261,15 @@ class TestTheListGrantsNothing(unittest.TestCase):
         for demand in demands["demands"]:
             if demand["id"] == WALK:
                 demand["taughtAt"] = ["F.1"]
-                demand["taughtAtNote"] = "F.1 is read by hand: its lesson teaches the walking line."
-        cur = curriculum(rung("F.1", concepts=[], introduces=["walking-bass"], options=["exercise.f2.steps"]))
+                demand["taughtAtNote"] = "F.1 is read by hand: its lesson teaches the chromatic line."
+        cur = curriculum(rung("F.1", concepts=[], introduces=["chromatic"], options=["exercise.f2.steps"]))
         errors, _warnings = validate.taught_at_findings(self.skills, demands, cur)
         self.assertTrue(any(WALK in e and "'F.1'" in e and "introduces" in e for e in errors),
                         f"a hand-reading note must not make an introducing rung a teaching rung; got {errors}")
 
     def test_an_unknown_concept_under_introduces_is_refused(self) -> None:
         cur = curriculum(rung("F.1", concepts=[], introduces=["no-such-concept"], options=[]))
-        cur["concepts"] = [{"id": "walking-bass", "display": "Walking bass"}]
+        cur["concepts"] = [{"id": "chromatic", "display": "Chromatic"}]
         errors = validate.unknown_concepts(cur)
         self.assertTrue(any("no-such-concept" in e for e in errors), errors)
 

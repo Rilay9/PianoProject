@@ -106,9 +106,13 @@ class TestOneTeachingRungPerPath(Vocabulary):
 
 class TestTheListIsTheLessons(Vocabulary):
     def test_a_listed_rung_whose_concepts_do_not_name_the_demand_fails(self) -> None:
-        errors = self.errors(self.with_taught_at(WALK, ["blues.5", "classical.6"]))
-        self.assertTrue(any(WALK in e and "'classical.6'" in e and "concepts name none of" in e for e in errors),
-                        f"{WALK} at classical.6, whose concepts do not name walking-bass; got {errors}")
+        # Revised (CQ1, `docs/prompts/runs/CQ1/decision.md`). Old assumption: `walking-bass` in a lesson's
+        # concepts names `texture.walking-bass`, so the rule is shown on that demand. The named-style rows are
+        # gone from `claims.CONCEPT_DEMANDS`; the rule is the same and is shown on `key.signature`, which
+        # `key-signatures` still names.
+        errors = self.errors(self.with_taught_at("key.signature", ["3.1", "classical.6"]))
+        self.assertTrue(any("key.signature" in e and "'classical.6'" in e and "concepts name none of" in e for e in errors),
+                        f"key.signature at classical.6, whose concepts do not name key-signatures; got {errors}")
 
     def test_a_hand_reading_the_note_writes_down_warns_instead(self) -> None:
         """
@@ -133,13 +137,22 @@ class TestTheListIsTheLessons(Vocabulary):
         self.assertTrue(any("pitch.chromatic" in e and "'3.1'" in e and "only introduces it" in e for e in errors),
                         f"pitch.chromatic at 3.1, which introduces accidentals: no note makes it a teaching rung; got {errors}")
 
-    def test_jazz_6_naming_the_walking_bass_must_make_the_list(self) -> None:
-        # Revised (F2): blues.6 for blues.5, which introduces the walking bass and so may not be listed.
-        demands = self.with_taught_at(WALK, ["blues.6", "jam.6"])
+    def test_a_rung_naming_a_demand_must_make_the_list(self) -> None:
+        """
+        Revised (CQ1, `docs/prompts/runs/CQ1/decision.md`). Old assumption (F2): jazz.6, whose concepts name
+        `walking-bass`, must make `texture.walking-bass`'s list. `walking-bass` no longer maps to a demand (a
+        broad result cannot certify a named style), so the validator derives nothing for that demand and its
+        hand-set list is not cross-checked until the walking-bass figure slice returns the concept with a
+        sourced matcher. The rule is shown on `key.signature`: theory.3 names it, and a list that omits it warns.
+        """
+        demands = self.with_taught_at("key.signature", ["3.1"])
         self.assertEqual(self.errors(demands), [])
-        warned = [w for w in self.warnings(demands) if WALK in w and "jazz.6" in w]
+        warned = [w for w in self.warnings(demands) if "key.signature" in w and "theory.3" in w]
         self.assertEqual(len(warned), 1,
-                         f"{WALK}: jazz.6's concepts name walking-bass and nothing on its path is listed; got {self.warnings(demands)}")
+                         f"key.signature: theory.3's concepts name key-signatures and nothing on its path is listed; got {self.warnings(demands)}")
+        # CQ1: and the walking bass is not derived at all, so omitting jazz.6 from its list warns of nothing.
+        demands = self.with_taught_at(WALK, ["blues.6", "jam.6"])
+        self.assertEqual([w for w in self.warnings(demands) if WALK in w and "jazz.6" in w], [])
 
     def test_the_committed_lists_are_the_lessons_readings(self) -> None:
         """
@@ -187,7 +200,11 @@ class TestTheDerivation(Vocabulary):
         skills = {s["id"]: s for s in self.skills["skills"]}
         demands = {d["id"]: d for d in self.demands["demands"]}
         derived = claims.teaching_rungs(self.curriculum, skills, demands)
-        self.assertEqual(derived[WALK], ["jazz.6", "blues.6", "jam.6"])
+        # Revised (CQ1, `docs/prompts/runs/CQ1/decision.md`). Old assumption: the derivation gives the walking
+        # bass at jazz.6, blues.6 and jam.6 from their `walking-bass` concept. That concept maps to no demand
+        # now, so the derivation gives none; the hand-set list (`test_the_walking_bass_is_taught_on_three_paths`)
+        # is untouched and is what the gate reads.
+        self.assertEqual(derived.get(WALK, []), [])
         # Revised (L120c item 9). Old assumption: syncopation's teaching rungs are latin.3 and 4.5 alone. jazz.4 now
         # names the syncopation its comping teaches (the Charleston, the off-beats) on a path that reaches neither.
         self.assertEqual(derived["rhythm.syncopation"], ["latin.3", "4.5", "jazz.4"])
@@ -505,27 +522,32 @@ class TestIntroducedIsNeverTaught(unittest.TestCase):
     (`untaught_on`) with the vocabulary's list set to what the derivation gives.
     """
 
-    ITEM = {"id": "exercise.f2.walk", "demands": [WALK], "measurement": {"status": "measured", "established": [WALK]}}
+    # Revised (CQ1, `docs/prompts/runs/CQ1/decision.md`). Old assumption: the fixture concept is `walking-bass`
+    # and its demand `texture.walking-bass`. The named-style rows are gone from `claims.CONCEPT_DEMANDS`, so the
+    # same mechanism is shown on `chromatic` / `pitch.chromatic`, which the table still maps.
+    DEMAND = "pitch.chromatic"
+    CONCEPT = "chromatic"
+    ITEM = {"id": "exercise.f2.walk", "demands": [DEMAND], "measurement": {"status": "measured", "established": [DEMAND]}}
 
     def untaught_at_f3(self, first: dict) -> tuple[list[str], list[str]]:
         skills, demands = claims.load_vocabulary()
         curriculum = fixture_path(first)
-        derived = claims.teaching_rungs(curriculum, skills, demands)[WALK]
+        derived = claims.teaching_rungs(curriculum, skills, demands)[self.DEMAND]
         vocabulary = copy.deepcopy(demands)
-        vocabulary[WALK]["taughtAt"] = derived
+        vocabulary[self.DEMAND]["taughtAt"] = derived
         return derived, claims.untaught_on(self.ITEM, "F.3", claims.rung_ancestry(curriculum), vocabulary)
 
     def test_an_earlier_rung_that_only_introduces_it_leaves_it_untaught(self) -> None:
         derived, untaught = self.untaught_at_f3(
-            {"id": "F.1", "concepts": [], "introduces": ["walking-bass"], "exerciseOptions": [], "songOptions": []})
-        self.assertEqual(derived, [], "F.1 introduces the walking bass: no teaching rung")
-        self.assertEqual(untaught, [WALK], "F.3's option carries a walk F.1 only introduced")
+            {"id": "F.1", "concepts": [], "introduces": [self.CONCEPT], "exerciseOptions": [], "songOptions": []})
+        self.assertEqual(derived, [], "F.1 introduces the concept: no teaching rung")
+        self.assertEqual(untaught, [self.DEMAND], "F.3's option carries a fact F.1 only introduced")
 
     def test_an_earlier_rung_that_teaches_it_covers_the_later_option(self) -> None:
         derived, untaught = self.untaught_at_f3(
-            {"id": "F.1", "concepts": ["walking-bass"], "exerciseOptions": [], "songOptions": []})
+            {"id": "F.1", "concepts": [self.CONCEPT], "exerciseOptions": [], "songOptions": []})
         self.assertEqual(derived, ["F.1"])
-        self.assertEqual(untaught, [], "F.1 teaches the walking bass, on F.3's path")
+        self.assertEqual(untaught, [], "F.1 teaches the concept, on F.3's path")
 
 
 KEY = "key.signature"

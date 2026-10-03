@@ -14,6 +14,10 @@ logs dropped that name:
   `test_import_mutopia`'s strict-flavour case fails, by CI's recorded design, with "ragtime.8's stride bass is
   kept by no option on the strict flavour", which does not say why. Its message now names the placeholder and the
   reason its import step wrote in the row's `importHint`; its pass condition is unchanged.
+  Revised (CQ1, `docs/prompts/runs/CQ1/decision.md`): ragtime.8 no longer claims a stride bass (a broad left-hand
+  result cannot certify a named style), so the case's condition is now that the Mutopia edition is measured on the
+  build, and its message says "ragtime.8's Mutopia edition is not measured on this build". `Q75_LINE` below is the
+  validator's wording as a fixture string, not a claim the build still makes.
 
 The Q83 half reads the built content (run `python tools/content/build.py` first), as the case it pins does: it
 turns the built catalogue's rag into the placeholder `import_mutopia.build_entry` really writes when the edition's
@@ -104,8 +108,8 @@ class TestTheStrictCaseNamesTheFetch(unittest.TestCase):
             (built / "catalog.json").write_text(json.dumps(catalog), encoding="utf-8")
             (built / "curriculum.json").write_text(self.curriculum, encoding="utf-8")
             with mock.patch.object(T, "BUILT", built):
-                with self.assertRaises(AssertionError, msg="the strict case passed without the rag: another option "
-                                       "now keeps ragtime.8's stride bass, so a fetch failure no longer fails it"
+                with self.assertRaises(AssertionError, msg="the strict case passed without the rag: a fetch failure "
+                                       "no longer fails it"
                                        ) as caught:
                     getattr(T.TestThePlacement(self.CASE), self.CASE)()
         return str(caught.exception)
@@ -124,7 +128,7 @@ class TestTheStrictCaseNamesTheFetch(unittest.TestCase):
         rag["measurement"] = {"status": "unmeasured",
                               "reason": "no notation is bundled: it arrives when the learner imports the piece"}
         message = self.failure(rag)
-        self.assertIn("ragtime.8's stride bass is kept by no option on the strict flavour", message)
+        self.assertIn("ragtime.8's Mutopia edition is not measured on this build", message)
         self.assertIn(f"{T.RAG} is a placeholder (the edition's .ly file was not fetched)", message)
 
     def test_a_bundled_rag_that_was_not_measured_is_not_called_a_placeholder(self) -> None:
@@ -134,7 +138,7 @@ class TestTheStrictCaseNamesTheFetch(unittest.TestCase):
         rag["demands"] = "unmeasured"
         rag["measurement"] = {"status": "unmeasured", "reason": "the score file was not built"}
         message = self.failure(rag)
-        self.assertIn("ragtime.8's stride bass is kept by no option on the strict flavour", message)
+        self.assertIn("ragtime.8's Mutopia edition is not measured on this build", message)
         self.assertNotIn("placeholder", message)
 
 

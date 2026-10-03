@@ -76,15 +76,26 @@ CONCEPT_DEMANDS = {
     "tied-across-bar": "rhythm.ties",
     "key-signatures": "key.signature",
     "chromatic": "pitch.chromatic",
-    "alberti": "texture.left-hand-pattern",
-    "alberti-bass": "texture.left-hand-pattern",
-    "broken-chord-accompaniment": "texture.left-hand-pattern",
-    "waltz-bass": "texture.left-hand-pattern",
-    "oom-pah-bass": "texture.left-hand-pattern",
-    "boogie-bass": "texture.left-hand-pattern",
-    "stride-bass": "texture.left-hand-pattern",
-    "walking-bass": "texture.walking-bass",
 }
+
+#: CQ1 (`docs/prompts/runs/CQ1/decision.md`): a broad accompaniment result (`leftHandPattern`) or the
+#: `walkingBass` heuristic cannot certify a named style. These eight concepts were mapped onto those two
+#: demands, so one broad flag stood for six different named styles (content-mistakes 1, 2). Two-hand
+#: scales, Hanon and arpeggios trip that flag too, but they never established a named concept, before or
+#: after: the eight positive claims removed here were on blues.4, ragtime.7, ragtime.8 and technique.6. They map to no demand now: each rung that names one claims nothing measured,
+#: which grants nothing and blocks nothing. The prerequisite gate is untouched (it reads the hand-set
+#: `taughtAt` in `demands.json`, not this table). Each returns to a demand only through its own figure
+#: slice (CQ2+), with a sourced, independently checked matcher; never by re-adding a row to the table above.
+NAMED_FIGURES_AWAITING_A_SOURCED_CHECK = (
+    "alberti",
+    "alberti-bass",
+    "broken-chord-accompaniment",
+    "waltz-bass",
+    "oom-pah-bass",
+    "boogie-bass",
+    "stride-bass",
+    "walking-bass",
+)
 
 #: E22: the three detector readings D0 pinned as what the detectors say, not as facts.
 E22_FAMILY = {

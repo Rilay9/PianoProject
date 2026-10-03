@@ -1529,26 +1529,13 @@ def taught_at_findings(skills_file: dict, demands_file: dict, curriculum: dict) 
 #: option keeps in `docs/prompts/rung-claims.md`: a deferral passes the build, never the report.
 #: The counts are each option's own per-bar readings (the bridge's every-bar places, E1), against
 #: the whole-piece every-bar rule the density file keeps for these two demands.
-DEFERRED_CONCEPT_CLAIMS: dict[tuple[str, str], str] = {
-    ("blues.6", "walking-bass"): (
-        "its walking-bass exercise walks in 12 of its 13 bars (the form's twelve and the closing bar, CL15) "
-        "under a right hand by the detector's own reading of "
-        "each bar; the whole-piece every-bar rule refuses it for the bar that returns to its third (C E G E), "
-        "E22's recorded misreading"),
-    ("blues.8", "walking-bass"): (
-        "its walking-bass exercise in E flat walks in 12 of its 13 bars by the detector's own reading of each bar; "
-        "the whole-piece rule refuses it for one bar that returns to a pitch (E22)"),
-    ("jazz.6", "walking-bass"): (
-        "its walking-bass exercises walk in 12 of 13 bars (C blues) and 3 of 4 (ii-V-I in F) by the detector's "
-        "own reading of each bar; the whole-piece rule refuses each for a bar that returns to a pitch (E22)"),
-    ("jam.6", "walking-bass"): (
-        "its two-hand walking-bass exercise in A walks in 12 of its 13 bars by the detector's own reading of each "
-        "bar (E22); its three intro exercises are the line alone, which is not the demand"),
-    ("ragtime.5", "oom-pah-bass"): (
-        "the Joplin pieces carry a left-hand pattern in 87 of 92, 80 of 85, 87 of 94 and 109 of 148 bars and the "
-        "waltz-bass Greensleeves in 15 of 16, by the detector's own reading of each bar; the whole-piece "
-        "every-bar rule refuses a piece for its introduction and closing bars"),
-}
+#: CQ1 (`docs/prompts/runs/CQ1/decision.md`): empty. The five deferrals (the walking bass at `blues.6`,
+#: `blues.8`, `jazz.6` and `jam.6`; the oom-pah bass at `ragtime.5`) excused a named-style concept claim that
+#: the broad `walkingBass` / `leftHandPattern` readings could not keep. Those concepts no longer map to a
+#: demand (`claims.NAMED_FIGURES_AWAITING_A_SOURCED_CHECK`), so the claims are not made and a deferral of
+#: them would be stale; `concept_claim_findings` itself fails a stale deferral. Their per-bar readings are
+#: in git history (738e23e) for the figure slice that returns each style.
+DEFERRED_CONCEPT_CLAIMS: dict[tuple[str, str], str] = {}
 
 
 def concept_claim_findings(
