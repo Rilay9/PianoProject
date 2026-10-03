@@ -465,3 +465,53 @@ this base. Its log is in the scratch `build/ct1/build.log`, which is not kept.
 
 **Not done:** CT1 parts one to four beyond the candidates above; no catalogue counts yet;
 no oracle comparisons; nothing heard (no one in this process can hear).
+
+---
+
+## 10. Update after the reuse census (`reuse-map.md` §9, 2026-10-03)
+
+The census changes six things in this plan.
+
+**1. Every source in §3 is now readable** except IMSLP's PDFs, which need conversion:
+- **S2:** the ABRSM sight-reading parameters table (p. 16) and its aural tests.
+- **S5:** the Faber correlation chart.
+- **O3:** the experts' texture labels (annotations ODbL). The research group's own texture
+  descriptors (GPL-3.0, over music21) are now **O3a**.
+
+So W1, W8 and the texture vocabulary no longer wait on the network.
+
+**2. W1's exit is corrected.** The experts label *function*, not style names. An Alberti
+bass is `HS1`, a single-voice harmonic-static accompaniment. So O3 checks two things:
+- **melody over accompaniment:** both precision and recall;
+- **a matcher's figure bars fall inside accompaniment layers:** precision only.
+
+O3 cannot check Alberti recall. W1 reports exactly that and claims no more.
+
+**3. Texture concepts take a published vocabulary.** O3a's layers and diacritics:
+- layers M, H and S;
+- h, p, o, t, r, b and s.
+
+They replace the `texture.*` demands' home-made terms. The named styles stay as figure
+definitions under that vocabulary, one module each way (§2.5).
+
+**4. Generators: real content first, now listed per family** (`reuse-map.md` §9.1):
+- **Czerny, Burgmüller, Beyer, Duvernoy, Gurlitt and Clementi Op. 36** for technique,
+  reading and accompaniment;
+- **Joplin from KernScores** (already fetched) for stride, oom-pah and the secondary rag;
+- **O3 `HS1` bars** for the Alberti family.
+
+The first action of W7 is listing Mutopia's holdings of those opus numbers. `study.py`'s
+grammar is retired.
+
+**5. More oracles:**
+- **O9 FiloBass** (walking bass statistics);
+- **O10 iRb / Jazz Harmony Treebank** (real jazz progressions, replacing `II_V_I` and
+  turnaround tables).
+
+**6. Reference implementations adopted as ideas, not code:**
+- PianoBooster's early cut-off and beginner stop point for Wait mode;
+- ynot99's order-free chord window, if O7 shows chord-order misses;
+- the "uncertain, unscored" microphone outcome;
+- rhythm difficulty on its own axis.
+
+**The census totals** are counted, not estimated: 64 labelled rows (`reuse-map.md` §9.9).

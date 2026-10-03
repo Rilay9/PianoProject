@@ -1,0 +1,114 @@
+make_scale:1048 len=84 consts= m21=.transpose,key.Key,pitch.Pitch,scale.HarmonicMinorScale,scale.MajorScale,scale.MelodicMinorScale,scale.MinorScale 
+   
+make_arpeggio:1136 len=43 consts=HANDS:214 m21=.transpose,key.Key,pitch.Pitch 
+   
+make_triad_inversions:1182 len=41 consts=HANDS:214 m21=key.Key,pitch.Pitch 
+   Root position, 1st inversion, 2nd inversion, root (octave up), then back down — as block chords.
+make_five_finger:1226 len=39 consts=FIVE_FINGER_STEPS:438,HANDS:214 m21=key.Key,pitch.Pitch 
+   C-D-E-F-G-F-E-D-C style pattern in quarters, and then nothing.
+make_hanon:1268 len=76 consts=HANDS:214 m21=chord.Chord,key.Key,pitch.Pitch,scale.MajorScale 
+   One Hanon exercise, note for note as the Mutopia edition prints it.
+make_chromatic:1392 len=45 consts=HANDS:214 m21=.transpose,key.Key,pitch.Pitch 
+   The chromatic scale, with the standard 1-3 fingering.
+make_seventh_arpeggio:1496 len=60 consts=HANDS:214,SEVENTH_ARPEGGIO_FINGERING_LH:305,SEVENTH_ARPEGGIO_FINGERING_RH:304,SEVENTH_LABELS:1472 m21=key.Key,pitch.Pitch 
+   A four-note seventh arpeggio, up and back, over two octaves.
+make_double_scale:1609 len=67 consts=DOUBLE_SIXTH_LH:1606,DOUBLE_SIXTH_RH:1605,DOUBLE_THIRD_LH:1604,DOUBLE_THIRD_RH:1603,HANDS:214 m21=.transpose,key.Key,pitch.Pitch,scale.MajorScale 
+   A scale in parallel thirds or sixths — `02` Part E stage 7.
+make_octave_scale:1679 len=76 consts=BLACK_PITCH_CLASSES:1348,HANDS:214 m21=.transpose,key.Key,pitch.Pitch 
+   A scale in octaves, solid or broken — `02` Part E stage 7.
+make_broken_seventh:1758 len=67 consts=HANDS:214,SEVENTH_LABELS:1472,SEVENTH_SHAPES:1441 m21=.transpose,key.Key,pitch.Pitch 
+   A seventh chord as a broken figure rather than a straight arpeggio.
+make_rhythm:1871 len=43 consts= m21= 
+   A rhythm drill on a one-line staff.
+make_coordination:1960 len=29 consts= m21=key.Key 
+   RH five-finger walk over a LH that holds (or changes I/V every bar).
+make_interval_reading:1998 len=61 consts=HANDS:214,INTERVAL_BAR_RHYTHMS:1995 m21=key.Key random
+   A four-bar melody in one five-finger position, using only 2nds and 3rds.
+make_position_shift:2062 len=33 consts=HANDS:214 m21=key.Key 
+   Four bars with one hand shift in the middle.
+make_cadence:2152 len=31 consts= m21=key.Key 
+   The cadence as whole-note left-hand chords, in one of three voicings.
+make_accompaniment:2200 len=52 consts=ACCOMPANIMENT_CHORDS:2197,HANDS:214 m21=chord.Chord,key.Key,pitch.Pitch 
+   A left-hand accompaniment pattern over I-IV-V-I, alone or under a right-hand scale.
+make_oompah:2315 len=51 consts=OOMPAH_CHORDS:2268 m21=key.Key 
+   Bass on 1 and 3, chord on 2 and 4 — an oom-pah bass, the left hand alone.
+make_pedal:2369 len=37 consts= m21=key.Key 
+   A chord sequence with pedal marks, for the CC64 change-timing drill.
+make_repeated_notes:2446 len=50 consts=HANDS:214 m21=key.Key 
+   The same note struck three or four times, changing finger each time.
+make_trill:2499 len=96 consts=HANDS:214 m21=key.Key,pitch.Pitch,scale.MajorScale 
+   A *measured* trill or a mordent, with the count written on the score.
+make_tremolo_octaves:2622 len=75 consts=BLACK_PITCH_CLASSES:1348,HANDS:214 m21=key.Key,pitch.Pitch,scale.MajorScale 
+   A tremolo: two notes alternating in sixteenths, an octave or a third apart,
+make_rotation:2700 len=49 consts=ACCOMPANIMENT_CHORDS:2197,HANDS:214 m21=key.Key 
+   Alberti figuration at speed — wrist rotation rather than finger work.
+make_articulation:2757 len=63 consts=HANDS:214 m21=key.Key 
+   The same four-bar phrase, written staccato and written legato.
+make_hand_independence:2827 len=39 consts=INDEPENDENCE_RATIOS:2824 m21=key.Key 
+   Two hands at different subdivisions of the same beat.
+make_shaping:2869 len=39 consts= m21=key.Key,pitch.Pitch 
+   A scale played with a rising (or falling) dynamic, scored on the slope.
+make_voicing:2911 len=30 consts= m21=key.Key 
+   A chord sequence whose top note must sing above the rest.
+make_syncopation:2949 len=68 consts= m21=chord.Chord 
+   Ties over the barline, and a sixteenth-note figure over held chords.
+make_secondary_rag:3038 len=73 consts=SECONDARY_RAG_CELL:3030,SECONDARY_RAG_CHORDS:3035 m21=key.Key 
+   The short–long sixteenth figure that crosses the beat, over an oom-pah bass.
+make_meter:3189 len=67 consts=SHUFFLE_BASS:3145,SHUFFLE_BASS_FINGERS:3148 m21=chord.Chord,key.Key,pitch.Pitch 
+   A phrase in one of `ODD_METERS`, with the grouping written above it.
+make_pedal_variant:3259 len=47 consts= m21=key.Key 
+   The two pedal skills the clean-change drill does not reach.
+make_seventh_voicing:3760 len=48 consts=II_V_I:3431,VOICING_LABELS:3423 m21=key.Key,pitch.Pitch 
+   A ii-V-I with the sevenths voiced one way, in one key.
+make_four_chord_loop:3815 len=49 consts=FOUR_CHORD_LOOP:3812 m21=interval.Interval,key.Key,pitch.Pitch 
+   I-V-vi-IV, root position or with the voice leading tidied by inversions.
+make_slash_bass:3867 len=50 consts= m21=.transpose,interval.Interval,key.Key,pitch.Pitch 
+   A stepwise bass line under held chords, written as slash chords.
+make_walking_bass:4005 len=99 consts=TWELVE_BAR:3937,TWELVE_BAR_MINOR:3950 m21=.transpose,interval.Interval,key.Key,pitch.Pitch 
+   A walking bass line in quarters, over a blues or over a ii-V-I.
+make_comping:4180 len=85 consts=COMPING_BARS:4134,II_V_I:3431,LATIN_VAMP:4912 m21=key.Key,pitch.Pitch 
+   A ii-V-I comped in one rhythm, so the rhythm is the exercise.
+make_stride:4268 len=51 consts=SEMITONE_INTERVAL:3480 m21=key.Key,pitch.Pitch 
+   Stride left hand: bass, chord, tenth, chord.
+make_turnaround:4329 len=47 consts= m21=key.Key,pitch.Pitch 
+   The two bars that send a chorus back to the top.
+make_ii_v_i:4390 len=98 consts= m21=key.Key,pitch.Pitch 
+   ii-V-I in one key, at one of three difficulties (`II_V_I_SHAPES`).
+make_tritone_sub:4491 len=36 consts= m21=key.Key,pitch.Pitch 
+   The same ii-V-I with the dominant replaced by the chord a tritone away.
+make_open_voicing:4530 len=67 consts= m21=key.Key,pitch.Pitch 
+   A stack of fourths over the root (a minor eleventh), and the sus2, sus4 and
+make_boogie:4665 len=77 consts=TWELVE_BAR:3937,TWELVE_BAR_MINOR:3950 m21=key.Key,pitch.Pitch 
+   A boogie left hand over the first four bars of a blues.
+make_blues_scale:4761 len=66 consts=BLUES_SCALE:4757,HANDS:214 m21=interval.Interval,key.Key,pitch.Pitch 
+   The blues scale, up and back.
+make_clave:4945 len=97 consts= m21= 
+   The clave on one line, to be clapped.
+make_tumbao:5114 len=32 consts=TUMBAO_OFFSETS:4907 m21=key.Key 
+   The bass tumbao alone, over a two-bar vamp.
+make_montuno:5149 len=45 consts= m21=key.Key 
+   The right-hand montuno, locked to the clave.
+make_latin_groove:5197 len=48 consts= m21=key.Key 
+   Tumbao and montuno together — what the rung asks you to be able to do.
+make_intro:5263 len=63 consts=FOUR_CHORD_LOOP:3812 m21=key.Key,pitch.Pitch 
+   A four-bar vamp introduction over the I-V-vi-IV loop.
+make_walkup:5339 len=79 consts=WALKUP_CHROMATIC:5334,WALKUP_DIATONIC:5336 m21=key.Key,pitch.Pitch 
+   The bass walking *into* the next chord — diatonic, then chromatic.
+make_passing_chord:5427 len=65 consts=PASSING_TARGETS:5424 m21=key.Key,pitch.Pitch 
+   The chord a semitone above the one you meant, played first.
+make_power_chord:5503 len=62 consts=POWER_CHORD_ROOTS:5500 m21=pitch.Pitch 
+   Root, fifth, octave — with weight.
+make_riff:5619 len=63 consts= m21=.transpose,key.Key,pitch.Pitch 
+   A figure in a five-finger position, repeated until it is a riff.
+make_pentatonic:5710 len=61 consts= m21=.transpose,interval.Interval,pitch.Pitch 
+   The minor pentatonic (or the blues form of it), one octave, thumb under.
+make_tresillo:5774 len=46 consts= m21=.transpose,key.Key,pitch.Pitch 
+   Three, three, two — the tresillo, as a bass figure.
+make_swing_pair:5823 len=61 consts= m21=.transpose,key.Key,pitch.Pitch 
+   Four bars of eighths straight, then the same four bars swung.
+make_modal_vamp:5887 len=79 consts= m21=.transpose,pitch.Pitch 
+   i-bVII-bVI-bVII: a minor vamp of four chords.
+make_ostinato:5969 len=47 consts= m21=pitch.Pitch 
+   One figure in eighths, repeated, over a bass that does not move.
+make_study:6019 len=32 consts= m21= 
+   A generated study (D3): eight to sixteen bars in four-bar phrases around one target,
