@@ -13,7 +13,7 @@ A cloud job must not depend on a different branch or a chat transcript for facts
 
 ## Rules for every job
 
-- One learner-facing proposition or tightly coupled concept family per job.
+- One learner-facing proposition, one figure, or one tightly coupled mechanical fact group per job.
 - Start from the current implementation and existing repository evidence; do not assume replacement is required.
 - Search for reusable assets/data/libraries only for the gap that remains.
 - Choose exactly one outcome for each touched mechanism: **KEEP / NARROW CLAIM / RETIRE / REPLACE / DEFER**.
@@ -23,51 +23,77 @@ A cloud job must not depend on a different branch or a chat transcript for facts
 - Generator and checker are independent implementations of a sourced definition.
 - Unknown may restrict automatic offers; it never grants teaching, a rung claim or credit.
 - No grand framework, project-wide migration or unrelated cleanup.
+- **No mid-job widening.** If a new fact changes the objective, record it for a later slice or stop and hand it back; do not append a second project to the running job.
 - Leave CL12a's files alone (`chatgpt/cl12a`): `app/src/curriculum/session.ts`, `sessionPurpose.ts`, `app/src/data/sessionRun.ts`, `app/src/ui/screens/TodayScreen.ts`, `PlanScreen.ts`, `app/src/ui/help.ts`. Report a dependency instead of crossing the seam.
 - Each job lives on its own `claude/cq<N>` branch cut from the current working head, never merges itself, and stops for outside review before the next job begins.
 
 Each entry must report: proposition, old learner-facing risk, reused evidence, candidate alternatives searched, chosen outcome and reason, independent oracle/counterexamples, changed files, catalogue before/after claim ledger, content gained/lost, and remaining unknowns.
 
-## CQ1 — named accompaniment claims: stop the known wrong certification
+## CQ1 — containment only: a broad accompaniment flag cannot certify a named style
 
-Scope only: Alberti, broken-chord, waltz bass, oom-pah, stride, boogie, walking bass, and the broad accompaniment claim only where required by those names.
+This first job is deliberately smaller than the old accompaniment rewrite.
 
-Use the already-recorded CL10a research/counterexamples and the corrected CT1 findings summarized in `content-recovery-foundation.md`. Do **not** land CL10a's 75% threshold as truth and do **not** apply `pending-detect.patch` merely because it fixes the 16 known false positives.
+Scope: the claim boundary that currently lets one broad accompaniment/left-hand-pattern result stand for Alberti, broken-chord, waltz bass, oom-pah, stride, boogie or walking bass.
 
-For each named figure:
+Use the already-recorded CL10a counterexamples and the corrected CT1 findings summarized in `content-recovery-foundation.md`.
+
+Do **not**:
+- invent or tune a new detector;
+- land CL10a's 75% threshold as truth;
+- apply `pending-detect.patch` merely because it fixes the 16 known false positives;
+- build seven new matchers in this job;
+- remove uncertainty from prerequisite/eligibility restriction.
+
+Do:
+- trace every consumer where the broad result grants a named claim, teaching statement, rung establishment or credit;
+- sever only that unsupported positive authority;
+- preserve unknown/restricting behavior so hard music does not become easier merely because the claim is withdrawn;
+- itemise exactly which catalogue/rung claims lose positive authority.
+
+**Finish:** a two-hand scale/Hanon/arpeggio can no longer certify any named accompaniment style through the broad flag; no new musical heuristic exists; the safety gate still treats unknown conservatively. Review before any named figure is rebuilt.
+
+## CQ2+ — rebuild named accompaniment figures one at a time
+
+One job per figure: Alberti, broken-chord, waltz bass, oom-pah, stride, boogie, walking bass. The reviewer may explicitly combine two only if they truly share one sourced definition and oracle.
+
+For each figure:
 
 1. write/cite the published definition;
-2. test the current mechanism against source examples and known near-misses;
-3. use/review the existing candidate matcher only if its implementation follows that definition;
-4. independently read the resulting score/passage;
-5. run a catalogue claim diff;
-6. enable the named claim only where the evidence supports it.
+2. inspect the current implementation/candidate matcher before writing anything;
+3. test it against source examples and known near-misses;
+4. search for a reusable implementation/data source for only the unresolved part;
+5. independently read the resulting score/passage;
+6. run a catalogue claim diff;
+7. enable the named claim only where the evidence supports it.
 
-A broad `leftHandPattern`/accompaniment flag must never certify a named figure.
+The corrected CT1 texture result is a scope guard: an ALGOMUS `HS1` label establishes accompaniment function, not the name Alberti. A named figure needs its own sourced figure check.
 
-General accompaniment presence is separate. Prefer the published texture vocabulary/descriptors and validate them against the expert Mozart texture annotations. If a small reliable solution is not established, leave general accompaniment unresolved/restricting rather than inventing another heuristic.
+General accompaniment presence is a separate future slice. Prefer the published texture vocabulary/descriptors and validate them against the expert Mozart annotations. If a small reliable solution is not established, leave the general claim unresolved/restricting rather than inventing another heuristic.
 
-**Finish:** known scale/Hanon/arpeggio false positives grant no named accompaniment claim; every surviving named claim has a source-defined matcher plus independent evidence; every changed catalogue claim is itemised. Review before CQ2.
+**Finish for each figure:** known near-misses are refused, surviving claims have independent evidence, and every changed catalogue claim is itemised. Review before the next figure.
 
-## CQ2 — notation facts: parity before replacement
+## After named-figure harm is closed — notation facts: parity before replacement
 
-Scope: clef/signature/accidentals, note values, ties, tuplets, intervals, ledger lines, metre and other mechanically defined notation facts.
+First job in this phase produces a parity report only for clef/signature/accidentals, note values, ties, tuplets, intervals, ledger lines, metre and other mechanically defined notation facts.
 
-Run the existing implementation and an authoritative library/parser over the same catalogue cases. Itemise disagreements. Fix whichever side is wrong. Keep a small runtime TypeScript rule when it is needed live and proven equivalent; replace/delete duplicated code only when doing so measurably reduces risk.
+Run the existing implementation and an authoritative library/parser over the same catalogue cases. Itemise disagreements. Do not swap code merely because a library exists.
 
-This is **not** a "replace everything with music21" job.
+Then fix one coherent disagreement class per reviewed slice:
+- fix whichever side is wrong;
+- keep a small runtime TypeScript rule when it is needed live and proven equivalent;
+- replace/delete duplicated code only when doing so measurably reduces risk.
 
-**Finish:** disagreements are classified and resolved or explicitly deferred; no learner-facing claim changes without an itemised diff. Review before CQ3.
+This is **not** a "replace everything with music21" wave.
 
-## CQ3 — harmony/theory facts: oracle first
+## Then — harmony/theory facts: oracle first
 
-Scope one coherent group at a time: chord spelling/quality/inversion, Roman numerals, cadences/progressions, etc.
+One coherent group at a time: chord spelling/quality/inversion, Roman numerals, cadences/progressions, etc.
 
 Use music21/Tonal/DCML/When-in-Rome where semantically appropriate, but measure the current operation against the oracle before swapping it. A library solving chord mechanics does not settle pedagogical placement.
 
-**Finish:** exact operations are either kept, narrowed, retired, replaced or deferred with measured reasons. Review before content coverage work.
+**Finish per slice:** exact operations are either kept, narrowed, retired, replaced or deferred with measured reasons.
 
-## CQ4 — content coverage matrix from existing material
+## Then — content coverage matrix from existing material
 
 Build the first complete matrix from the curriculum as it actually exists. For every target/rung record:
 
@@ -94,13 +120,13 @@ Search order for a genuine hole:
 5. existing open-source exercise/generator implementations;
 6. only then a constrained generated drill whose exact properties can be checked.
 
-The content suggestions from `claude/content-truth` are leads only; repository corpus records win where those later measurements contradicted them.
+Any copied CT1 content-suggestion list is a set of leads only; repository corpus records win where later measurements contradicted them.
 
 **Finish:** complete coverage/gap report, with no new musical mechanism. Review before any gap-filling build.
 
-## CQ5+ — fill one real coverage gap at a time
+## Gap filling — one real coverage gap at a time
 
-Take gaps from CQ4 in learner-risk/order priority. One gap per reviewed slice.
+Take gaps from the coverage matrix in learner-risk/order priority. One gap per reviewed slice.
 
 For a generator family, do not rewrite all families. Preserve it if its definition, spelling, physical bounds and task fit are independently supported. Replace a hand-built subpart only when a source/library/data path is clearly safer. Retire only when the family adds no unique pedagogical value or cannot be made truthful.
 
