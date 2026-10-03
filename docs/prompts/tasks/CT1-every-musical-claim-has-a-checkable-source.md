@@ -16,6 +16,8 @@ The app tells a learner what each rung teaches and which music practises it. It 
 
 **What stays out of reach, stated plainly:** whether a piece is a *good* teaching example, whether a phrase is musical, whether an exercise teaches *effectively*. Nobody in this process can hear. The checks here establish that the concept is truly present where claimed and that the levels and generators agree. They do not establish that it is taught beautifully: say *unverified as music* where that applies.
 
+**Check every batch against `docs/prompts/content-mistakes.md`** before you push it, and name the items checked in your entry.
+
 ## Part zero, first: the whole project's reuse map (the owner, 2026-10-03)
 
 The owner: *every piece of this project is either predefined, easily found online, already built, or impossible.* Before any other part, classify every component of the app and its content, exhaustively, and make each class checkable with one search.

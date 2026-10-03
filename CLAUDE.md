@@ -31,6 +31,8 @@ generate a substitute when suitable licensed real material meets the need. Resea
 musical correctness of **only the gap that remains**. The project assembles the best
 existing reliable pieces, adds only what is truly project-specific, and proves the seams.
 
+**Before pushing any content work, check it against `docs/prompts/content-mistakes.md`:** the mistakes already made here, each caught late.
+
 **Read `docs/prompts/operating-procedure.md` before any substantial piece of work, and
 point every agent brief at it.** It is short. It says how work is decided, done and
 reported here, and it is the owner's word as of 2026-09-25. `docs/00-invariants.md`
