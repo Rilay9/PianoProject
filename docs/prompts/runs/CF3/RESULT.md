@@ -99,7 +99,12 @@ This is read from what the left hand plays, not from the chord symbols (CF2's ta
    - Remove the imported *Happy Birthday* and the three PDMX lead sheets *Was wollen wir trinken*, *Dark Eyes* and *Auld Lang Syne*.
    - Keep *Skip to My Lou* as the optional chord-symbol piece.
    - This follows Faber's C, G and F order, and the lesson already uses another key for transfer.
-4. **Import request (owner's machine):** Beyer Op. 101 Nos. 8, 9 and 10 from PDMX, to be read before any placement on 2.1.
+4. **Import request (owner's machine):** Beyer Op. 101 Nos. 8, 9 and 10 from PDMX, to be read before any placement on 2.1. Archive paths:
+   - No. 8: `./mxl/9/52/QmRxtrDbgW6Pj4dab7ivA2tHVJ2dLwDAMFrvP22j1XQevV.mxl`
+   - No. 9: `./mxl/9/57/QmRZ943PepFQiRitGjEvyPWzmf8XaGX8vLYDVPca8o1u3n.mxl`
+   - No. 10: `./mxl/4/35/QmeoxeqGQq5YPmnCJyk6dazX7cDwjDs4rfgnKBNYXC43Xk.mxl`
+
+   None of the three files is anywhere on this machine: the filesystem was searched for each by name.
 
 ## Not done, by the plan
 
