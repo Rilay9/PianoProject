@@ -262,6 +262,14 @@ technical and pedagogical verdicts stated separately where both apply. What is u
 sits beside what passes, not at the end. Per fix: the mechanism, the discriminating test,
 the before and after measured the same way, and the red line that proves the test.
 
+**A builder's own tests prove intent, not correctness** (the owner, 2026-10-03: "flawed tests don't tell us if a flawed process is correct"). Red-then-green on the builder's fixtures shows only that the code does what the builder meant, and so does every red and green predicted exactly. Acceptance includes an oracle the builder did not choose:
+- real items picked by the orchestrator or the brief from both sides of the line;
+- corpus counts by family;
+- the field's established definitions;
+- pictures looked at.
+
+CL10a's fixtures were all as predicted, while its corpus diff showed scales and Hanon reading as accompaniment.
+
 **Content and corrections are itemised** (the owner's rule, 2026-09-30). A seam that changes
 what a learner is taught or hears — a lesson's text, a curriculum table, a vocabulary entry, a
 score's bytes, an edition note, a catalogue fact — lists every such change for the reviewer,
