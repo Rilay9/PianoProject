@@ -162,6 +162,11 @@ cd app && npx tsc -b && npm run lint && npx vitest run
 
 ## Done when (part one; parts two and three above)
 
+**Three pass/fail checks the owner holds this work to. The orchestrator reruns them at landing and reports yes or no with the item lists:**
+1. Every known false positive gets no accompaniment or named-style claim, in any use (contains, practise here, credit, learner wording). The known false positives are the 16 golden models in the appendix and CL10a's recorded parallel-exercise items in `docs/prompts/runs/CL10a/checks-68805867.txt`, re-derived at your base.
+2. A deliberately added test demand with no declared support grants nothing at the resolver.
+3. An item whose withdrawn demand is untaught at a rung is still kept out of that rung's automatic offers.
+
 - Every section of part one exists.
 - **The resolver:** it is in place, it is the only route for positive authority, and it denies by default.
 - **The counterexamples are refused** by the active paths; the valid reference cases still pass under their scope.
