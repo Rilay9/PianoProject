@@ -300,7 +300,7 @@ side by side; the traces feed a diagnosis the owner reads before Wave B is brief
 | **CL17** | One level: the scalar a sort key with its provenance, generated items stop claiming judgement, learners see demands; traced, then built (`CL17-one-level-traced-then-built.md`) | design | drafted 2026-10-02 (`CL17-one-level-traced-then-built.md`); Entry 227; landed 2026-10-02: merged 476bcc4c; handoff `handoffs/03c7f341.md`; verdict 2026-10-02: APPROVE (`responses/03c7f341.md`): the three decisions stand; slice 1 may dispatch
 | **SG08** | The Skills screen in three designs: every skill's whole name reads at a glance, and the measured skills lead (`SG08-the-skills-screen-in-three-designs.md`) | app | drafted 2026-10-02 (`SG08-the-skills-screen-in-three-designs.md`); Entry 228
 | **SG05** | The learner sees when they last backed up, and two light-theme texts reach 4.5:1 (`SG05-the-last-backup-and-two-contrasts.md`) | app | drafted 2026-10-02 (`SG05-the-last-backup-and-two-contrasts.md`); Entry 229; landed 2026-10-02: merged b2a1ec88; handoff `handoffs/b6beeb96.md`; verdict 2026-10-02: APPROVE WITH ONE REQUIRED CHANGE (`responses/b6beeb96.md`): the mechanism and the words accepted; publish the red and green results and inspect the six pictures. The review read `b6beeb96`, before the record commit `0ac3f395` added the pictures and the chain evidence; met by `runs/SG05/checks-ddfaea71.txt` (all six looked at); closed 2026-10-02: Part 1 (E8) built; U62 stays open as SG06
-| **CL12a** | Today and Plan name the same work ahead, each row says what it is for, and a bypassed lesson is never owed: CL12's slice A (`CL12a-today-and-plan-name-the-work-ahead.md`) | app | drafted 2026-10-03 (`CL12a-today-and-plan-name-the-work-ahead.md`); Entry 230
+| **CL12a** | Today and Plan name the same work ahead, each row says what it is for, and a bypassed lesson is never owed: CL12's slice A (`CL12a-today-and-plan-name-the-work-ahead.md`) | app | drafted 2026-10-03 (`CL12a-today-and-plan-name-the-work-ahead.md`); Entry 230; dispatched 2026-10-03: to the outside builder by the owner's paste, on its branch; its first checkpoint's handback decided (option 1: an ambiguous no-due row keeps its reason and shows no purpose label), in the checks file of 23606e0a
 | **F0a** | The F0 review's one required fix-forward: practice.4's unsourced "couple of days" threshold removed or sourced; one sentence and its claims row | content | **done 2026-09-26**, Entry 82's addendum; **accepted by the reviewer** (responses/5f79b97.md) |
 | **L120** | The 387 rung-own options the gate reads as `untaught`: a build-time table classifying each by its owning truth (a claim gap, an incidental demand, a demand no concept maps to, a misplacement), then the corrections per class (X1's constraint; the reviewer's ruling) | content, gate | brief drafted 2026-09-29 (`L120-untaught-readings-at-their-truth.md`); **with the reviewer before dispatch** (three questions); L120a the table, L120b the corrections; **L120a approved 2026-09-29** (`responses/questions-4dc2f135.md`): the table under the reviewer's order; L120b waits for the table |
 
@@ -466,7 +466,7 @@ CL12 · verdict · 226
 CL17 · verdict · 227
 SG08 · approved · 228
 SG05 · closed · 229
-CL12a · approved · 230
+CL12a · dispatched · 230
 F0a · closed · —
 L120 · approved · —
 -->

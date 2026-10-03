@@ -64,3 +64,4 @@ lane: CL12a · closes: L93 · entry: 230
 index: Today and Plan name the same work ahead, each row says what it is for, and a bypassed lesson is never owed: CL12's slice A (`CL12a-today-and-plan-name-the-work-ahead.md`) | app | drafted 2026-10-03 (`CL12a-today-and-plan-name-the-work-ahead.md`); Entry 230
 in-flight: drafted 2026-10-03 (`CL12a-today-and-plan-name-the-work-ahead.md`): slice A of the approved CL12 design; the typed intent, no behind or set-aside fallback, one forward-strand summary for Today and Plan, the five labels (Entry 230)
 state: approved 2026-10-03: slice A of the approved design, dispatchable without another brief review (Entry 230)
+- dispatched 2026-10-03: to the outside builder by the owner's paste, on its branch; its first checkpoint's handback decided (option 1: an ambiguous no-due row keeps its reason and shows no purpose label), in the checks file of 23606e0a
