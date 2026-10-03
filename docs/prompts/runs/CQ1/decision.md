@@ -96,50 +96,28 @@ dependencies, so they are not lost.
    - Opus comes in only for a genuinely unresolved musical or design judgement.
 3. **After CQ1's review:** stop, and report the cloud usage visible, before launching CQ2.
 
-## After review 1 (BLOCKING, comment 5969901324): what changes
+## After review 1 (BLOCKING, comment 5969901324): the scope correction
 
-The review was weighed against the code; all three findings hold.
+**The finding, read against the parent queue.** The review's finding 1 (`texture.walking-bass`
+certifies the named style directly) holds only against this slice's brief. The brief added
+"and the `walkingBass` heuristic", which widened CQ1 beyond its parent: `content-queue.md`
+defines CQ1 as containment of the broad accompaniment → named-concept bridge, and leaves each
+named figure to CQ2+.
 
-### 1. `texture.walking-bass` certifies the named style by itself (its display is "A walking bass")
+**The ruling** (the owner, 2026-10-03). The parent queue is authoritative. **CQ1 stays the
+`CONCEPT_DEMANDS` containment.** The direct `walkingBass` demand stays **D2**, for the
+walking-bass figure slice. A restrict-only flag was briefly decided here and is withdrawn,
+with no code from it kept.
 
-**Decision: NARROW CLAIM** at the single source of "established".
+**The fix-forward is only:**
+1. **This record's prose:** this section, and the scope note in `brief.md`.
+2. **Comments.** The false comments in `claims.py` and `test_named_figure_containment.py` are
+   corrected. Two-hand scales, Hanon and arpeggios never established a named concept, before
+   or after. The eight removed positive claims were on `blues.4`, `ragtime.7`, `ragtime.8`
+   and `technique.6`.
+3. **Report drift.** `inventory.md` goes back to the base (CQ1 leaves it byte-identical), and
+   `rung-claims.md` = base + CQ1's delta only. The local missing-data state (the unfetched
+   Mutopia edition, shifted detector counts) is not committed as repository truth.
 
-**The flag.** `demands.json` gives `texture.walking-bass` the field `"positiveAuthority": false`
-and a `positiveAuthorityNote`. The note cites CQ1 and E22: the unsourced `walkingBass`
-heuristic, with its recorded stride and clave misreads.
-
-**What reads it.** The build's `established_by_density` and `established_by_window`, and
-the app's `usefulDensity` (`eligibility.ts:107`, which `importStore` also uses), never list
-such a demand as established. The same arithmetic stays on both sides.
-
-**Its effects:**
-- **Withdrawn:** the "practises a walking bass" demand-tier offers, the skill opportunity
-  through it, and the rung-claim establishment.
-- **Kept:** `measurement.demands` (present), so the `uncoped` keep-out gate and `untaught_on`
-  are unchanged. Unknown restricts, never grants.
-
-**Not in this fix:**
-- **Runtime evidence.** `evidence.ts` counts located steps toward *hand-independence*
-  credit. That is credit for a skill, not a certificate of the named style, so it is
-  recorded with D1.
-- **Transfer.** `transfer.ts`'s texture dimension is likewise recorded with D1.
-- **The detector.** No detector changes.
-- **`texture.left-hand-pattern`.** It is not named (its display is "A moving left-hand
-  pattern"), so it stays D1.
-
-### 2. The generated reports carried local build drift
-
-- **`inventory.md`** is reverted to the base: CQ1 leaves it byte-identical.
-- **`rung-claims.md`** gets only CQ1's delta. That delta is the old-code against new-code
-  reports on the same catalogue, applied to the base file. Hunks that will not apply are
-  spliced by hand and listed.
-
-The local missing-data state (the unfetched Mutopia edition and shifted detector counts) is
-not committed as repository truth.
-
-### 3. False historical comments
-
-The comments in `claims.py` and `test_named_figure_containment.py` are corrected. Two-hand
-scales, Hanon and arpeggios never established a named concept, before or after this
-slice. The eight removed positive claims were on `blues.4`, `ragtime.7`, `ragtime.8` and
-`technique.6`.
+**Not changed:** app code, detectors, eligibility, transfer, evidence, the curriculum, and
+CL12a's files.

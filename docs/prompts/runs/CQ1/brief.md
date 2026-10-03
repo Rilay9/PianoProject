@@ -1,5 +1,11 @@
 # CQ1 brief: a broad accompaniment result cannot certify a named style
 
+> **Scope correction** (after review 1; the owner, 2026-10-03). This brief's words "and the
+> `walkingBass` heuristic, where it is the only evidence" widened CQ1 beyond its parent
+> (`content-queue.md`). The parent wins: CQ1 is the broad accompaniment → named-concept bridge
+> only, and the direct `texture.walking-bass` demand is D2, for its later figure slice. The
+> text below is otherwise kept as written. See `decision.md`, "After review 1".
+
 This brief is immutable for the slice. The source of truth is
 `docs/prompts/content-queue.md` (CQ1), `content-recovery-foundation.md`, `content-mistakes.md`
 and `CLAUDE.md`.
