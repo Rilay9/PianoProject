@@ -84,7 +84,17 @@ export interface OsmdSourceMeasure {
   MeasureNumber: number;
   ImplicitMeasure?: boolean;
   ActiveTimeSignature?: { Numerator: number; Denominator: number };
-  FirstInstructionsStaffEntries?: ({ Instructions?: unknown[] } | undefined)[];
+  FirstInstructionsStaffEntries?: (OsmdStaffInstructions | undefined)[];
+  LastInstructionsStaffEntries?: (OsmdStaffInstructions | undefined)[];
+  VerticalSourceStaffEntryContainers?: {
+    Timestamp: { RealValue: number };
+    StaffEntries: (OsmdStaffInstructions | undefined)[];
+  }[];
+}
+
+interface OsmdStaffInstructions {
+  Instructions?: unknown[];
+  ParentStaff?: { Id?: number };
 }
 
 export interface OsmdIterator {
@@ -227,6 +237,49 @@ function keyFifthsByMeasure(sheet: OsmdLikeSheet): number[] {
   });
 }
 
+/** OSMD 2.1.2's parsed clef instructions, in printed order, including changes inside a bar.
+ * LastInstructionsStaffEntries are courtesy clefs for the following bar. Printed lookup makes repeats
+ * return to the notation in force there instead of carrying the last playback clef backwards.
+ */
+function clefsByMeasure(sheet: OsmdLikeSheet): { at: number; staff: number; clef: NonNullable<ScoreNote['clef']> }[][] {
+  const active = new Map<number, NonNullable<ScoreNote['clef']>>();
+  const signs = ['G', 'F', 'C', 'percussion', 'TAB'] as const;
+  return sheet.SourceMeasures.map(measure => {
+    const changes: { at: number; staff: number; clef: NonNullable<ScoreNote['clef']> }[] = [];
+    const read = (entries: (OsmdStaffInstructions | undefined)[], at: number, keep: boolean): void => {
+      entries.forEach((entry, index) => {
+        const staff = entry?.ParentStaff?.Id ?? index + 1;
+        for (const instruction of entry?.Instructions ?? []) {
+          const c = instruction as { ClefType?: number; Line?: number; OctaveOffset?: number };
+          const sign = c.ClefType === undefined ? undefined : signs[c.ClefType];
+          if (sign === undefined || typeof c.Line !== 'number' || typeof c.OctaveOffset !== 'number') continue;
+          const clef = { sign, line: c.Line, octaveOffset: c.OctaveOffset };
+          active.set(staff, clef);
+          if (keep) changes.push({ at, staff, clef });
+        }
+      });
+    };
+    for (const [staff, clef] of active) changes.push({ at: 0, staff, clef });
+    read(measure.FirstInstructionsStaffEntries ?? [], 0, true);
+    for (const container of measure.VerticalSourceStaffEntryContainers ?? []) {
+      read(container.StaffEntries, wholeNotesToBeats(container.Timestamp.RealValue), true);
+    }
+    read(measure.LastInstructionsStaffEntries ?? [], 0, false);
+    return changes;
+  });
+}
+
+function clefAt(changes: ReturnType<typeof clefsByMeasure>[number], staff: number, offset: number): ScoreNote['clef'] {
+  let found: ScoreNote['clef'];
+  for (const change of changes) {
+    if (change.staff === staff && change.at <= offset + 1e-6) found = change.clef;
+  }
+  if (found === undefined) return undefined;
+  const defaultSign = staff >= 2 ? 'F' : 'G';
+  const defaultLine = staff >= 2 ? 4 : 2;
+  return found.sign === defaultSign && found.line === defaultLine && found.octaveOffset === 0 ? undefined : found;
+}
+
 /** The letters a key signature alters, in the order it adds them. */
 const SHARPS_ORDER = [5, 0, 7, 2, 9, 4, 11]; // F C G D A E B
 const FLATS_ORDER = [11, 4, 9, 2, 7, 0, 5]; // B E A D G C F
@@ -364,6 +417,7 @@ export function extractScoreModelFromSheet(
   const title = sheet.TitleString?.trim() ?? '';
   const homeStaves = voiceHomeStaves(sheet, maxSteps);
   const keyFifths = keyFifthsByMeasure(sheet);
+  const clefs = clefsByMeasure(sheet);
 
   const steps: ScoreStep[] = [];
   const tempoMap: TempoMapEntry[] = [];
@@ -458,7 +512,9 @@ export function extractScoreModelFromSheet(
         const tieLength = note.NoteTie?.Notes?.length ?? 1;
         const tiedDurations = tieLength > 1 ? tiedDurationsBeats(note) : undefined;
         const tuplet = tupletOf(note);
-        const accidental = writtenAccidental(note, midi, keyFifths[sourceMeasureIndex] ?? 0);
+        const fifths = keyFifths[sourceMeasureIndex] ?? 0;
+        const accidental = writtenAccidental(note, midi, fifths);
+        const clef = clefAt(clefs[sourceMeasureIndex] ?? [], note.ParentStaffEntry?.ParentStaff?.Id ?? staff, inMeasure);
         notes.push({
           id: makeNoteId({ measureIndex, staff, voice, onset, midi }),
           midi,
@@ -478,6 +534,8 @@ export function extractScoreModelFromSheet(
           ...(tuplet === undefined ? {} : { tuplet }),
           ...(accented ? { accent: true } : {}),
           ...(accidental === undefined ? {} : { accidental }),
+          ...(clef === undefined ? {} : { clef }),
+          ...(fifths === (keyFifths[0] ?? 0) ? {} : { keyFifths: fifths }),
         });
         handsPresent[hand] = true;
       }
@@ -543,3 +601,4 @@ export function extractScoreModel(
   }
   return extractScoreModelFromSheet(sheet, options);
 }
+

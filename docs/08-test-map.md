@@ -897,3 +897,24 @@ Outside the content pipeline, because the converter is (`03` §3's source table 
 
 
 | **Loop scoring is one population** (CL11c) | cumulative hits/wrongs against a one-lap denominator; Stop just after a lap saving the new partial lap instead of the completed pass | `tests/unit/loopScoresOnePopulation.test.ts` — lap two has its own hits/wrongs/steps and a wrong key still costs one note; Stop after completed looping reports that completed lap; `tests/unit/scoreTourRoute.test.ts` checks the real saved RunResult/session decision and whole practice duration; non-looped Keep tempo is unchanged | CL11c |
+
+
+## CL10a — notation in force and texture shares
+
+`cl10aHeldTune.test.ts` reproduces R37 with a merged melody tie across a 6/8 barline;
+the published checkpoint is one expected red presence assertion and two green controls.
+`cl10aNotationReadings.test.ts` goes through OSMD for one-staff F clef, a clef change and a
+C-to-G key change; synthetic models separate three quarters in 6/8, three qualifying bars
+of four, the two-of-three refusal, silent/accompaniment-only bars and explicit pickup.
+It also requires pickup serialization and a new evidence definitions version.
+
+`demandsOfFiles.test.ts` sends the same shared eligible/qualifying judgement to the content
+bridge, including carry from a held melody. The excerpt proposer consumes its cached
+threshold; `test_excerpt_proposer.py` tests accepted/refused windows and an empty denominator.
+`test_measured_truth.py` asks real built options to establish the five previously deferred
+rung claims and checks that one-staff bass readings are no longer suppressed by the old mask.
+
+Status: implementation submitted for orchestrator checks, not a pass. Full-corpus pin and
+untaught-table changes require the before/after rebuild and review requested in
+`docs/prompts/runs/CL10a/check-request.md`; never repin from a predicted count. A lost
+lesson-taught claim stops landing. Nothing here verifies a musical judgement by listening.

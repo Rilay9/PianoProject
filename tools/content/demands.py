@@ -29,9 +29,8 @@ notes of the model. The family contracts' density checks read those counts
 **Positions (E1).** Each row also carries where: per demand, per printed bar
 (1-based, the pickup as bar 1), how many located places, each printed note once
 however many passes the repeats make (`positions`); the printed bars where each
-every-bar detector's condition holds, the detector asked of that bar alone
-(`everyBar`: the left-hand pattern and the walking bass locate nothing unless
-every bar of the piece qualifies); each hand's lowest and highest pitch per
+texture detector's condition holds (`everyBar`, the legacy field name), plus its eligible
+bars and threshold (`textureShare`) directly from `detect.ts`; each hand's lowest and highest pitch per
 printed bar (`hands`); and the printed bar count (`printedBars`). The build keeps
 them in `build/positions-cache.json`, beside the counts under the same
 fingerprint and never on a catalogue row, for the excerpt proposer
@@ -196,3 +195,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+

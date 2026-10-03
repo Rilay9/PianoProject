@@ -483,8 +483,6 @@ export async function measureImport(xml: string, id: string): Promise<ImportMeas
       const n = detectors.detect(model, demand.detector).at.length;
       if (n > 0) located[demand.id] = n;
     }
-    const misread = clefMisread(xml);
-    const spoilt = new Set<string>(misread === undefined ? [] : CLEF_MISREAD);
     return {
       demands: detectors.measuredDemands(model, VOCABULARY_V0.demands),
       measurement: {
@@ -494,9 +492,8 @@ export async function measureImport(xml: string, id: string): Promise<ImportMeas
         bars: model.measureCount,
         steps: model.steps.length,
         notes: detectors.soundedNotes(model).length,
-        // A reading known to be wrong on this file never establishes an opportunity.
-        established: usefulDensity(located, model.measureCount).filter((demand) => !spoilt.has(demand)),
-        ...(misread === undefined ? {} : { misread: { demands: [...CLEF_MISREAD], why: misread } }),
+        // CL10a: the extracted model now carries the clef in force.
+        established: usefulDensity(located, model.measureCount),
       },
     };
   } catch (cause) {
@@ -504,11 +501,11 @@ export async function measureImport(xml: string, id: string): Promise<ImportMeas
   }
 }
 
-/** The two readings the detectors' clef assumption spoils (`build.CLEF_MISREAD`). */
+/** Legacy measurement diagnostics, retained for callers reading old records. */
 export const CLEF_MISREAD = ['clef.bass', 'pitch.ledger'] as const;
 
 /**
- * Why the clef-dependent readings of a score are unreliable, or `undefined`: the
+ * Why pre-CL10a clef-dependent readings were unreliable, or `undefined`: the
  * detectors read staff 1 as the treble clef (`detect.ts`'s module note), so an upper
  * staff written in the bass clef — a one-staff part, or an upper staff that moves into
  * it — reads wrong for the bass staff and the ledger lines. Found from the file's own
@@ -1277,3 +1274,4 @@ export async function importedCatalogItems(): Promise<CatalogItem[]> {
   // (`allItems`), and a catalog item has no use for the file's bytes.
   return (await importSummaries()).map(importToCatalogItem);
 }
+

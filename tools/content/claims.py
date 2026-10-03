@@ -96,7 +96,7 @@ E22_FAMILY = {
 E22_SYNCOPATION_FAMILIES = ("comping", "secondary_rag", "syncopation")
 E22_SYNCOPATION = ("E22: T37's syncopation does not count a tie across the barline that starts on "
                    "the beat, or a short off-beat note")
-E22_WALKING = "E22: 12 of the 16 two-hand walking-bass items are not walks by walkingBass's rule"
+E22_WALKING = "CL10a: this walking-bass option is not established by the notation reading; musical judgement remains unverified"
 E22_NOTATED_WALK = "E22 caution: walkingBass is known to misread a stride left hand and a one-line pulse"
 E22_NOTATED_SYNC = "E22 caution: syncopation's blind spots (a tie across the barline on the beat, a short off-beat note)"
 #: detect.ts's own clef assumption (its module note): an upper staff in the bass clef is read
@@ -782,7 +782,7 @@ def inventory(catalog: list[dict], curriculum: dict) -> dict:
         "one hand only (left)": sum(1 for s in measured_songs if s.get("hands") == "left"),
         "both hands": sum(1 for s in measured_songs if s.get("hands") == "both"),
         "hands together (established)": sum(1 for s in measured_songs if established(s, "texture.hands-together")),
-        "a left-hand pattern in every bar": sum(1 for s in measured_songs if established(s, "texture.left-hand-pattern")),
+        "a left-hand pattern across eligible bars": sum(1 for s in measured_songs if established(s, "texture.left-hand-pattern")),
         "a walking bass (E22: readings unverified)": sum(1 for s in measured_songs if established(s, "texture.walking-bass")),
         "single staff (notation.staves 1)": sum(1 for s in measured_songs if (s.get("notation") or {}).get("staves") == 1),
     }
@@ -910,3 +910,4 @@ def render_inventory(inv: dict) -> str:
     lines += [f"- {entry}" for entry in inv["unmeasured"]] or ["- none"]
     lines.append("")
     return "\n".join(lines)
+

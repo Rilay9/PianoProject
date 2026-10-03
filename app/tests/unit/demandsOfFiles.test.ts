@@ -33,8 +33,8 @@ import { describe, expect, it } from 'vitest';
 import { OpenSheetMusicDisplay } from 'opensheetmusicdisplay';
 import { extractScoreModel } from '../../src/score/extractScoreModel';
 import { toMusicXml } from '../../src/score/mxl';
-import { timeSignatureAt, type ScoreModel, type ScoreModelData, type ScoreNote } from '../../src/score/types';
-import { detect, measuredDemands, soundedNotes, type DetectorId } from '../../src/demands/detect';
+import type { ScoreModel, ScoreNote } from '../../src/score/types';
+import { detect, measuredDemands, soundedNotes, textureBars, type DetectorId } from '../../src/demands/detect';
 import type { DemandsFile } from '../../src/demands/vocabulary';
 import { installTextMeasurer } from './helpers/scoreCatalog';
 
@@ -71,53 +71,24 @@ interface Measured {
    * make. Only the bars with one.
    */
   positions: Record<string, Record<string, [number, number]>>;
-  /** E1: the printed bars where each every-bar detector's condition holds, asked of that bar alone. */
+  /** Texture qualifying printed bars, from the detector itself; legacy cache field name. */
   everyBar: Record<string, number[]>;
+  textureShare: Record<string, { eligible: number[]; minimumShare: number }>;
   /** E1: per printed bar, each hand's lowest and highest sounded pitch (grace notes left out). */
   hands: Record<string, { R?: [number, number]; L?: [number, number] }>;
   /** The printed bar count (`sourceMeasureCount`): what the bars above are counted in. */
   printedBars: number;
+  notationInForce: true;
 }
 
-/** The detectors that locate nothing unless every bar of the model qualifies. */
+/** The texture detectors whose window judgement needs eligible and qualifying bars. */
 const EVERY_BAR: readonly DetectorId[] = ['leftHandPattern', 'walkingBass'];
 
 /** A printed note, the same on every pass through a repeat (`printedNoteKey`'s fields). */
 const printedKey = (note: ScoreNote): string =>
   `${String(note.sourceMeasureIndex)}:${String(note.staff)}:${String(note.voice)}:${String(note.sourceOnset)}:${String(note.midi)}`;
 
-/**
- * One printed bar of the model alone, on its first pass: its steps as bar 0 of a one-bar model,
- * with the time signature in force there. The every-bar detectors read their per-bar condition
- * from exactly this (a bar's own notes, its metre, the tune above it), so asking the detector of
- * the slice is asking it of the bar; nothing here restates a condition.
- */
-function barSlice(model: ScoreModelData, printedIndex: number): ScoreModelData | undefined {
-  const first = model.steps.find((step) => step.sourceMeasureIndex === printedIndex);
-  if (first === undefined) return undefined;
-  const unrolled = first.measureIndex;
-  const steps = model.steps
-    .filter((step) => step.measureIndex === unrolled)
-    .map((step, index) => ({
-      ...step,
-      index,
-      measureIndex: 0,
-      notes: step.notes.map((note) => ({ ...note, measureIndex: 0 })),
-    }));
-  const metre = timeSignatureAt(model.timeSigMap, unrolled);
-  return {
-    id: model.id,
-    title: model.title,
-    steps,
-    tempoMap: model.tempoMap,
-    timeSigMap: metre ? [{ ...metre, atMeasure: 0 }] : [],
-    measureCount: 1,
-    sourceMeasureCount: 1,
-    ...(model.keySig === undefined ? {} : { keySig: model.keySig }),
-    handsPresent: model.handsPresent,
-  };
-}
-
+/** The bridge consumes the shared detector judgement; it never classifies a bar itself. */
 function measure(model: ScoreModel): Measured {
   const opportunities: Record<string, number> = {};
   const positions: Record<string, Record<string, [number, number]>> = {};
@@ -137,14 +108,13 @@ function measure(model: ScoreModel): Measured {
     if (Object.keys(perBar).length > 0) positions[demand.id] = perBar;
   }
   const everyBar: Record<string, number[]> = {};
+  const textureShare: Measured['textureShare'] = {};
   for (const demand of demands) {
     if (!EVERY_BAR.includes(demand.detector)) continue;
-    const bars: number[] = [];
-    for (let index = 0; index < model.sourceMeasureCount; index += 1) {
-      const slice = barSlice(model, index);
-      if (slice !== undefined && detect(slice, demand.detector).present) bars.push(index + 1);
-    }
-    everyBar[demand.id] = bars;
+    const judgement = textureBars(model, demand.detector as 'leftHandPattern' | 'walkingBass');
+    const printed = (bar: number): number => (model.steps.find(step => step.measureIndex === bar)?.sourceMeasureIndex ?? bar) + 1;
+    everyBar[demand.id] = judgement.qualifying.map(printed);
+    textureShare[demand.id] = { eligible: judgement.eligible.map(printed), minimumShare: judgement.minimumShare };
   }
   const hands: Record<string, { R?: [number, number]; L?: [number, number] }> = {};
   const seenNotes = new Set<string>();
@@ -163,8 +133,10 @@ function measure(model: ScoreModel): Measured {
     notes: soundedNotes(model).length,
     positions,
     everyBar,
+    textureShare,
     hands,
     printedBars: model.sourceMeasureCount,
+    notationInForce: true,
   };
 }
 
@@ -241,16 +213,16 @@ describe.runIf(IN === undefined)('Anh. 113, a quarried piece, measured by the ap
     ]) {
       expect(found, `Anh. 113 has ${id}`).toContain(id);
     }
+    expect(found, 'Anh. 113: 28 of 32 bars carry a left-hand pattern').toContain('texture.left-hand-pattern');
     // No tie, no dotted quarter (its long notes are halves and dotted halves),
     // 3/4 throughout; no note of a beat or more off the beat and no right-hand
     // bar that opens late; and bars 12, 29, 30 and 32 give the left hand one
-    // note, so neither a pattern in every bar nor a walk.
+    // note, so the pattern survives those contrasting bars, but there is no walk.
     for (const id of [
       'rhythm.ties',
       'rhythm.dotted-quarter',
       'metre.compound',
       'rhythm.syncopation',
-      'texture.left-hand-pattern',
       'texture.walking-bass',
     ]) {
       expect(found, `Anh. 113 has no ${id}`).not.toContain(id);
@@ -263,12 +235,10 @@ describe.runIf(IN === undefined)('Anh. 113, a quarried piece, measured by the ap
  * where each demand was located, without cutting the window. Per demand, per printed bar
  * (1-based, the pickup as bar 1, as `sections.json` and the Score loop count), each printed note
  * once however many passes the repeats make: `detect`'s own located places, read through the
- * note's `sourceMeasureIndex` (`DemandAt` carries only the unrolled measure). The two every-bar
- * detectors (left-hand pattern, walking bass) locate nothing unless every bar of the piece
- * qualifies, so their places cannot tell a window: the bridge asks each of them of every printed
- * bar alone, the detector itself on that bar's slice of the model. And each hand's lowest and
- * highest pitch per printed bar, for the window's span (the shift detector widens from the start
- * of the piece, so its places do not compose into a window either).
+ * note's `sourceMeasureIndex` (`DemandAt` carries only the unrolled measure). The texture
+ * bridge consumes `textureBars` on the full model, so a melody held from an earlier bar
+ * survives. `everyBar` retains its cache name for qualifying bars; `textureShare` carries
+ * eligible bars and the detector's threshold. Each hand's range is also kept per printed bar.
  */
 describe.runIf(IN === undefined)('the positions the bridge writes, by printed bar (E1)', () => {
   const FIXTURES = join(REPO, 'tools', 'content', 'tests', 'fixtures', 'excerpts');
@@ -307,7 +277,7 @@ describe.runIf(IN === undefined)('the positions the bridge writes, by printed ba
     expect(row.opportunities['interval.leap']).toBeGreaterThan(7);
   });
 
-  it('reads an every-bar detector bar by bar, and each hand’s range per bar', async () => {
+  it('reads texture eligibility and qualification bar by bar, and each hand’s range per bar', async () => {
     installTextMeasurer();
     const model = await modelOfFile(join(FIXTURES, 'walk-in-two-bars.musicxml'));
     const row = measure(model);
@@ -317,8 +287,10 @@ describe.runIf(IN === undefined)('the positions the bridge writes, by printed ba
     // Bar by bar: bars 1 and 3 walk, and a pattern (more than one left-hand note under a tune) is there too.
     expect(row.everyBar['texture.walking-bass']).toEqual([1, 3]);
     expect(row.everyBar['texture.left-hand-pattern']).toEqual([1, 3]);
+    expect(row.textureShare['texture.walking-bass']).toEqual({ eligible: [1, 2, 3], minimumShare: 0.75 });
     expect(row.hands['1']).toEqual({ R: [72, 72], L: [48, 53] });
     expect(row.hands['2']).toEqual({ R: [71, 71], L: [43, 43] });
     expect(row.hands['3']).toEqual({ R: [72, 72], L: [43, 48] });
   });
 });
+

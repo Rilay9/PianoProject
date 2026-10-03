@@ -201,8 +201,11 @@ export interface EvidenceContext {
  *   other; it reads them at the practice standard. The support share and the
  *   timing precisions moved into the vocabulary at the same time (L57) with
  *   their values unchanged, which alone would have moved nothing.
+ * - **7** — the same stored shape; CL10a reads the clef and key in force,
+ *   quarter walks in simple metre, held melody, and texture share. Located
+ *   opportunities change, so older evidence waits for the existing recompute.
  */
-export const EVIDENCE_DEFINITIONS = 6;
+export const EVIDENCE_DEFINITIONS = 7;
 
 /** A demand at some steps: another demand on a demand's counted steps (`overlapOf`), or one a skill does not count (`otherDemands`). */
 export interface DemandOverlap {
@@ -839,3 +842,4 @@ function evidenceForSkill(
   }
   return evidence;
 }
+

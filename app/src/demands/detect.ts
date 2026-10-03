@@ -13,17 +13,9 @@
  * **They read the score model, never the MusicXML.** The model is what the
  * engine plays and what the evidence function will attribute a run to, so a
  * demand found here is a demand at a step the learner was asked to play. It
- * carries what the page writes where a detector needs it: the written parts of
- * a tie chain (`tiedDurations`), the tuplet (`tuplet`), the accidental as
- * written (`accidental`, T41). Two facts it does not carry, and which these
- * detectors therefore assume:
- *
- * - **The clef.** Staff 1 is read as the treble clef and staff 2 as the bass,
- *   which the sight-reading writer guarantees and a grand staff almost always
- *   has. A one-staff part in the bass clef, or a clef change, reads wrong in
- *   `bassClef` and `ledgerLines` — E's work, before repertoire carries demands.
- * - **A key change.** The model keeps the first key (`keySig`). `keySignature`
- *   and `chromatic` judge every note against it.
+ * carries what the page writes where a detector needs it: tie parts, tuplets,
+ * accidentals, the clef and the key signature in force at each note. Absent
+ * clef/key overrides retain the conventional grand staff and opening key.
  *
  * Grace notes are never counted: they are ornaments (E), and OSMD gives them a
  * duration they do not have on the page. Rests are not on the model; the one
@@ -154,6 +146,58 @@ function barStarts(model: ScoreModelData): Map<number, number> {
     starts.set(0, (starts.get(1) ?? 0) - barLength(metreAt(model, 0)));
   }
   return starts;
+}
+
+/** The shared texture judgement. Bars are read here once, including held melody.
+ * A complete two-part bar remains eligible even at an introduction or ending;
+ * absent structural labels never license excluding a nonqualifying bar.
+ */
+export interface TextureBars {
+  eligible: number[];
+  qualifying: number[];
+  minimumShare: number;
+}
+export function textureBars(model: ScoreModelData, id: 'leftHandPattern' | 'walkingBass'): TextureBars {
+  const notes = placed(model);
+  const left = lineOf(model, 2);
+  const starts = barStarts(model);
+  const eligible: number[] = [];
+  const qualifying: number[] = [];
+  const seenPrinted = new Set<number>();
+  for (let bar = 0; bar < model.measureCount; bar += 1) {
+    const printed = model.steps.find(step => step.measureIndex === bar)?.sourceMeasureIndex ?? bar;
+    if (seenPrinted.has(printed)) continue;
+    seenPrinted.add(printed);
+    if (model.pickup === true && printed === 0) continue;
+    const start = starts.get(bar) ?? 0;
+    const end = start + barLength(metreAt(model, bar));
+    const upper = notes.filter(p => p.note.staff === 1 && p.note.onset < end - EPSILON && p.note.onset + p.note.duration > start + EPSILON);
+    const lower = notes.filter(p => p.note.staff === 2 && p.note.onset < end - EPSILON && p.note.onset + p.note.duration > start + EPSILON);
+    const overlap = upper.some(u => lower.some(l =>
+      Math.max(start, u.note.onset, l.note.onset) < Math.min(end, u.note.onset + u.note.duration, l.note.onset + l.note.duration) - EPSILON));
+    if (!overlap) continue;
+    eligible.push(bar);
+    if (id === 'leftHandPattern') {
+      if (new Set(lower.filter(p => p.note.measureIndex === bar).map(p => p.note.onset)).size > 1) qualifying.push(bar);
+    } else {
+      const metre = metreAt(model, bar);
+      if (isCompound(metre) || metre.beatType !== 4) continue;
+      const inBar = left.filter(p => p.note.measureIndex === bar);
+      const quarters = inBar.filter(p => same(parts(p.note)[0] ?? 0, 1));
+      if (quarters.length === inBar.length && quarters.length === barLength(metre) &&
+          quarters.every((p, i) => same(offsetInBar(model, p.note), i)) &&
+          !turnsBack(quarters.map(p => p.note.midi))) qualifying.push(bar);
+    }
+  }
+  // Three complete patterned bars with one contrasting bar still teach the
+  // texture; two patterned bars among three do not establish the piece's texture.
+  return { eligible, qualifying, minimumShare: 3 / 4 };
+}
+function textureOpportunity(model: ScoreModelData, id: 'leftHandPattern' | 'walkingBass'): Opportunity {
+  const bars = textureBars(model, id);
+  const present = bars.eligible.length > 0 && bars.qualifying.length / bars.eligible.length >= bars.minimumShare;
+  const qualifying = new Set(bars.qualifying.map(bar => model.steps.find(step => step.measureIndex === bar)?.sourceMeasureIndex ?? bar));
+  return found(id, present ? placed(model).filter(p => p.note.staff === 2 && qualifying.has(p.note.sourceMeasureIndex)).map(locate) : [], present);
 }
 
 /** Beats from the start of its bar to the note. */
@@ -298,8 +342,8 @@ const BASS_LEDGER_BELOW = 16; // E2 and lower
 const BASS_LEDGER_ABOVE = 29; // D4 and higher; middle C left out
 
 export const DETECTORS: Readonly<Record<DetectorId, Detector>> = {
-  /** A note on the bass staff (staff 2; see the module note on clefs). */
-  bassClef: (m) => found('bassClef', placed(m).filter((p) => p.note.staff === 2).map(locate)),
+  /** A note read under an F clef, regardless of its staff number. */
+  bassClef: (m) => found('bassClef', placed(m).filter((p) => (p.note.clef?.sign ?? (p.note.staff === 2 ? 'F' : 'G')) === 'F').map(locate)),
 
   /**
    * A note that needs a ledger line, other than middle C's: middle C is the
@@ -313,9 +357,15 @@ export const DETECTORS: Readonly<Record<DetectorId, Detector>> = {
       placed(m)
         .filter((p) => {
           const at = written(p.note).position;
-          return p.note.staff === 1
+          const clef = p.note.clef;
+          if (clef === undefined) return p.note.staff === 1
             ? at <= TREBLE_LEDGER_BELOW || at >= TREBLE_LEDGER_ABOVE
             : at <= BASS_LEDGER_BELOW || at >= BASS_LEDGER_ABOVE;
+          if (clef.sign === 'percussion' || clef.sign === 'TAB') return false;
+          const reference = (clef.sign === 'G' ? 32 : clef.sign === 'F' ? 24 : 28) + 7 * clef.octaveOffset;
+          const bottom = reference - 2 * (clef.line - 1);
+          // Middle C is the curriculum's first landmark, rather than this demand.
+          return at !== 28 && (at <= bottom - 2 || at >= bottom + 10);
         })
         .map(locate),
     ),
@@ -419,16 +469,16 @@ export const DETECTORS: Readonly<Record<DetectorId, Detector>> = {
    * whose altered letters never sound is present with nowhere to point.
    */
   keySignature: (m) => {
-    const fifths = keyFifths(m);
     return found(
       'keySignature',
       placed(m)
         .filter((p) => {
           const w = written(p.note);
+          const fifths = p.note.keyFifths ?? keyFifths(m);
           return keyAlter(w.letter, fifths) !== 0 && w.alter === keyAlter(w.letter, fifths);
         })
         .map(locate),
-      fifths !== 0,
+      keyFifths(m) !== 0 || placed(m).some(p => (p.note.keyFifths ?? keyFifths(m)) !== 0),
     );
   },
 
@@ -439,13 +489,13 @@ export const DETECTORS: Readonly<Record<DetectorId, Detector>> = {
    * major scale.
    */
   chromatic: (m) => {
-    const fifths = keyFifths(m);
-    const tonic = mod(fifths * 7, 12);
     return found(
       'chromatic',
       placed(m)
         .filter((p) => {
           const w = written(p.note);
+          const fifths = p.note.keyFifths ?? keyFifths(m);
+          const tonic = mod(fifths * 7, 12);
           if (!w.spelled) return !MAJOR.includes(mod(p.note.midi - tonic, 12));
           return w.alter !== keyAlter(w.letter, fifths);
         })
@@ -506,46 +556,10 @@ export const DETECTORS: Readonly<Record<DetectorId, Detector>> = {
     return found('handsTogether', notes.filter((p) => coordinated.has(p.step)).map(locate), present);
   },
 
-  /**
-   * The left hand (staff 2) plays more than one note in every bar, under a
-   * right hand that plays too: a pattern under a tune. A melody in the left
-   * hand alone is reading the bass clef, not this.
-   */
-  leftHandPattern: (m) => {
-    const notes = placed(m);
-    const left = notes.filter((p) => p.note.staff === 2);
-    const onsets = (bar: number): number => new Set(left.filter((p) => p.note.measureIndex === bar).map((p) => p.note.onset)).size;
-    const tune = (bar: number): boolean => notes.some((p) => p.note.staff === 1 && p.note.measureIndex === bar);
-    const everyBar =
-      m.measureCount > 0 && Array.from({ length: m.measureCount }, (_, bar) => onsets(bar) > 1 && tune(bar)).every(Boolean);
-    return found('leftHandPattern', everyBar ? left.map(locate) : []);
-  },
-
-  /**
-   * A line that walks: a quarter on every beat of every bar in the left hand
-   * (staff 2), a quarter per beat in 4/4 and three in 3/4, that never turns
-   * back in the bar to a pitch it has left, under a right hand that plays too.
-   * A broken chord in quarters (root, fifth, third, fifth) circles back to its
-   * fifth and is a pattern, not a walk; a walk that stalls on a repeated note
-   * still walks; the same quarters with nothing over them are a bass line read
-   * alone.
-   */
-  walkingBass: (m) => {
-    const notes = placed(m);
-    const left = lineOf(m, 2);
-    const walks = (bar: number): boolean => {
-      const inBar = left.filter((p) => p.note.measureIndex === bar);
-      const quarters = inBar.filter((p) => same(parts(p.note)[0] ?? 0, 1));
-      return (
-        quarters.length === inBar.length &&
-        quarters.length === barLength(metreAt(m, bar)) &&
-        !turnsBack(quarters.map((p) => p.note.midi))
-      );
-    };
-    const tune = (bar: number): boolean => notes.some((p) => p.note.staff === 1 && p.note.measureIndex === bar);
-    const everyBar = m.measureCount > 0 && Array.from({ length: m.measureCount }, (_, bar) => walks(bar) && tune(bar)).every(Boolean);
-    return found('walkingBass', everyBar ? left.map(locate) : []);
-  },
+  /** A pattern under a tune in at least three quarters of eligible printed bars. */
+  leftHandPattern: m => textureOpportunity(m, 'leftHandPattern'),
+  /** A quarter on each simple quarter beat, without returning to a departed pitch. */
+  walkingBass: m => textureOpportunity(m, 'walkingBass'),
 };
 
 /** One detector over one model. */
@@ -569,3 +583,4 @@ export function measuredDemands(model: ScoreModelData, demands: readonly { id: s
   const found = detectAll(model);
   return demands.filter((d) => found[d.detector as DetectorId]?.present === true).map((d) => d.id);
 }
+

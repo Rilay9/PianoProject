@@ -108,6 +108,10 @@ export interface ScoreNote {
    * changes only where a note has one.
    */
   accidental?: WrittenAccidental;
+  /** Clef in force where this note is printed; absent is staff 1 G2 / staff 2 F4. */
+  clef?: { sign: 'G' | 'F' | 'C' | 'percussion' | 'TAB'; line: number; octaveOffset: number };
+  /** Fifths in force here when different from the opening `keySig` (including zero). */
+  keyFifths?: number;
 }
 
 /** The accidentals a note's written name can carry (`ScoreNote.accidental`). */
@@ -278,7 +282,7 @@ export function withBeatToMs(data: ScoreModelData): ScoreModel {
 
 /** Strips the method back off, for serialising or comparing against a golden. */
 export function toScoreModelData(model: ScoreModel): ScoreModelData {
-  const { id, title, steps, tempoMap, timeSigMap, measureCount, sourceMeasureCount, keySig, handsPresent } =
+  const { id, title, steps, tempoMap, timeSigMap, measureCount, sourceMeasureCount, pickup, keySig, handsPresent } =
     model;
   return {
     id,
@@ -288,6 +292,7 @@ export function toScoreModelData(model: ScoreModel): ScoreModelData {
     timeSigMap,
     measureCount,
     sourceMeasureCount,
+    ...(pickup === undefined ? {} : { pickup }),
     ...(keySig === undefined ? {} : { keySig }),
     handsPresent,
   };
@@ -315,3 +320,4 @@ export function bpmAt(tempoMap: readonly TempoMapEntry[], beat: number): number 
   }
   return bpm;
 }
+

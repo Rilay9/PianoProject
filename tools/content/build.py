@@ -564,7 +564,7 @@ def established_by_window(located: dict[str, int], bars: int, table: dict, order
 #: The bridge's per-printed-bar positions (E1 item 5), kept apart from the counts: the proposer
 #: reads them, the catalogue never carries them, and the counts' cache stays the size it was.
 POSITIONS_CACHE = "positions-cache.json"
-POSITION_KEYS = ("positions", "everyBar", "hands", "printedBars")
+POSITION_KEYS = ("positions", "everyBar", "textureShare", "notationInForce", "hands", "printedBars")
 
 
 def span_of(hands: dict | None) -> dict[str, list[int]]:
@@ -718,11 +718,10 @@ def attach_demands(entries: list[dict], out_dir: Path) -> tuple[int, int, int]:
         by_window = ([d for d in established_by_window(located, int(row["measures"]), table, order) if d not in by_density]
                      if entry.get("type") == "excerpt" else [])
         by_contract = [d for d in established_by_contract(entry, row) if d not in by_density and d not in by_window]
-        misread = clef_misread(out_dir / entry["file"], (entry.get("notation") or {}).get("staves"))
-        # A reading known to be wrong on this file never establishes an opportunity; it stays
-        # among the ids, so the gate still treats it as something the learner may have to meet.
-        established = [d for d in order if (d in by_density or d in by_window or d in by_contract)
-                       and not (misread and d in CLEF_MISREAD)]
+        # CL10a: the fingerprint includes the notation extractor and detector.
+        # New measurements read the clef in force; the old staff-number mask
+        # would suppress correct one-staff bass readings after remeasurement.
+        established = [d for d in order if d in by_density or d in by_window or d in by_contract]
         # L120b: each sounding hand's range over the piece, for the coping question's fixed positions.
         span = span_of((positions.get(sha) or {}).get("hands"))
         entry["demands"] = list(row["demands"])
@@ -737,7 +736,6 @@ def attach_demands(entries: list[dict], out_dir: Path) -> tuple[int, int, int]:
             "established": established,
             **({"contract": [d for d in by_contract if d in established]} if [d for d in by_contract if d in established] else {}),
             **({"window": [d for d in by_window if d in established]} if [d for d in by_window if d in established] else {}),
-            **({"misread": {"demands": list(CLEF_MISREAD), "why": misread}} if misread else {}),
             **({"span": span} if span else {}),
         }
         measured += 1
@@ -1603,3 +1601,4 @@ def run_build(args: argparse.Namespace, started: float) -> None:
 
 if __name__ == "__main__":
     main()
+

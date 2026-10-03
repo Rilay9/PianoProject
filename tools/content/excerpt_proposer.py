@@ -20,13 +20,12 @@ their weighted sum, shown part by part; three gates refuse outright (`untaught`,
 `physical`). Nothing reads a level: a mutant that ranks by lowest difficulty is red
 (`test_excerpt_proposer.py`).
 
-**What the positions cannot tell, named.** The left-hand pattern and the walking bass locate
-nothing unless every bar of the piece qualifies, so the bridge asks each detector of every bar
-alone and a window has them where every bar of it does; the shift beyond a five-finger position
-widens from the start of the piece, so a window's span is read from each hand's range per bar; a
-key signature and compound time are properties of the bars, read from the notation; hands
-together is taken as present wherever both staves sound in a two-hand window (conservative: the
-gate would rather refuse a window than propose one the cut then measures as untaught).
+**Texture shares.** The bridge writes the detector's qualifying and eligible printed bars
+and its share threshold. A window consumes those facts; Python never classifies a pattern.
+Old caches without share metadata keep their recorded every-bar semantics until a rebuild.
+The shift beyond a five-finger position still uses each hand's range per bar. Key-relative
+positions from the new bridge read the key in force (`notationInForce`); the legacy key-change
+refusal remains only for older caches. Hands together remains a conservative window reading.
 
 Writes `build/excerpts/candidates.json` (one section per run: the target, the judging rung, the
 weights, every candidate with its parts and gates, the best refused window per parent with the
@@ -102,11 +101,8 @@ REPERTOIRE_PHYSICAL = {
 
 DOUBLE_BARS = {"light-light", "light-heavy", "heavy-light", "heavy-heavy", "repeat"}
 
-#: The selections the proposer offers. Not the left hand alone: a left-hand cut is one staff in
-#: the bass clef, and the detectors read staff 1 as the treble clef (`detect.ts`'s clef assumption,
-#: E0's 74 scores, E22's seam), so the cut would measure every note on a ledger line and none on
-#: the bass staff — demands the passage does not have. The cutter and the definitions take `left`;
-#: the proposer offers it again once the detectors read the clef.
+#: Retain the existing selection surface. CL10a fixes a one-staff bass reading,
+#: but does not dispatch the separate change to offer left-hand-only candidates.
 PROPOSED_SELECTIONS = ("both", "right")
 EVERY_BAR = ("texture.left-hand-pattern", "texture.walking-bass")
 
@@ -558,16 +554,29 @@ def window_counts(positions: dict, low: int, high: int, selection: str) -> dict[
 
 
 def every_bar(positions: dict, demand: str, low: int, high: int) -> tuple[int, int]:
-    """How many of the window's bars the every-bar detector's condition holds in, and how many bars."""
+    """Qualifying and eligible printed bars, classified by the app's detector."""
     bars = set((positions.get("everyBar") or {}).get(demand) or [])
-    return sum(1 for b in range(low, high + 1) if b in bars), high - low + 1
+    rule = (positions.get("textureShare") or {}).get(demand)
+    eligible = set(rule["eligible"]) if rule is not None else set(range(low, high + 1))
+    window = {b for b in range(low, high + 1) if b in eligible}
+    return len(window & bars), len(window)
+
+
+def texture_met(positions: dict, demand: str, held: int, total: int) -> bool:
+    """Consume the detector's threshold; never define a musical rule in Python.
+
+    Old caches retain their recorded every-bar semantics until remeasured.
+    """
+    rule = (positions.get("textureShare") or {}).get(demand)
+    minimum = rule["minimumShare"] if rule is not None else 1.0
+    return total > 0 and held / total >= minimum
 
 
 def window_demands(positions: dict, bars: list[Bar], low: int, high: int, selection: str, staves: int) -> list[str]:
     """
     The demands the window would carry, read as the cut would be measured (conservatively where
-    the positions cannot tell): the located demands on its staves; the every-bar ones where every
-    bar qualifies (two hands only); the shift where a hand's range over the window passes a fifth;
+    the positions cannot tell): the located demands on its staves; the texture ones at the detector's recorded
+    share of eligible bars (two hands only); the shift where a hand's range over the window passes a fifth;
     the key signature where the window's key has one; compound time where its bars are; hands
     together wherever both staves sound in a two-hand window.
     """
@@ -578,7 +587,7 @@ def window_demands(positions: dict, bars: list[Bar], low: int, high: int, select
     if selection == "both" and staves >= 2:
         for demand in EVERY_BAR:
             held, total = every_bar(positions, demand, low, high)
-            if held == total:
+            if texture_met(positions, demand, held, total):
                 present.add(demand)
         window = bars[low - 1:high]
         if any(b.sounding(1) for b in window) and any(b.sounding(2) for b in window):
@@ -589,7 +598,7 @@ def window_demands(positions: dict, bars: list[Bar], low: int, high: int, select
         highs = [hands[str(b)][hand][1] for b in range(low, high + 1) if hand in (hands.get(str(b)) or {})]
         if lows and max(highs) - min(lows) > 7:
             present.add("range.beyond-position")
-    if bars[low - 1].fifths != 0:
+    if any(b.fifths != 0 for b in bars[low - 1:high]):
         present.add("key.signature")
     # Compound time by the detectors' rule (`detect.ts`'s `isCompound`, L120b): more than one beat of
     # three eighths, so 3/8, simple triple, is not.
@@ -623,7 +632,7 @@ def opportunity(target_demands: list[str], positions: dict, low: int, high: int,
     """The target at the window rule's density, and how many of the window's bars it recurs in."""
     size = high - low + 1
     counts = window_counts(positions, low, high, selection)
-    if bars and any(d in KEY_RELATIVE for d in target_demands) and any(b.fifths != bars[0].fifths for b in bars[low - 1:high]):
+    if not positions.get("notationInForce") and bars and any(d in KEY_RELATIVE for d in target_demands) and any(b.fifths != bars[0].fifths for b in bars[low - 1:high]):
         why = "the window's key is not the piece's first key: the positions judge its notes against the first key, so only the cut can tell"
         return Part("opportunity", 0.0, why), Part("occurrences", 0.0, why)
     best_opp = Part("opportunity", 0.0, f"no {' or '.join(target_demands)} in the window")
@@ -633,9 +642,11 @@ def opportunity(target_demands: list[str], positions: dict, low: int, high: int,
             if selection != "both":
                 continue
             held, total = every_bar(positions, demand, low, high)
-            opp = Part("opportunity", 1.0 if held == total else held / total * 0.5,
-                       f"{demand}: every bar of {total}" if held == total else f"{demand}: {held} of {total} bars (the detector asks every bar)")
-            occ = Part("occurrences", held / total, f"{demand} in {held} of {total} bars")
+            met = texture_met(positions, demand, held, total)
+            fraction = held / total if total else 0.0
+            opp = Part("opportunity", 1.0 if met else fraction * 0.5,
+                       f"{demand}: {held} of {total} eligible bars; {'met' if met else 'refused'} by the detector's share rule")
+            occ = Part("occurrences", fraction, f"{demand} in {held} of {total} eligible bars")
         else:
             n = counts.get(demand, 0)
             rule = table["demands"].get(demand) or {}
@@ -1248,3 +1259,4 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":  # pragma: no cover
     raise SystemExit(main())
+
