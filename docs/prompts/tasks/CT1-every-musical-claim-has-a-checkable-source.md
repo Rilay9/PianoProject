@@ -1,5 +1,7 @@
 # CT1 — every concept the curriculum teaches is defined from published sources, checked in the actual notes, and aligned across rungs, generators and levels (the content-truth work)
 
+> **STOPPED, 2026-10-03, by the owner: do not run this brief again.** One session given all of it drifted and repeated the mistakes in `docs/prompts/content-mistakes.md`. The work continues as small lanes, one at a time, each reviewed before the next; the first is the left-hand-pattern and named-figure fix. The cloud session's pushed work on `claude/content-truth` is reviewed as it stands.
+
 **Version 3, 2026-10-03, the owner's direction:** *research each concept, make sure the rungs teach the concepts at the appropriate level, and make sure the generators, exercises, scales and content all align.* This replaces versions 1 and 2. Their containment idea survives only as a temporary safety net (part four). **Nothing in the catalogue or on a rung is deleted:** claims change; the music stays.
 
 You are working in the piano-teaching PWA in this repository. **Read `CLAUDE.md`, `docs/prompts/operating-procedure.md` §11–§14 and `docs/00-invariants.md` first.** Every house rule applies.
@@ -234,3 +236,4 @@ in-flight: drafted 2026-10-03 (`CT1-every-musical-claim-has-a-checkable-source.m
 state: with-reviewer 2026-10-03: the owner's prompt for a cloud session, with the outside reviewer before it is pasted (Entry 231)
 - held 2026-10-03: Part D would let untaught music through (eligibilityCore.ts:286); being revised with the reviewer's replacement under the rule that uncertainty only restricts
 - approved 2026-10-03: version 3, the owner's direction (research each concept, align rungs, generators and levels; nothing deleted), with the reviewer's corrections kept (restrict never grant, three questions apart, runtime generation, the modes); dispatchable to a cloud session
+- held 2026-10-03: stopped by the owner; one session with the whole scope drifted; continued as small lanes, the first being the named accompaniment figures
