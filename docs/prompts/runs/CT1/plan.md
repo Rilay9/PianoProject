@@ -1,5 +1,7 @@
 # CT1 — the plan forward: what exists, where truth comes from, and how to build exercises correctly
 
+> **Not a plan of record.** Superseded by `docs/prompts/content-recovery-foundation.md` and `content-queue.md` (draft PR #2). For what survives, see `HANDOFF.md` beside this file.
+
 Written 2026-10-03 on `claude/content-truth` at the base `abb62a0`, after part zero
 (`reuse-map.md`), for the owner and the reviewer to check before more is built.
 **This is a plan, not a report of built work.** What was built this session is listed in

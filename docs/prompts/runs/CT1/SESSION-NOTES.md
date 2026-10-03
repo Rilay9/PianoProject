@@ -1,5 +1,7 @@
 # CT1 session notes: the directions and state to keep across compaction
 
+> **Superseded** by `HANDOFF.md` beside this file and by the content-recovery foundation. Kept for provenance only.
+
 Written 2026-10-03 on `claude/content-truth`. The authoritative instructions are
 `CLAUDE.md` (*Reuse before reinvention*) and the CT1 brief on
 `origin/claude/piano-teaching-app-bo19td`. These notes keep the owner's and the reviewer's
